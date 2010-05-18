@@ -10,7 +10,7 @@
 <html>
 <head>
 	<?php echo $this->html->charset();?>
-	<title>Application > <?php echo $this->title(); ?></title>
+	<title>Totsy V2 > <?php echo $this->title(); ?></title>
 	<?php echo $this->html->style(array('debug', 'lithium')); ?>
 	<?php echo $this->html->style(array('base')); ?>
 	<?php echo $this->html->style(array('modal')); ?>
@@ -19,7 +19,7 @@
 </head>
 <body class="app">
 	<div id="container">
-		<div id="toper"><div>
+		<div id="topper"></div>
 		<div id="wrapper">
 			<div id="header">
 				<div id="header-lt">

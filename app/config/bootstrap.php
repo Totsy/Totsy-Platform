@@ -63,7 +63,7 @@ require __DIR__ . '/bootstrap/cache.php';
  * transliterations, localized validation, and how localized text should be loaded. Uncomment this
  * line if you plan to globalize your site.
  */
-// require __DIR__ . '/bootstrap/g11n.php';
+require __DIR__ . '/bootstrap/g11n.php';
 
 /**
  * This file contains configurations for handling different content types within the framework,
@@ -80,12 +80,13 @@ require __DIR__ . '/bootstrap/cache.php';
  * This configures your session storage. The Cookie storage adapter must be connected first, since
  * it intercepts any writes where the `'expires'` key is set in the options array.
  */
-// use \lithium\storage\Session;
-//
-// Session::config(array(
-// 	'cookie' => array('adapter' => 'Cookie', 'expire' => '+2 days'),
-// 	'default' => array('adapter' => 'Php')
-// ));
+use \lithium\storage\Session;
+
+Session::config(array(
+//	'cookie' => array('adapter' => 'Cookie', 'expire' => '+.01 days'),
+	'default' => array('adapter' => 'Php', 'expire' => '+.00001 days')
+));
 ini_set("display_errors", 1);
+//ini_set('xdebug.default_enable', '2');
 
 ?>

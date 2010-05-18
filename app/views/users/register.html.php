@@ -32,15 +32,15 @@ $(document).ready(function(){
 	</div>
 </div>
 <div class="reg-right col">
-	<div class="reg-copy">		
+	<div class="reg-copy">
 			<fieldset>				
 				<?=$this->form->create('',array('id'=>'registerForm')); ?>
 					<?=$this->form->label('fname','First Name',array('class'=>'label'));?>
 					<?=$this->form->text('firstname', array('class'=>'required'));?>
 					<?=$this->form->label('lname','Last Name',array('class'=>'label'));?>
 					<?=$this->form->text('lastname', array('class'=>'required'));?>
-					<?=$this->form->label('username','User Name',array('class'=>'label'));?>
-					<?=$this->form->text('username', array('class'=>'required'));?>
+					<?=$this->form->label('email','Email Address',array('class'=>'label'));?>
+					<?=$this->form->text('email', array('class'=>'required'));?>
 					<?=$this->form->label('password','Password',array('class'=>'label'));?>
 					<?=$this->form->password('password', array('class'=>'required'));?>
 					<?=$this->form->label('','',array('class'=>'clear block sm'));?>
