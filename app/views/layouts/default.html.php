@@ -11,7 +11,6 @@
 <head>
 	<?php echo $this->html->charset();?>
 	<title>Totsy V2 > <?php echo $this->title(); ?></title>
-	<?php echo $this->html->style(array('debug', 'lithium')); ?>
 	<?php echo $this->html->style(array('base')); ?>
 	<?php echo $this->html->style(array('modal')); ?>
 	<?php echo $this->scripts(); ?>

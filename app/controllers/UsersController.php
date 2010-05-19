@@ -3,8 +3,7 @@
 namespace app\controllers;
 use app\models\User;
 use \lithium\security\auth;
-use \lithium\storage\session\adapter\Php;
-
+use \lithium\storage\Session;
 
 class UsersController extends \lithium\action\Controller {
 
@@ -52,15 +51,16 @@ class UsersController extends \lithium\action\Controller {
 			            'fields' => array('email', 'password')
 			        )
 			    ));
-		
-		if ($this->request->data) {
-			$auth = Auth::check("userLogin", $this->request, array('checkSession' => false));
-			if (is_array($auth)){
-				$this->redirect('/');
-			} else {
-				$message = "Login Failed: Please Try Again.";
-			}
-		}
+		$auth = Auth::check("userLogin", $this->request);
+		if ($this->request->data && is_array($auth)) {
+				Session::write('_id',$auth['_id']);
+				Session::write('firstname',$auth['firstname']);
+				Session::write('lastname',$auth['lastname']);
+				$this->redirect(array('action' => 'index'));
+		} 	
+		if (is_array($auth)) {
+			$this->redirect('/');
+		} 
 
 		return compact('message');
 		
@@ -70,7 +70,15 @@ class UsersController extends \lithium\action\Controller {
 	 * Performs the logout action of the user removing any session details.
 	 */
 	public function logout() {
-		$result = Php::delete('userLogin');
+		Auth::config(array(
+			        'userLogin' => array(
+						'model' => 'User',
+						'adapter' => 'Form',
+			            'fields' => array('email', 'password')
+			        )
+			    ));
+		Auth::clear('userLogin');
+		$this->redirect(array('action'=>'login'));
 
 	}
 	
