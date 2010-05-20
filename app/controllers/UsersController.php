@@ -43,7 +43,7 @@ class UsersController extends \lithium\action\Controller {
 	 */
 	public function login() {
 		
-		$message = '';
+		$message = false;
 		Auth::config(array(
 			        'userLogin' => array(
 						'model' => 'User',
@@ -51,16 +51,18 @@ class UsersController extends \lithium\action\Controller {
 			            'fields' => array('email', 'password')
 			        )
 			    ));
-		$auth = Auth::check("userLogin", $this->request, array('checkSession' => false));
-		if ($this->request->data && is_array($auth)) {
-				Session::write('_id', $auth['_id']);
-				Session::write('firstname', $auth['firstname']);
-				Session::write('lastname', $auth['lastname']);				
-				$this->redirect('/');
-		} 	
-		if (is_array($auth)) {
-			$this->redirect('/');
-		} 
+		if ($this->request->data) {
+			$auth = Auth::check("userLogin", $this->request, array('checkSession'=> false, 'writeSession' => false));
+			if ($auth == false) {
+				$message = 'Login Failed - Please Try Again';
+			} else {
+					Session::write('_id', $auth['_id']);
+					Session::write('firstname', $auth['firstname']);
+					Session::write('lastname', $auth['lastname']);				
+					$this->redirect('/');
+			}		
+		}	
+
 		return compact('message');		
 	}
 	
@@ -68,8 +70,9 @@ class UsersController extends \lithium\action\Controller {
 	 * Performs the logout action of the user removing '_id' from session details.
 	 */
 	public function logout() {
-
 		Session::delete('_id');
+		Session::delete('firstname');
+		Session::delete('lastname');
 		$this->redirect(array('action'=>'login'));
 	}
 }
