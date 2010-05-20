@@ -3,25 +3,24 @@
 namespace app\models;
 
 use \lithium\data\Connections;
+use \lithium\storage\Session;
 
 class User extends \lithium\data\Model {
 	
-	public static function update(array $criteria = array(), array $data = array()) {
-		$self = static::_instance();
-		$classes = $self->_classes;
-		$meta = array('model' => get_called_class()) + $self->_meta;
-		$params = compact('criteria', 'data');
-		
+	/**
+	 * Update user information in Mongo
+	 * 
+	 * @todo Fix the long Mongo connection
+	 * @param array $data
+	 */
+	public function update(array $data) {
+		$sucess = false;
+				
 		$db = Connections::get('default');
-		//var_dump($db->connection->totsy->users->update(array('Test'=>'New'), array('$set' => array('Test' => 'Old'))));
-		
-		var_dump($self::invokeMethod('_connection'));
+		$email = Session::read('email');
+		$sucess = $db->connection->totsy->users->update(array('email' => "$email" ), array('$set' => $data));
 
-		
-		
-//		$db = Connections::get('default', array('autoCreate' => false));
-//		//Find a better way to connect to MongoCollection::command() directly.
-//		$db->connection->totsy->users->update($criteria, $options);
+		return $sucess;
 
 	}
 }

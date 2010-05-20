@@ -58,7 +58,8 @@ class UsersController extends \lithium\action\Controller {
 			} else {
 					Session::write('_id', $auth['_id']);
 					Session::write('firstname', $auth['firstname']);
-					Session::write('lastname', $auth['lastname']);				
+					Session::write('lastname', $auth['lastname']);
+					Session::write('email', $auth['email']);				
 					$this->redirect('/');
 			}		
 		}	
@@ -70,9 +71,11 @@ class UsersController extends \lithium\action\Controller {
 	 * Performs the logout action of the user removing '_id' from session details.
 	 */
 	public function logout() {
+		//Delete session information
 		Session::delete('_id');
 		Session::delete('firstname');
 		Session::delete('lastname');
+		Session::delete('email');
 		$this->redirect(array('action'=>'login'));
 	}
 }
