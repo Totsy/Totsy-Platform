@@ -21,4 +21,7 @@ nbproject
 
 # cache noise
 app/resources/tmp/cache/templates/
+
+# lithium schtuff
 libraries
+library
