@@ -19,6 +19,7 @@ class UsersController extends \lithium\action\Controller {
 	 * @return string User will be promoted that email is already registered.
 	 */
 	public function register(){
+		$message = false;
         if ($this->request->data) {
         	$this->request->data['password'] = sha1($this->request->data['password']);
 			$User = User::find('all',array('conditions' => array('email' => $this->request->data['email'])));
@@ -29,10 +30,10 @@ class UsersController extends \lithium\action\Controller {
 					 $this->redirect('/');
 				}
 			} else {
-				$success = 'This email is already registered';
+				$message = 'This email address is already registered';
 			}
 		}
-        return compact('success');
+        return compact('message');
 	}
 	
 	/**

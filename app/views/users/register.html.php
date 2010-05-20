@@ -27,12 +27,15 @@ $(document).ready(function(){
 		<blockquote>
 			"The online shopping phenomenon."<br />
 			<strong>Vogue</strong>
-		</blockquote>		
-		<a href="#" title="Sign In"><?php echo ('Already a member? Sign in here.');?></a>		
+		</blockquote>
+		<?=$this->html->link('Already a member? Sign in here', '/login', array('title'=>'Sign In'))?>			
 	</div>
 </div>
 <div class="reg-right col">
 	<div class="reg-copy">
+	<div class="message">
+		<?php if($message){echo "$message"; } ?>
+	</div>
 			<fieldset>				
 				<?=$this->form->create('',array('id'=>'registerForm')); ?>
 					<?=$this->form->label('fname','First Name',array('class'=>'label'));?>
