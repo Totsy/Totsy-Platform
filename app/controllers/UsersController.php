@@ -41,7 +41,7 @@ class UsersController extends \lithium\action\Controller {
 	 *
 	 * @return string The user is promted with a message if authentication failed.
 	 */
-	public	function login() {
+	public function login() {
 		
 		$message = '';
 		Auth::config(array(
@@ -51,37 +51,26 @@ class UsersController extends \lithium\action\Controller {
 			            'fields' => array('email', 'password')
 			        )
 			    ));
-		$auth = Auth::check("userLogin", $this->request);
+		$auth = Auth::check("userLogin", $this->request, array('checkSession' => false));
 		if ($this->request->data && is_array($auth)) {
-				Session::write('_id',$auth['_id']);
-				Session::write('firstname',$auth['firstname']);
-				Session::write('lastname',$auth['lastname']);
-				$this->redirect(array('action' => 'index'));
+				Session::write('_id', $auth['_id']);
+				Session::write('firstname', $auth['firstname']);
+				Session::write('lastname', $auth['lastname']);				
+				$this->redirect('/');
 		} 	
 		if (is_array($auth)) {
 			$this->redirect('/');
 		} 
-
-		return compact('message');
-		
+		return compact('message');		
 	}
 	
 	/**
-	 * Performs the logout action of the user removing any session details.
+	 * Performs the logout action of the user removing '_id' from session details.
 	 */
 	public function logout() {
-		Auth::config(array(
-			        'userLogin' => array(
-						'model' => 'User',
-						'adapter' => 'Form',
-			            'fields' => array('email', 'password')
-			        )
-			    ));
-		Auth::clear('userLogin');
+
+		Session::delete('_id');
 		$this->redirect(array('action'=>'login'));
-
 	}
-	
-
 }
 ?>

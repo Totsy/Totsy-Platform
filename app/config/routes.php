@@ -8,6 +8,17 @@
 
 use \lithium\net\http\Router;
 use \lithium\core\Environment;
+use \lithium\storage\Session;
+
+
+/**
+ * Redirect all non-authenticated users to 
+ */
+
+if(!Session::check('_id')) {
+	Router::connect('/register', array('controller' => 'users', 'action' => 'register'));
+	Router::connect('/{:args}', array('controller' => 'users', 'action' => 'login'));	
+}
 
 /**
  * Uncomment the line below to enable routing for admin actions.
@@ -22,6 +33,9 @@ use \lithium\core\Environment;
  */
 
 Router::connect('/', array('controller' => 'pages', 'action' => 'view', 'home'));
+Router::connect('/login', array('controller' => 'users', 'action' => 'login'));
+Router::connect('/logout', array('controller' => 'users', 'action' => 'logout'));
+Router::connect('/register', array('controller' => 'users', 'action' => 'register'));
 
 /**
  * ...and connect the rest of 'Pages' controller's urls.

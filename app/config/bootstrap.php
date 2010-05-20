@@ -82,7 +82,10 @@ require __DIR__ . '/bootstrap/g11n.php';
  */
 use \lithium\storage\Session;
 
-Session::config(array('default' => array('adapter' => 'Php')));
+Session::config(array(
+ 	'cookie' => array('adapter' => 'Cookie', 'expire' => '+2 days'),
+ 	'default' => array('adapter' => 'Php')));
+
 
 ini_set("display_errors", 1);
 //ini_set('xdebug.default_enable', '2');
