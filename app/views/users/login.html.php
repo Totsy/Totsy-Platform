@@ -16,7 +16,8 @@
 <?=$this->form->field('password', array(
 		'class'=>"validate['required']", 
 		'name' => 'password', 
-		'id' => 'password'));?>
+		'id' => 'password',
+		'type' => 'password'));?>
 <?=$this->form->submit('Login');?>
 <?=$this->form->end();?>
 <?=$this->html->link('Request Membership','/register')?>
