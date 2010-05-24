@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 use app\models\User;
-use \lithium\security\auth;
+use \lithium\security\Auth;
 use \lithium\storage\Session;
 
 class UsersController extends \lithium\action\Controller {
