@@ -1,12 +1,13 @@
+<?=$this->html->script('mootools-1.2.4-core-nc.js');?>
+<?=$this->html->script('mootools-1.2.4.4-more.js');?>
+<?=$this->html->script('formcheck.js');?>
+<?=$this->html->script('en.js');?>
+
+
 <script type="text/javascript">
-
-window.addEvent('domready', function(){equalHeights('.col');});
-
-$(document).ready(function(){
-  $("#registerForm").validate();
-});
-
-
+    window.addEvent('domready', function(){
+        new FormCheck('registerForm');
+    });
 </script>
 
 <div class="modal-top">
@@ -39,15 +40,18 @@ $(document).ready(function(){
 			<fieldset>				
 				<?=$this->form->create('',array('id'=>'registerForm')); ?>
 					<?=$this->form->label('fname','First Name',array('class'=>'label'));?>
-					<?=$this->form->text('firstname', array('class'=>'required'));?>
+					<?=$this->form->text('firstname', array('class'=>"validate['required']"));?>
 					<?=$this->form->label('lname','Last Name',array('class'=>'label'));?>
-					<?=$this->form->text('lastname', array('class'=>'required'));?>
+					<?=$this->form->text('lastname', array('class'=>"validate['required']"));?>
 					<?=$this->form->label('email','Email Address',array('class'=>'label'));?>
-					<?=$this->form->text('email', array('class'=>'required'));?>
+					<?=$this->form->text('email', array('class'=>"validate['required','email']"));?>
 					<?=$this->form->label('password','Password',array('class'=>'label'));?>
-					<?=$this->form->password('password', array('class'=>'required'));?>
+					<?=$this->form->password('password', array(
+							'class'=>"validate['required']", 
+							'name' => 'password', 
+							'id' => 'password'));?>
 					<?=$this->form->label('','',array('class'=>'clear block sm'));?>
-					<?=$this->form->checkbox('terms', array('class'=>'required'));?>
+					<?=$this->form->checkbox('terms', array('class'=>"validate['required']"));?>
 					<span>I agree to the <?=$this->html->link('terms of service','#')?></span>
 					<button type="submit" name="submit" id="submit-btn" class="btn reg-btn"><?php echo 'Register';?></button>				
 				<?=$this->form->end(); ?>

@@ -13,9 +13,23 @@
 			?>
 		</div>
 		<?=$this->form->create();?>
-		<?=$this->form->field('firstname', array('label' => 'First Name' ,'class'=>'required', 'type' => 'text', 'name' => 'test', 'value' => "$data[firstname]"))?>
-		<?=$this->form->field('lastname', array('label' => 'Last Name', 'class'=>'required', 'value' => "$data[lastname]"));?>
-		<?=$this->form->field('email', array('label' => 'E-Mail', 'class'=>'required', 'value' => "$data[email]"));?>
+		<?=$this->form->field('firstname', array(
+				'label' => 'First Name' ,
+				'class'=>'required', 
+				'type' => 'text', 
+				'name' => 'test', 
+				'value' => "$data[firstname]"
+			))?>
+		<?=$this->form->field('lastname', array(
+				'label' => 'Last Name', 
+				'class'=>'required', 
+				'value' => "$data[lastname]"
+			));?>
+		<?=$this->form->field('email', array(
+				'label' => 'E-Mail', 
+				'class'=>'required', 
+				'value' => "$data[email]"
+			));?>
 		<button type="submit" name="submit" class="flex-btn fr"><span>Submit</span></button>
 		<?=$this->form->end();?>	
 	</fieldset>

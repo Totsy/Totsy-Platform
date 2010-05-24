@@ -33,6 +33,7 @@ class UsersController extends \lithium\action\Controller {
 				$message = 'This email address is already registered';
 			}
 		}
+		$this->_render['layout'] = 'base';
         return compact('message');
 	}
 	
