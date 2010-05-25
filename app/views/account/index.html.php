@@ -1,9 +1,29 @@
+<?=$this->html->script('mootools-1.2.4-core-nc.js');?>
+<?=$this->html->script('overlay.js');?>
+<?=$this->html->script('Assets.js');?>
+<?=$this->html->script('multibox.js');?>
+<?=$this->html->style('multibox');?>
+
+
+<script>
+window.addEvent('domready', function(){ 
+ 	var overlay; 
+    var box = new multiBox('mb', { 
+		overlay: overlay,
+		showControls: false
+    }); 
+
+	 
+});
+</script>
+
+<h1 class="p-header">My Account</h1>
 <div class="tl"></div>
 <div class="tr"></div>
 <div id="page">
 
 	<!-- Replace with user's name -->
-	<strong>Hello, Mitch Pirtle</strong>
+	<strong>Hello <?=$data['firstname']?></strong>
 	
 	<!-- Replace with account welcome message -->
 	<p>From your My Account Dashboard you have the ability to view a snapshot of your recent account activity and update your account information. Select a link below to view or edit information.</p>
@@ -16,10 +36,11 @@
 			<div class="tl"></div>
 			<div class="tr"></div>
 			<div class="r-box lt-gradient-1">
-				<h3 class="gray fl"><?php echo ('Contact Information');?></h3>&nbsp;|&nbsp;<a href="#" title="<?php echo ('Edit');?>"><?php echo ('Edit');?></a>
+				<h3 class="gray fl"><?php echo ('Contact Information');?></h3>&nbsp;|&nbsp;<?=$this->html->link('Edit Info', '/account/info', array('class'=> 'mb'));?>
 				<br />
 				<br />
-				Mitch Pirtle<br />
+				<?=$data['firstname'].' '.$data['lastname'] ?><br />
+				<?=$data['email']?><br />
 				<a href="#" title="<?php echo ('Change Password');?>"><?php echo ('Change Password');?></a>
 			</div>
 			<div class="bl"></div>
@@ -30,7 +51,7 @@
 			<div class="tl"></div>
 			<div class="tr"></div>
 			<div class="r-box lt-gradient-1">
-				<h3 class="gray fl"><?php echo ('Newsletter');?></h3>&nbsp;|&nbsp;<a href="#" title="<?php echo ('Edit');?>"><?php echo ('Edit');?></a>
+				<h3 class="gray fl"><?php echo ('Newsletter');?></h3>&nbsp;|&nbsp;<?=$this->html->link('Edit', '/account/news', array('class'=> 'mb'));?>
 				<br />
 				<br />
 				<dl>
@@ -57,7 +78,7 @@
 			<div class="tl"></div>
 			<div class="tr"></div>
 			<div class="r-box lt-gradient-1">
-				<h3 class="gray fl"><?php echo ('Primary Billing Address');?></h3>&nbsp;|&nbsp;<a href="#" title="<?php echo ('Edit Address');?>"><?php echo ('Edit Address');?></a>
+				<h3 class="gray fl"><?php echo ('Primary Billing Address');?></h3>&nbsp;|&nbsp;<?=$this->html->link('Edit Address', '/account/edit', array('class'=> 'mb'));?>
 				<br />
 				<br />
 				<address>
@@ -74,7 +95,7 @@
 			<div class="tl"></div>
 			<div class="tr"></div>
 			<div class="r-box lt-gradient-1">
-				<h3 class="gray fl"><?php echo ('Primary Shipping Address');?></h3>&nbsp;|&nbsp;<a href="#" title="<?php echo ('Edit Address');?>"><?php echo ('Edit Address');?></a>
+				<h3 class="gray fl"><?php echo ('Primary Shipping Address');?></h3>&nbsp;|&nbsp;<?=$this->html->link('Edit Address', '/account/edit', array('class'=> 'mb'));?>
 				<br />
 				<br />
 				<address>
@@ -93,3 +114,4 @@
 </div>
 <div class="bl"></div>
 <div class="br"></div>
+<?=$this->html->link('Register', '/register', array('class'=> 'mb'));?>

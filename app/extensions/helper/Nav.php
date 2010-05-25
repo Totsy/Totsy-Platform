@@ -9,7 +9,7 @@ namespace app\extensions\helper;
 class Nav extends \lithium\template\Helper{
 	
 	/**
-	 * Builds a HTML unordered list (`ul`) to be used as nagivation element
+	 * Builds a HTML unordered list (`ul`) to be used as navigation element
 	 * 
 	 * @return boolean
 	 */

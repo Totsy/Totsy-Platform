@@ -9,7 +9,10 @@ use \lithium\storage\Session;
 class AccountController extends \lithium\action\Controller {
 	
 	public function index(){
+		$data = $this->getUser();
+		$this->_render['layout'] = 'main';
 		
+		return compact("data");
 	}
 	
 	
@@ -19,13 +22,25 @@ class AccountController extends \lithium\action\Controller {
 			//Update database using $set			
 			$sucess = User::update($this->request->data);			
 		}
+		$data = $this->getUser();
 		
-		$user = User::find('first',array('_id' => Session::read('_id')));
-		$data = $user->data();
-		
-	
 		return compact("data", "sucess");
 		
+	}
+	
+	public function getUser() {
+		return User::find('first',array('_id' => Session::read('_id')))->data();
+	}
+	
+	public function edit() {
+
+		$data = "";
+		return compact("data");
+	}
+	
+	public function news() {
+		$data = "";
+		return compact("data");
 	}
 }
 ?>

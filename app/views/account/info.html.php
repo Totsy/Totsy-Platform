@@ -1,3 +1,4 @@
+<?=$this->html->style('style');?>
 <div class="tl"></div>
 <div class="tr"></div>
 <div id="page">
