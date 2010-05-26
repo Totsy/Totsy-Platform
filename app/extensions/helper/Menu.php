@@ -1,0 +1,76 @@
+<?php
+namespace app\extensions\helper;
+use app\models\Navigation;
+
+/**
+ * The 'Nav' class extends the generic `lithium\template\Helper` class to provide
+ * a html menu list based on a backend document store.
+ */
+
+class Menu extends \lithium\template\Helper{
+	
+	/**
+	 * Builds a HTML unordered list (`ul`) to be used as navigation element
+	 * 
+	 * @return string
+	 */
+	public function build($doc, array $options = array()) {
+		$html = "";
+		$defaults = array('div' => null, 'ul' => null , 'li' => null);
+		$this->options = $options ? $options : $defaults;
+		$div = isset($options['div']) ? '<div>' : "";
+		$endDiv = isset($options['div']) ? '</div>' : "";
+		$ul = '<ul>';
+		$li = '';
+		
+		if(isset($options['div'])){
+			$div = '<div ';
+			$div .= Menu::getElements('div');
+			$div .= '>';
+		}
+		
+		if(isset($options['ul'])){
+			$ul = '<ul ';
+			$ul .= Menu::getElements('ul');
+			$ul .= '>';
+		}	
+		
+		foreach ($doc as $nav) {
+			$element = $nav->data();
+			
+			if(isset($options['li'])){
+				$li .= '<li ';
+				$li .= Menu::getElements('li');
+				$li .= '>';
+			} 
+			if(isset($element['class'])) {
+				$li .= "<li class = \"$element[class]\"";
+			}
+			else {
+				$li .= "<li>";
+			}
+			$url = '/'. $element['route']['controller'];
+			$li .= $this->html->link("<span>$element[title]</span>", $url, array('title' => "$element[title]", 'escape' => false ));	
+			if (isset($element['children'])) {
+				$subdoc = Navigation::find('all', array('conditions' => array('active' => 'true', 'parent' => $element['title'])));
+				$li .= Menu::build($subdoc);
+			}
+			$li .= '</li>';
+		}
+
+		$html .= $div . "<div>" . $ul . $li . "</div>";
+		$html .= '</ul>';
+		$html .= $endDiv;
+
+		return $html;
+	}
+	
+	protected function getElements($name) {
+		$element = '';
+		foreach ($this->options[$name] as $key=>$value){
+			$element .= "$key=\"$value\" ";
+		}
+		return $element;
+	}
+	
+}

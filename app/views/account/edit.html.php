@@ -2,7 +2,7 @@
 <?=$this->html->script('mootools-1.2.4.4-more.js');?>
 <?=$this->html->script('formcheck.js');?>
 <?=$this->html->script('en.js');?>
-<?=$this->html->style('style');?>
+
 
 <script type="text/javascript">
     window.addEvent('domready', function(){

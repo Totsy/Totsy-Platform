@@ -1,6 +1,8 @@
 <?php
 
 namespace app\controllers;
+use app\extensions\helper\Menu;
+use app\models\Navigation;
 
 class PagesController extends \lithium\action\Controller {
 
@@ -10,6 +12,8 @@ class PagesController extends \lithium\action\Controller {
 		if (empty($path)) {
 			$path = array('home');
 		}
+				
+		$this->_render['layout'] = 'main';
 		$this->render(join('/', $path));
 	}
 }

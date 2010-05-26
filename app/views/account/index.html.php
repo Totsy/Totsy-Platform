@@ -3,7 +3,18 @@
 <?=$this->html->script('Assets.js');?>
 <?=$this->html->script('multibox.js');?>
 <?=$this->html->style('multibox');?>
+<?php
+	use app\extensions\helper\Menu;
+	use app\models\Navigation;
 
+	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
+	$doc = Navigation::find('all', array('conditions' => array('location' => 'left', 'active' => 'true')));
+
+	$leftMenu = Menu::build($doc, $options);
+
+	echo $leftMenu;
+	
+?>
 
 <script>
 window.addEvent('domready', function(){ 
@@ -11,6 +22,7 @@ window.addEvent('domready', function(){
     var box = new multiBox('mb', { 
 		overlay: overlay,
 		showControls: false
+		
     }); 
 
 	 
@@ -36,7 +48,7 @@ window.addEvent('domready', function(){
 			<div class="tl"></div>
 			<div class="tr"></div>
 			<div class="r-box lt-gradient-1">
-				<h3 class="gray fl"><?php echo ('Contact Information');?></h3>&nbsp;|&nbsp;<?=$this->html->link('Edit Info', '/account/info', array('class'=> 'mb'));?>
+				<h3 class="gray fl"><?php echo ('Contact Information');?></h3>&nbsp;|&nbsp;<?=$this->html->link('Edit Info', '/account/info', array('class'=> 'mb', 'rel' => "width:550, height:600"));?>
 				<br />
 				<br />
 				<?=$data['firstname'].' '.$data['lastname'] ?><br />
@@ -114,4 +126,4 @@ window.addEvent('domready', function(){
 </div>
 <div class="bl"></div>
 <div class="br"></div>
-<?=$this->html->link('Register', '/register', array('class'=> 'mb'));?>
+<?=$this->html->link('Register', '/register', array('class'=> 'mb', 'rel' => "width:1000, height:1000"));?>
