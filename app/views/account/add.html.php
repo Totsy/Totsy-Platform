@@ -4,11 +4,11 @@
 <?=$this->html->script('en.js');?>
 <?=$this->html->style('formcheck');?>
 
-<!-- <script type="text/javascript">
+<script type="text/javascript">
     window.addEvent('domready', function(){
         new FormCheck('addressForm');
     });
-</script> -->
+</script>
 <?php
 	use app\extensions\helper\Menu;
 
@@ -20,8 +20,8 @@
 <div class="tl"></div> 
 <div class="tr"></div> 
 <div id="page"> 
- 
-	<h2 class="gray mar-b">Add New Address</h2> 
+ 	
+	<h2 class="gray mar-b">Add New Address</h2>
 	
 	<?=$this->form->create('',array('id'=>'addressForm', 'class' => "fl"));?>
 		<fieldset> 
@@ -39,13 +39,17 @@
 				<input type="radio" name="default" value="No">No
 			</div>
 			<div class="form-row"> 
+				<label for="fname">Description</label> 
+				<input type="text" name="description" id="description" class="validate['required']"/> 
+			</div>
+			<div class="form-row"> 
 				<label for="fname">First Name</label> 
-				<input type="text" name="fname" id="fname" class="validate['required']"/> 
+				<input type="text" name="firstname" id="fname" class="validate['required']"/> 
 			</div> 
 			
 			<div class="form-row"> 
 				<label for="lname">Last Name</label> 
-				<input type="text" name="lname" id="lname" class="validate['required']"/> 
+				<input type="text" name="lastname" id="lname" class="validate['required']"/> 
 			</div> 
 			
 			<div class="form-row"> 
@@ -98,8 +102,9 @@
 		</fieldset> 
 	
 	<?=$this->form->end();?> 
-	
+	<?=$this->html->link('Manage Address','account/addresses');?>
 </div> 
+
 <div class="bl"></div> 
 <div class="br"></div> 
 			

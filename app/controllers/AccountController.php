@@ -4,15 +4,17 @@ namespace app\controllers;
 use app\models\User;
 use \lithium\storage\Session;
 use app\models\Navigation;
+use \MongoId;
 
 
 
 class AccountController extends \lithium\action\Controller {
 	
+	
 	public function index(){
 		$data = $this->getUser();
 		$this->_render['layout'] = 'main';
-		
+
 		return compact("data");
 	}
 	
@@ -37,7 +39,7 @@ class AccountController extends \lithium\action\Controller {
 		return User::find('first',array('_id' => Session::read('_id')))->data();
 	}
 	
-	public function edit() {
+	public function add() {
 		$status = '';
 		$this->_render['layout'] = 'main';
 		if($this->request->data){
@@ -61,6 +63,17 @@ class AccountController extends \lithium\action\Controller {
 			return $chain->next($self, $params, $chain);
 		});
 	}
+	
+	public function addresses() {
+		$path = func_get_args();
+		$id = new MongoID(Session::read('_id'));
+		$addressList = User::find('first', array('conditions' => array('_id' => $id), 'fields' => array('Addresses')))->data('Addresses');
+		$this->_render['layout'] = 'main';
+		
+		return compact('addressList');
+		
+	}
+	
 	
 }
 ?>
