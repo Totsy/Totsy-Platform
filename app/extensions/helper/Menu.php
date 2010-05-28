@@ -3,14 +3,23 @@ namespace app\extensions\helper;
 use app\models\Navigation;
 
 /**
- * The 'Nav' class extends the generic `lithium\template\Helper` class to provide
- * a html menu list based on a backend document store.
+ * The 'Menu' class creates a html menu list based on a backend document store.
+ * 
+ * Usage: 
+ *
+ *{{{
+ * 	$options = array('div' => array('id' => 'main-nav'), 'ul' => array('class' => 'menu main-nav'));
+ *	$doc = Navigation::find('all', array('conditions' => array('location' => 'top', 'active' => 'true')));	
+ *  $html = Menu::build($doc, $options); //returns html menu list
+ *}}}
+ *
  */
 
-class Menu extends \lithium\template\Helper{
+class Menu extends \lithium\template\Helper{	
 	
 	/**
-	 * Builds a HTML unordered list (`ul`) to be used as navigation element
+	 * Builds a HTML unordered list (`ul`).
+	 * 
 	 * 
 	 * @return string
 	 */
@@ -22,26 +31,19 @@ class Menu extends \lithium\template\Helper{
 		$endDiv = isset($options['div']) ? '</div>' : "";
 		$ul = '<ul>';
 		$li = '';
-		
+
 		if(isset($options['div'])){
-			$div = '<div ';
-			$div .= Menu::getElements('div');
-			$div .= '>';
+			$div = '<div ' . Menu::getElements('div') . '>';
 		}
-		
 		if(isset($options['ul'])){
-			$ul = '<ul ';
-			$ul .= Menu::getElements('ul');
-			$ul .= '>';
+			$ul = '<ul '. Menu::getElements('ul') . '>';
 		}	
 		
 		foreach ($doc as $nav) {
 			$element = $nav->data();
 			
 			if(isset($options['li'])){
-				$li .= '<li ';
-				$li .= Menu::getElements('li');
-				$li .= '>';
+				$li .= '<li ' . Menu::getElements('li') .'>';
 			} 
 			if(isset($element['class'])) {
 				$li .= "<li class = \"$element[class]\"";
@@ -64,7 +66,11 @@ class Menu extends \lithium\template\Helper{
 
 		return $html;
 	}
-	
+	/**
+	 * Loops through the mongodb document elements.
+	 *
+	 * @return string
+	 */
 	protected function getElements($name) {
 		$element = '';
 		foreach ($this->options[$name] as $key=>$value){

@@ -8,12 +8,10 @@
 	use app\models\Navigation;
 
 	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
-	$doc = Navigation::find('all', array('conditions' => array('location' => 'left', 'active' => 'true')));
-
-	$leftMenu = Menu::build($doc, $options);
+	$leftMenu = Menu::build($navigation, $options);
 
 	echo $leftMenu;
-	
+
 ?>
 
 <script>
@@ -90,7 +88,7 @@ window.addEvent('domready', function(){
 			<div class="tl"></div>
 			<div class="tr"></div>
 			<div class="r-box lt-gradient-1">
-				<h3 class="gray fl"><?php echo ('Primary Billing Address');?></h3>&nbsp;|&nbsp;<?=$this->html->link('Edit Address', '/account/edit', array('class'=> 'mb'));?>
+				<h3 class="gray fl"><?php echo ('Primary Billing Address');?></h3>&nbsp;|&nbsp;<?=$this->html->link('Edit Address', '/account/edit');?>
 				<br />
 				<br />
 				<address>

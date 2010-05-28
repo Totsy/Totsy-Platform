@@ -3,6 +3,7 @@
 namespace app\controllers;
 use app\models\User;
 use \lithium\storage\Session;
+use app\models\Navigation;
 
 
 
@@ -17,14 +18,18 @@ class AccountController extends \lithium\action\Controller {
 	
 	
 	public function info() {
-		$sucess = false;
+		$success = false;
 		if ($this->request->data) {			
 			//Update database using $set			
-			$sucess = User::update($this->request->data);			
+			$success = User::update($this->request->data);
+			
+			//Update the session with correct names	
+			Session::write('firstname', $this->request->data['firstname']);
+			Session::write('lastname', $this->request->data['lastname']);			
 		}
 		$data = $this->getUser();
 		
-		return compact("data", "sucess");
+		return compact("data", "success");
 		
 	}
 	
@@ -33,14 +38,29 @@ class AccountController extends \lithium\action\Controller {
 	}
 	
 	public function edit() {
-
-		$data = "";
-		return compact("data");
+		$status = '';
+		$this->_render['layout'] = 'main';
+		if($this->request->data){
+			
+			$status = User::addressUpdate($this->request->data);
+		}
+		return compact("status");
 	}
 	
 	public function news() {
 		$data = "";
 		return compact("data");
 	}
+	
+	public function _init() {
+		parent::_init();
+	
+		$this->applyFilter('__invoke',  function($self, $params, $chain) {
+			$navigation = Navigation::find('all', array('conditions' => array('location' => 'left', 'active' => 'true')));
+			$self->set(compact('navigation'));
+			return $chain->next($self, $params, $chain);
+		});
+	}
+	
 }
 ?>

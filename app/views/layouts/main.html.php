@@ -16,7 +16,7 @@
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
 </head>
 <?php
-	if(isset($_SESSION)) {
+	if(isset($_SESSION['firstname'])) {
 		$array = array($_SESSION['firstname'], $_SESSION['lastname']);
 		$name = implode(" ", $array);
 	} 
@@ -29,13 +29,6 @@
 	$doc = Navigation::find('all', array('conditions' => array('location' => 'top', 'active' => 'true')));
 
 	$mainMenu = Menu::build($doc, $options);
-	
-	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
-	$doc = Navigation::find('all', array('conditions' => array('location' => 'left', 'active' => 'true')));
-
-	$subMenu = Menu::build($doc, $options);
-
-
 
 ?>	
 <body class="app" class="sec content my-account">
@@ -56,7 +49,7 @@
 			<div id="header-mid">
 				<?=$this->html->link('At Your Service','',array('id'=>'cs'));?>	
 				<div id="welcome">
-					<strong>Hello! </strong><?php echo $name;?> (<?=$this->html->link('Sign Out',array(
+					<strong>Hello! </strong><?php if(isset($name)){echo $name;};?> (<?=$this->html->link('Sign Out',array(
 							'controller' => 'users','action'=>'logout'),
 							array('title'=>'Sign Out'));?>	)				
 				</div>

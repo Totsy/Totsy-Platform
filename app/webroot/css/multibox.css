@@ -7,12 +7,12 @@
 
 .MultiBoxContainer {
 	position: absolute;
-	border: 20px solid #000;
+	border: 10px solid #CDCDCD;
 	background-color: #FFF;
 	display: none;
 	z-index: 2;
 	text-align: left;
-	/*overflow: hidden;*/
+/*	overflow: hidden;*/
 }
 
 .MultiBoxLoading {

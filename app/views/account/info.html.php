@@ -8,7 +8,7 @@
 		<legend>Account Information</legend>
 		<div>
 			<?php 
-				if($sucess){
+				if($success){
 					echo "Thank You for Updating Your Information";
 				}
 			?>
