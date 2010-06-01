@@ -8,7 +8,6 @@ class PagesController extends \lithium\action\Controller {
 
 	public function view() {
 		$path = func_get_args();
-
 		if (empty($path)) {
 			$path = array('home');
 		}
@@ -16,6 +15,8 @@ class PagesController extends \lithium\action\Controller {
 		$this->_render['layout'] = 'main';
 		$this->render(join('/', $path));
 	}
+	
+	
 }
 
 ?>

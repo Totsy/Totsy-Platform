@@ -15,14 +15,7 @@ use \MongoId;
  */
 
 class User extends \lithium\data\Model {
-	
-	/**
-	 * This is the maximum number of addresses that can be stored.
-	 * @var int 
-	 */
-	public static $_maxAddress = 10;
-	
-	
+		
 	/**
 	 * Update user information in Mongo
 	 * 
@@ -40,29 +33,7 @@ class User extends \lithium\data\Model {
 
 	}
 	
-	public function addressUpdate(array $data) {
-		$success = false;
-		$message = "";
-		$collection = User::_connection()->connection->totsy->users;
-				
-		$id = new MongoID(Session::read('_id'));
-		
-		$counter = User::find('first', array('conditions' => array('_id' => $id), 'fields' => 'AddressCounter'))->data('AddressCounter');
 
-		if ($counter >= User::$_maxAddress) {
-			$message = 'There are already 10 addresses registered. Please remove one first.';
-		} else {
-			//Add address to mongo
-			$success = $collection->update(array('_id' => $id ), array('$push' => array('Addresses' => $data)));
-				
-			//Increment address counter
-			$success = $collection->update(array('_id' => $id ), array('$inc' => array('AddressCounter' => 1)));
-			
-			$message = 'Thank you for adding your address';			
-		}		
-		return compact('success', 'message');
-
-	}
 	
 	
 	

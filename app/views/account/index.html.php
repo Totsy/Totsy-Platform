@@ -80,7 +80,7 @@ window.addEvent('domready', function(){
 	
 	</div>
 	
-	<h2 class="gray fl"><?php echo ('Address Book');?></h2>&nbsp;|&nbsp;<?=$this->html->link('Manage Addresses', '/account/addresses');?>
+	<h2 class="gray fl"><?php echo ('Address Book');?></h2>&nbsp;|&nbsp;<?=$this->html->link('Manage Addresses', '/addresses/view');?>
 	
 	<div class="col-2">
 	

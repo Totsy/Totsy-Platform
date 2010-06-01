@@ -8,6 +8,7 @@ use \MongoId;
 
 
 
+
 class AccountController extends \lithium\action\Controller {
 	
 	
@@ -35,26 +36,18 @@ class AccountController extends \lithium\action\Controller {
 		
 	}
 	
-	public function getUser() {
-		return User::find('first',array('_id' => Session::read('_id')))->data();
+	private function getUser($fields = array()) {
+
+		$id = new MongoID(Session::read('_id'));
+		return User::find('first', array('conditions' => array('_id' => $id), $fields))->data();	
 	}
-	
-	public function add() {
-		$status = '';
-		$this->_render['layout'] = 'main';
-		if($this->request->data){
 			
-			$status = User::addressUpdate($this->request->data);
-		}
-		return compact("status");
-	}
-	
 	public function news() {
 		$data = "";
 		return compact("data");
 	}
 	
-	public function _init() {
+	protected function _init() {
 		parent::_init();
 	
 		$this->applyFilter('__invoke',  function($self, $params, $chain) {
@@ -63,17 +56,6 @@ class AccountController extends \lithium\action\Controller {
 			return $chain->next($self, $params, $chain);
 		});
 	}
-	
-	public function addresses() {
-		$path = func_get_args();
-		$id = new MongoID(Session::read('_id'));
-		$addressList = User::find('first', array('conditions' => array('_id' => $id), 'fields' => array('Addresses')))->data('Addresses');
-		$this->_render['layout'] = 'main';
 		
-		return compact('addressList');
-		
-	}
-	
-	
 }
 ?>
