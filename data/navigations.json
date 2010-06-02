@@ -9,3 +9,9 @@
 {"title" : "Email Preferences", "route" : { "controller" : "account" , "action" : "pref"}, "location" : "left" , "active" : "true", "class" : "item21", "parent" : "My Account"}
 {"title" : "Help Desk", "route" : { "controller" : "pages" }, "location" : "left" , "active" : "true", "class" : "item22", "parent" : "My Account"}
 {"title" : "My Invitiations", "route" : { "controller" : "invite" }, "location" : "left" , "active" : "true", "class" : "last item23", "parent" : "My Account"}
+{"title" : "Terms of Use", "route" : { "controller" : "pages" , "view" : "terms" }, "location" : "bottom" , "active" : "true", "class" : "first item6"}
+{"title" : "Privacy Policy", "route" : { "controller" : "pages", "view" : "privacy" }, "location" : "bottom" , "active" : "true", "class" : "item 7"}
+{"title" : "SiteMap", "route" : { "controller" : "pages", "view" : "sitemap" }, "location" : "bottom" , "active" : "true", "class" : "item 9"}
+{"title" : "About Us", "route" : { "controller" : "pages", "view" : "aboutus" }, "location" : "bottom" , "active" : "true", "class" : "item 14"}
+{"title" : "FAQ", "route" : { "controller" : "pages", "view" : "faq" }, "location" : "bottom" , "active" : "true", "class" : "item 10"}
+{"title" : "Contact Us", "route" : { "controller" : "pages", "view" : "contact" }, "location" : "bottom" , "active" : "true", "class" : "last item15"}

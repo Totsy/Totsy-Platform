@@ -26,9 +26,13 @@
 	use app\models\Navigation;
 
 	$options = array('div' => array('id' => 'main-nav'), 'ul' => array('class' => 'menu main-nav'));
-	$doc = Navigation::find('all', array('conditions' => array('location' => 'top', 'active' => 'true')));
-
-	$mainMenu = Menu::build($doc, $options);
+	$topDoc = Navigation::find('all', array('conditions' => array('location' => 'top', 'active' => 'true')));
+	
+	$mainMenu = Menu::build($topDoc, $options);
+	$bottomOptions = array('ul' => array('class' => 'menu'));
+	$bottomDoc = Navigation::find('all', array('conditions' => array('location' => 'bottom', 'active' => 'true')));
+	$bottomMenu = Menu::build($bottomDoc, $bottomOptions);
+	
 
 ?>	
 <body class="app" class="sec content my-account">
@@ -64,5 +68,7 @@
 				<?php echo $this->content(); ?>
 		</div>
 	</div>
+	<div id="botter"></div>
+	<div id="footer"><?php echo $bottomMenu;?></div>
 	</body>	
 </html>
