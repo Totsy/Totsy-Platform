@@ -2,6 +2,7 @@
 <?=$this->html->script('overlay.js');?>
 <?=$this->html->script('Assets.js');?>
 <?=$this->html->script('multibox.js');?>
+<?=$this->html->script('common.js');?>
 <?=$this->html->style('multibox');?>
 <?php
 	use app\extensions\helper\Menu;
@@ -22,7 +23,9 @@ window.addEvent('domready', function(){
 		showControls: false
 		
     }); 
-
+window.addEvent('domready', function(){
+	equalHeights('.r-box');
+	});
 	 
 });
 </script>
