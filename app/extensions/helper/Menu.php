@@ -52,6 +52,9 @@ class Menu extends \lithium\template\Helper{
 				$li .= "<li>";
 			}
 			$url = '/'. $element['route']['controller'];
+			if (isset($element['route']['view'])) {
+				$url .= '/'.$element['route']['view'];
+			} 
 			$li .= $this->html->link("<span>$element[title]</span>", $url, array('title' => "$element[title]", 'escape' => false ));	
 			if (isset($element['children'])) {
 				$subdoc = Navigation::find('all', array('conditions' => array('active' => 'true', 'parent' => $element['title'])));
