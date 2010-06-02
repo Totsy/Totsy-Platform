@@ -15,15 +15,15 @@ class UsersController extends \lithium\action\Controller {
 	 * Performs basic registration functionality. All validation checks should happen via
 	 * JavaScript so no empty data is going into Mongo.
 	 * @todo Refactor to use count() from Mongo instead of array PHP count
-	 * @todo Confirm redirect location and message upon sucessful registration.
+	 * @todo Confirm redirect location and message upon successful registration.
 	 * @return string User will be promoted that email is already registered.
 	 */
 	public function register(){
 		$message = false;
         if ($this->request->data) {
         	$this->request->data['password'] = sha1($this->request->data['password']);
-			$User = User::find('all',array('conditions' => array('email' => $this->request->data['email'])));
-			if (count($User->data()) < 1 ) {
+			$currentUser = User::find('all',array('conditions' => array('email' => $this->request->data['email'])));
+			if (count($currentUser->data()) < 1 ) {
 				$User = User::create($this->request->data);
 	            $success = $User->save();
 				if ($success) {
