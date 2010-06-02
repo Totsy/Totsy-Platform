@@ -11,16 +11,89 @@
 			
 <div class="tl"><!-- --></div> 
 <div class="tr"><!-- --></div> 
-<div id="page"> 
+<div id="page">
  
- 
- 
- 
- 
-<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Morbi commodo, ipsum sed pharetra gravida, orci magna rhoncus neque, id pulvinar odio lorem non turpis. Nullam sit amet enim. Suspendisse id velit vitae ligula volutpat condimentum. Aliquam erat volutpat. Sed quis velit. Nulla facilisi. Nulla libero. Vivamus pharetra posuere sapien. Nam consectetuer. Sed aliquam, nunc eget euismod ullamcorper, lectus nunc ullamcorper orci, fermentum bibendum enim nibh eget ipsum. Donec porttitor ligula eu dolor. Maecenas vitae nulla consequat libero cursus venenatis. Nam magna enim, accumsan eu, blandit sed, blandit a, eros.</p> 
-<p>Quisque facilisis erat a dui. Nam malesuada ornare dolor. Cras gravida, diam sit amet rhoncus ornare, erat elit consectetuer erat, id egestas pede nibh eget odio. Proin tincidunt, velit vel porta elementum, magna diam molestie sapien, non aliquet massa pede eu diam. Aliquam iaculis. Fusce et ipsum et nulla tristique facilisis. Donec eget sem sit amet ligula viverra gravida. Etiam vehicula urna vel turpis. Suspendisse sagittis ante a urna. Morbi a est quis orci consequat rutrum. Nullam egestas feugiat felis. Integer adipiscing semper ligula. Nunc molestie, nisl sit amet cursus convallis, sapien lectus pretium metus, vitae pretium enim wisi id lectus. Donec vestibulum. Etiam vel nibh. Nulla facilisi. Mauris pharetra. Donec augue. Fusce ultrices, neque id dignissim ultrices, tellus mauris dictum elit, vel lacinia enim metus eu nunc.</p> 
-<p>Proin at eros non eros adipiscing mollis. Donec semper turpis sed diam. Sed consequat ligula nec tortor. Integer eget sem. Ut vitae enim eu est vehicula gravida. Morbi ipsum ipsum, porta nec, tempor id, auctor vitae, purus. Pellentesque neque. Nulla luctus erat vitae libero. Integer nec enim. Phasellus aliquam enim et tortor. Quisque aliquet, quam elementum condimentum feugiat, tellus odio consectetuer wisi, vel nonummy sem neque in elit. Curabitur eleifend wisi iaculis ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non velit non ligula laoreet ultrices. Praesent ultricies facilisis nisl. Vivamus luctus elit sit amet mi. Phasellus pellentesque, erat eget elementum volutpat, dolor nisl porta neque, vitae sodales ipsum nibh in ligula. Maecenas mattis pulvinar diam. Curabitur sed leo.</p> 
-<p>Nulla facilisi. In vel sem. Morbi id urna in diam dignissim feugiat. Proin molestie tortor eu velit. Aliquam erat volutpat. Nullam ultrices, diam tempus vulputate egestas, eros pede varius leo, sed imperdiet lectus est ornare odio</p> 
+	<p><em>(valid as of September 1, 2009)</em></p>
+
+	<p>By clicking on the "I AGREE" button below, you (referred in this document as the "Member" or "you", or "You") agree to be irrevocably bound with TOTSY by the following terms and conditions of sale and service (the "Terms of Service"), which are incorporated in each and every sale transaction made on the website Totsy.com, a proprietary domain name of My Baby VIP LLC (hereinafter referred to as "TOTSY"), and govern all aspects of the relationship between TOTSY and its Members.</p>
+
+	<p><strong>If you want to contact TOTSY's technical service or customer service, you may either contact us by telephone on our toll-free number at 1-888-59TOTSY (or 1-888-598-6879), or on our Site by clicking on the CONTACT US menu and choosing the proper selection. Please note that until September 30, 2009, you may contact us by telephone at the temporary toll-free number: 1-888-791-1112. Thank you.</strong></p>
+
+	<p><strong>1. Sale of Goods and Services</strong></p>
+
+	<p>The goods or services sold by TOTSY and described in a Purchase Order (the "PO") are subject to these Terms of Service. TOTSY agrees to be bound by and to comply with all such conditions. Each sale transaction will be confirmed to Member in a purchase order ("PO"), or upon the commencement of performance by TOTSY. All sales are final upon immediate payment by credit card or debit card by Member.</p>
+
+	<p><strong>2. Terms of Payment and Purchase price</strong></p>
+
+	<p>Along with the PO and a packing list, TOTSY shall submit an invoice with each shipment showing the PO number and other product information purchased by Member. When the sales order is ready for shipment, a copy of the invoice will be forwarded to you by email. All prices shown in the PO are firm and are not subject to adjustment. You will pay your PO immediately, before goods are shipped, by credit card using TOTSY's trusted online security payment system. Your credit card information will be used only for one transaction (corresponding to one PO). However, you may opt to store your credit card information with TOTSY to be used for future transactions on Totsy.com.</p>
+
+	<p><strong>3. Delivery</strong></p>
+
+	<p>TOTSY will make its best efforts to deliver to you the goods purchased on Totsy.com, consistent with the estimated schedule of delivery indicated to you during the purchasing process, according to the shipping method you have selected. However, TOTSY's delivery obligations are subject to the performance of outside contractors, and TOTSY will not be held liable for any damages due to a delay in delivery, or errors in delivery due to erroneous shipment information entered by the Member. If a delay in delivery exceeds more than fifteen (15) business days above the estimated date of delivery, it will be deemed as unreasonable and you will be entitled to cancel your PO, or part of the PO which is not delivered, and be entitled to a refund for those undelivered goods, subject however to the terms of our Return Policy concerning returns.</p>
+
+	<p><strong>4. Shipment — Shipping Errors, Lost or Damaged Merchandise, Defective Goods</strong></p>
+
+	<p>TOTSY shall ship the goods of each PO in their original purchase condition, including the original product packaging, manufacturer's containers, documentation, warranty cards, manuals, and all accessories, and in a manner that goods are properly protected from deterioration and contamination. You shall be responsible to pay only such freight charges as indicated on the face of your PO. For any shipping errors, lost or damages goods in transit, or defective goods, please refer to the terms of TOTSY's Return Policy incorporated in this Terms of Service by reference. If you receive quantities in excess of that shown in the PO, you must contact TOTSY's customer care immediately and TOTSY will ship back the goods shipped in excess at its own expenses.</p>
+
+	<p><strong>5. Warranty</strong></p>
+
+	<p>TOTSY warrants to Member that goods supplied under this PO are new, have not been used or refurbished, in compliance with all applicable specifications and the requirements of this PO. All goods supplied under this PO shall be free from liens or encumbrance on title. TOTSY warrants that the goods sold on its website originates from licensed and authorized sellers and distributors, and that such licensed and authorized sellers or distributors have represented to TOTSY that their goods are not stolen or counterfeits, and do not violate or infringe of any copyright, trade name, trademark, patent or related property rights. In the unlikely event that Member believes that the good it purchased is a stolen good or a counterfeit, or otherwise infringes on a third party's intellectual property rights, it must inform TOTSY without delay.</p>
+
+	<p><strong>6. Compliance with Laws</strong></p>
+
+	<p>TOTSY warrants that all goods and services sold hereunder shall have been purchased, sold, delivered and furnished in strict compliance with all applicable laws and regulations to which they are subject. TOTSY shall execute and deliver such documents as may be required to effect or to evidence compliance. All laws and regulations required in agreements of this character are hereby incorporated by this reference.</p>
+
+	<p><strong>7. Confidentiality — Privacy Policy</strong></p>
+
+	<p>In the performance of the services, TOTSY and its subcontractors, if any, may have access to personal information pertaining to Members and which TOTSY wants to protect from disclosure. TOTSY undertakes to hold all of personal information it receives from its Members in strict confidence and neither to disclose or release in any manner such personal information to any third party, nor to use such personal information with any third party, nor to use such personal information for any other purpose than the one for which Member has disclosed same in accordance with its <a href="/pages/privacy">Privacy Policy</a> which is incorporated to these Terms of Service by reference.</p>
+
+	<p><strong>8. Intellectual Property Indemnification</strong></p>
+
+	<p>Member agrees to defend, indemnify and hold harmless TOTSY, its officers, agents and employees from all claims, expenses and liabilities arising from any actual or alleged violation or infringement of TOTSY's intellectual property rights, and any intellectual property rights of TOTSY's Affiliates and Suppliers which may be affixed and used by TOTSY on its website.</p>
+
+	<p><strong>9. Limitation of Liability</strong></p>
+
+	<p>TOTSY shall not be responsible for, and shall not pay, any amount of incidental, consequential or other indirect damages, whether based on lost revenue or otherwise, regardless of whether TOTSY was advised of the possibility of such losses in advance. In no event shall TOTSY's liability hereunder exceed the amount of the purchase price paid by Member, regardless of whether Member's claim is based on contract, tort, strict liability, product liability or otherwise. TOTSY shall have no responsibility for the interruption of its Site, or the failure of any third party applications used by TOTSY in its Site.</p>
+
+	<p><strong>10. Termination by TOTSY</strong></p>
+
+	<p>TOTSY reserves the right to cancel a PO, or any part thereof, without penalty at any time and for any reasons, except that TOTSY shall immediately refund Member for the price of the goods cancelled. TOTSY reserves its right to suspend your account or unlist you as a member of Totsy.com at any time, if the event that you are in breach of any terms of these Terms of Service, or if you have disparaged, defamed or tarnished TOTSY and its trademarks.</p>
+
+	<p><strong>11. Force Majeure</strong></p>
+
+	<p>TOTSY shall not be liable for default or delay due to causes beyond TOTSY's control and without fault or negligence on the part of TOTSY, such as, but not limited to, strikes, lock outs, shut down of internet connections by Internet provider, cyber attacks on TOTSY.COM , loss or stolen items while in transit and while in custody of carriers hired by TOTSY, non delivery of items ordered from supplier; provided, however, that TOTSY gives Member prompt notice in writing when any such cause occurs, or appears likely to delay deliveries and/or frustrate performances of services by TOTSY and takes appropriate action to avoid or minimize such delay, or such performance. If any such default or delay threatens to impair TOTSY's ability to meet delivery obligations for its material, supplies and services, Member shall have the right, without any liability to TOTSY, to cancel the portion or portions of this PO so affected. Member shall not be liable for default or delay in the performance of its obligations due to cause beyond its control.</p>
+
+	<p><strong>12. Jurisdiction and Governing Law</strong></p>
+
+	<p>For any suit or proceeding to enforce the provisions of these Terms of Service, TOTSY irrevocably consents to the exclusive jurisdiction of the Courts of the State of New York. Furthermore TOTSY agrees that these Terms of Service shall be interpreted, construed and enforced in all respects in accordance with the laws of the State of New York, without giving effect to its principles of conflict of laws.</p>
+
+	<p><strong>13. Amendments of the Terms of Service</strong></p>
+
+	<p>These Terms of Service may be amended from time to time by TOTSY, at its sole discretion. Any revised Terms of Service will appear at the top of the document with the mention "revised as of MM/DD/YYYY."</p>
+
+	<p><strong>14. Assignment.</strong></p>
+
+	<p>The rights and liabilities of the parties hereto shall bind and inure to the benefit of their respective successors, heirs, executors and administrators, as the case may be.</p>
+
+	<p><strong>15. Headings.</strong></p>
+
+	<p>The headings in these Terms of Service are intended principally for convenience and shall not, by themselves, determine the rights and obligations of the parties to these Terms of Service.</p>
+
+	<p><strong>16. Severability.</strong></p>
+
+	<p>If any provision of these Terms of Service, or any terms of its other terms incorporated by reference, is held to be unenforceable for any reason, such provision shall be adjusted rather than voided, if possible, in order to achieve the intent of the parties to the maximum extent possible. In any event, all other provisions of these Terms of Service shall be deemed valid and enforceable to the full extent possible.</p>
+
+	<p><strong>17. Waiver.</strong></p>
+
+	<p>The waiver of any term or condition contained in these Terms of Service by any party to these Terms of Service shall not be construed as a waiver of a subsequent breach or failure of the same term or condition or a waiver of any other term or condition contained in these Terms of Service.</p>
+
+	<p><strong>18. Entire Agreement.</strong></p>
+
+	<p>These Terms of Service contains all of the terms and conditions agreed upon by the parties relating to the subject matter hereof and supersedes any and all prior and contemporaneous agreements, negotiations, correspondence, understandings and communications of the parties, whether oral or written, respecting the subject matter hereof.</p>
+
+	<p><strong>19. Injunctive Relief and Service of Process.</strong></p>
+
+	<p>The Member acknowledges and agrees that damages will not be an adequate remedy in the event of a breach of any of the Member's obligations under these Terms of Service. The Member therefore agrees that TOTSY shall be entitled (without limitation of any other rights or remedies otherwise available to TOTSY and without the necessity of posting a bond) to obtain an injunction from any court of competent jurisdiction prohibiting the continuance or recurrence of any breach of these Terms of Service. The Member further agrees that service upon the Member in any such action or proceeding may be made by first class mail, certified or registered, to the Member's address as last appearing on the records of TOTSY.</p>
  
  
 </div> 
