@@ -7,7 +7,7 @@ $leftMenu = Menu::build($navigation, $options);
 echo $leftMenu;
 
 if($addressList){ ?>
-	<table border="1" cellspacing="5" cellpadding="5">
+	<table border="0" cellspacing="5" cellpadding="5">
 		<tr>
 			<th>Description</th>
 			<th>Address</th>
@@ -18,7 +18,7 @@ if($addressList){ ?>
 ?>
 		<td><?=$addresses['description'];?></td>
 		<td>
-			<?php echo "<a href=/address/edit/". ($addresses['_id']); ?>			
+			<?php echo "<a href=/addresses/edit/". ($addresses['_id']); ?>			
 			<p><?=$addresses['firstname']." ".$addresses['lastname'] ?></p>
 			<p><?=$addresses['company']?></p>
 			<p><?=$addresses['address']?></p>
