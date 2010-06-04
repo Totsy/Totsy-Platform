@@ -36,7 +36,7 @@ window.addEvent('domready', function(){
 <div id="page">
 
 	<!-- Replace with user's name -->
-	<strong>Hello <?=$data['firstname']?></strong>
+	<strong>Hello <?=$userInfo['firstname']?></strong>
 	
 	<!-- Replace with account welcome message -->
 	<p>From your My Account Dashboard you have the ability to view a snapshot of your recent account activity and update your account information. Select a link below to view or edit information.</p>
@@ -52,8 +52,8 @@ window.addEvent('domready', function(){
 				<h3 class="gray fl"><?php echo ('Contact Information');?></h3>&nbsp;|&nbsp;<?=$this->html->link('Edit Info', '/account/info', array('class'=> 'mb', 'rel' => "width:550, height:600"));?>
 				<br />
 				<br />
-				<?=$data['firstname'].' '.$data['lastname'] ?><br />
-				<?=$data['email']?><br />
+				<?=$userInfo['firstname'].' '.$userInfo['lastname'] ?><br />
+				<?=$userInfo['email']?><br />
 				<a href="#" title="<?php echo ('Change Password');?>"><?php echo ('Change Password');?></a>
 			</div>
 			<div class="bl"></div>
@@ -91,13 +91,45 @@ window.addEvent('domready', function(){
 			<div class="tl"></div>
 			<div class="tr"></div>
 			<div class="r-box lt-gradient-1">
-				<h3 class="gray fl"><?php echo ('Primary Billing Address');?></h3>&nbsp;|&nbsp;<?=$this->html->link('Edit Address', '/account/edit');?>
+				<?php
+					if(!isset($addresses['Billing'])){						
+						$billMessage = 'No Billing Address';
+						$billLinkText = $routing['message'];
+						$billLink = $routing['url'];
+					} else {
+						$billLinkText = 'Edit Address';
+						$billLink = $addresses['Billing']['url'];
+					}
+					if(!isset($addresses['Shipping'])){						
+						$shipMessage = 'No Shipping Address';
+						$shipLinkText = $routing['message'];
+						$shipLink = $routing['url'];
+					} else {
+						$shipLinkText = 'Edit Address';
+						$shipLink = $addresses['Shipping']['url'];
+					}			
+				?>
+				<h3 class="gray fl"><?php echo ('Primary Billing Address');?></h3>&nbsp;|&nbsp;
+				<?=$this->html->link($billLinkText, $billLink);?>
 				<br />
 				<br />
 				<address>
-					123 Main Street<br />
-					Apt. 456<br />
-					Anytown, ST 90210 USA
+					<?php
+						if(isset($addresses['Billing'])) {
+							echo $addresses['Billing']['address'] . "<br />";
+							echo $addresses['Billing']['address_2'] . "<br />";
+							$subArray = array(
+									$addresses['Billing']['city'], 
+									$addresses['Billing']['state'], 
+									$addresses['Billing']['zip'],
+									$addresses['Billing']['country']
+									);
+							echo implode(', ', $subArray);
+							
+						} else {
+							echo $billMessage;
+						}
+					?>				
 				</address>
 			</div>
 			<div class="bl"></div>
@@ -108,14 +140,27 @@ window.addEvent('domready', function(){
 			<div class="tl"></div>
 			<div class="tr"></div>
 			<div class="r-box lt-gradient-1">
-				<h3 class="gray fl"><?php echo ('Primary Shipping Address');?></h3>&nbsp;|&nbsp;<?=$this->html->link('Edit Address', '/account/edit', array('class'=> 'mb'));?>
+				
+				<h3 class="gray fl"><?php echo ('Primary Shipping Address');?></h3>&nbsp;|&nbsp;<?=$this->html->link($shipLinkText, $shipLink, array('class'=> 'mb'));?>
 				<br />
 				<br />
 				<address>
-					567 Front Street<br />
-					8th Floor<br />
-					Suite 409<br />
-					Mytown, CA 86753 USA
+					<?php
+						if(isset($addresses['Shipping'])) {
+							echo $addresses['Shipping']['address'] . "<br />";
+							echo $addresses['Shipping']['address_2'] . "<br />";
+							$subArray = array(
+									$addresses['Shipping']['city'], 
+									$addresses['Shipping']['state'], 
+									$addresses['Shipping']['zip'],
+									$addresses['Shipping']['country']
+									);
+							echo implode(', ', $subArray);
+							
+						} else {
+							echo $shipMessage;
+						}
+					?>
 				</address>
 			</div>
 			<div class="bl"></div>

@@ -15,7 +15,8 @@ class UsersController extends \lithium\action\Controller {
 	 * Performs basic registration functionality. All validation checks should happen via
 	 * JavaScript so no empty data is going into Mongo.
 	 * @todo Refactor to use count() from Mongo instead of array PHP count
-	 * @todo Confirm redirect location and message upon successful registration.
+	 * @todo Confirm redirect location and message upon successful registration
+	 * @todo Authenticate upon successful registration before redirect
 	 * @return string User will be promoted that email is already registered.
 	 */
 	public function register(){

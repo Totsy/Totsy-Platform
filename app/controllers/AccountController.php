@@ -2,8 +2,9 @@
 
 namespace app\controllers;
 use app\models\User;
-use \lithium\storage\Session;
+use app\models\Address;
 use app\models\Navigation;
+use \lithium\storage\Session;
 use \MongoId;
 
 
@@ -12,11 +13,20 @@ use \MongoId;
 class AccountController extends \lithium\action\Controller {
 	
 	
+	private $addresses; 
+	
+
+	
 	public function index(){
-		$data = $this->getUser();
+		$userInfo = $this->getUser();
 		$this->_render['layout'] = 'main';
 
-		return compact("data");
+		$success = $this->setAddressInfo();
+		if($success){
+			$addresses = $this->addresses;
+		}	
+		$routing = array('url' => '/addresses/add', 'message' => 'Add Address');
+		return compact('userInfo', 'addresses', 'routing');
 	}
 	
 	
@@ -30,10 +40,31 @@ class AccountController extends \lithium\action\Controller {
 			Session::write('firstname', $this->request->data['firstname']);
 			Session::write('lastname', $this->request->data['lastname']);			
 		}
+
 		$data = $this->getUser();
 		
 		return compact("data", "success");
 		
+	}
+	
+	private function setAddressInfo($types = array('Billing', 'Shipping')) {
+		$success = false;
+		
+		foreach ($types as $value){
+			$address = Address::find('first', array('conditions' => array(
+					'user_id' => Session::read('_id'), 
+					'type' => "$value", 
+					'default' => 'Yes')));
+			if($address){				
+				$this->addresses["$value"] = $address->data();
+				$url = 'addresses/edit/'. $address->data('_id');
+				$urlArray = array('url' => $url);						
+				$this->addresses["$value"] = array_merge($this->addresses["$value"], $urlArray);	
+			}
+			$success = true;
+		}
+		
+		return $success;
 	}
 	
 	private function getUser($fields = array()) {
