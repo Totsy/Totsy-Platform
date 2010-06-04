@@ -19,9 +19,7 @@ nbproject
 # unknown but annoying as hell
 .settings
 
-# cache noise
-app/resources/tmp/cache/templates/
-
 # lithium schtuff
 libraries
 library
+app/resources/tmp
