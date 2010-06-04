@@ -46,7 +46,7 @@ class Menu extends \lithium\template\Helper{
 				$li .= '<li ' . Menu::getElements('li') .'>';
 			} 
 			if(isset($element['class'])) {
-				$li .= "<li class = \"$element[class]\"";
+				$li .= "<li class = \"$element[class]\"" . '>';
 			}
 			else {
 				$li .= "<li>";
@@ -63,8 +63,7 @@ class Menu extends \lithium\template\Helper{
 			$li .= '</li>';
 		}
 
-		$html .= $div . "<div>" . $ul . $li . "</div>";
-		$html .= '</ul>';
+		$html .= $div . "<div>" . $ul . $li . "</ul>". "</div>";
 		$html .= $endDiv;
 
 		return $html;
