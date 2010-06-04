@@ -9,20 +9,14 @@ FILES="*.json"
 EXTENSION="json"
 INDEXES="indexes.js"
 
-# fetch a list of data files for import
-
+# fetch a list of data files for import, and loop through that list
 for i in $FILES
 do
 	echo "Importing data for collection $i..."
 	mongoimport -d $DBNAME -c ${i%%.$EXTENSION} --drop $i
 done
 
-# shell example:
-#    "mongoimport -d totsy -c lists --drop lists.json"
-
-# now apply the indexes with the following syntax:
-#   "mongo totsy indexes.js"
-
+# create indexes and constraints
 echo "Creating all indexes and constraints..."
 mongo totsy $INDEXES
 
