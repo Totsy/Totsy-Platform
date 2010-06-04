@@ -15,12 +15,7 @@
 	<?php echo $this->scripts(); ?>
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
 </head>
-<?php
-	if(isset($_SESSION['firstname'])) {
-		$array = array($_SESSION['firstname'], $_SESSION['lastname']);
-		$name = implode(" ", $array);
-	} 
-?>
+
 <?php
 	use app\extensions\helper\Menu;
 	use app\models\Navigation;
@@ -53,7 +48,7 @@
 			<div id="header-mid">
 				<?=$this->html->link('At Your Service','',array('id'=>'cs'));?>	
 				<div id="welcome">
-					<strong>Hello! </strong><?php if(isset($name)){echo $name;};?> (<?=$this->html->link('Sign Out',array(
+					<strong>Hello! </strong><?php if(isset($userInfo['firstname'])){echo $userInfo['firstname']." ".$userInfo['lastname'];};?> (<?=$this->html->link('Sign Out',array(
 							'controller' => 'users','action'=>'logout'),
 							array('title'=>'Sign Out'));?>	)				
 				</div>
