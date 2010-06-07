@@ -4,7 +4,7 @@
 {"title" : "My Account", "route" : { "controller" : "account" }, "location" : "top", "active" : "true", "class" : "last parent item5", "children" : "true"}
 {"title" : "Account Dashboard", "route" : { "controller" : "account" }, "location" : "left", "active" : "true", "class" : "first item17", "parent" : "My Account"}
 {"title" : "Account Information", "route" : { "controller" : "account" , "action" : "info"}, "location" : "left", "active" : "true", "class" : "item18", "parent" : "My Account"}
-{"title" : "Address Book", "route" : { "controller" : "account" }, "location" : "left" , "active" : "true", "class" : "item19", "parent" : "My Account"}
+{"title" : "Address Book", "route" : { "controller" : "addresses"}, "location" : "left" , "active" : "true", "class" : "item19", "parent" : "My Account"}
 {"title" : "My Orders", "route" : { "controller" : "orders" }, "location" : "left" , "active" : "true", "class" : "item20", "parent" : "My Account"}
 {"title" : "Email Preferences", "route" : { "controller" : "account" , "action" : "pref"}, "location" : "left" , "active" : "true", "class" : "item21", "parent" : "My Account"}
 {"title" : "Help Desk", "route" : { "controller" : "pages" }, "location" : "left" , "active" : "true", "class" : "item22", "parent" : "My Account"}
