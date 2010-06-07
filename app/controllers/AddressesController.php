@@ -4,6 +4,7 @@ namespace app\controllers;
 use app\models\Address;
 use \lithium\storage\Session;
 use app\models\Navigation;
+use app\models\User;
 use \MongoId;
 use \lithium\data\Connections;
 use \lithium\analysis\Logger;
@@ -48,7 +49,7 @@ class AddressesController extends \lithium\action\Controller {
 		if($this->request->data){
 			$data = $this->cleanAddressData();
 			$count = Address::count(array('user_id' => Session::read('_id')));
-
+			
 			if($count >= $this->_maxAddresses) {
 				$message = 'There are already 10 addresses registered. Please remove one first.';
 			} else {
@@ -71,7 +72,9 @@ class AddressesController extends \lithium\action\Controller {
 	
 		$this->applyFilter('__invoke',  function($self, $params, $chain) {
 			$navigation = Navigation::find('all', array('conditions' => array('location' => 'left', 'active' => 'true')));
-			$self->set(compact('navigation'));
+			$id = Session::read('_id');
+			$userInfo = User::find('first', array('conditions' => array('_id' => $id)))->data();
+			$self->set(compact('navigation', 'userInfo'));
 			return $chain->next($self, $params, $chain);
 		});
 	}
@@ -90,11 +93,11 @@ class AddressesController extends \lithium\action\Controller {
 		// Check that we got address _id
 		if($addressId){
 			//Find address using user_id and address_id
-			$dataObject = Address::find('all', array('conditions' => array('_id' => $addressId, 'user_id' => Session::read('_id'))));
+			$dataObject = Address::find('first', array('conditions' => array('_id' => $addressId[0])));
 			if($dataObject) {
 				//Get the Data from record object
 				$addressRecord = $dataObject->data();
-				$addressRecord = $addressRecord ? $addressRecord[0] : false;
+				
 				//If we don't have data redirect to add view for security
 				if(!$addressRecord) {
 					$this->redirect('/addresses/add');
@@ -121,7 +124,7 @@ class AddressesController extends \lithium\action\Controller {
 	}
 	
 	private function getSession(){
-		return array('user_id' => new MongoID(Session::read('_id')));
+		return array('user_id' => Session::read('_id'));
 	}
 	
 	private function cleanAddressData()
