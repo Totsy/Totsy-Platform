@@ -11,7 +11,7 @@
 </script>
 
 <?php if ($message){ echo $message; } ?>
-<?=$this->form->create('',array('id'=>'loginForm'));?>
+<?=$this->form->create(null,array('id'=>'loginForm'));?>
 <?=$this->form->field('email', array('class'=>"validate['required','email']"));?>
 <?=$this->form->field('password', array(
 		'class'=>"validate['required']", 

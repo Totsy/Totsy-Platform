@@ -5,12 +5,12 @@ use app\models\User;
 use \lithium\security\Auth;
 use \lithium\storage\Session;
 
+
 class UsersController extends \lithium\action\Controller {
 
 	public function index(){
 
-	}
-	
+	}	
 	/**
 	 * Performs basic registration functionality. All validation checks should happen via
 	 * JavaScript so no empty data is going into Mongo.
@@ -19,32 +19,37 @@ class UsersController extends \lithium\action\Controller {
 	 * @todo Authenticate upon successful registration before redirect
 	 * @return string User will be promoted that email is already registered.
 	 */
-	public function register(){
+	public function register(){	
 		$message = false;
-        if ($this->request->data) {
-        	$this->request->data['password'] = sha1($this->request->data['password']);
+		if ($this->request->data) {
+			$this->request->data['password'] = sha1($this->request->data['password']);
 			$currentUser = User::find('all',array('conditions' => array('email' => $this->request->data['email'])));
 			if (count($currentUser->data()) < 1 ) {
-				$User = User::create($this->request->data);
-	            $success = $User->save();
+				$user = User::create();
+				$success = $user->save($this->request->data);
 				if ($success) {
-					 $this->redirect('/');
+					Session::write('_id', $user->_id);
+					Session::write('firstname', $user->firstname);
+					Session::write('lastname', $user->lastname);
+					Session::write('email', $user->email);
+					$this->redirect('/account/details');
 				}
+				
 			} else {
 				$message = 'This email address is already registered';
 			}
 		}
 		$this->_render['layout'] = 'base';
-        return compact('message');
+		return compact('message');
 	}
 	
 	/**
 	 * Performs login authentication for a user going directly to the database.
 	 * If authenticated the user will be redirected to the home page.
 	 *
-	 * @return string The user is promted with a message if authentication failed.
+	 * @return string The user is prompted with a message if authentication failed.
 	 */
-	public function login() {
+	public function login($credentials = array()) {
 		
 		$message = false;
 		Auth::config(array(
@@ -65,7 +70,7 @@ class UsersController extends \lithium\action\Controller {
 					Session::write('email', $auth['email']);				
 					$this->redirect('/');
 			}		
-		}	
+		}
 
 		return compact('message');		
 	}
@@ -81,5 +86,6 @@ class UsersController extends \lithium\action\Controller {
 		Session::delete('email');
 		$this->redirect(array('action'=>'login'));
 	}
+		
 }
 ?>

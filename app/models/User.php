@@ -4,7 +4,7 @@ namespace app\models;
 
 use \lithium\data\Connections;
 use \lithium\storage\Session;
-use \MongoId;
+
 
 
 /**
@@ -15,30 +15,7 @@ use \MongoId;
  */
 
 class User extends \lithium\data\Model {
-		
-	/**
-	 * Update user information in Mongo
-	 * 
-	 * @todo Fix the long Mongo connection
-	 * @param array $data
-	 */
-	public function update(array $data) {
-		$sucess = false;
-		$email = Session::read('email');
-		
-		var_dump($data);
-		$sucess = User::_connection()->connection->totsy->users->update(array('email' => "$email" ), array('$set' => $data));
-
-		return $sucess;
-
-	}
-	
-
-	
-	
-	
-	
-	
+			
 }
 
 

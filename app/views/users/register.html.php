@@ -38,7 +38,7 @@
 		<?php if($message){echo "$message"; } ?>
 	</div>
 			<fieldset>				
-				<?=$this->form->create('',array('id'=>'registerForm')); ?>
+				<?=$this->form->create(null,array('id'=>'registerForm')); ?>
 					<?=$this->form->label('fname','First Name',array('class'=>'label'));?>
 					<?=$this->form->text('firstname', array('class'=>"validate['required']"));?>
 					<?=$this->form->label('lname','Last Name',array('class'=>'label'));?>
