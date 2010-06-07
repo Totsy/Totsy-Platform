@@ -49,7 +49,7 @@ window.addEvent('domready', function(){
 			<div class="tl"></div>
 			<div class="tr"></div>
 			<div class="r-box lt-gradient-1">
-				<h3 class="gray fl"><?php echo ('Contact Information');?></h3>&nbsp;|&nbsp;<?=$this->html->link('Edit Info', '/account/info', array('class'=> 'mb', 'rel' => "width:550, height:600"));?>
+				<h3 class="gray fl"><?php echo ('Contact Information');?></h3>&nbsp;|&nbsp;<?=$this->html->link('Edit Info', '/account/info');?>
 				<br />
 				<br />
 				<?=$userInfo['firstname'].' '.$userInfo['lastname'] ?><br />
@@ -64,7 +64,7 @@ window.addEvent('domready', function(){
 			<div class="tl"></div>
 			<div class="tr"></div>
 			<div class="r-box lt-gradient-1">
-				<h3 class="gray fl"><?php echo ('Newsletter');?></h3>&nbsp;|&nbsp;<?=$this->html->link('Edit', '/account/news', array('class'=> 'mb'));?>
+				<h3 class="gray fl"><?php echo ('Newsletter');?></h3>&nbsp;|&nbsp;<?=$this->html->link('Edit', '/account/news');?>
 				<br />
 				<br />
 				<dl>
@@ -141,7 +141,7 @@ window.addEvent('domready', function(){
 			<div class="tr"></div>
 			<div class="r-box lt-gradient-1">
 				
-				<h3 class="gray fl"><?php echo ('Primary Shipping Address');?></h3>&nbsp;|&nbsp;<?=$this->html->link($shipLinkText, $shipLink, array('class'=> 'mb'));?>
+				<h3 class="gray fl"><?php echo ('Primary Shipping Address');?></h3>&nbsp;|&nbsp;<?=$this->html->link($shipLinkText, $shipLink);?>
 				<br />
 				<br />
 				<address>

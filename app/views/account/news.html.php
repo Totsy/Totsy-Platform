@@ -1,7 +1,18 @@
+<?php
+	use app\extensions\helper\Menu;
+	use app\models\Navigation;
+
+	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
+	$leftMenu = Menu::build($navigation, $options);
+
+	echo $leftMenu;
+
+?>
+
 <div class="tl"></div> 
 <div class="tr"></div> 
 <div id="page"> 
- 
+<?=$this->form->create(null,array('id'=>'addressForm', 'class' => "fl"));?> 
 	<h2 class="gray mar-b">Email Preferences</h2> 
 	
 	<form action="#" class="fl"> 
@@ -52,7 +63,5 @@
 			<strong>Based on your preferences:</strong><br /> 
 			You will receive an average of <strong>3</strong> emails from Totsy per week
 		</p> 
-		
-		
-		
-	</form>
+
+<?=$this->form->end();?> 
