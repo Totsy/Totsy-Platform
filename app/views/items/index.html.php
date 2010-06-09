@@ -13,6 +13,8 @@
 	} );
 </script>
 <br>
+<?=$this->html->link('Add an Item','/items/add')?> 
+<br>
 <p>
 	Todo: <br>
 		Add link for modal item addition.<br>

@@ -17,6 +17,9 @@ tinyMCE.init({
 		$("#duplicate").dynamicForm("#plus", "#minus", {limit:15, createColor: 'yellow', removeColor: 'red'});
 	});
 </script>
+
+<?=$this->html->link('See Item List','/items')?>
+
 <h1>Add an Item</h1>
 
 <?=$this->form->create(); ?>
@@ -27,8 +30,10 @@ tinyMCE.init({
 		<legend>Price Details</legend>
 	<?=$this->form->field('Original Price', array('type' => 'text'));?>
 	<?=$this->form->field('Sale Price', array('type' => 'text'));?>
+	<?=$this->form->label('Active')?>
 	<input type="radio" name="Active" value="Yes" id="Yes" checked ="checked">Yes
 	<input type="radio" name="Active" value="No" id="No">No
+	<?=$this->form->field('Vendor', array('type' => 'text'));?>
 	</fielset>
 	<br>
 	<fieldset> 
