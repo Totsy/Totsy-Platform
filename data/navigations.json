@@ -6,7 +6,7 @@
 {"title" : "Account Information", "route" : { "controller" : "account" , "action" : "info"}, "location" : "left", "active" : "true", "class" : "item18", "parent" : "My Account"}
 {"title" : "Address Book", "route" : { "controller" : "addresses"}, "location" : "left" , "active" : "true", "class" : "item19", "parent" : "My Account"}
 {"title" : "My Orders", "route" : { "controller" : "orders" }, "location" : "left" , "active" : "true", "class" : "item20", "parent" : "My Account"}
-{"title" : "Email Preferences", "route" : { "controller" : "account" , "action" : "pref"}, "location" : "left" , "active" : "true", "class" : "item21", "parent" : "My Account"}
+{"title" : "Email Preferences", "route" : { "controller" : "account" , "action" : "news"}, "location" : "left" , "active" : "true", "class" : "item21", "parent" : "My Account"}
 {"title" : "Help Desk", "route" : { "controller" : "pages" }, "location" : "left" , "active" : "true", "class" : "item22", "parent" : "My Account"}
 {"title" : "My Invitiations", "route" : { "controller" : "invite" }, "location" : "left" , "active" : "true", "class" : "last item23", "parent" : "My Account"}
 {"title" : "Terms of Use", "route" : { "controller" : "pages" , "view" : "terms" }, "location" : "bottom" , "active" : "true", "class" : "first item6"}

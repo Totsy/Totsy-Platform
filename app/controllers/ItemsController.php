@@ -12,15 +12,14 @@ use \lithium\storage\Session;
 class ItemsController extends \lithium\action\Controller {
 	
 	public function index() {
-		$items = Item::find('all')->data();
-		return compact('items');
+		$htmlTable = $this->_buildItemTable();
+		return compact('htmlTable');
 	}
 
 	/**
 	 * Adds a product item to the database
 	 */
-	public function add()
-	{
+	public function add() {
 		//Check if there was a post request
 		if ($this->request->data) {
 			//Let's put this in another var
@@ -55,10 +54,10 @@ class ItemsController extends \lithium\action\Controller {
 				//If we don't have an array lets make one out of the one item
 				$items = array(
 					'SKU' => $data['SKU'], 
-					'Color' => $data['SKU'], 
-					'Weight' => $data['SKU'], 
-					'Size' => $data['SKU'], 
-					'Inventory' => $data['SKU']
+					'Color' => $data['Color'], 
+					'Weight' => $data['Weight'], 
+					'Size' => $data['Size'], 
+					'Inventory' => $data['Inventory']
 				);
 			}
 			
@@ -78,5 +77,83 @@ class ItemsController extends \lithium\action\Controller {
 		}
 		return compact('message', 'itemData');
 	}
+	
+	
+	private function _buildItemTable() {
+		//Get the data
+		
+		$records = Item::find('all');
+		
+		$items = $records->data();
+		
+		//Start clean
+		$html = '';
+		//Setup the table
+		$html .= '<table id="itemTable" border="1" cellspacing="5" cellpadding="5" align="center">';
+		
+		//We need the thead for jquery datatables
+		$html .=  '<thead>'; 
+		$html .= '<tr>';
+			
+		//Build the table headings first
+		foreach ($items[0] as $key=>$value){
+			//If we are on the attribute then get all the subitems
+			if ($key == 'Attributes') {
+				foreach ($value as $subKey=>$subValue) {
+					//Build the table headings with subitems
+					$html .= "<th>$subKey</th>";
+				}
+			} else {
+				$html .=  "<th>$key</th>";
+			}	
+		}		
+		//Set ending tags for html table headings
+		$html .= '</tr></thead><tbody>';
+		
+		//Lets start building the data fields
+		foreach ($items as $array) {		
+			//Let's first check if this array item has nested attributes
+			if(isset($array['Attributes'][0])) {			
+				foreach ($array as $key => $value) {				
+					//Once we have an attribute lets build the whole row
+					if ($key == 'Attributes') {
+						$html .= '<tr>';
+						//Now build out attribute data
+						foreach ($value as $subarray) {
+							//Build core item info each time we have a new attribute
+							foreach ($array as $key => $value) {
+								if ($key != 'Attributes') {
+									$html .= '<td>'.$value.'</td>';
+								}
+							}
+							//Build out the attribute fields
+							foreach ($subarray as $attrKey => $attrVal) {
+								$html .= "<td>$attrVal</td>";
+							}
+							$html .= '</tr>';
+						}
+							
+					}	
+				}		
+			} else {
+				$html .= '<tr>';
+				//We dont have nested attributes here
+				foreach ($array as $key => $value) {
+					if ($key != 'Attributes') {
+						$html .= '<td>'.$value.'</td>';
+					} else {			
+						foreach ($value as $attrKey => $attrVal) {
+							$html .= "<td>$attrVal</td>";
+						}
+					}
+				}
+				$html .= '</tr>';
+			}
+		}
+			$html .= "</tbody>";
+			$html .= "</table>";
+			return $html;
+	}
 }
+
 ?>
