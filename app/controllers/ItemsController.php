@@ -63,7 +63,7 @@ class ItemsController extends \lithium\action\Controller {
 					'Inventory' => $data['Inventory']
 				);
 			}
-			
+
 			//Unset original values
 			unset($data['SKU'], $data['Color'], $data['Weight'], $data['Size'], $data['Inventory']);
 			//Merge cleaned up array and new item array
@@ -98,7 +98,7 @@ class ItemsController extends \lithium\action\Controller {
 			//Start clean
 			$html = '';
 			//Setup the table
-			$html .= '<table id="itemTable" border="1" cellspacing="5" cellpadding="5" align="center">';
+			$html .= '<table id="itemTable" border="1" cellspacing="5" cellpadding="20" style="width: 1050px">';
 
 			//We need the thead for jquery datatables
 			$html .=  '<thead>'; 
@@ -114,16 +114,16 @@ class ItemsController extends \lithium\action\Controller {
 					}
 				} else {
 					$html .=  "<th>$key</th>";
-				}	
-			}		
+				}
+			}
 			//Set ending tags for html table headings
 			$html .= '</tr></thead><tbody>';
 
 			//Lets start building the data fields
-			foreach ($items as $array) {		
+			foreach ($items as $array) {
 				//Let's first check if this array item has nested attributes
-				if(isset($array['Attributes'][0])) {			
-					foreach ($array as $key => $value) {				
+				if(isset($array['Attributes'][0])) {
+					foreach ($array as $key => $value) {
 						//Once we have an attribute lets build the whole row
 						if ($key == 'Attributes') {
 							$html .= '<tr>';
@@ -141,7 +141,6 @@ class ItemsController extends \lithium\action\Controller {
 								}
 								$html .= '</tr>';
 							}
-
 						}	
 					}		
 				} else {
