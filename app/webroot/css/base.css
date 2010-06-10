@@ -52,6 +52,8 @@ hr.no-show{display:none}
 button{cursor:pointer;overflow:visible}
 button::-moz-focus-inner{border:none}
 
+#logo{width:155px;height:90px;background:url(../img/logo.png) no-repeat;text-indent:-9999px;display:block}
+
 blockquote{margin-bottom:20px;width:70%}
 
 legend{margin-bottom:10px}
@@ -279,3 +281,26 @@ a#invite-others{background-position:129px -153px}
 #system-message dd.message ul,#message dd.message ul{border:1px solid #B2CC7E;background:url(../img/success-icon.png) #D8F0A7 no-repeat 4px center;color:#385D00}
 #system-message dd.error ul,#message dd.error ul{border:1px solid #DA9CA7;background:url(../img/error-icon.png) #F3C5C5 no-repeat 4px center;color:#9F001C}
 #system-message dd.notice ul,#message dd.notice ul{border:1px solid #7AB1DD;background:url(../img/info-icon.png) #C4E1F8 no-repeat 4px center;color:#005192}
+
+/* Login Page Styles */
+html{height:100%}
+body.login{height:100%}
+#fullscreen{position:relative;overflow:hidden;min-height:100%}
+#login-box{position:absolute;top:50%;left:80px;z-index:1}
+#login-box-border{position:absolute;left:0;top:-212px;padding:10px;background:url(../img/wht-trans-50.png);-moz-border-radius:20px;-webkit-border-radius:20px;border-radius:20px}
+#login-box-container{background:#FFF;padding:20px;width:560px;height:360px;-moz-border-radius:20px;-webkit-border-radius:20px;border-radius:20px}
+
+#bg{position:fixed;top:0;left:0;z-index:0}
+#bg img{width:100%;display:none}
+#bg .activeslide, #bg .activeslide img{display:inline}
+
+body.login #footer{background:#FFF;margin:0;width:100%;overflow:hidden;position:fixed;bottom:0;left:0}
+body.login #footer ul{float:left;padding:15px}
+body.login #copyright{float:right;text-align:right;padding:15px}
+
+body.login #logo{float:left;margin-right:20px}
+body.login #intro-copy{float:left;width:385px}
+body.login #intro-copy p{margin:15px 0}
+body.login #sign-in-box{clear:left;float:left;margin-top:30px}
+body.login #register-box{float:right;margin-top:30px}
+body.login .login-sig{text-align:center}

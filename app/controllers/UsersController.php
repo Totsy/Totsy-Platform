@@ -71,7 +71,9 @@ class UsersController extends \lithium\action\Controller {
 					$this->redirect('/');
 			}		
 		}
-
+		
+		//new login layout to account for fullscreen image JL
+		$this->_render['layout'] = 'login';
 		return compact('message');		
 	}
 	
