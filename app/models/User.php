@@ -15,7 +15,6 @@ use \lithium\storage\Session;
  */
 
 class User extends \lithium\data\Model {
-			
 }
 
 

@@ -5,11 +5,10 @@
 <?=$this->html->script('common.js');?>
 <?=$this->html->style('multibox');?>
 <?php
-	use app\extensions\helper\Menu;
 	use app\models\Navigation;
 
 	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
-	$leftMenu = Menu::build($navigation, $options);
+	$leftMenu = $this->menu->build($navigation, $options);
 
 	echo $leftMenu;
 

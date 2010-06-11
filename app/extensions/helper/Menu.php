@@ -10,7 +10,7 @@ use app\models\Navigation;
  *{{{
  * 	$options = array('div' => array('id' => 'main-nav'), 'ul' => array('class' => 'menu main-nav'));
  *	$doc = Navigation::find('all', array('conditions' => array('location' => 'top', 'active' => 'true')));	
- *  $html = Menu::build($doc, $options); //returns html menu list
+ *  $html = $this->menu->build($doc, $options); //returns html menu list
  *}}}
  *
  */
@@ -33,10 +33,10 @@ class Menu extends \lithium\template\Helper{
 		$li = '';
 
 		if(isset($options['div'])){
-			$div = '<div ' . Menu::getElements('div') . '>';
+			$div = '<div ' . $this->getElements('div') . '>';
 		}
 		if(isset($options['ul'])){
-			$ul = '<ul '. Menu::getElements('ul') . '>';
+			$ul = '<ul '. $this->getElements('ul') . '>';
 		}	
 		
 		foreach ($doc as $nav) {
@@ -58,10 +58,10 @@ class Menu extends \lithium\template\Helper{
 			if (isset($element['route']['action'])) {
 				$url .= '/'.$element['route']['action'];
 			}
-			$li .= $this->html->link("<span>$element[title]</span>", $url, array('title' => "$element[title]", 'escape' => false ));	
+			$li .= $this->_context->html->link("<span>$element[title]</span>", $url, array('title' => "$element[title]", 'escape' => false ));	
 			if (isset($element['children'])) {
 				$subdoc = Navigation::find('all', array('conditions' => array('active' => 'true', 'parent' => $element['title'])));
-				$li .= Menu::build($subdoc);
+				$li .= $this->build($subdoc);
 			}
 			$li .= '</li>';
 		}
