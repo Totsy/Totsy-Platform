@@ -31,9 +31,9 @@ h2,h3{font-weight:bold}
 
 .fl{float:left}
 .fr{float:right}
-.sm{font-size:.9em}
-.md{font-size:1.1em}
-.lg{font-size:1.3em}
+.sm{font-size:11px}
+.md{font-size:12px}
+.lg{font-size:16px}
 .clear{clear:both}
 .dk-blue{color:#0B4358}
 .block{display:block}
@@ -197,7 +197,7 @@ img.reg-img{border-bottom:4px solid #707070}
 .reg-right .label{text-transform:lowercase;font-weight:bold;display:block}
 label span{text-transform:lowercase;padding:0 0 0 5px}
 
-input.inputbox,textarea.inputbox{background:url(../img/input-bg.png) repeat-x left bottom #FFF;border:1px solid #DEDEDE;margin-bottom:8px}
+input.inputbox,textarea.inputbox{background:url(../img/input-bg.png) repeat-x left bottom #FFF;border:1px solid #DEDEDE;margin-bottom:5px}
 select.inputbox{margin-bottom:8px}
 textarea{font-family:Helvetica,Arial,Sans-Serif;color:#707070;font-size:12px}
 
@@ -220,6 +220,8 @@ label.radio{display:block;float:left;margin:3px 20px 10px 0}
 .form-row label{display:table-cell;text-align:right;padding-right:5px;font-weight:bold}
 
 .flex-btn{background:url(../img/btn-blank.png) transparent no-repeat right top;padding:0 10px 0 0;text-align:center;border:none}
+.flex-btn-2{background:#EB132C;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;border:none;padding:5px 10px;color:#FFF;text-transform:uppercase;cursor:pointer;box-shadow:5px 5px 5px #888;text-align:center}
+a.flex-btn-2{color:#FFF;font-size:12px;display:block;padding:10px;line-height:normal}
 
 .flex-btn span{background:url(../img/btn-blank.png) no-repeat left top;height:39px;padding:0 0 0 10px;display:block;white-space:nowrap;position:relative;color:#FFF;text-transform:uppercase;line-height:40px;text-shadow:#AE121B 2px 2px 0;letter-spacing:.5px;font-size:12px}
 
@@ -301,6 +303,16 @@ body.login #copyright{float:right;text-align:right;padding:15px}
 body.login #logo{float:left;margin-right:20px}
 body.login #intro-copy{float:left;width:385px}
 body.login #intro-copy p{margin:15px 0}
-body.login #sign-in-box{clear:left;float:left;margin-top:30px}
-body.login #register-box{float:right;margin-top:30px}
+body.login #sign-in-box{clear:left;float:left;margin:10px 0;width:230px}
+body.login .sign-in-container{padding-left:40px}
+body.login #register-box{float:right;margin:10px 0;width:230px}
+body.login .register-container{padding-right:40px}
+body.login #sign-in-box .r-box,body.login #register-box .r-box{height:190px}
+#sign-in-box h2,#register-box h2{color:#707070;text-transform:uppercase;font-weight:normal;font-size:16px;margin:0 0 10px 0}
+#sign-in-box .inputbox,#register-box .inputbox{background:#FFF;width:95%}
+#sign-in-box label,#register-box label{font-size:12px}
+#sign-in-box .flex-btn-2,#register-box .flex-btn-2{margin-top:5px}
+#sign-in-box .checkbox{margin-right:5px}
+#register-box p{line-height:normal;font-size:12px;margin-bottom:10px}
 body.login .login-sig{text-align:center}
+
