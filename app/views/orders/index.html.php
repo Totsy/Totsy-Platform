@@ -1,24 +1,19 @@
 <?php
-	use app\extensions\helper\Menu;
 	use app\models\Navigation;
 
 	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
-	$doc = Navigation::find('all', array('conditions' => array('location' => 'left', 'active' => 'true')));
-
-	$leftMenu = Menu::build($doc, $options);
-
-	echo $leftMenu;
-	
+	$doc = Navigation::all(array('conditions' => array('location' => 'left', 'active' => 'true')));
 ?>
+<?=$this->menu->build($doc, $options); ?>
 
 <div class="tl"></div>
 <div class="tr"></div>
 <div id="page">
 
-	<h2 class="gray mar-b"><?php echo ('Email Preferences');?></h2>
-	
+	<h2 class="gray mar-b"><?php echo ('Email Preferences'); ?></h2>
+
 	<table cellpadding="0" cellspacing="0" border="0" width="100%" class="order-table">
-	
+
 		<thead>
 			<tr>
 				<th width="10%"><?php echo ('Order Date');?></th>

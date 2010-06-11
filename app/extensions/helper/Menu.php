@@ -43,7 +43,7 @@ class Menu extends \lithium\template\Helper{
 			$element = $nav->data();
 			
 			if(isset($options['li'])){
-				$li .= '<li ' . Menu::getElements('li') .'>';
+				$li .= '<li ' . $this->getElements('li') .'>';
 			} 
 			if(isset($element['class'])) {
 				$li .= "<li class = \"$element[class]\"" . '>';
