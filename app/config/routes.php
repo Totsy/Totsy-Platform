@@ -10,7 +10,8 @@ use \lithium\net\http\Router;
 use \lithium\core\Environment;
 use \lithium\storage\Session;
 
-
+Router::connect('/uploads', 'Uploads::index');
+Router::connect('/uploads/upload', 'Uploads::upload');
 /**
  * Redirect all non-authenticated users to 
  */

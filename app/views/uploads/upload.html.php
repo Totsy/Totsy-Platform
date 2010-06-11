@@ -1,0 +1,1 @@
+<?=$this->form->checkbox("file-$id", array('checked' => "Yes"))?> <?php echo $fileName ?>
