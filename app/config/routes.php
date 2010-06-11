@@ -15,16 +15,10 @@ use \lithium\storage\Session;
  * Redirect all non-authenticated users to 
  */
 
-if(!Session::check('_id')) {
-	Router::connect('/register', array('controller' => 'users', 'action' => 'register'));
-	Router::connect('/{:args}', array('controller' => 'users', 'action' => 'login'));	
+if (!Session::check('_id')) {
+	Router::connect('/register', 'Users::register');
+	Router::connect('/{:args}', 'Users::login');
 }
-
-/**
- * Uncomment the line below to enable routing for admin actions.
- * @todo Implement me.
- */
-// Router::namespace('/admin', array('admin' => true));
 
 /**
  * Here, we are connecting '/' (base path) to controller called 'Pages',
@@ -32,17 +26,17 @@ if(!Session::check('_id')) {
  * to use (in this case, /app/views/pages/home.html.php)...
  */
 
-Router::connect('/', array('controller' => 'pages', 'action' => 'view', 'home'));
-Router::connect('/login', array('controller' => 'users', 'action' => 'login'));
-Router::connect('/logout', array('controller' => 'users', 'action' => 'logout'));
-Router::connect('/register', array('controller' => 'users', 'action' => 'register'));
-Router::connect('/addresses', array('controller' => 'addresses', 'action' => 'view'));
-Router::connect('/account/add/{:args}', array('controller' => 'account', 'action' => 'add'));
+Router::connect('/', array('Pages::view', 'home'));
+Router::connect('/login', 'Users::login');
+Router::connect('/logout', 'Users::logout');
+Router::connect('/register', 'Users::register');
+Router::connect('/addresses', 'Addresses::view');
+Router::connect('/account/add/{:args}', 'Account::add');
 
 /**
  * ...and connect the rest of 'Pages' controller's urls.
  */
-Router::connect('/pages/{:args}', array('controller' => 'pages', 'action' => 'view'));
+Router::connect('/pages/{:args}', 'Pages::view');
 
 /**
  * Connect the testing routes.
