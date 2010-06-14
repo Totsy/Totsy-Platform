@@ -47,7 +47,7 @@
 							<h2>Member Sign In</h2>
 							
 							<?=$this->form->create(null,array('id'=>'loginForm'));?>
-							<?=$this->form->field('email', array('class'=>"validate['required','email']  inputbox", 'id'=>"email"));?>
+							<?=$this->form->field('username', array('class'=>"validate['required']  inputbox", 'id'=>"username"));?>
 							<?=$this->form->field('password', array(
 									'class'=>"validate['required'] inputbox", 
 									'name' => 'password', 
