@@ -5,12 +5,14 @@ use app\models\User;
 use \lithium\security\Auth;
 use \lithium\storage\Session;
 
-
+/**
+ * This class provides all the methods to register and authentic a user
+ */
 class UsersController extends \lithium\action\Controller {
 
 	public function index(){
 
-	}	
+	}
 	/**
 	 * Performs basic registration functionality. All validation checks should happen via
 	 * JavaScript so no empty data is going into Mongo.
@@ -19,64 +21,84 @@ class UsersController extends \lithium\action\Controller {
 	 * @todo Authenticate upon successful registration before redirect
 	 * @return string User will be promoted that email is already registered.
 	 */
-	public function register(){	
+	public function register() {
 		$message = false;
+		Session::config(array('name' => 'default'));
 		if ($this->request->data) {
 			$this->request->data['password'] = sha1($this->request->data['password']);
-			$currentUser = User::find('all',array('conditions' => array('email' => $this->request->data['email'])));
-			if (count($currentUser->data()) < 1 ) {
+			//Check if email exists
+			$emailCheck = User::find('all', array(
+				'conditions' => array('email' => $this->request->data['email'])));
+			//Check if username exists
+			$usernameCheck = User::find('all',array(
+					'conditions' => array(
+						'username' => $this->request->data['username']
+						)
+					));
+			if (count($emailCheck->data()) < 1 &&  count($usernameCheck->data()) < 1) {
 				$user = User::create();
 				$success = $user->save($this->request->data);
 				if ($success) {
-					Session::write('_id', $user->_id);
-					Session::write('firstname', $user->firstname);
-					Session::write('lastname', $user->lastname);
-					Session::write('email', $user->email);
-					$this->redirect('/account/details');
+					$id = Session::write('_id', $user->_id);
+					$firstname = Session::write('firstname', $user->firstname);
+					$lastname = Session::write('lastname', $user->lastname);
+					$email = Session::write('email', $user->email);
+					if ($id && $firstname && $lastname && $email) {
+						$this->redirect('/account/details');
+					} else {
+						//For some reason we couldn't write to session - Do SOMETHING
+					}
 				}
-				
 			} else {
-				$message = 'This email address is already registered';
+				$message = 'This email/username is already registered';
 			}
 		}
 		$this->_render['layout'] = 'base';
 		return compact('message');
 	}
-	
 	/**
 	 * Performs login authentication for a user going directly to the database.
 	 * If authenticated the user will be redirected to the home page.
 	 *
 	 * @return string The user is prompted with a message if authentication failed.
 	 */
-	public function login($credentials = array()) {
-		
+	public function login() {
 		$message = false;
-		Auth::config(array(
-			        'userLogin' => array(
-						'model' => 'User',
-						'adapter' => 'Form',
-			            'fields' => array('email', 'password')
-			        )
-			    ));
+		Auth::config(array('userLogin' => array(
+			'model' => 'User',
+			'adapter' => 'Form',
+			'fields' => array('username', 'password'))
+			));
 		if ($this->request->data) {
-			$auth = Auth::check("userLogin", $this->request, array('checkSession'=> false, 'writeSession' => false));
-			if ($auth == false) {
-				$message = 'Login Failed - Please Try Again';
-			} else {
-					Session::write('_id', $auth['_id']);
-					Session::write('firstname', $auth['firstname']);
-					Session::write('lastname', $auth['lastname']);
-					Session::write('email', $auth['email']);				
+			$username = $this->request->data['username'];
+			$password = $this->request->data['password'];
+			//Grab User Record
+			$this->userRecord = User::find('first', array(
+				'conditions' => array('username' => "$username")));
+			if($this->userRecord->data('legacy') == 1) {
+				$successAuth = $this->authIllogic($password);
+				if ($successAuth) {
+					//Write core information to the session and redirect user
+					$this->writeSession($this->userRecord->data());
 					$this->redirect('/');
-			}		
+				} else {
+					$message = 'Login Failed - Please Try Again';
+				}
+			} else {
+				$auth = Auth::check("userLogin", $this->request, array(
+					'checkSession'=> false, 'writeSession' => false));
+				if ($auth == false) {
+					$message = 'Login Failed - Please Try Again';
+				} else {
+						$this->writeSession($auth);
+						$this->redirect('/');
+				}
+			}
 		}
-		
 		//new login layout to account for fullscreen image JL
 		$this->_render['layout'] = 'login';
-		return compact('message');		
+		return compact('message');
 	}
-	
 	/**
 	 * Performs the logout action of the user removing '_id' from session details.
 	 */
@@ -88,6 +110,33 @@ class UsersController extends \lithium\action\Controller {
 		Session::delete('email');
 		$this->redirect(array('action'=>'login'));
 	}
+	/**
+	 * This is only for legacy users that are coming with AuthLogic passwords and salt
+	 * @param string $password
+	 * @return boolean
+	 */
+	private function authIllogic($password) {
+		$digest = $password . $this->userRecord->data('salt');
+	    for ($i = 0; $i < 20; $i++) {
+			$digest = hash('sha512', $digest);
+	    }
+		return $digest == $this->userRecord->data('password');
+	}
+	/**
+	 * Write important information to the session
+	 * //TODO Check on the session setting. There may be some issues
+	 * with the way li3 currently handles session. We'll want this info
+	 * set within the Php session. Currently its set to the cookie. 
+	 * @param array $sessionInfo
+	 */
+	private function writeSession($sessionInfo) {
 		
+		$id = Session::write('_id', $sessionInfo['_id']);
+		$firstname = Session::write('firstname', $sessionInfo['firstname']);
+		$lastname = Session::write('lastname', $sessionInfo['lastname']);
+		$email = Session::write('email', $sessionInfo['email']);
+		return ($id && $firstname && $lastname && $email);
+	}
 }
+
 ?>
