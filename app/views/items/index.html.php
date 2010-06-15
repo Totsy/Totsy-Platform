@@ -23,8 +23,8 @@
 	
 </p>
 <br>
+<?=$this->items->build($items); ?>
 
-<?php echo $htmlTable?>
 
 
 

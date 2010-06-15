@@ -1,0 +1,80 @@
+<?php
+namespace app\extensions\helper;
+
+
+class Items extends \lithium\template\Helper {
+
+	public function build($items = null) {
+		if($items) {
+			//Start clean
+			$html = '';
+			//Setup the table
+			$html .= '<table id="itemTable" border="1" cellspacing="5" cellpadding="20" style="width: 1050px">';
+
+			//We need the thead for jquery datatables
+			$html .=  '<thead>'; 
+			$html .= '<tr>';
+
+			//Build the table headings first
+			foreach ($items[0] as $key=>$value){
+				//If we are on the attribute then get all the subitems
+				if ($key == 'Attributes') {
+					foreach ($value as $subKey=>$subValue) {
+						//Build the table headings with subitems
+						$html .= "<th>$subKey</th>";
+					}
+				} else {
+					$html .=  "<th>$key</th>";
+				}
+			}
+			//Set ending tags for html table headings
+			$html .= '</tr></thead><tbody>';
+
+			//Lets start building the data fields
+			foreach ($items as $array) {
+				//Let's first check if this array item has nested attributes
+				if(isset($array['Attributes'][0])) {
+					foreach ($array as $key => $value) {
+						//Once we have an attribute lets build the whole row
+						if ($key == 'Attributes') {
+							$html .= '<tr>';
+							//Now build out attribute data
+							foreach ($value as $subarray) {
+								//Build core item info each time we have a new attribute
+								foreach ($array as $key => $value) {
+									if ($key != 'Attributes') {
+										$html .= '<td>'.$value.'</td>';
+									}
+								}
+								//Build out the attribute fields
+								foreach ($subarray as $attrKey => $attrVal) {
+									$html .= "<td>$attrVal</td>";
+								}
+								$html .= '</tr>';
+							}
+						}	
+					}		
+				} else {
+					$html .= '<tr>';
+					//We dont have nested attributes here
+					foreach ($array as $key => $value) {
+						if ($key != 'Attributes') {
+							$html .= '<td>'.$value.'</td>';
+						} else {			
+							foreach ($value as $attrKey => $attrVal) {
+								$html .= "<td>$attrVal</td>";
+							}
+						}
+					}
+					$html .= '</tr>';
+				}
+			}
+				$html .= "</tbody>";
+				$html .= "</table>";
+				return $html;
+		} else {
+			return $html = "There are no items";
+		}
+	}
+	
+}
