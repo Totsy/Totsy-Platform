@@ -14,12 +14,28 @@ class Items extends \lithium\template\Helper {
 			//We need the thead for jquery datatables
 			$html .=  '<thead>'; 
 			$html .= '<tr>';
-
+		
+			$heading = array(
+				'_id', 
+				'Name', 
+				'Description', 
+				'Original_Price', 
+				'Sale_Price', 
+				'Active', 
+				'Vendor', 
+				'Attributes' => array(
+					'SKU', 
+					'Color', 
+					'Weight', 
+					'Size', 
+					'Inventory'
+			));
 			//Build the table headings first
-			foreach ($items[0] as $key=>$value){
+			foreach ($heading as $key){
 				//If we are on the attribute then get all the subitems
-				if ($key == 'Attributes') {
-					foreach ($value as $subKey=>$subValue) {
+				if (is_array($key)) {
+					
+					foreach ($key as $subKey) {
 						//Build the table headings with subitems
 						$html .= "<th>$subKey</th>";
 					}
