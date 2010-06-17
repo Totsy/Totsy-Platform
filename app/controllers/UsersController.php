@@ -53,7 +53,7 @@ class UsersController extends \lithium\action\Controller {
 				$message = 'This email/username is already registered';
 			}
 		}
-		$this->_render['layout'] = 'base';
+		$this->_render['layout'] = 'login';
 		return compact('message');
 	}
 	/**
@@ -137,6 +137,16 @@ class UsersController extends \lithium\action\Controller {
 		$email = Session::write('email', $sessionInfo['email']);
 		return ($id && $firstname && $lastname && $email);
 	}
+	
+	/**
+	 * 
+	 */
+	public function loginzuno(){
+		
+		$this->_render['layout'] = 'loginzuno';
+	
+	}
+	
 }
 
 ?>

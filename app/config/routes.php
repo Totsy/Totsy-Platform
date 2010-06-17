@@ -16,10 +16,12 @@ Router::connect('/uploads/upload', 'Uploads::upload');
  * Redirect all non-authenticated users to 
  */
 
+/*
 if (!Session::check('_id')) {
 	Router::connect('/register', 'Users::register');
 	Router::connect('/{:args}', 'Users::login');
 }
+*/
 
 /**
  * Here, we are connecting '/' (base path) to controller called 'Pages',
