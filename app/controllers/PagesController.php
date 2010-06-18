@@ -26,7 +26,7 @@ class PagesController extends \lithium\action\Controller {
 	
 		$this->applyFilter('__invoke',  function($self, $params, $chain) {
 			$_id = Session::read('_id');
-			$userInfo = User::find('first', array('conditions' => compact('_id')))->data();
+			$userInfo = User::find('first', array('conditions' => compact('_id')));
 			$self->set(compact('userInfo'));
 			return $chain->next($self, $params, $chain);
 		});

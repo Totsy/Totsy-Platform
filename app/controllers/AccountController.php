@@ -24,7 +24,6 @@ class AccountController extends \lithium\action\Controller {
 	public function index(){
 	
 		$this->_render['layout'] = 'main';
-
 		$success = $this->setAddressInfo();
 		if($success){
 			$addresses = $this->addresses;
@@ -41,7 +40,7 @@ class AccountController extends \lithium\action\Controller {
 		$success = false;
 		$this->_render['layout'] = 'main';
 		
-		if ($this->request->data) {			
+		if ($this->request->data) {		
 			$User = $this->getUser();
 			//Update database using $set			
 			$success = $User->save($this->request->data);
@@ -52,7 +51,7 @@ class AccountController extends \lithium\action\Controller {
 			}
 		}
 		
-		$data = $this->getUser()->data();
+		$data = $this->getUser();
 		
 		return compact("data", "success");
 		
@@ -98,24 +97,20 @@ class AccountController extends \lithium\action\Controller {
 		$data = "";
 		$this->_render['layout'] = 'main';
 		
-		if ($this->request->data) {	
-			
+		$user = $this->getUser();
+		if ($this->request->data) {
 			foreach ($this->request->data as $key=>$value){
 				$data[] = $key;
 			}
 			$data = array('Newsletter' => $data);
 			$user = $this->getUser();
-			
 			//Remove Submit Button
 			unset($this->request->data['submit']);
-			
 			$success = $user->save($data);
-
 		}
 		
 		return compact("data");
 	}
-	
 	
 	protected function _init() {
 		parent::_init();
@@ -123,10 +118,17 @@ class AccountController extends \lithium\action\Controller {
 		$this->applyFilter('__invoke',  function($self, $params, $chain) {
 			$navigation = Navigation::find('all', array('conditions' => array('location' => 'left', 'active' => 'true')));
 			$id = Session::read('_id');
-			$userInfo = User::find('first', array('conditions' => array('_id' => $id)))->data();
+			$userRecord = User::find('first', array('conditions' => array('_id' => $id)));
+			if ($userRecord == null) {
+				//@todo: This default configuration should be set somewhere else
+				$userInfo = array('firstname' => '', 'lastname' => 'Guest', 'email' => '');
+			} else {
+				$userInfo = $userRecord->data();
+			}
 			$self->set(compact('navigation', 'userInfo'));
 			return $chain->next($self, $params, $chain);
 		});
-	}		
+	}
 }
+
 ?>

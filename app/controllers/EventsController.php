@@ -18,7 +18,8 @@ class EventsController extends \lithium\action\Controller {
 	}
 
 	public function add() {
-		$items = Item::all()->data();
+
+		$items = Item::all();
 		if (!empty($this->request->data)) {
 			$event = Event::create($this->request->data);
 			if ($event->save()) {

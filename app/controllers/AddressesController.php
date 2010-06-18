@@ -73,7 +73,7 @@ class AddressesController extends \lithium\action\Controller {
 		$this->applyFilter('__invoke',  function($self, $params, $chain) {
 			$navigation = Navigation::find('all', array('conditions' => array('location' => 'left', 'active' => 'true')));
 			$id = Session::read('_id');
-			$userInfo = User::find('first', array('conditions' => array('_id' => $id)))->data();
+			$userInfo = User::find('first', array('conditions' => array('_id' => $id)));
 			$self->set(compact('navigation', 'userInfo'));
 			return $chain->next($self, $params, $chain);
 		});
@@ -90,10 +90,11 @@ class AddressesController extends \lithium\action\Controller {
 		//Get the arg address _id
 		$addressId = func_get_args();
 
-		// Check that we got address _id
+		// Check that we got	 address _id
 		if($addressId){
 			//Find address using user_id and address_id
 			$dataObject = Address::find('first', array('conditions' => array('_id' => $addressId[0])));
+			var_dump($dataObject);
 			if($dataObject) {
 				//Get the Data from record object
 				$addressRecord = $dataObject->data();
@@ -151,6 +152,10 @@ class AddressesController extends \lithium\action\Controller {
 			}
 			return $result;
 		});
+	}
+	
+	private function checkDefault() {
+		//Change all the default addresses
 	}	
 }
 ?>
