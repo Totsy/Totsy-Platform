@@ -6,8 +6,13 @@ use \lithium\security\Auth;
 use \lithium\storage\Session;
 
 /**
- * This class provides all the methods to register and authentic a user
+ * This class provides all the methods to register and authentic a user. 
  */
+
+/*
+	TODO The authenticaion process needs another look. We should be storing
+	the users information in the session instead of the cookie. 
+*/
 class UsersController extends \lithium\action\Controller {
 
 	public function index(){
@@ -74,26 +79,30 @@ class UsersController extends \lithium\action\Controller {
 			$password = $this->request->data['password'];
 			//Grab User Record
 			$this->userRecord = User::find('first', array(
-				'conditions' => array('username' => "$username")));
-			if($this->userRecord->data('legacy') == 1) {
-				$successAuth = $this->authIllogic($password);
-				if ($successAuth) {
-					//Write core information to the session and redirect user
-					$this->writeSession($this->userRecord->data());
-					$this->redirect('/');
-				} else {
-					$message = 'Login Failed - Please Try Again';
-				}
-			} else {
-				$auth = Auth::check("userLogin", $this->request, array(
-					'checkSession'=> false, 'writeSession' => false));
-				if ($auth == false) {
-					$message = 'Login Failed - Please Try Again';
-				} else {
-						$this->writeSession($auth);
+				'conditions' => array('username' => "$username")
+			));
+			if(!empty($this->userRecord)){
+				if($this->userRecord->legacy == 1) {
+					$successAuth = $this->authIllogic($password);
+					if ($successAuth) {
+						//Write core information to the session and redirect user
+						$this->writeSession($this->userRecord->data());
 						$this->redirect('/');
+					} else {
+						$message = 'Login Failed - Please Try Again';
+					}
+				} else {
+					$auth = Auth::check("userLogin", $this->request, array(
+						'checkSession'=> false, 'writeSession' => false));
+					if ($auth == false) {
+						$message = 'Login Failed - Please Try Again';
+					} else {
+							$this->writeSession($auth);
+							$this->redirect('/');
+					}
 				}
 			}
+			
 		}
 		//new login layout to account for fullscreen image JL
 		$this->_render['layout'] = 'login';
