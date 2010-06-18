@@ -29,6 +29,8 @@ h1{font-size:24px}
 h1.p-header{padding-left:36px}
 h2,h3{font-weight:bold}
 
+h2 span{font-weight:normal}
+
 .fl{float:left}
 .fr{float:right}
 .sm{font-size:11px}
@@ -62,8 +64,10 @@ ul.col-list, ul.col-list-2, .more-details ul.col-list{list-style:none;overflow:h
 ul.col-list li{float:left;width:25%;font-size:.9em}
 ul.col-list-2 li{float:left;width:50%}
 
-ul.bugs{list-style-image:url(../img/bug-icon.png);margin:0 0 0 30px}
+ul.bugs{list-style-image:url(../img/bug-icon.png);margin:0 0 0 20px}
 ul.bugs li{margin:10px 0;padding-right:30%}
+
+ul.columns-2 li{float:left;width:46%;padding-right:20px;margin:0}
 
 input.inputbox,textarea.inputbox{background:#FFF;border:1px solid #CCC;padding:5px}
 input.invalid{border:1px solid #FF3300}
@@ -216,9 +220,6 @@ button.reg-btn{background:url(../img/reg-btn.png) no-repeat;height:39px;width:13
 
 label.radio{display:block;float:left;margin:3px 20px 10px 0}
 
-.form-row{display:table-row}
-.form-row label{display:table-cell;text-align:right;padding-right:5px;font-weight:bold}
-
 .flex-btn{background:url(../img/btn-blank.png) transparent no-repeat right top;padding:0 10px 0 0;text-align:center;border:none}
 .flex-btn-2{background:#EB132C;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;border:none;padding:5px 10px;color:#FFF;text-transform:uppercase;cursor:pointer;box-shadow:5px 5px 5px #888;text-align:center}
 a.flex-btn-2{color:#FFF;font-size:12px;display:block;padding:10px;line-height:normal}
@@ -290,23 +291,24 @@ body.login{height:100%}
 #fullscreen{position:relative;overflow:hidden;min-height:100%}
 #login-box{position:absolute;top:50%;left:80px;z-index:1}
 #login-box-border{position:absolute;left:0;top:-212px;padding:10px;background:url(../img/wht-trans-50.png);-moz-border-radius:20px;-webkit-border-radius:20px;border-radius:20px}
-#login-box-container{background:#FFF;padding:20px;width:560px;height:360px;-moz-border-radius:20px;-webkit-border-radius:20px;border-radius:20px}
+#login-box-container{background:#FFF;padding:20px;width:600px;height:400px;-moz-border-radius:20px;-webkit-border-radius:20px;border-radius:20px}
 
-#bg{position:fixed;top:0;left:0;z-index:0}
-#bg img{width:100%;display:none}
-#bg .activeslide, #bg .activeslide img{display:inline}
+#bg{position:fixed;top:0;left:0;z-index:0;width:100%}
+#bg img{width:100%}
 
+body.login{background:#FFF}
 body.login #footer{background:#FFF;margin:0;width:100%;overflow:hidden;position:fixed;bottom:0;left:0}
 body.login #footer ul{float:left;padding:15px}
 body.login #copyright{float:right;text-align:right;padding:15px}
 
-body.login #logo{float:left;margin-right:20px}
-body.login #intro-copy{float:left;width:385px}
+body.login #logo{float:left;margin:0 20px 10px 0}
+body.login #intro-copy{float:left;width:400px}
+body.login #intro-copy h2{text-align:right;font-size:24px}
 body.login #intro-copy p{margin:15px 0}
 body.login #sign-in-box{clear:left;float:left;margin:10px 0;width:230px}
-body.login .sign-in-container{padding-left:40px}
+body.login .sign-in-container{padding-left:60px}
 body.login #register-box{float:right;margin:10px 0;width:230px}
-body.login .register-container{padding-right:40px}
+body.login .register-container{padding-right:60px}
 body.login #sign-in-box .r-box,body.login #register-box .r-box{height:190px}
 #sign-in-box h2,#register-box h2{color:#707070;text-transform:uppercase;font-weight:normal;font-size:16px;margin:0 0 10px 0}
 #sign-in-box .inputbox,#register-box .inputbox{background:#FFF;width:95%}
@@ -315,4 +317,10 @@ body.login #sign-in-box .r-box,body.login #register-box .r-box{height:190px}
 #sign-in-box .checkbox{margin-right:5px}
 #register-box p{line-height:normal;font-size:12px;margin-bottom:10px}
 body.login .login-sig{text-align:center}
+.reg-list{margin:10px 0;font-size:12px}
 
+.form-row{overflow:hidden;margin:3px 0}
+.form-row label{display:block;width:100px;float:left;line-height:30px;font-weight:normal}
+.form-row .inputbox{margin-right:20px;float:left}
+.submit-row{margin:20px 0 0 0;overflow:hidden}
+.reg-tos{display:block;float:left;width:350px;line-height:normal;margin-right:30px}
