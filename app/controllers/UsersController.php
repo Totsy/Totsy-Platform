@@ -4,6 +4,8 @@ namespace app\controllers;
 use app\models\User;
 use \lithium\security\Auth;
 use \lithium\storage\Session;
+use \lithium\data\Connections;
+use \lithium\analysis\Logger;
 
 /**
  * This class provides all the methods to register and authentic a user. 
@@ -28,31 +30,24 @@ class UsersController extends \lithium\action\Controller {
 	 */
 	public function register() {
 		$message = false;
-		Session::config(array('name' => 'default'));
 		if ($this->request->data) {
 			$this->request->data['password'] = sha1($this->request->data['password']);
+			$email = $this->request->data['email'];
+			$username = $this->request->data['username'];
 			//Check if email exists
-			$emailCheck = User::find('all', array(
-				'conditions' => array('email' => $this->request->data['email'])));
+			$emailCheck = User::count(array('email' => "$email"));
 			//Check if username exists
-			$usernameCheck = User::find('all',array(
-					'conditions' => array(
-						'username' => $this->request->data['username']
-						)
-					));
-			if (count($emailCheck->data()) < 1 &&  count($usernameCheck->data()) < 1) {
+			$usernameCheck = User::count(array('username' => "$username"));
+			if (empty($emailCheck) && empty($usernameCheck)) {
 				$user = User::create();
 				$success = $user->save($this->request->data);
 				if ($success) {
+					var_dump($success);
 					$id = Session::write('_id', $user->_id);
 					$firstname = Session::write('firstname', $user->firstname);
 					$lastname = Session::write('lastname', $user->lastname);
 					$email = Session::write('email', $user->email);
-					if ($id && $firstname && $lastname && $email) {
-						$this->redirect('/account/details');
-					} else {
-						//For some reason we couldn't write to session - Do SOMETHING
-					}
+					$this->redirect('/account/details');
 				}
 			} else {
 				$message = 'This email/username is already registered';
@@ -86,14 +81,13 @@ class UsersController extends \lithium\action\Controller {
 					$successAuth = $this->authIllogic($password);
 					if ($successAuth) {
 						//Write core information to the session and redirect user
-						$this->writeSession($this->userRecord->data());
+					//	$this->writeSession($this->userRecord->data());
 						$this->redirect('/');
 					} else {
 						$message = 'Login Failed - Please Try Again';
 					}
 				} else {
-					$auth = Auth::check("userLogin", $this->request, array(
-						'checkSession'=> false, 'writeSession' => false));
+					$auth = Auth::check("userLogin", $this->request);
 					if ($auth == false) {
 						$message = 'Login Failed - Please Try Again';
 					} else {
@@ -155,6 +149,22 @@ class UsersController extends \lithium\action\Controller {
 		$this->_render['layout'] = 'loginzuno';
 	
 	}
+	
+	protected function _init() {
+		parent::_init();
+		
+		$MongoDb = Connections::get('default');
+		$MongoDb->applyFilter('read', function($self, $params, $chain) use (&$MongoDb) {
+			$result = $chain->next($self, $params, $chain);
+			if (method_exists($result, 'data')) {
+				Logger::write('info',
+					json_encode($params['query']->export($MongoDb) + array('result' => $result->data()))
+				);
+			}
+			return $result;
+		});
+	}
+	
 	
 }
 

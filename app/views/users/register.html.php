@@ -61,6 +61,8 @@
 </div>
 
 <div class="form-row">
+<?=$this->form->label('username','Username',array('class'=>'label'));?>&nbsp;
+<?=$this->form->text('username', array('class'=>"validate['required'] inputbox",'id'=>"username"));?>
 <?=$this->form->label('password','Password',array('class'=>'label'));?>
 <?=$this->form->password('password', array(
 		'class'=>"validate['required'] inputbox", 
