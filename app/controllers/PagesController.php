@@ -10,7 +10,6 @@ class PagesController extends \lithium\action\Controller {
 
 	public function view() {
 		$path = func_get_args();
-
 		if (empty($path)) {
 			$path = array('home');
 		}
@@ -25,8 +24,7 @@ class PagesController extends \lithium\action\Controller {
 		parent::_init();
 	
 		$this->applyFilter('__invoke',  function($self, $params, $chain) {
-			$_id = Session::read('_id');
-			$userInfo = User::find('first', array('conditions' => compact('_id')));
+			$userInfo = Session::read('userLogin');
 			$self->set(compact('userInfo'));
 			return $chain->next($self, $params, $chain);
 		});

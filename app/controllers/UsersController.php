@@ -42,7 +42,6 @@ class UsersController extends \lithium\action\Controller {
 				$user = User::create();
 				$success = $user->save($this->request->data);
 				if ($success) {
-					var_dump($success);
 					$id = Session::write('_id', $user->_id);
 					$firstname = Session::write('firstname', $user->firstname);
 					$lastname = Session::write('lastname', $user->lastname);
@@ -81,7 +80,7 @@ class UsersController extends \lithium\action\Controller {
 					$successAuth = $this->authIllogic($password);
 					if ($successAuth) {
 						//Write core information to the session and redirect user
-					//	$this->writeSession($this->userRecord->data());
+						$this->writeSession($this->userRecord->data());
 						$this->redirect('/');
 					} else {
 						$message = 'Login Failed - Please Try Again';
@@ -91,8 +90,7 @@ class UsersController extends \lithium\action\Controller {
 					if ($auth == false) {
 						$message = 'Login Failed - Please Try Again';
 					} else {
-							$this->writeSession($auth);
-							$this->redirect('/');
+						$this->redirect('/');
 					}
 				}
 			}
@@ -106,11 +104,7 @@ class UsersController extends \lithium\action\Controller {
 	 * Performs the logout action of the user removing '_id' from session details.
 	 */
 	public function logout() {
-		//Delete session information
-		Session::delete('_id');
-		Session::delete('firstname');
-		Session::delete('lastname');
-		Session::delete('email');
+		Session::delete('userLogin');
 		$this->redirect(array('action'=>'login'));
 	}
 	/**
@@ -126,19 +120,11 @@ class UsersController extends \lithium\action\Controller {
 		return $digest == $this->userRecord->data('password');
 	}
 	/**
-	 * Write important information to the session
-	 * //TODO Check on the session setting. There may be some issues
-	 * with the way li3 currently handles session. We'll want this info
-	 * set within the Php session. Currently its set to the cookie. 
 	 * @param array $sessionInfo
+	 * @return boolean
 	 */
 	private function writeSession($sessionInfo) {
-		
-		$id = Session::write('_id', $sessionInfo['_id']);
-		$firstname = Session::write('firstname', $sessionInfo['firstname']);
-		$lastname = Session::write('lastname', $sessionInfo['lastname']);
-		$email = Session::write('email', $sessionInfo['email']);
-		return ($id && $firstname && $lastname && $email);
+		return (Session::write('userLogin', $sessionInfo));
 	}
 	
 	/**
@@ -164,8 +150,6 @@ class UsersController extends \lithium\action\Controller {
 			return $result;
 		});
 	}
-	
-	
 }
 
 ?>

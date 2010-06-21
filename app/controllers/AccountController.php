@@ -117,14 +117,7 @@ class AccountController extends \lithium\action\Controller {
 	
 		$this->applyFilter('__invoke',  function($self, $params, $chain) {
 			$navigation = Navigation::find('all', array('conditions' => array('location' => 'left', 'active' => 'true')));
-			$id = Session::read('_id');
-			$userRecord = User::find('first', array('conditions' => array('_id' => $id)));
-			if ($userRecord == null) {
-				//@todo: This default configuration should be set somewhere else
-				$userInfo = array('firstname' => '', 'lastname' => 'Guest', 'email' => '');
-			} else {
-				$userInfo = $userRecord->data();
-			}
+			$userInfo = Session::read('userLogin');
 			$self->set(compact('navigation', 'userInfo'));
 			return $chain->next($self, $params, $chain);
 		});
