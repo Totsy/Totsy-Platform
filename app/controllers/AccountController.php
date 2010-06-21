@@ -51,9 +51,9 @@ class AccountController extends \lithium\action\Controller {
 			}
 		}
 		
-		$data = $this->getUser();
+		$user = $this->getUser();
 		
-		return compact("data", "success");
+		return compact("user", "success");
 		
 	}
 	
@@ -89,8 +89,8 @@ class AccountController extends \lithium\action\Controller {
 	
 	private function getUser($fields = array()) {
 
-		$id = Session::read('_id');
-		return User::find('first', array('conditions' => array('_id' => $id), $fields));	
+		$user = Session::read('userLogin');
+		return User::find('first', array('conditions' => array('_id' => $user['_id']), $fields));	
 	}
 			
 	public function news() {
