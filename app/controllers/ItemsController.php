@@ -15,8 +15,14 @@ class ItemsController extends \lithium\action\Controller {
 	 */
 	public function index() {
 		$created_date = 0;
-		$modified_date = 0; 
-		$items = Item::find('all', array('fields' => compact('created_date', 'modified_date')));
+		$modified_date = 0;
+		$files = 0; 
+		$items = Item::find('all', array(
+			'fields' => compact(
+				'created_date', 
+				'modified_date', 
+				'files'
+		)));
 		return compact('items');
 	}
 	/**
@@ -27,6 +33,7 @@ class ItemsController extends \lithium\action\Controller {
 		if ($this->request->data) {
 			$itemData = $this->organizeItem($this->request->data);
 			$itemData['created_date'] = new MongoDate();
+			$itemData['files'] = $this->files($this->request->data);
 			//Create record	
 			$item = Item::create($itemData);
 			//Save record
@@ -42,15 +49,17 @@ class ItemsController extends \lithium\action\Controller {
 	 */
 	public function edit($id = null) {
 		$item = Item::find('first', array('conditions' => array('_id' => $id)));
+		
 		if ($item) {
 			$details = json_encode($item->details->data());
 		} else {
 			$this->redirect(array('controller' => 'items', 'action' => 'index'));
 		}
 		if (!empty($this->request->data)) {
-			$arrayData = $this->organizeItem($this->request->data);
-			$arrayData['modified_date'] = new MongoDate();
-			if ($item->save($arrayData)) {
+			$itemData = $this->organizeItem($this->request->data);
+			$itemData['modified_date'] = new MongoDate();
+			$itemData['files'] = $this->files($this->request->data);
+			if ($item->save($itemData)) {
 				$this->redirect(array(
 					'controller' => 'items', 'action' => 'edit',
 					'args' => array($item->id)
@@ -73,6 +82,12 @@ class ItemsController extends \lithium\action\Controller {
 			}
 		}
 		return array_merge($desc, array('details' => $details));
+	}
+	
+	private function files($item)
+	{
+		unset($item['itemDetails']);
+		return array_keys($item, 'on');
 	}
 	
 }
