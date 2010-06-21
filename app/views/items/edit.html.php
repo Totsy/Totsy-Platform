@@ -20,30 +20,31 @@ tinyMCE.init({
 
 <script type="text/javascript"> 
 	$(document).ready(function(){	
-		$("#itemDetails").dynamicForm("#plus", "#minus", {limit:15, createColor: 'yellow', removeColor: 'red'});
+		var mainDynamicForm = $("#itemDetails").dynamicForm("#plus", "#minus", {data:<?php echo $details; ?>, limit:15, createColor: 'yellow', removeColor: 'red'});
+		mainDynamicForm.inject(data);
 	});
 </script>
 
 <?=$this->html->link('See Item List','/items')?>
-
-<h1>Add an Item</h1>
-
+<h1>Edit Item</h1>
 <?=$this->form->create(); ?>
-    <?=$this->form->field('name', array('id' => 'name'));?>
-    <?=$this->form->field('description', array('type' => 'textarea', 'id' => 'description'));?>
+	<?=$this->form->field('', array('value' => $item->_id, 'type' => 'hidden', 'id' => '_id', 'name' => '_id'));?>
+	<input type="hidden" name="_id" value="<?=$item->_id;?>" id="_id">
+    <?=$this->form->field('name', array('value' => $item->name));?>
+    <?=$this->form->field('description', array('type' => 'textarea', 'name' => 'content', 'value' => $item->description));?>
 	<br>
 	<fieldset>
 		<legend>Price Details</legend>
-	<?=$this->form->field('original_price', array('type' => 'text'));?>
-	<?=$this->form->field('sale_price', array('type' => 'text'));?>
+	<?=$this->form->field('original_price', array('type' => 'text', 'value' => $item->original_price, 'id' => ''));?>
+	<?=$this->form->field('sale_price', array('type' => 'text', 'value' => $item->sale_price));?>
 	<?=$this->form->label('active')?>
 	<input type="radio" name="active" value="Yes" id="Yes" checked ="checked">Yes
 	<input type="radio" name="active" value="No" id="No">No
-	<?=$this->form->field('vendor', array('type' => 'text'));?>
+	<?=$this->form->field('vendor', array('type' => 'text','value' => $item->Vendor));?>
 	</fielset>
 	<br>
-	<fieldset> 
-		<legend>Item Details</legend> 		
+	<fieldset>
+		<span class="legend">Item Details</span> 		
 		<table border="0" cellspacing="5" cellpadding="5">
 			<tr>
 				<th>SKU</th>
@@ -86,5 +87,5 @@ tinyMCE.init({
 <br>
 
 	
-<?=$this->form->submit('Add/Update Item'); ?>
+	<?=$this->form->submit('Add/Update Item'); ?>
 <?=$this->form->end(); ?>

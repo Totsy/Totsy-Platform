@@ -4,37 +4,34 @@ namespace app\extensions\helper;
 
 class Items extends \lithium\template\Helper {
 
-	public function build($items = null) {
-		if($items) {
+	public function build($itemRecords = null) {
+		if(!empty($itemRecords)) {
+			$items = $itemRecords->data();
 			//Start clean
 			$html = '';
 			//Setup the table
-			$html .= '<table id="itemTable" border="1" cellspacing="5" cellpadding="20" style="width: 1050px">';
-
+			$html .= '<table id="itemTable" class="datatable" border="1" cellspacing="5" cellpadding="20" style="width: 1050px">';
 			//We need the thead for jquery datatables
 			$html .=  '<thead>'; 
 			$html .= '<tr>';
-		
 			$heading = array(
 				'_id', 
-				'Name', 
-				'Description', 
-				'Original_Price', 
-				'Sale_Price', 
-				'Active', 
-				'Vendor', 
-				'Attributes' => array(
-					'SKU', 
-					'Color', 
-					'Weight', 
-					'Size', 
-					'Inventory'
-			));
+				'name', 
+				'description', 
+				'original_price', 
+				'sale_price', 
+				'active', 
+				'vendor',
+				'sku', 
+				'color', 
+				'weight', 
+				'size', 
+				'inventory'
+			);
 			//Build the table headings first
 			foreach ($heading as $key){
 				//If we are on the attribute then get all the subitems
 				if (is_array($key)) {
-					
 					foreach ($key as $subKey) {
 						//Build the table headings with subitems
 						$html .= "<th>$subKey</th>";
@@ -45,40 +42,42 @@ class Items extends \lithium\template\Helper {
 			}
 			//Set ending tags for html table headings
 			$html .= '</tr></thead><tbody>';
-
 			//Lets start building the data fields
 			foreach ($items as $array) {
-				//Let's first check if this array item has nested attributes
-				if(isset($array['Attributes'][0])) {
+				$array = $this->sortArrayByArray($array, $heading);
+				$array['active'] = ($array['active'] == 1) ? 'Yes' : 'No';
+				$link = "href=\"/items/edit/$array[_id]\"";
+				//Let's first check if this array item has nested Details
+				if(isset($array['details'][0])) {
 					foreach ($array as $key => $value) {
 						//Once we have an attribute lets build the whole row
-						if ($key == 'Attributes') {
+						if ($key == 'details') {
 							$html .= '<tr>';
 							//Now build out attribute data
 							foreach ($value as $subarray) {
 								//Build core item info each time we have a new attribute
 								foreach ($array as $key => $value) {
-									if ($key != 'Attributes') {
-										$html .= '<td>'.$value.'</td>';
+									if ($key != 'details') {
+										$html .= "<td><a $link>$value</a></td>";
 									}
 								}
 								//Build out the attribute fields
 								foreach ($subarray as $attrKey => $attrVal) {
-									$html .= "<td>$attrVal</td>";
+									$html .= "<td><a $link>$attrVal</a></td>";
 								}
 								$html .= '</tr>';
 							}
-						}	
-					}		
+						}
+					}
 				} else {
 					$html .= '<tr>';
-					//We dont have nested attributes here
+					//We dont have nested Details here
 					foreach ($array as $key => $value) {
-						if ($key != 'Attributes') {
-							$html .= '<td>'.$value.'</td>';
-						} else {			
+						if ($key != 'details') {
+							$html .= "<td><a $link>$value</a></td>";
+						} else {
 							foreach ($value as $attrKey => $attrVal) {
-								$html .= "<td>$attrVal</td>";
+								$html .= "<td><a $link>$attrVal</a></td>";
 							}
 						}
 					}
@@ -93,4 +92,16 @@ class Items extends \lithium\template\Helper {
 		}
 	}
 	
+	public function sortArrayByArray($array,$orderArray) {
+		$ordered = array();
+		foreach($orderArray as $key => $value) {
+			if(array_key_exists($value, $array)) {
+				$ordered[$value] = $array[$value];
+				unset($array[$value]);
+			}
+		}
+	    return $ordered + $array;
+	}
 }
+
+?>

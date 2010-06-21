@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 use app\models\Item;
+use \MongoDate;
 
 
 /**
@@ -13,7 +14,9 @@ class ItemsController extends \lithium\action\Controller {
 	 * Main display of item data
 	 */
 	public function index() {
-		$items = Item::find('all');		
+		$created_date = 0;
+		$modified_date = 0; 
+		$items = Item::find('all', array('fields' => compact('created_date', 'modified_date')));
 		return compact('items');
 	}
 	/**
@@ -21,31 +24,32 @@ class ItemsController extends \lithium\action\Controller {
 	 */
 	public function add() {
 		//Check if there was a post request
-		if ($this->request->data) {			
-			$data = $this->request->data;
-			//I know this looks ugly but until I fix the js thats the way its going to be
-			$data = $data['itemDetails']['itemDetails'];
+		if ($this->request->data) {
+			$itemData = $this->organizeItem($this->request->data);
+			$itemData['created_date'] = new MongoDate();
 			//Create record	
-			$Item = Item::create($data);
+			$item = Item::create($itemData);
 			//Save record
-			$success = $Item->save($data);
-			//Save the data of the record to display in form
-			$itemData = $Item->data();
+			$success = $item->save($itemData);
 			if ($success) {
 				$message = 'Item Successfully Added';
 			}
 		}
-		return compact('message', 'itemData');
+		return compact('message', 'item');
 	}
-	
+	/**
+	 * Edit an item
+	 */
 	public function edit($id = null) {
 		$item = Item::find('first', array('conditions' => array('_id' => $id)));
-		if (empty($item)) {
+		if ($item) {
+			$details = json_encode($item->details->data());
+		} else {
 			$this->redirect(array('controller' => 'items', 'action' => 'index'));
 		}
 		if (!empty($this->request->data)) {
-			$data = $this->request->data;
-			$arrayData = $data['itemDetails']['itemDetails'];
+			$arrayData = $this->organizeItem($this->request->data);
+			$arrayData['modified_date'] = new MongoDate();
 			if ($item->save($arrayData)) {
 				$this->redirect(array(
 					'controller' => 'items', 'action' => 'edit',
@@ -53,8 +57,24 @@ class ItemsController extends \lithium\action\Controller {
 				));
 			}
 		}
-		return compact('item');
+		return compact('item', 'details');
 	}
+	/**
+	 * Reorganize the details of item data for document storage
+	 */
+	private function organizeItem($item) {
+		$data = $item['itemDetails']['itemDetails'];
+		$data['active'] = ($data['active'] == "Yes") ? 1 : 0;
+		foreach ($data as $key => $value){
+			if (is_numeric($key)) {
+				$details["$key"] = $value;
+			} else {
+				$desc["$key"] = $value; 
+			}
+		}
+		return array_merge($desc, array('details' => $details));
+	}
+	
 }
 
 ?>
