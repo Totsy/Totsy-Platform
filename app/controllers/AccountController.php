@@ -46,8 +46,11 @@ class AccountController extends \lithium\action\Controller {
 			$success = $User->save($this->request->data);
 			if($success) {
 				//Update the session with correct names	
-				Session::write('firstname', $this->request->data['firstname']);
-				Session::write('lastname', $this->request->data['lastname']);
+				$info = Session::read('userLogin');
+				$info['firstname'] = $this->request->data['firstname'];
+				$info['lastname'] = $this->request->data['lastname'];
+				Session::write('userLogin', $info);
+				$this->redirect('/account/info');
 			}
 		}
 		
