@@ -5,7 +5,7 @@
 	
 	<head>
 	
-		<title>Totsy - My Account</title>
+		<title>Totsy - Account - Help Desk</title>
 
 		<meta http-equiv="Content-type" content="" />
 		<meta http-equiv="Content-language" content="" />
@@ -50,7 +50,7 @@
 						<ul class="menu main-nav">
 							
 							<li class=" first item2">
-								<a href="/totsyv2/sales" title="Sales"><span>Sales</span></a>
+								<a href="#" title="Sales"><span>Sales</span></a>
 							</li>
 							
 							<li class="item3">
@@ -114,7 +114,7 @@
 				<div id="left">
 					
 					<ul class="menu">
-						<li class="active first">
+						<li class="first">
 							<a href="#" title="Account Dashboard"><span>Account Dashboard</span></a>
 						</li>
 						<li>
@@ -129,7 +129,7 @@
 						<li>
 							<a href="#" title="Email Preferences"><span>Email Preferences</span></a>
 						</li>
-						<li>
+						<li class="active">
 							<a href="#" title="Help Desk"><span>Help Desk</span></a>
 						</li>
 						<li class=" last">
@@ -139,100 +139,45 @@
 					
 				</div>
 				
+				<!-- Start Main Page Content -->
 				<div id="middle" class="noright">				
 					
 					<div class="tl"></div>
 					<div class="tr"></div>
 					<div id="page">
 					
-						<!-- Replace with user's name -->
-						<strong>Hello, Mitch Pirtle</strong>
-						
+						<h2 class="gray">My Support Tickets</h2>
+	
 						<!-- Replace with account welcome message -->
-						<p>From your My Account Dashboard you have the ability to view a snapshot of your recent account activity and update your account information. Select a link below to view or edit information.</p>
+						<p>You have submitted no tickets</p>
 						
-						<h2 class="gray">Account Information</h2>
-						
-						<div class="col-2">
-						
-							<div class="r-container box-2 fl">
-								<div class="tl"></div>
-								<div class="tr"></div>
-								<div class="r-box lt-gradient-1">
-									<h3 class="gray fl">Contact Information</h3>&nbsp;|&nbsp;<a href="#" title="Edit">Edit</a>
-									<br />
-									<br />
-									Mitch Pirtle<br />
-									mitch@totsy.com<br />
-									<a href="#" title="Change Password">Change Password</a>
-								</div>
-								<div class="bl"></div>
-								<div class="br"></div>
-							</div>
+						<form>
+							<fieldset class="fl">
 							
-							<div class="r-container box-2 fr">
-								<div class="tl"></div>
-								<div class="tr"></div>
-								<div class="r-box lt-gradient-1">
-									<h3 class="gray fl">Newsletter</h3>&nbsp;|&nbsp;<a href="#" title="Edit">Edit</a>
-									<br />
-									<br />
-									<dl>
-										<dt>You are currently subscribed to:</dt>
-										<dd>
-											<ul>
-												<li>General Subscription</li>
-											</ul>
-										</dd>
-									</dl>
-									
-								</div>
-								<div class="bl"></div>
-								<div class="br"></div>
-							</div>
-						
-						</div>
-						
-						<h2 class="gray fl">Address Book</h2>&nbsp;|&nbsp;<a href="#" title="Manage Addresses">Manage Addresses</a>
-						
-						<div class="col-2">
-						
-							<div class="r-container box-2 fl">
-								<div class="tl"></div>
-								<div class="tr"></div>
-								<div class="r-box lt-gradient-1">
-									<h3 class="gray fl">Primary Billing Address</h3>&nbsp;|&nbsp;<a href="#" title="Edit Address">Edit Address</a>
-									<br />
-									<br />
-									<address>
-										123 Main Street<br />
-										Apt. 456<br />
-										Anytown, ST 90210 USA
-									</address>
-								</div>
-								<div class="bl"></div>
-								<div class="br"></div>
-							</div>
+								<legend class="bold">Create new ticket</legend>
+								
+								<label for="title">Title</label><br />
+								<input type="text" id="title" class="inputbox" name="title" style="width:300px" />
+								
+								<br />
+								
+								<label for="order">Assign order</label><br />
+								<select name="order" id="order" style="width:310px" class="inputbox">
+									<option value="">-- Select an order --</option>
+								</select>
+								
+								<br />
+								
+								<label for="help-message">Message</label><br />
+								<textarea name="help-message" id="help-message" class="inputbox" style="width:300px;height:120px"></textarea>
+								
+								<br />
+								
+								<button class="flex-btn fr" name="submit" type="submit"><span>Submit</span></button>
+								
+							</fieldset>
 							
-							<div class="r-container box-2 fr">
-								<div class="tl"></div>
-								<div class="tr"></div>
-								<div class="r-box lt-gradient-1">
-									<h3 class="gray fl">Primary Shipping Address</h3>&nbsp;|&nbsp;<a href="#" title="Edit Address">Edit Address</a>
-									<br />
-									<br />
-									<address>
-										567 Front Street<br />
-										8th Floor<br />
-										Suite 409<br />
-										Mytown, CA 86753 USA
-									</address>
-								</div>
-								<div class="bl"></div>
-								<div class="br"></div>
-							</div>
-						
-						</div>
+						</form>
 					
 					</div>
 					<div class="bl"></div>
@@ -241,6 +186,7 @@
 				</div>
 				
 			</div>
+			<!-- End Main Content -->
 			
 		</div>
 		
@@ -274,7 +220,7 @@
 			<p class="clear">&copy; 2010 Totsy.com. All Rights Reserved.</p>
 		
 		</div>
-				
+		
 		<script type="text/javascript" src="../js/jquery-1.4.2.js"></script>
 		<script type="text/javascript" src="../js/jquery.equalheights.js"></script>
 		

@@ -5,7 +5,7 @@
 	
 	<head>
 	
-		<title>Totsy - My Account</title>
+		<title>Totsy - Account - Add an Address</title>
 
 		<meta http-equiv="Content-type" content="" />
 		<meta http-equiv="Content-language" content="" />
@@ -114,13 +114,13 @@
 				<div id="left">
 					
 					<ul class="menu">
-						<li class="active first">
+						<li class="first">
 							<a href="#" title="Account Dashboard"><span>Account Dashboard</span></a>
 						</li>
 						<li>
 							<a href="#" title="Account Information"><span>Account Information</span></a>
 						</li>
-						<li>
+						<li class="active">
 							<a href="#" title="Address Book"><span>Address Book</span></a>
 						</li>
 						<li>
@@ -139,100 +139,79 @@
 					
 				</div>
 				
+				<!-- Start Main Page Content -->
 				<div id="middle" class="noright">				
 					
 					<div class="tl"></div>
 					<div class="tr"></div>
 					<div id="page">
 					
-						<!-- Replace with user's name -->
-						<strong>Hello, Mitch Pirtle</strong>
-						
-						<!-- Replace with account welcome message -->
-						<p>From your My Account Dashboard you have the ability to view a snapshot of your recent account activity and update your account information. Select a link below to view or edit information.</p>
-						
-						<h2 class="gray">Account Information</h2>
-						
-						<div class="col-2">
-						
-							<div class="r-container box-2 fl">
-								<div class="tl"></div>
-								<div class="tr"></div>
-								<div class="r-box lt-gradient-1">
-									<h3 class="gray fl">Contact Information</h3>&nbsp;|&nbsp;<a href="#" title="Edit">Edit</a>
-									<br />
-									<br />
-									Mitch Pirtle<br />
-									mitch@totsy.com<br />
-									<a href="#" title="Change Password">Change Password</a>
+						<h2 class="gray mar-b">Add New Address</h2>
+	
+						<form action="#" class="fl">
+							<fieldset>
+								<legend class="no-show">New Address</legend>
+								
+								<div class="form-row">
+									<label for="fname">First Name</label>
+									<input type="text" name="fname" id="fname" class="inputbox" value="Mitch" />
 								</div>
-								<div class="bl"></div>
-								<div class="br"></div>
-							</div>
-							
-							<div class="r-container box-2 fr">
-								<div class="tl"></div>
-								<div class="tr"></div>
-								<div class="r-box lt-gradient-1">
-									<h3 class="gray fl">Newsletter</h3>&nbsp;|&nbsp;<a href="#" title="Edit">Edit</a>
-									<br />
-									<br />
-									<dl>
-										<dt>You are currently subscribed to:</dt>
-										<dd>
-											<ul>
-												<li>General Subscription</li>
-											</ul>
-										</dd>
-									</dl>
-									
+								
+								<div class="form-row">
+									<label for="lname">Last Name</label>
+									<input type="text" name="lname" id="lname" class="inputbox" value="Pirtle" />
 								</div>
-								<div class="bl"></div>
-								<div class="br"></div>
-							</div>
-						
-						</div>
-						
-						<h2 class="gray fl">Address Book</h2>&nbsp;|&nbsp;<a href="#" title="Manage Addresses">Manage Addresses</a>
-						
-						<div class="col-2">
-						
-							<div class="r-container box-2 fl">
-								<div class="tl"></div>
-								<div class="tr"></div>
-								<div class="r-box lt-gradient-1">
-									<h3 class="gray fl">Primary Billing Address</h3>&nbsp;|&nbsp;<a href="#" title="Edit Address">Edit Address</a>
-									<br />
-									<br />
-									<address>
-										123 Main Street<br />
-										Apt. 456<br />
-										Anytown, ST 90210 USA
-									</address>
+								
+								<div class="form-row">
+									<label for="company">Company</label>
+									<input type="text" name="company" id="company" class="inputbox" value="" />
 								</div>
-								<div class="bl"></div>
-								<div class="br"></div>
-							</div>
-							
-							<div class="r-container box-2 fr">
-								<div class="tl"></div>
-								<div class="tr"></div>
-								<div class="r-box lt-gradient-1">
-									<h3 class="gray fl">Primary Shipping Address</h3>&nbsp;|&nbsp;<a href="#" title="Edit Address">Edit Address</a>
-									<br />
-									<br />
-									<address>
-										567 Front Street<br />
-										8th Floor<br />
-										Suite 409<br />
-										Mytown, CA 86753 USA
-									</address>
+								
+								<div class="form-row">
+									<label for="phone">Telephone</label>
+									<input type="text" name="phone" id="phone" class="inputbox" value="" />
 								</div>
-								<div class="bl"></div>
-								<div class="br"></div>
-							</div>
+								
+								<div class="form-row">
+									<label for="fax">Fax</label>
+									<input type="text" name="fax" id="fax" class="inputbox" value="" />
+								</div>
+								
+								<div class="form-row">
+									<label for="address">Street Address</label>
+									<input type="text" name="address" id="address" class="inputbox" value="" />
+								</div>
+								
+								<div class="form-row">
+									<label for="address_2">Street Address 2</label>
+									<input type="text" name="address_2" id="address_2" class="inputbox" value="" />
+								</div>
+								
+								<div class="form-row">
+									<label for="city">City</label>
+									<input type="text" name="city" id="city" class="inputbox" value="" />
+								</div>
+								
+								<div class="form-row">
+									<label for="state">State/Province</label>
+									<input type="text" name="state" id="state" class="inputbox" value="" />
+								</div>
+								
+								<div class="form-row">
+									<label for="zip">Zip/Postal Code</label>
+									<input type="text" name="zip" id="zip" class="inputbox" value="" />
+								</div>
+								
+								<div class="form-row">
+									<label for="country">Country</label>
+									<input type="text" name="country" id="country" class="inputbox" value="" />
+								</div>
+								
+								<button type="submit" name="submit" class="flex-btn fr"><span>Submit</span></button>
+								
+							</fieldset>
 						
-						</div>
+						</form>
 					
 					</div>
 					<div class="bl"></div>
@@ -241,6 +220,7 @@
 				</div>
 				
 			</div>
+			<!-- End Main Content -->
 			
 		</div>
 		
@@ -274,7 +254,7 @@
 			<p class="clear">&copy; 2010 Totsy.com. All Rights Reserved.</p>
 		
 		</div>
-				
+		
 		<script type="text/javascript" src="../js/jquery-1.4.2.js"></script>
 		<script type="text/javascript" src="../js/jquery.equalheights.js"></script>
 		

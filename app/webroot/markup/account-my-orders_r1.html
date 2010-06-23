@@ -5,7 +5,7 @@
 	
 	<head>
 	
-		<title>Totsy - My Account</title>
+		<title>Totsy - Account - My Orders</title>
 
 		<meta http-equiv="Content-type" content="" />
 		<meta http-equiv="Content-language" content="" />
@@ -50,7 +50,7 @@
 						<ul class="menu main-nav">
 							
 							<li class=" first item2">
-								<a href="/totsyv2/sales" title="Sales"><span>Sales</span></a>
+								<a href="#" title="Sales"><span>Sales</span></a>
 							</li>
 							
 							<li class="item3">
@@ -114,7 +114,7 @@
 				<div id="left">
 					
 					<ul class="menu">
-						<li class="active first">
+						<li class="first">
 							<a href="#" title="Account Dashboard"><span>Account Dashboard</span></a>
 						</li>
 						<li>
@@ -123,7 +123,7 @@
 						<li>
 							<a href="#" title="Address Book"><span>Address Book</span></a>
 						</li>
-						<li>
+						<li class="active">
 							<a href="#" title="My Orders"><span>My Orders</span></a>
 						</li>
 						<li>
@@ -139,100 +139,62 @@
 					
 				</div>
 				
+				<!-- Start Main Page Content -->
 				<div id="middle" class="noright">				
 					
 					<div class="tl"></div>
 					<div class="tr"></div>
 					<div id="page">
 					
-						<!-- Replace with user's name -->
-						<strong>Hello, Mitch Pirtle</strong>
+						<h2 class="gray mar-b">My Orders</h2>
+	
+						<table cellpadding="0" cellspacing="0" border="0" width="100%" class="order-table">
 						
-						<!-- Replace with account welcome message -->
-						<p>From your My Account Dashboard you have the ability to view a snapshot of your recent account activity and update your account information. Select a link below to view or edit information.</p>
-						
-						<h2 class="gray">Account Information</h2>
-						
-						<div class="col-2">
-						
-							<div class="r-container box-2 fl">
-								<div class="tl"></div>
-								<div class="tr"></div>
-								<div class="r-box lt-gradient-1">
-									<h3 class="gray fl">Contact Information</h3>&nbsp;|&nbsp;<a href="#" title="Edit">Edit</a>
-									<br />
-									<br />
-									Mitch Pirtle<br />
-									mitch@totsy.com<br />
-									<a href="#" title="Change Password">Change Password</a>
-								</div>
-								<div class="bl"></div>
-								<div class="br"></div>
-							</div>
+							<thead>
+								<tr>
+									<th width="10%">Order Date</th>
+									<th width="40%">Items </th>
+									<th width="20%">Order ID</th>
+									<th width="30%">Tracking</th>
+								</tr>
+							</thead>
 							
-							<div class="r-container box-2 fr">
-								<div class="tl"></div>
-								<div class="tr"></div>
-								<div class="r-box lt-gradient-1">
-									<h3 class="gray fl">Newsletter</h3>&nbsp;|&nbsp;<a href="#" title="Edit">Edit</a>
-									<br />
-									<br />
-									<dl>
-										<dt>You are currently subscribed to:</dt>
-										<dd>
-											<ul>
-												<li>General Subscription</li>
-											</ul>
-										</dd>
-									</dl>
-									
-								</div>
-								<div class="bl"></div>
-								<div class="br"></div>
-							</div>
+							<tbody>
+								<tr class="alt0">
+									<td>04-12-10</td>
+									<td>
+										<a href="#" title="View product details">Standard Issue Kangaroo Pocket Knit Sweater</a><br />
+										Color: Gray<br />
+										Size: S<br />
+										Quantity: 1
+									</td>
+									<td>
+										<a href="#" title="View order number 34567890">34567890</a></td>
+									<td>
+										<p>Your order has shipped on 04-12-10 Via UPS Ground</p>
+										<a href="#" title="track order number 34567890" class="flex-btn fr"><span>Track Shipment</span></a>
+									</td>
+								</tr>
+								
+								<tr class="alt1">
+									<td>04-12-10</td>
+									<td>
+										<a href="#" title="View product details">Standard Issue Kangaroo Pocket Knit Sweater</a><br />
+										Color: Gray<br />
+										Size: S<br />
+										Quantity: 1
+									</td>
+									<td>
+										<a href="#" title="View order number 34567890">34567890</a></td>
+									<td>
+										<p>Your order has shipped on 04-12-10 Via UPS Ground</p>
+										<a href="#" title="track order number 34567890" class="flex-btn fr"><span>Track Shipment</span></a>
+									</td>
+								</tr>
+								
+							</tbody>
 						
-						</div>
-						
-						<h2 class="gray fl">Address Book</h2>&nbsp;|&nbsp;<a href="#" title="Manage Addresses">Manage Addresses</a>
-						
-						<div class="col-2">
-						
-							<div class="r-container box-2 fl">
-								<div class="tl"></div>
-								<div class="tr"></div>
-								<div class="r-box lt-gradient-1">
-									<h3 class="gray fl">Primary Billing Address</h3>&nbsp;|&nbsp;<a href="#" title="Edit Address">Edit Address</a>
-									<br />
-									<br />
-									<address>
-										123 Main Street<br />
-										Apt. 456<br />
-										Anytown, ST 90210 USA
-									</address>
-								</div>
-								<div class="bl"></div>
-								<div class="br"></div>
-							</div>
-							
-							<div class="r-container box-2 fr">
-								<div class="tl"></div>
-								<div class="tr"></div>
-								<div class="r-box lt-gradient-1">
-									<h3 class="gray fl">Primary Shipping Address</h3>&nbsp;|&nbsp;<a href="#" title="Edit Address">Edit Address</a>
-									<br />
-									<br />
-									<address>
-										567 Front Street<br />
-										8th Floor<br />
-										Suite 409<br />
-										Mytown, CA 86753 USA
-									</address>
-								</div>
-								<div class="bl"></div>
-								<div class="br"></div>
-							</div>
-						
-						</div>
+						</table>
 					
 					</div>
 					<div class="bl"></div>
@@ -241,6 +203,7 @@
 				</div>
 				
 			</div>
+			<!-- End Main Content -->
 			
 		</div>
 		
@@ -274,7 +237,7 @@
 			<p class="clear">&copy; 2010 Totsy.com. All Rights Reserved.</p>
 		
 		</div>
-				
+		
 		<script type="text/javascript" src="../js/jquery-1.4.2.js"></script>
 		<script type="text/javascript" src="../js/jquery.equalheights.js"></script>
 		
