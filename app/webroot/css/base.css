@@ -236,11 +236,12 @@ button.reg-btn{background:url(../img/reg-btn.png) no-repeat;height:39px;width:13
 
 label.radio{display:block;float:left;margin:3px 20px 10px 0}
 
-.flex-btn{background:url(../img/btn-blank.png) transparent no-repeat right top;padding:0 10px 0 0;text-align:center;border:none}
-.flex-btn-2{background:#EB132C;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;border:none;padding:5px 10px;color:#FFF;text-transform:uppercase;cursor:pointer;box-shadow:5px 5px 5px #888;text-align:center}
-a.flex-btn-2{color:#FFF;font-size:12px;display:block;padding:10px;line-height:normal}
+.flex-btn{background:#EB132C;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;border:none;padding:5px 10px;color:#FFF;text-transform:uppercase;cursor:pointer;box-shadow:5px 5px 5px #888;text-align:center}
 
-.flex-btn span{background:url(../img/btn-blank.png) no-repeat left top;height:39px;padding:0 0 0 10px;display:block;white-space:nowrap;position:relative;color:#FFF;text-transform:uppercase;line-height:40px;text-shadow:#AE121B 2px 2px 0;letter-spacing:.5px;font-size:12px}
+.flex-btn-2{background:#EB132C;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;border:none;padding:5px 10px;color:#FFF;text-transform:uppercase;cursor:pointer;box-shadow:5px 5px 5px #888;text-align:center}
+
+a:link.flex-btn,a:visited.flex-btn{color:#FFF;font-size:12px;display:block;padding:10px 5px;line-height:normal}
+a:link.flex-btn-2,a:visited.flex-btn-2{color:#FFF;font-size:12px;display:block;padding:10px 5px;line-height:normal}
 
 .flex-btn:hover{text-decoration:none}
 
@@ -297,8 +298,7 @@ a.sm-email{background-position:-32px 0}
 .p-container .details .table-cell{padding:10px}
 .p-container h2{font-weight:normal;text-transform:uppercase;color:#707070;margin-bottom:12px}
 .p-container .details strong{text-transform:uppercase;font-size:16px}
-.p-container .flex-btn{background:url(../img/btn-blank-gray.png) transparent no-repeat right top}
-.p-container .flex-btn span{background:url(../img/btn-blank-gray.png) no-repeat left top}
+
 .p-container .left{width:180px}
 .p-container .right{width:80px}
 .product-list-item.middle{margin:0 10px}
