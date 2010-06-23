@@ -161,6 +161,22 @@ li.item5 a:hover,li.item5.over a, li.active.item5 a{background-position:-244px 0
 .r-box-2{border:1px solid #D7D7D7;padding:10px 5px;overflow:hidden}
 .r-box-2 h2{margin-bottom:10px}
 
+.md-gray{background:#F0EFEF}
+
+#page-header{border:1px solid #D7D7D7;padding:10px;overflow:hidden}
+#page-header .left,#page-header .right{width:50%;float:left}
+#page-header .left{text-align:center}
+#middle #page-header .right p{margin-bottom:0;margin-top:10px}
+#page-header .details{overflow:hidden;margin-bottom:5px}
+#page-header img.m-logo{float:left;margin-right:10px}
+#page-header h1{color:#707070;font-size:20px}
+
+.table-row{display:table-row}
+.table-cell{display:table-cell;vertical-align:middle}
+.v-bottom{vertical-align:bottom}
+
+h2.page-title{font-weight:normal;font-size:24px}
+
 .box-2 .tl,.box-2 .tr,.box-2 .bl,.box-2 .br{position:absolute;width:9px;height:9px;background-image:url(../img/corners-2.png);background-repeat:no-repeat}
 .box-2 .r-box{border:1px solid #B5B5B5;overflow:hidden}
 
@@ -262,6 +278,31 @@ a#invite-aol{background-position:129px -102px}
 a#invite-msn{background-position:0 -153px}
 a#invite-others{background-position:129px -153px}
 
+.sm-actions{margin-bottom:5px}
+.sm-actions dl{display:table-row}
+.sm-actions dt, .sm-actions dd{display:table-cell;vertical-align:middle;padding-right:5px}
+.sm-actions ul{overflow:hidden}
+.sm-actions li{float:left;margin-right:5px}
+
+a.sm-btn{display:block;width:16px;height:16px;background-image:url(../img/sm-icons.png);text-indent:-9999px}
+a.sm-facebook{background-position:0 0}
+a.sm-twitter{background-position:-16px 0}
+a.sm-email{background-position:-32px 0}
+
+.sort-by{margin:14px;text-align:right}
+.sort-by select{margin-left:10px}
+
+.product-list-item{width:300px;float:left;margin-bottom:10px}
+.p-container{border:1px solid #D7D7D7}
+.p-container .details .table-cell{padding:10px}
+.p-container h2{font-weight:normal;text-transform:uppercase;color:#707070;margin-bottom:12px}
+.p-container .details strong{text-transform:uppercase;font-size:16px}
+.p-container .flex-btn{background:url(../img/btn-blank-gray.png) transparent no-repeat right top}
+.p-container .flex-btn span{background:url(../img/btn-blank-gray.png) no-repeat left top}
+.p-container .left{width:180px}
+.p-container .right{width:80px}
+.product-list-item.middle{margin:0 10px}
+
 /* Modal Styles */
 .body-overlayed embed, .body-overlayed object, .body-overlayed select{visibility:hidden}
 #sbox-window embed, #sbox-window object, #sbox-window select{visibility:visible}
@@ -320,7 +361,7 @@ body.login .login-sig{text-align:center}
 .reg-list{margin:10px 0;font-size:12px}
 
 .form-row{overflow:hidden;margin:3px 0}
-.form-row label{display:block;width:100px;float:left;line-height:30px;font-weight:normal}
+.form-row label{display:block;width:120px;float:left;line-height:30px;font-weight:normal}
 .form-row .inputbox{margin-right:20px;float:left}
 .submit-row{margin:20px 0 0 0;overflow:hidden}
 .reg-tos{display:block;float:left;width:350px;line-height:normal;margin-right:30px}
