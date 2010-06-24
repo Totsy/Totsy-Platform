@@ -2,7 +2,6 @@
 <?=$this->html->script('jquery-1.4.2');?>
 <?=$this->html->script('jquery-dynamic-form.js');?>
 <?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
-<?=$this->html->style('admin.css')?>
 <?=$this->html->script('swfupload.js');?>
 <?=$this->html->script('swfupload.queue.js');?>
 <?=$this->html->script('fileprogress.js');?>
@@ -29,12 +28,12 @@ tinyMCE.init({
 
 <script type="text/javascript" charset="utf-8">
 	$(function() {
-		var dates = $('#from, #to').datepicker({
+		var dates = $('#start_date, #end_date').datepicker({
 			defaultDate: "+1w",
 			changeMonth: true,
 			numberOfMonths: 2,
 			onSelect: function(selectedDate) {
-				var option = this.id == "from" ? "minDate" : "maxDate";
+				var option = this.id == "start_date" ? "minDate" : "maxDate";
 				var instance = $(this).data("datepicker");
 				var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
 				dates.not(this).datepicker("option", option, date);
@@ -44,23 +43,55 @@ tinyMCE.init({
 </script>
 
 <script type="text/javascript" charset="utf-8">
+
+	var oTable;
+
 	$(document).ready(function() {
-		$('#itemTable').dataTable();
+		/* Add a click handler to the rows - this could be used as a callback */
+		$('#itemTable tr').click( function() {
+			if ( $(this).hasClass('row_selected') )
+				$(this).removeClass('row_selected');
+			else
+				$(this).addClass('row_selected');
+		} );
+
+		/* Init the table */
+		oTable = $('#itemTable').dataTable();
+		
 	} );
+
+	function fnGetSelected( oTableLocal )
+	{
+		var aReturn = new Array();
+		var aTrs = oTableLocal.fnGetNodes();
+
+		for ( var i=0 ; i<aTrs.length ; i++ )
+		{
+			if ( $(aTrs[i]).hasClass('row_selected') )
+			{
+				aReturn.push( aTrs[i].id );
+			}
+		}
+		var eventItems = document.getElementById('event_items');
+		eventItems.innerHTML = eventItems.innerHTML + aReturn;
+		return aReturn;
+	}
+
+
 </script>
 
 <?=$this->html->link('See Event List','/items')?>
 
 <h1>Add an Event</h1>
 
-<?=$this->form->create(); ?>
+<?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
     <?=$this->form->field('Name');?>
     <?=$this->form->field('Description', array('type' => 'textarea', 'name' => 'content'));?>
 	<br>
 	<fieldset>
 		<legend>Event Duration</legend>
-		<label for="from">From</label><input type="text" name="from" value="" id="from">
-		<label for="to">To</label><input type="text" name="to" value="" id="to">
+		<label for="start_date">Start Date</label><input type="text" name="start_date" value="" id="start_date">
+		<label for="end_date">End Date</label><input type="text" name="end_date" value="" id="end_date">
 	</fieldset>
 <br>
 <h1>Upload an event image</h1>
@@ -84,6 +115,12 @@ tinyMCE.init({
 </table>
 <div id="fileInfo"></div>
 <br>
-<h1 id="add_event_items">Add Event Items</h1>
-<?=$this->items->build($items); ?>
+<h1 id="">Add Event Items</h1>
+<br>
+<div id="event_items">
+		<label for="upload_file">Upload Event CSV: </label><input type="file" name="upload_file" id="upload_file">
+</div>
+<br>
+<br>
+<?=$this->form->submit('Add Event')?>
 <?=$this->form->end(); ?>
