@@ -5,6 +5,7 @@ namespace app\controllers;
 use \app\models\Event;
 use \app\models\Item;
 use \MongoDate;
+use \MongoID;
 
 class EventsController extends \lithium\action\Controller {
 
@@ -19,6 +20,14 @@ class EventsController extends \lithium\action\Controller {
 	}
 
 	public function add() {
+		$eventKey = array(
+			'name',
+			'description',
+			'blurb',
+			'start_date',
+			'end_date'
+		);
+		$eventFiles = array();
 		$created_date = 0;
 		$modified_date = 0;
 		$files = 0; 
@@ -32,15 +41,24 @@ class EventsController extends \lithium\action\Controller {
 			TODO Clean up file handling here
 		*/
 		if ($_FILES) {
-			$items = $this->parseItems($_FILES);
+			$eventItems = $this->parseItems($_FILES);
 			unset($this->request->data['upload_file']);
 		}
 		if (!empty($this->request->data)) {
+			die(var_dump($this->request->data));
+			$uploadFileIds = array_diff_key($this->request->data, array_flip($eventKey));
+			if (!empty($uploadFileIds)) {
+				// Change all the id's to MongoIds
+				foreach ($uploadFileIds as $key => $value) {
+					$eventFiles[] = new MongoID($key);
+					unset($this->request->data[$key]);
+				}
+			}
 			$startDate = strtotime($this->request->data['start_date']);
 			$endDate = strtotime($this->request->data['end_date']); 
 			$this->request->data['start_date'] = new MongoDate($startDate);
 			$this->request->data['end_date'] = new MongoDate($endDate);
-			$eventData = array_merge($this->request->data, $items);
+			$eventData = array_merge($this->request->data, $eventItems, array('files' => $eventFiles));
 			$event = Event::create($eventData);
 			if ($event->save()) {
 				$this->redirect(array(
@@ -73,6 +91,26 @@ class EventsController extends \lithium\action\Controller {
 	
 	protected function parseItems($_FILES) {
 		$itemIds = array();
+		// Default column headers from csv file
+		$standardHeader = array(
+			'vendor',
+			'vendor_style',
+			'age',
+			'category',
+			'description',
+			'color',
+			'total_quantity',
+			'msrp',
+			'sale_retail',
+			'percent_off',
+			'orig_whol',
+			'sale_whol',
+			'imu',
+			'product_weight',
+			'product_dimensions',
+			'shipping_weight',
+			'shipping_dimensions'
+		);
 		if ($_FILES['upload_file']['type'] == 'text/csv') {
 			// Open the File.
 			if (($handle = fopen($_FILES['upload_file']['tmp_name'], "r")) !== FALSE) {
@@ -99,10 +137,17 @@ class EventsController extends \lithium\action\Controller {
 			unset($eventItems[0]);
 			// Add items to db and get _ids
 			foreach ($eventItems as $itemDetail) {
+				unset($itemDetail['NULL']);
+				// Group all the attributes together	
+				$itemAttributes = array_diff_key($itemDetail, array_flip($standardHeader));
+				// Unset all the attributes from main array so add back the details proper
+				foreach ($itemAttributes as $key => $value) {
+					unset($itemDetail[$key]);
+				}
 				$item = Item::create();
 				$date = new MongoDate();
 				// Add some more information to array
-				$details = array('active' => 1, 'created_date' => $date);
+				$details = array('active' => 1, 'created_date' => $date, 'details' => $itemAttributes );
 				$newItem = array_merge($itemDetail, $details);
 				if ($item->save($newItem)) {
 					$items[] = $item->_id;
@@ -111,6 +156,7 @@ class EventsController extends \lithium\action\Controller {
 		}
 		return compact('items');
 	}
+	
 }
 
 ?>
