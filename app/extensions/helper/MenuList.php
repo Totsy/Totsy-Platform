@@ -1,6 +1,6 @@
 <?php
 namespace app\extensions\helper;
-use app\models\Navigation;
+use app\models\Menu;
 
 /**
  * The 'Menu' class creates a html menu list based on a backend document store.
@@ -9,13 +9,13 @@ use app\models\Navigation;
  *
  *{{{
  * 	$options = array('div' => array('id' => 'main-nav'), 'ul' => array('class' => 'menu main-nav'));
- *	$doc = Navigation::find('all', array('conditions' => array('location' => 'top', 'active' => 'true')));	
+ *	$doc = Menu::find('all', array('conditions' => array('location' => 'top', 'active' => 'true')));	
  *  $html = $this->menu->build($doc, $options); //returns html menu list
  *}}}
  *
  */
 
-class Menu extends \lithium\template\Helper{	
+class MenuList extends \lithium\template\Helper{	
 	
 	/**
 	 * Builds a HTML unordered list (`ul`).
@@ -60,7 +60,7 @@ class Menu extends \lithium\template\Helper{
 			}
 			$li .= $this->_context->html->link("<span>$element[title]</span>", $url, array('title' => "$element[title]", 'escape' => false ));	
 			if (isset($element['children'])) {
-				$subdoc = Navigation::find('all', array('conditions' => array('active' => 'true', 'parent' => $element['title'])));
+				$subdoc = Menu::find('all', array('conditions' => array('active' => 'true', 'parent' => $element['title'])));
 				$li .= $this->build($subdoc);
 			}
 			$li .= '</li>';

@@ -17,15 +17,15 @@
 </head>
 
 <?php
-	use app\models\Navigation;
+	use app\models\Menu;
 
 	$options = array('div' => array('id' => 'main-nav'), 'ul' => array('class' => 'menu main-nav'));
-	$topDoc = Navigation::find('all', array('conditions' => array('location' => 'top', 'active' => 'true')));
+	$topDoc = Menu::find('all', array('conditions' => array('location' => 'top', 'active' => 'true')));
 	
-	$mainMenu = $this->menu->build($topDoc, $options);
+	$mainMenu = $this->menulist->build($topDoc, $options);
 	$bottomOptions = array('ul' => array('class' => 'menu'));
-	$bottomDoc = Navigation::find('all', array('conditions' => array('location' => 'bottom', 'active' => 'true')));
-	$bottomMenu = $this->menu->build($bottomDoc, $bottomOptions);
+	$bottomDoc = Menu::find('all', array('conditions' => array('location' => 'bottom', 'active' => 'true')));
+	$bottomMenu = $this->menulist->build($bottomDoc, $bottomOptions);
 	
 
 ?>	

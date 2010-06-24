@@ -3,7 +3,7 @@
 namespace app\controllers;
 use app\models\User;
 use app\models\Address;
-use app\models\Navigation;
+use app\models\Menu;
 use \lithium\storage\Session;
 
 
@@ -119,9 +119,9 @@ class AccountController extends \lithium\action\Controller {
 		parent::_init();
 	
 		$this->applyFilter('__invoke',  function($self, $params, $chain) {
-			$navigation = Navigation::find('all', array('conditions' => array('location' => 'left', 'active' => 'true')));
+			$menu = Menu::find('all', array('conditions' => array('location' => 'left', 'active' => 'true')));
 			$userInfo = Session::read('userLogin');
-			$self->set(compact('navigation', 'userInfo'));
+			$self->set(compact('menu', 'userInfo'));
 			return $chain->next($self, $params, $chain);
 		});
 	}

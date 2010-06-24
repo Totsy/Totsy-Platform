@@ -15,3 +15,6 @@
 {"title" : "About Us", "route" : { "controller" : "pages", "view" : "aboutus" }, "location" : "bottom" , "active" : "true", "class" : "item 14"}
 {"title" : "FAQ", "route" : { "controller" : "pages", "view" : "faq" }, "location" : "bottom" , "active" : "true", "class" : "item 10"}
 {"title" : "Contact Us", "route" : { "controller" : "pages", "view" : "contact" }, "location" : "bottom" , "active" : "true", "class" : "last item15"}
+{"title" : "Items", "route" : { "controller" : "items" }, "location" : "admin-top", "active" : "true", "class" : ""}
+{"title" : "Events", "route" : { "controller" : "events" }, "location" : "admin-top", "active" : "true", "class" : ""}
+

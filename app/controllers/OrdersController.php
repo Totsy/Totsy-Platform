@@ -3,7 +3,7 @@
 namespace app\controllers;
 use app\models\Orders;
 use \lithium\storage\Session;
-use app\models\Navigation;
+use app\models\Menu;
 
 class OrdersController extends \lithium\action\Controller {
 
@@ -14,10 +14,11 @@ class OrdersController extends \lithium\action\Controller {
 		parent::_init();
 	
 		$this->applyFilter('__invoke',  function($self, $params, $chain) {
-			$navigation = Navigation::find('all', array('conditions' => array('location' => 'left', 'active' => 'true')));
-			$self->set(compact('navigation'));
+			$menu = Menu::find('all', array('conditions' => array('location' => 'left', 'active' => 'true')));
+			$self->set(compact('menu'));
 			return $chain->next($self, $params, $chain);
 		});
 	}
 	
 }
+?>

@@ -1,10 +1,10 @@
 <?php
-	use app\models\Navigation;
+	use app\models\Menu;
 
 	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
-	$doc = Navigation::all(array('conditions' => array('location' => 'left', 'active' => 'true')));
+	$doc = Menu::all(array('conditions' => array('location' => 'left', 'active' => 'true')));
 ?>
-<?=$this->menu->build($doc, $options); ?>
+<?=$this->menulist->build($doc, $options); ?>
 
 <div class="tl"></div>
 <div class="tr"></div>

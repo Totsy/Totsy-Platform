@@ -3,7 +3,7 @@
 namespace app\controllers;
 use app\models\Address;
 use \lithium\storage\Session;
-use app\models\Navigation;
+use app\models\Menu;
 use app\models\User;
 use \MongoId;
 use \lithium\data\Connections;
@@ -65,16 +65,16 @@ class AddressesController extends \lithium\action\Controller {
 	}
 		
 	/**
-	 * Sets up the Navigation element for the page
+	 * Sets up the Menu element for the page
 	 */
 	protected function _init() {
 		parent::_init();
 	
 		$this->applyFilter('__invoke',  function($self, $params, $chain) {
-			$navigation = Navigation::find('all', array('conditions' => array('location' => 'left', 'active' => 'true')));
+			$menu = Menu::find('all', array('conditions' => array('location' => 'left', 'active' => 'true')));
 			$id = Session::read('_id');
 			$userInfo = User::find('first', array('conditions' => array('_id' => $id)));
-			$self->set(compact('navigation', 'userInfo'));
+			$self->set(compact('menu', 'userInfo'));
 			return $chain->next($self, $params, $chain);
 		});
 	}

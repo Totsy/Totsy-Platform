@@ -1,7 +1,7 @@
 <?php 
 
 $options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
-$leftMenu = $this->menu->build($navigation, $options);
+$leftMenu = $this->menulist->build($menu, $options);
 echo $leftMenu;
 
 if($addressList){ ?>

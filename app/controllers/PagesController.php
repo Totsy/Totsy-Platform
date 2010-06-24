@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use app\models\User;
-use app\models\Navigation;
+use app\models\Menu;
 use lithium\storage\Session;
 
 class PagesController extends \lithium\action\Controller {
