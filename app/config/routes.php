@@ -9,20 +9,31 @@
 use \lithium\net\http\Router;
 use \lithium\core\Environment;
 use \lithium\storage\Session;
+use app\models\File;
+use lithium\action\Response;
+
+/**
+ * The following allows up to serve images right out of mongodb.
+ * This needs to be first so that we don't get a controller error.
+ * 
+ */
+Router::connect("/{:id:[0-9a-f]{24}}.png", array(), function($request) {
+     return new Response(array(
+          'type' => 'image/png',
+          'body' => File::first($request->id)->file->getBytes()
+     ));
+});
 
 Router::connect('/uploads', 'Uploads::index');
 Router::connect('/uploads/upload', 'Uploads::upload');
 /**
  * Redirect all non-authenticated users to 
  */
-
-/*
-if (!Session::check('_id')) {
-	Router::connect('/register', 'Users::register');
-	Router::connect('/{:args}', 'Users::login');
-}
-*/
-
+//$userSession = Session::read('userLogin');
+// if (empty($userSession)) {
+// 	Router::connect('/register', 'Users::register');
+// 	Router::connect('/{:args}', 'Users::login');
+// }
 /**
  * Here, we are connecting '/' (base path) to controller called 'Pages',
  * its action called 'view', and we pass a param to select the view file
