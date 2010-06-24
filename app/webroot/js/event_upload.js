@@ -3,11 +3,11 @@ var upload1;
 window.onload = function() {
 	upload1 = new SWFUpload({
 		// Backend Settings
-		upload_url: "http://totsyli3/uploads/upload",
+		upload_url: "http://totsyli3/uploads/upload/event",
 
 		// File Upload Settings
 		file_size_limit : "102400",	// 100MB
-		file_types : "*.pdf;*.jpg;*.png",
+		file_types : "*.jpg;*.png",
 		file_types_description : "All Files",
 		file_upload_limit : "10",
 		file_queue_limit : "0",

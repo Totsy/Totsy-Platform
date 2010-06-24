@@ -7,7 +7,7 @@
 <?=$this->html->script('swfupload.queue.js');?>
 <?=$this->html->script('fileprogress.js');?>
 <?=$this->html->script('handlers.js');?>
-<?=$this->html->script('upload.js');?>
+<?=$this->html->script('item_upload.js');?>
 <?=$this->html->style('swfupload')?>
 
 <script type="text/javascript">

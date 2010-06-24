@@ -6,7 +6,7 @@
 <?=$this->html->script('swfupload.queue.js');?>
 <?=$this->html->script('fileprogress.js');?>
 <?=$this->html->script('handlers.js');?>
-<?=$this->html->script('upload.js');?>
+<?=$this->html->script('event_upload.js');?>
 <?=$this->html->style('swfupload')?>
 <?=$this->html->style('jquery_ui_blitzer.css')?>
 <?=$this->html->script('jquery.dataTables.js');?>
@@ -85,14 +85,17 @@ tinyMCE.init({
 <h1>Add an Event</h1>
 
 <?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
-    <?=$this->form->field('Name');?>
-    <?=$this->form->field('Description', array('type' => 'textarea', 'name' => 'content'));?>
+    <?=$this->form->field('name');?>
+    <?=$this->form->field('description', array('type' => 'textarea', 'name' => 'content'));?>
 	<br>
 	<fieldset>
 		<legend>Event Duration</legend>
 		<label for="start_date">Start Date</label><input type="text" name="start_date" value="" id="start_date">
 		<label for="end_date">End Date</label><input type="text" name="end_date" value="" id="end_date">
 	</fieldset>
+<br>
+<h1 id="uploaded_media">Uploaded Media</h1>
+<div id="fileInfo"></div>
 <br>
 <h1>Upload an event image</h1>
 
@@ -113,12 +116,13 @@ tinyMCE.init({
 		</td>
 	</tr>
 </table>
-<div id="fileInfo"></div>
+
 <br>
 <h1 id="">Add Event Items</h1>
 <br>
 <div id="event_items">
-		<label for="upload_file">Upload Event CSV: </label><input type="file" name="upload_file" id="upload_file">
+		<?=$this->form->label('Upload Event CSV: '); ?>
+		<?=$this->form->file('upload_file'); ?>
 </div>
 <br>
 <br>

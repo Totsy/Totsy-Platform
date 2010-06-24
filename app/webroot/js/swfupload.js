@@ -897,7 +897,7 @@ SWFUpload.prototype.uploadError = function (file, errorCode, message) {
 
 SWFUpload.prototype.uploadSuccess = function (file, serverData, responseReceived) {
 	file = this.unescapeFilePostParams(file);	
-	original = document.getElementById(this.customSettings.fileTarget)
+	original = document.getElementById(this.customSettings.fileTarget);
 	original.innerHTML = original.innerHTML + serverData;
 	this.queueEvent("upload_success_handler", [file, serverData, responseReceived]);
 };

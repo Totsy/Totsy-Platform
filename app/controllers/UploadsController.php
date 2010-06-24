@@ -22,8 +22,19 @@ class UploadsController extends \lithium\action\Controller {
 	 * Get the uploaded file from $POST and write it to GridFS if valid
 	 * @return array
 	 */
-	public function upload() {	
+	public function upload($type = null) {	
 		$success = false;
+		switch ($type) {
+			case 'item':
+				$this->_render['template'] = 'item';
+				break;
+			case 'event':
+				$this->_render['template'] = 'event';
+				break;
+			default:
+				$this->_render['template'] = 'upload';
+				break;
+		}
 		//Check that we have a $POST	
 		if ($this->request->data) {
 			if ($this->validate()) {
@@ -97,7 +108,7 @@ class UploadsController extends \lithium\action\Controller {
 	
 	/**
 	 * Writes the file to GridFS and sets the Object ID of the file. We are not checking
-	 * if this file has been uploaded already. There will be a master cron job to clear out
+	 * if this file has been uploaded already. There will be a cron job to clear out
 	 * all unused files from GridFS. 
 	 * @return boolean
 	 */
