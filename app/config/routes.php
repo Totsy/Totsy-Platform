@@ -40,7 +40,7 @@ Router::connect('/uploads/upload', 'Uploads::upload');
  * to use (in this case, /app/views/pages/home.html.php)...
  */
 
-Router::connect('/', array('Pages::view', 'home'));
+Router::connect('/', 'Events::index');
 Router::connect('/login', 'Users::login');
 Router::connect('/logout', 'Users::logout');
 Router::connect('/register', 'Users::register');
