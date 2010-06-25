@@ -80,7 +80,7 @@ tinyMCE.init({
 
 </script>
 
-<?=$this->html->link('See Event List','/items')?>
+<?=$this->html->link('See Event List','/events')?>
 
 <h1>Add an Event</h1>
 Hello administrator. Please add an event by filling in all the information below.
@@ -89,6 +89,8 @@ Thank You!
 <?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
     <?=$this->form->field('name');?>
     <?=$this->form->field('blurb', array('type' => 'textarea', 'name' => 'content'));?>
+	<input type="radio" name="enabled" value="1" id="enabled"> Enable Event
+	<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Event
 	<br>
 	<fieldset>
 		<legend>Event Duration</legend>
