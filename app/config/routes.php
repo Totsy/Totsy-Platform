@@ -17,9 +17,9 @@ use lithium\action\Response;
  * This needs to be first so that we don't get a controller error.
  * 
  */
-Router::connect("/{:id:[0-9a-f]{24}}.png", array(), function($request) {
+Router::connect("/image/{:id:[0-9a-f]{24}}.jpg", array(), function($request) {
      return new Response(array(
-          'type' => 'image/png',
+          'type' => 'image/jpg',
           'body' => File::first($request->id)->file->getBytes()
      ));
 });
