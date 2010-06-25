@@ -13,18 +13,18 @@
 use lithium\storage\Cache;
 use lithium\core\Libraries;
 use lithium\action\Dispatcher;
-use lithium\storage\cache\adapter\Apc;
+use lithium\storage\cache\adapter\XCache;
 
 /**
- * If APC is not available and the cache directory is not writeable, bail out.
+ * If xcache is not available, bail out.
  */
-if (!$apcEnabled = Apc::enabled() && !is_writable(LITHIUM_APP_PATH . '/resources/tmp/cache')) {
+if (!$xcacheEnabled = xcache::enabled()) {
 	return;
 }
 
 Cache::config(array(
 	'default' => array(
-		'adapter' => '\lithium\storage\cache\adapter\\' . ($apcEnabled ? 'Apc' : 'File')
+		'adapter' => '\lithium\storage\cache\adapter\XCache'
 	)
 ));
 

@@ -9,6 +9,19 @@ use \MongoID;
 
 class EventsController extends \lithium\action\Controller {
 
+	/**
+	 * List of event keys that should be in the view
+	 * @var array List of accepted event keys
+	 */
+	private $eventKey = array(
+		'name',
+		'description',
+		'blurb',
+		'start_date',
+		'end_date',
+		'enabled'
+	);
+	
 	public function index() {
 		$events = Event::all();
 		return compact('events');
@@ -16,27 +29,21 @@ class EventsController extends \lithium\action\Controller {
 
 	public function view($id = null) {
 		$event = Event::find($id);
+		if (empty($event)) {
+			$this->redirect(array('controller' => 'events', 'action' => 'index'));
+		}
+
 		return compact('event');
 	}
 
 	public function add() {
-		$eventKey = array(
-			'name',
-			'description',
-			'blurb',
-			'start_date',
-			'end_date'
-		);
-		$eventFiles = array();
+		
 		$created_date = 0;
 		$modified_date = 0;
 		$files = 0; 
-		$itemList = Item::find('all', array(
-			'fields' => compact(
-				'created_date', 
-				'modified_date', 
-				'files'
-		)));
+		if (empty($event)) {
+			$event = Event::create();
+		}
 		/*
 			TODO Clean up file handling here
 		*/
@@ -45,31 +52,18 @@ class EventsController extends \lithium\action\Controller {
 			unset($this->request->data['upload_file']);
 		}
 		if (!empty($this->request->data)) {
-			$uploadFileIds = array_diff_key($this->request->data, array_flip($eventKey));
-			if (!empty($uploadFileIds)) {
-				// Change all the id's to MongoIds
-				foreach ($uploadFileIds as $key => $value) {
-					$images[$key] = new MongoID($value);
-					unset($this->request->data[$key]);
-				}
-			}
+			$images = $this->praseImages();
 			$startDate = strtotime($this->request->data['start_date']);
 			$endDate = strtotime($this->request->data['end_date']); 
 			$this->request->data['start_date'] = new MongoDate($startDate);
 			$this->request->data['end_date'] = new MongoDate($endDate);
 			$eventData = array_merge($this->request->data, compact('items'), compact('images'));
-			$event = Event::create($eventData);
-			if ($event->save()) {
-				$this->redirect(array(
-					'controller' => 'events', 'action' => 'index',
-					'args' => array($event->id)
-				));
+			if ($event->save($eventData)) {	
+				$this->redirect(array('Events::view', 'args' => array($event->_id)));
 			}
 		}
-		if (empty($event)) {
-			$event = Event::create();
-		}
-		return compact('event', 'itemList');
+
+		return compact('event');
 	}
 
 	public function edit($id = null) {
@@ -77,8 +71,19 @@ class EventsController extends \lithium\action\Controller {
 		if (empty($event)) {
 			$this->redirect(array('controller' => 'events', 'action' => 'index'));
 		}
+		if ($_FILES) {
+			$items = $this->parseItems($_FILES);
+			unset($this->request->data['upload_file']);
+		}
 		if (!empty($this->request->data)) {
-			if ($event->save($this->request->data)) {
+			$images = $this->praseImages();
+			$startDate = strtotime($this->request->data['start_date']);
+			$endDate = strtotime($this->request->data['end_date']); 
+			$this->request->data['start_date'] = new MongoDate($startDate);
+			$this->request->data['end_date'] = new MongoDate($endDate);
+			$eventData = array_merge($this->request->data, compact('items'), compact('images'));
+			
+			if ($event->save($eventData)) {
 				$this->redirect(array(
 					'controller' => 'events', 'action' => 'view',
 					'args' => array($event->id)
@@ -157,6 +162,17 @@ class EventsController extends \lithium\action\Controller {
 		return $items;
 	}
 	
+	protected function praseImages() {
+		$images = array();
+		$uploadFileIds = array_diff_key($this->request->data, array_flip($this->eventKey));
+		if (!empty($uploadFileIds)) {
+			foreach ($uploadFileIds as $key => $value) {
+				$images[$key] = $value;
+				unset($this->request->data[$key]);
+			}
+		}
+		return $images;
+	}
 }
 
 ?>

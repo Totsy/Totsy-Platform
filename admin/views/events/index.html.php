@@ -14,3 +14,5 @@
 </script>
 <br>
 <?=$this->html->link('Create New Event','/events/add')?> 
+
+<?=$this->events->build($events)?>

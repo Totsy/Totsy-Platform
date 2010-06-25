@@ -8,6 +8,7 @@ class EventsController extends \lithium\action\Controller {
 
 	public function index() {
 		$events = Event::all();
+		$this->_render['layout'] = 'main';
 		return compact('events');
 	}
 
