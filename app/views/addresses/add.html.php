@@ -11,7 +11,7 @@
 </script> -->
 <?php
 	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
-	$leftMenu = $this->menulist->build($menu, $options);
+	$leftMenu = $this->MenuList->build($menu, $options);
 	echo $leftMenu;
 
 ?>

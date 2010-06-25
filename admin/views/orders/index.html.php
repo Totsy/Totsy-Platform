@@ -4,7 +4,7 @@
 	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
 	$doc = Menu::all(array('conditions' => array('location' => 'left', 'active' => 'true')));
 ?>
-<?=$this->menulist->build($doc, $options); ?>
+<?=$this->MenuList->build($doc, $options); ?>
 
 <div class="tl"></div>
 <div class="tr"></div>

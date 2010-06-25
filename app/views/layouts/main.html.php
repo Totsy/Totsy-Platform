@@ -22,10 +22,10 @@
 	$options = array('div' => array('id' => 'main-nav'), 'ul' => array('class' => 'menu main-nav'));
 	$topDoc = Menu::find('all', array('conditions' => array('location' => 'top', 'active' => 'true')));
 	
-	$mainMenu = $this->menulist->build($topDoc, $options);
+	$mainMenu = $this->MenuList->build($topDoc, $options);
 	$bottomOptions = array('ul' => array('class' => 'menu'));
 	$bottomDoc = Menu::find('all', array('conditions' => array('location' => 'bottom', 'active' => 'true')));
-	$bottomMenu = $this->menulist->build($bottomDoc, $bottomOptions);
+	$bottomMenu = $this->MenuList->build($bottomDoc, $bottomOptions);
 	
 
 ?>	

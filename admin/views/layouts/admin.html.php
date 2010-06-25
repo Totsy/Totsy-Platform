@@ -22,7 +22,7 @@
 	$options = array();
 	$topDoc = Menu::find('all', array('conditions' => array('location' => 'admin-top', 'active' => 'true')));
 	var_dump($topDoc->data());
-	$mainMenu = $this->menulist->build($topDoc, $options);
+	$mainMenu = $this->MenuList->build($topDoc, $options);
 
 ?>	
 
