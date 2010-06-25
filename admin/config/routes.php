@@ -9,6 +9,20 @@
 use \lithium\net\http\Router;
 use \lithium\core\Environment;
 use \lithium\storage\Session;
+use admin\models\File;
+use lithium\action\Response;
+
+/**
+ * The following allows up to serve images right out of mongodb.
+ * This needs to be first so that we don't get a controller error.
+ * 
+ */
+Router::connect("/image/{:id:[0-9a-f]{24}}.jpg", array(), function($request) {
+     return new Response(array(
+          'type' => 'image/jpg',
+          'body' => File::first($request->id)->file->getBytes()
+     ));
+});
 
 Router::connect('/uploads', 'Uploads::index');
 Router::connect('/uploads/upload', 'Uploads::upload');

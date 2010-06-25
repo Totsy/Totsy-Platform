@@ -6,6 +6,9 @@
 	<th align="justify">
 		Image Name
 	</th>
+	<th align="justify">
+		Image
+	</th>
 	<th align="center">
 		Event List Image
 	</th>
@@ -24,6 +27,9 @@
 		<?php echo $fileName ?>
 	</td>
 	<td align="center">
+		<?=$this->html->image("/image/$id.jpg", array('alt' => 'altText')); ?>
+	</td>
+	<td align="center">
 		<input type="radio" name="list_image" value="<?=$id;?>">
 	</td>
 	<td align="center">
@@ -34,4 +40,3 @@
 	</td>
 </tr>
 </table>
-
