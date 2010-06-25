@@ -31,7 +31,7 @@ class EventsController extends \lithium\action\Controller {
 		$created_date = 0;
 		$modified_date = 0;
 		$files = 0; 
-		$items = Item::find('all', array(
+		$itemList = Item::find('all', array(
 			'fields' => compact(
 				'created_date', 
 				'modified_date', 
@@ -41,7 +41,7 @@ class EventsController extends \lithium\action\Controller {
 			TODO Clean up file handling here
 		*/
 		if ($_FILES) {
-			$eventItems = $this->parseItems($_FILES);
+			$items = $this->parseItems($_FILES);
 			unset($this->request->data['upload_file']);
 		}
 		if (!empty($this->request->data)) {
@@ -49,7 +49,7 @@ class EventsController extends \lithium\action\Controller {
 			if (!empty($uploadFileIds)) {
 				// Change all the id's to MongoIds
 				foreach ($uploadFileIds as $key => $value) {
-					$eventFiles[] = new MongoID($key);
+					$images[$key] = new MongoID($value);
 					unset($this->request->data[$key]);
 				}
 			}
@@ -57,7 +57,7 @@ class EventsController extends \lithium\action\Controller {
 			$endDate = strtotime($this->request->data['end_date']); 
 			$this->request->data['start_date'] = new MongoDate($startDate);
 			$this->request->data['end_date'] = new MongoDate($endDate);
-			$eventData = array_merge($this->request->data, $eventItems, array('files' => $eventFiles));
+			$eventData = array_merge($this->request->data, compact('items'), compact('images'));
 			$event = Event::create($eventData);
 			if ($event->save()) {
 				$this->redirect(array(
@@ -69,7 +69,7 @@ class EventsController extends \lithium\action\Controller {
 		if (empty($event)) {
 			$event = Event::create();
 		}
-		return compact('event', 'items');
+		return compact('event', 'itemList');
 	}
 
 	public function edit($id = null) {
@@ -89,6 +89,7 @@ class EventsController extends \lithium\action\Controller {
 	}
 	
 	protected function parseItems($_FILES) {
+		$items = array();
 		$itemIds = array();
 		// Default column headers from csv file
 		$standardHeader = array(
@@ -153,7 +154,7 @@ class EventsController extends \lithium\action\Controller {
 				}
 			}
 		}
-		return compact('items');
+		return $items;
 	}
 	
 }
