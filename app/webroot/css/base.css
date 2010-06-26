@@ -335,6 +335,29 @@ h2.socialize-us{background:url(../img/socialize-with-us-img.png) no-repeat;width
 
 .hor-div-line{width:100%;height:1px;background:#7D7D7D}
 
+/* Coming Soon Animated Marquee Styles */
+
+#mouter{overflow:hidden}
+#mgroup{float:left;position:relative;overflow:hidden}
+#mcontrols{position:absolute;z-index:11;bottom:10px;right:10px;background:url(../img/gray-30-bg.png);padding:7px;color:#FFF;-moz-border-radius:10px;-webkit-border-radius:10px;border-radius:10px}
+span.citem{margin:0 3px;display:block;float:left;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;background:#888;text-indent:-9999px;height:9px;width:9px;cursor:pointer}
+span.citem.active-th{background:#FFF}
+
+.marquee-item{float:left}
+
+#lt-arrow,#rt-arrow{display:block;width:18px;height:38px;background-image:url(../img/marquee-arrows.png);background-repeat:no-repeat;text-indent:-9999px;cursor:pointer;margin-top:80px}
+#rt-arrow{background-position:right center;float:right}
+#lt-arrow{background-position:left center;float:left}
+
+.coming-soon-feature{margin:20px 18px}
+#coming-soon-feature-inner{overflow:hidden;padding:20px}
+.coming-soon-feature .left{float:left;width:468px;border-right:1px solid #CCC;}
+.coming-soon-feature .right{float:left;width:343px;padding-left:30px;margin:20px 0}
+
+.coming-soon-feature .manufacturer-logo{margin-bottom:20px}
+.coming-soon-feature h2{margin-bottom:0}
+.coming-soon-feature p{margin:20px 0}
+
 /* Modal Styles */
 .body-overlayed embed, .body-overlayed object, .body-overlayed select{visibility:hidden}
 #sbox-window embed, #sbox-window object, #sbox-window select{visibility:visible}
