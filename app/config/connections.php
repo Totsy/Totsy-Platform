@@ -10,6 +10,10 @@ use \lithium\data\Connections;
 
 
 // MongoDB Connection
-    Connections::add('default', array('type' =>  'MongoDb', 'database' => 'totsy', 'host' => 'localhost'));
+    Connections::add('default', array(
+		'type' =>  'MongoDb', 
+		'database' => 'totsy', 
+		'host' => 'localhost'
+	));
     
 ?>
