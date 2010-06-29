@@ -66,8 +66,8 @@ class EventsController extends \lithium\action\Controller {
 		return compact('event');
 	}
 
-	public function edit($id = null) {
-		$event = Event::find($id);
+	public function edit($_id = null) {
+		$event = Event::find($_id);
 		if (empty($event)) {
 			$this->redirect(array('controller' => 'events', 'action' => 'index'));
 		}
@@ -85,8 +85,8 @@ class EventsController extends \lithium\action\Controller {
 			
 			if ($event->save($eventData)) {
 				$this->redirect(array(
-					'controller' => 'events', 'action' => 'view',
-					'args' => array($event->id)
+					'controller' => 'events', 'action' => 'edit',
+					'args' => array($event->_id)
 				));
 			}
 		}

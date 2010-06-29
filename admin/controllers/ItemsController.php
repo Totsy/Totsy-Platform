@@ -13,7 +13,6 @@ class ItemsController extends \lithium\action\Controller {
 	
 	public function _init() {
 		parent::_init();
-		$this->_render['layout'] = 'admin';
 	}
 	/**
 	 * Main display of item data
