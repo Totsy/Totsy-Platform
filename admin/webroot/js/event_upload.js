@@ -3,7 +3,7 @@ var upload1;
 window.onload = function() {
 	upload1 = new SWFUpload({
 		// Backend Settings
-		upload_url: "http://totsyadmin/uploads/upload/event",
+		upload_url: "/uploads/upload/event",
 
 		// File Upload Settings
 		file_size_limit : "102400",	// 100MB
@@ -24,13 +24,13 @@ window.onload = function() {
 		upload_complete_handler : uploadComplete,
 
 		// Button Settings
-		button_image_url : "http://totsyadmin/img/XPButtonUploadText_61x22.png",
+		button_image_url : "/img/XPButtonUploadText_61x22.png",
 		button_placeholder_id : "spanButtonPlaceholder1",
 		button_width: 61,
 		button_height: 22,
 		
 		// Flash Settings
-		flash_url : "http://totsyadmin/img/flash/swfupload.swf",
+		flash_url : "/img/flash/swfupload.swf",
 		
 
 		custom_settings : {
