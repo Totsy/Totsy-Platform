@@ -44,6 +44,7 @@ h2 span{font-weight:normal}
 .bold{font-weight:bold}
 hr.no-show{display:none}
 .mar-b{margin-bottom:20px}
+.mar-10-b{margin-bottom:10px}
 .mar-t{margin-top:20px}
 .mar-none{margin:0}
 .pad-t{padding-top:20px}
@@ -73,6 +74,8 @@ ul.columns-2 li{float:left;width:46%;padding-right:20px;margin:0}
 input.inputbox,textarea.inputbox{background:#FFF;border:1px solid #CCC;padding:5px}
 input.invalid{border:1px solid #FF3300}
 label.invalid{color:#FF3300}
+
+label.required span{color:#EB132C;font-weight:bold}
 
 div.pagination{overflow:hidden;margin-bottom:10px;font-size:.9em;padding:0 10px}
 div.pagination span{display:block;float:left;margin-right:5px}
@@ -196,6 +199,70 @@ div.col-2 .box-2{width:48%}
 
 #right{width:320px;float:left;background:url(../img/right-bot-bg.png) no-repeat left bottom;font-size:.8em}
 #right h3{font-size:1.2em;margin-bottom:5px}
+
+#product-detail-left{width:300px;float:left}
+.img-th{float:left;cursor:pointer;border:1px solid #D7D7D7;margin:10px 3px 0 0}
+.img-th.active{border:4px solid #EB132C;margin:7px 3px 0 0}
+
+#product-detail-right{width:600px;float:right}
+#product-detail-right .sm-actions{margin:6px 0 0 0;position:relative;z-index:100}
+
+#detail-top-right{width:175px;float:right}
+#detail-top-right .p-container{padding:10px;text-align:center}
+#detail-top-right .p-container h2{font-size:18px;text-transform:uppercase;font-weight:bold;margin-bottom:5px}
+#detail-top-right .p-container p{font-size:12px;border-bottom:1px solid #CCC;padding-bottom:5px;margin-bottom:5px}
+#detail-top-right .p-container strike{font-size:13px}
+#detail-top-right .p-container button{font-size:12px;padding:10px 20px}
+
+#detail-top-left{width:425px;float:left}
+#detail-top-left h1{margin:10px 0 20px 0;color:#707070;font-size:22px}
+#detail-top-left label{display:block;width:50px;float:left}
+#detail-top-left select{width:150px}
+#detail-top-left .product-detail-attribute{margin:0 0 20px 0}
+
+#related-products{overflow:hidden}
+
+dt{font-weight:bold}
+ul.content-list{list-style:disc;margin:0 0 0 15px}
+
+#colors{overflow:hidden}
+#colors .color-swatch{border:1px solid #D7D7D7;margin:10px 5px 0 0;float:left;cursor:pointer}
+#colors .color-swatch.active{border:4px solid #D7D7D7;margin:7px 5px 0 0}
+
+/* Tabs
+----------------------------------*/
+.ui-tabs { position: relative;zoom: 1; }
+.ui-tabs p{margin:10px 0}
+.ui-tabs .ui-tabs-nav {overflow:hidden }
+.ui-tabs .ui-tabs-nav li {float: left; position: relative; top: 1px; margin: 0 5px 0 0;white-space: nowrap; }
+.ui-tabs .ui-tabs-nav li a {padding: .5em 1em; text-decoration: none; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected {}
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: text; }
+.ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a {cursor:pointer;display:block}
+.ui-tabs .ui-tabs-panel { display: block;padding:20px 0;border-top:4px solid #EB132C}
+.ui-tabs .ui-tabs-hide { display: none !important; }
+
+.ui-corner-top{ -moz-border-radius-topleft:10px;-webkit-border-top-left-radius:10px; border-top-left-radius: 10px; -moz-border-radius-topright: 10px; -webkit-border-top-right-radius:10px; border-top-right-radius:10px; }
+
+
+/* Component containers
+----------------------------------*/
+.ui-widget {}
+.ui-widget .ui-widget{}
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {}
+.ui-widget-content{}
+.ui-widget-content a {color:#222222}
+.ui-widget-header a {color:#222222}
+
+/* Interaction states
+----------------------------------*/
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{background:#ACACAC;}
+.ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited {color:#FFF;text-decoration:none}
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {background:#EB132C;color:#FFF}
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {background:#EB132C;color:#FFF}
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {color:#FFF;text-decoration:none}
+.ui-widget :active {outline:none}
+
 
 #footer{width:960px;margin:0 auto;text-transform:uppercase;font-size:11px;line-height:normal}
 #footer ul{overflow:hidden;float:right}
