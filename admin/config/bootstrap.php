@@ -76,29 +76,10 @@ require __DIR__ . '/bootstrap/g11n.php';
  */
 // require __DIR__ . '/bootstrap/console.php';
 
-use \lithium\storage\Cache;
-
-Cache::config(array(
-    'local' => array(
-		'adapter' => 'XCache'
-)));
-
 /**
  * This configures your session storage. The Cookie storage adapter must be connected first, since
  * it intercepts any writes where the `'expires'` key is set in the options array.
  */
-use \lithium\storage\Session;
-
-// Session::config(array(
-//     'default' => array(
-// 		'adapter' => 'Cache', 
-// 		'config' => 'local'
-// )));
-
-Session::config(array(
-    'default' => array(
-		'adapter' => 'Php', 
-)));
 
 use \lithium\analysis\Logger;
 Logger::config(array(
