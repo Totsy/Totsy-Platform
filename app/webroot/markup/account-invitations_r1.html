@@ -145,121 +145,135 @@
 					<div class="tl"></div>
 					<div class="tr"></div>
 					<div id="page">
-					
-						<?php echo $tabs->startPane( 'pane' );
-						echo $tabs->startPanel( 'Send', 'send' ); ?>
-							<div class="send-left">
-								<h2 class="gray"><?php echo JText::_('Send Invitations');?></h2>
-								<p>For each friend you invite, Totsy will credit your account with $15 after your friend's place their first order.</p>
-								
-								<form>
-									<fieldset>
-										<legend class="bold"><?php echo JText::_('Share this link with your friends');?></legend>
-										
-										<a href="#" title="Share this link with your friends" class="bold">http://totsy.com/invite/ylveslecoq</a>
-										
-										<br />
-										
-										<label for="to"><?php echo JText::_('To');?>:</label><br />
-										<textarea name="to" id="to" class="inputbox" style="width:320px" value="Separate email addresses by commas" onblur="if(this.value=='') this.value='Separate email addresses by commas';" onfocus="if(this.value=='Separate email addresses by commas') this.value='';">Separate email addresses by commas</textarea>
-										
-										<br />
-										
-										<label for="comments"><?php echo JText::_('Comments');?>:</label><br />
-										<textarea name="comments" id="comments" class="inputbox" style="width:320px" value="Please accept this invitation to join Totsy" onblur="if(this.value=='') this.value='Please accept this invitation to join Totsy';" onfocus="if(this.value=='Please accept this invitation to join Totsy') this.value='';">Please accept this invitation to join Totsy</textarea>
-										
-										<br />
-										
-										<button type="submit" name="submit" class="flex-btn fr"><span><?php echo JText::_('Send');?></span></button>
-										
-									</fieldset>
-								
-								</form>
-										
-							</div>
+						
+						<div id="tabs">
+						
+							<ul>
+								<li><a href="#sendinvites"><span>Send</span></a></li>
+							    <li><a href="#openinvites"><span>Open Invitations</span></a></li>
+							    <li><a href="#acceptedinvites"><span>Accepted</span></a></li>
+							</ul>
 							
-							<div class="send-right r-container">
-								<div class="tl"></div>
-								<div class="tr"></div>
-								<div class="r-box-2">
-					
-									<h2 class="gray"><?php echo JText::_('Share with your friends');?></h2>
+							<!-- Start Open Invitations Tab -->
+							<div id="sendinvites" class="ui-tabs-hide">
+								<div class="send-left">
+									<h2 class="gray">Send Invitations</h2>
+									<p>For each friend you invite, Totsy will credit your account with $15 after your friend's place their first order.</p>
 									
-									<a href="#" href="Share Totsy with your Facebook friends" id="invite-facebook" class="invite-btn fl">Facebook</a>
-									<a href="#" href="Share Totsy with your Twitter followers" id="invite-twitter" class="invite-btn fr">Twitter</a>
+									<form>
+										<fieldset>
+											<legend class="bold">Share this link with your friends</legend>
+											
+											<a href="#" title="Share this link with your friends" class="bold">http://totsy.com/invite/ylveslecoq</a>
+											
+											<br />
+											
+											<label for="to">To:</label><br />
+											<textarea name="to" id="to" class="inputbox" style="width:320px" value="Separate email addresses by commas" onblur="if(this.value=='') this.value='Separate email addresses by commas';" onfocus="if(this.value=='Separate email addresses by commas') this.value='';">Separate email addresses by commas</textarea>
+											
+											<br />
+											
+											<label for="comments">Comments:</label><br />
+											<textarea name="comments" id="comments" class="inputbox" style="width:320px" value="Please accept this invitation to join Totsy" onblur="if(this.value=='') this.value='Please accept this invitation to join Totsy';" onfocus="if(this.value=='Please accept this invitation to join Totsy') this.value='';">Please accept this invitation to join Totsy</textarea>
+											
+											<br />
+											
+											<button type="submit" name="submit" class="flex-btn fr"><span>Send</span></button>
+											
+										</fieldset>
 									
-									<div class="dividing-line clear mar-b"><!-- --></div>
-									
-									<h2 class="gray clear"><?php echo JText::_('Invite from your address book');?></h2>
-									
-									<a href="#" href="Invite friends from your Gmail contacts" id="invite-gmail" class="invite-btn fl">Gmail</a>
-									<a href="#" href="Invite friends from your Yahoo! contacts" id="invite-yahoo" class="invite-btn fr">Yahoo!</a>
-									
-									<a href="#" href="Invite friends from your Outlook address book" id="invite-outlook" class="invite-btn fl">Outlook</a>
-									<a href="#" href="Invite friends from your AOL contacts" id="invite-aol" class="invite-btn fr">AOL</a>
-									
-									<a href="#" href="Invite friends from your MSN address book" id="invite-msn" class="invite-btn fl">MSN</a>
-									<a href="#" href="Invite friends" id="invite-others" class="invite-btn fr">Others</a>
-					
+									</form>
+											
 								</div>
-								<div class="bl"></div>
-								<div class="br"></div>
-							</div>
-							
-						<?php
-						echo $tabs->endPanel();
-						echo $tabs->startPanel( 'Open Invitations', 'open' ); ?>
-					
-							<strong>All the friends you've invited have accepted.</strong><br />
-							Nice! Now why not go invite more? Get a $15 Credit when they place their first order.
-					
-						<?php
-						echo $tabs->endPanel();
-						echo $tabs->startPanel( 'Accepted', 'accepted' ); ?>
-					
-							<table cellpadding="0" cellspacing="0" border="0" width="100%" class="order-table">
-						
-								<thead>
-									<tr>
-										<th><?php echo JText::_('Friends');?></th>
-										<th><?php echo JText::_('Member Since');?></th>
-										<th><?php echo JText::_('Credits Earned');?></th>
-									</tr>
-								</thead>
 								
-								<tbody>
-									<tr class="alt0">
-										
-										<td>
-											JI Joe
-										</td>
-										<td>
-											03/03/2009
-										<td>
-											$15 on 03/03/2009
-										</td>
-									</tr>
-									
-									<tr class="alt1">
-										
-										<td>
-											Louie Vega
-										</td>
-										<td>
-											03/12/2009
-										<td>
-											$15 on 03/29/2009
-										</td>
-									</tr>
-									
-								</tbody>
-							
-							</table>
+								<div class="send-right r-container">
+									<div class="tl"></div>
+									<div class="tr"></div>
+									<div class="r-box-2">
 						
-						<?php
-						echo $tabs->endPanel();
-						echo $tabs->endPane();?>
-					
+										<h2 class="gray">Share with your friends</h2>
+										
+										<a href="#" href="Share Totsy with your Facebook friends" id="invite-facebook" class="invite-btn fl">Facebook</a>
+										<a href="#" href="Share Totsy with your Twitter followers" id="invite-twitter" class="invite-btn fr">Twitter</a>
+										
+										<div class="dividing-line clear mar-b"><!-- --></div>
+										
+										<h2 class="gray clear">Invite from your address book</h2>
+										
+										<a href="#" href="Invite friends from your Gmail contacts" id="invite-gmail" class="invite-btn fl">Gmail</a>
+										<a href="#" href="Invite friends from your Yahoo! contacts" id="invite-yahoo" class="invite-btn fr">Yahoo!</a>
+										
+										<a href="#" href="Invite friends from your Outlook address book" id="invite-outlook" class="invite-btn fl">Outlook</a>
+										<a href="#" href="Invite friends from your AOL contacts" id="invite-aol" class="invite-btn fr">AOL</a>
+										
+										<a href="#" href="Invite friends from your MSN address book" id="invite-msn" class="invite-btn fl">MSN</a>
+										<a href="#" href="Invite friends" id="invite-others" class="invite-btn fr">Others</a>
+						
+									</div>
+									<div class="bl"></div>
+									<div class="br"></div>
+								</div>
+								
+							</div>
+							<!-- End Send Invitations Tab -->
+								
+								
+							<!-- Start Open Invitations Tab -->
+							<div id="openinvites" class="ui-tabs-hide">
+						
+								<strong>All the friends you've invited have accepted.</strong><br />
+								Nice! Now why not go invite more? Get a $15 Credit when they place their first order.
+							
+							</div>
+							<!-- End Open Invitations Tab -->
+							
+							<!-- Start Accepted Invitations Tab -->
+							<div id="acceptedinvites" class="ui-tabs-hide">
+						
+								<table cellpadding="0" cellspacing="0" border="0" width="100%" class="order-table">
+							
+									<thead>
+										<tr>
+											<th>Friends</th>
+											<th>Member Since</th>
+											<th>Credits Earned</th>
+										</tr>
+									</thead>
+									
+									<tbody>
+										<tr class="alt0">
+											
+											<td>
+												JI Joe
+											</td>
+											<td>
+												03/03/2009
+											<td>
+												$15 on 03/03/2009
+											</td>
+										</tr>
+										
+										<tr class="alt1">
+											
+											<td>
+												Louie Vega
+											</td>
+											<td>
+												03/12/2009
+											<td>
+												$15 on 03/29/2009
+											</td>
+										</tr>
+										
+									</tbody>
+								
+								</table>
+							
+							</div>
+							<!-- End Accepted Invitations Tab -->
+						
+						</div>
+											
 					</div>
 					<div class="bl"></div>
 					<div class="br"></div>
@@ -304,6 +318,14 @@
 		
 		<script type="text/javascript" src="../js/jquery-1.4.2.js"></script>
 		<script type="text/javascript" src="../js/jquery.equalheights.js"></script>
+		
+		<script type="text/javascript" src="../js/jquery-ui-1.8.2.custom.min.js"></script>
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#tabs").tabs();
+			});
+		</script>
 		
 		<!-- This equals the hight of all the boxes to the same height -->
 		<script type="text/javascript">
