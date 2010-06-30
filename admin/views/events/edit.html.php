@@ -165,12 +165,8 @@ tinyMCE.init({
 		<?=$this->form->file('upload_file'); ?>
 </div>
 <h1 id="current_items">Current Items</h1>
-<?php
-foreach ($eventItems as $item) {
-	echo $this->html->link($item->description, "/items/edit/$item->_id");
-	echo '<br>';
-}
-?>
+<?=$this->items->build($eventItems);?>
+
 <br>
 <br>
 <?=$this->form->submit('Add Event')?>

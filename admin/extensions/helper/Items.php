@@ -3,98 +3,54 @@ namespace admin\extensions\helper;
 
 
 class Items extends \lithium\template\Helper {
+	
+	protected $heading = array( 
+		'vendor',
+		'vendor_style',
+		'description',
+		'active'
+	);
+	protected $table = array(
+		'itemTable',
+		'datatable'
+	);
 
 	public function build($itemRecords = null) {
+		$html = '';
 		if(!empty($itemRecords)) {
-			$items = $itemRecords->data();
-			//Start clean
-			$html = '';
+			$itemData = $itemRecords->data();
 			//Setup the table
-			$html .= '<table id="itemTable" class="datatable" border="1" cellspacing="5" cellpadding="20" style="width: 1050px">';
+			list($id, $class) = $this->table;
+			$html .= "<table id=\"$id\" class=\"$class\">";
 			//We need the thead for jquery datatables
 			$html .=  '<thead>'; 
 			$html .= '<tr>';
-			$heading = array(
-				'_id', 
-				'name', 
-				'description', 
-				'original_price', 
-				'sale_price', 
-				'active', 
-				'vendor',
-				'sku', 
-				'color', 
-				'weight', 
-				'size', 
-				'inventory'
-			);
+
 			//Build the table headings first
-			foreach ($heading as $key){
-				//If we are on the attribute then get all the subitems
-				if (is_array($key)) {
-					foreach ($key as $subKey) {
-						//Build the table headings with subitems
-						$html .= "<th>$subKey</th>";
-					}
-				} else {
-					$html .=  "<th>$key</th>";
-				}
+			foreach ($this->heading as $key){
+				$html .=  "<th>$key</th>";
 			}
 			//Set ending tags for html table headings
 			$html .= '</tr></thead><tbody>';
 			//Lets start building the data fields
-			foreach ($items as $array) {
-				$array = $this->sortArrayByArray($array, $heading);
-				$array['active'] = ($array['active'] == 1) ? 'Yes' : 'No';
-				$link = "href=\"/items/edit/$array[_id]\"";
-				//Let's first check if this array item has nested Details
-				if(isset($array['details'][0])) {
-					foreach ($array as $key => $value) {
-						//Once we have an attribute lets build the whole row
-						if ($key == 'details') {
-							//Now build out attribute data
-							foreach ($value as $subarray) {
-								//Build core item info each time we have a new attribute
-								$html .= "<tr id=$array[_id]>";
-								foreach ($array as $key => $value) {
-									if ($key != 'details') {
-										if ($key == 'name' || $key == '_id') {
-											$html .= "<td><a $link>$value</a></td>";
-										} else {
-											$html .= "<td>$value</td>";
-										}
-									}
-								}
-								//Build out the attribute fields
-								foreach ($subarray as $attrKey => $attrVal) {
-									$html .= "<td>$attrVal</td>";
-								}
-								$html .= '</tr>';
-							}
-						}
+			foreach ($itemData as $item) {
+				$details = array_intersect_key($item, array_flip($this->heading));
+				$ordered = $this->sortArrayByArray($details, $this->heading);
+				$ordered['active'] = ($ordered['active'] == 1) ? 'Yes' : 'No';
+				$link = "href=\"/items/edit/$item[_id]\"";
+				foreach ($ordered as $key => $value) {
+					if ($key == 'description') {
+						$html .= "<td><a $link>$value</a></td>";
+					} else {
+						$html .= "<td>$value</td>";
 					}
-				} else {
-					$html .= "<tr id=$array[_id]>";
-					//We dont have nested Details here
-					foreach ($array as $key => $value) {
-						if ($key != 'details') {
-							if ($key == 'name' || $key == '_id') {
-								$html .= "<td><a $link>$value</a></td>";
-							} else {
-								$html .= "<td>$value</td>";
-							}
-						} else {
-							foreach ($value as $attrKey => $attrVal) {
-								$html .= "<td>$attrVal</td>";
-							}
-						}
-					}
-					$html .= '</tr>';
 				}
+				$html .= '</tr>';
 			}
-				$html .= "</tbody>";
-				$html .= "</table>";
-				return $html;
+			
+			$html .= "</tbody>";
+			$html .= "</table>";
+			return $html;
 		} else {
 			return $html = "There are no items";
 		}
