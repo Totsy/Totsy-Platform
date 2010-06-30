@@ -80,7 +80,7 @@ class UsersController extends \lithium\action\Controller {
 					$successAuth = $this->authIllogic($password);
 					if ($successAuth) {
 						//Write core information to the session and redirect user
-						$this->writeSession($this->userRecord->data());
+						$sessionWrite = $this->writeSession($this->userRecord->data());
 						$this->redirect('/');
 					} else {
 						$message = 'Login Failed - Please Try Again';
@@ -94,7 +94,9 @@ class UsersController extends \lithium\action\Controller {
 					}
 				}
 			}
-			
+			/*
+				TODO Update the lastlogin time, ip address, and login counter
+			*/
 		}
 		//new login layout to account for fullscreen image JL
 		$this->_render['layout'] = 'login';
@@ -104,7 +106,7 @@ class UsersController extends \lithium\action\Controller {
 	 * Performs the logout action of the user removing '_id' from session details.
 	 */
 	public function logout() {
-		Session::delete('userLogin');
+		$success = Session::delete('userLogin');
 		$this->redirect(array('action'=>'login'));
 	}
 	/**
@@ -149,6 +151,26 @@ class UsersController extends \lithium\action\Controller {
 			}
 			return $result;
 		});
+	}
+	
+	public function updatePassword()
+	{
+		//If there is a request
+			//New Passwords need to match
+	
+			//Get the user based on their session
+	
+			//If the user is legacy
+				//If password is correct via authIllogic
+					//Remove Salt
+					//Change password using sha1
+					//Set Legacy flag to 0
+				//else
+					//Message the user that the old password is incorrect
+			//else 
+				//Change the password using sha1
+			//Send user message that their password has been updated
+		
 	}
 }
 

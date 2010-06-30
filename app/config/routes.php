@@ -23,23 +23,28 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.jpg", array(), function($request) {
           'body' => File::first($request->id)->file->getBytes()
      ));
 });
-
-Router::connect('/uploads', 'Uploads::index');
-Router::connect('/uploads/upload', 'Uploads::upload');
+/**
+ * The following allows up to serve images right out of mongodb.
+ * This needs to be first so that we don't get a controller error.
+ * 
+ */
+Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
+     return new Response(array(
+          'type' => 'image/gif',
+          'body' => File::first($request->id)->file->getBytes()
+     ));
+});
 /**
  * Redirect all non-authenticated users to 
  */
-//$userSession = Session::read('userLogin');
-// if (empty($userSession)) {
-// 	Router::connect('/register', 'Users::register');
-// 	Router::connect('/{:args}', 'Users::login');
-// }
+if(!Session::check('userLogin')) {
+	Router::connect('/{:args}', 'Users::login');	
+}
 /**
  * Here, we are connecting '/' (base path) to controller called 'Pages',
  * its action called 'view', and we pass a param to select the view file
  * to use (in this case, /app/views/pages/home.html.php)...
  */
-
 Router::connect('/', 'Events::index');
 Router::connect('/login', 'Users::login');
 Router::connect('/logout', 'Users::logout');

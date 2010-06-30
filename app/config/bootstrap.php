@@ -83,7 +83,7 @@ require __DIR__ . '/bootstrap/g11n.php';
 use \lithium\storage\Session;
 
 Session::config(array(
- 	'default' => array('adapter' => 'Php')
+ 	'default' => array('adapter' => 'Php', 'expires' => '3600')
 ));
 
 

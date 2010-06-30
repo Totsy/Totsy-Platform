@@ -32,16 +32,13 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
 });
 
 Router::connect('/uploads', 'Uploads::index');
-Router::connect('/uploads/upload', 'Uploads::upload');
+Router::connect('/uploads/upload{:args}', 'Uploads::upload');
 /**
  * Redirect all non-authenticated users to 
  */
-//$userSession = Session::read('userLogin');
-// if (empty($userSession)) {
-// 	Router::connect('/register', 'Users::register');
-// 	Router::connect('/{:args}', 'Users::login');
-// 	var_dump($userSession);
-// }
+if(!Session::check('userLogin')) {
+	Router::connect('/{:args}', 'Users::login');	
+}
 /**
  * Here, we are connecting '/' (base path) to controller called 'Pages',
  * its action called 'view', and we pass a param to select the view file
@@ -54,6 +51,7 @@ Router::connect('/logout', 'Users::logout');
 Router::connect('/register', 'Users::register');
 Router::connect('/addresses', 'Addresses::view');
 Router::connect('/account/add/{:args}', 'Account::add');
+Router::connect('/events', 'Events::index');
 
 /**
  * ...and connect the rest of 'Pages' controller's urls.

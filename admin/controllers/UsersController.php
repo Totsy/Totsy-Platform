@@ -5,7 +5,7 @@ use admin\models\User;
 use \lithium\security\Auth;
 use \lithium\storage\Session;
 use \lithium\data\Connections;
-use \lithium\analysis\Logger;
+
 
 /**
  * This class provides all the methods to register and authentic a user. 
@@ -21,41 +21,6 @@ class UsersController extends \lithium\action\Controller {
 
 	}
 	/**
-	 * Performs basic registration functionality. All validation checks should happen via
-	 * JavaScript so no empty data is going into Mongo.
-	 * @todo Refactor to use count() from Mongo instead of array PHP count
-	 * @todo Confirm redirect location and message upon successful registration
-	 * @todo Authenticate upon successful registration before redirect
-	 * @return string User will be promoted that email is already registered.
-	 */
-	public function register() {
-		$message = false;
-		if ($this->request->data) {
-			$this->request->data['password'] = sha1($this->request->data['password']);
-			$email = $this->request->data['email'];
-			$username = $this->request->data['username'];
-			//Check if email exists
-			$emailCheck = User::count(array('email' => "$email"));
-			//Check if username exists
-			$usernameCheck = User::count(array('username' => "$username"));
-			if (empty($emailCheck) && empty($usernameCheck)) {
-				$user = User::create();
-				$success = $user->save($this->request->data);
-				if ($success) {
-					$id = Session::write('_id', $user->_id);
-					$firstname = Session::write('firstname', $user->firstname);
-					$lastname = Session::write('lastname', $user->lastname);
-					$email = Session::write('email', $user->email);
-					$this->redirect('/account/details');
-				}
-			} else {
-				$message = 'This email/username is already registered';
-			}
-		}
-		$this->_render['layout'] = 'login';
-		return compact('message');
-	}
-	/**
 	 * Performs login authentication for a user going directly to the database.
 	 * If authenticated the user will be redirected to the home page.
 	 *
@@ -63,41 +28,24 @@ class UsersController extends \lithium\action\Controller {
 	 */
 	public function login() {
 		$message = false;
+		var_dump(Session::adapter());
+		var_dump(Session::read('userLogin'));
 		Auth::config(array('userLogin' => array(
 			'model' => 'User',
 			'adapter' => 'Form',
 			'fields' => array('username', 'password'))
 			));
 		if ($this->request->data) {
-			$username = $this->request->data['username'];
-			$password = $this->request->data['password'];
-			//Grab User Record
-			$this->userRecord = User::find('first', array(
-				'conditions' => array('username' => "$username")
-			));
-			if(!empty($this->userRecord)){
-				if($this->userRecord->legacy == 1) {
-					$successAuth = $this->authIllogic($password);
-					if ($successAuth) {
-						//Write core information to the session and redirect user
-						$sessionWrite = $this->writeSession($this->userRecord->data());
-						$this->redirect('/');
-					} else {
-						$message = 'Login Failed - Please Try Again';
-					}
-				} else {
-					$auth = Auth::check("userLogin", $this->request);
-					if ($auth == false) {
-						$message = 'Login Failed - Please Try Again';
-					} else {
-						$this->redirect('/');
-					}
-				}
+			$auth = Auth::check("userLogin", $this->request);
+			var_dump(Session::read('userLogin'));
+			if ($auth == false) {
+				$message = 'Login Failed - Please Try Again';
+			} else {
+				//$this->redirect('/');
+				
 			}
-			/*
-				TODO Update the lastlogin time, ip address, and login counter
-			*/
 		}
+
 		//new login layout to account for fullscreen image JL
 		$this->_render['layout'] = 'login';
 		return compact('message');
@@ -106,21 +54,15 @@ class UsersController extends \lithium\action\Controller {
 	 * Performs the logout action of the user removing '_id' from session details.
 	 */
 	public function logout() {
-		$success = Session::delete('userLogin');
+		Auth::config(array('userLogin' => array(
+			'model' => 'User',
+			'adapter' => 'Form',
+			'fields' => array('username', 'password'))
+			));
+		Auth::clear('userLogin');
 		$this->redirect(array('action'=>'login'));
 	}
-	/**
-	 * This is only for legacy users that are coming with AuthLogic passwords and salt
-	 * @param string $password
-	 * @return boolean
-	 */
-	private function authIllogic($password) {
-		$digest = $password . $this->userRecord->data('salt');
-	    for ($i = 0; $i < 20; $i++) {
-			$digest = hash('sha512', $digest);
-	    }
-		return $digest == $this->userRecord->data('password');
-	}
+
 	/**
 	 * @param array $sessionInfo
 	 * @return boolean
@@ -132,26 +74,8 @@ class UsersController extends \lithium\action\Controller {
 	/**
 	 * 
 	 */
-	public function loginzuno(){
-		
-		$this->_render['layout'] = 'loginzuno';
-	
-	}
-	
-	protected function _init() {
-		parent::_init();
-		
-		$MongoDb = Connections::get('default');
-		$MongoDb->applyFilter('read', function($self, $params, $chain) use (&$MongoDb) {
-			$result = $chain->next($self, $params, $chain);
-			if (method_exists($result, 'data')) {
-				Logger::write('info',
-					json_encode($params['query']->export($MongoDb) + array('result' => $result->data()))
-				);
-			}
-			return $result;
-		});
-	}
+
+
 	
 	public function updatePassword()
 	{
