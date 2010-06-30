@@ -2,8 +2,8 @@
 
 namespace admin\controllers;
 
-use \admin\models\Event;
-use \admin\models\Item;
+use admin\models\Event;
+use admin\models\Item;
 use \MongoDate;
 use \MongoID;
 
@@ -52,7 +52,7 @@ class EventsController extends \lithium\action\Controller {
 			unset($this->request->data['upload_file']);
 		}
 		if (!empty($this->request->data)) {
-			$images = $this->praseImages();
+			$images = $this->parseImages();
 			$startDate = strtotime($this->request->data['start_date']);
 			$endDate = strtotime($this->request->data['end_date']); 
 			$this->request->data['start_date'] = new MongoDate($startDate);
@@ -68,15 +68,16 @@ class EventsController extends \lithium\action\Controller {
 
 	public function edit($_id = null) {
 		$event = Event::find($_id);
+		$eventItems = Item::find('all', array('conditions' => array('active' => 1, 'event' => array($_id))));
 		if (empty($event)) {
-			$this->redirect(array('controller' => 'events', 'action' => 'index'));
+			$this->redirect(array('controller' => 'events', 'action' => 'add'));
 		}
 		if ($_FILES) {
-			$items = $this->parseItems($_FILES);
+			$items = $this->parseItems($_FILES, $event->_id);
 			unset($this->request->data['upload_file']);
 		}
 		if (!empty($this->request->data)) {
-			$images = $this->praseImages();
+			$images = $this->parseImages($event->images);
 			$startDate = strtotime($this->request->data['start_date']);
 			$endDate = strtotime($this->request->data['end_date']); 
 			$this->request->data['start_date'] = new MongoDate($startDate);
@@ -90,10 +91,10 @@ class EventsController extends \lithium\action\Controller {
 				));
 			}
 		}
-		return compact('event');
+		return compact('event', 'eventItems');
 	}
 	
-	protected function parseItems($_FILES) {
+	protected function parseItems($_FILES, $_id) {
 		$items = array();
 		$itemIds = array();
 		// Default column headers from csv file
@@ -152,7 +153,12 @@ class EventsController extends \lithium\action\Controller {
 				$item = Item::create();
 				$date = new MongoDate();
 				// Add some more information to array
-				$details = array('active' => 1, 'created_date' => $date, 'details' => $itemAttributes );
+				$details = array(
+					'active' => 1, 
+					'created_date' => $date, 
+					'details' => $itemAttributes, 
+					'event' => array($_id)
+				);
 				$newItem = array_merge($itemDetail, $details);
 				if ($item->save($newItem)) {
 					$items[] = $item->_id;
@@ -162,7 +168,7 @@ class EventsController extends \lithium\action\Controller {
 		return $items;
 	}
 	
-	protected function praseImages() {
+	protected function parseImages() {
 		$images = array();
 		$uploadFileIds = array_diff_key($this->request->data, array_flip($this->eventKey));
 		if (!empty($uploadFileIds)) {

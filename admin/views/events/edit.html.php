@@ -99,21 +99,41 @@ tinyMCE.init({
 <br>
 
 <h1 id="current_images">Current Images</h1>
-
 <?php 
-	$vars = $event->images->data();
-	if (!empty($vars)) {
-		$vars = array('im'=>'test');
-		$this->view()->render(array(
-			'template' => 'views'), 
-			$vars, 
-			array(
-				'controller' => 'uploads', 
-				'type' => 'html', 
-				'template' => 'event'
-		));
-	}
+	$preview_image = $event->images->preview_image; 
+	$banner_image = $event->images->banner_image;
+	$logo_image = $event->images->logo_image;
 ?>
+
+
+	<table border="1" cellspacing="30" cellpadding="30">
+	<tr>
+		<th align="justify">
+			Image Location
+		</th>
+		<th align="justify">
+			Image
+		</th>
+	</tr>
+	<tr>
+		<td>Preview Image</td>
+		<td align="center">
+			<?=$this->html->image("/image/$preview_image.jpg", array('alt' => 'altText')); ?>
+		</td>
+	</tr>
+	<tr>
+		<td>Banner Image</td>
+		<td align="center">
+			<?=$this->html->image("/image/$banner_image.jpg", array('alt' => 'altText')); ?>
+		</td>
+	</tr>
+	<tr>
+		<td>Logo Image</td>
+		<td align="center">
+			<?=$this->html->image("/image/$logo_image.jpg", array('alt' => 'altText')); ?>
+		</td>
+	</tr>
+	</table>
 
 <h1 id="uploaded_media">Uploaded Media</h1>
 <div id="fileInfo"></div>
@@ -144,6 +164,13 @@ tinyMCE.init({
 		<?=$this->form->label('Upload Event CSV: '); ?>
 		<?=$this->form->file('upload_file'); ?>
 </div>
+<h1 id="current_items">Current Items</h1>
+<?php
+foreach ($eventItems as $item) {
+	echo $this->html->link($item->description, "/items/edit/$item->_id");
+	echo '<br>';
+}
+?>
 <br>
 <br>
 <?=$this->form->submit('Add Event')?>

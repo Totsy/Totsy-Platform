@@ -9,7 +9,7 @@ window.onload = function() {
 		file_size_limit : "102400",	// 100MB
 		file_types : "*.jpg;*.gif",
 		file_types_description : "All Files",
-		file_upload_limit : "10",
+		file_upload_limit : "3",
 		file_queue_limit : "0",
 
 		// Event Handler Settings (all my handlers are in the Handler.js file)
