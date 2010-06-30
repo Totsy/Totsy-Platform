@@ -28,8 +28,6 @@ class UsersController extends \lithium\action\Controller {
 	 */
 	public function login() {
 		$message = false;
-		var_dump(Session::adapter());
-		var_dump(Session::read('userLogin'));
 		Auth::config(array('userLogin' => array(
 			'model' => 'User',
 			'adapter' => 'Form',
@@ -41,7 +39,7 @@ class UsersController extends \lithium\action\Controller {
 			if ($auth == false) {
 				$message = 'Login Failed - Please Try Again';
 			} else {
-				//$this->redirect('/');
+				$this->redirect('/');
 				
 			}
 		}
