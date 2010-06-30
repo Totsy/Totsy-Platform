@@ -7,6 +7,7 @@ use admin\models\Item;
 use \MongoDate;
 use \MongoID;
 
+
 class EventsController extends \lithium\action\Controller {
 
 	/**
@@ -48,7 +49,7 @@ class EventsController extends \lithium\action\Controller {
 			TODO Clean up file handling here
 		*/
 		if ($_FILES) {
-			$items = $this->parseItems($_FILES);
+			$items = $this->parseItems($_FILES, $event->_id);
 			unset($this->request->data['upload_file']);
 		}
 		if (!empty($this->request->data)) {
