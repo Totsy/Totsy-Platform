@@ -169,5 +169,5 @@ tinyMCE.init({
 
 <br>
 <br>
-<?=$this->form->submit('Add Event')?>
+<?=$this->form->submit('Update Event')?>
 <?=$this->form->end(); ?>

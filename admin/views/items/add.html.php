@@ -34,8 +34,11 @@ tinyMCE.init({
 	<br>
 	<fieldset>
 		<legend>Price Details</legend>
-	<?=$this->form->field('original_price', array('type' => 'text'));?>
-	<?=$this->form->field('sale_price', array('type' => 'text'));?>
+	<?=$this->form->field('msrp', array('type' => 'text'));?>
+	<?=$this->form->field('sale_retail', array('type' => 'text'));?>
+	<?=$this->form->field('percent_off', array('type' => 'text'));?>
+	<?=$this->form->field('original_wholesale', array('type' => 'text'));?>
+	<?=$this->form->field('sale_wholesale', array('type' => 'text'));?>
 	<?=$this->form->label('active')?>
 	<input type="radio" name="active" value="Yes" id="Yes" checked ="checked">Yes
 	<input type="radio" name="active" value="No" id="No">No
@@ -53,9 +56,9 @@ tinyMCE.init({
 				<th>Inventory</th>
 			</tr>
 			<tr id='itemDetails'>
-				<td><?=$this->form->text('sku');?></td>
+				<td><?=$this->form->text('vendor_sku');?></td>
+				<td><?=$this->form->text('Category');?></td>
 				<td><?=$this->form->text('color');?></td>
-				<td><?=$this->form->text('weight');?></td>
 				<td><?=$this->form->text('size');?></td>
 				<td><?=$this->form->text('inventory');?></td>
 				<td><a id="minus" href="">[-]</a> <a id="plus" href="">[+]</a></td>

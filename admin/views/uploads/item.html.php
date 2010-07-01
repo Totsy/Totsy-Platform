@@ -1,30 +1,30 @@
 <table border="1" cellspacing="30" cellpadding="30">
 <tr>
 	<th align="justify">
-		Active
-	</th>
-	<th align="justify">
 		Image Name
 	</th>
-	<th align="center">
-		Main Product Image
+	<th align="justify">
+		Image Preview
 	</th>
 	<th align="center">
-		Detail Product Image
+		Primary Product Image
+	</th>
+	<th align="center">
+		Secondary Product Image
 	</th>
 </tr>
 <tr>
-	<td align="center">
-		<input type="checkbox" name="file-<?=$id?>" value="1" checked>
-	</td>
 	<td align="center" width="200">
 		<?php echo $fileName ?>
 	</td>
 	<td align="center">
-		<input type="checkbox" name="main_image" value="<?=$id;?>">
+		<?=$this->html->image("/image/$id.jpg", array('alt' => 'altText')); ?>
 	</td>
 	<td align="center">
-		<input type="checkbox" name="detail_image_<?=$id;?>" value="<?=$id;?>">
+		<input type="checkbox" name="primary-<?=$id;?>" value="<?=$id;?>">
+	</td>
+	<td align="center">
+		<input type="checkbox" name="secondary-<?=$id;?>" value="<?=$id;?>">
 	</td>
 </tr>
 </table>
