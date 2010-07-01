@@ -976,3 +976,6 @@ border: 1px solid #7AB1DD;
 background: url(../img/info-icon.png) #C4E1F8 no-repeat 4px center;
 color: #005192
 }
+#event_duration, #event_status, #event_description, #event_note, #event_preview {
+margin : 10px 0 10px 0;
+}

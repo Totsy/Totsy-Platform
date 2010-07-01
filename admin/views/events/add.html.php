@@ -11,11 +11,13 @@
 <?=$this->html->style('jquery_ui_blitzer.css')?>
 <?=$this->html->script('jquery.dataTables.js');?>
 <?=$this->html->style('table');?>
+<?=$this->html->style('admin');?>
 
 <script type="text/javascript">
 tinyMCE.init({
 	mode : "textareas",
-	theme : "simple"
+	theme : "simple",
+	width : "600"
 });
 
 </script>
@@ -83,51 +85,56 @@ tinyMCE.init({
 <?=$this->html->link('See Event List','/events')?>
 
 <h1>Add an Event</h1>
-Hello administrator. Please add an event by filling in all the information below.
-
-Thank You!
-<?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
-    <?=$this->form->field('name');?>
-    <?=$this->form->field('blurb', array('type' => 'textarea', 'name' => 'content'));?>
-	<input type="radio" name="enabled" value="1" id="enabled"> Enable Event
-	<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Event
-	<br>
-	<fieldset>
-		<legend>Event Duration</legend>
-		<label for="start_date">Start Date</label><input type="text" name="start_date" value="" id="start_date">
-		<label for="end_date">End Date</label><input type="text" name="end_date" value="" id="end_date">
-	</fieldset>
-<br>
-<h1 id="uploaded_media">Uploaded Media</h1>
-<div id="fileInfo"></div>
-<br>
-
-<br>
-<table>
-	<tr valign="top">
-		<td>
-			<div>
-				<div class="fieldset flash" id="fsUploadProgress1">
-					<span class="legend">Upload Status</span>
-				</div>
-				<div style="padding-left: 5px;">
-					<span id="spanButtonPlaceholder1"></span>
-					<input id="btnCancel1" type="button" value="Cancel Uploads" onclick="cancelQueue(upload1);" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />
-					<br />
-				</div>
-			</div>
-		</td>
-	</tr>
-</table>
-
-<br>
-<h1 id="">Upload Event Items</h1>
-<br>
-<div id="event_items">
-		<?=$this->form->label('Upload Event CSV: '); ?>
-		<?=$this->form->file('upload_file'); ?>
+<div id="event_note">
+	<p>
+		Hello administrator. Please add an event by filling in all the information below. Thank You!
+	</p>
 </div>
-<br>
-<br>
-<?=$this->form->submit('Add Event')?>
+<h2 id="event_description">Event Description</h2>
+<?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
+    <?=$this->form->field('name', array('class' => 'general'));?>
+    <?=$this->form->field('blurb', array('type' => 'textarea', 'name' => 'content'));?>
+	<div id="event_status">
+		<h2 id="event_status">Event Status</h2>
+		<input type="radio" name="enabled" value="1" id="enabled"> Enable Event <br>
+		<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Event
+	</div>
+	<div id="event_duration">
+		<h2 id="event_duration">Event Duration</h2>
+		<?=$this->form->field('start_date', array('class' => 'general', 'id' => 'start_date'));?>
+		<?=$this->form->field('end_date', array('class' => 'general', 'id' => 'end_date'));?>
+	</div>
+	<br>
+	<h1 id="uploaded_media">Uploaded Media</h1>
+	<div id="fileInfo"></div>
+	<br>
+
+	<br>
+	<table>
+		<tr valign="top">
+			<td>
+				<div>
+					<div class="fieldset flash" id="fsUploadProgress1">
+						<span class="legend">Upload Status</span>
+					</div>
+					<div style="padding-left: 5px;">
+						<span id="spanButtonPlaceholder1"></span>
+						<input id="btnCancel1" type="button" value="Cancel Uploads" onclick="cancelQueue(upload1);" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />
+						<br />
+					</div>
+				</div>
+			</td>
+		</tr>
+	</table>
+
+	<br>
+	<h1 id="">Upload Event Items</h1>
+	<br>
+	<div id="event_items">
+			<?=$this->form->label('Upload Event CSV: '); ?>
+			<?=$this->form->file('upload_file'); ?>
+	</div>
+	<br>
+	<br>
+	<?=$this->form->submit('Add Event')?>
 <?=$this->form->end(); ?>

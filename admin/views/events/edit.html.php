@@ -11,11 +11,13 @@
 <?=$this->html->style('jquery_ui_blitzer.css')?>
 <?=$this->html->script('jquery.dataTables.js');?>
 <?=$this->html->style('table');?>
+<?=$this->html->style('admin');?>
 
 <script type="text/javascript">
 tinyMCE.init({
 	mode : "textareas",
-	theme : "simple"
+	theme : "simple",
+	width : "600"
 });
 
 </script>
@@ -84,25 +86,45 @@ tinyMCE.init({
 
 
 <h1>Edit an Event</h1>
-<?=$this->html->link('Preview Event',"/events/view/$event->_id")?>
-<?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
-    <?=$this->form->field('name', array('value' => $event->name));?>
-    <?=$this->form->field('blurb', array('type' => 'textarea', 'name' => 'content', 'value' => $event->blurb));?>
-	<input type="radio" name="enabled" value="1" id="enabled"> Enable Event
-	<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Event
-	<br>
-	<fieldset>
-		<legend>Event Duration</legend>
-		<label for="start_date">Start Date</label><input type="text" name="start_date" value="<?php echo date('M-d-Y', $event->start_date->sec);?>" id="start_date">
-		<label for="end_date">End Date</label><input type="text" name="end_date" value="<?php echo date('M-d-Y', $event->end_date->sec);?>" id="end_date">
-	</fieldset>
-<br>
+<div id="event_note">
+	<p>
+		Hello administrator. Please edit an event by filling in all the information below. Thank You!
+	</p>
+</div>
+<div id="event_preview">
+	<p> To see a preview of the event please <?=$this->html->link('click here.',"/events/view/$event->_id")?></p>
+</div>
+<h2 id="event_description">Event Description</h2>
 
+<?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
+    <?=$this->form->field('name', array('value' => $event->name, 'class' => 'general'));?>
+    <?=$this->form->field('blurb', array('type' => 'textarea', 'name' => 'content', 'value' => $event->blurb));?>
+	<div id="event_status">
+		<h2 id="event_status">Event Status</h2>
+		<input type="radio" name="enabled" value="1" id="enabled"> Enable Event <br>
+		<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Event
+	</div>
+	<div id="event_duration">
+		<h2 id="event_duration">Event Duration</h2>
+		<?php 
+			$start_date = date('M-d-Y', $event->start_date->sec);
+			$end_date =  date('M-d-Y', $event->end_date->sec);
+			echo $this->form->field('start_date', array(
+					'class' => 'general', 
+					'id' => 'start_date', 
+					'value' => "$start_date"
+				));
+		 	echo $this->form->field('end_date', array(
+					'class' => 'general', 
+					'id' => 'end_date', 
+					'value' => "$end_date"
+				));?>
+	</div>
 <h1 id="current_images">Current Images</h1>
 <?php 
-	$preview_image = $event->images->preview_image; 
-	$banner_image = $event->images->banner_image;
-	$logo_image = $event->images->logo_image;
+	$preview_image = (empty($event->images->preview_image)) ? null : $event->images->preview_image;
+	$banner_image = (empty($event->images->banner_image)) ? null : $event->images->banner_image; 
+	$logo_image = (empty($event->images->logo_image)) ? null : $event->images->logo_image; 
 ?>
 
 
