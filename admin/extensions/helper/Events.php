@@ -17,7 +17,7 @@ class Events extends \lithium\template\Helper {
 				'end_date', 
 				'enabled'
 			);
-			$html .= '<table id="itemTable" class="datatable" border="1" cellspacing="5" cellpadding="20" style="width: 1050px">';
+			$html .= '<table id="itemTable" class="datatable" border="1" style="width: 500px">';
 			$html .=  '<thead>'; 
 			$html .= '<tr>';
 			//Build the table headings first

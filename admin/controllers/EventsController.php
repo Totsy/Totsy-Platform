@@ -169,14 +169,18 @@ class EventsController extends \lithium\action\Controller {
 		return $items;
 	}
 	
-	protected function parseImages() {
+	protected function parseImages($imageRecord) {
 		$images = array();
-		$uploadFileIds = array_diff_key($this->request->data, array_flip($this->eventKey));
-		if (!empty($uploadFileIds)) {
-			foreach ($uploadFileIds as $key => $value) {
-				$images[$key] = $value;
-				unset($this->request->data[$key]);
+		if (empty($imageRecord)) {
+			$uploadFileIds = array_diff_key($this->request->data, array_flip($this->eventKey));
+			if (!empty($uploadFileIds)) {
+				foreach ($uploadFileIds as $key => $value) {
+					$images[$key] = $value;
+					unset($this->request->data[$key]);
+				}
 			}
+		} else {
+			$images = $imageRecord->data();
 		}
 		return $images;
 	}
