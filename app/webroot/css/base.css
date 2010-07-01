@@ -176,8 +176,8 @@ li.item5 a:hover,li.item5.over a, li.active.item5 a{background-position:-244px 0
 #page-header img.m-logo{float:left;margin-right:10px}
 #page-header h1{color:#707070;font-size:20px}
 
-.table-row{display:table-row}
-.table-cell{display:table-cell;vertical-align:middle}
+.table-row{overflow:hidden}
+/*.table-cell{display:table-cell;vertical-align:middle}*/
 .v-bottom{vertical-align:bottom}
 
 h2.page-title{font-weight:normal;font-size:24px}
@@ -377,8 +377,8 @@ a.sm-twitter-md{background-position:-80px 0;width:32px;height:32px}
 
 .splash-details .left{width:80%}
 .splash-details .right{width:20%;text-align:right}
-.details .left{width:70%}
-.details .right{width:30%;text-align:right}
+.details .left{width:56%;float:left}
+.details .right{width:30%;text-align:right;float:left}
 
 .product-list-item.middle{margin:0 10px 10px 10px}
 
