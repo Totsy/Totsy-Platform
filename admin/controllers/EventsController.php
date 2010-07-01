@@ -168,18 +168,19 @@ class EventsController extends \lithium\action\Controller {
 		}
 		return $items;
 	}
-	
+	/**
+	 * Parse the images from the request using the key
+	 * @param object
+	 * @return array
+	 */
 	protected function parseImages($imageRecord = null) {
 		$images = array();
-		if (empty($imageRecord)) {
-			$uploadFileIds = array_diff_key($this->request->data, array_flip($this->eventKey));
-			if (!empty($uploadFileIds)) {
-				foreach ($uploadFileIds as $key => $value) {
-					$images[$key] = $value;
-					unset($this->request->data[$key]);
-				}
+		foreach ($this->request->data as $key => $value) {
+			if (substr($key, -6) == '_image' ) {
+				$images["$key"] = $value;
 			}
-		} else {
+		}
+		if (empty($images) && !empty($imageRecord)) {
 			$images = $imageRecord->data();
 		}
 		return $images;
