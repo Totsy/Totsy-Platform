@@ -30,25 +30,6 @@ class ItemsController extends \lithium\action\Controller {
 		return compact('items');
 	}
 	/**
-	 * Adds a product item to the database
-	 */
-	public function add() {
-		//Check if there was a post request
-		if ($this->request->data) {
-			$itemData = $this->organizeItem($this->request->data);
-			$itemData['created_date'] = new MongoDate();
-			$itemData['files'] = $this->files($this->request->data);
-			//Create record	
-			$item = Item::create($itemData);
-			//Save record
-			$success = $item->save($itemData);
-			if ($success) {
-				$message = 'Item Successfully Added';
-			}
-		}
-		return compact('message', 'item');
-	}
-	/**
 	 * Edit an item
 	 */
 	public function edit($id = null) {
@@ -72,7 +53,11 @@ class ItemsController extends \lithium\action\Controller {
 			}
 			$itemData['modified_date'] = new MongoDate();
 			$itemData['files'] = $this->files($this->request->data);
-			$itemData = array_merge($itemData, array('primary_images' => $primaryImages), array('secondary_images' => $secondaryImages));
+			$itemData = array_merge($itemData, array(
+				'primary_images' => $primaryImages), 
+				array(
+					'secondary_images' => $secondaryImages
+			));
 			if ($item->save($itemData)) {
 				$this->redirect(array(
 					'controller' => 'items', 'action' => 'edit',
