@@ -169,7 +169,7 @@ class EventsController extends \lithium\action\Controller {
 		return $items;
 	}
 	
-	protected function parseImages($imageRecord) {
+	protected function parseImages($imageRecord = null) {
 		$images = array();
 		if (empty($imageRecord)) {
 			$uploadFileIds = array_diff_key($this->request->data, array_flip($this->eventKey));
