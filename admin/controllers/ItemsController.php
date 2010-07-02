@@ -10,10 +10,6 @@ use \MongoDate;
  */
 class ItemsController extends \lithium\action\Controller {
 	
-	
-	public function _init() {
-		parent::_init();
-	}
 	/**
 	 * Main display of item data
 	 */
@@ -30,7 +26,13 @@ class ItemsController extends \lithium\action\Controller {
 		return compact('items');
 	}
 	/**
-	 * Edit an item
+	 * Edits a product/item based on a preloaded CSV file.
+	 * 
+	 * The edit method has several parts that need to be parsed
+	 * before saved to the database. This primarily applies to the
+	 * images that are attached to the item. 
+	 * @param string
+	 * @return array
 	 */
 	public function edit($id = null) {
 		$item = Item::find('first', array('conditions' => array('_id' => $id)));
@@ -51,17 +53,25 @@ class ItemsController extends \lithium\action\Controller {
 					$secondaryImages[] = substr($key, 10, 24);
 				}
 			}
+			foreach ($itemData as $key => $value) {
+				if (substr($key, 0, 8) == 'primary-' ) {
+					$primaryImages[] = $value;
+					unset($itemData[$key]);
+				}
+				if (substr($key, 0, 10) == 'secondary-' ) {
+					$secondaryImages[] = $value;
+					unset($itemData[$key]);
+				}
+			}
 			$itemData['modified_date'] = new MongoDate();
-			$itemData['files'] = $this->files($this->request->data);
 			$itemData = array_merge($itemData, array(
 				'primary_images' => $primaryImages), 
-				array(
-					'secondary_images' => $secondaryImages
+				array('secondary_images' => $secondaryImages
 			));
 			if ($item->save($itemData)) {
 				$this->redirect(array(
 					'controller' => 'items', 'action' => 'edit',
-					'args' => array($item->id)
+					'args' => array($item->_id)
 				));
 			}
 		}
@@ -83,15 +93,7 @@ class ItemsController extends \lithium\action\Controller {
 		return array_merge($desc, array('details' => $details[0]));
 	}
 	
-	private function files($item)
-	{
-		unset($item['itemDetails']);
-		return array_keys($item, 'on');
-	}
-	
-	public function view($params, array $options = array()) {
-		
-	}
+	public function view($params, array $options = array()) {}
 }
 
 ?>
