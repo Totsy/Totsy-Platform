@@ -1,6 +1,8 @@
 <?=$this->html->script('jquery-1.4.2.min.js');?>
 <?=$this->html->script('jquery.dataTables.js');?>
 <?=$this->html->style('table');?>
+<?=$this->html->style('admin');?>
+
 
 
 <h1>Event Administration</h1>

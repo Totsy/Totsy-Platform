@@ -5,23 +5,16 @@
 
 <h1>Product Item Administration</h1>
 <br>
-<p>Edit items using the table below. Administrators are allowed to edit, delete and append media to items.</p>
 
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
 		$('#itemTable').dataTable();
 	} );
 </script>
-<br>
-<?=$this->html->link('Add an Item','/items/add')?> 
-<br>
-<p>
-	Todo: <br>
-		Add link for modal item addition.<br>
-		Add deletion of items.<br>
-		Add media add and delete.<br>
-	
-</p>
+<div id="note">
+	<p>Select from the list below to edit an item. To create new items please select <?=$this->html->link('an event','/events')?> or create <?=$this->html->link('a new event','/events/add')?> first.</p>	
+</div>
+
 <br>
 <?=$this->items->build($items); ?>
 
