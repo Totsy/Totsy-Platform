@@ -1,5 +1,5 @@
 <?=$this->html->script('jquery-1.4.2');?>
-<?=$this->html->script('jquery.countdown');?>
+<?=$this->html->script('jquery.countdown.min');?>
 <?=$this->html->style('jquery.countdown');?>
 
 <script type="text/javascript"> 
