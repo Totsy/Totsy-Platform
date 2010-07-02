@@ -44,6 +44,7 @@ class ItemsController extends \lithium\action\Controller {
 			$this->redirect(array('controller' => 'items', 'action' => 'index'));
 		}
 		if (!empty($this->request->data)) {
+			
 			$itemData = $this->organizeItem($this->request->data);
 			foreach ($this->request->data as $key => $value) {
 				if (substr($key, 0, 8) == 'primary-' ) {
@@ -82,7 +83,7 @@ class ItemsController extends \lithium\action\Controller {
 	 */
 	private function organizeItem($item) {
 		$data = $item['itemDetails']['itemDetails'];
-		$data['active'] = ($data['active'] == "Yes") ? 1 : 0;
+		$data['enabled'] = ($data['enabled'] == "Yes") ? 1 : 0;
 		foreach ($data as $key => $value){
 			if (is_numeric($key)) {
 				$details["$key"] = $value;

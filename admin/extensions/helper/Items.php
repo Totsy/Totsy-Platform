@@ -8,7 +8,7 @@ class Items extends \lithium\template\Helper {
 		'vendor',
 		'vendor_style',
 		'description',
-		'active'
+		'enabled'
 	);
 	protected $table = array(
 		'itemTable',
@@ -36,7 +36,7 @@ class Items extends \lithium\template\Helper {
 			foreach ($itemData as $item) {
 				$details = array_intersect_key($item, array_flip($this->heading));
 				$ordered = $this->sortArrayByArray($details, $this->heading);
-				$ordered['active'] = ($ordered['active'] == 1) ? 'Yes' : 'No';
+				$ordered['enabled'] = ($ordered['enabled'] == 1) ? 'Yes' : 'No';
 				$link = "href=\"/items/edit/$item[_id]\"";
 				foreach ($ordered as $key => $value) {
 					if ($key == 'description') {

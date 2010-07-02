@@ -1,3 +1,16 @@
+<?=$this->html->script('jquery-1.4.2');?>
+<?=$this->html->script('jquery.countdown');?>
+<?=$this->html->style('jquery.countdown');?>
+
+<script type="text/javascript"> 
+$(function () {
+	var saleEnd = new Date();
+	saleEnd = new Date(<?php echo $event->end_date->sec * 1000?>);
+	$('#listingCountdown').countdown({until: saleEnd, format:'dHM'});
+	$('#splashCountdown').countdown({until: saleEnd, compact: true, description: ''});
+});
+</script>
+
 <?php
 	if(!empty($event)) {
 		$banner_image = (empty($event->images)) ? null : $event->images->banner_image;
@@ -19,7 +32,7 @@
 		<div class="splash-details">
 			<div class="table-cell left">
 				Events End In<br />
-				<strong>8 Days, 12:59:49</strong>
+				<strong><div id="splashCountdown"></div></strong>
 			</div>
 			
 			<div class="table-cell right">
@@ -49,7 +62,8 @@
 				<img src="/image/<?=$logo_image?>.gif" alt="Logo ALT Tag" title="Logo ALT Tag" width="148" height="52" />
 				<div class="title table-cell v-bottom">
 					<h1>Fischer Price</h1>
-					<strong class="red">SALE ENDS in </strong>
+					<strong class="red">SALE ENDS in <div id="listingCountdown"></div></strong>
+					
 				</div>
 			</div>
 			<p><?php echo $blurb; ?><p>

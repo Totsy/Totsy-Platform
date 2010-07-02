@@ -9,6 +9,9 @@
 <?=$this->html->script('handlers.js');?>
 <?=$this->html->script('item_upload.js');?>
 <?=$this->html->style('swfupload')?>
+<?=$this->html->style('colorPicker')?>
+<?=$this->html->script('jquery.colorPicker.js');?>
+
 
 <script type="text/javascript">
 tinyMCE.init({
@@ -23,6 +26,11 @@ tinyMCE.init({
 		$("#itemDetails").dynamicForm("#plus", "#minus", {limit:15, createColor: 'yellow', removeColor: 'red'});
 	});
 </script>
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function() {
+    $('#itemDetails[itemDetails][color1]').colorPicker();
+  }
+</script>
 
 <?=$this->html->link('See Item List','/items')?>
 <h1>Edit Item</h1>
@@ -32,13 +40,22 @@ tinyMCE.init({
 	<div id="item_description">
 		<h2 id="">Product Description</h2>
 		<?=$this->form->field('description', array('type' => 'text', 'class' => 'desc', 'value' => $item->description));?>
-		<?=$this->form->field('blurb', array('type' => 'textarea', 'class' => 'general','name' => 'content', 'value' => $item->blrub));?>
+		<?=$this->form->field('blurb', array('type' => 'textarea', 'class' => 'general','name' => 'content', 'value' => $item->blurb));?>
 		<?=$this->form->field('vendor', array('type' => 'text', 'class' => 'general','value' => $item->vendor));?>
 		<?=$this->form->field('vendor_style', array('type' => 'text', 'class' => 'general','value' => $item->vendor_style));?>
 		<?=$this->form->field('age', array('type' => 'text', 'class' => 'general','value' => $item->age));?>
 		<?=$this->form->field('color', array('type' => 'text', 'class' => 'general', 'value' => $item->color));?>
-		<input type="radio" name="active" value="1" id="Yes" checked ="checked">Yes
-		<input type="radio" name="active" value="0" id="No">No
+		<div id="item_status">
+			<h2 id="item_status">Item Status</h2>
+			<?php
+				$enabled = ($item->enabled == 1) ? "checked" : null;
+				$disabled = ($item->enabled == 1) ? null : "checked";
+			 ?>
+
+			<input type="radio" name="enabled" value="1" id="enabled" <?php echo $enabled; ?> > Enable Item <br>
+			<input type="radio" name="enabled" value="0" id="enabled" <?php echo $disabled; ?> > Disable Item
+
+		</div>
 	</div>
 	<div id="item_activity">
 		

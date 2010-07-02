@@ -69,7 +69,7 @@ class EventsController extends \lithium\action\Controller {
 
 	public function edit($_id = null) {
 		$event = Event::find($_id);
-		$eventItems = Item::find('all', array('conditions' => array('active' => 1, 'event' => array($_id))));
+		$eventItems = Item::find('all', array('conditions' => array('enabled' => 1, 'event' => array($_id))));
 		if (empty($event)) {
 			$this->redirect(array('controller' => 'events', 'action' => 'add'));
 		}
@@ -94,7 +94,9 @@ class EventsController extends \lithium\action\Controller {
 		}
 		return compact('event', 'eventItems');
 	}
-	
+	/**
+	 * Parse the CSV file
+	 */
 	protected function parseItems($_FILES, $_id) {
 		$items = array();
 		$itemIds = array();
@@ -155,7 +157,7 @@ class EventsController extends \lithium\action\Controller {
 				$date = new MongoDate();
 				// Add some more information to array
 				$details = array(
-					'active' => 1, 
+					'enabled' => 1, 
 					'created_date' => $date, 
 					'details' => $itemAttributes, 
 					'event' => array($_id)
@@ -166,6 +168,7 @@ class EventsController extends \lithium\action\Controller {
 				}
 			}
 		}
+		
 		return $items;
 	}
 	/**
