@@ -375,8 +375,8 @@ a.sm-twitter-md{background-position:-80px 0;width:32px;height:32px}
 .p-container h2{font-weight:normal;text-transform:uppercase;color:#707070;margin-bottom:12px}
 .p-container .details strong{text-transform:uppercase;font-size:16px}
 
-.splash-details .left{width:80%}
-.splash-details .right{width:20%;text-align:right}
+.splash-details .left{width:70%;float:left;padding:15px 0 15px 20px}
+.splash-details .right{width:15%;text-align:right;float:right;padding:22px 20px 0 0}
 .details .left{width:56%;float:left}
 .details .right{width:30%;text-align:right;float:left}
 
@@ -385,8 +385,6 @@ a.sm-twitter-md{background-position:-80px 0;width:32px;height:32px}
 .p-container .splash-details{position:absolute;bottom:0;left:0;background:url(../img/gray-80-bg.png) repeat;color:#FFF;width:100%;font-size:20px;text-transform:uppercase;line-height:24px}
 
 .splash-details a.flex-btn:link, .splash-details a.flex-btn:visited{float:right;padding:10px 12px}
-
-.splash-details .table-cell{padding:15px 20px}
 
 .invite-column{width:180px;text-align:center;float:left}
 .invite-column h2{display:block;text-indent:-9999px}
