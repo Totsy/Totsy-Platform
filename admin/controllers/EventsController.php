@@ -54,11 +54,14 @@ class EventsController extends \lithium\action\Controller {
 		}
 		if (!empty($this->request->data)) {
 			$images = $this->parseImages();
-			$startDate = strtotime($this->request->data['start_date']);
-			$endDate = strtotime($this->request->data['end_date']); 
-			$this->request->data['start_date'] = new MongoDate($startDate);
-			$this->request->data['end_date'] = new MongoDate($endDate);
-			$eventData = array_merge($this->request->data, compact('items'), compact('images'));
+			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
+			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date']));
+			$eventData = array_merge(
+				$this->request->data, 
+				compact('items'), 
+				compact('images'), 
+				array('created_date' => new MongoDate())
+			);
 			if ($event->save($eventData)) {	
 				$this->redirect(array('Events::view', 'args' => array($event->_id)));
 			}

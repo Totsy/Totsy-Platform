@@ -3,11 +3,18 @@
 namespace app\controllers;
 
 use \app\models\Event;
+use \MongoDate;
 
 class EventsController extends \lithium\action\Controller {
 
 	public function index() {
-		$events = Event::all();
+		$now = new MongoDate(time());
+		$events = Event::all(array(
+			'conditions' => array(
+				'enabled' => '1',
+				'end_date' => array(
+					'$gt' => $now)
+		)));
 		$this->_render['layout'] = 'main';
 		return compact('events');
 	}
