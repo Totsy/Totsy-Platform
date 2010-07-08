@@ -12,6 +12,8 @@
 <?=$this->html->script('jquery.dataTables.js');?>
 <?=$this->html->style('table');?>
 <?=$this->html->style('admin');?>
+<?=$this->html->script('jquery-ui-timepicker.min.js');?>
+<?=$this->html->style('timepicker'); ?>
 
 <script type="text/javascript">
 tinyMCE.init({
@@ -30,13 +32,13 @@ tinyMCE.init({
 
 <script type="text/javascript" charset="utf-8">
 	$(function() {
-		var dates = $('#start_date, #end_date').datepicker({
+		var dates = $('#start_date, #end_date').datetimepicker({
 			defaultDate: "+1w",
 			changeMonth: true,
-			numberOfMonths: 2,
+			numberOfMonths: 1,
 			onSelect: function(selectedDate) {
 				var option = this.id == "start_date" ? "minDate" : "maxDate";
-				var instance = $(this).data("datepicker");
+				var instance = $(this).data("datetimepicker");
 				var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
 				dates.not(this).datepicker("option", option, date);
 			}
@@ -107,8 +109,8 @@ tinyMCE.init({
 	<div id="event_duration">
 		<h2 id="event_duration">Event Duration</h2>
 		<?php 
-			$start_date = date('M-d-Y', $event->start_date->sec);
-			$end_date =  date('M-d-Y', $event->end_date->sec);
+			$start_date = date('m/d/Y H:i', $event->start_date->sec);
+			$end_date =  date('m/d/Y H:i', $event->end_date->sec);
 			echo $this->form->field('start_date', array(
 					'class' => 'general', 
 					'id' => 'start_date', 

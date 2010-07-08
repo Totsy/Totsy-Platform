@@ -54,6 +54,7 @@ class EventsController extends \lithium\action\Controller {
 		}
 		if (!empty($this->request->data)) {
 			$images = $this->parseImages();
+			
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date']));
 			$eventData = array_merge(
@@ -82,10 +83,8 @@ class EventsController extends \lithium\action\Controller {
 		}
 		if (!empty($this->request->data)) {
 			$images = $this->parseImages($event->images);
-			$startDate = strtotime($this->request->data['start_date']);
-			$endDate = strtotime($this->request->data['end_date']); 
-			$this->request->data['start_date'] = new MongoDate($startDate);
-			$this->request->data['end_date'] = new MongoDate($endDate);
+			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
+			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date']));
 			$eventData = array_merge($this->request->data, compact('items'), compact('images'));
 			
 			if ($event->save($eventData)) {

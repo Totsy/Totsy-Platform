@@ -10,9 +10,10 @@
 <?=$this->html->style('swfupload')?>
 <?=$this->html->style('jquery_ui_blitzer.css')?>
 <?=$this->html->script('jquery.dataTables.js');?>
+<?=$this->html->script('jquery-ui-timepicker.min.js');?>
 <?=$this->html->style('table');?>
 <?=$this->html->style('admin');?>
-
+<?=$this->html->style('timepicker'); ?>
 <script type="text/javascript">
 tinyMCE.init({
 	mode : "textareas",
@@ -30,13 +31,13 @@ tinyMCE.init({
 
 <script type="text/javascript" charset="utf-8">
 	$(function() {
-		var dates = $('#start_date, #end_date').datepicker({
+		var dates = $('#start_date, #end_date').datetimepicker({
 			defaultDate: "+1w",
 			changeMonth: true,
-			numberOfMonths: 2,
+			numberOfMonths: 1,
 			onSelect: function(selectedDate) {
 				var option = this.id == "start_date" ? "minDate" : "maxDate";
-				var instance = $(this).data("datepicker");
+				var instance = $(this).data("datetimepicker");
 				var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
 				dates.not(this).datepicker("option", option, date);
 			}
