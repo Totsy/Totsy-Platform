@@ -1,41 +1,6 @@
 <?=$this->html->script('jquery-1.4.2');?>
 <?=$this->html->script('jquery.countdown.min');?>
 
-
-<?php $x = 0; ?>
-<?php foreach ($events as $event): ?>
-	<!-- Start product item -->
-	<?php if ($x <= 1): ?>
-		<div class="product-list-item featured r-container">
-	<?php else: ?>
-		<div class="product-list-item r-container">
-	<?php endif ?>	
-		<div class="tl"></div>
-		<div class="tr"></div>
-		<div class="md-gray p-container">
-			<img src="/image/<?php echo $event->images->preview_image?>.jpg" width="355" height="410" title="Product Title" alt="Product Alt Text" />
-			
-			<div class="splash-details">
-				<div class="table-cell left">
-					Events End In<br />
-					<strong><div id="<?php echo "splash$x"; ?>"</div></strong>
-				</div>
-				
-				<div class="table-cell right">
-					<a href="#" title="View Stroller Name Now" class="flex-btn"><span>Go</span></a>
-				</div>
-			</div>
-		</div>
-		<div class="bl"></div>
-		<div class="br"></div>
-	</div>
-	<!-- End product item -->
-	<?php
-		$date = $event->end_date->sec * 1000;
-		$splashid = "#splash$x";
-		$script[] = "<script type=\"text/javascript\">$(function () {var saleEnd = new Date();saleEnd = new Date($date);$(\"$splashid\").countdown({until: saleEnd, compact: true, description: ''});});</script>";?>
-	<?php $x++; ?>
-<?php endforeach ?>
 <div class="invite-column r-container">
 
 	<div class="tl"></div>
@@ -60,7 +25,126 @@
 	<div class="br"></div>
 
 </div>
-<!--Date Javascript -->
-<?php foreach ($script as $value): ?>
-	<?php echo $value ?>
+<h1 class="page-title gray"><span class="red">Today's <span class="bold caps">Sales</span></span></h1>
+<?php $x = 0; ?>
+<?php foreach ($eventsToday as $event): ?>
+	<!-- Start product item -->
+	<?php if ($x <= 1): ?>
+		<div class="product-list-item featured r-container">
+	<?php else: ?>
+		<div class="product-list-item r-container">
+	<?php endif ?>	
+		<div class="tl"></div>
+		<div class="tr"></div>
+		<div class="md-gray p-container">
+			<img src="/image/<?php echo $event->images->preview_image?>.jpg" width="355" height="410" title="Product Title" alt="Product Alt Text" />
+
+			<div class="splash-details">
+				<div class="table-cell left">
+					Events End In<br />
+					<strong><div id="<?php echo "splash$x"; ?>"</div></strong>
+				</div>
+
+				<div class="table-cell right">
+					<a href="#" title="View Stroller Name Now" class="flex-btn"><span>Go</span></a>
+				</div>
+			</div>
+		</div>
+		<div class="bl"></div>
+		<div class="br"></div>
+	</div>
+	<!-- End product item -->
+	<?php
+		$date = $event->end_date->sec * 1000;
+		$splashid = "#splash$x";
+		$todayJs[] = "<script type=\"text/javascript\">$(function () {var saleEnd = new Date();saleEnd = new Date($date);$(\"$splashid\").countdown({until: saleEnd, compact: true, description: ''});});</script>";?>
+	<?php $x++; ?>
 <?php endforeach ?>
+
+<?php $x = 0; ?>
+<?php foreach ($currentEvents as $event): ?>
+	
+	<!-- Start product item -->
+	<?php if ($x <= 1): ?>
+		<div class="product-list-item featured r-container">
+	<?php else: ?>
+		<div class="product-list-item r-container">
+	<?php endif ?>	
+		<div class="tl"></div>
+		<div class="tr"></div>
+		<div class="md-gray p-container">
+			<img src="/image/<?php echo $event->images->preview_image?>.jpg" width="298" height="298" title="Product Title" alt="Product Alt Text" />
+
+			<div class="splash-details">
+				<div class="table-cell left">
+					Events End In<br />
+					<strong><div id="<?php echo "splash$x"; ?>"</div></strong>
+				</div>
+
+				<div class="table-cell right">
+					<a href="#" title="View Stroller Name Now" class="flex-btn"><span>Go</span></a>
+				</div>
+			</div>
+		</div>
+		<div class="bl"></div>
+		<div class="br"></div>
+	</div>
+	<!-- End product item -->
+	<?php
+		$date = $event->end_date->sec * 1000;
+		$splashid = "#splash$x";
+		$currentJs[] = "<script type=\"text/javascript\">$(function () {var saleEnd = new Date();saleEnd = new Date($date);$(\"$splashid\").countdown({until: saleEnd, compact: true, description: ''});});</script>";?>
+	<?php $x++; ?>
+<?php endforeach ?>
+
+<h2 class="page-title gray clear"><span class="red">Coming <span class="bold caps">Soon</span></span></h2>
+
+<?php $x = 0; ?>
+<?php foreach ($futureEvents as $event): ?>
+	<div class="product-list-item r-container">
+	<div class="tl"></div>
+	<div class="tr"></div>
+	<div class="md-gray p-container">
+		<img src="/image/<?php echo $event->images->preview_image?>.jpg" width="298" height="298" title="Product Title" alt="Product Alt Text" />
+
+		<div class="splash-details">
+			<div class="table-cell left">
+				Events End In<br />
+				<strong><div id="<?php echo "splash$x"; ?>"</div></strong>
+			</div>
+
+			<div class="table-cell right">
+				<a href="#" title="View Stroller Name Now" class="flex-btn"><span>Go</span></a>
+			</div>
+		</div>
+	</div>
+	<div class="bl"></div>
+	<div class="br"></div>
+	</div>
+	<!-- End product item -->
+	<?php
+		$date = $event->end_date->sec * 1000;
+		$splashid = "#splash$x";
+		$futureJs[] = "<script type=\"text/javascript\">$(function () {var saleEnd = new Date();saleEnd = new Date($date);$(\"$splashid\").countdown({until: saleEnd, compact: true, description: ''});});</script>";?>
+	<?php $x++; ?>
+<?php endforeach ?>
+<!--Javascript Output for Today's Events -->
+<?php if (!empty($todayJs)): ?>
+	<?php foreach ($todayJs as $value): ?>
+		<?php echo $value ?>
+	<?php endforeach ?>
+<?php endif ?>
+
+<!--Javascript Output for Current Events-->
+<?php if (!empty($currentJs)): ?>
+	<?php foreach ($currentJs as $value): ?>
+		<?php echo $value ?>
+	<?php endforeach ?>
+<?php endif ?>
+
+<!--Javascript Output for Future Events-->
+<?php if (!empty($futureJs)): ?>
+	<?php foreach ($futureJs as $value): ?>
+		<?php echo $value ?>
+	<?php endforeach ?>
+<?php endif ?>

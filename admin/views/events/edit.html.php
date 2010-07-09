@@ -35,6 +35,7 @@ tinyMCE.init({
 		var dates = $('#start_date, #end_date').datetimepicker({
 			defaultDate: "+1w",
 			changeMonth: true,
+			changeYear: true,
 			numberOfMonths: 1,
 			onSelect: function(selectedDate) {
 				var option = this.id == "start_date" ? "minDate" : "maxDate";

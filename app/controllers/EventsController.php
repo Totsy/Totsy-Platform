@@ -9,14 +9,30 @@ class EventsController extends \lithium\action\Controller {
 
 	public function index() {
 		$now = new MongoDate(time());
-		$events = Event::all(array(
+		$tomorrow = new MongoDate(time() + (24 * 60 * 60));
+		$twoWeeks = new MongoDate(time() + (7 * 24 * 60 * 60));
+		$eventsToday = Event::all(array(
 			'conditions' => array(
 				'enabled' => '1',
 				'end_date' => array(
-					'$gt' => $now)
-		)));
+					'$gt' => $now,
+					'$lt' => $tomorrow
+		))));
+		$currentEvents = Event::all(array(
+			'conditions' => array(
+				'enabled' => '1',
+				'end_date' => array(
+					'$gt' => $tomorrow,
+					'$lt' => $twoWeeks
+		))));
+		$futureEvents = Event::all(array(
+			'conditions' => array(
+				'enabled' => '1',
+				'end_date' => array(
+					'$gt' => $twoWeeks
+		))));
 		$this->_render['layout'] = 'main';
-		return compact('events');
+		return compact('eventsToday', 'currentEvents', 'futureEvents');
 	}
 
 	public function view() {

@@ -21,7 +21,6 @@ $(function () {
 ?>
 <?=$this->html->link('Edit Event', array('Events::edit', 'args' => array($event->_id)));?>
 
-<h1 id="event_preview">Event Preview</h1>
 <div class="product-list-item middle r-container">
 	<div class="tl"></div>
 	<div class="tr"></div>
@@ -45,7 +44,6 @@ $(function () {
 	<div class="br"></div>
 </div>
 
-<h1 id="event_detail_preview">Event Detail Preview</h1>
 <div class="r-container clear">
 	<div class="tl"></div>
 	<div class="tr"></div>
@@ -61,7 +59,7 @@ $(function () {
 			<div class="details table-row">
 				<img src="/image/<?=$logo_image?>.gif" alt="Logo ALT Tag" title="Logo ALT Tag" width="148" height="52" />
 				<div class="title table-cell v-bottom">
-					<h1>Fischer Price</h1>
+					<h1><?=$event->name?></h1>
 					<strong class="red">SALE ENDS in <div id="listingCountdown"></div></strong>
 					
 				</div>
