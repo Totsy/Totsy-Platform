@@ -15,9 +15,13 @@
 		<div class="tr"></div>
 		<div class="md-gray p-container">
 			<?php if ($x <= 1): ?>
-				<img src="/image/<?php echo $event->images->preview_image?>.jpg" width="355" height="410" title="Product Title" alt="Product Alt Text" />
+				<?=$this->html->image("/image/{$event->images->preview_image}.jpg", array(
+					'title' => "Product Title", 'alt' => "Product Alt Text", 'width' => '355', 'height' => '410'
+				)); ?>
 			<?php else: ?>
-				<img src="/image/<?php echo $event->images->preview_image?>.jpg" width="298" height="298" title="Product Title" alt="Product Alt Text" />
+				<?=$this->html->image("/image/{$event->images->preview_image}.jpg", array(
+					'title' => "Product Title", 'alt' => "Product Alt Text", 'width' => '298', 'height' => '298'
+				)); ?>
 			<?php endif ?>
 			<div class="splash-details">
 				<div class="table-cell left">
@@ -79,7 +83,9 @@
 		<div class="tl"></div>
 		<div class="tr"></div>
 		<div class="md-gray p-container">
-			<img src="/image/<?php echo $event->images->preview_image?>.jpg" width="298" height="298" title="Product Title" alt="Product Alt Text" />
+			<?=$this->html->image("/image/{$event->images->preview_image}.jpg", array(
+				'title' => "Product Title", 'alt' => "Product Alt Text", 'width' => '298', 'height' => '298'
+			)); ?>
 
 			<div class="splash-details">
 				<div class="table-cell left">
@@ -88,7 +94,6 @@
 				</div>
 
 				<div class="table-cell right">
-					
 					<?=$this->html->link('Go', array('Events::view', 'args' => array($event->url)), array('class' => 'flex-btn'));?>
 				</div>
 			</div>
@@ -112,7 +117,9 @@
 	<div class="tl"></div>
 	<div class="tr"></div>
 	<div class="md-gray p-container">
-		<img src="/image/<?php echo $event->images->preview_image?>.jpg" width="298" height="298" title="Product Title" alt="Product Alt Text" />
+		<?=$this->html->image("/image/{$event->images->preview_image}.jpg", array(
+			'title' => "Product Title", 'alt' => "Product Alt Text", 'width' => '298', 'height' => '298'
+		)); ?>
 
 		<div class="splash-details">
 			<div class="table-cell left">
