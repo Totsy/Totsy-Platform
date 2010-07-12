@@ -56,11 +56,13 @@ class EventsController extends \lithium\action\Controller {
 			$seconds = ':'.rand(10,60);
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
+			$url = $this->clean($this->request->data['name']);
 			$eventData = array_merge(
 				$this->request->data, 
 				compact('items'), 
 				compact('images'), 
-				array('created_date' => new MongoDate())
+				array('created_date' => new MongoDate()),
+				array('url' => $url)
 			);
 			if ($event->save($eventData)) {	
 				$this->redirect(array('Events::view', 'args' => array($event->_id)));
@@ -85,7 +87,8 @@ class EventsController extends \lithium\action\Controller {
 			$images = $this->parseImages($event->images);
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
-			$eventData = array_merge($this->request->data, compact('items'), compact('images'));
+			$url = $this->clean($this->request->data['name']);
+			$eventData = array_merge($this->request->data, compact('items'), compact('images'), array('url' => $url));
 			
 			if ($event->save($eventData)) {
 				$this->redirect(array(
@@ -189,6 +192,14 @@ class EventsController extends \lithium\action\Controller {
 			$images = $imageRecord->data();
 		}
 		return $images;
+	}
+	
+	protected function clean($str) {
+		$clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $str);
+		$clean = strtolower(trim($clean, '-'));
+		$clean = preg_replace("/[\/_|+ -]+/", '-', $clean);
+
+		return $clean;
 	}
 }
 

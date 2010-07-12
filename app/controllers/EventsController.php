@@ -35,9 +35,12 @@ class EventsController extends \lithium\action\Controller {
 		return compact('eventsToday', 'currentEvents', 'futureEvents');
 	}
 
-	public function view($name) {
+	public function view($url) {
 		$this->_render['layout'] = 'main';
-		$event = Event::first(array('conditions' => array('enabled' => '1', 'name' => $name)));
+		if ($url == 'comingsoon') {
+			$this->_render['template'] = 'soon';
+		}
+		$event = Event::first(array('conditions' => array('enabled' => '1', 'url' => $url)));
 
 		return compact('event');
 	}
