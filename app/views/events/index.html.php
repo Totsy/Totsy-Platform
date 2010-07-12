@@ -26,7 +26,7 @@
 				</div>
 
 				<div class="table-cell right">
-					<?=$this->html->link('Go', array('Events::view', 'args' => array($event->name)), array('class' => 'flex-btn'));?>
+					<?=$this->html->link('Go', array('Events::view', 'args' => array($event->url)), array('class' => 'flex-btn'));?>
 				</div>
 			</div>
 		</div>
@@ -89,7 +89,7 @@
 
 				<div class="table-cell right">
 					
-					<?=$this->html->link('Go', array('Events::view', 'args' => array($event->name)), array('class' => 'flex-btn'));?>
+					<?=$this->html->link('Go', array('Events::view', 'args' => array($event->url)), array('class' => 'flex-btn'));?>
 				</div>
 			</div>
 		</div>
@@ -121,7 +121,7 @@
 			</div>
 
 			<div class="table-cell right">
-				<?=$this->html->link('Go', array('Events::view', 'args' => array($event->name)), array('class' => 'flex-btn'));?>
+				<?=$this->html->link('Go', array('Events::view', 'args' => array($event->url)), array('class' => 'flex-btn'));?>
 			</div>
 		</div>
 	</div>
