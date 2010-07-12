@@ -46,7 +46,7 @@
 				</div>
 
 				<div class="table-cell right">
-					<a href="#" title="View Stroller Name Now" class="flex-btn"><span>Go</span></a>
+					<?=$this->html->link('Go', array('Events::view', 'args' => array($event->name)), array('class' => 'flex-btn'));?>
 				</div>
 			</div>
 		</div>
@@ -82,7 +82,8 @@
 				</div>
 
 				<div class="table-cell right">
-					<a href="#" title="View Stroller Name Now" class="flex-btn"><span>Go</span></a>
+					
+					<?=$this->html->link('Go', array('Events::view', 'args' => array($event->name)), array('class' => 'flex-btn'));?>
 				</div>
 			</div>
 		</div>
@@ -114,7 +115,7 @@
 			</div>
 
 			<div class="table-cell right">
-				<a href="#" title="View Stroller Name Now" class="flex-btn"><span>Go</span></a>
+				<?=$this->html->link('Go', array('Events::view', 'args' => array($event->name)), array('class' => 'flex-btn'));?>
 			</div>
 		</div>
 	</div>
