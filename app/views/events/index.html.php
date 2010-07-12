@@ -1,30 +1,7 @@
 <?=$this->html->script('jquery-1.4.2');?>
 <?=$this->html->script('jquery.countdown.min');?>
 
-<div class="invite-column r-container">
 
-	<div class="tl"></div>
-	<div class="tr"></div>
-	<div class="md-gray-gradient p-container">
-	
-		<h2 class="invite-friends">Invite Friends Get $15</h2>
-		
-		<a href="#" class="flex-btn" title="Invite Friends Now">Invite Now</a>
-		
-		<div class="hor-div-line"><!-- --></div>
-		
-		<h2 class="socialize-us">Socialize With Us</h2>
-		
-		<div class="sm-icons">
-			<a href="http://facebook.com" title="Friend us on Facebook" class="sm-btn sm-facebook-md">Friend us on Facebook</a>
-			<a href="http://twitter.com" title="Follow us on Twitter" class="sm-btn sm-twitter-md">Follow us on Twitter</a>
-		</div>
-			
-	</div>
-	<div class="bl"></div>
-	<div class="br"></div>
-
-</div>
 <h1 class="page-title gray"><span class="red">Today's <span class="bold caps">Sales</span></span></h1>
 <?php $x = 0; ?>
 <?php foreach ($eventsToday as $event): ?>
@@ -60,7 +37,30 @@
 		$todayJs[] = "<script type=\"text/javascript\">$(function () {var saleEnd = new Date();saleEnd = new Date($date);$(\"$splashid\").countdown({until: saleEnd, compact: true, description: ''});});</script>";?>
 	<?php $x++; ?>
 <?php endforeach ?>
+<div class="invite-column r-container">
 
+	<div class="tl"></div>
+	<div class="tr"></div>
+	<div class="md-gray-gradient p-container">
+	
+		<h2 class="invite-friends">Invite Friends Get $15</h2>
+		
+		<a href="#" class="flex-btn" title="Invite Friends Now">Invite Now</a>
+		
+		<div class="hor-div-line"><!-- --></div>
+		
+		<h2 class="socialize-us">Socialize With Us</h2>
+		
+		<div class="sm-icons">
+			<a href="http://facebook.com" title="Friend us on Facebook" class="sm-btn sm-facebook-md">Friend us on Facebook</a>
+			<a href="http://twitter.com" title="Follow us on Twitter" class="sm-btn sm-twitter-md">Follow us on Twitter</a>
+		</div>
+			
+	</div>
+	<div class="bl"></div>
+	<div class="br"></div>
+
+</div>
 <?php $x = 0; ?>
 <?php foreach ($currentEvents as $event): ?>
 	
