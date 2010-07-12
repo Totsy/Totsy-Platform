@@ -7,7 +7,9 @@ use admin\models\Item;
 use \MongoDate;
 use \MongoID;
 
-
+/**
+ * Administrative functionality to create and edit events. 
+ */
 class EventsController extends \lithium\action\Controller {
 
 	/**
@@ -45,18 +47,15 @@ class EventsController extends \lithium\action\Controller {
 		if (empty($event)) {
 			$event = Event::create();
 		}
-		/*
-			TODO Clean up file handling here
-		*/
 		if ($_FILES) {
 			$items = $this->parseItems($_FILES, $event->_id);
 			unset($this->request->data['upload_file']);
 		}
 		if (!empty($this->request->data)) {
 			$images = $this->parseImages();
-			
+			$seconds = ':'.rand(10,60);
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
-			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date']));
+			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
 			$eventData = array_merge(
 				$this->request->data, 
 				compact('items'), 
@@ -73,6 +72,7 @@ class EventsController extends \lithium\action\Controller {
 
 	public function edit($_id = null) {
 		$event = Event::find($_id);
+		$seconds = ':'.rand(10,60);
 		$eventItems = Item::find('all', array('conditions' => array('enabled' => 1, 'event' => array($_id))));
 		if (empty($event)) {
 			$this->redirect(array('controller' => 'events', 'action' => 'add'));
@@ -84,7 +84,7 @@ class EventsController extends \lithium\action\Controller {
 		if (!empty($this->request->data)) {
 			$images = $this->parseImages($event->images);
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
-			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date']));
+			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
 			$eventData = array_merge($this->request->data, compact('items'), compact('images'));
 			
 			if ($event->save($eventData)) {

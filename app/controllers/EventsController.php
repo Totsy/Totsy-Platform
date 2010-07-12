@@ -36,9 +36,9 @@ class EventsController extends \lithium\action\Controller {
 	}
 
 	public function view($name) {
-		
+		$this->_render['layout'] = 'main';
 		$event = Event::first(array('conditions' => array('enabled' => '1', 'name' => $name)));
-		die(var_dump($event->data()));
+
 		return compact('event');
 	}
 
