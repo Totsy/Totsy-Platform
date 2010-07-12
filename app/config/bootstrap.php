@@ -76,6 +76,8 @@ require __DIR__ . '/bootstrap/g11n.php';
  */
 // require __DIR__ . '/bootstrap/console.php';
 
+require __DIR__ . '/bootstrap/payments.php';
+
 /**
  * This configures your session storage. The Cookie storage adapter must be connected first, since
  * it intercepts any writes where the `'expires'` key is set in the options array.
