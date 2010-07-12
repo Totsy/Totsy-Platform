@@ -37,7 +37,7 @@ use \Exception;
  * @see lithium\data\Connections::add()
  * @see lithium\data\source\MongoDb::__construct()
  */
-class MongoDb extends \lithium\data\Source\MongoDb {
+class MongoDb extends \lithium\data\source\MongoDb {
 
 	/**
 	 * The Mongo class instance.
