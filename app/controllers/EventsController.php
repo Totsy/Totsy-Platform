@@ -35,8 +35,10 @@ class EventsController extends \lithium\action\Controller {
 		return compact('eventsToday', 'currentEvents', 'futureEvents');
 	}
 
-	public function view() {
-		$event = Event::first($this->request->id);
+	public function view($name) {
+		
+		$event = Event::first(array('conditions' => array('enabled' => '1', 'name' => $name)));
+		die(var_dump($event->data()));
 		return compact('event');
 	}
 
