@@ -65,10 +65,10 @@ class MenuList extends \lithium\template\Helper{
 				$li .= $this->build($subdoc);
 			}
 			if ($menuItem['title'] == 'Sales') {
-				$todayList = Event::today(array('fields' => 'name'));
+				$todayList = Event::today(array('fields' => array('name', 'url')));
 				$saleItems = '';
 				foreach ($todayList as $item) {
-					$saleUrl = $this->_context->html->link("<span>$item->name</span>", "/events/view/$item->name", array(
+					$saleUrl = $this->_context->html->link("<span>$item->name</span>", "/events/view/$item->url", array(
 						'title' => "$item->name", 
 						'escape' => false 
 					));
