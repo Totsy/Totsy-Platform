@@ -2,11 +2,13 @@
 
 namespace app\controllers;
 
+use \app\controllers\BaseController;
 use \app\models\Event;
 use \app\models\Item;
 use \MongoDate;
+use \lithium\storage\Session;
 
-class EventsController extends \lithium\action\Controller {
+class EventsController extends BaseController {
 
 	public function index() {
 		$now = new MongoDate(time());
@@ -70,6 +72,7 @@ class EventsController extends \lithium\action\Controller {
 		}
 		return compact('event');
 	}
+	
 }
 
 

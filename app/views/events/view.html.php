@@ -27,7 +27,6 @@
 			var saleEnd = new Date();
 			saleEnd = new Date(<?php echo $event->end_date->sec * 1000?>);
 			$('#listingCountdown').countdown({until: saleEnd, format:'dHM'});
-			$('#splashCountdown').countdown({until: saleEnd, compact: true, description: ''});
 		});
 		</script>
 

@@ -1,6 +1,7 @@
 <?php
 
 namespace app\controllers;
+use app\controllers\BaseController;
 use app\models\Address;
 use \lithium\storage\Session;
 use app\models\Menu;
@@ -12,7 +13,7 @@ use \lithium\analysis\Logger;
 
 
 
-class AddressesController extends \lithium\action\Controller {
+class AddressesController extends BaseController {
 	/**
 	 * The maximum number of addresses a user can have stored
 	 * @var int
@@ -72,9 +73,7 @@ class AddressesController extends \lithium\action\Controller {
 	
 		$this->applyFilter('__invoke',  function($self, $params, $chain) {
 			$menu = Menu::find('all', array('conditions' => array('location' => 'left', 'active' => 'true')));
-			$id = Session::read('_id');
-			$userInfo = User::find('first', array('conditions' => array('_id' => $id)));
-			$self->set(compact('menu', 'userInfo'));
+			$self->set(compact('menu'));
 			return $chain->next($self, $params, $chain);
 		});
 	}
