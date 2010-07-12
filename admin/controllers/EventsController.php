@@ -5,7 +5,7 @@ namespace admin\controllers;
 use admin\models\Event;
 use admin\models\Item;
 use \MongoDate;
-use \MongoID;
+use \MongoId;
 
 /**
  * Administrative functionality to create and edit events. 
@@ -24,12 +24,16 @@ class EventsController extends \lithium\action\Controller {
 		'end_date',
 		'enabled'
 	);
-	
+	/**
+	 * Grab all the events from mongo
+	 */
 	public function index() {
 		$events = Event::all();
 		return compact('events');
 	}
-
+	/**
+	 * 
+	 */
 	public function view($id = null) {
 		$event = Event::find($id);
 		if (empty($event)) {
@@ -79,17 +83,24 @@ class EventsController extends \lithium\action\Controller {
 		if (empty($event)) {
 			$this->redirect(array('controller' => 'events', 'action' => 'add'));
 		}
-		if ($_FILES) {
-			$items = $this->parseItems($_FILES, $event->_id);
-			unset($this->request->data['upload_file']);
-		}
+
 		if (!empty($this->request->data)) {
+			if ($_FILES['upload_file']['error'] == 0) {
+				$items = $this->parseItems($_FILES, $event->_id);
+				unset($this->request->data['upload_file']);
+			} else {
+				if (!empty($eventItems)) {
+					foreach ($eventItems as $item) {
+						$items[] = (string) $item->_id;
+					}
+				}
+			}
 			$images = $this->parseImages($event->images);
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
 			$url = $this->clean($this->request->data['name']);
 			$eventData = array_merge($this->request->data, compact('items'), compact('images'), array('url' => $url));
-			
+
 			if ($event->save($eventData)) {
 				$this->redirect(array(
 					'controller' => 'events', 'action' => 'edit',
@@ -169,7 +180,7 @@ class EventsController extends \lithium\action\Controller {
 				);
 				$newItem = array_merge($itemDetail, $details);
 				if ($item->save($newItem)) {
-					$items[] = $item->_id;
+					$items[] = (string) $item->_id;
 				}
 			}
 		}

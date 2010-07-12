@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use \app\models\Event;
+use \app\models\Item;
 use \MongoDate;
 
 class EventsController extends \lithium\action\Controller {
@@ -41,8 +42,12 @@ class EventsController extends \lithium\action\Controller {
 			$this->_render['template'] = 'soon';
 		}
 		$event = Event::first(array('conditions' => array('enabled' => '1', 'url' => $url)));
-
-		return compact('event');
+		if (!empty($event)) {
+			foreach ($event->items as $value) {
+				$items[] = Item::first(array('conditions' => array('_id' => $value)));
+			}
+		}
+		return compact('event', 'items');
 	}
 
 	public function add() {
