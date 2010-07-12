@@ -84,34 +84,34 @@
 				<option value="Large">Large</option>
 			</select>
 		</div>
-		
-		<?php foreach ($items as $item): ?>
-			<!-- Start the product loop to output all products in this view -->
-			<!-- Start product item -->
-			<div class="product-list-item r-container">
-				<div class="tl"></div>
-				<div class="tr"></div>
-				<div class="md-gray p-container">
-
-					<img src="/image/<?php echo $item->primary_images[0]?>.jpg" alt="<?=$item->name?>" title="<?=$item->name?>" width="298" height="300"/>
-					<div class="details table-row">
-						<div class="table-cell left">
-							<h2><?=$item->name?></h2>
-							<strong class="price"><?=$item->sale_retail;?> Totsy Price</strong><br />
-							<strike><?=$item->msrp;?> Original Price</strike>
+		<?php if (!empty($items)): ?>
+			<?php foreach ($items as $item): ?>
+				<!-- Start the product loop to output all products in this view -->
+				<!-- Start product item -->
+				<div class="product-list-item r-container">
+					<div class="tl"></div>
+					<div class="tr"></div>
+					<div class="md-gray p-container">
+						<img src="/image/<?php echo $item->primary_images[0]?>.jpg" alt="<?=$item->name?>" title="<?=$item->name?>" width="298" height="300"/>
+						<div class="details table-row">
+							<div class="table-cell left">
+								<h2><?=$item->name?></h2>
+								<strong class="price"><?=$item->sale_retail;?> Totsy Price</strong><br />
+								<strike><?=$item->msrp;?> Original Price</strike>
+							</div>
+							<div class="table-cell right">
+								<a href="#" title="<?=$item->name?>" class="flex-btn"><span>View Now</span></a>
+							</div>
 						</div>
 
-						<div class="table-cell right">
-							<a href="#" title="<?=$item->name?>" class="flex-btn"><span>View Now</span></a>
-						</div>
 					</div>
-
+					<div class="bl"></div>
+					<div class="br"></div>
 				</div>
-				<div class="bl"></div>
-				<div class="br"></div>
-			</div>
-			<!-- End product item -->
-		<?php endforeach ?>
+				<!-- End product item -->
+			<?php endforeach ?>
+		<?php endif ?>
+		
 	</div>
 </div>
 </div>
