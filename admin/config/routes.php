@@ -17,27 +17,21 @@ use lithium\action\Response;
  * This needs to be first so that we don't get a controller error.
  * 
  */
-Router::connect("/image/{:id:[0-9a-f]{24}}.jpg", array(), function($request) {
-     return new Response(array(
-          'type' => 'image/jpg',
-          'body' => File::first($request->id)->file->getBytes()
-     ));
-});
-
-Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
-     return new Response(array(
-          'type' => 'image/gif',
-          'body' => File::first($request->id)->file->getBytes()
-     ));
+Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request) {
+	return new Response(array(
+		'headers' => array('Content-type' => "image/{$request->type}"),
+		'body' => File::first($request->id)->file->getBytes()
+	));
 });
 
 Router::connect('/uploads', 'Uploads::index');
 Router::connect('/uploads/upload{:args}', 'Uploads::upload');
+
 /**
  * Redirect all non-authenticated users to 
  */
-if(!Session::check('userLogin')) {
-	Router::connect('/{:args}', 'Users::login');	
+if (!Session::check('userLogin')) {
+	Router::connect('/{:args}', 'Users::login');
 }
 /**
  * Here, we are connecting '/' (base path) to controller called 'Pages',
