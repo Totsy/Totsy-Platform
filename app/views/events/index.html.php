@@ -42,7 +42,7 @@
 			<div class="splash-details">
 				<div class="table-cell left">
 					Events End In<br />
-					<strong><div id="<?php echo "splash$x"; ?>"</div></strong>
+					<strong><div id="<?php echo "todaysplash$x"; ?>"</div></strong>
 				</div>
 
 				<div class="table-cell right">
@@ -56,7 +56,7 @@
 	<!-- End product item -->
 	<?php
 		$date = $event->end_date->sec * 1000;
-		$splashid = "#splash$x";
+		$splashid = "#todaysplash$x";
 		$todayJs[] = "<script type=\"text/javascript\">$(function () {var saleEnd = new Date();saleEnd = new Date($date);$(\"$splashid\").countdown({until: saleEnd, compact: true, description: ''});});</script>";?>
 	<?php $x++; ?>
 <?php endforeach ?>
@@ -78,7 +78,7 @@
 			<div class="splash-details">
 				<div class="table-cell left">
 					Events End In<br />
-					<strong><div id="<?php echo "splash$x"; ?>"</div></strong>
+					<strong><div id="<?php echo "currentsplash$x"; ?>"</div></strong>
 				</div>
 
 				<div class="table-cell right">
@@ -92,7 +92,7 @@
 	<!-- End product item -->
 	<?php
 		$date = $event->end_date->sec * 1000;
-		$splashid = "#splash$x";
+		$splashid = "#currentsplash$x";
 		$currentJs[] = "<script type=\"text/javascript\">$(function () {var saleEnd = new Date();saleEnd = new Date($date);$(\"$splashid\").countdown({until: saleEnd, compact: true, description: ''});});</script>";?>
 	<?php $x++; ?>
 <?php endforeach ?>
@@ -110,7 +110,7 @@
 		<div class="splash-details">
 			<div class="table-cell left">
 				Events End In<br />
-				<strong><div id="<?php echo "splash$x"; ?>"</div></strong>
+				<strong><div id="<?php echo "futuresplash$x"; ?>"</div></strong>
 			</div>
 
 			<div class="table-cell right">
@@ -124,7 +124,7 @@
 	<!-- End product item -->
 	<?php
 		$date = $event->end_date->sec * 1000;
-		$splashid = "#splash$x";
+		$splashid = "#futuresplash$x";
 		$futureJs[] = "<script type=\"text/javascript\">$(function () {var saleEnd = new Date();saleEnd = new Date($date);$(\"$splashid\").countdown({until: saleEnd, compact: true, description: ''});});</script>";?>
 	<?php $x++; ?>
 <?php endforeach ?>

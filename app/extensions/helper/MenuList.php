@@ -1,6 +1,7 @@
 <?php
 namespace app\extensions\helper;
 use app\models\Menu;
+use app\models\Event;
 
 /**
  * The 'Menu' class creates a html menu list based on a backend document store.
@@ -40,28 +41,40 @@ class MenuList extends \lithium\template\Helper{
 		}	
 		
 		foreach ($doc as $nav) {
-			$element = $nav->data();
-			
+			$menuItem = $nav->data();
+
 			if(isset($options['li'])){
 				$li .= '<li ' . $this->getElements('li') .'>';
 			} 
-			if(isset($element['class'])) {
-				$li .= "<li class = \"$element[class]\"" . '>';
+			if(isset($menuItem['class'])) {
+				$li .= "<li class = \"$menuItem[class]\"" . '>';
 			}
 			else {
 				$li .= "<li>";
 			}
-			$url = '/'. $element['route']['controller'];
-			if (isset($element['route']['view'])) {
-				$url .= '/'.$element['route']['view'];
+			$url = '/'. $menuItem['route']['controller'];
+			if (isset($menuItem['route']['view'])) {
+				$url .= '/'.$menuItem['route']['view'];
 			} 
-			if (isset($element['route']['action'])) {
-				$url .= '/'.$element['route']['action'];
+			if (isset($menuItem['route']['action'])) {
+				$url .= '/'.$menuItem['route']['action'];
 			}
-			$li .= $this->_context->html->link("<span>$element[title]</span>", $url, array('title' => "$element[title]", 'escape' => false ));	
-			if (isset($element['children'])) {
-				$subdoc = Menu::find('all', array('conditions' => array('active' => 'true', 'parent' => $element['title'])));
+			$li .= $this->_context->html->link("<span>$menuItem[title]</span>", $url, array('title' => "$menuItem[title]", 'escape' => false ));	
+			if (isset($menuItem['children'])) {
+				$subdoc = Menu::find('all', array('conditions' => array('active' => 'true', 'parent' => $menuItem['title'])));
 				$li .= $this->build($subdoc);
+			}
+			if ($menuItem['title'] == 'Sales') {
+				$todayList = Event::today(array('fields' => 'name'));
+				$saleItems = '';
+				foreach ($todayList as $item) {
+					$saleUrl = $this->_context->html->link("<span>$item->name</span>", "/events/view/$item->name", array(
+						'title' => "$item->name", 
+						'escape' => false 
+					));
+					$saleItems .= "<li>$saleUrl</li>";
+				}
+				$li .= "<ul>$saleItems</ul>";
 			}
 			$li .= '</li>';
 		}
