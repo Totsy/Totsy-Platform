@@ -55,6 +55,7 @@ hr.no-show{display:none}
 button{cursor:pointer;overflow:visible}
 button:-moz-focus-inner{border:none}
 .caps{text-transform:uppercase}
+abbr{cursor:help}
 
 #logo{width:155px;height:90px;background:url(../img/logo.png) no-repeat;text-indent:-9999px;display:block}
 
@@ -422,6 +423,18 @@ span.citem.active-th{background:#FFF}
 .coming-soon-feature .manufacturer-logo{margin-bottom:20px}
 .coming-soon-feature h2{margin-bottom:0}
 .coming-soon-feature p{margin:20px 0}
+
+.cart-table{}
+.cart-table th{background:#ACACAC;padding:20px 10px 5px 10px;color:#FFF;font-weight:bold}
+.cart-table td{padding:10px;vertical-align:top;border-bottom:1px solid #D7D7D7}
+tr.alt0 td{background:#FFF}
+tr.alt1 td{background:#EFEFEF}
+td.cart-th{width:93px;border-left:1px solid #D7D7D7}
+td.cart-actions{border-right:1px solid #D7D7D7}
+tr.cart-total td{text-align:right;border-bottom:1px solid #D7D7D7;padding:20px}
+tr.cart-buy td{border:none;padding:20px}
+td.cart-button{text-align:right}
+a:link.delete,a:visited.delete{background:url(../img/cart-trash-btn.png) no-repeat;display:block;width:21px;height:21px;text-indent:-9999px}
 
 /* Modal Styles */
 .body-overlayed embed, .body-overlayed object, .body-overlayed select{visibility:hidden}
