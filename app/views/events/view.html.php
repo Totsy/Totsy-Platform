@@ -29,9 +29,8 @@
 
 		<?php
 			if(!empty($event)) {
-				$banner_image = (empty($event->images)) ? null : $event->images->banner_image;
-				$logo_image = (empty($event->images)) ? null : $event->images->logo_image;
-				$preview_image = (empty($event->images)) ? null : $event->images->preview_image;
+				$banner = (empty($event->images)) ? null : $event->images->banner_image;
+				$logo = (empty($event->images)) ? null : $event->images->logo_image;
 				$blurb = $event->blurb;
 			} 
 		?>
@@ -42,14 +41,26 @@
 			<div id="page-header" class="md-gray">
 
 				<div class="left">
-
-					<img src="/image/<?php echo $banner_image?>.jpg" alt="Image ALT Tag" title="Image ALT Tag" width="169" height="193" />
-
+					<?php
+						if (!empty($banner)) {
+							echo $this->html->image("/image/$banner.jpg", array(
+								'alt' => 'altText'), array(
+								'title' => "Image ALT Tag", 
+								'width' => "169", 
+								'height'=> "193"
+							));
+						} else {
+							echo $this->html->image('/img/no-image-small.jpeg', array('alt' => 'Totsy')); 
+						}
+				
+					?>
 				</div>
-
+				
 				<div class="right">
 					<div class="details table-row">
-						<img src="/image/<?=$logo_image?>.gif" alt="Logo ALT Tag" title="Logo ALT Tag" width="148" height="52" />
+						<?php if (!empty($logo)): ?>
+							<img src="/image/<?=$logo_image?>.gif" alt="Logo ALT Tag" title="Logo ALT Tag" width="148" height="52" />
+						<?php endif ?>
 						<div class="title table-cell v-bottom">
 							<h1><?=$event->name?></h1>
 							<strong class="red">SALE ENDS in <div id="listingCountdown"></div></strong>
