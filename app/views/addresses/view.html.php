@@ -4,29 +4,29 @@ $options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'
 $leftMenu = $this->MenuList->build($menu, $options);
 echo $leftMenu;
 
-if($addressList){ ?>
+if($addresses){ ?>
 	<table border="0" cellspacing="5" cellpadding="5">
 		<tr>
 			<th>Description</th>
 			<th>Address</th>
 			<th>Default</th></tr>
 		<tr>
-<?php	foreach($addressList as $addresses) {
-				$line = implode(', ', array($addresses['city'],$addresses['state'],$addresses['zip']));	
+<?php	foreach($addresses as $address) {
+				$line = implode(', ', array($address['city'],$address['state'],$address['zip']));	
 ?>
-		<td><?=$addresses['description'];?></td>
+		<td><?=$address['description'];?></td>
 		<td>
-			<?php echo "<a href=/addresses/edit/". ($addresses['_id']); ?>			
-			<p><?=$addresses['firstname']." ".$addresses['lastname'] ?></p>
-			<p><?=$addresses['company']?></p>
-			<p><?=$addresses['address']?></p>
-			<p><?=$addresses['address_2']?></p>
+			<?php echo "<a href=/addresses/edit/". ($address['_id']); ?>
+			<p><?=$address['firstname']." ".$address['lastname'] ?></p>
+			<p><?=$address['company']?></p>
+			<p><?=$address['address']?></p>
+			<p><?=$address['address_2']?></p>
 			<p><?=$line?></p>
-			<p><?=$addresses['country']?></p>	
+			<p><?=$address['country']?></p>	
 			</a>	
 		</td>
-		<td><?php if($addresses['default'] == 'Yes') {
-			echo "Default - $addresses[type]";
+		<td><?php if($address['default'] == 'Yes') {
+			echo "Default - $address[type]";
 			};?>
 		</td>
 	</tr>
@@ -35,7 +35,7 @@ if($addressList){ ?>
 </table>	
 <?php } else {
 	
-		echo "No Addresses on file. ";
+		echo "No address on file. ";
 }
 ?>
 <?=$this->html->link('Add Address','addresses/add');?>
