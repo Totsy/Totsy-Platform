@@ -71,9 +71,11 @@ class ItemsController extends BaseController {
 			if (!empty($item->event[0])) {
 				$itemData['event'] = array($item->event[0]);
 			}
-			if (!empty($item->url)) {
-				$itemData['url'] = $this->cleanUrl($this->request->data['name']);
-			}
+
+			$dirtyUrl = $itemData['description']." ".$itemData['color'];
+			$url = $this->cleanUrl($dirtyUrl);
+			$itemData['url'] = $url;
+
 			$itemData['modified_date'] = new MongoDate();
 			$itemData = array_merge($itemData, array(
 				'primary_images' => $primaryImages), 
