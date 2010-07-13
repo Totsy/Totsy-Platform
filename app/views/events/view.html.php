@@ -80,7 +80,12 @@
 		<?php if (!empty($items)): ?>
 			<?php foreach ($items as $item): ?>
 				<?php
-					$productImage = (!empty($item->primary_images) ? $item->primary_images[0] : null)
+					if (!empty($item->primary_images)) {
+						$image = $item->primary_images[0];
+						$productImage = "/image/$image.jpg";
+					} else {
+						$productImage = "/img/no-image-small.jpeg";
+					}
 				?>
 				<!-- Start the product loop to output all products in this view -->
 				<!-- Start product item -->
@@ -88,7 +93,7 @@
 					<div class="tl"></div>
 					<div class="tr"></div>
 					<div class="md-gray p-container">
-						<img src="/image/<?php echo $productImage ?>.jpg" alt="<?=$item->name?>" title="<?=$item->name?>" width="298" height="300"/>
+						<img src="<?php echo "$productImage"; ?>" alt="<?=$item->name?>" title="<?=$item->name?>" width="298" height="300"/>
 						<div class="details table-row">
 							<div class="table-cell left">
 								<h2><?=$item->name?></h2>
