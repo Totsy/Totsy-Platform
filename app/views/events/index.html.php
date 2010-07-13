@@ -123,7 +123,7 @@
 
 		<div class="splash-details">
 			<div class="table-cell left">
-				Events End In<br />
+				Events Starts In<br />
 				<strong><div id="<?php echo "futuresplash$x"; ?>"</div></strong>
 			</div>
 
@@ -137,7 +137,7 @@
 	</div>
 	<!-- End product item -->
 	<?php
-		$date = $event->end_date->sec * 1000;
+		$date = $event->start_date->sec * 1000;
 		$splashid = "#futuresplash$x";
 		$futureJs[] = "<script type=\"text/javascript\">$(function () {var saleEnd = new Date();saleEnd = new Date($date);$(\"$splashid\").countdown({until: saleEnd, compact: true, description: ''});});</script>";?>
 	<?php $x++; ?>

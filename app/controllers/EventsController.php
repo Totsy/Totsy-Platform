@@ -31,7 +31,7 @@ class EventsController extends BaseController {
 		$futureEvents = Event::all(array(
 			'conditions' => array(
 				'enabled' => '1',
-				'end_date' => array(
+				'start_date' => array(
 					'$gt' => $twoWeeks
 		))));
 		$this->_render['layout'] = 'main';
