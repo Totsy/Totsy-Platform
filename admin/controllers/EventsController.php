@@ -77,7 +77,7 @@ class EventsController extends BaseController {
 	public function edit($_id = null) {
 		$event = Event::find($_id);
 		$seconds = ':'.rand(10,60);
-		$eventItems = Item::find('all', array('conditions' => array('enabled' => 1, 'event' => array($_id))));
+		$eventItems = Item::find('all', array('conditions' => array('event' => array($_id))));
 		if (empty($event)) {
 			$this->redirect(array('controller' => 'events', 'action' => 'add'));
 		}
@@ -174,7 +174,7 @@ class EventsController extends BaseController {
 				
 				// Add some more information to array
 				$details = array(
-					'enabled' => 1, 
+					'enabled' => '0', 
 					'created_date' => $date, 
 					'details' => $itemAttributes, 
 					'event' => array($_id),

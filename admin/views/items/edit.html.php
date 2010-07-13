@@ -47,15 +47,17 @@ tinyMCE.init({
 		<?=$this->form->field('color', array('type' => 'text', 'class' => 'general', 'value' => $item->color));?>
 		<div id="item_status">
 			<h2 id="item_status">Item Status</h2>
-			<?php
-				$enabled = ($item->enabled == 1) ? "checked" : null;
-				$disabled = ($item->enabled == 1) ? null : "checked";
-			 ?>
-
-			<input type="radio" name="enabled" value="1" id="enabled" <?php echo $enabled; ?> > Enable Item <br>
-			<input type="radio" name="enabled" value="0" id="enabled" <?php echo $disabled; ?> > Disable Item
-
+			<?php if ($item->enabled == 1): ?>
+				<p>The item is currently published for viewing</p><br>
+				<input type="radio" name="enabled" value="1" id="enabled" checked> Enable Item <br>
+				<input type="radio" name="enabled" value="0" id="enabled"> Disable Item
+			<?php else: ?>
+				<p>The item is NOT published for viewing</p><br>
+				<input type="radio" name="enabled" value="1" id="enabled"> Enable Item <br>
+				<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Item
+			<?php endif ?>
 		</div>
+		
 	</div>
 	<div id="item_activity">
 		
@@ -94,6 +96,15 @@ tinyMCE.init({
 		</table>
 	</div>
 	<br>
+	<br>
+	<div id="event_info">
+		<h1 id="event_information">Event Information</h1>
+		<?php if (!empty($event)): ?>
+			<p>This item is associated with the <strong><?=$event->name?> </strong>event</p>
+			<?=$this->html->link("Edit - $event->name", array('Events::edit', 'args' => array("$event->_id"))); ?><br>
+			<?=$this->html->link("View - $event->name", array('Events::view', 'args' => array("$event->_id"))); ?>
+		<?php endif ?>
+	</div>
 	<br>
 	<div id="fileInfo"></div>
 	<h1>Upload files for a particular item</h1>

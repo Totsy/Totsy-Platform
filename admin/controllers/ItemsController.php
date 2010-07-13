@@ -2,6 +2,7 @@
 
 namespace admin\controllers;
 use admin\models\Item;
+use admin\models\Event;
 use \MongoDate;
 
 
@@ -35,9 +36,11 @@ class ItemsController extends \lithium\action\Controller {
 	 * @return array
 	 */
 	public function edit($id = null) {
-		$item = Item::find('first', array('conditions' => array('_id' => $id)));
+		$item = Item::find('first', array('conditions' => array('_id' => $id)));		
+		$event = Event::find('first', array('conditions' => array('_id' => $item->event[0])));
 		$primaryImages = array();
 		$secondaryImages = array();
+
 		if ($item) {
 			$details = json_encode($item->details->data());
 		} else {
@@ -64,11 +67,15 @@ class ItemsController extends \lithium\action\Controller {
 					unset($itemData[$key]);
 				}
 			}
+			if (!empty($item->event[0])) {
+				$itemData['event'] = array($item->event[0]);
+			}
 			$itemData['modified_date'] = new MongoDate();
 			$itemData = array_merge($itemData, array(
 				'primary_images' => $primaryImages), 
 				array('secondary_images' => $secondaryImages
 			));
+
 			if ($item->save($itemData)) {
 				$this->redirect(array(
 					'controller' => 'items', 'action' => 'edit',
@@ -76,14 +83,13 @@ class ItemsController extends \lithium\action\Controller {
 				));
 			}
 		}
-		return compact('item', 'details');
+		return compact('item', 'details', 'event');
 	}
 	/**
 	 * Reorganize the details of item data for document storage
 	 */
 	private function organizeItem($item) {
 		$data = $item['itemDetails']['itemDetails'];
-		$data['enabled'] = ($data['enabled'] == "Yes") ? 1 : 0;
 		foreach ($data as $key => $value){
 			if (is_numeric($key)) {
 				$details["$key"] = $value;
