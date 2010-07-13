@@ -50,7 +50,12 @@
 								'height'=> "193"
 							));
 						} else {
-							echo $this->html->image('/img/no-image-small.jpeg', array('alt' => 'Totsy')); 
+							echo $this->html->image('/img/no-image-small.jpeg', array(
+								'alt' => 'Totsy'), array(
+									'title' => "No Image Available", 
+									'width' => "169", 
+									'height'=> "193"
+									)); 
 						}
 				
 					?>
@@ -59,7 +64,7 @@
 				<div class="right">
 					<div class="details table-row">
 						<?php if (!empty($logo)): ?>
-							<img src="/image/<?=$logo_image?>.gif" alt="Logo ALT Tag" title="Logo ALT Tag" width="148" height="52" />
+							<img src="/image/<?=$logo?>.gif" alt="Logo ALT Tag" title="Logo ALT Tag" width="148" height="52" />
 						<?php endif ?>
 						<div class="title table-cell v-bottom">
 							<h1><?=$event->name?></h1>
