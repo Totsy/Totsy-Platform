@@ -7,6 +7,7 @@ class Items extends \lithium\template\Helper {
 	protected $heading = array( 
 		'vendor',
 		'vendor_style',
+		'color',
 		'description',
 		'enabled'
 	);

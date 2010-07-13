@@ -169,12 +169,16 @@ class EventsController extends BaseController {
 				}
 				$item = Item::create();
 				$date = new MongoDate();
+				$dirtyUrl = $itemDetail['description']." ".$itemDetail['color'];
+				$url = $this->cleanUrl($dirtyUrl);
+				
 				// Add some more information to array
 				$details = array(
 					'enabled' => 1, 
 					'created_date' => $date, 
 					'details' => $itemAttributes, 
-					'event' => array($_id)
+					'event' => array($_id),
+					'url' => $url
 				);
 				$newItem = array_merge($itemDetail, $details);
 				if ($item->save($newItem)) {
