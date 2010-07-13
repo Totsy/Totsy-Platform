@@ -19,8 +19,9 @@ class EventsController extends BaseController {
 				'enabled' => '1',
 				'end_date' => array(
 					'$gt' => $now,
-					'$lt' => $tomorrow
-		))));
+					'$lt' => $tomorrow)),
+			'order' => array('end_date' => 'ASC')
+		));
 		$currentEvents = Event::all(array(
 			'conditions' => array(
 				'enabled' => '1',

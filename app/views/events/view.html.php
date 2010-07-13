@@ -4,7 +4,7 @@
 
 	<div id="middle" class="fullwidth">				
 		
-		<h1 class="page-title gray"><span class="red">Today's <span class="bold caps">Sales</span> /</span> Troller Roller</h1>
+		<h1 class="page-title gray"><span class="red">Today's <span class="bold caps">Sales</span> /</span><?=$event->name; ?></h1>
 		
 		<div class="sm-actions fr">
 			<dl>
@@ -18,9 +18,6 @@
 				</dd>
 			</dl>
 		</div>
-		
-		
-
 
 		<script type="text/javascript"> 
 		$(function () {
@@ -66,9 +63,6 @@
 			<div class="bl"></div>
 			<div class="br"></div>
 		</div>
-		
-		
-		
 		<div class="sort-by">
 			<select id="by-category" name="by-category">
 				<option value="">View By Category</option>
