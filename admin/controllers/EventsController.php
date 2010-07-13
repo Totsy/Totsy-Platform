@@ -2,6 +2,7 @@
 
 namespace admin\controllers;
 
+use admin\controllers\BaseController;
 use admin\models\Event;
 use admin\models\Item;
 use \MongoDate;
@@ -10,7 +11,7 @@ use \MongoId;
 /**
  * Administrative functionality to create and edit events. 
  */
-class EventsController extends \lithium\action\Controller {
+class EventsController extends BaseController {
 
 	/**
 	 * List of event keys that should be in the view
@@ -60,7 +61,7 @@ class EventsController extends \lithium\action\Controller {
 			$seconds = ':'.rand(10,60);
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
-			$url = $this->clean($this->request->data['name']);
+			$url = $this->cleanUrl($this->request->data['name']);
 			$eventData = array_merge(
 				$this->request->data, 
 				compact('items'), 
@@ -98,7 +99,7 @@ class EventsController extends \lithium\action\Controller {
 			$images = $this->parseImages($event->images);
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
-			$url = $this->clean($this->request->data['name']);
+			$url = $this->cleanUrl($this->request->data['name']);
 			$eventData = array_merge($this->request->data, compact('items'), compact('images'), array('url' => $url));
 
 			if ($event->save($eventData)) {
@@ -203,14 +204,6 @@ class EventsController extends \lithium\action\Controller {
 			$images = $imageRecord->data();
 		}
 		return $images;
-	}
-	
-	protected function clean($str) {
-		$clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $str);
-		$clean = strtolower(trim($clean, '-'));
-		$clean = preg_replace("/[\/_|+ -]+/", '-', $clean);
-
-		return $clean;
 	}
 }
 
