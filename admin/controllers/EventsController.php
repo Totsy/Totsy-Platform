@@ -45,10 +45,7 @@ class EventsController extends BaseController {
 	}
 
 	public function add() {
-		
-		$created_date = 0;
-		$modified_date = 0;
-		$files = 0; 
+	
 		if (empty($event)) {
 			$event = Event::create();
 		}

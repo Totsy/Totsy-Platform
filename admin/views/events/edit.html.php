@@ -104,8 +104,15 @@ tinyMCE.init({
     <?=$this->form->field('blurb', array('type' => 'textarea', 'name' => 'content', 'value' => $event->blurb));?>
 	<div id="event_status">
 		<h2 id="event_status">Event Status</h2>
-		<input type="radio" name="enabled" value="1" id="enabled"> Enable Event <br>
-		<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Event
+		<?php if ($event->enabled == 1): ?>
+			<p>The event is currently published for viewing</p><br>
+			<input type="radio" name="enabled" value="1" id="enabled" checked> Enable Event <br>
+			<input type="radio" name="enabled" value="0" id="enabled"> Disable Event
+		<?php else: ?>
+			<p>The event is NOT published for viewing</p><br>
+			<input type="radio" name="enabled" value="1" id="enabled"> Enable Event <br>
+			<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Event
+		<?php endif ?>
 	</div>
 	<div id="event_duration">
 		<h2 id="event_duration">Event Duration</h2>

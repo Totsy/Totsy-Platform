@@ -49,6 +49,8 @@ class EventsController extends BaseController {
 			foreach ($event->items as $value) {
 				$items[] = Item::first(array('conditions' => array('_id' => $value)));
 			}
+		} else {
+			$this->_render['template'] = 'noevent';
 		}
 		return compact('event', 'items');
 	}
