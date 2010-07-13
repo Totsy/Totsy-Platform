@@ -1,6 +1,7 @@
 <?php
 
 namespace admin\controllers;
+use admin\controllers\BaseController;
 use admin\models\Item;
 use admin\models\Event;
 use \MongoDate;
@@ -9,7 +10,7 @@ use \MongoDate;
 /**
  * Handles the users main account information.
  */
-class ItemsController extends \lithium\action\Controller {
+class ItemsController extends BaseController {
 	
 	/**
 	 * Main display of item data
@@ -70,11 +71,15 @@ class ItemsController extends \lithium\action\Controller {
 			if (!empty($item->event[0])) {
 				$itemData['event'] = array($item->event[0]);
 			}
+			if (!empty($item->url)) {
+				$itemData['url'] = $this->cleanUrl($this->request->data['name']);
+			}
 			$itemData['modified_date'] = new MongoDate();
 			$itemData = array_merge($itemData, array(
 				'primary_images' => $primaryImages), 
 				array('secondary_images' => $secondaryImages
 			));
+			
 
 			if ($item->save($itemData)) {
 				$this->redirect(array(

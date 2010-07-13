@@ -79,13 +79,16 @@
 		</div>
 		<?php if (!empty($items)): ?>
 			<?php foreach ($items as $item): ?>
+				<?php
+					$productImage = (!empty($item->primary_images) ? $item->primary_images[0] : null)
+				?>
 				<!-- Start the product loop to output all products in this view -->
 				<!-- Start product item -->
 				<div class="product-list-item r-container">
 					<div class="tl"></div>
 					<div class="tr"></div>
 					<div class="md-gray p-container">
-						<img src="/image/<?php echo $item->primary_images[0]?>.jpg" alt="<?=$item->name?>" title="<?=$item->name?>" width="298" height="300"/>
+						<img src="/image/<?php echo $productImage ?>.jpg" alt="<?=$item->name?>" title="<?=$item->name?>" width="298" height="300"/>
 						<div class="details table-row">
 							<div class="table-cell left">
 								<h2><?=$item->name?></h2>
@@ -93,7 +96,7 @@
 								<strike><?=$item->msrp;?> Original Price</strike>
 							</div>
 							<div class="table-cell right">
-								<a href="#" title="<?=$item->name?>" class="flex-btn"><span>View Now</span></a>
+								<?=$this->html->link('View Now', array('Items::view', 'args' => "$item->url"), array('class' => 'flex-btn')); ?>
 							</div>
 						</div>
 

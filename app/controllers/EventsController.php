@@ -47,11 +47,15 @@ class EventsController extends BaseController {
 		$event = Event::first(array('conditions' => array('enabled' => '1', 'url' => $url)));
 		if (!empty($event)) {
 			foreach ($event->items as $value) {
-				$items[] = Item::first(array('conditions' => array('_id' => $value)));
+				$item = Item::first(array('conditions' => array('_id' => $value, 'enabled' => "1")));
+				if (!empty($item)) {
+					$items[] = $item;
+				}
 			}
 		} else {
 			$this->_render['template'] = 'noevent';
 		}
+
 		return compact('event', 'items');
 	}
 
