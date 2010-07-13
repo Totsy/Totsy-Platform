@@ -14,12 +14,19 @@
 		<div class="tl"></div>
 		<div class="tr"></div>
 		<div class="md-gray p-container">
+			<?php
+				if (!empty($event->images->preview_image)) {
+					$productImage = "/image/{$event->images->preview_image}.jpg";
+				} else {
+					$productImage = ($x <= 1) ? "/img/no-image-large.jpeg" : "/img/no-image-small.jpeg";
+				}
+			?>
 			<?php if ($x <= 1): ?>
-				<?=$this->html->image("/image/{$event->images->preview_image}.jpg", array(
+				<?=$this->html->image("$productImage", array(
 					'title' => "Product Title", 'alt' => "Product Alt Text", 'width' => '355', 'height' => '410'
 				)); ?>
 			<?php else: ?>
-				<?=$this->html->image("/image/{$event->images->preview_image}.jpg", array(
+				<?=$this->html->image("$productImage", array(
 					'title' => "Product Title", 'alt' => "Product Alt Text", 'width' => '298', 'height' => '298'
 				)); ?>
 			<?php endif ?>
@@ -83,6 +90,13 @@
 		<div class="tl"></div>
 		<div class="tr"></div>
 		<div class="md-gray p-container">
+			<?php
+				if (!empty($event->images->preview_image)) {
+					$productImage = "/image/{$event->images->preview_image}.jpg";
+				} else {
+					$productImage = "/img/no-image-small.jpeg";
+				}
+			?>
 			<?=$this->html->image("/image/{$event->images->preview_image}.jpg", array(
 				'title' => "Product Title", 'alt' => "Product Alt Text", 'width' => '298', 'height' => '298'
 			)); ?>
@@ -117,7 +131,14 @@
 	<div class="tl"></div>
 	<div class="tr"></div>
 	<div class="md-gray p-container">
-		<?=$this->html->image("/image/{$event->images->preview_image}.jpg", array(
+		<?php
+			if (!empty($event->images->preview_image)) {
+				$productImage = "/image/{$event->images->preview_image}.jpg";
+			} else {
+				$productImage = "/img/no-image-small.jpeg";
+			}
+		?>
+		<?=$this->html->image("$productImage", array(
 			'title' => "Product Title", 'alt' => "Product Alt Text", 'width' => '298', 'height' => '298'
 		)); ?>
 
