@@ -24,28 +24,15 @@ class UploadsController extends \lithium\action\Controller {
 	 */
 	public function upload($type = null) {	
 		$success = false;
-		switch ($type) {
-			case 'item':
-				$this->_render['template'] = 'item';
-				break;
-			case 'event':
-				$this->_render['template'] = 'event';
-				break;
-			default:
-				$this->_render['template'] = 'upload';
-				break;
-		}
-		//Check that we have a $POST	
-		if ($this->request->data) {
-			if ($this->validate()) {
-				$success = $this->write();
-				if ($success) {
-					$id = $this->id;
-					$fileName = $this->fileName;
-				}
+		$this->_render['template'] = in_array($type, array('item', 'event')) ? $type : 'upload';
+
+		// Check that we have a POST
+		if (($this->request->data) && $this->validate()) {
+			if ($this->write()) {
+				$id = $this->id;
+				$fileName = $this->fileName;
 			}
 		}
-		
 		return compact('id', 'fileName');
 	}
 	
@@ -118,7 +105,8 @@ class UploadsController extends \lithium\action\Controller {
 		$this->fileName = $this->request->data['Filedata']['name'];
 		$objectId = $grid->storeUpload('Filedata', $this->fileName);
 		$this->id = $objectId->__toString();
-		if($this->id) {
+
+		if ($this->id) {
 			$success = true;
 		}
 		return $success;
