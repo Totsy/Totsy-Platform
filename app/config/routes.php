@@ -47,16 +47,22 @@ if(!Session::check('userLogin')) {
  * to use (in this case, /app/views/pages/home.html.php)...
  */
 Router::connect('/', 'Events::index');
-Router::connect('/login', 'Users::login');
-Router::connect('/logout', 'Users::logout');
-Router::connect('/register', 'Users::register');
+Router::connect('/{:action:login|logout|register}', array('controller' => 'users'));
 Router::connect('/addresses', 'Addresses::view');
 Router::connect('/account/add/{:args}', 'Account::add');
+
+Router::connect('/shopping/cart', 'Cart::index');
+Router::connect('/shopping/checkout', 'Orders::add');
 
 /**
  * ...and connect the rest of 'Pages' controller's urls.
  */
 Router::connect('/pages/{:args}', 'Pages::view');
+
+/**
+ * Wire up the "search" for the 404 page, that attempts to figure out what you wanted.
+ */
+Router::connect('/search/{:search}', 'Search::view');
 
 /**
  * Connect the testing routes.
@@ -69,8 +75,8 @@ if (!Environment::is('production')) {
 /**
  * Finally, connect the default routes.
  */
-Router::connect('/{:controller}/{:action}/{:id:[0-9]+}.{:type}', array('id' => null));
-Router::connect('/{:controller}/{:action}/{:id:[0-9]+}');
+Router::connect('/{:controller}/{:action}/{:id:[0-9a-f]{24}}.{:type}', array('id' => null));
+Router::connect('/{:controller}/{:action}/{:id:[0-9a-f]{24}}');
 Router::connect('/{:controller}/{:action}/{:args}');
 
 ?>
