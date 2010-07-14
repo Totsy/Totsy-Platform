@@ -1,11 +1,3 @@
-<?php
-/**
- * Lithium: the most rad php framework
- *
- * @copyright     Copyright 2010, Union of RAD (http://union-of-rad.org)
- * @license       http://opensource.org/licenses/bsd-license.php The BSD License
- */
-?>
 <!doctype html>
 <html>
 <head>
@@ -34,24 +26,22 @@
 	<div id="wrapper">
 		<div id="header">
 			<div id="header-lt">
-				<?=$this->html->link($this->html->image('logo.png', array(
-						'width'=>'155', 
-						'height'=>'90'
-					)),
-					'',
-					array(
-						'id'=>'main-logo', 
-						'escape'=>false
-					));?>
+				<?=$this->html->link(
+					$this->html->image('logo.png', array('width'=>'155', 'height'=>'90')), '', array(
+						'id' => 'main-logo', 'escape'=> false
+					)
+				); ?>
 			</div>
 			<div id="header-mid">
-				<?=$this->html->link('At Your Service','',array('id'=>'cs'));?>	
+				<?=$this->html->link('At Your Service', '', array('id' => 'cs')); ?>
 				<div id="welcome">
-					<strong>Hello! </strong><?php if(isset($userInfo['firstname'])){echo $userInfo['firstname']." ".$userInfo['lastname'];};?> (<?=$this->html->link('Sign Out',array(
-							'controller' => 'users','action'=>'logout'),
-							array('title'=>'Sign Out'));?>	)				
+					<strong>Hello!</strong>
+					<?php if(isset($userInfo['firstname'])) { ?>
+						<?="{$userInfo['firstname']} {$userInfo['lastname']}"; ?>
+					<?php }?>
+					(<?=$this->html->link('Sign Out', 'Users::logout', array('title' => 'Sign Out')); ?>)
 				</div>
-				<?php echo $mainMenu;?>
+				<?php echo $mainMenu; ?>
 			</div>
 			<div id="header-rt">
 				<?=$this->html->link('Invite Friends. Get $15','',array('title'=>'Invite Friends. Get $15', 'id'=>'if'));?>	
