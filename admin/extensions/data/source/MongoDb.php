@@ -6,6 +6,8 @@
  * @license       http://opensource.org/licenses/bsd-license.php The BSD License
  */
 
+namespace admin\extensions\data\source;
+
 use \Mongo;
 use \MongoId;
 use \MongoCode;
