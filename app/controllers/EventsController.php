@@ -10,18 +10,20 @@ use \lithium\storage\Session;
 
 class EventsController extends BaseController {
 
+	protected function _init() {
+		parent::_init();
+		$this->_render['layout'] = 'main';
+	}
+	
 	public function index() {
 		$eventsToday = Event::today();
 		$currentEvents = Event::current();
 		$futureEvents = Event::future();
 
-		$this->_render['layout'] = 'main';
 		return compact('eventsToday', 'currentEvents', 'futureEvents');
 	}
 
 	public function view($url) {
-		$this->_render['layout'] = 'main';
-
 		if ($url == 'comingsoon') {
 			$this->_render['template'] = 'soon';
 		}
@@ -40,27 +42,6 @@ class EventsController extends BaseController {
 			}
 		}
 		return compact('event', 'items');
-	}
-
-	public function add() {
-		$event = Event::create();
-
-		if (($this->request->data) && $event->save($this->request->data)) {
-			$this->redirect(array('Events::view', 'id' => $event->_id));
-		}
-		return compact('event');
-	}
-
-	public function edit() {
-		$event = Event::find($this->request->id);
-
-		if (!$event) {
-			$this->redirect('Events::index');
-		}
-		if (($this->request->data) && $event->save($this->request->data)) {
-			$this->redirect(array('Events::view', 'id' => $event->_id));
-		}
-		return compact('event');
 	}
 }
 

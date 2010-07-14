@@ -1,10 +1,10 @@
-<?=$this->html->script(array('jquery-1.4.2', 'jquery.countdown.min'));?>
+<?=$this->html->script(array('jquery-1.4.2','jquery.countdown.min'));?>
 <?=$this->html->style('jquery.countdown');?>
 
 <div id="product-detail-right">
+	<div style="align:right" id="listingCountdown"></div>
 	<p class="mar-10-b" style="padding-right:10px;text-align:right">
-		<span class="caps">Sales Ends</span> in
-		<strong>3 hours and 2 minutes</strong>
+		
 	</p>
 
 	<div id="detail-top-left">
@@ -101,26 +101,6 @@
 		<div id="description" class="ui-tabs-hide">
 		    <h3>Overview</h3>
 			<?php echo $event->blurb; ?>
-			
-			<dl>
-				<dt>Details</dt>
-				<dl>
-					<ul class="content-list md">
-						<li>Wheeled 24" Expandable Short Stroller
-						<li>Tumi's signature ballistic nylon</li>
-						<li>Two zip pockets on front</li>
-						<li>Retractable top and side carry handles</li>
-						<li>Push button handle that adjusts to 2 heights</li>
-						<li>Dual zip main compartment</li>
-						<li>Nylon interior lining with multiple zip pockets, removable garment sleeve and tie down straps</li>
-						<li>Two feet on base</li>
-						<li>Comes with a luggage tag</li>
-						<li>Expands 2.5"</li>
-						<li>Dimensions: 24" H x 18" W x 11" D</li>
-					</ul>
-				</dl>
-			</dl>
-			
 		</div>
 		<!-- End Description Tab -->
 		
@@ -166,7 +146,7 @@
 <div id="product-detail-left">
 
 	<p class="mar-10-b" style="padding-left:10px">
-		<a href="#" title="Back to the sales event page">&lt; Click here for sale page</a>
+		<?=$this->html->link('< Click here for sale page', array('Events::view', 'args' => "$event->url")); ?>
 	</p>
 
 	<!-- Start product item -->
@@ -201,4 +181,12 @@
 
 <script type="text/javascript">
 	$(document).ready(function() { $("#tabs").tabs(); });
+</script>
+
+<script type="text/javascript"> 
+$(function () {
+	var saleEnd = new Date();
+	saleEnd = new Date(<?php echo $event->end_date->sec * 1000?>);
+	$('#listingCountdown').countdown({until: saleEnd, layout:'SALE ENDS in {dn} {dl} {hn} {hl} and {mn} {ml}'});
+});
 </script>

@@ -26,7 +26,7 @@
 		$(function () {
 			var saleEnd = new Date();
 			saleEnd = new Date(<?php echo $event->end_date->sec * 1000?>);
-			$('#listingCountdown').countdown({until: saleEnd, format:'dHM'});
+			$('#listingCountdown').countdown({until: saleEnd, layout:'SALE ENDS in {dn} {dl} {hn} {hl} and {mn} {ml}'});
 		});
 		</script>
 
@@ -71,7 +71,7 @@
 						<?php endif ?>
 						<div class="title table-cell v-bottom">
 							<h1><?=$event->name?></h1>
-							<strong class="red">SALE ENDS in <div id="listingCountdown"></div></strong>
+							<strong class="red"><div id="listingCountdown"></div></strong>
 
 						</div>
 					</div>
