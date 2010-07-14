@@ -7,13 +7,16 @@
 		Image
 	</th>
 	<th align="center">
-		Event Preview Image
+		Splash Big Image
 	</th>
 	<th align="center">
-		Event Banner Image
+		Splash Small Image
 	</th>
 	<th align="center">
-		Event Logo Image
+		Event Image
+	</th>
+	<th align="center">
+		Logo Image
 	</th>
 </tr>
 <tr>
@@ -24,10 +27,13 @@
 		<?=$this->html->image("/image/$id.jpg", array('alt' => 'altText')); ?>
 	</td>
 	<td align="center">
-		<input type="radio" name="preview_image" value="<?=$id;?>">
+		<input type="radio" name="splash_big_image" value="<?=$id;?>">
 	</td>
 	<td align="center">
-		<input type="radio" name="banner_image" value="<?=$id;?>">
+		<input type="radio" name="splash_small_image" value="<?=$id;?>">
+	</td>
+	<td align="center">
+		<input type="radio" name="event_image" value="<?=$id;?>">
 	</td>
 	<td align="center">
 		<input type="radio" name="logo_image" value="<?=$id;?>">

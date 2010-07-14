@@ -17,8 +17,8 @@
 		<div class="tr"></div>
 		<div class="md-gray p-container">
 			<?php
-				if (!empty($event->images->preview_image)) {
-					$productImage = "/image/{$event->images->preview_image}.jpg";
+				if (!empty($event->images->splash_big_image)) {
+					$productImage = "/image/{$event->images->splash_big_image}.jpg";
 				} else {
 					$productImage = ($x <= 1) ? "/img/no-image-large.jpeg" : "/img/no-image-small.jpeg";
 				}
@@ -89,8 +89,8 @@
 	<div class="tr"></div>
 	<div class="md-gray p-container">
 		<?php
-			if (!empty($event->images->preview_image)) {
-				$productImage = "/image/{$event->images->preview_image}.jpg";
+			if (!empty($event->images->splash_small_image)) {
+				$productImage = "/image/{$event->images->splash_small_image}.jpg";
 			} else {
 				$productImage = "/img/no-image-small.jpeg";
 			}
