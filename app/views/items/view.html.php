@@ -12,7 +12,7 @@
 		<?=$this->html->image('manufacturers/logos/fp-logo.gif', array(
 			'alt' => 'Logo ALT Tag', 'width' => "148", 'height' => "52"
 		)); ?>
-		<h1><?=$event->name; ?></h1>
+		<h1><?=$item->description." ".$item->color; ?></h1>
 		
 		<div class="product-detail-attribute">
 			<label for="size" class="required">Size<span>*</span></label>&nbsp;
@@ -91,26 +91,32 @@
 		<!-- End Video Tab -->
 		
 	</div>
-	
+	<!-- Started Related Products -->
 	<div id="related-products">
-		<h4>You would also love:</h4>
-		<a href="#" title="Product Name">
-			<?=$this->html->image('products/th/product-thumb-fpo.jpg', array(
-				"class" => "img-th", "width" => "93", "height" => "93"
-			)); ?>
-		</a>
-		<a href="#" title="Product Name">
-			<?=$this->html->image('products/th/product-thumb-2-fpo.jpg', array(
-				"class" => "img-th", "width" => "93", "height" => "93"
-			)); ?>
-		</a>
-		<a href="#" title="Product Name">
-			<?=$this->html->image('products/th/product-thumb-3-fpo.jpg', array(
-				"class" => "img-th", "width" => "93", "height" => "93"
-			)); ?>
-		</a>
+		<?php
+			if (!empty($related)) {
+				foreach ($related as $relatedItem) {
+					if (empty($relatedItem->primary_images)) {
+						$relatedImage = '/img/no-image-small.jpeg';
+					} else {
+						$relatedImage = "/image/{$relatedItem->primary_images[0]}.jpg";
+					}
+					echo $this->html->link(
+						$this->html->image("$relatedImage", array(
+							"class" => "img-th",
+							"width" => "93",
+							"height" => "93")),
+							"/items/view/$relatedItem->url", array(
+								'id' => 
+								"$relatedItem->name", 
+								'escape'=> false
+					));
+				}
+			}
+		?>
+		
 	</div>
-
+	<!-- End Related Products -->
 </div>
 
 <div id="product-detail-left">
@@ -124,11 +130,20 @@
 		<div class="tl"></div>
 		<div class="tr"></div>
 		<div class="md-gray p-container">
-		
-			<?=$this->html->image("/image/{$event->images->preview_image}.jpg", array(
-				"width" => "298", "height" => "300", "title" => $event->name, "alt" => $event->name
-			)); ?>
-
+			<?php
+				if (!empty($item->primary_images)) {
+					echo $this->html->image("/image/{$item->primary_images[0]}.jpg", array(
+						"width" => "298", "height" => "300", "title" => $event->name, "alt" => $event->name
+					));
+				} else {
+					echo $this->html->image('/img/no-image-small.jpeg', array(
+						'alt' => 'Totsy'), array(
+							'title' => "No Image Available", 
+							'width' => "298", 
+							'height'=> "300"
+							)); 
+				}
+			?>
 		</div>
 		<div class="bl"></div>
 		<div class="br"></div>
@@ -137,11 +152,19 @@
 	
 	<!-- Start additional image view thumbnails -->
 	<div id="thumbs">
-
-		<?=$this->html->image('products/th/product-thumb-fpo.jpg', array('class' => "img-th", 'width' => "93", 'height' => "93")); ?>
-		<?=$this->html->image('products/th/product-thumb-2-fpo.jpg', array('class' => "img-th active", 'width' => "93", 'height' => "93")); ?>
-		<?=$this->html->image('products/th/product-thumb-3-fpo.jpg', array('class' => "img-th", 'width' => "93", 'height' => "93")); ?>
-
+		<?php
+			if (!empty($item->primary_images)) {
+				echo $this->html->image("/image/{$item->primary_images[0]}.jpg", array(
+					'class' => "img-th", 
+					'width' => "93", 
+					'height' => "93"));
+			}
+		?>
+		<?php if (!empty($item->secondary_images)): ?>
+			<?php foreach ($item->secondary_images as $value): ?>
+						<?=$this->html->image("/image/{$value}.jpg", array('class' => "img-th", 'width' => "93", 'height' => "93")); ?>
+			<?php endforeach ?>
+		<?php endif ?>
 	</div>
 	<!-- End additional image view thumbnails -->
 

@@ -21,8 +21,13 @@ class ItemsController extends BaseController {
 		)));
 		if (is_array($item->event) && $item->event) {
 			$event = Event::first(reset($item->event));
+			$related = Item::all(array('conditions' => array(
+				'enabled' => '1', 
+				'description' => "$item->description",
+				'color' => array('$ne' => "$item->color")
+			)));
 		}
-		return compact('item', 'event');
+		return compact('item', 'event', 'related');
 	}
 
 }
