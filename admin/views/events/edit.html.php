@@ -130,14 +130,8 @@ tinyMCE.init({
 					'value' => "$end_date"
 				));?>
 	</div>
+
 <h1 id="current_images">Current Images</h1>
-<?php 
-	$preview_image = (empty($event->images->preview_image)) ? null : $event->images->preview_image;
-	$banner_image = (empty($event->images->banner_image)) ? null : $event->images->banner_image; 
-	$logo_image = (empty($event->images->logo_image)) ? null : $event->images->logo_image; 
-?>
-
-
 	<table border="1" cellspacing="30" cellpadding="30">
 	<tr>
 		<th align="justify">
@@ -148,21 +142,55 @@ tinyMCE.init({
 		</th>
 	</tr>
 	<tr>
-		<td>Preview Image</td>
+		<td>Big Splash Image</td>
 		<td align="center">
-			<?=$this->html->image("/image/$preview_image.jpg", array('alt' => 'altText')); ?>
+			<?php
+				if (!empty($event->images->splash_big_image)) {
+					$eventImage = "/image/{$event->images->splash_big_image}.jpg";
+				} else {
+					$eventImage = "/img/no-image-large.jpeg";
+				}
+			?>
+			<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
 		</td>
 	</tr>
 	<tr>
-		<td>Banner Image</td>
+		<td>Small Splash Image</td>
 		<td align="center">
-			<?=$this->html->image("/image/$banner_image.jpg", array('alt' => 'altText')); ?>
+			<?php
+				if (!empty($event->images->splash_small_image)) {
+					$eventImage = "/image/{$event->images->splash_small_image}.jpg";
+				} else {
+					$eventImage = "/img/no-image-small.jpeg";
+				}
+			?>
+			<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+		</td>
+	</tr>
+	<tr>
+		<td>Event Image</td>
+		<td align="center">
+			<?php
+				if (!empty($event->images->event_image)) {
+					$eventImage = "/image/{$event->images->event_image}.jpg";
+				} else {
+					$eventImage = "/img/no-image-small.jpeg";
+				}
+			?>
+			<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
 		</td>
 	</tr>
 	<tr>
 		<td>Logo Image</td>
 		<td align="center">
-			<?=$this->html->image("/image/$logo_image.jpg", array('alt' => 'altText')); ?>
+			<?php
+				if (!empty($event->images->logo_image)) {
+					$eventImage = "/image/{$event->images->logo_image}.jpg";
+				} else {
+					$eventImage = "/img/no-image-small.jpeg";
+				}
+			?>
+			<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
 		</td>
 	</tr>
 	</table>
