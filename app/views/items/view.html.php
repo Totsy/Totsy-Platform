@@ -15,16 +15,15 @@
 		<h1><?=$item->description." ".$item->color; ?></h1>
 		
 		<div class="product-detail-attribute">
+			<?php if (!empty($sizes)): ?>
 			<label for="size" class="required">Size<span>*</span></label>&nbsp;
-			<select name="size" id="size-select">
-				<option value="xsmall">x-small</option>
-				<option value="small">small</option>
-				<option value="medium">medium</option>
-				<option value="large">large</option>
-			</select>
+				<select name="size" id="size-select">
+					<?php foreach ($sizes as $value): ?>
+						<option value="<?=$value?>"><?=$value?></option>
+					<?php endforeach ?>
+				</select>
+			<?php endif ?>
 		</div>
-		
-	
 	</div>
 
 	<div id="detail-top-right" class="r-container">

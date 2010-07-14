@@ -27,7 +27,16 @@ class ItemsController extends BaseController {
 				'color' => array('$ne' => "$item->color")
 			)));
 		}
-		return compact('item', 'event', 'related');
+		if (!empty($item->details)) {
+			$details = $item->details->data();
+			foreach ($details as $key => $value) {
+				if (!empty($value)) {
+					$sizes[] = $key;
+				}
+			}
+		}
+
+		return compact('item', 'event', 'related', 'sizes');
 	}
 
 }
