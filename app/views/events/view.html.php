@@ -4,7 +4,7 @@
 
 	<div id="middle" class="fullwidth">				
 		
-		<h1 class="page-title gray"><span class="red">Today's <span class="bold caps">Sales</span> /</span><?=$event->name; ?></h1>
+		<h1 class="page-title gray"><span class="red">Today's <span class="bold caps">Sales</span> /</span> Troller Roller</h1>
 		
 		<div class="sm-actions fr">
 			<dl>
@@ -18,19 +18,24 @@
 				</dd>
 			</dl>
 		</div>
+		
+		
+
 
 		<script type="text/javascript"> 
 		$(function () {
 			var saleEnd = new Date();
 			saleEnd = new Date(<?php echo $event->end_date->sec * 1000?>);
 			$('#listingCountdown').countdown({until: saleEnd, format:'dHM'});
+			$('#splashCountdown').countdown({until: saleEnd, compact: true, description: ''});
 		});
 		</script>
 
 		<?php
 			if(!empty($event)) {
-				$banner = (empty($event->images)) ? null : $event->images->banner_image;
-				$logo = (empty($event->images)) ? null : $event->images->logo_image;
+				$banner_image = (empty($event->images)) ? null : $event->images->banner_image;
+				$logo_image = (empty($event->images)) ? null : $event->images->logo_image;
+				$preview_image = (empty($event->images)) ? null : $event->images->preview_image;
 				$blurb = $event->blurb;
 			} 
 		?>
@@ -41,31 +46,14 @@
 			<div id="page-header" class="md-gray">
 
 				<div class="left">
-					<?php
-						if (!empty($banner)) {
-							echo $this->html->image("/image/$banner.jpg", array(
-								'alt' => 'altText'), array(
-								'title' => "Image ALT Tag", 
-								'width' => "169", 
-								'height'=> "193"
-							));
-						} else {
-							echo $this->html->image('/img/no-image-small.jpeg', array(
-								'alt' => 'Totsy'), array(
-									'title' => "No Image Available", 
-									'width' => "169", 
-									'height'=> "193"
-									)); 
-						}
-				
-					?>
+
+					<img src="/image/<?php echo $banner_image?>.jpg" alt="Image ALT Tag" title="Image ALT Tag" width="169" height="193" />
+
 				</div>
-				
+
 				<div class="right">
 					<div class="details table-row">
-						<?php if (!empty($logo)): ?>
-							<img src="/image/<?=$logo?>.gif" alt="Logo ALT Tag" title="Logo ALT Tag" width="148" height="52" />
-						<?php endif ?>
+						<img src="/image/<?=$logo_image?>.gif" alt="Logo ALT Tag" title="Logo ALT Tag" width="148" height="52" />
 						<div class="title table-cell v-bottom">
 							<h1><?=$event->name?></h1>
 							<strong class="red">SALE ENDS in <div id="listingCountdown"></div></strong>
@@ -79,6 +67,9 @@
 			<div class="bl"></div>
 			<div class="br"></div>
 		</div>
+		
+		
+		
 		<div class="sort-by">
 			<select id="by-category" name="by-category">
 				<option value="">View By Category</option>
@@ -95,21 +86,13 @@
 		</div>
 		<?php if (!empty($items)): ?>
 			<?php foreach ($items as $item): ?>
-				<?php
-					if (!empty($item->primary_images)) {
-						$image = $item->primary_images[0];
-						$productImage = "/image/$image.jpg";
-					} else {
-						$productImage = "/img/no-image-small.jpeg";
-					}
-				?>
 				<!-- Start the product loop to output all products in this view -->
 				<!-- Start product item -->
 				<div class="product-list-item r-container">
 					<div class="tl"></div>
 					<div class="tr"></div>
 					<div class="md-gray p-container">
-						<img src="<?php echo "$productImage"; ?>" alt="<?=$item->name?>" title="<?=$item->name?>" width="298" height="300"/>
+						<img src="/image/<?php echo $item->primary_images[0]?>.jpg" alt="<?=$item->name?>" title="<?=$item->name?>" width="298" height="300"/>
 						<div class="details table-row">
 							<div class="table-cell left">
 								<h2><?=$item->name?></h2>
@@ -117,7 +100,7 @@
 								<strike><?=$item->msrp;?> Original Price</strike>
 							</div>
 							<div class="table-cell right">
-								<?=$this->html->link('View Now', array('Items::view', 'args' => "$item->url"), array('class' => 'flex-btn')); ?>
+								<a href="#" title="<?=$item->name?>" class="flex-btn"><span>View Now</span></a>
 							</div>
 						</div>
 

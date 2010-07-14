@@ -2,19 +2,36 @@
 
 namespace app\controllers;
 
-use \app\controllers\BaseController;
 use \app\models\Event;
 use \app\models\Item;
 use \MongoDate;
-use \lithium\storage\Session;
 
-class EventsController extends BaseController {
+class EventsController extends \lithium\action\Controller {
 
 	public function index() {
-		$eventsToday = Event::today();
-		$currentEvents = Event::current();
-		$futureEvents = Event::future();
-
+		$now = new MongoDate(time());
+		$tomorrow = new MongoDate(time() + (24 * 60 * 60));
+		$twoWeeks = new MongoDate(time() + (7 * 24 * 60 * 60));
+		$eventsToday = Event::all(array(
+			'conditions' => array(
+				'enabled' => '1',
+				'end_date' => array(
+					'$gt' => $now,
+					'$lt' => $tomorrow
+		))));
+		$currentEvents = Event::all(array(
+			'conditions' => array(
+				'enabled' => '1',
+				'end_date' => array(
+					'$gt' => $tomorrow,
+					'$lt' => $twoWeeks
+		))));
+		$futureEvents = Event::all(array(
+			'conditions' => array(
+				'enabled' => '1',
+				'end_date' => array(
+					'$gt' => $twoWeeks
+		))));
 		$this->_render['layout'] = 'main';
 		return compact('eventsToday', 'currentEvents', 'futureEvents');
 	}
@@ -27,15 +44,9 @@ class EventsController extends BaseController {
 		$event = Event::first(array('conditions' => array('enabled' => '1', 'url' => $url)));
 		if (!empty($event)) {
 			foreach ($event->items as $value) {
-				$item = Item::first(array('conditions' => array('_id' => $value, 'enabled' => "1")));
-				if (!empty($item)) {
-					$items[] = $item;
-				}
+				$items[] = Item::first(array('conditions' => array('_id' => $value)));
 			}
-		} else {
-			$this->_render['template'] = 'noevent';
 		}
-
 		return compact('event', 'items');
 	}
 
@@ -59,7 +70,6 @@ class EventsController extends BaseController {
 		}
 		return compact('event');
 	}
-	
 }
 
 
