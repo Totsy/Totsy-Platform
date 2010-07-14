@@ -38,11 +38,6 @@
 			<p class="caps">
 				<strike><?=$item->msrp; ?><br />Original Price</strike>
 			</p>
-
-			<p>
-				<strong>Delivery Timeline</strong><br />
-				<abbr title="Tuesday, April 6th, 2010">Tue 4/6/10</abbr> to <abbr title="Thursday, April 15th, 2010">Thu 4/15/10</abbr>
-			</p>
 			<button class="flex-btn">Buy Now</button>
 		</div>
 		<div class="bl"></div>
