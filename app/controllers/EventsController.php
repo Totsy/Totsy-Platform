@@ -21,21 +21,24 @@ class EventsController extends BaseController {
 
 	public function view($url) {
 		$this->_render['layout'] = 'main';
+
 		if ($url == 'comingsoon') {
 			$this->_render['template'] = 'soon';
 		}
 		$event = Event::first(array('conditions' => array('enabled' => '1', 'url' => $url)));
-		if (!empty($event)) {
-			foreach ($event->items as $value) {
-				$item = Item::first(array('conditions' => array('_id' => $value, 'enabled' => "1")));
-				if (!empty($item)) {
-					$items[] = $item;
-				}
-			}
-		} else {
+
+		if (!$event) {
 			$this->_render['template'] = 'noevent';
+			return array('event' => null, 'items' => array());
 		}
 
+		foreach ($event->items as $_id) {
+			$conditions = compact('_id') + array('enabled' => "1");
+
+			if ($item = Item::first(compact('conditions'))) {
+				$items[] = $item;
+			}
+		}
 		return compact('event', 'items');
 	}
 
@@ -43,7 +46,7 @@ class EventsController extends BaseController {
 		$event = Event::create();
 
 		if (($this->request->data) && $event->save($this->request->data)) {
-			$this->redirect(array('Events::view', 'args' => array($event->id)));
+			$this->redirect(array('Events::view', 'id' => $event->_id));
 		}
 		return compact('event');
 	}
@@ -55,7 +58,7 @@ class EventsController extends BaseController {
 			$this->redirect('Events::index');
 		}
 		if (($this->request->data) && $event->save($this->request->data)) {
-			$this->redirect(array('Events::view', 'args' => array($event->id)));
+			$this->redirect(array('Events::view', 'id' => $event->_id));
 		}
 		return compact('event');
 	}
