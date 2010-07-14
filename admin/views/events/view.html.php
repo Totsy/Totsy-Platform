@@ -50,18 +50,19 @@ $(function () {
 	<div id="page-header" class="md-gray">
 	
 		<div class="left">
-	
-			<img src="/image/<?php echo $banner_image?>.jpg" alt="Image ALT Tag" title="Image ALT Tag" width="169" height="193" />
-		
+			<?=$this->html->image("/image/{$banner_image}.jpg", array(
+				'alt' => "Image ALT Tag", 'title' => "Image ALT Tag", 'width' => '169', 'height' => '193'
+			)); ?>
 		</div>
 		
 		<div class="right">
 			<div class="details table-row">
-				<img src="/image/<?=$logo_image?>.gif" alt="Logo ALT Tag" title="Logo ALT Tag" width="148" height="52" />
+				<?=$this->html->image("/image/{$logo_image}.gif", array(
+					'alt' => "Logo ALT Tag", 'title' => "Logo ALT Tag", 'width' => '148', 'height' => '52'
+				)); ?>
 				<div class="title table-cell v-bottom">
 					<h1><?=$event->name?></h1>
 					<strong class="red">SALE ENDS in <div id="listingCountdown"></div></strong>
-					
 				</div>
 			</div>
 			<p><?php echo $blurb; ?><p>
