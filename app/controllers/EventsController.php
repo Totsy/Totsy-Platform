@@ -16,11 +16,10 @@ class EventsController extends BaseController {
 	}
 	
 	public function index() {
-		$eventsToday = Event::today();
-		$currentEvents = Event::current();
-		$futureEvents = Event::future();
+		$openEvents = Event::open();
+		$pendingEvents = Event::pending();
 
-		return compact('eventsToday', 'currentEvents', 'futureEvents');
+		return compact('openEvents', 'pendingEvents');
 	}
 
 	public function view($url) {

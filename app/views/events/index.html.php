@@ -6,7 +6,7 @@
 ?>
 <h1 class="page-title gray"><span class="red">Today's <span class="bold caps">Sales</span></span></h1>
 <?php $x = 0; ?>
-<?php foreach ($eventsToday as $event): ?>
+<?php foreach ($openEvents as $event): ?>
 	<!-- Start product item -->
 	<?php if ($x <= 1): ?>
 		<div class="product-list-item featured r-container">
@@ -80,55 +80,10 @@
 	<?php $x++; ?>
 <?php endforeach ?>
 
-<?php $x = 0; ?>
-<?php foreach ($currentEvents as $event): ?>
-	
-	<!-- Start product item -->
-	<?php if ($x <= 1): ?>
-		<div class="product-list-item featured r-container">
-	<?php else: ?>
-		<div class="product-list-item r-container">
-	<?php endif ?>	
-		<div class="tl"></div>
-		<div class="tr"></div>
-		<div class="md-gray p-container">
-			<?php
-				if (!empty($event->images->preview_image)) {
-					$productImage = "/image/{$event->images->preview_image}.jpg";
-				} else {
-					$productImage = "/img/no-image-small.jpeg";
-				}
-			?>
-			<?=$this->html->image("/image/{$event->images->preview_image}.jpg", array(
-				'title' => "Product Title", 'alt' => "Product Alt Text", 'width' => '298', 'height' => '298'
-			)); ?>
-
-			<div class="splash-details">
-				<div class="table-cell left">
-					Events End In<br />
-					<strong><div id="<?php echo "currentsplash$x"; ?>"</div></strong>
-				</div>
-
-				<div class="table-cell right">
-					<?=$this->html->link('Go', array('Events::view', 'args' => array($event->url)), array('class' => 'flex-btn'));?>
-				</div>
-			</div>
-		</div>
-		<div class="bl"></div>
-		<div class="br"></div>
-	</div>
-	<!-- End product item -->
-	<?php
-		$date = $event->end_date->sec * 1000;
-		$splashid = "#currentsplash$x";
-		$currentJs[] = "<script type=\"text/javascript\">$(function () {var saleEnd = new Date();saleEnd = new Date($date);$(\"$splashid\").countdown({until: saleEnd, $countLayout});});</script>";?>
-	<?php $x++; ?>
-<?php endforeach ?>
-
 <h2 class="page-title gray clear"><span class="red">Coming <span class="bold caps">Soon</span></span></h2>
 
 <?php $x = 0; ?>
-<?php foreach ($futureEvents as $event): ?>
+<?php foreach ($pendingEvents as $event): ?>
 	<div class="product-list-item r-container">
 	<div class="tl"></div>
 	<div class="tr"></div>
@@ -168,13 +123,6 @@
 <!--Javascript Output for Today's Events -->
 <?php if (!empty($todayJs)): ?>
 	<?php foreach ($todayJs as $value): ?>
-		<?php echo $value ?>
-	<?php endforeach ?>
-<?php endif ?>
-
-<!--Javascript Output for Current Events-->
-<?php if (!empty($currentJs)): ?>
-	<?php foreach ($currentJs as $value): ?>
 		<?php echo $value ?>
 	<?php endforeach ?>
 <?php endif ?>
