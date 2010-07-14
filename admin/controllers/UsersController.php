@@ -1,10 +1,11 @@
 <?php
 
 namespace admin\controllers;
+
 use admin\models\User;
-use \lithium\security\Auth;
-use \lithium\storage\Session;
-use \lithium\data\Connections;
+use lithium\security\Auth;
+use lithium\storage\Session;
+use lithium\data\Connections;
 
 
 /**
@@ -17,9 +18,9 @@ use \lithium\data\Connections;
 */
 class UsersController extends \lithium\action\Controller {
 
-	public function index(){
-
+	public function index() {
 	}
+
 	/**
 	 * Performs login authentication for a user going directly to the database.
 	 * If authenticated the user will be redirected to the home page.
@@ -27,36 +28,23 @@ class UsersController extends \lithium\action\Controller {
 	 * @return string The user is prompted with a message if authentication failed.
 	 */
 	public function login() {
-		$message = false;
-		Auth::config(array('userLogin' => array(
-			'model' => 'User',
-			'adapter' => 'Form',
-			'fields' => array('username', 'password'))
-			));
-		if ($this->request->data) {
-			$auth = Auth::check("userLogin", $this->request);
-			var_dump(Session::read('userLogin'));
-			if ($auth == false) {
-				$message = 'Login Failed - Please Try Again';
-			} else {
-				$this->redirect('/');
-				
-			}
-		}
-
 		//new login layout to account for fullscreen image JL
 		$this->_render['layout'] = 'login';
+		$message = false;
+
+		if ($this->request->data) {
+			if (Auth::check("userLogin", $this->request)) {
+				return $this->redirect('/');
+			}
+			$message = 'Login Failed - Please Try Again';
+		}
 		return compact('message');
 	}
+
 	/**
 	 * Performs the logout action of the user removing '_id' from session details.
 	 */
 	public function logout() {
-		Auth::config(array('userLogin' => array(
-			'model' => 'User',
-			'adapter' => 'Form',
-			'fields' => array('username', 'password'))
-			));
 		Auth::clear('userLogin');
 		$this->redirect(array('action'=>'login'));
 	}
@@ -68,13 +56,10 @@ class UsersController extends \lithium\action\Controller {
 	private function writeSession($sessionInfo) {
 		return (Session::write('userLogin', $sessionInfo));
 	}
-	
+
 	/**
 	 * 
 	 */
-
-
-	
 	public function updatePassword()
 	{
 		//If there is a request

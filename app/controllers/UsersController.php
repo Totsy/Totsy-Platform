@@ -63,19 +63,13 @@ class UsersController extends \lithium\action\Controller {
 	 */
 	public function login() {
 		$message = false;
-		Auth::config(array('userLogin' => array(
-			'model' => 'User',
-			'adapter' => 'Form',
-			'fields' => array('username', 'password'))
-			));
 		if ($this->request->data) {
 			$username = $this->request->data['username'];
 			$password = $this->request->data['password'];
 			//Grab User Record
-			$this->userRecord = User::find('first', array(
-				'conditions' => array('username' => "$username")
-			));
-			if(!empty($this->userRecord)){
+			$this->userRecord = User::first(array('conditions' => compact('username')));
+
+			if($this->userRecord){
 				if($this->userRecord->legacy == 1) {
 					$successAuth = $this->authIllogic($password);
 					if ($successAuth) {

@@ -81,12 +81,21 @@ require __DIR__ . '/bootstrap/g11n.php';
  * it intercepts any writes where the `'expires'` key is set in the options array.
  */
 use \lithium\storage\Session;
+use lithium\security\Auth;
 
 Session::config(array(
  	'default' => array('adapter' => 'Php', 'expires' => '3600')
 ));
 
+Auth::config(array('userLogin' => array(
+	'model' => 'User',
+	'adapter' => 'Form',
+	'fields' => array('username', 'password'))
+));
+
+
 use \lithium\analysis\Logger;
+
 Logger::config(array(
 	'default' => array('adapter' => 'File')
 ));
