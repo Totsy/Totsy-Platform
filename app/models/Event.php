@@ -36,18 +36,15 @@ class Event extends \lithium\data\Model {
 	/**
 	 * Query for events that occur between tomorrow and in two weeks
 	 */
-	public static function current($params = null, array $options = array()) {
-		$fields = $params['fields'];
-		
+	public static function current($params = null, array $options = array()) {		
 		return Event::all(array(
 			'conditions' => array(
 				'enabled' => '1',
 				'end_date' => array(
-					'$gt' => static::dates('tomorrow'),
-					'$lt' => static::dates('twoweeks')),
-			'fields' => $fields,
-			'order' => array('end_date' => 'ASC')
-		)));
+					'$gte' => static::dates('tomorrow'),
+					'$lte' => static::dates('twoweeks'))),
+			'order' => array('end_date' => 'ASC') 
+		));
 	}
 	/**
 	 * Query for all events that occur after two weeks

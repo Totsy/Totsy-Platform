@@ -1,4 +1,4 @@
-<?=$this->html->script(array('jquery-1.4.2','jquery.countdown.min'));?>
+<?=$this->html->script(array('jquery-1.4.2', 'jquery.countdown.min'));?>
 <?=$this->html->style('jquery.countdown');?>
 
 <div id="product-detail-right">
@@ -24,32 +24,7 @@
 			</select>
 		</div>
 		
-		<div id="colors" class="product-detail-attribute">
-			<?php
-				// @todo Replace me with actual item color list
-				$colors = array(
-					'red', 'orange', 'yellow', 'blue', 'gray', 'black', 'pink', 'purple'
-				);
-			?>
-			<label for="color" class="required">Color<span>*</span></label>&nbsp;
-			<?=$this->form->select('color', array_combine($colors, $colors), array(
-				'id' => 'color-select', 'value' => 'yellow'
-			)); ?>
-			<br />
-
-			<?php foreach (array_chunk($colors, 4) as $set) { ?>
-				<?php if ($set[0] != $colors[0]) { ?>
-					<br class="clear" />
-				<?php } ?>
-				<?php foreach ($set as $color) { ?>
-					<?php $class = ($color == 'yellow') ? "color-swatch active" : "color-swatch"; ?>
-					<?=$this->html->image(
-						"products/colors/{$color}.gif",
-						compact('class') + array('alt' => $color, 'width' => '36', 'height' => '36')
-					); ?>
-				<?php } ?>
-			<?php } ?>
-		</div>
+	
 	</div>
 
 	<div id="detail-top-right" class="r-container">
