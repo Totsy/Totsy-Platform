@@ -196,11 +196,11 @@ div.col-2 .box-2{width:48%}
 
 .leftandright{width:640px}
 .noright{width:696px}
-.noleft{width:610px}
+.noleft{width:534px;margin:10px 30px 30px 30px}
 .fullwidth{width:100%}
 
-#right{width:320px;float:left;background:url(../img/right-bot-bg.png) no-repeat left bottom;font-size:.8em}
-#right h3{font-size:1.2em;margin-bottom:5px}
+#right{width:300px;padding:10px 20px 0 0;float:left}
+#right h3{margin-bottom:5px}
 
 #product-detail-left{width:300px;float:left}
 .img-th{float:left;cursor:pointer;border:1px solid #D7D7D7;margin:10px 3px 0 0}
@@ -499,6 +499,29 @@ tr.cart-total td{text-align:right;border-bottom:1px solid #D7D7D7;padding:20px}
 tr.cart-buy td{border:none;padding:20px}
 td.cart-button{text-align:right}
 a:link.delete,a:visited.delete{background:url(../img/cart-trash-btn.png) no-repeat;display:block;width:21px;height:21px;text-indent:-9999px}
+
+#checkout-process{margin:0}
+#checkout-process li.step{border-top:1px solid #D7D7D7;padding:10px 0 0 0}
+#middle #checkout-process p{margin-bottom:10px}
+#checkout-process select{margin-bottom:10px}
+#checkout-process h2{margin-bottom:10px}
+
+#checkout-process .form-row label{width:150px}
+
+#shipping-new-address-form, #billing-new-address-form,#payment-method-form,#gift-message{display:none}
+
+table.order-status{width:100%}
+
+ol#order-details{margin:0}
+ol#order-details li{margin:10px 0;padding:10px 0 0 0;border-top:1px solid #CCC}
+ol#order-details h4{font-weight:bold}
+
+.shipping-detail{background:#CCC;color:#EB132C;padding:10px;margin-top:10px;font-size:12px}
+
+.shipping-methods li{margin:10px 0}
+.shipping-methods li img{vertical-align:middle;margin:0 0 0 5px}
+
+#gift-message textarea{width:522px;height:70px}
 
 /* Modal Styles */
 .body-overlayed embed, .body-overlayed object, .body-overlayed select{visibility:hidden}

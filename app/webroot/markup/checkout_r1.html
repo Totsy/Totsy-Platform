@@ -1,0 +1,538 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<html>
+	
+	<head>
+	
+		<title>Totsy - Checkout</title>
+
+		<link type="text/css" rel="stylesheet" href="../css/base.css" />
+		<link href="../favicon.ico" rel="shortcut icon" type="image/x-icon" />
+		
+		<!-- JS moved to end of page since we now have control of that -->
+		
+	</head>
+	
+	<body>
+	
+		<div id="topper"><!-- --></div>
+
+		<div id="wrapper">
+			
+			<!-- Start Header -->
+			<div id="header">
+				
+				<div id="header-lt">
+				
+					<a href="/" title="Back to the Totsy home page" id="main-logo">
+						<img src="../img/logo.png" alt="Totsy logo" title="Totsy logo" width="155" height="90" />
+					</a>
+				
+				</div>
+				
+				<div id="header-mid">
+					
+					<a href="#" id="cs" title="Customer Service">At Your Service</a>
+					
+					<div id="welcome">
+						<strong>Hello</strong> Mitch Pirtle! (<a href="#" title="Sign Out">Sign Out</a>)
+					</div>
+					
+					<!-- Start Main Navigation -->
+					<div id="main-nav">
+						<ul class="menu main-nav">
+							
+							<li class="first item2">
+								<a href="#" title="Sales"><span>Sales</span></a>
+							</li>
+							
+							<li class="item3">
+								<a href="#" title="Coming Soon"><span>Coming Soon</span></a>
+							</li>
+							
+							<li class="item4">
+								<a href="#" title="Blog"><span>Blog</span></a>
+							</li>
+							
+							<li class="last parent item5">
+								<a href="#" title="My Account"><span>My Account</span></a>
+								<ul>
+									<li class=" first item17">
+										<a href="#" title="Account Dashboard"><span>Account Dashboard</span></a>
+									</li>
+									<li class="item18">
+										<a href="#" title="Account Information"><span>Account Information</span></a>
+									</li>
+									<li class="item19">
+										<a href="#" title="Address Book"><span>Address Book</span></a></li>
+									<li class="item20">
+										<a href="#" title="My Orders"><span>My Orders</span></a>
+									</li>
+									<li class="item21">
+										<a href="#" title="Email Preferences"><span>Email Preferences</span></a>
+									</li>
+									<li class="item22">
+										<a href="#" title="Help Desk"><span>Help Desk</span></a>
+									</li>
+									<li class=" last item23">
+										<a href="#" title="My Invitations"><span>My Invitations</span></a>
+									</li>
+								</ul>
+								
+							</li>
+							
+						</ul>
+					</div>
+					<!-- End Main Navigation -->
+					
+				</div>
+				
+				<div id="header-rt">
+					
+					<a href="#" id="if" title="Invite Friends. Get $15">Invite Friends. Get $15</a>
+					
+					<p class="clear">
+						<span class="fl"><a href="#" id="credits" title="My Credits">My Credits</a> ($1,000)</span> <a href="#" id="cart" title="My Cart">Cart</a> <span class="fl">(1) <a href="#" id="checkout" title="Checkout">Checkout</a></span>
+					</p>
+					
+				</div>
+				
+			</div>
+			<!-- End Header -->
+			
+			<div id="content">
+				
+				<h1 class="p-header">Checkout</h1>
+				
+				<div id="middle" class="noleft">
+					
+					<div class="tl"></div>
+					<div class="tr"></div>
+					<div id="page">
+					
+					<ol id="checkout-process">
+						
+						<!-- Start Billing Information -->
+						<li id="opc-billing">
+							<div class="head">
+								<h2>Billing Address</h2>
+							</div>
+							
+							<div id="checkout-process-billing">
+								
+								<form id="checkout-billing-form" action="">
+								
+									<p>Select a billing address from your address book or enter a new address.</p>
+									
+									<select id="billing-address-select" onchange="billing(this.value)">
+										<option selected="selected" value="1">Mitch Pirtle, 123 Main Street, Anytown USA, 90210</option>
+										<option value="2">Mitch Pirtle, 123 Main Street, Anytown USA, 90210</option>
+										<option value="">New Address</option>
+									</select>
+									
+									<fieldset id="billing-new-address-form">
+										
+										<legend class="no-show">New Billing Address</legend>
+								
+										<div class="form-row">
+											<label for="fname" class="required">First Name<span>*</span></label>
+											<input type="text" name="fname" id="fname" class="inputbox" value="" />
+										</div>
+										
+										<div class="form-row">
+											<label for="lname" class="required">Last Name<span>*</span></label>
+											<input type="text" name="lname" id="lname" class="inputbox" value="" />
+										</div>
+										
+										<div class="form-row">
+											<label for="address" class="required">Street Address<span>*</span></label>
+											<input type="text" name="address" id="address" class="inputbox" value="" />
+										</div>
+										
+										<div class="form-row">
+											<label for="address_2">Street Address 2</label>
+											<input type="text" name="address_2" id="address_2" class="inputbox" value="" />
+										</div>
+										
+										<div class="form-row">
+											<label for="city" class="required">City<span>*</span></label>
+											<input type="text" name="city" id="city" class="inputbox" value="" />
+										</div>
+										
+										<div class="form-row">
+											<label for="state" class="required">State/Province<span>*</span></label>
+											<input type="text" name="state" id="state" class="inputbox" value="" />
+										</div>
+										
+										<div class="form-row">
+											<label for="zip" class="required">Zip/Postal Code<span>*</span></label>
+											<input type="text" name="zip" id="zip" class="inputbox" value="" />
+										</div>
+										
+										<div class="form-row">
+											<label for="phone">Telephone</label>
+											<input type="text" name="phone" id="phone" class="inputbox" value="" />
+										</div>
+									
+									</fieldset>
+									
+									<fieldset>
+										
+										<p>
+											<input type="radio" name="billing[use_for_shipping]" id="billing:use_for_shipping_yes" value="1" checked="checked" onclick="changeshipping(1)" />&nbsp;
+											<label for="billing:use_for_shipping_yes">Ship to this address</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											<input type="radio" name="billing[use_for_shipping]" id="billing:use_for_shipping_no" value="0" onclick="changeshipping(0)" />&nbsp;
+											<label for="billing:use_for_shipping_no">Ship to different address</label>
+										</p>
+									
+									</fieldset>
+									
+								</form>
+									
+							</div>
+							
+						</li>
+						<!-- End Billing Information -->
+						
+						<!-- Start Shipping Information -->
+						<li id="opc-shipping" class="step" style="opacity:0.5">
+							<div class="head">
+								<h2>Shipping Address</h2>
+							</div>
+							
+							<div id="checkout-process-shipping">
+								
+								<form id="checkout-shipping-form" action="">
+								
+									<p>Select a shipping address from your address book or enter a new address.</p>
+									
+									<select id="shipping-address-select" onchange="shipping(this.value)" disabled="disabled">
+										<option selected="selected" value="1">Mitch Pirtle, 123 Main Street, Anytown USA, 90210</option>
+										<option value="2">Mitch Pirtle, 123 Main Street, Anytown USA, 90210</option>
+										<option value="">New Address</option>
+									</select>
+									
+									<fieldset id="shipping-new-address-form">
+										
+										<legend class="no-show">New Shipping Address</legend>
+								
+										<div class="form-row">
+											<label for="fname" class="required">First Name<span>*</span></label>
+											<input type="text" name="fname" id="fname" class="inputbox" value="" />
+										</div>
+										
+										<div class="form-row">
+											<label for="lname" class="required">Last Name<span>*</span></label>
+											<input type="text" name="lname" id="lname" class="inputbox" value="" />
+										</div>
+										
+										<div class="form-row">
+											<label for="address" class="required">Street Address<span>*</span></label>
+											<input type="text" name="address" id="address" class="inputbox" value="" />
+										</div>
+										
+										<div class="form-row">
+											<label for="address_2">Street Address 2</label>
+											<input type="text" name="address_2" id="address_2" class="inputbox" value="" />
+										</div>
+										
+										<div class="form-row">
+											<label for="city" class="required">City<span>*</span></label>
+											<input type="text" name="city" id="city" class="inputbox" value="" />
+										</div>
+										
+										<div class="form-row">
+											<label for="state" class="required">State/Province<span>*</span></label>
+											<input type="text" name="state" id="state" class="inputbox" value="" />
+										</div>
+										
+										<div class="form-row">
+											<label for="zip" class="required">Zip/Postal Code<span>*</span></label>
+											<input type="text" name="zip" id="zip" class="inputbox" value="" />
+										</div>
+										
+										<div class="form-row">
+											<label for="phone">Telephone</label>
+											<input type="text" name="phone" id="phone" class="inputbox" value="" />
+										</div>
+									
+									</fieldset>
+																																				
+								</form>
+								
+							</div>
+							
+						</li>
+						<!-- End Shipping Information -->
+						
+						<li class="step">
+							<fieldset>
+							
+								<p><a href="javascript:void(0)" onclick="giftmessage()" title="Want to include a gift message?">Want to include a gift message?</a></p>
+								
+								<div id="gift-message">
+									<textarea name="gift-message" class="inputbox"></textarea>
+								</div>
+								
+							</fieldset>
+
+						</li>
+						
+						<li id="shipping-method" class="step">
+							<div class="head">
+								<h2>Shipping Method</h2>
+							</div>
+							
+							<div id="shipping-method-details">
+							<fieldset>
+									
+								<ul class="shipping-methods">
+									<li>
+										<label><input type="radio" name="ups" checked="checked" />&nbsp;<img src="../img/ups-icon.jpg" title="UPS Shipping" alt="UPS Shipping" width="26" height="32" />&nbsp;UPS Ground</label>
+										<span class="fr">
+											<strong>Estimated Delivery</strong><br />
+											<abbr title="Tuesday, April 6th, 2010">Tue 4/6/10</abbr> to <abbr title="Thursday, April 15th, 2010">Thu 4/15/10</abbr>
+										</span>
+									</li>
+								</ul>
+							
+							</fieldset>
+							
+							</div>
+						</li>
+						
+						<!-- Start Payment Information -->
+						<li id="opc-payment" class="step">
+							<div class="head">
+								<h2>Payment Information</h2>
+							</div>
+							
+							<div id="checkout-process-payment">
+								
+								<form id="checkout-payment-form" action="">
+								
+									<p>
+										<label for="payment-method-select">Pay with:</label>&nbsp;
+										<select id="payment-method-select" onchange="payment(this.value)">
+											<option selected="selected" value="1">Visa ending in 1234</option>
+											<option value="2">Visa ending in 5678</option>
+											<option value="">New Credit Card</option>
+										</select>
+									</p>
+									
+									
+									
+									<fieldset id="payment-method-form">
+										
+										<legend class="no-show">New Payment Method</legend>
+										
+										<div class="form-row">
+											<label for="cc-type" class="required">Credit Card Type<span>*</span></label>
+											<select id="cc-type">
+												<option selected="selected" value="1">Visa</option>
+												<option value="2">Mastercard</option>
+												<option value="3">American Express</option>
+											</select>
+										</div>
+										
+										<div class="form-row">
+											<label for="cc" class="required">Card Number<span>*</span></label>
+											<input type="text" name="cc" id="cc" class="inputbox" value="" />
+										</div>
+										
+										<div class="form-row">
+											
+											<label for="cc-exp" class="required">Expiration Date<span>*</span></label>
+											<select id="cc-exp-month">
+												<option selected="selected" value="1">Month</option>
+												<option value="2">January</option>
+												<option value="3">February</option>
+											</select>
+											
+											<select id="cc-exp-year">
+												<option selected="selected" value="1">Year</option>
+												<option value="2">2010</option>
+												<option value="3">2011</option>
+												<option value="3">2012</option>
+												<option value="3">2013</option>
+											</select>
+											
+										</div>
+										
+										<div class="form-row">
+											<label for="cc-ccv" class="required">CVV2 Code<span>*</span></label>
+											<input type="text" name="cc-ccv" id="cc-ccv" class="inputbox" value="" />
+										</div>
+									
+									</fieldset>
+																		
+								</form>
+									
+							</div>
+							
+						</li>
+						<!-- End Shipping Information -->
+						
+						<li class="step">
+								
+							<button class="flex-btn"><span>Submit Order</span></button>&nbsp;&nbsp;<span class="red">*</span> Required Fields
+							
+						</li>
+						
+					</ol>
+					
+					</div>
+					<div class="bl"></div>
+					<div class="br"></div>
+				
+				</div>	
+				
+				<div id="right">
+					
+					<div class="r-container">
+						<div class="tl"></div>
+						<div class="tr"></div>
+						<div class="r-box lt-gradient-1">
+							
+							<h3>Your Order</h3>
+							<table class="order-status">
+								<tr>
+									<td class="left"><strong>Order Subtotal:</strong></td>
+									<td class="right">$350.00</td>
+								</tr>
+								<tr>
+									<td class="left"><strong>Shipping:</strong></td>
+									<td class="right">$40.00</td>
+								</tr>
+								<tr>
+									<td class="left"><strong>Sales Tax:</strong></td>
+									<td class="right">$10.00</td>
+								</tr>
+								<tr>
+									<td class="left"><strong class="caps">Total:</strong></td>
+									<td class="right"><strong>$400.00</strong></td>
+								</tr>
+							</table>
+							
+							<ol id="order-details">
+								<li id="billing-details">
+									<h4>Billing Address</h4>
+									<address>123 Main Street<br />
+									Anytown, USA 90210</address>
+									
+								</li>
+								<li id="shipping-details">
+									<h4>Shipping Address</h4>
+									<address>456 Front Street<br />
+									Springville, USA 43210</address>
+									
+									<div class="shipping-detail">
+										<strong>Shipment 1</strong><br />
+										Extended Delivery Timeline<br />
+										<abbr title="Tuesday, April 6th, 2010">Tue 4/6/10</abbr> to <abbr title="Thursday, April 15th, 2010">Thu 4/15/10</abbr>
+									</div>
+									
+								</li>
+							</ol>
+						
+						</div>
+						<div class="bl"></div>
+						<div class="br"></div>
+					</div>
+					
+				</div>
+						
+			</div>
+						
+		</div>
+		
+		<div id="botter"><!-- --></div>
+		
+		<div id="footer">
+		
+			<ul class="menu">
+			
+				<li class="first">
+					<a href="#" title="Terms of Use"><span>Terms of Use</span></a>
+				</li>
+				<li>
+					<a href="#" title="Privacy Policy"><span>Privacy Policy</span></a>
+				</li>
+				<li>
+					<a href="#" title="Sitemap"><span>Sitemap</span></a>
+				</li>
+				<li>
+					<a href="#" title="About Us"><span>About Us</span></a>
+				</li>
+				<li>
+					<a href="#" title="FAQ"><span>FAQ</span></a>
+				</li>
+				<li class="last">
+					<a href="#" title="Contact Us"><span>Contact Us</span></a>
+				</li>
+				
+			</ul>
+			
+			<p class="clear">&copy; 2010 Totsy.com. All Rights Reserved.</p>
+		
+		</div>
+		
+		<script type="text/javascript" src="../js/jquery-1.4.2.js"></script>
+		<script type="text/javascript" src="../js/jquery.equalheights.js"></script>
+		<script type="text/javascript" src="../js/jquery-ui-1.8.2.custom.min.js"></script>
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#tabs").tabs();
+			});
+			
+			function shipping( s ){
+				if( s == '' ){
+					$('#shipping-new-address-form').show();
+				}else{
+					$('#shipping-new-address-form').hide();				
+				}
+			}
+			
+			function billing( s ){
+				if( s == '' ){
+					$('#billing-new-address-form').show();
+				}else{
+					$('#billing-new-address-form').hide();				
+				}
+			}
+			
+			function payment( s ){
+				if( s == '' ){
+					$('#payment-method-form').show();
+				}else{
+					$('#payment-method-form').hide();				
+				}
+			}
+			
+			function giftmessage(){
+				$('#gift-message').toggle();
+			}
+			
+			function changeshipping( s ){
+			
+				if( s == 1 ){
+				
+					$('#opc-shipping').css('opacity', 0.5);
+					$('#shipping-address-select').attr('disabled', 'disabled');
+				
+				}else{
+				
+					$('#opc-shipping').css('opacity', 1);
+					$('#shipping-address-select').attr('disabled', '');
+					
+				}
+			
+			}
+			
+		</script>
+				
+	</body>
+	
+</html>
