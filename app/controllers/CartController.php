@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use \app\models\Cart;
 
-class CartsController extends \lithium\action\Controller {
+class CartController extends \lithium\action\Controller {
 
 	public function index() {
 		$carts = Cart::all();
@@ -26,9 +26,7 @@ class CartsController extends \lithium\action\Controller {
 	}
 
 	public function edit() {
-		$cart = Cart::find($this->request->id);
-
-		if (!$cart) {
+		if (!$cart = Cart::find($this->request->id)) {
 			$this->redirect('Carts::index');
 		}
 		if (($this->request->data) && $cart->save($this->request->data)) {
