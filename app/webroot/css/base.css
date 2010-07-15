@@ -523,6 +523,19 @@ ol#order-details h4{font-weight:bold}
 
 #gift-message textarea{width:522px;height:70px}
 
+div.jqZoomTitle{z-index:5000;text-align:center;font-size:11px;height:16px;padding-top:2px;position:absolute;top:0;left:0;width: 100%;color: #FFF;background:#999}
+
+.jqZoomPup{overflow:hidden;background-color: #FFF;-moz-opacity:0.6;opacity: 0.6;filter: alpha(opacity = 60);z-index:10;cursor:crosshair}
+
+.jqZoomPup img{border:0}
+
+.preload{-moz-opacity:0.8;opacity: 0.8;filter: alpha(opacity = 80);color: #333;font-size: 12px;text-decoration: none;border: 1px solid #CCC;background-color:#FFF;padding: 8px;text-align:center;background-image: url(../img/zoomloader.gif);background-repeat: no-repeat;background-position: 43px 30px;width:90px;* width:100px;height:43px;*height:55px;z-index:10;position:absolute;top:3px;left:3px}
+
+.jqZoomWindow{border:1px solid #D7D7D7;background-color:#FFF}
+
+#img-container{width:298px;height:300px}
+#img-container.loading{background:url(../img/zoomloader.gif) no-repeat center center}
+
 /* Modal Styles */
 .body-overlayed embed, .body-overlayed object, .body-overlayed select{visibility:hidden}
 #sbox-window embed, #sbox-window object, #sbox-window select{visibility:visible}
