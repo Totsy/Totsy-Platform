@@ -1,17 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
 
 <html>
 	
 	<head>
 	
 		<title>Totsy - Product Detail Page</title>
-
-		<meta http-equiv="Content-type" content="" />
-		<meta http-equiv="Content-language" content="" />
-		
-		<meta name="description" content="" />
-		<meta name="keywords" content="" />
 
 		<link type="text/css" rel="stylesheet" href="../css/base.css" />
 		<link href="../favicon.ico" rel="shortcut icon" type="image/x-icon" />
@@ -268,9 +261,23 @@
 						<div class="tr"></div>
 						<div class="md-gray p-container loading" id="img-container">
 							
-							<a href="../img/products/large/stroller-3-fpo.jpg" class="zoom" title="Stroller 3 Title">
-								<img src="../img/products/images/stroller-3-fpo.jpg" width="298" height="300" title="Stroller 3 Title" alt="Stroller 3 Alt Text" />
-							</a>
+							<div class="zoom-container show" id="full_img_1">
+								<a href="../img/products/large/stroller-1-fpo.jpg" class="zoom" title="Stroller 1 Title">
+									<img src="../img/products/images/stroller-1-fpo.jpg" width="298" height="300" title="Stroller 3 Title" alt="Stroller 3 Alt Text" />
+								</a>
+							</div>
+							
+							<div class="zoom-container" id="full_img_2">
+								<a href="../img/products/large/stroller-2-fpo.jpg" class="zoom" title="Stroller 2 Title">
+									<img src="../img/products/images/stroller-2-fpo.jpg" width="298" height="300" title="Stroller 3 Title" alt="Stroller 3 Alt Text" />
+								</a>
+							</div>
+							
+							<div class="zoom-container" id="full_img_3">
+								<a href="../img/products/large/stroller-3-fpo.jpg" class="zoom" title="Stroller 3 Title">
+									<img src="../img/products/images/stroller-3-fpo.jpg" width="298" height="300" title="Stroller 3 Title" alt="Stroller 3 Alt Text" />
+								</a>
+							</div>
 								
 						</div>
 						<div class="bl"></div>
@@ -282,9 +289,9 @@
 					<div id="thumbs">
 						
 						<!-- Set the rel to the image that will be loaded as the large image -->
-						<img src="../img/products/th/product-thumb-fpo.jpg" rel="stroller-1-fpo.jpg" alt="product-thumb-fpo" class="img-th" width="93" height="93" />
-						<img src="../img/products/th/product-thumb-2-fpo.jpg" rel="stroller-2-fpo.jpg" alt="product-thumb-fpo" class="img-th active" width="93" height="93" />
-						<img src="../img/products/th/product-thumb-3-fpo.jpg" rel="stroller-3-fpo.jpg" alt="product-thumb-fpo" class="img-th" width="93" height="93" />
+						<img src="../img/products/th/product-thumb-fpo.jpg" rel="full_img_1" alt="product-thumb-fpo" class="img-th active" width="93" height="93" />
+						<img src="../img/products/th/product-thumb-2-fpo.jpg" rel="full_img_2" alt="product-thumb-fpo" class="img-th" width="93" height="93" />
+						<img src="../img/products/th/product-thumb-3-fpo.jpg" rel="full_img_3" alt="product-thumb-fpo" class="img-th" width="93" height="93" />
 						
 					</div>
 					<!-- End additional image view thumbnails -->
@@ -358,27 +365,8 @@
 					
 					var lg = $(this).attr('rel');
 					
-					var img = new Image();
-										
-					$(img).load(function(){
-						
-						$(this).hide();
-						
-						$('#img-container').empty();
-						
-						var newA = $( '<a></a>' ).attr('href', '../img/products/large/'+lg ).addClass('zoom');
-						
-						$('#img-container').append( newA );
-						
-						$('#img-container a').append(this);
-						
-						$('.zoom').jqzoom( options );
-						
-						//$(this).fadeIn(1000);
-						$(this).show();
-						
-						
-					}).attr('src', '../img/products/images/'+lg );
+					$('.zoom-container').removeClass('show');
+					$('#'+lg).addClass('show');
 				
 				});
 				
