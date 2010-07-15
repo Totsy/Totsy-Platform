@@ -15,5 +15,10 @@ use \lithium\data\Connections;
 		'database' => 'totsy', 
 		'host' => 'localhost'
 	));
+	Connections::add('test', array(
+		'type' =>  'MongoDb', 
+		'database' => 'totsy', 
+		'host' => '172.20.8.33'
+	));
     
 ?>
