@@ -47,9 +47,9 @@ Environment::is(function($request) {
 		case 'www.totsy.com':
 		case 'totsy.com':
 			return 'production';
-		case 'test.totsy.com':
+		case 'testadmin.totsy.com':
 			return 'test';
-		case 'dev.totsy.com':
+		case 'devadmin.totsy.com':
 			return 'development';
 		default:
 			return 'local';
