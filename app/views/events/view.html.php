@@ -1,4 +1,3 @@
-<?=$this->html->script('jquery-1.4.2');?>
 <?=$this->html->script('jquery.countdown.min');?>
 <?=$this->html->style('jquery.countdown');?>
 
@@ -18,18 +17,6 @@
 				</dd>
 			</dl>
 		</div>
-		
-		
-
-
-		<script type="text/javascript"> 
-		$(function () {
-			var saleEnd = new Date();
-			saleEnd = new Date(<?php echo $event->end_date->sec * 1000?>);
-			$('#listingCountdown').countdown({until: saleEnd, layout:'SALE ENDS in {dn} {dl} {hn} {hl} and {mn} {ml}'});
-		});
-		</script>
-
 		<?php
 			if(!empty($event)) {
 				$banner = (empty($event->images)) ? null : $event->images->banner_image;
@@ -138,3 +125,10 @@
 	</div>
 </div>
 </div>
+<script type="text/javascript"> 
+$(function () {
+	var saleEnd = new Date();
+	saleEnd = new Date(<?php echo $event->end_date->sec * 1000?>);
+	$('#listingCountdown').countdown({until: saleEnd, layout:'SALE ENDS in {dn} {dl} {hn} {hl} and {mn} {ml}'});
+});
+</script>

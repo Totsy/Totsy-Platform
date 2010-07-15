@@ -9,11 +9,6 @@ use \MongoDate;
 use \lithium\storage\Session;
 
 class EventsController extends BaseController {
-
-	protected function _init() {
-		parent::_init();
-		$this->_render['layout'] = 'main';
-	}
 	
 	public function index() {
 		$openEvents = Event::open();

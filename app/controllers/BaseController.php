@@ -14,6 +14,7 @@ class BaseController extends \lithium\action\Controller
 	protected function _init() {
 		$userInfo = Session::read('userLogin');
 		$this->set(compact('userInfo'));
+		$this->_render['layout'] = 'main';
 		parent::_init();
 	}
 }

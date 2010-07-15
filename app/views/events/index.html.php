@@ -1,4 +1,3 @@
-<?=$this->html->script('jquery-1.4.2');?>
 <?=$this->html->script('jquery.countdown.min');?>
 
 <?php

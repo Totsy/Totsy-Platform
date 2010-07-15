@@ -1,6 +1,8 @@
 <?php
 
 namespace app\controllers;
+
+use app\controllers\BaseController;
 use app\models\User;
 use app\models\Address;
 use app\models\Menu;
@@ -10,7 +12,7 @@ use \lithium\storage\Session;
 /**
  * Handles the users main account information.
  */
-class AccountController extends \lithium\action\Controller {
+class AccountController extends BaseController {
 	
 	/**
 	 * @var array Contains the address information of the user
@@ -23,7 +25,6 @@ class AccountController extends \lithium\action\Controller {
 	 */
 	public function index(){
 	
-		$this->_render['layout'] = 'main';
 		$success = $this->setAddressInfo();
 		if($success){
 			$addresses = $this->addresses;
@@ -38,7 +39,7 @@ class AccountController extends \lithium\action\Controller {
 	 */
 	public function info() {
 		$success = false;
-		$this->_render['layout'] = 'main';
+
 		
 		if ($this->request->data) {		
 			$User = $this->getUser();
@@ -98,7 +99,7 @@ class AccountController extends \lithium\action\Controller {
 			
 	public function news() {
 		$data = "";
-		$this->_render['layout'] = 'main';
+
 		
 		$user = $this->getUser();
 		if ($this->request->data) {

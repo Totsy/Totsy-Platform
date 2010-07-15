@@ -2,10 +2,16 @@
 
 namespace app\controllers;
 
+use \app\controllers\BaseController;
 use \app\models\Cart;
 
-class CartController extends \lithium\action\Controller {
+class CartController extends BaseController {
 
+	protected function _init() {
+		parent::_init();
+
+	}
+	
 	public function index() {
 		$carts = Cart::all();
 		return compact('carts');

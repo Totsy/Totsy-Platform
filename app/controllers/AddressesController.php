@@ -1,6 +1,7 @@
 <?php
 
 namespace app\controllers;
+
 use app\controllers\BaseController;
 use app\models\Address;
 use \lithium\storage\Session;
@@ -76,7 +77,6 @@ class AddressesController extends BaseController {
 		$message = '';
 
 		//Use the add template and main layout
-		$this->_render['layout'] = 'main';
 		$this->_render['template'] = 'add';
 
 		if(!empty($_id)){
