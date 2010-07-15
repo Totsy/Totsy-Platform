@@ -40,6 +40,22 @@ if (!include LITHIUM_LIBRARY_PATH . '/lithium/core/Libraries.php') {
  */
 require __DIR__ . '/bootstrap/libraries.php';
 
+use lithium\core\Environment;
+
+Environment::is(function($request) {
+	switch ($request->env('HTTP_HOST')) {
+		case 'www.totsy.com':
+		case 'totsy.com':
+			return 'production';
+		case 'test.totsy.com':
+			return 'test';
+		case 'dev.totsy.com':
+			return 'development';
+		default:
+			return 'local';
+	}
+});
+
 /**
  * Include this file if your application uses a database connection.
  */
@@ -84,7 +100,12 @@ use \lithium\storage\Session;
 use lithium\security\Auth;
 
 Session::config(array(
- 	'default' => array('adapter' => 'Php', 'expires' => '3600')
+ 	'default' => array(
+		'production' => array('adapter' => 'Php', 'session.save_path' => '/dev/shm'),
+		'test'       => array('adapter' => 'Php', 'session.save_path' => '/dev/shm'),
+		'development' => array('adapter' => 'Php', 'session.save_path' => '/dev/shm'),
+		'local' => array('adapter' => 'Php', 'expires' => '3600')
+	)
 ));
 
 Auth::config(array('userLogin' => array(
