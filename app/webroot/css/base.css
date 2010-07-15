@@ -370,9 +370,9 @@ button.reg-btn{background:url(../img/reg-btn.png) no-repeat;height:39px;width:13
 
 label.radio{display:block;float:left;margin:3px 20px 10px 0}
 
-.flex-btn{background:#EB132C;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;border:none;padding:5px 10px;color:#FFF;text-transform:uppercase;cursor:pointer;box-shadow:5px 5px 5px #888;text-align:center}
+.flex-btn{background:#E7002B;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;border:none;padding:5px 10px;color:#FFF;text-transform:uppercase;cursor:pointer;box-shadow:5px 5px 5px #888;text-align:center}
 
-.flex-btn-2{background:#EB132C;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;border:none;padding:5px 10px;color:#FFF;text-transform:uppercase;cursor:pointer;box-shadow:5px 5px 5px #888;text-align:center}
+.flex-btn-2{background:#E7002B;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;border:none;padding:5px 10px;color:#FFF;text-transform:uppercase;cursor:pointer;box-shadow:5px 5px 5px #888;text-align:center}
 
 a:link.flex-btn,a:visited.flex-btn{color:#FFF;font-size:12px;display:block;padding:10px 5px;line-height:normal}
 a:link.flex-btn-2,a:visited.flex-btn-2{color:#FFF;font-size:12px;display:block;padding:10px 5px;line-height:normal}
@@ -523,41 +523,17 @@ ol#order-details h4{font-weight:bold}
 
 #gift-message textarea{width:522px;height:70px}
 
+/* Product Detail - Image Zoom Styles */
 div.jqZoomTitle{z-index:5000;text-align:center;font-size:11px;height:16px;padding-top:2px;position:absolute;top:0;left:0;width: 100%;color: #FFF;background:#999}
-
 .jqZoomPup{overflow:hidden;background-color: #FFF;-moz-opacity:0.6;opacity: 0.6;filter: alpha(opacity = 60);z-index:10;cursor:crosshair}
-
 .jqZoomPup img{border:0}
-
 .preload{-moz-opacity:0.8;opacity: 0.8;filter: alpha(opacity = 80);color: #333;font-size: 12px;text-decoration: none;border: 1px solid #CCC;background-color:#FFF;padding: 8px;text-align:center;background-image: url(../img/zoomloader.gif);background-repeat: no-repeat;background-position: 43px 30px;width:90px;* width:100px;height:43px;*height:55px;z-index:10;position:absolute;top:3px;left:3px}
-
 .jqZoomWindow{border:1px solid #D7D7D7;background-color:#FFF}
 
 #img-container{width:298px;height:300px}
 #img-container.loading{background:url(../img/zoomloader.gif) no-repeat center center}
-
-/* Modal Styles */
-.body-overlayed embed, .body-overlayed object, .body-overlayed select{visibility:hidden}
-#sbox-window embed, #sbox-window object, #sbox-window select{visibility:visible}
-#sbox-overlay{position:absolute;background-color:#000}
-#sbox-window{position:absolute;text-align:left;overflow:visible;padding:15px;background:#707070;border:1px solid #EB132C;-moz-border-radius:20px;-webkit-border-radius:20px;border-radius:20px;}
-* html #sbox-window{top: 50% !important;left: 50% !important}
-#sbox-btn-close{position:absolute;width:18px;height:18px;right:30px;top:15px;background:url(../img/closebox.png) no-repeat top left;border:none}
-.sbox-loading #sbox-content{background-image:url(../img/spinner.gif);background-repeat:no-repeat;background-position:center}
-#sbox-content{clear:both;overflow:auto;background-color:#fff;height:100%;width:100%}
-.sbox-content-image#sbox-content{overflow:visible}
-#sbox-image{display:block}
-.sbox-content-image img{display:block}
-.sbox-content-iframe#sbox-content{overflow:visible}
-
-/* System Message Styles */
-#system-message,#message{margin:30px 0 20px 0;width:100%;float:left}
-#system-message ul,#message ul{list-style:none;margin:0}
-#system-message dt,#message dt{display:none}
-#system-message dd ul,#message dd ul{padding:10px 10px 10px 40px}
-#system-message dd.message ul,#message dd.message ul{border:1px solid #B2CC7E;background:url(../img/success-icon.png) #D8F0A7 no-repeat 4px center;color:#385D00}
-#system-message dd.error ul,#message dd.error ul{border:1px solid #DA9CA7;background:url(../img/error-icon.png) #F3C5C5 no-repeat 4px center;color:#9F001C}
-#system-message dd.notice ul,#message dd.notice ul{border:1px solid #7AB1DD;background:url(../img/info-icon.png) #C4E1F8 no-repeat 4px center;color:#005192}
+.zoom-container{position:absolute;visibility:hidden;z-index:0}
+.show{visibility:visible;z-index:1}
 
 /* Login Page Styles */
 html{height:100%}
