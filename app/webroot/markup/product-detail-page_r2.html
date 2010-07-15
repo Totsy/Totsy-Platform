@@ -342,7 +342,8 @@
 				var options = {
 					zoomWidth:425,
 					zoomHeight:300,
-					title: false
+					title: false,
+					zoomType: 'reverse'
 				};
 				
 				//intanciate zoom
@@ -371,7 +372,11 @@
 						
 						$('#img-container a').append(this);
 						
-						$(this).fadeIn(1000);
+						$('.zoom').jqzoom( options );
+						
+						//$(this).fadeIn(1000);
+						$(this).show();
+						
 						
 					}).attr('src', '../img/products/images/'+lg );
 				
