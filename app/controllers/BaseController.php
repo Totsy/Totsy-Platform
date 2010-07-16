@@ -19,12 +19,12 @@ class BaseController extends \lithium\action\Controller
 		$cart = Cart::all(array(
 			'conditions' => array(
 				'session' => Session::key()),
-			'fields' => array('item.quantity')
+			'fields' => array('quantity')
 		));
 		$cartCount = 0;
 		if (!empty($cart)) {
 			foreach ($cart as $item) {
-				$cartCount += $item->item->quantity;
+				$cartCount += $item->quantity;
 			}
 		}
 

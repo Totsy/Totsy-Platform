@@ -44,19 +44,21 @@ class CartController extends BaseController {
 			$cartItem = Cart::find('first', array(
 				'conditions' => array(
 					'session' => Session::key(),
-					'item._id' => "$itemId",
-					'item.size' => "$size"
+					'item_id' => "$itemId",
+					'size' => "$size"
 			)));
 			if (!empty($cartItem)) {
-				++ $cartItem->item->quantity;
+				++ $cartItem->quantity;
 				$cartItem->save();
 				$this->redirect(array('Cart::view'));
 			} else {
 				$item = $item->data();
 				$item['size'] = $size;
+				$item['item_id'] = $itemId;
 				unset($item['details']);
-				$item = array_merge($item, array('quantity' => 1));
-				if ($cart->addFields() && $cart->save(compact('item'))) {
+				unset($item['_id']);
+				$info = array_merge($item, array('quantity' => 1));
+				if ($cart->addFields() && $cart->save($info)) {
 					$this->redirect(array('Cart::view'));				
 				}
 			}

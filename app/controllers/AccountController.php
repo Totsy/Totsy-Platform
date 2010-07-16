@@ -96,25 +96,6 @@ class AccountController extends BaseController {
 		$user = Session::read('userLogin');
 		return User::find('first', array('conditions' => array('_id' => $user['_id']), $fields));	
 	}
-			
-	public function news() {
-		$data = "";
-
-		
-		$user = $this->getUser();
-		if ($this->request->data) {
-			foreach ($this->request->data as $key=>$value){
-				$data[] = $key;
-			}
-			$data = array('Newsletter' => $data);
-			$user = $this->getUser();
-			//Remove Submit Button
-			unset($this->request->data['submit']);
-			$success = $user->save($data);
-		}
-		
-		return compact("data");
-	}
 	
 	protected function _init() {
 		parent::_init();

@@ -8,10 +8,7 @@
 	use app\models\Menu;
 
 	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
-	$leftMenu = $this->MenuList->build($menu, $options);
-
-	echo $leftMenu;
-
+	echo $this->MenuList->build($menu, $options);
 ?>
 
 <script>
@@ -44,7 +41,7 @@ window.addEvent('domready', function(){
 	
 	<div class="col-2">
 	
-		<div class="r-container box-2 fl">
+		<div class="r-container">
 			<div class="tl"></div>
 			<div class="tr"></div>
 			<div class="r-box lt-gradient-1">
@@ -59,7 +56,7 @@ window.addEvent('domready', function(){
 			<div class="br"></div>
 		</div>
 		
-		<div class="r-container box-2 fr">
+		<!-- <div class="r-container box-2 fr">
 			<div class="tl"></div>
 			<div class="tr"></div>
 			<div class="r-box lt-gradient-1">
@@ -78,7 +75,7 @@ window.addEvent('domready', function(){
 			</div>
 			<div class="bl"></div>
 			<div class="br"></div>
-		</div>
+		</div> -->
 	
 	</div>
 	
@@ -171,4 +168,3 @@ window.addEvent('domready', function(){
 </div>
 <div class="bl"></div>
 <div class="br"></div>
-<?=$this->html->link('Register', '/register', array('class'=> 'mb', 'rel' => "width:1000, height:1000"));?>

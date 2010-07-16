@@ -2,8 +2,9 @@
 <?=$this->html->style('jquery.countdown');?>
 <?php
 	$countLayout = "layout: '{mnn}{sep}{snn}'";
+	$test = $cart->data();
 ?>
-<?php if (!empty($cart)): ?>
+<?php if (!empty($test)): ?>
 	<h1 class="page-title">
 		Your Cart
 	</h1>
@@ -33,6 +34,7 @@
 			</thead>
 			<tbody>
 	<?php $x = 0; ?>
+	<?php $subTotal = 0; ?>
 	<?php foreach ($cart as $item): ?>
 		<!-- Build Product Row -->
 					<tr class="alt0">
@@ -52,15 +54,15 @@
 						); ?>
 					</td>
 					<td class="cart-desc">
-						<strong><?=$this->html->link($item->item->description, array('Controller::action')); ?></strong><br>
-						<strong>Color:</strong> <?=$item->item->color;?><br>
-						<strong>Size:</strong><?=$item->item->size;?>
+						<strong><?=$this->html->link($item->description, array('Items::view', 'args' => $item->url)); ?></strong><br>
+						<strong>Color:</strong> <?=$item->color;?><br>
+						<strong>Size:</strong><?=$item->size;?>
 					</td>
 					<td class="cart-qty">
-						<input type="text" value="<?=$item->item->quantity?>" name="qty" id="qty" class="inputbox" size="1">
+						<input type="text" value="<?=$item->quantity?>" name="qty" id="qty" class="inputbox" size="1">
 					</td>
 					<td class="cart-price">
-						<strong><?=$item->item->sale_retail?></strong>
+						<strong><?=$item->sale_retail?></strong>
 					</td>
 					<td class="cart-time"><div id="<?php echo "itemCounter$x"; ?>"</div></td>
 					<td class="cart-actions">
@@ -70,21 +72,40 @@
 				<?php
 					$date = $item->expires->sec * 1000;
 					$counterDiv = "#itemCounter$x";
-					$itemCounters[] = "<script type=\"text/javascript\">$(function () {var itemExpires = new Date();itemExpires = new Date($date);$(\"$counterDiv\").countdown({until: itemExpires, $countLayout});});</script>";?>
-				<?php $x++; ?>
+					$itemCounters[] = "<script type=\"text/javascript\">$(function () {var itemExpires = new Date();itemExpires = new Date($date);$(\"$counterDiv\").countdown({until: itemExpires, $countLayout});});</script>";
+					$subTotal += $item->quantity * $item->sale_retail;
+					$x++; 
+				?>
 	<?php endforeach ?>
-	
+		<tr class="cart-total">
+			<td colspan="7"><strong>Subtotal: $<?=$subTotal?></strong></td>
+		</tr>
+
+		<tr class="cart-buy">
+			<td colspan="5" class="cart-notes">
+				<strong>Need more time to Shop?</strong><br />
+				We combine shipping on any additional orders placed within 1 hour
+				<br /><br />
+				<strong>Refund &amp; Return Policy</strong><br />
+
+			</td>
+			<td class="cart-button" colspan="2">
+				<button type="submit" class="flex-btn"><span>Buy Now</span></button>
+			</td>
 			</tbody>
 		</table>
 	</div>
+	<!--Javascript Output for Future Events-->
+	<?php if (!empty($itemCounters)): ?>
+		<?php foreach ($itemCounters as $counter): ?>
+			<?php echo $counter ?>
+		<?php endforeach ?>
+	<?php endif ?>
+<?php else: ?>
+<p>Your cart is empty. Let's do something about that!</p>
+	
 <?php endif ?>
 
-<!--Javascript Output for Future Events-->
-<?php if (!empty($itemCounters)): ?>
-	<?php foreach ($itemCounters as $counter): ?>
-		<?php echo $counter ?>
-	<?php endforeach ?>
-<?php endif ?>
 
 <script type="text/javascript" src="../js/jquery.equalheights.js">
 </script><script type="text/javascript">
