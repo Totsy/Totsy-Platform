@@ -5,6 +5,7 @@
 	$test = $cart->data();
 ?>
 <?php if (!empty($test)): ?>
+<?php $subTotal = 0; ?>
 <?=$this->form->create(); ?>
 	<h1 class="page-title">
 		Your Cart
@@ -35,7 +36,6 @@
 			</thead>
 			<tbody>
 	<?php $x = 0; ?>
-	<?php $subTotal = 0; ?>
 	<?php foreach ($cart as $item): ?>
 		<!-- Build Product Row -->
 					<tr class="alt0">
@@ -64,7 +64,7 @@
 						<input type="text" value="<?=$item->quantity?>" name="qty" id="qty" class="inputbox" size="1">
 					</td>
 					<td class="cart-price">
-						<strong><?=$item->sale_retail?></strong>
+						<strong>$<?=number_format($item->sale_retail,2)?></strong>
 					</td>
 					<td class="cart-time"><div id="<?php echo "itemCounter$x"; ?>"</div></td>
 					<td class="cart-actions">
@@ -87,13 +87,12 @@
 						}
 						});
 						</script>";
-
 					$subTotal += $item->quantity * $item->sale_retail;
 					$x++; 
 				?>
 	<?php endforeach ?>
 		<tr class="cart-total">
-			<td colspan="7"><strong>Subtotal: $<?=$subTotal?></strong></td>
+			<td colspan="7"><strong>Subtotal: $<?=number_format($subTotal,2)?></strong></td>
 		</tr>
 
 		<tr class="cart-buy">

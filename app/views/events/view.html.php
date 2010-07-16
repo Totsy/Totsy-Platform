@@ -99,8 +99,8 @@
 						<div class="details table-row">
 							<div class="table-cell left">
 								<h2><?=$item->name?></h2>
-								<strong class="price"><?=$item->sale_retail;?> Totsy Price</strong><br />
-								<strike><?=$item->msrp;?> Original Price</strike>
+								<strong class="price">$<?=number_format($item->sale_retail,2);?> Totsy Price</strong><br />
+								<strike>$<?=number_format($item->msrp,2);?> Original Price</strike>
 							</div>
 							<div class="table-cell right">
 								<?=$this->html->link('View Now', array('Items::view', 'args' => "$item->url"), array('class' => 'flex-btn')); ?>

@@ -34,10 +34,10 @@
 		<div class="tr"></div>
 		<div class="md-gray p-container">
 		
-			<h2 class="caps"><?=$item->sale_retail; ?><br />Totsy Price</h2>
+			<h2 class="caps">$<?=number_format($item->sale_retail,2); ?><br />Totsy Price</h2>
 			
 			<p class="caps">
-				<strike><?=$item->msrp; ?><br />Original Price</strike>
+				<strike>$<?=number_format($item->msrp,2); ?><br />Original Price</strike>
 			</p>
 			<button class="flex-btn">Buy Now</button>
 		</div>
