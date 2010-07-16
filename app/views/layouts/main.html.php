@@ -4,6 +4,7 @@
 	<?php echo $this->html->charset();?>
 	<title>Totsy<?php echo $this->title(); ?></title>
 	<?php echo $this->html->style(array('base')); ?>
+	<?=$this->html->script(array('jquery-1.4.2','jquery-ui-1.8.2.custom.min.js')); ?>
 	<?php echo $this->scripts(); ?>
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
 </head>
@@ -18,9 +19,8 @@
 	$bottomOptions = array('ul' => array('class' => 'menu'));
 	$bottomDoc = Menu::find('all', array('conditions' => array('location' => 'bottom', 'active' => 'true')));
 	$bottomMenu = $this->MenuList->build($bottomDoc, $bottomOptions);
-	
-
 ?>	
+
 <body class="app" class="sec content my-account">
 	<div id="topper"></div>	
 	<div id="wrapper">
@@ -45,7 +45,7 @@
 			</div>
 			<div id="header-rt">
 				<?=$this->html->link('Invite Friends. Get $15','',array('title'=>'Invite Friends. Get $15', 'id'=>'if'));?>	
-				<p class="clear"><span class="fl"><a href="#" id="credits" title="My Credits">My Credits</a> ($1,000)</span> <a href="/cart" id="cart" title="My Cart">Cart</a> <span class="fl">(1) <a href="#" id="checkout" title="Checkout">Checkout</a></span></p>
+				<p class="clear"><span class="fl"><a href="#" id="credits" title="My Credits">My Credits</a> ($1,000)</span> <a href="/cart/view" id="cart" title="My Cart">Cart</a> <span class="fl">(<?=$cartCount;?>) <a href="#" id="checkout" title="Checkout">Checkout</a></span></p>
 			</div>
 		</div>	
 		<div id="content">
@@ -56,4 +56,3 @@
 	<div id="footer"><?php echo $bottomMenu;?></div>
 	</body>	
 </html>
-<?=$this->html->script(array('jquery-1.4.2','jquery-ui-1.8.2.custom.min.js')); ?>

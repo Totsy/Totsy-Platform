@@ -17,23 +17,15 @@
 				</dd>
 			</dl>
 		</div>
-		<?php
-			if(!empty($event)) {
-				$banner = (empty($event->images)) ? null : $event->images->banner_image;
-				$logo = (empty($event->images)) ? null : $event->images->logo_image;
-				$blurb = $event->blurb;
-			} 
-		?>
-
 		<div class="r-container clear">
 			<div class="tl"></div>
 			<div class="tr"></div>
 			<div id="page-header" class="md-gray">
-
 				<div class="left">
+					<!-- Display Event Image -->
 					<?php
-						if (!empty($banner)) {
-							echo $this->html->image("/image/$banner.jpg", array(
+						if (!empty($event->images->event_image)) {
+							echo $this->html->image("/image/{$event->images->event_image}.jpg", array(
 								'alt' => 'altText'), array(
 								'title' => "Image ALT Tag", 
 								'width' => "169", 
@@ -47,14 +39,13 @@
 									'height'=> "193"
 									)); 
 						}
-				
 					?>
 				</div>
-
 				<div class="right">
 					<div class="details table-row">
-						<?php if (!empty($logo)): ?>
-							<img src="/image/<?=$logo?>.gif" alt="Logo ALT Tag" title="Logo ALT Tag" width="148" height="52" />
+						<!-- Display Logo Image -->
+						<?php if (!empty($event->images->logo_image)): ?>
+							<img src="/image/<?=$event->images->logo_image?>.gif" alt="Logo ALT Tag" title="Logo ALT Tag" width="148" height="52" />
 						<?php endif ?>
 						<div class="title table-cell v-bottom">
 							<h1><?=$event->name?></h1>
@@ -62,7 +53,9 @@
 
 						</div>
 					</div>
-					<p><?php echo $blurb; ?><p>
+					<p><?php if (!empty($event->blurb)): ?>
+						<?php echo $event->blurb ?>
+					<?php endif ?><p>
 				</div>
 
 			</div>

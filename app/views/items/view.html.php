@@ -1,5 +1,7 @@
 <?=$this->html->script(array('jquery-1.4.2', 'jquery.countdown.min'));?>
 <?=$this->html->style('jquery.countdown');?>
+<?=$this->form->create(null, array('url' => 'cart/add')); ?>
+	
 
 <div id="product-detail-right">
 	<div style="align:right" id="listingCountdown"></div>
@@ -17,7 +19,7 @@
 		<div class="product-detail-attribute">
 			<?php if (!empty($sizes)): ?>
 			<label for="size" class="required">Size<span>*</span></label>&nbsp;
-				<select name="size" id="size-select">
+				<select name="item_size" id="size-select">
 					<?php foreach ($sizes as $value): ?>
 						<option value="<?=$value?>"><?=$value?></option>
 					<?php endforeach ?>
@@ -25,7 +27,7 @@
 			<?php endif ?>
 		</div>
 	</div>
-
+	<?=$this->form->hidden("item_id", array('value' => "$item->_id")); ?>
 	<div id="detail-top-right" class="r-container">
 
 		<div class="tl"></div>
@@ -168,7 +170,7 @@
 	<!-- End additional image view thumbnails -->
 
 </div>
-
+<?=$this->form->end(); ?>
 <?=$this->html->script(array('jquery.equalheights', 'jquery-ui-1.8.2.custom.min')); ?>
 
 <script type="text/javascript">
