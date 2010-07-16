@@ -16,7 +16,7 @@ class EventsController extends BaseController {
 		return compact('openEvents', 'pendingEvents');
 	}
 
-	public function view($url, $pending = null) {
+	public function view($url) {
 		
 		$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 		if ($url == 'comingsoon') {
@@ -32,7 +32,10 @@ class EventsController extends BaseController {
 			$this->_render['template'] = 'noevent';
 			return array('event' => null, 'items' => array(), 'shareurl');
 		}
-		if ($pending == 'false') {
+		
+		$pending = ($event->start_date->sec > time() ? true : false);
+		
+		if ($pending == false) {
 			if (!empty($event->items)) {
 				foreach ($event->items as $_id) {
 					$conditions = compact('_id') + array('enabled' => true);
