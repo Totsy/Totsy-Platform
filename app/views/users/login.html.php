@@ -5,11 +5,62 @@
 <?=$this->html->script('en.js');?>
 <?=$this->html->style('formcheck');?>
 
+<?=$this->html->script('jquery-1.4.2.min.js');?>
+<?=$this->html->script('jquery.backstretch.min.js');?>
+
+<?=
+//get a random image from the login images directory
+
+$imglist='';
+	
+//directory to pull login images from
+$img_folder = "img/login/";
+
+mt_srand((double)microtime()*1000);
+
+$imgs = dir($img_folder);
+
+while ($file = $imgs->read()) {
+
+	if ( eregi("jpg", $file) || eregi("png", $file) ){
+		
+		$imglist .= "$file ";
+	}
+
+}
+
+closedir($imgs->handle);
+
+//put all images into an array
+$imglist = explode(" ", $imglist);
+$no = sizeof($imglist)-2;
+
+//generate a random number between 0 and the number of images
+$random = mt_rand(0, $no);
+$image = $imglist[$random];
+
+//display image
+//echo '<img id="bg-img" class="activeslide" src="'.$img_folder.$image.'" border=0 alt="" />';
+
+?>
+
+
 <script type="text/javascript">
+   
+   //need this until we pull mootools out
+   $.noConflict();
+    
     window.addEvent('domready', function(){
         
         new FormCheck('loginForm');
         
+    });
+    
+    
+    jQuery(document).ready(function($){
+    
+    	$.backstretch("<?=$img_folder.$image;?>");
+    
     });
     
 </script>
@@ -85,13 +136,7 @@
 		</div>
 		
 	</div>
-	
-	<div id="bg">
-	
-		<img id="bg-img" class="activeslide" src="../img/home-bg-1.jpg" alt="" />
-	
-	</div>
-	
+		
 </div>
 
 <div id="footer">
