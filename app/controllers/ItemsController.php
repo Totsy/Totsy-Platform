@@ -14,7 +14,7 @@ class ItemsController extends BaseController {
 	}
 
 	public function view($url = null) {
-		$conditions = array('enabled' => 1) + compact('url');
+		$conditions = array('enabled' => true) + compact('url');
 		$item = Item::first(compact('conditions'));
 
 		if (!$item) {

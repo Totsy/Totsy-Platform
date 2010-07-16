@@ -22,7 +22,7 @@ class Event extends \lithium\data\Model {
 		$fields = $params['fields'];
 		return Event::all(array(
 			'conditions' => array(
-				'enabled' => '1',
+				'enabled' => true,
 				'start_date' => array(
 					'$lte' => static::dates('now')),
 				'end_date' => array(
@@ -38,7 +38,7 @@ class Event extends \lithium\data\Model {
 		
 		return Event::all(array(
 			'conditions' => array(
-				'enabled' => '1',
+				'enabled' => true,
 				'start_date' => array(
 					'$gt' => static::dates('now'))),
 			'order' => array('start_date' => 'ASC')

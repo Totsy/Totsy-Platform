@@ -21,7 +21,11 @@ class EventsController extends BaseController {
 		if ($url == 'comingsoon') {
 			$this->_render['template'] = 'soon';
 		}
-		$event = Event::first(array('conditions' => array('enabled' => '1', 'url' => $url)));
+		$event = Event::first(array(
+			'conditions' => array(
+				'enabled' => true, 
+				'url' => $url
+		)));
 
 		if (!$event) {
 			$this->_render['template'] = 'noevent';
@@ -29,7 +33,7 @@ class EventsController extends BaseController {
 		}
 
 		foreach ($event->items as $_id) {
-			$conditions = compact('_id') + array('enabled' => "1");
+			$conditions = compact('_id') + array('enabled' => true);
 
 			if ($item = Item::first(compact('conditions'))) {
 				$items[] = $item;

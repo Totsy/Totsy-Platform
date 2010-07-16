@@ -19,7 +19,7 @@ class Item extends \lithium\data\Model {
 
 	public function related($item) {
 		return static::all(array('conditions' => array(
-			'enabled' => 1,
+			'enabled' => true,
 			'description' => "$item->description",
 			'color' => array('$ne' => "$item->color")
 		)));

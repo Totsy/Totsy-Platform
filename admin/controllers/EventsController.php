@@ -93,6 +93,7 @@ class EventsController extends BaseController {
 					}
 				}
 			}
+
 			$images = $this->parseImages($event->images);
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
@@ -100,6 +101,7 @@ class EventsController extends BaseController {
 			$eventData = array_merge($this->request->data, compact('items'), compact('images'), array('url' => $url));
 
 			if ($event->save($eventData)) {
+				
 				$this->redirect(array(
 					'controller' => 'events', 'action' => 'edit',
 					'args' => array($event->_id)
@@ -140,12 +142,15 @@ class EventsController extends BaseController {
 				// Set the parent multidimensional array key to 0.
 				$nn = 0;
 				while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+					
 					// Count the total keys in the row.
 					$c = count($data);
+					
 					// Capture the key row
 					for ($y = 0; $y < $c ; $y++) { 
 						$key[] = $data[$y];
 					}
+
 					// Remove the first heading
 					// Populate the multidimensional array.
 					for ($x = 0; $x < $c ; $x++) {
@@ -158,6 +163,7 @@ class EventsController extends BaseController {
 			}
 			// Remove the heading array
 			unset($eventItems[0]);
+			
 			// Add items to db and get _ids
 			foreach ($eventItems as $itemDetail) {
 				unset($itemDetail['NULL']);
@@ -174,13 +180,14 @@ class EventsController extends BaseController {
 				
 				// Add some more information to array
 				$details = array(
-					'enabled' => '0', 
+					'enabled' => true, 
 					'created_date' => $date, 
 					'details' => $itemAttributes, 
 					'event' => array($_id),
 					'url' => $url
 				);
 				$newItem = array_merge($itemDetail, $details);
+				
 				if ($item->save($newItem)) {
 					$items[] = (string) $item->_id;
 				}
