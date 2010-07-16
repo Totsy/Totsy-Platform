@@ -67,12 +67,26 @@ class MenuList extends \lithium\template\Helper{
 			if ($menuItem['title'] == 'Sales') {
 				$todayList = Event::open(array('fields' => array('name', 'url')));
 				$saleItems = '';
+				$x = 0;
+				$last = count($todayList) - 1;
 				foreach ($todayList as $item) {
+					switch ($x) {
+						case 0:
+							$class = 'first';
+							break;
+						case $last:
+							$class = 'last';
+							break;
+						default:
+							$class = '';
+							break;
+					}
+					$x++;
 					$saleUrl = $this->_context->html->link("<span>$item->name</span>", "/events/view/$item->url", array(
 						'title' => "$item->name", 
 						'escape' => false 
 					));
-					$saleItems .= "<li>$saleUrl</li>";
+					$saleItems .= "<li class='$class'>$saleUrl</li>";
 				}
 				$li .= "<ul>$saleItems</ul>";
 			}
