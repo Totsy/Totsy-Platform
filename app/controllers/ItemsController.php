@@ -13,28 +13,17 @@ class ItemsController extends BaseController {
 		$this->_render['layout'] = 'main';
 	}
 
-	public function view($url) {
-		$item = Item::first(array(
-			'conditions' => array(
-				'enabled' => '1', 
-				'url' => $url
-		)));
-		if (is_array($item->event) && $item->event) {
-			$event = Event::first(reset($item->event));
-			$related = Item::all(array('conditions' => array(
-				'enabled' => '1', 
-				'description' => "$item->description",
-				'color' => array('$ne' => "$item->color")
-			)));
+	public function view($url = null) {
+		$conditions = array('enabled' => 1) + compact('url');
+		$item = Item::first(compact('conditions'));
+
+		if (!$item) {
+			// @todo: Handle error!
 		}
-		if (!empty($item->details)) {
-			$details = $item->details->data();
-			foreach ($details as $key => $value) {
-				if (!empty($value)) {
-					$sizes[] = $key;
-				}
-			}
-		}
+
+		$event = $item->event();
+		$related = $item->related();
+		$sizes = $item->sizes();
 
 		return compact('item', 'event', 'related', 'sizes');
 	}
