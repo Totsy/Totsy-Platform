@@ -370,9 +370,9 @@ button.reg-btn{background:url(../img/reg-btn.png) no-repeat;height:39px;width:13
 
 label.radio{display:block;float:left;margin:3px 20px 10px 0}
 
-.flex-btn{background:#E7002B;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;border:none;padding:5px 10px;color:#FFF;text-transform:uppercase;cursor:pointer;box-shadow:5px 5px 5px #888;text-align:center}
+.flex-btn{background:#EB132C;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;border:none;padding:5px 10px;color:#FFF;text-transform:uppercase;cursor:pointer;box-shadow:5px 5px 5px #888;text-align:center}
 
-.flex-btn-2{background:#E7002B;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;border:none;padding:5px 10px;color:#FFF;text-transform:uppercase;cursor:pointer;box-shadow:5px 5px 5px #888;text-align:center}
+.flex-btn-2{background:#EB132C;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;border:none;padding:5px 10px;color:#FFF;text-transform:uppercase;cursor:pointer;box-shadow:5px 5px 5px #888;text-align:center}
 
 a:link.flex-btn,a:visited.flex-btn{color:#FFF;font-size:12px;display:block;padding:10px 5px;line-height:normal}
 a:link.flex-btn-2,a:visited.flex-btn-2{color:#FFF;font-size:12px;display:block;padding:10px 5px;line-height:normal}
