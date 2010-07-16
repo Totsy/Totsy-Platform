@@ -130,6 +130,7 @@ class EventsController extends BaseController {
 			'vendor_style',
 			'age',
 			'category',
+			'subcategory',
 			'description',
 			'color',
 			'total_quantity',
