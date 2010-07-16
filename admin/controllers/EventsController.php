@@ -54,6 +54,7 @@ class EventsController extends BaseController {
 			unset($this->request->data['upload_file']);
 		}
 		if (!empty($this->request->data)) {
+			(boolean) $this->request->data['enabled'];
 			$images = $this->parseImages();
 			$seconds = ':'.rand(10,60);
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
@@ -83,6 +84,7 @@ class EventsController extends BaseController {
 		}
 
 		if (!empty($this->request->data)) {
+			(boolean) $this->request->data['enabled'];
 			if ($_FILES['upload_file']['error'] == 0) {
 				$items = $this->parseItems($_FILES, $event->_id);
 				unset($this->request->data['upload_file']);
@@ -93,7 +95,7 @@ class EventsController extends BaseController {
 					}
 				}
 			}
-
+			
 			$images = $this->parseImages($event->images);
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));

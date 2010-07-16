@@ -98,8 +98,8 @@ tinyMCE.init({
     <?=$this->form->field('blurb', array('type' => 'textarea', 'name' => 'content'));?>
 	<div id="event_status">
 		<h2 id="event_status">Event Status</h2>
-		<input type="radio" name="enabled" value="1" id="enabled"> Enable Event <br>
-		<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Event
+		<input type="radio" name="enabled" value="true" id="enabled"> Enable Event <br>
+		<input type="radio" name="enabled" value="false" id="enabled" checked> Disable Event
 	</div>
 	<div id="event_duration">
 		<h2 id="event_duration">Event Duration</h2>

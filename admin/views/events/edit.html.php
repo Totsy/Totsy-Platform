@@ -106,12 +106,12 @@ tinyMCE.init({
 		<h2 id="event_status">Event Status</h2>
 		<?php if ($event->enabled == 1): ?>
 			<p>The event is currently published for viewing</p><br>
-			<input type="radio" name="enabled" value="1" id="enabled" checked> Enable Event <br>
-			<input type="radio" name="enabled" value="0" id="enabled"> Disable Event
+			<input type="radio" name="enabled" value="true" id="enabled" checked> Enable Event <br>
+			<input type="radio" name="enabled" value="false" id="enabled"> Disable Event
 		<?php else: ?>
 			<p>The event is NOT published for viewing</p><br>
-			<input type="radio" name="enabled" value="1" id="enabled"> Enable Event <br>
-			<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Event
+			<input type="radio" name="enabled" value="true" id="enabled"> Enable Event <br>
+			<input type="radio" name="enabled" value="false" id="enabled" checked> Disable Event
 		<?php endif ?>
 	</div>
 	<div id="event_duration">
