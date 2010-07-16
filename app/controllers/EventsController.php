@@ -13,7 +13,6 @@ class EventsController extends BaseController {
 	public function index() {
 		$openEvents = Event::open();
 		$pendingEvents = Event::pending();
-
 		return compact('openEvents', 'pendingEvents');
 	}
 
@@ -41,8 +40,11 @@ class EventsController extends BaseController {
 				}
 			}
 		}
+		
+		$tweeturl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-		return compact('event', 'items');
+		return compact('event', 'items', 'tweeturl');
+	
 	}
 }
 
