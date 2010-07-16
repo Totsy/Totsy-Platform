@@ -11,7 +11,7 @@
 				<dd>
 					<ul>
 						<li><a href="http://facebook.com" title="Share this sale with your friends on Facebook" class="sm-facebook sm-btn">Share this sale on Facebook</a></li>
-						<li><a href="http://twitter.com" title="Tweet this sale to your followers" class="sm-twitter sm-btn">Tweet this sale on Twitter</a></li>
+						<li><a href="http://twitter.com/home?status=Checking out the SALE event at Totsy.com: URL" title="Tweet this sale to your followers" class="sm-twitter sm-btn">Tweet this sale on Twitter</a></li>
 					</ul>
 				</dd>
 			</dl>
@@ -64,7 +64,8 @@
 		
 		
 		
-		<div class="sort-by">
+		<!--
+			<div class="sort-by">
 			<select id="by-category" name="by-category">
 				<option value="">View By Category</option>
 				<option value="Strollers">Strollers</option>
@@ -77,6 +78,7 @@
 				<option value="Medium">Medium</option>
 				<option value="Large">Large</option>
 			</select>
+		-->
 		</div>
 		<?php if (!empty($items)): ?>
 			<?php foreach ($items as $item): ?>
