@@ -25,7 +25,8 @@ class ItemsController extends BaseController {
 		$related = $item->related();
 		$sizes = $item->sizes();
 
-		return compact('item', 'event', 'related', 'sizes');
+		$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		return compact('item', 'event', 'related', 'sizes', 'shareurl');
 	}
 
 }
