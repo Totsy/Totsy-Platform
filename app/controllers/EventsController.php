@@ -32,13 +32,16 @@ class EventsController extends BaseController {
 			return array('event' => null, 'items' => array());
 		}
 
-		foreach ($event->items as $_id) {
-			$conditions = compact('_id') + array('enabled' => true);
+		if (!empty($event->items)) {
+			foreach ($event->items as $_id) {
+				$conditions = compact('_id') + array('enabled' => true);
 
-			if ($item = Item::first(compact('conditions'))) {
-				$items[] = $item;
+				if ($item = Item::first(compact('conditions'))) {
+					$items[] = $item;
+				}
 			}
 		}
+
 		return compact('event', 'items');
 	}
 }

@@ -54,19 +54,20 @@ class EventsController extends BaseController {
 			unset($this->request->data['upload_file']);
 		}
 		if (!empty($this->request->data)) {
-			(boolean) $this->request->data['enabled'];
 			$images = $this->parseImages();
 			$seconds = ':'.rand(10,60);
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
 			$url = $this->cleanUrl($this->request->data['name']);
 			$eventData = array_merge(
-				$this->request->data, 
+				Event::castData($this->request->data),
 				compact('items'), 
 				compact('images'), 
 				array('created_date' => new MongoDate()),
 				array('url' => $url)
 			);
+			//Remove this when $_schema is setup
+			unset($eventData['itemTable_length']);
 			if ($event->save($eventData)) {	
 				$this->redirect(array('Events::view', 'args' => array($event->_id)));
 			}
@@ -84,7 +85,7 @@ class EventsController extends BaseController {
 		}
 
 		if (!empty($this->request->data)) {
-			(boolean) $this->request->data['enabled'];
+			unset($this->request->data['itemTable_length']);
 			if ($_FILES['upload_file']['error'] == 0) {
 				$items = $this->parseItems($_FILES, $event->_id);
 				unset($this->request->data['upload_file']);
@@ -100,7 +101,12 @@ class EventsController extends BaseController {
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
 			$url = $this->cleanUrl($this->request->data['name']);
-			$eventData = array_merge($this->request->data, compact('items'), compact('images'), array('url' => $url));
+			$eventData = array_merge(
+				Event::castData($this->request->data),
+				compact('items'),
+				compact('images'),
+				array('url' => $url)
+			);
 
 			if ($event->save($eventData)) {
 				
@@ -188,8 +194,8 @@ class EventsController extends BaseController {
 					'event' => array($_id),
 					'url' => $url
 				);
-				$newItem = array_merge($itemDetail, $details);
-				
+				$newItem = array_merge(Item::castData($itemDetail), $details);
+
 				if ($item->save($newItem)) {
 					$items[] = (string) $item->_id;
 				}

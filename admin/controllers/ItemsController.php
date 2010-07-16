@@ -48,7 +48,6 @@ class ItemsController extends BaseController {
 			$this->redirect(array('controller' => 'items', 'action' => 'index'));
 		}
 		if (!empty($this->request->data)) {
-			(boolean) $this->request->data['enabled'];
 			$itemData = $this->organizeItem($this->request->data);
 			foreach ($this->request->data as $key => $value) {
 				if (substr($key, 0, 8) == 'primary-' ) {
@@ -77,7 +76,7 @@ class ItemsController extends BaseController {
 			$itemData['url'] = $url;
 
 			$itemData['modified_date'] = new MongoDate();
-			$itemData = array_merge($itemData, array(
+			$itemData = array_merge(Item::castData($itemData), array(
 				'primary_images' => $primaryImages), 
 				array('secondary_images' => $secondaryImages
 			));
