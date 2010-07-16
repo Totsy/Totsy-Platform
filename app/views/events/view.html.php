@@ -11,7 +11,7 @@
 				<dd>
 					<ul>
 						<li><a href="http://facebook.com" title="Share this sale with your friends on Facebook" class="sm-facebook sm-btn">Share this sale on Facebook</a></li>
-						<li><a href="http://twitter.com/home?status=Checking out the <?=$event->name; ?> event at Totsy.com: <?=$this->request()->params['url'] ; ?>" title="Tweet this sale to your followers" class="sm-twitter sm-btn">Tweet this sale on Twitter</a></li>
+						<li><a href="http://twitter.com/home?status=Checking out the <?=$event->name; ?> event at Totsy.com: <?=$this->request()->url; ?>" title="Tweet this sale to your followers" class="sm-twitter sm-btn">Tweet this sale on Twitter</a></li>
 					</ul>
 				</dd>
 			</dl>
