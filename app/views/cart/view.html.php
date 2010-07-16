@@ -1,10 +1,11 @@
 <?=$this->html->script('jquery.countdown.min');?>
 <?=$this->html->style('jquery.countdown');?>
 <?php
-	$countLayout = "layout: '{mnn}{sep}{snn}'";
+	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
 	$test = $cart->data();
 ?>
 <?php if (!empty($test)): ?>
+<?=$this->form->create(); ?>
 	<h1 class="page-title">
 		Your Cart
 	</h1>
@@ -54,6 +55,7 @@
 						); ?>
 					</td>
 					<td class="cart-desc">
+						<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
 						<strong><?=$this->html->link($item->description, array('Items::view', 'args' => $item->url)); ?></strong><br>
 						<strong>Color:</strong> <?=$item->color;?><br>
 						<strong>Size:</strong><?=$item->size;?>
@@ -71,8 +73,21 @@
 				</tr>
 				<?php
 					$date = $item->expires->sec * 1000;
-					$counterDiv = "#itemCounter$x";
-					$itemCounters[] = "<script type=\"text/javascript\">$(function () {var itemExpires = new Date();itemExpires = new Date($date);$(\"$counterDiv\").countdown({until: itemExpires, $countLayout});});</script>";
+					$itemCounters[] = "<script type=\"text/javascript\">
+						$(function () {
+							var itemExpires = new Date();
+							itemExpires = new Date($date);
+							$(\"#itemCounter$x\").countdown('change', {until: itemExpires, $countLayout});
+							
+						$(\"#itemCounter$x\").countdown({until: itemExpires, 
+						    expiryText: '<div class=\"over\">This item is no longer reserved</div>', $countLayout});
+						var now = new Date()
+						if (itemExpires < now) {
+							$(\"#itemCounter$x\").html('<div class=\"over\">This item is no longer reserved</div>');
+						}
+						});
+						</script>";
+
 					$subTotal += $item->quantity * $item->sale_retail;
 					$x++; 
 				?>
@@ -95,6 +110,7 @@
 			</tbody>
 		</table>
 	</div>
+<?=$this->form->end(); ?>
 	<!--Javascript Output for Future Events-->
 	<?php if (!empty($itemCounters)): ?>
 		<?php foreach ($itemCounters as $counter): ?>

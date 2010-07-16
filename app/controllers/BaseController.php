@@ -16,9 +16,7 @@ class BaseController extends \lithium\action\Controller
 	protected function _init() {
 		$userInfo = Session::read('userLogin');
 		$this->set(compact('userInfo'));
-		$cart = Cart::all(array(
-			'conditions' => array(
-				'session' => Session::key()),
+		$cart = Cart::active(array(
 			'fields' => array('quantity')
 		));
 		$cartCount = 0;

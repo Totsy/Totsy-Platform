@@ -16,10 +16,7 @@ class CartController extends BaseController {
 	}
 
 	public function view() {
-		$cart = Cart::all(array(
-			'conditions' => array(
-				'session' => Session::key()
-		)));
+		$cart = Cart::active();
 		return compact('cart');
 	}
 

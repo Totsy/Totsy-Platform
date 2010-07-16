@@ -27,6 +27,16 @@ class Cart extends \lithium\data\Model {
 		$data->user = $user['_id'];
 		return static::save($data);
 	}
+	
+	public static function active($params = null, array $options = array()) {
+		$fields = $params['fields'];
+		return static::all(array(
+			'conditions' => array(
+				'session' => Session::key()),
+			'fields' => $fields,
+			'order' => array('expires' => 'ASC') 
+		));
+	}
 
 }
 
