@@ -65,13 +65,13 @@
 
 	<p><strong>9. Modification And Notification Of Changes.</strong></p>
 
-	<p>TOTSY may at its sole discretion edit this Privacy Policy. Notice of all changes to the Privacy Policy will be provided as specified in Section 12 (Modification and Notification of Changes) of our <a href="/pages/terms">Terms of Service</a>.</p>
+	<p>TOTSY may at its sole discretion edit this Privacy Policy. Notice of all changes to the Privacy Policy will be provided as specified in Section 12 (Modification and Notification of Changes) of our <?=$this->html->link('terms of service', array('Pages::terms')); ?>.</p>
 
 	<p><strong>10. In Summary.</strong></p>
 
 	<p>TOTSY is committed to protecting your privacy. The information collected from our Site helps us better understand our market and consumer interests. This allows us to serve our Members and business associates with the level of satisfaction they deserve.</p>
 
-	<p>If you have questions or suggestions regarding this Privacy Policy or our privacy practices please <a href="/pages/contact">contact us</a> on our Site under our <a href="/pages/contact">CONTACT US</a> menu item. Thank you.</p> 
+	<p>If you have questions or suggestions regarding this Privacy Policy or our privacy practices please <?=$this->html->link('contact us', array('Pages::contact')); ?>. Thank you.</p> 
  
 </div> 
 <div class="bl"><!-- --></div> 
