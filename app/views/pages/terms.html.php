@@ -45,7 +45,7 @@
 
 	<p><strong>7. Confidentiality — Privacy Policy</strong></p>
 
-	<p>In the performance of the services, TOTSY and its subcontractors, if any, may have access to personal information pertaining to Members and which TOTSY wants to protect from disclosure. TOTSY undertakes to hold all of personal information it receives from its Members in strict confidence and neither to disclose or release in any manner such personal information to any third party, nor to use such personal information with any third party, nor to use such personal information for any other purpose than the one for which Member has disclosed same in accordance with its <a href="/pages/privacy">Privacy Policy</a> which is incorporated to these Terms of Service by reference.</p>
+	<p>In the performance of the services, TOTSY and its subcontractors, if any, may have access to personal information pertaining to Members and which TOTSY wants to protect from disclosure. TOTSY undertakes to hold all of personal information it receives from its Members in strict confidence and neither to disclose or release in any manner such personal information to any third party, nor to use such personal information with any third party, nor to use such personal information for any other purpose than the one for which Member has disclosed same in accordance with its <?=$this->html->link('privacy policy', array('Pages::privacy')); ?> which is incorporated to these Terms of Service by reference.</p>
 
 	<p><strong>8. Intellectual Property Indemnification</strong></p>
 
