@@ -1,16 +1,10 @@
 <h1 class="p-header">Frequently Asked Questions</h1> 
-				
-				
-		<div id="middle" class="fullwidth">				
-			
-						
-									
-						
-									
-			
+
+<div id="middle" class="fullwidth">				
 			
 <div class="tl"><!-- --></div> 
 <div class="tr"><!-- --></div> 
+
 <div id="page"> 
  
 	<p><strong>What is Totsy?</strong><br />
@@ -84,10 +78,7 @@
 <div class="br"><!-- --></div> 
 			
 		</div> 
-		
 				
 	</div> 
-	
-		
 		
 </div>
