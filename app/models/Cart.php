@@ -37,6 +37,19 @@ class Cart extends \lithium\data\Model {
 			'order' => array('expires' => 'ASC') 
 		));
 	}
+	
+	public function itemCount() {
+		$cart = Cart::active(array(
+			'fields' => array('quantity')
+		));
+		$cartCount = 0;
+		if (!empty($cart)) {
+			foreach ($cart as $item) {
+				$cartCount += $item->quantity;
+			}
+		}
+		return $cartCount;
+	}
 
 }
 

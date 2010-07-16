@@ -72,6 +72,19 @@ class CartController extends BaseController {
 		}
 		return compact('cart');
 	}
+	
+	public function remove() {
+
+		if ($this->request->query) {
+			foreach ($this->request->query as $key => $value) {
+				Cart::remove(array('_id' => "$key"));
+			}
+		}
+		$this->render(array('layout' => false));
+		
+		$cartcount = Cart::itemCount();
+		return compact('cartcount');
+	}
 }
 
 ?>

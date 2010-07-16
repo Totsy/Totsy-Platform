@@ -16,17 +16,11 @@ class BaseController extends \lithium\action\Controller
 	protected function _init() {
 		$userInfo = Session::read('userLogin');
 		$this->set(compact('userInfo'));
-		$cart = Cart::active(array(
-			'fields' => array('quantity')
-		));
-		$cartCount = 0;
-		if (!empty($cart)) {
-			foreach ($cart as $item) {
-				$cartCount += $item->quantity;
-			}
-		}
+
+		$cartCount = Cart::itemCount();
 
 		$this->set(compact('cartCount'));
+
 		$this->_render['layout'] = 'main';
 		parent::_init();
 	}

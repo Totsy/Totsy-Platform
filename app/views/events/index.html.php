@@ -1,8 +1,5 @@
 <?=$this->html->script('jquery.countdown.min');?>
 
-<?php
-	$countLayout = "layout: '{dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'";
-?>
 <h1 class="page-title gray"><span class="red">Today's <span class="bold caps">Sales</span></span></h1>
 <?php $x = 0; ?>
 <?php foreach ($openEvents as $event): ?>
@@ -33,7 +30,7 @@
 			<?php endif ?>
 			<div class="splash-details">
 				<div class="table-cell left">
-					Events End In<br />
+					Event Ends In<br />
 					<strong><div id="<?php echo "todaysplash$x"; ?>"</div></strong>
 				</div>
 
@@ -49,7 +46,7 @@
 	<?php
 		$date = $event->end_date->sec * 1000;
 		$splashid = "#todaysplash$x";
-		$todayJs[] = "<script type=\"text/javascript\">$(function () {var saleEnd = new Date();saleEnd = new Date($date);$(\"$splashid\").countdown({until: saleEnd, $countLayout});});</script>";?>
+		$todayJs[] = "<script type=\"text/javascript\">$(function () {var saleEnd = new Date();saleEnd = new Date($date);$(\"$splashid\").countdown({until: saleEnd, layout: '{dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});});</script>";?>
 		<?php if ($x == 1): ?>
 			<div class="invite-column r-container">
 
@@ -100,7 +97,7 @@
 
 		<div class="splash-details">
 			<div class="table-cell left">
-				Events Starts In<br />
+				Event Starts In<br />
 				<strong><div id="<?php echo "futuresplash$x"; ?>"</div></strong>
 			</div>
 
@@ -116,7 +113,7 @@
 	<?php
 		$date = $event->start_date->sec * 1000;
 		$splashid = "#futuresplash$x";
-		$futureJs[] = "<script type=\"text/javascript\">$(function () {var saleEnd = new Date();saleEnd = new Date($date);$(\"$splashid\").countdown({until: saleEnd, $countLayout});});</script>";?>
+		$futureJs[] = "<script type=\"text/javascript\">$(function () {var saleEnd = new Date();saleEnd = new Date($date);$(\"$splashid\").countdown({until: saleEnd, layout: '{dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});});</script>";?>
 	<?php $x++; ?>
 <?php endforeach ?>
 <!--Javascript Output for Today's Events -->

@@ -38,7 +38,7 @@
 	<?php $x = 0; ?>
 	<?php foreach ($cart as $item): ?>
 		<!-- Build Product Row -->
-					<tr class="alt0">
+					<tr id="<?=$item->_id?>" class="alt0">
 					<td class="cart-th">
 						<?php
 							if (!empty($item->primary_images)) {
@@ -68,7 +68,7 @@
 					</td>
 					<td class="cart-time"><div id="<?php echo "itemCounter$x"; ?>"</div></td>
 					<td class="cart-actions">
-						<a href="#" title="Remove from your cart" class="delete">delete</a>
+						<a href="#" id="<?php echo "remove$item->_id"?>" title="Remove from your cart" class="delete">delete</a>
 					</td>
 				</tr>
 				<?php
@@ -87,6 +87,15 @@
 						}
 						});
 						</script>";
+					$removeButtons[] = "<script type=\"text/javascript\" charset=\"utf-8\">
+							$('#remove$item->_id').click(function () { 
+								$('#$item->_id').remove();
+								$.ajax({url: \"remove\", data:'$item->_id', context: document.body, success: function(){
+								        $(this).addClass(\"done\");
+								      }});
+							    });
+						</script>";
+						
 					$subTotal += $item->quantity * $item->sale_retail;
 					$x++; 
 				?>
@@ -116,6 +125,12 @@
 			<?php echo $counter ?>
 		<?php endforeach ?>
 	<?php endif ?>
+	<!--Javascript Output for Future Events-->
+	<?php if (!empty($removeButtons)): ?>
+		<?php foreach ($removeButtons as $button): ?>
+			<?php echo $button ?>
+		<?php endforeach ?>
+	<?php endif ?>
 <?php else: ?>
 <p>Your cart is empty. Let's do something about that!</p>
 	
@@ -128,3 +143,4 @@ $(document).ready(function() {
 		$("#tabs").tabs();
 	});
 </script>
+
