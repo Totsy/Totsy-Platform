@@ -17,7 +17,7 @@ class EventsController extends BaseController {
 	}
 
 	public function view($url) {
-		$tweeturl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 		if ($url == 'comingsoon') {
 			$this->_render['template'] = 'soon';
 		}
@@ -29,7 +29,7 @@ class EventsController extends BaseController {
 
 		if (!$event) {
 			$this->_render['template'] = 'noevent';
-			return array('event' => null, 'items' => array(), 'tweeturl');
+			return array('event' => null, 'items' => array(), 'shareurl');
 		}
 
 		if (!empty($event->items)) {
@@ -42,7 +42,7 @@ class EventsController extends BaseController {
 			}
 		}
 
-		return compact('event', 'items', 'tweeturl');
+		return compact('event', 'items', 'shareurl');
 	
 	}
 }
