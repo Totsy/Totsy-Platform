@@ -3,7 +3,7 @@
 
 	<div id="middle" class="fullwidth">				
 		
-		<h1 class="page-title gray"><span class="red">Today's <span class="bold caps">Sales</span> /</span><?=$event->name; ?></h1>
+		<h1 class="page-title gray"><span class="red"><?=$type?> <span class="bold caps">Sales</span> /</span><?=$event->name; ?></h1>
 		
 		<div class="sm-actions fr">
 			<dl>
