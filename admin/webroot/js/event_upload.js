@@ -7,7 +7,7 @@ window.onload = function() {
 
 		// File Upload Settings
 		file_size_limit : "102400",	// 100MB
-		file_types : "*.jpg;*.gif;*.png",
+		file_types : "*.jpg;*.png;*.avi;*.gif",
 		file_types_description : "All Files",
 		file_upload_limit : "4",
 		file_queue_limit : "0",
