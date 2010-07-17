@@ -13,7 +13,7 @@ class Cart extends \lithium\data\Model {
 		'now' => 0,
 		'tenMinutes' => 600
 	);
-	
+
 	public static function dates($name) { 
 	     return new MongoDate(time() + static::_object()->_dates[$name]); 
 	}

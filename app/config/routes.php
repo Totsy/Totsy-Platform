@@ -53,7 +53,7 @@ Router::connect('/addresses/edit{:args}', 'Addresses::edit');
 Router::connect('/account/add/{:args}', 'Account::add');
 
 Router::connect('/shopping/cart', 'Cart::index');
-Router::connect('/shopping/checkout', 'Orders::add');
+Router::connect('/shopping/checkout', 'Transactions::add');
 
 /**
  * ...and connect the rest of 'Pages' controller's urls.

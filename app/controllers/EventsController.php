@@ -16,9 +16,9 @@ class EventsController extends BaseController {
 		return compact('openEvents', 'pendingEvents');
 	}
 
-	public function view($url) {
-		
+	public function view($url = null) {
 		$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
 		if ($url == 'comingsoon') {
 			$this->_render['template'] = 'soon';
 		}
@@ -55,6 +55,16 @@ class EventsController extends BaseController {
 		return compact('event', 'items', 'shareurl', 'type');
 	
 	}
+
+	// This code is for redirecting to a 404 page:
+	// if (!$event) {
+	// 	return $this->redirect(array('Search::view', 'search' => $url));
+	// }
+	// foreach ($event->items as $value) {
+	// 	$items[] = Item::first(array('conditions' => array('_id' => $value)));
+	// }
+	// return compact('event', 'items');
+
 }
 
 
