@@ -64,7 +64,7 @@
 		<ul>
 		    <li><a href="#description"><span>Description</span></a></li>
 		    <li><a href="#shipping"><span>Shipping &amp; Returns</span></a></li>
-		    <li><a href="#video"><span>Video</span></a></li>
+		    <!--<li><a href="#video"><span>Video</span></a></li>-->
 		</ul>
 		
 		<!-- Start Description Tab -->
@@ -85,12 +85,14 @@
 		<!-- End Shipping Tab -->
 		
 		<!-- Start Video Tab -->
+		<!--
 		<div id="video" class="ui-tabs-hide">
 		    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
 		    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
 		    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
 		    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
 		</div>
+		-->
 		<!-- End Video Tab -->
 		
 	</div>
