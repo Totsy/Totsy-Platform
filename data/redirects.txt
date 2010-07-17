@@ -1,0 +1,11 @@
+# This is a redirect file specifically for lighttpd. see:
+#
+# http://redmine.lighttpd.net/wiki/1/Docs:ModRedirect
+#
+# Include it in your config for V2 host like this:
+#
+#  include "/path/to/file.txt"
+#
+url.redirect = (
+	"^/contents/about_us$" => "http://test.totsy.com/pages/aboutus"
+)
