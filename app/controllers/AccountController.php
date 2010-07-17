@@ -19,6 +19,16 @@ class AccountController extends BaseController {
 	 */
 	private $addresses; 
 	
+	protected function _init() {
+		parent::_init();
+	
+		$this->applyFilter('__invoke',  function($self, $params, $chain) {
+			$menu = Menu::find('all', array('conditions' => array('location' => 'left', 'active' => 'true')));
+			$userInfo = Session::read('userLogin');
+			$self->set(compact('menu', 'userInfo'));
+			return $chain->next($self, $params, $chain);
+		});
+	}
 	/**
 	 * Get the main address information and set for the view
 	 * @return array
@@ -97,16 +107,7 @@ class AccountController extends BaseController {
 		return User::find('first', array('conditions' => array('_id' => $user['_id']), $fields));	
 	}
 	
-	protected function _init() {
-		parent::_init();
-	
-		$this->applyFilter('__invoke',  function($self, $params, $chain) {
-			$menu = Menu::find('all', array('conditions' => array('location' => 'left', 'active' => 'true')));
-			$userInfo = Session::read('userLogin');
-			$self->set(compact('menu', 'userInfo'));
-			return $chain->next($self, $params, $chain);
-		});
-	}
+
 }
 
 ?>

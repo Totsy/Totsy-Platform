@@ -1,30 +1,9 @@
-<?=$this->html->script('mootools-1.2.4-core-nc.js');?>
-<?=$this->html->script('overlay.js');?>
-<?=$this->html->script('Assets.js');?>
-<?=$this->html->script('multibox.js');?>
-<?=$this->html->script('common.js');?>
-<?=$this->html->style('multibox');?>
 <?php
 	use app\models\Menu;
 
 	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
 	echo $this->MenuList->build($menu, $options);
 ?>
-
-<script>
-window.addEvent('domready', function(){ 
- 	var overlay; 
-    var box = new multiBox('mb', { 
-		overlay: overlay,
-		showControls: false
-		
-    }); 
-window.addEvent('domready', function(){
-	equalHeights('.r-box');
-	});
-	 
-});
-</script>
 
 <h1 class="p-header">My Account</h1>
 <div class="tl"></div>

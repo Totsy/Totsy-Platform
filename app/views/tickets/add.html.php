@@ -5,60 +5,42 @@
 	echo $this->MenuList->build($menu, $options);
 ?>	
 		<!-- Start Main Page Content -->
-		<div id="middle" class="noright">				
-			
-			<div class="tl"></div>
-			<div class="tr"></div>
-			<div id="page">
-			
-				<h2 class="gray">My Support Tickets</h2>
-
-				<!-- Replace with account welcome message -->
-				<p>You have submitted no tickets</p>
-				<?php if (!empty($message)): ?>
-					<?php echo $message ?>
-				<?php endif ?>
-					<?=$this->form->create(); ?>
-					<fieldset class="fl">
-					
-						<legend class="bold">Create new ticket</legend>
-						
-							
-						
-						<label for="title">Title</label><br />
-						<input type="text" id="title" class="inputbox" name="title" style="width:300px" />
-						
-						<br />
-						
-						<label for="order">Assign order</label><br />
-						<select name="order" id="order" style="width:310px" class="inputbox">
-							<option value="">-- Select an order --</option>
-						</select>
-						
-						<br />
-						
-						<label for="message">Message</label><br />
-						<textarea name="message" id="message" class="inputbox" style="width:300px;height:120px"></textarea>
-						
-						<br />
-
-					<?=$this->form->submit('Submit', array('class' => "flex-btn fr" )); ?>
-					</fieldset>
-					<?=$this->form->end(); ?>
-			
+<div id="middle" class="noright">				
+	<div class="tl"></div>
+	<div class="tr"></div>
+	<div id="page">
+		<h2 class="gray">My Support Tickets</h2>
+		<br>
+		<?php if (!empty($message)): ?>
+			<?php echo $message ?>
+		<?php endif ?>
+			<?=$this->form->create(); ?>
+			<div id="message">
+				<p>Hello <?=$userInfo['firstname']?>, there will be a message here inviting you to submit a ticket</p>
 			</div>
-			<div class="bl"></div>
-			<div class="br"></div>
-			
-		</div>
-		
+				<fieldset class="fl">
+					<legend class="bold">Create new ticket</legend>
+					<label for="title">Title</label><br />
+					<input type="text" id="title" class="inputbox" name="title" style="width:300px" />
+					<br />
+					<label for="order">Assign order</label><br />
+						<?=$this->form->select('order', $orders, array('style'=>'width:310px')); ?>
+					<br />
+					<label for="message">Message</label><br />
+					<?=$this->form->textarea('message', array(
+						'class' => 'inputbox',
+						 'style' => 'width:300px;height:120px'
+						)); 
+					?>
+					<br />
+				<?=$this->form->submit('Submit', array('class' => "flex-btn fr" )); ?>
+				</fieldset>
+			<?=$this->form->end(); ?>
 	</div>
-	<!-- End Main Content -->
-	
+	<div class="bl"></div>
+	<div class="br"></div>
 </div>
 
-
-<script type="text/javascript" src="../js/jquery-1.4.2.js"></script>
 <script type="text/javascript" src="../js/jquery.equalheights.js"></script>
 
 <!-- This equals the hight of all the boxes to the same height -->
@@ -68,6 +50,3 @@
 	});
 </script>
 
-</body>
-
-</html>
