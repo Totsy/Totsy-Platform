@@ -8,7 +8,7 @@
 <?=$this->html->script('jquery-1.4.2.min.js');?>
 <?=$this->html->script('jquery.backstretch.min.js');?>
 
-<?=
+<?php
 //get a random image from the login images directory
 
 $imglist='';

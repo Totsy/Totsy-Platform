@@ -1,4 +1,4 @@
-<?=$this->html->script('jquery.countdown.min');?>
+<?=$this->html->script(array('jquery.countdown.min','jquery.number_format'));?>
 <?=$this->html->style('jquery.countdown');?>
 <?php
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
@@ -25,6 +25,9 @@
 					</th>
 					<th>
 						Price
+					</th>
+					<th>
+						Total Cost
 					</th>
 					<th>
 						Time Remaining
@@ -60,11 +63,14 @@
 						<strong>Color:</strong> <?=$item->color;?><br>
 						<strong>Size:</strong><?=$item->size;?>
 					</td>
-					<td class="cart-qty">
-						<input type="text" value="<?=$item->quantity?>" name="qty" id="qty" class="inputbox" size="1">
+					<td class="<?="qty-$x";?>">
+						<input type="text" value="<?=$item->quantity?>" name="qty" id="qty<?=$x?>" class="inputbox" size="1">
 					</td>
-					<td class="cart-price">
+					<td class="<?="price-item-$x";?>">
 						<strong>$<?=number_format($item->sale_retail,2)?></strong>
+					</td>
+					<td class="<?="total-item-$x";?>">
+						<strong>$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
 					</td>
 					<td class="cart-time"><div id="<?php echo "itemCounter$x"; ?>"</div></td>
 					<td class="cart-actions">
@@ -90,27 +96,27 @@
 					$removeButtons[] = "<script type=\"text/javascript\" charset=\"utf-8\">
 							$('#remove$item->_id').click(function () { 
 								$('#$item->_id').remove();
-								$.ajax({url: \"remove\", data:'$item->_id', context: document.body, success: function(){
-								        $(this).addClass(\"done\");
+								$.ajax({url: \"remove\", data:'$item->_id', context: document.body, success: function(data){
+										location.reload();
 								      }});
 							    });
 						</script>";
+					$quantityBox[] = "";
 						
 					$subTotal += $item->quantity * $item->sale_retail;
 					$x++; 
 				?>
 	<?php endforeach ?>
 		<tr class="cart-total">
-			<td colspan="7"><strong>Subtotal: $<?=number_format($subTotal,2)?></strong></td>
+			<td colspan="7" id='subtotal'><strong>Subtotal: $<?=number_format($subTotal,2)?></strong></td>
+		    </td>
 		</tr>
-
 		<tr class="cart-buy">
 			<td colspan="5" class="cart-notes">
 				<strong>Need more time to Shop?</strong><br />
 				We combine shipping on any additional orders placed within 1 hour
 				<br /><br />
 				<strong>Refund &amp; Return Policy</strong><br />
-
 			</td>
 			<td class="cart-button" colspan="2">
 				<button type="submit" class="flex-btn"><span>Buy Now</span></button>
@@ -119,6 +125,7 @@
 		</table>
 	</div>
 <?=$this->form->end(); ?>
+
 	<!--Javascript Output for Future Events-->
 	<?php if (!empty($itemCounters)): ?>
 		<?php foreach ($itemCounters as $counter): ?>
@@ -138,9 +145,35 @@
 
 
 <script type="text/javascript" src="../js/jquery.equalheights.js">
-</script><script type="text/javascript">
+</script>
+<script type="text/javascript">
 $(document).ready(function() {
 		$("#tabs").tabs();
 	});
 </script>
+<script type="text/javascript" charset="utf-8">
+$(".inputbox").change(function() {
+	var qty = $(this).val();
+	var price = $(this).closest("tr").find("td[class^=price]").html().split("$")[1];
+	var cost = parseInt(qty) * parseFloat(price);
+	var itemCost = $().number_format(cost, {
+		     numberOfDecimals:2,
+		     decimalSeparator: '.',
+		     thousandSeparator: ','
+	});
+	$(this).closest("tr").find("td[class^=total]").html("<strong>$" + itemCost + "</strong>");
+	var subTotal = 0;
+	$("td[class^=total]").each(function() {
+	    subTotal += parseFloat($(this).html().split("$")[1]);
+	});
+	var subTotalProper = $().number_format(subTotal, {
+			numberOfDecimals:2,
+			decimalSeparator: '.',
+			thousandSeparator: ','
+	});
+	$("#subtotal").html("<strong>Subtotal: $" + subTotalProper + "</strong>");
+});
+</script>
+
+​
 
