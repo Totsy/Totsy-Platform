@@ -38,7 +38,7 @@ class Cart extends \lithium\data\Model {
 		));
 	}
 	
-	public function itemCount() {
+	public static function itemCount() {
 		$cart = Cart::active(array(
 			'fields' => array('quantity')
 		));
