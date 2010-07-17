@@ -2,9 +2,11 @@
 #
 # http://redmine.lighttpd.net/wiki/1/Docs:ModRedirect
 #
-# Include it in your config for V2 host like this:
-#
-#  include "/path/to/file.txt"
+# STEP 1:
+#  Make a symbolic link for your redirects.txt file to /etc/lighttpd/redirects.txt
+# STEP 2:
+#  Adjust your lighttpd config for your vhost by adding the following line:
+#   include "redirects.txt"
 #
 url.redirect = (
 	"^/contents/about_us$" => "http://test.totsy.com/pages/aboutus"
