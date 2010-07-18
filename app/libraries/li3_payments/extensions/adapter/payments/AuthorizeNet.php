@@ -8,6 +8,7 @@ use li3_payments\extensions\PaymentObject;
 use li3_payments\extensions\payments\ECheck;
 use li3_payments\extensions\payments\Profile;
 use li3_payments\extensions\payments\Customer;
+use li3_payments\extensions\payments\CreditCard;
 use li3_payments\extensions\payments\Transaction;
 use li3_payments\extensions\payments\exceptions\TransactionException;
 // use li3_payments\payment\interfaces\UnlinkedInterface;
@@ -67,20 +68,30 @@ class AuthorizeNet extends \lithium\core\Object {
 			'debug' => false,
 			'version' => '3.1',
 			'delimiter' => '|',
-			'duplicateTimelimit' => 300,
+			'duplicateTimeLimit' => 300,
 			'connection' => array(),
 		);
 		parent::__construct($config + $defaults);
 	}
 
 	public function process($amount, PaymentObject $pmt, array $options = array()) {
-		if ($pmt instanceof Customer) {
-			$data = array('customer' => $pmt, 'type' => 'profileTransAuthCapture');
-			$request = $this->_renderCommand('process_profile', $data + compact('amount'));
-			$response = $this->_send('profile', $request);
+		switch (true) {
+			case ($pmt instanceof Customer):
+				$data = array('customer' => $pmt, 'type' => 'profileTransAuthCapture');
+				$request = $this->_renderCommand('process_profile', $data + compact('amount'));
+				$response = explode(',', (string) $this->_send('profile', $request)->directResponse);
+				return $response[6];
+			break;
+			case ($pmt instanceof CreditCard):
+				$data = $this->_serialize($pmt, $amount, Transaction::TYPE_AUTH_CAPTURE, $options);
+				$response = $this->_sendAim('default', $data);
+
+				if (intval($response['Response Code']) == 1) {
+					return $response['Transaction ID'];
+				}
+				throw new TransactionException($response['Response Reason Text']);
+			break;
 		}
-		$response = explode(',', (string) $response->directResponse);
-		return $response[6];
 		// $transaction = new Transaction(compact('amount') + array('payment' => $pmt) + $options);
 	}
 
@@ -165,6 +176,32 @@ class AuthorizeNet extends \lithium\core\Object {
 		// updateCustomerShippingAddressRequest
 	}
 
+	public function _serialize($payment, $amount, $mode, array $data) {
+		$data = compact('amount') + array(
+			'login'            => $this->_config['login'],
+			'tran_key'         => $this->_config['key'],
+			'version'          => $this->_config['version'],
+			'delim_data'       => 'TRUE',
+			'debug'            => $this->_config['debug'] ? 'TRUE' : 'FALSE',
+			'type'             => $this->_transactionTypes[$mode],
+			'delim_char'       => $this->_config['delimiter'],
+			'duplicate_window' => $this->_config['duplicateTimeLimit'],
+			'relay_response'   => 'FALSE',
+			'card_code'        => $payment->code,
+			'exp_date'         => "{$payment->month}-{$payment->year}",
+			'card_num'         => $payment->number
+		);
+		$result = '';
+
+		foreach($data as $key => $value) {
+			if ($value === null) {
+				continue;
+			}
+			$result .= 'x_' . $key . '=' . $value . '&';
+		}
+		return rtrim($result, "& ");
+	}
+
 	/**
 	 * Creates a customer object from an XML API response.
 	 *
@@ -247,8 +284,35 @@ class AuthorizeNet extends \lithium\core\Object {
 		$message = $this->_connection->post($path, $content, array(
 			'headers' => array('Content-type' => 'text/xml')
 		));
-
 		return $this->_response($message);
+	}
+
+	protected function _sendAim($service, $content) {
+		$gateway = $this->_gateways[$this->_config['debug'] ? 'test' : 'live'][$service];
+
+		$ch = curl_init($gateway);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
+		$response = urldecode(curl_exec($ch));
+
+		if (curl_errno($ch)) {
+			throw new TransactionException(curl_error($ch));
+		}
+		curl_close($ch);
+		$values = explode($this->_config['delimiter'], $response);
+		$keys = array(
+			"Response Code", "Response Subcode", "Response Reason Code", "Response Reason Text",
+			"Approval Code", "AVS Result Code", "Transaction ID", "Invoice Number", "Description",
+			"Amount", "Method", "Transaction Type", "Customer ID", "Cardholder First Name",
+			"Cardholder Last Name", "Company", "Billing Address", "City", "State",
+			"Zip", "Country", "Phone", "Fax", "Email", "Ship to First Name", "Ship to Last Name",
+			"Ship to Company", "Ship to Address", "Ship to City", "Ship to State",
+			"Ship to Zip", "Ship to Country", "Tax Amount", "Duty Amount", "Freight Amount",
+			"Tax Exempt Flag", "PO Number", "MD5 Hash", "Card Code (CVV2/CVC2/CID) Response Code",
+			"Cardholder Authentication Verification Value (CAVV) Response Code"
+		);
+		return array_combine($keys, array_slice($values, 0, count($keys)));
 	}
 
 	protected function _response($message) {

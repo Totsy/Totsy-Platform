@@ -45,14 +45,28 @@
 			</div>
 			<div id="header-rt">
 				<?=$this->html->link('Invite Friends. Get $15','',array('title'=>'Invite Friends. Get $15', 'id'=>'if'));?>	
-				<p class="clear"><span class="fl"><a href="#" id="credits" title="My Credits">My Credits</a> ($1,000)</span> <a href="/cart/view" id="cart" title="My Cart">Cart</a> <span class="fl">(<?=$cartCount;?>) <a href="#" id="checkout" title="Checkout">Checkout</a></span></p>
+				<p class="clear">
+					<span class="fl">
+						<a href="#" id="credits" title="My Credits">My Credits</a>
+						($1,000)
+					</span>
+					<?=$this->html->link('Cart', array('Cart::view'), array(
+						'id' => 'cart', 'title' => 'My Cart'
+					)); ?>
+					<span class="fl">
+						(<?=$cartCount;?>)
+						<?=$this->html->link('Checkout', array('Transactions::add'), array(
+							'id' => 'checkout', 'title' => 'checkout'
+						)); ?>
+					</span>
+				</p>
 			</div>
 		</div>	
 		<div id="content">
-				<?php echo $this->content(); ?>
+			<?php echo $this->content(); ?>
 		</div>
 	</div>
 	<div id="botter"></div>
-	<div id="footer"><?php echo $bottomMenu;?></div>
+	<div id="footer"><?php echo $bottomMenu; ?></div>
 	</body>	
 </html>

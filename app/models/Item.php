@@ -38,6 +38,10 @@ class Item extends \lithium\data\Model {
 		}
 		return $sizes;
 	}
+
+	public function weight($item, $size, $quantity = 1) {
+		// @todo
+	}
 }
 
 ?>
