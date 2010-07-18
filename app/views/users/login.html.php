@@ -1,10 +1,3 @@
-<?=$this->html->script('mootools-1.2.4-core-nc.js');?>
-<?=$this->html->script('mootools-1.2.4.4-more.js');?>
-
-<?=$this->html->script('formcheck.js');?>
-<?=$this->html->script('en.js');?>
-<?=$this->html->style('formcheck');?>
-
 <?=$this->html->script('jquery-1.4.2.min.js');?>
 <?=$this->html->script('jquery.backstretch.min.js');?>
 
@@ -47,16 +40,6 @@ $image = $imglist[$random];
 
 <script type="text/javascript">
    
-   //need this until we pull mootools out
-   $.noConflict();
-    
-    window.addEvent('domready', function(){
-        
-        new FormCheck('loginForm');
-        
-    });
-    
-    
     jQuery(document).ready(function($){
     
     	$.backstretch("<?=$img_folder.$image;?>");
