@@ -57,4 +57,6 @@ Libraries::add('li3_docs');
 
 Libraries::add('li3_payments');
 
+require LITHIUM_APP_PATH . '/libraries/swiftmailer/lib/swift_required.php';
+
 ?>
