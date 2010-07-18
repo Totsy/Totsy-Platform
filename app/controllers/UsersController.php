@@ -78,14 +78,14 @@ class UsersController extends BaseController {
 			$username = $this->request->data['username'];
 			$password = $this->request->data['password'];
 			//Grab User Record
-			$this->userRecord = User::first(array('conditions' => compact('username')));
+			$user = User::first(array('conditions' => compact('username')));
 
-			if($this->userRecord){
-				if($this->userRecord->legacy == 1) {
-					$successAuth = $this->authIllogic($password);
+			if($user){
+				if($user->legacy == 1) {
+					$successAuth = $this->authIllogic($password, $user);
 					if ($successAuth) {
 						//Write core information to the session and redirect user
-						$sessionWrite = $this->writeSession($this->userRecord->data());
+						$sessionWrite = $this->writeSession($user->data());
 						$this->redirect('/');
 					} else {
 						$message = 'Login Failed - Please Try Again';
@@ -119,12 +119,12 @@ class UsersController extends BaseController {
 	 * @param string $password
 	 * @return boolean
 	 */
-	private function authIllogic($password) {
-		$digest = $password . $this->userRecord->data('salt');
+	private function authIllogic($password, $user) {
+		$digest = $password . $user->salt;
 	    for ($i = 0; $i < 20; $i++) {
 			$digest = hash('sha512', $digest);
 	    }
-		return $digest == $this->userRecord->data('password');
+		return $digest == $user->password;
 	}
 	/**
 	 * @param array $sessionInfo
@@ -146,7 +146,7 @@ class UsersController extends BaseController {
 			$oldPass = $this->request->data['password'];
 			$newPass = $this->request->data['new_password'];
 			if ($user->legacy == '1') {
-				$status = ($this->authIllogic($oldPass)) ? 'true' : 'false';
+				$status = ($this->authIllogic($oldPass, $user)) ? 'true' : 'false';
 			} else {
 				$status = (sha1($oldPass) == $user->password) ? 'true' : 'false';
 			}
