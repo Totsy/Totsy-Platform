@@ -21,3 +21,4 @@
 { "_id" : { "$oid" : "4c42948447db591749e43336" }, "title" : "Meet the Moms", "route" : { "controller" : "pages", "action" : "moms" }, "location" : "about", "active" : "true", "class" : "first item17", "parent" : "About Us" }
 { "_id" : { "$oid" : "4c42949a47db591749e43337" }, "title" : "Press", "route" : { "controller" : "pages", "action" : "press" }, "location" : "about", "active" : "true", "class" : "first item17", "parent" : "About Us" }
 { "_id" : { "$oid" : "4c4294a647db591749e43338" }, "title" : "Contact Us", "route" : { "controller" : "pages", "action" : "contact" }, "location" : "about", "active" : "true", "class" : "first item17", "parent" : "About Us" }
+{ "_id" : { "$oid" : "4c42963df5f40c6547502e21" }, "title" : "Being Green", "route" : { "controller" : "pages", "action" : "being_green" }, "location" : "about", "active" : "true", "class" : "first item17", "parent" : "About Us" }
