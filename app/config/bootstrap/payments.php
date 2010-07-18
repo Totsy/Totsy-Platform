@@ -8,8 +8,7 @@ Payments::config(array(
 		'login' => '3Zuk5g64mFR',
 		'key' => '3DgFTdNk4q9342yr',
 		'debug' => true,
-		// 'login' => 'totsytest1138',
-		'password' => 'MyBa8yV1P',
+		'gateway' => 'live',
 		'connection' => array('classes' => array('socket' => 'lithium\net\socket\Curl'))
 	)
 ));
