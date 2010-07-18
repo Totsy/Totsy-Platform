@@ -5,8 +5,8 @@ use li3_payments\extensions\Payments;
 Payments::config(array(
 	'default' => array(
 		'adapter' => 'AuthorizeNet',
-		'login' => '3mVJKk363dcz',
-		'key' => '3zr65H5abZ68H4Ye',
+		'login' => '3Zuk5g64mFR',
+		'key' => '3DgFTdNk4q9342yr',
 		'debug' => true,
 		// 'login' => 'totsytest1138',
 		'password' => 'MyBa8yV1P',
