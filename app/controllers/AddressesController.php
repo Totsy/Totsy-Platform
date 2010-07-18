@@ -4,15 +4,9 @@ namespace app\controllers;
 
 use app\controllers\BaseController;
 use app\models\Address;
-use \lithium\storage\Session;
 use app\models\Menu;
 use app\models\User;
-use \MongoId;
-use \lithium\data\Connections;
-use \lithium\analysis\Logger;
-
-
-
+use \lithium\storage\Session;
 
 class AddressesController extends BaseController {
 	
@@ -29,47 +23,48 @@ class AddressesController extends BaseController {
 		parent::_init();
 	
 		$this->applyFilter('__invoke',  function($self, $params, $chain) {
-			$menu = Menu::find('all', array('conditions' => array('location' => 'left', 'active' => 'true')));
+			$menu = Menu::find('all', array(
+				'conditions' => array(
+					'location' => 'left', 
+					'active' => 'true'
+			)));
 			$self->set(compact('menu'));
 			return $chain->next($self, $params, $chain);
 		});
 	}
 	
-	public function view(){
-
-		$this->_render['layout'] = 'main';
-		$addresses = Address::find('all', array('conditions' => array('user_id' => Session::read('_id'))))->data();
+	public function view() {
+		$user = Session::read('userLogin');
+		if (!empty($user)) {
+			$addresses = Address::find('all', array(
+				'conditions' => array(
+					'user_id' => $user['_id']
+			)));
+		}
 		return compact("addresses");
-	}
-	
-	private function getUser($fields = array()) {
-
-		$id = new MongoID(Session::read('_id'));
-		return User::find('first', array('conditions' => array('_id' => $id), $fields))->data();	
 	}
 	
 	/**
 	 * Adds an address
 	 */
 	public function add() {
-
-		//Set some defaults
 		$status = '';
 		$message = '';
-		$this->_render['layout'] = 'main';
 		$address = Address::create();
-		$user = Session::read('userLogin');		
-		if($this->request->data){
+		$user = Session::read('userLogin');
+		if ($this->request->data) {
 			$count = Address::count(array('user_id' => $user['_id'] ));
 			if($count >= $this->_maxAddresses) {
 				$message = 'There are already 10 addresses registered. Please remove one first.';
 			} else {
-				$status = $address->save($this->request->data);
+				$this->request->data['default'] = ($this->request->data['default'] == '1') ? true : false;
+				$data = array_merge($this->request->data, array('user_id' => ((string) $user['_id'])));
+				$status = $address->save($data);
 				$message = 'Address Saved';
 			}
 			
 		}
-		
+
 		return compact('status', 'message', 'address');
 	}
 	
@@ -78,27 +73,36 @@ class AddressesController extends BaseController {
 
 		//Use the add template and main layout
 		$this->_render['template'] = 'add';
-
-		if(!empty($_id)){
+		$user = Session::read('userLogin');
+		
+		if (!empty($_id)){
 			//Find address using user_id and address_id
-			$address = Address::find('first', array('conditions' => array('_id' => $_id)));
+			$address = Address::find('first', array(
+				'conditions' => array(
+					'_id' => $_id,
+					'user_id' => $user['_id']
+			)));
 			if(empty($address)) {
 				$this->redirect('/addresses/add');
 			}
 		}
-		//Check if we got form data from $POST
-		if($this->request->data) {
-			$status = $address->save($this->request->data);
-			//TODO: Remove the old information from the record
-			if(!empty($status)) {
+		if (($this->request->data) && $address->save($this->request->data)) {
 				$message = 'Address Updated';
-			} else {
-				//If this doesn't get updated we have database issues. 
-				$message = 'Error';
-			}			
 		}
 
 		return compact('message', 'address');
+	}
+	
+	public function remove() {
+
+		if ($this->request->query) {
+			foreach ($this->request->query as $key => $value) {
+				Address::remove(array('_id' => "$key"));
+			}
+		}
+		$this->render(array('layout' => false));
+		
+		return true;
 	}
 }
 ?>

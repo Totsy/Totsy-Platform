@@ -25,7 +25,7 @@
 </p>
 	<h2 class="gray mar-b">Add/Edit Address</h2>
 	
-	<?=$this->form->create(null,array('id'=>'addressForm', 'class' => "fl"));?>
+	<?=$this->form->create($address, array('id'=>'addressForm', 'class' => "fl"));?>
 		<fieldset> 
 			<legend class="no-show">New Address</legend> 
 			<div class="form-row">
@@ -37,69 +37,68 @@
 			</div>
 			<div class="form-row">
 				<label>Make Default</label> 
-				<input type="radio" name="default" value="Yes" checked> Yes<br>
-				<input type="radio" name="default" value="No">No
+				<input type="radio" name="default" value="1" checked> Yes<br>
+				<input type="radio" name="default" value="0">No
 			</div>
 			<div class="form-row"> 
-				<label for="fname">Description</label> 
-				<input type="text" name="description" id="description" class="validate['required" value= "<?=$address->description;?>" /> 
+				<?=$this->form->label('description', 'Description'); ?>
+				<?=$this->form->text('description', array('class' => 'inputbox')); ?> 
 			</div>
 			<div class="form-row"> 
-				<label for="fname">First Name</label> 
-				<input type="text" name="firstname" id="fname" class="validate['required" value= "<?=$address->firstname;?>" /> 
+				<?=$this->form->label('firstname', 'First Name'); ?>
+				<?=$this->form->text('firstname', array('class' => 'inputbox')); ?> 
 			</div> 
 			
 			<div class="form-row"> 
-				<label for="lname">Last Name</label> 
-				<input type="text" name="lastname" id="lname" class="validate['required" value= "<?=$address->lastname;?>" /> 
+				<?=$this->form->label('lastname', 'Last Name'); ?>
+				<?=$this->form->text('lastname', array('class' => 'inputbox')); ?>
 			</div> 
 			
 			<div class="form-row"> 
-				<label for="company">Company</label> 
-				<input type="text" name="company" id="company" class="inputbox" value= "<?=$address->company;?>" /> 
+				<?=$this->form->label('company', 'Company'); ?>
+				<?=$this->form->text('company', array('class' => 'inputbox')); ?>
 			</div> 
 			
 			<div class="form-row"> 
-				<label for="phone">Telephone</label> 
-				<input type="text" name="phone" id="phone" class="inputbox" value= "<?=$address->phone;?>" /> 
+				<?=$this->form->label('telephone', 'Telephone'); ?>
+				<?=$this->form->text('telephone', array('class' => 'inputbox')); ?>
 			</div> 
 			
 			<div class="form-row"> 
-				<label for="fax">Fax</label> 
-				<input type="text" name="fax" id="fax" class="inputbox" value= "<?=$address->fax;?>" /> 
+				<?=$this->form->label('fax', 'Fax'); ?>
+				<?=$this->form->text('fax', array('class' => 'inputbox')); ?>
 			</div> 
 			
 			<div class="form-row"> 
-				<label for="address">Street Address</label> 
-				<input type="text" name="address" id="address" class="validate['required" value="<?=$address->address;?>" /> 
+				<?=$this->form->label('address', 'Street Address'); ?>
+				<?=$this->form->text('address', array('class' => 'inputbox')); ?>
 			</div> 
 			
 			<div class="form-row"> 
-				<label for="address_2">Street Address 2</label> 
-				<input type="text" name="address_2" id="address_2" class="inputbox" value= "<?=$address->address_2;?>" /> 
+				<?=$this->form->label('address_2', 'Street Address 2'); ?>
+				<?=$this->form->text('address_2', array('class' => 'inputbox')); ?>
 			</div> 
 			
 			<div class="form-row"> 
-				<label for="city">City</label> 
-				<input type="text" name="city" id="city" class="validate['required" value= "<?=$address->city;?>" /> 
+				<?=$this->form->label('city', 'City'); ?>
+				<?=$this->form->text('city', array('class' => 'inputbox')); ?>
 			</div> 
 			
 			<div class="form-row"> 
-				<label for="state">State/Province</label> 
-				<input type="text" name="state" id="state" class="validate['required" value= "<?=$address->state;?>" /> 
+				<?=$this->form->label('state', 'State/Province'); ?>
+				<?=$this->form->text('state', array('class' => 'inputbox')); ?>
 			</div> 
 			
 			<div class="form-row"> 
-				<label for="zip">Zip/Postal Code</label> 
-				<input type="text" name="zip" id="zip" class="validate['required" value= "<?=$address->zip;?>" /> 
+				<?=$this->form->label('zip', 'Zip/Postal Code'); ?>
+				<?=$this->form->text('zip', array('class' => 'inputbox')); ?>
 			</div> 
 			
 			<div class="form-row"> 
-				<label for="country">Country</label> 
-				<input type="text" name="country" id="country" class="validate['required" value= "<?=$address->country;?>"/> 
+				<?=$this->form->label('country', 'Country'); ?>
+				<?=$this->form->text('country', array('class' => 'inputbox')); ?>
 			</div> 
-			<button type="submit" name="submit" class="flex-btn fr"><span>Submit</span></button> 
-			
+			<?=$this->form->submit('Submit', array('class' => 'flex-btn fr')); ?>
 		</fieldset> 
 
 	<?=$this->form->end();?> 
