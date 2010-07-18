@@ -28,11 +28,17 @@
 					?>
 					<?php if ($x <= 1): ?>
 						<?=$this->html->image("$productImage", array(
-							'title' => "Product Title", 'alt' => "Product Alt Text", 'width' => '355', 'height' => '410'
+							'title' => "Product Title",
+							'alt' => "Product Alt Text",
+							'width' => '355',
+							'height' => '410'
 						)); ?>
 					<?php else: ?>
 						<?=$this->html->image("$productImage", array(
-							'title' => "Product Title", 'alt' => "Product Alt Text", 'width' => '298', 'height' => '298'
+							'title' => "Product Title",
+							'alt' => "Product Alt Text",
+							'width' => '298',
+							'height' => '298'
 						)); ?>
 					<?php endif ?>
 					<div class="splash-details">
@@ -109,7 +115,10 @@
 							}
 						?>
 						<?=$this->html->image("$productImage", array(
-							'title' => "Product Title", 'alt' => "Product Alt Text", 'width' => '298', 'height' => '298'
+							'title' => "Product Title", 
+							'alt' => "Product Alt Text", 
+							'width' => '298', 
+							'height' => '298'
 						)); ?>
 
 						<div class="splash-details">
@@ -119,7 +128,12 @@
 							</div>
 
 							<div class="table-cell right">
-								<?=$this->html->link('Go', array('Events::view', 'args' => array($event->url)), array('class' => 'flex-btn'));?>
+								<?=$this->html->link('Go', array(
+									'Events::view',
+									'args' => array($event->url)),
+									array('class' => 'flex-btn')
+									);
+								?>
 							</div>
 						</div>
 					</div>
@@ -135,8 +149,8 @@
 						saleEnd = new Date($date);
 						$(\"$splashid\").countdown({until: saleEnd, layout: '{dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
 					});
-				</script>"
-			;?>
+				</script>";
+			?>
 			<?php $x++; ?>
 	<?php endforeach ?>
 	</div>
