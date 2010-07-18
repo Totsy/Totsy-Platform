@@ -1,6 +1,11 @@
-<h1 class="p-header">About Us</h1> 
+<?php
+	use app\models\Menu;
 
-<div id="middle" class="fullwidth">				
+	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
+	echo $this->MenuList->build($menu, $options);
+?>
+
+<h1 class="p-header">About Us</h1> 
 			
 <div class="tl"><!-- --></div> 
 <div class="tr"><!-- --></div> 

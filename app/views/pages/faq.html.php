@@ -1,7 +1,12 @@
+<?php
+	use app\models\Menu;
+
+	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
+	echo $this->MenuList->build($menu, $options);
+?>
+
 <h1 class="p-header">Frequently Asked Questions</h1> 
 
-<div id="middle" class="fullwidth">				
-			
 <div class="tl"><!-- --></div> 
 <div class="tr"><!-- --></div> 
 
