@@ -20,14 +20,15 @@ class TransactionsController extends \app\controllers\BaseController {
 	}
 
 	public function add() {
+		$user = Session::read('userLogin');
 		$addresses = Address::find('list', array(
-			'conditions' => array('user_id' => Session::read('_id'))
+			'conditions' => array('user_id' => $user['_id'])
 		));
 		$cart = Cart::all(array(
 			'conditions' => array('session' => Session::key())
 		));
 		$order = Transaction::create();
-		$user = Session::read('userLogin');
+
 
 		if (($data = $this->request->data) && $order->process($user, $data, $cart, $addresses)) {
 			return $this->redirect(array('Transactions::view', 'id' => (string) $order->_id));
