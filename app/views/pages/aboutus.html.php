@@ -1,7 +1,33 @@
-Nulla facilisi. In vel sem. Morbi id urna in diam dignissim feugiat. Proin molestie tortor eu velit. Aliquam erat volutpat. Nullam ultrices, diam tempus vulputate egestas, eros pede varius leo, sed imperdiet lectus est ornare odio.
+<h1 class="p-header">About Us</h1> 
 
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Morbi commodo, ipsum sed pharetra gravida, orci magna rhoncus neque, id pulvinar odio lorem non turpis. Nullam sit amet enim. Suspendisse id velit vitae ligula volutpat condimentum. Aliquam erat volutpat. Sed quis velit. Nulla facilisi. Nulla libero. Vivamus pharetra posuere sapien. Nam consectetuer. Sed aliquam, nunc eget euismod ullamcorper, lectus nunc ullamcorper orci, fermentum bibendum enim nibh eget ipsum. Donec porttitor ligula eu dolor. Maecenas vitae nulla consequat libero cursus venenatis. Nam magna enim, accumsan eu, blandit sed, blandit a, eros.
+<div id="middle" class="fullwidth">				
+			
+<div class="tl"><!-- --></div> 
+<div class="tr"><!-- --></div> 
 
-Quisque facilisis erat a dui. Nam malesuada ornare dolor. Cras gravida, diam sit amet rhoncus ornare, erat elit consectetuer erat, id egestas pede nibh eget odio. Proin tincidunt, velit vel porta elementum, magna diam molestie sapien, non aliquet massa pede eu diam. Aliquam iaculis. Fusce et ipsum et nulla tristique facilisis. Donec eget sem sit amet ligula viverra gravida. Etiam vehicula urna vel turpis. Suspendisse sagittis ante a urna. Morbi a est quis orci consequat rutrum. Nullam egestas feugiat felis. Integer adipiscing semper ligula. Nunc molestie, nisl sit amet cursus convallis, sapien lectus pretium metus, vitae pretium enim wisi id lectus. Donec vestibulum. Etiam vel nibh. Nulla facilisi. Mauris pharetra. Donec augue. Fusce ultrices, neque id dignissim ultrices, tellus mauris dictum elit, vel lacinia enim metus eu nunc.
+<div id="page">
+	
+	<h2>Where the savvy mom shops.</h2>
+	<p>Totsy offers moms on-the-go and moms-to-be access to brand-specific sales, up to 70% off retail, just for them and the kids, ages 0-7.</p>
+	
+	<h2>Top brands for mom, baby, and child.</h2>
+	<p>Prenatal care products, baby gear, travel accessories, bedding and bath, children's clothing, toys, DVDs, and educational materials are just a sampling of a selection that promises only the best in quality and designer brands.</p>
+	
+	<h2>By invitation only.</h2>
+	<p>Membership is by invitation or request only. But the sooner you join, the better. Each sale lasts only 48 to 72 hours.</p>
+	
+	<h2>100% eco-friendly.</h2>
+	<p>Totsy is the first company in private sales to take on sustainable and socially responsible initiatives in all areas of business.</p>
+	
+	<h2>One baby, one tree.</h2>
+	<p>With every purchase you make through Totsy, we will plant one tree in the name of your child to help reduce the effects of deforestation. Who says shopping can't save the world?</p>
+	
+</div> 
+<div class="bl"><!-- --></div> 
+<div class="br"><!-- --></div> 
 
-Proin at eros non eros adipiscing mollis. Donec semper turpis sed diam. Sed consequat ligula nec tortor. Integer eget sem. Ut vitae enim eu est vehicula gravida. Morbi ipsum ipsum, porta nec, tempor id, auctor vitae, purus. Pellentesque neque. Nulla luctus erat vitae libero. Integer nec enim. Phasellus aliquam enim et tortor. Quisque aliquet, quam elementum condimentum feugiat, tellus odio consectetuer wisi, vel nonummy sem neque in elit. Curabitur eleifend wisi iaculis ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non velit non ligula laoreet ultrices. Praesent ultricies facilisis nisl. Vivamus luctus elit sit amet mi. Phasellus pellentesque, erat eget elementum volutpat, dolor nisl porta neque, vitae sodales ipsum nibh in ligula. Maecenas mattis pulvinar diam. Curabitur sed leo.
+		</div> 
+
+	</div> 
+
+</div>
