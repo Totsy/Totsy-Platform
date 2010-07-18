@@ -64,7 +64,7 @@
 						<strong>Size:</strong><?=$item->size;?>
 					</td>
 					<td class="<?="qty-$x";?>">
-						<input type="text" value="<?=$item->quantity?>" name="qty" id="qty<?=$x?>" class="inputbox" size="1">
+						<input type="text" value="<?=$item->quantity?>" name="qty" id="<?="$item->_id";?>" class="inputbox" size="1">
 					</td>
 					<td class="<?="price-item-$x";?>">
 						<strong>$<?=number_format($item->sale_retail,2)?></strong>
@@ -74,7 +74,7 @@
 					</td>
 					<td class="cart-time"><div id="<?php echo "itemCounter$x"; ?>"</div></td>
 					<td class="cart-actions">
-						<a href="#" id="<?php echo "remove$item->_id"?>" title="Remove from your cart" class="delete">delete</a>
+						<a href="#" id="<?="remove$item->_id"?>" title="Remove from your cart" class="delete">delete</a>
 					</td>
 				</tr>
 				<?php
@@ -101,8 +101,6 @@
 								      }});
 							    });
 						</script>";
-					$quantityBox[] = "";
-						
 					$subTotal += $item->quantity * $item->sale_retail;
 					$x++; 
 				?>
@@ -126,13 +124,13 @@
 	</div>
 <?=$this->form->end(); ?>
 
-	<!--Javascript Output for Future Events-->
+
 	<?php if (!empty($itemCounters)): ?>
 		<?php foreach ($itemCounters as $counter): ?>
 			<?php echo $counter ?>
 		<?php endforeach ?>
 	<?php endif ?>
-	<!--Javascript Output for Future Events-->
+
 	<?php if (!empty($removeButtons)): ?>
 		<?php foreach ($removeButtons as $button): ?>
 			<?php echo $button ?>
@@ -153,6 +151,7 @@ $(document).ready(function() {
 </script>
 <script type="text/javascript" charset="utf-8">
 $(".inputbox").change(function() {
+	var id = event.target.id;
 	var qty = $(this).val();
 	var price = $(this).closest("tr").find("td[class^=price]").html().split("$")[1];
 	var cost = parseInt(qty) * parseFloat(price);
@@ -171,9 +170,9 @@ $(".inputbox").change(function() {
 			decimalSeparator: '.',
 			thousandSeparator: ','
 	});
+
+	$.ajax({url: 'update', data: "_id="+id+"&"+"qty="+qty, context: document.body, success: function(data){
+	      }});
 	$("#subtotal").html("<strong>Subtotal: $" + subTotalProper + "</strong>");
 });
 </script>
-
-​
-

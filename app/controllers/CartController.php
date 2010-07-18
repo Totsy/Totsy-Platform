@@ -56,7 +56,7 @@ class CartController extends BaseController {
 				unset($item['_id']);
 				$info = array_merge($item, array('quantity' => 1));
 				if ($cart->addFields() && $cart->save($info)) {
-					$this->redirect(array('Cart::view'));				
+					$this->redirect(array('Cart::view'));
 				}
 			}
 		}
@@ -84,6 +84,23 @@ class CartController extends BaseController {
 		
 		$cartcount = Cart::itemCount();
 		return compact('cartcount');
+	}
+
+	public function update() {
+		if ($this->request->query) {
+			$data = $this->request->query;
+			$cart = Cart::find('first', array(
+				'conditions' => array(
+					'_id' => $data['_id']
+			)));
+			$cart->quantity = $data['qty'];
+			if ($cart->save()) {
+				$sucess = true;
+			}
+		}
+		$this->render(array('layout' => false));
+
+		return compact('success');
 	}
 }
 
