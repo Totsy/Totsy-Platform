@@ -58,13 +58,18 @@ class AddressesController extends BaseController {
 				$message = 'There are already 10 addresses registered. Please remove one first.';
 			} else {
 				$this->request->data['default'] = ($this->request->data['default'] == '1') ? true : false;
-				$data = array_merge($this->request->data, array('user_id' => ((string) $user['_id'])));
+				if (($this->request->data['default'] == true) && (Address::changeDefault($user['_id']))) {
+					$message = 'This address is now your default';
+				} else {
+					$message = 'Address Saved';
+				}
+				$data = array_merge(
+					$this->request->data, 
+					array('user_id' => ((string) $user['_id']
+				)));
 				$status = $address->save($data);
-				$message = 'Address Saved';
 			}
-			
 		}
-
 		return compact('status', 'message', 'address');
 	}
 	

@@ -1,11 +1,13 @@
 <?php
 
 namespace app\controllers;
+
+use app\controllers\BaseController;
 use app\models\User;
+use app\models\Menu;
 use \lithium\security\Auth;
 use \lithium\storage\Session;
-use \lithium\data\Connections;
-use \lithium\analysis\Logger;
+
 
 /**
  * This class provides all the methods to register and authentic a user. 
@@ -15,8 +17,17 @@ use \lithium\analysis\Logger;
 	TODO The authenticaion process needs another look. We should be storing
 	the users information in the session instead of the cookie. 
 */
-class UsersController extends \lithium\action\Controller {
+class UsersController extends BaseController {
 
+	protected function _init() {
+		parent::_init();
+		$this->applyFilter('__invoke',  function($self, $params, $chain) {
+			$menu = Menu::find('all', array('conditions' => array('location' => 'left', 'active' => 'true')));
+			$userInfo = Session::read('userLogin');
+			$self->set(compact('menu', 'userInfo'));
+			return $chain->next($self, $params, $chain);
+		});
+	}
 	public function index(){
 
 	}
@@ -124,48 +135,38 @@ class UsersController extends \lithium\action\Controller {
 	}
 	
 	/**
+	 * Updates the user information including password.
 	 * 
+	 * @return array
 	 */
-	public function loginzuno(){
-		
-		$this->_render['layout'] = 'loginzuno';
-	
-	}
-	
-	protected function _init() {
-		parent::_init();
-		
-		$MongoDb = Connections::get('default');
-		$MongoDb->applyFilter('read', function($self, $params, $chain) use (&$MongoDb) {
-			$result = $chain->next($self, $params, $chain);
-			if (method_exists($result, 'data')) {
-				Logger::write('info',
-					json_encode($params['query']->export($MongoDb) + array('result' => $result->data()))
-				);
+	public function info() {
+		$status = 'default';
+		$user = User::getUser();
+		if ($this->request->data) {
+			$oldPass = $this->request->data['password'];
+			$newPass = $this->request->data['new_password'];
+			if ($user->legacy == '1') {
+				$status = ($this->authIllogic($oldPass)) ? 'true' : 'false';
+			} else {
+				$status = (sha1($oldPass) == $user->password) ? 'true' : 'false';
 			}
-			return $result;
-		});
+			if ($status == 'true') {
+				$user->password = sha1($newPass);
+				$user->legacy == false;
+				unset($this->request->data['password']);
+				unset($this->request->data['new_password']);
+				if ($user->save($this->request->data)) {
+					$info = Session::read('userLogin');
+					$info['firstname'] = $this->request->data['firstname'];
+					$info['lastname'] = $this->request->data['lastname'];
+					Session::write('userLogin', $info);
+				}
+			}
+		}
+		return compact("user", "status");
+
 	}
-	
-	public function updatePassword()
-	{
-		//If there is a request
-			//New Passwords need to match
-	
-			//Get the user based on their session
-	
-			//If the user is legacy
-				//If password is correct via authIllogic
-					//Remove Salt
-					//Change password using sha1
-					//Set Legacy flag to 0
-				//else
-					//Message the user that the old password is incorrect
-			//else 
-				//Change the password using sha1
-			//Send user message that their password has been updated
-		
-	}
+
 }
 
 ?>

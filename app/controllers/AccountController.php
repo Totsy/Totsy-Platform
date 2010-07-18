@@ -42,35 +42,7 @@ class AccountController extends BaseController {
 		$routing = array('url' => '/addresses/add', 'message' => 'Add Address');
 		return compact('addresses', 'routing');
 	}
-	
-	/**
-	 * Updates the user information in both the db and session
-	 * @return array
-	 */
-	public function info() {
-		$success = false;
-
 		
-		if ($this->request->data) {		
-			$User = $this->getUser();
-			//Update database using $set			
-			$success = $User->save($this->request->data);
-			if($success) {
-				//Update the session with correct names	
-				$info = Session::read('userLogin');
-				$info['firstname'] = $this->request->data['firstname'];
-				$info['lastname'] = $this->request->data['lastname'];
-				Session::write('userLogin', $info);
-				$this->redirect('/account/info');
-			}
-		}
-		
-		$user = $this->getUser();
-		
-		return compact("user", "success");
-		
-	}
-	
 	/**
 	 * Set the main address information to the Account object $this
 	 *
@@ -100,13 +72,7 @@ class AccountController extends BaseController {
 		}
 		return $success;
 	}
-	
-	private function getUser($fields = array()) {
 
-		$user = Session::read('userLogin');
-		return User::find('first', array('conditions' => array('_id' => $user['_id']), $fields));	
-	}
-	
 
 }
 
