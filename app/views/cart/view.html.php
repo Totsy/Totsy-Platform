@@ -151,7 +151,7 @@ $(document).ready(function() {
 </script>
 <script type="text/javascript" charset="utf-8">
 $(".inputbox").change(function() {
-	var id = event.target.id;
+	var id = $(this).attr('id'); 
 	var qty = $(this).val();
 	var price = $(this).closest("tr").find("td[class^=price]").html().split("$")[1];
 	var cost = parseInt(qty) * parseFloat(price);
