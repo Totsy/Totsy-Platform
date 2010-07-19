@@ -1,6 +1,6 @@
 <?php
 	use app\models\Menu;
-
+	$this->title("My Account Information");
 	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
 	$leftMenu = $this->MenuList->build($menu, $options);
 

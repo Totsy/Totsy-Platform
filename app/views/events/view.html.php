@@ -1,3 +1,6 @@
+<?php
+	$this->title($event->name);
+?>
 <?=$this->html->script('jquery.countdown.min');?>
 <?=$this->html->style('jquery.countdown');?>
 

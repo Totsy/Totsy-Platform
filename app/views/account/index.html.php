@@ -1,6 +1,6 @@
 <?php
 	use app\models\Menu;
-
+	$this->title("Account Dashboard for " . $userInfo['firstname']);
 	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
 	echo $this->MenuList->build($menu, $options);
 ?>

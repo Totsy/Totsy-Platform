@@ -1,6 +1,6 @@
 <?php
 	use app\models\Menu;
-
+	$this->title("My Orders");
 	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
 	$doc = Menu::all(array('conditions' => array('location' => 'left', 'active' => 'true')));
 ?>

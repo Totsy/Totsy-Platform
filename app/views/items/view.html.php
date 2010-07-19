@@ -1,3 +1,8 @@
+<?php
+
+	$this->title($item->description);
+
+?>
 <?=$this->html->script(array('jqzoom.pack.1.0.1.js','jquery.equalheights'));?>
 <?=$this->html->style('jquery.countdown');?>
 

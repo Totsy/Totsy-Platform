@@ -1,4 +1,5 @@
 <?php 
+	$this->title("My Addresses");
 	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
 	$leftMenu = $this->MenuList->build($menu, $options);
 	echo $leftMenu;

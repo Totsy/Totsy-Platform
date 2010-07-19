@@ -2,7 +2,7 @@
 <html>
 <head>
 	<?php echo $this->html->charset();?>
-	<title>Totsy<?php echo $this->title(); ?></title>
+	<title><?php echo $this->title(); ?></title>
 	<?php echo $this->html->style(array('base')); ?>
 	<?php echo $this->scripts(); ?>
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
