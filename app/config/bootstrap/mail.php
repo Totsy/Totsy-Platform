@@ -4,7 +4,7 @@ use lithium\core\Environment;
 
 Environment::set('test', array(
 	'mail' => array(
-		'address'host''  => 'relay.jangosmtp.net',
+		'host'  => 'relay.jangosmtp.net',
 		'port'  => 25,
 		'username'  => 'mitchy',
 		'password'  => '413118BI',
