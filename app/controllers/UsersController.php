@@ -58,7 +58,12 @@ class UsersController extends BaseController {
 					$firstname = Session::write('firstname', $user->firstname);
 					$lastname = Session::write('lastname', $user->lastname);
 					$email = Session::write('email', $user->email);
-					Mailer::send('welcome', compact('user'));
+					Mailer::send(
+						'welcome',
+						'Welcome to Totsy!',
+						array('name' => $user->firstname, 'email' => $user->email),
+						compact('user')
+					);
 					$this->redirect('/account/details');
 				}
 			} else {

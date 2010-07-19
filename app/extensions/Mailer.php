@@ -24,9 +24,13 @@ class Mailer {
 		));
 	}
 
-	public static function send($template, array $data) {
-		die(static::_view()->render('all', $data, compact('template') + array(
-		)));
+	public static function send($template, $subject, array $to, array $data) {
+		$config = Environment::get('mail');
+		$message = Swift_Message::newInstance();
+		$message->setFrom();
+		$message->setSubject();
+		$message->setTo("{$to['name']} <{$to['email']}>")
+		$message->setBody(static::_view()->render('all', $data, compact('template')));
 	}
 }
 
