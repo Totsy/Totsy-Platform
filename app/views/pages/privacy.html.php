@@ -1,3 +1,9 @@
+<?php
+
+	$this->title("Privacy Policy");
+
+?>
+
 <h1 class="p-header">Privacy Policy</h1> 
 				
 				

@@ -1,3 +1,9 @@
+<?php
+
+$this->title("Shipping &amp; Tax");
+
+?>
+
 <h1 class="p-header">Shipping &amp; Tax</h1> 
 
 <div id="middle" class="fullwidth">				

@@ -1,3 +1,9 @@
+<?php
+
+$this->title("Terms of Use");
+
+?>
+
 <h1 class="p-header">Terms of Use</h1> 
 				
 				

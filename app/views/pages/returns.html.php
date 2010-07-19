@@ -1,3 +1,9 @@
+<?php
+
+	$this->title("Return Policy");
+	
+?>
+
 <h1 class="p-header">Return Policy</h1> 
 
 <div id="middle" class="fullwidth">				

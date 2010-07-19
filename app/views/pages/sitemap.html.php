@@ -1,3 +1,9 @@
+<?php
+
+$this->title("Sitemap");
+
+?>
+
 <h1 class="p-header">Site Map</h1> 
 	<div id="middle" class="fullwidth">				
 <div class="tl"><!-- --></div> 

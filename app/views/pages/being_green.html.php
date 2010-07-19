@@ -1,6 +1,6 @@
 <?php
 	use app\models\Menu;
-
+	$this->title("Being Green");
 	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
 	echo $this->MenuList->build($menu, $options);
 ?>
