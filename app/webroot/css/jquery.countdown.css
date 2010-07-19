@@ -1,6 +1,6 @@
 /* jQuery Countdown styles 1.5.8. */
 .hasCountdown {
-	text-align: right;
+	text-align: left;
 }
 .countdown_rtl {
 	direction: rtl;
