@@ -26,6 +26,12 @@ class Mailer {
 
 	public static function send($template, $subject, array $to, array $data) {
 		$config = Environment::get('mail');
+		// get a transport
+		$transport = Swift_SmtpTransport::newInstance($config->mail->host, $config->mail->port)
+			->setUsername($config->mail->username)
+			->setPassword($config->mail->password)
+			;
+		// make a message
 		$message = Swift_Message::newInstance();
 		$message->setFrom();
 		$message->setSubject();
