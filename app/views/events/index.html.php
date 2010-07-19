@@ -110,7 +110,7 @@
 				<div class="product-list-item middle r-container">
 			<?php endif ?>
 			<?php if ($y == 2): ?>
-				<?php $y = 0;?>
+				<?php $y = -1; ?>
 			<?php endif ?>
 					<div class="tl"></div>
 					<div class="tr"></div>
