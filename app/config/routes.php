@@ -36,19 +36,18 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
      ));
 });
 
-Router::connect('/{:action:login|logout|register}', array('controller' => 'users'));
 /**
  * Redirect all non-authenticated users to 
  */
 if(!Session::check('userLogin')) {
-	Router::connect('/{:args}', 'Users::login');	
+	Router::connect('/', 'Users::login');
+	Router::connect('/{:args}', 'Users::login');
+	return;
 }
-/**
- * Here, we are connecting '/' (base path) to controller called 'Pages',
- * its action called 'view', and we pass a param to select the view file
- * to use (in this case, /app/views/pages/home.html.php)...
- */
+
 Router::connect('/', 'Events::index');
+Router::connect('/{:action:login|logout|register}', array('controller' => 'users'));
+
 Router::connect('/addresses', 'Addresses::view');
 Router::connect('/addresses/edit{:args}', 'Addresses::edit');
 Router::connect('/account/info', 'Users::info');
