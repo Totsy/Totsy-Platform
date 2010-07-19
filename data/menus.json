@@ -7,7 +7,7 @@
 { "_id" : { "$oid" : "4c3b752f7e2d17000a910831" }, "title" : "Address Book", "route" : { "controller" : "addresses" }, "location" : "left", "active" : "true", "class" : "item19", "parent" : "My Account" }
 { "_id" : { "$oid" : "4c3b752f7e2d17000a910832" }, "title" : "My Orders", "route" : { "controller" : "orders" }, "location" : "left", "active" : "true", "class" : "item20", "parent" : "My Account" }
 { "_id" : { "$oid" : "4c3b752f7e2d17000a910833" }, "title" : "Email Preferences", "route" : { "controller" : "account", "action" : "news" }, "location" : "left", "active" : "false", "class" : "item21", "parent" : "My Account" }
-{ "_id" : { "$oid" : "4c3b752f7e2d17000a910834" }, "title" : "Help Desk", "route" : { "controller" : "pages" }, "location" : "left", "active" : "true", "class" : "item22", "parent" : "My Account" }
+{ "_id" : { "$oid" : "4c3b752f7e2d17000a910834" }, "title" : "Help Desk", "route" : { "controller" : "help" }, "location" : "left", "active" : "true", "class" : "item22", "parent" : "My Account" }
 { "_id" : { "$oid" : "4c3b752f7e2d17000a910835" }, "title" : "My Invitiations", "route" : { "controller" : "invite" }, "location" : "left", "active" : "true", "class" : "last item23", "parent" : "My Account" }
 { "_id" : { "$oid" : "4c3b752f7e2d17000a910836" }, "title" : "Terms of Use", "route" : { "controller" : "pages", "view" : "terms" }, "location" : "bottom", "active" : "true", "class" : "first item6" }
 { "_id" : { "$oid" : "4c3b752f7e2d17000a910837" }, "title" : "Privacy Policy", "route" : { "controller" : "pages", "view" : "privacy" }, "location" : "bottom", "active" : "true", "class" : "item 7" }
