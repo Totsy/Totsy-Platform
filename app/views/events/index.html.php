@@ -123,8 +123,8 @@
 
 						<div class="splash-details">
 							<div class="table-cell left">
-								Event Starts In<br />
-								<strong><div id="<?php echo "futuresplash$x"; ?>"</div></strong>
+								Event Starts In<br>
+								<strong><div id="<?php echo "futuresplash$x"; ?>"></div></strong>
 							</div>
 
 							<div class="table-cell right">
