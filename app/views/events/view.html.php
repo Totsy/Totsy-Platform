@@ -47,9 +47,8 @@
 							<img src="/image/<?=$event->images->logo_image?>.gif" alt="Logo ALT Tag" title="Logo ALT Tag" width="148" height="52" />
 						<?php endif ?>
 						<div class="title table-cell v-bottom">
-							<h1><?=$event->name?></h1>
+							<h1> <?=$event->name; ?> </h1>
 							<strong class="red"><div id="listingCountdown"></div></strong>
-
 						</div>
 					</div>
 					<p><?php if (!empty($event->blurb)): ?>
@@ -61,10 +60,7 @@
 			<div class="bl"></div>
 			<div class="br"></div>
 		</div>
-		
-		
-		
-		<!--
+
 			<div class="sort-by">
 			<select id="by-category" name="by-category">
 				<option value="">View By Category</option>
@@ -78,9 +74,10 @@
 				<option value="Medium">Medium</option>
 				<option value="Large">Large</option>
 			</select>
-		-->
+		
 		</div>
 		<?php if (!empty($items)): ?>
+			<?php $y = 0; ?>
 			<?php foreach ($items as $item): ?>
 				<?php
 					if (!empty($item->primary_images)) {
@@ -92,7 +89,15 @@
 				?>
 				<!-- Start the product loop to output all products in this view -->
 				<!-- Start product item -->
-				<div class="product-list-item r-container">
+					<?php if (($y == 0) || ($y == 2)): ?>
+						<div class="product-list-item r-container">
+					<?php endif ?>
+					<?php if ($y == 1): ?>
+						<div class="product-list-item middle r-container">
+					<?php endif ?>
+					<?php if ($y == 2): ?>
+						<?php $y = -1; ?>
+					<?php endif ?>
 					<div class="tl"></div>
 					<div class="tr"></div>
 					<div class="md-gray p-container">
@@ -112,6 +117,7 @@
 					<div class="bl"></div>
 					<div class="br"></div>
 				</div>
+				<?php $y++ ?>
 				<!-- End product item -->
 			<?php endforeach ?>
 		<?php endif ?>
