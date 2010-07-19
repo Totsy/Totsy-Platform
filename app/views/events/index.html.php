@@ -1,21 +1,24 @@
 <div id="middle" class="fullwidth">
 	<h1 class="page-title gray"><span class="red">Today's <span class="bold caps">Sales</span></span></h1>
 	<?php $x = 0; ?>
+	<?php $y = 0; ?>
 	<?php foreach ($openEvents as $event): ?>
 		<!-- Start product item -->
-		<?php if ($x == 0): ?>
+		<?php if ($y == 0): ?>
 			<div class="product-list-item featured r-container">
 		<?php endif ?>
-		<?php if ($x == 1): ?>
+		<?php if ($y == 1): ?>
 			<div class="product-list-item featured middle r-container">
 		<?php endif ?>
-		<?php if (($x > 1) && ($x % 2)): ?>
-			<div class="product-list-item middle r-container">
-		<?php endif ?>
-		<?php if (($x > 1) && !($x % 2)): ?>
+		<?php if (($y == 2) || ($y == 4)): ?>
 			<div class="product-list-item r-container">
 		<?php endif ?>
-			
+		<?php if ($y == 3): ?>
+			<div class="product-list-item middle r-container">
+		<?php endif ?>
+		<?php if ($y == 4): ?>
+			<?php $y = 1; ?>
+		<?php endif ?>
 				<div class="tl"></div>
 				<div class="tr"></div>
 				<div class="md-gray p-container">
@@ -48,7 +51,7 @@
 						</div>
 
 						<div class="table-cell right">
-							<?=$this->html->link('Go', array('Events::view', 'args' => array($event->url)), array('class' => 'flex-btn'));?>
+							<span><?=$this->html->link('Go', array('Events::view', 'args' => array($event->url)), array('class' => 'flex-btn'));?></span>
 						</div>
 					</div>
 				</div>
@@ -93,16 +96,21 @@
 				</div>
 			<?php endif ?>
 		<?php $x++; ?>
+		<?php $y++; ?>
 	<?php endforeach ?>
 	<div class="coming-soon-sales">
 		<h2 class="page-title gray clear"><span class="red">Coming <span class="bold caps">Soon</span></span></h2>
 		<?php $x = 0; ?>
+		<?php $y = 0; ?>
 		<?php foreach ($pendingEvents as $event): ?>
-			<?php if (($x == 0) && !($x % 2)): ?>
+			<?php if (($y == 0) || ($y == 2)): ?>
 				<div class="product-list-item r-container">
 			<?php endif ?>
-			<?php if (($x > 0) && ($x % 2)): ?>
+			<?php if ($y == 1): ?>
 				<div class="product-list-item middle r-container">
+			<?php endif ?>
+			<?php if ($y == 2): ?>
+				<?php $y = 0;?>
 			<?php endif ?>
 					<div class="tl"></div>
 					<div class="tr"></div>
@@ -152,6 +160,7 @@
 				</script>";
 			?>
 			<?php $x++; ?>
+			<?php $y++; ?>
 	<?php endforeach ?>
 	</div>
 </div>
