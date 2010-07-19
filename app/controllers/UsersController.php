@@ -7,6 +7,7 @@ use app\models\User;
 use app\models\Menu;
 use \lithium\security\Auth;
 use \lithium\storage\Session;
+use app\extensions\Mailer;
 
 
 /**
@@ -57,6 +58,7 @@ class UsersController extends BaseController {
 					$firstname = Session::write('firstname', $user->firstname);
 					$lastname = Session::write('lastname', $user->lastname);
 					$email = Session::write('email', $user->email);
+					Mailer::send('welcome', compact('user'));
 					$this->redirect('/account/details');
 				}
 			} else {
