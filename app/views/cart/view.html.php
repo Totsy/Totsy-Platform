@@ -4,6 +4,7 @@
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
 	$test = $cart->data();
 ?>
+
 <?php if (!empty($test)): ?>
 <?php $subTotal = 0; ?>
 <?=$this->form->create(); ?>
@@ -96,8 +97,7 @@
 					$removeButtons[] = "<script type=\"text/javascript\" charset=\"utf-8\">
 							$('#remove$item->_id').click(function () { 
 								$('#$item->_id').remove();
-								$.ajax({url: \"remove\", data:'$item->_id', context: document.body, success: function(data){
-										location.reload();
+								$.ajax({url: \"/cart/remove\", data:'$item->_id', context: document.body, success: function(data){
 								      }});
 							    });
 						</script>";
@@ -171,8 +171,9 @@ $(".inputbox").change(function() {
 			thousandSeparator: ','
 	});
 
-	$.ajax({url: 'update', data: "_id="+id+"&"+"qty="+qty, context: document.body, success: function(data){
+	$.ajax({url: '/cart/update', data: "_id="+id+"&"+"qty="+qty, context: document.body, success: function(data){
 	      }});
 	$("#subtotal").html("<strong>Subtotal: $" + subTotalProper + "</strong>");
 });
 </script>
+

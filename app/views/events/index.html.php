@@ -168,4 +168,3 @@
 		<?php echo $value ?>
 	<?php endforeach ?>
 <?php endif ?>
-<?=$this->html->script('jquery.countdown.min');?>

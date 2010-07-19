@@ -2,9 +2,9 @@
 <html>
 <head>
 	<?php echo $this->html->charset();?>
-	<title>Totsy<?php echo $this->title(); ?></title>
+	<title><?php echo $this->title('Totsy'); ?></title>
 	<?php echo $this->html->style(array('base')); ?>
-	<?=$this->html->script(array('jquery-1.4.2','jquery-ui-1.8.2.custom.min.js')); ?>
+	<?=$this->html->script(array('jquery-1.4.2','jquery-ui-1.8.2.custom.min.js', 'jquery.countdown.min')); ?>
 	<?php echo $this->scripts(); ?>
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
 </head>
@@ -48,9 +48,9 @@
 				<p class="clear">
 					<span class="fl">
 						<a href="#" id="credits" title="My Credits">My Credits</a>
-						($1,000)
+						($100)
 					</span>
-					<?=$this->html->link('Cart', array('Cart::view'), array(
+					<?=$this->html->link('Cart', '#', array(
 						'id' => 'cart', 'title' => 'My Cart'
 					)); ?>
 					<span class="fl">
@@ -68,5 +68,19 @@
 	</div>
 	<div id="botter"></div>
 	<div id="footer"><?php echo $bottomMenu; ?></div>
+	<div id='cart-modal'></div>
+	<script type="text/javascript">
+	$("#cart").click(function() {
+		$("#cart-modal").load('/cart/view').dialog({
+			autoOpen: false,
+			modal:true,
+			width: 900,
+			height: 600,
+			close: function(ev, ui) { location.reload(true); }
+		});
+		$("#cart-modal").dialog('open');
+
+	});
+	</script>
 	</body>	
 </html>
