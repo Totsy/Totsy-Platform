@@ -66,6 +66,7 @@ class AuthorizeNet extends \lithium\core\Object {
 			'test' => false,
 			'login' => null,
 			'debug' => false,
+			'gateway' => 'live',
 			'version' => '3.1',
 			'delimiter' => '|',
 			'duplicateTimeLimit' => 300,
@@ -182,7 +183,7 @@ class AuthorizeNet extends \lithium\core\Object {
 			'tran_key'         => $this->_config['key'],
 			'version'          => $this->_config['version'],
 			'delim_data'       => 'TRUE',
-			'debug'            => $this->_config['debug'] ? 'TRUE' : 'FALSE',
+			'test_request'     => $this->_config['debug'] ? 'TRUE' : 'FALSE',
 			'type'             => $this->_transactionTypes[$mode],
 			'delim_char'       => $this->_config['delimiter'],
 			'duplicate_window' => $this->_config['duplicateTimeLimit'],
@@ -272,7 +273,7 @@ class AuthorizeNet extends \lithium\core\Object {
 	}
 
 	protected function _send($service, $content) {
-		$gateway = parse_url($this->_gateways[$this->_config['debug'] ? 'test' : 'live'][$service]);
+		$gateway = parse_url($this->_gateways[$this->_config['gateway']][$service]);
 		$gateway['protocol'] = $gateway['scheme'];
 		$path = $gateway['path'];
 		unset($gateway['scheme'], $gateway['path']);
@@ -288,7 +289,7 @@ class AuthorizeNet extends \lithium\core\Object {
 	}
 
 	protected function _sendAim($service, $content) {
-		$gateway = $this->_gateways[$this->_config['debug'] ? 'test' : 'live'][$service];
+		$gateway = $this->_gateways[$this->_config['gateway']][$service];
 
 		$ch = curl_init($gateway);
 		curl_setopt($ch, CURLOPT_HEADER, 0);
