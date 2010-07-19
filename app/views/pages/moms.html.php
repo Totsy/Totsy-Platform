@@ -1,6 +1,6 @@
 <?php
 	use app\models\Menu;
-
+	$this->title("Meet the Moms");
 	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
 	echo $this->MenuList->build($menu, $options);
 ?>

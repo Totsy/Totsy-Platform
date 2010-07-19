@@ -1,12 +1,15 @@
 <!doctype html>
 <html>
 <head>
-	<?php echo $this->html->charset();?>
-	<title><?php echo $this->title('Totsy'); ?></title>
-	<?php echo $this->html->style(array('base')); ?>
+	<?=$this->html->charset();?>
+	<title>
+		<?=$this->title() ?: 'Totsy, the private sale site for Moms'; ?>
+		<?=$this->title() ? '- Totsy' : ''; ?>
+	</title>
+	<?=$this->html->style(array('base')); ?>
 	<?=$this->html->script(array('jquery-1.4.2','jquery-ui-1.8.2.custom.min.js', 'jquery.countdown.min')); ?>
-	<?php echo $this->scripts(); ?>
-	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
+	<?=$this->scripts(); ?>
+	<?=$this->html->link('Icon', null, array('type' => 'icon')); ?>
 	<script type="text/javascript">
 
 	  var _gaq = _gaq || [];
