@@ -43,8 +43,8 @@
 					<?php endif ?>
 					<div class="splash-details">
 						<div class="table-cell left">
-							Event Ends In<br />
-							<strong><div id="<?php echo "todaysplash$x"; ?>"</div></strong>
+							Event Ends In<br>
+							<strong><div id="<?php echo "todaysplash$x"; ?>"></div></strong>
 						</div>
 
 						<div class="table-cell right">
