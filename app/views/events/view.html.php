@@ -107,7 +107,7 @@
 						<img src="<?php echo "$productImage"; ?>" alt="<?=$item->name?>" title="<?=$item->name?>" width="298" height="300"/>
 						<div class="details table-row">
 							<div class="table-cell left">
-								<h2><?=$item->name?></h2>
+								<h2 class='image-description-color'><?=$item->description." ".$item->color; ?></h2>
 								<strong class="price">$<?=number_format($item->sale_retail,2);?> Totsy Price</strong><br />
 								<strike>$<?=number_format($item->msrp,2);?> Original Price</strike>
 							</div>
