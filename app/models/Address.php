@@ -27,11 +27,15 @@ class Address extends \lithium\data\Model {
 	 * Usage:
 	 * $conditions = array('user_id' => Session::read('_id'))
 	 */
-	public function count($conditions = array()) {
+	public static function count($conditions = array()) {
 		$collection = Address::_connection()->connection->totsy->addresses;
 		return $collection->count($conditions);
 	}
-	
+
+	public static function changeDefault($user) {
+		// I don't know what this is supposed to do, but there's a call to it in the Addresses
+		// controller.
+	}
 }
 
 ?>
