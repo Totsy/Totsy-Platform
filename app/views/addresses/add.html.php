@@ -4,11 +4,7 @@
 <?=$this->html->script('en.js');?>
 <?=$this->html->style('formcheck');?>
 
-<!-- <script type="text/javascript">
-    window.addEvent('domready', function(){
-        new FormCheck('addressForm');
-    });
-</script> -->
+<h1 class="p-header">My Account</h1>
 <?php
 	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
 	$leftMenu = $this->MenuList->build($menu, $options);

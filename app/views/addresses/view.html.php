@@ -1,3 +1,4 @@
+<h1 class="p-header">My Account</h1>
 <?php 
 	$this->title("My Addresses");
 	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
