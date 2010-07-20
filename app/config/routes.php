@@ -36,6 +36,8 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
      ));
 });
 
+Router::connect('/register', 'Users::register');
+
 /**
  * Redirect all non-authenticated users to 
  */
@@ -46,7 +48,7 @@ if(!Session::check('userLogin')) {
 }
 
 Router::connect('/', 'Events::index');
-Router::connect('/{:action:login|logout|register}', array('controller' => 'users'));
+Router::connect('/{:action:login|logout}', array('controller' => 'users'));
 
 Router::connect('/addresses', 'Addresses::view');
 Router::connect('/addresses/edit{:args}', 'Addresses::edit');
