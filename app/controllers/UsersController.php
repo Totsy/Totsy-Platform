@@ -20,14 +20,7 @@ use app\extensions\Mailer;
 */
 class UsersController extends BaseController {
 
-	protected function _init() {
-		parent::_init();
-		$this->applyFilter('__invoke',  function($self, $params, $chain) {
-			$userInfo = Session::read('userLogin');
-			$self->set(compact('userInfo'));
-			return $chain->next($self, $params, $chain);
-		});
-	}
+
 	public function index(){
 
 	}
@@ -206,6 +199,32 @@ class UsersController extends BaseController {
 	protected function generatePassword() {
         return substr(md5(uniqid(rand(),1)), 1, 10);
     }
+
+	public function invite() {
+		$to = array();
+		if ($this->request->data) {
+			$rawto = explode(',',$this->request->data['to']);
+			foreach ($rawto as $key => $value) {
+				$to[] = trim($value);
+			}
+			$message = $this->request->data['message'];
+			if(User::invite($to, $message)){
+				$flashMessage = "Your invitations have been sent";
+			}
+		}
+		$open = User::find('first', array(
+			'conditions' => array(
+				'invitations.status' => 'unused'),
+			'fields' => array('invitations')
+		));
+		$accepted = User::find('first', array(
+			'conditions' => array(
+				'invitations.status' => 'used'),
+			'fields' => array('invitations')
+		));
+		
+		return compact('open', 'accepted', 'flashMessage');
+	}
 }
 
 ?>

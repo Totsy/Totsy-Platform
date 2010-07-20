@@ -8,19 +8,33 @@ use \MongoDate;
 
 class User extends \lithium\data\Model {
 	
+
 	protected $_dates = array(
 		'now' => 0
 	);
 
+	public function collection() {
+		return static::_connection()->connection->users;
+	}
+
+	public static function push($field, $data)
+	{
+		$user = static::getUser();
+		return	static::collection()->update(array(
+			'_id' => $user->_id),
+			 array('$pushAll' => array($field => $data))
+		);
+	}
 	public static function dates($name) {
 	     return new MongoDate(time() + static::_object()->_dates[$name]);
 	}
 
-	public static function getUser() {
+	public static function getUser($fields = null) {
 		$user = Session::read('userLogin');
 		return User::find('first', array(
 			'conditions' => array(
-				'_id' => $user['_id'])
+				'_id' => $user['_id']),
+			'fields' => $fields
 		));	
 	}
 	/**
@@ -44,6 +58,22 @@ class User extends \lithium\data\Model {
 		$user->password = $password;
 		$user->updated = static::dates('now');
 		return $user->save();
+	}
+
+	public static function invite($to, $message) {
+		$user = null;
+		foreach ($to as $value) {
+			$data[] = array(
+				'date_sent' => static::dates('now'),
+				'email' => $value,
+				'status' => 'unused'
+			);
+		}
+		if (static::push('invitations', $data)) {
+			$user = static::getUser(array('invitations', 'invite_code'));
+		}
+
+		return	$user;
 	}
 
 }
