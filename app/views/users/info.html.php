@@ -1,7 +1,8 @@
 <?php $this->title("My Account Information"); ?>
-<?=$this->menu->render('left', array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'))); ?>
+<h1 class="p-header">My Account</h1>
+<?=$this->menu->render('left'); ?>
 
-<h1 class="p-header">My Info</h1>
+<div id="middle" class="noright">
 <div class="tl"></div>
 <div class="tr"></div>
 <div id="page">

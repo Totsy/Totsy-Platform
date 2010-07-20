@@ -1,5 +1,5 @@
 <?php $this->title("My Help Desk"); ?>
-<?=$this->menu->render('left', array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'))); ?>
+<?=$this->menu->render('left'); ?>
 
 <!-- Start Main Page Content -->
 <div id="middle" class="noright">
