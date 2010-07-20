@@ -1,3 +1,4 @@
+<?=$this->html->script('jquery.equalheights')?>
 <h1 class="p-header">My Account</h1>
 <?php
 	use app\models\Menu;
@@ -38,7 +39,7 @@
 			<div class="tl"></div>
 			<div class="tr"></div>
 			<div class="r-box lt-gradient-1">
-				<h3 class="gray fl"><?php echo ('Newsletter - COMING SOON');?></h3>
+				<h3 class="gray fl">Newsletter - Coming Soon</h3>&nbsp;|&nbsp;<a href="" title="Edit">Edit</a>
 				<br />
 				<br />
 				<dl>
@@ -146,3 +147,9 @@
 </div>
 <div class="bl"></div>
 <div class="br"></div>
+<!-- This equals the hight of all the boxes to the same height -->
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".r-box").equalHeights(100,300);
+	});
+</script>
