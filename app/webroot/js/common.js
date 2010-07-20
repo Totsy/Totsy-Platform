@@ -1,6 +1,6 @@
 window.addEvent('domready', function(){
-	
-	$$('.main-nav li').each(function(e){
+
+	$$('#main-nav li').each(function(e){
 		e.getLast().addEvent('mouseenter', function(){
 			e.addClass('over');
 		});	

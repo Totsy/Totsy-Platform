@@ -5,12 +5,7 @@
 <?=$this->html->style('formcheck');?>
 
 <h1 class="p-header">My Account</h1>
-<?php
-	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
-	$leftMenu = $this->MenuList->build($menu, $options);
-	echo $leftMenu;
-
-?>
+<?=$this->menu->render('left', array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'))); ?>
 <div class="tl"></div> 
 <div class="tr"></div> 
 <div id="page"> 

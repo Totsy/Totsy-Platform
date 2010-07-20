@@ -35,7 +35,7 @@ class Mailer {
 		$message = Swift_Message::newInstance();
 		$message->setFrom();
 		$message->setSubject();
-		$message->setTo("{$to['name']} <{$to['email']}>")
+		$message->setTo("{$to['name']} <{$to['email']}>");
 		$message->setBody(static::_view()->render('all', $data, compact('template')));
 	}
 }

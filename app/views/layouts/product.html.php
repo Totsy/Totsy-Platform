@@ -22,18 +22,9 @@
 </head>
 
 <?php
-	use app\models\Menu;
-
-	$options = array('div' => array('id' => 'main-nav'), 'ul' => array('class' => 'menu main-nav'));
-	$topDoc = Menu::find('all', array('conditions' => array('location' => 'top', 'active' => 'true')));
-	
-	$mainMenu = $this->MenuList->build($topDoc, $options);
-	$bottomOptions = array('ul' => array('class' => 'menu'));
-	$bottomDoc = Menu::find('all', array('conditions' => array('location' => 'bottom', 'active' => 'true')));
-	$bottomMenu = $this->MenuList->build($bottomDoc, $bottomOptions);
-	
-
-?>	
+	$mainMenu = $this->menu->render('main-nav');
+	$bottomMenu = $this->menu->render('bottom', array('ul' => array('class' => 'menu')));
+?>
 	<body> 
 	
 		<div id="topper"><!-- --></div> 

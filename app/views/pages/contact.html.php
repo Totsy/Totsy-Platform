@@ -1,11 +1,6 @@
-<?php
-	use app\models\Menu;
-	$this->title("Contact Us");
-	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
-	echo $this->MenuList->build($menu, $options);
-?>
+<?=$this->menu->render('about'); ?>
 
-<h1 class="p-header">Contact Us</h1> 
+<h1 class="p-header"><?=$this->title("Contact Us"); ?></h1>
 			
 <div class="tl"><!-- --></div> 
 <div class="tr"><!-- --></div> 

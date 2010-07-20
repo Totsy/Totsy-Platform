@@ -1,11 +1,8 @@
+<?php $this->title("My Addresses"); ?>
 <h1 class="p-header">My Account</h1>
-<?php 
-	$this->title("My Addresses");
-	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
-	$leftMenu = $this->MenuList->build($menu, $options);
-	echo $leftMenu;
-?>
-<?=$this->html->link('Add Address','Addresses::add');?>
+<?=$this->menu->render('left', array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'))); ?>
+<?=$this->html->link('Add Address','Addresses::add'); ?>
+
 <table width="70%" class="cart-table">
 	<thead>
 		<tr>

@@ -1,12 +1,5 @@
-<?php
-	use app\models\Menu;
-	$this->title("My Account Information");
-	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
-	$leftMenu = $this->MenuList->build($menu, $options);
-
-	echo $leftMenu;
-
-?>
+<?php $this->title("My Account Information"); ?>
+<?=$this->menu->render('left', array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'))); ?>
 
 <h1 class="p-header">My Info</h1>
 <div class="tl"></div>

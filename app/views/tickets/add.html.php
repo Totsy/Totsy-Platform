@@ -1,11 +1,8 @@
-<?php
-	use app\models\Menu;
-	$this->title("My Help Desk");
-	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
-	echo $this->MenuList->build($menu, $options);
-?>	
-		<!-- Start Main Page Content -->
-<div id="middle" class="noright">				
+<?php $this->title("My Help Desk"); ?>
+<?=$this->menu->render('left', array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'))); ?>
+
+<!-- Start Main Page Content -->
+<div id="middle" class="noright">
 	<div class="tl"></div>
 	<div class="tr"></div>
 	<div id="page">

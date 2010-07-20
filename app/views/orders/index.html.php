@@ -1,10 +1,5 @@
-<?php
-	use app\models\Menu;
-	$this->title("My Orders");
-	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
-	$doc = Menu::all(array('conditions' => array('location' => 'left', 'active' => 'true')));
-?>
-<?=$this->MenuList->build($doc, $options); ?>
+<?php $this->title("My Orders"); ?>
+<?=$this->menu->render('left', array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'))); ?>
 
 <div class="tl"></div>
 <div class="tr"></div>

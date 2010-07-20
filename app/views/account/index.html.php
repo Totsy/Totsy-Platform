@@ -1,11 +1,8 @@
-<?=$this->html->script('jquery.equalheights')?>
+<?php $this->title("Account Dashboard for " . $userInfo['firstname']); ?>
+<?=$this->html->script('jquery.equalheights'); ?>
+<?=$this->menu->render('left'); ?>
 <h1 class="p-header">My Account</h1>
-<?php
-	use app\models\Menu;
-	$this->title("Account Dashboard for " . $userInfo['firstname']);
-	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
-	echo $this->MenuList->build($menu, $options);
-?>
+
 <div class="tl"></div>
 <div class="tr"></div>
 <div id="page">
@@ -20,7 +17,7 @@
 	
 	<div class="col-2">
 	
-		<div class="r-container box-2 fl">
+		<div class="r-container">
 			<div class="tl"></div>
 			<div class="tr"></div>
 			<div class="r-box lt-gradient-1">
@@ -34,8 +31,8 @@
 			<div class="bl"></div>
 			<div class="br"></div>
 		</div>
-		
-		<div class="r-container box-2 fr">
+
+		<div class="r-container">
 			<div class="tl"></div>
 			<div class="tr"></div>
 			<div class="r-box lt-gradient-1">

@@ -15,27 +15,13 @@
 		<table width="100%" class="cart-table">
 			<thead>
 				<tr>
-					<th>
-						Item
-					</th>
-					<th>
-						Description
-					</th>
-					<th>
-						QTY
-					</th>
-					<th>
-						Price
-					</th>
-					<th>
-						Total Cost
-					</th>
-					<th>
-						Time Remaining
-					</th>
-					<th>
-						Remove Item
-					</th>
+					<th>Item</th>
+					<th>Description</th>
+					<th>QTY</th>
+					<th>Price</th>
+					<th>Total Cost</th>
+					<th>Time Remaining</th>
+					<th>Remove Item</th>
 				</tr>
 			</thead>
 			<tbody>

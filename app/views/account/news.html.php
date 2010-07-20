@@ -1,12 +1,4 @@
-<?php
-	use app\models\Menu;
-
-	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
-	$leftMenu = $this->MenuList->build($menu, $options);
-
-	echo $leftMenu;
-
-?>
+<?=$this->menu->render('left', array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'))); ?>
 
 <div class="tl"></div> 
 <div class="tr"></div> 
