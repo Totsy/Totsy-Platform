@@ -23,9 +23,8 @@ class UsersController extends BaseController {
 	protected function _init() {
 		parent::_init();
 		$this->applyFilter('__invoke',  function($self, $params, $chain) {
-			$menu = Menu::find('all', array('conditions' => array('location' => 'left', 'active' => 'true')));
 			$userInfo = Session::read('userLogin');
-			$self->set(compact('menu', 'userInfo'));
+			$self->set(compact('userInfo'));
 			return $chain->next($self, $params, $chain);
 		});
 	}

@@ -41,7 +41,11 @@ class AccountController extends BaseController {
 		$routing = array('url' => '/addresses/add', 'message' => 'Add Address');
 		return compact('addresses', 'routing');
 	}
-		
+
+	public function news() {
+		// @todo Implement me!
+	}
+
 	/**
 	 * Set the main address information to the Account object $this
 	 *

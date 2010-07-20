@@ -14,16 +14,6 @@ class PagesController extends BaseController {
 	 */
 	protected function _init() {
 		parent::_init();
-	
-		$this->applyFilter('__invoke',  function($self, $params, $chain) {
-			$menu = Menu::find('all', array(
-				'conditions' => array(
-					'location' => 'about', 
-					'active' => 'true'
-			)));
-			$self->set(compact('menu'));
-			return $chain->next($self, $params, $chain);
-		});
 	}
 	
 	public function view() {

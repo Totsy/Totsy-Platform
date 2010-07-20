@@ -1,4 +1,4 @@
-<?=$this->menu->render('left', array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'))); ?>
+<?=$this->menu->render('left'); ?>
 
 <div class="tl"></div> 
 <div class="tr"></div> 
