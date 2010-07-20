@@ -2,31 +2,30 @@
 
 namespace app\controllers;
 
+use \app\controllers\BaseController;
 use \app\models\Cart;
 use \app\models\Item;
 use \lithium\storage\Session;
 
-class CartController extends \lithium\action\Controller {
+class CartController extends BaseController {
+
 	
 	public function index() {
-		$this->_render['layout'] = 'cart';
 		$carts = Cart::all();
 		return compact('carts');
 	}
 
 	public function view() {
-		$this->_render['layout'] = 'cart';
 		$cart = Cart::active();
 		return compact('cart');
 	}
 
 	public function add() {
-		$this->_render['layout'] = 'cart';
 		$cart = Cart::create();
 
-		if ($this->request->query) {
-			$itemId = $this->request->query['item_id'];
-			$size = $this->request->query['item_size'];
+		if ($this->request->data) {
+			$itemId = $this->request->data['item_id'];
+			$size = $this->request->data['item_size'];
 			$item = Item::find('first', array(
 				'conditions' => array(
 					'_id' => "$itemId"),
@@ -61,7 +60,6 @@ class CartController extends \lithium\action\Controller {
 				}
 			}
 		}
-
 		return compact('cart');
 	}
 
@@ -72,7 +70,6 @@ class CartController extends \lithium\action\Controller {
 		if (($this->request->data) && $cart->save($this->request->data)) {
 			$this->redirect(array('Carts::view', 'args' => array($cart->id)));
 		}
-		$this->render(array('layout' => false));
 		return compact('cart');
 	}
 	

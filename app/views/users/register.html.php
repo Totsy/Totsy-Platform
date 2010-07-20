@@ -10,6 +10,11 @@
     });
 </script>
 
+<div id="fullscreen">
+<div id="login-box">
+<div id="login-box-border">
+<div id="login-box-container">
+
 <h1 id="logo">Totsy</h1>
 
 <div id="intro-copy">
@@ -78,3 +83,8 @@
 </div>
 
 <?=$this->form->end(); ?>
+
+</div>
+</div>
+</div>
+</div>
