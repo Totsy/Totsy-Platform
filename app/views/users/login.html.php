@@ -9,17 +9,14 @@ $imglist='';
 //directory to pull login images from
 $img_folder = "img/login/";
 
-mt_srand((double)microtime()*1000);
+mt_srand((double) microtime() * 1000);
 
 $imgs = dir($img_folder);
 
 while ($file = $imgs->read()) {
-
-	if ( eregi("jpg", $file) || eregi("png", $file) ){
-		
+	if (stristr("jpg", $file) || stristr("png", $file)) {
 		$imglist .= "$file ";
 	}
-
 }
 
 closedir($imgs->handle);
