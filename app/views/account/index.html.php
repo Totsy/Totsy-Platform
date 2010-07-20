@@ -62,46 +62,17 @@
 				<div class="tl"></div>
 				<div class="tr"></div>
 				<div class="r-box lt-gradient-1">
-					<?php
-						if(!isset($addresses['Billing'])){						
-							$billMessage = 'No Billing Address';
-							$billLinkText = $routing['message'];
-							$billLink = $routing['url'];
-						} else {
-							$billLinkText = 'Edit Address';
-							$billLink = $addresses['Billing']['url'];
-						}
-						if(!isset($addresses['Shipping'])){						
-							$shipMessage = 'No Shipping Address';
-							$shipLinkText = $routing['message'];
-							$shipLink = $routing['url'];
-						} else {
-							$shipLinkText = 'Edit Address';
-							$shipLink = $addresses['Shipping']['url'];
-						}			
-					?>
 					<h3 class="gray fl"><?php echo ('Primary Billing Address');?></h3>&nbsp;|&nbsp;
-					<?=$this->html->link($billLinkText, $billLink);?>
-					<br />
-					<br />
-					<address>
-						<?php
-							if(isset($addresses['Billing'])) {
-								echo $addresses['Billing']['address'] . "<br />";
-								echo $addresses['Billing']['address_2'] . "<br />";
-								$subArray = array(
-										$addresses['Billing']['city'], 
-										$addresses['Billing']['state'], 
-										$addresses['Billing']['zip'],
-										$addresses['Billing']['country']
-										);
-								echo implode(', ', $subArray);
-							
-							} else {
-								echo $billMessage;
-							}
-						?>				
-					</address>
+					<?php if (!empty($billing)): ?>
+						<?=$this->html->link('Edit Address', "/addresses/edit/$billing->_id"); ?><br><br>
+						<address>
+							<?=$billing->address?><br>
+							<?=$billing->address_2?><br>
+							<?=$billing->city?>, <?=$billing->state?>, <?=$billing->zip?>
+						<address>
+					<?php else: ?>
+						<?=$this->html->link('Add Address', "/addresses/add"); ?>
+					<?php endif ?>
 				</div>
 				<div class="bl"></div>
 				<div class="br"></div>
@@ -111,28 +82,17 @@
 				<div class="tl"></div>
 				<div class="tr"></div>
 				<div class="r-box lt-gradient-1">
-				
-					<h3 class="gray fl"><?php echo ('Primary Shipping Address');?></h3>&nbsp;|&nbsp;<?=$this->html->link($shipLinkText, $shipLink);?>
-					<br />
-					<br />
-					<address>
-						<?php
-							if(isset($addresses['Shipping'])) {
-								echo $addresses['Shipping']['address'] . "<br />";
-								echo $addresses['Shipping']['address_2'] . "<br />";
-								$subArray = array(
-										$addresses['Shipping']['city'], 
-										$addresses['Shipping']['state'], 
-										$addresses['Shipping']['zip'],
-										$addresses['Shipping']['country']
-										);
-								echo implode(', ', $subArray);
-							
-							} else {
-								echo $shipMessage;
-							}
-						?>
-					</address>
+					<h3 class="gray fl"><?php echo ('Primary Shipping Address');?></h3>&nbsp;|&nbsp;
+					<?php if (!empty($shipping)): ?>
+						<?=$this->html->link('Edit Address', "/addresses/edit/$shipping->_id"); ?><br><br>
+						<address>
+							<?=$shipping->address?><br>
+							<?=$shipping->address_2?><br>
+							<?=$shipping->city?>, <?=$shipping->state?>, <?=$shipping->zip?>
+						<address>
+					<?php else: ?>
+						<?=$this->html->link('Add Address', "/addresses/add"); ?>
+					<?php endif ?>
 				</div>
 				<div class="bl"></div>
 				<div class="br"></div>

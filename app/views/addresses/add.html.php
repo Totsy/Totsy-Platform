@@ -1,9 +1,4 @@
-<?=$this->html->script('mootools-1.2.4-core-nc.js');?>
-<?=$this->html->script('mootools-1.2.4.4-more.js');?>
-<?=$this->html->script('formcheck.js');?>
-<?=$this->html->script('en.js');?>
-<?=$this->html->style('formcheck');?>
-
+<?=$this->html->script('jquery.validate.min')?>
 <h1 class="p-header">My Account</h1>
 <?=$this->menu->render('left', array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'))); ?>
 <div class="tl"></div> 
@@ -29,7 +24,7 @@
 			<div class="form-row">
 				<label>Make Default</label> 
 				<input type="radio" name="default" value="1" checked> Yes<br>
-				<input type="radio" name="default" value="0">No
+				<input type="radio" name="default" value="0"> No
 			</div>
 			<div class="form-row"> 
 				<?=$this->form->label('description', 'Description'); ?>
