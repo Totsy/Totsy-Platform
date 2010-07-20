@@ -1,6 +1,7 @@
 <?=$this->html->script(array('jqzoom.pack.1.0.1','jquery.equalheights'));?>
 <?=$this->html->style('jquery.countdown');?>
 <?=$this->title($item->description);?>
+
 <div id="product-detail-right">
 	<div style="align:right" id="listingCountdown"></div><p class="mar-10-b" style="padding-right:10px;text-align:right"></p>
 	<div id="detail-top-left">
@@ -11,13 +12,16 @@
 		<h1><?=$item->description." ".$item->color; ?></h1>
 
 		<div class="product-detail-attribute">
+
 			<?php if (!empty($sizes)): ?>
-			<label for="size" class="required">Size<span>*</span></label>&nbsp;
-				<select name="item_size" id="size-select">
-					<?php foreach ($sizes as $value): ?>
-						<option value="<?=$value?>"><?=$value?></option>
-					<?php endforeach ?>
-				</select>
+				<?php if (!(count($sizes) == 1) && !($sizes[0] =='no size')): ?>
+					<label for="size" class="required">Size<span>*</span></label>&nbsp;
+						<select name="item_size" id="size-select">
+							<?php foreach ($sizes as $value): ?>
+									<option value="<?=$value?>"><?=$value?></option>
+							<?php endforeach ?>
+						</select>
+				<?php endif ?>
 			<?php endif ?>
 		</div>
 	</div>
