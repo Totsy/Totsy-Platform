@@ -17,7 +17,7 @@
 	
 	<div class="col-2">
 	
-		<div class="r-container">
+		<div class="r-container box-2 fl">
 			<div class="tl"></div>
 			<div class="tr"></div>
 			<div class="r-box lt-gradient-1">
@@ -32,7 +32,7 @@
 			<div class="br"></div>
 		</div>
 
-		<div class="r-container">
+		<div class="r-container box-2 fr">
 			<div class="tl"></div>
 			<div class="tr"></div>
 			<div class="r-box lt-gradient-1">
