@@ -577,3 +577,5 @@ body.login .login-sig{text-align:center}
 .form-row .inputbox{margin-right:20px;float:left}
 .submit-row{margin:20px 0 0 0;overflow:hidden}
 .reg-tos{display:block;float:left;width:350px;line-height:normal;margin-right:30px}
+
+#empty-cart{position:absolute;top:220px; left:320px;}

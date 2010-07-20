@@ -10,8 +10,8 @@
 	<?=$this->html->script(array('jquery-1.4.2','jquery-ui-1.8.2.custom.min.js', 'jquery.countdown.min')); ?>
 	<?=$this->scripts(); ?>
 	<?=$this->html->link('Icon', null, array('type' => 'icon')); ?>
-	<script type="text/javascript">
 
+	<script type="text/javascript">
 	  var _gaq = _gaq || [];
 	  _gaq.push(['_setAccount', 'UA-675412-15']);
 	  _gaq.push(['_trackPageview']);
@@ -21,7 +21,6 @@
 	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
 	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 	  })();
-
 	</script>
 </head>
 
@@ -36,7 +35,6 @@
 	$bottomDoc = Menu::find('all', array('conditions' => array('location' => 'bottom', 'active' => 'true')));
 	$bottomMenu = $this->MenuList->build($bottomDoc, $bottomOptions);
 ?>	
-
 <body class="app">
 	<div id="topper"></div>	
 	<div id="wrapper">
@@ -91,8 +89,8 @@
 			autoOpen: false,
 			modal:true,
 			width: 900,
-			height: 600,
-			close: function(ev, ui) { location.reload(true); }
+			height: 450,
+			close: function(ev, ui) {}
 		});
 		$("#cart-modal").dialog('open');
 
