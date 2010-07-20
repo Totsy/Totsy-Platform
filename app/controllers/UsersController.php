@@ -174,6 +174,39 @@ class UsersController extends BaseController {
 
 	}
 
+	public function reset() {
+		$this->render(array('layout' => false));
+		if ($this->request->data) {
+			$user = User::find('first', array(
+				'conditions' => array(
+					'email' => $this->request->data['email']
+			)));
+			if ($user) {
+				$clearText = $this->generatePassword();
+				$password = sha1($clearText);
+				$lastip = $this->request->env('REMOTE_ADDR');
+				if ($user = User::process($user, $password, $lastip)) {
+					die(var_dump($user,$clearText));
+					Mailer::send(
+						'welcome',
+						'Welcome to Totsy!',
+						array('name' => $user->firstname, 'email' => $user->email),
+						compact('user')
+					);
+					$message = "Your password has been reset. Please check your email";
+				} else {
+					$message = "Sorry your password has not been reset. Please try again.";
+				}
+			} else {
+				$message = "This email doesn't exist.";
+			}
+		}
+		return compact("message");
+	}
+
+	protected function generatePassword() {
+        return substr(md5(uniqid(rand(),1)), 1, 10);
+    }
 }
 
 ?>
