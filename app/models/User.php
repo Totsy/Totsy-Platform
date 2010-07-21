@@ -79,10 +79,14 @@ class User extends \lithium\data\Model {
 	 * Lookup a user by either their email or username
 	 */
 	public static function lookup($identity) {
+		$user = null;
 		$result = static::collection()->findOne(array(
-			'$or' => array(array('username' => "$identity", 'email' => "$identity")))
+			'$or' => array(array('username' => "$identity"), array('email' => "$identity")))
 		);
-		return User::create($result);
+		if ($result) {
+			$user = User::create($result);
+		}
+		return $user;
 	}
 }
 
