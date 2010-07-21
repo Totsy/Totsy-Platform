@@ -9,15 +9,6 @@ use \lithium\security\Auth;
 use \lithium\storage\Session;
 use app\extensions\Mailer;
 
-
-/**
- * This class provides all the methods to register and authentic a user. 
- */
-
-/*
-	TODO The authenticaion process needs another look. We should be storing
-	the users information in the session instead of the cookie. 
-*/
 class UsersController extends BaseController {
 
 
@@ -77,8 +68,7 @@ class UsersController extends BaseController {
 			$username = $this->request->data['username'];
 			$password = $this->request->data['password'];
 			//Grab User Record
-			$user = User::first(array('conditions' => compact('username')));
-
+			$user = User::lookup($username);
 			if($user){
 				if($user->legacy == 1) {
 					$successAuth = $this->authIllogic($password, $user);
