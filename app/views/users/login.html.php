@@ -2,35 +2,20 @@
 <?=$this->html->script('jquery.backstretch.min.js');?>
 
 <?php
-//get a random image from the login images directory
 
-$imglist='';
-	
-//directory to pull login images from
-$img_folder = "img/login/";
+use \DirectoryIterator;
+use lithium\net\http\Media;
 
-mt_srand((double) microtime() * 1000);
-
-$imgs = dir($img_folder);
-
-while ($file = $imgs->read()) {
-	if (stristr("jpg", $file) || stristr("png", $file)) {
-		$imglist .= "$file ";
+/**
+ * Get a random login image (of type jpg or png).
+ */
+foreach (new DirectoryIterator(Media::webroot(true) . '/img/login') as $file) {
+	if ($file->isDot() || !preg_match('/\.(png|jpg)$/', $file->getFilename())) {
+		continue;
 	}
+	$images[] = $file->getFilename();
 }
-
-closedir($imgs->handle);
-
-//put all images into an array
-$imglist = explode(" ", $imglist);
-$no = sizeof($imglist)-2;
-
-//generate a random number between 0 and the number of images
-$random = mt_rand(0, $no);
-$image = $imglist[$random];
-
-//display image
-//echo '<img id="bg-img" class="activeslide" src="'.$img_folder.$image.'" border=0 alt="" />';
+$image = $images[array_rand($images)];
 
 ?>
 
