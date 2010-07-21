@@ -373,9 +373,26 @@ button.reg-btn{background:url(../img/reg-btn.png) no-repeat;height:39px;width:13
 
 label.radio{display:block;float:left;margin:3px 20px 10px 0}
 
-.flex-btn{background:#EB132C;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;border:none;padding:5px 10px;color:#FFF;text-transform:uppercase;cursor:pointer;box-shadow:5px 5px 5px #888;text-align:center}
+.flex-btn{background:#f02b29;
+-moz-border-radius:5px;-webkit-border-radius:5px;
+border-radius:5px;border:none;
+padding:5px 10px;color:#FFF;
+text-transform:uppercase;
+cursor:pointer;box-shadow:5px 5px 5px #888;
+text-align:center}
+
+.flex-btn1{background:#EB132C;
+-moz-border-radius:5px;-webkit-border-radius:5px;
+border-radius:5px;border:none;
+padding:5px 10px;color:#FFF;
+text-transform:uppercase;
+cursor:pointer;box-shadow:5px 5px 5px #888;
+text-align:center;
+float:right;
+}
 
 .flex-btn-2{background:#EB132C;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;border:none;padding:5px 10px;color:#FFF;text-transform:uppercase;cursor:pointer;box-shadow:5px 5px 5px #888;text-align:center}
+
 
 a:link.flex-btn,a:visited.flex-btn{color:#FFF;font-size:12px;display:block;padding:10px 5px;line-height:normal}
 a:link.flex-btn-2,a:visited.flex-btn-2{color:#FFF;font-size:12px;display:block;padding:10px 5px;line-height:normal}
@@ -439,13 +456,48 @@ a.sm-twitter-md{background-position:-80px 0;width:32px;height:32px}
 
 .product-list-item{float:left;margin-bottom:10px}
 .p-container{border:1px solid #D7D7D7;position:relative}
-.p-container .details .table-cell{padding:10px}
-.p-container h2{font-weight:normal;text-transform:uppercase;color:#707070;margin-bottom:12px}
-.p-container .details strong{text-transform:uppercase;font-size:16px}
+.p-container .details .table-cell{
+	padding:3px;
+	padding-top:7px;
+	padding-left:5px
+}
+.p-container h2{
+font-weight:normal;
+text-transform:none;
+color:#707070;
+font-size:1.0em;
+max-width:270px;
+}
+
+.p-container h2:hover {
+	
+	text-decoration:none;
+	color:#f02b29
+	
+}
+
+h2:link
+
+.p-container .details strong{
+text-transform:uppercase;
+font-size:14px
+}
+
+.p-container .details .table-cell .price{
+text-transform:uppercase;
+font-weight:normal;
+font-size:20px;
+color:#f02b29;
+}
+
+.p-container .details .table-cell .original-price{
+font-size:10px;
+
+}
 
 .splash-details .left{width:70%;float:left;padding:15px 0 15px 20px}
 .splash-details .right{width:15%;text-align:right;float:right;padding:22px 20px 0 0}
-.details .left{width:56%;float:left}
+.details .left{width:80%;float:left}
 .details .right{width:30%;text-align:right;float:left}
 
 .product-list-item.middle{margin:0 10px 10px 10px}

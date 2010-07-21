@@ -104,18 +104,23 @@
 					<div class="tl"></div>
 					<div class="tr"></div>
 					<div class="md-gray p-container">
-						<img src="<?php echo "$productImage"; ?>" alt="<?=$item->name?>" title="<?=$item->name?>" width="298" height="300"/>
+						<a href="<?="/items/view/$item->url"?>">
+							<img src="<?php echo "$productImage"; ?>" alt="<?=$item->name?>" title="<?=$item->name?>" width="298" height="300"/>
+						</a>
 						<div class="details table-row">
 							<div class="table-cell left">
-								<h2 class='image-description-color'><?=$item->description." ".$item->color; ?></h2>
-								<strong class="price">$<?=number_format($item->sale_retail,2);?> Totsy Price</strong><br />
-								<strike>$<?=number_format($item->msrp,2);?> Original Price</strike>
-							</div>
-							<div class="table-cell right">
-								<?=$this->html->link('View Now', array('Items::view', 'args' => "$item->url"), array('class' => 'flex-btn')); ?>
+								<table width="280">
+								    <tr>
+                                        <td width="170" valign="top">
+                                            <a href="<?="/items/view/$item->url"?>"><h2><?=$item->description." ".$item->color; ?></h2></a>
+                                        </td>    
+                                        <td align="right">
+                                            <font class="price">$<?=number_format($item->sale_retail,2);?></font><br>
+                                            <font class="original-price">Original $<?=number_format($item->msrp,2);?></font>
+                                        </td>
+								</table>
 							</div>
 						</div>
-
 					</div>
 					<div class="bl"></div>
 					<div class="br"></div>
