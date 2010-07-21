@@ -20,7 +20,7 @@ class User extends \lithium\data\Model {
 	public static function push($field, $data)
 	{
 		$user = static::getUser();
-		return	static::collection()->update(array(
+		return static::collection()->update(array(
 			'_id' => $user->_id),
 			 array('$pushAll' => array($field => $data))
 		);
@@ -75,7 +75,16 @@ class User extends \lithium\data\Model {
 
 		return	$user;
 	}
-
+	/**
+	 * Lookup a user by either their email or username
+	 */
+	public static function lookup($identity) {
+		$result = static::collection()->find(array(
+			'$or' => array(array('username' => "$identity", 'email' => "$identity")))
+		);
+		$array = iterator_to_array($result);
+		return User::create($array);
+	}
 }
 
 
