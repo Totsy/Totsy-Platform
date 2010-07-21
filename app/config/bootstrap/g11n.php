@@ -114,9 +114,9 @@ Media::applyFilter('_handle', function($self, $params, $chain) {
  * Integration with `Validator`. You can load locale dependent rules into the `Validator`
  * by specifying them manually or retrieving them with the `Catalog` class.
  */
-Validator::add('phone', Catalog::read('validation.phone', 'en_US'));
-Validator::add('postalCode', Catalog::read('validation.postalCode', 'en_US'));
-Validator::add('ssn', Catalog::read('validation.ssn', 'en_US'));
+Validator::add('phone', Catalog::read(true, 'validation.phone', 'en_US'));
+Validator::add('postalCode', Catalog::read(true, 'validation.postalCode', 'en_US'));
+Validator::add('ssn', Catalog::read(true, 'validation.ssn', 'en_US'));
 
 /**
  * Intercepts dispatching processes in order to set the effective locale by using
