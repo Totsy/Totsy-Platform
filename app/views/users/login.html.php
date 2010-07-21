@@ -5,6 +5,8 @@
 
 use \DirectoryIterator;
 use lithium\net\http\Media;
+$images = array();
+$imgDirectory = $this->_request->env('base') . '/img/login/';
 
 /**
  * Get a random login image (of type jpg or png).
@@ -17,6 +19,7 @@ foreach (new DirectoryIterator(Media::webroot(true) . '/img/login') as $file) {
 }
 $image = $images[array_rand($images)];
 
+
 ?>
 
 
@@ -24,7 +27,7 @@ $image = $images[array_rand($images)];
    
     jQuery(document).ready(function($){
     
-    	$.backstretch("<?=$img_folder.$image;?>");
+    	$.backstretch("<?=$imgDirectory . $image;?>");
     
     });
     
