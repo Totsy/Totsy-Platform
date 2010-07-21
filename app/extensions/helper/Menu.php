@@ -64,14 +64,16 @@ class Menu extends \lithium\template\Helper {
 		$items = array();
 
 		foreach (range(0, count($menu->items->data()) - 1) as $i) {
-			$item = $menu->items->{$i};
+			$item = is_a($menu->items, 'Iterator') ? $menu->items[$i] : $menu->items->{$i};
 			$items[] = $this->_item($item, $active, $options);
 		}
 		return $items;
 	}
 
 	protected function _isActive($item, $active, $children = true) {
-		if ($item->url->data() == $active) {
+		$url = is_string($item->url) ? $item->url : $item->url->data();
+
+		if ($url == $active) {
 			return true;
 		}
 		if ($item->items && $children) {
@@ -82,7 +84,9 @@ class Menu extends \lithium\template\Helper {
 				$menu = $model::first(array('conditions' => array('key' => $item->items)));
 			}
 			foreach (range(0, count($menu->items->data()) - 1) as $i) {
-				if (!$this->_isActive($menu->items->{$i}, $active, $children)) {
+				$current = is_a($menu->items, 'Iterator') ? $menu->items[$i] : $menu->items->{$i};
+
+				if (!$this->_isActive($current, $active, $children)) {
 					continue;
 				}
 				return true;
@@ -96,9 +100,23 @@ class Menu extends \lithium\template\Helper {
 		$itemOpts = array_diff_key($item->data(), $defaults);
 		$label = $this->_render(__METHOD__, 'menu-label', array('content' => $item->label));
 
+		// Btw, this is a hack. :-)
+		if ($item->label == 'Sales' && $item->url->data() == array('controller' => 'events')) {
+			$menu = $this->_classes['menu'];
+			$event = $this->_classes['event'];
+			$query = array('fields' => array('name', 'url'));
+			$item->items = $event::open($query)->map(function($item) use ($menu) {
+				return $menu::create(array(
+					'label' => $item->name, 'url' => "/events/view/{$item->url}"
+				));
+			});
+			$item->items->first()->class = 'first';
+			$item->items->end()->class = 'last';
+		}
 		if ($item->url) {
+			$url = is_string($item->url) ? $item->url : $item->url->data();
 			$link = array('escape' => false, 'title' => $item->label);
-			$label = $this->_context->html->link($label, $item->url->data(), $link);
+			$label = $this->_context->html->link($label, $url, $link);
 		}
 		if ($this->_isActive($item, $active)) {
 			$itemOpts += array('class' => '');
@@ -121,94 +139,6 @@ class Menu extends \lithium\template\Helper {
 		}
 		return $this->_render(__METHOD__, $template, $content);
 	}
-
-	/**
-	 * Builds a HTML unordered list (`ul`).
-	 * 
-	 * 
-	 * @return string
-	 */
-	public function build($doc, array $options = array()) {
-		$defaults = array('div' => null, 'ul' => null , 'li' => null);
-		$this->options = $options ? $options : $defaults;
-		$model = $this->_classes['menu'];
-
-		if (isset($options['div'])){
-			$div = '<div ' . $this->getElements('div') . '>';
-		}
-		if (isset($options['ul'])){
-			$ul = '<ul '. $this->getElements('ul') . '>';
-		}	
-
-		foreach ($doc as $nav) {
-			$menuItem = $nav->data();
-
-			if(isset($options['li'])){
-				$li .= '<li ' . $this->getElements('li') .'>';
-			} 
-			if(isset($menuItem['class'])) {
-				$li .= "<li class = \"$menuItem[class]\"" . '>';
-			}
-			else {
-				$li .= "<li>";
-			}
-			$url = '/'. $menuItem['route']['controller'];
-			if (isset($menuItem['route']['view'])) {
-				$url .= '/'.$menuItem['route']['view'];
-			} 
-			if (isset($menuItem['route']['action'])) {
-				$url .= '/'.$menuItem['route']['action'];
-			}
-			$li .= $this->_context->html->link("<span>$menuItem[title]</span>", $url, array('title' => "$menuItem[title]", 'escape' => false ));	
-			if (isset($menuItem['children'])) {
-				$subdoc = Menu::find('all', array('conditions' => array('active' => 'true', 'parent' => $menuItem['title'])));
-				$li .= $this->build($subdoc);
-			}
-			if ($menuItem['title'] == 'Sales') {
-				$todayList = Event::open(array('fields' => array('name', 'url')));
-				$saleItems = '';
-				$x = 0;
-				$last = count($todayList) - 1;
-				foreach ($todayList as $item) {
-					switch ($x) {
-						case 0:
-							$class = 'first';
-							break;
-						case $last:
-							$class = 'last';
-							break;
-						default:
-							$class = '';
-							break;
-					}
-					$x++;
-					$saleUrl = $this->_context->html->link("<span>$item->name</span>", "/events/view/$item->url", array(
-						'title' => "$item->name", 
-						'escape' => false 
-					));
-					$saleItems .= "<li class='$class'>$saleUrl</li>";
-				}
-				$li .= "<ul>$saleItems</ul>";
-			}
-			$li .= '</li>';
-		}
-
-		$html .= $div . "<div>" . $ul . $li . "</ul>". "</div>";
-		$html .= $endDiv;
-
-		return $html;
-	}
-	/**
-	 * Loops through the mongodb document elements.
-	 *
-	 * @return string
-	 */
-	protected function getElements($name) {
-		$element = '';
-		foreach ($this->options[$name] as $key=>$value){
-			$element .= "$key=\"$value\" ";
-		}
-		return $element;
-	}
-	
 }
+
+?>
