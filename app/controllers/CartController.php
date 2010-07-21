@@ -40,7 +40,9 @@ class CartController extends BaseController {
 					'color',
 					'description',
 					'primary_images',
-					'url'
+					'url',
+					'category',
+					'product_weight'
 			)));
 			//Check if this item has already been added to cart
 			$cartItem = Cart::find('first', array(
