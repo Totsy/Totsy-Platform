@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\models\Event;
+use MongoId;
 
 /**
  * The `Item` class extends the generic `lithium\data\Model` class to provide
@@ -55,9 +56,10 @@ class Item extends \lithium\data\Model {
 	 */
 	public static function reserve($_id, $size, $quantity) {
 		if (!empty($_id)) {
+			$_id = new MongoId($_id);
 			return static::collection()->update(array(
 				'_id' => $_id),
-				 array('$inc' => array("sale_detail.'$size'.reserved_count" => $quantity))
+				 array('$inc' => array("sale_detail.$size.reserved_count" => $quantity))
 			);
 		}
 		return false;
@@ -68,9 +70,10 @@ class Item extends \lithium\data\Model {
 	 */	
 	public static function sold($_id, $size, $quantity) {
 		if (!empty($_id) && ( (int) $quantity > 1)) {
+			$_id = new MongoId($_id);
 			return static::collection()->update(array(
 				'_id' => $_id),
-				 array('$inc' => array("sale_detail.'$size'.sale_count" => $quantity))
+				 array('$inc' => array("sale_detail.$size.sale_count" => $quantity))
 			);
 		}
 		return false;
