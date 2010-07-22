@@ -38,7 +38,7 @@ class Cart extends \lithium\data\Model {
 			'conditions' => array(
 				'session' => Session::key(),
 				'expires' => array('$gt' => static::dates('now')),
-				'user_id' => $user['_id']),
+				'user' => $user['_id']),
 			'fields' => $fields,
 			'order' => array('expires' => 'ASC') 
 		));
