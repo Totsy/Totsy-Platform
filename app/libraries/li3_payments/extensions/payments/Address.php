@@ -34,6 +34,18 @@ class Address extends \lithium\core\Object {
 			}
 		}
 	}
+
+	public function data() {
+		$result = array();
+		$keys = array(
+			'firstName', 'lastName', 'company', 'address', 'city',
+			'state', 'zip', 'country', 'phone', 'fax'
+		);
+		foreach ($keys as $key) {
+			$result[$key] = $this->{$key};
+		}
+		return $result;
+	}
 }
 
 ?>

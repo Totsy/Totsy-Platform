@@ -20,20 +20,50 @@ class TransactionsController extends \app\controllers\BaseController {
 	}
 
 	public function add() {
-		$user = Session::read('userLogin');
-		$addresses = Address::find('list', array(
-			'conditions' => array('user_id' => $user['_id'])
-		));
-		$cart = Cart::all(array(
-			'conditions' => array('session' => Session::key())
-		));
+		$data = $this->request->data;
 		$order = Transaction::create();
+		$user = Session::read('userLogin');
+		$billing = Address::menu($user, 'Billing');
+		$shipping = Address::menu($user, 'Shipping');
+		$cart = Cart::findAllBySession(Session::key());
 
+		$tax = 0;
+		$shippingCost = 0;
+		$billingAddr = $shippingAddr = null;
 
-		if (($data = $this->request->data) && $order->process($user, $data, $cart, $addresses)) {
+		foreach (array('billing', 'shipping') as $key) {
+			$var = $key . 'Addr';
+
+			if (isset($data[$key])) {
+				$addr = $data[$key];
+				${$var} = is_array($addr) ? Address::create($addr) : Address::first($addr);
+			}
+			if (count(${$key}) && !${$var}) {
+				${$var} = Address::first(isset($data[$key]) ? $data[$key] : key(${$key}));
+			}
+		}
+
+		if ($shippingAddr) {
+			$tax = array_sum($cart->tax($shippingAddr));
+			$shippingCost = Cart::shipping($cart, $shippingAddr);
+		}
+
+		$map = function($item) { return $item->sale_retail * $item->quantity; };
+		$subTotal = array_sum($cart->map($map)->data());
+		$vars = compact(
+			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
+			'tax', 'shippingCost', 'billingAddr', 'shippingAddr'
+		);
+
+		if ($this->request->is('ajax')) {
+			return $vars;
+		}
+
+		if (($data = $this->request->data) && $order->process($user, $data, $cart)) {
+			Cart::remove(array('session' => Session::key()));
 			return $this->redirect(array('Transactions::view', 'id' => (string) $order->_id));
 		}
-		return compact('order', 'user', 'addresses', 'cart');
+		return $vars + compact('order');
 	}
 }
 

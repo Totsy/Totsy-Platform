@@ -20,7 +20,7 @@ class AuthorizeNet extends \lithium\core\Object {
 	protected $_transactionTypes = array(
 		Transaction::TYPE_VOID    => 'VOID',
 		Transaction::TYPE_AUTH    => 'AUTH_ONLY',
-		Transaction::TYPE_CAPTURE => 'CAPTURE_ONLY',
+		Transaction::TYPE_CAPTURE => 'PRIOR_AUTH_CAPTURE',
 		Transaction::TYPE_CREDIT  => 'CREDIT',
 		Transaction::TYPE_AUTH_CAPTURE => 'AUTH_CAPTURE',
 	);
@@ -84,7 +84,9 @@ class AuthorizeNet extends \lithium\core\Object {
 				return $response[6];
 			break;
 			case ($pmt instanceof CreditCard):
-				$data = $this->_serialize($pmt, $amount, Transaction::TYPE_AUTH_CAPTURE, $options);
+				$data = $this->_serialize(
+					$pmt, Transaction::TYPE_AUTH_CAPTURE, compact('amount') + $options
+				);
 				$response = $this->_sendAim('default', $data);
 
 				if (intval($response['Response Code']) == 1) {
@@ -97,14 +99,44 @@ class AuthorizeNet extends \lithium\core\Object {
 	}
 
 	public function authorize($amount, PaymentObject $pmt, array $options = array()) {
-		if ($pmt instanceof Customer) {
-			$data = array('customer' => $pmt, 'type' => 'profileTransAuthOnly');
-			$request = $this->_renderCommand('process_profile', $data + compact('amount'));
-			$result = $this->_send('profile', $request);
+		switch (true) {
+			case ($pmt instanceof Customer):
+				$data = array('customer' => $pmt, 'type' => 'profileTransAuthOnly');
+				$request = $this->_renderCommand('process_profile', $data + compact('amount'));
+				$result = $this->_send('profile', $request);
+			break;
+			case ($pmt instanceof CreditCard):
+				$data = $this->_serialize(
+					$pmt, Transaction::TYPE_AUTH, compact('amount') + $options
+				);
+				$response = $this->_sendAim('default', $data);
+
+				if (intval($response['Response Code']) == 1) {
+					return $response['Transaction ID'];
+				}
+				throw new TransactionException($response['Response Reason Text']);
+			break;
 		}
+		return $result;
 	}
 
-	public function capture($transaction, $amount, array $options = array()) {
+	public function capture($transaction, $transaction, array $options = array()) {
+		switch (true) {
+			case ($pmt instanceof Customer):
+			break;
+			case ($pmt instanceof CreditCard):
+				$data = $this->_serialize(
+					$pmt, Transaction::TYPE_CAPTURE, compact('transaction') + $options
+				);
+				$response = $this->_sendAim('default', $data);
+
+				if (intval($response['Response Code']) == 1) {
+					return $response['Transaction ID'];
+				}
+				throw new TransactionException($response['Response Reason Text']);
+			break;
+		}
+		return $result;
 	}
 
 	public function credit($transaction, $amount = null, array $options = array()) {
@@ -177,8 +209,9 @@ class AuthorizeNet extends \lithium\core\Object {
 		// updateCustomerShippingAddressRequest
 	}
 
-	public function _serialize($payment, $amount, $mode, array $data) {
-		$data = compact('amount') + array(
+	public function _serialize($payment, $mode, array $data) {
+		$params = $data;
+		$data = array(
 			'login'            => $this->_config['login'],
 			'tran_key'         => $this->_config['key'],
 			'version'          => $this->_config['version'],
@@ -192,6 +225,12 @@ class AuthorizeNet extends \lithium\core\Object {
 			'exp_date'         => "{$payment->month}-{$payment->year}",
 			'card_num'         => $payment->number
 		);
+		if (isset($params['amount'])) {
+			$data['amount'] = $params['amount'];
+		}
+		if (isset($params['transaction'])) {
+			$data['trans_id'] = $params['transaction'];
+		}
 		$result = '';
 
 		foreach($data as $key => $value) {

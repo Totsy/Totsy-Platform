@@ -1,147 +1,398 @@
-<?php
+<?php $this->html->script('application', array('inline' => false)); ?>
+<h1 class="p-header"><?=$this->title('Checkout'); ?></h1>
 
-$now = intval(date('Y'));
-$years = array_combine(range($now, $now + 15), range($now, $now + 15));
-$this->form->config(array('text' => array('class' => 'inputbox')));
+<div id="middle" class="noleft">
 
-?>
-<style type="text/css">
-	.shipping .form-row input[type=checkbox] {
-		float: left;
-		clear: right;
-		margin-top: 10px;
-	}
-	.shipping .form-row label {
-		margin-left: 4px;
-	}
-	.shipping .product-list {
-		margin-top: 10px;
-		border: 1px solid #CCCCCC;
-		padding: 5px 0 5px 20px;
-	}
-	.shipping .product-list .form-row label {
-		width: 200px;
-	}
-	form .submit {
-		clear: left;
-		float: left;
-		width: 39%;
-		margin-top: 95px;
-	}
-	form .addresses {
-		width: 55%;
-		float: right;
-		clear: right;
-	}
-	form .payment {
-		width: 39%;
-		float: left;
-		clear: left;
-	}
-</style>
+	<div class="tl"></div>
+	<div class="tr"></div>
+	<div id="page">
 
-<div id="page">
-<?=$this->form->create($order); ?>
-	<fieldset class="addresses">
-		<h2 class="gray mar-b">Billing info</h2>
-		<div class="form-row">
-			<?=$this->form->field('billing_address', array(
-				'type' => 'select', 'list' => $addresses
-			)); ?>
-		</div>
+	<ol id="checkout-process">
+		<?=$this->form->create($order); ?>
 
-		<br />
+		<!-- Start Billing Information -->
+		<li id="opc-billing">
+			<div class="head"><h2>Billing Address</h2></div>
 
-		<h2 class="gray mar-b">Choose a destination for each item</h2>
-		<div class="shipping">
-			<?php if (count($cart) > 3) { ?>
-			<div>
-				<?=$this->form->checkbox('select_all', array('id' => 'select_all')); ?>
-				<?=$this->form->label('select_all', 'Select all'); ?>
-				<?=$this->form->select('shipping_all', $addresses, array('id' => 'shipping_all')); ?>
-			</div>
-			<?php } ?>
-			<div class="product-list">
-				<?php foreach ($cart as $item) { ?>
+			<div id="checkout-process-billing">
+				<p>Select a billing address from your address book or enter a new address.</p>
+
+				<?=$this->form->select('billing', $billing + array('' => 'New Address...'), array(
+					'id' => 'billing',
+					'target' => '#billing-new-address-form',
+					'value' => key($billing)
+				)); ?>
+
+				<fieldset id="billing-new-address-form">
+					<legend class="no-show">New Billing Address</legend>
+
 					<div class="form-row">
-						<?=$this->form->checkbox("select_{$item->_id}"); ?>
-						<?=$this->form->label("shipping_{$item->_id}", $item->description); ?>
-						<?=$this->form->select("shipping[{$item->_id}]", $addresses, array(
-							'id' => "shipping_{$item->_id}"
+						<label for="fname" class="required">First Name<span>*</span></label>
+						<input type="text" name="billing[firstName]" id="fname" class="inputbox" value="" />
+					</div>
+
+					<div class="form-row">
+						<label for="lname" class="required">Last Name<span>*</span></label>
+						<input type="text" name="billing[lastName]" id="lname" class="inputbox" value="" />
+					</div>
+
+					<div class="form-row">
+						<label for="address" class="required">Street Address<span>*</span></label>
+						<input type="text" name="billing[address]" id="address" class="inputbox" value="" />
+					</div>
+
+					<div class="form-row">
+						<label for="address_2">Street Address 2</label>
+						<input type="text" name="billing[address_2]" id="address_2" class="inputbox" value="" />
+					</div>
+
+					<div class="form-row">
+						<label for="city" class="required">City<span>*</span></label>
+						<input type="text" name="billing[city]" id="city" class="inputbox" value="" />
+					</div>
+
+					<div class="form-row">
+						<label for="state" class="required">State/Province<span>*</span></label>
+						<input type="text" name="billing[state]" id="state" class="inputbox" value="" />
+					</div>
+
+					<div class="form-row">
+						<label for="zip" class="required">Zip/Postal Code<span>*</span></label>
+						<input type="text" name="billing[zip]" id="zip" class="inputbox" value="" />
+					</div>
+
+					<div class="form-row">
+						<label for="phone">Telephone</label>
+						<input type="text" name="billing[phone]" id="phone" class="inputbox" value="" />
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<p>
+						<input type="radio" name="billing_shipping" id="billing:use_for_shipping_yes" value="1" checked="checked" />&nbsp;
+						<label for="billing:use_for_shipping_yes">Ship to this address</label>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="radio" name="billing_shipping" id="billing:use_for_shipping_no" value="0" />&nbsp;
+						<label for="billing:use_for_shipping_no">Ship to different address</label>
+					</p>
+				</fieldset>
+
+			</div>
+		</li>
+		<!-- End Billing Information -->
+
+		<!-- Start Shipping Information -->
+		<li id="opc-shipping" class="step" style="opacity:0.5">
+			<div class="head">
+				<h2>Shipping Address</h2>
+			</div>
+
+			<div id="checkout-process-shipping">
+
+				<p>Select a shipping address from your address book or enter a new address.</p>
+
+				<?=$this->form->select('shipping', $shipping + array('' => 'New Address...'), array(
+					'id' => 'shipping',
+					'target' => '#shipping-new-address-form',
+					'value' => key($shipping)
+				)); ?>
+
+				<fieldset id="shipping-new-address-form">
+
+					<legend class="no-show">New Shipping Address</legend>
+
+					<div class="form-row">
+						<label for="fname" class="required">First Name<span>*</span></label>
+						<input type="text" name="shipping[firstName]" id="fname" class="inputbox" value="" />
+					</div>
+
+					<div class="form-row">
+						<label for="lname" class="required">Last Name<span>*</span></label>
+						<input type="text" name="shipping[lastName]" id="lname" class="inputbox" value="" />
+					</div>
+
+					<div class="form-row">
+						<label for="address" class="required">Street Address<span>*</span></label>
+						<input type="text" name="shipping[address]" id="address" class="inputbox" value="" />
+					</div>
+
+					<div class="form-row">
+						<label for="address_2">Street Address 2</label>
+						<input type="text" name="shipping[address_2]" id="address_2" class="inputbox" value="" />
+					</div>
+
+					<div class="form-row">
+						<label for="city" class="required">City<span>*</span></label>
+						<input type="text" name="shipping[city]" id="city" class="inputbox" value="" />
+					</div>
+
+					<div class="form-row">
+						<label for="state" class="required">State/Province<span>*</span></label>
+						<input type="text" name="shipping[state]" id="state" class="inputbox" value="" />
+					</div>
+
+					<div class="form-row">
+						<label for="zip" class="required">Zip/Postal Code<span>*</span></label>
+						<input type="text" name="shipping[zip]" id="zip" class="inputbox" value="" />
+					</div>
+
+					<div class="form-row">
+						<label for="phone">Telephone</label>
+						<input type="text" name="shipping[phone]" id="phone" class="inputbox" value="" />
+					</div>
+
+				</fieldset>
+
+			</div>
+		</li>
+		<!-- End Shipping Information -->
+
+		<li class="step">
+			<fieldset>
+
+				<p><a href="javascript:void(0)" id="gift" title="Want to include a gift message?">Want to include a gift message?</a></p>
+
+				<div id="gift-message">
+					<textarea name="gift-message" class="inputbox"></textarea>
+				</div>
+
+			</fieldset>
+
+		</li>
+
+		<li id="shipping-method" class="step">
+			<div class="head">
+				<h2>Shipping Method</h2>
+			</div>
+
+			<div id="shipping-method-details">
+			<fieldset>
+
+				<ul class="shipping-methods">
+					<li>
+						<label>
+							<input type="radio" name="shipping_method" value="ups" checked="checked" />&nbsp;
+							<?=$this->html->image('ups-icon.jpg', array('title' => "UPS Shipping", 'alt' => "UPS Shipping", 'width' => "26", 'height' => "32")); ?>&nbsp;
+							UPS Ground
+						</label>
+						<span class="fr">
+							<strong>Estimated Delivery</strong><br />
+							<abbr title="Tuesday, April 6th, 2010">Tue 4/6/10</abbr> to
+							<abbr title="Thursday, April 15th, 2010">Thu 4/15/10</abbr>
+						</span>
+					</li>
+				</ul>
+			</fieldset>
+
+			</div>
+		</li>
+
+		<!-- Start Payment Information -->
+		<li id="opc-payment" class="step">
+			<div class="head">
+				<h2>Payment Information</h2>
+			</div>
+
+			<div id="checkout-process-payment">
+				<p>
+					<label for="payment-method-select">Pay with:</label>
+					<?=$this->form->select(
+						'payment',
+						array('' => 'New Credit Card'),
+						array('id' => 'payment', 'value' => '1', 'target' => '#payment-method-form')
+					); ?>
+				</p>
+
+				<fieldset id="payment-method-form">
+					<legend class="no-show">New Payment Method</legend>
+
+					<div class="form-row">
+						<label for="cc-type" class="required">Credit Card Type<span>*</span></label>
+						<?=$this->form->select('card[type]', array(
+							'visa' => 'Visa',
+							'mc' => 'MasterCard',
+							'amex' => 'American Express'
 						)); ?>
 					</div>
-				<?php } ?>
-			</div>
-		</div>
-	</fieldset>
 
-	<fieldset class="payment">
-		<h2 class="gray mar-b">Payment information</h2>
-		<?=$this->form->field('card[type]', array(
-			'label' => 'Card Type', 'type' => 'select', 'wrap' => array('class' => 'form-row'), 'list' => array(
-				'visa' => 'Visa',
-				'mc' => 'MasterCard',
-				'amex' => 'American Express'
-			)
-		)); ?>
-		<?=$this->form->field('card[name]', array(
-			'label' => 'Name on Card', 'wrap' => array('class' => 'form-row')
-		)); ?>
-		<?=$this->form->field('card[number]', array(
-			'label' => 'Card Number', 'wrap' => array('class' => 'form-row')
-		)); ?>
-		<div class="form-row">
-			<?=$this->form->label('Expires'); ?>
-			<?=$this->form->select('card[month]', array(
-				1 => 'January',
-				2 => 'February',
-				3 => 'March',
-				4 => 'April',
-				5 => 'May',
-				6 => 'June',
-				7 => 'July',
-				8 => 'August',
-				9 => 'September',
-				10 => 'October',
-				11 => 'November',
-				12 => 'December'
-			)); ?>
-			<?=$this->form->select('card[year]', $years); ?>
-		</div>
-		<?=$this->form->field('card[code]', array(
-			'label' => 'Card Code', 'wrap' => array('class' => 'form-row')
-		)); ?>
-		<?=$this->form->field('save_card', array(
-			'type' => 'checkbox',
-			'id' => 'save_card',
-			'label' => 'Save my card information for later',
-			'template' => 'field-checkbox'
-		)); ?>
-		<div id="save_card_info" class="form-row">
-			<?=$this->form->label('card_name', 'Give this card a name'); ?>
-			<?=$this->form->text('card_name'); ?>
-		</div>
-	</fieldset>
-	<div class="submit">
-		<?=$this->form->submit('Checkout', array('class' => 'flex-btn')); ?>
+					<div class="form-row">
+						<label for="cc" class="required">Card Number<span>*</span></label>
+						<?=$this->form->text('card[number]', array('id' => 'cc', 'class' => 'inputbox')); ?>
+					</div>
+
+					<div class="form-row">
+						<label for="cc-exp" class="required">Expiration Date<span>*</span></label>
+						<?=$this->form->select('card[month]', array(
+							'' => 'Month',
+							1 => 'January',
+							2 => 'February',
+							3 => 'March',
+							4 => 'April',
+							5 => 'May',
+							6 => 'June',
+							7 => 'July',
+							8 => 'August',
+							9 => 'September',
+							10 => 'October',
+							11 => 'November',
+							12 => 'December'
+						)); ?>
+						<?php
+							$now = intval(date('Y'));
+							$years = array_combine(range($now, $now + 15), range($now, $now + 15));
+						?>
+						<?=$this->form->select('card[year]', array('' => 'Year') + $years); ?>
+					</div>
+
+					<div class="form-row">
+						<label for="cc-ccv" class="required">CVV2 Code<span>*</span></label>
+						<?=$this->form->text('card[code]', array('class' => 'inputbox')); ?>
+					</div>
+
+				</fieldset>
+
+			</div>
+
+		</li>
+		<!-- End Shipping Information -->
+
+		<li class="step">
+			<button class="flex-btn submit"><span>Submit Order</span></button>
+			&nbsp;&nbsp;
+			<span class="red">*</span> Required Fields
+		</li>
+
+		<?=$this->form->end(); ?>
+	</ol>
+
 	</div>
-<?=$this->form->end(); ?>
+	<div class="bl"></div>
+	<div class="br"></div>
+
+</div>
+
+<div id="right">
+
+	<div class="r-container order-summary">
+		<div class="tl"></div>
+		<div class="tr"></div>
+		<div class="r-box lt-gradient-1">
+
+			<h3>Your Order</h3>
+			<table class="order-status">
+				<tr>
+					<td class="left"><strong>Order Subtotal:</strong></td>
+					<td class="right subTotal">$<?=number_format((float) $subTotal, 2); ?></td>
+				</tr>
+				<tr>
+					<td class="left"><strong>Shipping:</strong></td>
+					<td class="right shippingCost">
+						$<?=number_format((float) $shippingCost, 2); ?>
+					</td>
+				</tr>
+				<tr>
+					<td class="left"><strong>Sales Tax:</strong></td>
+					<td class="right tax">$<?=number_format((float) $tax, 2); ?></td>
+				</tr>
+				<tr>
+					<td class="left"><strong class="caps">Total:</strong></td>
+					<?php $total = $subTotal + $tax + $shippingCost; ?>
+					<td class="right total">
+						<strong>$<?=number_format((float) $total, 2); ?></strong>
+					</td>
+				</tr>
+			</table>
+
+			<ol id="order-details">
+				<?php if ($billingAddr) { ?>
+					<li id="billing-details">
+						<h4>Billing Address</h4>
+						<address class="billing-address">
+							<?=$billingAddr->address; ?> <?=$billingAddr->address_2; ?><br />
+							<?=$billingAddr->city; ?>, <?=$billingAddr->state; ?>
+							<?=$billingAddr->zip; ?>
+						</address>
+					</li>
+				<?php } ?>
+				<?php if ($shippingAddr) { ?>
+					<li id="shipping-details">
+						<h4>Shipping Address</h4>
+						<address class="shipping-address">
+							<?=$shippingAddr->address; ?> <?=$shippingAddr->address_2; ?><br />
+							<?=$shippingAddr->city; ?>, <?=$shippingAddr->state; ?>
+							<?=$shippingAddr->zip; ?>
+						</address>
+
+						<?php
+						// <div class="shipping-detail">
+						// 	<strong>Shipment 1</strong><br />
+						// 	Extended Delivery Timeline<br />
+						// 	<abbr title="Tuesday, April 6th, 2010">Tue 4/6/10</abbr> to
+						// 	<abbr title="Thursday, April 15th, 2010">Thu 4/15/10</abbr>
+						// </div>
+						?>
+					</li>
+				<?php } ?>
+			</ol>
+
+		</div>
+		<div class="bl"></div>
+		<div class="br"></div>
+	</div>
+
 </div>
 
 <script type="text/javascript">
 $(document).ready(function() {
-	$('input[name=save_card]').bind('click', function() {
-		$(this).attr('checked') ? $('#save_card_info').show() : $('#save_card_info').hide();
+	$("#tabs").tabs();
+	var initializing = true;
+
+	var update = function() {
+		data = $('#checkout-billing-form, #checkout-shipping-form').serialize();
+		addrFormat = "{:address} {:address_2}<br />\n{:city}, {:state} {:zip}";
+
+		$.post(window.location + '.json', data, function(data) {
+			$('.order-summary').fadeOut('fast', function() {
+				if (data.shippingAddr.address) {
+					$('.shipping-address').html($(data.shippingAddr).template(addrFormat));
+				}
+				if (data.billingAddr.address) {
+					$('.billing-address').html($(data.billingAddr).template(addrFormat));
+				}
+				$('.shippingCost').html('$' + $.numberFormat(data.shippingCost));
+				$('.order-summary').fadeIn(1000);
+			});
+		}, 'json');
+	};
+
+	$('#billing, #shipping, #payment').bind('change', function() {
+		$this = $(this);
+		$target = $($this.attr('target'));
+		$target[($this.val() == '') ? 'show' : 'hide']().find('input, select').attr(
+			'disabled', $this.val() != ''
+		);
+		if (!initializing) {
+			update();
+		}
+	}).trigger('change');
+
+	$('#gift').bind('click', function() {
+		$('#gift-message').toggle();
 	});
-	$('#select_all').bind('click', function() {
-		$('.product-list input[type=checkbox]').attr('checked', $(this).attr('checked'));
+
+	$('input[name=billing_shipping]').bind('change', function() {
+		if ($(this).val() == 1) {
+			$('#opc-shipping').css('opacity', 0.5);
+			$('#shipping-address-select').attr('disabled', 'disabled');
+		} else {
+			$('#opc-shipping').css('opacity', 1);
+			$('#shipping-address-select').attr('disabled', '');
+		}
+		update();
 	});
-	$('#shipping_all').bind('change', function() {
-		value = $(this).val();
-		$('.product-list input[type=checkbox]:checked').each(function() {
-			$(this).parent().find('select').val(value);
-		});
-	});
-	$('#save_card_info').hide().css({ position: 'absolute' });
+
+	$('#payment-method-form').show();
+	$('#payment').parent().remove();
+	initializing = false;
 });
 </script>

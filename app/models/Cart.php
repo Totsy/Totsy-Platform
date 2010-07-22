@@ -2,8 +2,9 @@
 
 namespace app\models;
 
-use \lithium\storage\Session;
-use \MongoDate;
+use app\extensions\Ups;
+use lithium\storage\Session;
+use MongoDate;
 
 class Cart extends \lithium\data\Model {
 
@@ -13,6 +14,8 @@ class Cart extends \lithium\data\Model {
 		'now' => 0,
 		'tenMinutes' => 600
 	);
+
+	protected $_nonTaxableCategories = array('apparel');
 
 	public static function dates($name) { 
 	     return new MongoDate(time() + static::_object()->_dates[$name]); 
@@ -37,13 +40,12 @@ class Cart extends \lithium\data\Model {
 			'order' => array('expires' => 'ASC') 
 		));
 	}
-	
+
 	public static function itemCount() {
-		$cart = Cart::active(array(
-			'fields' => array('quantity')
-		));
+		$cart = Cart::active(array('fields' => array('quantity')));
 		$cartCount = 0;
-		if (!empty($cart)) {
+
+		if ($cart) {
 			foreach ($cart as $item) {
 				$cartCount += $item->quantity;
 			}
@@ -51,6 +53,55 @@ class Cart extends \lithium\data\Model {
 		return $cartCount;
 	}
 
+	/**
+	 * Computes the total amount of a cart item, including tax, times quantity.
+	 *
+	 * @param object $cart
+	 * @param object $shipping
+	 * @return float
+	 */
+	public function total($cart, $shipping) {
+		$unit = $cart->sale_retail + $cart->tax($shipping);
+		return $unit * $cart->quantity;
+	}
+
+	/**
+	 * Computes the sales tax for an individual item, based on the shipping destination.
+	 *
+	 * @param object $cart
+	 * @param object $shipping
+	 * @return float
+	 */
+	public function tax($cart, $shipping) {
+		$categories = static::_object()->_nonTaxableCategories;
+		$item = Item::first($cart->item_id);
+		$taxExempt = (
+			$shipping->state != 'NY' ||
+			(in_array($item->category, $categories) && $cart->sale_retail < 110)
+		);
+
+		if ($taxExempt) {
+			return 0;
+		}
+		return $cart->sale_retail * 0.08875;
+	}
+
+	public function weight($cart) {
+		$item = Item::first($cart->item_id);
+		return intval(preg_replace('/[^0-9\.]/', '', $item->product_weight)) * $cart->quantity;
+	}
+
+	public static function shipping($carts, $address) {
+		return floatval(Ups::estimate(array(
+			'weight' => array_sum($carts->weight()),
+			'product' => "GND",
+			'origin' => "18106",
+			'dest' => $address->zip,
+			'rate' => "RDP",
+			'container' => "CP",
+			'rescom' => "RES"
+		)));
+	}
 }
 
 ?>

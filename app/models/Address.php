@@ -2,10 +2,10 @@
 
 namespace app\models;
 
+use lithium\util\String;
 
 class Address extends \lithium\data\Model {
 	
-
 	protected $_meta = array('title' => 'description');
 
 	protected static function _findFilters() {
@@ -13,13 +13,24 @@ class Address extends \lithium\data\Model {
 			$result = array();
 			$meta = $self::meta();
 			$name = $meta['key'];
+			$format = '{:description} ({:address} {:city}, {:state})';
 
 			foreach ($chain->next($self, $params, $chain) as $entity) {
 				$key = $entity->{$name};
-				$result[is_scalar($key) ? $key : (string) $key] = $entity->{$meta['title']};
+				$result[(string) $key] = String::insert($format, $entity->data());
 			}
 			return $result;
 		}) + parent::_findFilters();
+	}
+
+	public static function menu($user, $type) {
+		if (is_array($user) && isset($user['_id'])) {
+			$user = $user['_id'];
+		}
+		return static::find('list', array(
+			'conditions' => array('user_id' => $user) + compact('type'),
+			'order' => array('default' => 'desc')
+		));
 	}
 
 	/**

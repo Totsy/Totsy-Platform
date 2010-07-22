@@ -104,20 +104,22 @@
 					<div class="tl"></div>
 					<div class="tr"></div>
 					<div class="md-gray p-container">
-						<a href="<?="/items/view/$item->url"?>">
-							<img src="<?php echo "$productImage"; ?>" alt="<?=$item->name?>" title="<?=$item->name?>" width="298" height="300"/>
-						</a>
+						<?=$this->html->link(
+							$this->html->image($productImage, array('alt' => $item->name, 'title' => $item->name, 'width' => '298', 'height' => '300')),
+							"/items/view/{$item->url}",
+							array('escape' => false)
+						); ?>
 						<div class="details table-row">
 							<div class="table-cell left">
 								<table width="280">
-								    <tr>
-                                        <td width="170" valign="top">
-                                            <a href="<?="/items/view/$item->url"?>"><h2><?=$item->description." ".$item->color; ?></h2></a>
-                                        </td>    
-                                        <td align="right">
-                                            <font class="price">$<?=number_format($item->sale_retail,2);?></font><br>
-                                            <font class="original-price">Original $<?=number_format($item->msrp,2);?></font>
-                                        </td>
+									<tr>
+										<td width="170" valign="top">
+											<a href="<?="/items/view/$item->url"?>"><h2><?=$item->description." ".$item->color; ?></h2></a>
+										</td>
+										<td align="right">
+											<font class="price">$<?=number_format($item->sale_retail,2);?></font><br>
+											<font class="original-price">Original $<?=number_format($item->msrp,2);?></font>
+										</td>
 								</table>
 							</div>
 						</div>

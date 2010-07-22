@@ -243,12 +243,13 @@ $(document).ready(function() {
 $("#item-submit").click(function(){
 var item_id = $('#item_id').attr('value'); 
 var item_size = $('#size-select').attr('value');
+
 $.ajax({
-	url: '/cart/add', 
-	data: "item_id="+item_id+"&"+"item_size="+item_size, 
+	url: $.base + '/cart/add',
+	data: "item_id=" + item_id + "&" + "item_size=" + item_size,
 	context: document.body,
 	success: function(){
-		$("#cart-modal").load('/cart/view').dialog({
+		$("#cart-modal").load($.base + '/cart/view').dialog({
 			autoOpen: false,
 			modal:true,
 			width: 900,

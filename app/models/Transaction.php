@@ -6,14 +6,15 @@ use li3_payments\extensions\Payments;
 
 class Transaction extends \lithium\data\Model {
 
-	public $validates = array();
+	public $validates = array(
+		'authKey' => 'Could not secure payment.'
+	);
 
-	public function process($transaction, $user, $data, $cart, $addresses) {
-		$ids = array_keys($addresses);
-		$addresses = array_map(
-			function($id) { return Address::first($id); }, array_combine($ids, $ids)
-		);
-		$billing = $addresses[$data['billing_address']];
+	public function process($transaction, $user, $data, $cart) {
+		foreach (array('billing', 'shipping') as $key) {
+			$addr = $data[$key];
+			${$key} = is_array($addr) ? Address::create($addr) : Address::first($addr);
+		}
 
 		$card = Payments::create('default', 'creditCard', $data['card'] + array(
 			'billing' => Payments::create('default', 'address', array(
@@ -27,32 +28,20 @@ class Transaction extends \lithium\data\Model {
 				'country'   => $billing->country
 			))
 		));
-		$amount = 0;
-		$manifest = array();
 
-		foreach ($data['shipping'] as $id => $address) {
-			if (!isset($manifest[$address])) {
-				$manifest[$address] = $addresses[$address]->data() + array('items' => array());
-			}
-			foreach ($cart as $item) {
-				if ((string) $item->_id == $id) {
-					$manifest[$address]['items'][] = array(
-						'description' => $item->description,
-						'color' => $item->color,
-						'size' => $item->size,
-						'price' => $item->sale_retail,
-						'quantity' => $item->quantity
-					);
-					break;
-				}
-			}
-		}
-		$cart->each(function($item) use (&$amount) { $amount += $item->sale_retail; });
+		$subTotal = array_sum($cart->map(function($item) { return $item->sale_retail; })->data());
+		$handling = Cart::shipping($cart, $shipping);
+		$tax = array_sum($cart->tax($shipping));
+		$total = $subTotal + $tax + $handling;
 
-		// @todo Tax-calculation rules go here.
-		$transaction->key = Payments::process('default', $amount, $card);
-		$transaction->manifest = array_values($manifest);
-		return $transaction->save();
+		return $transaction->save(compact('total', 'subTotal') + array(
+			'authKey' => Payments::authorize('default', $total, $card),
+			'billing' => $billing->data(),
+			'shipping' => $shipping->data(),
+			'shippingMethod' => $data['shipping_method'],
+			'giftMessage' => $data['gift-message'],
+			'items' => $cart->data()
+		));
 	}
 }
 

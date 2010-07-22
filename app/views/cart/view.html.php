@@ -61,7 +61,7 @@
 					</td>
 					<td class="cart-time"><div id="<?php echo "itemCounter$x"; ?>"</div></td>
 					<td class="cart-actions">
-						<a href="#" id="<?="remove$item->_id"?>" title="Remove from your cart" class="delete">delete</a>
+						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" class="delete">delete</a>
 					</td>
 				</tr>
 				<?php
@@ -83,7 +83,7 @@
 					$removeButtons[] = "<script type=\"text/javascript\" charset=\"utf-8\">
 							$('#remove$item->_id').click(function () { 
 								$('#$item->_id').remove();
-								$.ajax({url: \"/cart/remove\", data:'$item->_id', context: document.body, success: function(data){
+								$.ajax({url: $.base + \"/cart/remove\", data:'$item->_id', context: document.body, success: function(data){
 								      }});
 							    });
 						</script>";
@@ -141,24 +141,32 @@ $(".inputbox").change(function() {
 	var qty = $(this).val();
 	var price = $(this).closest("tr").find("td[class^=price]").html().split("$")[1];
 	var cost = parseInt(qty) * parseFloat(price);
+
 	var itemCost = $().number_format(cost, {
-		     numberOfDecimals:2,
-		     decimalSeparator: '.',
-		     thousandSeparator: ','
+		numberOfDecimals: 2,
+		decimalSeparator: '.',
+		thousandSeparator: ','
 	});
+
 	$(this).closest("tr").find("td[class^=total]").html("<strong>$" + itemCost + "</strong>");
 	var subTotal = 0;
+
 	$("td[class^=total]").each(function() {
 	    subTotal += parseFloat($(this).html().split("$")[1]);
 	});
+
 	var subTotalProper = $().number_format(subTotal, {
-			numberOfDecimals:2,
-			decimalSeparator: '.',
-			thousandSeparator: ','
+		numberOfDecimals: 2,
+		decimalSeparator: '.',
+		thousandSeparator: ','
 	});
 
-	$.ajax({url: '/cart/update', data: "_id="+id+"&"+"qty="+qty, context: document.body, success: function(data){
-	      }});
+	$.ajax({
+		url: $.base + '/cart/update',
+		data: "_id=" + id + "&" + "qty=" + qty,
+		context: document.body,
+		success: function(data) {}
+	});
 	$("#subtotal").html("<strong>Subtotal: $" + subTotalProper + "</strong>");
 });
 </script>

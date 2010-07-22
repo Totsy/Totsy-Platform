@@ -57,6 +57,7 @@ Router::connect('/account/add/{:args}', 'Account::add');
 
 Router::connect('/help', 'Tickets::add');
 Router::connect('/shopping/cart', 'Cart::index');
+Router::connect('/shopping/checkout.{:type}', 'Transactions::add');
 Router::connect('/shopping/checkout', 'Transactions::add');
 
 /**

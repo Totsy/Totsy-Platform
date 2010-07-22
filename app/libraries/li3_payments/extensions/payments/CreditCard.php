@@ -74,6 +74,14 @@ class CreditCard extends \li3_payments\extensions\PaymentObject {
 		parent::__construct($config + $defaults);
 	}
 
+	public function data() {
+		$result = array();
+		foreach (array('key', 'type', 'number', 'name', 'month', 'year', 'code') as $key) {
+			$result[$key] = $this->{$key};
+		}
+		return $result;
+	}
+
 	protected function _init() {
 		parent::_init();
 		$validator = $this->_classes['validator'];

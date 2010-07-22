@@ -1,3 +1,4 @@
+<?php use lithium\net\http\Router; ?>
 <!doctype html>
 <html>
 <head>
@@ -12,6 +13,7 @@
 	<?=$this->html->link('Icon', null, array('type' => 'icon')); ?>
 
 	<script type="text/javascript">
+		$.base = '<?=rtrim(Router::match("/", $this->_request)); ?>';
 	  var _gaq = _gaq || [];
 	  _gaq.push(['_setAccount', 'UA-675412-15']);
 	  _gaq.push(['_trackPageview']);
@@ -23,10 +25,6 @@
 	  })();
 	</script>
 </head>
-
-<?php
-	$bottomMenu = $this->menu->render('bottom', array('ul' => array('class' => 'menu')));
-?>
 
 <body class="app">
 	<div id="topper"></div>	
@@ -74,11 +72,11 @@
 		</div>
 	</div>
 	<div id="botter"></div>
-	<div id="footer"><?php echo $bottomMenu; ?></div>
+	<div id="footer"><?=$this->menu->render('bottom'); ?></div>
 	<div id='cart-modal'></div>
 	<script type="text/javascript">
 	$("#cart").click(function() {
-		$("#cart-modal").load('/cart/view').dialog({
+		$("#cart-modal").load($.base + '/cart/view').dialog({
 			autoOpen: false,
 			modal:true,
 			width: 900,
@@ -86,7 +84,6 @@
 			close: function(ev, ui) {}
 		});
 		$("#cart-modal").dialog('open');
-
 	});
 	</script>
 	</body>	
