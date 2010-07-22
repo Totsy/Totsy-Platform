@@ -93,7 +93,6 @@ class CartController extends BaseController {
 				'conditions' => array(
 					'_id' => $data['_id']
 			)));
-			$cart->quantity = $data['qty'];
 			$diff = $data['qty'] - $cart->quantity;
 			if ($cart->save()) {
 				$sucess = true;
