@@ -35,7 +35,8 @@ class Cart extends \lithium\data\Model {
 		$fields = $params['fields'];
 		return static::all(array(
 			'conditions' => array(
-				'session' => Session::key()),
+				'session' => Session::key(),
+				'expires' => array('$gt' => static::dates('now'))),
 			'fields' => $fields,
 			'order' => array('expires' => 'ASC') 
 		));
