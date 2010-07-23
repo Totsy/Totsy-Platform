@@ -41,7 +41,7 @@ class Mailer {
 		$message = Swift_Message::newInstance($transport);
 		$message->setFrom(array('noreply@totsy.com' => 'Totsy'));
 		$message->setSubject($subject);
-		die(var_dump(array("<{$to['email']}>" => "{$to['name']}")));
+		die(var_dump($to, array("<{$to['email']}>" => "{$to['name']}")));
 		$message->setTo(array("<{$to['email']}>" => "{$to['name']}"));
 		$message->setBody(static::_view()->render('all', $data, compact('template')));
 		
