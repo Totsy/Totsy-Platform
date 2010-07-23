@@ -23,16 +23,16 @@
 				<tr>
 					<!-- Remember to add absolute file paths to all images for production -->
 					<td width="180">
-						<a href="#" title="Totsy.com"><img src="../../img/email/email-logo.jpg" alt="Totsy" width="180" height="116" /></a>
+						<a href="#" title="Totsy.com"><img src="<?=$this->domain?>/img/email/email-logo.jpg" alt="Totsy" width="180" height="116" /></a>
 					</td>
 					<td width="65">
-						<a href="#" title="Current Totsy Sales"><img src="../../img/email/sales-btn.jpg" alt="Current Totsy Sales" width="65" height="116" /></a>
+						<a href="#" title="Current Totsy Sales"><img src="<?=$this->domain?>/img/email/sales-btn.jpg" alt="Current Totsy Sales" width="65" height="116" /></a>
 					</td>
 					<td width="111">
-						<a href="#" title="Access My Account"><img src="../../img/email/account-btn.jpg" alt="Access My Account" width="111" height="116" /></a>
+						<a href="#" title="Access My Account"><img src="<?=$this->domain?>/img/email/account-btn.jpg" alt="Access My Account" width="111" height="116" /></a>
 					</td>
 					<td width="236">
-						<a href="#" title="Invite Friends to Totsy"><img src="../../img/email/invite-btn.jpg" alt="Invite Friends to Totsy" width="236" height="116" /></a>
+						<a href="#" title="Invite Friends to Totsy"><img src="<?=$this->domain?>/img/email/invite-btn.jpg" alt="Invite Friends to Totsy" width="236" height="116" /></a>
 					</td>
 				</tr>
 				<tr>
@@ -41,14 +41,14 @@
 						
 						<tr>
 							<td colspan="4" style="padding:0 10px 10px 10px">
-								<img src="../../img/email/password-main-picture.jpg" alt="password-main-picture" width="570" height="177" />
+								<img src="<?=$this->domain?>/img/email/password-main-picture.jpg" alt="password-main-picture" width="570" height="177" />
 							</td>
 						</tr>
 						
 						<tr>	
 							<td style="padding:20px" valign="top">
-								<p>Dear <?=$data['firstname']." ".$data['lastname'];?>,</p>
-								<p>We understand that you are having some difficulty logging into your Totsy account. We've created a temporary password for you which is <?=$data['reset_token']?><strong>.</p>
+								<p>Dear <?=$this['firstname']." ".$this['lastname'];?>,</p>
+								<p>We understand that you are having some difficulty logging into your Totsy account. We've created a temporary password for you which is <?=$this['reset_token']?><strong>.</p>
 								<p>To login with your temporary password and assign a new one that is easy for you to remember, please <a href="http://test.totsy.com/login" title="Totsy Login" style="color:#E00000">visit our login page</a>.
 								<p>Our customer service team is also available to answer any questions. If you are still experiencing problems accessing Totsy.com after you have reset your password, please contact us at <a href="mailto:support@totsy.com" title="Totsy Support Address" style="color:#E00000">support@totsy.com</a> with the following information:</p>
 								
@@ -67,7 +67,7 @@
 				</tr>	
 				<tr>
 					<td colspan="4" style="">
-						<img src="../../img/email/footer-image.jpg" alt="footer-image" width="592" height="150" />
+						<img src="<?=$this->domain?>img/email/footer-image.jpg" alt="footer-image" width="592" height="150" />
 					</td>
 				</tr>
 				<tr>
