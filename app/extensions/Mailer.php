@@ -36,7 +36,7 @@ class Mailer {
 			->setPassword($config['mail']['password'])
 			->setPort($config['mail']['port'])
 			;
-		$data['domain'] = $config['domain'];
+		$data['domain'] = $config['mail']['domain'];
 		// make a message
 		$message = Swift_Message::newInstance($transport);
 		$message->setFrom(array('noreply@totsy.com' => 'Totsy'));
