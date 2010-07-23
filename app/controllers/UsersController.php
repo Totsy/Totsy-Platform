@@ -146,7 +146,7 @@ class UsersController extends BaseController {
 			}
 			if ($status == 'true') {
 				$user->password = sha1($newPass);
-				$user->legacy == false;
+				$user->legacy = false;
 				if (!empty($user->reset_token)) {
 					$user->reset_token = null;
 				}
@@ -178,7 +178,7 @@ class UsersController extends BaseController {
 				if ($user->save($data)) {
 					Mailer::send(
 						'password',
-						'Welcome to Totsy!',
+						'Totsy Password Reset',
 						array('name' => $user->firstname, 'email' => $user->email),
 						compact('token', 'user')
 					);
