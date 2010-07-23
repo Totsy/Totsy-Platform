@@ -1,5 +1,5 @@
 <div id="middle" class="fullwidth">
-	<h1 class="page-title gray"><span class="red">Today's <span class="bold caps">Sales</span></span></h1>
+	<h1 class="page-title gray"><span class="red">Today's Sales</span></h1>
 	<?php $x = 0; ?>
 	<?php $y = 0; ?>
 	<?php foreach ($openEvents as $event): ?>
@@ -30,24 +30,28 @@
 						}
 					?>
 					<?php if ($x <= 1): ?>
-						<?=$this->html->image("$productImage", array(
+						<?=$this->html->link(
+							$this->html->image("$productImage", array(
 							'title' => "Product Title",
 							'alt' => "Product Alt Text",
 							'width' => '355',
 							'height' => '410'
-						)); ?>
-					<?php else: ?>
-						<?=$this->html->image("$productImage", array(
+							)),array('Events::view', 'args' => array($event->url)), array('escape'=> false));
+						?>
+					<?php else: ?>				
+						<?=$this->html->link(
+							$this->html->image("$productImage", array(
 							'title' => "Product Title",
 							'alt' => "Product Alt Text",
 							'width' => '298',
 							'height' => '298'
-						)); ?>
+						)),array('Events::view', 'args' => array($event->url)), array('escape'=> false));
+						 ?>
 					<?php endif ?>
 					<div class="splash-details">
 						<div class="table-cell left">
-							Event Ends In<br>
-							<strong><div id="<?php echo "todaysplash$x"; ?>"></div></strong>
+							<?php echo $event->name; ?>
+							<div id="<?php echo "todaysplash$x"; ?>"></div>
 						</div>
 
 						<div class="table-cell right">
@@ -66,7 +70,7 @@
 				$(function () {
 					var saleEnd = new Date();
 					saleEnd = new Date($date);
-					$(\"$splashid\").countdown({until: saleEnd, layout: '{dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+					$(\"$splashid\").countdown({until: saleEnd, layout: 'Closes in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
 				});</script>";
 		?>
 			<?php if ($x == 1): ?>
@@ -83,7 +87,7 @@
 						<div class="hor-div-line"><!-- --></div>
 
 						<h2 class="socialize-us">Socialize With Us</h2>
-
+						<br><br>
 						<div class="sm-icons">
 							<a href="http://facebook.com" title="Friend us on Facebook" class="sm-btn sm-facebook-md">Friend us on Facebook</a>
 							<a href="http://twitter.com" title="Follow us on Twitter" class="sm-btn sm-twitter-md">Follow us on Twitter</a>
@@ -122,12 +126,14 @@
 								$productImage = "/img/no-image-small.jpeg";
 							}
 						?>
-						<?=$this->html->image("$productImage", array(
+						<?=$this->html->link(
+						$this->html->image("$productImage", array(
 							'title' => "Product Title", 
 							'alt' => "Product Alt Text", 
 							'width' => '298', 
 							'height' => '298'
-						)); ?>
+						)),array('Events::view', 'args' => array($event->url)), array('escape'=> false));
+						 ?>
 
 						<div class="splash-details">
 							<div class="table-cell left">
@@ -136,7 +142,7 @@
 							</div>
 
 							<div class="table-cell right">
-								<?=$this->html->link('Go', array(
+								<?=$this->html->link('Preview', array(
 									'Events::view',
 									'args' => array($event->url)),
 									array('class' => 'flex-btn')

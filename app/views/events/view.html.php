@@ -6,7 +6,7 @@
 
 	<div id="middle" class="fullwidth">				
 		
-		<h1 class="page-title gray"><span class="red"><?=$type?> <span class="bold caps">Sales</span> /</span><?=$event->name; ?></h1>
+		<h1 class="page-title gray"><span class="red"><?=$type?> Sales /</span> <?=$event->name; ?> <div id="listingCountdown" class="listingCountdown"></div></h1>
 		
 		<div class="sm-actions fr">
 			<dl>
@@ -50,8 +50,8 @@
 							<img src="/image/<?=$event->images->logo_image?>.gif" alt="Logo ALT Tag" title="Logo ALT Tag" width="148" height="52" />
 						<?php endif ?>
 						<div class="title table-cell v-bottom">
-							<h1> <?=$event->name; ?> </h1>
-							<strong class="red"><div id="listingCountdown"></div></strong>
+							<!--  h1> <? //=$event->name; ?> </h1 -->
+							<div id="listingCountdown"></div>
 						</div>
 					</div>
 					<p><?php if (!empty($event->blurb)): ?>
@@ -63,9 +63,9 @@
 			<div class="bl"></div>
 			<div class="br"></div>
 		</div>
-
-			<div class="sort-by">
-			<select id="by-category" name="by-category">
+			<div>
+			<!-- div class="sort-by" -->
+			<!-- select id="by-category" name="by-category">
 				<option value="">View By Category</option>
 				<option value="Strollers">Strollers</option>
 				<option value="Accessories">Accessories</option>
@@ -76,8 +76,8 @@
 				<option value="Small">Small</option>
 				<option value="Medium">Medium</option>
 				<option value="Large">Large</option>
-			</select>
-		
+			</select -->
+		<br>
 		</div>
 		<?php if (!empty($items)): ?>
 			<?php $y = 0; ?>
@@ -139,6 +139,6 @@
 $(function () {
 	var saleEnd = new Date();
 	saleEnd = new Date(<?php echo $event->end_date->sec * 1000?>);
-	$('#listingCountdown').countdown({until: saleEnd, layout:'SALE ENDS in {dn} {dl} {hn} {hl} and {mn} {ml}'});
+	$('#listingCountdown').countdown({until: saleEnd, layout: 'Closes in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
 });
 </script>

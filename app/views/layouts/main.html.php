@@ -38,7 +38,7 @@
 				); ?>
 			</div>
 			<div id="header-mid">
-				<?=$this->html->link('At Your Service', '', array('id' => 'cs')); ?>
+				<?=$this->html->link('Help Desk', '', array('id' => 'cs')); ?>
 				<div id="welcome">
 					<strong>Hello!</strong>
 					<?php if(isset($userInfo['firstname'])) { ?>
