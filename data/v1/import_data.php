@@ -7,9 +7,9 @@
 * There are other things you must do FIRST in order for
 * this script to work:
 * 
-* 1: psql -A -d totsy -f export_customers.sql -o customers.csv -F ","
+* 1: psql -Aqt -d totsy -f export_customers.sql -o customers.csv -F ","
 * 2: delete all duplicate entries and add to ../redirects.txt
-* 3: mongoimport -d totsytest -c users --drop --headerline --type csv --file customers.csv
+* 3: mongoimport -d totsytest -c users --drop --fieldFile customer_fields.txt --type csv --file customers.csv
 * 4: php -f import_data.php
 * 
 **/
@@ -40,7 +40,7 @@ $mongousers = $mongoconn->$mongodbname->users;
 /////////////////////////////////////////////////////////////
 
 // get cursor of user ids for all this nonsense
-$users = $mongousers->find();
+$users = $mongousers->find()->limit(2);
 
 // reset cursor, just in case
 $users->rewind();
@@ -76,12 +76,47 @@ foreach($users AS $user){
 	// fetch invitations
 	//
 	$invitation_code_ids = implode( ', ', $ids);
-	$invitessql = 'select created_at AS "date", invitee_email AS "email" from invitations where invitation_token_id IN ('.$invitation_code_ids.')';
+	$invitessql = 'select created_at AS "date", invitee_email AS "email", invited_customer_id from invitations where invitation_token_id IN ('.$invitation_code_ids.')';
+	$result1 = pg_query($pg, $invitessql);
+	if (!$result1) {
+	  echo "An error occurred - no invitations for this account (#".$user['id'].").\n";
+	  exit;
+	}
+	$invitations = pg_fetch_all($result1);
+	foreach($invitations AS $invitation){
+		if($invitation['invited_customer_id'] == $user['_id']){
+			$invitation['status'] = 'Ignored';
+		}elseif($invitation['invited_customer_id'] == ''){
+			$invitation['status'] = 'Sent';
+		}else{
+			$invitation['status'] = 'Accepted';
+			//unset($invitation['invited_customer_id']);
+		}
+		$array_invitations[] = $invitation;
+	}
+	$user['invitations'] = $array_invitations;
+		
+	//
+	// DEBUGGING OUTPUT
+	//
 	var_dump( $user );
-	unset($codes, $ids);
-	pg_free_result($result);
 	echo "\n\n////////////////////////////////////////////////////////////////////////////\n\n";
+
+	//
 	// update the user with an UPSERT
+	//
+	$mongousers->update(
+	        array('_id' => $user['_id']),
+	        array('$set' => $user),
+	        array("upsert" => true)
+	        );
+	
+	//
+	// clear everything for the next user document
+	unset($codes, $ids, $array_invitations);
+	pg_free_result($result);
+	pg_free_result($result1);
+
 }
 
 
