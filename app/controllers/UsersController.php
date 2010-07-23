@@ -70,27 +70,29 @@ class UsersController extends BaseController {
 			//Grab User Record
 			$user = User::lookup($username);
 			if($user){
-				if($user->legacy == 1) {
-					$successAuth = $this->authIllogic($password, $user);
-					if ($successAuth) {
+				if ($user->legacy == 1) {
+					$auth = $this->authIllogic($password, $user);
+					if ($auth == true) {
 						//Write core information to the session and redirect user
 						$sessionWrite = $this->writeSession($user->data());
-						$this->redirect('/');
-					} else {
-						$message = 'Login Failed - Please Try Again';
 					}
 				} else {
+					// Try non-legacy user
 					$auth = Auth::check("userLogin", $this->request);
-					if ($auth == false) {
-						$message = 'Login Failed - Please Try Again';
-					} else {
-						$this->redirect('/');
-					}
+				}
+				if (!empty($user->reset_token)) {
+					$auth = (sha1($password) == $user->reset_token) ? true : false;
+					$sessionWrite = $this->writeSession($user->data());
+					$this->redirect('account/info');
+				}
+				if ($auth) {
+					$ipaddress = $this->request->env('REMOTE_ADDR');
+					User::log($ipaddress);
+					$this->redirect('/');
+				} else {
+					$message = 'Login Failed - Please Try Again';
 				}
 			}
-			/*
-				TODO Update the lastlogin time, ip address, and login counter
-			*/
 		}
 		//new login layout to account for fullscreen image JL
 		$this->_render['layout'] = 'login';
@@ -157,18 +159,18 @@ class UsersController extends BaseController {
 	}
 
 	public function reset() {
-		$this->render(array('layout' => false));
+		$this->_render['layout'] = 'login';
 		if ($this->request->data) {
 			$user = User::find('first', array(
 				'conditions' => array(
 					'email' => $this->request->data['email']
 			)));
 			if ($user) {
-				$clearText = $this->generatePassword();
-				$password = sha1($clearText);
-				$lastip = $this->request->env('REMOTE_ADDR');
-				if ($user = User::process($user, $password, $lastip)) {
-					die(var_dump($user,$clearText));
+				$token = $this->generateToken();
+				$hash = sha1($token);
+				$data = array('reset_token' => $hash);
+				if ($user->save($data)) {
+					die(var_dump($user->data(),$clearText));
 					Mailer::send(
 						'welcome',
 						'Welcome to Totsy!',
@@ -186,17 +188,24 @@ class UsersController extends BaseController {
 		return compact("message");
 	}
 
-	protected function generatePassword() {
+	protected function generateToken() {
         return substr(md5(uniqid(rand(),1)), 1, 10);
     }
 
 	public function invite() {
 		$to = array();
+		$user = User::getUser();
 		if ($this->request->data) {
 			$rawto = explode(',',$this->request->data['to']);
 			foreach ($rawto as $key => $value) {
 				$to[] = trim($value);
 			}
+			Mailer::send(
+				'welcome',
+				'Welcome to Totsy!',
+				array('name' => $user->firstname, 'email' => $user->email),
+				compact('user')
+			);
 			$message = $this->request->data['message'];
 			if(User::invite($to, $message)){
 				$flashMessage = "Your invitations have been sent";
