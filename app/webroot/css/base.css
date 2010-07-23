@@ -631,3 +631,4 @@ body.login .login-sig{text-align:center}
 .reg-tos{display:block;float:left;width:350px;line-height:normal;margin-right:30px}
 
 #empty-cart{position:absolute;top:220px; left:320px;}
+.checkout-error{-moz-border-radius:10px;-webkit-border-radius:10px; border-radius: 10px; border: 1px solid #AA0033; padding: 7px; background: #EECCCC; font-weight: bold; color: #000000;}

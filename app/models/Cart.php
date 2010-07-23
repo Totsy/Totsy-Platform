@@ -8,6 +8,8 @@ use MongoDate;
 
 class Cart extends \lithium\data\Model {
 
+	const TAX_RATE = 0.08875;
+
 	public $validates = array();
 	
 	protected $_dates = array(
@@ -86,7 +88,7 @@ class Cart extends \lithium\data\Model {
 		if ($taxExempt) {
 			return 0;
 		}
-		return $cart->sale_retail * 0.08875;
+		return $cart->sale_retail * static::TAX_RATE;
 	}
 
 	public function weight($cart) {

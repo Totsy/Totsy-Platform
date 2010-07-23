@@ -3,6 +3,7 @@
 namespace app\models;
 
 use li3_payments\extensions\Payments;
+use li3_payments\extensions\payments\exceptions\TransactionException;
 
 class Transaction extends \lithium\data\Model {
 
@@ -32,16 +33,25 @@ class Transaction extends \lithium\data\Model {
 		$subTotal = array_sum($cart->map(function($item) { return $item->sale_retail; })->data());
 		$handling = Cart::shipping($cart, $shipping);
 		$tax = array_sum($cart->tax($shipping));
+
+		if ($tax && $handling) {
+			$tax += ($handling * Cart::TAX_RATE);
+		}
 		$total = $subTotal + $tax + $handling;
 
-		return $transaction->save(compact('total', 'subTotal') + array(
-			'authKey' => Payments::authorize('default', $total, $card),
-			'billing' => $billing->data(),
-			'shipping' => $shipping->data(),
-			'shippingMethod' => $data['shipping_method'],
-			'giftMessage' => $data['gift-message'],
-			'items' => $cart->data()
-		));
+		try {
+			return $transaction->save(compact('total', 'subTotal') + array(
+				'authKey' => Payments::authorize('default', $total, $card),
+				'billing' => $billing->data(),
+				'shipping' => $shipping->data(),
+				'shippingMethod' => $data['shipping_method'],
+				'giftMessage' => $data['gift-message'],
+				'items' => $cart->data()
+			));
+		} catch (TransactionException $e) {
+			$transaction->errors(array($e->getMessage()));
+		}
+		return false;
 	}
 }
 

@@ -60,7 +60,7 @@ $image = $images[array_rand($images)];
 						<div class="r-box lt-gradient-1">
 							<h2>Member Sign In</h2>
 							
-							<?=$this->form->create(null,array('id'=>'loginForm'));?>
+							<?=$this->form->create(null,array('url' => '/login', 'id'=>'loginForm'));?>
 							<?=$this->form->field('username', array('class'=>"validate['required']  inputbox", 'id'=>"username"));?>
 							<?=$this->form->field('password', array(
 									'class'=>"validate['required'] inputbox", 

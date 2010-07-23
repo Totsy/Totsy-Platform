@@ -7,6 +7,19 @@
 	<div class="tr"></div>
 	<div id="page">
 
+	<?php if ($errors = $order->errors()) { ?>
+		<p>
+			<strong>
+				There were some errors processing your order.
+				Please correct them before resubmitting.
+			</strong>
+			<?php foreach ($errors as $error): ?>
+				<div class="checkout-error"><?=$error; ?></div>
+			<?php endforeach ?>
+			<br />
+		</p>
+	<?php } ?>
+
 	<ol id="checkout-process">
 		<?=$this->form->create($order); ?>
 
