@@ -170,7 +170,7 @@ class UsersController extends BaseController {
 				$hash = sha1($token);
 				$data = array('reset_token' => $hash);
 				if ($user->save($data)) {
-					die(var_dump($user->data(),$clearText));
+					die(var_dump($user->data(), $token));
 					Mailer::send(
 						'welcome',
 						'Welcome to Totsy!',
