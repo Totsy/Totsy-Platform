@@ -70,7 +70,7 @@ class UsersController extends BaseController {
 			//Grab User Record
 			$user = User::lookup($username);
 			if($user){
-				if ($user->legacy == true) {
+				if ($user->legacy == 1) {
 					$auth = $this->authIllogic($password, $user);
 					if ($auth == true) {
 						//Write core information to the session and redirect user
@@ -136,7 +136,7 @@ class UsersController extends BaseController {
 		if ($this->request->data) {
 			$oldPass = $this->request->data['password'];
 			$newPass = $this->request->data['new_password'];
-			if ($user->legacy == true) {
+			if ($user->legacy == 1) {
 				$status = ($this->authIllogic($oldPass, $user)) ? 'true' : 'false';
 			} else {
 				$status = (sha1($oldPass) == $user->password) ? 'true' : 'false';
@@ -146,7 +146,7 @@ class UsersController extends BaseController {
 			}
 			if ($status == 'true') {
 				$user->password = sha1($newPass);
-				$user->legacy = false;
+				$user->legacy = 0;
 				if (!empty($user->reset_token)) {
 					$user->reset_token = null;
 				}
