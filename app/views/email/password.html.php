@@ -21,7 +21,7 @@
 				</tr>
 				<tr>
 					<td width="180">
-						<?php echo $this->html->link(
+						<?=$this->html->link(
 							$this->html->image(
 								"$data[domain]/img/email/email-logo.jpg",
 								array(
@@ -30,13 +30,14 @@
 								)),
 								'',
 								array(
-									'id' => 'Totsy'
+									'id' => 'Totsy',
+									'escape'=> false
 								)
 							);
 						?>
 					</td>
 					<td width="65">
-						<?php echo $this->html->link(
+						<?=$this->html->link(
 							$this->html->image(
 								"$data[domain]/img/email/sales-btn.jpg",
 								array(
@@ -46,13 +47,14 @@
 								)),
 								"$data[domain]/sales", 
 								array(
-									'id' => 'Totsy'
+									'id' => 'Totsy',
+									'escape'=> false
 								)
 							);
 						?>
 					</td>
 					<td width="111">
-						<?php echo $this->html->link(
+						<?=$this->html->link(
 							$this->html->image(
 								"$data[domain]/img/email/account-btn.jpg",
 								array(
@@ -62,7 +64,10 @@
 									'alt' => 'Access My Account'
 								)),
 								"$data[domain]/sales",
-								array('id' => 'Totsy', 'escape'=> false)
+								array(
+									'id' => 'Totsy', 
+									'escape'=> false
+								)
 							);
 						?>
 					</td>

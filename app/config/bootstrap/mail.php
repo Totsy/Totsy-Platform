@@ -8,7 +8,7 @@ Environment::set('test', array(
 		'port'  => 25,
 		'username'  => 'mitchy',
 		'password'  => '413118BI',
-		'domain' => 'totsy.com'
+		'domain' => 'test.totsy.com'
 	)
 ));
 Environment::set('staging', array(
@@ -19,6 +19,15 @@ Environment::set('staging', array(
 Environment::set('development', array(
 	'mail' => array(
 	
+	)
+));
+Environment::set('production', array(
+	'mail' => array(
+		'host'  => 'relay.jangosmtp.net',
+		'port'  => 25,
+		'username'  => 'mitchy',
+		'password'  => '413118BI',
+		'domain' => 'totsy.com'
 	)
 ));
 
