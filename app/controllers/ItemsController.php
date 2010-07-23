@@ -14,18 +14,22 @@ class ItemsController extends BaseController {
 	}
 
 	public function view($url = null) {
-		$conditions = array('enabled' => true) + compact('url');
-		$item = Item::first(compact('conditions'));
 
-		if (!$item) {
-			// @todo: Handle error!
+		if ($url == null) {
+			$this->redirect('/');
+		} else {
+			$conditions = array('enabled' => true) + compact('url');
+			$item = Item::first(compact('conditions'));
+			if (!$item) {
+				$this->redirect('/');
+			} else {
+				$event = $item->event();
+				$related = $item->related();
+				$sizes = $item->sizes();
+				$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+			}
 		}
 
-		$event = $item->event();
-		$related = $item->related();
-		$sizes = $item->sizes();
-
-		$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 		return compact('item', 'event', 'related', 'sizes', 'shareurl');
 	}
 
