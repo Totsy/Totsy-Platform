@@ -1,0 +1,15 @@
+_id
+firstname
+lastname
+affiliate
+username
+email
+legacy
+password
+salt
+created
+updated
+lastlogin
+lastip
+logincounter
+active
