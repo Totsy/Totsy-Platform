@@ -21,7 +21,7 @@
 				</tr>
 				<tr>
 					<td width="180">
-						<?=$this->html->link(
+						<?php echo $this->html->link(
 							$this->html->image(
 								"$data[domain]/img/email/email-logo.jpg",
 								array(
@@ -30,14 +30,13 @@
 								)),
 								'',
 								array(
-									'id' => 'Totsy',
-									'escape'=> false
+									'id' => 'Totsy'
 								)
 							);
 						?>
 					</td>
 					<td width="65">
-						<?=$this->html->link(
+						<?php echo $this->html->link(
 							$this->html->image(
 								"$data[domain]/img/email/sales-btn.jpg",
 								array(
@@ -46,12 +45,14 @@
 									'title' => 'Current Totsy Sales'
 								)),
 								"$data[domain]/sales", 
-								array('id' => 'Totsy', 'escape'=> false)
+								array(
+									'id' => 'Totsy'
+								)
 							);
 						?>
 					</td>
 					<td width="111">
-						<?=$this->html->link(
+						<?php echo $this->html->link(
 							$this->html->image(
 								"$data[domain]/img/email/account-btn.jpg",
 								array(
@@ -66,7 +67,7 @@
 						?>
 					</td>
 					<td width="236">
-						<?=$this->html->link(
+						<?php echo $this->html->link(
 							$this->html->image(
 								"$data[domain]/img/email/invite-btn.jpg",
 								array(
@@ -90,7 +91,7 @@
 						
 						<tr>
 							<td colspan="4" style="padding:0 10px 10px 10px">
-								<?=$this->html->image(
+								<?php echo $this->html->image(
 									"$data[domain]/img/email/password-main-picture.jpg",
 									array(
 										'width'=>'570',
@@ -123,7 +124,7 @@
 				</tr>	
 				<tr>
 					<td colspan="4" style="">
-						<?=$this->html->image(
+						<?php echo $this->html->image(
 							"$data[domain]/img/email/footer-image.jpg",
 							array(
 								'width'=>'592',
