@@ -69,7 +69,7 @@ $image = $images[array_rand($images)];
 									'type' => 'password'));?>
 							<?=$this->form->field('remember', array('id'=>"remember", 'type'=>"checkbox", 'class'=>"fl checkbox"));?>
 							
-							<?=$this->html->link('Forgot your password?','/remind', array('class'=>"md", 'title'=>"Forgot your password?"))?>
+							<?=$this->html->link('Forgot your password?','/reset', array('class'=>"md", 'title'=>"Forgot your password?"))?>
 							<br />
 							<?=$this->form->submit('Login', array('class'=>"flex-btn-2"));?>
 							<?=$this->form->end();?>
