@@ -36,7 +36,7 @@ class Mailer {
 			->setPassword($config['mail']['password'])
 			->setPort($config['mail']['port'])
 			;
-		$data['domain'] = $config['mail']['domain'];
+		$data['domain'] = "http://".$config['mail']['domain'];
 		// make a message
 		$message = Swift_Message::newInstance($transport);
 		$message->setFrom(array('noreply@totsy.com' => 'Totsy'));
@@ -44,7 +44,6 @@ class Mailer {
 		$message->setTo(array($to['email'] => $to['name']));
 		$message->setContentType("text/html");
 		$message->setBody(static::_view()->render('all', $data, compact('template')));
-		
 		//Create the Mailer using your created Transport
 		$mailer = Swift_Mailer::newInstance($transport);
 		

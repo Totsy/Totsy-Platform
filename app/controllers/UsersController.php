@@ -180,7 +180,7 @@ class UsersController extends BaseController {
 						'password',
 						'Welcome to Totsy!',
 						array('name' => $user->firstname, 'email' => $user->email),
-						compact('user')
+						compact('token', 'user')
 					);
 					$message = "Your password has been reset. Please check your email";
 				} else {
