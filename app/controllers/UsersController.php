@@ -176,9 +176,8 @@ class UsersController extends BaseController {
 				$hash = sha1($token);
 				$data = array('reset_token' => $hash);
 				if ($user->save($data)) {
-					die(var_dump($user->data(), $token));
 					Mailer::send(
-						'welcome',
+						'password',
 						'Welcome to Totsy!',
 						array('name' => $user->firstname, 'email' => $user->email),
 						compact('user')

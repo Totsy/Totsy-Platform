@@ -41,7 +41,8 @@ class Mailer {
 		$message = Swift_Message::newInstance($transport);
 		$message->setFrom(array('noreply@totsy.com' => 'Totsy'));
 		$message->setSubject($subject);
-		$message->setTo(array("<{$to['email']}>" => "{$to['name']}"));
+		$message->setTo(array($to['email'] => $to['name']));
+		$message->setContentType("text/html");
 		$message->setBody(static::_view()->render('all', $data, compact('template')));
 		
 		//Create the Mailer using your created Transport
