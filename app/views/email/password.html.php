@@ -3,7 +3,6 @@
 
 <html>
 <body>
-
 	<style type="text/css">
 	
 		td{font-family:Arial,sans-serif;color:#888888;font-size:14px;line-height:18px}
@@ -21,18 +20,69 @@
 					</td>
 				</tr>
 				<tr>
-					<!-- Remember to add absolute file paths to all images for production -->
 					<td width="180">
-						<a href="#" title="Totsy.com"><img src="../../img/email/email-logo.jpg" alt="Totsy" width="180" height="116" /></a>
+						<?php echo $this->html->link(
+							$this->html->image(
+								"$data[domain]/img/email/email-logo.jpg",
+								array(
+									'width'=>'180',
+									'height'=>'116'
+								)),
+								'',
+								array(
+									'id' => 'Totsy'
+								)
+							);
+						?>
 					</td>
 					<td width="65">
-						<a href="#" title="Current Totsy Sales"><img src="../../img/email/sales-btn.jpg" alt="Current Totsy Sales" width="65" height="116" /></a>
+						<?php echo $this->html->link(
+							$this->html->image(
+								"$data[domain]/img/email/sales-btn.jpg",
+								array(
+									'width'=>'65',
+									'height'=>'116',
+									'title' => 'Current Totsy Sales'
+								)),
+								"$data[domain]/sales", 
+								array(
+									'id' => 'Totsy'
+								)
+							);
+						?>
 					</td>
 					<td width="111">
-						<a href="#" title="Access My Account"><img src="../../img/email/account-btn.jpg" alt="Access My Account" width="111" height="116" /></a>
+						<?php echo $this->html->link(
+							$this->html->image(
+								"$data[domain]/img/email/account-btn.jpg",
+								array(
+									'width'=>'111',
+									'height'=>'116',
+									'title' => 'Access My Account',
+									'alt' => 'Access My Account'
+								)),
+								"$data[domain]/sales",
+								array('id' => 'Totsy', 'escape'=> false)
+							);
+						?>
 					</td>
 					<td width="236">
-						<a href="#" title="Invite Friends to Totsy"><img src="../../img/email/invite-btn.jpg" alt="Invite Friends to Totsy" width="236" height="116" /></a>
+						<?php echo $this->html->link(
+							$this->html->image(
+								"$data[domain]/img/email/invite-btn.jpg",
+								array(
+									'width'=>'236',
+									'height'=>'116',
+									'alt' => 'Invite Friends to Totsy'
+								)),
+								"$data[domain]/sales", 
+								array(
+									'id' => 'Totsy',
+									'escape'=> false,
+									'title' => 'Invite Friends to Totsy'
+								)
+							);
+						?>
 					</td>
 				</tr>
 				<tr>
@@ -41,14 +91,21 @@
 						
 						<tr>
 							<td colspan="4" style="padding:0 10px 10px 10px">
-								<img src="../../img/email/password-main-picture.jpg" alt="password-main-picture" width="570" height="177" />
+								<?php echo $this->html->image(
+									"$data[domain]/img/email/password-main-picture.jpg",
+									array(
+										'width'=>'570',
+										'height'=>'177',
+										'alt' => 'Totsy'
+									));
+								?>
 							</td>
 						</tr>
 						
-						<tr>	
+						<tr>
 							<td style="padding:20px" valign="top">
-								<p>Dear [Insert Customer Name],</p>
-								<p>We understand that you are having some difficulty logging into your Totsy account. We've created a temporary password for you which is <strong>[PASSWORD].</p>
+								<p>Dear <?=$data['user']->firstname." ".$data['user']->lastname;?>,</p>
+								<p>We understand that you are having some difficulty logging into your Totsy account. We've created a temporary password for you which is <?=$data['token']?>.</p>
 								<p>To login with your temporary password and assign a new one that is easy for you to remember, please <a href="http://test.totsy.com/login" title="Totsy Login" style="color:#E00000">visit our login page</a>.
 								<p>Our customer service team is also available to answer any questions. If you are still experiencing problems accessing Totsy.com after you have reset your password, please contact us at <a href="mailto:support@totsy.com" title="Totsy Support Address" style="color:#E00000">support@totsy.com</a> with the following information:</p>
 								
@@ -63,18 +120,26 @@
 
 							</td>
 						</tr>
-					</table>		
+					</table>
 				</tr>	
 				<tr>
 					<td colspan="4" style="">
-						<img src="../../img/email/footer-image.jpg" alt="footer-image" width="592" height="150" />
+						<?php echo $this->html->image(
+							"$data[domain]/img/email/footer-image.jpg",
+							array(
+								'width'=>'592',
+								'height'=>'150',
+								'alt' => 'Totsy'
+							));
+						?>
 					</td>
 				</tr>
 				<tr>
 					<td colspan="4" style="text-align:center;padding:20px">
-						Totsy - 27 West 20th Street, Suite 400 - New York, NY 10011 | 1-888-59TOTSY (1.888.791.1112) <a href="#" title="Info Email Address" style="color:#E00000">info@totsy.com</a>
+						Totsy - 27 West 20th Street, Suite 400 - New York, NY 10011 | 1-888-59TOTSY (1.888.791.1112) 
+						<a href="#" title="Info Email Address" style="color:#E00000">info@totsy.com</a>
 					</td>
-				</tr>	
+				</tr>
 		</table>
 	</center>
 </body>

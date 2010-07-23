@@ -12,18 +12,13 @@ c.updated_at AS "updated",
 c.last_login_at AS "lastlogin",
 c.last_login_ip AS "lastip",
 c.login_count AS "logincounter",
-1 AS "active",
-it.code AS "invitation_code"
+1 AS "active"
 
-FROM customers c,
-invitation_tokens it
+FROM customers c
 
 WHERE first_name != ''
-AND it.customer_id = c.id
--- skip crap data
-AND c.id > 3000
 
 ORDER BY c.id
 -- limit output
-LIMIT 20
+LIMIT 200
 ;

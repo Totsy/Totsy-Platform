@@ -1,6 +1,7 @@
 _id
 firstname
 lastname
+affiliate
 username
 email
 legacy

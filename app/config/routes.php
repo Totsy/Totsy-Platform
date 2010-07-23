@@ -37,7 +37,7 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
 });
 
 Router::connect('/register', 'Users::register');
-
+Router::connect('/reset', 'Users::reset');
 /**
  * Redirect all non-authenticated users to 
  */
@@ -54,7 +54,7 @@ Router::connect('/addresses', 'Addresses::view');
 Router::connect('/addresses/edit{:args}', 'Addresses::edit');
 Router::connect('/account/info', 'Users::info');
 Router::connect('/account/add/{:args}', 'Account::add');
-
+Router::connect('/invite', 'Users::invite');
 Router::connect('/help', 'Tickets::add');
 Router::connect('/shopping/cart', 'Cart::index');
 Router::connect('/shopping/checkout.{:type}', 'Transactions::add');

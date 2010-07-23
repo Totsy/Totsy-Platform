@@ -76,7 +76,7 @@
 	<div id='cart-modal'></div>
 	<script type="text/javascript">
 	$("#cart").click(function() {
-		$("#cart-modal").load($.base + '/cart/view').dialog({
+		$("#cart-modal").load($.base + 'cart/view').dialog({
 			autoOpen: false,
 			modal:true,
 			width: 900,

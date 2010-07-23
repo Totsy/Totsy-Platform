@@ -3,6 +3,8 @@
 namespace app\extensions;
 
 use Swift_Message;
+use Swift_SmtpTransport;
+use Swift_Mailer;
 use lithium\template\View;
 use lithium\core\Environment;
 use lithium\action\Request;
@@ -25,18 +27,29 @@ class Mailer {
 	}
 
 	public static function send($template, $subject, array $to, array $data) {
-		$config = Environment::get('mail');
+		$config = Environment::get('test');
+
 		// get a transport
-		$transport = Swift_SmtpTransport::newInstance($config->mail->host, $config->mail->port)
-			->setUsername($config->mail->username)
-			->setPassword($config->mail->password)
+		$transport = Swift_SmtpTransport::newInstance()
+			->setHost($config['mail']['host']) 
+			->setUsername($config['mail']['username'])
+			->setPassword($config['mail']['password'])
+			->setPort($config['mail']['port'])
 			;
+		$data['domain'] = "http://".$config['mail']['domain'];
 		// make a message
-		$message = Swift_Message::newInstance();
-		$message->setFrom();
-		$message->setSubject();
-		$message->setTo("{$to['name']} <{$to['email']}>");
+		$message = Swift_Message::newInstance($transport);
+		$message->setFrom(array('noreply@totsy.com' => 'Totsy'));
+		$message->setSubject($subject);
+		$message->setTo(array($to['email'] => $to['name']));
+		$message->setContentType("text/html");
 		$message->setBody(static::_view()->render('all', $data, compact('template')));
+		//Create the Mailer using your created Transport
+		$mailer = Swift_Mailer::newInstance($transport);
+		
+		//Send the message
+		$result = $mailer->send($message);
+
 	}
 }
 
