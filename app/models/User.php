@@ -13,7 +13,7 @@ class User extends \lithium\data\Model {
 		'now' => 0
 	);
 
-	public static function collection() {
+	public function collection() {
 		return static::_connection()->connection->users;
 	}
 
@@ -46,19 +46,6 @@ class User extends \lithium\data\Model {
 			unset($user->salt);
 		}
 	}
-	/**
-	 * During the password reminder process we need to cleanout
-	 * the user document. This method will remove the legacy indicator
-	 * and salt that was a part of the old system. The password is also
-	 * set to a SHA1().
-	 */
-	public static function process($user, $password, $ip) {
-		unset($user->legacy);
-		unset($user->salt);
-		$user->password = $password;
-		$user->updated = static::dates('now');
-		return $user->save();
-	}
 
 	public static function invite($to, $message) {
 		$user = null;
@@ -87,6 +74,17 @@ class User extends \lithium\data\Model {
 			$user = User::create($result);
 		}
 		return $user;
+	}
+
+	public static function log($ipaddress) {
+		$user = static::getUser();
+		$count = $user->logincounter + 1;
+		$data = array(
+			'lastip' => $ipaddress,
+			'lastlogin' => static::dates('now'),
+			'logincounter' => $count
+		);
+		return $user->save($data);
 	}
 }
 

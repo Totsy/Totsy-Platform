@@ -8,12 +8,6 @@ use \lithium\storage\Session;
 
 class CartController extends BaseController {
 
-	public function index() {
-		$this->_render['layout'] = 'cart';
-		$carts = Cart::all();
-		return compact('carts');
-	}
-
 	public function view() {
 		$this->_render['layout'] = 'cart';
 		$cart = Cart::active();
@@ -30,7 +24,7 @@ class CartController extends BaseController {
 
 		if ($this->request->query) {
 			$itemId = $this->request->query['item_id'];
-			$size = $this->request->query['item_size'];
+			$size = ($this->request->query['item_size'] == 'undefined' ? "no size": $this->request->query['item_size']);
 			$item = Item::find('first', array(
 				'conditions' => array(
 					'_id' => "$itemId"),
@@ -54,7 +48,7 @@ class CartController extends BaseController {
 			if (!empty($cartItem)) {
 				++ $cartItem->quantity;
 				$cartItem->save();
-				$this->redirect(array('Cart::view'));
+				Item::reserve($itemId, $size, 1);
 			} else {
 				$item = $item->data();
 				$item['size'] = $size;
@@ -63,22 +57,12 @@ class CartController extends BaseController {
 				unset($item['_id']);
 				$info = array_merge($item, array('quantity' => 1));
 				if ($cart->addFields() && $cart->save($info)) {
-					$this->redirect(array('Cart::view'));
+					Item::reserve($itemId, $size, 1);
 				}
 			}
+			$this->redirect(array('Cart::view'));
 		}
 
-		return compact('cart');
-	}
-
-	public function edit() {
-		if (!$cart = Cart::find($this->request->id)) {
-			$this->redirect('Carts::index');
-		}
-		if (($this->request->data) && $cart->save($this->request->data)) {
-			$this->redirect(array('Carts::view', 'args' => array($cart->id)));
-		}
-		$this->render(array('layout' => false));
 		return compact('cart');
 	}
 	
@@ -86,7 +70,14 @@ class CartController extends BaseController {
 
 		if ($this->request->query) {
 			foreach ($this->request->query as $key => $value) {
+				$cart = Cart::find('first', array(
+					'conditions' => array(
+						'_id' => "$key"
+				)));
 				Cart::remove(array('_id' => "$key"));
+				if (!empty($cart)) {
+					Item::reserve($cart->item_id, $cart->size, -$cart->quantity);
+				}
 			}
 		}
 		$this->render(array('layout' => false));
@@ -102,15 +93,17 @@ class CartController extends BaseController {
 				'conditions' => array(
 					'_id' => $data['_id']
 			)));
-			$cart->quantity = $data['qty'];
+			$diff = $data['qty'] - $cart->quantity;
 			if ($cart->save()) {
 				$sucess = true;
+				Item::reserve($cart->item_id, $cart->size, $diff);
 			}
 		}
 		$this->render(array('layout' => false));
 
 		return compact('success');
 	}
+
 }
 
 ?>

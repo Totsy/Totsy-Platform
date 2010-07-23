@@ -83,7 +83,7 @@
 					$removeButtons[] = "<script type=\"text/javascript\" charset=\"utf-8\">
 							$('#remove$item->_id').click(function () { 
 								$('#$item->_id').remove();
-								$.ajax({url: $.base + \"/cart/remove\", data:'$item->_id', context: document.body, success: function(data){
+								$.ajax({url: $.base + \"cart/remove\", data:'$item->_id', context: document.body, success: function(data){
 								      }});
 							    });
 						</script>";
@@ -162,7 +162,7 @@ $(".inputbox").change(function() {
 	});
 
 	$.ajax({
-		url: $.base + '/cart/update',
+		url: $.base + 'cart/update',
 		data: "_id=" + id + "&" + "qty=" + qty,
 		context: document.body,
 		success: function(data) {}
