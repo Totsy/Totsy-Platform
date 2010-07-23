@@ -70,7 +70,7 @@ class UsersController extends BaseController {
 			//Grab User Record
 			$user = User::lookup($username);
 			if($user){
-				if ($user->legacy == 1) {
+				if ($user->legacy == true) {
 					$auth = $this->authIllogic($password, $user);
 					if ($auth == true) {
 						//Write core information to the session and redirect user
