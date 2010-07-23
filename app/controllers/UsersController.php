@@ -80,7 +80,7 @@ class UsersController extends BaseController {
 					// Try non-legacy user
 					$auth = Auth::check("userLogin", $this->request);
 				}
-				if (!empty($user->reset_token)) {
+				if ($user->reset_token != '0') {
 					$auth = (sha1($password) == $user->reset_token) ? true : false;
 					$sessionWrite = $this->writeSession($user->data());
 					$this->redirect('account/info');
@@ -148,7 +148,7 @@ class UsersController extends BaseController {
 				$user->password = sha1($newPass);
 				$user->legacy = 0;
 				if (!empty($user->reset_token)) {
-					unset($user->reset_token);
+					$user->reset_token = '0';
 				}
 				unset($this->request->data['password']);
 				unset($this->request->data['new_password']);
