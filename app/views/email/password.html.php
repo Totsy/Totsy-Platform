@@ -47,8 +47,8 @@
 						
 						<tr>	
 							<td style="padding:20px" valign="top">
-								<p>Dear <?=$data->firstname." ".$data->lastname;?>,</p>
-								<p>We understand that you are having some difficulty logging into your Totsy account. We've created a temporary password for you which is <?=$data->reset_token?><strong>.</p>
+								<p>Dear <?=$data['firstname']." ".$data['lastname'];?>,</p>
+								<p>We understand that you are having some difficulty logging into your Totsy account. We've created a temporary password for you which is <?=$data['reset_token']?><strong>.</p>
 								<p>To login with your temporary password and assign a new one that is easy for you to remember, please <a href="http://test.totsy.com/login" title="Totsy Login" style="color:#E00000">visit our login page</a>.
 								<p>Our customer service team is also available to answer any questions. If you are still experiencing problems accessing Totsy.com after you have reset your password, please contact us at <a href="mailto:support@totsy.com" title="Totsy Support Address" style="color:#E00000">support@totsy.com</a> with the following information:</p>
 								
