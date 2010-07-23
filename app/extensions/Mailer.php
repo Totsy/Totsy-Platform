@@ -39,21 +39,21 @@ class Mailer {
 			
 		
 		// make a message
-		// $message = Swift_Message::newInstance($transport);
-		// $message->setFrom(array('info@totsy.com' => 'Totsy'));
-		// $message->setSubject('testing');
-		// $message->setTo(array("{$to['name']} <{$to['email']}>"));
-		// $message->setBody(static::_view()->render('all', $data, compact('template')));
+		$message = Swift_Message::newInstance($transport);
+		$message->setFrom(array('noreply@totsy.com' => 'Totsy'));
+		$message->setSubject('testing');
+		$message->setTo(array("{$to['name']} <{$to['email']}>"));
+		$message->setBody(static::_view()->render('all', $data, compact('template')));
 		
 		//Create the Mailer using your created Transport
 		$mailer = Swift_Mailer::newInstance($transport);
 
 		//Create a message
-		$message = Swift_Message::newInstance('Wonderful Subject')
-		  ->setFrom(array('noreply@totsy.com'))
-		  ->setTo(array('f.h.agard@lightcube.us'))
-		  ->setBody('Here is the message itself')
-		  ;
+		// $message = Swift_Message::newInstance('Wonderful Subject')
+		//  ->setFrom(array('noreply@totsy.com'))
+		//  ->setTo(array('mitch@spacemonkeylabs.com'))
+		//  ->setBody('Here is the message itself')
+		//  ;
 		
 		//Send the message
 		$result = $mailer->send($message);
