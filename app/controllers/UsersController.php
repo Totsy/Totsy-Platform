@@ -136,7 +136,7 @@ class UsersController extends BaseController {
 		if ($this->request->data) {
 			$oldPass = $this->request->data['password'];
 			$newPass = $this->request->data['new_password'];
-			if ($user->legacy == '1') {
+			if ($user->legacy == true) {
 				$status = ($this->authIllogic($oldPass, $user)) ? 'true' : 'false';
 			} else {
 				$status = (sha1($oldPass) == $user->password) ? 'true' : 'false';
