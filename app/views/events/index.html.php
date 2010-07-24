@@ -22,6 +22,12 @@
 				<div class="tl"></div>
 				<div class="tr"></div>
 				<div class="md-gray p-container">
+						<?php if ($itemCounts[ (string) $event->_id] == 0): ?>
+								<?=$this->html->image('/img/soldout.gif', array(
+									'title' => "Sold Out",
+									'style' => 'z-index : 2; position : absolute; left:20%'
+								)); ?>
+					<?php endif ?>
 					<?php
 						if (!empty($event->images->splash_big_image)) {
 							$productImage = "/image/{$event->images->splash_big_image}.jpg";

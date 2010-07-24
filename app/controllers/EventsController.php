@@ -8,12 +8,27 @@ use \app\models\Item;
 use \MongoDate;
 use \lithium\storage\Session;
 
+
 class EventsController extends BaseController {
 	
 	public function index() {
 		$openEvents = Event::open();
 		$pendingEvents = Event::pending();
-		return compact('openEvents', 'pendingEvents');
+		$events = Event::open(array('fields' => array('items')))->data();
+		//Get the quantity of available items in each event.
+		foreach ($events as $eventItems) {
+			$count = 0;
+			$id = $eventItems['_id'] ;
+			if (isset($eventItems['items'])) {
+				foreach ($eventItems['items'] as $eventItem) {
+					$item = Item::first(array('conditions' => array('_id' => $eventItem)));
+					$count += $item->total_quantity;
+				}
+			}
+			$itemCounts[$id] = $count;
+		}
+
+		return compact('openEvents', 'pendingEvents', 'itemCounts');
 	}
 
 	public function view($url = null) {
