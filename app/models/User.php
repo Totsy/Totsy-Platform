@@ -13,7 +13,7 @@ class User extends \lithium\data\Model {
 		'now' => 0
 	);
 
-	public static function collection() {
+	public function collection() {
 		return static::_connection()->connection->users;
 	}
 
