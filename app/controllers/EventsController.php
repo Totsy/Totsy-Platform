@@ -14,19 +14,10 @@ class EventsController extends BaseController {
 	public function index() {
 		$openEvents = Event::open();
 		$pendingEvents = Event::pending();
-		$events = Event::open(array('fields' => array('items')))->data();
-		//Get the quantity of available items in each event.
-		foreach ($events as $eventItems) {
-			$count = 0;
-			$id = $eventItems['_id'] ;
-			if (isset($eventItems['items'])) {
-				foreach ($eventItems['items'] as $eventItem) {
-					$item = Item::first(array('conditions' => array('_id' => $eventItem)));
-					$count += $item->total_quantity;
-				}
-			}
-			$itemCounts[$id] = $count;
-		}
+
+		$itemCounts = $this->inventoryCheck(Event::open(array(
+			'fields' => array('items')
+		)));
 
 		return compact('openEvents', 'pendingEvents', 'itemCounts');
 	}
@@ -71,14 +62,23 @@ class EventsController extends BaseController {
 	
 	}
 
-	// This code is for redirecting to a 404 page:
-	// if (!$event) {
-	// 	return $this->redirect(array('Search::view', 'search' => $url));
-	// }
-	// foreach ($event->items as $value) {
-	// 	$items[] = Item::first(array('conditions' => array('_id' => $value)));
-	// }
-	// return compact('event', 'items');
+	public function inventoryCheck($events) {
+		$events = $events->data();
+		foreach ($events as $eventItems) {
+			$count = 0;
+			$id = $eventItems['_id'] ;
+			if (isset($eventItems['items'])) {
+				foreach ($eventItems['items'] as $eventItem) {
+					$item = Item::first(array(
+						'conditions' => array('_id' => $eventItem
+					)));
+					$count += $item->total_quantity;
+				}
+			}
+			$itemCounts[$id] = $count;
+		}
+		return $itemCounts;
+	}
 
 }
 

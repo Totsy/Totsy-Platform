@@ -123,7 +123,7 @@ Session::config(array(
 Auth::config(array('userLogin' => array(
 	'model' => 'User',
 	'adapter' => 'Form',
-	'fields' => array('username', 'password')
+	'fields' => array('email', 'password')
 )));
 
 

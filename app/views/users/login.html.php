@@ -1,38 +1,3 @@
-<?=$this->html->script('jquery-1.4.2.min.js');?>
-<?=$this->html->script('jquery.backstretch.min.js');?>
-
-<?php
-
-use \DirectoryIterator;
-use lithium\net\http\Media;
-$images = array();
-$imgDirectory = $this->_request->env('base') . '/img/login/';
-
-/**
- * Get a random login image (of type jpg or png).
- */
-foreach (new DirectoryIterator(Media::webroot(true) . '/img/login') as $file) {
-	if ($file->isDot() || !preg_match('/\.(png|jpg)$/', $file->getFilename())) {
-		continue;
-	}
-	$images[] = $file->getFilename();
-}
-$image = $images[array_rand($images)];
-
-
-?>
-
-
-<script type="text/javascript">
-   
-    jQuery(document).ready(function($){
-    
-    	$.backstretch("<?=$imgDirectory . $image;?>");
-    
-    });
-    
-</script>
-
 <?php if ($message){ echo $message; } ?>
 
 <div id="fullscreen">
@@ -60,7 +25,7 @@ $image = $images[array_rand($images)];
 						<div class="r-box lt-gradient-1">
 							<h2>Member Sign In</h2>
 							
-							<?=$this->form->create(null,array('url' => '/login', 'id'=>'loginForm'));?>
+							<?=$this->form->create(null,array('id'=>'loginForm'));?>
 							<?=$this->form->field('username', array('class'=>"validate['required']  inputbox", 'id'=>"username"));?>
 							<?=$this->form->field('password', array(
 									'class'=>"validate['required'] inputbox", 
@@ -90,6 +55,7 @@ $image = $images[array_rand($images)];
 							<p>Become a member today for access to brand-specific sales, up to 70% off retail, just for you and the kids, ages 0-7. Prenatal care products, baby gear, travel accessories, bedding and bath, children's clothing, toys, and educational materials &mdash; and that's just the start.</p>
 							
 							<?=$this->html->link('Request Membership','/register', array('class'=>"flex-btn-2")); ?>
+							<?=$this->html->link('Request Membership','/register', array('id' => 'register_button', 'class'=>"flex-btn-2")); ?>
 						</div>
 						<div class="bl"></div>
 						<div class="br"></div>
