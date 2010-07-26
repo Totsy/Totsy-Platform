@@ -208,12 +208,14 @@ class UsersController extends BaseController {
 			foreach ($rawto as $key => $value) {
 				$to[] = trim($value);
 			}
-			Mailer::send(
-				'welcome',
-				'Welcome to Totsy!',
-				array('name' => $user->firstname, 'email' => $user->email),
-				compact('user')
-			);
+			foreach ($to as $email) {
+				Mailer::send(
+					'invite',
+					'You have been invited to Totsy.com!',
+					array('name' => '', 'email' => $email),
+					compact('user')
+				);
+			}
 			$message = $this->request->data['message'];
 			if(User::invite($to, $message)){
 				$flashMessage = "Your invitations have been sent";
