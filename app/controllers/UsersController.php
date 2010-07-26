@@ -155,7 +155,7 @@ class UsersController extends BaseController {
 			if ($status == 'true') {
 				$user->password = sha1($newPass);
 				$user->legacy = 0;
-				$user->reset_token = ($user->reset_token != '0') ? '0';
+				$user->reset_token = '0';
 				unset($this->request->data['password']);
 				unset($this->request->data['new_password']);
 				if ($user->save($this->request->data)) {
