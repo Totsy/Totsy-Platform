@@ -20,5 +20,5 @@ WHERE first_name != ''
 
 ORDER BY c.id
 -- limit output
-LIMIT 200
+--LIMIT 200
 ;
