@@ -40,7 +40,7 @@ class Transaction extends \lithium\data\Model {
 		$total = $subTotal + $tax + $handling;
 
 		try {
-			return $transaction->save(compact('total', 'subTotal') + array(
+			return $transaction->save(compact('total', 'subTotal', 'tax', 'handling') + array(
 				'authKey' => Payments::authorize('default', $total, $card),
 				'billing' => $billing->data(),
 				'shipping' => $shipping->data(),
