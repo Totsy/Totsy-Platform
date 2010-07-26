@@ -63,7 +63,7 @@
 						<?=$this->html->link('Checkout', array('Transactions::add'), array(
 							'id' => 'checkout', 'title' => 'checkout'
 						)); ?>
-					</span>
+		 	</span>
 				</p>
 			</div>
 		</div>	
