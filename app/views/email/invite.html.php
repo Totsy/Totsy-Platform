@@ -112,7 +112,7 @@
 								<p><?=$data['user']->firstname?> thinks you should join Totsy and has invited you! Totsy is the premier private shopping network for moms on-the-go and moms-to-be.</p>
 								<p>Membership is by invitation or request only. But while it costs nothing to join, and the savings you'll experience will mean everything.</p>
 								<p>With your membership, you will gain access to sales, of up to 70% off retail prices, just for you and the kids, ages 0-7. Prenatal care products, baby gear, travel accessories, bedding and bath, children's clothing, toys, DVDs, and educational materials are just a sampling of a selection that promises only the best. Each sale lasts 48 to 72 hours and includes amazing deals from quality, luxury, and designer brands.</p>
-								<p><a href="<?=$data['domain'].'/invitation'.$data['user']->invitation_code; ?>" title="Click to Accept Invitation" style="color:#E00000;text-decoration:none">Click here</a> to accept this invitation, and start experiencing exclusive access, top brands, and great deals today!</p>
+								<p><a href="<?=$data['domain'].'/invitation/'.$data['user']->invitation_code; ?>" title="Click to Accept Invitation" style="color:#E00000;text-decoration:none">Click here</a> to accept this invitation, and start experiencing exclusive access, top brands, and great deals today!</p>
 								<p>All the best,</p>
 								<p><strong style="color:#E00000;font-weight:normal">Totsy</strong></p>
 							</td>
