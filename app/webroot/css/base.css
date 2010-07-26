@@ -104,7 +104,7 @@ span.breadcrumbs span{font-size:.7em;padding:0 3px}
 
 #header{width:958px;height:110px;margin:0 1px;background:url(../img/header-bg.png) repeat-x;font-size:12px}
 #header-lt{width:230px;float:left}
-#main-logo{display:block;width:155px;height:90px;padding:15px 0 0 20px}
+#main-logo{display:block;width:60px;height:60px;padding:5px 0 0 5px}
 
 #header-mid{width:475px;float:left;position:relative;height:90px;padding:20px 0 0 0;font-size:13px}
 #welcome{font-weight:bold;padding:0 0 0 10px}
@@ -576,15 +576,46 @@ span.citem.active-th{background:#FFF}
 .coming-soon-feature p{margin:20px 0}
 
 .cart-table{}
-.cart-table th{background:#ACACAC;padding:20px 10px 5px 10px;color:#FFF;font-weight:bold}
-.cart-table td{padding:10px;vertical-align:top;border-bottom:1px solid #D7D7D7}
-tr.alt0 td{background:#FFF}
-tr.alt1 td{background:#EFEFEF}
-td.cart-th{width:93px;border-left:1px solid #D7D7D7}
+.cart-table th{
+background:#ACACAC;
+padding:8px 5px 5px 5px;
+color:#FFF;
+font-weight:bold
+}
+.cart-table td{
+padding:10px;
+vertical-align:top;
+border-bottom:1px solid #D7D7D7
+}
+
+tr.alt0 td{
+background:#FFF;
+height:50px;
+}
+
+tr.alt1 td{
+background:#EFEFEF
+height:50px;
+}
+
+td.cart-th{
+width:60px;
+height:60px;
+border-left:1px solid #D7D7D7
+
+}
 td.cart-actions{border-right:1px solid #D7D7D7}
-tr.cart-total td{text-align:right;border-bottom:1px solid #D7D7D7;padding:20px}
-tr.cart-buy td{border:none;padding:20px}
+td.cart-desc{
+font-size:12px;
+line-height:16px;
+}
+tr.cart-total td{text-align:right;border-bottom:1px solid #D7D7D7;padding:10px}
+tr.cart-buy td{border:none;padding:10px}
 td.cart-button{text-align:right}
+.cart-remove{
+	font-size:12px;
+	z-index:1;
+}
 a:link.delete,a:visited.delete{background:url(../img/cart-trash-btn.png) no-repeat;display:block;width:21px;height:21px;text-indent:-9999px}
 
 #checkout-process{margin:0}
