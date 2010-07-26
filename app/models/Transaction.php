@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use MongoId;
 use li3_payments\extensions\Payments;
 use li3_payments\extensions\payments\exceptions\TransactionException;
 
@@ -41,6 +42,7 @@ class Transaction extends \lithium\data\Model {
 
 		try {
 			return $transaction->save(compact('total', 'subTotal', 'tax', 'handling') + array(
+				'user_id' => new MongoId((string) $user['_id']),
 				'authKey' => Payments::authorize('default', $total, $card),
 				'billing' => $billing->data(),
 				'shipping' => $shipping->data(),
