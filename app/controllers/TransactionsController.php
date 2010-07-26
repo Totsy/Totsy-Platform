@@ -31,6 +31,10 @@ class TransactionsController extends \app\controllers\BaseController {
 		$shippingCost = 0;
 		$billingAddr = $shippingAddr = null;
 
+		if (isset($data['billing_shipping']) && $data['billing_shipping'] == '1') {
+			$data['shipping'] = $data['billing'];
+		}
+
 		foreach (array('billing', 'shipping') as $key) {
 			$var = $key . 'Addr';
 

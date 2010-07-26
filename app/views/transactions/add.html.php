@@ -21,7 +21,7 @@
 	<?php } ?>
 
 	<ol id="checkout-process">
-		<?=$this->form->create($order); ?>
+		<?=$this->form->create($order, array('class' => 'checkout')); ?>
 
 		<!-- Start Billing Information -->
 		<li id="opc-billing">
@@ -77,6 +77,10 @@
 					<div class="form-row">
 						<label for="phone">Telephone</label>
 						<input type="text" name="billing[phone]" id="phone" class="inputbox" value="" />
+					</div>
+
+					<div class="submit">
+						<button class="flex-btn done">Done</button>
 					</div>
 				</fieldset>
 
@@ -154,6 +158,9 @@
 						<input type="text" name="shipping[phone]" id="phone" class="inputbox" value="" />
 					</div>
 
+					<div class="submit">
+						<button class="flex-btn done">Done</button>
+					</div>
 				</fieldset>
 
 			</div>
@@ -361,15 +368,20 @@ $(document).ready(function() {
 	var initializing = true;
 
 	var update = function() {
-		data = $('#checkout-billing-form, #checkout-shipping-form').serialize();
-		addrFormat = "{:address} {:address_2}<br />\n{:city}, {:state} {:zip}";
+		var data = $('form.checkout').serialize();
+		var addrFormat = "{:address} {:address_2}<br />\n{:city}, {:state} {:zip}";
+		console.log(data);
 
 		$.post(window.location + '.json', data, function(data) {
+			console.log(data);
+
 			$('.order-summary').fadeOut('fast', function() {
 				if (data.shippingAddr.address) {
+					console.log($(data.shippingAddr).template(addrFormat));
 					$('.shipping-address').html($(data.shippingAddr).template(addrFormat));
 				}
 				if (data.billingAddr.address) {
+					console.log($(data.billingAddr).template(addrFormat));
 					$('.billing-address').html($(data.billingAddr).template(addrFormat));
 				}
 				$('.shippingCost').html('$' + $.numberFormat(data.shippingCost));
@@ -381,10 +393,10 @@ $(document).ready(function() {
 	$('#billing, #shipping, #payment').bind('change', function() {
 		$this = $(this);
 		$target = $($this.attr('target'));
-		$target[($this.val() == '') ? 'show' : 'hide']().find('input, select').attr(
-			'disabled', $this.val() != ''
-		);
-		if (!initializing) {
+		method = ($this.val() == '') ? 'show' : 'hide';
+		$target[method]().find('input, select').attr('disabled', $this.val() != '');
+
+		if (!initializing && $this.val() != '') {
 			update();
 		}
 	}).trigger('change');
@@ -402,6 +414,12 @@ $(document).ready(function() {
 			$('#shipping-address-select').attr('disabled', '');
 		}
 		update();
+	});
+
+	$("button.done").bind('click', function() {
+		$(this).parents('fieldset').hide();
+		update();
+		return false;
 	});
 
 	$('#payment-method-form').show();
