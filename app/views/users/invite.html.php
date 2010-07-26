@@ -24,8 +24,6 @@
 							<h2 class="gray">Send Invitations</h2>
 							<p>For each friend you invite, Totsy will credit your account with $15 after your friend's place their first order.</p>
 								<fieldset>
-									<legend class="bold">Share this link with your friends</legend>
-									<a href="#" title="Share this link with your friends" class="bold">http://totsy.com/invite/ylveslecoq</a>
 									<br>
 									<?=$this->form->create(); ?>
 										<?=$this->form->hidden('invitation_code', array('value' => 'ylveslecoq')); ?>
@@ -51,6 +49,10 @@
 										<br>
 										<?=$this->form->submit('Send', array('class' => 'flex-btn fr')); ?>
 									<?=$this->form->end(); ?>
+									<br><br><br>
+									<?php $invite = "http://totsy.com/invitation/$user->invitation_code";?>
+									<p>Share this link with your friends</p>
+									<a href="#" title="Share this link with your friends" class="bold"><?=$invite?></a>
 								</fieldset>
 						</div>
 						<div class="send-right r-container">
@@ -170,4 +172,4 @@
 </script>
 <script type="text/javascript" charset="utf-8">
 	$('.form')
-</script>>
+</script>

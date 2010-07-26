@@ -26,6 +26,11 @@ class UsersController extends BaseController {
 			if (empty($emailCheck)) {
 				$user = User::create();
 				$data = $this->request->data;
+				$data['invitation_code'] = substr($email, 0, strpos($email, '@'));
+				$inviteCheck = User::count(array('invitation_code' => $data['invitation_code']));
+				if ($inviteCheck > 0) {
+					$data['invitation_code'] = $this->randomString();
+				}
 				if ($invite_code) {
 					$inviter = User::find('find', array(
 						'conditions' => array(
@@ -200,6 +205,19 @@ class UsersController extends BaseController {
         return substr(md5(uniqid(rand(),1)), 1, 10);
     }
 
+
+	// Generate a random character string
+	protected function randomString($length = 8, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890')
+	{
+		$chars_length = (strlen($chars) - 1);
+		$string = $chars{rand(0, $chars_length)};
+		for ($i = 1; $i < $length; $i = strlen($string)) {
+			$r = $chars{rand(0, $chars_length)};
+			if ($r != $string{$i - 1}) $string .=  $r;
+		}
+		return $string;
+	}
+
 	public function invite() {
 		$to = array();
 		$user = User::getUser();
@@ -232,7 +250,7 @@ class UsersController extends BaseController {
 			'fields' => array('invitations')
 		));
 		
-		return compact('open', 'accepted', 'flashMessage');
+		return compact('user','open', 'accepted', 'flashMessage');
 	}
 
 }
