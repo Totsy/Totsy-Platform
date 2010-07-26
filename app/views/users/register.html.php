@@ -64,8 +64,7 @@
 	<div class="submit-row">
 	<?=$this->form->checkbox('terms', array('class'=>"", 'style'=>"float:left;margin-right:4px"));?>
 	<span class="sm reg-tos">By requesting membership, I accept the <?=$this->html->link('Terms and Conditions','#')?> of Totsy, and accept to receive sale email newsletters. Totsy will never sell or give my email to any outside party.</span>
-
-	<button type="submit" name="submit" id="submit-btn" class="flex-btn-2"><?php echo 'Register';?></button>
+	<?=$this->form->submit('Register', array('class' => 'flex-btn-2')); ?>
 	</div>
 
 <?=$this->form->end(); ?>

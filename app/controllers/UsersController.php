@@ -11,43 +11,46 @@ use app\extensions\Mailer;
 
 class UsersController extends BaseController {
 
-
-	public function index(){
-
-	}
 	/**
 	 * Performs basic registration functionality. All validation checks should happen via
 	 * JavaScript so no empty data is going into Mongo.
-	 * @todo Refactor to use count() from Mongo instead of array PHP count
-	 * @todo Confirm redirect location and message upon successful registration
-	 * @todo Authenticate upon successful registration before redirect
 	 * @return string User will be promoted that email is already registered.
 	 */
-	public function register() {
+	public function register($invite_code = null) {
 		$message = false;
+
 		if ($this->request->data) {
 			$this->request->data['password'] = sha1($this->request->data['password']);
 			$email = $this->request->data['email'];
-			$username = $this->request->data['username'];
-			//Check if email exists
 			$emailCheck = User::count(array('email' => "$email"));
-			//Check if username exists
-			$usernameCheck = User::count(array('username' => "$username"));
-			if (empty($emailCheck) && empty($usernameCheck)) {
+			if (empty($emailCheck)) {
 				$user = User::create();
-				$success = $user->save($this->request->data);
+				$data = $this->request->data;
+				if ($invite_code) {
+					$inviter = User::find('find', array(
+						'conditions' => array(
+							'invitation_code' => $invite_code
+					)));
+					if ($inviter) {
+						$data['invited_by'] = $inviter->_id;
+					}
+				}
+				$success = $user->save($data);
 				if ($success) {
-					$id = Session::write('_id', $user->_id);
-					$firstname = Session::write('firstname', $user->firstname);
-					$lastname = Session::write('lastname', $user->lastname);
-					$email = Session::write('email', $user->email);
+					$userLogin = array(
+						'_id' => $user->_id,
+						'firstname' => $user->firstname,
+						'lastname' => $user->lastname,
+						'email' => $user->email
+					);
+					Session::write('userLogin', $userLogin);
 					Mailer::send(
 						'welcome',
 						'Welcome to Totsy!',
 						array('name' => $user->firstname, 'email' => $user->email),
 						compact('user')
 					);
-					$this->redirect('/account/details');
+					$this->redirect('/');
 				}
 			} else {
 				$message = 'This email/username is already registered';
@@ -65,10 +68,10 @@ class UsersController extends BaseController {
 	public function login() {
 		$message = false;
 		if ($this->request->data) {
-			$username = $this->request->data['username'];
+			$email = $this->request->data['email'];
 			$password = $this->request->data['password'];
 			//Grab User Record
-			$user = User::lookup($username);
+			$user = User::lookup($email);
 			if($user){
 				if ($user->legacy == 1) {
 					$auth = $this->authIllogic($password, $user);
@@ -229,6 +232,7 @@ class UsersController extends BaseController {
 		
 		return compact('open', 'accepted', 'flashMessage');
 	}
+
 }
 
 ?>

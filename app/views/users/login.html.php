@@ -26,7 +26,7 @@
 							<h2>Member Sign In</h2>
 							
 							<?=$this->form->create(null,array('id'=>'loginForm'));?>
-							<?=$this->form->field('username', array('class'=>"validate['required']  inputbox", 'id'=>"username"));?>
+							<?=$this->form->field('email', array('class'=>"validate['required']  inputbox", 'id'=>"email"));?>
 							<?=$this->form->field('password', array(
 									'class'=>"validate['required'] inputbox", 
 									'name' => 'password', 
@@ -53,8 +53,6 @@
 							<h2>Become a Member</h2>
 							
 							<p>Become a member today for access to brand-specific sales, up to 70% off retail, just for you and the kids, ages 0-7. Prenatal care products, baby gear, travel accessories, bedding and bath, children's clothing, toys, and educational materials &mdash; and that's just the start.</p>
-							
-							<?=$this->html->link('Request Membership','/register', array('class'=>"flex-btn-2")); ?>
 							<?=$this->html->link('Request Membership','/register', array('id' => 'register_button', 'class'=>"flex-btn-2")); ?>
 						</div>
 						<div class="bl"></div>
