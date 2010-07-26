@@ -80,7 +80,7 @@
 			autoOpen: false,
 			modal:true,
 			width: 900,
-			height: 450,
+			height: 600,
 			close: function(ev, ui) {}
 		});
 		$("#cart-modal").dialog('open');
