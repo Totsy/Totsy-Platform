@@ -7,11 +7,11 @@
 	<div class="tr"></div>
 	<div id="page">
 		<!-- Replace with user's name -->
-		<strong>Hello <?=$userInfo['firstname']?></strong>
-	
+		<strong>Hello <?=$userInfo['firstname']?> !</strong>
+		<br><br></br>
 		<!-- Replace with account welcome message -->
 		<p>From your My Account Dashboard you have the ability to view a snapshot of your recent account activity and update your account information. Select a link below to view or edit information.</p>
-	
+		</br><br>
 		<h2 class="gray"><?php echo ('Account Information');?></h2>
 	
 		<div class="col-2">
@@ -20,7 +20,7 @@
 				<div class="tl"></div>
 				<div class="tr"></div>
 				<div class="r-box lt-gradient-1">
-					<h3 class="gray fl"><?php echo ('Contact Information');?></h3>&nbsp;|&nbsp;<?=$this->html->link('Edit Info', '/account/info');?>
+					<h3 class="gray fl"><?php echo ('Contact Information');?></h3>&nbsp;|&nbsp;<?=$this->html->link('Edit', '/account/info');?>
 					<br />
 					<br />
 					<?=$userInfo['firstname'].' '.$userInfo['lastname'] ?><br />
@@ -35,7 +35,7 @@
 				<div class="tl"></div>
 				<div class="tr"></div>
 				<div class="r-box lt-gradient-1">
-					<h3 class="gray fl">Newsletter - Coming Soon</h3>&nbsp;|&nbsp;<a href="" title="Edit">Edit</a>
+					<h3 class="gray fl">Email Preferences - Coming Soon</h3>&nbsp;|&nbsp;<a href="" title="Edit">Edit</a>
 					<br />
 					<br />
 					<dl>
@@ -54,8 +54,9 @@
 	
 		</div>
 	
-		<h2 class="gray fl"><?php echo ('Address Book');?></h2>&nbsp;|&nbsp;<?=$this->html->link('Manage Addresses', '/addresses/view');?>
-	
+		<h2 class="gray fl"><?php echo ('Address Book');?>
+
+		</h2>&nbsp; <? // =$this->html->link('Manage Addresses', '/addresses/view');?>
 		<div class="col-2">
 	
 			<div class="r-container box-2 fl">

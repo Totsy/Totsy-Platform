@@ -185,7 +185,7 @@ li.item5 a:hover,li.item5.over a, li.active.item5 a{background-position:-244px 0
 h2.page-title{font-weight:normal;font-size:24px}
 
 #page p{margin-bottom:10px;}
-#page h2,h3{margin-top:10px;}
+#page h2,h3{margin-top:2px;}
 
 .box-2 .tl,.box-2 .tr,.box-2 .bl,.box-2 .br{position:absolute;width:9px;height:9px;background-image:url(../img/corners-2.png);background-repeat:no-repeat}
 .box-2 .r-box{border:1px solid #B5B5B5;overflow:hidden}
@@ -354,8 +354,26 @@ img.reg-img{border-bottom:4px solid #707070}
 .reg-right .label{text-transform:lowercase;font-weight:bold;display:block}
 label span{text-transform:lowercase;padding:0 0 0 5px}
 
-input.inputbox,textarea.inputbox{background:url(../img/input-bg.png) repeat-x left bottom #FFF;border:1px solid #DEDEDE;margin-bottom:5px}
-select.inputbox{margin-bottom:8px}
+input.inputbox,textarea.inputbox{
+background:url(../img/input-bg.png) repeat-x left bottom #FFF;
+border:1px solid #DEDEDE;
+margin-bottom:5px
+}
+select{
+height:22px;
+background-color:#EBEBEB;
+margin-bottom:5px;
+margin-top:2px;
+border:1px solid #DEDEDE;
+}
+
+.listingCountdown{
+padding-top:7px;
+padding-right:7px;
+font-size:20px;
+float:right;
+color:#EB132C;
+}
 textarea{font-family:Helvetica,Arial,Sans-Serif;color:#707070;font-size:12px}
 
 .reg-right input.inputbox{width:260px}
@@ -373,7 +391,7 @@ button.reg-btn{background:url(../img/reg-btn.png) no-repeat;height:39px;width:13
 
 label.radio{display:block;float:left;margin:3px 20px 10px 0}
 
-.flex-btn{background:#f02b29;
+.flex-btn{background:#EB132C;
 -moz-border-radius:5px;-webkit-border-radius:5px;
 border-radius:5px;border:none;
 padding:5px 10px;color:#FFF;
@@ -472,7 +490,7 @@ max-width:270px;
 .p-container h2:hover {
 	
 	text-decoration:none;
-	color:#f02b29
+	color:#EB132C
 	
 }
 
@@ -487,7 +505,7 @@ font-size:14px
 text-transform:uppercase;
 font-weight:normal;
 font-size:20px;
-color:#f02b29;
+color:#EB132C;
 }
 
 .p-container .details .table-cell .original-price{
@@ -495,14 +513,28 @@ font-size:10px;
 
 }
 
-.splash-details .left{width:70%;float:left;padding:15px 0 15px 20px}
+.splash-details .left{
+font-size:14px;
+width:70%;
+float:left;
+padding:15px 0 15px 20px
+}
 .splash-details .right{width:15%;text-align:right;float:right;padding:22px 20px 0 0}
 .details .left{width:80%;float:left}
 .details .right{width:30%;text-align:right;float:left}
 
 .product-list-item.middle{margin:0 10px 10px 10px}
 
-.p-container .splash-details{position:absolute;bottom:0;left:0;background:url(../img/gray-80-bg.png) repeat;color:#FFF;width:100%;font-size:20px;text-transform:uppercase;line-height:24px}
+.p-container .splash-details{
+position:absolute;
+bottom:0;
+left:0;
+background:url(../img/gray-80-bg.png) repeat;
+color:#FFF;
+width:100%;
+font-size:18px;text-transform:uppercase;
+line-height:24px
+}
 
 .splash-details a.flex-btn:link, .splash-details a.flex-btn:visited{float:right;padding:10px 12px}
 
@@ -512,7 +544,7 @@ font-size:10px;
 h2.invite-friends{background:url(../img/invite-friends-get-15-img.png) no-repeat;width:138px;height:100px;margin-top:50px}
 h2.socialize-us{background:url(../img/socialize-with-us-img.png) no-repeat;width:124px;height:50px;}
 
-.invite-column .p-container{padding:0 21px;height:408px}
+.invite-column .p-container{padding:0 21px;height:416px}
 
 .invite-column .sm-icons{overflow:hidden;padding:0 26px}
 .invite-column a.sm-btn{float:left;margin:0 5px}
