@@ -39,7 +39,7 @@
 							}
 						?>
 						<?=$this->html->link(
-							$this->html->image("$productImage", array('width'=>'93', 'height'=>'93')), '', array(
+							$this->html->image("$productImage", array('width'=>'60', 'height'=>'60')), '', array(
 								'id' => 'main-logo', 'escape'=> false
 							)
 						); ?>
@@ -61,7 +61,8 @@
 					</td>
 					<td class="cart-time"><div id="<?php echo "itemCounter$x"; ?>"</div></td>
 					<td class="cart-actions">
-						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" class="delete">delete</a>
+						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" class="delete"><strong class="cart-remove">remove</strong></a>
+						
 					</td>
 				</tr>
 				<?php
