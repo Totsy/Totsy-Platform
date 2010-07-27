@@ -32,12 +32,12 @@ class UsersController extends BaseController {
 					$data['invitation_code'] = $this->randomString();
 				}
 				if ($invite_code) {
-					$inviter = User::find('find', array(
+					$inviter = User::find('first', array(
 						'conditions' => array(
 							'invitation_code' => $invite_code
 					)));
 					if ($inviter) {
-						$data['invited_by'] = $inviter->_id;
+						$data['invited_by'] = (string) $inviter->_id;
 					}
 				}
 				$success = $user->save($data);
