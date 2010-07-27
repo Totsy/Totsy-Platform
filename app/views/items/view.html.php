@@ -5,10 +5,14 @@
 <div id="product-detail-right">
 	<div style="align:right" id="listingCountdown"></div><p class="mar-10-b" style="padding-right:10px;text-align:right"></p>
 	<div id="detail-top-left">
-		<?php $logo = $event->images->logo_image;?>
-		<?=$this->html->image("/image/$logo.jpg", array(
-			'alt' => 'Logo ALT Tag', 'width' => "148", 'height' => "52"
-		)); ?>
+		<?php if ($event): ?>
+			<?php if ($event->logo_image): ?>
+				<?=$this->html->image("/image/$event->logo_image.jpg", array(
+					'alt' => 'Logo ALT Tag', 'width' => "148", 'height' => "52"
+				));
+				?>
+			<?php endif ?>
+		<?php endif ?>
 		<h1><?=$item->description." ".$item->color; ?></h1>
 
 		<div class="product-detail-attribute">
@@ -125,7 +129,14 @@
 <div id="product-detail-left">
 
 	<p class="mar-10-b" style="padding-left:10px">
-		<?=$this->html->link('< Click here for sale page', array('Events::view', 'args' => "$event->url")); ?>
+		<?php if ($event): ?>
+			<?=$this->html->link('< Click here for sale page', array(
+				'Events::view',
+				'args' => "$event->url"
+				));
+			?>
+		<?php endif ?>
+
 	</p>
 
 	<!-- Start product item -->
@@ -202,7 +213,7 @@
 <script type="text/javascript"> 
 $(function () {
 var saleEnd = new Date();
-saleEnd = new Date(<?php echo $event->end_date->sec * 1000?>);
+saleEnd = new Date(<?php if($event) {echo $event->end_date->sec * 1000;}?>);
 $('#listingCountdown').countdown({until: saleEnd, layout:'SALE ENDS in {dn} {dl} {hn} {hl} and {mn} {ml}'});
 });
 </script>
