@@ -107,6 +107,16 @@ class Cart extends \lithium\data\Model {
 			'rescom' => "RES"
 		)));
 	}
+
+	public static function checkCartItem($itemId, $size) {
+		return static::find('first', array(
+			'conditions' => array(
+				'session' => Session::key(),
+				'item_id' => "$itemId",
+				'size' => "$size",
+				'expires' => array('$gt' => static::dates('now'))
+		)));
+	}
 }
 
 ?>

@@ -39,12 +39,8 @@ class CartController extends BaseController {
 					'product_weight'
 			)));
 			//Check if this item has already been added to cart
-			$cartItem = Cart::find('first', array(
-				'conditions' => array(
-					'session' => Session::key(),
-					'item_id' => "$itemId",
-					'size' => "$size"
-			)));
+			$cartItem = Cart::checkCartItem($itemId, $size);
+
 			if (!empty($cartItem)) {
 				++ $cartItem->quantity;
 				$cartItem->save();
