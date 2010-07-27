@@ -49,7 +49,7 @@
 				<?=$this->menu->render('main-nav'); ?>
 			</div>
 			<div id="header-rt">
-				<?=$this->html->link('Invite Friends. Get $15','',array('title'=>'Invite Friends. Get $15', 'id'=>'if'));?>	
+				<?=$this->html->link('Invite Friends. Get $15','/invite',array('title'=>'Invite Friends. Get $15', 'id'=>'if'));?>
 				<p class="clear">
 					<span class="fl">
 						<a href="#" id="credits" title="My Credits">My Credits</a>
