@@ -65,6 +65,10 @@ class Menu extends \lithium\template\Helper {
 
 		foreach (range(0, count($menu->items->data()) - 1) as $i) {
 			$item = is_a($menu->items, 'Iterator') ? $menu->items[$i] : $menu->items->{$i};
+
+			if ($item->enabled === false) {
+				continue;
+			}
 			$items[] = $this->_item($item, $active, $options);
 		}
 		return $items;
