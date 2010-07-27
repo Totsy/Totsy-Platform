@@ -86,6 +86,15 @@ class User extends \lithium\data\Model {
 		);
 		return $user->save($data);
 	}
+
+	public static function applyCredit($user_id, $credit) {
+		$user = User::find('first', array(
+			'conditions' => array(
+				'_id' => $user_id
+		)));
+		$user->total_credit = $user->total_credit + $credit;
+		return $user->save();
+	}
 }
 
 

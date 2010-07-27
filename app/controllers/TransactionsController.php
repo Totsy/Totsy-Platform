@@ -2,7 +2,10 @@
 
 namespace app\controllers;
 
+use app\models\User;
 use app\models\Cart;
+use app\models\Item;
+use app\models\Credit;
 use app\models\Address;
 use app\models\Transaction;
 use lithium\storage\Session;
@@ -65,6 +68,19 @@ class TransactionsController extends \app\controllers\BaseController {
 
 		if (($data = $this->request->data) && $order->process($user, $data, $cart)) {
 			Cart::remove(array('session' => Session::key()));
+			foreach ($cart as $item) {
+				Item::sold($item->item_id, $item->size, $item->quantity);
+			}
+			$user = User::getUser();
+			$credit = Credit::create();
+			++$user->purchase_count;
+			$user->save();
+			if ($user->purchase_count = 1) {
+				if ($user->invited_by) {
+					User::applyCredit($user->invited_by, Credit::INVITE_CREDIT);
+					Credit::add($credit, $user->invited_by, Credit::INVITE_CREDIT, "Invitation");
+				}
+			}
 			return $this->redirect(array('Transactions::view', 'id' => (string) $order->_id));
 		}
 		return $vars + compact('order');
