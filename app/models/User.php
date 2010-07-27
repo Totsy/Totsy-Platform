@@ -78,11 +78,10 @@ class User extends \lithium\data\Model {
 
 	public static function log($ipaddress) {
 		$user = static::getUser();
-		$count = $user->logincounter + 1;
+		++$user->logincounter;
 		$data = array(
 			'lastip' => $ipaddress,
-			'lastlogin' => static::dates('now'),
-			'logincounter' => $count
+			'lastlogin' => static::dates('now')
 		);
 		return $user->save($data);
 	}
