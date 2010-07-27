@@ -19,12 +19,15 @@ class BaseController extends \lithium\action\Controller
 		$this->set(compact('userInfo'));
 
 		$cartCount = Cart::itemCount();
-		$user = User::find('first', array(
-			'conditions' => array(
-				'_id' => $userInfo['_id']),
-			'fields' => array('total_credit')
-		));
-		$credit = ($user->total_credit > 0) ? $user->total_credit : 0;
+		if ($userInfo) {
+			$user = User::find('first', array(
+				'conditions' => array(
+					'_id' => $userInfo['_id']),
+				'fields' => array('total_credit')
+			));
+			$credit = ($user->total_credit > 0) ? $user->total_credit : 0;
+		}
+
 		$this->set(compact('cartCount', 'credit'));
 
 		$this->_render['layout'] = 'main';
