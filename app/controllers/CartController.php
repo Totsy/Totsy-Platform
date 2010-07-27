@@ -24,7 +24,7 @@ class CartController extends BaseController {
 
 		if ($this->request->query) {
 			$itemId = $this->request->query['item_id'];
-			$size = ($this->request->query['item_size'] == 'undefined' ? "no size": $this->request->query['item_size']);
+			$size = ($this->request->query['item_size'] == 'undefined') ? "no size": $this->request->query['item_size'];
 			$item = Item::find('first', array(
 				'conditions' => array(
 					'_id' => "$itemId"),
