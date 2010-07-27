@@ -11,7 +11,7 @@ use MongoId;
  */
 class Item extends \lithium\data\Model {
 
-	public function collection() {
+	public static function collection() {
 		return static::_connection()->connection->items;
 	}
 	
