@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use \app\models\Cart;
+use \app\models\User;
 use \lithium\storage\Session;
 
 /**
@@ -18,8 +19,13 @@ class BaseController extends \lithium\action\Controller
 		$this->set(compact('userInfo'));
 
 		$cartCount = Cart::itemCount();
-
-		$this->set(compact('cartCount'));
+		$user = User::find('first', array(
+			'conditions' => array(
+				'_id' => $userInfo['_id']),
+			'fields' => array('total_credit')
+		));
+		$credit = ($user->total_credit > 0) ? $user->total_credit : 0;
+		$this->set(compact('cartCount', 'credit'));
 
 		$this->_render['layout'] = 'main';
 		parent::_init();

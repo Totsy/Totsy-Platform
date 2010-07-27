@@ -53,7 +53,7 @@
 				<p class="clear">
 					<span class="fl">
 						<a href="#" id="credits" title="My Credits">My Credits</a>
-						($100)
+						($<?=$credit?>)
 					</span>
 					<?=$this->html->link('Cart', '#', array(
 						'id' => 'cart', 'title' => 'My Cart'
