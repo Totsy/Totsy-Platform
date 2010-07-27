@@ -23,7 +23,10 @@ class ItemsController extends BaseController {
 			if (!$item) {
 				$this->redirect('/');
 			} else {
-				$event = $item->event();
+				$event = Event::find('first', array(
+					'conditions' => array(
+						'item' => $item->event
+				)));
 				$related = $item->related();
 				$sizes = $item->sizes();
 				$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];

@@ -1,8 +1,6 @@
 <?php
 
 namespace app\models;
-
-use app\models\Event;
 use MongoId;
 
 /**
@@ -13,13 +11,6 @@ class Item extends \lithium\data\Model {
 
 	public static function collection() {
 		return static::_connection()->connection->items;
-	}
-	
-	public function event($item) {
-		if (!is_array($item->event) || !$item->event) {
-			return null;
-		}
-		return Event::first(reset($item->event));
 	}
 
 	public function related($item) {
