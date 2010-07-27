@@ -40,18 +40,16 @@ $mongousers = $mongoconn->$mongodbname->users;
 /////////////////////////////////////////////////////////////
 
 // get cursor of user ids for all this nonsense
-$users = $mongousers->find()->limit(2);
+$users = $mongousers->find();
 
 // reset cursor, just in case
 $users->rewind();
 
 // loop through all user documents, adding each missing element
 foreach($users AS $user){
-	// move dates from strings to MongoDate() objects, save as _orig
-	$user['created_orig'] = $user['created'];
-	$user['created'] = new MongoDate(strtotime($user['created']));
-	$user['updated_orig'] = $user['updated'];
-	$user['updated'] = new MongoDate(strtotime($user['updated']));
+	// move dates from strings to MongoDate() objects
+	$user['created'] = new MongoDate(strtotime($user['created_orig']));
+	$user['updated'] = new MongoDate(strtotime($user['updated_orig']));
 	// determine if they are an affiliate or not
 	if($user['first_name'] == 'Affiliate'){
 		$user['affiliate'] = 1;
@@ -67,11 +65,17 @@ foreach($users AS $user){
 	  exit;
 	}
 	$invitationcodes = pg_fetch_all($result);
-	foreach($invitationcodes AS $invitationcode){
-		$codes[] = $invitationcode['code'];
-		$ids[] = $invitationcode['id'];
+	// do they have an invitation code?
+	if(count($invitationcodes) < 1)
+	{
+		//echo $user['email'] . " has no invitation codes.\n";
+	} else {
+		foreach($invitationcodes AS $invitationcode){
+			$codes[] = $invitationcode['code'];
+			$ids[] = $invitationcode['id'];
+		}
+		$user['invitation_codes'] = $codes;
 	}
-	$user['invitation_codes'] = $codes;
 	//
 	// fetch invitations
 	//
@@ -83,32 +87,41 @@ foreach($users AS $user){
 	  exit;
 	}
 	$invitations = pg_fetch_all($result1);
-	foreach($invitations AS $invitation){
-		if($invitation['invited_customer_id'] == $user['_id']){
-			$invitation['status'] = 'Ignored';
-		}elseif($invitation['invited_customer_id'] == ''){
-			$invitation['status'] = 'Sent';
-		}else{
-			$invitation['status'] = 'Accepted';
-			//unset($invitation['invited_customer_id']);
+	//debug($invitations);
+	// are there any invitations for this user?
+	if((count($invitations) < 1) OR (!$invitations))
+	{
+		//echo $user['email'] . " needs to get off their butt and send some invitations.\n\n";
+	} else {
+		foreach($invitations AS $invitation){
+			if($invitation['invited_customer_id'] == $user['_id']){
+				$invitation['status'] = 'Ignored';
+			}elseif($invitation['invited_customer_id'] == ''){
+				$invitation['status'] = 'Sent';
+			}else{
+				$invitation['status'] = 'Accepted';
+				//unset($invitation['invited_customer_id']);
+			}
+			unset($invitation['invited_customer_id']);
+			$array_invitations[] = $invitation;
 		}
-		$array_invitations[] = $invitation;
 	}
 	$user['invitations'] = $array_invitations;
 		
 	//
 	// DEBUGGING OUTPUT
 	//
-	var_dump( $user );
-	echo "\n\n////////////////////////////////////////////////////////////////////////////\n\n";
+	//var_dump( $user );
+	//echo "\n\n////////////////////////////////////////////////////////////////////////////\n\n";
 
 	//
 	// update the user with an UPSERT
 	//
+	$userid = $user['_id'];
+	unset($user['_id']);
 	$mongousers->update(
-	        array('_id' => $user['_id']),
-	        array('$set' => $user),
-	        array("upsert" => true)
+	        array('_id' => $userid),
+	        array('$set' => $user)
 	        );
 	
 	//
