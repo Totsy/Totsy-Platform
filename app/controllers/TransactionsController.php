@@ -25,7 +25,7 @@ class TransactionsController extends \app\controllers\BaseController {
 		$user = Session::read('userLogin');
 		$billing = Address::menu($user, 'Billing');
 		$shipping = Address::menu($user, 'Shipping');
-		$cart = Cart::findAllBySession(Session::key());
+		$cart = Cart::active();
 
 		$tax = 0;
 		$shippingCost = 0;
