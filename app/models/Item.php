@@ -66,14 +66,16 @@ class Item extends \lithium\data\Model {
 	}
 	/**
 	 * When a customer purchases an item the sale count of the item.size
-	 * will be incremented. 
+	 * will be incremented. The available quantity for the item will at the same time be
+	 * decremented.
 	 */	
 	public static function sold($_id, $size, $quantity) {
 		if (!empty($_id) && ( (int) $quantity > 1)) {
 			$_id = new MongoId($_id);
 			return static::collection()->update(array(
 				'_id' => $_id),
-				 array('$inc' => array("sale_detail.$size.sale_count" => $quantity))
+				 array('$inc' => array("sale_detail.$size.sale_count" => $quantity)),
+				 array('$inc' => array("detail.$size" => -$quantity))
 			);
 		}
 		return false;

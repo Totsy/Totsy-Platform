@@ -56,7 +56,7 @@
 	
 		<h2 class="gray fl"><?php echo ('Address Book');?>
 
-		</h2>&nbsp; <? // =$this->html->link('Manage Addresses', '/addresses/view');?>
+		</h2>&nbsp;|&nbsp;<?=$this->html->link('Manage Addresses', '/addresses/view');?>
 		<div class="col-2">
 	
 			<div class="r-container box-2 fl">
@@ -65,14 +65,14 @@
 				<div class="r-box lt-gradient-1">
 					<h3 class="gray fl"><?php echo ('Primary Billing Address');?></h3>&nbsp;|&nbsp;
 					<?php if (!empty($billing)): ?>
-						<?=$this->html->link('Edit Address', "/addresses/edit/$billing->_id"); ?><br><br>
+						<?=$this->html->link('Edit', "/addresses/edit/$billing->_id"); ?><br><br>
 						<address>
 							<?=$billing->address?><br>
 							<?=$billing->address_2?><br>
 							<?=$billing->city?>, <?=$billing->state?>, <?=$billing->zip?>
 						<address>
 					<?php else: ?>
-						<?=$this->html->link('Add Address', "/addresses/add"); ?>
+						<?=$this->html->link('Add', "/addresses/add"); ?>
 					<?php endif ?>
 				</div>
 				<div class="bl"></div>
@@ -85,14 +85,14 @@
 				<div class="r-box lt-gradient-1">
 					<h3 class="gray fl"><?php echo ('Primary Shipping Address');?></h3>&nbsp;|&nbsp;
 					<?php if (!empty($shipping)): ?>
-						<?=$this->html->link('Edit Address', "/addresses/edit/$shipping->_id"); ?><br><br>
+						<?=$this->html->link('Edit', "/addresses/edit/$shipping->_id"); ?><br><br>
 						<address>
 							<?=$shipping->address?><br>
 							<?=$shipping->address_2?><br>
 							<?=$shipping->city?>, <?=$shipping->state?>, <?=$shipping->zip?>
 						<address>
 					<?php else: ?>
-						<?=$this->html->link('Add Address', "/addresses/add"); ?>
+						<?=$this->html->link('Add', "/addresses/add"); ?>
 					<?php endif ?>
 				</div>
 				<div class="bl"></div>
