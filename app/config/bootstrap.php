@@ -65,6 +65,7 @@ Environment::is(function($request) {
  */
 require __DIR__ . '/connections.php';
 
+
 /**
  * Error handling.
  */
@@ -104,6 +105,7 @@ require __DIR__ . '/bootstrap/cache.php';
 require __DIR__ . '/bootstrap/payments.php';
 
 require __DIR__ . '/bootstrap/mail.php';
+
 /**
  * This configures your session storage. The Cookie storage adapter must be connected first, since
  * it intercepts any writes where the `'expires'` key is set in the options array.
