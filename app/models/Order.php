@@ -31,7 +31,7 @@ class Order extends \lithium\data\Model {
 			))
 		));
 
-		$subTotal = array_sum($cart->map(function($item) { return $item->sale_retail; })->data());
+		$subTotal = array_sum($cart->subTotal());
 		$handling = Cart::shipping($cart, $shipping);
 		$tax = array_sum($cart->tax($shipping));
 
