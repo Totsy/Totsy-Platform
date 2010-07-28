@@ -25,21 +25,75 @@ use lithium\net\http\Router;
 						To ensure delivery to your inbox, please add <a href="#" title="Totsy Support Address" style="color:#E00000">support@totsy.com</a> to your address book
 					</td>
 				</tr>
-				<tr>
-					<!-- Remember to add absolute file paths to all images for production -->
+					<tr>
 					<td width="180">
-						<a href="#" title="Totsy.com">
-							<img src="../../img/email/email-logo.jpg" alt="Totsy" width="180" height="116" />
-						</a>
+						<?=$this->html->link(
+							$this->html->image(
+								"$data[domain]/img/email/email-logo.jpg",
+								array(
+									'width'=>'180',
+									'height'=>'116'
+								)),
+								'',
+								array(
+									'id' => 'Totsy',
+									'escape'=> false
+								)
+							);
+						?>
 					</td>
 					<td width="65">
-						<a href="#" title="Current Totsy Sales"><img src="../../img/email/sales-btn.jpg" alt="Current Totsy Sales" width="65" height="116" /></a>
+						<?=$this->html->link(
+							$this->html->image(
+								"$data[domain]/img/email/sales-btn.jpg",
+								array(
+									'width'=>'65',
+									'height'=>'116',
+									'title' => 'Current Totsy Sales'
+								)),
+								"$data[domain]/sales", 
+								array(
+									'id' => 'Totsy',
+									'escape'=> false
+								)
+							);
+						?>
 					</td>
 					<td width="111">
-						<a href="#" title="Access My Account"><img src="../../img/email/account-btn.jpg" alt="Access My Account" width="111" height="116" /></a>
+						<?=$this->html->link(
+							$this->html->image(
+								"$data[domain]/img/email/account-btn.jpg",
+								array(
+									'width'=>'111',
+									'height'=>'116',
+									'title' => 'Access My Account',
+									'alt' => 'Access My Account'
+								)),
+								"$data[domain]/sales",
+								array(
+									'id' => 'Totsy', 
+									'escape'=> false
+								)
+							);
+						?>
 					</td>
 					<td width="236">
-						<a href="#" title="Invite Friends to Totsy"><img src="../../img/email/invite-btn.jpg" alt="Invite Friends to Totsy" width="236" height="116" /></a>
+						<?php echo $this->html->link(
+							$this->html->image(
+								"$data[domain]/img/email/invite-btn.jpg",
+								array(
+									'width'=>'236',
+									'height'=>'116',
+									'alt' => 'Invite Friends to Totsy'
+								)),
+								"$data[domain]/sales", 
+								array(
+									'id' => 'Totsy',
+									'escape'=> false,
+									'title' => 'Invite Friends to Totsy'
+								)
+							);
+						?>
 					</td>
 				</tr>
 				<tr>
@@ -48,6 +102,14 @@ use lithium\net\http\Router;
 						<tr>
 							<td colspan="4" style="padding:0 10px 10px 10px">
 								<img src="../../img/email/welcome_mainpic.jpg" alt="welcome_mainpic" width="570" height="178" />
+								<?=$this->html->image(
+									"$data[domain]/img/email/welcome_mainpic.jpg",
+									array(
+										'width'=>'570',
+										'height'=>'178',
+										'alt' => 'welcome_mainpic'
+									)); 
+								?>
 							</td>
 						</tr>
 						<tr>
@@ -80,7 +142,14 @@ use lithium\net\http\Router;
 				</tr>
 				<tr>
 					<td colspan="4" style="">
-						<img src="../../img/email/footer-image.jpg" alt="footer-image" width="592" height="150" />
+						<?php echo $this->html->image(
+							"$data[domain]/img/email/footer-image.jpg",
+							array(
+								'width'=>'592',
+								'height'=>'150',
+								'alt' => 'Totsy'
+							));
+						?>
 					</td>
 				</tr>
 				<tr>
