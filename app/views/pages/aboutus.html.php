@@ -1,7 +1,10 @@
+<?php $this->title("My Invitations "); ?>
+<h1 class="p-header">About Us</h1>
+			
 <?=$this->menu->render('about'); ?>
 
-<h1 class="p-header"><?=$this->title("About Us"); ?></h1>
-			
+<div id="middle" class="noright">
+
 <div class="tl"><!-- --></div> 
 <div class="tr"><!-- --></div> 
 
@@ -41,9 +44,5 @@
 </div> 
 <div class="bl"><!-- --></div> 
 <div class="br"><!-- --></div> 
-
-		</div> 
-
-	</div> 
 
 </div>
