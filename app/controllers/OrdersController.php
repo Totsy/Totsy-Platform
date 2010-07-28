@@ -40,7 +40,17 @@ class OrdersController extends BaseController {
 		$user = Session::read('userLogin');
 		$billing = Address::menu($user, 'Billing');
 		$shipping = Address::menu($user, 'Shipping');
-		$cart = Cart::active();
+		$fields = array(
+			'item_id',
+			'category',
+			'description',
+			'product_weight',
+			'quantity',
+			'sale_retail',
+			'size',
+			'url'
+		);
+		$cart = Cart::active(array('fields' => $fields));
 
 		$tax = 0;
 		$shippingCost = 0;

@@ -53,11 +53,6 @@ class Order extends \lithium\data\Model {
 		$inc = 0;
 		foreach ($cart as $item) {
 			$item['line_number'] = $inc;
-			unset($item['created']);
-			unset($item['expires']);
-			unset($item['_id']);
-			unset($item['session']);
-			unset($item['primary_images']);
 			$item['status'] = 'Order Placed';
 			$items[] = $item;
 			++$inc;
