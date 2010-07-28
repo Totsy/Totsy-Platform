@@ -88,7 +88,7 @@
 
 						<h2 class="invite-friends">Invite Friends Get $15</h2>
 
-						<a href="\invite" class="flex-btn" title="Invite Friends Now">Invite Now</a>
+						<a href="/invite" class="flex-btn" title="Invite Friends Now">Invite Now</a>
 
 						<div class="hor-div-line"><!-- --></div>
 
