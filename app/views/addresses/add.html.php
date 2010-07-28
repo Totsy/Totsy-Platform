@@ -74,7 +74,7 @@
 			<label for="city" class='required'>States <span>*</span></label>
 			<select>
 
-    		<option>Choose a States</option>
+    		<option>Choose a State</option>
 
     		<optgroup label="United States">
      
