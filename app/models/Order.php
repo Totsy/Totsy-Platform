@@ -6,7 +6,7 @@ use MongoId;
 use li3_payments\extensions\Payments;
 use li3_payments\extensions\payments\exceptions\TransactionException;
 
-class Transaction extends \lithium\data\Model {
+class Order extends \lithium\data\Model {
 
 	public $validates = array(
 		'authKey' => 'Could not secure payment.'

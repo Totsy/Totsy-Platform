@@ -103,7 +103,7 @@
 				<strong>Refund &amp; Return Policy</strong><br />
 			</td>
 			<td class="cart-button" colspan="2">
-				<?=$this->html->link('Buy Now', 'Transactions::add', array('class' => 'flex-btn')); ?>
+				<?=$this->html->link('Buy Now', 'Orders::add', array('class' => 'flex-btn')); ?>
 			</td>
 			</tbody>
 		</table>

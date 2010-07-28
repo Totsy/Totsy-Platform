@@ -7,24 +7,34 @@ use app\models\Cart;
 use app\models\Item;
 use app\models\Credit;
 use app\models\Address;
-use app\models\Transaction;
+use app\models\Order;
 use lithium\storage\Session;
 
-class TransactionsController extends \app\controllers\BaseController {
+class OrdersController extends \app\controllers\BaseController {
 
 	protected function _init() {
 		parent::_init();
 		$this->_render['layout'] = 'main';
 	}
+	
+	public function index() {
+		$user = Session::read('userLogin');
+		$orders = Order::find('all', array(
+			'conditions' => array(
+				'user_id' => (string) $user['_id']
+		)));
 
+		return (compact('orders'));	
+	}
+	
 	public function view() {
-		$transaction = Transaction::first($this->request->id);
-		return compact('transaction');
+		$transaction = Order::first($this->request->id);
+		return compact('order');
 	}
 
 	public function add() {
 		$data = $this->request->data;
-		$order = Transaction::create();
+		$order = Order::create();
 		$user = Session::read('userLogin');
 		$billing = Address::menu($user, 'Billing');
 		$shipping = Address::menu($user, 'Shipping');
@@ -81,7 +91,7 @@ class TransactionsController extends \app\controllers\BaseController {
 					Credit::add($credit, $user->invited_by, Credit::INVITE_CREDIT, "Invitation");
 				}
 			}
-			return $this->redirect(array('Transactions::view', 'id' => (string) $order->_id));
+			return $this->redirect(array('Orders::view', 'id' => (string) $order->_id));
 		}
 		return $vars + compact('order');
 	}
