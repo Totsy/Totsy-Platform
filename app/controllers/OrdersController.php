@@ -42,6 +42,7 @@ class OrdersController extends BaseController {
 		$shipping = Address::menu($user, 'Shipping');
 		$fields = array(
 			'item_id',
+			'color',
 			'category',
 			'description',
 			'product_weight',
