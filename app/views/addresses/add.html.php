@@ -71,8 +71,8 @@
 			</div> 
 			
 			<div class="form-row"> 
-			<label for="city" class='required'>States <span>*</span></label>
-			<select>
+			<label for="state" class='required'>States <span>*</span></label>
+			<select name='state'>
 
     		<option>Choose a State</option>
 
