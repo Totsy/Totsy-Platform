@@ -136,9 +136,8 @@
 									<?php $invites = $accepted->invitations->data() ?>
 							<?php foreach ($invites as $key => $value): ?>
 									<tr class="alt<?php echo ( ($y++ % 2) == 1 ? 0 : 1); ?>">
-										<td><?=$value['friend']?></td>
-										<td><?=date('M-d-Y h:i:s', $value['member_created']->sec); ?></td>
-										<td><?=$value['credit']?></td>
+										<td><?=$value['email']?></td>
+										<td><?=date('M-d-Y h:i:s', $value['date_accepted']->sec); ?></td>
 									</tr>
 								<?php $x++ ?>
 							<?php endforeach ?>

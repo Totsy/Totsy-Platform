@@ -154,9 +154,7 @@
 		    </optgroup>
 		   
 		</select>
-			
-				<? //=$this->form->label('state', 'State/Province'); ?>
-				<? //=$this->form->text('state', array('class' => 'inputbox')); ?>
+
 			</div> 
 			
 			<div class="form-row"> 

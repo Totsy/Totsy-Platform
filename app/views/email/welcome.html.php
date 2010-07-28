@@ -101,7 +101,6 @@ use lithium\net\http\Router;
 					<table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-left:1px solid #666; border-right:1px solid #666">
 						<tr>
 							<td colspan="4" style="padding:0 10px 10px 10px">
-								<img src="../../img/email/welcome_mainpic.jpg" alt="welcome_mainpic" width="570" height="178" />
 								<?=$this->html->image(
 									"$data[domain]/img/email/welcome_mainpic.jpg",
 									array(

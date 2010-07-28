@@ -5,6 +5,7 @@ namespace app\models;
 use \lithium\data\Connections;
 use \lithium\storage\Session;
 use \MongoDate;
+use \MongoId;
 
 class User extends \lithium\data\Model {
 	
@@ -46,22 +47,6 @@ class User extends \lithium\data\Model {
 			unset($user->salt);
 		}
 	}
-
-	public static function invite($to, $message) {
-		$user = null;
-		foreach ($to as $value) {
-			$data[] = array(
-				'date_sent' => static::dates('now'),
-				'email' => $value,
-				'status' => 'unused'
-			);
-		}
-		if (static::push('invitations', $data)) {
-			$user = static::getUser(array('invitations', 'invite_code'));
-		}
-
-		return	$user;
-	}
 	/**
 	 * Lookup a user by either their email or username
 	 */
@@ -94,6 +79,7 @@ class User extends \lithium\data\Model {
 		$user->total_credit = $user->total_credit + $credit;
 		return $user->save();
 	}
+
 }
 
 

@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\controllers\BaseController;
 use app\models\User;
 use app\models\Menu;
+use app\models\Invitation;
 use \lithium\security\Auth;
 use \lithium\storage\Session;
 use app\extensions\Mailer;
@@ -37,7 +38,24 @@ class UsersController extends BaseController {
 							'invitation_code' => $invite_code
 					)));
 					if ($inviter) {
-						$data['invited_by'] = (string) $inviter->_id;
+						$invited = Invitation::find('first', array(
+							'conditions' => array(
+								'user_id' => (string) $inviter->_id,
+								'email' => $email
+						)))	;
+						if ($invited) {
+							$invite->status = 'Accepted';
+							$invite->date_updated = Invitation::dates('now');
+							$invite->save();
+							Invitation::reject($inviter->_id, $email);
+						} else {
+							$invitation = Invitation::create();
+							$invitation->user_id = $inviter->_id;
+							$invitation->email = $email;
+							$invitation->date_accepted = Invitation::dates('now');
+							$invitation->status = 'Accepted';
+							$invitation->save();
+						}
 					}
 				}
 				$success = $user->save($data);
@@ -219,33 +237,34 @@ class UsersController extends BaseController {
 	public function invite() {
 		$to = array();
 		$user = User::getUser();
+		$id = (string) $user->_id;
 		if ($this->request->data) {
 			$rawto = explode(',',$this->request->data['to']);
+			$message = $this->request->data['message'];
 			foreach ($rawto as $key => $value) {
 				$to[] = trim($value);
 			}
 			foreach ($to as $email) {
+				$invitation = Invitation::create();
+				Invitation::add($invitation, $id, $email);
 				Mailer::send(
 					'invite',
 					'You have been invited to Totsy.com!',
 					array('name' => '', 'email' => $email),
-					compact('user')
+					compact('user', 'message')
 				);
 			}
-			$message = $this->request->data['message'];
-			if(User::invite($to, $message)){
-				$flashMessage = "Your invitations have been sent";
-			}
+			$flashMessage = "Your invitations have been sent";
 		}
-		$open = User::find('first', array(
+		$open = Invitation::find('all', array(
 			'conditions' => array(
-				'invitations.status' => 'unused'),
-			'fields' => array('invitations')
+				'user_id' => (string) $user->_id,
+				'status' => 'Sent')
 		));
-		$accepted = User::find('first', array(
+		$accepted = Invitation::find('all', array(
 			'conditions' => array(
-				'invitations.status' => 'used'),
-			'fields' => array('invitations')
+				'user_id' => (string) $user->_id,
+				'status' => 'Accepted')
 		));
 		
 		return compact('user','open', 'accepted', 'flashMessage');
