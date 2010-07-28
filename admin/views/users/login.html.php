@@ -26,15 +26,13 @@
 			<h2>Admin Sign In</h2>
 			
 			<?=$this->form->create(null,array('id'=>'loginForm'));?>
-			<?=$this->form->field('username', array('class'=>"validate['required']  inputbox", 'id'=>"username"));?>
+			<?=$this->form->field('email', array('class'=>"validate['required']  inputbox", 'id'=>"email"));?>
 			<?=$this->form->field('password', array(
 					'class'=>"validate['required'] inputbox", 
 					'name' => 'password', 
 					'id' => 'password',
 					'type' => 'password'));?>
 			<?=$this->form->field('remember', array('id'=>"remember", 'type'=>"checkbox", 'class'=>"fl checkbox"));?>
-			
-			<?=$this->html->link('Forgot your password?','/remind', array('class'=>"md", 'title'=>"Forgot your password?"))?>
 			<br />
 			<?=$this->form->submit('Login', array('class'=>"flex-btn-2"));?>
 			<?=$this->form->end();?>

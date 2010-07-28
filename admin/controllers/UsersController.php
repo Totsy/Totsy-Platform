@@ -18,9 +18,6 @@ use lithium\data\Connections;
 */
 class UsersController extends \lithium\action\Controller {
 
-	public function index() {
-	}
-
 	/**
 	 * Performs login authentication for a user going directly to the database.
 	 * If authenticated the user will be redirected to the home page.
@@ -28,7 +25,6 @@ class UsersController extends \lithium\action\Controller {
 	 * @return string The user is prompted with a message if authentication failed.
 	 */
 	public function login() {
-		//new login layout to account for fullscreen image JL
 		$this->_render['layout'] = 'login';
 		$message = false;
 
@@ -55,29 +51,6 @@ class UsersController extends \lithium\action\Controller {
 	 */
 	private function writeSession($sessionInfo) {
 		return (Session::write('userLogin', $sessionInfo));
-	}
-
-	/**
-	 * 
-	 */
-	public function updatePassword()
-	{
-		//If there is a request
-			//New Passwords need to match
-	
-			//Get the user based on their session
-	
-			//If the user is legacy
-				//If password is correct via authIllogic
-					//Remove Salt
-					//Change password using sha1
-					//Set Legacy flag to 0
-				//else
-					//Message the user that the old password is incorrect
-			//else 
-				//Change the password using sha1
-			//Send user message that their password has been updated
-		
 	}
 }
 
