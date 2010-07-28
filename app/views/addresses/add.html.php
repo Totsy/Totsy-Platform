@@ -10,8 +10,7 @@
 }?>
 </p>
 	<h2 class="gray mar-b">Add/Edit Address</h2>
-	
-	<?=$this->form->create($address, array('id'=>'addressForm', 'class' => "fl"));?>
+	<?=$this->form->create($address, array('id'=>'addressForm', 'class' => "fl", 'action' => "$action/$address->_id"));?>
 		<fieldset> 
 			<legend class="no-show">New Address</legend> 
 			<div class="form-row">
