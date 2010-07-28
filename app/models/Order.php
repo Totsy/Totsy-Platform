@@ -55,6 +55,8 @@ class Order extends \lithium\data\Model {
 			$item['line_number'] = $inc;
 			unset($item['created']);
 			unset($item['expires']);
+			unset($item['_id']);
+			unset($item['session']);
 			unset($item['primary_images']);
 			$item['status'] = 'Order Placed';
 			$items[] = $item;
