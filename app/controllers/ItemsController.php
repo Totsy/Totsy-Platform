@@ -25,7 +25,8 @@ class ItemsController extends BaseController {
 			} else {
 				$event = Event::find('first', array(
 					'conditions' => array(
-						'items' => array((string) $item->_id)
+						'items' => array((string) $item->_id),
+						'active' => true
 				)));
 				$related = $item->related();
 				$sizes = $item->sizes();
