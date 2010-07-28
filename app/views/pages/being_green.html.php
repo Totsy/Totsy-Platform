@@ -1,6 +1,10 @@
+<?php $this->title("Being Green"); ?>
+<h1 class="p-header">About Us</h1>
+			
 <?=$this->menu->render('about'); ?>
 
-<h1 class="p-header"><?=$this->title("Being Green"); ?></h1>
+<div id="middle" class="noright">
+
 <div class="tl"><!-- --></div> 
 <div class="tr"><!-- --></div> 
 

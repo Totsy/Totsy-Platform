@@ -1,5 +1,3 @@
-<?=$this->menu->render('about'); ?>
-
 <style type="text/css">
 	#audrey {
 		margin-left: 15px;
@@ -9,7 +7,12 @@
 		border: 1px solid #fabca8;
 	}
 </style>
-<h1 class="p-header"><?=$this->title("Meet the Moms"); ?></h1>
+<?php $this->title("Meet the Moms"); ?>
+<h1 class="p-header">About Us</h1>
+			
+<?=$this->menu->render('about'); ?>
+
+<div id="middle" class="noright">
 
 <div class="tl"><!-- --></div> 
 <div class="tr"><!-- --></div> 

@@ -1,4 +1,4 @@
-<?php $this->title("My Invitations "); ?>
+<?php $this->title("About Us"); ?>
 <h1 class="p-header">About Us</h1>
 			
 <?=$this->menu->render('about'); ?>
