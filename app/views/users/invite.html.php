@@ -49,9 +49,9 @@
 										<?=$this->form->submit('Send', array('class' => 'flex-btn fr')); ?>
 									<?=$this->form->end(); ?>
 									<br><br><br>
-									<?php $invite = "http://totsy.com/invitation/$user->invitation_code";?>
+									<?php $invite = "/join/$user->invitation_code";?>
 									<p>Share this link with your friends</p>
-									<a href="#" title="Share this link with your friends" class="bold"><?=$invite?></a>
+									<a href="<?=$invite?>" title="Share this link with your friends" class="bold">http://www.totsy.com<?=$invite?></a>
 								</fieldset>
 						</div>
 						<div class="send-right r-container">

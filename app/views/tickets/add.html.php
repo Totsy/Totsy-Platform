@@ -1,4 +1,5 @@
 <?php $this->title("My Help Desk"); ?>
+<h1 class="p-header">My Account</h1>
 <?=$this->menu->render('left'); ?>
 
 <!-- Start Main Page Content -->
