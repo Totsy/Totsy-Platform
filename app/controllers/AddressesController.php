@@ -28,7 +28,7 @@ class AddressesController extends BaseController {
 		if (!empty($user)) {
 			$addresses = Address::find('all', array(
 				'conditions' => array(
-					'user_id' => $user['_id']
+					'user_id' => (string) $user['_id']
 			)));
 		}
 		return compact("addresses");
@@ -43,7 +43,7 @@ class AddressesController extends BaseController {
 		$address = Address::create();
 		$user = Session::read('userLogin');
 		if ($this->request->data) {
-			$count = Address::count(array('user_id' => $user['_id'] ));
+			$count = Address::count(array('user_id' => (string) $user['_id'] ));
 			if($count >= $this->_maxAddresses) {
 				$message = 'There are already 10 addresses registered. Please remove one first.';
 			} else {
@@ -58,6 +58,7 @@ class AddressesController extends BaseController {
 					array('user_id' => ((string) $user['_id']
 				)));
 				$status = $address->save($data);
+				$this->redirect('/addresses');
 			}
 		}
 		return compact('status', 'message', 'address');
