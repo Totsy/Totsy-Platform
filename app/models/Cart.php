@@ -71,6 +71,17 @@ class Cart extends \lithium\data\Model {
 	}
 
 	/**
+	 * Computes the subtotal of a cart item,  without tax.
+	 *
+	 * @param object $cart
+	 * @param object $shipping
+	 * @return float
+	 */
+	public function subTotal($cart) {
+		return $cart->sale_retail * $cart->quantity;
+	}
+
+	/**
 	 * Computes the sales tax for an individual item, based on the shipping destination.
 	 *
 	 * @param object $cart
