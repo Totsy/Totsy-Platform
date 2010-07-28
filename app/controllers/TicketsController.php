@@ -12,7 +12,7 @@ class TicketsController extends BaseController {
 	public function view() {
 		$user = Session::read('userLogin');
 		$ticket = Ticket::find('all', array(
-			'conditions' => array('username' => $user['username'])
+			'conditions' => array('email' => $user['email'])
 		));
 		return compact('ticket');
 	}
@@ -22,7 +22,7 @@ class TicketsController extends BaseController {
 		$user = Session::read('userLogin');
 		$transactions = Transaction::find('all', array(
 			'conditions' => array(
-				'username' => $user['username']
+				'email' => $user['email']
 		)));
 		if (!empty($transactions)) {
 			$first = "---Please select an order---";
