@@ -26,11 +26,10 @@
 								<fieldset>
 									<br>
 									<?=$this->form->create(); ?>
-										<?=$this->form->hidden('invitation_code', array('value' => 'ylveslecoq')); ?>
 										<?=$this->form->label('To:'); ?>
 										<?=$this->form->textarea('to', array(
 											'class' => 'inputbox',
-											'id' => 'to', 
+											'id' => 'recipient_list',
 											'style' => "width:320px",
 											'value' => 'Separate email addresses by commas',
 											'onblur' => "if(this.value=='') this.value='Separate email addresses by commas';",
@@ -82,7 +81,7 @@
 							<div class="bl"></div>
 							<div class="br"></div>
 						</div>
-						
+
 					</div>
 					<!-- End Send Invitations Tab -->
 						
@@ -172,3 +171,14 @@
 <script type="text/javascript" charset="utf-8">
 	$('.form')
 </script>
+<script type="text/javascript" charset="utf-8">
+	$('#invite-gmail, #invite-yahoo, #invite-outlook, #invite-aol, #invite-msn, #invite-others').click(function(){
+		$('#recipient_list').val('');
+		showPlaxoABChooser('recipient_list', '/pages/plaxo');
+	})
+</script>
+<script type="text/javascript" src="http://www.plaxo.com/css/m/js/util.js"></script>
+<script type="text/javascript" src="http://www.plaxo.com/css/m/js/basic.js"></script>
+<script type="text/javascript" src="http://www.plaxo.com/css/m/js/abc_launcher.js"></script>
+<script type="text/javascript"><!--
+//--></script>

@@ -235,14 +235,19 @@ class UsersController extends BaseController {
 	}
 
 	public function invite() {
-		$to = array();
+		$recipient_list = array();
 		$user = User::getUser();
 		$id = (string) $user->_id;
 		if ($this->request->data) {
 			$rawto = explode(',',$this->request->data['to']);
 			$message = $this->request->data['message'];
 			foreach ($rawto as $key => $value) {
-				$to[] = trim($value);
+				preg_match('/<(.*)>/', $value, $matches);
+				if ($matches) {
+					$to[] = $matches[1];
+				} else {
+					$to[] = trim($value);
+				}
 			}
 			foreach ($to as $email) {
 				$invitation = Invitation::create();
