@@ -83,6 +83,7 @@ class CartController extends BaseController {
 	}
 
 	public function update() {
+		$success = false;
 		if ($this->request->query) {
 			$data = $this->request->query;
 			$cart = Cart::find('first', array(
@@ -90,6 +91,7 @@ class CartController extends BaseController {
 					'_id' => $data['_id']
 			)));
 			$diff = $data['qty'] - $cart->quantity;
+			$cart->quantity = $data['qty'];
 			if ($cart->save()) {
 				$sucess = true;
 				Item::reserve($cart->item_id, $cart->size, $diff);
