@@ -25,7 +25,7 @@ class Address extends \lithium\data\Model {
 
 	public static function menu($user, $type) {
 		if (is_array($user) && isset($user['_id'])) {
-			$user = $user['_id'];
+			$user = (string) $user['_id'];
 		}
 		return static::find('list', array(
 			'conditions' => array('user_id' => $user) + compact('type'),
