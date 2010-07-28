@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use app\models\Ticket;
-use app\models\Transaction;
+use app\models\Order;
 use app\controllers\BaseController;
 use \lithium\storage\Session;
 
@@ -20,7 +20,7 @@ class TicketsController extends BaseController {
 	public function add() {
 		$ticket = Ticket::create();
 		$user = Session::read('userLogin');
-		$transactions = Transaction::find('all', array(
+		$transactions = Order::find('all', array(
 			'conditions' => array(
 				'email' => $user['email']
 		)));
