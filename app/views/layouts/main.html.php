@@ -52,7 +52,7 @@
 				<?=$this->html->link('Invite Friends. Get $15','/invite',array('title'=>'Invite Friends. Get $15', 'id'=>'if'));?>
 				<p class="clear">
 					<span class="fl">
-						<a href="#" id="credits" title="My Credits">My Credits</a>
+						<strong>My Credits</strong>
 						($<?=$credit?>)
 					</span>
 					<?=$this->html->link('Cart', '#', array(
@@ -60,7 +60,7 @@
 					)); ?>
 					<span class="fl">
 						(<?=$cartCount;?>)
-						<?=$this->html->link('Checkout', array('Transactions::add'), array(
+						<?=$this->html->link('Checkout', array('Orders::add'), array(
 							'id' => 'checkout', 'title' => 'checkout'
 						)); ?>
 		 	</span>

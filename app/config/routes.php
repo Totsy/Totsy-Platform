@@ -60,7 +60,6 @@ Router::connect('/help', 'Tickets::add');
 Router::connect('/shopping/cart', 'Cart::index');
 Router::connect('/shopping/checkout.{:type}', 'Orders::add');
 Router::connect('/shopping/checkout', 'Orders::add');
-Router::connect('/orders', 'Orders::index');
 
 /**
  * ...and connect the rest of 'Pages' controller's urls.

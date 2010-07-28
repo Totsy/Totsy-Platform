@@ -1,5 +1,6 @@
 <?php $this->title("My Orders"); ?>
-<?=$this->menu->render('left', array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'))); ?>
+<h1 class="p-header">My Orders</h1>
+<?=$this->menu->render('left'); ?>
 
 <div id="middle" class="noright">				
 	
@@ -36,52 +37,28 @@
 			</thead>
 			
 			<tbody>
-				<tr class="alt0">
-					<td>04-12-10</td>
-					<td>
+				
+				
 
-						<span class="tip">3434544</span>
-						<div class="tooltip">
-							<strong class="caps red">Order Placed With Totsy</strong><br />
-							Your order has been received and we are in the process of verifying all the information on your order. We will contact you if anything is wrong with your order or if we need more information. An email confirmation of your order is sent immediately to your inbox.
-						</div>
-						
-					</td>
-					<td>
-						Standard Issue Kangaroo Pocket Knit Sweater<br />
-						Color: Gray<br />
-						Size: S<br />
-						Quantity: 1
-					</td>
-					<td>Order Placed</td>
-					<td>
-						<p>Your order has shipped on 04-12-10 Via UPS Ground</p>
-					</td>
-				</tr>
-				
-				<tr class="alt1">
-					<td>04-12-10</td>
-					<td>
-						
-						<span class="tip">3434544</span>
-						<div class="tooltip">
-							<strong class="caps red">Order Placed With Totsy</strong><br />
-							Your order has been received and we are in the process of verifying all the information on your order. We will contact you if anything is wrong with your order or if we need more information. An email confirmation of your order is sent immediately to your inbox.
-						</div>
-						
-					</td>
-					<td>
-						Standard Issue Kangaroo Pocket Knit Sweater<br />
-						Color: Gray<br />
-						Size: S<br />
-						Quantity: 1
-					</td>
-					<td>Order Placed</td>
-					<td>
-						<p>Your order has shipped on 04-12-10 Via UPS Ground</p>
-					</td>
-				</tr>
-				
+				<?php foreach ($orders as $order): ?>
+					<tr class="alt$x">
+						<td><?=date('m-d-Y', $order->date_created->sec); ?></td>
+						<td>
+							<span class="tip"><?php echo strtoupper(substr((string)$order->_id, 0, 8));	?></span>
+						</td>
+						<?php if ($order->items): ?>
+							<?php $items = $order->items->data() ?>
+						<?php endif ?>
+						<td>
+						<?php foreach ($items as $item): ?>
+								<?=$item['description']?><br>
+								Color: <?=$item['color']?><br>
+								Size: <?=$item['size']?><br>
+								Quantity: <?=$item['quantity']?><br><br>
+						<?php endforeach ?>
+						</td>
+					</tr>
+				<?php endforeach ?>
 			</tbody>
 		
 		</table>
@@ -203,9 +180,7 @@
 	</div>
 	
 </div>
-<script type="text/javascript" src="../js/jquery-1.4.2.js"></script>
 <script type="text/javascript" src="../js/jquery.equalheights.js"></script>
-<script type="text/javascript" src="../js/jquery-ui-1.8.2.custom.min.js"></script>
 <script type="text/javascript" src="../js/jquery.tools.min.js"></script>
 
 <!-- This equals the hight of all the boxes to the same height -->

@@ -8,14 +8,10 @@ use app\models\Item;
 use app\models\Credit;
 use app\models\Address;
 use app\models\Order;
+use app\controllers\BaseController;
 use lithium\storage\Session;
 
-class OrdersController extends \app\controllers\BaseController {
-
-	protected function _init() {
-		parent::_init();
-		$this->_render['layout'] = 'main';
-	}
+class OrdersController extends BaseController {
 	
 	public function index() {
 		$user = Session::read('userLogin');
@@ -26,9 +22,15 @@ class OrdersController extends \app\controllers\BaseController {
 
 		return (compact('orders'));	
 	}
-	
+
 	public function view() {
-		$transaction = Order::first($this->request->id);
+		$user = Session::read('userLogin');
+
+		$order = Order::find('first', array(
+			'conditions' => array(
+				'_id' => $this->request->id,
+				'user_id' => (string) $user['_id']
+		)));
 		return compact('order');
 	}
 
