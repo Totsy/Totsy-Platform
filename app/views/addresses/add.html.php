@@ -40,18 +40,8 @@
 			</div> 
 			
 			<div class="form-row"> 
-				<?=$this->form->label('company', 'Company'); ?>
-				<?=$this->form->text('company', array('class' => 'inputbox')); ?>
-			</div> 
-			
-			<div class="form-row"> 
 				<?=$this->form->label('telephone', 'Telephone'); ?>
 				<?=$this->form->text('telephone', array('class' => 'inputbox')); ?>
-			</div> 
-			
-			<div class="form-row"> 
-				<?=$this->form->label('fax', 'Fax'); ?>
-				<?=$this->form->text('fax', array('class' => 'inputbox')); ?>
 			</div> 
 			
 			<div class="form-row"> 
