@@ -40,6 +40,7 @@ class AddressesController extends BaseController {
 	public function add() {
 		$status = '';
 		$message = '';
+		$action = 'add';
 		$address = Address::create();
 		$user = Session::read('userLogin');
 		if ($this->request->data) {
@@ -61,12 +62,12 @@ class AddressesController extends BaseController {
 				$this->redirect('/addresses');
 			}
 		}
-		return compact('status', 'message', 'address');
+		return compact('status', 'message', 'address', 'action');
 	}
 	
 	public function edit($_id) {
 		$message = '';
-
+		$action = 'edit';
 		//Use the add template and main layout
 		$this->_render['template'] = 'add';
 		$user = Session::read('userLogin');
@@ -86,7 +87,7 @@ class AddressesController extends BaseController {
 				$message = 'Address Updated';
 		}
 
-		return compact('message', 'address');
+		return compact('message', 'address', 'action');
 	}
 	
 	public function remove() {
