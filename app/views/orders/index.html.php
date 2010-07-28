@@ -21,15 +21,13 @@
 			<li class="shipped link" id="shipped-btn">Packaged Shipped To You</li>
 			<li class="recieved link" id="recieved-btn">Order Arrives At Your Home</li>
 		</ol>
-		
-		<h2 class="gray mar-b">My Orders</h2>
-
+		<?php if ($orders->data()): ?>
 		<table cellpadding="0" cellspacing="0" border="0" width="100%" class="order-table">
 		
 			<thead>
 				<tr>
 					<th width="10%">Order Date</th>
-					<th width="20%">Order ID</th>
+					<th width="10%">Order ID</th>
 					<th width="40%">Items </th>
 					<th width="20%">Status</th>
 					<th width="30%">Tracking</th>
@@ -37,12 +35,9 @@
 			</thead>
 			
 			<tbody>
-				
-				
-
 				<?php foreach ($orders as $order): ?>
 					<tr class="alt$x">
-						<td><?=date('m-d-Y', $order->date_created->sec); ?></td>
+						<td><?=date('m-d-y', $order->date_created->sec); ?></td>
 						<td>
 							<span class="tip"><?php echo strtoupper(substr((string)$order->_id, 0, 8));	?></span>
 						</td>
@@ -57,12 +52,20 @@
 								Quantity: <?=$item['quantity']?><br><br>
 						<?php endforeach ?>
 						</td>
+						<td>
+							<?php foreach ($items as $item): ?>
+									<?=$item['status']?><br>
+							<?php endforeach ?>
+						</td>
+						<td></td>
 					</tr>
 				<?php endforeach ?>
 			</tbody>
 		
 		</table>
-	
+		<?php else: ?>
+			<center><strong>You have have no orders.</strong></center>
+		<?php endif ?>
 	</div>
 	<div class="bl"></div>
 	<div class="br"></div>
