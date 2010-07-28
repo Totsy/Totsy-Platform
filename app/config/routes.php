@@ -56,10 +56,15 @@ Router::connect('/addresses/edit{:args}', 'Addresses::edit');
 Router::connect('/account/info', 'Users::info');
 Router::connect('/account/add/{:args}', 'Account::add');
 Router::connect('/invite', 'Users::invite');
-Router::connect('/help', 'Tickets::add');
 Router::connect('/shopping/cart', 'Cart::index');
 Router::connect('/shopping/checkout.{:type}', 'Orders::add');
 Router::connect('/shopping/checkout', 'Orders::add');
+
+/**
+* Taking this route out, as the menu helper is not ready
+* for custom routes.
+*/
+//Router::connect('/help', 'Tickets::add');
 
 /**
  * ...and connect the rest of 'Pages' controller's urls.
