@@ -18,8 +18,12 @@ class ItemsController extends BaseController {
 		if ($url == null) {
 			$this->redirect('/');
 		} else {
-			$conditions = array('enabled' => true) + compact('url');
-			$item = Item::first(compact('conditions'));
+			$item = Item::find('first', array(
+				'conditions' => array(
+					'enabled' => true,
+					'url' => $url),
+				'order' => array('modified_date' => 'DESC'
+			)));
 			if (!$item) {
 				$this->redirect('/');
 			} else {
