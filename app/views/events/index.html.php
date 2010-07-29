@@ -95,8 +95,8 @@
 						<h2 class="socialize-us">Socialize With Us</h2>
 						<br><br>
 						<div class="sm-icons">
-							<a href="http://facebook.com" title="Friend us on Facebook" class="sm-btn sm-facebook-md">Friend us on Facebook</a>
-							<a href="http://twitter.com" title="Follow us on Twitter" class="sm-btn sm-twitter-md">Follow us on Twitter</a>
+							<a href="http://www.facebook.com/pages/Totsy/141535723466" title="Friend us on Facebook" class="sm-btn sm-facebook-md">Friend us on Facebook</a>
+							<a href="http://twitter.com/MyTotsy" title="Follow us on Twitter" class="sm-btn sm-twitter-md">Follow us on Twitter</a>
 						</div>
 
 					</div>
