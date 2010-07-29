@@ -14,14 +14,14 @@
 		<fieldset> 
 			<legend class="no-show">New Address</legend> 
 			<div class="form-row">
-				<label for="type">Address Type</label> 
+				<label for="type" class="addresses">Address Type</label> 
 				<select name="type" value= "<?=$address->type; ?>"
 				  <option>Billing</option>
 				<option>Shipping</option>			  
 				</select>
 			</div>
 			<div class="form-row">
-				<label>Make Default</label> 
+				<label class="addresses">Make Default</label> 
 				<input type="radio" name="default" value="1" checked> Yes<br>
 				<input type="radio" name="default" value="0"> No
 			</div>
@@ -40,7 +40,7 @@
 			</div> 
 			
 			<div class="form-row"> 
-				<?=$this->form->label('telephone', 'Telephone'); ?>
+				<?=$this->form->label('telephone', 'Telephone', array('escape' => false,'class' => 'addresses')); ?>
 				<?=$this->form->text('telephone', array('class' => 'inputbox')); ?>
 			</div> 
 			
@@ -50,7 +50,7 @@
 			</div> 
 			
 			<div class="form-row"> 
-				<?=$this->form->label('address_2', 'Street Address 2'); ?>
+				<?=$this->form->label('address_2', 'Street Address 2', array('escape' => false,'class' => 'addresses')); ?>
 				<?=$this->form->text('address_2', array('class' => 'inputbox')); ?>
 			</div> 
 			
