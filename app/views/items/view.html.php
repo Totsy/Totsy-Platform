@@ -1,19 +1,17 @@
 <?=$this->html->script(array('jqzoom.pack.1.0.1','jquery.equalheights'));?>
 <?=$this->html->style('jquery.countdown');?>
-<?=$this->title($item->description);?>
+
 
 <div id="product-detail-right">
-	<div style="align:right" id="listingCountdown"></div><p class="mar-10-b" style="padding-right:10px;text-align:right"></p>
+	<div id="product-detail-right-top">
+	<?php $logo = $event->images->logo_image;?>
+		<?=$this->html->image("/image/$logo.jpg", array(
+			'alt' => 'Logo ALT Tag', 'width' => "148", 'height' => "52"
+		)); ?>
+		<div id="listingCountdown" class="listingCountdown"></div>
+	</div>
 	<div id="detail-top-left">
-		<?php if ($event): ?>
-			<?php if ($event->logo_image): ?>
-				<?=$this->html->image("/image/$event->logo_image.jpg", array(
-					'alt' => 'Logo ALT Tag', 'width' => "148", 'height' => "52"
-				));
-				?>
-			<?php endif ?>
-		<?php endif ?>
-		<h1><?=$item->description." ".$item->color; ?></h1>
+		<h1><strong><?=$event->name?></strong> <?=$item->description." ".$item->color; ?></h1>
 
 		<div class="product-detail-attribute">
 
@@ -30,8 +28,9 @@
 		</div>
 	</div>
 	<?=$this->form->hidden("item_id", array('value' => "$item->_id", 'id'=>'item_id')); ?>
+	
 	<div id="detail-top-right" class="r-container">
-
+   
 		<div class="tl"></div>
 		<div class="tr"></div>
 		<div class="md-gray p-container">
@@ -39,8 +38,7 @@
 			<h2 class="caps">$<?=number_format($item->sale_retail,2); ?><br />Totsy Price</h2>
 	
 			<p class="caps">
-				<strike>$<?=number_format($item->msrp,2); ?><br />Original Price</strike>
-			</p>
+				$<?=number_format($item->msrp,2); ?><br />Original</p>
 			<button class="flex-btn" id='item-submit'>Buy Now</button>
 		</div>
 		<div class="bl"></div>
@@ -78,12 +76,15 @@
 
 		<!-- Start Shipping Tab -->
 		<div id="shipping" class="ui-tabs-hide">
-		    <p><strong>Shipping:</strong> Totsy will ship this item via Standard UPS or Standard US Mail shipping based on your selection at the end of the <?=$this->html->link('checkout process', array('Orders::checkout')); ?>. Complete shipping details are available at <?=$this->html->link('checkout', array('Orders::checkout')); ?>.</p>
+		
+		<strong>Shipping:</strong>Totsy will ship this item via Standard UPS or Standard US Mail shipping based on your selection at the end of your <?=$this->html->link('checkout process', array('Orders::checkout')); ?>.
+		Complete shipping details are available at <?=$this->html->link('shipping terms', array('Pages::shipping')); ?>.
 
-			<p>We can also provide expedited shipping. Want to learn more? Check out our <?=$this->html->link('shipping terms', array('Pages::shipping')); ?>.</p>
+		<p><strong>Returns:</strong> Totsy accept returns on selected items only. You will get a merchandise credit and free shipping (AK &amp; HI: air shipping rates apply). Simply be sure that we receive the merchandise you wish to return within 30 days from the date you originally received it in its original condition with all the packaging intact. Please note: Final Sale items cannot be returned. Want to learn more? Read more in our <?=$this->html->link('returns section', array('Pages::returns')); ?>.</p>
 
-			<p><strong>Returns:</strong> Totsy accept returns on selected items only. You will get a merchandise credit and free shipping (AK &amp; HI: air shipping rates apply). Simply be sure that we receive the merchandise you wish to return within 30 days from the date you originally received it in its original condition with all the packaging intact. Please note: Final Sale items cannot be returned. Want to learn more? Read more in our <?=$this->html->link('returns section', array('Pages::returns')); ?>.</p>
-		</div>
+		
+		    
+				</div>
 		<!-- End Shipping Tab -->
 
 		<!-- Start Video Tab -->
@@ -127,17 +128,6 @@
 </div>
 
 <div id="product-detail-left">
-
-	<p class="mar-10-b" style="padding-left:10px">
-		<?php if ($event): ?>
-			<?=$this->html->link('< Click here for sale page', array(
-				'Events::view',
-				'args' => "$event->url"
-				));
-			?>
-		<?php endif ?>
-
-	</p>
 
 	<!-- Start product item -->
 	<div class="r-container">
@@ -212,9 +202,9 @@
 
 <script type="text/javascript"> 
 $(function () {
-var saleEnd = new Date();
-saleEnd = new Date(<?php if($event) {echo $event->end_date->sec * 1000;}?>);
-$('#listingCountdown').countdown({until: saleEnd, layout:'SALE ENDS in {dn} {dl} {hn} {hl} and {mn} {ml}'});
+	var saleEnd = new Date();
+	saleEnd = new Date(<?php echo $event->end_date->sec * 1000?>);
+	$('#listingCountdown').countdown({until: saleEnd, layout: 'Closes in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
 });
 </script>
 <script type="text/javascript">
