@@ -22,7 +22,7 @@
 					<input type="text" id="title" class="inputbox" name="title" style="width:300px" />
 					<br />
 					<label for="order">Assign order</label><br />
-						<?=$this->form->select('order', $orders, array('style'=>'width:310px')); ?>
+						<?=$this->form->select('order', $orders, array('style' => 'width:310px')); ?>
 					<br />
 					<label for="message">Message</label><br />
 					<?=$this->form->textarea('message', array(
