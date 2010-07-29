@@ -39,7 +39,12 @@
 					<tr class="alt$x">
 						<td><?=date('m-d-y', $order->date_created->sec); ?></td>
 						<td>
-							<span class="tip"><?php echo strtoupper(substr((string)$order->_id, 0, 8));	?></span>
+							<?=$this->html->link(strtoupper(substr((string)$order->_id, 0, 8)), array(
+								'Orders::view',
+								'args' => (string) $order->_id
+								));
+							?>
+
 						</td>
 						<?php if ($order->items): ?>
 							<?php $items = $order->items->data() ?>
@@ -53,9 +58,7 @@
 						<?php endforeach ?>
 						</td>
 						<td>
-							<?php foreach ($items as $item): ?>
-									<?=$item['status']?><br>
-							<?php endforeach ?>
+							<?=$items[0]['status']?>
 						</td>
 						<td></td>
 					</tr>
