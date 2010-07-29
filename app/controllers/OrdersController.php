@@ -49,7 +49,8 @@ class OrdersController extends BaseController {
 			'quantity',
 			'sale_retail',
 			'size',
-			'url'
+			'url',
+			'primary_images'
 		);
 		$cart = Cart::active(array('fields' => $fields));
 
