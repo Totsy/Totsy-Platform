@@ -22,8 +22,9 @@ class EventsController extends BaseController {
 		return compact('openEvents', 'pendingEvents', 'itemCounts');
 	}
 
-	public function view($url = null) {
+	public function view() {
 		$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		$url = $this->request->item;
 
 		if ($url == 'comingsoon') {
 			$this->_render['template'] = 'soon';

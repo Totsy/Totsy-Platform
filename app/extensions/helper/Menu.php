@@ -33,7 +33,7 @@ class Menu extends \lithium\template\Helper {
 	public function render($key, array $options = array()) {
 		$defaults = array('block' => false);
 		$options += $defaults;
-		$cur = $this->_context->request()->params;
+		$cur = $base = $this->_context->request()->params;
 
 		if ($cur['controller'] == 'pages' && $cur['action'] == 'view' && isset($cur['args'][0])) {
 			$cur = array('controller' => $cur['controller'], 'action' => $cur['args'][0]);
@@ -42,6 +42,9 @@ class Menu extends \lithium\template\Helper {
 		}
 		if ($cur['action'] == 'index') {
 			unset($cur['action']);
+		}
+		if (isset($base['item'])) {
+			$cur['item'] = $base['item'];
 		}
 		$model = $this->_classes['menu'];
 		$menu = $model::first(array('conditions' => compact('key')));
@@ -111,7 +114,9 @@ class Menu extends \lithium\template\Helper {
 			$query = array('fields' => array('name', 'url'));
 			$item->items = $event::open($query)->map(function($item) use ($menu) {
 				return $menu::create(array(
-					'label' => $item->name, 'url' => "/events/view/{$item->url}"
+					'label' => $item->name, 'url' => array(
+						'controller' => 'events', 'action' => 'view', 'item' => $item->url
+					)
 				));
 			});
 			$item->items->first()->class = 'first';
