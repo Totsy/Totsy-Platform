@@ -77,7 +77,7 @@ input.inputbox,textarea.inputbox{background:#FFF;border:1px solid #CCC;padding:5
 input.invalid{border:1px solid #FF3300}
 label.invalid{color:#FF3300}
 
-label.required span{color:#EB132C;font-weight:bold}
+
 
 div.pagination{overflow:hidden;margin-bottom:10px;font-size:.9em;padding:0 10px}
 div.pagination span{display:block;float:left;margin-right:5px}
@@ -704,6 +704,9 @@ body.login .login-sig{text-align:center}
 .form-row{overflow:hidden;margin:3px 0}
 .form-row label{display:block;width:100px;float:left;line-height:30px;font-weight:normal}
 .form-row .inputbox{margin-right:20px;float:left}
+label.required span{color:#EB132C;font-weight:bold}
+label.required {display:block;width:120px;float:left;line-height:30px;font-weight:normal}
+.form-row label.addresses{display:block;width:120px;float:left;line-height:30px;font-weight:normal}
 .submit-row{margin:20px 0 0 0;overflow:hidden}
 .reg-tos{display:block;float:left;width:350px;line-height:normal;margin-right:30px}
 
