@@ -58,7 +58,7 @@ class Order extends \lithium\data\Model {
 		}
 		try {
 			return $transaction->save(compact('total', 'subTotal', 'tax', 'handling') + array(
-				'user_id' => new MongoId((string) $user['_id']),
+				'user_id' => (string) $user['_id'],
 				'card_type' => $card->type,
 				'card_number' => substr($card->number, -4),
 				'date_created' => static::dates('now'),
