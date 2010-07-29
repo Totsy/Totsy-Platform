@@ -21,6 +21,18 @@ class Order extends \lithium\data\Model {
 	     return new MongoDate(time() + static::_object()->_dates[$name]);
 	}
 
+	/**
+	 * Produces a text summary of an order to be used in a menu.
+	 *
+	 * @param object $order
+	 * @return string
+	 */
+	public function summary($order) {
+		return array(
+			(string) $order->_id => $order->total . ', ' . $order->items->{0}->description
+		);
+	}
+
 	public function process($transaction, $user, $data, $cart) {
 		foreach (array('billing', 'shipping') as $key) {
 			$addr = $data[$key];

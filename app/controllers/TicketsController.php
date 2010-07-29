@@ -20,19 +20,14 @@ class TicketsController extends BaseController {
 	public function add() {
 		$ticket = Ticket::create();
 		$user = Session::read('userLogin');
-		$transactions = Order::find('all', array(
-			'conditions' => array(
-				'email' => $user['email']
-		)));
-		if (!empty($transactions)) {
-			$first = "---Please select an order---";
-			$orders = array($first);
-		} else {
-			$order = array();
-		}
+		$orders = Order::findAllByUserId((string) $user['_id'])->invoke('summary', array(), array(
+			'merge' => true
+		));
+
 		unset($user['password']);
 		unset($user['_id']);
 		$data = array_merge($this->request->data, $user);
+
 		if (($this->request->data) && $ticket->save($data)) {
 			$message = "Your ticket has been submitted to Totsy. Thank You!";
 		}
