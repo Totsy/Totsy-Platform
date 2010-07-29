@@ -19,13 +19,13 @@ class AccountController extends BaseController {
 			'conditions' => array(
 				'user_id' => $user['_id'],
 				'type' => "Billing",
-				'default' => '1'
+				'default' => true
 		)));
 		$shipping = Address::find('first', array(
 			'conditions' => array(
 				'user_id' => $user['_id'],
 				'type' => "Shipping",
-				'default' => '1'
+				'default' => true
 		)));
 
 		return compact('billing', 'shipping');
