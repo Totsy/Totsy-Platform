@@ -702,7 +702,7 @@ body.login .login-sig{text-align:center}
 .reg-list{margin:10px 0;font-size:12px}
 
 .form-row{overflow:hidden;margin:3px 0}
-.form-row label{display:block;width:120px;float:left;line-height:30px;font-weight:normal}
+.form-row label{display:block;width:100px;float:left;line-height:30px;font-weight:normal}
 .form-row .inputbox{margin-right:20px;float:left}
 .submit-row{margin:20px 0 0 0;overflow:hidden}
 .reg-tos{display:block;float:left;width:350px;line-height:normal;margin-right:30px}
