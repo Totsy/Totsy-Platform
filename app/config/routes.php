@@ -60,6 +60,8 @@ Router::connect('/shopping/cart', 'Cart::index');
 Router::connect('/shopping/checkout.{:type}', 'Orders::add');
 Router::connect('/shopping/checkout', 'Orders::add');
 
+Router::connect('/events/view/{:item:[a-z0-9\-]+}', 'Events::view');
+
 /**
 * Taking this route out, as the menu helper is not ready
 * for custom routes.
