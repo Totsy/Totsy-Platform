@@ -128,61 +128,62 @@ tinyMCE.init({
 	</table>
 	
 	<br>
-	<table border="1" cellspacing="30" cellpadding="30">
-	<tr>
-		<th align="justify">
-			Image Preview
-		</th>
-		<th align="center">
-			Primary Product Image
-		</th>
-		<th align="center">
-			Secondary Product Image
-		</th>
-	</tr>
+<?php if ($item->large_zoom_image || $item->small_zoom_image || $item->alternate_images): ?>
 
-
-	<?php
-		if (!empty($item->primary_images) && !empty($item->secondary_images)) {
-
-			$intersect = array_intersect_key($item->secondary_images, $item->primary_images);
-
-			
-		}
-
-		if (!empty($item->primary_images)):
-			foreach ($item->primary_images as $value) : ?>
-			<tr>
-				<td align="center">
-					<?=$this->html->image("/image/$value.jpg", array('alt' => 'altText')); ?>
-				</td>
-				<td align="center">
-					<input type="checkbox" name="primary-<?=$value;?>" value="<?=$value;?>" checked>
-				</td>
-				<td align="center">
-					<input type="checkbox" name="secondary-<?=$value;?>" value="<?=$value;?>">
-				</td>
-			</tr>
-			<?php endforeach; ?>
-		<?php endif; ?>
-		<?php
-			if (!empty($item->secondary_images)):
-				foreach ($item->secondary_images as $value): ?>
+		<table border="1" cellspacing="30" cellpadding="30">
+			<th align="justify">
+				Image Preview
+			</th>
+			<th align="center">
+				Zoom Image
+			</th>
+			<th align="center">
+				Primary Image
+			</th>
+			<th align="center">
+				Alternate Image
+			</th>
+			<?php if ($item->zoom_image): ?>
 				<tr>
 					<td align="center">
-						<?=$this->html->image("/image/$value.jpg", array('alt' => 'altText')); ?>
+						<?=$this->html->image("/image/$item->zoom_image.jpg", array('alt' => 'altText')); ?>
 					</td>
 					<td align="center">
-						<input type="checkbox" name="primary-<?=$value;?>" value="<?=$value;?>">
+						<input type="radio" name="zoom_image" value="<?=$item->zoom_image;?>" checked>
 					</td>
-					<td align="center">
-						<input type="checkbox" name="secondary-<?=$value;?>" value="<?=$value;?>" checked>
-					</td>
+					<td></td>
+					<td></td>
 				</tr>
-				<?php endforeach; ?>
-			<?php endif; ?>
+			<?php endif ?>
+			<?php if ($item->primary_image): ?>
+				<tr>
+					<td align="center">
+						<?=$this->html->image("/image/$item->primary_image.jpg", array('alt' => 'altText')); ?>
+					</td>
+					<td></td>
+					<td align="center">
+						<input type="radio" name="primary_image" value="<?=$item->primary_image;?>" checked>
+					</td>
+					<td></td>
+				</tr>
+			<?php endif ?>
+			<?php
+				if (!empty($item->alternate_images)):
+					foreach ($item->alternate_images as $value): ?>
+					<tr>
+						<td align="center">
+							<?=$this->html->image("/image/$value.jpg", array('alt' => 'altText')); ?>
+						</td>
+						<td></td>
+						<td></td>
+						<td align="center">
+							<input type="checkbox" name="alternate-<?=$value;?>" value="<?=$value;?>" checked>
+						</td>
+					</tr>
+					<?php endforeach; ?>
+				<?php endif; ?>
 	</table>
-		
+<?php endif; ?>
 
 
 	<?=$this->form->submit('Update Item'); ?>
