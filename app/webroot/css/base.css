@@ -210,7 +210,7 @@ div.col-2 .box-2{width:48%}
 .img-th.active{border:4px solid #EB132C;margin:7px 3px 0 0}
 
 #product-detail-right{width:600px;float:right}
-#product-detail-right .sm-actions{margin:6px 0 0 0;position:relative;z-index:100}
+#product-detail-right .sm-actions{margin:6px 0 0 0;position:relative;z-index:100; padding-top:20px;}
 
 #detail-top-right{width:175px;float:right}
 #detail-top-right .p-container{padding:10px;text-align:center}
@@ -220,8 +220,8 @@ div.col-2 .box-2{width:48%}
 #detail-top-right .p-container button{font-size:12px;padding:10px 20px}
 
 #detail-top-left{width:425px;float:left}
-#detail-top-left h1{margin:10px 0 20px 0;color:#707070;font-size:22px}
-#detail-top-left label{display:block;width:50px;float:left}
+#detail-top-left h1{margin:10px 10px 20px 0;color:#707070;font-size:19px}
+#detail-top-left label{display:block;width:50px;float:left; padding-top:5px}
 #detail-top-left select{width:150px}
 #detail-top-left .product-detail-attribute{margin:0 0 20px 0}
 
@@ -255,7 +255,11 @@ ul.content-list{list-style:disc;margin:0 0 0 15px}
 .ui-widget{}
 .ui-widget .ui-widget{}
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {}
-.ui-widget-content{background:#FFF}
+.ui-widget-content{
+background:#FFF;
+padding-top:20px;
+
+}
 .ui-widget-content a{}
 .ui-widget-header a{}
 
@@ -583,7 +587,7 @@ color:#FFF;
 font-weight:bold
 }
 .cart-table td{
-padding:10px;
+padding:3px;
 vertical-align:top;
 border-bottom:1px solid #D7D7D7
 }
@@ -610,13 +614,23 @@ font-size:12px;
 line-height:16px;
 }
 tr.cart-total td{text-align:right;border-bottom:1px solid #D7D7D7;padding:10px}
-tr.cart-buy td{border:none;padding:10px}
+tr.cart-buy td{border:none;padding:5px}
 td.cart-button{text-align:right}
-.cart-remove{
+
+.cart-notes{
 	font-size:12px;
-	z-index:1;
 }
-a:link.delete,a:visited.delete{background:url(../img/cart-trash-btn.png) no-repeat;display:block;width:21px;height:21px;text-indent:-9999px}
+.cart-remove{
+padding:10px;
+color:#EB132C;
+}
+a:link.delete,a:visited.delete{
+background-image:url(../img/cart-trash-btn.png);
+background-repeat:no-repeat;
+width:21px;
+height:21px;
+padding-left:20px;
+}
 
 #checkout-process{margin:0}
 #checkout-process li.step{border-top:1px solid #D7D7D7;padding:10px 0 0 0}
