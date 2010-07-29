@@ -1,6 +1,9 @@
-<?=$this->menu->render('about', array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'))); ?>
+<?php $this->title("Press"); ?>
+<h1 class="p-header">About Us</h1>
+			
+<?=$this->menu->render('about'); ?>
 
-<h1 class="p-header"><?=$this->title("Press"); ?></h1> 
+<div id="middle" class="noright">
 
 <div class="tl"><!-- --></div> 
 <div class="tr"><!-- --></div> 

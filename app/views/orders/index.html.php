@@ -1,5 +1,5 @@
 <?php $this->title("My Orders"); ?>
-<h1 class="p-header">My Orders</h1>
+<h1 class="p-header">My Account</h1>
 <?=$this->menu->render('left'); ?>
 
 <div id="middle" class="noright">				
