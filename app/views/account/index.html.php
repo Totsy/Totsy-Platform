@@ -20,12 +20,12 @@
 				<div class="tl"></div>
 				<div class="tr"></div>
 				<div class="r-box lt-gradient-1">
-					<h3 class="gray fl"><?php echo ('Contact Information');?></h3>&nbsp;|&nbsp;<?=$this->html->link('Edit', '/account/info');?>
+					<h3 class="gray fl">Contact Information</h3>&nbsp;|&nbsp;<?=$this->html->link('Edit', '/account/info');?>
 					<br />
 					<br />
 					<?=$userInfo['firstname'].' '.$userInfo['lastname'] ?><br />
 					<?=$userInfo['email']?><br />
-					<a href="#" title="<?php echo ('Change Password');?>"><?php echo ('Change Password');?></a>
+					<?=$this->html->link('Change Password', '/account/info');?>
 				</div>
 				<div class="bl"></div>
 				<div class="br"></div>
