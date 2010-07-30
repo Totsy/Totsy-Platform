@@ -104,8 +104,18 @@
 					<div class="tl"></div>
 					<div class="tr"></div>
 					<div class="md-gray p-container">
+						<?php if ($item->total_quantity == 0): ?>
+								<?=$this->html->image('/img/soldout.gif', array(
+									'title' => "Sold Out",
+									'style' => 'z-index : 2; position : absolute; left:20%'
+								)); ?>
+						<?php endif ?>
 						<?=$this->html->link(
-							$this->html->image($productImage, array('alt' => $item->name, 'title' => $item->name, 'width' => '298', 'height' => '300')),
+							$this->html->image($productImage, array(
+								'alt' => $item->name,
+								'title' => $item->name,
+								'width' => '298',
+								'height' => '300')),
 							"/items/view/{$item->url}",
 							array('escape' => false)
 						); ?>

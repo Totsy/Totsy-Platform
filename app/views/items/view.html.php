@@ -39,7 +39,9 @@
 	
 			<p class="caps">
 				$<?=number_format($item->msrp,2); ?><br />Original</p>
-			<button class="flex-btn" id='item-submit'>Buy Now</button>
+			<?php if ($item->total_quantity != 0): ?>
+				<button class="flex-btn" id='item-submit'>Buy Now</button>
+			<?php endif ?>
 		</div>
 		<div class="bl"></div>
 		<div class="br"></div>
@@ -130,6 +132,12 @@
 		<div class="tl"></div>
 		<div class="tr"></div>
 		<div class="md-gray p-container loading" id="img-container">
+			<?php if ($item->total_quantity == 0): ?>
+					<?=$this->html->image('/img/soldout.gif', array(
+						'title' => "Sold Out",
+						'style' => 'z-index : 2; position : absolute; left:20%'
+					)); ?>
+			<?php endif ?>
 				<?php if (!empty($item->primary_image)): ?>
 					<div class="zoom-container show" id="full_img_1">
 				<?php echo $this->html->link($this->html->image("/image/{$item->primary_image}.jpg", array(
