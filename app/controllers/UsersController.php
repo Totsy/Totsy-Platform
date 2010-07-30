@@ -96,6 +96,13 @@ class UsersController extends BaseController {
 			//Grab User Record
 			$user = User::lookup($email);
 			if($user){
+				if (!empty($user->reset_token)) {
+					if (strlen($user->reset_token) > 1) {
+						$auth = (sha1($password) == $user->reset_token) ? true : false;
+						$sessionWrite = $this->writeSession($user->data());
+						$this->redirect('account/info');
+					}
+				}
 				if ($user->legacy == 1) {
 					$auth = $this->authIllogic($password, $user);
 					if ($auth == true) {
@@ -105,13 +112,6 @@ class UsersController extends BaseController {
 				} else {
 					// Try non-legacy user
 					$auth = Auth::check("userLogin", $this->request);
-				}
-				if (!empty($user->reset_token)) {
-					if (strlen($user->reset_token) > 1) {
-						$auth = (sha1($password) == $user->reset_token) ? true : false;
-						$sessionWrite = $this->writeSession($user->data());
-						$this->redirect('account/info');
-					}
 				}
 				if ($auth) {
 					$ipaddress = $this->request->env('REMOTE_ADDR');
