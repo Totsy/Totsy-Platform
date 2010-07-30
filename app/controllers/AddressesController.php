@@ -77,7 +77,7 @@ class AddressesController extends BaseController {
 			$address = Address::find('first', array(
 				'conditions' => array(
 					'_id' => $_id,
-					'user_id' => $user['_id']
+					'user_id' => (string) $user['_id']
 			)));
 			if(empty($address)) {
 				$this->redirect('/addresses/add');
