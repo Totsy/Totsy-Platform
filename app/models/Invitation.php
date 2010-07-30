@@ -19,11 +19,12 @@ class Invitation extends \lithium\data\Model {
 	     return new MongoDate(time() + static::_object()->_dates[$name]);
 	}
 	
-	public static function add($invitation, $id, $email) {
+	public static function add($invitation, $id, $code, $email) {
 		$invitation->user_id = $id;
 		$invitation->date_sent = static::dates('now');
 		$invitation->email = $email;
 		$invitation->status = 'Sent';
+		$invitation->invitation_code = $code;
 		return static::_object()->save($invitation);
 	}
 

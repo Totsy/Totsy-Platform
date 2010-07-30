@@ -28,7 +28,7 @@ class Event extends \lithium\data\Model {
 				'end_date' => array(
 					'$gt' => static::dates('now'))),
 			'fields' => $fields,
-			'order' => array('end_date' => 'ASC') 
+			'order' => array('start_date' => 'DESC')
 		));
 	}
 	/**

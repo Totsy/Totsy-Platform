@@ -35,7 +35,7 @@ class UsersController extends BaseController {
 				if ($invite_code) {
 					$inviter = User::find('first', array(
 						'conditions' => array(
-							'invitation_code' => $invite_code
+							'invitation_codes' => array($invite_code)
 					)));
 					if ($inviter) {
 						$invited = Invitation::find('first', array(
@@ -240,6 +240,7 @@ class UsersController extends BaseController {
 		$recipient_list = array();
 		$user = User::getUser();
 		$id = (string) $user->_id;
+		$code = $user->invitation_codes[0];
 		if ($this->request->data) {
 			$rawto = explode(',',$this->request->data['to']);
 			$message = $this->request->data['message'];
@@ -253,7 +254,7 @@ class UsersController extends BaseController {
 			}
 			foreach ($to as $email) {
 				$invitation = Invitation::create();
-				Invitation::add($invitation, $id, $email);
+				Invitation::add($invitation, $id, $code, $email);
 				Mailer::send(
 					'invite',
 					'You have been invited to Totsy.com!',
