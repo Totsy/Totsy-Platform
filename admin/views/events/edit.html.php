@@ -85,8 +85,9 @@ tinyMCE.init({
 
 </script>
 
-<?=$this->html->link('See Event List','/events')?>
 
+<h1 id="event">Editing Event - <?=$event->name?> </h1>
+<?=$this->html->link('Return to Event List','/events')?>
 <div id="tabs">
 	<ul>
 	    <li><a href="#event_info"><span>Event Info</span></a></li>
@@ -96,7 +97,6 @@ tinyMCE.init({
 	</ul>
 	
 	<div id="event_info">
-		<h1>Edit an Event</h1>
 		<div id="event_note">
 			<p>
 				Hello administrator. Please edit an event by filling in all the information below. Thank You!
@@ -138,6 +138,7 @@ tinyMCE.init({
 							'value' => "$end_date"
 						));?>
 			</div>
+		<?=$this->form->submit('Update Event')?>
 	</div>
 	<div id="event_images">
 		<h1 id="current_images">Current Images</h1>
@@ -227,6 +228,7 @@ tinyMCE.init({
 		</table>
 
 		<br>
+		<?=$this->form->submit('Update Event')?>
 	</div>
 	<div id="event_items">
 		<h1 id="">Item Management</h1>
@@ -238,14 +240,11 @@ tinyMCE.init({
 		<br><br>
 		<h2 id="current_items">Current Items</h2><br>
 		<?=$this->items->build($eventItems);?>
-
-		<h2 id="">Delete All Items Items</h2>
-		<p>Clicking the button below will remove all the images.</p>
-		<br>
-		<br>
+		<br><br>
+		<?=$this->form->submit('Update Event')?>
 	</div>
 </div>
-<?=$this->form->submit('Update Event')?>
+
 <?=$this->form->end(); ?>
 <script type="text/javascript">
 $(document).ready(function() {
