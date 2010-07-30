@@ -200,7 +200,7 @@ class UsersController extends BaseController {
 			if ($user) {
 				$token = $this->generateToken();
 				$hash = sha1($token);
-				$data = array('reset_token' => $hash);
+				$data = array('reset_token' => $hash, 'legacy' => 0);
 				if ($user->save($data)) {
 					Mailer::send(
 						'password',
