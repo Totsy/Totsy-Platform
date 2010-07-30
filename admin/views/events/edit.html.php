@@ -85,7 +85,7 @@ tinyMCE.init({
 
 </script>
 
-
+<?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
 <h1 id="event">Editing Event - <?=$event->name?> </h1>
 <?=$this->html->link('Return to Event List','/events')?>
 <div id="tabs">
@@ -95,7 +95,7 @@ tinyMCE.init({
 	    <li><a href="#event_items"><span>Event Items</span></a></li>
 	    <!--<li><a href="#video"><span>Video</span></a></li>-->
 	</ul>
-	
+
 	<div id="event_info">
 		<div id="event_note">
 			<p>
@@ -107,7 +107,7 @@ tinyMCE.init({
 		</div>
 		<h2 id="event_description">Event Description</h2>
 
-		<?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
+		
 		    <?=$this->form->field('name', array('value' => $event->name, 'class' => 'general'));?>
 		    <?=$this->form->field('blurb', array('type' => 'textarea', 'name' => 'content', 'value' => $event->blurb));?>
 			<div id="event_status">
