@@ -128,7 +128,7 @@ tinyMCE.init({
 	</table>
 	
 	<br>
-<?php if ($item->large_zoom_image || $item->small_zoom_image || $item->alternate_images): ?>
+<?php if ($item->primary_image || $item->zoom_image || $item->alternate_images): ?>
 
 		<table border="1" cellspacing="30" cellpadding="30">
 			<th align="justify">
