@@ -7,10 +7,13 @@
 		Image Preview
 	</th>
 	<th align="center">
-		Primary Product Image
+		Zoom Image
 	</th>
 	<th align="center">
-		Secondary Product Image
+		Primary Image
+	</th>
+	<th align="center">
+		Alternate Image
 	</th>
 </tr>
 <tr>
@@ -21,10 +24,13 @@
 		<?=$this->html->image("/image/$id.jpg", array('alt' => 'altText')); ?>
 	</td>
 	<td align="center">
-		<input type="checkbox" name="primary-<?=$id;?>" value="<?=$id;?>">
+		<input type="radio" name="zoom_image" value="<?=$id;?>">
 	</td>
 	<td align="center">
-		<input type="checkbox" name="secondary-<?=$id;?>" value="<?=$id;?>">
+		<input type="radio" name="primary_image" value="<?=$id;?>">
+	</td>
+	<td align="center">
+		<input type="checkbox" name="alternate-<?=$id;?>" value="<?=$id;?>">
 	</td>
 </tr>
 </table>

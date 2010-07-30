@@ -27,11 +27,9 @@ class UploadsController extends \lithium\action\Controller {
 		$this->_render['template'] = in_array($type, array('item', 'event')) ? $type : 'upload';
 
 		// Check that we have a POST
-		if (($this->request->data) && $this->validate()) {
-			if ($this->write()) {
-				$id = $this->id;
-				$fileName = $this->fileName;
-			}
+		if (($this->request->data) && $this->validate() && $this->write()) {
+			$id = $this->id;
+			$fileName = $this->fileName;
 		}
 		return compact('id', 'fileName');
 	}
@@ -94,23 +92,31 @@ class UploadsController extends \lithium\action\Controller {
     }
 	
 	/**
-	 * Writes the file to GridFS and sets the Object ID of the file. We are not checking
-	 * if this file has been uploaded already. There will be a cron job to clear out
-	 * all unused files from GridFS. 
+	 * Writes uploaded file to GridFS and sets the MongoId of the file if it doesn't
+	 * already exist in MongoDb.
+	 *
+	 * If the file has already been uploaded then set the id accordingly.
+	 *
 	 * @return boolean
 	 */
-	private function write() {
+	protected function write() {
 		$success = false;
 		$grid = File::getGridFS();
 		$this->fileName = $this->request->data['Filedata']['name'];
-		$objectId = $grid->storeUpload('Filedata', $this->fileName);
-		$this->id = $objectId->__toString();
-
-		if ($this->id) {
+		$md5 = md5_file($this->request->data['Filedata']['tmp_name']);
+		$file = File::first(array('conditions' => array('md5' => $md5)));
+		if ($file) {
 			$success = true;
+			$this->id = (string) $file->_id;
+		} else {
+			$this->id = (string) $grid->storeUpload('Filedata', $this->fileName);
+			if ($this->id) {
+				$success = true;
+			}
 		}
 		return $success;
 	}
-	
+
 }
+
 ?>
