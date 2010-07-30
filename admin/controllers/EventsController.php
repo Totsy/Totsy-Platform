@@ -195,7 +195,7 @@ class EventsController extends BaseController {
 					'event' => array($_id),
 					'url' => $url
 				);
-				$newItem = array_merge(Item::castData($itemDetail), $details);
+				$newItem = array_merge(Item::castData($itemDetail), Item::castData($details));
 
 				if ($item->save($newItem)) {
 					$items[] = (string) $item->_id;
