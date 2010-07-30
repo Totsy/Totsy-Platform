@@ -127,9 +127,6 @@
 	
 <?php endif ?>
 
-
-<script type="text/javascript" src="../js/jquery.equalheights.js">
-</script>
 <script type="text/javascript">
 $(document).ready(function() {
 		$("#tabs").tabs();
