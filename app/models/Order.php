@@ -33,7 +33,7 @@ class Order extends \lithium\data\Model {
 		);
 	}
 
-	public function process($transaction, $user, $data, $cart) {
+	public function process($order, $user, $data, $cart) {
 		foreach (array('billing', 'shipping') as $key) {
 			$addr = $data[$key];
 			${$key} = is_array($addr) ? Address::create($addr) : Address::first($addr);
@@ -52,12 +52,14 @@ class Order extends \lithium\data\Model {
 			))
 		));
 		$subTotal = array_sum($cart->subTotal());
-		$handling = Cart::shipping($cart, $shipping);
 		$tax = array_sum($cart->tax($shipping));
 
-		if ($tax && $handling) {
-			$tax += ($handling * Cart::TAX_RATE);
+		if (!$handling = Cart::shipping($cart, $shipping)) {
+			$order->errors(array('A valid shipping address was not specified.'));
+			return false;
 		}
+
+		$tax = $tax ? $tax + ($handling * Cart::TAX_RATE) : 0;
 		$total = $subTotal + $tax + $handling;
 		$cart = $cart->data();
 
@@ -69,7 +71,7 @@ class Order extends \lithium\data\Model {
 			++$inc;
 		}
 		try {
-			return $transaction->save(compact('total', 'subTotal', 'tax', 'handling') + array(
+			return $order->save(compact('total', 'subTotal', 'tax', 'handling') + array(
 				'user_id' => (string) $user['_id'],
 				'card_type' => $card->type,
 				'card_number' => substr($card->number, -4),
@@ -82,7 +84,7 @@ class Order extends \lithium\data\Model {
 				'items' => $items
 			));
 		} catch (TransactionException $e) {
-			$transaction->errors(array($e->getMessage()));
+			$order->errors(array($e->getMessage()));
 		}
 		return false;
 	}
