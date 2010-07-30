@@ -33,13 +33,18 @@ class Item extends \lithium\data\Model {
 				$items[$key] = (float) $value;
 			}
 		}
-		
+
 		foreach ($items as $key => $value) {
 			if (in_array($key, static::_object()->_ints)) {
 				$items[$key] = (int) $value;
 			}
+			if ($key == 'details') {
+				foreach ($value as $size => $quantity) {
+					$items['details'][$size] = (int) $quantity;
+				}
+			}
 		}
-		
+
 		foreach ($items as $key => $value) {
 			if (in_array($key, static::_object()->_booleans)) {
 				$items[$key] = (boolean) $value;
@@ -47,6 +52,7 @@ class Item extends \lithium\data\Model {
 		}
 		return $items;
 	}
+
 }
 
 ?>

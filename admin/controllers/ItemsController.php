@@ -46,32 +46,25 @@ class ItemsController extends BaseController {
 			$this->redirect(array('controller' => 'items', 'action' => 'index'));
 		}
 		if ($this->request->data) {
-
 			foreach ($this->request->data as $key => $value) {
 				if (substr($key, 0, 10) == 'alternate-' ) {
 					$alternate_images[] = substr($key, 10, 24);
 					unset($this->request->data[$key]);
 				}
 			}
-			$itemData = $this->organizeItem($this->request->data);
-			unset($this->request->data['itemDetails']);
-			if (array('zoom_image', 'primary_image') == array_keys($this->request->data)) {
-				$itemData['zoom_image'] = $this->request->data['zoom_image'];
-				$itemData['primary_image'] = $this->request->data['primary_image'];
-			}
-
 			if (!empty($item->event[0])) {
-				$itemData['event'] = array($item->event[0]);
+				$this->request->data['event'] = array($item->event[0]);
 			}
 
-			$dirtyUrl = $itemData['description']." ".$itemData['color'];
+			$dirtyUrl = $this->request->data['description']." ".$this->request->data['color'];
 			$url = rtrim($this->cleanUrl($dirtyUrl), "-");
-			$itemData['url'] = $url;
+			$this->request->data['url'] = $url;
 
-			$itemData['modified_date'] = new MongoDate();
+			$this->request->data['modified_date'] = new MongoDate();
 
-			$itemData = array_merge(Item::castData($itemData), compact('alternate_images'));
-			if ($item->save($itemData)) {
+			$data = array_merge(Item::castData($this->request->data), compact('alternate_images'));
+
+			if ($item->save($data)) {
 				$this->redirect(array(
 					'controller' => 'items', 'action' => 'edit',
 					'args' => array($item->_id)
@@ -80,21 +73,6 @@ class ItemsController extends BaseController {
 		}
 		return compact('item', 'details', 'event');
 	}
-	/**
-	 * Reorganize the details of item data for document storage
-	 */
-	private function organizeItem($item) {
-		$data = $item['itemDetails']['itemDetails'];
-		foreach ($data as $key => $value){
-			if (is_numeric($key)) {
-				$details["$key"] = $value;
-			} else {
-				$desc["$key"] = $value; 
-			}
-		}
-		return array_merge($desc, array('details' => $details[0]));
-	}
-
 }
 
 ?>

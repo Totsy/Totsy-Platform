@@ -21,16 +21,6 @@ tinyMCE.init({
 });
 
 </script>
-<script type="text/javascript"> 
-	$(document).ready(function(){	
-		$("#itemDetails").dynamicForm("#plus", "#minus", {limit:15, createColor: 'yellow', removeColor: 'red'});
-	});
-</script>
-<script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {
-    $('#itemDetails[itemDetails][color1]').colorPicker();
-  }
-</script>
 <h1 id="event">Editing Item - <?=$item->description?> </h1>
 <?=$this->html->link('See Item List','/items')?>
 <?=$this->form->create(); ?>
@@ -42,7 +32,13 @@ tinyMCE.init({
 		</ul>
 		<div id="item_info">
 			<h1>Edit Item</h1>
-				<?=$this->form->field('', array('value' => $item->_id, 'type' => 'hidden', 'id' => '_id', 'name' => '_id'));?>    
+				<?=$this->form->field('', array(
+					'value' => $item->_id, 
+					'type' => 'hidden', 
+					'id' => '_id', 
+					'name' => '_id'
+					));
+				?>    
 				<br>
 				<div id="item_description">
 					<h2 id="">Product Description</h2>
@@ -67,8 +63,16 @@ tinyMCE.init({
 						'class' => 'general',
 						'value' => $item->vendor_style
 					));?>
-					<?=$this->form->field('age', array('type' => 'text', 'class' => 'general','value' => $item->age));?>
-					<?=$this->form->field('color', array('type' => 'text', 'class' => 'general', 'value' => $item->color));?>
+					<?=$this->form->field('age', array(
+						'type' => 'text', 
+						'class' => 'general',
+						'value' => $item->age
+					));?>
+					<?=$this->form->field('color', array(
+						'type' => 'text', 
+						'class' => 'general', 
+						'value' => $item->color
+					));?>
 					<div id="item_status">
 						<h2 id="item_status">Item Status</h2>
 						<?php if ($item->enabled == 1): ?>
@@ -136,18 +140,19 @@ tinyMCE.init({
 				<div id="item_details">
 					<h2 id="">Item Details</h2>	
 					<table border="0" cellspacing="5" cellpadding="5">
-						<tr>
-							<?php
-								foreach ($item->details->data() as $key => $value) {
-								echo "<th>$key</th>";
-							}?>
-						</tr>
-						<tr id='itemDetails'>
-							<?php
-								foreach ($item->details->data() as $key => $value) {
-								echo '<td>'. $this->form->text($key, array('value' => $value, 'class' => 'details')).'</td>';
-							}?>
-						</tr>
+						<?php foreach ($item->details->data() as $key => $value): ?>
+							<tr>
+								<td>
+									<?=$key?>
+								</td>
+								<td>
+									<?=$this->form->text("details[$key]", array(
+										'value' => $value
+										));
+									?>
+								</td>
+							</tr>
+						<?php endforeach ?>
 					</table>
 				</div>
 				<br>
@@ -208,7 +213,9 @@ tinyMCE.init({
 						<?php if ($item->primary_image): ?>
 							<tr>
 								<td align="center">
-									<?=$this->html->image("/image/$item->primary_image.jpg", array('alt' => 'altText')); ?>
+									<?=$this->html->image("/image/$item->primary_image.jpg", array(
+										'alt' => 'altText')); 
+									?>
 								</td>
 								<td></td>
 								<td align="center">
