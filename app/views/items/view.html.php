@@ -90,10 +90,6 @@
 		<!-- Start Video Tab -->
 		<!--
 		<div id="video" class="ui-tabs-hide">
-		    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
-		    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
-		    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
-		    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
 		</div>
 		-->
 		<!-- End Video Tab -->
@@ -104,10 +100,10 @@
 		<?php
 			if (!empty($related)) {
 				foreach ($related as $relatedItem) {
-					if (empty($relatedItem->primary_images)) {
+					if (empty($relatedItem->primary_image)) {
 						$relatedImage = '/img/no-image-small.jpeg';
 					} else {
-						$relatedImage = "/image/{$relatedItem->primary_images[0]}.jpg";
+						$relatedImage = "/image/{$relatedItem->primary_image}.jpg";
 					}
 					echo $this->html->link(
 						$this->html->image("$relatedImage", array(
@@ -134,21 +130,21 @@
 		<div class="tl"></div>
 		<div class="tr"></div>
 		<div class="md-gray p-container loading" id="img-container">
-				<?php if (!empty($item->primary_images)): ?>
+				<?php if (!empty($item->primary_image)): ?>
 					<div class="zoom-container show" id="full_img_1">
-				<?php echo $this->html->link($this->html->image("/image/{$item->primary_images[0]}.jpg", array(
+				<?php echo $this->html->link($this->html->image("/image/{$item->primary_image}.jpg", array(
 						"width" => "298", 
 						"height" => "300", 
 						"title" => $item->description, 
 						"alt" => $item->description)),
-						"/image/{$item->primary_images[0]}.jpg",
+						"/image/{$item->zoom_image}.jpg",
 						array('escape' => false, 'class' => 'zoom')); 
 				?>
 					</div>
 				<?php endif ?>
-				<?php if (!empty($item->secondary_images)): ?>
+				<?php if (!empty($item->alternate_images)): ?>
 					<?php $x = 2; ?>
-					<?php foreach ($item->secondary_images as $value): ?>
+					<?php foreach ($item->alternate_images as $value): ?>
 						<div class="zoom-container" id="full_img_<?=$x?>">
 							<?php echo $this->html->link($this->html->image("/image/{$value}.jpg", array(
 									"width" => "298", 
@@ -156,7 +152,7 @@
 									"title" => $item->description, 
 									"alt" => $item->description)),
 									"image/$value.jpg",
-									array('escape' => false, 'class' => 'zoom')); 
+									array('escape' => false));
 							?>
 							<?php $x++; ?>	
 						</div>
@@ -171,8 +167,8 @@
 	<!-- Start additional image view thumbnails -->
 	<div id="thumbs">
 		<?php
-			if (!empty($item->primary_images)) {
-				echo $this->html->image("/image/{$item->primary_images[0]}.jpg", array(
+			if (!empty($item->primary_image)) {
+				echo $this->html->image("/image/{$item->primary_image}.jpg", array(
 					'class' => "img-th active", 
 					'width' => "93", 
 					'height' => "93",
@@ -180,9 +176,9 @@
 					'rel' => "full_img_1"));
 			}
 		?>
-		<?php if (!empty($item->secondary_images)): ?>
+		<?php if (!empty($item->alternate_images)): ?>
 			<?php $x = 2; ?>
-			<?php foreach ($item->secondary_images as $value): ?>
+			<?php foreach ($item->alternate_images as $value): ?>
 					<?=$this->html->image("/image/{$value}.jpg", array(
 						'class' => "img-th", 
 						'width' => "93", 
@@ -215,8 +211,8 @@ $(document).ready(function() {
 
 	//options of product zoom
 	var options = {
-		zoomWidth:425,
-		zoomHeight:300,
+		zoomWidth: 400,
+		zoomHeight: 300,
 		title: false,
 		zoomType: 'reverse'
 	};
