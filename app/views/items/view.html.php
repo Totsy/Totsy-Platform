@@ -152,7 +152,7 @@
 									"title" => $item->description, 
 									"alt" => $item->description)),
 									"image/$value.jpg",
-									array('escape' => false, 'class' => 'zoom')); 
+									array('escape' => false));
 							?>
 							<?php $x++; ?>	
 						</div>
