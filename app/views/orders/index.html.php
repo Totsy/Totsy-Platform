@@ -86,7 +86,9 @@
 		</ol>
 		
 		<h3 class="placed-header">Order <span>Placed</span> With Totsy</h3>
-		<p class="modal-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae dolor urna, sit amet sodales turpis. Ut justo ligula, fermentum in dapibus nec, sollicitudin nec arcu. Phasellus et tellus non lectus lacinia</p>
+		<p class="modal-copy">Your order has been received and we are in the process of verifying all the information 
+		relating to your transaction. We will contact you if anything is wrong with your order or if we need more information. 
+		An email confirmation of your order has been sent to you.</p>
 		
 	</div>
 	
@@ -100,7 +102,8 @@
 		</ol>
 		
 		<h3 class="secured-header">Order Secured <span>From Partners</span></h3>
-		<p class="modal-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae dolor urna, sit amet sodales turpis. Ut justo ligula, fermentum in dapibus nec, sollicitudin nec arcu. Phasellus et tellus non lectus lacinia</p>
+		<p class="modal-copy">We have secured the product from the brand and 
+		are awaiting a shipment from them. We will then process the items relating to this sale.</p>
 		
 	</div>
 	
@@ -114,7 +117,9 @@
 		</ol>
 		
 		<h3 class="warehouse-header">Items Arrive <span>At Warehouse</span></h3>
-		<p class="modal-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae dolor urna, sit amet sodales turpis. Ut justo ligula, fermentum in dapibus nec, sollicitudin nec arcu. Phasellus et tellus non lectus lacinia</p>
+		<p class="modal-copy">The merchandise from the completed sale is shipped directly to our warehouse, 
+		where we prepare the products for shipment directly to you. This step allows us to inspect the merchandise so 
+		it meets our stringent quality standards.</p>
 		
 	</div>
 	
@@ -128,7 +133,9 @@
 		</ol>
 		
 		<h3 class="shipped-header">Package <span>Shipped</span> To You</h3>
-		<p class="modal-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae dolor urna, sit amet sodales turpis. Ut justo ligula, fermentum in dapibus nec, sollicitudin nec arcu. Phasellus et tellus non lectus lacinia</p>
+		<p class="modal-copy">The items for your order are shipped via one of our national carriers. 
+		We try to consolidate all your items so you receive only one shipment; however, sometimes multiple shipments are unavoidable.
+		 This process is greener and minimizes the wait time for orders that include items from sales running on overlapping dates.</p>
 		
 	</div>
 	
@@ -142,7 +149,7 @@
 		</ol>
 		
 		<h3 class="recieved-header">Order Arrives <span>At Your Home</span></h3>
-		<p class="modal-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae dolor urna, sit amet sodales turpis. Ut justo ligula, fermentum in dapibus nec, sollicitudin nec arcu. Phasellus et tellus non lectus lacinia</p>
+		<p class="modal-copy">Your package has been delivered to your shipping address. Enjoy!</p>
 		
 	</div>
 	
@@ -156,31 +163,43 @@
 		</ol>
 		
 		<span class="red">Totsy Shipping Process</span>
-		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae dolor urna, sit amet sodales turpis. Ut justo ligula, fermentum in dapibus nec, sollicitudin nec arcu. Phasellus et tellus non lectus lacinia euismod. Ut hendrerit massa eu erat rutrum ut vulputate justo dignissim. Suspendisse sed nunc libero, non eleifend purus. Vivamus porttitor turpis nec purus commodo laoreet. Maecenas condimentum semper est eget bibendum. Nam sem est, tristique non aliquet in, scelerisque at lacus.</p>
+		<p>Totsy provides its members with incredible deals on top quality brands and products. In order to continue to provide deep discounts,
+		 we do not hold inventory, which allows us to drastically lower our costs and pass the savings on to our members. 
+		 We work very closely with our partners to make sure our product inventory is reserved; however, they don't ship the product 
+		 to our warehouse until after the event has ended. This causes a natural lag from the time you place your order to the time your 
+		 items ship from Totsy. The whole process normally takes 10-14 business days. For more information, please see the details 
+		 below about each step.</p>
 		
 		<div class="process-list-item">
 			<h3 class="placed-header">Order <span>Placed</span> With Totsy</h3>
-			<p class="modal-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae dolor urna, sit amet sodales turpis. Ut justo ligula, fermentum in dapibus nec, sollicitudin nec arcu. Phasellus et tellus non lectus lacinia</p>
+			<p class="modal-copy">Your order has been received and we are in the process of verifying all the information 
+		relating to your transaction. We will contact you if anything is wrong with your order or if we need more information. 
+		An email confirmation of your order has been sent to you.</p>
 		</div>
 		
 		<div class="process-list-item">
 			<h3 class="secured-header">Order Secured <span>From Partners</span></h3>
-			<p class="modal-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae dolor urna, sit amet sodales turpis. Ut justo ligula, fermentum in dapibus nec, sollicitudin nec arcu. Phasellus et tellus non lectus lacinia</p>
+			<p class="modal-copy">We have secured the product from the brand and 
+		are awaiting a shipment from them. We will then process the items relating to this sale.</p>
 		</div>
 		
 		<div class="process-list-item">
 			<h3 class="warehouse-header">Items Arrive <span>At Warehouse</span></h3>
-			<p class="modal-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae dolor urna, sit amet sodales turpis. Ut justo ligula, fermentum in dapibus nec, sollicitudin nec arcu. Phasellus et tellus non lectus lacinia</p>
+			<p class="modal-copy">The merchandise from the completed sale is shipped directly to our warehouse, 
+		where we prepare the products for shipment directly to you. This step allows us to inspect the merchandise so 
+		it meets our stringent quality standards.</p>
 		</div>
 		
 		<div class="process-list-item">
 			<h3 class="shipped-header">Package <span>Shipped</span> To You</h3>
-			<p class="modal-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae dolor urna, sit amet sodales turpis. Ut justo ligula, fermentum in dapibus nec, sollicitudin nec arcu. Phasellus et tellus non lectus lacinia</p>
+			<p class="modal-copy">The items for your order are shipped via one of our national carriers. 
+		We try to consolidate all your items so you receive only one shipment; however, sometimes multiple shipments are unavoidable.
+		 This process is greener and minimizes the wait time for orders that include items from sales running on overlapping dates.</p>
 		</div>
 		
 		<div class="process-list-item">
 			<h3 class="recieved-header">Order Arrives <span>At Your Home</span></h3>
-			<p class="modal-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae dolor urna, sit amet sodales turpis. Ut justo ligula, fermentum in dapibus nec, sollicitudin nec arcu. Phasellus et tellus non lectus lacinia</p>
+			<p class="modal-copy">Your package has been delivered to your shipping address. Enjoy!</p>
 		</div>
 		
 	</div>
@@ -196,12 +215,12 @@
 		$(".r-box").equalHeights(100,300);
 		
 		//process modal pop-ups
-		$("#placed-modal").dialog({height:220,modal:true,draggable:false,resizable:false,width:654,autoOpen:false});
-		$("#secured-modal").dialog({height:220,modal:true,draggable:false,resizable:false,width:654,autoOpen:false});
-		$("#warehouse-modal").dialog({height:220,modal:true,draggable:false,resizable:false,width:654,autoOpen:false});
-		$("#shipped-modal").dialog({height:220,modal:true,draggable:false,resizable:false,width:654,autoOpen:false});
-		$("#recieved-modal").dialog({height:220,modal:true,draggable:false,resizable:false,width:654,autoOpen:false});
-		$("#process-modal").dialog({height:600,modal:true,draggable:false,resizable:false,width:654,autoOpen:false});
+		$("#placed-modal").dialog({height:250,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
+		$("#secured-modal").dialog({height:250,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
+		$("#warehouse-modal").dialog({height:250,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
+		$("#shipped-modal").dialog({height:250,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
+		$("#recieved-modal").dialog({height:250,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
+		$("#process-modal").dialog({height:650,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
 		
 		$("#placed-btn").click(function(){
 			$("#placed-modal").dialog('open');
