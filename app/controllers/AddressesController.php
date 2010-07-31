@@ -84,7 +84,7 @@ class AddressesController extends BaseController {
 			}
 		}
 		if (($this->request->data) && $address->save($this->request->data)) {
-				$message = 'Address Updated';
+				$message = 'Your address has been updated';
 		}
 
 		return compact('message', 'address', 'action');

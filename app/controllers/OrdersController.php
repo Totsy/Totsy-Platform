@@ -90,7 +90,7 @@ class OrdersController extends BaseController {
 			return $vars;
 		}
 
-		if (($data = $this->request->data) && $order->process($user, $data, $cart)) {
+		if (($this->request->data) && $order->process($user, $data, $cart)) {
 			Cart::remove(array('session' => Session::key()));
 			foreach ($cart as $item) {
 				Item::sold($item->item_id, $item->size, $item->quantity);

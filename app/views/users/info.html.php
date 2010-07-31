@@ -13,19 +13,18 @@
 			<?php 
 				switch ($status) {
 					case 'true' :
-						echo "Your information has been updated.";
+						echo "<div class=\"standard-message\">Your information has been updated.</div>";
 						break;
 					case 'false' :
-						echo "Your current password is incorrect. Please try again";
+						echo "<div class=\"standard-error-message\">Your current password is incorrect. Please try again.</div>";
 						break;
 					default:
 						echo "<p>Please enter in your new information below and submit.</p><br>";
 						break;
 				}
-
-				
 			?>
 		</div>
+		<br>
 		<?=$this->form->create(null, array('class' => "fl") );?>
 			<div class="form-row"> 
 				<?=$this->form->label('firstname', 'First Name'); ?>

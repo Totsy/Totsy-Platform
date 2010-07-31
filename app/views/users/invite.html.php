@@ -11,7 +11,8 @@
 				
 				<div id="tabs">
 					<?php if (!empty($flashMessage)): ?>
-						<div id='flash'><strong><?=$flashMessage?></strong></div>
+						<div class='standard-message'><strong><?=$flashMessage?></strong></div>
+						<br>
 					<?php endif ?>
 					<ul>
 						<li><a href="#sendinvites"><span>Send</span></a></li>
