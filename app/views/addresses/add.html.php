@@ -5,9 +5,9 @@
 <div class="tr"></div> 
 <div id="page"> 
 <p>	
-<?php if($message) {
-	echo $message;	
-}?>
+	<?php if ($message): ?>
+		<div class="standard-message"><?=$message; ?></div>
+	<?php endif ?>
 </p>
 	<h2 class="gray mar-b">Add/Edit Address</h2>
 	<?=$this->form->create($address, array('id'=>'addressForm', 'class' => "fl", 'action' => "$action/$address->_id"));?>

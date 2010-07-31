@@ -10,11 +10,12 @@
 		<h2 class="gray">My Support Tickets</h2>
 		<br>
 		<?php if (!empty($message)): ?>
-			<?php echo $message ?>
+			<div class="standard-message"><?=$message;?></div>
 		<?php endif ?>
-			<?=$this->form->create(); ?>
+			<?=$this->form->create(null, array('id' => 'ticket')); ?>
 			<div id="message">
-				<p>Hello <?=$userInfo['firstname']?>, there will be a message here inviting you to submit a ticket</p>
+				<p>Hello <?=$userInfo['firstname']?>, <br><br>We hope to quickly resolve any issue you may have with your order.<br> 
+					Please use send us a message with as much detail as possible for us to assist you.</p>
 			</div>
 				<fieldset class="fl">
 					<legend class="bold">Create new ticket</legend>
@@ -38,6 +39,9 @@
 	<div class="bl"></div>
 	<div class="br"></div>
 </div>
+<div id="dialog">
+	
+</div>
 
 <script type="text/javascript" src="../js/jquery.equalheights.js"></script>
 
@@ -46,5 +50,21 @@
 	$(document).ready(function() {
 		$(".r-box").equalHeights(100,300);
 	});
+</script>
+
+<script type="text/javascript">
+
+$('#ticket').submit(function() {
+	$("#dialog").dialog("destroy");
+
+	$("#dialog-message").dialog({
+		modal: true,
+		buttons: {
+			Ok: function() {
+				$(this).dialog('close');
+			}
+		}
+	});
+});
 </script>
 
