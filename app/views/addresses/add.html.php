@@ -1,4 +1,6 @@
 <?=$this->html->script('jquery.validate.min')?>
+<?=$this->html->script('jquery.maskedinput-1.2.2')?>
+
 <h1 class="p-header">My Account</h1>
 <?=$this->menu->render('left', array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'))); ?>
 <div class="tl"></div> 
@@ -41,7 +43,7 @@
 			
 			<div class="form-row"> 
 				<?=$this->form->label('telephone', 'Telephone', array('escape' => false,'class' => 'addresses')); ?>
-				<?=$this->form->text('telephone', array('class' => 'inputbox')); ?>
+				<?=$this->form->text('telephone', array('class' => 'inputbox', 'id' => 'phone')); ?>
 			</div> 
 			
 			<div class="form-row"> 
@@ -161,6 +163,13 @@
 	<?=$this->form->end();?> 
 	<?=$this->html->link('Manage Address','addresses');?>
 </div> 
-
+<script type="text/javascript">
+jQuery(function($){
+   $("#date").mask("99/99/9999");
+   $("#phone").mask("(999) 999-9999");
+   $("#tin").mask("99-9999999");
+   $("#ssn").mask("999-99-9999");
+});
+</script>
 <div class="bl"></div> 
 <div class="br"></div> 
