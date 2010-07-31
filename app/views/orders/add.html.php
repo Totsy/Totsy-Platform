@@ -365,18 +365,13 @@ $(document).ready(function() {
 	var update = function() {
 		var data = $('form.checkout').serialize();
 		var addrFormat = "{:address} {:address_2}<br />\n{:city}, {:state} {:zip}";
-		console.log(data);
 
 		$.post(window.location + '.json', data, function(data) {
-			console.log(data);
-
 			$('.order-summary').fadeOut('fast', function() {
 				if (data.shippingAddr.address) {
-					console.log($(data.shippingAddr).template(addrFormat));
 					$('.shipping-address').html($(data.shippingAddr).template(addrFormat));
 				}
 				if (data.billingAddr.address) {
-					console.log($(data.billingAddr).template(addrFormat));
 					$('.billing-address').html($(data.billingAddr).template(addrFormat));
 				}
 				$('.shippingCost').html('$' + $.numberFormat(data.shippingCost));
@@ -386,10 +381,15 @@ $(document).ready(function() {
 	};
 
 	$('#billing, #shipping, #payment').bind('change', function() {
-		$this = $(this);
-		$target = $($this.attr('target'));
-		method = ($this.val() == '') ? 'show' : 'hide';
-		$target[method]().find('input, select').attr('disabled', $this.val() != '');
+		var $this = $(this);
+		var $target = $($this.attr('target'));
+		var method = ($this.val() == '') ? 'show' : 'hide';
+		var shippingToggle = 'input[name=billing_shipping]:checked';
+
+		if ($this.attr('id') == 'shipping' && $(shippingToggle).val() == "1") {
+			method = 'hide';
+		}
+		$target[method]().find('input, select').attr('disabled', (method == 'hide'));
 
 		if (!initializing && $this.val() != '') {
 			update();
@@ -401,15 +401,11 @@ $(document).ready(function() {
 	});
 
 	$('input[name=billing_shipping]').bind('change', function() {
-		if ($(this).val() == 1) {
-			$('#opc-shipping').css('opacity', 0.5);
-			$('#shipping-address-select').attr('disabled', 'disabled');
-		} else {
-			$('#opc-shipping').css('opacity', 1);
-			$('#shipping-address-select').attr('disabled', '');
-		}
+		on = ($(this).val() != 1);
+		$('#opc-shipping').css('opacity', on ? 1 : 0.5);
+		$('#shipping').attr('disabled', on ? '' : 'disabled').trigger('change');
 		update();
-	});
+	}).first().trigger('change');
 
 	$("button.done").bind('click', function() {
 		$(this).parents('fieldset').hide();
