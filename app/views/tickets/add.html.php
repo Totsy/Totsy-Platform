@@ -12,7 +12,7 @@
 		<?php if (!empty($message)): ?>
 			<div class="standard-message"><?=$message;?></div>
 		<?php endif ?>
-			<?=$this->form->create(null, array('id' => 'ticket')); ?>
+			<?=$this->form->create(); ?>
 			<div id="message">
 				<p>Hello <?=$userInfo['firstname']?>, <br><br>We hope to quickly resolve any issue you may have with your order.<br> 
 					Please use send us a message with as much detail as possible for us to assist you.</p>
@@ -39,32 +39,10 @@
 	<div class="bl"></div>
 	<div class="br"></div>
 </div>
-<div id="dialog">
-	
-</div>
-
 <script type="text/javascript" src="../js/jquery.equalheights.js"></script>
-
 <!-- This equals the hight of all the boxes to the same height -->
 <script type="text/javascript">
 	$(document).ready(function() {
 		$(".r-box").equalHeights(100,300);
 	});
 </script>
-
-<script type="text/javascript">
-
-$('#ticket').submit(function() {
-	$("#dialog").dialog("destroy");
-
-	$("#dialog-message").dialog({
-		modal: true,
-		buttons: {
-			Ok: function() {
-				$(this).dialog('close');
-			}
-		}
-	});
-});
-</script>
-
