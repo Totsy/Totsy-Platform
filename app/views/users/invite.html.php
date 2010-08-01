@@ -62,8 +62,8 @@
 				
 								<h2 class="gray">Share with your friends</h2>
 								
-								<a href="#" href="Share Totsy with your Facebook friends" id="invite-facebook" class="invite-btn fl">Facebook</a>
-								<a href="#" href="Share Totsy with your Twitter followers" id="invite-twitter" class="invite-btn fr">Twitter</a>
+								<a href="http://www.facebook.com/pages/Totsy/141535723466" href="Share Totsy with your Facebook friends" id="invite-facebook" target="_blank" class="invite-btn fl">Facebook</a>
+								<a href="http://twitter.com/MyTotsy" href="Share Totsy with your Twitter followers" id="invite-twitter" target="_blank" class="invite-btn fr">Twitter</a>
 								
 								<div class="dividing-line clear mar-b"><!-- --></div>
 								
