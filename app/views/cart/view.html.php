@@ -31,8 +31,8 @@
 					<tr id="<?=$item->_id?>" class="alt0">
 					<td class="cart-th">
 						<?php
-							if (!empty($item->primary_images)) {
-								$image = $item->primary_images[0];
+							if (!empty($item->primary_image)) {
+								$image = $item->primary_image;
 								$productImage = "/image/$image.jpg";
 							} else {
 								$productImage = "/img/no-image-small.jpeg";
