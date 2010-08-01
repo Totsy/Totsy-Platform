@@ -37,6 +37,12 @@ class Order extends \lithium\data\Model {
 		foreach (array('billing', 'shipping') as $key) {
 			$addr = $data[$key];
 			${$key} = is_array($addr) ? Address::create($addr) : Address::first($addr);
+
+			if (!${$key}->validates()) {
+				$order->errors(
+					$order->errors() + array($key => "Please use a valid {$key} address")
+				);
+			}
 		}
 
 		$card = Payments::create('default', 'creditCard', $data['card'] + array(
@@ -55,7 +61,10 @@ class Order extends \lithium\data\Model {
 		$tax = array_sum($cart->tax($shipping));
 
 		if (!$handling = Cart::shipping($cart, $shipping)) {
-			$order->errors(array('A valid shipping address was not specified.'));
+			$order->errors($order->errors() + array(
+				'shipping' => 'A valid shipping address was not specified.'
+			));
+			$order->set($data);
 			return false;
 		}
 
@@ -84,7 +93,8 @@ class Order extends \lithium\data\Model {
 				'items' => $items
 			));
 		} catch (TransactionException $e) {
-			$order->errors(array($e->getMessage()));
+			$order->set($data);
+			$order->errors($order->errors() + array($e->getMessage()));
 		}
 		return false;
 	}

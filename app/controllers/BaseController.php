@@ -17,22 +17,21 @@ class BaseController extends \lithium\action\Controller
 	protected function _init() {
 		$userInfo = Session::read('userLogin');
 		$this->set(compact('userInfo'));
-
 		$cartCount = Cart::itemCount();
+
 		if ($userInfo) {
 			$user = User::find('first', array(
-				'conditions' => array(
-					'_id' => $userInfo['_id']),
+				'conditions' => array('_id' => $userInfo['_id']),
 				'fields' => array('total_credit')
 			));
-			$credit = ($user->total_credit > 0) ? $user->total_credit : 0;
+			if ($user) {
+				$credit = ($user->total_credit > 0) ? $user->total_credit : 0;
+			}
 		}
-
 		$this->set(compact('cartCount', 'credit'));
-
 		$this->_render['layout'] = 'main';
 		parent::_init();
 	}
-	
-	
 }
+
+?>

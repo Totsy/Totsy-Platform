@@ -1,7 +1,9 @@
 /**
  * Mimic PHP's number_format() function by adding commas to numbers.
  */
-jQuery.numberFormat = function(n) {
+jQuery.numberFormat = function(n, decimals) {
+	decimals = decimals || 0;
+
 	if (n > 9999) {
 		n = Math.round(n / 1000) + "K";
 	}
@@ -19,8 +21,13 @@ jQuery.numberFormat = function(n) {
 	if (x2.length > 3) {
 		x2 = x2.substr(0, 3);
 	}
-	if (x2.length > 0 && x2.length < 3) {
-		x2 += "0";
+	if (decimals && !x2) {
+		x2 = '.';
+	}
+	if (x2.length > 0) {
+		while (x2.length < decimals + 1) {
+			x2 += "0";
+		}
 	}
 	return x1 + x2;
 };
@@ -67,5 +74,5 @@ jQuery.fn.template = function(text, formatters) {
 		}
 		return text;
 	};
-	return loop(this[0]);
+	return loop(this[0]).replace(/{:\w+}/g, '');
 };

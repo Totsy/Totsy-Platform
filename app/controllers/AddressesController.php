@@ -24,12 +24,10 @@ class AddressesController extends BaseController {
 	}
 	
 	public function view() {
-		$user = Session::read('userLogin');
-		if (!empty($user)) {
-			$addresses = Address::find('all', array(
-				'conditions' => array(
-					'user_id' => (string) $user['_id']
-			)));
+		if ($user = Session::read('userLogin')) {
+			$addresses = Address::all(array(
+				'conditions' => array('user_id' => (string) $user['_id'])
+			));
 		}
 		return compact("addresses");
 	}
@@ -41,25 +39,28 @@ class AddressesController extends BaseController {
 		$status = '';
 		$message = '';
 		$action = 'add';
-		$address = Address::create();
+		$address = Address::create($this->request->data);
 		$user = Session::read('userLogin');
+
 		if ($this->request->data) {
-			$count = Address::count(array('user_id' => (string) $user['_id'] ));
-			if($count >= $this->_maxAddresses) {
-				$message = 'There are already 10 addresses registered. Please remove one first.';
+			$count = Address::count(array('user_id' => (string) $user['_id']));
+
+			if ($count >= $this->_maxAddresses) {
+				$message = "There are already {$this->_maxAddresses} addresses registered. ";
+				$message .= "Please remove one first.";
 			} else {
 				$this->request->data['default'] = ($this->request->data['default'] == '1') ? true : false;
+
 				if (($this->request->data['default'] == true) && (Address::changeDefault($user['_id']))) {
 					$message = 'This address is now your default';
-				} else {
+				} elseif ($address->validates()) {
 					$message = 'Address Saved';
 				}
-				$data = array_merge(
-					$this->request->data, 
-					array('user_id' => ((string) $user['_id']
-				)));
-				$status = $address->save($data);
-				$this->redirect('/addresses');
+				$address->user_id = (string) $user['_id'];
+
+				if ($address->save()) {
+					$this->redirect('/addresses');
+				}
 			}
 		}
 		return compact('status', 'message', 'address', 'action');
