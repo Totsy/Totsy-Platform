@@ -28,7 +28,7 @@ class Item extends \lithium\data\Model {
 		$sizes = array();
 
 		foreach ($item->details->data() as $key => $val) {
-			if ($val) {
+			if ($val && ($val > 0)) {
 				$sizes[] = $key;
 			}
 		}
@@ -38,36 +38,42 @@ class Item extends \lithium\data\Model {
 	public function weight($item, $size, $quantity = 1) {
 		// @todo
 	}
-	
+
 	/**
-	 * When a customer adds an item to their cart the 
-	 * sale_detail.{itemsize}.reserved_count will be incremented. 
-	 * If the customer manually removes an item from the cart or 
-	 * they purchase an item then 'dec' should be passed as the value of $type.
+	 * Perform the atomic operation on item quantities by size.
+	 *
+	 * Only reserve the quantity if the requested amount is less than or equal
+	 * to the actual quantity.
 	 */
 	public static function reserve($_id, $size, $quantity) {
 		if (!empty($_id)) {
 			$_id = new MongoId($_id);
 			return static::collection()->update(array(
-				'_id' => $_id),
-				 array('$inc' => array("sale_detail.$size.reserved_count" => $quantity))
+				'_id' => $_id, "details.$size" => array('$gte' => $quantity)),
+				 array('$inc' => array("sale_details.$size.reserved_count" => $quantity))
 			);
 		}
 		return false;
 	}
 	/**
+	 * Perform the atomic operation of marking an item as sold by size.
+	 *
 	 * When a customer purchases an item the sale count of the item.size
 	 * will be incremented. The available quantity for the item will at the same time be
 	 * decremented.
 	 */	
 	public static function sold($_id, $size, $quantity) {
-		if (!empty($_id) && ( (int) $quantity > 1)) {
+		if (!empty($_id) && ( +$quantity > 1)) {
 			$_id = new MongoId($_id);
 			return static::collection()->update(array(
-				'_id' => $_id),
-				 array('$inc' => array("sale_detail.$size.sale_count" => $quantity)),
-				 array('$inc' => array("detail.$size" => -$quantity))
-			);
+				'_id' => $_id, "details.$size" => array('$gte' => +$quantity)),
+				 array(
+					'$inc' => array(
+						"sale_details.$size.sale_count" => +$quantity,
+						"details.$size" => -$quantity,
+						"sale_details.$size.reserved_count" => -$quantity,
+						"total_quantity" => -$quantity
+			)));
 		}
 		return false;
 	}
