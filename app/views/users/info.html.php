@@ -27,7 +27,7 @@
 		<br>
 		<?=$this->form->create(null, array('class' => "fl") );?>
 			<div class="form-row"> 
-				<?=$this->form->label('firstname', 'First Name'); ?>
+				<?=$this->form->label('firstname', 'First Name', array('class' => 'account' )); ?>
 				<?=$this->form->text('firstname', array(
 						'type' => 'text', 
 						'class' => 'inputbox',
@@ -36,7 +36,7 @@
 				?>
 			</div>
 			<div class="form-row"> 
-				<?=$this->form->label('lastname', 'Last Name'); ?>
+				<?=$this->form->label('lastname', 'Last Name',array('class' => 'account' )); ?>
 				<?=$this->form->text('lastname', array(
 						'class' => 'inputbox',
 						'value' => $user->lastname
@@ -44,7 +44,7 @@
 				?>
 			</div>
 			<div class="form-row"> 
-				<?=$this->form->label('eamil', 'E-Mail'); ?>
+				<?=$this->form->label('eamil', 'E-Mail',array('class' => 'account' )); ?>
 				<?=$this->form->text('email', array(
 						'class' => 'inputbox',
 						'value' => $user->email
@@ -52,7 +52,7 @@
 				;?>
 			</div>
 			<div class="form-row"> 
-				<?=$this->form->label('password', 'Current Password'); ?>
+				<?=$this->form->label('password', 'Current Password',array('class' => 'account' )); ?>
 				<?=$this->form->password('password', array(
 						'class' => 'inputbox',
 						'type' => 'password',
@@ -61,7 +61,7 @@
 				;?>
 			</div>
 			<div class="form-row"> 
-				<?=$this->form->label('new_password', 'New Password'); ?>
+				<?=$this->form->label('new_password', 'New Password',array('class' => 'account' )); ?>
 				<?=$this->form->password('new_password', array(
 						'class' => 'inputbox' 
 					))

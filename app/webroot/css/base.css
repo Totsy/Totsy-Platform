@@ -703,6 +703,7 @@ body.login .login-sig{text-align:center}
 
 .form-row{overflow:hidden;margin:3px 0}
 .form-row label{display:block;width:100px;float:left;line-height:30px;font-weight:normal}
+.form-row label.account{display:block;width:130px;float:left;line-height:30px;font-weight:normal}
 .form-row .inputbox{margin-right:20px;float:left}
 label.required span{color:#EB132C;font-weight:bold}
 label.required {display:block;width:120px;float:left;line-height:30px;font-weight:normal}
