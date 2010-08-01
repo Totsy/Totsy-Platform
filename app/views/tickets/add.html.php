@@ -14,14 +14,35 @@
 		<?php endif ?>
 			<?=$this->form->create(); ?>
 			<div id="message">
-				<p>Hello <?=$userInfo['firstname']?>, <br><br>We hope to quickly resolve any issue you may have with your order.<br> 
+				<p>Hello <?=$userInfo['firstname']?>, <br><br>We hope to quickly resolve any issue you may have.<br> 
 					Please use send us a message with as much detail as possible for us to assist you.</p>
 			</div>
 				<fieldset class="fl">
 					<legend class="bold">Create new ticket</legend>
-					<label for="title">Title</label><br />
-					<input type="text" id="title" class="inputbox" name="title" style="width:300px" />
-					<br />
+					<!--  label for="title">Title</label><br />
+					<input type="text" id="title" class="inputbox" name="title" style="width:300px" / -->
+					<select id="" name="">
+					    <option value="">Please Select a Topic</option>
+						<option value="Cancellations">Cancellations</option>
+						<option value="Credit balance">Credit balance</option>
+						<option value="Damaged/Defective Items">Damaged/Defective Items</option>
+						
+						<option value="Membership">Membership</option>
+						<option value="New Product Idea">New Product Idea</option>
+						<option value="Order Status">Order Status</option>
+						<option value="Order Placed">Order Placed</option>
+						<option value="Press">Press</option>
+						<option value="Product information">Product information</option>
+						<option value="Promotions">Promotions</option>
+						<option value="Shipping Returns">Shipping Returns</option>
+						<option value="Sponsors">Sponsors</option>
+						
+						<option value="Suggestions">Suggestions</option>
+						<option value="Website Problems">Website Problems</option>
+						<option value="Selling Your Products with Us">Selling Your Products with Us</option>
+						<option value="Other">Other</option>
+					</select>
+					<br>
 					<label for="order">Assign order</label><br />
 						<?=$this->form->select('order', $orders, array('style' => 'width:310px')); ?>
 					<br />
