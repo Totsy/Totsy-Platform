@@ -16,6 +16,10 @@
 			<div id="message">
 				<p>Hello <?=$userInfo['firstname']?>, <br><br>We hope to quickly resolve any issue you may have.<br> 
 					Please use send us a message with as much detail as possible for us to assist you.</p>
+					You can also contact Totsy at:<br>
+			Corporate Address: 27 West 20th Street, Suite 400, New York, NY 10011<br>
+			Phone Number: 1-888-59TOTSY (1-888-598-6879) <br><br>
+					
 			</div>
 				<fieldset class="fl">
 					<legend class="bold">Create new ticket</legend>
@@ -57,6 +61,7 @@
 				</fieldset>
 			<?=$this->form->end(); ?>
 	</div>
+	
 	<div class="bl"></div>
 	<div class="br"></div>
 </div>
