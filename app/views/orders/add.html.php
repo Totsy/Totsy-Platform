@@ -374,7 +374,7 @@ $(document).ready(function() {
 				if (data.billingAddr.address) {
 					$('.billing-address').html($(data.billingAddr).template(addrFormat));
 				}
-				$('.shippingCost').html('$' + $.numberFormat(data.shippingCost));
+				$('.shippingCost').html('$' + $.numberFormat(data.shippingCost, 2));
 				$('.order-summary').fadeIn(1000);
 			});
 		}, 'json');
