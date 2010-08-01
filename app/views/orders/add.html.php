@@ -1,4 +1,9 @@
-<?php $this->html->script('application', array('inline' => false)); ?>
+<?php
+	use app\models\Address;
+	$this->html->script('application', array('inline' => false));
+	$this->form->config(array('text' => array('class' => 'inputbox')));
+?>
+
 <h1 class="p-header"><?=$this->title('Checkout'); ?></h1>
 
 <div id="middle" class="noleft">
@@ -41,42 +46,44 @@
 
 					<div class="form-row">
 						<label for="fname" class="required">First Name<span>*</span></label>
-						<input type="text" name="billing[firstName]" id="fname" class="inputbox" value="" />
+						<?=$this->form->text('billing.firstname', array('id' => 'fname')); ?>
 					</div>
 
 					<div class="form-row">
 						<label for="lname" class="required">Last Name<span>*</span></label>
-						<input type="text" name="billing[lastName]" id="lname" class="inputbox" value="" />
+						<?=$this->form->text('billing.lastname', array('id' => 'lname')); ?>
 					</div>
 
 					<div class="form-row">
 						<label for="address" class="required">Street Address<span>*</span></label>
-						<input type="text" name="billing[address]" id="address" class="inputbox" value="" />
+						<?=$this->form->text('billing.address', array('id' => 'address')); ?>
 					</div>
 
 					<div class="form-row">
 						<label for="address_2">Street Address 2</label>
-						<input type="text" name="billing[address_2]" id="address_2" class="inputbox" value="" />
+						<input type="text" name="billing.address_2" id="address_2" class="inputbox" value="" />
 					</div>
 
 					<div class="form-row">
 						<label for="city" class="required">City<span>*</span></label>
-						<input type="text" name="billing[city]" id="city" class="inputbox" value="" />
+						<?=$this->form->text('billing.city', array('id' => 'city')); ?>
 					</div>
 
 					<div class="form-row">
 						<label for="state" class="required">State/Province<span>*</span></label>
-						<input type="text" name="billing[state]" id="state" class="inputbox" value="" />
+						<?=$this->form->select('billing.state', Address::$states, array(
+							'class' => 'inputbox', 'empty' => 'Choose a State'
+						)); ?>
 					</div>
 
 					<div class="form-row">
 						<label for="zip" class="required">Zip/Postal Code<span>*</span></label>
-						<input type="text" name="billing[zip]" id="zip" class="inputbox" value="" />
+						<?=$this->form->text('billing.zip', array('id' => 'zip')); ?>
 					</div>
 
 					<div class="form-row">
 						<label for="phone">Telephone</label>
-						<input type="text" name="billing[phone]" id="phone" class="inputbox" value="" />
+						<?=$this->form->text('billing.phone', array('id' => 'phone')); ?>
 					</div>
 
 					<div class="submit">
@@ -120,42 +127,44 @@
 
 					<div class="form-row">
 						<label for="fname" class="required">First Name<span>*</span></label>
-						<input type="text" name="shipping[firstName]" id="fname" class="inputbox" value="" />
+						<?=$this->form->text('shipping.firstname', array('id' => 'fname')); ?>
 					</div>
 
 					<div class="form-row">
 						<label for="lname" class="required">Last Name<span>*</span></label>
-						<input type="text" name="shipping[lastName]" id="lname" class="inputbox" value="" />
+						<?=$this->form->text('shipping.lastname', array('id' => 'lname')); ?>
 					</div>
 
 					<div class="form-row">
 						<label for="address" class="required">Street Address<span>*</span></label>
-						<input type="text" name="shipping[address]" id="address" class="inputbox" value="" />
+						<?=$this->form->text('shipping.address', array('id' => 'address')); ?>
 					</div>
 
 					<div class="form-row">
 						<label for="address_2">Street Address 2</label>
-						<input type="text" name="shipping[address_2]" id="address_2" class="inputbox" value="" />
+						<?=$this->form->text('shipping.address_2', array('id' => 'address_2')); ?>
 					</div>
 
 					<div class="form-row">
 						<label for="city" class="required">City<span>*</span></label>
-						<input type="text" name="shipping[city]" id="city" class="inputbox" value="" />
+						<?=$this->form->text('shipping.city', array('id' => 'city')); ?>
 					</div>
 
 					<div class="form-row">
 						<label for="state" class="required">State/Province<span>*</span></label>
-						<input type="text" name="shipping[state]" id="state" class="inputbox" value="" />
+						<?=$this->form->select('shipping.state', Address::$states, array(
+							'class' => 'inputbox', 'empty' => 'Choose a State'
+						)); ?>
 					</div>
 
 					<div class="form-row">
 						<label for="zip" class="required">Zip/Postal Code<span>*</span></label>
-						<input type="text" name="shipping[zip]" id="zip" class="inputbox" value="" />
+						<?=$this->form->text('shipping.zip', array('id' => 'zip')); ?>
 					</div>
 
 					<div class="form-row">
 						<label for="phone">Telephone</label>
-						<input type="text" name="shipping[phone]" id="phone" class="inputbox" value="" />
+						<?=$this->form->text('shipping.phone', array('id' => 'phone')); ?>
 					</div>
 
 					<div class="submit">
