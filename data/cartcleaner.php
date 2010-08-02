@@ -16,7 +16,7 @@ function debug( $thingie ){
 */
 $mhost = '172.20.8.33';
 $mdb = 'totsy';
-$minutes = 11; // set this to the number of MINUTES your expiration needs
+$minutes = 10; // set this to the number of MINUTES your expiration needs
 $expire = $minutes * 60;
 
 $mongo = new Mongo("mongodb://$mhost");
