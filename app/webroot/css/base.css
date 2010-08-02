@@ -476,7 +476,7 @@ a.sm-twitter-md{background-position:-80px 0;width:32px;height:32px}
 
 .coming-soon-sales{padding:20px 0;clear:both;overflow:hidden}
 
-.product-list-item{float:left;margin-bottom:10px;z-index:10000}
+.product-list-item{float:left;margin-bottom:10px;}
 .p-container{border:1px solid #D7D7D7;position:relative}
 .p-container .details .table-cell{
 	padding:3px;
