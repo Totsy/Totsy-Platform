@@ -70,7 +70,7 @@
 	</script>
 </head>
 
-<body class="app" onload="zIndexWorkaround()">
+<body class="app">
 	<div id="topper"></div>	
 	<div id="wrapper">
 		<div id="header">
