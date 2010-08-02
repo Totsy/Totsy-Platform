@@ -101,6 +101,7 @@
 				We combine shipping on any additional orders placed within 1 hour
 				<br /><br />
 				<strong>Refund &amp; Return Policy</strong><br />
+				We do have a policy for <?=$this->html->link('refunds and returns available', array('Pages::returns')); ?>.
 			</td>
 			<td class="cart-button" colspan="2">
 				<?=$this->html->link('Buy Now', 'Orders::add', array('class' => 'flex-btn')); ?>
