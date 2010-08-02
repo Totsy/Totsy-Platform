@@ -23,7 +23,7 @@ class Menu extends \lithium\template\Helper {
 	);
 
 	protected $_strings = array(
-		'menu' => '<div id="{:key}"{:options}><div><ul class="menu">{:html}</ul></div></div>',
+		'menu' => '<div id="{:key}"{:options}><ul class="menu main-nav">{:html}</ul></div>',
 		'sub-menu' => '<ul>{:html}</ul>',
 		'menu-list-item' => '<li{:options}>{:html}{:items}</li>',
 		'menu-block-item' => '<div{:options}>{:html}{:items}</div>',
