@@ -11,8 +11,8 @@
 <head>
 	<?php echo $this->html->charset();?>
 	<title>Totsy<?php echo $this->title(); ?></title>
-	<?php echo $this->html->style(array('formcheck')); ?>
-	<?php echo $this->html->style(array('base')); ?>
+	<?php echo $this->html->style(array('formcheck'), array('media' => 'screen')); ?>
+	<?php echo $this->html->style(array('base'), array('media' => 'screen')); ?>
 	<?php echo $this->scripts(); ?>
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
 	<script type="text/javascript">

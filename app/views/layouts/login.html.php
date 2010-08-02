@@ -4,7 +4,7 @@
 <head>
 	<?php echo $this->html->charset();?>
 	<title>Totsy<?php echo $this->title(); ?></title>
-	<?php echo $this->html->style(array('base')); ?>
+	<?php echo $this->html->style(array('base'), array('media' => 'screen')); ?>
 	<?=$this->html->script(array('jquery-1.4.2','jquery-ui-1.8.2.custom.min.js','jquery.backstretch.min.js')); ?>
 	<?php echo $this->scripts(); ?>
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>

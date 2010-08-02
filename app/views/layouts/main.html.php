@@ -7,7 +7,7 @@
 		<?=$this->title() ?: 'Totsy, the private sale site for Moms'; ?>
 		<?=$this->title() ? '- Totsy' : ''; ?>
 	</title>
-	<?=$this->html->style(array('base')); ?>
+	<?=$this->html->style(array('base'), array('media' => 'screen')); ?>
 	<?=$this->html->script(array('jquery-1.4.2','jquery-ui-1.8.2.custom.min.js', 'jquery.countdown.min')); ?>
 	<?=$this->scripts(); ?>
 	<?=$this->html->link('Icon', null, array('type' => 'icon')); ?>
