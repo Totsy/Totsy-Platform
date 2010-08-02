@@ -46,7 +46,9 @@
 					<?php }?>
 					(<?=$this->html->link('Sign Out', 'Users::logout', array('title' => 'Sign Out')); ?>)
 				</div>
+				  <div id="nav-container">
 				<?=$this->menu->render('main-nav'); ?>
+				  </div>
 			</div>
 			<div id="header-rt">
 				<?=$this->html->link('Invite Friends. Get $15','/invite',array('title'=>'Invite Friends. Get $15', 'id'=>'if'));?>
