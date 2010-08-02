@@ -99,6 +99,7 @@
 	</div>
 	<!-- Started Related Products -->
 	<div id="related-products">
+	<h2>You would also love:</h2><br>
 		<?php
 			if (!empty($related)) {
 				foreach ($related as $relatedItem) {
