@@ -6,7 +6,7 @@
 	<div id="product-detail-right-top">
 	<?php $logo = $event->images->logo_image;?>
 		<?=$this->html->image("/image/$logo.jpg", array(
-			'alt' => 'Logo ALT Tag', 'width' => "148", 'height' => "52"
+			'alt' => $event->name, 'width' => "148", 'height' => "52"
 		)); ?>
 		<div id="listingCountdown" class="listingCountdown"></div>
 	</div>
