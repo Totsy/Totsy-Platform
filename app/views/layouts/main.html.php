@@ -23,6 +23,50 @@
 	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
 	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 	  })();
+
+	  function isIE()
+	  {
+	      if(navigator.userAgent.match(/MSIE \d\.\d+/))
+	          return true;
+	      return false;
+	  }
+	  
+	  function zIndexWorkaround()
+	  {
+	      // If the browser is IE,
+	      if(isIE())
+	      {
+	          /*
+	          ** For each div with class menu (i.e.,
+	          ** the thing we want to be on top),
+	          */
+	          $$("div.menu").each(function(menu) {
+	              // For each of its ancestors,
+	              menu.ancestors().each(function (a) {
+	                  var pos = a.getStyle("position");
+
+	                  // If it's positioned,
+	                  if(pos == "relative" ||
+	                     pos == "absolute" ||
+	                     pos == "fixed")
+	                  {
+	                      /*
+	                      ** Add the "on-top" class name when the
+	                      ** mouse is hovering over it,
+	                      */
+	                      Event.observe(a, "mouseover", function() {
+	                          a.addClassName("on-top");
+	                      });
+	                      // And remove it when the mouse leaves.
+	                      Event.observe(a, "mouseout", function() {
+	                          a.removeClassName("on-top");
+	                      });
+	                  }
+	              });
+	          });
+	      }
+	  }
+	  	  
 	</script>
 </head>
 
@@ -46,9 +90,7 @@
 					<?php }?>
 					(<?=$this->html->link('Sign Out', 'Users::logout', array('title' => 'Sign Out')); ?>)
 				</div>
-				  <div id="nav-container">
 				<?=$this->menu->render('main-nav'); ?>
-				  </div>
 			</div>
 			<div id="header-rt">
 				<?=$this->html->link('Invite Friends. Get $15','/invite',array('title'=>'Invite Friends. Get $15', 'id'=>'if'));?>
