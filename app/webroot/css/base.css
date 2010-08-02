@@ -117,10 +117,10 @@ a#if{display:block;width:214px;height:39px;background:url(../img/invite-btn-1.gi
 a#cart{display:inline-table;height:28px;background:url(../img/cs-icon.gif) 0 0 no-repeat;padding-left:22px;margin:0 2px 0 8px;float:left}
 
 #main-nav{position:absolute;bottom:10px;}
-#main-nav ul{z-index:1}
-#main-nav li{float:left;padding-right:5px;margin-right:5px;background:url(../img/nav-div.gif) right 5px no-repeat;position:relative;z-index:1}
-#main-nav li.last{background:none;padding-right:0;margin-right:0;z-index:1}
-#main-nav a{display:block;height:32px;background-image:url(../img/nav-sprite.gif);background-repeat:no-repeat;text-indent:-9999px;z-index:1}
+#main-nav ul{}
+#main-nav li{float:left;padding-right:5px;margin-right:5px;background:url(../img/nav-div.gif) right 5px no-repeat;position:relative;}
+#main-nav li.last{background:none;padding-right:0;margin-right:0;}
+#main-nav a{display:block;height:32px;background-image:url(../img/nav-sprite.gif);background-repeat:no-repeat;text-indent:-9999px;}
 
 li.item2 a{background-position:0 -32px;width:59px}
 li.item2 a:hover,li.item2.over a, li.active.item2 a{background-position:0 0}
@@ -134,7 +134,7 @@ li.item4 a:hover,li.item4.over a, li.active.item4 a{background-position:-184px 0
 li.item5 a{background-position:-244px -32px;width:117px}
 li.item5 a:hover,li.item5.over a, li.active.item5 a{background-position:-244px 0}
 
-#main-nav li ul{position:absolute;left:-9999px;z-index:500;width:164px;top:32px;z-index:1}
+#main-nav li ul{position:absolute;left:-9999px;z-index:500;width:164px;top:32px;}
 #main-nav li li{float:none;margin-right:0;background-image:none;background-color:#E7E7E8;border-left:1px solid #B3B3B3;border-right:1px solid #B3B3B3;padding:0 5px}
 #main-nav li li.first{background:url(../img/dd-bg.png) left top no-repeat;border:none;padding:5px 5px 0 5px}
 #main-nav li li.last{background:url(../img/dd-bg.png) left bottom no-repeat;border:none;padding:0 5px 5px 5px}
