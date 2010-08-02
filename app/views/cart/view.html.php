@@ -33,7 +33,7 @@
 						<?php
 							if (!empty($item->primary_image)) {
 								$image = $item->primary_image;
-								$productImage = "/image/$image.jpg";
+								$productImage = "/img/$image.jpg";
 							} else {
 								$productImage = "/img/no-image-small.jpeg";
 							}
