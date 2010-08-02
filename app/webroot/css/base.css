@@ -158,7 +158,7 @@ li.item5 a:hover,li.item5.over a, li.active.item5 a{background-position:-244px 0
 #middle{float:left;position:relative}
 .r-container{position:relative}
 #middle p{margin-bottom:20px}
-.tl,.tr,.bl,.br{position:absolute;width:14px;height:14px;background-image:url(../img/corners.png);background-repeat:no-repeat;z-index:100}
+.tl,.tr,.bl,.br{position:absolute;width:14px;height:14px;background-image:url(../img/corners.png);background-repeat:no-repeat;z-index:300}
 .tl{top:0;left:0;background-position:right bottom}
 .tr{top:0;right:0;background-position:left bottom}
 .bl{bottom:0;left:0;background-position:right top}
