@@ -40,7 +40,7 @@
 	          ** For each div with class menu (i.e.,
 	          ** the thing we want to be on top),
 	          */
-	          $$(".menu main-nav").each(function(menu) {
+	          $$("md-gray p-container").each(function(menu) {
 	              // For each of its ancestors,
 	              menu.ancestors().each(function (a) {
 	                  var pos = a.getStyle("position");

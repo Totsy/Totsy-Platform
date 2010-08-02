@@ -77,7 +77,7 @@ input.inputbox,textarea.inputbox{background:#FFF;border:1px solid #CCC;padding:5
 input.invalid{border:1px solid #FF3300}
 label.invalid{color:#FF3300}
 
-.on-top{z-index: 10000;}
+.on-top{z-index:10000;}
 
 div.pagination{overflow:hidden;margin-bottom:10px;font-size:.9em;padding:0 10px}
 div.pagination span{display:block;float:left;margin-right:5px}
