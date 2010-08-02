@@ -113,10 +113,10 @@ a#cs{float:right;text-transform:uppercase;background:url(../img/cs-icon.gif) rig
 
 #header-rt{width:243px;float:right;padding:10px 10px 0 0;font-weight:bold}
 a#if{display:block;width:214px;height:39px;background:url(../img/invite-btn-1.gif) left top no-repeat;text-indent:-9999px;float:right}
-#header-rt p{display:block;line-height:36px;height:28px;float:right;margin-top:10px;z-index:1}
+#header-rt p{display:block;line-height:36px;height:28px;float:right;margin-top:10px;}
 a#cart{display:inline-table;height:28px;background:url(../img/cs-icon.gif) 0 0 no-repeat;padding-left:22px;margin:0 2px 0 8px;float:left}
 
-#main-nav{position:absolute;bottom:10px; z-index:1}
+#main-nav{position:absolute;bottom:10px;}
 #main-nav ul{z-index:1}
 #main-nav li{float:left;padding-right:5px;margin-right:5px;background:url(../img/nav-div.gif) right 5px no-repeat;position:relative;z-index:1}
 #main-nav li.last{background:none;padding-right:0;margin-right:0;z-index:1}
