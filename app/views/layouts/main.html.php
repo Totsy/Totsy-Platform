@@ -40,7 +40,7 @@
 	          ** For each div with class menu (i.e.,
 	          ** the thing we want to be on top),
 	          */
-	          $$("main-nav ul").each(function(menu) {
+	          $$("main-nav ul.menu").each(function(menu) {
 	              // For each of its ancestors,
 	              menu.ancestors().each(function (a) {
 	                  var pos = a.getStyle("position");
@@ -70,7 +70,7 @@
 	</script>
 </head>
 
-<body class="app">
+<body class="app" onload="zIndexWorkaround()">
 	<div id="topper"></div>	
 	<div id="wrapper">
 		<div id="header">
