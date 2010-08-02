@@ -25,6 +25,7 @@
 				</tr>
 			</thead>
 			<tbody>
+			
 	<?php $x = 0; ?>
 	<?php foreach ($cart as $item): ?>
 		<!-- Build Product Row -->
@@ -33,7 +34,7 @@
 						<?php
 							if (!empty($item->primary_image)) {
 								$image = $item->primary_image;
-								$productImage = "/img/$image.jpg";
+								$productImage = "/img$image.jpg";
 							} else {
 								$productImage = "/img/no-image-small.jpeg";
 							}
