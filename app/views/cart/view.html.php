@@ -1,16 +1,20 @@
 <?=$this->html->script(array('jquery.countdown.min','jquery.number_format'));?>
 <?=$this->html->style('jquery.countdown');?>
+<?=$this->html->style('base');?>
 <?php
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
 	$test = $cart->data();
 ?>
-
+<?php if (!empty($message)): ?>
+	<div><?=$message?></div>
+<?php endif ?>
 <?php if (!empty($test)): ?>
 <?php $subTotal = 0; ?>
 <?=$this->form->create(); ?>
 	<h1 class="page-title">
 		Your Cart
 	</h1>
+	<div id='message'></div>
 	<div id="middle" class="fullwidth">
 		<table width="100%" class="cart-table">
 			<thead>
@@ -25,7 +29,6 @@
 				</tr>
 			</thead>
 			<tbody>
-			
 	<?php $x = 0; ?>
 	<?php foreach ($cart as $item): ?>
 		<!-- Build Product Row -->
@@ -34,13 +37,17 @@
 						<?php
 							if (!empty($item->primary_image)) {
 								$image = $item->primary_image;
-								$productImage = "/img$image.jpg";
+								$productImage = "/image/$image.jpg";
 							} else {
 								$productImage = "/img/no-image-small.jpeg";
 							}
 						?>
 						<?=$this->html->link(
-							$this->html->image("$productImage", array('width'=>'60', 'height'=>'60')), '', array(
+							$this->html->image("$productImage", array(
+								'width'=>'60',
+								'height'=>'60')),
+								'',
+								array(
 								'id' => 'main-logo', 'escape'=> false
 							)
 						); ?>
@@ -52,7 +59,16 @@
 						<strong>Size:</strong><?=$item->size;?>
 					</td>
 					<td class="<?="qty-$x";?>">
-						<input type="text" value="<?=$item->quantity?>" name="qty" id="<?="$item->_id";?>" class="inputbox" size="1">
+						<?=$this->form->text('', array(
+							'value' => $item->quantity,
+							'name' => 'qty',
+							'id' => $item->_id,
+							'class' => 'inputbox',
+							'size' => '1',
+							'maxlength' => 1
+							));
+						?>
+
 					</td>
 					<td class="<?="price-item-$x";?>">
 						<strong>$<?=number_format($item->sale_retail,2)?></strong>
@@ -102,7 +118,6 @@
 				We combine shipping on any additional orders placed within 1 hour
 				<br /><br />
 				<strong>Refund &amp; Return Policy</strong><br />
-				We do have a policy for <?=$this->html->link('refunds and returns available', array('Pages::returns')); ?>.
 			</td>
 			<td class="cart-button" colspan="2">
 				<?=$this->html->link('Buy Now', 'Orders::add', array('class' => 'flex-btn')); ?>
@@ -129,13 +144,8 @@
 	
 <?php endif ?>
 
-<script type="text/javascript">
-$(document).ready(function() {
-		$("#tabs").tabs();
-	});
-</script>
 <script type="text/javascript" charset="utf-8">
-$(".inputbox").change(function() {
+$(".inputbox").bind('keyup', function() {
 	var id = $(this).attr('id'); 
 	var qty = $(this).val();
 	var price = $(this).closest("tr").find("td[class^=price]").html().split("$")[1];
@@ -164,7 +174,11 @@ $(".inputbox").change(function() {
 		url: $.base + 'cart/update',
 		data: "_id=" + id + "&" + "qty=" + qty,
 		context: document.body,
-		success: function(data) {}
+		success: function(message) {
+			$('#message').addClass("ui-state-error ui-corner-all");
+			$('#message').css("padding: 0pt 0.7em;");
+			$('#message').html(message);
+		}
 	});
 	$("#subtotal").html("<strong>Subtotal: $" + subTotalProper + "</strong>");
 });

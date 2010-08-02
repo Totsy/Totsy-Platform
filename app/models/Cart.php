@@ -128,6 +128,24 @@ class Cart extends \lithium\data\Model {
 				'expires' => array('$gt' => static::dates('now'))
 		)));
 	}
+
+	public static function reserved($item_id, $size) {
+		$total = 0;
+		$reserved =  static::find('all', array(
+			'conditions' => array(
+				'item_id' => $item_id,
+				'size' => $size),
+			'fields' => array('quantity')
+		));
+		if ($reserved) {
+			$carts = $reserved->data();
+			foreach ($carts as $cart) {
+				$total = $total + $cart['quantity'];
+			}
+		}
+
+		return $total;
+	}
 }
 
 ?>

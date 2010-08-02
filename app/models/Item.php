@@ -40,22 +40,6 @@ class Item extends \lithium\data\Model {
 	}
 
 	/**
-	 * Perform the atomic operation on item quantities by size.
-	 *
-	 * Only reserve the quantity if the requested amount is less than or equal
-	 * to the actual quantity.
-	 */
-	public static function reserve($_id, $size, $quantity) {
-		if (!empty($_id)) {
-			$_id = new MongoId($_id);
-			return static::collection()->update(array(
-				'_id' => $_id, "details.$size" => array('$gte' => $quantity)),
-				 array('$inc' => array("sale_details.$size.reserved_count" => $quantity))
-			);
-		}
-		return false;
-	}
-	/**
 	 * Perform the atomic operation of marking an item as sold by size.
 	 *
 	 * When a customer purchases an item the sale count of the item.size
@@ -71,7 +55,6 @@ class Item extends \lithium\data\Model {
 					'$inc' => array(
 						"sale_details.$size.sale_count" => +$quantity,
 						"details.$size" => -$quantity,
-						"sale_details.$size.reserved_count" => -$quantity,
 						"total_quantity" => -$quantity
 			)));
 		}

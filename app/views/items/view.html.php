@@ -28,7 +28,7 @@
 		</div>
 	</div>
 	<?=$this->form->hidden("item_id", array('value' => "$item->_id", 'id'=>'item_id')); ?>
-	
+
 	<div id="detail-top-right" class="r-container">
    
 		<div class="tl"></div>
@@ -36,11 +36,12 @@
 		<div class="md-gray p-container">
 
 			<h2 class="caps">$<?=number_format($item->sale_retail,2); ?><br />Totsy Price</h2>
-	
+
 			<p class="caps">
 				$<?=number_format($item->msrp,2); ?><br />Original</p>
 			<?php if ($item->total_quantity != 0): ?>
 				<button class="flex-btn" id='item-submit'>Buy Now</button>
+				<div id="all-reserved"></div>
 			<?php endif ?>
 		</div>
 		<div class="bl"></div>
@@ -246,6 +247,7 @@ $(document).ready(function() {
 });
 </script>
 <script type="text/javascript">
+
 $("#item-submit").click(function(){
 var item_id = $('#item_id').attr('value'); 
 var item_size = $('#size-select').attr('value');
@@ -266,6 +268,33 @@ $.ajax({
 		$("#cart-modal").dialog('open');
      }
 });
+});
+
+$(document).ready(function() {
+	var itemCheck = function(){
+		var item_id = $('#item_id').attr('value');
+		var item_size = $('#size-select').attr('value');
+		$.ajax({
+			url: $.base + 'items/available',
+			data: "item_id=" + item_id + "&" + "item_size=" + item_size,
+			context: document.body,
+			success: function(data){
+				if (data == 'false') {
+					$('#all-reserved').show();
+					$('#item-submit').hide();
+					$('#all-reserved').html("<p class=\"flex-btn\">All items are reserved <br>Check back in two minutes</p>");
+				} else {
+					$('#item-submit').show();
+					$('#all-reserved').hide();
+				}
+		     }
+		});
+	};
+	itemCheck();
+
+	$("#size-select").change(function(){
+		itemCheck();
+	});
 });
 
 
