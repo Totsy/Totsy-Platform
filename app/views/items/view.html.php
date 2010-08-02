@@ -260,6 +260,7 @@ $.ajax({
 			modal:true,
 			width: 900,
 			height: 600,
+			overlay: {opacity: 0.5, background: "black"}
 			close: function(ev, ui) { location.reload(true); }
 		});
 		$("#cart-modal").dialog('open');
