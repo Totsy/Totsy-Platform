@@ -35,7 +35,7 @@
 		Karan's personal assistant. The experience inspired Audrey to create a fashion component for
 		mothers on <a href="http://momgenerations.com/" target="_blank">MomGenerations.com</a>.
 	</p><p>
-		Drawing on her background in fashion, Audrey hosts a MomTV show, every Sunday night, called
+		Drawing on her background in fashion, Audrey hosts a Mom's TV show, every Sunday night, called
 		Audrey's Fashion Sense and also contributes to the Blissful Style channel on
 		<a href="http://bilssfullydomestic.com/" target="_blank">BlissfullyDomestic.com</a>. On
 		January 1, 2009, Audrey launched the popular series "365 Days of Fashion Advice for Moms" on
@@ -48,7 +48,7 @@
 		She is a vlogger for Johnson &amp; Johnson's "Real Moms" Health Channel, a member of Hanes'
 		Social Media Comfort Crew, and a member of Frito-Lay's FAB 15. In addition, she also holds a
 		position on Hasbro's Playskool Panel and is currently working on a new project, Daily Dose
-		of Style, to be launched October 1, 2009. Audrey has appeared in Redbook Magazine, Conceive
+		of Style, which launched October 1, 2009. Audrey has appeared in Redbook Magazine, Conceive
 		Magazine, Woman's World, and the Providence Journal. She has also appeared on the Rachael
 		Ray Show, NBC 4 New York News, FOX's The Rhode Show, WBZ News Boston, and ABC News
 		Providence.
