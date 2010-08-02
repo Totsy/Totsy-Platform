@@ -158,7 +158,7 @@ li.item5 a:hover,li.item5.over a, li.active.item5 a{background-position:-244px 0
 #middle{float:left;position:relative}
 .r-container{position:relative}
 #middle p{margin-bottom:20px}
-.tl,.tr,.bl,.br{position:absolute;width:14px;height:14px;background-image:url(../img/corners.png);background-repeat:no-repeat;}
+.tl,.tr,.bl,.br{position:absolute;width:14px;height:14px;background-image:url(../img/corners.png);background-repeat:no-repeat;z-index:500}
 .tl{top:0;left:0;background-position:right bottom}
 .tr{top:0;right:0;background-position:left bottom}
 .bl{bottom:0;left:0;background-position:right top}
@@ -476,7 +476,7 @@ a.sm-twitter-md{background-position:-80px 0;width:32px;height:32px}
 
 .coming-soon-sales{padding:20px 0;clear:both;overflow:hidden}
 
-.product-list-item{float:left;margin-bottom:10px}
+.product-list-item{float:left;margin-bottom:10px;z-index:1000}
 .p-container{border:1px solid #D7D7D7;position:relative}
 .p-container .details .table-cell{
 	padding:3px;
