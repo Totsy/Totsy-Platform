@@ -72,7 +72,7 @@
 					<div class="form-row">
 						<label for="state" class="required">State/Province<span>*</span></label>
 						<?=$this->form->select('billing.state', Address::$states, array(
-							'class' => 'inputbox', 'empty' => 'Choose a State'
+							'class' => 'inputbox', 'empty' => 'Select a state'
 						)); ?>
 					</div>
 
@@ -153,7 +153,7 @@
 					<div class="form-row">
 						<label for="state" class="required">State/Province<span>*</span></label>
 						<?=$this->form->select('shipping.state', Address::$states, array(
-							'class' => 'inputbox', 'empty' => 'Choose a State'
+							'class' => 'inputbox', 'empty' => 'Select a state'
 						)); ?>
 					</div>
 

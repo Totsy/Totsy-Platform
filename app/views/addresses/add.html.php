@@ -76,7 +76,7 @@
 			
 			<div class="form-row"> 
 				<label for="state" class='required'>State <span>*</span></label>
-				<?=$this->form->select('state', Address::$states); ?>
+				<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state')); ?>
 				<?=$this->form->error('state'); ?>
 			</div>
 			
