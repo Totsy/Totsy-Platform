@@ -134,7 +134,7 @@ li.item4 a:hover,li.item4.over a, li.active.item4 a{background-position:-184px 0
 li.item5 a{background-position:-244px -32px;width:117px}
 li.item5 a:hover,li.item5.over a, li.active.item5 a{background-position:-244px 0}
 
-#main-nav li ul{position:absolute;left:-9999px;width:164px;top:32px;}
+#main-nav li ul{position:absolute;left:-9999px;z-index:500;width:164px;top:32px;}
 #main-nav li li{float:none;margin-right:0;background-image:none;background-color:#E7E7E8;border-left:1px solid #B3B3B3;border-right:1px solid #B3B3B3;padding:0 5px}
 #main-nav li li.first{background:url(../img/dd-bg.png) left top no-repeat;border:none;padding:5px 5px 0 5px}
 #main-nav li li.last{background:url(../img/dd-bg.png) left bottom no-repeat;border:none;padding:0 5px 5px 5px}
