@@ -92,7 +92,7 @@ class Cart extends \lithium\data\Model {
 		$item = Item::first($cart->item_id);
 		$taxExempt = (
 			$shipping->state != 'NY' ||
-			($item->taxable && $cart->sale_retail < 110)
+			($item->taxable == false && $cart->sale_retail < 110)
 		);
 
 		if ($taxExempt) {
