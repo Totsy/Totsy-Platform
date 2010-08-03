@@ -91,7 +91,7 @@ class UsersController extends BaseController {
 	public function login() {
 		$message = false;
 		if ($this->request->data) {
-			$email = $this->request->data['email'];
+			$email = strtolower($this->request->data['email']);
 			$password = $this->request->data['password'];
 			//Grab User Record
 			$user = User::lookup($email);
