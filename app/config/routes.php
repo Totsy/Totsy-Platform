@@ -18,6 +18,8 @@ use lithium\action\Response;
  * 
  */
 Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request) {
+	$request->type = ($request->type == 'jpg') ? 'jpeg' : $request->type;
+
 	return new Response(array(
 		'headers' => array(
 			'Content-type' => "image/{$request->type}",
