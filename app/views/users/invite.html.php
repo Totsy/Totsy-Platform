@@ -50,9 +50,9 @@
 										<?=$this->form->submit('Send', array('class' => 'flex-btn fr')); ?>
 									<?=$this->form->end(); ?>
 									<br><br><br>
-									<?php $invite = "/join/" . $user->invitation_codes[0];?>
-									<p>Share this link with your friends</p>
-									<a href="<?=$invite?>" title="Share this link with your friends" class="bold">http://www.totsy.com<?=$invite?></a>
+									<?php $invite = "http://www.totsy.com/join/" . $user->invitation_codes[0];?>
+									<p>Share this link with your friends:</p>
+									<p><strong><?=$invite?></strong></p>
 								</fieldset>
 						</div>
 						<div class="send-right r-container">
@@ -113,8 +113,8 @@
 								</tbody>
 							</table>
 						<?php else: ?>
-							<strong>All the friends you've invited have accepted.</strong><br />
-							Nice! Now why not go invite more? Get a $15 Credit when they place their first order.
+							<strong>This feature is being migrated to the new site.</strong><br />
+							We'll have your invitation data loaded soon.
 						<?php endif ?>
 					</div>
 					<!-- End Open Invitations Tab -->
@@ -144,7 +144,8 @@
 								</tbody>
 							</table>
 						<?php else: ?>
-							<strong>You haven't invited anyone to Totsy. Why not send and invitation and get a $15 Credit when they place their first order</strong><br>
+							<strong>This feature is being migrated to the new site.</strong><br>
+							We have your invitation history and will have it loaded soon.
 						<?php endif ?>
 					
 					</div>

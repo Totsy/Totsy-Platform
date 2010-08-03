@@ -7,16 +7,16 @@
 * There are other things you must do FIRST in order for
 * this script to work:
 * 
-* 1: psql -Aqt -d totsy -f export_customers.sql -o customers.csv -F ","
+* 1: psql -Aqt -d totsy -f export_customers.sql -o customers.json -F ","
 * 2: delete all duplicate entries and add to ../redirects.txt
-* 3: mongoimport -d totsytest -c users --drop --fieldFile customer_fields.txt --type csv --file customers.csv
+* 3: mongoimport -d totsy -c users --drop --file customers.json
 * 4: php -f import_data.php
 * 
 **/
 
 // DON'T FORGET TO SET THIS
 $pgdbname = 'totsy';
-$mongodbname = 'totsytest';
+$mongodbname = 'totsy';
 
 // just for debugging convenience
 function debug( $thingie ){
@@ -79,6 +79,7 @@ foreach($users AS $user){
 	//
 	// fetch invitations
 	//
+	/*
 	$invitation_code_ids = implode( ', ', $ids);
 	$invitessql = 'select created_at AS "date", invitee_email AS "email", invited_customer_id from invitations where invitation_token_id IN ('.$invitation_code_ids.')';
 	$result1 = pg_query($pg, $invitessql);
@@ -107,7 +108,8 @@ foreach($users AS $user){
 		}
 	}
 	$user['invitations'] = $array_invitations;
-		
+	*/
+
 	//
 	// DEBUGGING OUTPUT
 	//
@@ -128,7 +130,7 @@ foreach($users AS $user){
 	// clear everything for the next user document
 	unset($codes, $ids, $array_invitations);
 	pg_free_result($result);
-	pg_free_result($result1);
+	//pg_free_result($result1);
 
 }
 
