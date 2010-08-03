@@ -44,9 +44,9 @@ class UsersController extends BaseController {
 								'email' => $email
 						)))	;
 						if ($invited) {
-							$invite->status = 'Accepted';
-							$invite->date_updated = Invitation::dates('now');
-							$invite->save();
+							$invited->status = 'Accepted';
+							$invited->date_updated = Invitation::dates('now');
+							$invited->save();
 							Invitation::reject($inviter->_id, $email);
 						} else {
 							$invitation = Invitation::create();
