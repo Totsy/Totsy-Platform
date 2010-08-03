@@ -1,3 +1,10 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	if($.browser.msie && $.browser.version < 8){
+		window.location.replace("/upgrade");
+	}
+});
+</script>
 <div id="middle" class="fullwidth">
 	<h1 class="page-title gray"><span class="red">Today's Sales</span></h1>
 	<?php $x = 0; ?>
