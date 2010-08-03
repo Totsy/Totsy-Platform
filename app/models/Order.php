@@ -59,14 +59,15 @@ class Order extends \lithium\data\Model {
 		));
 		$subTotal = array_sum($cart->subTotal());
 		$tax = array_sum($cart->tax($shipping));
+		$handling = Cart::shipping($cart, $shipping) ?: 7.95;
 
-		if (!$handling = Cart::shipping($cart, $shipping)) {
-			$order->errors($order->errors() + array(
-				'shipping' => 'A valid shipping address was not specified.'
-			));
-			$order->set($data);
-			return false;
-		}
+		// if (!$handling) {
+		// 	$order->errors($order->errors() + array(
+		// 		'shipping' => 'A valid shipping address was not specified.'
+		// 	));
+		// 	$order->set($data);
+		// 	return false;
+		// }
 
 		$tax = $tax ? $tax + ($handling * Cart::TAX_RATE) : 0;
 		$total = $subTotal + $tax + $handling;

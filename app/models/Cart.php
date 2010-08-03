@@ -22,7 +22,7 @@ class Cart extends \lithium\data\Model {
 	public static function dates($name) { 
 	     return new MongoDate(time() + static::_object()->_dates[$name]); 
 	}
-	
+
 	public static function addFields($data, array $options = array()) {
 
 		$data->expires = static::dates('tenMinutes');
