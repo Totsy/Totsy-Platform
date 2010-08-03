@@ -107,7 +107,7 @@ class Cart extends \lithium\data\Model {
 	}
 
 	public static function shipping($carts, $address) {
-		return floatval(Ups::estimate(array(
+		$result = floatval(Ups::estimate(array(
 			'weight' => array_sum($carts->weight()),
 			'product' => "GND",
 			'origin' => "18106",
@@ -116,6 +116,7 @@ class Cart extends \lithium\data\Model {
 			'container' => "CP",
 			'rescom' => "RES"
 		)));
+		return $result ?: 7.95
 	}
 
 	public static function checkCartItem($itemId, $size) {

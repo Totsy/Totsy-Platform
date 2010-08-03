@@ -59,7 +59,7 @@ class Order extends \lithium\data\Model {
 		));
 		$subTotal = array_sum($cart->subTotal());
 		$tax = array_sum($cart->tax($shipping));
-		$handling = Cart::shipping($cart, $shipping) ?: 7.95;
+		$handling = Cart::shipping($cart, $shipping);
 
 		// if (!$handling) {
 		// 	$order->errors($order->errors() + array(
