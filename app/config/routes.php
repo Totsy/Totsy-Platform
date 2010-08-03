@@ -23,6 +23,8 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 	return new Response(array(
 		'headers' => array(
 			'Content-type' => "image/{$request->type}",
+			'Pragma' => 'cache',
+			'Expires' => date("r", strtotime("+10 years")),
 			'Cache-control' => 'max-age=999999',
 			'Last-modified' => 'Mon, 29 Jun 1998 02:28:12 GMT'
 		),
