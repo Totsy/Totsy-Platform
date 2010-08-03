@@ -2,6 +2,8 @@
 
 namespace app\extensions;
 
+use lithium\analysis\Logger;
+
 /*
 Copyright (c) 2000, Jason Costomiris
 All rights reserved.
@@ -72,7 +74,7 @@ class Ups {
 		$this->upsProductCode = $prod;
 	}
 
-	public function origin($zip){
+	public function origin($zip) {
 		$this->originPostalCode = $zip;
 		$this->originCountryCode = 'US';
 	}
@@ -129,7 +131,7 @@ class Ups {
 		$this->packageWeight = $foo;
 	}
 
-    function rescom($foo){
+    function rescom($foo) {
 		switch($foo){
 			case "RES": // Residential Address
 				$this->resComCode = "1";
@@ -171,10 +173,11 @@ class Ups {
 
 		while (!feof($fp)) {
 			$result = fgets($fp, 500);
+			Logger::debug("UPS API result for {$url}: {$result}");
 			$result = explode("%", $result);
 			$errcode = substr($result[0], -1);
 
-			switch($errcode){
+			switch($errcode) {
 				case 3:
 					$returnval = $result[8];
 				break;

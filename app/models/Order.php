@@ -59,8 +59,17 @@ class Order extends \lithium\data\Model {
 		));
 		$subTotal = array_sum($cart->subTotal());
 		$tax = array_sum($cart->tax($shipping));
+		$handling = null;
+		$upsCounter = 0;
 
-		if (!$handling = Cart::shipping($cart, $shipping)) {
+		while (!$handling && $upsCounter < 5) {
+			$handling = Cart::shipping($cart, $shipping);
+			if (!$handling) {
+				sleep(2);
+			}
+		}
+
+		if (!$handling) {
 			$order->errors($order->errors() + array(
 				'shipping' => 'A valid shipping address was not specified.'
 			));
