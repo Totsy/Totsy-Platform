@@ -116,7 +116,7 @@ class Cart extends \lithium\data\Model {
 			'container' => "CP",
 			'rescom' => "RES"
 		)));
-		return $result ?: 7.95
+		return $result ?: 7.95;
 	}
 
 	public static function checkCartItem($itemId, $size) {
