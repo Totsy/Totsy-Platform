@@ -383,7 +383,12 @@ $(document).ready(function() {
 				if (data.billingAddr.address) {
 					$('.billing-address').html($(data.billingAddr).template(addrFormat));
 				}
+				$('.subTotal').html('$' + $.numberFormat(data.subTotal, 2));
+				$('.tax').html('$' + $.numberFormat(data.tax, 2));
 				$('.shippingCost').html('$' + $.numberFormat(data.shippingCost, 2));
+				$('.total').html('$' + $.numberFormat(
+					data.tax + data.shippingCost + data.subTotal, 2
+				));
 				$('.order-summary').fadeIn(1000);
 			});
 		}, 'json');
