@@ -27,7 +27,7 @@ class Mailer {
 	}
 
 	public static function send($template, $subject, array $to, array $data) {
-		$config = Environment::get('test');
+		$config = Environment::get('development');
 
 		// get a transport
 		$transport = Swift_SmtpTransport::newInstance()
