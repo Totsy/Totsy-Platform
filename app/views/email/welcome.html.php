@@ -20,9 +20,7 @@ use lithium\net\http\Router;
 		<table cellspacing="0" cellpadding="0" border="0" width="592">	
 				<tr>
 					<td colspan="4" style="text-align:center;padding:10px">
-						If you are unable to see this message, <a href="#" style="color:#E00000">click here to view</a>
-						<br>
-						To ensure delivery to your inbox, please add <a href="#" title="Totsy Support Address" style="color:#E00000">support@totsy.com</a> to your address book
+						To ensure delivery to your inbox, please add <a href="mailto:support@totsy.com" style="color:#E00000;text-decoration:none">support@totsy.com</a> to your address book
 					</td>
 				</tr>
 					<tr>
@@ -69,7 +67,7 @@ use lithium\net\http\Router;
 									'title' => 'Access My Account',
 									'alt' => 'Access My Account'
 								)),
-								"$data[domain]/sales",
+								"$data[domain]/account",
 								array(
 									'id' => 'Totsy', 
 									'escape'=> false
@@ -86,7 +84,7 @@ use lithium\net\http\Router;
 									'height'=>'116',
 									'alt' => 'Invite Friends to Totsy'
 								)),
-								"$data[domain]/sales", 
+								"$data[domain]/Users/invite", 
 								array(
 									'id' => 'Totsy',
 									'escape'=> false,
@@ -126,10 +124,10 @@ use lithium\net\http\Router;
 									discount pricing. You can change your email preferences at any
 									time by visiting
 									<a href="<?php echo (Router::match('Account::index', $this->_request, array('absolute' => true))); ?>">My Account</a> at
-									<a href="http://www.totsy.com/">Totsy.com</a>.
+									<a href="http://www.totsy.com/" style="color:#E00000;text-decoration:none">Totsy.com</a>.
 								</p>
 								<p>In addition to the great savings, take a minute to check out our
-									<a href="<?php echo Router::match('pages/being_green', $this->_request, array('absolute' => true)); ?>">
+									<a href="http://www.totsy.com/pages/being_green" style="color:#E00000;text-decoration:none">
 									environmentally conscious initiatives</a>, and find out how
 									every purchase can make a difference.
 								</p>
