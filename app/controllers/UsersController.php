@@ -278,6 +278,12 @@ class UsersController extends BaseController {
 		return compact('user','open', 'accepted', 'flashMessage');
 	}
 
+	public function upgrade() {
+		$this->_render['layout'] = 'upgrade';
+		$user = User::getUser();
+		return compact('user');
+	}
+
 }
 
 ?>

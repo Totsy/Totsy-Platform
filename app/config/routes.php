@@ -59,7 +59,7 @@ Router::connect('/invite', 'Users::invite');
 Router::connect('/shopping/cart', 'Cart::index');
 Router::connect('/shopping/checkout.{:type}', 'Orders::add');
 Router::connect('/shopping/checkout', 'Orders::add');
-
+Router::connect('/upgrade', 'Users::upgrade');
 Router::connect('/events/view/{:item:[a-z0-9\-]+}', 'Events::view');
 
 /**
