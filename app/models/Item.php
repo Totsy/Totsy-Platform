@@ -47,16 +47,15 @@ class Item extends \lithium\data\Model {
 	 * decremented.
 	 */	
 	public static function sold($_id, $size, $quantity) {
-		if (!empty($_id) && ( +$quantity > 1)) {
+		if (!empty($_id) && ( +$quantity > 0)) {
 			$_id = new MongoId($_id);
-			return static::collection()->update(array(
-				'_id' => $_id, "details.$size" => array('$gte' => +$quantity)),
-				 array(
-					'$inc' => array(
-						"sale_details.$size.sale_count" => +$quantity,
-						"details.$size" => -$quantity,
-						"total_quantity" => -$quantity
-			)));
+			$update = array(
+				'$inc' => array(
+					"sale_details.$size.sale_count" => +$quantity,
+					"details.$size" => -$quantity,
+					"total_quantity" => -$quantity
+			));
+			return static::collection()->update(array('_id' => $_id), $update);
 		}
 		return false;
 	}
