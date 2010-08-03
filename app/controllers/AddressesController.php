@@ -49,13 +49,13 @@ class AddressesController extends BaseController {
 				$message = "There are already {$this->_maxAddresses} addresses registered. ";
 				$message .= "Please remove one first.";
 			} else {
-				$this->request->data['default'] = ($this->request->data['default'] == '1') ? true : false;
 
-				if (($this->request->data['default'] == true) && (Address::changeDefault($user['_id']))) {
+				if (($this->request->data['default'] == '1') && (Address::changeDefault($user['_id']))) {
 					$message = 'This address is now your default';
 				} elseif ($address->validates()) {
 					$message = 'Address Saved';
 				}
+				$address->default = ($this->request->data['default'] == '1') ? true : false;
 				$address->user_id = (string) $user['_id'];
 
 				if ($address->save()) {
