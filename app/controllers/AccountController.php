@@ -17,13 +17,13 @@ class AccountController extends BaseController {
 
 		$billing = Address::find('first', array(
 			'conditions' => array(
-				'user_id' => $user['_id'],
+				'user_id' => (string) $user['_id'],
 				'type' => "Billing",
 				'default' => true
 		)));
 		$shipping = Address::find('first', array(
 			'conditions' => array(
-				'user_id' => $user['_id'],
+				'user_id' => (string) $user['_id'],
 				'type' => "Shipping",
 				'default' => true
 		)));
