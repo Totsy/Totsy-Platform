@@ -85,6 +85,16 @@ tinyMCE.init({
 							<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Item
 						<?php endif ?>
 					</div>
+					<div id="item_tax">
+						<h2 id="item_tax">Item Tax</h2>
+						<?php if ($item->taxable == 1): ?>
+							<input type="radio" name="taxable" value="1" id="taxable" checked> Taxable Item <br>
+							<input type="radio" name="taxable" value="0" id="taxable"> Not Taxable Item
+						<?php else: ?>
+							<input type="radio" name="taxable" value="1" id="taxable"> Taxable Item <br>
+							<input type="radio" name="taxable" value="0" id="taxable" checked> Not Taxable Item
+						<?php endif ?>
+					</div>
 				</div>
 				<div id="item_pricing">
 					<h2 id="">Pricing</h2>
