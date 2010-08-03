@@ -19,7 +19,11 @@ use lithium\action\Response;
  */
 Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request) {
 	return new Response(array(
-		'headers' => array('Content-type' => "image/{$request->type}"),
+		'headers' => array(
+			'Content-type' => "image/{$request->type}",
+			'Cache-control' => 'max-age=999999',
+			'Last-modified' => 'Mon, 29 Jun 1998 02:28:12 GMT'
+		),
 		'body' => File::first($request->id)->file->getBytes()
 	));
 });
