@@ -17,7 +17,7 @@
 					<td colspan="4" style="text-align:center;padding:10px">
 						If you are unable to see this message, <a href="<?=$data['domain'].'/invitation/'.$data['user']->invitation_codes[0]; ?>" title="Click to Accept Invitation" style="color:#E00000;text-decoration:none">click here to view</a>
 						<br>
-						To ensure delivery to your inbox, please add <strong>support@totsy.com</strong> to your address book
+						To ensure delivery to your inbox, please add <a href="mailto:support@totsy.com" style="color:#E00000;text-decoration:none">support@totsy.com</a> to your address book
 					</td>
 				</tr>
 					<tr>
