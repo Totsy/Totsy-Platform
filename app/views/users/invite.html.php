@@ -1,9 +1,9 @@
 <?php $this->title("My Invitations "); ?>
-<?=$this->html->script(array('jquery.equalheights', 'jquery.flash')); ?>
+<?=$this->html->script(array('jquery.equalheights')); ?>
 <h1 class="p-header">My Account</h1>
-<?=$this->menu->render('left');?>				
+<?=$this->menu->render('left');?>
 			<!-- Start Main Page Content -->
-		<div id="middle" class="noright">				
+		<div id="middle" class="noright">
 			
 			<div class="tl"></div>
 			<div class="tr"></div>
