@@ -53,6 +53,8 @@ class CreditCard extends \li3_payments\extensions\PaymentObject {
 	 */
 	public $code;
 
+	public $billing;
+
 	protected $_validates = array(
 		'type' => array('inList', 'list' => array()),
 		'number' => array(array('creditCard', 'format' => 'any'), array('luhn')),

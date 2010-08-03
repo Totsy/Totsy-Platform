@@ -3,6 +3,7 @@
 namespace li3_payments\extensions\adapter\payments;
 
 use SimpleXMLElement;
+use lithium\util\Inflector;
 use lithium\data\Collection;
 use li3_payments\extensions\PaymentObject;
 use li3_payments\extensions\payments\ECheck;
@@ -225,11 +226,20 @@ class AuthorizeNet extends \lithium\core\Object {
 			'exp_date'         => "{$payment->month}-{$payment->year}",
 			'card_num'         => $payment->number
 		);
-		if (isset($params['amount'])) {
-			$data['amount'] = $params['amount'];
+		if (isset($payment->billing) && is_object($payment->billing)) {
+			$billing = array(
+				'firstName', 'lastName', 'address', 'city', 'state', 'zip', 'phone', 'company'
+			);
+			foreach ($billing as $key) {
+				if (isset($payment->billing->{$key})) {
+					$data[Inflector::underscore($key)] = $payment->billing->{$key};
+				}
+			}
 		}
-		if (isset($params['transaction'])) {
-			$data['trans_id'] = $params['transaction'];
+		foreach (array('amount' => 'amount', 'transaction' => 'trans_id') as $source => $dest) {
+			if (isset($params[$source])) {
+				$data[$dest] = $params[$source];
+			}
 		}
 		$result = '';
 

@@ -47,6 +47,7 @@ class User extends \lithium\data\Model {
 			unset($user->salt);
 		}
 	}
+
 	/**
 	 * Lookup a user by either their email or username
 	 */
