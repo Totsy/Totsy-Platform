@@ -89,11 +89,10 @@ class Cart extends \lithium\data\Model {
 	 * @return float
 	 */
 	public function tax($cart, $shipping) {
-		$categories = static::_object()->_nonTaxableCategories;
 		$item = Item::first($cart->item_id);
 		$taxExempt = (
 			$shipping->state != 'NY' ||
-			(in_array($item->category, $categories) && $cart->sale_retail < 110)
+			($item->taxable && $cart->sale_retail < 110)
 		);
 
 		if ($taxExempt) {
