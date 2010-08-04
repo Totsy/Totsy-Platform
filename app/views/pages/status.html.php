@@ -13,7 +13,7 @@
 
 	<h3>Credit History</h3>
 
-	<p>We're in the process of migrating all customer credit history to the new platform. Rest assured that if you have earned credits in the past, your credits are not lost. Your credits will be here within the next few days, and new credits are already functional so you won't miss out on any opportunities while we are migrating the data from our old site.</p>
+	<p>We are in the process of migrating all customer credit history to the new platform. Rest assured that if you have earned credits in the past, your credits are not lost. Your credits will be here within the next few days, and new credits are already functional so you won't miss out on any opportunities while we are migrating the data from our old site.</p>
 	
 	<h3>Order History</h3>
 	
@@ -21,11 +21,11 @@
 		
 	<h3>Invitation History</h3>
 	
-	<p>Your invitations are safely stored in the database, and we're working to hook the new platform up to them and should have that done with order and credit information.</p>
+	<p>Your invitations are safely stored in the database, and we're working to hook the new platform up to them and should have that done along with order and credit information.</p>
 	
 	<h3>Blog</h3>
 	
-	<p>You have probably noticed that our blog is on temporary vacation while we get the new site up and running smoothly. We have big plans for the blog and will be announcing when it comes back online.</p>
+	<p>You have probably noticed that our blog is on temporary vacation while we get the new site up and running smoothly. We have big plans for the blog and will be making an announcement when it comes back online.</p>
 
 
 </div>
