@@ -6,7 +6,9 @@
 
 	<div id="middle" class="fullwidth">				
 		
-		<h1 class="page-title gray"><span class="red"><?=$type?> Sales /</span> <?=$event->name; ?> <div id="listingCountdown" class="listingCountdown"></div></h1>
+		<div id="listingCountdown" class="listingCountdown"></div>
+		
+		<h1 class="page-title gray"><span class="red"><?=$type?> Sales /</span> <?=$event->name; ?></h1>
 		
 		<div class="sm-actions fr">
 			<dl>
