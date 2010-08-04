@@ -46,6 +46,7 @@ Environment::is(function($request) {
 	switch ($request->env('HTTP_HOST')) {
 		case 'www.totsy.com':
 		case 'totsy.com':
+		case 'admin.totsy.com':
 			return 'production';
 		case 'testadmin.totsy.com':
 			return 'test';
