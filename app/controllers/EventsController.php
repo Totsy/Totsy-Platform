@@ -70,10 +70,7 @@ class EventsController extends BaseController {
 			$id = $eventItems['_id'] ;
 			if (isset($eventItems['items'])) {
 				foreach ($eventItems['items'] as $eventItem) {
-					$item = Item::first(array(
-						'conditions' => array('_id' => $eventItem
-					)));
-					if (!empty($item->total_quantity)) {
+					if ($item = Item::first(array('conditions' => array('_id' => $eventItem)))) {
 						$count += $item->total_quantity;
 					}
 				}
