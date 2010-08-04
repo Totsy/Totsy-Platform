@@ -1,3 +1,12 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	if (hash = window.location.hash) {
+		$('html, body').animate({ scrollTop: $(hash).offset().top - 100 }, 500, 'linear', function() {
+			setTimeout(function() {  $(hash).animate({ backgroundColor: '#FFFFAA' }, 500)}, 250);
+		});
+	}
+});
+</script>
 <?=$this->menu->render('about'); ?>
 
 <h1 class="p-header"><?=$this->title('Frequently Asked Questions'); ?></h1>
@@ -108,7 +117,7 @@
 	and running smoothly. We have big plans for the blog and will be making an announcement when 
 	it comes back online.</p>
 	
-	<p><strong>Your site says I need to use Internet Explorer 8, but that is what I have. What 
+	<p id="IE8"><strong>Your site says I need to use Internet Explorer 8, but that is what I have. What
 	gives?</strong><br />
 	Internet Explorer 8 includes a feature called Compatibility Mode, which tells it to 
 	pretend to be Internet Explorer 7. Not only does this fool our website, but it forces a working 
