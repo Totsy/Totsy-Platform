@@ -87,6 +87,33 @@
 	to be removed from our database. Once you confirm, we'll automatically remove you from our
 	lists.</p>
  
+	<h2>Site Issues</h2>
+	
+	<p><strong>Where did my credits go?</strong><br />
+	We are in the process of migrating all customer credit history to the new platform. Rest assured 
+	that if you have earned credits in the past, your credits are not lost. Your credits will be 
+	here within the next few days, and new credits are already functional so you won't miss out on 
+	any opportunities while we are migrating the data from our old site.</p>
+	
+	<p><strong>My order history is not there. either.</strong><br />
+	Like credits, order data is in the process of being massaged and imported to the new platform. 
+	This is expected to be up shortly.</p>
+	
+	<p><strong>How about invitations, did I lose my invitations from the old site?</strong><br />
+	Your invitations are safely stored in the database, and we're working to hook the new platform 
+	up to them and should have that done along with order and credit information.</p>
+	
+	<p><strong>What happened to the blog?</strong><br />
+	You have probably noticed that our blog is on temporary vacation while we get the new site up 
+	and running smoothly. We have big plans for the blog and will be making an announcement when 
+	it comes back online.</p>
+	
+	<p><strong>Your site says I need to use Internet Explorer 8, but that is what I have. What 
+	gives?</strong><br />
+	Internet Explorer 8 includes a feature called Compatibility Mode, which tells it to 
+	pretend to be Internet Explorer 7. Not only does this fool our website, but it forces a working 
+	browser to stop working properly. Make sure you are not running Internet Explorer 8 in 
+	Compatibility Mode, and all should be good.</p>
  
 </div> 
 <div class="bl"><!-- --></div> 
