@@ -16,7 +16,7 @@
 		<div class="product-detail-attribute">
 
 			<?php if (!empty($sizes)): ?>
-				<?php if (!(count($sizes) == 1) && !($sizes[0] =='no size')): ?>
+				<?php if ( !($sizes[0] =='no size')): ?>
 					<label for="size" class="required">Size<span>*</span></label>&nbsp;
 						<select name="item_size" id="size-select">
 							<?php foreach ($sizes as $value): ?>
