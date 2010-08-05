@@ -258,7 +258,8 @@ tinyMCE.init({
 			<?php if (!empty($event)): ?>
 				<p>This item is associated with the <strong><?=$event->name?> </strong>event</p>
 				<?=$this->html->link("Edit - $event->name", array('Events::edit', 'args' => array("$event->_id"))); ?><br>
-				<?=$this->html->link("View - $event->name", array('Events::view', 'args' => array("$event->_id"))); ?>
+				<?=$this->html->link("View - $event->name", array('Events::preview', 'args' => array("$event->_id"))); ?><br>
+				<?=$this->html->link("View - $item->description", array('Items::preview', 'args' => array("$item->url"))); ?>
 			<?php endif ?>
 		</div>
 	</div>

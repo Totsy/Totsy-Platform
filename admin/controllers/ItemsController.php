@@ -73,6 +73,36 @@ class ItemsController extends BaseController {
 		}
 		return compact('item', 'details', 'event');
 	}
+
+	public function preview($url = null) {
+
+		if ($url == null) {
+			$this->redirect('/');
+		} else {
+			$item = Item::find('first', array(
+				'conditions' => array(
+					'enabled' => true,
+					'url' => $url),
+				'order' => array('modified_date' => 'DESC'
+			)));
+			if (!$item) {
+				$this->redirect('/');
+			} else {
+				$event = Event::find('first', array(
+					'conditions' => array(
+						'items' => array((string) $item->_id),
+						'enabled' => true
+				)));
+				$related = $item->related();
+				$sizes = $item->sizes();
+				$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+			}
+		}
+		$this->_render['layout'] = 'preview';
+		$id = $item->_id;
+		$preview = 'Items';
+		return compact('item', 'event', 'related', 'sizes', 'shareurl', 'id', 'preview');
+	}
 }
 
 ?>

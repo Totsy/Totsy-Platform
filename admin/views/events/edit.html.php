@@ -14,6 +14,8 @@
 <?=$this->html->style('admin');?>
 <?=$this->html->script('jquery-ui-timepicker.min.js');?>
 <?=$this->html->style('timepicker'); ?>
+<?=$this->html->script('jquery.countdown.min');?>
+<?=$this->html->style('jquery.countdown');?>
 
 <script type="text/javascript">
 tinyMCE.init({
@@ -93,7 +95,6 @@ tinyMCE.init({
 	    <li><a href="#event_info"><span>Event Info</span></a></li>
 		<li><a href="#event_images"><span>Event Images</span></a></li>
 	    <li><a href="#event_items"><span>Event Items</span></a></li>
-	    <!--<li><a href="#video"><span>Video</span></a></li>-->
 	</ul>
 
 	<div id="event_info">
@@ -103,7 +104,7 @@ tinyMCE.init({
 			</p>
 		</div>
 		<div id="event_preview">
-			<p> To see a preview of the event please <?=$this->html->link('click here.',"/events/view/$event->_id")?></p>
+			<p> To see a preview of the event please <?=$this->html->link('click here.',"/events/preview/$event->_id")?></p>
 		</div>
 		<h2 id="event_description">Event Description</h2>
 
