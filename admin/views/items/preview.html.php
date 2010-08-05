@@ -113,7 +113,7 @@
 							"class" => "img-th",
 							"width" => "93",
 							"height" => "93")),
-							"/items/view/$relatedItem->url", array(
+							"/items/preview/$relatedItem->url", array(
 								'id' => 
 								"$relatedItem->name", 
 								'escape'=> false
