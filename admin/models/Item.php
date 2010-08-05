@@ -23,7 +23,8 @@ class Item extends \lithium\data\Model {
 		);
 	
 	protected $_booleans = array(
-		'enabled'
+		'enabled',
+		'taxable'
 		);
 		
 	public static function castData($items, array $options = array()) {
@@ -51,6 +52,28 @@ class Item extends \lithium\data\Model {
 			}
 		}
 		return $items;
+	}
+
+	public function related($item) {
+		return static::all(array('conditions' => array(
+			'enabled' => true,
+			'description' => "$item->description",
+			'color' => array('$ne' => "$item->color")
+		)));
+	}
+
+	public function sizes($item) {
+		if (empty($item->details)) {
+			return array();
+		}
+		$sizes = array();
+
+		foreach ($item->details->data() as $key => $val) {
+			if ($val && ($val > 0)) {
+				$sizes[] = $key;
+			}
+		}
+		return $sizes;
 	}
 
 }

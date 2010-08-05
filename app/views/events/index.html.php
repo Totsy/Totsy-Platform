@@ -1,3 +1,14 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	if ($.browser.msie && $.browser.version < 8){
+		if ($.browser.version == 7 && document.documentMode) {
+			window.location.replace("/pages/faq#IE8");
+		} else {
+			window.location.replace("/upgrade");
+		}
+	}
+});
+</script>
 <div id="middle" class="fullwidth">
 	<h1 class="page-title gray"><span class="red">Today's Sales</span></h1>
 	<?php $x = 0; ?>

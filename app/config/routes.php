@@ -18,8 +18,16 @@ use lithium\action\Response;
  * 
  */
 Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request) {
+	$request->type = ($request->type == 'jpg') ? 'jpeg' : $request->type;
+
 	return new Response(array(
-		'headers' => array('Content-type' => "image/{$request->type}"),
+		'headers' => array(
+			'Content-type' => "image/{$request->type}",
+			'Pragma' => 'cache',
+			'Expires' => date("r", strtotime("+10 years")),
+			'Cache-control' => 'max-age=999999',
+			'Last-modified' => 'Mon, 29 Jun 1998 02:28:12 GMT'
+		),
 		'body' => File::first($request->id)->file->getBytes()
 	));
 });
@@ -59,7 +67,7 @@ Router::connect('/invite', 'Users::invite');
 Router::connect('/shopping/cart', 'Cart::index');
 Router::connect('/shopping/checkout.{:type}', 'Orders::add');
 Router::connect('/shopping/checkout', 'Orders::add');
-
+Router::connect('/upgrade', 'Users::upgrade');
 Router::connect('/events/view/{:item:[a-z0-9\-]+}', 'Events::view');
 
 /**

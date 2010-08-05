@@ -116,7 +116,17 @@ class EventsController extends BaseController {
 				));
 			}
 		}
-		return compact('event', 'eventItems');
+		if ($event->items) {
+			foreach ($event->items as $_id) {
+				$conditions = compact('_id') + array('enabled' => true);
+
+				if ($item = Item::first(compact('conditions'))) {
+					$items[] = $item;
+				}
+			}
+		}
+
+		return compact('event', 'eventItems', 'items');
 	}
 	/**
 	 * Parse the CSV file
@@ -221,6 +231,37 @@ class EventsController extends BaseController {
 			$images = $imageRecord->data();
 		}
 		return $images;
+	}
+
+	public function preview($_id = null) {
+
+		$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		$event = Event::first(array(
+			'conditions' => array(
+				'_id' => $_id
+		)));
+
+		$pending = ($event->start_date->sec > time() ? true : false);
+
+		if (!empty($event->items)) {
+			foreach ($event->items as $_id) {
+				$conditions = compact('_id') + array('enabled' => true);
+
+				if ($item = Item::first(compact('conditions'))) {
+					$items[] = $item;
+				}
+			}
+		}
+		if ($pending == false) {
+			$type = 'Today\'s';
+		} else {
+			$type = 'Coming Soon';
+		}
+		$this->_render['layout'] = 'preview';
+		$id = $event->_id;
+		$preview = "Events";
+		return compact('event', 'items', 'shareurl', 'type', 'id', 'preview');
+
 	}
 }
 

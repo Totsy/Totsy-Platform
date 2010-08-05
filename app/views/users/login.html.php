@@ -72,7 +72,7 @@
 </div>
 
 <div id="footer">
-
+<!--
 	<ul>
 		<li class="first"><a href="#" title="Terms of Use">Terms of Use</a></li>
 		<li><a href="#" title="Privacy Policy">Privacy Policy</a></li>
@@ -80,7 +80,7 @@
 		<li><a href="#" title="FAQ">FAQ</a></li>
 		<li class="last"><a href="#" title="Contact Us">Contact Us</a></li>
 	</ul>
-	
+-->	
 	<span id="copyright">&copy; 2010 Totsy.com. All Rights Reserved.</span>
 
 </div>

@@ -1,8 +1,10 @@
+<?=$this->html->script('jquery-1.4.2.min.js');?>
+
 <?php
 	$this->title($event->name);
 ?>
 <?=$this->html->script('jquery.countdown.min');?>
-<?=$this->html->style('jquery.countdown');?>
+
 
 	<div id="middle" class="fullwidth">				
 		
@@ -118,7 +120,7 @@
 								'title' => $item->name,
 								'width' => '298',
 								'height' => '300')),
-							"/items/view/{$item->url}",
+							"/items/preview/{$item->url}",
 							array('escape' => false)
 						); ?>
 						<div class="details table-row">
@@ -126,7 +128,7 @@
 								<table width="280">
 									<tr>
 										<td width="170" valign="top">
-											<a href="<?="/items/view/$item->url"?>"><h2><?=$item->description ?></h2></a>
+											<a href="<?="/items/preview/$item->url"?>"><h2><?=$item->description ?></h2></a>
 										</td>
 										<td align="right">
 											<font class="price">$<?=number_format($item->sale_retail,2);?></font><br>
@@ -145,8 +147,6 @@
 		<?php endif ?>
 		
 	</div>
-</div>
-</div>
 <script type="text/javascript"> 
 $(function () {
 	var saleEnd = new Date();

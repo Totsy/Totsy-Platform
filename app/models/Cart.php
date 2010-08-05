@@ -22,7 +22,7 @@ class Cart extends \lithium\data\Model {
 	public static function dates($name) { 
 	     return new MongoDate(time() + static::_object()->_dates[$name]); 
 	}
-	
+
 	public static function addFields($data, array $options = array()) {
 
 		$data->expires = static::dates('tenMinutes');
@@ -89,11 +89,10 @@ class Cart extends \lithium\data\Model {
 	 * @return float
 	 */
 	public function tax($cart, $shipping) {
-		$categories = static::_object()->_nonTaxableCategories;
 		$item = Item::first($cart->item_id);
 		$taxExempt = (
 			$shipping->state != 'NY' ||
-			(in_array($item->category, $categories) && $cart->sale_retail < 110)
+			($item->taxable == false && $cart->sale_retail < 110)
 		);
 
 		if ($taxExempt) {
@@ -108,7 +107,7 @@ class Cart extends \lithium\data\Model {
 	}
 
 	public static function shipping($carts, $address) {
-		return floatval(Ups::estimate(array(
+		$result = floatval(Ups::estimate(array(
 			'weight' => array_sum($carts->weight()),
 			'product' => "GND",
 			'origin' => "18106",
@@ -117,6 +116,7 @@ class Cart extends \lithium\data\Model {
 			'container' => "CP",
 			'rescom' => "RES"
 		)));
+		return $result ?: 7.95;
 	}
 
 	public static function checkCartItem($itemId, $size) {
@@ -127,6 +127,24 @@ class Cart extends \lithium\data\Model {
 				'size' => "$size",
 				'expires' => array('$gt' => static::dates('now'))
 		)));
+	}
+
+	public static function reserved($item_id, $size) {
+		$total = 0;
+		$reserved =  static::find('all', array(
+			'conditions' => array(
+				'item_id' => $item_id,
+				'size' => $size),
+			'fields' => array('quantity')
+		));
+		if ($reserved) {
+			$carts = $reserved->data();
+			foreach ($carts as $cart) {
+				$total = $total + $cart['quantity'];
+			}
+		}
+
+		return $total;
 	}
 }
 

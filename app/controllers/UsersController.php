@@ -44,9 +44,9 @@ class UsersController extends BaseController {
 								'email' => $email
 						)))	;
 						if ($invited) {
-							$invite->status = 'Accepted';
-							$invite->date_updated = Invitation::dates('now');
-							$invite->save();
+							$invited->status = 'Accepted';
+							$invited->date_updated = Invitation::dates('now');
+							$invited->save();
 							Invitation::reject($inviter->_id, $email);
 						} else {
 							$invitation = Invitation::create();
@@ -91,7 +91,7 @@ class UsersController extends BaseController {
 	public function login() {
 		$message = false;
 		if ($this->request->data) {
-			$email = $this->request->data['email'];
+			$email = strtolower($this->request->data['email']);
 			$password = $this->request->data['password'];
 			//Grab User Record
 			$user = User::lookup($email);
@@ -276,6 +276,12 @@ class UsersController extends BaseController {
 		));
 		
 		return compact('user','open', 'accepted', 'flashMessage');
+	}
+
+	public function upgrade() {
+		$this->_render['layout'] = 'upgrade';
+		$user = User::getUser();
+		return compact('user');
 	}
 
 }

@@ -1,5 +1,4 @@
 <?=$this->html->script(array('jqzoom.pack.1.0.1','jquery.equalheights'));?>
-<?=$this->html->style('jquery.countdown');?>
 
 
 <div id="product-detail-right">
@@ -245,57 +244,4 @@ $(document).ready(function() {
 	});
 
 });
-</script>
-<script type="text/javascript">
-
-$("#item-submit").click(function(){
-var item_id = $('#item_id').attr('value'); 
-var item_size = $('#size-select').attr('value');
-
-$.ajax({
-	url: $.base + 'cart/add',
-	data: "item_id=" + item_id + "&" + "item_size=" + item_size,
-	context: document.body,
-	success: function(){
-		$("#cart-modal").load($.base + 'cart/view').dialog({
-			autoOpen: false,
-			modal:true,
-			width: 900,
-			height: 600,
-			overlay: {opacity: 0.5, background: "black"},
-			close: function(ev, ui) { location.reload(true); }
-		});
-		$("#cart-modal").dialog('open');
-     }
-});
-});
-
-$(document).ready(function() {
-	var itemCheck = function(){
-		var item_id = $('#item_id').attr('value');
-		var item_size = $('#size-select').attr('value');
-		$.ajax({
-			url: $.base + 'items/available',
-			data: "item_id=" + item_id + "&" + "item_size=" + item_size,
-			context: document.body,
-			success: function(data){
-				if (data == 'false') {
-					$('#all-reserved').show();
-					$('#item-submit').hide();
-					$('#all-reserved').html("<p class=\"flex-btn\">All items are reserved <br>Check back in two minutes</p>");
-				} else {
-					$('#item-submit').show();
-					$('#all-reserved').hide();
-				}
-		     }
-		});
-	};
-	itemCheck();
-
-	$("#size-select").change(function(){
-		itemCheck();
-	});
-});
-
-
 </script>

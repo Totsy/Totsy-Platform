@@ -85,6 +85,16 @@ tinyMCE.init({
 							<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Item
 						<?php endif ?>
 					</div>
+					<div id="item_tax">
+						<h2 id="item_tax">Item Tax</h2>
+						<?php if ($item->taxable == 1): ?>
+							<input type="radio" name="taxable" value="1" id="taxable" checked> Taxable Item <br>
+							<input type="radio" name="taxable" value="0" id="taxable"> Not Taxable Item
+						<?php else: ?>
+							<input type="radio" name="taxable" value="1" id="taxable"> Taxable Item <br>
+							<input type="radio" name="taxable" value="0" id="taxable" checked> Not Taxable Item
+						<?php endif ?>
+					</div>
 				</div>
 				<div id="item_pricing">
 					<h2 id="">Pricing</h2>
@@ -248,7 +258,8 @@ tinyMCE.init({
 			<?php if (!empty($event)): ?>
 				<p>This item is associated with the <strong><?=$event->name?> </strong>event</p>
 				<?=$this->html->link("Edit - $event->name", array('Events::edit', 'args' => array("$event->_id"))); ?><br>
-				<?=$this->html->link("View - $event->name", array('Events::view', 'args' => array("$event->_id"))); ?>
+				<?=$this->html->link("View - $event->name", array('Events::preview', 'args' => array("$event->_id"))); ?><br>
+				<?=$this->html->link("View - $item->description", array('Items::preview', 'args' => array("$item->url"))); ?>
 			<?php endif ?>
 		</div>
 	</div>

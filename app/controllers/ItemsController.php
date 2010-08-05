@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\controllers\BaseController;
 use app\models\Item;
 use app\models\Event;
+use app\models\Cart;
 
 class ItemsController extends BaseController {
 
@@ -38,9 +39,25 @@ class ItemsController extends BaseController {
 			}
 		}
 
-		return compact('item', 'event', 'related', 'sizes', 'shareurl');
+		return compact('item', 'event', 'related', 'sizes', 'shareurl', 'reserved');
 	}
 
+	public function available() {
+		$available = false;
+		$this->render(array('layout' => false));
+		if ($this->request->query) {
+			$data = $this->request->query;
+			$reserved = Cart::reserved($data['item_id'], $data['item_size']);
+			$item = Item::find('first', array(
+				'conditions' => array(
+					'_id' => $data['item_id']
+			)));
+
+			$qty = $item->details->{$data['item_size']} - $reserved;
+			$available = ($qty > 0) ? true : false;
+			echo json_encode($available);
+		}
+	}
 }
 
 ?>

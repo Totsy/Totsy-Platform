@@ -6,6 +6,7 @@ use \lithium\data\Connections;
 use \lithium\storage\Session;
 use \MongoDate;
 use \MongoId;
+use \MongoRegex;
 
 class User extends \lithium\data\Model {
 	
@@ -47,13 +48,15 @@ class User extends \lithium\data\Model {
 			unset($user->salt);
 		}
 	}
+
 	/**
 	 * Lookup a user by either their email or username
 	 */
-	public static function lookup($identity) {
+	public static function lookup($email) {
 		$user = null;
+		$email = new MongoRegex("/$email/i");
 		$result = static::collection()->findOne(array(
-			'$or' => array(array('username' => "$identity"), array('email' => "$identity")))
+			'$or' => array(array('username' => $email), array('email' => $email)))
 		);
 		if ($result) {
 			$user = User::create($result);
