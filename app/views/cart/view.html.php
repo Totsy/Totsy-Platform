@@ -114,10 +114,10 @@
 		</tr>
 		<tr class="cart-buy">
 			<td colspan="5" class="cart-notes">
-				<strong>Need more time to Shop?</strong><br />
+				<!-- strong>Need more time to Shop?</strong><br />
 				We combine shipping on any additional orders placed within 1 hour
-				<br /><br />
-				<strong>Refund &amp; Return Policy</strong><br />
+				<br /><br / -->
+				<a href='../pages/returns'><strong>Refund &amp; Return Policy</strong></a><br />
 			</td>
 			<td class="cart-button" colspan="2">
 				<?=$this->html->link('Buy Now', 'Orders::add', array('class' => 'flex-btn')); ?>
