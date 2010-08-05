@@ -117,7 +117,7 @@
 				<!-- strong>Need more time to Shop?</strong><br />
 				We combine shipping on any additional orders placed within 1 hour
 				<br /><br / -->
-				<a href='../pages/returns'><strong>Refund &amp; Return Policy</strong></a><br />
+				<a href='../../pages/returns'><strong>Refund &amp; Return Policy</strong></a><br />
 			</td>
 			<td class="cart-button" colspan="2">
 				<?=$this->html->link('Buy Now', 'Orders::add', array('class' => 'flex-btn')); ?>
