@@ -50,7 +50,7 @@ class OrdersController extends BaseController {
 			'sale_retail',
 			'size',
 			'url',
-			'primary_images',
+			'primary_image',
 			'expires'
 		);
 		$cart = Cart::active(array('fields' => $fields));
@@ -92,7 +92,7 @@ class OrdersController extends BaseController {
 			return $vars;
 		}
 
-		if (($this->request->data) && $order->process($user, $data, $cart)) {
+		if (($cart->data()) && ($this->request->data) && $order->process($user, $data, $cart)) {
 			Cart::remove(array('session' => Session::key()));
 			foreach ($cart as $item) {
 				Item::sold($item->item_id, $item->size, $item->quantity);

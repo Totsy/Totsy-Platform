@@ -10,7 +10,7 @@ class CartController extends BaseController {
 
 	public function view() {
 		$this->_render['layout'] = 'cart';
-		$cart = Cart::active();
+		$cart = Cart::active(array('time' => '-3min'));
 
 		if ($this->request->data) {
 			return array('data' => $this->request->data);

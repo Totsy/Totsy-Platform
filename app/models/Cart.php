@@ -37,7 +37,7 @@ class Cart extends \lithium\data\Model {
 	}
 	
 	public static function active($params = null, array $options = array()) {
-		$fields = $params['fields'];
+		$fields = (!empty($params['fields'])) ? $params['fields'] : null;
 		$time = (!empty($params['time'])) ? $params['time'] : 'now';
 		$user = Session::read('userLogin');
 		return static::all(array(
