@@ -140,7 +140,7 @@
 		<?php endforeach ?>
 	<?php endif ?>
 <?php else: ?>
-<div id='empty-cart'><h1>Your shopping cart is empty.</h1><div>
+<div id='empty-cart'><h1><center>You have no items in your cart. <br> Take a look at our open sales to continue shopping.</center></h1><div>
 	
 <?php endif ?>
 

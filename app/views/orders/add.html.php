@@ -2,6 +2,7 @@
 	use app\models\Address;
 	$this->html->script('application', array('inline' => false));
 	$this->form->config(array('text' => array('class' => 'inputbox')));
+	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
 ?>
 
 <h1 class="p-header"><?=$this->title('Checkout'); ?></h1>
@@ -11,7 +12,94 @@
 	<div class="tl"></div>
 	<div class="tr"></div>
 	<div id="page">
+	<?php if ($showCart): ?>
+		<div class="head"><h2>Order Details</h2></div><br>
+		<table width="100%" class="cart-table">
+			<thead>
+				<tr>
+					<th>Item</th>
+					<th>Description</th>
+					<th>QTY</th>
+					<th>Price</th>
+					<th>Total Cost</th>
+					<th>Time Remaining</th>
+				</tr>
+			</thead>
+			<tbody>
+		<?php $x = 0; ?>
+		<?php foreach ($showCart as $item): ?>
+			<!-- Build Product Row -->
+						<tr id="<?=$item->_id?>" class="alt<?=$x?>">
+						<td class="cart-th">
+							<?php
+								if (!empty($item->primary_image)) {
+									$image = $item->primary_image;
+									$productImage = "/image/$image.jpg";
+								} else {
+									$productImage = "/img/no-image-small.jpeg";
+								}
+							?>
+							<?=$this->html->link(
+								$this->html->image("$productImage", array(
+									'width'=>'60',
+									'height'=>'60')),
+									'',
+									array(
+									'id' => 'main-logo', 'escape'=> false
+								)
+							); ?>
+						</td>
+						<td class="cart-desc">
+							<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
+							<strong><?=$this->html->link($item->description, array(
+								'Items::view',
+								'args' => $item->url
+								));
+							?></strong><br>
+							<strong>Color:</strong> <?=$item->color;?><br>
+							<strong>Size:</strong><?=$item->size;?>
+						</td>
+						<td class="<?="qty-$x";?>">
+							<?=$item->quantity;?>
+						</td>
+						<td class="<?="price-item-$x";?>">
+							<strong>$<?=number_format($item->sale_retail,2)?></strong>
+						</td>
+						<td class="<?="total-item-$x";?>">
+							<strong>$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
+						</td>
+						<td class="cart-time"><div id="<?php echo "itemCounter$x"; ?>"</div></td>
+					</tr>
+					<?php
+						$date = $item->expires->sec * 1000;
+						$itemCounters[] = "<script type=\"text/javascript\">
+							$(function () {
+								var itemExpires = new Date();
+								itemExpires = new Date($date);
+								$(\"#itemCounter$x\").countdown('change', {until: itemExpires, $countLayout});
 
+							$(\"#itemCounter$x\").countdown({until: itemExpires,
+							    expiryText: '<div class=\"over\">This item is no longer reserved for purchase</div>', $countLayout});
+							var now = new Date()
+							if (itemExpires < now) {
+								$(\"#itemCounter$x\").html('<div class=\"over\">This item is no longer reserved for purchase</div>');
+							}
+							});
+							</script>";
+						$subTotal += $item->quantity * $item->sale_retail;
+						$x++;
+					?>
+		<?php endforeach ?>
+				</tbody>
+			</table>
+
+		<?php if (!empty($itemCounters)): ?>
+			<?php foreach ($itemCounters as $counter): ?>
+				<?php echo $counter ?>
+			<?php endforeach ?>
+		<?php endif ?>
+	<?php endif ?>
+	<br>
 	<?php if ($errors = $order->errors()) { ?>
 		<p>
 			<strong>
@@ -432,3 +520,19 @@ $(document).ready(function() {
 	initializing = false;
 });
 </script>
+<?php if ($error == true): ?>
+	<script>
+	$(document).ready(function() {
+		$("#cart-modal").load($.base + 'cart/view').dialog({
+			autoOpen: false,
+			modal:true,
+			width: 900,
+			height: 600,
+			close: function(ev, ui) {
+				parent.location = "/events";
+			}
+		});
+		$("#cart-modal").dialog('open');
+	});
+	</script>
+<?php endif ?>

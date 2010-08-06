@@ -50,9 +50,11 @@ class OrdersController extends BaseController {
 			'sale_retail',
 			'size',
 			'url',
-			'primary_images'
+			'primary_images',
+			'expires'
 		);
 		$cart = Cart::active(array('fields' => $fields));
+		$showCart = Cart::active(array('fields' => $fields, 'time' => '-3min'));
 
 		$tax = 0;
 		$shippingCost = 0;
@@ -107,7 +109,11 @@ class OrdersController extends BaseController {
 			}
 			return $this->redirect(array('Orders::view', 'id' => (string) $order->_id));
 		}
-		return $vars + compact('order');
+
+		$error = ($cart->data()) ? false : true;
+
+		return $vars + compact('error', 'order', 'showCart');
+
 	}
 }
 
