@@ -52,8 +52,8 @@ class ItemsController extends BaseController {
 				'conditions' => array(
 					'_id' => $data['item_id']
 			)));
-
-			$qty = $item->details->{$data['item_size']} - $reserved;
+			$size = ($data['item_size'] == 'undefined') ? 'no size' : $data['item_size'];
+			$qty = $item->details->{$size} - $reserved;
 			$available = ($qty > 0) ? true : false;
 			echo json_encode($available);
 		}
