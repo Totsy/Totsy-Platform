@@ -11,11 +11,6 @@
 * 	Average Items / Order
 */
 
-/**
-* 2010-08-03: 350
-* 2010-08-04: 204
-*/
-
 // just for debugging convenience
 function debug( $thingie ){
 	var_dump( $thingie );
@@ -25,8 +20,7 @@ function debug( $thingie ){
 /**
 * Configuration
 */
-$mhost = 'localhost';
-$mdb = 'totsy';
+require_once 'reports_conf.php';
 $start_date = '2010-08-04';
 $start_timestamp = strtotime($start_date);
 $end_date = '2010-08-05';
