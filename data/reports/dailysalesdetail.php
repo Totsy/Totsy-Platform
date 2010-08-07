@@ -41,8 +41,8 @@ function debug( $thingie ){
 
 // Configuration
 require_once 'reports_conf.php';
-$start_date = '2010-08-04';
-$end_date = '2010-08-05';
+$start_date = '2010-08-05';
+$end_date = '2010-08-06';
 $start = new MongoDate(strtotime("$start_date 00:00:00"));
 $end = new MongoDate(strtotime("$end_date 00:00:00"));
 
@@ -75,7 +75,7 @@ $mongo = new Mongo($mhost);
 $mongoorders = $mongo->$mdb->orders;
 $mongousers = $mongo->$mdb->users;
 $mongoevents = $mongo->$mdb->events;
-$mongoitems = $mongo->mdb->items;
+$mongoitems = $mongo->$mdb->items;
 
 // find dates between 1/15/2010 and 1/30/2010
 $orders = $mongoorders->find(array("date_created" => array('$gt' => $start, '$lte' => $end)));
@@ -92,15 +92,15 @@ foreach($orders AS $order){
 			// Get the event name since it is missing from order
 			$event = $mongoevents->findOne( array( 'items' => $item['item_id'] ));
 			// Get the sku (vendor_style) from items since it is missing from order item
-			$item_id = 'ObjectId("'.$item['item_id'].'")';
+			$item_id = new MongoID( $item['item_id'] );
 			$product = $mongoitems->findOne( array( '_id' => $item_id ));
-			debug($item_id);
+			//debug($product);
 			// looping through embedded array
 			$output[] = array(
 				$order['_id'],
 				$event['name'],
 				$item['description'] . ' ' . $item['color'] . ' ' . $item['size'],
-				'--------'.$product['_id'].'--------',
+				$product['vendor_style'],
 				$order['shippingMethod'],
 				$item['quantity'],
 				$item['sale_retail'],
@@ -115,16 +115,21 @@ foreach($orders AS $order){
 				$order['shipping']['city'],
 				$order['shipping']['state'],
 				$order['shipping']['zip'],
-				$order['shipping']['phone'],$item['item_id']
+				$order['shipping']['phone']
 				);
 		}
 	}else{
 		// We only got one line item for this order
-		$output2[] = array(
+		// Get the event name since it is missing from order
+		$event = $mongoevents->findOne( array( 'items' => $item['item_id'] ));
+		// Get the sku (vendor_style) from items since it is missing from order item
+		$item_id = new MongoID( $item['item_id'] );
+		$product = $mongoitems->findOne( array( '_id' => $item_id ));
+		$output1[] = array(
 			$order['_id'],
-			// EVENT
+			$event['name'],
 			$item['description'] . ' ' . $item['color'] . ' ' . $item['size'],
-			// SKU
+			$product['vendor_style'],
 			$order['shippingMethod'],
 			$item['quantity'],
 			$item['sale_retail'],
@@ -144,8 +149,11 @@ foreach($orders AS $order){
 	}
 }
 
-$count = count($output) - 1;
-echo "We got $count order items for $start_date.\n";
+/*
+* debugging
+*/
+//$count = count($output) - 1;
+//echo "We got $count order items for $start_date.\n";
 
 // spit out that stuff
 foreach($output AS $line){
