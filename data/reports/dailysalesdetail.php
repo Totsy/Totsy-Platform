@@ -50,6 +50,8 @@ $fields = array(
 	'Order Id',
 	'Event',
 	'Product Name',
+	'Product Color',
+	'Profuct Size',
 	'Product SKU',
 	'Shipping Method',
 	'Quantity',
@@ -57,9 +59,9 @@ $fields = array(
 	'Subtotal',
 	'Created At',
 	'Customer ID',
-	'First Name',
-	'Last Name',
+	'Customer Name',
 	'Email',
+	'Billing Name',
 	'Shipping Name',
 	'Shipping Address',
 	'Shipping City',
@@ -82,9 +84,15 @@ $orders = $mongoorders->find(array("date_created" => array('$gt' => $start, '$lt
 
 foreach($orders AS $order){
 	// Get the user name
-	$user = $mongousers->findOne( array( '_id' => $order['user_id'] ));
+	if(strlen($order['user_id']) == 24){
+		$userid = new MongoID( $order['user_id'] );
+		$user = $mongousers->findOne( array( '_id' => $userid ));
+	} else {
+		$user = $mongousers->findOne( array( '_id' => $order['user_id'] ));
+	}
 	$username_first = $user['firstname'];
 	$username_last = $user['lastname'];
+	$email = $user['email'];
 	// How many line items do we have?
 	if(count($order['items']) > 1){
 		// Reach into the items array for line item data
@@ -94,12 +102,19 @@ foreach($orders AS $order){
 			// Get the sku (vendor_style) from items since it is missing from order item
 			$item_id = new MongoID( $item['item_id'] );
 			$product = $mongoitems->findOne( array( '_id' => $item_id ));
-			//debug($product);
+			// Check for shipping phone number
+			if(!isset($order['shipping']['phone'])){
+				$order['shipping']['phone'] = '';
+			}
+			// Get the 8-character shorter order id
+			$orderid = substr($order['_id'], 0, 8);
 			// looping through embedded array
 			$output[] = array(
-				$order['_id'],
+				$orderid,
 				$event['name'],
-				$item['description'] . ' ' . $item['color'] . ' ' . $item['size'],
+				$item['description'],
+				$item['color'],
+				$item['size'],
 				$product['vendor_style'],
 				$order['shippingMethod'],
 				$item['quantity'],
@@ -107,10 +122,10 @@ foreach($orders AS $order){
 				$item['quantity'] * $item['sale_retail'],
 				date('Y-m-d h:i:s', $order['date_created']->sec),
 				$order['user_id'],
-				$username_first,
-				$username_last,
-				$order['shipping']['firstname'],
-				$order['shipping']['lastname'],
+				$username_first . ' ' . $username_last,
+				$email,
+				$order['billing']['firstname'] . ' ' . $order['billing']['lastname'],
+				$order['shipping']['firstname'] . ' ' . $order['shipping']['lastname'],
 				$order['shipping']['address'],
 				$order['shipping']['city'],
 				$order['shipping']['state'],
@@ -125,10 +140,18 @@ foreach($orders AS $order){
 		// Get the sku (vendor_style) from items since it is missing from order item
 		$item_id = new MongoID( $item['item_id'] );
 		$product = $mongoitems->findOne( array( '_id' => $item_id ));
-		$output1[] = array(
-			$order['_id'],
+		// Check for shipping phone number
+		if(!isset($order['shipping']['phone'])){
+			$order['shipping']['phone'] = '';
+		}
+		// Get the 8-character shorter order id
+		$orderid = substr($order['_id'], 0, 8);
+		$output[] = array(
+			$orderid,
 			$event['name'],
-			$item['description'] . ' ' . $item['color'] . ' ' . $item['size'],
+			$item['description'],
+			$item['color'],
+			$item['size'],
 			$product['vendor_style'],
 			$order['shippingMethod'],
 			$item['quantity'],
@@ -136,10 +159,10 @@ foreach($orders AS $order){
 			$item['quantity'] * $item['sale_retail'],
 			date('Y-m-d h:i:s', $order['date_created']->sec),
 			$order['user_id'],
-			$username_first,
-			$username_last,
-			$order['shipping']['firstname'],
-			$order['shipping']['lastname'],
+			$username_first . ' ' . $username_last,
+			$email,
+			$order['billing']['firstname'] . ' ' . $order['billing']['lastname'],
+			$order['shipping']['firstname'] . ' ' . $order['shipping']['lastname'],
 			$order['shipping']['address'],
 			$order['shipping']['city'],
 			$order['shipping']['state'],
