@@ -89,11 +89,11 @@ foreach($orders AS $order){
 		$item['line_number'] = $idx;
 		$order['items'][] = $item;		
 	}
+	var_dump( $order );
 	$order_id = $order['_id'];
 	unset( $order['_id'] );
 	$mongoorders->update(
 			array( '_id' => $order_id),
 			array('$set' => $order)
 		);
-	//var_dump( $order );
 }
