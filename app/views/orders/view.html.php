@@ -60,8 +60,8 @@
 											<?php foreach ($items as $item): ?>
 												<tr style="background-color:#e8e8e8;text-align:center">
 												<?php
-													if (!empty($item['primary_images'][0])) {
-														$image = '/image/'. $item['primary_images'][0] . '.jpg';
+													if (!empty($item['primary_image'])) {
+														$image = '/image/'. $item['primary_image'] . '.jpg';
 													} else {
 														$image = "/img/no-image-small.jpeg";
 													}
