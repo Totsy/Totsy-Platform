@@ -71,16 +71,16 @@
 						<td class="cart-time"><div id="<?php echo "itemCounter$x"; ?>"</div></td>
 					</tr>
 					<?php
-						$date = $item->expires->sec * 1000;
+						//Allow users three extra minutes on their items for checkout.
+						$date = ($item->expires->sec * 1000) + (3 * 60000);
 						$itemCounters[] = "<script type=\"text/javascript\">
 							$(function () {
-								var itemExpires = new Date();
-								itemExpires = new Date($date);
+								var itemExpires = new Date($date);
 								$(\"#itemCounter$x\").countdown('change', {until: itemExpires, $countLayout});
 
 							$(\"#itemCounter$x\").countdown({until: itemExpires,
 							    expiryText: '<div class=\"over\">This item is no longer reserved for purchase</div>', $countLayout});
-							var now = new Date()
+							var now = new Date();
 							if (itemExpires < now) {
 								$(\"#itemCounter$x\").html('<div class=\"over\">This item is no longer reserved for purchase</div>');
 							}

@@ -53,8 +53,8 @@ class OrdersController extends BaseController {
 			'primary_image',
 			'expires'
 		);
-		$cart = Cart::active(array('fields' => $fields));
-		$showCart = Cart::active(array('fields' => $fields, 'time' => '-3min'));
+		$cart = Cart::active(array('fields' => $fields, 'time' => '-3min'));
+		$showCart = Cart::active(array('fields' => $fields, 'time' => '-5min'));
 
 		$tax = 0;
 		$shippingCost = 0;
