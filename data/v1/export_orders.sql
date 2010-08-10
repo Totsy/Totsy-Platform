@@ -1,9 +1,13 @@
+-- YOU NEED THIS VIEW FIRST:
+--
+-- CREATE VIEW order_taxes AS SELECT order_id, sum(tax_amount) FROM order_products GROUP BY order_id;
+--
 -- 1) psql -Aqt -d totsy -f export_orders.sql -o orders.json -F ","
 -- 2) mongoimport -d totsytest -c orders --drop --file orders.json
 SELECT '{_id:'||o.id AS "_id",
 -- 'MISSING' AS "total",
 -- 'MISSING' AS "subtotal",
--- 'MISSING' AS "tax",
+ 'tax:'||COALESCE(ot.sum, 0) AS "tax",
  'handling:'||TRUNC(CAST(o.shipping_price AS decimal) / 100, 2) AS "handling",
  'user_id:'||o.customer_id AS "user_id",
 -- 'MISSING' AS "card_type",
@@ -19,13 +23,14 @@ SELECT '{_id:'||o.id AS "_id",
  'country:"'||bi.billing_country||'"' AS "billing.country",
  'phone:"'||COALESCE(bi.phone,'')||'"' AS "billing.telephone",
  'user_id:'||bi.customer_id||'}' AS "billing.user_id",
--- 'MISSING' AS "shipping",
+-- 'shipping:'||o.shipping_price AS "shipping",
  'shippingMethod:"'||o.shipping_method||'"' AS "shippingMethod", 
  'giftMessage:""' AS "giftMessage",
 -- 'MISSING' AS "items",
  'legacy_billinginfo_id:'||o.billinginfo_id||'}'
 FROM orders o
 LEFT JOIN billinginfos bi ON o.billinginfo_id = bi.id
+LEFT JOIN order_taxes ot ON o.id = ot.order_id
 WHERE si_client_id = 7
 AND billinginfo_id IS NOT NULL
 -- debugging
