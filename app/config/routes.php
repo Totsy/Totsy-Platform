@@ -69,6 +69,7 @@ Router::connect('/shopping/checkout.{:type}', 'Orders::add');
 Router::connect('/shopping/checkout', 'Orders::add');
 Router::connect('/upgrade', 'Users::upgrade');
 Router::connect('/events/view/{:item:[a-z0-9\-]+}', 'Events::view');
+Router::connect('/welcome', 'Users::affiliate');
 
 /**
 * Taking this route out, as the menu helper is not ready
