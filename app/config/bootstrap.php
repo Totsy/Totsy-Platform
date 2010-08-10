@@ -122,19 +122,33 @@ Session::config(array(
 	)
 ));
 
-Auth::config(array('userLogin' => array(
-	'model' => 'User',
-	'adapter' => 'Form',
-	'fields' => array('email', 'password')
-)));
+Auth::config(array(
+	'default' => array(
+		'production' => array('userLogin' => array(
+			'model' => 'User',
+			'adapter' => 'Form',
+			'fields' => array('email', 'password'))),
+		'test' => array('userLogin' => array(
+			'model' => 'User',
+			'adapter' => 'Form',
+			'fields' => array('email', 'password'),
+			'scope' => array('admin' => true))),
+		'development' => array('userLogin' => array(
+			'model' => 'User',
+			'adapter' => 'Form',
+			'fields' => array('email', 'password'),
+			'scope' => array('admin' => true))),
+		'local' => array('userLogin' => array(
+			'model' => 'User',
+			'adapter' => 'Form',
+			'fields' => array('email', 'password')))
+	)
+));
 
 
 use \lithium\analysis\Logger;
 Logger::config(array(
 	'default' => array('adapter' => 'File')
 ));
-
-ini_set("display_errors", 1);
-ini_set('xdebug.default_enable', '2');
 
 ?>
