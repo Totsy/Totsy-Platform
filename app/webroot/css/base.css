@@ -672,8 +672,21 @@ html{height:100%}
 body.login{height:100%}
 #fullscreen{position:relative;overflow:hidden;min-height:100%}
 #login-box{position:absolute;top:50%;left:80px;z-index:1}
-#login-box-border{position:absolute;left:0;top:-212px;padding:10px;background:url(../img/wht-trans-50.png);-moz-border-radius:20px;-webkit-border-radius:20px;border-radius:20px}
-#login-box-container{background:#FFF;padding:20px;width:600px;height:400px;-moz-border-radius:20px;-webkit-border-radius:20px;border-radius:20px}
+#login-box-border{position:absolute;left:0;top:-212px}
+
+#login-box-container{position:relative}
+.login-inner{width:600px}
+
+.tt{background:url(../img/login-corners.png) no-repeat 100% 0;height:25px;margin:0 0 0 25px}
+.tt div{background:url(../img/login-corners.png) no-repeat 0 0;font-size:0;height:25px;line-height:0;width:25px;position:relative;left:-25px}
+
+.tb{background:url(../img/login-corners.png) no-repeat 100% 100%;height:25px;margin:0 0 0 25px}
+.tb div{background:url(../img/login-corners.png) no-repeat 0 100%;font-size:0;height:25px;line-height:0;width:25px;position:relative;left:-25px}
+
+.tm{background:url(../img/login-vert.png) repeat-y 0 0;padding:0 0 0 11px}
+.ti{background:url(../img/login-vert.png) repeat-y 100% 0;padding:0 12px 0 0}
+
+.tc{background:#FFF}
 
 #bg{position:fixed;top:0;left:0;z-index:0;width:100%}
 #bg img{width:100%}
@@ -683,7 +696,7 @@ body.login #footer{background:#FFF;margin:0;width:100%;overflow:hidden;position:
 body.login #footer ul{float:left;padding:15px}
 body.login #copyright{float:right;text-align:right;padding:15px}
 
-body.login #logo{float:left;margin:0 20px 10px 0}
+body.login #logo{float:left;margin:0 20px 10px 20px}
 body.login #intro-copy{float:left;width:400px}
 body.login #intro-copy h2{text-align:right;font-size:24px}
 body.login #intro-copy p{margin:15px 0}
@@ -727,3 +740,6 @@ label.required {display:block;width:120px;float:left;line-height:30px;font-weigh
 	-webkit-border-radius: 5px;
 }
 
+/* Additions for IE and Cross browser compatibility */
+#login_button{display:block;width:60px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 0;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer}
+#register_button{display:block;width:188px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -36px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer}
