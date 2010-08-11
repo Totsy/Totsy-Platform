@@ -50,9 +50,11 @@ class OrdersController extends BaseController {
 			'sale_retail',
 			'size',
 			'url',
-			'primary_images'
+			'primary_image',
+			'expires'
 		);
-		$cart = Cart::active(array('fields' => $fields));
+		$cart = Cart::active(array('fields' => $fields, 'time' => '-3min'));
+		$showCart = Cart::active(array('fields' => $fields, 'time' => '-5min'));
 
 		$tax = 0;
 		$shippingCost = 0;
@@ -90,7 +92,7 @@ class OrdersController extends BaseController {
 			return $vars;
 		}
 
-		if (($this->request->data) && $order->process($user, $data, $cart)) {
+		if (($cart->data()) && ($this->request->data) && $order->process($user, $data, $cart)) {
 			Cart::remove(array('session' => Session::key()));
 			foreach ($cart as $item) {
 				Item::sold($item->item_id, $item->size, $item->quantity);
@@ -107,7 +109,11 @@ class OrdersController extends BaseController {
 			}
 			return $this->redirect(array('Orders::view', 'id' => (string) $order->_id));
 		}
-		return $vars + compact('order');
+
+		$error = ($cart->data()) ? false : true;
+
+		return $vars + compact('error', 'order', 'showCart');
+
 	}
 }
 

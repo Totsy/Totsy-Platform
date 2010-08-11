@@ -14,7 +14,10 @@ class Cart extends \lithium\data\Model {
 	
 	protected $_dates = array(
 		'now' => 0,
-		'tenMinutes' => 600
+		'-1min' => -60,
+		'-3min' => -180,
+		'-5min' => -300,
+		'10min' => 600
 	);
 
 	protected $_nonTaxableCategories = array('apparel');
@@ -25,7 +28,7 @@ class Cart extends \lithium\data\Model {
 
 	public static function addFields($data, array $options = array()) {
 
-		$data->expires = static::dates('tenMinutes');
+		$data->expires = static::dates('10min');
 		$data->created = static::dates('now');
 		$data->session = Session::key();
 		$user = Session::read('userLogin');
@@ -34,12 +37,13 @@ class Cart extends \lithium\data\Model {
 	}
 	
 	public static function active($params = null, array $options = array()) {
-		$fields = $params['fields'];
+		$fields = (!empty($params['fields'])) ? $params['fields'] : null;
+		$time = (!empty($params['time'])) ? $params['time'] : 'now';
 		$user = Session::read('userLogin');
 		return static::all(array(
 			'conditions' => array(
 				'session' => Session::key(),
-				'expires' => array('$gt' => static::dates('now')),
+				'expires' => array('$gte' => static::dates($time)),
 				'user' => $user['_id']),
 			'fields' => $fields,
 			'order' => array('expires' => 'ASC') 

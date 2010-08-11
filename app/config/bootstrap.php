@@ -111,7 +111,6 @@ require __DIR__ . '/bootstrap/mail.php';
  * it intercepts any writes where the `'expires'` key is set in the options array.
  */
 use lithium\storage\Session;
-use lithium\security\Auth;
 
 Session::config(array(
  	'default' => array(
@@ -122,19 +121,11 @@ Session::config(array(
 	)
 ));
 
+use lithium\security\Auth;
 Auth::config(array('userLogin' => array(
 	'model' => 'User',
 	'adapter' => 'Form',
 	'fields' => array('email', 'password')
 )));
-
-
-use \lithium\analysis\Logger;
-Logger::config(array(
-	'default' => array('adapter' => 'File')
-));
-
-ini_set("display_errors", 1);
-ini_set('xdebug.default_enable', '2');
 
 ?>

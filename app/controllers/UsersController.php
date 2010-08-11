@@ -73,6 +73,9 @@ class UsersController extends BaseController {
 						array('name' => $user->firstname, 'email' => $user->email),
 						compact('user')
 					);
+					if ($invite_code == 'keyade') {
+						$this->redirect(array('Users::affiliate', 'args' => 'keyade'));
+					}
 					$this->redirect('/');
 				}
 			} else {
@@ -284,6 +287,15 @@ class UsersController extends BaseController {
 		return compact('user');
 	}
 
+	public function affiliate($name) {
+		if (empty($name)) {
+			$this->redirect('/');
+		}
+		$this->_render['layout'] = 'login';
+		$this->_render['template'] = $name;
+		$user = Session::read('userLogin');
+		return compact('user');
+	}
 }
 
 ?>
