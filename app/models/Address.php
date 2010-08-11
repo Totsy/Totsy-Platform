@@ -127,12 +127,12 @@ class Address extends \lithium\data\Model {
 		}) + parent::_findFilters();
 	}
 
-	public static function menu($user, $type) {
+	public static function menu($user) {
 		if (is_array($user) && isset($user['_id'])) {
 			$user = (string) $user['_id'];
 		}
 		return static::find('list', array(
-			'conditions' => array('user_id' => $user) + compact('type'),
+			'conditions' => array('user_id' => $user),
 			'order' => array('default' => 'desc')
 		));
 	}

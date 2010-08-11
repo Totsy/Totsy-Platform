@@ -72,7 +72,9 @@
 			modal:true,
 			width: 900,
 			height: 600,
-			close: function(ev, ui) {}
+			close: function(ev, ui) {
+				location.reload();
+			}
 		});
 		$("#cart-modal").dialog('open');
 	});

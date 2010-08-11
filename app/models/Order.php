@@ -97,8 +97,13 @@ class Order extends \lithium\data\Model {
 				$order->set($data);
 				$order->errors($order->errors() + array($e->getMessage()));
 			}
+		} else {
+			 $order->errors(
+				$order->errors() + array($key => "All the items in your cart have expired. Please see our latest sales.")
+			);
+			$order->set($data);
+			return false;
 		}
-		return false;
 	}
 }
 

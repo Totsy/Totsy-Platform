@@ -5,15 +5,19 @@
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
 ?>
 
-<h1 class="p-header"><?=$this->title('Checkout'); ?></h1>
 
-<div id="middle" class="noleft">
+<h1 class="page-title gray"><span class="red"><?=$this->title('Checkout - Delivery Method'); ?></span></h1>
+
+<div id="middle" class="fullwidth">
 
 	<div class="tl"></div>
 	<div class="tr"></div>
 	<div id="page">
+		<p><strong class="red"><?=$this->html->link('STEP 1 (Delivery)', array('Orders::add')); ?></strong> &#8658; STEP 2 (Payment) &#8658; STEP 3 (Confirmation)</p><br>
+	<!-- Begin Order Details -->
 	<?php if ($showCart): ?>
-		<div class="head"><h2>Order Details</h2></div><br>
+		<div class="head"><h2>Order Details</h2></div>
+		<div class='fr'><?=$this->html->link('Edit Your Cart', '#', array('id' => 'checkout-cart')); ?></div>
 		<table width="100%" class="cart-table">
 			<thead>
 				<tr>
@@ -68,116 +72,98 @@
 						<td class="<?="total-item-$x";?>">
 							<strong>$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
 						</td>
-						<td class="cart-time"><div id="<?php echo "itemCounter$x"; ?>"</div></td>
+						<td class="cart-time"><div id="<?php echo "checkout-counter-$x"; ?>"</div></td>
 					</tr>
 					<?php
 						//Allow users three extra minutes on their items for checkout.
-						$date = ($item->expires->sec * 1000) + (3 * 60000);
-						$itemCounters[] = "<script type=\"text/javascript\">
+						$date = ($item->expires->sec * 1000);
+						$checkoutCounters[] = "<script type=\"text/javascript\">
 							$(function () {
-								var itemExpires = new Date($date);
-								$(\"#itemCounter$x\").countdown('change', {until: itemExpires, $countLayout});
+								var itemCheckoutExpires = new Date($date);
+								$(\"#checkout-counter-$x\").countdown('change', {until: itemCheckoutExpires, $countLayout});
 
-							$(\"#itemCounter$x\").countdown({until: itemExpires,
+							$(\"#checkout-counter-$x\").countdown({until: itemCheckoutExpires,
 							    expiryText: '<div class=\"over\">This item is no longer reserved for purchase</div>', $countLayout});
 							var now = new Date();
-							if (itemExpires < now) {
-								$(\"#itemCounter$x\").html('<div class=\"over\">This item is no longer reserved for purchase</div>');
+							if (itemCheckoutExpires < now) {
+								$(\"#checkout-counter-$x\").html('<div class=\"over\">This item is no longer reserved for purchase</div>');
 							}
 							});
 							</script>";
-						$subTotal += $item->quantity * $item->sale_retail;
 						$x++;
 					?>
 		<?php endforeach ?>
+					<tr class="cart-total">
+						<td colspan="7" id='subtotal'><strong>Subtotal: $<?=number_format($subTotal,2)?></strong></td>
+					</tr>
 				</tbody>
 			</table>
-
-		<?php if (!empty($itemCounters)): ?>
-			<?php foreach ($itemCounters as $counter): ?>
-				<?php echo $counter ?>
-			<?php endforeach ?>
-		<?php endif ?>
 	<?php endif ?>
+	<!-- End Order Details -->
 	<br>
-	<?php if ($errors = $order->errors()) { ?>
-		<p>
-			<strong>
-				There were some errors processing your order.
-				Please correct them before resubmitting.
-			</strong>
-			<?php foreach ($errors as $error): ?>
-				<div class="checkout-error"><?=$error; ?></div>
-			<?php endforeach ?>
-			<br />
-		</p>
-	<?php } ?>
-
 	<ol id="checkout-process">
 		<?=$this->form->create($order, array('class' => 'checkout')); ?>
-
+		
 		<!-- Start Billing Information -->
 		<li id="opc-billing">
 			<div class="head"><h2>Billing Address</h2></div>
-
+			
 			<div id="checkout-process-billing">
-				<p>Select a billing address from your address book or enter a new address.</p>
+				<p>Select a billing address from your address book or <?=$this->html->link('click here to enter a new address', '#', array('id' => 'add-address')); ?>.</p>
 
-				<?=$this->form->select('billing', $billing + array('' => 'New Address...'), array(
-					'id' => 'billing',
-					'target' => '#billing-new-address-form',
-					'value' => key($billing)
-				)); ?>
+				<?php if (empty($billing)): ?>
+					<fieldset>
+						<legend class="no-show">New Billing Address</legend>
 
-				<fieldset id="billing-new-address-form">
-					<legend class="no-show">New Billing Address</legend>
+						<div class="form-row">
+							<label for="fname" class="required">First Name<span>*</span></label>
+							<?=$this->form->text('billing.firstname', array('id' => 'fname')); ?>
+						</div>
 
-					<div class="form-row">
-						<label for="fname" class="required">First Name<span>*</span></label>
-						<?=$this->form->text('billing.firstname', array('id' => 'fname')); ?>
-					</div>
+						<div class="form-row">
+							<label for="lname" class="required">Last Name<span>*</span></label>
+							<?=$this->form->text('billing.lastname', array('id' => 'lname')); ?>
+						</div>
 
-					<div class="form-row">
-						<label for="lname" class="required">Last Name<span>*</span></label>
-						<?=$this->form->text('billing.lastname', array('id' => 'lname')); ?>
-					</div>
+						<div class="form-row">
+							<label for="address" class="required">Street Address<span>*</span></label>
+							<?=$this->form->text('billing.address', array('id' => 'address')); ?>
+						</div>
 
-					<div class="form-row">
-						<label for="address" class="required">Street Address<span>*</span></label>
-						<?=$this->form->text('billing.address', array('id' => 'address')); ?>
-					</div>
+						<div class="form-row">
+							<label for="address_2">Street Address 2</label>
+							<input type="text" name="billing.address_2" id="address_2" class="inputbox" value="" />
+						</div>
 
-					<div class="form-row">
-						<label for="address_2">Street Address 2</label>
-						<input type="text" name="billing.address_2" id="address_2" class="inputbox" value="" />
-					</div>
+						<div class="form-row">
+							<label for="city" class="required">City<span>*</span></label>
+							<?=$this->form->text('billing.city', array('id' => 'city')); ?>
+						</div>
 
-					<div class="form-row">
-						<label for="city" class="required">City<span>*</span></label>
-						<?=$this->form->text('billing.city', array('id' => 'city')); ?>
-					</div>
+						<div class="form-row">
+							<label for="state" class="required">State/Province<span>*</span></label>
+							<?=$this->form->select('billing.state', Address::$states, array(
+								'class' => 'inputbox', 'empty' => 'Select a state'
+							)); ?>
+						</div>
 
-					<div class="form-row">
-						<label for="state" class="required">State/Province<span>*</span></label>
-						<?=$this->form->select('billing.state', Address::$states, array(
-							'class' => 'inputbox', 'empty' => 'Select a state'
+						<div class="form-row">
+							<label for="zip" class="required">Zip/Postal Code<span>*</span></label>
+							<?=$this->form->text('billing.zip', array('id' => 'zip')); ?>
+						</div>
+
+						<div class="form-row">
+							<label for="phone">Telephone</label>
+							<?=$this->form->text('billing.phone', array('id' => 'phone')); ?>
+						</div>
+					</fieldset>
+				<?php else: ?>
+						<?=$this->form->select('billing', $billing, array(
+							'id' => 'billing',
+							'target' => '#billing-new-address-form',
+							'value' => key($billing)
 						)); ?>
-					</div>
-
-					<div class="form-row">
-						<label for="zip" class="required">Zip/Postal Code<span>*</span></label>
-						<?=$this->form->text('billing.zip', array('id' => 'zip')); ?>
-					</div>
-
-					<div class="form-row">
-						<label for="phone">Telephone</label>
-						<?=$this->form->text('billing.phone', array('id' => 'phone')); ?>
-					</div>
-
-					<div class="submit">
-						<button class="flex-btn done">Done</button>
-					</div>
-				</fieldset>
+				<?php endif ?>
 
 				<fieldset>
 					<p>
@@ -201,81 +187,70 @@
 
 			<div id="checkout-process-shipping">
 
-				<p>Select a shipping address from your address book or enter a new address.</p>
+				<p>Select a shipping address from your address book or 
+					<?=$this->html->link('click here to enter a new address', '#', array(
+						'id' => 'add-address')); ?>.
+				</p>
 
-				<?=$this->form->select('shipping', $shipping + array('' => 'New Address...'), array(
-					'id' => 'shipping',
-					'target' => '#shipping-new-address-form',
-					'value' => key($shipping)
-				)); ?>
 
-				<fieldset id="shipping-new-address-form">
+				<?php if (empty($shipping)): ?>
+						<fieldset>
 
-					<legend class="no-show">New Shipping Address</legend>
+							<legend class="no-show">New Shipping Address</legend>
 
-					<div class="form-row">
-						<label for="fname" class="required">First Name<span>*</span></label>
-						<?=$this->form->text('shipping.firstname', array('id' => 'fname')); ?>
-					</div>
+							<div class="form-row">
+								<label for="fname" class="required">First Name<span>*</span></label>
+								<?=$this->form->text('shipping.firstname', array('id' => 'fname')); ?>
+							</div>
 
-					<div class="form-row">
-						<label for="lname" class="required">Last Name<span>*</span></label>
-						<?=$this->form->text('shipping.lastname', array('id' => 'lname')); ?>
-					</div>
+							<div class="form-row">
+								<label for="lname" class="required">Last Name<span>*</span></label>
+								<?=$this->form->text('shipping.lastname', array('id' => 'lname')); ?>
+							</div>
 
-					<div class="form-row">
-						<label for="address" class="required">Street Address<span>*</span></label>
-						<?=$this->form->text('shipping.address', array('id' => 'address')); ?>
-					</div>
+							<div class="form-row">
+								<label for="address" class="required">Street Address<span>*</span></label>
+								<?=$this->form->text('shipping.address', array('id' => 'address')); ?>
+							</div>
 
-					<div class="form-row">
-						<label for="address_2">Street Address 2</label>
-						<?=$this->form->text('shipping.address_2', array('id' => 'address_2')); ?>
-					</div>
+							<div class="form-row">
+								<label for="address_2">Street Address 2</label>
+								<?=$this->form->text('shipping.address_2', array('id' => 'address_2')); ?>
+							</div>
 
-					<div class="form-row">
-						<label for="city" class="required">City<span>*</span></label>
-						<?=$this->form->text('shipping.city', array('id' => 'city')); ?>
-					</div>
+							<div class="form-row">
+								<label for="city" class="required">City<span>*</span></label>
+								<?=$this->form->text('shipping.city', array('id' => 'city')); ?>
+							</div>
 
-					<div class="form-row">
-						<label for="state" class="required">State/Province<span>*</span></label>
-						<?=$this->form->select('shipping.state', Address::$states, array(
-							'class' => 'inputbox', 'empty' => 'Select a state'
+							<div class="form-row">
+								<label for="state" class="required">State/Province<span>*</span></label>
+								<?=$this->form->select('shipping.state', Address::$states, array(
+									'class' => 'inputbox', 'empty' => 'Select a state'
+								)); ?>
+							</div>
+
+							<div class="form-row">
+								<label for="zip" class="required">Zip/Postal Code<span>*</span></label>
+								<?=$this->form->text('shipping.zip', array('id' => 'zip')); ?>
+							</div>
+
+							<div class="form-row">
+								<label for="phone">Telephone</label>
+								<?=$this->form->text('shipping.phone', array('id' => 'phone')); ?>
+							</div>
+						</fieldset>
+				<?php else: ?>
+						<?=$this->form->select('shipping', $shipping, array(
+							'id' => 'shipping',
+							'target' => '#shipping-new-address-form',
+							'value' => key($shipping)
 						)); ?>
-					</div>
-
-					<div class="form-row">
-						<label for="zip" class="required">Zip/Postal Code<span>*</span></label>
-						<?=$this->form->text('shipping.zip', array('id' => 'zip')); ?>
-					</div>
-
-					<div class="form-row">
-						<label for="phone">Telephone</label>
-						<?=$this->form->text('shipping.phone', array('id' => 'phone')); ?>
-					</div>
-
-					<div class="submit">
-						<button class="flex-btn done">Done</button>
-					</div>
-				</fieldset>
+				<?php endif ?>
 
 			</div>
 		</li>
 		<!-- End Shipping Information -->
-
-		<li class="step">
-			<fieldset>
-
-				<p><a href="javascript:void(0)" id="gift" title="Want to include a gift message?">Want to include a gift message?</a></p>
-
-				<div id="gift-message">
-					<textarea name="gift-message" class="inputbox"></textarea>
-				</div>
-
-			</fieldset>
-
-		</li>
 
 		<li id="shipping-method" class="step">
 			<div class="head">
@@ -299,79 +274,11 @@
 			</div>
 		</li>
 
-		<!-- Start Payment Information -->
-		<li id="opc-payment" class="step">
-			<div class="head">
-				<h2>Payment Information</h2>
-			</div>
-
-			<div id="checkout-process-payment">
-				<p>
-					<label for="payment-method-select">Pay with:</label>
-					<?=$this->form->select(
-						'payment',
-						array('' => 'New Credit Card'),
-						array('id' => 'payment', 'value' => '1', 'target' => '#payment-method-form')
-					); ?>
-				</p>
-
-				<fieldset id="payment-method-form">
-					<legend class="no-show">New Payment Method</legend>
-
-					<div class="form-row">
-						<label for="cc-type" class="required">Credit Card Type<span>*</span></label>
-						<?=$this->form->select('card[type]', array(
-							'visa' => 'Visa',
-							'mc' => 'MasterCard',
-							'amex' => 'American Express'
-						)); ?>
-					</div>
-
-					<div class="form-row">
-						<label for="cc" class="required">Card Number<span>*</span></label>
-						<?=$this->form->text('card[number]', array('id' => 'cc', 'class' => 'inputbox')); ?>
-					</div>
-
-					<div class="form-row">
-						<label for="cc-exp" class="required">Expiration Date<span>*</span></label>
-						<?=$this->form->select('card[month]', array(
-							'' => 'Month',
-							1 => 'January',
-							2 => 'February',
-							3 => 'March',
-							4 => 'April',
-							5 => 'May',
-							6 => 'June',
-							7 => 'July',
-							8 => 'August',
-							9 => 'September',
-							10 => 'October',
-							11 => 'November',
-							12 => 'December'
-						)); ?>
-						<?php
-							$now = intval(date('Y'));
-							$years = array_combine(range($now, $now + 15), range($now, $now + 15));
-						?>
-						<?=$this->form->select('card[year]', array('' => 'Year') + $years); ?>
-					</div>
-
-					<div class="form-row">
-						<label for="cc-ccv" class="required">CVV2 Code<span>*</span></label>
-						<?=$this->form->text('card[code]', array('class' => 'inputbox')); ?>
-					</div>
-
-				</fieldset>
-
-			</div>
-
-		</li>
-		<!-- End Shipping Information -->
+		
 
 		<li class="step">
-			<button class="flex-btn submit"><span>Submit Order</span></button>
+			<button class="flex-btn submit"><span>Confirm Delivery Method</span></button>
 			&nbsp;&nbsp;
-			<span class="red">*</span> Required Fields
 		</li>
 
 		<?=$this->form->end(); ?>
@@ -385,154 +292,67 @@
 
 <div id="right">
 
-	<div class="r-container order-summary">
-		<div class="tl"></div>
-		<div class="tr"></div>
-		<div class="r-box lt-gradient-1">
-
-			<h3>Your Order</h3>
-			<table class="order-status">
-				<tr>
-					<td class="left"><strong>Order Subtotal:</strong></td>
-					<td class="right subTotal">$<?=number_format((float) $subTotal, 2); ?></td>
-				</tr>
-				<tr>
-					<td class="left"><strong>Shipping:</strong></td>
-					<td class="right shippingCost">
-						$<?=number_format((float) $shippingCost, 2); ?>
-					</td>
-				</tr>
-				<tr>
-					<td class="left"><strong>Sales Tax:</strong></td>
-					<td class="right tax">$<?=number_format((float) $tax, 2); ?></td>
-				</tr>
-				<tr>
-					<td class="left"><strong class="caps">Total:</strong></td>
-					<?php $total = $subTotal + $tax + $shippingCost; ?>
-					<td class="right total">
-						<strong>$<?=number_format((float) $total, 2); ?></strong>
-					</td>
-				</tr>
-			</table>
-
-			<ol id="order-details">
-				<?php if ($billingAddr) { ?>
-					<li id="billing-details">
-						<h4>Billing Address</h4>
-						<address class="billing-address">
-							<?=$billingAddr->address; ?> <?=$billingAddr->address_2; ?><br />
-							<?=$billingAddr->city; ?>, <?=$billingAddr->state; ?>
-							<?=$billingAddr->zip; ?>
-						</address>
-					</li>
-				<?php } ?>
-				<?php if ($shippingAddr) { ?>
-					<li id="shipping-details">
-						<h4>Shipping Address</h4>
-						<address class="shipping-address">
-							<?=$shippingAddr->address; ?> <?=$shippingAddr->address_2; ?><br />
-							<?=$shippingAddr->city; ?>, <?=$shippingAddr->state; ?>
-							<?=$shippingAddr->zip; ?>
-						</address>
-
-						<?php
-						// <div class="shipping-detail">
-						// 	<strong>Shipment 1</strong><br />
-						// 	Extended Delivery Timeline<br />
-						// 	<abbr title="Tuesday, April 6th, 2010">Tue 4/6/10</abbr> to
-						// 	<abbr title="Thursday, April 15th, 2010">Thu 4/15/10</abbr>
-						// </div>
-						?>
-					</li>
-				<?php } ?>
-			</ol>
-
-		</div>
-		<div class="bl"></div>
-		<div class="br"></div>
-	</div>
+<div id="address-modal"></div>
 
 </div>
 
-<script type="text/javascript">
+
+<script>
 $(document).ready(function() {
-	$("#tabs").tabs();
-	var initializing = true;
-
-	var update = function() {
-		var data = $('form.checkout').serialize();
-		var addrFormat = "{:address} {:address_2}<br />\n{:city}, {:state} {:zip}";
-
-		$.post(window.location + '.json', data, function(data) {
-			$('.order-summary').fadeOut('fast', function() {
-				if (data.shippingAddr.address) {
-					$('.shipping-address').html($(data.shippingAddr).template(addrFormat));
-				}
-				if (data.billingAddr.address) {
-					$('.billing-address').html($(data.billingAddr).template(addrFormat));
-				}
-				$('.subTotal').html('$' + $.numberFormat(data.subTotal, 2));
-				$('.tax').html('$' + $.numberFormat(data.tax, 2));
-				$('.shippingCost').html('$' + $.numberFormat(data.shippingCost, 2));
-				$('.total').html('$' + $.numberFormat(
-					data.tax + data.shippingCost + data.subTotal, 2
-				));
-				$('.order-summary').fadeIn(1000);
-			});
-		}, 'json');
-	};
-
-	$('#billing, #shipping, #payment').bind('change', function() {
-		var $this = $(this);
-		var $target = $($this.attr('target'));
-		var method = ($this.val() == '') ? 'show' : 'hide';
-		var shippingToggle = 'input[name=billing_shipping]:checked';
-
-		if ($this.attr('id') == 'shipping' && $(shippingToggle).val() == "1") {
-			method = 'hide';
-		}
-		$target[method]().find('input, select').attr('disabled', (method == 'hide'));
-
-		if (!initializing && $this.val() != '') {
-			update();
-		}
-	}).trigger('change');
-
-	$('#gift').bind('click', function() {
-		$('#gift-message').toggle();
-	});
-
 	$('input[name=billing_shipping]').bind('change', function() {
 		on = ($(this).val() != 1);
 		$('#opc-shipping').css('opacity', on ? 1 : 0.5);
 		$('#shipping').attr('disabled', on ? '' : 'disabled').trigger('change');
-		update();
 	}).first().trigger('change');
-
-	$("button.done").bind('click', function() {
-		$(this).parents('fieldset').hide();
-		update();
-		return false;
-	});
-
-	$('#payment-method-form').show();
-	$('#payment').parent().remove();
-	initializing = false;
 });
 </script>
-<?php if ($error == true): ?>
-	<script>
-	$(document).ready(function() {
+
+<?php if (!empty($checkoutCounters)): ?>
+	<?php foreach ($checkoutCounters as $cc): ?>
+		<?php echo $cc ?>
+	<?php endforeach ?>
+<?php endif ?>
+
+<script type="text/javascript">
+$("#add-address").click(function() {
+	$("#address-modal").load($.base + 'addresses/add').dialog({
+		autoOpen: false,
+		modal:true,
+		width: 500,
+		height: 600,
+		close: function(ev, ui) {}
+	});
+	$("#address-modal").dialog('open');
+});
+
+</script>
+	<?php if ($cartEmpty == true): ?>
+		<script>
+		$(document).ready(function() {
+			$("#cart-modal").load($.base + 'cart/view').dialog({
+				autoOpen: false,
+				modal:true,
+				width: 900,
+				height: 600,
+				close: function(ev, ui) {
+					parent.location = "/events";
+				}
+			});
+			$("#cart-modal").dialog('open');
+		});
+		</script>
+	<?php endif ?>
+	<script type="text/javascript">
+	$("#checkout-cart").click(function() {
 		$("#cart-modal").load($.base + 'cart/view').dialog({
 			autoOpen: false,
 			modal:true,
 			width: 900,
 			height: 600,
 			close: function(ev, ui) {
-				parent.location = "/events";
+				location.reload();
 			}
 		});
 		$("#cart-modal").dialog('open');
 	});
 	</script>
-<?php endif ?>

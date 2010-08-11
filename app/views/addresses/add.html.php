@@ -2,9 +2,12 @@
 <?=$this->html->script('jquery.validate.min')?>
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
 
-<h1 class="p-header">My Account</h1>
 
-<?=$this->menu->render('left', array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'))); ?>
+<?php if (!$isAjax): ?>
+	<h1 class="p-header">My Account</h1>
+	<?=$this->menu->render('left', array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'))); ?>
+<?php endif ?>
+
 
 <div class="tl"></div> 
 <div class="tr"></div> 
@@ -91,7 +94,9 @@
 			</div> 
 			<?=$this->form->submit('Submit', array('class' => 'flex-btn fr')); ?>
 		</fieldset> 
-
+		<?php if ($isAjax): ?>
+			<?=$this->form->hidden('isAjax', array('value' => 1)); ?>
+		<?php endif ?>
 	<?=$this->form->end();?> 
 	<?=$this->html->link('Manage Address','addresses');?>
 </div> 

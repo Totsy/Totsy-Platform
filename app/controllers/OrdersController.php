@@ -36,10 +36,10 @@ class OrdersController extends BaseController {
 
 	public function add() {
 		$data = $this->request->data;
-		$order = Order::create();
+
 		$user = Session::read('userLogin');
-		$billing = Address::menu($user, 'Billing');
-		$shipping = Address::menu($user, 'Shipping');
+		$billing = Address::menu($user);
+		$shipping = Address::menu($user);
 		$fields = array(
 			'item_id',
 			'color',
@@ -53,7 +53,47 @@ class OrdersController extends BaseController {
 			'primary_image',
 			'expires'
 		);
+
+		$order = Order::create();
+		$showCart = Cart::active(array('fields' => $fields, 'time' => '-5min'));
 		$cart = Cart::active(array('fields' => $fields, 'time' => '-3min'));
+		$map = function($item) { return $item->sale_retail * $item->quantity; };
+		$subTotal = array_sum($cart->map($map)->data());
+		$vars = compact(
+			'user', 'billing', 'shipping', 'cart', 'subTotal','order',
+			'tax', 'shippingCost', 'billingAddr', 'shippingAddr'
+		);
+
+		$cartEmpty = ($cart->data()) ? false : true;
+
+		if ($this->request->data) {
+			$user = Session::read('userLogin');
+			$user['checkout'] = $this->request->data;
+			Session::write('userLogin', $user);
+			$this->redirect('Orders::process');
+		}
+
+		return $vars + compact('cartEmpty', 'showCart');
+	}
+
+	public function process() {
+		$order = Order::create();
+		$user = Session::read('userLogin');
+		$data = $user['checkout'] + $this->request->data;
+		$fields = array(
+			'item_id',
+			'color',
+			'category',
+			'description',
+			'product_weight',
+			'quantity',
+			'sale_retail',
+			'size',
+			'url',
+			'primary_image',
+			'expires'
+		);
+		$cart = Cart::active(array('fields' => $fields, 'time' => 'now'));
 		$showCart = Cart::active(array('fields' => $fields, 'time' => '-5min'));
 
 		$tax = 0;
@@ -69,10 +109,7 @@ class OrdersController extends BaseController {
 
 			if (isset($data[$key])) {
 				$addr = $data[$key];
-				${$var} = is_array($addr) ? Address::create($addr) : Address::first($addr);
-			}
-			if (count(${$key}) && !${$var}) {
-				${$var} = Address::first(isset($data[$key]) ? $data[$key] : key(${$key}));
+				${$var} = Address::first($addr);
 			}
 		}
 
@@ -87,10 +124,6 @@ class OrdersController extends BaseController {
 			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
 			'tax', 'shippingCost', 'billingAddr', 'shippingAddr'
 		);
-
-		if ($this->request->is('ajax')) {
-			return $vars;
-		}
 
 		if (($cart->data()) && ($this->request->data) && $order->process($user, $data, $cart)) {
 			Cart::remove(array('session' => Session::key()));
@@ -110,9 +143,9 @@ class OrdersController extends BaseController {
 			return $this->redirect(array('Orders::view', 'id' => (string) $order->_id));
 		}
 
-		$error = ($cart->data()) ? false : true;
+		$cartEmpty = ($cart->data()) ? false : true;
 
-		return $vars + compact('error', 'order', 'showCart');
+		return $vars + compact('cartEmpty', 'order', 'showCart');
 
 	}
 }
