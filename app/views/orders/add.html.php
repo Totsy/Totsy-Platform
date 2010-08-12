@@ -13,7 +13,7 @@
 	<div class="tl"></div>
 	<div class="tr"></div>
 	<div id="page">
-		<p><strong class="red"><?=$this->html->link('STEP 1 (Delivery)', array('Orders::add')); ?></strong> &#8658; STEP 2 (Payment) &#8658; STEP 3 (Confirmation)</p><br>
+		<p><strong class="red"><?=$this->html->link('STEP 1 (Shipping/Billing Info)', array('Orders::add')); ?></strong> &#8658; STEP 2 (Payment) &#8658; STEP 3 (Confirmation)</p><br>
 	<!-- Begin Order Details -->
 	<?php if ($showCart): ?>
 		<div class="head"><h2>Order Details</h2></div>
@@ -106,149 +106,58 @@
 		
 		<!-- Start Billing Information -->
 		<li id="opc-billing">
-			<div class="head"><h2>Billing Address</h2></div>
-			
 			<div id="checkout-process-billing">
-				<p>Select a billing address from your address book or <?=$this->html->link('click here to enter a new address', '#', array('id' => 'add-address')); ?>.</p>
-
-				<?php if (empty($billing)): ?>
-					<fieldset>
-						<legend class="no-show">New Billing Address</legend>
-
-						<div class="form-row">
-							<label for="fname" class="required">First Name<span>*</span></label>
-							<?=$this->form->text('billing.firstname', array('id' => 'fname')); ?>
-						</div>
-
-						<div class="form-row">
-							<label for="lname" class="required">Last Name<span>*</span></label>
-							<?=$this->form->text('billing.lastname', array('id' => 'lname')); ?>
-						</div>
-
-						<div class="form-row">
-							<label for="address" class="required">Street Address<span>*</span></label>
-							<?=$this->form->text('billing.address', array('id' => 'address')); ?>
-						</div>
-
-						<div class="form-row">
-							<label for="address_2">Street Address 2</label>
-							<input type="text" name="billing.address_2" id="address_2" class="inputbox" value="" />
-						</div>
-
-						<div class="form-row">
-							<label for="city" class="required">City<span>*</span></label>
-							<?=$this->form->text('billing.city', array('id' => 'city')); ?>
-						</div>
-
-						<div class="form-row">
-							<label for="state" class="required">State/Province<span>*</span></label>
-							<?=$this->form->select('billing.state', Address::$states, array(
-								'class' => 'inputbox', 'empty' => 'Select a state'
-							)); ?>
-						</div>
-
-						<div class="form-row">
-							<label for="zip" class="required">Zip/Postal Code<span>*</span></label>
-							<?=$this->form->text('billing.zip', array('id' => 'zip')); ?>
-						</div>
-
-						<div class="form-row">
-							<label for="phone">Telephone</label>
-							<?=$this->form->text('billing.phone', array('id' => 'phone')); ?>
-						</div>
-					</fieldset>
+			<?php if (empty($billing)): ?>
+					<center><strong><?=$this->html->link('Please take a moment to add an Address', '#', array(
+						'class' => 'add-address')); ?></strong></center>
 				<?php else: ?>
+					<div class="head"><h2>Billing Address</h2></div>
+					<p>Select a billing address from your address book.</p>
 						<?=$this->form->select('billing', $billing, array(
 							'id' => 'billing',
 							'target' => '#billing-new-address-form',
 							'value' => key($billing)
 						)); ?>
+						<fieldset>
+							<p>
+								<input type="radio" name="billing_shipping" id="billing:use_for_shipping_yes" value="1" checked="checked" />&nbsp;
+								<label for="billing:use_for_shipping_yes">Ship to this address</label>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<input type="radio" name="billing_shipping" id="billing:use_for_shipping_no" value="0" />&nbsp;
+								<label for="billing:use_for_shipping_no">Ship to different address</label>
+							</p>
+						</fieldset>
+						<?=$this->html->link('Add a new address', '#', array(
+							'class' => 'add-address')); ?>
 				<?php endif ?>
-
-				<fieldset>
-					<p>
-						<input type="radio" name="billing_shipping" id="billing:use_for_shipping_yes" value="1" checked="checked" />&nbsp;
-						<label for="billing:use_for_shipping_yes">Ship to this address</label>
-						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						<input type="radio" name="billing_shipping" id="billing:use_for_shipping_no" value="0" />&nbsp;
-						<label for="billing:use_for_shipping_no">Ship to different address</label>
-					</p>
-				</fieldset>
-
 			</div>
 		</li>
 		<!-- End Billing Information -->
 
 		<!-- Start Shipping Information -->
 		<li id="opc-shipping" class="step" style="opacity:0.5">
-			<div class="head">
-				<h2>Shipping Address</h2>
-			</div>
 
 			<div id="checkout-process-shipping">
 
-				<p>Select a shipping address from your address book or 
-					<?=$this->html->link('click here to enter a new address', '#', array(
-						'id' => 'add-address')); ?>.
-				</p>
-
-
 				<?php if (empty($shipping)): ?>
-						<fieldset>
 
-							<legend class="no-show">New Shipping Address</legend>
-
-							<div class="form-row">
-								<label for="fname" class="required">First Name<span>*</span></label>
-								<?=$this->form->text('shipping.firstname', array('id' => 'fname')); ?>
-							</div>
-
-							<div class="form-row">
-								<label for="lname" class="required">Last Name<span>*</span></label>
-								<?=$this->form->text('shipping.lastname', array('id' => 'lname')); ?>
-							</div>
-
-							<div class="form-row">
-								<label for="address" class="required">Street Address<span>*</span></label>
-								<?=$this->form->text('shipping.address', array('id' => 'address')); ?>
-							</div>
-
-							<div class="form-row">
-								<label for="address_2">Street Address 2</label>
-								<?=$this->form->text('shipping.address_2', array('id' => 'address_2')); ?>
-							</div>
-
-							<div class="form-row">
-								<label for="city" class="required">City<span>*</span></label>
-								<?=$this->form->text('shipping.city', array('id' => 'city')); ?>
-							</div>
-
-							<div class="form-row">
-								<label for="state" class="required">State/Province<span>*</span></label>
-								<?=$this->form->select('shipping.state', Address::$states, array(
-									'class' => 'inputbox', 'empty' => 'Select a state'
-								)); ?>
-							</div>
-
-							<div class="form-row">
-								<label for="zip" class="required">Zip/Postal Code<span>*</span></label>
-								<?=$this->form->text('shipping.zip', array('id' => 'zip')); ?>
-							</div>
-
-							<div class="form-row">
-								<label for="phone">Telephone</label>
-								<?=$this->form->text('shipping.phone', array('id' => 'phone')); ?>
-							</div>
-						</fieldset>
 				<?php else: ?>
+					<div class="head">
+						<h2>Shipping Address</h2>
+					</div>
+					<p>Select a shipping address from your address book.
+					</p>
 						<?=$this->form->select('shipping', $shipping, array(
 							'id' => 'shipping',
 							'target' => '#shipping-new-address-form',
 							'value' => key($shipping)
-						)); ?>
+						)); ?><br>
+						<?=$this->html->link('Add a new address', '#', array(
+							'class' => 'add-address')); ?>
 				<?php endif ?>
 
 			</div>
+
 		</li>
 		<!-- End Shipping Information -->
 
@@ -314,12 +223,13 @@ $(document).ready(function() {
 <?php endif ?>
 
 <script type="text/javascript">
-$("#add-address").click(function() {
+$(".add-address").click(function() {
 	$("#address-modal").load($.base + 'addresses/add').dialog({
 		autoOpen: false,
 		modal:true,
 		width: 500,
 		height: 600,
+		position: 'top',
 		close: function(ev, ui) {}
 	});
 	$("#address-modal").dialog('open');
@@ -331,9 +241,9 @@ $("#add-address").click(function() {
 		$(document).ready(function() {
 			$("#cart-modal").load($.base + 'cart/view').dialog({
 				autoOpen: false,
-				modal:true,
+				modal: true,
 				width: 900,
-				height: 600,
+				height: 600
 				close: function(ev, ui) {
 					parent.location = "/events";
 				}

@@ -17,7 +17,7 @@ class Cart extends \lithium\data\Model {
 		'-1min' => -60,
 		'-3min' => -180,
 		'-5min' => -300,
-		'10min' => 600
+		'15min' => 900
 	);
 
 	protected $_nonTaxableCategories = array('apparel');
@@ -28,7 +28,7 @@ class Cart extends \lithium\data\Model {
 
 	public static function addFields($data, array $options = array()) {
 
-		$data->expires = static::dates('10min');
+		$data->expires = static::dates('15min');
 		$data->created = static::dates('now');
 		$data->session = Session::key();
 		$user = Session::read('userLogin');
