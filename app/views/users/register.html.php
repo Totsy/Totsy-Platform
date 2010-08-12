@@ -1,16 +1,16 @@
-<div id="fullscreen">
+<div id="fullscreen" style="background:#FF3300">
 	<div id="login-box">
 		<div id="login-box-border">
 			<div id="login-box-container">
 				<div class="tt">
-					<div></div>
+					<div><!-- --></div>
 				</div>
 				
 				<div class="tm">
 					
 					<div class="ti">		
 						
-						<div class="tc login-inner">
+						<div class="tc login-inner register-inner">
 							
 							<h1 id="logo">Totsy</h1>
 							
@@ -89,7 +89,7 @@
 				</div>
 				
 				<div class="tb">
-					<div></div>
+					<div><!-- --></div>
 				</div>
 			
 			</div>
