@@ -60,13 +60,13 @@ class UsersController extends BaseController {
 				}
 				$success = $user->save($data);
 				if ($success) {
-					$user = array(
+					$userLogin = array(
 						'_id' => $user->_id,
 						'firstname' => $user->firstname,
 						'lastname' => $user->lastname,
 						'email' => $user->email
 					);
-					Session::write('userLogin', $user);
+					Session::write('userLogin', $userLogin);
 					Mailer::send(
 						'welcome',
 						'Welcome to Totsy!',
