@@ -22,6 +22,7 @@
 							<div class="r-container clear reg-list">
 							<div class="tl"></div>
 							<div class="tr"></div>
+							
 							<div class="r-box lt-gradient-1">
 								<strong class="red">Why you will love Totsy</strong>
 								<ul class="bugs columns-2">
@@ -33,8 +34,10 @@
 									<li>We are 100% green.</li>
 								</ul>
 							</div>
+							
 							<div class="bl"></div>
 							<div class="br"></div>
+							
 							</div>
 							<br><br><br>
 							<center><p><strong class='red'>Thank you for registering with Totsy.<br>
@@ -48,6 +51,8 @@
 				<div class="tb">
 					<div></div>
 				</div>
+				
+			</div>
 
 		</div>
 	</div>
