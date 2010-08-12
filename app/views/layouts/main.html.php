@@ -42,19 +42,19 @@
 			<div id="header-rt">
 				<?=$this->html->link('Invite Friends. Get $15','/invite',array('title'=>'Invite Friends. Get $15', 'id'=>'if'));?>
 				<p class="clear">
-					<span class="fl">
-						<?=$this->html->link('My Credits', array('Pages::credits')); ?>
-						($<?=$credit?>)
-					</span>
-					<?=$this->html->link('Cart', '#', array(
-						'id' => 'cart', 'title' => 'My Cart'
-					)); ?>
-					<span class="fl">
+					<span class="fr">
 						(<?=$cartCount;?>)
 						<?=$this->html->link('Checkout', array('Orders::add'), array(
 							'id' => 'checkout', 'title' => 'checkout'
 						)); ?>
-		 	</span>
+		 			</span>
+					<?=$this->html->link('Cart', '#', array(
+						'id' => 'cart', 'title' => 'My Cart'
+					)); ?>
+		 			<span class="fr">
+						<?=$this->html->link('My Credits', array('Pages::credits')); ?>
+						($<?=$credit?>)
+					</span>
 				</p>
 			</div>
 		</div>	
