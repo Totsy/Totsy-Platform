@@ -111,10 +111,12 @@ span.breadcrumbs span{font-size:.7em;padding:0 3px}
 #welcome strong{color:#EB132C}
 a#cs{float:right;text-transform:uppercase;background:url(../img/cs-icon.gif) right bottom no-repeat;padding-right:20px;line-height:20px;height:16px}
 
-#header-rt{width:243px;float:right;padding:10px 10px 0 0;font-weight:bold}
-a#if{display:block;width:214px;height:39px;background:url(../img/invite-btn-1.gif) left top no-repeat;text-indent:-9999px;float:right}
-#header-rt p{display:block;line-height:36px;height:28px;float:right;margin-top:10px;}
-a#cart{display:inline-table;height:28px;background:url(../img/cs-icon.gif) 0 0 no-repeat;padding-left:22px;margin:0 2px 0 8px;float:left}
+#header-rt{float:right;padding:10px 10px 0 0;font-weight:bold}
+
+a#if{display:block;width:214px;height:39px;background:url(../img/invite-btn-1.gif) left top no-repeat;text-indent:-9999px;float:right;margin:0 0 10px 0}
+
+#header-rt p{line-height:36px;overflow:hidden}
+a#cart{display:block;height:28px;background:url(../img/cs-icon.gif) 0 0 no-repeat;padding-left:22px;margin:0 2px 0 8px;float:right}
 
 #main-nav{position:absolute;bottom:10px;}
 #main-nav ul{}
