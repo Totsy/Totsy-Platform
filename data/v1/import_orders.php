@@ -24,11 +24,14 @@
 * attribute_value AS "weight" from product_attributes where attribute_id = 179 
 * and attribute_value != '';
 * 
+* 4) create index idx_order_products_orderid ON order_products (order_id);
+* 
 */
 
 // DON'T FORGET TO SET THIS
 $pgdbname = 'totsy';
 $mongodbname = 'totsytest';
+$testorderid = '7080';
 $debug = false;
 
 // just for debugging convenience
@@ -50,8 +53,8 @@ $mongoorders = $mongoconn->$mongodbname->orders;
 
 // get cursor of user ids for all this nonsense
 if($debug == true){
-	// DEBUG, LIMIT TO 20
-	$orders = $mongoorders->find()->limit(20);
+	// DEBUG, FIND SPECIFIC ORDER FOR TESTING
+	$orders = $mongoorders->find(array('_id' => $testorderid));
 } else {
 	// PRODUCTION
 	$orders = $mongoorders->find();
@@ -62,7 +65,13 @@ $orders->rewind();
 
 // loop through all user documents, adding each missing element
 foreach($orders AS $order){
+	$record = $order;
 	// Get the order items
+	if( $debug == true ){
+		$order_id = $testorderid;
+	}else{
+		$order_id = $record['_id'];
+	}
 	$item_sql = 'SELECT 
 	-- \'MISSING\' AS "_id",
 	 COALESCE(pc.color, \'no color\') AS "color",
@@ -80,29 +89,31 @@ foreach($orders AS $order){
 	LEFT JOIN product_colors pc ON op.product_id = pc.product_id
 	LEFT JOIN product_sizes ps ON op.product_id = ps.product_id
 	LEFT JOIN product_weights pw ON op.product_id = pw.product_id
-	WHERE order_id =' . $order['_id'];
+	WHERE order_id = ' . $order_id;
 	$item_res = pg_query($pg, $item_sql);
+	if(!$item_res){
+		echo "Looks like there were no order items, or an error in the database happened while executing this query.\n";
+		exit;
+	}
 	$items = pg_fetch_all( $item_res );
-	if(count($items)>1){
+	if(count($items)>0){
 		foreach($items AS $item){
 			$item['_id'] = new MongoId();
-			$order['items'][] = $item;
+			$record['items'][] = $item;
 		}
-	}else{
-		$item['_id'] = new MongoId();
-		$order['items'][] = $item;	
 	}
 	
 	// DEBUG
 	if($debug == true){
-		var_dump( $order );
+		var_dump( $record );
+	}else{
+		unset( $record['_id']);
+		$mongoorders->update(
+				array( '_id' => $order_id),
+				array('$set' => $record)
+		);
 	}
 
-	$order_id = $order['_id'];
-	unset( $order['_id'] );
-	$mongoorders->update(
-			array( '_id' => $order_id),
-			array('$set' => $order)
-		);
 	pg_free_result( $item_res );
+	unset( $record );
 }
