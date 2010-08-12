@@ -458,8 +458,8 @@ a#invite-msn{background-position:0 -153px}
 a#invite-others{background-position:129px -153px}
 
 .sm-actions{margin-bottom:5px}
-.sm-actions dl{display:table-row}
-.sm-actions dt, .sm-actions dd{display:table-cell;vertical-align:middle;padding-right:5px}
+.sm-actions dl{overflow:hidden}
+.sm-actions dt, .sm-actions dd{float:left;vertical-align:middle;padding-right:5px}
 .sm-actions ul{overflow:hidden}
 .sm-actions li{float:left;margin-right:5px}
 
@@ -746,3 +746,5 @@ label.required {display:block;width:120px;float:left;line-height:30px;font-weigh
 /* Additions for IE and Cross browser compatibility */
 #login_button{display:block;width:60px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 0;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0}
 #register_button{display:block;width:188px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -36px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer}
+
+.register_button{display:block;width:76px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -72px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0}
