@@ -13,10 +13,10 @@
 	<div class="tr"></div>
 	<div id="page">
 		<p>
-			<strong class="red"><?=$this->html->link('STEP 1 - Delivery Method', array('Orders::add'));?></strong>
+			<strong class="red"><?=$this->html->link('STEP 1 (Shipping/Billing Info)', array('Orders::add'));?></strong>
 			&raquo;
-			<strong class="red">STEP 2 - Order Review</strong>
-			&raquo; STEP 3 - Order Confirmation
+			<strong class="red">STEP 2 (Payment)</strong>
+			&raquo; STEP 3 (Confirmation)
 		</p>
 	<?php if ($errors = $order->errors()) { ?>
 		<p>

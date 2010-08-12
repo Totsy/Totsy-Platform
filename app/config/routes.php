@@ -46,6 +46,7 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
 
 Router::connect('/register', 'Users::register');
 Router::connect('/invitation/{:args}', 'Users::register');
+Router::connect('/join/{:args}', 'Users::register');
 Router::connect('/reset', 'Users::reset');
 /**
  * Redirect all non-authenticated users to 
