@@ -60,13 +60,13 @@ class UsersController extends BaseController {
 				}
 				$success = $user->save($data);
 				if ($success) {
-					$userLogin = array(
+					$user = array(
 						'_id' => $user->_id,
 						'firstname' => $user->firstname,
 						'lastname' => $user->lastname,
 						'email' => $user->email
 					);
-					Session::write('userLogin', $userLogin);
+					Session::write('userLogin', $user);
 					Mailer::send(
 						'welcome',
 						'Welcome to Totsy!',
@@ -74,9 +74,10 @@ class UsersController extends BaseController {
 						compact('user')
 					);
 					if ($invite_code == 'keyade') {
-						$this->redirect(array('Users::affiliate', 'args' => 'keyade'));
+						$this->_render['template'] = 'keyade';
+					} else {
+						$this->redirect('/');
 					}
-					$this->redirect('/');
 				}
 			} else {
 				$message = 'This email/username is already registered';
@@ -284,16 +285,6 @@ class UsersController extends BaseController {
 	public function upgrade() {
 		$this->_render['layout'] = 'upgrade';
 		$user = User::getUser();
-		return compact('user');
-	}
-
-	public function affiliate($name) {
-		if (empty($name)) {
-			$this->redirect('/');
-		}
-		$this->_render['layout'] = 'login';
-		$this->_render['template'] = $name;
-		$user = Session::read('userLogin');
 		return compact('user');
 	}
 }
