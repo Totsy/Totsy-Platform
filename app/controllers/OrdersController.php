@@ -109,7 +109,11 @@ class OrdersController extends BaseController {
 
 			if (isset($data[$key])) {
 				$addr = $data[$key];
-				${$var} = Address::first($addr);
+				${$var} = Address::find('first', array(
+					'conditions' => array(
+						'_id' => $addr,
+						'user_id' => (string) $user['_id']
+				)));
 			}
 		}
 
@@ -124,6 +128,7 @@ class OrdersController extends BaseController {
 			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
 			'tax', 'shippingCost', 'billingAddr', 'shippingAddr'
 		);
+
 
 		if (($cart->data()) && ($this->request->data) && $order->process($user, $data, $cart)) {
 			Cart::remove(array('session' => Session::key()));
