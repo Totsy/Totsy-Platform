@@ -29,6 +29,7 @@
 // DON'T FORGET TO SET THIS
 $pgdbname = 'totsy';
 $mongodbname = 'totsytest';
+$debug = false;
 
 // just for debugging convenience
 function debug( $thingie ){
@@ -48,7 +49,13 @@ $mongoconn = new Mongo();
 $mongoorders = $mongoconn->$mongodbname->orders;
 
 // get cursor of user ids for all this nonsense
-$orders = $mongoorders->find()->limit(20);
+if($debug == true){
+	// DEBUG, LIMIT TO 20
+	$orders = $mongoorders->find()->limit(20);
+} else {
+	// PRODUCTION
+	$orders = $mongoorders->find();
+}
 
 // reset cursor, just in case
 $orders->rewind();
@@ -76,24 +83,26 @@ foreach($orders AS $order){
 	WHERE order_id =' . $order['_id'];
 	$item_res = pg_query($pg, $item_sql);
 	$items = pg_fetch_all( $item_res );
-	$idx = 0;
-	if(is_array($items)){
+	if(count($items)>1){
 		foreach($items AS $item){
 			$item['_id'] = new MongoId();
-			$item['line_number'] = $idx;
 			$order['items'][] = $item;
-			$idx++;
 		}
 	}else{
 		$item['_id'] = new MongoId();
-		$item['line_number'] = $idx;
-		$order['items'][] = $item;		
+		$order['items'][] = $item;	
 	}
-	var_dump( $order );
+	
+	// DEBUG
+	if($debug == true){
+		var_dump( $order );
+	}
+
 	$order_id = $order['_id'];
 	unset( $order['_id'] );
 	$mongoorders->update(
 			array( '_id' => $order_id),
 			array('$set' => $order)
 		);
+	pg_free_result( $item_res );
 }
