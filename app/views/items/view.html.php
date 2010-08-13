@@ -4,11 +4,13 @@
 
 <div id="product-detail-right">
 	<div id="product-detail-right-top">
-	<?php $logo = $event->images->logo_image;?>
+		
+		<div id="listingCountdown" class="listingCountdown"></div>
+		<?php $logo = $event->images->logo_image;?>
 		<?=$this->html->image("/image/$logo.jpg", array(
 			'alt' => $event->name, 'width' => "148", 'height' => "52"
 		)); ?>
-		<div id="listingCountdown" class="listingCountdown"></div>
+		
 	</div>
 	<div id="detail-top-left">
 		<h1><strong><?=$event->name?></strong> <?=$item->description." ".$item->color; ?></h1>
