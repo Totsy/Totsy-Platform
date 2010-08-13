@@ -249,9 +249,14 @@
 			</li>
 			<?=$this->form->end(); ?>
 	</ol>
+	
+	<div class="bl"></div>
+	<div class="br"></div>
+	
 	</div>
-	<div>
+
 </div>
+
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function(){
 		$('#gift').bind('click', function() {
