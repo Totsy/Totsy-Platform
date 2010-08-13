@@ -4,7 +4,7 @@
 	
 	<div id="login-box">
 	
-		<div id="login-box-border">
+		<div id="login-box-border" class="login-modal">
 			
 			<div id="login-box-container">
 				

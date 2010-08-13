@@ -678,8 +678,9 @@ body.login{height:100%}
 #login-box-border{position:absolute;left:0;top:-212px}
 
 #login-box-container{position:relative}
-.login-inner{width:600px}
-.register-inner{padding:0 10px 10px 10px;width:620px}
+.login-modal{width:620px}
+.register-inner{padding:0 10px 10px 10px}
+.register-modal{width:660px}
 
 .tt{background:url(../img/login-corners.png) no-repeat 100% 0;height:25px;margin:0 0 0 25px}
 .tt div{background:url(../img/login-corners.png) no-repeat 0 0;font-size:0;height:25px;line-height:0;width:25px;position:relative;left:-25px}
