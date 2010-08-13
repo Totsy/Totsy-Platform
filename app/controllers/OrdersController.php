@@ -55,8 +55,12 @@ class OrdersController extends BaseController {
 		);
 
 		$order = Order::create();
-		$showCart = Cart::active(array('fields' => $fields, 'time' => '-5min'));
-		$cart = Cart::active(array('fields' => $fields, 'time' => '-3min'));
+
+		if (Cart::increaseExpires()){
+			$showCart = Cart::active(array('fields' => $fields, 'time' => '-5min'));
+			$cart = Cart::active(array('fields' => $fields, 'time' => '-3min'));
+		}
+
 		$map = function($item) { return $item->sale_retail * $item->quantity; };
 		$subTotal = array_sum($cart->map($map)->data());
 		$vars = compact(
@@ -67,13 +71,17 @@ class OrdersController extends BaseController {
 		$cartEmpty = ($cart->data()) ? false : true;
 
 		if ($this->request->data) {
-			$user = Session::read('userLogin');
-			$user['checkout'] = $this->request->data;
-			Session::write('userLogin', $user);
-			$this->redirect('Orders::process');
+			if (count($this->request->data) > 1) {
+				$user = Session::read('userLogin');
+				$user['checkout'] = $this->request->data;
+				Session::write('userLogin', $user);
+				$this->redirect('Orders::process');
+			} else {
+				$error = "Shipping and Delivery Information Missing";
+			}
 		}
 
-		return $vars + compact('cartEmpty', 'showCart');
+		return $vars + compact('cartEmpty', 'showCart', 'error');
 	}
 
 	public function process() {
@@ -131,6 +139,9 @@ class OrdersController extends BaseController {
 
 
 		if (($cart->data()) && ($this->request->data) && $order->process($user, $data, $cart)) {
+			$orderId = strtoupper(substr((string)$order->_id, 0, 8));
+			$order->order_id = $orderId;
+			$order->save();
 			Cart::remove(array('session' => Session::key()));
 			foreach ($cart as $item) {
 				Item::sold($item->item_id, $item->size, $item->quantity);

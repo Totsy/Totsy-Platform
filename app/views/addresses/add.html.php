@@ -26,18 +26,13 @@
 	)); ?>
 		<fieldset> 
 			<legend class="no-show">New Address</legend> 
-			<div class="form-row">
-				<label for="type" class="addresses">Address Type</label> 
-				<select name="type" value= "<?=$address->type; ?>"
-				  <option>Billing</option>
-				<option>Shipping</option>
-				</select>
-			</div>
-			<div class="form-row">
-				<label class="addresses">Make Default</label> 
-				<input type="radio" name="default" value="1" checked> Yes<br>
-				<input type="radio" name="default" value="0"> No
-			</div>
+			<?php if (!$isAjax): ?>
+				<div class="form-row">
+					<label class="addresses">Make Default</label> 
+					<input type="radio" name="default" value="1" checked> Yes<br>
+					<input type="radio" name="default" value="0"> No
+				</div>
+			<?php endif ?>
 			<div class="form-row"> 
 				<?=$this->form->label('description', 'Description <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('description', array('class' => 'inputbox')); ?>
@@ -93,7 +88,10 @@
 			<?=$this->form->hidden('isAjax', array('value' => 1)); ?>
 		<?php endif ?>
 	<?=$this->form->end();?> 
-	<?=$this->html->link('Manage Address','addresses');?>
+	<?php if (!$isAjax): ?>
+		<?=$this->html->link('Manage Address','addresses');?>
+	<?php endif ?>
+	
 </div> 
 <script type="text/javascript">
 jQuery(function($){

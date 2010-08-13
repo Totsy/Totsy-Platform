@@ -11,7 +11,6 @@
 			<thead>
 				<tr>
 					<th>#</th>
-					<th>Address Type</th>
 					<th>Description	</th>
 					<th>Address</th>
 					<th>Remove Address</th>
@@ -24,9 +23,6 @@
 				<tr id="<?=$address->_id?>">
 				<td>
 					<?=$x?>
-				</td>
-				<td>
-					<?=$address->type?>
 				</td>
 				<td>
 					<?=$address->description?>

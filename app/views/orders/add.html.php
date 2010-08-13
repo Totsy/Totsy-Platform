@@ -14,6 +14,17 @@
 	<div class="tr"></div>
 	<div id="page">
 		<p><strong class="red"><?=$this->html->link('STEP 1 (Shipping/Billing Info)', array('Orders::add')); ?></strong> &#8658; STEP 2 (Payment) &#8658; STEP 3 (Confirmation)</p><br>
+		<?php if (!empty($error)) { ?>
+			<p>
+				<strong>
+					There were some errors processing your order.
+					Please correct them before resubmitting.
+				</strong>
+					<div class="checkout-error"><?=$error;?></div>
+				<br />
+			</p>
+		<?php } ?>
+
 	<!-- Begin Order Details -->
 	<?php if ($showCart): ?>
 		<div class="head"><h2>Order Details</h2></div>
