@@ -54,53 +54,57 @@
 	</div>
 
 	<div class="clear"><!-- --></div>
-
-	<div class="sm-actions fr">
-		<dl>
-			<dt><strong>Share</strong></dt>
-			<dd>
-				<ul>
-					<li><a href="http://www.facebook.com/sharer.php?u=<?=urlencode($shareurl);?>&t=<?=urlencode('Checking out the  '.$item->description.' on Totsy.com');?>" target="_blank" title="Share this item with your friends on Facebook" class="sm-facebook sm-btn">Share this sale on Facebook</a></li>
-					<li><a href="http://twitter.com/home?status=Checking out the <?=$item->description; ?> at Totsy.com: <?=$shareurl;?>" target="_blank" title="Tweet this sale to your followers" class="sm-twitter sm-btn">Tweet this sale on Twitter</a></li>
-				</ul>
-			</dd>
-		</dl>
-	</div>
-		
-	<div id="tabs">
-		<ul>
-		    <li><a href="#description"><span>Description</span></a></li>
-		    <li><a href="#shipping"><span>Shipping &amp; Returns</span></a></li>
-		    <!--<li><a href="#video"><span>Video</span></a></li>-->
-		</ul>
-
-		<!-- Start Description Tab -->
-		<div id="description" class="ui-tabs-hide">
-		    <h3>Overview</h3>
-			<?php echo $item->blurb; ?>
+	
+	<div class="product-bottom-wrapper">
+	
+		<div class="sm-actions fr">
+			<dl>
+				<dt><strong>Share</strong></dt>
+				<dd>
+					<ul>
+						<li><a href="http://www.facebook.com/sharer.php?u=<?=urlencode($shareurl);?>&t=<?=urlencode('Checking out the  '.$item->description.' on Totsy.com');?>" target="_blank" title="Share this item with your friends on Facebook" class="sm-facebook sm-btn">Share this sale on Facebook</a></li>
+						<li><a href="http://twitter.com/home?status=Checking out the <?=$item->description; ?> at Totsy.com: <?=$shareurl;?>" target="_blank" title="Tweet this sale to your followers" class="sm-twitter sm-btn">Tweet this sale on Twitter</a></li>
+					</ul>
+				</dd>
+			</dl>
 		</div>
-		<!-- End Description Tab -->
-
-		<!-- Start Shipping Tab -->
-		<div id="shipping" class="ui-tabs-hide">
-		
-		<strong>Shipping:</strong>Totsy will ship this item via Standard UPS or Standard US Mail shipping based on your selection at the end of your <?=$this->html->link('checkout process', array('Orders::add')); ?>.
-		Complete shipping details are available at <?=$this->html->link('shipping terms', array('Pages::shipping')); ?>.
-
-		<p><strong>Returns:</strong> Totsy accept returns on selected items only. You will get a merchandise credit and free shipping (AK &amp; HI: air shipping rates apply). Simply be sure that we receive the merchandise you wish to return within 30 days from the date you originally received it in its original condition with all the packaging intact. Please note: Final Sale items cannot be returned. Want to learn more? Read more in our <?=$this->html->link('returns section', array('Pages::returns')); ?>.</p>
-
-		
-		    
-				</div>
-		<!-- End Shipping Tab -->
-
-		<!-- Start Video Tab -->
-		<!--
-		<div id="video" class="ui-tabs-hide">
+			
+		<div id="tabs">
+			<ul>
+			    <li><a href="#description"><span>Description</span></a></li>
+			    <li><a href="#shipping"><span>Shipping &amp; Returns</span></a></li>
+			    <!--<li><a href="#video"><span>Video</span></a></li>-->
+			</ul>
+	
+			<!-- Start Description Tab -->
+			<div id="description" class="ui-tabs-hide">
+			    <h3>Overview</h3>
+				<?php echo $item->blurb; ?>
+			</div>
+			<!-- End Description Tab -->
+	
+			<!-- Start Shipping Tab -->
+			<div id="shipping" class="ui-tabs-hide">
+			
+			<strong>Shipping:</strong>Totsy will ship this item via Standard UPS or Standard US Mail shipping based on your selection at the end of your <?=$this->html->link('checkout process', array('Orders::add')); ?>.
+			Complete shipping details are available at <?=$this->html->link('shipping terms', array('Pages::shipping')); ?>.
+	
+			<p><strong>Returns:</strong> Totsy accept returns on selected items only. You will get a merchandise credit and free shipping (AK &amp; HI: air shipping rates apply). Simply be sure that we receive the merchandise you wish to return within 30 days from the date you originally received it in its original condition with all the packaging intact. Please note: Final Sale items cannot be returned. Want to learn more? Read more in our <?=$this->html->link('returns section', array('Pages::returns')); ?>.</p>
+	
+			
+			    
+					</div>
+			<!-- End Shipping Tab -->
+	
+			<!-- Start Video Tab -->
+			<!--
+			<div id="video" class="ui-tabs-hide">
+			</div>
+			-->
+			<!-- End Video Tab -->
+	
 		</div>
-		-->
-		<!-- End Video Tab -->
-
+	
 	</div>
 	<!-- Started Related Products -->
 	<div id="related-products">

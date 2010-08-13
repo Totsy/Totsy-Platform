@@ -1,6 +1,6 @@
-<div id="fullscreen" style="background:#FF3300">
+<div id="fullscreen">
 	<div id="login-box">
-		<div id="login-box-border">
+		<div id="login-box-border" class="register-modal">
 			<div id="login-box-container">
 				<div class="tt">
 					<div><!-- --></div>
