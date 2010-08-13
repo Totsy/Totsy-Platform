@@ -238,7 +238,7 @@ ul.content-list{list-style:disc;margin:0 0 0 15px}
 
 /* Tabs
 ----------------------------------*/
-.ui-tabs { position: relative;zoom: 1; }
+.ui-tabs {position:relative;z-index:1;zoom: 1; }
 .ui-tabs p{margin:10px 0}
 .ui-tabs .ui-tabs-nav {overflow:hidden }
 .ui-tabs .ui-tabs-nav li {float: left; position: relative; top: 1px; margin: 0 5px 0 0;white-space: nowrap; }
@@ -690,7 +690,7 @@ body.login{height:100%}
 .tm{background:url(../img/login-vert.png) repeat-y 0 0;padding:0 0 0 11px}
 .ti{background:url(../img/login-vert.png) repeat-y 100% 0;padding:0 12px 0 0}
 
-.tc{background:#FFF}
+.tc{background:#FFF;display:block}
 
 #bg{position:fixed;top:0;left:0;z-index:0;width:100%}
 #bg img{width:100%}
@@ -750,12 +750,12 @@ label.required {display:block;width:120px;float:left;line-height:30px;font-weigh
 
 .register_button{display:block;width:76px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -72px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0}
 
-.buy-now{width:100px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -108px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important}
+.buy-now{width:100px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -108px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:inline}
 
-.confirm-delivery-button{width:180px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -144px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important}
+.confirm-delivery-button{width:180px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -144px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:inline}
 
-.place-order-button{width:140px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -180px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important}
+.place-order-button{width:140px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -180px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:inline}
 
-.submit-btn{width:68px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -216px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important}
+.submit-btn{width:68px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -216px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:inline}
 
-.send-btn{width:68px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -252px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important}
+.send-btn{width:68px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -252px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:inline}
