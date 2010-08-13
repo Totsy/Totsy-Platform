@@ -140,7 +140,7 @@ li.item5 a:hover,li.item5.over a, li.active.item5 a{background-position:-244px 0
 #main-nav li li{float:none;margin-right:0;background-image:none;background-color:#E7E7E8;border-left:1px solid #B3B3B3;border-right:1px solid #B3B3B3;padding:0 5px}
 #main-nav li li.first{background:url(../img/dd-bg.png) left top no-repeat;border:none;padding:5px 5px 0 5px}
 #main-nav li li.last{background:url(../img/dd-bg.png) left bottom no-repeat;border:none;padding:0 5px 5px 5px}
-#main-nav li ul a:link,#main-nav li ul a:visited{height:auto;width:auto;background-image:none;text-indent:0;padding:5px;text-transform:uppercase;font-weight:bold;color:#636363;font-size:11px}
+#main-nav li ul a:link,#main-nav li ul a:visited{height:auto;width:auto;background-image:none;text-indent:0;border-bottom:1px solid #B3B3B3;padding:5px;text-transform:uppercase;font-weight:bold;color:#636363;font-size:11px}
 #main-nav li ul li.last a{border-bottom:none}
 #main-nav li ul a:hover,#main-nav li ul li.active a:link,#main-nav li ul li.active a:visited{background:#FFF;color:#EB132C;text-decoration:none}
 #main-nav li:hover ul{left:0}
@@ -212,7 +212,7 @@ div.col-2 .box-2{width:48%}
 .img-th.active{border:4px solid #EB132C;margin:7px 3px 0 0}
 
 #product-detail-right{width:600px;float:right}
-#product-detail-right .sm-actions{margin:6px 0 0 0;position:relative; padding-top:20px;z-index:2}
+#product-detail-right .sm-actions{margin:6px 0 0 0;position:absolute;right:0;top:20px;z-index:2}
 
 #detail-top-right{width:175px;float:right}
 #detail-top-right .p-container{padding:10px;text-align:center}
@@ -235,6 +235,8 @@ ul.content-list{list-style:disc;margin:0 0 0 15px}
 #colors{overflow:hidden}
 #colors .color-swatch{border:1px solid #D7D7D7;margin:10px 5px 0 0;float:left;cursor:pointer}
 #colors .color-swatch.active{border:4px solid #D7D7D7;margin:7px 5px 0 0}
+
+.product-bottom-wrapper{position:relative;z-index:1}
 
 /* Tabs
 ----------------------------------*/
