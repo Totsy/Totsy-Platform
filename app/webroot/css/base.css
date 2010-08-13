@@ -753,7 +753,7 @@ label.required {display:block;width:120px;float:left;line-height:30px;font-weigh
 
 .register_button{display:block;width:76px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -72px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0}
 
-.buy-now{width:100px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -108px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important}
+.buy-now{width:100px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -108px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
 
 #detail-top-right .buy-now{display:block;margin:5px auto 0 auto}
 
