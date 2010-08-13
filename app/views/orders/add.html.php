@@ -254,7 +254,7 @@ $(".add-address").click(function() {
 				autoOpen: false,
 				modal: true,
 				width: 900,
-				height: 600
+				height: 600,
 				close: function(ev, ui) {
 					parent.location = "/events";
 				}
