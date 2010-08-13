@@ -70,7 +70,7 @@ foreach($orders AS $order){
 	if( $debug == true ){
 		$order_id = $testorderid;
 	}else{
-		$order_id = $record['_id'];
+		$order_id = $record['order_id'];
 	}
 	$item_sql = 'SELECT 
 	-- \'MISSING\' AS "_id",
@@ -107,9 +107,10 @@ foreach($orders AS $order){
 	if($debug == true){
 		var_dump( $record );
 	}else{
+		$mongoid = $record['_id'];
 		unset( $record['_id']);
 		$mongoorders->update(
-				array( '_id' => $order_id),
+				array( '_id' => $mongoid),
 				array('$set' => $record)
 		);
 	}

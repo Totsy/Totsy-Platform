@@ -6,7 +6,7 @@
 --
 -- 1) psql -Aqt -d totsy -f export_orders.sql -o orders.json -F ","
 -- 2) mongoimport -d totsytest -c orders --drop --file orders.json
-SELECT '{_id:"'||o.id||'"' AS "_id",
+SELECT '{order_id:"'||o.id||'"' AS "order_id",
  'legacy:true' AS "legacy",
  'total:'||COALESCE(os.subtotal, 0) + COALESCE(ot.sum, 0) + TRUNC(CAST(o.shipping_price AS decimal) / 100, 2) AS "total",
  'subtotal:'||COALESCE(os.subtotal, 0) AS "subtotal",
@@ -35,7 +35,8 @@ FROM orders o
 LEFT JOIN billinginfos bi ON o.billinginfo_id = bi.id
 LEFT JOIN order_taxes ot ON o.id = ot.order_id
 LEFT JOIN order_subtotal os ON o.id = os.order_id
-WHERE si_client_id = 7
+WHERE si_client_id = 7 
+AND o.created_at > '2009-10-06 00:00:00'
 AND billinginfo_id IS NOT NULL
 AND os.subtotal != 0
 ORDER BY o.id
