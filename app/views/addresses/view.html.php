@@ -47,7 +47,7 @@
 					$removeButtons[] = "<script type=\"text/javascript\" charset=\"utf-8\">
 							$('#remove$address->_id').click(function () { 
 								$('#$address->_id').remove();
-								$.ajax({url: \"addresses/remove\", data:'$address->_id', context: document.body, success: function(data){
+								$.ajax({url: $.base + \"addresses/remove\", data:'$address->_id', context: document.body, success: function(data){
 								      }});
 							    });
 						</script>";
@@ -65,7 +65,3 @@
 		<?php echo $button ?>
 	<?php endforeach ?>
 <?php endif ?>
-
-
-
-

@@ -13,10 +13,10 @@
 	<div class="tr"></div>
 	<div id="page">
 		<p>
-			<strong class="red"><?=$this->html->link('STEP 1 - Delivery Method', array('Orders::add'));?></strong>
+			<strong class="red"><?=$this->html->link('STEP 1 (Shipping/Billing Info)', array('Orders::add'));?></strong>
 			&raquo;
-			<strong class="red">STEP 2 - Order Review</strong>
-			&raquo; STEP 3 - Order Confirmation
+			<strong class="red">STEP 2 (Payment)</strong>
+			&raquo; STEP 3 (Confirmation)
 		</p>
 	<?php if ($errors = $order->errors()) { ?>
 		<p>
@@ -243,15 +243,20 @@
 
 			</li>
 			<li class="step">
-				<button class="flex-btn submit"><span>Place Your Order</span></button>
+				<button class="place-order-button submit"><span>Place Your Order</span></button>
 				&nbsp;&nbsp;
 				<span class="red">*</span> Required Fields
 			</li>
 			<?=$this->form->end(); ?>
 	</ol>
+	
+	<div class="bl"></div>
+	<div class="br"></div>
+	
 	</div>
-	<div>
+
 </div>
+
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function(){
 		$('#gift').bind('click', function() {

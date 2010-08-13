@@ -87,11 +87,6 @@
 				<?=$this->form->label('zip', 'Zip/Postal Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('zip', array('class' => 'inputbox')); ?>
 			</div> 
-			
-			<div class="form-row"> 
-				<?=$this->form->label('country', 'Country <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('country', array('class' => 'inputbox')); ?>
-			</div> 
 			<?=$this->form->submit('Submit', array('class' => 'flex-btn fr')); ?>
 		</fieldset> 
 		<?php if ($isAjax): ?>

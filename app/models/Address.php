@@ -86,23 +86,24 @@ class Address extends \lithium\data\Model {
 			"WV" => 'West Virginia',
 			"WI" => 'Wisconsin',
 			"WY" => 'Wyoming'
-		),
-		'Canada' => array(
-			"AB" => 'Alberta',
-			"BC" => 'British Columbia',
-			"MB" => 'Manitoba',
-			"NB" => 'New Brunswick',
-			"NL" => 'Newfoundland and Labrador',
-			"NT" => 'Northwest Territories',
-			"NS" => 'Nova Scotia',
-			"NU" => 'Nunavut',
-			"PE" => 'Prince Edward Island',
-			"SK" => 'Saskatchewan',
-			"ON" => 'Ontario',
-			"QC" => 'Quebec',
-			"YT" => 'Yukon'
 		)
+		// 'Canada' => array(
+		// 	"AB" => 'Alberta',
+		// 	"BC" => 'British Columbia',
+		// 	"MB" => 'Manitoba',
+		// 	"NB" => 'New Brunswick',
+		// 	"NL" => 'Newfoundland and Labrador',
+		// 	"NT" => 'Northwest Territories',
+		// 	"NS" => 'Nova Scotia',
+		// 	"NU" => 'Nunavut',
+		// 	"PE" => 'Prince Edward Island',
+		// 	"SK" => 'Saskatchewan',
+		// 	"ON" => 'Ontario',
+		// 	"QC" => 'Quebec',
+		// 	"YT" => 'Yukon'
+		// )
 	);
+
 
 	protected $_meta = array('title' => 'description');
 

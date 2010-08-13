@@ -120,7 +120,7 @@
 				<a href='../../pages/returns'><strong>Refund &amp; Return Policy</strong></a><br />
 			</td>
 			<td class="cart-button" colspan="2">
-				<?=$this->html->link('Buy Now', 'Orders::add', array('class' => 'flex-btn')); ?>
+				<?=$this->html->link('Buy Now', 'Orders::add', array('class' => 'buy-now')); ?>
 			</td>
 			</tbody>
 		</table>
