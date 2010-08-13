@@ -68,7 +68,7 @@ $(document).ready(function() {
 						</div>
 
 						<div class="table-cell right">
-							<span><?=$this->html->link('Go', array('Events::view', 'args' => array($event->url)), array('class' => 'flex-btn'));?></span>
+							<span><?=$this->html->link('Go', array('Events::view', 'args' => array($event->url)), array('class' => 'go-btn'));?></span>
 						</div>
 					</div>
 				</div>
@@ -158,7 +158,7 @@ $(document).ready(function() {
 								<?=$this->html->link('Preview', array(
 									'Events::view',
 									'args' => array($event->url)),
-									array('class' => 'flex-btn')
+									array('class' => 'preview-btn')
 									);
 								?>
 							</div>

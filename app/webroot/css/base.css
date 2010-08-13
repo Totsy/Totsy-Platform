@@ -528,9 +528,9 @@ width:70%;
 float:left;
 padding:15px 0 15px 20px
 }
-.splash-details .right{width:15%;text-align:right;float:right;padding:22px 20px 0 0}
-.details .left{width:80%;float:left}
-.details .right{width:30%;text-align:right;float:left}
+.splash-details .right{float:right;padding:22px 20px 0 0}
+.details .left{float:left}
+.details .right{text-align:right;float:left}
 
 .product-list-item.middle{margin:0 10px 10px 10px}
 
@@ -764,3 +764,7 @@ label.required {display:block;width:120px;float:left;line-height:30px;font-weigh
 .submit-btn{width:68px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -216px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
 
 .send-btn{width:68px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -252px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
+
+.go-btn{width:48px;height:26px;background:url(../img/btn-sprite.png) no-repeat 0 -308px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
+
+.preview-btn{width:68px;height:26px;background:url(../img/btn-sprite.png) no-repeat 0 -280px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
