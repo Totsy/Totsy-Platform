@@ -524,13 +524,12 @@ font-size:10px;
 
 .splash-details .left{
 font-size:14px;
-width:70%;
 float:left;
 padding:15px 0 15px 20px
 }
-.splash-details .right{width:15%;text-align:right;float:right;padding:22px 20px 0 0}
-.details .left{width:80%;float:left}
-.details .right{width:30%;text-align:right;float:left}
+.splash-details .right{float:right;padding:22px 20px 0 0}
+.details .left{float:left}
+.details .right{text-align:right;float:left}
 
 .product-list-item.middle{margin:0 10px 10px 10px}
 
@@ -553,7 +552,7 @@ line-height:24px
 h2.invite-friends{background:url(../img/invite-friends-get-15-img.png) no-repeat;width:138px;height:100px;margin-top:50px}
 h2.socialize-us{background:url(../img/socialize-with-us-img.png) no-repeat;width:124px;height:50px;}
 
-.invite-column .p-container{padding:0 21px;height:416px}
+.invite-column .p-container{padding:0 21px;height:410px}
 
 .invite-column .sm-icons{overflow:hidden;padding:0 26px}
 .invite-column a.sm-btn{float:left;margin:0 5px}
@@ -753,7 +752,7 @@ label.required {display:block;width:120px;float:left;line-height:30px;font-weigh
 
 .register_button{display:block;width:76px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -72px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0}
 
-.buy-now{width:100px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -108px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important}
+.buy-now{width:100px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -108px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
 
 #detail-top-right .buy-now{display:block;margin:5px auto 0 auto}
 
@@ -764,3 +763,11 @@ label.required {display:block;width:120px;float:left;line-height:30px;font-weigh
 .submit-btn{width:68px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -216px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
 
 .send-btn{width:68px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -252px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
+
+.go-btn{width:48px;height:26px;background:url(../img/btn-sprite.png) no-repeat 0 -308px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
+
+.preview-btn{width:68px;height:26px;background:url(../img/btn-sprite.png) no-repeat 0 -280px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
+
+.invite-splash-btn{width:134px;height:33px;background:url(../img/btn-sprite.png) no-repeat 0 -337px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
+
+.hasCountdown{font-weight:bold}

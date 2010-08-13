@@ -56,12 +56,13 @@ class AddressesController extends BaseController {
 				$message .= "Please remove one first.";
 			} else {
 
-				if (($this->request->data['default'] == '1') && (Address::changeDefault($user['_id']))) {
-					$message = 'This address is now your default';
-				} elseif ($address->validates()) {
+				// if (($this->request->data['default'] == '1') && (Address::changeDefault($user['_id']))) {
+				// 	$message = 'This address is now your default';
+				// } elseif 
+				if ($address->validates()) {
 					$message = 'Address Saved';
 				}
-				$address->default = ($this->request->data['default'] == '1') ? true : false;
+				//$address->default = ($this->request->data['default'] == '1') ? true : false;
 				$address->user_id = (string) $user['_id'];
 
 				if ($address->save()) {
