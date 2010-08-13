@@ -1,11 +1,7 @@
 <script type="text/javascript">
 $(document).ready(function() {
-	if ($.browser.msie && $.browser.version < 8){
-		if ($.browser.version == 7 && document.documentMode) {
-			window.location.replace("/pages/faq#IE8");
-		} else {
-			window.location.replace("/upgrade");
-		}
+	if ($.browser.msie && $.browser.version < 7){
+		window.location.replace("/upgrade");
 	}
 });
 </script>
