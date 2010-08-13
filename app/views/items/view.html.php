@@ -1,8 +1,8 @@
 <?=$this->html->script(array('jqzoom.pack.1.0.1','jquery.equalheights'));?>
 <?=$this->html->style('jquery.countdown');?>
 
-
 <div id="product-detail-right">
+	
 	<div id="product-detail-right-top">
 		
 		<div id="listingCountdown" class="listingCountdown"></div>
@@ -12,6 +12,7 @@
 		)); ?>
 		
 	</div>
+	
 	<div id="detail-top-left">
 		<h1><strong><?=$event->name?></strong> <?=$item->description." ".$item->color; ?></h1>
 
@@ -28,6 +29,7 @@
 				<?php endif ?>
 			<?php endif ?>
 		</div>
+		
 	</div>
 	<?=$this->form->hidden("item_id", array('value' => "$item->_id", 'id'=>'item_id')); ?>
 
@@ -42,7 +44,7 @@
 			<p class="caps">
 				$<?=number_format($item->msrp,2); ?><br />Original</p>
 			<?php if ($item->total_quantity != 0): ?>
-				<button class="flex-btn" id='item-submit'>Buy Now</button>
+				<button class="buy-now" id='item-submit'>Buy Now</button>
 				<div id="all-reserved"></div>
 			<?php endif ?>
 		</div>

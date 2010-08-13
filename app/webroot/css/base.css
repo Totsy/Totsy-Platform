@@ -755,3 +755,7 @@ label.required {display:block;width:120px;float:left;line-height:30px;font-weigh
 .confirm-delivery-button{width:180px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -144px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important}
 
 .place-order-button{width:140px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -180px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important}
+
+.submit-btn{width:68px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -216px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important}
+
+.send-btn{width:68px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -252px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important}
