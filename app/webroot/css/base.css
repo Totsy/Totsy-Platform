@@ -157,7 +157,7 @@ li.item5 a:hover,li.item5.over a, li.active.item5 a{background-position:-244px 0
 #left ul.menu a:hover{color:#EB132C}
 #left ul.menu li.active a:link,#left ul.menu li.active a:visited{color:#EB132C;font-weight:bold}
 
-#middle{float:left;position:relative;z-index:1}
+#middle{float:left;position:relative;}
 .r-container{position:relative;z-index:99}
 #middle p{margin-bottom:20px}
 .tl,.tr,.bl,.br{position:absolute;width:14px;height:14px;background-image:url(../img/corners.png);background-repeat:no-repeat;z-index:100}
