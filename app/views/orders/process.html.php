@@ -243,7 +243,7 @@
 
 			</li>
 			<li class="step">
-				<button class="flex-btn submit"><span>Place Your Order</span></button>
+				<button class="place-order-button submit"><span>Place Your Order</span></button>
 				&nbsp;&nbsp;
 				<span class="red">*</span> Required Fields
 			</li>
