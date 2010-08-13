@@ -620,6 +620,7 @@ line-height:16px;
 tr.cart-total td{text-align:right;border-bottom:1px solid #D7D7D7;padding:10px}
 tr.cart-buy td{border:none;padding:5px}
 td.cart-button{text-align:right}
+td.cart-button a{float:right}
 
 .cart-notes{
 	font-size:12px;
