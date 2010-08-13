@@ -186,7 +186,7 @@
 		
 
 		<li class="step">
-			<button class="flex-btn submit"><span>Confirm Delivery Method</span></button>
+			<button class="confirm-delivery-button submit"><span>Confirm Delivery Method</span></button>
 			&nbsp;&nbsp;
 		</li>
 
