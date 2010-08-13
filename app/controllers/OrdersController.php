@@ -23,12 +23,11 @@ class OrdersController extends BaseController {
 		return (compact('orders'));	
 	}
 
-	public function view() {
+	public function view($order_id) {
 		$user = Session::read('userLogin');
-
 		$order = Order::find('first', array(
 			'conditions' => array(
-				'_id' => $this->request->id,
+				'order_id' => $order_id,
 				'user_id' => (string) $user['_id']
 		)));
 		return compact('order');
@@ -156,7 +155,7 @@ class OrdersController extends BaseController {
 					Credit::add($credit, $user->invited_by, Credit::INVITE_CREDIT, "Invitation");
 				}
 			}
-			return $this->redirect(array('Orders::view', 'id' => (string) $order->_id));
+			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 		}
 
 		$cartEmpty = ($cart->data()) ? false : true;
