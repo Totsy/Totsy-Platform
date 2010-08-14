@@ -85,28 +85,33 @@ class CartController extends BaseController {
 		$success = false;
 		$message = null;
 		if ($this->request->query) {
-			$data = $this->request->query;
-			$cart = Cart::find('first', array(
-				'conditions' => array(
-					'_id' => $data['_id']
-			)));
-			$diff = $data['qty'] - $cart->quantity;
-			$cart->quantity = $data['qty'];
+			$qty = (int) $this->request->query['qty'];
+			if ($qty > 0) {
+				$cart = Cart::find('first', array(
+					'conditions' => array(
+						'_id' => $this->request->query['_id']
+				)));
+				$diff = $qty - $cart->quantity;
+				$cart->quantity = $qty;
 
-			$item = Item::find('first', array(
-				'conditions' => array(
-					'_id' => $cart->item_id
-			)));
+				$item = Item::find('first', array(
+					'conditions' => array(
+						'_id' => $cart->item_id
+				)));
 
-			if ($item->details->{$cart->size} == 0) {
-				$message = "Sorry we are sold out of this item.";
+				if ($item->details->{$cart->size} == 0) {
+					$message = "Sorry we are sold out of this item.";
+				}
+				if ($cart->quantity > $item->details->{$cart->size}) {
+					$message = "Sorry you have requested more of this item than what is available.";
+				}
+				if (empty($message) && $cart->save()) {
+					$message = "Your cart has been updated.";
+				}
+			} else {
+				$message = "Please submit a number greater than 0";
 			}
-			if ($cart->quantity > $item->details->{$cart->size}) {
-				$message = "Sorry you have requested more of this item than what is available.";
-			}
-			if (empty($message) && $cart->save()) {
-				$message = "Your cart has been updated";
-			}
+
 		}
 		$this->render(array('layout' => false));
 		echo json_encode($message);

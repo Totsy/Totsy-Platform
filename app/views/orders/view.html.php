@@ -35,7 +35,7 @@
 							</tr>
 							<tr>
 								<td style="padding:20px" valign="top">
-									<p style="font-weight:bold">Order: <?php echo strtoupper(substr((string)$order->_id, 0, 8));?></p><br>
+									<p style="font-weight:bold">Order: <?=$order->order_id;?></p><br>
 									<p>Thank you so much for shopping with Totsy. Please find your order summary information below:
 									<br>
 								</td>
@@ -57,6 +57,7 @@
 												<td colspan="5" height="5"></td>
 											</tr>
 											<?php $items = $order->items->data(); ?>
+
 											<?php foreach ($items as $item): ?>
 												<tr style="background-color:#e8e8e8;text-align:center">
 												<?php
