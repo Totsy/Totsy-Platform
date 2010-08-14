@@ -53,11 +53,8 @@ $image = $images[array_rand($images)];
 							<h1 id="logo">Totsy</h1>
 							
 							<div id="intro-copy">
-							
 								<p class="red">You have places to be, things to do, and little ones in tow.</p>
-								
 								<p>At Totsy, moms on the go and moms to be experience the shopping they desire at prices they can't resist.</p>
-							
 							</div>
 			
 							<div class="sign-in-container">
@@ -75,7 +72,7 @@ $image = $images[array_rand($images)];
 												<br><br>
 												<?=$this->form->text('email', array('label' => 'Email Address')); ?>
 												<br><br>
-												<?=$this->form->submit('Reset Password', array('class'=>"flex-btn-2"));?>
+												<?=$this->form->submit('Reset Password', array('class'=>"reset-pw-btn"));?>
 											<?=$this->form->end(); ?>
 									</div>
 									<div class="bl"></div>
@@ -92,13 +89,14 @@ $image = $images[array_rand($images)];
 										
 										<p>Become a member today for access to brand-specific sales, up to 70% off retail, just for you and the kids, ages 0-7. Prenatal care products, baby gear, travel accessories, bedding and bath, children's clothing, toys, and educational materials &mdash; and that's just the start.</p>
 										
-										<?=$this->html->link('Request Membership','/register', array('class'=>"flex-btn-2")); ?>
+										<?=$this->html->link('Request Membership','/register', array('class'=>"register_button")); ?>
 									</div>
 									<div class="bl"></div>
 									<div class="br"></div>
-								
 								</div>
 							</div>
+							
+							
 				
 						</div>
 					</div>
