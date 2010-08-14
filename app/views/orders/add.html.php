@@ -197,7 +197,7 @@
 		
 
 		<li class="step">
-			<button class="confirm-delivery-button submit"><span>Confirm Delivery Method</span></button>
+			<?=$this->form->submit('Confirm Delivery Method', array('class' => 'confirm-delivery-button')); ?>
 			&nbsp;&nbsp;
 		</li>
 
