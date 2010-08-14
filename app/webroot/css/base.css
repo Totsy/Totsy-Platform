@@ -279,7 +279,7 @@ padding-top:20px;
 
 /* Dialog Box
 ----------------------------------*/
-.ui-widget-overlay{left:0;top:0;position:absolute;background:#000;opacity:0.5}
+.ui-widget-overlay{left:0;top:0;position:absolute;background:url(../img/black-50.png)}
 
 .ui-dialog {position:absolute;padding:5px 10px;overflow: hidden;border:1px solid #707070 }
 .ui-dialog .ui-dialog-titlebar{position:relative;text-align:right}
