@@ -10,6 +10,7 @@
 */
 
 // DON'T FORGET TO SET THIS
+$mongodbhost = 'bleemil.totsy.com';
 $mongodbname = 'totsy';
 $debug = false;
 
@@ -20,7 +21,7 @@ function debug( $thingie ){
 }
 
 // ...aaaaand here's mongo!
-$mongoconn = new Mongo();
+$mongoconn = new Mongo($mongodbhost);
 $mongoorders = $mongoconn->$mongodbname->orders;
 $conditions = array(
 		"order_id" => array(
