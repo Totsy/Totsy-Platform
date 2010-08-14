@@ -89,14 +89,14 @@ $image = $images[array_rand($images)];
 										
 										<p>Become a member today for access to brand-specific sales, up to 70% off retail, just for you and the kids, ages 0-7. Prenatal care products, baby gear, travel accessories, bedding and bath, children's clothing, toys, and educational materials &mdash; and that's just the start.</p>
 										
-										<?=$this->html->link('Request Membership','/register', array('class'=>"register_button")); ?>
+										<?=$this->html->link('Request Membership','/register', array('class'=>"request-mem-btn")); ?>
 									</div>
 									<div class="bl"></div>
 									<div class="br"></div>
 								</div>
 							</div>
 							
-							
+							<div class="clear"><!-- --></div>
 				
 						</div>
 					</div>
