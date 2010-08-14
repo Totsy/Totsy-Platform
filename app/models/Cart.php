@@ -11,14 +11,20 @@ class Cart extends \lithium\data\Model {
 	const TAX_RATE = 0.08875;
 
 	public $validates = array();
-	
+
 	protected $_dates = array(
 		'now' => 0,
 		'-1min' => -60,
 		'-3min' => -180,
 		'-5min' => -300,
-		'10min' => 600
+		'3min' => 180,
+		'5min' => 300,
+		'15min' => 900
 	);
+
+	public static function collection() {
+		return static::_connection()->connection->carts;
+	}
 
 	protected $_nonTaxableCategories = array('apparel');
 
@@ -28,7 +34,7 @@ class Cart extends \lithium\data\Model {
 
 	public static function addFields($data, array $options = array()) {
 
-		$data->expires = static::dates('10min');
+		$data->expires = static::dates('15min');
 		$data->created = static::dates('now');
 		$data->session = Session::key();
 		$user = Session::read('userLogin');
@@ -149,6 +155,26 @@ class Cart extends \lithium\data\Model {
 		}
 
 		return $total;
+	}
+
+	public static function increaseExpires() {
+		$user = Session::read('userLogin');
+		$conditions = array(
+			'session' => Session::key(),
+			'expires' => array(
+				'$lte' => static::dates('3min'),
+				'$gte' => static::dates('now')),
+			'user' => $user['_id']
+		);
+		$cartItems = static::find('all', array('conditions' => $conditions));
+		if ($cartItems) {
+			foreach ($cartItems as $cart) {
+				$cart->expires = static::dates('5min');
+				$cart->save();
+			}
+		}
+
+		return true;
 	}
 }
 

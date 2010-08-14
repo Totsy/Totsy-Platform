@@ -36,6 +36,12 @@ class AddressesController extends BaseController {
 	 * Adds an address
 	 */
 	public function add() {
+		if ($this->request->is('ajax')) {
+			$this->_render['layout'] = 'empty';
+			$isAjax = true;
+		} else {
+			$isAjax = false;
+		}
 		$status = '';
 		$message = '';
 		$action = 'add';
@@ -50,23 +56,29 @@ class AddressesController extends BaseController {
 				$message .= "Please remove one first.";
 			} else {
 
-				if (($this->request->data['default'] == '1') && (Address::changeDefault($user['_id']))) {
-					$message = 'This address is now your default';
-				} elseif ($address->validates()) {
+				// if (($this->request->data['default'] == '1') && (Address::changeDefault($user['_id']))) {
+				// 	$message = 'This address is now your default';
+				// } elseif 
+				if ($address->validates()) {
 					$message = 'Address Saved';
 				}
-				$address->default = ($this->request->data['default'] == '1') ? true : false;
+				//$address->default = ($this->request->data['default'] == '1') ? true : false;
 				$address->user_id = (string) $user['_id'];
 
 				if ($address->save()) {
-					$this->redirect('/addresses');
+					if (!empty($this->request->data['isAjax'])) {
+						$this->redirect('/shopping/checkout');
+					} else {
+						$this->redirect('/addresses');
+					}
 				}
 			}
 		}
-		return compact('status', 'message', 'address', 'action');
+		return compact('status', 'message', 'address', 'action', 'isAjax');
 	}
 	
 	public function edit($_id) {
+		$isAjax = false;
 		$message = '';
 		$action = 'edit';
 		//Use the add template and main layout
@@ -88,7 +100,7 @@ class AddressesController extends BaseController {
 				$message = 'Your address has been updated';
 		}
 
-		return compact('message', 'address', 'action');
+		return compact('message', 'address', 'action', 'isAjax');
 	}
 	
 	public function remove() {

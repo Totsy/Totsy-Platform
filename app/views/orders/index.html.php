@@ -39,12 +39,13 @@
 					<tr class="alt$x">
 						<td><?=date('m-d-y', $order->date_created->sec); ?></td>
 						<td>
-							<?=$this->html->link(strtoupper(substr((string)$order->_id, 0, 8)), array(
-								'Orders::view',
-								'args' => (string) $order->_id
-								));
-							?>
-
+							<?php if (!empty($order->order_id)): ?>
+								<?=$this->html->link("$order->order_id", array(
+									'Orders::view',
+									'args' => $order->order_id
+									));
+								?>
+							<?php endif ?>
 						</td>
 						<?php if ($order->items): ?>
 							<?php $items = $order->items->data() ?>

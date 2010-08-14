@@ -5,9 +5,9 @@
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
 	$test = $cart->data();
 ?>
-<?php if (!empty($message)): ?>
-	<div><?=$message?></div>
-<?php endif ?>
+
+<div class="message"></div>
+<br>
 <?php if (!empty($test)): ?>
 <?php $subTotal = 0; ?>
 <?=$this->form->create(); ?>
@@ -120,7 +120,7 @@
 				<a href='../../pages/returns'><strong>Refund &amp; Return Policy</strong></a><br />
 			</td>
 			<td class="cart-button" colspan="2">
-				<?=$this->html->link('Buy Now', 'Orders::add', array('class' => 'flex-btn')); ?>
+				<?=$this->html->link('Buy Now', 'Orders::add', array('class' => 'buy-now')); ?>
 			</td>
 			</tbody>
 		</table>
@@ -175,9 +175,9 @@ $(".inputbox").bind('keyup', function() {
 		data: "_id=" + id + "&" + "qty=" + qty,
 		context: document.body,
 		success: function(message) {
-			$('#message').addClass("ui-state-error ui-corner-all");
+			$('#message').addClass("cart-message");
 			$('#message').css("padding: 0pt 0.7em;");
-			$('#message').html(message);
+			$('#message').html('<center>' + message + '</center>');
 		}
 	});
 	$("#subtotal").html("<strong>Subtotal: $" + subTotalProper + "</strong>");

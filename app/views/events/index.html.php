@@ -1,11 +1,7 @@
 <script type="text/javascript">
 $(document).ready(function() {
-	if ($.browser.msie && $.browser.version < 8){
-		if ($.browser.version == 7 && document.documentMode) {
-			window.location.replace("/pages/faq#IE8");
-		} else {
-			window.location.replace("/upgrade");
-		}
+	if ($.browser.msie && $.browser.version < 7){
+		window.location.replace("/upgrade");
 	}
 });
 </script>
@@ -72,7 +68,7 @@ $(document).ready(function() {
 						</div>
 
 						<div class="table-cell right">
-							<span><?=$this->html->link('Go', array('Events::view', 'args' => array($event->url)), array('class' => 'flex-btn'));?></span>
+							<span><?=$this->html->link('Go', array('Events::view', 'args' => array($event->url)), array('class' => 'go-btn'));?></span>
 						</div>
 					</div>
 				</div>
@@ -99,7 +95,7 @@ $(document).ready(function() {
 
 						<h2 class="invite-friends">Invite Friends Get $15</h2>
 
-						<a href="/invite" class="flex-btn" title="Invite Friends Now">Invite Now</a>
+						<a href="/invite" class="invite-splash-btn" title="Invite Friends Now">Invite Now</a>
 
 						<div class="hor-div-line"><!-- --></div>
 
@@ -162,7 +158,7 @@ $(document).ready(function() {
 								<?=$this->html->link('Preview', array(
 									'Events::view',
 									'args' => array($event->url)),
-									array('class' => 'flex-btn')
+									array('class' => 'preview-btn')
 									);
 								?>
 							</div>

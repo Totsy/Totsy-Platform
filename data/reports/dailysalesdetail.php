@@ -41,8 +41,8 @@ function debug( $thingie ){
 
 // Configuration
 require_once 'reports_conf.php';
-$start_date = '2010-08-05';
-$end_date = '2010-08-06';
+$start_date = date("Y-m-d", strtotime("yesterday"));
+$end_date = date("Y-m-d", strtotime("today"));
 $start = new MongoDate(strtotime("$start_date 00:00:00"));
 $end = new MongoDate(strtotime("$end_date 00:00:00"));
 
@@ -94,7 +94,7 @@ foreach($orders AS $order){
 	$username_last = $user['lastname'];
 	$email = $user['email'];
 	// How many line items do we have?
-	if(count($order['items']) > 1){
+	if(count($order['items']) > 0){
 		// Reach into the items array for line item data
 		foreach($order['items'] AS $item){
 			// Get the event name since it is missing from order
@@ -133,42 +133,6 @@ foreach($orders AS $order){
 				$order['shipping']['phone']
 				);
 		}
-	}else{
-		// We only got one line item for this order
-		// Get the event name since it is missing from order
-		$event = $mongoevents->findOne( array( 'items' => $item['item_id'] ));
-		// Get the sku (vendor_style) from items since it is missing from order item
-		$item_id = new MongoID( $item['item_id'] );
-		$product = $mongoitems->findOne( array( '_id' => $item_id ));
-		// Check for shipping phone number
-		if(!isset($order['shipping']['phone'])){
-			$order['shipping']['phone'] = '';
-		}
-		// Get the 8-character shorter order id
-		$orderid = substr($order['_id'], 0, 8);
-		$output[] = array(
-			$orderid,
-			$event['name'],
-			$item['description'],
-			$item['color'],
-			$item['size'],
-			$product['vendor_style'],
-			$order['shippingMethod'],
-			$item['quantity'],
-			$item['sale_retail'],
-			$item['quantity'] * $item['sale_retail'],
-			date('Y-m-d h:i:s', $order['date_created']->sec),
-			$order['user_id'],
-			$username_first . ' ' . $username_last,
-			$email,
-			$order['billing']['firstname'] . ' ' . $order['billing']['lastname'],
-			$order['shipping']['firstname'] . ' ' . $order['shipping']['lastname'],
-			$order['shipping']['address'],
-			$order['shipping']['city'],
-			$order['shipping']['state'],
-			$order['shipping']['zip'],
-			$order['shipping']['phone']
-			);		
 	}
 }
 
