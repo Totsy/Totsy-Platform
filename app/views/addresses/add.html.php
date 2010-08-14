@@ -1,7 +1,5 @@
 <?php use app\models\Address; ?>
-<?=$this->html->script('jquery.validate.min')?>
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
-
 
 <?php if (!$isAjax): ?>
 	<h1 class="p-header">My Account</h1>
