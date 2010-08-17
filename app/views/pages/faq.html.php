@@ -66,7 +66,7 @@ $(document).ready(function() {
 		Yes, you can track your order online via your account page.</p>
 	
 		<p><strong>Does Totsy ship to Canada?</strong><br />
-		Yes.</p>
+		No.</p>
 	
 		<p><strong>Does Totsy ship internationally?</strong><br />
 		We do not yet have international delivery rates set up, but if there is a specific request, you
