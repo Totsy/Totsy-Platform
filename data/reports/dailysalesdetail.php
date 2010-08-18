@@ -41,8 +41,8 @@ function debug( $thingie ){
 
 // Configuration
 require_once 'reports_conf.php';
-$start_date = date("Y-m-d", strtotime("yesterday"));
-$end_date = date("Y-m-d", strtotime("today"));
+$start_date = '2010-08-13';
+$end_date = '2010-08-14';
 $start = new MongoDate(strtotime("$start_date 00:00:00"));
 $end = new MongoDate(strtotime("$end_date 00:00:00"));
 
