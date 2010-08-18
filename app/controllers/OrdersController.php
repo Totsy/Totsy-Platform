@@ -8,6 +8,7 @@ use app\models\Item;
 use app\models\Credit;
 use app\models\Address;
 use app\models\Order;
+use app\models\Event;
 use app\controllers\BaseController;
 use lithium\storage\Session;
 use app\extensions\Mailer;
@@ -100,11 +101,21 @@ class OrdersController extends BaseController {
 			'size',
 			'url',
 			'primary_image',
-			'expires'
+			'expires',
+			'event'
 		);
 		$cart = Cart::active(array('fields' => $fields, 'time' => 'now'));
 		$showCart = Cart::active(array('fields' => $fields, 'time' => '-5min'));
 
+		foreach ($cart as $cartValue) {
+			$event = Event::find('first', array(
+				'conditions' => array(
+					'_id' => $cartValue->event[0]
+			)));
+			$cartValue->event_name = $event->name;
+			$cartValue->event_id = $cartValue->event[0];
+			unset($cartValue->event);
+		}
 		$tax = 0;
 		$shippingCost = 0;
 		$billingAddr = $shippingAddr = null;
