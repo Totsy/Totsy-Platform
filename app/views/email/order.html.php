@@ -30,16 +30,73 @@
 						<tr>
 							<!-- Remember to add absolute file paths to all images for production -->
 							<td width="180">
-								<a href="#" title="Totsy.com"><img src="/img/email/email-logo.jpg" alt="Totsy" width="180" height="116" /></a>
+								<?=$this->html->link(
+									$this->html->image(
+										"$data[domain]/img/email/email-logo.jpg",
+										array(
+											'width'=>'180',
+											'height'=>'116'
+										)),
+										'',
+										array(
+											'id' => 'Totsy',
+											'escape'=> false
+										)
+									);
+								?>
 							</td>
 							<td width="65">
-								<a href="#" title="Current Totsy Sales"><img src="/img/email/sales-btn.jpg" alt="Current Totsy Sales" width="65" height="116" /></a>
+								<?=$this->html->link(
+									$this->html->image(
+										"$data[domain]/img/email/sales-btn.jpg",
+										array(
+											'width'=>'65',
+											'height'=>'116',
+											'title' => 'Current Totsy Sales'
+										)),
+										"$data[domain]/sales", 
+										array(
+											'id' => 'Totsy',
+											'escape'=> false
+										)
+									);
+								?>
 							</td>
 							<td width="111">
-								<a href="#" title="Access My Account"><img src="/img/email/account-btn.jpg" alt="Access My Account" width="111" height="116" /></a>
+								<?=$this->html->link(
+									$this->html->image(
+										"$data[domain]/img/email/account-btn.jpg",
+										array(
+											'width'=>'111',
+											'height'=>'116',
+											'title' => 'Access My Account',
+											'alt' => 'Access My Account'
+										)),
+										"$data[domain]/account",
+										array(
+											'id' => 'Totsy', 
+											'escape'=> false
+										)
+									);
+								?>
 							</td>
 							<td width="236">
-								<a href="#" title="Invite Friends to Totsy"><img src="/img/email/invite-btn.jpg" alt="Invite Friends to Totsy" width="236" height="116" /></a>
+								<?php echo $this->html->link(
+									$this->html->image(
+										"$data[domain]/img/email/invite-btn.jpg",
+										array(
+											'width'=>'236',
+											'height'=>'116',
+											'alt' => 'Invite Friends to Totsy'
+										)),
+										"$data[domain]/Users/invite", 
+										array(
+											'id' => 'Totsy',
+											'escape'=> false,
+											'title' => 'Invite Friends to Totsy'
+										)
+									);
+								?>
 							</td>
 						</tr>
 						<tr> <!-- start body of email -->
@@ -48,7 +105,7 @@
 									<tr>
 										<td colspan="4" style="padding:0 10px 10px 10px">
 											<?php echo $this->html->image(
-															"/img/email/order-confirmation.jpg",
+															"$data[domain]/img/email/order-confirmation.jpg",
 															array(
 																'width'=>'570',
 																'height'=>'77',
@@ -92,9 +149,9 @@
 											<tr style="background-color:#e8e8e8;text-align:center">
 											<?php
 												if (!empty($item['primary_image'])) {
-													$image = '/image/'. $item['primary_image'] . '.jpg';
+													$image = $data['domain'].'/image/'. $item['primary_image'] . '.jpg';
 												} else {
-													$image = "/img/no-image-small.jpeg";
+													$image = "$data[domain]/img/no-image-small.jpeg";
 												}
 											?>
 											<td height="100" style="border-right:1px solid #666666;padding-top:5px;padding-bottom:5px" title="item">
@@ -199,7 +256,14 @@
 											</p>
 										</td>
 										<td>
-											<img src="/img/email/tree-logo.jpg" alt="tree-logo" width="40" height="30" />
+											<?php echo $this->html->image(
+												"$data[domain]/img/email/tree-logo.jpg",
+												array(
+													'width'=>'40',
+													'height'=>'30',
+													'alt' => 'Totsy'
+												));
+											?>
 										</td>
 									</tr>
 								</table>
