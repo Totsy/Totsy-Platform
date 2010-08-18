@@ -27,10 +27,11 @@ class UsersController extends BaseController {
 			if (empty($emailCheck)) {
 				$user = User::create();
 				$data = $this->request->data;
-				$data['invitation_code'] = substr($email, 0, strpos($email, '@'));
-				$inviteCheck = User::count(array('invitation_code' => $data['invitation_code']));
+				$data['created_date'] = User::dates('now');
+				$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
+				$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));
 				if ($inviteCheck > 0) {
-					$data['invitation_code'] = $this->randomString();
+					$data['invitation_codes'] = array($this->randomString());
 				}
 				if ($invite_code) {
 					$inviter = User::find('first', array(
@@ -73,6 +74,8 @@ class UsersController extends BaseController {
 						array('name' => $user->firstname, 'email' => $user->email),
 						compact('user')
 					);
+					$ipaddress = $this->request->env('REMOTE_ADDR');
+					User::log($ipaddress);
 					if ($invite_code == 'keyade') {
 						$this->_render['template'] = 'keyade';
 					} else {
