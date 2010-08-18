@@ -128,11 +128,24 @@
 									</table>
 									<table style="padding:0 0 0 20px">
 										<tr>
-											<td width="150">
+											<td style="padding:20px;">
 												Payment Info:
 											</td>
 											<td width="200">
 												 <?=strtoupper($order->card_type)?> ending with <?=$order->card_number?>
+											</td>
+										</tr>
+										<tr>
+											<td style="padding:20px;">
+												Shipping Address:
+											</td>
+											<td>
+												<address class="shipping-address">
+													<?=$order->shipping->firstname;?> <?=$order->shipping->lastname;?><br>
+													<?=$order->shipping->address; ?> <?=$order->shipping->address_2; ?><br />
+													<?=$order->shipping->city; ?>, <?=$order->shipping->state; ?>
+													<?=$order->shipping->zip; ?>
+												</address>
 											</td>
 										</tr>
 									</table>

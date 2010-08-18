@@ -10,6 +10,7 @@ use app\models\Address;
 use app\models\Order;
 use app\controllers\BaseController;
 use lithium\storage\Session;
+use app\extensions\Mailer;
 
 class OrdersController extends BaseController {
 	
@@ -155,6 +156,12 @@ class OrdersController extends BaseController {
 					Credit::add($credit, $user->invited_by, Credit::INVITE_CREDIT, "Invitation");
 				}
 			}
+			Mailer::send(
+				'order',
+				"Totsy - Order Acknowledgment - $orderId",
+				array('name' => $user->firstname, 'email' => $user->email),
+				compact('order')
+			);
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 		}
 
