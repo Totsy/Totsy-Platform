@@ -18,8 +18,9 @@ class OrdersController extends BaseController {
 		$user = Session::read('userLogin');
 		$orders = Order::find('all', array(
 			'conditions' => array(
-				'user_id' => (string) $user['_id']
-		)));
+				'user_id' => (string) $user['_id']),
+			'order' => array('date_created' => 'DESC')
+		));
 
 		return (compact('orders'));	
 	}
