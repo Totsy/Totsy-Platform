@@ -2,7 +2,7 @@
 
 	<div id="login-box">
 
-		<div id="login-box-border">
+		<div id="login-box-border" class="register-modal">
 
 			<div id="login-box-container">
 				
@@ -57,7 +57,7 @@
 		</div>
 	</div>
 </div>
-
+<div id="imagepix"></div>
 <script type="text/javascript">
 $(document).ready(function () {
 	var customer_id = '<?=$user->_id;?>';
@@ -70,7 +70,7 @@ $(document).ready(function () {
 		var c = ca[i];
 		while (c.charAt(0)==' ') c = c.substring(1,c.length);
 		if (c.indexOf(nameEQ) == 0){
-			document.write( img + customer_id + '&kaClkId=' + c.substring(nameEQ.length,c.length) + params);
+			$('#imagepix').html( img + customer_id + '&kaClkId=' + c.substring(nameEQ.length,c.length) + params);
 		}
 	}
 	setTimeout(function(){window.location = '/'}, 5000 );
