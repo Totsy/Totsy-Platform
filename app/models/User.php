@@ -7,13 +7,42 @@ use \lithium\storage\Session;
 use \MongoDate;
 use \MongoId;
 use \MongoRegex;
+use \lithium\util\Validator;
 
 class User extends \lithium\data\Model {
-	
+
+	public $validates = array(
+		'firstname' => array(
+			'notEmpty', 'required' => true, 'message' => 'Please add a first name'
+		),
+		'lastname' => array(
+			'notEmpty', 'required' => true, 'message' => 'Please add a last name'
+		),
+		'email' => array(
+			array('email', 'message' => 'Email is not valid'),
+			array('notEmpty', 'required' => true, 'message' => 'Please add an email address')
+		),
+		'password' => array(
+			'notEmpty', 'required' => true, 'message' => 'Please submit a password'
+		),
+		'terms' => array(
+			'notEmpty', 'required' => true, 'message' => 'Please accept terms'
+		),
+		'confirmemail' => array(
+			array('notEmpty', 'required' => true, 'message' => 'Please confirm your email address')
+		)
+	);
 
 	protected $_dates = array(
 		'now' => 0
 	);
+
+	// public static function __init(array $options = array()) {
+	// 	parent::__init($options);
+	// 	Validator::add('isEmailMatch', function ($value) {
+	// 		return ($value ==  1) ? true : false;
+	// 	});
+	// }
 
 	public static function collection() {
 		return static::_connection()->connection->users;

@@ -45,30 +45,61 @@
 								<div class="tr"></div>
 								<div class="r-box lt-gradient-1">
 								
-								<?=$this->form->create(null,array('id'=>'registerForm')); ?>
+								<?=$this->form->create($user ,array('id'=>'registerForm')); ?>
+
 									<div class="form-row">
-										<?=$this->form->label('fname','First Name',array('class'=>'label'));?>&nbsp;
-										<?=$this->form->text('firstname', array('class'=>"inputbox",'id'=>"fname"));?>
-										<?=$this->form->label('lname','Last Name',array('class'=>'label'));?>&nbsp;
-										<?=$this->form->text('lastname', array('class'=>"inputbox",'id'=>"lname"));?>
+										<?=$this->form->label('firstname', 'First Name <span>*</span>', array(
+											'escape' => false,
+											'class' => 'required'
+											));
+										?>
+										<?=$this->form->text('firstname', array('class' => 'inputbox')); ?>
+										<?=$this->form->error('firstname'); ?>
+									</div>
+									<div class="form-row">
+										<?=$this->form->label('lastname', 'Last Name <span>*</span>', array(
+											'escape' => false,
+											'class' => 'required'
+											));
+										?>
+										<?=$this->form->text('lastname', array('class' => 'inputbox')); ?>
+										<?=$this->form->error('lastname'); ?>
+									</div>
+									<div class="form-row">
+										<?=$this->form->label('email', 'Email <span>*</span>', array(
+											'escape' => false,
+											'class' => 'required'
+											)); 
+										?>
+										<?=$this->form->text('email', array('class' => 'inputbox')); ?> 
+										<?=$this->form->error('email'); ?>
+									</div>
+									<div class="form-row">
+										<?=$this->form->label('confirmemail', 'Confirm Email <span>*</span>', array(
+											'escape' => false,
+											'class' => 'required'
+											));
+										?>
+										<?=$this->form->text('confirmemail', array('class' => 'inputbox')); ?>
+										<?=$this->form->error('confirmemail'); ?>
 									</div>
 
 									<div class="form-row">
-									<?=$this->form->label('email','Email',array('class'=>'label'));?>&nbsp;
-									<?=$this->form->text('email', array('class'=>"inputbox",'id'=>"email"));?>
-									<?=$this->form->label('confirmemail','Confirm email',array('class'=>'label'));?>&nbsp;
-									<?=$this->form->text('confirmemail', array('class'=>"inputbox",'id'=>"confirmemail"));?>
-									</div>
-
-									<div class="form-row">
-									<?=$this->form->label('password','Password',array('class'=>'label'));?>
+									<?=$this->form->label('password','Password <span>*</span>', array(
+										'class'=>'required',
+										'escape' => false
+										));
+									?>
 									<?=$this->form->password('password', array(
-											'class'=>"inputbox", 
+											'class'=>"inputbox",
 											'name' => 'password', 
-											'id' => 'password'));?>
+											'id' => 'password'));
+									?>
+									<?=$this->form->error('password'); ?>
 									</div>
-									<div class="submit-row">
+									<div class="form-row">
 										<?=$this->form->checkbox('terms', array('class'=>"", 'style'=>"float:left;margin-right:4px"));?>
+
 										<span class="sm reg-tos">
 												By requesting membership, I accept the 
 											<?=$this->html->link('Terms and Conditions','#')?> 
@@ -76,6 +107,7 @@
 											Totsy will never sell or give my email to any outside party.
 										</span>
 										<?=$this->form->submit('Register', array('class' => 'register_button')); ?>
+										<?=$this->form->error('terms'); ?>
 									</div>
 								<?=$this->form->end(); ?>
 									

@@ -123,8 +123,8 @@ use lithium\net\http\Router;
 									each new sale with information about the featured brand and
 									discount pricing. You can change your email preferences at any
 									time by visiting
-									<a href="<?php echo (Router::match('Account::index', $this->_request, array('absolute' => true))); ?>">My Account</a> at
-									<a href="http://www.totsy.com/" style="color:#E00000;text-decoration:none">Totsy.com</a>.
+									<?=$this->html->link('My Account', array('Account::index'), array('style' => "color:#E00000;text-decoration:none")); ?>
+									at Totsy</a>.
 								</p>
 								<p>In addition to the great savings, take a minute to check out our
 									<a href="http://www.totsy.com/pages/being_green" style="color:#E00000;text-decoration:none">

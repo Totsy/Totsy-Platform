@@ -10,6 +10,7 @@ use \lithium\security\Auth;
 use \lithium\storage\Session;
 use app\extensions\Mailer;
 
+
 class UsersController extends BaseController {
 
 	/**
@@ -19,13 +20,12 @@ class UsersController extends BaseController {
 	 */
 	public function register($invite_code = null) {
 		$message = false;
-
-		if ($this->request->data) {
-			$this->request->data['password'] = sha1($this->request->data['password']);
+		$user = User::create($this->request->data);
+		if ($this->request->data && $user->validates() ) {
 			$email = $this->request->data['email'];
+			$this->request->data['password'] = sha1($this->request->data['password']);
 			$emailCheck = User::count(array('email' => "$email"));
 			if (empty($emailCheck)) {
-				$user = User::create();
 				$data = $this->request->data;
 				$data['created_date'] = User::dates('now');
 				$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
@@ -87,7 +87,7 @@ class UsersController extends BaseController {
 			}
 		}
 		$this->_render['layout'] = 'login';
-		return compact('message');
+		return compact('message', 'user');
 	}
 	/**
 	 * Performs login authentication for a user going directly to the database.
