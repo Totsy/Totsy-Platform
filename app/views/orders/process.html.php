@@ -243,7 +243,7 @@
 
 			</li>
 			<li class="step">
-				<button class="place-order-button submit"><span>Place Your Order</span></button>
+				<?=$this->form->submit('Place Your Order', array('class' => 'place-order-button submit')); ?>
 				&nbsp;&nbsp;
 				<span class="red">*</span> Required Fields
 			</li>
