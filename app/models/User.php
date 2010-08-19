@@ -20,7 +20,8 @@ class User extends \lithium\data\Model {
 		),
 		'email' => array(
 			array('email', 'message' => 'Email is not valid'),
-			array('notEmpty', 'required' => true, 'message' => 'Please add an email address')
+			array('notEmpty', 'required' => true, 'message' => 'Please add an email address'),
+			array('isUniqueEmail', 'message' => 'This email address is already registered')
 		),
 		'password' => array(
 			'notEmpty', 'required' => true, 'message' => 'Please submit a password'
@@ -30,6 +31,9 @@ class User extends \lithium\data\Model {
 		),
 		'confirmemail' => array(
 			array('notEmpty', 'required' => true, 'message' => 'Please confirm your email address')
+		),
+		'emailcheck' => array(
+			array('isEmailMatch', 'message' => 'Emails don\'t match. Please confirm email.')
 		)
 	);
 
@@ -37,12 +41,18 @@ class User extends \lithium\data\Model {
 		'now' => 0
 	);
 
-	// public static function __init(array $options = array()) {
-	// 	parent::__init($options);
-	// 	Validator::add('isEmailMatch', function ($value) {
-	// 		return ($value ==  1) ? true : false;
-	// 	});
-	// }
+	public static function __init(array $options = array()) {
+		parent::__init($options);
+
+		Validator::add('isEmailMatch', function ($value) {
+			return ($value ==  true) ? true : false;
+		});
+
+		Validator::add('isUniqueEmail', function ($value) {
+			$email = User::count(array('email' => "$value"));
+			return (empty($email)) ? true : false;
+		});
+	}
 
 	public static function collection() {
 		return static::_connection()->connection->users;

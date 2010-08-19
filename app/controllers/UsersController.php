@@ -20,70 +20,69 @@ class UsersController extends BaseController {
 	 */
 	public function register($invite_code = null) {
 		$message = false;
-		$user = User::create($this->request->data);
+		$data = $this->request->data;
+		if (isset($data) && $this->request->data) {
+			$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
+		}
+
+		$user = User::create($data);
 		if ($this->request->data && $user->validates() ) {
 			$email = $this->request->data['email'];
 			$this->request->data['password'] = sha1($this->request->data['password']);
-			$emailCheck = User::count(array('email' => "$email"));
-			if (empty($emailCheck)) {
-				$data = $this->request->data;
-				$data['created_date'] = User::dates('now');
-				$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
-				$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));
-				if ($inviteCheck > 0) {
-					$data['invitation_codes'] = array($this->randomString());
-				}
-				if ($invite_code) {
-					$inviter = User::find('first', array(
+			$data['created_date'] = User::dates('now');
+			$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
+			$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));
+			if ($inviteCheck > 0) {
+				$data['invitation_codes'] = array($this->randomString());
+			}
+			if ($invite_code) {
+				$inviter = User::find('first', array(
+					'conditions' => array(
+						'invitation_codes' => array($invite_code)
+				)));
+				if ($inviter) {
+					$invited = Invitation::find('first', array(
 						'conditions' => array(
-							'invitation_codes' => array($invite_code)
-					)));
-					if ($inviter) {
-						$invited = Invitation::find('first', array(
-							'conditions' => array(
-								'user_id' => (string) $inviter->_id,
-								'email' => $email
-						)))	;
-						if ($invited) {
-							$invited->status = 'Accepted';
-							$invited->date_updated = Invitation::dates('now');
-							$invited->save();
-							Invitation::reject($inviter->_id, $email);
-						} else {
-							$invitation = Invitation::create();
-							$invitation->user_id = $inviter->_id;
-							$invitation->email = $email;
-							$invitation->date_accepted = Invitation::dates('now');
-							$invitation->status = 'Accepted';
-							$invitation->save();
-						}
-					}
-				}
-				$success = $user->save($data);
-				if ($success) {
-					$userLogin = array(
-						'_id' => $user->_id,
-						'firstname' => $user->firstname,
-						'lastname' => $user->lastname,
-						'email' => $user->email
-					);
-					Session::write('userLogin', $userLogin);
-					Mailer::send(
-						'welcome',
-						'Welcome to Totsy!',
-						array('name' => $user->firstname, 'email' => $user->email),
-						compact('user')
-					);
-					$ipaddress = $this->request->env('REMOTE_ADDR');
-					User::log($ipaddress);
-					if ($invite_code == 'keyade') {
-						$this->_render['template'] = 'keyade';
+							'user_id' => (string) $inviter->_id,
+							'email' => $email
+					)))	;
+					if ($invited) {
+						$invited->status = 'Accepted';
+						$invited->date_updated = Invitation::dates('now');
+						$invited->save();
+						Invitation::reject($inviter->_id, $email);
 					} else {
-						$this->redirect('/');
+						$invitation = Invitation::create();
+						$invitation->user_id = $inviter->_id;
+						$invitation->email = $email;
+						$invitation->date_accepted = Invitation::dates('now');
+						$invitation->status = 'Accepted';
+						$invitation->save();
 					}
 				}
-			} else {
-				$message = 'This email/username is already registered';
+			}
+			$success = $user->save($data);
+			if ($success) {
+				$userLogin = array(
+					'_id' => $user->_id,
+					'firstname' => $user->firstname,
+					'lastname' => $user->lastname,
+					'email' => $user->email
+				);
+				Session::write('userLogin', $userLogin);
+				Mailer::send(
+					'welcome',
+					'Welcome to Totsy!',
+					array('name' => $user->firstname, 'email' => $user->email),
+					compact('user')
+				);
+				$ipaddress = $this->request->env('REMOTE_ADDR');
+				User::log($ipaddress);
+				if ($invite_code == 'keyade') {
+					$this->_render['template'] = 'keyade';
+				} else {
+					$this->redirect('/');
+				}
 			}
 		}
 		$this->_render['layout'] = 'login';

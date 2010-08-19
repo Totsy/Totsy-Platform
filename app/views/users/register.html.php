@@ -82,6 +82,7 @@
 										?>
 										<?=$this->form->text('confirmemail', array('class' => 'inputbox')); ?>
 										<?=$this->form->error('confirmemail'); ?>
+										<?=$this->form->error('emailcheck'); ?>
 									</div>
 
 									<div class="form-row">
