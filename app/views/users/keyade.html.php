@@ -58,10 +58,9 @@
 	</div>
 </div>
 
-<script>
+<script type="text/javascript">
 $(document).ready(function () {
-	var invitation_id = '<%= @customer.inviting_invitation_token_id %>';
-	var customer_id = '<%= @customer.id %>';
+	var customer_id = '<?=$user->_id;?>';
 	var cookieName = "K_18733";
 	var img = '<img src="https://k.keyade.com/kaev/1/?kaPcId=18733&kaEvId=17105&kaEvMcId=';
 	var params = '&kaEvCt1=1" width="2" height="2">';
@@ -71,9 +70,7 @@ $(document).ready(function () {
 		var c = ca[i];
 		while (c.charAt(0)==' ') c = c.substring(1,c.length);
 		if (c.indexOf(nameEQ) == 0){
-			if (invitation_id == '95069'){
-				document.write( img + customer_id + '&kaClkId=' + c.substring(nameEQ.length,c.length) + params);
-			} 
+			document.write( img + customer_id + '&kaClkId=' + c.substring(nameEQ.length,c.length) + params);
 		}
 	}
 	setTimeout(function(){window.location = '/'}, 5000 );
