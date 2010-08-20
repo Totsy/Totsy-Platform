@@ -19,6 +19,9 @@ class UsersController extends BaseController {
 	 * @return string User will be promoted that email is already registered.
 	 */
 	public function register($invite_code = null) {
+		if ($invite_code == 'our365') {
+			$this->_render['template'] = 'our365';
+		}
 		$message = false;
 		$data = $this->request->data;
 		if (isset($data) && $this->request->data) {
@@ -50,7 +53,9 @@ class UsersController extends BaseController {
 						$invited->status = 'Accepted';
 						$invited->date_updated = Invitation::dates('now');
 						$invited->save();
-						Invitation::reject($inviter->_id, $email);
+						if ($invite_code != 'keyade') {
+							Invitation::reject($inviter->_id, $email);
+						}
 					} else {
 						$invitation = Invitation::create();
 						$invitation->user_id = $inviter->_id;
@@ -61,8 +66,7 @@ class UsersController extends BaseController {
 					}
 				}
 			}
-			$success = $user->save($data);
-			if ($success) {
+			if ($user->save($data)) {
 				$userLogin = array(
 					'_id' => $user->_id,
 					'firstname' => $user->firstname,
@@ -70,12 +74,12 @@ class UsersController extends BaseController {
 					'email' => $user->email
 				);
 				Session::write('userLogin', $userLogin);
-				Mailer::send(
-					'welcome',
-					'Welcome to Totsy!',
-					array('name' => $user->firstname, 'email' => $user->email),
-					compact('user')
-				);
+				// Mailer::send(
+				// 	'welcome',
+				// 	'Welcome to Totsy!',
+				// 	array('name' => $user->firstname, 'email' => $user->email),
+				// 	compact('user')
+				// );
 				$ipaddress = $this->request->env('REMOTE_ADDR');
 				User::log($ipaddress);
 				if ($invite_code == 'keyade') {
