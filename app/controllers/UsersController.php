@@ -26,11 +26,12 @@ class UsersController extends BaseController {
 		$data = $this->request->data;
 		if (isset($data) && $this->request->data) {
 			$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
+			$data['email'] = strtolower($this->request->data['email']);
 		}
 
 		$user = User::create($data);
 		if ($this->request->data && $user->validates() ) {
-			$email = $this->request->data['email'];
+			$email = $data['email'];
 			$data['password'] = sha1($this->request->data['password']);
 			$data['created_date'] = User::dates('now');
 			$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
