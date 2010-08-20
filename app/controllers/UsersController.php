@@ -74,12 +74,12 @@ class UsersController extends BaseController {
 					'email' => $user->email
 				);
 				Session::write('userLogin', $userLogin);
-				// Mailer::send(
-				// 	'welcome',
-				// 	'Welcome to Totsy!',
-				// 	array('name' => $user->firstname, 'email' => $user->email),
-				// 	compact('user')
-				// );
+				Mailer::send(
+					'welcome',
+					'Welcome to Totsy!',
+					array('name' => $user->firstname, 'email' => $user->email),
+					compact('user')
+				);
 				$ipaddress = $this->request->env('REMOTE_ADDR');
 				User::log($ipaddress);
 				if ($invite_code == 'keyade') {
