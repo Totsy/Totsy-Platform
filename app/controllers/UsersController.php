@@ -193,7 +193,7 @@ class UsersController extends BaseController {
 				$user->reset_token = '0';
 				unset($this->request->data['password']);
 				unset($this->request->data['new_password']);
-				if ($user->save($this->request->data)) {
+				if ($user->save($this->request->data, array('validate' => false))) {
 					$info = Session::read('userLogin');
 					$info['firstname'] = $this->request->data['firstname'];
 					$info['lastname'] = $this->request->data['lastname'];
@@ -223,7 +223,7 @@ class UsersController extends BaseController {
 						array('name' => $user->firstname, 'email' => $user->email),
 						compact('token', 'user')
 					);
-					$message = "Your password has been reset. Please check your email";
+					$message = "Your password has been reset. Please check your email.";
 				} else {
 					$message = "Sorry your password has not been reset. Please try again.";
 				}

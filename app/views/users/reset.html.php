@@ -61,18 +61,16 @@ $image = $images[array_rand($images)];
 								<div id="sign-in-box" class="r-container">
 									<div class="tl"></div>
 									<div class="tr"></div>
-									<div class="r-box lt-gradient-1">		
-											<?php if (!empty($message)): ?>
-												<?=$message;?>
-											<?php endif ?>
+									<div class="r-box lt-gradient-1">
+
 											<?=$this->form->create(null, array('id'=>'loginForm')); ?>
-													<h2>Password Reset</h2>
+													<center><h2>Password Reset</h2></center>
 													
-													<p>Please enter your email below and more instructions will be sent to you.</p>
+													
 												<br><br>
-												<?=$this->form->text('email', array('label' => 'Email Address')); ?>
+												<center><?=$this->form->text('email', array('label' => 'Email Address')); ?></center>
 												<br><br>
-												<?=$this->form->submit('Reset Password', array('class'=>"reset-pw-btn"));?>
+												<center><?=$this->form->submit('Reset Password', array('class'=>"reset-pw-btn"));?></center>
 											<?=$this->form->end(); ?>
 									</div>
 									<div class="bl"></div>
@@ -85,11 +83,12 @@ $image = $images[array_rand($images)];
 									<div class="tl"></div>
 									<div class="tr"></div>
 									<div class="r-box lt-gradient-1">
-										<h2>Become a Member</h2>
+										<h3>Please enter your email and further instructions will be provided.</h3>
+										<br><br>
+										<?php if (!empty($message)): ?>
+											<div id='message' class="cart-message"><?=$message;?></div>
+										<?php endif ?>
 										
-										<p>Become a member today for access to brand-specific sales, up to 70% off retail, just for you and the kids, ages 0-7. Prenatal care products, baby gear, travel accessories, bedding and bath, children's clothing, toys, and educational materials &mdash; and that's just the start.</p>
-										
-										<?=$this->html->link('Request Membership','/register', array('class'=>"request-mem-btn")); ?>
 									</div>
 									<div class="bl"></div>
 									<div class="br"></div>

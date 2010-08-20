@@ -28,7 +28,7 @@ class Invitation extends \lithium\data\Model {
 		return static::_object()->save($invitation);
 	}
 
-	public function reject($winner, $email) {
+	public static function reject($winner, $email) {
 		return static::collection()->update(array(
 			'email' => $email, 
 			'$ne' => $winner), 
