@@ -756,6 +756,8 @@ label.required {display:block;width:120px;float:left;line-height:30px;font-weigh
 
 .register_button{display:block;width:76px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -72px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0}
 
+.register_button_grn{display:block;width:76px;height:26px;background:url(../img/btn-sprite-grn.png) no-repeat 0 -72px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0}
+
 .buy-now{width:100px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -108px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
 
 .reset-pw-btn{width:126px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -373px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
@@ -777,3 +779,22 @@ label.required {display:block;width:120px;float:left;line-height:30px;font-weigh
 .invite-splash-btn{width:134px;height:33px;background:url(../img/btn-sprite.png) no-repeat 0 -337px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
 
 .hasCountdown{font-weight:bold}
+
+
+.our365-login .tt{background:url(../img/our365/our365-login-corners.png) no-repeat 100% 0;height:25px;margin:0 0 0 25px}
+.our365-login .tt div{background:url(../img/our365/our365-login-corners.png) no-repeat 0 0;font-size:0;height:25px;line-height:0;width:25px;position:relative;left:-25px}
+
+.our365-login .tb{background:url(../img/our365/our365-login-corners.png) no-repeat 100% 100%;height:25px;margin:0 0 0 25px}
+.our365-login .tb div{background:url(../img/our365/our365-login-corners.png) no-repeat 0 100%;font-size:0;height:25px;line-height:0;width:25px;position:relative;left:-25px}
+
+.our365-login .tc{background:url(../img/our365/our365-login-bg.png) no-repeat right bottom #FFF;display:block;padding:0 10px 25px 10px}
+
+.our365-login .our365-promo{margin:0 0 10px 0}
+.our365-login .our365-promo .lt-gradient-1{background:url(../img/our365/baby.png) no-repeat;height:159px}
+.our365-login .our365-promo .r-box{padding:0;position:relative}
+.our365-login .our365-promo .promo-copy{position:absolute;top:26px;left:20px;font-size:14px;color:#666666;width:425px}
+.our365-register-container{padding:0 0 0 15px}
+.our365-login .t-and-c{padding:30px 0 0 0}
+.our365-login .t-and-c .reg-tos{width:300px}
+h1#our365-logo{background:url(../img/our365/our365-totsy-logos.png) no-repeat;width:276px;height:83px;text-indent:-9999px;float:left;margin:0 20px 15px 0}
+body.login .our365-login #intro-copy{width:310px;font-size:16px;padding:15px 0 0 0}
