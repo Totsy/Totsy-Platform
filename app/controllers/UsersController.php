@@ -127,7 +127,11 @@ class UsersController extends BaseController {
 				if ($auth) {
 					$ipaddress = $this->request->env('REMOTE_ADDR');
 					User::log($ipaddress);
-					$this->redirect('/');
+					if ($this->request->url != 'login' && $this->request->url) {
+						$this->redirect($this->request->url);
+					} else {
+						$this->redirect('/');
+					}
 				} else {
 					$message = 'Login Failed - Please Try Again';
 				}
@@ -210,9 +214,9 @@ class UsersController extends BaseController {
 			)));
 			if ($user) {
 				$token = $this->generateToken();
-				$hash = sha1($token);
-				$data = array('reset_token' => $hash, 'legacy' => 0);
-				if ($user->save($data)) {
+				$user->reset_token = sha1($token);
+				$user->legacy = 0;
+				if ($user->save(null, array('validate' => false))) {
 					Mailer::send(
 						'password',
 						'Totsy Password Reset',
