@@ -39,7 +39,7 @@
 							<div class="our365-register-container">
 								<?=$this->form->create($user ,array('id'=>'registerForm')); ?>
 
-									<div class="form-row fl">
+									<div class="form-row fl form-50-row">
 										<?=$this->form->label('firstname', 'First Name <span>*</span>', array(
 											'escape' => false,
 											'class' => 'required'
@@ -48,7 +48,7 @@
 										<?=$this->form->text('firstname', array('class' => 'inputbox')); ?>
 										<?=$this->form->error('firstname'); ?>
 									</div>
-									<div class="form-row fl">
+									<div class="form-row fl form-50-row">
 										<?=$this->form->label('lastname', 'Last Name <span>*</span>', array(
 											'escape' => false,
 											'class' => 'required'
@@ -57,7 +57,7 @@
 										<?=$this->form->text('lastname', array('class' => 'inputbox')); ?>
 										<?=$this->form->error('lastname'); ?>
 									</div>
-									<div class="form-row fl">
+									<div class="form-row fl form-50-row">
 										<?=$this->form->label('email', 'Email <span>*</span>', array(
 											'escape' => false,
 											'class' => 'required'
@@ -66,7 +66,7 @@
 										<?=$this->form->text('email', array('class' => 'inputbox')); ?> 
 										<?=$this->form->error('email'); ?>
 									</div>
-									<div class="form-row fl">
+									<div class="form-row fl form-50-row">
 										<?=$this->form->label('confirmemail', 'Confirm Email <span>*</span>', array(
 											'escape' => false,
 											'class' => 'required'

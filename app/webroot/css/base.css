@@ -789,6 +789,8 @@ label.required {display:block;width:120px;float:left;line-height:30px;font-weigh
 
 .our365-login .tc{background:url(../img/our365/our365-login-bg.png) no-repeat right bottom #FFF;display:block;padding:0 10px 25px 10px}
 
+.our365-login .form-50-row{width:50%}
+
 .our365-login .our365-promo{margin:0 0 10px 0}
 .our365-login .our365-promo .lt-gradient-1{background:url(../img/our365/baby.png) no-repeat;height:159px}
 .our365-login .our365-promo .r-box{padding:0;position:relative}
