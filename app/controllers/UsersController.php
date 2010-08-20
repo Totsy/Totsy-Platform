@@ -19,7 +19,7 @@ class UsersController extends BaseController {
 	 * @return string User will be promoted that email is already registered.
 	 */
 	public function register($invite_code = null) {
-		if ($invite_code == 'our365') {
+		if ($invite_code == 'our365' || $invite_code == 'our365widget' ) {
 			$this->_render['template'] = 'our365';
 		}
 		$message = false;
