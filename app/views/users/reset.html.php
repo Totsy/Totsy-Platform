@@ -56,42 +56,36 @@ $image = $images[array_rand($images)];
 								<p class="red">You have places to be, things to do, and little ones in tow.</p>
 								<p>At Totsy, moms on the go and moms to be experience the shopping they desire at prices they can't resist.</p>
 							</div>
-			
+							<?php if ($success == false): ?>
 							<div class="sign-in-container">
 								<div id="sign-in-box" class="r-container">
 									<div class="tl"></div>
 									<div class="tr"></div>
 									<div class="r-box lt-gradient-1">
-
+										
+											<h3>Please enter your email and further instructions will be provided.</h3>
 											<?=$this->form->create(null, array('id'=>'loginForm')); ?>
-													<center><h2>Password Reset</h2></center>
-													
-													
-												<br><br>
-												<center><?=$this->form->text('email', array('label' => 'Email Address')); ?></center>
-												<br><br>
-												<center><?=$this->form->submit('Reset Password', array('class'=>"reset-pw-btn"));?></center>
+												<center>
+													<br><br>
+													<?=$this->form->text('email', array('label' => 'Email Address')); ?>
+													<br><br>
+													<?=$this->form->submit('Reset Password',array(
+													'class'=>"reset-pw-btn"
+													));?>
+												</center>
 											<?=$this->form->end(); ?>
-									</div>
-									<div class="bl"></div>
-									<div class="br"></div>
-								</div>
-							</div>				
-			
-							<div class="register-container">
-								<div id="register-box" class="r-container">
-									<div class="tl"></div>
-									<div class="tr"></div>
-									<div class="r-box lt-gradient-1">
-										<h3>Please enter your email and further instructions will be provided.</h3>
-										<br><br>
-										<?php if (!empty($message)): ?>
-											<div id='message' class="cart-message"><?=$message;?></div>
-										<?php endif ?>
 										
 									</div>
 									<div class="bl"></div>
 									<div class="br"></div>
+								</div>
+							</div>	
+							<?php endif ?>
+							<div class="register-container">
+								<div id="register-box" class="r-container">
+									<?php if (!empty($message)): ?>
+										<div id='message' class="cart-message"><?=$message;?></div>
+									<?php endif ?>
 								</div>
 							</div>
 							

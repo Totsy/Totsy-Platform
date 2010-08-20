@@ -185,7 +185,7 @@ class UsersController extends BaseController {
 				$status = (sha1($oldPass) == $user->password) ? 'true' : 'false';
 			}
 			if (!empty($user->reset_token)) {
-				$status = ($user->reset_token == sha1($oldPass)) ? 'true' : 'false';
+				$status = ($user->reset_token == sha1($oldPass) || $user->password == sha1($oldPass)) ? 'true' : 'false';
 			}
 			if ($status == 'true') {
 				$user->password = sha1($newPass);
@@ -207,6 +207,7 @@ class UsersController extends BaseController {
 
 	public function reset() {
 		$this->_render['layout'] = 'login';
+		$success = false;
 		if ($this->request->data) {
 			$user = User::find('first', array(
 				'conditions' => array(
@@ -224,6 +225,7 @@ class UsersController extends BaseController {
 						compact('token', 'user')
 					);
 					$message = "Your password has been reset. Please check your email.";
+					$success = true;
 				} else {
 					$message = "Sorry your password has not been reset. Please try again.";
 				}
@@ -231,7 +233,7 @@ class UsersController extends BaseController {
 				$message = "This email doesn't exist.";
 			}
 		}
-		return compact("message");
+		return compact('message', 'success');
 	}
 
 	protected function generateToken() {
