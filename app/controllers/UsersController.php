@@ -31,7 +31,7 @@ class UsersController extends BaseController {
 		$user = User::create($data);
 		if ($this->request->data && $user->validates() ) {
 			$email = $this->request->data['email'];
-			$this->request->data['password'] = sha1($this->request->data['password']);
+			$data['password'] = sha1($this->request->data['password']);
 			$data['created_date'] = User::dates('now');
 			$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
 			$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));

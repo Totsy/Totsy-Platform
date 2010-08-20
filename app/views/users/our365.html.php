@@ -46,7 +46,6 @@
 											));
 										?>
 										<?=$this->form->text('firstname', array('class' => 'inputbox')); ?>
-										<?=$this->form->error('firstname'); ?>
 									</div>
 									<div class="form-row fl form-50-row">
 										<?=$this->form->label('lastname', 'Last Name <span>*</span>', array(
@@ -55,7 +54,6 @@
 											));
 										?>
 										<?=$this->form->text('lastname', array('class' => 'inputbox')); ?>
-										<?=$this->form->error('lastname'); ?>
 									</div>
 									<div class="form-row fl form-50-row">
 										<?=$this->form->label('email', 'Email <span>*</span>', array(
@@ -64,7 +62,6 @@
 											)); 
 										?>
 										<?=$this->form->text('email', array('class' => 'inputbox')); ?> 
-										<?=$this->form->error('email'); ?>
 									</div>
 									<div class="form-row fl form-50-row">
 										<?=$this->form->label('confirmemail', 'Confirm Email <span>*</span>', array(
@@ -73,8 +70,6 @@
 											));
 										?>
 										<?=$this->form->text('confirmemail', array('class' => 'inputbox')); ?>
-										<?=$this->form->error('confirmemail'); ?>
-										<?=$this->form->error('emailcheck'); ?>
 									</div>
 
 									<div class="form-row clear">
@@ -88,6 +83,11 @@
 											'name' => 'password', 
 											'id' => 'password'));
 									?>
+									<?=$this->form->error('firstname'); ?>
+									<?=$this->form->error('lastname'); ?>
+									<?=$this->form->error('email'); ?>
+									<?=$this->form->error('confirmemail'); ?>
+									<?=$this->form->error('emailcheck'); ?>
 									<?=$this->form->error('password'); ?>
 									</div>
 									<div class="form-row t-and-c">
