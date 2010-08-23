@@ -69,7 +69,7 @@ class EventsController extends BaseController {
 			//Remove this when $_schema is setup
 			unset($eventData['itemTable_length']);
 			if ($event->save($eventData)) {	
-				$this->redirect(array('Events::view', 'args' => array($event->_id)));
+				$this->redirect(array('Events::edit', 'args' => array($event->_id)));
 			}
 		}
 
@@ -80,23 +80,21 @@ class EventsController extends BaseController {
 		$event = Event::find($_id);
 		$seconds = ':'.rand(10,60);
 		$eventItems = Item::find('all', array('conditions' => array('event' => array($_id))));
+
 		if (empty($event)) {
 			$this->redirect(array('controller' => 'events', 'action' => 'add'));
 		}
-
 		if (!empty($this->request->data)) {
 			unset($this->request->data['itemTable_length']);
 			if ($_FILES['upload_file']['error'] == 0) {
 				$items = $this->parseItems($_FILES, $event->_id);
 				unset($this->request->data['upload_file']);
-			} else {
 				if (!empty($eventItems)) {
 					foreach ($eventItems as $item) {
 						$items[] = (string) $item->_id;
 					}
 				}
 			}
-			
 			$images = $this->parseImages($event->images);
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
@@ -107,7 +105,6 @@ class EventsController extends BaseController {
 				compact('images'),
 				array('url' => $url)
 			);
-
 			if ($event->save($eventData)) {
 				
 				$this->redirect(array(
@@ -163,14 +160,13 @@ class EventsController extends BaseController {
 				while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 					
 					// Count the total keys in the row.
-					$c = count($data);
-					
+					$c = count($data) - 1;
 					// Capture the key row
-					for ($y = 0; $y < $c ; $y++) { 
-						$key[] = $data[$y];
+					for ($y = 0; $y < $c ; $y++) {
+						if (strlen($data[$y]) > 0) {
+							$key[] = $data[$y];
+						}
 					}
-
-					// Remove the first heading
 					// Populate the multidimensional array.
 					for ($x = 0; $x < $c ; $x++) {
 						$eventItems[$nn][$key[$x]] = $data[$x];
@@ -180,9 +176,10 @@ class EventsController extends BaseController {
 				// Close the File.
 				fclose($handle);
 			}
+
 			// Remove the heading array
 			unset($eventItems[0]);
-			
+
 			// Add items to db and get _ids
 			foreach ($eventItems as $itemDetail) {
 				unset($itemDetail['NULL']);
