@@ -88,7 +88,7 @@ class EventsController extends BaseController {
 			unset($this->request->data['itemTable_length']);
 			if ($_FILES['upload_file']['error'] == 0) {
 				//THIS IS A HACK!!
-				$success = $this->parseItems($_FILES, $event->_id);
+				$success = $this->parseItems($_FILES, $event->_id, $this->request->data['enable_items']);
 				unset($this->request->data['upload_file']);
 				$eventItems = Item::find('all', array('conditions' => array('event' => array($_id))));
 				if (!empty($eventItems)) {
@@ -130,7 +130,7 @@ class EventsController extends BaseController {
 	/**
 	 * Parse the CSV file
 	 */
-	protected function parseItems($_FILES, $_id) {
+	protected function parseItems($_FILES, $_id, $enabled) {
 		$items = array();
 		$itemIds = array();
 		// Default column headers from csv file
@@ -198,14 +198,13 @@ class EventsController extends BaseController {
 				
 				// Add some more information to array
 				$details = array(
-					'enabled' => true, 
+					'enabled' => (bool) $enabled,
 					'created_date' => $date, 
 					'details' => $itemAttributes, 
 					'event' => array($_id),
 					'url' => $url
 				);
 				$newItem = array_merge(Item::castData($itemDetail), Item::castData($details));
-
 				if ($item->save($newItem)) {
 					$items[] = (string) $item->_id;
 				}

@@ -234,8 +234,14 @@ tinyMCE.init({
 	<div id="event_items">
 		<h1 id="">Item Management</h1>
 		<br>
+		<h2 id="">Delete Items</h2>
+			<p>Click the button below to delete all items from this event. If you want to delete one item at a time please remove items from their management screen.</p>
+		<br>
 		<h2 id="">Upload Items</h2>
 		<br>
+		<p>Please select the default option for all items being uploaded:</p>
+			<input type="radio" name="enable_items" value="1" id="enable_items"> Enable All <br>
+			<input type="radio" name="enable_items" value="0" id="enable_items" checked> Disable All <br><br>
 			<?=$this->form->label('Upload Event CSV: '); ?>
 			<?=$this->form->file('upload_file'); ?>
 		<br><br>
