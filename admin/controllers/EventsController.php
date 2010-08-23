@@ -87,8 +87,10 @@ class EventsController extends BaseController {
 		if (!empty($this->request->data)) {
 			unset($this->request->data['itemTable_length']);
 			if ($_FILES['upload_file']['error'] == 0) {
-				$items = $this->parseItems($_FILES, $event->_id);
+				//THIS IS A HACK!!
+				$success = $this->parseItems($_FILES, $event->_id);
 				unset($this->request->data['upload_file']);
+				$eventItems = Item::find('all', array('conditions' => array('event' => array($_id))));
 				if (!empty($eventItems)) {
 					foreach ($eventItems as $item) {
 						$items[] = (string) $item->_id;
