@@ -30,7 +30,7 @@
 									<ul class="bugs columns-2">
 										<li>Exclusive sales for moms, children &amp; babies.</li>
 										<li>Sales last up to 3 days, plenty of time to shop.</li>
-										<li>Savings of up to 70% off retail.</li>
+										<li>Savings of up to 80% off retail.</li>
 										<li>For every purchase, one tree is planted.</li>
 										<li>Membership is free</li>
 										<li>We are 100% green.</li>
