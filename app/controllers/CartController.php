@@ -37,7 +37,8 @@ class CartController extends BaseController {
 					'url',
 					'category',
 					'product_weight',
-					'event'
+					'event',
+					'vendor_style'
 			)));
 
 			//Check if this item has already been added to cart
