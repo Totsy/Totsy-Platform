@@ -32,7 +32,6 @@
 					<div id='address'>
 						<?=$address->address?><br><?=$address->address_2?><br>
 						<?=$address->city?>, <?=$address->state?>, <?=$address->zip?><br>
-						<?=$address->country?><br>
 						<?=$this->html->link('Edit', "addresses/edit/$address->_id"); ?>
 					</div>
 				</td>

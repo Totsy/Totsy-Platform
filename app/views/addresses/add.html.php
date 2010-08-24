@@ -7,9 +7,9 @@
 <?php endif ?>
 
 
-<div class="tl"></div> 
-<div class="tr"></div> 
-<div id="page"> 
+<div class="tl"></div>
+<div class="tr"></div>
+<div id="page">
 <p>
 	<?php if ($message): ?>
 		<div class="standard-message"><?=$message; ?></div>
@@ -36,47 +36,47 @@
 				<?=$this->form->text('description', array('class' => 'inputbox')); ?>
 				<?=$this->form->error('description'); ?>
 			</div>
-			<div class="form-row"> 
+			<div class="form-row">
 				<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('firstname', array('class' => 'inputbox')); ?> 
+				<?=$this->form->text('firstname', array('class' => 'inputbox')); ?>
 				<?=$this->form->error('firstname'); ?>
-			</div> 
-			
-			<div class="form-row"> 
+			</div>
+
+			<div class="form-row">
 				<?=$this->form->label('lastname', 'Last Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('lastname', array('class' => 'inputbox')); ?>
 				<?=$this->form->error('lastname'); ?>
-			</div> 
-			
-			<div class="form-row"> 
+			</div>
+
+			<div class="form-row">
 				<?=$this->form->label('telephone', 'Telephone', array('escape' => false,'class' => 'addresses')); ?>
 				<?=$this->form->text('telephone', array('class' => 'inputbox', 'id' => 'phone')); ?>
-			</div> 
-			
-			<div class="form-row"> 
+			</div>
+
+			<div class="form-row">
 				<?=$this->form->label('address', 'Street Address <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('address', array('class' => 'inputbox')); ?>
 				<?=$this->form->error('address'); ?>
-			</div> 
-			
-			<div class="form-row"> 
+			</div>
+
+			<div class="form-row">
 				<?=$this->form->label('address_2', 'Street Address 2', array('escape' => false,'class' => 'addresses')); ?>
 				<?=$this->form->text('address_2', array('class' => 'inputbox')); ?>
-			</div> 
-			
-			<div class="form-row"> 
+			</div>
+
+			<div class="form-row">
 				<?=$this->form->label('city', 'City <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('city', array('class' => 'inputbox')); ?>
 				<?=$this->form->error('city'); ?>
-			</div> 
-			
-			<div class="form-row"> 
+			</div>
+
+			<div class="form-row">
 				<label for="state" class='required'>State <span>*</span></label>
 				<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state')); ?>
 				<?=$this->form->error('state'); ?>
 			</div>
-			
-			<div class="form-row"> 
+
+			<div class="form-row">
 				<?=$this->form->label('zip', 'Zip/Postal Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('zip', array('class' => 'inputbox')); ?>
 			</div> 
@@ -99,5 +99,5 @@ jQuery(function($){
    $("#ssn").mask("999-99-9999");
 });
 </script>
-<div class="bl"></div> 
-<div class="br"></div> 
+<div class="bl"></div>
+<div class="br"></div>

@@ -15,19 +15,18 @@ class Event extends \lithium\data\Model {
 	public static function dates($name) { 
 	     return new MongoDate(time() + static::_object()->_dates[$name]); 
 	}
+
 	/**
 	 * Query for all the events within the next 24 hours
 	 */
 	public static function open($params = null, array $options = array()) {
 		$fields = $params['fields'];
-		return Event::all(array(
+		return Event::all(compact('fields') + array(
 			'conditions' => array(
 				'enabled' => true,
-				'start_date' => array(
-					'$lte' => static::dates('now')),
-				'end_date' => array(
-					'$gt' => static::dates('now'))),
-			'fields' => $fields,
+				'start_date' => array('$lte' => static::dates('now')),
+				'end_date' => array('$gt' => static::dates('now'))
+			),
 			'order' => array('start_date' => 'DESC')
 		));
 	}

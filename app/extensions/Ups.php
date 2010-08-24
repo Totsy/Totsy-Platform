@@ -170,7 +170,7 @@ class Ups {
 		);
 		$url = $endpoint . http_build_query($query);
 
-		if ($fp = fopen($url, "r") === false) {
+		if (($fp = fopen($url, "r") === false) || !$fp) {
 			return null;
 		}
 
