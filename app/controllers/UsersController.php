@@ -35,6 +35,7 @@ class UsersController extends BaseController {
 			$data['password'] = sha1($this->request->data['password']);
 			$data['created_date'] = User::dates('now');
 			$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
+			$data['invited_by'] = $invite_code;
 			$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));
 			if ($inviteCheck > 0) {
 				$data['invitation_codes'] = array($this->randomString());
@@ -45,7 +46,6 @@ class UsersController extends BaseController {
 						'invitation_codes' => array($invite_code)
 				)));
 				if ($inviter) {
-					$data['invited_by'] = $invite_code;
 					$invited = Invitation::find('first', array(
 						'conditions' => array(
 							'user_id' => (string) $inviter->_id,
