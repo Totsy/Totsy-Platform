@@ -14,8 +14,8 @@ use app\extensions\Mailer;
 class UsersController extends BaseController {
 
 	/**
-	 * Performs basic registration functionality. All validation checks should happen via
-	 * JavaScript so no empty data is going into Mongo.
+	 * Performs basic registration functionality.
+	 *
 	 * @return string User will be promoted that email is already registered.
 	 */
 	public function register($invite_code = null) {
@@ -35,6 +35,7 @@ class UsersController extends BaseController {
 			$data['password'] = sha1($this->request->data['password']);
 			$data['created_date'] = User::dates('now');
 			$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
+			$data['invited_by'] = $invite_code;
 			$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));
 			if ($inviteCheck > 0) {
 				$data['invitation_codes'] = array($this->randomString());

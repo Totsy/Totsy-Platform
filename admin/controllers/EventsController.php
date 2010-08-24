@@ -130,7 +130,7 @@ class EventsController extends BaseController {
 	/**
 	 * Parse the CSV file
 	 */
-	protected function parseItems($_FILES, $_id, $enabled) {
+	protected function parseItems($_FILES, $_id, $enabled = false) {
 		$items = array();
 		$itemIds = array();
 		// Default column headers from csv file

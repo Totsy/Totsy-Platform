@@ -40,6 +40,9 @@ class EventsController extends BaseController {
 			return array('event' => null, 'items' => array(), 'shareurl');
 		}
 		
+		if ($event->end_date->sec < time()) {
+			$this->redirect('/');
+		}
 		$pending = ($event->start_date->sec > time() ? true : false);
 		
 		if ($pending == false) {

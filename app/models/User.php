@@ -119,7 +119,7 @@ class User extends \lithium\data\Model {
 				'_id' => $user_id
 		)));
 		$user->total_credit = $user->total_credit + $credit;
-		return $user->save();
+		return $user->save(null,array('validate' => false));
 	}
 
 }

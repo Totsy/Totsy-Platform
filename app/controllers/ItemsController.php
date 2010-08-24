@@ -33,10 +33,15 @@ class ItemsController extends BaseController {
 						'items' => array((string) $item->_id),
 						'enabled' => true
 				)));
-				$related = $item->related();
-				$sizes = $item->sizes();
-				$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+				if ($event->end_date->sec < time()) {
+					$this->redirect('/');
+				} else {
+					$related = $item->related();
+					$sizes = $item->sizes();
+					$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+				}
 			}
+
 		}
 
 		return compact('item', 'event', 'related', 'sizes', 'shareurl', 'reserved');
