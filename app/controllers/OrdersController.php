@@ -152,8 +152,8 @@ class OrdersController extends BaseController {
 
 		if (isset($this->request->data['credit_amount'])) {
 			$credit = number_format((float)$this->request->data['credit_amount'], 2);
-			$lower = -0.999999;
-			$upper = (!empty($userDoc->total_credit)) ? $userDoc->total_credit : 0;
+			$lower = -0.999;
+			$upper = (!empty($userDoc->total_credit)) ? $userDoc->total_credit + 0.01 : 0;
 			$inRange = Validator::isInRange($credit, null, compact('lower', 'upper'));
 			$isMoney = Validator::isMoney($credit);
 			if (!$isMoney) {
