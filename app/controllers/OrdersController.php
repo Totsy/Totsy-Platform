@@ -146,7 +146,7 @@ class OrdersController extends BaseController {
 		$map = function($item) { return $item->sale_retail * $item->quantity; };
 		$subTotal = array_sum($cart->map($map)->data());
 
-		$userDoc = User::find('first', array('condition' => array('_id' => $user['_id'])));
+		$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
 
 		$orderCredit = Credit::create();
 
@@ -165,7 +165,7 @@ class OrdersController extends BaseController {
 			if (!$inRange) {
 				$orderCredit->errors(
 					$orderCredit->errors() + array(
-						'amount' => "Please apply credits that are greater than $0 and less than $ $userDoc->total_credit"
+						'amount' => "Please apply credits that are greater than $0 and less than $$userDoc->total_credit"
 					));
 			}
 			$isValid = ($subTotal >= $credit) ? true : false;
