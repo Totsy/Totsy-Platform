@@ -112,35 +112,47 @@
 				</tbody>
 			</table>
 	<?php endif ?>
-	<?php $total = $subTotal + $tax + $shippingCost; ?>
+	<?php $total = ($subTotal + $orderCredit->credit_amount) + $tax + $shippingCost; ?>
+
 	<ol id="checkout-process">
 	<!-- End Order Details -->
 		<li id="order-summary" class="step">
 			<table class="order-status" width="100%">
 				<tr>
-					<td style="padding:5px;text-align:right">
-						<strong>Order Subtotal:</strong> 
-						<br>
-						<strong>Shipping:</strong>
-						<br>
-						<strong>Sales Tax:</strong>
-						<br><br><br>
-						<strong class="caps">Total:</strong>
-					</td>
-					<td style="align:right">
-						$<?=number_format((float) $subTotal, 2);?>
-						<br>
-						$<?=number_format((float) $shippingCost, 2);?>
-						<br>
-						$<?=number_format((float) $tax, 2);?>
-						<br><br><br>
-						$<?=number_format((float) $total, 2);?>
-					</td>
+					<td style="text-align:right"><strong>Order Subtotal:</strong> </td>
+					<td style="text-align:center">$<?=number_format((float) $subTotal, 2);?></td>
+				</tr>
+				<tr>
+					<td style="text-align:right"><strong>Shipping:</strong> </td>
+					<td style="text-align:center">$<?=number_format((float) $shippingCost, 2);?></td>
+				</tr>
+				<tr>
+					<td style="text-align:right"><strong>Sales Tax:</strong> </td>
+					<td style="text-align:center">$<?=number_format((float) $tax, 2);?></td>
+				</tr>
+				<tr>
+					<?php if ($credit): ?>
+						<?php $orderCredit->credit_amount = abs($orderCredit->credit_amount); ?>
+						<?=$this->form->create($orderCredit); ?>
+						<div class="form-row">
+						<?=$this->form->error('amount'); ?>
+						</div>
+							<td style="text-align:right"><strong>Credit:</strong> </td>
+							<td style="text-align:center">-$<?=number_format((float) $orderCredit->credit_amount, 2);?></td>
+							<td style="text-align:center">
+								$<?=$this->form->text('credit_amount', array('size' => 4, 'maxlength' => '6')); ?>
+								<?=$this->form->submit('Apply Credit'); ?>
+							</td>
+						<?=$this->form->end(); ?>
+					<?php endif ?>
+				</tr>
+				<tr>
+					<td style="text-align:right"><strong>Total:</strong> </td>
+					<td style="text-align:center">$<?=number_format((float) $total, 2);?></td>
 				</tr>
 			</table>
 		</li>
-		<?=$this->form->create(); ?>
-
+<?=$this->form->create(); ?>
 	<!-- Start Payment Information -->    
 	<li id="opc-payment" class="step">
 		<div id="checkout-process-payment">
@@ -247,6 +259,7 @@
 				&nbsp;&nbsp;
 				<span class="red">*</span> Required Fields
 			</li>
+			<?=$this->form->hidden('credit_amount', array('value' => $orderCredit->amount)); ?>
 			<?=$this->form->end(); ?>
 	</ol>
 	

@@ -33,7 +33,8 @@ class Order extends \lithium\data\Model {
 		);
 	}
 
-	public function process($order, $user, $data, $cart) {
+	public function process($order, $user, $data, $cart, $orderCredit) {
+
 		foreach (array('billing', 'shipping') as $key) {
 			$addr = $data[$key];
 			${$key} = is_array($addr) ? Address::create($addr) : Address::first($addr);
@@ -69,6 +70,9 @@ class Order extends \lithium\data\Model {
 		// 	return false;
 		// }
 
+		if ($orderCredit->credit_amount < 0) {
+			$subTotal = $subTotal + $orderCredit->credit_amount;
+		}
 		$tax = $tax ? $tax + ($handling * Cart::TAX_RATE) : 0;
 		$total = $subTotal + $tax + $handling;
 		$cart = $cart->data();
