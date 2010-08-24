@@ -25,7 +25,8 @@ class BaseController extends \lithium\action\Controller
 				'fields' => array('total_credit')
 			));
 			if ($user) {
-				$credit = ($user->total_credit > 0) ? number_format($user->total_credit, 0) : 0;
+				$decimal = ($user->total_credit < 1) ? 2 : 0;
+				$credit = ($user->total_credit > 0) ? number_format($user->total_credit, $decimal) : 0;
 			}
 		}
 		$this->set(compact('cartCount', 'credit'));

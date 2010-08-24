@@ -193,7 +193,6 @@ class OrdersController extends BaseController {
 				User::applyCredit($user['_id'], $orderCredit->credit_amount);
 				Credit::add($orderCredit, $user['_id'], $orderCredit->credit_amount, "Used Credit");
 				$order->credit_used = $orderCredit->credit_amount;
-				//$order->credit_id = $credit->_id;
 			}
 			$order->save();
 			Cart::remove(array('session' => Session::key()));

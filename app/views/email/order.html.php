@@ -198,7 +198,7 @@
 										<td style="padding:20px" valign="top">
 											Order Subtotal:
 											<br>
-											<?php if ($order->credit_amount): ?>
+											<?php if ($order->credit_used): ?>
 											Credit Applied:
 												<br>
 											<?php endif ?>
