@@ -182,16 +182,18 @@ class OrdersController extends BaseController {
 
 		$vars = compact(
 			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
-			'tax', 'shippingCost', 'billingAddr', 'shippingAddr', 'orderCredit'
+			'tax', 'shippingCost', 'billingAddr', 'shippingAddr', 'orderCredit', 'userDoc'
 		);
 
 		if (($cart->data()) && (count($this->request->data) > 1) && $order->process($user, $data, $cart, $orderCredit)) {
 			$orderId = strtoupper(substr((string)$order->_id, 0, 8));
 			$order->order_id = $orderId;
-			if ($orderCredit->credit_amount < 0) {
-				$order->credit_used = $orderCredit->credit_amount;
+
+			if ($orderCredit->credit_amount) {
 				User::applyCredit($user['_id'], $orderCredit->credit_amount);
 				Credit::add($orderCredit, $user['_id'], $orderCredit->credit_amount, "Used Credit");
+				$order->credit_used = $orderCredit->credit_amount;
+				//$order->credit_id = $credit->_id;
 			}
 			$order->save();
 			Cart::remove(array('session' => Session::key()));

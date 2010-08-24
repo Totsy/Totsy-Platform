@@ -70,11 +70,13 @@ class Order extends \lithium\data\Model {
 		// 	return false;
 		// }
 
-		if ($orderCredit->credit_amount < 0) {
-			$subTotal = $subTotal + $orderCredit->credit_amount;
-		}
 		$tax = $tax ? $tax + ($handling * Cart::TAX_RATE) : 0;
-		$total = $subTotal + $tax + $handling;
+		if ($orderCredit->credit_amount) {
+			$total = ($subTotal + $orderCredit->credit_amount) + $tax + $handling;
+		} else {
+			$total = $subTotal + $tax + $handling;
+		}
+
 		$cart = $cart->data();
 		if ($cart) {
 			$inc = 0;

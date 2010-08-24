@@ -199,7 +199,7 @@
 											Order Subtotal:
 											<br>
 											<?php if ($order->credit_amount): ?>
-											Credit:
+											Credit Applied:
 												<br>
 											<?php endif ?>
 											Sales Tax:
@@ -211,8 +211,8 @@
 										<td style="padding:20px;text-align:right" valign="top">
 											$<?=number_format($order->subTotal,2); ?>
 											<br>
-											<?php if ($order->credit_amount): ?>
-												-$<?=number_format(abs($order->tax),2); ?>
+											<?php if ($order->credit_used): ?>
+												-$<?=number_format(abs($order->credit_used),2); ?>
 												<br>
 											<?php endif ?>
 											$<?=number_format($order->tax,2); ?>

@@ -140,6 +140,7 @@
 							<td style="text-align:right"><strong>Credit:</strong> </td>
 							<td style="text-align:center">-$<?=number_format((float) $orderCredit->credit_amount, 2);?></td>
 							<td style="text-align:center">
+								<p> You have $<?=$userDoc->total_credit;?> in credits</p>
 								$<?=$this->form->text('credit_amount', array('size' => 4, 'maxlength' => '6')); ?>
 								<?=$this->form->submit('Apply Credit'); ?>
 							</td>
