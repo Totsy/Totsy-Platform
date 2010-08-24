@@ -259,7 +259,7 @@
 				&nbsp;&nbsp;
 				<span class="red">*</span> Required Fields
 			</li>
-			<?=$this->form->hidden('credit_amount', array('value' => $orderCredit->amount)); ?>
+			<?=$this->form->hidden('credit_amount', array('value' => $orderCredit->credit_amount)); ?>
 			<?=$this->form->end(); ?>
 	</ol>
 	
