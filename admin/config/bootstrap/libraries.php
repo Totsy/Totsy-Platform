@@ -54,5 +54,6 @@ Libraries::add('admin', array('default' => true));
  * Add some plugins
  */
 //Libraries::add('li3_docs');
-
+require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel.php';
+require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel/IOFactory.php';
 ?>
