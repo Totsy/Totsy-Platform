@@ -100,17 +100,7 @@ $(document).ready(function() {
 	 
 		<h2>Site Issues</h2>
 		
-		<p><strong>Where did my credits go?</strong><br />
-		We are in the process of migrating all customer credit history to the new platform. Rest assured 
-		that if you have earned credits in the past, your credits are not lost. Your credits will be 
-		here within the next few days, and new credits are already functional so you won't miss out on 
-		any opportunities while we are migrating the data from our old site.</p>
-		
-		<p><strong>My order history is not there. either.</strong><br />
-		Like credits, order data is in the process of being massaged and imported to the new platform. 
-		This is expected to be up shortly.</p>
-		
-		<p><strong>How about invitations, did I lose my invitations from the old site?</strong><br />
+		<p><strong>Where are my old invitations, did I lose my invitations from the old site?</strong><br />
 		Your invitations are safely stored in the database, and we're working to hook the new platform 
 		up to them and should have that done along with order and credit information.</p>
 		
