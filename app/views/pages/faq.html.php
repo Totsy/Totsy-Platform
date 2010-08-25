@@ -100,13 +100,7 @@ $(document).ready(function() {
 	 
 		<h2>Site Issues</h2>
 		
-		<p><strong>Where did my credits go?</strong><br />
-		We've migrated your credits from the old system, and are now hooking them into checkout so you
-		can select how much you want to apply at the time of purchase. This should be available shortly, 
-		and new credits are already functional so you won't miss out on 
-		any opportunities while we finish up the migration from our old site.</p>
-		
-		<p><strong>How about invitations, did I lose my invitations from the old site?</strong><br />
+		<p><strong>Where are my old invitations, did I lose my invitations from the old site?</strong><br />
 		Your invitations are safely stored in the database, and we're working to hook the new platform 
 		up to them and should have that done along with order and credit information.</p>
 		
