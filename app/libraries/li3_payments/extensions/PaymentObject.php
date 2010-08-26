@@ -2,7 +2,7 @@
 
 namespace li3_payments\extensions;
 
-class PaymentObject extends \lithium\core\Object {
+abstract class PaymentObject extends \lithium\core\Object {
 
 	protected $_autoConfig = array('classes' => 'merge', 'connection');
 

@@ -24,7 +24,8 @@ Payments::config(array(
 		'test' => $dev,
 		'development' => $dev,
 		'local' => $dev
-	)
+	),
+	'test' => $dev
 ));
 
 ?>

@@ -10,6 +10,13 @@ class PaymentsTest extends \lithium\test\Unit {
 		$this->skipIf(!Payments::config('test'), 'No "test" payment configuration defined.');
 	}
 
+	protected $_classes = array(
+		'view' => 'lithium\template\View',
+		'service' => 'lithium\net\http\Service',
+		'response' => 'lithium\net\http\Response',
+		'payments' => 'li3_payments\extensions\Payments'
+	);
+
 	public function testProfileCrudAndPaymentOperations() {
 		$address = Payments::create('test', 'address', array(
 			'firstName' => 'John',
@@ -79,8 +86,11 @@ class PaymentsTest extends \lithium\test\Unit {
 
 		$transactionId = Payments::process('test', intval(rand(5, 10)), $customer);
 		$this->assertTrue(is_numeric($transactionId));
+		$this->assertTrue(is_object($customer));
 
-		$this->assertTrue($customer->delete());
+		if (is_object($customer)) {
+			$this->assertTrue($customer->delete());
+		}
 
 		$customer2 = Payments::profiles('test', $ids[1]);
 
@@ -97,8 +107,25 @@ class PaymentsTest extends \lithium\test\Unit {
 
 		$transactionId = Payments::process('test', intval(rand(5, 10)), $customer2);
 		$this->assertTrue(is_numeric($transactionId));
+		$this->assertTrue(is_object($customer2));
 
-		$this->assertTrue($customer2->delete());
+		if (is_object($customer2)) {
+			$this->assertTrue($customer2->delete());
+		}
+	}
+
+	public function testPreAuthCaptureTransaction() {
+		$amt = round((rand() % 2000) / 100, 2);
+
+		$transId = Payments::authorize('test', $amt, Payments::create('test', 'creditCard', array(
+			'number' => '4111111111111111',
+			'month' => 11,
+			'year' => 2023
+		)));
+		$this->assertTrue(is_numeric($transId));
+
+		$captured = Payments::capture('test', $transId, $amt);
+		$this->assertTrue(is_numeric($transId));
 	}
 }
 
