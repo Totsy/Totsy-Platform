@@ -62,8 +62,7 @@
 							<?=$items[0]['status']?>
 						</td>
 						<?php if (!empty($item['tracking_number'])): ?>
-							<td><a href=http://wwwapps.ups.com/WebTracking/processInputRequest?sort_by=3D=status&tracknums_displayed=3D1&TypeOfInquiryNumber=3DT&loc=3D=en_US&InquiryNumber1=<?=$item['tracking_number']; ?>&track.x=3D0&track.y==3D0>
-								<?=$item['tracking_number']; ?>
+							<td><?=$this->shipment->link($item['tracking_number'], array('type' => 'UPS'))?>
 								</a>
 							</td>
 						<?php else: ?>
