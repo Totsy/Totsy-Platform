@@ -9,6 +9,7 @@ use PHPExcel_IOFactory;
 use PHPExcel;
 use PHPExcel_Cell;
 use PHPExcel_Cell_DataType;
+use admin\extensions\Mailer;
 
 
 class OrdersController extends \lithium\action\Controller {
@@ -33,9 +34,11 @@ class OrdersController extends \lithium\action\Controller {
 		$_shipToHeaders = array(
 			'ShipDate',
 			'OrderNum',
+			'ShipMethod',
 			'Tracking #',
 			'Cost',
-			'SKU'
+			'SKU',
+			'Email'
 		);
 		if ($this->request->data) {
 			if ($_FILES['upload']['error'] == 0) {
@@ -82,12 +85,14 @@ class OrdersController extends \lithium\action\Controller {
 								$checkedItems[] = $orderItem;
 							}
 							$order->items = $checkedItems;
+							$order->ship_method = $shipRecord['ShipMethod'];
 						}
 						$details = array(
 							'Order' => $order->order_id,
 							'SKU' => $shipRecord['SKU'],
 							'First Name' => $order->shipping->firstname,
 							'Last Name' => $order->shipping->lastname,
+							'Ship Method' => $order->ship_method,
 							'Tracking Number' => $shipRecord['Tracking #']
 						);
 						if (empty($order->auth_confirmation)) {
@@ -95,8 +100,14 @@ class OrdersController extends \lithium\action\Controller {
 						} else {
 							$order->save();
 						}
-							$details['Confirmation Number'] = $order->auth_confirmation;
-							$updated[] = $details;
+						$details['Confirmation Number'] = $order->auth_confirmation;
+						$updated[] = $details;
+						Mailer::send(
+							'shipped',
+							"Totsy - Shipping Notification - $order->order_id",
+							array('name' => $order->firstname, 'email' => $shipRecord['Email']),
+							compact('order', 'details')
+						);
 					}
 				}
 			}
