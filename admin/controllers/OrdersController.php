@@ -81,21 +81,23 @@ class OrdersController extends \lithium\action\Controller {
 								}
 								$checkedItems[] = $orderItem;
 							}
+							$order->items = $checkedItems;
 						}
+						$details = array(
+							'Order' => $order->order_id,
+							'SKU' => $shipRecord['SKU'],
+							'First Name' => $order->shipping->firstname,
+							'Last Name' => $order->shipping->lastname,
+							'Tracking Number' => $shipRecord['Tracking #']
+						);
+						if (empty($order->auth_confirmation)) {
+							$order->process();
+						} else {
+							$order->save();
+						}
+							$details['Confirmation Number'] = $order->auth_confirmation;
+							$updated[] = $details;
 					}
-					$order->items = $checkedItems;
-					$updated[] = array(
-						'Order' => $order->order_id,
-						'SKU' => $shipRecord['SKU'],
-						'First Name' => $order->shipping->firstname,
-						'Last Name' => $order->shipping->lastname,
-						'Tracking Number' => $shipRecord['Tracking #']
-					);
-					//Capture Total Payment - This needs to change for partials
-					// if ($order->process()) {
-					// 	# code...
-					// }
-
 				}
 			}
 		}

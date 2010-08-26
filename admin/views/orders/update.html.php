@@ -30,6 +30,7 @@
 					<td><?=$order['First Name']?></td>
 					<td><?=$order['Last Name']?></td>
 					<td><?=$order['Tracking Number']?></td>
+					<td><?=$order['Confirmation Number']?></td>
 				</tr>
 			<?php endforeach ?>
 		</tbody>
