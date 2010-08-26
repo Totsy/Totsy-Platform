@@ -31,6 +31,18 @@ class Order extends \lithium\data\Model {
 		return $result;
 	}
 
+	public function process($order) {
+		try {
+			return $order->save(array(
+				'date_payment' => static::dates('now'),
+				'processKey' => Payments::capture('default', $order->total, $order->authKey)
+			));
+		} catch (TransactionException $e) {
+			$order->set($data);
+			$order->errors($order->errors() + array($e->getMessage()));
+		}
+	}
+
 }
 
 ?>
