@@ -13,6 +13,22 @@ use PHPExcel_Cell_DataType;
 
 class OrdersController extends \lithium\action\Controller {
 
+	public function index() {
+		if ($this->request->data) {
+
+		}
+
+		return compact('orders');
+	}
+
+	public function view() {
+		$order = null;
+		if ($this->request->data) {
+			$order =  Order::lookup($this->request->data['order_id']);
+		}
+		return compact('order');
+	}
+
 	public function update() {
 		$_shipToHeaders = array(
 			'ShipDate',
@@ -75,10 +91,11 @@ class OrdersController extends \lithium\action\Controller {
 						'Last Name' => $order->shipping->lastname,
 						'Tracking Number' => $shipRecord['Tracking #']
 					);
-					//TODO
-					//Save Order and build new array of orders that have been verified
-					//This is going to come in handy for admin when they want to view details
-					//Of an order
+					//Capture Total Payment - This needs to change for partials
+					// if ($order->process()) {
+					// 	# code...
+					// }
+
 				}
 			}
 		}
