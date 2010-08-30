@@ -25,7 +25,12 @@
 		<tbody>
 			<?php foreach ($updated as $order): ?>
 				<tr>
-					<td><?=$this->html->link($order['Order'], array('Orders::view', 'args' => $order['Order'])); ?></td>
+					<td>
+					<?=$this->html->link($order['Order'], array(
+						'Orders::view',
+						'args' => $order['Order']),
+						array('target' => '_blank')); ?>
+					</td>
 					<td><?=$order['SKU']?></td>
 					<td><?=$order['First Name']?></td>
 					<td><?=$order['Last Name']?></td>
