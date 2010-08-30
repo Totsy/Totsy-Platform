@@ -5,6 +5,7 @@ use admin\models\Order;
 use admin\models\User;
 use admin\models\Event;
 use admin\models\Item;
+use MongoDate;
 use PHPExcel_IOFactory;
 use PHPExcel;
 use PHPExcel_Cell;
@@ -15,15 +16,24 @@ use admin\extensions\Mailer;
 class OrdersController extends \lithium\action\Controller {
 
 	public function index() {
-		if ($this->request->data) {
 
+		if ($this->request->data) {
+			$minDate = new MongoDate(strtotime($this->request->data['min_date']));
+			$maxDate = new MongoDate(strtotime($this->request->data['max_date']));
+			$orders = Order::find('all', array(
+				'conditions' => array(
+					'date_created' => array('$lte' => $maxDate, '$gte' => $minDate)
+			)));
 		}
 
 		return compact('orders');
 	}
 
-	public function view() {
+	public function view($order_id = null) {
 		$order = null;
+		if ($order_id) {
+			$order = Order::lookup($order_id);
+		}
 		if ($this->request->data) {
 			$order =  Order::lookup($this->request->data['order_id']);
 		}
