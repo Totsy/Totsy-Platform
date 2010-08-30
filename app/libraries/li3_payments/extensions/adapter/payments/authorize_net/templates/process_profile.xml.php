@@ -17,8 +17,6 @@
 			<customerShippingAddressId><?=$customer->shipping->key; ?></customerShippingAddressId>
 		<?php } ?>
 
-		<recurringBilling>false</recurringBilling>
-
 		<?php if (isset($customer->payment->code)) { ?>
 			<cardCode><?=$customer->payment->code; ?></cardCode>
 		<?php } ?>

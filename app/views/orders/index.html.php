@@ -61,7 +61,13 @@
 						<td>
 							<?=$items[0]['status']?>
 						</td>
-						<td></td>
+						<?php if (!empty($item['tracking_number'])): ?>
+							<td><?=$this->shipment->link($item['tracking_number'], array('type' => 'UPS'))?>
+								</a>
+							</td>
+						<?php else: ?>
+							<td>Pending</td>
+						<?php endif ?>
 					</tr>
 				<?php endforeach ?>
 			</tbody>

@@ -169,7 +169,10 @@ class Ups {
 			'49_residential' => $this->resComCode
 		);
 		$url = $endpoint . http_build_query($query);
-		$fp = fopen($url, "r");
+
+		if (($fp = fopen($url, "r") === false) || !$fp) {
+			return null;
+		}
 
 		while (!feof($fp)) {
 			$result = fgets($fp, 500);

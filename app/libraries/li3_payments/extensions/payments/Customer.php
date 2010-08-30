@@ -9,35 +9,47 @@ class Customer extends \li3_payments\extensions\PaymentObject {
 	 *
 	 * @var string
 	 */
-	public $key;
+	protected $_key;
 
 	/**
 	 * Internal application-specific ID. Usually a reference to a record or document in a database.
 	 *
 	 * @var string
 	 */
-	public $id;
+	protected $_id;
 
-	public $type = 'individual'; // or 'business'
+	protected $_type = 'individual'; // or 'business'
 
-	public $description;
+	protected $_description;
 
-	public $firstName;
+	protected $_firstName;
 
-	public $lastName;
+	protected $_lastName;
 
-	public $email;
+	protected $_email;
 
-	public $payment;
+	protected $_payment;
 
-	public $address;
+	protected $_address;
 
-	public $billing;
+	protected $_billing;
 
-	public $shipping;
+	protected $_shipping;
+
+	protected $_autoConfig = array(
+		'key', 'id', 'type', 'description', 'firstName', 'lastName', 'connection',
+		'email', 'payment', 'address', 'billing', 'shipping', 'classes' => 'merge'
+	);
+
+	protected $_classes = array(
+		'validator' => 'lithium\util\Validator',
+		'payments' => 'li3_payments\extensions\Payments'
+	);
 
 	protected function _init() {
+		parent::_init();
 		$payments = $this->_classes['payments'];
+
 		$name = array(
 			'firstName' => isset($this->_config['firstName']) ? $this->_config['firstName'] : '',
 			'lastName' => isset($this->_config['lastName']) ? $this->_config['lastName'] : '',
@@ -52,7 +64,16 @@ class Customer extends \li3_payments\extensions\PaymentObject {
 				);
 			}
 		}
-		parent::_init();
+	}
+
+	public function __get($name) {
+		$name = "_{$name}";
+		return isset($this->{$name}) ? $this->{$name} : null;
+	}
+
+	public function __isset($name) {
+		$name = "_{$name}";
+		return isset($this->{$name});
 	}
 }
 

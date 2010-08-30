@@ -110,9 +110,8 @@ class OrdersController extends BaseController {
 
 		foreach ($cart as $cartValue) {
 			$event = Event::find('first', array(
-				'conditions' => array(
-					'_id' => $cartValue->event[0]
-			)));
+				'conditions' => array('_id' => $cartValue->event[0])
+			));
 			$cartValue->event_name = $event->name;
 			$cartValue->event_id = $cartValue->event[0];
 			unset($cartValue->event);

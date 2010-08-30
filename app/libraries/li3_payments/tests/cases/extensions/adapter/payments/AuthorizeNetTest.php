@@ -24,7 +24,6 @@ class AuthorizeNetTest extends \lithium\test\Unit {
 
 	public function testCreateCustomer() {
 		$customer = new Customer();
-		var_dump($this->subject->create($customer));
 	}
 
 	public function testAuthorizeTransaction() {
