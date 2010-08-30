@@ -170,12 +170,7 @@
 		</ol>
 		
 		<span class="red">Totsy Shipping Process</span>
-		<p>Totsy provides its members with incredible deals on top quality brands and products. In order to continue to provide deep discounts,
-		 we do not hold inventory, which allows us to drastically lower our costs and pass the savings on to our members. 
-		 We work very closely with our partners to make sure our product inventory is reserved; however, they don't ship the product 
-		 to our warehouse until after the event has ended. This causes a natural lag from the time you place your order to the time your 
-		 items ship from Totsy. The whole process normally takes 10-14 business days. For more information, please see the details 
-		 below about each step.</p>
+		<p>Totsy provides its members with incredible deals on top quality brands and products. In order to continue to provide deep discounts, we do not hold inventory, which allows us to drastically lower our costs and pass the savings on to our members. We work very closely with our partners to make sure our product inventory is reserved; however, they don't ship the product to our warehouse until after the event has ended. This causes a natural lag from the time you place your order to the time your items ship from Totsy. The whole process normally takes 15 business days on average, and we're taking steps to make that duration shorter. For more information, please see the details below about each step.</p>
 		
 		<div class="process-list-item">
 			<h3 class="placed-header">Order <span>Placed</span> With Totsy</h3>
