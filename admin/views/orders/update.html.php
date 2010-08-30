@@ -25,10 +25,16 @@
 		<tbody>
 			<?php foreach ($updated as $order): ?>
 				<tr>
-					<td><?=$order['Order']?></td>
+					<td>
+					<?=$this->html->link($order['Order'], array(
+						'Orders::view',
+						'args' => $order['Order']),
+						array('target' => '_blank')); ?>
+					</td>
 					<td><?=$order['SKU']?></td>
 					<td><?=$order['First Name']?></td>
 					<td><?=$order['Last Name']?></td>
+					<td><?=$order['Ship Method']?></td>
 					<td><?=$order['Tracking Number']?></td>
 					<td><?=$order['Confirmation Number']?></td>
 				</tr>
