@@ -87,7 +87,7 @@ foreach($voids AS $void){
 			$void["card_number"],
 			$void["card_type"],
 			'"' . date('Y-m-d H:i:s', $void["date_created"]->sec) . '"',
-			$item["description"],
+			'"' . $item["description"] . '"',
 			$item["quantity"],
 			$item["color"],
 			$item["sale_retail"],
