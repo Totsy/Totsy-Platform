@@ -118,8 +118,8 @@
 							<td style="padding:20px" valign="top">
 								<p style="font-weight:bold">Order: <?=$order->order_id;?></p>
 								<p>Dear <?=$order->billing->firstname?> <?=$order->billing->lastname?>,<br> 
-									A portion or all of your order has shipped. 
-									A summary of your order is available from your account page. 
+									Your order (or a portion of it) has been shipped to you.<br>
+									A summary of your order is available from your account page.
 									<?=$this->html->link('Click Here', "$data[domain]/orders/view/$order->order_id"); ?> 
 									to view your order.<br> 
 									Track your order: <?=$order->ship_method?>
