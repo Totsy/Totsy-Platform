@@ -7,7 +7,10 @@ use admin\models\Event;
 use admin\models\Item;
 use \MongoDate;
 use \MongoId;
-
+use PHPExcel_IOFactory;
+use PHPExcel;
+use PHPExcel_Cell;
+use PHPExcel_Cell_DataType;
 /**
  * Administrative functionality to create and edit events. 
  */
@@ -49,10 +52,7 @@ class EventsController extends BaseController {
 		if (empty($event)) {
 			$event = Event::create();
 		}
-		if ($_FILES) {
-			$items = $this->parseItems($_FILES, $event->_id);
-			unset($this->request->data['upload_file']);
-		}
+
 		if (!empty($this->request->data)) {
 			$images = $this->parseImages();
 			$seconds = ':'.rand(10,60);
@@ -86,14 +86,15 @@ class EventsController extends BaseController {
 		}
 		if (!empty($this->request->data)) {
 			unset($this->request->data['itemTable_length']);
-			if ($_FILES['upload_file']['error'] == 0) {
-				//THIS IS A HACK!!
-				$success = $this->parseItems($_FILES, $event->_id, $this->request->data['enable_items']);
-				unset($this->request->data['upload_file']);
-				$eventItems = Item::find('all', array('conditions' => array('event' => array($_id))));
-				if (!empty($eventItems)) {
-					foreach ($eventItems as $item) {
-						$items[] = (string) $item->_id;
+			$enableItems = $this->request->data['enable_items'];
+			if ($_FILES['upload_file']['error'] == 0 && $_FILES['upload_file']['size'] > 0) {
+				if (is_array($this->parseItems($_FILES, $event->_id, $enableItems))) {
+					unset($this->request->data['upload_file']);
+					$eventItems = Item::find('all', array('conditions' => array('event' => array($_id))));
+					if (!empty($eventItems)) {
+						foreach ($eventItems as $item) {
+							$items[] = (string) $item->_id;
+						}
 					}
 				}
 			}
@@ -154,63 +155,52 @@ class EventsController extends BaseController {
 			'shipping_weight',
 			'shipping_dimensions'
 		);
-		if ($_FILES['upload_file']['type'] == 'text/csv') {
-			// Open the File.
-			if (($handle = fopen($_FILES['upload_file']['tmp_name'], "r")) !== FALSE) {
-				// Set the parent multidimensional array key to 0.
-				$nn = 0;
-				while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-					
-					// Count the total keys in the row.
-					$c = count($data) - 1;
-					// Capture the key row
-					for ($y = 0; $y < $c ; $y++) {
-						if (strlen($data[$y]) > 0) {
-							$key[] = $data[$y];
-						}
-					}
-					// Populate the multidimensional array.
-					for ($x = 0; $x < $c ; $x++) {
-						$eventItems[$nn][$key[$x]] = $data[$x];
-					}
-					$nn++;
+		if ($this->request->data) {
+			if ($_FILES['upload_file']['error'] == 0) {
+				$file = $_FILES['upload_file']['tmp_name'];
+				$objReader = PHPExcel_IOFactory::createReaderForFile("$file");
+				$objPHPExcel = $objReader->load("$file");
+				foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
+					$highestRow = $worksheet->getHighestRow();
+					$highestColumn = $worksheet->getHighestColumn();
+					$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
+					for ($row = 1; $row <= $highestRow; ++ $row) {
+						for ($col = 0; $col < $highestColumnIndex; ++ $col) {
+							$cell = $worksheet->getCellByColumnAndRow($col, $row);
+							$val = $cell->getValue();
+							if ($row == 1) {
+								$heading[] = $val;
+							} else {
+								if (!in_array($heading[$col], array('','NULL'))) {
+									$eventItems[$row - 1][$heading[$col]] = $val;
+								}
+							}
+ 						}
+ 					}
 				}
-				// Close the File.
-				fclose($handle);
-			}
-
-			// Remove the heading array
-			unset($eventItems[0]);
-
-			// Add items to db and get _ids
-			foreach ($eventItems as $itemDetail) {
-				unset($itemDetail['NULL']);
-				// Group all the attributes together	
-				$itemAttributes = array_diff_key($itemDetail, array_flip($standardHeader));
-				// Unset all the attributes from main array so add back the details proper
-				foreach ($itemAttributes as $key => $value) {
-					unset($itemDetail[$key]);
-				}
-				$item = Item::create();
-				$date = new MongoDate();
-				$dirtyUrl = $itemDetail['description']." ".$itemDetail['color'];
-				$url = $this->cleanUrl($dirtyUrl);
-				
-				// Add some more information to array
-				$details = array(
-					'enabled' => (bool) $enabled,
-					'created_date' => $date, 
-					'details' => $itemAttributes, 
-					'event' => array($_id),
-					'url' => $url
-				);
-				$newItem = array_merge(Item::castData($itemDetail), Item::castData($details));
-				if ($item->save($newItem)) {
-					$items[] = (string) $item->_id;
+				foreach ($eventItems as $itemDetail) {
+					$itemAttributes = array_diff_key($itemDetail, array_flip($standardHeader));
+					foreach ($itemAttributes as $key => $value) {
+						unset($itemDetail[$key]);
+					}
+					$item = Item::create();
+					$date = new MongoDate();
+					$dirtyUrl = $itemDetail['description']." ".$itemDetail['color'];
+					$url = $this->cleanUrl($dirtyUrl);
+					$details = array(
+						'enabled' => (bool) $enabled,
+						'created_date' => $date,
+						'details' => $itemAttributes,
+						'event' => array($_id),
+						'url' => $url
+					);
+					$newItem = array_merge(Item::castData($itemDetail), Item::castData($details));
+					if ($item->save($newItem)) {
+						$items[] = (string) $item->_id;
+					}
 				}
 			}
 		}
-		
 		return $items;
 	}
 	/**

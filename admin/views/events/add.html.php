@@ -128,15 +128,6 @@ tinyMCE.init({
 			</td>
 		</tr>
 	</table>
-
-	<br>
-	<h1 id="">Upload Event Items</h1>
-	<br>
-	<div id="event_items">
-			<?=$this->form->label('Upload Event CSV: '); ?>
-			<?=$this->form->file('upload_file'); ?>
-	</div>
-	<br>
 	<br>
 	<?=$this->form->submit('Add Event')?>
 <?=$this->form->end(); ?>
