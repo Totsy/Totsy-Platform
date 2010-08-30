@@ -20,7 +20,7 @@ function debug( $thingie ){
 
 // Configuration
 require_once 'reports_conf.php';
-ini_set("display_errors", false);
+error_reporting(0);
 
 $fields = array(
 		"order_id",
@@ -42,7 +42,7 @@ $fields = array(
 		"tracking_number"
 	);
 
-echo implode(",", $fields);
+echo implode(",", $fields) . "\n";
 
 // aaaaand here's mongo!
 $mongo = new Mongo($mhost);
@@ -78,15 +78,15 @@ foreach($voids AS $void){
 			$void['order_id'],
 			$void["authKey"],
 			$void["auth_confirmation"],
-			$void["firstname"],
-			$void["lastname"],
-			$void["address"],
-			$void["city"],
-			$void["state"],
-			$void["zip"],
+			$void['billing']["firstname"],
+			$void['billing']["lastname"],
+			'"' . $void['billing']["address"] . '"',
+			$void['billing']["city"],
+			$void['billing']["state"],
+			'"' . $void['billing']["zip"] . '"',
 			$void["card_number"],
 			$void["card_type"],
-			$void["date_created"],
+			'"' . date('Y-m-d H:i:s', $void["date_created"]->sec) . '"',
 			$item["description"],
 			$item["quantity"],
 			$item["color"],
@@ -94,5 +94,5 @@ foreach($voids AS $void){
 			$item["tracking_number"]
 		);
 	}
-	echo implode(",", $result);
+	echo implode(",", $result) . "\n";
 }
