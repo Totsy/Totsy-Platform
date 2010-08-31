@@ -20,13 +20,29 @@ class OrdersController extends \lithium\action\Controller {
 		if ($this->request->data) {
 			$minDate = new MongoDate(strtotime($this->request->data['min_date']));
 			$maxDate = new MongoDate(strtotime($this->request->data['max_date']));
-			$orders = Order::find('all', array(
+			$rawOrders = Order::find('all',array(
 				'conditions' => array(
-					'date_created' => array('$lte' => $maxDate, '$gte' => $minDate)
-			)));
+					'date_created' => array('$lte' => $maxDate, '$gte' => $minDate))
+			));
+			$headings = array('date_created','order_id', 'billing', 'shipping','total');
+			$details = $rawOrders->data();
+			foreach ($details as $order) {
+				$orders[] = $this->sortArrayByArray($order, $headings);
+			}
 		}
 
-		return compact('orders');
+		return compact('orders', 'headings');
+	}
+	
+	public function sortArrayByArray($array, $orderArray) {
+	    $ordered = array();
+	    foreach($orderArray as $key) {
+	        if(array_key_exists($key,$array)) {
+	                $ordered[$key] = $array[$key];
+	                unset($array[$key]);
+	        }
+	    }
+	    return $ordered + $array;
 	}
 
 	public function view($order_id = null) {
@@ -105,19 +121,27 @@ class OrdersController extends \lithium\action\Controller {
 							'Ship Method' => $order->ship_method,
 							'Tracking Number' => $shipRecord['Tracking #']
 						);
-						if (empty($order->auth_confirmation)) {
-							$order->process();
-						} else {
-							$order->save();
+						$trackingNum = Order::find('first', array(
+							'conditions' => array(
+								'tracking_numbers' => $shipRecord['Tracking #']
+						)));
+						if (empty($trackingNum)) {
+							Mailer::send(
+								'shipped',
+								"Totsy - Shipping Notification - $order->order_id",
+								array('name' => $order->firstname, 'email' => $shipRecord['Email']),
+								compact('order', 'details')
+							);
+						}
+						if(Order::setTrackingNumber($order->order_id, $shipRecord['Tracking #'])){
+							if (empty($order->auth_confirmation)) {
+								$order->process();
+							} else {
+								$order->save();
+							}
 						}
 						$details['Confirmation Number'] = $order->auth_confirmation;
 						$updated[] = $details;
-						Mailer::send(
-							'shipped',
-							"Totsy - Shipping Notification - $order->order_id",
-							array('name' => $order->firstname, 'email' => $shipRecord['Email']),
-							compact('order', 'details')
-						);
 					}
 				}
 			}
