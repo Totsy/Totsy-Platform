@@ -1,66 +1,82 @@
-<?php
-	use app\models\Menu;
+<?=$this->html->script('jquery-1.4.2');?>
+<?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
+<?=$this->html->style('jquery_ui_blitzer.css')?>
+<?=$this->html->script('jquery.dataTables.js');?>
+<?=$this->html->script('jquery-ui-timepicker.min.js');?>
+<?=$this->html->style('table');?>
+<?=$this->html->style('admin');?>
+<?=$this->html->style('timepicker'); ?>
 
-	$options = array('div' => array('id' => 'left'), 'ul' => array('class' => 'menu'));
-	$doc = Menu::all(array('conditions' => array('location' => 'left', 'active' => 'true')));
-?>
-<?=$this->MenuList->build($doc, $options); ?>
+<script type="text/javascript" charset="utf-8">
+	$(function() {
+		var dates = $('#min_date, #max_date').datetimepicker({
+			defaultDate: "-2w",
+			changeMonth: true,
+			changeYear: true,
+			numberOfMonths: 1,
+			onSelect: function(selectedDate) {
+				var option = this.id == "min_date" ? "minDate" : "maxDate";
+				var instance = $(this).data("datetimepicker");
+				var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+				dates.not(this).datepicker("option", option, date);
+			}
+		});
+	});
+</script>
+<?=$this->form->create(); ?>
+	<div id="order_date">
+		<h2 id="order_date">Order Place</h2>
+		<?=$this->form->field('min_date', array('class' => 'general', 'id' => 'min_date'));?>
+		<?=$this->form->field('max_date', array('class' => 'general', 'id' => 'max_date'));?>
+	</div>
+	<?=$this->form->submit('Search'); ?>
+<?=$this->form->end(); ?>
 
-<div class="tl"></div>
-<div class="tr"></div>
-<div id="page">
 
-	<h2 class="gray mar-b"><?php echo ('Email Preferences'); ?></h2>
-
-	<table cellpadding="0" cellspacing="0" border="0" width="100%" class="order-table">
-
+<?php if (!empty($orders)): ?>
+	<table id="orderTable" class="datatable" border="1" style="width: 700px">
 		<thead>
 			<tr>
-				<th width="10%"><?php echo ('Order Date');?></th>
-				<th width="40%"><?php echo ('Items ');?></th>
-				<th width="20%"><?php echo ('Order ID');?></th>
-				<th width="30%"><?php echo ('Tracking');?></th>
+				<?php 
+				foreach ($headings as $heading) {
+					echo "<th>$heading</th>";
+				}
+				?>
 			</tr>
 		</thead>
-		
 		<tbody>
-			<tr class="alt0">
-				<td>04-12-10</td>
-				<td>
-					<a href="#" title="View product details">Standard Issue Kangaroo Pocket Knit Sweater</a><br />
-					Color: Gray<br />
-					Size: S<br />
-					Quantity: 1
-				</td>
-				<td>
-					<a href="#" title="View order number 34567890">34567890</a></td>
-				<td>
-					<p>Your order has shipped on 04-12-10 Via UPS Ground</p>
-					<a href="#" title="track order number 34567890" class="flex-btn fr"><span><?php echo ('Track Shipment');?></span></a>
-				</td>
-			</tr>
-			
-			<tr class="alt1">
-				<td>04-12-10</td>
-				<td>
-					<a href="#" title="View product details">Standard Issue Kangaroo Pocket Knit Sweater</a><br />
-					Color: Gray<br />
-					Size: S<br />
-					Quantity: 1
-				</td>
-				<td>
-					<a href="#" title="View order number 34567890">34567890</a></td>
-				<td>
-					<p>Your order has shipped on 04-12-10 Via UPS Ground</p>
-					<a href="#" title="track order number 34567890" class="flex-btn fr"><span><?php echo ('Track Shipment');?></span></a>
-				</td>
-			</tr>
-			
+			<?php foreach ($orders as $order): ?>
+				<tr>
+				<?php foreach ($order as $key => $value): ?>
+					<?php if (in_array($key, $headings)): ?>
+						<?php if (is_array($value)): ?>
+							<td>
+							<?php foreach ($value as $key => $value): ?>
+								<?php echo "$key: $value";?><br>
+							<?php endforeach ?>
+							</td>
+						<?php else: ?>
+							<?php if ($key == 'order_id'): ?>
+								<td>
+								<?=$this->html->link($value, array(
+									'Orders::view',
+									'args'=>$value),
+									array('target' => '_blank')); 
+								?>
+								</td>
+							<?php else: ?>
+								<td><?=$value?></td>
+							<?php endif ?>
+						<?php endif ?>
+					<?php endif ?>
+				<?php endforeach ?>
+				</tr>
+			<?php endforeach ?>
 		</tbody>
-	
 	</table>
-	
-	
-</div>
-<div class="bl"></div>
-<div class="br"></div>
+<?php endif ?>
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function() {
+		$('#orderTable').dataTable();
+	} );
+</script>
