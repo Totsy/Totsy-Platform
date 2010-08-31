@@ -105,19 +105,27 @@ class OrdersController extends \lithium\action\Controller {
 							'Ship Method' => $order->ship_method,
 							'Tracking Number' => $shipRecord['Tracking #']
 						);
-						if (empty($order->auth_confirmation)) {
-							$order->process();
-						} else {
-							$order->save();
+						$trackingNum = Order::find('first', array(
+							'conditions' => array(
+								'tracking_numbers' => $shipRecord['Tracking #']
+						)));
+						if (empty($trackingNum)) {
+							Mailer::send(
+								'shipped',
+								"Totsy - Shipping Notification - $order->order_id",
+								array('name' => $order->firstname, 'email' => $shipRecord['Email']),
+								compact('order', 'details')
+							);
+						}
+						if(Order::setTrackingNumber($order->order_id, $shipRecord['Tracking #'])){
+							if (empty($order->auth_confirmation)) {
+								$order->process();
+							} else {
+								$order->save();
+							}
 						}
 						$details['Confirmation Number'] = $order->auth_confirmation;
 						$updated[] = $details;
-						Mailer::send(
-							'shipped',
-							"Totsy - Shipping Notification - $order->order_id",
-							array('name' => $order->firstname, 'email' => $shipRecord['Email']),
-							compact('order', 'details')
-						);
 					}
 				}
 			}

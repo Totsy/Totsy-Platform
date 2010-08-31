@@ -38,9 +38,13 @@ class Order extends \lithium\data\Model {
 				'auth_confirmation' => Payments::capture('default', $order->authKey, $order->total)
 			));
 		} catch (TransactionException $e) {
-			$order->set($data);
 			$order->errors($order->errors() + array($e->getMessage()));
 		}
+	}
+
+	public static function setTrackingNumber($order_id, $number) {
+		$set = array('$addToSet' => array('tracking_numbers' => $number));
+		return static::collection()->update(array('order_id' => $order_id), $set);
 	}
 
 }
