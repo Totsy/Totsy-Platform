@@ -5,6 +5,7 @@ use admin\models\Order;
 use admin\models\User;
 use admin\models\Event;
 use admin\models\Item;
+use admin\models\Credit;
 use MongoDate;
 use PHPExcel_IOFactory;
 use PHPExcel;
@@ -95,6 +96,10 @@ class OrdersController extends \lithium\action\Controller {
 				foreach ($shipRecords as $shipRecord) {
 					$checkedItems = array();
 					$order = Order::lookup($shipRecord['OrderNum']);
+					$user = User::find('first', array(
+						'conditions' => array(
+							'_id' => $order->user_id
+					)));
 					if ($order) {
 						$item = Item::find('first', array(
 							'conditions' => array(
@@ -135,7 +140,13 @@ class OrdersController extends \lithium\action\Controller {
 						}
 						if(Order::setTrackingNumber($order->order_id, $shipRecord['Tracking #'])){
 							if (empty($order->auth_confirmation)) {
-								$order->process();
+								if ($order->process() && $user->purchase_count == 1) {
+									if ($user->invited_by) {
+										$credit = Credit::create();
+										User::applyCredit($user->invited_by, Credit::INVITE_CREDIT);
+										Credit::add($credit, $user->invited_by, Credit::INVITE_CREDIT, "Invitation");
+									}
+								}
 							} else {
 								$order->save();
 							}
