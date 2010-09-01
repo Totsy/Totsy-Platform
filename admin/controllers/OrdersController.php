@@ -96,7 +96,7 @@ class OrdersController extends \lithium\action\Controller {
 				foreach ($shipRecords as $shipRecord) {
 					$checkedItems = array();
 					$order = Order::lookup($shipRecord['OrderNum']);
-					if ($order) {
+					if ($order && !empty($order->items)) {
 						$user = User::find('first', array(
 							'conditions' => array(
 								'_id' => $order->user_id
