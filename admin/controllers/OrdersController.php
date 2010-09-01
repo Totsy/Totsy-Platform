@@ -96,11 +96,11 @@ class OrdersController extends \lithium\action\Controller {
 				foreach ($shipRecords as $shipRecord) {
 					$checkedItems = array();
 					$order = Order::lookup($shipRecord['OrderNum']);
-					$user = User::find('first', array(
-						'conditions' => array(
-							'_id' => $order->user_id
-					)));
 					if ($order) {
+						$user = User::find('first', array(
+							'conditions' => array(
+								'_id' => $order->user_id
+						)));
 						$item = Item::find('first', array(
 							'conditions' => array(
 								'vendor_style' => $shipRecord['SKU']
