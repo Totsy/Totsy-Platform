@@ -200,14 +200,7 @@ class OrdersController extends BaseController {
 			}
 			$user = User::getUser();
 			++$user->purchase_count;
-			$user->save();
-			if ($user->purchase_count = 1) {
-				if ($user->invited_by) {
-					$credit = Credit::create();
-					User::applyCredit($user->invited_by, Credit::INVITE_CREDIT);
-					Credit::add($credit, $user->invited_by, Credit::INVITE_CREDIT, "Invitation");
-				}
-			}
+			$user->save(null, array('validate' => false));
 			Mailer::send(
 				'order',
 				"Totsy - Order Acknowledgment - $orderId",
