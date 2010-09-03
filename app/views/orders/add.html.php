@@ -28,7 +28,7 @@
 	<!-- Begin Order Details -->
 	<?php if ($showCart): ?>
 		<div class="head"><h2>Order Details</h2></div>
-		<div class='fr'><?=$this->html->link('Edit Your Cart', '#', array('id' => 'checkout-cart')); ?></div>
+		<div class='fr'><?=$this->html->link('Edit Your Cart', '#', array('id' => 'checkout-cart', 'class' => 'edit-your-cart')); ?></div>
 		<table width="100%" class="cart-table">
 			<thead>
 				<tr>

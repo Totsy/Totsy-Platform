@@ -68,13 +68,14 @@ $(document).ready(function() {
 						</div>
 
 						<div class="table-cell right">
-							<span><?=$this->html->link('Go', array('Events::view', 'args' => array($event->url)), array('class' => 'go-btn'));?></span>
+							<span><?=$this->html->link('Shop', array('Events::view', 'args' => array($event->url)), array('class' => 'go-btn'));?></span>
 						</div>
 					</div>
 				</div>
 				<div class="bl"></div>
 				<div class="br"></div>
 			</div>
+	
 		<!-- End product item -->
 		<?php
 			$date = $event->end_date->sec * 1000;
@@ -116,7 +117,7 @@ $(document).ready(function() {
 		<?php $y++; ?>
 	<?php endforeach ?>
 	<div class="coming-soon-sales">
-		<h2 class="page-title gray clear"><span class="red">Coming <span class="bold caps">Soon</span></span></h2>
+		<h2 class="page-title gray clear"><span class="red">Coming Soon</span></h2>
 		<?php $x = 0; ?>
 		<?php $y = 0; ?>
 		<?php foreach ($pendingEvents as $event): ?>
@@ -150,12 +151,12 @@ $(document).ready(function() {
 
 						<div class="splash-details">
 							<div class="table-cell left">
-								Event Starts In<br>
-								<strong><div id="<?php echo "futuresplash$x"; ?>"></div></strong>
+								<?php echo $event->name; ?>
+								<div id="<?php echo "futuresplash$x"; ?>"></div>
 							</div>
 
 							<div class="table-cell right">
-								<?=$this->html->link('Preview', array(
+								<?=$this->html->link('View', array(
 									'Events::view',
 									'args' => array($event->url)),
 									array('class' => 'preview-btn')
