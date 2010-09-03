@@ -21,6 +21,9 @@ class PagesController extends BaseController {
 		if (empty($path)) {
 			$path = array('home');
 		}
+		if ($path[0] == 'blog') {
+			$this->redirect('http://totsyblog.blogspot.com');
+		}
 		$this->render(join('/', $path));
 	}
 
