@@ -113,14 +113,13 @@
 		    </td>
 		</tr>
 		<tr class="cart-buy">
-			<td colspan="5" class="cart-notes">
-				<!-- strong>Need more time to Shop?</strong><br />
-				We combine shipping on any additional orders placed within 1 hour
-				<br /><br / -->
+			<td colspan="5" class="return-policy">
 				<a href='../../pages/returns'><strong>Refund &amp; Return Policy</strong></a><br />
 			</td>
 			<td class="cart-button" colspan="2">
-				<?=$this->html->link('Buy Now', 'Orders::add', array('class' => 'buy-now')); ?>
+				<?=$this->html->link('Buy Now', 'Orders::add', array('class' => 'proceed-to-checkout')); ?>
+				<?=$this->html->link('Buy Now', 'Events::view', array('class' => 'continue-shopping')); ?>
+				
 			</td>
 			</tbody>
 		</table>
