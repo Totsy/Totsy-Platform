@@ -44,7 +44,7 @@ $(document).ready(function() {
 		Yes.</p>
 	
 		<p><strong>How can I pay for my items?</strong><br />
-		Payment can be made either via credit card or PayPal.</p>
+		Payment can be made with Visa, Mastercard, or American Express.</p>
 	
 		<p><strong>Can I cancel an order?</strong><br />
 		Generally no, especially on final sales, but you always have the option to call customer service
