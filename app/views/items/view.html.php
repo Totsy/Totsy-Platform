@@ -44,7 +44,7 @@
 			<p class="caps">
 				$<?=number_format($item->msrp,2); ?><br />Original</p>
 			<?php if ($item->total_quantity != 0): ?>
-				<button class="buy-now" id='item-submit'>Buy Now</button>
+				<button class="buy-now" id='item-submit'>Add To Cart</button>
 				<div id="all-reserved"></div>
 			<?php endif ?>
 		</div>

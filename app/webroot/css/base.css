@@ -621,7 +621,7 @@ tr.cart-total td{text-align:right;border-bottom:1px solid #D7D7D7;padding:10px}
 tr.cart-buy td{border:none;padding:5px}
 td.cart-button{text-align:right}
 td.cart-button a{float:right}
-
+td.return-policy a{float:left; margin-top:10px}
 .cart-notes{
 	font-size:12px;
 }
@@ -766,6 +766,12 @@ label.required {display:block;width:120px;float:left;line-height:30px;font-weigh
 
 .confirm-delivery-button{width:180px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -144px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
 
+.proceed-to-checkout{width:180px;height:30px;background:url(../img/btn-sprite.gif) no-repeat 0 -371px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
+
+.continue-shopping{width:180px;height:30px;background:url(../img/btn-sprite.gif) no-repeat 0 -430px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
+
+.edit-your-cart{width:140px;height:28px;background:url(../img/btn-sprite.gif) no-repeat 0 -401px;border:none;text-indent:-9999px;margin-top:5px;margin-bottom:5px;cursor:pointer;font-size:0 !important;display:block}
+
 .place-order-button{width:140px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -180px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
 
 .submit-btn{width:68px;height:26px;background:url(../img/btn-sprite.gif) no-repeat 0 -216px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
@@ -774,7 +780,7 @@ label.required {display:block;width:120px;float:left;line-height:30px;font-weigh
 
 .go-btn{width:48px;height:26px;background:url(../img/btn-sprite.png) no-repeat 0 -308px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
 
-.preview-btn{width:68px;height:26px;background:url(../img/btn-sprite.png) no-repeat 0 -280px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
+.preview-btn{width:46px;height:26px;background:url(../img/btn-sprite.png) no-repeat 0 -280px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
 
 .invite-splash-btn{width:134px;height:33px;background:url(../img/btn-sprite.png) no-repeat 0 -337px;border:none;text-indent:-9999px;margin-top:5px;cursor:pointer;font-size:0 !important;display:block}
 
