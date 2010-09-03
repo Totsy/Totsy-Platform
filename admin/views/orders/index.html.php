@@ -1,10 +1,12 @@
 <?=$this->html->script('jquery-1.4.2');?>
 <?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
-<?=$this->html->style('jquery_ui_blitzer.css')?>
 <?=$this->html->script('jquery.dataTables.js');?>
+<?=$this->html->script('TableTools.min.js');?>
 <?=$this->html->script('jquery-ui-timepicker.min.js');?>
+<?=$this->html->script('ZeroClipboard.js');?>
+<?=$this->html->style('jquery_ui_blitzer.css')?>
 <?=$this->html->style('table');?>
-<?=$this->html->style('admin');?>
+<?=$this->html->style('TableTools');?>
 <?=$this->html->style('timepicker'); ?>
 
 <script type="text/javascript" charset="utf-8">
@@ -47,29 +49,29 @@
 		<tbody>
 			<?php foreach ($orders as $order): ?>
 				<tr>
-				<?php foreach ($order as $key => $value): ?>
-					<?php if (in_array($key, $headings)): ?>
-						<?php if (is_array($value)): ?>
-							<td>
-							<?php foreach ($value as $key => $value): ?>
-								<?php echo "$key: $value";?><br>
-							<?php endforeach ?>
-							</td>
-						<?php else: ?>
-							<?php if ($key == 'order_id'): ?>
-								<td>
-								<?=$this->html->link($value, array(
-									'Orders::view',
-									'args'=>$value),
-									array('target' => '_blank')); 
-								?>
-								</td>
-							<?php else: ?>
-								<td><?=$value?></td>
-							<?php endif ?>
-						<?php endif ?>
-					<?php endif ?>
-				<?php endforeach ?>
+					<td><?=date('m-d-Y', $order['date_created']['sec']);?></td>
+					<td>
+						<?=$this->html->link($order['order_id'], array(
+						'Orders::view',
+						'args'=>$order['order_id']),
+						array('target' => '_blank')); 
+						?>
+					</td>
+					<td>
+						<div>
+						<?=$order['billing']['firstname']?>
+						<?=$order['billing']['lastname']?><br>
+						<?=$order['billing']['address']?>
+						<?=$order['billing']['city']?> <?=$order['billing']['state']?> <?=$order['billing']['zip']?>
+						</div>
+					</td>
+					<td>
+						<?=$order['shipping']['firstname']?>
+						<?=$order['shipping']['lastname']?><br>
+						<?=$order['shipping']['address']?>
+						<?=$order['shipping']['city']?> <?=$order['shipping']['state']?> <?=$order['shipping']['zip']?>
+					</td>
+					<td>$<?=number_format($order['total'],2);?></td>
 				</tr>
 			<?php endforeach ?>
 		</tbody>
@@ -77,6 +79,10 @@
 <?php endif ?>
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
-		$('#orderTable').dataTable();
+		TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
+		$('#orderTable').dataTable({
+			"sDom": 'T<"clear">lfrtip'
+		}
+		);
 	} );
 </script>
