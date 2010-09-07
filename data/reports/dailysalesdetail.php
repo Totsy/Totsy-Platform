@@ -7,8 +7,8 @@
 * and purchasing. This is run every morning for the previous day.
 * 
 * This report outputs the following:
-*   Order Id (orders._id)
-*   Event (events.event_name)
+*   Order Id (order.order_id)
+*   Event (items.event_name)
 *   Product Name (items.description)
 *   Product SKU (item.vendor_style)
 *   Shipping Method (orders.shippingMethod)
@@ -41,10 +41,11 @@ function debug( $thingie ){
 
 // Configuration
 require_once 'reports_conf.php';
-$start_date = '2010-08-13';
-$end_date = '2010-08-14';
+$start_date = '2010-09-06';
+$end_date = '2010-09-07';
 $start = new MongoDate(strtotime("$start_date 00:00:00"));
 $end = new MongoDate(strtotime("$end_date 00:00:00"));
+error_reporting(0);
 
 $fields = array(
 	'Order Id',
@@ -76,7 +77,6 @@ $mongo = new Mongo($mhost);
 
 $mongoorders = $mongo->$mdb->orders;
 $mongousers = $mongo->$mdb->users;
-$mongoevents = $mongo->$mdb->events;
 $mongoitems = $mongo->$mdb->items;
 
 // find dates between 1/15/2010 and 1/30/2010
@@ -97,8 +97,6 @@ foreach($orders AS $order){
 	if(count($order['items']) > 0){
 		// Reach into the items array for line item data
 		foreach($order['items'] AS $item){
-			// Get the event name since it is missing from order
-			$event = $mongoevents->findOne( array( 'items' => $item['item_id'] ));
 			// Get the sku (vendor_style) from items since it is missing from order item
 			$item_id = new MongoID( $item['item_id'] );
 			$product = $mongoitems->findOne( array( '_id' => $item_id ));
@@ -106,12 +104,10 @@ foreach($orders AS $order){
 			if(!isset($order['shipping']['phone'])){
 				$order['shipping']['phone'] = '';
 			}
-			// Get the 8-character shorter order id
-			$orderid = substr($order['_id'], 0, 8);
 			// looping through embedded array
 			$output[] = array(
-				$orderid,
-				$event['name'],
+				$order['order_id'],
+				$item['event_name'],
 				$item['description'],
 				$item['color'],
 				$item['size'],
