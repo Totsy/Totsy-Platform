@@ -41,11 +41,13 @@ function debug( $thingie ){
 
 // Configuration
 require_once 'reports_conf.php';
-$start_date = '2010-09-06';
-$end_date = '2010-09-07';
-$start = new MongoDate(strtotime("$start_date 00:00:00"));
-$end = new MongoDate(strtotime("$end_date 00:00:00"));
-error_reporting(0);
+$debug = false;
+// Suppress errors unless you're debugging
+if($debug == true){
+	error_reporting(E_ERROR);
+}else{
+	error_reporting(0);
+}
 
 $fields = array(
 	'Order Id',
@@ -78,9 +80,34 @@ $mongo = new Mongo($mhost);
 $mongoorders = $mongo->$mdb->orders;
 $mongousers = $mongo->$mdb->users;
 $mongoitems = $mongo->$mdb->items;
+$mongoevents = $mongo->$mdb->events;
 
-// find dates between 1/15/2010 and 1/30/2010
-$orders = $mongoorders->find(array("date_created" => array('$gt' => $start, '$lte' => $end)));
+// Set the search properties
+if(isset($argv[2])){
+	$start = new MongoDate(strtotime($argv[1] . "00:00:00"));
+	$stop = new MongoDate(strtotime($argv[2] . "00:00:00"));
+	$options = array(
+		'date_created' => array('$gte' => $start, '$lte' => $stop)
+	);
+	$orders = $mongoorders->find( $options );
+}elseif(isset($argv[1])){
+	$start = new MongoDate(strtotime($argv[1] . "00:00:00"));
+	$options = array(
+		'date_created' => array('$gte' => $start)
+	);
+	$orders = $mongoorders->find( $options );
+}else{
+	$options = array();
+	$orders = $mongoorders->find();
+}
+
+/*
+* debugging
+*/
+if($debug == true){
+	echo "We got " . $orders->count() . " order items with the following options:\n";
+	debug( $options );
+}
 
 foreach($orders AS $order){
 	// Get the user name
@@ -100,9 +127,10 @@ foreach($orders AS $order){
 			// Get the sku (vendor_style) from items since it is missing from order item
 			$item_id = new MongoID( $item['item_id'] );
 			$product = $mongoitems->findOne( array( '_id' => $item_id ));
-			// Check for shipping phone number
-			if(!isset($order['shipping']['phone'])){
-				$order['shipping']['phone'] = '';
+			// Check for event_name
+			if(!isset($item['event_name'])){
+				$event = $mongoevents->findOne( array( 'items' => $item['item_id'] ));
+				$item['event_name'] = $event['name'];
 			}
 			// looping through embedded array
 			$output[] = array(
@@ -131,12 +159,6 @@ foreach($orders AS $order){
 		}
 	}
 }
-
-/*
-* debugging
-*/
-//$count = count($output) - 1;
-//echo "We got $count order items for $start_date.\n";
 
 // spit out that stuff
 foreach($output AS $line){
