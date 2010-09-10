@@ -142,7 +142,7 @@
 		<div class="tl"></div>
 		<div class="tr"></div>
 		<div class="md-gray p-container loading" id="img-container">
-			<?php if ($item->total_quantity == 0): ?>
+			<?php if ($item->total_quantity <= 0): ?>
 					<?=$this->html->image('/img/soldout.gif', array(
 						'title' => "Sold Out",
 						'style' => 'z-index : 2; position : absolute; left:20%'
