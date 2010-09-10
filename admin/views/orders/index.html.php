@@ -25,9 +25,9 @@
 </script>
 
 <div class="grid_16">
-	<h2 id="page-heading">Order Search</h2>
+	<h2 id="page-heading">Order Management</h2>
 </div>
-<div class="grid_4">
+<div class="grid_3">
 	<div class="box">
 	<h2>
 		<a href="#" id="toggle-forms">Date Search</a>
@@ -49,9 +49,53 @@
 	</div>
 	</div>
 </div>
-
+<div class="grid_3">
+	<div class="box">
+	<h2>
+		<a href="#" id="toggle-order-search">Order Search</a>
+	</h2>
+	<div class="block" id="order-search">
+		<fieldset>
+			<?=$this->form->create(); ?>
+					<p>
+						<?=$this->form->label('Order Number'); ?>
+						<?=$this->form->text('order_id', array('id' => 'order_id'));?>
+					</p>
+				<?=$this->form->submit('Search'); ?>
+			<?=$this->form->end(); ?>
+		</fieldset>
+	</div>
+	</div>
+</div>
+<div class="grid_6">
+	<div class="box">
+	<h2>
+		<a href="#" id="toggle-order-search">User Search</a>
+	</h2>
+	<div class="block" id="order-search">
+		<fieldset>
+			<?=$this->form->create(); ?>
+					<p>
+						<?=$this->form->label('First Name'); ?>
+						<?=$this->form->text('firstname', array('id' => 'firstname'));?>
+					</p>
+					<p>
+						<?=$this->form->label('Last Name'); ?>
+						<?=$this->form->text('lastname', array('id' => 'lastname'));?>
+					</p>
+					<p>
+						<?=$this->form->label('Email'); ?>
+						<?=$this->form->text('lastname', array('id' => 'lastname'));?>
+					</p>
+				<?=$this->form->submit('Search'); ?>
+			<?=$this->form->end(); ?>
+		</fieldset>
+	</div>
+	</div>
+</div>
+<div class="grid_16">
 <?php if (!empty($orders)): ?>
-	<table id="orderTable" class="datatable" border="1" style="width: 700px">
+	<table id="orderTable" class="datatable" border="1" style="width: 800px">
 		<thead>
 			<tr>
 				<?php 
@@ -92,6 +136,7 @@
 		</tbody>
 	</table>
 <?php endif ?>
+</div>
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
 		TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
