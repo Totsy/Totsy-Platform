@@ -1,13 +1,11 @@
-<?=$this->html->script('jquery-1.4.2');?>
-<?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
 <?=$this->html->script('jquery.dataTables.js');?>
 <?=$this->html->script('TableTools.min.js');?>
 <?=$this->html->script('jquery-ui-timepicker.min.js');?>
 <?=$this->html->script('ZeroClipboard.js');?>
 <?=$this->html->style('jquery_ui_blitzer.css')?>
-<?=$this->html->style('table');?>
 <?=$this->html->style('TableTools');?>
 <?=$this->html->style('timepicker'); ?>
+<?=$this->html->style('table');?>
 
 <script type="text/javascript" charset="utf-8">
 	$(function() {
@@ -25,15 +23,32 @@
 		});
 	});
 </script>
-<?=$this->form->create(); ?>
-	<div id="order_date">
-		<h2 id="order_date">Order Place</h2>
-		<?=$this->form->field('min_date', array('class' => 'general', 'id' => 'min_date'));?>
-		<?=$this->form->field('max_date', array('class' => 'general', 'id' => 'max_date'));?>
-	</div>
-	<?=$this->form->submit('Search'); ?>
-<?=$this->form->end(); ?>
 
+<div class="grid_16">
+	<h2 id="page-heading">Order Search</h2>
+</div>
+<div class="grid_4">
+	<div class="box">
+	<h2>
+		<a href="#" id="toggle-forms">Date Search</a>
+	</h2>
+	<div class="block" id="forms">
+		<fieldset>
+			<?=$this->form->create(); ?>
+					<p>
+						<?=$this->form->label('Minimum Order Date'); ?>
+						<?=$this->form->text('min_date', array('id' => 'min_date'));?>
+					</p>
+					<p>
+					<?=$this->form->label('Maxium Order Date'); ?>
+					<?=$this->form->text('max_date', array('id' => 'max_date'));?>
+					</p>
+				<?=$this->form->submit('Search'); ?>
+			<?=$this->form->end(); ?>
+		</fieldset>
+	</div>
+	</div>
+</div>
 
 <?php if (!empty($orders)): ?>
 	<table id="orderTable" class="datatable" border="1" style="width: 700px">

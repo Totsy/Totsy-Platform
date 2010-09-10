@@ -1,0 +1,37 @@
+/* DEFAULT Styles - Orange
+----------------------------------------------- */
+div.flash-message {
+	width: 95%;
+	margin: 5px 2em;
+	padding: 6px 1em;
+	background: #FF5F00;
+	border: #A92B00 dotted 2px;
+}
+ 
+/* PASS - Green
+----------------------------------------------- */
+div.pass {
+	background: #03CA00;
+	border-color: #028C00;
+}
+
+/* FAIL - Red
+----------------------------------------------- */
+div.fail {
+	background: #E92023;
+	border-color: #5E1415;
+}
+
+/* NOTICE - Blue
+----------------------------------------------- */
+div.notice {
+	background: #0076C3;
+	border-color: #00548B;
+}
+
+/* WARNING - Yellow
+----------------------------------------------- */
+div.warning {
+	background: #FFD800;
+	border-color: #C3A500;
+}
