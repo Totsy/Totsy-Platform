@@ -25,7 +25,6 @@ class UsersController extends \lithium\action\Controller {
 	 * @return string The user is prompted with a message if authentication failed.
 	 */
 	public function login() {
-		$this->_render['layout'] = 'login';
 		$message = false;
 
 		if ($this->request->data) {

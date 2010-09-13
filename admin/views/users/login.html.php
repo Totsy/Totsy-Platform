@@ -1,5 +1,7 @@
 <?php if ($message){ echo $message; } ?>
-<div class="grid_5">
+<div class="grid_16"></div>
+<div class="clear"></div>
+<div class="grid_6 prefix_6">
 	<div class="box">
 		<h2>
 			<a href="#" id="toggle-forms">Forms</a>

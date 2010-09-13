@@ -7,6 +7,7 @@ use admin\models\Event;
 use admin\models\Item;
 use admin\models\Credit;
 use MongoDate;
+use MongoRegex;
 use PHPExcel_IOFactory;
 use PHPExcel;
 use PHPExcel_Cell;
@@ -19,16 +20,43 @@ class OrdersController extends \lithium\action\Controller {
 	public function index() {
 
 		if ($this->request->data) {
-			$minDate = new MongoDate(strtotime($this->request->data['min_date']));
-			$maxDate = new MongoDate(strtotime($this->request->data['max_date']));
-			$rawOrders = Order::find('all',array(
-				'conditions' => array(
-					'date_created' => array('$lte' => $maxDate, '$gte' => $minDate))
-			));
-			$headings = array('date_created','order_id', 'billing', 'shipping','total');
-			$details = $rawOrders->data();
-			foreach ($details as $order) {
-				$orders[] = $this->sortArrayByArray($order, $headings);
+			switch ($this->request->data['type']) {
+				case 'date':
+					if (!empty($this->request->data['min_date'])) {
+						$minDate = new MongoDate(strtotime($this->request->data['min_date']));
+						$maxDate = new MongoDate(strtotime($this->request->data['max_date']));
+						$conditions = array(
+							'date_created' => array(
+								'$lte' => $maxDate, 
+								'$gte' => $minDate
+						));
+						$rawOrders = Order::find('all', array('conditions' => $conditions));
+					}
+					break;
+				case 'order':
+					if (!empty($this->request->data['order_id'])) {
+						$orderid = $this->request->data['order_id'];
+						$order = new MongoRegex("/$orderid/i");
+						$rawOrders = Order::find('all', array('conditions' => array('order_id' => $order)));
+					}
+					break;
+				case 'user':
+						$rawOrders = Order::findUser($this->request->data);
+					break;
+			}
+
+			if ($rawOrders) {
+				$headings = array('date_created','order_id', 'billing', 'shipping','total');
+				if (get_class($rawOrders) == 'MongoCursor') {
+					foreach ($rawOrders as $order) {
+						var_dump($order);
+					}
+				} else {
+					$details = $rawOrders->data();
+					foreach ($details as $order) {
+						$orders[] = $this->sortArrayByArray($order, $headings);
+					}
+				}
 			}
 		}
 
@@ -47,6 +75,7 @@ class OrdersController extends \lithium\action\Controller {
 	}
 
 	public function view($order_id = null) {
+		$this->_render['layout'] = 'base';
 		$order = null;
 		if ($order_id) {
 			$order = Order::lookup($order_id);

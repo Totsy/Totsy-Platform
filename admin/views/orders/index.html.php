@@ -27,6 +27,12 @@
 <div class="grid_16">
 	<h2 id="page-heading">Order Management</h2>
 </div>
+<div class="grid_4">
+	<?php echo $this->view()->render(array('element' => '../elements/box'), array(					
+		'boxtitle' => 'Searching',
+		'boxbody' => "Search for orders using either date, order id or user information."
+	)); ?>
+</div>
 <div class="grid_3">
 	<div class="box">
 	<h2>
@@ -43,6 +49,7 @@
 					<?=$this->form->label('Maxium Order Date'); ?>
 					<?=$this->form->text('max_date', array('id' => 'max_date'));?>
 					</p>
+					<?=$this->form->hidden('type', array('value' => 'date')); ?>
 				<?=$this->form->submit('Search'); ?>
 			<?=$this->form->end(); ?>
 		</fieldset>
@@ -61,6 +68,7 @@
 						<?=$this->form->label('Order Number'); ?>
 						<?=$this->form->text('order_id', array('id' => 'order_id'));?>
 					</p>
+					<?=$this->form->hidden('type', array('value' => 'order')); ?>
 				<?=$this->form->submit('Search'); ?>
 			<?=$this->form->end(); ?>
 		</fieldset>
@@ -85,14 +93,24 @@
 					</p>
 					<p>
 						<?=$this->form->label('Email'); ?>
-						<?=$this->form->text('lastname', array('id' => 'lastname'));?>
+						<?=$this->form->text('email', array('id' => 'email'));?>
 					</p>
+					<p>
+						<?=$this->form->label('Address'); ?>
+						<?=$this->form->text('address', array('id' => 'address'));?>
+					</p>
+					<p>
+						<?=$this->form->label('Lookup Type'); ?>
+						<?=$this->form->select('address_type', array('Billing' => 'Billing', 'Shipping' => 'Shipping')); ?>
+					</p>
+					<?=$this->form->hidden('type', array('value' => 'user')); ?>
 				<?=$this->form->submit('Search'); ?>
 			<?=$this->form->end(); ?>
 		</fieldset>
 	</div>
 	</div>
 </div>
+<div id="clear"></div>
 <div class="grid_16">
 <?php if (!empty($orders)): ?>
 	<table id="orderTable" class="datatable" border="1" style="width: 800px">
@@ -118,17 +136,21 @@
 					</td>
 					<td>
 						<div>
-						<?=$order['billing']['firstname']?>
-						<?=$order['billing']['lastname']?><br>
-						<?=$order['billing']['address']?>
-						<?=$order['billing']['city']?> <?=$order['billing']['state']?> <?=$order['billing']['zip']?>
+						<?php if (!empty($order['billing'])): ?>
+							<?=$order['billing']['firstname']?>
+							<?=$order['billing']['lastname']?><br>
+							<?=$order['billing']['address']?>
+							<?=$order['billing']['city']?> <?=$order['billing']['state']?> <?=$order['billing']['zip']?>
+						<?php endif ?>
 						</div>
 					</td>
 					<td>
-						<?=$order['shipping']['firstname']?>
-						<?=$order['shipping']['lastname']?><br>
-						<?=$order['shipping']['address']?>
-						<?=$order['shipping']['city']?> <?=$order['shipping']['state']?> <?=$order['shipping']['zip']?>
+						<?php if (!empty($order['shipping'])): ?>
+							<?=$order['shipping']['firstname']?>
+							<?=$order['shipping']['lastname']?><br>
+							<?=$order['shipping']['address']?>
+							<?=$order['shipping']['city']?> <?=$order['shipping']['state']?> <?=$order['shipping']['zip']?>
+						<?php endif ?>
 					</td>
 					<td>$<?=number_format($order['total'],2);?></td>
 				</tr>

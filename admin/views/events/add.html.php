@@ -1,18 +1,14 @@
 <?=$this->html->script('tiny_mce/tiny_mce.js');?>
-<?=$this->html->script('jquery-1.4.2');?>
-<?=$this->html->script('jquery-dynamic-form.js');?>
-<?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
 <?=$this->html->script('swfupload.js');?>
 <?=$this->html->script('swfupload.queue.js');?>
 <?=$this->html->script('fileprogress.js');?>
 <?=$this->html->script('handlers.js');?>
 <?=$this->html->script('event_upload.js');?>
 <?=$this->html->style('swfupload')?>
-<?=$this->html->style('jquery_ui_blitzer.css')?>
 <?=$this->html->script('jquery.dataTables.js');?>
 <?=$this->html->script('jquery-ui-timepicker.min.js');?>
+<?=$this->html->style('jquery_ui_blitzer.css')?>
 <?=$this->html->style('table');?>
-<?=$this->html->style('admin');?>
 <?=$this->html->style('timepicker'); ?>
 <script type="text/javascript">
 tinyMCE.init({
@@ -21,12 +17,6 @@ tinyMCE.init({
 	width : "600"
 });
 
-</script>
-
-<script type="text/javascript"> 
-	$(document).ready(function(){	
-		$("#duplicate").dynamicForm("#plus", "#minus", {limit:15, createColor: 'yellow', removeColor: 'red'});
-	});
 </script>
 
 <script type="text/javascript" charset="utf-8">
@@ -84,9 +74,10 @@ tinyMCE.init({
 
 </script>
 
-<?=$this->html->link('See Event List','/events')?>
 
-<h1>Add an Event</h1>
+<div class="grid_16">
+	<h2 id="page-heading">Add an Event</h2>
+</div>
 <div id="event_note">
 	<p>
 		Hello administrator. Please add an event by filling in all the information below. Thank You!
