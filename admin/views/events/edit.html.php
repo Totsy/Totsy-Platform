@@ -11,7 +11,6 @@
 <?=$this->html->style('jquery_ui_blitzer.css')?>
 <?=$this->html->script('jquery.dataTables.js');?>
 <?=$this->html->style('table');?>
-<?=$this->html->style('admin');?>
 <?=$this->html->script('jquery-ui-timepicker.min.js');?>
 <?=$this->html->style('timepicker'); ?>
 <?=$this->html->script('jquery.countdown.min');?>
@@ -88,8 +87,9 @@ tinyMCE.init({
 </script>
 
 <?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
-<h1 id="event">Editing Event - <?=$event->name?> </h1>
-<?=$this->html->link('Return to Event List','/events')?>
+<div class="grid_16">
+	<h2 id="page-heading">Editing Event - <?=$event->name?></h2>
+</div>
 <div id="tabs">
 	<ul>
 	    <li><a href="#event_info"><span>Event Info</span></a></li>
@@ -106,13 +106,13 @@ tinyMCE.init({
 		<div id="event_preview">
 			<p> To see a preview of the event please <?=$this->html->link('click here.',"/events/preview/$event->_id")?></p>
 		</div>
-		<h2 id="event_description">Event Description</h2>
+		<h4 id="article-heading">Event Description</h4>
 
 		
 		    <?=$this->form->field('name', array('value' => $event->name, 'class' => 'general'));?>
 		    <?=$this->form->field('blurb', array('type' => 'textarea', 'name' => 'content', 'value' => $event->blurb));?>
 			<div id="event_status">
-				<h2 id="event_status">Event Status</h2>
+				<h4 id="event_status">Event Status</h4>
 				<?php if ($event->enabled == 1): ?>
 					<p>The event is currently published for viewing</p><br>
 					<input type="radio" name="enabled" value="1" id="enabled" checked> Enable Event <br>
@@ -242,7 +242,7 @@ tinyMCE.init({
 		<p>Please select the default option for all items being uploaded:</p>
 			<input type="radio" name="enable_items" value="1" id="enable_items"> Enable All <br>
 			<input type="radio" name="enable_items" value="0" id="enable_items" checked> Disable All <br><br>
-			<?=$this->form->label('Upload Event CSV: '); ?>
+			<?=$this->form->label('Upload Event (Excel Files): '); ?>
 			<?=$this->form->file('upload_file'); ?>
 		<br><br>
 		<h2 id="current_items">Current Items</h2><br>

@@ -13,23 +13,9 @@ class PagesController extends \lithium\action\Controller {
 		if (empty($path)) {
 			$path = array('home');
 		}
-		$this->_render['layout'] = 'main';
 		$this->render(join('/', $path));
 	}
-	
-	/**
-	 * Set the userInfo for use in all the views
-	 */	
-	protected function _init() {
-		parent::_init();
-	
-		$this->applyFilter('__invoke',  function($self, $params, $chain) {
-			$userInfo = Session::read('userLogin');
-			$self->set(compact('userInfo'));
-			return $chain->next($self, $params, $chain);
-		});
-	}
-	
+
 }
 
 ?>

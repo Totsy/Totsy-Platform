@@ -11,7 +11,6 @@
 <?=$this->html->style('jquery_ui_blitzer.css')?>
 <?=$this->html->script('jquery.dataTables.js');?>
 <?=$this->html->style('table');?>
-<?=$this->html->style('admin');?>
 
 <script type="text/javascript">
 tinyMCE.init({
@@ -21,7 +20,10 @@ tinyMCE.init({
 });
 
 </script>
-<h1 id="event">Editing Item - <?=$item->description?> </h1>
+<div class="grid_16">
+	<h2 id="page-heading">Editing Item - <?=$item->description?></h2>
+</div>
+
 <?=$this->html->link('See Item List','/items')?>
 <?=$this->form->create(); ?>
 	<div id="tabs">
@@ -47,10 +49,10 @@ tinyMCE.init({
 						'class' => 'desc', 
 						'value' => $item->description
 					));?>
-					<?=$this->form->field('blurb', array(
-						'type' => 'textarea', 
+					<?=$this->form->label('Copy'); ?>
+					<?=$this->form->textarea('blurb', array(
 						'class' => 'general',
-						'name' => 'content', 
+						'name' => 'blurb', 
 						'value' => $item->blurb
 					));?>
 					<?=$this->form->field('vendor', array(

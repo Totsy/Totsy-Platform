@@ -1,9 +1,3 @@
-<?=$this->form->create(); ?>
-	<?=$this->form->label('Search By OrderId'); ?>
-	<?=$this->form->text('order_id'); ?>
-	<?=$this->form->submit('Submit'); ?>
-<?=$this->form->end(); ?>
-
 <?php if ($order): ?>
 	<style type="text/css">
 

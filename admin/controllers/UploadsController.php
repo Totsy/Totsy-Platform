@@ -101,6 +101,7 @@ class UploadsController extends \lithium\action\Controller {
 	 */
 	protected function write() {
 		$success = false;
+		$this->_render['layout'] = false;
 		$grid = File::getGridFS();
 		$this->fileName = $this->request->data['Filedata']['name'];
 		$md5 = md5_file($this->request->data['Filedata']['tmp_name']);

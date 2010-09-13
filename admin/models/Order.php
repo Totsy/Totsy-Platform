@@ -6,7 +6,7 @@ use MongoId;
 use MongoDate;
 use li3_payments\extensions\Payments;
 use li3_payments\extensions\payments\exceptions\TransactionException;
-use \MongoRegex;
+use MongoRegex;
 
 class Order extends \lithium\data\Model {
 
@@ -45,6 +45,17 @@ class Order extends \lithium\data\Model {
 	public static function setTrackingNumber($order_id, $number) {
 		$set = array('$addToSet' => array('tracking_numbers' => $number));
 		return static::collection()->update(array('order_id' => $order_id), $set);
+	}
+
+	public static function findUser($data) {
+		$type = strtolower($data['address_type']);
+		$exclude = array('address_type', 'type');
+		foreach ($data as $key => $value) {
+			if (($value != '') && (!in_array($key, $exclude))) {
+				$conditions["$type.$key"] = new MongoRegex("/$value/i");
+			}
+		}
+		return static::find('all', array('conditions' => $conditions));
 	}
 
 }
