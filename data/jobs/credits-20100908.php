@@ -77,25 +77,4 @@ $list = array(
 	array('email' => 'danielletoet@sbcglobal.net', 'amount' => 5, 'reason' => 'Customer Service Credit')
 );
 
-// aaaaand here's mongo!
-$mongo = new Mongo($mhost);
-
-$mongousers = $mongo->$mdb->users;
-$mongocredits = $mongo->$mdb->credits;
-
-foreach($list AS $item){
-	// Get the user._id for the credit entry
-	$options = array('email' => $item['email']);
-	$user = $mongousers->findOne( $options );
-	//echo "User " . $user['_id'] . " (" . $item['email'] . ") is about to get a $" . $item['amount'] . " credit for " . $item['reason'] . "\n";
-	$record = array(
-		'customer_id' => $user['_id'],
-		'type' => 'Credit',
-		'description' => 'Customer Service Credit',
-		'amount' => $item['amount'],
-		'date_created' => new MongoDate()
-	);
-	//echo implode( ",", $record ) . "\n";
-	$mongocredits->save( $record );
-	$mongousers->update($options, array('$inc' => array('total_credit' => $item['amount'])));
-}
+include_once 'credits.inc.php';
