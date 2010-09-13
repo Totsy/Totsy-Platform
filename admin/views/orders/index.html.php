@@ -28,11 +28,12 @@
 	<h2 id="page-heading">Order Management</h2>
 </div>
 <div class="grid_4">
-	<?php echo $this->view()->render(array('element' => '../elements/box'), array(					
+	<?php echo $this->view()->render(array('element' => '../elements/box'), array(
 		'boxtitle' => 'Searching',
 		'boxbody' => "Search for orders using either date, order id or user information."
 	)); ?>
 </div>
+<div id="clear"></div>
 <div class="grid_3">
 	<div class="box">
 	<h2>
@@ -56,6 +57,7 @@
 	</div>
 	</div>
 </div>
+<div id="clear"></div>
 <div class="grid_3">
 	<div class="box">
 	<h2>
@@ -75,6 +77,7 @@
 	</div>
 	</div>
 </div>
+<div id="clear"></div>
 <div class="grid_6">
 	<div class="box">
 	<h2>
