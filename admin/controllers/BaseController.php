@@ -16,4 +16,15 @@ class BaseController extends \lithium\action\Controller {
 		return $clean;
 	}
 
+	public function sortArrayByArray($array, $orderArray) {
+	    $ordered = array();
+	    foreach($orderArray as $key) {
+	        if(array_key_exists($key,$array)) {
+	                $ordered[$key] = $array[$key];
+	                unset($array[$key]);
+	        }
+	    }
+	    return $ordered + $array;
+	}
+
 }

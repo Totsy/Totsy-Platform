@@ -30,14 +30,14 @@
 <div class="grid_4">
 	<?php echo $this->view()->render(array('element' => '../elements/box'), array(
 		'boxtitle' => 'Searching',
-		'boxbody' => "Search for orders using either date, order id or user information."
+		'boxbody' => "Search for orders using either date, order id or user information. If results have been found they will be presented in a table below. "
 	)); ?>
 </div>
 <div id="clear"></div>
 <div class="grid_3">
 	<div class="box">
 	<h2>
-		<a href="#" id="toggle-forms">Date Search</a>
+		<a href="#" id="toggle-forms">Search By Date</a>
 	</h2>
 	<div class="block" id="forms">
 		<fieldset>
@@ -61,7 +61,7 @@
 <div class="grid_3">
 	<div class="box">
 	<h2>
-		<a href="#" id="toggle-order-search">Order Search</a>
+		<a href="#" id="toggle-order-search">Search By Order</a>
 	</h2>
 	<div class="block" id="order-search">
 		<fieldset>
@@ -81,7 +81,7 @@
 <div class="grid_6">
 	<div class="box">
 	<h2>
-		<a href="#" id="toggle-order-search">User Search</a>
+		<a href="#" id="toggle-order-search">Search By User</a>
 	</h2>
 	<div class="block" id="order-search">
 		<fieldset>

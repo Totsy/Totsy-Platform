@@ -47,7 +47,7 @@ class Order extends \lithium\data\Model {
 		return static::collection()->update(array('order_id' => $order_id), $set);
 	}
 
-	public static function findUser($data) {
+	public static function findUserOrder($data) {
 		$type = strtolower($data['address_type']);
 		$exclude = array('address_type', 'type');
 		foreach ($data as $key => $value) {

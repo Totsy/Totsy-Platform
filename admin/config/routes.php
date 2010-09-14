@@ -46,7 +46,7 @@ Router::connect('/register', 'Users::register');
 Router::connect('/addresses', 'Addresses::view');
 Router::connect('/account/add/{:args}', 'Account::add');
 Router::connect('/events', 'Events::index');
-
+Router::connect('/users/view/{:args}', 'Users::view');
 /**
  * ...and connect the rest of 'Pages' controller's urls.
  */

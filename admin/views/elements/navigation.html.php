@@ -35,10 +35,7 @@
 		<?php echo $this->html->link('User Management', '#'); ?>
 		<ul>
 			<li>
-				<?php echo $this->html->link('User Credits', '#'); ?>
-			</li>
-			<li>
-				<?php echo $this->html->link('User Info', '#'); ?>
+				<?php echo $this->html->link('Search Users', 'Users::index'); ?>
 			</li>
 		</ul>
 	</li>

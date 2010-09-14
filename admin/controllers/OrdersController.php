@@ -41,7 +41,7 @@ class OrdersController extends \lithium\action\Controller {
 					}
 					break;
 				case 'user':
-						$rawOrders = Order::findUser($this->request->data);
+						$rawOrders = Order::findUserOrder($this->request->data);
 					break;
 			}
 
