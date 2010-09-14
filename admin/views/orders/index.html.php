@@ -156,6 +156,13 @@
 						<?php endif ?>
 					</td>
 					<td>$<?=number_format($order['total'],2);?></td>
+					<td>
+						<?=$this->html->link('View', array(
+						'Users::view',
+						'args'=>$order['user_id']),
+						array('target' => '_blank'));
+						?>
+					</td>
 				</tr>
 			<?php endforeach ?>
 		</tbody>

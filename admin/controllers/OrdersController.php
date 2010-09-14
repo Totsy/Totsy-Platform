@@ -46,7 +46,7 @@ class OrdersController extends \lithium\action\Controller {
 			}
 
 			if ($rawOrders) {
-				$headings = array('date_created','order_id', 'billing', 'shipping','total');
+				$headings = array('date_created','order_id', 'billing', 'shipping','total', 'Customer Profile');
 				if (get_class($rawOrders) == 'MongoCursor') {
 					foreach ($rawOrders as $order) {
 						var_dump($order);
