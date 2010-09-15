@@ -53,16 +53,26 @@ class UsersController extends \admin\controllers\BaseController {
 					'credit' => array(
 						'Date',
 						'Reason',
+						'Description',
 						'Amount'
 				));
-				$credits = Credit::find('all', array('conditions' => array('customer_id' => $id)));
+				$reasons = array(
+					'Manual Credit' => 'Manual Credit',
+					'Invitation' => 'Invitation'
+				);
+				$credits = Credit::find('all', array(
+					'conditions' => array(
+						'$or' => array(
+							array('user_id' => $id),
+							array('customer_id' => $id)
+					))));
 				$orders = Order::find('all', array('conditions' => array('user_id' => $id)));
 				$data = array_intersect_key($user->data(), array_flip($headings['user']));
-				$user = $this->sortArrayByArray($data, $headings['user']);
+				$info = $this->sortArrayByArray($data, $headings['user']);
 			}
 		}
 
-		return compact('user', 'credits', 'orders', 'headings');
+		return compact('user', 'credits', 'orders', 'headings', 'info', 'reasons');
 	}
 	/**
 	 * Performs login authentication for a user going directly to the database.

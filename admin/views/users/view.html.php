@@ -12,14 +12,14 @@
 	<h2 id="page-heading">User Management</h2>
 </div>
 <div id="clear"></div>
-<div class="grid_8">
+<div class="grid_6">
 	<div class="box">
 		<h2>
 			<a href="#" id="toggle-tables">User Information</a>
 		</h2>
 		<div class="block" id="user-table">
 			<table border="0" cellspacing="5" cellpadding="5" width="100">
-				<?php foreach ($user as $key => $value): ?>
+				<?php foreach ($info as $key => $value): ?>
 					<?php if (in_array($key, array('lastlogin'))): ?>
 						<tr><td><?=$key?></td><td><?=date('m-d-Y', $value['sec']);?></td></tr>
 						<?php else: ?>
@@ -31,7 +31,7 @@
 	</div>
 </div>
 <div id="clear"></div>
-<div class="grid_8">
+<div class="grid_10">
 	<div class="box">
 		<h2>
 			<a href="#" id="toggle-tables">Order History</a>
@@ -70,35 +70,41 @@
 </div>
 
 <div id="clear"></div>
-<div class="grid_8">
+<div class="grid_6">
 	<div class="box">
 		<h2>
 			<a href="#" id="toggle-form">Apply Credits</a>
 		</h2>
 		<div class="block" id="forms">
-			<?=$this->form->create(); ?>
+			<?=$this->form->create(null, array('url' => 'Credits::add')); ?>
 			<p>
 				<?=$this->form->label('Reason For Credit: '); ?>
-				<?=$this->form->select('reason', array('Reason 1', 'Reason 2', 'Reason 3')); ?>
+				<?=$this->form->select('reason', $reasons); ?>
 			</p>
 			<p>
-				<?=$this->form->label('Amount of Credit: '); ?>
-				$<?=$this->form->text('credit_amount', array('size' => 4)); ?>
+				<?=$this->form->label('Credit Amount: '); ?>
+				$<?=$this->form->text('amount', array('size' => 6)); ?>
 			</p>
+			<p>
+				<?=$this->form->label('Description:'); ?>
+				<?=$this->form->textarea('description'); ?>
+			</p>
+				<?=$this->form->hidden('user_id', array('value' => $user->_id)); ?>
 				<?=$this->form->submit('Apply'); ?>
 			<?=$this->form->end(); ?>
 		</div>
 	</div>
 </div>
 <div id="clear"></div>
-<div class="grid_8">
+<div class="grid_10">
 	<div class="box">
 		<h2>
 			<a href="#" id="toggle-tables">Credit History</a>
 		</h2>
 		<div class="block" id="tables">
+		<p>Total Credit - $<?=number_format($user->total_credit, 2);?></p>
 		<?php if (!empty($credits)): ?>
-			<table id="orderTable" class="datatable" border="1">
+			<table id="creditTable" class="datatable" border="1">
 				<thead>
 					<tr>
 						<?php 
@@ -111,11 +117,30 @@
 				<tbody>
 					<?php foreach ($credits as $credit): ?>
 						<tr>
-							<td><?=date('m-d-Y', $credit->date_created->sec);?></td>
 							<td>
-								Reason
+								<?php if (!empty($credit->date_created->sec)): ?>
+									<?=date('m-d-Y', $credit->date_created->sec);?>
+								<?php else: ?>
+									<?=date('m-d-Y', $credit->created->sec);?>
+								<?php endif ?>
 							</td>
-							<td>$<?=number_format($credit->amount, 2);?></td>
+							<td>
+								<?php if ($credit->reason): ?>
+									<?=$credit->reason;?>
+								<?php endif ?>
+							</td>
+							<td>
+								<?php if ($credit->description): ?>
+									<?=$credit->description;?>
+								<?php endif ?>
+							</td>
+							<td>
+								<?php if ($credit->amount): ?>
+									$<?=number_format($credit->amount, 2);?>
+								<?php else: ?>
+								$<?=number_format($credit->credit_amount, 2);?>
+								<?php endif ?>
+							</td>
 						</tr>
 					<?php endforeach ?>
 				</tbody>
@@ -127,6 +152,7 @@
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
 		$('#orderTable').dataTable();
+		$('#creditTable').dataTable();
 	} );
 </script>
 <script type="text/javascript">

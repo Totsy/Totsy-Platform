@@ -9,13 +9,13 @@ use MongoRegex;
 
 class User extends \lithium\data\Model {
 
-	public static function applyCredit($invitecode, $credit) {
+	public static function applyCredit($data) {
 		$user = User::find('first', array(
 			'conditions' => array(
-				'invitation_codes' => array($invitecode)
+				'_id' => $data['user_id']
 		)));
-		$user->total_credit = $user->total_credit + $credit;
-		return $user->save(null, array('validate' => false));
+		$user->total_credit = $user->total_credit + $data['amount'];
+		return $user->save(null,array('validate' => false));
 	}
 
 	public static function findUsers($data) {

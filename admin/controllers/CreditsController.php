@@ -3,6 +3,8 @@
 namespace admin\controllers;
 
 use \admin\models\Credit;
+use \admin\models\User;
+use lithium\util\Validator;
 
 class CreditsController extends \lithium\action\Controller {
 
@@ -18,9 +20,15 @@ class CreditsController extends \lithium\action\Controller {
 
 	public function add() {
 		$credit = Credit::create();
-
-		if (($this->request->data) && $credit->save($this->request->data)) {
-			$this->redirect(array('Credits::view', 'args' => array($credit->id)));
+		$isMoney = Validator::isMoney($this->request->data['amount']);
+		if (($isMoney) && ($this->request->data) && Credit::add($credit, $this->request->data)) {
+			if (User::applyCredit($this->request->data)) {
+				$this->redirect(array('Users::view', 'args' => array($this->request->data['user_id'])));
+			}
+		} else {
+			$this->redirect(array('Users::view', 'args' => array(
+				$this->request->data['user_id']
+			)));
 		}
 		return compact('credit');
 	}

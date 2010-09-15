@@ -43,10 +43,17 @@ class OrdersController extends \lithium\action\Controller {
 				case 'user':
 						$rawOrders = Order::findUserOrder($this->request->data);
 					break;
+				case 'event':
+					if (!empty($this->request->data['event_name'])) {
+						$eventName = $this->request->data['event_name'];
+						$eventName = new MongoRegex("/$eventName/i");
+						$rawOrders = Order::find('all', array('conditions' => array('items.event_name' => $eventName)));
+					}
+					break;
 			}
 
 			if ($rawOrders) {
-				$headings = array('date_created','order_id', 'billing', 'shipping','total', 'Customer Profile');
+				$headings = array('date_created','order_id', 'Event Name', 'billing', 'shipping','total', 'Customer Profile');
 				if (get_class($rawOrders) == 'MongoCursor') {
 					foreach ($rawOrders as $order) {
 						var_dump($order);
