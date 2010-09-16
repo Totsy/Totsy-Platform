@@ -1,10 +1,15 @@
 <?php
 
 namespace admin\models;
+use MongoId;
 
 class Event extends \lithium\data\Model {
 
 	public $validates = array();
+
+	public static function collection() {
+		return static::_connection()->connection->events;
+	}
 	
 	protected $_booleans = array(
 		'enabled'
@@ -18,6 +23,13 @@ class Event extends \lithium\data\Model {
 			}
 		}
 		return $event;
+	}
+
+	public static function removeItems($event) {
+		return static::collection()->update(
+			array('_id' => new MongoId($event)),
+			array('$unset' => array('items' => true)
+		));
 	}
 }
 

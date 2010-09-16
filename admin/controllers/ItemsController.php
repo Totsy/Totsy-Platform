@@ -103,6 +103,25 @@ class ItemsController extends BaseController {
 		$preview = 'Items';
 		return compact('item', 'event', 'related', 'sizes', 'shareurl', 'id', 'preview');
 	}
+
+	/**
+	 * Remove Items from Event and Item Collection
+	 *
+	 * Based on the event _id items will be removed from the Item collection.
+	 * The item field will also be unset.
+	 * @return array
+	 */
+	public function removeItems() {
+		if ($this->request->data) {
+			$event = $this->request->data['event'];
+			if (($event) && Item::remove(array('event' => $event)) && Event::removeItems($event)) {
+				$this->redirect(array(
+					'Events::edit',
+					'args' => array($event)
+				));
+			}
+		}
+	}
 }
 
 ?>

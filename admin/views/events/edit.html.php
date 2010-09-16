@@ -90,169 +90,180 @@ tinyMCE.init({
 <div class="grid_16">
 	<h2 id="page-heading">Editing Event - <?=$event->name?></h2>
 </div>
-<div id="tabs">
-	<ul>
-	    <li><a href="#event_info"><span>Event Info</span></a></li>
-		<li><a href="#event_images"><span>Event Images</span></a></li>
-	    <li><a href="#event_items"><span>Event Items</span></a></li>
-	</ul>
+<div id="clear"></div>
 
-	<div id="event_info">
-		<div id="event_note">
-			<p>
-				Hello administrator. Please edit an event by filling in all the information below. Thank You!
-			</p>
-		</div>
-		<div id="event_preview">
-			<p> To see a preview of the event please <?=$this->html->link('click here.',"/events/preview/$event->_id")?></p>
-		</div>
-		<h4 id="article-heading">Event Description</h4>
+<div id="grid_16">
+	<div id="tabs">
+		<ul>
+		    <li><a href="#event_info"><span>Event Info</span></a></li>
+			<li><a href="#event_images"><span>Event Images</span></a></li>
+		    <li><a href="#event_items"><span>Event Items</span></a></li>
+		</ul>
+
+		<div id="event_info">
+			<div id="event_note">
+				<p>
+					Hello administrator. Please edit an event by filling in all the information below. Thank You!
+				</p>
+			</div>
+			<div id="event_preview">
+				<p> To see a preview of the event please <?=$this->html->link('click here.',"/events/preview/$event->_id")?></p>
+			</div>
+			<h4 id="article-heading">Event Description</h4>
 
 		
-		    <?=$this->form->field('name', array('value' => $event->name, 'class' => 'general'));?>
-		    <?=$this->form->field('blurb', array('type' => 'textarea', 'name' => 'content', 'value' => $event->blurb));?>
-			<div id="event_status">
-				<h4 id="event_status">Event Status</h4>
-				<?php if ($event->enabled == 1): ?>
-					<p>The event is currently published for viewing</p><br>
-					<input type="radio" name="enabled" value="1" id="enabled" checked> Enable Event <br>
-					<input type="radio" name="enabled" value="0" id="enabled"> Disable Event
-				<?php else: ?>
-					<p>The event is NOT published for viewing</p><br>
-					<input type="radio" name="enabled" value="1" id="enabled"> Enable Event <br>
-					<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Event
-				<?php endif ?>
-			</div>
-			<div id="event_duration">
-				<h2 id="event_duration">Event Duration</h2>
-				<?php 
-					$start_date = date('m/d/Y H:i', $event->start_date->sec);
-					$end_date =  date('m/d/Y H:i', $event->end_date->sec);
-					echo $this->form->field('start_date', array(
-							'class' => 'general', 
-							'id' => 'start_date', 
-							'value' => "$start_date"
-						));
-				 	echo $this->form->field('end_date', array(
-							'class' => 'general', 
-							'id' => 'end_date', 
-							'value' => "$end_date"
-						));?>
-			</div>
-		<?=$this->form->submit('Update Event')?>
-	</div>
-	<div id="event_images">
-		<h1 id="current_images">Current Images</h1>
-			<table border="1" cellspacing="30" cellpadding="30">
-			<tr>
-				<th align="justify">
-					Image Location
-				</th>
-				<th align="justify">
-					Image
-				</th>
-			</tr>
-			<tr>
-				<td>Big Splash Image</td>
-				<td align="center">
-					<?php
-						if (!empty($event->images->splash_big_image)) {
-							$eventImage = "/image/{$event->images->splash_big_image}.jpg";
-						} else {
-							$eventImage = "/img/no-image-large.jpeg";
-						}
-					?>
-					<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
-				</td>
-			</tr>
-			<tr>
-				<td>Small Splash Image</td>
-				<td align="center">
-					<?php
-						if (!empty($event->images->splash_small_image)) {
-							$eventImage = "/image/{$event->images->splash_small_image}.jpg";
-						} else {
-							$eventImage = "/img/no-image-small.jpeg";
-						}
-					?>
-					<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
-				</td>
-			</tr>
-			<tr>
-				<td>Event Image</td>
-				<td align="center">
-					<?php
-						if (!empty($event->images->event_image)) {
-							$eventImage = "/image/{$event->images->event_image}.jpg";
-						} else {
-							$eventImage = "/img/no-image-small.jpeg";
-						}
-					?>
-					<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
-				</td>
-			</tr>
-			<tr>
-				<td>Logo Image</td>
-				<td align="center">
-					<?php
-						if (!empty($event->images->logo_image)) {
-							$eventImage = "/image/{$event->images->logo_image}.jpg";
-						} else {
-							$eventImage = "/img/no-image-small.jpeg";
-						}
-					?>
-					<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
-				</td>
-			</tr>
+			    <?=$this->form->field('name', array('value' => $event->name, 'class' => 'general'));?>
+			    <?=$this->form->field('blurb', array('type' => 'textarea', 'name' => 'content', 'value' => $event->blurb));?>
+				<div id="event_status">
+					<h4 id="event_status">Event Status</h4>
+					<?php if ($event->enabled == 1): ?>
+						<p>The event is currently published for viewing</p><br>
+						<input type="radio" name="enabled" value="1" id="enabled" checked> Enable Event <br>
+						<input type="radio" name="enabled" value="0" id="enabled"> Disable Event
+					<?php else: ?>
+						<p>The event is NOT published for viewing</p><br>
+						<input type="radio" name="enabled" value="1" id="enabled"> Enable Event <br>
+						<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Event
+					<?php endif ?>
+				</div>
+				<div id="event_duration">
+					<h2 id="event_duration">Event Duration</h2>
+					<?php 
+						$start_date = date('m/d/Y H:i', $event->start_date->sec);
+						$end_date =  date('m/d/Y H:i', $event->end_date->sec);
+						echo $this->form->field('start_date', array(
+								'class' => 'general', 
+								'id' => 'start_date', 
+								'value' => "$start_date"
+							));
+					 	echo $this->form->field('end_date', array(
+								'class' => 'general', 
+								'id' => 'end_date', 
+								'value' => "$end_date"
+							));?>
+				</div>
+			<?=$this->form->submit('Update Event')?>
+		</div>
+		<div id="event_images">
+			<h1 id="current_images">Current Images</h1>
+				<table border="1" cellspacing="30" cellpadding="30">
+				<tr>
+					<th align="justify">
+						Image Location
+					</th>
+					<th align="justify">
+						Image
+					</th>
+				</tr>
+				<tr>
+					<td>Big Splash Image</td>
+					<td align="center">
+						<?php
+							if (!empty($event->images->splash_big_image)) {
+								$eventImage = "/image/{$event->images->splash_big_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-large.jpeg";
+							}
+						?>
+						<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+					</td>
+				</tr>
+				<tr>
+					<td>Small Splash Image</td>
+					<td align="center">
+						<?php
+							if (!empty($event->images->splash_small_image)) {
+								$eventImage = "/image/{$event->images->splash_small_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-small.jpeg";
+							}
+						?>
+						<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+					</td>
+				</tr>
+				<tr>
+					<td>Event Image</td>
+					<td align="center">
+						<?php
+							if (!empty($event->images->event_image)) {
+								$eventImage = "/image/{$event->images->event_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-small.jpeg";
+							}
+						?>
+						<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+					</td>
+				</tr>
+				<tr>
+					<td>Logo Image</td>
+					<td align="center">
+						<?php
+							if (!empty($event->images->logo_image)) {
+								$eventImage = "/image/{$event->images->logo_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-small.jpeg";
+							}
+						?>
+						<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+					</td>
+				</tr>
+				</table>
+
+			<h1 id="uploaded_media">Uploaded Media</h1>
+			<div id="fileInfo"></div>
+			<br>
+
+			<br>
+			<table>
+				<tr valign="top">
+					<td>
+						<div>
+							<div class="fieldset flash" id="fsUploadProgress1">
+								<span class="legend">Upload Status</span>
+							</div>
+							<div style="padding-left: 5px;">
+								<span id="spanButtonPlaceholder1"></span>
+								<input id="btnCancel1" type="button" value="Cancel Uploads" onclick="cancelQueue(upload1);" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />
+								<br />
+							</div>
+						</div>
+					</td>
+				</tr>
 			</table>
 
-		<h1 id="uploaded_media">Uploaded Media</h1>
-		<div id="fileInfo"></div>
-		<br>
-
-		<br>
-		<table>
-			<tr valign="top">
-				<td>
-					<div>
-						<div class="fieldset flash" id="fsUploadProgress1">
-							<span class="legend">Upload Status</span>
-						</div>
-						<div style="padding-left: 5px;">
-							<span id="spanButtonPlaceholder1"></span>
-							<input id="btnCancel1" type="button" value="Cancel Uploads" onclick="cancelQueue(upload1);" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />
-							<br />
-						</div>
-					</div>
-				</td>
-			</tr>
-		</table>
-
-		<br>
-		<?=$this->form->submit('Update Event')?>
+			<br>
+			<?=$this->form->submit('Update Event')?>
+		</div>
+		<div id="event_items">
+			<h1 id="">Item Management</h1>
+			<br>
+			<h2 id="">Upload Items</h2>
+			<br>
+			<p>Please select the default option for all items being uploaded:</p>
+				<input type="radio" name="enable_items" value="1" id="enable_items"> Enable All <br>
+				<input type="radio" name="enable_items" value="0" id="enable_items" checked> Disable All <br><br>
+				<?=$this->form->label('Upload Event (Excel Files): '); ?>
+				<?=$this->form->file('upload_file'); ?>
+				<?=$this->form->submit('Update Event')?>
+			<br><br>
+			<h2 id="current_items">Current Items</h2><br>
+			<?=$this->items->build($eventItems);?>
+			<br><br>
+			
+			<?=$this->form->end(); ?>
+			<h2 id="">Delete Items</h2>
+				<p>Click the button below to delete all items from this event. <strong>WARNING - This action cannot be undone. All items associated with this event will be deleted!!!!!!<strong></p>
+				<?=$this->form->create(null, array('url' => 'Items::removeItems', 'name' => 'item-delete')); ?>
+					<?=$this->form->hidden('event', array('value' => $event->_id)); ?>
+					<?=$this->form->submit('Delete All Items'); ?>
+				<?=$this->form->end(); ?>
+		</div>
 	</div>
-	<div id="event_items">
-		<h1 id="">Item Management</h1>
-		<br>
-		<h2 id="">Delete Items</h2>
-			<p>Click the button below to delete all items from this event. If you want to delete one item at a time please remove items from their management screen.</p>
-		<br>
-		<h2 id="">Upload Items</h2>
-		<br>
-		<p>Please select the default option for all items being uploaded:</p>
-			<input type="radio" name="enable_items" value="1" id="enable_items"> Enable All <br>
-			<input type="radio" name="enable_items" value="0" id="enable_items" checked> Disable All <br><br>
-			<?=$this->form->label('Upload Event (Excel Files): '); ?>
-			<?=$this->form->file('upload_file'); ?>
-		<br><br>
-		<h2 id="current_items">Current Items</h2><br>
-		<?=$this->items->build($eventItems);?>
-		<br><br>
-		<?=$this->form->submit('Update Event')?>
-	</div>
+
+	
+
+
 </div>
-
-<?=$this->form->end(); ?>
 <script type="text/javascript">
 $(document).ready(function() {
 
