@@ -6,7 +6,7 @@
 	<title>Totsy<?php echo $this->title(); ?></title>
 	<?php echo $this->html->style(array('base'), array('media' => 'screen')); ?>
 	<?=$this->html->script(array(
-		'http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js',
+		'jquery-1.4.2.min.js',
 		'jquery-ui-1.8.2.custom.min.js',
 		'jquery.backstretch.min.js'
 	)); ?>
