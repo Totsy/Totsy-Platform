@@ -83,6 +83,7 @@
 			</p>
 			<p>
 				<?=$this->form->label('Credit Amount: '); ?>
+				<?=$this->form->select('sign', array('+' => '+', '-' => '-')); ?>
 				$<?=$this->form->text('amount', array('size' => 6)); ?>
 			</p>
 			<p>

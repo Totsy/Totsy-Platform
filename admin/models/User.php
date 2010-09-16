@@ -14,7 +14,8 @@ class User extends \lithium\data\Model {
 			'conditions' => array(
 				'_id' => $data['user_id']
 		)));
-		$user->total_credit = $user->total_credit + $data['amount'];
+		$amount = $data['sign'].$data['amount'];
+		$user->total_credit = $user->total_credit + $amount;
 		return $user->save(null,array('validate' => false));
 	}
 

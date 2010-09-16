@@ -20,7 +20,8 @@ class Credit extends \lithium\data\Model {
 	public static function add($credit, $data) {
 		$credit->created = static::dates('now');
 		$credit->user_id = (string) $data['user_id'];
-		$credit->credit_amount = (float) $data['amount'];
+		$amount = $data['sign'].$data['amount'];
+		$credit->credit_amount = (float) $amount;
 		$credit->reason = $data['reason'];
 		$credit->description = $data['description'];
 	 	return static::_object()->save($credit);

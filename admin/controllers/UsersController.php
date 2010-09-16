@@ -57,7 +57,7 @@ class UsersController extends \admin\controllers\BaseController {
 						'Amount'
 				));
 				$reasons = array(
-					'Manual Credit' => 'Manual Credit',
+					'Credit Adjustment' => 'Credit Adjustment',
 					'Invitation' => 'Invitation'
 				);
 				$credits = Credit::find('all', array(
