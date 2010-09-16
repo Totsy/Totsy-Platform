@@ -48,6 +48,8 @@ Router::connect('/register', 'Users::register');
 Router::connect('/invitation/{:args}', 'Users::register');
 Router::connect('/join/{:args}', 'Users::register');
 Router::connect('/reset', 'Users::reset');
+Router::connect('/pages/{:args}', 'Pages::view');
+
 /**
  * Redirect all non-authenticated users to 
  */
@@ -77,11 +79,6 @@ Router::connect('/welcome', 'Users::affiliate');
 * for custom routes.
 */
 //Router::connect('/help', 'Tickets::add');
-
-/**
- * ...and connect the rest of 'Pages' controller's urls.
- */
-Router::connect('/pages/{:args}', 'Pages::view');
 
 /**
  * Wire up the "search" for the 404 page, that attempts to figure out what you wanted.

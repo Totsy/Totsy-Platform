@@ -24,6 +24,11 @@ class PagesController extends BaseController {
 		if ($path[0] == 'blog') {
 			$this->redirect('http://totsyblog.blogspot.com');
 		}
+		$allowed = array('terms', 'faq', 'contact', 'privacy', 'aboutus');
+		$userCheck = Session::read('userLogin');
+		if (empty($userCheck) && !in_array($path[0], $allowed)) {
+			$this->redirect('/');
+		}
 		$this->render(join('/', $path));
 	}
 

@@ -29,33 +29,41 @@
 				); ?>
 			</div>
 			<div id="header-mid">
-				<?=$this->html->link('Help Desk', 'Tickets::add', array('id' => 'cs')); ?>
+				<?php if (!empty($userInfo)): ?>
+					<?=$this->html->link('Help Desk', 'Tickets::add', array('id' => 'cs')); ?>
+				<?php endif ?>
 				<div id="welcome">
-					<strong>Hello!</strong>
 					<?php if(isset($userInfo['firstname'])) { ?>
+						<strong>Hello!</strong>
 						<?="{$userInfo['firstname']} {$userInfo['lastname']}"; ?>
+						(<?=$this->html->link('Sign Out', 'Users::logout', array('title' => 'Sign Out')); ?>)
 					<?php }?>
-					(<?=$this->html->link('Sign Out', 'Users::logout', array('title' => 'Sign Out')); ?>)
 				</div>
-				<?=$this->menu->render('main-nav'); ?>
+				<?php if (!(empty($userInfo))): ?>
+					<?=$this->menu->render('main-nav'); ?>
+				<?php endif ?>
 			</div>
 			<div id="header-rt">
 				<?=$this->html->link('Invite Friends. Get $15','/invite',array('title'=>'Invite Friends. Get $15', 'id'=>'if'));?>
-				<p class="clear">
-					<span class="fr">
-						(<?=$cartCount;?>)
-						<?=$this->html->link('Checkout', array('Orders::add'), array(
-							'id' => 'checkout', 'title' => 'checkout'
+				<?php if (!empty($userInfo)): ?>
+					<p class="clear">
+						<span class="fr">
+							(<?=$cartCount;?>)
+							<?=$this->html->link('Checkout', array('Orders::add'), array(
+								'id' => 'checkout', 'title' => 'checkout'
+							)); ?>
+			 			</span>
+						<?=$this->html->link('Cart', '#', array(
+							'id' => 'cart', 'title' => 'My Cart'
 						)); ?>
-		 			</span>
-					<?=$this->html->link('Cart', '#', array(
-						'id' => 'cart', 'title' => 'My Cart'
-					)); ?>
-		 			<span class="fr">
-						<?=$this->html->link('My Credits', array('Pages::credits')); ?>
-						($<?=$credit?>)
-					</span>
-				</p>
+			 			<span class="fr">
+							<?=$this->html->link('My Credits', array('Pages::credits')); ?>
+							<?php if (!empty($credit)): ?>
+								($<?=$credit?>)
+							<?php endif ?>
+						</span>
+					</p>
+				<?php endif ?>
 			</div>
 		</div>	
 		<div id="content">

@@ -9,9 +9,14 @@ $(document).ready(function() {
 </script>
 <h1 class="p-header"><?=$this->title('Frequently Asked Questions'); ?></h1>
 
-<?=$this->menu->render('about'); ?>
 
-<div id="middle" class="noright">
+
+<?php if (!empty($userInfo)): ?>
+	<?=$this->menu->render('about'); ?>
+	<div id="middle" class="noright">
+<?php else: ?>
+	<div id="middle" class="fullwidth">
+<?php endif ?>
 
 	<div class="tl"><!-- --></div> 
 	<div class="tr"><!-- --></div> 
