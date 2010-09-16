@@ -118,8 +118,7 @@
 			</td>
 			<td class="cart-button" colspan="2">
 				<?=$this->html->link('Buy Now', 'Orders::add', array('class' => 'proceed-to-checkout')); ?>
-				<?=$this->html->link('Buy Now', 'Events::view', array('class' => 'continue-shopping')); ?>
-				
+				<?=$this->html->link('Buy Now', 'Events::index', array('class' => 'continue-shopping')); ?>
 			</td>
 			</tbody>
 		</table>
