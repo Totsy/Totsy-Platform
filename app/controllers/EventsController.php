@@ -46,6 +46,8 @@ class EventsController extends BaseController {
 		$pending = ($event->start_date->sec > time() ? true : false);
 		
 		if ($pending == false) {
+			++$event->views;
+			$event->save();
 			if (!empty($event->items)) {
 				foreach ($event->items as $_id) {
 					$conditions = compact('_id') + array('enabled' => true);

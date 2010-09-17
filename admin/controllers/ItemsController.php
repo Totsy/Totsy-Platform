@@ -5,7 +5,7 @@ use admin\controllers\BaseController;
 use admin\models\Item;
 use admin\models\Event;
 use \MongoDate;
-
+use \li3_flash_message\extensions\storage\FlashMessage;
 
 /**
  * Handles the users main account information.
@@ -113,13 +113,18 @@ class ItemsController extends BaseController {
 	 */
 	public function removeItems() {
 		if ($this->request->data) {
-			$event = $this->request->data['event'];
-			if (($event) && Item::remove(array('event' => $event)) && Event::removeItems($event)) {
-				$this->redirect(array(
-					'Events::edit',
-					'args' => array($event)
-				));
+			$id = $this->request->data['event'];
+			$event = Event::find('first', array('conditions' => array('_id' => $id)));
+			if ($event->views <= 0){
+				if ((!empty($event->items)) && Item::remove(array('event' => $id)) && Event::removeItems($id)) {
+					FlashMessage::set('Items Removed', array('class' => 'pass'));
+				} else {
+					FlashMessage::set('Remove Failed', array('class' => 'warning'));
+				}
+			} else {
+				FlashMessage::set('Items Cannot Be Removed the Event is Live', array('class' => 'fail'));
 			}
+			$this->redirect(array('Events::edit','args' => array($id)));
 		}
 	}
 }

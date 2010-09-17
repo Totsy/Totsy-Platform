@@ -36,6 +36,8 @@ class ItemsController extends BaseController {
 				if ($event->end_date->sec < time()) {
 					$this->redirect('/');
 				} else {
+					++$item->views;
+					$item->save();
 					$related = $item->related();
 					$sizes = $item->sizes();
 					$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
