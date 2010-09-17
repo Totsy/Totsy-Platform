@@ -13,12 +13,13 @@ use PHPExcel;
 use PHPExcel_Cell;
 use PHPExcel_Cell_DataType;
 use admin\extensions\Mailer;
+use \li3_flash_message\extensions\storage\FlashMessage;
 
 
 class OrdersController extends \lithium\action\Controller {
 
 	public function index() {
-
+		FlashMessage::clear();
 		if ($this->request->data) {
 			switch ($this->request->data['type']) {
 				case 'date':
@@ -57,12 +58,17 @@ class OrdersController extends \lithium\action\Controller {
 				if (get_class($rawOrders) == 'MongoCursor') {
 					foreach ($rawOrders as $order) {
 						var_dump($order);
+						FlashMessage::set('Results Found', array('class' => 'pass'));
 					}
 				} else {
 					$details = $rawOrders->data();
 					foreach ($details as $order) {
+						FlashMessage::set('Results Found', array('class' => 'pass'));
 						$orders[] = $this->sortArrayByArray($order, $headings);
 					}
+				}
+				if (empty($order)) {
+					FlashMessage::set('No Results Found', array('class' => 'warning'));
 				}
 			}
 		}
