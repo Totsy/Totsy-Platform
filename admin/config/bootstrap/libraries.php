@@ -43,6 +43,7 @@ use lithium\core\Libraries;
  * generally should not need to override any settings.
  */
 Libraries::add('lithium');
+Libraries::add('li3_flash_message');
 
 /**
  * Add the application.  You can pass a `'path'` key here if this bootstrap file is outside of
@@ -58,4 +59,5 @@ Libraries::add('li3_payments');
 require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel.php';
 require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel/IOFactory.php';
 require LITHIUM_APP_PATH . '/libraries/swiftmailer/lib/swift_required.php';
+
 ?>
