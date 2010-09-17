@@ -113,6 +113,11 @@ Session::config(array(
 	)
 ));
 
+Session::config(array(
+    'flash_message' => array('adapter' => 'Php')
+));
+
+
 Auth::config(array('userLogin' => array(
 	'model' => 'User',
 	'adapter' => 'Form',
