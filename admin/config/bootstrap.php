@@ -114,7 +114,7 @@ Session::config(array(
 ));
 
 Session::config(array(
-    'flash_message' => array('adapter' => 'Php')
+    'flash_message' => array('adapter' => 'Php', 'session.save_path' => '/dev/shm')
 ));
 
 
