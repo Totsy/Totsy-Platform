@@ -25,9 +25,12 @@ class Order extends \lithium\data\Model {
 	     return new MongoDate(time() + static::_object()->_dates[$name]);
 	}
 	
-	public static function lookup($orderId) {
+	public static function lookup($orderId, $userId) {
 		$orderId = new MongoRegex("/$orderId/i");
-		$result = static::find('first', array('conditions' => array('order_id' => $orderId)));
+		$result = static::find('first', array('conditions' => array(
+			'order_id' => $orderId,
+			'user_id' => $userId
+		)));
 		return $result;
 	}
 

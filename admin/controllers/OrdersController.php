@@ -137,12 +137,12 @@ class OrdersController extends \lithium\action\Controller {
 				$updated = array();
 				foreach ($shipRecords as $shipRecord) {
 					$checkedItems = array();
-					$order = Order::lookup(substr($shipRecord['OrderNum'], 0, 8));
+					$user = User::find('first', array(
+						'conditions' => array(
+							'email' => $shipRecord['Email']
+					)));
+					$order = Order::lookup(substr($shipRecord['OrderNum'], 0, 8), (string) $user->_id);
 					if ($order && !empty($order->items)) {
-						$user = User::find('first', array(
-							'conditions' => array(
-								'_id' => $order->user_id
-						)));
 						$item = Item::find('first', array(
 							'conditions' => array(
 								'vendor_style' => $shipRecord['SKU']
