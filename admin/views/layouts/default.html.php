@@ -34,7 +34,7 @@
 		// end checking for css files
 
 		// add the name of the scripts you want to include here.
-		$script = array('jquery-1.3.2.min', 'jquery-fluid16', 'jquery-ui');
+		$script = array('jquery-1.4.2.min', 'jquery-fluid16', 'jquery-ui-1.8.2.custom.min');
 		foreach ($script as $js):
 			if (file_exists("js/".$js.".js")) { // files are in APP/webroot
 				echo $this->html->script($js);

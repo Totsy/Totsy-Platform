@@ -87,11 +87,11 @@ class OrdersController extends \lithium\action\Controller {
 	    return $ordered + $array;
 	}
 
-	public function view($order_id = null) {
+	public function view($id = null) {
 		$this->_render['layout'] = 'base';
 		$order = null;
-		if ($order_id) {
-			$order = Order::lookup($order_id);
+		if ($id) {
+			$order = Order::find('first', array('conditions' => array('_id' => $id)));
 		}
 		if ($this->request->data) {
 			$order =  Order::lookup($this->request->data['order_id']);

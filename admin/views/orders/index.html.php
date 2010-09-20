@@ -1,16 +1,18 @@
+<?=$this->html->script('jquery-ui-timepicker.min.js');?>
 <?=$this->html->script('jquery.dataTables.js');?>
 <?=$this->html->script('TableTools.min.js');?>
-<?=$this->html->script('jquery-ui-timepicker.min.js');?>
 <?=$this->html->script('ZeroClipboard.js');?>
 <?=$this->html->style('jquery_ui_blitzer.css')?>
 <?=$this->html->style('TableTools');?>
 <?=$this->html->style('timepicker'); ?>
 <?=$this->html->style('table');?>
+<?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
+<?=$this->html->script('jquery-ui-timepicker.min.js');?>
 
 <script type="text/javascript" charset="utf-8">
 	$(function() {
 		var dates = $('#min_date, #max_date').datetimepicker({
-			defaultDate: "-2w",
+			defaultDate: "+1w",
 			changeMonth: true,
 			changeYear: true,
 			numberOfMonths: 1,
@@ -23,15 +25,27 @@
 		});
 	});
 </script>
-
 <div class="grid_16">
 	<h2 id="page-heading">Order Management</h2>
 </div>
 <div class="grid_4">
-	<?php echo $this->view()->render(array('element' => '../elements/box'), array(
-		'boxtitle' => 'Searching',
-		'boxbody' => "Search for orders using either date, order id or user information. If results have been found they will be presented in a table below. "
-	)); ?>
+	<div class="box">
+	<h2>
+		<a href="#" id="toggle-forms">Search By Event</a>
+	</h2>
+	<div class="block" id="forms">
+		<fieldset>
+			<?=$this->form->create(); ?>
+					<p>
+						<?=$this->form->label('Event Name'); ?>
+						<?=$this->form->text('event_name');?>
+					</p>
+					<?=$this->form->hidden('type', array('value' => 'event')); ?>
+				<?=$this->form->submit('Search'); ?>
+			<?=$this->form->end(); ?>
+		</fieldset>
+	</div>
+	</div>
 </div>
 <div id="clear"></div>
 <div class="grid_3">
@@ -81,7 +95,7 @@
 <div class="grid_6">
 	<div class="box">
 	<h2>
-		<a href="#" id="toggle-order-search">Search By User</a>
+		<a href="#" id="toggle-order-search">Search By Billing/Shipping Info</a>
 	</h2>
 	<div class="block" id="order-search">
 		<fieldset>
@@ -133,8 +147,21 @@
 					<td>
 						<?=$this->html->link($order['order_id'], array(
 						'Orders::view',
-						'args'=>$order['order_id']),
+						'args'=>$order['_id']),
 						array('target' => '_blank')); 
+						?>
+					</td>
+					<td>
+						<?php
+							$events = array();
+							foreach ($order['items'] as $item) {
+								if (!empty($item['event_name'])) {
+									if (!(in_array($item['event_name'], $events))) {
+										$events[] = $item['event_name'];
+										echo "$item[event_name]\n";
+									}
+								}
+							}
 						?>
 					</td>
 					<td>
