@@ -27,7 +27,7 @@ class Events extends \lithium\template\Helper {
 		'Reports::purchases',
 	);
 
-	public function build($eventRecords = null, $options = array()){
+	public function build($eventRecords = null, $options = array('type' => null)){
 		switch ($options['type']) {
 			case 'logistics':
 				$action = array('Reports::purchase');
