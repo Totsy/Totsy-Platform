@@ -30,6 +30,14 @@
 	</li>
 	<li>
 		<?php echo $this->html->link('Reports', '#'); ?>
+		<ul>
+			<li>
+				<?php echo $this->html->link('Affiliate Report', 'Reports::affiliate'); ?>
+			</li>
+			<li>
+				<?php echo $this->html->link('Logistics', 'Reports::logistics'); ?>
+			</li>
+		</ul>
 	</li>
 	<li>
 		<?php echo $this->html->link('User Management', '#'); ?>
