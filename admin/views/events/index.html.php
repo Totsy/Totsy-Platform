@@ -7,12 +7,12 @@
 <div class="grid_16">
 	<h2 id="page-heading">Event Administration</h2>
 </div>
-<br>
-<p>Edit events using the table below.</p>
+<div class='clear'></div>
+<div class="grid_16">
+	<?=$this->events->build($events)?>
+</div>
+<div class='clear'></div>
 
-<?=$this->html->link('Create New Event','/events/add')?> 
-
-<?=$this->events->build($events)?>
 
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
