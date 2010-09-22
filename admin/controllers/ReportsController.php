@@ -123,9 +123,9 @@ class ReportsController extends \lithium\action\Controller {
 							foreach ($items as $item) {
 								if (($item['item_id'] == $eventItem['_id'])) {
 									$purchaseOrder[$inc]['Quantity'] += $item['quantity'];
+									$purchaseOrder[$inc]['Size'] = $item['size'];
+									$purchaseOrder[$inc]['Unit'] = $eventItem['sale_whol'];
 								}
-								$purchaseOrder[$inc]['Size'] = $item['size'];
-								$purchaseOrder[$inc]['Unit'] = $eventItem['sale_whol'];
 							}
 							$purchaseOrder[$inc]['Total'] = $purchaseOrder[$inc]['Quantity'] * $eventItem['sale_whol'];
 						}
