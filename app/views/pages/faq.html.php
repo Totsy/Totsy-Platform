@@ -105,10 +105,6 @@ $(document).ready(function() {
 	 
 		<h2>Site Issues</h2>
 		
-		<p><strong>Where are my old invitations, did I lose my invitations from the old site?</strong><br />
-		Your invitations are safely stored in the database, and we're working to hook the new platform 
-		up to them and should have that done along with order and credit information.</p>
-		
 		<p><strong>What happened to the blog?</strong><br />
 		You have probably noticed that our blog is on temporary vacation while we get the new site up 
 		and running smoothly. We have big plans for the blog and will be making an announcement when 
