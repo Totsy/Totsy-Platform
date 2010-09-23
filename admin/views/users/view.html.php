@@ -55,7 +55,7 @@
 							<td>
 								<?=$this->html->link($order->order_id, array(
 								'Orders::view',
-								'args'=>$order->order_id),
+								'args'=>$order->_id),
 								array('target' => '_blank')); 
 								?>
 							</td>
