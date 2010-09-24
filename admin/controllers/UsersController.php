@@ -13,15 +13,35 @@ use admin\models\Order;
 
 
 /**
- * This class provides all the methods to register and authentic a user. 
+ * The Users Contoller for the namespace admin provides authentication and
+ * CRUD functionality. Currently, the Users Controller is only providing read functionality
+ * but it will be expanded to handle the full end to end CRUD.
  */
 
-/*
-	TODO The authenticaion process needs another look. We should be storing
-	the users information in the session instead of the cookie. 
-*/
 class UsersController extends \admin\controllers\BaseController {
 
+	/**
+	 * Associative array of headings used in view.
+	 */
+	protected $_headings = array(
+		'user' => array(
+			'firstname',
+			'lastname',
+			'email',
+			'logincounter',
+			'purchase_count',
+			'invited_by'
+			),
+		'order' => array(
+			'Date',
+			'Order Id',
+			'Total'),
+		'credit' => array(
+			'Date',
+			'Reason',
+			'Description',
+			'Amount'
+	));
 
 	public function index() {
 		if ($this->request->data) {
@@ -38,24 +58,7 @@ class UsersController extends \admin\controllers\BaseController {
 					'conditions' => array('_id' => $id)
 			));
 			if ($user) {
-				$headings = array(
-					'user' => array(
-						'firstname',
-						'lastname',
-						'email',
-						'logincounter',
-						'purchase_count'
-						),
-					'order' => array(
-						'Date',
-						'Order Id',
-						'Total'),
-					'credit' => array(
-						'Date',
-						'Reason',
-						'Description',
-						'Amount'
-				));
+				$headings = $this->_headings;
 				$reasons = array(
 					'Credit Adjustment' => 'Credit Adjustment',
 					'Invitation' => 'Invitation'
