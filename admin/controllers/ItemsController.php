@@ -90,8 +90,7 @@ class ItemsController extends BaseController {
 			} else {
 				$event = Event::find('first', array(
 					'conditions' => array(
-						'items' => array((string) $item->_id),
-						'enabled' => true
+						'items' => array((string) $item->_id)
 				)));
 				$related = $item->related();
 				$sizes = $item->sizes();
