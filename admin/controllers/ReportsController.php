@@ -175,7 +175,7 @@ class ReportsController extends BaseController {
 					$orders = Order::find('all', array(
 						'conditions' => array(
 							'items.item_id' => (string) $eventItem['_id'],
-							'items.size' => $key,
+							'items.size' => (string) $key,
 							'items.status' => array('$ne' => 'Order Canceled')
 					)));
 					if ($orders) {
