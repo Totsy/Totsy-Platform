@@ -1,6 +1,7 @@
 <?php
 
 namespace admin\controllers;
+use admin\controllers\BaseController;
 use admin\models\Cart;
 use admin\models\User;
 use admin\models\Order;
@@ -11,7 +12,7 @@ use MongoCode;
 use MongoDate;
 
 
-class ReportsController extends \lithium\action\Controller {
+class ReportsController extends BaseController {
 
 	protected $_purchaseHeading = array(
 		'SKU',
@@ -21,6 +22,59 @@ class ReportsController extends \lithium\action\Controller {
 		'Size',
 		'Unit',
 		'Total'
+	);
+
+	protected $_clientId = 'TOT';
+
+	protected $_productHeading = array(
+		'ClientID',
+		'SKU',
+		'Description',
+		'WhsInsValue (Cost)',
+		'ShipInsValue',
+		'Expiration_Date',
+		'UPC',
+		'Description for Customs',
+		'HSC Code',
+		'Class for LTL',
+		'Country of Origin',
+		'Velocity',
+		'Ref1',
+		'Ref2',
+		'Ref3',
+		'Ref4',
+		'Ref5',
+		'UOM1',
+		'UOM1_Qty',
+		'UOM1_Weight',
+		'UOM1_Length',
+		'UOM1_Width',
+		'UOM1_Height',
+		'UOM1_Cube'
+	);
+
+	protected $_orderHeading = array(
+		'Date',
+		'ClientId',
+		'DC',
+		'ShipMethod',
+		'RushOrder (Y/N)',
+		'OrderNum',
+		'SKU',
+		'Qty',
+		'CompanyOrName',
+		'ContactName',
+		'Address1',
+		'Address2',
+		'City',
+		'StateOrProvince',
+		'Zip',
+		'Country',
+		'Email',
+		'Tel',
+		'Customer PO #',
+		'Pack Slip Comment',
+		'Special Packing Instructions'
 	);
 	public function index() {
 
@@ -91,7 +145,17 @@ class ReportsController extends \lithium\action\Controller {
 		$events = Event::all();
 		return compact('events', 'items');
 	}
-	
+	/**
+	 * The purchases method complies the PO report for the logistics team. This report returns an associative array
+	 * which lists all the sales of each item of a sale.
+	 *
+	 * The order of operation is as follows:
+	 *
+	 * 1) Find all the event that is being requested via the URL.
+	 * 2) Find all the times that are a part of the event requested.
+	 * 3) For each item get all the orders that have been placed with that item in it.
+	 * 4) Build the array of cumulative purchases for each item of the event.
+	 */
 	public function purchases($eventId = null) {
 		if ($eventId) {
 			$purchaseHeading = $this->_purchaseHeading;
@@ -107,40 +171,60 @@ class ReportsController extends \lithium\action\Controller {
 			$eventItems = $items->data();
 			$inc = 0;
 			foreach ($eventItems as $eventItem) {
-				$orders = Order::find('all', array(
-					'conditions' => array(
-						'items.item_id' => (string) $eventItem['_id']
-				)));
-				if ($orders) {
-					$orderData = $orders->data();
-					if (!empty($orderData)) {
-						$purchaseOrder[$inc]['SKU'] = $eventItem['vendor_style'];
-						$purchaseOrder[$inc]['Product Name'] = $eventItem['description'];
-						$purchaseOrder[$inc]['Product Color'] = $eventItem['color'];
-						$purchaseOrder[$inc]['Quantity'] = 0;
-						foreach ($orderData as $order) {
-							$items = $order['items'];
-							foreach ($items as $item) {
-								if (($item['item_id'] == $eventItem['_id'])) {
-									$purchaseOrder[$inc]['Quantity'] += $item['quantity'];
-									$purchaseOrder[$inc]['Size'] = $item['size'];
-									$purchaseOrder[$inc]['Unit'] = $eventItem['sale_whol'];
+				foreach ($eventItem['details'] as $key => $value) {
+					$orders = Order::find('all', array(
+						'conditions' => array(
+							'items.item_id' => (string) $eventItem['_id'],
+							'items.size' => $key
+					)));
+					if ($orders) {
+						$orderData = $orders->data();
+						if (!empty($orderData)) {
+							foreach ($orderData as $order) {
+								$items = $order['items'];
+								foreach ($items as $item) {
+									if (($item['item_id'] == $eventItem['_id']) && ($key == $item['size'])){
+										$purchaseOrder[$inc]['Product Name'] = $eventItem['description'];
+										$purchaseOrder[$inc]['Product Color'] = $eventItem['color'];
+										$purchaseOrder[$inc]['SKU'] = $eventItem['vendor_style'];
+										$purchaseOrder[$inc]['Unit'] = $eventItem['sale_whol'];
+										if (empty($purchaseOrder[$inc]['Quantity'])) {
+											$purchaseOrder[$inc]['Quantity'] = $item['quantity'];
+										} else {
+											$purchaseOrder[$inc]['Quantity'] += $item['quantity'];
+										}
+										$purchaseOrder[$inc]['Total'] = $purchaseOrder[$inc]['Quantity'] * $eventItem['sale_whol'];
+										$purchaseOrder[$inc]['Size'] = $item['size'];
+										$purchaseOrder[$inc] = $this->sortArrayByArray($purchaseOrder[$inc], $purchaseHeading);
+									}
 								}
 							}
-							$purchaseOrder[$inc]['Total'] = $purchaseOrder[$inc]['Quantity'] * $eventItem['sale_whol'];
-						}
-						if (!empty($purchaseOrder[$inc]['Total'])) {
-							$total['sum'] += $purchaseOrder[$inc]['Total'];
-							$total['quantity'] += $purchaseOrder[$inc]['Quantity'];
+							if (!empty($purchaseOrder[$inc]['Total'])) {
+								$total['sum'] += $purchaseOrder[$inc]['Total'];
+								$total['quantity'] += $purchaseOrder[$inc]['Quantity'];
+							}
+							++$inc;
 						}
 					}
 				}
-				++$inc;
 			}
 		}
 		return compact('purchaseOrder', 'event', 'total', 'purchaseHeading');
 	}
 
+	public function orderFile($eventId = null) {
+		if ($eventId) {
+			$productHeading = $this->_purchaseHeading;
+
+			$items = Item::find('all', array(
+				'conditions' => array(
+					'event' => array('$in' => array($eventId)
+			))));
+
+			$eventItems = $items->data();
+
+		}
+	}
 }
 
 ?>
