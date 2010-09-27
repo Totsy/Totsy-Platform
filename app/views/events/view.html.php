@@ -9,7 +9,6 @@
 		<div id="listingCountdown" class="listingCountdown"></div>
 		
 		<h1 class="page-title gray"><span class="red"><?=$type?> Sales /</span> <?=$event->name; ?></h1>
-        <iframe src="http://www.facebook.com/plugins/like.php?href=<?=urlencode($shareurl);?>&amp;layout=standard&amp;show_faces=false&amp;width=450&amp;action=like&amp;font=arial&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:35px;" allowTransparency="true"></iframe>
 	
 		<div class="sm-actions fr">
 			<dl>
