@@ -16,15 +16,14 @@ class Events extends \lithium\template\Helper {
 		'name',
 		'start_date',
 		'end_date',
-		'PO',
-		'Product File',
-		'ASN'
+		'Report'
 	);
 
 	protected $_links = array(
-		'Reports::purchases',
-		'Reports::purchases',
-		'Reports::purchases',
+		'PO' => 'Reports::purchases',
+		'ASN' => 'Reports::purchases',
+		'Product File' => 'Reports::purchases',
+		'Order File' => 'Reports::orders'
 	);
 
 	public function build($eventRecords = null, $options = array('type' => null)){
@@ -64,11 +63,14 @@ class Events extends \lithium\template\Helper {
 					}
 				}
 				if ($options['type'] == 'logistics') {
-					foreach ($this->_links as $route) {
+					$html .= "<td>";
+					foreach ($this->_links as $name => $route) {
 						$link = array($route, 'args' => $event['_id']);
 						$option = array('escape' => false);
-						$html .= "<td>". $this->_context->html->link('View', $link, $option)."</td>";
+						$html .= $this->_context->html->link("View - $name", $link, $option);
+						$html .= "<br>";
 					}
+					$html .= "</td>";
 				}
 				$html .= '</tr>';
 			}

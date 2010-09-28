@@ -26,6 +26,8 @@ class ReportsController extends BaseController {
 
 	protected $_clientId = 'TOT';
 
+	protected $_dc = 'ALN';
+
 	protected $_productHeading = array(
 		'ClientID',
 		'SKU',
@@ -54,6 +56,16 @@ class ReportsController extends BaseController {
 	);
 
 	protected $_orderHeading = array(
+		'Select',
+		'OrderNum',
+		'SKU',
+		'Qty',
+		'CompanyOrName',
+		'Email',
+		'Note'
+	);
+
+	protected $_orderfileheading = array(
 		'Date',
 		'ClientId',
 		'DC',
@@ -76,6 +88,7 @@ class ReportsController extends BaseController {
 		'Pack Slip Comment',
 		'Special Packing Instructions'
 	);
+	
 	public function index() {
 
 	}
@@ -146,7 +159,7 @@ class ReportsController extends BaseController {
 		return compact('events', 'items');
 	}
 	/**
-	 * The purchases method complies the PO report for the logistics team. This report returns an associative array
+	 * The purchases method generates the PO report for the logistics team. This report returns an associative array
 	 * which lists all the sales of each item of a sale.
 	 *
 	 * The order of operation is as follows:
@@ -155,6 +168,7 @@ class ReportsController extends BaseController {
 	 * 2) Find all the times that are a part of the event requested.
 	 * 3) For each item get all the orders that have been placed with that item in it.
 	 * 4) Build the array of cumulative purchases for each item of the event.
+	 * @return mixed
 	 */
 	public function purchases($eventId = null) {
 		if ($eventId) {
@@ -213,19 +227,65 @@ class ReportsController extends BaseController {
 		return compact('purchaseOrder', 'event', 'total', 'purchaseHeading');
 	}
 
-	public function orderFile($eventId = null) {
+	public function orders($eventId = null) {
+		if ($this->request->data) {
+			die(var_dump($this->request->data));
+		}
 		if ($eventId) {
-			$productHeading = $this->_purchaseHeading;
-
+			$orderHeading = $this->_orderHeading;
+			$event = Event::find('first', array(
+				'conditions' => array(
+					'_id' => $eventId
+			)));
 			$items = Item::find('all', array(
 				'conditions' => array(
 					'event' => array('$in' => array($eventId)
 			))));
-
 			$eventItems = $items->data();
-
+			$inc = 0;
+			foreach ($eventItems as $eventItem) {
+				$orders = Order::find('all', array(
+					'conditions' => array(
+						'items.item_id' => (string) $eventItem['_id']
+				)));
+				if ($orders) {
+					$orderData = $orders->data();
+					if (!empty($orderData)) {
+						foreach ($orderData as $order) {
+							$items = $order['items'];
+							$user = User::find('first', array('conditions' => array('_id' => $order['user_id'])));
+							$others['Closed'] = 0;
+							$others['Open'] = 0;
+							foreach ($items as $item) {
+								$orderEvent = Event::find('first', array(
+									'conditions' => array(
+										'_id' => $item['event_id']
+								)));
+								if (!empty($orderEvent)) {
+									$others['Closed'] += ($orderEvent->end_date->sec < time()) ? 1 : 0;
+									$others['Open'] += ($orderEvent->end_date->sec > time()) ? 1 : 0;
+								}
+								if (($item['item_id'] == $eventItem['_id'])){
+									$orderList[$inc]['Select'] = ($others['Open'] != 0) ? '' : 'Checked';
+									$orderList[$inc]['OrderNum'] = $order['order_id'];
+									$orderList[$inc]['id'] = $order['_id'];
+									$orderList[$inc]['SKU'] = $eventItem['vendor_style'];
+									$orderList[$inc]['Qty'] = $item['quantity'];
+									$orderList[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
+									$orderList[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
+									$orderList[$inc]['Note'] = $others;
+									$orderList[$inc] = $this->sortArrayByArray($orderList[$inc], $orderHeading);
+								}
+								++$inc;
+							}
+						}
+					}
+				}
+			}
 		}
+		return compact('orderList', 'event', 'total', 'orderHeading');
 	}
 }
+
 
 ?>
