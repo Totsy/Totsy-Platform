@@ -10,9 +10,10 @@
 </div>
 <div class="clear"></div>
 <?php if (!empty($orderList)): ?>
-	<?=$this->form->create(); ?>
+	<?=$this->form->create(null, array('url' => 'Reports::orderfile')); ?>
 	<div class="grid_16">
-		<?=$this->form->submit('Generate Orders'); ?>
+		<?=$this->form->submit('Generate Final Order List'); ?>
+		<?=$this->form->hidden('event_id', array('value' => $event->_id)); ?>
 	</div>
 	<div class="clear"></div>
 	<div class="grid_16">
@@ -31,7 +32,7 @@
 						<tr>
 							<?php foreach ($orders as $key => $value): ?>
 								<?php if ($key == 'Select'): ?>
-									<td><input type="checkbox" name="<?=$orders['id']?>" value="<?=$orders['OrderNum']?>" id="some_name" <?=$value?></td>
+									<td><input type="checkbox" name="<?=$orders['id']?>" value="<?=$orders['Item']?>" <?=$value?></td>
 								<?php elseif ($key == 'Note'): ?>
 										<?php if (is_array($value)): ?>
 											<?php if ($value['Open'] == 0): ?>
@@ -46,7 +47,7 @@
 										<?php endif ?>
 									</td>
 								<?php else: ?>
-									<?php if ($key != 'id'): ?>
+									<?php if (!in_array($key, array('id', 'Item'))): ?>
 										<td><?=$value?></td>
 									<?php endif ?>
 								<?php endif ?>

@@ -65,7 +65,7 @@ class ReportsController extends BaseController {
 		'Note'
 	);
 
-	protected $_orderfileheading = array(
+	protected $_fileHeading = array(
 		'Date',
 		'ClientId',
 		'DC',
@@ -228,9 +228,6 @@ class ReportsController extends BaseController {
 	}
 
 	public function orders($eventId = null) {
-		if ($this->request->data) {
-			die(var_dump($this->request->data));
-		}
 		if ($eventId) {
 			$orderHeading = $this->_orderHeading;
 			$event = Event::find('first', array(
@@ -267,6 +264,7 @@ class ReportsController extends BaseController {
 								}
 								if (($item['item_id'] == $eventItem['_id'])){
 									$orderList[$inc]['Select'] = ($others['Open'] != 0) ? '' : 'Checked';
+									$orderList[$inc]['Item'] = $eventItem['_id'];
 									$orderList[$inc]['OrderNum'] = $order['order_id'];
 									$orderList[$inc]['id'] = $order['_id'];
 									$orderList[$inc]['SKU'] = $eventItem['vendor_style'];
@@ -284,6 +282,72 @@ class ReportsController extends BaseController {
 			}
 		}
 		return compact('orderList', 'event', 'total', 'orderHeading');
+	}
+
+	public function orderfile() {
+		$heading = $this->_fileHeading;
+		if ($this->request->data) {
+			$eventId = $this->request->data['event_id'];
+			unset($this->request->data['event_id']);
+			$orders = $this->request->data;
+			$inc = 0;
+			$event = Event::find('first', array(
+				'conditions' => array(
+					'_id' => $eventId
+			)));
+			foreach ($orders as $orderId => $itemId) {
+				$conditions = array(
+					'_id' => $orderId,
+					'items.item_id' => $itemId
+				);
+				$order = $this->getOrders('first', $conditions);
+				$orderItem = Item::find('first', array(
+					'conditions' => array(
+						'_id' => $itemId
+				)));
+				$user = User::find('first', array('conditions' => array('_id' => $order['user_id'])));
+				$items = $order['items'];
+				foreach ($items as $item) {
+					if (($item['item_id'] == $itemId)){
+						$orderFile[$inc]['ContactName'] = '';
+						$orderFile[$inc]['Date'] = date('m/d/Y');
+						$orderFile[$inc]['ClientId'] = $this->_clientId;
+						$orderFile[$inc]['DC'] = $this->_dc;
+						if ($order['shippingMethod'] == 'ups') {
+						     $orderFile[$inc]['ShipMethod'] = 'UPSGROUND';
+						} else {
+						     $orderFile[$inc]['ShipMethod'] = $order['shippingMethod'];
+						}
+						$orderFile[$inc]['RushOrder (Y/N)'] = '';
+						$orderFile[$inc]['Tel'] = $order['shipping']['telephone'];
+						$orderFile[$inc]['Country'] = '';
+						$orderFile[$inc]['OrderNum'] = $order['order_id'];
+						$orderFile[$inc]['SKU'] = $orderItem->vendor_style;
+						$orderFile[$inc]['Qty'] = $item['quantity'];
+						$orderFile[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
+						$orderFile[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
+						$orderFile[$inc]['Customer PO #'] = '';
+						$orderFile[$inc]['Pack Slip Comment'] = '';
+						$orderFile[$inc]['Special Packing Instructions'] = '';
+						$orderFile[$inc]['Address1'] = $order['shipping']['address'];
+						$orderFile[$inc]['Address2'] = $order['shipping']['address_2'];
+						$orderFile[$inc]['City'] = $order['shipping']['city'];
+ 						$orderFile[$inc]['StateOrProvince'] = $order['shipping']['state'];
+						$orderFile[$inc]['Zip'] = $order['shipping']['zip'];
+						$orderFile[$inc] = $this->sortArrayByArray($orderFile[$inc], $heading);
+						++$inc;
+					}
+				}
+			}
+		}
+		return compact('orderFile', 'heading', 'event');
+	}
+
+	protected function getOrders($search = 'all', $conditions = array()) {
+		$orders = Order::find($search, array(
+			'conditions' => $conditions
+		));
+		return $orders->data();
 	}
 }
 
