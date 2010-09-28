@@ -38,10 +38,7 @@
 	$(document).ready(function() {
 		TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
 		$('#order_list').dataTable({
-			"sDom": 'T<"clear">lfrtip',
-			'bLengthChange' : false,
-			"bPaginate": false,
-			"bFilter": false
+			"sDom": 'T<"clear">lfrtip'
 		}
 		);
 	} );

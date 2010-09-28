@@ -28,11 +28,13 @@
 					</tr>
 				</thead>
 				<tbody>
+					<?php $inc = 0 ?>
 					<?php foreach ($orderList as $orders): ?>
 						<tr>
+							<?php ++$inc; ?>
 							<?php foreach ($orders as $key => $value): ?>
 								<?php if ($key == 'Select'): ?>
-									<td><input type="checkbox" name="<?=$orders['id']?>" value="<?=$orders['Item']?>" <?=$value?></td>
+									<td><input type="checkbox" name="<?=$orders['id']?>-<?=$inc?>" value="<?=$orders['Item']?>" <?=$value?></td>
 								<?php elseif ($key == 'Note'): ?>
 										<?php if (is_array($value)): ?>
 											<?php if ($value['Open'] == 0): ?>

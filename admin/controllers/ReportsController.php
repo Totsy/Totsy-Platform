@@ -297,7 +297,7 @@ class ReportsController extends BaseController {
 			)));
 			foreach ($orders as $orderId => $itemId) {
 				$conditions = array(
-					'_id' => $orderId,
+					'_id' => substr($orderId, 0, 24),
 					'items.item_id' => $itemId
 				);
 				$order = $this->getOrders('first', $conditions);
@@ -335,9 +335,9 @@ class ReportsController extends BaseController {
  						$orderFile[$inc]['StateOrProvince'] = $order['shipping']['state'];
 						$orderFile[$inc]['Zip'] = $order['shipping']['zip'];
 						$orderFile[$inc] = $this->sortArrayByArray($orderFile[$inc], $heading);
-						++$inc;
 					}
 				}
+				++$inc;
 			}
 		}
 		return compact('orderFile', 'heading', 'event');
