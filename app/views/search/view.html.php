@@ -4,4 +4,3 @@
 	
 	<?php return; ?>
 <?php } ?>
-<?php var_dump($events->data()); ?>
