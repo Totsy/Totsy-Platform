@@ -23,6 +23,8 @@ class PagesController extends BaseController {
 		}
 		if ($path[0] == 'blog') {
 			$this->redirect('http://totsyblog.blogspot.com');
+		}elseif ($path[0] == 'btrendie' ){
+			$this->_render['layout'] = 'blank';
 		}
 		$allowed = array('terms', 'faq', 'contact', 'privacy', 'aboutus');
 		$userCheck = Session::read('userLogin');
