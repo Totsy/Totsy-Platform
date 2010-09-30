@@ -17,7 +17,8 @@ class Item extends \lithium\data\Model {
 		return static::all(array('conditions' => array(
 			'enabled' => true,
 			'description' => "$item->description",
-			'color' => array('$ne' => "$item->color")
+			'color' => array('$ne' => "$item->color"),
+			'event' => $item->event
 		)));
 	}
 

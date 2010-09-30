@@ -99,29 +99,27 @@
 	</div>
 	<!-- Started Related Products -->
 	<div id="related-products">
-	<!-- h2>You would also love:</h2><br -->
-		<?php
-			if (!empty($related)) {
-				foreach ($related as $relatedItem) {
-					if (empty($relatedItem->primary_image)) {
-						$relatedImage = '/img/no-image-small.jpeg';
-					} else {
-						$relatedImage = "/image/{$relatedItem->primary_image}.jpg";
-					}
-					echo $this->html->link(
-						$this->html->image("$relatedImage", array(
-							"class" => "img-th",
-							"width" => "93",
-							"height" => "93")),
-							"/items/preview/$relatedItem->url", array(
-								'id' => 
-								"$relatedItem->name", 
-								'escape'=> false
-					));
+	<?php if (!empty($related)): ?>
+		<h2>You would also love:</h2><br>
+		<?php foreach ($related as $relatedItem): ?>
+			<?php
+				if (empty($relatedItem->primary_image)) {
+					$relatedImage = '/img/no-image-small.jpeg';
+				} else {
+					$relatedImage = "/image/{$relatedItem->primary_image}.jpg";
 				}
-			}
-		?>
-
+				echo $this->html->link(
+					$this->html->image("$relatedImage", array(
+						"class" => "img-th",
+						"width" => "93",
+						"height" => "93")),
+						"/items/view/$relatedItem->url", array(
+							'id' => "$relatedItem->name",
+							'escape'=> false
+				));
+			?>
+		<?php endforeach ?>
+	<?php endif ?>
 	</div>
 	<!-- End Related Products -->
 </div>
