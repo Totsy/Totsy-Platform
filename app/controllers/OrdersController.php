@@ -9,10 +9,13 @@ use app\models\Credit;
 use app\models\Address;
 use app\models\Order;
 use app\models\Event;
+use app\models\Promotion;
+use app\models\Promocode;
 use app\controllers\BaseController;
 use lithium\storage\Session;
 use lithium\util\Validator;
 use app\extensions\Mailer;
+use MongoDate;
 
 class OrdersController extends BaseController {
 	
@@ -39,7 +42,8 @@ class OrdersController extends BaseController {
 
 	public function add() {
 		$data = $this->request->data;
-
+		Session::delete('credit');
+		Session::delete('promocode');
 		$user = Session::read('userLogin');
 		$billing = Address::menu($user);
 		$shipping = Address::menu($user);
@@ -149,6 +153,10 @@ class OrdersController extends BaseController {
 
 		$orderCredit = Credit::create();
 
+		if (Session::read('credit')) {
+			$orderCredit->credit_amount = Session::read('credit');
+		}
+
 		if (isset($this->request->data['credit_amount'])) {
 			$credit = number_format((float)$this->request->data['credit_amount'], 2);
 			$lower = -0.999;
@@ -176,15 +184,51 @@ class OrdersController extends BaseController {
 			}
 			if ($isMoney && $inRange && $isValid) {
 				$orderCredit->credit_amount = -$credit;
+				Session::write('credit', -$credit);
+			}
+		}
+
+		$orderPromo = Promotion::create();
+		$postCreditTotal = $subTotal + $orderCredit->credit_amount;
+		if (Session::read('promocode')) {
+			$orderPromo->code = Session::read('promocode');
+		}
+		if (isset($this->request->data['code'])) {
+			$orderPromo->code = $this->request->data['code'];
+		}
+
+		if ($orderPromo->code) {
+			$code = Promocode::confirmCode($orderPromo->code);
+			if (empty($code)) {
+				$orderPromo->errors(
+					$orderPromo->errors() + array(
+						'promo' => 'Sorry, Your promotion code is invalid'
+				));
+			} else {
+				if ($postCreditTotal > $code->minimum_purchase) {
+					$orderPromo->user_id = $user['_id'];
+					if ($code->type == 'percentage') {
+						$orderPromo->saved_amount = $postCreditTotal * -$code->discount_amount;
+					}
+					if ($code->type == 'dollar') {
+						$orderPromo->saved_amount = -$code->discount_amount;
+					}
+					Session::write('promocode', $orderPromo->code);
+				} else {
+					$orderPromo->errors(
+						$orderPromo->errors() + array(
+							'promo' => "Sorry, you need a minimum order total of $$code->minimum_purchase to use promotion code. Shipping and sales tax is not included."
+					));
+				}
 			}
 		}
 
 		$vars = compact(
 			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
-			'tax', 'shippingCost', 'billingAddr', 'shippingAddr', 'orderCredit', 'userDoc'
+			'tax', 'shippingCost', 'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'userDoc'
 		);
 
-		if (($cart->data()) && (count($this->request->data) > 1) && $order->process($user, $data, $cart, $orderCredit)) {
+		if (($cart->data()) && (count($this->request->data) > 1) && $order->process($user, $data, $cart, $orderCredit, $orderPromo)) {
 			$orderId = strtoupper(substr((string)$order->_id, 0, 8));
 			$orderNumCheck = Order::count(array('order_id' => $orderId));
 			if ($orderNumCheck > 0) {
@@ -195,7 +239,16 @@ class OrdersController extends BaseController {
 			if ($orderCredit->credit_amount) {
 				User::applyCredit($user['_id'], $orderCredit->credit_amount);
 				Credit::add($orderCredit, $user['_id'], $orderCredit->credit_amount, "Used Credit");
+				Session::delete('credit');
 				$order->credit_used = $orderCredit->credit_amount;
+			}
+			if ($orderPromo->saved_amount) {
+				Promocode::add((string) $code->_id, $orderPromo->saved_amount);
+				$orderPromo->order_id = (string) $order->_id;
+				$orderPromo->date_created = new MongoDate();
+				$orderPromo->save();
+				$order->promo_code = $orderPromo->code;
+				$order->promo_discount = $orderPromo->saved_amount;
 			}
 			$order->save();
 			Cart::remove(array('session' => Session::key()));
