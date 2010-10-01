@@ -15,8 +15,8 @@ Payments::config(array(
 	'default' => array(
 		'production' => array(
 			'adapter' => 'AuthorizeNet',
-			'login' => '3Zuk5g64mFR',
-			'key' => '3DgFTdNk4q9342yr',
+			'login' => '8M2rfU63AKzX',
+			'key' => '8rLu652Ff932KUXD',
 			'debug' => false,
 			'gateway' => 'live',
 			'connection' => array('classes' => array('socket' => 'lithium\net\socket\Curl'))
