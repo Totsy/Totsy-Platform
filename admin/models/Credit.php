@@ -2,7 +2,8 @@
 
 namespace admin\models;
 
-use \MongoDate;
+use MongoDate;
+use lithium\storage\Session;
 
 class Credit extends \lithium\data\Model {
 
@@ -18,7 +19,9 @@ class Credit extends \lithium\data\Model {
 	}
 
 	public static function add($credit, $data) {
+		$user = Session::read('userLogin');
 		$credit->created = static::dates('now');
+		$credit->admin_id = $user['_id'];
 		$credit->user_id = (string) $data['user_id'];
 		$amount = $data['sign'].$data['amount'];
 		$credit->credit_amount = (float) $amount;
