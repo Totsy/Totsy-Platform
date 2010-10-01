@@ -2,8 +2,9 @@
 
 namespace app\models;
 
-use \MongoDate;
+use MongoDate;
 use MongoId;
+use MongoRegex;
 
 class Promocode extends \lithium\data\Model {
 
@@ -26,6 +27,7 @@ class Promocode extends \lithium\data\Model {
 	 *
 	 */
 	public static function confirmCode($code) {
+		$code = new MongoRegex("/$code/i");
 		return static::find('first', array(
 			'conditions' => array(
 				'code' => $code,
