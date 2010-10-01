@@ -202,6 +202,10 @@
 											Credit Applied:
 												<br>
 											<?php endif ?>
+											<?php if ($order->promo_discount): ?>
+											Promotion Discount:
+												<br>
+											<?php endif ?>
 											Sales Tax:
 											<br>
 											Shipping:
@@ -213,6 +217,10 @@
 											<br>
 											<?php if ($order->credit_used): ?>
 												-$<?=number_format(abs($order->credit_used),2); ?>
+												<br>
+											<?php endif ?>
+											<?php if ($order->promo_discount): ?>
+												-$<?=number_format(abs($order->promo_discount),2); ?>
 												<br>
 											<?php endif ?>
 											$<?=number_format($order->tax,2); ?>
