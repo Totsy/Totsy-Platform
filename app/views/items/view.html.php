@@ -266,7 +266,7 @@ $.ajax({
 			autoOpen: false,
 			modal:true,
 			width: 900,
-			height: 600,
+			//height: 600,
 			overlay: {opacity: 0.5, background: "black"},
 			close: function(ev, ui) { location.reload(true); }
 		});
