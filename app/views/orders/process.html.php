@@ -282,6 +282,13 @@
 			</li>
 			<?=$this->form->hidden('credit_amount', array('value' => $orderCredit->credit_amount)); ?>
 			<?=$this->form->end(); ?>
+            
+    <!-- begin thawte seal --> 
+    <div id="thawteseal" style="text-align:right;" title="Click to Verify - This site chose Thawte SSL for secure e-commerce and confidential communications.">
+        <div><script type="text/javascript" src="https://seal.thawte.com/getthawteseal?host_name=www.totsy.com&amp;size=L&amp;lang=en"></script></div>
+        <div><a href="http://www.thawte.com/products/" target="_blank" style="color:#000000; text-decoration:none; font:bold 10px arial,sans-serif; margin:0px; padding:0px;">ABOUT SSL CERTIFICATES</a></div>
+    </div>
+    <!-- end thawte seal -->
 	</ol>
 	
 	<div class="bl"></div>
