@@ -128,7 +128,7 @@
         <div><script type="text/javascript" src="https://seal.thawte.com/getthawteseal?host_name=www.totsy.com&amp;size=L&amp;lang=en"></script></div>
         <div><a href="http://www.thawte.com/products/" target="_blank" style="color:#000000; text-decoration:none; font:bold 10px arial,sans-serif; margin:0px; padding:0px;">ABOUT SSL CERTIFICATES</a></div>
     </div>
-    <!-- end thawte seal -->
+    <!-- end thawte seal --> 
     
     
 	</div>
