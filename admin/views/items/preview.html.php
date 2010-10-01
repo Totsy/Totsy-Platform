@@ -99,7 +99,8 @@
 	</div>
 	<!-- Started Related Products -->
 	<div id="related-products">
-	<?php if (!empty($related)): ?>
+	<?php $relatedData = $related->data(); ?>
+	<?php if (!empty($relatedData)): ?>
 		<h2>You would also love:</h2><br>
 		<?php foreach ($related as $relatedItem): ?>
 			<?php
