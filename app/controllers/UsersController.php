@@ -70,7 +70,7 @@ class UsersController extends BaseController {
 			}
 			if ($user->save($data)) {
 				$userLogin = array(
-					'_id' => $user->_id,
+					'_id' => (string) $user->_id,
 					'firstname' => $user->firstname,
 					'lastname' => $user->lastname,
 					'email' => $user->email
