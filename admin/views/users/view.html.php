@@ -68,34 +68,37 @@
 		</div>
 	</div>
 </div>
-
 <div id="clear"></div>
 <div class="grid_6">
 	<div class="box">
 		<h2>
 			<a href="#" id="toggle-form">Apply Credits</a>
 		</h2>
-		<div class="block" id="forms">
-			<?=$this->form->create(null, array('url' => 'Credits::add')); ?>
-			<p>
-				<?=$this->form->label('Reason For Credit: '); ?>
-				<?=$this->form->select('reason', $reasons); ?>
-			</p>
-			<p>
-				<?=$this->form->label('Credit Amount: '); ?>
-				<?=$this->form->select('sign', array('+' => '+', '-' => '-')); ?>
-				$<?=$this->form->text('amount', array('size' => 6)); ?>
-			</p>
-			<p>
-				<?=$this->form->label('Description:'); ?>
-				<?=$this->form->textarea('description'); ?>
-			</p>
-				<?=$this->form->hidden('user_id', array('value' => $user->_id)); ?>
-				<?=$this->form->submit('Apply'); ?>
-			<?=$this->form->end(); ?>
+		<?php if (!empty($admin['superadmin']) && $admin['superadmin'] == true): ?>
+			<div class="block" id="forms">
+				<?=$this->form->create(null, array('url' => 'Credits::add')); ?>
+				<p>
+					<?=$this->form->label('Reason For Credit: '); ?>
+					<?=$this->form->select('reason', $reasons); ?>
+				</p>
+				<p>
+					<?=$this->form->label('Credit Amount: '); ?>
+					<?=$this->form->select('sign', array('+' => '+', '-' => '-')); ?>
+					$<?=$this->form->text('amount', array('size' => 6)); ?>
+				</p>
+				<p>
+					<?=$this->form->label('Description:'); ?>
+					<?=$this->form->textarea('description'); ?>
+				</p>
+					<?=$this->form->hidden('user_id', array('value' => $user->_id)); ?>
+					<?=$this->form->submit('Apply'); ?>
+				<?=$this->form->end(); ?>
+		<?php else: ?>
+				<p>Only Super Admins can apply credits</p>
+		<?php endif ?>
+				</div>
+			</div>
 		</div>
-	</div>
-</div>
 <div id="clear"></div>
 <div class="grid_10">
 	<div class="box">

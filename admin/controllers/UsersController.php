@@ -53,6 +53,7 @@ class UsersController extends \admin\controllers\BaseController {
 
 	public function view($id = null) {
 		if ($id) {
+			$admin = Session::read('userLogin');
 			$user = User::find(
 				'first', array(
 					'conditions' => array('_id' => $id)
@@ -75,7 +76,7 @@ class UsersController extends \admin\controllers\BaseController {
 			}
 		}
 
-		return compact('user', 'credits', 'orders', 'headings', 'info', 'reasons');
+		return compact('user', 'credits', 'orders', 'headings', 'info', 'reasons', 'admin');
 	}
 	/**
 	 * Performs login authentication for a user going directly to the database.
