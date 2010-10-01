@@ -37,12 +37,13 @@ class Promocode extends \lithium\data\Model {
 			)));
 	}
 
-	public static function add($_id, $discount) {
+	public static function add($_id, $discount, $revenue) {
 		$_id = new MongoId($_id);
 		$update = array(
 			'$inc' => array(
 				"times_used" => 1,
-				"total_discounts" => $discount
+				"total_discounts" => $discount,
+				"total_revenue" => $revenue
 		));
 		return static::collection()->update(array('_id' => $_id), $update);
 	}

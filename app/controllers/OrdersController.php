@@ -243,7 +243,7 @@ class OrdersController extends BaseController {
 				$order->credit_used = $orderCredit->credit_amount;
 			}
 			if ($orderPromo->saved_amount) {
-				Promocode::add((string) $code->_id, $orderPromo->saved_amount);
+				Promocode::add((string) $code->_id, $orderPromo->saved_amount, $order->total);
 				$orderPromo->order_id = (string) $order->_id;
 				$orderPromo->date_created = new MongoDate();
 				$orderPromo->save();
