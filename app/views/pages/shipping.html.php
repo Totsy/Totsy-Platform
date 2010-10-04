@@ -15,7 +15,7 @@ $this->title("Shipping &amp; Tax");
 	
 	<h2>Shipping Time</h2>
 
-	<p>For delivery, orders will be processed, shipped, and delivered within 3-4 weeks. When your order is shipped, you will be able to access a tracking number on your personal account page.</p>
+	<p>For delivery, orders will be processed, ordered to the brand, received at Totsy, quality controlled, and then shipped, and delivered within 3-5 weeks after the sale close. Your items are order to the brand after your purchase them so some brands might be a bit slow to ship those items to us. Make sure you always consider this when choosing the size when ordering an apparel item. When your order is shipped, you will be able to access a tracking number on your personal account page.</p>
 
 	<h2>Sales Tax</h2>
 

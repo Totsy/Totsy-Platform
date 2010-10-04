@@ -137,7 +137,10 @@ class ReportsController extends BaseController {
 					}
 			}');
 			$inital = array('total' => 0);
-			$reduce = new MongoCode('function(doc, prev){prev.total += doc.total;}');
+			$reduce = new MongoCode('function(doc, prev){
+				prev.total += doc.total
+				}'
+			);
 			$condition = $date + array('user_id' => array('$in' => $userId));
 
 			$collection = Order::collection();
@@ -262,7 +265,7 @@ class ReportsController extends BaseController {
 									$others['Closed'] += ($orderEvent->end_date->sec < time()) ? 1 : 0;
 									$others['Open'] += ($orderEvent->end_date->sec > time()) ? 1 : 0;
 								}
-								if (($item['item_id'] == $eventItem['_id'])){
+								if (($item['item_id'] == $eventItem['_id']) && $item['status'] != 'Order Canceled'){
 									$orderList[$inc]['Select'] = ($others['Open'] != 0) ? '' : 'Checked';
 									$orderList[$inc]['Item'] = $eventItem['_id'];
 									$orderList[$inc]['OrderNum'] = $order['order_id'];
