@@ -265,6 +265,7 @@ table {
 	width:100%;
 	border:1px solid #bbb;
 	margin-bottom:10px;
+	clear:both;
 }
 col.colC {
 	width:8em;
