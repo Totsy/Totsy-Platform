@@ -46,6 +46,7 @@ class ItemsController extends BaseController {
 			$this->redirect(array('controller' => 'items', 'action' => 'index'));
 		}
 		if ($this->request->data) {
+			$alternate_images = array();
 			foreach ($this->request->data as $key => $value) {
 				if (substr($key, 0, 10) == 'alternate-' ) {
 					$alternate_images[] = substr($key, 10, 24);
@@ -63,7 +64,6 @@ class ItemsController extends BaseController {
 			$this->request->data['modified_date'] = new MongoDate();
 
 			$data = array_merge(Item::castData($this->request->data), compact('alternate_images'));
-
 			if ($item->save($data)) {
 				$this->redirect(array(
 					'controller' => 'items', 'action' => 'edit',
