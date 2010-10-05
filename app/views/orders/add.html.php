@@ -204,9 +204,11 @@
 		<?=$this->form->end(); ?>    
     
     <!-- begin thawte seal --> 
-    <div id="thawteseal" style="text-align:right;" title="Click to Verify - This site chose Thawte SSL for secure e-commerce and confidential communications.">
-        <div><script type="text/javascript" src="https://seal.thawte.com/getthawteseal?host_name=www.totsy.com&amp;size=L&amp;lang=en"></script></div>
-        <div><a href="http://www.thawte.com/products/" target="_blank" style="color:#000000; text-decoration:none; font:bold 10px arial,sans-serif; margin:0px; padding:0px;">ABOUT SSL CERTIFICATES</a></div>
+    <div id="thawteseal" style="text-align: right; float: right; width: 200px;" title="Click to Verify - This site chose Thawte SSL for secure e-commerce and confidential communications.">
+        <script type="text/javascript" src="https://seal.thawte.com/getthawteseal?host_name=www.totsy.com&amp;size=L&amp;lang=en"></script>
+        <a href="http://www.thawte.com/products/" target="_blank" style="color:#000000; text-decoration:none; font:bold 10px arial,sans-serif; margin:0px; padding:0px;">ABOUT SSL CERTIFICATES</a>
+        
+    <!-- (c) 2005, 2010. Authorize.Net is a registered trademark of CyberSource Corporation --> <div class="AuthorizeNetSeal"> <script type="text/javascript" language="javascript">var ANS_customer_id="98c2dcdf-499f-415d-9743-ca19c7d4381d";</script> <script type="text/javascript" language="javascript" src="//verify.authorize.net/anetseal/seal.js" ></script> <a href="http://www.authorize.net/" id="AuthorizeNetText" target="_blank">Merchant Services</a> </div>      
     </div>
     <!-- end thawte seal -->
     
