@@ -38,6 +38,7 @@
 					<td><?=$order['Ship Method']?></td>
 					<td><?=$order['Tracking Number']?></td>
 					<td><?=$order['Confirmation Number']?></td>
+					<td><?=$order['Errors']?></td>
 				</tr>
 			<?php endforeach ?>
 		</tbody>

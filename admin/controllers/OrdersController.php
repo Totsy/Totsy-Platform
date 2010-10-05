@@ -141,60 +141,63 @@ class OrdersController extends \lithium\action\Controller {
 						'conditions' => array(
 							'email' => $shipRecord['Email']
 					)));
-					$order = Order::lookup(substr($shipRecord['OrderNum'], 0, 8), (string) $user->_id);
-					if ($order && !empty($order->items)) {
-						$item = Item::find('first', array(
-							'conditions' => array(
-								'vendor_style' => $shipRecord['SKU']
-						)));
-						if ($item) {
-							$itemId = (string) $item->_id;
-							$orderData = $order->data();
-							foreach ($orderData['items'] as $orderItem) {
-								if ($orderItem['item_id'] == $itemId) {
-									$orderItem['status'] = "Order Shipped";
-									$orderItem['tracking_number'] = $shipRecord['Tracking #'];
-								}
-								$checkedItems[] = $orderItem;
-							}
-							$order->items = $checkedItems;
-						}
-						$order->ship_method = $shipRecord['ShipMethod'];
-						$details = array(
-							'Order' => $order->order_id,
-							'SKU' => $shipRecord['SKU'],
-							'First Name' => $order->shipping->firstname,
-							'Last Name' => $order->shipping->lastname,
-							'Ship Method' => $order->ship_method,
-							'Tracking Number' => $shipRecord['Tracking #']
-						);
-						$trackingNum = Order::find('first', array(
-							'conditions' => array(
-								'tracking_numbers' => $shipRecord['Tracking #']
-						)));
-						if (empty($trackingNum)) {
-							Mailer::send(
-								'shipped',
-								"Totsy - Shipping Notification - $order->order_id",
-								array('name' => $order->firstname, 'email' => $shipRecord['Email']),
-								compact('order', 'details')
-							);
-						}
-						if(Order::setTrackingNumber($order->order_id, $shipRecord['Tracking #'])){
-							if (empty($order->auth_confirmation)) {
-								if ($order->process() && $user->purchase_count == 1) {
-									if ($user->invited_by) {
-										$credit = Credit::create();
-										User::applyCredit($user->invited_by, Credit::INVITE_CREDIT);
-										Credit::add($credit, $user->invited_by, Credit::INVITE_CREDIT, "Invitation");
+					if (!empty($user)) {
+						$order = Order::lookup(substr($shipRecord['OrderNum'], 0, 8), (string) $user->_id);
+						if ($order && !empty($order->items)) {
+							$item = Item::find('first', array(
+								'conditions' => array(
+									'vendor_style' => $shipRecord['SKU']
+							)));
+							if ($item) {
+								$itemId = (string) $item->_id;
+								$orderData = $order->data();
+								foreach ($orderData['items'] as $orderItem) {
+									if ($orderItem['item_id'] == $itemId) {
+										$orderItem['status'] = "Order Shipped";
+										$orderItem['tracking_number'] = $shipRecord['Tracking #'];
 									}
+									$checkedItems[] = $orderItem;
 								}
-							} else {
-								$order->save();
+								$order->items = $checkedItems;
 							}
+							$order->ship_method = $shipRecord['ShipMethod'];
+							$details = array(
+								'Order' => $order->order_id,
+								'SKU' => $shipRecord['SKU'],
+								'First Name' => $order->shipping->firstname,
+								'Last Name' => $order->shipping->lastname,
+								'Ship Method' => $order->ship_method,
+								'Tracking Number' => $shipRecord['Tracking #']
+							);
+							$trackingNum = Order::find('first', array(
+								'conditions' => array(
+									'tracking_numbers' => $shipRecord['Tracking #']
+							)));
+							if (empty($trackingNum)) {
+								Mailer::send(
+									'shipped',
+									"Totsy - Shipping Notification - $order->order_id",
+									array('name' => $order->firstname, 'email' => $shipRecord['Email']),
+									compact('order', 'details')
+								);
+							}
+							if(Order::setTrackingNumber($order->order_id, $shipRecord['Tracking #'])){
+								if (empty($order->auth_confirmation)) {
+									if ($order->process() && $user->purchase_count == 1) {
+										if ($user->invited_by) {
+											$credit = Credit::create();
+											User::applyCredit($user->invited_by, Credit::INVITE_CREDIT);
+											Credit::add($credit, $user->invited_by, Credit::INVITE_CREDIT, "Invitation");
+										}
+									}
+								} else {
+									$order->save();
+								}
+							}
+							$details['Confirmation Number'] = $order->auth_confirmation;
+							$details['Errors'] = $order->auth_error;
+							$updated[] = $details;
 						}
-						$details['Confirmation Number'] = $order->auth_confirmation;
-						$updated[] = $details;
 					}
 				}
 			}
