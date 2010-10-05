@@ -182,7 +182,7 @@ class OrdersController extends \lithium\action\Controller {
 								);
 							}
 							if(Order::setTrackingNumber($order->order_id, $shipRecord['Tracking #'])){
-								if (empty($order->auth_confirmation)) {
+								if (empty($order->auth_confirmation) || $order->auth_confirmation == -1) {
 									if ($order->process() && $user->purchase_count == 1) {
 										if ($user->invited_by) {
 											$credit = Credit::create();

@@ -42,6 +42,7 @@ class Order extends \lithium\data\Model {
 				'auth_error' => null
 			));
 		} catch (TransactionException $e) {
+			$order->errors($order->errors() + array($e->getMessage()));
 			$order->auth_error = array($e->getMessage());
 			$order->auth_confirmation = -1;
 			$order->save();
