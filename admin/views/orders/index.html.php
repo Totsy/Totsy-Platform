@@ -183,6 +183,15 @@
 						<?php endif ?>
 					</td>
 					<td>$<?=number_format($order['total'],2);?></td>
+					<?php if (!empty($order['tracking_numbers'])): ?>
+						<td>
+						<?php foreach ($order['tracking_numbers'] as $number): ?>
+							<?=$this->shipment->link($number, array('type' => $order['shippingMethod']))?>
+						<?php endforeach ?>
+						</td>
+					<?php else: ?>
+							<td>Not Shipped/No Tracking #</td>
+					<?php endif ?>
 					<td>
 						<?=$this->html->link('View', array(
 						'Users::view',

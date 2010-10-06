@@ -18,12 +18,34 @@ use \li3_flash_message\extensions\storage\FlashMessage;
 
 class OrdersController extends \lithium\action\Controller {
 
+	/**
+	 * These headings are used in the datatable index view.
+	 *
+	 * @var array
+	 */
+	protected $_headings = array(
+		'date_created',
+		'order_id',
+		'Event Name',
+		'billing',
+		'shipping',
+		'total',
+		'Tracking Info',
+		'Customer Profile'
+	);
+
+	/**
+	 * Main view to query for orders in the admin screen.
+	 *
+	 * @return object of orders and array of headings for view.
+	 */
 	public function index() {
+		$headings = $this->_headings;
 		FlashMessage::clear();
 		if ($this->request->data) {
 			switch ($this->request->data['type']) {
 				case 'date':
-					if (!empty($this->request->data['min_date'])) {
+					if (!empty($this->request->data['min_date']) && !empty($this->request->data['max_date'])) {
 						$minDate = new MongoDate(strtotime($this->request->data['min_date']));
 						$maxDate = new MongoDate(strtotime($this->request->data['max_date']));
 						$conditions = array(
@@ -54,10 +76,8 @@ class OrdersController extends \lithium\action\Controller {
 			}
 
 			if ($rawOrders) {
-				$headings = array('date_created','order_id', 'Event Name', 'billing', 'shipping','total', 'Customer Profile');
 				if (get_class($rawOrders) == 'MongoCursor') {
 					foreach ($rawOrders as $order) {
-						var_dump($order);
 						FlashMessage::set('Results Found', array('class' => 'pass'));
 					}
 				} else {
