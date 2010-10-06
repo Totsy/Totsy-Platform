@@ -29,30 +29,30 @@ class ReportsController extends BaseController {
 	protected $_dc = 'ALN';
 
 	protected $_productHeading = array(
-		'ClientID',
-		'SKU',
-		'Description',
-		'WhsInsValue (Cost)',
-		'ShipInsValue',
-		'Expiration_Date',
-		'UPC',
-		'Description for Customs',
-		'HSC Code',
-		'Class for LTL',
-		'Country of Origin',
-		'Velocity',
-		'Ref1',
-		'Ref2',
-		'Ref3',
-		'Ref4',
-		'Ref5',
-		'UOM1',
-		'UOM1_Qty',
-		'UOM1_Weight',
-		'UOM1_Length',
-		'UOM1_Width',
-		'UOM1_Height',
-		'UOM1_Cube'
+		'ClientID' => 'TOT',
+		'SKU' => null,
+		'Description' => null,
+		'WhsInsValue (Cost)' => null,
+		'ShipInsValue' => null,
+		'Expiration_Date' => null,
+		'UPC' => null,
+		'Description for Customs' => null,
+		'HSC Code' => null,
+		'Class for LTL' => null,
+		'Country of Origin' => 'USA',
+		'Velocity' => 'B',
+		'Ref1' => null,
+		'Ref2' => null,
+		'Ref3' => null,
+		'Ref4' => null,
+		'Ref5' => null,
+		'UOM1' => 'EA',
+		'UOM1_Qty' => 1,
+		'UOM1_Weight' => '1.00',
+		'UOM1_Length' => '1.00',
+		'UOM1_Width' => '1.00',
+		'UOM1_Height' => '1.00',
+		'UOM1_Cube' => '1.00'
 	);
 
 	protected $_orderHeading = array(
@@ -88,7 +88,8 @@ class ReportsController extends BaseController {
 		'Pack Slip Comment',
 		'Special Packing Instructions'
 	);
-	
+
+
 	public function index() {
 
 	}
@@ -181,11 +182,7 @@ class ReportsController extends BaseController {
 				'conditions' => array(
 					'_id' => $eventId
 			)));
-			$items = Item::find('all', array(
-				'conditions' => array(
-					'event' => array('$in' => array($eventId)
-			))));
-			$eventItems = $items->data();
+			$eventItems = $this->getOrderItems($eventId);
 			$inc = 0;
 			foreach ($eventItems as $eventItem) {
 				foreach ($eventItem['details'] as $key => $value) {
@@ -237,11 +234,7 @@ class ReportsController extends BaseController {
 				'conditions' => array(
 					'_id' => $eventId
 			)));
-			$items = Item::find('all', array(
-				'conditions' => array(
-					'event' => array('$in' => array($eventId)
-			))));
-			$eventItems = $items->data();
+			$eventItems = $this->getOrderItems($eventId);
 			$inc = 0;
 			foreach ($eventItems as $eventItem) {
 				$orders = Order::find('all', array(
@@ -351,6 +344,62 @@ class ReportsController extends BaseController {
 			'conditions' => $conditions
 		));
 		return $orders->data();
+	}
+	
+	public function getOrderItems($eventId = null) {
+		$items = null;
+		if ($eventId) {
+			$items = Item::find('all', array(
+				'conditions' => array(
+					'event' => array('$in' => array($eventId)
+			))));
+			$items = $items->data();
+		}
+		return $items;
+	}
+
+	public function productfile($eventId = null) {
+		if ($eventId) {
+			$productHeading = $this->_productHeading;
+			$event = Event::find('first', array(
+				'conditions' => array(
+					'_id' => $eventId
+			)));
+			$eventItems = $this->getOrderItems($eventId);
+			$inc = 0;
+			foreach ($eventItems as $eventItem) {
+				foreach ($eventItem['details'] as $key => $value) {
+					$conditions = array(
+						'items.item_id' => (string) $eventItem['_id'],
+						'items.size' => (string) $key,
+						'items.status' => array('$ne' => 'Order Canceled')
+					);
+					$orders = $this->getOrders('all', $conditions);
+					if ($orders) {
+						foreach ($orders as $order) {
+							$items = $order['items'];
+							foreach ($items as $item) {
+								if (($item['item_id'] == $eventItem['_id']) && ($key == $item['size'])){
+									$fields[$inc]['SKU'] = $eventItem['vendor_style'];
+									$fields[$inc]['Description'] = strtoupper(substr($eventItem['description'], 0, 40));
+									$fields[$inc]['WhsInsValue (Cost)'] = number_format($eventItem['sale_whol'], 2);
+									$fields[$inc]['Description for Customs'] = $eventItem['category'];
+									$fields[$inc]['ShipInsValue'] = number_format($eventItem['orig_whol'], 2);
+									$fields[$inc]['Ref1'] = $item['item_id'];
+									if ((int) $item['product_weight'] > 0) {
+										$fields[$inc]['UOM1_Weight'] = number_format($item['product_weight'],2);
+									}
+									$fields[$inc] = array_merge($productHeading, $fields[$inc]);
+									$productFile[$inc] = $this->sortArrayByArray($fields[$inc], $productHeading);
+								}
+							}
+						}
+						++$inc;
+					}
+				}
+			}
+		}
+		return compact('productFile', 'event', 'productHeading');
 	}
 }
 
