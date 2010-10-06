@@ -1,3 +1,4 @@
+<?php use admin\models\Event; ?>
 <?=$this->html->script('tiny_mce/tiny_mce.js');?>
 <?=$this->html->script('jquery-1.4.2');?>
 <?=$this->html->script('jquery-dynamic-form.js');?>
@@ -110,10 +111,10 @@ tinyMCE.init({
 				<p> To see a preview of the event please <?=$this->html->link('click here.',"/events/preview/$event->_id")?></p>
 			</div>
 			<h4 id="article-heading">Event Description</h4>
-
-		
 			    <?=$this->form->field('name', array('value' => $event->name, 'class' => 'general'));?>
-			    <?=$this->form->field('blurb', array('type' => 'textarea', 'name' => 'content', 'value' => $event->blurb));?>
+				<div id="blurb_div">
+					<?=$this->form->field('blurb', array('type' => 'textarea', 'name' => 'content', 'value' => $event->blurb));?><br>
+				</div>
 				<div id="event_status">
 					<h4 id="event_status">Event Status</h4>
 					<?php if ($event->enabled == 1): ?>
@@ -127,7 +128,7 @@ tinyMCE.init({
 					<?php endif ?>
 				</div>
 				<div id="event_duration">
-					<h2 id="event_duration">Event Duration</h2>
+					<h4 id="event_duration">Event Duration</h4>
 					<?php 
 						$start_date = date('m/d/Y H:i', $event->start_date->sec);
 						$end_date =  date('m/d/Y H:i', $event->end_date->sec);
@@ -142,6 +143,23 @@ tinyMCE.init({
 								'value' => "$end_date"
 							));?>
 				</div>
+				<div id="tags">
+					<?=$this->form->label('Tags'); ?>
+					<?php if ($event->tags): ?>
+						<select name="tags[]" id="tags" multiple="multiple" size="5">
+							<?php foreach (Event::$tags as $tag): ?>
+								<?php if (in_array($tag, $event->tags)): ?>
+									<option value="<?=$tag?>" selected><?=$tag?> </option>
+								<?php else: ?>
+									<option value="<?=$tag?>"><?=$tag?> </option>
+								<?php endif ?>
+							<?php endforeach ?>
+						</select>
+					<?php else: ?>
+						<?=$this->form->select('tags', Event::$tags, array('size' => 5, 'multiple' => 'multiple')); ?>
+					<?php endif ?>
+				</div>
+				<br>
 			<?=$this->form->submit('Update Event')?>
 		</div>
 		<div id="event_images">

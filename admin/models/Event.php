@@ -7,6 +7,12 @@ class Event extends \lithium\data\Model {
 
 	public $validates = array();
 
+	public static $tags = array(
+		'holiday' => 'holiday',
+		'special' => 'special',
+		'toys' => 'toys'
+	);
+
 	public static function collection() {
 		return static::_connection()->connection->events;
 	}
