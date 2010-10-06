@@ -130,7 +130,7 @@
 <div id="clear"></div>
 <div class="grid_16">
 <?php if (!empty($orders)): ?>
-	<table id="orderTable" class="datatable" border="1" style="width: 800px">
+	<table id="orderTable" class="datatable" border="1">
 		<thead>
 			<tr>
 				<?php 
