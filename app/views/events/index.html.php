@@ -118,6 +118,11 @@ $(document).ready(function() {
 	<?php endforeach ?>
 	<div class="coming-soon-sales">
 		<h2 class="page-title gray clear"><span class="red">Coming Soon</span></h2>
+        <?=$this->html->image('/img/toySale.png', array(
+									'title' => "Toy Sale",
+									'style' => 'text-align: center; margin:0px 0px 5px 0px;'
+								)); ?>
+         <div class="clear"></div>
 		<?php $x = 0; ?>
 		<?php $y = 0; ?>
 		<?php foreach ($pendingEvents as $event): ?>
