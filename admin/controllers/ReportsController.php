@@ -386,6 +386,8 @@ class ReportsController extends BaseController {
 									$fields[$inc]['Description for Customs'] = $eventItem['category'];
 									$fields[$inc]['ShipInsValue'] = number_format($eventItem['orig_whol'], 2);
 									$fields[$inc]['Ref1'] = $item['item_id'];
+									$fields[$inc]['Ref2'] = $item['size'];
+									$fields[$inc]['Ref3'] = $item['color'];
 									if ((int) $item['product_weight'] > 0) {
 										$fields[$inc]['UOM1_Weight'] = number_format($item['product_weight'],2);
 									}
