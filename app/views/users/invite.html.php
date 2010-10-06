@@ -28,6 +28,7 @@
 									<br>
 									<?=$this->form->create(); ?>
 										<?=$this->form->label('To:'); ?>
+										<br>
 										<?=$this->form->textarea('to', array(
 											'class' => 'inputbox',
 											'id' => 'recipient_list',
@@ -47,7 +48,7 @@
 											'onfocus' => "if(this.value=='Please accept this invitation to join Totsy') this.value='';"
 											)); ?>
 										<br>
-										<?=$this->form->submit('Send', array('class' => 'send-btn fr')); ?>
+										<?=$this->form->submit('Send', array('class' => 'send-btn fl')); ?>
 									<?=$this->form->end(); ?>
 									<br><br><br>
 									<?php if (is_array($user->invitation_codes)): ?>
