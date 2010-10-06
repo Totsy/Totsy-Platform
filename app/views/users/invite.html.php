@@ -50,7 +50,13 @@
 										<?=$this->form->submit('Send', array('class' => 'send-btn fr')); ?>
 									<?=$this->form->end(); ?>
 									<br><br><br>
-									<?php $invite = "http://www.totsy.com/join/" . $user->invitation_codes[0];?>
+									<?php if (is_array($user->invitation_codes)): ?>
+										<?php foreach ($user->invitation_codes as $code): ?>
+											<?php $invite = "http://www.totsy.com/join/" . $code;?>
+										<?php endforeach ?>
+									<?php else: ?>
+										<?php $invite = "http://www.totsy.com/join/" . $user->invitation_codes;?>
+									<?php endif ?>
 									<p>Share this link with your friends:</p>
 									<p><strong><?=$invite?></strong></p>
 								</fieldset>
