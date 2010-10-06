@@ -58,7 +58,7 @@
 										<?php $invite = "http://www.totsy.com/join/" . $user->invitation_codes;?>
 									<?php endif ?>
 									<p>Share this link with your friends:</p>
-									<p><strong><?=$invite?></strong></p>
+									<p style="word-wrap:break-word;"><strong><?=$invite?></strong></p>
 								</fieldset>
 						</div>
 						<div class="send-right r-container">
