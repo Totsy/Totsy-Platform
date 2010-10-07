@@ -21,8 +21,8 @@ class Events extends \lithium\template\Helper {
 
 	protected $_links = array(
 		'PO' => 'Reports::purchases',
-		'ASN' => 'Reports::purchases',
-		'Product File' => 'Reports::purchases',
+		'ASN' => '#',
+		'Product File' => 'Reports::productfile',
 		'Order File' => 'Reports::orders'
 	);
 

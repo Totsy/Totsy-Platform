@@ -17,16 +17,18 @@
 	</li>
 	
 	<li>
-		<?php echo $this->html->link('Event Management', 'Events::index'); ?>
+		<?php echo $this->html->link('Event/Item Management', 'Events::index'); ?>
 		<ul>
 			<li>
 				<?php echo $this->html->link('Add New Event', 'Events::add'); ?>
 			</li>
+			<li>
+				<?php echo $this->html->link('View Events', 'Events::index'); ?>
+			</li>
+			<li>
+				<?php echo $this->html->link('View Items', 'Items::index'); ?>
+			</li>
 		</ul>
-	</li>
-	
-	<li>
-		<?php echo $this->html->link('Item Management', 'Items::index'); ?>
 	</li>
 	<li>
 		<?php echo $this->html->link('Reports', '#'); ?>
@@ -36,6 +38,20 @@
 			</li>
 			<li>
 				<?php echo $this->html->link('Logistics', 'Reports::logistics'); ?>
+			</li>
+		</ul>
+	</li>
+	<li>
+		<?php echo $this->html->link('Promotions', '#'); ?>
+		<ul>
+			<li>
+				<?php echo $this->html->link('Create Promocode', '#'); ?>
+			</li>
+			<li>
+				<?php echo $this->html->link('View/Edit Promocodes', '#'); ?>
+			</li>
+			<li>
+				<?php echo $this->html->link('View Promotions', '#'); ?>
 			</li>
 		</ul>
 	</li>
