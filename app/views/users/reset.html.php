@@ -74,7 +74,8 @@ $image = $images[array_rand($images)];
 													));?>
 												</center>
 											<?=$this->form->end(); ?>
-										
+                                            
+                                                                                        										
 									</div>
 									<div class="bl"></div>
 									<div class="br"></div>
@@ -84,7 +85,7 @@ $image = $images[array_rand($images)];
 							<div class="register-container">
 								<div id="register-box" class="r-container">
 									<?php if (!empty($message)): ?>
-										<div id='message' class="cart-message"><?=$message;?></div>
+										<div id='message' class="cart-message"><?=$message;?> <a href="/" class="md" title="Return to Totsy">Return to Totsy</a></div>
 									<?php endif ?>
 								</div>
 							</div>

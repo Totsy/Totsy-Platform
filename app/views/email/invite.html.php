@@ -16,14 +16,14 @@
                 <tr>
                     <!-- Remember to add absolute file paths to all images for production -->
 
-                    <td style="height: 143px;" background="http://dev.totsy.com/markup/v2_emails/assets/img/top_back.png">
+                    <td style="height: 143px;" background="http://www.totsy.com/markup/v2_emails/assets/img/top_back.png">
                     <table cellspacing="0" cellpadding="0" border="0">
                         <tbody>
                             <tr>
-                                <td><a target="_blank" href="http://www.totsy.com" title="Totsy.com" border="0"><img height="112" width="181" src="http://dev.totsy.com/markup/v2_emails/assets/img/header_01.png" alt="Totsy.com" border="0" /></a></td>
-                                <td><a target="_blank" href="http://www.totsy.com/" title="Current Totsy Sales" border="0"><img height="112" width="53" src="http://dev.totsy.com/markup/v2_emails/assets/img/header_02.png" alt="Sales" border="0"  /></a></td>
-                                <td><a target="_blank" href="http://www.totsy.com/account" title="Access My Account" border="0"><img height="112" width="123" src="http://dev.totsy.com/markup/v2_emails/assets/img/header_03.png" alt="My Account" border="0"  /></a></td>
-                                <td><a target="_blank" href="http://www.totsy.com/invite" title="Invite Friends to Totsy" border="0"><img height="112" width="234" src="http://dev.totsy.com/markup/v2_emails/assets/img/header_04.png" alt="invite Your Friends" border="0" /></a></td>
+                                <td><a target="_blank" href="http://www.totsy.com" title="Totsy.com" border="0"><img height="112" width="181" src="http://www.totsy.com/markup/v2_emails/assets/img/header_01.png" alt="Totsy.com" border="0" /></a></td>
+                                <td><a target="_blank" href="http://www.totsy.com/" title="Current Totsy Sales" border="0"><img height="112" width="53" src="http://www.totsy.com/markup/v2_emails/assets/img/header_02.png" alt="Sales" border="0"  /></a></td>
+                                <td><a target="_blank" href="http://www.totsy.com/account" title="Access My Account" border="0"><img height="112" width="123" src="http://www.totsy.com/markup/v2_emails/assets/img/header_03.png" alt="My Account" border="0"  /></a></td>
+                                <td><a target="_blank" href="http://www.totsy.com/invite" title="Invite Friends to Totsy" border="0"><img height="112" width="234" src="http://www.totsy.com/markup/v2_emails/assets/img/header_04.png" alt="invite Your Friends" border="0" /></a></td>
                             </tr>
 
                         </tbody>
@@ -35,11 +35,11 @@
                     <table cellspacing="0" cellpadding="0" border="0">
                         <tbody>
                             <tr>
-                              <td valign="top" style="padding: 10px;" background="http://dev.totsy.com/markup/v2_emails/assets/img/mid_back.png"><img src="http://www.totsy.com/img/email/invitation-mainpic.jpg" width="570" height="177" /></td>
+                              <td valign="top" style="padding: 10px;" background="http://www.totsy.com/markup/v2_emails/assets/img/mid_back.png"><img src="http://www.totsy.com/img/email/invitation-mainpic.jpg" width="570" height="177" /></td>
                             </tr>
                             <tr>
 
-                                <td valign="top" style="padding: 20px;" background="http://dev.totsy.com/markup/v2_emails/assets/img/mid_back.png">
+                                <td valign="top" style="padding: 20px;" background="http://www.totsy.com/markup/v2_emails/assets/img/mid_back.png">
                                 <p>Greetings!</p> 
 								<p><?=$data['user']->firstname?> thinks you should join Totsy and has invited you! Totsy is the premier private shopping network for moms on-the-go and moms-to-be. Here is your personal message:</p>
 								<p><em>&quot;<?=$data['message']?>&quot;</em></p>
@@ -56,7 +56,7 @@
                 </tr>
 
                 <tr>
-                    <td name="Cont_6" style="padding: 20px;" background="http://dev.totsy.com/markup/v2_emails/assets/img/bottom_back.png" height="161"></td>
+                    <td name="Cont_6" style="padding: 20px;" background="http://www.totsy.com/markup/v2_emails/assets/img/bottom_back.png" height="161"></td>
                 </tr>
                 <tr>
                     <td style="font-size: 11px; text-align: center; padding: 20px;">Totsy - 27 West 20th Street, Suite 400 - New York, NY 10011 | 1-888-59TOTSY (1.888.791.1112) <a href="#" title="Info Email Address" style="color: rgb(224, 0, 0);">info@totsy.com</a>
