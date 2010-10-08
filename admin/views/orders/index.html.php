@@ -178,7 +178,8 @@
 						<?php if (!empty($order['shipping'])): ?>
 							<?=$order['shipping']['firstname']?>
 							<?=$order['shipping']['lastname']?><br>
-							<?=$order['shipping']['address']?>
+							<?=$order['shipping']['address']?><br>
+							<?=$order['shipping']['address_2']?>
 							<?=$order['shipping']['city']?> <?=$order['shipping']['state']?> <?=$order['shipping']['zip']?>
 						<?php endif ?>
 					</td>
