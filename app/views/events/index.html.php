@@ -36,10 +36,18 @@ $(document).ready(function() {
 								)); ?>
 					<?php endif ?>
 					<?php
-						if (!empty($event->images->splash_big_image)) {
-							$productImage = "/image/{$event->images->splash_big_image}.jpg";
+						if (!empty($event->images->splash_big_image) && !empty($event->images->splash_small_image)) {
+							if ($x <= 1) {
+								$productImage = "/image/{$event->images->splash_big_image}.jpg";
+							} else {
+								$productImage = "/image/{$event->images->splash_small_image}.jpg";
+							}
 						} else {
-							$productImage = ($x <= 1) ? "/img/no-image-large.jpeg" : "/img/no-image-small.jpeg";
+							if ($x <= 1) {
+								$productImage = "/img/no-image-large.jpeg";
+							} else {
+								$productImage = "/img/no-image-small.jpeg";
+							}
 						}
 					?>
 					<?php if ($x <= 1): ?>
