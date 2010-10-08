@@ -9,6 +9,38 @@ use \MongoId;
 use \MongoRegex;
 use \lithium\util\Validator;
 
+/**
+ * The User Model is a direct link to the MongoDb users collection.
+ *
+ * All the basic information regarding the user is stored in this collection.
+ *
+ * General Schema:
+ *
+ * {{{
+ * {
+ *		_id: MongoId,
+ * 		firstname: String (required),
+ * 		lastname: String (required),
+ * 		email: String (required),
+ * 		password: String (required),
+ * 		invitation_code: mixed (array, string) (required),
+ * 		invited_by: String,
+ * 		lastip: String,
+ * 		lastlogin: MongoDate,
+ * 		logincounter: Int,
+ * 		purchase_count: Int,
+ * 		created_date: MongoDate,
+ * 		total_credit: Float,
+ * 		active: mixed (1/0),
+ * 		legacy: mixed (1/0),
+ * 		salt: String (From Legacy Users),
+ * 		superadmin: Boolean,
+ * 		affiliate: (1/0)
+ * }
+ * }}}
+ *
+ * TODO: Affiliate, active, and legacy should all be changed to the Boolean type
+ */
 class User extends \lithium\data\Model {
 
 	public $validates = array(
