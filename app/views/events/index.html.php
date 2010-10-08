@@ -36,18 +36,10 @@ $(document).ready(function() {
 								)); ?>
 					<?php endif ?>
 					<?php
-						if (!empty($event->images->splash_big_image) && !empty($event->images->splash_small_image)) {
-							if ($x <= 1) {
-								$productImage = "/image/{$event->images->splash_big_image}.jpg";
-							} else {
-								$productImage = "/image/{$event->images->splash_small_image}.jpg";
-							}
+						if (!empty($event->images->splash_big_image)) {
+							$productImage = "/image/{$event->images->splash_big_image}.jpg";
 						} else {
-							if ($x <= 1) {
-								$productImage = "/img/no-image-large.jpeg";
-							} else {
-								$productImage = "/img/no-image-small.jpeg";
-							}
+							$productImage = ($x <= 1) ? "/img/no-image-large.jpeg" : "/img/no-image-small.jpeg";
 						}
 					?>
 					<?php if ($x <= 1): ?>
@@ -65,7 +57,7 @@ $(document).ready(function() {
 							'title' => "Product Title",
 							'alt' => "Product Alt Text",
 							'width' => '298',
-							'height' => '298'
+							'height' => '344'
 						)),array('Events::view', 'args' => array($event->url)), array('escape'=> false));
 						 ?>
 					<?php endif ?>
@@ -158,7 +150,7 @@ $(document).ready(function() {
 							'title' => "Product Title", 
 							'alt' => "Product Alt Text", 
 							'width' => '298', 
-							'height' => '298'
+							'height' => '344'
 						)),array('Events::view', 'args' => array($event->url)), array('escape'=> false));
 						 ?>
 
