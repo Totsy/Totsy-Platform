@@ -90,10 +90,10 @@
 							$(\"#itemCounter$x\").countdown('change', {until: itemExpires, $countLayout});
 							
 						$(\"#itemCounter$x\").countdown({until: itemExpires, 
-						    expiryText: '<div class=\"over\">This item is no longer reserved</div>', $countLayout});
+						    expiryText: '<div class=\"over\" style=\"color:#ff0000;\">This item is no longer reserved</div>', $countLayout});
 						var now = new Date()
 						if (itemExpires < now) {
-							$(\"#itemCounter$x\").html('<div class=\"over\">This item is no longer reserved</div>');
+							$(\"#itemCounter$x\").html('<div class=\"over\" style=\"color:#ff0000;\">This item is no longer reserved</div>');
 						}
 						});
 						</script>";
