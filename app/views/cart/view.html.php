@@ -7,7 +7,6 @@
 ?>
 
 <div class="message"></div>
-<br>
 <?php if (!empty($test)): ?>
 <?php $subTotal = 0; ?>
 <?=$this->form->create(); ?>
@@ -56,7 +55,7 @@
 						<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
 						<strong><?=$this->html->link($item->description, array('Items::view', 'args' => $item->url)); ?></strong><br>
 						<strong>Color:</strong> <?=$item->color;?><br>
-						<strong>Size:</strong><?=$item->size;?>
+						<strong>Size:</strong> <?=$item->size;?>
 					</td>
 					<td class="<?="qty-$x";?>">
 						<?=$this->form->text('', array(
@@ -76,7 +75,7 @@
 					<td class="<?="total-item-$x";?>">
 						<strong>$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
 					</td>
-					<td class="cart-time"><div id="<?php echo "itemCounter$x"; ?>"</div></td>
+					<td class="cart-time"><div id='<?php echo "itemCounter$x"; ?>'></div></td>
 					<td class="cart-actions">
 						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" class="delete">remove</a>
 					</td>
@@ -90,10 +89,10 @@
 							$(\"#itemCounter$x\").countdown('change', {until: itemExpires, $countLayout});
 							
 						$(\"#itemCounter$x\").countdown({until: itemExpires, 
-						    expiryText: '<div class=\"over\" style=\"color:#ff0000;\">This item is no longer reserved</div>', $countLayout});
+						    expiryText: '<div class=\"over\" style=\"color:#fff; background: #ff0000;\">This item is no longer reserved</div>', $countLayout});
 						var now = new Date()
 						if (itemExpires < now) {
-							$(\"#itemCounter$x\").html('<div class=\"over\" style=\"color:#ff0000;\">This item is no longer reserved</div>');
+							$(\"#itemCounter$x\").html('<div class=\"over\" style=\"color:#fff; background: #ff0000;\">This item is no longer reserved</div>');
 						}
 						});
 						</script>";

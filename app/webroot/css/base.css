@@ -806,3 +806,5 @@ label.required {display:block;width:120px;float:left;line-height:30px;font-weigh
 .our365-login .t-and-c .reg-tos{width:300px}
 h1#our365-logo{background:url(../img/our365/our365-totsy-logos.png) no-repeat;width:276px;height:83px;text-indent:-9999px;float:left;margin:0 20px 15px 0}
 body.login .our365-login #intro-copy{width:310px;font-size:16px;padding:15px 0 0 0}
+
+.error_flash { background: #f62020; padding: 15px; color: #fff; font-size: 20px; border-bottom: 8px solid rgb(68, 68, 68); }

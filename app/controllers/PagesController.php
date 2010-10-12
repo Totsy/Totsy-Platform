@@ -22,7 +22,7 @@ class PagesController extends BaseController {
 			$path = array('home');
 		}
 		if ($path[0] == 'blog') {
-			$this->redirect('http://totsyblog.blogspot.com');
+			$this->redirect('http://totsyblog.blogspot.com', array('target' => '_blank'));
 		}elseif ($path[0] == 'btrendie' ){
 			$this->_render['layout'] = 'blank';
 		}

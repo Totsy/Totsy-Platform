@@ -134,7 +134,7 @@ class UsersController extends BaseController {
 						$this->redirect('/');
 					}
 				} else {
-					$message = 'Login Failed - Please Try Again';
+					$message = '<div class="error_flash">Login Failed - Please Try Again</div>';
 				}
 			}
 		}

@@ -44,7 +44,7 @@
 				<?php endif ?>
 			</div>
 			<div id="header-rt">
-				<?=$this->html->link('Invite Friends. Get $15','/invite',array('title'=>'Invite Friends. Get $15', 'id'=>'if'));?>
+				<?=$this->html->link('Invite Friends. Get $15','/Users/invite',array('title'=>'Invite Friends. Get $15', 'id'=>'if'));?>
 				<?php if (!empty($userInfo)): ?>
 					<p class="clear">
 						<span class="fr">
