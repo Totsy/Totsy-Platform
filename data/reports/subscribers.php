@@ -18,7 +18,7 @@ function debug( $thingie ){
 
 // Configuration
 require_once 'reports_conf.php';
-$start = strtotime( '2010-09-11 00:00:00' );
+$start = new MongoDate( strtotime( '2010-09-11 00:00:00' ) );
 $options = array(
 	'created_date' => array('$gte' => $start),
 	'invited_by' => array('$ne' => 'btrendie')
@@ -40,8 +40,6 @@ $users = $mongousers->find(
 			"email" => 1
 		)
 	);
-
-var_dump( $options );
 
 // Output column headers
 echo "First,Last,Email\n";
