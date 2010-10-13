@@ -2,7 +2,7 @@
 
 /**
 * Connect to mongodb server, and remove all cart items
-* that are 11 minutes old or older
+* that are older than the time specified
 */
 
 // just for debugging convenience
@@ -16,7 +16,7 @@ function debug( $thingie ){
 */
 $mhost = '172.20.8.33';
 $mdb = 'totsy';
-$minutes = 15; // set this to the number of MINUTES your expiration needs
+$minutes = 17; // set this to the number of MINUTES your expiration needs
 $expire = $minutes * 60;
 
 $mongo = new Mongo("mongodb://$mhost");
@@ -28,7 +28,7 @@ $mongocarts = $mongo->$mdb->carts;
 */
 //echo "There are " . $mongocarts->count() . " items in the collection before cleanup.\n";
 
-$deadline = new MongoDate(time() - 660);
+$deadline = new MongoDate(time() - $expire);
 
 $mongocarts->remove(array("created" => array('$lte' => $deadline)));
 
