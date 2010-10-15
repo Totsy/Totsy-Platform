@@ -61,7 +61,7 @@ $(document).ready(function() {
 		<h2>Shipping Information</h2>
 	
 		<p><strong>What are my shipping options?</strong><br />
-		For standard delivery, we ship via USPS Priority Mail. For express delivery, we ship via UPS.
+		Our shipping partner is UPS.
 		</p>
 	
 		<p><strong>How long will it take for me to get my order?</strong><br />
