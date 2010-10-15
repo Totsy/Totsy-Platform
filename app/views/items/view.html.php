@@ -1,4 +1,4 @@
-<?=$this->html->script(array('jqzoom.pack.1.0.1','jquery.equalheights'));?>
+<?=$this->html->script(array('jqzoom.pack.1.0.1','jquery.equalheights', 'cloud-zoom.1.0.2'));?>
 <?=$this->html->style('jquery.countdown');?>
 
 <div id="product-detail-right">
@@ -139,7 +139,7 @@
 	<div class="r-container">
 		<div class="tl"></div>
 		<div class="tr"></div>
-		<div class="md-gray p-container loading" id="img-container">
+		<div class="p-container" id="img-container">
 			<?php if ($item->total_quantity <= 0): ?>
 					<?=$this->html->image('/img/soldout.gif', array(
 						'title' => "Sold Out",
@@ -147,16 +147,15 @@
 					)); ?>
 			<?php endif ?>
 				<?php if (!empty($item->primary_image)): ?>
-					<div class="zoom-container show" id="full_img_1">
-				<?php echo $this->html->link($this->html->image("/image/{$item->primary_image}.jpg", array(
-						"width" => "298", 
-						"height" => "300", 
-						"title" => $item->description, 
-						"alt" => $item->description)),
-						"/image/{$item->zoom_image}.jpg",
-						array('escape' => false, 'class' => 'zoom')); 
-				?>
-					</div>
+
+
+<div class="zoom-small-image"> 
+    <a href='/image/<?php echo $item->zoom_image; ?>.jpg' class='cloud-zoom' rel="position: 'inside'"> 
+    	<img src="/image/<?php echo $item->primary_image; ?>.jpg" alt='' border="0" title=""/> 
+    </a> 
+</div>
+
+
 				<?php endif ?>
 				<?php if (!empty($item->alternate_images)): ?>
 					<?php $x = 2; ?>
