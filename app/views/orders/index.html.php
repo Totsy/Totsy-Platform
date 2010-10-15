@@ -9,7 +9,7 @@
 	<div id="page">
 		
 		<div class="mar-10-b">
-			<strong class="gray">Shipping Process</strong>&nbsp;|&nbsp;<a href="javascript:void(0)" id="process-btn" title="more information">more info</a>
+			<strong class="gray">Shipping Process</strong>
 		</div>
 		
 		<p>Note: Orders may be split into multiple shipments with different tracking numbers.</p>
@@ -83,7 +83,7 @@
 </div>
 
 </div>
-	<div id="placed-modal" class="modal-div">
+	<div id="placed-modal" class="modal-div" style="display:none">
 		<ol class="shipping-process">
 			<li class="placed active">Order Placed With Totsy</li>
 			<li class="secured">Order Secured From Partners</li>
@@ -99,7 +99,7 @@
 		
 	</div>
 	
-	<div id="secured-modal" class="modal-div">
+	<div id="secured-modal" class="modal-div" style="display:none">
 		<ol class="shipping-process">
 			<li class="placed">Order Placed With Totsy</li>
 			<li class="secured active">Order Secured From Partners</li>
@@ -114,7 +114,7 @@
 		
 	</div>
 	
-	<div id="warehouse-modal" class="modal-div">
+	<div id="warehouse-modal" class="modal-div" style="display:none">
 		<ol class="shipping-process">
 			<li class="placed">Order Placed With Totsy</li>
 			<li class="secured">Order Secured From Partners</li>
@@ -130,7 +130,7 @@
 		
 	</div>
 	
-	<div id="shipped-modal" class="modal-div">
+	<div id="shipped-modal" class="modal-div" style="display:none">
 		<ol class="shipping-process">
 			<li class="placed">Order Placed With Totsy</li>
 			<li class="secured">Order Secured From Partners</li>
@@ -146,7 +146,7 @@
 		
 	</div>
 	
-	<div id="recieved-modal" class="modal-div">
+	<div id="recieved-modal" class="modal-div" style="display:none">
 		<ol class="shipping-process">
 			<li class="placed">Order Placed With Totsy</li>
 			<li class="secured">Order Secured From Partners</li>
@@ -160,7 +160,7 @@
 		
 	</div>
 	
-	<div id="process-modal" class="modal-div">
+	<div id="process-modal" class="modal-div" style="display:none">
 		<ol class="shipping-process">
 			<li class="placed">Order Placed With Totsy</li>
 			<li class="secured">Order Secured From Partners</li>
@@ -217,12 +217,12 @@
 		$(".r-box").equalHeights(100,300);
 		
 		//process modal pop-ups
-		$("#placed-modal").dialog({height:250,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
-		$("#secured-modal").dialog({height:250,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
-		$("#warehouse-modal").dialog({height:250,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
-		$("#shipped-modal").dialog({height:250,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
-		$("#recieved-modal").dialog({height:250,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
-		$("#process-modal").dialog({height:650,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
+		//$("#placed-modal").dialog({height:250,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
+		//$("#secured-modal").dialog({height:250,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
+		//$("#warehouse-modal").dialog({height:250,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
+		//$("#shipped-modal").dialog({height:250,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
+		//$("#recieved-modal").dialog({height:250,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
+		//$("#process-modal").dialog({height:650,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
 		
 		$("#placed-btn").click(function(){
 			$("#placed-modal").dialog('open');
