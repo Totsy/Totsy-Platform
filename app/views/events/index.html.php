@@ -1,3 +1,7 @@
+
+<?=$this->html->script(array('jquery.jcarousel.min'));?>
+<?=$this->html->style('skin');?>
+
 <script type="text/javascript">
 $(document).ready(function() {
 	if ($.browser.msie && $.browser.version < 7){
@@ -5,6 +9,36 @@ $(document).ready(function() {
 	}
 });
 </script>
+
+<script type="text/javascript">
+
+    // our event listener receives the carousel
+    // object, so we just check to see if it's 
+    // turned itself off or not...
+    function afterAnimation(carousel){
+        if(carousel.autoStopped){
+            carousel.startAuto()
+        }
+    }
+  
+    jQuery(document).ready(function(){
+        var options = {
+            auto: 2.5,
+            scroll:1,
+            wrap: 'last', // with this solution, wrap doesn't matter any more
+            // itemLastInCallBack fires when a new 'last' image
+            // shows up
+            itemLastInCallback:{
+                onAfterAnimation: afterAnimation
+                }
+        }
+        jQuery('#mycarousel').jcarousel(options);
+    })
+
+</script>
+
+
+
 <div id="middle" class="fullwidth">
 	<h1 class="page-title gray"><span class="red">Today's Sales</span></h1>
 	<?php $x = 0; ?>
@@ -118,10 +152,15 @@ $(document).ready(function() {
 	<?php endforeach ?>
 	<div class="coming-soon-sales">
 		<h2 class="page-title gray clear"><span class="red">Coming Soon</span></h2>
-        <?=$this->html->image('/img/toySale.png', array(
-									'title' => "Toy Sale",
-									'style' => 'text-align: center; margin:0px 0px 5px 0px;'
-								)); ?>
+	
+    <div style="padding:0px 9px;">
+            <ul id="mycarousel" class="jcarousel-skin-tango">
+                <li><img src="http://dev.totsy.com/img/toySale_banner1.png" alt="" /></li>
+                <li><img src="http://dev.totsy.com/img/toySale_banner2.png" alt="" /></li>
+                <li><img src="http://dev.totsy.com/img/toySale_banner3.png" alt="" /></li>
+            </ul>
+	</div>
+
          <div class="clear"></div>
 		<?php $x = 0; ?>
 		<?php $y = 0; ?>
