@@ -17,6 +17,7 @@ list-style-type: none;
 .jcarousel-skin-tango .jcarousel-clip-horizontal {
     width: 840px;
     height: 272px;
+    margin: 0 0 10px;
 }
 
 .jcarousel-skin-tango .jcarousel-item {
