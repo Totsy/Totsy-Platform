@@ -8,6 +8,7 @@
 
 use lithium\core\Libraries;
 
+
 /**
  * Optimize default request cycle by loading common classes.  If you're implementing custom
  * request/response or dispatch classes, you can safely remove these.  Actually, you can safely
@@ -54,7 +55,7 @@ Libraries::add('admin', array('default' => true));
 /**
  * Add some plugins
  */
-//Libraries::add('li3_docs');
+Libraries::add('li3_docs');
 Libraries::add('li3_payments');
 require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel.php';
 require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel/IOFactory.php';

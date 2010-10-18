@@ -53,7 +53,7 @@ Libraries::add('app', array('default' => true));
 /**
  * Add some plugins
  */
-//Libraries::add('li3_docs');
+Libraries::add('li3_docs');
 
 Libraries::add('li3_payments');
 
