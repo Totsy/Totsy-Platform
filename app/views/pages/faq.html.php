@@ -61,11 +61,11 @@ $(document).ready(function() {
 		<h2>Shipping Information</h2>
 	
 		<p><strong>What are my shipping options?</strong><br />
-		For standard delivery, we ship via USPS Priority Mail. For express delivery, we ship via UPS.
+		Our shipping partner is UPS.
 		</p>
 	
 		<p><strong>How long will it take for me to get my order?</strong><br />
-		For delivery, orders will be processed, ordered to the brand, received at Totsy, quality controlled, and then shipped, and delivered within 3-5 weeks after the sale close. Your items are order to the brand after you purchase them so some brands might be a bit slow to ship those items to us. Make sure you always consider this when choosing the size when ordering an apparel item. When your order is shipped, you will be able to access a tracking number on your personal account page.</p>
+		For delivery, orders will be processed, ordered to the brand, received at Totsy, quality controlled, and then shipped, and delivered within 3-5 weeks after the sale close. Your items are ordered to the brand after you purchase them so some brands might be a bit slow to ship those items to us. Make sure you always consider this when choosing the size when ordering an apparel item. When your order is shipped, you will be able to access a tracking number on your personal account page.</p>
 	
 		<p><strong>Can I track my order?</strong><br />
 		Yes, you can track your order online via your account page.</p>
