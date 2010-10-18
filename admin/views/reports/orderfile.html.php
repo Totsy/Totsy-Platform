@@ -4,20 +4,22 @@
 <?=$this->html->script('ZeroClipboard.js');?>
 <?=$this->html->style('table');?>
 <?=$this->html->style('TableTools');?>
+<?php if (!empty($event)): ?>
+	<div class="grid_16">
+		<h2 id="page-heading">Order File - <?=$event->name?></h2>
+	</div>
+<?php endif ?>
 
-<div class="grid_16">
-	<h2 id="page-heading">Order File - <?=$event->name?></h2>
-</div>
 <div class="clear"></div>
 <?php if (!empty($orderFile)): ?>
 	<div class="clear"></div>
 	<div class="grid_16">
-			<table id="order_list" class="datatable" border="1">
+			<table id="order_list" class="datatable" border="1" style="width:960px;">
 				<thead>
 					<tr>
 						<?php 
-						foreach ($heading as $value) {
-							echo "<th>$value</th>";
+						foreach ($heading as $key => $value) {
+							echo "<th>$key</th>";
 						}
 						?>
 					</tr>
@@ -38,8 +40,11 @@
 	$(document).ready(function() {
 		TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
 		$('#order_list').dataTable({
-			"sDom": 'T<"clear">lfrtip'
-		}
-		);
+			'bAutoWidth' : false,
+			"sDom": 'T<"clear">lfrtip',
+			"sScrollX": "960px",
+			"sScrollXInner": "110%",
+			"bScrollCollapse": true
+					});
 	} );
 </script>

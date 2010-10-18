@@ -10,10 +10,18 @@ use admin\models\Item;
 use admin\models\Base;
 use MongoCode;
 use MongoDate;
+use MongoRegex;
 
-
+/**
+ * The Reports Controller is the core for all reporting functionality.
+ */
 class ReportsController extends BaseController {
 
+	/**
+	 * The purchase order column headings.
+	 *
+	 * @var array
+	 */
 	protected $_purchaseHeading = array(
 		'SKU',
 		'Product Name',
@@ -26,8 +34,11 @@ class ReportsController extends BaseController {
 
 	protected $_clientId = 'TOT';
 
-	protected $_dc = 'ALN';
-
+	/**
+	 * The product file report column heading and default values.
+	 *
+	 * @var array
+	 */
 	protected $_productHeading = array(
 		'ClientID' => 'TOT',
 		'SKU' => null,
@@ -65,28 +76,56 @@ class ReportsController extends BaseController {
 		'Note'
 	);
 
+	/**
+	 * The order file column heading.
+	 *
+	 * @var	array
+	 */
 	protected $_fileHeading = array(
-		'Date',
-		'ClientId',
-		'DC',
-		'ShipMethod',
-		'RushOrder (Y/N)',
-		'OrderNum',
-		'SKU',
-		'Qty',
-		'CompanyOrName',
-		'ContactName',
-		'Address1',
-		'Address2',
-		'City',
-		'StateOrProvince',
-		'Zip',
-		'Country',
-		'Email',
-		'Tel',
-		'Customer PO #',
-		'Pack Slip Comment',
-		'Special Packing Instructions'
+		'Date' => null,
+		'ClientId' => 'TOT',
+		'DC' => 'ALN',
+		'ShipMethod' => null,
+		'RushOrder (Y/N)' => null,
+		'OrderNum' => null,
+		'SKU' => null,
+		'Qty' => null,
+		'CompanyOrName' => null,
+		'ContactName' => null,
+		'Address1' => null,
+		'Address2' => null,
+		'City' => null,
+		'StateOrProvince' => null,
+		'Zip' => null,
+		'Country' => null,
+		'Email' => null,
+		'Tel' => null,
+		'Customer PO #' => null,
+		'Pack Slip Comment' => null,
+		'Special Packing Instructions' => null,
+		'Ref1' => null,
+		'Ref2' => null,
+		'Ref3' => null,
+		'Ref4' => null,
+		'Ref5' => null,
+		'Ref6' => null,
+		'Ref7' => null,
+		'Ref8' => null,
+		'Ref9' => null,
+		'Ref10' => null,
+		'BillType (R/3P)' => null,
+		'R3PAccountNum' => null,
+		'Billing CompanyName' => null,
+		'Billing Address1' => null,
+		'Billing Address2' => null,
+		'Billing City' => null,
+		'Billing State' => null,
+		'Billing Country' => null,
+		'Billing Telephone' => null,
+		'COD (Y/N)' => null,
+		'Order COD Value' => null,
+		'COD: Require Payment By Cashier\'s Check/Money Order (Y/N)' => null,
+		'COD: Add Shipping Costs to COD Amount (Y/N)' => null
 	);
 
 
@@ -101,61 +140,130 @@ class ReportsController extends BaseController {
 		echo "[$x, $y]";
 	}
 
-	public function affiliate() {
-		$orderTotals = null;
-		if ($this->request->data) {
-			$affiliate = $this->request->data['affiliate'];
-			$min = new MongoDate(strtotime($this->request->data['min_date']));
-			$max = new MongoDate(strtotime($this->request->data['max_date']));
-			$total = 0;
-			$date = array(
-				'date_created' => array(
-					'$gt' => $min,
-					'$lt' => $max)
-			);
-			switch ($affiliate) {
-				case 'trendytogs':
-					$conditions = array(
-						'trendytogs_signup' => array('$exists' => true),
-						"purchase_count" => array('$gte' => 1)
-					);
-					break;
-				default:
-					$conditions = array(
-						'invited_by' => $affiliate,
-						'purchase_count' => array('$gte' => 1)
-					);
-					break;
-			}
-			$users = User::find('all', array('conditions' => $conditions));
-			$userId = array();
-			foreach ($users as $user) {
-				$userId[] = (string) $user->_id;
-			}
-			$keys = new MongoCode('function(doc){
-				return {
-					Date: doc.date_created.toDateString()
-					}
-			}');
-			$inital = array('total' => 0);
-			$reduce = new MongoCode('function(doc, prev){
-				prev.total += doc.total
-				}'
-			);
-			$condition = $date + array('user_id' => array('$in' => $userId));
 
-			$collection = Order::collection();
-			$retvals = $collection->group($keys, $inital, $reduce, $condition);
-			$sum = null;
-			$orderTotals = $retvals['retval'];
-			if ($orderTotals) {
-				foreach ($orderTotals as $totals) {
-					$sum += $totals['total'];
-				}
+	public function affiliate() {
+		if ($this->request->data) {
+			$name = $this->request->data['affiliate'];
+			$affiliate = new MongoRegex("/$name/i");
+			if ($this->request->data['min_date'] && $this->request->data['max_date']) {
+				$min = new MongoDate(strtotime($this->request->data['min_date']));
+				$max = new MongoDate(strtotime($this->request->data['max_date']));
+				$date = array(
+					'date_created' => array(
+						'$gt' => $min,
+						'$lt' => $max)
+				);
 			}
+			$searchType = $this->request->data['search_type'];
+			$groupBy = $this->request->data['group_by'];
+
+			switch ($searchType) {
+				case 'revenue':
+					# code...
+					break;
+				case 'registrations':
+					switch ($name) {
+						case 'trendytogs':
+							$conditions = array(
+								'trendytogs_signup' => array('$exists' => true)
+							);
+							$dateField = 'date_created';
+							break;
+						default:
+							$conditions = array(
+								'invited_by' => $affiliate,
+							);
+							$dateField = 'created_date';
+							if (!empty($date)) {
+								$conditions = $conditions + $date;
+							}
+							break;
+					}
+					switch ($groupBy) {
+						case 'month':
+							$key = "Date: doc.$dateField.getMonth()";
+							break;
+						default:
+							$key = null;
+							break;
+					}
+
+						$keys = new MongoCode("function(doc){
+							return {
+								$key
+								}
+						}");
+					$inital = array('count' => 0);
+					$reduce = new MongoCode('function(doc, prev){
+						prev.count += 1
+						}'
+					);
+
+					$collection = User::collection();
+
+					$retvals = $collection->group($keys, $inital, $reduce, $conditions);
+					$results = $retvals['retval'];
+					var_dump($retvals);
+					break;
+			}
+
+			// db.users.group(
+			//      {
+			//           keyf: function(doc){
+			//                return {
+			//                     "Date": doc.created_date.getMonth(),
+			//                }
+			//           },
+			//           initial : {count:0},
+			//           reduce: function(doc, prev){prev.count += 1;},
+			//           cond: {
+			//                "invited_by" : "keyade"
+			//           }
+			//      }
+			// )
+			// switch ($affiliate) {
+			// 	case 'trendytogs':
+			// 		$conditions = array(
+			// 			'trendytogs_signup' => array('$exists' => true),
+			// 			"purchase_count" => array('$gte' => 1)
+			// 		);
+			// 		break;
+			// 	default:
+			// 		$conditions = array(
+			// 			'invited_by' => $affiliate,
+			// 			'purchase_count' => array('$gte' => 1)
+			// 		);
+			// 		break;
+			// }
+			// $users = User::find('all', array('conditions' => $conditions));
+			// $userId = array();
+			// foreach ($users as $user) {
+			// 	$userId[] = (string) $user->_id;
+			// }
+			// $keys = new MongoCode('function(doc){
+			// 	return {
+			// 		Date: doc.date_created.toDateString()
+			// 		}
+			// }');
+			//$inital = array('total' => 0);
+			// $reduce = new MongoCode('function(doc, prev){
+			// 	prev.total += doc.total
+			// 	}'
+			// );
+			//$condition = $date + array('user_id' => array('$in' => $userId));
+
+			//$collection = Order::collection();
+			// $retvals = $collection->group($keys, $inital, $reduce, $condition);
+			// $sum = null;
+			// $orderTotals = $retvals['retval'];
+			// if ($orderTotals) {
+			// 	foreach ($orderTotals as $totals) {
+			// 		$sum += $totals['total'];
+			// 	}
+			// }
 		}
 
-		return compact('orderTotals', 'sum');
+		return compact('results');
 	}
 
 	public function logistics($event = null) {
@@ -280,6 +388,14 @@ class ReportsController extends BaseController {
 		return compact('orderList', 'event', 'total', 'orderHeading');
 	}
 
+	/**
+	 * Generates the order file.
+	 *
+	 * @return array
+	 *     orderFile - This is the array of all the orders that are being processed for shipmment.
+	 *     heading - The column headings for the orderFile.
+	 *     event - The event object.
+	 */
 	public function orderfile() {
 		$heading = $this->_fileHeading;
 		if ($this->request->data) {
@@ -307,8 +423,6 @@ class ReportsController extends BaseController {
 					if (($item['item_id'] == $itemId)){
 						$orderFile[$inc]['ContactName'] = '';
 						$orderFile[$inc]['Date'] = date('m/d/Y');
-						$orderFile[$inc]['ClientId'] = $this->_clientId;
-						$orderFile[$inc]['DC'] = $this->_dc;
 						if ($order['shippingMethod'] == 'ups') {
 						     $orderFile[$inc]['ShipMethod'] = 'UPSGROUND';
 						} else {
@@ -330,6 +444,10 @@ class ReportsController extends BaseController {
 						$orderFile[$inc]['City'] = $order['shipping']['city'];
  						$orderFile[$inc]['StateOrProvince'] = $order['shipping']['state'];
 						$orderFile[$inc]['Zip'] = $order['shipping']['zip'];
+						$orderFile[$inc]['Ref1'] = $item['item_id'];
+						$orderFile[$inc]['Ref2'] = $item['size'];
+						$orderFile[$inc]['Ref3'] = $item['color'];
+						$orderFile[$inc] = array_merge($heading, $orderFile[$inc]);
 						$orderFile[$inc] = $this->sortArrayByArray($orderFile[$inc], $heading);
 					}
 				}
@@ -404,6 +522,5 @@ class ReportsController extends BaseController {
 		return compact('productFile', 'event', 'productHeading');
 	}
 }
-
 
 ?>
