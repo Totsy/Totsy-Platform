@@ -36,9 +36,9 @@
 							<tr>
 								<td style="padding:20px" valign="top">
 									<p style="font-weight:bold">Order: <?=$order->order_id;?></p><br>
-									<p>Thank you so much for shopping with Totsy. Please find your order summary information below:
-									<br>
-								</td>
+									<p>Thank you so much for shopping with Totsy. Please find your order summary information below:</p>
+								  	<p style="font-size:11px;"><span style="font-weight:bold;">NOTE:</span> Your order will be delivered within 3-5 weeks</p>
+						        </td>
 							</tr>
 							<tr>
 								<td style="color:#666666;padding-top:5px;padding-bottom:5px;padding-left:20px" valign="top">

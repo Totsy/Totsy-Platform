@@ -12,7 +12,8 @@
 			<strong class="gray">Shipping Process</strong>
 		</div>
 		
-		<p>Note: Orders may be split into multiple shipments with different tracking numbers.</p>
+		<p style="font-size:11px;"><span style="font-weight:bold;">NOTE:</span> Orders may be split into multiple shipments with different tracking numbers.</p>
+        <p style="font-size:11px;"><span style="font-weight:bold;">NOTE:</span> Your order will be delivered within 3-5 weeks</p>
 		
 		<ol class="shipping-process">
 			<li class="placed link" id="placed-btn">Order Placed With Totsy</li>
