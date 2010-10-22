@@ -74,8 +74,7 @@ $(document).ready(function() {
 		No.</p>
 	
 		<p><strong>Does Totsy ship internationally?</strong><br />
-		We do not yet have international delivery rates set up, but if there is a specific request, you
-		can contact us either via email or phone.</p>
+		No.</p>
 	
 		<h2>Returns</h2>
 	
