@@ -18,6 +18,13 @@
 </head>
 
 <body class="app">
+	
+	<!-- ClickTale Top part -->
+	<script type="text/javascript">
+		var WRInitTime=(new Date()).getTime();
+	</script>
+	<!-- ClickTale end of Top part -->
+
 	<div id="topper"></div>	
 	<div id="wrapper">
 		<div id="header">
@@ -99,5 +106,16 @@
 	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 	  })();
 	</script>
+
+	<!-- ClickTale Bottom part -->
+	<div id="ClickTaleDiv" style="display: none;"></div>
+	<script type="text/javascript">
+		if(document.location.protocol!='https:')
+		document.write(unescape("%3Cscript%20src='http://s.clicktale.net/WRb6.js'%20type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+		if(typeof ClickTale=='function') ClickTale(10064,1,"www03");
+	</script>
+	<!-- ClickTale end of Bottom part -->
 	</body>	
 </html>
