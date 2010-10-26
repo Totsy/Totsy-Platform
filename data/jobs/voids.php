@@ -5,12 +5,26 @@
 * 
 * This currently searches for orders based on authKey, then
 * matches them up by event name.
+* 
+* Call this script thusly, with great panache:
+* 
+*   php -f voids.php voids-2010102601.php
+* 
+* Failing to pass a datafile will result in a warning 
+* followed by an abrupt exit.
 */
 
 
 // purely for debugging bliss
 function debug( $thingie ){
 	var_dump( $thingie );
+	exit;
+}
+
+if(isset( $argv[1] )){
+	include $argv[1];
+}else{
+	echo "You need to pass a datafile to this script in order for it to work. Exiting now...\n";
 	exit;
 }
 
@@ -23,15 +37,6 @@ $mongo = new Mongo($mhost);
 
 $mongoorders = $mongo->$mdb->orders;
 $mongoevents = $mongo->$mdb->events;
-
-$authKeys = array(
-		"3248089314",
-		"3245952247",
-		"3241715774",
-		"3247548178",
-		"3233514449",
-		"3247725553"
-	);
 
 $voids = $mongoorders->find( 
 		array(
