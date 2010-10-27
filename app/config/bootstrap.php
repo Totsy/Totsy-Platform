@@ -115,9 +115,9 @@ use lithium\storage\Session;
 Session::config(array(
  	'default' => array(
 		'production' => array('adapter' => 'Php', 'session.save_path' => '/dev/shm'),
-		'test'       => array('adapter' => 'Php', 'session.save_path' => '/dev/shm'),
-		'development' => array('adapter' => 'Php', 'session.save_path' => '/dev/shm'),
-		'local' => array('adapter' => 'Php', 'expires' => '3600')
+		'test'       => array('adapter' => 'Model', 'model' => 'Session'),
+		'development' => array('adapter' => 'Model', 'model' => 'Session'),
+		'local' => array('adapter' => 'Model', 'model' => 'Session')
 	)
 ));
 
