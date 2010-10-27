@@ -101,23 +101,22 @@ require __DIR__ . '/bootstrap/mail.php';
  * This configures your session storage. The Cookie storage adapter must be connected first, since
  * it intercepts any writes where the `'expires'` key is set in the options array.
  */
-use \lithium\storage\Session;
-use lithium\security\Auth;
+use lithium\storage\Session;
 
 Session::config(array(
  	'default' => array(
 		'production' => array('adapter' => 'Php', 'session.save_path' => '/dev/shm'),
-		'test'       => array('adapter' => 'Php', 'session.save_path' => '/dev/shm'),
-		'development' => array('adapter' => 'Php', 'session.save_path' => '/dev/shm'),
-		'local' => array('adapter' => 'Php', 'expires' => '3600')
+		'test'       => array('adapter' => 'Model', 'model' => 'Session'),
+		'development' => array('adapter' => 'Model', 'model' => 'Session'),
+		'local' => array('adapter' => 'Model', 'model' => 'Session')
 	)
 ));
 
 Session::config(array(
-    'flash_message' => array('adapter' => 'Php', 'session.save_path' => '/dev/shm')
+    'flash_message' => array('adapter' => 'Model', 'model' => 'Session')
 ));
 
-
+use lithium\security\Auth;
 Auth::config(array('userLogin' => array(
 	'model' => 'User',
 	'adapter' => 'Form',
@@ -126,12 +125,10 @@ Auth::config(array('userLogin' => array(
 )));
 
 
-use \lithium\analysis\Logger;
+use lithium\analysis\Logger;
 
 Logger::config(array(
 	'default' => array('adapter' => 'File')
 ));
 
-ini_set("display_errors", 1);
-ini_set("memory_limit", '256M');
 ?>
