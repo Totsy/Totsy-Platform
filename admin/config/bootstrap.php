@@ -104,12 +104,7 @@ require __DIR__ . '/bootstrap/mail.php';
 use lithium\storage\Session;
 
 Session::config(array(
- 	'default' => array(
-		'production' => array('adapter' => 'Php', 'session.save_path' => '/dev/shm'),
-		'test'       => array('adapter' => 'Model', 'model' => 'Session'),
-		'development' => array('adapter' => 'Model', 'model' => 'Session'),
-		'local' => array('adapter' => 'Model', 'model' => 'Session')
-	)
+ 	'default' => array('adapter' => 'Model', 'model' => 'Session')
 ));
 
 Session::config(array(
