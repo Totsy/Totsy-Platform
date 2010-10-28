@@ -52,8 +52,7 @@ div#header {
 	text-align:left;
 	margin-bottom: 0;
 	padding: 20px 1em 12px 1em;
-	height: 123px;
-}
+	}
 
 h1#sitetitle {
 	font-size: 3em;
@@ -78,10 +77,9 @@ h4#siteslogan {
 
 h2#page-heading {
 	font-weight:normal;
-	padding:.5em;
-	margin:0 0 10px 0;
-	border-bottom:1px solid #ccc;
-}
+	padding:5px;
+	margin:5px 0;
+	}
 
 
 /* boxes
