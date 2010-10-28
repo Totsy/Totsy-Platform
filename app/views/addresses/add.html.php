@@ -35,7 +35,9 @@
 				<?=$this->form->label('description', 'Description <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('description', array('class' => 'inputbox')); ?>
 				<?=$this->form->error('description'); ?>
-			</div>
+			<span style="font-size:10px;">(i.e. home, work, school, etc)</span>
+            </div>
+            
 			<div class="form-row">
 				<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('firstname', array('class' => 'inputbox')); ?>

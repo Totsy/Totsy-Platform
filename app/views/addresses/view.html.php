@@ -11,9 +11,9 @@
 			<thead>
 				<tr>
 					<th>#</th>
-					<th>Description	</th>
+					<th>Description <span style="font-size:10px; color:#fff;">(i.e. home, work, school, etc)</span></th>
 					<th>Address</th>
-					<th>Remove Address</th>
+					<th>Remove</th>
 				</tr>
 			</thead>
 			<tbody>
