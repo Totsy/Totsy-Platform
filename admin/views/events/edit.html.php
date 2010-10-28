@@ -89,11 +89,10 @@ tinyMCE.init({
 
 <?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
 <div class="grid_16">
-	<h2 id="page-heading">Editing Event - <?=$event->name?></h2>
+	<h2>Editing Event - <?=$event->name?></h2>
 </div>
-<div id="clear"></div>
 
-<div id="grid_16">
+<div class="grid_16">
 	<div id="tabs">
 		<ul>
 		    <li><a href="#event_info"><span>Event Info</span></a></li>
@@ -163,7 +162,8 @@ tinyMCE.init({
 			<?=$this->form->submit('Update Event')?>
 		</div>
 		<div id="event_images">
-			<h1 id="current_images">Current Images</h1>
+			<h3 id="current_images">Current Images</h3>
+            <hr />
 				<table border="1" cellspacing="30" cellpadding="30">
 				<tr>
 					<th align="justify">
@@ -227,7 +227,8 @@ tinyMCE.init({
 				</tr>
 				</table>
 
-			<h1 id="uploaded_media">Uploaded Media</h1>
+			<h3 id="uploaded_media">Uploaded Media</h3>
+            <hr />
 			<div id="fileInfo"></div>
 			<br>
 
@@ -253,10 +254,10 @@ tinyMCE.init({
 			<?=$this->form->submit('Update Event')?>
 		</div>
 		<div id="event_items">
-			<h1 id="">Item Management</h1>
-			<br>
-			<h2 id="">Upload Items</h2>
-			<br>
+			<h3 id="">Item Management</h3>
+			<hr />
+			<h3 id="">Upload Items</h3>
+            <hr />
 			<p>Please select the default option for all items being uploaded:</p>
 				<input type="radio" name="enable_items" value="1" id="enable_items"> Enable All <br>
 				<input type="radio" name="enable_items" value="0" id="enable_items" checked> Disable All <br><br>
@@ -264,7 +265,8 @@ tinyMCE.init({
 				<?=$this->form->file('upload_file'); ?>
 				<?=$this->form->submit('Update Event')?>
 			<br><br>
-			<h2 id="current_items">Current Items</h2><br>
+			<h3 id="current_items">Current Items</h3>
+            <hr />
 			<?=$this->items->build($eventItems);?>
 			<br><br>
 			
