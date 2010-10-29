@@ -117,5 +117,27 @@
 		if(typeof ClickTale=='function') ClickTale(10064,1,"www03");
 	</script>
 	<!-- ClickTale end of Bottom part -->
+    
+    <script type="text/javascript">
+			$(function () {
+				$(window).scroll(function () {
+					if ($(this).scrollTop() != 0) {
+						$('#toTop').fadeIn();
+					} else {
+						$('#toTop').fadeOut();
+					}
+				});
+				$('#toTop').click(function () {
+					$('body,html').animate({
+						scrollTop: 0
+					},
+					800);
+				});
+			});
+		</script>
+    
+    <div id='toTop'>^ Back to Top</div>
+    
+
 	</body>	
 </html>
