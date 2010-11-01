@@ -11,12 +11,13 @@ use MongoDate;
 use MongoId;
 use li3_flash_message\extensions\storage\FlashMessage;
 use li3_silverpop\extensions\Silverpop;
+use lithium\storage\Session;
 
 /**
- * undocumented class
+ * The `Emails` class is the gateway to send manual order status update
+ * emails to all the customers associated with an event.
  *
  **/
-
 class EmailsController extends \lithium\action\Controller {
 
 	public function index() {
@@ -29,10 +30,13 @@ class EmailsController extends \lithium\action\Controller {
 		return compact('email');
 	}
 
-	public function select($eventId = null) {
-		
-		$email = Email::create();
-
+	/**
+	 * The main method to handle the manual email transactional emails.
+	 * @param string $eventId
+	 * @return array
+	 * @todo Redirect admin to an event status page.
+	 */
+	public function send($eventId = null) {
 		if ($eventId) {
 			$event = Event::find('first', array(
 				'conditions' => array(
@@ -40,7 +44,6 @@ class EmailsController extends \lithium\action\Controller {
 			)));
 		}
 		if ($this->request->data) {
-			$order = Order::find('first', array('conditions' => array('_id' => '4c991893ce64e5c10fce0500')));
 			$orders = Order::find('all', array(
 				'conditions' => array(
 					'items.event_id' => $eventId
@@ -51,25 +54,53 @@ class EmailsController extends \lithium\action\Controller {
 						'conditions' => array(
 							'_id' => $order->user_id
 					)));
-					$data = array(
-						'email' => 'esmith@totsy.com',
-						'order' => $order,
-						'event' => $event,
-						'note' => $this->request->data['note'],
-						'campaignId' => $this->request->data['campaignId']
-					);
-					if (Silverpop::send('orderStatus', $data)) {
-						$log = array('body' => $data) + array(
-							'event_id' => $eventId,
-							'template' => 'orderStatus',
-							'created_date' => Email::dates('now')
-						);
-						$email->save($log);
-					}
+					$this->_send($user, $order, $event->name, $this->request->data);
+					$status = '3';
+					$this->_update($order, $status);
 				}
 			}
 		}
-		return compact('emailLog', 'event', 'emailTypes');
+		return compact('event');
+	}
+
+	/**
+	 * Updates the order status based on what email was sent to the customer.
+	 *
+	 * @param object $order
+	 * @param string $status
+	 * @return boolean
+	 */
+	protected function _update($order, $status) {
+
+	}
+
+	/**
+	 * This method interacts with the li3_silverpop library to process the XML
+	 * transaction.
+	 *
+	 * @param object $user
+	 * @param object $order
+	 * @param object $event
+	 * @param array $post
+	 * @return boolean
+	 */
+	protected function _send($user, $order, $event, $post) {
+		$admin = Session::read('userLogin');
+		$email = Email::create();
+		$data = array(
+			'email' => 'fagard@totsy.com',
+			'order' => $order,
+			'event' => $event,
+			'note' => $post['note'],
+			'campaignId' => $post['campaignId']
+		);
+		$log['success'] = (Silverpop::send('orderStatus', $data)) ? true : false;
+		$log = array(
+			'created_date' => Email::dates('now'),
+			'admin_id' => $admin['_id'],
+			'admin_name' => $admin['firstname']
+			) + $data;
+		return $email->save($log);
 	}
 }
 

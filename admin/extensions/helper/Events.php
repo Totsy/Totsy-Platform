@@ -34,7 +34,7 @@ class Events extends \lithium\template\Helper {
 	);
 
 	protected $_email = array(
-		'General Emails' => 'Emails::select'
+		'General Emails' => 'Emails::send'
 	);
 
 	public function build($eventRecords = null, $options = array('type' => null)){
