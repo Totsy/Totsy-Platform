@@ -12,6 +12,7 @@
 	<?=$this->form->field('lastname');?>
 	<?=$this->form->field('email');?>
 	<?=$this->form->field('confirmemail');?>
+	<?=$this->form->field('password');?>
 	Accept terms: <?=$this->form->checkbox('terms');?><br />
 	<?=$this->form->submit('Add Entry'); ?>
 <?=$this->form->end(); ?>
