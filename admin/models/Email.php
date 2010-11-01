@@ -28,7 +28,7 @@ class Email extends Base {
 
 	public $validates = array();
 
-	protected $_meta = array('source' => 'emails');
+	protected $_meta = array('source' => 'log.emails');
 
 	public static $templates = array(
 		'781191' => 'Order Enroute Warehouse - Normal',
