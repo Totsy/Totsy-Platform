@@ -57,6 +57,7 @@ Libraries::add('admin', array('default' => true));
  */
 Libraries::add('li3_docs');
 Libraries::add('li3_payments');
+Libraries::add('li3_silverpop');
 require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel.php';
 require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel/IOFactory.php';
 require LITHIUM_APP_PATH . '/libraries/swiftmailer/lib/swift_required.php';
