@@ -1,10 +1,5 @@
 <ul class="nav main">
 	<li>
-		<?php echo $this->html->link('Dashboard', '/'); ?>
-		<ul>
-		</ul>
-	</li>
-	<li>
 		<?php echo $this->html->link('Order Management', 'Orders::index'); ?>
 		<ul>
 			<li>
@@ -63,7 +58,9 @@
 			</li>
 		</ul>
 	</li>
-	
+	<li>
+		<?php echo $this->html->link('Email Management', 'Emails::index'); ?>
+	</li>
 	<li class="secondary">
 		<?php echo $this->html->link('Logout', 'Users::logout'); ?>
 	</li>
