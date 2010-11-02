@@ -1,16 +1,5 @@
-<?=$this->html->script('tiny_mce/tiny_mce.js');?>
-<?=$this->html->script('jquery-1.4.2');?>
-<?=$this->html->script('jquery-dynamic-form.js');?>
-<?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
-<?=$this->html->script('swfupload.js');?>
-<?=$this->html->script('swfupload.queue.js');?>
-<?=$this->html->script('fileprogress.js');?>
-<?=$this->html->script('handlers.js');?>
-<?=$this->html->script('item_upload.js');?>
-<?=$this->html->style('swfupload')?>
-<?=$this->html->style('jquery_ui_blitzer.css')?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->style('table');?>
+<?=$this->html->script(array('tiny_mce/tiny_mce.js', 'jquery-1.4.2', 'jquery-dynamic-form.js', 'jquery-ui-1.8.2.custom.min.js', 'swfupload.js', 'swfupload.queue.js', 'fileprogress.js', 'handlers.js', 'item_upload.js'));?>
+<?=$this->html->style(array('swfupload', 'jquery_ui_blitzer.css', 'jquery.dataTables.js', 'table'))?>
 
 <script type="text/javascript">
 tinyMCE.init({

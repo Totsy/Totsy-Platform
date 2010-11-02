@@ -1,15 +1,5 @@
-<?=$this->html->script('tiny_mce/tiny_mce.js');?>
-<?=$this->html->script('swfupload.js');?>
-<?=$this->html->script('swfupload.queue.js');?>
-<?=$this->html->script('fileprogress.js');?>
-<?=$this->html->script('handlers.js');?>
-<?=$this->html->script('event_upload.js');?>
-<?=$this->html->style('swfupload')?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->script('jquery-ui-timepicker.min.js');?>
-<?=$this->html->style('jquery_ui_blitzer.css')?>
-<?=$this->html->style('table');?>
-<?=$this->html->style('timepicker'); ?>
+<?=$this->html->script(array('tiny_mce/tiny_mce.js', 'swfupload.js', 'swfupload.queue.js', 'fileprogress.js', 'handlers.js', 'event_upload.js', 'jquery.dataTables.js', 'jquery-ui-timepicker.min.js'));?>
+<?=$this->html->style(array('swfupload', 'jquery_ui_blitzer.css', 'table', 'timepicker'));?> 
 <script type="text/javascript">
 tinyMCE.init({
 	mode : "textareas",
