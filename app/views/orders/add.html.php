@@ -24,7 +24,6 @@
 				<br />
 			</p>
 		<?php } ?>
-</div>
 	<!-- Begin Order Details -->
 	<?php if ($showCart): ?>
 		<div class="head"><h3>Order Details</h3></div>
