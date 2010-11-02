@@ -26,7 +26,7 @@
 
 ?>	
 
-<body class="app" class="sec content my-account">
+<body class="sec content my-account app">
 	<div id="wrapper">
 		<div id="header">
 			<div id="header-lt">

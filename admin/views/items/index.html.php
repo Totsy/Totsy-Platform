@@ -1,5 +1,4 @@
-<?=$this->html->script('jquery-1.4.2.min.js');?>
-<?=$this->html->script('jquery.dataTables.js');?>
+<?=$this->html->script(array('jquery-1.4.2.min.js', 'jquery.dataTables.js'));?>
 <?=$this->html->style('table');?>
 
 

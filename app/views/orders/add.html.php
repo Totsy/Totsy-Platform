@@ -13,7 +13,7 @@
 	<div class="tl"></div>
 	<div class="tr"></div>
 	<div id="page">
-		<p><strong class="red"><?=$this->html->link('STEP 1 (Shipping/Billing Info)', array('Orders::add')); ?></strong> &#8658; STEP 2 (Payment) &#8658; STEP 3 (Confirmation)</p><br>
+		<a href="/shopping/checkout"><img src="/img/CHECKOUT_STEPS_GREEN_01.png" /></a> <img src="/img/CHECKOUT_STEPS_GREY_02.png"/> <!-- &#8658; STEP 2 (Payment) --> <img src="/img/CHECKOUT_STEPS_GREY_03.png"/> <!-- &#8658; STEP 3 (Confirmation) -->
 		<?php if (!empty($error)) { ?>
 			<p>
 				<strong>
@@ -24,10 +24,10 @@
 				<br />
 			</p>
 		<?php } ?>
-
+</div>
 	<!-- Begin Order Details -->
 	<?php if ($showCart): ?>
-		<div class="head"><h2>Order Details</h2></div>
+		<div class="head"><h3>Order Details</h3></div>
 		<div class='fr'><?=$this->html->link('Edit Your Cart', '#', array('id' => 'checkout-cart', 'class' => 'edit-your-cart')); ?></div>
 		<table width="100%" class="cart-table">
 			<thead>
@@ -83,7 +83,7 @@
 						<td class="<?="total-item-$x";?>">
 							<strong>$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
 						</td>
-						<td class="cart-time"><div id="<?php echo "checkout-counter-$x"; ?>"</div></td>
+						<td class="cart-time"><div id="<?php echo "checkout-counter-$x"; ?>"></div></td>
 					</tr>
 					<?php
 						//Allow users three extra minutes on their items for checkout.
