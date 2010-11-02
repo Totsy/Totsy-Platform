@@ -13,7 +13,7 @@
 	<div class="tl"></div>
 	<div class="tr"></div>
 	<div id="page">
-		<a href="/shopping/checkout"><img src="/img/CHECKOUT_STEPS_GREEN_01.png" /></a> <img src="/img/CHECKOUT_STEPS_GREY_02.png"/> <!-- &#8658; STEP 2 (Payment) --> <img src="/img/CHECKOUT_STEPS_GREY_03.png"/> <!-- &#8658; STEP 3 (Confirmation) -->
+		<p><strong class="red"><?=$this->html->link('STEP 1 (Shipping/Billing Info)', array('Orders::add')); ?></strong> &#8658; STEP 2 (Payment) &#8658; STEP 3 (Confirmation)</p><br>
 		<?php if (!empty($error)) { ?>
 			<p>
 				<strong>
