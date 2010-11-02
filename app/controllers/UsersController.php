@@ -107,41 +107,46 @@ class UsersController extends BaseController {
 			$password = $this->request->data['password'];
 			//Grab User Record
 			$user = User::lookup($email);
-			if($user){
-				if (!empty($user->reset_token)) {
-					if (strlen($user->reset_token) > 1) {
-						$auth = (sha1($password) == $user->reset_token) ? true : false;
-						$sessionWrite = $this->writeSession($user->data());
-						$this->redirect('account/info');
+			$redirect = '/';
+			if (strlen($password) > 0) {
+				if($user){
+					if (!empty($user->reset_token)) {
+						if (strlen($user->reset_token) > 1) {
+							$auth = (sha1($password) == $user->reset_token) ? true : false;
+							$redirect = 'account/info';
+						}
 					}
-				}
-				if ($user->legacy == 1) {
-					$auth = $this->authIllogic($password, $user);
-					if ($auth == true) {
-						//Write core information to the session and redirect user
-						$sessionWrite = $this->writeSession($user->data());
-					}
-				} else {
-					// Try non-legacy user
-					$auth = Auth::check("userLogin", $this->request);
-				}
-				if ($auth) {
-					$ipaddress = $this->request->env('REMOTE_ADDR');
-					User::log($ipaddress);
-					if ($this->request->url != 'login' && $this->request->url) {
-						$this->redirect($this->request->url);
+					if ($user->legacy == 1) {
+						$auth = $this->authIllogic($password, $user);
+						if ($auth == true) {
+							//Write core information to the session and redirect user
+							$sessionWrite = $this->writeSession($user->data());
+						}
 					} else {
-						$this->redirect('/');
+						// Try non-legacy user
+						$auth = Auth::check("userLogin", $this->request);
 					}
-				} else {
-					$message = '<div class="error_flash">Login Failed - Please Try Again</div>';
+					if ($auth) {
+						$ipaddress = $this->request->env('REMOTE_ADDR');
+						User::log($ipaddress);
+						if ($this->request->url != 'login' && $this->request->url) {
+							$this->redirect($this->request->url);
+						} else {
+							$this->redirect($redirect);
+						}
+					} else {
+						$message = '<div class="error_flash">Login Failed - Please Try Again</div>';
+					}
 				}
+			} else {
+				$message = '<div class="error_flash">Login Failed - Your Password Is Blank</div>';
 			}
 		}
 		//new login layout to account for fullscreen image JL
 		$this->_render['layout'] = 'login';
 		return compact('message');
 	}
+
 	/**
 	 * Performs the logout action of the user removing '_id' from session details.
 	 */
