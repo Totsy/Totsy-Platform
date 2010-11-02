@@ -1,6 +1,5 @@
 <?=$this->html->script(array('jquery.countdown.min','jquery.number_format'));?>
-<?=$this->html->style('jquery.countdown');?>
-<?=$this->html->style('base');?>
+<?=$this->html->style(array('jquery.countdown', 'base'));?>
 <?php
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
 	$test = $cart->data();
