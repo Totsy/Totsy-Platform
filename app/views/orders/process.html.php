@@ -263,7 +263,8 @@
 					array('id' => 'payment', 'value' => '1', 'target' => '#payment-method-form')
 				); ?>
 			</p> -->
-			<li class="step">
+			<!-- 
+			     <li class="step">
 				<fieldset>
 
 					<p><a href="javascript:void(0)" id="gift" title="Want to include a gift message?">Want to include a gift message?</a></p>
@@ -274,7 +275,8 @@
 
 				</fieldset>
 
-			</li>
+			     </li>
+			-->
 			<li class="step">
 				<?=$this->form->submit('Place Your Order', array('class' => 'place-order-button submit')); ?>
 				&nbsp;&nbsp;
