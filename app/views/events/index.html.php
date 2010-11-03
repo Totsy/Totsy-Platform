@@ -62,7 +62,10 @@ $(document).ready(function() {
 		<?php endif ?>
 				<div class="tl"></div>
 				<div class="tr"></div>
-				<div class="md-gray p-container">
+				
+                
+                <div class="md-gray p-container">
+               
 						<?php if ($itemCounts[ (string) $event->_id] == 0): ?>
 								<?=$this->html->image('/img/soldout.gif', array(
 									'title' => "Sold Out",
@@ -94,8 +97,22 @@ $(document).ready(function() {
 							'height' => '344'
 						)),array('Events::view', 'args' => array($event->url)), array('escape'=> false));
 						 ?>
+                         
 					<?php endif ?>
-					<div class="splash-details">
+                 
+                  
+                <div class="splash-details">
+               	
+                <!-- Begin Holiday Banner Notifications -->
+                <?php if ($event->tags): ?>
+					<?php foreach ($event->tags as $key => $value): ?>
+                        <div style="background:#000; font-size:12px; color:#FFF; font-weight:normal; padding:5px; margin:0px 0px -10px 0px;">
+                        <span><img src="/favicon.ico" align="absmiddle" /></span> <?=$value?> Sale</div>
+                    	<div class="clear"></div>
+                    <?php endforeach ?>
+          		<?php endif ?>
+                <!-- End Holiday Banner Notifications -->
+                
 						<div class="table-cell left">
 							<?php echo $event->name; ?>
 							<div id="<?php echo "todaysplash$x"; ?>"></div>
@@ -155,9 +172,9 @@ $(document).ready(function() {
 	
     <div style="padding:0px 9px;">
             <ul id="mycarousel" class="jcarousel-skin-tango">
-                <li><img src="http://dev.totsy.com/img/toySale_banner1.png" alt="" /></li>
-                <li><img src="http://dev.totsy.com/img/toySale_banner2.png" alt="" /></li>
-                <li><img src="http://dev.totsy.com/img/toySale_banner3.png" alt="" /></li>
+                <li><img src="http://dev.totsy.com/img/toySale_banner1.png" alt="" width="840" /></li>
+                <li><img src="http://dev.totsy.com/img/toySale_banner2.png" alt="" width="840" /></li>
+                <li><img src="http://dev.totsy.com/img/toySale_banner3.png" alt=""  width="840"  /></li>
             </ul>
 	</div>
 
