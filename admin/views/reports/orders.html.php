@@ -20,11 +20,13 @@
 			<table id="order_list" class="datatable" border="1">
 				<thead>
 					<tr>
-						<?php 
-						foreach ($orderHeading as $heading) {
-							echo "<th>$heading</th>";
-						}
-						?>
+						<?php foreach ($orderHeading as $heading): ?>
+							<?php if ($heading == 'Select'): ?>
+								<th><input type="checkbox" id="orders_all"> Toggle Select</th>
+							<?php else: ?>
+								<th><?=$heading?></th>
+							<?php endif ?>
+						<?php endforeach ?>
 					</tr>
 				</thead>
 				<tbody>
@@ -34,7 +36,7 @@
 							<?php ++$inc; ?>
 							<?php foreach ($orders as $key => $value): ?>
 								<?php if ($key == 'Select'): ?>
-									<td><input type="checkbox" name="<?=$orders['id']?>-<?=$inc?>" value="<?=$orders['Item']?>" <?=$value?></td>
+									<td><center><input type="checkbox" class="order" name="<?=$orders['id']?>-<?=$inc?>" value="<?=$orders['Item']?>" <?=$value?></center></td>
 								<?php elseif ($key == 'Note'): ?>
 										<?php if (is_array($value)): ?>
 											<?php if ($value['Open'] == 0): ?>
@@ -71,5 +73,13 @@
 			"bFilter": false
 		}
 		);
+		$("#orders_all").click(function()
+		{
+			var checked_status = this.checked;
+			$(".order").each(function()
+			{
+				this.checked = checked_status;
+			});
+		});
 	} );
 </script>
