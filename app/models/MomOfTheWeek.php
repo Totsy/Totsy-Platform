@@ -8,7 +8,7 @@ class MomOfTheWeek extends Base {
 
 	public $validates = array();
 
-	protected $meta = array('source' => 'mom_of_the_weeks');
+	protected $_meta = array('source' => 'mom_of_the_weeks');
 
 }
 

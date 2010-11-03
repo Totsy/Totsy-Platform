@@ -14,8 +14,11 @@ class MomOfTheWeeksController extends \lithium\action\Controller {
 			// Create the sweepstakes entry
 			$data = $this->request->data;
 			$data['date_created'] = new MongoDate();
-			$momOfTheWeek = MomOfTheWeek::create($data);
-			$success = $momOfTheWeek->save();
+			$success = MomOfTheWeek::collection()->update(
+				array( 'email' => $data['email'] ),
+				$data,
+				array( 'upsert' => true )
+			);
 			// If new user, create
 			if(isset($data['password'])){
 				// New user, need to register here
@@ -29,7 +32,7 @@ class MomOfTheWeeksController extends \lithium\action\Controller {
 	
 	public function fbml() {
 		$this->render(array('layout' => false));
-		MomOfTheWeek::collection()->update( array $criteria , array $newobj [, array $options = array() ] )
+//		MomOfTheWeek::collection()->update( array $criteria , array $newobj [, array $options = array() ] )
 	}
 }
 ?>

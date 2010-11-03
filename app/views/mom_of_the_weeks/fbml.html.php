@@ -242,7 +242,7 @@ function output(val){
 	<link rel="stylesheet" href="http://dev.totsy.com/css/motw/style.css?v=1.47" type="text/css" media="screen" />
 
 	<div id="output"></div>
-	dev.totsy.com
+	
 	<div id="container">
 	
 		<div id="response-container">
