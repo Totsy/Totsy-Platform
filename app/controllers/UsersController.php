@@ -28,7 +28,6 @@ class UsersController extends BaseController {
 			$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
 			$data['email'] = strtolower($this->request->data['email']);
 		}
-
 		$user = User::create($data);
 		if ($this->request->data && $user->validates() ) {
 			$email = $data['email'];
@@ -93,6 +92,42 @@ class UsersController extends BaseController {
 		}
 		$this->_render['layout'] = 'login';
 		return compact('message', 'user');
+	}
+	/**
+	 * This static method is a temporary solution for contoller based registration (non-user).
+	 * We'll need to refactor the `register` method along with `registration` so that there is more
+	 * code reuse.
+	 *
+	 * @param array $data
+	 * @return boolean
+	 */
+	public static function registration($data = null) {
+		$saved = false;
+		if ($data) {
+			$data['email'] = strtolower($this->request->data['email']);
+			$user = User::create($data);
+			if ($user->validates()) {
+				$email = $data['email'];
+				$data['password'] = sha1($this->request->data['password']);
+				$data['created_date'] = User::dates('now');
+				$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
+				$data['invited_by'] = $invite_code;
+				$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));
+				if ($inviteCheck > 0) {
+					$data['invitation_codes'] = array($this->randomString());
+				}
+				if ($saved = $user->save($data)) {
+					Mailer::send(
+						'welcome',
+						'Welcome to Totsy!',
+						array('name' => $user->firstname, 'email' => $user->email),
+						compact('user')
+					);
+				}
+			}
+		}
+
+		return $saved;
 	}
 	/**
 	 * Performs login authentication for a user going directly to the database.
