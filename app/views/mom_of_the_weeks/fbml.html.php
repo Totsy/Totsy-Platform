@@ -226,11 +226,11 @@ function output(val){
             <div style="position: absolute; top:2px;left:0px; width:100%; background-color:white">
 
    <div id="body">			
-	<link rel="stylesheet" href="http://lltotsyli3/css/motw/reset.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="http://lltotsyli3/css/motw/style.css?v=1.47" type="text/css" media="screen" />
+	<link rel="stylesheet" href="http://dev.totsy.com/css/motw/reset.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="http://dev.totsy.com/css/motw/style.css?v=1.47" type="text/css" media="screen" />
 
 	<div id="output"></div>
-	
+	dev.totsy.com
 	<div id="container">
 	
 		<div id="response-container">
@@ -238,7 +238,7 @@ function output(val){
 		</div>
 				
 		<div id="header">
-			<img src="http://lltotsyli3/img/motw/MotW_logo.jpg" alt="Mom Of The Week" border="0" title="Mom Of The Week">
+			<img src="http://dev.totsy.com/img/motw/MotW_logo.jpg" alt="Mom Of The Week" border="0" title="Mom Of The Week">
 		</div>
 		<div id="intro">
 			1 prize per week. Starting November 1st.	
@@ -379,7 +379,7 @@ function output(val){
 					</div>
 					
 					<div id="register-load-indicator">
-						<img src="http://lltotsyli3/img/motw/ajax-loader.gif">
+						<img src="http://dev.totsy.com/img/motw/ajax-loader.gif">
 					</div>
 				</div>					
 						
@@ -392,7 +392,7 @@ function output(val){
 	</div>
 
 	<div id="footer">
-	<img src="http://lltotsyli3/img/motw/MotW_prizing_wk1.jpg" alt="MotW_prizing_wk1" width="520" height="192" />
+	<img src="http://dev.totsy.com/img/motw/MotW_prizing_wk1.jpg" alt="MotW_prizing_wk1" width="520" height="192" />
 
 	</div>
 	
