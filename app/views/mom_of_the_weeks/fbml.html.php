@@ -229,7 +229,7 @@ function output(val){
     <div style="height: 1200px;">
         <!-- start non-fan part -->
         <div class="top">
-            <img src="http://dev.totsy.com/img/motw/nonfan.jpg" width="553" height="520" alt="Become a fan to enter the sweepstakes" />
+            <img src="http://dev.totsy.com/img/motw/nonfan.jpg" width="520" height="353" alt="Become a fan to enter the sweepstakes" />
         </div>
         <!-- end non-fan part -->
 
