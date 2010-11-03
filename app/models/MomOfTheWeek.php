@@ -2,9 +2,14 @@
 
 namespace app\models;
 
-class MomOfTheWeek extends \lithium\data\Model {
+use app\models\Base;
+
+class MomOfTheWeek extends Base {
 
 	public $validates = array();
+
+	protected $meta = array('source' => 'mom_of_the_weeks');
+
 }
 
 ?>
