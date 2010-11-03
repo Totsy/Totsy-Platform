@@ -45,7 +45,7 @@ function onRegisterSubmit(evt){
 			}
 		}
 		if(regFlag == true){
-			ajax.post("http://dev.totsy.com/momoftheweek", {
+			ajax.post("http://www.totsy.com/momoftheweek", {
 				"q1":document.getElementById("form[question][question1]").getValue(),
 				"q2":document.getElementById("form[question][question2]").getValue(),
 				"q3":document.getElementById("form[question][question3]").getValue(),
@@ -60,7 +60,7 @@ function onRegisterSubmit(evt){
 				"terms":"1"
 			});	
 		} else {
-			ajax.post("http://dev.totsy.com/momoftheweek", {
+			ajax.post("http://www.totsy.com/momoftheweek", {
 				"q1":document.getElementById("form[question][question1]").getValue(),
 				"q2":document.getElementById("form[question][question2]").getValue(),
 				"q3":document.getElementById("form[question][question3]").getValue(),
@@ -229,7 +229,7 @@ function output(val){
     <div style="height: 1200px;">
         <!-- start non-fan part -->
         <div class="top">
-            <img src="http://dev.totsy.com/img/motw/nonfan.jpg" width="520" height="353" alt="Become a fan to enter the sweepstakes" />
+            <img src="http://www.totsy.com/img/motw/nonfan.jpg" width="520" height="353" alt="Become a fan to enter the sweepstakes" />
         </div>
         <!-- end non-fan part -->
 
@@ -238,8 +238,8 @@ function output(val){
             <div style="position: absolute; top:2px;left:0px; width:100%; background-color:white">
 
    <div id="body">			
-	<link rel="stylesheet" href="http://dev.totsy.com/css/motw/reset.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="http://dev.totsy.com/css/motw/style.css?v=1.47" type="text/css" media="screen" />
+	<link rel="stylesheet" href="http://www.totsy.com/css/motw/reset.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="http://www.totsy.com/css/motw/style.css?v=1.47" type="text/css" media="screen" />
 
 	<div id="output"></div>
 	
@@ -250,7 +250,7 @@ function output(val){
 		</div>
 				
 		<div id="header">
-			<img src="http://dev.totsy.com/img/motw/MotW_logo.jpg" alt="Mom Of The Week" border="0" title="Mom Of The Week">
+			<img src="http://www.totsy.com/img/motw/MotW_logo.jpg" alt="Mom Of The Week" border="0" title="Mom Of The Week">
 		</div>
 		<div id="intro">
 			1 prize per week. Starting November 1st.	
@@ -391,7 +391,7 @@ function output(val){
 					</div>
 					
 					<div id="register-load-indicator">
-						<img src="http://dev.totsy.com/img/motw/ajax-loader.gif">
+						<img src="http://www.totsy.com/img/motw/ajax-loader.gif">
 					</div>
 				</div>					
 						
@@ -404,7 +404,7 @@ function output(val){
 	</div>
 
 	<div id="footer">
-	<img src="http://dev.totsy.com/img/motw/MotW_prizing_wk1.jpg" alt="MotW_prizing_wk1" width="520" height="192" />
+	<img src="http://www.totsy.com/img/motw/MotW_prizing_wk1.jpg" alt="MotW_prizing_wk1" width="520" height="192" />
 
 	</div>
 	
