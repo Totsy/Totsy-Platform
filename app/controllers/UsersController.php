@@ -94,7 +94,7 @@ class UsersController extends BaseController {
 		return compact('message', 'user');
 	}
 	/**
-	 * This static method is a temporary solution for contoller based registration (non-user).
+	 * This static method is a temporary solution for controller based registration (non-user).
 	 * We'll need to refactor the `register` method along with `registration` so that there is more
 	 * code reuse.
 	 *
@@ -111,7 +111,6 @@ class UsersController extends BaseController {
 				$data['password'] = sha1($this->request->data['password']);
 				$data['created_date'] = User::dates('now');
 				$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
-				$data['invited_by'] = $invite_code;
 				$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));
 				if ($inviteCheck > 0) {
 					$data['invitation_codes'] = array($this->randomString());

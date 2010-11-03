@@ -14,6 +14,7 @@ class MomOfTheWeeksController extends \lithium\action\Controller {
 			// Create the sweepstakes entry
 			$data = $this->request->data;
 			$data['date_created'] = new MongoDate();
+			$data['invited_by'] = 'momoftheweek';
 			$success = MomOfTheWeek::collection()->update(
 				array( 'email' => $data['email'] ),
 				$data,
@@ -22,6 +23,7 @@ class MomOfTheWeeksController extends \lithium\action\Controller {
 			// If new user, create
 			if(isset($data['password'])){
 				// New user, need to register here
+				$success = UsersController::registration($data);
 			}
 			die($success);
 		}else{
