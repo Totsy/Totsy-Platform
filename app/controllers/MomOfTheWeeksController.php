@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use \app\models\MomOfTheWeek;
 use \MongoDate;
-use \app\controllers\UsersController;
+//use \app\controllers\UsersController;
 
 class MomOfTheWeeksController extends \lithium\action\Controller {
 
