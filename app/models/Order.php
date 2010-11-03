@@ -84,16 +84,20 @@ class Order extends \lithium\data\Model {
 				++$inc;
 			}
 			try {
+				if ($total > 0) {
+					$authKey = Payments::authorize('default', $total, $card);
+				} else {
+					$authKey = null;
+				}
 				return $order->save(compact('total', 'subTotal', 'tax', 'handling') + array(
 					'user_id' => (string) $user['_id'],
 					'card_type' => $card->type,
 					'card_number' => substr($card->number, -4),
 					'date_created' => static::dates('now'),
-					'authKey' => Payments::authorize('default', $total, $card),
+					'authKey' => $authKey,
 					'billing' => $billing->data(),
 					'shipping' => $shipping->data(),
 					'shippingMethod' => $data['shipping_method'],
-					'giftMessage' => $data['gift-message'],
 					'items' => $items
 				));
 			} catch (TransactionException $e) {
