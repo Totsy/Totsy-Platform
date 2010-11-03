@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use \app\models\MomOfTheWeek;
 use \MongoDate;
-//use \app\controllers\UsersController;
+use \app\controllers\UsersController;
 
 class MomOfTheWeeksController extends \lithium\action\Controller {
 
@@ -22,8 +22,10 @@ class MomOfTheWeeksController extends \lithium\action\Controller {
 			);
 			// If new user, create
 			if(isset($data['password'])){
+				
 				// New user, need to register here
 				$success = UsersController::registration($data);
+				die(var_dump($data, $success));
 			}
 			die($success);
 		}else{
