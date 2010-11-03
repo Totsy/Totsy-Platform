@@ -105,7 +105,7 @@ class UsersController extends BaseController {
 		$saved = false;
 		if ($data) {
 			$data['email'] = strtolower($this->request->data['email']);
-			$user = User::create($data);
+			$user = User::create($data);var_dump( $user );die;
 			if ($user->validates()) {
 				$email = $data['email'];
 				$data['password'] = sha1($this->request->data['password']);
