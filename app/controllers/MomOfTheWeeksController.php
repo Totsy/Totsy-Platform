@@ -29,6 +29,7 @@ class MomOfTheWeeksController extends \lithium\action\Controller {
 	
 	public function fbml() {
 		$this->render(array('layout' => false));
+		MomOfTheWeek::collection()->update( array $criteria , array $newobj [, array $options = array() ] )
 	}
 }
 ?>
