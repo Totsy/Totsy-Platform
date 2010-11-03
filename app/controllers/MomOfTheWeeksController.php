@@ -20,6 +20,9 @@ class MomOfTheWeeksController extends \lithium\action\Controller {
 				$data,
 				array( 'upsert' => true )
 			);
+			if($success == 0){
+				return $success;
+			}
 			// If new user, create
 			if(isset($data['password'])){
 				// New user, need to register here
