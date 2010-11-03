@@ -107,7 +107,6 @@ class UsersController extends BaseController {
 			$data['email'] = strtolower($data['email']);
 			$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
 			$user = User::create($data);
-			var_dump($user->validates(), $user);
 			if ($user->validates()) {
 				$email = $data['email'];
 				$data['password'] = sha1($data['password']);
