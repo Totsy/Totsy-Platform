@@ -26,5 +26,9 @@ class MomOfTheWeeksController extends \lithium\action\Controller {
 			//$this->redirect('Events::index');
 		}
 	}
+	
+	public function fbml() {
+		$this->render(array('layout' => false));
+	}
 }
 ?>

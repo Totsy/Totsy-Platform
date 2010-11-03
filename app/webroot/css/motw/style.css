@@ -129,7 +129,7 @@ a{
 
 #register{
 	width: auto;
-	background:url(http://jasonfried.com/totsy/momoftheweek/img/MotW_bg1.jpg) no-repeat 100% 100%;
+	background:url(http://lltotsyli3/img/motw/MotW_bg1.jpg) no-repeat 100% 100%;
 	margin: 0 0px 0px 0;
 	color: #000;
 	padding: 54px;
@@ -233,7 +233,7 @@ display: block;
 	padding: 0;
 	font-size: 0;
 	text-indent: -10000px;
-	background: transparent url(http://jasonfried.com/totsy/momoftheweek/img/register-button-register.gif) no-repeat 0 0;
+	background: transparent url(http://lltotsyli3/img/motw/register-button-register.gif) no-repeat 0 0;
 	cursor: pointer;
 }
 
