@@ -23,8 +23,14 @@ class MomOfTheWeeksController extends \lithium\action\Controller {
 			// If new user, create
 			if(isset($data['password'])){
 				// New user, need to register here
-				unset($data['q1'], $data['q2'], $data['q3'], $data['q4'], $data['q5'], $data['q6']);
-				$success = UsersController::registration($data);
+				$user['firstname'] = $data['firstname'];
+				$user['lastname'] = $data['lastname'];
+				$user['email'] = $data['email'];
+				$user['confirmemail'] = $data['confirmemail'];
+				$user['password'] = $data['password'];
+				$user['terms'] = $data['terms'];
+				$user['invited_by'] = $data['invited_by'];
+				$success = UsersController::registration($user);
 			}
 			die($success);
 		}else{
