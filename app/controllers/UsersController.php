@@ -104,11 +104,11 @@ class UsersController extends BaseController {
 	public static function registration($data = null) {
 		$saved = false;
 		if ($data) {
-			$data['email'] = strtolower($this->request->data['email']);
+			$data['email'] = strtolower($data['email']);
 			$user = User::create($data);var_dump( $user );die;
 			if ($user->validates()) {
 				$email = $data['email'];
-				$data['password'] = sha1($this->request->data['password']);
+				$data['password'] = sha1($data['password']);
 				$data['created_date'] = User::dates('now');
 				$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
 				$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));
