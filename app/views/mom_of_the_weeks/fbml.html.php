@@ -331,14 +331,14 @@ function output(val){
 				</div>
 				
 				<div id="confirm-container" class="container show" style="margin-top:20px;">
-				<h4>Confirm Membership:</h4>Not a member? <a onclick="showNewMemberForm()">Click Here</a>.
 					<form name="confirm" id="confirm-form" method="post">
 						<div style="margin-top:20px;">
-							<p>Email address used to sign up for Totsy.com</p><span id="confirmemail-error" class="error-text">Please enter a valid email address.</span>
+							<p>Email address used to access your Totsy account:</p><span id="confirmemail-error" class="error-text">Please enter a valid email address.</span>
 							<input type="text" name="form[confirm][email]" id="form[confirm][email]" value="" onclick="return false;"/>
 							<div class="clear"></div>
 						</div>
 					</form>
+					<h4>Confirm Membership:</h4>Not a member? <a onclick="showNewMemberForm()">Click Here</a>.
 				</div>
 				
 				<div id="newmember-container" class="container" style="margin-top:20px;">
