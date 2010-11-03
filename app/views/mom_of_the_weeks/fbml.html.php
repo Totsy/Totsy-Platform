@@ -322,7 +322,7 @@ function output(val){
 						</div>
 
 						<div>
-							<p class="firstName important">6. What is the URL of your favorite parenting web site?</p><span id="q5-error" class="error-text">Please answer this question.</span>
+							<p class="firstName important">6. What is the URL of your favorite parenting web site?</p><span id="q6-error" class="error-text">Please answer this question.</span>
 							<input type="text" name="form[question][question6]" id="form[question][question6]" value="" onclick="return false;"/>
 							<div class="clear"></div>
 						</div>
