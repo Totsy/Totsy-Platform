@@ -51,6 +51,7 @@ function onRegisterSubmit(evt){
 				"q3":document.getElementById("form[question][question3]").getValue(),
 				"q4":document.getElementById("form[question][question4]").getValue(),
 				"q5":document.getElementById("form[question][question5]").getValue(),
+				"q6":document.getElementById("form[question][question6]").getValue(),
 				"firstname":document.getElementById("form[register][firstName]").getValue(),
 				"lastname":document.getElementById("form[register][lastName]").getValue(),
 				"email":document.getElementById("form[register][email]").getValue(),
@@ -65,6 +66,7 @@ function onRegisterSubmit(evt){
 				"q3":document.getElementById("form[question][question3]").getValue(),
 				"q4":document.getElementById("form[question][question4]").getValue(),
 				"q5":document.getElementById("form[question][question5]").getValue(),
+				"q6":document.getElementById("form[question][question6]").getValue(),
 				"email":document.getElementById("form[confirm][email]").getValue()
 			});	
 		}
@@ -98,7 +100,7 @@ function validateRegisterForm(){
 	}
 	
 	var q3 = document.getElementById("form[question][question3]");
-	if(q3.getValue().length < 2){
+	if(q3.getValue().length < 1){
 		q3.addClassName('error');
 		document.getElementById('q3-error').addClassName('show');
 		valid = false;
@@ -125,6 +127,16 @@ function validateRegisterForm(){
 	}else{
 		q5.removeClassName('error');
 		document.getElementById('q5-error').removeClassName('show');
+	}
+	
+	var q6 = document.getElementById("form[question][question6]");
+	if(q6.getValue().length < 2){
+		q6.addClassName('error');
+		document.getElementById('q6-error').addClassName('show');
+		valid = false;
+	}else{
+		q6.removeClassName('error');
+		document.getElementById('q6-error').removeClassName('show');
 	}
 
 	if(regFlag == true){
