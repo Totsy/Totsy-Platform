@@ -186,6 +186,7 @@ class ReportsController extends BaseController {
 					);
 					$conditions = array('report_id' => $reportId);
 					$results = $collection->group($keys, $inital, $reduce, $conditions);
+					$collection->remove($conditions);
 					break;
 				case 'Registrations':
 					switch ($name) {
