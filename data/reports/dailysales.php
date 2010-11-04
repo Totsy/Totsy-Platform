@@ -1,14 +1,22 @@
 <?php
 
 /**
-* Generate the daily sales report, for a specified date. with the following output:
-* 	Date
-* 	Day
-* 	Items Sold
-* 	Orders
-* 	Total Sales
-* 	Average Basket
-* 	Average Items / Order
+* Generate the daily sales summary report, for a specified 
+* date range, with daily totals providing the following output:
+* 
+* NY Total Sales
+* NY Total Tax
+* NY Total Shipping
+* PA Total Sales
+* PA Total Tax
+* PA Total Shipping
+* Other Total Sales
+* Other Total Tax
+* Other Total Shipping
+* Grand Total Sales
+* Grand Total Tax
+* Grand Total Shipping
+* 
 */
 
 // just for debugging convenience
@@ -21,46 +29,58 @@ function debug( $thingie ){
 * Configuration
 */
 require_once 'reports_conf.php';
-$start_date = '2010-08-04';
-$start_timestamp = strtotime($start_date);
-$end_date = '2010-08-05';
-$end_timestamp = strtotime($end_date);
+$states = array( 'NY', 'PA', 'Other' );
+$start_date = $argv[1];
+$start = new MongoDate(strtotime($start_date));
+$end_date = $argv[2];
+$end = new MongoDate(strtotime($end_date));
+$options = array(
+		'date_created' => array( '$gte' => $start, '$lte' => $end ),
+		'items.0.order_status' => array( '$ne' => 'Order Canceled')
+	);
 
+/**
+* The report
+*/
 $mongo = new Mongo($mhost);
-
 $mongoorders = $mongo->$mdb->orders;
+$orders = $mongoorders->find( $options );
 
-$orders = $mongoorders->find();
+/*
+* Debugging shizzle
+*/
+//$message = 'There are ' . $orders->count() . ' orders that are in this date range that are getting processed.';
+//debug( $message );
 
-$idx = 0;
-
-foreach($orders AS $order){
-	$id = $order["_id"];
-	$ordertimestamp = $id->getTimestamp();
-	// Only look at the documents in our date range
-	if(($ordertimestamp > $start_timestamp) AND ($ordertimestamp < $end_timestamp)){
-		//var_dump( $order);
-		// Add up the order total amounts for grand total
-		$tot_amount += $order['total'];
-		// How many line items do we have?
-		if(count($order['items']) > 1){
-			// Reach into the items array for line item data
-			$item_qty = 0;
-			foreach($order['items'] AS $item){
-				$item_qty += $item['quantity'];
-			}
-			$tot_qty += $item_qty;
-		}else{
-			// We only got one line item for this order
-			$tot_qty += $item_qty;
-		}
-		// Increment the counter
-		$idx++;
-	}
+if($orders->count() == 0){
+	echo "There are no orders in this timeframe.\n";
+	exit;
+}else{
+	echo "DATE,CATEGORY,ORDER_ID,STATUS,STATE,QUANTITY,SALE,TAX,FREIGHT\n";
 }
 
-// Calculate average baskets
-$avg_basket = $tot_amount / $idx;
-$avg_items = $tot_qty / $idx;
+foreach($orders AS $order){
+	switch( $order['billing']['state'] ){
+		case 'NY':
+			$state = 'NY';
+			break;
+		case 'PA':
+			$state = 'PA';
+			break;
+		default:
+			$state = 'Other';
+	}
+	
+	// Get the total count of order items per order
+	$itemcount = 0;
+	foreach($order['items'] AS $orderitem){
+		$itemcount = $itemcount + $orderitem['quantity'];
+		$order_status = $orderitem['status'];
+	}
+	
+	// Get the date string from the MongoDate for the order
+	$date = date('Y-m-d', $order['date_created']->sec);
 
-echo "DATE: $start_date\nITEMS SOLD: $tot_qty\nORDERS: $idx\nTOTAL: $tot_amount\nAVERAGE BASKET: $avg_basket\nAVERAGE ITEMS / ORDER: $avg_items\n";
+	echo "$date,$state," . $order['order_id'] . ',' . $order_status . ',' . $order['billing']['state'] . ',' . $itemcount . ',' . $order['subTotal'] . ',' . $order['tax'] . ',' . $order['handling'] . "\n";
+	
+}
