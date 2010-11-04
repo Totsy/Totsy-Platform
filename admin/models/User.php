@@ -5,9 +5,12 @@ namespace admin\models;
 use \lithium\data\Connections;
 use \lithium\storage\Session;
 use MongoRegex;
+use admin\models\Base;
 
 
-class User extends \lithium\data\Model {
+class User extends Base {
+
+	protected $_meta = array('source' => 'users');
 
 	public static function applyCredit($data) {
 		$user = User::find('first', array(

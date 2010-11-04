@@ -174,7 +174,7 @@ $(document).ready(function() {
             <ul id="mycarousel" class="jcarousel-skin-tango">
                 <li><img src="http://dev.totsy.com/img/toySale_banner1.png" alt="" width="840" /></li>
                 <li><img src="http://dev.totsy.com/img/toySale_banner2.png" alt="" width="840" /></li>
-                <li><img src="http://dev.totsy.com/img/toySale_banner3.png" alt=""  width="840" /></li>
+                <li><img src="http://dev.totsy.com/img/toySale_banner3.png" alt=""  width="840"  /></li>
             </ul>
 	</div>
 

@@ -19,6 +19,15 @@ class Base extends \lithium\data\Model {
 	     return new MongoDate(time() + static::_object()->_dates[$name]);
 	}
 
+	/**
+	 * This method gives direct access to the MongoDB collection object from any
+	 * model that extends the Base Model.
+	 * @return object
+	 */
+	public static function collection() {
+		return static::_connection()->connection->{static::_object()->_meta['source']};
+	}
+
 }
 
 ?>
