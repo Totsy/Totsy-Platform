@@ -253,9 +253,14 @@ function output(val){
 			<img src="http://www.totsy.com/img/motw/MotW_logo.jpg" alt="Mom Of The Week" border="0" title="Mom Of The Week">
 		</div>
 		<div id="intro">
-			1 prize per week. Starting November 1st.	
+			Four Moms each month! Over $1,000 Dollars in Prizes! Get featured!	
 		</div>
-		
+
+		<div id="footer">
+		<img src="http://www.totsy.com/img/motw/MotW_prizing_wk1.jpg" alt="MotW_prizing_wk1" width="520" height="192" />
+
+		</div>
+				
 		<div id="register">
 <!-- 	Share with Friends	 -->
 			<div id="success-container" class="container">
@@ -287,7 +292,7 @@ function output(val){
 <!-- START REG -->
 			<div id="register-container" class="container show">
 								
-				<h3>Enter Our Weekly Sweepstakes:</h3>
+				<h3>Enter Our Weekly Contest:</h3>
 								
 				<div id="register-form-container">
 					<form name="question" id="question-form" method="post">
@@ -331,10 +336,10 @@ function output(val){
 				</div>
 				
 				<div id="confirm-container" class="container show" style="margin-top:20px;">
-					<h4>Confirm Membership:</h4>Not a member? <a onclick="showNewMemberForm()">Click Here</a>.
+					<h4>Only Members Can Participate.<br />Confirm Membership:</h4>Not a member? <a onclick="showNewMemberForm()">Click Here</a>.
 					<form name="confirm" id="confirm-form" method="post">
 						<div style="margin-top:20px;">
-							<p>Email address used to access your Totsy account:</p><span id="confirmemail-error" class="error-text">Please enter a valid email address.</span>
+							<p>Enter the email address used to access your Totsy account:</p><span id="confirmemail-error" class="error-text">Please enter a valid email address.</span>
 							<input type="text" name="form[confirm][email]" id="form[confirm][email]" value="" onclick="return false;"/>
 							<div class="clear"></div>
 						</div>
@@ -393,7 +398,14 @@ function output(val){
 					<div id="register-load-indicator">
 						<img src="http://www.totsy.com/img/motw/ajax-loader.gif">
 					</div>
-				</div>					
+				</div>
+				
+				<div id="clownpants" class="container">
+					<img src="http://lltotsyli3/img/motw/alex/1_3.jpg" />
+					<img src="http://lltotsyli3/img/motw/alex/711W_1.jpg" />
+					<img src="http://lltotsyli3/img/motw/alex/712W-1-1.jpg" />
+					<img src="http://lltotsyli3/img/motw/alex/721X-1.jpg" />
+				</div>				
 						
 						
 				<div class="clear"></div>
@@ -403,10 +415,7 @@ function output(val){
 										
 	</div>
 
-	<div id="footer">
-	<img src="http://www.totsy.com/img/motw/MotW_prizing_wk1.jpg" alt="MotW_prizing_wk1" width="520" height="192" />
 
-	</div>
 	
 	<div class="clear"></div>
 </div>
