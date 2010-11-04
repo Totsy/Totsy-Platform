@@ -148,70 +148,68 @@ class ReportsController extends BaseController {
 						'$gte' => $min,
 						'$lte' => $max)
 				);
-			}
-			$searchType = $this->request->data['search_type'];
+				$searchType = $this->request->data['search_type'];
 
-			switch ($searchType) {
-				case 'Revenue':
-					$users = User::find('all', array(
-						'conditions' => array(
-							'invited_by' => $affiliate,
-							'purchase_count' => array('$gt' => 1)
-					)));
-					if ($users) {
-						$reportId = substr(md5(uniqid(rand(),1)), 1, 15);
-						$collection = Report::collection();
-						foreach ($users as $user) {
-							$orders = Order::find('all', array(
-								'conditions' => array(
-									'user_id' => (string) $user->_id,
-									'date_created' => array(
-										'$gte' => $min,
-										'$lte' => $max
-							))));
-							$orders = $orders->data();
-							if ($orders) {
-								foreach ($orders as $order) {
-									$order['date_created'] = new MongoDate($order['date_created']['sec']);
-									$collection->save(array('data' => $order, 'report_id' => $reportId));
+				switch ($searchType) {
+					case 'Revenue':
+						$users = User::find('all', array(
+							'conditions' => array(
+								'invited_by' => $affiliate,
+								'purchase_count' => array('$gt' => 1)
+						)));
+						if ($users) {
+							$reportId = substr(md5(uniqid(rand(),1)), 1, 15);
+							$collection = Report::collection();
+							foreach ($users as $user) {
+								$orders = Order::find('all', array(
+									'conditions' => array(
+										'user_id' => (string) $user->_id,
+										'date_created' => array(
+											'$gte' => $min,
+											'$lte' => $max
+								))));
+								$orders = $orders->data();
+								if ($orders) {
+									foreach ($orders as $order) {
+										$order['date_created'] = new MongoDate($order['date_created']['sec']);
+										$collection->save(array('data' => $order, 'report_id' => $reportId));
+									}
 								}
 							}
 						}
-					}
-					$keys = new MongoCode("function(doc){return {'Date': doc.data.date_created.getMonth()}}");
-					$inital = array('total' => 0);
-					$reduce = new MongoCode('function(doc, prev){
-						prev.total += doc.data.total
-						}'
-					);
-					$conditions = array('report_id' => $reportId);
-					$results = $collection->group($keys, $inital, $reduce, $conditions);
-					$collection->remove($conditions);
-					break;
-				case 'Registrations':
-					switch ($name) {
-						case 'trendytogs':
-							$conditions = array(
-								'trendytogs_signup' => array('$exists' => true)
-							);
-							$dateField = 'date_created';
-							break;
-						default:
-							$conditions = array(
-								'invited_by' => $affiliate,
-							);
-							$dateField = 'created_date';
-							if (!empty($date)) {
-								$conditions = $conditions + $date;
-							}
-							break;
-					}
-						$keys = new MongoCode("function(doc){return {'Date': doc.$dateField.getMonth()}}");
+						$keys = new MongoCode("function(doc){return {'Date': doc.data.date_created.getMonth()}}");
 						$inital = array('total' => 0);
-						$reduce = new MongoCode('function(doc, prev){prev.total += 1}');
-						$collection = User::collection();
+						$reduce = new MongoCode('function(doc, prev){
+							prev.total += doc.data.total
+							}'
+						);
+						$conditions = array('report_id' => $reportId);
 						$results = $collection->group($keys, $inital, $reduce, $conditions);
+						$collection->remove($conditions);
 						break;
+					case 'Registrations':
+						switch ($name) {
+							case 'trendytogs':
+								$conditions = array(
+									'trendytogs_signup' => array('$exists' => true)
+								);
+								$dateField = 'date_created';
+								break;
+							default:
+								$conditions = array(
+									'invited_by' => $affiliate,
+								);
+								$dateField = 'created_date';
+								if (!empty($date)) {
+									$conditions = $conditions + $date;
+								}
+							$keys = new MongoCode("function(doc){return {'Date': doc.$dateField.getMonth()}}");
+							$inital = array('total' => 0);
+							$reduce = new MongoCode('function(doc, prev){prev.total += 1}');
+							$collection = User::collection();
+							$results = $collection->group($keys, $inital, $reduce, $conditions);
+						}
+				}
 			}
 		}
 		return compact('search', 'results', 'searchType', 'criteria');
