@@ -50,7 +50,12 @@ $image = $images[array_rand($images)];
 					
 						<div class="tc login-inner">
 				
-							<h1 id="logo">Totsy</h1>
+							<div id='logo'>
+                            <h1>
+                              <a href='/' title="Totsy.com">
+                                Totsy</a>
+                              </h1>
+                            </div>
 							
 							<div id="intro-copy">
 								<p class="red">You have places to be, things to do, and little ones in tow.</p>
