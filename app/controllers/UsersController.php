@@ -141,6 +141,7 @@ class UsersController extends BaseController {
 			$email = trim(strtolower($this->request->data['email']));
 			$password = trim($this->request->data['password']);
 			$this->request->data['password'] = trim($this->request->data['password']);
+			$this->request->data['email'] = trim($this->request->data['email']);
 			//Grab User Record
 			$user = User::lookup($email);
 			$redirect = '/';
