@@ -401,10 +401,10 @@ function output(val){
 				</div>
 				
 				<div id="clownpants" class="container">
-					<img src="http://lltotsyli3/img/motw/alex/1_3.jpg" />
-					<img src="http://lltotsyli3/img/motw/alex/711W_1.jpg" />
-					<img src="http://lltotsyli3/img/motw/alex/712W-1-1.jpg" />
-					<img src="http://lltotsyli3/img/motw/alex/721X-1.jpg" />
+					<img src="http://dev.totsy.com/img/motw/alex/1_3.jpg" />
+					<img src="http://dev.totsy.com/img/motw/alex/711W_1.jpg" />
+					<img src="http://dev.totsy.com/img/motw/alex/712W-1-1.jpg" />
+					<img src="http://dev.totsy.com/img/motw/alex/721X-1.jpg" />
 				</div>				
 						
 						
