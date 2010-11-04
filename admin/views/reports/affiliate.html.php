@@ -75,7 +75,7 @@
 						<tr>
 							<td><?=date('F',  mktime(0, 0, 0, ($result['Date'] + 1)))?></td>
 							<?php if ($searchType == 'Revenue'): ?>
-								<td><?=number_format($result['total'], 2)?></td>
+								<td>$<?=number_format($result['total'], 2)?></td>
 							<?php else: ?>
 								<td><?=$result['total']?></td>
 							<?php endif ?>
