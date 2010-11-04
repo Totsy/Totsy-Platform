@@ -9,6 +9,7 @@
 <?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
 <?=$this->html->script('jquery-ui-timepicker.min.js');?>
 
+
 <script type="text/javascript" charset="utf-8">
 	$(function() {
 		var dates = $('#min_date, #max_date').datetimepicker({
@@ -28,50 +29,71 @@
 <div class="grid_6">
 	<div class="box">
 	<h2>
-		<a href="#" id="toggle-forms">Query for Affiliate Totals</a>
+		<a href="#" id="toggle-forms">Query for Affiliate Order/Count Totals</a>
 	</h2>
 	<div class="block" id="forms">
 		<fieldset>
-			<?=$this->form->create(); ?>
+			<?=$this->form->create($search); ?>
 				<p>
-					<?=$this->form->select('affiliate', array(
-						'keyade' => 'Keyade', 
-						'trendytogs' => 'Trendy Togs',
-						'thecutekid' => 'The Cute Kid',
-						'mommytracked' => 'mommytracked',
-						'planningfamily' => 'planningfamily',
-						'babycenter' => 'babycenter',
-						'babiesonline' => 'babiesonline',
-						'grandparents' => 'grandparents',
-						'grandparents2' => 'grandparents2',
-						'our365' => 'our365',
-						'our365widget' => 'our365widget',
-						'strollertraffic'=> 'strollertraffic',
-						'mamaista'=> 'mamaista',
-						'classymommy'=> 'classymommy',
-						'familycorner'=> 'familycorner',
-						'momslikeme'=> 'momslikeme',
-						'disney'=> 'disney',
-						'mothering'=> 'mothering',
-						'mypoints'=> 'mypoints',
-						'arcamax'=> 'arcamax',
-						'ivillage'=> 'ivillage',
-						'whattoexpect'=> 'whattoexpect'
+					<?=$this->form->label('Affiliate'); ?>
+					<?=$this->form->text('affiliate'); ?>
+				</p>
+				<p>
+					<?=$this->form->label('Minimum Seach Date'); ?>
+					<?=$this->form->text('min_date', array('id' => 'min_date'));?>
+				</p>
+				<p>
+				<?=$this->form->label('Maximum Seach Date'); ?>
+				<?=$this->form->text('max_date', array('id' => 'max_date'));?>
+				</p>
+				<p>
+					<?=$this->form->label('Search Type'); ?>
+					<?=$this->form->select('search_type', array(
+						'Revenue' => 'Total Revenue',
+						'Registrations' => 'Total Registrations'
 						)); 
 					?>
 				</p>
-					<p>
-						<?=$this->form->label('Minimum Order Date'); ?>
-						<?=$this->form->text('min_date', array('id' => 'min_date'));?>
-					</p>
-					<p>
-					<?=$this->form->label('Maxium Order Date'); ?>
-					<?=$this->form->text('max_date', array('id' => 'max_date'));?>
-					</p>
-					<?=$this->form->hidden('type', array('value' => 'date')); ?>
 				<?=$this->form->submit('Search'); ?>
 			<?=$this->form->end(); ?>
 		</fieldset>
 	</div>
 	</div>
 </div>
+<div class="clear"></div>
+<?php if (!empty($results)): ?>
+	<div class="grid_16">
+			<table id="report" class="datatable" border="1">
+				<thead>
+					<tr>
+						<th>Month</th>
+						<th>Total - <?=$searchType?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ($results['retval'] as $result): ?>
+						<tr>
+							<td><?=date('F',  mktime(0, 0, 0, ($result['Date'] + 1)))?></td>
+							<?php if ($searchType == 'Revenue'): ?>
+								<td><?=number_format($result['total'], 2)?></td>
+							<?php else: ?>
+								<td><?=$result['total']?></td>
+							<?php endif ?>
+						</tr>
+					<?php endforeach ?>
+				</tbody>
+			</table>
+	</div>
+<?php endif ?>
+
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function() {
+		TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
+		$('#report').dataTable({
+			"sDom": 'T<"clear">lfrtip',
+			'bLengthChange' : false,
+			"bPaginate": false
+		}
+		);
+	} );
+</script>

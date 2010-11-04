@@ -8,6 +8,7 @@ use admin\models\Order;
 use admin\models\Event;
 use admin\models\Item;
 use admin\models\Base;
+use admin\models\Report;
 use MongoCode;
 use MongoDate;
 use MongoRegex;
@@ -133,35 +134,60 @@ class ReportsController extends BaseController {
 
 	}
 
-	public function cart() {
-		$this->_render['layout'] = false;
-		$y = Cart::count();
-		$x = time() * 1000;
-		echo "[$x, $y]";
-	}
-
-
 	public function affiliate() {
+		$search = Report::create($this->request->data);
 		if ($this->request->data) {
+			$criteria = $this->request->data;
 			$name = $this->request->data['affiliate'];
 			$affiliate = new MongoRegex("/$name/i");
 			if ($this->request->data['min_date'] && $this->request->data['max_date']) {
 				$min = new MongoDate(strtotime($this->request->data['min_date']));
 				$max = new MongoDate(strtotime($this->request->data['max_date']));
 				$date = array(
-					'date_created' => array(
-						'$gt' => $min,
-						'$lt' => $max)
+					'created_date' => array(
+						'$gte' => $min,
+						'$lte' => $max)
 				);
 			}
 			$searchType = $this->request->data['search_type'];
-			$groupBy = $this->request->data['group_by'];
 
 			switch ($searchType) {
-				case 'revenue':
-					# code...
+				case 'Revenue':
+					$users = User::find('all', array(
+						'conditions' => array(
+							'invited_by' => $affiliate,
+							'purchase_count' => array('$gt' => 1)
+					)));
+					if ($users) {
+						$reportId = substr(md5(uniqid(rand(),1)), 1, 15);
+						$collection = Report::collection();
+						foreach ($users as $user) {
+							$orders = Order::find('all', array(
+								'conditions' => array(
+									'user_id' => (string) $user->_id,
+									'date_created' => array(
+										'$gte' => $min,
+										'$lte' => $max
+							))));
+							$orders = $orders->data();
+							if ($orders) {
+								foreach ($orders as $order) {
+									$order['date_created'] = new MongoDate($order['date_created']['sec']);
+									$collection->save(array('data' => $order, 'report_id' => $reportId));
+								}
+							}
+						}
+					}
+					$keys = new MongoCode("function(doc){return {'Date': doc.data.date_created.getMonth()}}");
+					$inital = array('total' => 0);
+					$reduce = new MongoCode('function(doc, prev){
+						prev.total += doc.data.total
+						}'
+					);
+					$conditions = array('report_id' => $reportId);
+					$results = $collection->group($keys, $inital, $reduce, $conditions);
 					break;
-				case 'registrations':
+				case 'Registrations':
 					switch ($name) {
 						case 'trendytogs':
 							$conditions = array(
@@ -179,91 +205,15 @@ class ReportsController extends BaseController {
 							}
 							break;
 					}
-					switch ($groupBy) {
-						case 'month':
-							$key = "Date: doc.$dateField.getMonth()";
-							break;
-						default:
-							$key = null;
-							break;
-					}
-
-						$keys = new MongoCode("function(doc){
-							return {
-								$key
-								}
-						}");
-					$inital = array('count' => 0);
-					$reduce = new MongoCode('function(doc, prev){
-						prev.count += 1
-						}'
-					);
-
-					$collection = User::collection();
-
-					$retvals = $collection->group($keys, $inital, $reduce, $conditions);
-					$results = $retvals['retval'];
-					var_dump($retvals);
-					break;
+						$keys = new MongoCode("function(doc){return {'Date': doc.$dateField.getMonth()}}");
+						$inital = array('total' => 0);
+						$reduce = new MongoCode('function(doc, prev){prev.total += 1}');
+						$collection = User::collection();
+						$results = $collection->group($keys, $inital, $reduce, $conditions);
+						break;
 			}
-
-			// db.users.group(
-			//      {
-			//           keyf: function(doc){
-			//                return {
-			//                     "Date": doc.created_date.getMonth(),
-			//                }
-			//           },
-			//           initial : {count:0},
-			//           reduce: function(doc, prev){prev.count += 1;},
-			//           cond: {
-			//                "invited_by" : "keyade"
-			//           }
-			//      }
-			// )
-			// switch ($affiliate) {
-			// 	case 'trendytogs':
-			// 		$conditions = array(
-			// 			'trendytogs_signup' => array('$exists' => true),
-			// 			"purchase_count" => array('$gte' => 1)
-			// 		);
-			// 		break;
-			// 	default:
-			// 		$conditions = array(
-			// 			'invited_by' => $affiliate,
-			// 			'purchase_count' => array('$gte' => 1)
-			// 		);
-			// 		break;
-			// }
-			// $users = User::find('all', array('conditions' => $conditions));
-			// $userId = array();
-			// foreach ($users as $user) {
-			// 	$userId[] = (string) $user->_id;
-			// }
-			// $keys = new MongoCode('function(doc){
-			// 	return {
-			// 		Date: doc.date_created.toDateString()
-			// 		}
-			// }');
-			//$inital = array('total' => 0);
-			// $reduce = new MongoCode('function(doc, prev){
-			// 	prev.total += doc.total
-			// 	}'
-			// );
-			//$condition = $date + array('user_id' => array('$in' => $userId));
-
-			//$collection = Order::collection();
-			// $retvals = $collection->group($keys, $inital, $reduce, $condition);
-			// $sum = null;
-			// $orderTotals = $retvals['retval'];
-			// if ($orderTotals) {
-			// 	foreach ($orderTotals as $totals) {
-			// 		$sum += $totals['total'];
-			// 	}
-			// }
 		}
-
-		return compact('results');
+		return compact('search', 'results', 'searchType', 'criteria');
 	}
 
 	public function logistics($event = null) {
