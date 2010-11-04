@@ -163,6 +163,13 @@ abbr {
 	text-indent:-9999px;
 	display:block
 }
+#logo a {
+	width:155px;
+	height:90px;
+	background:url(../img/logo.png) no-repeat;
+	text-indent:-9999px;
+	display:block
+}
 blockquote {
 	margin-bottom:20px;
 	width:70%
@@ -2384,36 +2391,42 @@ body.login .our365-login #intro-copy {
 }
 
 /* ZOOM IMAGE STYLE */
-/* This is the moving lens square underneath the mouse pointer. */
+.cloud-zoom {
+	margin:0px;
+}
 .cloud-zoom-lens {
-	border: 4px solid #888 !important;
-	margin:-4px;	/* Set this to minus the border thickness. */
-	background-color:#fff;
 	cursor:move;
+	border:none;
 }
-/* This is for the title text. */
-.cloud-zoom-title {
-	position:absolute !important;
-	background-color:#000;
-	color:#fff;
-	padding:3px;
-	width:100%;
-	text-align:center;
-	font-weight:bold;
-	font-size:10px;
-	top:0px;
+.zoom-small-image {
+	width:298px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius:6px;
+	border:2px solid #eee;
+	padding:1px;
 }
-/* This is the zoom window. */
 .cloud-zoom-big {
-	border:0px solid #ccc;
-	overflow:hidden;
+	-moz-border-radius: 6px;
+	-webkit-border-radius:6px;
+	padding:0px;
 }
-/* This is the loading message. */
 .cloud-zoom-loading {
 	color:white;
 	background:#222;
 	padding:3px;
-	border:1px solid #000;
+	border:none;
+}
+.zoom-desc {
+	margin-top:10px;
+}
+.zoom-desc img {
+	border:2px solid #eee;
+	margin:0px;
+	background:#FFF;
+	padding:.01em;
+    overflow: hidden;
+	-moz-border-radius: 6px;
+	-webkit-border-radius:6px;
 }
 
 /*----------------------------------------------------------------------------------------------------

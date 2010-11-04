@@ -136,10 +136,12 @@ class UsersController extends BaseController {
 	 * @return string The user is prompted with a message if authentication failed.
 	 */
 	public function login() {
-		$message = false;
+		$message = $resetAuth = $legacyAuth = $nativeAuth = false;
 		if ($this->request->data) {
-			$email = strtolower($this->request->data['email']);
-			$password = $this->request->data['password'];
+			$email = trim(strtolower($this->request->data['email']));
+			$password = trim($this->request->data['password']);
+			$this->request->data['password'] = trim($this->request->data['password']);
+			$this->request->data['email'] = trim($this->request->data['email']);
 			//Grab User Record
 			$user = User::lookup($email);
 			$redirect = '/';
@@ -147,21 +149,17 @@ class UsersController extends BaseController {
 				if($user){
 					if (!empty($user->reset_token)) {
 						if (strlen($user->reset_token) > 1) {
-							$auth = (sha1($password) == $user->reset_token) ? true : false;
+							$resetAuth = (sha1($password) == $user->reset_token) ? true : false;
 							$redirect = 'account/info';
 						}
 					}
 					if ($user->legacy == 1) {
-						$auth = $this->authIllogic($password, $user);
-						if ($auth == true) {
-							//Write core information to the session and redirect user
-							$sessionWrite = $this->writeSession($user->data());
-						}
+						$legacyAuth = $this->authIllogic($password, $user);
 					} else {
-						// Try non-legacy user
-						$auth = Auth::check("userLogin", $this->request);
+						$nativeAuth = Auth::check("userLogin", $this->request);
 					}
-					if ($auth) {
+					if ($resetAuth || $legacyAuth || $nativeAuth) {
+						$sessionWrite = $this->writeSession($user->data());
 						$ipaddress = $this->request->env('REMOTE_ADDR');
 						User::log($ipaddress);
 						if ($this->request->url != 'login' && $this->request->url) {

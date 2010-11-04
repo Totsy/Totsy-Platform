@@ -12,7 +12,13 @@
 						
 						<div class="tc login-inner register-inner">
 							
-							<h1 id="logo">Totsy</h1>
+							<div id='logo'>
+                            <h1>
+                              <a href='/' title="Totsy.com">
+                                Totsy</a>
+                              </h1>
+                            </div>
+
 							
 							<div id="intro-copy">
 								<h2 style="margin-top:30px"><span>Become a</span> MEMBER</h2>
