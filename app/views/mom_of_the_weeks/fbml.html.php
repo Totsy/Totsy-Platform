@@ -226,7 +226,7 @@ function output(val){
 </script> 
 
 <div>
-    <div style="height: 1200px;">
+    <div style="height: 2500px;">
         <!-- start non-fan part -->
         <div class="top">
             <img src="http://www.totsy.com/img/motw/nonfan.jpg" width="520" height="353" alt="Become a fan to enter the sweepstakes" />
