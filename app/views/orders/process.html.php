@@ -135,7 +135,10 @@
 				</tr>
 
 				<?php if ($discountExempt): ?>
-				<p> Should we say something here about an item in the order that cant have a discount applied?</p>
+						<p>**Your order contains an item where promotions or credits cannot be applied.<br>
+							If you need to use credits or promotion codes, please do so on a separate order.<br>
+							We apologize for any inconvenience this may cause.
+						</p>
 				<?php else: ?>
 					<tr>
 						<?php if ($credit): ?>
