@@ -38,7 +38,8 @@ class CartController extends BaseController {
 					'category',
 					'product_weight',
 					'event',
-					'vendor_style'
+					'vendor_style',
+					'discount_exempt'
 			)));
 
 			//Check if this item has already been added to cart

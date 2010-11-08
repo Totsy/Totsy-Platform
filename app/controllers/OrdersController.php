@@ -14,8 +14,8 @@ use app\models\Promocode;
 use app\controllers\BaseController;
 use lithium\storage\Session;
 use lithium\util\Validator;
-use app\extensions\Mailer;
 use MongoDate;
+use li3_silverpop\extensions\Silverpop;
 
 class OrdersController extends BaseController {
 	
@@ -107,11 +107,12 @@ class OrdersController extends BaseController {
 			'url',
 			'primary_image',
 			'expires',
-			'event'
+			'event',
+			'discount_exempt'
 		);
 		$cart = Cart::active(array('fields' => $fields, 'time' => 'now'));
 		$showCart = Cart::active(array('fields' => $fields, 'time' => '-5min'));
-
+		$discountExempt = $this->_discountExempt($cart);
 		foreach ($cart as $cartValue) {
 			$event = Event::find('first', array(
 				'conditions' => array('_id' => $cartValue->event[0])
@@ -225,7 +226,7 @@ class OrdersController extends BaseController {
 
 		$vars = compact(
 			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
-			'tax', 'shippingCost', 'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'userDoc'
+			'tax', 'shippingCost', 'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'userDoc', 'discountExempt'
 		);
 
 		if (($cart->data()) && (count($this->request->data) > 1) && $order->process($user, $data, $cart, $orderCredit, $orderPromo)) {
@@ -258,12 +259,11 @@ class OrdersController extends BaseController {
 			$user = User::getUser();
 			++$user->purchase_count;
 			$user->save(null, array('validate' => false));
-			Mailer::send(
-				'order',
-				"Totsy - Order Acknowledgment - $orderId",
-				array('name' => $user->firstname, 'email' => $user->email),
-				compact('order')
+			$data = array(
+				'order' => $order,
+				'email' => $user->email
 			);
+			Silverpop::send('orderConfirmation', $data);
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 		}
 
@@ -271,6 +271,16 @@ class OrdersController extends BaseController {
 
 		return $vars + compact('cartEmpty', 'order', 'showCart');
 
+	}
+
+	protected function _discountExempt($cart) {
+		$discountExempt = false;
+		foreach ($cart as $cartItem) {
+			if ($cartItem->discount_exempt) {
+				$discountExempt = true;
+			}
+		}
+		return $discountExempt;
 	}
 }
 
