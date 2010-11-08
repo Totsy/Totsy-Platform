@@ -137,9 +137,7 @@
 
 	<!-- Start product item -->
 	<div class="r-container">
-		<div class="tl"></div>
-		<div class="tr"></div>
-		<div class="p-container" id="img-container">
+
 			<?php if ($item->total_quantity <= 0): ?>
 					<?=$this->html->image('/img/soldout.gif', array(
 						'title' => "Sold Out",
@@ -148,65 +146,66 @@
 			<?php endif ?>
 				<?php if (!empty($item->primary_image)): ?>
 
+<div class="zoom-section">
+  <div class="zoom-small-image"> 
+    <a href='/image/<?php echo $item->zoom_image; ?>.jpg' id='zoom1' class='cloud-zoom' rel="position: 'inside'">
+    <img src="/image/<?php echo $item->primary_image; ?>.jpg" alt='' border="0" title=""/></a> 
+  </div>
 
-<div class="zoom-small-image"> 
-    <a href='/image/<?php echo $item->zoom_image; ?>.jpg' class='cloud-zoom' rel="position: 'inside'"> 
-    	<img src="/image/<?php echo $item->primary_image; ?>.jpg" alt='' border="0" title=""/> 
-    </a> 
-</div>
-
-
-				<?php endif ?>
-				<?php if (!empty($item->alternate_images)): ?>
-					<?php $x = 2; ?>
-					<?php foreach ($item->alternate_images as $value): ?>
-						<div class="zoom-container" id="full_img_<?=$x?>">
-							<?php echo $this->html->link($this->html->image("/image/{$value}.jpg", array(
-									"width" => "298", 
-									"height" => "300", 
-									"title" => $item->description, 
-									"alt" => $item->description)),
-									"image/$value.jpg",
-									array('escape' => false));
-							?>
-							<?php $x++; ?>	
-						</div>
-					<?php endforeach ?>
-				<?php endif ?>
-		</div>
-		<div class="bl"></div>
-		<div class="br"></div>
-	</div>
-	<!-- End product item -->
-
-	<!-- Start additional image view thumbnails -->
-	<div id="thumbs">
-		<?php
+  	<!-- Start additional image view thumbnails -->
+	<div class="zoom-desc" style="margin-top:10px;"> 
+<?php
 			if (!empty($item->primary_image)) {
-				echo $this->html->image("/image/{$item->primary_image}.jpg", array(
-					'class' => "img-th active", 
+				echo $this->html->link(
+				$this->html->image("/image/{$item->primary_image}.jpg", array(
+					'class' => "zoom-tiny-image", 
 					'width' => "93", 
 					'height' => "93",
 					'alt' => "product-thumb-fpo",
-					'rel' => "full_img_1"));
+					'rel' => "full_img_1")),
+					"/image/{$item->primary_image}.jpg", array(
+							'class' => "cloud-zoom-gallery",
+							'rel' => "useZoom: 'zoom1', smallImage: '/image/{$item->primary_image}.jpg'",
+							'escape'=> false
+				));
 			}
 		?>
 		<?php if (!empty($item->alternate_images)): ?>
 			<?php $x = 2; ?>
 			<?php foreach ($item->alternate_images as $value): ?>
-					<?=$this->html->image("/image/{$value}.jpg", array(
-						'class' => "img-th", 
+					<?=$this->html->link(
+					$this->html->image("/image/{$value}.jpg", array(
+						'class' => "zoom-tiny-image", 
 						'width' => "93", 
 						'height' => "93",
-						'rel' => "full_img_$x",
-						'alt' => "product-thumb-fpo"
-						)); 
-					?>
+						'alt' => "full_img_$x"
+						)),
+						"/image/$item->zoom_image.jpg", array(
+							'class' => "cloud-zoom-gallery",
+							'rel' => "useZoom: 'zoom1', smallImage: '/image/{$value}.jpg'",
+							'escape'=> false
+				));
+						
+					?>                  
+                    
 					<?php $x++; ?>	
 			<?php endforeach ?>
 		<?php endif ?>
-	</div>
+
 	<!-- End additional image view thumbnails -->
+  </div>
+</div>
+
+
+
+				<?php endif ?>
+				<?php if (!empty($item->alternate_images)): ?>
+					<?php $x = 2; ?>
+
+
+				<?php endif ?>
+	</div>
+	<!-- End product item -->
 
 </div>
 
@@ -223,32 +222,6 @@ $(document).ready(function() {
 
 	//create tabs
 	$("#tabs").tabs();
-
-	//options of product zoom
-	var options = {
-		zoomWidth: 400,
-		zoomHeight: 300,
-		title: false,
-		zoomType: 'reverse'
-	};
-
-	//intanciate zoom
-	$('.zoom').jqzoom( options );
-
-	//make product thumbnails do something
-	$('.img-th').click(function(){
-	
-		$('.img-th').removeClass('active');
-	
-		$(this).addClass('active');
-	
-		var lg = $(this).attr('rel');
-	
-		$('.zoom-container').removeClass('show');
-		$('#'+lg).addClass('show');
-
-	});
-
 });
 </script>
 <script type="text/javascript">
