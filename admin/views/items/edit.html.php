@@ -109,6 +109,17 @@ tinyMCE.init({
 							<input type="radio" name="shipping_exempt" value="0" id="shipping_exempt" checked> Shipping Applied Item
 						<?php endif ?>
 					</div>
+					<div id="discount">
+						<h2 id="discount">Allow/Disallow Discounts on Order</h2>
+						<p>Note: By setting this property the <b>entire</b> discounts (credits or promotions) can be disallowed.</p>
+						<?php if ($item->discount_exempt == 1): ?>
+							<input type="radio" name="discount_exempt" value="1" id="discount_exempt" checked> Disallow Credits/Promos on Order<br>
+							<input type="radio" name="discount_exempt" value="0" id="discount_exempt"> Allow Credits/Promos on Order
+						<?php else: ?>
+							<input type="radio" name="discount_exempt" value="1" id="discount_exempt"> Disallow Credits/Promos on Order <br>
+							<input type="radio" name="discount_exempt" value="0" id="discount_exempt" checked> Allow Credits/Promos on Order
+						<?php endif ?>
+					</div>
 				</div>
 				<div id="item_pricing">
 					<h2 id="">Pricing</h2>

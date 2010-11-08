@@ -25,7 +25,8 @@ class Item extends \lithium\data\Model {
 	protected $_booleans = array(
 		'enabled',
 		'taxable',
-		'shipping_exempt'
+		'shipping_exempt',
+		'discount_exempt'
 		);
 		
 	public static function castData($items, array $options = array()) {
