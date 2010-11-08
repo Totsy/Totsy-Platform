@@ -99,6 +99,16 @@ tinyMCE.init({
 							<input type="radio" name="taxable" value="0" id="taxable" checked> Not Taxable Item
 						<?php endif ?>
 					</div>
+					<div id="item_shipping">
+						<h2 id="item_shipping">Shipping Exemption</h2>
+						<?php if ($item->shipping_exempt == 1): ?>
+							<input type="radio" name="shipping_exempt" value="1" id="shipping_exempt" checked> Shipping Exempt Item <br>
+							<input type="radio" name="shipping_exempt" value="0" id="shipping_exempt"> Shipping Applied Item
+						<?php else: ?>
+							<input type="radio" name="shipping_exempt" value="1" id="shipping_exempt"> Shipping Exempt Item <br>
+							<input type="radio" name="shipping_exempt" value="0" id="shipping_exempt" checked> Shipping Applied Item
+						<?php endif ?>
+					</div>
 				</div>
 				<div id="item_pricing">
 					<h2 id="">Pricing</h2>

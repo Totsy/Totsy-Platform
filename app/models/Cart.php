@@ -126,7 +126,12 @@ class Cart extends \lithium\data\Model {
 			'container' => "CP",
 			'rescom' => "RES"
 		)));
-		return $result ?: 7.95;
+		$cost =  $result ?: 7.95;
+		$cartCheck = $carts->data();
+		if (count($cartCheck) == 1 && Item::first($cartCheck[0]['item_id'])->shipping_exempt) {
+			$cost = 0;
+		}
+		return $cost;
 	}
 
 	public static function checkCartItem($itemId, $size) {
