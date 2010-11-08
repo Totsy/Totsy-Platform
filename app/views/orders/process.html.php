@@ -133,40 +133,45 @@
 					<td style="text-align:right"><strong>Sales Tax:</strong> </td>
 					<td style="text-align:center">$<?=number_format((float) $tax, 2);?></td>
 				</tr>
-				<tr>
-					<?php if ($credit): ?>
-						<?php $orderCredit->credit_amount = abs($orderCredit->credit_amount); ?>
-						<?=$this->form->create($orderCredit); ?>
-						<div class="form-row">
-						<?=$this->form->error('amount'); ?>
-						</div>
-							<td style="text-align:right"><strong>Credit:</strong> </td>
-							<td style="text-align:center">-$<?=number_format((float) $orderCredit->credit_amount, 2);?></td>
-							<td style="text-align:right">
-								<p> You have $<?=number_format((float) $userDoc->total_credit, 2);?> in credits</p>
-								$<?=$this->form->text('credit_amount', array('size' => 4, 'maxlength' => '6')); ?>
-								<?=$this->form->submit('Apply Credit'); ?>
-							</td>
-						<?=$this->form->end(); ?>
-					<?php endif ?>
-				</tr>
-				<tr>
-						<?=$this->form->create($orderPromo); ?>
-						<div class="form-row">
-							<?=$this->form->error('promo'); ?>
-						</div>
-							<td style="text-align:right"><strong>Promotion Savings:</strong> </td>
-							<?php if (!empty($orderPromo)): ?>
-								<td style="text-align:center">-$<?=number_format((float) abs($orderPromo->saved_amount), 2);?></td>
-							<?php else: ?>
-								<td style="text-align:center">-$<?=number_format((float) 0, 2);?></td>
-							<?php endif ?>
-							<td style="text-align:right">
-								<?=$this->form->text('code', array('size' => 10)); ?>
-								<?=$this->form->submit('Apply Promotion Code'); ?>
-							</td>
-						<?=$this->form->end(); ?>
-				</tr>
+
+				<?php if ($discountExempt): ?>
+				<p> Should we say something here about an item in the order that cant have a discount applied?</p>
+				<?php else: ?>
+					<tr>
+						<?php if ($credit): ?>
+							<?php $orderCredit->credit_amount = abs($orderCredit->credit_amount); ?>
+							<?=$this->form->create($orderCredit); ?>
+							<div class="form-row">
+							<?=$this->form->error('amount'); ?>
+							</div>
+								<td style="text-align:right"><strong>Credit:</strong> </td>
+								<td style="text-align:center">-$<?=number_format((float) $orderCredit->credit_amount, 2);?></td>
+								<td style="text-align:right">
+									<p> You have $<?=number_format((float) $userDoc->total_credit, 2);?> in credits</p>
+									$<?=$this->form->text('credit_amount', array('size' => 4, 'maxlength' => '6')); ?>
+									<?=$this->form->submit('Apply Credit'); ?>
+								</td>
+							<?=$this->form->end(); ?>
+						<?php endif ?>
+					</tr>
+					<tr>
+							<?=$this->form->create($orderPromo); ?>
+							<div class="form-row">
+								<?=$this->form->error('promo'); ?>
+							</div>
+								<td style="text-align:right"><strong>Promotion Savings:</strong> </td>
+								<?php if (!empty($orderPromo)): ?>
+									<td style="text-align:center">-$<?=number_format((float) abs($orderPromo->saved_amount), 2);?></td>
+								<?php else: ?>
+									<td style="text-align:center">-$<?=number_format((float) 0, 2);?></td>
+								<?php endif ?>
+								<td style="text-align:right">
+									<?=$this->form->text('code', array('size' => 10)); ?>
+									<?=$this->form->submit('Apply Promotion Code'); ?>
+								</td>
+							<?=$this->form->end(); ?>
+					</tr>
+				<?php endif ?>
 				<tr>
 					<td style="text-align:right"><strong>Total:</strong> </td>
 					<td style="text-align:center">$<?=number_format((float) $total, 2);?></td>
