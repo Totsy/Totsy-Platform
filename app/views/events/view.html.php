@@ -25,7 +25,7 @@
 			<div class="tl"></div>
 			<div class="tr"></div>
 			<div id="page-header" class="md-gray">
-				<div class="left">
+				<div style="float:left; display:block; width:300px;">
 					<!-- Display Event Image -->
 					<?php
 						if (!empty($event->images->event_image)) {
@@ -33,7 +33,8 @@
 								'alt' => $event->name), array(
 								'title' => $event->name, 
 								'width' => "169", 
-								'height'=> "193"
+								'height'=> "193", 
+								'style' => 'border:4px solid #fff;'
 							));
 						} else {
 							echo $this->html->image('/img/no-image-small.jpeg', array(
@@ -45,8 +46,8 @@
 						}
 					?>
 				</div>
-				<div class="right">
-					<div class="details table-row">
+				<div style="float:left; display:block; width:590px; margin-left:5px; line-height:22px; text-align:justify;">
+					<div style="width:300px;">
 						<!-- Display Logo Image -->
 						<?php if (!empty($event->images->logo_image)): ?>
 							<img src="/image/<?=$event->images->logo_image?>.gif" alt="<?= $event->name; ?>" title="<?= $event->name; ?>" width="148" height="52" />
