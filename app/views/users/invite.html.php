@@ -69,21 +69,21 @@
 				
 								<h2 class="gray">Share with your friends</h2>
 								
-								<a href="http://www.facebook.com/pages/Totsy/141535723466" href="Share Totsy with your Facebook friends" id="invite-facebook" target="_blank" class="invite-btn fl">Facebook</a>
-								<a href="http://twitter.com/MyTotsy" href="Share Totsy with your Twitter followers" id="invite-twitter" target="_blank" class="invite-btn fr">Twitter</a>
+								<a href="http://www.facebook.com/pages/Totsy/141535723466" title="Share Totsy with your Facebook friends" id="invite-facebook" target="_blank" class="invite-btn fl">Facebook</a>
+	              <a href="http://twitter.com/MyTotsy" title="Share Totsy with your Twitter followers" id="invite-twitter" target="_blank" class="invite-btn fr">Twitter</a>
 								
 								<div class="dividing-line clear mar-b"><!-- --></div>
 								
 								<h2 class="gray clear">Invite from your address book</h2>
 								
-								<a href="#" href="Invite friends from your Gmail contacts" id="invite-gmail" class="invite-btn fl">Gmail</a>
-								<a href="#" href="Invite friends from your Yahoo! contacts" id="invite-yahoo" class="invite-btn fr">Yahoo!</a>
+								<a href="#" title="Invite friends from your Gmail contacts" id="invite-gmail" class="invite-btn fl">Gmail</a>
+								<a href="#" title="Invite friends from your Yahoo! contacts" id="invite-yahoo" class="invite-btn fr">Yahoo!</a>
 								
-								<a href="#" href="Invite friends from your Outlook address book" id="invite-outlook" class="invite-btn fl">Outlook</a>
-								<a href="#" href="Invite friends from your AOL contacts" id="invite-aol" class="invite-btn fr">AOL</a>
+								<a href="#" title="Invite friends from your Outlook address book" id="invite-outlook" class="invite-btn fl">Outlook</a>
+								<a href="#" title="Invite friends from your AOL contacts" id="invite-aol" class="invite-btn fr">AOL</a>
 								
-								<a href="#" href="Invite friends from your MSN address book" id="invite-msn" class="invite-btn fl">MSN</a>
-								<a href="#" href="Invite friends" id="invite-others" class="invite-btn fr">Others</a>
+								<a href="#" title="Invite friends from your MSN address book" id="invite-msn" class="invite-btn fl">MSN</a>
+								<a href="#" title="Invite friends" id="invite-others" class="invite-btn fr">Others</a>
 				
 							</div>
 							<div class="bl"></div>
@@ -96,7 +96,7 @@
 						
 					<!-- Start Open Invitations Tab -->
 					<div id="openinvites" class="ui-tabs-hide">
-						<?php if (!empty($open->invitations)): ?>
+						<?php if (!empty($open)): ?>
 							<table cellpadding="0" cellspacing="0" border="0" width="100%" class="order-table">
 								<thead>
 									<tr>
@@ -108,12 +108,12 @@
 							<?php $x = 1;?>
 							<?php $y = 0;?>
 								<tbody>
-									<?php $invites = $open->invitations->data() ?>
-							<?php foreach ($invites as $key => $value): ?>
+									<?php // $invites = $open->data() ?>
+							<?php foreach ($open as $invite): ?>
 									<tr class="alt<?php echo ( ($y++ % 2) == 1 ? 0 : 1); ?>">
 										<td><?=$x?></td>
-										<td><?=$value['email']?></td>
-										<td><?=date('M-d-Y h:i:s', $value['date_sent']->sec); ?></td>
+										<td><?=$invite->email; ?></td>
+										<td><?=date('M-d-Y', $invite->date_sent->sec); ?></td>
 									</tr>
 								<?php $x++ ?>
 							<?php endforeach ?>
@@ -128,34 +128,35 @@
 					
 					<!-- Start Accepted Invitations Tab -->
 					<div id="acceptedinvites" class="ui-tabs-hide">
-						<?php if (!empty($accepted->invitations)): ?>
+						<?php if (!empty($accepted)): ?>
+                        <span style="font-size:11px;">($15.00 credit will be applied for each friend making their 1st purchase)</span>
 							<table cellpadding="0" cellspacing="0" border="0" width="100%" class="order-table">
 								<thead>
 									<tr>
-										<th>Friends</th>
-										<th>Member Since</th>
-										<th>Credits Earned</th>
-									</tr>
+										<th width="8%">#</th>
+										<th width="85%">Invitations</th>
+										<th width="7%">Status</th>
+						          </tr>
 								</thead>
 							<?php $x = 1;?>
 							<?php $y = 0;?>
 								<tbody>
-									<?php $invites = $accepted->invitations->data() ?>
-							<?php foreach ($invites as $key => $value): ?>
+							<?php foreach ($accepted as $invite): ?>
 									<tr class="alt<?php echo ( ($y++ % 2) == 1 ? 0 : 1); ?>">
-										<td><?=$value['email']?></td>
-										<td><?=date('M-d-Y h:i:s', $value['date_accepted']->sec); ?></td>
+										<td nowrap="nowrap"><?=$x?></td>
+									  <td nowrap="nowrap"><?=$invite->email; ?></td>
+										<td nowrap="nowrap"><span style="color:#090; font-size:12px; font-weight:bold; float:right;">Accepted!</span></td>
 									</tr>
 								<?php $x++ ?>
 							<?php endforeach ?>
 								</tbody>
 							</table>
 						<?php else: ?>
-							<strong>This feature is being migrated to the new site.</strong><br>
+    <strong>This feature is being migrated to the new site.</strong><br>
 							We have your invitation history and will have it loaded soon.
 						<?php endif ?>
 					
-					</div>
+			    </div>
 					<!-- End Accepted Invitations Tab -->
 				
 				</div>

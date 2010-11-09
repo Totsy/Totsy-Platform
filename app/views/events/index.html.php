@@ -38,15 +38,28 @@ $(document).ready(function() {
 </script>
 
 
+	<h1 class="page-title gray"><span class="red">Today's Sales</span> 
+    <div class="sm-actions fr" style="font-size:12px; margin:7px 0px 0px 0px;">
+			<dl>
+				<dt><strong>Socialize With Us</strong></dt> 
+				<dd>
+					<ul>
+						<li><a href="http://www.facebook.com/pages/Totsy/141535723466" target="_blank" title="Friend us on Facebook" class="sm-facebook sm-btn">Friend us on Facebook</a></li>
+						<li><a href="http://twitter.com/MyTotsy" target="_blank" title="Follow us on Twitter" class="sm-twitter sm-btn">Follow us on Twitter</a></li>
+					</ul>
+				</dd>
+			</dl>
+		</div>   </h1>
+
 
 <div id="middle" class="fullwidth">
-	<h1 class="page-title gray"><span class="red">Today's Sales</span></h1>
+     
 	<?php $x = 0; ?>
 	<?php $y = 0; ?>
 	<?php foreach ($openEvents as $event): ?>
 		<!-- Start product item -->
 		<?php if ($y == 0): ?>
-			<div class="product-list-item featured r-container">
+			<div class="product-list-item featured r-container"> 
 		<?php endif ?>
 		<?php if ($y == 1): ?>
 			<div class="product-list-item featured middle r-container">
@@ -139,30 +152,18 @@ $(document).ready(function() {
 				});</script>";
 		?>
 			<?php if ($x == 1): ?>
-				<div class="invite-column r-container">
+            
+            
+            <?=$this->html->link(
+							$this->html->image("/img/Invite_holiday.png", array(
+							'title' => "Banner Image",
+							'alt' => "Banner Image",
+							'width' => '181',
+							'height' => '413'
+						)),array('Users::invite'), array('escape'=> false));
+						 ?>
+            
 
-					<div class="tl"></div>
-					<div class="tr"></div>
-					<div class="md-gray-gradient p-container">
-
-						<h2 class="invite-friends">Invite Friends Get $15</h2>
-
-						<a href="/invite" class="invite-splash-btn" title="Invite Friends Now">Invite Now</a>
-
-						<div class="hor-div-line"><!-- --></div>
-
-						<h2 class="socialize-us">Socialize With Us</h2>
-						<br><br>
-						<div class="sm-icons">
-							<a href="http://www.facebook.com/pages/Totsy/141535723466" title="Friend us on Facebook" class="sm-btn sm-facebook-md" target="_blank">Friend us on Facebook</a>
-							<a href="http://twitter.com/MyTotsy" title="Follow us on Twitter" class="sm-btn sm-twitter-md" target="_blank">Follow us on Twitter</a>
-						</div>
-
-					</div>
-					<div class="bl"></div>
-					<div class="br"></div>
-
-				</div>
 			<?php endif ?>
 		<?php $x++; ?>
 		<?php $y++; ?>
@@ -174,7 +175,7 @@ $(document).ready(function() {
             <ul id="mycarousel" class="jcarousel-skin-tango">
                 <li><img src="http://dev.totsy.com/img/toySale_banner1.png" alt="" width="840" /></li>
                 <li><img src="http://dev.totsy.com/img/toySale_banner2.png" alt="" width="840" /></li>
-                <li><img src="http://dev.totsy.com/img/toySale_banner3.png" alt=""  width="840"  /></li>
+                <li><img src="http://dev.totsy.com/img/toySale_banner3.png" alt="" width="840" /></li>
             </ul>
 	</div>
 
