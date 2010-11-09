@@ -31,12 +31,13 @@ class Email extends Base {
 	protected $_meta = array('source' => 'log.emails');
 
 	public static $templates = array(
-		'781191' => 'Order Enroute Warehouse - Normal',
-		'781192' => 'Order Enroute Warehouse - Long',
-		'781193' => 'Order Enroute Warehouse - Delayed',
-		'781203' => 'Order At Warehouse',
-		'781194' => 'Apply Credit',
-		'781195' => 'Order Issue'
+		'orderStatusNormal' => 'Order Enroute Warehouse - Normal',
+		'orderStatusLong' => 'Order Enroute Warehouse - Long',
+		'orderStatusDelayed' => 'Order Enroute Warehouse - Delayed',
+		'orderWarehouse' => 'Order At Warehouse',
+		'orderCredit' => 'Apply Credit',
+		'orderIssue' => 'Order Issue',
+		'accountNotification' => 'Account Notification'
 	);
 }
 

@@ -2,11 +2,11 @@
 
 namespace admin\controllers;
 
-use \admin\models\Email;
-use \admin\models\Event;
-use \admin\models\User;
-use \admin\models\Order;
-use \admin\extensions\Mailer;
+use admin\models\Email;
+use admin\models\Event;
+use admin\models\User;
+use admin\models\Order;
+use admin\extensions\Mailer;
 use MongoDate;
 use MongoId;
 use li3_flash_message\extensions\storage\FlashMessage;
@@ -91,16 +91,17 @@ class EmailsController extends \lithium\action\Controller {
 			'email' => 'fagard@totsy.com',
 			'order' => $order,
 			'event' => $event,
-			'note' => $post['note'],
-			'campaignId' => $post['campaignId']
+			'note' => $post['note']
 		);
-		$log['success'] = (Silverpop::send('orderStatus', $data)) ? true : false;
 		$log = array(
 			'created_date' => Email::dates('now'),
 			'admin_id' => $admin['_id'],
 			'admin_name' => $admin['firstname']
 			) + $data;
-		return $email->save($log);
+		$email->save($log);
+		$data['SPOP'] = $email->_id;
+		$email->success = (Silverpop::send($post['template'], $data)) ? true : false;
+		return $email->save();
 	}
 }
 

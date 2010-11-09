@@ -8,7 +8,7 @@
 <?=$this->form->create(); ?>
 		<p>
 			<?=$this->form->label('Select Email Type'); ?>
-			<?=$this->form->select('campaignId', Email::$templates);?>
+			<?=$this->form->select('template', Email::$templates);?>
 		</p>
 		<p>
 			<?=$this->form->label('Special Note to Customer'); ?>
