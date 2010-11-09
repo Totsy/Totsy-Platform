@@ -51,6 +51,7 @@ Router::connect('/invitation/{:args}', 'Users::register');
 Router::connect('/join/{:args}', 'Users::register');
 Router::connect('/reset', 'Users::reset');
 Router::connect('/pages/{:args}', 'Pages::view');
+Router::connect('/blog', 'Blog::index');
 
 /**
  * Redirect all non-authenticated users to 
