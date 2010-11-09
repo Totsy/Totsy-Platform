@@ -95,6 +95,7 @@
 		<li class="first"><a href="/pages/terms" title="Terms of Use">Terms of Use</a></li>
 		<li><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
 		<li><a href="/pages/aboutus" title="About Us">About Us</a></li>
+		<li><a href="/blog" title="Blog">Blog</a></li>
 		<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
 		<li class="last"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
 	</ul>
