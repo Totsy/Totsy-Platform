@@ -4,9 +4,7 @@ namespace app\controllers;
 
 use app\controllers\BaseController;
 
-/**
- * Handles the users main account information.
- */
+
 class BlogController extends BaseController {
 	
 	public function index(){
