@@ -10,6 +10,8 @@ class Cart extends \lithium\data\Model {
 
 	const TAX_RATE = 0.08875;
 
+	const TAX_RATE_NYS = 0.04375;
+
 	public $validates = array();
 
 	protected $_dates = array(
@@ -20,6 +22,16 @@ class Cart extends \lithium\data\Model {
 		'3min' => 180,
 		'5min' => 300,
 		'15min' => 900
+	);
+
+	protected $_nyczips = array(
+		'100',
+		'104',
+		'111',
+		'114',
+		'116',
+		'11004',
+		'11005'
 	);
 
 	public static function collection() {
@@ -100,15 +112,21 @@ class Cart extends \lithium\data\Model {
 	 */
 	public function tax($cart, $shipping) {
 		$item = Item::first($cart->item_id);
-		$taxExempt = (
-			$shipping->state != 'NY' ||
-			($item->taxable == false && $cart->sale_retail < 110)
-		);
-
-		if ($taxExempt) {
-			return 0;
+		$tax = 0;
+		$zipCheckPartial = in_array(substr($shipping->zip, 0, 3), $this->_nyczips);
+		$zipCheckFull = in_array($shipping->zip, $this->_nyczips);
+		$nycExempt = (($zipCheckPartial || $zipCheckFull) && $cart->sale_retail < 110) ? false : true;
+		if ($item->taxable != false || $nycExempt) {
+			switch ($shipping->state) {
+				case 'NY':
+					$tax = static::TAX_RATE_NYS;
+					break;
+				default:
+					$tax =  ($cart->sale_retail < 110) ? 0 : static::TAX_RATE;
+					break;
+			}
 		}
-		return $cart->sale_retail * static::TAX_RATE;
+		return $cart->sale_retail * $tax;
 	}
 
 	public function weight($cart) {
