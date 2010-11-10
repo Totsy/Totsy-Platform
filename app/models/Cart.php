@@ -116,7 +116,8 @@ class Cart extends \lithium\data\Model {
 		$zipCheckPartial = in_array(substr($shipping->zip, 0, 3), $this->_nyczips);
 		$zipCheckFull = in_array($shipping->zip, $this->_nyczips);
 		$nysZip = ($zipCheckPartial || $zipCheckFull) ? true : false;
-		$nycExempt = ($nysZip && $cart->sale_retail < 110) ? false : true;
+		$nycExempt = ($nysZip && $cart->sale_retail < 110) ? true : false;
+
 		if ($item->taxable != false || $nycExempt) {
 			switch ($shipping->state) {
 				case 'NY':
