@@ -115,11 +115,12 @@ class Cart extends \lithium\data\Model {
 		$tax = 0;
 		$zipCheckPartial = in_array(substr($shipping->zip, 0, 3), $this->_nyczips);
 		$zipCheckFull = in_array($shipping->zip, $this->_nyczips);
-		$nycExempt = (($zipCheckPartial || $zipCheckFull) && $cart->sale_retail < 110) ? false : true;
+		$nysZip = ($zipCheckPartial || $zipCheckFull) ? true : false;
+		$nycExempt = ($nysZip && $cart->sale_retail < 110) ? false : true;
 		if ($item->taxable != false || $nycExempt) {
 			switch ($shipping->state) {
 				case 'NY':
-					$tax = static::TAX_RATE_NYS;
+					$tax = ($nysZip) ? static::TAX_RATE : static::TAX_RATE_NYS;
 					break;
 				default:
 					$tax =  ($cart->sale_retail < 110) ? 0 : static::TAX_RATE;
