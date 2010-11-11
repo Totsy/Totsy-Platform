@@ -557,6 +557,66 @@ class ReportsController extends BaseController {
 		}
 		return compact('details', 'summary', 'dates');
 	}
+
+	public function eventSales() {
+		FlashMessage::clear();
+		if ($this->request->data) {
+			$dates = $this->request->data;
+			if (!empty($dates['min_date']) && !empty($dates['max_date'])) {
+				$conditions = array(
+					'date_created' => array(
+						'$gt' => new MongoDate(strtotime($this->request->data['min_date'])),
+						'$lte' => new MongoDate(strtotime($this->request->data['max_date']))
+				));
+				$orderCollection = Order::collection();
+				$orders = $orderCollection->find($conditions);
+				$reportId = substr(md5(uniqid(rand(),1)), 1, 15);
+				$collection = Report::collection();
+				if ($orders) {
+					foreach ($orders as $order) {
+						$orderSummary = array();
+						$items = $order['items'];
+						foreach ($items as $item) {
+							$orderItem = array();
+							$orderItem['date'] = $order['date_created'];
+							$orderItem['quantity'] = $item['quantity'];
+							$orderItem['total'] = $item['sale_retail'] * $item['quantity'];
+							$orderItem['event_name'] = $item['event_name'];
+							$orderItem['report_id'] = $reportId;
+							$collection->save($orderItem);
+						}
+					}
+				}
+				$keys = new MongoCode("
+					function(doc){
+						return {
+							'event' : doc.event_name
+						}
+					}");
+				$inital = array(
+					'total' => 0,
+					'quantity' => 0
+				);
+				$reduce = new MongoCode('function(doc, prev){
+					prev.total += doc.total,
+					prev.quantity += doc.quantity
+					}'
+				);
+				$conditions = array('report_id' => $reportId);
+				$results = $collection->group($keys, $inital, $reduce, $conditions);
+				$results = $results['retval'];
+				$collection->remove($conditions);
+				if (!empty($results)) {
+					FlashMessage::set('Results Found', array('class' => 'pass'));
+				} else {
+					FlashMessage::set('No Results Found', array('class' => 'warning'));
+				}
+			} else {
+				FlashMessage::set('Please enter in a valid search date', array('class' => 'warning'));
+			}
+		}
+		return compact('results', 'dates');
+	}
 }
 
 ?>
