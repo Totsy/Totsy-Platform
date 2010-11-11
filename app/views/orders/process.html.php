@@ -88,7 +88,7 @@
 						<td class="<?="total-item-$x";?>">
 							<strong>$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
 						</td>
-						<td class="cart-time"><div id="<?php echo "itemCounter-$x"; ?>"</div></td>
+						<td class="cart-time"><div id='<?php echo "itemCounter-$x"; ?>'></div></td> 
 					</tr>
 					<?php
 						//Allow users three extra minutes on their items for checkout.

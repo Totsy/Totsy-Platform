@@ -37,7 +37,7 @@
 			
 			<tbody>
 				<?php foreach ($orders as $order): ?>
-					<tr class="alt$x">
+					<tr class="alt$x" style="border-bottom:1px solid #ddd;">
 						<td><?=date('m-d-y', $order->date_created->sec); ?></td>
 						<td>
 							<?php if (!empty($order->order_id)): ?>
