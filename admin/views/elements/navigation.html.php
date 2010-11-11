@@ -34,6 +34,12 @@
 			<li>
 				<?php echo $this->html->link('Logistics', 'Reports::logistics'); ?>
 			</li>
+			<li>
+				<?php echo $this->html->link('Sales', 'Reports::sales'); ?>
+			</li>
+			<li>
+				<?php echo $this->html->link('Event Sales', 'Reports::eventSales'); ?>
+			</li>
 		</ul>
 	</li>
 	<li>
