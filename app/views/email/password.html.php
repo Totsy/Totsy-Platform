@@ -38,7 +38,8 @@
 
                                 <td valign="top" style="padding: 20px;" background="http://www.totsy.com/markup/v2_emails/assets/img/mid_back.png">
                                 <p>Dear <?=$data['user']->firstname." ".$data['user']->lastname;?>,</p>
-								<p>We understand that you are having some difficulty logging into your Totsy account. We've created a temporary password for you which is <?=$data['token']?>.</p>
+								<p>We understand that you are having some difficulty logging into your Totsy account. We've created a temporary password for you which is:</p>
+								<h3 style="text-align:center; color:#F00; font-weight:normal; font-size:24px; border:1px solid #ddd; background:#f7f7f7; padding:10px 5px;"><?=$data['token']?></h3>
 								<p>To login with your temporary password and assign a new one that is easy for you to remember, please <a href="http://www.totsy.com/login" title="Totsy Login" style="color:#E00000">visit our login page</a>.
 								<p>Our customer service team is also available to answer any questions. If you are still experiencing problems accessing Totsy.com after you have reset your password, please contact us at <a href="mailto:support@totsy.com" title="Totsy Support Address" style="color:#E00000">support@totsy.com</a> with the following information:</p>
 								
@@ -47,9 +48,8 @@
 								<li>Your email address and any others you may have used to register</li>
 								</ul>
 
-								<p>&nbsp;</p>
 								<p>All the best,</p>
-								<p><strong style="color:#E00000;font-weight:normal">Totsy</strong></p>
+								<p><strong>Totsy</strong></p>
                                 </td>
                             </tr>
                         </tbody>
