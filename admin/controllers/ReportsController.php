@@ -12,6 +12,7 @@ use admin\models\Report;
 use MongoCode;
 use MongoDate;
 use MongoRegex;
+use li3_flash_message\extensions\storage\FlashMessage;
 
 /**
  * The Reports Controller is the core for all reporting functionality.
@@ -469,6 +470,91 @@ class ReportsController extends BaseController {
 			}
 		}
 		return compact('productFile', 'event', 'productHeading');
+	}
+
+	public function sales() {
+		FlashMessage::clear();
+		if ($this->request->data) {
+			$dates = $this->request->data;
+			if (!empty($dates['min_date']) && !empty($dates['max_date'])) {
+				$conditions = array(
+					'date_created' => array(
+						'$gt' => new MongoDate(strtotime($this->request->data['min_date'])),
+						'$lte' => new MongoDate(strtotime($this->request->data['max_date']))
+				));
+				$orders = Order::find('all', array('conditions' => $conditions));
+				$reportId = substr(md5(uniqid(rand(),1)), 1, 15);
+				$collection = Report::collection();
+				if ($orders) {
+					foreach ($orders as $order) {
+						$orderSummary = array();
+						$items = $order->items->data();
+						$itemQuantity = 0;
+						foreach ($items as $item) {
+							$itemQuantity += $item['quantity'];
+						}
+						$orderSummary['tax'] = $order->tax;
+						$orderSummary['total'] = $order->total;
+						switch($order->shipping->state){
+							case 'NY':
+								$state = 'NY';
+								break;
+							case 'PA':
+								$state = 'PA';
+								break;
+							default:
+								$state = 'Other';
+						}
+						$orderSummary['state'] = $state;
+						$orderSummary['handling'] = $order->handling;
+						$orderSummary['quantity'] = $itemQuantity;
+						$orderSummary['date'] = $order->date_created;
+						$orderSummary['report_id'] = $reportId;
+						$collection->save($orderSummary);
+					}
+				}
+				$keys = new MongoCode("
+					function(doc){
+						return {
+							'date': doc.date.toDateString(),
+							'state' : doc.state
+						}
+					}");
+				$inital = array(
+					'total' => 0,
+					'tax' => 0,
+					'handling' => 0,
+					'quantity' => 0
+				);
+				$reduce = new MongoCode('function(doc, prev){
+					prev.total += doc.total,
+					prev.tax += doc.tax,
+					prev.handling += doc.handling,
+					prev.quantity += doc.quantity
+					}'
+				);
+				$conditions = array('report_id' => $reportId);
+				$results = $collection->group($keys, $inital, $reduce, $conditions);
+				$details = $results['retval'];
+				$keys = new MongoCode("
+					function(doc){
+						return {
+							'date': doc.date.toDateString()
+						}
+					}");
+				$results = $collection->group($keys, $inital, $reduce, $conditions);
+				$summary = $results['retval'];
+				$collection->remove($conditions);
+				if (!empty($summary)) {
+					FlashMessage::set('Results Found', array('class' => 'pass'));
+				} else {
+					FlashMessage::set('No Results Found', array('class' => 'warning'));
+				}
+			} else {
+				FlashMessage::set('Please enter in a valid search date', array('class' => 'warning'));
+			}
+		}
+		return compact('details', 'summary', 'dates');
 	}
 }
 
