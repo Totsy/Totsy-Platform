@@ -24,6 +24,10 @@ use \lithium\data\Connections;
 			'type' =>  'MongoDb', 
 			'database' => 'totsy', 
 			'host' => 'localhost'),
+		'eric' => array(
+			'type' =>  'MongoDb', 
+			'database' => 'totsy_eric', 
+			'host' => 'localhost'),
 		'local' => array(
 			'type' =>  'MongoDb', 
 			'database' => 'totsy', 
