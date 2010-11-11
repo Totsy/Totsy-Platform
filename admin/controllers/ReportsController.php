@@ -482,34 +482,35 @@ class ReportsController extends BaseController {
 						'$gt' => new MongoDate(strtotime($this->request->data['min_date'])),
 						'$lte' => new MongoDate(strtotime($this->request->data['max_date']))
 				));
-				$orders = Order::find('all', array('conditions' => $conditions));
+				$orderCollection = Order::collection();
+				$orders = $orderCollection->find($conditions);
 				$reportId = substr(md5(uniqid(rand(),1)), 1, 15);
 				$collection = Report::collection();
 				if ($orders) {
 					foreach ($orders as $order) {
 						$orderSummary = array();
-						$items = $order->items->data();
+						$items = $order['items'];
 						$itemQuantity = 0;
 						foreach ($items as $item) {
 							$itemQuantity += $item['quantity'];
 						}
-						$orderSummary['tax'] = $order->tax;
-						$orderSummary['total'] = $order->total;
-						switch($order->shipping->state){
-							case 'NY':
-								$state = 'NY';
-								break;
-							case 'PA':
-								$state = 'PA';
-								break;
-							default:
-								$state = 'Other';
-						}
-						$orderSummary['state'] = $state;
-						$orderSummary['handling'] = $order->handling;
-						$orderSummary['quantity'] = $itemQuantity;
-						$orderSummary['date'] = $order->date_created;
-						$orderSummary['report_id'] = $reportId;
+							$orderSummary['tax'] = $order['tax'];
+							$orderSummary['total'] = $order['total'];
+							switch($order['shipping']['state']){
+								case 'NY':
+									$state = 'NY';
+									break;
+								case 'PA':
+									$state = 'PA';
+									break;
+								default:
+									$state = 'Other';
+							}
+							$orderSummary['state'] = $state;
+							$orderSummary['handling'] = $order['handling'];
+							$orderSummary['quantity'] = $itemQuantity;
+							$orderSummary['date'] = $order['date_created'];
+							$orderSummary['report_id'] = $reportId;
 						$collection->save($orderSummary);
 					}
 				}

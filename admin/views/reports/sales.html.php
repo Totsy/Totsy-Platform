@@ -102,8 +102,7 @@
 		TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
 		$('#results_table').dataTable({
 			"sDom": 'T<"clear">lfrtip',
-			"bPaginate": false,
-			"bFilter": false
+			"bPaginate": false
 		}
 		);
 	} );
@@ -113,8 +112,7 @@
 		TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
 		$('#summary_table').dataTable({
 			"sDom": 'T<"clear">lfrtip',
-			"bPaginate": false,
-			"bFilter": false
+			"bPaginate": false
 		}
 		);
 	} );
