@@ -35,7 +35,7 @@
 				<div class="tl"></div>
 				<div class="tr"></div>
 				<div class="r-box lt-gradient-1">
-					<h3 class="gray fl">Email Preferences - Coming Soon</h3>&nbsp;|&nbsp;<a href="" title="Edit">Edit</a>
+					<h3 class="gray fl">Email Preferences - Coming Soon</h3><!--&nbsp;|&nbsp;<a href="" title="Edit">Edit</a>
 					<br />
 					<br />
 					<dl>
@@ -45,7 +45,7 @@
 								<li>General Subscription</li>
 							</ul>
 						</dd>
-					</dl>
+					</dl>-->
 				
 				</div>
 				<div class="bl"></div>
