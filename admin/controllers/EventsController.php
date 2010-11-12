@@ -192,7 +192,8 @@ class EventsController extends BaseController {
 						'created_date' => $date,
 						'details' => $itemAttributes,
 						'event' => array($_id),
-						'url' => $url
+						'url' => $url,
+						'taxable' => true
 					);
 					$newItem = array_merge(Item::castData($itemDetail), Item::castData($details));
 					if ((array_sum($newItem['details']) > 0) && $item->save($newItem)) {
