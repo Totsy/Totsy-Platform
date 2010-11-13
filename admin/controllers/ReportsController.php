@@ -397,6 +397,7 @@ class ReportsController extends BaseController {
 						$orderFile[$inc]['Ref1'] = $item['item_id'];
 						$orderFile[$inc]['Ref2'] = $item['size'];
 						$orderFile[$inc]['Ref3'] = $item['color'];
+						$orderFile[$inc]['Ref4'] = $item['description'];
 						$orderFile[$inc] = array_merge($heading, $orderFile[$inc]);
 						$orderFile[$inc] = $this->sortArrayByArray($orderFile[$inc], $heading);
 					}
@@ -545,6 +546,9 @@ class ReportsController extends BaseController {
 					}");
 				$results = $collection->group($keys, $inital, $reduce, $conditions);
 				$summary = $results['retval'];
+				$keys = new MongoCode("function(doc){return {}}");
+				$total = $collection->group($keys, $inital, $reduce, $conditions);
+				$total = $total['retval'][0];
 				$collection->remove($conditions);
 				if (!empty($summary)) {
 					FlashMessage::set('Results Found', array('class' => 'pass'));
@@ -555,9 +559,16 @@ class ReportsController extends BaseController {
 				FlashMessage::set('Please enter in a valid search date', array('class' => 'warning'));
 			}
 		}
-		return compact('details', 'summary', 'dates');
+		return compact('details', 'summary', 'dates', 'total');
 	}
 
+	/**
+	 * Generates a report of sales grouped by event for a specified date range.
+	 *
+	 * @return array
+	 *    $results
+	 *    $dates
+	 */
 	public function eventSales() {
 		FlashMessage::clear();
 		if ($this->request->data) {
