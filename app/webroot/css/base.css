@@ -295,9 +295,8 @@ span.breadcrumbs span {
 	background:url(../img/cnt-bg.png) repeat-y #FFF
 }
 #header {
-	width:958px;
 	height:110px;
-	margin:0 1px;
+	margin:0px;
 	background:url(../img/header-bg.png) repeat-x;
 	font-size:12px
 }

@@ -95,8 +95,8 @@ $(document).ready(function() {
 					<?php if ($x <= 1): ?>
 						<?=$this->html->link(
 							$this->html->image("$productImage", array(
-							'title' => "Product Title",
-							'alt' => "Product Alt Text",
+							'title' => $event->name,
+							'alt' => $event->name,
 							'width' => '355',
 							'height' => '410'
 							)),array('Events::view', 'args' => array($event->url)), array('escape'=> false));
@@ -104,8 +104,8 @@ $(document).ready(function() {
 					<?php else: ?>				
 						<?=$this->html->link(
 							$this->html->image("$productImage", array(
-							'title' => "Product Title",
-							'alt' => "Product Alt Text",
+							'title' => $event->name,
+							'alt' => $event->name,
 							'width' => '298',
 							'height' => '344'
 						)),array('Events::view', 'args' => array($event->url)), array('escape'=> false));
@@ -153,17 +153,14 @@ $(document).ready(function() {
 		?>
 			<?php if ($x == 1): ?>
             
+			<?=$this->html->link($this->html->image("/img/Invite_holiday.png", array(
+					'title' => "Invite Friends. Get $15",
+					'alt' => "Invite Friends. Get $15",
+					'width' => '181',
+					'height' => '413'
+					)),'/Users/invite', array('escape'=> false));
+			?>
             
-            <?=$this->html->link(
-							$this->html->image("/img/Invite_holiday.png", array(
-							'title' => "Banner Image",
-							'alt' => "Banner Image",
-							'width' => '181',
-							'height' => '413'
-						)),array('Users::invite'), array('escape'=> false));
-						 ?>
-            
-
 			<?php endif ?>
 		<?php $x++; ?>
 		<?php $y++; ?>
@@ -173,9 +170,9 @@ $(document).ready(function() {
 	
     <div style="padding:0px 9px;">
             <ul id="mycarousel" class="jcarousel-skin-tango">
-                <li><img src="http://dev.totsy.com/img/toySale_banner1.png" alt="" width="840" /></li>
-                <li><img src="http://dev.totsy.com/img/toySale_banner2.png" alt="" width="840" /></li>
-                <li><img src="http://dev.totsy.com/img/toySale_banner3.png" alt="" width="840" /></li>
+            	<li><?=$this->html->image("/img/toySale_banner1.png", array('title' => "Toy Sale",'alt' => "Toy Sale",'width' => '840','height' => '272'));?></li>
+                <li><?=$this->html->image("/img/toySale_banner2.png", array('title' => "Toy Sale",'alt' => "Toy Sale",'width' => '840','height' => '272'));?></li>
+                <li><?=$this->html->image("/img/toySale_banner3.png", array('title' => "Toy Sale",'alt' => "Toy Sale",'width' => '840','height' => '272'));?></li>
             </ul>
 	</div>
 
@@ -204,8 +201,8 @@ $(document).ready(function() {
 						?>
 						<?=$this->html->link(
 						$this->html->image("$productImage", array(
-							'title' => "Product Title", 
-							'alt' => "Product Alt Text", 
+							'title' => $event->name, 
+							'alt' => $event->name, 
 							'width' => '298', 
 							'height' => '344'
 						)),array('Events::view', 'args' => array($event->url)), array('escape'=> false));
