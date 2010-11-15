@@ -95,8 +95,8 @@ $(document).ready(function() {
 					<?php if ($x <= 1): ?>
 						<?=$this->html->link(
 							$this->html->image("$productImage", array(
-							'title' => "Product Title",
-							'alt' => "Product Alt Text",
+							'title' => $event->name,
+							'alt' => $event->name,
 							'width' => '355',
 							'height' => '410'
 							)),array('Events::view', 'args' => array($event->url)), array('escape'=> false));
@@ -104,8 +104,8 @@ $(document).ready(function() {
 					<?php else: ?>				
 						<?=$this->html->link(
 							$this->html->image("$productImage", array(
-							'title' => "Product Title",
-							'alt' => "Product Alt Text",
+							'title' => $event->name,
+							'alt' => $event->name,
 							'width' => '298',
 							'height' => '344'
 						)),array('Events::view', 'args' => array($event->url)), array('escape'=> false));
@@ -201,8 +201,8 @@ $(document).ready(function() {
 						?>
 						<?=$this->html->link(
 						$this->html->image("$productImage", array(
-							'title' => "Product Title", 
-							'alt' => "Product Alt Text", 
+							'title' => $event->name, 
+							'alt' => $event->name, 
 							'width' => '298', 
 							'height' => '344'
 						)),array('Events::view', 'args' => array($event->url)), array('escape'=> false));
