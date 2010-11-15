@@ -153,17 +153,14 @@ $(document).ready(function() {
 		?>
 			<?php if ($x == 1): ?>
             
+			<?=$this->html->link($this->html->image("/img/Invite_holiday.png", array(
+					'title' => "Invite Friends. Get $15",
+					'alt' => "Invite Friends. Get $15",
+					'width' => '181',
+					'height' => '413'
+					)),'/Users/invite', array('escape'=> false));
+			?>
             
-            <?=$this->html->link(
-							$this->html->image("/img/Invite_holiday.png", array(
-							'title' => "Banner Image",
-							'alt' => "Banner Image",
-							'width' => '181',
-							'height' => '413'
-						)),array('Users::invite'), array('escape'=> false));
-						 ?>
-            
-
 			<?php endif ?>
 		<?php $x++; ?>
 		<?php $y++; ?>
