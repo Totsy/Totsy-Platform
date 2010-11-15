@@ -170,9 +170,9 @@ $(document).ready(function() {
 	
     <div style="padding:0px 9px;">
             <ul id="mycarousel" class="jcarousel-skin-tango">
-                <li><img src="http://dev.totsy.com/img/toySale_banner1.png" alt="" width="840" /></li>
-                <li><img src="http://dev.totsy.com/img/toySale_banner2.png" alt="" width="840" /></li>
-                <li><img src="http://dev.totsy.com/img/toySale_banner3.png" alt="" width="840" /></li>
+            	<li><?=$this->html->image("/img/toySale_banner1.png", array('title' => "Toy Sale",'alt' => "Toy Sale",'width' => '840','height' => '272'));?></li>
+                <li><?=$this->html->image("/img/toySale_banner2.png", array('title' => "Toy Sale",'alt' => "Toy Sale",'width' => '840','height' => '272'));?></li>
+                <li><?=$this->html->image("/img/toySale_banner3.png", array('title' => "Toy Sale",'alt' => "Toy Sale",'width' => '840','height' => '272'));?></li>
             </ul>
 	</div>
 
