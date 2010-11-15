@@ -52,6 +52,25 @@
 </div>
 <div class="clear"></div>
 <div class="grid_16">
+	<?php if (!empty($total)): ?>
+		<table id="total_table" class="datatable" border="1">
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th>Quantity</th>
+					<th>Tax</th>
+					<th>Freight</th>
+					<th>Total</th>
+				</tr>
+			</thead>
+			<tr>
+				<td>Total (<?=$dates['min_date'];?> through <?=$dates['max_date']?>)</td>
+				<td><?=$total['quantity'];?></td>
+				<td>$<?=number_format($total['tax'], 2);?></td>
+				<td>$<?=number_format($total['handling'], 2);?></td>
+				<td>$<?=number_format($total['total'], 2);?></td>
+			</tr>
+	<?php endif ?>
 	<?php if (!empty($summary)): ?>
 		<table id="summary_table" class="datatable" border="1">
 			<thead>
@@ -72,6 +91,7 @@
 				<td>$<?=number_format($result['total'], 2);?></td>
 			</tr>
 		<?php endforeach ?>
+		</table>
 	<?php endif ?>
 	<?php if (!empty($details)): ?>
 		<table id="results_table" class="datatable" border="1">
@@ -96,13 +116,15 @@
 			</tr>
 		<?php endforeach ?>
 	<?php endif ?>
+		</table>
 </div>
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
 		TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
 		$('#results_table').dataTable({
 			"sDom": 'T<"clear">lfrtip',
-			"bPaginate": false
+			"bPaginate": false,
+			"bFilter": false
 		}
 		);
 	} );
@@ -112,7 +134,8 @@
 		TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
 		$('#summary_table').dataTable({
 			"sDom": 'T<"clear">lfrtip',
-			"bPaginate": false
+			"bPaginate": false,
+			"bFilter": false
 		}
 		);
 	} );
