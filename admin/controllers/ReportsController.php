@@ -256,7 +256,7 @@ class ReportsController extends BaseController {
 							foreach ($orderData as $order) {
 								$items = $order['items'];
 								foreach ($items as $item) {
-									if (($item['item_id'] == $eventItem['_id']) && ($key == $item['size'])){
+									if (($item['item_id'] == $eventItem['_id']) && (string) $key == $item['size'])){
 										$purchaseOrder[$inc]['Product Name'] = $eventItem['description'];
 										$purchaseOrder[$inc]['Product Color'] = $eventItem['color'];
 										$purchaseOrder[$inc]['SKU'] = $eventItem['vendor_style'];
@@ -342,7 +342,7 @@ class ReportsController extends BaseController {
 	 * Generates the order file.
 	 *
 	 * @return array
-	 *     orderFile - This is the array of all the orders that are being processed for shipmment.
+	 *     orderFile - This is the array of all the orders that are being processed for shipment.
 	 *     heading - The column headings for the orderFile.
 	 *     event - The event object.
 	 */
