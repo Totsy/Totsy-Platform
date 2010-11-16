@@ -319,12 +319,12 @@ class UsersController extends BaseController {
 			foreach ($to as $email) {
 				$invitation = Invitation::create();
 				Invitation::add($invitation, $id, $code, $email);
-				Mailer::send(
-					'invite',
-					'You have been invited to Totsy.com!',
-					array('name' => '', 'email' => $email),
-					compact('user', 'message')
+				$data = array(
+					'user' => $user,
+					'email' => $user->email,
+					'message' => $message
 				);
+				Silverpop::send('invite', $data);
 			}
 			$flashMessage = "Your invitations have been sent";
 		}
