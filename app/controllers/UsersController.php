@@ -10,6 +10,7 @@ use lithium\security\Auth;
 use lithium\storage\Session;
 use app\extensions\Mailer;
 use li3_silverpop\extensions\Silverpop;
+use MongoRegex;
 
 
 class UsersController extends BaseController {
@@ -255,9 +256,11 @@ class UsersController extends BaseController {
 		$this->_render['layout'] = 'login';
 		$success = false;
 		if ($this->request->data) {
+			$email = $this->request->data['email'];
+			$email = new MongoRegex("/$email/i");
 			$user = User::find('first', array(
 				'conditions' => array(
-					'email' => $this->request->data['email']
+					'email' => $email
 			)));
 			if ($user) {
 				$token = $this->generateToken();
