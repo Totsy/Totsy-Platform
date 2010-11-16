@@ -125,12 +125,11 @@ class UsersController extends BaseController {
 					$data['invitation_codes'] = array($this->randomString());
 				}
 				if ($saved = $user->save($data)) {
-					Mailer::send(
-						'welcome',
-						'Welcome to Totsy!',
-						array('name' => $user->firstname, 'email' => $user->email),
-						compact('user')
+					$data = array(
+						'user' => $user,
+						'email' => $user->email
 					);
+					Silverpop::send('registration', $data);
 				}
 			}
 		}
@@ -266,12 +265,12 @@ class UsersController extends BaseController {
 				$user->reset_token = sha1($token);
 				$user->legacy = 0;
 				if ($user->save(null, array('validate' => false))) {
-					Mailer::send(
-						'password',
-						'Totsy Password Reset',
-						array('name' => $user->firstname, 'email' => $user->email),
-						compact('token', 'user')
+					$data = array(
+						'user' => $user,
+						'email' => $user->email,
+						'token' => $token
 					);
+					Silverpop::send('reset', $data);
 					$message = "Your password has been reset. Please check your email.";
 					$success = true;
 				} else {
