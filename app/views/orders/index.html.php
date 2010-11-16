@@ -77,7 +77,7 @@
 		
 		</table>
 		<?php else: ?>
-			<center><strong>You do not have no orders.</strong></center>
+			<center><strong>You do not have any orders, <a href="/" title="Begin Shopping">Begin Shopping</a></strong></center>
 		<?php endif ?>
 	</div>
 	<div class="bl"></div>
