@@ -6,15 +6,24 @@ use app\controllers\BaseController;
 use app\models\User;
 use app\models\Menu;
 use app\models\Invitation;
-use \lithium\security\Auth;
-use \lithium\storage\Session;
+use lithium\security\Auth;
+use lithium\storage\Session;
 use app\extensions\Mailer;
+use li3_silverpop\extensions\Silverpop;
 
 
 class UsersController extends BaseController {
 
 	/**
-	 * Performs basic registration functionality.
+	 * Performs registration functionality.
+	 *
+	 * The registration process takes into account the invitation code that a customer came
+	 * in with. For instance, if the url is www.totsy.com/join/ou365 then that code is saved
+	 * as the invited_by field in mongo.
+	 *
+	 * During the registation process the user is also given an invitation code that they can use
+	 * to invite others to Totsy. They are sent a welcome email and redirected to either the event
+	 * page or a landing page based on the invitation url.
 	 *
 	 * @return string User will be promoted that email is already registered.
 	 */
@@ -75,12 +84,11 @@ class UsersController extends BaseController {
 					'email' => $user->email
 				);
 				Session::write('userLogin', $userLogin);
-				Mailer::send(
-					'welcome',
-					'Welcome to Totsy!',
-					array('name' => $user->firstname, 'email' => $user->email),
-					compact('user')
+				$data = array(
+					'user' => $user,
+					'email' => $user->email
 				);
+				Silverpop::send('registration', $data);
 				$ipaddress = $this->request->env('REMOTE_ADDR');
 				User::log($ipaddress);
 				if ($invite_code == 'keyade') {
@@ -254,6 +262,7 @@ class UsersController extends BaseController {
 			)));
 			if ($user) {
 				$token = $this->generateToken();
+				$user->clear_token = $token;
 				$user->reset_token = sha1($token);
 				$user->legacy = 0;
 				if ($user->save(null, array('validate' => false))) {
