@@ -324,7 +324,7 @@ class UsersController extends BaseController {
 				Invitation::add($invitation, $id, $code, $email);
 				$data = array(
 					'user' => $user,
-					'email' => $user->email,
+					'email' => $email,
 					'message' => $message
 				);
 				Silverpop::send('invite', $data);
