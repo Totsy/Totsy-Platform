@@ -77,7 +77,7 @@
 		
 		</table>
 		<?php else: ?>
-			<center><strong>You have have no orders.</strong></center>
+			<center><strong>You do not have no orders.</strong></center>
 		<?php endif ?>
 	</div>
 	<div class="bl"></div>
