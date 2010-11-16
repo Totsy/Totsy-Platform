@@ -526,13 +526,15 @@ class ReportsController extends BaseController {
 					'total' => 0,
 					'tax' => 0,
 					'handling' => 0,
-					'quantity' => 0
+					'quantity' => 0,
+					'count' => 0
 				);
 				$reduce = new MongoCode('function(doc, prev){
 					prev.total += doc.total,
 					prev.tax += doc.tax,
 					prev.handling += doc.handling,
 					prev.quantity += doc.quantity
+					prev.count += 1
 					}'
 				);
 				$conditions = array('report_id' => $reportId);
@@ -616,6 +618,9 @@ class ReportsController extends BaseController {
 				$conditions = array('report_id' => $reportId);
 				$results = $collection->group($keys, $inital, $reduce, $conditions);
 				$results = $results['retval'];
+				$keys = new MongoCode("function(doc){return {}}");
+				$total = $collection->group($keys, $inital, $reduce, $conditions);
+				$total = $total['retval'][0];
 				$collection->remove($conditions);
 				if (!empty($results)) {
 					FlashMessage::set('Results Found', array('class' => 'pass'));
@@ -626,7 +631,7 @@ class ReportsController extends BaseController {
 				FlashMessage::set('Please enter in a valid search date', array('class' => 'warning'));
 			}
 		}
-		return compact('results', 'dates');
+		return compact('results', 'dates', 'total');
 	}
 }
 

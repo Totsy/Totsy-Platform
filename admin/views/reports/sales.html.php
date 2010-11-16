@@ -57,7 +57,8 @@
 			<thead>
 				<tr>
 					<th>Date</th>
-					<th>Quantity</th>
+					<th># of Orders</th>
+					<th># of Units</th>
 					<th>Tax</th>
 					<th>Freight</th>
 					<th>Total</th>
@@ -65,6 +66,7 @@
 			</thead>
 			<tr>
 				<td>Total (<?=$dates['min_date'];?> through <?=$dates['max_date']?>)</td>
+				<td><?=$total['count'];?></td>
 				<td><?=$total['quantity'];?></td>
 				<td>$<?=number_format($total['tax'], 2);?></td>
 				<td>$<?=number_format($total['handling'], 2);?></td>
@@ -76,7 +78,8 @@
 			<thead>
 				<tr>
 					<th>Date</th>
-					<th>Quantity</th>
+					<th># of Orders</th>
+					<th># of Units</th>
 					<th>Tax</th>
 					<th>Freight</th>
 					<th>Total</th>
@@ -85,6 +88,7 @@
 		<?php foreach ($summary as $result): ?>
 			<tr>
 				<td><?=$result['date'];?></td>
+				<td><?=$result['count'];?></td>
 				<td><?=$result['quantity'];?></td>
 				<td>$<?=number_format($result['tax'], 2);?></td>
 				<td>$<?=number_format($result['handling'], 2);?></td>
@@ -99,7 +103,8 @@
 				<tr>
 					<th>Date</th>
 					<th>State</th>
-					<th>Quantity</th>
+					<th># of Orders</th>
+					<th># of Units</th>
 					<th>Tax</th>
 					<th>Freight</th>
 					<th>Total</th>
@@ -109,6 +114,7 @@
 			<tr>
 				<td><?=$result['date'];?></td>
 				<td><?=$result['state'];?></td>
+				<td><?=$result['count'];?></td>
 				<td><?=$result['quantity'];?></td>
 				<td>$<?=number_format($result['tax'], 2);?></td>
 				<td>$<?=number_format($result['handling'], 2);?></td>

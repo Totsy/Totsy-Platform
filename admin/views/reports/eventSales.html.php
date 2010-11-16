@@ -55,12 +55,27 @@
 	<?php if (!empty($dates)): ?>
 		<h3>Showing Events Running from <?=$dates['min_date']?> GMT to <?=$dates['max_date']?> GMT</h3>
 	<?php endif ?>
+	<?php if (!empty($total)): ?>
+		<table id="total_table" class="datatable" border="1">
+			<thead>
+				<tr>
+					<th>Event</th>
+					<th># of Units</th>
+					<th>Total Sale Retail</th>
+				</tr>
+			</thead>
+			<tr>
+				<td>All Events</td>
+				<td><?=$total['quantity'];?></td>
+				<td>$<?=number_format($total['total'], 2);?></td>
+			</tr>
+	<?php endif ?>
 	<?php if (!empty($results)): ?>
 		<table id="summary_table" class="datatable" border="1">
 			<thead>
 				<tr>
 					<th>Event</th>
-					<th>Quantity</th>
+					<th># of Units</th>
 					<th>Total Sale Retail</th>
 				</tr>
 			</thead>
