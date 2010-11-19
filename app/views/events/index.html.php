@@ -126,7 +126,7 @@ $(document).ready(function() {
           		<?php endif ?>
                 <!-- End Holiday Banner Notifications -->
                 
-						<div class="table-cell left" style="width:275px; display:block; padding:5px 5px 5px 10px;">
+						<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
 						 <p style="padding:0px; margin:0px; font-size:16px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
 						 <p style="padding:0px; margin:-3px 0px 0px 0px; font-size:13px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;"><span id="<?php echo "todaysplash$x"; ?>"></span>
 						</div>
