@@ -117,7 +117,7 @@ hr.no-show {
 	display:none
 }
 .mar-b {
-	margin-bottom:20px
+	margin-bottom:5px
 }
 .mar-10-b {
 	margin-bottom:10px
@@ -659,10 +659,10 @@ div.col-2 .box-2 {
 	float:right
 }
 #product-detail-right .sm-actions {
-	margin:6px 0 0 0;
+	margin:10px 0 0 0;
 	position:absolute;
 	right:0;
-	top:20px;
+	top:0px;
 	z-index:2
 }
 #detail-top-right {
@@ -2447,3 +2447,10 @@ body.login .our365-login #intro-copy {
         font-size:11px;
 }
 
+/*----------------------------------------------------------------------------------------------------
+/* Horizontal Rule
+----------------------------------------------------------------------------------------------------*/
+
+hr { height: 0; border: solid #ddd; border-width: 1px 0 0; }
+hr {
+... border-top: 1px solid #d8d8d8; border-bottom: 1px solid #fff; } /* yes, the "..." is a hack and you should leave it alone! -erictherobot */
