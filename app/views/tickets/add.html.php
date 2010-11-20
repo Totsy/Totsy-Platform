@@ -7,8 +7,8 @@
 	<div class="tl"></div>
 	<div class="tr"></div>
 	<div id="page">
-		<h2 class="gray">My Support Tickets</h2>
-		<br>
+		<h2 class="gray mar-b">Help Desk</h2>
+		<hr />
 		<?php if (!empty($message)): ?>
 			<div class="standard-message"><?=$message;?></div>
 		<?php endif ?>
