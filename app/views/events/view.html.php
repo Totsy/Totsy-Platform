@@ -120,7 +120,7 @@
 								'width' => '298',
 								'height' => '300')),
 							"/items/view/{$item->url}",
-							array('escape' => false)
+							array('title' => $item->name, 'escape' => false)
 						); ?>
 						<div class="details table-row">
 							<div class="table-cell left">
