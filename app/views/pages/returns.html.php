@@ -15,23 +15,24 @@
 
 <p>(as of 09/01/2009)</p>
 
-<h2>1. Final Sales</h2>
-
+<h2 class="gray mar-b">1. Final Sales</h2>
+<hr />
 <p>All sales made by TOTSY on its website to its Members are final.</p>
 
-<h2>2. No Exchanges</h2>
-
+<h2 class="gray mar-b">2. No Exchanges</h2>
+<hr />
 <p>TOTSY does not accept exchanges, unless otherwise provided below. Our sales open and close within three days, and TOTSY does not have any inventory to process exchanges.</p>
 
-<h2>3. Return Policy for Goods Not Sold as Final Sale</h2>
-
+<h2 class="gray mar-b">3. Return Policy for Goods Not Sold as Final Sale</h2>
+<hr />
 <p>TOTSY will accept returns only on items that are not specifically designated as Final Sale on its website, subject, however, to the following exceptions and conditions:</p>
 <ul>
 	<li>NO RETURNS, REFUNDS OR EXCHANGES WILL BE ACCEPTED ON THE FOLLOWING CATEGORIES OF PRODUCTS (IN ANY EVENT, EVEN IF LISTED AS NOT A "FINAL SALE"): SKINCARE, FOOTWEAR, BAGS & DIAPER BAGS, ACCESSORIES, SWIMWEAR, UNDERWEAR, SLEEPWEAR, HOSIERY, FURNITURE, WHEELGOOD, ELECTRONIC, TOYS & GAMES, BREAST PUMP, CARE & FEEDING ACCESSORIES, BOOKS, CD&DVD, TRAVEL.</li>
 	<li>Items purchased as part of a set or multi-item pack may not be returned individually.</li>
 </ul>
 
-<h3>3.2 Procedure For Returns: you may return a product bought on TOTSY's website which was not listed as a Final Sale, only upon compliance with TOTSY's Return Procedure:</h3>
+<h3 class="gray mar-b">3.2 Procedure For Returns: you may return a product bought on TOTSY's website which was not listed as a Final Sale, only upon compliance with TOTSY's Return Procedure:</h3>
+<hr />
 <ul>
 	<li><strong>48h Notice:</strong> Within forty eight (48) hours of your confirmed sale, as indicated on your PO, you must contact TOTSY's customer service either by telephone (Toll free number: 1-888-59TOTSY, or 1-888-598-6879), or via TOTSY's website by clicking on the CONTACT US menu.</li>
 	<li><strong>RMA Number:</strong> All returns must include a Return Merchandise Authorization number (RMA) provided by a TOTSY customer service representative and conspicuously written on the outside of the package, or box, in which Member will ship the returned items. Any returns that do not have a valid RMA on the outside of the packages will be rejected.</li>
@@ -44,12 +45,12 @@
 
 <p>Returns that do not meet these requirements will be sent back to you and a merchandise credit will not be issued.</p>
 
-<h2>4. Refunds — Account Credits</h2>
-
+<h2 class="gray mar-b">4. Refunds — Account Credits</h2>
+<hr />
 <p>If merchandise is accepted for return, a credit for the amount of your original purchase less the cost of the original shipment will be credited to your TOTSY account. Visit the MY CREDIT menu on the navigational bar of our Site to check your credit.</p>
 
-<h2>5. Return Policy for Items Shipped In Error, Damaged or Defective Merchandise</h2>
-
+<h2 class="gray mar-b">5. Return Policy for Items Shipped In Error, Damaged or Defective Merchandise</h2>
+<hr />
 <p>If an item was shipped in error, turns out to be defective, was lost or damaged in transit, or was received with an unreasonable delay as defined under the Terms of Service, please contact our TOTSY customer service representative so we can resolve the problem. TOTSY's return procedure set forth in Section 3.2 applies to this Section, except that TOTSY will credit your TOTSY account with the shipping costs you incurred to return such items, and except that a customer service representative will make a determination as to whether your items were either shipped in error, lost or damaged in transit, defective, or received with an unreasonable delay.</p>
 
 

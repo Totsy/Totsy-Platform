@@ -22,7 +22,8 @@ $(document).ready(function() {
 	<div class="tr"><!-- --></div> 
 	
 	<div id="page"> 
-	 
+	<h2 class="gray mar-b">FAQ's</h2>
+	<hr />
 		<p><strong>What is Totsy?</strong><br />
 		Totsy is a private shopping network of exclusive, brand-specific sales, up to 70% off retail,
 		for moms on-the-go, moms-to-be, and kids, ages 0-7. Prenatal care products, baby gear, travel
@@ -34,8 +35,8 @@ $(document).ready(function() {
 		Membership is free. You can join either by accepting an invitation offer from a friend or by
 		requesting your membership via Totsy's sign-in page.</p>
 	
-		<h2>Sales and Payment</h2>
-	
+		<h2 class="gray mar-b">Sales and Payment</h2>
+		<hr />
 		<p><strong>When does a Totsy sale start?</strong><br />
 		Sales start at 10 AM (EST). Exceptions may be made for one-hour sales.</p>
 	
@@ -58,8 +59,8 @@ $(document).ready(function() {
 		<p><strong>Does Totsy charge sales tax?</strong><br />
 		Yes, but only for orders delivered to Delaware, Pennsylvania, and New York.</p>
 	
-		<h2>Shipping Information</h2>
-	
+		<h2 class="gray mar-b">Shipping Information</h2>
+		<hr />
 		<p><strong>What are my shipping options?</strong><br />
 		Our shipping partner is UPS.
 		</p>
@@ -76,13 +77,13 @@ $(document).ready(function() {
 		<p><strong>Does Totsy ship internationally?</strong><br />
 		No.</p>
 	
-		<h2>Returns</h2>
-	
+		<h2 class="gray mar-b">Returns</h2>
+		<hr />
 		<p><strong>What is Totsy's policy on returns and exchanges?</strong><br />
 		Please see our Return Policy page for more information.</p>
 	
-		<h2>Account Maintenance</h2>
-	
+		<h2 class="gray mar-b">Account Maintenance</h2>
+		<hr />
 		<p><strong>What happens if I forget my password?</strong><br />
 		If you forget your password, you can reset it via the "Forgot Your Password?" link on Totsy's
 		sign-in page. You'll be directed to a new page and asked to input your email address. We will
@@ -102,8 +103,8 @@ $(document).ready(function() {
 		to be removed from our database. Once you confirm, we'll automatically remove you from our
 		lists.</p>
 	 
-		<h2>Site Issues</h2>
-		
+		<h2 class="gray mar-b">Site Issues</h2>
+		<hr />
 		<p><strong>What happened to the blog?</strong><br />
 		You have probably noticed that our blog is on temporary vacation while we get the new site up 
 		and running smoothly. We have big plans for the blog and will be making an announcement when 

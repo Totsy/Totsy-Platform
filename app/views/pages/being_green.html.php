@@ -9,7 +9,8 @@
 <div class="tr"><!-- --></div> 
 
 <div id="page">
-
+<h2 class="gray mar-b">Being Green</h2>
+<hr />
 	<p>
 		For today's world and tomorrow's generation, Totsy is the first company in private sales to
 		take on sustainable and socially responsible initiatives in all areas of business. We are
@@ -30,8 +31,9 @@
 		measures we implement now will help us continue to lower our carbon footprint each year.
 	</p>
 
-	<h2>One Baby, One Tree&trade;</h2>
-	<p>
+	<h2 class="gray mar-b">One Baby, One Tree&trade;</h2>
+	<hr />
+<p>
 		<?=$this->html->image('being_green/carbonzero.gif', array(
 			'align' => 'left', 'style' => 'margin-right: 15px; margin-bottom:10px;'
 		)); ?>
