@@ -6,7 +6,9 @@
 	<div class="tl"></div>
 	<div class="tr"></div>
 	<div id="page">
-		<?=$this->html->link('Click here to add an address','Addresses::add'); ?>
+	<h2 class="gray mar-b">Address Book <span style="float:right; font-weight:normal; font-size:12px;"><?=$this->html->link('Add New Address','Addresses::add'); ?></span></h2>
+	<hr />
+	
 		<table width="100%" class="cart-table">
 			<thead>
 				<tr>

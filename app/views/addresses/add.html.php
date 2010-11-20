@@ -10,13 +10,14 @@
 <div class="tl"></div>
 <div class="tr"></div>
 <div id="page">
-<p>
 	<?php if ($message): ?>
 		<div class="standard-message"><?=$message; ?></div>
 	<?php endif ?>
-</p>
 
-	<h2 class="gray mar-b">Add/Edit Address</h2>
+	<h2 class="gray mar-b">Add/Edit Address Book <span style="float:right; font-weight:normal; font-size:12px;"><?php if (!$isAjax): ?>
+                <?=$this->html->link('Manage Address Book','addresses');?><?php endif ?></span>
+	</h2>
+	<hr />
 	<?=$this->form->create($address, array(
 		'id' => 'addressForm',
 		'class' => "fl",
@@ -88,9 +89,6 @@
 			<?=$this->form->hidden('isAjax', array('value' => 1)); ?>
 		<?php endif ?>
 	<?=$this->form->end();?> 
-	<?php if (!$isAjax): ?>
-		<?=$this->html->link('Manage Address','addresses');?>
-	<?php endif ?>
 	
 </div> 
 <script type="text/javascript">
