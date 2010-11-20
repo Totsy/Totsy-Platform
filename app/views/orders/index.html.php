@@ -8,9 +8,8 @@
 	<div class="tr"></div>
 	<div id="page">
 		
-		<div class="mar-10-b">
-			<strong class="gray">Tracking System</strong>
-		</div>
+		<h2 class="gray mar-b">Tracking System <span style="float:right; font-weight:normal; font-size:11px;"><span style="font-weight:bold;">NOTE: </span>Orders may be split into multiple shipments with different tracking numbers.</span></h2>
+		<hr />
 		<ol class="shipping-process">
 			<li class="placed link" id="placed-btn">Order Placed With Totsy</li>
 			<li class="secured link" id="secured-btn">Order Secured From Partners</li>
@@ -18,12 +17,9 @@
 			<li class="shipped link" id="shipped-btn">Packaged Shipped To You</li>
 			<li class="recieved link" id="recieved-btn">Order Arrives At Your Home</li>
 		</ol>
-        		<p style="font-size:14px; font-weight:bold; text-align:center; color:red;">Our order tracking system is currently under construction. <br />
+        	<p style="font-size:14px; font-weight:bold; text-align:center; color:red;">Our order tracking system is currently under construction. <br />
 		All orders  are being processed and will be shipped within 15 to 20 business days. <br /> 
 		If you have any questions do not hesitate to contact us!</p>
-		<p style="font-size:11px;"><span style="font-weight:bold;">NOTE:</span>		  Orders may be split into multiple shipments with different tracking numbers.</p>
-   
-    <p>&nbsp;</p>
 		<?php if ($orders->data()): ?>
 		<table cellpadding="0" cellspacing="0" border="0" width="100%" class="order-table">
 		
@@ -77,7 +73,7 @@
 		
 		</table>
 		<?php else: ?>
-			<center><strong>You do not have any orders, <a href="/" title="Begin Shopping">Begin Shopping</a></strong></center>
+			<center><strong>You do not have any orders. <a href="/" title="Go Shopping">Go Shopping</a></strong></center>
 		<?php endif ?>
 	</div>
 	<div class="bl"></div>
