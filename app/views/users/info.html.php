@@ -9,6 +9,7 @@
 	<div id="page">
 	
 		<h2 class="gray mar-b">Edit Account Information</h2>
+		<hr />
 		<fieldset id="" class="">
 			<div>
 				<?php 
@@ -20,7 +21,7 @@
 							echo "<div class=\"standard-error-message\">Your current password is incorrect. Please try again.</div>";
 							break;
 						default:
-							echo "<p>Please enter in your new information below and submit.</p><br>";
+							echo "Please enter in your new information below and submit.";
 							break;
 					}
 				?>

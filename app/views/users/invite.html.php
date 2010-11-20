@@ -8,7 +8,8 @@
 			<div class="tl"></div>
 			<div class="tr"></div>
 			<div id="page">
-				
+			<h2 class="gray mar-b">My Invitations</h2>
+			<hr />
 				<div id="tabs">
 					<?php if (!empty($flashMessage)): ?>
 						<div class='standard-message'><strong><?=$flashMessage?></strong></div>
@@ -22,7 +23,8 @@
 					<!-- Start Open Invitations Tab -->
 					<div id="sendinvites" class="ui-tabs-hide">
 						<div class="send-left">
-							<h2 class="gray">Send Invitations</h2>
+							<h2 class="gray mar-b">Send Invitations</h2>
+							<hr />
 							<p>For each friend you invite, Totsy will credit your account with $15 after your friend's place their first order.</p>
 								<fieldset>
 									<br>
@@ -67,15 +69,15 @@
 							<div class="tr"></div>
 							<div class="r-box-2">
 				
-								<h2 class="gray">Share with your friends</h2>
-								
+								<h2 class="gray mar-b">Share with your friends</h2>
+								<hr />
 								<a href="http://www.facebook.com/pages/Totsy/141535723466" title="Share Totsy with your Facebook friends" id="invite-facebook" target="_blank" class="invite-btn fl">Facebook</a>
 	              <a href="http://twitter.com/MyTotsy" title="Share Totsy with your Twitter followers" id="invite-twitter" target="_blank" class="invite-btn fr">Twitter</a>
 								
 								<div class="dividing-line clear mar-b"><!-- --></div>
 								
-								<h2 class="gray clear">Invite from your address book</h2>
-								
+								<h2 class="gray clear mar-b">Invite from your address book</h2>
+								<hr />
 								<a href="#" title="Invite friends from your Gmail contacts" id="invite-gmail" class="invite-btn fl">Gmail</a>
 								<a href="#" title="Invite friends from your Yahoo! contacts" id="invite-yahoo" class="invite-btn fr">Yahoo!</a>
 								
