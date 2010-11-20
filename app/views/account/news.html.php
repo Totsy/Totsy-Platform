@@ -5,7 +5,7 @@
 <div id="page"> 
 <?=$this->form->create(null,array('id'=>'addressForm', 'class' => "fl"));?> 
 	<h2 class="gray mar-b">Email Preferences</h2> 
-	
+	<hr />
 	<form action="#" class="fl"> 
 		<div class="email-prefs"> 
 			<div class="first"> 
