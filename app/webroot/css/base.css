@@ -839,6 +839,7 @@ ul.content-list {
 .ui-dialog {
 	position:absolute;
 	padding:5px 10px;
+	top:150px!important;
 	overflow: hidden;
 	border:1px solid #707070
 }
@@ -1468,7 +1469,8 @@ h2:link  .p-container .details strong {
 	text-transform:uppercase;
 	font-weight:normal;
 	font-size:20px;
-	color:#EB132C;
+	/* color:#EB132C; */
+	color: #009900;
 }
 .p-container .details .table-cell .original-price {
 	font-size:10px;
@@ -1654,10 +1656,12 @@ span.citem.active-th {
 tr.alt0 td {
 	background:#FFF;
 	height:50px;
+	vertical-align:middle;
 }
 tr.alt1 td {
 	background:#EFEFEF;
 	height:50px;
+	vertical-align:middle;
 }
 td.cart-th {
 	width:60px;

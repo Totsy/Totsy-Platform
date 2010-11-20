@@ -38,10 +38,10 @@
 		<div class="tr"></div>
 		<div class="md-gray p-container">
 
-			<h2 class="caps">$<?=number_format($item->sale_retail,2); ?><br />Totsy Price</h2>
+			<h2 class="caps" style="font-size:14px;">Totsy Price</h2>
+			<div style="padding: 10px 0px; color:#009900; font-size:24px;">$<?=number_format($item->sale_retail,2); ?></div>
 
-			<p class="caps">
-				$<?=number_format($item->msrp,2); ?><br />Original</p>
+			  <span class="original-price">Original: $<?=number_format($item->msrp,2); ?></span>
 			<?php if ($item->total_quantity != 0): ?>
 				<button class="buy-now" id='item-submit'>Add To Cart</button>
 				<div id="all-reserved"></div>
@@ -77,15 +77,17 @@
 	
 			<!-- Start Description Tab -->
 			<div id="description" class="ui-tabs-hide">
-			    <h3>Overview</h3>
+			<h2 class="gray mar-b">Description: <span style="font-weight:normal;"><?=$event->name?> - <?=$item->description?></span></h2>
+			<hr />
 				<?php echo $item->blurb; ?>
 			</div>
 			<!-- End Description Tab -->
 	
 			<!-- Start Shipping Tab -->
 			<div id="shipping" class="ui-tabs-hide">
-			
-			<strong>Shipping:</strong>Totsy will ship this item via Standard UPS or Standard US Mail shipping based on your selection at the end of your <?=$this->html->link('checkout process', array('Orders::add')); ?>.
+			<h2 class="gray mar-b">Shipping &amp; Returns</h2>
+			<hr />
+			<strong>Shipping:</strong> Totsy will ship this item via Standard UPS or Standard US Mail shipping based on your selection at the end of your <?=$this->html->link('checkout process', array('Orders::add')); ?>.
 			Complete shipping details are available at <?=$this->html->link('shipping terms', array('Pages::shipping')); ?>.
 	
 			<p><strong>Returns:</strong> Totsy accept returns on selected items only. You will get a merchandise credit and free shipping (AK &amp; HI: air shipping rates apply). Simply be sure that we receive the merchandise you wish to return within 30 days from the date you originally received it in its original condition with all the packaging intact. Please note: Final Sale items cannot be returned. Want to learn more? Read more in our <?=$this->html->link('returns section', array('Pages::returns')); ?>.</p>
@@ -109,7 +111,8 @@
 	<div id="related-products">
 		<?php $relatedData = $related->data(); ?>
 		<?php if (!empty($relatedData)): ?>
-		<h2>You would also love:</h2><br>
+		<h2 class="gray mar-b">You would also love:</h2>
+		<hr />
 		<?php foreach ($related as $relatedItem): ?>
 			<?php
 				if (empty($relatedItem->primary_image)) {
