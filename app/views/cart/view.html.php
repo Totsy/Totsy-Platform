@@ -9,9 +9,8 @@
 <?php if (!empty($test)): ?>
 <?php $subTotal = 0; ?>
 <?=$this->form->create(); ?>
-	<h1 class="page-title">
-		Your Cart
-	</h1>
+	<h2 class="gray mar-b">Shopping Cart</h2>
+	<hr />
 	<div id='message'></div>
 	<div id="middle" class="fullwidth">
 		<table width="100%" class="cart-table">
@@ -30,7 +29,7 @@
 	<?php $x = 0; ?>
 	<?php foreach ($cart as $item): ?>
 		<!-- Build Product Row -->
-					<tr id="<?=$item->_id?>" class="alt0">
+					<tr id="<?=$item->_id?>" class="alt0" style="margin:0px!important; padding:0px!important;">
 					<td class="cart-th">
 						<?php
 							if (!empty($item->primary_image)) {
@@ -43,10 +42,11 @@
 						<?=$this->html->link(
 							$this->html->image("$productImage", array(
 								'width'=>'60',
-								'height'=>'60')),
+								'height'=>'60',
+						'style' => 'border:1px solid #ddd; background:#fff; margin:2px; display:block; padding:2px;')),
 								'',
 								array(
-								'id' => 'main-logo', 'escape'=> false
+								'id' => 'main-logo_', 'escape'=> false
 							)
 						); ?>
 					</td>
@@ -69,10 +69,10 @@
 
 					</td>
 					<td class="<?="price-item-$x";?>">
-						<strong>$<?=number_format($item->sale_retail,2)?></strong>
+						<strong style="color:#009900;">$<?=number_format($item->sale_retail,2)?></strong>
 					</td>
 					<td class="<?="total-item-$x";?>">
-						<strong>$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
+						<strong style="color:#009900;">$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
 					</td>
 					<td class="cart-time"><div id='<?php echo "itemCounter$x"; ?>'></div></td>
 					<td class="cart-actions">
@@ -107,12 +107,12 @@
 				?>
 	<?php endforeach ?>
 		<tr class="cart-total">
-			<td colspan="7" id='subtotal'><strong>Subtotal: $<?=number_format($subTotal,2)?></strong></td>
+			<td colspan="7" id='subtotal'><strong>Subtotal: <span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong></td>
 		    </td>
 		</tr>
 		<tr class="cart-buy">
 			<td colspan="5" class="return-policy">
-				<a href='../../pages/returns'><strong>Refund &amp; Return Policy</strong></a><br />
+				<a href='../../pages/returns'><strong style="font-size:12px; font-weight:normal;">Refund &amp; Return Policy</strong></a><br />
 			</td>
 			<td class="cart-button" colspan="2">
 				<?=$this->html->link('Buy Now', 'Orders::add', array('class' => 'proceed-to-checkout')); ?>
