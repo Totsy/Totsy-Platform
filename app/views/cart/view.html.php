@@ -9,7 +9,7 @@
 <?php if (!empty($test)): ?>
 <?php $subTotal = 0; ?>
 <?=$this->form->create(); ?>
-	<h2 class="gray mar-b">Shopping Cart</h2>
+	<h2 class="gray mar-b">My Cart</h2>
 	<hr />
 	<div id='message'></div>
 	<div id="middle" class="fullwidth">
@@ -44,7 +44,7 @@
 								'width'=>'60',
 								'height'=>'60',
 						'style' => 'border:1px solid #ddd; background:#fff; margin:2px; display:block; padding:2px;')),
-								'',
+							array('Items::view', 'args' => $item->url),
 								array(
 								'id' => 'main-logo_', 'escape'=> false
 							)
