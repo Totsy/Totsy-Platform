@@ -1079,7 +1079,8 @@ p.modal-copy {
 }
 #footer ul {
 	overflow:hidden;
-	float:right
+	float:right;
+	margin:0px 0px 10px 0px;
 }
 #footer li {
 	float:left;
