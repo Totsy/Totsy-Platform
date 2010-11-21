@@ -2458,3 +2458,9 @@ body.login .our365-login #intro-copy {
 hr { height: 0; border: solid #ddd; border-width: 1px 0 0; }
 hr {
 ... border-top: 1px solid #d8d8d8; border-bottom: 1px solid #fff; } /* yes, the "..." is a hack and you should leave it alone! -erictherobot */
+
+/*----------------------------------------------------------------------------------------------------                                                                                                   
+/* FAQ's                                                                                                                                                                                  
+----------------------------------------------------------------------------------------------------*/
+.faq_answer { padding:5px; background:#ddd; }
+.faq_question { padding:5px; background:#FFF; border:1px solid #ddd; }
