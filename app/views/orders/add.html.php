@@ -13,20 +13,22 @@
 	<div class="tl"></div>
 	<div class="tr"></div>
 	<div id="page">
-		<p><strong class="red"><?=$this->html->link('STEP 1 (Shipping/Billing Info)', array('Orders::add')); ?></strong> &#8658; STEP 2 (Payment) &#8658; STEP 3 (Confirmation)</p><br>
-		<?php if (!empty($error)) { ?>
-			<p>
-				<strong>
-					There were some errors processing your order.
-					Please correct them before resubmitting.
-				</strong>
-					<div class="checkout-error"><?=$error;?></div>
-				<br />
-			</p>
-		<?php } ?>
+
+<?php if (!empty($error)) { ?>
+                        <div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /><?=$error; ?></div>
+                      
+<?php } ?>
+
+<a href="/shopping/checkout"><div style="margin:0px 10px 0px 0px; float: left; display:block; background:#f7f7f7; border:1px solid #ddd; width:240px; text-align:center; padding:20px;">STEP
+1 (Shipping/Billing Info)</div></a>
+              <div style="margin:0px 10px 0px 0px; float: left; display:block; background:#efefef; border:1px solid #ddd; width:246px; padding:20px; text-align: center;">STEP 2 (Payment)</div>
+              <div style="margin:0px 0px 0px 0px; float:left; display:block; background:#efefef; border:1px solid #ddd; width:246px; padding:20px; text-align:center;">STEP 3 (Confirmation)</div>
+              <div style="clear:both; margin-bottom:15px;"></div>		
+
 	<!-- Begin Order Details -->
 	<?php if ($showCart): ?>
-		<div class="head"><h3>Order Details</h3></div>
+		<h2 class="gray mar-b">Order Details</h2><hr />
+	
 		<div class='fr'><?=$this->html->link('Edit Your Cart', '#', array('id' => 'checkout-cart', 'class' => 'edit-your-cart')); ?></div>
 		<table width="100%" class="cart-table">
 			<thead>
@@ -43,7 +45,7 @@
 		<?php $x = 0; ?>
 		<?php foreach ($showCart as $item): ?>
 			<!-- Build Product Row -->
-						<tr id="<?=$item->_id?>" class="alt<?=$x?>">
+						<tr id="<?=$item->_id?>" class="alt<?=$x?>" style="margin:0px!important; padding:0px!important;">
 						<td class="cart-th">
 							<?php
 								if (!empty($item->primary_image)) {
@@ -56,10 +58,11 @@
 							<?=$this->html->link(
 								$this->html->image("$productImage", array(
 									'width'=>'60',
-									'height'=>'60')),
+									'height'=>'60',
+							'style' => 'background:#fff; border:1px solid #ddd; padding:2px; margin:2px;')),
 									'',
 									array(
-									'id' => 'main-logo', 'escape'=> false
+									'id' => 'main-logo_', 'escape'=> false
 								)
 							); ?>
 						</td>
@@ -71,16 +74,16 @@
 								));
 							?></strong><br>
 							<strong>Color:</strong> <?=$item->color;?><br>
-							<strong>Size:</strong><?=$item->size;?>
+							<strong>Size:</strong> <?=$item->size;?>
 						</td>
 						<td class="<?="qty-$x";?>">
 							<?=$item->quantity;?>
 						</td>
 						<td class="<?="price-item-$x";?>">
-							<strong>$<?=number_format($item->sale_retail,2)?></strong>
+							<strong style="color:#009900;">$<?=number_format($item->sale_retail,2)?></strong>
 						</td>
 						<td class="<?="total-item-$x";?>">
-							<strong>$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
+							<strong style="color:#009900;">$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
 						</td>
 						<td class="cart-time"><div id="<?php echo "checkout-counter-$x"; ?>"></div></td>
 					</tr>
@@ -104,7 +107,7 @@
 					?>
 		<?php endforeach ?>
 					<tr class="cart-total">
-						<td colspan="7" id='subtotal'><strong>Subtotal: $<?=number_format($subTotal,2)?></strong></td>
+						<td colspan="7" id='subtotal'><strong>Subtotal: </strong><strong style="color:#009900;">$<?=number_format($subTotal,2)?></strong></td>
 					</tr>
 				</tbody>
 			</table>
@@ -115,13 +118,13 @@
 		<?=$this->form->create($order, array('class' => 'checkout')); ?>
 		
 		<!-- Start Billing Information -->
-		<li id="opc-billing">
+		<div style="float:left; width:415px; margin:0px 10px 10px 0px;  display:block;"><li id="opc-billing">
 			<div id="checkout-process-billing">
 			<?php if (empty($billing)): ?>
 					<center><strong><?=$this->html->link('Please take a moment to add an Address', '#', array(
 						'class' => 'add-address')); ?></strong></center>
 				<?php else: ?>
-					<div class="head"><h2>Billing Address</h2></div>
+					<h2 class="gray mar-b">Billing Address</h2><hr />
 					<p>Select a billing address from your address book.</p>
 						<?=$this->form->select('billing', $billing, array(
 							'id' => 'billing',
@@ -142,19 +145,21 @@
 				<?php endif ?>
 			</div>
 		</li>
+		  </div>
 		<!-- End Billing Information -->
 
 		<!-- Start Shipping Information -->
-		<li id="opc-shipping" class="step" style="opacity:0.5">
+		<div style="float:left; width:410px; display:block;">
+		  <li id="opc-shipping" class="step_" style="opacity:0.5">
 
 			<div id="checkout-process-shipping">
 
 				<?php if (empty($shipping)): ?>
 
 				<?php else: ?>
-					<div class="head">
-						<h2>Shipping Address</h2>
-					</div>
+				
+						<h2 class="gray mar-b">Shipping Address</h2>
+					<hr />
 					<p>Select a shipping address from your address book.
 					</p>
 						<?=$this->form->select('shipping', $shipping, array(
@@ -169,24 +174,26 @@
 			</div>
 
 		</li>
+		  </div>
+<div style="clear:both;"></div>
 		<!-- End Shipping Information -->
 
 		<li id="shipping-method" class="step">
-			<div class="head">
-				<h2>Shipping Method</h2>
-			</div>
+			
+				<h2 class="gray mar-b">Shipping Method</h2>
+			<hr />
 
 			<div id="shipping-method-details">
 			<fieldset>
 
 				<ul class="shipping-methods">
-					<li>
+				<li>
 						<label>
 							<input type="radio" name="shipping_method" value="ups" checked="checked" />&nbsp;
 							<?=$this->html->image('ups-icon.jpg', array('title' => "UPS Shipping", 'alt' => "UPS Shipping", 'width' => "26", 'height' => "32")); ?>&nbsp;
 							UPS Ground
 						</label>
-					</li>
+				</li>	
 				</ul>
 			</fieldset>
 

@@ -12,28 +12,23 @@
 	<div class="tl"></div>
 	<div class="tr"></div>
 	<div id="page">
-		<p>
-			<strong class="red"><?=$this->html->link('STEP 1 (Shipping/Billing Info)', array('Orders::add'));?></strong>
-			&raquo;
-			<strong class="red">STEP 2 (Payment)</strong>
-			&raquo; STEP 3 (Confirmation)
-		</p>
-	<?php if ($errors = $order->errors()) { ?>
-		<p>
-			<strong>
-				There were some errors processing your order.
-				Please correct them before resubmitting.
-			</strong>
-			<?php foreach ($errors as $error): ?>
-				<div class="checkout-error"><?=$error; ?></div>
-			<?php endforeach ?>
-			<br />
-		</p>
-	<?php } ?>
+<?php if ($errors = $order->errors()) { ?>
+             
+                        <?php foreach ($errors as $error): ?>
+                       
+			<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /><?=$error; ?></div>
+                        <?php endforeach ?>
+             
+        <?php } ?>
+
+	    <a href="/shopping/checkout"><div style="margin:0px 10px 0px 0px; float: left; display:block; background:#f7f7f7; border:1px solid #ddd; width:240px; text-align:center; padding:20px;">STEP 1 (Shipping/Billing Info)</div></a>
+	      <div style="margin:0px 10px 0px 0px; float: left; display:block; background:#efefef; border:1px solid #ddd; width:246px; padding:20px; text-align: center;">STEP 2 (Payment)</div>
+	      <div style="margin:0px 0px 0px 0px; float:left; display:block; background:#efefef; border:1px solid #ddd; width:246px; padding:20px; text-align:center;">STEP 3 (Confirmation)</div>
+	      <div style="clear:both; margin-bottom:15px;"></div>
 
 	<!-- Begin Order Details -->
 	<?php if ($showCart): ?>
-		<div class="head"><h2>Items in Your Cart</h2></div><br>
+		<h2 class="gray mar-b">My Items</h2><hr />
 		<table width="100%" class="cart-table">
 			<thead>
 				<tr>
@@ -49,7 +44,7 @@
 		<?php $x = 0; ?>
 		<?php foreach ($showCart as $item): ?>
 			<!-- Build Product Row -->
-						<tr id="<?=$item->_id?>" class="alt<?=$x?>">
+						<tr id="<?=$item->_id?>" class="alt<?=$x?>" style="margin:0px!important; padding:0px!important;">
 						<td class="cart-th">
 							<?php
 								if (!empty($item->primary_image)) {
@@ -62,10 +57,11 @@
 							<?=$this->html->link(
 								$this->html->image("$productImage", array(
 									'width'=>'60',
-									'height'=>'60')),
+									'height'=>'60',
+							'style' => 'border:1px solid #ddd; background:#fff; margin:2px; padding:2px;',)),
 									'',
 									array(
-									'id' => 'main-logo', 'escape'=> false
+									'id' => 'main-logo_', 'escape'=> false
 								)
 							); ?>
 						</td>
@@ -77,16 +73,16 @@
 								));
 							?></strong><br>
 							<strong>Color:</strong> <?=$item->color;?><br>
-							<strong>Size:</strong><?=$item->size;?>
+							<strong>Size:</strong> <?=$item->size;?>
 						</td>
 						<td class="<?="qty-$x";?>">
 							<?=$item->quantity;?>
 						</td>
 						<td class="<?="price-item-$x";?>">
-							<strong>$<?=number_format($item->sale_retail,2)?></strong>
+							<strong style="color:#009900;">$<?=number_format($item->sale_retail,2)?></strong>
 						</td>
 						<td class="<?="total-item-$x";?>">
-							<strong>$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
+							<strong style="color:#009900;">$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
 						</td>
 						<td class="cart-time"><div id='<?php echo "itemCounter-$x"; ?>'></div></td> 
 					</tr>
@@ -177,7 +173,7 @@
 				<?php endif ?>
 				<tr>
 					<td style="text-align:right"><strong>Total:</strong> </td>
-					<td style="text-align:center">$<?=number_format((float) $total, 2);?></td>
+					<td style="text-align:center; color:#009900;">$<?=number_format((float) $total, 2);?></td>
 				</tr>
 			</table>
 		</li>
@@ -188,10 +184,11 @@
 		<table width="100%">
 			<tr>
 				<td>
-					<div class="head">
-						<h2>Payment Information</h2>
-					</div>
-					<fieldset>
+			
+					<h2 class="gray mar-b">Payment Information <span style=" font-size:12px; font-weight:normal;"><span class="red">*</span> Required Fields</span></h2>
+					<hr />
+					<div>
+					  <fieldset>
 						<legend class="no-show">New Payment Method</legend>
 
 						<div class="form-row">
@@ -237,11 +234,13 @@
 							<?=$this->form->text('card[code]', array('class' => 'inputbox')); ?>
 						</div>
 					</fieldset>
+					  </div>
 				</td>
-				<td>
+				<td style="vertical-align:top; padding:5px;">
 					<?php if ($billingAddr) { ?>
-						<li>
+					
 							<h4>Billing Address</h4>
+							<hr />
 							<address class="billing-address">
 								<?=$billingAddr->address; ?> <?=$billingAddr->address_2; ?><br />
 								<?=$billingAddr->city; ?>, <?=$billingAddr->state; ?>
@@ -249,15 +248,16 @@
 							</address>
 					<?php } ?>
 				</td>
-				<td>
+				<td style="vertical-align:top; padding:5px;">
 					<?php if ($shippingAddr) { ?>
 							<h4>Shipping Address</h4>
+							<hr />
 							<address class="shipping-address">
 								<?=$shippingAddr->address; ?> <?=$shippingAddr->address_2; ?><br />
 								<?=$shippingAddr->city; ?>, <?=$shippingAddr->state; ?>
 								<?=$shippingAddr->zip; ?>
 							</address>
-						</li>
+						
 					<?php } ?>
 				</td>
 			</tr>
@@ -287,8 +287,6 @@
 			-->
 			<li class="step">
 				<?=$this->form->submit('Place Your Order', array('class' => 'place-order-button submit')); ?>
-				&nbsp;&nbsp;
-				<span class="red">*</span> Required Fields
 			</li>
 			<?=$this->form->hidden('credit_amount', array('value' => $orderCredit->credit_amount)); ?>
 			<?=$this->form->end(); ?>
