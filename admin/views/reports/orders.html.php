@@ -36,7 +36,7 @@
 							<?php ++$inc; ?>
 							<?php foreach ($orders as $key => $value): ?>
 								<?php if ($key == 'Select'): ?>
-									<td><center><input type="checkbox" class="order" name="<?=$orders['id']?>-<?=$inc?>" value="<?=$orders['Item']?>" <?=$value?></center></td>
+									<td><center><input type="checkbox" class="order" name="<?=$orders['id']?>-<?=$inc?>" value="<?=$orders['Cart']?>" <?=$value?></center></td>
 								<?php elseif ($key == 'Note'): ?>
 										<?php if (is_array($value)): ?>
 											<?php if ($value['Open'] == 0): ?>
@@ -51,7 +51,7 @@
 										<?php endif ?>
 									</td>
 								<?php else: ?>
-									<?php if (!in_array($key, array('id', 'Item'))): ?>
+									<?php if (!in_array($key, array('Cart', 'id', 'Item'))): ?>
 										<td><?=$value?></td>
 									<?php endif ?>
 								<?php endif ?>
@@ -69,8 +69,7 @@
 		$('#order_list').dataTable({
 			"sDom": 'T<"clear">lfrtip',
 			'bLengthChange' : false,
-			"bPaginate": false,
-			"bFilter": false
+			"bPaginate": false
 		}
 		);
 		$("#orders_all").click(function()

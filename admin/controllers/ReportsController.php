@@ -319,6 +319,7 @@ class ReportsController extends BaseController {
 								if (($item['item_id'] == $eventItem['_id']) && $item['status'] != 'Order Canceled'){
 									$orderList[$inc]['Select'] = ($others['Open'] != 0) ? '' : 'Checked';
 									$orderList[$inc]['Item'] = $eventItem['_id'];
+									$orderList[$inc]['Cart'] = $item['_id'];
 									$orderList[$inc]['OrderNum'] = $order['order_id'];
 									$orderList[$inc]['id'] = $order['_id'];
 									$orderList[$inc]['SKU'] = $eventItem['vendor_style'];
@@ -357,20 +358,20 @@ class ReportsController extends BaseController {
 				'conditions' => array(
 					'_id' => $eventId
 			)));
-			foreach ($orders as $orderId => $itemId) {
+			foreach ($orders as $orderId => $cartId) {
 				$conditions = array(
 					'_id' => substr($orderId, 0, 24),
-					'items.item_id' => $itemId
+					'items._id' => $cartId
 				);
 				$order = $this->getOrders('first', $conditions);
-				$orderItem = Item::find('first', array(
-					'conditions' => array(
-						'_id' => $itemId
-				)));
 				$user = User::find('first', array('conditions' => array('_id' => $order['user_id'])));
 				$items = $order['items'];
 				foreach ($items as $item) {
-					if (($item['item_id'] == $itemId)){
+					if (($item['_id'] == $cartId)){
+						$orderItem = Item::find('first', array(
+							'conditions' => array(
+								'_id' => $item['item_id']
+						)));
 						$orderFile[$inc]['ContactName'] = '';
 						$orderFile[$inc]['Date'] = date('m/d/Y');
 						if ($order['shippingMethod'] == 'ups') {
@@ -392,7 +393,7 @@ class ReportsController extends BaseController {
 						$orderFile[$inc]['Address1'] = $order['shipping']['address'];
 						$orderFile[$inc]['Address2'] = $order['shipping']['address_2'];
 						$orderFile[$inc]['City'] = $order['shipping']['city'];
- 						$orderFile[$inc]['StateOrProvince'] = $order['shipping']['state'];
+						$orderFile[$inc]['StateOrProvince'] = $order['shipping']['state'];
 						$orderFile[$inc]['Zip'] = $order['shipping']['zip'];
 						$orderFile[$inc]['Ref1'] = $item['item_id'];
 						$orderFile[$inc]['Ref2'] = $item['size'];
