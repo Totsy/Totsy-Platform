@@ -17,7 +17,7 @@
 			<li class="shipped link" id="shipped-btn">Packaged Shipped To You</li>
 			<li class="recieved link" id="recieved-btn">Order Arrives At Your Home</li>
 		</ol>
-        	<p style="font-size:14px; font-weight:bold; text-align:center; color:red;">Our order tracking system is currently under construction. <br />
+        	<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">Our order tracking system is currently under construction. <br />
 		All orders  are being processed and will be shipped within 15 to 20 business days. <br /> 
 		If you have any questions do not hesitate to contact us!</p>
 		<?php if ($orders->data()): ?>
@@ -57,7 +57,7 @@
 								Quantity: <?=$item['quantity']?><br><br>
 						<?php endforeach ?>
 						</td>
-						<td>
+						<td style="color:#009900;">
 							<?=$items[0]['status']?>
 						</td>
 						<?php if (!empty($item['tracking_number'])): ?>
@@ -65,7 +65,7 @@
 								</a>
 							</td>
 						<?php else: ?>
-							<td>Pending</td>
+							<td style="color:#ff0000;">Pending</td>
 						<?php endif ?>
 					</tr>
 				<?php endforeach ?>

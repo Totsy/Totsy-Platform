@@ -2465,3 +2465,45 @@ hr {
 ----------------------------------------------------------------------------------------------------*/
 .faq_answer { padding:5px; background:#ddd; }
 .faq_question { padding:5px; background:#FFF; border:1px solid #ddd; }
+
+.rounded { border-radius:6px; -moz-border-radius:6px; -webkit-border-radius:6px; border:1px solid #ddd; }
+
+/*arrow-right*/
+#arrow-right{
+    float:left;
+    height:10px;
+    background:transparent;
+    top:30px;
+    left:0px;
+}
+
+#arrow-right-1{
+    border-top:solid 15px transparent;
+    border-left:solid 15px #009900;
+    margin:15px 10px 0px -41px;
+}
+#arrow-right-2{
+    border-bottom:solid 15px transparent;
+    border-left:solid 15px #009900;
+    margin: 0px 10px 0px -41px;
+}
+
+/*arrow-right*/
+#arrow-right-red{
+    float:left;
+    height:10px;
+    background:transparent;
+    top:30px;
+    left:0px;
+}
+
+#arrow-right-1-red{
+    border-top:solid 15px transparent;
+    border-left:solid 15px #ff0000;
+    margin:15px 10px 0px -41px;
+}
+#arrow-right-2-red{
+    border-bottom:solid 15px transparent;
+    border-left:solid 15px #ff0000;
+    margin: 0px 10px 0px -41px;
+}
