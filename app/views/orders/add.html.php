@@ -19,11 +19,20 @@
                       
 <?php } ?>
 
-<a href="/shopping/checkout"><div style="margin:0px 10px 0px 0px; float: left; display:block; background:#f7f7f7; border:1px solid #ddd; width:240px; text-align:center; padding:20px;">STEP
-1 (Shipping/Billing Info)</div></a>
-              <div style="margin:0px 10px 0px 0px; float: left; display:block; background:#efefef; border:1px solid #ddd; width:246px; padding:20px; text-align: center;">STEP 2 (Payment)</div>
-              <div style="margin:0px 0px 0px 0px; float:left; display:block; background:#efefef; border:1px solid #ddd; width:246px; padding:20px; text-align:center;">STEP 3 (Confirmation)</div>
-              <div style="clear:both; margin-bottom:15px;"></div>		
+           <div class="rounded" style="color: #009900; margin:0px 10px 0px 0px; float: left; display:block; background:#ebffeb; border:1px solid #ddd; width:230px; text-align:center; padding:20px;">Shipping / Billing Info</div>
+<div id="arrow-right">
+  <div id="arrow-right-1"></div>
+  <div id="arrow-right-2"></div>
+</div><!--arrow-right-->
+
+              <div class="rounded" style="color: #ff0000; margin:0px 10px 0px 0px; float: left; display:block; background:#ffebeb; border:1px solid #ddd; width:236px; padding:20px; text-align: center;">Payment</div>
+<div id="arrow-right-red">
+  <div id="arrow-right-1-red"></div>
+  <div id="arrow-right-2-red"></div>
+</div><!--arrow-right-->
+
+              <div class="rounded" style="color:#ff0000; margin:0px 0px 0px 0px; float:left; display:block; background:#ffebeb; border:1px solid #ddd; width:246px; padding:20px; text-align:center;">Confirmation</div>
+              <div style="clear:both; margin-bottom:15px;"></div>
 
 	<!-- Begin Order Details -->
 	<?php if ($showCart): ?>
