@@ -168,14 +168,14 @@ $(document).ready(function() {
 	<div class="coming-soon-sales">
 		<h2 class="page-title gray clear"><span class="red">Coming Soon</span></h2>
 	
-    <div style="padding:0px 9px;">
+<!--    <div style="padding:0px 9px;">
             <ul id="mycarousel" class="jcarousel-skin-tango">
             	<li><?=$this->html->image("/img/toySale_banner1.png", array('title' => "Toy Sale",'alt' => "Toy Sale",'width' => '840','height' => '272'));?></li>
                 <li><?=$this->html->image("/img/toySale_banner2.png", array('title' => "Toy Sale",'alt' => "Toy Sale",'width' => '840','height' => '272'));?></li>
                 <li><?=$this->html->image("/img/toySale_banner3.png", array('title' => "Toy Sale",'alt' => "Toy Sale",'width' => '840','height' => '272'));?></li>
             </ul>
 	</div>
-
+-->
          <div class="clear"></div>
 		<?php $x = 0; ?>
 		<?php $y = 0; ?>
