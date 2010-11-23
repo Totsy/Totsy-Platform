@@ -21,7 +21,7 @@
              
         <?php } ?>
 
-	   <div class="rounded" style="color: #009900; margin:0px 10px 0px 0px; float: left; display:block; background:#ebffeb; border:1px solid #ddd; width:230px; text-align:center; padding:20px;">Shipping / Billing Info</div>
+	   <div class="rounded" style="color: #009900; margin:0px 10px 0px 0px; float: left; display:block; background:#ebffeb; border:1px solid #ddd; width:249px; text-align:center; padding:20px;">Shipping / Billing Info</div>
 <div id="arrow-right">
   <div id="arrow-right-1"></div>
   <div id="arrow-right-2"></div>
