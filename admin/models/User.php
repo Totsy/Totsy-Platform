@@ -19,7 +19,8 @@ class User extends Base {
 		)));
 		$amount = $data['sign'].$data['amount'];
 		$user->total_credit = $user->total_credit + $amount;
-		return $user->save(null,array('validate' => false));
+
+		return $user->save(null, array('validate' => false));
 	}
 
 	public static function findUsers($data) {

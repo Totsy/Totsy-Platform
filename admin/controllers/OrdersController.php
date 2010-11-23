@@ -13,7 +13,9 @@ use PHPExcel;
 use PHPExcel_Cell;
 use PHPExcel_Cell_DataType;
 use admin\extensions\Mailer;
-use \li3_flash_message\extensions\storage\FlashMessage;
+use li3_flash_message\extensions\storage\FlashMessage;
+use li3_silverpop\extensions\Silverpop;
+use MongoId;
 
 
 class OrdersController extends \lithium\action\Controller {
@@ -31,9 +33,13 @@ class OrdersController extends \lithium\action\Controller {
 		'shipping',
 		'total',
 		'Tracking Info',
+		'Estimated Ship Date',
 		'Customer Profile'
 	);
 
+	protected $_shipBuffer = 15;
+
+	protected $_holidays = array();
 	/**
 	 * Main view to query for orders in the admin screen.
 	 *
@@ -42,6 +48,7 @@ class OrdersController extends \lithium\action\Controller {
 	public function index() {
 		$headings = $this->_headings;
 		FlashMessage::clear();
+		$collection = Order::collection();
 		if ($this->request->data) {
 			switch ($this->request->data['type']) {
 				case 'date':
@@ -53,14 +60,14 @@ class OrdersController extends \lithium\action\Controller {
 								'$lte' => $maxDate, 
 								'$gte' => $minDate
 						));
-						$rawOrders = Order::find('all', array('conditions' => $conditions));
+						$rawOrders = $collection->find($conditions);
 					}
 					break;
 				case 'order':
 					if (!empty($this->request->data['order_id'])) {
 						$orderid = $this->request->data['order_id'];
 						$order = new MongoRegex("/$orderid/i");
-						$rawOrders = Order::find('all', array('conditions' => array('order_id' => $order)));
+						$rawOrders = $collection->find(array('order_id' => $order));
 					}
 					break;
 				case 'user':
@@ -70,7 +77,7 @@ class OrdersController extends \lithium\action\Controller {
 					if (!empty($this->request->data['event_name'])) {
 						$eventName = $this->request->data['event_name'];
 						$eventName = new MongoRegex("/$eventName/i");
-						$rawOrders = Order::find('all', array('conditions' => array('items.event_name' => $eventName)));
+						$rawOrders = $collection->find(array('items.event_name' => $eventName));
 					}
 					break;
 			}
@@ -79,12 +86,8 @@ class OrdersController extends \lithium\action\Controller {
 				if (get_class($rawOrders) == 'MongoCursor') {
 					foreach ($rawOrders as $order) {
 						FlashMessage::set('Results Found', array('class' => 'pass'));
-					}
-				} else {
-					$details = $rawOrders->data();
-					foreach ($details as $order) {
-						FlashMessage::set('Results Found', array('class' => 'pass'));
 						$orders[] = $this->sortArrayByArray($order, $headings);
+						$shipDate["$order[_id]"] = $this->shipDate($order);
 					}
 				}
 				if (empty($order)) {
@@ -93,7 +96,7 @@ class OrdersController extends \lithium\action\Controller {
 			}
 		}
 
-		return compact('orders', 'headings');
+		return compact('orders', 'headings', 'shipDate');
 	}
 	
 	public function sortArrayByArray($array, $orderArray) {
@@ -130,6 +133,7 @@ class OrdersController extends \lithium\action\Controller {
 			'Email'
 		);
 		if ($this->request->data) {
+			$sendEmail = (boolean) $this->request->data['send_email'];
 			if ($_FILES['upload']['error'] == 0) {
 				$file = $_FILES['upload']['tmp_name'];
 				$objReader = PHPExcel_IOFactory::createReaderForFile("$file");
@@ -157,73 +161,113 @@ class OrdersController extends \lithium\action\Controller {
 				$updated = array();
 				foreach ($shipRecords as $shipRecord) {
 					$checkedItems = array();
-					$user = User::find('first', array(
-						'conditions' => array(
-							'email' => $shipRecord['Email']
-					)));
-					if (!empty($user)) {
-						$order = Order::lookup(substr($shipRecord['OrderNum'], 0, 8), (string) $user->_id);
-						if ($order && !empty($order->items)) {
-							$item = Item::find('first', array(
-								'conditions' => array(
-									'vendor_style' => $shipRecord['SKU']
-							)));
-							if ($item) {
-								$itemId = (string) $item->_id;
-								$orderData = $order->data();
-								foreach ($orderData['items'] as $orderItem) {
-									if ($orderItem['item_id'] == $itemId) {
-										$orderItem['status'] = "Order Shipped";
-										$orderItem['tracking_number'] = $shipRecord['Tracking #'];
-									}
-									$checkedItems[] = $orderItem;
+					$order = Order::lookup(substr($shipRecord['OrderNum'], 0, 8));
+					if ($order && !empty($order->items)) {
+						$item = Item::find('first', array(
+							'conditions' => array(
+								'vendor_style' => $shipRecord['SKU']
+						)));
+						if ($item) {
+							$itemId = (string) $item->_id;
+							$orderData = $order->data();
+							foreach ($orderData['items'] as $orderItem) {
+								if ($orderItem['item_id'] == $itemId) {
+									$orderItem['status'] = "Order Shipped";
+									$orderItem['tracking_number'] = $shipRecord['Tracking #'];
 								}
-								$order->items = $checkedItems;
+								$checkedItems[] = $orderItem;
 							}
-							$order->ship_method = $shipRecord['ShipMethod'];
-							$details = array(
-								'Order' => $order->order_id,
-								'SKU' => $shipRecord['SKU'],
-								'First Name' => $order->shipping->firstname,
-								'Last Name' => $order->shipping->lastname,
-								'Ship Method' => $order->ship_method,
-								'Tracking Number' => $shipRecord['Tracking #']
+							$order->items = $checkedItems;
+						}
+						$order->ship_method = $shipRecord['ShipMethod'];
+						$details = array(
+							'Order' => $order->order_id,
+							'SKU' => $shipRecord['SKU'],
+							'First Name' => $order->shipping->firstname,
+							'Last Name' => $order->shipping->lastname,
+							'Ship Method' => $order->ship_method,
+							'Tracking Number' => $shipRecord['Tracking #']
+						);
+						$trackingNum = Order::find('first', array(
+							'conditions' => array(
+								'tracking_numbers' => $shipRecord['Tracking #']
+						)));
+						$user = User::find('first', array('condition' => array('_id' => $order->user_id)));
+						if (empty($trackingNum) && $sendEmail) {
+							$data = array(
+								'order' => $order,
+								'email' => $shipRecord['Email'],
+								'details' => $details
 							);
-							$trackingNum = Order::find('first', array(
-								'conditions' => array(
-									'tracking_numbers' => $shipRecord['Tracking #']
-							)));
-							if (empty($trackingNum)) {
-								Mailer::send(
-									'shipped',
-									"Totsy - Shipping Notification - $order->order_id",
-									array('name' => $order->firstname, 'email' => $shipRecord['Email']),
-									compact('order', 'details')
-								);
-							}
-							if(Order::setTrackingNumber($order->order_id, $shipRecord['Tracking #'])){
-								if (empty($order->auth_confirmation) || $order->auth_confirmation == -1) {
-									if ($order->process() && $user->purchase_count == 1) {
-										if ($user->invited_by) {
+							Silverpop::send('orderShipped', $data);
+						}
+						if (Order::setTrackingNumber($order->order_id, $shipRecord['Tracking #'])){
+							if (empty($order->auth_confirmation)) {
+								if ($order->process() && $user->purchase_count == 1) {
+									if ($user->invited_by) {
+										$inviter = User::find('first', array(
+											'conditions' => array(
+												'invitation_code' => $user->invited_by
+										)));
+										if ($inviter) {
 											$credit = Credit::create();
-											User::applyCredit($user->invited_by, Credit::INVITE_CREDIT);
-											Credit::add($credit, $user->invited_by, Credit::INVITE_CREDIT, "Invitation");
+											$data = array(
+												'user_id' => (string) $inviter->_id,
+												'sign' => '+',
+												'amount' => Credit::INVITE_CREDIT
+											);
+											User::applyCredit($data);
+											$data = array(
+												'reason' => "Invitation Credit",
+												'sign' => "+",
+												'amount' => Credit::INVITE_CREDIT,
+												'description' => null,
+												'user_id' => $inviter->_id
+											);
+											Credit::add($credit, $data);
 										}
 									}
-								} else {
-									$order->save();
 								}
+							} else {
+								$order->save();
 							}
-							$details['Confirmation Number'] = $order->auth_confirmation;
-							$details['Errors'] = $order->auth_error;
-							$updated[] = $details;
 						}
+						$details['Confirmation Number'] = $order->auth_confirmation;
+						$details['Errors'] = $order->auth_error;
+						$updated[] = $details;
 					}
 				}
 			}
 		}
-
 		return compact('updated');
+	}
+
+	/**
+	 * Calculated estimated ship by date for an order.
+	 *
+	 * The estimated ship-by-date is calculated based on the last event that closes.
+	 * @param object $order
+	 * @return string
+	 */
+	public function shipDate($order) {
+		$dateformat = 'Y-m-d';
+		$i = 1;
+		$items = $order['items'];
+		foreach ($items as $item) {
+			$ids[] = new MongoId("$item[event_id]");
+		}
+		$event = Event::find('first', array(
+			'conditions' => array('_id' => $ids),
+			'order' => array('date_created' => 'DESC')
+		));
+		$shipDate = $event->end_date->sec;
+		while($i < $this->_shipBuffer) {
+			$day = date('N', $shipDate);
+			$date = date('Y-m-d', $shipDate);
+			if($day < 6 && !in_array($date, $this->_holidays))$i++;
+			$shipDate = strtotime($date.' +1 day');
+		}
+		return date($dateformat, $shipDate);
 	}
 }
 ?>

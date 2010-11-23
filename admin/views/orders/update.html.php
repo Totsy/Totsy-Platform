@@ -8,12 +8,15 @@
 <h1>Order Administration</h1>
 <br>
 <?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
+	<input type="radio" name="send_email" value="1" id="send_email" checked> Send Email <br>
+	<input type="radio" name="send_email" value="0" id="send_email"> Dont Send Email
+	<br>
 	<?=$this->form->label('Upload Order File: '); ?>
 	<?=$this->form->file('upload'); ?>
 	<?=$this->form->submit('Submit'); ?>
 <?=$this->form->end(); ?>
 <?php if (!empty($updated)): ?>
-	<table id="orderTable" class="datatable" border="1" style="width: 500px">
+	<table id="orderTable" class="datatable" border="1">
 		<thead>
 			<tr>
 				<?php
@@ -38,7 +41,7 @@
 					<td><?=$order['Ship Method']?></td>
 					<td><?=$order['Tracking Number']?></td>
 					<td><?=$order['Confirmation Number']?></td>
-					<td><?=$order['Errors']?></td>
+					<td><?=$order['Errors'][0]?></td>
 				</tr>
 			<?php endforeach ?>
 		</tbody>
