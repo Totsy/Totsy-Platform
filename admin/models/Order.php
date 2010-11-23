@@ -8,6 +8,41 @@ use li3_payments\extensions\Payments;
 use li3_payments\extensions\payments\exceptions\TransactionException;
 use MongoRegex;
 
+/**
+* The Orders Model is related to the Orders Collection in MongoDB.
+*
+* This model is touched by both the admin and app. The main purpose of this class is
+* to process the orders with authorize.net and set information to the order during
+* processing.
+*
+* Here is an example of a real schema:
+*
+* {{{
+*	{
+*		"_id" : ObjectId("4c605e12ce64e5df2c1c2100"),
+*		"authKey" : "111111111",
+*		"auth_confirmation" : "111111111",
+*		"billing" : {},
+*		"card_number" : "xxxx",
+*		"date_created" : "Mon Aug 09 2010 15:59:11 GMT-0400 (EDT)",
+*		"giftMessage" : "",
+*		"handling" : 8.68,
+*		"items" : [
+*			{See cart}
+*		]
+*		"order_id" : "4c605e12",
+*		"payment_date" : "Thu Sep 02 2010 16:12:34 GMT-0400 (EDT)",
+*		"shipping" : {}
+*		"shippingMethod" : "ups",
+*		"subTotal" : 33.9,
+*		"tax" : 0,
+*		"total" : 42.58,
+*		"tracking_numbers" : [
+*			"'1ZY8Y293030xxxxxxxx"
+*		],
+*		"user_id" : "4c5f88427bc2e06b5c44bbae"
+* }}}
+**/
 class Order extends \lithium\data\Model {
 
 	protected $_dates = array(
