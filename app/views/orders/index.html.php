@@ -28,7 +28,7 @@
 					<th width="10%">Order Date</th>
 					<th width="10%">Order ID</th>
 					<th width="40%">Items </th>
-					<th width="20%">Status</th>
+					<th width="20%">Estimated Ship Date</th>
 					<th width="30%">Tracking</th>
 				</tr>
 			</thead>
@@ -58,7 +58,7 @@
 						<?php endforeach ?>
 						</td>
 						<td style="color:#009900;">
-							<?=$items[0]['status']?>
+							<?=$shipDate["$order->_id"]?>
 						</td>
 						<?php if (!empty($item['tracking_number'])): ?>
 							<td><?=$this->shipment->link($item['tracking_number'], array('type' => 'UPS'))?>

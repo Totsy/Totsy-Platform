@@ -15,10 +15,15 @@ use app\controllers\BaseController;
 use lithium\storage\Session;
 use lithium\util\Validator;
 use MongoDate;
+use MongoId;
 use li3_silverpop\extensions\Silverpop;
 
 class OrdersController extends BaseController {
-	
+
+	protected $_shipBuffer = 15;
+
+	protected $_holidays = array();
+
 	public function index() {
 		$user = Session::read('userLogin');
 		$orders = Order::find('all', array(
@@ -26,10 +31,20 @@ class OrdersController extends BaseController {
 				'user_id' => (string) $user['_id']),
 			'order' => array('date_created' => 'DESC')
 		));
-
-		return (compact('orders'));	
+		foreach ($orders as $order) {
+			$shipDate["$order->_id"] = $this->shipDate($order);
+		}
+		return (compact('orders', 'shipDate'));
 	}
 
+	/**
+	 * View a specific order.
+	 *
+	 * This method gets the order for a user based on their order number and
+	 * user_id. There is a time check on the order to determine if a new.
+	 * @param string $order_id
+	 * @return mixed
+	 */
 	public function view($order_id) {
 		$user = Session::read('userLogin');
 		$order = Order::find('first', array(
@@ -37,7 +52,9 @@ class OrdersController extends BaseController {
 				'order_id' => $order_id,
 				'user_id' => (string) $user['_id']
 		)));
-		return compact('order');
+		$new = ($order->date_created->sec > (time() - 120)) ? true : false;
+		$shipDate = $this->shipDate($order);
+		return compact('order', 'new', 'shipDate');
 	}
 
 	public function add() {
@@ -251,6 +268,7 @@ class OrdersController extends BaseController {
 				$order->promo_code = $orderPromo->code;
 				$order->promo_discount = $orderPromo->saved_amount;
 			}
+			$order->ship_date = $this->shipDate($order);
 			$order->save();
 			Cart::remove(array('session' => Session::key()));
 			foreach ($cart as $item) {
@@ -281,6 +299,34 @@ class OrdersController extends BaseController {
 			}
 		}
 		return $discountExempt;
+	}
+
+	/**
+	 * Calculated estimated ship by date for an order.
+	 *
+	 * The estimated ship-by-date is calculated based on the last event that closes.
+	 * @param object $order
+	 * @return string
+	 */
+	public function shipDate($order) {
+		$dateformat = 'm-d-Y';
+		$i = 1;
+		$items = $order->items->data();
+		foreach ($items as $item) {
+			$ids[] = new MongoId("$item[event_id]");
+		}
+		$event = Event::find('first', array(
+			'conditions' => array('_id' => $ids),
+			'order' => array('date_created' => 'DESC')
+		));
+		$shipDate = $event->end_date->sec;
+		while($i < $this->_shipBuffer) {
+			$day = date('N', $shipDate);
+			$date = date('Y-m-d', $shipDate);
+			if($day < 6 && !in_array($date, $this->_holidays))$i++;
+			$shipDate = strtotime($date.' +1 day');
+		}
+		return date($dateformat, $shipDate);
 	}
 }
 
