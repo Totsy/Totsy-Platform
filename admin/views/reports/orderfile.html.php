@@ -42,8 +42,6 @@
 		$('#order_list').dataTable({
 			'bAutoWidth' : false,
 			"sDom": 'T<"clear">lfrtip',
-			"sScrollX": "960px",
-			"sScrollXInner": "110%",
 			"bScrollCollapse": true
 					});
 	} );
