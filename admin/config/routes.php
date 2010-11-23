@@ -24,8 +24,6 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 	));
 });
 
-Router::connect('/uploads', 'Uploads::index');
-Router::connect('/uploads/upload{:args}', 'Uploads::upload');
 
 /**
  * Redirect all non-authenticated users to 
@@ -33,38 +31,57 @@ Router::connect('/uploads/upload{:args}', 'Uploads::upload');
 if (!Session::check('userLogin')) {
 	Router::connect('/{:args}', 'Users::login');
 }
+
+$session = Session::read('userLogin');
+
 /**
  * Here, we are connecting '/' (base path) to controller called 'Pages',
  * its action called 'view', and we pass a param to select the view file
  * to use (in this case, /app/views/pages/home.html.php)...
  */
 
-Router::connect('/', array('Pages::view', 'home'));
 Router::connect('/login', 'Users::login');
 Router::connect('/logout', 'Users::logout');
-Router::connect('/register', 'Users::register');
-Router::connect('/addresses', 'Addresses::view');
-Router::connect('/account/add/{:args}', 'Account::add');
-Router::connect('/events', 'Events::index');
-Router::connect('/users/view/{:args}', 'Users::view');
-/**
- * ...and connect the rest of 'Pages' controller's urls.
- */
-Router::connect('/pages/{:args}', 'Pages::view');
+Router::connect('/', array('Pages::view', 'home'));
+Router::connect('/search/{:search}', 'Search::view');
 
-/**
- * Connect the testing routes.
- */
-if (!Environment::is('production')) {
-	Router::connect('/test/{:args}', array('controller' => '\lithium\test\Controller'));
-	Router::connect('/test', array('controller' => '\lithium\test\Controller'));
+if ($session['admin']) {
+	Router::connect('/uploads', 'Uploads::index');
+	Router::connect('/uploads/upload{:args}', 'Uploads::upload');
+
+	Router::connect('/register', 'Users::register');
+	Router::connect('/addresses', 'Addresses::view');
+	Router::connect('/account/add/{:args}', 'Account::add');
+	Router::connect('/events', 'Events::index');
+	Router::connect('/users/view/{:args}', 'Users::view');
+
+	/**
+	 * ...and connect the rest of 'Pages' controller's urls.
+	 */
+	Router::connect('/pages/{:args}', 'Pages::view');
+
+	/**
+	 * Connect the testing routes.
+	 */
+	if (!Environment::is('production')) {
+		Router::connect('/test/{:args}', array('controller' => '\lithium\test\Controller'));
+		Router::connect('/test', array('controller' => '\lithium\test\Controller'));
+	}
+
+	/**
+	 * Finally, connect the default routes.
+	 */
+	Router::connect('/{:controller}/{:action}/{:id:[0-9]+}.{:type}', array('id' => null));
+	Router::connect('/{:controller}/{:action}/{:id:[0-9]+}');
+	Router::connect('/{:controller}/{:action}/{:args}');
 }
 
-/**
- * Finally, connect the default routes.
- */
-Router::connect('/{:controller}/{:action}/{:id:[0-9]+}.{:type}', array('id' => null));
-Router::connect('/{:controller}/{:action}/{:id:[0-9]+}');
-Router::connect('/{:controller}/{:action}/{:args}');
+if (isset($session['acls'])) {
+	foreach ($session['acls'] as $acl) {
+		$connect = implode('::', array($acl['controller'], $acl['action']));
+		Router::connect($acl['route'], $connect);
+	}
+	
+}
 
 ?>
