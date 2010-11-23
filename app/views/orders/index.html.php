@@ -7,8 +7,9 @@
 	<div class="tl"></div>
 	<div class="tr"></div>
 	<div id="page">
-		
-		<h2 class="gray mar-b">Tracking System <span style="float:right; font-weight:normal; font-size:11px;"><span style="font-weight:bold;">NOTE: </span>Orders may be split into multiple shipments with different tracking numbers.</span></h2>
+	<h2 class="gray mar-b">My Orders</h2>
+	<hr />
+<!--		<h2 class="gray mar-b">Tracking System <span style="float:right; font-weight:normal; font-size:11px;"><span style="font-weight:bold;">NOTE: </span>Orders may be split into multiple shipments with different tracking numbers.</span></h2>
 		<hr />
 		<ol class="shipping-process">
 			<li class="placed link" id="placed-btn">Order Placed With Totsy</li>
@@ -20,7 +21,7 @@
         	<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">Our order tracking system is currently under construction. <br />
 		All orders  are being processed and will be shipped within 15 to 20 business days. <br /> 
 		If you have any questions do not hesitate to contact us!</p>
-		<?php if ($orders->data()): ?>
+-->		<?php if ($orders->data()): ?>
 		<table cellpadding="0" cellspacing="0" border="0" width="100%" class="order-table">
 		
 			<thead>
@@ -51,10 +52,10 @@
 						<?php endif ?>
 						<td>
 						<?php foreach ($items as $item): ?>
-								<?=$item['description']?><br>
-								Color: <?=$item['color']?><br>
-								Size: <?=$item['size']?><br>
-								Quantity: <?=$item['quantity']?><br><br>
+								<strong><?=$item['description']?></strong><br />
+								<span style="font-size:12px;">Color: <?=$item['color']?></span><br />
+								<span style="font-size:12px;">Size: <?=$item['size']?></span><br />
+								<span style="font-size:12px;">Quantity: <?=$item['quantity']?></span><br />
 						<?php endforeach ?>
 						</td>
 						<td style="color:#009900;">
