@@ -309,7 +309,7 @@ class OrdersController extends BaseController {
 	 * @return string
 	 */
 	public function shipDate($order) {
-		$dateformat = 'm-d-Y';
+
 		$i = 1;
 		$items = $order->items->data();
 		foreach ($items as $item) {
@@ -326,7 +326,7 @@ class OrdersController extends BaseController {
 			if($day < 6 && !in_array($date, $this->_holidays))$i++;
 			$shipDate = strtotime($date.' +1 day');
 		}
-		return date($dateformat, $shipDate);
+		return $shipDate;
 	}
 }
 
