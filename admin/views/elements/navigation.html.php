@@ -12,13 +12,13 @@
 	</li>
 	
 	<li>
-		<?php echo $this->html->link('Event/Item Management', 'Events::index'); ?>
+		<?php echo $this->html->link('Event/Item Management', array('Base::selectEvent')); ?>
 		<ul>
 			<li>
 				<?php echo $this->html->link('Add New Event', 'Events::add'); ?>
 			</li>
 			<li>
-				<?php echo $this->html->link('View Events', 'Events::index'); ?>
+				<?php echo $this->html->link('View Events', array('Base::selectEvent')); ?>
 			</li>
 			<li>
 				<?php echo $this->html->link('View Items', 'Items::index'); ?>
@@ -32,7 +32,7 @@
 				<?php echo $this->html->link('Affiliate Report', 'Reports::affiliate'); ?>
 			</li>
 			<li>
-				<?php echo $this->html->link('Logistics', 'Reports::logistics'); ?>
+				<?php echo $this->html->link('Logistics', array('Base::selectEvent', 'args'=>'logistics')); ?>
 			</li>
 			<li>
 				<?php echo $this->html->link('Sales', 'Reports::sales'); ?>
@@ -65,7 +65,7 @@
 		</ul>
 	</li>
 	<li>
-		<?php echo $this->html->link('Email Management', 'Emails::index'); ?>
+		<?php echo $this->html->link('Email Management', array('Base::selectEvent', 'args'=>'email')); ?>
 	</li>
 	<li class="secondary">
 		<?php echo $this->html->link('Logout', 'Users::logout'); ?>
