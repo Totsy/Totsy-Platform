@@ -35,6 +35,7 @@ class Email extends Base {
 		'orderStatusLong' => 'Order Enroute Warehouse - Long',
 		'orderStatusDelayed' => 'Order Enroute Warehouse - Delayed',
 		'orderWarehouse' => 'Order At Warehouse',
+		'delayedEmail' => 'Delayed Email (general)',
 		'orderCredit' => 'Apply Credit',
 		'orderIssue' => 'Order Issue',
 		'accountNotification' => 'Account Notification'
