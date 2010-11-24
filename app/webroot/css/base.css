@@ -671,7 +671,8 @@ div.col-2 .box-2 {
 }
 #detail-top-right .p-container {
 	padding:10px;
-	text-align:center
+	text-align:center;
+	color:#707070;
 }
 #detail-top-right .p-container h2 {
 	font-size:18px;
@@ -2058,7 +2059,7 @@ label.required {
 }
 #empty-cart {
 	position:absolute;
-	top:220px;
+	/* top:220px; */
 	left:200px;
 }
 .checkout-error {

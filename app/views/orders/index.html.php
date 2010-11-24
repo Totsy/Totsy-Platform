@@ -26,7 +26,7 @@
 		
 			<thead>
 				<tr>
-					<th width="10%">Order Date</th>
+					<th width="18%">Order Date</th>
 					<th width="10%">Order ID</th>
 					<th width="40%">Items </th>
 					<th width="20%">Estimated Ship Date</th>
@@ -37,7 +37,7 @@
 			<tbody>
 				<?php foreach ($orders as $order): ?>
 					<tr class="alt$x" style="border-bottom:1px solid #ddd;">
-						<td><?=date('m-d-y', $order->date_created->sec); ?></td>
+						<td><?=date('M d, Y', $order->date_created->sec); ?></td>
 						<td>
 							<?php if (!empty($order->order_id)): ?>
 								<?=$this->html->link("$order->order_id", array(
@@ -57,16 +57,16 @@
 								<span style="font-size:12px;">Size: <?=$item['size']?></span><br />
 								<span style="font-size:12px;">Quantity: <?=$item['quantity']?></span><br />
 						<?php endforeach ?>
-						</td>
+						</t>d
 						<td style="color:#009900;">
-							<?=$shipDate["$order->_id"]?>
+							<?=date('M d, Y', $shipDate["$order->_id"]); ?>
 						</td>
 						<?php if (!empty($item['tracking_number'])): ?>
 							<td><?=$this->shipment->link($item['tracking_number'], array('type' => 'UPS'))?>
 								</a>
 							</td>
 						<?php else: ?>
-							<td style="color:#ff0000;">Pending</td>
+							<td>Pending</td>
 						<?php endif ?>
 					</tr>
 				<?php endforeach ?>

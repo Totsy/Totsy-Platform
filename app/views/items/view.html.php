@@ -41,9 +41,9 @@
 			<h2 class="caps" style="font-size:14px;">Totsy Price</h2>
 			<div style="padding: 10px 0px; color:#009900; font-size:24px;">$<?=number_format($item->sale_retail,2); ?></div>
 
-			  <span class="original-price">Original: $<?=number_format($item->msrp,2); ?></span>
+			<span class="original-price">Original: $<?=number_format($item->msrp,2); ?></span>
 			<?php if ($item->total_quantity != 0): ?>
-				<button class="buy-now" id='item-submit'>Add To Cart</button>
+				<button class="buy-now" id="item-submit">Add To Cart</button>
 				<div id="all-reserved"></div>
 			<?php endif ?>
 		</div>
@@ -198,20 +198,13 @@
 	<!-- End additional image view thumbnails -->
   </div>
 </div>
-
-
-
 				<?php endif ?>
 				<?php if (!empty($item->alternate_images)): ?>
 					<?php $x = 2; ?>
-
-
 				<?php endif ?>
 	</div>
 	<!-- End product item -->
-
 </div>
-
 
 <script type="text/javascript"> 
 $(function () {

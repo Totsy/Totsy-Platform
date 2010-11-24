@@ -11,12 +11,6 @@
 
 
 <?php if ($order): ?>
-	<style type="text/css">
-
-		td{font-family:Arial,sans-serif;color:#888888;font-size:14px;line-height:18px}
-		img{border:none}
-
-	</style>
 		<table cellspacing="0" cellpadding="0" border="0" width="695">
 		
 				<tr >
