@@ -19,6 +19,12 @@ class Events extends \lithium\template\Helper {
 		'Report'
 	);
 
+	protected $_creditHeading = array(
+		'name',
+		'start_date',
+		'end_date',
+		'Apply Credit'
+	);
 	protected $_emailHeading = array(
 		'name',
 		'start_date',
@@ -37,6 +43,10 @@ class Events extends \lithium\template\Helper {
 		'General Emails' => 'Emails::send'
 	);
 
+	protected $_credit = array(
+		'Apply Event Credit' => 'Credit::event'
+	);
+
 	public function build($eventRecords = null, $options = array('type' => null)){
 		switch ($options['type']) {
 			case 'logistics':
@@ -46,6 +56,10 @@ class Events extends \lithium\template\Helper {
 			case 'email':
 				$action = array('Emails::new');
 				$heading = $this->_emailHeading;
+				break;
+			case 'credits':
+				$action = array('Credits::event');
+				$heading = $this->_productHeading;
 				break;
 			default:
 				$action = array('Events::edit');
@@ -80,6 +94,16 @@ class Events extends \lithium\template\Helper {
 				if ($options['type'] == 'logistics') {
 					$html .= "<td>";
 					foreach ($this->_links as $name => $route) {
+						$link = array($route, 'args' => $event['_id']);
+						$option = array('escape' => false);
+						$html .= $this->_context->html->link("View - $name", $link, $option);
+						$html .= "<br>";
+					}
+					$html .= "</td>";
+				}
+				if ($options['type'] == 'credits') {
+					$html .= "<td>";
+					foreach ($this->_credit as $name => $route) {
 						$link = array($route, 'args' => $event['_id']);
 						$option = array('escape' => false);
 						$html .= $this->_context->html->link("View - $name", $link, $option);

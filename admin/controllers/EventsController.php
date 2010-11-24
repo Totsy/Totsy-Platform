@@ -28,13 +28,7 @@ class EventsController extends BaseController {
 		'end_date',
 		'enabled'
 	);
-	/**
-	 * Grab all the events from mongo
-	 */
-	public function index() {
-		$events = Event::all();
-		return compact('events');
-	}
+
 	/**
 	 * 
 	 */
