@@ -128,8 +128,8 @@ class OrdersController extends BaseController {
 		if ($this->request->data) {
 			$order =  Order::lookup($this->request->data['order_id']);
 		}
-
-		return compact('order');
+		$shipDate = $this->shipDate($order);
+		return compact('order', 'shipDate');
 	}
 
 	/**
@@ -263,11 +263,10 @@ class OrdersController extends BaseController {
 	 * @return string
 	 */
 	public function shipDate($order) {
-		$dateformat = 'Y-m-d';
 		$i = 1;
-		$items = $order['items'];
+		$items = (is_object($order)) ? $order->items->data() : $order['items'];
 		foreach ($items as $item) {
-			$ids[] = new MongoId("$item[event_id]");
+			$ids[] = new MongoId($item['event_id']);
 		}
 		$event = Event::find('first', array(
 			'conditions' => array('_id' => $ids),
@@ -282,7 +281,7 @@ class OrdersController extends BaseController {
 			}
 			$shipDate = strtotime($date.' +1 day');
 		}
-		return date($dateformat, $shipDate);
+		return $shipDate;
 	}
 }
 ?>

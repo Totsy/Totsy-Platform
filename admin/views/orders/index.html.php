@@ -143,7 +143,7 @@
 		<tbody>
 			<?php foreach ($orders as $order): ?>
 				<tr>
-					<td><?=date('m-d-Y', $order['date_created']['sec']);?></td>
+					<td><?=date('m-d-Y', $order['date_created']->sec);?></td>
 					<td>
 						<?=$this->html->link($order['order_id'], array(
 						'Orders::view',
@@ -193,6 +193,7 @@
 					<?php else: ?>
 							<td>Not Shipped/No Tracking #</td>
 					<?php endif ?>
+					<td><?=$shipDate["$order[_id]"]?></td>
 					<td>
 						<?=$this->html->link('View', array(
 						'Users::view',
