@@ -1,28 +1,31 @@
 <?php
 
 namespace admin\controllers;
+
 use admin\models\Order;
 use admin\models\User;
 use admin\models\Event;
 use admin\models\Item;
 use admin\models\Credit;
+use admin\controllers\BaseController;
 use MongoDate;
 use MongoRegex;
+use MongoId;
 use PHPExcel_IOFactory;
 use PHPExcel;
 use PHPExcel_Cell;
 use PHPExcel_Cell_DataType;
-use admin\extensions\Mailer;
 use li3_flash_message\extensions\storage\FlashMessage;
 use li3_silverpop\extensions\Silverpop;
-use MongoId;
 
-
-class OrdersController extends \lithium\action\Controller {
+/**
+ * The Orders Controller
+ *
+ **/
+class OrdersController extends BaseController {
 
 	/**
 	 * These headings are used in the datatable index view.
-	 *
 	 * @var array
 	 */
 	protected $_headings = array(
@@ -37,9 +40,21 @@ class OrdersController extends \lithium\action\Controller {
 		'Customer Profile'
 	);
 
-	protected $_shipBuffer = 15;
+	/**
+	 * The # of business days to be added to an event to determine the estimated
+	 * ship by date. The default is 18 business days.
+	 *
+	 * @var int
+	 **/
+	protected $_shipBuffer = 18;
 
-	protected $_holidays = array();
+	/**
+	 * Any holidays that need to be factored into the estimated ship date calculation.
+	 *
+	 * @var array
+	 */
+	protected $_holidays = array('2010-11-25', '2010-11-26');
+
 	/**
 	 * Main view to query for orders in the admin screen.
 	 *
@@ -81,7 +96,6 @@ class OrdersController extends \lithium\action\Controller {
 					}
 					break;
 			}
-
 			if ($rawOrders) {
 				if (get_class($rawOrders) == 'MongoCursor') {
 					foreach ($rawOrders as $order) {
@@ -98,18 +112,13 @@ class OrdersController extends \lithium\action\Controller {
 
 		return compact('orders', 'headings', 'shipDate');
 	}
-	
-	public function sortArrayByArray($array, $orderArray) {
-	    $ordered = array();
-	    foreach($orderArray as $key) {
-	        if(array_key_exists($key,$array)) {
-	                $ordered[$key] = $array[$key];
-	                unset($array[$key]);
-	        }
-	    }
-	    return $ordered + $array;
-	}
 
+	/**
+	 * The view method renders the order confirmation page that is sent to the customer
+	 * after they have placed their order
+	 *
+	 * @param string $id The _id of the order
+	 */
 	public function view($id = null) {
 		$this->_render['layout'] = 'base';
 		$order = null;
@@ -119,9 +128,13 @@ class OrdersController extends \lithium\action\Controller {
 		if ($this->request->data) {
 			$order =  Order::lookup($this->request->data['order_id']);
 		}
+
 		return compact('order');
 	}
 
+	/**
+	 * The update method captures payment and updates the order with tracking info.
+	 */
 	public function update() {
 		$_shipToHeaders = array(
 			'ShipDate',
@@ -264,7 +277,9 @@ class OrdersController extends \lithium\action\Controller {
 		while($i < $this->_shipBuffer) {
 			$day = date('N', $shipDate);
 			$date = date('Y-m-d', $shipDate);
-			if($day < 6 && !in_array($date, $this->_holidays))$i++;
+			if ($day < 6 && !in_array($date, $this->_holidays)){
+				$i++;
+			}
 			$shipDate = strtotime($date.' +1 day');
 		}
 		return date($dateformat, $shipDate);
