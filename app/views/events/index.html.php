@@ -1,4 +1,3 @@
-
 <?=$this->html->script(array('jquery.jcarousel.min'));?>
 <?=$this->html->style('skin');?>
 
@@ -38,7 +37,7 @@ $(document).ready(function() {
 </script>
 
 
-	<h1 class="page-title gray"><span class="red">Today's Sales</span> 
+	<h2 class="page-title gray"><span class="_red">Today's Sales</span> 
     <div class="sm-actions fr" style="font-size:12px; margin:7px 0px 0px 0px;">
 			<dl>
 				<dt><strong>Socialize With Us</strong></dt> 
@@ -49,7 +48,8 @@ $(document).ready(function() {
 					</ul>
 				</dd>
 			</dl>
-		</div>   </h1>
+		</div>   </h2>
+	<hr />
 
 
 <div id="middle" class="fullwidth">
@@ -98,7 +98,8 @@ $(document).ready(function() {
 							'title' => $event->name,
 							'alt' => $event->name,
 							'width' => '355',
-							'height' => '410'
+							'height' => '410',
+					'style' => 'margin:0px 0px -6px 0px;'
 							)),array('Events::view', 'args' => array($event->url)), array('escape'=> false));
 						?>
 					<?php else: ?>				
@@ -166,7 +167,8 @@ $(document).ready(function() {
 		<?php $y++; ?>
 	<?php endforeach ?>
 	<div class="coming-soon-sales">
-		<h2 class="page-title gray clear"><span class="red">Coming Soon</span></h2>
+		<h2 class="page-title gray clear"><span class="_red">Coming Soon</span></h2>
+		<hr />
 	
 <!--    <div style="padding:0px 9px;">
             <ul id="mycarousel" class="jcarousel-skin-tango">
