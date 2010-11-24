@@ -18,10 +18,26 @@ use MongoDate;
 use MongoId;
 use li3_silverpop\extensions\Silverpop;
 
+/**
+ * The Orders Controller
+ *
+ * @see http://admin.totsy.local/docs/admin/controllers/OrdersController
+ **/
 class OrdersController extends BaseController {
 
-	protected $_shipBuffer = 15;
+	/**
+	 * The # of business days to be added to an event to determine the estimated
+	 * ship by date. The default is 18 business days.
+	 *
+	 * @var int
+	 **/
+	protected $_shipBuffer = 18;
 
+	/**
+	 * Any holidays that need to be factored into the estimated ship date calculation.
+	 *
+	 * @var array
+	 */
 	protected $_holidays = array();
 
 	public function index() {
@@ -309,7 +325,6 @@ class OrdersController extends BaseController {
 	 * @return string
 	 */
 	public function shipDate($order) {
-
 		$i = 1;
 		$items = $order->items->data();
 		foreach ($items as $item) {
@@ -323,7 +338,9 @@ class OrdersController extends BaseController {
 		while($i < $this->_shipBuffer) {
 			$day = date('N', $shipDate);
 			$date = date('Y-m-d', $shipDate);
-			if($day < 6 && !in_array($date, $this->_holidays))$i++;
+			if ($day < 6 && !in_array($date, $this->_holidays)) {
+				$i++;
+			}
 			$shipDate = strtotime($date.' +1 day');
 		}
 		return $shipDate;
