@@ -44,7 +44,7 @@ class Events extends \lithium\template\Helper {
 	);
 
 	protected $_credit = array(
-		'Apply Event Credit' => 'Credit::event'
+		'Apply Event Credit' => 'Credits::eventCredit'
 	);
 
 	public function build($eventRecords = null, $options = array('type' => null)){
@@ -106,7 +106,7 @@ class Events extends \lithium\template\Helper {
 					foreach ($this->_credit as $name => $route) {
 						$link = array($route, 'args' => $event['_id']);
 						$option = array('escape' => false);
-						$html .= $this->_context->html->link("View - $name", $link, $option);
+						$html .= $this->_context->html->link("$name", $link, $option);
 						$html .= "<br>";
 					}
 					$html .= "</td>";

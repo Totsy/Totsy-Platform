@@ -10,7 +10,17 @@
 			</li>
 		</ul>
 	</li>
-	
+	<li>
+		<?php echo $this->html->link('Credit Management', '#'); ?>
+		<ul>
+			<li>
+				<?php echo $this->html->link('Report on Credits', '#'); ?>
+			</li>
+			<li>
+				<?php echo $this->html->link('Apply Credit by Event', array('Base::selectEvent', 'args'=>'credits')); ?>
+			</li>
+		</ul>
+	</li>
 	<li>
 		<?php echo $this->html->link('Event/Item Management', array('Base::selectEvent')); ?>
 		<ul>

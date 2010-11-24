@@ -26,6 +26,11 @@ class Credit extends \lithium\data\Model {
 		'tenMinutes' => 600
 	);
 
+	public static $reasons = array(
+		'Credit Adjustment' => 'Credit Adjustment',
+		'Invitation' => 'Invitation'
+	);
+
 	public static function dates($name) {
 	     return new MongoDate(time() + static::_object()->_dates[$name]);
 	}
@@ -54,6 +59,11 @@ class Credit extends \lithium\data\Model {
 		$credit->credit_amount = (float) $amount;
 		$credit->reason = $data['reason'];
 		$credit->description = $data['description'];
+		if (!empty($data['event_id']) || !empty($data['order_id'])) {
+			$credit->event_id = $data['event_id'];
+			$credit->order_number = $data['order_number'];
+			$credit->order_id = $data['order_id'];
+		}
 	 	return static::_object()->save($credit);
 	}
 
