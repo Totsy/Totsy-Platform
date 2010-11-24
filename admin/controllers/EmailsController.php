@@ -47,7 +47,7 @@ class EmailsController extends \lithium\action\Controller {
 			$orders = Order::find('all', array(
 				'conditions' => array(
 					'items.event_id' => $eventId
-			)));
+			), 'limit' => 1));
 			if ($orders) {
 				foreach ($orders as $order) {
 					$user = User::find('first', array(
