@@ -1,7 +1,7 @@
 <?php
 
 namespace admin\controllers;
-
+use admin\models\Event;
 
 class BaseController extends \lithium\action\Controller {
 
@@ -25,6 +25,17 @@ class BaseController extends \lithium\action\Controller {
 	        }
 	    }
 	    return $ordered + $array;
+	}
+
+	/**
+	 * The selectEvent method provides a list of events in a table
+	 * based on the type configuration provided in the url {:arg}.
+	 *
+	 * @see /extensions/helpers/Events.php
+	 */
+	public function selectEvent($type = null) {
+		$events = Event::all();
+		return compact('events', 'type');
 	}
 
 }

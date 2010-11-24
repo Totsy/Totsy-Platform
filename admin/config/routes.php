@@ -54,6 +54,7 @@ if ($session['admin']) {
 	Router::connect('/account/add/{:args}', 'Account::add');
 	Router::connect('/events', 'Events::index');
 	Router::connect('/users/view/{:args}', 'Users::view');
+	Router::connect('/select/event/{:args}', 'Base::selectEvent');
 
 	/**
 	 * ...and connect the rest of 'Pages' controller's urls.
@@ -75,13 +76,14 @@ if ($session['admin']) {
 	Router::connect('/{:controller}/{:action}/{:id:[0-9]+}');
 	Router::connect('/{:controller}/{:action}/{:args}');
 }
-
+/**
+ * Hooking up ACLs
+ */
 if (isset($session['acls'])) {
 	foreach ($session['acls'] as $acl) {
 		$connect = implode('::', array($acl['controller'], $acl['action']));
 		Router::connect($acl['route'], $connect);
 	}
-	
 }
 
 ?>

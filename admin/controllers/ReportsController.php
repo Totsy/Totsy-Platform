@@ -216,10 +216,6 @@ class ReportsController extends BaseController {
 		return compact('search', 'results', 'searchType', 'criteria');
 	}
 
-	public function logistics($event = null) {
-		$events = Event::all();
-		return compact('events', 'items');
-	}
 	/**
 	 * The purchases method generates the PO report for the logistics team. This report returns an associative array
 	 * which lists all the sales of each item of a sale.
