@@ -193,7 +193,7 @@
 					<?php else: ?>
 							<td>Not Shipped/No Tracking #</td>
 					<?php endif ?>
-					<td><?=$shipDate["$order[_id]"]?></td>
+					<td><?=date('M d, Y', $shipDate["$order[_id]"])?></td>
 					<td>
 						<?=$this->html->link('View', array(
 						'Users::view',
