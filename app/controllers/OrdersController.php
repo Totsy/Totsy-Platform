@@ -70,7 +70,14 @@ class OrdersController extends BaseController {
 		)));
 		$new = ($order->date_created->sec > (time() - 120)) ? true : false;
 		$shipDate = $this->shipDate($order);
-		return compact('order', 'new', 'shipDate');
+		$event = Event::find('first', array(
+			'conditions' => array('_id' => $ids),
+			'order' => array('date_created' => 'DESC')
+		));
+		$allEventsClosed = ($event->end_date->sec > time()) ? true : false;
+		$shipped = (isset($order->tracking_numbers)) ? true : false;
+		$preShipped = ($shipped) ? true : false;
+		return compact('order', 'new', 'shipDate', 'allEventsClosed', 'shipped', 'preShipped');
 	}
 
 	public function add() {
@@ -295,7 +302,8 @@ class OrdersController extends BaseController {
 			$user->save(null, array('validate' => false));
 			$data = array(
 				'order' => $order,
-				'email' => $user->email
+				'email' => $user->email,
+				'shipDate' => $this->shipDate($order)
 			);
 			Silverpop::send('orderConfirmation', $data);
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
