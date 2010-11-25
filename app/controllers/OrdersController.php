@@ -72,6 +72,8 @@ class OrdersController extends BaseController {
 		$shipDate = $this->shipDate($order);
 		if (!empty($shipDate)) {
 			$allEventsClosed = ($this->getLastEvent($order)->end_date->sec > time()) ? false : true;
+		} else {
+			$allEventsClosed = true;
 		}
 		$shipped = (isset($order->tracking_numbers)) ? true : false;
 		$preShipment = ($shipped) ? true : false;
