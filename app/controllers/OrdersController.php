@@ -346,7 +346,7 @@ class OrdersController extends BaseController {
 	public function getLastEvent($order) {
 		$items = $order->items->data();
 		foreach ($items as $item) {
-			if (isset($item['event_id'])) {
+			if (!empty($item['event_id'])) {
 				$ids[] = new MongoId("$item[event_id]");
 			}
 		}
