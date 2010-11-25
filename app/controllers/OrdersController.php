@@ -70,11 +70,7 @@ class OrdersController extends BaseController {
 		)));
 		$new = ($order->date_created->sec > (time() - 120)) ? true : false;
 		$shipDate = $this->shipDate($order);
-		$event = Event::find('first', array(
-			'conditions' => array('_id' => $ids),
-			'order' => array('date_created' => 'DESC')
-		));
-		$allEventsClosed = ($event->end_date->sec > time()) ? true : false;
+		$allEventsClosed = ($this->getLastEvent($order)->end_date->sec > time()) ? true : false;
 		$shipped = (isset($order->tracking_numbers)) ? true : false;
 		$preShipped = ($shipped) ? true : false;
 		return compact('order', 'new', 'shipDate', 'allEventsClosed', 'shipped', 'preShipped');
@@ -334,14 +330,7 @@ class OrdersController extends BaseController {
 	 */
 	public function shipDate($order) {
 		$i = 1;
-		$items = $order->items->data();
-		foreach ($items as $item) {
-			$ids[] = new MongoId("$item[event_id]");
-		}
-		$event = Event::find('first', array(
-			'conditions' => array('_id' => $ids),
-			'order' => array('date_created' => 'DESC')
-		));
+		$event = $this->getLastEvent($order);
 		$shipDate = $event->end_date->sec;
 		while($i < $this->_shipBuffer) {
 			$day = date('N', $shipDate);
@@ -352,6 +341,18 @@ class OrdersController extends BaseController {
 			$shipDate = strtotime($date.' +1 day');
 		}
 		return $shipDate;
+	}
+
+	public function getLastEvent($order) {
+		$items = $order->items->data();
+		foreach ($items as $item) {
+			$ids[] = new MongoId("$item[event_id]");
+		}
+		$event = Event::find('first', array(
+			'conditions' => array('_id' => $ids),
+			'order' => array('date_created' => 'DESC')
+		));
+		return $event;
 	}
 }
 
