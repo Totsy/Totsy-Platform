@@ -45,7 +45,19 @@ Router::connect('/logout', 'Users::logout');
 Router::connect('/', array('Pages::view', 'home'));
 Router::connect('/search/{:search}', 'Search::view');
 
-if ($session['admin']) {
+/**
+ * Hooking up ACLs
+ */
+if (isset($session['acls'])) {
+	foreach ($session['acls'] as $acl) {
+		$connect = implode('::', array($acl['controller'], $acl['action']));
+		Router::connect($acl['route'], $connect);
+	}
+}
+/**
+ * Hooking up someone is only an admin.
+ */
+if ($session['admin'] && !isset($session['acls'])) {
 	Router::connect('/uploads', 'Uploads::index');
 	Router::connect('/uploads/upload{:args}', 'Uploads::upload');
 
@@ -75,15 +87,6 @@ if ($session['admin']) {
 	Router::connect('/{:controller}/{:action}/{:id:[0-9]+}.{:type}', array('id' => null));
 	Router::connect('/{:controller}/{:action}/{:id:[0-9]+}');
 	Router::connect('/{:controller}/{:action}/{:args}');
-}
-/**
- * Hooking up ACLs
- */
-if (isset($session['acls'])) {
-	foreach ($session['acls'] as $acl) {
-		$connect = implode('::', array($acl['controller'], $acl['action']));
-		Router::connect($acl['route'], $connect);
-	}
 }
 
 ?>
