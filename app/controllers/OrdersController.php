@@ -70,7 +70,7 @@ class OrdersController extends BaseController {
 		)));
 		$new = ($order->date_created->sec > (time() - 120)) ? true : false;
 		$shipDate = $this->shipDate($order);
-		$allEventsClosed = ($this->getLastEvent($order)->end_date->sec > time()) ? true : false;
+		$allEventsClosed = ($this->getLastEvent($order)->end_date->sec > time()) ? false : true;
 		$shipped = (isset($order->tracking_numbers)) ? true : false;
 		$preShipment = ($shipped) ? true : false;
 		return compact('order', 'new', 'shipDate', 'allEventsClosed', 'shipped', 'preShipment');
