@@ -29,8 +29,8 @@
 					<th width="18%">Order Date</th>
 					<th width="10%">Order ID</th>
 					<th width="40%">Items </th>
-					<th width="20%">Estimated Ship Date</th>
-					<th width="30%">Tracking</th>
+					<th width="50%">Shipping Info</th>
+					<!-- <th width="30%">Tracking</th> -->
 				</tr>
 			</thead>
 			
@@ -57,16 +57,15 @@
 								<span style="font-size:12px;">Size: <?=$item['size']?></span><br />
 								<span style="font-size:12px;">Quantity: <?=$item['quantity']?></span><br />
 						<?php endforeach ?>
-						</t>d
-						<td style="color:#009900;">
-							<?=date('M d, Y', $shipDate["$order->_id"]); ?>
 						</td>
-						<?php if (!empty($item['tracking_number'])): ?>
-							<td><?=$this->shipment->link($item['tracking_number'], array('type' => 'UPS'))?>
-								</a>
+						<?php if (!empty($item['tracking_numbers'])): ?>
+							<td><?=$this->shipment->link($item['tracking_numbers'], array('type' => 'UPS'))?>
+						
 							</td>
 						<?php else: ?>
-							<td>Pending</td>
+						<td style="color:#009900;">
+                                                        <?=date('M d, Y', $shipDate["$order->_id"]); ?>
+                                                </td>
 						<?php endif ?>
 					</tr>
 				<?php endforeach ?>

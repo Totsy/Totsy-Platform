@@ -44,21 +44,48 @@
 
 <h2 class="gray mar-b">Tracking System <span style="float:right; font-weight:normal; font-size:11px;"><span style="font-weight:bold;">NOTE: </span>Orders may be split into multiple shipments with different tracking numbers.</span></h2>
 <hr />
+
+
+<div class="rounded" style="border:1px solid #ddd; display:block; width:141px; float:left; text-align:center; padding:10px; margin-right:10px; background:#ebffeb; color:#009900;">Order Placed</div>
+
+<?php if ($allEventsClosed) { ?>
+<div class="rounded" style="border:1px solid #ddd; display:block; width:141px; float:left; text-align:center; padding:10px; margin-right:10px; background:#ebffeb; color:#009900;">All Events Closed</div>
+<?php } else { ?>
+<div class="rounded" style="border:1px solid #ddd; display:block; width:141px; float:left; text-align:center; padding:10px; margin-right:10px;">All Events Closed</div>
+<?php } ?>
+
+<?php if ($preShipment) { ?>
+<div class="rounded" style="border:1px solid #ddd; display:block; width:143px; float:left; text-align:center; padding:10px; margin-right:10px; background:#ebffeb; color:#009900;">Pre-Shipment</div>
+<?php } else { ?>
+<div class="rounded" style="border:1px solid #ddd; display:block; width:145px; float:left; text-align:center; padding:10px; margin-right:10px;">Pre-Shipment</div>
+<?php } ?>
+<?php if ($shipped) { ?>
+<div class="rounded" style="border:1px solid #ddd; display:block; width:145px; float:left; text-align:center; padding:10px; margin-right:0px; background:#ebffeb; color:#009900;">Shipped</div>
+<?php } else { ?>
+<div class="rounded" style="border:1px solid #ddd; display:block; width:145px; float:left; text-align:center; padding:10px; margin-right:0px;">Shipped</div>
+<?php } ?>
+
+<!--
 <ol class="shipping-process" style="margin:0px 0px 10px 0px;">
-  <li class="placed link" id="placed-btn">Order Placed With Totsy</li>
+  <li class="placed link active" id="placed-btn">Order Placed With Totsy</li>
   <li class="secured link" id="secured-btn">Order Secured From Partners</li>
   <li class="warehouse link" id="warehouse-btn">Items Arrive At Warehouse</li>
   <li class="shipped link" id="shipped-btn">Packaged Shipped To You</li>
-  <li class="recieved link" id="recieved-btn">Order Arrives At Your Home</li>
+<li class="recieved link" id="recieved-btn">Order Arrives At Your Home</li>
   </ol>
+-->
+<!-- 
 <p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">Our order tracking system is currently under construction. <br />
 
   All orders  are being processed and will be shipped within 15 to 20 business days. <br /> 
   If you have any questions do not hesitate to contact us!</p>
-<br />
 
-								<h2 class="gray mar-b">Order Summary <span style="font-size:11px; float:right; font-weight:normal;"><span style="font-weight:bold;">NOTE:</span> Your order will be delivered within 3-5 weeks</span></h2>
-								<hr />
+<br />
+-->
+<div style="clear:both;"></div>
+								<h2 style="margin:20px 0px 0px 0px;" class="gray mar-b">Order Summary <span style="color:red; font-weight:bold; float:right;">Estimated Ship Date: <?=date('M d, Y', $shipDate); ?></span></h2>
+<hr />
+								
 
  <?php } ?>
 
