@@ -83,7 +83,10 @@
 <br />
 -->
 <div style="clear:both;"></div>
-								<h2 style="margin:20px 0px 0px 0px;" class="gray mar-b">Order Summary <span style="color:red; font-weight:bold; float:right;">Estimated Ship Date: <?=date('M d, Y', $shipDate); ?></span></h2>
+								<h2 style="margin:20px 0px 0px 0px;" class="gray mar-b">Order Summary
+									<?php if (!empty($shipDate) || ($shipDate < time())): ?>
+										<span style="color:red; font-weight:bold; float:right;">Estimated Ship Date: <?=date('M d, Y', $shipDate); ?></span></h2>
+									<?php endif ?>
 <hr />
 								
 
