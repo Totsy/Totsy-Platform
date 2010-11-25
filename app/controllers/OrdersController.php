@@ -331,14 +331,17 @@ class OrdersController extends BaseController {
 	public function shipDate($order) {
 		$i = 1;
 		$event = $this->getLastEvent($order);
-		$shipDate = $event->end_date->sec;
-		while($i < $this->_shipBuffer) {
-			$day = date('N', $shipDate);
-			$date = date('Y-m-d', $shipDate);
-			if ($day < 6 && !in_array($date, $this->_holidays)) {
-				$i++;
+		$shipDate = null;
+		if (!empty($event)) {
+			$shipDate = $event->end_date->sec;
+			while($i < $this->_shipBuffer) {
+				$day = date('N', $shipDate);
+				$date = date('Y-m-d', $shipDate);
+				if ($day < 6 && !in_array($date, $this->_holidays)) {
+					$i++;
+				}
+				$shipDate = strtotime($date.' +1 day');
 			}
-			$shipDate = strtotime($date.' +1 day');
 		}
 		return $shipDate;
 	}
