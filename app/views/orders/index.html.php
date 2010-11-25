@@ -58,14 +58,16 @@
 								<span style="font-size:12px;">Quantity: <?=$item['quantity']?></span><br />
 						<?php endforeach ?>
 						</td>
-						<?php if (!empty($item['tracking_numbers'])): ?>
-							<td><?=$this->shipment->link($item['tracking_numbers'], array('type' => 'UPS'))?>
-						
+						<?php if (!empty($order->tracking_numbers)): ?>
+							<td>
+								Tracking Number(s):
+							<?php foreach ($order->tracking_numbers as $number): ?>
+								<?=$this->shipment->link($number, array('type' => 'UPS'))?>
+							<?php endforeach ?>
+							</td>
 							</td>
 						<?php else: ?>
-						<td style="color:#009900;">
-                                                        <?=date('M d, Y', $shipDate["$order->_id"]); ?>
-                                                </td>
+						<td>Estimated Ship Date: <br/><?=date('M d, Y', $shipDate["$order->_id"]); ?></td>
 						<?php endif ?>
 					</tr>
 				<?php endforeach ?>
