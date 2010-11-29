@@ -23,7 +23,8 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 		'body' => File::first($request->id)->file->getBytes()
 	));
 });
-
+Router::connect('/uploads', 'Uploads::index');
+Router::connect('/uploads/upload{:args}', 'Uploads::upload');
 
 /**
  * Redirect all non-authenticated users to 
@@ -39,13 +40,11 @@ $session = Session::read('userLogin');
  * its action called 'view', and we pass a param to select the view file
  * to use (in this case, /app/views/pages/home.html.php)...
  */
-
 Router::connect('/login', 'Users::login');
 Router::connect('/logout', 'Users::logout');
 Router::connect('/', array('Pages::view', 'home'));
 Router::connect('/search/{:search}', 'Search::view');
-Router::connect('/uploads', 'Uploads::index');
-Router::connect('/uploads/upload{:args}', 'Uploads::upload');
+
 
 /**
  * Hooking up ACLs
@@ -60,7 +59,6 @@ if (isset($session['acls'])) {
  * Hooking up someone is only an admin.
  */
 if ($session['admin'] && !isset($session['acls'])) {
-
 	Router::connect('/register', 'Users::register');
 	Router::connect('/addresses', 'Addresses::view');
 	Router::connect('/account/add/{:args}', 'Account::add');
@@ -80,7 +78,6 @@ if ($session['admin'] && !isset($session['acls'])) {
 		Router::connect('/test/{:args}', array('controller' => '\lithium\test\Controller'));
 		Router::connect('/test', array('controller' => '\lithium\test\Controller'));
 	}
-
 	/**
 	 * Finally, connect the default routes.
 	 */
