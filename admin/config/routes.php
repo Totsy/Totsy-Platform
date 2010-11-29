@@ -44,6 +44,8 @@ Router::connect('/login', 'Users::login');
 Router::connect('/logout', 'Users::logout');
 Router::connect('/', array('Pages::view', 'home'));
 Router::connect('/search/{:search}', 'Search::view');
+Router::connect('/uploads', 'Uploads::index');
+Router::connect('/uploads/upload{:args}', 'Uploads::upload');
 
 /**
  * Hooking up ACLs
@@ -58,8 +60,6 @@ if (isset($session['acls'])) {
  * Hooking up someone is only an admin.
  */
 if ($session['admin'] && !isset($session['acls'])) {
-	Router::connect('/uploads', 'Uploads::index');
-	Router::connect('/uploads/upload{:args}', 'Uploads::upload');
 
 	Router::connect('/register', 'Users::register');
 	Router::connect('/addresses', 'Addresses::view');
