@@ -67,7 +67,7 @@
 							</td>
 							</td>
 						<?php else: ?>
-							<?php if ($shipDate > time()): ?>
+							<?php if ($shipDate["$order->_id"] > time()): ?>
 								<td>Estimated Ship Date: <br/><?=date('M d, Y', $shipDate["$order->_id"]); ?></td>
 							<?php else: ?>
 								<td>-</td>
