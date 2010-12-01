@@ -124,12 +124,17 @@ class OrdersController extends BaseController {
 		$order = null;
 		if ($id) {
 			$order = Order::find('first', array('conditions' => array('_id' => $id)));
-		}
-		if ($this->request->data) {
-			$order =  Order::lookup($this->request->data['order_id']);
+				$orderData = $order->data();
+				$orderItems = $orderData['items'];
+				foreach ($orderItems as $orderItem) {
+					$item = Item::find('first', array(
+						'conditions' => array('_id' => $orderItem['item_id']
+					)));
+					$sku["$orderItem[item_id]"] = $item->vendor_style;
+				}
 		}
 		$shipDate = $this->shipDate($order);
-		return compact('order', 'shipDate');
+		return compact('order', 'shipDate', 'sku');
 	}
 
 	/**
