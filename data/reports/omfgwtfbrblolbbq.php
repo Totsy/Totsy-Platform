@@ -83,7 +83,7 @@ foreach( $user_id AS $user ){
 	$users = $mongousers->find( $useroption );
 	
 	foreach($users AS $userdoc){		
-		//echo $userdoc['firstname'] . ',' . $userdoc['lastname'] . ',' . strtolower($userdoc['email']) . "\n";
+		echo $userdoc['firstname'] . ',' . $userdoc['lastname'] . ',' . strtolower($userdoc['email']) . "\n";
 	}
 
 }
