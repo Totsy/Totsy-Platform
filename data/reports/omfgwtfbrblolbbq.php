@@ -2,7 +2,9 @@
 
 /*
 * Generate a list of people who purchased products from us
-* between $start_date and $end_date
+* between $start_date and $end_date, and issue them a
+* $5 credit by incrementing the users document and 
+* creating a credits document.
 * 
 * OUTPUT: firstname, lastname, email
 * 
@@ -43,7 +45,7 @@ $mongocredits = $mongo->$mdb->credits;
 $orders = $mongoorders->find( $options );
 
 // Debugging output
-echo $orders->count() . ' orders found between ' . $argv[1] . ' and ' . $argv[2] . "\n\n";
+//echo $orders->count() . ' orders found between ' . $argv[1] . ' and ' . $argv[2] . "\n\n";
 
 foreach( $orders AS $order ){
 	$user_ids[] = $order['user_id'];
@@ -53,7 +55,7 @@ foreach( $orders AS $order ){
 $user_id = array_unique( $user_ids );
 
 // Debugging output
-echo 'There are ' . count( $user_id ) . " unique users that placed these orders.\n\n";
+//echo 'There are ' . count( $user_id ) . " unique users that placed these orders.\n\n";
 
 // Loop through the users, and give them a $5 credit and output first,last,email
 foreach( $user_id AS $user ){
@@ -74,7 +76,7 @@ foreach( $user_id AS $user ){
 		'amount' => 5,
 		'date_created' => new MongoDate()
 	);
-	debug( $record );
+	//debug( $record );
 	$mongocredits->save( $record );
 	
 	// Get a cursor for iterating output and inserting credit documents
