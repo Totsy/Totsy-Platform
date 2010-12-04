@@ -166,7 +166,7 @@ $(document).ready(function() {
 		<?php $x++; ?>
 		<?php $y++; ?>
 	<?php endforeach ?>
-        <!-- <a href="http://www.totsy.com/events/view/baby-blow-out-sale" title="Baby Blowout"><img src="/img/BabyBlowOut_banner.png" border="0" height="175" width="918" /></a>-->  
+        <img src="/img/Xmas_ban.jpg" border="0" />  
 	<br style="margin-bottom:10px;"/>
 
 	<div class="coming-soon-sales">
