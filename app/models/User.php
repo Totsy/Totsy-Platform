@@ -125,7 +125,7 @@ class User extends \lithium\data\Model {
 	 */
 	public static function lookup($email) {
 		$user = null;
-		$email = new MongoRegex("/$email/i");
+		$email = new MongoRegex("/^$email/i");
 		$result = static::collection()->findOne(array(
 			'$or' => array(array('username' => $email), array('email' => $email)))
 		);
