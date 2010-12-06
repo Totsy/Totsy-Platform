@@ -2439,6 +2439,9 @@ body.login .our365-login #intro-copy {
 ----------------------------------------------------------------------------------------------------*/
 #toTop {
 	width:100px;
+	-webkit-border-radius: 6px;  
+	-moz-border-radius:  6px;  
+	border-radius:  6px;  
         border:1px solid #ccc;
         background:#f7f7f7;
         text-align:center;
