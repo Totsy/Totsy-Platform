@@ -166,7 +166,7 @@ $(document).ready(function() {
 		<?php $x++; ?>
 		<?php $y++; ?>
 	<?php endforeach ?>
-        <img src="/img/Xmas_ban.jpg" border="0" />  
+        <!-- <img src="/img/Xmas_ban.jpg" border="0" />-->  
 	<br style="margin-bottom:10px;"/>
 
 	<div class="coming-soon-sales">
