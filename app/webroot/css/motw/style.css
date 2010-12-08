@@ -1,3 +1,29 @@
+/* @override 
+	http://local.facebook.dev.exclusively.in/instant_access/css/style.css
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.18
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.20
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.22
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.23
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.24
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.25
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.26
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.30
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.31
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.32
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.33
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.34
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.35
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.36
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.37
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.38
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.4
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.41
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.46
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.5
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.51
+	http://jasonfried.com/totsy/momoftheweek/css/style.css?v=1.52
+*/
+
 /* @group Global */
 
 html{
@@ -6,7 +32,7 @@ html{
 }
 
 #body{
-	background-color: #f7dddc;
+	background: transparent;
 	font-family: Arial;
 	font-size: 13px;
 	color: #fff;
@@ -16,7 +42,7 @@ html{
 #container{
 	width: auto;
 	height: auto;
-	background-color: #f7dddc;
+	background: transparent;
 }
 
 
@@ -41,6 +67,11 @@ a{
 	clear: both;
 }
 
+.h-dots {
+	background: transparent url(http://jasonfried.com/totsy/momoftheweek/images/h-dots.png) repeat-x;
+	height: 1px !important;
+}
+
 .fb-like-button{
 	width: 53px;
 	height: 25px;
@@ -59,12 +90,20 @@ a{
 	overflow: hidden;
 }
 
+.form-header{
+	margin-bottom: 12px;
+}
+
+.form-header img {
+vertical-align: text-bottom;
+}
 /* @group Header */
 
 #header{
 	width: 100%;
-	background-color: #000;
-	margin: 0 0 0 0;
+	background:transparent;
+	padding: 10px 0 0 48px;
+	height: 62px;
 }
 
 #header ul.navigation{
@@ -76,13 +115,26 @@ a{
 	margin: 10px 10px;	
 }
 
+.top_curve {
+	width: 423px;
+	height:9px;
+	background: url(http://jasonfried.com/totsy/momoftheweek/images/curve_top.png);
+	display: none;
+}
+.bottom_curve {
+	width: 423px;
+	height:9px;
+	background: url(http://jasonfried.com/totsy/momoftheweek/images/curve_bottom.png);
+	display: none;
+}
+
 /* @end */
 
 /* @group Style Expressed */
 
 #intro{
 	width: 100%;
-	background-color: #838892;
+	background-image: url(http://jasonfried.com/totsy/momoftheweek/images/messaging_bg.png);
 	margin: 0 0 0 0;
 	padding-left: 54px;
 	color:#ffffff;
@@ -106,7 +158,6 @@ a{
 
 #register{
 	width: auto;
-	background:url(http://www.totsy.com/img/motw/MotW_bg1.jpg) no-repeat 100% 100%;
 	margin: 0 0px 0px 0;
 	color: #000;
 	padding: 54px;
@@ -135,6 +186,13 @@ a{
 
 #register #register-container{
 	display: none;
+	
+}
+
+#register-form-container, #newmember-container, #confirm-container {
+	background:url(http://jasonfried.com/totsy/momoftheweek/images/trans_bg_middle.png);
+	padding: 20px;
+	width:383px;
 }
 
 #register #register-container.show{
@@ -143,7 +201,6 @@ a{
 
 #register #register-form div,
 #register #question-form div{
-	height: 50px;
 	margin: 0 0 10px 0;
 	display: block;
 }
@@ -163,19 +220,27 @@ a{
 	color: #666;	
 }
 
-#register #register-form label.important{
-	color: #000;	
+.important{
+	color: #666;
+	font-size: 12px;
+	font-weight: bold;	
 }
 
 #register input,
 #register #register-form select{
-	width: 360px;
 	height: auto;
 	display: block;
-	background-color: #fff;
 	margin: 0;
 	padding: 5px;
-	border:1px solid #ddd;
+	border:1px solid #999;
+}
+
+.short{
+width:160px;
+}
+
+.long{
+width:360px;
 }
 
 #register #register-form input.error,
@@ -210,7 +275,7 @@ display: block;
 	padding: 0;
 	font-size: 0;
 	text-indent: -10000px;
-	background: transparent url(http://www.totsy.com/img/motw/register-button-register.gif) no-repeat 0 0;
+	background: transparent url(http://jasonfried.com/totsy/momoftheweek/img/register-button-register.gif) no-repeat 0 0;
 	cursor: pointer;
 }
 
@@ -358,5 +423,11 @@ display: block;
 }
 
 /* @end */
+
+
+
+
+
+
 
 
