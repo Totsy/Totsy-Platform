@@ -75,7 +75,7 @@ class OrdersController extends BaseController {
 						$rawOrders = $collection->find(array('order_id' => $order) + $date);
 						break;
 					case 'address':
-							$rawOrders = Order::findOrderByAddress($this->request->data);
+							$rawOrders = Order::orderSearch($search, 'address');
 						break;
 					case 'event':
 						$eventName = new MongoRegex("/$search/i");
@@ -90,7 +90,7 @@ class OrdersController extends BaseController {
 							$rawOrders = $collection->find(array('items.description' => $item) + $date);
 						break;
 					case 'name':
-							$rawOrders = Order::findOrderByName($search);
+							$rawOrders = Order::orderSearch($search, 'name');
 						break;
 				}
 			}

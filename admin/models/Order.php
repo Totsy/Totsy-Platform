@@ -41,6 +41,7 @@ use MongoRegex;
 *			"'1ZY8Y293030xxxxxxxx"
 *		],
 *		"user_id" : "4c5f88427bc2e06b5c44bbae"
+*   }
 * }}}
 **/
 class Order extends \lithium\data\Model {
@@ -88,16 +89,32 @@ class Order extends \lithium\data\Model {
 		return static::collection()->update(array('order_id' => $order_id), $set);
 	}
 
-	public static function findUserOrder($data) {
-		$type = strtolower($data['address_type']);
-		$exclude = array('address_type', 'type');
-		foreach ($data as $key => $value) {
-			if (($value != '') && (!in_array($key, $exclude))) {
-				$conditions["$type.$key"] = new MongoRegex("/$value/i");
-			}
+	/**
+	 * Search for an order by either name or address.
+	 * We are limiting this order search by the official launch of August 3rd.
+	 * There are way too many issues when dealing with orders that are from the old system.
+	 * @param string $data, $type
+	 * @return array
+	 */
+	public static function orderSearch($data, $type) {
+		$keys = array(
+			'name' => array(
+				'shipping.firstname',
+				'shipping.lastname',
+				'billing.firstname',
+				'billing.lastname'),
+			'address' => array(
+				'shipping.address',
+				'billing.address')
+		);
+		foreach ($keys[$type] as $key) {
+			$conditions[] = array($key => new MongoRegex("/$data/i"));
 		}
-		return static::find('all', array('conditions' => $conditions));
+		$orders = static::collection();
+		$date = array('date_created' => array('$gt' => new MongoDate(strtotime('August 3, 2010'))));
+		return $orders->find(array('$or' => $conditions) + $date)->sort(array('date_created' => 1));
 	}
+
 
 }
 
