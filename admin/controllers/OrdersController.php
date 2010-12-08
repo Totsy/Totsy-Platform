@@ -29,13 +29,13 @@ class OrdersController extends BaseController {
 	 * @var array
 	 */
 	protected $_headings = array(
-		'date_created',
-		'order_id',
+		'Date Created',
+		'Order ID',
 		'AuthKey',
 		'Event Name',
-		'billing',
-		'shipping',
-		'total',
+		'Billing Info',
+		'Shipping Info',
+		'Order Cost',
 		'Tracking Info',
 		'Estimated Ship Date',
 		'Customer Profile'
