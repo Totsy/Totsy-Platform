@@ -47,12 +47,14 @@
 					));
 				?>
 				<?=$this->form->select('type', array(
-					'name' => 'Search Shipping/Billing Names',
+					'name' => 'Shipping/Billing Name',
+					'email' => 'Customer Email',
+					'address' => 'Shipping/Billing Address',
 					'order' => 'Order #',
 					'event' => 'Event Name',
 					'authKey' => 'Authorize.net Key',
 					'item' => 'Item Description'
-					), array('style' => 'float:left; width:250px; margin: 0px 10px 0px 0px;'));
+					), array('style' => 'float:left; width:250px; margin: 0px 20px 0px 0px;'));
 				?>
 				<?=$this->form->submit('Submit'); ?>
 			<?=$this->form->end(); ?>
