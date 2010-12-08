@@ -20,9 +20,10 @@ class Shipment extends \lithium\template\Helper {
 	public function link($number, array $options = array()) {
 
 		$type = $options['type'];
-
+		$link = null;
 		switch ($type) {
 			case 'UPS':
+			case 'ups':
 				$upsBase = 'http://wwwapps.ups.com/WebTracking/processInputRequest?sort_by=3D=status&';
 				$upsDetails = 'tracknums_displayed=3D1&TypeOfInquiryNumber=3DT&loc=3D=en_US&InquiryNumber1=';
 				$upsDetails2 = '&track.x=3D0&track.y==3D0';

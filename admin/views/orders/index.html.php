@@ -28,105 +28,40 @@
 <div class="grid_16">
 	<h2 id="page-heading">Order Management</h2>
 </div>
-<div class="grid_4">
-	<div class="box">
-	<h2>
-		<a href="#" id="toggle-forms">Search By Event</a>
-	</h2>
-	<div class="block" id="forms">
-		<fieldset>
-			<?=$this->form->create(); ?>
-					<p>
-						<?=$this->form->label('Event Name'); ?>
-						<?=$this->form->text('event_name');?>
-					</p>
-					<?=$this->form->hidden('type', array('value' => 'event')); ?>
-				<?=$this->form->submit('Search'); ?>
-			<?=$this->form->end(); ?>
-		</fieldset>
-	</div>
-	</div>
-</div>
+
 <div id="clear"></div>
-<div class="grid_3">
-	<div class="box">
-	<h2>
-		<a href="#" id="toggle-forms">Search By Date</a>
-	</h2>
-	<div class="block" id="forms">
-		<fieldset>
-			<?=$this->form->create(); ?>
-					<p>
-						<?=$this->form->label('Minimum Order Date'); ?>
-						<?=$this->form->text('min_date', array('id' => 'min_date'));?>
-					</p>
-					<p>
-					<?=$this->form->label('Maxium Order Date'); ?>
-					<?=$this->form->text('max_date', array('id' => 'max_date'));?>
-					</p>
-					<?=$this->form->hidden('type', array('value' => 'date')); ?>
-				<?=$this->form->submit('Search'); ?>
-			<?=$this->form->end(); ?>
-		</fieldset>
-	</div>
-	</div>
-</div>
+
+
 <div id="clear"></div>
-<div class="grid_3">
+<div class="grid_16">
 	<div class="box">
 	<h2>
-		<a href="#" id="toggle-order-search">Search By Order</a>
+		<a href="#" id="toggle-order-search">Search</a>
 	</h2>
 	<div class="block" id="order-search">
 		<fieldset>
 			<?=$this->form->create(); ?>
-					<p>
-						<?=$this->form->label('Order Number'); ?>
-						<?=$this->form->text('order_id', array('id' => 'order_id'));?>
-					</p>
-					<?=$this->form->hidden('type', array('value' => 'order')); ?>
-				<?=$this->form->submit('Search'); ?>
+				<?=$this->form->text('search', array(
+					'id' => 'search',
+					'style' => 'float:left; width:400px; margin: 0px 10px 0px 0px;'
+					));
+				?>
+				<?=$this->form->select('type', array(
+					'name' => 'Search Shipping/Billing Names',
+					'order' => 'Order #',
+					'event' => 'Event Name',
+					'authKey' => 'Authorize.net Key',
+					'item' => 'Item Description'
+					), array('style' => 'float:left; width:250px; margin: 0px 10px 0px 0px;'));
+				?>
+				<?=$this->form->submit('Submit'); ?>
 			<?=$this->form->end(); ?>
 		</fieldset>
 	</div>
 	</div>
 </div>
+
 <div id="clear"></div>
-<div class="grid_6">
-	<div class="box">
-	<h2>
-		<a href="#" id="toggle-order-search">Search By Billing/Shipping Info</a>
-	</h2>
-	<div class="block" id="order-search">
-		<fieldset>
-			<?=$this->form->create(); ?>
-					<p>
-						<?=$this->form->label('First Name'); ?>
-						<?=$this->form->text('firstname', array('id' => 'firstname'));?>
-					</p>
-					<p>
-						<?=$this->form->label('Last Name'); ?>
-						<?=$this->form->text('lastname', array('id' => 'lastname'));?>
-					</p>
-					<p>
-						<?=$this->form->label('Email'); ?>
-						<?=$this->form->text('email', array('id' => 'email'));?>
-					</p>
-					<p>
-						<?=$this->form->label('Address'); ?>
-						<?=$this->form->text('address', array('id' => 'address'));?>
-					</p>
-					<p>
-						<?=$this->form->label('Lookup Type'); ?>
-						<?=$this->form->select('address_type', array('Billing' => 'Billing', 'Shipping' => 'Shipping')); ?>
-					</p>
-					<?=$this->form->hidden('type', array('value' => 'user')); ?>
-				<?=$this->form->submit('Search'); ?>
-			<?=$this->form->end(); ?>
-		</fieldset>
-	</div>
-	</div>
-</div>
 <div id="clear"></div>
 <div class="grid_16">
 <?php if (!empty($orders)): ?>
@@ -148,8 +83,11 @@
 						<?=$this->html->link($order['order_id'], array(
 						'Orders::view',
 						'args'=>$order['_id']),
-						array('target' => '_blank')); 
+						array('target' => '_blank'));
 						?>
+					</td>
+					<td>
+						<?=$order['authKey']?>
 					</td>
 					<td>
 						<?php
@@ -170,7 +108,10 @@
 							<?=$order['billing']['firstname']?>
 							<?=$order['billing']['lastname']?><br>
 							<?=$order['billing']['address']?>
-							<?=$order['billing']['city']?> <?=$order['billing']['state']?> <?=$order['billing']['zip']?>
+							<?php if (!empty($order['billing']['city'])): ?>
+								<?=$order['billing']['city']?>
+							<?php endif ?>
+							<?=$order['billing']['state']?> <?=$order['billing']['zip']?>
 						<?php endif ?>
 						</div>
 					</td>
@@ -179,8 +120,13 @@
 							<?=$order['shipping']['firstname']?>
 							<?=$order['shipping']['lastname']?><br>
 							<?=$order['shipping']['address']?><br>
-							<?=$order['shipping']['address_2']?>
-							<?=$order['shipping']['city']?> <?=$order['shipping']['state']?> <?=$order['shipping']['zip']?>
+							<?php if (!empty($order['shipping']['address_2'])): ?>
+								<?=$order['shipping']['address_2']?>
+							<?php endif ?>
+							<?php if (!empty($order['shipping']['city'])): ?>
+								<?=$order['shipping']['city']?>
+							<?php endif ?>
+							<?=$order['shipping']['state']?> <?=$order['shipping']['zip']?>
 						<?php endif ?>
 					</td>
 					<td>$<?=number_format($order['total'],2);?></td>

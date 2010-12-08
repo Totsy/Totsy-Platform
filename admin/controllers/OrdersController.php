@@ -31,6 +31,7 @@ class OrdersController extends BaseController {
 	protected $_headings = array(
 		'date_created',
 		'order_id',
+		'AuthKey',
 		'Event Name',
 		'billing',
 		'shipping',
@@ -65,38 +66,35 @@ class OrdersController extends BaseController {
 		FlashMessage::clear();
 		$collection = Order::collection();
 		if ($this->request->data) {
-			switch ($this->request->data['type']) {
-				case 'date':
-					if (!empty($this->request->data['min_date']) && !empty($this->request->data['max_date'])) {
-						$minDate = new MongoDate(strtotime($this->request->data['min_date']));
-						$maxDate = new MongoDate(strtotime($this->request->data['max_date']));
-						$conditions = array(
-							'date_created' => array(
-								'$lte' => $maxDate, 
-								'$gte' => $minDate
-						));
-						$rawOrders = $collection->find($conditions);
-					}
-					break;
-				case 'order':
-					if (!empty($this->request->data['order_id'])) {
-						$orderid = $this->request->data['order_id'];
-						$order = new MongoRegex("/$orderid/i");
-						$rawOrders = $collection->find(array('order_id' => $order));
-					}
-					break;
-				case 'user':
-						$rawOrders = Order::findUserOrder($this->request->data);
-					break;
-				case 'event':
-					if (!empty($this->request->data['event_name'])) {
-						$eventName = $this->request->data['event_name'];
-						$eventName = new MongoRegex("/$eventName/i");
-						$rawOrders = $collection->find(array('items.event_name' => $eventName));
-					}
-					break;
+			$search = $this->request->data['search'];
+			$date = array('date_created' => array('$gt' => new MongoDate(strtotime('August 3, 2010'))));
+			if (!empty($search)) {
+				switch ($this->request->data['type']) {
+					case 'order':
+						$order = new MongoRegex("/$search/i");
+						$rawOrders = $collection->find(array('order_id' => $order) + $date);
+						break;
+					case 'address':
+							$rawOrders = Order::findOrderByAddress($this->request->data);
+						break;
+					case 'event':
+						$eventName = new MongoRegex("/$search/i");
+						$rawOrders = $collection->find(array('items.event_name' => $eventName) + $date);
+						break;
+					case 'authKey':
+						$authKey = new MongoRegex("/$search/");
+						$rawOrders = $collection->find(array('authKey' => $authKey) + $date);
+						break;
+					case 'item':
+							$item = new MongoRegex("/$search/i");
+							$rawOrders = $collection->find(array('items.description' => $item) + $date);
+						break;
+					case 'name':
+							$rawOrders = Order::findOrderByName($search);
+						break;
+				}
 			}
-			if ($rawOrders) {
+			if (!empty($rawOrders)) {
 				if (get_class($rawOrders) == 'MongoCursor') {
 					foreach ($rawOrders as $order) {
 						FlashMessage::set('Results Found', array('class' => 'pass'));
@@ -269,23 +267,31 @@ class OrdersController extends BaseController {
 	 */
 	public function shipDate($order) {
 		$i = 1;
+		$shipDate = null;
 		$items = (is_object($order)) ? $order->items->data() : $order['items'];
-		foreach ($items as $item) {
-			$ids[] = new MongoId($item['event_id']);
-		}
-		$event = Event::find('first', array(
-			'conditions' => array('_id' => $ids),
-			'order' => array('date_created' => 'DESC')
-		));
-		$shipDate = $event->end_date->sec;
-		while($i < $this->_shipBuffer) {
-			$day = date('N', $shipDate);
-			$date = date('Y-m-d', $shipDate);
-			if ($day < 6 && !in_array($date, $this->_holidays)){
-				$i++;
+		if (!empty($items)) {
+			foreach ($items as $item) {
+				if (!empty($item['event_id'])) {
+					$ids[] = new MongoId($item['event_id']);
+				}
 			}
-			$shipDate = strtotime($date.' +1 day');
+			if (!empty($ids)) {
+				$event = Event::find('first', array(
+					'conditions' => array('_id' => $ids),
+					'order' => array('date_created' => 'DESC')
+				));
+				$shipDate = $event->end_date->sec;
+				while($i < $this->_shipBuffer) {
+					$day = date('N', $shipDate);
+					$date = date('Y-m-d', $shipDate);
+					if ($day < 6 && !in_array($date, $this->_holidays)){
+						$i++;
+					}
+					$shipDate = strtotime($date.' +1 day');
+				}
+			}
 		}
+
 		return $shipDate;
 	}
 }
