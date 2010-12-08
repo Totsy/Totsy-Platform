@@ -67,9 +67,10 @@ class OrdersController extends BaseController {
 		$collection = Order::collection();
 		if ($this->request->data) {
 			$search = $this->request->data['search'];
+			$searchType = $this->request->data['type'];
 			$date = array('date_created' => array('$gt' => new MongoDate(strtotime('August 3, 2010'))));
 			if (!empty($search)) {
-				switch ($this->request->data['type']) {
+				switch ($searchType) {
 					case 'order':
 						$order = new MongoRegex("/$search/i");
 						$rawOrders = $collection->find(array('order_id' => $order) + $date);
@@ -92,18 +93,30 @@ class OrdersController extends BaseController {
 					case 'name':
 							$rawOrders = Order::orderSearch($search, 'name');
 						break;
+					case 'email':
+						$users = User::find('all', array(
+							'conditions' => array('email' => new MongoRegex("/$search/i")
+						)));
+						if (!empty($users)) {
+							$users = $users->data();
+							foreach ($users as $user) {
+								$_id[] = $user['_id'];
+							}
+							$rawOrders = $collection->find(array('user_id' => array('$in' => $_id)));
+						}
+						break;
 				}
 			}
 			if (!empty($rawOrders)) {
 				if (get_class($rawOrders) == 'MongoCursor') {
 					foreach ($rawOrders as $order) {
-						FlashMessage::set('Results Found', array('class' => 'pass'));
+						FlashMessage::set("Results found for $searchType search of $search", array('class' => 'pass'));
 						$orders[] = $this->sortArrayByArray($order, $headings);
 						$shipDate["$order[_id]"] = $this->shipDate($order);
 					}
 				}
 				if (empty($order)) {
-					FlashMessage::set('No Results Found', array('class' => 'warning'));
+					FlashMessage::set("No results found for $searchType search of $search", array('class' => 'warning'));
 				}
 			}
 		}
