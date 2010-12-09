@@ -16,6 +16,7 @@
 <?=$this->html->style('timepicker'); ?>
 <?=$this->html->script('jquery.countdown.min');?>
 <?=$this->html->style('jquery.countdown');?>
+<?=$this->html->script('jquery.maskedinput-1.2.2')?>
 
 <script type="text/javascript">
 tinyMCE.init({
@@ -159,6 +160,16 @@ tinyMCE.init({
 					<?php endif ?>
 				</div>
 				<br>
+				<div id="shipMessage">
+					<?=$this->form->label('Shipping Message'); ?>
+					<?=$this->form->textarea('ship_message', array('value' => $event->ship_message)); ?>
+				</div>
+				<div id="shipDateOverride">
+					<?=$this->form->label('Estimated Ship Date'); ?>
+					<p>This date will override the calcualted ship date for orders.</p>
+					<?=$this->form->text('ship_date', array('id' => 'ship_date', 'value' => $event->ship_date)); ?>
+				</div>
+				<br>
 			<?=$this->form->submit('Update Event')?>
 		</div>
 		<div id="event_images">
@@ -290,4 +301,9 @@ $(document).ready(function() {
 	//create tabs
 	$("#tabs").tabs();
 });
+</script>
+<script type="text/javascript">
+	jQuery(function($){
+	   $("#ship_date").mask("99/99/9999");
+	});
 </script>
