@@ -110,13 +110,20 @@ class OrdersController extends BaseController {
 			'size',
 			'url',
 			'primary_image',
-			'expires'
+			'expires',
+			'event_name',
+			'event'
 		);
 
 		$order = Order::create();
 
 		if (Cart::increaseExpires()){
-			$showCart = Cart::active(array('fields' => $fields, 'time' => '-5min'));
+			$cart = Cart::active(array(
+				'fields' => $fields,
+				'time' => '-5min'
+			));
+			$cartByEvent = $this->itemGroupByEvent($cart, array('type' => 'cart'));
+			$orderEvents = $this->orderEvents($cart);
 			$cart = Cart::active(array('fields' => $fields, 'time' => '-3min'));
 		}
 
@@ -140,7 +147,7 @@ class OrdersController extends BaseController {
 			}
 		}
 
-		return $vars + compact('cartEmpty', 'showCart', 'error');
+		return $vars + compact('cartEmpty', 'cartByEvent', 'error', 'orderEvents');
 	}
 
 	public function process() {
@@ -378,12 +385,20 @@ class OrdersController extends BaseController {
 	 * Group all the items in an order by their corresponding event.
 	 * The event mongoID is used as the key.
 	 */
-	protected function itemGroupByEvent($order) {
+	protected function itemGroupByEvent($order, $options = array('type' => 'order')) {
 		$eventItems = null;
-		if ($order) {
+		if ($order && $options['type'] == 'order') {
 			$orderItems = $order->items->data();
 			foreach ($orderItems as $item) {
 				$eventItems[$item['event_id']][] = $item;
+			}
+		}
+		if ($order && $options['type'] == 'cart') {
+			$orderItems = $order->data();
+			foreach ($orderItems as $item) {
+				$event = $item['event'][0];
+				unset($item['event']);
+				$eventItems[$event][] = $item;
 			}
 		}
 		return $eventItems;
@@ -407,11 +422,12 @@ class OrdersController extends BaseController {
 	}
 
 	protected function getEventIds($order) {
-		$items = $order->items->data();
+		$items = (!empty($order->items)) ? $order->items->data() : $order->data();
 		$event = null;
 		foreach ($items as $item) {
-			if (!empty($item['event_id'])) {
-				$ids[] = new MongoId("$item[event_id]");
+			$eventId = (!empty($item['event_id'])) ? $item['event_id'] : $item['event'][0];
+			if (!empty($eventId)) {
+				$ids[] = new MongoId("$eventId");
 			}
 		}
 		return $ids;
