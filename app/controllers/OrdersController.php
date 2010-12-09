@@ -77,7 +77,19 @@ class OrdersController extends BaseController {
 		}
 		$shipped = (isset($order->tracking_numbers)) ? true : false;
 		$preShipment = ($shipped) ? true : false;
-		return compact('order', 'new', 'shipDate', 'allEventsClosed', 'shipped', 'preShipment');
+		$itemsByEvent = $this->itemGroupByEvent($order);
+		$orderEvents = $this->orderEvents($order);
+
+		return compact(
+			'order',
+			'orderEvents',
+			'itemsByEvent',
+			'new',
+			'shipDate',
+			'allEventsClosed',
+			'shipped',
+			'preShipment'
+		);
 	}
 
 	public function add() {
@@ -351,13 +363,8 @@ class OrdersController extends BaseController {
 	}
 
 	public function getLastEvent($order) {
-		$items = $order->items->data();
 		$event = null;
-		foreach ($items as $item) {
-			if (!empty($item['event_id'])) {
-				$ids[] = new MongoId("$item[event_id]");
-			}
-		}
+		$ids = $this->getEventIds($order);
 		if (!empty($ids)) {
 			$event = Event::find('first', array(
 				'conditions' => array('_id' => $ids),
@@ -365,6 +372,49 @@ class OrdersController extends BaseController {
 			));
 		}
 		return $event;
+	}
+
+	/**
+	 * Group all the items in an order by their corresponding event.
+	 * The event mongoID is used as the key.
+	 */
+	protected function itemGroupByEvent($order) {
+		$eventItems = null;
+		if ($order) {
+			$orderItems = $order->items->data();
+			foreach ($orderItems as $item) {
+				$eventItems[$item['event_id']][] = $item;
+			}
+		}
+		return $eventItems;
+	}
+
+	public function orderEvents($order) {
+		$orderEvents = null;
+		$ids = $this->getEventIds($order);
+		if (!empty($ids)) {
+			$events = Event::find('all', array(
+				'conditions' => array('_id' => $ids),
+				'fields' => array('name', 'ship_message', 'ship_date')
+			));
+			$events = $events->data();
+			foreach ($events as $event) {
+				$orderEvents[$event['_id']] = $event;
+			}
+		}
+
+		return $orderEvents;
+	}
+
+	protected function getEventIds($order) {
+		$items = $order->items->data();
+		$event = null;
+		foreach ($items as $item) {
+			if (!empty($item['event_id'])) {
+				$ids[] = new MongoId("$item[event_id]");
+			}
+		}
+		return $ids;
 	}
 }
 
