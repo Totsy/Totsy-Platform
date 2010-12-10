@@ -58,6 +58,7 @@ class OrdersController extends BaseController {
 	 *
 	 * This method gets the order for a user based on their order number and
 	 * user_id. There is a time check on the order to determine if a new.
+	 * The view is called both for the order confirmation page and the order view page.
 	 * @param string $order_id
 	 * @return mixed
 	 */
@@ -369,6 +370,15 @@ class OrdersController extends BaseController {
 		return $shipDate;
 	}
 
+	/**
+	 * Return the event that will be the last to close in an order.
+	 *
+	 * This method is needed to determine what the expected ship date should be.
+	 * Based on the business model, if a multi event order will ship together then the
+	 * estimated ship date will be determined from the fulfillment of the last event.
+	 * @param object $order
+	 * @return object $event
+	 */
 	public function getLastEvent($order) {
 		$event = null;
 		$ids = $this->getEventIds($order);
@@ -412,6 +422,9 @@ class OrdersController extends BaseController {
 		return $eventItems;
 	}
 
+	/**
+	 * Return all the events of an order.
+	 */
 	public function orderEvents($order) {
 		$orderEvents = null;
 		$ids = $this->getEventIds($order);
@@ -429,6 +442,11 @@ class OrdersController extends BaseController {
 		return $orderEvents;
 	}
 
+	/**
+	 * Get all the eventIds that are stored either in an order or cart object and cast to MongoId.
+	 * @param object
+	 * @return array
+	 */
 	protected function getEventIds($order) {
 		$items = (!empty($order->items)) ? $order->items->data() : $order->data();
 		$event = null;
