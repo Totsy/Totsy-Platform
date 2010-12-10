@@ -122,7 +122,7 @@ class OrdersController extends BaseController {
 				'fields' => $fields,
 				'time' => '-5min'
 			));
-			$cartByEvent = $this->itemGroupByEvent($cart, array('type' => 'cart'));
+			$cartByEvent = $this->itemGroupByEvent($cart);
 			$orderEvents = $this->orderEvents($cart);
 			$cart = Cart::active(array('fields' => $fields, 'time' => '-3min'));
 		}
@@ -383,24 +383,32 @@ class OrdersController extends BaseController {
 
 	/**
 	 * Group all the items in an order by their corresponding event.
-	 * The event mongoID is used as the key.
+	 *
+	 * The $order object is assumed to have originated from one of model types; Order or Cart.
+	 * Irrespective of the type both will return an associative array of event items.
+	 * @param object $order
+	 * @return array $eventItems
 	 */
-	protected function itemGroupByEvent($order, $options = array('type' => 'order')) {
+	protected function itemGroupByEvent($order) {
 		$eventItems = null;
-		if ($order && $options['type'] == 'order') {
-			$orderItems = $order->items->data();
-			foreach ($orderItems as $item) {
-				$eventItems[$item['event_id']][] = $item;
+		if ($order) {
+			$model = $order->model();
+			if ($model == 'app\models\Order') {
+				$orderItems = $order->items->data();
+				foreach ($orderItems as $item) {
+					$eventItems[$item['event_id']][] = $item;
+				}
+			}
+			if ($model == 'app\models\Cart') {
+				$orderItems = $order->data();
+				foreach ($orderItems as $item) {
+					$event = $item['event'][0];
+					unset($item['event']);
+					$eventItems[$event][] = $item;
+				}
 			}
 		}
-		if ($order && $options['type'] == 'cart') {
-			$orderItems = $order->data();
-			foreach ($orderItems as $item) {
-				$event = $item['event'][0];
-				unset($item['event']);
-				$eventItems[$event][] = $item;
-			}
-		}
+
 		return $eventItems;
 	}
 
