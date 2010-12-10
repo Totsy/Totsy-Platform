@@ -58,6 +58,7 @@ class OrdersController extends BaseController {
 	 *
 	 * This method gets the order for a user based on their order number and
 	 * user_id. There is a time check on the order to determine if a new.
+	 * The view is called both for the order confirmation page and the order view page.
 	 * @param string $order_id
 	 * @return mixed
 	 */
@@ -77,7 +78,19 @@ class OrdersController extends BaseController {
 		}
 		$shipped = (isset($order->tracking_numbers)) ? true : false;
 		$preShipment = ($shipped) ? true : false;
-		return compact('order', 'new', 'shipDate', 'allEventsClosed', 'shipped', 'preShipment');
+		$itemsByEvent = $this->itemGroupByEvent($order);
+		$orderEvents = $this->orderEvents($order);
+
+		return compact(
+			'order',
+			'orderEvents',
+			'itemsByEvent',
+			'new',
+			'shipDate',
+			'allEventsClosed',
+			'shipped',
+			'preShipment'
+		);
 	}
 
 	public function add() {
@@ -98,13 +111,20 @@ class OrdersController extends BaseController {
 			'size',
 			'url',
 			'primary_image',
-			'expires'
+			'expires',
+			'event_name',
+			'event'
 		);
 
 		$order = Order::create();
 
 		if (Cart::increaseExpires()){
-			$showCart = Cart::active(array('fields' => $fields, 'time' => '-5min'));
+			$cart = Cart::active(array(
+				'fields' => $fields,
+				'time' => '-5min'
+			));
+			$cartByEvent = $this->itemGroupByEvent($cart);
+			$orderEvents = $this->orderEvents($cart);
 			$cart = Cart::active(array('fields' => $fields, 'time' => '-3min'));
 		}
 
@@ -128,7 +148,7 @@ class OrdersController extends BaseController {
 			}
 		}
 
-		return $vars + compact('cartEmpty', 'showCart', 'error');
+		return $vars + compact('cartEmpty', 'cartByEvent', 'error', 'orderEvents');
 	}
 
 	public function process() {
@@ -350,14 +370,18 @@ class OrdersController extends BaseController {
 		return $shipDate;
 	}
 
+	/**
+	 * Return the event that will be the last to close in an order.
+	 *
+	 * This method is needed to determine what the expected ship date should be.
+	 * Based on the business model, if a multi event order will ship together then the
+	 * estimated ship date will be determined from the fulfillment of the last event.
+	 * @param object $order
+	 * @return object $event
+	 */
 	public function getLastEvent($order) {
-		$items = $order->items->data();
 		$event = null;
-		foreach ($items as $item) {
-			if (!empty($item['event_id'])) {
-				$ids[] = new MongoId("$item[event_id]");
-			}
-		}
+		$ids = $this->getEventIds($order);
 		if (!empty($ids)) {
 			$event = Event::find('first', array(
 				'conditions' => array('_id' => $ids),
@@ -365,6 +389,74 @@ class OrdersController extends BaseController {
 			));
 		}
 		return $event;
+	}
+
+	/**
+	 * Group all the items in an order by their corresponding event.
+	 *
+	 * The $order object is assumed to have originated from one of model types; Order or Cart.
+	 * Irrespective of the type both will return an associative array of event items.
+	 * @param object $order
+	 * @return array $eventItems
+	 */
+	protected function itemGroupByEvent($order) {
+		$eventItems = null;
+		if ($order) {
+			$model = $order->model();
+			if ($model == 'app\models\Order') {
+				$orderItems = $order->items->data();
+				foreach ($orderItems as $item) {
+					$eventItems[$item['event_id']][] = $item;
+				}
+			}
+			if ($model == 'app\models\Cart') {
+				$orderItems = $order->data();
+				foreach ($orderItems as $item) {
+					$event = $item['event'][0];
+					unset($item['event']);
+					$eventItems[$event][] = $item;
+				}
+			}
+		}
+
+		return $eventItems;
+	}
+
+	/**
+	 * Return all the events of an order.
+	 */
+	public function orderEvents($order) {
+		$orderEvents = null;
+		$ids = $this->getEventIds($order);
+		if (!empty($ids)) {
+			$events = Event::find('all', array(
+				'conditions' => array('_id' => $ids),
+				'fields' => array('name', 'ship_message', 'ship_date')
+			));
+			$events = $events->data();
+			foreach ($events as $event) {
+				$orderEvents[$event['_id']] = $event;
+			}
+		}
+
+		return $orderEvents;
+	}
+
+	/**
+	 * Get all the eventIds that are stored either in an order or cart object and cast to MongoId.
+	 * @param object
+	 * @return array
+	 */
+	protected function getEventIds($order) {
+		$items = (!empty($order->items)) ? $order->items->data() : $order->data();
+		$event = null;
+		foreach ($items as $item) {
+			$eventId = (!empty($item['event_id'])) ? $item['event_id'] : $item['event'][0];
+			if (!empty($eventId)) {
+				$ids[] = new MongoId("$eventId");
+			}
+		}
+		return $ids;
 	}
 }
 

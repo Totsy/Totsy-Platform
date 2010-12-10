@@ -47,10 +47,10 @@
 					));
 				?>
 				<?=$this->form->select('type', array(
-					'name' => 'Shipping/Billing Name',
 					'email' => 'Customer Email',
-					'address' => 'Shipping/Billing Address',
 					'order' => 'Order #',
+					'name' => 'Shipping/Billing Name',
+					'address' => 'Shipping/Billing Address',
 					'event' => 'Event Name',
 					'authKey' => 'Authorize.net Key',
 					'item' => 'Item Description'

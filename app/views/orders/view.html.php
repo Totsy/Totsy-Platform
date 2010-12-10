@@ -12,93 +12,54 @@
 
 <?php if ($order): ?>
 		<table cellspacing="0" cellpadding="0" border="0" width="695">
-		
-				<tr >
+				<tr>
 					<td colspan="4">
 						<table cellpadding="0" cellspacing="0" width="100%">
-						
 							<tr>
 								<td valign="top">
-<?php if ($new) { ?> 
-<div class="rounded" style="color:#009900; margin:0px 10px 0px 0px; float: left; display:block; background:#ebffeb; border:1px solid #ddd; width:180px; text-align:center; padding:20px;">Shipping / Billing Info</div>
-<div id="arrow-right">
-  <div id="arrow-right-1"></div>
-  <div id="arrow-right-2"></div>
-</div><!--arrow-right-->
-
-              <div class="rounded" style="color:#009900; margin:0px 10px 0px 0px; float: left; display:block; background:#ebffeb; border:1px solid #ddd; width:180px; padding:20px; text-align: center;"
->Payment</div>
-<div id="arrow-right">
-  <div id="arrow-right-1"></div>
-  <div id="arrow-right-2"></div>
-</div><!--arrow-right-->
-
-              <div class="rounded" style="color:#009900; margin:0px 0px 0px 0px; float:left; display:block; background:#ebffeb; border:1px solid #ddd; width:188px; padding:20px; text-align:center;">Confirmation</div>
-              <div style="clear:both; margin-bottom:15px;"></div>
- 
-
-								<div style="background:#f7f7f7; padding:10px; border:1px solid #ddd;"><h2>Thank you! Your order has been successfully placed! <span style="float:right;">Order #<?=$order->order_id;?></span></h2></div>	
-<div style="clear:both;"></div>
-<div style="display:block; padding:10px; background:#feffd0; font-weight:bold; margin:10px 0px; border:1px solid #ddd; text-align:center;">Our shipping cut off for Christmas delivery has passed. Please note that unfortunately WE CAN NOT GUARANTEE HOLIDAY DELIVERY unless otherwise stated.  Thank you for understanding and for shopping with Totsy.</div>
-
-<?php } else { ?>
-								<br />
-
-<h2 class="gray mar-b">Tracking System <span style="float:right; font-weight:normal; font-size:11px;"><span style="font-weight:bold;">NOTE: </span>Orders may be split into multiple shipments with different tracking numbers.</span></h2>
-<hr />
-
-
-<div class="rounded" style="border:1px solid #ddd; display:block; width:141px; float:left; text-align:center; padding:10px; margin-right:10px; background:#ebffeb; color:#009900;">Order Placed</div>
-
-<?php if ($allEventsClosed) { ?>
-<div class="rounded" style="border:1px solid #ddd; display:block; width:141px; float:left; text-align:center; padding:10px; margin-right:10px; background:#ebffeb; color:#009900;">All Events Closed</div>
-<?php } else { ?>
-<div class="rounded" style="border:1px solid #ddd; display:block; width:141px; float:left; text-align:center; padding:10px; margin-right:10px;">All Events Closed</div>
-<?php } ?>
-
-<?php if ($preShipment) { ?>
-<div class="rounded" style="border:1px solid #ddd; display:block; width:143px; float:left; text-align:center; padding:10px; margin-right:10px; background:#ebffeb; color:#009900;">Pre-Shipment</div>
-<?php } else { ?>
-<div class="rounded" style="border:1px solid #ddd; display:block; width:145px; float:left; text-align:center; padding:10px; margin-right:10px;">Pre-Shipment</div>
-<?php } ?>
-<?php if ($shipped) { ?>
-<div class="rounded" style="border:1px solid #ddd; display:block; width:145px; float:left; text-align:center; padding:10px; margin-right:0px; background:#ebffeb; color:#009900;">Shipped</div>
-<?php } else { ?>
-<div class="rounded" style="border:1px solid #ddd; display:block; width:145px; float:left; text-align:center; padding:10px; margin-right:0px;">Shipped</div>
-<?php } ?>
-
-<div style="clear:both;"></div>
-<div style="display:block; padding:10px; background:#feffd0; font-weight:bold; margin:10px 0px; border:1px solid #ddd; text-align:center;">Our shipping cut off for Christmas delivery has passed. Please note that unfortunately WE CAN NOT GUARANTEE HOLIDAY DELIVERY unless otherwise stated.  Thank you for understanding and for shopping with Totsy.</div>
-
-
-<!--
-<ol class="shipping-process" style="margin:0px 0px 10px 0px;">
-  <li class="placed link active" id="placed-btn">Order Placed With Totsy</li>
-  <li class="secured link" id="secured-btn">Order Secured From Partners</li>
-  <li class="warehouse link" id="warehouse-btn">Items Arrive At Warehouse</li>
-  <li class="shipped link" id="shipped-btn">Packaged Shipped To You</li>
-<li class="recieved link" id="recieved-btn">Order Arrives At Your Home</li>
-  </ol>
--->
-<!-- 
-<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">Our order tracking system is currently under construction. <br />
-
-  All orders  are being processed and will be shipped within 15 to 20 business days. <br /> 
-  If you have any questions do not hesitate to contact us!</p>
-
-<br />
--->
-<div style="clear:both;"></div>
-								<h2 style="margin:20px 0px 0px 0px;" class="gray mar-b">Order Summary
-									<?php if (!empty($shipDate) && ($shipDate > time())): ?>
-										<span style="color:red; font-weight:bold; float:right;">Estimated Ship Date: <?=date('M d, Y', $shipDate); ?></span></h2>
+									<?php if ($new): ?>
+									<div class="rounded" style="color:#009900; margin:0px 10px 0px 0px; float: left; display:block; background:#ebffeb; border:1px solid #ddd; width:180px; text-align:center; padding:20px;">Shipping / Billing Info</div>
+									<div id="arrow-right">
+									  <div id="arrow-right-1"></div>
+									  <div id="arrow-right-2"></div>
+									</div><!--arrow-right-->
+									<div class="rounded" style="color:#009900; margin:0px 10px 0px 0px; float: left; display:block; background:#ebffeb; border:1px solid #ddd; width:180px; padding:20px; text-align: center;">Payment</div>
+										<div id="arrow-right">
+											<div id="arrow-right-1"></div>
+											<div id="arrow-right-2"></div>
+										</div><!--arrow-right-->
+										<div class="rounded" style="color:#009900; margin:0px 0px 0px 0px; float:left; display:block; background:#ebffeb; border:1px solid #ddd; width:188px; padding:20px; text-align:center;">Confirmation</div>
+										<div style="clear:both; margin-bottom:15px;"></div>
+										<div style="background:#f7f7f7; padding:10px; border:1px solid #ddd;"><h2>Thank you! Your order has been successfully placed! <span style="float:right;">Order #<?=$order->order_id;?></span></h2></div>
+										<div style="clear:both;"></div>
+										<div style="display:block; padding:10px; background:#feffd0; font-weight:bold; margin:10px 0px; border:1px solid #ddd; text-align:center;">
+											Our shipping cut off for Christmas delivery has passed. Please note that unfortunately WE CAN NOT GUARANTEE HOLIDAY DELIVERY unless otherwise stated.  Thank you for understanding and for shopping with Totsy.
+										</div>
+									<?php else: ?>
+										<br />
+										<h2 class="gray mar-b">Tracking System <span style="float:right; font-weight:normal; font-size:11px;"><span style="font-weight:bold;">NOTE: </span>Orders may be split into multiple shipments with different tracking numbers.</span></h2>
+										<hr />
+										<div class="rounded" style="border:1px solid #ddd; display:block; width:141px; float:left; text-align:center; padding:10px; margin-right:10px; background:#ebffeb; color:#009900;">Order Placed</div>
+										<?php if ($allEventsClosed): ?>
+											<div class="rounded" style="border:1px solid #ddd; display:block; width:141px; float:left; text-align:center; padding:10px; margin-right:10px; background:#ebffeb; color:#009900;">All Events Closed</div>
+										<?php else: ?>
+											<div class="rounded" style="border:1px solid #ddd; display:block; width:141px; float:left; text-align:center; padding:10px; margin-right:10px;">All Events Closed</div>
+										<?php endif ?>
+										<?php if ($preShipment): ?>
+											<div class="rounded" style="border:1px solid #ddd; display:block; width:143px; float:left; text-align:center; padding:10px; margin-right:10px; background:#ebffeb; color:#009900;">Pre-Shipment</div>
+										<?php else: ?>
+											<div class="rounded" style="border:1px solid #ddd; display:block; width:145px; float:left; text-align:center; padding:10px; margin-right:10px;">Pre-Shipment</div>
+										<?php endif ?>
+										<?php if ($shipped): ?>
+											<div class="rounded" style="border:1px solid #ddd; display:block; width:145px; float:left; text-align:center; padding:10px; margin-right:0px; background:#ebffeb; color:#009900;">Shipped</div>
+										<?php else: ?>
+											<div class="rounded" style="border:1px solid #ddd; display:block; width:145px; float:left; text-align:center; padding:10px; margin-right:0px;">Shipped</div>
+										<?php endif ?>
+										<div style="clear:both;"></div>
+										<h2 style="margin:20px 0px 0px 0px;" class="gray mar-b">Order Summary
+										<hr />
 									<?php endif ?>
-<hr />
-								
-
- <?php } ?>
-
-						        </td>
+								</td>
 							</tr>
 							<tr>
 								<td valign="top">
@@ -106,44 +67,58 @@
 							<tr>
 								<td colspan="4"><!-- start order detail table -->
 										<table cellpadding="0" cellspacing="0" border="0" width="100%">
-											<tr style="background:#ddd;">
-												<td style="padding:5px; width:70px;"><strong>Item</strong></td>
-												<td style="padding:5px; width:340px;"><strong>Description</strong></td>
-												<td style="padding:5px; width:100px;"><strong>Price</strong></td>
-												<td style="padding:5px; width: 50px;"><strong>Qty</strong></td>
-												<td style="padding:5px; width:100px;"><strong>Subtotal</strong></td>
-											</tr>
-											
-											<?php $items = $order->items->data(); ?>
 
-											<?php foreach ($items as $item): ?>
+											<?php foreach ($itemsByEvent as $key => $event): ?>
 												<tr>
-												<?php
-													if (!empty($item['primary_image'])) {
-														$image = '/image/'. $item['primary_image'] . '.jpg';
-													} else {
-														$image = "/img/no-image-small.jpeg";
-													}
-												?>
-												<td style="padding:5px;" title="item">
-													<?=$this->html->image("$image", array('width' => "60", 'height' => "60", 'style' => "margin:2px; padding:2px; background:#fff; border:1px solid #ddd;")); ?>
-												</td>
-												<td style="padding:5px" title="description">
-													<?=$item['description']?>
-													<br>
-													Color: <?=$item['color']?>
-													<br>
-													Size: <?=$item['size']?>
-												</td>
-												<td style="padding:5px; color:#009900;" title="price">
-													$<?=number_format($item['sale_retail'],2); ?>
-												</td>
-													<td style="padding:5px;" title="quantity">
-														<?=$item['quantity']?>
+													<td style="padding:5px; width:20px;"><?=$orderEvents[$key]['name']?></td>
+													<?php if (!empty($orderEvents[$key]['ship_message'])): ?>
+														<td><?php echo $orderEvents[$key]['ship_message']?></td>
+													<?php endif ?>
+													<td>
+														Estimated Ship Date:
+														<?php if (!empty($orderEvents[$key]['ship_date'])): ?>
+															<?=date('M d, Y', strtotime($orderEvents[$key]['ship_date']))?>
+														<?php else: ?>
+															 <?=date('M d, Y', $shipDate)?>
+														<?php endif ?>
 													</td>
-													<td title="subtotal" style="padding:5px; color:#009900;">
-														$<?php echo number_format(($item['quantity'] * $item['sale_retail']),2)?>
+												</tr>
+												<tr style="background:#ddd;">
+													<td style="padding:5px; width:70px;"><strong>Item</strong></td>
+													<td style="padding:5px; width:340px;"><strong>Description</strong></td>
+													<td style="padding:5px; width:100px;"><strong>Price</strong></td>
+													<td style="padding:5px; width: 50px;"><strong>Qty</strong></td>
+													<td style="padding:5px; width:100px;"><strong>Subtotal</strong></td>
+												</tr>
+												<?php foreach ($event as $item): ?>
+													<tr>
+													<?php
+														if (!empty($item['primary_image'])) {
+															$image = '/image/'. $item['primary_image'] . '.jpg';
+														} else {
+															$image = "/img/no-image-small.jpeg";
+														}
+													?>
+													<td style="padding:5px;" title="item">
+														<?=$this->html->image("$image", array('width' => "60", 'height' => "60", 'style' => "margin:2px; padding:2px; background:#fff; border:1px solid #ddd;")); ?>
 													</td>
+													<td style="padding:5px" title="description">
+														<?=$item['description']?>
+														<br>
+														Color: <?=$item['color']?>
+														<br>
+														Size: <?=$item['size']?>
+													</td>
+													<td style="padding:5px; color:#009900;" title="price">
+														$<?=number_format($item['sale_retail'],2); ?>
+													</td>
+														<td style="padding:5px;" title="quantity">
+															<?=$item['quantity']?>
+														</td>
+														<td title="subtotal" style="padding:5px; color:#009900;">
+															$<?php echo number_format(($item['quantity'] * $item['sale_retail']),2)?>
+														</td>
+												<?php endforeach ?>
 											<?php endforeach ?>
 											</tr>
 									

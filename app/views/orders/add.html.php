@@ -35,86 +35,91 @@
               <div style="clear:both; margin-bottom:15px;"></div>
 
 	<!-- Begin Order Details -->
-	<?php if ($showCart): ?>
+	<?php if ($cartByEvent): ?>
 		<h2 class="gray mar-b">Order Details</h2><hr />
 	
 		<div class='fr'><?=$this->html->link('Edit Your Cart', '#', array('id' => 'checkout-cart', 'class' => 'edit-your-cart')); ?></div>
 		<table width="100%" class="cart-table">
-			<thead>
-				<tr>
-					<th>Item</th>
-					<th>Description</th>
-					<th>QTY</th>
-					<th>Price</th>
-					<th>Total Cost</th>
-					<th>Time Remaining</th>
-				</tr>
-			</thead>
-			<tbody>
-		<?php $x = 0; ?>
-		<?php foreach ($showCart as $item): ?>
-			<!-- Build Product Row -->
-						<tr id="<?=$item->_id?>" class="alt<?=$x?>" style="margin:0px!important; padding:0px!important;">
-						<td class="cart-th">
-							<?php
-								if (!empty($item->primary_image)) {
-									$image = $item->primary_image;
-									$productImage = "/image/$image.jpg";
-								} else {
-									$productImage = "/img/no-image-small.jpeg";
-								}
-							?>
-							<?=$this->html->link(
-								$this->html->image("$productImage", array(
-									'width'=>'60',
-									'height'=>'60',
-							'style' => 'background:#fff; border:1px solid #ddd; padding:2px; margin:2px;')),
-									'',
-									array(
-									'id' => 'main-logo_', 'escape'=> false
-								)
-							); ?>
-						</td>
-						<td class="cart-desc">
-							<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
-							<strong><?=$this->html->link($item->description, array(
-								'Items::view',
-								'args' => $item->url
-								));
-							?></strong><br>
-							<strong>Color:</strong> <?=$item->color;?><br>
-							<strong>Size:</strong> <?=$item->size;?>
-						</td>
-						<td class="<?="qty-$x";?>">
-							<?=$item->quantity;?>
-						</td>
-						<td class="<?="price-item-$x";?>">
-							<strong style="color:#009900;">$<?=number_format($item->sale_retail,2)?></strong>
-						</td>
-						<td class="<?="total-item-$x";?>">
-							<strong style="color:#009900;">$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
-						</td>
-						<td class="cart-time"><div id="<?php echo "checkout-counter-$x"; ?>"></div></td>
-					</tr>
-					<?php
-						//Allow users three extra minutes on their items for checkout.
-						$date = ($item->expires->sec * 1000);
-						$checkoutCounters[] = "<script type=\"text/javascript\">
-							$(function () {
-								var itemCheckoutExpires = new Date($date);
-								$(\"#checkout-counter-$x\").countdown('change', {until: itemCheckoutExpires, $countLayout});
 
-							$(\"#checkout-counter-$x\").countdown({until: itemCheckoutExpires,
-							    expiryText: '<div class=\"over\">This item is no longer reserved for purchase</div>', $countLayout});
-							var now = new Date();
-							if (itemCheckoutExpires < now) {
-								$(\"#checkout-counter-$x\").html('<div class=\"over\">This item is no longer reserved for purchase</div>');
-							}
-							});
-							</script>";
-						$x++;
-					?>
-		<?php endforeach ?>
+		<?php $x = 0; ?>
+		<?php foreach ($cartByEvent as $key => $event): ?>
+			<tr>
+				<td><?=$orderEvents[$key]['name']?><td>
+			</tr>
+			<tr>
+				<th>Item</th>
+				<th>Description</th>
+				<th>QTY</th>
+				<th>Price</th>
+				<th>Total Cost</th>
+				<th>Time Remaining</th>
+				</tr>
+			<?php foreach ($event as $item): ?>
+				<tbody>
+					<!-- Build Product Row -->
+								<tr id="<?=$item['_id']?>" class="alt<?=$x?>" style="margin:0px!important; padding:0px!important;">
+								<td class="cart-th">
+									<?php
+										if (!empty($item['primary_image'])) {
+											$image = $item['primary_image'];
+											$productImage = "/image/$image.jpg";
+										} else {
+											$productImage = "/img/no-image-small.jpeg";
+										}
+									?>
+									<?=$this->html->link(
+										$this->html->image("$productImage", array(
+											'width'=>'60',
+											'height'=>'60',
+									'style' => 'background:#fff; border:1px solid #ddd; padding:2px; margin:2px;')),
+											'',
+											array(
+											'id' => 'main-logo_', 'escape'=> false
+										)
+									); ?>
+								</td>
+								<td class="cart-desc">
+									<?=$this->form->hidden("item$x", array('value' => $item['_id'])); ?>
+									<strong><?=$this->html->link($item['description'], array(
+										'Items::view',
+										'args' => $item['url']
+										));
+									?></strong><br>
+									<strong>Color:</strong> <?=$item['color'];?><br>
+									<strong>Size:</strong> <?=$item['size'];?>
+								</td>
+								<td class="<?="qty-$x";?>">
+									<?=$item['quantity'];?>
+								</td>
+								<td class="<?="price-item-$x";?>">
+									<strong style="color:#009900;">$<?=number_format($item['sale_retail'],2)?></strong>
+								</td>
+								<td class="<?="total-item-$x";?>">
+									<strong style="color:#009900;">$<?=number_format($item['sale_retail'] * $item['quantity'] ,2)?></strong>
+								</td>
+								<td class="cart-time"><div id="<?php echo "checkout-counter-$x"; ?>"></div></td>
+							</tr>
+							<?php
+								//Allow users three extra minutes on their items for checkout.
+								$date = ($item['expires']['sec'] * 1000);
+								$checkoutCounters[] = "<script type=\"text/javascript\">
+									$(function () {
+										var itemCheckoutExpires = new Date($date);
+										$(\"#checkout-counter-$x\").countdown('change', {until: itemCheckoutExpires, $countLayout});
+
+									$(\"#checkout-counter-$x\").countdown({until: itemCheckoutExpires,
+									    expiryText: '<div class=\"over\">This item is no longer reserved for purchase.</div>', $countLayout});
+									var now = new Date();
+									if (itemCheckoutExpires < now) {
+										$(\"#checkout-counter-$x\").html('<div class=\"over\">This item is no longer reserved for purchase</div>');
+									}
+									});
+									</script>";
+								$x++;
+							?>
+				<?php endforeach ?>
+			<?php endforeach ?>
+
 					<tr class="cart-total">
 						<td colspan="7" id='subtotal'><strong>Subtotal: </strong><strong style="color:#009900;">$<?=number_format($subTotal,2)?></strong></td>
 					</tr>

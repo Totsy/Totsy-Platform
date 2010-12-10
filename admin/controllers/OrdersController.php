@@ -102,7 +102,7 @@ class OrdersController extends BaseController {
 							foreach ($users as $user) {
 								$_id[] = $user['_id'];
 							}
-							$rawOrders = $collection->find(array('user_id' => array('$in' => $_id)));
+							$rawOrders = $collection->find(array('user_id' => array('$in' => $_id)) + $date);
 						}
 						break;
 				}
