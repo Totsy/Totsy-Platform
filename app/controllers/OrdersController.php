@@ -171,7 +171,8 @@ class OrdersController extends BaseController {
 			'discount_exempt'
 		);
 		$cart = Cart::active(array('fields' => $fields, 'time' => 'now'));
-		$showCart = Cart::active(array('fields' => $fields, 'time' => '-5min'));
+		$cartByEvent = $this->itemGroupByEvent($cart);
+		$orderEvents = $this->orderEvents($cart);
 		$discountExempt = $this->_discountExempt($cart);
 		foreach ($cart as $cartValue) {
 			$event = Event::find('first', array(
@@ -331,7 +332,7 @@ class OrdersController extends BaseController {
 
 		$cartEmpty = ($cart->data()) ? false : true;
 
-		return $vars + compact('cartEmpty', 'order', 'showCart');
+		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents');
 
 	}
 
@@ -399,18 +400,18 @@ class OrdersController extends BaseController {
 	 * @param object $order
 	 * @return array $eventItems
 	 */
-	protected function itemGroupByEvent($order) {
+	protected function itemGroupByEvent($object) {
 		$eventItems = null;
-		if ($order) {
-			$model = $order->model();
+		if ($object) {
+			$model = $object->model();
 			if ($model == 'app\models\Order') {
-				$orderItems = $order->items->data();
+				$orderItems = $object->items->data();
 				foreach ($orderItems as $item) {
 					$eventItems[$item['event_id']][] = $item;
 				}
 			}
 			if ($model == 'app\models\Cart') {
-				$orderItems = $order->data();
+				$orderItems = $object->data();
 				foreach ($orderItems as $item) {
 					$event = $item['event'][0];
 					unset($item['event']);
@@ -425,9 +426,9 @@ class OrdersController extends BaseController {
 	/**
 	 * Return all the events of an order.
 	 */
-	public function orderEvents($order) {
+	public function orderEvents($object) {
 		$orderEvents = null;
-		$ids = $this->getEventIds($order);
+		$ids = $this->getEventIds($object);
 		if (!empty($ids)) {
 			$events = Event::find('all', array(
 				'conditions' => array('_id' => $ids),
@@ -447,8 +448,8 @@ class OrdersController extends BaseController {
 	 * @param object
 	 * @return array
 	 */
-	protected function getEventIds($order) {
-		$items = (!empty($order->items)) ? $order->items->data() : $order->data();
+	protected function getEventIds($object) {
+		$items = (!empty($object->items)) ? $object->items->data() : $object->data();
 		$event = null;
 		foreach ($items as $item) {
 			$eventId = (!empty($item['event_id'])) ? $item['event_id'] : $item['event'][0];
