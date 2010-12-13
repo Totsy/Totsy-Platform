@@ -164,7 +164,7 @@ class UsersController extends BaseController {
 					if ($user->legacy == 1) {
 						$legacyAuth = $this->authIllogic($password, $user);
 					} else {
-						$nativeAuth = Auth::check("userLogin", $this->request);
+						$nativeAuth = (sha1($password) == $user->password) ? true : false;
 					}
 					if ($resetAuth || $legacyAuth || $nativeAuth) {
 						$sessionWrite = $this->writeSession($user->data());
