@@ -3,7 +3,7 @@
 namespace admin\models;
 
 use MongoDate;
-use lithium\storage\Session;
+use lithium\storage\Session as LiSession;
 /**
  * The Credit model class that interacts with the credits collection.
  *
