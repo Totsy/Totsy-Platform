@@ -632,7 +632,7 @@ class ReportsController extends BaseController {
 	}
 
 	public function sku($vendor_style, $size) {
-		return strtoupper(str_replace(' ', '-', trim($vendor_style.'-'.$size)));
+		return strtoupper(str_replace(' ', '', trim($vendor_style.'-'.$size)));
 	}
 }
 
