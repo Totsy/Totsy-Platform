@@ -56,10 +56,10 @@
 		<?php echo $this->html->link('Promotions', '#'); ?>
 		<ul>
 			<li>
-				<?php echo $this->html->link('Create Promocode', '#'); ?>
+				<?php echo $this->html->link('Create Promocode', 'promocodes/add'); ?>
 			</li>
 			<li>
-				<?php echo $this->html->link('View/Edit Promocodes', '#'); ?>
+				<?php echo $this->html->link('View/Edit Promocodes', 'promocodes/index' ); ?>
 			</li>
 			<li>
 				<?php echo $this->html->link('View Promotions', '#'); ?>
