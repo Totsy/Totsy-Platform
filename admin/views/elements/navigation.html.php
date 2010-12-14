@@ -38,6 +38,9 @@
 	<li>
 		<?php echo $this->html->link('Reports', '#'); ?>
 		<ul>
+            <li>
+				<?php echo $this->html->link('Google Analytics', 'Reports::googleAnalytics'); ?>
+			</li>
 			<li>
 				<?php echo $this->html->link('Affiliate Report', 'Reports::affiliate'); ?>
 			</li>
