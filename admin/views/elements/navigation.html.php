@@ -62,7 +62,7 @@
 				<?php echo $this->html->link('View/Edit Promocodes', 'promocodes/index' ); ?>
 			</li>
 			<li>
-				<?php echo $this->html->link('View Promotions', '#'); ?>
+				<?php echo $this->html->link('View Promotions', 'promocodes/report'); ?>
 			</li>
 		</ul>
 	</li>
