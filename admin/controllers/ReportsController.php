@@ -423,6 +423,10 @@ class ReportsController extends BaseController {
 		}
 		return $items;
 	}
+    
+    public function googleAnalytics() {
+		
+	}
 
 	public function productfile($eventId = null) {
 		if ($eventId) {
