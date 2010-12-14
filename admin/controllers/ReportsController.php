@@ -255,7 +255,7 @@ class ReportsController extends BaseController {
 									if (($item['item_id'] == $eventItem['_id']) && ((string) $key == $item['size'])){
 										$purchaseOrder[$inc]['Product Name'] = $eventItem['description'];
 										$purchaseOrder[$inc]['Product Color'] = $eventItem['color'];
-										$purchaseOrder[$inc]['SKU'] = $eventItem['vendor_style'];
+										$purchaseOrder[$inc]['SKU'] = $this->sku($eventItem['vendor_style'], $item['size']);
 										$purchaseOrder[$inc]['Unit'] = $eventItem['sale_whol'];
 										if (empty($purchaseOrder[$inc]['Quantity'])) {
 											$purchaseOrder[$inc]['Quantity'] = $item['quantity'];
@@ -318,7 +318,7 @@ class ReportsController extends BaseController {
 									$orderList[$inc]['Cart'] = $item['_id'];
 									$orderList[$inc]['OrderNum'] = $order['order_id'];
 									$orderList[$inc]['id'] = $order['_id'];
-									$orderList[$inc]['SKU'] = strtoupper(trim($eventItem['vendor_style'].'-'.$item['size']));
+									$orderList[$inc]['SKU'] = $this->sku($eventItem['vendor_style'], $item['size']);
 									$orderList[$inc]['Qty'] = $item['quantity'];
 									$orderList[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
 									$orderList[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
@@ -379,7 +379,7 @@ class ReportsController extends BaseController {
 						$orderFile[$inc]['Tel'] = $order['shipping']['telephone'];
 						$orderFile[$inc]['Country'] = '';
 						$orderFile[$inc]['OrderNum'] = $order['order_id'];
-						$orderFile[$inc]['SKU'] = strtouppper(trim($orderItem->vendor_style.'-'.$item['size']));
+						$orderFile[$inc]['SKU'] = $this->sku($orderItem->vendor_style, $item['size']);
 						$orderFile[$inc]['Qty'] = $item['quantity'];
 						$orderFile[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
 						$orderFile[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
@@ -446,7 +446,7 @@ class ReportsController extends BaseController {
 							$items = $order['items'];
 							foreach ($items as $item) {
 								if (($item['item_id'] == $eventItem['_id']) && ($key == $item['size'])){
-									$fields[$inc]['SKU'] = strtoupper(trim($eventItem['vendor_style'].'-'.$item['size']));
+									$fields[$inc]['SKU'] = $this->sku($eventItem['vendor_style'], $item['size']);
 									$fields[$inc]['Description'] = strtoupper(substr($eventItem['description'], 0, 40));
 									$fields[$inc]['WhsInsValue (Cost)'] = number_format($eventItem['sale_whol'], 2);
 									$fields[$inc]['Description for Customs'] = $eventItem['category'];
@@ -629,6 +629,10 @@ class ReportsController extends BaseController {
 			}
 		}
 		return compact('results', 'dates', 'total');
+	}
+
+	public function sku($vendor_style, $size) {
+		return strtoupper(str_replace(' ', '-', trim($vendor_style.'-'.$size)));
 	}
 }
 
