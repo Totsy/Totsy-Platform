@@ -35,7 +35,8 @@ class PromocodesController extends \lithium\action\Controller {
 	}
 
 	public function view($code = null) {
-		$promocode = Promocode::all( array( 'conditions' => array( 'code'=> strtolower($code) ) ) );
+        var_dump($code);
+		$promocode = Promocode::all( array( 'conditions' => array( 'code'=> strtoupper($code) ) ) );
         //var_dump($promocode);
 		return compact('promocode');
 	}
