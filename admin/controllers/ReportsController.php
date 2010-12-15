@@ -386,8 +386,8 @@ class ReportsController extends BaseController {
 						$orderFile[$inc]['Customer PO #'] = '';
 						$orderFile[$inc]['Pack Slip Comment'] = '';
 						$orderFile[$inc]['Special Packing Instructions'] = '';
-						$orderFile[$inc]['Address1'] = $order['shipping']['address'];
-						$orderFile[$inc]['Address2'] = $order['shipping']['address_2'];
+						$orderFile[$inc]['Address1'] =  str_replace(',', ' ', $order['shipping']['address']);
+						$orderFile[$inc]['Address2'] = str_replace(',', ' ', $order['shipping']['address_2']);
 						$orderFile[$inc]['City'] = $order['shipping']['city'];
 						$orderFile[$inc]['StateOrProvince'] = $order['shipping']['state'];
 						$orderFile[$inc]['Zip'] = $order['shipping']['zip'];
@@ -395,6 +395,7 @@ class ReportsController extends BaseController {
 						$orderFile[$inc]['Ref2'] = $item['size'];
 						$orderFile[$inc]['Ref3'] = $item['color'];
 						$orderFile[$inc]['Ref4'] = $item['description'];
+						$orderFile[$inc]['Customer PO #'] = $order['_id'];
 						$orderFile[$inc] = array_merge($heading, $orderFile[$inc]);
 						$orderFile[$inc] = $this->sortArrayByArray($orderFile[$inc], $heading);
 					}
