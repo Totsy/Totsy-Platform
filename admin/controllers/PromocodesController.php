@@ -4,6 +4,7 @@ namespace admin\controllers;
 
 use \admin\models\Promocode;
 use \admin\models\Promotion;
+use li3_flash_message\extensions\storage\FlashMessage;
 use MongoDate;
 use MongoRegex;
 
@@ -49,14 +50,13 @@ class PromocodesController extends \lithium\action\Controller {
 	}
     
     public function report() {
-        
+        FlashMessage::clear();
         $data = $this->request->data;
-        
-        var_dump($data);
-        
+               
         if( empty($data) ){
            
             $promotions = Promotion::all();
+            $promocodes= Promocode::all();
         
         }else{
            
@@ -65,6 +65,12 @@ class PromocodesController extends \lithium\action\Controller {
                      
                     $search = $data['search'];
                     $promotions  = Promotion::find(  'all', array( 
+                                                    'conditions' =>array( 
+                                                                    '$or' =>  array( 
+                                                                        array( 'code' => strtolower($search) ),
+                                                                        array( 'code' => strtoupper($search) )
+                                                        ) ) ) );
+                    $promocodes = Promocode::all( array( 
                                                     'conditions' =>array( 
                                                                     '$or' =>  array( 
                                                                         array( 'code' => strtolower($search) ),
@@ -79,21 +85,26 @@ class PromocodesController extends \lithium\action\Controller {
                 $promotions  = Promotion::find(  'all', array( 'conditions'=>array('date_created' =>array( '$gt' => $start, '$lte' => $end ) ) ) );
             }
             
+            if (!empty($promotions)) {
+                FlashMessage::set('Results Found', array('class' => 'pass'));
+            } else {
+                FlashMessage::set('No Results Found', array('class' => 'warning'));
+            }
+            
         }
         
         foreach($promotions as $promotion){
           
           $obj_data = $promotion->data();
           
-         // var_dump($obj_vars);
-                     
             if( !empty( $obj_data['date_created'] ) ) {
                 $promotion->date_created= date( 'm/d/Y', $promotion->date_created->sec);
             }
-            
         }
         
-		return compact('promotions');
+        
+        
+		return compact('promotions', 'promocodes');
 	}
 
 	public function add() {
@@ -120,7 +131,7 @@ class PromocodesController extends \lithium\action\Controller {
                     
                     }
                    
-                   var_dump( strtotime( $code['start_date'] )  );
+               //    var_dump( strtotime( $code['start_date'] )  );
                    
                    $code['start_date']= new MongoDate( strtotime( $code['start_date'] ) );
                    $code['end_date']= new MongoDate( strtotime( $code['end_date'] ) );
