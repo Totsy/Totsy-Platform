@@ -13,6 +13,7 @@ use MongoCode;
 use MongoDate;
 use MongoRegex;
 use li3_flash_message\extensions\storage\FlashMessage;
+use \lithium\data\Model;
 
 /**
  * The Reports Controller is the core for all reporting functionality.
@@ -255,7 +256,7 @@ class ReportsController extends BaseController {
 									if (($item['item_id'] == $eventItem['_id']) && ((string) $key == $item['size'])){
 										$purchaseOrder[$inc]['Product Name'] = $eventItem['description'];
 										$purchaseOrder[$inc]['Product Color'] = $eventItem['color'];
-										$purchaseOrder[$inc]['SKU'] = $eventItem['vendor_style'];
+										$purchaseOrder[$inc]['SKU'] = $this->sku($eventItem['vendor_style'], $item['size']);
 										$purchaseOrder[$inc]['Unit'] = $eventItem['sale_whol'];
 										if (empty($purchaseOrder[$inc]['Quantity'])) {
 											$purchaseOrder[$inc]['Quantity'] = $item['quantity'];
@@ -318,7 +319,7 @@ class ReportsController extends BaseController {
 									$orderList[$inc]['Cart'] = $item['_id'];
 									$orderList[$inc]['OrderNum'] = $order['order_id'];
 									$orderList[$inc]['id'] = $order['_id'];
-									$orderList[$inc]['SKU'] = $eventItem['vendor_style'];
+									$orderList[$inc]['SKU'] = $this->sku($eventItem['vendor_style'], $item['size']);
 									$orderList[$inc]['Qty'] = $item['quantity'];
 									$orderList[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
 									$orderList[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
@@ -379,15 +380,15 @@ class ReportsController extends BaseController {
 						$orderFile[$inc]['Tel'] = $order['shipping']['telephone'];
 						$orderFile[$inc]['Country'] = '';
 						$orderFile[$inc]['OrderNum'] = $order['order_id'];
-						$orderFile[$inc]['SKU'] = $orderItem->vendor_style;
+						$orderFile[$inc]['SKU'] = $this->sku($orderItem->vendor_style, $item['size']);
 						$orderFile[$inc]['Qty'] = $item['quantity'];
 						$orderFile[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
 						$orderFile[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
 						$orderFile[$inc]['Customer PO #'] = '';
 						$orderFile[$inc]['Pack Slip Comment'] = '';
 						$orderFile[$inc]['Special Packing Instructions'] = '';
-						$orderFile[$inc]['Address1'] = $order['shipping']['address'];
-						$orderFile[$inc]['Address2'] = $order['shipping']['address_2'];
+						$orderFile[$inc]['Address1'] =  str_replace(',', ' ', $order['shipping']['address']);
+						$orderFile[$inc]['Address2'] = str_replace(',', ' ', $order['shipping']['address_2']);
 						$orderFile[$inc]['City'] = $order['shipping']['city'];
 						$orderFile[$inc]['StateOrProvince'] = $order['shipping']['state'];
 						$orderFile[$inc]['Zip'] = $order['shipping']['zip'];
@@ -395,6 +396,7 @@ class ReportsController extends BaseController {
 						$orderFile[$inc]['Ref2'] = $item['size'];
 						$orderFile[$inc]['Ref3'] = $item['color'];
 						$orderFile[$inc]['Ref4'] = $item['description'];
+						$orderFile[$inc]['Customer PO #'] = $order['_id'];
 						$orderFile[$inc] = array_merge($heading, $orderFile[$inc]);
 						$orderFile[$inc] = $this->sortArrayByArray($orderFile[$inc], $heading);
 					}
@@ -450,7 +452,7 @@ class ReportsController extends BaseController {
 							$items = $order['items'];
 							foreach ($items as $item) {
 								if (($item['item_id'] == $eventItem['_id']) && ($key == $item['size'])){
-									$fields[$inc]['SKU'] = $eventItem['vendor_style'];
+									$fields[$inc]['SKU'] = $this->sku($eventItem['vendor_style'], $item['size']);
 									$fields[$inc]['Description'] = strtoupper(substr($eventItem['description'], 0, 40));
 									$fields[$inc]['WhsInsValue (Cost)'] = number_format($eventItem['sale_whol'], 2);
 									$fields[$inc]['Description for Customs'] = $eventItem['category'];
@@ -634,6 +636,112 @@ class ReportsController extends BaseController {
 		}
 		return compact('results', 'dates', 'total');
 	}
+
+	public function sku($vendor_style, $size) {
+		$size = ($size == 'no size') ? null : '-'.$size;
+		return strtoupper(str_replace(' ', '', trim($vendor_style.$size)));
+	}
+
+	public function saledetail() {
+		FlashMessage::clear();
+		$data = Model::create($this->request->data);
+		if ($this->request->data) {
+			$search = $this->request->data;
+			$data = Model::create($search);
+			if (!empty($search['min_date']) && !empty($search['max_date'])) {
+				$amount = ($search['amount'] == '') ? 0 : $search['amount'];
+				$dollarLimit = array("$search[range_type]" => (float) $amount);
+				$conditions = array(
+					'total' => $dollarLimit,
+					'date_created' => array(
+						'$gt' => new MongoDate(strtotime($search['min_date'])),
+						'$lte' => new MongoDate(strtotime($search['max_date']))
+				));
+				$shippingLimit = ($search['state'] != 'All') ? array('shipping.state' => $search['state']) : array();
+				$categoryFields = array('items.category' => array('$nin' => array('accessories','apparel')));
+				$categoryLimit = ($search['include_category'] == false) ? $categoryFields : array();
+				$conditions = $conditions + $shippingLimit + $categoryLimit;
+				$orderCollection = Order::collection();
+				$orders = $orderCollection->find($conditions);
+				$reportId = substr(md5(uniqid(rand(),1)), 1, 15);
+				$collection = Report::collection();
+				if ($orders) {
+					foreach ($orders as $order) {
+						$orderSummary = array();
+						$items = $order['items'];
+						$itemQuantity = 0;
+						foreach ($items as $item) {
+							$itemQuantity += $item['quantity'];
+						}
+						$orderSummary['gross'] = $order['tax'] + $order['subTotal'] + $order['handling'];
+						$orderSummary['tax'] = $order['tax'];
+						$orderSummary['sub_total'] = $order['subTotal'];
+						$orderSummary['total'] = $order['total'];
+						$orderSummary['state'] = $order['shipping']['state'];
+						$orderSummary['handling'] = $order['handling'];
+						$orderSummary['quantity'] = $itemQuantity;
+						$orderSummary['date'] = $order['date_created'];
+						$orderSummary['report_id'] = $reportId;
+						$orderSummary['credit_used'] = (!empty($order['credit_used'])) ? $order['credit_used'] : null;
+						$collection->save($orderSummary);
+					}
+				}
+				$keys = new MongoCode("
+					function(doc){
+						return {
+							'date': doc.date.getMonth(),
+							'state' : doc.state
+						}
+					}");
+				$inital = array(
+					'credit_used' => 0,
+					'gross' => 0,
+					'total' => 0,
+					'tax' => 0,
+					'handling' => 0,
+					'quantity' => 0,
+					'count' => 0,
+					'sub_total' =>0,
+					'credit_used' =>0
+				);
+				$reduce = new MongoCode('function(doc, prev){
+					prev.gross += doc.gross,
+					prev.total += doc.total,
+					prev.tax += doc.tax,
+					prev.handling += doc.handling,
+					prev.quantity += doc.quantity,
+					prev.sub_total += doc.sub_total,
+					prev.credit_used += doc.credit_used,
+					prev.count += 1
+					}'
+				);
+				$conditions = array('report_id' => $reportId);
+				$results = $collection->group($keys, $inital, $reduce, $conditions);
+				$details = $results['retval'];
+				$keys = new MongoCode("
+					function(doc){
+						return {
+							'date': doc.date.getMonth()
+						}
+					}");
+				$results = $collection->group($keys, $inital, $reduce, $conditions);
+				$summary = $results['retval'];
+				$keys = new MongoCode("function(doc){return {}}");
+				$total = $collection->group($keys, $inital, $reduce, $conditions);
+				$total = (!empty($total['retval'][0])) ? $total['retval'][0] : null;
+				$collection->remove($conditions);
+				if (!empty($summary)) {
+					FlashMessage::set('Results Found', array('class' => 'pass'));
+				} else {
+					FlashMessage::set('No Results Found', array('class' => 'warning'));
+				}
+			} else {
+				FlashMessage::set('Please enter in a valid search date', array('class' => 'warning'));
+			}
+		}
+		return compact('details', 'summary', 'dates', 'total', 'data');
+	}
+
 }
 
 ?>

@@ -45,16 +45,26 @@
 													}
 												?>
 												<td style="padding:5px;" title="item">
-													<?=$this->html->image("$image", array('width' => "60", 'height' => "60", 'style' => "margin:2px; padding:2px; background:#fff; border:1px solid #ddd;")); ?>
+													<?=$this->html->image("$image", array(
+														'width' => "60",
+														'height' => "60",
+														'style' => "margin:2px; padding:2px; background:#fff; border:1px solid #ddd;"
+														));
+													?>
 												</td>
 												<td style="padding:5px" title="description">
-													Description: <?=$item['description']?><br />
+													Event: <?=$this->html->link($item['event_name'], array(
+														'Events::preview', 'args' => $item['event_id']),
+														array('target' =>'_blank')
+													); ?><br />
+													Item: <?=$this->html->link($item['description'],
+														array('Items::preview', 'args' => $item['url']),
+														array('target' =>'_blank')
+													); ?><br />
 													Color: <?=$item['color']?><br/>
 													Size: <?=$item['size']?><br/>
 													Vendor Style: <?=$sku["$item[item_id]"];?><br/>
 													Category: <?=$item['category'];?><br/>
-													Event: <?=$item['event_name'];?>
-													
 												</td>
 												<td style="padding:5px; color:#009900;" title="price">
 													$<?=number_format($item['sale_retail'],2); ?>

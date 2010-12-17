@@ -35,12 +35,16 @@
 
 	      <div class="rounded" style="color:#ff0000; margin:0px 0px 0px 0px; float:left; display:block; background:#ffebeb; border:1px solid #ddd; width:246px; padding:20px; text-align:center;">Confirmation</div>
 	      <div style="clear:both; margin-bottom:15px;"></div>
-
-	<!-- Begin Order Details -->
-	<?php if ($showCart): ?>
 		<h2 class="gray mar-b">My Items</h2><hr />
+	<!-- Begin Order Details -->
+	<?php if ($cartByEvent): ?>
+		<?php $x = 0; ?>
+		<?php foreach ($cartByEvent as $key => $event): ?>
 		<table width="100%" class="cart-table">
 			<thead>
+				<tr>
+					<td><?=$orderEvents[$key]['name']?><td>
+				</tr>
 				<tr>
 					<th>Item</th>
 					<th>Description</th>
@@ -51,14 +55,13 @@
 				</tr>
 			</thead>
 			<tbody>
-		<?php $x = 0; ?>
-		<?php foreach ($showCart as $item): ?>
+		<?php foreach ($event as $item): ?>
 			<!-- Build Product Row -->
-						<tr id="<?=$item->_id?>" class="alt<?=$x?>" style="margin:0px!important; padding:0px!important;">
+						<tr id="<?=$item['_id']?>" class="alt<?=$x?>" style="margin:0px!important; padding:0px!important;">
 						<td class="cart-th">
 							<?php
-								if (!empty($item->primary_image)) {
-									$image = $item->primary_image;
+								if (!empty($item['primary_image'])) {
+									$image = $item['primary_image'];
 									$productImage = "/image/$image.jpg";
 								} else {
 									$productImage = "/img/no-image-small.jpeg";
@@ -76,29 +79,29 @@
 							); ?>
 						</td>
 						<td class="cart-desc">
-							<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
-							<strong><?=$this->html->link($item->description, array(
+							<?=$this->form->hidden("item$x", array('value' => $item['_id'])); ?>
+							<strong><?=$this->html->link($item['description'], array(
 								'Items::view',
-								'args' => $item->url
+								'args' => $item['url']
 								));
 							?></strong><br>
-							<strong>Color:</strong> <?=$item->color;?><br>
-							<strong>Size:</strong> <?=$item->size;?>
+							<strong>Color:</strong> <?=$item['color'];?><br>
+							<strong>Size:</strong> <?=$item['size'];?>
 						</td>
 						<td class="<?="qty-$x";?>">
-							<?=$item->quantity;?>
+							<?=$item['quantity'];?>
 						</td>
 						<td class="<?="price-item-$x";?>">
-							<strong style="color:#009900;">$<?=number_format($item->sale_retail,2)?></strong>
+							<strong style="color:#009900;">$<?=number_format($item['sale_retail'],2)?></strong>
 						</td>
 						<td class="<?="total-item-$x";?>">
-							<strong style="color:#009900;">$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
+							<strong style="color:#009900;">$<?=number_format($item['sale_retail'] * $item['quantity'] ,2)?></strong>
 						</td>
 						<td class="cart-time"><div id='<?php echo "itemCounter-$x"; ?>'></div></td> 
 					</tr>
 					<?php
 						//Allow users three extra minutes on their items for checkout.
-						$date = ($item->expires->sec * 1000);
+						$date = ($item['expires']['sec'] * 1000);
 						$itemCounters[] = "<script type=\"text/javascript\">
 							$(function () {
 								var itemProcessExpires = new Date($date);
@@ -114,6 +117,7 @@
 							</script>";
 						$x++;
 					?>
+			<?php endforeach ?>
 		<?php endforeach ?>
 				</tbody>
 			</table>
