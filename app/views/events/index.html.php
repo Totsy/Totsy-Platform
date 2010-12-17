@@ -171,11 +171,11 @@ $(document).ready(function() {
 	      <img src="/img/winterSale_banner_02.png" width="920" height="61" alt="" style="float:left; margin:0px; padding:0px;">
 	</div>
 	    <div style="margin:0px; padding:0px:">
-	      <a href="http://www.totsy.com/events/view/consider-yourself-hugged"><img src="/img/winterSale_banner_03.png" width="190" height="87" alt="" style="float:left; margin:0px; padding:0px;"></a>
-	      <a href="http://www.totsy.com/events/view/agoo-outerwear"><img src="/img/winterSale_banner_04.png" width="179" height="87" alt="" style="float:left; margin:0px; padding:0px;"></a>
-	      <a href="http://www.totsy.com/events/view/rugged-bear"><img src="/img/winterSale_banner_05.png" width="180" height="87" alt="" style="float:left; margin:0px; padding:0px;"></a>
-	      <a href="http://www.totsy.com/events/view/little-laundry"><img src="/img/winterSale_banner_06.png" width="180" height="87" alt="" style="float:left; margin:0px; padding:0px;"></a>
-	      <a href="http://www.totsy.com/events/view/convertible-designs"><img src="/img/winterSale_banner_07.png" width="191" height="87" alt="" style="float:left; margin:0px; padding:0px;"></a>
+	      <a href="http://www.totsy.com/events/view/bongo"><img src="/img/winterSale_banner_03.png" width="190" height="87" alt="" style="float:left; margin:0px; padding:0px;"></a>
+	      <a href="http://www.totsy.com/events/view/coco-bonbons-outerwear"><img src="/img/winterSale_banner_04.png" width="179" height="87" alt="" style="float:left; margin:0px; padding:0px;"></a>
+	      <a href="http://www.totsy.com/events/view/warm-as-a-lamb"><img src="/img/winterSale_banner_05.png" width="180" height="87" alt="" style="float:left; margin:0px; padding:0px;"></a>
+	      <a href="http://www.totsy.com/events/view/elks-angels"><img src="/img/winterSale_banner_06.png" width="180" height="87" alt="" style="float:left; margin:0px; padding:0px;"></a>
+	      <a href="http://www.totsy.com/events/view/ed-hardy-outerwear"><img src="/img/winterSale_banner_07.png" width="191" height="87" alt="" style="float:left; margin:0px; padding:0px;"></a>
 	    </div>
 
 <!-- <img src="/img/Xmas_ban.jpg" border="0" />-->  
