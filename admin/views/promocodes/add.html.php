@@ -56,10 +56,14 @@
                <?=$this->form->text( 'max_use', array( 'value' => 'Enter max use') ); ?><br><br>
               
               <?=$this->form->label('Enter start date:'); ?>
-               <?=$this->form->text( 'start_date', array('value' => 'Enter start date here', 'id' => 'start_date') ); ?><br><br>
+              <?=$this->form->text( 'start_date', array('value' => 'Enter start date here', 'id' => 'start_date') ); ?><br><br>
               
               <?=$this->form->label('Enter end date:'); ?>
-               <?=$this->form->text( 'end_date', array('value' => 'Enter end date here', 'id' => 'end_date') ); ?><br><br>
+              <?=$this->form->text( 'end_date', array('value' => 'Enter end date here', 'id' => 'end_date') ); ?><br><br>
+              
+                
+              <?=$this->form->label('Created by:'); ?>
+              <?=$this->form->select( 'created_by', $fields ); ?><br><br>
               
               <?=$this->form->submit('create'); ?><br><br>
              

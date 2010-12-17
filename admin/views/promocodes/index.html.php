@@ -19,7 +19,8 @@
                 <th> Expiration Date</th>
                 <th> Created </th>
                 <th> Enabled </th>
-                <th>  </th>
+                <th> Created By:  </th>
+                 <th>   </th>
             </tr>
         </thead>
          <tbody>
@@ -55,10 +56,13 @@
                 <td>
                     <?=$promocode->date_created; ?>
                 </td>
+                 
                 <td>
                     <?=$promocode->enabled; ?> 
                 </td>
-                
+                <td>
+                    <? ?> 
+                </td>
                 
                 <td>
                     <?=$this->html->link('edit', 'promocodes/edit/'.$promocode->_id); ?>
