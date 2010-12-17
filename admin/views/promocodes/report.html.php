@@ -124,7 +124,7 @@
 		TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
 		$('#promoSummary').dataTable({
 			"sDom": 'T<"clear">lfrtip',
-			"bPaginate": false,
+			"bPaginate": true,
 			"bFilter": false
 		}
 		);
