@@ -39,12 +39,8 @@
     <div class='block' id='forms'>
         <fieldset>
         <?=$this->form->create(); ?>
-            <?php if ( $promocode->enabled ): ?>
-                Enable: <?=$this->form->checkbox( 'enabled', array( 'checked'=>'checked', 'value' => '1' ) ); ?> <br>
-            <?php else: ?>
-                Enable: <?=$this->form->checkbox( 'enabled', array( 'value' => '0' ) ); ?> <br>
-            <?php endif; ?>
-            
+         Enable: <?=$this->form->checkbox( 'enabled', array( 'checked'=>'checked', 'value' => '1' ) ); ?> <br>
+                    
            Code: <?=$this->form->text('code', array( 'value' => $promocode->code ) ); ?><br>
            
           Description: <br>
