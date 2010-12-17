@@ -3,7 +3,7 @@
 namespace app\models;
 
 use app\extensions\Ups;
-use lithium\storage\Session as LiSession;
+use lithium\storage\Session;
 use MongoDate;
 
 class Cart extends \lithium\data\Model {
