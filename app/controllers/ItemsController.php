@@ -25,6 +25,7 @@ class ItemsController extends BaseController {
 					'url' => $url),
 				'order' => array('modified_date' => 'DESC'
 			)));
+
 			if (!$item) {
 				$this->redirect('/');
 			} else {
@@ -33,13 +34,14 @@ class ItemsController extends BaseController {
 						'items' => array((string) $item->_id),
 						'enabled' => true
 				)));
+
 				if ($event->end_date->sec < time()) {
 					$this->redirect('/');
 				} else {
 					++$item->views;
 					$item->save();
-					$related = $item->related();
-					$sizes = $item->sizes();
+					$related = Item::related($item);
+					$sizes = Item::sizes($item);
 					$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 				}
 			}
