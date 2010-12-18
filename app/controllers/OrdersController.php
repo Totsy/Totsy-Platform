@@ -451,6 +451,7 @@ class OrdersController extends BaseController {
 	protected function getEventIds($object) {
 		$items = (!empty($object->items)) ? $object->items->data() : $object->data();
 		$event = null;
+		$ids = array();
 		foreach ($items as $item) {
 			$eventId = (!empty($item['event_id'])) ? $item['event_id'] : $item['event'][0];
 			if (!empty($eventId)) {
