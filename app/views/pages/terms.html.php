@@ -24,7 +24,7 @@ $this->title("Terms of Use");
 
 	<p>By clicking on the "I AGREE" button below, you (referred in this document as the "Member" or "you", or "You") agree to be irrevocably bound with TOTSY by the following terms and conditions of sale and service (the "Terms of Service"), which are incorporated in each and every sale transaction made on the website Totsy.com, a proprietary domain name of My Baby VIP LLC (hereinafter referred to as "TOTSY"), and govern all aspects of the relationship between TOTSY and its Members.</p>
 
-	<p><strong>If you want to contact TOTSY's technical service or customer service, you may either contact us by telephone on our toll-free number at 1-888-59TOTSY (or 1-888-598-6879), or on our Site by clicking on the CONTACT US menu and choosing the proper selection. Please note that until September 30, 2009, you may contact us by telephone at the temporary toll-free number: 1-888-791-1112. Thank you.</strong></p>
+	<p>Please contact us at <a href="mailto:support@totsy.com">support@totsy.com</a></p>
 
 	<p class="gray mar-b"><strong>1. Sale of Goods and Services</strong></p>
 	<hr />
