@@ -18,6 +18,7 @@
                 <th>Start Date </th>
                 <th> Expiration Date</th>
                 <th> Created </th>
+                <th> Created By: </th>
                 <th> Enabled </th>
                 <th>  </th>
             </tr>
@@ -51,19 +52,18 @@
                 <td>
                     <?=$promocode->end_date; ?>
                 </td>
-                
                 <td>
                     <?=$promocode->date_created; ?>
                 </td>
                 <td>
+                    <?=$promocode->created_by; ?>
+                </td>
+                <td>
                     <?=$promocode->enabled; ?> 
                 </td>
-                
-                
                 <td>
                     <?=$this->html->link('edit', 'promocodes/edit/'.$promocode->_id); ?>
                 </td>
-                   
                 <tr>
             <?php endforeach; ?>
         </tbody>
