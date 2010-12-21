@@ -16,7 +16,7 @@ class PromocodesControllerTest extends \lithium\test\Unit {
 		
 		$remote = new PromocodesController();
 		//var_dump($remote);
-		$remote->request->data = array('enabled' => 'on',
+		$post = array('enabled' => 'on',
 					'code' =>'testcode2',
 					'description' => 'testing code',
 					'type'=> 'percentage',
@@ -27,7 +27,8 @@ class PromocodesControllerTest extends \lithium\test\Unit {
 					'end_date' => '01/03/2010'
 				);
 			
-		$result = $remote->add();
+		$result = $remote->add($post);
+		//var_dump($result);
 		$this->assertEqual( true, $result );
 		
 	}
@@ -50,6 +51,25 @@ class PromocodesControllerTest extends \lithium\test\Unit {
 		
 		$this->assertEqual('array', $result);
 	}
+	
+	/*public function testPromocodeEditing(){
+		$remote = new PromocodesController();
+		
+		$remote->request->data = array('enabled' => '',
+					'code' =>'testcode2',
+					'description' => 'testing code',
+					'type'=> 'percentage',
+					'discount_amount' => '.1',
+					'minimum_purchase' => '60',
+					'max_use' => '0',
+					'start_date' => '12/27/2010 00:00',
+					'end_date' => '01/03/2010'
+				);
+				
+		$result = gettype($remote->edit('4d11059dde55906912000000'));
+		
+		$this->assertEqual( true, $result );
+	}*/
 
 }
 

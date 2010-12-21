@@ -44,7 +44,7 @@
                 <?=$this->form->textarea('description', array('value' => 'Enter description here')); ?><br><br>
                
                <?=$this->form->label('Code Type:'); ?>
-               <?=$this->form->select( 'type', array('percent' => 'percent',  'dollar'=> 'dollar amount', 'shipping'=> 'shipping') ); ?><br><br>
+               <?=$this->form->select( 'type', array('percentage' => 'percent',  'dollar'=> 'dollar amount', 'shipping'=> 'shipping') ); ?><br><br>
               
               <?=$this->form->label('Enter discount amount here:'); ?>
                <?=$this->form->text( 'discount_amount', array( 'value' => 'Enter discount amount here') ); ?><br><br>
