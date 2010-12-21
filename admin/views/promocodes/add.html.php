@@ -60,11 +60,7 @@
               
               <?=$this->form->label('Enter end date:'); ?>
               <?=$this->form->text( 'end_date', array('value' => 'Enter end date here', 'id' => 'end_date') ); ?><br><br>
-              
-                
-              <?=$this->form->label('Created by:'); ?>
-              <?=$this->form->select( 'created_by', $fields ); ?><br><br>
-              
+                           
               <?=$this->form->submit('create'); ?><br><br>
              
             <?=$this->form->end(); ?>

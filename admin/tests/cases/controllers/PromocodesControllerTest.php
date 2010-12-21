@@ -1,0 +1,56 @@
+<?php
+
+namespace admin\tests\cases\controllers;
+
+use \admin\controllers\PromocodesController;
+
+class PromocodesControllerTest extends \lithium\test\Unit {
+
+	public function setUp() {
+		
+	}
+
+	public function tearDown() {}
+	
+	public function testCreatingPromocodes() {
+		
+		$remote = new PromocodesController();
+		//var_dump($remote);
+		$remote->request->data = array('enabled' => 'on',
+					'code' =>'testcode2',
+					'description' => 'testing code',
+					'type'=> 'percentage',
+					'discount_amount' => '.1',
+					'minimum_purchase' => '60',
+					'max_use' => '0',
+					'start_date' => '12/27/2010 00:00',
+					'end_date' => '01/03/2010'
+				);
+			
+		$result = $remote->add();
+		$this->assertEqual( true, $result );
+		
+	}
+	
+	public function testPromotionReporting() {
+		
+		$remote = new PromocodesController();
+		$remote->request->data = array();
+		$result = gettype($remote->report());
+		
+		$this->assertEqual('array', $result);
+		
+	}
+
+	public function testPromotionReportingWithSearch() {
+		
+		$remote = new PromocodesController();
+		$remote->request->data = array('search'=>'vipmom');
+		$result = gettype($remote->report());
+		
+		$this->assertEqual('array', $result);
+	}
+
+}
+
+?>

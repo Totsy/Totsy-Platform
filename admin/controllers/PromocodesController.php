@@ -46,11 +46,11 @@ class PromocodesController extends \lithium\action\Controller {
 	public function view($code = null) {
        // var_dump($code);
 		$promocodes = Promocode::find( 'all', array( 
-                                                'conditions' =>array( 
-                                                                '$or' =>  array( 
-                                                                    array( 'code' => strtolower($code) ),
-                                                                    array( 'code' => strtoupper($code) )
-                                                    ) ) ) );
+									'conditions' =>array( 
+													'$or' =>  array( 
+														array( 'code' => strtolower($code) ),
+														array( 'code' => strtoupper($code) )
+										) ) ) );
       //  var_dump($promocode->data());
         $promocodes= $promocodes->data();
 		return compact('promocodes');
@@ -58,15 +58,16 @@ class PromocodesController extends \lithium\action\Controller {
     
     public function report() {
         FlashMessage::clear();
-        $data = $this->request->data;
+        
                
-        if( empty($data) ){
+        if( empty($this->request->data) ){
            
             $promotions = Promotion::all();
             $promocodes= Promocode::all();
         
         }else{
            
+           $data = $this->request->data;
             $search = $data['search'];
             if( !empty($data['search']) ) {
                      
@@ -113,29 +114,27 @@ class PromocodesController extends \lithium\action\Controller {
 	}
 
 	public function add() {
-        
-		$promoCode= Promocode::create();
-        $code = $this->request->data;
-        $admins = User::all( array( 'conditional'=>array('admin' => true) ) );
-        
-        
-        if( !empty($code) ) {
-            
+        FlashMessage::clear();
+		        
+        if( !empty($this->request->data) ) {
+			$promoCode= Promocode::create();
+			$admins = User::all( array( 'conditional'=>array('admin' => true) ) );
+           $code = $this->request->data;
+           
            $promocode = Promocode::all( array( 'conditions'=>array( 'code' => $code['code'] ) ) );
-                
 
-			if ($promocode->data() ) {
+			if($promocode->data() ) {
 				$message = 'Coupon Code Already Exists';
 				return compact('message');
 			}   
 			  
-		  if( $this->request->data['enabled'] == '1' || $this->request->data['enabled'] == 'On' ){
+		  if( $this->request->data['enabled'] == '1' || $this->request->data['enabled'] == 'on' ){
 			  
-			   $this->request->data['enabled'] = true;
+			   $code['enabled'] = true;
 			
 			}else{
 			
-				 $this->request->data['enabled'] = false;
+				$code['enabled'] = false;
 			
 			}
 		   
@@ -143,13 +142,16 @@ class PromocodesController extends \lithium\action\Controller {
 		   $code['end_date']= new MongoDate( strtotime( $code['end_date'] ) );
 		   $code['date_created']= new MongoDate( strtotime( date('D M d Y') ) );
 		   $code = Promocode::createdBy($code);
-		   if( $promoCode->save($code) ){
-			   
-				$this->redirect('Promocodes::index');
-				
-		   }
+	
+			$result = $promoCode->save($code);
+			if ($result) {
+                $this->redirect( array( 'Promocodes::index' ) );
+                FlashMessage::set('Promocode Created!', array('class' => 'pass'));
+            } else {
+                FlashMessage::set('Promocode not created.  Please check the form', array('class' => 'warning'));
+            }
+			
 		}
-
 	}
 
 	public function edit($id=NULL) {

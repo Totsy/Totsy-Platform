@@ -47,7 +47,7 @@
                 end date range:
                 <?=$this->form->text('end_date', array('id'=>'end_date' , 'style' => 'width:180') ); ?>
             
-           <?=$this->form->submit('search'); ?><br><br>
+           <?=$this->form->submit('find'); ?><br><br>
         <?=$this->form->end(); ?>
         
         </fieldset>
