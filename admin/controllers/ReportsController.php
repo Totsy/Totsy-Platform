@@ -639,7 +639,11 @@ class ReportsController extends BaseController {
 
 	public function sku($vendor_style, $size) {
 		$size = ($size == 'no size') ? null : '-'.$size;
-		return strtoupper(str_replace(' ', '', trim($vendor_style.$size)));
+		$sku = strtoupper(str_replace(' ', '', trim($vendor_style.$size)));
+		if (strlen($sku) > 19) {
+			$sku = str_replace('-', '', $sku);
+		}
+		return $sku;
 	}
 
 	public function saledetail() {
@@ -740,6 +744,161 @@ class ReportsController extends BaseController {
 			}
 		}
 		return compact('details', 'summary', 'dates', 'total', 'data');
+	}
+	/**
+	 * This adhoc method was used to generate the order file for dotcom. In the very near future
+	 * this method will be migrated to a command method and executed via cron job.
+	 *
+	 *
+	 *  @todo Migrate code to li3 command.
+	 */
+	public function adhoc() {
+		$orderCollection = Order::collection();
+
+		$orderFile = array();
+		$events = array(
+			'4ce2b4e4ce64e5ed3bea2000',
+			'4ce5931ece64e5d225c94100',
+			'4ce2b843ce64e5443c141700',
+			'4ce31210ce64e54046693300',
+			'4ce6994ece64e5bb495f1f00',
+			'4ce59f8bce64e56029ec1800',
+			'4ce59b36ce64e58629aa2500',
+			'4cf510ffce64e5117f3f3d00',
+			'4cea9ab5ce64e5055a790b00',
+			'4cf81a87ce64e57462f0b700',
+			'4cf668f8ce64e56b2d391e00',
+			'4ceaf4c1ce64e56765ce1200',
+			'4cf3ce24ce64e5b056bb2400',
+			'4cf40025ce64e5395d7a3500',
+			'4cf4084bce64e5f85e891f00',
+			'4cedcf3ece64e53b49c64900',
+			'4cf43bc3ce64e59d63c72c00',
+			'4cf50f3ace64e54a7f7a1c00',
+			'4cf41e23ce64e50b62d20500',
+			'4cf57ad2ce64e5ba0d092000',
+			'4cf51f79ce64e5a702ac1b00',
+			'4cf6e197ce64e5a23a723b00',
+			'4cf6e197ce64e5a23a723b00',
+			'4cf6b829ce64e51b38210100',
+			'4cf669eece64e56b2d684200'
+		);
+		$heading = $this->_fileHeading;
+		$orders = $orderCollection->find(array('items.event_id' => array('$in' => $events)));
+		$inc = 0;
+
+		$fp = fopen('/tmp/TOT12182010.txt', 'w');
+		$eventList = array();
+		foreach ($orders as $order) {
+			$user = User::find('first', array('conditions' => array('_id' => $order['user_id'])));
+			$items = $order['items'];
+			foreach ($items as $item) {
+				$orderItem = Item::find('first', array(
+					'conditions' => array(
+						'_id' => $item['item_id']
+				)));
+				$orderFile[$inc]['ContactName'] = '';
+				$orderFile[$inc]['Date'] = date('m/d/Y');
+				if ($order['shippingMethod'] == 'ups') {
+				     $orderFile[$inc]['ShipMethod'] = 'UPSGROUND';
+				} else {
+				     $orderFile[$inc]['ShipMethod'] = $order['shippingMethod'];
+				}
+				$orderFile[$inc]['RushOrder (Y/N)'] = '';
+				$orderFile[$inc]['Tel'] = $order['shipping']['telephone'];
+				$orderFile[$inc]['Country'] = '';
+				$orderFile[$inc]['OrderNum'] = $order['order_id'];
+				$orderFile[$inc]['SKU'] = $this->sku($orderItem->vendor_style, $item['size']);
+				$orderFile[$inc]['Qty'] = $item['quantity'];
+				$orderFile[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
+				$orderFile[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
+				$orderFile[$inc]['Customer PO #'] = '';
+				$orderFile[$inc]['Pack Slip Comment'] = '';
+				$orderFile[$inc]['Special Packing Instructions'] = '';
+				$orderFile[$inc]['Address1'] =  str_replace(',', ' ', $order['shipping']['address']);
+				$orderFile[$inc]['Address2'] = str_replace(',', ' ', $order['shipping']['address_2']);
+				$orderFile[$inc]['City'] = $order['shipping']['city'];
+				$orderFile[$inc]['StateOrProvince'] = $order['shipping']['state'];
+				$orderFile[$inc]['Zip'] = $order['shipping']['zip'];
+				$orderFile[$inc]['Ref1'] = $item['item_id'];
+				$orderFile[$inc]['Ref2'] = $item['size'];
+				$orderFile[$inc]['Ref3'] = $item['color'];
+				$orderFile[$inc]['Ref4'] = $item['description'];
+				$orderFile[$inc]['Customer PO #'] = $order['_id'];
+				$orderFile[$inc] = array_merge($heading, $orderFile[$inc]);
+				$orderFile[$inc] = $this->sortArrayByArray($orderFile[$inc], $heading);
+				if (!in_array($item['event_id'], $eventList)) {
+					$eventList[] = $item['event_id'];
+				}
+				fputcsv($fp, $orderFile[$inc], chr(9));
+				++$inc;
+			}
+		}
+		close($fp);
+		$this->newproductfile2($eventList);
+	}
+	/**
+	 * The newproductfile method like adhoc method needs to be migrated so its executed via li3 command.
+	 *
+	 * The purpose of this method is to create the item list for our 3PL. For every order that was created a
+	 * CSV line is generated. This method needs to be simplified so that it doesnt loop through
+	 * every order but builds and item list soely on what is saved in the event.
+	 * Event if we don't have purchases for particular items the item file should contain everything.
+	 * that we are attempting to sell. The PO will contain the details of the items and quantites
+	 * that have been purchased.
+	 * @todo Migrate code to li3 command.
+	 */
+	protected function newproductfile($eventIds = null) {
+		if ($eventIds) {
+			$fp = fopen('/tmp/TOTIT12182010.txt', 'w');
+			$productHeading = $this->_productHeading;
+			foreach ($eventIds as $eventId) {
+				$event = Event::find('first', array(
+					'conditions' => array(
+						'_id' => $eventId
+				)));
+				$eventItems = $this->getOrderItems($eventId);
+				$inc = 0;
+				foreach ($eventItems as $eventItem) {
+					foreach ($eventItem['details'] as $key => $value) {
+						$conditions = array(
+							'items.item_id' => (string) $eventItem['_id'],
+							'items.size' => (string) $key,
+							'items.status' => array('$ne' => 'Order Canceled')
+						);
+						$orders = $this->getOrders('all', $conditions);
+						if ($orders) {
+							foreach ($orders as $order) {
+								$items = $order['items'];
+								foreach ($items as $item) {
+									if (($item['item_id'] == $eventItem['_id']) && ($key == $item['size'])){
+										$fields[$inc]['SKU'] = $this->sku($eventItem['vendor_style'], $item['size']);
+										$fields[$inc]['Description'] = strtoupper(substr($eventItem['description'], 0, 40));
+										$fields[$inc]['WhsInsValue (Cost)'] = number_format($eventItem['sale_whol'], 2);
+										$fields[$inc]['Description for Customs'] = $eventItem['category'];
+										$fields[$inc]['ShipInsValue'] = number_format($eventItem['orig_whol'], 2);
+										$fields[$inc]['Ref1'] = $item['item_id'];
+										$fields[$inc]['Ref2'] = $item['size'];
+										$fields[$inc]['Ref3'] = $item['color'];
+										if ((int) $item['product_weight'] > 0) {
+											$fields[$inc]['UOM1_Weight'] = number_format($item['product_weight'],2);
+										}
+										$fields[$inc] = array_merge($productHeading, $fields[$inc]);
+										$productFile[$inc] = $this->sortArrayByArray($fields[$inc], $productHeading);
+									}
+								}
+							}
+							if (!empty($productFile[$inc])) {
+								fputcsv($fp, $productFile[$inc]);
+							}
+							++$inc;
+						}
+					}
+				}
+			}
+		}
+		fclose($fp);
+		return true;
 	}
 
 }
