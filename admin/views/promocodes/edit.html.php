@@ -40,7 +40,7 @@
         <fieldset>
         <?=$this->form->create(); ?>
             <?php  $enable= (($promocode->enabled))? 'checked' : '' ?>
-            Enable: <?=$this->form->checkbox( 'enabled', array( 'checked'=>$enable, 'value' => '1' ) ); ?> <br>
+			Enable: <?=$this->form->checkbox( 'enabled', array( 'checked'=>$enable, 'value' => '1' ) ); ?> <br>
                     
            Code: <?=$this->form->text('code', array( 'value' => $promocode->code ) ); ?><br>
            

@@ -14,12 +14,11 @@ class PromocodesController extends \lithium\action\Controller {
 	public function index() {
         
         $promocodes = Promocode::all();
-       // var_dump( get_class( $promocodes) );
+       
        foreach($promocodes as $promocode){
           
           $obj_data = $promocode->data();
           
-         // var_dump($obj_vars);
            if(!empty( $obj_data['start_date'] )) {
                 $promocode->start_date = date('m/d/Y', $promocode->start_date->sec );
             }
@@ -30,6 +29,13 @@ class PromocodesController extends \lithium\action\Controller {
            
             if(!empty( $obj_data['date_created'] )) {
                 $promocode->date_created= date( 'm/d/Y', $promocode->date_created->sec);
+            }
+			
+			if(!empty( $obj_data['created_by'] )) {
+				$conditions = array('conditions'=>array('_id'=>$obj_data['created_by']));
+                $user = User::find('all', $conditions);
+				$user=$user[0]->data();
+				$promocode->created_by= $user['firstname'].' '.$user['lastname'];
             }
             
         }
@@ -117,34 +123,33 @@ class PromocodesController extends \lithium\action\Controller {
             
            $promocode = Promocode::all( array( 'conditions'=>array( 'code' => $code['code'] ) ) );
                 
-                if ($promocode->data() ) {
-                    $message = 'Coupon Code Already Exists';
-                    return compact('message');
-                }   
-                  
-                  if( $this->request->data['enabled'] !== '1' ){
-                      
-                       $this->request->data['enabled'] = false;
-                    
-                    }else{
-                        
-                         $this->request->data['enabled'] = true;
-                    
-                    }
-                
-                   $code['start_date']= new MongoDate( strtotime( $code['start_date'] ) );
-                   $code['end_date']= new MongoDate( strtotime( $code['end_date'] ) );
-                   $code['date_created']= new MongoDate( strtotime( date('D M d Y') ) );
-                    
-                   if( $promoCode->save($code) ){
-                       
-                        $this->redirect('Promocodes::index');
-                        
-                   }
-                    
-           }
-           
-           return compact('admins');
+
+			if ($promocode->data() ) {
+				$message = 'Coupon Code Already Exists';
+				return compact('message');
+			}   
+			  
+		  if( $this->request->data['enabled'] == '1' || $this->request->data['enabled'] == 'On' ){
+			  
+			   $this->request->data['enabled'] = true;
+			
+			}else{
+			
+				 $this->request->data['enabled'] = false;
+			
+			}
+		   
+		   $code['start_date']= new MongoDate( strtotime( $code['start_date'] ) );
+		   $code['end_date']= new MongoDate( strtotime( $code['end_date'] ) );
+		   $code['date_created']= new MongoDate( strtotime( date('D M d Y') ) );
+		   $code = Promocode::createdBy($code);
+		   if( $promoCode->save($code) ){
+			   
+				$this->redirect('Promocodes::index');
+				
+		   }
+		}
+
 	}
 
 	public function edit($id=NULL) {
@@ -157,7 +162,7 @@ class PromocodesController extends \lithium\action\Controller {
 		}
         
         $obj_data = $promocode->data();
-        
+
         if(!empty( $obj_data['start_date'] )){
                 $promocode->start_date = date('m/d/Y', $promocode->start_date->sec );
         }
@@ -166,31 +171,28 @@ class PromocodesController extends \lithium\action\Controller {
             $promocode->end_date = date('m/d/Y', $promocode->end_date->sec );
         }
         
-        
 		if ( $this->request->data ) {
-            
-               $data = $this->request->data;
-               
-               if( $data['enabled'] !== '1' ){
-                          
-                    $data['enabled'] = false;
-            
-                }else{
-                
-                    $data['enabled'] = true;
-                
-                }
-           
-                $admins = User::all( array( 'conditional'=>array('admin' => true) ) );
-                           
-               $data['start_date']= new MongoDate( strtotime( $data['start_date'] ) );
-               $data['end_date']= new MongoDate( strtotime( $data['end_date'] ) );
-               $data['date_created']= new MongoDate( strtotime( date('D M d Y') ) );
-                
-                $promocode->save($data);
-                
-                $this->redirect( array( 'Promocodes::index' ) );
-            
+
+		   $data = $this->request->data;
+		  
+		   if( $data['enabled'] == '1' || $data['enabled'] == 'On' ){
+				
+			   $data['enabled'] = true;
+			
+			}else{
+			
+				 $data['enabled'] = false;
+			
+			}
+	   
+		   $data['start_date']= new MongoDate( strtotime( $data['start_date'] ) );
+		   $data['end_date']= new MongoDate( strtotime( $data['end_date'] ) );
+		   $data['date_created']= new MongoDate( strtotime( date('D M d Y') ) );
+		   $data= Promocode::createdBy($data);
+			var_dump($data);
+		   $promocode->save($data);
+			
+			$this->redirect( array( 'Promocodes::index' ) );
 		}
         
 		return compact('promocode', 'admins');
