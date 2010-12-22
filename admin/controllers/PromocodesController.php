@@ -182,7 +182,7 @@ class PromocodesController extends \admin\controllers\BaseController {
 		   $data = $this->request->data;
 
 		   if( $data['enabled'] == '1' || $data['enabled'] == 'on' ){
-
+				
 			   $data['enabled'] = true;
 
 			}else{
@@ -197,7 +197,7 @@ class PromocodesController extends \admin\controllers\BaseController {
 			$data['end_date']= new MongoDate( strtotime( $data['end_date'] ) );
 			$data['date_created']= new MongoDate( strtotime( date('D M d Y') ) );
 			$data= Promocode::createdBy($data);
-			var_dump($data);
+			
 		   $promocode->save($data);
 
 			$this->redirect( array( 'Promocodes::index' ) );
