@@ -65,19 +65,18 @@ if(!Session::check('userLogin')) {
 
 Router::connect('/', 'Events::index');
 Router::connect('/{:action:login|logout}', array('controller' => 'users'));
-
-Router::connect('/addresses', 'Addresses::view');
-Router::connect('/addresses/edit{:args}', 'Addresses::edit');
-Router::connect('/account/info', 'Users::info');
-Router::connect('/account/add/{:args}', 'Account::add');
+Router::connect('/myaccount/addresses', 'Addresses::view');
+Router::connect('/myaccount/addresses/edit{:args}', 'Addresses::edit');
+Router::connect('/myaccount', 'Users::info');
+Router::connect('/myaccount/add/{:args}', 'Account::add');
+Router::connect('/myaccount/orders', 'Orders::index');
 Router::connect('/invite', 'Users::invite');
-Router::connect('/shopping/cart', 'Cart::index');
-Router::connect('/shopping/checkout.{:type}', 'Orders::add');
-Router::connect('/shopping/checkout', 'Orders::add');
-Router::connect('/upgrade', 'Users::upgrade');
-Router::connect('/events/view/{:item:[a-z0-9\-]+}', 'Events::view');
+Router::connect('/cart', 'Cart::index');
+Router::connect('/checkout.{:type}', 'Orders::add');
 Router::connect('/welcome', 'Users::affiliate');
-
+Router::connect('/{:event:[a-z0-9\-]+}', 'Events::view');
+//Router::connect('/events/view/{:event:[a-z0-9\-]+}', 'Events::view');
+Router::connect('/{:event:[a-z0-9\-]+}/{:item:[a-z0-9\-]+}', 'Items::view');
 /**
 * Taking this route out, as the menu helper is not ready
 * for custom routes.
