@@ -17,7 +17,6 @@ class ItemsController extends BaseController {
 	public function view($url = null) {
 		$url = $this->request->item;
 		$event = $this->request->event;
-
 		if ($url == null) {
 			$this->redirect('/');
 		} else {
@@ -27,14 +26,14 @@ class ItemsController extends BaseController {
 					'url' => $url),
 				'order' => array('modified_date' => 'DESC'
 			)));
-			var_dump($item->_id);
-			$event = Event::find('first', array(
-				'conditions' => array(
-					'items' => array((string) $item->_id),
-					'enabled' => true,
-					'url' => $event
-			)));
-
+			if ($item) {
+				$event = Event::find('first', array(
+					'conditions' => array(
+						'items' => array((string) $item->_id),
+						'enabled' => true,
+						'url' => $event
+				)));
+			}
 			if ($item == null || $event == null) {
 				$this->redirect('/');
 			} else {

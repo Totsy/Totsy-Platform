@@ -72,11 +72,11 @@ Router::connect('/myaccount/add/{:args}', 'Account::add');
 Router::connect('/myaccount/orders', 'Orders::index');
 Router::connect('/invite', 'Users::invite');
 Router::connect('/cart', 'Cart::index');
+Router::connect('/cart/view', 'Cart::view');
 Router::connect('/checkout.{:type}', 'Orders::add');
 Router::connect('/welcome', 'Users::affiliate');
-Router::connect('/{:event:[a-z0-9\-]+}', 'Events::view');
-//Router::connect('/events/view/{:event:[a-z0-9\-]+}', 'Events::view');
-Router::connect('/{:event:[a-z0-9\-]+}/{:item:[a-z0-9\-]+}', 'Items::view');
+Router::connect('/sale/{:event:[a-z0-9\-]+}', 'Events::view');
+Router::connect('/sale/{:event:[a-z0-9\-]+}/{:item:[a-z0-9\-]+}', 'Items::view');
 /**
 * Taking this route out, as the menu helper is not ready
 * for custom routes.

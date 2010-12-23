@@ -100,7 +100,7 @@ $(document).ready(function() {
 							'width' => '355',
 							'height' => '410',
 					'style' => 'margin:0px 0px -6px 0px;'
-							)), $event->url, array('escape'=> false));
+							)), "sale/$event->url", array('escape'=> false));
 						?>
 					<?php else: ?>				
 						<?=$this->html->link(
@@ -109,7 +109,7 @@ $(document).ready(function() {
 							'alt' => $event->name,
 							'width' => '298',
 							'height' => '344'
-						)), $event->url, array('escape'=> false));
+						)), "sale/$event->url", array('escape'=> false));
 						 ?>
                          
 					<?php endif ?>
