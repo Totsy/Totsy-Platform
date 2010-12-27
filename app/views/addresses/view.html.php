@@ -34,7 +34,7 @@
 					<div id='address'>
 						<?=$address->address?><br><?=$address->address_2?><br>
 						<?=$address->city?>, <?=$address->state?>, <?=$address->zip?><br>
-						<?=$this->html->link('Edit', "addresses/edit/$address->_id"); ?>
+						<?=$this->html->link('Edit', array('controller' => 'Addresses', 'action' => 'edit', 'args' => $address->_id)); ?>
 					</div>
 				</td>
 				<td align='center'>
