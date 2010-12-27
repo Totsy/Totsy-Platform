@@ -31,7 +31,7 @@ class PagesController extends BaseController {
 		if (empty($userCheck) && !in_array($path[0], $allowed)) {
 			$this->redirect('/');
 		}
-		$this->render(join('/', $path));
+		$this->render(array('template' => $path[0]));
 	}
 
 }
