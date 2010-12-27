@@ -38,6 +38,9 @@
 	<li>
 		<?php echo $this->html->link('Reports', '#'); ?>
 		<ul>
+            <li>
+				<?php echo $this->html->link('Google Analytics', 'Reports::googleAnalytics'); ?>
+			</li>
 			<li>
 				<?php echo $this->html->link('Affiliate Report', 'Reports::affiliate'); ?>
 			</li>
@@ -59,13 +62,13 @@
 		<?php echo $this->html->link('Promotions', '#'); ?>
 		<ul>
 			<li>
-				<?php echo $this->html->link('Create Promocode', '#'); ?>
+				<?php echo $this->html->link('Create Promocode', 'promocodes/add'); ?>
 			</li>
 			<li>
-				<?php echo $this->html->link('View/Edit Promocodes', '#'); ?>
+				<?php echo $this->html->link('View/Edit Promocodes', 'promocodes/index' ); ?>
 			</li>
 			<li>
-				<?php echo $this->html->link('View Promotions', '#'); ?>
+				<?php echo $this->html->link('View Promotions', 'promocodes/report'); ?>
 			</li>
 		</ul>
 	</li>

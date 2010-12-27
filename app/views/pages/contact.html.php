@@ -17,10 +17,13 @@
 
 	<div id="page">
 		<div id="message">
-			Please <a href="mailto:support@totsy.com" title="Click to send us an email at support@totsy.com">click to email us</a> and we will do our best to respond quickly.</p>
-			<p>You can also contact Totsy at:<br>
-				Corporate Address: 10 West 18th Street, 4th Floor, New York, NY 10011<br>
-				Phone Number: 1-888-59TOTSY (1-888-598-6879) </p>
+				<strong>Corporate Address:</strong><br/>
+				10 West 18th Street<br/>
+				4th Floor<br/>
+				New York, NY 10011<br/>
+				<br />
+				<strong>Support Email:</strong> <br />				 
+				<a href="mailto:support@totsy.com">support@totsy.com</a></p>
 		</div>
 	</div>
 	<div class="bl"><!-- --></div>

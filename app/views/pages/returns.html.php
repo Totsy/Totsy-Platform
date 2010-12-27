@@ -34,7 +34,7 @@
 <h3 class="gray mar-b">3.2 Procedure For Returns: you may return a product bought on TOTSY's website which was not listed as a Final Sale, only upon compliance with TOTSY's Return Procedure:</h3>
 <hr />
 <ul>
-	<li><strong>48h Notice:</strong> Within forty eight (48) hours of your confirmed sale, as indicated on your PO, you must contact TOTSY's customer service either by telephone (Toll free number: 1-888-59TOTSY, or 1-888-598-6879), or via TOTSY's website by clicking on the CONTACT US menu.</li>
+	<li><strong>48h Notice:</strong> Within forty eight (48) hours of your confirmed sale, as indicated on your PO, you must contact TOTSY's customer service via email at <a href="mailto:support@totsy.com">support@totsy.com</a></li>
 	<li><strong>RMA Number:</strong> All returns must include a Return Merchandise Authorization number (RMA) provided by a TOTSY customer service representative and conspicuously written on the outside of the package, or box, in which Member will ship the returned items. Any returns that do not have a valid RMA on the outside of the packages will be rejected.</li>
 	<li><strong>Shipping Costs:</strong> Member shall be responsible for the shipping costs of any returned items which has an RMA. If Member returns one or more items which does not have an RMA, TOTSY is entitled to discard it, will not credit the Member's account and Member shall be responsible for any costs related to the storage and shipping of such items.</li>
 	<li><strong>5 Business Days to Receive Returns:</strong> TOTSY must receive your return items within five (5) business days from the date you received a RMA from TOTSY.</li>
