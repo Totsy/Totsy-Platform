@@ -62,8 +62,8 @@ if(!Session::check('userLogin')) {
 	Router::connect('/{:args}', 'Users::login');
 	return;
 }
-
 Router::connect('/', 'Events::index');
+Router::connect('/sales', 'Events::index');
 Router::connect('/{:action:login|logout}', array('controller' => 'users'));
 Router::connect('/myaccount/addresses', 'Addresses::view');
 Router::connect('/myaccount/address/add', 'Addresses::add');
@@ -71,10 +71,11 @@ Router::connect('/myaccount/addresses/edit{:args}', 'Addresses::edit');
 Router::connect('/myaccount', 'Users::info');
 Router::connect('/myaccount/add/{:args}', 'Account::add');
 Router::connect('/myaccount/orders', 'Orders::index');
+Router::connect('/order', 'Orders::add');
 Router::connect('/invite', 'Users::invite');
 Router::connect('/cart', 'Cart::index');
 Router::connect('/cart/view', 'Cart::view');
-Router::connect('/checkout.{:type}', 'Orders::add');
+Router::connect('/checkout', 'Orders::process');
 Router::connect('/welcome', 'Users::affiliate');
 Router::connect('/sale/{:event:[a-z0-9\-]+}', 'Events::view');
 Router::connect('/sale/{:event:[a-z0-9\-]+}/{:item:[a-z0-9\-]+}', 'Items::view');
