@@ -69,7 +69,7 @@ class AddressesController extends BaseController {
 					if (!empty($this->request->data['isAjax'])) {
 						$this->redirect('/shopping/checkout');
 					} else {
-						$this->redirect('/addresses');
+						$this->redirect('Addresses::view');
 					}
 				}
 			}

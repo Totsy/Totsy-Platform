@@ -81,7 +81,7 @@
 
 			<div class="form-row">
 				<?=$this->form->label('zip', 'Zip/Postal Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('zip', array('class' => 'inputbox')); ?>
+				<?=$this->form->text('zip', array('class' => 'inputbox', 'id' => 'zip')); ?>
 			</div> 
 			<?=$this->form->submit('Submit', array('class' => 'flex-btn fr')); ?>
 		</fieldset> 
@@ -97,6 +97,7 @@ jQuery(function($){
    $("#phone").mask("(999) 999-9999");
    $("#tin").mask("99-9999999");
    $("#ssn").mask("999-99-9999");
+   $("#zip").mask("99999");
 });
 </script>
 <div class="bl"></div>
