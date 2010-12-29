@@ -92,8 +92,8 @@ class ItemsController extends BaseController {
 					'conditions' => array(
 						'items' => array((string) $item->_id)
 				)));
-				$related = $item->related();
-				$sizes = $item->sizes();
+				$related = Item::related($item);
+				$sizes = Item::sizes($item);
 				$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 			}
 		}

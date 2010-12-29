@@ -56,16 +56,16 @@ class Item extends \lithium\data\Model {
 		return $items;
 	}
 
-	public function related($item) {
+	public static function related($item) {
 		return static::all(array('conditions' => array(
 			'enabled' => true,
 			'description' => "$item->description",
 			'color' => array('$ne' => "$item->color"),
-			'event' => $item->event
+			'event' => $item->event[0]
 		)));
 	}
 
-	public function sizes($item) {
+	public static function sizes($item) {
 		if (empty($item->details)) {
 			return array();
 		}
