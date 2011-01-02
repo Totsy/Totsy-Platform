@@ -13,7 +13,7 @@ class PagesController extends \lithium\action\Controller {
 		if (empty($path)) {
 			$path = array('home');
 		}
-		$this->render(join('/', $path));
+		$this->render(array('template'=>join('/', $path)));
 	}
 
 }

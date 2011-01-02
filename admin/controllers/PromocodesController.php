@@ -1,7 +1,6 @@
 <?php
 
 namespace admin\controllers;
-
 use \admin\models\Promocode;
 use \admin\models\Promotion;
 use \admin\models\User;
