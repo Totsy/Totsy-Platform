@@ -248,7 +248,7 @@ function output(val){
 //--> 
 </script> 
 
-<div style="height:920px;">
+<div style="height:1410px;">
 	<div style="position: absolute; left:0px; width:520px; background-image: url(http://dev.totsy.com/img/motw/images/facebook_motw_bg.jpg); overflow-x:hidden">
 
 	  <div id="body">			
@@ -683,7 +683,7 @@ function output(val){
 				<img src="http://dev.totsy.com/img/motw/images/motw_logo.png" alt="Mom Of The Week" border="0" title="Mom Of The Week">
 			</div>
 			<div id="intro">
-				1 prize per week. Starting December 1st.	
+				1 prize per week. Starting January 1st.	
 			</div>
 			
 			<div id="register">
@@ -871,7 +871,7 @@ function output(val){
 		</div>
 	
 		<div id="footer">
-		<img src="http://dev.totsy.com/img/motw/images/melissa_doug.png" alt="MotW_prizing_wk1" width="522" height="125"/>
+		<img src="http://dev.totsy.com/img/preview-motw-month3.jpg" alt="MotW_prizing_wk2"/>
 	
 		</div>
 		
