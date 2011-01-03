@@ -249,10 +249,10 @@ function output(val){
 </script> 
 
 <div style="height:1410px;">
-	<div style="position: absolute; left:0px; width:520px; background-image: url(http://dev.totsy.com/img/motw/images/facebook_motw_bg.jpg); overflow-x:hidden">
+	<div style="position: absolute; left:0px; width:520px; background-image: url(http://www.totsy.com/img/motw/images/facebook_motw_bg.jpg); overflow-x:hidden">
 
 	  <div id="body">			
-		<link rel="stylesheet" href="http://dev.totsy.com/css/motw/reset.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="http://www.totsy.com/css/motw/reset.css" type="text/css" media="screen" />
 		<style>
 		/* @group Global */
 
@@ -295,7 +295,7 @@ function output(val){
 		}
 		
 		.h-dots {
-			background: transparent url(http://dev.totsy.com/img/motw/images/h-dots.png) repeat-x;
+			background: transparent url(http://www.etsy.com/img/motw/images/h-dots.png) repeat-x;
 			height: 1px !important;
 		}
 		
@@ -345,13 +345,13 @@ function output(val){
 		.top_curve {
 			width: 423px;
 			height:9px;
-			background: url(http://dev.totsy.com/img/motw/images/curve_top.png);
+			background: url(http://www.totsy.com/img/motw/images/curve_top.png);
 			display: none;
 		}
 		.bottom_curve {
 			width: 423px;
 			height:9px;
-			background: url(http://dev.totsy.com/img/motw/images/curve_bottom.png);
+			background: url(http://www.totsy.com/img/motw/images/curve_bottom.png);
 			display: none;
 		}
 		
@@ -361,7 +361,7 @@ function output(val){
 		
 		#intro{
 			width: 100%;
-			background-image: url(http://dev.totsy.com/img/motw/images/messaging_bg.png);
+			background-image: url(http://www.totsy.com/img/motw/images/messaging_bg.png);
 			margin: 0 0 0 0;
 			padding-left: 54px;
 			color:#ffffff;
@@ -415,7 +415,7 @@ function output(val){
 		}
 		
 		#register-form-container, #newmember-container, #confirm-container, #response-container {
-			background:url(http://dev.totsy.com/img/motw/images/trans_bg_middle.png);
+			background:url(http://www.totsy.com/img/motw/images/trans_bg_middle.png);
 			padding: 20px;
 			width:383px;
 		}
@@ -509,7 +509,7 @@ function output(val){
 			padding: 0;
 			font-size: 0;
 			text-indent: -10000px;
-			background: transparent url(http://dev.totsy.com/img/motw/images/enter_contest_button.png) no-repeat 0 0;
+			background: transparent url(http://www.totsy.com/img/motw/images/enter_contest_button.png) no-repeat 0 0;
 			cursor: pointer;
 		}
 		
@@ -680,7 +680,7 @@ function output(val){
 		<div id="container">
 					
 			<div id="header">
-				<img src="http://dev.totsy.com/img/motw/images/motw_logo.png" alt="Mom Of The Week" border="0" title="Mom Of The Week">
+				<img src="http://www.totsy.com/img/motw/images/motw_logo.png" alt="Mom Of The Week" border="0" title="Mom Of The Week">
 			</div>
 			<div id="intro">
 				1 prize per week. Starting January 1st.	
@@ -786,7 +786,7 @@ function output(val){
 					
 					<div id="confirm-top" class="top_curve container show" style="margin-top:20px;"></div>
 					<div id="confirm-container" class="container show">
-					<div class="form-header"><img src="http://dev.totsy.com/img/motw/images/confirmmember_register.png" alt="enter_header"/>&nbsp;&nbsp;&nbsp;Not a member? <a onclick="showNewMemberForm()">Click Here</a>.</div>
+					<div class="form-header"><img src="http://www.totsy.com/img/motw/images/confirmmember_register.png" alt="enter_header"/>&nbsp;&nbsp;&nbsp;Not a member? <a onclick="showNewMemberForm()">Click Here</a>.</div>
 						<form name="confirm" id="confirm-form" method="post">
 							<div style="margin-top:8px;">
 								<p>Email address used to sign up for Totsy.com</p><span id="confirmemail-error" class="error-text">Please enter a valid email address.</span>
@@ -804,7 +804,7 @@ function output(val){
 							</div>
 	
 							<div id="register-load-indicator">
-								<img src="http://dev.totsy.com/img/motw/ajax-loader.gif">
+								<img src="http://www.totsy.com/img/motw/ajax-loader.gif">
 							</div>
 						</div>		
 					</div>
@@ -812,7 +812,7 @@ function output(val){
 					
 					<div id="newmember-top" class="top_curve container" style="margin-top:20px;"></div>
 					<div id="newmember-container" class="container">
-					<div class="form-header"><img src="http://dev.totsy.com/img/motw/images/becomemember_register.png" alt="enter_header"/>&nbsp;&nbsp;&nbsp;Already a member? <a onclick="showConfirmForm()">Click Here</a>.</div>
+					<div class="form-header"><img src="http://www.totsy.com/img/motw/images/becomemember_register.png" alt="enter_header"/>&nbsp;&nbsp;&nbsp;Already a member? <a onclick="showConfirmForm()">Click Here</a>.</div>
 						<form name="register" id="register-form" method="post">
 						
 						<div style="margin-top:8px; float:left;">
@@ -855,7 +855,7 @@ function output(val){
 
 	
 							<div id="register-load-indicator">
-								<img src="http://dev.totsy.com/img/motw/ajax-loader.gif">
+								<img src="http://www.totsy.com/img/motw/ajax-loader.gif">
 							</div>
 						</div>		
 					</div>	
@@ -871,7 +871,7 @@ function output(val){
 		</div>
 	
 		<div id="footer">
-		<img src="http://dev.totsy.com/img/preview-motw-month3.jpg" alt="MotW_prizing_wk2"/>
+		<img src="http://www.totsy.com/img/preview-motw-month3.jpg" alt="MotW_prizing_wk2"/>
 	
 		</div>
 		
