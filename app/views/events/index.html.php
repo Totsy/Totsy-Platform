@@ -223,7 +223,7 @@ $(document).ready(function() {
 							'alt' => $event->name, 
 							'width' => '298', 
 							'height' => '344'
-						)),array('Events::view', 'args' => array($event->url)), array('escape'=> false));
+						)), 'sale/'.$event->url, array('escape'=> false));
 						 ?>
 
 						<div class="splash-details">
