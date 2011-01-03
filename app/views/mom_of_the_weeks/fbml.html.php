@@ -295,7 +295,7 @@ function output(val){
 		}
 		
 		.h-dots {
-			background: transparent url(http://www.etsy.com/img/motw/images/h-dots.png) repeat-x;
+			background: transparent url(http://www.totsy.com/img/motw/images/h-dots.png) repeat-x;
 			height: 1px !important;
 		}
 		
@@ -724,7 +724,7 @@ function output(val){
 					<div id="register-top" class="top_curve container show"></div>
 					<div id="register-form-container" class="container show">
 					
-					<div class="form-header"><img src="http://dev.totsy.com/img/motw/images/enter_header.png" alt="enter_header"/></div>
+					<div class="form-header"><img src="http://www.totsy.com/img/motw/images/enter_header.png" alt="enter_header"/></div>
 						<form name="question" id="question-form" method="post">
 							<div style="margin-top:8px; float:left;">
 								<p class="firstName important">What is your full name?</p><span id="q1-error" class="error-text">Please answer this question.</span>
