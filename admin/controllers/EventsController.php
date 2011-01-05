@@ -123,7 +123,9 @@ class EventsController extends BaseController {
 		return compact('event', 'eventItems', 'items');
 	}
 	/**
-	 * Parse the CSV file
+	 * This method parses the item file that is uploaded in the Events Edit View.
+	 *
+	 * @todo Move this method to the Items controller and make it a static method.
 	 */
 	protected function parseItems($_FILES, $_id, $enabled = false) {
 		$items = array();
@@ -185,7 +187,7 @@ class EventsController extends BaseController {
 						'enabled' => (bool) $enabled,
 						'created_date' => $date,
 						'details' => $itemAttributes,
-						'event' => array($_id),
+						'event' => array((string) $_id),
 						'url' => $url,
 						'taxable' => true
 					);
