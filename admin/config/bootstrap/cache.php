@@ -13,7 +13,7 @@
 use lithium\storage\Cache;
 use lithium\core\Libraries;
 use lithium\action\Dispatcher;
-use lithium\storage\cache\adapter\Apc;
+use lithium\storage\cache\adapter\XCache;
 
 /**
  * If xcache is not available, bail out.
