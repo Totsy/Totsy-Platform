@@ -57,6 +57,10 @@ Environment::is(function($request) {
 	}
 });
 
+if (empty($request)) {
+	Environment::set('development');
+}
+
 /**
  * Include this file if your application uses a database connection.
  */
