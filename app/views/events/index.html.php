@@ -110,6 +110,7 @@ $(document).ready(function() {
 							'width' => '298',
 							'height' => '344'
 						)), "sale/$event->url", array('escape'=> false));
+						
 						 ?>
                          
 					<?php endif ?>
@@ -133,7 +134,7 @@ $(document).ready(function() {
 						</div>
 						
 						<div class="table-cell right" style="width:55px; display:block; padding:5px; margin:7px 0px 0px 0px; ">
-							<span><?=$this->html->link('Shop', array('Events::view', 'args' => array($event->url)), array('class' => 'go-btn'));?></span>
+							<span><?=$this->html->link('Shop', 'sale/'.$event->url, array('class' => 'go-btn'));?></span>
 						</div>
 					</div>
 				</div>
