@@ -167,7 +167,7 @@ $(document).ready(function() {
 		<?php $x++; ?>
 		<?php $y++; ?>
 	<?php endforeach ?>
-       
+<!--       
 	    <div>
 	      <img src="/img/winterSale_banner_02.png" width="920" height="61" alt="" style="float:left; margin:0px; padding:0px;">
 	</div>
@@ -179,7 +179,8 @@ $(document).ready(function() {
 	      <a href="http://www.totsy.com/events/view/pink-platinum"><img src="/img/winterSale_banner_07.png" width="191" height="87" alt="" style="float:left; margin:0px; padding:0px;"></a>
 	    </div>
 
-<!-- <img src="/img/Xmas_ban.jpg" border="0" />-->  
+-->  
+
 	<br style="margin-bottom:10px;"/>
 
 	<div class="coming-soon-sales">

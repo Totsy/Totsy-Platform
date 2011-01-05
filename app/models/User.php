@@ -23,7 +23,7 @@ use \lithium\util\Validator;
  * 		lastname: String (required),
  * 		email: String (required),
  * 		password: String (required),
- * 		invitation_code: mixed (array, string) (required),
+ * 		invitation_codes: mixed (array, string) (required),
  * 		invited_by: String,
  * 		lastip: String,
  * 		lastlogin: MongoDate,
