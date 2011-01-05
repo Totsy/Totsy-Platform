@@ -29,14 +29,16 @@ Cache::config(array(
 ));
 
 Dispatcher::applyFilter('run', function($self, $params, $chain) {
-	if ($cache = Cache::read('default', 'core.libraries')) {
+	$key = 'admin.core.libraries';
+
+	if ($cache = Cache::read('default', $key)) {
 		$cache = (array) unserialize($cache) + Libraries::cache();
 		Libraries::cache($cache);
 	}
 	$result = $chain->next($self, $params, $chain);
 
 	if ($cache != Libraries::cache()) {
-		Cache::write('default', 'admin.core.libraries', serialize(Libraries::cache()), '+1 day');
+		Cache::write('default', $key, serialize(Libraries::cache()), '+1 day');
 	}
 	return $result;
 });
