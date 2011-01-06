@@ -63,7 +63,6 @@ class OrdersController extends BaseController {
 	 */
 	public function index() {
 		$headings = $this->_headings;
-		FlashMessage::clear();
 		$collection = Order::collection();
 		if ($this->request->data) {
 			$search = $this->request->data['search'];
