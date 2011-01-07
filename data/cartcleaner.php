@@ -14,7 +14,7 @@ function debug( $thingie ){
 /**
 * Configuration
 */
-$mhost = '172.20.8.33';
+$mhost = '172.20.15.38';
 $mdb = 'totsy';
 $minutes = 17; // set this to the number of MINUTES your expiration needs
 $expire = $minutes * 60;
