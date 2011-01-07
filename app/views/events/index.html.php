@@ -175,11 +175,11 @@ $(document).ready(function() {
               <img src="/img/homeMonth_ban_02.png" style="float:left; margin:0px; padding:0px 0px 0px -2px; width:921px;">
         </div>
             <div style="margin:0px; padding:0px:">
-              <a href="/events/view/dutailier"><img src="/img/homeMonth_ban_03.png" style="float:left; margin:0px; padding:0px;"></a>
+              <img src="/img/homeMonth_ban_03.png" style="float:left; margin:0px; padding:0px;">
               <a href="/events/view/the-kids-room-by-stupell"><img src="/img/homeMonth_ban_04.png" style="float:left; margin:0px; padding:0px;"></a>
               <a href="/events/view/new-arrivals-inc"><img src="/img/homeMonth_ban_05.png" style="float:left; margin:0px; padding:0px;"></a>
               <a href="/events/view/cocalo-bedding"><img src="/img/homeMonth_ban_06.png" style="float:left; margin:0px; padding:0px;"></a>
-              <a href="/events/view/kids-rugs-by-momeni"><img src="/img/homeMonth_ban_07.png" style="float:left; margin:0px 0px 0px -2px; padding:0px; "></a>
+              <img src="/img/homeMonth_ban_07.png" style="float:left; margin:0px 0px 0px -3px; padding:0px; ">
             </div>
 
 	<br style="margin-bottom:10px;"/>
