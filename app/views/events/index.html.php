@@ -52,6 +52,10 @@ $(document).ready(function() {
 	<hr />
 
 
+    
+
+
+
 <div id="middle" class="fullwidth">
      
 	<?php $x = 0; ?>
@@ -121,8 +125,7 @@ $(document).ready(function() {
                 <!-- Begin Holiday Banner Notifications -->
                 <?php if ($event->tags): ?>
 					<?php foreach ($event->tags as $key => $value): ?>
-                        <div style="background:#000; font-size:12px; color:#FFF; font-weight:normal; padding:5px; margin:0px 0px -10px 0px;">
-                        <span><img src="/favicon.ico" align="absmiddle" /></span> <?=$value?> Sale</div>
+                        <div style="background:#f0efef; font-size:12px; color:#a8a8a8; font-weight:normal; padding:3px 5px; margin:0px 0px -22px 0px;"> <?=$value?></div>
                     	<div class="clear"></div>
                     <?php endforeach ?>
           		<?php endif ?>
@@ -167,19 +170,18 @@ $(document).ready(function() {
 		<?php $x++; ?>
 		<?php $y++; ?>
 	<?php endforeach ?>
-<!--       
-	    <div>
-	      <img src="/img/winterSale_banner_02.png" width="920" height="61" alt="" style="float:left; margin:0px; padding:0px;">
-	</div>
-	    <div style="margin:0px; padding:0px:">
-	      <a href="http://www.totsy.com/events/view/carters-watch-the-wear"><img src="/img/winterSale_banner_03.png" width="190" height="87" alt="" style="float:left; margin:0px; padding:0px;"></a>
-	      <a href="http://www.totsy.com/events/view/beeposh-accessories"><img src="/img/winterSale_banner_04.png" width="179" height="87" alt="" style="float:left; margin:0px; padding:0px;"></a>
-	      <a href="http://www.totsy.com/events/view/cocalo"><img src="/img/winterSale_banner_05.png" width="180" height="87" alt="" style="float:left; margin:0px; padding:0px;"></a>
-	      <a href="http://www.totsy.com/events/view/goldbug-shoes"><img src="/img/winterSale_banner_06.png" width="180" height="87" alt="" style="float:left; margin:0px; padding:0px;"></a>
-	      <a href="http://www.totsy.com/events/view/pink-platinum"><img src="/img/winterSale_banner_07.png" width="191" height="87" alt="" style="float:left; margin:0px; padding:0px;"></a>
-	    </div>
-
--->  
+      
+      
+      <div style="margin-top: 20px;">
+              <img src="/img/homeMonth_ban_02.png" style="float:left; margin:0px; padding:0px 0px 0px -2px; width:921px;">
+        </div>
+            <div style="margin:0px; padding:0px:">
+              <a href="/events/view/dutailier"><img src="/img/homeMonth_ban_03.png" style="float:left; margin:0px; padding:0px;"></a>
+              <a href="/events/view/the-kids-room-by-stupell"><img src="/img/homeMonth_ban_04.png" style="float:left; margin:0px; padding:0px;"></a>
+              <a href="/events/view/new-arrivals-inc"><img src="/img/homeMonth_ban_05.png" style="float:left; margin:0px; padding:0px;"></a>
+              <a href="/events/view/cocalo-bedding"><img src="/img/homeMonth_ban_06.png" style="float:left; margin:0px; padding:0px;"></a>
+              <a href="/events/view/kids-rugs-by-momeni"><img src="/img/homeMonth_ban_07.png" style="float:left; margin:0px 0px 0px -2px; padding:0px; "></a>
+            </div>
 
 	<br style="margin-bottom:10px;"/>
 
@@ -229,7 +231,17 @@ $(document).ready(function() {
 						 ?>
 
 						<div class="splash-details">
-							<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
+							
+<!-- Begin Holiday Banner Notifications -->
+                <?php if ($event->tags): ?>
+                                        <?php foreach ($event->tags as $key => $value): ?>
+                        <div style="background:#f0efef; font-size:12px; color:#a8a8a8; font-weight:normal; padding:3px 5px; margin:0px 0px 0px 0px;"> <?=$value?></div>
+                        <div class="clear"></div>
+                    <?php endforeach ?>
+                        <?php endif ?>
+                <!-- End Holiday Banner Notifications -->
+
+<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
 							<p style="padding:0px; margin:0px; font-size:16px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
 							<p style="padding:0px; margin:-3px 0px 0px 0px; font-size:13px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;">
 <span id="<?php echo "futuresplash$x"; ?>"></span>
