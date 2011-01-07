@@ -2,36 +2,7 @@
 
 namespace app\extensions;
 
-use lithium\analysis\Logger;
-
-/*
-Copyright (c) 2000, Jason Costomiris
-All rights reserved.
-Don't be scared, it's just a BSD-ish license.
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions
-are met:
-1. Redistributions of source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-3. All advertising materials mentioning features or use of this software
-   must display the following acknowledgement:
-   This product includes software developed by Jason Costomiris.
-4. The name of the author may not be used to endorse or promote products
-   derived from this software without specific prior written permission.
-THIS SOFTWARE IS PROVIDED BY THE AUTHOR COPYRIGHT HOLDERS AND CONTRIBUTORS
-``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
-TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+use lithium\net\http\Service;
 
 class Ups {
 
@@ -154,7 +125,7 @@ class Ups {
 
 	public function quote() {
 		$upsAction = "3"; // You want 3. Don't change unless you are sure.
-		$endpoint = "http://www.ups.com/using/services/rave/qcostcgi.cgi?";
+		$endpoint = "/using/services/rave/qcostcgi.cgi?";
 		$query = array(
 			'accept_UPS_license_agreement' => 'yes',
 			'10_action' => $upsAction,
@@ -170,34 +141,34 @@ class Ups {
 		);
 		$url = $endpoint . http_build_query($query);
 
-		if (($fp = fopen($url, "r") === false) || !$fp) {
+		$service = new Service(array(
+			'socket' => 'Context',
+			'host' => 'www.ups.com'
+		));
+
+		if (!$result = $service->get($url)) {
 			return null;
 		}
 
-		while (!feof($fp)) {
-			$result = fgets($fp, 500);
-			Logger::debug("UPS API result for {$url}: {$result}");
-			$result = explode("%", $result);
-			$errcode = substr($result[0], -1);
+		$result = explode("%", $result);
+		$errcode = substr($result[0], -1);
 
-			switch($errcode) {
-				case 3:
-					$returnval = $result[8];
-				break;
-				case 4:
-					$returnval = $result[8];
-				break;
-				case 5:
-					$returnval = $result[1];
-				break;
-				case 6:
-					$returnval = $result[1];
-				break;
-			}
+		switch($errcode) {
+			case 3:
+				$returnval = $result[8];
+			break;
+			case 4:
+				$returnval = $result[8];
+			break;
+			case 5:
+				$returnval = $result[1];
+			break;
+			case 6:
+				$returnval = $result[1];
+			break;
 		}
-		fclose($fp);
 		return $returnval ?: null;
 	}
 }
 
-?>
+
