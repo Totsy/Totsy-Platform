@@ -151,7 +151,7 @@ class ReportsController extends BaseController {
 						'$lte' => $max)
 				);
 				$searchType = $this->request->data['search_type'];
-
+				$total = 0;
 				switch ($searchType) {
 					case 'Revenue':
 						$users = User::find('all', array(
@@ -187,6 +187,14 @@ class ReportsController extends BaseController {
 						);
 						$conditions = array('report_id' => $reportId);
 						$results = $collection->group($keys, $inital, $reduce, $conditions);
+						$results['total'] = 0;
+						foreach ($results['retval'] as $result)
+						{
+							$results['total'] += $result['total'];
+						}
+						$results['total'] = round($results['total'], 2);
+						$results['total'] = number_format($results['total']);
+						$results['total'] = "$".$results['total'];
 						$collection->remove($conditions);
 						break;
 					case 'Registrations':
@@ -210,6 +218,12 @@ class ReportsController extends BaseController {
 							$reduce = new MongoCode('function(doc, prev){prev.total += 1}');
 							$collection = User::collection();
 							$results = $collection->group($keys, $inital, $reduce, $conditions);
+							$results['total'] = 0;
+							foreach ($results['retval'] as $result)
+							{
+								$results['total'] += $result['total'];
+							}
+							$results['total'] = number_format($results['total']);
 						}
 				}
 			}
