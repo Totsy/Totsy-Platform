@@ -12,6 +12,8 @@ class Cart extends \lithium\data\Model {
 
 	const TAX_RATE_NYS = 0.04375;
 
+	const ORIGIN_ZIP = "08837";
+
 	public $validates = array();
 
 	protected $_dates = array(
@@ -142,7 +144,7 @@ class Cart extends \lithium\data\Model {
 		$result = floatval(Ups::estimate(array(
 			'weight' => array_sum($carts->weight()),
 			'product' => "GND",
-			'origin' => "18106",
+			'origin' => static::ORIGIN_ZIP,
 			'dest' => $address->zip,
 			'rate' => "RDP",
 			'container' => "CP",
