@@ -12,6 +12,8 @@ class Cart extends \lithium\data\Model {
 
 	const TAX_RATE_NYS = 0.04375;
 
+	const ORIGIN_ZIP = "08837";
+
 	public $validates = array();
 
 	protected $_dates = array(
@@ -133,14 +135,16 @@ class Cart extends \lithium\data\Model {
 
 	public function weight($cart) {
 		$item = Item::first($cart->item_id);
-		return intval(preg_replace('/[^0-9\.]/', '', $item->product_weight)) * $cart->quantity;
+		$weight = $item->shipping_weight ?: $item->product_weight;
+		$weight = is_string($weight) ? intval(preg_replace('/[^0-9\.]/', '', $weight)) : $weight;
+		return ($weight ?: 1) * $cart->quantity;
 	}
 
 	public static function shipping($carts, $address) {
 		$result = floatval(Ups::estimate(array(
 			'weight' => array_sum($carts->weight()),
 			'product' => "GND",
-			'origin' => "18106",
+			'origin' => static::ORIGIN_ZIP,
 			'dest' => $address->zip,
 			'rate' => "RDP",
 			'container' => "CP",
