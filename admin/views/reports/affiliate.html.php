@@ -82,6 +82,12 @@
 						</tr>
 					<?php endforeach ?>
 				</tbody>
+				<tfooter>
+					<tr>
+						<th>Grand Total<?php echo " - ".$searchType; ?> : </th>
+						<th> <?php echo $results['total'] ?></th>
+					</tr>
+				</tfooter>
 			</table>
 	</div>
 <?php endif ?>

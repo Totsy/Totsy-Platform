@@ -70,7 +70,7 @@ function onRegisterSubmit(evt){
 			}
 		}
 		if(regFlag == true){
-			ajax.post("http://dev.totsy.com/momoftheweek", {
+			ajax.post("http://www.totsy.com/momoftheweek", {
 				"q1":document.getElementById("form[question][question1]").getValue(),
 				"q2":document.getElementById("form[question][question2]").getValue(),
 				"q3":document.getElementById("form[question][question3]").getValue(),
@@ -84,7 +84,7 @@ function onRegisterSubmit(evt){
 				"terms":"1"
 			});	
 		} else {
-			ajax.post("http://dev.totsy.com/momoftheweek", {
+			ajax.post("http://www.totsy.com/momoftheweek", {
 				"q1":document.getElementById("form[question][question1]").getValue(),
 				"q2":document.getElementById("form[question][question2]").getValue(),
 				"q3":document.getElementById("form[question][question3]").getValue(),
