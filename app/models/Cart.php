@@ -133,7 +133,9 @@ class Cart extends \lithium\data\Model {
 
 	public function weight($cart) {
 		$item = Item::first($cart->item_id);
-		return intval(preg_replace('/[^0-9\.]/', '', $item->product_weight)) * $cart->quantity;
+		$weight = $item->shipping_weight ?: $item->product_weight;
+		$weight = is_string($weight) ? intval(preg_replace('/[^0-9\.]/', '', $weight)) : $weight;
+		return ($weight ?: 1) * $cart->quantity;
 	}
 
 	public static function shipping($carts, $address) {
