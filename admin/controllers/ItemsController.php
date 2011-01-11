@@ -56,13 +56,9 @@ class ItemsController extends BaseController {
 			if (!empty($item->event[0])) {
 				$this->request->data['event'] = array($item->event[0]);
 			}
-
 			$dirtyUrl = $this->request->data['description']." ".$this->request->data['color'];
-			$url = rtrim($this->cleanUrl($dirtyUrl), "-");
-			$this->request->data['url'] = $url;
-
+			$this->request->data['url'] = $this->cleanUrl($dirtyUrl);
 			$this->request->data['modified_date'] = new MongoDate();
-
 			$data = array_merge(Item::castData($this->request->data), compact('alternate_images'));
 			if ($item->save($data)) {
 				$this->redirect(array(

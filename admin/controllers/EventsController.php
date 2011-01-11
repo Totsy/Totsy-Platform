@@ -181,8 +181,7 @@ class EventsController extends BaseController {
 					}
 					$item = Item::create();
 					$date = new MongoDate();
-					$dirtyUrl = $itemDetail['description']." ".$itemDetail['color'];
-					$url = $this->cleanUrl($dirtyUrl);
+					$url = $this->cleanUrl($itemDetail['description']." ".$itemDetail['color']);
 					$details = array(
 						'enabled' => (bool) $enabled,
 						'created_date' => $date,
