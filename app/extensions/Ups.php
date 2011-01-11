@@ -99,7 +99,7 @@ class Ups {
 	}
 
 	function weight($foo) {
-		$this->packageWeight = $foo;
+		$this->packageWeight = $foo ?: 1;
 	}
 
     function rescom($foo) {
