@@ -126,6 +126,8 @@ class EventsController extends BaseController {
 	 * This method parses the item file that is uploaded in the Events Edit View.
 	 *
 	 * @todo Move this method to the Items controller and make it a static method.
+	 * @todo Add event to the header information for spreadsheet (event - this needs to replace vendor)
+	 * @todo Add vendor_description
 	 */
 	protected function parseItems($_FILES, $_id, $enabled = false) {
 		$items = array();
