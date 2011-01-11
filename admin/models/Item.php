@@ -102,10 +102,12 @@ class Item extends \lithium\data\Model {
 			if ($key != 'vendor') {
 				$sku[] = strtoupper(substr(md5($param), 0, 3));
 			} else {
+				$param = preg_replace('/[^(\x20-\x7F)]*/','', $param);
 				$sku[] = strtoupper(substr($param, 0, 3));
 			}
 		}
-		return trim(implode('-', $sku), ' ');
+
+		return preg_replace('/\s*/m', '', implode('-', $sku));
 	}
 }
 
