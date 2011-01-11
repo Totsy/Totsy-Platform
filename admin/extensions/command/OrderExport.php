@@ -20,6 +20,7 @@ use PHPExcel_Cell_DataType;
 use admin\extensions\command\Base;
 
 
+
 /**
  * Export orders already processed.
  *
@@ -28,8 +29,50 @@ class OrderExport extends Base {
 
 	public function run() {
 		$this->header('Exporting Orders');
-		$ordersExported = $this->_orderGenerator();
-		//$this->out("There were $this->orderCount orders exported totalling $this->lineCount");
+		$this->events = array(
+			'4cf93ed5ce64e5660dde2d00',
+			'4cfd132dce64e56c09922600',
+			'4d016768ce64e55d76c30a00',
+			'4d013012ce64e5ff6f120600',
+			'4cffdf81ce64e54d47310400',
+			'4d067533ce64e5fe24712800',
+			'4d07ce69ce64e5df53bb0a00',
+			'4d0802ccce64e5f159533600',
+			'4d08054fce64e5c45a7f2900',
+			'4d078626ce64e56f4b161200',
+			'4cfd822bce64e5cc36c92c00',
+			'4d0a921fce64e5782e421600',
+			'4d0bbd09ce64e5e653fd1600',
+			'4d0aa18ace64e5b52e946400',
+			'4d0aa694ce64e5e8317c0200',
+			'4d0f8de1ce64e55b54533800',
+			'4d0f92c5ce64e58a56cd0600',
+			'4d0fa0c8ce64e58f57d72000',
+			'4d0fb4fbce64e58563c51900',
+			'4d136a78ce64e50476c32000',
+			'4d11034ace64e513276f3b00',
+			'4d113988ce64e5eb2efe3700',
+			'4d07d440ce64e51654f50b00',
+			'4d12bc12ce64e5f461a20100',
+			'4d12bd49ce64e5ed61820a00',
+			'4d13d350ce64e5cc7c0d8200',
+			'4d12c12fce64e5f461352100',
+			'4d1a4b2fce64e5c370291500',
+			'4d1a677dce64e58874020100',
+			'4cffd7f9ce64e50c445c2700',
+			'4cf9466bce64e58d0ed71d00',
+			'4d0bda7fce64e52a56712900',
+			'4d0f8b80ce64e52e550c3500',
+			'4d13ce28ce64e57801693200',
+			'4d0bd440ce64e52a561a1900',
+			'4d06b42dce64e55b2c8f1600'
+		);
+		if (empty($this->test)) {
+			$this->test = false;
+		}
+		//$ordersExported = $this->_orderGenerator();
+		$this->batchId = array('order_batch' => substr(md5(uniqid(rand(),1)), 1, 20));
+		$this->_purchases($this->events);
 	}
 
 	/**
@@ -42,14 +85,13 @@ class OrderExport extends Base {
 	public function _orderGenerator() {
 		$orderCollection = Order::collection();
 		$orderFile = array();
-		$this->batchId = array('order_batch' => substr(md5(uniqid(rand(),1)), 1, 20));
 		$heading = ProcessedOrder::$_fileHeading;
-		$events = array('4d0fa0c8ce64e58f57d72000');
-		$orders = $orderCollection->find(array('items.event_id' => array('$in' => $events)));
-		$inc = 0;
-		$this->time = date('Ymd', time());
-		$fp = fopen('/tmp/TOTOrd'.$this->time.'_2.txt', 'w');
-		$eventList = array();
+		$orders = $orderCollection->find(array('items.event_id' => array('$in' => $this->events)));
+		$inc = 1;
+		$this->time = date('Ymds');
+		$handle = '/tmp/totsy/TOTOrd'.$this->time.'.txt';
+		$fp = fopen($handle, 'w');
+		$eventList = $orderArray = array();
 		foreach ($orders as $order) {
 			$conditions = array('Customer PO #' => (string) $order['_id']);
 			$processCheck = ProcessedOrder::count(compact('conditions'));
@@ -94,16 +136,23 @@ class OrderExport extends Base {
 					if (!in_array($item['event_id'], $eventList)) {
 						$eventList[] = $item['event_id'];
 					}
+					if (!in_array($orderFile[$inc]['OrderNum'], $orderArray)) {
+						$orderArray[] = $orderFile[$inc]['OrderNum'];
+					}
+					if ($this->test != 'true') {
+						$processedOrder = ProcessedOrder::create();
+						$processedOrder->save($orderFile[$inc] + $this->batchId);
+					}
+					$this->out("Adding order $order[_id] to $handle");
 					fputcsv($fp, $orderFile[$inc], chr(9));
-					$processedOrder = ProcessedOrder::create();
-					$processedOrder->save($orderFile[$inc] + $this->batchId);
 					++$inc;
 				}
 			}
 		}
 		fclose($fp);
 		$this->_itemGenerator($eventList);
-		$this->_purchases($eventList);
+		$totalOrders = count($orderArray);
+		$this->out("$handle was created total of $totalOrders orders generated with $inc lines");
 	}
 	
 	protected function _asciiClean($description) {
@@ -122,7 +171,7 @@ class OrderExport extends Base {
 	 * @todo Migrate code to li3 command.
 	 */
 	protected function _itemGenerator($eventIds = null) {
-		$fp = fopen('/tmp/TOTIT'.$this->time.'_2.csv', 'w');
+		$fp = fopen('/tmp/totsy/TOTIT'.$this->time.'.csv', 'w');
 		if ($eventIds) {
 			$productHeading = ProcessedOrder::$_productHeading;
 			foreach ($eventIds as $eventId) {
@@ -130,7 +179,7 @@ class OrderExport extends Base {
 					'conditions' => array(
 						'_id' => $eventId
 				)));
-				$inc = 0;
+				$inc = 1;
 				$eventItems = $this->_getOrderItems($eventId);
 				foreach ($eventItems as $eventItem) {
 					foreach ($eventItem['details'] as $key => $value) {
@@ -159,8 +208,10 @@ class OrderExport extends Base {
 							$productFile[$inc] = $this->sortArrayByArray($fields[$inc], $productHeading);
 						}
 						if (!empty($productFile[$inc])) {
-							$itemMasterEntry = ItemMaster::create();
-							$itemMasterEntry->save($productFile[$inc] + $this->batchId);
+							if ($this->test != 'true') {
+								$itemMasterEntry = ItemMaster::create();
+								$itemMasterEntry->save($productFile[$inc] + $this->batchId);
+							}
 							fputcsv($fp, $productFile[$inc]);
 						}
 						++$inc;
@@ -169,6 +220,7 @@ class OrderExport extends Base {
 			}
 		}
 		fclose($fp);
+		$this->out("There were $inc items generated and saved to the item master");
 		return true;
 	}
 
@@ -178,8 +230,8 @@ class OrderExport extends Base {
 	 *
 	 * The order of operation is as follows:
 	 *
-	 * 1) Find all the event that is being requested via the URL.
-	 * 2) Find all the times that are a part of the event requested.
+	 * 1) Find all the event that is being requested in the eventList array.
+	 * 2) Find all the items that are a part of the event requested.
 	 * 3) For each item get all the orders that have been placed with that item in it.
 	 * 4) Build the array of cumulative purchases for each item of the event.
 	 * @return mixed
@@ -193,10 +245,14 @@ class OrderExport extends Base {
 					'_id' => $eventId
 			)));
 			$eventItems = $this->_getOrderItems($eventId);
-			$inc = 0;
-			$vendorName = trim(substr($event->name, 0, 5), ' ');
-			$fp = fopen('/tmp/TOTitpo'.$vendorName.$this->time.'.csv', 'w');
+			$vendorName = preg_replace('/[^(\x20-\x7F)]*/','', substr($this->_asciiClean($event->name), 0, 3));
+			$time = date('ymds');
+			$poNumber = 'TOT'.'-'.$vendorName.$time;
+			$fileHandle = '/tmp/totsy/TOTitpo'.$vendorName.$time.'.csv';
+			$this->out("Opening $fileHandle");
+			$fp = fopen($fileHandle, 'w');
 			$purchaseOrder = array();
+			$inc = 0;
 			foreach ($eventItems as $eventItem) {
 				foreach ($eventItem['details'] as $key => $value) {
 					$orders = Order::find('all', array(
@@ -213,7 +269,7 @@ class OrderExport extends Base {
 								foreach ($items as $item) {
 									if (($item['item_id'] == $eventItem['_id']) && ((string) $key == $item['size'])){
 										$purchaseOrder[$inc]['Supplier'] = $eventItem['vendor'];
-										$purchaseOrder[$inc]['PO # / RMA #'] = $vendorName.'-'.$this->time;
+										$purchaseOrder[$inc]['PO # / RMA #'] = $poNumber;
 										$purchaseOrder[$inc]['SKU'] = Item::sku(
 											$eventItem['vendor'],
 											$eventItem['vendor_style'],
@@ -225,14 +281,15 @@ class OrderExport extends Base {
 										} else {
 											$purchaseOrder[$inc]['Qty'] += $item['quantity'];
 										}
-										$purchaseOrder[$inc] = array_merge($purchaseHeading, $purchaseOrder[$inc]);
 										$purchaseOrder[$inc] = $this->sortArrayByArray($purchaseOrder[$inc], $purchaseHeading);
 									}
 								}
 							}
-							$po = PurchaseOrder::create();
-							$po->save($purchaseOrder[$inc] + $this->batchId);
-							fputcsv($fp, $purchaseOrder[$inc]);
+							if (!empty($purchaseOrder[$inc])) {
+								fputcsv($fp, array_merge($purchaseHeading, $purchaseOrder[$inc]));
+								$po = PurchaseOrder::create();
+								$po->save(array_merge($purchaseHeading, $purchaseOrder[$inc]) + $this->batchId);
+							}
 							++$inc;
 						}
 					}
