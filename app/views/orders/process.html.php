@@ -59,6 +59,7 @@
 			<!-- Build Product Row -->
 						<tr id="<?=$item['_id']?>" class="alt<?=$x?>" style="margin:0px!important; padding:0px!important;">
 						<td class="cart-th">
+							<?php $itemUrl = "sale/".$orderEvents[$key]['url'].'/'.$item['url'];?>
 							<?php
 								if (!empty($item['primary_image'])) {
 									$image = $item['primary_image'];
@@ -71,7 +72,7 @@
 								$this->html->image("$productImage", array(
 									'width'=>'60',
 									'height'=>'60',
-							'style' => 'border:1px solid #ddd; background:#fff; margin:2px; padding:2px;',)),
+									'style' => 'border:1px solid #ddd; background:#fff; margin:2px; padding:2px;',)),
 									'',
 									array(
 									'id' => 'main-logo_', 'escape'=> false
@@ -80,10 +81,7 @@
 						</td>
 						<td class="cart-desc">
 							<?=$this->form->hidden("item$x", array('value' => $item['_id'])); ?>
-							<strong><?=$this->html->link($item['description'], array(
-								'Items::view',
-								'args' => $item['url']
-								));
+							<strong><?=$this->html->link($item['description'], $itemUrl);
 							?></strong><br>
 							<strong>Color:</strong> <?=$item['color'];?><br>
 							<strong>Size:</strong> <?=$item['size'];?>
