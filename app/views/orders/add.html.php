@@ -57,6 +57,7 @@
 			<?php foreach ($event as $item): ?>
 				<tbody>
 					<!-- Build Product Row -->
+								<?php $itemUrl = "sale/".$orderEvents[$key]['url'].'/'.$item['url'];?>
 								<tr id="<?=$item['_id']?>" class="alt<?=$x?>" style="margin:0px!important; padding:0px!important;">
 								<td class="cart-th">
 									<?php
@@ -75,15 +76,13 @@
 											'',
 											array(
 											'id' => 'main-logo_', 'escape'=> false
-										)
+										),
+										$itemUrl
 									); ?>
 								</td>
 								<td class="cart-desc">
 									<?=$this->form->hidden("item$x", array('value' => $item['_id'])); ?>
-									<strong><?=$this->html->link($item['description'], array(
-										'Items::view',
-										'args' => $item['url']
-										));
+									<strong><?=$this->html->link($item['description'], $itemUrl);
 									?></strong><br>
 									<strong>Color:</strong> <?=$item['color'];?><br>
 									<strong>Size:</strong> <?=$item['size'];?>

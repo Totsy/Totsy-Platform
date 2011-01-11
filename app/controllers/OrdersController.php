@@ -432,7 +432,7 @@ class OrdersController extends BaseController {
 		if (!empty($ids)) {
 			$events = Event::find('all', array(
 				'conditions' => array('_id' => $ids),
-				'fields' => array('name', 'ship_message', 'ship_date')
+				'fields' => array('name', 'ship_message', 'ship_date', 'url')
 			));
 			$events = $events->data();
 			foreach ($events as $event) {
