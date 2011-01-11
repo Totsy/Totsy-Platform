@@ -65,9 +65,9 @@ if(!Session::check('userLogin')) {
 Router::connect('/', 'Events::index');
 Router::connect('/sales', 'Events::index');
 Router::connect('/{:action:login|logout}', array('controller' => 'users'));
-Router::connect('/myaccount/addresses', 'Addresses::view');
-Router::connect('/myaccount/address/add', 'Addresses::add');
-Router::connect('/myaccount/addresses/edit{:args}', 'Addresses::edit');
+Router::connect('/myaccount/addresses/{:action}', array('controller' => 'Addresses'));
+//Router::connect('/myaccount/address/add', 'Addresses::add');
+//Router::connect('/myaccount/addresses/edit{:args}', 'Addresses::edit');
 Router::connect('/myaccount', 'Users::info');
 Router::connect('/myaccount/add/{:args}', 'Account::add');
 Router::connect('/myaccount/orders', 'Orders::index');
