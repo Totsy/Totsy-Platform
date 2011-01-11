@@ -13,9 +13,7 @@ use PHPExcel_Cell_DataType;
 
 
 /**
- * Li3 Import Command to load Order tracking information.
- *
- * 
+ * The `Base` class is a collection of methods that are useful to other commands.
  */
 class Base extends \lithium\console\Command {
 
