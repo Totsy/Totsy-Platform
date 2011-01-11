@@ -4,14 +4,19 @@ namespace app\controllers;
 
 use \app\models\Cart;
 use \app\models\Item;
+use \app\models\Event;
 use \lithium\storage\Session;
+use MongoId;
 
 class CartController extends BaseController {
 
 	public function view() {
 		$this->_render['layout'] = 'cart';
 		$cart = Cart::active(array('time' => '-3min'));
-
+		foreach($cart as $item){
+			$events = Event::find('all', array('conditions'=>array('_id' => $item->event[0])));
+			$item->event= $events[0]->url;
+		}
 		if ($this->request->data) {
 			return array('data' => $this->request->data);
 		}
