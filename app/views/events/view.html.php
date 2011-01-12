@@ -119,7 +119,7 @@
 								'title' => $item->name,
 								'width' => '298',
 								'height' => '300')),
-							"/items/view/{$item->url}",
+							"sale/$event->url/{$item->url}",
 							array('title' => $item->name, 'escape' => false)
 						); ?>
 						<div class="details table-row">
@@ -127,7 +127,7 @@
 								<table width="280">
 									<tr>
 										<td width="170" valign="top">
-											<a href="<?="/items/view/$item->url"?>"><h2><?=$item->description ?></h2></a>
+											<a href="<?="/sale/$event->url/$item->url"?>"><h2><?=$item->description ?></h2></a>
 										</td>
 										<td align="right">
 											<font class="price">$<?=number_format($item->sale_retail,2);?></font><br>

@@ -123,7 +123,11 @@ class EventsController extends BaseController {
 		return compact('event', 'eventItems', 'items');
 	}
 	/**
-	 * Parse the CSV file
+	 * This method parses the item file that is uploaded in the Events Edit View.
+	 *
+	 * @todo Move this method to the Items controller and make it a static method.
+	 * @todo Add event to the header information for spreadsheet (event - this needs to replace vendor)
+	 * @todo Add vendor_description
 	 */
 	protected function parseItems($_FILES, $_id, $enabled = false) {
 		$items = array();
@@ -179,13 +183,12 @@ class EventsController extends BaseController {
 					}
 					$item = Item::create();
 					$date = new MongoDate();
-					$dirtyUrl = $itemDetail['description']." ".$itemDetail['color'];
-					$url = $this->cleanUrl($dirtyUrl);
+					$url = $this->cleanUrl($itemDetail['description']." ".$itemDetail['color']);
 					$details = array(
 						'enabled' => (bool) $enabled,
 						'created_date' => $date,
 						'details' => $itemAttributes,
-						'event' => array($_id),
+						'event' => array((string) $_id),
 						'url' => $url,
 						'taxable' => true
 					);

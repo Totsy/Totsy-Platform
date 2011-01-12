@@ -432,7 +432,7 @@ class OrdersController extends BaseController {
 		if (!empty($ids)) {
 			$events = Event::find('all', array(
 				'conditions' => array('_id' => $ids),
-				'fields' => array('name', 'ship_message', 'ship_date')
+				'fields' => array('name', 'ship_message', 'ship_date', 'url')
 			));
 			$events = $events->data();
 			foreach ($events as $event) {
@@ -451,6 +451,7 @@ class OrdersController extends BaseController {
 	protected function getEventIds($object) {
 		$items = (!empty($object->items)) ? $object->items->data() : $object->data();
 		$event = null;
+		$ids = array();
 		foreach ($items as $item) {
 			$eventId = (!empty($item['event_id'])) ? $item['event_id'] : $item['event'][0];
 			if (!empty($eventId)) {

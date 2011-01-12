@@ -56,16 +56,16 @@ class Item extends \lithium\data\Model {
 		return $items;
 	}
 
-	public function related($item) {
+	public static function related($item) {
 		return static::all(array('conditions' => array(
 			'enabled' => true,
 			'description' => "$item->description",
 			'color' => array('$ne' => "$item->color"),
-			'event' => $item->event
+			'event' => $item->event[0]
 		)));
 	}
 
-	public function sizes($item) {
+	public static function sizes($item) {
 		if (empty($item->details)) {
 			return array();
 		}
@@ -79,6 +79,36 @@ class Item extends \lithium\data\Model {
 		return $sizes;
 	}
 
+	/**
+	 * SKU generator for all items.
+	 *
+	 * This Totsy specific SKU is a combination of the vendor name, style, size and color.
+	 * A MD5 hash is taken of each component and limited to 3 characters. This static method should
+	 * be used in any instance where SKUs are produced.
+	 *
+	 * @param string $vendor
+	 * @param string $style
+	 * @param string $size
+	 * @param string $color
+	 */
+	public static function sku($vendor, $style, $size, $color) {
+		$params = array(
+			'vendor' => $vendor,
+			'style' => $style,
+			'size' => $size,
+			'color' => $color
+		);
+		foreach ($params as $key => $param) {
+			if ($key != 'vendor') {
+				$sku[] = strtoupper(substr(md5($param), 0, 3));
+			} else {
+				$param = preg_replace('/[^(\x20-\x7F)]*/','', $param);
+				$sku[] = strtoupper(substr($param, 0, 3));
+			}
+		}
+
+		return preg_replace('/\s*/m', '', implode('-', $sku));
+	}
 }
 
 ?>

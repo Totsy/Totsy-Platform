@@ -56,13 +56,9 @@ class ItemsController extends BaseController {
 			if (!empty($item->event[0])) {
 				$this->request->data['event'] = array($item->event[0]);
 			}
-
 			$dirtyUrl = $this->request->data['description']." ".$this->request->data['color'];
-			$url = rtrim($this->cleanUrl($dirtyUrl), "-");
-			$this->request->data['url'] = $url;
-
+			$this->request->data['url'] = $this->cleanUrl($dirtyUrl);
 			$this->request->data['modified_date'] = new MongoDate();
-
 			$data = array_merge(Item::castData($this->request->data), compact('alternate_images'));
 			if ($item->save($data)) {
 				$this->redirect(array(
@@ -92,8 +88,8 @@ class ItemsController extends BaseController {
 					'conditions' => array(
 						'items' => array((string) $item->_id)
 				)));
-				$related = $item->related();
-				$sizes = $item->sizes();
+				$related = Item::related($item);
+				$sizes = Item::sizes($item);
 				$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 			}
 		}

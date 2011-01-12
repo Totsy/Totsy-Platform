@@ -69,27 +69,31 @@ class AddressesController extends BaseController {
 					if (!empty($this->request->data['isAjax'])) {
 						$this->redirect('/shopping/checkout');
 					} else {
-						$this->redirect('/addresses');
+						$this->redirect('Addresses::view');
 					}
 				}
 			}
 		}
 		return compact('status', 'message', 'address', 'action', 'isAjax');
 	}
-	
-	public function edit($_id) {
+
+	/**
+	 * Edit the users address.
+	 *
+	 * To ensure the security of the edit use the user_id from the session.
+	 * @todo It seems there was some legacy ajax calls in here. Clean up if necessary.
+	 * @return mixed
+	 */
+	public function edit() {
 		$isAjax = false;
 		$message = '';
 		$action = 'edit';
-		//Use the add template and main layout
 		$this->_render['template'] = 'add';
 		$user = Session::read('userLogin');
-		
-		if (!empty($_id)){
-			//Find address using user_id and address_id
+		if (!empty($this->request->id)){
 			$address = Address::find('first', array(
 				'conditions' => array(
-					'_id' => $_id,
+					'_id' => $this->request->id,
 					'user_id' => (string) $user['_id']
 			)));
 			if(empty($address)) {

@@ -57,6 +57,10 @@ Environment::is(function($request) {
 	}
 });
 
+if (empty($request)) {
+	Environment::set('development');
+}
+
 /**
  * Include this file if your application uses a database connection.
  */
@@ -104,11 +108,11 @@ require __DIR__ . '/bootstrap/mail.php';
 use lithium\storage\Session;
 
 Session::config(array(
- 	'default' => array('adapter' => 'Model', 'model' => 'Session')
+ 	'default' => array('adapter' => 'admin\extensions\adapter\session\Model', 'model' => 'MongoSession')
 ));
 
 Session::config(array(
-    'flash_message' => array('adapter' => 'Model', 'model' => 'Session')
+    'flash_message' => array('adapter' => 'admin\extensions\adapter\session\Model', 'model' => 'MongoSession')
 ));
 
 use lithium\security\Auth;
@@ -118,7 +122,6 @@ Auth::config(array('userLogin' => array(
 	'fields' => array('email', 'password'),
 	'scope' => array('admin' => true)
 )));
-
 
 use lithium\analysis\Logger;
 

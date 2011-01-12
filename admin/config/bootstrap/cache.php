@@ -13,30 +13,32 @@
 use lithium\storage\Cache;
 use lithium\core\Libraries;
 use lithium\action\Dispatcher;
-use lithium\storage\cache\adapter\Apc;
+use lithium\storage\cache\adapter\XCache;
 
 /**
- * If APC is not available and the cache directory is not writeable, bail out.
+ * If xcache is not available, bail out.
  */
-if (!$apcEnabled = Apc::enabled() && !is_writable(LITHIUM_APP_PATH . '/resources/tmp/cache')) {
+if (!$xcacheEnabled = xcache::enabled()) {
 	return;
 }
 
 Cache::config(array(
 	'default' => array(
-		'adapter' => '\lithium\storage\cache\adapter\\' . ($apcEnabled ? 'Apc' : 'File')
+		'adapter' => '\lithium\storage\cache\adapter\XCache'
 	)
 ));
 
 Dispatcher::applyFilter('run', function($self, $params, $chain) {
-	if ($cache = Cache::read('default', 'core.libraries')) {
+	$key = 'admin.core.libraries';
+
+	if ($cache = Cache::read('default', $key)) {
 		$cache = (array) unserialize($cache) + Libraries::cache();
 		Libraries::cache($cache);
 	}
 	$result = $chain->next($self, $params, $chain);
 
 	if ($cache != Libraries::cache()) {
-		Cache::write('default', 'core.libraries', serialize(Libraries::cache()), '+1 day');
+		Cache::write('default', $key, serialize(Libraries::cache()), '+1 day');
 	}
 	return $result;
 });

@@ -64,7 +64,7 @@
 							'width' => '355',
 							'height' => '410',
 					'style' => 'margin:0px 0px -6px 0px;'
-							)),array('Events::view', 'args' => array($event->url)), array('escape'=> false));
+							)), "sale/$event->url", array('escape'=> false));
 						?>
 					<?php else: ?>				
 						<?=$this->html->link(
@@ -73,7 +73,8 @@
 							'alt' => $event->name,
 							'width' => '298',
 							'height' => '344'
-						)),array('Events::view', 'args' => array($event->url)), array('escape'=> false));
+						)), "sale/$event->url", array('escape'=> false));
+						
 						 ?>
                          
 					<?php endif ?>
@@ -96,7 +97,7 @@
 						</div>
 						
 						<div class="table-cell right" style="width:55px; display:block; padding:5px; margin:7px 0px 0px 0px; ">
-							<span><?=$this->html->link('Shop', array('Events::view', 'args' => array($event->url)), array('class' => 'go-btn'));?></span>
+							<span><?=$this->html->link('Shop', 'sale/'.$event->url, array('class' => 'go-btn'));?></span>
 						</div>
 					</div>
 				</div>
@@ -182,7 +183,7 @@
 							'alt' => $event->name, 
 							'width' => '298', 
 							'height' => '344'
-						)),array('Events::view', 'args' => array($event->url)), array('escape'=> false));
+						)), 'sale/'.$event->url, array('escape'=> false));
 						 ?>
 
 						<div class="splash-details">

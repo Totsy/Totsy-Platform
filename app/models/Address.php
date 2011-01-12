@@ -104,12 +104,11 @@ class Address extends \lithium\data\Model {
 		// )
 	);
 
-
 	protected $_meta = array('title' => 'description');
 
 	public static function __init() {
 		parent::__init();
-		$validator = static::_object()->_classes['validator'];
+		$validator = static::$_classes['validator'];
 		$validator::add('state', '[A-Z]{2}', array('contains' => false));
 	}
 

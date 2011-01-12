@@ -35,14 +35,7 @@ tinyMCE.init({
 			<li><a href="#item_event_info"><span>Item Event Info</span></a></li>
 		</ul>
 		<div id="item_info">
-			<h1>Edit Item</h1>
-				<?=$this->form->field('', array(
-					'value' => $item->_id, 
-					'type' => 'hidden', 
-					'id' => '_id', 
-					'name' => '_id'
-					));
-				?>    
+				<input type="hidden" name="_id" value="<?=$item->_id?>" id="_id">
 				<br>
 				<div id="item_description">
 					<h2 id="">Product Description</h2>

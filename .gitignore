@@ -24,3 +24,4 @@ library
 app/resources/tmp
 admin/libraries/li3_payments
 admin/libraries/swiftmailer
+libraries

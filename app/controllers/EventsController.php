@@ -24,7 +24,7 @@ class EventsController extends BaseController {
 
 	public function view() {
 		$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-		$url = $this->request->item;
+		$url = $this->request->event;
 
 		if ($url == 'comingsoon') {
 			$this->_render['template'] = 'soon';
@@ -34,7 +34,6 @@ class EventsController extends BaseController {
 				'enabled' => true, 
 				'url' => $url
 		)));
-
 		if (!$event) {
 			$this->_render['template'] = 'noevent';
 			return array('event' => null, 'items' => array(), 'shareurl');

@@ -62,10 +62,9 @@ if(!Session::check('userLogin')) {
 	Router::connect('/{:args}', 'Users::login');
 	return;
 }
-
 Router::connect('/', 'Events::index');
+Router::connect('/sales', 'Events::index');
 Router::connect('/{:action:login|logout}', array('controller' => 'users'));
-
 Router::connect('/addresses', 'Addresses::view');
 Router::connect('/addresses/edit{:args}', 'Addresses::edit');
 Router::connect('/account/info', 'Users::info');
@@ -77,7 +76,8 @@ Router::connect('/shopping/checkout', 'Orders::add');
 Router::connect('/upgrade', 'Users::upgrade');
 Router::connect('/events/view/{:item:[a-z0-9\-]+}', 'Events::view');
 Router::connect('/welcome', 'Users::affiliate');
-
+Router::connect('/sale/{:event:[a-z0-9\-]+}', 'Events::view');
+Router::connect('/sale/{:event:[a-z0-9\-]+}/{:item:[a-z0-9\-]+}', 'Items::view');
 /**
 * Taking this route out, as the menu helper is not ready
 * for custom routes.

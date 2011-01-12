@@ -115,7 +115,7 @@ require __DIR__ . '/bootstrap/mail.php';
 use lithium\storage\Session;
 
 Session::config(array(
- 	'default' => array('adapter' => 'Model', 'model' => 'Session')
+ 	'default' => array('adapter' => 'app\extensions\adapter\session\Model', 'model' => 'MongoSession')
 ));
 
 use lithium\security\Auth;

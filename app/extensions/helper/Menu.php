@@ -115,7 +115,7 @@ class Menu extends \lithium\template\Helper {
 			$item->items = $event::open($query)->map(function($item) use ($menu) {
 				return $menu::create(array(
 					'label' => $item->name, 'url' => array(
-						'controller' => 'events', 'action' => 'view', 'item' => $item->url
+						'controller' => 'events', 'action' => 'view', 'event' => $item->url
 					)
 				));
 			});
