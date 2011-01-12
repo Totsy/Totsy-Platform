@@ -2519,6 +2519,7 @@ hr {
 
     width:920px;
     height:270px;
+    -moz-border-radius: 12px!important; -webkit-border-radius: 12px!important;
 
 	background:url(../img/loading.gif) no-repeat 50% 50%;
 
@@ -2533,7 +2534,7 @@ hr {
 	left:0px;
 
 	display:none;
-	border-radius:6px; -moz-border-radius:6px; -webkit-border-radius:6px; 
+	-moz-border-radius: 12px!important; -webkit-border-radius: 12px!important; 
 
 }
 
@@ -2672,6 +2673,7 @@ a.nivo-prevNav {
 .nivoSlider {
 
 	position:relative;
+	-moz-border-radius: 12px!important; -webkit-border-radius: 12px!important; border:2px solid #fff;
 
 }
 
@@ -2682,6 +2684,7 @@ a.nivo-prevNav {
 	top:0px;
 
 	left:0px;
+	-moz-border-radius: 12px!important; -webkit-border-radius: 12px!important; 
 
 }
 
@@ -2708,6 +2711,8 @@ a.nivo-prevNav {
 	z-index:60;
 
 	display:none;
+	
+	-moz-border-radius: 12px!important; -webkit-border-radius: 12px!important; 
 
 }
 
@@ -2810,3 +2815,4 @@ font-size:22px;
 	font-weight:bold;
 
 }
+.slider_img { -moz-border-radius: 6px!important; -webkit-border-radius: 6px!important; border:4px solid #444; }
