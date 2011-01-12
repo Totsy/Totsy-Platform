@@ -1,41 +1,4 @@
-<?=$this->html->script(array('jquery.jcarousel.min'));?>
-<?=$this->html->style('skin');?>
-
-<script type="text/javascript">
-$(document).ready(function() {
-	if ($.browser.msie && $.browser.version < 7){
-		window.location.replace("/upgrade");
-	}
-});
-</script>
-
-<script type="text/javascript">
-
-    // our event listener receives the carousel
-    // object, so we just check to see if it's 
-    // turned itself off or not...
-    function afterAnimation(carousel){
-        if(carousel.autoStopped){
-            carousel.startAuto()
-        }
-    }
-  
-    jQuery(document).ready(function(){
-        var options = {
-            auto: 2.5,
-            scroll:1,
-            wrap: 'last', // with this solution, wrap doesn't matter any more
-            // itemLastInCallBack fires when a new 'last' image
-            // shows up
-            itemLastInCallback:{
-                onAfterAnimation: afterAnimation
-                }
-        }
-        jQuery('#mycarousel').jcarousel(options);
-    })
-
-</script>
-
+<?=$this->html->script(array('jquery.nivo.slider.pack'));?>
 
 	<h2 class="page-title gray"><span class="_red">Today's Sales</span> 
     <div class="sm-actions fr" style="font-size:12px; margin:7px 0px 0px 0px;">
@@ -52,11 +15,8 @@ $(document).ready(function() {
 	<hr />
 
 
-    
-
-
-
-<div id="middle" class="fullwidth">
+   
+<div class="fullwidth">
      
 	<?php $x = 0; ?>
 	<?php $y = 0; ?>
@@ -171,7 +131,7 @@ $(document).ready(function() {
 		<?php $y++; ?>
 	<?php endforeach ?>
       
-      
+  <!--     
       <div style="margin-top: 20px;">
               <img src="/img/homeMonth_ban_02.png" style="float:left; margin:0px; padding:0px 0px 0px -2px; width:921px;">
         </div>
@@ -183,11 +143,31 @@ $(document).ready(function() {
               <img src="/img/homeMonth_ban_07.png" style="float:left; margin:0px 0px 0px -3px; padding:0px; ">
             </div>
 
+	
+
+ -->
+        <div style="margin-bottom:35px;" class="clear"></div>
+    
+    
+		<h2 class="page-title gray clear"><span class="_red">Monthly Sales / Home Decor Month</span></h2>
+		<hr />
+		
+		        <div id="slider" class="nivoSlider">
+                <a href="/events/view/my-baby-sam"><img src="/img/home_img-1.jpg"  alt="" title="My Baby Sam" /></a>
+                <a href="/events/view/azur-italian-furniture"><img src="/img/home_img-2.jpg"  alt="" title="Azur Italian Furniture" /></a>
+                <a href="/events/view/angel-baby"><img src="/img/home_img-3.jpg" alt="" title="Angel Baby" /></a>
+                <a href="/events/view/home-design-book-sale"><img src="/img/home_img-4.jpg"  alt="" title="Home Design Book Sale" /></a>
+                <a href="/events/view/artehouse"><img src="/img/home_img-5.jpg" alt=""  title="ArteHouse" /></a>	<a href="/events/view/the-rug-market"><img src="/img/home_img-6.jpg" alt=""  title="The Rug Market" /></a>
+
+            </div>
+            
+
+    
 	<br style="margin-bottom:10px;"/>
 
 	<div class="coming-soon-sales">
 
-		<h2 class="page-title gray clear"><span class="_red">Coming Soon</span></h2>
+		<h2 class="page-title gray clear"><span class="_red">Upcoming Sales</span></h2>
 		<hr />
 	
 <!--    <div style="padding:0px 9px;">
@@ -289,3 +269,9 @@ $(document).ready(function() {
 		<?php echo $value ?>
 	<?php endforeach ?>
 <?php endif ?>
+
+    <script type="text/javascript">
+    $(window).load(function() {
+        $('#slider').nivoSlider();
+    });
+    </script>
