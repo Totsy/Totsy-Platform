@@ -53,7 +53,7 @@
 										<?=$this->form->submit('Send', array('class' => 'send-btn fl')); ?>
 									<?=$this->form->end(); ?>
 									<br><br><br>
-									<?php if (is_array($user->invitation_codes->data())): ?>
+									<?php if (is_object($user->invitation_codes)): ?>
 										<?php foreach ($user->invitation_codes as $code): ?>
 											<?php $invite = "http://www.totsy.com/join/" . $code;?>
 										<?php endforeach ?>
