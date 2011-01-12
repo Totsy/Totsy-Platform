@@ -118,7 +118,7 @@
 		?>
 			<?php if ($x == 1): ?>
             
-			<?=$this->html->link($this->html->image("/img/Invite_holiday.png", array(
+			<?=$this->html->link($this->html->image("/img/invite_girl.png", array(
 					'title' => "Invite Friends. Get $15",
 					'alt' => "Invite Friends. Get $15",
 					'width' => '181',
@@ -131,24 +131,9 @@
 		<?php $y++; ?>
 	<?php endforeach ?>
       
-  <!--     
-      <div style="margin-top: 20px;">
-              <img src="/img/homeMonth_ban_02.png" style="float:left; margin:0px; padding:0px 0px 0px -2px; width:921px;">
-        </div>
-            <div style="margin:0px; padding:0px:">
-              <img src="/img/homeMonth_ban_03.png" style="float:left; margin:0px; padding:0px;">
-              <a href="/events/view/the-kids-room-by-stupell"><img src="/img/homeMonth_ban_04.png" style="float:left; margin:0px; padding:0px;"></a>
-              <a href="/events/view/new-arrivals-inc"><img src="/img/homeMonth_ban_05.png" style="float:left; margin:0px; padding:0px;"></a>
-              <a href="/events/view/cocalo-bedding"><img src="/img/homeMonth_ban_06.png" style="float:left; margin:0px; padding:0px;"></a>
-              <img src="/img/homeMonth_ban_07.png" style="float:left; margin:0px 0px 0px -3px; padding:0px; ">
-            </div>
 
-	
-
- -->
         <div style="margin-bottom:35px;" class="clear"></div>
-    
-    
+
 		<h2 class="page-title gray clear"><span class="_red">Monthly Sales / Home Decor Month</span></h2>
 		<hr />
 		
@@ -160,24 +145,14 @@
                 <a href="/events/view/artehouse"><img src="/img/home_img-5.jpg" alt=""  title="ArteHouse" /></a>	<a href="/events/view/the-rug-market"><img src="/img/home_img-6.jpg" alt=""  title="The Rug Market" /></a>
 
             </div>
-            
 
-    
 	<br style="margin-bottom:10px;"/>
 
 	<div class="coming-soon-sales">
 
 		<h2 class="page-title gray clear"><span class="_red">Upcoming Sales</span></h2>
 		<hr />
-	
-<!--    <div style="padding:0px 9px;">
-            <ul id="mycarousel" class="jcarousel-skin-tango">
-            	<li><?=$this->html->image("/img/toySale_banner1.png", array('title' => "Toy Sale",'alt' => "Toy Sale",'width' => '840','height' => '272'));?></li>
-                <li><?=$this->html->image("/img/toySale_banner2.png", array('title' => "Toy Sale",'alt' => "Toy Sale",'width' => '840','height' => '272'));?></li>
-                <li><?=$this->html->image("/img/toySale_banner3.png", array('title' => "Toy Sale",'alt' => "Toy Sale",'width' => '840','height' => '272'));?></li>
-            </ul>
-	</div>
--->
+
          <div class="clear"></div>
 		<?php $x = 0; ?>
 		<?php $y = 0; ?>

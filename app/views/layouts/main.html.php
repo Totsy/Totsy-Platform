@@ -7,25 +7,18 @@
 		<?=$this->title() ?: 'Totsy, the private sale site for Moms'; ?>
 		<?=$this->title() ? '- Totsy' : ''; ?>
 	</title>
-	<?=$this->html->style(array('base'), array('media' => 'screen')); ?>
+	<?=$this->html->style(array('base.css?v=012345'), array('media' => 'screen')); ?>
 	<?=$this->html->script(array(
-		'jquery-1.4.2.min.js',
-		'jquery-ui-1.8.2.custom.min.js',
-		'jquery.countdown.min'
+		'jquery-1.4.2.min.js?v=012345',
+		'jquery-ui-1.8.2.custom.min.js?v=012345',
+		'jquery.countdown.min.js?v=012345'
 	)); ?>
 	<?=$this->scripts(); ?>
 	<?=$this->html->link('Icon', null, array('type' => 'icon')); ?>
 </head>
 
 <body class="app">
-	
-	<!-- ClickTale Top part -->
-	<script type="text/javascript">
-		var WRInitTime=(new Date()).getTime();
-	</script>
-	<!-- ClickTale end of Top part -->
-
-	<div id="topper"></div>	
+<div id="topper"></div>	
 	<div id="wrapper">
 		<div id="header">
 			<div id="header-lt">
@@ -89,21 +82,6 @@
 		</ul>
 		<span id="copyright">&copy; 2010 Totsy.com. All Rights Reserved.</span>
 	</div>
-	<div id='cart-modal'></div>
-	<script type="text/javascript">
-	$("#cart").click(function() {
-		$("#cart-modal").load($.base + 'cart/view').dialog({
-			autoOpen: false,
-			modal:true,
-			width: 900,
-			//height: 600,
-			close: function(ev, ui) {
-				location.reload();
-			}
-		});
-		$("#cart-modal").dialog('open');
-	});
-	</script>
 	<script type="text/javascript">
 		$.base = '<?=rtrim(Router::match("/", $this->_request)); ?>';
 	  var _gaq = _gaq || [];
@@ -116,17 +94,6 @@
 	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 	  })();
 	</script>
-
-	<!-- ClickTale Bottom part -->
-	<div id="ClickTaleDiv" style="display: none;"></div>
-	<script type="text/javascript">
-		if(document.location.protocol!='https:')
-		document.write(unescape("%3Cscript%20src='http://s.clicktale.net/WRb6.js'%20type='text/javascript'%3E%3C/script%3E"));
-	</script>
-	<script type="text/javascript">
-		if(typeof ClickTale=='function') ClickTale(10064,1,"www03");
-	</script>
-	<!-- ClickTale end of Bottom part -->
     
     <script type="text/javascript">
 			$(function () {
@@ -146,6 +113,22 @@
 			});
 		</script>
     
+    	<div id='cart-modal'></div>
+	<script type="text/javascript">
+	$("#cart").click(function() {
+		$("#cart-modal").load($.base + 'cart/view').dialog({
+			autoOpen: false,
+			modal:true,
+			width: 900,
+			//height: 600,
+			close: function(ev, ui) {
+				location.reload();
+			}
+		});
+		$("#cart-modal").dialog('open');
+	});
+	</script>
+	
     <div id='toTop'>^ Back to Top</div>
     
 
