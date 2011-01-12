@@ -137,11 +137,12 @@
 		<hr />
 		
 		        <div id="slider" class="nivoSlider">
-                <a href="/events/view/my-baby-sam"><img src="/img/home_img-1.jpg"  alt="" title="My Baby Sam" /></a>
-                <a href="/events/view/azur-italian-furniture"><img src="/img/home_img-2.jpg"  alt="" title="Azur Italian Furniture" /></a>
-                <a href="/events/view/angel-baby"><img src="/img/home_img-3.jpg" alt="" title="Angel Baby" /></a>
-                <a href="/events/view/home-design-book-sale"><img src="/img/home_img-4.jpg"  alt="" title="Home Design Book Sale" /></a>
-                <a href="/events/view/artehouse"><img src="/img/home_img-5.jpg" alt=""  title="ArteHouse" /></a>	<a href="/events/view/the-rug-market"><img src="/img/home_img-6.jpg" alt=""  title="The Rug Market" /></a>
+                <a href="/sale/my-baby-sam"><img src="/img/home_img-1.jpg"  alt="" title="My Baby Sam" /></a>
+                <a href="/sale/azur-italian-furniture"><img src="/img/home_img-2.jpg"  alt="" title="Azur Italian Furniture" /></a>
+                <a href="/sale/angel-baby"><img src="/img/home_img-3.jpg" alt="" title="Angel Baby" /></a>
+                <a href="/sale/home-design-book-sale"><img src="/img/home_img-4.jpg"  alt="" title="Home Design Book Sale" /></a>
+                <a href="/sale/artehouse"><img src="/img/home_img-5.jpg" alt=""  title="ArteHouse" /></a>	
+                <a href="/sale/the-rug-market"><img src="/img/home_img-6.jpg" alt=""  title="The Rug Market" /></a>
 
             </div>
 
