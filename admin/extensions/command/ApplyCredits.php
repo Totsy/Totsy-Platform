@@ -46,12 +46,17 @@ class ApplyCredits extends \lithium\console\Command {
 			));
 			$order = Order::first($conditions);
 			if ($order) {
-				$this->out("Giving a credit to $invitation->user_id");
-				$data = array('user_id' => $invitation->user_id);
-				$options = array('type' => 'Invite');
-				if (Credit::add($data, $options) && User::applyCredit($data, $options)) {
-					$invitation->credited = true;
-					$invitation->save();
+				$user = User::find($invitation->user_id);
+				if (empty($user->affiliate)) {
+					$this->out("Giving a credit to $invitation->user_id");
+					$data = array('user_id' => $invitation->user_id);
+					$options = array('type' => 'Invite');
+					if (Credit::add($data, $options) && User::applyCredit($data, $options)) {
+						$invitation->credited = true;
+						$invitation->save();
+					}
+				} else {
+					$this->out('Skipping affiliate user');
 				}
 			}
 		}
