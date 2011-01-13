@@ -40,7 +40,10 @@ class ApplyCredits extends \lithium\console\Command {
 		$totalCredit = 0;
 		foreach ($invitations as $invitation) {
 			$user = User::findByemail($invitation->email);
-			$conditions = array('user_id' => (string) $user['_id']);
+			$conditions = array(
+				'user_id' => (string) $user['_id'],
+				'items.status' => array('$ne' => 'Order Canceled'
+			));
 			$order = Order::first($conditions);
 			if ($order) {
 				$this->out("Giving a credit to $invitation->user_id");
