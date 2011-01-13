@@ -49,7 +49,10 @@ class ApplyCredits extends \lithium\console\Command {
 				$user = User::find($invitation->user_id);
 				if (empty($user->affiliate)) {
 					$this->out("Giving a credit to $invitation->user_id");
-					$data = array('user_id' => $invitation->user_id);
+					$data = array(
+						'user_id' => $invitation->user_id,
+						'description' => "Invite accepted from: $invitation->email"
+					);
 					$options = array('type' => 'Invite');
 					if (Credit::add($data, $options) && User::applyCredit($data, $options)) {
 						$invitation->credited = true;

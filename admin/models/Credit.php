@@ -55,10 +55,10 @@ class Credit extends \lithium\data\Model {
 		$user = Session::read('userLogin');
 		$credit->created = static::dates('now');
 		$options['type'] = empty($options['type']) ? null : $options['type'];
+		$credit->description = empty($data['description']) ? null : $data['description'];
 		if ($user) {
 			$credit->admin_id = $user['_id'];
 			$amount = $data['sign'].$data['amount'];
-			$credit->description = $data['description'];
 			$credit->reason = $data['reason'];
 		}
 		if (!empty($data['event_id']) || !empty($data['order_id'])) {
