@@ -4,6 +4,7 @@ namespace admin\models;
 
 use \lithium\data\Connections;
 use \lithium\storage\Session;
+use admin\models\Credit;
 use MongoRegex;
 use admin\models\Base;
 
@@ -12,12 +13,14 @@ class User extends Base {
 
 	protected $_meta = array('source' => 'users');
 
-	public static function applyCredit($data) {
-		$user = User::find('first', array(
-			'conditions' => array(
-				'_id' => $data['user_id']
-		)));
-		$amount = $data['sign'].$data['amount'];
+	public static function applyCredit($data, $options = array()) {
+		$options['type'] = empty($options['type']) ? null : $options['type'];
+		$user = User::find($data['user_id']);
+		if ($options['type'] == 'Invite') {
+			$amount = Credit::INVITE_CREDIT;
+		} else {
+			$amount = $data['sign'].$data['amount'];
+		}
 		$user->total_credit = $user->total_credit + $amount;
 
 		return $user->save(null, array('validate' => false));

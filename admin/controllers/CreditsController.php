@@ -26,9 +26,8 @@ class CreditsController extends \lithium\action\Controller {
 	}
 
 	public function add() {
-		$credit = Credit::create();
 		$isMoney = Validator::isMoney($this->request->data['amount']);
-		if (($isMoney) && ($this->request->data) && Credit::add($credit, $this->request->data)) {
+		if (($isMoney) && ($this->request->data) && Credit::add($this->request->data)) {
 			if (User::applyCredit($this->request->data)) {
 				$this->redirect(array('Users::view', 'args' => array($this->request->data['user_id'])));
 			}
@@ -67,7 +66,6 @@ class CreditsController extends \lithium\action\Controller {
 						'items.event_id' => $eventId
 				)));
 				foreach ($orders as $order) {
-					$credit = Credit::create();
 					$data = array(
 						'user_id' => (string) $order->user_id,
 						'sign' => $this->request->data['sign'],
@@ -84,7 +82,7 @@ class CreditsController extends \lithium\action\Controller {
 						'order_number' => (string) $order->order_id,
 						'order_id' => (string) $order->_id
 					);
-					Credit::add($credit, $data);
+					Credit::add($data);
 				}
 			}
 		}
