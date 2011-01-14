@@ -77,8 +77,9 @@ class ApplyCredits extends \lithium\console\Command {
 					);
 					$options = array('type' => 'Invite');
 					if (Credit::add($data, $options) && User::applyCredit($data, $options)) {
-						$invitation->credited = true;
-						$invitation->save();
+						$updateInvite = Invitation::find($invitation['_id']);
+						$updateInvite->credited = true;
+						$updateInvite->save();
 					}
 				}
 			}
