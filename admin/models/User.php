@@ -15,7 +15,10 @@ class User extends Base {
 
 	public static function applyCredit($data, $options = array()) {
 		$options['type'] = empty($options['type']) ? null : $options['type'];
-		$user = User::find($data['user_id']);
+		$user = User::find('first', array(
+			'conditions' => array(
+				'_id' => $data['user_id']
+		)));
 		if ($user) {
 			if ($options['type'] == 'Invite') {
 				$amount = Credit::INVITE_CREDIT;
