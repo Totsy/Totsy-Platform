@@ -17,8 +17,15 @@ use MongoId;
  */
 class ApplyCredits extends \lithium\console\Command {
 
+	/**
+	 * The environment to use when running the command. db='development' is the default.
+	 * Set to 'production' if running live when using a cronjob.
+	 */
+	public $env = 'development';
+
 	public function run() {
 		$this->header('Launching search for Invitations....');
+		Environment::set($this->env);
 		$this->_credit();
 		$this->out('Finished Applying Credits');
 	}
