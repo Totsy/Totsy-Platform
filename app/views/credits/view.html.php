@@ -6,7 +6,7 @@
 	<div class="tl"></div>
 	<div class="tr"></div>
 	<div id="page">
-		<h2 class="gray mar-b">My Orders</h2>
+		<h2 class="gray mar-b">My Credits</h2>
 		<div id="name">
 			<b>Credit Total:
 			<?php if (!empty($credit)): ?>
