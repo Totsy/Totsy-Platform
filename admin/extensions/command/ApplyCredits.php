@@ -72,7 +72,7 @@ class ApplyCredits extends \lithium\console\Command {
 				if (empty($invitationCheck)) {
 					$this->out("Giving a credit to $invitation[user_id]");
 					$data = array(
-						'user_id' => $invitation->user_id,
+						'user_id' => $invitation['user_id'],
 						'description' => "Invite accepted from: $invitation[email]"
 					);
 					$options = array('type' => 'Invite');
