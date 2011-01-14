@@ -26,9 +26,33 @@
 	});
 </script>
 
+<br>
+<br>
+<div class='grid_3 menu'>
+	<table>
+		<thead>
+			<tr>
+				<th>Promo Navigation </th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td> <?php echo $this->html->link('Create Promocode', 'promocodes/add'); ?> </td>
+			</tr>
+			<tr>
+				<td><?php echo $this->html->link('View/Edit Promocodes', 'promocodes/index' ); ?></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->html->link('View Promotions', 'promocodes/report'); ?></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+
 <div class="grid_16">
 	<h2 id="page-heading">Promotions Report</h2>
-</div
+</div>
 
 <!--search starts here-->
 <div class='grid_6 box' >

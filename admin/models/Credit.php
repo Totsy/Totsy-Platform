@@ -50,21 +50,30 @@ class Credit extends \lithium\data\Model {
 	 *     to the $credit object and saved.
 	 * @return boolean
 	 */
-	public static function add($credit, array $data = array()) {
+	public static function add(array $data = array(), $options = array()) {
+		$credit = static::_object()->create();
 		$user = Session::read('userLogin');
 		$credit->created = static::dates('now');
-		$credit->admin_id = $user['_id'];
-		$credit->user_id = (string) $data['user_id'];
-		$amount = $data['sign'].$data['amount'];
-		$credit->credit_amount = (float) $amount;
-		$credit->reason = $data['reason'];
-		$credit->description = $data['description'];
+		$options['type'] = empty($options['type']) ? null : $options['type'];
+		$credit->description = empty($data['description']) ? null : $data['description'];
+		if ($user) {
+			$credit->admin_id = $user['_id'];
+			$amount = $data['sign'].$data['amount'];
+			$credit->reason = $data['reason'];
+		}
 		if (!empty($data['event_id']) || !empty($data['order_id'])) {
 			$credit->event_id = $data['event_id'];
 			$credit->order_number = $data['order_number'];
 			$credit->order_id = $data['order_id'];
 		}
-	 	return static::_object()->save($credit);
+		if ($options['type'] == 'Invite') {
+			$amount = static::INVITE_CREDIT;
+			$credit->reason = 'Invitation';
+		}
+		$credit->user_id = (string) $data['user_id'];
+		$credit->credit_amount = (float) $amount;
+
+		return static::_object()->save($credit);
 	}
 
 }

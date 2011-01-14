@@ -41,32 +41,32 @@
         <?=$this->form->create(); ?>
             <?php  $enable= (($promocode->enabled))? 'checked' : '' ?>
 			Enable: <?=$this->form->checkbox( 'enabled', array( 'checked'=>$enable, 'value' => '1' ) ); ?> <br>
-                    
+
            Code: <?=$this->form->text('code', array( 'value' => $promocode->code ) ); ?><br>
-           
+
           Description: <br>
           <?=$this->form->textarea('description', array( 'value' => $promocode->description ) ); ?><br>
-          
+
           Code Type:
            <?=$this->form->select('type', array('percentage' => 'percent',  'dollar'=> 'dollar amount', 'shipping'=> 'shipping'), array('id' => 'type' , 'value' => $promocode->type) ); ?><br>
-           
+
            <?=$this->form->label('Discount Amount:'); ?>
            <?=$this->form->text('discount_amount', array( 'value' => $promocode->discount_amount)); ?><br>
-           
+
            <?=$this->form->label('Minimum Purchase:'); ?>
            <?=$this->form->text('minimum_purchase', array( 'value' => $promocode->minimum_purchase)); ?><br>
-           
+
            <?=$this->form->label('Enter maximum uses:'); ?>
-           <?=$this->form->text( 'max_use', array( 'value' => $promocode->max_use) ); ?><br><br>   
-           
+           <?=$this->form->text( 'max_use', array( 'value' => $promocode->max_use) ); ?><br><br>
+
            <?=$this->form->label('Start Date:'); ?>
            <?=$this->form->text('start_date', array('value' => $promocode->start_date, 'id'=>'start_date')); ?><br>
-           
+
            <?=$this->form->label('Expiration Date:'); ?>
            <?=$this->form->text('end_date', array('value' => $promocode->end_date, 'id'=>'end_date')); ?><br>
-              
+
            <?=$this->form->submit('update'); ?>
-        
+
         <?=$this->form->end(); ?>
         </fieldset>
     </div>
