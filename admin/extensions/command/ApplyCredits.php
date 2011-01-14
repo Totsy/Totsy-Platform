@@ -53,36 +53,45 @@ class ApplyCredits extends \lithium\console\Command {
 		);
 		$collection = Invitation::connection()->connection->invitations;
 		$invitations = $collection->find($conditions);
+		$invitations->sort(array('_id' => -1));
 		$invitationCount = Invitation::count(compact('conditions'));
 		$this->out("There are currently $invitationCount outstanding invitations.");
+		$i = 0;
 		foreach ($invitations as $invitation) {
-			$user = User::findByemail($invitation['email']);
-			$conditions = array(
-				'user_id' => (string) $user['_id'],
-				'items.status' => array('$ne' => 'Order Canceled'
-			));
-			$order = Order::first(compact('conditions'));
-			if ($order) {
-				$user = User::find($invitation['user_id']);
-				$invitationCheck = Invitation::find('first', array(
-					'conditions' => array(
-						'email' => $invitation['email'],
-						'credited' => true
-				)));
-				if (empty($invitationCheck)) {
-					$this->out("Giving a credit to $invitation[user_id]");
-					$data = array(
-						'user_id' => $invitation['user_id'],
-						'description' => "Invite accepted from: $invitation[email]"
-					);
-					$options = array('type' => 'Invite');
-					if (Credit::add($data, $options) && User::applyCredit($data, $options)) {
-						$updateInvite = Invitation::find($invitation['_id']);
-						$updateInvite->credited = true;
-						$updateInvite->save();
+			$this->out("Currently processing invitation $i out of $invitationCount");
+			if (!empty($invitation['email'])) {
+				$user = User::findByemail($invitation['email']);
+				$conditions = array(
+					'user_id' => (string) $user['_id'],
+					'items.status' => array('$ne' => 'Order Canceled'
+				));
+				$order = Order::first(compact('conditions'));
+				if ($order) {
+					$user = User::find($invitation['user_id']);
+					$invitationCheck = Invitation::find('first', array(
+						'conditions' => array(
+							'email' => $invitation['email'],
+							'credited' => true
+					)));
+					if (empty($invitationCheck)) {
+						$this->out("Giving a credit to $invitation[user_id]");
+						$data = array(
+							'user_id' => $invitation['user_id'],
+							'description' => "Invite accepted from: $invitation[email]"
+						);
+						$options = array('type' => 'Invite');
+						if (Credit::add($data, $options) && User::applyCredit($data, $options)) {
+							$updateInvite = Invitation::find('first', array(
+								'conditions' => array(
+									'_id' => $invitation['_id']
+							)));
+							$updateInvite->credited = true;
+							$updateInvite->save();
+						}
 					}
 				}
 			}
+			$i++;
 		}
 	}
 }
