@@ -16,14 +16,16 @@ class User extends Base {
 	public static function applyCredit($data, $options = array()) {
 		$options['type'] = empty($options['type']) ? null : $options['type'];
 		$user = User::find($data['user_id']);
-		if ($options['type'] == 'Invite') {
-			$amount = Credit::INVITE_CREDIT;
-		} else {
-			$amount = $data['sign'].$data['amount'];
+		if ($user) {
+			if ($options['type'] == 'Invite') {
+				$amount = Credit::INVITE_CREDIT;
+			} else {
+				$amount = $data['sign'].$data['amount'];
+			}
+			$user->total_credit = $user->total_credit + $amount;
+			$user->save(null, array('validate' => false));
 		}
-		$user->total_credit = $user->total_credit + $amount;
-
-		return $user->save(null, array('validate' => false));
+		return true;
 	}
 
 	public static function findUsers($data) {
