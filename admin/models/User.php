@@ -22,7 +22,11 @@ class User extends Base {
 			} else {
 				$amount = $data['sign'].$data['amount'];
 			}
-			$user->total_credit = $user->total_credit + $amount;
+			if (empty($user->total_credit)) {
+				$user->total_credit = $amount;
+			} else {
+				$user->total_credit = $user->total_credit + $amount;
+			}
 			$user->save(null, array('validate' => false));
 		}
 		return true;
