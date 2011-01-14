@@ -42,6 +42,7 @@ class ApplyCredits extends \lithium\console\Command {
 	protected function _credit() {
 		$affiliates = User::findAllByaffiliate(true, array('fields' => array('_id' => true)));
 		$affiliates = $affiliates->data();
+
 		foreach ($affiliates as $value) {
 			$ids[] = (string) $value['_id'];
 		}
@@ -50,8 +51,8 @@ class ApplyCredits extends \lithium\console\Command {
 			'credited' => array('$ne' => true),
 			'user_id' => array('$nin' => $ids)
 		);
-		$invitations = Invitation::all($conditions);
-		$invitationCount = Invitation::count($conditions);
+		$invitations = Invitation::all(compact('conditions'));
+		$invitationCount = Invitation::count(compact('conditions'));
 		$this->out("There are currently $invitationCount outstanding invitations.");
 		foreach ($invitations as $invitation) {
 			$user = User::findByemail($invitation->email);
@@ -59,13 +60,14 @@ class ApplyCredits extends \lithium\console\Command {
 				'user_id' => (string) $user['_id'],
 				'items.status' => array('$ne' => 'Order Canceled'
 			));
-			$order = Order::first($conditions);
+			$order = Order::first(compact('conditions'));
 			if ($order) {
 				$user = User::find($invitation->user_id);
-				$invitationCheck = User::find('first', array(
-					'email' => $invitation->email,
-					'credited' => true
-				));
+				$invitationCheck = Invitation::find('first', array(
+					'conditions' => array(
+						'email' => $invitation->email,
+						'credited' => true
+				)));
 				if (empty($invitationCheck)) {
 					$this->out("Giving a credit to $invitation->user_id");
 					$data = array(
