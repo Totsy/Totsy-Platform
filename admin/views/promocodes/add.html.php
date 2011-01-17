@@ -27,6 +27,26 @@
 <div class="grid_16">
 	<h2 id="page-heading">Promocode Add Panel</h2>
 </div>
+<div class='grid_3 menu'>
+	<table>
+		<thead>
+			<tr>
+				<th>Promo Navigation </th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td> <?php echo $this->html->link('Create Promocode', 'promocodes/add'); ?> </td>
+			</tr>
+			<tr>
+				<td><?php echo $this->html->link('View/Edit Promocodes', 'promocodes/index' ); ?></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->html->link('View Promotions', 'promocodes/report'); ?></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
 
 <div class='grid_6 box '>
     <h2>
@@ -35,9 +55,9 @@
     <div class= 'block forms' >
         <fieldset>
             <?=$this->form->create(); ?>
-                  <?=$this->form->label('Enable:'); ?> <?=$this->form->checkbox('enabled', array('checked'=>'checked', 'value' => '1')); ?> <br>
+                <?=$this->form->label('Enable:'); ?> <?=$this->form->checkbox('enabled', array('checked'=>'checked', 'value' => '1')); ?> <br>
                 <br>
-                  <?=$this->form->label('Code:'); ?>
+                <?=$this->form->label('Code:'); ?>
                 <?=$this->form->text('code', array('value' => 'Enter code')); ?><br>
                 <br>
                 <?=$this->form->label('Description:'); ?> <br>

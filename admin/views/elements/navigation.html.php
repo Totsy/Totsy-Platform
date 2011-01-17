@@ -59,16 +59,12 @@
 		</ul>
 	</li>
 	<li>
-		<?php echo $this->html->link('Promotions', '#'); ?>
+		<?php echo $this->html->link('Marketing', '#'); ?>
 		<ul>
 			<li>
-				<?php echo $this->html->link('Create Promocode', 'promocodes/add'); ?>
-			</li>
-			<li>
-				<?php echo $this->html->link('View/Edit Promocodes', 'promocodes/index' ); ?>
-			</li>
-			<li>
-				<?php echo $this->html->link('View Promotions', 'promocodes/report'); ?>
+				<?php echo $this->html->link('Promocode', 'promocodes/index'); ?>
+				<?php echo $this->html->link('Affiliate', 'Affiliates::index'); ?>
+				
 			</li>
 		</ul>
 	</li>
