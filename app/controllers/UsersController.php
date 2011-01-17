@@ -82,6 +82,7 @@ class UsersController extends BaseController {
 					'_id' => (string) $user->_id,
 					'firstname' => $user->firstname,
 					'lastname' => $user->lastname,
+					'zip' => $user->zip,
 					'email' => $user->email
 				);
 				Session::write('userLogin', $userLogin);

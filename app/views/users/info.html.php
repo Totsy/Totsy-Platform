@@ -46,6 +46,14 @@
 					?>
 				</div>
 				<div class="form-row"> 
+					<?=$this->form->label('zip', 'Zip/Postal Code',array('class' => 'account' )); ?>
+					<?=$this->form->text('zip', array(
+							'class' => 'inputbox',
+							'value' => $user->zip
+						));
+					?>
+				</div>
+				<div class="form-row"> 
 					<?=$this->form->label('eamil', 'E-Mail',array('class' => 'account' )); ?>
 					<?=$this->form->text('email', array(
 							'class' => 'inputbox',

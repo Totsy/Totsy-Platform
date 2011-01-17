@@ -50,6 +50,9 @@ class User extends \lithium\data\Model {
 		'lastname' => array(
 			'notEmpty', 'required' => true, 'message' => 'Please add a last name'
 		),
+			'zip' => array(
+				'notEmpty', 'required' => true, 'message' => 'Please add a zip code'
+		),
 		'email' => array(
 			array('email', 'message' => 'Email is not valid'),
 			array('notEmpty', 'required' => true, 'message' => 'Please add an email address'),
