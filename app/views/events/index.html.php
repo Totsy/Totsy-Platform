@@ -1,9 +1,9 @@
 <?=$this->html->script(array('jquery.nivo.slider.pack'));?>
 
-	<h2 class="page-title gray"><span class="_red">Today's Sales</span> 
+	<h2 class="page-title gray"><span class="_red">Today's Sales</span>
     <div class="sm-actions fr" style="font-size:12px; margin:7px 0px 0px 0px;">
 			<dl>
-				<dt><strong>Socialize With Us</strong></dt> 
+				<dt><strong>Socialize With Us</strong></dt>
 				<dd>
 					<ul>
 						<li><a href="http://www.facebook.com/pages/Totsy/141535723466" target="_blank" title="Friend us on Facebook" class="sm-facebook sm-btn">Friend us on Facebook</a></li>
@@ -15,15 +15,15 @@
 	<hr />
 
 
-   
+
 <div class="fullwidth">
-     
+
 	<?php $x = 0; ?>
 	<?php $y = 0; ?>
 	<?php foreach ($openEvents as $event): ?>
 		<!-- Start product item -->
 		<?php if ($y == 0): ?>
-			<div class="product-list-item featured r-container"> 
+			<div class="product-list-item featured r-container">
 		<?php endif ?>
 		<?php if ($y == 1): ?>
 			<div class="product-list-item featured middle r-container">
@@ -39,10 +39,10 @@
 		<?php endif ?>
 				<div class="tl"></div>
 				<div class="tr"></div>
-				
-                
+
+
                 <div class="md-gray p-container">
-               
+
 						<?php if ($itemCounts[ (string) $event->_id] == 0): ?>
 								<?=$this->html->image('/img/soldout.gif', array(
 									'title' => "Sold Out",
@@ -66,7 +66,7 @@
 					'style' => 'margin:0px 0px -6px 0px;'
 							)), "sale/$event->url", array('escape'=> false));
 						?>
-					<?php else: ?>				
+					<?php else: ?>
 						<?=$this->html->link(
 							$this->html->image("$productImage", array(
 							'title' => $event->name,
@@ -74,14 +74,14 @@
 							'width' => '298',
 							'height' => '344'
 						)), "sale/$event->url", array('escape'=> false));
-						
+
 						 ?>
-                         
+
 					<?php endif ?>
-                 
-                  
+
+
                 <div class="splash-details">
-               	
+
                 <!-- Begin Holiday Banner Notifications -->
                 <?php if ($event->tags): ?>
 					<?php foreach ($event->tags as $key => $value): ?>
@@ -90,12 +90,12 @@
                     <?php endforeach ?>
           		<?php endif ?>
                 <!-- End Holiday Banner Notifications -->
-                
+
 						<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
 						 <p style="padding:0px; margin:0px; font-size:16px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
 						 <p style="padding:0px; margin:-3px 0px 0px 0px; font-size:13px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;"><span id="<?php echo "todaysplash$x"; ?>"></span>
 						</div>
-						
+
 						<div class="table-cell right" style="width:55px; display:block; padding:5px; margin:7px 0px 0px 0px; ">
 							<span><?=$this->html->link('Shop', 'sale/'.$event->url, array('class' => 'go-btn'));?></span>
 						</div>
@@ -104,7 +104,7 @@
 				<div class="bl"></div>
 				<div class="br"></div>
 			</div>
-	
+
 		<!-- End product item -->
 		<?php
 			$date = $event->end_date->sec * 1000;
@@ -117,7 +117,7 @@
 				});</script>";
 		?>
 			<?php if ($x == 1): ?>
-            
+
 			<?=$this->html->link($this->html->image("/img/invite_girl.png", array(
 					'title' => "Invite Friends. Get $15",
 					'alt' => "Invite Friends. Get $15",
@@ -125,24 +125,24 @@
 					'height' => '413'
 					)),'/Users/invite', array('escape'=> false));
 			?>
-            
+
 			<?php endif ?>
 		<?php $x++; ?>
 		<?php $y++; ?>
 	<?php endforeach ?>
-      
+
 
         <div style="margin-bottom:35px;" class="clear"></div>
 
 		<h2 class="page-title gray clear"><span class="_red">Monthly Sales / Home Decor Month</span></h2>
 		<hr />
-		
+
 		        <div id="slider" class="nivoSlider">
                 <a href="/sale/my-baby-sam"><img src="/img/home_img-1.jpg"  alt="" title="My Baby Sam" /></a>
                 <a href="/sale/azur-italian-furniture"><img src="/img/home_img-2.jpg"  alt="" title="Azur Italian Furniture" /></a>
                 <a href="/sale/angel-baby"><img src="/img/home_img-3.jpg" alt="" title="Angel Baby" /></a>
                 <a href="/sale/home-design-book-sale"><img src="/img/home_img-4.jpg"  alt="" title="Home Design Book Sale" /></a>
-                <a href="/sale/artehouse"><img src="/img/home_img-5.jpg" alt=""  title="ArteHouse" /></a>	
+                <a href="/sale/artehouse"><img src="/img/home_img-5.jpg" alt=""  title="ArteHouse" /></a>
                 <a href="/sale/the-rug-market"><img src="/img/home_img-6.jpg" alt=""  title="The Rug Market" /></a>
 
             </div>
@@ -179,15 +179,15 @@
 						?>
 						<?=$this->html->link(
 						$this->html->image("$productImage", array(
-							'title' => $event->name, 
-							'alt' => $event->name, 
-							'width' => '298', 
+							'title' => $event->name,
+							'alt' => $event->name,
+							'width' => '298',
 							'height' => '344'
 						)), 'sale/'.$event->url, array('escape'=> false));
 						 ?>
 
 						<div class="splash-details">
-							
+
 <!-- Begin Holiday Banner Notifications -->
                 <?php if ($event->tags): ?>
                                         <?php foreach ($event->tags as $key => $value): ?>
@@ -204,10 +204,7 @@
 							</div>
 
 							<div class="table-cell right" style="width:55px; display:block; padding:5px; margin:7px 0px 0px 0px;">
-								<?=$this->html->link('View', array(
-									'Events::view',
-									'args' => array($event->url)),
-									array('class' => 'preview-btn')
+								<?=$this->html->link('View', 'sale/'.$event->url, array('class' => 'preview-btn')
 									);
 								?>
 							</div>

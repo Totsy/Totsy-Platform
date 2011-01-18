@@ -69,6 +69,7 @@ Router::connect('/addresses', 'Addresses::view');
 Router::connect('/addresses/edit{:args}', 'Addresses::edit');
 Router::connect('/account/info', 'Users::info');
 Router::connect('/account/add/{:args}', 'Account::add');
+Router::connect('/credits', 'Credits::view');
 Router::connect('/invite', 'Users::invite');
 Router::connect('/shopping/cart', 'Cart::index');
 Router::connect('/shopping/checkout.{:type}', 'Orders::add');

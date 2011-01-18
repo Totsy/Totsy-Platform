@@ -24,6 +24,9 @@ use admin\extensions\command\Base;
 /**
  * Export orders already processed.
  *
+ * @todo Include in the query for orders a boolean check for cancled.
+ * We are going to need to change all Order Status = Cancled to cancled = true.
+ * This is going to make life easier for everyone down the line.
  */
 class OrderExport extends Base {
 
