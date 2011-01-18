@@ -79,7 +79,7 @@
 											));
 										?>
 										
-										<?=$this->form->text('zip', array('class' => 'inputbox')); ?>
+										<?=$this->form->text('zip', array('class' => 'inputbox', 'id' => 'zip')); ?>
 										<?=$this->form->error('zip'); ?>
 									</div>
 									<div class="form-row">
