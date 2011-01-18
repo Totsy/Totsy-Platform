@@ -137,13 +137,14 @@
 		<h2 class="page-title gray clear"><span class="_red">Monthly Sales / Home Decor Month</span></h2>
 		<hr />
 
-		        <div id="slider" class="nivoSlider">
-                <a href="/sale/my-baby-sam"><img src="/img/home_img-1.jpg"  alt="" title="My Baby Sam" /></a>
-                <a href="/sale/azur-italian-furniture"><img src="/img/home_img-2.jpg"  alt="" title="Azur Italian Furniture" /></a>
-                <a href="/sale/angel-baby"><img src="/img/home_img-3.jpg" alt="" title="Angel Baby" /></a>
-                <a href="/sale/home-design-book-sale"><img src="/img/home_img-4.jpg"  alt="" title="Home Design Book Sale" /></a>
-                <a href="/sale/artehouse"><img src="/img/home_img-5.jpg" alt=""  title="ArteHouse" /></a>
-                <a href="/sale/the-rug-market"><img src="/img/home_img-6.jpg" alt=""  title="The Rug Market" /></a>
+ <div id="slider" class="nivoSlider">
+		<a href="/sale/baby-mod"><img src="/img/home_img-1.jpg"  alt="" title="Up to 47% Off" /></a>
+                <a href="/sale/woombie"><img src="/img/home_img-2.jpg"  alt="" title="Up to 40% Off" /></a>
+                <a href="/sale/cozibug"><img src="/img/home_img-3.jpg" alt="" title="Up to 60% Off" /></a>
+                <a href="/sale/kids-line"><img src="/img/home_img-4.jpg"  alt="" title="Up to 72% Off" /></a>
+                <a href="/sale/all-pop-art"><img src="/img/home_img-5.jpg" alt=""  title="Up to 46% Off" /></a>
+
+
 
             </div>
 
