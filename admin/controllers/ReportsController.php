@@ -252,6 +252,9 @@ class ReportsController extends BaseController {
 				'conditions' => array(
 					'_id' => $eventId
 			)));
+			$vendorName = preg_replace('/[^(\x20-\x7F)]*/','', substr($this->_asciiClean($event->name), 0, 3));
+			$time = date('ymds', $event->_id->getTimestamp());
+			$poNumber = 'TOT'.'-'.$vendorName.$time;
 			$eventItems = $this->getOrderItems($eventId);
 			$inc = 0;
 			foreach ($eventItems as $eventItem) {
@@ -300,7 +303,7 @@ class ReportsController extends BaseController {
 				}
 			}
 		}
-		return compact('purchaseOrder', 'event', 'total', 'purchaseHeading');
+		return compact('poNumber', 'purchaseOrder', 'event', 'total', 'purchaseHeading');
 	}
 
 	public function orders($eventId = null) {
