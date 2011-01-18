@@ -26,6 +26,7 @@ class ReportsController extends BaseController {
 	 * @var array
 	 */
 	protected $_purchaseHeading = array(
+		'Vendor Style',
 		'SKU',
 		'Product Name',
 		'Product Color',
@@ -270,6 +271,7 @@ class ReportsController extends BaseController {
 									if (($item['item_id'] == $eventItem['_id']) && ((string) $key == $item['size'])){
 										$purchaseOrder[$inc]['Product Name'] = $eventItem['description'];
 										$purchaseOrder[$inc]['Product Color'] = $eventItem['color'];
+										$purchaseOrder[$inc]['Vendor Style'] = $eventItem['vendor_style'];
 										$purchaseOrder[$inc]['SKU'] = Item::sku(
 											$eventItem['vendor'],
 											$eventItem['vendor_style'],
