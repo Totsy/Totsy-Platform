@@ -1,3 +1,4 @@
+<?=$this->html->script('jquery.maskedinput-1.2.2')?>
 <div id="fullscreen">
 	<div id="login-box">
 		<div id="login-box-border" class="register-modal">
@@ -71,6 +72,16 @@
 										<?=$this->form->text('lastname', array('class' => 'inputbox')); ?>
 										<?=$this->form->error('lastname'); ?>
 									</div>
+							<div class="form-row">
+										<?=$this->form->label('zip', 'Zip/Postal Code <span>*</span>', array(
+											'escape' => false,
+											'class' => 'required'
+											));
+										?>
+										
+										<?=$this->form->text('zip', array('class' => 'inputbox')); ?>
+										<?=$this->form->error('zip'); ?>
+									</div>
 									<div class="form-row">
 										<?=$this->form->label('email', 'Email <span>*</span>', array(
 											'escape' => false,
@@ -135,7 +146,11 @@
 		</div>
 	</div>
 </div>
-
+<script type="text/javascript">
+jQuery(function($){
+   $("#zip").mask("99999");
+});
+</script>
 <div id="footer">
 
 	<ul>
