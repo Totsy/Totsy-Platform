@@ -141,6 +141,8 @@ class Cart extends \lithium\data\Model {
 	}
 
 	public static function shipping($carts, $address) {
+		/**
+		THIS WORKED, BUT WE'RE GOING TO A FLAT RATE
 		$result = floatval(Ups::estimate(array(
 			'weight' => array_sum($carts->weight()),
 			'product' => "GND",
@@ -151,6 +153,8 @@ class Cart extends \lithium\data\Model {
 			'rescom' => "RES"
 		)));
 		$cost =  $result ?: 7.95;
+		**/
+		$cost = 7.95;
 		$cartCheck = $carts->data();
 		if (count($cartCheck) == 1 && Item::first($cartCheck[0]['item_id'])->shipping_exempt) {
 			$cost = 0;
