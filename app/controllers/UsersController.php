@@ -110,31 +110,25 @@ class UsersController extends BaseController {
 	 * @param array $data
 	 * @return boolean
 	 */
-	public static function registration($data = null) {
+	public function registration($code = null) {
 		$saved = false;
-		if ($data) {
-			$data['email'] = strtolower($data['email']);
-			$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
-			$user = User::create($data);
-			if ($user->validates()) {
-				$email = $data['email'];
-				$data['password'] = sha1($data['password']);
-				$data['created_date'] = User::dates('now');
-				$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
-				$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));
-				if ($inviteCheck > 0) {
-					$data['invitation_codes'] = array($this->randomString());
-				}
-				if ($saved = $user->save($data)) {
-					$data = array(
-						'user' => $user,
-						'email' => $user->email
-					);
+		if (($code)) {
+			$data = $this->request->data;
+			if( ($data) ){
+				$user = User::create($data);
+				if($user->validates()){
+					$saved= 'true';
+					$data['password']=sha1($data['password']);
+					$data['created_date']=User::dates('now');
+					$data['invitation_codes']=substr($data['email'], 0, strpos($data['email'], '@'));
+					$data['invited_by']= $code;
+					$user->save($data);
 					Silverpop::send('registration', $data);
+					return $saved;
+
 				}
 			}
 		}
-
 		return $saved;
 	}
 	/**
@@ -214,10 +208,10 @@ class UsersController extends BaseController {
 	private function writeSession($sessionInfo) {
 		return (Session::write('userLogin', $sessionInfo));
 	}
-	
+
 	/**
 	 * Updates the user information including password.
-	 * 
+	 *
 	 * @return array
 	 */
 	public function info() {
@@ -341,7 +335,7 @@ class UsersController extends BaseController {
 				'user_id' => (string) $user->_id,
 				'status' => 'Accepted')
 		));
-		
+
 		return compact('user','open', 'accepted', 'flashMessage');
 	}
 
