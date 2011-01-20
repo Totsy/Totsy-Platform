@@ -138,7 +138,7 @@
 		<hr />
 
  <div id="slider" class="nivoSlider">
-		<a href="/sale/baby-mod"><img src="/img/home_img-1.jpg"  alt="" title="Baby Mod - Up to 47% Off" /></a>
+		<!-- <a href="/sale/baby-mod"><img src="/img/home_img-1.jpg"  alt="" title="Baby Mod - Up to 47% Off" /></a> -->
                 <a href="/sale/woombie"><img src="/img/home_img-2.jpg"  alt="" title="Woombie - Up to 40% Off" /></a>
                 <a href="/sale/cozibug"><img src="/img/home_img-3.jpg" alt="" title="Cozibug - Up to 60% Off" /></a>
                 <a href="/sale/kids-line"><img src="/img/home_img-4.jpg"  alt="" title="Kids Line - Up to 72% Off" /></a>

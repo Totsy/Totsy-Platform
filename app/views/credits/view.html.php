@@ -8,15 +8,14 @@
 	<div id="page">
 		<h2 class="gray mar-b">My Credits</h2>
 		<hr/>
-		<div id="name" style="padding:10px 10px 10px 5px; background:#f1f1f1; color:#009900;" class="order-table">
-			<strong class="fl">Total Credits</strong>
-			<strong class="fr">
-			<?php if (!empty($credit)): ?>
-				$<?=$credit?>
-			<?php endif ?>sss
-			</strong>
+		
+		<?php if (empty($credit)): ?>
+		<div id="name" style="padding:10px 10px 10px 5px; color:#009900;" class="order-table">
+			<strong class="fl">Total Credits: $<?=$credit?></strong>
 			<div style="clear:both;"></div>
 		</div>
+		<?php endif ?>
+		
 		<table border="0" cellspacing="5" cellpadding="5" width="100%" class="order-table">
 			<tr>
 				<th>Date</th>
@@ -32,8 +31,9 @@
 					</tr>
 				<?php endif ?>
 			<?php endforeach ?>
-	
+
 		</table>
+		
 	</div>
 	<div class="bl"></div>
 	<div class="br"></div>
