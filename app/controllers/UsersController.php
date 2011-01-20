@@ -110,28 +110,35 @@ class UsersController extends BaseController {
 	 *
 	 * @param array $data
 	 * @return boolean
+	 * @see app/controllers/MomOfTheWeeksController.php
 	 */
-	public function registration($code = null) {
-		$saved = false;
-		if (($code)) {
-			$data = $this->request->data;
-			if( ($data) ){
+		public static function registration($data = null) {
+			$saved = false;
+			if ($data) {
+				$data['email'] = strtolower($data['email']);
+				$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
 				$user = User::create($data);
-				if($user->validates()){
-					$saved= 'true';
-					$data['password']=sha1($data['password']);
-					$data['created_date']=User::dates('now');
-					$data['invitation_codes']=substr($data['email'], 0, strpos($data['email'], '@'));
-					$data['invited_by']= $code;
-					$user->save($data);
-					Silverpop::send('registration', $data);
-					return $saved;
-
+				if ($user->validates()) {
+					$email = $data['email'];
+					$data['password'] = sha1($data['password']);
+					$data['created_date'] = User::dates('now');
+					$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
+					$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));
+					if ($inviteCheck > 0) {
+						$data['invitation_codes'] = array($this->randomString());
+					}
+					if ($saved = $user->save($data)) {
+						$data = array(
+						'user' => $user,
+						'email' => $user->email
+						);
+						Silverpop::send('registration', $data);
+					}
 				}
 			}
+
+			return $saved;
 		}
-		return $saved;
-	}
 	/**
 	 * Performs login authentication for a user going directly to the database.
 	 * If authenticated the user will be redirected to the home page.
