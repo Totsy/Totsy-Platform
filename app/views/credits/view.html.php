@@ -7,30 +7,33 @@
 	<div class="tr"></div>
 	<div id="page">
 		<h2 class="gray mar-b">My Credits</h2>
-		<div id="name">
-			<b>Credit Total:
-			<?php if (!empty($credit)): ?>
-				$<?=$credit?>
-			<?php endif ?>
-			</b>
+		<hr/>
+		
+		<?php if (empty($credit)): ?>
+		<div id="name" style="padding:10px 10px 10px 5px; color:#009900;" class="order-table">
+			<strong class="fl">Total Credits: $<?=$credit?></strong>
+			<div style="clear:both;"></div>
 		</div>
+		<?php endif ?>
+		
 		<table border="0" cellspacing="5" cellpadding="5" width="100%" class="order-table">
 			<tr>
 				<th>Date</th>
-				<th>Amount</th>
+				<th>Credit Amount</th>
 				<th>Reason</th>
 			</tr>
 			<?php foreach ($credits as $credit): ?>
 				<?php if ($credit->created): ?>
 					<tr>
 						<td><?=date('Y-m-d', $credit->created->sec)?></td>
-						<td>$<?=$credit->credit_amount?></td>
+						<td class="price">$<?=$credit->credit_amount?></td>
 						<td><?=$credit->reason?></td>
 					</tr>
 				<?php endif ?>
 			<?php endforeach ?>
-	
+
 		</table>
+		
 	</div>
 	<div class="bl"></div>
 	<div class="br"></div>

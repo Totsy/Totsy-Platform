@@ -92,6 +92,7 @@ class ReportsController extends BaseController {
 		'ShipMethod' => null,
 		'RushOrder (Y/N)' => null,
 		'OrderNum' => null,
+		'OldSKU' => null,
 		'SKU' => null,
 		'Qty' => null,
 		'CompanyOrName' => null,
@@ -252,6 +253,9 @@ class ReportsController extends BaseController {
 				'conditions' => array(
 					'_id' => $eventId
 			)));
+			$vendorName = preg_replace('/[^(\x20-\x7F)]*/','', substr($this->_asciiClean($event->name), 0, 3));
+			$time = date('ymds', $event->_id->getTimestamp());
+			$poNumber = 'TOT'.'-'.$vendorName.$time;
 			$eventItems = $this->getOrderItems($eventId);
 			$inc = 0;
 			foreach ($eventItems as $eventItem) {
@@ -300,7 +304,7 @@ class ReportsController extends BaseController {
 				}
 			}
 		}
-		return compact('purchaseOrder', 'event', 'total', 'purchaseHeading');
+		return compact('poNumber', 'purchaseOrder', 'event', 'total', 'purchaseHeading');
 	}
 
 	public function orders($eventId = null) {
@@ -362,6 +366,15 @@ class ReportsController extends BaseController {
 		return compact('orderList', 'event', 'total', 'orderHeading');
 	}
 
+	public function oldsku($vendor_style, $size) {
+		$size = ($size == 'no size') ? null : '-'.$size;
+		$sku = strtoupper(str_replace(' ', '', trim($vendor_style.$size)));
+		if (strlen($sku) > 19) {
+			$sku = str_replace('-', '', $sku);
+		}
+		return $sku;
+	}
+
 	/**
 	 * Generates the order file.
 	 *
@@ -406,7 +419,7 @@ class ReportsController extends BaseController {
 						$orderFile[$inc]['Tel'] = $order['shipping']['telephone'];
 						$orderFile[$inc]['Country'] = '';
 						$orderFile[$inc]['OrderNum'] = $order['order_id'];
-						$orderFile[$inc]['SKU'] = $this->sku($orderItem->vendor_style, $item['size']);
+						$orderFile[$inc]['OldSKU'] = $this->oldsku($orderItem->vendor_style, $item['size']);
 						$orderFile[$inc]['SKU'] = Item::sku(
 							$orderItem->vendor,
 							$orderItem->vendor_style,

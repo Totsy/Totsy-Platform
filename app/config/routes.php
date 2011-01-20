@@ -15,7 +15,7 @@ use lithium\action\Response;
 /**
  * The following allows up to serve images right out of mongodb.
  * This needs to be first so that we don't get a controller error.
- * 
+ *
  */
 Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request) {
 	$request->type = ($request->type == 'jpg') ? 'jpeg' : $request->type;
@@ -35,7 +35,7 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 /**
  * The following allows up to serve images right out of mongodb.
  * This needs to be first so that we don't get a controller error.
- * 
+ *
  */
 Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
      return new Response(array(
@@ -50,12 +50,13 @@ Router::connect('/momoftheweek/fbml', 'MomOfTheWeeks::fbml');
 Router::connect('/surveys', 'Surveys::index');
 Router::connect('/invitation/{:args}', 'Users::register');
 Router::connect('/join/{:args}', 'Users::register');
+Router::connect('/affiliate/{:args}', 'Users::registration');
 Router::connect('/reset', 'Users::reset');
 Router::connect('/pages/{:args}', 'Pages::view');
 Router::connect('/blog', 'Blog::index');
 
 /**
- * Redirect all non-authenticated users to 
+ * Redirect all non-authenticated users to
  */
 if(!Session::check('userLogin')) {
 	Router::connect('/', 'Users::login');

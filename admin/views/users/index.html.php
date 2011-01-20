@@ -58,6 +58,10 @@
 						<?=$this->form->label('Email'); ?>
 						<?=$this->form->text('email', array('id' => 'email'));?>
 					</p>
+					<p>
+						<?=$this->form->label('Zip/Postal Code'); ?>
+						<?=$this->form->text('zip', array('id' => 'zip'));?>
+					</p>
 				<?=$this->form->submit('Search'); ?>
 			<?=$this->form->end(); ?>
 		</fieldset>
@@ -96,6 +100,13 @@
 						</td>
 						<td>
 							<?=$this->html->link($user->lastname, array(
+							'Users::view',
+							'args'=>$user->_id),
+							array('target' => '_blank'));
+							?>
+						</td>
+						<td>
+							<?=$this->html->link($user->zip, array(
 							'Users::view',
 							'args'=>$user->_id),
 							array('target' => '_blank'));

@@ -28,6 +28,7 @@ class UsersController extends \admin\controllers\BaseController {
 			'firstname',
 			'lastname',
 			'email',
+			'zip',
 			'logincounter',
 			'purchase_count',
 			'invited_by'
@@ -47,7 +48,7 @@ class UsersController extends \admin\controllers\BaseController {
 		if ($this->request->data) {
 			$users = User::findUsers($this->request->data);
 		}
-		$headings = array('firstname','lastname', 'email');
+		$headings = array('Ref','Last Name', 'First Name','Zip/postal code');
 		return compact('users', 'headings');
 	}
 
@@ -75,7 +76,7 @@ class UsersController extends \admin\controllers\BaseController {
 				$info = $this->sortArrayByArray($data, $headings['user']);
 			}
 		}
-
+	
 		return compact('user', 'credits', 'orders', 'headings', 'info', 'reasons', 'admin');
 	}
 	/**
