@@ -82,6 +82,7 @@ class UsersController extends BaseController {
 					'_id' => (string) $user->_id,
 					'firstname' => $user->firstname,
 					'lastname' => $user->lastname,
+					'zip' => $user->zip,
 					'email' => $user->email
 				);
 				Session::write('userLogin', $userLogin);
@@ -109,34 +110,35 @@ class UsersController extends BaseController {
 	 *
 	 * @param array $data
 	 * @return boolean
+	 * @see app/controllers/MomOfTheWeeksController.php
 	 */
-	public static function registration($data = null) {
-		$saved = false;
-		if ($data) {
-			$data['email'] = strtolower($data['email']);
-			$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
-			$user = User::create($data);
-			if ($user->validates()) {
-				$email = $data['email'];
-				$data['password'] = sha1($data['password']);
-				$data['created_date'] = User::dates('now');
-				$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
-				$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));
-				if ($inviteCheck > 0) {
-					$data['invitation_codes'] = array($this->randomString());
-				}
-				if ($saved = $user->save($data)) {
-					$data = array(
+		public static function registration($data = null) {
+			$saved = false;
+			if ($data) {
+				$data['email'] = strtolower($data['email']);
+				$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
+				$user = User::create($data);
+				if ($user->validates()) {
+					$email = $data['email'];
+					$data['password'] = sha1($data['password']);
+					$data['created_date'] = User::dates('now');
+					$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
+					$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));
+					if ($inviteCheck > 0) {
+						$data['invitation_codes'] = array($this->randomString());
+					}
+					if ($saved = $user->save($data)) {
+						$data = array(
 						'user' => $user,
 						'email' => $user->email
-					);
-					Silverpop::send('registration', $data);
+						);
+						Silverpop::send('registration', $data);
+					}
 				}
 			}
-		}
 
-		return $saved;
-	}
+			return $saved;
+		}
 	/**
 	 * Performs login authentication for a user going directly to the database.
 	 * If authenticated the user will be redirected to the home page.
@@ -214,10 +216,10 @@ class UsersController extends BaseController {
 	private function writeSession($sessionInfo) {
 		return (Session::write('userLogin', $sessionInfo));
 	}
-	
+
 	/**
 	 * Updates the user information including password.
-	 * 
+	 *
 	 * @return array
 	 */
 	public function info() {
@@ -341,7 +343,7 @@ class UsersController extends BaseController {
 				'user_id' => (string) $user->_id,
 				'status' => 'Accepted')
 		));
-		
+
 		return compact('user','open', 'accepted', 'flashMessage');
 	}
 
