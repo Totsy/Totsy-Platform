@@ -9,7 +9,7 @@
 		<h2 class="gray mar-b">My Credits</h2>
 		<hr/>
 		
-		<?php if (empty($credit)): ?>
+		<?php if (!empty($credit)): ?>
 		<div id="name" style="padding:10px 10px 10px 5px; color:#009900;" class="order-table">
 			<strong class="fl">Total Credits: $<?=$credit?></strong>
 			<div style="clear:both;"></div>
@@ -20,18 +20,15 @@
 			<tr>
 				<th>Date</th>
 				<th>Credit Amount</th>
-				<th>Reason</th>
+				<th>Description</th>
 			</tr>
 			<?php foreach ($credits as $credit): ?>
-				<?php if ($credit->created): ?>
-					<tr>
-						<td><?=date('Y-m-d', $credit->created->sec)?></td>
-						<td class="price">$<?=$credit->credit_amount?></td>
-						<td><?=$credit->reason?></td>
-					</tr>
-				<?php endif ?>
+			<tr>
+				<td><?=date('Y-m-d', $credit->_id->getTimestamp())?></td>
+				<td>$<?=$credit->amount?></td>
+				<td><?=$credit->description?></td>
+			<tr>
 			<?php endforeach ?>
-
 		</table>
 		
 	</div>
