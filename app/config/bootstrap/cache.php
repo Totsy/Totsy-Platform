@@ -24,19 +24,21 @@ if (!$xcacheEnabled = xcache::enabled()) {
 
 Cache::config(array(
 	'default' => array(
-		'adapter' => '\lithium\storage\cache\adapter\XCache'
+		'adapter' => 'lithium\storage\cache\adapter\XCache'
 	)
 ));
 
 Dispatcher::applyFilter('run', function($self, $params, $chain) {
-	if ($cache = Cache::read('default', 'core.libraries')) {
-		$cache = (array) unserialize($cache) + Libraries::cache();
+	$key = md5(LITHIUM_APP_PATH);
+
+	if ($cache = Cache::read('default', "{$key}.core.libraries")) {
+		$cache = (array) array_merge($cache + Libraries::cache());
 		Libraries::cache($cache);
 	}
 	$result = $chain->next($self, $params, $chain);
 
 	if ($cache != Libraries::cache()) {
-		Cache::write('default', 'core.libraries', serialize(Libraries::cache()), '+1 day');
+		Cache::write('default', "{$key}.core.libraries", Libraries::cache(), '+1 day');
 	}
 	return $result;
 });

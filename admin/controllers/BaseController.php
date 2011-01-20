@@ -35,4 +35,7 @@ class BaseController extends \lithium\action\Controller {
 		return compact('events', 'type');
 	}
 
+	protected function _asciiClean($description) {
+		return preg_replace('/[^(\x20-\x7F)]*/','', $description);
+	}
 }

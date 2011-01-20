@@ -6,7 +6,7 @@
 <?=$this->html->style('TableTools');?>
 
 <div class="grid_16">
-	<h2 id="page-heading">Purchase Order - <?=$event->name?></h2>
+	<h2 id="page-heading">Purchase Order: <?=$poNumber; ?> (<?=$event->name?>)</h2>
 </div>
 <div id="clear"></div>
 <div class="grid_8">
