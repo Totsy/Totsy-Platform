@@ -50,7 +50,7 @@ Router::connect('/momoftheweek/fbml', 'MomOfTheWeeks::fbml');
 Router::connect('/surveys', 'Surveys::index');
 Router::connect('/invitation/{:args}', 'Users::register');
 Router::connect('/join/{:args}', 'Users::register');
-Router::connect('/affiliate/{:args}', 'Users::registration');
+Router::connect('/affiliate/{:args}', 'Affiliates::registration');
 Router::connect('/reset', 'Users::reset');
 Router::connect('/pages/{:args}', 'Pages::view');
 Router::connect('/blog', 'Blog::index');
