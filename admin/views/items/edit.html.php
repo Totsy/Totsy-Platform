@@ -40,34 +40,34 @@ tinyMCE.init({
 				<div id="item_description">
 					<h2 id="">Product Description</h2>
 					<?=$this->form->field('description', array(
-						'type' => 'text', 
-						'class' => 'desc', 
+						'type' => 'text',
+						'class' => 'desc',
 						'value' => $item->description
 					));?>
 					<?=$this->form->label('Copy'); ?>
 					<?=$this->form->textarea('blurb', array(
 						'class' => 'general',
-						'name' => 'blurb', 
+						'name' => 'blurb',
 						'value' => $item->blurb
 					));?>
 					<?=$this->form->field('vendor', array(
-						'type' => 'text', 
+						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->vendor
 					));?>
 					<?=$this->form->field('vendor_style', array(
-						'type' => 'text', 
+						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->vendor_style
 					));?>
 					<?=$this->form->field('age', array(
-						'type' => 'text', 
+						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->age
 					));?>
 					<?=$this->form->field('color', array(
-						'type' => 'text', 
-						'class' => 'general', 
+						'type' => 'text',
+						'class' => 'general',
 						'value' => $item->color
 					));?>
 					<div id="item_status">
@@ -99,9 +99,20 @@ tinyMCE.init({
 							<input type="radio" name="shipping_exempt" value="0" id="shipping_exempt"> Shipping Applied Item
 						<?php else: ?>
 							<input type="radio" name="shipping_exempt" value="1" id="shipping_exempt"> Shipping Exempt Item <br>
-							<input type="radio" name="shipping_exempt" value="0" id="shipping_exempt" checked> Shipping Applied Item
+							<input type="radio" name="shipping_exempt" value="0" id="shipping_exempt" checked> Shipping Applied Item<br>
 						<?php endif ?>
 					</div>
+					<div id="item_oversize" style="margin-left:20px">
+						<?php if ($item->shipping_oversize == 1): ?>
+							<input type="radio" name="shipping_oversize" value="0" id="shipping_oversize" > Shipping Normal size Item <br>
+							<input type="radio" name="shipping_oversize" value="1" id="shipping_oversize" checked> Shipping OverSize Item
+						<?php else: ?>
+							<input type="radio" name="shipping_oversize" value="0" id="shipping_oversize" checked> Shipping Normal size Item <br>
+							<input type="radio" name="shipping_oversize" value="1" id="shipping_oversize" > Shipping Oversize Item<br>
+						<?php endif ?>
+						<?=$this->form->text("shipping_rate", array('value'=>$item->shipping_rate, 'id'=>"shipping_rate")) ?>
+					</div>
+
 					<div id="discount">
 						<h2 id="discount">Allow/Disallow Discounts on Order</h2>
 						<p>Note: By setting this property the <b>entire</b> discounts (credits or promotions) can be disallowed.</p>
@@ -117,28 +128,28 @@ tinyMCE.init({
 				<div id="item_pricing">
 					<h2 id="">Pricing</h2>
 					<?=$this->form->field('sale_retail', array(
-						'type' => 'text', 
+						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->sale_retail
 					));?>
 					<?=$this->form->field('msrp', array(
-						'type' => 'text', 
+						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->msrp
 					));?>
 					<?=$this->form->field('total_quantity', array(
-						'type' => 'text', 
+						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->total_quantity
 					));?>
 
 					<?=$this->form->field('orig_whol', array(
-						'type' => 'text', 
+						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->orig_whol
 					));?>
 					<?=$this->form->field('sale_whol', array(
-						'type' => 'text', 
+						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->sale_whol
 					));?>
@@ -146,27 +157,27 @@ tinyMCE.init({
 				<div id="item_properties">
 					<h2 id="">Weight and Dimensions</h2>
 					<?=$this->form->field('product_weight', array(
-						'type' => 'text', 
+						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->product_weight
 					));?>
 					<?=$this->form->field('product_dimensions', array(
-						'type' => 'text', 
+						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->product_dimensions
 					));?>
 					<?=$this->form->field('shipping_weight', array(
-						'type' => 'text', 
+						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->shipping_weight
 					));?>
 					<?=$this->form->field('shipping_dimensions', array(
-						'type' => 'text', 
+						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->shipping_dimensions));?>
 				</div>
 				<div id="item_details">
-					<h2 id="">Item Details</h2>	
+					<h2 id="">Item Details</h2>
 					<table border="0" cellspacing="5" cellpadding="5">
 						<?php foreach ($item->details->data() as $key => $value): ?>
 							<tr>
@@ -242,7 +253,7 @@ tinyMCE.init({
 							<tr>
 								<td align="center">
 									<?=$this->html->image("/image/$item->primary_image.jpg", array(
-										'alt' => 'altText')); 
+										'alt' => 'altText'));
 									?>
 								</td>
 								<td></td>
@@ -289,4 +300,42 @@ $(document).ready(function() {
 	//create tabs
 	$("#tabs").tabs();
 });
+</script>
+<script type='text/javascript'>
+
+
+		if( $("input:radio[name=shipping_exempt]:checked").val() == '0'){
+			$('#item_oversize').show();
+		}else{
+			$('#item_oversize').hide();
+		}
+
+
+		if( $('##item_oversize').val() == '1'){
+			$('##item_oversize').show();
+		}else{
+			$('##item_oversize').hide();
+		}
+
+
+	$(document).ready(function(){
+		$("input:radio[name=shipping_exempt]").change(function(){
+			if( this.value == '0'){
+				$('##item_oversize').show();
+			}else{
+				$('##item_oversize').hide();
+			}
+		});
+	});
+
+	$(document).ready(function(){
+		$("#shipping_rate").css("display","none");
+		$("input:radio[name=shipping_oversize]").change(function(){
+			if(this.value=='1'){
+				$('#shipping_rate').show();
+			}else{
+				$('#shipping_rate').hide();
+			}
+		});
+	});
 </script>

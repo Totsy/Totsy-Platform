@@ -42,8 +42,8 @@ class Cart extends \lithium\data\Model {
 
 	protected $_nonTaxableCategories = array('apparel');
 
-	public static function dates($name) { 
-	     return new MongoDate(time() + static::_object()->_dates[$name]); 
+	public static function dates($name) {
+	     return new MongoDate(time() + static::_object()->_dates[$name]);
 	}
 
 	public static function addFields($data, array $options = array()) {
@@ -55,7 +55,7 @@ class Cart extends \lithium\data\Model {
 		$data->user = $user['_id'];
 		return static::_object()->save($data);
 	}
-	
+
 	public static function active($params = null, array $options = array()) {
 		$fields = (!empty($params['fields'])) ? $params['fields'] : null;
 		$time = (!empty($params['time'])) ? $params['time'] : 'now';
@@ -66,7 +66,7 @@ class Cart extends \lithium\data\Model {
 				'expires' => array('$gte' => static::dates($time)),
 				'user' => $user['_id']),
 			'fields' => $fields,
-			'order' => array('expires' => 'ASC') 
+			'order' => array('expires' => 'ASC')
 		));
 	}
 
@@ -156,10 +156,28 @@ class Cart extends \lithium\data\Model {
 		**/
 		$cost = 7.95;
 		$cartCheck = $carts->data();
+
 		if (count($cartCheck) == 1 && Item::first($cartCheck[0]['item_id'])->shipping_exempt) {
 			$cost = 0;
 		}
+
+		if (count($cartCheck) == 1 && !Item::first($cartCheck[0]['item_id'])->shipping_exempt && Item::first($cartCheck[0]['item_id'])->shipping_oversize ) {
+			$cost = 0;
+		}
 		return $cost;
+	}
+
+	public static function overSizeShipping($cart){
+			$items= $cart->data();
+			$cost=0;
+			foreach($items as $item) {
+				$info= Item::find($item['item_id']);
+				if(array_key_exists('shipping_oversize', $info->data())){
+					$data= $info->data();
+					$cost+= $data['shipping_rate'];
+				}
+			}
+			return $cost;
 	}
 
 	public static function checkCartItem($itemId, $size) {

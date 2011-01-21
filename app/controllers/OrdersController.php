@@ -184,8 +184,9 @@ class OrdersController extends BaseController {
 		}
 		$tax = 0;
 		$shippingCost = 0;
+		$overShippingCost = 0;
 		$billingAddr = $shippingAddr = null;
-
+		//var_dump($cart->data());
 		if (isset($data['billing_shipping']) && $data['billing_shipping'] == '1') {
 			$data['shipping'] = $data['billing'];
 		}
@@ -206,6 +207,7 @@ class OrdersController extends BaseController {
 		if ($shippingAddr) {
 			$tax = array_sum($cart->tax($shippingAddr));
 			$shippingCost = Cart::shipping($cart, $shippingAddr);
+			$overShippingCost = Cart::overSizeShipping($cart);
 		}
 
 		$map = function($item) { return $item->sale_retail * $item->quantity; };
@@ -287,7 +289,7 @@ class OrdersController extends BaseController {
 
 		$vars = compact(
 			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
-			'tax', 'shippingCost', 'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'userDoc', 'discountExempt'
+			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'userDoc', 'discountExempt'
 		);
 
 		if (($cart->data()) && (count($this->request->data) > 1) && $order->process($user, $data, $cart, $orderCredit, $orderPromo)) {
