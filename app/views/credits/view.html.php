@@ -19,14 +19,14 @@
 		<table border="0" cellspacing="5" cellpadding="5" width="100%" class="order-table">
 			<tr>
 				<th>Date</th>
-				<th>Credit Amount</th>
+				<th>Amount</th>
 				<th>Description</th>
 			</tr>
 			<?php foreach ($credits as $credit): ?>
 			<tr>
-				<td><?=date('Y-m-d', $credit->_id->getTimestamp())?></td>
-				<td>$<?=$credit->amount?></td>
-				<td><?=$credit->description?></td>
+			<td><?=date('Y-m-d', $credit->_id->getTimestamp())?></td>
+			<td>$<?=$credit->amount?></td>
+			<td><?=$credit->description?></td>
 			<tr>
 			<?php endforeach ?>
 		</table>
