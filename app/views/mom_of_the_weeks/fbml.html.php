@@ -839,7 +839,7 @@ function output(val){
 												
 						<div style="float:left;  margin-left:10px;">
 							<p class="password important">Password</p><span id="pw-error" class="error-text">This field is required</span>
-							<input class="short" type="text" name="form[register][password1]" id="form[register][password1]" value="" onclick="return false;"/>
+							<input class="short" type="password" name="form[register][password1]" id="form[register][password1]" value="" onclick="return false;"/>
 							<div class="clear"></div>
 						</div>
 						<div style="clear:both; height:1px;"></div>
