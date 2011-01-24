@@ -61,6 +61,7 @@ class Order extends \lithium\data\Model {
 		$subTotal = array_sum($cart->subTotal());
 		$tax = array_sum($cart->tax($shipping));
 		$handling = Cart::shipping($cart, $shipping);
+		$overSizeHandling= Cart::overSizeShipping($cart);
 
 		// if (!$handling) {
 		// 	$order->errors($order->errors() + array(
@@ -70,8 +71,8 @@ class Order extends \lithium\data\Model {
 		// 	return false;
 		// }
 
-		$tax = $tax ? $tax + ($handling * Cart::TAX_RATE) : 0;
-		$total = ($subTotal + $orderCredit->credit_amount + $orderPromo->saved_amount) + $tax + $handling;
+		$tax = $tax ? $tax + (($overSizeHandling+$handling) * Cart::TAX_RATE) : 0;
+		$total = ($subTotal + $orderCredit->credit_amount + $orderPromo->saved_amount) + $tax + $handling +$overSizeHandling;
 
 
 		$cart = $cart->data();
@@ -89,7 +90,7 @@ class Order extends \lithium\data\Model {
 				} else {
 					$authKey = null;
 				}
-				return $order->save(compact('total', 'subTotal', 'tax', 'handling') + array(
+				return $order->save(compact('total', 'subTotal', 'tax', 'handling','overSizeHandling') + array(
 					'user_id' => (string) $user['_id'],
 					'card_type' => $card->type,
 					'card_number' => substr($card->number, -4),

@@ -302,40 +302,25 @@ $(document).ready(function() {
 });
 </script>
 <script type='text/javascript'>
+$(document).ready(function(){
+	($('#shipping_exempt:checked').val() == 0)? $('#item_oversize').show() : $('#item_oversize').hide();
+	($('#shipping_oversize:checked').val() == 1)? $('#shipping_rate').show() : $('#shipping_rate').hide();
+});
 
-
-		if( $("input:radio[name=shipping_exempt]:checked").val() == '0'){
+$(document).ready(function(){
+	$('input[name=shipping_exempt]').change(function(){
+		if ( $('#shipping_exempt:checked').val() == 0)
 			$('#item_oversize').show();
-		}else{
+		else
 			$('#item_oversize').hide();
-		}
-
-
-		if( $('##item_oversize').val() == '1'){
-			$('##item_oversize').show();
-		}else{
-			$('##item_oversize').hide();
-		}
-
-
-	$(document).ready(function(){
-		$("input:radio[name=shipping_exempt]").change(function(){
-			if( this.value == '0'){
-				$('##item_oversize').show();
-			}else{
-				$('##item_oversize').hide();
-			}
-		});
 	});
-
-	$(document).ready(function(){
-		$("#shipping_rate").css("display","none");
-		$("input:radio[name=shipping_oversize]").change(function(){
-			if(this.value=='1'){
-				$('#shipping_rate').show();
-			}else{
-				$('#shipping_rate').hide();
-			}
-		});
+	$('input[name=shipping_oversize]').change(function(){
+		if ( $('#shipping_oversize:checked').val() == 1)
+			$('#shipping_rate').show();
+		else
+			$('#shipping_rate').hide();
 	});
+});
+
+
 </script>

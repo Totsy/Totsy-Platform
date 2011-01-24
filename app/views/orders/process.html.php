@@ -42,8 +42,8 @@
 		<?php foreach ($cartByEvent as $key => $event): ?>
 		<table width="100%" class="cart-table">
 			<thead>
-				<tr>
-					<td><?=$orderEvents[$key]['name']?><td>
+				<tr >
+					<td colspan='6'><?=$orderEvents[$key]['name']?><td>
 				</tr>
 				<tr>
 					<th>Item</th>
