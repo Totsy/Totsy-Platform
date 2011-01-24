@@ -1,7 +1,7 @@
 <?php
 	$this->title("Order Confirmation");
 ?>
-<?php 
+<?php
 
    $new = ($order->date_created->sec > (time() - 120)) ? true : false;
 
@@ -32,7 +32,7 @@
 										<div style="clear:both; margin-bottom:15px;"></div>
 										<div style="background:#f7f7f7; padding:10px; border:1px solid #ddd;"><h2>Thank you! Your order has been successfully placed! <span style="float:right;">Order #<?=$order->order_id;?></span></h2></div>
 										<div style="clear:both;"></div>
-										<!-- 
+										<!--
 <div style="display:block; padding:10px; background:#feffd0; font-weight:bold; margin:10px 0px; border:1px solid #ddd; text-align:center;">
 											Our shipping cut off for Christmas delivery has passed. Please note that unfortunately WE CAN NOT GUARANTEE HOLIDAY DELIVERY unless otherwise stated.  Thank you for understanding and for shopping with Totsy.
 										</div> -->
@@ -122,7 +122,7 @@
 												<?php endforeach ?>
 											<?php endforeach ?>
 											</tr>
-									
+
 										</table>
 								</td><!-- end order detail table -->
 							</tr>
@@ -152,7 +152,12 @@
 												<br>
 												Shipping:
 												<br><br><br>
-												<strong style="font-weight:bold;color:#606060">Total:</strong> 
+												<?php if ( array_key_exists('overSizeHandling', $order->data()) && $data['order']->overSizeHandling !=0): ?>
+                                                    <br>
+                                                    $<?=number_format($data['order']->overSizeHandling,2); ?>
+                                                <?php endif; ?>
+												<br><br><br>
+												<strong style="font-weight:bold;color:#606060">Total:</strong>
 											</td>
 											<td style="padding-left:15px; text-align:right;" valign="top">
 												$<?=number_format($order->subTotal,2); ?>
@@ -167,7 +172,11 @@
 												<?php endif ?>
 												$<?=number_format($order->tax,2); ?>
 												<br>
-												$<?=number_format($order->handling,2); ?>
+												$<?=number_format($order->handling,2); ?> <br>
+												<?php if ( array_key_exists('overSizeHandling', $order->data()) && $data['order']->overSizeHandling !=0): ?>
+                                                    <br>
+                                                    $<?=number_format($data['order']->overSizeHandling,2); ?>
+                                                <?php endif; ?>
 												<br><br><br>
 												<strong style="font-weight:bold;color:#009900;">$<?=number_format($order->total,2); ?></strong>
 											</td>
@@ -185,7 +194,7 @@
 												<div style=" width:320px; display:block;"><strong>Payment Info:</strong> <br /><?=strtoupper($order->card_type)?> ending with <?=$order->card_number?></div>
 											</td>
 											<td>
-											
+
 											</td>
 										</tr>
 									</table>
