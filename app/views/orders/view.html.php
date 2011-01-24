@@ -151,10 +151,9 @@
 												Sales Tax:
 												<br>
 												Shipping:
-												<br><br><br>
-												<?php if ( array_key_exists('overSizeHandling', $order->data()) && $data['order']->overSizeHandling !=0): ?>
+												<?php if ( array_key_exists('overSizeHandling', $order->data()) && $order->overSizeHandling !=0): ?>
                                                     <br>
-                                                    $<?=number_format($data['order']->overSizeHandling,2); ?>
+                                                    Oversize Shipping:
                                                 <?php endif; ?>
 												<br><br><br>
 												<strong style="font-weight:bold;color:#606060">Total:</strong>
@@ -173,9 +172,9 @@
 												$<?=number_format($order->tax,2); ?>
 												<br>
 												$<?=number_format($order->handling,2); ?> <br>
-												<?php if ( array_key_exists('overSizeHandling', $order->data()) && $data['order']->overSizeHandling !=0): ?>
-                                                    <br>
-                                                    $<?=number_format($data['order']->overSizeHandling,2); ?>
+												<?php if ( array_key_exists('overSizeHandling', $order->data()) && $order->overSizeHandling !=0): ?>
+
+                                                    $<?=number_format($order->overSizeHandling,2); ?>
                                                 <?php endif; ?>
 												<br><br><br>
 												<strong style="font-weight:bold;color:#009900;">$<?=number_format($order->total,2); ?></strong>
