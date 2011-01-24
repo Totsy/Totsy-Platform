@@ -16,7 +16,7 @@
 
 <?php if (!empty($error)) { ?>
                         <div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /><?=$error; ?></div>
-                      
+
 <?php } ?>
 
            <div class="rounded" style="color: #009900; margin:0px 10px 0px 0px; float: left; display:block; background:#ebffeb; border:1px solid #ddd; width:230px; text-align:center; padding:20px;">Shipping / Billing Info</div>
@@ -37,14 +37,14 @@
 	<!-- Begin Order Details -->
 	<?php if ($cartByEvent): ?>
 		<h2 class="gray mar-b">Order Details</h2><hr />
-	
+
 		<div class='fr'><?=$this->html->link('Edit Your Cart', '#', array('id' => 'checkout-cart', 'class' => 'edit-your-cart')); ?></div>
 		<table width="100%" class="cart-table">
 
 		<?php $x = 0; ?>
 		<?php foreach ($cartByEvent as $key => $event): ?>
 			<tr>
-				<td><?=$orderEvents[$key]['name']?><td>
+				<td colspan='6'><?=$orderEvents[$key]['name']?><td>
 			</tr>
 			<tr>
 				<th>Item</th>
@@ -129,7 +129,7 @@
 	<br>
 	<ol id="checkout-process">
 		<?=$this->form->create($order, array('class' => 'checkout')); ?>
-		
+
 		<!-- Start Billing Information -->
 		<div style="float:left; width:415px; margin:0px 10px 10px 0px;  display:block;"><li id="opc-billing">
 			<div id="checkout-process-billing">
@@ -170,7 +170,7 @@
 				<?php if (empty($shipping)): ?>
 
 				<?php else: ?>
-				
+
 						<h2 class="gray mar-b">Shipping Address</h2>
 					<hr />
 					<p>Select a shipping address from your address book.
@@ -192,7 +192,7 @@
 		<!-- End Shipping Information -->
 
 		<li id="shipping-method" class="step">
-			
+
 				<h2 class="gray mar-b">Shipping Method</h2>
 			<hr />
 
@@ -206,34 +206,34 @@
 							<?=$this->html->image('ups-icon.jpg', array('title' => "UPS Shipping", 'alt' => "UPS Shipping", 'width' => "26", 'height' => "32")); ?>&nbsp;
 							UPS Ground
 						</label>
-				</li>	
+				</li>
 				</ul>
 			</fieldset>
 
 			</div>
 		</li>
 
-		
+
 
 		<li class="step">
 			<?=$this->form->submit('Confirm Delivery Method', array('class' => 'confirm-delivery-button')); ?>
 			&nbsp;&nbsp;
 		</li>
 
-		<?=$this->form->end(); ?>    
-    
-    <!-- begin thawte seal --> 
+		<?=$this->form->end(); ?>
+
+    <!-- begin thawte seal -->
     <div id="thawteseal" title="Click to Verify - This site chose Thawte SSL for secure e-commerce and confidential communications." style="float: right!important; width:200px;">
         <div style="float: left!important; width:100px; display:block;"><script type="text/javascript" src="https://seal.thawte.com/getthawteseal?host_name=www.totsy.com&amp;size=L&amp;lang=en"></script></div>
-    
-    <div class="AuthorizeNetSeal" style="float: left!important; width:100px; display:block;"> <script type="text/javascript" language="javascript">var ANS_customer_id="98c2dcdf-499f-415d-9743-ca19c7d4381d";</script> <script type="text/javascript" language="javascript" src="//verify.authorize.net/anetseal/seal.js" ></script></div>                        
+
+    <div class="AuthorizeNetSeal" style="float: left!important; width:100px; display:block;"> <script type="text/javascript" language="javascript">var ANS_customer_id="98c2dcdf-499f-415d-9743-ca19c7d4381d";</script> <script type="text/javascript" language="javascript" src="//verify.authorize.net/anetseal/seal.js" ></script></div>
     </div>
     <!-- end thawte seal -->
-    
+
 	</ol>
 
 	</div>
-    
+
 	<div class="bl"></div>
 	<div class="br"></div>
 

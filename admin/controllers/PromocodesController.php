@@ -14,7 +14,7 @@ class PromocodesController extends \admin\controllers\BaseController {
 	public function index() {
 
        $promocodes = Promocode::all();
-	
+
        foreach($promocodes as $promocode){
 
           $obj_data = $promocode->data();
@@ -118,16 +118,17 @@ class PromocodesController extends \admin\controllers\BaseController {
 
         if( !empty($this->request->data) ) {
 			$promoCode= Promocode::create();
+
 			$admins = User::all( array( 'conditional'=>array('admin' => true) ) );
 			$code = $this->request->data;
-			
+
 			$col = Promocode::collection();
 			$conditions = array('code' =>$code['code']);
-			
+
 			if($col->count( $conditions ) > 0) {
 				$col->update($conditions, array('$set'=>array('enabled'=>false)), array('multiple'=>true));
 			}
-          
+
 
 		  if( $this->request->data['enabled'] == '1' || $this->request->data['enabled'] == 'on' ){
 
@@ -144,7 +145,7 @@ class PromocodesController extends \admin\controllers\BaseController {
 		   $code['start_date']= new MongoDate( strtotime( $code['start_date'] ) );
 		   $code['end_date']= new MongoDate( strtotime( $code['end_date'] ) );
 		   $code['date_created']= new MongoDate( strtotime( date('D M d Y') ) );
-		   $code = Promocode::createdBy($code);
+		   $code['created_by'] = Promocode::createdBy();
 
 			$result = $promoCode->save($code);
 			if ($result) {
@@ -181,7 +182,7 @@ class PromocodesController extends \admin\controllers\BaseController {
 		   $data = $this->request->data;
 
 		   if( $data['enabled'] == '1' || $data['enabled'] == 'on' ){
-				
+
 			   $data['enabled'] = true;
 
 			}else{
@@ -196,7 +197,7 @@ class PromocodesController extends \admin\controllers\BaseController {
 			$data['end_date']= new MongoDate( strtotime( $data['end_date'] ) );
 			$data['date_created']= new MongoDate( strtotime( date('D M d Y') ) );
 			$data= Promocode::createdBy($data);
-			
+
 		   $promocode->save($data);
 
 			$this->redirect( array( 'Promocodes::index' ) );

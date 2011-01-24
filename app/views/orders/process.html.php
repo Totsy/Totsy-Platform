@@ -13,12 +13,12 @@
 	<div class="tr"></div>
 	<div id="page">
 <?php if ($errors = $order->errors()) { ?>
-             
+
                         <?php foreach ($errors as $error): ?>
-                       
+
 			<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /><?=$error; ?></div>
                         <?php endforeach ?>
-             
+
         <?php } ?>
 
 	   <div class="rounded" style="color: #009900; margin:0px 10px 0px 0px; float: left; display:block; background:#ebffeb; border:1px solid #ddd; width:249px; text-align:center; padding:20px;">Shipping / Billing Info</div>
@@ -42,8 +42,8 @@
 		<?php foreach ($cartByEvent as $key => $event): ?>
 		<table width="100%" class="cart-table">
 			<thead>
-				<tr>
-					<td><?=$orderEvents[$key]['name']?><td>
+				<tr >
+					<td colspan='6'><?=$orderEvents[$key]['name']?><td>
 				</tr>
 				<tr>
 					<th>Item</th>
@@ -95,7 +95,7 @@
 						<td class="<?="total-item-$x";?>">
 							<strong style="color:#009900;">$<?=number_format($item['sale_retail'] * $item['quantity'] ,2)?></strong>
 						</td>
-						<td class="cart-time"><div id='<?php echo "itemCounter-$x"; ?>'></div></td> 
+						<td class="cart-time"><div id='<?php echo "itemCounter-$x"; ?>'></div></td>
 					</tr>
 					<?php
 						//Allow users three extra minutes on their items for checkout.
@@ -120,9 +120,9 @@
 				</tbody>
 			</table>
 	<?php endif ?>
-	<?php 
+	<?php
 		$preTotal = $subTotal + $orderCredit->credit_amount;
-		$total = $preTotal + $tax + $shippingCost + $orderPromo->saved_amount;
+		$total = $preTotal + $tax + $shippingCost + $overShippingCost + $orderPromo->saved_amount;
 	?>
 
 	<ol id="checkout-process">
@@ -137,6 +137,12 @@
 					<td style="text-align:right"><strong>Shipping:</strong> </td>
 					<td style="text-align:center">$<?=number_format((float) $shippingCost, 2);?></td>
 				</tr>
+				<?php if ($overShippingCost !=0): ?>
+					<tr>
+						<td style="text-align:right"><strong>Oversize Shipping:</strong> </td>
+						<td style="text-align:center">$<?=number_format((float) $overShippingCost, 2);?></td>
+					</tr>
+				<?php endif; ?>
 				<tr>
 					<td style="text-align:right"><strong>Sales Tax:</strong> </td>
 					<td style="text-align:center">$<?=number_format((float) $tax, 2);?></td>
@@ -190,13 +196,13 @@
 			</table>
 		</li>
 <?=$this->form->create(); ?>
-	<!-- Start Payment Information -->    
+	<!-- Start Payment Information -->
 	<li id="opc-payment" class="step">
 		<div id="checkout-process-payment">
 		<table width="100%">
 			<tr>
 				<td>
-			
+
 					<h2 class="gray mar-b">Payment Information <span style=" font-size:12px; font-weight:normal;"><span class="red">*</span> Required Fields</span></h2>
 					<hr />
 					<div>
@@ -250,7 +256,7 @@
 				</td>
 				<td style="vertical-align:top; padding:5px;">
 					<?php if ($billingAddr) { ?>
-					
+
 							<h4>Billing Address</h4>
 							<hr />
 							<address class="billing-address">
@@ -269,12 +275,12 @@
 								<?=$shippingAddr->city; ?>, <?=$shippingAddr->state; ?>
 								<?=$shippingAddr->zip; ?>
 							</address>
-						
+
 					<?php } ?>
 				</td>
 			</tr>
 		</table>
-		
+
 			<!-- <p>
 				<label for="payment-method-select">Pay with:</label>
 				<?=$this->form->select(
@@ -283,7 +289,7 @@
 					array('id' => 'payment', 'value' => '1', 'target' => '#payment-method-form')
 				); ?>
 			</p> -->
-			<!-- 
+			<!--
 			     <li class="step">
 				<fieldset>
 
@@ -302,21 +308,21 @@
 			</li>
 			<?=$this->form->hidden('credit_amount', array('value' => $orderCredit->credit_amount)); ?>
 			<?=$this->form->end(); ?>
-            
-    <!-- begin thawte seal --> 
+
+    <!-- begin thawte seal -->
     <div id="thawteseal" title="Click to Verify - This site chose Thawte SSL for secure e-commerce and confidential communications." style="float: right!important; width:200px;">
         <div style="float: left!important; width:100px; display:block;"><script type="text/javascript" src="https://seal.thawte.com/getthawteseal?host_name=www.totsy.com&amp;size=L&amp;lang=en"></script></div>
-    
-    <div class="AuthorizeNetSeal" style="float: left!important; width:100px; display:block;"> <script type="text/javascript" language="javascript">var ANS_customer_id="98c2dcdf-499f-415d-9743-ca19c7d4381d";</script> <script type="text/javascript" language="javascript" src="//verify.authorize.net/anetseal/seal.js" ></script></div>                        
+
+    <div class="AuthorizeNetSeal" style="float: left!important; width:100px; display:block;"> <script type="text/javascript" language="javascript">var ANS_customer_id="98c2dcdf-499f-415d-9743-ca19c7d4381d";</script> <script type="text/javascript" language="javascript" src="//verify.authorize.net/anetseal/seal.js" ></script></div>
     </div>
 
     <!-- end thawte seal -->
 
 	</ol>
-	
+
 	<div class="bl"></div>
 	<div class="br"></div>
-	
+
 	</div>
 
 </div>

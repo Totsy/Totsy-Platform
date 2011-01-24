@@ -7,7 +7,7 @@ namespace admin\models;
  * access to the Item MongoDB collection. This collection contains all product items.
  */
 class Item extends \lithium\data\Model {
-	
+
 	protected $_floats = array(
 		'msrp',
 		'sale_retail',
@@ -15,20 +15,22 @@ class Item extends \lithium\data\Model {
 		'sale_whol',
 		'imu',
 		'product_weight',
-		'shipping_weight'
+		'shipping_weight',
+		'shipping_rate'
 		);
-		
+
 	protected $_ints = array(
 		'total_quantity'
 		);
-	
+
 	protected $_booleans = array(
 		'enabled',
 		'taxable',
 		'shipping_exempt',
-		'discount_exempt'
+		'discount_exempt',
+		'shipping_overweight'
 		);
-		
+
 	public static function castData($items, array $options = array()) {
 
 		foreach ($items as $key => $value) {
