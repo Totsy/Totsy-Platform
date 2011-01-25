@@ -138,14 +138,13 @@
 		<hr />
 
  <div id="slider" class="nivoSlider">
-		<!-- <a href="/sale/baby-mod"><img src="/img/home_img-1.jpg"  alt="" title="Baby Mod - Up to 47% Off" /></a> -->
-                <a href="/sale/woombie"><img src="/img/home_img-2.jpg"  alt="" title="Woombie - Up to 40% Off" /></a>
-                <a href="/sale/cozibug"><img src="/img/home_img-3.jpg" alt="" title="Cozibug - Up to 60% Off" /></a>
-                <a href="/sale/kids-line"><img src="/img/home_img-4.jpg"  alt="" title="Kids Line - Up to 72% Off" /></a>
-                <a href="/sale/all-pop-art"><img src="/img/home_img-5.jpg" alt=""  title="All Pop Art - Up to 46% Off" /></a>
-
-
-            </div>
+	 <a href="/sale/mk-company-frames"><img src="/img/home_img-1-1.jpg"  alt="" title="MK &amp; Company Frames" /></a>
+		 <a href="/sale/aacua-by-maamam"><img src="/img/home_img-1-2.jpg"  alt="" title="Aacua" /></a>
+		 <a href="/sale/just-born"><img src="/img/home_img-1-3.jpg"  alt="" title="Just Born" /></a>
+		 <a href="/sale/dynamic-rugs"><img src="/img/home_img-1-4.jpg"  alt="" title="Dynamic Rugs" /></a>
+		 <a href="/sale/pearhead"><img src="/img/home_img-1-5.jpg"  alt="" title="Pearhead" /></a>
+		 <a href="/sale/chf-industries"><img src="/img/home_img-1-6.jpg"  alt="" title="CHF Industries" /></a>
+	 </div>
 
 	<br style="margin-bottom:10px;"/>
 
