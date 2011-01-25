@@ -129,12 +129,12 @@
 		<hr />
 
  <div id="slider" class="nivoSlider">
-	 <a href="/sale/mk-company-frames"><img src="/img/home_img-1-1.jpg"  alt="" title="MK & Company Frames" /></a>
-		 <a href="/sale/aacua-by-maamam"><img src="/img/home_img-1-2.jpg"  alt="" title="Aacua" /></a>
-		 <a href="/sale/just-born"><img src="/img/home_img-1-3.jpg"  alt="" title="Just Born" /></a>
-		 <a href="/sale/dynamic-rugs"><img src="/img/home_img-1-4.jpg"  alt="" title="Dynamic Rugs" /></a>
-		 <a href="/sale/pearhead"><img src="/img/home_img-1-5.jpg"  alt="" title="Pearhead" /></a>
-		 <a href="/sale/chf-industries"><img src="/img/home_img-1-6.jpg"  alt="" title="CHF Industries" /></a>
+   <a href="/sale/mk-company-frames"><img src="/img/home_img-1-1.jpg"  alt="" title="MK & Company Frames" /></a>
+		 <a href="/sale/aacua-by-maamam"><img src="/img/home_img-2-1.jpg"  alt="" title="Aacua" /></a>
+		 <a href="/sale/just-born"><img src="/img/home_img-3-1.jpg"  alt="" title="Just Born" /></a>
+		 <a href="/sale/dynamic-rugs"><img src="/img/home_img-4-1.jpg"  alt="" title="Dynamic Rugs" /></a>
+		 <a href="/sale/pearhead"><img src="/img/home_img-5-1.jpg"  alt="" title="Pearhead" /></a>
+		 <a href="/sale/chf-industries"><img src="/img/home_img-6-1.jpg"  alt="" title="CHF Industries" /></a>
 	 </div>
 
 	<br style="margin-bottom:10px;"/>
