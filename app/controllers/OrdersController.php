@@ -293,13 +293,7 @@ class OrdersController extends BaseController {
 		);
 
 		if (($cart->data()) && (count($this->request->data) > 1) && $order->process($user, $data, $cart, $orderCredit, $orderPromo)) {
-			$orderId = strtoupper(substr((string)$order->_id, 0, 8));
-			$orderNumCheck = Order::count(array('order_id' => $orderId));
-			if ($orderNumCheck > 0) {
-				$order->order_id = $orderId.strtoupper(substr((string)$order->_id, 13, 4));
-			} else {
-				$order->order_id = $orderId;
-			}
+			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8).substr((string)$order->_id, 13, 4));
 			if ($orderCredit->credit_amount) {
 				User::applyCredit($user['_id'], $orderCredit->credit_amount);
 				Credit::add($orderCredit, $user['_id'], $orderCredit->credit_amount, "Used Credit");
