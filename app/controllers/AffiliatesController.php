@@ -19,17 +19,17 @@ class AffiliatesController extends \lithium\action\Controller {
 
                 if(isset($data['password'])){
                     // New user, need to register here
-                    $user['firstname'] = $data['firstname'];
-                    $user['lastname'] = $data['lastname'];
+                    $user['firstname'] = $data['fname'];
+                    $user['lastname'] = $data['lname'];
                     $user['email'] = $data['email'];
-                    $user['confirmemail'] = $data['confirmemail'];
+                    $user['confirmemail'] = $data['email'];
                     $user['password'] = $data['password'];
-                    $user['terms'] = $data['terms'];
+                    $user['terms'] = "1";
                     $user['invited_by'] = $data['invited_by'];
                     $success = UsersController::registration($user);
                 }
             }
-             die($success);
+             return $success;
 		}
 
 	}
