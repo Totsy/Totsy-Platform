@@ -278,17 +278,32 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
     </tr>
     <thead>
     <tr>
-    <th>Last 3 Month</th>
-    <th>last 3 month before</th>
+    <th>
+   <?php echo date('M jS',$startOfTheLast6Month) . " - " . date('M jS',$startOfTheLast3Month) ?>
+   </th>
+    <th><?php echo date('M jS',$startOfTheLast3Month) . " - " . date('M jS',$today) ?></th>
     <th>
     Diff %
     </th>
     </tr>
     </thead>
     <tr>
-    <td>some number</td>
-    <td>some number</td>
-    <td></td>
+    <td><?= "$ " . number_format( $last6MonthRevenue , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
+    <td><?= "$ " . number_format( $last3MonthRevenue , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
+    <td>
+     <?php
+    $percentage = ($last6MonthRevenue / $last3MonthRevenue);
+    if($percentage < 1){
+      
+      echo "<font class='positive'> + " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      
+    }else{
+      
+      echo "<font class='negative'> - " . number_format( ($percentage -1) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+    }
+     
+    ?>
+    </td>
     </tr>
   </table>
   </div>
