@@ -129,8 +129,10 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
     </tr>
     </thead>
     <tr>
-    <td><?php echo "$". $yesterdayRevenue?></td>
-    <td><?php echo "$". $todayRevenue?></td>
+    <td><?php echo "$". number_format( $yesterdayRevenue , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?>
+    </td>
+    <td><?php echo "$". number_format( $todayRevenue , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?>
+    </td>
     <td>
     <?php
     $percentage = ($yesterdayRevenue / $todayRevenue);
