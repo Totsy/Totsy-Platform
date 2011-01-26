@@ -2,16 +2,16 @@
 
 namespace app\controllers;
 
-use \app\models\Affiliate;
+use app\models\Affiliate;
 
 class AffiliatesController extends \lithium\action\Controller {
 
     /**
-        Affiliate registration from remote POST.  Of course this need to
+        Affiliate registration from remote POST.
     **/
-	public function registration($code=NULL) {
+	public function registration($code = NULL) {
 	    $success = false;
-		if($code) {
+		if ($code) {
             if($this->request->data){
                 $data = $this->request->data;
                 $data['date_created'] = new MongoDate();
@@ -29,11 +29,9 @@ class AffiliatesController extends \lithium\action\Controller {
                     $success = UsersController::registration($user);
                 }
             }
-             return $success;
+             return compact('success');
 		}
-
 	}
-
 }
 
 ?>
