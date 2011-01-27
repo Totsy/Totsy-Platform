@@ -29,16 +29,16 @@ Cache::config(array(
 ));
 
 Dispatcher::applyFilter('run', function($self, $params, $chain) {
-	$key = 'admin.core.libraries';
+	$key = md5(LITHIUM_APP_PATH);
 
-	if ($cache = Cache::read('default', $key)) {
+	if ($cache = Cache::read('default', "{$key}.admin.core.libraries")) {
 		$cache = (array) unserialize($cache) + Libraries::cache();
 		Libraries::cache($cache);
 	}
 	$result = $chain->next($self, $params, $chain);
 
 	if ($cache != Libraries::cache()) {
-		Cache::write('default', $key, serialize(Libraries::cache()), '+1 day');
+		Cache::write('default', "{$key}.admin.core.libraries", serialize(Libraries::cache()), '+1 day');
 	}
 	return $result;
 });

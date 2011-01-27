@@ -196,7 +196,7 @@ class PromocodesController extends \admin\controllers\BaseController {
 			$data['start_date']= new MongoDate( strtotime( $data['start_date'] ) );
 			$data['end_date']= new MongoDate( strtotime( $data['end_date'] ) );
 			$data['date_created']= new MongoDate( strtotime( date('D M d Y') ) );
-			$data= Promocode::createdBy($data);
+			$data['creaeted_by']= Promocode::createdBy();
 
 		   $promocode->save($data);
 
