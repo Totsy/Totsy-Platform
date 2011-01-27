@@ -21,11 +21,17 @@ use PHPExcel_Cell_DataType;
 class OrderImport extends \lithium\console\Command {
 
 	/**
+	 * The environment to use when running the command. db='development' is the default.
+	 * Set to 'production' if running live when using a cronjob.
+	 */
+	public $env = 'development';
+
+	/**
 	 * CSV or XLS file to be imported.
 	 * 
 	 * @var string
 	 */
-	public $file = null;
+	protected $file = null;
 
 	/**
 	 * MongoDB Collection
@@ -55,12 +61,12 @@ class OrderImport extends \lithium\console\Command {
 	/**
 	 * Full path to file.
 	 */
-	public $path = null;
+	protected $path = null;
 
 	/**
 	 * File extensions.
 	 */
-	public $type = null;
+	protected $type = null;
 
 	/**
 	 * Entry point for the OrderImport script.
@@ -71,6 +77,7 @@ class OrderImport extends \lithium\console\Command {
 	 */
 	public function run() {
 		$this->header('Ship File Processor');
+		Environment::set($this->env);
 		$this->collection = OrderShipped::collection();
 		$this->collection->ensureIndex(array('hash' => 1), array("unique" => true));
 		if ($this->dir) {
@@ -90,6 +97,8 @@ class OrderImport extends \lithium\console\Command {
 					}
 		        }
 		    }
+		} else {
+			$this->out('Error: No directory provided');
 		}
 	}
 
@@ -123,16 +132,36 @@ class OrderImport extends \lithium\console\Command {
 
 	/**
 	 * Parse Tab or CSV delimited files.
+	 *
+	 *
 	 */
 	protected function _tabParser() {
 		$nn = 0;
-		die(var_dump(OrderShipped::schema()));
-		while (($data = fgetcsv($handle, 1000, chr(9))) !== FALSE) {
-			$c = count($data);
-			for ($x = 0; $x < $c ; $x++) {
-				$eventItems[$nn][$key[$x]] = $data[$x];
+		$header = OrderShipped::$_header;
+		if (($handle = fopen($this->path, "r")) !== FALSE) {
+			while (($data = fgetcsv($handle, 1000, chr(9))) !== FALSE) {
+				$c = count($data);
+				for ($x = 0; $x < $c ; $x++) {
+					if ($data[$x] != '') {
+						$key = function ($header, $x) {
+							switch ($x) {
+								case 54:
+									return 'OrderId';
+									break;
+								case 55:
+									return 'ItemId';
+									break;
+								default:
+									return $header[$x];
+									break;
+							}
+						};
+						$shipRecords[$nn][$key($header, $x)] = $data[$x];
+					}
+				}
+				$this->_save($shipRecords[$nn]);
+				$nn++;
 			}
-			$nn++;
 		}
 		return true;
 	}
@@ -142,13 +171,12 @@ class OrderImport extends \lithium\console\Command {
 	 *
 	 * @see admin\models\OrderShipped;
 	 */
-	private function _save($shipRecords) {
-		if (!empty($shipRecords[$row - 1])) {
-			$record = $shipRecords[$row - 1] + array('hash' => md5(implode("", $shipRecords[$row - 1])));
+	private function _save($shipRecord) {
+		if (!empty($shipRecord)) {
+			$record = $shipRecord + array('hash' => md5(implode("", $shipRecord)));
 			try {
 				$this->collection = OrderShipped::collection();
 				$id = $this->collection->save($record);
-				$this->out("Saving Mongo Record: $record[hash]");
 			} catch (Exception $e) {
 				$this->out("Hash: $record[hash] has already been saved");
 			}

@@ -254,7 +254,7 @@ class ReportsController extends BaseController {
 					'_id' => $eventId
 			)));
 			$vendorName = preg_replace('/[^(\x20-\x7F)]*/','', substr($this->_asciiClean($event->name), 0, 3));
-			$time = date('ymds', $event->_id->getTimestamp());
+			$time = date('ymdis', $event->_id->getTimestamp());
 			$poNumber = 'TOT'.'-'.$vendorName.$time;
 			$eventItems = $this->getOrderItems($eventId);
 			$inc = 0;

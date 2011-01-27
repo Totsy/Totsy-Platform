@@ -13,90 +13,137 @@ use lithium\core\Environment;
 use MongoDate;
 use MongoRegex;
 use MongoId;
-use PHPExcel_IOFactory;
-use PHPExcel;
-use PHPExcel_Cell;
-use PHPExcel_Cell_DataType;
 use admin\extensions\command\Base;
 
 
 
 /**
- * Export orders already processed.
- *
- * @todo Include in the query for orders a boolean check for cancled.
- * We are going to need to change all Order Status = Cancled to cancled = true.
- * This is going to make life easier for everyone down the line.
+ * Export Order, Item and PO files to DC system.
  */
 class OrderExport extends Base {
 
+	/**
+	 * The environment to use when running the command. 'production' is the default.
+	 * Set to 'development' or 'test' if you want to execute command on a different database.
+	 *
+	 * @var string
+	 */
+	public $env = 'production';
+
+	/**
+	 * The test boolean string flag will prevent saves to database. 'false' is the default.
+	 *
+	 * @var boolean
+	 */
+	public $test = false;
+
+	/**
+	 * FTP Server of 3PL we are sending files to.
+	 *
+	 * @var string
+	 */
+	protected $_ftpServer = 'ftp.dotcomdistribution.com';
+
+	/**
+	 * FTP User Name.
+	 *
+	 * @var string
+	 */
+	protected $_ftpUser = 'TOT90';
+
+	/**
+	 * FTP Password.
+	 *
+	 * @var string
+	 */
+	protected $_ftpPass = '4J518t54';
+
+	/**
+	 * The array list of events that should be batched
+	 * processed.
+	 *
+	 * @var array
+	 */
+	protected $events = array();
+
+	/**
+	 * Any files that should be excluded during import.
+	 *
+	 * @var array
+	 */
+	protected $_exclude = array(
+		'.',
+		'..',
+		'.DS_Store',
+		'processed'
+	);
+
+	/**
+	 * Directory of files holding the files to FTP.
+	 *
+	 * @var string
+	 */
+	public $source = '/tmp/totsy';
+
+	/**
+	 * Directory of files holding the backup files to FTP.
+	 *
+	 * @var string
+	 */
+	public $processed = '/tmp/totsy/processed';
+
+	/**
+	 * Full path to file.
+	 */
+	protected $path = null;
+
+	/**
+	 * Main method for exporting Order and PO files.
+	 *
+	 * The `run` method will query the pending event transactions
+	 * that have not yet been processed. This queuing system will be managed
+	 * from the admin dashboard.
+	 *
+	 * @todo Remove the environment set to the base command.
+	 * @todo Build query to gather events from DB as a queue.
+	 */
 	public function run() {
-		$this->header('Exporting Orders');
+		Environment::set($this->env);
 		$this->events = array(
-			'4cf93ed5ce64e5660dde2d00',
-			'4cfd132dce64e56c09922600',
-			'4d016768ce64e55d76c30a00',
-			'4d013012ce64e5ff6f120600',
-			'4cffdf81ce64e54d47310400',
-			'4d067533ce64e5fe24712800',
-			'4d07ce69ce64e5df53bb0a00',
-			'4d0802ccce64e5f159533600',
-			'4d08054fce64e5c45a7f2900',
-			'4d078626ce64e56f4b161200',
-			'4cfd822bce64e5cc36c92c00',
-			'4d0a921fce64e5782e421600',
-			'4d0bbd09ce64e5e653fd1600',
-			'4d0aa18ace64e5b52e946400',
-			'4d0aa694ce64e5e8317c0200',
-			'4d0f8de1ce64e55b54533800',
-			'4d0f92c5ce64e58a56cd0600',
-			'4d0fa0c8ce64e58f57d72000',
-			'4d0fb4fbce64e58563c51900',
-			'4d136a78ce64e50476c32000',
-			'4d11034ace64e513276f3b00',
-			'4d113988ce64e5eb2efe3700',
-			'4d07d440ce64e51654f50b00',
-			'4d12bc12ce64e5f461a20100',
-			'4d12bd49ce64e5ed61820a00',
-			'4d13d350ce64e5cc7c0d8200',
-			'4d12c12fce64e5f461352100',
-			'4d1a4b2fce64e5c370291500',
-			'4d1a677dce64e58874020100',
-			'4cffd7f9ce64e50c445c2700',
-			'4cf9466bce64e58d0ed71d00',
-			'4d0bda7fce64e52a56712900',
-			'4d0f8b80ce64e52e550c3500',
-			'4d13ce28ce64e57801693200',
-			'4d0bd440ce64e52a561a1900',
-			'4d06b42dce64e55b2c8f1600'
+			'4d0fb676ce64e5d15e5e3a00'
 		);
-		if (empty($this->test)) {
-			$this->test = false;
+		if ($this->events) {
+			$this->batchId = array('order_batch' => substr(md5(uniqid(rand(),1)), 1, 20));
+			$batch = $this->batchId['order_batch'];
+			$this->time = date('Ymdis');
+			$this->out("Generating orders under batch# $batch");
+			$this->_orderGenerator();
+			$this->_purchases();
+			$this->_export();
+		} else {
+			$this->out('No events in queue for processing');
 		}
-		//$ordersExported = $this->_orderGenerator();
-		$this->batchId = array('order_batch' => substr(md5(uniqid(rand(),1)), 1, 20));
-		$this->_purchases($this->events);
 	}
 
 	/**
-	 * This adhoc method was used to generate the order file for dotcom. In the very near future
+	 * The Order Generator
 	 * this method will be migrated to a command method and executed via cron job.
-	 *
-	 *
-	 *  @todo Migrate code to li3 command.
 	 */
 	public function _orderGenerator() {
+		$this->header('Generating Orders');
 		$orderCollection = Order::collection();
 		$orderFile = array();
 		$heading = ProcessedOrder::$_fileHeading;
-		$orders = $orderCollection->find(array('items.event_id' => array('$in' => $this->events)));
+		$orders = $orderCollection->find(array(
+			'items.event_id' => array('$in' => $this->events),
+			'canceled' => array('$ne' => true)
+		));
 		$inc = 1;
-		$this->time = date('Ymds');
 		$handle = '/tmp/totsy/TOTOrd'.$this->time.'.txt';
 		$fp = fopen($handle, 'w');
 		$eventList = $orderArray = array();
 		foreach ($orders as $order) {
-			$conditions = array('Customer PO #' => (string) $order['_id']);
+			$conditions = array('Customer PO #' => array('$in' => array((string) $order['_id'], $order['_id'])));
 			$processCheck = ProcessedOrder::count(compact('conditions'));
 			if ($processCheck == 0) {
 				$user = User::find('first', array('conditions' => array('_id' => $order['user_id'])));
@@ -117,7 +164,7 @@ class OrderExport extends Base {
 					$orderFile[$inc]['Tel'] = $order['shipping']['telephone'];
 					$orderFile[$inc]['Country'] = '';
 					$orderFile[$inc]['OrderNum'] = $order['order_id'];
-					$orderFile[$inc]['SKU'] = Item::sku($orderItem->vendor, $orderItem->vendor_style, $item['size'], $item['color']);
+					$orderFile[$inc]['SKU'] = Item::sku($orderItem->vendor, $orderItem->vendor_style, $item['size'], $orderItem->color);
 					$orderFile[$inc]['Qty'] = $item['quantity'];
 					$orderFile[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
 					$orderFile[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
@@ -156,25 +203,31 @@ class OrderExport extends Base {
 		$this->_itemGenerator($eventList);
 		$totalOrders = count($orderArray);
 		$this->out("$handle was created total of $totalOrders orders generated with $inc lines");
+		return true;
 	}
-	
+
+	/**
+	 * Take any string and convert to ASCII
+	 */
 	protected function _asciiClean($description) {
 		return preg_replace('/[^(\x20-\x7F)]*/','', $description);
 	}
 
 	/**
-	 * The itemGenerator method gathers all the items to generate the order file.
+	 * The itemGenerator method builds the item list for the item master database and file.
 	 *
-	 * The purpose of this method is to create the item list for our 3PL. For every order that was created a
-	 * CSV line is generated. This method needs to be simplified so that it doesnt loop through
-	 * every order but builds and item list soely on what is saved in the event.
-	 * Event if we don't have purchases for particular items the item file should contain everything.
-	 * that we are attempting to sell. The PO will contain the details of the items and quantites
-	 * that have been purchased.
-	 * @todo Migrate code to li3 command.
+	 * The method first looks for all the events that were queued for processing. All the
+	 * items of those events are then gathered into a file for transmission to the 3PL.
+	 * To avoid retransmission an item master is retained and checked before including
+	 * the item in the file.
+	 *
+	 * @param array $eventId Array of events.
 	 */
 	protected function _itemGenerator($eventIds = null) {
-		$fp = fopen('/tmp/totsy/TOTIT'.$this->time.'.csv', 'w');
+		$this->header('Generating Items');
+		$handle = '/tmp/totsy/TOTIT'.$this->time.'.csv';
+		$this->out("Opening item file $handle");
+		$fp = fopen($handle, 'w');
 		if ($eventIds) {
 			$productHeading = ProcessedOrder::$_productHeading;
 			foreach ($eventIds as $eventId) {
@@ -183,6 +236,7 @@ class OrderExport extends Base {
 						'_id' => $eventId
 				)));
 				$inc = 1;
+				$count = 0;
 				$eventItems = $this->_getOrderItems($eventId);
 				foreach ($eventItems as $eventItem) {
 					foreach ($eventItem['details'] as $key => $value) {
@@ -192,9 +246,9 @@ class OrderExport extends Base {
 						if ($itemMasterCheck == 0){
 							$fields[$inc]['SKU'] = $sku;
 							$description = implode(' ', array(
-								$eventItem['description'],
 								$eventItem['color'],
-								$key
+								$key,
+								$eventItem['description']
 							));
 							$fields[$inc]['Description'] = $this->_asciiClean($description);
 							$fields[$inc]['WhsInsValue (Cost)'] = number_format($eventItem['sale_whol'], 2);
@@ -214,6 +268,7 @@ class OrderExport extends Base {
 							if ($this->test != 'true') {
 								$itemMasterEntry = ItemMaster::create();
 								$itemMasterEntry->save($productFile[$inc] + $this->batchId);
+								++$count;
 							}
 							fputcsv($fp, $productFile[$inc]);
 						}
@@ -223,7 +278,7 @@ class OrderExport extends Base {
 			}
 		}
 		fclose($fp);
-		$this->out("There were $inc items generated and saved to the item master");
+		$this->out("There were $count items generated and saved to the item master and $handle");
 		return true;
 	}
 
@@ -239,8 +294,9 @@ class OrderExport extends Base {
 	 * 4) Build the array of cumulative purchases for each item of the event.
 	 * @return mixed
 	 */
-	protected function _purchases($eventList = array()) {
-		foreach ($eventList as $eventId) {
+	protected function _purchases() {
+		$this->header('Generating Purchase Orders');
+		foreach ($this->events as $eventId) {
 			$purchaseHeading = ProcessedOrder::$_purchaseHeading;
 			$total = array('sum' => 0, 'quantity' => 0);
 			$event = Event::find('first', array(
@@ -249,11 +305,11 @@ class OrderExport extends Base {
 			)));
 			$eventItems = $this->_getOrderItems($eventId);
 			$vendorName = preg_replace('/[^(\x20-\x7F)]*/','', substr($this->_asciiClean($event->name), 0, 3));
-			$time = date('ymds');
+			$time = date('ymdis', $event->_id->getTimestamp());
 			$poNumber = 'TOT'.'-'.$vendorName.$time;
-			$fileHandle = '/tmp/totsy/TOTitpo'.$vendorName.$time.'.csv';
-			$this->out("Opening $fileHandle");
-			$fp = fopen($fileHandle, 'w');
+			$handle = '/tmp/totsy/TOTitpo'.$vendorName.$time.'.csv';
+			$this->out("Opening PO file $handle");
+			$fp = fopen($handle, 'w');
 			$purchaseOrder = array();
 			$inc = 0;
 			foreach ($eventItems as $eventItem) {
@@ -313,4 +369,43 @@ class OrderExport extends Base {
 		}
 		return $items;
 	}
+	/**
+	 * This export script examine the source directory and send any files
+	 * that have not already been transmitted. Once the transmission has been
+	 * confirmed move the file over to a backup folder within the same directory.
+	 */
+	public function _export() {
+		$this->header('FTPing Files');
+		$ftpConn = ftp_connect($this->_ftpServer);
+		$login = ftp_login($ftpConn, $this->_ftpUser, $this->_ftpPass);
+		if ((!$ftpConn) || (!$login)) {
+			$this->error("FTP Connection Failed");
+		} else {
+			$this->out("Connected to $this->_ftpServer");
+			ftp_chdir($ftpConn, '/tot90/in');
+			if ($this->source) {
+				$handle = opendir($this->source);
+				while (false !== ($this->file = readdir($handle))) {
+					if (!(in_array($this->file, $this->_exclude))) {
+						$fullPath = implode('/', array($this->source, $this->file));
+						$backupPath = implode('/', array($this->processed, $this->file));
+						if (filesize($fullPath) > 0) {
+							if (ftp_put($ftpConn, $this->file, $fullPath, FTP_BINARY)) {
+								$this->out("Successfully uploaded $this->file");
+								$this->out("Moving $fullPath to $backupPath");
+								rename($fullPath, $backupPath);
+							} else {
+								$this->error("There was a problem while uploading $this->file");
+							}
+						} else {
+							$this->out("$fullPath was empty. Removing...");
+							unlink($fullPath);
+						}
+					}
+				}
+			}
+		}
+		ftp_close($ftpConn);
+	}
+
 }
