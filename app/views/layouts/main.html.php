@@ -57,7 +57,7 @@
 							'id' => 'cart', 'title' => 'My Cart'
 						)); ?>
 			 			<span class="fr">
-							<?=$this->html->link('My Credits', array('Pages::credits')); ?>
+							<?=$this->html->link('My Credits', array('Credits::view')); ?>
 							<?php if (!empty($credit)): ?>
 								($<?=$credit?>)
 							<?php endif ?>
