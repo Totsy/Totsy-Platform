@@ -601,13 +601,11 @@ body {background:#fff!important;}
 <body>
 <div class="container_24">
   <div class="grid_12"><img src="http://www.totsy.com/img/logo.png" align="left" /></div>
-  <div class="grid_12"><!-- <p style="text-align:right; padding:65px 0px 0px 0px;">Survey closes on December 3rd, 2010</p>-- ></div>
+  <div class="grid_12"><!-- <p style="text-align:right; padding:65px 0px 0px 0px;">Survey closes on December 3rd, 2010</p> --></div>
   <div class="grid_24"><hr /></div>
   <div class="grid_24">
-    <h2>Oops - we do not have any current survey's running</h2>
-    <p>please check back again</p>
-   <!--  <iframe src="https://spreadsheets.google.com/embeddedform?formkey=dDRHTmpRQWN6MG5aZVhuV0JxVzV2Ymc6MQ" width="960" height="2224" frameborder="0" marginheight="0" marginwidth="0" style="border:0px; width:960px; margin:0px!important; padding:0px; ">Loading...</iframe>
-  </div> -->
+    <iframe src="https://spreadsheets.google.com/embeddedform?formkey=dDhfNUVNOHNDckY2QWI0SDZ1V3A2Z3c6MQ" width="960" height="2224" frameborder="0" marginheight="0" marginwidth="0" style="border:0px; width:960px; margin:0px!important; padding:0px; ">Loading...</iframe>
+  </div>
 </div>
 </body>
 </html>
