@@ -1,3 +1,7 @@
+<?=$this->html->script('jquery-1.4.2');?>
+<?=$this->html->script('jquery.maskedinput-1.2.2')?>
+<?=$this->html->script('jquery.dataTables.js');?>
+<?=$this->html->style(array('jquery_ui_blitzer.css', 'table'));?> 
 <?php
 	$this->title(" - Order Confirmation");
 ?>
@@ -14,9 +18,92 @@
 						<tr>
 							<td valign="top">
 								<br />
+								<?php if($order->cancel){?>
+									<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
+										The order has been canceled by <?=$order->cancel_by?>
+									</p><br />
+								<?php }else{ ?>
 									<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
 										The order is expected to ship on <?=date('M d, Y', $shipDate)?>
 									</p><br />
+									<?php if($message != ""){ ?>
+									<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;"><?php echo $message; ?>
+									</p><br />
+									<?php } ?>
+									<p style="text-align:center;">
+									<button id="cancel_button" onclick="confirmCancel()" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
+								    <button id="update_shipping" style="font-weight:bold;font-size:14px;">Update Shipping</button>
+									</p><br />
+									<? } ?>
+									<div id="new_shipping" style="display:none">
+											<h2 id="new_shipping_address">New shipping address</h2>
+											<?=$this->form->create(null ,array('id'=>'newShippingForm','enctype' => "multipart/form-data")); ?>
+												<div class="form-row">
+													<?=$this->form->label('firstname', 'First Name', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('firstname', array('class' => 'inputbox')); ?>
+													<?=$this->form->error('firstname'); ?>
+												</div>
+												<div class="form-row">
+													<?=$this->form->label('lastname', 'Last Name', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('lastname', array('class' => 'inputbox')); ?>
+													<?=$this->form->error('lastname'); ?>
+												</div>
+												<div class="form-row">
+													<?=$this->form->label('address', 'Address', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('address', array('class' => 'inputbox')); ?>
+													<?=$this->form->error('address'); ?>
+												</div>
+											 	<div class="form-row">
+													<?=$this->form->label('city', 'City', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('city', array('class' => 'inputbox')); ?>
+													<?=$this->form->error('city'); ?>
+												</div>
+												<div class="form-row">
+													<?=$this->form->label('state', 'State', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('state', array('class' => 'inputbox')); ?>
+													<?=$this->form->error('state'); ?>
+												</div>
+												<div class="form-row">
+													<?=$this->form->label('zip', 'Zip', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('zip', array('class' => 'inputbox', 'id' => 'zip')); ?>
+													<?=$this->form->error('zip'); ?>
+												</div>
+												<div class="form-row">
+													<?=$this->form->label('phone', 'Phone', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('phone', array('class' => 'inputbox', 'id' => 'phone')); ?>
+													<?=$this->form->error('phone'); ?>
+												</div>
+											<?=$this->form->submit('Confirm new shipping details')?>
+										</div>
+									<br />
 								<h2 class="gray mar-b">Order Summary <span style="font-size:11px; float:right; font-weight:normal;"><span style="font-weight:bold;">NOTE:</span> Your order will be delivered within 3-5 weeks</span></h2>
 								<hr />
 						    </td>
@@ -168,3 +255,30 @@
 <?php else: ?>
 	<strong>Sorry, we cannot locate the order that you are looking for.</strong>
 <?php endif ?>
+<script type="text/javascript">
+jQuery(function($){
+	$("#zip").mask("99999");
+	$("#phone").mask("(999) 999-9999");
+});
+</script>
+<script type="text/javascript" >
+function confirmCancel(){
+	if(confirm('Are you sure to cancel the order ?')){
+		window.location += "&cancel=true";
+	}
+}
+</script>
+<script type="text/javascript" >
+$(document).ready(function(){
+	$("#update_shipping").click(function () {
+		if ($("#new_shipping").is(":hidden")) {
+		     $("#new_shipping").show("slow");
+		   } else {
+		     $("#new_shipping").slideUp();
+		   }
+	});
+	$("#cancel").click(function () {
+		alert("are you sure to cancel the order ?");
+	});
+ });
+</script>

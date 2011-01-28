@@ -8,6 +8,8 @@ use admin\models\Event;
 use admin\models\Item;
 use admin\models\Credit;
 use admin\controllers\BaseController;
+use \lithium\storage\Session;
+use MongoCode;
 use MongoDate;
 use MongoRegex;
 use MongoId;
@@ -65,6 +67,7 @@ class OrdersController extends BaseController {
 		$headings = $this->_headings;
 		$collection = Order::collection();
 		if ($this->request->data) {
+			
 			$search = $this->request->data['search'];
 			$searchType = $this->request->data['type'];
 			$date = array('date_created' => array('$gt' => new MongoDate(strtotime('August 3, 2010'))));
@@ -130,6 +133,42 @@ class OrdersController extends BaseController {
 	 * @param string $id The _id of the order
 	 */
 	public function view($id = null) {
+		//Cancel the current Order
+		$current_user = Session::read('userLogin');
+		$message ="";
+		if ($id) {
+			if($_GET["cancel"]){
+				Order::cancel($id, $current_user["email"]);
+				$message ="Order Canceled";
+			}
+		}
+		//update the shipping address by adding the new one and pushing the old one.
+		if ($id) {
+			if($this->request->data){
+				$new_shipping_datas = $this->request->data;
+				$update = true;
+				foreach($new_shipping_datas as $data){
+					if($data == null) $update = false;
+				}
+				if($update){
+					$orderCollection = Order::collection();
+					$order = Order::find('first', array('conditions' => array('_id' => $id)));
+					$current_shipping_datas = array( 
+						"modified_by" => $current_user["email"],
+						"firstname" => $order["shipping"]["firstname"],
+						"lastname" => $order["shipping"]["lastname"],
+						"address" => $order["shipping"]["address"],
+						"city" => $order["shipping"]["city"],
+						"state" => $order["shipping"]["state"],
+						"zip" => $order["shipping"]["zip"],
+						"phone" => $order["shipping"]["phone"] 
+						);
+					$orderCollection->update(array("_id" => new MongoId($id)), array('$push' => array('old_shippings' => $current_shipping_datas)),  array("upsert" => true));
+					$orderCollection->update(array("_id" => new MongoId($id)), array('$set' => array('shipping' => $new_shipping_datas)));
+					$message ="Shipping Updated";
+				}else $message = "Some informations for the new shipping are missing";
+			}
+		}
 		$this->_render['layout'] = 'base';
 		$order = null;
 		if ($id) {
@@ -144,7 +183,7 @@ class OrdersController extends BaseController {
 				}
 		}
 		$shipDate = $this->shipDate($order);
-		return compact('order', 'shipDate', 'sku');
+		return compact('order', 'shipDate', 'sku','message');
 	}
 
 	/**

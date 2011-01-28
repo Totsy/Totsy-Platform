@@ -53,10 +53,12 @@ class Order extends \lithium\data\Model {
 	public static function collection() {
 		return static::_connection()->connection->orders;
 	}
-	public $validates = array(
-		'authKey' => 'Could not secure payment.'
-	);
 
+	public $validates = array(
+		'authKey' => 'Could not secure payment.',
+		
+	);
+		
 	public static function dates($name) {
 	     return new MongoDate(time() + static::_object()->_dates[$name]);
 	}
@@ -113,6 +115,11 @@ class Order extends \lithium\data\Model {
 		$orders = static::collection();
 		$date = array('date_created' => array('$gt' => new MongoDate(strtotime('August 3, 2010'))));
 		return $orders->find(array('$or' => $conditions) + $date)->sort(array('date_created' => 1));
+	}
+	
+	public static function cancel($order_id, $author_cancel) {
+		$set = array('$set' => array('cancel' => true, 'cancel_by'=> $author_cancel));
+		static::collection()->update(array('_id' => new MongoId($order_id)), $set, array("upsert" => true));
 	}
 
 
