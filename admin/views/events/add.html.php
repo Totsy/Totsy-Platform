@@ -1,5 +1,5 @@
 <?=$this->html->script(array('tiny_mce/tiny_mce.js', 'swfupload.js', 'swfupload.queue.js', 'fileprogress.js', 'handlers.js', 'event_upload.js', 'jquery.dataTables.js', 'jquery-ui-timepicker.min.js'));?>
-<?=$this->html->style(array('swfupload', 'jquery_ui_blitzer.css', 'table', 'timepicker'));?> 
+<?=$this->html->style(array('swfupload', 'jquery_ui_blitzer', 'table', 'timepicker'));?>
 <script type="text/javascript">
 tinyMCE.init({
 	mode : "textareas",
@@ -19,7 +19,7 @@ tinyMCE.init({
 			onSelect: function(selectedDate) {
 				var option = this.id == "start_date" ? "minDate" : "maxDate";
 				var instance = $(this).data("datetimepicker");
-				var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+				var date = $.datepicker.parseDate(instadnce.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
 				dates.not(this).datepicker("option", option, date);
 			}
 		});
@@ -41,7 +41,7 @@ tinyMCE.init({
 
 		/* Init the table */
 		oTable = $('#itemTable').dataTable();
-		
+
 	} );
 
 	function fnGetSelected( oTableLocal )
