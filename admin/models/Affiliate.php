@@ -13,7 +13,7 @@ class Affiliate extends Base {
 			'active'=>array('type'=>'boolean', 'null'=>false, 'default'=>true)
 			);
 
-	public static function pixelFormating($pixels){
+	public static function pixelFormating($pixels, $codes){
 			if( empty($pixels) ){ return array(); }
 			$formatted = array();
 			foreach($pixels as $key=>$pixel){
@@ -22,11 +22,12 @@ class Affiliate extends Base {
 				}else{
 					$temp['enable'] = false;
 				}
-
-				if(is_array($pixel['page'])){
-
-					$temp['page'] = array_values($pixel['page']);
+				if(in_array('/join/', $pixel['page'])) {
+					foreach($codes as $value){
+						$pixel['page'][] = '/join/'.$value;
+					}
 				}
+				$temp['page'] = array_values($pixel['page']);
 
 				$temp['pixel'] = $pixel['pixel'];
 

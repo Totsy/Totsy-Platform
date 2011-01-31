@@ -17,7 +17,8 @@ class AffiliatesController extends \admin\controllers\BaseController {
 	    '/sales' => 'sales',
 	    '/shopping/checkout' => 'checkout',
 	    '/shopping/process' => 'checkout process',
-	    '/orders/view' => 'orders confirmation'
+	    '/orders/view' => 'orders confirmation',
+	    '/join/' => 'landing page'
 	    );
 
 	public function index() {
@@ -51,7 +52,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
 			$info['invitation_codes'] = array_values( $data['invitation_codes'] );
 			if($data['active_pixel'] == '1' || $data['active_pixel'] == 'on'){
                 $info['active_pixel'] = true;
-			    $info['pixel'] = Affiliate::pixelFormating( $data['pixel'] );
+			    $info['pixel'] = Affiliate::pixelFormating( $data['pixel'], $info['invitation_codes'] );
 			}else{
 			    $info['active_pixel'] = false;
 			}
@@ -81,7 +82,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
             $info['invitation_codes'] = array_values( $data['invitation_codes'] );
             if($data['active_pixel'] == '1' || $data['active_pixel'] == 'on'){
                 $info['active_pixel'] = true;
-			    $info['pixel'] = Affiliate::pixelFormating($data['pixel']);
+			    $info['pixel'] = Affiliate::pixelFormating($data['pixel'], $info['invitation_codes']);
 			   // die(var_dump($info['pixel']));
 			}else{
 			    $info['active_pixel'] = false;
