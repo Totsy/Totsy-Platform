@@ -2,20 +2,40 @@
 
 namespace admin\models;
 
-use MongoDate;
+class Affiliate extends Base {
 
+	protected $_meta = array('source' => 'affiliates');
 
-class Affiliate extends \admin\models\Base {
-
-	protected $_meta = array('source' => 'users');
-
-	protected $_schema=array(
+	protected $_schema = array(
+			'_id' => array('type' => 'id'),
 			'invitation_codes'=>array('type'=>'array', 'null'=>false ),
 			'affiliate'=>array('type'=>'boolean', 'null'=>false, 'default'=>true),
 			'active'=>array('type'=>'boolean', 'null'=>false, 'default'=>true)
 			);
 
-	public $validates = array();
+	public static function pixelFormating($pixels){
+			if( empty($pixels) ){ return array(); }
+			$formatted = array();
+			foreach($pixels as $key=>$pixel){
+				if($pixel['enable'] == '1' || $pixel['enable'] == 'on'){
+					$temp['enable'] = true;
+				}else{
+					$temp['enable'] = false;
+				}
+
+				if(is_array($pixel['page'])){
+
+					$temp['page'] = array_values($pixel['page']);
+				}
+
+				$temp['pixel'] = $pixel['pixel'];
+
+				$formatted[] = $temp;
+
+			}
+
+		return $formatted;
+	}
 }
 
 ?>
