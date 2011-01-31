@@ -131,6 +131,7 @@
 
     <div id='toTop'>^ Back to Top</div>
 
-    <?php echo $data; ?>
+    <!--affiliate pixels-->
+    <?php echo $pixel; ?>
 	</body>
 </html>
