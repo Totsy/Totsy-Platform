@@ -64,16 +64,16 @@
         <?=$this->form->create(); ?>
              code:
                 <?=$this->form->text('search' , array('id'=>'start_end' , 'style' => 'width:280')); ?>
-            <nbsp>  OR 
+            <nbsp>  OR
                  <nbsp> <nbsp>
                 start date range:
-                <?=$this->form->text('start_date', array('id'=>'start_end' , 'style' => 'width:180')); ?> 
+                <?=$this->form->text('start_date', array('id'=>'start_end' , 'style' => 'width:180')); ?>
                 end date range:
                 <?=$this->form->text('end_date', array('id'=>'end_date' , 'style' => 'width:180') ); ?>
-            
+
            <?=$this->form->submit('find'); ?><br><br>
         <?=$this->form->end(); ?>
-        
+
         </fieldset>
     </div>
 </div>
@@ -93,16 +93,16 @@
             </tr>
         </thead>
         <tbody>
-            
+
                <?php foreach($promocodes as $promocode): ?>
                     <tr>
                         <td> <?=$promocode->code; ?></td>
                         <td> <?=$promocode->times_used; ?></td>
                         <td> <?=$promocode->total_discounts; ?></td>
-                        <td> $<?=$promocode->total_revenue; ?></td>
+                        <td> $<?=number_format($promocode->total_revenue,2); ?></td>
                     </tr>
                 <?php endforeach; ?>
-            
+
         </tbody>
     </table>
 </div>
@@ -132,7 +132,7 @@
                         <?=$this->html->link($promotion->order_id, 'orders/view/'.$promotion->order_id, array('target' => '_blank') );?>
                      </td>
                      <td>
-                        $<?php echo round($promotion->saved_amount, 2 ); ?>
+                        $<?php echo number_format($promotion->saved_amount, 2 ); ?>
                     </td>
                     <td>
                     <?=$promotion->date_created; ?>
