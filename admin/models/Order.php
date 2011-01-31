@@ -117,12 +117,17 @@ class Order extends \lithium\data\Model {
 		return $orders->find(array('$or' => $conditions) + $date)->sort(array('date_created' => 1));
 	}
 	
+	/**
+	 * Cancel an order.
+	 * By putting the "cancel" field on the db to true.
+	 * And to find the author of this modification, we add a "cancel_by" field.
+	 * @param string $order_id, $author_cancel
+	 * @return null
+	 */
 	public static function cancel($order_id, $author_cancel) {
 		$set = array('$set' => array('cancel' => true, 'cancel_by'=> $author_cancel));
 		static::collection()->update(array('_id' => new MongoId($order_id)), $set, array("upsert" => true));
 	}
-
-
 }
 
 ?>

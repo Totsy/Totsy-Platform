@@ -127,11 +127,14 @@ class OrdersController extends BaseController {
 	}
 
 	/**
-	 * The view method renders the order confirmation page that is sent to the customer
-	 * after they have placed their order
-	 *
-	 * @param string $id The _id of the order
-	 */
+	* The view method renders the order confirmation page that is sent to the customer
+	* after they have placed their order
+	* The view method render two buttons to manage add new shipping details and cancel order. 
+	* A shipping details form will be render if you click on the button
+	* A pop-up will be called if you click on cancel button to confirm the action
+	* Confirm the shipping form will update the "shipping" array and push the old datas on "old_shippings"
+	* @param string $id The _id of the order
+	*/
 	public function view($id = null) {
 		//Cancel the current Order
 		$current_user = Session::read('userLogin');
