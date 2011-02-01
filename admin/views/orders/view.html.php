@@ -18,23 +18,26 @@
 						<tr>
 							<td valign="top">
 								<br />
-								<?php if($order->cancel){?>
+								<?php if($order->cancel == true){?>
 									<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
 										The order has been canceled by <?=$order->cancel_by?>
+									</p><br />
+									<p style="text-align:center;">
+										<button id="uncancel_button" style="font-weight:bold;font-size:14px;"> Uncancel Order</button>
 									</p><br />
 								<?php }else{ ?>
 									<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
 										The order is expected to ship on <?=date('M d, Y', $shipDate)?>
 									</p><br />
-									<?php if($message != ""){ ?>
-									<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;"><?php echo $message; ?>
-									</p><br />
-									<?php } ?>
 									<p style="text-align:center;">
-									<button id="cancel_button" onclick="confirmCancel()" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
-								    <button id="update_shipping" style="font-weight:bold;font-size:14px;">Update Shipping</button>
+									<button id="cancel_button" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
+									<button id="update_shipping" style="font-weight:bold;font-size:14px;">Update Shipping</button>
 									</p><br />
 									<? } ?>
+									<div id="cancel_form" style="display:none">
+										<?=$this->form->create(null ,array('id'=>'cancelForm','enctype' => "multipart/form-data")); ?>
+										<?=$this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
+									</div>
 									<div id="new_shipping" style="display:none">
 											<h2 id="new_shipping_address">New shipping address</h2>
 											<?=$this->form->create(null ,array('id'=>'newShippingForm','enctype' => "multipart/form-data")); ?>
@@ -262,23 +265,25 @@ jQuery(function($){
 });
 </script>
 <script type="text/javascript" >
-function confirmCancel(){
-	if(confirm('Are you sure to cancel the order ?')){
-		window.location += "&cancel=true";
-	}
-}
-</script>
-<script type="text/javascript" >
 $(document).ready(function(){
 	$("#update_shipping").click(function () {
 		if ($("#new_shipping").is(":hidden")) {
-		     $("#new_shipping").show("slow");
-		   } else {
-		     $("#new_shipping").slideUp();
-		   }
+			$("#new_shipping").show("slow");
+		} else {
+			$("#new_shipping").slideUp();
+		}
 	});
-	$("#cancel").click(function () {
-		alert("are you sure to cancel the order ?");
+	$("#cancel_button").click(function () {
+		if (confirm('Are you sure to cancel the order ?')) {
+			$.post("../cancel", $("#cancelForm").serialize());
+			window.setTimeout('location.reload()', 500);
+		}
 	});
- });
+	$("#uncancel_button").click(function () {
+		if (confirm('Are you sure to uncancel the order ?')) {
+			$.post("../cancel", $("#cancelForm").serialize());
+			window.setTimeout('location.reload()', 500);
+		}
+	});
+});
 </script>

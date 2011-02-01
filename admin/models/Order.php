@@ -56,13 +56,12 @@ class Order extends \lithium\data\Model {
 
 	public $validates = array(
 		'authKey' => 'Could not secure payment.',
-		
 	);
-		
+
 	public static function dates($name) {
-	     return new MongoDate(time() + static::_object()->_dates[$name]);
+		return new MongoDate(time() + static::_object()->_dates[$name]);
 	}
-	
+
 	public static function lookup($orderId) {
 		$orderId = new MongoRegex("/$orderId/i");
 		$result = static::find('first', array('conditions' => array(
@@ -75,7 +74,8 @@ class Order extends \lithium\data\Model {
 		try {
 			return $order->save(array(
 				'payment_date' => static::dates('now'),
-				'auth_confirmation' => Payments::capture('default', $order->authKey, round($order->total, 2)),
+				'auth_confirmation' => Payments::capture('default', $order->authKey,
+				round($order->total, 2)),
 				'auth_error' => null
 			));
 		} catch (TransactionException $e) {
@@ -95,7 +95,8 @@ class Order extends \lithium\data\Model {
 	 * Search for an order by either name or address.
 	 * We are limiting this order search by the official launch of August 3rd.
 	 * There are way too many issues when dealing with orders that are from the old system.
-	 * @param string $data, $type
+	 * @param string $data,
+	 * @param string $type
 	 * @return array
 	 */
 	public static function orderSearch($data, $type) {
@@ -116,17 +117,30 @@ class Order extends \lithium\data\Model {
 		$date = array('date_created' => array('$gt' => new MongoDate(strtotime('August 3, 2010'))));
 		return $orders->find(array('$or' => $conditions) + $date)->sort(array('date_created' => 1));
 	}
-	
+
 	/**
 	 * Cancel an order.
-	 * By putting the "cancel" field on the db to true.
+	 * By putting the "cancel" field on the db to true if the order is uncanceled.
+	 * Uncancel an order.
+	 * By putting the "cancel" field on the db to false if the order is canceled..
 	 * And to find the author of this modification, we add a "cancel_by" field.
 	 * @param string $order_id, $author_cancel
-	 * @return null
+	 * @param string $author_cancel
 	 */
 	public static function cancel($order_id, $author_cancel) {
-		$set = array('$set' => array('cancel' => true, 'cancel_by'=> $author_cancel));
-		static::collection()->update(array('_id' => new MongoId($order_id)), $set, array("upsert" => true));
+		$result = static::find('first', array('conditions' => array(
+			'_id' => $order_id
+		)));
+		$order = $result->data();
+		if(empty($order["cancel"]) || ($order["cancel"] == false)) {
+			$set = array('$set' => array('cancel' => true, 'cancel_by'=> $author_cancel));
+			static::collection()->update(array('_id' => new MongoId($order_id)),
+				$set, array("upsert" => true));
+		}else{
+			$set = array('$set' => array('cancel' => false, 'cancel_by'=> $author_cancel));
+			static::collection()->update(array('_id' => new MongoId($order_id)),
+			 	$set, array("upsert" => true));
+		}
 	}
 }
 
