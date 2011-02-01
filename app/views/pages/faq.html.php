@@ -12,7 +12,20 @@ $(document).ready(function() {
   <?=$this->title('Frequently Asked Questions'); ?>
 </h1>
 <?php if (!empty($userInfo)): ?>
-<?=$this->menu->render('about'); ?>
+	<div id="left" id="left">
+		<ul class="menu main-nav">
+		  <h3 style="color:#999;">About Us</h3>
+		  <hr />
+		  <li class="first item15"><a href="/pages/aboutus" title="About Totsy"><span>How Totsy Works</span></a></li>
+		  <li class="first item16"><a href="/pages/press" title="Press"><span>Totsy in the Press</span></a></li>
+		  <li class="first item17"><a href="/pages/being_green" title="Being Green"><span>Being Green</span></a></li>
+		  <br />
+		  <h3 style="color:#999;">Need Help?</h3>
+		  <hr />
+		  <li class="first item18"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
+		  <li class="first item19 active"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
+		</ul>
+	</div>
 <div id="middle" class="noright">
 <?php else: ?>
 <div id="middle" class="fullwidth">
