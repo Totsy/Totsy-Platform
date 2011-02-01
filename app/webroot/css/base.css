@@ -432,7 +432,7 @@ z-index:10; position:absolute; top:3px; left:3px }
 html { height:100% }
 body.login { height:100% }
 #fullscreen { position:relative; overflow:hidden; min-height:100% }
-#login-box { position:absolute; top:50%; left:80px; z-index:1 }
+#login-box { position:absolute; top:35%; left:80px; z-index:1 }
 #login-box-border { position:absolute; left:0; top:-212px }
 #login-box-container { position:relative }
 .login-modal { width:620px }
