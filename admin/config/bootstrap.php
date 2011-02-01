@@ -125,4 +125,7 @@ Logger::config(array(
 	'default' => array('adapter' => 'File')
 ));
 
+ini_set('memory_limit', '512M');
+ini_set('max_execution_time', '90');
+
 ?>
