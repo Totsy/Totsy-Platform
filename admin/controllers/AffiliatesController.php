@@ -18,7 +18,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
 	    '/shopping/checkout' => 'checkout',
 	    '/shopping/process' => 'checkout process',
 	    '/orders/view' => 'orders confirmation',
-	    '/join/' => 'landing page'
+	    '/a/' => 'landing page'
 	    );
 
 	public function index() {

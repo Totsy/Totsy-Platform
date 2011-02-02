@@ -50,7 +50,7 @@ class BaseController extends \lithium\action\Controller {
 		}
 
 
-        if(preg_match('/join/',$_SERVER['REQUEST_URI'])) {
+        if(preg_match('/a/',$_SERVER['REQUEST_URI'])) {
 
 		    $invited_by = substr($_SERVER['REQUEST_URI'],6);
         }
