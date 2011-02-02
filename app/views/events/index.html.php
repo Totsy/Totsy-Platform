@@ -129,9 +129,16 @@
 		<hr />
 
 	<div id="slider" class="nivoSlider">
- 		 <a href="/sale/adore-la-vie"><img src="/img/spring_img1.jpg"  alt="" title="Adore La Vie" /></a>
-		 <a href="/sale/gigi-s-dresses"><img src="/img/spring_img2.jpg"  alt="" title="Gigi's Dresses" /></a>
-		 <a href="/sale/corky-s-dresses"><img src="/img/spring_img3.jpg"  alt="" title="Corky's Dresses" /></a>
+ 		 <a href="/sale/gigi-s-dresses"><img src="/img/spring_img1.jpg"  alt="" title="Gigi's Dresses - Up to 65% OFF" /></a>
+		 <a href="/sale/corky-s-dresses"><img src="/img/spring_img2.jpg"  alt="" title="Corky's Dresses - Up to 57% OFF" /></a>
+		 <a href="/sale/adore-la-vie"><img src="/img/spring_img3.jpg"  alt="" title="Adore La Vie - Up to 50% OFF" /></a>
+		 
+		 <a href="/sale/bellarisa"><img src="/img/spring_img4.jpg"  alt="" title="Adore La Vie - Up to 51% OFF" /></a>
+		 
+		 <a href="/sale/china-doll"><img src="/img/spring_img5.jpg"  alt="" title="Adore La Vie - Up to 59% OFF" /></a>
+		 
+		 <a href="/sale/whoops-bunny"><img src="/img/spring_img6.jpg"  alt="" title="Adore La Vie - Up to 50% OFF" /></a>
+		 
 	</div>
 
 	<br style="margin-bottom:10px;"/>
