@@ -106,6 +106,7 @@
 												</div>
 											<?=$this->form->submit('Confirm new shipping details')?>
 										</div>
+										<?php if(!empty($order->tracking_numbers)){ ?>
 										<div>
 										<h2 class="gray mar-b">Order Tracking<span style="font-size:11px; float:right; font-weight:normal;"></h2><hr />
 										<table cellspacing="0" cellpadding="0" border="0" width="695">
@@ -137,6 +138,8 @@
 										</tr>
 										</table>
 										</div>
+										<?php } //endif tracking numbers?>
+										<?php if(!empty($order->modifications)){ ?>
 										<div>
 										<h2 class="gray mar-b">Modifications Logs <span style="font-size:11px; float:right; font-weight:normal;"></h2><hr />
 										<table cellspacing="0" cellpadding="0" border="0" width="695">
@@ -179,6 +182,7 @@
 										</tr>
 										</table>
 										</div>
+										<?php } //endif modifications ?>
 										<br />
 								<h2 class="gray mar-b">Order Summary <span style="font-size:11px; float:right; font-weight:normal;"><span style="font-weight:bold;">NOTE:</span> Your order will be delivered within 3-5 weeks</span></h2>
 								<hr />
