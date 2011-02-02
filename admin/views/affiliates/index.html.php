@@ -30,7 +30,8 @@
         <thead>
             <tr>
                 <th> Affiliates Code </th>
-                <th> Active </th>
+                <th> Active Affiliate </th>
+                <th> Pixels? </th>
                 <th> Created By: </th>
                 <th> Created Date </th>
                  <th>   </th>
@@ -40,11 +41,12 @@
             <?php foreach($affiliates->data() as $affiliate): ?>
 				<tr>
 					<?php if(is_array($affiliate['invitation_codes'])): ?>
-						<td> <?php echo implode(",", $affiliate['invitation_codes']); ?> </td>
+						<td> <?php echo substr(implode(",", $affiliate['invitation_codes']), 0,15).'...'; ?> </td>
 					<?php else:?>
 						<td> <?=$affiliate['invitation_codes']; ?> </td>
 					<?php endif;?>
 					<td> <?php if(!empty($affiliate['active'])) echo $affiliate['active']; ?> </td>
+					<td> <?php if(!empty($affiliate['active_pixel'])) echo $affiliate['active_pixel']; ?> </td>
 					<td> <?php if(!empty($affiliate['created_by'])) echo $affiliate['created_by']; ?> </td>
 					<td> <?php if(!empty($affiliate['date_created'])) echo $affiliate['date_created']; ?> </td>
 					<td> <?=$this->html->link('edit', 'affiliates/edit/'.$affiliate['_id']); ?> </td>

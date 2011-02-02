@@ -600,7 +600,7 @@ body {background:#fff!important;}
 </head>
 <body>
 <div class="container_24">
-  <div class="grid_12"><img src="http://www.totsy.com/img/logo.png" align="left" /></div>
+  <div class="grid_12"><a href="/" title="Return to Totsy.com"><img src="/img/logo.png" align="left" /></a></div>
   <div class="grid_12"><!-- <p style="text-align:right; padding:65px 0px 0px 0px;">Survey closes on December 3rd, 2010</p> --></div>
   <div class="grid_24"><hr /></div>
   <div class="grid_24">

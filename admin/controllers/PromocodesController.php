@@ -1,10 +1,9 @@
 <?php
 
 namespace admin\controllers;
-use \admin\models\Promocode;
-use \admin\models\Promotion;
-use \admin\models\User;
-use li3_flash_message\extensions\storage\FlashMessage;
+use admin\models\Promocode;
+use admin\models\Promotion;
+use admin\models\User;
 use MongoDate;
 use MongoRegex;
 use MongoCollection;
@@ -20,23 +19,24 @@ class PromocodesController extends \admin\controllers\BaseController {
           $obj_data = $promocode->data();
 
            if(!empty( $obj_data['start_date'] )) {
-                $promocode->start_date = date('m/d/Y', $promocode->start_date->sec );
+
+                $promocode->start_date = date('m/d/Y', $obj_data['start_date']['sec'] );
             }
 
             if(!empty( $obj_data['end_date'] )) {
-                $promocode->end_date = date('m/d/Y', $promocode->end_date->sec );
+                $promocode->end_date = date('m/d/Y', $obj_data['end_date']['sec'] );
             }
 
             if(!empty( $obj_data['date_created'] )) {
-                $promocode->date_created= date( 'm/d/Y', $promocode->date_created->sec);
+                $promocode->date_created = date( 'm/d/Y', $obj_data['date_created']['sec']);
             }
 
 			if(!empty( $obj_data['created_by'] )) {
 				$conditions = array('conditions'=>array('_id'=>$obj_data['created_by']));
                 $user = User::find('all', $conditions);
-				$user=$user[0]->data();
-				$promocode->created_by= $user['firstname'].' '.$user['lastname'];
-            }
+				$user = $user[0]->data();
+				$promocode->created_by = $user['firstname'] . '' . $user['lastname'];
+			}
 
         }
 
@@ -52,18 +52,16 @@ class PromocodesController extends \admin\controllers\BaseController {
 														array( 'code' => strtoupper($code) )
 										) ) ) );
       //  var_dump($promocode->data());
-        $promocodes= $promocodes->data();
+        $promocodes = $promocodes->data();
 		return compact('promocodes');
 	}
 
     public function report() {
-        FlashMessage::clear();
-
 
         if( empty($this->request->data) ){
 
             $promotions = Promotion::all();
-            $promocodes= Promocode::all();
+            $promocodes = Promocode::all();
 
         }else{
 
@@ -74,15 +72,15 @@ class PromocodesController extends \admin\controllers\BaseController {
                     $search = $data['search'];
                     $promotions  = Promotion::find(  'all', array(
                                                     'conditions' =>array(
-                                                                    '$or' =>  array(
-                                                                        array( 'code' => strtolower($search) ),
-                                                                        array( 'code' => strtoupper($search) )
+															'$or' =>  array(
+																array( 'code' => strtolower($search) ),
+																array( 'code' => strtoupper($search) )
                                                         ) ) ) );
                     $promocodes = Promocode::all( array(
                                                     'conditions' =>array(
-                                                                    '$or' =>  array(
-                                                                        array( 'code' => strtolower($search) ),
-                                                                        array( 'code' => strtoupper($search) )
+															'$or' =>  array(
+																array( 'code' => strtolower($search) ),
+																array( 'code' => strtoupper($search) )
                                                         ) ) ) );
             }
 
@@ -90,13 +88,11 @@ class PromocodesController extends \admin\controllers\BaseController {
 
                 $start = new MongoDate( strtotime($data['start']) );
                 $end = new MongoDate( strtotime($data['end']) );
-                $promotions  = Promotion::find(  'all', array( 'conditions'=>array('date_created' =>array( '$gt' => $start, '$lte' => $end ) ) ) );
-            }
-
-            if (!empty($promotions)) {
-                FlashMessage::set('Results Found', array('class' => 'pass'));
-            } else {
-                FlashMessage::set('No Results Found', array('class' => 'warning'));
+                $promotions = Promotion::find(  'all', array(
+                				'conditions'=>array(
+                					'date_created' =>array(
+                					'$gt' => $start, '$lte' => $end
+                					) ) ) );
             }
 
         }
@@ -106,7 +102,7 @@ class PromocodesController extends \admin\controllers\BaseController {
           $obj_data = $promotion->data();
 
             if( !empty( $obj_data['date_created'] ) ) {
-                $promotion->date_created= date( 'm/d/Y', $promotion->date_created->sec);
+                $promotion->date_created = date( 'm/d/Y', $promotion->date_created->sec);
             }
         }
 
@@ -114,19 +110,24 @@ class PromocodesController extends \admin\controllers\BaseController {
 	}
 
 	public function add() {
-        FlashMessage::clear();
 
-        if( !empty($this->request->data) ) {
-			$promoCode= Promocode::create();
+       if( !empty($this->request->data) ) {
+			$promoCode = Promocode::create();
 
-			$admins = User::all( array( 'conditional'=>array('admin' => true) ) );
+			$admins = User::all( array(
+									'conditional'=>array(
+									'admin' => true
+								) ) );
 			$code = $this->request->data;
 
 			$col = Promocode::collection();
 			$conditions = array('code' =>$code['code']);
 
 			if($col->count( $conditions ) > 0) {
-				$col->update($conditions, array('$set'=>array('enabled'=>false)), array('multiple'=>true));
+				$col->update($conditions, array(
+								'$set'=>array(
+								'enabled'=>false
+							)), array('multiple'=>true));
 			}
 
 
@@ -140,37 +141,32 @@ class PromocodesController extends \admin\controllers\BaseController {
 
 			}
 			$code['discount_amount'] = (float) $code['discount_amount'];
-			$code['minimum_purchase'] = (int)$code['minimum_purchase'];
-			$code['max_use'] = (int)$code['max_use'];
-		   $code['start_date']= new MongoDate( strtotime( $code['start_date'] ) );
-		   $code['end_date']= new MongoDate( strtotime( $code['end_date'] ) );
-		   $code['date_created']= new MongoDate( strtotime( date('D M d Y') ) );
+			$code['minimum_purchase'] = (int) $code['minimum_purchase'];
+			$code['max_use'] = (int) $code['max_use'];
+		   $code['start_date'] = new MongoDate( strtotime( $code['start_date'] ) );
+		   $code['end_date'] = new MongoDate( strtotime( $code['end_date'] ) );
+		   $code['date_created'] = new MongoDate( strtotime( date('D M d Y') ) );
 		   $code['created_by'] = Promocode::createdBy();
 
 			$result = $promoCode->save($code);
 			if ($result) {
                 $this->redirect( array( 'Promocodes::index' ) );
-                FlashMessage::set('Promocode Created!', array('class' => 'pass'));
-            } else {
-                FlashMessage::set('Promocode not created.  Please check the form', array('class' => 'warning'));
             }
 
 		}
 	}
 
-	public function edit($id=NULL) {
+	public function edit($id = NULL) {
 		$promocode = Promocode::find($id);
 
 		if (!$promocode) {
-
 			$this->redirect('Promocodes::index');
-
 		}
 
         $obj_data = $promocode->data();
 
         if(!empty( $obj_data['start_date'] )){
-                $promocode->start_date = date('m/d/Y', $promocode->start_date->sec );
+            $promocode->start_date = date('m/d/Y', $promocode->start_date->sec );
         }
 
         if(!empty( $obj_data['end_date'] )){
@@ -179,6 +175,18 @@ class PromocodesController extends \admin\controllers\BaseController {
 
 		if ( $this->request->data ) {
 
+			$col = Promocode::collection();
+			$conditions = array('code' => $obj_data['code']);
+
+			if($col->count( $conditions ) > 0) {
+				$col->update($conditions, array(
+					'$set'=>array(
+						'enabled'=>false
+					)), array(
+						'multiple'=> true
+						));
+			}
+
 		   $data = $this->request->data;
 
 		   if( $data['enabled'] == '1' || $data['enabled'] == 'on' ){
@@ -186,17 +194,15 @@ class PromocodesController extends \admin\controllers\BaseController {
 			   $data['enabled'] = true;
 
 			}else{
-
 				 $data['enabled'] = false;
-
 			}
 			$data['discount_amount'] = (float) $data['discount_amount'];
-			$data['minimum_purchase'] = (int)$data['minimum_purchase'];
-			$data['max_use'] = (int)$data['max_use'];
-			$data['start_date']= new MongoDate( strtotime( $data['start_date'] ) );
-			$data['end_date']= new MongoDate( strtotime( $data['end_date'] ) );
-			$data['date_created']= new MongoDate( strtotime( date('D M d Y') ) );
-			$data['creaeted_by']= Promocode::createdBy();
+			$data['minimum_purchase'] = (int) $data['minimum_purchase'];
+			$data['max_use'] = (int) $data['max_use'];
+			$data['start_date'] = new MongoDate( strtotime( $data['start_date'] ) );
+			$data['end_date'] = new MongoDate( strtotime( $data['end_date'] ) );
+			$data['date_created'] = new MongoDate( strtotime( date('D M d Y') ) );
+			$data['creaeted_by'] = Promocode::createdBy();
 
 		   $promocode->save($data);
 

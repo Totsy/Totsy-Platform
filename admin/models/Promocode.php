@@ -4,10 +4,9 @@ namespace admin\models;
 
 
 
-class Promocode extends \admin\models\Base {
+class Promocode extends Base {
 
     protected $_meta = array('source' => 'promocodes');
-
 
 }
 

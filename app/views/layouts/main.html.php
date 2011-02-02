@@ -18,7 +18,7 @@
 </head>
 
 <body class="app">
-<div id="topper"></div>	
+<div id="topper"></div>
 	<div id="wrapper">
 		<div id="header">
 			<div id="header-lt">
@@ -57,7 +57,7 @@
 							'id' => 'cart', 'title' => 'My Cart'
 						)); ?>
 			 			<span class="fr">
-							<?=$this->html->link('My Credits', array('Pages::credits')); ?>
+							<?=$this->html->link('My Credits', array('Credits::view')); ?>
 							<?php if (!empty($credit)): ?>
 								($<?=$credit?>)
 							<?php endif ?>
@@ -65,7 +65,7 @@
 					</p>
 				<?php endif ?>
 			</div>
-		</div>	
+		</div>
 		<div id="content">
 			<?php echo $this->content(); ?>
 		</div>
@@ -94,7 +94,7 @@
 	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 	  })();
 	</script>
-    
+
     <script type="text/javascript">
 			$(function () {
 				$(window).scroll(function () {
@@ -112,7 +112,7 @@
 				});
 			});
 		</script>
-    
+
     	<div id='cart-modal'></div>
 	<script type="text/javascript">
 	$("#cart").click(function() {
@@ -128,9 +128,10 @@
 		$("#cart-modal").dialog('open');
 	});
 	</script>
-	
-    <div id='toTop'>^ Back to Top</div>
-    
 
-	</body>	
+    <div id='toTop'>^ Back to Top</div>
+
+    <!--affiliate pixels-->
+    <?php echo $pixel; ?>
+	</body>
 </html>

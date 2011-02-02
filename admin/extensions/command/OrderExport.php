@@ -110,7 +110,6 @@ class OrderExport extends Base {
 	public function run() {
 		Environment::set($this->env);
 		$this->events = array(
-			'4d0fb676ce64e5d15e5e3a00'
 		);
 		if ($this->events) {
 			$this->batchId = array('order_batch' => substr(md5(uniqid(rand(),1)), 1, 20));
@@ -138,71 +137,75 @@ class OrderExport extends Base {
 			'items.event_id' => array('$in' => $this->events),
 			'canceled' => array('$ne' => true)
 		));
-		$inc = 1;
-		$handle = '/tmp/totsy/TOTOrd'.$this->time.'.txt';
-		$fp = fopen($handle, 'w');
-		$eventList = $orderArray = array();
-		foreach ($orders as $order) {
-			$conditions = array('Customer PO #' => array('$in' => array((string) $order['_id'], $order['_id'])));
-			$processCheck = ProcessedOrder::count(compact('conditions'));
-			if ($processCheck == 0) {
-				$user = User::find('first', array('conditions' => array('_id' => $order['user_id'])));
-				$items = $order['items'];
-				foreach ($items as $item) {
-					$orderItem = Item::find('first', array(
-						'conditions' => array(
-							'_id' => $item['item_id']
-					)));
-					$orderFile[$inc]['ContactName'] = '';
-					$orderFile[$inc]['Date'] = date('m/d/Y');
-					if ($order['shippingMethod'] == 'ups') {
-					     $orderFile[$inc]['ShipMethod'] = 'UPSGROUND';
-					} else {
-					     $orderFile[$inc]['ShipMethod'] = $order['shippingMethod'];
+		if ($orders) {
+			$inc = 1;
+			$handle = '/tmp/totsy/TOTOrd'.$this->time.'.txt';
+			$fp = fopen($handle, 'w');
+			$eventList = $orderArray = array();
+			foreach ($orders as $order) {
+				$conditions = array('Customer PO #' => array('$in' => array((string) $order['_id'], $order['_id'])));
+				$processCheck = ProcessedOrder::count(compact('conditions'));
+				if ($processCheck == 0) {
+					$user = User::find('first', array('conditions' => array('_id' => $order['user_id'])));
+					$items = $order['items'];
+					foreach ($items as $item) {
+						$orderItem = Item::find('first', array(
+							'conditions' => array(
+								'_id' => $item['item_id']
+						)));
+						$orderFile[$inc]['ContactName'] = '';
+						$orderFile[$inc]['Date'] = date('m/d/Y');
+						if ($order['shippingMethod'] == 'ups') {
+						     $orderFile[$inc]['ShipMethod'] = 'UPSGROUND';
+						} else {
+						     $orderFile[$inc]['ShipMethod'] = $order['shippingMethod'];
+						}
+						$orderFile[$inc]['RushOrder (Y/N)'] = '';
+						$orderFile[$inc]['Tel'] = $order['shipping']['telephone'];
+						$orderFile[$inc]['Country'] = '';
+						$orderFile[$inc]['OrderNum'] = $order['order_id'];
+						$orderFile[$inc]['SKU'] = Item::sku($orderItem->vendor, $orderItem->vendor_style, $item['size'], $orderItem->color);
+						$orderFile[$inc]['Qty'] = $item['quantity'];
+						$orderFile[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
+						$orderFile[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
+						$orderFile[$inc]['Customer PO #'] = $order['_id'];
+						$orderFile[$inc]['Pack Slip Comment'] = '';
+						$orderFile[$inc]['Special Packing Instructions'] = '';
+						$orderFile[$inc]['Address1'] =  str_replace(',', ' ', $order['shipping']['address']);
+						$orderFile[$inc]['Address2'] = str_replace(',', ' ', $order['shipping']['address_2']);
+						$orderFile[$inc]['City'] = $order['shipping']['city'];
+						$orderFile[$inc]['StateOrProvince'] = $order['shipping']['state'];
+						$orderFile[$inc]['Zip'] = $order['shipping']['zip'];
+						$orderFile[$inc]['Ref1'] = $item['item_id'];
+						$orderFile[$inc]['Ref2'] = $item['size'];
+						$orderFile[$inc]['Ref3'] = $item['color'];
+						$orderFile[$inc]['Ref4'] = $this->_asciiClean($item['description']);
+						$orderFile[$inc]['Customer PO #'] = $order['_id'];
+						$orderFile[$inc] = array_merge($heading, $orderFile[$inc]);
+						$orderFile[$inc] = $this->sortArrayByArray($orderFile[$inc], $heading);
+						if (!in_array($item['event_id'], $eventList)) {
+							$eventList[] = $item['event_id'];
+						}
+						if (!in_array($orderFile[$inc]['OrderNum'], $orderArray)) {
+							$orderArray[] = $orderFile[$inc]['OrderNum'];
+						}
+						if ($this->test != 'true') {
+							$processedOrder = ProcessedOrder::create();
+							$processedOrder->save($orderFile[$inc] + $this->batchId);
+						}
+						$this->out("Adding order $order[_id] to $handle");
+						fputcsv($fp, $orderFile[$inc], chr(9));
+						++$inc;
 					}
-					$orderFile[$inc]['RushOrder (Y/N)'] = '';
-					$orderFile[$inc]['Tel'] = $order['shipping']['telephone'];
-					$orderFile[$inc]['Country'] = '';
-					$orderFile[$inc]['OrderNum'] = $order['order_id'];
-					$orderFile[$inc]['SKU'] = Item::sku($orderItem->vendor, $orderItem->vendor_style, $item['size'], $orderItem->color);
-					$orderFile[$inc]['Qty'] = $item['quantity'];
-					$orderFile[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
-					$orderFile[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
-					$orderFile[$inc]['Customer PO #'] = $order['_id'];
-					$orderFile[$inc]['Pack Slip Comment'] = '';
-					$orderFile[$inc]['Special Packing Instructions'] = '';
-					$orderFile[$inc]['Address1'] =  str_replace(',', ' ', $order['shipping']['address']);
-					$orderFile[$inc]['Address2'] = str_replace(',', ' ', $order['shipping']['address_2']);
-					$orderFile[$inc]['City'] = $order['shipping']['city'];
-					$orderFile[$inc]['StateOrProvince'] = $order['shipping']['state'];
-					$orderFile[$inc]['Zip'] = $order['shipping']['zip'];
-					$orderFile[$inc]['Ref1'] = $item['item_id'];
-					$orderFile[$inc]['Ref2'] = $item['size'];
-					$orderFile[$inc]['Ref3'] = $item['color'];
-					$orderFile[$inc]['Ref4'] = $this->_asciiClean($item['description']);
-					$orderFile[$inc]['Customer PO #'] = $order['_id'];
-					$orderFile[$inc] = array_merge($heading, $orderFile[$inc]);
-					$orderFile[$inc] = $this->sortArrayByArray($orderFile[$inc], $heading);
-					if (!in_array($item['event_id'], $eventList)) {
-						$eventList[] = $item['event_id'];
-					}
-					if (!in_array($orderFile[$inc]['OrderNum'], $orderArray)) {
-						$orderArray[] = $orderFile[$inc]['OrderNum'];
-					}
-					if ($this->test != 'true') {
-						$processedOrder = ProcessedOrder::create();
-						$processedOrder->save($orderFile[$inc] + $this->batchId);
-					}
-					$this->out("Adding order $order[_id] to $handle");
-					fputcsv($fp, $orderFile[$inc], chr(9));
-					++$inc;
 				}
 			}
+			fclose($fp);
+			$this->_itemGenerator($eventList);
+			$totalOrders = count($orderArray);
+			$this->out("$handle was created total of $totalOrders orders generated with $inc lines");
+		} else {
+			$this->out('No orders found');
 		}
-		fclose($fp);
-		$this->_itemGenerator($eventList);
-		$totalOrders = count($orderArray);
-		$this->out("$handle was created total of $totalOrders orders generated with $inc lines");
 		return true;
 	}
 
@@ -228,6 +231,7 @@ class OrderExport extends Base {
 		$handle = '/tmp/totsy/TOTIT'.$this->time.'.csv';
 		$this->out("Opening item file $handle");
 		$fp = fopen($handle, 'w');
+		$count = 0;
 		if ($eventIds) {
 			$productHeading = ProcessedOrder::$_productHeading;
 			foreach ($eventIds as $eventId) {
@@ -236,7 +240,6 @@ class OrderExport extends Base {
 						'_id' => $eventId
 				)));
 				$inc = 1;
-				$count = 0;
 				$eventItems = $this->_getOrderItems($eventId);
 				foreach ($eventItems as $eventItem) {
 					foreach ($eventItem['details'] as $key => $value) {

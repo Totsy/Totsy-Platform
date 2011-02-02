@@ -1,10 +1,10 @@
-<?php $this->title("My Credits"); ?>
-
-	<h1 class="p-header">My Account</h1>
-
+<?php $this->title("My Account Credits"); ?>
+<h1 class="p-header">My Account</h1>
 	
-		<div id="left">
+	<div id="left">
 		<ul class="menu main-nav">
+		  <h3 style="color:#999;">My Account</h3>
+		  <hr />
 		<li class="firstitem17 "><a href="/account" title="Account Dashboard"><span>Account Dashboard</span></a></li>
 	    <li class="item18"><a href="/account/info" title="Account Information"><span>Account Information</span></a></li>
 	    <li class="item19"><a href="/addresses" title="Address Book"><span>Address Book</span></a></li>
@@ -24,34 +24,13 @@
 	<div class="tl"></div>
 	<div class="tr"></div>
 	<div id="page">
-		<h2 class="gray mar-b">My Credits</h2>
-		<hr/>
 		
-		<?php if (!empty($credit)) { ?>
-		<div id="name" style="padding:10px 10px 10px 5px; color:#009900;" class="order-table">
-			<strong class="fl">Total Credits: $<?=$credit?></strong>
-			<div style="clear:both;"></div>
-		</div>
-		<table border="0" cellspacing="5" cellpadding="5" width="100%" class="order-table">
-			<tr>
-				<th>Date</th>
-				<th>Amount</th>
-				<th>Description</th>
-			</tr>
-			<?php foreach ($credits as $credit): ?>
-			<tr>
-			<td><?=date('Y-m-d', $credit->_id->getTimestamp())?></td>
-			<td>$<?=$credit->amount?></td>
-			<td><?=$credit->description?></td>
-			<tr>
-			<?php endforeach ?>
-		</table>
-		<?php } else { ?>
-		<div id="name" style="padding:10px 10px 10px 5px;" class="order-table">
-			<strong class="fl">Earn credits by <a href="/users/invite" title="inviting your friends and family">inviting your friends and family.</a></strong>
-			<div style="clear:both;"></div>
-		</div>
-		<?php } ?>
+		<h2 class="gray mar-b">My Credits</h2>
+		<hr />
+		<p>Credits from the old Totsy website have been moved over, and you should see that amount available at the top of the page next to the text "My Credits".</p>
+		
+		<p>We've taken great pains to restore your credits from the old Totsy website; if you think your credits did not make it over from your original Totsy account, please <?=$this->html->link('contact us', array('Tickets::add')); ?> and we can verify the status of your account.</p>
+	
 	</div>
 	<div class="bl"></div>
 	<div class="br"></div>
