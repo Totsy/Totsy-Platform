@@ -7,7 +7,7 @@ use app\models\User;
 use MongoDate;
 use lithium\storage\Session;
 
-class AffiliatesController extends \lithium\action\Controller {
+class AffiliatesController extends BaseController {
 
     /**
     * Affiliate registration from remote POST.
@@ -46,7 +46,9 @@ class AffiliatesController extends \lithium\action\Controller {
 	    $pdata = $this->request->data;
         $message = false;
         $user = User::create();
-        if( ($affiliate) && ($pdata) ) {
+
+        if( ($affiliate)){
+
             if($affiliate == 'w4') {
                $gdata = $this->request->query;
                 if( ($gdata) ){
@@ -63,36 +65,37 @@ class AffiliatesController extends \lithium\action\Controller {
                     $affiliate = $subaff;
                 }
             }
-			$data['email'] = strtolower($pdata['email']);
-			$data['firstname'] = $pdata['firstname'];
-            $data['lastname'] = $pdata['lastname'];
-            $data['email'] = strtolower($pdata['email']);
-            $data['zip'] = $pdata['zip'];
-            $data['confirmemail'] = $pdata['email'];
-            $data['password'] = $pdata['password'];
-            $data['terms'] = "1";
-            $data['invited_by'] = $affiliate;
-            extract(UsersController::registration($data));
-            if($saved) {
-                $userLogin = array(
-					'_id' => (string) $user->_id,
-					'firstname' => $user->firstname,
-					'lastname' => $user->lastname,
-					'zip' => $user->zip,
-					'email' => $user->email
-				);
-				Session::write('userLogin', $userLogin);
-               $ipaddress = $this->request->env('REMOTE_ADDR');
-			    User::log($ipaddress);
-			    $this->redirect('/');
-            }
-            $message = $saved;
+            if( ($pdata) ) {
 
+                $data['email'] = strtolower($pdata['email']);
+                $data['firstname'] = $pdata['firstname'];
+                $data['lastname'] = $pdata['lastname'];
+                $data['email'] = strtolower($pdata['email']);
+                $data['zip'] = $pdata['zip'];
+                $data['confirmemail'] = $pdata['email'];
+                $data['password'] = $pdata['password'];
+                $data['terms'] = "1";
+                $data['invited_by'] = $affiliate;
+                extract(UsersController::registration($data));
+                if($saved) {
+                     $message = $saved;
+                    $userLogin = array(
+                        '_id' => (string) $user->_id,
+                        'firstname' => $user->firstname,
+                        'lastname' => $user->lastname,
+                        'zip' => $user->zip,
+                        'email' => $user->email
+                    );
+                    Session::write('userLogin', $userLogin);
+                   $ipaddress = $this->request->env('REMOTE_ADDR');
+                    User::log($ipaddress);
+                    $this->redirect('/');
+                }
+            }
         }
 
 	    $this->_render['layout'] = 'login';
-        return compact('message', 'user' );
-
+        return compact('message', 'user');
 	}
 }
 

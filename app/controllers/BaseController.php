@@ -48,15 +48,16 @@ class BaseController extends \lithium\action\Controller {
 			    }
 			}
 		}
-
-
         if(preg_match('/a/',$_SERVER['REQUEST_URI'])) {
 
-		    $invited_by = substr($_SERVER['REQUEST_URI'],6);
+		    $invited_by = substr($_SERVER['REQUEST_URI'],3);
+		    if(strpos($invited_by, '&')) {
+		        $invited_by = substr($invited_by,0,strpos($invited_by, '&'));
+		    }
         }
-	    $pixel = $this->getPixels('invidence');
-		$this->set(compact('pixel'));
+	    $pixel = $this->getPixels($invited_by);
 
+		$this->set(compact('pixel'));
 
 		$this->_render['layout'] = 'main';
 		parent::_init();
@@ -66,7 +67,9 @@ class BaseController extends \lithium\action\Controller {
 	  if(!($invited_by)) return null;
 
          $url = $_SERVER['REQUEST_URI'];
-
+        if(strpos($url, '&')) {
+            $url = substr($url,0,strpos($url, '&'));
+        }
         if(preg_match('(/orders/view/)',$url)) {
             $url = '/orders/view';
         }
@@ -84,7 +87,6 @@ class BaseController extends \lithium\action\Controller {
 
 		foreach($pixels as $data) {
 			foreach($data['pixel'] as $index) {
-
                 if(in_array($url, $index['page'])) {
 				    $pixel .= '<br>\n'. $index['pixel']. '<br>';
 				}
