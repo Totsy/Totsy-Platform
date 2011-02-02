@@ -150,8 +150,8 @@
 </div>
 <script type="text/javascript"> 
 $(function () {
-	var saleEnd = new Date();
-	saleEnd = new Date(<?php echo $event->end_date->sec * 1000?>);
-	$('#listingCountdown').countdown({until: saleEnd, layout: 'Closes in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+	var saleStart = new Date();
+	saleStart = new Date(<?php echo $event->start_date->sec * 1000?>);
+	$('#listingCountdown').countdown({until: saleStart, layout: 'Opens in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
 });
 </script>
