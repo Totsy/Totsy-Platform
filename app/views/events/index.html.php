@@ -131,7 +131,7 @@
 	<div id="slider" class="nivoSlider">
  		 <a href="/sale/adore-la-vie"><img src="/img/spring_img1.jpg"  alt="" title="Adore La Vie" /></a>
 		 <a href="/sale/gigi-s-dresses"><img src="/img/spring_img2.jpg"  alt="" title="Gigi's Dresses" /></a>
-		 <a href="/sale/"><img src="/img/spring_img3.jpg"  alt="" title="Corky's Dresses" /></a>
+		 <a href="/sale/corky-s-dresses"><img src="/img/spring_img3.jpg"  alt="" title="Corky's Dresses" /></a>
 	</div>
 
 	<br style="margin-bottom:10px;"/>
