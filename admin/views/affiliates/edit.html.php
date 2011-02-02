@@ -74,7 +74,7 @@
 				Select Page(s):<br>
 				<select name="<?php echo 'pixel['.$count.'][page][]'; ?>" multiple='multiple' size='5'> <?php echo $option; ?> </select> <br>
 				Pixel:<br>
-				<?=$this->form->textarea('pixel['.$count.'][pixel]', array('value' => $pix)); ?>
+				<?=$this->form->textarea('pixel['.$count.'][pixel]', array('value' => $pix, 'rows'=>'5')); ?>
 				<br>
 			</div>
 		<?php

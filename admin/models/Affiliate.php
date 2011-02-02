@@ -22,6 +22,7 @@ class Affiliate extends Base {
 				}else{
 					$temp['enable'] = false;
 				}
+
 				if(in_array('/join/', $pixel['page'])) {
 					foreach($codes as $value){
 						$pixel['page'][] = '/join/'.$value;

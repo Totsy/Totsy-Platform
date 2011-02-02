@@ -49,9 +49,8 @@
 	}
 	$image = $images[array_rand($images)];
 
-
 	?>
-
+    <!-- Affiliate Pixel -->
     <?php echo $pixel; ?>
 	<script type="text/javascript">
 

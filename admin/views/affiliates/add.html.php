@@ -48,9 +48,9 @@
 			Enable:
 			<?=$this->form->checkbox('pixel[0][enable]', array('value'=>'1', 'checked'=>'checked')); ?> <br>
 			Select Page(s):<br>
-			<?=$this->form->select('pixel[0][page][]', $sitePages, array('multiple'=>'multiple', 'size'=>5)); ?><br>
+			<?=$this->form->select('pixel[0][page]', $sitePages, array('multiple'=>'multiple', 'size'=>5)); ?><br>
 			Pixel:<br>
-			<?=$this->form->textarea('pixel[0][pixel]'); ?>
+			<?=$this->form->textarea('pixel[0][pixel]' , array('rows'=>'5')); ?>
 		</div>
 		<br>
 	</div>
