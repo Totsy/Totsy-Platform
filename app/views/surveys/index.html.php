@@ -604,7 +604,8 @@ body {background:#fff!important;}
   <div class="grid_12"><!-- <p style="text-align:right; padding:65px 0px 0px 0px;">Survey closes on December 3rd, 2010</p> --></div>
   <div class="grid_24"><hr /></div>
   <div class="grid_24">
-    <iframe src="https://spreadsheets.google.com/embeddedform?formkey=dDhfNUVNOHNDckY2QWI0SDZ1V3A2Z3c6MQ" width="960" height="2224" frameborder="0" marginheight="0" marginwidth="0" style="border:0px; width:960px; margin:0px!important; padding:0px; ">Loading...</iframe>
+    <h4>We're sorry, we do not have any surveys running at this time. Please check back later. </h4><!-- <iframe src="https://spreadsheets.google.com/embeddedform?formkey=dDhfNUVNOHNDckY2QWI0SDZ1V3A2Z3c6MQ" width="960" height="2224" frameborder="0" marginheight="0" marginwidth="0" style="border:0px; width:960px; margin:0px!important; padding:0px; ">Loading...</iframe> 
+    -->
   </div>
 </div>
 </body>
