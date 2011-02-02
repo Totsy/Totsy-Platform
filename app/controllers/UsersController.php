@@ -26,14 +26,9 @@ class UsersController extends BaseController {
 	 * During the registration process the user is also given an invitation code that they can use
 	 * to invite others to Totsy. They are sent a welcome email and redirected to either the event
 	 * page or a landing page based on the invitation url.
-	 *
-<<<<<<< HEAD
-	 * @params string $invite_code
-=======
 	 * If a user came from track.totsy.com via Keyade, pull the $affiliate_user_id from the URL and
 	 * add to the user document.
-	 *
->>>>>>> 026e94188d26253be0adcf217e24d642641a2147
+	 * @params string $invite_code, string $affiliate_user_id
 	 * @return string User will be promoted that email is already registered.
 	 */
 	public function register($invite_code = null, $affiliate_user_id = null) {
