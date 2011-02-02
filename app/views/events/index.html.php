@@ -125,17 +125,14 @@
 
         <div style="margin-bottom:35px;" class="clear"></div>
 
-		<h2 class="page-title gray clear"><span class="_red">Monthly Sales / Home Decor Month</span></h2>
+		<h2 class="page-title gray clear"><span class="_red">Monthly Sales / Spring Month</span></h2>
 		<hr />
 
- <div id="slider" class="nivoSlider">
-	 <a href="/sale/mk-company-frames"><img src="/img/home_img-1-1.jpg"  alt="" title="MK and Company Frames" /></a>
-	 <a href="/sale/aacua-by-maamam"><img src="/img/home_img-2-1.jpg"  alt="" title="Aacua" /></a>
-	 <a href="/sale/just-born"><img src="/img/home_img-3-1.jpg"  alt="" title="Just Born" /></a>
-	 <a href="/sale/dynamic-rugs"><img src="/img/home_img-4-1.jpg"  alt="" title="Dynamic Rugs" /></a>
-	 <a href="/sale/pearhead"><img src="/img/home_img-5-1.jpg"  alt="" title="Pearhead" /></a>
-	 <a href="/sale/chf-industries"><img src="/img/home_img-6-1.jpg"  alt="" title="CHF Industries" /></a>
- </div>
+	<div id="slider" class="nivoSlider">
+ 		 <a href="/sale/adore-la-vie"><img src="/img/spring_img1.jpg"  alt="" title="Adore La Vie" /></a>
+		 <a href="/sale/gigi-s-dresses"><img src="/img/spring_img2.jpg"  alt="" title="Gigi's Dresses" /></a>
+		 <a href="/sale/"><img src="/img/spring_img3.jpg"  alt="" title="Corky's Dresses" /></a>
+	</div>
 
 	<br style="margin-bottom:10px;"/>
 

@@ -531,7 +531,7 @@ body.login .our365-login #intro-copy { width:310px; font-size:16px; padding:15px
 /*----------------------------------------------------------------------------------------------------
 /* Back To Top 
 ----------------------------------------------------------------------------------------------------*/
-#toTop { width:100px; -webkit-border-radius: 6px; -moz-border-radius:  6px; border-radius:  6px; border:1px solid #ccc; background:#f7f7f7; text-align:center; padding:5px; position:fixed; /* this is the magic */ bottom:10px; /* together with this to put the div at the bottom*/ right:10px; cursor:pointer; display:none; color:#333; font-family:verdana; font-size:11px; }
+#toTop { width:100px; -webkit-border-radius: 6px; -moz-border-radius:  6px; border-radius:  6px; border:1px solid #ccc; background:#f7f7f7; text-align:center; padding:5px; position:fixed; /* this is the magic */ bottom:10px; /* together with this to put the div at the bottom*/ right:10px; cursor:pointer; display:none; color:#333; font-family:verdana; font-size:11px; z-index:999;}
 /*----------------------------------------------------------------------------------------------------
 /* Horizontal Rule
 ----------------------------------------------------------------------------------------------------*/
