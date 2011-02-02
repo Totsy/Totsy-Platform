@@ -48,7 +48,6 @@ class AffiliatesController extends BaseController {
         $user = User::create();
 
         if( ($affiliate)){
-
             if($affiliate == 'w4') {
                $gdata = $this->request->query;
                 if( ($gdata) ){

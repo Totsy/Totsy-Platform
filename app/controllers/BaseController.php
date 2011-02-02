@@ -55,7 +55,7 @@ class BaseController extends \lithium\action\Controller {
 		        $invited_by = substr($invited_by,0,strpos($invited_by, '&'));
 		    }
         }
-	    $pixel = $this->getPixels($invited_by);
+	    $pixel = Affiliate::getPixels($invited_by);
 
 		$this->set(compact('pixel'));
 
@@ -63,38 +63,8 @@ class BaseController extends \lithium\action\Controller {
 		parent::_init();
 	}
 
-	protected function getPixels($invited_by) {
-	  if(!($invited_by)) return null;
 
-         $url = $_SERVER['REQUEST_URI'];
-        if(strpos($url, '&')) {
-            $url = substr($url,0,strpos($url, '&'));
-        }
-        if(preg_match('(/orders/view/)',$url)) {
-            $url = '/orders/view';
-        }
 
-		$options = array('conditions' => array(
-		                        'invitation_codes' => $invited_by,
-								'pixel' => array(
-									'$elemMatch'=>array(
-										'page' =>$url,
-										'enable' => true
-								))), 'fields'=>array('pixel.pixel' => 1, 'pixel.page' => 1));
-		$pixels = Affiliate::find('all', $options );
-		$pixels= $pixels->data();
-		$pixel = NULL;
-
-		foreach($pixels as $data) {
-			foreach($data['pixel'] as $index) {
-                if(in_array($url, $index['page'])) {
-				    $pixel .= '<br>\n'. $index['pixel']. '<br>';
-				}
-			}
-		}
-
-		return $pixel;
-	}
 }
 
 ?>
