@@ -91,7 +91,7 @@
     </div>
     
     <div id="location" class="grid_16">
-        <p>TOTSY - 27 WEST 20TH STREET, SUITE 400 - NEW YORK, NY 10011</p>
+        <p>TOTSY - 10 WEST 18TH STREET, FLOOR 4 - NEW YORK, NY 10011</p>
     </div>
 		
 </div>
