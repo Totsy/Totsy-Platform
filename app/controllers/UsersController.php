@@ -9,6 +9,7 @@ use app\models\Invitation;
 use lithium\security\Auth;
 use lithium\storage\Session;
 use app\extensions\Mailer;
+use app\extensions\Keyade;
 use li3_silverpop\extensions\Silverpop;
 use MongoRegex;
 
@@ -19,20 +20,23 @@ class UsersController extends BaseController {
 	 * Performs registration functionality.
 	 *
 	 * The registration process takes into account the invitation code that a customer came
-	 * in with. For instance, if the url is www.totsy.com/join/ou365 then that code is saved
+	 * in with. For instance, if the url is www.totsy.com/join/our365 then that code is saved
 	 * as the invited_by field in mongo.
 	 *
-	 * During the registation process the user is also given an invitation code that they can use
+	 * During the registration process the user is also given an invitation code that they can use
 	 * to invite others to Totsy. They are sent a welcome email and redirected to either the event
 	 * page or a landing page based on the invitation url.
 	 *
+<<<<<<< HEAD
 	 * @params string $invite_code
+=======
+	 * If a user came from track.totsy.com via Keyade, pull the $affiliate_user_id from the URL and
+	 * add to the user document.
+	 *
+>>>>>>> 026e94188d26253be0adcf217e24d642641a2147
 	 * @return string User will be promoted that email is already registered.
 	 */
-	public function register($invite_code = null) {
-		if ($invite_code == 'our365' || $invite_code == 'our365widget' ) {
-			$this->_render['template'] = 'our365';
-		}
+	public function register($invite_code = null, $affiliate_user_id = null) {
 		$message = false;
 		$data = $this->request->data;
 		if (isset($data) && $this->request->data) {
@@ -78,6 +82,17 @@ class UsersController extends BaseController {
 					}
 				}
 			}
+			switch ($invite_code) {
+				case 'our365':
+				case 'our365widget':
+					$this->_render['template'] = 'our365';
+					break;
+				case 'keyade':
+					$this->_render['template'] = 'keyade';
+					if($affiliate_user_id){
+						$data['keyade_user_id'] = $affiliate_user_id;
+					}
+			}
 			if ($user->save($data)) {
 				$userLogin = array(
 					'_id' => (string) $user->_id,
@@ -94,11 +109,7 @@ class UsersController extends BaseController {
 				Silverpop::send('registration', $data);
 				$ipaddress = $this->request->env('REMOTE_ADDR');
 				User::log($ipaddress);
-				if ($invite_code == 'keyade') {
-					$this->_render['template'] = 'keyade';
-				} else {
-					$this->redirect('/');
-				}
+				$this->redirect('/');
 			}
 		}
 		$this->_render['layout'] = 'login';
