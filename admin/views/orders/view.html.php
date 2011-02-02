@@ -20,7 +20,7 @@
 								<br />
 								<?php if($order->cancel == true){?>
 									<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
-										The order has been canceled by <?=$order->cancel_by?>
+										The order has been canceled
 									</p><br />
 									<p style="text-align:center;">
 										<button id="uncancel_button" style="font-weight:bold;font-size:14px;"> Uncancel Order</button>
@@ -106,7 +106,80 @@
 												</div>
 											<?=$this->form->submit('Confirm new shipping details')?>
 										</div>
-									<br />
+										<div>
+										<h2 class="gray mar-b">Order Tracking<span style="font-size:11px; float:right; font-weight:normal;"></h2><hr />
+										<table cellspacing="0" cellpadding="0" border="0" width="695">
+										<tr>
+											<td valign="top">
+										</tr>
+										<tr>
+										<td colspan="4"><!-- start order tracking table -->
+											<table cellpadding="0" cellspacing="0" border="0" width="100%">
+												<tr style="background:#ddd;">
+													<td style="padding:5px; width:30px;"><strong>N°</strong></td>
+													<td style="padding:5px; width:400px;"><strong>Tracking Number</strong></td>
+												</tr>
+												<?php $numbers = $order->tracking_numbers->data(); ?>
+												<?php $n=0; ?>
+												<?php foreach ($numbers as $number): ?>
+												<tr>
+													<td style="padding:5px" title="number">
+													<?=$n?>
+													</td>
+													<td style="padding:5px" title="type">
+													<?=$this->shipment->link($number, array('type' => $order['shippingMethod']))?>
+													</td>
+												<?php $n++; ?>
+												<?php endforeach ?>
+												</tr>
+											</table>
+										</td><!-- end order tracking table -->
+										</tr>
+										</table>
+										</div>
+										<div>
+										<h2 class="gray mar-b">Modifications Logs <span style="font-size:11px; float:right; font-weight:normal;"></h2><hr />
+										<table cellspacing="0" cellpadding="0" border="0" width="695">
+										<tr>
+											<td valign="top">
+										</tr>
+										<tr>
+										<td colspan="4"><!-- start order modifications table -->
+											<table cellpadding="0" cellspacing="0" border="0" width="100%">
+												<tr style="background:#ddd;">
+													<td style="padding:5px; width:30px;"><strong>N°</strong></td>
+													<td style="padding:5px; width:100px;"><strong>Type</strong></td>
+													<td style="padding:5px; width:100px;"><strong>Author</strong></td>
+													<td style="padding:5px; width:200px;"><strong>Date</strong></td>
+												</tr>
+												<?php $modifications = $order->modifications->data(); ?>
+												<?php krsort($modifications); ?>
+												<?php $n=0; ?>
+												<?php foreach ($modifications as $modification): ?>
+												<?php if($n<6) { ?>
+												<tr>
+													<td style="padding:5px" title="number">
+														<?=$n?>
+													</td>
+													<td style="padding:5px" title="type">
+														<?=ucfirst($modification["type"])?>
+													</td>
+													<td style="padding:5px" title="author">
+														<?=$modification["author"]?>
+													</td>
+													<td style="padding:5px" title="date">
+														<?=date('Y-M-d h:i:s', $modification["date"]["sec"])?>
+													</td>
+												<?php $n++; ?>
+												<?php } ?>
+												<?php endforeach ?>
+												</tr>
+											</table>
+										</td><!-- end order modifications table -->
+										</tr>
+										</table>
+										</div>
+										<br />
 								<h2 class="gray mar-b">Order Summary <span style="font-size:11px; float:right; font-weight:normal;"><span style="font-weight:bold;">NOTE:</span> Your order will be delivered within 3-5 weeks</span></h2>
 								<hr />
 						    </td>

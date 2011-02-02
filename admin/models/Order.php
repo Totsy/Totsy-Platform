@@ -124,23 +124,30 @@ class Order extends \lithium\data\Model {
 	 * Uncancel an order.
 	 * By putting the "cancel" field on the db to false if the order is canceled..
 	 * And to find the author of this modification, we add a "cancel_by" field.
-	 * @param string $order_id, $author_cancel
-	 * @param string $author_cancel
+	 * @param string $order_id,
+	 * @param string $author
 	 */
-	public static function cancel($order_id, $author_cancel) {
+	public static function cancel($order_id, $author) {
+		//Get the actual datas of the order
 		$result = static::find('first', array('conditions' => array(
 			'_id' => $order_id
 		)));
 		$order = $result->data();
-		if(empty($order["cancel"]) || ($order["cancel"] == false)) {
-			$set = array('$set' => array('cancel' => true, 'cancel_by'=> $author_cancel));
+		//Compare the cancel status, write modification datas and update cancel db status
+		$modification_datas["author"] = $author;
+		$modification_datas["date"] = new MongoDate(strtotime('now'));
+		if(empty($order["cancel"]) || ($order["cancel"] == false)){
+			$modification_datas["type"] = "cancel";
 			static::collection()->update(array('_id' => new MongoId($order_id)),
-				$set, array("upsert" => true));
+				array('$set' => array('cancel' => true)), array("upsert" => true));
 		}else{
-			$set = array('$set' => array('cancel' => false, 'cancel_by'=> $author_cancel));
+			$modification_datas["type"] = "uncancel";
 			static::collection()->update(array('_id' => new MongoId($order_id)),
-			 	$set, array("upsert" => true));
+				array('$set' => array('cancel' => false)), array("upsert" => true));
 		}
+		//Pushing modification datas to db
+		static::collection()->update(array("_id" => new MongoId($order_id)),
+		array('$push' => array('modifications' => $modification_datas)), array('upsert' => true));
 	}
 }
 

@@ -141,24 +141,29 @@ class OrdersController extends BaseController {
 	}
 
 	/**
-	* The updateShipping method push the old value of shipping and add new values.
+	* The updateShipping method push the old value of shipping with details about author,type and date
+	* After that it updates the shipping values by the new datas from the form
 	* @param string $id The _id of the order
 	*/
 	public function updateShipping($id){
 		$current_user = Session::read('userLogin');
-		$new_shipping_datas = $this->request->data;
+		$orderCollection = Order::collection();
+		//Get datas from the shipping form
+		$datas = $this->request->data;
 		$update = true;
 		//check if form is well completed
-		foreach($new_shipping_datas as $data){
+		foreach($datas as $data){
 			if($data == null){
-				$update = false;
+				$missing = true;
 			}
 		}
-		if($update){
-			$orderCollection = Order::collection();
+		//If yes, we prepare the array of modification datas
+		if(!$missing){
 			$order = Order::find('first', array('conditions' => array('_id' => new MongoId($id))));
-			$current_shipping_datas = array(
-				"modified_by" => $current_user["email"],
+			$modification_datas["author"] = $current_user["email"];
+			$modification_datas["date"] = new MongoDate(strtotime('now'));
+			$modification_datas["type"] = "shipping";
+			$modification_datas["old_datas"] = array(
 				"firstname" => $order["shipping"]["firstname"],
 				"lastname" => $order["shipping"]["lastname"],
 				"address" => $order["shipping"]["address"],
@@ -167,11 +172,13 @@ class OrdersController extends BaseController {
 				"zip" => $order["shipping"]["zip"],
 				"phone" => $order["shipping"]["phone"]
 				);
-			$orderCollection->update(array("_id" => new MongoId($id)), array('$push' => array('old_shippings' => $current_shipping_datas)), array('upsert' => true));
-			$orderCollection->update(array("_id" => new MongoId($id)), array('$set' => array('shipping' => $new_shipping_datas)));
-			 FlashMessage::set("Shipping details has been updated.", array('class' => 'pass'));
-		} else FlashMessage::set("Some informations for the new shipping are missing", array('class' => 'warning'));
+			//We push the modifications datas with the old shipping
+			$orderCollection->update(array("_id" => new MongoId($id)), array('$push' => array('modifications' => $modification_datas)), array('upsert' => true));
+			$orderCollection->update(array("_id" => new MongoId($id)), array('$set' => array('shipping' => $datas)));
+			FlashMessage::set("Shipping details has been updated.", array('class' => 'pass'));
+		}else FlashMessage::set("Some informations for the new shipping are missing", array('class' => 'warning'));
 	}
+
 	/**
 	* The view method renders the order confirmation page that is sent to the customer
 	* after they have placed their order
@@ -181,7 +188,6 @@ class OrdersController extends BaseController {
 	* Confirm the shipping form will update the "shipping" array and push the old datas on "old_shippings"
 	* @param string $id The _id of the order
 	*/
-
 	public function view($id = null) {
 		//update the shipping address by adding the new one and pushing the old one.
 		if ($id) {
@@ -358,7 +364,7 @@ class OrdersController extends BaseController {
 					if ($day < 6 && !in_array($date, $this->_holidays)){
 						$i++;
 					}
-					$shipDate = strtotime($date.' +1 day');
+					$shipDate = strtotime($date . ' +1 day');
 				}
 			}
 		}
