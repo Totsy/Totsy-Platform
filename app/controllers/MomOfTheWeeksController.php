@@ -33,7 +33,8 @@ class MomOfTheWeeksController extends \lithium\action\Controller {
 				$user['password'] = $data['password'];
 				$user['terms'] = $data['terms'];
 				$user['invited_by'] = $data['invited_by'];
-				$success = UsersController::registration($user);
+				extract(UsersController::registration($user));
+				$success = $saved;
 			}
 			die($success);
 		}else{
@@ -41,7 +42,7 @@ class MomOfTheWeeksController extends \lithium\action\Controller {
 			//$this->redirect('Events::index');
 		}
 	}
-	
+
 	public function fbml() {
 		$this->render(array('layout' => false));
 //		MomOfTheWeek::collection()->update( array $criteria , array $newobj [, array $options = array() ] )

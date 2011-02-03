@@ -51,6 +51,7 @@ Router::connect('/surveys', 'Surveys::index');
 Router::connect('/invitation/{:args}', 'Users::register');
 Router::connect('/join/{:args}', 'Users::register');
 Router::connect('/affiliate/{:args}', 'Affiliates::registration');
+Router::connect('/a/{:args}', 'Affiliates::register');
 Router::connect('/reset', 'Users::reset');
 Router::connect('/pages/{:args}', 'Pages::view');
 Router::connect('/blog', 'Blog::index');

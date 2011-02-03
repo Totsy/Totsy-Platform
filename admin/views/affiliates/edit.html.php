@@ -54,32 +54,33 @@
 			$count=0;
 			$size= count($affiliate['pixel']);
 
-
-			foreach($affiliate['pixel'] as $pixel):
-				$checked = (($pixel->enable)) ? 'checked' : '';
-				$pix = $pixel->pixel;
-				$option='';
-				foreach($sitePages as $key => $name){
-					if( in_array($key , $pixel->page->data()) ){
-						$option .= "<option value=$key selected='selected'> $name </option>";
-					}else{
-						$option .= "<option value= $key> $name </option>";
+			if( $size > 0):
+				foreach($affiliate['pixel'] as $pixel):
+					$checked = (($pixel->enable)) ? 'checked' : '';
+					$pix = $pixel->pixel;
+					$option='';
+					foreach($sitePages as $key => $name){
+						if( in_array($key , $pixel->page->data()) ){
+							$option .= "<option value=$key selected='selected'> $name </option>";
+						}else{
+							$option .= "<option value= $key> $name </option>";
+						}
 					}
-				}
-		?>
-			<div id='<?php echo 'pixel_'.($count+1)?>'>
-				<label> Pixel # <?=$count+1; ?> </label><br>
-				Enable:
-				<?=$this->form->checkbox('pixel['.$count.'][enable]', array('value'=>'1', 'checked'=> $checked)); ?> <br>
-				Select Page(s):<br>
-				<select name="<?php echo 'pixel['.$count.'][page][]'; ?>" multiple='multiple' size='5'> <?php echo $option; ?> </select> <br>
-				Pixel:<br>
-				<?=$this->form->textarea('pixel['.$count.'][pixel]', array('value' => $pix)); ?>
-				<br>
-			</div>
-		<?php
-			$count++;
-			endforeach;
+			?>
+				<div id='<?php echo 'pixel_'.($count+1)?>'>
+					<label> Pixel # <?=$count+1; ?> </label><br>
+					Enable:
+					<?=$this->form->checkbox('pixel['.$count.'][enable]', array('value'=>'1', 'checked'=> $checked)); ?> <br>
+					Select Page(s):<br>
+					<select name="<?php echo 'pixel['.$count.'][page][]'; ?>" multiple='multiple' size='5'> <?php echo $option; ?> </select> <br>
+					Pixel:<br>
+					<?=$this->form->textarea('pixel['.$count.'][pixel]', array('value' => $pix, 'rows'=>'5')); ?>
+					<br>
+				</div>
+			<?php
+				$count++;
+				endforeach;
+			endif;
 		?>
 		<input type='hidden' id="pixel_count" name="pixel_count" value="<?php echo $count; ?>" />
 		<br>
@@ -118,7 +119,7 @@
 			newPixelDiv.html("<label> Pixel #" +counter + "</label> <br> Enable:"+
 				'<?=$this->form->checkbox("pixel['+(counter-1)+'][enable]", array("value"=>"1", "checked"=>"checked")); ?> <br> Select:'+
 				'<?=$this->form->select("pixel['+(counter-1)+'][page]", $sitePages, array("multiple"=>"multiple", "size"=>5)); ?><br> Pixel<br>'+
-				'<?=$this->form->textarea("pixel['+(counter-1)+'][pixel]"); ?>'
+				'<?=$this->form->textarea("pixel['+(counter-1)+'][pixel]", array("rows"=>"5")); ?>'
 				);
 			newPixelDiv.appendTo('#pixel_panel');
 

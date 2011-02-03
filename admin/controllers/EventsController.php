@@ -180,6 +180,9 @@ class EventsController extends BaseController {
 					$itemAttributes = array_diff_key($itemDetail, array_flip($standardHeader));
 					foreach ($itemAttributes as $key => $value) {
 						unset($itemDetail[$key]);
+						if ($value) {
+							$itemCleanAttributes[trim($key)] = $value;
+						}
 					}
 					$item = Item::create();
 					$date = new MongoDate();
@@ -187,7 +190,7 @@ class EventsController extends BaseController {
 					$details = array(
 						'enabled' => (bool) $enabled,
 						'created_date' => $date,
-						'details' => $itemAttributes,
+						'details' => $itemCleanAttributes,
 						'event' => array((string) $_id),
 						'url' => $url,
 						'taxable' => true
@@ -201,6 +204,7 @@ class EventsController extends BaseController {
 		}
 		return $items;
 	}
+
 	/**
 	 * Parse the images from the request using the key
 	 * @param object
