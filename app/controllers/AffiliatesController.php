@@ -61,7 +61,7 @@ class AffiliatesController extends BaseController {
                                     'sub_affiliates' => $subaff
                                 )));
                     }
-                    $affiliate = $subaff;
+                    $affiliate .= $subaff;
                 }
             }
             if( ($pdata) ) {
