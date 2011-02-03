@@ -53,20 +53,17 @@ tinyMCE.init({
 					<?=$this->form->field('vendor', array(
 						'type' => 'text',
 						'class' => 'general',
-						'value' => $item->vendor,
-						'disabled' => 'disabled'
+						'value' => $item->vendor
 					));?>
 					<?=$this->form->field('vendor_style', array(
 						'type' => 'text',
 						'class' => 'general',
-						'value' => $item->vendor_style,
-						'disabled' => 'disabled'
+						'value' => $item->vendor_style
 					));?>
 					<?=$this->form->field('color', array(
 						'type' => 'text',
 						'class' => 'general',
-						'value' => $item->color,
-						'disabled' => 'disabled'
+						'value' => $item->color
 					));?>
 					<?=$this->form->field('age', array(
 						'type' => 'text',
