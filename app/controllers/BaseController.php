@@ -6,6 +6,7 @@ use \app\models\Cart;
 use \app\models\User;
 use \lithium\storage\Session;
 use app\models\Affiliate;
+use MongoRegex;
 
 /**
 * The base controller will setup functionality used throughout the app.
@@ -35,27 +36,35 @@ class BaseController extends \lithium\action\Controller {
 		/**
 		* Get the pixels for a particular url.
 		**/
-		$options = array('conditions'=>array(
-								'pixel'=>array(
-									'$elemMatch'=>array(
-										'page' => $_SERVER['REQUEST_URI'],
-										'enable' => true
-								))), 'fields'=>array('pixel.pixel'=>1));
-		$pixels = Affiliate::find('all', $options );
-		$pixels= $pixels->data();
-		$data = NULL;
-
-		foreach($pixels as $pixel){
-			foreach($pixel['pixel'] as $index){
-				$data .= implode('<br>', $index);
+		$invited_by = NULL;
+		 if ($userInfo) {
+			$user = User::find('first', array(
+				'conditions' => array('_id' => $userInfo['_id']),
+				'fields' => array('invited_by')
+			));
+			if($user){
+			    if($user->invited_by){
+			        $invited_by = $user->invited_by;
+			    }
 			}
 		}
-		$this->set(compact('data'));
+        if(preg_match('/a/',$_SERVER['REQUEST_URI'])) {
 
+		    $invited_by = substr($_SERVER['REQUEST_URI'],3);
+		    if(strpos($invited_by, '&')) {
+		        $invited_by = substr($invited_by,0,strpos($invited_by, '&'));
+		    }
+        }
+	    $pixel = Affiliate::getPixels($invited_by);
+
+		$this->set(compact('pixel'));
 
 		$this->_render['layout'] = 'main';
 		parent::_init();
 	}
+
+
+
 }
 
 ?>

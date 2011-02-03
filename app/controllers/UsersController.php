@@ -26,10 +26,9 @@ class UsersController extends BaseController {
 	 * During the registration process the user is also given an invitation code that they can use
 	 * to invite others to Totsy. They are sent a welcome email and redirected to either the event
 	 * page or a landing page based on the invitation url.
-	 *
 	 * If a user came from track.totsy.com via Keyade, pull the $affiliate_user_id from the URL and
 	 * add to the user document.
-	 *
+	 * @params string $invite_code, string $affiliate_user_id
 	 * @return string User will be promoted that email is already registered.
 	 */
 	public function register($invite_code = null, $affiliate_user_id = null) {
@@ -111,6 +110,7 @@ class UsersController extends BaseController {
 		$this->_render['layout'] = 'login';
 		return compact('message', 'user');
 	}
+
 	/**
 	 * This static method is a temporary solution for controller based registration (non-user).
 	 * We'll need to refactor the `register` method along with `registration` so that there is more
@@ -118,7 +118,6 @@ class UsersController extends BaseController {
 	 *
 	 * @param array $data
 	 * @return boolean
-	 * @see app/controllers/MomOfTheWeeksController.php
 	 */
 		public static function registration($data = null) {
 			$saved = false;
@@ -131,9 +130,11 @@ class UsersController extends BaseController {
 					$data['password'] = sha1($data['password']);
 					$data['created_date'] = User::dates('now');
 					$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
-					$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));
+					$inviteCheck = User::count( array(
+							'invitation_codes' => $data['invitation_codes']
+							));
 					if ($inviteCheck > 0) {
-						$data['invitation_codes'] = array($this->randomString());
+						$data['invitation_codes'] = array(static::_object()->randomString());
 					}
 					if ($saved = $user->save($data)) {
 						$data = array(
@@ -144,8 +145,10 @@ class UsersController extends BaseController {
 					}
 				}
 			}
-
-			return $saved;
+			return compact('saved','user');
+			/**
+			* @see app/controllers/MomOfTheWeeksController.php
+			**/
 		}
 	/**
 	 * Performs login authentication for a user going directly to the database.
