@@ -69,9 +69,9 @@ class AffiliatesController extends BaseController {
                 $data['email'] = strtolower($pdata['email']);
                 $data['firstname'] = $pdata['firstname'];
                 $data['lastname'] = $pdata['lastname'];
-                $data['email'] = strtolower($pdata['email']);
+                $data['email'] = htmlspecialchars_decode(strtolower($pdata['email']));
                 $data['zip'] = $pdata['zip'];
-                $data['confirmemail'] = $pdata['email'];
+                $data['confirmemail'] = htmlspecialchars_decode(strtolower($pdata['email']));
                 $data['password'] = $pdata['password'];
                 $data['terms'] = "1";
                 $data['invited_by'] = $affiliate;

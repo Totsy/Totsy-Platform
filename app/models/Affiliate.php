@@ -42,7 +42,7 @@ class Affiliate extends Base {
 				}
 			}
 		}
-
+       // die(var_dump($url));
 		return $pixel;
 	}
 
