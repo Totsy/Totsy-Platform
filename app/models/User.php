@@ -141,11 +141,9 @@ class User extends \lithium\data\Model {
 	public static function log($ipaddress) {
 		$user = static::getUser();
 		++$user->logincounter;
-		$data = array(
-			'lastip' => $ipaddress,
-			'lastlogin' => static::dates('now')
-		);
-		return $user->save($data);
+		$user->lastip = $ipaddress;
+		$user->lastlogin = static::dates('now');
+		return $user->save(null,array('validate' => false));
 	}
 
 	public static function applyCredit($user_id, $credit) {
