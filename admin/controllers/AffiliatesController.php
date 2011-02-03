@@ -18,7 +18,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
 	    '/shopping/checkout' => 'checkout',
 	    '/shopping/process' => 'checkout process',
 	    '/orders/view' => 'orders confirmation',
-	    '/join/' => 'landing page'
+	    '/a/' => 'landing page'
 	    );
 
 	public function index() {
@@ -47,18 +47,21 @@ class AffiliatesController extends \admin\controllers\BaseController {
 
 		$data = $this->request->data;
 		if ( ($data) ) {
-			$info['active'] = (( $data['active'] == '1' || $data['active'] == 'on')) ? true : false;
-			$info['name'] = $data['affiliate_name'];
-			$info['invitation_codes'] = array_values( $data['invitation_codes'] );
-			if($data['active_pixel'] == '1' || $data['active_pixel'] == 'on'){
+
+            $info['active'] = (($data['active'] == '1' || $data['active'] == 'on')) ? true : false;
+            $info['name'] = $data['affiliate_name'];
+            $info['invitation_codes'] = array_values( $data['invitation_codes'] );
+            if($data['active_pixel'] == '1' || $data['active_pixel'] == 'on'){
                 $info['active_pixel'] = true;
-			    $info['pixel'] = Affiliate::pixelFormating( $data['pixel'], $info['invitation_codes'] );
+			    $info['pixel'] = Affiliate::pixelFormating($data['pixel'], $info['invitation_codes']);
+			   // die(var_dump($info['pixel']));
 			}else{
 			    $info['active_pixel'] = false;
 			}
 			$info['created_by'] = $affiliate->createdBy();
 			$info['date_created'] = new MongoDate( strtotime( date('D M d Y') ) );
-			if( ($affiliate->save($info)) ){
+
+			if( ($affiliate->save($info)) ) {
 				$this->redirect( array( 'Affiliates::index' ) );
 			}
 		}
@@ -76,7 +79,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
         $data = $this->request->data;
 
         if( ($data) ) {
-            //die(var_dump($data));
+
             $info['active'] = (($data['active'] == '1' || $data['active'] == 'on')) ? true : false;
             $info['name'] = $data['affiliate_name'];
             $info['invitation_codes'] = array_values( $data['invitation_codes'] );

@@ -48,9 +48,9 @@
 			Enable:
 			<?=$this->form->checkbox('pixel[0][enable]', array('value'=>'1', 'checked'=>'checked')); ?> <br>
 			Select Page(s):<br>
-			<?=$this->form->select('pixel[0][page][]', $sitePages, array('multiple'=>'multiple', 'size'=>5)); ?><br>
+			<?=$this->form->select('pixel[0][page]', $sitePages, array('multiple'=>'multiple', 'size'=>5)); ?><br>
 			Pixel:<br>
-			<?=$this->form->textarea('pixel[0][pixel]'); ?>
+			<?=$this->form->textarea('pixel[0][pixel]' , array('rows'=>'5')); ?>
 		</div>
 		<br>
 	</div>
@@ -81,7 +81,7 @@
 			newPixelDiv.html("<label> Pixel #" +counter + "</label> <br> Enable:"+
 				'<?=$this->form->checkbox("pixel['+(counter-1)+'][enable]", array("value"=>"1", "checked"=>"checked")); ?> <br> Select:'+
 				'<?=$this->form->select("pixel['+(counter-1)+'][page]", $sitePages, array("multiple"=>"multiple", "size"=>5)); ?><br> Pixel<br>'+
-				'<?=$this->form->textarea("pixel['+(counter-1)+'][pixel]"); ?>'
+				'<?=$this->form->textarea("pixel['+(counter-1)+'][pixel]", array("rows"=>"5")); ?>'
 				);
 			newPixelDiv.appendTo('#pixel_panel');
 
