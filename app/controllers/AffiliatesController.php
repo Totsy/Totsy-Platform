@@ -25,7 +25,7 @@ class AffiliatesController extends BaseController {
                     $user['lastname'] = $data['lname'];
                     $user['email'] = strtolower($data['email']);
                     $user['zip'] = $data['zip'];
-                    $user['confirmemail'] = $data['email'];
+                    $user['confirmemail'] = strtolower($data['confirmemail']);
                     $user['password'] = $data['password'];
                     $user['terms'] = "1";
                     $user['invited_by'] = $code;
