@@ -180,9 +180,7 @@ class EventsController extends BaseController {
 					$itemAttributes = array_diff_key($itemDetail, array_flip($standardHeader));
 					foreach ($itemAttributes as $key => $value) {
 						unset($itemDetail[$key]);
-						if ($value) {
-							$itemCleanAttributes[trim($key)] = $value;
-						}
+						$itemCleanAttributes[trim($key)] = $value;
 					}
 					$item = Item::create();
 					$date = new MongoDate();
