@@ -20,6 +20,7 @@ class Affiliate extends Base {
 
 		$options = array('conditions' => array(
 		                        'invitation_codes' => $invited_by,
+		                        'active' => true,
 								'pixel' => array(
 									'$elemMatch'=>array(
 										'page' =>$url,
