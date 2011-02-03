@@ -98,6 +98,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
 			}
         }
         $sitePages = $this->sitePages;
+        $affiliate = $affiliate->data();
         return compact('sitePages','affiliate');
 	}
 }

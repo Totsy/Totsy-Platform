@@ -72,10 +72,6 @@ class User extends \lithium\data\Model {
 		)
 	);
 
-	protected $_dates = array(
-		'now' => 0
-	);
-
 	public static function __init(array $options = array()) {
 		parent::__init($options);
 
@@ -100,9 +96,6 @@ class User extends \lithium\data\Model {
 			'_id' => $user->_id),
 			 array('$pushAll' => array($field => $data))
 		);
-	}
-	public static function dates($name) {
-	     return new MongoDate(time() + static::_object()->_dates[$name]);
 	}
 
 	public static function getUser($fields = null) {
@@ -141,11 +134,9 @@ class User extends \lithium\data\Model {
 	public static function log($ipaddress) {
 		$user = static::getUser();
 		++$user->logincounter;
-		$data = array(
-			'lastip' => $ipaddress,
-			'lastlogin' => static::dates('now')
-		);
-		return $user->save($data);
+		$user->lastip = $ipaddress;
+		$user->lastlogin = new MongoDate();
+		return $user->save(null,array('validate' => false));
 	}
 
 	public static function applyCredit($user_id, $credit) {

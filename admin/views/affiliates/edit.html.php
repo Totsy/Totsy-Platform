@@ -31,8 +31,10 @@
 	Enter Code:
 	<?=$this->form->text('code'); ?>  <input type='button' name='add_code' id='add_code' value='add'/>
 	<br>
+
 	Affiliate codes:<br>
 	<?php
+
 		$codes= array();
 		foreach($affiliate['invitation_codes'] as $code){
 			$codes[$code]= $code;
@@ -52,15 +54,16 @@
 		<br>
 		<?php
 			$count=0;
-			$size= count($affiliate['pixel']);
+
+			$size= (array_key_exists('pixel', $affiliate)) ? count($affiliate['pixel']) : 0;
 
 			if( $size > 0):
 				foreach($affiliate['pixel'] as $pixel):
-					$checked = (($pixel->enable)) ? 'checked' : '';
-					$pix = $pixel->pixel;
+					$checked = (($pixel['enable'])) ? 'checked' : '';
+					$pix = $pixel['pixel'];
 					$option='';
 					foreach($sitePages as $key => $name){
-						if( in_array($key , $pixel->page->data()) ){
+						if( in_array($key , $pixel['page']) ){
 							$option .= "<option value=$key selected='selected'> $name </option>";
 						}else{
 							$option .= "<option value= $key> $name </option>";
