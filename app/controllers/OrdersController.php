@@ -308,7 +308,7 @@ class OrdersController extends BaseController {
 				$order->promo_code = $orderPromo->code;
 				$order->promo_discount = $orderPromo->saved_amount;
 			}
-			$order->ship_date = $this->shipDate($order);
+			$order->ship_date = new MongoDate($this->shipDate($order));
 			$order->save();
 			Cart::remove(array('session' => Session::key()));
 			foreach ($cart as $item) {

@@ -12,6 +12,7 @@ use app\extensions\Mailer;
 use app\extensions\Keyade;
 use li3_silverpop\extensions\Silverpop;
 use MongoRegex;
+use MongoDate;
 
 
 class UsersController extends BaseController {
@@ -42,7 +43,7 @@ class UsersController extends BaseController {
 		if ($this->request->data && $user->validates() ) {
 			$email = $data['email'];
 			$data['password'] = sha1($this->request->data['password']);
-			$data['created_date'] = User::dates('now');
+			$data['created_date'] = new MongoDate();
 			$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
 			$data['invited_by'] = $invite_code;
 			$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));

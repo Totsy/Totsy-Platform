@@ -1,3 +1,7 @@
+<?=$this->html->script('jquery-1.4.2');?>
+<?=$this->html->script('jquery.maskedinput-1.2.2')?>
+<?=$this->html->script('jquery.dataTables.js');?>
+<?=$this->html->style(array('jquery_ui_blitzer.css', 'table'));?> 
 <?php
 	$this->title(" - Order Confirmation");
 ?>
@@ -14,9 +18,168 @@
 						<tr>
 							<td valign="top">
 								<br />
+								<?php if($order->cancel == true){?>
+									<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
+										The order has been canceled
+									</p><br />
+									<p style="text-align:center;">
+										<button id="uncancel_button" style="font-weight:bold;font-size:14px;"> Uncancel Order</button>
+									</p><br />
+								<?php }else{ ?>
 									<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
 										The order is expected to ship on <?=date('M d, Y', $shipDate)?>
 									</p><br />
+									<p style="text-align:center;">
+									<button id="cancel_button" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
+									<button id="update_shipping" style="font-weight:bold;font-size:14px;">Update Shipping</button>
+									</p><br />
+									<? } ?>
+									<div id="cancel_form" style="display:none">
+										<?=$this->form->create(null ,array('id'=>'cancelForm','enctype' => "multipart/form-data")); ?>
+										<?=$this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
+									</div>
+									<div id="new_shipping" style="display:none">
+											<h2 id="new_shipping_address">New shipping address</h2>
+											<?=$this->form->create(null ,array('id'=>'newShippingForm','enctype' => "multipart/form-data")); ?>
+												<div class="form-row">
+													<?=$this->form->label('firstname', 'First Name', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('firstname', array('class' => 'inputbox')); ?>
+													<?=$this->form->error('firstname'); ?>
+												</div>
+												<div class="form-row">
+													<?=$this->form->label('lastname', 'Last Name', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('lastname', array('class' => 'inputbox')); ?>
+													<?=$this->form->error('lastname'); ?>
+												</div>
+												<div class="form-row">
+													<?=$this->form->label('address', 'Address', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('address', array('class' => 'inputbox')); ?>
+													<?=$this->form->error('address'); ?>
+												</div>
+											 	<div class="form-row">
+													<?=$this->form->label('city', 'City', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('city', array('class' => 'inputbox')); ?>
+													<?=$this->form->error('city'); ?>
+												</div>
+												<div class="form-row">
+													<?=$this->form->label('state', 'State', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('state', array('class' => 'inputbox')); ?>
+													<?=$this->form->error('state'); ?>
+												</div>
+												<div class="form-row">
+													<?=$this->form->label('zip', 'Zip', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('zip', array('class' => 'inputbox', 'id' => 'zip')); ?>
+													<?=$this->form->error('zip'); ?>
+												</div>
+												<div class="form-row">
+													<?=$this->form->label('phone', 'Phone', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('phone', array('class' => 'inputbox', 'id' => 'phone')); ?>
+													<?=$this->form->error('phone'); ?>
+												</div>
+											<?=$this->form->submit('Confirm new shipping details')?>
+										</div>
+										<div>
+										<h2 class="gray mar-b">Order Tracking<span style="font-size:11px; float:right; font-weight:normal;"></h2><hr />
+										<table cellspacing="0" cellpadding="0" border="0" width="695">
+										<tr>
+											<td valign="top">
+										</tr>
+										<tr>
+										<td colspan="4"><!-- start order tracking table -->
+											<table cellpadding="0" cellspacing="0" border="0" width="100%">
+												<tr style="background:#ddd;">
+													<td style="padding:5px; width:30px;"><strong>N°</strong></td>
+													<td style="padding:5px; width:400px;"><strong>Tracking Number</strong></td>
+												</tr>
+												<?php $numbers = $order->tracking_numbers->data(); ?>
+												<?php $n=0; ?>
+												<?php foreach ($numbers as $number): ?>
+												<tr>
+													<td style="padding:5px" title="number">
+													<?=$n?>
+													</td>
+													<td style="padding:5px" title="type">
+													<?=$this->shipment->link($number, array('type' => $order['shippingMethod']))?>
+													</td>
+												<?php $n++; ?>
+												<?php endforeach ?>
+												</tr>
+											</table>
+										</td><!-- end order tracking table -->
+										</tr>
+										</table>
+										</div>
+										<div>
+										<h2 class="gray mar-b">Modifications Logs <span style="font-size:11px; float:right; font-weight:normal;"></h2><hr />
+										<table cellspacing="0" cellpadding="0" border="0" width="695">
+										<tr>
+											<td valign="top">
+										</tr>
+										<tr>
+										<td colspan="4"><!-- start order modifications table -->
+											<table cellpadding="0" cellspacing="0" border="0" width="100%">
+												<tr style="background:#ddd;">
+													<td style="padding:5px; width:30px;"><strong>N°</strong></td>
+													<td style="padding:5px; width:100px;"><strong>Type</strong></td>
+													<td style="padding:5px; width:100px;"><strong>Author</strong></td>
+													<td style="padding:5px; width:200px;"><strong>Date</strong></td>
+												</tr>
+												<?php $modifications = $order->modifications->data(); ?>
+												<?php krsort($modifications); ?>
+												<?php $n=0; ?>
+												<?php foreach ($modifications as $modification): ?>
+												<?php if($n<6) { ?>
+												<tr>
+													<td style="padding:5px" title="number">
+														<?=$n?>
+													</td>
+													<td style="padding:5px" title="type">
+														<?=ucfirst($modification["type"])?>
+													</td>
+													<td style="padding:5px" title="author">
+														<?=$modification["author"]?>
+													</td>
+													<td style="padding:5px" title="date">
+														<?=date('Y-M-d h:i:s', $modification["date"]["sec"])?>
+													</td>
+												<?php $n++; ?>
+												<?php } ?>
+												<?php endforeach ?>
+												</tr>
+											</table>
+										</td><!-- end order modifications table -->
+										</tr>
+										</table>
+										</div>
+										<br />
 								<h2 class="gray mar-b">Order Summary <span style="font-size:11px; float:right; font-weight:normal;"><span style="font-weight:bold;">NOTE:</span> Your order will be delivered within 3-5 weeks</span></h2>
 								<hr />
 						    </td>
@@ -168,3 +331,32 @@
 <?php else: ?>
 	<strong>Sorry, we cannot locate the order that you are looking for.</strong>
 <?php endif ?>
+<script type="text/javascript">
+jQuery(function($){
+	$("#zip").mask("99999");
+	$("#phone").mask("(999) 999-9999");
+});
+</script>
+<script type="text/javascript" >
+$(document).ready(function(){
+	$("#update_shipping").click(function () {
+		if ($("#new_shipping").is(":hidden")) {
+			$("#new_shipping").show("slow");
+		} else {
+			$("#new_shipping").slideUp();
+		}
+	});
+	$("#cancel_button").click(function () {
+		if (confirm('Are you sure to cancel the order ?')) {
+			$.post("../cancel", $("#cancelForm").serialize());
+			window.setTimeout('location.reload()', 500);
+		}
+	});
+	$("#uncancel_button").click(function () {
+		if (confirm('Are you sure to uncancel the order ?')) {
+			$.post("../cancel", $("#cancelForm").serialize());
+			window.setTimeout('location.reload()', 500);
+		}
+	});
+});
+</script>
