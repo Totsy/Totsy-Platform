@@ -145,8 +145,9 @@ class ReportsController extends BaseController {
 			$name = $this->request->data['affiliate'];
 			$affiliate = new MongoRegex("/$name/i");
 			if ($this->request->data['min_date'] && $this->request->data['max_date']) {
-				$min = new MongoDate(strtotime($this->request->data['min_date']));
-				$max = new MongoDate(strtotime($this->request->data['max_date']));
+				//Conditions with date converted to the right time format (-6hours)
+				$min = new MongoDate(strtotime($this->request->data['min_date'])-(60*60*6));
+				$max = new MongoDate(strtotime($this->request->data['max_date'])-(60*60*6));
 				$date = array(
 					'created_date' => array(
 						'$gte' => $min,
@@ -526,10 +527,11 @@ class ReportsController extends BaseController {
 		if ($this->request->data) {
 			$dates = $this->request->data;
 			if (!empty($dates['min_date']) && !empty($dates['max_date'])) {
+				//Conditions with date converted to the right time format (-6hours)
 				$conditions = array(
 					'date_created' => array(
-						'$gt' => new MongoDate(strtotime($this->request->data['min_date'])),
-						'$lte' => new MongoDate(strtotime($this->request->data['max_date']))
+						'$gt' => new MongoDate(strtotime($this->request->data['min_date'])-(60*60*6)),
+						'$lte' => new MongoDate(strtotime($this->request->data['max_date'])-(60*60*6))
 				));
 				$orderCollection = Order::collection();
 				$orders = $orderCollection->find($conditions);
@@ -624,10 +626,11 @@ class ReportsController extends BaseController {
 		if ($this->request->data) {
 			$dates = $this->request->data;
 			if (!empty($dates['min_date']) && !empty($dates['max_date'])) {
+				//Conditions with date converted to the right time format (-6hours)  
 				$conditions = array(
 					'date_created' => array(
-						'$gt' => new MongoDate(strtotime($this->request->data['min_date'])),
-						'$lte' => new MongoDate(strtotime($this->request->data['max_date']))
+						'$gt' => new MongoDate(strtotime($this->request->data['min_date'])-(60*60*6)),
+						'$lte' => new MongoDate(strtotime($this->request->data['max_date'])-(60*60*6))
 				));
 				$orderCollection = Order::collection();
 				$orders = $orderCollection->find($conditions);
@@ -691,11 +694,12 @@ class ReportsController extends BaseController {
 			if (!empty($search['min_date']) && !empty($search['max_date'])) {
 				$amount = ($search['amount'] == '') ? 0 : $search['amount'];
 				$dollarLimit = array("$search[range_type]" => (float) $amount);
+				//Conditions with date converted to the right time format (-6hours)
 				$conditions = array(
 					'total' => $dollarLimit,
 					'date_created' => array(
-						'$gt' => new MongoDate(strtotime($search['min_date'])),
-						'$lte' => new MongoDate(strtotime($search['max_date']))
+						'$gt' => new MongoDate(strtotime($search['min_date'])-(60*60*6)),
+						'$lte' => new MongoDate(strtotime($search['max_date'])-(60*60*6))
 				));
 				$shippingLimit = ($search['state'] != 'All') ? array('shipping.state' => $search['state']) : array();
 				$categoryFields = array('items.category' => array('$nin' => array('accessories','apparel')));
