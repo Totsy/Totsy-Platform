@@ -3,6 +3,7 @@
 namespace admin\extensions\command;
 
 use admin\models\OrderShipped;
+use admin\models\Order;
 use lithium\core\Environment;
 use MongoDate;
 use MongoRegex;
@@ -11,7 +12,8 @@ use PHPExcel_IOFactory;
 use PHPExcel;
 use PHPExcel_Cell;
 use PHPExcel_Cell_DataType;
-
+use admin\extensions\command\Importer;
+use lithium\analysis\Logger;
 
 /**
  * Li3 Import Command to load Order tracking information.
@@ -48,7 +50,8 @@ class OrderImport extends \lithium\console\Command {
 	protected $_exclude = array(
 		'.',
 		'..',
-		'.DS_Store'
+		'.DS_Store',
+		'backup'
 	);
 
 	/**
@@ -56,7 +59,14 @@ class OrderImport extends \lithium\console\Command {
 	 *
 	 * @var string
 	 */
-	public $dir = null;
+	public $source = '/totsy/shipfiles';
+
+	/**
+	 * Directory of files holding shipping logs.
+	 *
+	 * @var string
+	 */
+	public $backup = '/totsy/shipfiles/backup';
 
 	/**
 	 * Full path to file.
@@ -78,14 +88,15 @@ class OrderImport extends \lithium\console\Command {
 	public function run() {
 		$this->header('Ship File Processor');
 		Environment::set($this->env);
+		Importer::getAll();
 		$this->collection = OrderShipped::collection();
 		$this->collection->ensureIndex(array('hash' => 1), array("unique" => true));
-		if ($this->dir) {
-			$handle = opendir($this->dir);
+		if ($this->source) {
+			$handle = opendir($this->source);
 			while (false !== ($this->file = readdir($handle))) {
 				if (!(in_array($this->file, $this->_exclude))) {
 		            $this->out("Trying to Process - $this->file");
-					$this->path = $this->dir.'/'.$this->file;
+					$this->path = $this->source.'/'.$this->file;
 					$this->type = substr($this->file, -3);
 					switch ($this->type) {
 						case 'xls':
@@ -94,6 +105,16 @@ class OrderImport extends \lithium\console\Command {
 						default:
 							$this->_tabParser();
 							break;
+					}
+					if (!is_dir($this->backup)) {
+						mkdir($this->backup);
+					}
+					if ($this->file) {
+						$fullPath = implode('/', array($this->source, $this->file));
+						$backupPath = implode('/', array($this->backup, $this->file));
+						if (rename($fullPath, $backupPath)) {
+							Logger::info("Renaming $fullPath to $backupPath");
+						}
 					}
 		        }
 		    }
@@ -137,7 +158,7 @@ class OrderImport extends \lithium\console\Command {
 	 */
 	protected function _tabParser() {
 		$nn = 0;
-		$header = OrderShipped::$_header;
+		$header = array_keys(OrderShipped::schema());
 		if (($handle = fopen($this->path, "r")) !== FALSE) {
 			while (($data = fgetcsv($handle, 1000, chr(9))) !== FALSE) {
 				$c = count($data);
@@ -167,18 +188,25 @@ class OrderImport extends \lithium\console\Command {
 	}
 
 	/**
-	 * Saves individual record to the order.shipped Mongo Collection
+	 * Saves individual record to the order.shipped Mongo Collection.
+	 * 
+	 * There is a hash saved with the record so we can avoid duplicate entries.
+	 * The order.shipped collection has an unique index on 'hash'. We are using the
+	 * try catch to avoid issues if there is a duplicate.
 	 *
 	 * @see admin\models\OrderShipped;
 	 */
 	private function _save($shipRecord) {
 		if (!empty($shipRecord)) {
-			$record = $shipRecord + array('hash' => md5(implode("", $shipRecord)));
+			$hash = array('hash' => md5(implode("", $shipRecord)));
+			$date = array('created_date' => new MongoDate());
+			$record = $shipRecord + $hash + $date;
 			try {
-				$this->collection = OrderShipped::collection();
-				$id = $this->collection->save($record);
-			} catch (Exception $e) {
-				$this->out("Hash: $record[hash] has already been saved");
+				$collection = OrderShipped::collection();
+				$collection->insert($record);
+			} catch (\Exception $e) {
+				$message = $e->getMessage();
+				Logger::info($message);
 			}
 		}
 		return true;

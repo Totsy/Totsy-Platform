@@ -135,7 +135,7 @@ class OrderExport extends Base {
 		$heading = ProcessedOrder::$_fileHeading;
 		$orders = $orderCollection->find(array(
 			'items.event_id' => array('$in' => $this->events),
-			'canceled' => array('$ne' => true)
+			'cancel' => array('$ne' => true)
 		));
 		if ($orders) {
 			$inc = 1;
@@ -321,7 +321,8 @@ class OrderExport extends Base {
 						'conditions' => array(
 							'items.item_id' => (string) $eventItem['_id'],
 							'items.size' => (string) $key,
-							'items.status' => array('$ne' => 'Order Canceled')
+							'items.status' => array('$ne' => 'Order Canceled'),
+							'cancel' => array('$ne' => true)
 					)));
 					if ($orders) {
 						$orderData = $orders->data();
