@@ -73,7 +73,7 @@
 										<?=$this->form->error('lastname'); ?>
 									</div>
 							<div class="form-row">
-										<?=$this->form->label('zip', 'Zip/Postal Code <span>*</span>', array(
+										<?=$this->form->label('zip', 'Zip Code <span>*</span>', array(
 											'escape' => false,
 											'class' => 'required'
 											));

@@ -59,7 +59,7 @@
 					?>
 				</div>
 				<div class="form-row"> 
-					<?=$this->form->label('zip', 'Zip/Postal Code',array('class' => 'account' )); ?>
+					<?=$this->form->label('zip', 'Zip Code',array('class' => 'account' )); ?>
 					<?=$this->form->text('zip', array(
 							'class' => 'inputbox',
 							'value' => $user->zip

@@ -94,7 +94,7 @@
 			</div>
 
 			<div class="form-row">
-				<?=$this->form->label('zip', 'Zip/Postal Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+				<?=$this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('zip', array('class' => 'inputbox', 'id' => 'zip')); ?>
 			</div> 
 			<?=$this->form->submit('Submit', array('class' => 'flex-btn fr')); ?>
