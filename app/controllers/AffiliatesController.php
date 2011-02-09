@@ -17,6 +17,10 @@ class AffiliatesController extends BaseController {
 	public function registration($code = NULL) {
 	    $success = false;
 		if ($code) {
+		    $count = Affiliate::count(array('conditions' => array('invitation_codes' => $code)));
+
+            if ( $count == 0 ){ return compact('success'); }
+
             if($this->request->data){
                 $data = $this->request->data;
                 if(isset($data['password'])) {
@@ -25,7 +29,7 @@ class AffiliatesController extends BaseController {
                     $user['lastname'] = $data['lname'];
                     $user['email'] = strtolower($data['email']);
                     $user['zip'] = $data['zip'];
-                    $user['confirmemail'] = strtolower($data['confirmemail']);
+                    $user['confirmemail'] = strtolower($data['email']);
                     $user['password'] = $data['password'];
                     $user['terms'] = "1";
                     $user['invited_by'] = $code;
@@ -40,30 +44,20 @@ class AffiliatesController extends BaseController {
 
 	/**
 	    Affiliate-user invite register
-	    @params
+	    @params $affiliate
 	**/
 	public function register($affiliate = NULL) {
 	    $pdata = $this->request->data;
         $message = false;
         $user = User::create();
 
-        if( ($affiliate)){
-            if($affiliate == 'w4') {
-               $gdata = $this->request->query;
-                if( ($gdata) ){
+        if ( ($affiliate)){
 
-                    $subaff = $gdata['subid'];
-                    $conditions = array('invitation_codes' => 'w4');
-                    $col = Affiliate::collection();
-                    if($col->count($conditions) > 0) {
-                        $col->update($conditions, array(
-                                '$addToSet' => array(
-                                    'sub_affiliates' => $subaff
-                                )));
-                    }
-                    $affiliate .= $subaff;
-                }
+           $gdata = $this->request->query;
+            if( ($gdata) ){
+                $affiliate = Affiliate::storeSubAffiliate($gdata, $affiliate);
             }
+
             if( ($pdata) ) {
 
                 $data['email'] = strtolower($pdata['email']);
@@ -73,7 +67,7 @@ class AffiliatesController extends BaseController {
                 $data['zip'] = $pdata['zip'];
                 $data['confirmemail'] = $pdata['email'];
                 $data['password'] = $pdata['password'];
-                $data['terms'] = "1";
+                $data['terms'] = (boolean) $pdata['terms'];
                 $data['invited_by'] = $affiliate;
                 extract(UsersController::registration($data));
                 if($saved) {
@@ -88,7 +82,12 @@ class AffiliatesController extends BaseController {
                     Session::write('userLogin', $userLogin);
                    $ipaddress = $this->request->env('REMOTE_ADDR');
                     User::log($ipaddress);
-                    $this->redirect('/');
+                    if($affiliate == 'linkshare'){
+                       if( array_key_exists('url', $gdata)){
+                            $this->redirect(htmlspecialchars($gdata['url']));
+                       }
+                    }
+                     $this->redirect('/sales');
                 }
             }
         }
@@ -96,6 +95,8 @@ class AffiliatesController extends BaseController {
 	    $this->_render['layout'] = 'login';
         return compact('message', 'user');
 	}
+
+
 }
 
 ?>

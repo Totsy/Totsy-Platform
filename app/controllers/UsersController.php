@@ -47,7 +47,7 @@ class UsersController extends BaseController {
 			$data['invited_by'] = $invite_code;
 			$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));
 			if ($inviteCheck > 0) {
-				$data['invitation_codes'] = array($this->randomString());
+				$data['invitation_codes'] = array(static::randomString());
 			}
 			if ($invite_code) {
 				$inviter = User::find('first', array(
@@ -134,12 +134,12 @@ class UsersController extends BaseController {
 							'invitation_codes' => $data['invitation_codes']
 							));
 					if ($inviteCheck > 0) {
-						$data['invitation_codes'] = array(static::_object()->randomString());
+						$data['invitation_codes'] = array(static::randomString());
 					}
 					if ($saved = $user->save($data)) {
 						$data = array(
-						'user' => $user,
-						'email' => $user->email
+							'user' => $user,
+							'email' => $user->email
 						);
 						Silverpop::send('registration', $data);
 					}
@@ -262,7 +262,6 @@ class UsersController extends BaseController {
 			}
 		}
 		return compact("user", "status");
-
 	}
 
 	public function reset() {
@@ -305,7 +304,7 @@ class UsersController extends BaseController {
 
 
 	// Generate a random character string
-	protected function randomString($length = 8, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890')
+	protected static function randomString($length = 8, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890')
 	{
 		$chars_length = (strlen($chars) - 1);
 		$string = $chars{rand(0, $chars_length)};

@@ -25,6 +25,7 @@
 	<?=$this->form->create(); ?>
 
 	Activate: <?=$this->form->checkbox('active', array('checked'=>'checked')); ?> <br>
+	Affiliate Level: <?=$this->form->select('level',$packages); ?> <br><br>
 	Affiliate Name:
 	<?=$this->form->text('affiliate_name'); ?> <br><br>
 	Enter Code:
@@ -33,7 +34,7 @@
 	Affiliate codes:<br>
 	<?=$this->form->select('invitation_codes',array(),array('multiple'=>'multiple', 'size'=>5)); ?> <br>
 	<input type='button' name='edit_code' id='edit_code' value='edit'/><br><br>
-	Affiliate uses pixels: <?=$this->form->checkbox('active_pixel', array('value'=>'1')); ?>
+	<div id='activate_pixel'> Affiliate uses pixels: <?=$this->form->checkbox('active_pixel', array('value'=>'1')); ?> </div>
 	<br>
 	<br>
 	<div id='pixel_panel'>
@@ -68,6 +69,22 @@
 				$('#pixel_panel').show();
 			}else{
 				$('#pixel_panel').hide();
+			}
+		});
+	});
+	$(document).ready(function(){
+		if( $('#Level').val() != 'regular' ){
+			$('#activate_pixel').show();
+		}else{
+			$('#activate_pixel').hide();
+		}
+
+		$('#Level').change(function(){
+			if( $('#Level').val() != 'regular' ){
+				$('#activate_pixel').show();
+			}else{
+				$('#pixel_panel').hide();
+				$('#activate_pixel').hide();
 			}
 		});
 	});
