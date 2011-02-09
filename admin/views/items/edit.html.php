@@ -60,15 +60,15 @@ tinyMCE.init({
 						'class' => 'general',
 						'value' => $item->vendor_style
 					));?>
-					<?=$this->form->field('age', array(
-						'type' => 'text',
-						'class' => 'general',
-						'value' => $item->age
-					));?>
 					<?=$this->form->field('color', array(
 						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->color
+					));?>
+					<?=$this->form->field('age', array(
+						'type' => 'text',
+						'class' => 'general',
+						'value' => $item->age
 					));?>
 					<div id="item_status">
 						<h2 id="item_status">Item Status</h2>

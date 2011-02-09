@@ -13,12 +13,14 @@
 	<title>Totsy<?php echo $this->title(); ?></title>
 	<?php //echo $this->html->style(array('formcheck')); ?>
 	<?php //echo $this->html->style(array('base')); ?>
+	<?php echo $this->html->style(array('flash')); ?>
 	<?php echo $this->scripts(); ?>
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
 </head>
 <body class="app">		
 	<div>
-		<div id="content">
+		<div id="content" style="width:695px">
+			<?php echo $this->flashMessage->output(); ?>
 			<?php echo $this->content(); ?>
 		</div>
 	</div>

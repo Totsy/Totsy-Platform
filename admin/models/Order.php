@@ -53,14 +53,15 @@ class Order extends \lithium\data\Model {
 	public static function collection() {
 		return static::_connection()->connection->orders;
 	}
+
 	public $validates = array(
-		'authKey' => 'Could not secure payment.'
+		'authKey' => 'Could not secure payment.',
 	);
 
 	public static function dates($name) {
-	     return new MongoDate(time() + static::_object()->_dates[$name]);
+		return new MongoDate(time() + static::_object()->_dates[$name]);
 	}
-	
+
 	public static function lookup($orderId) {
 		$orderId = new MongoRegex("/$orderId/i");
 		$result = static::find('first', array('conditions' => array(
@@ -73,7 +74,8 @@ class Order extends \lithium\data\Model {
 		try {
 			return $order->save(array(
 				'payment_date' => static::dates('now'),
-				'auth_confirmation' => Payments::capture('default', $order->authKey, round($order->total, 2)),
+				'auth_confirmation' => Payments::capture('default', $order->authKey,
+				round($order->total, 2)),
 				'auth_error' => null
 			));
 		} catch (TransactionException $e) {
@@ -93,7 +95,8 @@ class Order extends \lithium\data\Model {
 	 * Search for an order by either name or address.
 	 * We are limiting this order search by the official launch of August 3rd.
 	 * There are way too many issues when dealing with orders that are from the old system.
-	 * @param string $data, $type
+	 * @param string $data,
+	 * @param string $type
 	 * @return array
 	 */
 	public static function orderSearch($data, $type) {
@@ -115,7 +118,37 @@ class Order extends \lithium\data\Model {
 		return $orders->find(array('$or' => $conditions) + $date)->sort(array('date_created' => 1));
 	}
 
-
+	/**
+	 * Cancel an order.
+	 * By putting the "cancel" field on the db to true if the order is uncanceled.
+	 * Uncancel an order.
+	 * By putting the "cancel" field on the db to false if the order is canceled..
+	 * And to find the author of this modification, we add a "cancel_by" field.
+	 * @param string $order_id,
+	 * @param string $author
+	 */
+	public static function cancel($order_id, $author) {
+		//Get the actual datas of the order
+		$result = static::find('first', array('conditions' => array(
+			'_id' => $order_id
+		)));
+		$order = $result->data();
+		//Compare the cancel status, write modification datas and update cancel db status
+		$modification_datas["author"] = $author;
+		$modification_datas["date"] = new MongoDate(strtotime('now'));
+		if(empty($order["cancel"]) || ($order["cancel"] == false)){
+			$modification_datas["type"] = "cancel";
+			static::collection()->update(array('_id' => new MongoId($order_id)),
+				array('$set' => array('cancel' => true)), array("upsert" => true));
+		}else{
+			$modification_datas["type"] = "uncancel";
+			static::collection()->update(array('_id' => new MongoId($order_id)),
+				array('$set' => array('cancel' => false)), array("upsert" => true));
+		}
+		//Pushing modification datas to db
+		static::collection()->update(array("_id" => new MongoId($order_id)),
+		array('$push' => array('modifications' => $modification_datas)), array('upsert' => true));
+	}
 }
 
 ?>

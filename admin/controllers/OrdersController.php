@@ -8,6 +8,8 @@ use admin\models\Event;
 use admin\models\Item;
 use admin\models\Credit;
 use admin\controllers\BaseController;
+use lithium\storage\Session;
+use MongoCode;
 use MongoDate;
 use MongoRegex;
 use MongoId;
@@ -67,7 +69,8 @@ class OrdersController extends BaseController {
 		if ($this->request->data) {
 			$search = $this->request->data['search'];
 			$searchType = $this->request->data['type'];
-			$date = array('date_created' => array('$gt' => new MongoDate(strtotime('August 3, 2010'))));
+			$date = array('date_created' => array('$gt' =>
+				new MongoDate(strtotime('August 3, 2010'))));
 			if (!empty($search)) {
 				switch ($searchType) {
 					case 'order':
@@ -75,22 +78,24 @@ class OrdersController extends BaseController {
 						$rawOrders = $collection->find(array('order_id' => $order) + $date);
 						break;
 					case 'address':
-							$rawOrders = Order::orderSearch($search, 'address');
+						$rawOrders = Order::orderSearch($search, 'address');
 						break;
 					case 'event':
 						$eventName = new MongoRegex("/$search/i");
-						$rawOrders = $collection->find(array('items.event_name' => $eventName) + $date);
+						$rawOrders = $collection->find(array('items.event_name' => $eventName)
+						+ $date);
 						break;
 					case 'authKey':
 						$authKey = new MongoRegex("/$search/");
 						$rawOrders = $collection->find(array('authKey' => $authKey) + $date);
 						break;
 					case 'item':
-							$item = new MongoRegex("/$search/i");
-							$rawOrders = $collection->find(array('items.description' => $item) + $date);
+						$item = new MongoRegex("/$search/i");
+						$rawOrders = $collection->find(array('items.description' => $item)
+						+ $date);
 						break;
 					case 'name':
-							$rawOrders = Order::orderSearch($search, 'name');
+						$rawOrders = Order::orderSearch($search, 'name');
 						break;
 					case 'email':
 						$users = User::find('all', array(
@@ -101,7 +106,8 @@ class OrdersController extends BaseController {
 							foreach ($users as $user) {
 								$_id[] = $user['_id'];
 							}
-							$rawOrders = $collection->find(array('user_id' => array('$in' => $_id)) + $date);
+							$rawOrders = $collection->find(array('user_id' => array('$in' => $_id))
+							+ $date);
 						}
 						break;
 				}
@@ -124,12 +130,71 @@ class OrdersController extends BaseController {
 	}
 
 	/**
-	 * The view method renders the order confirmation page that is sent to the customer
-	 * after they have placed their order
-	 *
-	 * @param string $id The _id of the order
-	 */
+	* The cancel method close an order or unclose it by modfiying the calling the Order cancel method
+	*/
+	public function cancel(){
+		$current_user = Session::read('userLogin');
+		$datas = $this->request->data;
+		if ($datas["id"]) {
+			$status = Order::cancel($datas["id"], $current_user["email"]);
+		}
+	}
+
+	/**
+	* The updateShipping method push the old value of shipping with details about author,type and date
+	* After that it updates the shipping values by the new datas from the form
+	* @param string $id The _id of the order
+	*/
+	public function updateShipping($id){
+		$current_user = Session::read('userLogin');
+		$orderCollection = Order::collection();
+		//Get datas from the shipping form
+		$datas = $this->request->data;
+		$update = true;
+		//check if form is well completed
+		foreach($datas as $data){
+			if($data == null){
+				$missing = true;
+			}
+		}
+		//If yes, we prepare the array of modification datas
+		if(!$missing){
+			$order = Order::find('first', array('conditions' => array('_id' => new MongoId($id))));
+			$modification_datas["author"] = $current_user["email"];
+			$modification_datas["date"] = new MongoDate(strtotime('now'));
+			$modification_datas["type"] = "shipping";
+			$modification_datas["old_datas"] = array(
+				"firstname" => $order["shipping"]["firstname"],
+				"lastname" => $order["shipping"]["lastname"],
+				"address" => $order["shipping"]["address"],
+				"city" => $order["shipping"]["city"],
+				"state" => $order["shipping"]["state"],
+				"zip" => $order["shipping"]["zip"],
+				"phone" => $order["shipping"]["phone"]
+				);
+			//We push the modifications datas with the old shipping
+			$orderCollection->update(array("_id" => new MongoId($id)), array('$push' => array('modifications' => $modification_datas)), array('upsert' => true));
+			$orderCollection->update(array("_id" => new MongoId($id)), array('$set' => array('shipping' => $datas)));
+			FlashMessage::set("Shipping details has been updated.", array('class' => 'pass'));
+		}else FlashMessage::set("Some informations for the new shipping are missing", array('class' => 'warning'));
+	}
+
+	/**
+	* The view method renders the order confirmation page that is sent to the customer
+	* after they have placed their order
+	* The view method render two buttons to manage add new shipping details and cancel order.
+	* A shipping details form will be render if you click on the button
+	* A pop-up will be called if you click on cancel button to confirm the action
+	* Confirm the shipping form will update the "shipping" array and push the old datas on "old_shippings"
+	* @param string $id The _id of the order
+	*/
 	public function view($id = null) {
+		//update the shipping address by adding the new one and pushing the old one.
+		if ($id) {
+			if($this->request->data){
+				$this->updateShipping($id);
+			}
+		}
 		$this->_render['layout'] = 'base';
 		$order = null;
 		if ($id) {
@@ -299,12 +364,12 @@ class OrdersController extends BaseController {
 					if ($day < 6 && !in_array($date, $this->_holidays)){
 						$i++;
 					}
-					$shipDate = strtotime($date.' +1 day');
+					$shipDate = strtotime($date . ' +1 day');
 				}
 			}
 		}
-
 		return $shipDate;
 	}
 }
+
 ?>
