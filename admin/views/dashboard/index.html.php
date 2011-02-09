@@ -111,6 +111,7 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
 
 <!-- Revenue result table -->
 <div class="grid_8">
+<br><br><br><br>
   <table class="datatable">
     <thead>
     <tr>
@@ -135,14 +136,14 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
     </td>
     <td>
     <?php
-    $percentage = ($yesterdayRevenue / $todayRevenue);
+    $percentage = ($todayRevenue / $yesterdayRevenue);
     if($percentage < 1){
       
-      echo "<font class='positive'> + " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
-      
+      echo "<font class='negative'> - " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+       
     }else{
       
-      echo "<font class='negative'> - " . number_format( ($percentage -1) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='positive'> + " . number_format( ($percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
     }
      
     ?>
@@ -166,14 +167,14 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
     <td><?= "$ " . number_format( $FirstWeekRevenue , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
     <td>
     <?php
-    $percentage = ($lastMonthFirstWeekRevenue / $FirstWeekRevenue);
+    $percentage = ($FirstWeekRevenue / $lastMonthFirstWeekRevenue);
     if($percentage < 1){
       
-      echo "<font class='positive'> + " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='negative'> - " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
       
     }else{
       
-      echo "<font class='negative'> - " . number_format( ($percentage -1) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='positive'> + " . number_format( ($percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
     }
      
     ?>
@@ -197,14 +198,14 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
     <td><?= "$ " . number_format( $First2WeekRevenue , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
     <td>
     <?php
-    $percentage = ($lastMonthSecondWeekRevenue / $First2WeekRevenue);
+    $percentage = ($First2WeekRevenue / $lastMonthSecondWeekRevenue);
     if($percentage < 1){
       
-      echo "<font class='positive'> + " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='negative'> - " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
       
     }else{
       
-      echo "<font class='negative'> - " . number_format( ($percentage -1) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='positive'> + " . number_format( ($percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
     }
      
     ?>
@@ -228,14 +229,14 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
     <td><?= "$ " . number_format( $First3WeekRevenue , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
     <td>
     <?php
-    $percentage = ($lastMonthThirdWeekRevenue / $First3WeekRevenue);
+    $percentage = ($First3WeekRevenue / $lastMonthThirdWeekRevenue);
     if($percentage < 1){
       
-      echo "<font class='positive'> + " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='negative'> - " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
       
     }else{
       
-      echo "<font class='negative'> - " . number_format( ($percentage -1) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='positive'> + " . number_format( ($percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
     }
      
     ?>
@@ -265,14 +266,14 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
     <td><?= "$ " . number_format( $currentMonthRevenue , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
     <td>
     <?php
-    $percentage = ($lastMonthRevenue / $currentMonthRevenue);
+    $percentage = ($currentMonthRevenue / $lastMonthRevenue);
     if($percentage < 1){
       
-      echo "<font class='positive'> + " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='negative'> - " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
       
     }else{
       
-      echo "<font class='negative'> - " . number_format( ($percentage -1) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='positive'> + " . number_format( ($percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
     }
      
     ?>
@@ -294,14 +295,14 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
     <td><?= "$ " . number_format( $last3MonthRevenue , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
     <td>
      <?php
-    $percentage = ($last6MonthRevenue / $last3MonthRevenue);
+    $percentage = ($last3MonthRevenue / $last6MonthRevenue);
     if($percentage < 1){
       
-      echo "<font class='positive'> + " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='negative'> - " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
       
     }else{
       
-      echo "<font class='negative'> - " . number_format( ($percentage -1) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='positive'> + " . number_format( ($percentage -1) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
     }
      
     ?>
@@ -313,7 +314,7 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
 
 <!-- Registration result table -->
 <div class="grid_8">
-
+<br><br><br><br>
 
   <table class="datatable">
     <thead>
@@ -337,14 +338,14 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
     <td><?php echo $todayNewUsers ?></td>
     <td>
     <?php
-    $percentage = ($yesterdayNewUsers / $todayNewUsers);
+    $percentage = ($todayNewUsers / $yesterdayNewUsers);
     if($percentage < 1){
       
-      echo "<font class='positive'> + " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='negative'> - " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
       
     }else{
       
-      echo "<font class='negative'> - " . number_format( ($percentage -1) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='positive'> + " . number_format( ($percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
     }
      
     ?>
@@ -364,18 +365,18 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
     </tr>
     </thead>
     <tr>
-    <td><?= number_format( $lastMonthFirstWeekNewUsers , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
-    <td><?= number_format( $FirstWeekNewUsers , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
+    <td><?= number_format( $lastMonthFirstWeekNewUsers , $decimals = 0 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
+    <td><?= number_format( $FirstWeekNewUsers , $decimals = 0 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
     <td>
     <?php
-    $percentage = ($lastMonthFirstWeekNewUsers / $FirstWeekNewUsers);
+    $percentage = ($FirstWeekNewUsers / $lastMonthFirstWeekNewUsers);
     if($percentage < 1){
       
-      echo "<font class='positive'> + " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='negative'> - " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
       
     }else{
       
-      echo "<font class='negative'> - " . number_format( ($percentage -1) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='positive'> + " . number_format( ($percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
     }
      
     ?>
@@ -395,18 +396,18 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
     </tr>
     </thead>
     <tr>
-    <td><?= number_format( $lastMonthSecondWeekNewUsers , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
-    <td><?= number_format( $First2WeekNewUsers , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
+    <td><?= number_format( $lastMonthSecondWeekNewUsers , $decimals = 0 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
+    <td><?= number_format( $First2WeekNewUsers , $decimals = 0 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
     <td>
     <?php
-    $percentage = ($lastMonthSecondWeekNewUsers / $First2WeekNewUsers);
+    $percentage = ($First2WeekNewUsers / $lastMonthSecondWeekNewUsers);
     if($percentage < 1){
       
-      echo "<font class='positive'> + " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='negative'> - " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
       
     }else{
       
-      echo "<font class='negative'> - " . number_format( ($percentage -1) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='positive'> - " . number_format( ($percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
     }
      
     ?>
@@ -426,18 +427,18 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
     </tr>
     </thead>
     <tr>
-    <td><?= number_format( $lastMonthThirdWeekNewUsers , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
-    <td><?= number_format( $First3WeekNewUsers , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
+    <td><?= number_format( $lastMonthThirdWeekNewUsers , $decimals = 0 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
+    <td><?= number_format( $First3WeekNewUsers , $decimals = 0 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
     <td>
     <?php
-    $percentage = ($lastMonthThirdWeekNewUsers / $First3WeekNewUsers);
+    $percentage = ($First3WeekNewUsers / $lastMonthThirdWeekNewUsers);
     if($percentage < 1){
       
-      echo "<font class='positive'> + " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='negative'> - " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
       
     }else{
       
-      echo "<font class='negative'> - " . number_format( ($percentage -1) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='positive'> + " . number_format( ($percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
     }
      
     ?>
@@ -463,18 +464,18 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
     </tr>
     </thead>
     <tr>
-    <td><?= number_format( $lastMonthNewUsers , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
-    <td><?= number_format( $currentMonthNewUsers , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
+    <td><?= number_format( $lastMonthNewUsers , $decimals = 0 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
+    <td><?= number_format( $currentMonthNewUsers , $decimals = 0 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
     <td>
     <?php
-    $percentage = ($lastMonthNewUsers / $currentMonthNewUsers);
+    $percentage = ($currentMonthNewUsers / $lastMonthNewUsers);
     if($percentage < 1){
       
-      echo "<font class='positive'> + " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='negative'> - " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
       
     }else{
       
-      echo "<font class='negative'> - " . number_format( ($percentage -1) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='positive'> + " . number_format( ($percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
     }
      
     ?>
@@ -482,22 +483,36 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
     </tr>
     <thead>
     <tr>
-    <th>Last 3 Month</th>
-    <th>last 3 month before</th>
+    <th>
+   <?php echo date('M jS',$startOfTheLast6Month) . " - " . date('M jS',$startOfTheLast3Month) ?>
+   </th>
+    <th><?php echo date('M jS',$startOfTheLast3Month) . " - " . date('M jS',$today) ?></th>
     <th>
     Diff %
     </th>
     </tr>
     </thead>
     <tr>
-    <td>some number</td>
-    <td>some number</td>
-    <td></td>
+    <td><?= number_format( $last6MonthNewUsers , $decimals = 0 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
+    <td><?= number_format( $last3MonthNewUsers , $decimals = 0 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
+    <td>
+     <?php
+    $percentage = ($last3MonthNewUsers / $last6MonthNewUsers);
+    if($percentage < 1){
+      
+      echo "<font class='negative'> - " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      
+    }else{
+      
+      echo "<font class='positive'> + " . number_format( ($percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+    }
+     
+    ?>
+    </td>
     </tr>
   </table>
 
 </div>
-
 
 </div>
 

@@ -129,15 +129,15 @@
 		<hr />
 
 	<div id="slider" class="nivoSlider">
- 		 <a href="/sale/gigi-s-dresses"><img src="/img/spring_img1.jpg"  alt="" title="Gigi's Dresses - Up to 65% OFF" /></a>
-		 <a href="/sale/corky-s-dresses"><img src="/img/spring_img2.jpg"  alt="" title="Corky's Dresses - Up to 57% OFF" /></a>
-		 <a href="/sale/adore-la-vie"><img src="/img/spring_img3.jpg"  alt="" title="Adore La Vie - Up to 50% OFF" /></a>
+ 		 <a href="/sale/baby-lulu"><img src="/img/spring_img1.jpg"  alt="" title="Baby Lulu - Up to 70% OFF" /></a>
+		 <a href="/sale/noa-lily"><img src="/img/spring_img2.jpg"  alt="" title="Noa Lily - Up to 40% OFF" /></a>
+		 <a href="/sale/kids-preferred"><img src="/img/spring_img3.jpg"  alt="" title="Kids Preferred - Up to 59% OFF" /></a>
 		 
-		 <a href="/sale/bellarisa"><img src="/img/spring_img4.jpg"  alt="" title="Bellarisa - Up to 51% OFF" /></a>
+		 <a href="/sale/rockabye"><img src="/img/spring_img4.jpg"  alt="" title="Rockabye - Up to 40% OFF" /></a>
 		 
-		 <a href="/sale/china-doll"><img src="/img/spring_img5.jpg"  alt="" title="China Doll - Up to 59% OFF" /></a>
+		 <a href="/sale/nota-bene"><img src="/img/spring_img5.jpg"  alt="" title="Nota Bene - Up to 64% OFF" /></a>
 		 
-		 <a href="/sale/whoops-bunny"><img src="/img/spring_img6.jpg"  alt="" title="Whoops Bunny - Up to 50% OFF" /></a>
+		 <a href="/sale/pedoodles"><img src="/img/spring_img6.jpg"  alt="" title="Pedoodles - Up to 64% OFF" /></a>
 		 
 	</div>
 
