@@ -73,7 +73,7 @@
 										<?=$this->form->error('lastname'); ?>
 									</div>
 							<div class="form-row">
-										<?=$this->form->label('zip', 'Zip/Postal Code <span>*</span>', array(
+										<?=$this->form->label('zip', 'Zip Code <span>*</span>', array(
 											'escape' => false,
 											'class' => 'required'
 											));
@@ -120,7 +120,7 @@
 
 										<span class="sm reg-tos">
 												By requesting membership, I accept the
-											<?=$this->html->link('Terms and Conditions','#')?>
+											<?=$this->html->link('Terms and Conditions','pages/terms')?>
 											of Totsy, and accept to receive sale email newsletters.
 											Totsy will never sell or give my email to any outside party.
 										</span>

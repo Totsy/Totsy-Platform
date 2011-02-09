@@ -3,7 +3,7 @@
 <html>
 <head>
 	<?php echo $this->html->charset();?>
-	<title>Totsy<?php echo $this->title(); ?></title>
+	<title>Totsy, the private sale site for Moms</title>
 	<?php echo $this->html->style(array('base'), array('media' => 'screen')); ?>
 	<?=$this->html->script(array(
 		'jquery-1.4.2.min.js',
