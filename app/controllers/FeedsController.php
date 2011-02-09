@@ -46,6 +46,9 @@ class FeedsController extends BaseController {
 		);
 		switch($partner){
 			case 'keyade':
+				if($this->request->query['token'] != '7cf7e9d58a213b2ebb401517d342475e'){
+					die("Nope, definitely something important missing.\n");
+				}
 				// TODO: authenticate with token in $_GET
 				switch( $action ){
 					case 'signups':
