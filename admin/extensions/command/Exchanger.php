@@ -9,7 +9,7 @@ use lithium\analysis\Logger;
 /**
  * The `Importer` command class contains core classes to capture files from remote sources.
  */
-class Importer extends \lithium\console\Command {
+class Exchanger extends \lithium\console\Command {
 
 	/**
 	 * FTP Server of 3PL we are sending files to.

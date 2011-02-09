@@ -12,7 +12,7 @@ use PHPExcel_IOFactory;
 use PHPExcel;
 use PHPExcel_Cell;
 use PHPExcel_Cell_DataType;
-use admin\extensions\command\Importer;
+use admin\extensions\command\Exchanger;
 use lithium\analysis\Logger;
 
 /**
@@ -88,7 +88,7 @@ class OrderImport extends \lithium\console\Command {
 	public function run() {
 		$this->header('Ship File Processor');
 		Environment::set($this->env);
-		Importer::getAll();
+		Exchanger::getAll();
 		$this->collection = OrderShipped::collection();
 		$this->collection->ensureIndex(array('hash' => 1), array("unique" => true));
 		if ($this->source) {
@@ -202,8 +202,8 @@ class OrderImport extends \lithium\console\Command {
 			$date = array('created_date' => new MongoDate());
 			$record = $shipRecord + $hash + $date;
 			try {
-				$collection = OrderShipped::collection();
-				$collection->insert($record);
+				$ship = OrderShipped::create($record);
+				$ship->save();
 			} catch (\Exception $e) {
 				$message = $e->getMessage();
 				Logger::info($message);

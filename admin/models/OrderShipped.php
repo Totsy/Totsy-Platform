@@ -10,8 +10,13 @@ class OrderShipped extends \lithium\data\Model {
 
 	protected $_meta = array('source' => 'orders.shipped');
 
+	/**
+	 * The schema for orders.shipped is configured for both 3Linx and DC.
+	 * The key position is very important as it directly maps to the column position
+	 * of the DC ship file. 
+	 */
 	protected $_schema = array(
-		"ShipDate" => array('type' => 'string', 'null' => false),
+		"ShipDate" => array('type' => 'MongoDate', 'null' => false),
 		"ShipDC" => array('type' => 'string', 'null' => false),
 		"ShipMethod" => array('type' => 'string', 'null' => false),
 		"OrderNum" => array('type' => 'string', 'null' => false),
@@ -65,7 +70,9 @@ class OrderShipped extends \lithium\data\Model {
 		"Order COD Value" => array('type' => 'string', 'null' => true),
 		"COD: Require Payment By Cashier's Check/Money Order (Y/N)" => array('type' => 'string', 'null' => true),
 		"COD: Add Shipping Costs to COD Amount (Y/N)" => array('type' => 'string', 'null' => true),
-		"hash" => array('type' => 'string', 'null' => false)
+		"hash" => array('type' => 'string', 'null' => false),
+		"ItemId" => array('type' =>'MongoId', 'null' => true),
+		"OrderId" => array('type' =>'MongoId', 'null' => true)
 	);
 
 }
