@@ -41,7 +41,7 @@ use \lithium\util\Validator;
  *
  * TODO: Affiliate, active, and legacy should all be changed to the Boolean type
  */
-class User extends \lithium\data\Model {
+class User extends Base {
 
 	public $validates = array(
 		'firstname' => array(
@@ -104,7 +104,7 @@ class User extends \lithium\data\Model {
 			'conditions' => array(
 				'_id' => $user['_id']),
 			'fields' => $fields
-		));	
+		));
 	}
 	/**
 	 * Cleans the user document.
