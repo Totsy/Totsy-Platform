@@ -34,7 +34,7 @@
 				<?php endif ?>
 				<div id="welcome">
 					<?php if(isset($userInfo['firstname'])) { ?>
-						<strong>Hello!</strong>
+						Hello, 
 						<?="{$userInfo['firstname']} {$userInfo['lastname']}"; ?>
 						(<?=$this->html->link('Sign Out', 'Users::logout', array('title' => 'Sign Out')); ?>)
 					<?php }?>

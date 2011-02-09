@@ -48,7 +48,11 @@ class UsersController extends BaseController {
 			$data['invited_by'] = $invite_code;
 			$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));
 			if ($inviteCheck > 0) {
+<<<<<<< HEAD
 				$data['invitation_codes'] = array(static::randomString());
+=======
+				$data['invitation_codes'] = array(self::randomString());
+>>>>>>> 8b73b5bbf6c90aa12a8e94da10cfd2c8f20bcaf9
 			}
 			if ($invite_code) {
 				$inviter = User::find('first', array(
@@ -135,7 +139,7 @@ class UsersController extends BaseController {
 							'invitation_codes' => $data['invitation_codes']
 							));
 					if ($inviteCheck > 0) {
-						$data['invitation_codes'] = array(static::randomString());
+						$data['invitation_codes'] = array(self::randomString());
 					}
 					if ($saved = $user->save($data)) {
 						$data = array(
