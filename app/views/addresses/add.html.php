@@ -1,7 +1,7 @@
 <?php use app\models\Address; ?>
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
 
-<?php if (!$isAjax): ?>
+
 	<h1 class="p-header">My Account</h1>
 	<div id="left">
 		<ul class="menu main-nav">
@@ -10,7 +10,6 @@
 	    <li class="item19 active"><a href="/addresses" title="Address Book"><span>Address Book</span></a></li>
 	    <li class="item20"><a href="/orders" title="My Orders"><span>My Orders</span></a></li>
 	    <li class="item20"><a href="/Credits/view" title="My Credits"><span>My Credits</span></a></li>
-	    <li class="item22"><a href="/tickets/add" title="Help Desk"><span>Help Desk</span></a></li>
 	    <li class="lastitem23"><a href="/Users/invite" title="My Invitations"><span>My Invitations</span></a></li>
 		  <br />
 		  <h3 style="color:#999;">Need Help?</h3>
@@ -20,7 +19,6 @@
 		</ul>
 	</div>
 
-<?php endif ?>
 
 
 <div class="tl"></div>
@@ -96,7 +94,7 @@
 			</div>
 
 			<div class="form-row">
-				<?=$this->form->label('zip', 'Zip/Postal Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+				<?=$this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('zip', array('class' => 'inputbox', 'id' => 'zip')); ?>
 			</div> 
 			<?=$this->form->submit('Submit', array('class' => 'flex-btn fr')); ?>
