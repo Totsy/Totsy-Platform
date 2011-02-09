@@ -110,7 +110,7 @@ li.item5 a:hover, li.item5.over a, li.active.item5 a { background-position:-244p
 #main-nav li li { float:none; margin-right:0; background-image:none; background-color:#E7E7E8; border-left:1px solid #B3B3B3; border-right:1px solid #B3B3B3; padding:0 5px }
 #main-nav li li.first { background:url(../img/dd-bg.png) left top no-repeat; border:none; padding:5px 5px 0 5px }
 #main-nav li li.last { background:url(../img/dd-bg.png) left bottom no-repeat; border:none; padding:0 5px 5px 5px }
-#main-nav li ul a:link, #main-nav li ul a:visited { height:auto; width:auto; background-image:none; text-indent:0; border-bottom:1px solid #B3B3B3; padding:5px; text-transform:uppercase; font-weight:bold; color:#636363; font-size:11px }
+#main-nav li ul a:link, #main-nav li ul a:visited { height:auto; width:auto; background-image:none; text-indent:0; border-bottom:1px solid #B3B3B3; padding:5px; text-transform:uppercase; font-weight:bold; color:#636363; font-size:11px; white-space: nowrap;}
 #main-nav li ul li.last a { border-bottom:none }
 #main-nav li ul a:hover, #main-nav li ul li.active a:link, #main-nav li ul li.active a:visited { background:#FFF; color:#EB132C; text-decoration:none }
 #main-nav li:hover ul { left:0 }
