@@ -29,7 +29,7 @@
 	<?php
 		$option ='';
 		foreach( $packages as $key){
-			if( array_key_exists('level', $affiliate->data())  && $key == $affiliate['level'] ){
+			if( array_key_exists('level', $affiliate)  && $key == $affiliate['level'] ){
 
 				$option .= "<option value= $key selected='selected'> $key</option>";
 			}else{
@@ -74,11 +74,12 @@
 					$pix = $pixel['pixel'];
 					$option='';
 					foreach($sitePages as $key => $name){
-						if( in_array($key , $pixel['page']) ){
+						if( $pixel['page'] && in_array($key , $pixel['page']) ){
 							$option .= "<option value=$key selected='selected'> $name </option>";
 						}else{
 							$option .= "<option value= $key> $name </option>";
 						}
+					}
 				?>
 					<div id='<?php echo 'pixel_'.($count+1)?>'>
 						<label> Pixel # <?=$count+1; ?> </label><br>
@@ -157,7 +158,7 @@
 		$('#add_code').click(function(){
 			var value= $('#Code').val();
 			if(value){
-				$('#InvitationCodes').append("<option value="+value+">"+value+"</option>");
+				$('#InvitationCodes').append("<option value=" + value + ">"+value+"</option>");
 				$('#Code').attr('value', "");
 			}
 		});

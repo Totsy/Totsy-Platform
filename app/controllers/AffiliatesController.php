@@ -52,6 +52,7 @@ class AffiliatesController extends BaseController {
         $user = User::create();
 
         if ( ($affiliate)){
+            $pixel = Affiliate::getPixels('after_reg', $affiliate);
 
            $gdata = $this->request->query;
             if( ($gdata) ){
@@ -87,16 +88,14 @@ class AffiliatesController extends BaseController {
                             $this->redirect(htmlspecialchars($gdata['url']));
                        }
                     }
-                     $this->redirect('/sales');
+                    Session::write('pixel',$pixel);
+                    $this->redirect('/sales');
                 }
             }
         }
-
 	    $this->_render['layout'] = 'login';
         return compact('message', 'user');
 	}
-
-
 }
 
 ?>

@@ -13,6 +13,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
 
 	public $sitePages = array(
 	    '/a/' => 'landing page',
+	    'after_reg' => 'after registering',
 	    '/' => 'login',
 	    '/sales' => 'sales',
 	    'product' => 'product page',
@@ -108,6 +109,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
         }
         $sitePages = $this->sitePages;
 		$packages = $this->packages;
+		$affiliate = $affiliate->data();
         return compact('sitePages', 'packages','affiliate');
 
 	}
