@@ -119,8 +119,16 @@ class Exchanger extends \lithium\console\Command {
 	/**
 	 * Put a file to the connected FTP Server.
 	 */
-	public function putFile($file, $path) {
-		return ftp_put($this->connection, $file, $path, FTP_BINARY);
+	public static function putFile($file, $path) {
+		$self = static::_object();
+		$sucess = false;
+		$self->connect();
+		if ($self->connection) {
+			$self->changeDirectory('/tot90/in');
+			$sucess = ftp_put($self->connection, $file, $path, FTP_BINARY);
+			$self->disconnect();
+		}
+		return $sucess;
 	}
 
 	/**

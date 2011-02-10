@@ -14,8 +14,8 @@ use MongoDate;
 use MongoRegex;
 use MongoId;
 use admin\extensions\command\Base;
-
-
+use admin\extensions\command\Exchanger;
+use lithium\analysis\Logger;
 
 /**
  * Export Order, Item and PO files to DC system.
@@ -83,14 +83,14 @@ class OrderExport extends Base {
 	 *
 	 * @var string
 	 */
-	public $source = '/tmp/totsy';
+	public $source = '/totsy/pending';
 
 	/**
 	 * Directory of files holding the backup files to FTP.
 	 *
 	 * @var string
 	 */
-	public $processed = '/tmp/totsy/processed';
+	public $processed = '/totsy/processed';
 
 	/**
 	 * Full path to file.
@@ -139,7 +139,7 @@ class OrderExport extends Base {
 		));
 		if ($orders) {
 			$inc = 1;
-			$handle = '/tmp/totsy/TOTOrd'.$this->time.'.txt';
+			$handle = $this->source.'TOTOrd'.$this->time.'.txt';
 			$fp = fopen($handle, 'w');
 			$eventList = $orderArray = array();
 			foreach ($orders as $order) {
@@ -228,7 +228,7 @@ class OrderExport extends Base {
 	 */
 	protected function _itemGenerator($eventIds = null) {
 		$this->header('Generating Items');
-		$handle = '/tmp/totsy/TOTIT'.$this->time.'.csv';
+		$handle = $this->source.'TOTIT'.$this->time.'.csv';
 		$this->out("Opening item file $handle");
 		$fp = fopen($handle, 'w');
 		$count = 0;
@@ -310,7 +310,7 @@ class OrderExport extends Base {
 			$vendorName = preg_replace('/[^(\x20-\x7F)]*/','', substr($this->_asciiClean($event->name), 0, 3));
 			$time = date('ymdis', $event->_id->getTimestamp());
 			$poNumber = 'TOT'.'-'.$vendorName.$time;
-			$handle = '/tmp/totsy/TOTitpo'.$vendorName.$time.'.csv';
+			$handle = $this->source.'/TOTitpo'.$vendorName.$time.'.csv';
 			$this->out("Opening PO file $handle");
 			$fp = fopen($handle, 'w');
 			$purchaseOrder = array();
@@ -379,37 +379,27 @@ class OrderExport extends Base {
 	 * confirmed move the file over to a backup folder within the same directory.
 	 */
 	public function _export() {
-		$this->header('FTPing Files');
-		$ftpConn = ftp_connect($this->_ftpServer);
-		$login = ftp_login($ftpConn, $this->_ftpUser, $this->_ftpPass);
-		if ((!$ftpConn) || (!$login)) {
-			$this->error("FTP Connection Failed");
-		} else {
-			$this->out("Connected to $this->_ftpServer");
-			ftp_chdir($ftpConn, '/tot90/in');
-			if ($this->source) {
-				$handle = opendir($this->source);
-				while (false !== ($this->file = readdir($handle))) {
-					if (!(in_array($this->file, $this->_exclude))) {
-						$fullPath = implode('/', array($this->source, $this->file));
-						$backupPath = implode('/', array($this->processed, $this->file));
-						if (filesize($fullPath) > 0) {
-							if (ftp_put($ftpConn, $this->file, $fullPath, FTP_BINARY)) {
-								$this->out("Successfully uploaded $this->file");
-								$this->out("Moving $fullPath to $backupPath");
-								rename($fullPath, $backupPath);
-							} else {
-								$this->error("There was a problem while uploading $this->file");
-							}
+		if ($this->source) {
+			$handle = opendir($this->source);
+			while (false !== ($this->file = readdir($handle))) {
+				if (!(in_array($this->file, $this->_exclude))) {
+					$fullPath = implode('/', array($this->source, $this->file));
+					$backupPath = implode('/', array($this->processed, $this->file));
+					if (filesize($fullPath) > 0) {
+						if (Exchanger::putFile($this->file, $fullPath)) {
+							$this->out("Successfully uploaded $this->file");
+							$this->out("Moving $fullPath to $backupPath");
+							rename($fullPath, $backupPath);
 						} else {
-							$this->out("$fullPath was empty. Removing...");
-							unlink($fullPath);
+							$this->error("There was a problem while uploading $this->file");
 						}
+					} else {
+						$this->out("$fullPath was empty. Removing...");
+						unlink($fullPath);
 					}
 				}
 			}
 		}
-		ftp_close($ftpConn);
 	}
 
 }
