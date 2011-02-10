@@ -120,7 +120,7 @@
 								'title' => $item->name,
 								'width' => '298',
 								'height' => '300')),
-							"/items/preview/{$item->url}",
+							"/items/preview/{$event->url}/{$item->url}",
 							array('escape' => false)
 						); ?>
 						<div class="details table-row">

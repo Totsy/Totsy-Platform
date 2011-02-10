@@ -65,6 +65,7 @@ if ($session['admin'] && !isset($session['acls'])) {
 	Router::connect('/events', 'Events::index');
 	Router::connect('/users/view/{:args}', 'Users::view');
 	Router::connect('/select/event/{:args}', 'Base::selectEvent');
+	Router::connect('/items/preview/{:event:[a-z0-9\-]+}/{:item:[a-z0-9\-]+}', 'Items::preview');
 
 	/**
 	 * ...and connect the rest of 'Pages' controller's urls.
