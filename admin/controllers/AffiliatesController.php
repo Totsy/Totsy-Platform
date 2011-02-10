@@ -12,14 +12,22 @@ use MongoCollection;
 class AffiliatesController extends \admin\controllers\BaseController {
 
 	public $sitePages = array(
-	    '/register' => 'registration',
+	    '/a/' => 'landing page',
+	    'after_reg' => 'after registering',
 	    '/' => 'login',
 	    '/sales' => 'sales',
+	    'product' => 'product page',
+	    'event' => 'event page ',
 	    '/shopping/checkout' => 'checkout',
 	    '/shopping/process' => 'checkout process',
-	    '/orders/view' => 'orders confirmation',
-	    '/a/' => 'landing page'
+	    '/orders/view' => 'orders confirmation'
+
 	    );
+
+	public $packages = array(
+	    'regular' => 'regular',
+	    'super' => 'super',
+	);
 
 	public function index() {
 	   $affiliates = Affiliate::find('all',array('conditions'=>array('affiliate'=>true)));
@@ -50,14 +58,15 @@ class AffiliatesController extends \admin\controllers\BaseController {
 
             $info['active'] = (($data['active'] == '1' || $data['active'] == 'on')) ? true : false;
             $info['name'] = $data['affiliate_name'];
+            $info['level'] = $data['level'];
             $info['invitation_codes'] = array_values( $data['invitation_codes'] );
-            if($data['active_pixel'] == '1' || $data['active_pixel'] == 'on'){
-                $info['active_pixel'] = true;
-			    $info['pixel'] = Affiliate::pixelFormating($data['pixel'], $info['invitation_codes']);
-			   // die(var_dump($info['pixel']));
-			}else{
-			    $info['active_pixel'] = false;
+            if($info['level'] != 'regular'){
+                $info['active_pixel'] = (boolean) $data['active_pixel'];
+			    $info['pixel'] = Affiliate::pixelFormating($data['pixel'],
+			                                                $info['invitation_codes']
+			                                                );
 			}
+
 			$info['created_by'] = $affiliate->createdBy();
 			$info['date_created'] = new MongoDate( strtotime( date('D M d Y') ) );
 
@@ -66,7 +75,8 @@ class AffiliatesController extends \admin\controllers\BaseController {
 			}
 		}
 		$sitePages = $this->sitePages;
-        return compact('sitePages');
+		$packages = $this->packages;
+        return compact('sitePages', 'packages');
 	}
 
 	public function edit($id = NULL) {
@@ -82,13 +92,13 @@ class AffiliatesController extends \admin\controllers\BaseController {
 
             $info['active'] = (($data['active'] == '1' || $data['active'] == 'on')) ? true : false;
             $info['name'] = $data['affiliate_name'];
+            $info['level'] = $data['level'];
             $info['invitation_codes'] = array_values( $data['invitation_codes'] );
-            if($data['active_pixel'] == '1' || $data['active_pixel'] == 'on'){
-                $info['active_pixel'] = true;
-			    $info['pixel'] = Affiliate::pixelFormating($data['pixel'], $info['invitation_codes']);
-			   // die(var_dump($info['pixel']));
-			}else{
-			    $info['active_pixel'] = false;
+            if($info['level'] != 'regular'){
+                $info['active_pixel'] = (boolean) $data['active_pixel'];
+			    $info['pixel'] = Affiliate::pixelFormating($data['pixel'],
+			                            $info['invitation_codes']
+			                            );
 			}
 			$info['created_by'] = $affiliate->createdBy();
 			$info['date_created'] = new MongoDate( strtotime( date('D M d Y') ) );
@@ -98,8 +108,10 @@ class AffiliatesController extends \admin\controllers\BaseController {
 			}
         }
         $sitePages = $this->sitePages;
-        $affiliate = $affiliate->data();
-        return compact('sitePages','affiliate');
+		$packages = $this->packages;
+		$affiliate = $affiliate->data();
+        return compact('sitePages', 'packages','affiliate');
+
 	}
 }
 

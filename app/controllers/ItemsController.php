@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\controllers\BaseController;
+use app\models\Affiliate;
 use app\models\Item;
 use app\models\Event;
 use app\models\Cart;
@@ -18,7 +19,7 @@ class ItemsController extends BaseController {
 		$url = $this->request->item;
 		$event = $this->request->event;
 		if ($url == null) {
-			$this->redirect('/');
+			$this->redirect('/sales');
 		} else {
 			$item = Item::find('first', array(
 				'conditions' => array(
@@ -35,7 +36,7 @@ class ItemsController extends BaseController {
 				)));
 			}
 			if ($item == null || $event == null) {
-				$this->redirect('/');
+				$this->redirect('/sales');
 			} else {
 				$event = Event::find('first', array(
 					'conditions' => array(
@@ -44,7 +45,7 @@ class ItemsController extends BaseController {
 				)));
 
 				if ($event->end_date->sec < time()) {
-					$this->redirect('/');
+					$this->redirect('/sales');
 				} else {
 					++$item->views;
 					$item->save();
@@ -53,10 +54,11 @@ class ItemsController extends BaseController {
 					$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 				}
 			}
-
+            $pixel = Affiliate::getPixels('product', 'spinback',null);
+			$spinback_fb = Affiliate::generatePixel('spinback', $pixel, null, $_SERVER['REQUEST_URI'] );
 		}
 
-		return compact('item', 'event', 'related', 'sizes', 'shareurl', 'reserved');
+		return compact('item', 'event', 'related', 'sizes', 'shareurl', 'reserved', 'spinback_fb');
 	}
 
 	public function available() {
