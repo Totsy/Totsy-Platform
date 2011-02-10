@@ -113,6 +113,23 @@ class UsersController extends \admin\controllers\BaseController {
 		return (Session::write('userLogin', $sessionInfo));
 	}
 
+	/**
+	 * Update the informations of the current user.
+	 */
+	public function update($id = null) {
+		
+		if($id){
+			$headings = $this->_headings;
+			$user = User::find('first', array('conditions' => array('_id' => $id)));
+			$data = array_intersect_key($user->data(), array_flip($headings['user']));
+			$info = $this->sortArrayByArray($data, $headings['user']);
+			if ($this->request->data) {
+				$datas = $this->request->data;
+				print_r($datas);
+			}
+			return compact('user','info');	
+		}
+	}
 
 }
 
