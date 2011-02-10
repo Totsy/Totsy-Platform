@@ -70,8 +70,9 @@ class ItemsController extends BaseController {
 		return compact('item', 'details', 'event');
 	}
 
-	public function preview($url = null) {
-
+	public function preview() {
+		$url = $this->request->item;
+		$event = $this->request->event;
 		if ($url == null) {
 			$this->redirect('/');
 		} else {
@@ -79,9 +80,17 @@ class ItemsController extends BaseController {
 				'conditions' => array(
 					'enabled' => true,
 					'url' => $url),
-				'order' => array('modified_date' => 'DESC'
-			)));
-			if (!$item) {
+				'order' => array('modified_date' => 'DESC')
+			));
+			if ($item) {
+				$event = Event::find('first', array(
+					'conditions' => array(
+						'items' => array((string) $item->_id),
+						'enabled' => true,
+						'url' => $event
+				)));
+			}
+			if ($item == null || $event == null) {
 				$this->redirect('/');
 			} else {
 				$event = Event::find('first', array(
