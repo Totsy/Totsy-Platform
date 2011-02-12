@@ -35,9 +35,10 @@ class AffiliatesController extends BaseController {
                     $user['invited_by'] = $code;
                     extract(UsersController::registration($user));
                     $success = $saved;
+                     var_dump($success);
+                     die();
                 }
             }
-
              return compact('success');
 		}
 	}
@@ -50,6 +51,7 @@ class AffiliatesController extends BaseController {
 	    $pdata = $this->request->data;
         $message = false;
         $user = User::create();
+        $urlredirect = '';
 
         if ( ($affiliate)){
             $pixel = Affiliate::getPixels('after_reg', $affiliate);
@@ -57,6 +59,9 @@ class AffiliatesController extends BaseController {
            $gdata = $this->request->query;
             if( ($gdata) ){
                 $affiliate = Affiliate::storeSubAffiliate($gdata, $affiliate);
+                if (array_key_exists('url', $gdata)) {
+                    $urlredirect = $gdata['url'];
+                }
             }
 
             if( ($pdata) ) {
@@ -89,7 +94,11 @@ class AffiliatesController extends BaseController {
                        }
                     }
                     Session::write('pixel',$pixel);
-                    $this->redirect('/sales');
+                    if(($urlredirect)) {
+                        $this->redirect($urlredirect);
+                    }else{
+                        $this->redirect('/sales');
+                    }
                 }
             }
         }

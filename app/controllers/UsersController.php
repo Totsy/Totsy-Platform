@@ -105,7 +105,7 @@ class UsersController extends BaseController {
 				Silverpop::send('registration', $data);
 				$ipaddress = $this->request->env('REMOTE_ADDR');
 				User::log($ipaddress);
-				$this->redirect('/');
+				$this->redirect('/sales');
 			}
 		}
 		$this->_render['layout'] = 'login';

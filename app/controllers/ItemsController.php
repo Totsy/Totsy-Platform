@@ -54,8 +54,12 @@ class ItemsController extends BaseController {
 					$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 				}
 			}
-            $pixel = Affiliate::getPixels('product', 'spinback',null);
-			$spinback_fb = Affiliate::generatePixel('spinback', $pixel, null, $_SERVER['REQUEST_URI'] );
+            $pixel = Affiliate::getPixels('product', 'spinback');
+       // var_dump($item->primary_image);
+			$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
+			                                            array('product' => $_SERVER['REQUEST_URI'])
+			                                            );
+		 //  die(var_dump($spinback_fb));
 		}
 
 		return compact('item', 'event', 'related', 'sizes', 'shareurl', 'reserved', 'spinback_fb');

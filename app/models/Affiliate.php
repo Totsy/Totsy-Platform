@@ -33,16 +33,21 @@ class Affiliate extends Base {
 		                    ));
 		$pixels = Affiliate::find('all', $options );
 		$pixels = $pixels->data();
+
 		$pixel = NULL;
 
 		foreach($pixels as $data) {
 			foreach($data['pixel'] as $index) {
+
                 if(in_array($url, $index['page'])) {
-                    $pixel .= static::generatePixel($invited_by, $index['pixel'], $orderid);
+                    if($url == '/orders/view'){
+                        $pixel .= static::generatePixel($invited_by, $index['pixel'], array( 'orderid' => $orderid));
+                    }else{
+                        $pixel .= static::generatePixel($invited_by, $index['pixel']);
+                    }
 				}
 			}
 		}
-       // die(var_dump($url));
 		return $pixel;
 	}
 
@@ -56,13 +61,15 @@ class Affiliate extends Base {
 		return $string;
 	}
 
-    public static function generatePixel($invited_by, $pixel, $orderid = NULL, $product = NULL) {
+    public static function generatePixel($invited_by, $pixel, $options = array()) {
+
         if($invited_by == 'w4'){
             $transid = 'totsy' . static::randomString();
             return '<br/>' . str_replace('$', $transid,$pixel );
-        }else if($invited_by == 'spinback' && ( ($orderid) || ($product) )){
+        }else if($invited_by == 'spinback' && ($options)) {
             $insert = '';
-            if (($orderid)) {
+            if (array_key_exists('orderid', $options) && ($options['orderid'])) {
+                $orderid = $options['orderid'];
                 $order = Order::find('all', array('conditions' => array('order_id' => $orderid)));
                 $order = $order->data();
                 if(($order)) {
@@ -72,7 +79,8 @@ class Affiliate extends Base {
                 return str_replace('$' , $insert, $pixel);
             }
 
-            if(($product)) {
+            if(array_key_exists('product', $options) && ($options['product'])) {
+                $product = $options['product'];
                 $last = strrpos($product, '/');
                 $item = substr($product, $last + 1);
                 $item = Item::find('first', array(
@@ -81,10 +89,13 @@ class Affiliate extends Base {
                         'url' => $item),
                     'order' => array('modified_date' => 'DESC'
                 )));
+               $insert .= ' pi= http://totsy.local/image/' . $item->primary_image .'.jpeg';
                $insert .= ' pid=' . $item->_id;
-               $insert .= ' plp=http://totsy.local' . $product;
+               $insert .= ' plp="http://totsy.local/a/spinback&url=http://totsy.local' . $product . '"';
                $insert .= ' pn="' . $item->description . '"';
                $insert .= ' m="' . $item->vendor . '"';
+               $insert .= 'msg= "Check out this item!"';
+
                return str_replace('$',$insert,$pixel);
             }
         }else if($invited_by == 'linkshare'){
@@ -95,16 +106,23 @@ class Affiliate extends Base {
     }
 
 	public static function storeSubAffiliate($get_data, $affiliate) {
-            $subaff = (array_key_exists('subid',$get_data)) ? $get_data['subid'] : $get_data['siteId'];
-            $conditions = array('invitation_codes' => $affiliate);
-            $col = Affiliate::collection();
-            if($col->count($conditions) > 0) {
-                $col->update($conditions, array(
-                        '$addToSet' => array(
-                            'sub_affiliates' => $subaff
-                        )));
-            }
-           return $affiliate .= $subaff;
+        if (array_key_exists('subid',$get_data)) {
+            $subaff = $get_data['subid'];
+        } else if (array_key_exists('subID',$get_data)) {
+            $subaff = $get_data['siteID'];
+        }else {
+            return $affiliate;
+        }
+
+        $conditions = array('invitation_codes' => $affiliate);
+        $col = Affiliate::collection();
+        if($col->count($conditions) > 0) {
+            $col->update($conditions, array(
+                    '$addToSet' => array(
+                        'sub_affiliates' => $subaff
+                    )));
+        }
+       return $affiliate .= $subaff;
 	}
 }
 

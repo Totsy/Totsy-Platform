@@ -143,7 +143,7 @@ class ReportsController extends BaseController {
 		if ($this->request->data) {
 			$criteria = $this->request->data;
 			$name = $this->request->data['affiliate'];
-			$affiliate = new MongoRegex("/$name/i");
+			$affiliate = new MongoRegex("/^$name/i");
 			if ($this->request->data['min_date'] && $this->request->data['max_date']) {
 				$min = new MongoDate(strtotime($this->request->data['min_date']));
 				$max = new MongoDate(strtotime($this->request->data['max_date']));
@@ -458,7 +458,7 @@ class ReportsController extends BaseController {
 		));
 		return $orders->data();
 	}
-	
+
 	public function getOrderItems($eventId = null) {
 		$items = null;
 		if ($eventId) {
@@ -470,9 +470,9 @@ class ReportsController extends BaseController {
 		}
 		return $items;
 	}
-    
+
     public function googleAnalytics() {
-		
+
 	}
 
 	public function productfile($eventId = null) {
