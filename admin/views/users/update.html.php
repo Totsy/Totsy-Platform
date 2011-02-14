@@ -11,7 +11,7 @@
 	<table cellspacing="0" cellpadding="0" border="0" width="695">
 		<tr>
 			<td valign="top">
-				<h2 class="gray mar-b">User Informations</h2>
+				<h2 class="gray mar-b">User Information</h2>
 				<hr />
 				<table border="0" cellspacing="5" cellpadding="5" width="100">
 						<?php foreach ($info as $key => $value): ?>
@@ -32,22 +32,27 @@
 					<fieldset>
 						<?=$this->form->create(); ?>
 						<table>
+							<?php foreach ($groups as $group):
+									//check groups of the user
+									$checked = false;
+									if(!empty($user["groups"])){
+										foreach($user["groups"] as $u_group)
+										{
+											if($u_group["_id"] == $group["_id"]) $checked = true;
+										}
+									}?>
 						<tr>
-							<td>Financial :</td> 
-							<td><?=$this->form->checkbox( 'financial', array('value' => '1' ) ); ?></td>
+							<td><?=$group["name"]?></td>
+							<td>
+							<?php
+							if($checked==true)
+									echo $this->form->checkbox( $group["name"], array('value' => '1', 'checked' => 'checked'));
+							else
+									echo $this->form->checkbox( $group["name"], array('value' => '1'));
+								?>
+							</td>
 						</tr>
-						<tr>
-							<td>Marketing :</td> 
-							<td><?=$this->form->checkbox( 'marketing', array('value' => '1' ) ); ?></td>
-						<tr>
-						</tr>
-							<td>Tech : </td> 
-							<td><?=$this->form->checkbox( 'tech', array('value' => '1' ) ); ?></td>
-						</tr>
-						<tr>
-							<td>Administration :</td> 
-							<td><?=$this->form->checkbox( 'administration', array('value' => '1' ) ); ?></td>
-						</tr>
+						 	<?php endforeach ?>
 						</table>
 						<?=$this->form->submit('Update', array('style' => 'float:right; width:100px; margin: 0px 20px 0px 0px;'))?>
 						<?=$this->form->end(); ?>

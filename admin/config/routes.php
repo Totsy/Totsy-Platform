@@ -45,7 +45,6 @@ Router::connect('/logout', 'Users::logout');
 Router::connect('/', array('Pages::view', 'home'));
 Router::connect('/search/{:search}', 'Search::view');
 
-
 /**
  * Hooking up ACLs
  */
@@ -64,6 +63,7 @@ if ($session['admin'] && !isset($session['acls'])) {
 	Router::connect('/account/add/{:args}', 'Account::add');
 	Router::connect('/events', 'Events::index');
 	Router::connect('/users/view/{:args}', 'Users::view');
+	//Router::connect('/users/update/{:args}', 'Users::update');
 	Router::connect('/select/event/{:args}', 'Base::selectEvent');
 	Router::connect('/items/preview/{:event:[a-z0-9\-]+}/{:item:[a-z0-9\-]+}', 'Items::preview');
 

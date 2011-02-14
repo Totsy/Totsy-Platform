@@ -3,7 +3,7 @@
 namespace admin\controllers;
 
 use admin\models\Group;
-use \lithium\data\Connections;
+use lithium\data\Connections;
 use admin\controllers\BaseController;
 use MongoCode;
 use MongoDate;
@@ -16,7 +16,7 @@ use MongoId;
  */
 
 class GroupsController extends \admin\controllers\BaseController {
-	
+
 	/**
 	* Main view
 	*
@@ -24,21 +24,24 @@ class GroupsController extends \admin\controllers\BaseController {
 	public function index() {
 		if($this->request->data){
 			$datas = $this->request->data;
+			//Case : Create a group
 			if($datas["add_group"] != ""){
 				$this->create($datas["add_group"]);
-			}
+			}//Case : Remove a group
 			elseif($datas["remove_group"] != ""){
 				$this->remove($datas["remove_group"]);
-			}
+			}//Case update ACLs of groups
 			else{
-				$group = Group::find('first', array('conditions' => array('name' => $datas["select_group"])));
+				$group = Group::find('first', array('conditions' =>
+				array('name' => $datas["select_group"])));
 				if(!empty($datas["select_group"]) && ($datas["current"] == $datas["select_group"])){
 					$this->update($group["_id"]);
 				}
-				$group = Group::find('first', array('conditions' => array('name' => $datas["select_group"])));
+				$group = Group::find('first', array('conditions' =>
+				array('name' => $datas["select_group"])));
 			}
 		}
-		
+
 		$groups = Group::find('all');
 		$select_groups["undefined"] = "select a group";
 		foreach($groups as $gro){
@@ -46,41 +49,48 @@ class GroupsController extends \admin\controllers\BaseController {
 		}
 		return compact('group','select_groups');
 	}
-	
+
 	/**
-	* The view method 
+	* The view method
 	*
-	* @param string $id The _id of the order
+	* @param string $id The _id of the group
 	*/
 	public function view($id = null) {
 	}
-	
+
 	/**
 	 * Update the informations of the groups.
+	 * @param string $id The _id of the group
 	 */
 	public function update($id = null){
 		if($id != null){
 			$datas = $this->request->data;
 			$groupsCollection = Group::collection();
-
-			foreach($datas as $key => $data)
-			{
+			foreach($datas as $key => $data) {
 				$param = explode("_", $key);
-				if($param[0] == "acl" && !empty($data) ) $acls[$param[2]][$param[1]] = $data;
+				if($param[0] == "acl" && !empty($data)){
+					$acls[$param[2]][$param[1]] = $data;
+				}
 			}
 			if(!empty($acls) || $datas["type"] == "cancel"){
-				$groupsCollection->update(array("_id" => $id) , array('$unset' => array( "acls" => 1)));
+				$groupsCollection->update(array("_id" => $id) ,
+				array('$unset' => array( "acls" => 1)));
 				if(!empty($acls)){
 					foreach($acls as $acl){
 						if(($acl["connection"] != "") && ($acl["route"] != "")){
-							$groupsCollection->update(array("_id" => $id) , array('$push' => array( "acls" => $acl)));
+							$groupsCollection->update(array("_id" => $id) ,
+							array('$push' => array( "acls" => $acl)));
 						}
 					}
 				}
 			}
 		}
 	}
-	
+
+	/**
+	* Create a new group in groups collection
+	* @param string $name of the group to create.
+	*/
 	public function create($name = null)
 	{
 		$test_group = Group::find('first', array('conditions' => array('name' => $name)));
@@ -89,7 +99,11 @@ class GroupsController extends \admin\controllers\BaseController {
 			$group->save();
 		}
 	}
-	
+
+	/**
+	* Remove a group from groups collection
+	* @param string $name of the group to remove.
+	*/
 	public function remove($name = null)
 	{
 		$test_group = Group::find('first', array('conditions' => array('name' => $name)));
@@ -98,7 +112,5 @@ class GroupsController extends \admin\controllers\BaseController {
 		}
 	}
 }
-
-
 
 ?>

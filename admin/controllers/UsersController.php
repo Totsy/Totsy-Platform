@@ -9,7 +9,8 @@ use lithium\data\Connections;
 use admin\models\Cart;
 use admin\models\Credit;
 use admin\models\Order;
-
+use admin\models\Group;
+use MongoId;
 
 
 /**
@@ -76,7 +77,7 @@ class UsersController extends \admin\controllers\BaseController {
 				$info = $this->sortArrayByArray($data, $headings['user']);
 			}
 		}
-	
+
 		return compact('user', 'credits', 'orders', 'headings', 'info', 'reasons', 'admin');
 	}
 	/**
@@ -114,23 +115,84 @@ class UsersController extends \admin\controllers\BaseController {
 	}
 
 	/**
-	 * Update the informations of the current user.
-	 */
+	* Update the informations (Groups and ACLs) of the current user.
+	* @param string $id The _id of the User
+	*/
 	public function update($id = null) {
-		
 		if($id){
 			$headings = $this->_headings;
-			$user = User::find('first', array('conditions' => array('_id' => $id)));
-			$data = array_intersect_key($user->data(), array_flip($headings['user']));
-			$info = $this->sortArrayByArray($data, $headings['user']);
+			$usersCollection = User::collection();
+			$groupsCollection = Group::collection();
+			//Test datas form
 			if ($this->request->data) {
 				$datas = $this->request->data;
-				print_r($datas);
-			}
-			return compact('user','info');	
+				$n = 0;
+				$j = 0;
+				if(!empty($datas)) {
+					foreach($datas as $key => $data) {
+						$group = Group::find('first', array('conditions' => array('name' => $key)));
+						//Test if group exist and the data field is not equal to null
+						if(!empty($group) && ($data == 1)){
+							$groups_user[$n]["name"] = $group["name"];
+							$groups_user[$n]["_id"] = $group["_id"];
+							//Test if group has acls
+							if(!empty($group["acls"])){
+								//Fill the futur acls array for the actual user
+								foreach($group["acls"] as $group_acl) {
+									$acls_pre_user[$j]["connection"] = $group_acl["connection"];
+									$acls_pre_user[$j]["route"] = $group_acl["route"];
+									$j++;
+								}
+							}
+							$n++;
+						}
+					}//end foreach datas
+					//Clean acls result
+					$acls_user = User::arrayUnique($acls_pre_user);
+					//Decrement total_users from group erased if groups will be updated.
+					if($n > 0) {
+						$user = User::find('first', array('conditions' => array('_id' => $id)));
+						if(!empty($user["groups"])){
+							foreach($user["groups"] as $user_group){
+								$groupsCollection->update(array("_id" =>
+								new MongoId($user_group["_id"])) ,
+								array('$inc' => array( "total_users" => -1 )));
+							}
+						}
+					}
+					//Add groups and ACLs to the user document
+					if(!empty($groups_user)) {
+						//Test if id is a string or a MongoId
+						if(strlen($id) > 10) {
+							$usersCollection->update(array("_id" => new MongoId($id)) ,
+							array('$set' => array( "groups" => $groups_user)),
+							array('upsert' => true));
+							$usersCollection->update(array("_id" => new MongoId($id)) ,
+							array('$set' => array( 'acls' => $acls_user)), array('upsert' => true));
+						}else {
+							$usersCollection->update(array("_id" => $id) ,
+							array('$set' => array( "groups" => $groups_user)),
+							array('upsert' => true));
+							$usersCollection->update(array("_id" => $id) ,
+							array('$set' => array( 'acls' => $acls_user)),
+							array('upsert' => true));
+						}
+						//Increment total_users for the group selected
+						foreach($groups_user as $grou_us) {
+							$groupsCollection->update(array("_id" => new MongoId($grou_us["_id"])) ,
+							array('$inc' => array( "total_users" => 1 )));
+						}
+					}//End of if groups to add condition
+				}//End of Request->Datas condition
+			}//End of Id condition
+			//Get actual user informations and all groups
+			$user = User::find('first', array('conditions' => array('_id' => $id)));
+			$groups = Group::find('all');
+			$data = array_intersect_key($user->data(), array_flip($headings['user']));
+			$info = $this->sortArrayByArray($data, $headings['user']);
+			return compact('user','groups','info');
 		}
 	}
-
 }
 
 ?>
