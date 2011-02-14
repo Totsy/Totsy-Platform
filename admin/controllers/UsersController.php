@@ -148,7 +148,9 @@ class UsersController extends \admin\controllers\BaseController {
 						}
 					}//end foreach datas
 					//Clean acls result
-					$acls_user = User::arrayUnique($acls_pre_user);
+					
+					if(count($acls_pre_user)>1) $acls_user = User::arrayUnique($acls_pre_user);
+					else $acls_user = $acls_pre_user;
 					//Decrement total_users from group erased if groups will be updated.
 					if($n > 0) {
 						$user = User::find('first', array('conditions' => array('_id' => $id)));

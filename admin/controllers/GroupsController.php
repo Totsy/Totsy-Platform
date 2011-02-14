@@ -28,7 +28,7 @@ class GroupsController extends \admin\controllers\BaseController {
 			if($datas["add_group"] != ""){
 				$this->create($datas["add_group"]);
 			}//Case : Remove a group
-			elseif($datas["remove_group"] != ""){
+			elseif($datas["remove_group"] != "undefined" && $datas["select_group"] == "undefined"){
 				$this->remove($datas["remove_group"]);
 			}//Case update ACLs of groups
 			else{

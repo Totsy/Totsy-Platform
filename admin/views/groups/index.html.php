@@ -1,13 +1,14 @@
 <?=$this->html->script('jquery-1.4.2');?>
-<div>
-	<h2>Groups - Update ACLs</h2>
+<div class='box'>
+	<h1>Groups - ACL Management</h1>
+	<div class="clear"></div>
 	<?=$this->form->create(null ,array('id'=>'groupsFrom')); ?>
 	<?=$this->form->select("select_group", $select_groups, array("style" => "width:150px;font-weight:bold;font-size:13px;", "onChange" => 'this.form.submit();', 'value' => $group["name"])); ?><br />
 	<?php if(!empty($group)): ?>
 		<br />
 			<div id="table_wrap" class="container_16">
 				<div id="title_row" class="grid_16" style="background:#f7f7f7; border-bottom:1px solid #ddd; margin:0px 0px 5px 0px;">
-					<h4>Group: <?=$group["name"]?></h4>
+					<h2>Group: <?=$group["name"]?></h2>
 					<p>Total Users : <?=$group["total_users"]?></p>
 				</div>
 				<?php $n=0;?>
@@ -54,15 +55,15 @@
 	<div class="clear"></div>
 	<?php if(empty($group)): ?>
 		<div style="background:#f7f7f7; border-bottom:1px solid #ddd; margin:0px 0px 5px 0px; padding:5px;">
-			<span style="font-size:24px;">Create a Group</span>
+			<span style="font-size:22px;">Create a Group</span>
 			<?=$this->form->create(null ,array('id'=>'addGroupForm','enctype' => "multipart/form-data")); ?>
 			<span style="margin:0px 20px 0px 20px;">Type the name : <?=$this->form->text("add_group", array('class' => 'inputbox', "id" => "add_group")); ?></span>
 			<?=$this->form->submit('Add', array("style" => "width:100px;font-weight:bold;font-size:12px;"))?>
 		</div>
 		<div style="background:#f7f7f7; border-bottom:1px solid #ddd; margin:0px 0px 5px 0px; padding:5px;">
-			<span style="font-size:24px;">Remove a Group </span>
+			<span style="font-size:22px;">Remove a Group </span>
 			<?=$this->form->create(null ,array('id'=>'removeGroupForm','enctype' => "multipart/form-data")); ?>
-			<span style="margin:0px 20px 0px 20px;">Type the name : <?=$this->form->text("remove_group", array('class' => 'inputbox', "id" => "remove_group")); ?></span>
+			<span style="margin:0px 20px 0px 20px;"><?=$this->form->select("remove_group", $select_groups, array("style" => "width:150px;font-weight:bold;font-size:13px;")); ?></span>
 			<?=$this->form->submit('Remove', array("style" => "width:100px;font-weight:bold;font-size:12px;"))?>
 		</div>
 	<?php endif ?>
