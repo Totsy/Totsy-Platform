@@ -871,7 +871,7 @@ function output(val){
 		</div>
 	
 		<div id="footer">
-		<img src="http://l.totsy.com/img/preview-mothw-fbml.jpg" alt="Mom Of The Week Prizes"/>
+		<img src="http://www.totsy.com/img/preview-mothw-fbml.jpg" alt="Mom Of The Week Prizes"/>
 	
 		</div>
 		
