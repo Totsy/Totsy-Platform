@@ -83,14 +83,14 @@ class OrderExport extends Base {
 	 *
 	 * @var string
 	 */
-	public $source = '/totsy/pending/';
+	public $source = '/resources/totsy/pending/';
 
 	/**
 	 * Directory of files holding the backup files to FTP.
 	 *
 	 * @var string
 	 */
-	public $processed = '/totsy/processed/';
+	public $processed = '/resources/totsy/processed/';
 
 	/**
 	 * Full path to file.
@@ -109,6 +109,8 @@ class OrderExport extends Base {
 	 */
 	public function run() {
 		Environment::set($this->env);
+		$this->source = LITHIUM_APP_PATH . $this->source;
+		$this->processed = LITHIUM_APP_PATH . $this->processed;
 		$this->events = array(
 			'4d485ae4538926705a009e34',
 			'4d4b133d538926ec2d0012a7',
@@ -128,8 +130,8 @@ class OrderExport extends Base {
 			$batch = $this->batchId['order_batch'];
 			$this->time = date('Ymdis');
 			$this->out("Generating orders under batch# $batch");
-			//$this->_orderGenerator();
-			//$this->_purchases();
+			$this->_orderGenerator();
+			$this->_purchases();
 			$this->_export();
 		} else {
 			$this->out('No events in queue for processing');

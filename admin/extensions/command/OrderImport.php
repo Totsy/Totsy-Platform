@@ -26,7 +26,12 @@ class OrderImport extends \lithium\console\Command {
 	 * The environment to use when running the command. db='development' is the default.
 	 * Set to 'production' if running live when using a cronjob.
 	 */
-	public $env = 'development';
+	public $env = 'production';
+	
+	/**
+	 * Allows verbose info logging. (default = false)
+	 */
+	public $verbose = false;
 
 	/**
 	 * CSV or XLS file to be imported.
@@ -59,14 +64,14 @@ class OrderImport extends \lithium\console\Command {
 	 *
 	 * @var string
 	 */
-	public $source = '/totsy/shipfiles';
+	public $source = '/resources/totsy/shipfiles';
 
 	/**
 	 * Directory of files holding shipping logs.
 	 *
 	 * @var string
 	 */
-	public $backup = '/totsy/shipfiles/backup';
+	public $backup = '/resources/totsy/shipfiles/backup';
 
 	/**
 	 * Full path to file.
@@ -86,16 +91,18 @@ class OrderImport extends \lithium\console\Command {
 	 * The default parsing is tab delimited in favor of
 	 */
 	public function run() {
-		$this->header('Ship File Processor');
+		Logger::info('Launching Li3 order-import');
 		Environment::set($this->env);
-		//Exchanger::getAll();
+		Exchanger::getAll();
+		$this->source = LITHIUM_APP_PATH . $this->source;
+		$this->backup = LITHIUM_APP_PATH . $this->backup;
 		$this->collection = OrderShipped::collection();
 		$this->collection->ensureIndex(array('hash' => 1), array("unique" => true));
-		if ($this->source) {
-			$handle = opendir($this->source);
+		$handle = opendir($this->source);
+		if ($handle) {
 			while (false !== ($this->file = readdir($handle))) {
 				if (!(in_array($this->file, $this->_exclude))) {
-		            $this->out("Trying to Process - $this->file");
+					Logger::info("Li3 order-import: Processing Ship File - $this->file");
 					$this->path = $this->source.'/'.$this->file;
 					$this->type = substr($this->file, -3);
 					switch ($this->type) {
@@ -113,14 +120,15 @@ class OrderImport extends \lithium\console\Command {
 						$fullPath = implode('/', array($this->source, $this->file));
 						$backupPath = implode('/', array($this->backup, $this->file));
 						if (rename($fullPath, $backupPath)) {
-							Logger::info("Renaming $fullPath to $backupPath");
+							Logger::info("Li3 order-import: Renaming $fullPath to $backupPath");
 						}
 					}
-		        }
-		    }
+				}
+			}
 		} else {
-			$this->out('Error: No directory provided');
+			Logger::error("Could not open $this->source");
 		}
+		Logger::info('Li3 order-import Finished');
 	}
 
 	/**
@@ -152,8 +160,7 @@ class OrderImport extends \lithium\console\Command {
 	}
 
 	/**
-	 * Parse Tab or CSV delimited files.
-	 *
+	 * Parse Tab delimited files.
 	 *
 	 */
 	protected function _tabParser() {
@@ -206,20 +213,27 @@ class OrderImport extends \lithium\console\Command {
 				$ship = OrderShipped::create($record);
 				$ship->save();
 				if ($ship) {
+					preg_match('/[A-Z0-9]{8,12}/s', $ship->OrderNum, $match);
+					$this->log("Adding Ship Log MongoId $ship->_id to Order $match[0]");
 					$orderCollection->update(
-						array('order_id' => $ship->OrderNum),
-						array('$push' => array('ship_records' => $ship->_id)),
+						array('$or' => array(array('order_id' => $match[0]), array('_id' => $ship->OrderId))),
+						array('$addToSet' => array('ship_records' => $ship->_id)),
 						array('upsert' => false)
 					);
 				}
 			} catch (\Exception $e) {
 				$message = $e->getMessage();
-				Logger::info($message);
+				$this->log($message);
 			}
 		}
 		return true;
 	}
 
+	public function log($message, $type = 'info') {
+		if ($this->verbose) {
+			Logger::$type('Li3 order-import:' . $message);
+		}
+	}
 
 
 }
