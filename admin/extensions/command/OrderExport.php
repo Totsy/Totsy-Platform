@@ -28,7 +28,7 @@ class OrderExport extends Base {
 	 *
 	 * @var string
 	 */
-	public $env = 'production';
+	public $env = 'development';
 
 	/**
 	 * The test boolean string flag will prevent saves to database. 'false' is the default.
@@ -83,14 +83,14 @@ class OrderExport extends Base {
 	 *
 	 * @var string
 	 */
-	public $source = '/totsy/pending';
+	public $source = '/totsy/pending/';
 
 	/**
 	 * Directory of files holding the backup files to FTP.
 	 *
 	 * @var string
 	 */
-	public $processed = '/totsy/processed';
+	public $processed = '/totsy/processed/';
 
 	/**
 	 * Full path to file.
@@ -110,14 +110,26 @@ class OrderExport extends Base {
 	public function run() {
 		Environment::set($this->env);
 		$this->events = array(
+			'4d485ae4538926705a009e34',
+			'4d4b133d538926ec2d0012a7',
+			'4d50151e538926aa780000e7',
+			'4d4ca3445389260a7b00019a',
+			'4d501984538926057a000080',
+			'4d4c4c0c538926783b005410',
+			'4d50137c53892682780000f1',
+			'4d50142b5389265478000098',
+			'4d5074b65389267c09000118',
+			'4d5081db5389263309000172',
+			'4d50345b5389266a7e000050',
+			'4d5090da5389261e0d000005'
 		);
 		if ($this->events) {
 			$this->batchId = array('order_batch' => substr(md5(uniqid(rand(),1)), 1, 20));
 			$batch = $this->batchId['order_batch'];
 			$this->time = date('Ymdis');
 			$this->out("Generating orders under batch# $batch");
-			$this->_orderGenerator();
-			$this->_purchases();
+			//$this->_orderGenerator();
+			//$this->_purchases();
 			$this->_export();
 		} else {
 			$this->out('No events in queue for processing');
@@ -131,6 +143,7 @@ class OrderExport extends Base {
 	public function _orderGenerator() {
 		$this->header('Generating Orders');
 		$orderCollection = Order::collection();
+		$itemCollection = Item::connection()->connection->items;
 		$orderFile = array();
 		$heading = ProcessedOrder::$_fileHeading;
 		$orders = $orderCollection->find(array(
@@ -145,14 +158,12 @@ class OrderExport extends Base {
 			foreach ($orders as $order) {
 				$conditions = array('Customer PO #' => array('$in' => array((string) $order['_id'], $order['_id'])));
 				$processCheck = ProcessedOrder::count(compact('conditions'));
+				$this->out("Already processed $order[_id]");
 				if ($processCheck == 0) {
 					$user = User::find('first', array('conditions' => array('_id' => $order['user_id'])));
 					$items = $order['items'];
 					foreach ($items as $item) {
-						$orderItem = Item::find('first', array(
-							'conditions' => array(
-								'_id' => $item['item_id']
-						)));
+						$orderItem = $itemCollection->findOne(array('_id' => new MongoId($item['item_id'])));
 						$orderFile[$inc]['ContactName'] = '';
 						$orderFile[$inc]['Date'] = date('m/d/Y');
 						if ($order['shippingMethod'] == 'ups') {
@@ -164,7 +175,7 @@ class OrderExport extends Base {
 						$orderFile[$inc]['Tel'] = $order['shipping']['telephone'];
 						$orderFile[$inc]['Country'] = '';
 						$orderFile[$inc]['OrderNum'] = $order['order_id'];
-						$orderFile[$inc]['SKU'] = Item::sku($orderItem->vendor, $orderItem->vendor_style, $item['size'], $orderItem->color);
+						$orderFile[$inc]['SKU'] = Item::sku($orderItem['vendor'], $orderItem['vendor_style'], $item['size'], $orderItem['color']);
 						$orderFile[$inc]['Qty'] = $item['quantity'];
 						$orderFile[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
 						$orderFile[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
@@ -190,7 +201,7 @@ class OrderExport extends Base {
 							$orderArray[] = $orderFile[$inc]['OrderNum'];
 						}
 						if ($this->test != 'true') {
-							$processedOrder = ProcessedOrder::create();
+							$processedOrder = ProcessedOrder::connection()->connection->{'orders.processed'};
 							$processedOrder->save($orderFile[$inc] + $this->batchId);
 						}
 						$this->out("Adding order $order[_id] to $handle");
@@ -211,9 +222,11 @@ class OrderExport extends Base {
 
 	/**
 	 * Take any string and convert to ASCII
+	 * @todo Check to see if this method is available in LI3 Util
 	 */
 	protected function _asciiClean($description) {
-		return preg_replace('/[^(\x20-\x7F)]*/','', $description);
+		$clean1 = preg_replace('/[^a-zA-Z0-9_-]/s', '', $description);
+		return preg_replace('/[^(\x20-\x7F)]*/','', $clean1);
 	}
 
 	/**
@@ -299,6 +312,7 @@ class OrderExport extends Base {
 	 */
 	protected function _purchases() {
 		$this->header('Generating Purchase Orders');
+		$orderCollection = Order::collection();
 		foreach ($this->events as $eventId) {
 			$purchaseHeading = ProcessedOrder::$_purchaseHeading;
 			$total = array('sum' => 0, 'quantity' => 0);
@@ -310,51 +324,47 @@ class OrderExport extends Base {
 			$vendorName = preg_replace('/[^(\x20-\x7F)]*/','', substr($this->_asciiClean($event->name), 0, 3));
 			$time = date('ymdis', $event->_id->getTimestamp());
 			$poNumber = 'TOT'.'-'.$vendorName.$time;
-			$handle = $this->source.'/TOTitpo'.$vendorName.$time.'.csv';
+			$handle = $this->source.'TOTitpo'.$vendorName.$time.'.csv';
 			$this->out("Opening PO file $handle");
 			$fp = fopen($handle, 'w');
 			$purchaseOrder = array();
 			$inc = 0;
 			foreach ($eventItems as $eventItem) {
 				foreach ($eventItem['details'] as $key => $value) {
-					$orders = Order::find('all', array(
-						'conditions' => array(
-							'items.item_id' => (string) $eventItem['_id'],
-							'items.size' => (string) $key,
-							'items.status' => array('$ne' => 'Order Canceled'),
-							'cancel' => array('$ne' => true)
-					)));
+					$orders = $orderCollection->find(array(
+						'items.item_id' => (string) $eventItem['_id'],
+						'items.size' => (string) $key,
+						'items.status' => array('$ne' => 'Order Canceled'),
+						'cancel' => array('$ne' => true))
+					);
 					if ($orders) {
-						$orderData = $orders->data();
-						if (!empty($orderData)) {
-							foreach ($orderData as $order) {
-								$items = $order['items'];
-								foreach ($items as $item) {
-									if (($item['item_id'] == $eventItem['_id']) && ((string) $key == $item['size'])){
-										$purchaseOrder[$inc]['Supplier'] = $eventItem['vendor'];
-										$purchaseOrder[$inc]['PO # / RMA #'] = $poNumber;
-										$purchaseOrder[$inc]['SKU'] = Item::sku(
-											$eventItem['vendor'],
-											$eventItem['vendor_style'],
-											$item['size'], 
-											$eventItem['color']
-										);
-										if (empty($purchaseOrder[$inc]['Qty'])) {
-											$purchaseOrder[$inc]['Qty'] = $item['quantity'];
-										} else {
-											$purchaseOrder[$inc]['Qty'] += $item['quantity'];
-										}
-										$purchaseOrder[$inc] = $this->sortArrayByArray($purchaseOrder[$inc], $purchaseHeading);
+						foreach ($orders as $order) {
+							$items = $order['items'];
+							foreach ($items as $item) {
+								if (($item['item_id'] == $eventItem['_id']) && ((string) $key == $item['size'])){
+									$purchaseOrder[$inc]['Supplier'] = $eventItem['vendor'];
+									$purchaseOrder[$inc]['PO # / RMA #'] = $poNumber;
+									$purchaseOrder[$inc]['SKU'] = Item::sku(
+										$eventItem['vendor'],
+										$eventItem['vendor_style'],
+										$item['size'], 
+										$eventItem['color']
+									);
+									if (empty($purchaseOrder[$inc]['Qty'])) {
+										$purchaseOrder[$inc]['Qty'] = $item['quantity'];
+									} else {
+										$purchaseOrder[$inc]['Qty'] += $item['quantity'];
 									}
+									$purchaseOrder[$inc] = $this->sortArrayByArray($purchaseOrder[$inc], $purchaseHeading);
 								}
 							}
-							if (!empty($purchaseOrder[$inc])) {
-								fputcsv($fp, array_merge($purchaseHeading, $purchaseOrder[$inc]));
-								$po = PurchaseOrder::create();
-								$po->save(array_merge($purchaseHeading, $purchaseOrder[$inc]) + $this->batchId);
-							}
-							++$inc;
 						}
+						if (!empty($purchaseOrder[$inc])) {
+							fputcsv($fp, array_merge($purchaseHeading, $purchaseOrder[$inc]));
+							$po = PurchaseOrder::create();
+							$po->save(array_merge($purchaseHeading, $purchaseOrder[$inc]) + $this->batchId);
+						}
+						++$inc;
 					}
 				}
 			}
@@ -383,8 +393,8 @@ class OrderExport extends Base {
 			$handle = opendir($this->source);
 			while (false !== ($this->file = readdir($handle))) {
 				if (!(in_array($this->file, $this->_exclude))) {
-					$fullPath = implode('/', array($this->source, $this->file));
-					$backupPath = implode('/', array($this->processed, $this->file));
+					$fullPath = $this->source.$this->file;
+					$backupPath = $this->processed.$this->file;
 					if (filesize($fullPath) > 0) {
 						if (Exchanger::putFile($this->file, $fullPath)) {
 							$this->out("Successfully uploaded $this->file");
