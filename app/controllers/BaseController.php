@@ -51,12 +51,19 @@ class BaseController extends \lithium\action\Controller {
         if(preg_match('/a/',$_SERVER['REQUEST_URI'])) {
 
 		    $invited_by = substr($_SERVER['REQUEST_URI'],3);
+
+            if(strpos($invited_by, '?')) {
+              $invited_by = substr($invited_by,0,strpos($invited_by, '?'));
+		    }
+
 		    if(strpos($invited_by, '&')) {
 		        $invited_by = substr($invited_by,0,strpos($invited_by, '&'));
 		    }
-        }
-	    $pixel = Affiliate::getPixels($invited_by);
 
+        }
+	    $pixel = Affiliate::getPixels($_SERVER['REQUEST_URI'], $invited_by);
+        $pixel .= Session::read('pixel');
+        Session::delete('pixel');
 		$this->set(compact('pixel'));
 
 		$this->_render['layout'] = 'main';

@@ -4,7 +4,7 @@ Grey Box Method - Layout CSS
 ----------------------------------------------- */
 
 body {
-	background: #fff url(../img/bg-img.png) repeat-x;
+	background: #fff /* url(../img/bg-img.png) repeat-x */;
 	color: #333;
 	font-size: 11px;
 	padding: 0px;

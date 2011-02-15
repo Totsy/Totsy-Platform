@@ -139,8 +139,8 @@ class UsersController extends BaseController {
 					}
 					if ($saved = $user->save($data)) {
 						$data = array(
-						'user' => $user,
-						'email' => $user->email
+							'user' => $user,
+							'email' => $user->email
 						);
 						Silverpop::send('registration', $data);
 					}
@@ -263,7 +263,6 @@ class UsersController extends BaseController {
 			}
 		}
 		return compact("user", "status");
-
 	}
 
 	public function reset() {

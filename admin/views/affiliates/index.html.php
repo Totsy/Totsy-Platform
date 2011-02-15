@@ -29,7 +29,8 @@
     <table id='codeSummary' class='datatable' >
         <thead>
             <tr>
-                <th> Affiliates Code </th>
+                <th> Affiliates Name </th>
+                <th> Affiliates Level </th>
                 <th> Active Affiliate </th>
                 <th> Pixels? </th>
                 <th> Created By: </th>
@@ -40,11 +41,8 @@
          <tbody>
             <?php foreach($affiliates->data() as $affiliate): ?>
 				<tr>
-					<?php if(is_array($affiliate['invitation_codes'])): ?>
-						<td> <?php echo substr(implode(",", $affiliate['invitation_codes']), 0,15).'...'; ?> </td>
-					<?php else:?>
-						<td> <?=$affiliate['invitation_codes']; ?> </td>
-					<?php endif;?>
+					<td> <?php if(!empty($affiliate['name'])) echo $affiliate['name']; ?> </td>
+					<td> <?php if(!empty($affiliate['level'])) echo $affiliate['level']; ?> </td>
 					<td> <?php if(!empty($affiliate['active'])) echo $affiliate['active']; ?> </td>
 					<td> <?php if(!empty($affiliate['active_pixel'])) echo $affiliate['active_pixel']; ?> </td>
 					<td> <?php if(!empty($affiliate['created_by'])) echo $affiliate['created_by']; ?> </td>

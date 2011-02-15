@@ -18,14 +18,14 @@
 						<tr>
 							<td valign="top">
 								<br />
-								<?php if($order->cancel == true){?>
+								<?php if($order->cancel == true): ?>
 									<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
 										The order has been canceled
 									</p><br />
 									<p style="text-align:center;">
 										<button id="uncancel_button" style="font-weight:bold;font-size:14px;"> Uncancel Order</button>
 									</p><br />
-								<?php }else{ ?>
+								<?php else: ?>
 									<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
 										The order is expected to ship on <?=date('M d, Y', $shipDate)?>
 									</p><br />
@@ -33,7 +33,7 @@
 									<button id="cancel_button" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
 									<button id="update_shipping" style="font-weight:bold;font-size:14px;">Update Shipping</button>
 									</p><br />
-									<? } ?>
+								<?php endif ?>
 									<div id="cancel_form" style="display:none">
 										<?=$this->form->create(null ,array('id'=>'cancelForm','enctype' => "multipart/form-data")); ?>
 										<?=$this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
@@ -106,83 +106,83 @@
 												</div>
 											<?=$this->form->submit('Confirm new shipping details')?>
 										</div>
-										<?php if(!empty($order->tracking_numbers)){ ?>
-										<div>
-										<h2 class="gray mar-b">Order Tracking<span style="font-size:11px; float:right; font-weight:normal;"></h2><hr />
-										<table cellspacing="0" cellpadding="0" border="0" width="695">
-										<tr>
-											<td valign="top">
-										</tr>
-										<tr>
-										<td colspan="4"><!-- start order tracking table -->
-											<table cellpadding="0" cellspacing="0" border="0" width="100%">
-												<tr style="background:#ddd;">
-													<td style="padding:5px; width:30px;"><strong>N°</strong></td>
-													<td style="padding:5px; width:400px;"><strong>Tracking Number</strong></td>
-												</tr>
-												<?php $numbers = $order->tracking_numbers->data(); ?>
-												<?php $n=0; ?>
-												<?php foreach ($numbers as $number): ?>
+											<?php if (!empty($order->tracking_numbers)): ?>
+												<div>
+												<h2 class="gray mar-b">Order Tracking<span style="font-size:11px; float:right; font-weight:normal;"></h2><hr />
+												<table cellspacing="0" cellpadding="0" border="0" width="695">
 												<tr>
-													<td style="padding:5px" title="number">
-													<?=$n?>
-													</td>
-													<td style="padding:5px" title="type">
-													<?=$this->shipment->link($number, array('type' => $order['shippingMethod']))?>
-													</td>
-												<?php $n++; ?>
-												<?php endforeach ?>
+													<td valign="top">
 												</tr>
-											</table>
-										</td><!-- end order tracking table -->
-										</tr>
-										</table>
-										</div>
-										<?php } //endif tracking numbers?>
-										<?php if(!empty($order->modifications)){ ?>
-										<div>
-										<h2 class="gray mar-b">Modifications Logs <span style="font-size:11px; float:right; font-weight:normal;"></h2><hr />
-										<table cellspacing="0" cellpadding="0" border="0" width="695">
-										<tr>
-											<td valign="top">
-										</tr>
-										<tr>
-										<td colspan="4"><!-- start order modifications table -->
-											<table cellpadding="0" cellspacing="0" border="0" width="100%">
-												<tr style="background:#ddd;">
-													<td style="padding:5px; width:30px;"><strong>N°</strong></td>
-													<td style="padding:5px; width:100px;"><strong>Type</strong></td>
-													<td style="padding:5px; width:100px;"><strong>Author</strong></td>
-													<td style="padding:5px; width:200px;"><strong>Date</strong></td>
-												</tr>
-												<?php $modifications = $order->modifications->data(); ?>
-												<?php krsort($modifications); ?>
-												<?php $n=0; ?>
-												<?php foreach ($modifications as $modification): ?>
-												<?php if($n<6) { ?>
 												<tr>
-													<td style="padding:5px" title="number">
-														<?=$n?>
-													</td>
-													<td style="padding:5px" title="type">
-														<?=ucfirst($modification["type"])?>
-													</td>
-													<td style="padding:5px" title="author">
-														<?=$modification["author"]?>
-													</td>
-													<td style="padding:5px" title="date">
-														<?=date('Y-M-d h:i:s', $modification["date"]["sec"])?>
-													</td>
-												<?php $n++; ?>
-												<?php } ?>
-												<?php endforeach ?>
+												<td colspan="4"><!-- start order tracking table -->
+													<table cellpadding="0" cellspacing="0" border="0" width="100%">
+														<tr style="background:#ddd;">
+															<td style="padding:5px; width:30px;"><strong>N°</strong></td>
+															<td style="padding:5px; width:400px;"><strong>Tracking Number</strong></td>
+														</tr>
+														<?php $numbers = $order->tracking_numbers->data(); ?>
+														<?php $n=0; ?>
+														<?php foreach ($numbers as $number): ?>
+														<tr>
+															<td style="padding:5px" title="number">
+															<?=$n?>
+															</td>
+															<td style="padding:5px" title="type">
+															<?=$this->shipment->link($number, array('type' => $order['shippingMethod']))?>
+															</td>
+														<?php $n++; ?>
+														<?php endforeach ?>
+														</tr>
+													</table>
+												</td><!-- end order tracking table -->
 												</tr>
+												</table>
+												</div>
+											<?php endif ?>
+										<?php if (!empty($order->modifications)): ?>
+											<div>
+											<h2 class="gray mar-b">Modifications Logs <span style="font-size:11px; float:right; font-weight:normal;"></h2><hr />
+											<table cellspacing="0" cellpadding="0" border="0" width="695">
+											<tr>
+												<td valign="top">
+											</tr>
+											<tr>
+											<td colspan="4"><!-- start order modifications table -->
+												<table cellpadding="0" cellspacing="0" border="0" width="100%">
+													<tr style="background:#ddd;">
+														<td style="padding:5px; width:30px;"><strong>N°</strong></td>
+														<td style="padding:5px; width:100px;"><strong>Type</strong></td>
+														<td style="padding:5px; width:100px;"><strong>Author</strong></td>
+														<td style="padding:5px; width:200px;"><strong>Date</strong></td>
+													</tr>
+													<?php $modifications = $order->modifications->data(); ?>
+													<?php krsort($modifications); ?>
+													<?php $n=0; ?>
+													<?php foreach ($modifications as $modification): ?>
+														<?php if ($n<6): ?>
+															<tr>
+																<td style="padding:5px" title="number">
+																	<?=$n?>
+																</td>
+																<td style="padding:5px" title="type">
+																	<?=ucfirst($modification["type"])?>
+																</td>
+																<td style="padding:5px" title="author">
+																	<?=$modification["author"]?>
+																</td>
+																<td style="padding:5px" title="date">
+																	<?=date('Y-M-d h:i:s', $modification["date"]["sec"])?>
+																</td>
+															</tr>
+															<?php $n++; ?>
+														<?php endif ?>
+													<?php endforeach ?>
+												</table>
+											</td><!-- end order modifications table -->
+											</tr>
 											</table>
-										</td><!-- end order modifications table -->
-										</tr>
-										</table>
-										</div>
-										<?php } //endif modifications ?>
+											</div>
+										<?php endif ?>
 										<br />
 								<h2 class="gray mar-b">Order Summary <span style="font-size:11px; float:right; font-weight:normal;"><span style="font-weight:bold;">NOTE:</span> Your order will be delivered within 3-5 weeks</span></h2>
 								<hr />

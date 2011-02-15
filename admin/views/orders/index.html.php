@@ -47,8 +47,8 @@
 					));
 				?>
 				<?=$this->form->select('type', array(
-					'email' => 'Customer Email',
 					'order' => 'Order #',
+					'email' => 'Customer Email',
 					'name' => 'Shipping/Billing Name',
 					'address' => 'Shipping/Billing Address',
 					'event' => 'Event Name',
