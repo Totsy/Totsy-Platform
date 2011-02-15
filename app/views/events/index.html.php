@@ -125,7 +125,9 @@
 
         <div style="margin-bottom:35px;" class="clear"></div>
 
-		<h2 class="page-title gray clear"><span class="_red">Monthly Sales / Spring Month</span></h2>
+	<!-- 	 disable banner until we have more resources to manage it. 
+	
+	<h2 class="page-title gray clear"><span class="_red">Monthly Sales / Spring Month</span></h2>
 		<hr />
 
 	<div id="slider" class="nivoSlider">
@@ -142,7 +144,7 @@
 	</div>
 
 	<br style="margin-bottom:10px;"/>
-
+ -->
 	<div class="coming-soon-sales">
 
 		<h2 class="page-title gray clear"><span class="_red">Upcoming Sales</span></h2>
