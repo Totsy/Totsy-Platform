@@ -9,6 +9,7 @@ use admin\models\Event;
 use admin\models\Item;
 use admin\models\Base;
 use admin\models\Report;
+use Mongo;
 use MongoCode;
 use MongoDate;
 use MongoRegex;
@@ -458,7 +459,7 @@ class ReportsController extends BaseController {
 		));
 		return $orders->data();
 	}
-	
+
 	public function getOrderItems($eventId = null) {
 		$items = null;
 		if ($eventId) {
@@ -470,9 +471,9 @@ class ReportsController extends BaseController {
 		}
 		return $items;
 	}
-    
+
     public function googleAnalytics() {
-		
+
 	}
 
 	public function productfile($eventId = null) {
@@ -782,6 +783,84 @@ class ReportsController extends BaseController {
 		return compact('details', 'summary', 'dates', 'total', 'data');
 	}
 
+	/**
+	* Generates a csv file with the number of registered person for a time fixed
+	*/
+	public function	registeredUsers(){
+		if ($this->request->data) {
+			$search = $this->request->data;
+			if (!empty($search['min_date']) && !empty($search['max_date'])) {
+				//Map Function with user_id as key parameter
+				$map = new MongoCode("function() {
+				  emit(this._id, {count: 1, firstname: this.firstname, lastname: this.lastname,
+					                           email: this.email   });
+				};");
+				//Reduce Function to get users registered
+				$reduce = new MongoCode("function(key, values) {
+					var count = 0;
+					var firstname;
+					var lastname;
+					var email;
+					values.forEach(function(v) {
+					    count += 1;
+					    firstname = v.firstname;
+						lastname = v.lastname;
+						email = v.email;
+					  });
+					  return {
+						    count: count,
+							firstname: firstname,
+							lastname: lastname,
+							email: email
+						};
+				};");
+
+				$m = new Mongo();
+				$db = $m->selectDB("totsy");
+
+				//Prepare the query
+				$query = array(
+					'created_date' => array(
+						'$gt' => new MongoDate(strtotime($search['min_date'])),
+						'$lte' => new MongoDate(strtotime($search['max_date']))
+				));
+
+				//Execute the MapReduce with a date filter
+				$result = $db->command(array(
+				    "mapreduce" => "users",
+				    "map" => $map,
+				    "reduce" => $reduce,
+				    "query" => $query));
+				//Stock the result of the mapreduce in a temporary collection
+				$temporary_collection = $db->selectCollection($result['result']);
+				//Get the array of the count of credits per User ID
+				$reg_usrs = $temporary_collection->find();
+				$i = 1;
+				//Fill the 1st line of the csv array
+				$registered_users[0]["firstname"] = "firstname";
+				$registered_users[0]["lastname"] = "lastname";
+				$registered_users[0]["email"] = "email";
+				//Fill the csv array with all the datas
+				foreach($reg_usrs as $reg_usr){
+						$registered_users[$i]["firstname"] = $reg_usr['value']['firstname'];
+						$registered_users[$i]["lastname"] = $reg_usr['value']['lastname'];
+						$registered_users[$i]["email"] = $reg_usr['value']['email'];
+						$i++;
+				}
+				//Open a CSV file - don't forget to have the good permission
+				$file = "../resources/tmp/registered_users.csv";
+				$fp = fopen($file, 'w');
+				//Create each line of the csv
+				foreach ($registered_users as $fields) {
+				    fputcsv($fp, $fields, ',', '"');
+				}
+				header("Content-type: application/vnd.ms-excel");
+				header("Content-disposition: attachment; filename=\"" . $file . "\"; ");
+				readfile($file);
+				fclose($fp);
+			}
+		}
+	}
 }
 
 ?>
