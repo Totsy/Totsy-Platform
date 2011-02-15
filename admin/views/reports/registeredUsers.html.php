@@ -51,3 +51,33 @@
 	</div>
 </div>
 <div class="clear"></div>
+<?php if (!empty($users)): ?>
+	<h2> From <?=$select_date["min_date"]?> to <?=$select_date["max_date"]?> </h2>
+	<table id="summary_table" class="datatable" border="1">
+		<thead>
+			<tr>
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>Email</th>
+			</tr>
+		</thead>
+	<?php foreach ($users as $user): ?>
+		<tr>
+			<td><?=$user['firstname'];?></td>
+			<td><?=$user['lastname'];?></td>
+			<td><?=$user['email'];?></td>
+		</tr>
+	<?php endforeach ?>
+	</table>
+<?php endif ?>
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function() {
+		TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
+		$('#summary_table').dataTable({
+			"sDom": 'T<"clear">lfrtip',
+			"bPaginate": false,
+			"bFilter": false
+		}
+		);
+	});
+</script>

@@ -824,7 +824,6 @@ class ReportsController extends BaseController {
 						'$gt' => new MongoDate(strtotime($search['min_date'])),
 						'$lte' => new MongoDate(strtotime($search['max_date']))
 				));
-
 				//Execute the MapReduce with a date filter
 				$result = $db->command(array(
 				    "mapreduce" => "users",
@@ -835,29 +834,17 @@ class ReportsController extends BaseController {
 				$temporary_collection = $db->selectCollection($result['result']);
 				//Get the array of the count of credits per User ID
 				$reg_usrs = $temporary_collection->find();
-				$i = 1;
-				//Fill the 1st line of the csv array
-				$registered_users[0]["firstname"] = "firstname";
-				$registered_users[0]["lastname"] = "lastname";
-				$registered_users[0]["email"] = "email";
-				//Fill the csv array with all the datas
+				$i = 0;
 				foreach($reg_usrs as $reg_usr){
-						$registered_users[$i]["firstname"] = $reg_usr['value']['firstname'];
-						$registered_users[$i]["lastname"] = $reg_usr['value']['lastname'];
-						$registered_users[$i]["email"] = $reg_usr['value']['email'];
+						$users[$i]["firstname"] = $reg_usr['value']['firstname'];
+						$users[$i]["lastname"] = $reg_usr['value']['lastname'];
+						$users[$i]["email"] = $reg_usr['value']['email'];
 						$i++;
 				}
-				//Open a CSV file - don't forget to have the good permission
-				$file = "../resources/tmp/registered_users.csv";
-				$fp = fopen($file, 'w');
-				//Create each line of the csv
-				foreach ($registered_users as $fields) {
-				    fputcsv($fp, $fields, ',', '"');
-				}
-				header("Content-type: application/vnd.ms-excel");
-				header("Content-disposition: attachment; filename=\"" . $file . "\"; ");
-				readfile($file);
-				fclose($fp);
+				$select_date["min_date"] = $search['min_date'];
+				$select_date["max_date"] = $search['max_date'];
+				
+				return compact('users', 'select_date');
 			}
 		}
 	}
