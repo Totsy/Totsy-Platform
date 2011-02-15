@@ -4,7 +4,8 @@ namespace admin\controllers;
 use admin\controllers\BaseController;
 use admin\models\Item;
 use admin\models\Event;
-use \MongoDate;
+use MongoRegex;
+use MongoDate;
 use \li3_flash_message\extensions\storage\FlashMessage;
 
 /**
@@ -121,6 +122,15 @@ class ItemsController extends BaseController {
 			}
 			$this->redirect(array('Events::edit','args' => array($id)));
 		}
+	}
+
+	public function search() {
+		if ($this->request->data) {
+			$search = $this->request->data['search'];
+			$itemCollection = Item::connection()->connection->items;
+			$items = $itemCollection->find(array('skus' => array('$in' => array(new MongoRegex("/$search/i")))));
+		}
+		return compact('items');
 	}
 }
 
