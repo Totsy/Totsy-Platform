@@ -88,7 +88,7 @@ class OrderImport extends \lithium\console\Command {
 	public function run() {
 		$this->header('Ship File Processor');
 		Environment::set($this->env);
-		Exchanger::getAll();
+		//Exchanger::getAll();
 		$this->collection = OrderShipped::collection();
 		$this->collection->ensureIndex(array('hash' => 1), array("unique" => true));
 		if ($this->source) {
@@ -197,6 +197,7 @@ class OrderImport extends \lithium\console\Command {
 	 * @see admin\models\OrderShipped;
 	 */
 	private function _save($shipRecord) {
+		$orderCollection = Order::connection()->connection->orders;
 		if (!empty($shipRecord)) {
 			$hash = array('hash' => md5(implode("", $shipRecord)));
 			$date = array('created_date' => new MongoDate());
@@ -204,6 +205,13 @@ class OrderImport extends \lithium\console\Command {
 			try {
 				$ship = OrderShipped::create($record);
 				$ship->save();
+				if ($ship) {
+					$orderCollection->update(
+						array('order_id' => $ship->OrderNum),
+						array('$push' => array('ship_records' => $ship->_id)),
+						array('upsert' => false)
+					);
+				}
 			} catch (\Exception $e) {
 				$message = $e->getMessage();
 				Logger::info($message);
