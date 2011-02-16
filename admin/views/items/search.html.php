@@ -43,10 +43,11 @@
 			<?=$this->form->create(); ?>
 				<?=$this->form->text('search', array(
 					'id' => 'search',
-					'style' => 'float:left; width:400px; margin: 0px 10px 0px 0px;'
+					'style' => 'float:left; width:440px; margin: 0px 10px 0px 0px;'
 					));
 				?>
 				<?=$this->form->submit('Submit'); ?>
+				(Search By: Description, Vendor, Vendor Style or SKU)
 			<?=$this->form->end(); ?>
 		</fieldset>
 	</div>
@@ -57,14 +58,17 @@
 <div id="clear"></div>
 <div class="grid_16">
 <?php if (!empty($items)): ?>
-	<table id="orderTable" class="datatable" border="1">
+	<table id="itemTable" class="datatable" border="1">
 		<thead>
 			<tr>
-				<td>Image</td>
-				<td>Description</td>
-				<td>Vendor</td>
-				<td>Vendor Style</td>
-				<td>Color</td>
+				<th>Image</th>
+				<th>Price</th>
+				<th>Description</th>
+				<th>Vendor</th>
+				<th>Vendor Style</th>
+				<th>Color</th>
+				<th>Size</th>
+				<th>Totsy SKU</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -72,28 +76,39 @@
 				<tr>
 					<?php
 						if (!empty($item['primary_image'])) {
-							$image = '/image/'. $item['primary_image'] . '.jpg';
+							$image = '/image/'. $item['primary_image'] . '.jpeg';
 						} else {
 							$image = "/img/no-image-small.jpeg";
 						}
 					?>
-					<td style="padding:5px;" title="item">
+					<td width="5%">
 						<?=$this->html->image("$image", array(
-							'width' => "60",
-							'height' => "60",
+							'width' => "110",
+							'height' => "110",
 							'style' => "margin:2px; padding:2px; background:#fff; border:1px solid #ddd;"
 							));
 						?>
 					</td>
-					<td><?=$item['description']?></td>
+					<td>$<?=$item['msrp']?></td>
+					<td width="5%"><?=$item['description']?></td>
 					<td><?=$item['vendor']?></td>
-					<td><?=$item['vendor_style']?></td>
+					<td width="5%"><?=$item['vendor_style']?></td>
 					<td>
 					<?php if (empty($item['color'])): ?>
 						None
 					<?php else: ?>
 						<?=$item['color']?>
 					<?php endif ?>
+					</td>
+					<td>
+						<?php foreach ($item['sku_details'] as $key => $value): ?>
+							<?=$key?></br>
+						<?php endforeach ?>
+					</td>
+					<td>
+						<?php foreach ($item['sku_details'] as $key => $value): ?>
+							<?=$value?></br>
+						<?php endforeach ?>
 					</td>
 				</tr>
 			<?php endforeach ?>
@@ -103,7 +118,7 @@
 </div>
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
-		$('#orderTable').dataTable({
+		$('#itemTable').dataTable({
 			"sDom": 'T<"clear">lfrtip'
 		}
 		);
