@@ -1,15 +1,16 @@
 <?php
 
-	$this->title("No Event");
+	$this->title("Sale Not Found");
 
 ?>
 
-<h1>We're sorry <?="{$userInfo['firstname']}"; ?>, the event you are looking for is not available</h1>
+<h1>We're sorry <?="{$userInfo['firstname']}"; ?>, the sale you are looking for is not available</h1>
 
 <hr />
 
 <p>Please continue browsing <a href="/" title="Totsy's Sales">Today's Sales</a></p>
 <br/><br/>
+
 <!-- 
 <h3>Other Products You May Enjoy</h3>
 <hr/>
@@ -31,3 +32,4 @@
 -->
 </div>
 
+<div align="center"><img src="/img/error-img.jpg" alt="" /></div>
