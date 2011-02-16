@@ -56,7 +56,8 @@ class OrderImport extends \lithium\console\Command {
 		'.',
 		'..',
 		'.DS_Store',
-		'backup'
+		'backup',
+		'empty'
 	);
 
 	/**

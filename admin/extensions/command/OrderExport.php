@@ -75,7 +75,8 @@ class OrderExport extends Base {
 		'.',
 		'..',
 		'.DS_Store',
-		'processed'
+		'processed',
+		'empty'
 	);
 
 	/**
