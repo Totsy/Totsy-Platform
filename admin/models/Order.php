@@ -7,6 +7,7 @@ use MongoDate;
 use li3_payments\extensions\Payments;
 use li3_payments\extensions\payments\exceptions\TransactionException;
 use MongoRegex;
+use lithium\analysis\Logger;
 
 /**
 * The Orders Model is related to the Orders Collection in MongoDB.
@@ -70,19 +71,32 @@ class Order extends \lithium\data\Model {
 		return $result;
 	}
 
-	public function process($order) {
+	public static function process($order) {
 		try {
-			return $order->save(array(
-				'payment_date' => static::dates('now'),
-				'auth_confirmation' => Payments::capture('default', $order->authKey,
-				round($order->total, 2)),
-				'auth_error' => null
-			));
+			$auth = Payments::capture('default', $order['authKey'], round($order['total'], 2));
+			$collection = static::_object()->collection();
+			$orderId = new MongoId($order['_id']);
+			return $collection->update(
+				array('_id' => $orderId),
+				array('$set' => array(
+					'payment_date' => new MongoDate(),
+					'auth_confirmation' => $auth,
+					'auth_error' => null)),
+				array('upsert' => false)
+			);
+			Logger::info("process-payment: Processed payment for order_id $order[_id]");
 		} catch (TransactionException $e) {
-			$order->errors($order->errors() + array($e->getMessage()));
-			$order->auth_error = array($e->getMessage());
-			$order->auth_confirmation = -1;
-			$order->save();
+			$error = $e->getMessage();
+			Logger::info("process-payment: Failed to process payment for order_id $order[_id]");
+			Logger::error("process-payment: Error $error thrown for $order[_id]");
+			$collection->update(
+				array('_id' => $orderId),
+				array('$set' => array(
+					'error_date' => new MongoDate(),
+					'auth_confirmation' => -1,
+					'auth_error' => $error)),
+				array('upsert' => false)
+			);
 		}
 	}
 
