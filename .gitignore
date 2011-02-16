@@ -32,3 +32,4 @@ admin/resources/totsy/processed/*.csv
 admin/resources/totsy/processed/*.txt
 admin/resources/tmp/logs/
 admin/resources/tmp/cache/
+admin/resources/shipfiles/backup
