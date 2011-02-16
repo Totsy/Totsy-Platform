@@ -814,10 +814,13 @@ class ReportsController extends BaseController {
 							email: email
 						};
 				};");
-
 				$m = new Mongo();
 				$db = $m->selectDB("totsy");
-
+				$users_collection = $db->users;
+				$users_collection->ensureIndex(array('_id' => 1));
+				$users_collection->ensureIndex(array('email' => 1));
+				$users_collection->ensureIndex(array('firstname' => 1));
+				$users_collection->ensureIndex(array('lastname' => 1));
 				//Prepare the query
 				$query = array(
 					'created_date' => array(
@@ -832,19 +835,20 @@ class ReportsController extends BaseController {
 				    "query" => $query));
 				//Stock the result of the mapreduce in a temporary collection
 				$temporary_collection = $db->selectCollection($result['result']);
-				//Get the array of the count of credits per User ID
+				//Get all the users obtain
 				$reg_usrs = $temporary_collection->find();
-				$i = 0;
+				//Create the array that will simulate a CSV file
+				$users[0]["firstname"] = "firstname" . ",";
+				$users[0]["lastname"] = "lastname" . ",";
+				$users[0]["email"] = "email";
+				$i = 1;
 				foreach($reg_usrs as $reg_usr){
-						$users[$i]["firstname"] = $reg_usr['value']['firstname'];
-						$users[$i]["lastname"] = $reg_usr['value']['lastname'];
-						$users[$i]["email"] = $reg_usr['value']['email'];
-						$i++;
+					$users[$i]["firstname"] = $reg_usr['value']['firstname'] . ",";
+					$users[$i]["lastname"] = $reg_usr['value']['lastname'] . ",";
+					$users[$i]["email"] = $reg_usr['value']['email'];
+					$i++;
 				}
-				$select_date["min_date"] = $search['min_date'];
-				$select_date["max_date"] = $search['max_date'];
-				
-				return compact('users', 'select_date');
+				if($i>2) $this->render(array('layout' => false, 'data' => $users));
 			}
 		}
 	}

@@ -1,3 +1,5 @@
+<?php $datas = $this->_data?>
+<?php if(empty($datas[0]["email"])){ ?>
 <?=$this->html->script('jquery-ui-timepicker.min.js');?>
 <?=$this->html->script('jquery.dataTables.js');?>
 <?=$this->html->script('TableTools.min.js');?>
@@ -8,7 +10,6 @@
 <?=$this->html->style('table');?>
 <?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
 <?=$this->html->script('jquery-ui-timepicker.min.js');?>
-
 <script type="text/javascript" charset="utf-8">
 	$(function() {
 		var dates = $('#min_date, #max_date').datetimepicker({
@@ -50,34 +51,14 @@
 		</div>
 	</div>
 </div>
-<div class="clear"></div>
-<?php if (!empty($users)): ?>
-	<h2> From <?=$select_date["min_date"]?> to <?=$select_date["max_date"]?> </h2>
-	<table id="summary_table" class="datatable" border="1">
-		<thead>
-			<tr>
-				<th>First Name</th>
-				<th>Last Name</th>
-				<th>Email</th>
-			</tr>
-		</thead>
-	<?php foreach ($users as $user): ?>
-		<tr>
-			<td><?=$user['firstname'];?></td>
-			<td><?=$user['lastname'];?></td>
-			<td><?=$user['email'];?></td>
-		</tr>
-	<?php endforeach ?>
-	</table>
-<?php endif ?>
-<script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {
-		TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
-		$('#summary_table').dataTable({
-			"sDom": 'T<"clear">lfrtip',
-			"bPaginate": false,
-			"bFilter": false
+<?php }else {
+	foreach($datas as $user){
+		foreach($user as $info){
+			print_r($info);
 		}
-		);
-	});
-</script>
+		echo( "\n" );
+	}
+	header("Content-type: application/vnd.ms-excel");
+	header("Content-disposition: attachment; filename=\"registeredUsers.csv\"");
+}
+?>
