@@ -26,7 +26,7 @@ class OrderImport extends \lithium\console\Command {
 	 * The environment to use when running the command. db='development' is the default.
 	 * Set to 'production' if running live when using a cronjob.
 	 */
-	public $env = 'production';
+	public $env = 'development';
 	
 	/**
 	 * Allows verbose info logging. (default = false)

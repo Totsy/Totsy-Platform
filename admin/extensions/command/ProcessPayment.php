@@ -27,7 +27,7 @@ class ProcessPayment extends \lithium\console\Command  {
 	 *
 	 * @var string
 	 */
-	public $env = 'production';
+	public $env = 'development';
 
 	/**
 	 * Find all the orders that haven't been shipped which have stock status.

@@ -25,3 +25,9 @@ app/resources/tmp
 admin/libraries/li3_payments
 admin/libraries/swiftmailer
 libraries
+
+# admin resource stuff
+admin/resources/totsy/shipfiles/*
+admin/resources/totsy/processed/*
+admin/resources/tmp/logs/*
+admin/resources/tmp/cache/*
