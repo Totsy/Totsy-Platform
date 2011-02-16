@@ -33,6 +33,7 @@ class ProcessPayment extends \lithium\console\Command  {
 	 * Find all the orders that haven't been shipped which have stock status.
 	 */
 	public function run() {
+		Logger::info('Starting Payment Processor');
 		Environment::set($this->env);
 		$this->capture();
 	}
