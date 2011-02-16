@@ -38,6 +38,11 @@ class Exchanger extends \lithium\console\Command {
 	public $connection = null;
 
 	/**
+	 * Source location for downloaded ship files.
+	 */
+	protected $source = '/totsy/shipfiles/';
+
+	/**
 	 * Instances
 	 */
 	protected static $_instances = array();
@@ -62,7 +67,7 @@ class Exchanger extends \lithium\console\Command {
 			if ($files) {
 				foreach ($files as $file) {
 					if (substr($file, 0, 3) == 'CSH') {
-						$localPath = "/totsy/shipfiles/$file";
+						$localPath = LITHIUM_APP_PATH.$this->source.$file;
 						if ($self->getFile($localPath, $file)) {
 							Logger::info("Downloaded $file to $localPath");
 							$self->moveFile("/tot90/out/$file", "/tot90/out/bk/$file");
