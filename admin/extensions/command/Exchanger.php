@@ -40,7 +40,7 @@ class Exchanger extends \lithium\console\Command {
 	/**
 	 * Source location for downloaded ship files.
 	 */
-	protected $source = '/totsy/shipfiles/';
+	protected $source = '/resources/totsy/shipfiles/';
 
 	/**
 	 * Instances
