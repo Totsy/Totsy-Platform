@@ -56,6 +56,9 @@
 			<li>
 				<?php echo $this->html->link('Event Sales', 'Reports::eventSales'); ?>
 			</li>
+			<li>
+				<?php echo $this->html->link('Registered Users', 'Reports::registeredUsers'); ?>
+			</li>
 		</ul>
 	</li>
 	<li>
