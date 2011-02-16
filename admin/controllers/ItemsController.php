@@ -128,7 +128,13 @@ class ItemsController extends BaseController {
 		if ($this->request->data) {
 			$search = $this->request->data['search'];
 			$itemCollection = Item::connection()->connection->items;
-			$items = $itemCollection->find(array('skus' => array('$in' => array(new MongoRegex("/$search/i")))));
+			$items = $itemCollection->find(
+				array('$or' => array(
+					array('description' => new MongoRegex("/$search/i")),
+					array('vendor' => new MongoRegex("/$search/i")),
+					array('vendor_style' => new MongoRegex("/$search/i")),
+					array('skus' => array('$in' => array(new MongoRegex("/$search/i"))))
+			)));
 		}
 		return compact('items');
 	}
