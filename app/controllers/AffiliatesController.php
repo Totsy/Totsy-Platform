@@ -16,10 +16,13 @@ class AffiliatesController extends BaseController {
     **/
 	public function registration($code = NULL) {
 	    $success = false;
+	    $message = '';
+	    $errors = 'Affiliate does not exists';
+
 		if ($code) {
 		    $count = Affiliate::count(array('conditions' => array('invitation_codes' => $code)));
-
-            if ( $count == 0 ){ return compact('success'); }
+            var_dump($count);
+            if ( $count == 0 ){ return compact('success', 'errors'); }
 
             if($this->request->data){
                 $data = $this->request->data;
@@ -35,11 +38,11 @@ class AffiliatesController extends BaseController {
                     $user['invited_by'] = $code;
                     extract(UsersController::registration($user));
                     $success = $saved;
-                     var_dump($success);
-                     die();
+                    $errors = $user->errors();
+
                 }
             }
-             return compact('success');
+             return compact('success','errors');
 		}
 	}
 
@@ -85,7 +88,7 @@ class AffiliatesController extends BaseController {
                         'zip' => $user->zip,
                         'email' => $user->email
                     );
-                    Session::write('userLogin', $userLogin);
+                   Session::write('userLogin', $userLogin, array('name'=>'default'));
                    $ipaddress = $this->request->env('REMOTE_ADDR');
                     User::log($ipaddress);
                     if($affiliate == 'linkshare'){
@@ -93,7 +96,7 @@ class AffiliatesController extends BaseController {
                             $this->redirect(htmlspecialchars($gdata['url']));
                        }
                     }
-                    Session::write('pixel',$pixel);
+                    Session::write('pixel',$pixel, array('name'=>'default'));
                     if(($urlredirect)) {
                         $this->redirect($urlredirect);
                     }else{
