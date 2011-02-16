@@ -29,7 +29,7 @@
 			<strong class="fl">Total Credits: $<?=$credit?></strong>
 			<div style="clear:both;"></div>
 		</div>
-		<table border="0" cellspacing="5" cellpadding="5" width="100%" class="order-table">
+		<table border="0" cellspacing="5" cellpadding="5" width="100%" class="order-table" style="margin-top:10px;">
 			<tr>
 				<th>Date</th>
 				<th>Amount</th>
@@ -38,7 +38,13 @@
 			<?php foreach ($credits as $credit): ?>
 			<tr>
 			<td><?=date('Y-m-d', $credit->_id->getTimestamp())?></td>
-			<td>$<?=$credit->amount?></td>
+			<td>
+			<?php if (!empty($credit->credit_amount)) { ?>
+					$<?=$credit->credit_amount?>
+				<?php  } else {  ?>
+					$<?=$credit->amount?>
+			<?php } ?>
+			</td>
 			<td><?=$credit->description?></td>
 			<tr>
 			<?php endforeach ?>
@@ -47,6 +53,7 @@
 		<div id="name" style="padding:10px 10px 10px 5px;" class="order-table">
 			<strong class="fl">Earn credits by <a href="/users/invite" title="inviting your friends and family">inviting your friends and family.</a></strong>
 			<div style="clear:both;"></div>
+			<br />
 		</div>
 		<?php } ?>
 	</div>
