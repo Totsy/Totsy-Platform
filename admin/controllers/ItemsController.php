@@ -71,24 +71,26 @@ class ItemsController extends BaseController {
 	}
 
 	public function preview() {
-		$url = $this->request->item;
-		$event = $this->request->event;
-		if ($url == null) {
+		$itemUrl = $this->request->item;
+		$eventUrl = $this->request->event;
+		if ($itemUrl == null || $eventUrl == null) {
 			$this->redirect('/');
 		} else {
-			$item = Item::find('first', array(
+			$event = Event::find('first', array(
 				'conditions' => array(
 					'enabled' => true,
-					'url' => $url),
-				'order' => array('modified_date' => 'DESC')
-			));
-			if ($item) {
-				$event = Event::find('first', array(
-					'conditions' => array(
-						'items' => array((string) $item->_id),
-						'enabled' => true,
-						'url' => $event
-				)));
+					'url' => $eventUrl
+			)));
+			$items = Item::find('all', array(
+				'conditions' => array(
+					'enabled' => true,
+					'url' => $itemUrl
+			)));
+			$matches = $items->data();
+			foreach ($matches as $match) {
+				if (in_array($match['_id'], $event->items->data())) {
+					$item = Item::find($match['_id']);
+				}
 			}
 			if ($item == null || $event == null) {
 				$this->redirect('/');

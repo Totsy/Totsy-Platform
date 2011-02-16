@@ -1,6 +1,6 @@
 <?php use app\models\Address; ?>
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
-
+<?php if (!$isAjax): ?>
 
 	<h1 class="p-header">My Account</h1>
 	<div id="left">
@@ -19,7 +19,7 @@
 		</ul>
 	</div>
 
-
+<?php endif ?>
 
 <div class="tl"></div>
 <div class="tr"></div>
