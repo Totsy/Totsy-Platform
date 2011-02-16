@@ -21,7 +21,6 @@ class AffiliatesController extends BaseController {
 
 		if ($code) {
 		    $count = Affiliate::count(array('conditions' => array('invitation_codes' => $code)));
-            var_dump($count);
             if ( $count == 0 ){ return compact('success', 'errors'); }
 
             if($this->request->data){
@@ -42,7 +41,7 @@ class AffiliatesController extends BaseController {
 
                 }
             }
-             return compact('success','errors');
+            $this->render(array('data'=>compact('success','errors'), 'layout' =>false));
 		}
 	}
 

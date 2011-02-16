@@ -21,6 +21,7 @@ class Affiliate extends Base {
         }
 
         $conditions['active'] = true;
+        $conditions['level'] = 'super';
         $conditions['pixel'] = array('$elemMatch' => array(
                                     'page' => $url,
                                     'enable' => true
@@ -89,9 +90,9 @@ class Affiliate extends Base {
                         'url' => $item),
                     'order' => array('modified_date' => 'DESC'
                 )));
-               $insert .= ' pi= http://totsy.local/image/' . $item->primary_image .'.jpeg';
+               $insert .= ' pi= http://' . $_SERVER['HTTP_HOST'] . '/image/' . $item->primary_image .'.jpeg';
                $insert .= ' pid=' . $item->_id;
-               $insert .= ' plp="http://totsy.local/a/spinback&url=http://totsy.local' . $product . '"';
+               $insert .= 'plp="http://' . $_SERVER['HTTP_HOST'] . '/a/spinback&url=http://' . $_SERVER['HTTP_HOST'] . $product . '"';
                $insert .= ' pn="' . $item->description . '"';
                $insert .= ' m="' . $item->vendor . '"';
                $insert .= 'msg= "Check out this item!"';
@@ -101,14 +102,14 @@ class Affiliate extends Base {
         }else if($invited_by == 'linkshare'){
 
         }else{
-            return '<br/>' . $pixel . '<br/>';
+            return '<br/>' . $pixel . '<br/>\r\n';
         }
     }
 
 	public static function storeSubAffiliate($get_data, $affiliate) {
-        if (array_key_exists('subid',$get_data)) {
+        if (array_key_exists('subid' , $get_data)) {
             $subaff = $get_data['subid'];
-        } else if (array_key_exists('subID',$get_data)) {
+        } else if (array_key_exists('siteID' , $get_data)) {
             $subaff = $get_data['siteID'];
         }else {
             return $affiliate;

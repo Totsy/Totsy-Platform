@@ -35,6 +35,16 @@ class UsersController extends BaseController {
 	public function register($invite_code = null, $affiliate_user_id = null) {
 		$message = false;
 		$data = $this->request->data;
+		/*
+		* redirects to the affiliate registration page if the left the page
+		* and then decided to register after words.
+		*/
+		if(Session::check('cookieCrumb', array('name' => 'cookie'))){
+			$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
+			if(preg_match('/a/', $cookie['landing_url'])){
+				$this->redirect($cookie['landing_url']);
+			}
+		}
 		if (isset($data) && $this->request->data) {
 			$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
 			$data['email'] = strtolower($this->request->data['email']);
@@ -97,7 +107,7 @@ class UsersController extends BaseController {
 					'zip' => $user->zip,
 					'email' => $user->email
 				);
-				Session::write('userLogin', $userLogin);
+				Session::write('userLogin', $userLogin, array('name'=>'default'));
 				$data = array(
 					'user' => $user,
 					'email' => $user->email
@@ -184,6 +194,11 @@ class UsersController extends BaseController {
 						$sessionWrite = $this->writeSession($user->data());
 						$ipaddress = $this->request->env('REMOTE_ADDR');
 						User::log($ipaddress);
+						if(Session::check('cookieCrumb', array('name' => 'cookie'))){
+							$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
+							$user = Session::read('userLogin');
+							$cookie['user_id'] = $user['_id'];
+						}
 						if ($this->request->url != 'login' && $this->request->url) {
 							$this->redirect($this->request->url);
 						} else {
@@ -226,7 +241,7 @@ class UsersController extends BaseController {
 	 * @return boolean
 	 */
 	private function writeSession($sessionInfo) {
-		return (Session::write('userLogin', $sessionInfo));
+		return (Session::write('userLogin', $sessionInfo, array('name'=>'default')));
 	}
 
 	/**
@@ -258,7 +273,7 @@ class UsersController extends BaseController {
 					$info = Session::read('userLogin');
 					$info['firstname'] = $this->request->data['firstname'];
 					$info['lastname'] = $this->request->data['lastname'];
-					Session::write('userLogin', $info);
+					Session::write('userLogin', $info, array('name'=>'default'));
 				}
 			}
 		}

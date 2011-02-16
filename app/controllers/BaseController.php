@@ -48,6 +48,7 @@ class BaseController extends \lithium\action\Controller {
 			    }
 			}
 		}
+
         if(preg_match('/a/',$_SERVER['REQUEST_URI'])) {
 
 		    $invited_by = substr($_SERVER['REQUEST_URI'],3);
@@ -59,18 +60,23 @@ class BaseController extends \lithium\action\Controller {
 		    if(strpos($invited_by, '&')) {
 		        $invited_by = substr($invited_by,0,strpos($invited_by, '&'));
 		    }
-
         }
 	    $pixel = Affiliate::getPixels($_SERVER['REQUEST_URI'], $invited_by);
         $pixel .= Session::read('pixel');
         Session::delete('pixel');
 		$this->set(compact('pixel'));
-
+        $cookieInfo = null;
+		if ( preg_match('(/|/a/|/login)', $_SERVER['REQUEST_URI']) && !Session::check('cookieCrumb', array('name' => 'cookie')) ) {
+		    $cookieInfo = array(
+		            'user_id' => Session::read('_id'),
+		            'landing_url' => $_SERVER['REQUEST_URI'],
+		            'entryTime' => strtotime('now')
+		        );
+		   Session::write('cookieCrumb', $cookieInfo ,array('name' => 'cookie'));
+		}
 		$this->_render['layout'] = 'main';
 		parent::_init();
 	}
-
-
 
 }
 

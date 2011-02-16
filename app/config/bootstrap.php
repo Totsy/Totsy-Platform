@@ -55,8 +55,8 @@ Environment::is(function($request) {
 			return 'test';
 		case 'dev.totsy.com':
 			return 'development';
-		case 'eric.totsy.com':
-			return 'eric';
+		case 'analy.totsy.local':
+			return 'analytics';
 		default:
 			return 'local';
 	}
@@ -115,7 +115,8 @@ require __DIR__ . '/bootstrap/mail.php';
 use lithium\storage\Session;
 
 Session::config(array(
- 	'default' => array('adapter' => 'app\extensions\adapter\session\Model', 'model' => 'MongoSession')
+ 	'default' => array('adapter' => 'app\extensions\adapter\session\Model', 'model' => 'MongoSession'),
+ 	'cookie' => array('adapter' => 'Cookie', 'expire' => '+1year')
 ));
 
 use lithium\security\Auth;

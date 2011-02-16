@@ -1,1 +1,1 @@
-<?php var_dump($success); ?>
+<?php var_dump($success, $errors); ?>

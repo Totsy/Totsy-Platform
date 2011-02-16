@@ -4,6 +4,7 @@ namespace app\models;
 
 use \lithium\data\Connections;
 use \lithium\storage\Session;
+use \lithium\storage\session\adapter\Cookie;
 use \MongoDate;
 use \MongoId;
 use \MongoRegex;
@@ -146,6 +147,23 @@ class User extends Base {
 		)));
 		$user->total_credit = $user->total_credit + $credit;
 		return $user->save(null,array('validate' => false));
+	}
+
+	public static function setupCookie() {
+		//$cookie = Session::adapter('Cookie');
+		//return $cookie;
+		/* $cookie->write('test', 'test');
+		 if(preg_match('/^/linkshare./', $_SESSION['REQUEST_URI'])) {
+		 	$time = 63072000;
+		 } else {
+		 	$time = 31536000;
+		 }
+
+		 if ( ($cookie->check('test')) ){
+		 		$cookie->delete('test');
+		 		$cookie->write('landing_page', $_SESSION['REQUEST_URI'], array('expire' => time() + $time));
+		 		//Cookie::write('userId', Session::read(''));
+		 } */
 	}
 
 }
