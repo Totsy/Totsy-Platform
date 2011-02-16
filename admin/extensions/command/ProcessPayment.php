@@ -49,6 +49,7 @@ class ProcessPayment extends \lithium\console\Command  {
 		$orders = $ordersCollection->find(array(
 			'ship_records' => array('$exists' => true),
 			'auth_confirmation' => array('$exists' => false),
+			'order_id' => '4D5C46196AF2'
 		));
 		if ($orders) {
 			foreach ($orders as $order) {
