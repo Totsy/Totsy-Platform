@@ -10,23 +10,30 @@ class OrderShipped extends \lithium\data\Model {
 
 	protected $_meta = array('source' => 'orders.shipped');
 
+	/**
+	 * The schema for orders.shipped is configured for both 3Linx and DC.
+	 * The key position is very important as it directly maps to the column position
+	 * of the DC ship file. 
+	 */
 	protected $_schema = array(
-		"ShipDate" => array('type' => 'string', 'null' => false),
+		"ShipDate" => array('type' => 'MongoDate', 'null' => false),
 		"ShipDC" => array('type' => 'string', 'null' => false),
 		"ShipMethod" => array('type' => 'string', 'null' => false),
 		"OrderNum" => array('type' => 'string', 'null' => false),
 		"BoxID" => array('type' => 'string', 'null' => false),
 		"Tracking #" => array('type' => 'string', 'null' => false),
-		"Weight" => array('type' => 'string', 'null' => false),
 		"Cost" => array('type' => 'string', 'null' => false),
 		"RecvDate" => array('type' => 'string', 'null' => false),
 		"ClientID" => array('type' => 'string', 'null' => false),
 		"DC" => array('type' => 'string', 'null' => false),
 		"RushOrder (Y/N)" => array('type' => 'string', 'null' => false),
-		"SKU" => array('type' => 'string', 'null' => false),
 		"Qty" => array('type' => 'string', 'null' => false),
 		"CompanyOrName" => array('type' => 'string', 'null' => false),
+		"Blank1" => array('type' => 'string', 'null' => false),
+		"SKU" => array('type' => 'string', 'null' => false),
+		"Weight" => array('type' => 'string', 'null' => false),
 		"ContactName" => array('type' => 'string', 'null' => false),
+		"Blank2" => array('type' => 'string', 'null' => false),
 		"Address1" => array('type' => 'string', 'null' => false),
 		"Address2" => array('type' => 'string', 'null' => false),
 		"City " => array('type' => 'string', 'null' => false),
@@ -64,7 +71,8 @@ class OrderShipped extends \lithium\data\Model {
 		"COD: Require Payment By Cashier's Check/Money Order (Y/N)" => array('type' => 'string', 'null' => true),
 		"COD: Add Shipping Costs to COD Amount (Y/N)" => array('type' => 'string', 'null' => true),
 		"hash" => array('type' => 'string', 'null' => false),
-		
+		"ItemId" => array('type' =>'MongoId', 'null' => true),
+		"OrderId" => array('type' =>'MongoId', 'null' => true)
 	);
 
 }
