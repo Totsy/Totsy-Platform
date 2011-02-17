@@ -76,6 +76,7 @@ class Order extends \lithium\data\Model {
 		$orderId = new MongoId($order['_id']);
 		try {
 			$auth = Payments::capture('default', $order['authKey'], round($order['total'], 2));
+			Logger::info("process-payment: Processed payment for order_id $order[_id]");
 			return $collection->update(
 				array('_id' => $orderId),
 				array('$set' => array(
@@ -84,7 +85,6 @@ class Order extends \lithium\data\Model {
 					'auth_error' => null)),
 				array('upsert' => false)
 			);
-			Logger::info("process-payment: Processed payment for order_id $order[_id]");
 		} catch (TransactionException $e) {
 			$error = $e->getMessage();
 			Logger::info("process-payment: Failed to process payment for order_id $order[_id]");

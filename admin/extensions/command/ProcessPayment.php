@@ -36,7 +36,9 @@ class ProcessPayment extends \lithium\console\Command  {
 		Logger::info('Starting Payment Processor');
 		Environment::set($this->env);
 		$this->capture();
+		Logger::info('Payment Processor Finished');
 	}
+
 	/**
 	 * Find all orders that have a the field ship_records but no confirmation
 	 * auth Key. These are the orders that have a corresponding ship record(s).
@@ -67,6 +69,7 @@ class ProcessPayment extends \lithium\console\Command  {
 							);
 							$options = array('type' => 'Invite');
 							if (Credit::add($data, $options) && User::applyCredit($data, $options)) {
+								Logger::info("process-payment: Added Credit to UserId: $inviter->_id");
 								$updateInvite = Invitation::find('first', array(
 									'conditions' => array(
 										'email' => $user->email,
@@ -79,8 +82,6 @@ class ProcessPayment extends \lithium\console\Command  {
 							}
 						}
 					}
-				} else {
-					Logger::error("Payment capture failed for $order[order_id]");
 				}
 			}
 		}
