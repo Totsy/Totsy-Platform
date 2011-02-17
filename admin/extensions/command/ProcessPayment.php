@@ -36,6 +36,7 @@ class ProcessPayment extends \lithium\console\Command  {
 		Logger::info('Starting Payment Processor');
 		Environment::set($this->env);
 		$this->capture();
+		Logger::info('Payment Processor Finished');
 	}
 
 	/**
