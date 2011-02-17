@@ -72,9 +72,9 @@ class Order extends \lithium\data\Model {
 	}
 
 	public static function process($order) {
+		$collection = static::collection();
 		try {
 			$auth = Payments::capture('default', $order['authKey'], round($order['total'], 2));
-			$collection = static::_object()->collection();
 			$orderId = new MongoId($order['_id']);
 			return $collection->update(
 				array('_id' => $orderId),
