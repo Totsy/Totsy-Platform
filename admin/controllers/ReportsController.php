@@ -707,7 +707,7 @@ class ReportsController extends BaseController {
 				$categoryLimit = ($search['include_category'] == false) ? $categoryFields : array();
 				$conditions = $conditions + $shippingLimit + $categoryLimit;
 				$orderCollection = Order::collection();
-				$orders = $orderCollection->find($conditions);∂
+				$orders = $orderCollection->find($conditions);
 				$reportId = substr(md5(uniqid(rand(),1)), 1, 15);
 				$collection = Report::collection();
 				if ($orders) {
