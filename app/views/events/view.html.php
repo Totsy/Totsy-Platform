@@ -8,7 +8,7 @@
 		
 		<div id="listingCountdown" class="listingCountdown"></div>
 		
-		<h1 class="page-title gray"><span class="red"><?=$type?> Sales /</span> <?=$event->name; ?></h1>
+		<h1 class="page-title gray"><span class="red"><a href="/" title="Sales"><?=$type?> Sales</a> /</span> <?=$event->name; ?></h1>
 	
 		<div class="sm-actions fr">
 			<dl>
@@ -148,10 +148,10 @@
 	</div>
 </div>
 </div>
-<script type="text/javascript"> 
+<script type="text/javascript">
 $(function () {
-	var saleStart = new Date();
-	saleStart = new Date(<?php echo $event->start_date->sec * 1000?>);
-	$('#listingCountdown').countdown({until: saleStart, layout: 'Opens in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+	var saleEnd = new Date();
+	saleEnd = new Date(<?php echo $event->end_date->sec * 1000?>);
+	$('#listingCountdown').countdown({until: saleEnd, layout: 'Closes in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
 });
 </script>

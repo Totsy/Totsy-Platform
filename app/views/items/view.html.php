@@ -220,6 +220,7 @@ $(document).ready(function() {
 	$("#tabs").tabs();
 });
 </script>
+<?=$spinback_fb; ?>
 <script type="text/javascript">
 
 $("#item-submit").click(function(){

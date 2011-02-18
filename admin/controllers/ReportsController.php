@@ -9,6 +9,7 @@ use admin\models\Event;
 use admin\models\Item;
 use admin\models\Base;
 use admin\models\Report;
+use Mongo;
 use MongoCode;
 use MongoDate;
 use MongoRegex;
@@ -459,7 +460,7 @@ class ReportsController extends BaseController {
 		));
 		return $orders->data();
 	}
-	
+
 	public function getOrderItems($eventId = null) {
 		$items = null;
 		if ($eventId) {
@@ -471,9 +472,9 @@ class ReportsController extends BaseController {
 		}
 		return $items;
 	}
-    
+
     public function googleAnalytics() {
-		
+
 	}
 
 	public function productfile($eventId = null) {
@@ -786,6 +787,41 @@ class ReportsController extends BaseController {
 		return compact('details', 'summary', 'dates', 'total', 'data');
 	}
 
+	/**
+	* Generates a csv file with the number of registered person for a time fixed
+	*/
+	public function	registeredUsers(){
+		if ($this->request->data) {
+			$search = $this->request->data;
+			if (!empty($search['min_date']) && !empty($search['max_date'])) {
+	
+				$conditions = array('created_date' => array(
+					'$gt' => new MongoDate(strtotime($search['min_date'])),
+					'$lte' => new MongoDate(strtotime($search['max_date']))));
+				$userCollection = User::collection();
+				$userCollection->ensureIndex(array('_id' => 1));
+				$userCollection->ensureIndex(array('email' => 1));
+				$userCollection->ensureIndex(array('firstname' => 1));
+				$userCollection->ensureIndex(array('lastname' => 1));
+				$userCollection->ensureIndex(array('created_date' => 1));
+				
+				$reg_usrs = $userCollection->find($conditions);
+
+				//Create the array that will simulate a CSV file
+				$users[0]["firstname"] = "firstname" . ",";
+				$users[0]["lastname"] = "lastname" . ",";
+				$users[0]["email"] = "email";
+				$i = 1;
+				foreach($reg_usrs as $reg_usr){
+					$users[$i]["firstname"] = $reg_usr['firstname'] . ",";
+					$users[$i]["lastname"] = $reg_usr['lastname'] . ",";
+					$users[$i]["email"] = $reg_usr['email'];
+					$i++;
+				}
+				if($i>2) $this->render(array('layout' => false, 'data' => $users));
+			}
+		}
+	}
 }
 
 ?>

@@ -3,6 +3,7 @@
 namespace admin\extensions\command;
 
 use admin\models\OrderShipped;
+use admin\models\Order;
 use lithium\core\Environment;
 use MongoDate;
 use MongoRegex;
@@ -11,7 +12,8 @@ use PHPExcel_IOFactory;
 use PHPExcel;
 use PHPExcel_Cell;
 use PHPExcel_Cell_DataType;
-
+use admin\extensions\command\Exchanger;
+use lithium\analysis\Logger;
 
 /**
  * Li3 Import Command to load Order tracking information.
@@ -25,6 +27,11 @@ class OrderImport extends \lithium\console\Command {
 	 * Set to 'production' if running live when using a cronjob.
 	 */
 	public $env = 'development';
+	
+	/**
+	 * Allows verbose info logging. (default = false)
+	 */
+	public $verbose = false;
 
 	/**
 	 * CSV or XLS file to be imported.
@@ -48,7 +55,9 @@ class OrderImport extends \lithium\console\Command {
 	protected $_exclude = array(
 		'.',
 		'..',
-		'.DS_Store'
+		'.DS_Store',
+		'backup',
+		'empty'
 	);
 
 	/**
@@ -56,7 +65,14 @@ class OrderImport extends \lithium\console\Command {
 	 *
 	 * @var string
 	 */
-	public $dir = null;
+	public $source = '/resources/totsy/shipfiles';
+
+	/**
+	 * Directory of files holding shipping logs.
+	 *
+	 * @var string
+	 */
+	public $backup = '/resources/totsy/shipfiles/backup';
 
 	/**
 	 * Full path to file.
@@ -76,16 +92,19 @@ class OrderImport extends \lithium\console\Command {
 	 * The default parsing is tab delimited in favor of
 	 */
 	public function run() {
-		$this->header('Ship File Processor');
+		Logger::info('Launching Li3 order-import');
 		Environment::set($this->env);
+		Exchanger::getAll();
+		$this->source = LITHIUM_APP_PATH . $this->source;
+		$this->backup = LITHIUM_APP_PATH . $this->backup;
 		$this->collection = OrderShipped::collection();
 		$this->collection->ensureIndex(array('hash' => 1), array("unique" => true));
-		if ($this->dir) {
-			$handle = opendir($this->dir);
+		$handle = opendir($this->source);
+		if ($handle) {
 			while (false !== ($this->file = readdir($handle))) {
 				if (!(in_array($this->file, $this->_exclude))) {
-		            $this->out("Trying to Process - $this->file");
-					$this->path = $this->dir.'/'.$this->file;
+					Logger::info("Li3 order-import: Processing Ship File - $this->file");
+					$this->path = $this->source.'/'.$this->file;
 					$this->type = substr($this->file, -3);
 					switch ($this->type) {
 						case 'xls':
@@ -95,11 +114,22 @@ class OrderImport extends \lithium\console\Command {
 							$this->_tabParser();
 							break;
 					}
-		        }
-		    }
+					if (!is_dir($this->backup)) {
+						mkdir($this->backup);
+					}
+					if ($this->file) {
+						$fullPath = implode('/', array($this->source, $this->file));
+						$backupPath = implode('/', array($this->backup, $this->file));
+						if (rename($fullPath, $backupPath)) {
+							Logger::info("Li3 order-import: Renaming $fullPath to $backupPath");
+						}
+					}
+				}
+			}
 		} else {
-			$this->out('Error: No directory provided');
+			Logger::error("Could not open $this->source");
 		}
+		Logger::info('Li3 order-import Finished');
 	}
 
 	/**
@@ -131,13 +161,12 @@ class OrderImport extends \lithium\console\Command {
 	}
 
 	/**
-	 * Parse Tab or CSV delimited files.
-	 *
+	 * Parse Tab delimited files.
 	 *
 	 */
 	protected function _tabParser() {
 		$nn = 0;
-		$header = OrderShipped::$_header;
+		$header = array_keys(OrderShipped::schema());
 		if (($handle = fopen($this->path, "r")) !== FALSE) {
 			while (($data = fgetcsv($handle, 1000, chr(9))) !== FALSE) {
 				$c = count($data);
@@ -167,23 +196,45 @@ class OrderImport extends \lithium\console\Command {
 	}
 
 	/**
-	 * Saves individual record to the order.shipped Mongo Collection
+	 * Saves individual record to the order.shipped Mongo Collection.
+	 * 
+	 * There is a hash saved with the record so we can avoid duplicate entries.
+	 * The order.shipped collection has an unique index on 'hash'. We are using the
+	 * try catch to avoid issues if there is a duplicate.
 	 *
 	 * @see admin\models\OrderShipped;
 	 */
 	private function _save($shipRecord) {
+		$orderCollection = Order::connection()->connection->orders;
 		if (!empty($shipRecord)) {
-			$record = $shipRecord + array('hash' => md5(implode("", $shipRecord)));
+			$hash = array('hash' => md5(implode("", $shipRecord)));
+			$date = array('created_date' => new MongoDate());
+			$record = $shipRecord + $hash + $date;
 			try {
-				$this->collection = OrderShipped::collection();
-				$id = $this->collection->save($record);
-			} catch (Exception $e) {
-				$this->out("Hash: $record[hash] has already been saved");
+				$ship = OrderShipped::create($record);
+				$ship->save();
+				if ($ship) {
+					preg_match('/[A-Z0-9]{8,12}/s', $ship->OrderNum, $match);
+					$this->log("Adding Ship Log MongoId $ship->_id to Order $match[0]");
+					$orderCollection->update(
+						array('$or' => array(array('order_id' => $match[0]), array('_id' => $ship->OrderId))),
+						array('$addToSet' => array('ship_records' => $ship->_id)),
+						array('upsert' => false)
+					);
+				}
+			} catch (\Exception $e) {
+				$message = $e->getMessage();
+				$this->log($message);
 			}
 		}
 		return true;
 	}
 
+	public function log($message, $type = 'info') {
+		if ($this->verbose) {
+			Logger::$type('Li3 order-import:' . $message);
+		}
+	}
 
 
 }

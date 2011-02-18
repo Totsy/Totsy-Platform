@@ -25,7 +25,7 @@ class Affiliate extends Base {
 
 				if(in_array('/a/', $pixel['page'])) {
 					foreach($codes as $value){
-						$pixel['page'][] = '/a/'.$value;
+						$pixel['page'][] = '/a/' . $value;
 					}
 				}
 				$temp['page'] = array_values($pixel['page']);

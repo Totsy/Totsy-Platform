@@ -289,12 +289,12 @@ class DashboardController extends \lithium\action\Controller {
     
     //sets the date conditions for the search for first 2 weeks of current month
      $conditions = array(
-          'date_created' => array(
+          'created_date' => array(
             '$gt' => new MongoDate($startOfTheLast3Month)
             
         ));
-   $lastMonth3NewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
-   
+   $last3MonthNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
+   $last3MonthNewUsers += 81300;
    
     //*****************************************************************************************
    //sets the date conditions for the search for 3 to 6 month for Users and Orders
@@ -313,12 +313,17 @@ class DashboardController extends \lithium\action\Controller {
     
     //sets the date conditions for the search for first 2 weeks of current month
      $conditions = array(
-          'date_created' => array(
+          'created_date' => array(
             '$gt' => new MongoDate($startOfTheLast6Month),
             '$lte' => new MongoDate($startOfTheLast3Month)
         ));
-   $lastMonth6NewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
+        
+   $last6MonthNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
+   $last6MonthNewUsers += 81300;
    
+   $conditions = array();
+        
+   $totalUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
     //Return all the goodies to the Dashboard View
     
     return compact(
@@ -354,7 +359,8 @@ class DashboardController extends \lithium\action\Controller {
     'last3MonthRevenue',
     'last3MonthNewUsers',
     'last6MonthRevenue',
-    'last6MonthNewUsers'
+    'last6MonthNewUsers',
+    'totalUsers'
     );
   }
 

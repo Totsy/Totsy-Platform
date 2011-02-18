@@ -683,7 +683,7 @@ function output(val){
 				<img src="http://www.totsy.com/img/motw/images/motw_logo.png" alt="Mom Of The Week" border="0" title="Mom Of The Week">
 			</div>
 			<div id="intro">
-				1 prize per week. Starting January 1st.	
+				We Pick A Winner Each Week.
 			</div>
 			
 			<div id="register">
@@ -811,7 +811,7 @@ function output(val){
 					<div id="confirm-bottom" class="bottom_curve container show"></div>
 					
 					<div id="newmember-top" class="top_curve container" style="margin-top:20px;"></div>
-					<div id="newmember-container" class="container">
+					<div id="newmember-container" class="container"> 
 					<div class="form-header"><img src="http://www.totsy.com/img/motw/images/becomemember_register.png" alt="enter_header"/>&nbsp;&nbsp;&nbsp;Already a member? <a onclick="showConfirmForm()">Click Here</a>.</div>
 						<form name="register" id="register-form" method="post">
 						
@@ -871,7 +871,7 @@ function output(val){
 		</div>
 	
 		<div id="footer">
-		<img src="http://www.totsy.com/img/preview-motw-month3.jpg" alt="MotW_prizing_wk2"/>
+		<img src="http://www.totsy.com/img/preview-mothw-fbml.jpg" alt="Mom Of The Week Prizes"/>
 	
 		</div>
 		
