@@ -147,8 +147,8 @@ class ReportsController extends BaseController {
 			$affiliate = new MongoRegex("/$name/i");
 			if ($this->request->data['min_date'] && $this->request->data['max_date']) {
 				//Conditions with date converted to the right timezone
-				$min = new MongoDate(strtotime($this->request->data['min_date'])+date('Z'));
-				$max = new MongoDate(strtotime($this->request->data['max_date'])+date('Z'));
+				$min = new MongoDate(strtotime($this->request->data['min_date']));
+				$max = new MongoDate(strtotime($this->request->data['max_date']));
 				$date = array(
 					'created_date' => array(
 						'$gte' => $min,
@@ -531,8 +531,8 @@ class ReportsController extends BaseController {
 				//Conditions with date converted to the right timezone
 				$conditions = array(
 					'date_created' => array(
-						'$gt' => new MongoDate(strtotime($this->request->data['min_date'])+date('Z')),
-						'$lte' => new MongoDate(strtotime($this->request->data['max_date'])+date('Z'))
+						'$gt' => new MongoDate(strtotime($this->request->data['min_date'])),
+						'$lte' => new MongoDate(strtotime($this->request->data['max_date']))
 				));
 				$orderCollection = Order::collection();
 				$orders = $orderCollection->find($conditions);
@@ -630,8 +630,8 @@ class ReportsController extends BaseController {
 				//Conditions with date converted to the right timezone
 				$conditions = array(
 					'date_created' => array(
-						'$gt' => new MongoDate(strtotime($this->request->data['min_date'])+date('Z')),
-						'$lte' => new MongoDate(strtotime($this->request->data['max_date'])+date('Z'))
+						'$gt' => new MongoDate(strtotime($this->request->data['min_date'])),
+						'$lte' => new MongoDate(strtotime($this->request->data['max_date']))
 				));
 				$orderCollection = Order::collection();
 				$orders = $orderCollection->find($conditions);
@@ -699,8 +699,8 @@ class ReportsController extends BaseController {
 				$conditions = array(
 					'total' => $dollarLimit,
 					'date_created' => array(
-						'$gt' => new MongoDate(strtotime($search['min_date'])+date('Z')),
-						'$lte' => new MongoDate(strtotime($search['max_date'])+date('Z'))
+						'$gt' => new MongoDate(strtotime($search['min_date'])),
+						'$lte' => new MongoDate(strtotime($search['max_date']))
 				));
 				$shippingLimit = ($search['state'] != 'All') ? array('shipping.state' => $search['state']) : array();
 				$categoryFields = array('items.category' => array('$nin' => array('accessories','apparel')));
