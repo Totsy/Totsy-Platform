@@ -51,7 +51,16 @@ class Affiliate extends Base {
 		}
 		return $pixel;
 	}
-
+    /**
+    *   This function appends neccessary information to affilates pixels so affiliates can function *   and collect data.
+    *   @params $invited_by the affilate code associated with the pixel
+    *           $pixel the pixel the affiliate provided
+    *           $options Used those times when the url is dynamic and the affiliate need a pixel or
+    *                    app on that page.  Available options: product - item view page, orderid -
+    *                    for affiliates who need orderids for share revenue.
+    *   @return Returns modified pixels.
+    *   $TODO  Move the appending to the Helper
+    **/
     public static function generatePixel($invited_by, $pixel, $options = array()) {
 
         if($invited_by == 'w4'){
@@ -86,7 +95,6 @@ class Affiliate extends Base {
                $insert .= ' pn="' . $item->description . '"';
                $insert .= ' m="' . $item->vendor . '"';
                $insert .= 'msg= "Check out this great deal on Totsy!"';
-                $insert = html_entity_decode($insert);
                return str_replace('$',$insert,$pixel);
             }
         }else if($invited_by == 'linkshare'){
