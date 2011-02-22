@@ -21,7 +21,7 @@ use \lithium\console\Dispatcher as ConsoleDispatcher;
 /**
  * Sets the default timezone used by all date/time functions.
  */
-date_default_timezone_set('America/New_York');
+date_default_timezone_set('Etc/UTC');
 
 /**
  * Adds globalization specific settings to the environment.

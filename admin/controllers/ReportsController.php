@@ -146,6 +146,7 @@ class ReportsController extends BaseController {
 			$name = $this->request->data['affiliate'];
 			$affiliate = new MongoRegex("/$name/i");
 			if ($this->request->data['min_date'] && $this->request->data['max_date']) {
+				//Conditions with date converted to the right timezone
 				$min = new MongoDate(strtotime($this->request->data['min_date']));
 				$max = new MongoDate(strtotime($this->request->data['max_date']));
 				$date = array(
@@ -527,6 +528,7 @@ class ReportsController extends BaseController {
 		if ($this->request->data) {
 			$dates = $this->request->data;
 			if (!empty($dates['min_date']) && !empty($dates['max_date'])) {
+				//Conditions with date converted to the right timezone
 				$conditions = array(
 					'date_created' => array(
 						'$gt' => new MongoDate(strtotime($this->request->data['min_date'])),
@@ -625,6 +627,7 @@ class ReportsController extends BaseController {
 		if ($this->request->data) {
 			$dates = $this->request->data;
 			if (!empty($dates['min_date']) && !empty($dates['max_date'])) {
+				//Conditions with date converted to the right timezone
 				$conditions = array(
 					'date_created' => array(
 						'$gt' => new MongoDate(strtotime($this->request->data['min_date'])),
@@ -692,6 +695,7 @@ class ReportsController extends BaseController {
 			if (!empty($search['min_date']) && !empty($search['max_date'])) {
 				$amount = ($search['amount'] == '') ? 0 : $search['amount'];
 				$dollarLimit = array("$search[range_type]" => (float) $amount);
+				//Conditions with date converted to the right timezone
 				$conditions = array(
 					'total' => $dollarLimit,
 					'date_created' => array(
