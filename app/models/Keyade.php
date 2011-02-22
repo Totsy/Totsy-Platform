@@ -12,14 +12,16 @@ class Keyade extends \lithium\data\Model {
 	/**
 	 * Subscriber list, provided by date
 	 *
-	 * @return xml object
+	 * @return xml
 	 */
 	public static function signups( $data ){
 		$connection = static::_connection()->connection->users;
 		$options = array(
 			'keyade_user_id' => array( '$exists' => true),
-			'created_date' => array( '$gte' => $data['start_date']),
-			'created_date' => array( '$lt' => $data['end_date'])
+			'created_date' =>  array(
+				'$gte' => $data['start_date'],
+				'$lte' => $data['end_date']
+			)
 		);
 		// Run that sucker!
 		$cursor = $connection->find( $options );
