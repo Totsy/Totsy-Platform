@@ -65,15 +65,7 @@ class BaseController extends \lithium\action\Controller {
         $pixel .= Session::read('pixel');
         Session::delete('pixel');
 		$this->set(compact('pixel'));
-        $cookieInfo = null;
-		if ( preg_match('(/|/a/|/login)', $_SERVER['REQUEST_URI']) && !Session::check('cookieCrumb', array('name' => 'cookie')) ) {
-		    $cookieInfo = array(
-		            'user_id' => Session::read('_id'),
-		            'landing_url' => $_SERVER['REQUEST_URI'],
-		            'entryTime' => strtotime('now')
-		        );
-		   Session::write('cookieCrumb', $cookieInfo ,array('name' => 'cookie'));
-		}
+        User::setupCookie();
 		$this->_render['layout'] = 'main';
 		parent::_init();
 	}

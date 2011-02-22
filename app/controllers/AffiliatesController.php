@@ -53,7 +53,7 @@ class AffiliatesController extends BaseController {
 	    $pdata = $this->request->data;
         $message = false;
         $user = User::create();
-        $urlredirect = '';
+        $urlredirect = '/sales';
 
         if ( ($affiliate)){
             $pixel = Affiliate::getPixels('after_reg', $affiliate);
@@ -61,8 +61,9 @@ class AffiliatesController extends BaseController {
            $gdata = $this->request->query;
             if( ($gdata) ){
                 $affiliate = Affiliate::storeSubAffiliate($gdata, $affiliate);
-                if (array_key_exists('url', $gdata)) {
-                    $urlredirect = $gdata['url'];
+                if (array_key_exists('redirect', $gdata)) {
+                    $urlredirect = parse_url(htmlspecialchars_decode($gdata['redirect']), PHP_URL_PATH);
+                   $urlredirect = substr($urlredirect,strlen('/'.$_SERVER['HTTP_HOST']));
                 }
             }
 
@@ -96,11 +97,7 @@ class AffiliatesController extends BaseController {
                        }
                     }
                     Session::write('pixel',$pixel, array('name'=>'default'));
-                    if(($urlredirect)) {
-                        $this->redirect($urlredirect);
-                    }else{
-                        $this->redirect('/sales');
-                    }
+                    $this->redirect($urlredirect);
                 }
             }
         }

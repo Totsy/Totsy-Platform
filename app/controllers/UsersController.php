@@ -14,7 +14,6 @@ use li3_silverpop\extensions\Silverpop;
 use MongoRegex;
 use MongoDate;
 
-
 class UsersController extends BaseController {
 
 	/**
@@ -58,7 +57,7 @@ class UsersController extends BaseController {
 			$data['invited_by'] = $invite_code;
 			$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));
 			if ($inviteCheck > 0) {
-				$data['invitation_codes'] = array(self::randomString());
+				$data['invitation_codes'] = array(Util::randomString());
 			}
 			if ($invite_code) {
 				$inviter = User::find('first', array(
@@ -145,7 +144,7 @@ class UsersController extends BaseController {
 							'invitation_codes' => $data['invitation_codes']
 							));
 					if ($inviteCheck > 0) {
-						$data['invitation_codes'] = array(self::randomString());
+						$data['invitation_codes'] = array(Util::randomString());
 					}
 					if ($saved = $user->save($data)) {
 						$data = array(
@@ -169,6 +168,8 @@ class UsersController extends BaseController {
 	 */
 	public function login() {
 		$message = $resetAuth = $legacyAuth = $nativeAuth = false;
+		$rememberHash = '';
+		$this->autoLogin();
 		if ($this->request->data) {
 			$email = trim(strtolower($this->request->data['email']));
 			$password = trim($this->request->data['password']);
@@ -176,7 +177,7 @@ class UsersController extends BaseController {
 			$this->request->data['email'] = trim($this->request->data['email']);
 			//Grab User Record
 			$user = User::lookup($email);
-			$redirect = '/';
+			$redirect = '/sales';
 			if (strlen($password) > 0) {
 				if($user){
 					if (!empty($user->reset_token)) {
@@ -194,12 +195,16 @@ class UsersController extends BaseController {
 						$sessionWrite = $this->writeSession($user->data());
 						$ipaddress = $this->request->env('REMOTE_ADDR');
 						User::log($ipaddress);
-						if(Session::check('cookieCrumb', array('name' => 'cookie'))){
-							$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-							$user = Session::read('userLogin');
-							$cookie['user_id'] = $user['_id'];
+						$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
+            			$userInfo = Session::read('userLogin');
+            			$cookie['user_id'] = $user['_id'];
+            			if(array_key_exists('redirect', $cookie) && $cookie['redirect'] ) {
+							$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$_SERVER['HTTP_HOST']));
+							unset($cookie['redirect']);
 						}
-						if ($this->request->url != 'login' && $this->request->url) {
+            			Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
+						User::rememberMeWrite($this->request->data['remember_me']);
+						if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) {
 							$this->redirect($this->request->url);
 						} else {
 							$this->redirect($redirect);
@@ -216,12 +221,34 @@ class UsersController extends BaseController {
 		$this->_render['layout'] = 'login';
 		return compact('message');
 	}
-
+	protected function autoLogin(){
+		$redirect = '/sales';
+		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
+		if(preg_match( '@[^(/|login)]@', $this->request->url ) && array_key_exists('autoLoginHash', $cookie)) {
+			$user = User::find('first', array('conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
+			if($user) {
+				if($cookie['user_id'] == $user->_id){
+					$sessionWrite = $this->writeSession($user->data());
+					$ipaddress = $this->request->env('REMOTE_ADDR');
+					User::log($ipaddress);
+					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
+					if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) {
+						$this->redirect($this->request->url);
+					} else {
+						$this->redirect($redirect);
+					}
+				}
+			}
+		}
+	}
 	/**
 	 * Performs the logout action of the user removing '_id' from session details.
 	 */
 	public function logout() {
 		$success = Session::delete('userLogin');
+		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
+		unset($cookie['autoLoginHash']);
+		$cookieSuccess = Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 		$this->redirect(array('action'=>'login'));
 	}
 	/**
@@ -280,6 +307,21 @@ class UsersController extends BaseController {
 		return compact("user", "status");
 	}
 
+	public static function generateToken() {
+        return substr(md5(uniqid(rand(),1)), 1, 10);
+    }
+
+    public static function randomString($length = 8, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890')
+    {
+        $chars_length = (strlen($chars) - 1);
+        $string = $chars{rand(0, $chars_length)};
+        for ($i = 1; $i < $length; $i = strlen($string)) {
+            $r = $chars{rand(0, $chars_length)};
+            if ($r != $string{$i - 1}) $string .=  $r;
+        }
+        return $string;
+    }
+
 	public function reset() {
 		$this->_render['layout'] = 'login';
 		$success = false;
@@ -291,7 +333,7 @@ class UsersController extends BaseController {
 					'email' => $email
 			)));
 			if ($user) {
-				$token = $this->generateToken();
+				$token = Util::generateToken();
 				$user->clear_token = $token;
 				$user->reset_token = sha1($token);
 				$user->legacy = 0;
@@ -312,23 +354,6 @@ class UsersController extends BaseController {
 			}
 		}
 		return compact('message', 'success');
-	}
-
-	protected function generateToken() {
-        return substr(md5(uniqid(rand(),1)), 1, 10);
-    }
-
-
-	// Generate a random character string
-	protected static function randomString($length = 8, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890')
-	{
-		$chars_length = (strlen($chars) - 1);
-		$string = $chars{rand(0, $chars_length)};
-		for ($i = 1; $i < $length; $i = strlen($string)) {
-			$r = $chars{rand(0, $chars_length)};
-			if ($r != $string{$i - 1}) $string .=  $r;
-		}
-		return $string;
 	}
 
 	public function invite() {

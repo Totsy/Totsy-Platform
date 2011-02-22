@@ -52,16 +52,6 @@ class Affiliate extends Base {
 		return $pixel;
 	}
 
-	protected static function randomString($length = 8, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890') {
-		$chars_length = (strlen($chars) - 1);
-		$string = $chars{rand(0, $chars_length)};
-		for ($i = 1; $i < $length; $i = strlen($string)) {
-			$r = $chars{rand(0, $chars_length)};
-			if ($r != $string{$i - 1}) $string .=  $r;
-		}
-		return $string;
-	}
-
     public static function generatePixel($invited_by, $pixel, $options = array()) {
 
         if($invited_by == 'w4'){
@@ -92,17 +82,17 @@ class Affiliate extends Base {
                 )));
                $insert .= ' pi= http://' . $_SERVER['HTTP_HOST'] . '/image/' . $item->primary_image .'.jpeg';
                $insert .= ' pid=' . $item->_id;
-               $insert .= 'plp="http://' . $_SERVER['HTTP_HOST'] . '/a/spinback&url=http://' . $_SERVER['HTTP_HOST'] . $product . '"';
+               $insert .= ' plp=http://' . $_SERVER['HTTP_HOST'] . '/a/spinback?redirect=http://' . $_SERVER['HTTP_HOST'] . $product;
                $insert .= ' pn="' . $item->description . '"';
                $insert .= ' m="' . $item->vendor . '"';
-               $insert .= 'msg= "Check out this item!"';
+               $insert .= 'msg= "Check out this great deal on Totsy!"';
 
                return str_replace('$',$insert,$pixel);
             }
         }else if($invited_by == 'linkshare'){
 
         }else{
-            return '<br/>' . $pixel . '<br/>\r\n';
+            return '<br/>' . $pixel . '<br/>';
         }
     }
 
