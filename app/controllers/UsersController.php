@@ -247,7 +247,8 @@ class UsersController extends BaseController {
 	public function logout() {
 		$success = Session::delete('userLogin');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-		unset($cookie['autoLoginHash']);
+		$cookie['autoLoginHash'] = null;
+		Session::delete('cookieCrumb', array('name' => 'cookie'));
 		$cookieSuccess = Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 		$this->redirect(array('action'=>'login'));
 	}
