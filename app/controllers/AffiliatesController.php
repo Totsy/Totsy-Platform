@@ -62,8 +62,7 @@ class AffiliatesController extends BaseController {
             if( ($gdata) ){
                 $affiliate = Affiliate::storeSubAffiliate($gdata, $affiliate);
                 if (array_key_exists('redirect', $gdata)) {
-                    $urlredirect = parse_url(htmlspecialchars_decode($gdata['redirect']), PHP_URL_PATH);
-                   $urlredirect = substr($urlredirect,strlen('/'.$_SERVER['HTTP_HOST']));
+                    $urlredirect = parse_url(htmlspecialchars_decode(urldecode($gdata['redirect'])), PHP_URL_PATH);
                 }
             }
 
