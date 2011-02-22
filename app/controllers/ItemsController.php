@@ -51,11 +51,10 @@ class ItemsController extends BaseController {
 				}
 			}
             $pixel = Affiliate::getPixels('product', 'spinback');
-       // var_dump($item->primary_image);
 			$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
 			                                            array('product' => $_SERVER['REQUEST_URI'])
 			                                            );
-		 //  die(var_dump($spinback_fb));
+			$spinback_fb = htmlspecialchars_decode($spinback_fb);
 		}
 
 		return compact('item', 'event', 'related', 'sizes', 'shareurl', 'reserved', 'spinback_fb');
