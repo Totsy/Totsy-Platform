@@ -86,7 +86,7 @@ class Affiliate extends Base {
                $insert .= ' pn="' . $item->description . '"';
                $insert .= ' m="' . $item->vendor . '"';
                $insert .= 'msg= "Check out this great deal on Totsy!"';
-
+                $insert = htmlspecialchars_decode($insert);
                return str_replace('$',$insert,$pixel);
             }
         }else if($invited_by == 'linkshare'){
