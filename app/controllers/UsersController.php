@@ -224,7 +224,7 @@ class UsersController extends BaseController {
 	protected function autoLogin(){
 		$redirect = '/sales';
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-		if(preg_match( '@[^(/|login)]@', $this->request->url ) && array_key_exists('autoLoginHash', $cookie)) {
+		if(preg_match( '@[(/|login)]@', $this->request->url ) && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array('conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
 			if($user) {
 				if($cookie['user_id'] == $user->_id){
