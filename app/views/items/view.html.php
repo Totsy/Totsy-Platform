@@ -57,7 +57,7 @@
 	<div class="product-bottom-wrapper">
 
 		<div class="sm-actions fr">
-			<?=$spinback_fb; ?>
+			<?php echo $spinback_fb; ?>
 			<div class='clear'></div>
 		</div>
 
