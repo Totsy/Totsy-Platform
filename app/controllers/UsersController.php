@@ -334,7 +334,7 @@ class UsersController extends BaseController {
 					'email' => $email
 			)));
 			if ($user) {
-				$token = Util::generateToken();
+				$token = static::generateToken();
 				$user->clear_token = $token;
 				$user->reset_token = sha1($token);
 				$user->legacy = 0;
