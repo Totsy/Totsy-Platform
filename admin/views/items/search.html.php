@@ -102,12 +102,12 @@
 					</td>
 					<td>
 						<?php foreach ($item['sku_details'] as $key => $value): ?>
-							<?=$key?></br>
+							<?=$key?><br />
 						<?php endforeach ?>
 					</td>
 					<td>
 						<?php foreach ($item['sku_details'] as $key => $value): ?>
-							<?=$value?></br>
+							<?=$value?><br />
 						<?php endforeach ?>
 					</td>
 				</tr>
