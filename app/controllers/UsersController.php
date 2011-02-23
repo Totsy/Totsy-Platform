@@ -40,7 +40,7 @@ class UsersController extends BaseController {
 		*/
 		if(Session::check('cookieCrumb', array('name' => 'cookie'))){
 			$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-			if(preg_match('/a/', $cookie['landing_url'])){
+			if(preg_match('(/a/)', $cookie['landing_url'])){
 				$this->redirect($cookie['landing_url']);
 			}
 		}
