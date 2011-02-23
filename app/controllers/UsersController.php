@@ -57,7 +57,7 @@ class UsersController extends BaseController {
 			$data['invited_by'] = $invite_code;
 			$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));
 			if ($inviteCheck > 0) {
-				$data['invitation_codes'] = array(Util::randomString());
+				$data['invitation_codes'] = array(static::randomString());
 			}
 			if ($invite_code) {
 				$inviter = User::find('first', array(
@@ -144,7 +144,7 @@ class UsersController extends BaseController {
 							'invitation_codes' => $data['invitation_codes']
 							));
 					if ($inviteCheck > 0) {
-						$data['invitation_codes'] = array(Util::randomString());
+						$data['invitation_codes'] = array(static::randomString());
 					}
 					if ($saved = $user->save($data)) {
 						$data = array(
@@ -224,7 +224,7 @@ class UsersController extends BaseController {
 	protected function autoLogin(){
 		$redirect = '/sales';
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-		if(preg_match( '@[(/|login)]@', $this->request->url ) && array_key_exists('autoLoginHash', $cookie)) {
+		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie &&array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array('conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
 			if($user) {
 				if($cookie['user_id'] == $user->_id){
