@@ -21,6 +21,7 @@ class Affiliate extends Base {
         }
 
         $conditions['active'] = true;
+        $conditions['level'] = 'super';
         $conditions['pixel'] = array('$elemMatch' => array(
                                     'page' => $url,
                                     'enable' => true
@@ -33,36 +34,42 @@ class Affiliate extends Base {
 		                    ));
 		$pixels = Affiliate::find('all', $options );
 		$pixels = $pixels->data();
+
 		$pixel = NULL;
 
 		foreach($pixels as $data) {
 			foreach($data['pixel'] as $index) {
+
                 if(in_array($url, $index['page'])) {
-                    $pixel .= static::generatePixel($invited_by, $index['pixel'], $orderid);
+                    if($url == '/orders/view'){
+                        $pixel .= static::generatePixel($invited_by, $index['pixel'], array( 'orderid' => $orderid));
+                    }else{
+                        $pixel .= static::generatePixel($invited_by, $index['pixel']);
+                    }
 				}
 			}
 		}
-       // die(var_dump($url));
 		return $pixel;
 	}
+    /**
+    *   This function appends neccessary information to affilates pixels so affiliates can function *   and collect data.
+    *   @params $invited_by the affilate code associated with the pixel
+    *           $pixel the pixel the affiliate provided
+    *           $options Used those times when the url is dynamic and the affiliate need a pixel or
+    *                    app on that page.  Available options: product - item view page, orderid -
+    *                    for affiliates who need orderids for share revenue.
+    *   @return Returns modified pixels.
+    *   $TODO  Move the appending to the Helper
+    **/
+    public static function generatePixel($invited_by, $pixel, $options = array()) {
 
-	protected static function randomString($length = 8, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890') {
-		$chars_length = (strlen($chars) - 1);
-		$string = $chars{rand(0, $chars_length)};
-		for ($i = 1; $i < $length; $i = strlen($string)) {
-			$r = $chars{rand(0, $chars_length)};
-			if ($r != $string{$i - 1}) $string .=  $r;
-		}
-		return $string;
-	}
-
-    public static function generatePixel($invited_by, $pixel, $orderid = NULL, $product = NULL) {
         if($invited_by == 'w4'){
             $transid = 'totsy' . static::randomString();
             return '<br/>' . str_replace('$', $transid,$pixel );
-        }else if($invited_by == 'spinback' && ( ($orderid) || ($product) )){
+        }else if($invited_by == 'spinback' && ($options)) {
             $insert = '';
-            if (($orderid)) {
+            if (array_key_exists('orderid', $options) && ($options['orderid'])) {
+                $orderid = $options['orderid'];
                 $order = Order::find('all', array('conditions' => array('order_id' => $orderid)));
                 $order = $order->data();
                 if(($order)) {
@@ -72,7 +79,8 @@ class Affiliate extends Base {
                 return str_replace('$' , $insert, $pixel);
             }
 
-            if(($product)) {
+            if(array_key_exists('product', $options) && ($options['product'])) {
+                $product = $options['product'];
                 $last = strrpos($product, '/');
                 $item = substr($product, $last + 1);
                 $item = Item::find('first', array(
@@ -81,10 +89,12 @@ class Affiliate extends Base {
                         'url' => $item),
                     'order' => array('modified_date' => 'DESC'
                 )));
+               $insert .= ' pi= http://' . $_SERVER['HTTP_HOST'] . '/image/' . $item->primary_image .'.jpeg';
                $insert .= ' pid=' . $item->_id;
-               $insert .= ' plp=http://totsy.local' . $product;
+               $insert .= ' plp=http://' . $_SERVER['HTTP_HOST'] . '/a/spinback?redirect=http://' . $_SERVER['HTTP_HOST'] . $product;
                $insert .= ' pn="' . $item->description . '"';
                $insert .= ' m="' . $item->vendor . '"';
+               $insert .= 'msg= "Check out this great deal on Totsy!"';
                return str_replace('$',$insert,$pixel);
             }
         }else if($invited_by == 'linkshare'){
@@ -95,16 +105,23 @@ class Affiliate extends Base {
     }
 
 	public static function storeSubAffiliate($get_data, $affiliate) {
-            $subaff = (array_key_exists('subid',$get_data)) ? $get_data['subid'] : $get_data['siteId'];
-            $conditions = array('invitation_codes' => $affiliate);
-            $col = Affiliate::collection();
-            if($col->count($conditions) > 0) {
-                $col->update($conditions, array(
-                        '$addToSet' => array(
-                            'sub_affiliates' => $subaff
-                        )));
-            }
-           return $affiliate .= $subaff;
+        if (array_key_exists('subid' , $get_data)) {
+            $subaff = $get_data['subid'];
+        } else if (array_key_exists('siteID' , $get_data)) {
+            $subaff = $get_data['siteID'];
+        }else {
+            return $affiliate;
+        }
+
+        $conditions = array('invitation_codes' => $affiliate);
+        $col = Affiliate::collection();
+        if($col->count($conditions) > 0) {
+            $col->update($conditions, array(
+                    '$addToSet' => array(
+                        'sub_affiliates' => $subaff
+                    )));
+        }
+       return $affiliate .= $subaff;
 	}
 }
 

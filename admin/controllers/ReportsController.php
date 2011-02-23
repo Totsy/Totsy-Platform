@@ -144,7 +144,7 @@ class ReportsController extends BaseController {
 		if ($this->request->data) {
 			$criteria = $this->request->data;
 			$name = $this->request->data['affiliate'];
-			$affiliate = new MongoRegex("/$name/i");
+			$affiliate = new MongoRegex("/^$name/i");
 			if ($this->request->data['min_date'] && $this->request->data['max_date']) {
 				//Conditions with date converted to the right timezone
 				$min = new MongoDate(strtotime($this->request->data['min_date']));

@@ -14,7 +14,7 @@ class Base extends \lithium\data\Model {
 		'5min' => 300,
 		'15min' => 900
 	);
-	
+
 	public static function dates($name) {
 	     return new MongoDate(time() + static::_object()->_dates[$name]);
 	}
@@ -28,6 +28,20 @@ class Base extends \lithium\data\Model {
 		return static::_connection()->connection->{static::_object()->_meta['source']};
 	}
 
+    public static function generateToken() {
+        return substr(md5(uniqid(rand(),1)), 1, 10);
+    }
+
+    public static function randomString($length = 8, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890')
+    {
+        $chars_length = (strlen($chars) - 1);
+        $string = $chars{rand(0, $chars_length)};
+        for ($i = 1; $i < $length; $i = strlen($string)) {
+            $r = $chars{rand(0, $chars_length)};
+            if ($r != $string{$i - 1}) $string .=  $r;
+        }
+        return $string;
+    }
 }
 
 ?>
