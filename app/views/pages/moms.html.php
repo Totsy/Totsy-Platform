@@ -299,11 +299,15 @@ ul.bullets { list-style-type:circle; font-size:11px; margin:0px 0px 2px 15px; }
     <div class="mtm_right_content">
       <h3 class="gray"><strong>Angela Roy</strong></h3>
       <hr />
-      <p>Piera Jolly is getting wiser one tantrum at a time! The 30-something, first time mom of a three year old boy is trying to balance motherhood and life in Atlanta and she's blogging about it on her popular blog, JollyMom. Thank goodness, because we would never have been creative enough to think of throwing a potty party when potty training, but Piera did!</p>
-      <p><strong><em>Named Power Mom by Nielsen in 2009 and one of Access Communication's Top 50 Mommy Blogs in 2010!</em></strong></p>
-      <p>Founded in 2008, JollyMom.com is a savvy blog that provides moms with helpful parenting information, fun child-friendly activities, craft ideas, recipes, and the latest trends for moms, kids, and families. </p>
-      <p>Piera loves to spend time in the kitchen and she's working on writing a cookbook about kids and healthy eating, we can't wait for our signed copy! </p>
-      <h5 class="gray"><strong>Piera and JollyMom.com Honors:</strong></h5>
+      <p>Angela Roy’s entrepreneurial spirit and PR genius came to life when she and 4 friends formed MommyPR.com, an online community to connect brands with other mommy bloggers. From press releases to product reviews, from giveaways to marketing campaigns, the content on MommPR.com certainly qualifies Angela a PR genius. </p>
+
+<p>But we think she’s a super mom! She is a military spouse, a mother of two girls, and has a Twitter following of over 10,000! </p>
+
+<p>Being a military spouse has taught her how to be more resourceful and patient. Having traveled around the world, Angela is very aware of how lucky we all are to live in the U.S. We are so glad she’s sharing that wealth of wisdom with the rest of us! </p>
+
+<p><strong><em>From press releases to product reviews, from giveaways to marketing campaigns, the content on MommPR.com certainly qualifies Angela a PR genius.</em></strong></p>
+      
+            <h5 class="gray"><strong>Brands Love Talking About Angela: </strong></h5>
       <hr />
       <ul class="bullets">
         <li>Named Top Mommy Blogger by IGDA Newsletter</li>
