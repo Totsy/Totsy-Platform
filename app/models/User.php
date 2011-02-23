@@ -4,6 +4,7 @@ namespace app\models;
 
 use \lithium\data\Connections;
 use \lithium\storage\Session;
+use \lithium\storage\session\adapter\Cookie;
 use \MongoDate;
 use \MongoId;
 use \MongoRegex;
@@ -148,6 +149,44 @@ class User extends Base {
 		return $user->save(null,array('validate' => false));
 	}
 
+	public static function rememberMeWrite($rememberme) {
+	    if( (boolean)$rememberme && Session::check('cookieCrumb', array('name' => 'cookie'))) {
+            $rememberHash = static::generateToken() . static::randomString();
+            $cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
+            $userInfo = Session::read('userLogin');
+            $cookie['user_id'] = $userInfo['_id'];
+            $cookie['autoLoginHash'] = $rememberHash;
+            Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
+            $user = static::collection();
+            $user->update(array(
+                    'email' => $userInfo['email']
+                    ), array(
+                        '$set' => array(
+                            'autologinHash' => $rememberHash
+                    )));
+        }
+	}
+	public static function setupCookie() {
+		$cookieInfo = null;
+		$urlredirect = ((array_key_exists('redirect',$_REQUEST))) ? $_REQUEST['redirect'] : null ;
+		if ( preg_match('(/|/a/|/login)', $_SERVER['REQUEST_URI']) ) {
+			if(!Session::check('cookieCrumb', array('name' => 'cookie')) ) {
+
+				$cookieInfo = array(
+						'user_id' => Session::read('_id'),
+						'landing_url' => $_SERVER['REQUEST_URI'],
+						'entryTime' => strtotime('now'),
+						'redirect' => $urlredirect
+					);
+			   Session::write('cookieCrumb', $cookieInfo ,array('name' => 'cookie'));
+			}else{
+				$cookieInfo = Session::read('cookieCrumb', array('name' => 'cookie'));
+				$cookieInfo['entryTime'] = strtotime('now');
+				$cookieInfo['redirect'] = $urlredirect;
+				Session::write('cookieCrumb', $cookieInfo ,array('name' => 'cookie'));
+			}
+		}
+	}
 }
 
 

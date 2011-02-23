@@ -16,10 +16,12 @@ class AffiliatesController extends BaseController {
     **/
 	public function registration($code = NULL) {
 	    $success = false;
+	    $message = '';
+	    $errors = 'Affiliate does not exists';
+
 		if ($code) {
 		    $count = Affiliate::count(array('conditions' => array('invitation_codes' => $code)));
-
-            if ( $count == 0 ){ return compact('success'); }
+            if ( $count == 0 ){ return compact('success', 'errors'); }
 
             if($this->request->data){
                 $data = $this->request->data;
@@ -35,10 +37,11 @@ class AffiliatesController extends BaseController {
                     $user['invited_by'] = $code;
                     extract(UsersController::registration($user));
                     $success = $saved;
+                    $errors = $user->errors();
+
                 }
             }
-
-             return compact('success');
+            $this->render(array('data'=>compact('success','errors'), 'layout' =>false));
 		}
 	}
 
@@ -50,6 +53,7 @@ class AffiliatesController extends BaseController {
 	    $pdata = $this->request->data;
         $message = false;
         $user = User::create();
+        $urlredirect = '/sales';
 
         if ( ($affiliate)){
             $pixel = Affiliate::getPixels('after_reg', $affiliate);
@@ -57,6 +61,9 @@ class AffiliatesController extends BaseController {
            $gdata = $this->request->query;
             if( ($gdata) ){
                 $affiliate = Affiliate::storeSubAffiliate($gdata, $affiliate);
+                if (array_key_exists('redirect', $gdata)) {
+                    $urlredirect = parse_url(htmlspecialchars_decode(urldecode($gdata['redirect'])), PHP_URL_PATH);
+                }
             }
 
             if( ($pdata) ) {
@@ -80,7 +87,7 @@ class AffiliatesController extends BaseController {
                         'zip' => $user->zip,
                         'email' => $user->email
                     );
-                    Session::write('userLogin', $userLogin);
+                   Session::write('userLogin', $userLogin, array('name'=>'default'));
                    $ipaddress = $this->request->env('REMOTE_ADDR');
                     User::log($ipaddress);
                     if($affiliate == 'linkshare'){
@@ -88,8 +95,8 @@ class AffiliatesController extends BaseController {
                             $this->redirect(htmlspecialchars($gdata['url']));
                        }
                     }
-                    Session::write('pixel',$pixel);
-                    $this->redirect('/sales');
+                    Session::write('pixel',$pixel, array('name'=>'default'));
+                    $this->redirect($urlredirect);
                 }
             }
         }

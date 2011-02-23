@@ -1,10 +1,11 @@
 <?php $this->title("Being Green"); ?>
 <h1 class="p-header">About Us</h1>
-	<div id="left" id="left">
+	<div id="left">
 		<ul class="menu main-nav">
 		  <h3 style="color:#999;">About Us</h3>
 		  <hr />
 		  <li class="first item15"><a href="/pages/aboutus" title="About Totsy"><span>How Totsy Works</span></a></li>
+		  <li class="first item17"><a href="/pages/moms" title="Meet The Moms"><span>Meet The Moms</span></a></li>
 		  <li class="first item16"><a href="/pages/press" title="Press"><span>Totsy in the Press</span></a></li>
 		  <li class="first item17 active"><a href="/pages/being_green" title="Being Green"><span>Being Green</span></a></li>
 		  <br />
