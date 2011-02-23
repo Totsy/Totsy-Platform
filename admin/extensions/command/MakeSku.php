@@ -5,7 +5,7 @@ use admin\models\Item;
 use lithium\analysis\Logger;
 use lithium\core\Environment;
 
-class SKUGenerator extends \lithium\console\Command  {
+class MakeSku extends \lithium\console\Command  {
 
 	/**
 	 * The environment to use when running the command. 'production' is the default.
