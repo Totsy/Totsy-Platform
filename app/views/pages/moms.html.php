@@ -299,11 +299,11 @@ ul.bullets { list-style-type:circle; font-size:11px; margin:0px 0px 2px 15px; }
     <div class="mtm_right_content">
       <h3 class="gray"><strong>Angela Roy</strong></h3>
       <hr />
-      <p>Angela Roy’s entrepreneurial spirit and PR genius came to life when she and 4 friends formed MommyPR.com, an online community to connect brands with other mommy bloggers. From press releases to product reviews, from giveaways to marketing campaigns, the content on MommPR.com certainly qualifies Angela a PR genius. </p>
+      <p>Angela Roy's entrepreneurial spirit and PR genius came to life when she and 4 friends formed MommyPR.com, an online community to connect brands with other mommy bloggers. From press releases to product reviews, from giveaways to marketing campaigns, the content on MommPR.com certainly qualifies Angela a PR genius. </p>
 
-<p>But we think she’s a super mom! She is a military spouse, a mother of two girls, and has a Twitter following of over 10,000! </p>
+<p>But we think she's a super mom! She is a military spouse, a mother of two girls, and has a Twitter following of over 10,000! </p>
 
-<p>Being a military spouse has taught her how to be more resourceful and patient. Having traveled around the world, Angela is very aware of how lucky we all are to live in the U.S. We are so glad she’s sharing that wealth of wisdom with the rest of us! </p>
+<p>Being a military spouse has taught her how to be more resourceful and patient. Having traveled around the world, Angela is very aware of how lucky we all are to live in the U.S. We are so glad she's sharing that wealth of wisdom with the rest of us! </p>
 
 <p><strong><em>From press releases to product reviews, from giveaways to marketing campaigns, the content on MommPR.com certainly qualifies Angela a PR genius.</em></strong></p>
       
