@@ -141,7 +141,7 @@ class OrdersController extends BaseController {
 			if (count($this->request->data) > 1) {
 				$user = Session::read('userLogin');
 				$user['checkout'] = $this->request->data;
-				Session::write('userLogin', $user);
+				Session::write('userLogin', $user, array('name' => 'default'));
 				$this->redirect('Orders::process');
 			} else {
 				$error = "Shipping and Delivery Information Missing";
@@ -248,7 +248,7 @@ class OrdersController extends BaseController {
 			}
 			if ($isMoney && $inRange && $isValid) {
 				$orderCredit->credit_amount = -$credit;
-				Session::write('credit', -$credit);
+				Session::write('credit', -$credit, array('name' => 'default'));
 			}
 		}
 
@@ -277,7 +277,7 @@ class OrdersController extends BaseController {
 					if ($code->type == 'dollar') {
 						$orderPromo->saved_amount = -$code->discount_amount;
 					}
-					Session::write('promocode', $orderPromo->code);
+					Session::write('promocode', $orderPromo->code, array('name' => 'default'));
 				} else {
 					$orderPromo->errors(
 						$orderPromo->errors() + array(
