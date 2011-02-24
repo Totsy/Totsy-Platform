@@ -118,14 +118,16 @@ class User extends Base {
 	}
 
 	/**
-	 * Lookup a user by either their email or username
+	 * The lookup method takes the email address to search and converts
+	 * to a regex to lookup the user.
+	 *
+	 * @param string $email
+	 * @todo remove regex when all email addresses have been lowercased.
 	 */
 	public static function lookup($email) {
 		$user = null;
 		$email = new MongoRegex("/^$email/i");
-		$result = static::collection()->findOne(array(
-			'$or' => array(array('username' => $email), array('email' => $email)))
-		);
+		$result = static::collection()->findOne(array('email' => $email));
 		if ($result) {
 			$user = User::create($result);
 		}
@@ -169,7 +171,7 @@ class User extends Base {
 	public static function setupCookie() {
 		$cookieInfo = null;
 		$urlredirect = ((array_key_exists('redirect',$_REQUEST))) ? $_REQUEST['redirect'] : null ;
-		if ( preg_match('(/|/a/|/login)', $_SERVER['REQUEST_URI']) ) {
+		if ( preg_match('(/|/a/|/login|/register|/join/|/invitation/)', $_SERVER['REQUEST_URI']) ) {
 			if(!Session::check('cookieCrumb', array('name' => 'cookie')) ) {
 
 				$cookieInfo = array(

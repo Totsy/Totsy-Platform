@@ -310,7 +310,7 @@ class OrdersController extends BaseController {
 			}
 			$order->ship_date = new MongoDate($this->shipDate($order));
 			$order->save();
-			Cart::remove(array('session' => Session::key()));
+			Cart::remove(array('session' => Session::key('default')));
 			foreach ($cart as $item) {
 				Item::sold($item->item_id, $item->size, $item->quantity);
 			}
