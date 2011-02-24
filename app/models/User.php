@@ -118,14 +118,16 @@ class User extends Base {
 	}
 
 	/**
-	 * Lookup a user by either their email or username
+	 * The lookup method takes the email address to search and converts
+	 * to a regex to lookup the user.
+	 *
+	 * @param string $email
+	 * @todo remove regex when all email addresses have been lowercased.
 	 */
 	public static function lookup($email) {
 		$user = null;
 		$email = new MongoRegex("/^$email/i");
-		$result = static::collection()->findOne(array(
-			'$or' => array(array('username' => $email), array('email' => $email)))
-		);
+		$result = static::collection()->findOne(array('email' => $email));
 		if ($result) {
 			$user = User::create($result);
 		}
