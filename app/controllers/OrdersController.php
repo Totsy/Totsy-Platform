@@ -95,7 +95,7 @@ class OrdersController extends BaseController {
 
 	public function add() {
 		$data = $this->request->data;
-		Session::delete('credit', );
+		Session::delete('credit');
 		Session::delete('promocode');
 		$user = Session::read('userLogin');
 		$billing = Address::menu($user);
