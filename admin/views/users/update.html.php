@@ -38,7 +38,7 @@
 									if(!empty($user["groups"])){
 										foreach($user["groups"] as $u_group)
 										{
-											if($u_group["_id"] == $group["_id"]) $checked = true;
+											if($u_group == $group["_id"]) $checked = true;
 										}
 									}?>
 						<tr>

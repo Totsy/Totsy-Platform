@@ -133,8 +133,7 @@ class UsersController extends \admin\controllers\BaseController {
 						$group = Group::find('first', array('conditions' => array('name' => $key)));
 						//Test if group exist and the data field is not equal to null
 						if(!empty($group) && ($data == 1)){
-							$groups_user[$n]["name"] = $group["name"];
-							$groups_user[$n]["_id"] = $group["_id"];
+							$groups_user[$n] = $group["_id"];
 							//Test if group has acls
 							if(!empty($group["acls"])){
 								//Fill the futur acls array for the actual user
@@ -148,40 +147,55 @@ class UsersController extends \admin\controllers\BaseController {
 						}
 					}//end foreach datas
 					//Clean acls result
-					
-					if(count($acls_pre_user)>1) $acls_user = User::arrayUnique($acls_pre_user);
-					else $acls_user = $acls_pre_user;
+					if(count($acls_pre_user) > 1){
+						$acls_user = User::arrayUnique($acls_pre_user);
+					}
+					else {
+						$acls_user = $acls_pre_user;
+					}
 					//Decrement total_users from group erased if groups will be updated.
 					if($n > 0) {
 						$user = User::find('first', array('conditions' => array('_id' => $id)));
 						if(!empty($user["groups"])){
 							foreach($user["groups"] as $user_group){
 								$groupsCollection->update(array("_id" =>
-								new MongoId($user_group["_id"])) ,
+								new MongoId($user_group)) ,
 								array('$inc' => array( "total_users" => -1 )));
 							}
 						}
 					}
+					//First erase the existing groups and acls of the user
+					if(strlen($id) > 10) {
+						$usersCollection->update(array("_id" => new MongoId($id)),
+						array('$unset' => array( "groups" => 1)));
+						$usersCollection->update(array("_id" => new MongoId($id)),
+						array('$unset' => array( "acls" => 1)));
+					}else {
+						$usersCollection->update(array("_id" => $id) ,
+						array('$unset' => array( "groups" => 1)));
+						$usersCollection->update(array("_id" => $id),
+						array('$unset' => array( "acls" => 1)));
+					}
 					//Add groups and ACLs to the user document
 					if(!empty($groups_user)) {
 						//Test if id is a string or a MongoId
-						if(strlen($id) > 10) {
-							$usersCollection->update(array("_id" => new MongoId($id)) ,
-							array('$set' => array( "groups" => $groups_user)),
-							array('upsert' => true));
-							$usersCollection->update(array("_id" => new MongoId($id)) ,
-							array('$set' => array( 'acls' => $acls_user)), array('upsert' => true));
-						}else {
-							$usersCollection->update(array("_id" => $id) ,
-							array('$set' => array( "groups" => $groups_user)),
-							array('upsert' => true));
-							$usersCollection->update(array("_id" => $id) ,
-							array('$set' => array( 'acls' => $acls_user)),
-							array('upsert' => true));
-						}
-						//Increment total_users for the group selected
-						foreach($groups_user as $grou_us) {
-							$groupsCollection->update(array("_id" => new MongoId($grou_us["_id"])) ,
+						foreach($groups_user as $group_user){
+							if(strlen($id) > 10) {
+								$usersCollection->update(array("_id" => new MongoId($id)),
+								array('$addToSet' => array( "groups" =>  new MongoId($group_user))),
+								array('upsert' => true));
+								$usersCollection->update(array("_id" => new MongoId($id)) ,
+								array('$set' => array( 'acls' => $acls_user)), array('upsert' => true));
+							}else {
+								$usersCollection->update(array("_id" => $id) ,
+								array('$addToSet' => array( "groups" =>  new MongoId($group_user))),
+								array('upsert' => true));
+								$usersCollection->update(array("_id" => $id) ,
+								array('$set' => array( 'acls' => $acls_user)),
+								array('upsert' => true));
+							}
+							//Increment total_users for the group selected
+							$groupsCollection->update(array("_id" => new MongoId($group_user)),
 							array('$inc' => array( "total_users" => 1 )));
 						}
 					}//End of if groups to add condition
