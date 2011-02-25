@@ -360,7 +360,7 @@ class UsersController extends BaseController {
 		$user = User::getUser();
 		$id = (string) $user->_id;
 		// Some documents have arrays, others have strings
-		if(is_array($user->invitation_codes){
+		if(is_array($user->invitation_codes)){
 			$code = $user->invitation_codes[0];
 		} else {
 			$code = $user->invitation_codes;
