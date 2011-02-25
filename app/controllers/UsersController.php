@@ -11,7 +11,6 @@ use lithium\storage\Session;
 use app\extensions\Mailer;
 use app\extensions\Keyade;
 use li3_silverpop\extensions\Silverpop;
-use MongoRegex;
 use MongoDate;
 
 class UsersController extends BaseController {
@@ -327,8 +326,7 @@ class UsersController extends BaseController {
 		$this->_render['layout'] = 'login';
 		$success = false;
 		if ($this->request->data) {
-			$email = $this->request->data['email'];
-			$email = new MongoRegex("/$email/i");
+			$email = strtolower($this->request->data['email']);
 			$user = User::find('first', array(
 				'conditions' => array(
 					'email' => $email
@@ -361,7 +359,12 @@ class UsersController extends BaseController {
 		$recipient_list = array();
 		$user = User::getUser();
 		$id = (string) $user->_id;
-		$code = $user->invitation_codes[0];
+		// Some documents have arrays, others have strings
+		if(is_array($user->invitation_codes){
+			$code = $user->invitation_codes[0];
+		} else {
+			$code = $user->invitation_codes;
+		}
 		if ($this->request->data) {
 			$rawto = explode(',',$this->request->data['to']);
 			$message = $this->request->data['message'];
