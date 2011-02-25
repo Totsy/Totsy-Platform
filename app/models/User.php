@@ -7,7 +7,6 @@ use \lithium\storage\Session;
 use \lithium\storage\session\adapter\Cookie;
 use \MongoDate;
 use \MongoId;
-use \MongoRegex;
 use \lithium\util\Validator;
 
 /**
@@ -118,15 +117,14 @@ class User extends Base {
 	}
 
 	/**
-	 * The lookup method takes the email address to search and converts
-	 * to a regex to lookup the user.
+	 * The lookup method takes the email address to search and finds
+	 * the user by that address.
 	 *
 	 * @param string $email
-	 * @todo remove regex when all email addresses have been lowercased.
 	 */
 	public static function lookup($email) {
 		$user = null;
-		$email = new MongoRegex("/^$email/i");
+		$email = strtolower($email);
 		$result = static::collection()->findOne(array('email' => $email));
 		if ($result) {
 			$user = User::create($result);
