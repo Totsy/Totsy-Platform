@@ -89,9 +89,9 @@ class Affiliate extends Base {
                         'url' => $item),
                     'order' => array('modified_date' => 'DESC'
                 )));
-               $insert .= ' pi= http://' . $_SERVER['HTTP_HOST'] . '/image/' . $item->primary_image .'.jpeg';
+               $insert .= ' pi= http://www.' . $_SERVER['HTTP_HOST'] . '/image/' . $item->primary_image .'.jpeg';
                $insert .= ' pid=' . $item->_id;
-               $insert .= ' plp=http://' . $_SERVER['HTTP_HOST'] . '/a/spinback?redirect=http://' . $_SERVER['HTTP_HOST'] . $product;
+               $insert .= ' plp=http://www.' . $_SERVER['HTTP_HOST'] . '/a/spinback?redirect=http://www.' . $_SERVER['HTTP_HOST'] . $product;
                $insert .= ' pn="' . $item->description . '"';
                $insert .= ' m="' . $item->vendor . '"';
                $insert .= 'msg= "Check out this great deal on Totsy!"';
