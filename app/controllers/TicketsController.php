@@ -27,12 +27,14 @@ class TicketsController extends BaseController {
 		$orders = Order::findAllByUserId((string) $user['_id'])->invoke('summary', array(), array(
 			'merge' => true
 		));
+
 		$list = Ticket::$issueList;
 		$agent = array('user_agent' => $this->request->env('HTTP_USER_AGENT'));
-		$email = array('email' => $list[$data['issue']['issue_type']]);
-		$data = array('issue' => $this->request->data) + array('user' => $user) + $agent + $email;
+		$data = array('issue' => $this->request->data) + array('user' => $user) + $agent;
 		if (($this->request->data) && $ticket->save($data)) {
-			Silverpop::send('general', $data);
+			$email = array('email' => $list[$data['issue']['issue_type']]);
+			$data = $data + $email;
+			Silverpop::send('ticket', $data);
 			$this->redirect('tickets/sent');
 		}
 

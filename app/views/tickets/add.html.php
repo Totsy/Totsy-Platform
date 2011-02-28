@@ -30,7 +30,9 @@
 	<?=$this->form->create(); ?>
 		<select id="parent" style="width:350px;" name="issue_type">
 			<option value="">I need help with:</option>
-			<option value="order">My Order(s)</option>
+			<?php if ($orders): ?>
+				<option value="order">My Order(s)</option>
+			<?php endif ?>
 			<option value="tech">Technical Support</option>
 			<option value="cs">Customer Support</option>
 			<option value="business">New Business Development</option>
@@ -39,10 +41,12 @@
 	
 		<br />
 		<select id="child" name="type" style="width:350px;">
-			<option value="">Choose Your Order Number</option>
-			<?php foreach ($orders as $key => $value): ?>
-				<option class="sub_order" value="<?=$key?>"><?=$value?></option>
-			<?php endforeach ?>
+			<?php if ($orders): ?>
+				<option value="">Choose Your Order Number</option>
+				<?php foreach ($orders as $key => $value): ?>
+					<option class="sub_order" value="<?=$key?>"><?=$value?></option>
+				<?php endforeach ?>
+			<?php endif ?>
 			<option class="sub_tech" value="">Choose One</option>
 			<option class="sub_tech" value="5">Trouble with logging in</option>
 	
