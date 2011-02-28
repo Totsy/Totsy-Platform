@@ -47,7 +47,7 @@
 				<?php endif ?>
 			</div>
 			<div id="header-rt">
-				<?=$this->html->link('Invite Friends. Get $15','/Users/invite',array('title'=>'Invite Friends. Get $15', 'id'=>'if'));?>
+				<?=$this->html->link('Invite Friends. Get $15','/users/invite',array('title'=>'Invite Friends. Get $15', 'id'=>'if'));?>
 				<?php if (!empty($userInfo)): ?>
 					<p class="clear">
 						<span class="fr">
@@ -79,7 +79,7 @@
 			<li class="first"><a href="/pages/terms" title="Terms of Use">Terms of Use</a></li>
 			<li><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
 			<li><a href="/pages/aboutus" title="About Us">About Us</a></li>
-			<li><a href="/blog" title="Blog">Blog</a></li>
+			<li><a href="http://blog.totsy.com" title="Blog" target="_blank">Blog</a></li>
 			<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
 			<li class="last"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
 		</ul>
