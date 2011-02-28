@@ -50,11 +50,7 @@ Router::connect('/search/{:search}', 'Search::view');
  */
 if (isset($session['acls'])) {
 	foreach ($session['acls'] as $acl) {
-		if(preg_match("#^[a-zA-Z_]+[:]{2,2}[a-zA-Z_]+$#",$acl['connection'])){
-			if(preg_match("#^/[a-zA-Z0-9_/]+/?(\{\:args\})?$#",$acl['route'])){
-				Router::connect($acl['route'], $acl['connection']);
-			}
-		}
+		Router::connect($acl['route'], $acl['connection']);
 	}
 }
 

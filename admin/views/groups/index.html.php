@@ -2,17 +2,17 @@
 <div class='box'>
 	<h1>Groups - ACL Management</h1>
 	<div class="clear"></div>
-	<?=$this->form->create(null ,array('id'=>'groupsFrom')); ?>
-	<?=$this->form->select("select_group", $select_groups, array("style" => "width:150px;font-weight:bold;font-size:13px;", "onChange" => 'this.form.submit();', 'value' => $group["name"])); ?><br />
-	<?php if(!empty($group)): ?>
+	<?=$this->form->create($group ,array('id'=>'groupsFrom')); ?>
+	<?=$this->form->select("select_group", $ddm_groups, array("style" => "width:150px;font-weight:bold;font-size:13px;", "onChange" => 'this.form.submit();', 'value' => $group_selected["name"])); ?><br />
+	<?php if(!empty($group_selected)): ?>
 		<br />
 			<div id="table_wrap" class="container_16">
 				<div id="title_row" class="grid_16" style="background:#f7f7f7; border-bottom:1px solid #ddd; margin:0px 0px 5px 0px;">
-					<h2>Group: <?=$group["name"]?></h2>
+					<h2>Group: <?=$group_selected["name"]?></h2>
 				</div>
-				<?php $n=0;?>
-				<?php if (!empty($group["acls"])): ?>
-					<?php foreach($group["acls"] as $acl):?>
+				<?php $n=5;?>
+				<?php if (!empty($group_selected["acls"])): ?>
+					<?php foreach($group_selected["acls"] as $acl):?>
 						<div id="acl_<?=$n?>" class="grid_16" style="background:#f7f7f7; border-bottom:1px solid #ddd; margin:0px 0px 5px 0px;">
 							<div id="info_row" class="grid_14 alpha" style="padding:5px;">
 								<span style="font-size:24px;">Acl <?=$n?></span>
@@ -31,15 +31,17 @@
 			<div>
 				<a href="#" id="add_acl" onclick="show_ad()" ><img src="/img/add.png" width="20" height="20"></a>
 				<span style="font-size:24px;padding:15px;">New Acls</span>
-				<?=$this->form->hidden('current', array('class' => 'inputbox', 'id' => 'current', 'value' => $group["name"])); ?>
+				<?=$this->form->hidden('current', array('class' => 'inputbox', 'id' => 'current', 'value' => $group_selected["name"])); ?>
 				<?=$this->form->hidden('type', array('class' => 'inputbox', 'id' => 'type', 'value' => "")); ?>
 			</div>
-			<div id="new_acl" style="display:none;">
+			<div id="new_acl" style="display:block;">
 				<div class="clear"></div>
-				<?php for ($i=($n+1) ; $i < ($n+5) ; $i++): ?>
-						<span style="margin:0px 20px 0px 20px;">Route <?=$this->form->text('acl_route_'.$i, array('class' => 'inputbox', "id" => "acl_route_".$i)); ?> </span>
-						<span style="margin:0px 20px 0px 20px;">Connection <?=$this->form->text('acl_connection_'.$i, array('class' => 'inputbox', "id" => "acl_connection_".$i)); ?></span>
+				<?php for ($i=0 ; $i < 4 ; $i++): ?>
+						<span style="margin:0px 20px 0px 20px;">Route <?=$this->form->text('newacl_route_'.$i, array('class' => 'inputbox', "id" => "newacl_route_".$i)); ?></span>
+						<span style="margin:0px 20px 0px 20px;">Connection <?=$this->form->text('newacl_connection_'.$i, array('class' => 'inputbox', "id" => "newacl_connection_".$i)); ?></span>
 					<div class="clear"></div>
+						<div style="color: red ; font-size: 10pt"><?=$this->form->error('newacl_route_'.$i); ?></div>
+						<div  style="color: red ; font-size: 10pt"><?=$this->form->error('newacl_connection_'.$i); ?></div> 
 				<?php endfor ?>
 			</div>
 			</div>
@@ -86,7 +88,7 @@
 	<?php endif ?>
 	<br />
 	<div class="clear"></div>
-	<?php if(empty($group)): ?>
+	<?php if(empty($group_selected)): ?>
 		<div style="background:#f7f7f7; border-bottom:1px solid #ddd; margin:0px 0px 5px 0px; padding:5px;">
 			<span style="font-size:22px;">Create a Group</span>
 			<?=$this->form->create(null ,array('id'=>'addGroupForm','enctype' => "multipart/form-data")); ?>
@@ -96,7 +98,7 @@
 		<div style="background:#f7f7f7; border-bottom:1px solid #ddd; margin:0px 0px 5px 0px; padding:5px;">
 			<span style="font-size:22px;">Remove a Group </span>
 			<?=$this->form->create(null ,array('id'=>'removeGroupForm','enctype' => "multipart/form-data")); ?>
-			<span style="margin:0px 20px 0px 20px;"><?=$this->form->select("remove_group", $select_groups, array("style" => "width:150px;font-weight:bold;font-size:13px;")); ?></span>
+			<span style="margin:0px 20px 0px 20px;"><?=$this->form->select("remove_group", $ddm_groups, array("style" => "width:150px;font-weight:bold;font-size:13px;")); ?></span>
 			<?=$this->form->submit('Remove', array("style" => "width:100px;font-weight:bold;font-size:12px;"))?>
 		</div>
 	<?php endif ?>

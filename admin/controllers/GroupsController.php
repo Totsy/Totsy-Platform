@@ -35,30 +35,32 @@ class GroupsController extends \admin\controllers\BaseController {
 				//Case Change selection
 			}//Case update ACLs of groups
 			else{
-				$group = Group::find('first', array('conditions' =>
+				$group_selected = Group::find('first', array('conditions' =>
 				array('name' => $datas["select_group"])));
 				$search = User::find('all', array('conditions' =>
-				array('groups' => $group[_id])));
+				array('groups' => $group_selected[_id])));
 				$users = $search->data();
-				if( (!empty($datas["select_group"])) && ($datas["select_group"] != "undefined") &&
-				($datas["current"] == $datas["select_group"])) {
-					$this->update($group["_id"]);
+				if( (!empty($datas["select_group"])) && ($datas["select_group"] != "undefined") && ($datas["current"] == $datas["select_group"])) {
+						$group = Group::create($this->request->data);
+						if($group->validates()){
+							$this->update($group_selected["_id"]);
+						}
 				}
 				//Refresh Result after update
 				$search = User::find('all', array('conditions' =>
-				array('groups' => $group[_id])));
+				array('groups' => $group_selected[_id])));
 				$users = $search->data();
-				$group = Group::find('first', array('conditions' =>
+				$group_selected = Group::find('first', array('conditions' =>
 				array('name' => $datas["select_group"])));
 			}
 		}
 		//Create Dropdown Menu
 		$groups = Group::find('all');
-		$select_groups["undefined"] = "select a group";
+		$ddm_groups["undefined"] = "select a group";
 		foreach($groups as $gro){
-			$select_groups[$gro["name"]] = $gro["name"];
+			$ddm_groups[$gro["name"]] = $gro["name"];
 		}
-		return compact('group','select_groups','users');
+		return compact('group','group_selected','ddm_groups','users');
 	}
 
 	/**
@@ -80,7 +82,7 @@ class GroupsController extends \admin\controllers\BaseController {
 			$datas = $this->request->data;
 			foreach($datas as $key => $data) {
 				$param = explode("_", $key);
-				if($param[0] == "acl" && !empty($data)){
+				if(($param[0] == "acl" || $param[0] == "newacl") && !empty($data)){
 					$acls[$param[2]][$param[1]] = $data;
 				}
 				if($param[0] == "user" && !empty($data)){
@@ -167,6 +169,7 @@ class GroupsController extends \admin\controllers\BaseController {
 			foreach($user["groups"] as $user_group){
 				$group = Group::find("first", array('conditions' => array("_id" => $user_group)));
 				if(!empty($group["acls"])){
+						$j = 0;
 						//Fill the futur acls array for the actual user
 						foreach($group["acls"] as $group_acl) {
 							$acls_pre_user[$j]["connection"] = $group_acl["connection"];
