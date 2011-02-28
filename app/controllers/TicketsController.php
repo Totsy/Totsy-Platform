@@ -29,12 +29,11 @@ class TicketsController extends BaseController {
 		));
 		$list = Ticket::$issueList;
 		$agent = array('user_agent' => $this->request->env('HTTP_USER_AGENT'));
-		//$email = array('email' => $list[$data['issue']['issue_type']]);
-		$email = array('email' => 'fhagard@lightcube.us');
+		$email = array('email' => $list[$data['issue']['issue_type']]);
 		$data = array('issue' => $this->request->data) + array('user' => $user) + $agent + $email;
 		if (($this->request->data) && $ticket->save($data)) {
 			Silverpop::send('general', $data);
-			$this->redirect('ticket/sent');
+			$this->redirect('tickets/sent');
 		}
 
 		return compact('ticket', 'message', 'orders');
