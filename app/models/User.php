@@ -44,15 +44,15 @@ use \lithium\util\Validator;
 class User extends Base {
 
 	public $validates = array(
-		'firstname' => array(
-			'notEmpty', 'required' => true, 'message' => 'Please add a first name'
+	/*	'firstname' => array(
+			'notEmpty', 'required' => false, 'message' => 'Please add a first name'
 		),
 		'lastname' => array(
-			'notEmpty', 'required' => true, 'message' => 'Please add a last name'
+			'notEmpty', 'required' => false, 'message' => 'Please add a last name'
 		),
 			'zip' => array(
-				'notEmpty', 'required' => true, 'message' => 'Please add a zip code'
-		),
+				'notEmpty', 'required' => false, 'message' => 'Please add a zip code'
+		),*/
 		'email' => array(
 			array('email', 'message' => 'Email is not valid'),
 			array('notEmpty', 'required' => true, 'message' => 'Please add an email address'),
