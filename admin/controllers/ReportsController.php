@@ -266,7 +266,7 @@ class ReportsController extends BaseController {
 						'conditions' => array(
 							'items.item_id' => (string) $eventItem['_id'],
 							'items.size' => (string) $key,
-							'items.status' => array('$ne' => 'Order Canceled')
+							'cancel' => array('$ne' => true)
 					)));
 					if ($orders) {
 						$orderData = $orders->data();
