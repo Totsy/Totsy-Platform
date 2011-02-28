@@ -53,16 +53,22 @@
 								<div class="r-box lt-gradient-1">
 								
 								<?=$this->form->create($user ,array('id'=>'registerForm')); ?>
-
-									<div class="form-row">
+               
+               <!-- Commnented Firstname, Lastname and Zip code ---->
+								
+									<!-- div class="form-row">
 										<?=$this->form->label('firstname', 'First Name <span>*</span>', array(
 											'escape' => false,
 											'class' => 'required'
 											));
 										?>
+										
+										
 										<?=$this->form->text('firstname', array('class' => 'inputbox')); ?>
 										<?=$this->form->error('firstname'); ?>
 									</div>
+									
+									
 									<div class="form-row">
 										<?=$this->form->label('lastname', 'Last Name <span>*</span>', array(
 											'escape' => false,
@@ -81,7 +87,10 @@
 										
 										<?=$this->form->text('zip', array('class' => 'inputbox', 'id' => 'zip')); ?>
 										<?=$this->form->error('zip'); ?>
-									</div>
+									</div -->
+									
+									<!-- ************************************************************** -->
+									
 									<div class="form-row">
 										<?=$this->form->label('email', 'Email <span>*</span>', array(
 											'escape' => false,
