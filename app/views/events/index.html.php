@@ -125,9 +125,10 @@
 
 	<div style="margin-bottom:35px;" class="clear"></div>
 
+	<!--
 	<h2 class="page-title gray clear"><span class="_red">Monthly Sales / Spring Month</span></h2>
 	<hr />
-
+ 
 	<div id="slider" class="nivoSlider">
 		 <img src="/img/spring_img1.jpg" />
 		 <img src="/img/spring_img2.jpg" />
@@ -138,7 +139,7 @@
 	</div>
 	
 	<br style="margin-bottom:10px;"/>
-
+	-->
 	<div class="coming-soon-sales">
 
 		<h2 class="page-title gray clear"><span class="_red">Upcoming Sales</span></h2>
@@ -230,3 +231,4 @@
         $('#slider').nivoSlider();
     });
     </script>
+    
