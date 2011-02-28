@@ -2,7 +2,9 @@
 ul.bullets { list-style-type:circle; font-size:11px; margin:0px 0px 2px 15px; }
 .photo_avatar { float:left; display:block; width:150px; margin:0px; }
 .mtm_right_content { margin:0px 0px 0px 10px; display:block; float:left; width:486px; }
-.mtm_page_break { margin:30px 0px!important; clear:both; }
+.mtm_page_break { margin:45px 0px!important; clear:both; }
+em {background:#f7f7f7; display: block; padding:5px; border-bottom: 1px solid #999; border-top: 1px solid #999;}
+.bigger {font-size:20px;}
 </style>
 <?php $this->title("Meet the Moms"); ?>
 <h1 class="p-header">About Us</h1>
@@ -26,7 +28,7 @@ ul.bullets { list-style-type:circle; font-size:11px; margin:0px 0px 2px 15px; }
   <div id="page">
     <h2 class="gray mar-b">Meet The Moms</h2>
     <hr />
-    <p>Meet Totsy's Mom Committee, our hand-picked group of mompreneurs, bloggers and website divas from across the country. Led my Totsy's Chief Mom, the Mom Committee is working for you, at your service to provide expertise, advise, trends, and more. You'll see the committee members in lots of places including our blog and social media platforms. And check them out on all their own fun sites!</p>
+    <p>Meet Totsy's Mom Committee, our hand-picked group of mompreneurs, bloggers and website divas from across the country. Led by Totsy's Chief Mom, the Mom Committee is working for you, at your service to provide expertise, advice, trends, and more. You'll see the committee members in lots of places including our blog and social media platforms. And check them out on all their own fun sites!</p>
     <!-- start mom block -->
     <div class="photo_avatar"><img src="/img/diana_mom.jpg" title="" width="150" alt="" /> <br />
       <ul class="bullets">
@@ -42,7 +44,7 @@ ul.bullets { list-style-type:circle; font-size:11px; margin:0px 0px 2px 15px; }
       <div style="clear:both;"></div>
     </div>
     <div class="mtm_right_content">
-      <h3 class="gray"><strong>Diana Dornan Heather</strong></h3>
+      <h3 class="gray bigger"><strong>Diana Dornan Heather</strong></h3>
       <hr />
       <p>Diana Dornan Heather is Totsy's resident Chief Mom. In corporate speak that's 
         Chief Editor and Director of Social Media, but we like to think of her as the face 
@@ -57,8 +59,8 @@ ul.bullets { list-style-type:circle; font-size:11px; margin:0px 0px 2px 15px; }
         shows and music videos.</p>
       <p>This was all after she graduated with her law degree from the University of 
         Mississippi School of Law and practiced law in MS for two years. </p>
-      Diana "is Totsy's resident Chief Mom" that's Chief Editor and Director of 
-      Social Media, but we like to think of her as the face and voice of Totsy.
+      <p><strong><em>"Diana is Totsy's resident Chief Mom that's Chief Editor and Director of 
+      Social Media, but we like to think of her as the face and voice of Totsy."</em></strong></p>
       <p>Then of course, she's a mom to 2 little girls and wife to a British-born 
         entrepreneur. So, she knows all about being an international family, traveling between 
         her hometown on Mississippi's Gulf Coast and her in-laws home in London.</p>
@@ -85,7 +87,7 @@ ul.bullets { list-style-type:circle; font-size:11px; margin:0px 0px 2px 15px; }
     <!-- start mom block -->
     <div class="photo_avatar"><img src="/img/BaileyFamily.jpg" title="" width="150" alt="" /> <br />
       <ul class="bullets">
-        <li>Blog: <a href="http://rockinmama.net" target="_blank" title="Rockin' Mama">Rockin' Mama</a></li>
+        <li><a href="http://rockinmama.net" target="_blank" title="Rockin' Mama">Rockin' Mama</a></li>
         <li>Los Angeles, CA</li>
         <li>Mom to a boy (3.5 yrs) and a girl (1 yr)</li>
       </ul>
@@ -96,11 +98,11 @@ ul.bullets { list-style-type:circle; font-size:11px; margin:0px 0px 2px 15px; }
       <div style="clear:both;"></div>
     </div>
     <div class="mtm_right_content">
-      <h3 class="gray"><strong>Caryn Bailey</strong></h3>
+      <h3 class="gray bigger"><strong>Caryn Bailey</strong></h3>
       <hr />
       <p>Caryn Bailey loves to share her knowledge of baby care, parenting and breastfeeding on her blog, Rockin' Mama. And, trust us, she knows what she's talking about. Caryn has over 11 years of experience as a Registered Nurse in maternal, lactation and newborn care and is often found in the NICU caring for premature babies. And that doesn't count her own experience as a mom of two and one pregnancy that landed her on bed rest!</p>
       <p>The Los Angeles born and raised working mom traveled the world before settling in South Orange County, where she now lives with her husband and kids.</p>
-      <p>Rockin Mama named Top 50 Mom Blogs by Access PR</p>
+      <p><strong><em>"Rockin Mama named Top 50 Mom Blogs by Access PR"</em></strong></p>
       <p>Rockin' Mama is an online resource for parents looking for information on parenting and must-have products related to Caryn's passions, including: health, fitness, and all things green.</p>
       <h5 class="gray"><strong>You May Have Heard About Caryn:</strong></h5>
       <hr />
@@ -128,11 +130,11 @@ ul.bullets { list-style-type:circle; font-size:11px; margin:0px 0px 2px 15px; }
       <div style="clear:both;"></div>
     </div>
     <div class="mtm_right_content">
-      <h3 class="gray"><strong>Sara Fisher</strong></h3>
+      <h3 class="gray bigger"><strong>Sara Fisher</strong></h3>
       <hr />
       <p>Sara R. Fisher isn't your average marketing and PR guru. She is a freelance writer who likes to scout out what's hip for the mom, baby and preschooler set AND an entrepreneur who recently launched her own "mom comm" agency where she helps brands reach moms in an authentic way.</p>
       <p>Sara has hobnobbed with professional athletes, survived the dot-com boom (and bust) as an original team member at About.com, earned a Master's degree from Medill at Northwestern University (no easy feat) and worked with CEOs of Fortune 500 companies. Yes, we're tired just thinking about it! But the job she relishes most is that of being a mother to her two boys - naturally!</p>
-      <p>She has hobnobbed with professional athletes and worked with CEOs of Fortune 500 companies. But the job she relishes most is that of being a mother to her two boys</p>
+      <p><strong><em>"She has hobnobbed with professional athletes and worked with CEOs of Fortune 500 companies. But the job she relishes most is that of being a mother to her two boys"</em></strong></p>
       <p>When she's not carpooling, she can usually be found at her new company, 2 Moms Media or penning her popular "mommy" blog, Self-Made Mom</p>
       <h5 class="gray"><strong>Where You've Seen Sara:</strong></h5>
       <hr />
@@ -161,11 +163,11 @@ ul.bullets { list-style-type:circle; font-size:11px; margin:0px 0px 2px 15px; }
       <div style="clear:both;"></div>
     </div>
     <div class="mtm_right_content">
-      <h3 class="gray"><strong>Jodi Grundig</strong></h3>
+      <h3 class="gray bigger"><strong>Jodi Grundig</strong></h3>
       <hr />
       <p>Jodi Grundig can plan our family finances! With an MBA in finance and over ten years of corporate finance experience, the mom of two is a sought-after brand ambassador, travel writer, mom blogger and brand consultant. We're talking brands like Stouffers, Johnson and Johnson, ConAgra, Genesis Today, Honda, and TJMaxx/Marshalls!</p>
       <p>An avid traveler and travel blogger too, Jodi has attended many media familiarization trips (FAMs), including trips to Hawaii, Freeport, Maine, Lake George, NY, the White Mountains of New Hampshire, and Martha's Vineyard.</p>
-      <p>Jodi has been invited on a variety of brand events and media junkets for Johnson and Johnson, Honda, and TJMaxx/Marshalls.</p>
+      <p><strong><em>"Jodi has been invited on a variety of brand events and media junkets for Johnson and Johnson, Honda, and TJMaxx/Marshalls."</em></strong></p>
       <p>Jodi has been blogging since 2007, when she found the popular mom review blog, Mom's Favorite Stuff. In 2010, she co-founded Boston Parent Bloggers, which now has over 100 members. Jodi is currently a featured mom blogger on ClubMum.net and Kmart's Playdate Spot.</p>
       <h5 class="gray"><strong>Jodi Makes A Difference:</strong></h5>
       <hr />
@@ -195,11 +197,11 @@ ul.bullets { list-style-type:circle; font-size:11px; margin:0px 0px 2px 15px; }
       <div style="clear:both;"></div>
     </div>
     <div class="mtm_right_content">
-      <h3 class="gray"><strong>Marybeth Hamilton</strong></h3>
+      <h3 class="gray bigger"><strong>Marybeth Hamilton</strong></h3>
       <hr />
       <p>Marybeth Hamilton has all the tools for success! She's a finance expert, former employee of both Target and General Mills, and a mom of two. And now, thanks to her site, Baby Goodbuys, the rest of us are lucky enough to benefit from her money-saving tips.</p>
       <p>She says that after having her first baby in July 2008, she discovered that, despite nearly everything she had heard and read, having a baby just wasn't that expensive! We never had that feeling, so it must be because she's a finance whiz! Luckily, Marybeth decided to share her knowledge and shopping expertise with the world, and boy are we glad she did! </p>
-      <p><strong><em>Marybeth discovered that, despite nearly everything she had heard and read, having a baby just wasn't that expensive! </em></strong></p>
+      <p><strong><em>"Marybeth discovered that, despite nearly everything she had heard and read, having a baby just wasn't that expensive! "</em></strong></p>
       <p>Before becoming a mom to two under two (now, two under three!), Marybeth earned a Bachelor of Business Administration degree with a major in finance and a minor in communication. After 8 years of enthusiastically climbing the corporate ladder, she became a stay-at-home-mom. Now, she is proud to announce that her second job is being a Minnesota mom blogger! Marybeth lives with her husband, two kids, one amazing shelter dog and two rescued cats near Minneapolis.</p>
       <p>As you can tell, Marybeth has a lot on her plate, but when she does have a few hours to spare, she always tries to spend quality time with her extended family and close friends. She loves reading, big Broadway musicals, Diet Coke, shopping and Starbucks lattes, and she'll take any of those in any order!</p>
       <h5 class="gray"><strong>Seen in the Press:</strong></h5>
@@ -228,12 +230,12 @@ ul.bullets { list-style-type:circle; font-size:11px; margin:0px 0px 2px 15px; }
       <div style="clear:both;"></div>
     </div>
     <div class="mtm_right_content">
-      <h3 class="gray"><strong>April Daniels Hussar</strong></h3>
+      <h3 class="gray bigger"><strong>April Daniels Hussar</strong></h3>
       <hr />
       <p>April Daniels Hussar is a big wig at top online women's mag Betty Confidential and she knows everything about celebrity moms and babies, beauty, style and balancing life as a working mom (or at least trying to!). April is Betty Confidential's Executive Editor and their resident yummy mummy (or as she says, "slummy mummy" depending on the day - but we don't believe her!). </p>
       <p>We love April because she is as likely to be found rubbing elbows at events with fellow fashionistas as trolling Target for cheap-chic tees and economy-sized laundry soap.</p>
       <p>She has written about everything from friending exes on Facebook (we've all e-stalked) to Bristol and Sarah Palin; from finding the best lip gloss to raising a daughter in the 21st Century. April also blogs on The HuffingtonPost and has been quoted on AOL's PopEater! </p>
-      <p><strong><em>One of the highlights of April's mommy-blogging life was traveling to the Vancouver Winter Olympics as one of Proctor &amp; Gamble's "Thank you Mom" Bloggers.</em></strong></p>
+      <p><strong><em>"One of the highlights of April's mommy-blogging life was traveling to the Vancouver Winter Olympics as one of Proctor &amp; Gamble's "Thank you Mom" Bloggers."</em></strong></p>
       <p>April lives with her husband and daughter in the "wilds" of suburban New Jersey, where she escapes to the Big Apple as often as possible.</p>
       <h5 class="gray"><strong>Betty Confidential is everywhere:</strong></h5>
       <hr />
@@ -266,10 +268,10 @@ ul.bullets { list-style-type:circle; font-size:11px; margin:0px 0px 2px 15px; }
       <div style="clear:both;"></div>
     </div>
     <div class="mtm_right_content">
-      <h3 class="gray"><strong>Piera Jolly</strong></h3>
+      <h3 class="gray bigger"><strong>Piera Jolly</strong></h3>
       <hr />
       <p>Piera Jolly is getting wiser one tantrum at a time! The 30-something, first time mom of a three year old boy is trying to balance motherhood and life in Atlanta and she's blogging about it on her popular blog, JollyMom. Thank goodness, because we would never have been creative enough to think of throwing a potty party when potty training, but Piera did!</p>
-      <p><strong><em>Named Power Mom by Nielsen in 2009 and one of Access Communication's Top 50 Mommy Blogs in 2010!</em></strong></p>
+      <p><strong><em>"Named Power Mom by Nielsen in 2009 and one of Access Communication's Top 50 Mommy Blogs in 2010!"</em></strong></p>
       <p>Founded in 2008, JollyMom.com is a savvy blog that provides moms with helpful parenting information, fun child-friendly activities, craft ideas, recipes, and the latest trends for moms, kids, and families. </p>
       <p>Piera loves to spend time in the kitchen and she's working on writing a cookbook about kids and healthy eating, we can't wait for our signed copy! </p>
       <h5 class="gray"><strong>Piera and JollyMom.com Honors:</strong></h5>
@@ -297,7 +299,7 @@ ul.bullets { list-style-type:circle; font-size:11px; margin:0px 0px 2px 15px; }
       <div style="clear:both;"></div>
     </div>
     <div class="mtm_right_content">
-      <h3 class="gray"><strong>Angela Roy</strong></h3>
+      <h3 class="gray bigger"><strong>Angela Roy</strong></h3>
       <hr />
       <p>Angela Roy's entrepreneurial spirit and PR genius came to life when she and 4 friends formed MommyPR.com, an online community to connect brands with other mommy bloggers. From press releases to product reviews, from giveaways to marketing campaigns, the content on MommPR.com certainly qualifies Angela a PR genius. </p>
 
@@ -305,7 +307,7 @@ ul.bullets { list-style-type:circle; font-size:11px; margin:0px 0px 2px 15px; }
 
 <p>Being a military spouse has taught her how to be more resourceful and patient. Having traveled around the world, Angela is very aware of how lucky we all are to live in the U.S. We are so glad she's sharing that wealth of wisdom with the rest of us! </p>
 
-<p><strong><em>From press releases to product reviews, from giveaways to marketing campaigns, the content on MommPR.com certainly qualifies Angela a PR genius.</em></strong></p>
+<p><strong><em>"From press releases to product reviews, from giveaways to marketing campaigns, the content on MommPR.com certainly qualifies Angela a PR genius."</em></strong></p>
       
             <h5 class="gray"><strong>Brands Love Talking About Angela: </strong></h5>
       <hr />
@@ -332,12 +334,12 @@ ul.bullets { list-style-type:circle; font-size:11px; margin:0px 0px 2px 15px; }
       <div style="clear:both;"></div>
     </div>
     <div class="mtm_right_content">
-      <h3 class="gray"><strong>Courtney Solstad</strong></h3>
+      <h3 class="gray bigger"><strong>Courtney Solstad</strong></h3>
       <hr />
       </ul>
 <p>Courtney has a REAL passion for saving money and paying it forward. Thousands of moms rely on My DFW Mommy for money-saving tips and fun free things to do in the Dallas area. She should know because she won a house party, a car and a trip to the American Idol Finale in 2009 all through a money-saving website! She is hooked when it comes to freebies, deals and coupons! </p>
 <p>Courtney's passion for coupon clipping and money-saving came from her desire to stay home with her own three little princesses! She has been married to Steve for 10 years and is thankful that he supports her staying home with the girls.</p>
-<p><strong><em>Through a money-saving website, she won a house party, a car and a trip to the American Idol Finale in 2009!</em></strong></p>
+<p><strong><em>"Through a money-saving website, she won a house party, a car and a trip to the American Idol Finale in 2009!"</em></strong></p>
 <p>Before having her children, Courtney worked as a school social worker, using her B.S. in Psychology. She has a true passion and beliefs in helping others better their circumstances, Courtney is also a phenomenal Twitter Party host!</p>
       <h5 class="gray"><strong>Courtney&rsquo;s Blog has been featured on:</strong></h5>
       <hr />
@@ -370,14 +372,14 @@ ul.bullets { list-style-type:circle; font-size:11px; margin:0px 0px 2px 15px; }
       <div style="clear:both;"></div>
     </div>
     <div class="mtm_right_content">
-      <h3 class="gray"><strong>Vera Sweeney</strong></h3>
+      <h3 class="gray bigger"><strong>Vera Sweeney</strong></h3>
       <hr />
       </ul>
 <p>Vera Sweeney is the genius mom who founded I'm Not Obsessed.com, Lady and the Blog.com and several others and we're not afraid to admit that we are, well, obsessed with Vera and her sites. </p>
 <p>Prior to blogging, Vera was a business consultant for Accenture working primarily in the financial industry for clients like JP Morgan, Merrill Lynch, Vanguard, Sumitomo Bank and Mt. Sinai Hospital. After having her first child in 2005, she became a stay at home mom and I'm Not Obsessed was born. INO offers "gossip without the guilt" and is geared towards women who have a love for celebrity gossip (just like us!) but want their news sans the raunchiness of other websites (yes, please!).</p>
 <p>We love that Vera makes INO a safe place for people to visit while at work or surfing the web at home with their children nearby. She keeps all content clean and all pictures rated-PG!</p>
 <p>In September of 2009, LadyAndTheBlog.com was added to the ever-growing INO brand. LATB is full of great product reviews including beauty and fashion lines, children's equipment, clothing, and accessories, and press previews for next season's must haves. LATB also focuses on how to dress like a celebrity and teaches readers to do it for less. Genius! </p>
-<p align="center"><strong><em>I'm Not Obsessed offers gossip without the guilt!</em></strong></p>
+<p><strong><em>"I'm Not Obsessed offers gossip without the guilt!"</em></strong></p>
 <p>Her family business receives an average of 5 million page views a month! Vera lives in NYC with her hubby and two kids. </p>
       <h5 class="gray"><strong>I'm Not Obsessed has been featured on:</strong></h5>
       <hr />

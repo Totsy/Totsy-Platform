@@ -114,7 +114,7 @@
 					'alt' => "Invite Friends. Get $15",
 					'width' => '181',
 					'height' => '413'
-					)),'/Users/invite', array('escape'=> false));
+					)),'/users/invite', array('escape'=> false));
 			?>
 
 			<?php endif ?>
@@ -125,6 +125,7 @@
 
 	<div style="margin-bottom:35px;" class="clear"></div>
 
+	<!-- 
 	<h2 class="page-title gray clear"><span class="_red">Monthly Sales / Spring Month</span></h2>
 	<hr />
 
@@ -138,7 +139,8 @@
 	</div>
 	
 	<br style="margin-bottom:10px;"/>
-
+	
+	-->
 	<div class="coming-soon-sales">
 
 		<h2 class="page-title gray clear"><span class="_red">Upcoming Sales</span></h2>
