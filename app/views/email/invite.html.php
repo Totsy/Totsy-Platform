@@ -59,7 +59,7 @@
                     <td name="Cont_6" style="padding: 20px;" background="http://www.totsy.com/markup/v2_emails/assets/img/bottom_back.png" height="161"></td>
                 </tr>
                 <tr>
-                    <td style="font-size: 11px; text-align: center; padding: 20px;">Totsy - 27 West 20th Street, Suite 400 - New York, NY 10011 | 1-888-59TOTSY (1.888.791.1112) <a href="#" title="Info Email Address" style="color: rgb(224, 0, 0);">info@totsy.com</a>
+                    <td style="font-size: 11px; text-align: center; padding: 20px;">Totsy - 10 West 18th Street, Floor 4 - New York, NY 10011 <a href="#" title="Info Email Address" style="color: rgb(224, 0, 0);">info@totsy.com</a>
                     </td>
                 </tr>
             </tbody>

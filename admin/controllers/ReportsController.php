@@ -9,6 +9,7 @@ use admin\models\Event;
 use admin\models\Item;
 use admin\models\Base;
 use admin\models\Report;
+use Mongo;
 use MongoCode;
 use MongoDate;
 use MongoRegex;
@@ -143,8 +144,9 @@ class ReportsController extends BaseController {
 		if ($this->request->data) {
 			$criteria = $this->request->data;
 			$name = $this->request->data['affiliate'];
-			$affiliate = new MongoRegex("/$name/i");
+			$affiliate = new MongoRegex("/^$name/i");
 			if ($this->request->data['min_date'] && $this->request->data['max_date']) {
+				//Conditions with date converted to the right timezone
 				$min = new MongoDate(strtotime($this->request->data['min_date']));
 				$max = new MongoDate(strtotime($this->request->data['max_date']));
 				$date = array(
@@ -458,7 +460,7 @@ class ReportsController extends BaseController {
 		));
 		return $orders->data();
 	}
-	
+
 	public function getOrderItems($eventId = null) {
 		$items = null;
 		if ($eventId) {
@@ -470,9 +472,9 @@ class ReportsController extends BaseController {
 		}
 		return $items;
 	}
-    
+
     public function googleAnalytics() {
-		
+
 	}
 
 	public function productfile($eventId = null) {
@@ -526,6 +528,7 @@ class ReportsController extends BaseController {
 		if ($this->request->data) {
 			$dates = $this->request->data;
 			if (!empty($dates['min_date']) && !empty($dates['max_date'])) {
+				//Conditions with date converted to the right timezone
 				$conditions = array(
 					'date_created' => array(
 						'$gt' => new MongoDate(strtotime($this->request->data['min_date'])),
@@ -624,6 +627,7 @@ class ReportsController extends BaseController {
 		if ($this->request->data) {
 			$dates = $this->request->data;
 			if (!empty($dates['min_date']) && !empty($dates['max_date'])) {
+				//Conditions with date converted to the right timezone
 				$conditions = array(
 					'date_created' => array(
 						'$gt' => new MongoDate(strtotime($this->request->data['min_date'])),
@@ -691,6 +695,7 @@ class ReportsController extends BaseController {
 			if (!empty($search['min_date']) && !empty($search['max_date'])) {
 				$amount = ($search['amount'] == '') ? 0 : $search['amount'];
 				$dollarLimit = array("$search[range_type]" => (float) $amount);
+				//Conditions with date converted to the right timezone
 				$conditions = array(
 					'total' => $dollarLimit,
 					'date_created' => array(
@@ -782,6 +787,41 @@ class ReportsController extends BaseController {
 		return compact('details', 'summary', 'dates', 'total', 'data');
 	}
 
+	/**
+	* Generates a csv file with the number of registered person for a time fixed
+	*/
+	public function	registeredUsers(){
+		if ($this->request->data) {
+			$search = $this->request->data;
+			if (!empty($search['min_date']) && !empty($search['max_date'])) {
+	
+				$conditions = array('created_date' => array(
+					'$gt' => new MongoDate(strtotime($search['min_date'])),
+					'$lte' => new MongoDate(strtotime($search['max_date']))));
+				$userCollection = User::collection();
+				$userCollection->ensureIndex(array('_id' => 1));
+				$userCollection->ensureIndex(array('email' => 1));
+				$userCollection->ensureIndex(array('firstname' => 1));
+				$userCollection->ensureIndex(array('lastname' => 1));
+				$userCollection->ensureIndex(array('created_date' => 1));
+				
+				$reg_usrs = $userCollection->find($conditions);
+
+				//Create the array that will simulate a CSV file
+				$users[0]["firstname"] = "firstname" . ",";
+				$users[0]["lastname"] = "lastname" . ",";
+				$users[0]["email"] = "email";
+				$i = 1;
+				foreach($reg_usrs as $reg_usr){
+					$users[$i]["firstname"] = $reg_usr['firstname'] . ",";
+					$users[$i]["lastname"] = $reg_usr['lastname'] . ",";
+					$users[$i]["email"] = $reg_usr['email'];
+					$i++;
+				}
+				if($i>2) $this->render(array('layout' => false, 'data' => $users));
+			}
+		}
+	}
 }
 
 ?>

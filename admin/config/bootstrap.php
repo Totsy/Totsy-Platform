@@ -80,7 +80,7 @@ require __DIR__ . '/bootstrap/cache.php';
  * transliterations, localized validation, and how localized text should be loaded. Uncomment this
  * line if you plan to globalize your site.
  */
-//require __DIR__ . '/bootstrap/g11n.php';
+require __DIR__ . '/bootstrap/g11n.php';
 
 /**f
  * This file contains configurations for handling different content types within the framework,
@@ -96,6 +96,11 @@ require __DIR__ . '/bootstrap/cache.php';
 require __DIR__ . '/bootstrap/payments.php';
 
 require __DIR__ . '/bootstrap/mail.php';
+
+/**
+ * This file configures the analysis behavior which includes Logging.
+ */
+require __DIR__ . '/bootstrap/analysis.php';
 
 /**
  * This configures your session storage. The Cookie storage adapter must be connected first, since
@@ -119,11 +124,6 @@ Auth::config(array('userLogin' => array(
 	'scope' => array('admin' => true)
 )));
 
-use lithium\analysis\Logger;
-
-Logger::config(array(
-	'default' => array('adapter' => 'File')
-));
 
 ini_set('memory_limit', '512M');
 ini_set('max_execution_time', '90');

@@ -50,7 +50,7 @@ class Cart extends \lithium\data\Model {
 
 		$data->expires = static::dates('15min');
 		$data->created = static::dates('now');
-		$data->session = Session::key();
+		$data->session = Session::key('default');
 		$user = Session::read('userLogin');
 		$data->user = $user['_id'];
 		return static::_object()->save($data);
@@ -62,7 +62,7 @@ class Cart extends \lithium\data\Model {
 		$user = Session::read('userLogin');
 		return static::all(array(
 			'conditions' => array(
-				'session' => Session::key(),
+				'session' => Session::key('default'),
 				'expires' => array('$gte' => static::dates($time)),
 				'user' => $user['_id']),
 			'fields' => $fields,
@@ -183,7 +183,7 @@ class Cart extends \lithium\data\Model {
 	public static function checkCartItem($itemId, $size) {
 		return static::find('first', array(
 			'conditions' => array(
-				'session' => Session::key(),
+				'session' => Session::key('default'),
 				'item_id' => "$itemId",
 				'size' => "$size",
 				'expires' => array('$gt' => static::dates('now'))
@@ -211,7 +211,7 @@ class Cart extends \lithium\data\Model {
 	public static function increaseExpires() {
 		$user = Session::read('userLogin');
 		$conditions = array(
-			'session' => Session::key(),
+			'session' => Session::key('default'),
 			'expires' => array(
 				'$lte' => static::dates('3min'),
 				'$gte' => static::dates('now')),
@@ -224,7 +224,6 @@ class Cart extends \lithium\data\Model {
 				$cart->save();
 			}
 		}
-
 		return true;
 	}
 }

@@ -31,7 +31,7 @@
 				<?php echo $this->html->link('View Events', array('Base::selectEvent')); ?>
 			</li>
 			<li>
-				<?php echo $this->html->link('View Items', 'Items::index'); ?>
+				<?php echo $this->html->link('Search for Items', 'Items::search'); ?>
 			</li>
 		</ul>
 	</li>
@@ -55,6 +55,9 @@
 			</li>
 			<li>
 				<?php echo $this->html->link('Event Sales', 'Reports::eventSales'); ?>
+			</li>
+			<li>
+				<?php echo $this->html->link('Registered Users', 'Reports::registeredUsers'); ?>
 			</li>
 		</ul>
 	</li>

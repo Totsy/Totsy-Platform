@@ -4,7 +4,8 @@ namespace admin\controllers;
 use admin\controllers\BaseController;
 use admin\models\Item;
 use admin\models\Event;
-use \MongoDate;
+use MongoRegex;
+use MongoDate;
 use \li3_flash_message\extensions\storage\FlashMessage;
 
 /**
@@ -71,24 +72,26 @@ class ItemsController extends BaseController {
 	}
 
 	public function preview() {
-		$url = $this->request->item;
-		$event = $this->request->event;
-		if ($url == null) {
+		$itemUrl = $this->request->item;
+		$eventUrl = $this->request->event;
+		if ($itemUrl == null || $eventUrl == null) {
 			$this->redirect('/');
 		} else {
-			$item = Item::find('first', array(
+			$event = Event::find('first', array(
 				'conditions' => array(
 					'enabled' => true,
-					'url' => $url),
-				'order' => array('modified_date' => 'DESC')
-			));
-			if ($item) {
-				$event = Event::find('first', array(
-					'conditions' => array(
-						'items' => array((string) $item->_id),
-						'enabled' => true,
-						'url' => $event
-				)));
+					'url' => $eventUrl
+			)));
+			$items = Item::find('all', array(
+				'conditions' => array(
+					'enabled' => true,
+					'url' => $itemUrl
+			)));
+			$matches = $items->data();
+			foreach ($matches as $match) {
+				if (in_array($match['_id'], $event->items->data())) {
+					$item = Item::find($match['_id']);
+				}
 			}
 			if ($item == null || $event == null) {
 				$this->redirect('/');
@@ -130,6 +133,21 @@ class ItemsController extends BaseController {
 			}
 			$this->redirect(array('Events::edit','args' => array($id)));
 		}
+	}
+
+	public function search() {
+		if ($this->request->data) {
+			$search = $this->request->data['search'];
+			$itemCollection = Item::connection()->connection->items;
+			$items = $itemCollection->find(
+				array('$or' => array(
+					array('description' => new MongoRegex("/$search/i")),
+					array('vendor' => new MongoRegex("/$search/i")),
+					array('vendor_style' => new MongoRegex("/$search/i")),
+					array('skus' => array('$in' => array(new MongoRegex("/$search/i"))))
+			)));
+		}
+		return compact('items');
 	}
 }
 

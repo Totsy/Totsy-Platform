@@ -4,9 +4,9 @@ namespace app\models;
 
 use \lithium\data\Connections;
 use \lithium\storage\Session;
+use \lithium\storage\session\adapter\Cookie;
 use \MongoDate;
 use \MongoId;
-use \MongoRegex;
 use \lithium\util\Validator;
 
 /**
@@ -44,15 +44,15 @@ use \lithium\util\Validator;
 class User extends Base {
 
 	public $validates = array(
-		'firstname' => array(
-			'notEmpty', 'required' => true, 'message' => 'Please add a first name'
+	/*	'firstname' => array(
+			'notEmpty', 'required' => false, 'message' => 'Please add a first name'
 		),
 		'lastname' => array(
-			'notEmpty', 'required' => true, 'message' => 'Please add a last name'
+			'notEmpty', 'required' => false, 'message' => 'Please add a last name'
 		),
 			'zip' => array(
-				'notEmpty', 'required' => true, 'message' => 'Please add a zip code'
-		),
+				'notEmpty', 'required' => false, 'message' => 'Please add a zip code'
+		),*/
 		'email' => array(
 			array('email', 'message' => 'Email is not valid'),
 			array('notEmpty', 'required' => true, 'message' => 'Please add an email address'),
@@ -117,14 +117,15 @@ class User extends Base {
 	}
 
 	/**
-	 * Lookup a user by either their email or username
+	 * The lookup method takes the email address to search and finds
+	 * the user by that address.
+	 *
+	 * @param string $email
 	 */
 	public static function lookup($email) {
 		$user = null;
-		$email = new MongoRegex("/^$email/i");
-		$result = static::collection()->findOne(array(
-			'$or' => array(array('username' => $email), array('email' => $email)))
-		);
+		$email = strtolower($email);
+		$result = static::collection()->findOne(array('email' => $email));
 		if ($result) {
 			$user = User::create($result);
 		}
@@ -148,6 +149,44 @@ class User extends Base {
 		return $user->save(null,array('validate' => false));
 	}
 
+	public static function rememberMeWrite($rememberme) {
+	    if( (boolean)$rememberme && Session::check('cookieCrumb', array('name' => 'cookie'))) {
+            $rememberHash = static::generateToken() . static::randomString();
+            $cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
+            $userInfo = Session::read('userLogin');
+            $cookie['user_id'] = $userInfo['_id'];
+            $cookie['autoLoginHash'] = $rememberHash;
+            Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
+            $user = static::collection();
+            $user->update(array(
+                    'email' => $userInfo['email']
+                    ), array(
+                        '$set' => array(
+                            'autologinHash' => $rememberHash
+                    )));
+        }
+	}
+	public static function setupCookie() {
+		$cookieInfo = null;
+		$urlredirect = ((array_key_exists('redirect',$_REQUEST))) ? $_REQUEST['redirect'] : null ;
+		if ( preg_match('(/|/a/|/login|/register|/join/|/invitation/)', $_SERVER['REQUEST_URI']) ) {
+			if(!Session::check('cookieCrumb', array('name' => 'cookie')) ) {
+
+				$cookieInfo = array(
+						'user_id' => Session::read('_id'),
+						'landing_url' => $_SERVER['REQUEST_URI'],
+						'entryTime' => strtotime('now'),
+						'redirect' => $urlredirect
+					);
+			   Session::write('cookieCrumb', $cookieInfo ,array('name' => 'cookie'));
+			}else{
+				$cookieInfo = Session::read('cookieCrumb', array('name' => 'cookie'));
+				$cookieInfo['entryTime'] = strtotime('now');
+				$cookieInfo['redirect'] = $urlredirect;
+				Session::write('cookieCrumb', $cookieInfo ,array('name' => 'cookie'));
+			}
+		}
+	}
 }
 
 

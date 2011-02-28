@@ -64,7 +64,7 @@ class Model extends \lithium\core\Object {
      *              - `'config'` _string_: The name of the model that this adapter should use.
      */
     public function __construct(array $config = array()) {
-        $defaults = array('model' => null, 'expiry' => '+30 days');
+        $defaults = array('model' => null, 'expiry' => '+3 days');
         parent::__construct($config + $defaults);
     }
 

@@ -15,35 +15,31 @@ class ItemsController extends BaseController {
 		$this->_render['layout'] = 'main';
 	}
 
-	public function view($url = null) {
-		$url = $this->request->item;
-		$event = $this->request->event;
-		if ($url == null) {
+	public function view() {
+		$itemUrl = $this->request->item;
+		$eventUrl = $this->request->event;
+		if ($itemUrl == null || $eventUrl == null) {
 			$this->redirect('/sales');
 		} else {
-			$item = Item::find('first', array(
+			$event = Event::find('first', array(
 				'conditions' => array(
 					'enabled' => true,
-					'url' => $url),
-				'order' => array('modified_date' => 'DESC'
+					'url' => $eventUrl
 			)));
-			if ($item) {
-				$event = Event::find('first', array(
-					'conditions' => array(
-						'items' => array((string) $item->_id),
-						'enabled' => true,
-						'url' => $event
-				)));
+			$items = Item::find('all', array(
+				'conditions' => array(
+					'enabled' => true,
+					'url' => $itemUrl
+			)));
+			$matches = $items->data();
+			foreach ($matches as $match) {
+				if (in_array($match['_id'], $event->items->data())) {
+					$item = Item::find($match['_id']);
+				}
 			}
 			if ($item == null || $event == null) {
 				$this->redirect('/sales');
 			} else {
-				$event = Event::find('first', array(
-					'conditions' => array(
-						'items' => array((string) $item->_id),
-						'enabled' => true
-				)));
-
 				if ($event->end_date->sec < time()) {
 					$this->redirect('/sales');
 				} else {
@@ -54,8 +50,11 @@ class ItemsController extends BaseController {
 					$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 				}
 			}
-            $pixel = Affiliate::getPixels('product', 'spinback',null);
-			$spinback_fb = Affiliate::generatePixel('spinback', $pixel, null, $_SERVER['REQUEST_URI'] );
+            $pixel = Affiliate::getPixels('product', 'spinback');
+			$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
+			                                            array('product' => $_SERVER['REQUEST_URI'])
+			                                            );
+
 		}
 
 		return compact('item', 'event', 'related', 'sizes', 'shareurl', 'reserved', 'spinback_fb');

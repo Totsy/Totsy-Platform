@@ -85,17 +85,18 @@
 
 											<?php foreach ($itemsByEvent as $key => $event): ?>
 												<tr>
-													<td style="padding:5px; width:20px;"><?=$orderEvents[$key]['name']?></td>
+													<td colspan="2" style="padding:5px; text-align::left;"><?=$orderEvents[$key]['name']?></td>
 													<?php if (!empty($orderEvents[$key]['ship_message'])): ?>
 														<td><?php echo $orderEvents[$key]['ship_message']?></td>
 													<?php endif ?>
-													<td>
+													<td colspan="3" style="padding:5px; text-align:right;">
 														Estimated Ship Date:
 														<?php if (!empty($orderEvents[$key]['ship_date'])): ?>
 															<?=date('M d, Y', strtotime($orderEvents[$key]['ship_date']))?>
 														<?php else: ?>
 															 <?=date('M d, Y', $shipDate)?>
 														<?php endif ?>
+														
 													</td>
 												</tr>
 												<tr style="background:#ddd;">
