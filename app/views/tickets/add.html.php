@@ -28,46 +28,39 @@
 	<hr />
 	
 	<?=$this->form->create(); ?>
-		<select id="parent" style="width:350px;" name="title">
+		<select id="parent" style="width:350px;" name="issue_type">
 			<option value="">I need help with:</option>
-			<option value="1">My Order(s)</option>
-			<option value="2">Technical Support</option>
-			<option value="3">Customer Support</option>
-			<option value="4">New Business Development</option>
-			<option value="5">Press</option>
+			<option value="order">My Order(s)</option>
+			<option value="tech">Technical Support</option>
+			<option value="cs">Customer Support</option>
+			<option value="business">New Business Development</option>
+			<option value="press">Press</option>
 		</select>
 	
 		<br />
-		<select id="child" style="width:350px;">
+		<select id="child" name="type" style="width:350px;">
 			<option value="">Choose Your Order Number</option>
-			<option class="sub_1" value="2356">Order #2356 - Ed Hardy Shoes</option>
-			<option class="sub_1" value="2357">Order #2357 - All Pop Art</option>
-			<option class="sub_1" value="2358">Order #2358 - Some Other Brand</option>
-			<option class="sub_1" value="2359">Order #2359 - Here's Another One</option>
+			<?php foreach ($orders as $key => $value): ?>
+				<option class="sub_order" value="<?=$key?>"><?=$value?></option>
+			<?php endforeach ?>
+			<option class="sub_tech" value="">Choose One</option>
+			<option class="sub_tech" value="5">Trouble with logging in</option>
 	
-			<option class="sub_1" value="2360">Order #2360 - You Get The Idea</option>
-			<option class="sub_1" value="2361">Order #2361 - You Get The Idea Right?</option>
-			<option class="sub_1" value="2362">Order #2362 - You SEE?</option>
-			<option class="sub_1" value="2363">Order #2363 - Hello?</option>
-	
-			<option class="sub_2" value="">Choose One</option>
-			<option class="sub_2" value="5">Trouble with logging in</option>
-	
-			<option class="sub_2" value="5">Where Are My Credits</option>
-			<option class="sub_2" value="5">Problem With Shipping</option>
+			<option class="sub_tech" value="5">Where Are My Credits</option>
+			<option class="sub_tech" value="5">Problem With Shipping</option>
 		
-			<option class="sub_3" value="">Choose One</option>
-			<option class="sub_3" value="6">Phone Number</option>
-			<option class="sub_3" value="7">Walk In</option>
+			<option class="sub_cs" value="">Choose One</option>
+			<option class="sub_cs" value="6">Phone Number</option>
+			<option class="sub_cs" value="7">Walk In</option>
 			
-			<option class="sub_4" value="">Choose One</option>
+			<option class="sub_business" value="">Choose One</option>
 	
-			<option class="sub_4" value="6">Phone Number</option>
-			<option class="sub_4" value="7">Walk In</option>
+			<option class="sub_business" value="6">Phone Number</option>
+			<option class="sub_business" value="7">Walk In</option>
 			
-			<option class="sub_5" value="">Choose One</option>
-			<option class="sub_5" value="6">Phone Number</option>
-			<option class="sub_5" value="7">Walk In</option>
+			<option class="sub_press" value="">Choose One</option>
+			<option class="sub_press" value="6">Phone Number</option>
+			<option class="sub_press" value="7">Walk In</option>
 		</select>
 	
 		<br />
