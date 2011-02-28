@@ -33,11 +33,14 @@
 					<?=$this->html->link('Help Desk', 'Tickets::add', array('id' => 'cs')); ?>
 				<?php endif ?>
 				<div id="welcome">
-					<?php if(isset($userInfo['firstname'])) { ?>
-						Hello, 
+				Hello,
+					<?php if(array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])):
+					?>
 						<?="{$userInfo['firstname']} {$userInfo['lastname']}"; ?>
-						(<?=$this->html->link('Sign Out', 'Users::logout', array('title' => 'Sign Out')); ?>)
-					<?php }?>
+					<?php else:?>
+					    <?="{$userInfo['email']}"; ?>
+					<?php endif; ?>
+					(<?=$this->html->link('Sign Out', 'Users::logout', array('title' => 'Sign Out')); ?>)
 				</div>
 				<?php if (!(empty($userInfo))): ?>
 					<?=$this->menu->render('main-nav'); ?>
