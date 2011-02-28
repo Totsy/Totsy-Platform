@@ -1,4 +1,4 @@
-<?php $this->title("Account Dashboard for " . $userInfo['firstname']); ?>
+<?php $this->title("Account Dashboard for ". $userInfo['email']); ?>
 <?=$this->html->script('jquery.equalheights'); ?>
 
 	<h1 class="p-header">My Account</h1>
@@ -17,23 +17,23 @@
 		  <li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
 		</ul>
 	</div>
-	
+
 <div id="middle" class="noright">
 	<div class="tl"></div>
 	<div class="tr"></div>
 	<div id="page">
 		<!-- Replace with user's name -->
-		<h2 class="gray mar-b">Hello <?=$userInfo['firstname']?>!</h2>
+		<h2 class="gray mar-b">Hello <?=$userInfo['email'];?>!</h2>
 		<hr />
-	
+
 		<!-- Replace with account welcome message -->
 		<p>From your My Account Dashboard you have the ability to view a snapshot of your recent account activity and update your account information. Select a link below to view or edit information.</p>
 		</br><br>
 		<h2 class="gray mar-b">Account Information</h2>
 		<hr />
-	
+
 		<div class="col-2">
-	
+
 			<div class="r-container box-2 fl">
 				<div class="tl"></div>
 				<div class="tr"></div>
@@ -41,8 +41,13 @@
 					<h3 class="gray fl">Contact Information</h3>&nbsp;|&nbsp;<?=$this->html->link('Edit', '/account/info');?>
 					<br />
 					<br />
-					<?=$userInfo['firstname'].' '.$userInfo['lastname'] ?><br />
-					<?=$userInfo['email']?><br />
+					<?php if(array_key_exists('firstname', $userInfo) &&     !empty($userInfo['firstname'])):
+					?>
+					    <?=$userInfo['firstname'].' '.$userInfo['lastname'] ?><br />
+					<?php else: ?>
+					    Totsy Member<br />
+					<?php endif;?>
+					<?=$userInfo['email'];?><br />
 					<?=$this->html->link('Change Password', '/account/info');?>
 				</div>
 				<div class="bl"></div>
@@ -64,18 +69,18 @@
 							</ul>
 						</dd>
 					</dl>-->
-				
+
 				</div>
 				<div class="bl"></div>
 				<div class="br"></div>
 			</div>
-	
+
 		</div>
-	
+
 		<h2 class="gray fl">Address Book</h2>&nbsp;|&nbsp;<?=$this->html->link('Manage Addresses', '/addresses/view');?>
 		<hr />
 		<div class="col-2">
-	
+
 			<div class="r-container box-2 fl">
 				<div class="tl"></div>
 				<div class="tr"></div>
@@ -95,7 +100,7 @@
 				<div class="bl"></div>
 				<div class="br"></div>
 			</div>
-		
+
 			<div class="r-container box-2 fr">
 				<div class="tl"></div>
 				<div class="tr"></div>
@@ -115,7 +120,7 @@
 				<div class="bl"></div>
 				<div class="br"></div>
 			</div>
-	
+
 		</div>
 
 	</div>
