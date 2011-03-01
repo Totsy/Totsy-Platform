@@ -34,7 +34,7 @@ class CartController extends BaseController {
 				'conditions' => array(
 					'_id' => "$itemId"),
 				'fields' => array(
-					'sale_retail', 
+					'sale_retail',
 					"details.$size",
 					'color',
 					'description',
@@ -72,7 +72,7 @@ class CartController extends BaseController {
 
 		return compact('cart', 'message');
 	}
-	
+
 	public function remove() {
 
 		if ($this->request->query) {
@@ -85,7 +85,7 @@ class CartController extends BaseController {
 			}
 		}
 		$this->render(array('layout' => false));
-		
+
 		$cartcount = Cart::itemCount();
 		return compact('cartcount');
 	}
@@ -93,35 +93,17 @@ class CartController extends BaseController {
 	public function update() {
 		$success = false;
 		$message = null;
-		if ($this->request->query) {
-			$qty = (int) $this->request->query['qty'];
-			if ($qty > 0) {
-				$cart = Cart::find('first', array(
-					'conditions' => array(
-						'_id' => $this->request->query['_id']
-				)));
-				$diff = $qty - $cart->quantity;
-				$cart->quantity = $qty;
+		$data = $this->request->data;
 
-				$item = Item::find('first', array(
-					'conditions' => array(
-						'_id' => $cart->item_id
-				)));
-
-				if ($item->details->{$cart->size} == 0) {
-					$message = "Sorry we are sold out of this item.";
+		if( $data ){
+			$carts = $data['cart'];
+			foreach( $carts as $key => $value){
+				if(Cart::check($value['qty'], $value['_id'])){
+					$cart = Cart::find('first',array('conditions' => array('_id' => $value['_id'])));
 				}
-				if ($cart->quantity > $item->details->{$cart->size}) {
-					$message = "Sorry you have requested more of this item than what is available.";
-				}
-				if (empty($message) && $cart->save()) {
-					$message = "Your cart has been updated.";
-				}
-			} else {
-				$message = "Please submit a number greater than 0";
 			}
-
 		}
+
 		$this->render(array('layout' => false));
 		echo json_encode($message);
 	}
