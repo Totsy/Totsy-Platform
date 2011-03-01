@@ -8,10 +8,17 @@ use \app\models\Event;
 use \lithium\storage\Session;
 use MongoId;
 
+/**
+ * The Cart Class
+ */
 class CartController extends BaseController {
 
+	/**
+	 * The view method shows the current state of the cart.
+	 *
+	 * @return compact
+	 */
 	public function view() {
-		$this->_render['layout'] = 'cart';
 		$cart = Cart::active(array('time' => '-3min'));
 		foreach($cart as $item){
 			$events = Event::find('all', array('conditions'=>array('_id' => $item->event[0])));
@@ -23,13 +30,17 @@ class CartController extends BaseController {
 		return compact('cart');
 	}
 
+	/**
+	 * The add method increments the quantity of one item.
+	 *
+	 * @return compact
+	 */
 	public function add() {
-		$this->_render['layout'] = 'cart';
 		$cart = Cart::create();
 		$message = null;
-		if ($this->request->query) {
-			$itemId = $this->request->query['item_id'];
-			$size = ($this->request->query['item_size'] == 'undefined') ? "no size": $this->request->query['item_size'];
+		if ($this->request->data) {
+			$itemId = $this->request->data['item_id'];
+			$size = (empty($this->request->data['item_size'])) ? "no size": $this->request->data['item_size'];
 			$item = Item::find('first', array(
 				'conditions' => array(
 					'_id' => "$itemId"),
@@ -47,14 +58,11 @@ class CartController extends BaseController {
 					'discount_exempt',
 					'event'
 			)));
-
 			//Check if this item has already been added to cart
 			$cartItem = Cart::checkCartItem($itemId, $size);
-
 			if (!empty($cartItem)) {
 				++ $cartItem->quantity;
 				$cartItem->save();
-				Item::reserve($itemId, $size, 1);
 			} else {
 				$item = $item->data();
 				$item['size'] = $size;
