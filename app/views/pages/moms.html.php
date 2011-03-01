@@ -102,7 +102,7 @@ em {background:#f7f7f7; display: block; padding:5px; border-bottom: 1px solid #9
       <hr />
       <p>Caryn Bailey loves to share her knowledge of baby care, parenting and breastfeeding on her blog, Rockin' Mama. And, trust us, she knows what she's talking about. Caryn has over 11 years of experience as a Registered Nurse in maternal, lactation and newborn care and is often found in the NICU caring for premature babies. And that doesn't count her own experience as a mom of two and one pregnancy that landed her on bed rest!</p>
       <p>The Los Angeles born and raised working mom traveled the world before settling in South Orange County, where she now lives with her husband and kids.</p>
-      <p><strong><em>"Rockin Mama named Top 50 Mom Blogs by Access PR"</em></strong></p>
+      <p><strong><em>"Rockin Mama named Top 50 Mom Blogs by Access PR."</em></strong></p>
       <p>Rockin' Mama is an online resource for parents looking for information on parenting and must-have products related to Caryn's passions, including: health, fitness, and all things green.</p>
       <h5 class="gray"><strong>You May Have Heard About Caryn:</strong></h5>
       <hr />
@@ -134,7 +134,7 @@ em {background:#f7f7f7; display: block; padding:5px; border-bottom: 1px solid #9
       <hr />
       <p>Sara R. Fisher isn't your average marketing and PR guru. She is a freelance writer who likes to scout out what's hip for the mom, baby and preschooler set AND an entrepreneur who recently launched her own "mom comm" agency where she helps brands reach moms in an authentic way.</p>
       <p>Sara has hobnobbed with professional athletes, survived the dot-com boom (and bust) as an original team member at About.com, earned a Master's degree from Medill at Northwestern University (no easy feat) and worked with CEOs of Fortune 500 companies. Yes, we're tired just thinking about it! But the job she relishes most is that of being a mother to her two boys - naturally!</p>
-      <p><strong><em>"She has hobnobbed with professional athletes and worked with CEOs of Fortune 500 companies. But the job she relishes most is that of being a mother to her two boys"</em></strong></p>
+      <p><strong><em>"She has hobnobbed with professional athletes and worked with CEOs of Fortune 500 companies. But the job she relishes most is that of being a mother to her two boys."</em></strong></p>
       <p>When she's not carpooling, she can usually be found at her new company, 2 Moms Media or penning her popular "mommy" blog, Self-Made Mom</p>
       <h5 class="gray"><strong>Where You've Seen Sara:</strong></h5>
       <hr />
@@ -201,7 +201,7 @@ em {background:#f7f7f7; display: block; padding:5px; border-bottom: 1px solid #9
       <hr />
       <p>Marybeth Hamilton has all the tools for success! She's a finance expert, former employee of both Target and General Mills, and a mom of two. And now, thanks to her site, Baby Goodbuys, the rest of us are lucky enough to benefit from her money-saving tips.</p>
       <p>She says that after having her first baby in July 2008, she discovered that, despite nearly everything she had heard and read, having a baby just wasn't that expensive! We never had that feeling, so it must be because she's a finance whiz! Luckily, Marybeth decided to share her knowledge and shopping expertise with the world, and boy are we glad she did! </p>
-      <p><strong><em>"Marybeth discovered that, despite nearly everything she had heard and read, having a baby just wasn't that expensive! "</em></strong></p>
+      <p><strong><em>"Marybeth discovered that, despite nearly everything she had heard and read, having a baby just wasn't that expensive!"</em></strong></p>
       <p>Before becoming a mom to two under two (now, two under three!), Marybeth earned a Bachelor of Business Administration degree with a major in finance and a minor in communication. After 8 years of enthusiastically climbing the corporate ladder, she became a stay-at-home-mom. Now, she is proud to announce that her second job is being a Minnesota mom blogger! Marybeth lives with her husband, two kids, one amazing shelter dog and two rescued cats near Minneapolis.</p>
       <p>As you can tell, Marybeth has a lot on her plate, but when she does have a few hours to spare, she always tries to spend quality time with her extended family and close friends. She loves reading, big Broadway musicals, Diet Coke, shopping and Starbucks lattes, and she'll take any of those in any order!</p>
       <h5 class="gray"><strong>Seen in the Press:</strong></h5>
