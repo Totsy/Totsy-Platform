@@ -62,7 +62,8 @@
 		<thead>
 			<tr>
 				<th>Image</th>
-				<th>Price</th>
+				<th>Sale Retail</th>
+				<th>MSRP</th>
 				<th>Description</th>
 				<th>Vendor</th>
 				<th>Vendor Style</th>
@@ -89,6 +90,7 @@
 							));
 						?>
 					</td>
+					<td>$<?=$item['sale_retail']?></td>
 					<td>$<?=$item['msrp']?></td>
 					<td width="5%"><?=$item['description']?></td>
 					<td><?=$item['vendor']?></td>

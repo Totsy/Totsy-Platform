@@ -114,7 +114,7 @@
 					'alt' => "Invite Friends. Get $15",
 					'width' => '181',
 					'height' => '413'
-					)),'/Users/invite', array('escape'=> false));
+					)),'/users/invite', array('escape'=> false));
 			?>
 
 			<?php endif ?>
@@ -125,10 +125,10 @@
 
 	<div style="margin-bottom:35px;" class="clear"></div>
 
-	<!--
+	<!-- 
 	<h2 class="page-title gray clear"><span class="_red">Monthly Sales / Spring Month</span></h2>
 	<hr />
- 
+
 	<div id="slider" class="nivoSlider">
 		 <img src="/img/spring_img1.jpg" />
 		 <img src="/img/spring_img2.jpg" />
@@ -139,6 +139,7 @@
 	</div>
 	
 	<br style="margin-bottom:10px;"/>
+	
 	-->
 	<div class="coming-soon-sales">
 
@@ -231,4 +232,3 @@
         $('#slider').nivoSlider();
     });
     </script>
-    

@@ -106,6 +106,13 @@
 							?>
 						</td>
 						<td>
+							<?=$this->html->link($user->email, array(
+							'Users::view',
+							'args'=>$user->_id),
+							array('target' => '_blank'));
+							?>
+						</td>
+						<td>
 							<?=$this->html->link($user->zip, array(
 							'Users::view',
 							'args'=>$user->_id),

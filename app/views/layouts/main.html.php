@@ -33,18 +33,21 @@
 					<?=$this->html->link('Help Desk', 'Tickets::add', array('id' => 'cs')); ?>
 				<?php endif ?>
 				<div id="welcome">
-					<?php if(isset($userInfo['firstname'])) { ?>
-						Hello, 
+				Hello,
+					<?php if(array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])):
+					?>
 						<?="{$userInfo['firstname']} {$userInfo['lastname']}"; ?>
-						(<?=$this->html->link('Sign Out', 'Users::logout', array('title' => 'Sign Out')); ?>)
-					<?php }?>
+					<?php else:?>
+					    <?="{$userInfo['email']}"; ?>
+					<?php endif; ?>
+					(<?=$this->html->link('Sign Out', 'Users::logout', array('title' => 'Sign Out')); ?>)
 				</div>
 				<?php if (!(empty($userInfo))): ?>
 					<?=$this->menu->render('main-nav'); ?>
 				<?php endif ?>
 			</div>
 			<div id="header-rt">
-				<?=$this->html->link('Invite Friends. Get $15','/Users/invite',array('title'=>'Invite Friends. Get $15', 'id'=>'if'));?>
+				<?=$this->html->link('Invite Friends. Get $15','/users/invite',array('title'=>'Invite Friends. Get $15', 'id'=>'if'));?>
 				<?php if (!empty($userInfo)): ?>
 					<p class="clear">
 						<span class="fr">
@@ -76,7 +79,7 @@
 			<li class="first"><a href="/pages/terms" title="Terms of Use">Terms of Use</a></li>
 			<li><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
 			<li><a href="/pages/aboutus" title="About Us">About Us</a></li>
-			<li><a href="/blog" title="Blog">Blog</a></li>
+			<li><a href="http://blog.totsy.com" title="Blog" target="_blank">Blog</a></li>
 			<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
 			<li class="last"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
 		</ul>
