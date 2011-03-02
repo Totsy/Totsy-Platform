@@ -29,7 +29,7 @@
 	
 	<?=$this->form->create(); ?>
 		<select id="parent" style="width:350px;" name="issue_type">
-			<option value="">I need help with:</option>
+			<option value="default">I need help with:</option>
 			<?php if ($orders): ?>
 				<option value="order">My Order(s)</option>
 			<?php endif ?>
