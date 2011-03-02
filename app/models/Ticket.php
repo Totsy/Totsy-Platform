@@ -9,7 +9,8 @@ class Ticket extends \lithium\data\Model {
 	public static $issueList = array(
 		'order' => 'support@totsy.com',
 		'tech'=> 'support@totsy.com',
-		'cs' => 'support@totsy.com',
+		'refunds' => 'support@totsy.com',
+		'merch' => 'support@totsy.com',
 		'business' => 'business@totsy.com',
 		'press' => 'press@totsy.com'
 	);

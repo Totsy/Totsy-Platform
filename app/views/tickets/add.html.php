@@ -34,43 +34,56 @@
 				<option value="order">My Order(s)</option>
 			<?php endif ?>
 			<option value="tech">Technical Support</option>
-			<option value="cs">Customer Support</option>
-			<option value="business">New Business Development</option>
-			<option value="press">Press</option>
+			<option value="refunds">Refund &amp; Credit</option>
+			<option value="merch">Merchandising &amp; Product Inquiries</option>
+			<option value="shipping">Shipping &amp; Returns</option>
+			<option value="business">Business Development &amp; Vendor Opportunities</option>
+			<option value="press">Press Inquiries</option>
 		</select>
 	
 		<br />
 		<select id="child" name="type" style="width:350px;">
+		<!-- orders -->
 			<?php if ($orders): ?>
 				<option value="">Choose Your Order Number</option>
 				<?php foreach ($orders as $key => $value): ?>
 					<option class="sub_order" value="<?=$key?>"><?=$value?></option>
 				<?php endforeach ?>
 			<?php endif ?>
-			<option class="sub_tech" value="">Choose One</option>
-			<option class="sub_tech" value="5">Trouble with logging in</option>
-	
-			<option class="sub_tech" value="5">Where Are My Credits</option>
-			<option class="sub_tech" value="5">Problem With Shipping</option>
 		
-			<option class="sub_cs" value="">Choose One</option>
-			<option class="sub_cs" value="6">Phone Number</option>
-			<option class="sub_cs" value="7">Walk In</option>
-			
+		<!-- Tech -->
+			<option class="sub_tech" value="">Choose One</option>
+			<option class="sub_tech" value="5">Trouble with logging in.</option>
+			<option class="sub_tech" value="5">My cart items have expired.</option>
+		
+		<!-- Refund -->
+			<option class="sub_refunds" value="">Choose One</option>
+			<option class="sub_refunds" value="6">I would like a refund</option>
+			<option class="sub_refunds" value="7">What happened to my credits?</option>
+		
+		<!-- Merch -->
+			<option class="sub_merch" value="">Choose One</option>
+			<option class="sub_merch" value="6">Selling products on Totsy</option>
+			<option class="sub_merch" value="7">Merchandising information</option>
+		
+		<!-- Shipping -->	
+			<option class="sub_shipping" value="">Choose One</option>
+			<option class="sub_shipping" value="6">I would like a return</option>
+			<option class="sub_shipping" value="7">Where is my order?</option>
+		
+		<!-- Business Dev -->	
 			<option class="sub_business" value="">Choose One</option>
-	
-			<option class="sub_business" value="6">Phone Number</option>
-			<option class="sub_business" value="7">Walk In</option>
-			
+			<option class="sub_business" value="6">How can I sell my products on Totsy?</option>
+			<option class="sub_business" value="7">Can I run an exclusive sale on Totsy?</option>
+		
+		<!-- Press -->	
 			<option class="sub_press" value="">Choose One</option>
-			<option class="sub_press" value="6">Phone Number</option>
-			<option class="sub_press" value="7">Walk In</option>
+			<option class="sub_press" value="6">I would like more information about Totsy.</option>
+			<option class="sub_press" value="7">I'd like a media kit</option>
 		</select>
 	
 		<br />
-		<h3>Users Details</h3>
-		<input type="text" disabled="disabled" value="<?=$userInfo['firstname']?> <?=$userInfo['lastname']?>" />
-		<br />
+		
 		<h3>Your Message</h3>
 		<?=$this->form->textarea('message', array(
 			'class' => 'inputbox',
