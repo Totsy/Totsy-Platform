@@ -35,7 +35,8 @@ class TicketsController extends BaseController {
 			$email = array('email' => $list[$data['issue']['issue_type']]);
 			$data = $data + $email;
 			Silverpop::send('ticket', $data);
-			$this->redirect('tickets/sent');
+			//$this->redirect('tickets/sent');
+			$this->_render['template'] = 'sent';
 		}
 
 		return compact('ticket', 'message', 'orders');
