@@ -95,8 +95,7 @@
 					$removeButtons[] = "<script type=\"text/javascript\" charset=\"utf-8\">
 							$('#remove$item->_id').click(function () { 
 								$('#$item->_id').remove();
-								$.ajax({url: $.base + \"cart/remove\", data:'$item->_id', context: document.body, success: function(data){
-								      }});
+								$.post(\"cart/remove\" , { id: '$item->_id' } );
 							    });
 						</script>";
 					$subTotal += $item->quantity * $item->sale_retail;

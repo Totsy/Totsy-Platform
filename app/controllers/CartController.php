@@ -82,18 +82,17 @@ class CartController extends BaseController {
 	}
 
 	public function remove() {
-
-		if ($this->request->query) {
-			foreach ($this->request->query as $key => $value) {
+		if ($this->request->data) {
+				$data = $this->request->data;
 				$cart = Cart::find('first', array(
 					'conditions' => array(
-						'_id' => "$key"
+						'_id' => $data["id"]
 				)));
-				Cart::remove(array('_id' => "$key"));
+				if(!empty($cart)){
+					Cart::remove(array('_id' => $data["id"]));
+				}
 			}
-		}
-		$this->render(array('layout' => false));
-
+		$this->_render['layout'] = false;
 		$cartcount = Cart::itemCount();
 		return compact('cartcount');
 	}

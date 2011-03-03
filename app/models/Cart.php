@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\extensions\Ups;
 use lithium\storage\Session;
+use app\models\Item;
 use MongoDate;
 
 class Cart extends \lithium\data\Model {
@@ -73,7 +74,6 @@ class Cart extends \lithium\data\Model {
 	public static function itemCount() {
 		$cart = Cart::active(array('fields' => array('quantity')));
 		$cartCount = 0;
-
 		if ($cart) {
 			foreach ($cart as $item) {
 				$cartCount += $item->quantity;
@@ -226,6 +226,7 @@ class Cart extends \lithium\data\Model {
 		}
 		return true;
 	}
+<<<<<<< HEAD
 	 public static function check($quantity = null, $cart_id = null){
        $cart = static::find('first', array(
            'conditions' => array(
@@ -249,6 +250,32 @@ class Cart extends \lithium\data\Model {
        }
        return $check;
    }
+=======
+	
+	public static function check($quantity = null, $cart_id = null){
+		$cart = static::find('first', array(
+			'conditions' => array(
+				'_id' => $cart_id
+				)
+		));
+		$item = Item::find('first', array(
+				'conditions' => array(
+					'_id' => $cart->item_id
+		)));
+		if ($item->details->{$cart->size} == 0) {
+			$check["statut"] = false;
+			$check["errors"] = "Sorry we are sold out of this item.";
+		}
+		if ($quantity > $item->details->{$cart->size}) {
+			$check["statut"] = false;
+			$check["errors"] =  "Sorry you have requested more of this item than what is available.";
+		}
+		if (empty($check["errors"])){
+			$check["statut"] = true;
+		}
+		return $check;
+	}
+>>>>>>> e17c967948bb0b0d4cfdd0156c33c1aa4f854693
 }
 
 ?>
