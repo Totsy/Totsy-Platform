@@ -29,7 +29,7 @@ class Order extends \lithium\data\Model {
 	 */
 	public function summary($order) {
 		return array(
-			(string) $order->_id => $order->order_id.'- Order Total: $'.number_format($order->total, 2)
+			(string) $order->order_id => $order->order_id.'- Order Total: $'.number_format($order->total, 2)
 		);
 	}
 
