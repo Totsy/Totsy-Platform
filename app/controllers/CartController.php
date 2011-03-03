@@ -105,9 +105,28 @@ class CartController extends BaseController {
 
 		if( $data ){
 			$carts = $data['cart'];
-			foreach( $carts as $key => $value){
-				if(Cart::check($value['qty'], $value['_id'])){
-					$cart = Cart::find('first',array('conditions' => array('_id' => $value['_id'])));
+			$result = Session::check($cart);
+			if(is_bool($result)){
+				foreach($carts as $key => $qty) {
+					$cart = Cart::find('first', array(
+						'conditions' => array(
+							'_id' => $key
+					)));
+					$cart->quantity = $qty;
+					if($cart->save()){
+						$message = "Your cart has been saved.";
+					}
+				}
+			}else{
+				foreach($carts as $key => $qty) {
+					$cart = Cart::find('first', array(
+						'conditions' => array(
+							'_id' => $key
+					)));
+					$cart->quantity = $qty;
+					if($cart->save()){
+						$message = "Your cart has been saved.";
+					}
 				}
 			}
 		}
