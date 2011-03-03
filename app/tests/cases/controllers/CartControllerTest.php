@@ -2,7 +2,6 @@
 
 namespace app\tests\cases\controllers;
 
-<<<<<<< HEAD
 use lithium\action\Request;
 use \app\controllers\CartController;
 use \app\models\Cart;
@@ -40,35 +39,6 @@ class CartControllerTest extends \lithium\test\Unit {
 		$this->tearDown();
 	}
 
-	public function tearDown() {
-	    $efixture = Fixture::load('Event');
-        $ifixture = Fixture::load('Item');
-        $cfixture = Fixture::load('Cart');
-
-        $event = Event::create();
-        $event->remove($efixture->first());
-        $item = Item::create();
-        $item->remove($ifixture->first());
-        $cart = Cart::create();
-        $cart->remove($cfixture->first());
-
-	}
-
-
-}
-
-?>
-=======
-use app\models\Cart;
-use app\models\Item;
-use app\controllers\CartController;
-use MongoId;
-use MongoDate;
-use lithium\storage\Session;
-use lithium\action\Request;
-
-class CartControllerTest extends \lithium\test\Unit {
-	
 	/*
 	* Testing the Remove method from the CartController
 	*/
@@ -81,7 +51,7 @@ class CartControllerTest extends \lithium\test\Unit {
 		$user = Session::read('userLogin');
 		$active_time  = new MongoDate();
 		$expire_time  = new MongoDate();
-		$expire_time->sec = ($expire_time->sec + (60*60*60)); 
+		$expire_time->sec = ($expire_time->sec + (60*60*60));
 		//Create temporary document
 		$datas_cart = array(
 			"_id" => $cart_id,
@@ -90,7 +60,7 @@ class CartControllerTest extends \lithium\test\Unit {
 			"created" => $active_time,
 			"description" => "FireREEEman Towel",
 			"discount_exempt" => false,
-			"event" =>  array( 
+			"event" =>  array(
 							"0" => "YFY7FD7YF7YD7HUHU"
 						),
 			"expires" => $expire_time,
@@ -112,5 +82,21 @@ class CartControllerTest extends \lithium\test\Unit {
 		$this->assertEqual( 0 , $result["cartcount"] );
 	}
 
+	public function tearDown() {
+	    $efixture = Fixture::load('Event');
+        $ifixture = Fixture::load('Item');
+        $cfixture = Fixture::load('Cart');
+
+        $event = Event::create();
+        $event->remove($efixture->first());
+        $item = Item::create();
+        $item->remove($ifixture->first());
+        $cart = Cart::create();
+        $cart->remove($cfixture->first());
+
+	}
+
+
 }
->>>>>>> e17c967948bb0b0d4cfdd0156c33c1aa4f854693
+
+?>

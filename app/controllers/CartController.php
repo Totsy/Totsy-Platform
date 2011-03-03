@@ -101,7 +101,8 @@ class CartController extends BaseController {
 		$success = false;
 		$message = null;
 		$data = $this->request->data;
-
+		var_dump($data);
+		die();
 		if( $data ){
 			$carts = $data['cart'];
 			$result = Session::check($cart);
