@@ -72,7 +72,11 @@ class Order extends \lithium\data\Model {
 		// }
 
 		$tax = $tax ? $tax + (($overSizeHandling+$handling) * Cart::TAX_RATE) : 0;
-		$total = ($subTotal + $orderCredit->credit_amount + $orderPromo->saved_amount) + $tax + $handling +$overSizeHandling;
+		$afterDiscount = $subTotal + $orderCredit->credit_amount + $orderPromo->saved_amount;
+		if( $afterDiscount < 0 ){
+		    $afterDiscount = 0;
+		}
+		$total = $afterDiscount + $tax + $handling +$overSizeHandling;
 
 
 		$cart = $cart->data();
