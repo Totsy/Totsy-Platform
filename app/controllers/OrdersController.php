@@ -269,7 +269,7 @@ class OrdersController extends BaseController {
 					if ($count >= $code->max_use) {
 						$orderPromo->errors(
 							$orderPromo->errors() + array(
-								'promo' => "Sorry, you've reached the maximum allowed use of this promotion code"
+								'promo' => "This promocode was already be used"
 						));
 					}
 				}
@@ -278,7 +278,7 @@ class OrdersController extends BaseController {
 					if (!is_array($userPromotions) || !in_array((string) $code->_id, $userPromotions)) {
 						$orderPromo->errors(
 							$orderPromo->errors() + array(
-								'promo' => "Sorry, this promotion is limited"
+								'promo' => "Sorry, Your promotion code is invalid"
 						));
 					}
 				}
