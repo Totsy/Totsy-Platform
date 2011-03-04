@@ -303,6 +303,10 @@ class OrdersController extends BaseController {
 						'promo' => 'Sorry, Your promotion code is invalid'
 				));
 			}
+			$errors = $orderPromo->errors();
+			if ($errors) {
+				$orderPromo->saved_amount = 0;
+			}
 		}
 
 		$vars = compact(
