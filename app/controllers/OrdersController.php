@@ -263,7 +263,7 @@ class OrdersController extends BaseController {
 
 		if ($orderPromo->code) {
 			$code = Promocode::confirmCode($orderPromo->code);
-			$count = Promotion::confirmCount($orderPromo->_id, $user['_id']);
+			$count = Promotion::confirmCount($code->_id, $user['_id']);
 			if ($code) {
 				if ($code->max_use > 0) {
 					if ($count >= $code->max_use) {
@@ -325,6 +325,7 @@ class OrdersController extends BaseController {
 			if ($orderPromo->saved_amount) {
 				Promocode::add((string) $code->_id, $orderPromo->saved_amount, $order->total);
 				$orderPromo->order_id = (string) $order->_id;
+				$orderPromo->code_id = (string) $code->_id;
 				$orderPromo->date_created = new MongoDate();
 				$orderPromo->save();
 				$order->promo_code = $orderPromo->code;
