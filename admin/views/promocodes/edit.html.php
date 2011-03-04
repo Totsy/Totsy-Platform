@@ -32,6 +32,26 @@
 	<h2 id="page-heading">Promocode Edit Panel</h2>
 </div>
 
+<div class='grid_3 menu'>
+	<table>
+		<thead>
+			<tr>
+				<th>Promo Navigation </th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td> <?php echo $this->html->link('Create Promocode', 'promocodes/add'); ?> </td>
+			</tr>
+			<tr>
+				<td><?php echo $this->html->link('View/Edit Promocodes', 'promocodes/index' ); ?></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->html->link('View Promotions', 'promocodes/report'); ?></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
 <div class='grid_6 box'>
     <h2>
 		<a href="#" id="toggle-forms">Edit Panel</a>
@@ -55,6 +75,9 @@
 
            <?=$this->form->label('Minimum Purchase:'); ?>
            <?=$this->form->text('minimum_purchase', array( 'value' => $promocode->minimum_purchase)); ?><br>
+
+           <?php  $enable= (($promocode->limited_use))? 'checked' : '' ?>
+			Limit Per User: <?=$this->form->checkbox( 'limited_use', array( 'checked'=>$enable, 'value' => '1' ) ); ?> <br>
 
            <?=$this->form->label('Enter maximum uses:'); ?>
            <?=$this->form->text( 'max_use', array( 'value' => $promocode->max_use) ); ?><br><br>
