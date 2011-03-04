@@ -269,7 +269,7 @@ class OrdersController extends BaseController {
 					if ($count >= $code->max_use) {
 						$orderPromo->errors(
 							$orderPromo->errors() + array(
-								'promo' => "This promocode was already be used"
+								'promo' => "This promocode was already used"
 						));
 					}
 				}
