@@ -269,7 +269,7 @@ class OrdersController extends BaseController {
 					if ($count >= $code->max_use) {
 						$orderPromo->errors(
 							$orderPromo->errors() + array(
-								'promo' => "This promocode was already used"
+								'promo' => "This promotion code was already used"
 						));
 					}
 				}
@@ -278,7 +278,7 @@ class OrdersController extends BaseController {
 					if (!is_array($userPromotions) || !in_array((string) $code->_id, $userPromotions)) {
 						$orderPromo->errors(
 							$orderPromo->errors() + array(
-								'promo' => "Sorry, Your promotion code is invalid"
+								'promo' => "Your promotion code is invalid"
 						));
 					}
 				}
@@ -294,13 +294,13 @@ class OrdersController extends BaseController {
 				} else {
 					$orderPromo->errors(
 						$orderPromo->errors() + array(
-							'promo' => "Sorry, you need a minimum order total of $$code->minimum_purchase to use promotion code. Shipping and sales tax is not included."
+							'promo' => "You need a minimum order total of $$code->minimum_purchase to use this promotion code. Shipping and sales tax is not included."
 					));
 				}
 			} else {
 				$orderPromo->errors(
 					$orderPromo->errors() + array(
-						'promo' => 'Sorry, Your promotion code is invalid'
+						'promo' => 'Your promotion code is invalid'
 				));
 			}
 			$errors = $orderPromo->errors();
