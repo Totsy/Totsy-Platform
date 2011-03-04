@@ -274,7 +274,7 @@ class OrdersController extends BaseController {
 					}
 				}
 				if ($code->limited_use == true) {
-					if (!in_array($orderPromo->_id, $userDoc->promotions)) {
+					if (!is_array($userDoc->promotions) || !in_array((string) $orderPromo->_id, $userDoc->promotions)) {
 						$orderPromo->errors(
 							$orderPromo->errors() + array(
 								'promo' => "Sorry, this promotion is limited"
