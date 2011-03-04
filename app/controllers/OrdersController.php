@@ -263,12 +263,24 @@ class OrdersController extends BaseController {
 
 		if ($orderPromo->code) {
 			$code = Promocode::confirmCode($orderPromo->code);
-			if (empty($code)) {
-				$orderPromo->errors(
-					$orderPromo->errors() + array(
-						'promo' => 'Sorry, Your promotion code is invalid'
-				));
-			} else {
+			$count = Promotion::confirmCount($orderPromo->_id, $user['_id']);
+			if ($code) {
+				if ($code->maxium_use > 0) {
+					if ($count > $code->maxium_use) {
+						$orderPromo->errors(
+							$orderPromo->errors() + array(
+								'promo' => "Sorry, the maximum allowed use of this promotion is $code->maxium_use times"
+						));
+					}
+				}
+				if ($code->limited_use == true) {
+					if (!in_array($orderPromo->_id, $userDoc->promotions)) {
+						$orderPromo->errors(
+							$orderPromo->errors() + array(
+								'promo' => "Sorry, this promotion is limited"
+						));
+					}
+				}
 				if ($postCreditTotal > $code->minimum_purchase) {
 					$orderPromo->user_id = $user['_id'];
 					if ($code->type == 'percentage') {
@@ -284,6 +296,11 @@ class OrdersController extends BaseController {
 							'promo' => "Sorry, you need a minimum order total of $$code->minimum_purchase to use promotion code. Shipping and sales tax is not included."
 					));
 				}
+			} else {
+				$orderPromo->errors(
+					$orderPromo->errors() + array(
+						'promo' => 'Sorry, Your promotion code is invalid'
+				));
 			}
 		}
 
