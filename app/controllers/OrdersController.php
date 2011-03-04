@@ -265,7 +265,7 @@ class OrdersController extends BaseController {
 			$code = Promocode::confirmCode($orderPromo->code);
 			$count = Promotion::confirmCount($orderPromo->_id, $user['_id']);
 			if ($code) {
-				if ($code->maxium_use > 0) {
+				if ($code->max_use > 0) {
 					if ($count > $code->maxium_use) {
 						$orderPromo->errors(
 							$orderPromo->errors() + array(
