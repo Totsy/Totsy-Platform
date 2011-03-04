@@ -1,13 +1,13 @@
 {
     "item":{
-        "_id" : "10004",
+        "_id":"10004",
         "details" : {
             "no size" : "10"
         },
         "description" : "Kitty Octopus Stuff Toy",
         "category" : "toy",
         "event" : [
-            "4c3632e58ead0e0052000000"
+            "300001"
         ],
         "sale_whol" : 15
     }

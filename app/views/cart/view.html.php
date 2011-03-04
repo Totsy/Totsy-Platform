@@ -57,13 +57,13 @@
 						<strong>Color:</strong> <?=$item->color;?><br>
 						<strong>Size:</strong> <?=$item->size;?>
 					</td>
-					
+
 					<td class="<?="price-item-$x";?>" style="width:45px;">
 						<strong style="color:#009900;">$<?=number_format($item->sale_retail,2)?></strong>
 					</td>
 					<td class="<?="qty-$x";?>" style="width:65px; text-align:center">
 					<!-- Quantity Select -->
-					<?=$this->form->select('qty', array(0 => '0', 1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6', 7 => '7', 8 => '8', 9 => '9'), array(
+					<?=$this->form->select("cart[{$item->_id}]", array(0 => '0', 1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6', 7 => '7', 8 => '8', 9 => '9'), array(
     					'id' => $item->_id, 'value' => $item->quantity
 					));
 					?>
@@ -83,8 +83,8 @@
 							var itemExpires = new Date();
 							itemExpires = new Date($date);
 							$(\"#itemCounter$x\").countdown('change', {until: itemExpires, $countLayout});
-							
-						$(\"#itemCounter$x\").countdown({until: itemExpires, 
+
+						$(\"#itemCounter$x\").countdown({until: itemExpires,
 						    expiryText: '<div class=\"over\" style=\"color:#fff; background: #ff0000;\">This item is no longer reserved</div>', $countLayout});
 						var now = new Date()
 						if (itemExpires < now) {
@@ -93,13 +93,13 @@
 						});
 						</script>";
 					$removeButtons[] = "<script type=\"text/javascript\" charset=\"utf-8\">
-							$('#remove$item->_id').click(function () { 
+							$('#remove$item->_id').click(function () {
 								$('#$item->_id').remove();
 								$.post(\"cart/remove\" , { id: '$item->_id' } );
 							    });
 						</script>";
 					$subTotal += $item->quantity * $item->sale_retail;
-					$x++; 
+					$x++;
 				?>
 	<?php endforeach ?>
 		<tr class="cart-total">
@@ -116,8 +116,8 @@
 			</td>
 			</tbody>
 		</table>
-           
-    
+
+
 	</div>
 <?=$this->form->end(); ?>
 
@@ -142,7 +142,7 @@
 <?php endif ?>
 <script type="text/javascript" charset="utf-8">
 	$(".inputbox").bind('keyup', function() {
-	var id = $(this).attr('id'); 
+	var id = $(this).attr('id');
 	var qty = $(this).val();
 	var price = $(this).closest("tr").find("td[class^=price]").html().split("$")[1];
 	var cost = parseInt(qty) * parseFloat(price);
@@ -186,8 +186,8 @@ function deletechecked(message)
             var answer = confirm(message)
             if (answer){
                 document.messages.submit();
-                return false; 
+                return false;
             }
-            return false;  
-        } 
+            return false;
+        }
 </script>

@@ -101,38 +101,26 @@ class CartController extends BaseController {
 		$success = false;
 		$message = null;
 		$data = $this->request->data;
-		var_dump($data);
-		die();
+
 		if( $data ){
 			$carts = $data['cart'];
-			$result = Session::check($cart);
-			if(is_bool($result)){
-				foreach($carts as $key => $qty) {
-					$cart = Cart::find('first', array(
-						'conditions' => array(
-							'_id' => $key
-					)));
-					$cart->quantity = $qty;
-					if($cart->save()){
-						$message = "Your cart has been saved.";
-					}
-				}
-			}else{
-				foreach($carts as $key => $qty) {
-					$cart = Cart::find('first', array(
-						'conditions' => array(
-							'_id' => $key
-					)));
-					$cart->quantity = $qty;
-					if($cart->save()){
-						$message = "Your cart has been saved.";
-					}
+			foreach($carts as $id => $qty){
+				$result = Cart::check((int)$qty, (string)$id);
+				$cart = Cart::find('first' , array( 'conditions' => 		array('_id' =>  (string)$id)
+					));
+				var_dump($result['status']);
+
+				if($result['status']){
+					$cart->quantity = (int)$qty;
+					$cart->save();
+				}else{
+					$cart->error = $result['errors'];
+					var_dump($result['errors']);
+					$cart->save();
 				}
 			}
 		}
-
-		$this->render(array('layout' => false));
-		echo json_encode($message);
+	//	$this->redirect('Cartcontroller::view');
 	}
 
 }

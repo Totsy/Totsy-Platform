@@ -31,7 +31,7 @@
 			<div id="header-mid">
 				<?php if (!empty($userInfo)): ?>
 					<?=$this->html->link('Help Desk', 'Tickets::add', array('id' => 'cs')); ?>
-				<?php endif ?>
+
 				<div id="welcome">
 				Hello,
 					<?php if(array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])):
@@ -42,6 +42,7 @@
 					<?php endif; ?>
 					(<?=$this->html->link('Sign Out', 'Users::logout', array('title' => 'Sign Out')); ?>)
 				</div>
+			<?php endif ?>
 				<?php if (!(empty($userInfo))): ?>
 					<?=$this->menu->render('main-nav'); ?>
 				<?php endif ?>

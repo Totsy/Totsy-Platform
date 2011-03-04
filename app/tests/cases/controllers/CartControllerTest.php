@@ -18,25 +18,26 @@ class CartControllerTest extends \lithium\test\Unit {
         $ifixture = Fixture::load('Item');
         $cfixture = Fixture::load('Cart');
 
-        $event = Event::create();
-        $event->save($efixture->first());
-        $item = Item::create();
-        $item->save($ifixture->first());
-        $cart = Cart::create();
-        $cart->save($cfixture->first());
+        $event = Event::create($efixture->first());
+        $event->save();
+        $item = Item::create($ifixture->first());
+        $item->save();
+        $cart = Cart::create($cfixture->first());
+        $cart->save();
 	}
 
 	public function testCartUpdate() {
-    	$this->setUp();
+    	//$this->setUp();
 		$post = array('cart' =>array(
 		        '200001' => '4'
         ));
+
 		$cartPuppet = new CartController();
 		$cartPuppet->request->data = $post;
 		$cartPuppet->update();
 		$result = Cart::find('first', array('conditions' => array('_id' => '200001')));
-		$this->assertEqual(4, $result->quantity, 'update was not successful');
-		$this->tearDown();
+		$this->assertEqual(4, $result->quantity);
+	//	$this->tearDown();
 	}
 
 	/*
@@ -87,7 +88,7 @@ class CartControllerTest extends \lithium\test\Unit {
         $ifixture = Fixture::load('Item');
         $cfixture = Fixture::load('Cart');
 
-        $event = Event::create();
+        $event = Event::find();
         $event->remove($efixture->first());
         $item = Item::create();
         $item->remove($ifixture->first());
