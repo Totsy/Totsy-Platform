@@ -17,7 +17,7 @@
 	<?=$this->html->link('Icon', null, array('type' => 'icon')); ?>
 </head>
 
-<body class="app">
+<body class="app"><div id="global_site_msg"><strong>Last minute message:</strong> our last promotional campaign that was intended for a select audience of our long-time members was unintentionally exposed to the general public. <br />This promotion has now been restored and will only work for members who received an email directly from Totsy containing a promocode.</div>
 <div id="topper"></div>
 	<div id="wrapper">
 		<div id="header">

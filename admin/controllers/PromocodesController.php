@@ -131,22 +131,15 @@ class PromocodesController extends \admin\controllers\BaseController {
 			}
 
 
-		  if( $this->request->data['enabled'] == '1' || $this->request->data['enabled'] == 'on' ){
-
-			   $code['enabled'] = true;
-
-			}else{
-
-				$code['enabled'] = false;
-
-			}
+			$code['enabled'] = 	Promocode::setToBool($this->request->data['enabled']);
+			$code['limited_use'] = Promocode::setToBool($this->request->data['limited_use']);
 			$code['discount_amount'] = (float) $code['discount_amount'];
 			$code['minimum_purchase'] = (int) $code['minimum_purchase'];
 			$code['max_use'] = (int) $code['max_use'];
-		   $code['start_date'] = new MongoDate( strtotime( $code['start_date'] ) );
-		   $code['end_date'] = new MongoDate( strtotime( $code['end_date'] ) );
-		   $code['date_created'] = new MongoDate( strtotime( date('D M d Y') ) );
-		   $code['created_by'] = Promocode::createdBy();
+			$code['start_date'] = new MongoDate( strtotime( $code['start_date'] ) );
+			$code['end_date'] = new MongoDate( strtotime( $code['end_date'] ) );
+			$code['date_created'] = new MongoDate( strtotime( date('D M d Y') ) );
+			$code['created_by'] = Promocode::createdBy();
 
 			$result = $promoCode->save($code);
 			if ($result) {
@@ -165,11 +158,11 @@ class PromocodesController extends \admin\controllers\BaseController {
 
         $obj_data = $promocode->data();
 
-        if(!empty( $obj_data['start_date'] )){
+        if(array_key_exists('start_date', $obj_data) && !empty( $obj_data['start_date'] )){
             $promocode->start_date = date('m/d/Y', $promocode->start_date->sec );
         }
 
-        if(!empty( $obj_data['end_date'] )){
+        if(array_key_exists('end_date', $obj_data) && !empty( $obj_data['end_date'] )){
             $promocode->end_date = date('m/d/Y', $promocode->end_date->sec );
         }
 
@@ -187,15 +180,9 @@ class PromocodesController extends \admin\controllers\BaseController {
 						));
 			}
 
-		   $data = $this->request->data;
-
-		   if( $data['enabled'] == '1' || $data['enabled'] == 'on' ){
-
-			   $data['enabled'] = true;
-
-			}else{
-				 $data['enabled'] = false;
-			}
+			$data = $this->request->data;
+			$data['enabled'] = 	Promocode::setToBool($this->request->data['enabled']);
+			//$data['limited_use'] = Promocode::setToBool($this->request->data['limited_use']);
 			$data['discount_amount'] = (float) $data['discount_amount'];
 			$data['minimum_purchase'] = (int) $data['minimum_purchase'];
 			$data['max_use'] = (int) $data['max_use'];
