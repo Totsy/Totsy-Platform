@@ -16,11 +16,14 @@
 	<?=$this->scripts(); ?>
 	<?=$this->html->link('Icon', null, array('type' => 'icon')); ?>
 </head>
-
-<body class="app"><div id="global_site_msg"><strong>Last minute message:</strong> our last promotional campaign that was intended for a select audience of our long-time members was unintentionally exposed to the general public. <br />This promotion has now been restored and will only work for members who received an email directly from Totsy containing a promocode.</div>
+<body class="app">
+<div id="global_site_msg"><strong>Last minute message:</strong> our last promotional campaign that was intended for a select audience of our long-time members was unintentionally exposed to the general public. <br />This promotion has now been restored and will only work for members who received an email directly from Totsy containing a promocode.</div>
 <div id="topper"></div>
+
 	<div id="wrapper">
+	
 		<div id="header">
+		
 			<div id="header-lt">
 				<?=$this->html->link(
 					$this->html->image('logo.png', array('width'=>'155', 'height'=>'90')), '', array(
@@ -28,10 +31,12 @@
 					)
 				); ?>
 			</div>
+			
 			<div id="header-mid">
+			
 				<?php if (!empty($userInfo)): ?>
 					<?=$this->html->link('Help Desk', 'Tickets::add', array('id' => 'cs')); ?>
-				<?php endif ?>
+				
 				<div id="welcome">
 				Hello,
 					<?php if(array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])):
@@ -42,6 +47,7 @@
 					<?php endif; ?>
 					(<?=$this->html->link('Sign Out', 'Users::logout', array('title' => 'Sign Out')); ?>)
 				</div>
+				<?php endif ?>
 				<?php if (!(empty($userInfo))): ?>
 					<?=$this->menu->render('main-nav'); ?>
 				<?php endif ?>
@@ -83,7 +89,7 @@
 			<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
 			<li class="last"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
 		</ul>
-		<span id="copyright">&copy; 2010 Totsy.com. All Rights Reserved.</span>
+		<span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved.</span>
 	</div>
 	<script type="text/javascript">
 		$.base = '<?=rtrim(Router::match("/", $this->_request)); ?>';
