@@ -28,8 +28,7 @@
 	<hr />
 <div syle="margin:0px 0px 0px 0px; width:280px; float:left;">
 	<iframe src="http://watch.videogenie.com/media/embeddedCompilation.do?uid=8050fef8-9d65-4a6b-b067-8117b29d6654&amp;logo=no"
-        frameborder="0" scrolling="no"
-        style="width: 304px; height: 284px; overflow: hidden; margin: 0pt; float: left;">
+        frameborder="0" scrolling="no" style="width: 322px; height: 290px; overflow: hidden; margin: 0pt; float: left;">
   <a href="http://watch.videogenie.com/media/seeMoreVideos.do?uid=8050fef8-9d65-4a6b-b067-8117b29d6654"
      target="_blank">Click to see the videos.</a>
      </iframe>
