@@ -83,7 +83,7 @@
 			<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
 			<li class="last"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
 		</ul>
-		<span id="copyright">&copy; 2010 Totsy.com. All Rights Reserved.</span>
+		<span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved.</span>
 	</div>
 	<script type="text/javascript">
 		$.base = '<?=rtrim(Router::match("/", $this->_request)); ?>';
