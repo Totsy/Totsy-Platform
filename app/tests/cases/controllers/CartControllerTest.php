@@ -19,24 +19,41 @@ class CartControllerTest extends \lithium\test\Unit {
         $efixture = Fixture::load('Event');
         $ifixture = Fixture::load('Item');
         $cfixture = Fixture::load('Cart');
+        $next = $efixture->first();
+        do {
+            $event = Event::create();
+            $event->save($next);
+        }while($next = $efixture->next());
 
-        $event = Event::create();
-        $event->save($efixture->first());
-        $item = Item::create();
-        $item->save($ifixture->first());
-        $cart = Cart::create();
-        $cart->save($cfixture->first());
+        $next = $ifixture->first();
+
+        do {
+
+            $item = Item::create();
+            $item->save($next);
+        }while($next = $ifixture->next());
+
+       $next = $cfixture->first();
+         do {
+            $cart = Cart::create();
+            $cart->save($next);
+        }while($next = $cfixture->next());
+
+
 	}
 
 	public function testCartUpdate() {
 		$post = array('cart' =>array(
-		        '200001' => '4'
+		        '200001' => '4',
+		        '200002' => '5'
         ));
         $response= new Request(array('data'=>$post));
 		$cartPuppet = new CartController(array('request' => $response));
 		$cartPuppet->update();
-		$result = Cart::find('first', array('conditions' => array('_id' => '200001')));
-		$this->assertEqual(4, $result->quantity,'Update was not successful');
+		$result1 = Cart::find('first', array('conditions' => array('_id' => '200001')));
+		$result2 = Cart::find('first', array('conditions' => array('_id' => '200002')));
+		$this->assertEqual(4, $result1->quantity,'Uh-oh! Update was not successful: '. 'Expected value: 4 not equal to cart 20001 quantity: '.$result1->quantity);
+		$this->assertNotEqual(5, $result2->quantity,'Uh-oh! Update was successful: '. 'Expected value: 5 not equal to cart 20002 quantity: '.$result2->quantity);
 	}
 
 	/*
@@ -89,11 +106,20 @@ class CartControllerTest extends \lithium\test\Unit {
         $cfixture = Fixture::load('Cart');
 
         $event = $efixture->first();
-        Event::remove( array('_id' => $event['_id'] ) );
-        $item = $ifixture->first();
-        Item::remove( array( '_id' => $item['_id'] ) );
+         do {
+            Event::remove( array('_id' => $event['_id'] ) );
+        }while($event = $efixture->next());
+
+       $item = $ifixture->first();
+         do {
+           Item::remove( array( '_id' => $item['_id'] ) );
+        }while($item = $ifixture->next());
+
         $cart = $cfixture->first();
-        Cart::remove( array('_id' => $cart['_id'] ) );
+         do {
+           Cart::remove( array('_id' => $cart['_id'] ) );
+        }while($cart = $cfixture->next());
+
 	}
 
 
