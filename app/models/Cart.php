@@ -242,7 +242,6 @@ class Cart extends \lithium\data\Model {
 			$check["status"] = false;
 			$check["errors"] = "Sorry we are sold out of this item.";
 		}
-		var_dump($cart->size);
 		if ($quantity > $item->details->{$cart->size}) {
 			$check["status"] = false;
 			$check["errors"] =  "Sorry you have requested more of this item than what is available.";

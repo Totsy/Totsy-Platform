@@ -108,14 +108,12 @@ class CartController extends BaseController {
 				$result = Cart::check((int)$qty, (string)$id);
 				$cart = Cart::find('first' , array( 'conditions' => 		array('_id' =>  (string)$id)
 					));
-				var_dump($result['status']);
 
 				if($result['status']){
 					$cart->quantity = (int)$qty;
 					$cart->save();
 				}else{
 					$cart->error = $result['errors'];
-					var_dump($result['errors']);
 					$cart->save();
 				}
 			}

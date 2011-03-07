@@ -7,6 +7,8 @@ use \app\controllers\CartController;
 use \app\models\Cart;
 use \app\models\Event;
 use \app\models\Item;
+use MongoDate;
+use \lithium\storage\Session;
 use li3_fixtures\test\Fixture;
 
 
@@ -18,26 +20,23 @@ class CartControllerTest extends \lithium\test\Unit {
         $ifixture = Fixture::load('Item');
         $cfixture = Fixture::load('Cart');
 
-        $event = Event::create($efixture->first());
-        $event->save();
-        $item = Item::create($ifixture->first());
-        $item->save();
-        $cart = Cart::create($cfixture->first());
-        $cart->save();
+        $event = Event::create();
+        $event->save($efixture->first());
+        $item = Item::create();
+        $item->save($ifixture->first());
+        $cart = Cart::create();
+        $cart->save($cfixture->first());
 	}
 
 	public function testCartUpdate() {
-    	//$this->setUp();
 		$post = array('cart' =>array(
 		        '200001' => '4'
         ));
-
-		$cartPuppet = new CartController();
-		$cartPuppet->request->data = $post;
+        $response= new Request(array('data'=>$post));
+		$cartPuppet = new CartController(array('request' => $response));
 		$cartPuppet->update();
 		$result = Cart::find('first', array('conditions' => array('_id' => '200001')));
-		$this->assertEqual(4, $result->quantity);
-	//	$this->tearDown();
+		$this->assertEqual(4, $result->quantity,'Update was not successful');
 	}
 
 	/*
@@ -84,17 +83,17 @@ class CartControllerTest extends \lithium\test\Unit {
 	}
 
 	public function tearDown() {
-	    $efixture = Fixture::load('Event');
+
+        $efixture = Fixture::load('Event');
         $ifixture = Fixture::load('Item');
         $cfixture = Fixture::load('Cart');
 
-        $event = Event::find();
-        $event->remove($efixture->first());
-        $item = Item::create();
-        $item->remove($ifixture->first());
-        $cart = Cart::create();
-        $cart->remove($cfixture->first());
-
+        $event = $efixture->first();
+        Event::remove( array('_id' => $event['_id'] ) );
+        $item = $ifixture->first();
+        Item::remove( array( '_id' => $item['_id'] ) );
+        $cart = $cfixture->first();
+        Cart::remove( array('_id' => $cart['_id'] ) );
 	}
 
 
