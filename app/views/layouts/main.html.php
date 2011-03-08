@@ -57,9 +57,7 @@
 								'id' => 'checkout', 'title' => 'checkout'
 							)); ?>
 			 			</span>
-						<?=$this->html->link('Cart', '#', array(
-							'id' => 'cart', 'title' => 'My Cart'
-						)); ?>
+						<span class="fr"><?=$this->html->link('Cart', array('Cart::view')); ?></span>
 			 			<span class="fr">
 							<?=$this->html->link('My Credits', array('Credits::view')); ?>
 							<?php if (!empty($credit)): ?>
@@ -118,8 +116,9 @@
 		</script>
 
     	<div id='cart-modal'></div>
+
 	<script type="text/javascript">
-	$("#cart").click(function() {
+	/*$("#cart").click(function() {
 		$("#cart-modal").load($.base + 'cart/view').dialog({
 			autoOpen: false,
 			modal:true,
@@ -130,7 +129,7 @@
 			}
 		});
 		$("#cart-modal").dialog('open');
-	});
+	}); */
 	</script>
 
     <div id='toTop'>^ Back to Top</div>

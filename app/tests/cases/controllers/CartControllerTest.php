@@ -21,6 +21,7 @@ class CartControllerTest extends \lithium\test\Unit {
         $cfixture = Fixture::load('Cart');
         $next = $efixture->first();
         do {
+            Event::remove(array('_id' => $next['_id'] ));
             $event = Event::create();
             $event->save($next);
         }while($next = $efixture->next());
@@ -28,13 +29,14 @@ class CartControllerTest extends \lithium\test\Unit {
         $next = $ifixture->first();
 
         do {
-
+            Item::remove(array('_id' => $next['_id'] ));
             $item = Item::create();
             $item->save($next);
         }while($next = $ifixture->next());
 
        $next = $cfixture->first();
          do {
+            Cart::remove(array('_id' => $next['_id'] ));
             $cart = Cart::create();
             $cart->save($next);
         }while($next = $cfixture->next());

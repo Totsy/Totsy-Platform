@@ -19,15 +19,22 @@ class CartController extends BaseController {
 	 * @return compact
 	 */
 	public function view() {
+		Cart::increaseExpires();
+		$message = '';
 		$cart = Cart::active(array('time' => '-3min'));
 		foreach($cart as $item){
+			if(array_key_exists('error', $item->data()) && !empty($item->error)){
+				$message .= $item->error . '<br/>';
+				$item->error="";
+				$item->save();
+			}
 			$events = Event::find('all', array('conditions'=>array('_id' => $item->event[0])));
 			$item->event= $events[0]->url;
 		}
 		if ($this->request->data) {
 			return array('data' => $this->request->data);
 		}
-		return compact('cart');
+		return compact('cart', 'message');
 	}
 
 	/**
@@ -117,7 +124,8 @@ class CartController extends BaseController {
 				}
 			}
 		}
-	//	$this->redirect('Cartcontroller::view');
+		$this->_render['layout'] = false;
+		$this->redirect('/cart/view');
 	}
 
 }

@@ -38,7 +38,7 @@
 	<?php if ($cartByEvent): ?>
 		<h2 class="gray mar-b">Order Details</h2><hr />
 
-		<div class='fr'><?=$this->html->link('Edit Your Cart', '#', array('id' => 'checkout-cart', 'class' => 'edit-your-cart')); ?></div>
+		<div class='fr'><?=$this->html->link('Edit Your Cart','/cart/view' ,array('id' => 'checkout-cart', 'class' => 'edit-your-cart')); ?></div>
 		<table width="100%" class="cart-table">
 
 		<?php $x = 0; ?>
@@ -276,8 +276,10 @@ $(".add-address").click(function() {
 });
 
 </script>
-	<?php if ($cartEmpty == true): ?>
+	<?php //if ($cartEmpty == true):
+	?>
 		<script>
+		/**
 		$(document).ready(function() {
 			$("#cart-modal").load($.base + 'cart/view').dialog({
 				autoOpen: false,
@@ -289,10 +291,11 @@ $(".add-address").click(function() {
 				}
 			});
 			$("#cart-modal").dialog('open');
-		});
+		}); **/
 		</script>
-	<?php endif ?>
+	<?php //endif ?>
 	<script type="text/javascript">
+	/**
 	$("#checkout-cart").click(function() {
 		$("#cart-modal").load($.base + 'cart/view').dialog({
 			autoOpen: false,
@@ -304,5 +307,5 @@ $(".add-address").click(function() {
 			}
 		});
 		$("#cart-modal").dialog('open');
-	});
-	</script>
+	}); **/
+</script>

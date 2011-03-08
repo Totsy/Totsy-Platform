@@ -12,7 +12,7 @@
 	<h1 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> My Cart</h1>
 
 	<hr />
-	<div id='message'></div>
+	<div id='message'><?php echo $message; ?></div>
 	<div id="middle" class="fullwidth">
 		<table width="100%" class="cart-table">
 			<thead>
@@ -95,15 +95,17 @@
 					$removeButtons[] = "<script type=\"text/javascript\" charset=\"utf-8\">
 							$('#remove$item->_id').click(function () {
 								$('#$item->_id').remove();
-								$.post(\"cart/remove\" , { id: '$item->_id' } );
+								$.post(\"/cart/remove\" , { id: '$item->_id' } );
 							    });
 						</script>";
 					$subTotal += $item->quantity * $item->sale_retail;
 					$x++;
 				?>
 	<?php endforeach ?>
+
 		<tr class="cart-total">
-			<td colspan="7" id='subtotal'><strong>Subtotal: <span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong></td>
+
+			<td colspan="7" id='subtotal'><a id="update" href="/cart/update"> Update Cart <a/><br/><strong>Subtotal: <span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong></td>
 		    </td>
 		</tr>
 		<tr class="cart-buy">
@@ -179,7 +181,11 @@
 	$("#subtotal").html("<strong>Subtotal: $" + subTotalProper + "</strong>");
 });
 </script>
-
+<script>
+	$('#update').click(function(){
+		$.post('/cart/update', $('select').serialize());
+	});
+</script>
 <script>
 function deletechecked(message)
         {
