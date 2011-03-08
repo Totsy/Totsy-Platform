@@ -13,6 +13,7 @@
 
 	<hr />
 	<div id='message'><?php echo $message; ?></div>
+	<div id='message'>Your Estimated Ship-Date Is: <?=date('m-d-Y', $shipDate)?></div>
 	<div id="middle" class="fullwidth">
 		<table width="100%" class="cart-table">
 			<thead>
@@ -53,7 +54,7 @@
 					</td>
 					<td class="cart-desc" style="width:325px;">
 						<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
-						<strong><?=$this->html->link($item->description,'sale/'.$item->event.'/'.$item->url); ?></strong><br>
+						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?></strong><br>
 						<strong>Color:</strong> <?=$item->color;?><br>
 						<strong>Size:</strong> <?=$item->size;?>
 					</td>

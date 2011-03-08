@@ -6,6 +6,7 @@ use app\extensions\Ups;
 use lithium\storage\Session;
 use app\models\Item;
 use MongoDate;
+use MongoId;
 
 /**
 * The Cart Class.
@@ -17,7 +18,7 @@ use MongoDate;
 * Carts have the following document structure in Mongo:
 * {{{
 *	"_id" : ObjectId("4d6dda33538926843a0026ad"),
-*	"category" : "Room Decor   ",
+*	"category" : "Room Decor",
 *	"color" : "White",
 *	"created" : "Wed Mar 02 2011 00:48:35 GMT-0500 (EST)",
 *	"description" : "Baby Blanket Satin Stars",
@@ -41,6 +42,21 @@ use MongoDate;
 * @see app/models/Order::process()
 */
 class Cart extends \lithium\data\Model {
+
+	/**
+	 * The # of business days to be added to an event to determine the estimated
+	 * ship by date. The default is 18 business days.
+	 *
+	 * @var int
+	 **/
+	protected $_shipBuffer = 18;
+
+	/**
+	 * Any holidays that need to be factored into the estimated ship date calculation.
+	 *
+	 * @var array
+	 */
+	protected $_holidays = array();
 
 	const TAX_RATE = 0.08875;
 
@@ -326,6 +342,70 @@ class Cart extends \lithium\data\Model {
 			$check["status"] = true;
 		}
 		return $check;
+	}
+
+	/**
+	 * Calculated estimated ship by date for an order.
+	 *
+	 * The estimated ship-by-date is calculated based on the last event that closes.
+	 * @param object $order
+	 * @return string
+	 */
+	public static function shipDate($cart) {
+		$i = 1;
+		$event = static::getLastEvent($cart);
+		$shipDate = null;
+		if (!empty($event)) {
+			$shipDate = $event->end_date->sec;
+			while($i < static::_object()->_shipBuffer) {
+				$day = date('N', $shipDate);
+				$date = date('Y-m-d', $shipDate);
+				if ($day < 6 && !in_array($date, static::_object()->_holidays)) {
+					$i++;
+				}
+				$shipDate = strtotime($date.' +1 day');
+			}
+		}
+		return $shipDate;
+	}
+
+	/**
+	 * Return the event that will be the last to close in an order.
+	 *
+	 * This method is needed to determine what the expected ship date should be.
+	 * Based on the business model, if a multi event order will ship together then the
+	 * estimated ship date will be determined from the fulfillment of the last event.
+	 * @param object $order
+	 * @return object $event
+	 */
+	public static function getLastEvent($cart) {
+		$event = null;
+		$ids = static::getEventIds($cart);
+		if (!empty($ids)) {
+			$event = Event::find('first', array(
+				'conditions' => array('_id' => $ids),
+				'order' => array('date_created' => 'DESC')
+			));
+		}
+		return $event;
+	}
+
+	/**
+	 * Get all the eventIds that are stored either in an order or cart object and cast to MongoId.
+	 * @param object
+	 * @return array
+	 */
+	public static function getEventIds($object) {
+		$items = (!empty($object->items)) ? $object->items->data() : $object->data();
+		$event = null;
+		$ids = array();
+		foreach ($items as $item) {
+			$eventId = (!empty($item['event_id'])) ? $item['event_id'] : $item['event'][0];
+			if (!empty($eventId)) {
+				$ids[] = new MongoId("$eventId");
+			}
+		}
+		return $ids;
 	}
 }
 
