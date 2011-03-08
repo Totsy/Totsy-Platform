@@ -38,6 +38,7 @@ class CartControllerTest extends \lithium\test\Unit {
          do {
             Cart::remove(array('_id' => $next['_id'] ));
             $cart = Cart::create();
+            $next['session'] = Session::key('default');
             $cart->save($next);
         }while($next = $cfixture->next());
 

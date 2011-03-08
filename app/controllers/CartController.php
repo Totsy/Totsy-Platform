@@ -2,9 +2,9 @@
 
 namespace app\controllers;
 
-use \app\models\Cart;
-use \app\models\Item;
-use \app\models\Event;
+use app\models\Cart;
+use app\models\Item;
+use app\models\Event;
 use \lithium\storage\Session;
 use MongoId;
 
@@ -69,7 +69,12 @@ class CartController extends BaseController {
 			//Check if this item has already been added to cart
 			$cartItem = Cart::checkCartItem($itemId, $size);
 			if (!empty($cartItem)) {
-				++ $cartItem->quantity;
+				if($cartItem->quantity < 9){
+					++ $cartItem->quantity;
+				}else{
+					$cartItem->error = "You have reached the maximum of 9 per item.";
+					$cartItem->save();
+				}
 				$cartItem->save();
 			} else {
 				$item = $item->data();
@@ -113,11 +118,11 @@ class CartController extends BaseController {
 		if( $data ){
 			$carts = $data['cart'];
 			foreach($carts as $id => $qty){
-				$result = Cart::check((int)$qty, (string)$id);
-				$cart = Cart::find('first' , array( 'conditions' => 		array('_id' =>  (string)$id)
+				$result = Cart::check((int) $qty, (string) $id);
+				$cart = Cart::find('first' , array( 'conditions' => 		array('_id' =>  (string) $id)
 					));
 				if($result['status']){
-					$cart->quantity = (int)$qty;
+					$cart->quantity = (int) $qty;
 					$cart->save();
 				}else{
 					$cart->error = $result['errors'];
@@ -128,7 +133,6 @@ class CartController extends BaseController {
 		$this->_render['layout'] = false;
 		$this->redirect('/cart/view');
 	}
-
 }
 
 ?>
