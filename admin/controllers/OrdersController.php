@@ -151,14 +151,17 @@ class OrdersController extends BaseController {
 		//Get datas from the shipping form
 		$datas = $this->request->data;
 		$update = true;
+		$count = 0;
 		//check if form is well completed
 		foreach($datas as $data){
 			if($data == null){
 				$missing = true;
+			}else {
+				$count++;	
 			}
 		}
 		//If yes, we prepare the array of modification datas
-		if(!$missing){
+		if((!$missing) && ($count>6)){
 			$order = Order::find('first', array('conditions' => array('_id' => new MongoId($id))));
 			$modification_datas["author"] = $current_user["email"];
 			$modification_datas["date"] = new MongoDate(strtotime('now'));

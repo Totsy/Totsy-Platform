@@ -108,9 +108,9 @@
 					<div class="tr"></div>
 					<div class="md-gray p-container">
 						<?php if ($item->total_quantity == 0): ?>
-								<?=$this->html->image('/img/soldout.gif', array(
+								<?=$this->html->image('/img/soldout.png', array(
 									'title' => "Sold Out",
-									'style' => 'z-index : 2; position : absolute; left:20%'
+									'style' => 'z-index : 2; position : absolute; left:69%; margin:10px;'
 								)); ?>
 						<?php endif ?>
 						<?=$this->html->link(

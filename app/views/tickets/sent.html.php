@@ -1,4 +1,6 @@
-<h1 class="p-header"><?=$this->title("Contact Us"); ?></h1>
+<?php if (!empty($userInfo)): ?>
+			
+			<h1 class="p-header"><?=$this->title("Contact Us"); ?></h1>
 				
 <div id="left">
 		<ul class="menu main-nav">
@@ -15,24 +17,18 @@
 		  <li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
 		</ul>
 	</div>
-	<div id="middle" class="noright">
+<?php endif ?>
 
-
-	
-	<div class="tl"><!-- --></div> 
-	<div class="tr"><!-- --></div> 
-
+<div id="middle" class="noright">
+	<div class="tl"></div>
+	<div class="tr"></div>
 	<div id="page">
-		<div id="message">
-				<strong>Corporate Address:</strong><br/>
-				10 West 18th Street<br/>
-				4th Floor<br/>
-				New York, NY 10011<br/>
-				<br />
-				<strong>Support Email:</strong> <br />				 
-				<a href="mailto:support@totsy.com">support@totsy.com</a></p>
-		</div>
+			
+	<h2 class="gray mar-b">Contact Us</h2>
+	<hr />
+	<p>Thank you for your message, we will be contacting you shortly.</p>
+
 	</div>
-	<div class="bl"><!-- --></div>
-	<div class="br"><!-- --></div>
+	<div class="bl"></div>
+	<div class="br"></div>
 </div>

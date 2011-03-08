@@ -26,8 +26,7 @@
 								<div class="tl"></div>
 								<div class="tr"></div>
 								<div class="r-box lt-gradient-1">
-									<p class="promo-copy"><strong>Have you heard the buzz about online private sample sales?</strong><br />
-									Now they're for babies, too. You're invited to a free private club. With private online sales every week of the year, Totsy offers its members sales on high end brands for baby and moms at 40-70% off." Savings of up to 70% off retail.<br />
+									<p class="promo-copy"><strong>Have you heard the buzz about online private sample sales?</strong><br />Now they're for babies, too. You're invited to a free private club. With private online sales every week of the year, Totsy offers its members sales on high end brands for baby and moms at 40-70% off." Savings of up to 90% off retail.<br />
 									<strong>Membership is free</strong>
 									</p>
 								</div>
@@ -131,6 +130,6 @@
 		<li class="last"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
 	</ul>
 	
-	<span id="copyright">&copy; 2010 Totsy.com. All Rights Reserved.</span>
+	<span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved.</span>
 
 </div>

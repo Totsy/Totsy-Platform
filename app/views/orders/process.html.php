@@ -122,7 +122,11 @@
 	<?php endif ?>
 	<?php
 		$preTotal = $subTotal + $orderCredit->credit_amount;
-		$total = $preTotal + $tax + $shippingCost + $overShippingCost + $orderPromo->saved_amount;
+		$afterDiscount = $preTotal + $orderPromo->saved_amount;
+		if($afterDiscount < 0){
+			$afterDiscount = 0;
+		}
+		$total = $afterDiscount + $tax + $shippingCost + $overShippingCost;
 	?>
 
 	<ol id="checkout-process">

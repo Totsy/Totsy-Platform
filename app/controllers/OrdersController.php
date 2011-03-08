@@ -263,12 +263,25 @@ class OrdersController extends BaseController {
 
 		if ($orderPromo->code) {
 			$code = Promocode::confirmCode($orderPromo->code);
-			if (empty($code)) {
-				$orderPromo->errors(
-					$orderPromo->errors() + array(
-						'promo' => 'Sorry, Your promotion code is invalid'
-				));
-			} else {
+			$count = Promotion::confirmCount($code->_id, $user['_id']);
+			if ($code) {
+				if ($code->max_use > 0) {
+					if ($count >= $code->max_use) {
+						$orderPromo->errors(
+							$orderPromo->errors() + array(
+								'promo' => "This promotion code has already been used"
+						));
+					}
+				}
+				if ($code->limited_use == true) {
+					$userPromotions = ($userDoc->promotions) ? $userDoc->promotions->data() : null;
+					if (!is_array($userPromotions) || !in_array((string) $code->_id, $userPromotions)) {
+						$orderPromo->errors(
+							$orderPromo->errors() + array(
+								'promo' => "Your promotion code is invalid"
+						));
+					}
+				}
 				if ($postCreditTotal > $code->minimum_purchase) {
 					$orderPromo->user_id = $user['_id'];
 					if ($code->type == 'percentage') {
@@ -281,9 +294,18 @@ class OrdersController extends BaseController {
 				} else {
 					$orderPromo->errors(
 						$orderPromo->errors() + array(
-							'promo' => "Sorry, you need a minimum order total of $$code->minimum_purchase to use promotion code. Shipping and sales tax is not included."
+							'promo' => "You need a minimum order total of $$code->minimum_purchase to use this promotion code. Shipping and sales tax is not included."
 					));
 				}
+			} else {
+				$orderPromo->errors(
+					$orderPromo->errors() + array(
+						'promo' => 'Your promotion code is invalid'
+				));
+			}
+			$errors = $orderPromo->errors();
+			if ($errors) {
+				$orderPromo->saved_amount = 0;
 			}
 		}
 
@@ -303,6 +325,7 @@ class OrdersController extends BaseController {
 			if ($orderPromo->saved_amount) {
 				Promocode::add((string) $code->_id, $orderPromo->saved_amount, $order->total);
 				$orderPromo->order_id = (string) $order->_id;
+				$orderPromo->code_id = (string) $code->_id;
 				$orderPromo->date_created = new MongoDate();
 				$orderPromo->save();
 				$order->promo_code = $orderPromo->code;
