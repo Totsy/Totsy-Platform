@@ -26,21 +26,6 @@ use li3_silverpop\extensions\Silverpop;
 class OrdersController extends BaseController {
 
 	/**
-	 * The # of business days to be added to an event to determine the estimated
-	 * ship by date. The default is 18 business days.
-	 *
-	 * @var int
-	 **/
-	protected $_shipBuffer = 18;
-
-	/**
-	 * Any holidays that need to be factored into the estimated ship date calculation.
-	 *
-	 * @var array
-	 */
-	protected $_holidays = array();
-
-	/**
 	 * Allows the view of all the orders a customer has in descending order.
 	 * The ship date is also populated next to each order if applicable.
 	 * @return compact
@@ -98,6 +83,13 @@ class OrdersController extends BaseController {
 		);
 	}
 
+	/**
+	 * Creates inital order based on the cart.
+	 * This view is needed to set the address information for the order.
+	 * When the add method is processed then the applicable tax can be calculated.
+	 * @return compact
+	 * @todo improve documentation
+	 */
 	public function add() {
 		$data = $this->request->data;
 		Session::delete('credit');
@@ -156,6 +148,12 @@ class OrdersController extends BaseController {
 		return $vars + compact('cartEmpty', 'cartByEvent', 'error', 'orderEvents');
 	}
 
+	/**
+	 * Processes an order by capturing payment.
+	 * @return compact
+	 * @todo Improve documentation
+	 * @todo Make this method lighter by taking out promocode/credit validation
+	 */
 	public function process() {
 		$order = Order::create();
 		$user = Session::read('userLogin');
@@ -191,7 +189,7 @@ class OrdersController extends BaseController {
 		$shippingCost = 0;
 		$overShippingCost = 0;
 		$billingAddr = $shippingAddr = null;
-		//var_dump($cart->data());
+
 		if (isset($data['billing_shipping']) && $data['billing_shipping'] == '1') {
 			$data['shipping'] = $data['billing'];
 		}
@@ -360,6 +358,13 @@ class OrdersController extends BaseController {
 
 	}
 
+	/**
+	 * Checks if the discountExempt flag is set in any of the cart items.
+	 * The method will return true if there is a discounted item and false if there isn't.
+	 *
+	 * @param array
+	 * @return boolean
+	 */
 	protected function _discountExempt($cart) {
 		$discountExempt = false;
 		foreach ($cart as $cartItem) {
@@ -375,6 +380,7 @@ class OrdersController extends BaseController {
 	 *
 	 * The $order object is assumed to have originated from one of model types; Order or Cart.
 	 * Irrespective of the type both will return an associative array of event items.
+	 *
 	 * @param object $order
 	 * @return array $eventItems
 	 */
@@ -403,6 +409,9 @@ class OrdersController extends BaseController {
 
 	/**
 	 * Return all the events of an order.
+	 *
+	 * @param object $object
+	 * @return array $orderEvents
 	 */
 	public function orderEvents($object) {
 		$orderEvents = null;
