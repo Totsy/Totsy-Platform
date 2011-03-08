@@ -3,12 +3,12 @@
 namespace app\tests\cases\controllers;
 
 use lithium\action\Request;
-use \app\controllers\CartController;
-use \app\models\Cart;
-use \app\models\Event;
-use \app\models\Item;
+use app\controllers\CartController;
+use app\models\Cart;
+use app\models\Event;
+use app\models\Item;
 use MongoDate;
-use \lithium\storage\Session;
+use lithium\storage\Session;
 use li3_fixtures\test\Fixture;
 
 
@@ -68,9 +68,9 @@ class CartControllerTest extends \lithium\test\Unit {
 		$remote->request->data = array('id'=>$cart_id);
 		$remote->request->params['type'] = 'html';
 		$user = Session::read('userLogin');
-		$active_time  = new MongoDate();
-		$expire_time  = new MongoDate();
-		$expire_time->sec = ($expire_time->sec + (60*60*60));
+		$active_time = new MongoDate();
+		$expire_time = new MongoDate();
+		$expire_time->sec = ($expire_time->sec + (60 * 60 * 60));
 		//Create temporary document
 		$datas_cart = array(
 			"_id" => $cart_id,

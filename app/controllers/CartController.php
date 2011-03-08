@@ -2,10 +2,10 @@
 
 namespace app\controllers;
 
-use \app\models\Cart;
-use \app\models\Item;
-use \app\models\Event;
-use \lithium\storage\Session;
+use app\models\Cart;
+use app\models\Item;
+use app\models\Event;
+use lithium\storage\Session;
 use MongoId;
 
 /**
@@ -21,12 +21,12 @@ use MongoId;
 class CartController extends BaseController {
 
 	/**
-	 * Displays the current state of the cart.
-	 *
-	 * @return compact
-	 * @see app/models/Cart::increaseExpires()
-	 * @see app/models/Cart::active()
-	 */
+	* Displays the current state of the cart.
+	*
+	* @see app/models/Cart::increaseExpires()
+	* @see app/models/Cart::active()
+	* @return compact
+	*/
 	public function view() {
 		Cart::increaseExpires();
 		$message = '';
@@ -98,6 +98,12 @@ class CartController extends BaseController {
 		return compact('cart', 'message');
 	}
 
+	/**
+	* The remove method delete an item from the temporary cart.
+	*
+	* @see app/models/Cart::remove()
+	* @return compact
+	*/
 	public function remove() {
 		if ($this->request->data) {
 				$data = $this->request->data;
@@ -122,11 +128,11 @@ class CartController extends BaseController {
 		if( $data ){
 			$carts = $data['cart'];
 			foreach($carts as $id => $qty){
-				$result = Cart::check((int)$qty, (string)$id);
+				$result = Cart::check((int) $qty, (string) $id);
 				$cart = Cart::find('first' , array( 'conditions' => array('_id' =>  (string)$id)
 					));
 				if($result['status']){
-					$cart->quantity = (int)$qty;
+					$cart->quantity = (int) $qty;
 					$cart->save();
 				}else{
 					$cart->error = $result['errors'];
@@ -137,7 +143,6 @@ class CartController extends BaseController {
 		$this->_render['layout'] = false;
 		$this->redirect('/cart/view');
 	}
-
 }
 
 ?>
