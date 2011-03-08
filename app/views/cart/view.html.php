@@ -12,7 +12,8 @@
 	<h1 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> My Cart</h1>
 
 	<hr />
-	<div id='message'></div>
+	<div id='message'><?php echo $message; ?></div>
+	<div id='message'>Your Estimated Ship-Date Is: <?=date('m-d-Y', $shipDate)?></div>
 	<div id="middle" class="fullwidth">
 		<table width="100%" class="cart-table">
 			<thead>
@@ -53,17 +54,17 @@
 					</td>
 					<td class="cart-desc" style="width:325px;">
 						<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
-						<strong><?=$this->html->link($item->description,'sale/'.$item->event.'/'.$item->url); ?></strong><br>
+						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?></strong><br>
 						<strong>Color:</strong> <?=$item->color;?><br>
 						<strong>Size:</strong> <?=$item->size;?>
 					</td>
-					
+
 					<td class="<?="price-item-$x";?>" style="width:45px;">
 						<strong style="color:#009900;">$<?=number_format($item->sale_retail,2)?></strong>
 					</td>
 					<td class="<?="qty-$x";?>" style="width:65px; text-align:center">
 					<!-- Quantity Select -->
-					<?=$this->form->select('qty', array(0 => '0', 1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6', 7 => '7', 8 => '8', 9 => '9'), array(
+					<?=$this->form->select("cart[{$item->_id}]", array(0 => '0', 1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6', 7 => '7', 8 => '8', 9 => '9'), array(
     					'id' => $item->_id, 'value' => $item->quantity
 					));
 					?>
@@ -83,8 +84,8 @@
 							var itemExpires = new Date();
 							itemExpires = new Date($date);
 							$(\"#itemCounter$x\").countdown('change', {until: itemExpires, $countLayout});
-							
-						$(\"#itemCounter$x\").countdown({until: itemExpires, 
+
+						$(\"#itemCounter$x\").countdown({until: itemExpires,
 						    expiryText: '<div class=\"over\" style=\"color:#fff; background: #ff0000;\">This item is no longer reserved</div>', $countLayout});
 						var now = new Date()
 						if (itemExpires < now) {
@@ -93,17 +94,19 @@
 						});
 						</script>";
 					$removeButtons[] = "<script type=\"text/javascript\" charset=\"utf-8\">
-							$('#remove$item->_id').click(function () { 
+							$('#remove$item->_id').click(function () {
 								$('#$item->_id').remove();
-								$.post(\"cart/remove\" , { id: '$item->_id' } );
+								$.post(\"/cart/remove\" , { id: '$item->_id' } );
 							    });
 						</script>";
 					$subTotal += $item->quantity * $item->sale_retail;
-					$x++; 
+					$x++;
 				?>
 	<?php endforeach ?>
+
 		<tr class="cart-total">
-			<td colspan="7" id='subtotal'><strong>Subtotal: <span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong></td>
+
+			<td colspan="7" id='subtotal'><a id="update" href="/cart/update"> Update Cart <a/><br/><strong>Subtotal: <span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong></td>
 		    </td>
 		</tr>
 		<tr class="cart-buy">
@@ -116,8 +119,8 @@
 			</td>
 			</tbody>
 		</table>
-           
-    
+
+
 	</div>
 <?=$this->form->end(); ?>
 
@@ -142,7 +145,7 @@
 <?php endif ?>
 <script type="text/javascript" charset="utf-8">
 	$(".inputbox").bind('keyup', function() {
-	var id = $(this).attr('id'); 
+	var id = $(this).attr('id');
 	var qty = $(this).val();
 	var price = $(this).closest("tr").find("td[class^=price]").html().split("$")[1];
 	var cost = parseInt(qty) * parseFloat(price);
@@ -179,15 +182,19 @@
 	$("#subtotal").html("<strong>Subtotal: $" + subTotalProper + "</strong>");
 });
 </script>
-
+<script>
+	$('#update').click(function(){
+		$.post('/cart/update', $('select').serialize());
+	});
+</script>
 <script>
 function deletechecked(message)
         {
             var answer = confirm(message)
             if (answer){
                 document.messages.submit();
-                return false; 
+                return false;
             }
-            return false;  
-        } 
+            return false;
+        }
 </script>

@@ -19,15 +19,23 @@ class CartController extends BaseController {
 	 * @return compact
 	 */
 	public function view() {
+		Cart::increaseExpires();
+		$message = '';
 		$cart = Cart::active(array('time' => '-3min'));
 		foreach($cart as $item){
+			if(array_key_exists('error', $item->data()) && !empty($item->error)){
+				$message .= $item->error . '<br/>';
+				$item->error = "";
+				$item->save();
+			}
 			$events = Event::find('all', array('conditions'=>array('_id' => $item->event[0])));
-			$item->event= $events[0]->url;
+			$item->event_url = $events[0]->url;
 		}
 		if ($this->request->data) {
 			return array('data' => $this->request->data);
 		}
-		return compact('cart');
+		$shipDate = Cart::shipDate($cart);
+		return compact('cart', 'message', 'shipDate');
 	}
 
 	/**
@@ -45,7 +53,7 @@ class CartController extends BaseController {
 				'conditions' => array(
 					'_id' => "$itemId"),
 				'fields' => array(
-					'sale_retail', 
+					'sale_retail',
 					"details.$size",
 					'color',
 					'description',
@@ -80,7 +88,7 @@ class CartController extends BaseController {
 
 		return compact('cart', 'message');
 	}
-	
+
 	public function remove() {
 		if ($this->request->data) {
 				$data = $this->request->data;
@@ -100,37 +108,25 @@ class CartController extends BaseController {
 	public function update() {
 		$success = false;
 		$message = null;
-		if ($this->request->query) {
-			$qty = (int) $this->request->query['qty'];
-			if ($qty > 0) {
-				$cart = Cart::find('first', array(
-					'conditions' => array(
-						'_id' => $this->request->query['_id']
-				)));
-				$diff = $qty - $cart->quantity;
-				$cart->quantity = $qty;
+		$data = $this->request->data;
 
-				$item = Item::find('first', array(
-					'conditions' => array(
-						'_id' => $cart->item_id
-				)));
-
-				if ($item->details->{$cart->size} == 0) {
-					$message = "Sorry we are sold out of this item.";
+		if( $data ){
+			$carts = $data['cart'];
+			foreach($carts as $id => $qty){
+				$result = Cart::check((int)$qty, (string)$id);
+				$cart = Cart::find('first' , array( 'conditions' => 		array('_id' =>  (string)$id)
+					));
+				if($result['status']){
+					$cart->quantity = (int)$qty;
+					$cart->save();
+				}else{
+					$cart->error = $result['errors'];
+					$cart->save();
 				}
-				if ($cart->quantity > $item->details->{$cart->size}) {
-					$message = "Sorry you have requested more of this item than what is available.";
-				}
-				if (empty($message) && $cart->save()) {
-					$message = "Your cart has been updated.";
-				}
-			} else {
-				$message = "Please submit a number greater than 0";
 			}
-
 		}
-		$this->render(array('layout' => false));
-		echo json_encode($message);
+		$this->_render['layout'] = false;
+		$this->redirect('/cart/view');
 	}
 
 }
