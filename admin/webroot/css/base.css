@@ -10,7 +10,7 @@ q:before,q:after{content:'';}
 abbr,acronym{border:0}
 /** End YUI Resets **/
 
-body{font-family:Helvetica,Arial,Sans-Serif;color:#707070;background:#CDCDCD;font-size:14px;line-height:18px}
+body{font-family:Helvetica,Arial,Sans-Serif;color:#707070;background:#CDCDCD;font-size:13px;line-height:21px}
 
 a:link, a:visited{color:#EB132C;text-decoration:none}
 a:hover{text-decoration:underline}

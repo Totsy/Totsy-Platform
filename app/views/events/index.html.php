@@ -44,9 +44,9 @@
                 <div class="md-gray p-container">
 
 						<?php if ($itemCounts[ (string) $event->_id] == 0): ?>
-								<?=$this->html->image('/img/soldout.gif', array(
+								<?=$this->html->image('/img/soldout.png', array(
 									'title' => "Sold Out",
-									'style' => 'z-index : 2; position : absolute; left:20%'
+									'style' => 'z-index : 2; position : absolute; left:69%; margin:10px;'
 								)); ?>
 					<?php endif ?>
 					<?php

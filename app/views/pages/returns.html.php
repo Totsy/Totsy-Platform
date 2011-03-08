@@ -5,7 +5,6 @@
 ?>
 
 <h1 class="p-header">Return Policy</h1>
-<?php if (!empty($userInfo)): ?>
 	<div id="left">
 		<ul class="menu main-nav">
 		  <h3 style="color:#999;">About Us</h3>
@@ -21,11 +20,7 @@
 		  <li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
 		</ul>
 	</div>
-	<div id="middle" class="noright">
-<?php else: ?>
-	<div id="middle" class="fullwidth">
-
-<?php endif ?>				
+	<div id="middle" class="noright">			
 			
 <div class="tl"><!-- --></div> 
 <div class="tr"><!-- --></div> 

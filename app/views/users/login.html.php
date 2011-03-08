@@ -60,7 +60,7 @@
 									<div class="r-box lt-gradient-1">
 										<h2>Become a Member</h2>
 
-										<p>Become a member today for access to brand-specific sales, up to 70% off retail, just for you and the kids, ages 0-7. Prenatal care products, baby gear, travel accessories, bedding and bath, children's clothing, toys, and educational materials &mdash; and that's just the start.</p>
+										<p>Become a member today for access to brand-specific sales, up to 90% off retail, just for you and the kids, ages 0-8. Prenatal care products, baby gear, travel accessories, bedding and bath, children's clothing, toys, and educational materials &mdash; and that's just the start.</p>
 										<?=$this->html->link('Request Membership','/register', array('id' => 'register_button')); ?>
 									</div>
 									<div class="bl"><!-- --></div>
@@ -99,6 +99,6 @@
 		<li class="last"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
 	</ul>
 
-	<span id="copyright">&copy; 2010 Totsy.com. All Rights Reserved.</span>
+	<span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved.</span>
 
 </div>
