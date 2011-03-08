@@ -6,10 +6,7 @@ use lithium\core\Environment;
 use MongoDate;
 use MongoRegex;
 use MongoId;
-use PHPExcel_IOFactory;
-use PHPExcel;
-use PHPExcel_Cell;
-use PHPExcel_Cell_DataType;
+use lithium\analysis\Logger;
 
 
 /**
@@ -26,5 +23,12 @@ class Base extends \lithium\console\Command {
 	        }
 	    }
 	    return $ordered + $array;
+	}
+
+	public function log($message, $type = 'info') {
+		if ($this->verbose) {
+			$class = get_class($this);
+			Logger::$type("Li3 $class: " . $message);
+		}
 	}
 }

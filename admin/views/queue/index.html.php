@@ -14,32 +14,13 @@
 
 
 <div id="clear"></div>
-<div class="grid_6">
+
+<div class="grid_8">
 	<div class="box">
 	<h2>
-		<a href="#" id="toggle-order-search">Event Search</a>
+		<a href="#" id="toggle-queue">Currently in Queue</a>
 	</h2>
-	<div class="block" id="order-search">
-		<fieldset>
-			<p>Search for a specific event(s)</p>
-			<?=$this->form->create(); ?>
-				<?=$this->form->text('search', array(
-					'id' => 'search',
-					'style' => 'float:left; width:200px; margin: 0px 10px 0px 0px;'
-					));
-				?>
-				<?=$this->form->submit('Search'); ?>
-			<?=$this->form->end(); ?>
-		</fieldset>
-	</div>
-	</div>
-</div>
-<div class="grid_9">
-	<div class="box">
-	<h2>
-		<a href="#" id="toggle-order-search">Currently in Queue</a>
-	</h2>
-	<div class="block" id="order-search">
+	<div class="block" id="queue">
 		<?php if (!empty($queue)): ?>
 			<table border="0" cellspacing="5" cellpadding="5">
 				<tr>
@@ -60,10 +41,65 @@
 						<td><?=$this->html->link('View Details', array('Queue::view', 'args' => $data['_id'])); ?></td>
 					</tr>
 			<?php endforeach ?>
+			<?php if ($i == 0): ?>
+				<td colspan="5"><center>Nothing in the queue!</center></td>
+			<?php endif ?>
 			</table>
 		<?php else: ?>
 			<h4>Nothing in the queue!</h4>
 		<?php endif ?>
+	</div>
+	</div>
+</div>
+<div class="grid_8">
+	<div class="box">
+	<h2>
+		<a href="#" id="toggle-recent">Recently Processed</a>
+	</h2>
+	<div class="block" id="recent">
+		<?php if (!empty($recent)): ?>
+			<table border="0" cellspacing="5" cellpadding="5">
+				<tr>
+					<th>Date</th>
+					<th>Orders Processed</th>
+					<th>Order Lines</th>
+					<th>View</th>
+				</tr>
+			<?php $i = 0; ?>
+			<?php foreach ($recent as $data): ?>
+				<?php $i++?>
+					<tr>
+						<td><?=date('m-d-Y', $data['processed_date']->sec)?></td>
+						<td><?=$data['summary']['order']['count']?></td>
+						<td><?=$data['summary']['order']['lines']?></td>
+						<td><?=$this->html->link('View Details', array('Queue::view', 'args' => $data['_id'])); ?></td>
+					</tr>
+			<?php endforeach ?>
+			</table>
+		<?php else: ?>
+			<h4>Nothing in the queue!</h4>
+		<?php endif ?>
+	</div>
+	</div>
+</div>
+
+<div class="grid_6">
+	<div class="box">
+	<h2>
+		<a href="#" id="toggle-order-search">Event Search</a>
+	</h2>
+	<div class="block" id="order-search">
+		<fieldset>
+			<p>Search for a specific event(s)</p>
+			<?=$this->form->create(); ?>
+				<?=$this->form->text('search', array(
+					'id' => 'search',
+					'style' => 'float:left; width:200px; margin: 0px 10px 0px 0px;'
+					));
+				?>
+				<?=$this->form->submit('Search'); ?>
+			<?=$this->form->end(); ?>
+		</fieldset>
 	</div>
 	</div>
 </div>

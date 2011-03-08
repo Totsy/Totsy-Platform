@@ -36,8 +36,11 @@ class QueueController extends BaseController {
 			$conditions = array('name' => new MongoRegex("/$search/i"));
 		}
 		$events = Event::find('all', compact('conditions'));
-		$queue = Queue::all();
-		return compact('events', 'queue');
+		$conditions = array('processed' => array('$ne' => true));
+		$queue = Queue::all(compact('conditions'));
+		$conditions = array('processed' => true);
+		$recent = Queue::all(compact('conditions'));
+		return compact('events', 'queue', 'recent');
 	}
 
 	/**
@@ -63,6 +66,22 @@ class QueueController extends BaseController {
 		$this->redirect('Queue::index');
 	}
 
+	/**
+	 * Allows the admin to view the details of a Queue job.
+	 * @param string $id The object id of the queue
+	 * @return compact
+	 */
+	public function view($id) {
+		if ($id) {
+			$queue = Queue::find($id);
+			if ($queue) {
+				$orders = $queue->orders->data();
+				$conditions = array('_id' => $queue->orders->data());
+				$orderEvents = Event::all(compact('conditions'));
+			}
+		}
+		return compact('orderEvents');
+	}
 	
 
 	
