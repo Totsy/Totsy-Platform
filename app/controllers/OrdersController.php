@@ -145,7 +145,7 @@ class OrdersController extends BaseController {
 			}
 		}
 		$shipDate = Cart::shipDate($cart);
-		return $vars + compact('cartEmpty', 'cartByEvent', 'error', 'orderEvents');
+		return $vars + compact('cartEmpty', 'cartByEvent', 'error', 'orderEvents', 'shipDate');
 	}
 
 	/**
@@ -174,6 +174,7 @@ class OrdersController extends BaseController {
 			'discount_exempt'
 		);
 		$cart = Cart::active(array('fields' => $fields, 'time' => 'now'));
+		$shipDate = Cart::shipDate($cart);
 		$cartByEvent = $this->itemGroupByEvent($cart);
 		$orderEvents = $this->orderEvents($cart);
 		$discountExempt = $this->_discountExempt($cart);
@@ -346,7 +347,7 @@ class OrdersController extends BaseController {
 			$data = array(
 				'order' => $order,
 				'email' => $user->email,
-				'shipDate' => Cart::shipDate($cart)
+				'shipDate' => $shipDate
 			);
 			Silverpop::send('orderConfirmation', $data);
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
@@ -354,7 +355,7 @@ class OrdersController extends BaseController {
 
 		$cartEmpty = ($cart->data()) ? false : true;
 
-		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents');
+		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate');
 
 	}
 

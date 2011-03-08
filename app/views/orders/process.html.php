@@ -35,6 +35,7 @@
 
 	      <div class="rounded" style="color:#ff0000; margin:0px 0px 0px 0px; float:left; display:block; background:#ffebeb; border:1px solid #ddd; width:246px; padding:20px; text-align:center;">Confirmation</div>
 	      <div style="clear:both; margin-bottom:15px;"></div>
+	<div>The estimated ship date of your order is: <?=date('M d, Y', $shipDate)?></div>
 		<h2 class="gray mar-b">My Items</h2><hr />
 	<!-- Begin Order Details -->
 	<?php if ($cartByEvent): ?>
