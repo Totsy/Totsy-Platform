@@ -18,6 +18,7 @@ class ItemsController extends BaseController {
 	public function view() {
 		$itemUrl = $this->request->item;
 		$eventUrl = $this->request->event;
+		$item = null;
 		if ($itemUrl == null || $eventUrl == null) {
 			$this->redirect('/sales');
 		} else {
