@@ -10,7 +10,7 @@ use \lithium\storage\Session;
 
 
 class EventsController extends BaseController {
-	
+
 	public function index() {
 		$openEvents = Event::open();
 		$pendingEvents = Event::pending();
@@ -31,19 +31,19 @@ class EventsController extends BaseController {
 		}
 		$event = Event::first(array(
 			'conditions' => array(
-				'enabled' => true, 
+				'enabled' => true,
 				'url' => $url
 		)));
 		if (!$event) {
 			$this->_render['template'] = 'noevent';
 			return array('event' => null, 'items' => array(), 'shareurl');
 		}
-		
+
 		if ($event->end_date->sec < time()) {
-			$this->redirect('/');
+			$this->redirect('/sales');
 		}
 		$pending = ($event->start_date->sec > time() ? true : false);
-		
+
 		if ($pending == false) {
 			++$event->views;
 			$event->save();
@@ -64,7 +64,7 @@ class EventsController extends BaseController {
 
 
 		return compact('event', 'items', 'shareurl', 'type');
-	
+
 	}
 
 	public function inventoryCheck($events) {

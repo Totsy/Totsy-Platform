@@ -62,7 +62,9 @@
 								'id' => 'checkout', 'title' => 'checkout'
 							)); ?>
 			 			</span>
-						<span class="fr"><?=$this->html->link('Cart', array('Cart::view')); ?></span>
+						<span class="fr"><?=$this->html->link('Cart', array('Cart::view'), array(
+							'id' => 'cart', 'title' => 'My Cart'
+						)); ?></span>
 			 			<span class="fr">
 							<?=$this->html->link('My Credits', array('Credits::view')); ?>
 							<?php if (!empty($credit)): ?>
