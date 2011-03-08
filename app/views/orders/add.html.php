@@ -276,24 +276,12 @@ $(".add-address").click(function() {
 });
 
 </script>
-	<?php //if ($cartEmpty == true):
+	<?php if ($cartEmpty == true):
 	?>
 		<script>
-		/**
-		$(document).ready(function() {
-			$("#cart-modal").load($.base + 'cart/view').dialog({
-				autoOpen: false,
-				modal: true,
-				width: 900,
-				height: 600,
-				close: function(ev, ui) {
-					parent.location = "/events";
-				}
-			});
-			$("#cart-modal").dialog('open');
-		}); **/
+			window.location.replace('/cart/view');
 		</script>
-	<?php //endif ?>
+	<?php endif ?>
 	<script type="text/javascript">
 	/**
 	$("#checkout-cart").click(function() {
