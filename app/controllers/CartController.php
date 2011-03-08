@@ -5,19 +5,28 @@ namespace app\controllers;
 use app\models\Cart;
 use app\models\Item;
 use app\models\Event;
-use \lithium\storage\Session;
+use lithium\storage\Session;
 use MongoId;
 
 /**
- * The Cart Class
+ * Facilitates the app CRUD operations of a users cart (baskets).
+ * The cart is the first step in the checkout process. Users are able to modify the
+ * quantities of an item in their cart and remove it altogether.
+ * Carts are not active indefinitely. There a crontab that will remove all cart items
+ * that are more than 15 minutes old.
+ *
+ * @todo Show link to cartcleaner.php
+ * @see app/models/Cart
  */
 class CartController extends BaseController {
 
 	/**
-	 * The view method shows the current state of the cart.
-	 *
-	 * @return compact
-	 */
+	* Displays the current state of the cart.
+	*
+	* @see app/models/Cart::increaseExpires()
+	* @see app/models/Cart::active()
+	* @return compact
+	*/
 	public function view() {
 		Cart::increaseExpires();
 		$message = '';
@@ -41,6 +50,7 @@ class CartController extends BaseController {
 	/**
 	 * The add method increments the quantity of one item.
 	 *
+	 * @see app/models/Cart::checkCartItem()
 	 * @return compact
 	 */
 	public function add() {
@@ -66,7 +76,6 @@ class CartController extends BaseController {
 					'discount_exempt',
 					'event'
 			)));
-			//Check if this item has already been added to cart
 			$cartItem = Cart::checkCartItem($itemId, $size);
 			if (!empty($cartItem)) {
 				if($cartItem->quantity < 9){
@@ -94,6 +103,12 @@ class CartController extends BaseController {
 		return compact('cart', 'message');
 	}
 
+	/**
+	* The remove method delete an item from the temporary cart.
+	*
+	* @see app/models/Cart::remove()
+	* @return compact
+	*/
 	public function remove() {
 		if ($this->request->data) {
 				$data = $this->request->data;
