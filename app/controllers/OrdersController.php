@@ -40,6 +40,11 @@ class OrdersController extends BaseController {
 	 */
 	protected $_holidays = array();
 
+	/**
+	 * Allows the view of all the orders a customer has in descending order.
+	 * The ship date is also populated next to each order if applicable.
+	 * @return compact
+	 */
 	public function index() {
 		$user = Session::read('userLogin');
 		$orders = Order::find('all', array(
@@ -48,7 +53,7 @@ class OrdersController extends BaseController {
 			'order' => array('date_created' => 'DESC')
 		));
 		foreach ($orders as $order) {
-			$shipDate["$order->_id"] = $this->shipDate($order);
+			$shipDate["$order->_id"] = Cart::shipDate($order);
 		}
 		return (compact('orders', 'shipDate'));
 	}
