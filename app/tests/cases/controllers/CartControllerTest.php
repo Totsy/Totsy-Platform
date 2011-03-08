@@ -24,7 +24,7 @@ class CartControllerTest extends \lithium\test\Unit {
             Event::remove(array('_id' => $next['_id'] ));
             $event = Event::create();
             $event->save($next);
-        }while($next = $efixture->next());
+        } while($next = $efixture->next());
 
         $next = $ifixture->first();
 
@@ -32,30 +32,35 @@ class CartControllerTest extends \lithium\test\Unit {
             Item::remove(array('_id' => $next['_id'] ));
             $item = Item::create();
             $item->save($next);
-        }while($next = $ifixture->next());
+        } while($next = $ifixture->next());
 
        $next = $cfixture->first();
          do {
             Cart::remove(array('_id' => $next['_id'] ));
             $cart = Cart::create();
             $cart->save($next);
-        }while($next = $cfixture->next());
+        } while($next = $cfixture->next());
 
 
 	}
 
+	/*
+	* Testing the Update method from the CartController
+	*/
 	public function testCartUpdate() {
 		$post = array('cart' =>array(
 		        '200001' => '4',
 		        '200002' => '5'
         ));
-        $response= new Request(array('data'=>$post));
+        $response = new Request(array('data'=>$post));
 		$cartPuppet = new CartController(array('request' => $response));
 		$cartPuppet->update();
 		$result1 = Cart::find('first', array('conditions' => array('_id' => '200001')));
 		$result2 = Cart::find('first', array('conditions' => array('_id' => '200002')));
-		$this->assertEqual(4, $result1->quantity,'Uh-oh! Update was not successful: '. 'Expected value: 4 not equal to cart 20001 quantity: '.$result1->quantity);
-		$this->assertNotEqual(5, $result2->quantity,'Uh-oh! Update was successful: '. 'Expected value: 5 not equal to cart 20002 quantity: '.$result2->quantity);
+		$this->assertEqual(4, $result1->quantity,'Uh-oh! Update was not successful: ' .
+		 'Expected value: 4 not equal to cart 20001 quantity: ' . $result1->quantity);
+		$this->assertNotEqual(5, $result2->quantity,'Uh-oh! Update was successful: ' .
+		 'Expected value: 5 not equal to cart 20002 quantity: ' . $result2->quantity);
 	}
 
 	/*
@@ -110,17 +115,17 @@ class CartControllerTest extends \lithium\test\Unit {
         $event = $efixture->first();
          do {
             Event::remove( array('_id' => $event['_id'] ) );
-        }while($event = $efixture->next());
+        } while($event = $efixture->next());
 
        $item = $ifixture->first();
          do {
            Item::remove( array( '_id' => $item['_id'] ) );
-        }while($item = $ifixture->next());
+        } while($item = $ifixture->next());
 
         $cart = $cfixture->first();
          do {
            Cart::remove( array('_id' => $cart['_id'] ) );
-        }while($cart = $cfixture->next());
+        } while($cart = $cfixture->next());
 
 	}
 

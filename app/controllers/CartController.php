@@ -58,7 +58,8 @@ class CartController extends BaseController {
 		$message = null;
 		if ($this->request->data) {
 			$itemId = $this->request->data['item_id'];
-			$size = (empty($this->request->data['item_size'])) ? "no size": $this->request->data['item_size'];
+			$size = (empty($this->request->data['item_size'])) ?
+			 "no size": $this->request->data['item_size'];
 			$item = Item::find('first', array(
 				'conditions' => array(
 					'_id' => "$itemId"),
@@ -120,19 +121,23 @@ class CartController extends BaseController {
 		return compact('cartcount');
 	}
 
+	/**
+	* The update method allow to update the actual cart
+	*
+	* @see app/models/Cart::check()
+	*/
 	public function update() {
 		$success = false;
 		$message = null;
 		$data = $this->request->data;
-
 		if( $data ){
 			$carts = $data['cart'];
-			foreach($carts as $id => $qty){
-				$result = Cart::check((int) $qty, (string) $id);
+			foreach($carts as $id => $quantity){
+				$result = Cart::check((integer) $quantity, (string) $id);
 				$cart = Cart::find('first' , array( 'conditions' => array('_id' =>  (string)$id)
 					));
 				if($result['status']){
-					$cart->quantity = (int) $qty;
+					$cart->quantity = (integer) $quantity;
 					$cart->save();
 				}else{
 					$cart->error = $result['errors'];
