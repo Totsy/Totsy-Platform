@@ -25,16 +25,17 @@ class CartController extends BaseController {
 		foreach($cart as $item){
 			if(array_key_exists('error', $item->data()) && !empty($item->error)){
 				$message .= $item->error . '<br/>';
-				$item->error="";
+				$item->error = "";
 				$item->save();
 			}
 			$events = Event::find('all', array('conditions'=>array('_id' => $item->event[0])));
-			$item->event= $events[0]->url;
+			$item->event_url = $events[0]->url;
 		}
 		if ($this->request->data) {
 			return array('data' => $this->request->data);
 		}
-		return compact('cart', 'message');
+		$shipDate = Cart::shipDate($cart);
+		return compact('cart', 'message', 'shipDate');
 	}
 
 	/**

@@ -70,9 +70,9 @@ class OrdersController extends BaseController {
 				'user_id' => (string) $user['_id']
 		)));
 		$new = ($order->date_created->sec > (time() - 120)) ? true : false;
-		$shipDate = $this->shipDate($order);
+		$shipDate = Cart::shipDate($order);
 		if (!empty($shipDate)) {
-			$allEventsClosed = ($this->getLastEvent($order)->end_date->sec > time()) ? false : true;
+			$allEventsClosed = (Cart::getLastEvent($order)->end_date->sec > time()) ? false : true;
 		} else {
 			$allEventsClosed = true;
 		}
@@ -147,7 +147,7 @@ class OrdersController extends BaseController {
 				$error = "Shipping and Delivery Information Missing";
 			}
 		}
-
+		$shipDate = Cart::shipDate($cart);
 		return $vars + compact('cartEmpty', 'cartByEvent', 'error', 'orderEvents');
 	}
 
@@ -331,7 +331,7 @@ class OrdersController extends BaseController {
 				$order->promo_code = $orderPromo->code;
 				$order->promo_discount = $orderPromo->saved_amount;
 			}
-			$order->ship_date = new MongoDate($this->shipDate($order));
+			$order->ship_date = new MongoDate(Cart::shipDate($order));
 			$order->save();
 			Cart::remove(array('session' => Session::key('default')));
 			foreach ($cart as $item) {
@@ -343,7 +343,7 @@ class OrdersController extends BaseController {
 			$data = array(
 				'order' => $order,
 				'email' => $user->email,
-				'shipDate' => $this->shipDate($order)
+				'shipDate' => Cart::shipDate($cart)
 			);
 			Silverpop::send('orderConfirmation', $data);
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
@@ -363,52 +363,6 @@ class OrdersController extends BaseController {
 			}
 		}
 		return $discountExempt;
-	}
-
-	/**
-	 * Calculated estimated ship by date for an order.
-	 *
-	 * The estimated ship-by-date is calculated based on the last event that closes.
-	 * @param object $order
-	 * @return string
-	 */
-	public function shipDate($order) {
-		$i = 1;
-		$event = $this->getLastEvent($order);
-		$shipDate = null;
-		if (!empty($event)) {
-			$shipDate = $event->end_date->sec;
-			while($i < $this->_shipBuffer) {
-				$day = date('N', $shipDate);
-				$date = date('Y-m-d', $shipDate);
-				if ($day < 6 && !in_array($date, $this->_holidays)) {
-					$i++;
-				}
-				$shipDate = strtotime($date.' +1 day');
-			}
-		}
-		return $shipDate;
-	}
-
-	/**
-	 * Return the event that will be the last to close in an order.
-	 *
-	 * This method is needed to determine what the expected ship date should be.
-	 * Based on the business model, if a multi event order will ship together then the
-	 * estimated ship date will be determined from the fulfillment of the last event.
-	 * @param object $order
-	 * @return object $event
-	 */
-	public function getLastEvent($order) {
-		$event = null;
-		$ids = $this->getEventIds($order);
-		if (!empty($ids)) {
-			$event = Event::find('first', array(
-				'conditions' => array('_id' => $ids),
-				'order' => array('date_created' => 'DESC')
-			));
-		}
-		return $event;
 	}
 
 	/**
@@ -447,7 +401,7 @@ class OrdersController extends BaseController {
 	 */
 	public function orderEvents($object) {
 		$orderEvents = null;
-		$ids = $this->getEventIds($object);
+		$ids = Cart::getEventIds($object);
 		if (!empty($ids)) {
 			$events = Event::find('all', array(
 				'conditions' => array('_id' => $ids),
@@ -462,23 +416,6 @@ class OrdersController extends BaseController {
 		return $orderEvents;
 	}
 
-	/**
-	 * Get all the eventIds that are stored either in an order or cart object and cast to MongoId.
-	 * @param object
-	 * @return array
-	 */
-	protected function getEventIds($object) {
-		$items = (!empty($object->items)) ? $object->items->data() : $object->data();
-		$event = null;
-		$ids = array();
-		foreach ($items as $item) {
-			$eventId = (!empty($item['event_id'])) ? $item['event_id'] : $item['event'][0];
-			if (!empty($eventId)) {
-				$ids[] = new MongoId("$eventId");
-			}
-		}
-		return $ids;
-	}
 }
 
 ?>
