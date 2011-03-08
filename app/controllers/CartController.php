@@ -130,9 +130,9 @@ class CartController extends BaseController {
 		$success = false;
 		$message = null;
 		$data = $this->request->data;
-		if ($data){
+		if ($data) {
 			$carts = $data['cart'];
-			foreach($carts as $id => $quantity){
+			foreach ($carts as $id => $quantity) {
 				$result = Cart::check((integer) $quantity, (string) $id);
 				$cart = Cart::find('first', array(
 					'conditions' => array('_id' =>  (string) $id)
