@@ -9,14 +9,23 @@ use \lithium\storage\Session;
 use MongoId;
 
 /**
- * The Cart Class
+ * Facilitates the app CRUD operations of a users cart (baskets).
+ * The cart is the first step in the checkout process. Users are able to modify the
+ * quantities of an item in their cart and remove it altogether.
+ * Carts are not active indefinitely. There a crontab that will remove all cart items
+ * that are more than 15 minutes old.
+ *
+ * @todo Show link to cartcleaner.php
+ * @see app/models/Cart
  */
 class CartController extends BaseController {
 
 	/**
-	 * The view method shows the current state of the cart.
+	 * Displays the current state of the cart.
 	 *
 	 * @return compact
+	 * @see app/models/Cart::increaseExpires()
+	 * @see app/models/Cart::active()
 	 */
 	public function view() {
 		Cart::increaseExpires();
@@ -41,6 +50,7 @@ class CartController extends BaseController {
 	/**
 	 * The add method increments the quantity of one item.
 	 *
+	 * @see app/models/Cart::checkCartItem()
 	 * @return compact
 	 */
 	public function add() {
@@ -66,7 +76,6 @@ class CartController extends BaseController {
 					'discount_exempt',
 					'event'
 			)));
-			//Check if this item has already been added to cart
 			$cartItem = Cart::checkCartItem($itemId, $size);
 			if (!empty($cartItem)) {
 				++ $cartItem->quantity;
@@ -114,7 +123,7 @@ class CartController extends BaseController {
 			$carts = $data['cart'];
 			foreach($carts as $id => $qty){
 				$result = Cart::check((int)$qty, (string)$id);
-				$cart = Cart::find('first' , array( 'conditions' => 		array('_id' =>  (string)$id)
+				$cart = Cart::find('first' , array( 'conditions' => array('_id' =>  (string)$id)
 					));
 				if($result['status']){
 					$cart->quantity = (int)$qty;
