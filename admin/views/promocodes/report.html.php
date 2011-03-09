@@ -112,30 +112,34 @@
     <table id='promoSummary' class='datatable'>
         <thead>
             <tr>
+				<th> Created on </th>
                 <th> Promocode </th>
-                <th> Userid</th>
-                <th> Order </th>
-                <th> Amount Saved </th>
-                <th> Created on </th>
+                <th> Email</th>
+                <th> Amount Credited </th>
+				<th> Order SubTotal </th>
+                <th> Order Total </th>
             </tr>
         </thead>
         <tbody>
             <?php foreach( $promotions as $promotion ): ?>
                 <tr>
+	                <td>
+                    <?=$promotion->date_created; ?>
+                    </td>
                     <td>
                         <?=$this->html->link($promotion->code, 'promocodes/view/'.$promotion->code ); ?>
                      </td>
                      <td>
-                        <?=$this->html->link($promotion->user_id, 'users/view/'.$promotion->user_id, array('target' => '_blank')); ?>
+                        <?=$this->html->link($promotion->email, 'users/view/'.$promotion->user_id, array('target' => '_blank')); ?>
                      </td>
                      <td>
-                        <?=$this->html->link($promotion->order_id, 'orders/view/'.$promotion->order_id, array('target' => '_blank') );?>
-                     </td>
-                     <td>
-                        $<?php echo number_format($promotion->saved_amount, 2 ); ?>
+                        $<?=number_format($promotion->saved_amount, 2); ?>
                     </td>
-                    <td>
-                    <?=$promotion->date_created; ?>
+					<td>
+						$<?=number_format($promotion->subTotal, 2); ?>
+                    </td>
+					<td>
+						$<?=number_format($promotion->total, 2); ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
