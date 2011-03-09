@@ -7,11 +7,11 @@
 		<?=$this->title() ?: 'Totsy, the private sale site for Moms'; ?>
 		<?=$this->title() ? '- Totsy' : ''; ?>
 	</title>
-	<?=$this->html->style(array('base.css?v=012345'), array('media' => 'screen')); ?>
+	<?=$this->html->style(array('base.css?v=012346'), array('media' => 'screen')); ?>
 	<?=$this->html->script(array(
-		'jquery-1.4.2.min.js?v=012345',
-		'jquery-ui-1.8.2.custom.min.js?v=012345',
-		'jquery.countdown.min.js?v=012345'
+		'jquery-1.4.2.min.js?v=012346',
+		'jquery-ui-1.8.2.custom.min.js?v=012346',
+		'jquery.countdown.min.js?v=012346'
 	)); ?>
 	<?=$this->scripts(); ?>
 	<?=$this->html->link('Icon', null, array('type' => 'icon')); ?>
