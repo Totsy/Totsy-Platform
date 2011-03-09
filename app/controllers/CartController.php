@@ -79,8 +79,14 @@ class CartController extends BaseController {
 			)));
 			$cartItem = Cart::checkCartItem($itemId, $size);
 			if (!empty($cartItem)) {
-				++ $cartItem->quantity;
-				$cartItem->save();
+				if($cartItem->quantity < 9){
+					++ $cartItem->quantity;
+					$cartItem->save();
+				}else{
+					$cartItem->error = 'You have reached the maximum of 9 per item.'
+					$cartItem->save();
+				}
+
 			} else {
 				$item = $item->data();
 				$item['size'] = $size;
