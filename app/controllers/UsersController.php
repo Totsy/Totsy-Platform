@@ -15,6 +15,8 @@ use MongoDate;
 
 class UsersController extends BaseController {
 
+	public $sessionKey = 'userLogin';
+	
 	/**
 	 * Performs registration functionality.
 	 *
@@ -412,7 +414,7 @@ class UsersController extends BaseController {
 	 */
 	public function password() {
 		$status = 'default';
-		$user = User::getUser();
+		$user = User::getUser(null, $this->sessionKey);
 		if ($this->request->data) {
 			$oldPass = $this->request->data['password'];
 			$newPass = $this->request->data['new_password'];
