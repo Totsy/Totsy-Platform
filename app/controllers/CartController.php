@@ -144,8 +144,12 @@ class CartController extends BaseController {
 					'conditions' => array('_id' =>  (string) $id)
 				));
 				if ($result['status']) {
-					$cart->quantity = (integer) $quantity;
-					$cart->save();
+					if($quantity == 0){
+				        Cart::remove(array('_id' => $id));
+				    }else {
+						$cart->quantity = (integer) $quantity;
+						$cart->save();
+					}
 				} else {
 					$cart->error = $result['errors'];
 					$cart->save();
