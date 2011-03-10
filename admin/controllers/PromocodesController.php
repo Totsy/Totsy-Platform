@@ -55,6 +55,7 @@ class PromocodesController extends \admin\controllers\BaseController {
 	 * @todo Improve documentation
 	 */
     public function report() {
+		$promocodes = Promocode::all();
 		if ($this->request->data) {
 			$data = $this->request->data;
 			$search = $data['search'];
@@ -62,7 +63,7 @@ class PromocodesController extends \admin\controllers\BaseController {
 				$search = $data['search'];
 				$conditions = array('code' => new MongoRegex("/$search/i"));
 				$promotions  = Promotion::all(compact('conditions'));
-				$promocodes = Promocode::all(compact('conditions'));
+				$promocodeDetail = Promocode::all(compact('conditions'));
 			}
 			if (!empty($data['start']) && !empty($data['end'])) {
 				$start = new MongoDate(strtotime($data['start']));
@@ -79,7 +80,7 @@ class PromocodesController extends \admin\controllers\BaseController {
 				}
 			}
 		}
-        return compact('promotions', 'promocodes');
+        return compact('promotions', 'promocodes', 'promocodeDetail');
 	}
 
 	/**
