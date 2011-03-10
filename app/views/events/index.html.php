@@ -1,5 +1,19 @@
 <?=$this->html->script(array('jquery.nivo.slider.pack'));?>
-
+<script>
+(function($) {
+	$.fn.rotate = function() {
+		var container = $(this);
+		var totale = container.find("div").size();
+		var current = 0;
+		var i = setInterval(function() {
+			if (current >= totale) current = 0;
+			container.find("div").filter(":eq("+current+")").fadeIn("slow").end().not(":eq("+current+")").fadeOut("slow");
+			current++;
+		}, 5000);
+		return container;
+	};
+})(jQuery);
+</script>
 	<h2 class="page-title gray"><span class="_red">Today's Sales</span>
     <div class="sm-actions fr" style="font-size:12px; margin:7px 0px 0px 0px;">
 			<dl>
@@ -11,10 +25,9 @@
 					</ul>
 				</dd>
 			</dl>
-		</div>   </h2>
+		</div>   
+	</h2>
 	<hr />
-
-
 
 <div class="fullwidth">
 
@@ -108,15 +121,14 @@
 				});</script>";
 		?>
 			<?php if ($x == 1): ?>
-
-			<?=$this->html->link($this->html->image("/img/invite_girl.png", array(
-					'title' => "Invite Friends. Get $15",
-					'alt' => "Invite Friends. Get $15",
-					'width' => '181',
-					'height' => '413'
-					)),'/users/invite', array('escape'=> false));
-			?>
-
+			
+<div id="banner_container">
+    <div><a href="/users/invite"><img src="/img/invite_girl.png" alt="" /></a></div>
+    <div><img src="/img/banners/shoeBan_1.jpg" alt="Shoe Month" /></div>
+    <div><img src="/img/banners/shoeBan_2.jpg" alt="Shoe Month 2" /></div>
+    <div><img src="/img/banners/shoeBan_3.jpg" alt="Shoe Month 3" /></div>
+    <div><img src="/img/banners/shoeBan_4.jpg" alt="Shoe Month 4" /></div>
+</div>
 			<?php endif ?>
 		<?php $x++; ?>
 		<?php $y++; ?>
@@ -125,22 +137,6 @@
 
 	<div style="margin-bottom:35px;" class="clear"></div>
 
-	<!-- 
-	<h2 class="page-title gray clear"><span class="_red">Monthly Sales / Spring Month</span></h2>
-	<hr />
-
-	<div id="slider" class="nivoSlider">
-		 <img src="/img/spring_img1.jpg" />
-		 <img src="/img/spring_img2.jpg" />
-		 <img src="/img/spring_img3.jpg" />
-		 <img src="/img/spring_img4.jpg" />
-		 <img src="/img/spring_img5.jpg" />
-		 <img src="/img/spring_img6.jpg" />
-	</div>
-	
-	<br style="margin-bottom:10px;"/>
-	
-	-->
 	<div class="coming-soon-sales">
 
 		<h2 class="page-title gray clear"><span class="_red">Upcoming Sales</span></h2>
@@ -227,8 +223,10 @@
 	<?php endforeach ?>
 <?php endif ?>
 
-    <script type="text/javascript">
-    $(window).load(function() {
-        $('#slider').nivoSlider();
-    });
-    </script>
+<script type="text/javascript">
+<!--
+	$(document).ready(function() {
+		$("#banner_container").rotate();
+	});
+//-->
+</script>
