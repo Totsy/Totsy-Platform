@@ -81,72 +81,69 @@
 <br>
 
 <!--resut table starts here-->
+<?php if (!empty($promocodes)): ?>
 
-<div class = 'grid_16'>
-    <table>
-        <thead>
-            <tr>
-                <th> Promocode </th>
-                <th> No. Of Uses </th>
-                <th> Total Discounts</th>
-                <th> Total Revenue </th>
-            </tr>
-        </thead>
-        <tbody>
+	<div class = 'grid_16'>
+	    <table>
+	        <thead>
+	            <tr>
+	                <th> Promocode </th>
+	                <th> No. Of Uses </th>
+	                <th> Total Discounts</th>
+	                <th> Total Revenue </th>
+	            </tr>
+	        </thead>
+	        <tbody>
 
-               <?php foreach($promocodes as $promocode): ?>
-                    <tr>
-                        <td> <?=$promocode->code; ?></td>
-                        <td> <?=$promocode->times_used; ?></td>
-                        <td> <?=$promocode->total_discounts; ?></td>
-                        <td> $<?=number_format($promocode->total_revenue,2); ?></td>
-                    </tr>
-                <?php endforeach; ?>
+	               <?php foreach($promocodes as $promocode): ?>
+	                    <tr>
+	                        <td> <?=$promocode->code; ?></td>
+	                        <td> <?=$promocode->times_used; ?></td>
+	                        <td> <?=$promocode->total_discounts; ?></td>
+	                        <td> $<?=number_format($promocode->total_revenue,2); ?></td>
+	                    </tr>
+	                <?php endforeach; ?>
 
-        </tbody>
-    </table>
-</div>
+	        </tbody>
+	    </table>
+	</div>
 
 
-<div class='grid_16'>
-    <table id='promoSummary' class='datatable'>
-        <thead>
-            <tr>
-				<th> Created on </th>
-                <th> Promocode </th>
-                <th> Email</th>
-                <th> Amount Credited </th>
-				<th> Order SubTotal </th>
-                <th> Order Total </th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach( $promotions as $promotion ): ?>
-                <tr>
-	                <td>
-                    <?=$promotion->date_created; ?>
-                    </td>
-                    <td>
-                        <?=$this->html->link($promotion->code, 'promocodes/view/'.$promotion->code ); ?>
-                     </td>
-                     <td>
-                        <?=$this->html->link($promotion->email, 'users/view/'.$promotion->user_id, array('target' => '_blank')); ?>
-                     </td>
-                     <td>
-                        $<?=number_format($promotion->saved_amount, 2); ?>
-                    </td>
-					<td>
-						$<?=number_format($promotion->subTotal, 2); ?>
-                    </td>
-					<td>
-						$<?=number_format($promotion->total, 2); ?>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </table>
-    </table>
-</div>
-
+	<div class='grid_16'>
+	    <table id='promoSummary' class='datatable'>
+	        <thead>
+	            <tr>
+	                <th> Promocode </th>
+	                <th> Userid</th>
+	                <th> Order </th>
+	                <th> Amount Saved </th>
+	                <th> Created on </th>
+	            </tr>
+	        </thead>
+	        <tbody>
+	            <?php foreach( $promotions as $promotion ): ?>
+	                <tr>
+	                    <td>
+	                        <?=$this->html->link($promotion->code, 'promocodes/view/'.$promotion->code ); ?>
+	                     </td>
+	                     <td>
+	                        <?=$this->html->link($promotion->user_id, 'users/view/'.$promotion->user_id, array('target' => '_blank')); ?>
+	                     </td>
+	                     <td>
+	                        <?=$this->html->link($promotion->order_id, 'orders/view/'.$promotion->order_id, array('target' => '_blank') );?>
+	                     </td>
+	                     <td>
+	                        $<?php echo number_format($promotion->saved_amount, 2 ); ?>
+	                    </td>
+	                    <td>
+	                    <?=$promotion->date_created; ?>
+	                    </td>
+	                </tr>
+	            <?php endforeach; ?>
+	        </table>
+	    </table>
+	</div>
+<?php endif ?>
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
 		TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";

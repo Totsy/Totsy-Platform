@@ -55,10 +55,7 @@ class PromocodesController extends \admin\controllers\BaseController {
 	 * @todo Improve documentation
 	 */
     public function report() {
-		if (empty($this->request->data)) {
-			$promotions = Promotion::all();
-			$promocodes = Promocode::all();
-		} else {
+		if ($this->request->data) {
 			$data = $this->request->data;
 			$search = $data['search'];
 			if (!empty($data['search'])) {
@@ -76,16 +73,10 @@ class PromocodesController extends \admin\controllers\BaseController {
 							'$gt' => $start, '$lte' => $end
 				))));
 			}
-		}
-
-		foreach ($promotions as $promotion) {
-			if ($promotion->date_created) {
-				$promotion->date_created = date( 'm/d/Y', $promotion->date_created->sec);
-				$user = User::find($promotion->user_id);
-				$order = Order::find($promotion->order_id);
-				$promotion->email = $user->email;
-				$promotion->subTotal = $order->sub_total;
-				$promotion->total = $order->total;
+			foreach ($promotions as $promotion) {
+				if ($promotion->date_created) {
+					$promotion->date_created = date('m/d/Y', $promotion->date_created->sec);
+				}
 			}
 		}
         return compact('promotions', 'promocodes');
