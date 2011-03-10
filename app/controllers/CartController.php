@@ -37,8 +37,10 @@ class CartController extends BaseController {
 				$item->error = "";
 				$item->save();
 			}
-			$events = Event::find('all', array('conditions'=>array('_id' => $item->event[0])));
+			$events = Event::find('all', array('conditions' => array('_id' => $item->event[0])));
+			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
 			$item->event_url = $events[0]->url;
+			$item->available = $itemInfo->details->{$item->size} - Cart::reserved($item->item_id, $item->size);
 		}
 		if ($this->request->data) {
 			return array('data' => $this->request->data);

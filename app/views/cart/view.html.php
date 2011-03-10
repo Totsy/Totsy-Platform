@@ -64,7 +64,15 @@
 					</td>
 					<td class="<?="qty-$x";?>" style="width:65px; text-align:center">
 					<!-- Quantity Select -->
-					<?=$this->form->select("cart[{$item->_id}]", array(0 => '0', 1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6', 7 => '7', 8 => '8', 9 => '9'), array(
+					<?php
+						if($item->available < 9){
+							$qty = $item->available;
+							$select = range('0',(string)$qty);
+						}else{
+							$select = range('0','9');
+						}
+					?>
+					<?=$this->form->select("cart[{$item->_id}]", $select, array(
     					'id' => $item->_id, 'value' => $item->quantity
 					));
 					?>

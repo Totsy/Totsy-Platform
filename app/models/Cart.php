@@ -203,7 +203,7 @@ class Cart extends \lithium\data\Model {
 					break;
 			}
 		}
-		return $cart->sale_retail * $tax;
+		return ($cart->sale_retail * $cart->quantity) * $tax;
 	}
 
 	/**
