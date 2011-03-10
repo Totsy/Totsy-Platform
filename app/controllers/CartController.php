@@ -83,7 +83,7 @@ class CartController extends BaseController {
 					++ $cartItem->quantity;
 					$cartItem->save();
 				}else{
-					$cartItem->error = 'You have reached the maximum of 9 per item.'
+					$cartItem->error = 'You have reached the maximum of 9 per item.';
 					$cartItem->save();
 				}
 
