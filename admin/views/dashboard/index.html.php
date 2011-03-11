@@ -345,7 +345,7 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
       
     }else{
       
-      echo "<font class='positive'> + " . number_format( ($percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='positive'> + " . number_format( ($percentage -1) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
     }
      
     ?>
@@ -376,7 +376,7 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
       
     }else{
       
-      echo "<font class='positive'> + " . number_format( ($percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='positive'> + " . number_format( ($percentage -1) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
     }
      
     ?>
@@ -407,7 +407,7 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
       
     }else{
       
-      echo "<font class='positive'> - " . number_format( ($percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='positive'> - " . number_format( ($percentage -1) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
     }
      
     ?>
@@ -438,7 +438,7 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
       
     }else{
       
-      echo "<font class='positive'> + " . number_format( ($percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='positive'> + " . number_format( ($percentage -1) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
     }
      
     ?>
@@ -475,7 +475,7 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
       
     }else{
       
-      echo "<font class='positive'> + " . number_format( ($percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='positive'> + " . number_format( ($percentage -1) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
     }
      
     ?>
@@ -504,7 +504,7 @@ echo "last Month  Users is: " . $lastMonthRevenue . "<br>";
       
     }else{
       
-      echo "<font class='positive'> + " . number_format( ($percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
+      echo "<font class='positive'> + " . number_format( ($percentage -1) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
     }
      
     ?>
