@@ -9,12 +9,6 @@
 <div class="grid_16">
 	<h2 id="page-heading">Order Management</h2>
 </div>
-
-<div id="clear"></div>
-
-
-<div id="clear"></div>
-
 <div class="grid_8">
 	<div class="box">
 	<h2>
@@ -82,7 +76,7 @@
 	</div>
 	</div>
 </div>
-
+<div class="clear"></div>
 <div class="grid_6">
 	<div class="box">
 	<h2>
@@ -104,7 +98,7 @@
 	</div>
 </div>
 
-<div id="clear"></div>
+<div class="clear"></div>
 
 <div class="grid_16">
 	<?=$this->form->create(null, array('url' => 'Queue::add')); ?>

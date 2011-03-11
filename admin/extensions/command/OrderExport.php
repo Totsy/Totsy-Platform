@@ -114,6 +114,25 @@ class OrderExport extends Base {
 	protected $path = null;
 
 	/**
+	 * Additional events associated with orders not in
+	 * original queue.
+	 * @var array
+	 */
+	protected $addEvents = array();
+
+	/**
+	 * Order Events for processing
+	 * @var array
+	 */
+	protected $orderEvents = array();
+
+	/**
+	 * PO Events for processing
+	 * @var array
+	 */
+	protected $poEvents = array();
+
+	/**
 	 * Main method for exporting Order and PO files.
 	 *
 	 * The `run` method will query the pending event transactions
@@ -121,7 +140,7 @@ class OrderExport extends Base {
 	 * from the admin dashboard.
 	 *
 	 * @todo Remove the environment set to the base command.
-	 * @todo Build query to gather events from DB as a queue.
+	 * @todo Make sure a queue cannot contain two empty arrays.
 	 */
 	public function run() {
 		Environment::set($this->env);
@@ -134,18 +153,26 @@ class OrderExport extends Base {
 			$this->batchId = array('order_batch' => $queue->_id);
 			$this->log("Starting to process $queue->_id");
 			$this->time = date('Ymdis');
-			$orderEvents = $queue->orders->data();
-			$poEvents = $queue->purchase_orders->data();
-			$this->_orderGenerator($orderEvents);
-			$this->_purchases($poEvents);
+			$queueData = $queue->data();
+			if ($queueData['orders']) {
+				$this->orderEvents = $queueData['orders'];
+				$this->_orderGenerator();
+			}
+			if ($queueData['purchase_orders']) {
+				$this->poEvents = $queueData['purchase_orders'];
+				$this->_purchases();
+			}
+			$this->_itemGenerator();
 			$this->_export();
-			$queue->summary = $this->summary;
-			$queue->processed = true;
-			$queue->processed_date = new MongoDate();
-			$queue->save();
-			$this->summary['from_email'] = 'logistics@totsy.com';
-			$this->summary['to_email'] = 'fagard@totsy.com';
-			Silverpop::send('exportSummary', $this->summary);
+			if ($queueData['orders'] || $queueData['purchase_orders']) {
+				$queue->summary = $this->summary;
+				$queue->processed = true;
+				$queue->processed_date = new MongoDate();
+				$queue->save();
+				$this->summary['from_email'] = 'logistics@totsy.com';
+				$this->summary['to_email'] = 'fagard@totsy.com';
+				Silverpop::send('exportSummary', $this->summary);
+			}
 		} else {
 			$this->out('No events in queue for processing');
 		}
@@ -155,14 +182,14 @@ class OrderExport extends Base {
 	 * The Order Generator
 	 * this method will be migrated to a command method and executed via cron job.
 	 */
-	public function _orderGenerator($eventIds) {
+	protected function _orderGenerator() {
 		$this->log("Starting to process Orders");
 		$orderCollection = Order::collection();
 		$itemCollection = Item::connection()->connection->items;
 		$orderFile = array();
 		$heading = ProcessedOrder::$_fileHeading;
 		$orders = $orderCollection->find(array(
-			'items.event_id' => array('$in' => $eventIds),
+			'items.event_id' => array('$in' => $this->orderEvents),
 			'cancel' => array('$ne' => true)
 		));
 		if ($orders) {
@@ -170,7 +197,7 @@ class OrderExport extends Base {
 			$filename = 'TOTOrd'.$this->time.'.txt';
 			$handle = $this->source.$filename;
 			$fp = fopen($handle, 'w');
-			$eventList = $orderArray = array();
+			$orderArray = array();
 			foreach ($orders as $order) {
 				$conditions = array('Customer PO #' => array('$in' => array((string) $order['_id'], $order['_id'])));
 				$processCheck = ProcessedOrder::count(compact('conditions'));
@@ -215,8 +242,8 @@ class OrderExport extends Base {
 						$orderFile[$inc]['Customer PO #'] = $order['_id'];
 						$orderFile[$inc] = array_merge($heading, $orderFile[$inc]);
 						$orderFile[$inc] = $this->sortArrayByArray($orderFile[$inc], $heading);
-						if (!in_array($item['event_id'], $eventList)) {
-							$eventList[] = $item['event_id'];
+						if (!in_array($item['event_id'], $this->addEvents)) {
+							$this->addEvents[] = $item['event_id'];
 						}
 						if (!in_array($orderFile[$inc]['OrderNum'], $orderArray)) {
 							$orderArray[] = $orderFile[$inc]['OrderNum'];
@@ -232,7 +259,6 @@ class OrderExport extends Base {
 				}
 			}
 			fclose($fp);
-			$this->_itemGenerator($eventList);
 			$totalOrders = count($orderArray);
 			$this->summary['order']['count'] = count($orderArray);
 			$this->summary['order']['lines'] = $inc;
@@ -247,17 +273,19 @@ class OrderExport extends Base {
 	/**
 	 * The itemGenerator method builds the item list for the item master database and file.
 	 *
-	 * The method first looks for all the events that were queued for processing. All the
+	 * The method first looks for all the events that were queued for processing. This includes
+	 * the events that were associated with an order but not explicitly queued. All the
 	 * items of those events are then gathered into a file for transmission to the 3PL.
 	 * To avoid retransmission an item master is retained and checked before including
 	 * the item in the file.
 	 *
 	 * @param array $eventId Array of events.
 	 */
-	protected function _itemGenerator($eventIds = null) {
+	protected function _itemGenerator() {
 		$this->log('Generating Items');
 		$filename = 'TOTIT'.$this->time.'.csv';
 		$handle = $this->source.$filename;
+		$eventIds = array_unique(array_merge($this->orderEvents, $this->poEvents, $this->addEvents));
 		$this->log("Opening item file $handle");
 		$fp = fopen($handle, 'w');
 		$count = 0;
@@ -328,10 +356,10 @@ class OrderExport extends Base {
 	 * 4) Build the array of cumulative purchases for each item of the event.
 	 * @return mixed
 	 */
-	protected function _purchases($eventIds) {
+	protected function _purchases() {
 		$this->header('Generating Purchase Orders');
 		$orderCollection = Order::collection();
-		foreach ($eventIds as $eventId) {
+		foreach ($this->poEvents as $eventId) {
 			$purchaseHeading = ProcessedOrder::$_purchaseHeading;
 			$total = array('sum' => 0, 'quantity' => 0);
 			$event = Event::find('first', array(
