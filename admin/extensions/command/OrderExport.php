@@ -21,7 +21,15 @@ use li3_silverpop\extensions\Silverpop;
 use admin\extensions\util\String;
 
 /**
- * Export Order, Item and PO files to DC system.
+ * This command is the main processor to manage the transmission of files to our 3PL
+ *
+ * The export specification is based on the DotCom flat file integration.
+ * Based on what has been queued from the admin system all the event ids will be processed
+ * for order, item and/or PO transmission.
+ *
+ * @see http://projects.totsy.com/projects/tech/wiki/Dotcom
+ * @see admin/extensions/command/Exchanger
+ * @see admin/controllers/QueueController
  */
 class OrderExport extends Base {
 
@@ -180,7 +188,11 @@ class OrderExport extends Base {
 
 	/**
 	 * The Order Generator
-	 * this method will be migrated to a command method and executed via cron job.
+	 *
+	 * Generates all the orders of the events that have been requested from the queue.
+	 * All non-canceled orders are organized into the format specified by DotCom.
+	 * They are saved to a staging folder which will be FTPed.
+	 * @return boolean
 	 */
 	protected function _orderGenerator() {
 		$this->log("Starting to process Orders");
@@ -422,6 +434,9 @@ class OrderExport extends Base {
 		}
 	}
 
+	/**
+	 * Return all the items of an event.
+	 */
 	protected function _getOrderItems($eventId = null) {
 		$items = null;
 		if ($eventId) {
@@ -438,8 +453,6 @@ class OrderExport extends Base {
 	 * that have not already been transmitted. Once the transmission has been
 	 * confirmed move the file over to a backup folder within the same directory.
 	 *
-	 * @todo Enhance the _export code so if there are any errors in Exchanger
-	 * it is executed until all the files are sent.
 	 */
 	public function _export() {
 		if ($this->source) {

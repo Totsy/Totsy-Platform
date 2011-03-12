@@ -57,6 +57,7 @@
 					<th>Date</th>
 					<th>Orders Processed</th>
 					<th>Order Lines</th>
+					<th>POs Processed</th>
 					<th>View</th>
 				</tr>
 			<?php $i = 0; ?>
@@ -64,8 +65,21 @@
 				<?php $i++?>
 					<tr>
 						<td><?=date('m-d-Y', $data['processed_date']->sec)?></td>
-						<td><?=$data['summary']['order']['count']?></td>
-						<td><?=$data['summary']['order']['lines']?></td>
+						<?php if (!empty($data['summary']['order']['count'])): ?>
+							<td><?=$data['summary']['order']['count']?></td>
+						<?php else: ?>
+							<td>0</td>
+						<?php endif ?>
+						<?php if (!empty($data['summary']['order']['lines'])): ?>
+							<td><?=$data['summary']['order']['lines']?></td>
+						<?php else: ?>
+							<td>0</td>
+						<?php endif ?>
+						<?php if (!empty($data['summary']['purchase_orders'])): ?>
+							<td><?=count($data['summary']['purchase_orders'])?></td>
+						<?php else: ?>
+							<td>0</td>
+						<?php endif ?>
 						<td><?=$this->html->link('View Details', array('Queue::view', 'args' => $data['_id'])); ?></td>
 					</tr>
 			<?php endforeach ?>
