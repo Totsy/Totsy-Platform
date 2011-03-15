@@ -12,7 +12,7 @@
 		)); ?>
 
 	</div>
-
+<?=$this->form->create(null, array('url' => 'Cart::add')); ?>
 	<div id="detail-top-left">
 		<h1><strong><?=$event->name?></strong> <?=$item->description." ".$item->color; ?></h1>
 
@@ -43,7 +43,7 @@
 
 			<span class="original-price">Original: $<?=number_format($item->msrp,2); ?></span>
 			<?php if ($item->total_quantity != 0): ?>
-				<button class="buy-now" id="item-submit">Add To Cart</button>
+				<?=$this->form->submit('Add To Cart', array('class' => 'buy-now')); ?>
 				<div id="all-reserved"></div>
 			<?php endif ?>
 		</div>
@@ -51,7 +51,7 @@
 		<div class="br"></div>
 
 	</div>
-
+<?=$this->form->end(); ?>
 	<div class="clear"><!-- --></div>
 
 	<div class="product-bottom-wrapper">
@@ -135,9 +135,9 @@
 	<div class="r-container">
 
 			<?php if ($item->total_quantity <= 0): ?>
-					<?=$this->html->image('/img/soldout.gif', array(
+					<?=$this->html->image('/img/soldout.png', array(
 						'title' => "Sold Out",
-						'style' => 'z-index : 2; position : absolute; left:20%'
+						'style' => 'z-index : 2; position : absolute; left:69%; margin:10px;'
 					)); ?>
 			<?php endif ?>
 				<?php if (!empty($item->primary_image)): ?>
@@ -214,29 +214,13 @@ $(document).ready(function() {
 });
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 
 $("#item-submit").click(function(){
 var item_id = $('#item_id').attr('value');
 var item_size = $('#size-select').attr('value');
 
-$.ajax({
-	url: $.base + 'cart/add',
-	data: "item_id=" + item_id + "&" + "item_size=" + item_size,
-	context: document.body,
-	success: function(){
-		$("#cart-modal").load($.base + 'cart/view').dialog({
-			autoOpen: false,
-			modal:true,
-			width: 900,
-			//height: 600,
-			overlay: {opacity: 0.5, background: "black"},
-			close: function(ev, ui) { location.reload(true); }
-		});
-		$("#cart-modal").dialog('open');
-     }
-});
-});
+
 
 $(document).ready(function() {
 	var itemCheck = function(){
@@ -266,4 +250,4 @@ $(document).ready(function() {
 });
 
 
-</script>
+</script> -->

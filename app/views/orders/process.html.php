@@ -35,6 +35,7 @@
 
 	      <div class="rounded" style="color:#ff0000; margin:0px 0px 0px 0px; float:left; display:block; background:#ffebeb; border:1px solid #ddd; width:246px; padding:20px; text-align:center;">Confirmation</div>
 	      <div style="clear:both; margin-bottom:15px;"></div>
+	<div>The estimated ship date of your order is: <?=date('M d, Y', $shipDate)?></div>
 		<h2 class="gray mar-b">My Items</h2><hr />
 	<!-- Begin Order Details -->
 	<?php if ($cartByEvent): ?>
@@ -122,7 +123,11 @@
 	<?php endif ?>
 	<?php
 		$preTotal = $subTotal + $orderCredit->credit_amount;
-		$total = $preTotal + $tax + $shippingCost + $overShippingCost + $orderPromo->saved_amount;
+		$afterDiscount = $preTotal + $orderPromo->saved_amount;
+		if($afterDiscount < 0){
+			$afterDiscount = 0;
+		}
+		$total = $afterDiscount + $tax + $shippingCost + $overShippingCost;
 	?>
 
 	<ol id="checkout-process">
@@ -341,17 +346,6 @@
 <?php endif ?>
 <?php if ($cartEmpty == true): ?>
 	<script>
-	$(document).ready(function() {
-		$("#cart-modal").load($.base + 'cart/view').dialog({
-			autoOpen: false,
-			modal:true,
-			width: 900,
-			//height: 600,
-			close: function(ev, ui) {
-				parent.location = "/events";
-			}
-		});
-		$("#cart-modal").dialog('open');
-	});
+		window.location.replace('/cart/view');
 	</script>
 <?php endif ?>

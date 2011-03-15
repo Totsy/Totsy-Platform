@@ -147,7 +147,7 @@
 				
 			</ul> 
 			
-			<p class="clear">&copy; 2010 Totsy.com. All Rights Reserved.</p> 
+			<p class="clear">&copy; 2011 Totsy.com. All Rights Reserved.</p> 
 		
 		</div> 
 		

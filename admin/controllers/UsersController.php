@@ -89,6 +89,8 @@ class UsersController extends \admin\controllers\BaseController {
 		$message = false;
 
 		if ($this->request->data) {
+		    $this->request->data['email'] = strtolower($this->request->data['email']);
+		    $this->request->data['confirmemail'] = strtolower($this->request->data['confirmemail']);
 			if (Auth::check("userLogin", $this->request)) {
 				return $this->redirect('/');
 			}
