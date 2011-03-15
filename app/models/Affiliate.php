@@ -61,7 +61,8 @@ class Affiliate extends Base {
         $needles = explode('|',$pattern);
         $keys = array_keys($get_data);
         if($key = array_intersect($needles, $keys)){
-            $subaff = $get_data[key($key)];
+            $value = $needles[key($key)];
+            $subaff = $get_data[$value];
         }else {
             return $affiliate;
         }
