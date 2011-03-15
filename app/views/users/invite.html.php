@@ -64,7 +64,7 @@
 											'onfocus' => "if(this.value=='Please accept this invitation to join Totsy') this.value='';"
 											)); ?>
 										<br>
-										<?=$this->form->submit('Send', array('class' => 'send-btn fl')); ?>
+										<?=$this->form->submit('Send Invitations', array('class' => 'button')); ?>
 									<?=$this->form->end(); ?>
 									<br><br><br>
 									<?php if (is_object($user->invitation_codes)): ?>

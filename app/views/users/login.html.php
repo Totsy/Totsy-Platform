@@ -41,8 +41,8 @@
 												//'name' => 'password',
 												'id' => 'password',
 												'type' => 'password'));?>
-										<?=$this->form->checkbox('remember_me', array('class' =>              'fl checkbox')); ?> Remember Me
-										<?=$this->form->submit('Login', array('id'=>"login_button"));?>
+										<?=$this->form->checkbox('remember_me', array('class' =>              'fl checkbox')); ?> Remember Me <br/>
+										<?=$this->form->submit('Sign In', array('class'=>"button"));?>
 
 										<p style='margin-top: 5px'> <?=$this->html->link('Forgot your password?','/reset', array('class'=>"md", 'title'=>"Forgot your password?"))?> </p>
 										<?=$this->form->end();?>
@@ -61,7 +61,8 @@
 										<h2>Become a Member</h2>
 
 										<p>Become a member today for access to brand-specific sales, up to 90% off retail, just for you and the kids, ages 0-8. Prenatal care products, baby gear, travel accessories, bedding and bath, children's clothing, toys, and educational materials &mdash; and that's just the start.</p>
-										<?=$this->html->link('Request Membership','/register', array('id' => 'register_button')); ?>
+										<?=$this->html->link('Request Membership','/register', array('class' => 'button')); ?>
+										
 									</div>
 									<div class="bl"><!-- --></div>
 									<div class="br"><!-- --></div>
