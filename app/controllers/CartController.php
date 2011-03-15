@@ -81,7 +81,9 @@ class CartController extends BaseController {
 			)));
 			$cartItem = Cart::checkCartItem($itemId, $size);
 			if (!empty($cartItem)) {
-				if($cartItem->quantity < 9){
+				$avail = $itemInfo->details->{$item->size} - Cart::reserved($item->item_id, $item->size);
+				if($cartItem->quantity < 9 && $cartItem->quantity < $avail ){
+					Cart::check($cartItem)
 					++ $cartItem->quantity;
 					$cartItem->save();
 				}else{
