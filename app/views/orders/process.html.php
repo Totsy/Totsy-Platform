@@ -2,8 +2,13 @@
 	$this->html->script('application', array('inline' => false));
 	$this->form->config(array('text' => array('class' => 'inputbox')));
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
-?>
-
+	$preTotal = $subTotal + $orderCredit->credit_amount;
+	$afterDiscount = $preTotal + $orderPromo->saved_amount;
+	if($afterDiscount < 0){
+		$afterDiscount = 0;
+	}
+	$total = $afterDiscount + $tax + $shippingCost + $overShippingCost;
+	?>
 <h1 class="page-title gray"><span class="_red"><a href="/" title="Sales">Today's Sales</a></span> / <a href="/cart/view" title="My Cart">My Cart</a> / Checkout / Process Payment</h1>
 
 	<hr />
@@ -317,14 +322,7 @@
 				</tbody>
 			</table>
 	<?php endif ?>
-	<?php
-		$preTotal = $subTotal + $orderCredit->credit_amount;
-		$afterDiscount = $preTotal + $orderPromo->saved_amount;
-		if($afterDiscount < 0){
-			$afterDiscount = 0;
-		}
-		$total = $afterDiscount + $tax + $shippingCost + $overShippingCost;
-	?>
+
 
 	
 
