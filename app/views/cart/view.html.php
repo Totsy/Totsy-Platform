@@ -13,7 +13,7 @@
 
 	<hr />
 	<div id='message'><?php echo $message; ?></div>
-	<div id='message'>Your Estimated Ship-Date Is: <?=date('m-d-Y', $shipDate)?></div>
+	<div class='fr' style="padding:10px; background:#fffbd1; border-top:1px solid #D7D7D7; border-right:1px solid #D7D7D7; border-left:1px solid #D7D7D7;">Estimated Ship Date: <?=date('m-d-Y', $shipDate)?></div>
 	<div id="middle" class="fullwidth">
 		<table width="100%" class="cart-table">
 			<thead>
@@ -31,7 +31,7 @@
 	<?php $x = 0; ?>
 	<?php foreach ($cart as $item): ?>
 		<!-- Build Product Row -->
-					<tr id="<?=$item->_id?>" class="alt0" style="margin:0px!important; padding:0px!important;">
+					<tr id="<?=$item->_id?>" class="alt0">
 					<td class="cart-th">
 						<?php
 							if (!empty($item->primary_image)) {
@@ -45,7 +45,7 @@
 							$this->html->image("$productImage", array(
 								'width'=>'60',
 								'height'=>'60',
-						'style' => 'border:1px solid #ddd; background:#fff; margin:2px; display:block; padding:2px;')),
+						'style' => 'margin:2px; display:block; padding:4px;')),
 							array('Items::view', 'args' => $item->url),
 								array(
 								'id' => 'main-logo_', 'escape'=> false
@@ -94,10 +94,10 @@
 							$(\"#itemCounter$x\").countdown('change', {until: itemExpires, $countLayout});
 
 						$(\"#itemCounter$x\").countdown({until: itemExpires,
-						    expiryText: '<div class=\"over\" style=\"color:#fff; background: #ff0000;\">This item is no longer reserved</div>', $countLayout});
+						    expiryText: '<div class=\"over\" style=\"color:#fff; padding:5px; background: #ff0000;\">no longer reserved</div>', $countLayout});
 						var now = new Date()
 						if (itemExpires < now) {
-							$(\"#itemCounter$x\").html('<div class=\"over\" style=\"color:#fff; background: #ff0000;\">This item is no longer reserved</div>');
+							$(\"#itemCounter$x\").html('<div class=\"over\" style=\"color:#fff; padding:5px; background: #ff0000;\">no longer reserved</div>');
 						}
 						});
 						</script>";
@@ -114,7 +114,7 @@
 
 		<tr class="cart-total">
 
-			<td colspan="7" id='subtotal'><a id="update" href="/cart/update"> Update Cart <a/><br/><strong>Subtotal: <span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong></td>
+			<td colspan="7" id='subtotal'><strong>Subtotal: <span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong><br/><hr/><a id="update" class="button" href="/cart/update"> Update Cart <a/></td>
 		    </td>
 		</tr>
 		<tr class="cart-buy">
@@ -122,8 +122,8 @@
 				<a href='../../pages/returns'><strong style="font-size:12px; font-weight:normal;">Refund &amp; Return Policy</strong></a><br />
 			</td>
 			<td class="cart-button" colspan="3">
-				<?=$this->html->link('Buy Now', 'Orders::add', array('class' => 'proceed-to-checkout')); ?>
-				<?=$this->html->link('Buy Now', 'Events::index', array('class' => 'continue-shopping')); ?>
+				<?=$this->html->link('Proceed To Checkout', 'Orders::add', array('class' => 'button')); ?>
+				<?=$this->html->link('Continue Shopping', 'Events::index', array('class' => 'button', 'style' => 'margin-right:10px;')); ?>
 			</td>
 			</tbody>
 		</table>

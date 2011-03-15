@@ -6,21 +6,10 @@
 
 	<div id="middle" class="fullwidth">				
 		
-		<div id="listingCountdown" class="listingCountdown"></div>
-		
 		<h1 class="page-title gray"><span class="red"><a href="/" title="Sales"><?=$type?> Sales</a> /</span> <?=$event->name; ?></h1>
+		<hr />
 	
-		<div class="sm-actions fr">
-			<dl>
-				<dt><strong>Share</strong></dt>
-				<dd>
-					<ul>
-						<li><a href="http://www.facebook.com/sharer.php?u=<?=urlencode($shareurl);?>&t=<?=urlencode('Checking out the '.$event->name.' event on Totsy.com');?>" target="_blank" title="Share this sale with your friends on Facebook" class="sm-facebook sm-btn">Share this sale on Facebook</a></li>
-						<li><a href="http://twitter.com/home?status=Checking out the <?=$event->name; ?> event at Totsy.com: <?=$shareurl;?>" target="_blank" title="Tweet this sale to your followers" class="sm-twitter sm-btn">Tweet this sale on Twitter</a></li>
-					</ul>
-				</dd>
-			</dl>
-		</div>
+	
 		<div class="r-container clear">
 			<div class="tl"></div>
 			<div class="tr"></div>
@@ -47,6 +36,19 @@
 					?>
 				</div>
 				<div style="float:left; display:block; width:590px; margin-left:5px; line-height:22px; text-align:justify;">
+				<div id="listingCountdown" class="listingCountdown"></div>
+				<div style="clear:both;"></div><div class="sm-actions fr">
+			<dl>
+				<dt><strong>Share</strong></dt>
+				<dd>
+					<ul>
+						<li><a href="http://www.facebook.com/sharer.php?u=<?=urlencode($shareurl);?>&t=<?=urlencode('Checking out the '.$event->name.' event on Totsy.com');?>" target="_blank" title="Share this sale with your friends on Facebook" class="sm-facebook sm-btn">Share this sale on Facebook</a></li>
+						<li><a href="http://twitter.com/home?status=Checking out the <?=$event->name; ?> event at Totsy.com: <?=$shareurl;?>" target="_blank" title="Tweet this sale to your followers" class="sm-twitter sm-btn">Tweet this sale on Twitter</a></li>
+					</ul>
+				</dd>
+			</dl>
+		</div>
+		
 					<div style="width:300px;">
 						<!-- Display Logo Image -->
 						<?php if (!empty($event->images->logo_image)): ?>
@@ -54,8 +56,10 @@
 						<?php endif ?>
 						<div class="title table-cell v-bottom">
 							<!--  h1> <? //=$event->name; ?> </h1 -->
-							<div id="listingCountdown"></div>
+							
+							
 						</div>
+					
 					</div>
 					<p><?php if (!empty($event->blurb)): ?>
 						<?php echo $event->blurb ?>

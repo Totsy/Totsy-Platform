@@ -90,7 +90,7 @@
 						))
 					;?>
 				</div>
-			<?=$this->form->submit('Submit', array('class' => 'submit-btn fr')); ?>
+			<?=$this->form->submit('Update Account Information', array('class' => 'button')); ?>
 			<?=$this->form->end();?>	
 		</fieldset>
 		
