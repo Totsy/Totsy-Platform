@@ -183,14 +183,14 @@ class Affiliate extends Base {
 
             $skulist[] = $itemInfo->sku_details->{$item->size};
             $namelist[] = urlencode($itemInfo->description);
-            $qlist[] = $item->quantity;
-            $amtlist[] = ($item->sale_retail * $item->quantity)*100;
+            $qlist[] =  $item->quantity;
+            $amtlist[] = ($trans_type == 'cancel') ? (-$item->sale_retail * $item->quantity)*100 : ($item->sale_retail * $item->quantity)*100 ;
         }
         $raw .= 'skulist=' . implode('|', $skulist) . '&';
         $raw .= 'namelist=' . implode('|', $namelist) . '&';
         $raw .= 'qlist=' . implode('|' , $qlist) . '&';
         $raw .= 'cur=USD&';
-        $raw .= 'amt=' . implode('|', $amtlist);
+        $raw .= 'amtlist='. implode('|', $amtlist);
         var_dump($raw);
         return $raw;
     }
@@ -205,22 +205,21 @@ class Affiliate extends Base {
         /**Avoiding sending duplicate information**/
         $transaction = static::collection()->count(array(
                             'order_id' => $orderid,
-                            'trans_type' => $trans_type
+                            'trans_type' => $trans_type,
+                            'success' => true
                         ));
         if( $transaction >= 1){
             return true;
         }
         $parser = xml_parser_create();
         xml_parse_into_struct($parser, file_get_contents($data), $response, $index);
-        var_dump($response);
-        $status = $response[1]['value'];
-        while( $status == 'Access denied' ) {
-             xml_parse_into_struct($parser, file_get_contents($data), $response, $index);
-             $status = $response[1]['value'];
-        }
         xml_parser_free($parser);
-        $success = ( (bool) $response[5]['value'] ) ? (bool) $response[5]['value'] : (bool) $response[7]['value'];
-
+        $status = $response[1]['value'];
+        if( $status == 'Access denied' ) {
+             $success = false;
+        }else{
+            $success = ( (bool) $response[5]['value'] ) ? (bool) $response[5]['value'] : (bool) $response[7]['value'];
+        }
         $trans['trans_id'] = $response[1]['value'];
         $trans['affiliate'] = $affiliate;
         $trans['success'] = $success;
