@@ -67,9 +67,10 @@
 					<?php
 						if($item->available < 9){
 							$qty = $item->available;
-							$select = range('0',(string)$qty);
+
+							$select = array_merge(array('0'), range('1',(string)$qty));
 						}else{
-							$select = range('0','9');
+							$select = array_merge(array('0'), range('1','9'));
 						}
 					?>
 					<?=$this->form->select("cart[{$item->_id}]", $select, array(
