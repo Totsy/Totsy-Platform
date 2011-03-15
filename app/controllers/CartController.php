@@ -80,8 +80,9 @@ class CartController extends BaseController {
 					'event'
 			)));
 			$cartItem = Cart::checkCartItem($itemId, $size);
+			$itemInfo = Item::find('first', array('conditions' => array('_id' => $itemId)));
 			if (!empty($cartItem)) {
-				$avail = $itemInfo->details->{$item->size} - Cart::reserved($item->item_id, $item->size);
+				$avail = $itemInfo->details->{$itemInfo->size} - Cart::reserved($itemId, $itemInfo->size);
 				if($cartItem->quantity < 9 && $cartItem->quantity < $avail ){
 					Cart::check($cartItem)
 					++ $cartItem->quantity;
