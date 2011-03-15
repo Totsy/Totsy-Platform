@@ -33,12 +33,12 @@
 
               <div class="rounded" style="color:#ff0000; margin:0px 0px 0px 0px; float:left; display:block; background:#ffebeb; border:1px solid #ddd; width:246px; padding:20px; text-align:center;">Confirmation</div>
               <div style="clear:both; margin-bottom:15px;"></div>
-
+ <div>The estimated ship date of your order is: <?=date('M d, Y', $shipDate)?></div>
 	<!-- Begin Order Details -->
 	<?php if ($cartByEvent): ?>
 		<h2 class="gray mar-b">Order Details</h2><hr />
 
-		<div class='fr'><?=$this->html->link('Edit Your Cart', '#', array('id' => 'checkout-cart', 'class' => 'edit-your-cart')); ?></div>
+		<div class='fr'><?=$this->html->link('Edit Your Cart','/cart/view' ,array('id' => 'checkout-cart', 'class' => 'edit-your-cart')); ?></div>
 		<table width="100%" class="cart-table">
 
 		<?php $x = 0; ?>
@@ -276,23 +276,14 @@ $(".add-address").click(function() {
 });
 
 </script>
-	<?php if ($cartEmpty == true): ?>
+	<?php if ($cartEmpty == true):
+	?>
 		<script>
-		$(document).ready(function() {
-			$("#cart-modal").load($.base + 'cart/view').dialog({
-				autoOpen: false,
-				modal: true,
-				width: 900,
-				height: 600,
-				close: function(ev, ui) {
-					parent.location = "/events";
-				}
-			});
-			$("#cart-modal").dialog('open');
-		});
+			window.location.replace('/cart/view');
 		</script>
 	<?php endif ?>
 	<script type="text/javascript">
+	/**
 	$("#checkout-cart").click(function() {
 		$("#cart-modal").load($.base + 'cart/view').dialog({
 			autoOpen: false,
@@ -304,5 +295,5 @@ $(".add-address").click(function() {
 			}
 		});
 		$("#cart-modal").dialog('open');
-	});
-	</script>
+	}); **/
+</script>

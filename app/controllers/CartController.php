@@ -2,34 +2,64 @@
 
 namespace app\controllers;
 
-use \app\models\Cart;
-use \app\models\Item;
-use \app\models\Event;
-use \lithium\storage\Session;
+use app\models\Cart;
+use app\models\Item;
+use app\models\Event;
+use lithium\storage\Session;
 use MongoId;
 
+/**
+ * Facilitates the app CRUD operations of a users cart (baskets).
+ * The cart is the first step in the checkout process. Users are able to modify the
+ * quantities of an item in their cart and remove it altogether.
+ * Carts are not active indefinitely. There a crontab that will remove all cart items
+ * that are more than 15 minutes old.
+ *
+ * @todo Show link to cartcleaner.php
+ * @see app/models/Cart
+ */
 class CartController extends BaseController {
 
+	/**
+	* Displays the current state of the cart.
+	*
+	* @see app/models/Cart::increaseExpires()
+	* @see app/models/Cart::active()
+	* @return compact
+	*/
 	public function view() {
-		$this->_render['layout'] = 'cart';
+		Cart::increaseExpires();
+		$message = '';
 		$cart = Cart::active(array('time' => '-3min'));
 		foreach($cart as $item){
+			if(array_key_exists('error', $item->data()) && !empty($item->error)){
+				$message .= $item->error . '<br/>';
+				$item->error = "";
+				$item->save();
+			}
 			$events = Event::find('all', array('conditions'=>array('_id' => $item->event[0])));
-			$item->event= $events[0]->url;
+			$item->event_url = $events[0]->url;
 		}
 		if ($this->request->data) {
 			return array('data' => $this->request->data);
 		}
-		return compact('cart');
+		$shipDate = Cart::shipDate($cart);
+		return compact('cart', 'message', 'shipDate');
 	}
 
+	/**
+	 * The add method increments the quantity of one item.
+	 *
+	 * @see app/models/Cart::checkCartItem()
+	 * @return compact
+	 */
 	public function add() {
-		$this->_render['layout'] = 'cart';
 		$cart = Cart::create();
 		$message = null;
-		if ($this->request->query) {
-			$itemId = $this->request->query['item_id'];
-			$size = ($this->request->query['item_size'] == 'undefined') ? "no size": $this->request->query['item_size'];
+		if ($this->request->data) {
+			$itemId = $this->request->data['item_id'];
+			$size = (empty($this->request->data['item_size'])) ?
+			 "no size": $this->request->data['item_size'];
 			$item = Item::find('first', array(
 				'conditions' => array(
 					'_id' => "$itemId"),
@@ -47,14 +77,10 @@ class CartController extends BaseController {
 					'discount_exempt',
 					'event'
 			)));
-
-			//Check if this item has already been added to cart
 			$cartItem = Cart::checkCartItem($itemId, $size);
-
 			if (!empty($cartItem)) {
 				++ $cartItem->quantity;
 				$cartItem->save();
-				Item::reserve($itemId, $size, 1);
 			} else {
 				$item = $item->data();
 				$item['size'] = $size;
@@ -72,59 +98,57 @@ class CartController extends BaseController {
 		return compact('cart', 'message');
 	}
 
-	public function remove() {
 
-		if ($this->request->query) {
-			foreach ($this->request->query as $key => $value) {
+	/**
+	* The remove method delete an item from the temporary cart.
+	*
+	* @see app/models/Cart::remove()
+	* @return compact
+	*/
+	public function remove() {
+		if ($this->request->data) {
+				$data = $this->request->data;
 				$cart = Cart::find('first', array(
 					'conditions' => array(
-						'_id' => "$key"
+						'_id' => $data["id"]
 				)));
-				Cart::remove(array('_id' => "$key"));
+				if(!empty($cart)){
+					Cart::remove(array('_id' => $data["id"]));
+				}
 			}
-		}
-		$this->render(array('layout' => false));
 
+		$this->_render['layout'] = false;
 		$cartcount = Cart::itemCount();
 		return compact('cartcount');
 	}
 
+	/**
+	* The update method allow to update the actual cart
+	*
+	* @see app/models/Cart::check()
+	*/
 	public function update() {
 		$success = false;
 		$message = null;
-		if ($this->request->query) {
-			$qty = (int) $this->request->query['qty'];
-			if ($qty > 0) {
-				$cart = Cart::find('first', array(
-					'conditions' => array(
-						'_id' => $this->request->query['_id']
-				)));
-				$diff = $qty - $cart->quantity;
-				$cart->quantity = $qty;
-
-				$item = Item::find('first', array(
-					'conditions' => array(
-						'_id' => $cart->item_id
-				)));
-
-				if ($item->details->{$cart->size} == 0) {
-					$message = "Sorry we are sold out of this item.";
+		$data = $this->request->data;
+		if( $data ){
+			$carts = $data['cart'];
+			foreach($carts as $id => $quantity){
+				$result = Cart::check((integer) $quantity, (string) $id);
+				$cart = Cart::find('first' , array( 'conditions' => array('_id' =>  (string)$id)
+					));
+				if($result['status']){
+					$cart->quantity = (integer) $quantity;
+					$cart->save();
+				}else{
+					$cart->error = $result['errors'];
+					$cart->save();
 				}
-				if ($cart->quantity > $item->details->{$cart->size}) {
-					$message = "Sorry you have requested more of this item than what is available.";
-				}
-				if (empty($message) && $cart->save()) {
-					$message = "Your cart has been updated.";
-				}
-			} else {
-				$message = "Please submit a number greater than 0";
 			}
-
 		}
-		$this->render(array('layout' => false));
-		echo json_encode($message);
+		$this->_render['layout'] = false;
+		$this->redirect('/cart/view');
 	}
-
 }
 
 ?>

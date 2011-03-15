@@ -26,20 +26,10 @@ use li3_silverpop\extensions\Silverpop;
 class OrdersController extends BaseController {
 
 	/**
-	 * The # of business days to be added to an event to determine the estimated
-	 * ship by date. The default is 18 business days.
-	 *
-	 * @var int
-	 **/
-	protected $_shipBuffer = 18;
-
-	/**
-	 * Any holidays that need to be factored into the estimated ship date calculation.
-	 *
-	 * @var array
+	 * Allows the view of all the orders a customer has in descending order.
+	 * The ship date is also populated next to each order if applicable.
+	 * @return compact
 	 */
-	protected $_holidays = array();
-
 	public function index() {
 		$user = Session::read('userLogin');
 		$orders = Order::find('all', array(
@@ -48,7 +38,7 @@ class OrdersController extends BaseController {
 			'order' => array('date_created' => 'DESC')
 		));
 		foreach ($orders as $order) {
-			$shipDate["$order->_id"] = $this->shipDate($order);
+			$shipDate["$order->_id"] = Cart::shipDate($order);
 		}
 		return (compact('orders', 'shipDate'));
 	}
@@ -70,9 +60,9 @@ class OrdersController extends BaseController {
 				'user_id' => (string) $user['_id']
 		)));
 		$new = ($order->date_created->sec > (time() - 120)) ? true : false;
-		$shipDate = $this->shipDate($order);
+		$shipDate = Cart::shipDate($order);
 		if (!empty($shipDate)) {
-			$allEventsClosed = ($this->getLastEvent($order)->end_date->sec > time()) ? false : true;
+			$allEventsClosed = (Cart::getLastEvent($order)->end_date->sec > time()) ? false : true;
 		} else {
 			$allEventsClosed = true;
 		}
@@ -93,6 +83,13 @@ class OrdersController extends BaseController {
 		);
 	}
 
+	/**
+	 * Creates inital order based on the cart.
+	 * This view is needed to set the address information for the order.
+	 * When the add method is processed then the applicable tax can be calculated.
+	 * @return compact
+	 * @todo improve documentation
+	 */
 	public function add() {
 		$data = $this->request->data;
 		Session::delete('credit');
@@ -147,10 +144,16 @@ class OrdersController extends BaseController {
 				$error = "Shipping and Delivery Information Missing";
 			}
 		}
-
-		return $vars + compact('cartEmpty', 'cartByEvent', 'error', 'orderEvents');
+		$shipDate = Cart::shipDate($cart);
+		return $vars + compact('cartEmpty', 'cartByEvent', 'error', 'orderEvents', 'shipDate');
 	}
 
+	/**
+	 * Processes an order by capturing payment.
+	 * @return compact
+	 * @todo Improve documentation
+	 * @todo Make this method lighter by taking out promocode/credit validation
+	 */
 	public function process() {
 		$order = Order::create();
 		$user = Session::read('userLogin');
@@ -171,6 +174,7 @@ class OrdersController extends BaseController {
 			'discount_exempt'
 		);
 		$cart = Cart::active(array('fields' => $fields, 'time' => 'now'));
+		$shipDate = Cart::shipDate($cart);
 		$cartByEvent = $this->itemGroupByEvent($cart);
 		$orderEvents = $this->orderEvents($cart);
 		$discountExempt = $this->_discountExempt($cart);
@@ -186,7 +190,7 @@ class OrdersController extends BaseController {
 		$shippingCost = 0;
 		$overShippingCost = 0;
 		$billingAddr = $shippingAddr = null;
-		//var_dump($cart->data());
+
 		if (isset($data['billing_shipping']) && $data['billing_shipping'] == '1') {
 			$data['shipping'] = $data['billing'];
 		}
@@ -331,7 +335,7 @@ class OrdersController extends BaseController {
 				$order->promo_code = $orderPromo->code;
 				$order->promo_discount = $orderPromo->saved_amount;
 			}
-			$order->ship_date = new MongoDate($this->shipDate($order));
+			$order->ship_date = new MongoDate(Cart::shipDate($order));
 			$order->save();
 			Cart::remove(array('session' => Session::key('default')));
 			foreach ($cart as $item) {
@@ -343,7 +347,7 @@ class OrdersController extends BaseController {
 			$data = array(
 				'order' => $order,
 				'email' => $user->email,
-				'shipDate' => $this->shipDate($order)
+				'shipDate' => $shipDate
 			);
 			Silverpop::send('orderConfirmation', $data);
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
@@ -351,10 +355,17 @@ class OrdersController extends BaseController {
 
 		$cartEmpty = ($cart->data()) ? false : true;
 
-		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents');
+		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate');
 
 	}
 
+	/**
+	 * Checks if the discountExempt flag is set in any of the cart items.
+	 * The method will return true if there is a discounted item and false if there isn't.
+	 *
+	 * @param array
+	 * @return boolean
+	 */
 	protected function _discountExempt($cart) {
 		$discountExempt = false;
 		foreach ($cart as $cartItem) {
@@ -366,56 +377,11 @@ class OrdersController extends BaseController {
 	}
 
 	/**
-	 * Calculated estimated ship by date for an order.
-	 *
-	 * The estimated ship-by-date is calculated based on the last event that closes.
-	 * @param object $order
-	 * @return string
-	 */
-	public function shipDate($order) {
-		$i = 1;
-		$event = $this->getLastEvent($order);
-		$shipDate = null;
-		if (!empty($event)) {
-			$shipDate = $event->end_date->sec;
-			while($i < $this->_shipBuffer) {
-				$day = date('N', $shipDate);
-				$date = date('Y-m-d', $shipDate);
-				if ($day < 6 && !in_array($date, $this->_holidays)) {
-					$i++;
-				}
-				$shipDate = strtotime($date.' +1 day');
-			}
-		}
-		return $shipDate;
-	}
-
-	/**
-	 * Return the event that will be the last to close in an order.
-	 *
-	 * This method is needed to determine what the expected ship date should be.
-	 * Based on the business model, if a multi event order will ship together then the
-	 * estimated ship date will be determined from the fulfillment of the last event.
-	 * @param object $order
-	 * @return object $event
-	 */
-	public function getLastEvent($order) {
-		$event = null;
-		$ids = $this->getEventIds($order);
-		if (!empty($ids)) {
-			$event = Event::find('first', array(
-				'conditions' => array('_id' => $ids),
-				'order' => array('date_created' => 'DESC')
-			));
-		}
-		return $event;
-	}
-
-	/**
 	 * Group all the items in an order by their corresponding event.
 	 *
 	 * The $order object is assumed to have originated from one of model types; Order or Cart.
 	 * Irrespective of the type both will return an associative array of event items.
+	 *
 	 * @param object $order
 	 * @return array $eventItems
 	 */
@@ -444,10 +410,13 @@ class OrdersController extends BaseController {
 
 	/**
 	 * Return all the events of an order.
+	 *
+	 * @param object $object
+	 * @return array $orderEvents
 	 */
 	public function orderEvents($object) {
 		$orderEvents = null;
-		$ids = $this->getEventIds($object);
+		$ids = Cart::getEventIds($object);
 		if (!empty($ids)) {
 			$events = Event::find('all', array(
 				'conditions' => array('_id' => $ids),
@@ -462,23 +431,6 @@ class OrdersController extends BaseController {
 		return $orderEvents;
 	}
 
-	/**
-	 * Get all the eventIds that are stored either in an order or cart object and cast to MongoId.
-	 * @param object
-	 * @return array
-	 */
-	protected function getEventIds($object) {
-		$items = (!empty($object->items)) ? $object->items->data() : $object->data();
-		$event = null;
-		$ids = array();
-		foreach ($items as $item) {
-			$eventId = (!empty($item['event_id'])) ? $item['event_id'] : $item['event'][0];
-			if (!empty($eventId)) {
-				$ids[] = new MongoId("$eventId");
-			}
-		}
-		return $ids;
-	}
 }
 
 ?>

@@ -23,9 +23,9 @@
 <div id="topper"></div>
 
 	<div id="wrapper">
-	
+
 		<div id="header">
-		
+
 			<div id="header-lt">
 				<?=$this->html->link(
 					$this->html->image('logo.png', array('width'=>'155', 'height'=>'90')), '', array(
@@ -33,12 +33,11 @@
 					)
 				); ?>
 			</div>
-			
+
 			<div id="header-mid">
-			
+
 				<?php if (!empty($userInfo)): ?>
 					<?=$this->html->link('Help Desk', 'Tickets::add', array('id' => 'cs')); ?>
-				
 				<div id="welcome">
 				Hello,
 					<?php if(array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])):
@@ -49,6 +48,7 @@
 					<?php endif; ?>
 					(<?=$this->html->link('Sign Out', 'Users::logout', array('title' => 'Sign Out')); ?>)
 				</div>
+
 				<?php endif ?>
 				<?php if (!(empty($userInfo))): ?>
 					<?=$this->menu->render('main-nav'); ?>
@@ -64,9 +64,9 @@
 								'id' => 'checkout', 'title' => 'checkout'
 							)); ?>
 			 			</span>
-						<?=$this->html->link('Cart', '#', array(
+						<span class="fr"><?=$this->html->link('Cart', array('Cart::view'), array(
 							'id' => 'cart', 'title' => 'My Cart'
-						)); ?>
+						)); ?></span>
 			 			<span class="fr">
 							<?=$this->html->link('My Credits', array('Credits::view')); ?>
 							<?php if (!empty($credit)): ?>
@@ -125,8 +125,9 @@
 		</script>
 
     	<div id='cart-modal'></div>
+
 	<script type="text/javascript">
-	$("#cart").click(function() {
+	/*$("#cart").click(function() {
 		$("#cart-modal").load($.base + 'cart/view').dialog({
 			autoOpen: false,
 			modal:true,
@@ -137,7 +138,7 @@
 			}
 		});
 		$("#cart-modal").dialog('open');
-	});
+	}); */
 	</script>
 
     <div id='toTop'>^ Back to Top</div>
