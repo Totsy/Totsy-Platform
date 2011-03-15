@@ -2,8 +2,9 @@
 
 namespace app\models;
 
-use app\Models\Order;
-use app\Models\Item;
+use app\extensions\helper\Pixel;
+use lithium\storage\Session;
+use MongoDate;
 
 class Affiliate extends Base {
 
@@ -18,6 +19,9 @@ class Affiliate extends Base {
         if(preg_match('(/orders/view/)',$url)) {
             $orderid = substr($url,13);
             $url = '/orders/view';
+        }
+        if($index = strpos($invited_by, '_')) {
+            $invited_by = substr($invited_by, 0 , $index);
         }
 
         $conditions['active'] = true;
@@ -51,17 +55,39 @@ class Affiliate extends Base {
 		}
 		return $pixel;
 	}
+
+	public static function storeSubAffiliate($get_data, $affiliate) {
+        $pattern = 'siteId|siteID|siteid|subid|subID|subId';
+        $needles = explode('|',$pattern);
+        $keys = array_keys($get_data);
+        if($key = array_intersect($needles, $keys)){
+            $subaff = $get_data[$key[0]];
+        }else {
+            return $affiliate;
+        }
+
+        $conditions = array('invitation_codes' => $affiliate);
+        $col = Affiliate::collection();
+        if($col->count($conditions) > 0) {
+            $col->update($conditions, array(
+                    '$addToSet' => array(
+                        'sub_affiliates' => $subaff
+                    )));
+        }
+       return $affiliate .= '_' . $subaff;
+	}
     /**
     *   This function appends neccessary information to affilates pixels so affiliates can function *   and collect data.
     *   @params $invited_by the affilate code associated with the pixel
     *           $pixel the pixel the affiliate provided
     *           $options Used those times when the url is dynamic and the affiliate need a pixel or
-    *                    app on that page.  Available options: product - item view page, orderid -
-    *                    for affiliates who need orderids for share revenue.
+    *                    app on that page.  Available options: product -> item view page, orderid ->
+    *                    for affiliates who need orderids for share revenue, trans_type -> for
+    *                    transmitting 'new'/'cancel' order to revenue share affiliates.
     *   @return Returns modified pixels.
     *   $TODO  Move the appending to the Helper
     **/
-    public static function generatePixel($invited_by, $pixel, $options = array()) {
+	public static function generatePixel($invited_by, $pixel, $options = array()) {
 
         if($invited_by == 'w4'){
             $transid = 'totsy' . static::randomString();
@@ -97,32 +123,112 @@ class Affiliate extends Base {
                $insert .= 'msg= "Check out this great deal on Totsy!"';
                return str_replace('$',$insert,$pixel);
             }
-        }else if($invited_by == 'linkshare'){
+        }else if($invited_by == 'linkshare') {
+            if( array_key_exists('orderid', $options) && $options['orderid']) {
+                $raw = '';
+                if (array_key_exists('trans_type', $options) && $options['trans_type']) {
+                    $trans_type = $options['trans_type'];
+                }else{
+                    $trans_type = 'new';
+                }
+                $orderid = $options['orderid'];
+                $cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
+                $order = Order::find('first', array('conditions' => array(
+                                        'order_id' => $orderid
+                        )));
+                $user = User::find('first', array('conditions' => array(
+                            '_id' => $order->user_id
+                        )));
+                $raw = static::linkshareRaw($order, $user, $user->created_date->sec, $trans_type);
+                //Encrypting raw message
+                $msg = urlencode(base64_encode($raw));
+                //Used for authenticity
+                $md5_raw = hash_hmac('md5', $raw, 'Ve3YGHn7', true);
+                $md5 = base64_encode($md5_raw);
+                $md5 = str_replace('+', '/', $md5);
+                $md5 = urlencode(str_replace('-', '_', $md5));
+                $data = 'http://track.linksynergy.com/nvp?mid=36138&msg=' . $msg . '&md5=' . $md5 . '&xml=1';
 
+                static::transaction($data, 'linkshare', $orderid, $trans_type);
+            }
         }else{
             return '<br/>' . $pixel . '<br/>';
         }
     }
+    /**
+    *
+    **/
+    public static function linkshareRaw($order, $user, $entryTime, $trans_type){
+        $raw = '';
+        $raw .= 'ord=' . $order->order_id . '&';
+        $raw .= 'tr=' . substr($user->invited_by, strlen('linkshare')+1) . '&';
+        $raw .= 'land=' . date('Ymd_Hi', $entryTime) . '&';
+        $raw .= 'date=' . date('Ymd_Hi', $order->date_created->sec) . '&';
+        $skulist = array();
+        $namelist = array();
+        $qlist = array();
+        $amtlist = array();
+        foreach($order->items as $item) {
+            if($trans_type == 'cancel') {
+                if($order->cancel) {
+                    $itemInfo = Item::find( $item->item_id);
+                }else if($item->cancel) {
+                     $itemInfo = Item::find( $item->item_id);
+                }else{
+                    continue;
+                }
+            }else{
+                $itemInfo = Item::find( $item->item_id);
+            }
 
-	public static function storeSubAffiliate($get_data, $affiliate) {
-        if (array_key_exists('subid' , $get_data)) {
-            $subaff = $get_data['subid'];
-        } else if (array_key_exists('siteID' , $get_data)) {
-            $subaff = $get_data['siteID'];
-        }else {
-            return $affiliate;
+            $skulist[] = $itemInfo->sku_details->{$item->size};
+            $namelist[] = urlencode($itemInfo->description);
+            $qlist[] = $item->quantity;
+            $amtlist[] = ($item->sale_retail * $item->quantity)*100;
         }
+        $raw .= 'skulist=' . implode('|', $skulist) . '&';
+        $raw .= 'namelist=' . implode('|', $namelist) . '&';
+        $raw .= 'qlist=' . implode('|' , $qlist) . '&';
+        $raw .= 'cur=USD&';
+        $raw .= 'amt=' . implode('|', $amtlist);
+        var_dump($raw);
+        return $raw;
+    }
 
-        $conditions = array('invitation_codes' => $affiliate);
-        $col = Affiliate::collection();
-        if($col->count($conditions) > 0) {
-            $col->update($conditions, array(
-                    '$addToSet' => array(
-                        'sub_affiliates' => $subaff
-                    )));
+    /**
+    *   This function sends order transactions to linkshare.
+    *   @PARAM $data is the information that needs to be passes.
+    *   $RETURN True or False
+    **/
+	public static function transaction($data, $affiliate, $orderid, $trans_type = 'new') {
+        static::meta('source','affiliate.log');
+        /**Avoiding sending duplicate information**/
+        $transaction = static::collection()->count(array(
+                            'order_id' => $orderid,
+                            'trans_type' => $trans_type
+                        ));
+        if( $transaction >= 1){
+            return true;
         }
-       return $affiliate .= $subaff;
-	}
+        $parser = xml_parser_create();
+        xml_parse_into_struct($parser, file_get_contents($data), $response, $index);
+        var_dump($response);
+        $status = $response[1]['value'];
+        while( $status == 'Access denied' ) {
+             xml_parse_into_struct($parser, file_get_contents($data), $response, $index);
+             $status = $response[1]['value'];
+        }
+        xml_parser_free($parser);
+        $success = ( (bool) $response[5]['value'] ) ? (bool) $response[5]['value'] : (bool) $response[7]['value'];
+
+        $trans['trans_id'] = $response[1]['value'];
+        $trans['affiliate'] = $affiliate;
+        $trans['success'] = $success;
+        $trans['order_id'] = $orderid;
+        $trans['trans_type'] = $trans_type;
+        $trans['created_date'] = new MongoDate(strtotime('now'));
+        return static::collection()->save($trans);
+    }
 }
 
 ?>

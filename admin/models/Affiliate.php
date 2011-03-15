@@ -23,13 +23,12 @@ class Affiliate extends Base {
 					$temp['enable'] = false;
 				}
 
-				if(in_array('/a/', $pixel['page'])) {
+				if($pixel['enable'] && array_key_exists('page', $pixel) && in_array('/a/', $pixel['page'])) {
 					foreach($codes as $value){
 						$pixel['page'][] = '/a/' . $value;
 					}
 				}
 				$temp['page'] = array_values($pixel['page']);
-
 				$temp['pixel'] = $pixel['pixel'];
 
 				$formatted[] = $temp;

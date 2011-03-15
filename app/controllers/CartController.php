@@ -34,7 +34,7 @@ class CartController extends BaseController {
 				'conditions' => array(
 					'_id' => "$itemId"),
 				'fields' => array(
-					'sale_retail', 
+					'sale_retail',
 					"details.$size",
 					'color',
 					'description',
@@ -69,10 +69,9 @@ class CartController extends BaseController {
 
 			$this->redirect(array('Cart::view'));
 		}
-
 		return compact('cart', 'message');
 	}
-	
+
 	public function remove() {
 
 		if ($this->request->query) {
@@ -85,7 +84,7 @@ class CartController extends BaseController {
 			}
 		}
 		$this->render(array('layout' => false));
-		
+
 		$cartcount = Cart::itemCount();
 		return compact('cartcount');
 	}
