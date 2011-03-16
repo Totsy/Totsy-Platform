@@ -62,6 +62,7 @@ class BaseController extends \lithium\action\Controller {
 		    }
         }
 	    $pixel = Affiliate::getPixels($_SERVER['REQUEST_URI'], $invited_by);
+
         $pixel .= Session::read('pixel');
         Session::delete('pixel');
 		$this->set(compact('pixel'));
