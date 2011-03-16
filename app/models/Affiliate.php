@@ -20,6 +20,9 @@ class Affiliate extends Base {
             $orderid = substr($url,13);
             $url = '/orders/view';
         }
+        if(preg_match('(/a/)',$url)){
+            $url = '/a/'.$invited_by;
+        }
         if($index = strpos($invited_by, '_')) {
             $invited_by = substr($invited_by, 0 , $index);
         }
@@ -55,7 +58,13 @@ class Affiliate extends Base {
 		}
 		return $pixel;
 	}
-
+    /*
+    *   storeSubAffiliate stores an affiliates subid/siteid that were passed in through the special
+    *   affiliate url.
+    *   @PARAMS $get_data GET array, $affiliate: name of affiliate
+    *   @RETURN if an subid/siteid is available the return value is the affiliate_subid, if not the
+    *   affiliate name will return.
+    */
 	public static function storeSubAffiliate($get_data, $affiliate) {
         $pattern = 'siteId|siteID|siteid|subid|subID|subId';
         $needles = explode('|',$pattern);
@@ -142,7 +151,10 @@ class Affiliate extends Base {
                         )));
                 $raw = static::linkshareRaw($order, $user, $user->created_date->sec, $trans_type);
                 //Encrypting raw message
-                $msg = urlencode(base64_encode($raw));
+                $msg = base64_encode($raw);
+                $msg = str_replace('+', '/', $msg);
+                $msg = urlencode(str_replace('-', '_', $msg));
+
                 //Used for authenticity
                 $md5_raw = hash_hmac('md5', $raw, 'Ve3YGHn7', true);
                 $md5 = base64_encode($md5_raw);
