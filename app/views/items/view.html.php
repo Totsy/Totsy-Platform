@@ -233,7 +233,7 @@ $(document).ready(function() {
 					$('.button').hide();
 					$('#all-reserved').html("<p style='background:#ff0000;padding:5px;text-align:center;color:#fff;border-radius:6px;'>All items are reserved <br>Check back in two minutes</p>");
 				} else {
-					$('#item-submit').show();
+					$('.button').show();
 					$('#all-reserved').hide();
 				}
 		     }
