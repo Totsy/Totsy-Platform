@@ -44,7 +44,7 @@
 	      </div>
 	<ol id="checkout-process">
 	<!-- End Order Details -->
-
+<?=$this->form->create(); ?>
 	<!-- Start Payment Information -->
 	<li id="opc-payment" class="step">
 		<div id="checkout-process-payment">
@@ -132,7 +132,11 @@
 							We apologize for any inconvenience this may cause.
 						</p>
 				<?php else: ?>
-				
+					<li class="step">
+						<?=$this->form->submit('Place Your Order', array('class' => 'button submit fr')); ?>
+					</li>
+					<?=$this->form->hidden('credit_amount', array('value' => $orderCredit->credit_amount)); ?>
+					<?=$this->form->end(); ?>
 						<?php if ($credit): ?>
 							<div style="padding:10px; background:#eee;"><?php $orderCredit->credit_amount = abs($orderCredit->credit_amount); ?>
 							<?=$this->form->create($orderCredit); ?>
@@ -177,7 +181,7 @@
 				</tr>
 			</table>
 		</li>
-		<?=$this->form->create(); ?>
+		
 				</td>
 				<td style="vertical-align:top; padding-left:10px; width:250px">
 		
@@ -229,11 +233,7 @@
 			     </li>
 			-->
 			<hr/>
-			<li class="step">
-				<?=$this->form->submit('Place Your Order', array('class' => 'button submit fr')); ?>
-			</li>
-			<?=$this->form->hidden('credit_amount', array('value' => $orderCredit->credit_amount)); ?>
-			<?=$this->form->end(); ?>
+
 			
 			   
 			   
