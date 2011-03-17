@@ -150,7 +150,7 @@ class Affiliate extends Base {
                             '_id' => $order->user_id
                         )));
                 $raw = static::linkshareRaw($order, $user, $user->created_date->sec, $trans_type);
-                var_dump($raw);
+
                 //Encrypting raw message
                  $base64 = base64_encode($raw);
                 $msg = str_replace('-','_',str_replace('+','/',$base64));
