@@ -150,6 +150,7 @@ class Affiliate extends Base {
                             '_id' => $order->user_id
                         )));
                 $raw = static::linkshareRaw($order, $user, $user->created_date->sec, $trans_type);
+                var_dump($raw);
                 //Encrypting raw message
                  $base64 = base64_encode($raw);
                 $msg = str_replace('-','_',str_replace('+','/',$base64));
@@ -195,11 +196,19 @@ class Affiliate extends Base {
             $qlist[] =  $item->quantity;
             $amtlist[] = ($trans_type == 'cancel') ? (-$item->sale_retail * $item->quantity)*100 : ($item->sale_retail * $item->quantity)*100 ;
         }
-        $raw .= 'skulist=' . implode('|', $skulist) . '&';
-        $raw .= 'namelist=' . implode('|', $namelist) . '&';
-        $raw .= 'qlist=' . implode('|' , $qlist) . '&';
-        $raw .= 'cur=USD&';
-        $raw .= 'amtlist='. implode('|', $amtlist);
+        if($order->promocode){
+            $raw .= 'skulist=' . implode('|', $skulist) . '|Discount&';
+            $raw .= 'namelist=' . implode('|', $namelist) . '|Discount&';
+            $raw .= 'qlist=' . implode('|' , $qlist) . '|0&';
+            $raw .= 'cur=USD&';
+            $raw .= 'amtlist='. implode('|', $amtlist) . '|' . round($order->promo_discount,2)*100;
+        }else{
+            $raw .= 'skulist=' . implode('|', $skulist) . '&';
+            $raw .= 'namelist=' . implode('|', $namelist) . '&';
+            $raw .= 'qlist=' . implode('|' , $qlist) . '&';
+            $raw .= 'cur=USD&';
+            $raw .= 'amtlist='. implode('|', $amtlist);
+        }
         return $raw;
     }
 
