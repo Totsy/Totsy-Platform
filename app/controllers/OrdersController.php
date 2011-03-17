@@ -155,6 +155,7 @@ class OrdersController extends BaseController {
 	 * @todo Make this method lighter by taking out promocode/credit validation
 	 */
 	public function process() {
+
 		$order = Order::create();
 		$user = Session::read('userLogin');
 		$data = $user['checkout'] + $this->request->data;
@@ -212,6 +213,7 @@ class OrdersController extends BaseController {
 			$tax = array_sum($cart->tax($shippingAddr));
 			$shippingCost = Cart::shipping($cart, $shippingAddr);
 			$overShippingCost = Cart::overSizeShipping($cart);
+			$tax = $tax ? $tax + (($overShippingCost + $shippingCost) * Cart::TAX_RATE) : 0;
 		}
 
 		$map = function($item) { return $item->sale_retail * $item->quantity; };
@@ -267,8 +269,8 @@ class OrdersController extends BaseController {
 
 		if ($orderPromo->code) {
 			$code = Promocode::confirmCode($orderPromo->code);
-			$count = Promotion::confirmCount($code->_id, $user['_id']);
 			if ($code) {
+				$count = Promotion::confirmCount($code->_id, $user['_id']);
 				if ($code->max_use > 0) {
 					if ($count >= $code->max_use) {
 						$orderPromo->errors(

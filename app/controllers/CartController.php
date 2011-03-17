@@ -37,8 +37,10 @@ class CartController extends BaseController {
 				$item->error = "";
 				$item->save();
 			}
-			$events = Event::find('all', array('conditions'=>array('_id' => $item->event[0])));
+			$events = Event::find('all', array('conditions' => array('_id' => $item->event[0])));
+			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
 			$item->event_url = $events[0]->url;
+			$item->available = $itemInfo->details->{$item->size} - Cart::reserved($item->item_id, $item->size);
 		}
 		if ($this->request->data) {
 			return array('data' => $this->request->data);
@@ -78,9 +80,23 @@ class CartController extends BaseController {
 					'event'
 			)));
 			$cartItem = Cart::checkCartItem($itemId, $size);
+			$itemInfo = Item::find('first', array('conditions' => array('_id' => $itemId)));
 			if (!empty($cartItem)) {
-				++ $cartItem->quantity;
-				$cartItem->save();
+				$avail = $itemInfo->details->{$itemInfo->size} - Cart::reserved($itemId, $itemInfo->size);
+				//Make sure user does not add more than 9 items to the cart
+				if($cartItem->quantity < 9 ){
+					//Make sure the items are available
+					if( $avail > 0 ){
+						++$cartItem->quantity;
+						$cartItem->save();
+					}else{
+						$cartItem->error = 'You can’t add this quantity in your cart. <a href="#5">Why?</a>';
+					$cartItem->save();
+					}
+				}else{
+					$cartItem->error = 'You have reached the maximum of 9 per item.';
+					$cartItem->save();
+				}
 			} else {
 				$item = $item->data();
 				$item['size'] = $size;
@@ -92,7 +108,6 @@ class CartController extends BaseController {
 
 				}
 			}
-
 			$this->redirect(array('Cart::view'));
 		}
 		return compact('cart', 'message');
@@ -131,16 +146,21 @@ class CartController extends BaseController {
 		$success = false;
 		$message = null;
 		$data = $this->request->data;
-		if( $data ){
+		if ($data) {
 			$carts = $data['cart'];
-			foreach($carts as $id => $quantity){
+			foreach ($carts as $id => $quantity) {
 				$result = Cart::check((integer) $quantity, (string) $id);
-				$cart = Cart::find('first' , array( 'conditions' => array('_id' =>  (string)$id)
-					));
-				if($result['status']){
-					$cart->quantity = (integer) $quantity;
-					$cart->save();
-				}else{
+				$cart = Cart::find('first', array(
+					'conditions' => array('_id' =>  (string) $id)
+				));
+				if ($result['status']) {
+					if($quantity == 0){
+				        Cart::remove(array('_id' => $id));
+				    }else {
+						$cart->quantity = (integer) $quantity;
+						$cart->save();
+					}
+				} else {
 					$cart->error = $result['errors'];
 					$cart->save();
 				}

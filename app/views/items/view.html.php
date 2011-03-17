@@ -1,6 +1,9 @@
 <?=$this->html->script(array('jqzoom.pack.1.0.1','jquery.equalheights', 'cloud-zoom.1.0.2'));?>
 <?=$this->html->style('jquery.countdown');?>
 
+<h1 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a> / <?=$item->description?></h1>
+
+	<hr />
 <div id="product-detail-right">
 
 	<div id="product-detail-right-top">
@@ -42,8 +45,8 @@
 			<div style="padding: 10px 0px; color:#009900; font-size:24px;">$<?=number_format($item->sale_retail,2); ?></div>
 
 			<span class="original-price">Original: $<?=number_format($item->msrp,2); ?></span>
-			<?php if ($item->total_quantity != 0): ?>
-				<?=$this->form->submit('Add To Cart', array('class' => 'buy-now')); ?>
+			<?php if ($item->total_quantity >= 1): ?>
+				<?=$this->form->submit('Add To Cart', array('class' => 'button')); ?>
 				<div id="all-reserved"></div>
 			<?php endif ?>
 		</div>
@@ -214,13 +217,7 @@ $(document).ready(function() {
 });
 </script>
 
-<!-- <script type="text/javascript">
-
-$("#item-submit").click(function(){
-var item_id = $('#item_id').attr('value');
-var item_size = $('#size-select').attr('value');
-
-
+<script type="text/javascript">
 
 $(document).ready(function() {
 	var itemCheck = function(){
@@ -233,10 +230,10 @@ $(document).ready(function() {
 			success: function(data){
 				if (data == 'false') {
 					$('#all-reserved').show();
-					$('#item-submit').hide();
-					$('#all-reserved').html("<p class=\"flex-btn\">All items are reserved <br>Check back in two minutes</p>");
+					$('.button').hide();
+					$('#all-reserved').html("<p style='background:#ff0000;padding:5px;text-align:center;color:#fff;border-radius:6px;'>All items are reserved <br>Check back in two minutes</p>");
 				} else {
-					$('#item-submit').show();
+					$('.button').show();
 					$('#all-reserved').hide();
 				}
 		     }
@@ -250,4 +247,4 @@ $(document).ready(function() {
 });
 
 
-</script> -->
+</script>

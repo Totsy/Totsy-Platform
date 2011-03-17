@@ -133,7 +133,8 @@
 											of Totsy, and accept to receive sale email newsletters.
 											Totsy will never sell or give my email to any outside party.
 										</span>
-										<?=$this->form->submit('Register', array('class' => 'register_button')); ?>
+										
+										<?=$this->form->submit('Register', array('class' => 'button')); ?>
 										<?=$this->form->error('terms'); ?>
 									</div>
 								<?=$this->form->end(); ?>
