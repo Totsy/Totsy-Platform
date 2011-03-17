@@ -45,7 +45,7 @@
 			<div style="padding: 10px 0px; color:#009900; font-size:24px;">$<?=number_format($item->sale_retail,2); ?></div>
 
 			<span class="original-price">Original: $<?=number_format($item->msrp,2); ?></span>
-			<?php if ($item->total_quantity != 0): ?>
+			<?php if ($item->total_quantity >= 1): ?>
 				<?=$this->form->submit('Add To Cart', array('class' => 'button')); ?>
 				<div id="all-reserved"></div>
 			<?php endif ?>

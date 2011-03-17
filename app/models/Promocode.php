@@ -27,7 +27,7 @@ class Promocode extends \lithium\data\Model {
 	 *
 	 */
 	public static function confirmCode($code) {
-		$code = new MongoRegex("/$code/i");
+		$code = new MongoRegex("/($code)/i");
 		return static::find('first', array(
 			'conditions' => array(
 				'code' => $code,
