@@ -22,7 +22,7 @@
 
                         <?php foreach ($errors as $error): ?>
 
-			<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /><?=$error; ?></div>
+			<div class="checkout-error"><?=$error; ?></div>
                         <?php endforeach ?>
 
         <?php } ?>
@@ -154,7 +154,11 @@
 							
 							<?=$this->form->end(); ?>
 							</div>
+							</div></div>
+						<?php else : ?>
+						<div style="padding:10px; background:#eee;"><h1 style="color:#707070; font-size:22px;">Credits: <span style="color:#009900; float:right;">$0.00</span></h1></div>
 						<?php endif ?>
+						
 					<div style="padding:10px; background:#eee; margin:10px 0">
 							<?=$this->form->create($orderPromo); ?>
 							<div class="form-row">
