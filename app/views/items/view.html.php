@@ -217,13 +217,11 @@ $(document).ready(function() {
 });
 </script>
 
-<!-- <script type="text/javascript">
+<script type="text/javascript">
 
 $("#item-submit").click(function(){
 var item_id = $('#item_id').attr('value');
 var item_size = $('#size-select').attr('value');
-
-
 
 $(document).ready(function() {
 	var itemCheck = function(){
@@ -253,4 +251,4 @@ $(document).ready(function() {
 });
 
 
-</script> -->
+</script>
