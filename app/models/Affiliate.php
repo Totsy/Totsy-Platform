@@ -190,13 +190,12 @@ class Affiliate extends Base {
             }else{
                 $itemInfo = Item::find( $item->item_id);
             }
-
             $skulist[] = $itemInfo->sku_details->{$item->size};
             $namelist[] = urlencode($itemInfo->description);
             $qlist[] =  $item->quantity;
             $amtlist[] = ($trans_type == 'cancel') ? (-$item->sale_retail * $item->quantity)*100 : ($item->sale_retail * $item->quantity)*100 ;
         }
-        if($order->promocode){
+         if($order->promo_code){
             $raw .= 'skulist=' . implode('|', $skulist) . '|Discount&';
             $raw .= 'namelist=' . implode('|', $namelist) . '|Discount&';
             $raw .= 'qlist=' . implode('|' , $qlist) . '|0&';
