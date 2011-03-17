@@ -66,12 +66,12 @@ class ItemsController extends BaseController {
 		$this->render(array('layout' => false));
 		if ($this->request->query) {
 			$data = $this->request->query;
-			$reserved = Cart::reserved($data['item_id'], $data['item_size']);
+			$size = ($data['item_size'] == 'undefined') ? 'no size' : $data['item_size'];
+			$reserved = Cart::reserved($data['item_id'], $size);
 			$item = Item::find('first', array(
 				'conditions' => array(
 					'_id' => $data['item_id']
 			)));
-			$size = ($data['item_size'] == 'undefined') ? 'no size' : $data['item_size'];
 			$qty = $item->details->{$size} - $reserved;
 			$available = ($qty > 0) ? true : false;
 			echo json_encode($available);
