@@ -20,7 +20,7 @@ use lithium\util\String;
 /**
  * Gathers orders details based on promocode for reporting analysis.
  *
- * This script was a adhoc request to gather details of how many times customers used
+ * This script was an adhoc request to gather details of how many times customers used
  * three specific promocodes. All the orders for these three promocodes were gathered
  * and stored in the Reports collection. Using an upsert based on finding the user
  * and promocode allows a document to show repeat use. Therefore, if a customer used
@@ -60,7 +60,9 @@ class PromoAnalysis extends \lithium\console\Command  {
 	public $env = 'development';
 
 	/**
-	 * Find all the orders that haven't been shipped which have stock status.
+	 * Find all the orders matching the $promoIds key array and aggregate
+	 * the number of times each customer used that promo when placing an order.
+	 * All results are stored in the Reports Collection.
 	 */
 	public function run() {
 		Environment::set($this->env);

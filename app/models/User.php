@@ -98,8 +98,8 @@ class User extends Base {
 		);
 	}
 
-	public static function getUser($fields = null) {
-		$user = Session::read('userLogin');
+	public static function getUser($fields = null,$sessionKey = 'userLogin') {
+		$user = Session::read($sessionKey);
 		return User::find('first', array(
 			'conditions' => array(
 				'_id' => $user['_id']),
