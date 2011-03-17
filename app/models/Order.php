@@ -71,6 +71,7 @@ class Order extends \lithium\data\Model {
 		// 	return false;
 		// }
 
+		$tax = $tax ? $tax + (($overSizeHandling+$handling) * Cart::TAX_RATE) : 0;
 		$afterDiscount = $subTotal + $orderCredit->credit_amount + $orderPromo->saved_amount;
 		if( $afterDiscount < 0 ){
 		    $afterDiscount = 0;
