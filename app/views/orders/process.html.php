@@ -101,6 +101,11 @@
 							<?=$this->form->text('card[code]', array('class' => 'inputbox')); ?>
 						</div>
 					</fieldset>
+					<li class="step">
+						<?=$this->form->submit('Place Your Order', array('class' => 'button submit fr')); ?>
+					</li>
+					<?=$this->form->hidden('credit_amount', array('value' => $orderCredit->credit_amount)); ?>
+					<?=$this->form->end(); ?>
 					  </div>
 				</td>
 				<td style="vertical-align:top; width:300px;">
@@ -132,11 +137,7 @@
 							We apologize for any inconvenience this may cause.
 						</p>
 				<?php else: ?>
-					<li class="step">
-						<?=$this->form->submit('Place Your Order', array('class' => 'button submit fr')); ?>
-					</li>
-					<?=$this->form->hidden('credit_amount', array('value' => $orderCredit->credit_amount)); ?>
-					<?=$this->form->end(); ?>
+
 						<?php if ($credit): ?>
 							<div style="padding:10px; background:#eee;"><?php $orderCredit->credit_amount = abs($orderCredit->credit_amount); ?>
 							<?=$this->form->create($orderCredit); ?>
