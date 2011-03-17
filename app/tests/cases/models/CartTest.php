@@ -65,7 +65,7 @@ class CartTest extends \lithium\test\Unit {
 		Cart::remove(array("_id" => $cart_id));
 		Item::remove(array("_id" => $item_id));
 		//Test result
-		$this->assertEqual( true , $result["statut"]);
+		$this->assertEqual( true , $result["status"]);
 	}
 }
 

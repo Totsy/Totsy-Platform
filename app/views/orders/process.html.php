@@ -2,11 +2,17 @@
 	$this->html->script('application', array('inline' => false));
 	$this->form->config(array('text' => array('class' => 'inputbox')));
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
-?>
+	$preTotal = $subTotal + $orderCredit->credit_amount;
+	$afterDiscount = $preTotal + $orderPromo->saved_amount;
+	if($afterDiscount < 0){
+		$afterDiscount = 0;
+	}
+	$total = $afterDiscount + $tax + $shippingCost + $overShippingCost;
+	?>
+<h1 class="page-title gray"><span class="_red"><a href="/" title="Sales">Today's Sales</a></span> / <a href="/cart/view" title="My Cart">My Cart</a> / Checkout / Process Payment</h1>
 
-
-<h1 class="page-title gray"><span class="red"><?=$this->title('Checkout - Payment Method'); ?></span></h1>
-
+	<hr />
+	
 <div id="middle" class="fullwidth">
 
 	<div class="tl"></div>
@@ -20,7 +26,7 @@
                         <?php endforeach ?>
 
         <?php } ?>
-
+<div style="display:none;">
 	   <div class="rounded" style="color: #009900; margin:0px 10px 0px 0px; float: left; display:block; background:#ebffeb; border:1px solid #ddd; width:249px; text-align:center; padding:20px;">Shipping / Billing Info</div>
 <div id="arrow-right">
   <div id="arrow-right-1"></div>
@@ -34,102 +40,8 @@
 </div><!--arrow-right-->
 
 	      <div class="rounded" style="color:#ff0000; margin:0px 0px 0px 0px; float:left; display:block; background:#ffebeb; border:1px solid #ddd; width:246px; padding:20px; text-align:center;">Confirmation</div>
-	      <div style="clear:both; margin-bottom:15px;"></div>
-	<div>The estimated ship date of your order is: <?=date('M d, Y', $shipDate)?></div>
-		<h2 class="gray mar-b">My Items</h2><hr />
-	<!-- Begin Order Details -->
-	<?php if ($cartByEvent): ?>
-		<?php $x = 0; ?>
-		<?php foreach ($cartByEvent as $key => $event): ?>
-		<table width="100%" class="cart-table">
-			<thead>
-				<tr >
-					<td colspan='6'><?=$orderEvents[$key]['name']?><td>
-				</tr>
-				<tr>
-					<th>Item</th>
-					<th>Description</th>
-					<th>QTY</th>
-					<th>Price</th>
-					<th>Total Cost</th>
-					<th>Time Remaining</th>
-				</tr>
-			</thead>
-			<tbody>
-		<?php foreach ($event as $item): ?>
-			<!-- Build Product Row -->
-						<tr id="<?=$item['_id']?>" class="alt<?=$x?>" style="margin:0px!important; padding:0px!important;">
-						<td class="cart-th">
-							<?php $itemUrl = "sale/".$orderEvents[$key]['url'].'/'.$item['url'];?>
-							<?php
-								if (!empty($item['primary_image'])) {
-									$image = $item['primary_image'];
-									$productImage = "/image/$image.jpg";
-								} else {
-									$productImage = "/img/no-image-small.jpeg";
-								}
-							?>
-							<?=$this->html->link(
-								$this->html->image("$productImage", array(
-									'width'=>'60',
-									'height'=>'60',
-									'style' => 'border:1px solid #ddd; background:#fff; margin:2px; padding:2px;',)),
-									'',
-									array(
-									'id' => 'main-logo_', 'escape'=> false
-								)
-							); ?>
-						</td>
-						<td class="cart-desc">
-							<?=$this->form->hidden("item$x", array('value' => $item['_id'])); ?>
-							<strong><?=$this->html->link($item['description'], $itemUrl);
-							?></strong><br>
-							<strong>Color:</strong> <?=$item['color'];?><br>
-							<strong>Size:</strong> <?=$item['size'];?>
-						</td>
-						<td class="<?="qty-$x";?>">
-							<?=$item['quantity'];?>
-						</td>
-						<td class="<?="price-item-$x";?>">
-							<strong style="color:#009900;">$<?=number_format($item['sale_retail'],2)?></strong>
-						</td>
-						<td class="<?="total-item-$x";?>">
-							<strong style="color:#009900;">$<?=number_format($item['sale_retail'] * $item['quantity'] ,2)?></strong>
-						</td>
-						<td class="cart-time"><div id='<?php echo "itemCounter-$x"; ?>'></div></td>
-					</tr>
-					<?php
-						//Allow users three extra minutes on their items for checkout.
-						$date = ($item['expires']['sec'] * 1000);
-						$itemCounters[] = "<script type=\"text/javascript\">
-							$(function () {
-								var itemProcessExpires = new Date($date);
-								$(\"#itemCounter-$x\").countdown('change', {until: itemProcessExpires, $countLayout});
-
-							$(\"#itemCounter-$x\").countdown({until: itemProcessExpires,
-							    expiryText: '<div class=\"over\">This item is no longer reserved for purchase</div>', $countLayout});
-							var now = new Date();
-							if (itemProcessExpires < now) {
-								$(\"#itemCounter-$x\").html('<div class=\"over\">This item is no longer reserved for purchase</div>');
-							}
-							});
-							</script>";
-						$x++;
-					?>
-			<?php endforeach ?>
-		<?php endforeach ?>
-				</tbody>
-			</table>
-	<?php endif ?>
-	<?php
-		$preTotal = $subTotal + $orderCredit->credit_amount;
-		$afterDiscount = $preTotal + $orderPromo->saved_amount;
-		if($afterDiscount < 0){
-			$afterDiscount = 0;
-		}
-		$total = $afterDiscount + $tax + $shippingCost + $overShippingCost;
-	?>
-
+	      
+	      </div>
 	<ol id="checkout-process">
 	<!-- End Order Details -->
 		<li id="order-summary" class="step">
@@ -204,13 +116,13 @@
 	<!-- Start Payment Information -->
 	<li id="opc-payment" class="step">
 		<div id="checkout-process-payment">
-		<table width="100%">
+		<table width="55%">
 			<tr>
 				<td>
 
 					<h2 class="gray mar-b">Payment Information <span style=" font-size:12px; font-weight:normal;"><span class="red">*</span> Required Fields</span></h2>
 					<hr />
-					<div>
+					<div style="width:">
 					  <fieldset>
 						<legend class="no-show">New Payment Method</legend>
 
@@ -262,7 +174,7 @@
 				<td style="vertical-align:top; padding:5px;">
 					<?php if ($billingAddr) { ?>
 
-							<h4>Billing Address</h4>
+							<h4 style="color:#707070; font-weight:bold;">Billing Address - <a href="">Edit</a></h4>
 							<hr />
 							<address class="billing-address">
 								<?=$billingAddr->address; ?> <?=$billingAddr->address_2; ?><br />
@@ -270,10 +182,9 @@
 								<?=$billingAddr->zip; ?>
 							</address>
 					<?php } ?>
-				</td>
-				<td style="vertical-align:top; padding:5px;">
+					<br />
 					<?php if ($shippingAddr) { ?>
-							<h4>Shipping Address</h4>
+							<h4 style="color:#707070; font-weight:bold;">Shipping Address - <a href="">Edit</a></h4>
 							<hr />
 							<address class="shipping-address">
 								<?=$shippingAddr->address; ?> <?=$shippingAddr->address_2; ?><br />
@@ -308,11 +219,112 @@
 
 			     </li>
 			-->
+			<hr/>
 			<li class="step">
-				<?=$this->form->submit('Place Your Order', array('class' => 'place-order-button submit')); ?>
+				<?=$this->form->submit('Place Your Order', array('class' => 'button submit fr')); ?>
 			</li>
 			<?=$this->form->hidden('credit_amount', array('value' => $orderCredit->credit_amount)); ?>
 			<?=$this->form->end(); ?>
+			
+			   
+			   
+			   <div style="clear:both; margin-top:90px;"></div>
+
+		<h1 style="color:#707070;">Order Summary</h2>
+		<hr />
+
+<div style="clear:both; margin-bottom:10px;"></div>
+
+   
+	<!-- Begin Order Details -->
+	<?php if ($cartByEvent): ?>
+		<?php $x = 0; ?>
+		<?php foreach ($cartByEvent as $key => $event): ?>
+		<table width="100%" class="cart-table">
+			<thead>
+				<tr >
+					<td colspan='3' style="vertical-align:bottom; font-weight:bold; font-size:18px;"><?=$orderEvents[$key]['name']?><td>
+					<td></td>
+					<td colspan="3"><div class="fr" style="padding:10px; background:#fffbd1; border-left:1px solid #D7D7D7; border-right:1px solid #D7D7D7; border-top:1px solid #D7D7D7;">Estimated Ship Date: <?=date('M d, Y', $shipDate)?></div></td>
+				</tr>
+				<tr>
+					<th>Item</th>
+					<th>Description</th>
+					<th>Price</th>
+					<th>Qty</th>
+					<th>Total Cost</th>
+					<th>Time Remaining</th>
+				</tr>
+			</thead>
+			<tbody>
+		<?php foreach ($event as $item): ?>
+			<!-- Build Product Row -->
+						<tr id="<?=$item['_id']?>" class="alt<?=$x?>" style="margin-top:10px;">
+						<td class="cart-th">
+							<?php $itemUrl = "sale/".$orderEvents[$key]['url'].'/'.$item['url'];?>
+							<?php
+								if (!empty($item['primary_image'])) {
+									$image = $item['primary_image'];
+									$productImage = "/image/$image.jpg";
+								} else {
+									$productImage = "/img/no-image-small.jpeg";
+								}
+							?>
+							<?=$this->html->link(
+								$this->html->image("$productImage", array(
+									'width'=>'60',
+									'height'=>'60',
+									'style' => 'margin:2px; padding:4px;',)),
+									'',
+									array(
+									'id' => 'main-logo_', 'escape'=> false
+								)
+							); ?>
+						</td>
+						<td class="cart-desc">
+							<?=$this->form->hidden("item$x", array('value' => $item['_id'])); ?>
+							<strong><?=$this->html->link($item['description'], $itemUrl);
+							?></strong><br>
+							<strong>Color:</strong> <?=$item['color'];?><br>
+							<strong>Size:</strong> <?=$item['size'];?>
+						</td>
+						<td class="<?="price-item-$x";?>">
+							<strong style="color:#009900;">$<?=number_format($item['sale_retail'],2)?></strong>
+						</td>
+						<td class="<?="qty-$x";?>">
+							<?=$item['quantity'];?>
+						</td>
+						<td class="<?="total-item-$x";?>">
+							<strong style="color:#009900;">$<?=number_format($item['sale_retail'] * $item['quantity'] ,2)?></strong>
+						</td>
+						<td class="cart-time"><img src="/img/clock_icon.gif" class="fl"/><div id='<?php echo "itemCounter-$x"; ?>' class="fl" style="margin-left:5px;"></div></td>
+					</tr>
+					<?php
+						//Allow users three extra minutes on their items for checkout.
+						$date = ($item['expires']['sec'] * 1000);
+						$itemCounters[] = "<script type=\"text/javascript\">
+							$(function () {
+								var itemProcessExpires = new Date($date);
+								$(\"#itemCounter-$x\").countdown('change', {until: itemProcessExpires, $countLayout});
+
+							$(\"#itemCounter-$x\").countdown({until: itemProcessExpires,
+							    expiryText: '<div class=\"over\" style=\"color:#fff; padding:5px; background: #ff0000;\">no longer reserved</div>', $countLayout});
+							var now = new Date();
+							if (itemProcessExpires < now) {
+								$(\"#itemCounter-$x\").html('<div class=\"over\" style=\"color:#fff; padding:5px; background: #ff0000;\">no longer reserved</div>');
+							}
+							});
+							</script>";
+						$x++;
+					?>
+			<?php endforeach ?>
+		<?php endforeach ?>
+				</tbody>
+			</table>
+	<?php endif ?>
+
+
+	
 
     <!-- begin thawte seal -->
     <div id="thawteseal" title="Click to Verify - This site chose Thawte SSL for secure e-commerce and confidential communications." style="float: right!important; width:200px;">

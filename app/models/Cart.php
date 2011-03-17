@@ -203,7 +203,7 @@ class Cart extends \lithium\data\Model {
 					break;
 			}
 		}
-		return $cart->sale_retail * $tax;
+		return ($cart->sale_retail * $cart->quantity) * $tax;
 	}
 
 	/**
@@ -318,7 +318,11 @@ class Cart extends \lithium\data\Model {
 	}
 
 	/**
-	 * @todo Need documentation
+	 * Check the quanity of an item and compare it to the request value.
+	 *
+	 * @param float $quantity
+	 * @param string $cart_id
+	 * @return boolean
 	 */
 	public static function check($quantity = null, $cart_id = null){
 		$cart = static::find('first', array(

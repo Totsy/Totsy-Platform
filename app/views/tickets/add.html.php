@@ -92,7 +92,7 @@
 		?>
 		<br />
 	
-		<?=$this->form->submit('Submit', array('class' => "flex-btn" )); ?>
+		<?=$this->form->submit('Send Information', array('class' => "button" )); ?>
 	<?=$this->form->end(); ?>
 		
 	</div>

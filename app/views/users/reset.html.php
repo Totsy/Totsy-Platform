@@ -74,9 +74,8 @@ $image = $images[array_rand($images)];
 													<br><br>
 													<?=$this->form->text('email', array('label' => 'Email Address', 'class' => 'inputbox')); ?>
 													<br><br>
-													<?=$this->form->submit('Reset Password',array(
-													'class'=>"reset-pw-btn"
-													));?>
+													
+													<?=$this->form->submit('Reset Password', array('class' => 'button')); ?>
 												</center>
 											<?=$this->form->end(); ?>
                                             

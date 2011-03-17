@@ -1,6 +1,9 @@
 <?=$this->html->script(array('jqzoom.pack.1.0.1','jquery.equalheights', 'cloud-zoom.1.0.2'));?>
 <?=$this->html->style('jquery.countdown');?>
 
+<h1 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a> / <?=$item->description?></h1>
+
+	<hr />
 <div id="product-detail-right">
 
 	<div id="product-detail-right-top">
@@ -43,7 +46,7 @@
 
 			<span class="original-price">Original: $<?=number_format($item->msrp,2); ?></span>
 			<?php if ($item->total_quantity != 0): ?>
-				<?=$this->form->submit('Add To Cart', array('class' => 'buy-now')); ?>
+				<?=$this->form->submit('Add To Cart', array('class' => 'button')); ?>
 				<div id="all-reserved"></div>
 			<?php endif ?>
 		</div>
