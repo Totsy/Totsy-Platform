@@ -44,7 +44,7 @@
 	      </div>
 	<ol id="checkout-process">
 	<!-- End Order Details -->
-<?=$this->form->create(); ?>
+
 	<!-- Start Payment Information -->
 	<li id="opc-payment" class="step">
 		<div id="checkout-process-payment">
@@ -102,10 +102,7 @@
 						</div>
 					</fieldset>
 					  </div>
-					  
-					  
 				</td>
-				
 				<td style="vertical-align:top; width:300px;">
 				<h1 style="color:#707070; font-size:22px;">Credits & Promotional Codes</h1>
 				<hr />
@@ -143,22 +140,18 @@
 							<?=$this->form->error('amount'); ?>
 							</div>
 							You have $<?=number_format((float) $userDoc->total_credit, 2);?> in credits
-
-<hr />	
-							
+							<hr />
 							<?=$this->form->text('credit_amount', array('size' => 6, 'maxlength' => '6')); ?>
 									<?=$this->form->submit('Apply Credit'); ?>
-<hr />
-<strong>Credit:</strong>
+									<hr />
+										<strong>Credit:</strong>
 								-$<?=number_format((float) $orderCredit->credit_amount, 2);?>
-							
 							<?=$this->form->end(); ?>
 							</div>
 							</div></div>
 						<?php else : ?>
 						<div style="padding:10px; background:#eee;"><h1 style="color:#707070; font-size:22px;">Credits: <span style="color:#009900; float:right;">$0.00</span></h1></div>
 						<?php endif ?>
-						
 					<div style="padding:10px; background:#eee; margin:10px 0">
 							<?=$this->form->create($orderPromo); ?>
 							<div class="form-row">
@@ -178,14 +171,13 @@
 							</div>
 					</tr>
 				<?php endif ?>
-
 				<tr>
 					<td style="text-align:left; color:#707070; font-size:22px;"><hr /><strong>Order Total:</strong> </td>
 					<td style="text-align:right; color:#009900; font-size:22px;"><hr />$<?=number_format((float) $total, 2);?></td>
 				</tr>
 			</table>
 		</li>
-				
+		<?=$this->form->create(); ?>
 				</td>
 				<td style="vertical-align:top; padding-left:10px; width:250px">
 		
