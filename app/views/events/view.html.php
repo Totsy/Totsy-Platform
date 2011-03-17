@@ -4,12 +4,12 @@
 <?=$this->html->script('jquery.countdown.min');?>
 <?=$this->html->style('jquery.countdown');?>
 
-	<div id="middle" class="fullwidth">				
-		
+	<div id="middle" class="fullwidth">
+
 		<h1 class="page-title gray"><span class="red"><a href="/" title="Sales"><?=$type?> Sales</a> /</span> <?=$event->name; ?></h1>
 		<hr />
-	
-	
+
+
 		<div class="r-container clear">
 			<div class="tl"></div>
 			<div class="tr"></div>
@@ -20,18 +20,18 @@
 						if (!empty($event->images->event_image)) {
 							echo $this->html->image("/image/{$event->images->event_image}.jpg", array(
 								'alt' => $event->name), array(
-								'title' => $event->name, 
-								'width' => "169", 
-								'height'=> "193", 
+								'title' => $event->name,
+								'width' => "169",
+								'height'=> "193",
 								'style' => 'border:4px solid #fff;'
 							));
 						} else {
 							echo $this->html->image('/img/no-image-small.jpeg', array(
 								'alt' => 'Totsy'), array(
-									'title' => "No Image Available", 
-									'width' => "169", 
+									'title' => "No Image Available",
+									'width' => "169",
 									'height'=> "193"
-									)); 
+									));
 						}
 					?>
 				</div>
@@ -48,7 +48,7 @@
 				</dd>
 			</dl>
 		</div>
-		
+
 					<div style="width:300px;">
 						<!-- Display Logo Image -->
 						<?php if (!empty($event->images->logo_image)): ?>
@@ -56,10 +56,10 @@
 						<?php endif ?>
 						<div class="title table-cell v-bottom">
 							<!--  h1> <? //=$event->name; ?> </h1 -->
-							
-							
+
+
 						</div>
-					
+
 					</div>
 					<p><?php if (!empty($event->blurb)): ?>
 						<?php echo $event->blurb ?>
@@ -77,7 +77,7 @@
 				<option value="Strollers">Strollers</option>
 				<option value="Accessories">Accessories</option>
 			</select>
-			
+
 			<select id="by-size" name="by-size">
 				<option value="">View By Size</option>
 				<option value="Small">Small</option>
@@ -111,7 +111,7 @@
 					<div class="tl"></div>
 					<div class="tr"></div>
 					<div class="md-gray p-container">
-						<?php if ($item->total_quantity == 0): ?>
+						<?php if ($item->total_quantity <= 0): ?>
 								<?=$this->html->image('/img/soldout.png', array(
 									'title' => "Sold Out",
 									'style' => 'z-index : 2; position : absolute; left:69%; margin:10px;'
@@ -148,7 +148,7 @@
 				<!-- End product item -->
 			<?php endforeach ?>
 		<?php endif ?>
-		
+
 	</div>
 </div>
 </div>
