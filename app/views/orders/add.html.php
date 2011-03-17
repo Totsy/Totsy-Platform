@@ -40,13 +40,13 @@
 		<?=$this->form->create($order, array('class' => 'checkout')); ?>
 
 		<!-- Start Billing Information -->
-		<div style="float:left; width:415px; margin:0px 10px 10px 0px;  display:block;"><li id="opc-billing">
+		<div style="float:left; width:423px; margin:0px 10px 10px 0px;  display:block;"><li id="opc-billing">
 			<div id="checkout-process-billing">
 			<?php if (empty($billing)): ?>
 					<center><strong><?=$this->html->link('Please take a moment to add an Address', '#', array(
 						'class' => 'add-address')); ?></strong></center>
 				<?php else: ?>
-					<h2 class="gray mar-b">Billing Address</h2><hr />
+					<h1 style="color:#707070;">Billing Address</h2><hr />
 					<p>Select a billing address from your address book.</p>
 						<?=$this->form->select('billing', $billing, array(
 							'id' => 'billing',
@@ -71,7 +71,7 @@
 		<!-- End Billing Information -->
 
 		<!-- Start Shipping Information -->
-		<div style="float:left; width:410px; display:block;">
+		<div style="float:left; width:445px; display:block;">
 		  <li id="opc-shipping" class="step_" style="opacity:0.5">
 
 			<div id="checkout-process-shipping">
@@ -80,7 +80,7 @@
 
 				<?php else: ?>
 
-						<h2 class="gray mar-b">Shipping Address</h2>
+						<h1 style="color:#707070;">Shipping Address</h1>
 					<hr />
 					<p>Select a shipping address from your address book.
 					</p>

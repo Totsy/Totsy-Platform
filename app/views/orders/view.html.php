@@ -32,7 +32,7 @@
 							<tr>
 								<td valign="top">
 									<?php if ($new): ?>
-									<div class="rounded" style="color:#009900; margin:0px 10px 0px 0px; float: left; display:block; background:#ebffeb; border:1px solid #ddd; width:180px; text-align:center; padding:20px;">Shipping / Billing Info</div>
+<div style="display:none;">									<div class="rounded" style="color:#009900; margin:0px 10px 0px 0px; float: left; display:block; background:#ebffeb; border:1px solid #ddd; width:180px; text-align:center; padding:20px;">Shipping / Billing Info</div>
 									<div id="arrow-right">
 									  <div id="arrow-right-1"></div>
 									  <div id="arrow-right-2"></div>
@@ -43,6 +43,7 @@
 											<div id="arrow-right-2"></div>
 										</div><!--arrow-right-->
 										<div class="rounded" style="color:#009900; margin:0px 0px 0px 0px; float:left; display:block; background:#ebffeb; border:1px solid #ddd; width:188px; padding:20px; text-align:center;">Confirmation</div>
+										</div>
 										<div style="clear:both; margin-bottom:15px;"></div>
 										<div style="background:#f7f7f7; padding:10px; border:1px solid #ddd;"><h2>Thank you! Your order has been successfully placed! <span style="float:right;">Order #<?=$order->order_id;?></span></h2></div>
 										<div style="clear:both;"></div>
