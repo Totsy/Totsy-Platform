@@ -67,8 +67,11 @@
 					<?php
 						if($item->available < 9){
 							$qty = $item->available;
-
-							$select = array_unique(array_merge(array('0'), range('1',(string)$qty)));
+							if($item->quantity > $qty){
+								$select = array_unique(array_merge(array('0'), range('1',(string)$item->quantity)));
+							}else{
+								$select = array_unique(array_merge(array('0'), range('1',(string)$qty)));
+							}
 						}else{
 							$select = array_unique(array_merge(array('0'), range('1','9')));
 						}
