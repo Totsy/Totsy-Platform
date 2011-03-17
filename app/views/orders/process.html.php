@@ -44,85 +44,17 @@
 	      </div>
 	<ol id="checkout-process">
 	<!-- End Order Details -->
-		<li id="order-summary" class="step">
-			<table class="order-status" width="100%">
-				<tr>
-					<td style="text-align:right"><strong>Order Subtotal:</strong> </td>
-					<td style="text-align:center">$<?=number_format((float) $subTotal, 2);?></td>
-				</tr>
-				<tr>
-					<td style="text-align:right"><strong>Shipping:</strong> </td>
-					<td style="text-align:center">$<?=number_format((float) $shippingCost, 2);?></td>
-				</tr>
-				<?php if ($overShippingCost !=0): ?>
-					<tr>
-						<td style="text-align:right"><strong>Oversize Shipping:</strong> </td>
-						<td style="text-align:center">$<?=number_format((float) $overShippingCost, 2);?></td>
-					</tr>
-				<?php endif; ?>
-				<tr>
-					<td style="text-align:right"><strong>Sales Tax:</strong> </td>
-					<td style="text-align:center">$<?=number_format((float) $tax, 2);?></td>
-				</tr>
-
-				<?php if ($discountExempt): ?>
-						<p>**Your order contains an item where promotions or credits cannot be applied.<br>
-							If you need to use credits or promotion codes, please do so on a separate order.<br>
-							We apologize for any inconvenience this may cause.
-						</p>
-				<?php else: ?>
-					<tr>
-						<?php if ($credit): ?>
-							<?php $orderCredit->credit_amount = abs($orderCredit->credit_amount); ?>
-							<?=$this->form->create($orderCredit); ?>
-							<div class="form-row">
-							<?=$this->form->error('amount'); ?>
-							</div>
-								<td style="text-align:right"><strong>Credit:</strong> </td>
-								<td style="text-align:center">-$<?=number_format((float) $orderCredit->credit_amount, 2);?></td>
-								<td style="text-align:right">
-									<p> You have $<?=number_format((float) $userDoc->total_credit, 2);?> in credits</p>
-									$<?=$this->form->text('credit_amount', array('size' => 4, 'maxlength' => '6')); ?>
-									<?=$this->form->submit('Apply Credit'); ?>
-								</td>
-							<?=$this->form->end(); ?>
-						<?php endif ?>
-					</tr>
-					<tr>
-							<?=$this->form->create($orderPromo); ?>
-							<div class="form-row">
-								<?=$this->form->error('promo'); ?>
-							</div>
-								<td style="text-align:right"><strong>Promotion Savings:</strong> </td>
-								<?php if (!empty($orderPromo)): ?>
-									<td style="text-align:center">-$<?=number_format((float) abs($orderPromo->saved_amount), 2);?></td>
-								<?php else: ?>
-									<td style="text-align:center">-$<?=number_format((float) 0, 2);?></td>
-								<?php endif ?>
-								<td style="text-align:right">
-									<?=$this->form->text('code', array('size' => 10)); ?>
-									<?=$this->form->submit('Apply Promotion Code'); ?>
-								</td>
-							<?=$this->form->end(); ?>
-					</tr>
-				<?php endif ?>
-				<tr>
-					<td style="text-align:right"><strong>Total:</strong> </td>
-					<td style="text-align:center; color:#009900;">$<?=number_format((float) $total, 2);?></td>
-				</tr>
-			</table>
-		</li>
 <?=$this->form->create(); ?>
 	<!-- Start Payment Information -->
 	<li id="opc-payment" class="step">
 		<div id="checkout-process-payment">
-		<table width="55%">
+		<table>
 			<tr>
-				<td>
+				<td style="vertical-align:top; padding-right:10px;">
 
-					<h2 class="gray mar-b">Payment Information <span style=" font-size:12px; font-weight:normal;"><span class="red">*</span> Required Fields</span></h2>
+					<h1 style="color:#707070; font-size:22px;">Payment Information <span style="font-size:12px; font-weight:normal;"><span class="red">*</span> Required Fields</span></h1>
 					<hr />
-					<div style="width:">
+					<div>
 					  <fieldset>
 						<legend class="no-show">New Payment Method</legend>
 
@@ -170,11 +102,92 @@
 						</div>
 					</fieldset>
 					  </div>
+					  
+					  
 				</td>
-				<td style="vertical-align:top; padding:5px;">
+				
+				<td style="vertical-align:top; width:300px;">
+				<h1 style="color:#707070; font-size:22px;">Credits & Promotional Codes</h1>
+				<hr />
+						<li id="order-summary" class="step">
+			<table class="order-status" width="100%">
+				<tr>
+					<td><strong>Order Subtotal:</strong> </td>
+					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $subTotal, 2);?></td>
+				</tr>
+				<tr>
+					<td><strong>Shipping:</strong> </td>
+					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $shippingCost, 2);?></td>
+				</tr>
+				<?php if ($overShippingCost !=0): ?>
+					<tr>
+						<td><strong>Oversize Shipping:</strong> </td>
+						<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $overShippingCost, 2);?></td>
+					</tr>
+				<?php endif; ?>
+				<tr>
+					<td><strong>Sales Tax:</strong> </td>
+					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $tax, 2);?></td>
+
+				<?php if ($discountExempt): ?>
+						<p>**Your order contains an item where promotions or credits cannot be applied.<br>
+							If you need to use credits or promotion codes, please do so on a separate order.<br>
+							We apologize for any inconvenience this may cause.
+						</p>
+				<?php else: ?>
+				
+						<?php if ($credit): ?>
+							<div style="padding:10px; background:#eee;"><?php $orderCredit->credit_amount = abs($orderCredit->credit_amount); ?>
+							<?=$this->form->create($orderCredit); ?>
+							<div class="form-row">
+							<?=$this->form->error('amount'); ?>
+							</div>
+							You have $<?=number_format((float) $userDoc->total_credit, 2);?> in credits
+
+<hr />	
+							
+							<?=$this->form->text('credit_amount', array('size' => 6, 'maxlength' => '6')); ?>
+									<?=$this->form->submit('Apply Credit'); ?>
+<hr />
+<strong>Credit:</strong>
+								-$<?=number_format((float) $orderCredit->credit_amount, 2);?>
+							
+							<?=$this->form->end(); ?>
+							</div>
+						<?php endif ?>
+					<div style="padding:10px; background:#eee; margin:10px 0">
+							<?=$this->form->create($orderPromo); ?>
+							<div class="form-row">
+								<?=$this->form->error('promo'); ?>
+							</div>
+									<?=$this->form->text('code', array('size' => 6)); ?>
+									
+									<?=$this->form->submit('Apply Promo Code'); ?>
+								<hr />
+								<strong>Promo Savings:</strong>
+								<?php if (!empty($orderPromo)): ?>
+									-$<?=number_format((float) abs($orderPromo->saved_amount), 2);?>
+								<?php else: ?>
+									-$<?=number_format((float) 0, 2);?>
+								<?php endif ?>
+							<?=$this->form->end(); ?>
+							</div>
+					</tr>
+				<?php endif ?>
+
+				<tr>
+					<td style="text-align:left; color:#707070; font-size:22px;"><hr /><strong>Order Total:</strong> </td>
+					<td style="text-align:right; color:#009900; font-size:22px;"><hr />$<?=number_format((float) $total, 2);?></td>
+				</tr>
+			</table>
+		</li>
+				
+				</td>
+				<td style="vertical-align:top; padding-left:10px; width:250px">
+		
 					<?php if ($billingAddr) { ?>
 
-							<h4 style="color:#707070; font-weight:bold;">Billing Address - <a href="">Edit</a></h4>
+							<h1 style="color:#707070; font-size:22px">Billing Address</h1>
 							<hr />
 							<address class="billing-address">
 								<?=$billingAddr->address; ?> <?=$billingAddr->address_2; ?><br />
@@ -184,7 +197,7 @@
 					<?php } ?>
 					<br />
 					<?php if ($shippingAddr) { ?>
-							<h4 style="color:#707070; font-weight:bold;">Shipping Address - <a href="">Edit</a></h4>
+							<h1 style="color:#707070; font-size:22px">Shipping Address</h1>
 							<hr />
 							<address class="shipping-address">
 								<?=$shippingAddr->address; ?> <?=$shippingAddr->address_2; ?><br />

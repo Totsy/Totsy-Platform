@@ -406,7 +406,7 @@ a:link.delete, a:visited.delete { background-image:url(../img/cart-trash-btn.png
 #middle #checkout-process p { margin-bottom:10px }
 #checkout-process select { margin-bottom:10px }
 #checkout-process h2 { margin-bottom:10px }
-#checkout-process .form-row label { width:150px }
+#checkout-process .form-row label { width:122px }
 #shipping-new-address-form, #billing-new-address-form, #payment-method-form, #gift-message { display:none }
 table.order-status { width:100% }
 ol#order-details { margin:0 }
