@@ -102,7 +102,7 @@
 						</div>
 					</fieldset>
 					<li class="step">
-						<?=$this->form->submit('Place Your Order', array('class' => 'button submit fr')); ?>
+						<?=$this->form->submit('Place Your Order', array('class' => 'button submit fr button_hack')); ?>
 					</li>
 					<?=$this->form->hidden('credit_amount', array('value' => $orderCredit->credit_amount)); ?>
 					<?=$this->form->end(); ?>
