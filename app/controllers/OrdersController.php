@@ -213,6 +213,7 @@ class OrdersController extends BaseController {
 			$tax = array_sum($cart->tax($shippingAddr));
 			$shippingCost = Cart::shipping($cart, $shippingAddr);
 			$overShippingCost = Cart::overSizeShipping($cart);
+			$tax = $tax ? $tax + (($overShippingCost + $shippingCost) * Cart::TAX_RATE) : 0;
 		}
 
 		$map = function($item) { return $item->sale_retail * $item->quantity; };
