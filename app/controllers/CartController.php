@@ -83,14 +83,20 @@ class CartController extends BaseController {
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $itemId)));
 			if (!empty($cartItem)) {
 				$avail = $itemInfo->details->{$itemInfo->size} - Cart::reserved($itemId, $itemInfo->size);
-				if($cartItem->quantity < 9 && $cartItem->quantity < $avail ){
-					++$cartItem->quantity;
+				//Make sure user does not add more than 9 items to the cart
+				if($cartItem->quantity < 9 ){
+					//Make sure the items are available
+					if( $avail > 0 ){
+						++$cartItem->quantity;
+						$cartItem->save();
+					}else{
+						$cartItem->error = 'You can’t add this quantity in your cart. <a href="#5">Why?</a>';
 					$cartItem->save();
+					}
 				}else{
 					$cartItem->error = 'You have reached the maximum of 9 per item.';
 					$cartItem->save();
 				}
-
 			} else {
 				$item = $item->data();
 				$item['size'] = $size;
@@ -102,7 +108,6 @@ class CartController extends BaseController {
 
 				}
 			}
-
 			$this->redirect(array('Cart::view'));
 		}
 
