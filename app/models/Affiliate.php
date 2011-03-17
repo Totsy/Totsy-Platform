@@ -151,17 +151,13 @@ class Affiliate extends Base {
                         )));
                 $raw = static::linkshareRaw($order, $user, $user->created_date->sec, $trans_type);
                 //Encrypting raw message
-                $msg = base64_encode($raw);
-                $msg = str_replace('+', '/', $msg);
-                $msg = urlencode(str_replace('-', '_', $msg));
+                 $base64 = base64_encode($raw);
+                $msg = str_replace('-','_',str_replace('+','/',$base64));
 
                 //Used for authenticity
                 $md5_raw = hash_hmac('md5', $raw, 'Ve3YGHn7', true);
                 $md5 = base64_encode($md5_raw);
-                $md5 = str_replace('+', '/', $md5);
-                $md5 = urlencode(str_replace('-', '_', $md5));
-                $data = 'http://track.linksynergy.com/nvp?mid=36138&msg=' . $msg . '&md5=' . $md5 . '&xml=1';
-
+                $data = 'http://track.linksynergy.com/nvp?mid=36138&msg=' . urlencode($msg) . '&md5=' . urlencode($md5) . '&xml=1';
                 static::transaction($data, 'linkshare', $orderid, $trans_type);
             }
         }else{
@@ -204,7 +200,6 @@ class Affiliate extends Base {
         $raw .= 'qlist=' . implode('|' , $qlist) . '&';
         $raw .= 'cur=USD&';
         $raw .= 'amtlist='. implode('|', $amtlist);
-        var_dump($raw);
         return $raw;
     }
 
