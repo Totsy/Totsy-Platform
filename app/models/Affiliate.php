@@ -150,18 +150,15 @@ class Affiliate extends Base {
                             '_id' => $order->user_id
                         )));
                 $raw = static::linkshareRaw($order, $user, $user->created_date->sec, $trans_type);
+
                 //Encrypting raw message
-                $msg = base64_encode($raw);
-                $msg = str_replace('+', '/', $msg);
-                $msg = urlencode(str_replace('-', '_', $msg));
+                 $base64 = base64_encode($raw);
+                $msg = str_replace('-','_',str_replace('+','/',$base64));
 
                 //Used for authenticity
                 $md5_raw = hash_hmac('md5', $raw, 'Ve3YGHn7', true);
                 $md5 = base64_encode($md5_raw);
-                $md5 = str_replace('+', '/', $md5);
-                $md5 = urlencode(str_replace('-', '_', $md5));
-                $data = 'http://track.linksynergy.com/nvp?mid=36138&msg=' . $msg . '&md5=' . $md5 . '&xml=1';
-
+                $data = 'http://track.linksynergy.com/nvp?mid=36138&msg=' . urlencode($msg) . '&md5=' . urlencode($md5) . '&xml=1';
                 static::transaction($data, 'linkshare', $orderid, $trans_type);
             }
         }else{
@@ -193,18 +190,24 @@ class Affiliate extends Base {
             }else{
                 $itemInfo = Item::find( $item->item_id);
             }
-
             $skulist[] = $itemInfo->sku_details->{$item->size};
             $namelist[] = urlencode($itemInfo->description);
             $qlist[] =  $item->quantity;
             $amtlist[] = ($trans_type == 'cancel') ? (-$item->sale_retail * $item->quantity)*100 : ($item->sale_retail * $item->quantity)*100 ;
         }
-        $raw .= 'skulist=' . implode('|', $skulist) . '&';
-        $raw .= 'namelist=' . implode('|', $namelist) . '&';
-        $raw .= 'qlist=' . implode('|' , $qlist) . '&';
-        $raw .= 'cur=USD&';
-        $raw .= 'amtlist='. implode('|', $amtlist);
-        var_dump($raw);
+         if($order->promo_code){
+            $raw .= 'skulist=' . implode('|', $skulist) . '|Discount&';
+            $raw .= 'namelist=' . implode('|', $namelist) . '|Discount&';
+            $raw .= 'qlist=' . implode('|' , $qlist) . '|0&';
+            $raw .= 'cur=USD&';
+            $raw .= 'amtlist='. implode('|', $amtlist) . '|' . round($order->promo_discount,2)*100;
+        }else{
+            $raw .= 'skulist=' . implode('|', $skulist) . '&';
+            $raw .= 'namelist=' . implode('|', $namelist) . '&';
+            $raw .= 'qlist=' . implode('|' , $qlist) . '&';
+            $raw .= 'cur=USD&';
+            $raw .= 'amtlist='. implode('|', $amtlist);
+        }
         return $raw;
     }
 
