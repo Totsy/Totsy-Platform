@@ -21,7 +21,7 @@
 	<div class="tl"></div>
 	<div class="tr"></div>
 	<div id="page">
-	
+
 		<h2 class="gray mar-b">Edit Account Information</h2>
 		<hr />
 		<fieldset id="" class="">
@@ -70,6 +70,7 @@
 						))
 					;?>
 				</div>
+
 			<?=$this->form->submit('Submit', array('class' => 'submit-btn fr')); ?>
 			<?=$this->form->end();?>
 		</fieldset>

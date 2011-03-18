@@ -10,7 +10,7 @@ q:before, q:after { content:''; }
 abbr, acronym { border:0 }
 /** End YUI Resets **/
 
-body { font-family:Helvetica, Arial, Sans-Serif; color:#707070; background:#CDCDCD; font-size:14px; line-height:18px }
+body { font-family:Helvetica, Arial, Sans-Serif; color:#707070; background:#CDCDCD; font-size:12px; line-height:19px }
 a:link, a:visited { color:#EB132C; text-decoration:none }
 a:hover { text-decoration:underline }
 .grn #left ul.menu li.active a:link, .grn #left ul.menu li.active a:visited, .grn #content a:link, .grn #content a:visited, .grn #content li.active a:link, .grn #content li.active a:visited { color:#72BF50 }
@@ -385,10 +385,10 @@ span.citem.active-th { background:#FFF }
 .coming-soon-feature .manufacturer-logo { margin-bottom:20px }
 .coming-soon-feature h2 { margin-bottom:0 }
 .coming-soon-feature p { margin:20px 0 }
-.cart-table { }
+.cart-table { margin-bottom: 10px; }
 .cart-table th { background:#ACACAC; padding:8px 5px 5px 5px; color:#FFF; font-weight:bold }
-.cart-table td { padding:3px; vertical-align:top; border-bottom:1px solid #D7D7D7 }
-tr.alt0 td { background:#FFF; height:50px; vertical-align:middle; }
+.cart-table td { padding:0px; border-bottom:1px solid #D7D7D7 }
+tr.alt0 td { background:#f7f7f7; height:50px; vertical-align:middle; }
 tr.alt1 td { background:#EFEFEF; height:50px; vertical-align:middle; }
 td.cart-th { width:60px; height:60px; border-left:1px solid #D7D7D7 }
 td.cart-actions { border-right:1px solid #D7D7D7 }
@@ -402,11 +402,11 @@ td.return-policy a { float:left; margin-top:10px }
 .cart-remove { padding:10px; color:#EB132C; }
 a:link.delete, a:visited.delete { background-image:url(../img/cart-trash-btn.png); background-repeat:no-repeat; width:21px; height:21px; padding-left:20px; }
 #checkout-process { margin:0 }
-#checkout-process li.step { border-top:1px solid #D7D7D7; padding:10px 0 0 0 }
+#checkout-process li.step { padding:0 }
 #middle #checkout-process p { margin-bottom:10px }
 #checkout-process select { margin-bottom:10px }
 #checkout-process h2 { margin-bottom:10px }
-#checkout-process .form-row label { width:150px }
+#checkout-process .form-row label { width:122px }
 #shipping-new-address-form, #billing-new-address-form, #payment-method-form, #gift-message { display:none }
 table.order-status { width:100% }
 ol#order-details { margin:0 }
@@ -615,4 +615,16 @@ font-size: 14px; padding:5px; background: #eb132c; color:#fff; border-bottom: 1p
 	height: 415px;
 	overflow: hidden;
 	position: relative;
+}
+
+/************ Button ************/
+.button { display: inline-block; background: url('../img/btn-back-red.png') top left repeat-x !important; border: 1px solid #e22b00 !important; padding: 5px 7px 5px 7px !important; color: #fff !important; font-size: 16px !important; cursor: pointer; -moz-box-shadow:0 0 4px rgba(0, 0, 0, 0.3); border:4px solid #FFFFFF; }
+.button:hover { text-decoration: none; background: #e32f10!important; color: #fff !important; }
+.button:active { padding: 5px 7px 5px 7px !important; }
+.button { -moz-border-radius: 4px; -webkit-border-radius: 4px; }
+
+.button_hack {
+    left: 574px;
+    position: relative;
+    top: 125px;
 }

@@ -203,7 +203,7 @@ class Cart extends \lithium\data\Model {
 					break;
 			}
 		}
-		return $cart->sale_retail * $tax;
+		return ($cart->sale_retail * $cart->quantity) * $tax;
 	}
 
 	/**
@@ -246,7 +246,8 @@ class Cart extends \lithium\data\Model {
 	}
 
 	/**
-	 * @todo Need documentation
+	 * This gets all in a users cart and add the shipping for all oversized
+	 *	items
 	 */
 	public static function overSizeShipping($cart){
 			$items= $cart->data();
