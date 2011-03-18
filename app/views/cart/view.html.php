@@ -118,8 +118,8 @@
 
 		<tr class="cart-total">
 
-			<td colspan="7" id='subtotal'><strong>Subtotal: <span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong><br/><hr/><a id="update" class="button" href="/cart/update"> Update Cart <a/></td>
-		    </td>
+			<td colspan="7" id='subtotal'><strong>Subtotal: <span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong><br/><hr/><?=$this->form->submit('Update Cart', array('class' => 'button'))?></td>
+
 		</tr>
 		<tr class="cart-buy">
 			<td colspan="4" class="return-policy">
@@ -193,11 +193,6 @@
 	});
 	$("#subtotal").html("<strong>Subtotal: $" + subTotalProper + "</strong>");
 });
-</script>
-<script>
-	$('#update').click(function(){
-		$.post('/cart/update', $('select').serialize());
-	});
 </script>
 <script>
 function deletechecked(message)
