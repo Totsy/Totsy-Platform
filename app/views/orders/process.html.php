@@ -4,56 +4,30 @@
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
 	$preTotal = $subTotal + $orderCredit->credit_amount;
 	$afterDiscount = $preTotal + $orderPromo->saved_amount;
-	if($afterDiscount < 0){
+	if ($afterDiscount < 0) {
 		$afterDiscount = 0;
 	}
 	$total = $afterDiscount + $tax + $shippingCost + $overShippingCost;
-	?>
+?>
 <h1 class="page-title gray"><span class="_red"><a href="/" title="Sales">Today's Sales</a></span> / <a href="/cart/view" title="My Cart">My Cart</a> / Checkout / Process Payment</h1>
-
-	<hr />
-	
+<hr />
 <div id="middle" class="fullwidth">
-
 	<div class="tl"></div>
 	<div class="tr"></div>
 	<div id="page">
-<?php if ($errors = $order->errors()) { ?>
-
-                        <?php foreach ($errors as $error): ?>
-
-			<div class="checkout-error"><?=$error; ?></div>
-                        <?php endforeach ?>
-
-        <?php } ?>
-<div style="display:none;">
-	   <div class="rounded" style="color: #009900; margin:0px 10px 0px 0px; float: left; display:block; background:#ebffeb; border:1px solid #ddd; width:249px; text-align:center; padding:20px;">Shipping / Billing Info</div>
-<div id="arrow-right">
-  <div id="arrow-right-1"></div>
-  <div id="arrow-right-2"></div>
-</div><!--arrow-right-->
-
-	      <div class="rounded" style="color: #009900; margin:0px 10px 0px 0px; float: left; display:block; background:#ebffeb; border:1px solid #ddd; width:236px; padding:20px; text-align: center;">Payment</div>
-<div id="arrow-right">
-  <div id="arrow-right-1"></div>
-  <div id="arrow-right-2"></div>
-</div><!--arrow-right-->
-
-	      <div class="rounded" style="color:#ff0000; margin:0px 0px 0px 0px; float:left; display:block; background:#ffebeb; border:1px solid #ddd; width:246px; padding:20px; text-align:center;">Confirmation</div>
-	      
-	      </div>
-<div>
+<?php if ($errors = $order->errors()): ?>
+	<?php foreach ($errors as $error): ?>
+		<div class="checkout-error"><?=$error; ?></div>
+	<?php endforeach ?>
+<?php endif ?>
 	<!-- End Order Details -->
 <?=$this->form->create(); ?>
 	<!-- Start Payment Information -->
-		<div id="checkout-process-payment">
 		<table>
 			<tr>
 				<td style="vertical-align:top; padding-right:10px; width:303px;">
 					<h1 style="color:#707070; font-size:22px;">Payment Information <span style="font-size:12px; font-weight:normal;"><span class="red">*</span> Required Fields</span></h1>
 					<hr />
-					<div>
-					  <fieldset>
 						<legend class="no-show">New Payment Method</legend>
 						<p>
 							<label for="cc-type" class="required">Credit Card Type<span>*</span></label>
@@ -94,13 +68,9 @@
 							<label for="cc-ccv" class="required">CVV2 Code<span>*</span></label>
 							<?=$this->form->text('card[code]', array('class' => 'inputbox')); ?>
 						</p>
-					</fieldset>
-				
-						<?=$this->form->submit('Place Your Order', array('class' => 'button submit fr button_hack')); ?>
-					</li>
+					<?=$this->form->submit('Place Your Order', array('class' => 'button submit fr button_hack')); ?>
 					<?=$this->form->hidden('credit_amount', array('value' => $orderCredit->credit_amount)); ?>
 					<?=$this->form->end(); ?>
-					  </div>
 				</td>
 				<td style="vertical-align:top; width:300px;">
 					<h1 style="color:#707070; font-size:22px;">Credits &amp; Promotional Codes</h1>
@@ -131,20 +101,18 @@
 							<?php else: ?>
 							<?php if ($credit): ?>
 								<div style="padding:10px; background:#eee;"><?php $orderCredit->credit_amount = abs($orderCredit->credit_amount); ?>
-								<?=$this->form->create($orderCredit); ?>
-								<div class="form-row">
-								<?=$this->form->error('amount'); ?>
+									<?=$this->form->create($orderCredit); ?>
+									<?=$this->form->error('amount'); ?>
+									You have $<?=number_format((float) $userDoc->total_credit, 2);?> in credits
+									<hr />
+									<?=$this->form->text('credit_amount', array('size' => 6, 'maxlength' => '6')); ?>
+											<?=$this->form->submit('Apply Credit'); ?>
+											<hr />
+												<strong>Credit:</strong>
+										-$<?=number_format((float) $orderCredit->credit_amount, 2);?>
+									<?=$this->form->end(); ?>
 								</div>
-								You have $<?=number_format((float) $userDoc->total_credit, 2);?> in credits
-								<hr />
-								<?=$this->form->text('credit_amount', array('size' => 6, 'maxlength' => '6')); ?>
-										<?=$this->form->submit('Apply Credit'); ?>
-										<hr />
-											<strong>Credit:</strong>
-									-$<?=number_format((float) $orderCredit->credit_amount, 2);?>
-								<?=$this->form->end(); ?>
-								</div>
-								</div></div>
+
 							<?php else : ?>
 								<div style="padding:10px; background:#eee;"><h1 style="color:#707070; font-size:22px;">Credits: <span style="color:#009900; float:right;">$0.00</span></h1></div>
 							<?php endif ?>
@@ -170,7 +138,6 @@
 						</tr>
 					</table>
 				</td>
-				
 				<td style="vertical-align:top; padding-left:10px; width:250px">
 					<?php if ($billingAddr): ?>
 							<h1 style="color:#707070; font-size:22px">Billing Address</h1>
@@ -192,13 +159,12 @@
 							</address>
 					<?php endif ?>
 				</td>
-				</tr>
-			</table>
-			<hr/>
-			   <div style="clear:both; margin-top:90px;"></div>
+			</tr>
+		</table>
+		<hr/>
+		<div style="clear:both; margin-top:90px;"></div>
 		<h1 style="color:#707070;">Order Summary</h1>
-		<hr />
-		</div>
+			<hr />
 <div style="clear:both; margin-bottom:10px;"></div>
 
    
