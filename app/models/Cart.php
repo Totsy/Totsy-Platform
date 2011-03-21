@@ -405,7 +405,8 @@ class Cart extends \lithium\data\Model {
 		$event = null;
 		$ids = array();
 		foreach ($items as $item) {
-			$eventId = (!empty($item['event_id'])) ? $item['event_id'] : $item['event'][0];
+			$itemEvent = (empty($item['event'][0])) ? null : $item['event'][0];
+			$eventId = (!empty($item['event_id'])) ? $item['event_id'] : $itemEvent;
 			if (!empty($eventId)) {
 				$ids[] = new MongoId("$eventId");
 			}

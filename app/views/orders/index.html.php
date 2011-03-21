@@ -73,21 +73,27 @@
 								<span style="font-size:12px;">Quantity: <?=$item['quantity']?></span><br />
 						<?php endforeach ?>
 						</td>
-						<?php if (!empty($order->tracking_numbers)): ?>
-							<td>
+						<td>
+							<?php if (!empty($trackingNumbers) || !empty($order->tracking_numbers)): ?>
 								Tracking Number(s):
-							<?php foreach ($order->tracking_numbers as $number): ?>
-								<?=$this->shipment->link($number, array('type' => 'UPS'))?>
-							<?php endforeach ?>
-							</td>
-							</td>
-						<?php else: ?>
-							<?php if ($shipDate["$order->_id"] > time()): ?>
-								<td>Estimated Ship Date: <br/><?=date('M d, Y', $shipDate["$order->_id"]); ?></td>
+								<?php if ($trackingNumbers): ?>
+										<?php foreach ($trackingNumbers["$order->_id"] as $trackingNumber): ?>
+											<?=$this->shipment->link($trackingNumber, array('type' => 'UPS'))?>
+										<?php endforeach ?>
+								<?php endif ?>
+								<?php if (!empty($order->tracking_numbers)): ?>
+									<?php foreach ($order->tracking_numbers as $number): ?>
+										<?=$this->shipment->link($number, array('type' => 'UPS'))?>
+									<?php endforeach ?>
+								<?php endif ?>
 							<?php else: ?>
-								<td>-</td>
-							<?php endif ?>
+								<?php if ($shipDate["$order->_id"] > time()): ?>
+									Estimated Ship Date: <br/><?=date('M d, Y', $shipDate["$order->_id"]); ?>
+								<?php else: ?>
+									-
+								<?php endif ?>
 						<?php endif ?>
+						</td>
 					</tr>
 				<?php endforeach ?>
 			</tbody>
