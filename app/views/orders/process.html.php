@@ -13,11 +13,11 @@
 
 	<hr />
 	
-<div id="middle" class="fullwidth">
+
 
 	<div class="tl"></div>
 	<div class="tr"></div>
-	<div id="page">
+	
 <?php if ($errors = $order->errors()) { ?>
 
                         <?php foreach ($errors as $error): ?>
@@ -42,11 +42,10 @@
 	      <div class="rounded" style="color:#ff0000; margin:0px 0px 0px 0px; float:left; display:block; background:#ffebeb; border:1px solid #ddd; width:246px; padding:20px; text-align:center;">Confirmation</div>
 	      
 	      </div>
-<div>
+
 	<!-- End Order Details -->
 <?=$this->form->create(); ?>
 	<!-- Start Payment Information -->
-		<div id="checkout-process-payment">
 		<table>
 			<tr>
 				<td style="vertical-align:top; padding-right:10px; width:303px;">
@@ -251,7 +250,7 @@
 		<?php foreach ($cartByEvent as $key => $event): ?>
 		<table width="100%" class="cart-table">
 			<thead>
-				<tr >
+				<tr>
 					<td colspan="3" style="vertical-align:bottom; font-weight:bold; font-size:18px;"><?=$orderEvents[$key]['name']?><td>
 					<td></td>
 					<td colspan="3"><div class="fr" style="padding:10px; background:#fffbd1; border-left:1px solid #D7D7D7; border-right:1px solid #D7D7D7; border-top:1px solid #D7D7D7;">Estimated Ship Date: <?=date('M d, Y', $shipDate)?></div></td>
@@ -349,7 +348,7 @@
 	<div class="bl"></div>
 	<div class="br"></div>
 
-	</div>
+
 
 </div>
 
