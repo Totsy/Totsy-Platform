@@ -8,13 +8,28 @@ use app\models\Item;
 use app\models\Event;
 use app\models\Cart;
 
+/**
+ * Controls the user experience with an item.
+ *
+ * @see app\models\Affiliate
+ * @see app\models\Item
+ * @see app\models\Event
+ * @see app\models\Cart
+ */
 class ItemsController extends BaseController {
 
-	protected function _init() {
-		parent::_init();
-		$this->_render['layout'] = 'main';
-	}
-
+	/**
+	 * Loads all elements needed to view an item.
+	 *
+	 * The method first checks if the url from the request is valid
+	 * to process. If the event or item can't be properly matched then
+	 * there will be a forced redirect to the sales page.
+	 * Otherwise, the item is found and returned to the view.
+	 * In this method we also provide a tracking pixel for spinback.
+	 * @see app/models/Affiliate::getPixels()
+	 * @see app/models/Affiliate::generatePixel()
+	 * @return compact
+	 */
 	public function view() {
 		$itemUrl = $this->request->item;
 		$eventUrl = $this->request->event;
@@ -53,14 +68,30 @@ class ItemsController extends BaseController {
 			}
             $pixel = Affiliate::getPixels('product', 'spinback');
 			$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
-			                                            array('product' => $_SERVER['REQUEST_URI'])
-			                                            );
-
+				array('product' => $_SERVER['REQUEST_URI']));
 		}
 
-		return compact('item', 'event', 'related', 'sizes', 'shareurl', 'reserved', 'spinback_fb');
+		return compact(
+			'item',
+			'event',
+			'related',
+			'sizes',
+			'shareurl',
+			'reserved',
+			'spinback_fb'
+		);
 	}
 
+	/**
+	 * Checks the availability of an item.
+	 *
+	 * The method checks if a single item (color/size) is available for purchase.
+	 * A boolean of `true` is returned if the actual quantity available less reserved
+	 * items in the cart is greater than zero.
+	 *
+	 * @see app/models/Cart::reserved()
+	 * @return boolean
+	 */
 	public function available() {
 		$available = false;
 		$this->render(array('layout' => false));
