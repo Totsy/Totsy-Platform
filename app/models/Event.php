@@ -4,46 +4,47 @@ namespace app\models;
 use MongoDate;
 
 /**
-* The Event Class.
+* The Event Class
 *
-* Controls all the model methods needed to interact with an Event.
-* The Event represents the main component of the platform. An event contains a list
-* of events that are associated with it.
+* Controls all the model methods needed to interact with an Event object.
+* An event is an element that groups items together and represents a "sale"
+* on the website.
+* Each event has its own images that is displayed on the main page. Each event is open for
+* a short duration specified by the start_date and end_date.
 *
 * Events have the following document structure in Mongo:
 * {{{
-*	{
-*		"_id" : ObjectId("4c3fd068ce64e5e475270000"),
-*		"blurb" : "<p>Event Blurb</p>
-*		"created_date" : ISODate("2010-07-16T03:22:16.120Z"),
-*		"enable_items" : "0",
-*		"enabled" : false,
-*		"end_date" : ISODate("2010-08-03T10:00:23Z"),
-*		"event_image" : "4c409564ce64e5e275310100",
-*		"images" : {
-*			"logo_image" : "4c8f867bce64e53150db0500"
-*		},
-*		"itemTable_length" : "10",
-*		"items" : [
-*			"4c409c6cce64e5e175470100",
-*			"4c409c6cce64e5e175480100",
-*			"4c409c6cce64e5e1754a0100",
-*			"4c409c6cce64e5e1754b0100",
-*			"4c409c6cce64e5e1754c0100",
-*			"4c409c6cce64e5e1754d0100",
-*			"4c409c6cce64e5e1754e0100",
-*			"4c409c6cce64e5e1754f0100",
-*			"4c409c6cce64e5e175500100",
-*			"4c409c6cce64e5e175490100"
-*		],
-*		"logo_image" : "4c8f867bce64e53150db0500",
-*		"name" : "CachCach",
-*		"splash_big_image" : "4c409563ce64e5e175e30000",
-*		"splash_small_image" : "4c409564ce64e5e475630000",
-*		"start_date" : ISODate("2010-07-19T21:00:00Z"),
-*		"url" : "cachcach"
-*	}
+*    "_id" : ObjectId("4c3fd068ce64e5e475270000"),
+*    "blurb" : "<p>Event Blurb</p>,
+*    "created_date" : ISODate("2010-07-16T03:22:16.120Z"),
+*    "enable_items" : "0",
+*    "enabled" : false,
+*    "end_date" : ISODate("2010-08-03T10:00:23Z"),
+*    "event_image" : "4c409564ce64e5e275310100",
+*    "images" : {
+*        "logo_image" : "4c8f867bce64e53150db0500"
+*    },
+*    "items" : [
+*        "4c409c6cce64e5e175470100",
+*        "4c409c6cce64e5e175480100",
+*        "4c409c6cce64e5e1754a0100",
+*    ],
+*    "logo_image" : "4c8f867bce64e53150db0500",
+*    "name" : "CachCach",
+*    "splash_big_image" : "4c409563ce64e5e175e30000",
+*    "splash_small_image" : "4c409564ce64e5e475630000",
+*    "start_date" : ISODate("2010-07-19T21:00:00Z"),
+*    "url" : "cachcach"
 * }}}
+*
+*    * blurb - Any copy that will be displayed on the event index page
+*    * event_image - ObjectId of the gridfs image.
+*    * items - An array of all the products that are tied to this single event.
+*    * name - Text that is used as a reference for the event.
+*    * splash_big_image - ObjectId of the gridfs image.
+*    * splash_small_image - ObjectId of the gridfs image.
+*    * splash_small_image - ObjectId of the gridfs image.
+*    * url - The url of the event that is used as a lookup field.
 */
 class Event extends \lithium\data\Model {
 
