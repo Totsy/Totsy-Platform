@@ -22,60 +22,67 @@
 <?php endif ?>
 	<!-- End Order Details -->
 <?=$this->form->create(); ?>
-	<!-- Start Payment Information -->
 		<table>
 			<tr>
 				<td style="vertical-align:top; padding-right:10px; width:303px;">
-					<h1 style="color:#707070; font-size:22px;">Payment Information <span style="font-size:12px; font-weight:normal;"><span class="red">*</span> Required Fields</span></h1>
-					<hr />
-						<legend class="no-show">New Payment Method</legend>
-						<p>
-							<label for="cc-type" class="required">Credit Card Type<span>*</span></label>
-							<?=$this->form->select('card[type]', array(
-								'visa' => 'Visa',
-								'mc' => 'MasterCard',
-								'amex' => 'American Express'
-							)); ?>
-						</p>
-						<p>
-							<label for="cc" class="required">Card Number<span>*</span></label>
-							<?=$this->form->text('card[number]', array('id' => 'cc', 'class' => 'inputbox')); ?>
-						</p>
-						<p>
-							<label for="cc-exp" class="required">Expiration Date<span>*</span></label>
-							<?=$this->form->select('card[month]', array(
-								'' => 'Month',
-								1 => 'January',
-								2 => 'February',
-								3 => 'March',
-								4 => 'April',
-								5 => 'May',
-								6 => 'June',
-								7 => 'July',
-								8 => 'August',
-								9 => 'September',
-								10 => 'October',
-								11 => 'November',
-								12 => 'December'
-							)); ?>
-							<?php
-								$now = intval(date('Y'));
-								$years = array_combine(range($now, $now + 15), range($now, $now + 15));
-							?>
-							<?=$this->form->select('card[year]', array('' => 'Year') + $years); ?>
-						</p>
-						<p>
-							<label for="cc-ccv" class="required">CVV2 Code<span>*</span></label>
-							<?=$this->form->text('card[code]', array('class' => 'inputbox')); ?>
-						</p>
-					<?=$this->form->submit('Place Your Order', array('class' => 'button submit fr button_hack')); ?>
-					<?=$this->form->hidden('credit_amount', array('value' => $orderCredit->credit_amount)); ?>
-					<?=$this->form->end(); ?>
+					<table>
+						<tr>
+							<td>
+								<h1 style="color:#707070; font-size:22px;">Payment Information <span style="font-size:12px; font-weight:normal;"><span class="red">*</span> Required Fields</span></h1>
+								<hr />
+									<legend class="no-show">New Payment Method</legend>
+									<p>
+										<label for="cc-type" class="required">Credit Card Type<span>*</span></label>
+										<?=$this->form->select('card[type]', array(
+											'visa' => 'Visa',
+											'mc' => 'MasterCard',
+											'amex' => 'American Express'
+										)); ?>
+									</p>
+									<p>
+										<label for="cc" class="required">Card Number<span>*</span></label>
+										<?=$this->form->text('card[number]', array('id' => 'cc', 'class' => 'inputbox')); ?>
+									</p>
+									<p>
+										<label for="cc-exp" class="required">Expiration Date<span>*</span></label>
+										<?=$this->form->select('card[month]', array(
+											'' => 'Month',
+											1 => 'January',
+											2 => 'February',
+											3 => 'March',
+											4 => 'April',
+											5 => 'May',
+											6 => 'June',
+											7 => 'July',
+											8 => 'August',
+											9 => 'September',
+											10 => 'October',
+											11 => 'November',
+											12 => 'December'
+										)); ?>
+										<?php
+											$now = intval(date('Y'));
+											$years = array_combine(range($now, $now + 15), range($now, $now + 15));
+										?>
+										<?=$this->form->select('card[year]', array('' => 'Year') + $years); ?>
+									</p>
+									<p>
+										<label for="cc-ccv" class="required">CVV2 Code<span>*</span></label>
+										<?=$this->form->text('card[code]', array('class' => 'inputbox')); ?>
+									</p>
+								<?=$this->form->submit('Place Your Order', array('class' => 'button submit fr button_hack')); ?>
+								<?=$this->form->hidden('credit_amount', array('value' => $orderCredit->credit_amount)); ?>
+								<?=$this->form->end(); ?>
+							</td>
+						</tr>
+					</table>
 				</td>
 				<td style="vertical-align:top; width:300px;">
-					<h1 style="color:#707070; font-size:22px;">Credits &amp; Promotional Codes</h1>
-					<hr />
-					<table class="order-status" width="100%">
+					<table>
+						<tr>
+							<h1 style="color:#707070; font-size:22px;">Credits &amp; Promotional Codes</h1>
+							<hr />
+						</tr>
 						<tr>
 							<td><strong>Order Subtotal:</strong> </td>
 							<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $subTotal, 2);?></td>
@@ -92,13 +99,17 @@
 						<?php endif ?>
 						<tr>
 							<td><strong>Sales Tax:</strong></td>
-							<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $tax, 2);?></td>
+							<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $tax, 2);?>
+						</tr>
+						<tr>
 							<?php if ($discountExempt): ?>
 									<p>**Your order contains an item where promotions or credits cannot be applied.<br>
 										If you need to use credits or promotion codes, please do so on a separate order.<br>
 										We apologize for any inconvenience this may cause.
 									</p>
 							<?php else: ?>
+						</tr>
+						<tr>
 							<?php if ($credit): ?>
 								<div style="padding:10px; background:#eee;"><?php $orderCredit->credit_amount = abs($orderCredit->credit_amount); ?>
 									<?=$this->form->create($orderCredit); ?>
@@ -112,10 +123,12 @@
 										-$<?=number_format((float) $orderCredit->credit_amount, 2);?>
 									<?=$this->form->end(); ?>
 								</div>
-
+							
 							<?php else : ?>
 								<div style="padding:10px; background:#eee;"><h1 style="color:#707070; font-size:22px;">Credits: <span style="color:#009900; float:right;">$0.00</span></h1></div>
 							<?php endif ?>
+						</tr>
+						<tr>
 							<div style="padding:10px; background:#eee; margin:10px 0">
 								<?=$this->form->create($orderPromo); ?>
 									<?=$this->form->error('promo'); ?>
@@ -139,25 +152,31 @@
 					</table>
 				</td>
 				<td style="vertical-align:top; padding-left:10px; width:250px">
-					<?php if ($billingAddr): ?>
-							<h1 style="color:#707070; font-size:22px">Billing Address</h1>
-							<hr />
-							<address class="billing-address">
-								<?=$billingAddr->address; ?> <?=$billingAddr->address_2; ?><br />
-								<?=$billingAddr->city; ?>, <?=$billingAddr->state; ?>
-								<?=$billingAddr->zip; ?>
-							</address>
-					<?php endif ?>
-					<br />
-					<?php if ($shippingAddr): ?>
-							<h1 style="color:#707070; font-size:22px">Shipping Address</h1>
-							<hr />
-							<address class="shipping-address">
-								<?=$shippingAddr->address; ?> <?=$shippingAddr->address_2; ?><br />
-								<?=$shippingAddr->city; ?>, <?=$shippingAddr->state; ?>
-								<?=$shippingAddr->zip; ?>
-							</address>
-					<?php endif ?>
+					<table>
+						<tr>
+							<td>
+								<?php if ($billingAddr): ?>
+										<h1 style="color:#707070; font-size:22px">Billing Address</h1>
+										<hr />
+										<address class="billing-address">
+											<?=$billingAddr->address; ?> <?=$billingAddr->address_2; ?><br />
+											<?=$billingAddr->city; ?>, <?=$billingAddr->state; ?>
+											<?=$billingAddr->zip; ?>
+										</address>
+								<?php endif ?>
+								<br />
+								<?php if ($shippingAddr): ?>
+										<h1 style="color:#707070; font-size:22px">Shipping Address</h1>
+										<hr />
+										<address class="shipping-address">
+											<?=$shippingAddr->address; ?> <?=$shippingAddr->address_2; ?><br />
+											<?=$shippingAddr->city; ?>, <?=$shippingAddr->state; ?>
+											<?=$shippingAddr->zip; ?>
+										</address>
+								<?php endif ?>
+							</td>
+						</tr>
+					</table>
 				</td>
 			</tr>
 		</table>
