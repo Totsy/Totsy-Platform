@@ -42,11 +42,10 @@
 	      <div class="rounded" style="color:#ff0000; margin:0px 0px 0px 0px; float:left; display:block; background:#ffebeb; border:1px solid #ddd; width:246px; padding:20px; text-align:center;">Confirmation</div>
 	      
 	      </div>
-	<ol id="checkout-process">
+<div>
 	<!-- End Order Details -->
 <?=$this->form->create(); ?>
 	<!-- Start Payment Information -->
-	<li id="opc-payment" class="step">
 		<div id="checkout-process-payment">
 		<table>
 			<tr>
@@ -111,7 +110,7 @@
 				<td style="vertical-align:top; width:300px;">
 				<h1 style="color:#707070; font-size:22px;">Credits & Promotional Codes</h1>
 				<hr />
-						<li id="order-summary" class="step">
+					
 			<table class="order-status" width="100%">
 				<tr>
 					<td><strong>Order Subtotal:</strong> </td>
@@ -181,7 +180,7 @@
 					<td style="text-align:right; color:#009900; font-size:22px;"><hr />$<?=number_format((float) $total, 2);?></td>
 				</tr>
 			</table>
-		</li>
+		
 		
 				</td>
 				<td style="vertical-align:top; padding-left:10px; width:250px">
@@ -345,7 +344,7 @@
 
     <!-- end thawte seal -->
 
-	</ol>
+	</div>
 
 	<div class="bl"></div>
 	<div class="br"></div>
