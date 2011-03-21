@@ -42,7 +42,7 @@
 	      <div class="rounded" style="color:#ff0000; margin:0px 0px 0px 0px; float:left; display:block; background:#ffebeb; border:1px solid #ddd; width:246px; padding:20px; text-align:center;">Confirmation</div>
 	      
 	      </div>
-<div>
+<div style="303px!important;">
 	<!-- End Order Details -->
 <?=$this->form->create(); ?>
 	<!-- Start Payment Information -->
@@ -53,7 +53,7 @@
 
 					<h1 style="color:#707070; font-size:22px;">Payment Information <span style="font-size:12px; font-weight:normal;"><span class="red">*</span> Required Fields</span></h1>
 					<hr />
-					<div>
+					<div style="303px!important;">
 					  <fieldset>
 						<legend class="no-show">New Payment Method</legend>
 
