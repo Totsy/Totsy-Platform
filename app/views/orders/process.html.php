@@ -42,36 +42,36 @@
 	      <div class="rounded" style="color:#ff0000; margin:0px 0px 0px 0px; float:left; display:block; background:#ffebeb; border:1px solid #ddd; width:246px; padding:20px; text-align:center;">Confirmation</div>
 	      
 	      </div>
-<div style="303px!important;">
+<div>
 	<!-- End Order Details -->
 <?=$this->form->create(); ?>
 	<!-- Start Payment Information -->
 		<div id="checkout-process-payment">
-		<table style="width:100%;">
+		<table>
 			<tr>
 				<td style="vertical-align:top; padding-right:10px; width:303px;">
 
 					<h1 style="color:#707070; font-size:22px;">Payment Information <span style="font-size:12px; font-weight:normal;"><span class="red">*</span> Required Fields</span></h1>
 					<hr />
-					<div style="303px!important;">
+					<div>
 					  <fieldset>
 						<legend class="no-show">New Payment Method</legend>
 
-						<div class="form-row">
+						<p>
 							<label for="cc-type" class="required">Credit Card Type<span>*</span></label>
 							<?=$this->form->select('card[type]', array(
 								'visa' => 'Visa',
 								'mc' => 'MasterCard',
 								'amex' => 'American Express'
 							)); ?>
-						</div>
+						</p>
 
-						<div class="form-row">
+						<p>
 							<label for="cc" class="required">Card Number<span>*</span></label>
 							<?=$this->form->text('card[number]', array('id' => 'cc', 'class' => 'inputbox')); ?>
-						</div>
+						</p>
 
-						<div class="form-row">
+						<p>
 							<label for="cc-exp" class="required">Expiration Date<span>*</span></label>
 							<?=$this->form->select('card[month]', array(
 								'' => 'Month',
@@ -93,16 +93,16 @@
 								$years = array_combine(range($now, $now + 15), range($now, $now + 15));
 							?>
 							<?=$this->form->select('card[year]', array('' => 'Year') + $years); ?>
-						</div>
+						</p>
 
-						<div class="form-row">
+						<p>
 							<label for="cc-ccv" class="required">CVV2 Code<span>*</span></label>
 							<?=$this->form->text('card[code]', array('class' => 'inputbox')); ?>
-						</div>
+						</p>
 					</fieldset>
 				
 						<?=$this->form->submit('Place Your Order', array('class' => 'button submit fr button_hack')); ?>
-					
+					</li>
 					<?=$this->form->hidden('credit_amount', array('value' => $orderCredit->credit_amount)); ?>
 					<?=$this->form->end(); ?>
 					  </div>
