@@ -200,9 +200,15 @@ class OrderExport extends Base {
 		$itemCollection = Item::connection()->connection->items;
 		$orderFile = array();
 		$heading = ProcessedOrder::$_fileHeading;
+		$promocodes = array('$nin' => array(
+			new MongoRegex("/15CREDIT/i"),
+			new MongoRegex("/TENOFF/i"),
+			new MongoRegex("/5OFF/i")
+		));
 		$orders = $orderCollection->find(array(
 			'items.event_id' => array('$in' => $this->orderEvents),
-			'cancel' => array('$ne' => true)
+			'cancel' => array('$ne' => true),
+			'promo_code' => $promocodes
 		));
 		if ($orders) {
 			$inc = 1;
