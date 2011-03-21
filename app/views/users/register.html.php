@@ -125,7 +125,7 @@
 									<?=$this->form->error('password'); ?>
 									</div>
 									<div class="form-row">
-										<?=$this->form->checkbox('terms', array('class'=>"", 'style'=>"float:left;margin-right:4px"));?>
+										<?=$this->form->checkbox('terms', array('class'=>"", "checked" => "checked", 'style'=>"float:left;margin-right:4px; display: none;"));?>
 
 										<span class="sm reg-tos">
 												By requesting membership, I accept the
@@ -138,7 +138,6 @@
 										<?=$this->form->error('terms'); ?>
 									</div>
 								<?=$this->form->end(); ?>
-
 								</div>
 								<div class="bl"></div>
 								<div class="br"></div>
@@ -172,6 +171,6 @@ jQuery(function($){
 		<li class="last"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
 	</ul>
 
-	<span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved.</span>
+	<span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved. <br />10 West 18th Street, Floor 4 - New York, NY 10011</span>
 
 </div>
