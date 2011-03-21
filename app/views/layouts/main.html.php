@@ -3,6 +3,7 @@
 <html>
 <head>
 	<?=$this->html->charset();?>
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
 	<title>
 		<?=$this->title() ?: 'Totsy, the private sale site for Moms'; ?>
 		<?=$this->title() ? '- Totsy' : ''; ?>
