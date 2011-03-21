@@ -50,13 +50,11 @@
 		<table>
 			<tr>
 				<td style="vertical-align:top; padding-right:10px; width:303px;">
-
 					<h1 style="color:#707070; font-size:22px;">Payment Information <span style="font-size:12px; font-weight:normal;"><span class="red">*</span> Required Fields</span></h1>
 					<hr />
 					<div>
 					  <fieldset>
 						<legend class="no-show">New Payment Method</legend>
-
 						<p>
 							<label for="cc-type" class="required">Credit Card Type<span>*</span></label>
 							<?=$this->form->select('card[type]', array(
@@ -65,12 +63,10 @@
 								'amex' => 'American Express'
 							)); ?>
 						</p>
-
 						<p>
 							<label for="cc" class="required">Card Number<span>*</span></label>
 							<?=$this->form->text('card[number]', array('id' => 'cc', 'class' => 'inputbox')); ?>
 						</p>
-
 						<p>
 							<label for="cc-exp" class="required">Expiration Date<span>*</span></label>
 							<?=$this->form->select('card[month]', array(
@@ -94,7 +90,6 @@
 							?>
 							<?=$this->form->select('card[year]', array('' => 'Year') + $years); ?>
 						</p>
-
 						<p>
 							<label for="cc-ccv" class="required">CVV2 Code<span>*</span></label>
 							<?=$this->form->text('card[code]', array('class' => 'inputbox')); ?>
@@ -108,85 +103,76 @@
 					  </div>
 				</td>
 				<td style="vertical-align:top; width:300px;">
-				<h1 style="color:#707070; font-size:22px;">Credits & Promotional Codes</h1>
-				<hr />
-					
-			<table class="order-status" width="100%">
-				<tr>
-					<td><strong>Order Subtotal:</strong> </td>
-					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $subTotal, 2);?></td>
-				</tr>
-				<tr>
-					<td><strong>Shipping:</strong> </td>
-					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $shippingCost, 2);?></td>
-				</tr>
-				<?php if ($overShippingCost !=0): ?>
-					<tr>
-						<td><strong>Oversize Shipping:</strong> </td>
-						<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $overShippingCost, 2);?></td>
-					</tr>
-				<?php endif; ?>
-				<tr>
-					<td><strong>Sales Tax:</strong> </td>
-					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $tax, 2);?></td>
-
-				<?php if ($discountExempt): ?>
-						<p>**Your order contains an item where promotions or credits cannot be applied.<br>
-							If you need to use credits or promotion codes, please do so on a separate order.<br>
-							We apologize for any inconvenience this may cause.
-						</p>
-				<?php else: ?>
-
-						<?php if ($credit): ?>
-							<div style="padding:10px; background:#eee;"><?php $orderCredit->credit_amount = abs($orderCredit->credit_amount); ?>
-							<?=$this->form->create($orderCredit); ?>
-							<div class="form-row">
-							<?=$this->form->error('amount'); ?>
-							</div>
-							You have $<?=number_format((float) $userDoc->total_credit, 2);?> in credits
-							<hr />
-							<?=$this->form->text('credit_amount', array('size' => 6, 'maxlength' => '6')); ?>
-									<?=$this->form->submit('Apply Credit'); ?>
-									<hr />
-										<strong>Credit:</strong>
-								-$<?=number_format((float) $orderCredit->credit_amount, 2);?>
-							<?=$this->form->end(); ?>
-							</div>
-							</div></div>
-						<?php else : ?>
-						<div style="padding:10px; background:#eee;"><h1 style="color:#707070; font-size:22px;">Credits: <span style="color:#009900; float:right;">$0.00</span></h1></div>
+					<h1 style="color:#707070; font-size:22px;">Credits &amp; Promotional Codes</h1>
+					<hr />
+					<table class="order-status" width="100%">
+						<tr>
+							<td><strong>Order Subtotal:</strong> </td>
+							<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $subTotal, 2);?></td>
+						</tr>
+						<tr>
+							<td><strong>Shipping:</strong> </td>
+							<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $shippingCost, 2);?></td>
+						</tr>
+						<?php if ($overShippingCost !=0): ?>
+							<tr>
+								<td><strong>Oversize Shipping:</strong> </td>
+								<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $overShippingCost, 2);?></td>
+							</tr>
 						<?php endif ?>
-					<div style="padding:10px; background:#eee; margin:10px 0">
-							<?=$this->form->create($orderPromo); ?>
-							<div class="form-row">
-								<?=$this->form->error('promo'); ?>
-							</div>
-									<?=$this->form->text('code', array('size' => 6)); ?>
-									
-									<?=$this->form->submit('Apply Promo Code'); ?>
+						<tr>
+							<td><strong>Sales Tax:</strong></td>
+							<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $tax, 2);?></td>
+							<?php if ($discountExempt): ?>
+									<p>**Your order contains an item where promotions or credits cannot be applied.<br>
+										If you need to use credits or promotion codes, please do so on a separate order.<br>
+										We apologize for any inconvenience this may cause.
+									</p>
+							<?php else: ?>
+							<?php if ($credit): ?>
+								<div style="padding:10px; background:#eee;"><?php $orderCredit->credit_amount = abs($orderCredit->credit_amount); ?>
+								<?=$this->form->create($orderCredit); ?>
+								<div class="form-row">
+								<?=$this->form->error('amount'); ?>
+								</div>
+								You have $<?=number_format((float) $userDoc->total_credit, 2);?> in credits
 								<hr />
-								<strong>Promo Savings:</strong>
-								<?php if (!empty($orderPromo)): ?>
-									-$<?=number_format((float) abs($orderPromo->saved_amount), 2);?>
-								<?php else: ?>
-									-$<?=number_format((float) 0, 2);?>
-								<?php endif ?>
-							<?=$this->form->end(); ?>
+								<?=$this->form->text('credit_amount', array('size' => 6, 'maxlength' => '6')); ?>
+										<?=$this->form->submit('Apply Credit'); ?>
+										<hr />
+											<strong>Credit:</strong>
+									-$<?=number_format((float) $orderCredit->credit_amount, 2);?>
+								<?=$this->form->end(); ?>
+								</div>
+								</div></div>
+							<?php else : ?>
+								<div style="padding:10px; background:#eee;"><h1 style="color:#707070; font-size:22px;">Credits: <span style="color:#009900; float:right;">$0.00</span></h1></div>
+							<?php endif ?>
+							<div style="padding:10px; background:#eee; margin:10px 0">
+								<?=$this->form->create($orderPromo); ?>
+									<?=$this->form->error('promo'); ?>
+									<?=$this->form->text('code', array('size' => 6)); ?>
+									<?=$this->form->submit('Apply Promo Code'); ?>
+									<hr />
+									<strong>Promo Savings:</strong>
+									<?php if (!empty($orderPromo)): ?>
+										-$<?=number_format((float) abs($orderPromo->saved_amount), 2);?>
+									<?php else: ?>
+										-$<?=number_format((float) 0, 2);?>
+									<?php endif ?>
+								<?=$this->form->end(); ?>
 							</div>
-					</tr>
-				<?php endif ?>
-				<tr>
-					<td style="text-align:left; color:#707070; font-size:22px;"><hr /><strong>Order Total:</strong> </td>
-					<td style="text-align:right; color:#009900; font-size:22px;"><hr />$<?=number_format((float) $total, 2);?></td>
-				</tr>
-			</table>
-		
-		
+						</tr>
+					<?php endif ?>
+						<tr>
+							<td style="text-align:left; color:#707070; font-size:22px;"><hr /><strong>Order Total:</strong> </td>
+							<td style="text-align:right; color:#009900; font-size:22px;"><hr />$<?=number_format((float) $total, 2);?></td>
+						</tr>
+					</table>
 				</td>
+				
 				<td style="vertical-align:top; padding-left:10px; width:250px">
-		
-					<?php if ($billingAddr) { ?>
-
+					<?php if ($billingAddr): ?>
 							<h1 style="color:#707070; font-size:22px">Billing Address</h1>
 							<hr />
 							<address class="billing-address">
@@ -194,9 +180,9 @@
 								<?=$billingAddr->city; ?>, <?=$billingAddr->state; ?>
 								<?=$billingAddr->zip; ?>
 							</address>
-					<?php } ?>
+					<?php endif ?>
 					<br />
-					<?php if ($shippingAddr) { ?>
+					<?php if ($shippingAddr): ?>
 							<h1 style="color:#707070; font-size:22px">Shipping Address</h1>
 							<hr />
 							<address class="shipping-address">
@@ -204,44 +190,15 @@
 								<?=$shippingAddr->city; ?>, <?=$shippingAddr->state; ?>
 								<?=$shippingAddr->zip; ?>
 							</address>
-
-					<?php } ?>
+					<?php endif ?>
 				</td>
-			</tr>
-		</table>
-
-			<!-- <p>
-				<label for="payment-method-select">Pay with:</label>
-				<?=$this->form->select(
-					'payment',
-					array('' => 'New Credit Card'),
-					array('id' => 'payment', 'value' => '1', 'target' => '#payment-method-form')
-				); ?>
-			</p> -->
-			<!--
-			     <li class="step">
-				<fieldset>
-
-					<p><a href="javascript:void(0)" id="gift" title="Want to include a gift message?">Want to include a gift message?</a></p>
-
-					<div id="gift-message">
-						<textarea name="gift-message" class="inputbox"></textarea>
-					</div>
-
-				</fieldset>
-
-			     </li>
-			-->
+				</tr>
+			</table>
 			<hr/>
-
-			
-			   
-			   
 			   <div style="clear:both; margin-top:90px;"></div>
-
 		<h1 style="color:#707070;">Order Summary</h1>
 		<hr />
-
+		</div>
 <div style="clear:both; margin-bottom:10px;"></div>
 
    
