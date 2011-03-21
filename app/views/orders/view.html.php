@@ -98,7 +98,7 @@
 														<?php else: ?>
 															 <?=date('M d, Y', $shipDate)?>
 														<?php endif ?>
-														
+
 													</td>
 												</tr>
 												<tr style="background:#ddd;">
@@ -222,6 +222,11 @@
 							<tr>
 								<td colspan="4">
 									<table>
+									    <tr>
+									        <td>
+									            <?php echo $spinback_fb; ?>
+									        </td>
+									    </tr>
 										<tr>
 											<td>
 												<p>A TREE HAS BEEN PLANTED WITH THIS ORDER.

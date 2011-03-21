@@ -11,6 +11,7 @@ use app\models\Order;
 use app\models\Event;
 use app\models\Promotion;
 use app\models\Promocode;
+use app\models\Affiliate;
 use app\controllers\BaseController;
 use lithium\storage\Session;
 use lithium\util\Validator;
@@ -71,6 +72,12 @@ class OrdersController extends BaseController {
 		$itemsByEvent = $this->itemGroupByEvent($order);
 		$orderEvents = $this->orderEvents($order);
 
+
+		$pixel = Affiliate::getPixels('order', 'spinback');
+		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
+			                                            array('order' => $_SERVER['REQUEST_URI'])
+			                                            );
+
 		return compact(
 			'order',
 			'orderEvents',
@@ -79,7 +86,8 @@ class OrdersController extends BaseController {
 			'shipDate',
 			'allEventsClosed',
 			'shipped',
-			'preShipment'
+			'preShipment',
+			'spinback_fb'
 		);
 	}
 

@@ -38,7 +38,6 @@ class AffiliatesController extends BaseController {
                     extract(UsersController::registration($user));
                     $success = $saved;
                     $errors = $user->errors();
-
                 }
             }
             $this->render(array('data'=>compact('success','errors'), 'layout' =>false));
@@ -66,6 +65,10 @@ class AffiliatesController extends BaseController {
                 }
             }
 
+            if(!Session::check('userLogin')){
+                $this->redirect($urlredirect);
+            }
+
             if( ($pdata) ) {
 
                 $data['email'] = strtolower($pdata['email']);
@@ -90,11 +93,7 @@ class AffiliatesController extends BaseController {
                    Session::write('userLogin', $userLogin, array('name'=>'default'));
                    $ipaddress = $this->request->env('REMOTE_ADDR');
                     User::log($ipaddress);
-                    if($affiliate == 'linkshare'){
-                       if( array_key_exists('url', $gdata)){
-                            $this->redirect(htmlspecialchars($gdata['url']));
-                       }
-                    }
+
                     Session::write('pixel',$pixel, array('name'=>'default'));
                     $this->redirect($urlredirect);
                 }
