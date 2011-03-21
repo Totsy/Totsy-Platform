@@ -28,13 +28,13 @@ $total = $afterDiscount + $tax + $shippingCost + $overShippingCost;
     <?php echo $this->form->create(); ?>
     <!-- Start Payment Information -->
     <div id="checkout-process-payment">
-    <table width="100%">
+    <table>
         <tr>
 
-      <td valign="top" style="vertical-align:top; padding-right:10px; width:303px;">
-        <table width="100%">
+      <td valign="top" style="vertical-align:top; padding-right:10px;">
+        <table>
           <tr>
-            <td><h1 style="color:#707070; font-size:22px;">Payment Information <span style="font-size:12px; font-weight:normal;"><span class="red">*</span> Required Fields</span></h1>
+            <td width="269"><h1 style="color:#707070; font-size:22px;">Payment Information <span style="font-size:12px; font-weight:normal;"><span class="red">*</span> Required Fields</span></h1>
         <hr /></td>
           </tr>
           <tr>
@@ -43,17 +43,18 @@ $total = $afterDiscount + $tax + $shippingCost + $overShippingCost;
                 <legend class="no-show">New Payment Method</legend>
                 <div class="form-row">
                   <label for="cc-type2" class="required">Credit Card Type<span>*</span></label>
-                  <?php echo $this->form->select('card[type]', array(
+                  <br><br>
+				  <?php echo $this->form->select('card[type]', array(
 		'visa' => 'Visa',
 		'mc' => 'MasterCard',
 		'amex' => 'American Express'
 	)); ?> </div>
                 <div class="form-row">
                   <label for="cc2" class="required">Card Number<span>*</span></label>
-                  <?php echo $this->form->text('card[number]', array('id' => 'cc', 'class' => 'inputbox')); ?> </div>
+                  <br><br><?php echo $this->form->text('card[number]', array('id' => 'cc', 'class' => 'inputbox')); ?> </div>
                 <div class="form-row">
                   <label for="cc-exp2" class="required">Expiration Date<span>*</span></label>
-                  <?php echo $this->form->select('card[month]', array(
+                  <br ><br><?php echo $this->form->select('card[month]', array(
 		'' => 'Month',
 		1 => 'January',
 		2 => 'February',
@@ -75,12 +76,12 @@ $years = array_combine(range($now, $now + 15), range($now, $now + 15));
                   <?php echo $this->form->select('card[year]', array('' => 'Year') + $years); ?> </div>
                 <div class="form-row">
                   <label for="cc-ccv2" class="required">CVV2 Code<span>*</span></label>
-                  <?php echo $this->form->text('card[code]', array('class' => 'inputbox')); ?> </div>
+                  <br ><br><?php echo $this->form->text('card[code]', array('class' => 'inputbox')); ?> </div>
               </fieldset>
               <?php echo $this->form->submit('Place Your Order', array('class' => 'button submit fr button_hack')); ?> <?php echo $this->form->hidden('credit_amount', array('value' => $orderCredit->credit_amount)); ?> <?php echo $this->form->end(); ?> </div></td>
           </tr>
       </table></td>
-      <td valign="top" style="vertical-align:top; width:300px;"><table class="order-status" width="100%">
+      <td valign="top" style="vertical-align:top;"><table class="order-status">
         <tr>
           <td colspan="2"><h1 style="color:#707070; font-size:22px;">Credits &amp; Promotional Codes</h1>
             <hr /></td>
@@ -164,9 +165,9 @@ $years = array_combine(range($now, $now + 15), range($now, $now + 15));
           </tr>
     </table></td>
 
-        <td valign="top" style="vertical-align:top; padding-left:10px; width:220px"><table width="100%">
+        <td valign="top" style="vertical-align:top; padding-left:10px;"><table>
           <tr>
-              <td><h1 style="color:#707070; font-size:22px;"><span style="color:#707070; font-size:22px">
+              <td width="186"><h1 style="color:#707070; font-size:22px;"><span style="color:#707070; font-size:22px">
                 <?php if ($billingAddr) { ?>
                 Billing Address</span></h1>
                 <hr /></td>
