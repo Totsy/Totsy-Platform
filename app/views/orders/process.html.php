@@ -47,7 +47,7 @@
 <?=$this->form->create(); ?>
 	<!-- Start Payment Information -->
 		<div id="checkout-process-payment">
-		<table>
+		<table style="width:100%;">
 			<tr>
 				<td style="vertical-align:top; padding-right:10px; width:303px;">
 
