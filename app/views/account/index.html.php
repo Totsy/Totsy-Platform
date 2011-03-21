@@ -49,7 +49,7 @@
 					    Totsy Member<br />
 					<?php endif;?>
 					<?=$userInfo['email'];?><br />
-					<?=$this->html->link('Change Password', '/account/info');?>
+					<?=$this->html->link('Change Password', '/account/password');?>
 				</div>
 				<div class="bl"></div>
 				<div class="br"></div>
