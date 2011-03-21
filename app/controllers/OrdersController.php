@@ -38,16 +38,19 @@ class OrdersController extends BaseController {
 				'user_id' => (string) $user['_id']),
 			'order' => array('date_created' => 'DESC')
 		));
-		$trackingNum = $trackingNumbers = array();
+		$trackingNum = $list = $trackingNumbers = array();
 		foreach ($orders as $order) {
 			$shipDate["$order->_id"] = Cart::shipDate($order);
 			$conditions = array('OrderId' => $order->_id);
 			$shipRecords = OrderShipped::find('all', compact('conditions'));
 			foreach ($shipRecords as $record) {
-				$trackingNum[] = $record->{'Tracking #'};
+				if (!in_array($record->{'Tracking #'}, $list)) {
+					$list[] = $record->{'Tracking #'};
+					$trackingNum[] = array('code' => $record->{'Tracking #'}, 'method' => $record->ShipMethod);
+				}
 			}
 			if ($trackingNum) {
-				$trackingNumbers["$order->_id"] = array_unique($trackingNum);
+				$trackingNumbers["$order->_id"] = $trackingNum;
 			}
 		}
 

@@ -77,9 +77,11 @@
 							<?php if (!empty($trackingNumbers) || !empty($order->tracking_numbers)): ?>
 								Tracking Number(s):
 								<?php if ($trackingNumbers): ?>
+									<?php if (!empty($trackingNumbers["$order->_id"])): ?>
 										<?php foreach ($trackingNumbers["$order->_id"] as $trackingNumber): ?>
-											<?=$this->shipment->link($trackingNumber, array('type' => 'UPS'))?>
+											<?=$this->shipment->link($trackingNumber['code'], array('type' => $trackingNumber['method']))?>
 										<?php endforeach ?>
+									<?php endif ?>
 								<?php endif ?>
 								<?php if (!empty($order->tracking_numbers)): ?>
 									<?php foreach ($order->tracking_numbers as $number): ?>
