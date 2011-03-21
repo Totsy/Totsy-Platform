@@ -70,11 +70,12 @@
 						))
 					;?>
 				</div>
-			<?=$this->form->submit('Submit', array('class' => 'submit-btn fr')); ?>
+			<?=$this->form->submit('Change Password', array('class' => 'button fr')); ?>
 			<?=$this->form->end();?>
 		</fieldset>
 
 	</div>
 	<div class="bl"></div>
 	<div class="br"></div>
+</div>
 </div>

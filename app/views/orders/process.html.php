@@ -13,11 +13,11 @@
 
 	<hr />
 	
-<div id="middle" class="fullwidth">
+
 
 	<div class="tl"></div>
 	<div class="tr"></div>
-	<div id="page">
+	
 <?php if ($errors = $order->errors()) { ?>
 
                         <?php foreach ($errors as $error): ?>
@@ -42,14 +42,13 @@
 	      <div class="rounded" style="color:#ff0000; margin:0px 0px 0px 0px; float:left; display:block; background:#ffebeb; border:1px solid #ddd; width:246px; padding:20px; text-align:center;">Confirmation</div>
 	      
 	      </div>
-<div>
+
 	<!-- End Order Details -->
 <?=$this->form->create(); ?>
 	<!-- Start Payment Information -->
-		<div id="checkout-process-payment">
 		<table>
 			<tr>
-				<td style="vertical-align:top; padding-right:10px;">
+				<td style="vertical-align:top; padding-right:10px; width:303px;">
 
 					<h1 style="color:#707070; font-size:22px;">Payment Information <span style="font-size:12px; font-weight:normal;"><span class="red">*</span> Required Fields</span></h1>
 					<hr />
@@ -100,9 +99,9 @@
 							<?=$this->form->text('card[code]', array('class' => 'inputbox')); ?>
 						</div>
 					</fieldset>
-					<li class="step">
+				
 						<?=$this->form->submit('Place Your Order', array('class' => 'button submit fr button_hack')); ?>
-					</li>
+					
 					<?=$this->form->hidden('credit_amount', array('value' => $orderCredit->credit_amount)); ?>
 					<?=$this->form->end(); ?>
 					  </div>
@@ -156,7 +155,7 @@
 						<?php else : ?>
 						<div style="padding:10px; background:#eee;"><h1 style="color:#707070; font-size:22px;">Credits: <span style="color:#009900; float:right;">$0.00</span></h1></div>
 						<?php endif ?>
-					<div style="padding:10px; background:#eee; margin:10px 0">
+					<div style="padding:10px; background:#eee; margin:10px 0;">
 							<?=$this->form->create($orderPromo); ?>
 							<div class="form-row">
 								<?=$this->form->error('promo'); ?>
@@ -183,7 +182,7 @@
 		
 		
 				</td>
-				<td style="vertical-align:top; padding-left:10px; width:250px">
+				<td style="vertical-align:top; padding-left:10px; width:220px">
 		
 					<?php if ($billingAddr) { ?>
 
@@ -239,7 +238,7 @@
 			   
 			   <div style="clear:both; margin-top:90px;"></div>
 
-		<h1 style="color:#707070;">Order Summary</h2>
+		<h1 style="color:#707070;">Order Summary</h1>
 		<hr />
 
 <div style="clear:both; margin-bottom:10px;"></div>
@@ -251,8 +250,8 @@
 		<?php foreach ($cartByEvent as $key => $event): ?>
 		<table width="100%" class="cart-table">
 			<thead>
-				<tr >
-					<td colspan='3' style="vertical-align:bottom; font-weight:bold; font-size:18px;"><?=$orderEvents[$key]['name']?><td>
+				<tr>
+					<td colspan="3" style="vertical-align:bottom; font-weight:bold; font-size:18px;"><?=$orderEvents[$key]['name']?><td>
 					<td></td>
 					<td colspan="3"><div class="fr" style="padding:10px; background:#fffbd1; border-left:1px solid #D7D7D7; border-right:1px solid #D7D7D7; border-top:1px solid #D7D7D7;">Estimated Ship Date: <?=date('M d, Y', $shipDate)?></div></td>
 				</tr>
@@ -349,7 +348,7 @@
 	<div class="bl"></div>
 	<div class="br"></div>
 
-	</div>
+
 
 </div>
 
