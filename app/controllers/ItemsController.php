@@ -26,10 +26,19 @@ class ItemsController extends BaseController {
 	 * there will be a forced redirect to the sales page.
 	 * Otherwise, the item is found and returned to the view.
 	 * In this method we also provide a tracking pixel for spinback.
+	 *
 	 * @see app/models/Affiliate::getPixels()
 	 * @see app/models/Affiliate::generatePixel()
+	 * @see app/models/Item::sizes()
 	 * @return compact
-	 */
+	 *  * $item: `Object` of the item.
+	 *  * $event: `Object` of the event.
+	 *  * $related: `Object` of items that should be shown within the view.
+	 *  * $sizes: `Array` of sizes that are available for the item.
+	 *  * $shareurl: `String` containing URL that will be shared with 3rd party systems.
+	 *  * $reserved: `Objects` of related items.
+	 *  * $spinback_fb: `String` containing pixel that will fire in the view.
+	*/
 	public function view() {
 		$itemUrl = $this->request->item;
 		$eventUrl = $this->request->event;
