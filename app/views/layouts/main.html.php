@@ -2,8 +2,7 @@
 <!doctype html>
 <html>
 <head>
-	<?=$this->html->charset();?>
-	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
+	<?=$this->html->charset();?>3
 	<title>
 		<?=$this->title() ?: 'Totsy, the private sale site for Moms'; ?>
 		<?=$this->title() ? '- Totsy' : ''; ?>
