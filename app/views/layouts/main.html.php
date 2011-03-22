@@ -9,9 +9,9 @@
 	</title>
 	<?=$this->html->style(array('base.css?v=012346'), array('media' => 'screen')); ?>
 	<?=$this->html->script(array(
-		'jquery-1.4.2.min.js?v=012346',
-		'jquery-ui-1.8.2.custom.min.js?v=012346',
-		'jquery.countdown.min.js?v=012346'
+		'jquery-1.4.2.min.js?v=012347',
+		'jquery-ui-1.8.2.custom.min.js?v=012347',
+		'jquery.countdown.min.js?v=012347'
 	)); ?>
 	<?=$this->scripts(); ?>
 	<?=$this->html->link('Icon', null, array('type' => 'icon')); ?>
