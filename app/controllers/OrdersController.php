@@ -38,8 +38,9 @@ class OrdersController extends BaseController {
 				'user_id' => (string) $user['_id']),
 			'order' => array('date_created' => 'DESC')
 		));
-		$trackingNum = $list = $trackingNumbers = array();
+		$trackingNumbers = array();
 		foreach ($orders as $order) {
+			$list = $trackingNum = array();
 			$shipDate["$order->_id"] = Cart::shipDate($order);
 			$conditions = array('OrderId' => $order->_id);
 			$shipRecords = OrderShipped::find('all', compact('conditions'));
@@ -171,7 +172,6 @@ class OrdersController extends BaseController {
 	 * @todo Make this method lighter by taking out promocode/credit validation
 	 */
 	public function process() {
-
 		$order = Order::create();
 		$user = Session::read('userLogin');
 		$data = $user['checkout'] + $this->request->data;
