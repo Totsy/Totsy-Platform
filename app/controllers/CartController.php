@@ -110,9 +110,9 @@ class CartController extends BaseController {
 			}
 			$this->redirect(array('Cart::view'));
 		}
-
 		return compact('cart', 'message');
 	}
+
 
 	/**
 	* The remove method delete an item from the temporary cart.
@@ -131,6 +131,7 @@ class CartController extends BaseController {
 					Cart::remove(array('_id' => $data["id"]));
 				}
 			}
+
 		$this->_render['layout'] = false;
 		$cartcount = Cart::itemCount();
 		return compact('cartcount');

@@ -292,7 +292,6 @@ class Cart extends \lithium\data\Model {
 				$total = $total + $cart['quantity'];
 			}
 		}
-
 		return $total;
 	}
 

@@ -74,7 +74,7 @@
 					$pix = $pixel['pixel'];
 					$option='';
 					foreach($sitePages as $key => $name){
-						if( $pixel['page'] && in_array($key , $pixel['page']) ){
+						if( array_key_exists('page', $pixel) && $pixel['page'] && in_array($key , $pixel['page']) ){
 							$option .= "<option value=$key selected='selected'> $name </option>";
 						}else{
 							$option .= "<option value= $key> $name </option>";
