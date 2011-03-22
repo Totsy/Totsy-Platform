@@ -125,9 +125,9 @@ $totalLastMonthSecondWeekNewUsers = $lastMonthFirstWeekNewUsers + $lastMonthSeco
 $totalLastMonthThirdWeekNewUsers = $lastMonthFirstWeekNewUsers + $lastMonthSecondWeekNewUsers + $lastMonthThirdWeekNewUsers;
 ?>
 <div class="grid_8">
+
 <br><br><br><br>
   <table class="datatable">
-  
     <thead>
     <tr>
     <th colspan='3' class="dashboard"><h3>Revenue</h3></th>

@@ -15,7 +15,7 @@ class DashboardController extends \lithium\action\Controller {
     //date_default_timezone_set(ini_get('date.timezone')); 
     
     //sets today date with time of the day.
-
+    $date_test = mktime(0, 0, 0, date("09"), date("01"), date("2010"));
     $startOfToday = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
     $today = strtotime('now');
     
@@ -41,6 +41,13 @@ class DashboardController extends \lithium\action\Controller {
     $orderCollections = Order::collection();
     $userCollections = User::collection();
     
+    
+    $conditions = array(
+          'created_date' => array(
+            '$lte' => new MongoDate($date_test)
+        ));
+    
+    $total_NewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
     
     //sets the date conditions for the search for today for the Orders
     $conditions = array(
@@ -182,6 +189,7 @@ class DashboardController extends \lithium\action\Controller {
    if ($today > $endOfThirdWeek) {
    
    $currentMonthRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
+   $currentMonthRevenue =+ $FirstWeekRevenue + $secondWeekRevenue + $thirdWeekRevenue;
    
     }else{
       
@@ -200,7 +208,8 @@ class DashboardController extends \lithium\action\Controller {
     if ($today > $endOfThirdWeek) {
    
    $currentMonthNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
-   
+   $currentMonthNewUsers =+ $FirstWeekNewUsers + $secondWeekNewUsers + $thirdWeekNewUsers;
+    
     }else{
       
       $currentMonthNewUsers = $FirstWeekNewUsers + $secondWeekNewUsers + $thirdWeekNewUsers;
@@ -434,6 +443,45 @@ class DashboardController extends \lithium\action\Controller {
    $conditions = array();
         
    $totalUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
+   
+   /**
+   ////////////////////////////////////////////////////////////////////////
+  
+   $start= mktime(0, 0, 0, date("m")-1, 1, date("Y"));
+   $end = mktime(0, 0, 0, date("m"), 1, date("Y"));
+   
+   //$conditions = array(
+   //       'created_date' => array(
+   //         '$gt' => new MongoDate($start_for_selected),
+   //         '$lte' => new MongoDate($end_for_selected)
+   //     ));
+    
+    $conditions = array(
+          'created_date' => array(
+            '$gt' => new MongoDate($start),
+            '$lte' => new MongoDate($end)
+        ));    
+    
+   //$totalSelectedUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
+   
+   $totalSelectedUsers = $this->_selectedUsers(array('conditions' => $conditions), $userCollections);
+   //foreach($totalSelectedUsers as $user) {
+     //var_dump($user);
+   //}
+   //var_dump($totalSelectedUsers);
+   
+   $conditions = array(
+          'date_created' => array(
+            '$gt' => new MongoDate($start),
+            '$lte' => new MongoDate($end)
+            
+        ));
+   echo "test 1";
+   $totalRevenueSelectedUsers = $this->_ltv(array('conditions' => $conditions), $orderCollections, $totalSelectedUsers);
+   
+   ////////////////////////////////////////////////////////////////////////
+   **/
+   
     //Return all the goodies to the Dashboard View
     
     return compact(
@@ -470,7 +518,10 @@ class DashboardController extends \lithium\action\Controller {
     'last3MonthNewUsers',
     'last6MonthRevenue',
     'last6MonthNewUsers',
-    'totalUsers'
+    'totalUsers',
+    'total_NewUsers',
+    'totalSelectedUsers',
+    'totalRevenueSelectedUsers'
     );
   }
 
@@ -491,6 +542,57 @@ class DashboardController extends \lithium\action\Controller {
 
   }
 
+  protected function _ltv($params, $data, $selected_users) {
+    
+  
+  $data->ensureIndex(array('date_created' => 1));
+  //echo "test 2";
+    $conditions = $params['conditions'];
+    $orders = $data->find($conditions,array(
+                        'user_id' => 1, 'total' => 1));
+      echo "test 3"; 
+     
+    //var_dump($orders);
+  if ($orders) {
+    echo "test 4";
+   $totalRevenue = 0;
+        foreach ($orders as $order) {
+           //var_dump($order['user_id']);
+          
+          foreach($selected_users as $user){
+            //var_dump($order["user_id"]);
+            
+            
+            if($user["_id"]  == new MongoId($order["user_id"])) {
+            $totalRevenue += $order["total"];
+            }
+              
+             
+          }
+        
+        }
+        
+  }
+  
+         
+    echo $totalRevenue;             
+  
+ }
+
+  
+
+  protected function _selectedUsers($params, $data) {
+    
+    $data->ensureIndex(array('created_date' => 1));  
+    $conditions = $params['conditions'];
+    //var_dump($conditions);
+    $s_users = $data->find($conditions, array(
+                        '_id' => 1));
+   
+    
+    return $s_users;      
+    
+  }
   protected function _registration($params, $data) {
       
     $conditions = $params['conditions'];
