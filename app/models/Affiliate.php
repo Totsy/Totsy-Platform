@@ -136,6 +136,7 @@ class Affiliate extends Base {
                         'url' => $item),
                     'order' => array('modified_date' => 'DESC'
                 )));
+<<<<<<< HEAD
                 $insert = static::spinback_share('/image/' . $item->primary_image . '.jpeg',$item->_id, $product,  $item->description, $item->vendor, "Check out this great deal on Totsy!"  );
 
                return str_replace('$',$insert,$pixel);
@@ -149,6 +150,14 @@ class Affiliate extends Base {
                             'url' => $vendorurl
                         )));
                 $insert = static::spinback_share('/image/' .$event->logo_image . '.gif',$event->_id, $options['event'],  $event->name, $event->name, "Check out this SALE on Totsy!"  );
+=======
+               $insert .= ' pi= http://www.' . $_SERVER['HTTP_HOST'] . '/image/' . $item->primary_image .'.jpeg';
+               $insert .= ' pid=' . $item->_id;
+               $insert .= ' plp=http://www.' . $_SERVER['HTTP_HOST'] . '/a/spinback?redirect=http://www.' . $_SERVER['HTTP_HOST'] . $product;
+               $insert .= ' pn="' . $item->description . '"';
+               $insert .= ' m="' . $item->vendor . '"';
+               $insert .= 'msg= "Check out this great deal on Totsy!"';
+>>>>>>> ccf7d8a12b087ae18deaabe92f21a5ebe4460e53
                return str_replace('$',$insert,$pixel);
             }
         }else if($invited_by == 'linkshare') {

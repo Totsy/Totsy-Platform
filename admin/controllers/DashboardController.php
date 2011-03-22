@@ -15,7 +15,7 @@ class DashboardController extends \lithium\action\Controller {
     //date_default_timezone_set(ini_get('date.timezone')); 
     
     //sets today date with time of the day.
-
+    $date_test = mktime(0, 0, 0, date("09"), date("01"), date("2010"));
     $startOfToday = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
     $today = strtotime('now');
     
@@ -31,9 +31,9 @@ class DashboardController extends \lithium\action\Controller {
     // end of 3 week current month
     // end of month current month
     $startOfTheMonth  = mktime(0, 0, 0, date("m"), 1, date("Y"));
-    $endOfFirstWeek = mktime(0, 0, 0, date("m"), 7, date("Y"));
-    $endOfSecondWeek = mktime(0, 0, 0, date("m"), 14, date("Y"));
-    $endOfThirdWeek =  mktime(0, 0, 0, date("m"), 21, date("Y"));
+    $endOfFirstWeek = mktime(0, 0, 0, date("m"), 8, date("Y"));
+    $endOfSecondWeek = mktime(0, 0, 0, date("m"), 15, date("Y"));
+    $endOfThirdWeek =  mktime(0, 0, 0, date("m"), 22, date("Y"));
     $endOfMonth = mktime(0, 0, 0, date("m")+1, 1, date("Y"));
     
     
@@ -41,6 +41,13 @@ class DashboardController extends \lithium\action\Controller {
     $orderCollections = Order::collection();
     $userCollections = User::collection();
     
+    
+    $conditions = array(
+          'created_date' => array(
+            '$lte' => new MongoDate($date_test)
+        ));
+    
+    $total_NewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
     
     //sets the date conditions for the search for today for the Orders
     $conditions = array(
@@ -97,60 +104,120 @@ class DashboardController extends \lithium\action\Controller {
             '$lte' => new MongoDate($endOfFirstWeek)
         ));
    
+   
    $FirstWeekNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
     
-    //sets the date conditions for the search for first 2 weeks of current month
+    //sets the date conditions for the search for the second  weeks of current month
      $conditions = array(
           'date_created' => array(
-            '$gt' => new MongoDate($startOfTheMonth),
+            '$gt' => new MongoDate($endOfFirstWeek),
             '$lte' => new MongoDate($endOfSecondWeek)
         ));
-    
-   $First2WeekRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
    
+  
+   if ($today > $endOfFirstWeek) {
+   
+   $secondWeekRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
+   
+    }else{
+      
+      $secondWeekRevenue = 0;
+    }
+    
    //sets the date conditions for the search for today for the Users
     $conditions = array(
           'created_date' => array(
-            '$gt' => new MongoDate($startOfTheMonth),
+            '$gt' => new MongoDate($endOfFirstWeek),
             '$lte' => new MongoDate($endOfSecondWeek)
         ));
         
-   $First2WeekNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
+   if ($today > $endOfFirstWeek) {
+   
+   $secondWeekNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
+   
+    }else{
+      
+      $secondWeekNewUsers = 0;
+    }
+   
      
     //sets the date conditions for the search for first 3 weeks of current month
      $conditions = array(
           'date_created' => array(
-            '$gt' => new MongoDate($startOfTheMonth),
+            '$gt' => new MongoDate($endOfSecondWeek),
             '$lte' => new MongoDate($endOfThirdWeek)
         ));
     
-   $First3WeekRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
+    
+   if ($today > $endOfSecondWeek) {
+   
+   $thirdWeekRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
+   
+    }else{
+      
+      $thirdWeekRevenue = 0;
+    }
+     
+   
    
    //sets the date conditions for the search for today for the Users
     $conditions = array(
           'created_date' => array(
-            '$gt' => new MongoDate($startOfTheMonth),
+            '$gt' => new MongoDate($endOfSecondWeek),
             '$lte' => new MongoDate($endOfThirdWeek)
         ));
    
-   $First3WeekNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
    
-    $conditions = array(
-          'date_created' => array(
-            '$gt' => new MongoDate($startOfTheMonth),
+   if ($today > $endOfSecondWeek) {
+   
+   $thirdWeekNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
+   
+    }else{
+      
+      $thirdWeekNewUsers = 0;
+    }
+    
+   
+   
+   
+   $conditions = array(
+         'date_created' => array(
+            '$gt' => new MongoDate($endOfThirdWeek),
             '$lte' => new MongoDate($endOfMonth)
         ));
-    
+   
+   if ($today > $endOfThirdWeek) {
+   
    $currentMonthRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
+   $currentMonthRevenue =+ $FirstWeekRevenue + $secondWeekRevenue + $thirdWeekRevenue;
+   
+    }else{
+      
+      $currentMonthRevenue = $FirstWeekRevenue + $secondWeekRevenue + $thirdWeekRevenue;
+   
+    }
+     
    
    //sets the date conditions for the search for today for the Users
-    $conditions = array(
+   $conditions = array(
           'created_date' => array(
-            '$gt' => new MongoDate($startOfTheMonth),
+            '$gt' => new MongoDate($endOfThirdWeek),
             '$lte' => new MongoDate($endOfMonth)
         ));
+   
+    if ($today > $endOfThirdWeek) {
    
    $currentMonthNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
+   $currentMonthNewUsers =+ $FirstWeekNewUsers + $secondWeekNewUsers + $thirdWeekNewUsers;
+    
+    }else{
+      
+      $currentMonthNewUsers = $FirstWeekNewUsers + $secondWeekNewUsers + $thirdWeekNewUsers;
+   
+    }
+    
+   
+   
   
   //*****************************************************************************************************
   //********************************   end of current months number   ***********************************
@@ -169,9 +236,9 @@ class DashboardController extends \lithium\action\Controller {
     // end of month last month
     
     $startOfTheLastMonth  = mktime(0, 0, 0, date("m")-1, 1, date("Y"));
-    $endOfLastMonthFirstWeek = mktime(0, 0, 0, date("m")-1, 7, date("Y"));
-    $endOfLastMonthSecondWeek = mktime(0, 0, 0, date("m")-1, 14, date("Y"));
-    $endOfLastMonthThirdWeek = mktime(0, 0, 0, date("m")-1, 21, date("Y"));
+    $endOfLastMonthFirstWeek = mktime(0, 0, 0, date("m")-1, 8, date("Y"));
+    $endOfLastMonthSecondWeek = mktime(0, 0, 0, date("m")-1, 15, date("Y"));
+    $endOfLastMonthThirdWeek = mktime(0, 0, 0, date("m")-1, 22, date("Y"));
     $endOfLastMonth = mktime(0, 0, 0, date("m"), 1, date("Y"));
     $startOfTheLast3Month  = mktime(0, 0, 0, date("m")-3, date("d"), date("Y"));
     $startOfTheLast6Month  = mktime(0, 0, 0, date("m")-6, date("d"), date("Y"));
@@ -203,23 +270,46 @@ class DashboardController extends \lithium\action\Controller {
    
     $conditions = array(
           'date_created' => array(
-            '$gt' => new MongoDate($startOfTheLastMonth),
+            '$gt' => new MongoDate($endOfLastMonthFirstWeek),
             '$lte' => new MongoDate($endOfLastMonthSecondWeek)
             
         ));
         
+   
+   if ($today > $endOfFirstWeek) {
+   
    $lastMonthSecondWeekRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
+   
+    }else{
+      
+      $lastMonthSecondWeekRevenue = 0;
+    }
+   
+   
+   
    
    
     
     //sets the date conditions for the search for first 2 weeks of current month
      $conditions = array(
           'created_date' => array(
-            '$gt' => new MongoDate($startOfTheLastMonth),
+            '$gt' => new MongoDate($endOfLastMonthFirstWeek),
             '$lte' => new MongoDate($endOfLastMonthSecondWeek)
         ));
     
+   
+   if ($today > $endOfFirstWeek) {
+   
    $lastMonthSecondWeekNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
+   
+    }else{
+      
+       $lastMonthSecondWeekNewUsers = 0;
+    
+    }
+   
+   
+   
     
     
     
@@ -229,23 +319,43 @@ class DashboardController extends \lithium\action\Controller {
    
     $conditions = array(
           'date_created' => array(
-            '$gt' => new MongoDate($startOfTheLastMonth),
+            '$gt' => new MongoDate($endOfLastMonthSecondWeek),
             '$lte' => new MongoDate($endOfLastMonthThirdWeek)
             
         ));
-        
+   
+   
+   if ($today > $endOfSecondWeek) {
+   
    $lastMonthThirdWeekRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
+   
+    }else{
+      
+       $lastMonthThirdWeekRevenue = 0;
+    
+    }     
+   
    
    
     
     //sets the date conditions for the search for first 2 weeks of current month
      $conditions = array(
           'created_date' => array(
-            '$gt' => new MongoDate($startOfTheLastMonth),
+            '$gt' => new MongoDate($endOfLastMonthSecondWeek),
             '$lte' => new MongoDate($endOfLastMonthThirdWeek)
         ));
-    
+   
+   if ($today > $endOfSecondWeek) {
+   
    $lastMonthThirdWeekNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
+   
+    }else{
+      
+     //$lastMonthThirdWeekNewUsers = 0;
+    
+    }  
+     
+   
     
     
     //*****************************************************************************************
@@ -258,8 +368,12 @@ class DashboardController extends \lithium\action\Controller {
             '$lte' => new MongoDate($endOfLastMonth)
             
         ));
-        
+    
+   
    $lastMonthRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
+   
+  
+   
    
    
     
@@ -269,8 +383,13 @@ class DashboardController extends \lithium\action\Controller {
             '$gt' => new MongoDate($startOfTheLastMonth),
             '$lte' => new MongoDate($endOfLastMonth)
         ));
-    
+   
+   
+   
    $lastMonthNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
+   
+  
+   
    
    
     //*****************************************************************************************
@@ -324,6 +443,45 @@ class DashboardController extends \lithium\action\Controller {
    $conditions = array();
         
    $totalUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
+   
+   /**
+   ////////////////////////////////////////////////////////////////////////
+  
+   $start= mktime(0, 0, 0, date("m")-1, 1, date("Y"));
+   $end = mktime(0, 0, 0, date("m"), 1, date("Y"));
+   
+   //$conditions = array(
+   //       'created_date' => array(
+   //         '$gt' => new MongoDate($start_for_selected),
+   //         '$lte' => new MongoDate($end_for_selected)
+   //     ));
+    
+    $conditions = array(
+          'created_date' => array(
+            '$gt' => new MongoDate($start),
+            '$lte' => new MongoDate($end)
+        ));    
+    
+   //$totalSelectedUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
+   
+   $totalSelectedUsers = $this->_selectedUsers(array('conditions' => $conditions), $userCollections);
+   //foreach($totalSelectedUsers as $user) {
+     //var_dump($user);
+   //}
+   //var_dump($totalSelectedUsers);
+   
+   $conditions = array(
+          'date_created' => array(
+            '$gt' => new MongoDate($start),
+            '$lte' => new MongoDate($end)
+            
+        ));
+   echo "test 1";
+   $totalRevenueSelectedUsers = $this->_ltv(array('conditions' => $conditions), $orderCollections, $totalSelectedUsers);
+   
+   ////////////////////////////////////////////////////////////////////////
+   **/
+   
     //Return all the goodies to the Dashboard View
     
     return compact(
@@ -336,14 +494,14 @@ class DashboardController extends \lithium\action\Controller {
     'todayRevenue',
     'yesterdayRevenue', 
     'FirstWeekRevenue',
-    'First2WeekRevenue',
-    'First3WeekRevenue',
+    'secondWeekRevenue',
+    'thirdWeekRevenue',
     'currentMonthRevenue',
     'todayNewUsers', 
     'yesterdayNewUsers', 
     'FirstWeekNewUsers', 
-    'First2WeekNewUsers',
-    'First3WeekNewUsers',
+    'secondWeekNewUsers',
+    'thirdWeekNewUsers',
     'currentMonthNewUsers',
     'lastMonthFirstWeekRevenue',
     'lastMonthSecondWeekRevenue',
@@ -360,7 +518,10 @@ class DashboardController extends \lithium\action\Controller {
     'last3MonthNewUsers',
     'last6MonthRevenue',
     'last6MonthNewUsers',
-    'totalUsers'
+    'totalUsers',
+    'total_NewUsers',
+    'totalSelectedUsers',
+    'totalRevenueSelectedUsers'
     );
   }
 
@@ -381,6 +542,57 @@ class DashboardController extends \lithium\action\Controller {
 
   }
 
+  protected function _ltv($params, $data, $selected_users) {
+    
+  
+  $data->ensureIndex(array('date_created' => 1));
+  //echo "test 2";
+    $conditions = $params['conditions'];
+    $orders = $data->find($conditions,array(
+                        'user_id' => 1, 'total' => 1));
+      echo "test 3"; 
+     
+    //var_dump($orders);
+  if ($orders) {
+    echo "test 4";
+   $totalRevenue = 0;
+        foreach ($orders as $order) {
+           //var_dump($order['user_id']);
+          
+          foreach($selected_users as $user){
+            //var_dump($order["user_id"]);
+            
+            
+            if($user["_id"]  == new MongoId($order["user_id"])) {
+            $totalRevenue += $order["total"];
+            }
+              
+             
+          }
+        
+        }
+        
+  }
+  
+         
+    echo $totalRevenue;             
+  
+ }
+
+  
+
+  protected function _selectedUsers($params, $data) {
+    
+    $data->ensureIndex(array('created_date' => 1));  
+    $conditions = $params['conditions'];
+    //var_dump($conditions);
+    $s_users = $data->find($conditions, array(
+                        '_id' => 1));
+   
+    
+    return $s_users;      
+    
+  }
   protected function _registration($params, $data) {
       
     $conditions = $params['conditions'];

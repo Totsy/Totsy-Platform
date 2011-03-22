@@ -67,7 +67,7 @@
 										<?php else: ?>
 											<div class="rounded" style="border:1px solid #ddd; display:block; width:145px; float:left; text-align:center; padding:10px; margin-right:10px;">Pre-Shipment</div>
 										<?php endif ?>
-										<?php if ($shipped): ?>
+										<?php if ($shipped || $shipRecord): ?>
 											<div class="rounded" style="border:1px solid #ddd; display:block; width:145px; float:left; text-align:center; padding:10px; margin-right:0px; background:#ebffeb; color:#009900;">Shipped</div>
 										<?php else: ?>
 											<div class="rounded" style="border:1px solid #ddd; display:block; width:145px; float:left; text-align:center; padding:10px; margin-right:0px;">Shipped</div>

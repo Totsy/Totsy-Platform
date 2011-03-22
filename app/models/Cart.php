@@ -12,7 +12,7 @@ use MongoId;
 * The Cart Class.
 *
 * Controls all the model methods needed to interact with the shopping cart.
-* The cart docuemnt has a one-to-one relationship with an item. What ties all the carts together
+* The cart document has a one-to-one relationship with an item. What ties all the carts together
 * is the session of the user. They see all their carts together based on their user_id and session.
 * When the order is placed all the active carts are embedded into the Order Document as an array.
 * Carts have the following document structure in Mongo:
@@ -404,7 +404,8 @@ class Cart extends \lithium\data\Model {
 		$event = null;
 		$ids = array();
 		foreach ($items as $item) {
-			$eventId = (!empty($item['event_id'])) ? $item['event_id'] : $item['event'][0];
+			$itemEvent = (empty($item['event'][0])) ? null : $item['event'][0];
+			$eventId = (!empty($item['event_id'])) ? $item['event_id'] : $itemEvent;
 			if (!empty($eventId)) {
 				$ids[] = new MongoId("$eventId");
 			}
