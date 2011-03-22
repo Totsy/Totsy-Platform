@@ -2,7 +2,7 @@
 <!doctype html>
 <html>
 <head>
-	<?=$this->html->charset();?>3
+	<?=$this->html->charset();?>
 	<title>
 		<?=$this->title() ?: 'Totsy, the private sale site for Moms'; ?>
 		<?=$this->title() ? '- Totsy' : ''; ?>
