@@ -28,6 +28,9 @@ class CartController extends BaseController {
 	* @return compact
 	*/
 	public function view() {
+		if ($this->request->data) {
+			$this->update();
+		}
 		Cart::increaseExpires();
 		$message = '';
 		$cart = Cart::active(array('time' => '-3min'));
@@ -41,9 +44,6 @@ class CartController extends BaseController {
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
 			$item->event_url = $events[0]->url;
 			$item->available = $itemInfo->details->{$item->size} - Cart::reserved($item->item_id, $item->size);
-		}
-		if ($this->request->data) {
-			return array('data' => $this->request->data);
 		}
 		$shipDate = Cart::shipDate($cart);
 		return compact('cart', 'message', 'shipDate');
@@ -110,9 +110,9 @@ class CartController extends BaseController {
 			}
 			$this->redirect(array('Cart::view'));
 		}
-
 		return compact('cart', 'message');
 	}
+
 
 	/**
 	* The remove method delete an item from the temporary cart.
@@ -131,6 +131,7 @@ class CartController extends BaseController {
 					Cart::remove(array('_id' => $data["id"]));
 				}
 			}
+
 		$this->_render['layout'] = false;
 		$cartcount = Cart::itemCount();
 		return compact('cartcount');

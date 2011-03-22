@@ -11,6 +11,7 @@ use app\models\Order;
 use app\models\Event;
 use app\models\Promotion;
 use app\models\Promocode;
+use app\models\OrderShipped;
 use app\controllers\BaseController;
 use lithium\storage\Session;
 use lithium\util\Validator;
@@ -37,10 +38,24 @@ class OrdersController extends BaseController {
 				'user_id' => (string) $user['_id']),
 			'order' => array('date_created' => 'DESC')
 		));
+		$trackingNumbers = array();
 		foreach ($orders as $order) {
+			$list = $trackingNum = array();
 			$shipDate["$order->_id"] = Cart::shipDate($order);
+			$conditions = array('OrderId' => $order->_id);
+			$shipRecords = OrderShipped::find('all', compact('conditions'));
+			foreach ($shipRecords as $record) {
+				if (!in_array($record->{'Tracking #'}, $list)) {
+					$list[] = $record->{'Tracking #'};
+					$trackingNum[] = array('code' => $record->{'Tracking #'}, 'method' => $record->ShipMethod);
+				}
+			}
+			if ($trackingNum) {
+				$trackingNumbers["$order->_id"] = $trackingNum;
+			}
 		}
-		return (compact('orders', 'shipDate'));
+
+		return (compact('orders', 'shipDate', 'trackingNumbers'));
 	}
 
 	/**
@@ -67,7 +82,8 @@ class OrdersController extends BaseController {
 			$allEventsClosed = true;
 		}
 		$shipped = (isset($order->tracking_numbers)) ? true : false;
-		$preShipment = ($shipped) ? true : false;
+		$shipRecord = (isset($order->ship_records)) ? true : false;
+		$preShipment = ($shipped || $shipRecord) ? true : false;
 		$itemsByEvent = $this->itemGroupByEvent($order);
 		$orderEvents = $this->orderEvents($order);
 
@@ -79,6 +95,7 @@ class OrdersController extends BaseController {
 			'shipDate',
 			'allEventsClosed',
 			'shipped',
+			'shipRecord',
 			'preShipment'
 		);
 	}
@@ -155,7 +172,6 @@ class OrdersController extends BaseController {
 	 * @todo Make this method lighter by taking out promocode/credit validation
 	 */
 	public function process() {
-
 		$order = Order::create();
 		$user = Session::read('userLogin');
 		$data = $user['checkout'] + $this->request->data;

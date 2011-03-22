@@ -17,6 +17,14 @@
 	<?=$this->html->link('Icon', null, array('type' => 'icon')); ?>
 </head>
 <body class="app">
+
+<!-- ClickTale Top part -->
+<script type="text/javascript">
+var WRInitTime=(new Date()).getTime();
+</script>
+<!-- ClickTale end of Top part -->
+
+
 <!-- 
 <div id="global_site_msg"><strong>Last minute message:</strong> our last promotional campaign that was intended for a select audience of our long-time members was unintentionally exposed to the general public. <br />This promotion has now been restored and will only work for members who received an email directly from Totsy containing a promocode.</div>
 -->
@@ -145,5 +153,21 @@
 
     <!--affiliate pixels-->
     <?php echo $pixel; ?>
+    
+    
+	    <!-- ClickTale Bottom part -->
+	<div id="ClickTaleDiv" style="display: none;"></div>
+	<script type='text/javascript'>
+	document.write(unescape("%3Cscript%20src='"+
+	 (document.location.protocol=='https:'?
+	  'https://clicktale.pantherssl.com/':
+	  'http://s.clicktale.net/')+
+	 "WRb6.js'%20type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var ClickTaleSSL=1;
+	if(typeof ClickTale=='function') ClickTale(17040,1,"www02");
+	</script>
+	<!-- ClickTale end of Bottom part -->
 	</body>
 </html>

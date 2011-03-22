@@ -46,7 +46,7 @@
 					<center><strong><?=$this->html->link('Please take a moment to add an Address', '#', array(
 						'class' => 'add-address')); ?></strong></center>
 				<?php else: ?>
-					<h1 style="color:#707070;">Billing Address</h2><hr />
+					<h2 style="color:#707070;">Billing Address</h2><hr />
 					<p>Select a billing address from your address book.</p>
 						<?=$this->form->select('billing', $billing, array(
 							'id' => 'billing',
@@ -80,10 +80,9 @@
 
 				<?php else: ?>
 
-						<h1 style="color:#707070;">Shipping Address</h1>
+						<h2 style="color:#707070;">Shipping Address</h2>
 					<hr />
-					<p>Select a shipping address from your address book.
-					</p>
+					<p>Select a shipping address from your address book.</p>
 						<?=$this->form->select('shipping', $shipping, array(
 							'id' => 'shipping',
 							'target' => '#shipping-new-address-form',
@@ -133,7 +132,7 @@
 
 			   <div style="clear:both; margin-top:90px;"></div>
 
-		<h1 style="color:#707070;">Order Summary</h2>
+		<h2 style="color:#707070;">Order Summary</h2>
 		<hr />
 
 <div style="clear:both; margin-bottom:10px;"></div>
