@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\controllers\BaseController;
 use app\models\User;
 use app\models\Menu;
+use app\models\Affiliate;
 use app\models\Invitation;
 use lithium\security\Auth;
 use lithium\storage\Session;

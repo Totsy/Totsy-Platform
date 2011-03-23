@@ -90,9 +90,7 @@ class OrdersController extends BaseController {
 
 
 		$pixel = Affiliate::getPixels('order', 'spinback');
-		$spinback_fb = Affiliate::generatePixel('spinback', $pixel, array(
-			'order' => $_SERVER['REQUEST_URI']
-			));
+		$spinback_fb = Affiliate::generatePixel('spinback', $pixel, array('order' => $_SERVER['REQUEST_URI']));
 
 		return compact(
 			'order',

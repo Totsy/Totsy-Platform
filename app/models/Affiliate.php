@@ -116,12 +116,12 @@ class Affiliate extends Base {
             return '<br/>' . str_replace('$', $transid,$pixel );
         }else if($invited_by == 'spinback' && ($options)) {
             $insert = '';
-            ifarray_key_exists('invite', $options) && ($options['invite']){
+            if (array_key_exists('invite', $options) && ($options['invite'])){
                 $session = Session::read('userLogin');
                 $user = User::find('first', array('conditions' => array(
                     'email' => $session['email']
                 )));
-                $insert = static::spinback_share('/img/logo.jpg', $order->order_id, '/sales', 'Great Deals on Totsy', '' ,"I just saved on Totsy.");
+               // $insert = static::spinback_share('/img/logo.jpg', $order->order_id, '/sales', 'Great Deals on Totsy', '' ,"I just saved on Totsy.");
                 return str_replace('$' , $insert, $pixel);
             }
             if (array_key_exists('orderid', $options) && ($options['orderid'])) {
@@ -137,18 +137,18 @@ class Affiliate extends Base {
                 }
                 return str_replace('$' , $insert, $pixel);
             }
-            if(array_key_exists('order', $options) && $options['order']){
+            if (array_key_exists('order', $options) && ($options['order'])){
                 $orderurl = $options['order'];
                 $last = strrpos($orderurl, '/');
                 $orderid = substr($orderurl, $last + 1);
-                $order = $order = Order::find('first', array('conditions' => array(
+                $order = Order::find('first', array('conditions' => array(
                     'order_id' => $orderid
                 )));
 
                 $insert = static::spinback_share('/img/logo.jpg', $order->order_id, '/sales', 'Great Deals on Totsy', '' ,"I just saved on Totsy.");
                 return str_replace('$',$insert,$pixel);
             }
-            if(array_key_exists('product', $options) && ($options['product'])) {
+            if (array_key_exists('product', $options) && ($options['product'])) {
                 $product = $options['product'];
                 $last = strrpos($product, '/');
                 $item = substr($product, $last + 1);
