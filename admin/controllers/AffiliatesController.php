@@ -21,8 +21,8 @@ class AffiliatesController extends \admin\controllers\BaseController {
 	    '/shopping/checkout' => 'checkout',
 	    '/shopping/process' => 'checkout process',
 	    '/orders/view' => 'orders confirmation',
-	    'order' =>'order confirmation(spinback)'
-
+	    'order' =>'order confirmation(spinback)',
+        'invite' => 'invite page(spinback)'
 	    );
 
 	public $packages = array(

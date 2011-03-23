@@ -402,7 +402,12 @@ class UsersController extends BaseController {
 				'status' => 'Accepted')
 		));
 
-		return compact('user','open', 'accepted', 'flashMessage');
+		$pixel = Affiliate::getPixels('invite', 'spinback');
+		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
+			                                            array('invite' => $_SERVER['REQUEST_URI'])
+			                                            );
+
+		return compact('user','open', 'accepted', 'flashMessage', 'spinback_fb');
 	}
 
 	public function upgrade() {

@@ -10,9 +10,19 @@ class Affiliate extends Base {
 
     protected $_meta = array('source'=> 'affiliates');
 	public $validates = array();
-
+    /**
+    * Retrieves active pixels relate to active affiliates
+    *
+    * @param $url the pixel needs to be placed
+    * @param $invited_by the affiliate associated with the user
+    * @return the pixels associated to the affiliate and url
+    */
 	public static function getPixels($url, $invited_by) {
         $orderid = NULL;
+        $cookie = Session::read('cookieCrumb',array('name' => 'cookie'));
+        if(array_key_exists('affiliated', $cookie) && $cookie['affiliated']){
+            $invited_by = $cookie['affiliated'];
+        }
         if(strpos($url, '&')) {
             $url = substr($url,0,strpos($url, '&'));
         }
@@ -106,9 +116,19 @@ class Affiliate extends Base {
             return '<br/>' . str_replace('$', $transid,$pixel );
         }else if($invited_by == 'spinback' && ($options)) {
             $insert = '';
+            ifarray_key_exists('invite', $options) && ($options['invite']){
+                $session = Session::read('userLogin');
+                $user = User::find('first', array('conditions' => array(
+                    'email' => $session['email']
+                )));
+                $insert = static::spinback_share('/img/logo.jpg', $order->order_id, '/sales', 'Great Deals on Totsy', '' ,"I just saved on Totsy.");
+                return str_replace('$' , $insert, $pixel);
+            }
             if (array_key_exists('orderid', $options) && ($options['orderid'])) {
                 $orderid = $options['orderid'];
-                $order = Order::find('all', array('conditions' => array('order_id' => $orderid)));
+                $order = Order::find('all', array('conditions' => array(
+                    'order_id' => $orderid
+                )));
                 $order = $order->data();
                 if(($order)) {
                     $insert .= 'cid="totsy"';
@@ -121,7 +141,9 @@ class Affiliate extends Base {
                 $orderurl = $options['order'];
                 $last = strrpos($orderurl, '/');
                 $orderid = substr($orderurl, $last + 1);
-                $order = $order = Order::find('first', array('conditions' => array('order_id' => $orderid)));
+                $order = $order = Order::find('first', array('conditions' => array(
+                    'order_id' => $orderid
+                )));
 
                 $insert = static::spinback_share('/img/logo.jpg', $order->order_id, '/sales', 'Great Deals on Totsy', '' ,"I just saved on Totsy.");
                 return str_replace('$',$insert,$pixel);
@@ -136,7 +158,6 @@ class Affiliate extends Base {
                         'url' => $item),
                     'order' => array('modified_date' => 'DESC'
                 )));
-<<<<<<< HEAD
                 $insert = static::spinback_share('/image/' . $item->primary_image . '.jpeg',$item->_id, $product,  $item->description, $item->vendor, "Check out this great deal on Totsy!"  );
 
                return str_replace('$',$insert,$pixel);
@@ -145,19 +166,10 @@ class Affiliate extends Base {
                 $event = $options['event'];
                 $last = strrpos($event, '/');
                 $vendorurl = substr($event, $last + 1);
-                $event = Event::find('first', array(
-                        'conditions' => array(
+                $event = Event::find('first', array('conditions' => array(
                             'url' => $vendorurl
                         )));
                 $insert = static::spinback_share('/image/' .$event->logo_image . '.gif',$event->_id, $options['event'],  $event->name, $event->name, "Check out this SALE on Totsy!"  );
-=======
-               $insert .= ' pi= http://www.' . $_SERVER['HTTP_HOST'] . '/image/' . $item->primary_image .'.jpeg';
-               $insert .= ' pid=' . $item->_id;
-               $insert .= ' plp=http://www.' . $_SERVER['HTTP_HOST'] . '/a/spinback?redirect=http://www.' . $_SERVER['HTTP_HOST'] . $product;
-               $insert .= ' pn="' . $item->description . '"';
-               $insert .= ' m="' . $item->vendor . '"';
-               $insert .= 'msg= "Check out this great deal on Totsy!"';
->>>>>>> ccf7d8a12b087ae18deaabe92f21a5ebe4460e53
                return str_replace('$',$insert,$pixel);
             }
         }else if($invited_by == 'linkshare') {
@@ -171,8 +183,8 @@ class Affiliate extends Base {
                 $orderid = $options['orderid'];
                 $cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
                 $order = Order::find('first', array('conditions' => array(
-                                        'order_id' => $orderid
-                        )));
+                        'order_id' => $orderid
+                    )));
                 $user = User::find('first', array('conditions' => array(
                             '_id' => $order->user_id
                         )));
@@ -192,6 +204,7 @@ class Affiliate extends Base {
             return '<br/>' . $pixel . '<br/>';
         }
     }
+
     /**
     * Spinback share params for javascript
     *

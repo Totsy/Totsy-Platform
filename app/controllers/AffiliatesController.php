@@ -53,7 +53,7 @@ class AffiliatesController extends BaseController {
         $message = false;
         $user = User::create();
         $urlredirect = '/sales';
-
+        $cookie = Session::read('cookieCrumb',array('name'=>'cookie'));
         if ( ($affiliate)){
             $pixel = Affiliate::getPixels('after_reg', $affiliate);
 
@@ -64,6 +64,9 @@ class AffiliatesController extends BaseController {
                     $urlredirect = parse_url(htmlspecialchars_decode(urldecode($gdata['redirect'])), PHP_URL_PATH);
                 }
             }
+
+            $cookie['affiliated'] = $affiliate;
+            Session::write($cookie, array('name' => 'cookie'));
 
             if(!Session::check('userLogin')){
                 $this->redirect($urlredirect);

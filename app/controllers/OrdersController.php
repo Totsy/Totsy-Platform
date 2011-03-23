@@ -11,11 +11,8 @@ use app\models\Order;
 use app\models\Event;
 use app\models\Promotion;
 use app\models\Promocode;
-<<<<<<< HEAD
 use app\models\Affiliate;
-=======
 use app\models\OrderShipped;
->>>>>>> ccf7d8a12b087ae18deaabe92f21a5ebe4460e53
 use app\controllers\BaseController;
 use lithium\storage\Session;
 use lithium\util\Validator;
@@ -93,9 +90,9 @@ class OrdersController extends BaseController {
 
 
 		$pixel = Affiliate::getPixels('order', 'spinback');
-		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
-			                                            array('order' => $_SERVER['REQUEST_URI'])
-			                                            );
+		$spinback_fb = Affiliate::generatePixel('spinback', $pixel, array(
+			'order' => $_SERVER['REQUEST_URI']
+			));
 
 		return compact(
 			'order',
@@ -105,13 +102,10 @@ class OrdersController extends BaseController {
 			'shipDate',
 			'allEventsClosed',
 			'shipped',
-<<<<<<< HEAD
 			'preShipment',
-			'spinback_fb'
-=======
+			'spinback_fb',
 			'shipRecord',
 			'preShipment'
->>>>>>> ccf7d8a12b087ae18deaabe92f21a5ebe4460e53
 		);
 	}
 
