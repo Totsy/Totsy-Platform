@@ -1,3 +1,4 @@
+<div id="entire">
 <?=$this->html->script('jquery-1.4.2');?>
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
 <?=$this->html->script('jquery.dataTables.js');?>
@@ -5,7 +6,6 @@
 <?php
 	$this->title(" - Order Confirmation");
 ?>
-
 <?php if ($order): ?>
 	<style type="text/css">
 		td{font-family:Arial,sans-serif;color:#888888;font-size:14px;line-height:18px}
@@ -22,17 +22,25 @@
 									<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
 										The order has been canceled
 									</p><br />
-									<p style="text-align:center;">
-										<button id="uncancel_button" style="font-weight:bold;font-size:14px;"> Uncancel Order</button>
-									</p><br />
 								<?php else: ?>
+								
+									<div id='confirm_cancel_div' style="display:none">
+									<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
+										Are you really sure you want to cancel this order ? You won't be able to go back.
+									</p>
+									<div style="text-align:center;">
+										<button id="confirm_cancel" style="font-weight:bold;font-size:14px;">Confirm Cancel</button>
+										<button id="abort_cancel" style="font-weight:bold;font-size:14px;">Abort</button>
+										</div><br />
+									</div>
+									<div id="normal" style="display:block">
 									<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
 										The order is expected to ship on <?=date('M d, Y', $shipDate)?>
-									</p><br />
+									</p>
 									<p style="text-align:center;">
 									<button id="cancel_button" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
 									<button id="update_shipping" style="font-weight:bold;font-size:14px;">Update Shipping</button>
-									</p><br />
+									</p></div>
 								<?php endif ?>
 									<div id="cancel_form" style="display:none">
 										<?=$this->form->create(null ,array('id'=>'cancelForm','enctype' => "multipart/form-data")); ?>
@@ -101,10 +109,11 @@
 														'class' => 'required'
 														));
 													?>
-													<?=$this->form->text('phone', array('class' => 'inputbox', 'id' => 'phone')); ?>
+												<?=$this->form->text('phone', array('class' => 'inputbox', 'id' => 'phone')); ?>
 													<?=$this->form->error('phone'); ?>
 												</div>
 											<?=$this->form->submit('Confirm new shipping details')?>
+											<?=$this->form->end();?>
 										</div>
 											<?php if (!empty($order->tracking_numbers)): ?>
 												<div>
@@ -183,6 +192,7 @@
 											</table>
 											</div>
 										<?php endif ?>
+										<?php if($itemscanceled == false): ?>
 										<br />
 								<h2 class="gray mar-b">Order Summary <span style="font-size:11px; float:right; font-weight:normal;"><span style="font-weight:bold;">NOTE:</span> Your order will be delivered within 3-5 weeks</span></h2>
 								<hr />
@@ -199,11 +209,20 @@
 												<td style="padding:5px; width:340px;"><strong>Description</strong></td>
 												<td style="padding:5px; width:100px;"><strong>Price</strong></td>
 												<td style="padding:5px; width: 50px;"><strong>Qty</strong></td>
-												<td style="padding:5px; width:100px;"><strong>Subtotal</strong></td>
+												<td style="padding:5px; width:80px;"><strong>Subtotal</strong></td>
+												<td style="padding:5px; width:30px;"><strong></strong></td>
 											</tr>
-											<?php $items = $order->items->data(); ?>
-											<?php foreach ($items as $item): ?>
-												<tr>
+											<?=$this->form->create(null ,array('id'=>'itemsForm','enctype' => "multipart/form-data")); ?>
+											<?php $items = $order->items; ?>
+											<?php foreach ($items as $key => $item): ?>
+											<?php $name = "items[".strval($key)."][cancel]"; ?>
+							<?=$this->form->hidden($name, array('class' => 'inputbox', 'id' => $name, 'value' => (string) $item["cancel"])); ?>
+							<?=$this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
+												<tr class="item_line"
+												<?php if($item["cancel"] == true) {
+													echo "style='background-color:red;opacity:.5'"; 
+													} ?>
+													 id="<?=$key?>">
 												<?php
 													if (!empty($item['primary_image'])) {
 														$image = '/image/'. $item['primary_image'] . '.jpg';
@@ -236,12 +255,23 @@
 												<td style="padding:5px; color:#009900;" title="price">
 													$<?=number_format($item['sale_retail'],2); ?>
 												</td>
-													<td style="padding:5px;" title="quantity">
-														<?=$item['quantity']?>
-													</td>
-													<td title="subtotal" style="padding:5px; color:#009900;">
-														$<?php echo number_format(($item['quantity'] * $item['sale_retail']),2)?>
-													</td>
+												<td style="padding:5px;" title="quantity">
+													<?=$item['quantity']?>
+												</td>
+												<td title="subtotal" style="padding:5px; color:#009900;">
+													$<?php echo number_format(($item['quantity'] * $item['sale_retail']),2)?>
+												</td>
+												<td>
+													<div style="text-align:center;">
+														<?php if($item["cancel"] == true){ ?>	
+									<a href="#" onclick="open_item('<?=$key?>')" id="open_button">
+															<img src="/img/success-icon.png" width="20" height="20"></a>
+														<?php } else {?>
+									<a href="#" onclick="cancel_item('<?=$key?>')" id="remove_button">
+										<img src="/img/error-icon.png" width="20" height="20"></a>
+														<?php }//endelse?>
+													</div>
+												</td>
 											<?php endforeach ?>
 											</tr>
 									
@@ -264,9 +294,9 @@
 												<br>
 												<?php if ($order->credit_used): ?>
 												Credit Applied:
-													<br>
+												<br>
 												<?php endif ?>
-												<?php if ($order->promo_discount): ?>
+												<?php if (($order->promo_discount) && (empty($order["promocode_disable"]))): ?>
 												Promotion Discount:
 													<br>
 												<?php endif ?>
@@ -277,13 +307,23 @@
 												<strong style="font-weight:bold;color:#606060">Total:</strong> 
 											</td>
 											<td style="padding-left:15px; text-align:right;" valign="top">
+											<?=$this->form->hidden("subTotal", array('class' => 'inputbox', 'id' => "subTotal", 'value' => $order->subTotal )); ?>
+											<?=$this->form->hidden("credit_used", array('class' => 'inputbox', 'id' => "credit_used", 'value' => $order->credit_used )); ?>
+											<?=$this->form->hidden("promo_discount", array('class' => 'inputbox', 'id' => "promo_discount", 'value' => $order->promo_discount )); ?>
+											<?=$this->form->hidden("promo_code", array('class' => 'inputbox', 'id' => "promo_code", 'value' => $order->promo_code )); ?>
+											<?=$this->form->hidden("tax", array('class' => 'inputbox', 'id' => "tax", 'value' => $order->tax)); ?>
+											<?=$this->form->hidden("handling", array('class' => 'inputbox', 'id' => "handling", 'value' => $order->handling )); ?>
+											<?=$this->form->hidden("total", array('class' => 'inputbox', 'id' => "total", 'value' => $order->total)); ?>
+											<?=$this->form->hidden("initial_credit_used", array('class' => 'inputbox', 'id' => "initial_credit_used", 'value' => $order->initial_credit_used)); ?>
+											<?=$this->form->hidden("user_total_credits", array('class' => 'inputbox', 'id' => "user_total_credits", 'value' => $order->user_total_credits )); ?>
+											<?=$this->form->hidden("promocode_disable", array('class' => 'inputbox', 'id' => "promocode_disable", 'value' => $order->promocode_disable )); ?>
 												$<?=number_format($order->subTotal,2); ?>
 												<br>
 												<?php if ($order->credit_used): ?>
 													-$<?=number_format(abs($order->credit_used),2); ?>
 													<br>
 												<?php endif ?>
-												<?php if ($order->promo_discount): ?>
+												<?php if (($order->promo_discount) && (empty($order["promocode_disable"]))): ?>
 													-$<?=number_format(abs($order->promo_discount),2); ?>
 													<br>
 												<?php endif ?>
@@ -319,22 +359,30 @@
 										</tr>
 										<tr>
 											<td>
-
 											</td>
 											<td>
 											
 											</td>
 										</tr>
 									</table>
+									<?php endif ?>
 								</td>
 							</tr>
-							<tr>
-								<td style="padding:0px 0px 5px 0px;"><hr></td>
-							</tr>
-		</table>
+		<tr>
+			<td style="padding:0px 0px 5px 0px;"><hr></td>
+		</tr>	
+	</table>
+	<?=$this->form->hidden("save", array('class' => 'inputbox', 'id' => "save")); ?>
+	<?php if($itemscanceled == false): ?>
+	<p style="text-align:center;">
+		<button id="update_button"  onclick="update_order();" style="font-weight:bold;font-size:14px;">Update Order</button>
+	</p>
+	<?php endif ?>
+	<?=$this->form->end();?>
 <?php else: ?>
 	<strong>Sorry, we cannot locate the order that you are looking for.</strong>
 <?php endif ?>
+</div>
 <script type="text/javascript">
 jQuery(function($){
 	$("#zip").mask("99999");
@@ -350,17 +398,41 @@ $(document).ready(function(){
 			$("#new_shipping").slideUp();
 		}
 	});
-	$("#cancel_button").click(function () {
-		if (confirm('Are you sure to cancel the order ?')) {
-			$.post("../cancel", $("#cancelForm").serialize());
-			window.setTimeout('location.reload()', 500);
+	$("#confirm_cancel").click(function () {
+		$.post("../cancel", $("#cancelForm").serialize());
+		window.setTimeout('location.reload()', 500);
+	});
+	$("#abort_cancel").click(function () {
+		if ($("#normal").is(":hidden")) {
+			$("#normal").show("slow");
+			$("#confirm_cancel_div").slideUp();
 		}
 	});
-	$("#uncancel_button").click(function () {
-		if (confirm('Are you sure to uncancel the order ?')) {
-			$.post("../cancel", $("#cancelForm").serialize());
-			window.setTimeout('location.reload()', 500);
+	$("#cancel_button").click(function () {
+		if ($("#confirm_cancel_div").is(":hidden")) {
+			$("#confirm_cancel_div").show("slow");
+			$("#normal").slideUp();
 		}
 	});
 });
+function cancel_item(val) {
+	if (confirm('Are you sure to remove this item ?')) {
+		$('input[name="items['+val+'][cancel]"]').val("true");
+		$('#save').val("false");
+		$('#itemsForm').submit();
+	}
+};
+function open_item(val) {
+	if (confirm('Are you sure to reopen this item ?')) {
+		$('input[name="items['+val+'][cancel]"]').val("false");
+		$('#save').val("false");
+		$('#itemsForm').submit();
+	}
+};
+function update_order() {
+	if (confirm('Are you sure to apply the changes to the order?')) {
+		$('#save').val("true");
+		$('#itemsForm').submit();
+	}
+};
 </script>
