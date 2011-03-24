@@ -260,7 +260,7 @@ class Order extends \lithium\data\Model {
 	* @param object $selected_order
 	* @param array $items
 	*/
-	public static function saveCurrentOrder($selected_order, $items = null) {
+	public static function saveCurrentOrder($selected_order, $items = null, $author) {
 		$orderCollection = static::collection();
 		$userCollection = User::collection();
 		/************* PREPARING DATAS **************/
@@ -271,7 +271,7 @@ class Order extends \lithium\data\Model {
 			'handling' => $selected_order["handling"],
 			'promocode_disable' => $selected_order["promocode_disable"],
 			'credit_used' => $selected_order["credit_used"],
-			'items' => $items
+			'comment' => $selected_order["comment"]
 		);
 		/**************UPDATE DB****************************/
 		if(isset($selected_order["user_total_credits"])){
@@ -282,9 +282,58 @@ class Order extends \lithium\data\Model {
 			}
 		}
 		$orderCollection->update(array("_id" => new MongoId($selected_order["id"])),array('$set' => $datas_order_prices));
+		//Update Items
+		foreach($items as $item) {
+			static::changeQuantity($selected_order["id"], $item["_id"], $item["quantity"], $item["initial_quantity"]);
+			static::cancelItem($selected_order["id"], $item["_id"], $item["cancel"]);
+		}
+		//Pushing modification datas to db
+		$modification_datas["author"] = $author;
+		$modification_datas["type"] = "items";
+		$modification_datas["date"] = new MongoDate(strtotime('now'));
+		$modification_datas["comment"] = $selected_order['comment'];
+		$result = static::collection()->update(array("_id" => new MongoId($selected_order["id"])),
+		array('$push' => array('modifications' => $modification_datas)), array('upsert' => true));
 		return true;
 	}
 
+	/**
+	* Cancel or Uncancel an item from one Order
+	* @param string $order_id
+	* @param string $cart_id
+	* @param boolean $cancel
+	*/
+	public static function cancelItem($order_id, $cart_id, $cancel = true) {
+		$orderCollection = static::collection();
+		$order = $orderCollection->findOne(array("_id" => new MongoId($order_id)), array('items' => 1));
+		foreach($order["items"] as $key => $item) {
+			if($item["_id"] == new MongoId($cart_id)) {
+				$order["items"][$key]["cancel"] = $cancel;
+			}
+		}
+		$orderCollection->update(array("_id" => new MongoId($order_id)), array('$set' => array( "items" => $order["items"])));
+	}
+
+	/**
+	* Change the quantity of an order
+	* @param string $order_id
+	* @param string $cart_id
+	* @param int $quantity
+	*/
+	public static function changeQuantity($order_id, $cart_id, $quantity, $initial_quantity = null) {
+		$orderCollection = static::collection();
+		$order = $orderCollection->findOne(array("_id" => new MongoId($order_id)), array('items' => 1));
+		foreach($order["items"] as $key => $item) {
+			if($item["_id"] == new MongoId($cart_id)) {
+				$order["items"][$key]["quantity"] = $quantity;
+				if(!empty($initial_quantity)) {
+					$order["items"][$key]["initial_quantity"] = $initial_quantity;
+				}
+			}
+		}
+		$orderCollection->update(array("_id" => new MongoId($order_id)), array('$set' => array( "items" => $order["items"])));
+	}
+	
 	/**
 	* Refresh the prices details and credits of the temporary order
 	* and return it to the view
@@ -310,9 +359,6 @@ class Order extends \lithium\data\Model {
 		$conditions = array("code" => $regexObj); 
 		$promocode = Promocode::find("first", $conditions);
 		/************PROMOCODES TREATMENT************/
-		echo "Minimum Promo : ".$promocode->minimum_purchase;
-		echo " Actual Credit Used : ".$selected_order["credit_used"];
-		echo " Initial Credit User : ".$selected_order["initial_credit_used"];
 		if( $subTotal <= $promocode->minimum_purchase){
 			$preAfterDiscount = $subTotal;
 			$datas_order["promocode_disable"] = true;
@@ -321,7 +367,6 @@ class Order extends \lithium\data\Model {
 			$preAfterDiscount = $subTotal  + $selected_order["promo_discount"];
 			$datas_order["promocode_disable"] = false;
 		}
-		echo " preAfterDiscount : ".$preAfterDiscount;
 		/**************CREDITS TREATMENT**************/
 		if(isset($selected_order["credit_used"])){
 			if(empty($selected_order["user_total_credits"])){
@@ -330,7 +375,6 @@ class Order extends \lithium\data\Model {
 				$user_ord["total_credit"] = $selected_order["user_total_credits"];
 			}
 			$datas_user["total_credit"] = $user_ord["total_credit"];
-			echo " User Credit Before Calculation ".$user_ord["total_credit"];
 			//Set Initial Credits if not Set
 			if(empty($selected_order["initial_credit_used"])) {
 				$datas_order["initial_credit_used"] = $selected_order["credit_used"];
@@ -338,28 +382,22 @@ class Order extends \lithium\data\Model {
 			}
 			//CASE (CREDITS > TOTAL)
 			if(abs($selected_order["credit_used"]) > $preAfterDiscount) {
-				echo " CASE (CREDITS > TOTAL) ";
 				$refill = abs($selected_order["credit_used"] + $preAfterDiscount);
 				$new_credits = $selected_order["credit_used"] + $refill;
-				echo " REFILL : ".$refill;
 				$datas_user["total_credit"] = $refill;
 				$afterDiscount = $preAfterDiscount  + $new_credits;
 				$datas_order["credit_used"] = $new_credits;
 			} else if(abs($selected_order["credit_used"]) == $preAfterDiscount) {
-				echo " CASE (CREDITS == TOTAL) ";
 				$afterDiscount = $preAfterDiscount + $selected_order["credit_used"];
 			} else if(abs($selected_order["credit_used"]) < $preAfterDiscount) {
-				echo " CASE (CREDITS < TOTAL) ";
 				//Get back credits from user
 				$initial_credits = ($user_ord["total_credit"] - abs($selected_order["initial_credit_used"] - $selected_order["credit_used"]));
 				if($selected_order["credit_used"] != $selected_order["initial_credit_used"]){
 					$datas_user["total_credit"] = $initial_credits;
 					}
 				if(abs($selected_order["initial_credit_used"]) > $preAfterDiscount) {
-					echo " CASE (INITAL > TOTAL) ";
 					$refill = abs($selected_order["initial_credit_used"] + $preAfterDiscount);
 					$new_credits = $selected_order["initial_credit_used"] + $refill;
-					echo " REFILL : ".$refill;
 					$datas_user["total_credit"] = ($refill + $user_ord["total_credit"]);
 					$afterDiscount = $preAfterDiscount  + $new_credits;
 					$datas_order["credit_used"] = $new_credits;
@@ -389,7 +427,6 @@ class Order extends \lithium\data\Model {
 		$new_datas_order = array_merge($new_datas_order, $datas_order);
 		//keep user credits infos
 		$new_datas_order["user_total_credits"] = $datas_user["total_credit"];
-		echo " User Credit After Calculation " . $new_datas_order["user_total_credits"];
 		$new_datas_order['initial_credit_used'] = $selected_order["initial_credit_used"];
 		/**************CREATE TEMP ORDER********************/
 		$temp_order = static::Create($new_datas_order);

@@ -140,7 +140,6 @@ class OrdersController extends BaseController {
 		if ($datas["id"]) {
 			$status = Order::cancel($datas["id"], $current_user["email"]);
 			$selected_order = $orderCollection->findOne(array("_id" => new MongoId($datas["id"])));
-			Order::actualizePrices($selected_order, null, 'true');
 		}
 	}
 
@@ -157,14 +156,20 @@ class OrdersController extends BaseController {
 			$datas["user_id"] = $selected_order["user_id"];
 			$items = $selected_order["items"];
 			foreach($datas["items"] as $key => $item) {
-				if($item["cancel"] == "true" || $item["cancel"] == "1") {
+				//Quantity
+				$items[$key]["initial_quantity"] = $item["initial_quantity"];
+				$items[$key]["quantity"] = $item["quantity"];
+				//Cancel Status
+				if((($item["cancel"] == "true" || $item["cancel"] == "1") && 
+				$item["quantity"] > 0) || ($item["quantity"] == 0 && $item["cancel"] == "" )) {
 					$items[$key]["cancel"] = true;
 				} else if($item["cancel"] == "false" || $item["cancel"] == "0" || $item["cancel"] == "") {
 					$items[$key]["cancel"] = false;
+					$items[$key]["quantity"] = $item["initial_quantity"];
 				}
 			}
 			if($datas["save"] == 'true') {
-				$result = Order::saveCurrentOrder($datas, $items);
+				$result = Order::saveCurrentOrder($datas, $items, $current_user["email"]);
 				if($result == true) {
 					FlashMessage::set("Order items has been updated.", array('class' => 'pass'));
 				}
@@ -254,12 +259,16 @@ class OrdersController extends BaseController {
 		if($this->request->data){
 		 	$datas = $this->request->data;
 		}
+		if(!empty($datas["cancel_action"])){
+			$this->cancel();
+		}
+		
 		if(!empty($datas["save"])){
 			$order = $this->manage_items();
 		}else {
 			$order = null;
 		}
-		if ($id && empty($datas["save"])) {
+		if ($id && empty($datas["save"]) && empty($datas["cancel_action"]) && !empty($datas["phone"])) {
 			if($this->request->data){
 				$this->updateShipping($id);
 			}

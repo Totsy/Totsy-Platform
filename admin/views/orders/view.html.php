@@ -45,6 +45,8 @@
 									<div id="cancel_form" style="display:none">
 										<?=$this->form->create(null ,array('id'=>'cancelForm','enctype' => "multipart/form-data")); ?>
 										<?=$this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
+										<?=$this->form->hidden('cancel_action', array('class' => 'inputbox', 'id' => 'cancel_action', 'value' => 1)); ?>
+										<?=$this->form->end();?>
 									</div>
 									<div id="new_shipping" style="display:none">
 											<h2 id="new_shipping_address">New shipping address</h2>
@@ -163,6 +165,7 @@
 														<td style="padding:5px; width:100px;"><strong>Type</strong></td>
 														<td style="padding:5px; width:100px;"><strong>Author</strong></td>
 														<td style="padding:5px; width:200px;"><strong>Date</strong></td>
+														<td style="padding:5px; width:30px;"><strong>Comment</strong></td>
 													</tr>
 													<?php $modifications = $order->modifications->data(); ?>
 													<?php krsort($modifications); ?>
@@ -181,6 +184,9 @@
 																</td>
 																<td style="padding:5px" title="date">
 																	<?=date('Y-M-d h:i:s', $modification["date"]["sec"])?>
+																</td>
+																<td style="padding:5px" title="comment">
+						<a href="#" onclick='open_comment("<?php echo(urlencode($modification["comment"])) ;?>")' re >See</a>
 																</td>
 															</tr>
 															<?php $n++; ?>
@@ -256,7 +262,23 @@
 													$<?=number_format($item['sale_retail'],2); ?>
 												</td>
 												<td style="padding:5px;" title="quantity">
-													<?=$item['quantity']?>
+											
+													<?php
+													if(!empty($item['initial_quantity'])) {
+														$limit = $item['initial_quantity'];
+													} else {
+														$limit = $item['quantity'];
+													}
+													$i = 0;
+													$quantities = array();
+													do {
+														$quantities[$i] = $i;
+														$i++;
+													} while ($i <= $limit)
+													?>
+													<?=$this->form->hidden("items[".$key."][initial_quantity]", array('class' => 'inputbox', 'id' => "initial_quantity", 'value' => $limit )); ?>
+													<?=$this->form->select('items['.$key.'][quantity]', $quantities, array('style' => 'float:left; width:50px; margin: 0px 20px 0px 0px;', 'id' => 'dd_qty', 'value' => $item['quantity'], 'onchange' => "change_quantity()"));
+													?>
 												</td>
 												<td title="subtotal" style="padding:5px; color:#009900;">
 													$<?php echo number_format(($item['quantity'] * $item['sale_retail']),2)?>
@@ -307,31 +329,33 @@
 												<strong style="font-weight:bold;color:#606060">Total:</strong> 
 											</td>
 											<td style="padding-left:15px; text-align:right;" valign="top">
-											<?=$this->form->hidden("subTotal", array('class' => 'inputbox', 'id' => "subTotal", 'value' => $order->subTotal )); ?>
-											<?=$this->form->hidden("credit_used", array('class' => 'inputbox', 'id' => "credit_used", 'value' => $order->credit_used )); ?>
-											<?=$this->form->hidden("promo_discount", array('class' => 'inputbox', 'id' => "promo_discount", 'value' => $order->promo_discount )); ?>
-											<?=$this->form->hidden("promo_code", array('class' => 'inputbox', 'id' => "promo_code", 'value' => $order->promo_code )); ?>
-											<?=$this->form->hidden("tax", array('class' => 'inputbox', 'id' => "tax", 'value' => $order->tax)); ?>
-											<?=$this->form->hidden("handling", array('class' => 'inputbox', 'id' => "handling", 'value' => $order->handling )); ?>
-											<?=$this->form->hidden("total", array('class' => 'inputbox', 'id' => "total", 'value' => $order->total)); ?>
-											<?=$this->form->hidden("initial_credit_used", array('class' => 'inputbox', 'id' => "initial_credit_used", 'value' => $order->initial_credit_used)); ?>
-											<?=$this->form->hidden("user_total_credits", array('class' => 'inputbox', 'id' => "user_total_credits", 'value' => $order->user_total_credits )); ?>
-											<?=$this->form->hidden("promocode_disable", array('class' => 'inputbox', 'id' => "promocode_disable", 'value' => $order->promocode_disable )); ?>
-												$<?=number_format($order->subTotal,2); ?>
+											<!--- HIDDEN DATAS - ITEMS -->
+	<?=$this->form->hidden("subTotal", array('class' => 'inputbox', 'id' => "subTotal", 'value' => $order->subTotal )); ?>
+	<?=$this->form->hidden("credit_used", array('class' => 'inputbox', 'id' => "credit_used", 'value' => $order->credit_used )); ?>
+	<?=$this->form->hidden("promo_discount", array('class' => 'inputbox', 'id' => "promo_discount", 'value' => $order->promo_discount )); ?>
+	<?=$this->form->hidden("promo_code", array('class' => 'inputbox', 'id' => "promo_code", 'value' => $order->promo_code )); ?>
+	<?=$this->form->hidden("tax", array('class' => 'inputbox', 'id' => "tax", 'value' => $order->tax)); ?>
+	<?=$this->form->hidden("handling", array('class' => 'inputbox', 'id' => "handling", 'value' => $order->handling )); ?>
+	<?=$this->form->hidden("total", array('class' => 'inputbox', 'id' => "total", 'value' => $order->total)); ?>
+	<?=$this->form->hidden("initial_credit_used", array('class' => 'inputbox', 'id' => "initial_credit_used", 'value' => $order->initial_credit_used)); ?>
+	<?=$this->form->hidden("user_total_credits", array('class' => 'inputbox', 'id' => "user_total_credits", 'value' => $order->user_total_credits )); ?>
+	<?=$this->form->hidden("promocode_disable", array('class' => 'inputbox', 'id' => "promocode_disable", 'value' => $order->promocode_disable )); ?>
+										<!--- END HIDDEN DATAS - ITEMS -->
+											$<?=number_format($order->subTotal,2); ?>
+											<br>
+											<?php if ($order->credit_used): ?>
+												-$<?=number_format(abs($order->credit_used),2); ?>
 												<br>
-												<?php if ($order->credit_used): ?>
-													-$<?=number_format(abs($order->credit_used),2); ?>
-													<br>
-												<?php endif ?>
-												<?php if (($order->promo_discount) && (empty($order["promocode_disable"]))): ?>
-													-$<?=number_format(abs($order->promo_discount),2); ?>
-													<br>
-												<?php endif ?>
-												$<?=number_format($order->tax,2); ?>
+											<?php endif ?>
+											<?php if (($order->promo_discount) && (empty($order["promocode_disable"]))): ?>
+												-$<?=number_format(abs($order->promo_discount),2); ?>
 												<br>
-												$<?=number_format($order->handling,2); ?>
-												<br><br><br>
-												<strong style="font-weight:bold;color:#009900;">$<?=number_format($order->total,2); ?></strong>
+											<?php endif ?>
+											$<?=number_format($order->tax,2); ?>
+											<br>
+											$<?=number_format($order->handling,2); ?>
+											<br><br><br>
+											<strong style="font-weight:bold;color:#009900;">$<?=number_format($order->total,2); ?></strong>
 											</td>
 										</tr>
 									</table>
@@ -373,6 +397,9 @@
 		</tr>	
 	</table>
 	<?=$this->form->hidden("save", array('class' => 'inputbox', 'id' => "save")); ?>
+	Commment :
+	<?=$this->form->textarea("comment", array('style' => 'width:100%;', 'row' => '6', 'id' => "comment")); ?>
+	<div style="clear:both"></div>
 	<?php if($itemscanceled == false): ?>
 	<p style="text-align:center;">
 		<button id="update_button"  onclick="update_order();" style="font-weight:bold;font-size:14px;">Update Order</button>
@@ -399,8 +426,7 @@ $(document).ready(function(){
 		}
 	});
 	$("#confirm_cancel").click(function () {
-		$.post("../cancel", $("#cancelForm").serialize());
-		window.setTimeout('location.reload()', 500);
+		$('#cancelForm').submit();
 	});
 	$("#abort_cancel").click(function () {
 		if ($("#normal").is(":hidden")) {
@@ -415,6 +441,12 @@ $(document).ready(function(){
 		}
 	});
 });
+function change_quantity() {
+	if (confirm('Are you sure to change the quantity of this item ?')) {
+		$('#save').val("false");
+  		$('#itemsForm').submit();
+	}
+};
 function cancel_item(val) {
 	if (confirm('Are you sure to remove this item ?')) {
 		$('input[name="items['+val+'][cancel]"]').val("true");
@@ -430,9 +462,17 @@ function open_item(val) {
 	}
 };
 function update_order() {
-	if (confirm('Are you sure to apply the changes to the order?')) {
-		$('#save').val("true");
-		$('#itemsForm').submit();
+	var test = $('textarea#comment').val();
+	if(test == "") {
+		alert("Please fill the comment section before updating");
+	} else {
+		if (confirm('Are you sure to apply the changes to the order?')) {
+			$('#save').val("true");
+			$('#itemsForm').submit();
+		}
 	}
 };
+function open_comment(val) {
+	alert(unescape(val));
+}
 </script>
