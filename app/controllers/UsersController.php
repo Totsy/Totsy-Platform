@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\controllers\BaseController;
 use app\models\User;
 use app\models\Menu;
+use app\models\Affiliate;
 use app\models\Invitation;
 use lithium\security\Auth;
 use lithium\storage\Session;
@@ -16,7 +17,7 @@ use MongoDate;
 class UsersController extends BaseController {
 
 	public $sessionKey = 'userLogin';
-	
+
 	/**
 	 * Performs registration functionality.
 	 *
@@ -232,6 +233,10 @@ class UsersController extends BaseController {
 					$sessionWrite = $this->writeSession($user->data());
 					$ipaddress = $this->request->env('REMOTE_ADDR');
 					User::log($ipaddress);
+					if(array_key_exists('redirect', $cookie) && $cookie['redirect'] ) {
+						$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$_SERVER['HTTP_HOST']));
+						unset($cookie['redirect']);
+					}
 					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 					if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) {
 						$this->redirect($this->request->url);
@@ -398,7 +403,12 @@ class UsersController extends BaseController {
 				'status' => 'Accepted')
 		));
 
-		return compact('user','open', 'accepted', 'flashMessage');
+		$pixel = Affiliate::getPixels('invite', 'spinback');
+		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
+			                                            array('invite' => $_SERVER['REQUEST_URI'])
+			                                            );
+
+		return compact('user','open', 'accepted', 'flashMessage', 'spinback_fb');
 	}
 
 	public function upgrade() {
