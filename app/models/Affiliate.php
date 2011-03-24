@@ -121,7 +121,7 @@ class Affiliate extends Base {
                 $user = User::find('first', array('conditions' => array(
                     'email' => $session['email']
                 )));
-               // $insert = static::spinback_share('/img/logo.jpg', $order->order_id, '/sales', 'Great Deals on Totsy', '' ,"I just saved on Totsy.");
+                $insert = static::spinback_share('/img/logo.png', $user->_id, '/join/' . $user->invitation_codes[0], 'Private sales site for Moms looking for great Deals', '' ,"I saved tons on Totsy and you can too!", ' st="Invite Your Friends" ');
                 return str_replace('$' , $insert, $pixel);
             }
             if (array_key_exists('orderid', $options) && ($options['orderid'])) {
@@ -145,7 +145,7 @@ class Affiliate extends Base {
                     'order_id' => $orderid
                 )));
 
-                $insert = static::spinback_share('/img/logo.jpg', $order->order_id, '/sales', 'Great Deals on Totsy', '' ,"I just saved on Totsy.");
+                $insert = static::spinback_share('/img/logo.png', $order->order_id, '/sales', 'Great Deals on Totsy', '' ,"I just saved on Totsy.", ' st="Share Your Order" ');
                 return str_replace('$',$insert,$pixel);
             }
             if (array_key_exists('product', $options) && ($options['product'])) {
@@ -169,7 +169,7 @@ class Affiliate extends Base {
                 $event = Event::find('first', array('conditions' => array(
                             'url' => $vendorurl
                         )));
-                $insert = static::spinback_share('/image/' .$event->logo_image . '.gif',$event->_id, $options['event'],  $event->name, $event->name, "Check out this SALE on Totsy!"  );
+                $insert = static::spinback_share('/image/' .$event->logo_image . '.gif',$event->_id, $options['event'],  $event->name, $event->name, "Check out this SALE on Totsy!", ' st="Share this Sale!"'  );
                return str_replace('$',$insert,$pixel);
             }
         }else if($invited_by == 'linkshare') {
@@ -216,7 +216,7 @@ class Affiliate extends Base {
     * @param $msg message to display
     * @return string of variables for javascript
     */
-    private static function spinback_share($pi, $pid, $plp, $pn, $m, $msg){
+    private static function spinback_share($pi, $pid, $plp, $pn, $m, $msg, $extra = null){
         $insert ='';
         $insert .= ' pi= http://' . $_SERVER['HTTP_HOST'] . $pi;
        $insert .= ' pid=' . $pid;
@@ -224,6 +224,7 @@ class Affiliate extends Base {
        $insert .= ' pn="' .$pn . '"';
        $insert .= ' m="' . $m. '"';
        $insert .= 'msg= "' . $msg . '"';
+       $insert .= $extra;
         return $insert;
     }
     /**

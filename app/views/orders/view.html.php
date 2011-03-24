@@ -222,11 +222,14 @@
 							<tr>
 								<td colspan="4">
 									<table>
+									 <?php if($new): ?>
+
 									    <tr>
 									        <td>
 									            <?php echo $spinback_fb; ?>
 									        </td>
 									    </tr>
+									    <?php endif;?>
 										<tr>
 											<td>
 												<p>A TREE HAS BEEN PLANTED WITH THIS ORDER.
