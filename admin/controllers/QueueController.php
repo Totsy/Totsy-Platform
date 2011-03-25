@@ -15,6 +15,8 @@ use admin\extensions\util\String;
 /**
  * The Queue Controller
  *
+ * @todo Show all the POs that have already been processed
+ * @todo Open PO tab, Sent PO Tabs
  **/
 class QueueController extends BaseController {
 
@@ -28,7 +30,7 @@ class QueueController extends BaseController {
 	public function index() {
 		$conditions = array(
 			'end_date' => array(
-				'$gte' => new MongoDate(strtotime("-2 week")),
+				'$gte' => new MongoDate(strtotime("-5 week")),
 				'$lte' => new MongoDate(time())
 		));
 		if ($this->request->data) {

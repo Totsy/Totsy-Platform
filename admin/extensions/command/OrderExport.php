@@ -156,33 +156,35 @@ class OrderExport extends Base {
 		$this->processed = LITHIUM_APP_PATH . $this->processed;
 		$this->log("...Waking up...");
 		$conditions = array('processed' => array('$ne' => true));
-		$queue = Queue::find('first', compact('conditions'));
-		if ($queue) {
-			$this->batchId = array('order_batch' => $queue->_id);
-			$this->log("Starting to process $queue->_id");
-			$this->time = date('Ymdis');
-			$queueData = $queue->data();
-			if ($queueData['orders']) {
-				$this->orderEvents = $queueData['orders'];
-				$this->_orderGenerator();
+		$records = Queue::find('all', compact('conditions'));
+		foreach ($records as $queue) {
+			$this->summary = array();
+			$this->log("Processing Queue Record: $queue->_id");
+			if ($queue) {
+				$this->batchId = array('order_batch' => $queue->_id);
+				$this->log("Starting to process $queue->_id");
+				$this->time = date('Ymdis');
+				$queueData = $queue->data();
+				if ($queueData['orders']) {
+					$this->orderEvents = $queueData['orders'];
+					$this->_orderGenerator();
+				}
+				if ($queueData['purchase_orders']) {
+					$this->poEvents = $queueData['purchase_orders'];
+					$this->_purchases();
+				}
+				$this->_itemGenerator();
+				$this->_export();
+				if ($queueData['orders'] || $queueData['purchase_orders']) {
+					$queue->summary = $this->summary;
+					$queue->processed = true;
+					$queue->processed_date = new MongoDate();
+					$queue->save();
+					$this->summary['from_email'] = 'logistics@totsy.com';
+					$this->summary['to_email'] = 'fagard@totsy.com';
+					Silverpop::send('exportSummary', $this->summary);
+				}
 			}
-			if ($queueData['purchase_orders']) {
-				$this->poEvents = $queueData['purchase_orders'];
-				$this->_purchases();
-			}
-			$this->_itemGenerator();
-			$this->_export();
-			if ($queueData['orders'] || $queueData['purchase_orders']) {
-				$queue->summary = $this->summary;
-				$queue->processed = true;
-				$queue->processed_date = new MongoDate();
-				$queue->save();
-				$this->summary['from_email'] = 'logistics@totsy.com';
-				$this->summary['to_email'] = 'fagard@totsy.com';
-				Silverpop::send('exportSummary', $this->summary);
-			}
-		} else {
-			$this->out('No events in queue for processing');
 		}
 	}
 
@@ -249,7 +251,11 @@ class OrderExport extends Base {
 						$orderFile[$inc]['Pack Slip Comment'] = '';
 						$orderFile[$inc]['Special Packing Instructions'] = '';
 						$orderFile[$inc]['Address1'] =  str_replace(',', ' ', $order['shipping']['address']);
-						$orderFile[$inc]['Address2'] = str_replace(',', ' ', $order['shipping']['address_2']);
+						if (!empty($order['shipping']['address_2'])) {
+							$orderFile[$inc]['Address2'] = str_replace(',', ' ', $order['shipping']['address_2']);
+						} else {
+							$orderFile[$inc]['Address2'] = "";
+						}
 						$orderFile[$inc]['City'] = $order['shipping']['city'];
 						$orderFile[$inc]['StateOrProvince'] = $order['shipping']['state'];
 						$orderFile[$inc]['Zip'] = $order['shipping']['zip'];
