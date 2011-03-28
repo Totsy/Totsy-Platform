@@ -31,6 +31,9 @@
 									<div style="text-align:center;">
 										<button id="confirm_cancel" style="font-weight:bold;font-size:14px;">Confirm Cancel</button>
 										<button id="abort_cancel" style="font-weight:bold;font-size:14px;">Abort</button>
+										<div style="clear:both"></div><br \>
+										Commment :
+						<?=$this->form->textarea("comment_text", array('style' => 'width:100%;', 'row' => '6', 'id' => "comment_text")); ?>
 										</div><br />
 									</div>
 									<div id="normal" style="display:block">
@@ -46,6 +49,7 @@
 										<?=$this->form->create(null ,array('id'=>'cancelForm','enctype' => "multipart/form-data")); ?>
 										<?=$this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
 										<?=$this->form->hidden('cancel_action', array('class' => 'inputbox', 'id' => 'cancel_action', 'value' => 1)); ?>
+										<?=$this->form->hidden('comment', array('class' => 'textarea', 'id' => 'comment')); ?>
 										<?=$this->form->end();?>
 									</div>
 									<div id="new_shipping" style="display:none">
@@ -185,9 +189,11 @@
 																<td style="padding:5px" title="date">
 																	<?=date('Y-M-d h:i:s', $modification["date"]["sec"])?>
 																</td>
+																<?php if(!empty($modification["comment"])) :?>
 																<td style="padding:5px" title="comment">
 						<a href="#" onclick='open_comment("<?php echo(urlencode($modification["comment"])) ;?>")' re >See</a>
 																</td>
+																<?php endif ?>
 															</tr>
 															<?php $n++; ?>
 														<?php endif ?>
@@ -396,13 +402,13 @@
 			<td style="padding:0px 0px 5px 0px;"><hr></td>
 		</tr>	
 	</table>
+	<?php if($itemscanceled == false): ?>
 	<?=$this->form->hidden("save", array('class' => 'inputbox', 'id' => "save")); ?>
 	Commment :
 	<?=$this->form->textarea("comment", array('style' => 'width:100%;', 'row' => '6', 'id' => "comment")); ?>
 	<div style="clear:both"></div>
-	<?php if($itemscanceled == false): ?>
 	<p style="text-align:center;">
-		<button id="update_button"  onclick="update_order();" style="font-weight:bold;font-size:14px;">Update Order</button>
+		<input type="submit" id="update_button"  onclick="update_order(); return false;" value="Update Order"/>
 	</p>
 	<?php endif ?>
 	<?=$this->form->end();?>
@@ -426,7 +432,14 @@ $(document).ready(function(){
 		}
 	});
 	$("#confirm_cancel").click(function () {
-		$('#cancelForm').submit();
+		var test = $('textarea#comment_text').val();
+		if(test == "") {
+			alert("Please fill the comment section before updating");
+			return false;
+		} else {
+			$('#comment').val(test);
+			$('#cancelForm').submit();
+		}
 	});
 	$("#abort_cancel").click(function () {
 		if ($("#normal").is(":hidden")) {
@@ -465,8 +478,9 @@ function update_order() {
 	var test = $('textarea#comment').val();
 	if(test == "") {
 		alert("Please fill the comment section before updating");
+		return false;
 	} else {
-		if (confirm('Are you sure to apply the changes to the order?')) {
+		if(confirm('Are you sure to apply the changes to the order?')) {
 			$('#save').val("true");
 			$('#itemsForm').submit();
 		}

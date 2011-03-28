@@ -138,7 +138,7 @@ class OrdersController extends BaseController {
 		$orderCollection = Order::collection();
 		$datas = $this->request->data;
 		if ($datas["id"]) {
-			$status = Order::cancel($datas["id"], $current_user["email"]);
+			$status = Order::cancel($datas["id"], $current_user["email"], $datas["comment"]);
 			$selected_order = $orderCollection->findOne(array("_id" => new MongoId($datas["id"])));
 		}
 	}
@@ -161,11 +161,13 @@ class OrdersController extends BaseController {
 				$items[$key]["quantity"] = $item["quantity"];
 				//Cancel Status
 				if((($item["cancel"] == "true" || $item["cancel"] == "1") && 
-				$item["quantity"] > 0) || ($item["quantity"] == 0 && $item["cancel"] == "" )) {
+				$item["quantity"] > 0) || ($item["quantity"] == 0 && ($item["cancel"] == "" ||  $item["cancel"] == 1 ||  $item["cancel"] == 'true'))) {
 					$items[$key]["cancel"] = true;
 				} else if($item["cancel"] == "false" || $item["cancel"] == "0" || $item["cancel"] == "") {
 					$items[$key]["cancel"] = false;
-					$items[$key]["quantity"] = $item["initial_quantity"];
+					if($items[$key]["quantity"] == 0) {
+						$items[$key]["quantity"] = $item["initial_quantity"];
+					}
 				}
 			}
 			if($datas["save"] == 'true') {
@@ -196,7 +198,7 @@ class OrdersController extends BaseController {
 				}
 			}
 			if(!empty($cancel_order)){
-				Order::cancel($datas["id"], $current_user["email"]);
+				$this->cancel();
 				$order_temp = Order::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
 			}
 		}

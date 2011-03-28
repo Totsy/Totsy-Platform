@@ -9,6 +9,7 @@ use li3_payments\extensions\payments\exceptions\TransactionException;
 use MongoRegex;
 use lithium\analysis\Logger;
 use admin\models\User;
+use admin\models\Item;
 
 /**
 * The Orders Model is related to the Orders Collection in MongoDB.
@@ -156,17 +157,24 @@ class Order extends \lithium\data\Model {
 	 * @param string $order_id,
 	 * @param string $author
 	 */
-	public static function cancel($order_id, $author) {
+	public static function cancel($order_id, $author, $comment) {
+		$userCollection = User::collection();
 		//Get the actual datas of the order
 		$result = static::find('first', array('conditions' => array(
-			'_id' => $order_id
+			'_id' => new MongoId($order_id)
 		)));
 		$order = $result->data();
+		if(strlen($order["user_id"]) > 10){
+			$user = $userCollection->findOne(array("_id" => new MongoId($order["user_id"])));
+		} else {
+			$user = $userCollection->findOne(array("_id" => $order["user_id"]));
+		}
 		//Compare the cancel status, write modification datas and update cancel db status
 		$modification_datas["author"] = $author;
 		$modification_datas["date"] = new MongoDate(strtotime('now'));
 		if(empty($order["cancel"]) || ($order["cancel"] == false)){
 			$modification_datas["type"] = "cancel";
+			$modification_datas["comment"] = $comment;
 			static::collection()->update(array('_id' => new MongoId($order_id)),
 				array('$set' => array('cancel' => true)), array("upsert" => true));
 			//Cancel all the items
@@ -177,9 +185,19 @@ class Order extends \lithium\data\Model {
 			static::collection()->update(array('_id' => new MongoId($order_id)),
 				array('$set' => array('items' => $items)));
 		}
+		//Reattribute credits to the user
+		if(isset($order["credit_used"])) {
+			if(strlen($order["user_id"]) > 10){
+				$userCollection->update(array("_id" => new MongoId($order["user_id"])), array('$set' => array("total_credit" => (((float) abs($order["credit_used"])) + ((float) $user["total_credit"])))));
+			} else {
+				$userCollection->update(array("_id" => $order["user_id"]), array('$set' => array("total_credit" => (((float) abs($order["credit_used"])) + ((float) $user["total_credit"])))));
+			}
+		}
 		//Pushing modification datas to db
 		$result = static::collection()->update(array("_id" => new MongoId($order_id)),
 		array('$push' => array('modifications' => $modification_datas)), array('upsert' => true));
+		
+		return $result;
 	}
 
 	public static function shipping($items) {
@@ -196,13 +214,13 @@ class Order extends \lithium\data\Model {
 	}
 
 	public static function overSizeShipping($items){
+		$itemsCollection = Item::collection();
 		$cost = 0;
 		foreach($items as $item) {
-			$info = Item::find("first", array("_id" => new MongoId($item['item_id'])));
-			if(array_key_exists('shipping_oversize', $info->data())){
-				$data = $info->data();
-				if(empty($data["cancel"]) || ($data["cancel"] == false)){
-					$cost += $data['shipping_rate'];
+			$info = $itemsCollection->findOne(array("_id" => new MongoId($item['item_id'])));
+			if(array_key_exists('shipping_oversize', $info)){
+				if(empty($info["cancel"]) || ($info["cancel"] == false)){
+					$cost += $info['shipping_rate'];
 				}
 			}
 		}
@@ -221,23 +239,24 @@ class Order extends \lithium\data\Model {
 		$tax = 0;
 		foreach($items as $item){
 			if(($item["cancel"] == false) || (empty($item["cancel"]))){
-				$zipCheckPartial = in_array(substr($shipping->zip, 0, 3), static::_object()->_nyczips);
-				$zipCheckFull = in_array($shipping->zip, static::_object()->_nyczips);
+				$zipCheckPartial = in_array(substr($shipping["zip"], 0, 3), static::_object()->_nyczips);
+				$zipCheckFull = in_array($shipping["zip"], static::_object()->_nyczips);
 				$nysZip = ($zipCheckPartial || $zipCheckFull) ? true : false;
 				$nycExempt = ($nysZip && $item->sale_retail < 110) ? true : false;
-				if ($item->taxable != false || $nycExempt) {
-					switch ($shipping->state) {
+				if ($item['taxable'] != false || $nycExempt) {
+					switch ($shipping["state"]) {
 						case 'NY':
 							$tax = ($nysZip) ? static::TAX_RATE : static::TAX_RATE_NYS;
 							break;
 						default:
-							$tax =  ($item->sale_retail < 110) ? 0 : static::TAX_RATE;
+							$tax =  ($item['sale_retail'] < 110) ? 0 : static::TAX_RATE;
 							break;
 					}
 				}
 				$tax += ($item['sale_retail'] * $item['tax']);
 			}
 		}
+		return $tax;
 	}
 
 	/**
@@ -276,9 +295,9 @@ class Order extends \lithium\data\Model {
 		/**************UPDATE DB****************************/
 		if(isset($selected_order["user_total_credits"])){
 			if(strlen($selected_order["user_id"]) > 10){
-				$userCollection->update(array("_id" => new MongoId($selected_order["user_id"])), array('$set' => array("total_credit" => $selected_order["user_total_credits"])));
+				$userCollection->update(array("_id" => new MongoId($selected_order["user_id"])), array('$set' => array("total_credit" => (float) $selected_order["user_total_credits"])));
 			} else {
-				$userCollection->update(array("_id" => $selected_order["user_id"]), array('$set' => array("total_credit" =>  $selected_order["user_total_credits"])));
+				$userCollection->update(array("_id" => $selected_order["user_id"]), array('$set' => array("total_credit" => (float) $selected_order["user_total_credits"])));
 			}
 		}
 		$orderCollection->update(array("_id" => new MongoId($selected_order["id"])),array('$set' => $datas_order_prices));
@@ -294,7 +313,7 @@ class Order extends \lithium\data\Model {
 		$modification_datas["comment"] = $selected_order['comment'];
 		$result = static::collection()->update(array("_id" => new MongoId($selected_order["id"])),
 		array('$push' => array('modifications' => $modification_datas)), array('upsert' => true));
-		return true;
+		return $result;
 	}
 
 	/**
@@ -370,11 +389,15 @@ class Order extends \lithium\data\Model {
 		/**************CREDITS TREATMENT**************/
 		if(isset($selected_order["credit_used"])){
 			if(empty($selected_order["user_total_credits"])){
-				$user_ord = $userCollection->findOne(array("_id" => new MongoId($selected_order["user_id"])));
+				if(strlen($order["user_id"]) > 10){
+					$user_ord = $userCollection->findOne(array("_id" => new MongoId($order["user_id"])));
+				} else {
+					$user_ord = $userCollection->findOne(array("_id" => $order["user_id"]));
+				}
 			} else {
 				$user_ord["total_credit"] = $selected_order["user_total_credits"];
 			}
-			$datas_user["total_credit"] = $user_ord["total_credit"];
+			$datas_user["total_credit"] = (float) $user_ord["total_credit"];
 			//Set Initial Credits if not Set
 			if(empty($selected_order["initial_credit_used"])) {
 				$datas_order["initial_credit_used"] = $selected_order["credit_used"];
@@ -384,7 +407,7 @@ class Order extends \lithium\data\Model {
 			if(abs($selected_order["credit_used"]) > $preAfterDiscount) {
 				$refill = abs($selected_order["credit_used"] + $preAfterDiscount);
 				$new_credits = $selected_order["credit_used"] + $refill;
-				$datas_user["total_credit"] = $refill;
+				$datas_user["total_credit"] = ($datas_user["total_credit"] + $refill);
 				$afterDiscount = $preAfterDiscount  + $new_credits;
 				$datas_order["credit_used"] = $new_credits;
 			} else if(abs($selected_order["credit_used"]) == $preAfterDiscount) {
