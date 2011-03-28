@@ -87,6 +87,36 @@ class Order extends \lithium\data\Model {
 		return $result;
 	}
 
+	/**
+	 * Voids and Order
+	 *
+	 * @param array $order - Array of order information
+	 * @return boolean
+	 */
+	public static function void($order) {
+		$collection = static::collection();
+		$orderId = new MongoId($order['_id']);
+		try {
+			$auth = Payments::void('default', $order['authKey']);
+			return $collection->update(
+				array('_id' => $orderId),
+				array('$set' => array(
+					'void_date' => new MongoDate(),
+					'void_confirm' => $auth)),
+				array('upsert' => false)
+			);
+		} catch (Exception $e) {
+			$error = $e->getMessage();
+			Logger::error("order-void: Void Failed. Error $error thrown for $order[_id]");
+			$collection->update(
+				array('_id' => $orderId),
+				array('$set' => array(
+					'error_date' => new MongoDate(),
+					'auth_error' => $error)),
+				array('upsert' => false)
+			);
+		}
+	}
 	public static function process($order) {
 		$collection = static::collection();
 		$orderId = new MongoId($order['_id']);
