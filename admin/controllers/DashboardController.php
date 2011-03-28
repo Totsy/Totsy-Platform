@@ -188,8 +188,8 @@ class DashboardController extends \lithium\action\Controller {
    
    if ($today > $endOfThirdWeek) {
    
-   $currentMonthRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
-   $currentMonthRevenue =+ $FirstWeekRevenue + $secondWeekRevenue + $thirdWeekRevenue;
+   $currentMonthRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections)
+   + ($FirstWeekRevenue + $secondWeekRevenue + $thirdWeekRevenue);
    
     }else{
       
@@ -207,8 +207,8 @@ class DashboardController extends \lithium\action\Controller {
    
     if ($today > $endOfThirdWeek) {
    
-   $currentMonthNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
-   $currentMonthNewUsers =+ $FirstWeekNewUsers + $secondWeekNewUsers + $thirdWeekNewUsers;
+   $currentMonthNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections) + 
+   ($FirstWeekNewUsers + $secondWeekNewUsers + $thirdWeekNewUsers);
     
     }else{
       
