@@ -199,7 +199,7 @@
 																</td>
 																<?php if(!empty($modification["comment"])) :?>
 																<td style="padding:5px" title="comment">
-						<a href="#" onclick='open_comment("<?php echo(urlencode($modification["comment"])) ;?>")' re >See</a>
+							<a href="#" onclick='open_comment("<?php echo(urlencode($modification["comment"])) ;?>")' re >See</a>
 																</td>
 																<?php endif ?>
 															</tr>
@@ -504,6 +504,10 @@ function update_order() {
 	}
 };
 function open_comment(val) {
-	alert(unescape(val));
+	// Create a regular expression to search all +s in the string
+	var lsRegExp = /\+/g;
+	// Return the decoded string
+    val = unescape(String(val).replace(lsRegExp, " "));
+	alert(val);
 }
 </script>
