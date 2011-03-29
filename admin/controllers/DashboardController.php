@@ -21,4 +21,6 @@ class DashboardController extends \lithium\action\Controller {
     return $record;
     }
 }
+//* 
+
 ?>
