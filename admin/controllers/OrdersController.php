@@ -271,7 +271,7 @@ class OrdersController extends BaseController {
 	*/
 	public function view($id = null) {
 		//Only view
-		$edit_mode = true;
+		$edit_mode = false;
 		//update the shipping address by adding the new one and pushing the old one.
 		if($this->request->data){
 		 	$datas = $this->request->data;
