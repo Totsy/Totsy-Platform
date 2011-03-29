@@ -30,7 +30,7 @@ class QueueController extends BaseController {
 	public function index() {
 		$conditions = array(
 			'end_date' => array(
-				'$gte' => new MongoDate(strtotime("-5 week")),
+				'$gte' => new MongoDate(strtotime("-2 week")),
 				'$lte' => new MongoDate(time())
 		));
 		if ($this->request->data) {
@@ -42,7 +42,20 @@ class QueueController extends BaseController {
 		$queue = Queue::all(compact('conditions'));
 		$conditions = array('processed' => true);
 		$recent = Queue::all(compact('conditions'));
-		return compact('events', 'queue', 'recent');
+		/**
+		 * Show all the data
+		 */
+		$data = $recent->data();
+		$processedOrders =  $processedPOs = array();
+		foreach ($data as $records) {
+			if ($records['orders']) {
+				$processedOrders = array_unique(array_merge($processedOrders, $records['orders']));
+			}
+			if ($records['purchase_orders']) {
+				$processedPOs = array_unique(array_merge($processedPOs, $records['purchase_orders']));
+			}
+		}
+		return compact('events', 'queue', 'recent', 'processedOrders', 'processedPOs');
 	}
 
 	/**

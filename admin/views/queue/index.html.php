@@ -9,7 +9,7 @@
 <div class="grid_16">
 	<h2 id="page-heading">Order Management</h2>
 </div>
-<div class="grid_8">
+<div class="grid_6">
 	<div class="box">
 	<h2>
 		<a href="#" id="toggle-queue">Currently in Queue</a>
@@ -45,14 +45,15 @@
 	</div>
 	</div>
 </div>
-<div class="grid_8">
+<div class="grid_10">
 	<div class="box">
 	<h2>
 		<a href="#" id="toggle-recent">Recently Processed</a>
 	</h2>
 	<div class="block" id="recent">
 		<?php if (!empty($recent)): ?>
-			<table border="0" cellspacing="5" cellpadding="5">
+			<table id ="summary_table" border="0" cellspacing="5" class="datatable" cellpadding="5">
+				<thead>
 				<tr>
 					<th>Date</th>
 					<th>Orders Processed</th>
@@ -60,6 +61,8 @@
 					<th>POs Processed</th>
 					<th>View</th>
 				</tr>
+				</thead>
+			<tbody>
 			<?php $i = 0; ?>
 			<?php foreach ($recent as $data): ?>
 				<?php $i++?>
@@ -83,6 +86,7 @@
 						<td><?=$this->html->link('View Details', array('Queue::view', 'args' => $data['_id'])); ?></td>
 					</tr>
 			<?php endforeach ?>
+			</tbody>
 			</table>
 		<?php else: ?>
 			<h4>Nothing in the queue!</h4>
@@ -90,8 +94,8 @@
 	</div>
 	</div>
 </div>
-<div class="clear"></div>
-<div class="grid_6">
+
+<!-- <div class="grid_6">
 	<div class="box">
 	<h2>
 		<a href="#" id="toggle-order-search">Event Search</a>
@@ -109,7 +113,7 @@
 			<?=$this->form->end(); ?>
 		</fieldset>
 	</div>
-	</div>
+	</div> -->
 </div>
 
 <div class="clear"></div>
@@ -133,8 +137,20 @@
 						<td><?=$event->name?></td>
 						<td><?=date('m-d-Y', $event->end_date->sec)?></td>
 						<td><?=Event::poNumber($event)?></td>
-						<td><center><input type="checkbox" name="orders[]" value="<?=$event->_id?>" /></center></td>
-						<td><center><input type="checkbox" name="pos[]" value="<?=$event->_id?>" /></center></td>
+						<td>
+						<?php if (in_array((string) $event->_id, $processedOrders)): ?>
+							<center>Processed</center>
+						<?php else: ?>
+							<center><input type="checkbox" name="orders[]" value="<?=$event->_id?>" /></center>
+						<?php endif ?>
+						</td>
+						<td>
+						<?php if (in_array((string) $event->_id, $processedPOs)): ?>
+							<center>Processed</center>
+						<?php else: ?>
+							<center><input type="checkbox" name="pos[]" value="<?=$event->_id?>" /></center>
+						<?php endif ?>
+						</td>
 					</tr>
 				<?php endforeach ?>
 			</tbody>
@@ -150,6 +166,14 @@
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
 		$('#eventTable').dataTable({
+			"sDom": 'T<"clear">lfrtip'
+		}
+		);
+	} );
+</script>
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function() {
+		$('#summary_table').dataTable({
 			"sDom": 'T<"clear">lfrtip'
 		}
 		);
