@@ -208,7 +208,7 @@ class CreateDashboard extends \lithium\console\Command  {
    if ($today > $endOfThirdWeek) {
 
    $currentMonthRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
-   $currentMonthRevenue =+ $FirstWeekRevenue + $secondWeekRevenue + $thirdWeekRevenue;
+   $currentMonthRevenue += $FirstWeekRevenue + $secondWeekRevenue + $thirdWeekRevenue;
 
     }else{
 
