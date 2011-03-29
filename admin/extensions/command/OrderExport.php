@@ -49,27 +49,6 @@ class OrderExport extends Base {
 	public $test = 'false';
 
 	/**
-	 * FTP Server of 3PL we are sending files to.
-	 *
-	 * @var string
-	 */
-	protected $_ftpServer = 'ftp.dotcomdistribution.com';
-
-	/**
-	 * FTP User Name.
-	 *
-	 * @var string
-	 */
-	protected $_ftpUser = 'TOT90';
-
-	/**
-	 * FTP Password.
-	 *
-	 * @var string
-	 */
-	protected $_ftpPass = '4J518t54';
-
-	/**
 	 * The array list of events that should be batched
 	 * processed.
 	 *
@@ -174,7 +153,6 @@ class OrderExport extends Base {
 					$this->_purchases();
 				}
 				$this->_itemGenerator();
-				$this->_export();
 				if ($queueData['orders'] || $queueData['purchase_orders']) {
 					$queue->summary = $this->summary;
 					$queue->processed = true;
@@ -202,15 +180,9 @@ class OrderExport extends Base {
 		$itemCollection = Item::connection()->connection->items;
 		$orderFile = array();
 		$heading = ProcessedOrder::$_fileHeading;
-		$promocodes = array('$nin' => array(
-			new MongoRegex("/15CREDIT/i"),
-			new MongoRegex("/TENOFF/i"),
-			new MongoRegex("/5OFF/i")
-		));
 		$orders = $orderCollection->find(array(
 			'items.event_id' => array('$in' => $this->orderEvents),
-			'cancel' => array('$ne' => true),
-			'promo_code' => $promocodes
+			'cancel' => array('$ne' => true)
 		));
 		if ($orders) {
 			$inc = 1;
@@ -221,7 +193,6 @@ class OrderExport extends Base {
 			foreach ($orders as $order) {
 				$conditions = array('Customer PO #' => array('$in' => array((string) $order['_id'], $order['_id'])));
 				$processCheck = ProcessedOrder::count(compact('conditions'));
-				$this->log("Already processed $order[_id]");
 				if ($processCheck == 0) {
 					$user = User::find('first', array('conditions' => array('_id' => $order['user_id'])));
 					$items = $order['items'];
@@ -280,6 +251,8 @@ class OrderExport extends Base {
 						fputcsv($fp, $orderFile[$inc], chr(9));
 						++$inc;
 					}
+				} else {
+					$this->log("Already processed $order[_id]");
 				}
 			}
 			fclose($fp);
@@ -459,35 +432,6 @@ class OrderExport extends Base {
 			$items = $items->data();
 		}
 		return $items;
-	}
-	/**
-	 * This export script examine the source directory and send any files
-	 * that have not already been transmitted. Once the transmission has been
-	 * confirmed move the file over to a backup folder within the same directory.
-	 *
-	 */
-	public function _export() {
-		if ($this->source) {
-			$handle = opendir($this->source);
-			while (false !== ($this->file = readdir($handle))) {
-				if (!(in_array($this->file, $this->_exclude))) {
-					$fullPath = $this->source.$this->file;
-					$backupPath = $this->processed.$this->file;
-					if (filesize($fullPath) > 0) {
-						if (Exchanger::putFile($this->file, $fullPath)) {
-							$this->log("Successfully uploaded $this->file");
-							$this->log("Moving $fullPath to $backupPath");
-							rename($fullPath, $backupPath);
-						} else {
-							$this->error("There was a problem while uploading $this->file");
-						}
-					} else {
-						$this->log("$fullPath was empty. Removing...");
-						unlink($fullPath);
-					}
-				}
-			}
-		}
 	}
 
 }
