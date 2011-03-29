@@ -434,10 +434,10 @@ class Order extends \lithium\data\Model {
 		/**************CREDITS TREATMENT**************/
 		if(isset($selected_order["credit_used"])){
 			if(empty($selected_order["user_total_credits"])){
-				if(strlen($order["user_id"]) > 10){
-					$user_ord = $userCollection->findOne(array("_id" => new MongoId($order["user_id"])));
+				if(strlen($selected_order["user_id"]) > 10){
+					$user_ord = $userCollection->findOne(array("_id" => new MongoId($selected_order["user_id"])));
 				} else {
-					$user_ord = $userCollection->findOne(array("_id" => $order["user_id"]));
+					$user_ord = $userCollection->findOne(array("_id" => $selected_order["user_id"]));
 				}
 			} else {
 				$user_ord["total_credit"] = $selected_order["user_total_credits"];
