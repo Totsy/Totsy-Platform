@@ -35,14 +35,20 @@ if (!Session::check('userLogin')) {
 
 $session = Session::read('userLogin');
 
+Router::connect('/login', 'Users::login');
+Router::connect('/logout', 'Users::logout');
+
 /**
  * Here, we are connecting '/' (base path) to controller called 'Pages',
  * its action called 'view', and we pass a param to select the view file
  * to use (in this case, /app/views/pages/home.html.php)...
  */
-Router::connect('/login', 'Users::login');
-Router::connect('/logout', 'Users::logout');
-Router::connect('/', array('Pages::view', 'home'));
+//Router::connect('/', array('Pages::view', 'home'));
+/**
+ * Leaving above code and comments, but redirecting to Dashboard
+ */
+Router::connect('/', 'Dashboard::index');
+
 Router::connect('/search/{:search}', 'Search::view');
 
 
