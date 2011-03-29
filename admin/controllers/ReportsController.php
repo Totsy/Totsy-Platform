@@ -274,7 +274,9 @@ class ReportsController extends BaseController {
 							foreach ($orderData as $order) {
 								$items = $order['items'];
 								foreach ($items as $item) {
-									if (($item['item_id'] == $eventItem['_id']) && ((string) $key == $item['size'])){
+									$active = ($item['cancel'] == true) ? false : true;
+									$itemValid = ($item['item_id'] == $eventItem['_id']) ? true : false;
+									if ($itemValid && ((string) $key == $item['size']) && $active){
 										$purchaseOrder[$inc]['Product Name'] = $eventItem['description'];
 										$purchaseOrder[$inc]['Product Color'] = $eventItem['color'];
 										$purchaseOrder[$inc]['Vendor Style'] = $eventItem['vendor_style'];
@@ -340,7 +342,7 @@ class ReportsController extends BaseController {
 									$others['Closed'] += ($orderEvent->end_date->sec < time()) ? 1 : 0;
 									$others['Open'] += ($orderEvent->end_date->sec > time()) ? 1 : 0;
 								}
-								if (($item['item_id'] == $eventItem['_id']) && $item['status'] != 'Order Canceled'){
+								if (($item['item_id'] == $eventItem['_id']) && $item['cancel'] != true){
 									$orderList[$inc]['Select'] = ($others['Open'] != 0) ? '' : 'Checked';
 									$orderList[$inc]['Item'] = $eventItem['_id'];
 									$orderList[$inc]['Cart'] = $item['_id'];

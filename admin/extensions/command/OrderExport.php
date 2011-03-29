@@ -197,59 +197,61 @@ class OrderExport extends Base {
 					$user = User::find('first', array('conditions' => array('_id' => $order['user_id'])));
 					$items = $order['items'];
 					foreach ($items as $item) {
-						$orderItem = $itemCollection->findOne(array('_id' => new MongoId($item['item_id'])));
-						$orderFile[$inc]['ContactName'] = '';
-						$orderFile[$inc]['Date'] = date('m/d/Y');
-						if ($order['shippingMethod'] == 'ups') {
-						     $orderFile[$inc]['ShipMethod'] = 'UPSGROUND';
-						} else {
-						     $orderFile[$inc]['ShipMethod'] = $order['shippingMethod'];
+						if ($item['cancel'] != true) {
+							$orderItem = $itemCollection->findOne(array('_id' => new MongoId($item['item_id'])));
+							$orderFile[$inc]['ContactName'] = '';
+							$orderFile[$inc]['Date'] = date('m/d/Y');
+							if ($order['shippingMethod'] == 'ups') {
+							     $orderFile[$inc]['ShipMethod'] = 'UPSGROUND';
+							} else {
+							     $orderFile[$inc]['ShipMethod'] = $order['shippingMethod'];
+							}
+							$orderFile[$inc]['RushOrder (Y/N)'] = '';
+							$orderFile[$inc]['Tel'] = $order['shipping']['telephone'];
+							$orderFile[$inc]['Country'] = '';
+							$orderFile[$inc]['OrderNum'] = $order['order_id'];
+							$orderFile[$inc]['SKU'] = Item::sku(
+								$orderItem['vendor'],
+								$orderItem['vendor_style'],
+								$item['size'],
+								$orderItem['color']
+							);
+							$orderFile[$inc]['Qty'] = $item['quantity'];
+							$orderFile[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
+							$orderFile[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
+							$orderFile[$inc]['Customer PO #'] = $order['_id'];
+							$orderFile[$inc]['Pack Slip Comment'] = '';
+							$orderFile[$inc]['Special Packing Instructions'] = '';
+							$orderFile[$inc]['Address1'] =  str_replace(',', ' ', $order['shipping']['address']);
+							if (!empty($order['shipping']['address_2'])) {
+								$orderFile[$inc]['Address2'] = str_replace(',', ' ', $order['shipping']['address_2']);
+							} else {
+								$orderFile[$inc]['Address2'] = "";
+							}
+							$orderFile[$inc]['City'] = $order['shipping']['city'];
+							$orderFile[$inc]['StateOrProvince'] = $order['shipping']['state'];
+							$orderFile[$inc]['Zip'] = $order['shipping']['zip'];
+							$orderFile[$inc]['Ref1'] = $item['item_id'];
+							$orderFile[$inc]['Ref2'] = $item['size'];
+							$orderFile[$inc]['Ref3'] = $item['color'];
+							$orderFile[$inc]['Ref4'] = String::asciiClean($item['description']);
+							$orderFile[$inc]['Customer PO #'] = $order['_id'];
+							$orderFile[$inc] = array_merge($heading, $orderFile[$inc]);
+							$orderFile[$inc] = $this->sortArrayByArray($orderFile[$inc], $heading);
+							if (!in_array($item['event_id'], $this->addEvents)) {
+								$this->addEvents[] = $item['event_id'];
+							}
+							if (!in_array($orderFile[$inc]['OrderNum'], $orderArray)) {
+								$orderArray[] = $orderFile[$inc]['OrderNum'];
+							}
+							if ($this->test != 'true') {
+								$processedOrder = ProcessedOrder::connection()->connection->{'orders.processed'};
+								$processedOrder->save($orderFile[$inc] + $this->batchId);
+							}
+							$this->log("Adding order $order[_id] to $handle");
+							fputcsv($fp, $orderFile[$inc], chr(9));
+							++$inc;
 						}
-						$orderFile[$inc]['RushOrder (Y/N)'] = '';
-						$orderFile[$inc]['Tel'] = $order['shipping']['telephone'];
-						$orderFile[$inc]['Country'] = '';
-						$orderFile[$inc]['OrderNum'] = $order['order_id'];
-						$orderFile[$inc]['SKU'] = Item::sku(
-							$orderItem['vendor'],
-							$orderItem['vendor_style'],
-							$item['size'],
-							$orderItem['color']
-						);
-						$orderFile[$inc]['Qty'] = $item['quantity'];
-						$orderFile[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
-						$orderFile[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
-						$orderFile[$inc]['Customer PO #'] = $order['_id'];
-						$orderFile[$inc]['Pack Slip Comment'] = '';
-						$orderFile[$inc]['Special Packing Instructions'] = '';
-						$orderFile[$inc]['Address1'] =  str_replace(',', ' ', $order['shipping']['address']);
-						if (!empty($order['shipping']['address_2'])) {
-							$orderFile[$inc]['Address2'] = str_replace(',', ' ', $order['shipping']['address_2']);
-						} else {
-							$orderFile[$inc]['Address2'] = "";
-						}
-						$orderFile[$inc]['City'] = $order['shipping']['city'];
-						$orderFile[$inc]['StateOrProvince'] = $order['shipping']['state'];
-						$orderFile[$inc]['Zip'] = $order['shipping']['zip'];
-						$orderFile[$inc]['Ref1'] = $item['item_id'];
-						$orderFile[$inc]['Ref2'] = $item['size'];
-						$orderFile[$inc]['Ref3'] = $item['color'];
-						$orderFile[$inc]['Ref4'] = String::asciiClean($item['description']);
-						$orderFile[$inc]['Customer PO #'] = $order['_id'];
-						$orderFile[$inc] = array_merge($heading, $orderFile[$inc]);
-						$orderFile[$inc] = $this->sortArrayByArray($orderFile[$inc], $heading);
-						if (!in_array($item['event_id'], $this->addEvents)) {
-							$this->addEvents[] = $item['event_id'];
-						}
-						if (!in_array($orderFile[$inc]['OrderNum'], $orderArray)) {
-							$orderArray[] = $orderFile[$inc]['OrderNum'];
-						}
-						if ($this->test != 'true') {
-							$processedOrder = ProcessedOrder::connection()->connection->{'orders.processed'};
-							$processedOrder->save($orderFile[$inc] + $this->batchId);
-						}
-						$this->log("Adding order $order[_id] to $handle");
-						fputcsv($fp, $orderFile[$inc], chr(9));
-						++$inc;
 					}
 				} else {
 					$this->log("Already processed $order[_id]");
@@ -386,7 +388,9 @@ class OrderExport extends Base {
 						foreach ($orders as $order) {
 							$items = $order['items'];
 							foreach ($items as $item) {
-								if (($item['item_id'] == $eventItem['_id']) && ((string) $key == $item['size'])){
+								$active = ($item['cancel'] == true) ? false : true;
+								$itemValid = ($item['item_id'] == $eventItem['_id']) ? true : false;
+								if ($itemValid && ((string) $key == $item['size']) && $active){
 									$purchaseOrder[$inc]['Supplier'] = $eventItem['vendor'];
 									$purchaseOrder[$inc]['PO # / RMA #'] = $poNumber;
 									$purchaseOrder[$inc]['SKU'] = Item::sku(
