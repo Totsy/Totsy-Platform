@@ -11,13 +11,16 @@ use MongoCode;
 class DashboardController extends \lithium\action\Controller {
 
     public function index() {
-		$limit = array(1);
-		$order = array('_id' => 'DESC');
-    	$record = Dashboard::find('all', compact('order', 'limit'));
-		if ($record) {
-			$record = $record->data();
-		}
-		return $record;
-	}
+    $conditions = array(
+      'created_date' => array('$gt' => new MongoDate(strtotime('-5min')))
+    );
+      $record = Dashboard::find('first', compact('conditions'));
+    if ($record) {
+      $record = $record->data();
+    }
+    return $record;
+    }
 }
+//* 
+
 ?>
