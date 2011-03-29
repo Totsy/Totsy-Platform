@@ -304,9 +304,13 @@ class OrdersController extends BaseController {
 					)));
 					$sku["$orderItem[item_id]"] = $item->vendor_style;
 					//Check if items are all canceled
-						if(($orderItem["cancel"] == false) || (empty($orderItem["cancel"]))) {
+					if(empty($orderItem["cancel"])) {
+						$itemscanceled = false;
+					} else {
+						if($orderItem["cancel"] == false) {
 							$itemscanceled = false;
 						}
+					}
 				}
 			}
 		}
