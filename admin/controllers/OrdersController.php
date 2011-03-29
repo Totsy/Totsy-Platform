@@ -163,8 +163,13 @@ class OrdersController extends BaseController {
 				$items[$key]["initial_quantity"] = $item["initial_quantity"];
 				$items[$key]["quantity"] = $item["quantity"];
 				//Cancel Status
-				$cancelCheck = ($item["cancel"] == "true" ||  $item["cancel"] == 1) ? true : false;
-				$cancelEmptyCheck = (!empty($cancelCheck) || $item["cancel"] == "") ? true : false;
+				if(empty($item["cancel"])){
+					$cancelCheck = false;
+					$cancelEmptyCheck = false;
+				} else {
+					$cancelCheck = ($item["cancel"] == "true" ||  $item["cancel"] == 1) ? true : false;
+					$cancelEmptyCheck = (!empty($cancelCheck) || $item["cancel"] == "") ? true : false;
+				}
 				if(((!empty($cancelCheck)) && $item["quantity"] > 0) || ($item["quantity"] == 0 && !empty($cancelEmptyCheck))) {
 					$items[$key]["cancel"] = true;
 				} else if(empty($cancelCheck)) {
@@ -266,7 +271,7 @@ class OrdersController extends BaseController {
 	*/
 	public function view($id = null) {
 		//Only view
-		$edit_mode = false;
+		$edit_mode = true;
 		//update the shipping address by adding the new one and pushing the old one.
 		if($this->request->data){
 		 	$datas = $this->request->data;
