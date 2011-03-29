@@ -116,13 +116,15 @@ class OrdersController extends BaseController {
 			if (!empty($rawOrders)) {
 				if (get_class($rawOrders) == 'MongoCursor') {
 					foreach ($rawOrders as $order) {
-						FlashMessage::set("Results found for $searchType search of $search", array('class' => 'pass'));
+						FlashMessage::set("Results found for $searchType search of $search",
+							array('class' => 'pass'));
 						$orders[] = $this->sortArrayByArray($order, $headings);
 						$shipDate["$order[_id]"] = $this->shipDate($order);
 					}
 				}
 				if (empty($order)) {
-					FlashMessage::set("No results found for $searchType search of $search", array('class' => 'warning'));
+					FlashMessage::set("No results found for $searchType search of $search",
+						array('class' => 'warning'));
 				}
 			}
 		}
@@ -131,7 +133,8 @@ class OrdersController extends BaseController {
 	}
 
 	/**
-	* The cancel method close an order or unclose it by modfiying the calling the Order cancel method
+	* The cancel method close an order or unclose it
+	* by modfiying the calling the Order cancel method
 	*/
 	public function cancel() {
 		$current_user = Session::read('userLogin');
@@ -144,10 +147,10 @@ class OrdersController extends BaseController {
 	}
 
 	/**
-	* The cancel_item method close modify the order by deleting one item.
-	* The field cancel will be put on true for this item.
+	* The manage_items method update the temporary order.
+	* If the variable save is set to true, it apply the changes.
 	*/
-	public function manage_items(){
+	public function manage_items() {
 		$current_user = Session::read('userLogin');
 		$orderCollection = Order::collection();
 		if($this->request->data){
@@ -160,10 +163,11 @@ class OrdersController extends BaseController {
 				$items[$key]["initial_quantity"] = $item["initial_quantity"];
 				$items[$key]["quantity"] = $item["quantity"];
 				//Cancel Status
-				if((($item["cancel"] == "true" || $item["cancel"] == "1") && 
-				$item["quantity"] > 0) || ($item["quantity"] == 0 && ($item["cancel"] == "" ||  $item["cancel"] == 1 ||  $item["cancel"] == 'true'))) {
+				$cancelCheck = ($item["cancel"] == "true" ||  $item["cancel"] == 1) ? true : false;
+				$cancelEmptyCheck = (!empty($cancelCheck) || $item["cancel"] == "") ? true : false;
+				if(((!empty($cancelCheck)) && $item["quantity"] > 0) || ($item["quantity"] == 0 && !empty($cancelEmptyCheck))) {
 					$items[$key]["cancel"] = true;
-				} else if($item["cancel"] == "false" || $item["cancel"] == "0" || $item["cancel"] == "") {
+				} else if(empty($cancelCheck)) {
 					$items[$key]["cancel"] = false;
 					if($items[$key]["quantity"] == 0) {
 						$items[$key]["quantity"] = $item["initial_quantity"];
@@ -190,11 +194,15 @@ class OrdersController extends BaseController {
 			if(!empty($test_order["tracking_numbers"])) {
 				$order_temp["tracking_numbers"] = $test_order["tracking_numbers"];
 			}
-			//Check if all itemes are closed, close the order.
+			//Check if all items are closed, close the order.
 			$cancel_order = true;
 			foreach($test_order["items"] as $item){
-				if(($item["cancel"] != 'false') || empty($item["cancel"])){
+				if(empty($item["cancel"])) {
 					$cancel_order = false;
+				} else {
+				 	if($item["cancel"] != 'false') {
+						$cancel_order = false;
+					}
 				}
 			}
 			if(!empty($cancel_order)){
@@ -257,6 +265,8 @@ class OrdersController extends BaseController {
 	* @param string $id The _id of the order
 	*/
 	public function view($id = null) {
+		//Only view
+		$edit_mode = false;
 		//update the shipping address by adding the new one and pushing the old one.
 		if($this->request->data){
 		 	$datas = $this->request->data;
@@ -264,7 +274,6 @@ class OrdersController extends BaseController {
 		if(!empty($datas["cancel_action"])){
 			$this->cancel();
 		}
-		
 		if(!empty($datas["save"])){
 			$order = $this->manage_items();
 		}else {
@@ -283,6 +292,10 @@ class OrdersController extends BaseController {
 				$order = $order_current;
 			}
 			$orderData = $order_current->data();
+			//Check if order has been authorize.net confirmed
+			if(empty($orderData["void_confirm"]) && empty($orderData["auth_confirmation"])) {
+				$edit_mode = true;
+			}
 			$orderItems = $orderData['items'];
 			if(!empty($orderItems)){
 				foreach ($orderItems as $key => $orderItem) {
@@ -298,7 +311,7 @@ class OrdersController extends BaseController {
 			}
 		}
 		$shipDate = $this->shipDate($order);
-		return compact('order', 'shipDate', 'sku', 'itemscanceled');
+		return compact('order', 'shipDate', 'sku', 'itemscanceled','edit_mode');
 	}
 
 	/**

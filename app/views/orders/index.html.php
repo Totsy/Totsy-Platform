@@ -67,10 +67,12 @@
 						<?php endif ?>
 						<td>
 						<?php foreach ($items as $item): ?>
+							<?php if(empty($item["cancel"])) : ?>
 								<strong><?=$item['description']?></strong><br />
 								<span style="font-size:12px;">Color: <?=$item['color']?></span><br />
 								<span style="font-size:12px;">Size: <?=$item['size']?></span><br />
 								<span style="font-size:12px;">Quantity: <?=$item['quantity']?></span><br />
+							<?php endif ?>
 						<?php endforeach ?>
 						</td>
 						<td>

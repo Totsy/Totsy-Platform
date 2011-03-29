@@ -37,9 +37,16 @@
 										</div><br />
 									</div>
 									<div id="normal" style="display:block">
-									<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
+									<?php if($edit_mode): ?>
+										<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
 										The order is expected to ship on <?=date('M d, Y', $shipDate)?>
-									</p>
+										</p>
+									<?php else : ?>
+										<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
+										The order has been shipped on <?=date('M d, Y', $shipDate)?>
+										</p>
+									<?php endif ?>
+									<?php if($edit_mode): ?>
 									<p style="text-align:center;">
 									<button id="cancel_button" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
 									<button id="update_shipping" style="font-weight:bold;font-size:14px;">Update Shipping</button>
@@ -121,6 +128,7 @@
 											<?=$this->form->submit('Confirm new shipping details')?>
 											<?=$this->form->end();?>
 										</div>
+										<?php endif ?>
 											<?php if (!empty($order->tracking_numbers)): ?>
 												<div>
 												<h2 class="gray mar-b">Order Tracking<span style="font-size:11px; float:right; font-weight:normal;"></h2><hr />
@@ -222,7 +230,9 @@
 												<td style="padding:5px; width:100px;"><strong>Price</strong></td>
 												<td style="padding:5px; width: 50px;"><strong>Qty</strong></td>
 												<td style="padding:5px; width:80px;"><strong>Subtotal</strong></td>
-												<td style="padding:5px; width:30px;"><strong></strong></td>
+												<?php if($edit_mode): ?>
+													<td style="padding:5px; width:30px;"><strong></strong></td>
+												<?php endif ?>
 											</tr>
 											<?=$this->form->create(null ,array('id'=>'itemsForm','enctype' => "multipart/form-data")); ?>
 											<?php $items = $order->items; ?>
@@ -268,7 +278,7 @@
 													$<?=number_format($item['sale_retail'],2); ?>
 												</td>
 												<td style="padding:5px;" title="quantity">
-											
+												<?php if($edit_mode): ?>
 													<?php
 													if(!empty($item['initial_quantity'])) {
 														$limit = $item['initial_quantity'];
@@ -285,10 +295,14 @@
 													<?=$this->form->hidden("items[".$key."][initial_quantity]", array('class' => 'inputbox', 'id' => "initial_quantity", 'value' => $limit )); ?>
 													<?=$this->form->select('items['.$key.'][quantity]', $quantities, array('style' => 'float:left; width:50px; margin: 0px 20px 0px 0px;', 'id' => 'dd_qty', 'value' => $item['quantity'], 'onchange' => "change_quantity()"));
 													?>
+													<?php else :?>
+														<?=$item['quantity'] ?>
+													<?php endif ?>
 												</td>
 												<td title="subtotal" style="padding:5px; color:#009900;">
 													$<?php echo number_format(($item['quantity'] * $item['sale_retail']),2)?>
 												</td>
+												<?php if($edit_mode): ?>
 												<td>
 													<div style="text-align:center;">
 														<?php if($item["cancel"] == true){ ?>	
@@ -300,6 +314,7 @@
 														<?php }//endelse?>
 													</div>
 												</td>
+												<?php endif ?>
 											<?php endforeach ?>
 											</tr>
 									
@@ -402,6 +417,7 @@
 			<td style="padding:0px 0px 5px 0px;"><hr></td>
 		</tr>	
 	</table>
+	<?php if($edit_mode): ?>
 	<?php if($itemscanceled == false): ?>
 	<?=$this->form->hidden("save", array('class' => 'inputbox', 'id' => "save")); ?>
 	Commment :
@@ -412,6 +428,7 @@
 	</p>
 	<?php endif ?>
 	<?=$this->form->end();?>
+	<?php endif ?>
 <?php else: ?>
 	<strong>Sorry, we cannot locate the order that you are looking for.</strong>
 <?php endif ?>

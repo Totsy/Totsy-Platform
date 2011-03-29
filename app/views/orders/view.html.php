@@ -109,6 +109,7 @@
 													<td style="padding:5px; width:100px;"><strong>Subtotal</strong></td>
 												</tr>
 												<?php foreach ($event as $item): ?>
+													<?php if( empty($item['cancel'])): ?>
 													<tr>
 													<?php
 														if (!empty($item['primary_image'])) {
@@ -136,6 +137,7 @@
 														<td title="subtotal" style="padding:5px; color:#009900;">
 															$<?php echo number_format(($item['quantity'] * $item['sale_retail']),2)?>
 														</td>
+														<?php endif ?>
 												<?php endforeach ?>
 											<?php endforeach ?>
 											</tr>
