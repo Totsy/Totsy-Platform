@@ -274,7 +274,7 @@ class ReportsController extends BaseController {
 							foreach ($orderData as $order) {
 								$items = $order['items'];
 								foreach ($items as $item) {
-									$active = ($item['cancel'] == true) ? false : true;
+									$active = (empty($item['cancel']) || $item['cancel'] != true) ? false : true;
 									$itemValid = ($item['item_id'] == $eventItem['_id']) ? true : false;
 									if ($itemValid && ((string) $key == $item['size']) && $active){
 										$purchaseOrder[$inc]['Product Name'] = $eventItem['description'];
@@ -342,7 +342,7 @@ class ReportsController extends BaseController {
 									$others['Closed'] += ($orderEvent->end_date->sec < time()) ? 1 : 0;
 									$others['Open'] += ($orderEvent->end_date->sec > time()) ? 1 : 0;
 								}
-								if (($item['item_id'] == $eventItem['_id']) && $item['cancel'] != true){
+								if (($item['item_id'] == $eventItem['_id']) && (empty($item['cancel']) || $item['cancel'] != true)){
 									$orderList[$inc]['Select'] = ($others['Open'] != 0) ? '' : 'Checked';
 									$orderList[$inc]['Item'] = $eventItem['_id'];
 									$orderList[$inc]['Cart'] = $item['_id'];
@@ -500,7 +500,8 @@ class ReportsController extends BaseController {
 						foreach ($orders as $order) {
 							$items = $order['items'];
 							foreach ($items as $item) {
-								if (($item['item_id'] == $eventItem['_id']) && ($key == $item['size'])){
+								$active = (empty($item['cancel']) || $item['cancel'] != true) ? true : false;
+								if (($item['item_id'] == $eventItem['_id']) && ($key == $item['size']) && $active){
 									$fields[$inc]['SKU'] = $this->sku($eventItem['vendor_style'], $item['size']);
 									$fields[$inc]['Description'] = strtoupper(substr($eventItem['description'], 0, 40));
 									$fields[$inc]['WhsInsValue (Cost)'] = number_format($eventItem['sale_whol'], 2);

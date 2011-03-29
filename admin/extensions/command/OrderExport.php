@@ -197,7 +197,7 @@ class OrderExport extends Base {
 					$user = User::find('first', array('conditions' => array('_id' => $order['user_id'])));
 					$items = $order['items'];
 					foreach ($items as $item) {
-						if ($item['cancel'] != true) {
+						if (empty($item['cancel']) || $item['cancel'] != true) {
 							$orderItem = $itemCollection->findOne(array('_id' => new MongoId($item['item_id'])));
 							$orderFile[$inc]['ContactName'] = '';
 							$orderFile[$inc]['Date'] = date('m/d/Y');
@@ -388,7 +388,7 @@ class OrderExport extends Base {
 						foreach ($orders as $order) {
 							$items = $order['items'];
 							foreach ($items as $item) {
-								$active = ($item['cancel'] == true) ? false : true;
+								$active = (empty($item['cancel']) || $item['cancel'] != true) ? true : false;
 								$itemValid = ($item['item_id'] == $eventItem['_id']) ? true : false;
 								if ($itemValid && ((string) $key == $item['size']) && $active){
 									$purchaseOrder[$inc]['Supplier'] = $eventItem['vendor'];
