@@ -53,6 +53,7 @@
 		</div>	
 		<div id="content">
 				<?php echo $this->content(); ?>
+				<br><br>
 		</div>
 	</div>
 	<div id="botter"></div>
