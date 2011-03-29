@@ -227,7 +227,7 @@ class CreateDashboard extends \lithium\console\Command  {
     if ($today > $endOfThirdWeek) {
 
    $currentMonthNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
-   $currentMonthNewUsers =+ $FirstWeekNewUsers + $secondWeekNewUsers + $thirdWeekNewUsers;
+   $currentMonthNewUsers += $FirstWeekNewUsers + $secondWeekNewUsers + $thirdWeekNewUsers;
 
     }else{
 
