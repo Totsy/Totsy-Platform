@@ -86,6 +86,7 @@
 										<table cellpadding="0" cellspacing="0" border="0" width="100%">
 
 											<?php foreach ($itemsByEvent as $key => $event): ?>
+												<?php if( empty($event['cancel'])): ?>
 												<tr>
 													<td colspan="2" style="padding:5px; text-align::left;"><?=$orderEvents[$key]['name']?></td>
 													<?php if (!empty($orderEvents[$key]['ship_message'])): ?>
@@ -108,6 +109,7 @@
 													<td style="padding:5px; width: 50px;"><strong>Qty</strong></td>
 													<td style="padding:5px; width:100px;"><strong>Subtotal</strong></td>
 												</tr>
+												<? endif ?>
 												<?php foreach ($event as $item): ?>
 													<?php if( empty($item['cancel'])): ?>
 													<tr>
