@@ -9,7 +9,7 @@
 <div class="grid_16">
 	<h2 id="page-heading">Order Management</h2>
 </div>
-<div class="grid_6">
+<div class="grid_10">
 	<div class="box">
 	<h2>
 		<a href="#" id="toggle-queue">Currently in Queue</a>
@@ -22,7 +22,6 @@
 					<th>Date</th>
 					<th>Event Orders Queued</th>
 					<th>Event POs Queued</th>
-					<th>View</th>
 				</tr>
 			<?php $i = 0; ?>
 			<?php foreach ($queue as $data): ?>
@@ -32,7 +31,6 @@
 						<td><?=date('m-d-Y', $data['created_date']->sec)?></td>
 						<td><?=count($data['orders'])?></td>
 						<td><?=count($data['purchase_orders'])?></td>
-						<td><?=$this->html->link('View Details', array('Queue::view', 'args' => $data['_id'])); ?></td>
 					</tr>
 			<?php endforeach ?>
 			<?php if ($i == 0): ?>
@@ -45,79 +43,6 @@
 	</div>
 	</div>
 </div>
-<div class="grid_10">
-	<div class="box">
-	<h2>
-		<a href="#" id="toggle-recent">Recently Processed</a>
-	</h2>
-	<div class="block" id="recent">
-		<?php if (!empty($recent)): ?>
-			<table id ="summary_table" border="0" cellspacing="5" class="datatable" cellpadding="5">
-				<thead>
-				<tr>
-					<th>Date</th>
-					<th>Orders Processed</th>
-					<th>Order Lines</th>
-					<th>POs Processed</th>
-					<th>View</th>
-				</tr>
-				</thead>
-			<tbody>
-			<?php $i = 0; ?>
-			<?php foreach ($recent as $data): ?>
-				<?php $i++?>
-					<tr>
-						<td><?=date('m-d-Y', $data['processed_date']->sec)?></td>
-						<?php if (!empty($data['summary']['order']['count'])): ?>
-							<td><?=$data['summary']['order']['count']?></td>
-						<?php else: ?>
-							<td>0</td>
-						<?php endif ?>
-						<?php if (!empty($data['summary']['order']['lines'])): ?>
-							<td><?=$data['summary']['order']['lines']?></td>
-						<?php else: ?>
-							<td>0</td>
-						<?php endif ?>
-						<?php if (!empty($data['summary']['purchase_orders'])): ?>
-							<td><?=count($data['summary']['purchase_orders'])?></td>
-						<?php else: ?>
-							<td>0</td>
-						<?php endif ?>
-						<td><?=$this->html->link('View Details', array('Queue::view', 'args' => $data['_id'])); ?></td>
-					</tr>
-			<?php endforeach ?>
-			</tbody>
-			</table>
-		<?php else: ?>
-			<h4>Nothing in the queue!</h4>
-		<?php endif ?>
-	</div>
-	</div>
-</div>
-
-<!-- <div class="grid_6">
-	<div class="box">
-	<h2>
-		<a href="#" id="toggle-order-search">Event Search</a>
-	</h2>
-	<div class="block" id="order-search">
-		<fieldset>
-			<p>Search for a specific event(s)</p>
-			<?=$this->form->create(); ?>
-				<?=$this->form->text('search', array(
-					'id' => 'search',
-					'style' => 'float:left; width:200px; margin: 0px 10px 0px 0px;'
-					));
-				?>
-				<?=$this->form->submit('Search'); ?>
-			<?=$this->form->end(); ?>
-		</fieldset>
-	</div>
-	</div> -->
-</div>
-
-<div class="clear"></div>
-
 <div class="grid_16">
 	<?=$this->form->create(null, array('url' => 'Queue::add')); ?>
 	<?php if (!empty($events)): ?>
@@ -161,6 +86,91 @@
 <?=$this->form->submit('Submit'); ?>
 <?=$this->form->end(); ?>
 </div>
+<div class="clear"></div>
+<br />
+<hr />
+
+<div class="clear"></div>
+<div class="grid_16">
+	<div class="box">
+	<h2>
+		<a href="#" id="toggle-recent">Recently Processed</a>
+	</h2>
+	<div class="block" id="recent">
+		<?php if (!empty($recent)): ?>
+			<table id ="summary_table" border="0" cellspacing="5" class="datatable" cellpadding="5">
+				<thead>
+				<tr>
+					<th>Date</th>
+					<th>Orders Processed</th>
+					<th>Order Lines</th>
+					<th># POs Processed</th>
+					<th>POs Sent</th>
+				</tr>
+				</thead>
+			<tbody>
+			<?php $i = 0; ?>
+			<?php foreach ($recent as $data): ?>
+				<?php $i++?>
+					<tr>
+						<td><?=date('m-d-Y', $data['processed_date']->sec)?></td>
+						<?php if (!empty($data['summary']['order']['count'])): ?>
+							<td><?=$data['summary']['order']['count']?></td>
+						<?php else: ?>
+							<td>0</td>
+						<?php endif ?>
+						<?php if (!empty($data['summary']['order']['lines'])): ?>
+							<td><?=$data['summary']['order']['lines']?></td>
+						<?php else: ?>
+							<td>0</td>
+						<?php endif ?>
+						<?php if (!empty($data['summary']['purchase_orders'])): ?>
+							<td><?=count($data['summary']['purchase_orders'])?></td>
+						<?php else: ?>
+							<td>0</td>
+						<?php endif ?>
+						<td>
+							<?php if (!empty($data['summary']['purchase_orders'])): ?>
+								<?php foreach ($data['summary']['purchase_orders'] as $value): ?>
+									<?=$value?><br />
+								<?php endforeach ?>
+							<?php endif ?>
+						</td>
+					</tr>
+			<?php endforeach ?>
+			</tbody>
+			</table>
+		<?php else: ?>
+			<h4>Nothing in the queue!</h4>
+		<?php endif ?>
+	</div>
+	</div>
+</div>
+
+<!-- <div class="grid_6">
+	<div class="box">
+	<h2>
+		<a href="#" id="toggle-order-search">Event Search</a>
+	</h2>
+	<div class="block" id="order-search">
+		<fieldset>
+			<p>Search for a specific event(s)</p>
+			<?=$this->form->create(); ?>
+				<?=$this->form->text('search', array(
+					'id' => 'search',
+					'style' => 'float:left; width:200px; margin: 0px 10px 0px 0px;'
+					));
+				?>
+				<?=$this->form->submit('Search'); ?>
+			<?=$this->form->end(); ?>
+		</fieldset>
+	</div>
+	</div> -->
+</div>
+
+
+
+
 <div id="clear"></div>
 
 <script type="text/javascript" charset="utf-8">
