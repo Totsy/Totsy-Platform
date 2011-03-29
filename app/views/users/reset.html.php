@@ -74,9 +74,8 @@ $image = $images[array_rand($images)];
 													<br><br>
 													<?=$this->form->text('email', array('label' => 'Email Address', 'class' => 'inputbox')); ?>
 													<br><br>
-													<?=$this->form->submit('Reset Password',array(
-													'class'=>"reset-pw-btn"
-													));?>
+													
+													<?=$this->form->submit('Reset Password', array('class' => 'button')); ?>
 												</center>
 											<?=$this->form->end(); ?>
                                             
@@ -123,6 +122,6 @@ $image = $images[array_rand($images)];
 		<li class="last"><a href="#" title="Contact Us">Contact Us</a></li>
 	</ul>
 	
-	<span id="copyright">&copy; 2010 Totsy.com. All Rights Reserved.</span>
+	<span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved.  <br />10 West 18th Street, Floor 4 - New York, NY 10011</span>
 
 </div>

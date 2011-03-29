@@ -19,10 +19,10 @@ use \lithium\data\Connections;
 		'test' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy_test',
-			'host' => '172.20.15.37'),
+			'host' => '172.20.15.42'),
 		'development' => array(
 			'type' =>  'MongoDb',
-			'database' => 'totsy',
+			'database' => 'totsy_dev',
 			'host' => 'localhost'),
 		'local' => array(
 			'type' =>  'MongoDb',

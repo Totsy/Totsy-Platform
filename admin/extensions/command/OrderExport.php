@@ -419,7 +419,7 @@ class OrderExport extends Base {
 									$purchaseOrder[$inc]['SKU'] = Item::sku(
 										$eventItem['vendor'],
 										$eventItem['vendor_style'],
-										$item['size'], 
+										$item['size'],
 										$eventItem['color']
 									);
 									if (empty($purchaseOrder[$inc]['Qty'])) {

@@ -7,20 +7,33 @@
 		<?=$this->title() ?: 'Totsy, the private sale site for Moms'; ?>
 		<?=$this->title() ? '- Totsy' : ''; ?>
 	</title>
-	<?=$this->html->style(array('base.css?v=012345'), array('media' => 'screen')); ?>
+	<?=$this->html->style(array('base.css?v=012346'), array('media' => 'screen')); ?>
 	<?=$this->html->script(array(
-		'jquery-1.4.2.min.js?v=012345',
-		'jquery-ui-1.8.2.custom.min.js?v=012345',
-		'jquery.countdown.min.js?v=012345'
+		'jquery-1.4.2.min.js?v=012347',
+		'jquery-ui-1.8.2.custom.min.js?v=012347',
+		'jquery.countdown.min.js?v=012347'
 	)); ?>
 	<?=$this->scripts(); ?>
 	<?=$this->html->link('Icon', null, array('type' => 'icon')); ?>
 </head>
-
 <body class="app">
+
+<!-- ClickTale Top part -->
+<script type="text/javascript">
+var WRInitTime=(new Date()).getTime();
+</script>
+<!-- ClickTale end of Top part -->
+
+
+<!-- 
+<div id="global_site_msg"><strong>Last minute message:</strong> our last promotional campaign that was intended for a select audience of our long-time members was unintentionally exposed to the general public. <br />This promotion has now been restored and will only work for members who received an email directly from Totsy containing a promocode.</div>
+-->
 <div id="topper"></div>
+
 	<div id="wrapper">
+
 		<div id="header">
+
 			<div id="header-lt">
 				<?=$this->html->link(
 					$this->html->image('logo.png', array('width'=>'155', 'height'=>'90')), '', array(
@@ -28,10 +41,11 @@
 					)
 				); ?>
 			</div>
+
 			<div id="header-mid">
+
 				<?php if (!empty($userInfo)): ?>
 					<?=$this->html->link('Help Desk', 'Tickets::add', array('id' => 'cs')); ?>
-				<?php endif ?>
 				<div id="welcome">
 				Hello,
 					<?php if(array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])):
@@ -42,6 +56,8 @@
 					<?php endif; ?>
 					(<?=$this->html->link('Sign Out', 'Users::logout', array('title' => 'Sign Out')); ?>)
 				</div>
+
+				<?php endif ?>
 				<?php if (!(empty($userInfo))): ?>
 					<?=$this->menu->render('main-nav'); ?>
 				<?php endif ?>
@@ -56,9 +72,9 @@
 								'id' => 'checkout', 'title' => 'checkout'
 							)); ?>
 			 			</span>
-						<?=$this->html->link('Cart', '#', array(
+						<span class="fr"><?=$this->html->link('Cart', array('Cart::view'), array(
 							'id' => 'cart', 'title' => 'My Cart'
-						)); ?>
+						)); ?></span>
 			 			<span class="fr">
 							<?=$this->html->link('My Credits', array('Credits::view')); ?>
 							<?php if (!empty($credit)): ?>
@@ -83,7 +99,7 @@
 			<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
 			<li class="last"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
 		</ul>
-		<span id="copyright">&copy; 2010 Totsy.com. All Rights Reserved.</span>
+		<span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved.</span>
 	</div>
 	<script type="text/javascript">
 		$.base = '<?=rtrim(Router::match("/", $this->_request)); ?>';
@@ -117,8 +133,9 @@
 		</script>
 
     	<div id='cart-modal'></div>
+
 	<script type="text/javascript">
-	$("#cart").click(function() {
+	/*$("#cart").click(function() {
 		$("#cart-modal").load($.base + 'cart/view').dialog({
 			autoOpen: false,
 			modal:true,
@@ -129,12 +146,28 @@
 			}
 		});
 		$("#cart-modal").dialog('open');
-	});
+	}); */
 	</script>
 
     <div id='toTop'>^ Back to Top</div>
 
     <!--affiliate pixels-->
     <?php echo $pixel; ?>
+    
+    
+	    <!-- ClickTale Bottom part -->
+	<div id="ClickTaleDiv" style="display: none;"></div>
+	<script type='text/javascript'>
+	document.write(unescape("%3Cscript%20src='"+
+	 (document.location.protocol=='https:'?
+	  'https://clicktale.pantherssl.com/':
+	  'http://s.clicktale.net/')+
+	 "WRb6.js'%20type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var ClickTaleSSL=1;
+	if(typeof ClickTale=='function') ClickTale(17040,1,"www02");
+	</script>
+	<!-- ClickTale end of Bottom part -->
 	</body>
 </html>
