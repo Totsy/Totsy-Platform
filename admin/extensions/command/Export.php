@@ -15,7 +15,7 @@ use admin\extensions\util\String;
 /**
  *
  */
-class FTPExport extends Base  {
+class Export extends Base  {
 
 	/**
 	 * The environment to use when running the command. 'production' is the default.
