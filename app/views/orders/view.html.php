@@ -165,7 +165,7 @@
 												Credit Applied:
 													<br>
 												<?php endif ?>
-												<?php if ($order->promo_discount): ?>
+												<?php if (($order->promo_discount) && empty($order->promocode_disable)): ?>
 												Promotion Discount:
 													<br>
 												<?php endif ?>
@@ -186,7 +186,7 @@
 													-$<?=number_format(abs($order->credit_used),2); ?>
 													<br>
 												<?php endif ?>
-												<?php if ($order->promo_discount): ?>
+												<?php if (($order->promo_discount) && empty($order->promocode_disable)): ?>
 													-$<?=number_format(abs($order->promo_discount),2); ?>
 													<br>
 												<?php endif ?>
