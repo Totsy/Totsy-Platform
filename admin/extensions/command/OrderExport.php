@@ -79,7 +79,7 @@ class OrderExport extends Base {
 	/**
 	 * Allows verbose info logging. (default = false)
 	 */
-	public $verbose = true;
+	public $verbose = 'false';
 
 	/**
 	 * Directory of files holding the files to FTP.
@@ -304,6 +304,9 @@ class OrderExport extends Base {
 						$itemMasterCheck = ItemMaster::count(compact('conditions'));
 						if ($itemMasterCheck == 0){
 							$fields[$inc]['SKU'] = $sku;
+							if ($this->verbose == 'true') {
+								$this->log("Adding SKU: $sku to $handle");
+							}
 							$description = implode(' ', array(
 								$eventItem['color'],
 								$key,
@@ -311,7 +314,7 @@ class OrderExport extends Base {
 							));
 							$fields[$inc]['Description'] = String::asciiClean($description);
 							$fields[$inc]['WhsInsValue (Cost)'] = number_format($eventItem['sale_whol'], 2);
-							$fields[$inc]['Description for Customs'] = $eventItem['category'];
+							$fields[$inc]['Description for Customs'] = (!empty($eventItem['category']) ? $eventItem['category'] : "");
 							$fields[$inc]['ShipInsValue'] = number_format($eventItem['orig_whol'], 2);
 							$fields[$inc]['Ref1'] = $eventItem['_id'];
 							$fields[$inc]['Ref2'] = $key;
@@ -356,7 +359,7 @@ class OrderExport extends Base {
 	 * @return mixed
 	 */
 	protected function _purchases() {
-		$this->header('Generating Purchase Orders');
+		$this->log('Generating Purchase Orders');
 		$orderCollection = Order::collection();
 		foreach ($this->poEvents as $eventId) {
 			$purchaseHeading = ProcessedOrder::$_purchaseHeading;
