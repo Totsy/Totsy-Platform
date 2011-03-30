@@ -1,0 +1,127 @@
+<?=$this->html->script(array('tiny_mce/tiny_mce.js', 'swfupload.js', 'swfupload.queue.js', 'fileprogress.js', 'handlers.js', 'event_upload.js', 'jquery.dataTables.js', 'jquery-ui-timepicker.min.js'));?>
+<?=$this->html->style(array('swfupload', 'jquery_ui_blitzer', 'table', 'timepicker'));?>
+<script type="text/javascript">
+tinyMCE.init({
+	// General options
+	mode : "textareas",
+	theme : "advanced",
+	plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,preview,searchreplace,print,contextmenu,paste,directionality,noneditable,visualchars,nonbreaking,xhtmlxtras",
+
+	// Theme options
+	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
+	theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,code,|,forecolor,backcolor",
+	theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,charmap,iespell,advhr",
+	theme_advanced_buttons4 : "spellchecker,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking,blockquote,pagebreak",
+	theme_advanced_toolbar_location : "top",
+	theme_advanced_toolbar_align : "left",
+	theme_advanced_statusbar_location : "bottom",
+	theme_advanced_resizing : false,
+
+
+});
+</script>
+
+
+<script type="text/javascript" charset="utf-8">
+	$(function() {
+		var dates = $('#start_date, #end_date').datetimepicker({
+			defaultDate: "+1w",
+			changeMonth: true,
+			changeYear: true,
+			numberOfMonths: 1,
+			onSelect: function(selectedDate) {
+				var option = this.id == "start_date" ? "minDate" : "maxDate";
+				var instance = $(this).data("datetimepicker");
+				var date = $.datepicker.parseDate(instadnce.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+				dates.not(this).datepicker("option", option, date);
+			}
+		});
+	});
+</script>
+
+<script type="text/javascript" charset="utf-8">
+
+	var oTable;
+
+	$(document).ready(function() {
+		/* Add a click handler to the rows - this could be used as a callback */
+		$('#itemTable tr').click( function() {
+			if ( $(this).hasClass('row_selected') )
+				$(this).removeClass('row_selected');
+			else
+				$(this).addClass('row_selected');
+		} );
+
+		/* Init the table */
+		oTable = $('#itemTable').dataTable();
+
+	} );
+
+	function fnGetSelected( oTableLocal )
+	{
+		var aReturn = new Array();
+		var aTrs = oTableLocal.fnGetNodes();
+
+		for ( var i=0 ; i<aTrs.length ; i++ )
+		{
+			if ( $(aTrs[i]).hasClass('row_selected') )
+			{
+				aReturn.push( aTrs[i].id );
+			}
+		}
+		var eventItems = document.getElementById('event_items');
+		eventItems.innerHTML = eventItems.innerHTML + aReturn;
+		return aReturn;
+	}
+
+
+</script>
+
+
+<div class="grid_16">
+	<h2 id="page-heading">Add an Event</h2>
+</div>
+<div id="event_note">
+	<p>
+		Hello administrator. Please add an event by filling in all the information below. Thank You!
+	</p>
+</div>
+<h2 id="event_description">Event Description</h2>
+<?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
+    <?=$this->form->field('name', array('class' => 'general'));?>
+    <?=$this->form->field('blurb', array('type' => 'textarea', 'name' => 'content'));?>
+	<div id="event_status">
+		<h2 id="event_status">Event Status</h2>
+		<input type="radio" name="enabled" value="1" id="enabled"> Enable Event <br>
+		<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Event
+	</div>
+	<div id="event_duration">
+		<h2 id="event_duration">Event Duration</h2>
+		<?=$this->form->field('start_date', array('class' => 'general', 'id' => 'start_date'));?>
+		<?=$this->form->field('end_date', array('class' => 'general', 'id' => 'end_date'));?>
+	</div>
+	<br>
+	<h1 id="uploaded_media">Uploaded Media</h1>
+	<div id="fileInfo"></div>
+	<br>
+
+	<br>
+	<table>
+		<tr valign="top">
+			<td>
+				<div>
+					<div class="fieldset flash" id="fsUploadProgress1">
+						<span class="legend">Upload Status</span>
+					</div>
+					<div style="padding-left: 5px;">
+						<span id="spanButtonPlaceholder1"></span>
+						<input id="btnCancel1" type="button" value="Cancel Uploads" onclick="cancelQueue(upload1);" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />
+						<br />
+					</div>
+				</div>
+			</td>
+		</tr>
+	</table>
+	<br>
+	<?=$this->form->submit('Add Event')?>
+<?=$this->form->end(); ?>
