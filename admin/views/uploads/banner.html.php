@@ -18,10 +18,10 @@
 		<?=$this->html->image("/image/$id.jpg", array('alt' => 'altText')); ?>
 	</td>
 	<td align="center">
-		<input type="text" name="url[$id]" value="">
+		<input type="text" name="url[<?php echo $id; ?>]" value="">
 	</td>
 	<td align="center">
-		<input type="hidden" name="img" value="$id">
+		<input type="hidden" name="img[]" value="<?php echo $id; ?>">
 	</td>
 </tr>
 </table>
