@@ -25,7 +25,7 @@ var WRInitTime=(new Date()).getTime();
 <!-- ClickTale end of Top part -->
 
 
-<!-- 
+<!--
 <div id="global_site_msg"><strong>Last minute message:</strong> our last promotional campaign that was intended for a select audience of our long-time members was unintentionally exposed to the general public. <br />This promotion has now been restored and will only work for members who received an email directly from Totsy containing a promocode.</div>
 -->
 <div id="topper"></div>
@@ -36,7 +36,7 @@ var WRInitTime=(new Date()).getTime();
 
 			<div id="header-lt">
 				<?=$this->html->link(
-					$this->html->image('logo.png', array('width'=>'155', 'height'=>'90')), '', array(
+					$this->html->image('logo.png', array('width'=>'155', 'height'=>'90')), '/sales', array(
 						'id' => 'main-logo', 'escape'=> false
 					)
 				); ?>
@@ -153,8 +153,8 @@ var WRInitTime=(new Date()).getTime();
 
     <!--affiliate pixels-->
     <?php echo $pixel; ?>
-    
-    
+
+
 	    <!-- ClickTale Bottom part -->
 	<div id="ClickTaleDiv" style="display: none;"></div>
 	<script type='text/javascript'>

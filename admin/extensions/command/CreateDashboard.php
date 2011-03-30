@@ -208,7 +208,7 @@ class CreateDashboard extends \lithium\console\Command  {
    if ($today > $endOfThirdWeek) {
 
    $currentMonthRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
-   $currentMonthRevenue =+ $FirstWeekRevenue + $secondWeekRevenue + $thirdWeekRevenue;
+   $currentMonthRevenue += $FirstWeekRevenue + $secondWeekRevenue + $thirdWeekRevenue;
 
     }else{
 
@@ -227,7 +227,7 @@ class CreateDashboard extends \lithium\console\Command  {
     if ($today > $endOfThirdWeek) {
 
    $currentMonthNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
-   $currentMonthNewUsers =+ $FirstWeekNewUsers + $secondWeekNewUsers + $thirdWeekNewUsers;
+   $currentMonthNewUsers += $FirstWeekNewUsers + $secondWeekNewUsers + $thirdWeekNewUsers;
 
     }else{
 
@@ -236,7 +236,7 @@ class CreateDashboard extends \lithium\console\Command  {
     }
 
 
-
+   ////**************************
 
   //*****************************************************************************************************
   //********************************   end of current months number   ***********************************
