@@ -18,8 +18,7 @@
 		<?=$this->html->image("/image/$id.jpg", array('alt' => 'altText')); ?>
 	</td>
 	<td align="center">
-	    <?=$this->html->text(); ?>
-		<input type="text" name="url" value="">
+		<input type="text" name="url[$id]" value="">
 	</td>
 </tr>
 </table>

@@ -93,7 +93,7 @@ tinyMCE.init({
 	<div id="banner_status">
 		<h2 id="banner_status">Banner Status</h2>
 		<input type="checkbox" name="enabled" value="1" id="enabled"> Publish Banner <br>
-		<p><b>Note:</b> If you publish this banner, the previous banners will be disabled.</p>
+		<p><b>Note:</b> If you publish this banner, the previous banners will be disabled. </p>
 	</div>
 	<div id="banner_duration">
 		<h2 id="banner_duration">Banner End Date</h2>
