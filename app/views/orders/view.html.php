@@ -86,7 +86,7 @@
 										<table cellpadding="0" cellspacing="0" border="0" width="100%">
 
 											<?php foreach ($itemsByEvent as $key => $event): ?>
-												<?php if(empty($event['cancel'])): ?>
+												<?php //if(empty($event['cancel'])): ?>
 												<tr>
 													<td colspan="2" style="padding:5px; text-align::left;"><?=$orderEvents[$key]['name']?></td>
 													<?php if (!empty($orderEvents[$key]['ship_message'])): ?>
@@ -140,7 +140,7 @@
 														</td>
 														<?php endif ?>
 												<?php endforeach ?>
-												<? endif ?>
+												<? //endif ?>
 											<?php endforeach ?>
 											</tr>
 
