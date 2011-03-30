@@ -48,7 +48,9 @@ class EventsController extends BaseController {
 		}
 
 		if (!empty($this->request->data)) {
+			echo "test";
 			$images = $this->parseImages();
+				var_dump($images);
 			$seconds = ':'.rand(10,60);
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
@@ -63,7 +65,7 @@ class EventsController extends BaseController {
 			//Remove this when $_schema is setup
 			unset($eventData['itemTable_length']);
 			if ($event->save($eventData)) {	
-				$this->redirect(array('Events::edit', 'args' => array($event->_id)));
+				//$this->redirect(array('Events::edit', 'args' => array($event->_id)));
 			}
 		}
 
