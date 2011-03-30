@@ -2,6 +2,7 @@
 
 namespace admin\models;
 use MongoId;
+use admin\extensions\util\String;
 
 class Event extends \lithium\data\Model {
 
@@ -36,6 +37,12 @@ class Event extends \lithium\data\Model {
 			array('_id' => new MongoId($event)),
 			array('$unset' => array('items' => true)
 		));
+	}
+
+	public static function poNumber($event) {
+		$vendorName = preg_replace('/[^(\x20-\x7F)]*/','', substr(String::asciiClean($event->name), 0, 3));
+		$time = date('ymdis', $event->_id->getTimestamp());
+		return 'TOT'.'-'.$vendorName.$time;
 	}
 }
 
