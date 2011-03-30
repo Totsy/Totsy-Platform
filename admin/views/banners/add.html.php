@@ -1,4 +1,4 @@
-<?=$this->html->script(array('tiny_mce/tiny_mce.js', 'swfupload.js', 'swfupload.queue.js', 'fileprogress.js', 'handlers.js', 'event_upload.js', 'jquery.dataTables.js', 'jquery-ui-timepicker.min.js'));?>
+<?=$this->html->script(array('tiny_mce/tiny_mce.js', 'swfupload.js', 'swfupload.queue.js', 'fileprogress.js', 'handlers.js', 'banner_upload.js', 'jquery.dataTables.js', 'jquery-ui-timepicker.min.js'));?>
 <?=$this->html->style(array('swfupload', 'jquery_ui_blitzer', 'table', 'timepicker'));?>
 <script type="text/javascript">
 tinyMCE.init({
@@ -24,13 +24,13 @@ tinyMCE.init({
 
 <script type="text/javascript" charset="utf-8">
 	$(function() {
-		var dates = $('#start_date, #end_date').datetimepicker({
+		var dates = $('#end_date').datetimepicker({
 			defaultDate: "+1w",
 			changeMonth: true,
 			changeYear: true,
 			numberOfMonths: 1,
 			onSelect: function(selectedDate) {
-				var option = this.id == "start_date" ? "minDate" : "maxDate";
+				var option = this.id == "end_date" ? "minDate" : "maxDate";
 				var instance = $(this).data("datetimepicker");
 				var date = $.datepicker.parseDate(instadnce.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
 				dates.not(this).datepicker("option", option, date);
@@ -79,25 +79,24 @@ tinyMCE.init({
 
 
 <div class="grid_16">
-	<h2 id="page-heading">Add an Event</h2>
+	<h2 id="page-heading">Add a Banner</h2>
 </div>
 <div id="event_note">
 	<p>
-		Hello administrator. Please add an event by filling in all the information below. Thank You!
+		You can add new set of images for the banner.
 	</p>
 </div>
-<h2 id="event_description">Event Description</h2>
+<h2 id="banner_description">Banner Description</h2>
 <?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
     <?=$this->form->field('name', array('class' => 'general'));?>
-    <?=$this->form->field('blurb', array('type' => 'textarea', 'name' => 'content'));?>
-	<div id="event_status">
-		<h2 id="event_status">Event Status</h2>
-		<input type="radio" name="enabled" value="1" id="enabled"> Enable Event <br>
-		<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Event
+
+	<div id="banner_status">
+		<h2 id="banner_status">Banner Status</h2>
+		<input type="checkbox" name="enabled" value="1" id="enabled"> Publish Banner <br>
+		<p><b>Note:</b> If you publish this banner, the previous banners will be disabled.</p>
 	</div>
-	<div id="event_duration">
-		<h2 id="event_duration">Event Duration</h2>
-		<?=$this->form->field('start_date', array('class' => 'general', 'id' => 'start_date'));?>
+	<div id="banner_duration">
+		<h2 id="banner_duration">Banner End Date</h2>
 		<?=$this->form->field('end_date', array('class' => 'general', 'id' => 'end_date'));?>
 	</div>
 	<br>
@@ -123,5 +122,5 @@ tinyMCE.init({
 		</tr>
 	</table>
 	<br>
-	<?=$this->form->submit('Add Event')?>
+	<?=$this->form->submit('Add Banner')?>
 <?=$this->form->end(); ?>
