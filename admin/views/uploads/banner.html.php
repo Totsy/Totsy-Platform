@@ -20,5 +20,8 @@
 	<td align="center">
 		<input type="text" name="url[$id]" value="">
 	</td>
+	<td align="center">
+		<input type="hidden" name="img" value="$id">
+	</td>
 </tr>
 </table>
