@@ -158,8 +158,8 @@ class OrderExport extends Base {
 					$queue->processed = true;
 					$queue->processed_date = new MongoDate();
 					$queue->save();
-					$this->summary['from_email'] = 'logistics@totsy.com';
-					$this->summary['to_email'] = 'mlangstein@totsy.com';
+					$this->summary['from_email'] = 'no-reply@totsy.com';
+					$this->summary['to_email'] = 'logistics@totsy.com';
 					Silverpop::send('exportSummary', $this->summary);
 				}
 			}
