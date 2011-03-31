@@ -10,6 +10,20 @@ use MongoId;
 class OrderTest extends \lithium\test\Unit {
 
 	/*
+	* Run Auth.Net Process For One Order
+	*/
+	public function updateOrderAuth() {
+		$orderCollection = Order::collection();
+		//configuration
+		$order_id = "";
+		//Update authorize.net Total
+		if(!empty($order_id)) {
+			$order = $orderCollection->findOne(array("_id" => new MongoId($order_id)));
+			Order::process($order);
+		}
+	}
+	
+	/*
 	* Testing the Cancel Method of the Order
 	*/
 	public function testCancel() {
