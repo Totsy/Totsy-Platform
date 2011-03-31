@@ -34,7 +34,6 @@ class BannersController extends \lithium\action\Controller {
                         );
                     }
                 }
-				echo "check passed";
 				$datas = $this->request->data;
 				//Treat Current Images
 				$images = $this->parseImages();
