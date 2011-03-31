@@ -32,6 +32,13 @@ class BannersController extends \lithium\action\Controller {
 				//Get end date
 				$seconds = ':'.rand(10,60);
 				$datas['end_date'] = new MongoDate(strtotime($datas['end_date'].$seconds));
+				//Check Enabled
+				if(!empty($datas['enabled'])) {
+					$enabled = true;
+				} else {
+					$enabled = false;
+				}
+				'enable' => $datas['enabled']
 				//Create Datas Array
 				$bannerDatas = array(
 					"img" => $images,
@@ -39,7 +46,7 @@ class BannersController extends \lithium\action\Controller {
 					"name" => $datas['name'],
 					'author' => $author,
 					'created_date' =>  new MongoDate(strtotime('now')),
-					'enable' => $datas['enabled']
+					'enabled' => $enabled
 				);
 				//Create and save the new banner
 				$banner = Banner::Create();
