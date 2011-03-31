@@ -330,6 +330,19 @@
 							</tr>
 							<tr>
 								<td colspan="4">
+										<!--- HIDDEN DATAS - ITEMS -->
+<?=$this->form->hidden("subTotal", array('class' => 'inputbox', 'id' => "subTotal", 'value' => $order->subTotal )); ?>
+<?=$this->form->hidden("credit_used", array('class' => 'inputbox', 'id' => "credit_used", 'value' => $order->credit_used )); ?>
+<?=$this->form->hidden("promo_discount", array('class' => 'inputbox', 'id' => "promo_discount", 'value' => $order->promo_discount )); ?>
+<?=$this->form->hidden("promo_code", array('class' => 'inputbox', 'id' => "promo_code", 'value' => $order->promo_code )); ?>
+<?=$this->form->hidden("tax", array('class' => 'inputbox', 'id' => "tax", 'value' => $order->tax)); ?>
+<?=$this->form->hidden("handling", array('class' => 'inputbox', 'id' => "handling", 'value' => $order->handling )); ?>
+<?=$this->form->hidden("total", array('class' => 'inputbox', 'id' => "total", 'value' => $order->total)); ?>
+<?=$this->form->hidden("initial_credit_used", array('class' => 'inputbox', 'id' => "initial_credit_used", 'value' => $order->initial_credit_used)); ?>
+<?=$this->form->hidden("user_total_credits", array('class' => 'inputbox', 'id' => "user_total_credits", 'value' => $order->user_total_credits )); ?>
+<?=$this->form->hidden("promocode_disable", array('class' => 'inputbox', 'id' => "promocode_disable", 'value' => $order->promocode_disable )); ?>
+									<!--- END HIDDEN DATAS - ITEMS -->
+									<?php if(empty($order->cancel)): ?>
 									<table style="width:200px; float: right;">
 										<tr>
 											<td valign="top">
@@ -339,7 +352,7 @@
 												Credit Applied:
 												<br>
 												<?php endif ?>
-												<?php if (($order->promo_discount) && (empty($order["promocode_disable"]))): ?>
+												<?php if (($order->promo_discount) && (empty($order->promocode_disable))): ?>
 												Promotion Discount:
 													<br>
 												<?php endif ?>
@@ -350,25 +363,13 @@
 												<strong style="font-weight:bold;color:#606060">Total:</strong> 
 											</td>
 											<td style="padding-left:15px; text-align:right;" valign="top">
-											<!--- HIDDEN DATAS - ITEMS -->
-	<?=$this->form->hidden("subTotal", array('class' => 'inputbox', 'id' => "subTotal", 'value' => $order->subTotal )); ?>
-	<?=$this->form->hidden("credit_used", array('class' => 'inputbox', 'id' => "credit_used", 'value' => $order->credit_used )); ?>
-	<?=$this->form->hidden("promo_discount", array('class' => 'inputbox', 'id' => "promo_discount", 'value' => $order->promo_discount )); ?>
-	<?=$this->form->hidden("promo_code", array('class' => 'inputbox', 'id' => "promo_code", 'value' => $order->promo_code )); ?>
-	<?=$this->form->hidden("tax", array('class' => 'inputbox', 'id' => "tax", 'value' => $order->tax)); ?>
-	<?=$this->form->hidden("handling", array('class' => 'inputbox', 'id' => "handling", 'value' => $order->handling )); ?>
-	<?=$this->form->hidden("total", array('class' => 'inputbox', 'id' => "total", 'value' => $order->total)); ?>
-	<?=$this->form->hidden("initial_credit_used", array('class' => 'inputbox', 'id' => "initial_credit_used", 'value' => $order->initial_credit_used)); ?>
-	<?=$this->form->hidden("user_total_credits", array('class' => 'inputbox', 'id' => "user_total_credits", 'value' => $order->user_total_credits )); ?>
-	<?=$this->form->hidden("promocode_disable", array('class' => 'inputbox', 'id' => "promocode_disable", 'value' => $order->promocode_disable )); ?>
-										<!--- END HIDDEN DATAS - ITEMS -->
 											$<?=number_format($order->subTotal,2); ?>
 											<br>
 											<?php if ($order->credit_used): ?>
 												-$<?=number_format(abs($order->credit_used),2); ?>
 												<br>
 											<?php endif ?>
-											<?php if (($order->promo_discount) && (empty($order["promocode_disable"]))): ?>
+											<?php if (($order->promo_discount) && (empty($order->promocode_disable))): ?>
 												-$<?=number_format(abs($order->promo_discount),2); ?>
 												<br>
 											<?php endif ?>
@@ -380,6 +381,7 @@
 											</td>
 										</tr>
 									</table>
+									<?php endif ?>
 									<table style="float:left;" valign="top">
 										<tr>
 											<td>

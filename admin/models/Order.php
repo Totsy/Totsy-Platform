@@ -214,6 +214,10 @@ class Order extends \lithium\data\Model {
 			$items = $order["items"];
 			foreach($order["items"] as $key => $item){
 				$items[$key]["cancel"] = true;
+				//Reattribute original quantity
+				if(!empty($items[$key]["initial_quantity"])) {
+					$items[$key]["quantity"] = $items[$key]["initial_quantity"];
+				}
 			}
 			static::collection()->update(array('_id' => new MongoId($order_id)),
 				array('$set' => array('items' => $items)));

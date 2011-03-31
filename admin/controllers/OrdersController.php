@@ -170,7 +170,7 @@ class OrdersController extends BaseController {
 					$cancelCheck = ($item["cancel"] == "true" ||  $item["cancel"] == 1) ? true : false;
 					$cancelEmptyCheck = (!empty($cancelCheck) || $item["cancel"] == "") ? true : false;
 				}
-				if(((!empty($cancelCheck)) && $item["quantity"] > 0) || ($item["quantity"] == 0 && !empty($cancelEmptyCheck))) {
+				if(((!empty($cancelCheck)) && $item["quantity"] > 0) || ($item["quantity"] == 0 && ($item["cancel"] == false || $item["cancel"] == 1))) {
 					$items[$key]["cancel"] = true;
 				} else if(empty($cancelCheck)) {
 					$items[$key]["cancel"] = false;
@@ -318,6 +318,11 @@ class OrdersController extends BaseController {
 					}
 				}
 			}
+		}
+		//Check if order has been canceled
+		if(!empty($order->cancel)) {
+			$edit_mode = false;
+			$itemscanceled = false;
 		}
 		$shipDate = $this->shipDate($order);
 		return compact('order', 'shipDate', 'sku', 'itemscanceled','edit_mode');
