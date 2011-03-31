@@ -356,9 +356,6 @@ class Order extends \lithium\data\Model {
 		$modification_datas["comment"] = $selected_order['comment'];
 		$result = static::collection()->update(array("_id" => new MongoId($selected_order["id"])),
 		array('$push' => array('modifications' => $modification_datas)), array('upsert' => true));
-		//update auth.net price
-		$order = $orderCollection->findOne(array("_id" => new MongoId($selected_order["id"])));
-		static::process($order);
 		return $result;
 	}
 
