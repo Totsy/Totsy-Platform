@@ -23,15 +23,16 @@ class BannersController extends \lithium\action\Controller {
 		if(!empty($this->request->data)){
 			$check = $this->check();
 			if ($check) {
-			    $enable = $this->request->data['enable'];
-                $col = Banners::collection();
-                $conditions = array('enable' => $enable);
-
-                if ($col->count($conditions) > 0) {
-                    $col->update($conditions, array(
-                        '$set' => array('enable' => false)),
-                        array('multiple' => true)
-                    );
+			    if(array_key_exists('enabled', $this->request->data)){
+                    $enable = (bool)$this->request->data['enabled'];
+                    $col = Banner::collection();
+                    $conditions = array('enabled' => $enable);
+                    if ($col->count($conditions) > 0) {
+                        $col->update($conditions, array(
+                            '$set' => array('enabled' => false)),
+                            array('multiple' => true)
+                        );
+                    }
                 }
 				echo "check passed";
 				$datas = $this->request->data;
@@ -65,6 +66,7 @@ class BannersController extends \lithium\action\Controller {
 					FlashMessage::set("Your banner has been saved.", array('class' => 'pass'));
 				}
 			} else {
+			    echo "You must fill all the requested informations";
 				FlashMessage::set("You must fill all the requested informations", array('class' => 'warning'));
 			}
 		}

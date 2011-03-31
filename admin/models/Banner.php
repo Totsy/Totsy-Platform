@@ -7,7 +7,7 @@ class Banner extends Base {
 	public $validates = array();
 
 	public static function collection() {
-		return static::_connection()->connection->events;
+		return static::_connection()->connection->banners;
 	}
 }
 

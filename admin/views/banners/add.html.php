@@ -81,9 +81,9 @@ tinyMCE.init({
 <div class="grid_16">
 	<h2 id="page-heading">Add a Banner</h2>
 </div>
-<div id="event_note">
+<div id="banner_note">
 	<p>
-		You can add new set of images for the banner.
+		This panel is for creating new banners that will go up that day.
 	</p>
 </div>
 <h2 id="banner_description">Banner Description</h2>
