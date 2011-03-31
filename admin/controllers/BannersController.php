@@ -23,6 +23,16 @@ class BannersController extends \lithium\action\Controller {
 		if(!empty($this->request->data)){
 			$check = $this->check();
 			if ($check) {
+			    $enable = $this->request->data['enable'];
+                $col = Banners::collection();
+                $conditions = array('enable' => $enable);
+
+                if ($col->count($conditions) > 0) {
+                    $col->update($conditions, array(
+                        '$set' => array('enable' => false)),
+                        array('multiple' => true)
+                    );
+                }
 				echo "check passed";
 				$datas = $this->request->data;
 				$images = $this->parseImages();
@@ -37,10 +47,10 @@ class BannersController extends \lithium\action\Controller {
 					"name" => $datas['name'],
 					'author' => $author,
 					'created_date' =>  new MongoDate(strtotime('now')),
-					'enable' => $datas['enabled']
+					'enable' =>(bool)$datas['enabled']
 				);
 				$banner = Banner::Create();
-				if ($banner->save($bannerDatas)) {	
+				if ($banner->save($bannerDatas)) {
 					//$this->redirect(array('Banner::edit', 'args' => array($event->_id)));
 					FlashMessage::set("Your banner has been saved.", array('class' => 'pass'));
 				}
@@ -62,7 +72,7 @@ class BannersController extends \lithium\action\Controller {
 		}
 		return compact('banner');
 	}
-	
+
 	/**
 	* The check method verify if all the datas are collected to save the bannerr
 	* @return boolean $check
@@ -87,7 +97,7 @@ class BannersController extends \lithium\action\Controller {
 		}
 		return $check;
 	}
-	
+
 	/**
 	 * Parse the images from the request using the key
 	 * @param object
