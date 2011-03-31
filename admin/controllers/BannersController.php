@@ -27,6 +27,18 @@ class BannersController extends \lithium\action\Controller {
 			$banner->validates();
 			
 			if ($check) {
+			    if(array_key_exists('enabled', $this->request->data)){
+                    $enable = (bool)$this->request->data['enabled'];
+                    $col = Banner::collection();
+                    $conditions = array('enabled' => $enable);
+                    if ($col->count($conditions) > 0) {
+                        $col->update($conditions, array(
+                            '$set' => array('enabled' => false)),
+                            array('multiple' => true)
+                        );
+                    }
+                }
+				echo "check passed";
 				$datas = $this->request->data;
 				//Treat Current Images
 				$images = $this->parseImages();
@@ -53,11 +65,12 @@ class BannersController extends \lithium\action\Controller {
 				);
 				//Create and save the new banner
 				$banner = Banner::Create();
-				if ($banner->save($bannerDatas)) {	
+				if ($banner->save($bannerDatas)) {
 					//$this->redirect(array('Banner::edit', 'args' => array($event->_id)));
 					FlashMessage::set("Your banner has been saved.", array('class' => 'pass'));
 				}
 			} else {
+			    echo "You must fill all the requested informations";
 				FlashMessage::set("You must fill all the requested informations", array('class' => 'warning'));
 			}
 		}
@@ -75,7 +88,7 @@ class BannersController extends \lithium\action\Controller {
 		}
 		return compact('banner');
 	}
-	
+
 	/**
 	* The check method verify if all the datas are collected to save the bannerr
 	* @return boolean $check
@@ -100,7 +113,7 @@ class BannersController extends \lithium\action\Controller {
 		}
 		return $check;
 	}
-	
+
 	/**
 	 * Parse the images from the request using the key
 	 * @param object

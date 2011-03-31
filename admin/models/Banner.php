@@ -2,7 +2,7 @@
 
 namespace admin\models;
 
-class Banner extends \lithium\data\Model {
+class Banner extends Base {
 
 	public $validates = array(
 		'name' => array(
@@ -15,7 +15,7 @@ class Banner extends \lithium\data\Model {
 	);
 	
 	public static function collection() {
-		return static::_connection()->connection->events;
+		return static::_connection()->connection->banners;
 	}
 }
 
