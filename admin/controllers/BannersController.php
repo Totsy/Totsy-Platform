@@ -35,20 +35,30 @@ class BannersController extends \lithium\action\Controller {
                 }
 				echo "check passed";
 				$datas = $this->request->data;
+				//Treat Current Images
 				$images = $this->parseImages();
+				//Get Author Informations
 				$current_user = Session::read('userLogin');
 				$author = $current_user["email"];
+				//Get end date
 				$seconds = ':'.rand(10,60);
 				$datas['end_date'] = new MongoDate(strtotime($datas['end_date'].$seconds));
-				if($datas)
+				//Check Enabled
+				if(!empty($datas['enabled'])) {
+					$enabled = true;
+				} else {
+					$enabled = false;
+				}
+				//Create Datas Array
 				$bannerDatas = array(
 					"img" => $images,
 					"end_date" => $datas['end_date'],
 					"name" => $datas['name'],
 					'author' => $author,
 					'created_date' =>  new MongoDate(strtotime('now')),
-					'enable' =>(bool)$datas['enabled']
+					'enabled' => $enabled
 				);
+				//Create and save the new banner
 				$banner = Banner::Create();
 				if ($banner->save($bannerDatas)) {
 					//$this->redirect(array('Banner::edit', 'args' => array($event->_id)));
