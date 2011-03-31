@@ -51,6 +51,7 @@
 			
 			<tbody>
 				<?php foreach ($orders as $order): ?>
+					<?php if(empty($order->cancel)): ?>
 					<tr class="alt$x" style="border-bottom:1px solid #ddd;">
 						<td><?=date('M d, Y', $order->date_created->sec); ?></td>
 						<td>
@@ -99,6 +100,7 @@
 						<?php endif ?>
 						</td>
 					</tr>
+					<?php endif ?>
 				<?php endforeach ?>
 			</tbody>
 		
