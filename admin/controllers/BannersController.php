@@ -4,6 +4,8 @@ namespace admin\controllers;
 
 use \admin\models\Banner;
 use li3_flash_message\extensions\storage\FlashMessage;
+use lithium\storage\Session;
+use MongoDate;
 
 class BannersController extends \lithium\action\Controller {
 
@@ -18,29 +20,30 @@ class BannersController extends \lithium\action\Controller {
 	}
 
 	public function add() {
-		var_dump($this->request->data);
 		if(!empty($this->request->data)){
 			$check = $this->check();
 			if ($check) {
+				echo "check passed";
 				$datas = $this->request->data;
 				$images = $this->parseImages();
-				var_dump($images);
+				$current_user = Session::read('userLogin');
+				$author = $current_user["email"];
 				$seconds = ':'.rand(10,60);
 				$datas['end_date'] = new MongoDate(strtotime($datas['end_date'].$seconds));
-				/**if($datas)
-				$eventData = array_merge(
-					Event::castData($this->request->data),
-					compact('items'), 
-					compact('images'), 
-					array('created_date' => new MongoDate()),
-					array('url' => $url)
+				if($datas)
+				$bannerDatas = array(
+					"img" => $images,
+					"end_date" => $datas['end_date'],
+					"name" => $datas['name'],
+					'author' => $author,
+					'created_date' =>  new MongoDate(strtotime('now')),
+					'enable' => $datas['enabled']
 				);
-				//Remove this when $_schema is setup
-				unset($eventData['itemTable_length']);
-				if ($event->save($eventData)) {	
-					$this->redirect(array('Events::edit', 'args' => array($event->_id)));
-				}**/
-				FlashMessage::set("Your banner has been saved.", array('class' => 'pass'));
+				$banner = Banner::Create();
+				if ($banner->save($bannerDatas)) {	
+					//$this->redirect(array('Banner::edit', 'args' => array($event->_id)));
+					FlashMessage::set("Your banner has been saved.", array('class' => 'pass'));
+				}
 			} else {
 				FlashMessage::set("You must fill all the requested informations", array('class' => 'warning'));
 			}
@@ -69,7 +72,8 @@ class BannersController extends \lithium\action\Controller {
 		$images = array();
 		$to_check = array(
 			"name",
-			"end_date"
+			"end_date",
+			"img"
 			);
 		if(!empty($this->request->data)) {
 			$datas = $this->request->data;
@@ -77,15 +81,6 @@ class BannersController extends \lithium\action\Controller {
 				if(empty($datas[$data])) {
 					$check = false;
 				}
-			}
-			//check images
-			foreach ($datas as $key => $value) {
-				if (substr($key, -6) == '_image' ) {
-					$img_exist = true;
-				}
-			}
-			if(empty($img_exist)) {
-				$check = false;
 			}
 		} else {
 			$check = false;
@@ -100,13 +95,12 @@ class BannersController extends \lithium\action\Controller {
 	 */
 	protected function parseImages($imageRecord = null) {
 		$images = array();
-		foreach ($this->request->data as $key => $value) {
-			if (substr($key, -6) == '_image' ) {
-				$images["$key"] = $value;
+		$datas = $this->request->data;
+		foreach ($datas["img"] as $key => $value) {
+			$images[$key]["_id"] = $value;
+			if(!empty($datas['url'][$value])) {
+				$images[$key]["url"] = $datas['url'][$value];
 			}
-		}
-		if (empty($images) && !empty($imageRecord)) {
-			$images = $imageRecord->data();
 		}
 		return $images;
 	}
