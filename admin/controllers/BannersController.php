@@ -14,14 +14,18 @@ class BannersController extends \lithium\action\Controller {
 		return compact('banners');
 	}
 
-	public function view() {
-		$banner = Banner::first($this->request->id);
-		return compact('banner');
+	public function view($type = null) {
+		$banners = Banner::all();
+		return compact('banners', 'type');
 	}
 
 	public function add() {
+		$banner = null;
 		if(!empty($this->request->data)){
 			$check = $this->check();
+			$banner = Banner::Create($this->request->data);
+			$banner->validates();
+			
 			if ($check) {
 			    if(array_key_exists('enabled', $this->request->data)){
                     $enable = (bool)$this->request->data['enabled'];
@@ -125,6 +129,7 @@ class BannersController extends \lithium\action\Controller {
 		}
 		return $images;
 	}
+
 }
 
 ?>
