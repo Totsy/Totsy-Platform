@@ -87,9 +87,10 @@ tinyMCE.init({
 	</p>
 </div>
 <h2 id="banner_description">Banner Description</h2>
-<?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
-    <?=$this->form->field('name', array('class' => 'general'));?>
-
+<div class="form-row">
+<?=$this->form->create($banner, array('enctype' => "multipart/form-data")); ?>
+<?=$this->form->field('name', array('class' => 'inputbox'));?>
+</div>
 	<div id="banner_status">
 		<h2 id="banner_status">Banner Status</h2>
 		<input type="checkbox" name="enabled" value="1" id="enabled"> Publish Banner <br>
@@ -97,7 +98,7 @@ tinyMCE.init({
 	</div>
 	<div id="banner_duration">
 		<h2 id="banner_duration">Banner End Date</h2>
-		<?=$this->form->field('end_date', array('class' => 'general', 'id' => 'end_date'));?>
+		<?=$this->form->field('end_date', array('class' => 'inputbox'));?>
 	</div>
 	<br>
 	<h1 id="uploaded_media">Uploaded Media</h1>
