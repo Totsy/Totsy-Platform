@@ -3,11 +3,11 @@
 <?=$this->html->style('table');?>
 
 <div class="grid_16">
-	<h2 id="page-heading">Select Banners for <?=$type?> Administration</h2>
+	<h2 id="page-heading">Select Banners for Administration</h2>
 </div>
 <div class='clear'></div>
 <div class="grid_16">
-	<?=$this->banners->build($banners, array('type' => $type))?>
+	<?=$this->banners->build($banners)?>
 </div>
 <div class='clear'></div>
 

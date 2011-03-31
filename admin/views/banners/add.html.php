@@ -98,7 +98,7 @@ tinyMCE.init({
 	</div>
 	<div id="banner_duration">
 		<h2 id="banner_duration">Banner End Date</h2>
-		<?=$this->form->field('end_date', array('class' => 'inputbox'));?>
+		<?=$this->form->field('end_date', array('class' => 'inputbox', 'id' => 'end_date'));?>
 	</div>
 	<br>
 	<h1 id="uploaded_media">Uploaded Media</h1>
