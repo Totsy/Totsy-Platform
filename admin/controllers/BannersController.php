@@ -38,7 +38,6 @@ class BannersController extends \lithium\action\Controller {
 				} else {
 					$enabled = false;
 				}
-				'enable' => $datas['enabled']
 				//Create Datas Array
 				$bannerDatas = array(
 					"img" => $images,
