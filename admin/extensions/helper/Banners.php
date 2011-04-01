@@ -15,7 +15,6 @@ class Banners extends \lithium\template\Helper {
 		$heading = $this->_standardHeading;
 		if (!empty($bannerRecords)) {
 			$bannerList = $bannerRecords->data();
-			var_dump($bannerList);
 			$html = '';
 			$html .= '<table id="itemTable" class="datatable" border="1">';
 			$html .=  '<thead>'; 

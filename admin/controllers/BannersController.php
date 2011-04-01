@@ -42,7 +42,7 @@ class BannersController extends \lithium\action\Controller {
 				$images = $this->parseImages();
 				//Get Author Informations
 				$current_user = Session::read('userLogin');
-				$author = $current_user["email"];
+				$author = Banner::createdBy();
 				//Get end date
 				$seconds = ':'.rand(10,60);
 				$datas['end_date'] = new MongoDate(strtotime($datas['end_date'].$seconds));

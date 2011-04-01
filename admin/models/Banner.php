@@ -8,9 +8,6 @@ class Banner extends Base {
 		'name' => array(
 			array('notEmpty', 'required' => true, 'message' => 'Please add a banner name'),
 
-		),
-		'end_date' => array(
-			'notEmpty', 'required' => true, 'message' => 'Please add an end date for the banner'
 		)
 	);
 	
