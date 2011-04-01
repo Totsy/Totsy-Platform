@@ -289,47 +289,29 @@ class CreateDashboard extends \lithium\console\Command  {
 
     $conditions = array(
           'date_created' => array(
-            '$gt' => new MongoDate($endOfLastMonthFirstWeek),
+            '$gt' => new MongoDate($startOfTheLastMonth),
             '$lte' => new MongoDate($endOfLastMonthSecondWeek)
 
         ));
 
 
-   if ($today > $endOfFirstWeek) {
+  
 
    $lastMonthSecondWeekRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
-
-    }else{
-
-      $lastMonthSecondWeekRevenue = 0;
-    }
-
-
-
 
 
 
     //sets the date conditions for the search for first 2 weeks of current month
      $conditions = array(
           'created_date' => array(
-            '$gt' => new MongoDate($endOfLastMonthFirstWeek),
+            '$gt' => new MongoDate($startOfTheLastMonth),
             '$lte' => new MongoDate($endOfLastMonthSecondWeek)
         ));
 
 
-   if ($today > $endOfFirstWeek) {
+   
 
    $lastMonthSecondWeekNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
-
-    }else{
-
-       $lastMonthSecondWeekNewUsers = 0;
-
-    }
-
-
-
-
 
 
    //*****************************************************************************************
@@ -338,21 +320,15 @@ class CreateDashboard extends \lithium\console\Command  {
 
     $conditions = array(
           'date_created' => array(
-            '$gt' => new MongoDate($endOfLastMonthSecondWeek),
+            '$gt' => new MongoDate($startOfTheLastMonth),
             '$lte' => new MongoDate($endOfLastMonthThirdWeek)
 
         ));
 
 
-   if ($today > $endOfSecondWeek) {
+   
 
    $lastMonthThirdWeekRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
-
-    }else{
-
-       $lastMonthThirdWeekRevenue = 0;
-
-    }     
 
 
 
@@ -360,26 +336,21 @@ class CreateDashboard extends \lithium\console\Command  {
     //sets the date conditions for the search for first 2 weeks of current month
      $conditions = array(
           'created_date' => array(
-            '$gt' => new MongoDate($endOfLastMonthSecondWeek),
+            '$gt' => new MongoDate($startOfTheLastMonth),
             '$lte' => new MongoDate($endOfLastMonthThirdWeek)
         ));
 
-   if ($today > $endOfSecondWeek) {
+   
 
    $lastMonthThirdWeekNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
 
-    }else{
-
-     //$lastMonthThirdWeekNewUsers = 0;
-
-    }  
+   
 
 
 
-
-    //*****************************************************************************************
-   //sets the date conditions for the search for last month for Users and Orders
-   //*****************************************************************************************
+//*****************************************************************************************
+//sets the date conditions for the search for last month for Users and Orders
+//*****************************************************************************************
 
     $conditions = array(
           'date_created' => array(
