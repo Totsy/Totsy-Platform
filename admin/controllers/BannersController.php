@@ -80,7 +80,6 @@ class BannersController extends \lithium\action\Controller {
 
 	public function edit() {
 		$banner = Banner::find($this->request->id);
-
 		if (!$banner) {
 			$this->redirect('Banners::index');
 		}
@@ -120,7 +119,7 @@ class BannersController extends \lithium\action\Controller {
 	 * @param object
 	 * @return array
 	 */
-	protected function parseImages($imageRecord = null) {
+	public function parseImages($imageRecord = null) {
 		$images = array();
 		$datas = $this->request->data;
 		foreach ($datas["img"] as $key => $value) {
@@ -131,7 +130,7 @@ class BannersController extends \lithium\action\Controller {
 		}
 		return $images;
 	}
-	
+
 	public function preview($_id = null) {
 		$bannersCollection = Banner::collection();
 		$banner = $bannersCollection->findOne(array("_id" => new MongoId($_id)));
@@ -145,7 +144,6 @@ class BannersController extends \lithium\action\Controller {
 		$id = $banner["_id"];
 		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner', 'preview', 'id');
 	}
-	
 
 }
 
