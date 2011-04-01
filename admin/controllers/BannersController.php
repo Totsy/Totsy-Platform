@@ -3,9 +3,13 @@
 namespace admin\controllers;
 
 use \admin\models\Banner;
+use \admin\controllers\EventsController;
+use admin\models\Event;
+use admin\models\Item;
 use li3_flash_message\extensions\storage\FlashMessage;
 use lithium\storage\Session;
 use MongoDate;
+use MongoId;
 
 class BannersController extends \lithium\action\Controller {
 
@@ -127,6 +131,21 @@ class BannersController extends \lithium\action\Controller {
 		}
 		return $images;
 	}
+	
+	public function preview($_id = null) {
+		$bannersCollection = Banner::collection();
+		$banner = $bannersCollection->findOne(array("_id" => new MongoId($_id)));
+		$openEvents = Event::open();
+		$pendingEvents = Event::pending();
+		$itemCounts = EventsController::inventoryCheck(Event::open(array(
+			'fields' => array('items')
+		)));
+		$this->_render['layout'] = 'preview';
+		$preview = "Banners";
+		$id = $banner["_id"];
+		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner', 'preview', 'id');
+	}
+	
 
 }
 
