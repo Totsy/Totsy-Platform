@@ -25,7 +25,7 @@ class BannersController extends \lithium\action\Controller {
 			$check = $this->check();
 			$banner = Banner::Create($this->request->data);
 			$banner->validates();
-			
+
 			if ($check) {
 			    if(array_key_exists('enabled', $this->request->data)){
                     $enable = (bool)$this->request->data['enabled'];
@@ -76,14 +76,53 @@ class BannersController extends \lithium\action\Controller {
 		return compact('banner');
 	}
 
-	public function edit() {
-		$banner = Banner::find($this->request->id);
+	public function edit($id=null) {
+
+		$banner = Banner::find($id);
 
 		if (!$banner) {
-			$this->redirect('Banners::index');
+			$this->redirect('Banners::add');
 		}
-		if (($this->request->data) && $banner->save($this->request->data)) {
-			$this->redirect(array('Banners::view', 'args' => array($banner->id)));
+		if(($this->request->data)){
+
+                if(array_key_exists('enabled', $this->request->data)){
+                    $enable = (bool)$this->request->data['enabled'];
+                    $col = Banner::collection();
+                    $conditions = array('enabled' => $enable);
+                    if ($col->count($conditions) > 0) {
+                        $col->update($conditions, array(
+                            '$set' => array('enabled' => false)),
+                            array('multiple' => true)
+                        );
+                    }
+                }
+				$data = $this->request->data;
+				//Treat Current Images
+				$images = $this->parseImages();
+				//Get Author Informations
+				$author = Banner::createdBy();
+				//Get end date
+				$seconds = ':'.rand(10,60);
+				$data['end_date'] = new MongoDate(strtotime($data['end_date'].$seconds));
+				//Check Enabled
+				if(!empty($data['enabled'])) {
+					$enabled = true;
+				} else {
+					$enabled = false;
+				}
+                $banner->img = $images;
+                $banner->end_date = $data['end_date'];
+                $banner->name = $data['name'];
+                $banner->author = $author;
+                $banner->created_date =  new MongoDate(strtotime('now'));
+                $banner->enabled = $enabled;
+				//Create and save the new banner
+				if ($banner->save()) {
+					//$this->redirect(array('Banner::edit', 'args' => array($event->_id)));
+					FlashMessage::set("Your banner has been saved.", array('class' => 'pass'));
+				} else {
+                    FlashMessage::set("You must fill all the requested informations", array('class' => 'warning'));
+                }
 		}
 		return compact('banner');
 	}

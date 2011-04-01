@@ -13,7 +13,7 @@ class Banner extends Base {
 			'notEmpty', 'required' => true, 'message' => 'Please add an end date for the banner'
 		)
 	);
-	
+
 	public static function collection() {
 		return static::_connection()->connection->banners;
 	}
