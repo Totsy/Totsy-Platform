@@ -12,7 +12,7 @@ class OrderTest extends \lithium\test\Unit {
 	/*
 	* Run Auth.Net Process For One Order
 	*/
-	public function updateOrderAuth() {
+	public function testupdateOrderAuth() {
 		$orderCollection = Order::collection();
 		//configuration
 		$order_id = "";
