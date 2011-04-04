@@ -2,7 +2,11 @@
 
 namespace admin\models;
 use MongoId;
+<<<<<<< HEAD
 use MongoDate;
+=======
+use admin\extensions\util\String;
+>>>>>>> 839e2258878db9b6c66cab0c72cccf6a4117924d
 
 class Event extends \lithium\data\Model {
 
@@ -13,7 +17,7 @@ class Event extends \lithium\data\Model {
 		'special' => 'special',
 		'toys' => 'toys'
 	);
-	
+
 	/**
 	 * Query for all the events within the next 24 hours.
 	 *
@@ -30,17 +34,17 @@ class Event extends \lithium\data\Model {
 			'order' => array('start_date' => 'DESC')
 		));
 	}
-	
+
 	public static function collection() {
 		return static::_connection()->connection->events;
 	}
-	
+
 	protected $_booleans = array(
 		'enabled'
 		);
-		
+
 	public static function castData($event, array $options = array()) {
-		
+
 		foreach ($event as $key => $value) {
 			if (in_array($key, static::_object()->_booleans)) {
 				$event[$key] = (boolean) $value;
@@ -55,7 +59,7 @@ class Event extends \lithium\data\Model {
 			array('$unset' => array('items' => true)
 		));
 	}
-	
+
 	/**
 	 * Query for all events that are enabled and have a start date
 	 * that is greater than "now".
@@ -70,6 +74,11 @@ class Event extends \lithium\data\Model {
 					'$gt' => new MongoDate())),
 			'order' => array('start_date' => 'ASC')
 		));
+
+	public static function poNumber($event) {
+		$vendorName = preg_replace('/[^(\x20-\x7F)]*/','', substr(String::asciiClean($event->name), 0, 3));
+		$time = date('ymdis', $event->_id->getTimestamp());
+		return 'TOT'.'-'.$vendorName.$time;
 	}
 }
 

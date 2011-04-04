@@ -31,6 +31,10 @@ class Item extends \lithium\data\Model {
 		'shipping_overweight'
 		);
 
+	public static function collection() {
+		return static::_connection()->connection->items;
+	}
+	
 	public static function castData($items, array $options = array()) {
 
 		foreach ($items as $key => $value) {

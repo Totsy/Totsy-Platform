@@ -11,6 +11,7 @@ use app\models\Order;
 use app\models\Event;
 use app\models\Promotion;
 use app\models\Promocode;
+use app\models\Affiliate;
 use app\models\OrderShipped;
 use app\controllers\BaseController;
 use lithium\storage\Session;
@@ -86,6 +87,16 @@ class OrdersController extends BaseController {
 		$preShipment = ($shipped || $shipRecord) ? true : false;
 		$itemsByEvent = $this->itemGroupByEvent($order);
 		$orderEvents = $this->orderEvents($order);
+		//Check if all items from one event are closed
+		foreach($itemsByEvent as $items_e) {
+			foreach($items_e as $item) {
+				if(empty($item['cancel'])) {
+					$openEvent[$item['event_id']] = true;
+				}
+			}
+		}
+		$pixel = Affiliate::getPixels('order', 'spinback');
+		$spinback_fb = Affiliate::generatePixel('spinback', $pixel, array('order' => $_SERVER['REQUEST_URI']));
 
 		return compact(
 			'order',
@@ -95,8 +106,11 @@ class OrdersController extends BaseController {
 			'shipDate',
 			'allEventsClosed',
 			'shipped',
+			'preShipment',
+			'spinback_fb',
 			'shipRecord',
-			'preShipment'
+			'preShipment',
+			'openEvent'
 		);
 	}
 

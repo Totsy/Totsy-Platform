@@ -8,6 +8,7 @@ use \app\models\Item;
 use app\models\Banner;
 use \MongoDate;
 use \lithium\storage\Session;
+use app\models\Affiliate;
 
 
 class EventsController extends BaseController {
@@ -43,7 +44,7 @@ class EventsController extends BaseController {
 		}
 
 		if ($event->end_date->sec < time()) {
-			$this->redirect('/sales');
+			$this->redirect('/sales ');
 		}
 		$pending = ($event->start_date->sec > time() ? true : false);
 
@@ -65,8 +66,11 @@ class EventsController extends BaseController {
 			$type = 'Coming Soon';
 		}
 
-
-		return compact('event', 'items', 'shareurl', 'type');
+		$pixel = Affiliate::getPixels('event', 'spinback');
+		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
+			                                            array('event' => $_SERVER['REQUEST_URI'])
+			                                            );
+		return compact('event', 'items', 'shareurl', 'type', 'spinback_fb');
 
 	}
 
