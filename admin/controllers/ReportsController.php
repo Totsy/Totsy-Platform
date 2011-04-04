@@ -274,7 +274,7 @@ class ReportsController extends BaseController {
 							foreach ($orderData as $order) {
 								$items = $order['items'];
 								foreach ($items as $item) {
-									$active = (empty($item['cancel']) || $item['cancel'] != true) ? false : true;
+									$active = (empty($item['cancel']) || $item['cancel'] != true) ? true : false;
 									$itemValid = ($item['item_id'] == $eventItem['_id']) ? true : false;
 									if ($itemValid && ((string) $key == $item['size']) && $active){
 										$purchaseOrder[$inc]['Product Name'] = $eventItem['description'];
