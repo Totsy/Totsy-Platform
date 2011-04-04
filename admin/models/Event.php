@@ -2,11 +2,8 @@
 
 namespace admin\models;
 use MongoId;
-<<<<<<< HEAD
 use MongoDate;
-=======
 use admin\extensions\util\String;
->>>>>>> 839e2258878db9b6c66cab0c72cccf6a4117924d
 
 class Event extends \lithium\data\Model {
 
