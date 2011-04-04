@@ -36,6 +36,17 @@
 		</ul>
 	</li>
 	<li>
+		<?php echo $this->html->link('Banner Management', array('Banners::view')); ?>
+		<ul>
+			<li>
+				<?php echo $this->html->link('Add New Banner', 'Banners::add'); ?>
+			</li>
+			<li>
+				<?php echo $this->html->link('View Banners', array('Banners::view')); ?>
+			</li>
+		</ul>
+	</li>
+	<li>
 		<?php echo $this->html->link('Reports', '#'); ?>
 		<ul>
             <li>

@@ -551,3 +551,5 @@ input.search.button {
 #kwick .four {
 	background: #999;
 }
+
+.error {width :25%; font-weight: bold; border: 1px solid #AA0033; padding: 4px 7px; background: #EECCCC; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; }
