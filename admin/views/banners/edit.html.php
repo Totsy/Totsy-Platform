@@ -127,15 +127,17 @@ tinyMCE.init({
 				<div id="banner_status">
 					<h4 id="banner_status">Banner Status</h4>
 					<?php if ($banner->enabled): ?>
-						<p>The banner is currently published for viewing</p><br>
-						<input type="checkbox" name="enabled" value="1" id="enabled" checked> unpublish
+						<p>The banner is currently published for viewing</p>
+						<?php $checked = 'checked';?>
 					<?php else: ?>
-						<p>The banner is NOT published for viewing</p><br>
-						<input type="checkbox" name="enabled" value="1" id="enabled"> Publish <br>
+						<p>The banner is NOT published for viewing</p>
+						<?php $checked = '';?>
 					<?php endif ?>
+					<?=$this->form->checkbox("enabled", array('value' => 1, 'checked'=>$checked)) ?>
+					Publish <br/><br/>
 				</div>
 				<div id="banner_duration">
-					<h4 id="banner_duration">banner Duration</h4>
+					<h4 id="banner_duration">Banner Duration</h4>
 					<?php
 						$end_date =  date('m/d/Y H:i', $banner->end_date->sec);
 					?>
