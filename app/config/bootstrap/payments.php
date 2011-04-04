@@ -4,8 +4,8 @@ use li3_payments\extensions\Payments;
 
 $dev = array(
 	'adapter' => 'AuthorizeNet',
-	'login' => '8bg66qYX2',
-	'key' => '589CsNvKF4M5sf35',
+	'login' => '7uXvS44q',
+	'key' => '5z4X93s7cq4P2tEQ',
 	'debug' => false,
 	'gateway' => 'test',
 	'connection' => array('classes' => array('socket' => 'lithium\net\socket\Curl'))

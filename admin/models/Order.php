@@ -214,6 +214,10 @@ class Order extends \lithium\data\Model {
 			$items = $order["items"];
 			foreach($order["items"] as $key => $item){
 				$items[$key]["cancel"] = true;
+				//Reattribute original quantity
+				if(!empty($items[$key]["initial_quantity"])) {
+					$items[$key]["quantity"] = $items[$key]["initial_quantity"];
+				}
 			}
 			static::collection()->update(array('_id' => new MongoId($order_id)),
 				array('$set' => array('items' => $items)));
@@ -403,6 +407,7 @@ class Order extends \lithium\data\Model {
 		//Configuration
 		$orderCollection = static::collection();
 		$userCollection = User::collection();
+		$promocodeCollection = Promocode::collection();
 		//Save items status
 		if(!empty($items)){
 			$datas_order["items"] = $items;
@@ -418,8 +423,8 @@ class Order extends \lithium\data\Model {
 			//Get Actual Promocodes variables
 			$regexObj = new MongoRegex("/" . $selected_order["promo_code"] . "/i");
 			$conditions = array("code" => $regexObj);
-			$promocode = Promocode::find("first", $conditions);
-			if( $subTotal <= $promocode->minimum_purchase){
+			$promocode = $promocodeCollection->findOne($conditions);
+			if( $subTotal <= $promocode['minimum_purchase']){
 				$preAfterDiscount = $subTotal;
 				$datas_order["promocode_disable"] = true;
 			}
@@ -429,15 +434,14 @@ class Order extends \lithium\data\Model {
 			}
 		} else {
 			$preAfterDiscount = $subTotal;
-			$datas_order["promocode_disable"] = true;
 		}
 		/**************CREDITS TREATMENT**************/
 		if(isset($selected_order["credit_used"])){
 			if(empty($selected_order["user_total_credits"])){
-				if(strlen($order["user_id"]) > 10){
-					$user_ord = $userCollection->findOne(array("_id" => new MongoId($order["user_id"])));
+				if(strlen($selected_order["user_id"]) > 10){
+					$user_ord = $userCollection->findOne(array("_id" => new MongoId($selected_order["user_id"])));
 				} else {
-					$user_ord = $userCollection->findOne(array("_id" => $order["user_id"]));
+					$user_ord = $userCollection->findOne(array("_id" => $selected_order["user_id"]));
 				}
 			} else {
 				$user_ord["total_credit"] = $selected_order["user_total_credits"];
