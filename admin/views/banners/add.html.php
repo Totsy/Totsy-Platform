@@ -89,7 +89,6 @@ tinyMCE.init({
 <h2 id="banner_description">Banner Description</h2>
 <?=$this->form->create($banner, array('enctype' => "multipart/form-data")); ?>
     <?=$this->form->field('name', array('class' => 'general'));?>
-
 	<div id="banner_status">
 		<h2 id="banner_status">Banner Status</h2>
 		<input type="checkbox" name="enabled" value="1" id="enabled"> Publish Banner <br>

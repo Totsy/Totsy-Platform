@@ -121,14 +121,18 @@
 				});</script>";
 		?>
 			<?php if ($x == 1): ?>
-			
-<div id="banner_container">
-    <div><a href="/users/invite"><img src="/img/invite_girl.png" alt="" /></a></div>
-    <div><img src="/img/banners/shoeBan_1.jpg" alt="Shoe Month" /></div>
-    <div><img src="/img/banners/shoeBan_2.jpg" alt="Shoe Month 2" /></div>
-    <div><img src="/img/banners/shoeBan_3.jpg" alt="Shoe Month 3" /></div>
-    <div><img src="/img/banners/shoeBan_4.jpg" alt="Shoe Month 4" /></div>
-</div>
+				<div id="banner_container">
+					<?php foreach($banner["img"] as $image): ?>
+						<div><?php if(!empty($image["url"])):?>
+							<a href="<?=$image["url"]?>">
+								<img src="/image/<?=$image["_id"]?>.jpeg" alt="" />
+							</a>
+							<?php else: ?>
+								<img src="/image/<?=$image["_id"]?>.jpeg" alt="" />
+							<?php endif ?>
+						</div>
+					<?php endforeach ?>
+				</div>
 			<?php endif ?>
 		<?php $x++; ?>
 		<?php $y++; ?>

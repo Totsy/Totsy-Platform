@@ -3,9 +3,13 @@
 namespace admin\controllers;
 
 use \admin\models\Banner;
+use \admin\controllers\EventsController;
+use admin\models\Event;
+use admin\models\Item;
 use li3_flash_message\extensions\storage\FlashMessage;
 use lithium\storage\Session;
 use MongoDate;
+use MongoId;
 
 class BannersController extends \lithium\action\Controller {
 
@@ -25,7 +29,6 @@ class BannersController extends \lithium\action\Controller {
 			$check = $this->check();
 			$banner = Banner::Create($this->request->data);
 			$banner->validates();
-
 			if ($check) {
 			    if(array_key_exists('enabled', $this->request->data)){
                     $enable = (bool)$this->request->data['enabled'];
@@ -43,7 +46,7 @@ class BannersController extends \lithium\action\Controller {
 				$images = $this->parseImages();
 				//Get Author Informations
 				$current_user = Session::read('userLogin');
-				$author = $current_user["email"];
+				$author = Banner::createdBy();
 				//Get end date
 				$seconds = ':'.rand(10,60);
 				$datas['end_date'] = new MongoDate(strtotime($datas['end_date'].$seconds));
@@ -67,9 +70,9 @@ class BannersController extends \lithium\action\Controller {
 				if ($banner->save($bannerDatas)) {
 					//$this->redirect(array('Banner::edit', 'args' => array($event->_id)));
 					FlashMessage::set("Your banner has been saved.", array('class' => 'pass'));
+					$this->redirect('Banners::view');
 				}
 			} else {
-			    echo "You must fill all the requested informations";
 				FlashMessage::set("You must fill all the requested informations", array('class' => 'warning'));
 			}
 		}
@@ -84,7 +87,8 @@ class BannersController extends \lithium\action\Controller {
 			$this->redirect('Banners::add');
 		}
 		if(($this->request->data)){
-
+		    $check = $this->check();
+            if ($check) {
                 if(array_key_exists('enabled', $this->request->data)){
                     $enable = (bool)$this->request->data['enabled'];
                     $col = Banner::collection();
@@ -120,9 +124,11 @@ class BannersController extends \lithium\action\Controller {
 				if ($banner->save()) {
 					//$this->redirect(array('Banner::edit', 'args' => array($event->_id)));
 					FlashMessage::set("Your banner has been saved.", array('class' => 'pass'));
-				} else {
-                    FlashMessage::set("You must fill all the requested informations", array('class' => 'warning'));
-                }
+					$this->redirect('Banners::view');
+				}
+            }else {
+                FlashMessage::set("You must fill all the requested informations", array('class' => 'warning'));
+            }
 		}
 		return compact('banner');
 	}
@@ -168,6 +174,22 @@ class BannersController extends \lithium\action\Controller {
 		}
 		return $images;
 	}
+
+	public function preview($_id = null) {
+		$bannersCollection = Banner::collection();
+		$banner = $bannersCollection->findOne(array("_id" => new MongoId($_id)));
+		$openEvents = Event::open();
+		$pendingEvents = Event::pending();
+		$eventremote = new EventsController();
+		$itemCounts = $eventremote->inventoryCheck(Event::open(array(
+			'fields' => array('items')
+		)));
+		$this->_render['layout'] = 'preview';
+		$preview = "Banners";
+		$id = $banner["_id"];
+		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner', 'preview', 'id');
+	}
+
 
 }
 

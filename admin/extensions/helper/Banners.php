@@ -10,18 +10,11 @@ class Banners extends \lithium\template\Helper {
 		'enabled'
 	);
 
-	protected $_links = array(
-		'PO' => 'Reports::purchases',
-		'ASN' => '#',
-		'Product File' => 'Reports::productfile',
-		'Order File' => 'Reports::orders'
-	);
-
-
-
-	public function build($eventRecords = null){
-		if (!empty($eventRecords)) {
-			$eventList = $eventRecords->data();
+	public function build($bannerRecords = null){
+		$action = array('Banners::edit');
+		$heading = $this->_standardHeading;
+		if (!empty($bannerRecords)) {
+			$bannerList = $bannerRecords->data();
 			$html = '';
 			$html .= '<table id="itemTable" class="datatable" border="1">';
 			$html .=  '<thead>'; 
@@ -30,56 +23,23 @@ class Banners extends \lithium\template\Helper {
 				$html .=  "<th>$value</th>";
 			}
 			$html .= '</tr></thead><tbody>';
-			foreach ($eventList as $event) {
-				$details = array_intersect_key($event, array_flip($heading));
+			foreach ($bannerList as $banner) {
+				$details = array_intersect_key($banner, array_flip($heading));
 				$orderedDetails = $this->sortArrayByArray($details, $heading);
-				$link = array_merge($action, array('args' => $event['_id']));
-				$html .= "<tr id=$event[_id]>";
+				$link = array_merge($action, array('args' => $banner['_id']));
+				$html .= "<tr id=$banner[_id]>";
 				foreach ($orderedDetails as $key => $value) {
-					if ($key == 'start_date' || $key == 'end_date') {
+					if ($key == 'end_date') {
 						$value = date('M-d-Y', $value['sec']);
 					}
-					if ($options['type'] == 'logistics') {
-						$html .= "<td>$value</td>";
-					} else {
-						$html .= "<td>". $this->_context->html->link($value, $link, array('escape' => false))."</td>";
-					}
-				}
-				if ($options['type'] == 'logistics') {
-					$html .= "<td>";
-					foreach ($this->_links as $name => $route) {
-						$link = array($route, 'args' => $event['_id']);
-						$option = array('escape' => false);
-						$html .= $this->_context->html->link("View - $name", $link, $option);
-						$html .= "<br>";
-					}
-					$html .= "</td>";
-				}
-				if ($options['type'] == 'credits') {
-					$html .= "<td>";
-					foreach ($this->_credit as $name => $route) {
-						$link = array($route, 'args' => $event['_id']);
-						$option = array('escape' => false);
-						$html .= $this->_context->html->link("$name", $link, $option);
-						$html .= "<br>";
-					}
-					$html .= "</td>";
-				}
-				if ($options['type'] == 'email') {
-					$html .= "<td>";
-					foreach ($this->_email as $name => $route) {
-						$link = array($route, 'args' => $event['_id']);
-						$option = array('escape' => false);
-						$html .= $this->_context->html->link("$name", $link, $option);
-						$html .= "<br>";
-					}
-					$html .= "</td>";
+					$html .= "<td>". $this->_context->html->link($value, $link, array('escape' => false))."</td>";
 				}
 				$html .= '</tr>';
 			}
 		}
 		return $html;
 	}
+
 	public function sortArrayByArray($array,$orderArray) {
 		$ordered = array();
 		foreach($orderArray as $key => $value) {
