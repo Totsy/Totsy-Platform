@@ -190,10 +190,6 @@ class BannersController extends \lithium\action\Controller {
 		$id = $banner["_id"];
 		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner', 'preview', 'id');
 	}
-<<<<<<< HEAD
-
-=======
->>>>>>> 8d4f9e706d4e73a6f9d5d3e9f115807f4c6f673f
 
 }
 
