@@ -254,7 +254,7 @@ class EventsController extends BaseController {
 
 	}
 	
-	public function inventoryCheck($events) {
+	public static function inventoryCheck($events) {
 		$events = $events->data();
 		foreach ($events as $eventItems) {
 			$count = 0;

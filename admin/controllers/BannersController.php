@@ -79,6 +79,7 @@ class BannersController extends \lithium\action\Controller {
 		return compact('banner');
 	}
 
+
 	public function edit($id=null) {
 
 		$banner = Banner::find($id);
@@ -163,7 +164,7 @@ class BannersController extends \lithium\action\Controller {
 	 * @param object
 	 * @return array
 	 */
-	protected function parseImages($imageRecord = null) {
+	public function parseImages($imageRecord = null) {
 		$images = array();
 		$datas = $this->request->data;
 		foreach ($datas["img"] as $key => $value) {
@@ -189,7 +190,10 @@ class BannersController extends \lithium\action\Controller {
 		$id = $banner["_id"];
 		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner', 'preview', 'id');
 	}
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8d4f9e706d4e73a6f9d5d3e9f115807f4c6f673f
 
 }
 

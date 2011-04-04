@@ -101,6 +101,7 @@ class CartControllerTest extends \lithium\test\Unit {
 		$result = $remote->remove();
 		//Test result
 		$this->assertEqual(0, $result["cartcount"] );
+		Cart::remove(array('_id' => $cart_id ));
 	}
 
 	public function tearDown() {
