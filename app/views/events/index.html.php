@@ -123,7 +123,7 @@
 			<?php if ($x == 1): ?>
 				<div id="banner_container">
 					<div><a href="/users/invite"><img src="/img/invite_girl.png" alt="" /></a></div>
-					<?php if(!empty(($banner["img"])): ?>
+					<?php if(!empty($banner["img"])): ?>
 						<?php foreach($banner["img"] as $image): ?>
 							<div><?php if(!empty($image["url"])):?>
 								<a href="<?=$image["url"]?>">
