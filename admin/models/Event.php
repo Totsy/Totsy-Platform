@@ -71,6 +71,7 @@ class Event extends \lithium\data\Model {
 					'$gt' => new MongoDate())),
 			'order' => array('start_date' => 'ASC')
 		));
+	}
 
 	public static function poNumber($event) {
 		$vendorName = preg_replace('/[^(\x20-\x7F)]*/','', substr(String::asciiClean($event->name), 0, 3));
