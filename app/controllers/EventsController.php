@@ -14,7 +14,7 @@ class EventsController extends BaseController {
 
 	public function index() {
 		$bannersCollection = Banner::collection();
-		$banner = $bannersCollection->findOne(array("enabled" => true));
+		$banner = $bannersCollection->findOne(array("enabled" => true, 'end_date' => array('$lt' => new MongoDate(strtotime('now')))));
 		$openEvents = Event::open();
 		$pendingEvents = Event::pending();
 
