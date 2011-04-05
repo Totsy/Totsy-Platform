@@ -13,8 +13,8 @@ use Mongo;
 use MongoCode;
 use MongoDate;
 use MongoRegex;
-use li3_flash_message\extensio32ns\storage\FlashMessage;
-use \lithium\data\Model;
+use li3_flash_message\extensions\storage\FlashMessage;
+use lithium\data\Model;
 
 /**
  * The Reports Controller is the core for all reporting functionality.
