@@ -64,11 +64,23 @@ class AffiliatesController extends BaseController {
                     $urlredirect = parse_url(htmlspecialchars_decode(urldecode($gdata['redirect'])), PHP_URL_PATH);
                 }
             }
+            $cookie['affiliate'] = $affiliate;
+            Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 
-            $cookie['affiliated'] = $affiliate;
-            Session::write($cookie, array('name' => 'cookie'));
+            if(Session::check('userLogin', array('name' => 'default'))){
+                $userlogin = Session::read('userLogin');
+                if(preg_match('@^linkshare@i', $affiliate)){
 
-            if(!Session::check('userLogin')){
+                    $user = User::find('first', array('conditions'=> array(
+                        'email' => $userlogin['email']
+                        )));
+
+                    $user->affiliate_share = array(
+                            'affiliate' => $affiliate ,
+                            'entryTime' => $cookie['entryTime']
+                        );
+                    $user->save();
+                }
                 $this->redirect($urlredirect);
             }
 
@@ -94,11 +106,19 @@ class AffiliatesController extends BaseController {
                         'email' => $user->email
                     );
                    Session::write('userLogin', $userLogin, array('name'=>'default'));
-                   $ipaddress = $this->request->env('REMOTE_ADDR');
-                    User::log($ipaddress);
 
-                    Session::write('pixel',$pixel, array('name'=>'default'));
-                    $this->redirect($urlredirect);
+                  if(preg_match('@^(linkshare)@i', $affiliate)){
+                    $user = User::find('first', array('conditions' => array(
+                        '_id' => $userLogin['_id']
+                        )));
+                      $user->affiliate_share = array('affiliate' => $affiliate , 'landing_time' => $cookie['entryTime']);
+                       $user->save();
+                   }
+                   $ipaddress = $this->request->env('REMOTE_ADDR');
+                   User::log($ipaddress);
+
+                   Session::write('pixel',$pixel, array('name'=>'default'));
+                   $this->redirect($urlredirect);
                 }
             }
         }
