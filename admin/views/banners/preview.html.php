@@ -1,4 +1,5 @@
 <?=$this->html->script(array('jquery.nivo.slider.pack'));?>
+
 <script>
 (function($) {
 	$.fn.rotate = function() {
@@ -25,7 +26,7 @@
 					</ul>
 				</dd>
 			</dl>
-		</div>   
+		</div>
 	</h2>
 	<hr />
 
@@ -120,23 +121,22 @@
 					$(\"$splashid\").countdown({until: saleEnd, layout: 'Closes in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
 				});</script>";
 		?>
-			<?php if ($x == 1): ?>
-				<div id="banner_container">
-					<div><a href="/users/invite"><img src="/img/invite_girl.png" alt="" /></a></div>
-					<?php if(!empty($banner["img"])): ?>
-						<?php foreach($banner["img"] as $image): ?>
-							<div><?php if(!empty($image["url"])):?>
-								<a href="<?=$image["url"]?>">
-									<img src="/image/<?=$image["_id"]?>.jpeg" alt="" />
-								</a>
-								<?php else: ?>
-									<img src="/image/<?=$image["_id"]?>.jpeg" alt="" />
-								<?php endif ?>
-							</div>
-						<?php endforeach ?>
-					<?php endif ?>
-				</div>
-			<?php endif ?>
+
+            <?php if ($x == 1): ?>
+                <div id="banner_container">
+                    <div><a href="/users/invite"><img src="/img/invite_girl.png" alt="" /></a></div>
+                        <?php foreach($banner["img"] as $image): ?>
+                            <div><?php if(!empty($image["url"])):?>
+                                <a href="<?=$image["url"]?>">
+                                    <img src="/image/<?=$image["_id"]?>.jpeg" alt="" />
+                                </a>
+                                <?php else: ?>
+                                    <img src="/image/<?=$image["_id"]?>.jpeg" alt="" />
+                                <?php endif ?>
+                            </div>
+                        <?php endforeach ?>
+                </div>
+            <?php endif ?>
 		<?php $x++; ?>
 		<?php $y++; ?>
 	<?php endforeach ?>

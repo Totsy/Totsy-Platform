@@ -51,6 +51,7 @@
 			
 			<tbody>
 				<?php foreach ($orders as $order): ?>
+					<?php if(empty($order->cancel)): ?>
 					<tr class="alt$x" style="border-bottom:1px solid #ddd;">
 						<td><?=date('M d, Y', $order->date_created->sec); ?></td>
 						<td>
@@ -67,10 +68,12 @@
 						<?php endif ?>
 						<td>
 						<?php foreach ($items as $item): ?>
+							<?php if(empty($item["cancel"])) : ?>
 								<strong><?=$item['description']?></strong><br />
 								<span style="font-size:12px;">Color: <?=$item['color']?></span><br />
 								<span style="font-size:12px;">Size: <?=$item['size']?></span><br />
 								<span style="font-size:12px;">Quantity: <?=$item['quantity']?></span><br />
+							<?php endif ?>
 						<?php endforeach ?>
 						</td>
 						<td>
@@ -97,6 +100,7 @@
 						<?php endif ?>
 						</td>
 					</tr>
+					<?php endif ?>
 				<?php endforeach ?>
 			</tbody>
 		

@@ -2,8 +2,8 @@
 
 namespace app\controllers;
 
-use \app\models\Cart;
-use \app\models\User;
+use app\models\Cart;
+use app\models\User;
 use \lithium\storage\Session;
 use app\models\Affiliate;
 use MongoRegex;
@@ -43,6 +43,7 @@ class BaseController extends \lithium\action\Controller {
 				'fields' => array('invited_by')
 			));
 			if($user){
+
 			    if($user->invited_by){
 			        $invited_by = $user->invited_by;
 			    }
