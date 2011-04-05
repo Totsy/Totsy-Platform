@@ -19,6 +19,7 @@ use admin\extensions\command\Exchanger;
 use lithium\analysis\Logger;
 use li3_silverpop\extensions\Silverpop;
 use admin\extensions\util\String;
+use admin\extensions\command\Pid;
 
 /**
  * This command is the main processor to manage the transmission of files to our 3PL
@@ -82,11 +83,11 @@ class OrderExport extends Base {
 	public $verbose = 'false';
 
 	/**
-	 * Directory of files holding the files to FTP.
+	 * Directory of tmp files.
 	 *
 	 * @var string
 	 */
-	public $source = '/resources/totsy/pending/';
+	public $tmp = '/resources/totsy/tmp/';
 
 	/**
 	 * Directory of files holding the backup files to FTP.
@@ -94,6 +95,13 @@ class OrderExport extends Base {
 	 * @var string
 	 */
 	public $processed = '/resources/totsy/processed/';
+
+	/**
+	 * Directory of files holding the backup files to FTP.
+	 *
+	 * @var string
+	 */
+	public $pending = '/resources/totsy/pending/';
 
 	/**
 	 * Full path to file.
@@ -131,38 +139,44 @@ class OrderExport extends Base {
 	 */
 	public function run() {
 		Environment::set($this->env);
-		$this->source = LITHIUM_APP_PATH . $this->source;
+		$this->tmp = LITHIUM_APP_PATH . $this->tmp;
 		$this->processed = LITHIUM_APP_PATH . $this->processed;
+		$this->pending = LITHIUM_APP_PATH . $this->pending;
 		$this->log("...Waking up...");
-		$conditions = array('processed' => array('$ne' => true));
-		$records = Queue::find('all', compact('conditions'));
-		foreach ($records as $queue) {
-			$this->summary = array();
-			$this->log("Processing Queue Record: $queue->_id");
-			if ($queue) {
-				$this->batchId = array('order_batch' => $queue->_id);
-				$this->log("Starting to process $queue->_id");
-				$this->time = date('Ymdis');
-				$queueData = $queue->data();
-				if ($queueData['orders']) {
-					$this->orderEvents = $queueData['orders'];
-					$this->_orderGenerator();
-				}
-				if ($queueData['purchase_orders']) {
-					$this->poEvents = $queueData['purchase_orders'];
-					$this->_purchases();
-				}
-				$this->_itemGenerator();
-				if ($queueData['orders'] || $queueData['purchase_orders']) {
-					$queue->summary = $this->summary;
-					$queue->processed = true;
-					$queue->processed_date = new MongoDate();
-					$queue->save();
-					$this->summary['from_email'] = 'logistics@totsy.com';
-					$this->summary['to_email'] = 'mlangstein@totsy.com';
-					Silverpop::send('exportSummary', $this->summary);
+		$pid = new Pid($this->tmp,  'OrderExport');
+		if ($pid->already_running == false) {
+			$conditions = array('processed' => array('$ne' => true));
+			$records = Queue::find('all', compact('conditions'));
+			foreach ($records as $queue) {
+				$this->summary = array();
+				$this->log("Processing Queue Record: $queue->_id");
+				if ($queue) {
+					$this->batchId = array('order_batch' => $queue->_id);
+					$this->log("Starting to process $queue->_id");
+					$this->time = date('Ymdis');
+					$queueData = $queue->data();
+					if ($queueData['orders']) {
+						$this->orderEvents = $queueData['orders'];
+						$this->_orderGenerator();
+					}
+					if ($queueData['purchase_orders']) {
+						$this->poEvents = $queueData['purchase_orders'];
+						$this->_purchases();
+					}
+					$this->_itemGenerator();
+					if ($queueData['orders'] || $queueData['purchase_orders']) {
+						$queue->summary = $this->summary;
+						$queue->processed = true;
+						$queue->processed_date = new MongoDate();
+						$queue->save();
+						$this->summary['from_email'] = 'no-reply@totsy.com';
+						$this->summary['to_email'] = 'logistics@totsy.com';
+						Silverpop::send('exportSummary', $this->summary);
+					}
 				}
 			}
+		} else {
+			$this->log("Already Running! Stoping Execution");
 		}
 	}
 
@@ -187,7 +201,7 @@ class OrderExport extends Base {
 		if ($orders) {
 			$inc = 1;
 			$filename = 'TOTOrd'.$this->time.'.txt';
-			$handle = $this->source.$filename;
+			$handle = $this->tmp.$filename;
 			$fp = fopen($handle, 'w');
 			$orderArray = array();
 			foreach ($orders as $order) {
@@ -258,6 +272,7 @@ class OrderExport extends Base {
 				}
 			}
 			fclose($fp);
+			rename($handle, $this->pending.$filename);
 			$totalOrders = count($orderArray);
 			$this->summary['order']['count'] = count($orderArray);
 			$this->summary['order']['lines'] = $inc;
@@ -283,7 +298,7 @@ class OrderExport extends Base {
 	protected function _itemGenerator() {
 		$this->log('Generating Items');
 		$filename = 'TOTIT'.$this->time.'.csv';
-		$handle = $this->source.$filename;
+		$handle = $this->tmp.$filename;
 		$eventIds = array_unique(array_merge($this->orderEvents, $this->poEvents, $this->addEvents));
 		$this->log("Opening item file $handle");
 		$fp = fopen($handle, 'w');
@@ -340,6 +355,7 @@ class OrderExport extends Base {
 			}
 		}
 		fclose($fp);
+		rename($handle, $this->pending.$filename);
 		$this->summary['item']['count'] = $count;
 		$this->summary['item']['filename'] = $filename;
 		$this->log("There were $count items generated and saved to the item master and $handle");
@@ -373,7 +389,7 @@ class OrderExport extends Base {
 			$time = date('ymdis', $event->_id->getTimestamp());
 			$poNumber = 'TOT'.'-'.$vendorName.$time;
 			$filename = 'TOTitpo'.$vendorName.$time.'.csv';
-			$handle = $this->source.$filename;
+			$handle = $this->tmp.$filename;
 			$this->log("Opening PO file $handle");
 			$fp = fopen($handle, 'w');
 			$this->summary['purchase_orders'][] = $filename;
@@ -423,6 +439,7 @@ class OrderExport extends Base {
 				}
 			}
 			fclose($fp);
+			rename($handle, $this->pending.$filename);
 		}
 	}
 

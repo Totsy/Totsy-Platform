@@ -38,6 +38,14 @@
 					<?=$this->form->label('Affiliate'); ?>
 					<?=$this->form->text('affiliate'); ?>
 				</p>
+				    <?php
+				        if(($criteria) && (bool)$criteria['subaffiliate']){
+				            $checked = 'checked';
+				        }else{
+				            $checked = '';
+				        }
+				    ?>
+				    <?=$this->form->label('Subaffiliates included'); ?>  <?=$this->form->checkbox('subaffiliate', array('checked' => $checked, 'value' => '1'));?> <br/>
 				<p>
 					<?=$this->form->label('Minimum Seach Date'); ?>
 					<?=$this->form->text('min_date', array('id' => 'min_date'));?>
@@ -51,7 +59,7 @@
 					<?=$this->form->select('search_type', array(
 						'Revenue' => 'Total Revenue',
 						'Registrations' => 'Total Registrations'
-						)); 
+						));
 					?>
 				</p>
 				<?=$this->form->submit('Search'); ?>
@@ -71,7 +79,40 @@
 					</tr>
 				</thead>
 				<tbody>
-					<?php foreach ($results['retval'] as $result): ?>
+				    <?php
+				        if(($criteria) && (bool)$criteria['subaffiliate']):
+				            $reports = array();
+				            foreach ($results['retval'] as $result){
+				                $reports[$result['Date']][] = $result;
+				            }
+				            $results['retval'] = $reports;
+				            foreach($results['retval'] as $month => $values):
+
+				    ?>
+				        <tr>
+				            <td colspan = "2"><?=date('F',  mktime(0, 0, 0, ($month + 1)))?></td>
+				        <tr>
+
+				    <?php
+				                foreach($values as $value):
+				    ?>
+				        <tr>
+				                <td><?=$value['subaff']?></td>
+                                <?php if ($searchType == 'Revenue'): ?>
+                                    <td>$<?=number_format($value['total'], 2)?></td>
+                                <?php else: ?>
+                                    <td><?=$value['total']?></td>
+                                <?php endif ?>
+                        </tr>
+					<?php
+					            endforeach;
+					        endforeach;
+					?>
+
+					<?php
+					    else:
+					    foreach ($results['retval'] as $result):
+					?>
 						<tr>
 							<td><?=date('F',  mktime(0, 0, 0, ($result['Date'] + 1)))?></td>
 							<?php if ($searchType == 'Revenue'): ?>
@@ -80,9 +121,13 @@
 								<td><?=$result['total']?></td>
 							<?php endif ?>
 						</tr>
-					<?php endforeach ?>
+					<?php
+					        endforeach;
+					    endif;
+					?>
+
 				</tbody>
-				
+
 				<?php if ($results['total'] != '$0' && $results['total'] != '0'): ?>
 				<tfooter>
 					<tr>

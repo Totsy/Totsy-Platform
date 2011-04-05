@@ -132,11 +132,11 @@
 		$('#add_pixel').click(function(){
 			var newPixelDiv = $(document.createElement('div')).attr("id", "pixel_"+counter);
 
-			newPixelDiv.html("<label> Pixel #" +counter + "</label> <br> Enable:"+
+			newPixelDiv.html(unescape("<label> Pixel #" +counter + "</label> <br> Enable:"+
 				'<?=$this->form->checkbox("pixel['+(counter-1)+'][enable]", array("value"=>"1", "checked"=>"checked")); ?> <br> Select:'+
 				'<?=$this->form->select("pixel['+(counter-1)+'][page]", $sitePages, array("multiple"=>"multiple", "size"=>5)); ?><br> Pixel<br>'+
 				'<?=$this->form->textarea("pixel['+(counter-1)+'][pixel]", array("rows"=>"5")); ?>'
-				);
+				));
 			newPixelDiv.appendTo('#pixel_panel');
 
 			counter++;
