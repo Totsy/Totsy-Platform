@@ -54,13 +54,29 @@ class Affiliate extends Base {
 
 		$user = User::find('first', array('conditions' => array('_id' => $cookie['user_id'])));
 
+		if($url == '/orders/view'){
+            if(array_key_exists('affiliate',$cookie) && preg_match('@^(linkshare)@i',$cookie['affiliate'])){
+                $user->affiliate_share = array(
+                            'affiliate' => $cookie['affiliate'],
+                            'entryTime' => $cookie['entryTime']
+                        );
+                $user->save();
+                static::generatePixel('linkshare', '', array( 'orderid' => $orderid));
+            }elseif($user->affiliate_share){
+                $cookie['affiliate'] = $user->affiliate_share['affiliate'];
+                $cookie['entryTime'] = $user->affiliate_share['entryTime'];
+                Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
+                static::generatePixel($cookie['affiliate'], '', array( 'orderid' => $orderid));
+            }
+        }
+
 		foreach($pixels as $data) {
 			foreach($data['pixel'] as $index) {
 
                 if(in_array($url, $index['page'])) {
                     if($url == '/orders/view'){
                         if(array_key_exists('affiliate',$cookie) && preg_match('@^(linkshare)@i',$cookie['affiliate'])){
-                            static::generatePixel($cookie['affiliate'], '', array( 'orderid' => $orderid));
+                            static::generatePixel('linkshare', '', array( 'orderid' => $orderid));
                         }elseif($user->affiliate_share){
                             $cookie['affiliate'] = $user->affiliate_share['affiliate'];
                             $cookie['entryTime'] = $user->affiliate_share['entryTime'];
@@ -184,6 +200,7 @@ class Affiliate extends Base {
         }
         if($invited_by == 'linkshare') {
             if( array_key_exists('orderid', $options) && $options['orderid']) {
+
                 $raw = '';
                 if (array_key_exists('trans_type', $options) && $options['trans_type']) {
                     $trans_type = $options['trans_type'];

@@ -51,7 +51,8 @@
 								<div class="tl"></div>
 								<div class="tr"></div>
 								<div class="r-box lt-gradient-1">
-
+                                 <?=$this->html->link('Already a Member? Click Here.', '/');?>
+                                 <br/>
 								<?=$this->form->create($user ,array('id'=>'registerForm')); ?>
 
                <!-- Commnented Firstname, Lastname and Zip code --->
@@ -90,7 +91,6 @@
 									</div -->
 
 									<!-- ************************************************************** -->
-
 									<div class="form-row">
 										<?=$this->form->label('email', 'Email <span>*</span>', array(
 											'escape' => false,
@@ -133,7 +133,7 @@
 											of Totsy, and accept to receive sale email newsletters.
 											Totsy will never sell or give my email to any outside party.
 										</span>
-										
+
 										<?=$this->form->submit('Register', array('class' => 'button')); ?>
 										<?=$this->form->error('terms'); ?>
 									</div>
