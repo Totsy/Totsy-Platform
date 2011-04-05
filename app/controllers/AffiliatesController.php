@@ -68,6 +68,7 @@ class AffiliatesController extends BaseController {
             Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 
             if(Session::check('userLogin', array('name' => 'default'))){
+
                 $userlogin = Session::read('userLogin');
                 if(preg_match('@^linkshare@i', $affiliate)){
 

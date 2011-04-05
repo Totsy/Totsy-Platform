@@ -598,7 +598,6 @@ a.nivo-prevNav { left:15px; }
 #sb_share_link img {
     border: medium none;
     margin: -9px -2px 0 0!important;
-    width: 179px!important;
 }
 
 #sb_content h3 {
@@ -608,7 +607,7 @@ color: #F3072B!important;
 #global_site_msg {
 font-size: 14px; padding:5px; background: #eb132c; color:#fff; border-bottom: 1px solid #ccc;
  text-align:center;}
- 
+
  #banner_container {
 	float: left;
 	width: 180px;
