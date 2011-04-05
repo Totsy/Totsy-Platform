@@ -163,9 +163,14 @@ class OrdersController extends BaseController {
 				$items[$key]["initial_quantity"] = $item["initial_quantity"];
 				$items[$key]["quantity"] = $item["quantity"];
 				//Cancel Status
-				$cancelCheck = ($item["cancel"] == "true" ||  $item["cancel"] == 1) ? true : false;
-				$cancelEmptyCheck = (!empty($cancelCheck) || $item["cancel"] == "") ? true : false;
-				if(((!empty($cancelCheck)) && $item["quantity"] > 0) || ($item["quantity"] == 0 && !empty($cancelEmptyCheck))) {
+				if(empty($item["cancel"])){
+					$cancelCheck = false;
+					$cancelEmptyCheck = false;
+				} else {
+					$cancelCheck = ($item["cancel"] == "true" ||  $item["cancel"] == 1) ? true : false;
+					$cancelEmptyCheck = (!empty($cancelCheck) || $item["cancel"] == "") ? true : false;
+				}
+				if(((!empty($cancelCheck)) && $item["quantity"] > 0) || ($item["quantity"] == 0 && ($item["cancel"] == false || $item["cancel"] == 1))) {
 					$items[$key]["cancel"] = true;
 				} else if(empty($cancelCheck)) {
 					$items[$key]["cancel"] = false;
@@ -304,11 +309,20 @@ class OrdersController extends BaseController {
 					)));
 					$sku["$orderItem[item_id]"] = $item->vendor_style;
 					//Check if items are all canceled
-						if(($orderItem["cancel"] == false) || (empty($orderItem["cancel"]))) {
+					if(empty($orderItem["cancel"])) {
+						$itemscanceled = false;
+					} else {
+						if($orderItem["cancel"] == false) {
 							$itemscanceled = false;
 						}
+					}
 				}
 			}
+		}
+		//Check if order has been canceled
+		if(!empty($order->cancel)) {
+			$edit_mode = false;
+			$itemscanceled = false;
 		}
 		$shipDate = $this->shipDate($order);
 		return compact('order', 'shipDate', 'sku', 'itemscanceled','edit_mode');
