@@ -13,7 +13,7 @@ use Mongo;
 use MongoCode;
 use MongoDate;
 use MongoRegex;
-use li3_flash_message\extensions\storage\FlashMessage;
+use li3_flash_message\extensio32ns\storage\FlashMessage;
 use \lithium\data\Model;
 
 /**
@@ -141,10 +141,16 @@ class ReportsController extends BaseController {
 
 	public function affiliate() {
 		$search = Report::create($this->request->data);
+		$criteria = null;
 		if ($this->request->data) {
 			$criteria = $this->request->data;
 			$name = $this->request->data['affiliate'];
-			$affiliate = $name;
+			$subaff = $this->request->data['subaffiliate'];
+			if((bool)$subaff){
+				$affiliate = new MongoRegex('/^' . $name . '/i');
+			}else{
+				$affiliate = $name;
+			}
 			if ($this->request->data['min_date'] && $this->request->data['max_date']) {
 				//Conditions with date converted to the right timezone
 				$min = new MongoDate(strtotime($this->request->data['min_date']));
@@ -178,12 +184,22 @@ class ReportsController extends BaseController {
 								if ($orders) {
 									foreach ($orders as $order) {
 										$order['date_created'] = new MongoDate($order['date_created']['sec']);
+										$order['subaff'] = $user->invited_by;
 										$collection->save(array('data' => $order, 'report_id' => $reportId));
 									}
 								}
 							}
 						}
-						$keys = new MongoCode("function(doc){return {'Date': doc.data.date_created.getMonth()}}");
+						if(($subaff)){
+							$keys = new MongoCode("function(doc){
+							return {
+								'Date': doc.data.date_created.getMonth(),
+								'subaff' : doc.data.subaff
+
+							}}");
+						}else{
+							$keys = new MongoCode("function(doc){return {'Date': doc.data.date_created.getMonth()}}");
+						}
 						$inital = array('total' => 0);
 						$reduce = new MongoCode('function(doc, prev){
 							prev.total += doc.data.total
@@ -217,7 +233,15 @@ class ReportsController extends BaseController {
 								if (!empty($date)) {
 									$conditions = $conditions + $date;
 								}
-							$keys = new MongoCode("function(doc){return {'Date': doc.$dateField.getMonth()}}");
+							if($subaff){
+								$keys = new MongoCode("function(doc){
+									return {
+										'Date': doc.$dateField.getMonth(),
+										'subaff':doc.invited_by
+									}}");
+							}else{
+								$keys = new MongoCode("function(doc){return {'Date': doc.$dateField.getMonth()}}");
+							}
 							$inital = array('total' => 0);
 							$reduce = new MongoCode('function(doc, prev){prev.total += 1}');
 							$collection = User::collection();
