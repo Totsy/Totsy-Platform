@@ -48,7 +48,9 @@ class EventsController extends BaseController {
 		}
 
 		if (!empty($this->request->data)) {
+			echo "test";
 			$images = $this->parseImages();
+				var_dump($images);
 			$seconds = ':'.rand(10,60);
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
@@ -63,7 +65,7 @@ class EventsController extends BaseController {
 			//Remove this when $_schema is setup
 			unset($eventData['itemTable_length']);
 			if ($event->save($eventData)) {	
-				$this->redirect(array('Events::edit', 'args' => array($event->_id)));
+				//$this->redirect(array('Events::edit', 'args' => array($event->_id)));
 			}
 		}
 
@@ -250,6 +252,26 @@ class EventsController extends BaseController {
 		$preview = "Events";
 		return compact('event', 'items', 'shareurl', 'type', 'id', 'preview');
 
+	}
+	
+	public static function inventoryCheck($events) {
+		$events = $events->data();
+		foreach ($events as $eventItems) {
+			$count = 0;
+			$id = $eventItems['_id'] ;
+
+			if (isset($eventItems['items'])) {
+				foreach ($eventItems['items'] as $eventItem) {
+					if ($item = Item::first(array('conditions' => array('_id' => $eventItem)))) {
+						if ($item->total_quantity) {
+							$count += $item->total_quantity;
+						}
+					}
+				}
+			}
+			$itemCounts[$id] = $count;
+		}
+		return $itemCounts;
 	}
 }
 
