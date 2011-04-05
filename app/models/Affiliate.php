@@ -75,14 +75,6 @@ class Affiliate extends Base {
 
                 if(in_array($url, $index['page'])) {
                     if($url == '/orders/view'){
-                        if(array_key_exists('affiliate',$cookie) && preg_match('@^(linkshare)@i',$cookie['affiliate'])){
-                            static::generatePixel('linkshare', '', array( 'orderid' => $orderid));
-                        }elseif($user->affiliate_share){
-                            $cookie['affiliate'] = $user->affiliate_share['affiliate'];
-                            $cookie['entryTime'] = $user->affiliate_share['entryTime'];
-                            Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
-                            static::generatePixel($cookie['affiliate'], '', array( 'orderid' => $orderid));
-                        }
                         $pixel .= static::generatePixel($invited_by, $index['pixel'], array( 'orderid' => $orderid));
                     }else{
                         $pixel .= static::generatePixel($invited_by, $index['pixel']);
