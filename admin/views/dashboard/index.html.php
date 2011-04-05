@@ -209,11 +209,11 @@ $totalLastMonthThirdWeekNewUsers = $lastMonthFirstWeekNewUsers + $lastMonthSecon
     </tr>
     </thead>
     <tr>
-    <td><?= "$ " . number_format( $totalLastMonthSecondWeekRevenue , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
+    <td><?= "$ " . number_format( $lastMonthSecondWeekRevenue , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
     <td><?= "$ " . number_format( $totalSecondWeekRevenue , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
     <td>
     <?php
-    $percentage = ($totalSecondWeekRevenue / $totalLastMonthSecondWeekRevenue);
+    $percentage = ($totalSecondWeekRevenue / $lastMonthSecondWeekRevenue);
     if($percentage < 1){
       
       echo "<font class='negative'> - " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
@@ -240,12 +240,12 @@ $totalLastMonthThirdWeekNewUsers = $lastMonthFirstWeekNewUsers + $lastMonthSecon
     </tr>
     </thead>
     <tr>
-    <td><?= "$ " . number_format( $totalLastMonthThirdWeekRevenue , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
+    <td><?= "$ " . number_format( $lastMonthThirdWeekRevenue , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
     <td><?= "$ " . number_format( $totalThirdWeekRevenue , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) ?></td>
     <td>
     <?php
     
-    $percentage = ($totalThirdWeekRevenue / $totalLastMonthThirdWeekRevenue);
+    $percentage = ($totalThirdWeekRevenue / $lastMonthThirdWeekRevenue);
     if($percentage < 1){
       
       echo "<font class='negative'> - " . number_format( (1 - $percentage) * 100 , $decimals = 2 , $dec_point = '.' , $thousands_sep = ',' ) . " %</font>";
