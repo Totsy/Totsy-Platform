@@ -141,6 +141,7 @@ class OrderExport extends Base {
 		Environment::set($this->env);
 		$this->tmp = LITHIUM_APP_PATH . $this->tmp;
 		$this->processed = LITHIUM_APP_PATH . $this->processed;
+		$this->pending = LITHIUM_APP_PATH . $this->pending;
 		$this->log("...Waking up...");
 		$pid = new Pid($this->tmp,  'OrderExport');
 		if ($pid->already_running == false) {
