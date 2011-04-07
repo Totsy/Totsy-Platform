@@ -59,8 +59,7 @@
 	<h2 class="gray mar-b">One baby, one tree</h2>
 	<hr />
 	<p>
-		With every purchase you make through Totsy, we will plant one tree in the name of your child
-		to help reduce the effects of deforestation. Who says shopping can't save the world?
+		Totsy plants one tree in honor of your child when you make your first purchase. And, every time you shop with us - we’ll keep it watered for you!  Who says shopping can't save the world?
 	</p>
 
 </div> 

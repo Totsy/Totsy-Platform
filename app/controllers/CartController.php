@@ -23,6 +23,7 @@ class CartController extends BaseController {
 	/**
 	* Displays the current state of the cart.
 	*
+	*
 	* @see app/models/Cart::increaseExpires()
 	* @see app/models/Cart::active()
 	* @return compact
@@ -33,9 +34,10 @@ class CartController extends BaseController {
 		}
 		Cart::increaseExpires();
 		$message = '';
+		$itemlist = array();
 		$cart = Cart::active(array('time' => '-3min'));
 		foreach($cart as $item){
-			if(array_key_exists('error', $item->data()) && !empty($item->error)){
+			if (array_key_exists('error', $item->data()) && !empty($item->error)){
 				$message .= $item->error . '<br/>';
 				$item->error = "";
 				$item->save();
@@ -44,9 +46,19 @@ class CartController extends BaseController {
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
 			$item->event_url = $events[0]->url;
 			$item->available = $itemInfo->details->{$item->size} - Cart::reserved($item->item_id, $item->size);
+			$itemlist[$item->created->sec] = $item->event[0];
 		}
 		$shipDate = Cart::shipDate($cart);
-		return compact('cart', 'message', 'shipDate');
+		if ($cart) {
+			krsort($itemlist);
+			$conditions = array('_id' => current($itemlist));
+			$event = Event::find('first', compact('conditions'));
+			if ($event) {
+				$returnUrl = $event->url;
+			}
+		}
+
+		return compact('cart', 'message', 'shipDate', 'returnUrl');
 	}
 
 	/**
@@ -76,8 +88,7 @@ class CartController extends BaseController {
 					'product_weight',
 					'event',
 					'vendor_style',
-					'discount_exempt',
-					'event'
+					'discount_exempt'
 			)));
 			$cartItem = Cart::checkCartItem($itemId, $size);
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $itemId)));
