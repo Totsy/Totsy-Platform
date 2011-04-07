@@ -215,7 +215,9 @@ class Affiliate extends Base {
                     $entryTime = $cookie['entryTime'];
                 }
                 $raw = static::linkshareRaw($order, $track, $entryTime, $trans_type);
-
+                if(($pixel)){
+                    $pixel .= static::linkshareRaw($order, $track, $entryTime, null);
+                }
                 //Encrypting raw message
                  $base64 = base64_encode($raw);
                 $msg = str_replace('-','_',str_replace('+','/',$base64));
@@ -258,9 +260,11 @@ class Affiliate extends Base {
     public static function linkshareRaw($order, $tr, $entryTime, $trans_type){
         $raw = '';
         $raw .= 'ord=' . $order->order_id . '&';
-        $raw .= 'tr=' . substr($tr, strlen('linkshare')+1) . '&';
-        $raw .= 'land=' . date('Ymd_Hi', $entryTime) . '&';
-        $raw .= 'date=' . date('Ymd_Hi', $order->date_created->sec) . '&';
+        if(($trans_type)){
+            $raw .= 'tr=' . substr($tr, strlen('linkshare')+1) . '&';
+            $raw .= 'land=' . date('Ymd_Hi', $entryTime) . '&';
+            $raw .= 'date=' . date('Ymd_Hi', $order->date_created->sec) . '&';
+        }
         $skulist = array();
         $namelist = array();
         $qlist = array();
