@@ -36,6 +36,10 @@ class Affiliate extends Base {
 			}
 		return $formatted;
 	}
+
+	public static function landingPages(){
+
+	}
 }
 
 ?>

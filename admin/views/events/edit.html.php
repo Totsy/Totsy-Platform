@@ -27,9 +27,9 @@ tinyMCE.init({
 
 	// Theme options
 	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
-	theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,code,|,forecolor,backcolor",
+	theme_advanced_buttons2 : "cut,copy,paste,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,code,|,forecolor,backcolor",
 	theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,charmap,iespell,advhr",
-	theme_advanced_buttons4 : "spellchecker,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking,blockquote,pagebreak",
+	theme_advanced_buttons4 : "spellchecker,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking,blockquote",
 	theme_advanced_toolbar_location : "top",
 	theme_advanced_toolbar_align : "left",
 	theme_advanced_statusbar_location : "bottom",
@@ -39,8 +39,8 @@ tinyMCE.init({
 });
 </script>
 
-<script type="text/javascript"> 
-	$(document).ready(function(){	
+<script type="text/javascript">
+	$(document).ready(function(){
 		$("#duplicate").dynamicForm("#plus", "#minus", {limit:15, createColor: 'yellow', removeColor: 'red'});
 	});
 </script>
@@ -77,7 +77,7 @@ tinyMCE.init({
 
 		/* Init the table */
 		oTable = $('#itemTable').dataTable();
-		
+
 	} );
 
 	function fnGetSelected( oTableLocal )
@@ -141,17 +141,17 @@ tinyMCE.init({
 				</div>
 				<div id="event_duration">
 					<h4 id="event_duration">Event Duration</h4>
-					<?php 
+					<?php
 						$start_date = date('m/d/Y H:i', $event->start_date->sec);
 						$end_date =  date('m/d/Y H:i', $event->end_date->sec);
 						echo $this->form->field('start_date', array(
-								'class' => 'general', 
-								'id' => 'start_date', 
+								'class' => 'general',
+								'id' => 'start_date',
 								'value' => "$start_date"
 							));
 					 	echo $this->form->field('end_date', array(
-								'class' => 'general', 
-								'id' => 'end_date', 
+								'class' => 'general',
+								'id' => 'end_date',
 								'value' => "$end_date"
 							));?>
 				</div>
@@ -292,7 +292,7 @@ tinyMCE.init({
             <hr />
 			<?=$this->items->build($eventItems);?>
 			<br><br>
-			
+
 			<?=$this->form->end(); ?>
 			<h2 id="">Delete Items</h2>
 				<p>Click the button below to delete all items from this event. <strong>WARNING - This action cannot be undone. All items associated with this event will be deleted!!!!!!<strong></p>
@@ -303,7 +303,7 @@ tinyMCE.init({
 		</div>
 	</div>
 
-	
+
 
 
 </div>

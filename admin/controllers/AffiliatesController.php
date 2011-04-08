@@ -63,9 +63,11 @@ class AffiliatesController extends \admin\controllers\BaseController {
             $info['invitation_codes'] = array_values( $data['invitation_codes'] );
             if($info['level'] != 'regular'){
                 $info['active_pixel'] = (boolean) $data['active_pixel'];
-			    $info['pixel'] = Affiliate::pixelFormating($data['pixel'],
+                if($info['active_pixel']){
+			        $info['pixel'] = Affiliate::pixelFormating($data['pixel'],
 			                                                $info['invitation_codes']
 			                                                );
+			    }
 			}
 
 			$info['created_by'] = $affiliate->createdBy();
@@ -97,9 +99,17 @@ class AffiliatesController extends \admin\controllers\BaseController {
             $info['invitation_codes'] = array_values( $data['invitation_codes'] );
             if($info['level'] != 'regular'){
                 $info['active_pixel'] = (boolean) $data['active_pixel'];
-			    $info['pixel'] = Affiliate::pixelFormating($data['pixel'],
+                $info['active_landing'] = (boolean) $data['active_landing'];
+                if($info['active_pixel']){
+			        $info['pixel'] = Affiliate::pixelFormating($data['pixel'],
 			                            $info['invitation_codes']
 			                            );
+			    }
+			    if($info['active_landing']){
+			        $info['landing'] = Affiliate::landingPages($data['pixel'],
+			                            $info['invitation_codes']
+			                            );
+			    }
 			}
 			$info['created_by'] = $affiliate->createdBy();
 			$info['date_created'] = new MongoDate( strtotime( date('D M d Y') ) );

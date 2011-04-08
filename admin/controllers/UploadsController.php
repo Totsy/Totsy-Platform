@@ -24,7 +24,7 @@ class UploadsController extends \lithium\action\Controller {
 	 */
 	public function upload($type = null) {
 		$success = false;
-		$this->_render['template'] = in_array($type, array('item', 'event','banner')) ? $type : 'upload';
+		$this->_render['template'] = in_array($type, array('item', 'event','banner','affiliate')) ? $type : 'upload';
 
 		// Check that we have a POST
 		if (($this->request->data) && $this->validate() && $this->write()) {
