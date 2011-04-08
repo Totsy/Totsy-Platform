@@ -24,7 +24,8 @@ class UploadsController extends \lithium\action\Controller {
 	 */
 	public function upload($type = null) {
 		$success = false;
-		$this->_render['template'] = in_array($type, array('item', 'event','banner','service')) ? $type : 'upload';
+
+		$this->_render['template'] = in_array($type, array('item', 'event','banner','service','affiliate')) ? $type : 'upload';
 
         //Check if there are any tags associated with the image
         if(array_key_exists('tag',$this->request->data)){

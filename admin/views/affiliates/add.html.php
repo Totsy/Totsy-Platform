@@ -1,3 +1,15 @@
+<?=$this->html->script('tiny_mce/tiny_mce.js');?>
+<?=$this->html->script('jquery-1.4.2');?>
+<?=$this->html->script('jquery-dynamic-form.js');?>
+<?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
+<?=$this->html->script('swfupload.js');?>
+<?=$this->html->script('swfupload.queue.js');?>
+<?=$this->html->script('fileprogress.js');?>
+<?=$this->html->script('handlers.js');?>
+<?=$this->html->script('affiliate_upload.js');?>
+<?=$this->html->style('swfupload')?>
+<?=$this->html->style('jquery_ui_blitzer.css')?>
+
 
 <div class="grid_16">
 	<h2 id="page-heading">Affiliate Add Panel</h2>
@@ -21,7 +33,7 @@
 	</table>
 </div>
 
-<div class="grid_6 box">
+<div class="grid_2 box">
 	<div class='block forms'>
 		<?=$this->form->create(); ?>
 
@@ -34,37 +46,102 @@
 		<br>
 		Affiliate codes:<br>
 		<?=$this->form->select('invitation_codes',array(),array('multiple'=>'multiple', 'size'=>5)); ?> <br>
-		<input type='button' name='edit_code' id='edit_code' value='edit'/><br><br>
-		<div id='activate_pixel'> Affiliate uses pixels: <?=$this->form->checkbox('active_pixel', array('value'=>'1')); ?> </div>
-		<br>
-		<br>
-		<div id='pixel_panel'>
-			<h5>Add Pixels</h5>
-			<input type='button' name='add_pixel' value='add pixel'id='add_pixel'/>
-			<input type='button' name='remove_pixel' value='remove pixel' id='remove_pixel'/>
-			<br>
-			<br>
+		<input type='button' name='edit_code' id='edit_code' value='edit code'/><br><br>
+	</div>
+</div> <!--end of box-->
 
-			<div id='pixel_1'>
-				<label> Pixel #1 </label><br>
-				Enable:
-				<?=$this->form->checkbox('pixel[0][enable]', array('value'=>'1', 'checked'=>'checked')); ?> <br>
-				Select Page(s):<br>
-				<?=$this->form->select('pixel[0][page]', $sitePages, array('multiple'=>'multiple', 'size'=>5)); ?><br>
-				Pixel:<br>
-				<?=$this->form->textarea('pixel[0][pixel]' , array('rows'=>'5')); ?>
-			</div>
-			<br>
-		</div>
-		<br>
-		<br>
-		<?=$this->form->submit('Create', array('id'=>'create')); ?>
-		<?=$this->form->end(); ?>
+<div class ="grid_9 box">
+	<div class='block forms'>
+		<div id='tabs'>
+			<ul>
+				<li><a href="#pixel"><span>Pixels</span></a></li>
+				<li><a href="#landing_page"><span>Landing Pages</span></a></li>
+			</ul>
+			<div id='pixel'>
+				<div id='pixel_activate'> Affiliate uses pixels: <?=$this->form->checkbox('active_pixel', array('value'=>'1')); ?> </div>
+				<br>
+				<br>
+				<div id='pixel_panel'>
+					<h5>Add Pixels</h5>
+					<input type='button' name='add_pixel' value='add pixel'id='add_pixel'/>
+					<input type='button' name='remove_pixel' value='remove pixel' id='remove_pixel'/>
+					<br>
+					<br>
+
+					<div id='pixel_1'>
+						<label> Pixel #1 </label><br>
+						Enable:
+						<?=$this->form->checkbox('pixel[0][enable]', array('value'=>'1', 'checked'=>'checked')); ?> <br>
+						Select Page(s):<br>
+						<?=$this->form->select('pixel[0][page]', $sitePages, array('multiple'=>'multiple', 'size'=>5)); ?><br>
+						Pixel:<br>
+						<?=$this->form->textarea('pixel[0][pixel]' , array('rows'=>'10', 'cols' =>'30')); ?>
+					</div>
+					<br>
+				</div><!--end of pixel panel-->
+			</div><!--end of pixel-->
+			<div id='landing_page'>
+				<div id='landing_activate'> Affiliate uses landing pages:
+					<?=$this->form->checkbox('active_landing', array('value'=>'1')); ?>
+				</div>
+				<div id='landing_panel'>
+					<br/>
+					<div id='templates'>
+					</div>
+					<div id='template_form'>
+						<label>Description </label>
+						<?=$this->form->text('description'); ?>
+						<label>Associated Keywords</label>
+						<?=$this->form->text('keywords'); ?>
+						<label>Associated URL </label>
+						<?=$this->form->text('url'); ?>
+						<h5 id="uploaded_media">Uploaded Media</h5>
+						<div id="fileInfo"></div>
+						<br>
+
+						<br>
+						<table>
+							<tr valign="top">
+								<td>
+									<div>
+										<div class="fieldset flash" id="fsUploadProgress1">
+											<span class="legend">Upload Status</span>
+										</div>
+										<div style="padding-left: 5px;">
+											<span id="spanButtonPlaceholder1"></span>
+											<input id="btnCancel1" type="button" value="Cancel Uploads" onclick="cancelQueue(upload1);" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />
+											<br />
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div><!--end landing panel-->
+			</div><!--end landing page-->
+
+		</div><!--end tabs-->
 	</div>
 </div>
+		<br>
+		<br>
+	<div id='submit button' class="grid_16">
+		<div class="grid_7" >
+			<?=$this->form->submit('Create', array('id'=>'create')); ?>
+		</div>
+	</div>
+	<?=$this->form->end(); ?>
+</div>
 
+<script type="text/javascript">
+$(document).ready(function() {
+	//create tabs
+	$("#tabs").tabs();
+});
+</script>
 <script type='text/javascript'>
 		$('#pixel_panel').hide();
+		$('#landing_panel').hide();
 	$(document).ready(function(){
 		$('input[name=active_pixel]').change(function(){
 			if( $('#ActivePixel:checked').val() == 1){
@@ -73,20 +150,27 @@
 				$('#pixel_panel').hide();
 			}
 		});
+		$('input[name=active_landing]').change(function(){
+			if( $('#ActiveLanding:checked').val() == 1){
+				$('#landing_panel').show();
+			}else{
+				$('#landing_panel').hide();
+			}
+		});
 	});
 	$(document).ready(function(){
 		if( $('#Level').val() != 'regular' ){
-			$('#activate_pixel').show();
+			$('#tabs').show();
 		}else{
-			$('#activate_pixel').hide();
+			$('#tabs').hide();
 		}
 
 		$('#Level').change(function(){
 			if( $('#Level').val() != 'regular' ){
-				$('#activate_pixel').show();
+				$('#tabs').show();
 			}else{
 				$('#pixel_panel').hide();
-				$('#activate_pixel').hide();
+				$('#tabs').hide();
 			}
 		});
 	});

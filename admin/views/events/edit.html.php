@@ -452,6 +452,7 @@ for ( i=1; i<6; i++ ) {
 			<h3 id="current_items">Current Items</h3>
 
             <hr />
+
 			<?=$this->form->create(null, array('url' => 'Items::itemUpdate', 'name' => 'item-update')); ?>
 				<?=$this->form->hidden('id', array('value' => $event->_id)); ?>
 				<div style="float:left; font: bold; font-size: 18px;">
@@ -473,6 +474,7 @@ for ( i=1; i<6; i++ ) {
 				<div style="float:right; font: bold; font-size: 18px;">
 					<?=$this->form->submit('Update Event')?>
 				</div>
+				
 			<?=$this->form->end(); ?>
 
 			<br><br>
@@ -485,11 +487,11 @@ for ( i=1; i<6; i++ ) {
 					<?=$this->form->submit('Delete All Items'); ?>
 				<?=$this->form->end(); ?>
 		</div>
+
 		<div id="event_history">
 				<?php
 					if (sizeof($event->modifications) > 0) {
 				?>
-
 				<table>
 					<tr>
 						<td>User</td>
