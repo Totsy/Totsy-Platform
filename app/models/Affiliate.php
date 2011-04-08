@@ -216,7 +216,8 @@ class Affiliate extends Base {
                 }
                 $raw = static::linkshareRaw($order, $track, $entryTime, $trans_type);
                 if(($pixel)){
-                    $pixel .= static::linkshareRaw($order, $track, $entryTime, null);
+                    $insert = static::linkshareRaw($order, $track, $entryTime, null);
+                    $pixel .= str_replace('$',$insert,$pixel);
                 }
                 //Encrypting raw message
                  $base64 = base64_encode($raw);
