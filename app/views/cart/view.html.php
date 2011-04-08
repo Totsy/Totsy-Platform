@@ -127,7 +127,7 @@
 			</td>
 			<td class="cart-button" colspan="3">
 				<?=$this->html->link('Proceed To Checkout', 'Orders::add', array('class' => 'button')); ?>
-				<?=$this->html->link('Continue Shopping', 'Events::index', array('class' => 'button', 'style' => 'margin-right:10px;')); ?>
+				<?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('class' => 'button', 'style' => 'margin-right:10px;')); ?>
 			</td>
 			</tbody>
 		</table>
