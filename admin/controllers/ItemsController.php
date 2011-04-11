@@ -149,6 +149,13 @@ class ItemsController extends BaseController {
 		}
 		return compact('items');
 	}
+
+	public function itemUpdate() {
+		if ($this->request->data) {
+			die(var_dump($this->request->data));
+			$this->redirect(array('Events::edit','args' => array($id)));
+		}
+	}
 }
 
 ?>

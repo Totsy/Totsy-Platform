@@ -288,12 +288,18 @@ tinyMCE.init({
 				<?=$this->form->file('upload_file'); ?>
 				<?=$this->form->submit('Update Event')?>
 			<br><br>
+			<?=$this->form->end(); ?>
 			<h3 id="current_items">Current Items</h3>
             <hr />
-			<?=$this->items->build($eventItems);?>
+			<?=$this->form->create(null, array('url' => 'Items::itemUpdate', 'name' => 'item-update')); ?>
+				<?=$this->form->hidden('event', array('value' => $event->_id)); ?>
+				<?=$this->form->submit('Submit'); ?>
+				<?=$this->items->build($eventItems);?>
+			<?=$this->form->end(); ?>
+			
 			<br><br>
 			
-			<?=$this->form->end(); ?>
+			
 			<h2 id="">Delete Items</h2>
 				<p>Click the button below to delete all items from this event. <strong>WARNING - This action cannot be undone. All items associated with this event will be deleted!!!!!!<strong></p>
 				<?=$this->form->create(null, array('url' => 'Items::removeItems', 'name' => 'item-delete')); ?>
