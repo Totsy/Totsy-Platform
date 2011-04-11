@@ -161,7 +161,7 @@ class ItemsController extends BaseController {
 					$itemsCollection->update(array("_id" => new MongoId($key)), array('$set' => array("blurb" => $data)));
 				}
 			}
-			$this->redirect(array('Events::edit','args' => array($id)));
+			$this->redirect('/events/edit/'.$id.'#event_items');
 		}
 	}
 }
