@@ -13,6 +13,8 @@ use app\extensions\Mailer;
 use app\extensions\Keyade;
 use li3_silverpop\extensions\Silverpop;
 use MongoDate;
+use li3_facebook\extension\FacebookProxy;
+
 
 class UsersController extends BaseController {
 
@@ -36,11 +38,12 @@ class UsersController extends BaseController {
 	public function register($invite_code = null, $affiliate_user_id = null) {
 		$message = false;
 		$data = $this->request->data;
+		$this->autoLogin();
 		/*
 		* redirects to the affiliate registration page if the left the page
 		* and then decided to register after words.
 		*/
-		if(Session::check('cookieCrumb', array('name' => 'cookie'))){
+		if (Session::check('cookieCrumb', array('name' => 'cookie'))){
 			$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 			if(preg_match('(/a/)', $cookie['landing_url'])){
 				$this->redirect($cookie['landing_url']);
@@ -169,6 +172,7 @@ class UsersController extends BaseController {
 	 * @return string The user is prompted with a message if authentication failed.
 	 */
 	public function login() {
+
 		$message = $resetAuth = $legacyAuth = $nativeAuth = false;
 		$rememberHash = '';
 		$this->autoLogin();
@@ -221,10 +225,31 @@ class UsersController extends BaseController {
 		}
 		//new login layout to account for fullscreen image JL
 		$this->_render['layout'] = 'login';
-		return compact('message');
+
+		return compact('message', 'fbsession', 'fbconfig');
 	}
+
 	protected function autoLogin(){
 		$redirect = '/sales';
+		if ($this->fbsession) {
+			$userfb = FacebookProxy::api('/me');
+			$user = User::find('first', array(
+				'conditions' => array(
+					'$or' => array(
+						array('email' => strtolower($userfb['email'])),
+						array('facebook_info.id' => $userfb['id'])
+			))));
+			if ($user) {
+				$user->facebook_info = $userfb;
+				$user->save(null, array('validate' => false));
+				$sessionWrite = $this->writeSession($user->data());
+				$ipaddress = $this->request->env('REMOTE_ADDR');
+				User::log($ipaddress);
+				$this->redirect('/sales');
+			} else {
+				$this->redirect('/register/facebook');
+			}
+		}
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array('conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
@@ -247,6 +272,7 @@ class UsersController extends BaseController {
 			}
 		}
 	}
+
 	/**
 	 * Performs the logout action of the user removing '_id' from session details.
 	 */
@@ -256,7 +282,8 @@ class UsersController extends BaseController {
 		$cookie['autoLoginHash'] = null;
 		Session::delete('cookieCrumb', array('name' => 'cookie'));
 		$cookieSuccess = Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
-		$this->redirect(array('action'=>'login'));
+		FacebookProxy::setSession(null);
+		$this->redirect(array('action' => 'login'));
 	}
 	/**
 	 * This is only for legacy users that are coming with AuthLogic passwords and salt
@@ -286,6 +313,22 @@ class UsersController extends BaseController {
 	public function info() {
 		$status = 'default';
 		$user = User::getUser();
+		$connected = (empty($user->facebook_info) ? false : true);
+		FacebookProxy::setSession(null);
+		$fbsession = FacebookProxy::getSession();
+		if ($fbsession && $connected == false) {
+			$userfb = FacebookProxy::api('/me');
+			$check = User::find('first', array(
+				'conditions' => array(
+						'facebook_info.id' => $userfb['id']
+			)));
+			if (empty($check)) {
+				$user->facebook_info = $userfb;
+				$user->save(null, array('validate' => false));
+			} else {
+				$status = 'badfacebook';
+			}
+		}
 		if ($this->request->data) {
 			$email = $this->request->data['email'];
 			$firstname = $this->request->data['firstname'];
@@ -308,7 +351,7 @@ class UsersController extends BaseController {
 				$status = "email";
 			}
 		}
-		return compact("user", "status");
+		return compact('user', 'status', 'connected', 'failed', 'userfb');
 	}
 
 	public static function generateToken() {
@@ -461,6 +504,29 @@ class UsersController extends BaseController {
 		}
 		return compact("user", "status");
 	}
+
+	/**
+	 * Register with a facebook account
+	 * @return compact
+	 */
+	public function fbregister() {
+		$message = null;
+		$user = null;
+		$fbuser = FacebookProxy::api('/me');
+		$user = User::create();
+		$user->email = $fbuser['email'];
+		$user->confirmemail = $fbuser['email'];
+		$this->_render['layout'] = 'login';
+		if ($this->request->data) {
+			$data = $this->request->data;
+			$data['facebook_info'] = $fbuser;
+			static::registration($data);
+			$this->redirect('/sales');
+		}
+
+		return compact('message', 'user', 'fbuser');
+	}
+
 }
 
 ?>

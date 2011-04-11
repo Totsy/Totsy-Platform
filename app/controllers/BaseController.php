@@ -4,9 +4,11 @@ namespace app\controllers;
 
 use app\models\Cart;
 use app\models\User;
-use \lithium\storage\Session;
+use lithium\storage\Session;
 use app\models\Affiliate;
 use MongoRegex;
+use li3_facebook\extension\FacebookProxy;
+use lithium\core\Environment;
 
 /**
 * The base controller will setup functionality used throughout the app.
@@ -20,6 +22,14 @@ class BaseController extends \lithium\action\Controller {
 		$userInfo = Session::read('userLogin');
 		$this->set(compact('userInfo'));
 		$cartCount = Cart::itemCount();
+		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
+	    $logoutUrl = $logoutUrl."$_SERVER[SERVER_NAME]/logout";
+		/**
+		 * Setup all the necessary facebook stuff
+		 */
+		$this->fbsession = $fbsession = FacebookProxy::getSession();
+		$fbconfig = FacebookProxy::config();
+		$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
 
 		if ($userInfo) {
 			$user = User::find('first', array(
@@ -31,7 +41,7 @@ class BaseController extends \lithium\action\Controller {
 				$credit = ($user->total_credit > 0) ? number_format($user->total_credit, $decimal) : 0;
 			}
 		}
-		$this->set(compact('cartCount', 'credit'));
+		$this->set(compact('cartCount', 'credit', 'fbsession', 'fbconfig', 'fblogout'));
 
 		/**
 		* Get the pixels for a particular url.
@@ -42,32 +52,26 @@ class BaseController extends \lithium\action\Controller {
 				'conditions' => array('_id' => $userInfo['_id']),
 				'fields' => array('invited_by')
 			));
-			if($user){
-
-			    if($user->invited_by){
-			        $invited_by = $user->invited_by;
+			if ($user){
+				if ($user->invited_by){
+					$invited_by = $user->invited_by;
 			    }
 			}
 		}
-
-        if(preg_match('/a/',$_SERVER['REQUEST_URI'])) {
-
-		    $invited_by = substr($_SERVER['REQUEST_URI'],3);
-
-            if(strpos($invited_by, '?')) {
-              $invited_by = substr($invited_by,0,strpos($invited_by, '?'));
-		    }
-
-		    if(strpos($invited_by, '&')) {
-		        $invited_by = substr($invited_by,0,strpos($invited_by, '&'));
-		    }
-        }
-	    $pixel = Affiliate::getPixels($_SERVER['REQUEST_URI'], $invited_by);
-
-        $pixel .= Session::read('pixel');
-        Session::delete('pixel');
+		if (preg_match('/a/',$_SERVER['REQUEST_URI'])) {
+			$invited_by = substr($_SERVER['REQUEST_URI'], 3);
+			if (strpos($invited_by, '?')) {
+				$invited_by = substr($invited_by, 0, strpos($invited_by, '?'));
+			}
+			if (strpos($invited_by, '&')) {
+				$invited_by = substr($invited_by,0,strpos($invited_by, '&'));
+			}
+		}
+		$pixel = Affiliate::getPixels($_SERVER['REQUEST_URI'], $invited_by);
+		$pixel .= Session::read('pixel');
+		Session::delete('pixel');
 		$this->set(compact('pixel'));
-        User::setupCookie();
+		User::setupCookie();
 		$this->_render['layout'] = 'main';
 		parent::_init();
 	}
