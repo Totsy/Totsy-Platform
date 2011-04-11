@@ -150,15 +150,20 @@ class ItemsController extends BaseController {
 		}
 		return compact('items');
 	}
-
+	
+	/**
+	 * Update Items from Items Collection
+	 * Based on the event _id items will be update from the Item collection.
+	 */
 	public function itemUpdate() {
 		$itemsCollection = Item::Collection();
 		if ($this->request->data) {
-			$datas = $this->request->data;
-			$id = $datas['id'];
-			foreach($datas as $key => $data) {
+			$data = $this->request->data;
+			$id = $data['id'];
+			foreach($data as $key => $value) {
 				if($key != 'id') {
-					$itemsCollection->update(array("_id" => new MongoId($key)), array('$set' => array("blurb" => $data)));
+					$itemId = array("_id" => new MongoId($key));
+					$itemsCollection->update($itemId, array('$set' => array("blurb" => $value)));
 				}
 			}
 			$this->redirect('/events/edit/'.$id.'#event_items');
