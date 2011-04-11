@@ -1,9 +1,15 @@
 <?=$this->html->script('jquery-1.4.2');?>
+<?=$this->html->script('jquery.maskedinput-1.2.2')?>
+<?=$this->html->script('jquery.dataTables.js');?>
 <div class='box'>
 	<h1>Groups - ACL Management</h1>
 	<div class="clear"></div>
 	<?=$this->form->create($group ,array('id'=>'groupsFrom')); ?>
-	<?=$this->form->select("select_group", $ddm_groups, array("style" => "width:150px;font-weight:bold;font-size:13px;", "onChange" => 'this.form.submit();', 'value' => $group_selected["name"])); ?><br />
+	<?php if(empty($group_selected["name"])) : ?>
+		<?=$this->form->select("select_group", $ddm_groups, array("style" => "width:150px;font-weight:bold;font-size:13px;", "onChange" => 'this.form.submit();', 'value' => "")); ?><br />
+	<?php else : ?>
+		<?=$this->form->select("select_group", $ddm_groups, array("style" => "width:150px;font-weight:bold;font-size:13px;", "onChange" => 'this.form.submit();', 'value' => $group_selected["name"])); ?><br />
+	<?php endif ?>
 	<?php if(!empty($group_selected)): ?>
 		<br />
 			<div id="table_wrap" class="container_16">
@@ -15,7 +21,7 @@
 					<?php foreach($group_selected["acls"] as $acl):?>
 						<div id="acl_<?=$n?>" class="grid_16" style="background:#f7f7f7; border-bottom:1px solid #ddd; margin:0px 0px 5px 0px;">
 							<div id="info_row" class="grid_14 alpha" style="padding:5px;">
-								<span style="font-size:24px;">Acl <?=$n?></span>
+								<span style="font-size:24px;">Acl <?=($n - 4)?></span>
 								<span style="margin:0px 20px 0px 20px;">Route <?=$this->form->text("acl_route_".$n, array('class' => 'inputbox', 'value' => $acl["route"], "id" => "acl_route_".$n )); ?></span>
 								<span>Connection <?=$this->form->text("acl_connection_".$n, array('class' => 'inputbox', 'value' => $acl["connection"], "id" => "acl_connection_".$n )); ?></span>
 							</div>	

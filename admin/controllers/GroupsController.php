@@ -26,11 +26,13 @@ class GroupsController extends \admin\controllers\BaseController {
 		if($this->request->data){
 			$datas = $this->request->data;
 			//Case : Create a group
-			if($datas["add_group"] != ""){
+			if(!empty($datas["add_group"])){
 				$this->create($datas["add_group"]);
 			}//Case : Remove a group
-			elseif((strlen($datas["remove_group"]) > 2) && $datas["select_group"] == "undefined"){
-				$this->remove($datas["remove_group"]);
+			elseif(!empty($datas["remove_group"]) && $datas["select_group"] == "undefined"){
+				if(strlen($datas["remove_group"]) > 2) {
+					$this->remove($datas["remove_group"]);
+				}
 			}elseif($datas["select_group"] == "undefined"){
 				//Case Change selection
 			}//Case update ACLs of groups
@@ -38,21 +40,27 @@ class GroupsController extends \admin\controllers\BaseController {
 				$group_selected = Group::find('first', array('conditions' =>
 				array('name' => $datas["select_group"])));
 				$search = User::find('all', array('conditions' =>
-				array('groups' => $group_selected[_id])));
+				array('groups' => $group_selected["_id"])));
 				$users = $search->data();
-				if( (!empty($datas["select_group"])) && ($datas["select_group"] != "undefined") && ($datas["current"] == $datas["select_group"])) {
-						$group = Group::create($this->request->data);
-						if($group->validates()){
-							$this->update($group_selected["_id"]);
-						}
+				if(!empty($datas["current"])) {
+					if( (!empty($datas["select_group"])) && ($datas["select_group"] != "undefined") && ($datas["current"] == $datas["select_group"])) {
+							$group = Group::create($this->request->data);
+							if($group->validates()){
+								$this->update($group_selected["_id"]);
+							}
+					}
 				}
 				//Refresh Result after update
 				$search = User::find('all', array('conditions' =>
-				array('groups' => $group_selected[_id])));
+				array('groups' => $group_selected["_id"])));
 				$users = $search->data();
 				$group_selected = Group::find('first', array('conditions' =>
 				array('name' => $datas["select_group"])));
 			}
+		}
+		//fill empty datas
+		if(empty($group)) {
+			$group = null;
 		}
 		//Create Dropdown Menu
 		$groups = Group::find('all');
