@@ -1,5 +1,19 @@
 <?=$this->html->script(array('jquery.nivo.slider.pack'));?>
-
+<script>
+(function($) {
+	$.fn.rotate = function() {
+		var container = $(this);
+		var totale = container.find("div").size();
+		var current = 0;
+		var i = setInterval(function() {
+			if (current >= totale) current = 0;
+			container.find("div").filter(":eq("+current+")").fadeIn("slow").end().not(":eq("+current+")").fadeOut("slow");
+			current++;
+		}, 5000);
+		return container;
+	};
+})(jQuery);
+</script>
 	<h2 class="page-title gray"><span class="_red">Today's Sales</span>
     <div class="sm-actions fr" style="font-size:12px; margin:7px 0px 0px 0px;">
 			<dl>
@@ -11,10 +25,9 @@
 					</ul>
 				</dd>
 			</dl>
-		</div>   </h2>
+		</div>   
+	</h2>
 	<hr />
-
-
 
 <div class="fullwidth">
 
@@ -44,9 +57,9 @@
                 <div class="md-gray p-container">
 
 						<?php if ($itemCounts[ (string) $event->_id] == 0): ?>
-								<?=$this->html->image('/img/soldout.gif', array(
+								<?=$this->html->image('/img/soldout.png', array(
 									'title' => "Sold Out",
-									'style' => 'z-index : 2; position : absolute; left:20%'
+									'style' => 'z-index : 2; position : absolute; left:69%; margin:10px;'
 								)); ?>
 					<?php endif ?>
 					<?php
@@ -108,15 +121,21 @@
 				});</script>";
 		?>
 			<?php if ($x == 1): ?>
-
-			<?=$this->html->link($this->html->image("/img/invite_girl.png", array(
-					'title' => "Invite Friends. Get $15",
-					'alt' => "Invite Friends. Get $15",
-					'width' => '181',
-					'height' => '413'
-					)),'/Users/invite', array('escape'=> false));
-			?>
-
+				<div id="banner_container">
+					<div><a href="/users/invite"><img src="/img/invite_girl.png" alt="" /></a></div>
+					<?php if(!empty($banner["img"])): ?>
+						<?php foreach($banner["img"] as $image): ?>
+							<div><?php if(!empty($image["url"])):?>
+								<a href="<?=$image["url"]?>">
+									<img src="/image/<?=$image["_id"]?>.jpeg" alt="" />
+								</a>
+								<?php else: ?>
+									<img src="/image/<?=$image["_id"]?>.jpeg" alt="" />
+								<?php endif ?>
+							</div>
+						<?php endforeach ?>
+					<?php endif ?>
+				</div>
 			<?php endif ?>
 		<?php $x++; ?>
 		<?php $y++; ?>
@@ -124,20 +143,6 @@
 
 
 	<div style="margin-bottom:35px;" class="clear"></div>
-
-	<h2 class="page-title gray clear"><span class="_red">Monthly Sales / Spring Month</span></h2>
-	<hr />
-
-	<div id="slider" class="nivoSlider">
-		 <img src="/img/spring_img1.jpg" />
-		 <img src="/img/spring_img2.jpg" />
-		 <img src="/img/spring_img3.jpg" />
-		 <img src="/img/spring_img4.jpg" />
-		 <img src="/img/spring_img5.jpg" />
-		 <img src="/img/spring_img6.jpg" />
-	</div>
-	
-	<br style="margin-bottom:10px;"/>
 
 	<div class="coming-soon-sales">
 
@@ -225,8 +230,10 @@
 	<?php endforeach ?>
 <?php endif ?>
 
-    <script type="text/javascript">
-    $(window).load(function() {
-        $('#slider').nivoSlider();
-    });
-    </script>
+<script type="text/javascript">
+<!--
+	$(document).ready(function() {
+		$("#banner_container").rotate();
+	});
+//-->
+</script>

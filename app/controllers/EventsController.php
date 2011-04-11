@@ -5,13 +5,17 @@ namespace app\controllers;
 use \app\controllers\BaseController;
 use \app\models\Event;
 use \app\models\Item;
+use app\models\Banner;
 use \MongoDate;
 use \lithium\storage\Session;
+use app\models\Affiliate;
 
 
 class EventsController extends BaseController {
-	
+
 	public function index() {
+		$bannersCollection = Banner::collection();
+		$banner = $bannersCollection->findOne(array("enabled" => true, 'end_date' => array('$gte' => new MongoDate(strtotime('now')))));
 		$openEvents = Event::open();
 		$pendingEvents = Event::pending();
 
@@ -19,7 +23,7 @@ class EventsController extends BaseController {
 			'fields' => array('items')
 		)));
 
-		return compact('openEvents', 'pendingEvents', 'itemCounts');
+		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner');
 	}
 
 	public function view() {
@@ -31,19 +35,19 @@ class EventsController extends BaseController {
 		}
 		$event = Event::first(array(
 			'conditions' => array(
-				'enabled' => true, 
+				'enabled' => true,
 				'url' => $url
 		)));
 		if (!$event) {
 			$this->_render['template'] = 'noevent';
 			return array('event' => null, 'items' => array(), 'shareurl');
 		}
-		
+
 		if ($event->end_date->sec < time()) {
-			$this->redirect('/');
+			$this->redirect('/sales ');
 		}
 		$pending = ($event->start_date->sec > time() ? true : false);
-		
+
 		if ($pending == false) {
 			++$event->views;
 			$event->save();
@@ -62,9 +66,12 @@ class EventsController extends BaseController {
 			$type = 'Coming Soon';
 		}
 
+		$pixel = Affiliate::getPixels('event', 'spinback');
+		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
+			                                            array('event' => $_SERVER['REQUEST_URI'])
+			                                            );
+		return compact('event', 'items', 'shareurl', 'type', 'spinback_fb');
 
-		return compact('event', 'items', 'shareurl', 'type');
-	
 	}
 
 	public function inventoryCheck($events) {

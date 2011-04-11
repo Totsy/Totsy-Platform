@@ -6,8 +6,9 @@
 ?>
 
 
-<h1 class="page-title gray"><span class="red"><?=$this->title('Checkout - Delivery Method'); ?></span></h1>
+<h1 class="page-title gray"><span class="_red"><a href="/" title="Sales">Today's Sales</a></span> / <a href="/cart/view" title="My Cart">My Cart</a> / Checkout / Shipping &amp; Billing</h1>
 
+	<hr />
 <div id="middle" class="fullwidth">
 
 	<div class="tl"></div>
@@ -18,7 +19,7 @@
                         <div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /><?=$error; ?></div>
 
 <?php } ?>
-
+<div style="display:none;">
            <div class="rounded" style="color: #009900; margin:0px 10px 0px 0px; float: left; display:block; background:#ebffeb; border:1px solid #ddd; width:230px; text-align:center; padding:20px;">Shipping / Billing Info</div>
 <div id="arrow-right">
   <div id="arrow-right-1"></div>
@@ -32,112 +33,20 @@
 </div><!--arrow-right-->
 
               <div class="rounded" style="color:#ff0000; margin:0px 0px 0px 0px; float:left; display:block; background:#ffebeb; border:1px solid #ddd; width:246px; padding:20px; text-align:center;">Confirmation</div>
-              <div style="clear:both; margin-bottom:15px;"></div>
-
-	<!-- Begin Order Details -->
-	<?php if ($cartByEvent): ?>
-		<h2 class="gray mar-b">Order Details</h2><hr />
-
-		<div class='fr'><?=$this->html->link('Edit Your Cart', '#', array('id' => 'checkout-cart', 'class' => 'edit-your-cart')); ?></div>
-		<table width="100%" class="cart-table">
-
-		<?php $x = 0; ?>
-		<?php foreach ($cartByEvent as $key => $event): ?>
-			<tr>
-				<td colspan='6'><?=$orderEvents[$key]['name']?><td>
-			</tr>
-			<tr>
-				<th>Item</th>
-				<th>Description</th>
-				<th>QTY</th>
-				<th>Price</th>
-				<th>Total Cost</th>
-				<th>Time Remaining</th>
-				</tr>
-			<?php foreach ($event as $item): ?>
-				<tbody>
-					<!-- Build Product Row -->
-								<?php $itemUrl = "sale/".$orderEvents[$key]['url'].'/'.$item['url'];?>
-								<tr id="<?=$item['_id']?>" class="alt<?=$x?>" style="margin:0px!important; padding:0px!important;">
-								<td class="cart-th">
-									<?php
-										if (!empty($item['primary_image'])) {
-											$image = $item['primary_image'];
-											$productImage = "/image/$image.jpg";
-										} else {
-											$productImage = "/img/no-image-small.jpeg";
-										}
-									?>
-									<?=$this->html->link(
-										$this->html->image("$productImage", array(
-											'width'=>'60',
-											'height'=>'60',
-									'style' => 'background:#fff; border:1px solid #ddd; padding:2px; margin:2px;')),
-											'',
-											array(
-											'id' => 'main-logo_', 'escape'=> false
-										),
-										$itemUrl
-									); ?>
-								</td>
-								<td class="cart-desc">
-									<?=$this->form->hidden("item$x", array('value' => $item['_id'])); ?>
-									<strong><?=$this->html->link($item['description'], $itemUrl);
-									?></strong><br>
-									<strong>Color:</strong> <?=$item['color'];?><br>
-									<strong>Size:</strong> <?=$item['size'];?>
-								</td>
-								<td class="<?="qty-$x";?>">
-									<?=$item['quantity'];?>
-								</td>
-								<td class="<?="price-item-$x";?>">
-									<strong style="color:#009900;">$<?=number_format($item['sale_retail'],2)?></strong>
-								</td>
-								<td class="<?="total-item-$x";?>">
-									<strong style="color:#009900;">$<?=number_format($item['sale_retail'] * $item['quantity'] ,2)?></strong>
-								</td>
-								<td class="cart-time"><div id="<?php echo "checkout-counter-$x"; ?>"></div></td>
-							</tr>
-							<?php
-								//Allow users three extra minutes on their items for checkout.
-								$date = ($item['expires']['sec'] * 1000);
-								$checkoutCounters[] = "<script type=\"text/javascript\">
-									$(function () {
-										var itemCheckoutExpires = new Date($date);
-										$(\"#checkout-counter-$x\").countdown('change', {until: itemCheckoutExpires, $countLayout});
-
-									$(\"#checkout-counter-$x\").countdown({until: itemCheckoutExpires,
-									    expiryText: '<div class=\"over\">This item is no longer reserved for purchase.</div>', $countLayout});
-									var now = new Date();
-									if (itemCheckoutExpires < now) {
-										$(\"#checkout-counter-$x\").html('<div class=\"over\">This item is no longer reserved for purchase</div>');
-									}
-									});
-									</script>";
-								$x++;
-							?>
-				<?php endforeach ?>
-			<?php endforeach ?>
-
-					<tr class="cart-total">
-						<td colspan="7" id='subtotal'><strong>Subtotal: </strong><strong style="color:#009900;">$<?=number_format($subTotal,2)?></strong></td>
-					</tr>
-				</tbody>
-			</table>
-	<?php endif ?>
-	<!-- End Order Details -->
-	<br>
+              </div>
+              
+              
 	<ol id="checkout-process">
 		<?=$this->form->create($order, array('class' => 'checkout')); ?>
 
 		<!-- Start Billing Information -->
-		<div style="float:left; width:415px; margin:0px 10px 10px 0px;  display:block;"><li id="opc-billing">
+		<div style="float:left; width:423px; margin:0px 10px 10px 0px;  display:block;"><li id="opc-billing">
 			<div id="checkout-process-billing">
 			<?php if (empty($billing)): ?>
 					<center><strong><?=$this->html->link('Please take a moment to add an Address', '#', array(
 						'class' => 'add-address')); ?></strong></center>
 				<?php else: ?>
-					<h2 class="gray mar-b">Billing Address</h2><hr />
+					<h2 style="color:#707070;">Billing Address</h2><hr />
 					<p>Select a billing address from your address book.</p>
 						<?=$this->form->select('billing', $billing, array(
 							'id' => 'billing',
@@ -162,7 +71,7 @@
 		<!-- End Billing Information -->
 
 		<!-- Start Shipping Information -->
-		<div style="float:left; width:410px; display:block;">
+		<div style="float:left; width:445px; display:block;">
 		  <li id="opc-shipping" class="step_" style="opacity:0.5">
 
 			<div id="checkout-process-shipping">
@@ -171,10 +80,9 @@
 
 				<?php else: ?>
 
-						<h2 class="gray mar-b">Shipping Address</h2>
+						<h2 style="color:#707070;">Shipping Address</h2>
 					<hr />
-					<p>Select a shipping address from your address book.
-					</p>
+					<p>Select a shipping address from your address book.</p>
 						<?=$this->form->select('shipping', $shipping, array(
 							'id' => 'shipping',
 							'target' => '#shipping-new-address-form',
@@ -191,7 +99,7 @@
 <div style="clear:both;"></div>
 		<!-- End Shipping Information -->
 
-		<li id="shipping-method" class="step">
+		<li id="shipping-method" class="step" style="display:none;">
 
 				<h2 class="gray mar-b">Shipping Method</h2>
 			<hr />
@@ -214,14 +122,113 @@
 		</li>
 
 
+<hr />
 
 		<li class="step">
-			<?=$this->form->submit('Confirm Delivery Method', array('class' => 'confirm-delivery-button')); ?>
-			&nbsp;&nbsp;
+			<?=$this->form->submit('Confirm & Continue', array('class' => 'button fr')); ?>
 		</li>
 
 		<?=$this->form->end(); ?>
 
+			   <div style="clear:both; margin-top:90px;"></div>
+
+		<h2 style="color:#707070;">Order Summary</h2>
+		<hr />
+
+<div style="clear:both; margin-bottom:10px;"></div>
+
+	<!-- Begin Order Details -->
+	<?php if ($cartByEvent): ?>
+		<table width="100%" class="cart-table">
+
+		<?php $x = 0; ?>
+		<?php foreach ($cartByEvent as $key => $event): ?>
+			<tr>
+				<td colspan="3" style="vertical-align:bottom; font-weight:bold; font-size:18px;"><?=$orderEvents[$key]['name']?> <td>
+				<td colspan="3"><div class='fr' style="padding:10px; background:#fffbd1; border-left:1px solid #D7D7D7; border-right:1px solid #D7D7D7; border-top:1px solid #D7D7D7;">Estimated Ship Date: <?=date('m-d-Y', $shipDate)?></div></td>
+			</tr>
+			<tr>
+				<th>Item</th>
+				<th>Description</th>
+				<th>Price</th>
+				<th>Qty</th>
+				<th>Total Cost</th>
+				<th>Time Remaining</th>
+			</tr>
+			<?php foreach ($event as $item): ?>
+				<tbody>
+					<!-- Build Product Row -->
+								<?php $itemUrl = "sale/".$orderEvents[$key]['url'].'/'.$item['url'];?>
+								<tr id="<?=$item['_id']?>" class="alt<?=$x?>" style="margin-top:10px;">
+								<td class="cart-th">
+									<?php
+										if (!empty($item['primary_image'])) {
+											$image = $item['primary_image'];
+											$productImage = "/image/$image.jpg";
+										} else {
+											$productImage = "/img/no-image-small.jpeg";
+										}
+									?>
+									<?=$this->html->link(
+										$this->html->image("$productImage", array(
+											'width'=>'60',
+											'height'=>'60',
+									'style' => 'padding:4px; margin:2px;')),
+											'',
+											array(
+											'id' => 'main-logo_', 'escape'=> false
+										),
+										$itemUrl
+									); ?>
+								</td>
+								<td class="cart-desc">
+									<?=$this->form->hidden("item$x", array('value' => $item['_id'])); ?>
+									<strong><?=$this->html->link($item['description'], $itemUrl);
+									?></strong><br>
+									<strong>Color:</strong> <?=$item['color'];?><br>
+									<strong>Size:</strong> <?=$item['size'];?>
+								</td>
+								<td class="<?="price-item-$x";?>">
+									<strong style="color:#009900;">$<?=number_format($item['sale_retail'],2)?></strong>
+								</td>
+								<td class="<?="qty-$x";?>">
+									<?=$item['quantity'];?>
+								</td>
+								<td class="<?="total-item-$x";?>">
+									<strong style="color:#009900;">$<?=number_format($item['sale_retail'] * $item['quantity'] ,2)?></strong>
+								</td>
+								<td class="cart-time" style="border-right:1px solid #d7d7d7;"><img src="/img/clock_icon.gif" class="fl"/><div id='<?php echo "checkout-counter-$x"; ?>' class="fl" style="margin-left:5px;"></div></td>
+								
+							</tr>
+							<?php
+								//Allow users three extra minutes on their items for checkout.
+								$date = ($item['expires']['sec'] * 1000);
+								$checkoutCounters[] = "<script type=\"text/javascript\">
+									$(function () {
+										var itemCheckoutExpires = new Date($date);
+										$(\"#checkout-counter-$x\").countdown('change', {until: itemCheckoutExpires, $countLayout});
+
+									$(\"#checkout-counter-$x\").countdown({until: itemCheckoutExpires,
+									    expiryText: '<div class=\"over\" style=\"color:#fff; padding:5px; background: #ff0000;\">no longer reserved</div>', $countLayout});
+									var now = new Date();
+									if (itemCheckoutExpires < now) {
+										$(\"#checkout-counter-$x\").html('<div class=\"over\" style=\"color:#fff; padding:5px; background: #ff0000;\">no longer reserved</div>');
+									}
+									});
+									</script>";
+								$x++;
+							?>
+				<?php endforeach ?>
+			<?php endforeach ?>
+
+					<tr class="cart-total">
+						<td colspan="7" id='subtotal'><strong>Subtotal: </strong><strong style="color:#009900;">$<?=number_format($subTotal,2)?></strong><br/><hr/><?=$this->html->link('Edit Your Cart','/cart/view' ,array('id' => 'checkout-cart', 'class' => 'button fr')); ?></td>
+					</tr>
+				</tbody>
+			</table>
+	<?php endif ?>
+	<!-- End Order Details -->
+	
     <!-- begin thawte seal -->
     <div id="thawteseal" title="Click to Verify - This site chose Thawte SSL for secure e-commerce and confidential communications." style="float: right!important; width:200px;">
         <div style="float: left!important; width:100px; display:block;"><script type="text/javascript" src="https://seal.thawte.com/getthawteseal?host_name=www.totsy.com&amp;size=L&amp;lang=en"></script></div>
@@ -276,23 +283,14 @@ $(".add-address").click(function() {
 });
 
 </script>
-	<?php if ($cartEmpty == true): ?>
+	<?php if ($cartEmpty == true):
+	?>
 		<script>
-		$(document).ready(function() {
-			$("#cart-modal").load($.base + 'cart/view').dialog({
-				autoOpen: false,
-				modal: true,
-				width: 900,
-				height: 600,
-				close: function(ev, ui) {
-					parent.location = "/events";
-				}
-			});
-			$("#cart-modal").dialog('open');
-		});
+			window.location.replace('/cart/view');
 		</script>
 	<?php endif ?>
 	<script type="text/javascript">
+	/**
 	$("#checkout-cart").click(function() {
 		$("#cart-modal").load($.base + 'cart/view').dialog({
 			autoOpen: false,
@@ -304,5 +302,5 @@ $(".add-address").click(function() {
 			}
 		});
 		$("#cart-modal").dialog('open');
-	});
-	</script>
+	}); **/
+</script>

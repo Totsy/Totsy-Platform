@@ -74,7 +74,7 @@
 					$pix = $pixel['pixel'];
 					$option='';
 					foreach($sitePages as $key => $name){
-						if( $pixel['page'] && in_array($key , $pixel['page']) ){
+						if( array_key_exists('page', $pixel) && $pixel['page'] && in_array($key , $pixel['page']) ){
 							$option .= "<option value=$key selected='selected'> $name </option>";
 						}else{
 							$option .= "<option value= $key> $name </option>";
@@ -132,11 +132,11 @@
 		$('#add_pixel').click(function(){
 			var newPixelDiv = $(document.createElement('div')).attr("id", "pixel_"+counter);
 
-			newPixelDiv.html("<label> Pixel #" +counter + "</label> <br> Enable:"+
+			newPixelDiv.html(unescape("<label> Pixel #" +counter + "</label> <br> Enable:"+
 				'<?=$this->form->checkbox("pixel['+(counter-1)+'][enable]", array("value"=>"1", "checked"=>"checked")); ?> <br> Select:'+
 				'<?=$this->form->select("pixel['+(counter-1)+'][page]", $sitePages, array("multiple"=>"multiple", "size"=>5)); ?><br> Pixel<br>'+
 				'<?=$this->form->textarea("pixel['+(counter-1)+'][pixel]", array("rows"=>"5")); ?>'
-				);
+				));
 			newPixelDiv.appendTo('#pixel_panel');
 
 			counter++;

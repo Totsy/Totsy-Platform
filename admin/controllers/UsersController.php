@@ -49,7 +49,7 @@ class UsersController extends \admin\controllers\BaseController {
 		if ($this->request->data) {
 			$users = User::findUsers($this->request->data);
 		}
-		$headings = array('Ref','Last Name', 'First Name','Zip/postal code');
+		$headings = array('Ref','Last Name', 'First Name','Email','Zip/postal code');
 		return compact('users', 'headings');
 	}
 
@@ -90,6 +90,7 @@ class UsersController extends \admin\controllers\BaseController {
 		$message = false;
 
 		if ($this->request->data) {
+		    $this->request->data['email'] = strtolower($this->request->data['email']);
 			if (Auth::check("userLogin", $this->request)) {
 				return $this->redirect('/');
 			}

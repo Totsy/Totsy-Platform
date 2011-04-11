@@ -62,27 +62,29 @@
                 <br>
                 <?=$this->form->label('Description:'); ?> <br>
                 <?=$this->form->textarea('description', array('value' => 'Enter description here')); ?><br><br>
-               
+
                <?=$this->form->label('Code Type:'); ?>
                <?=$this->form->select( 'type', array('percentage' => 'percent',  'dollar'=> 'dollar amount', 'shipping'=> 'shipping') ); ?><br><br>
-              
+
               <?=$this->form->label('Enter discount amount here:'); ?>
                <?=$this->form->text( 'discount_amount', array( 'value' => 'Enter discount amount here') ); ?><br><br>
-              
+
               <?=$this->form->label('Enter minimum purchase amount:'); ?>
                <?=$this->form->text( 'minimum_purchase', array( 'value' => 'Enter minimum purchase') ); ?><br><br>
-              
+
+               <?=$this->form->label('Limit Per User:'); ?> <?=$this->form->checkbox('limited_use', array('checked'=>'checked', 'value' => '1')); ?> <br>
+                <br>
               <?=$this->form->label('Enter maximum use:'); ?>
                <?=$this->form->text( 'max_use', array( 'value' => 'Enter max use') ); ?><br><br>
-              
+
               <?=$this->form->label('Enter start date:'); ?>
               <?=$this->form->text( 'start_date', array('value' => 'Enter start date here', 'id' => 'start_date') ); ?><br><br>
-              
+
               <?=$this->form->label('Enter end date:'); ?>
               <?=$this->form->text( 'end_date', array('value' => 'Enter end date here', 'id' => 'end_date') ); ?><br><br>
-                           
+
               <?=$this->form->submit('create'); ?><br><br>
-             
+
             <?=$this->form->end(); ?>
         </fieldset>
     </div>

@@ -2,17 +2,18 @@
 	<h1 class="p-header">My Account</h1>
 	<div id="left">
 		<ul class="menu main-nav">
-		<li class="firstitem17"><a href="/account" title="Account Dashboard"><span>Account Dashboard</span></a></li>
-	    <li class="item18"><a href="/account/info" title="Account Information"><span>Account Information</span></a></li>
-	    <li class="item19"><a href="/addresses" title="Address Book"><span>Address Book</span></a></li>
-	    <li class="item20 active"><a href="/orders" title="My Orders"><span>My Orders</span></a></li>
-	    <li class="item20"><a href="/Credits/view" title="My Credits"><span>My Credits</span></a></li>
-	    <li class="lastitem23"><a href="/Users/invite" title="My Invitations"><span>My Invitations</span></a></li>
-		  <br />
-		  <h3 style="color:#999;">Need Help?</h3>
-		  <hr />
-		  <li class="first item18"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
-		  <li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
+			<li class="firstitem17"><a href="/account" title="Account Dashboard"><span>Account Dashboard</span></a></li>
+			<li class="item18"><a href="/account/info" title="Account Information"><span>Account Information</span></a></li>
+			<li class="item18"><a href="/account/password" title="Change Password"><span>Change Password</span></a></li>
+			<li class="item19"><a href="/addresses" title="Address Book"><span>Address Book</span></a></li>
+			<li class="item20 active"><a href="/orders" title="My Orders"><span>My Orders</span></a></li>
+			<li class="item20"><a href="/Credits/view" title="My Credits"><span>My Credits</span></a></li>
+			<li class="lastitem23"><a href="/Users/invite" title="My Invitations"><span>My Invitations</span></a></li>
+			<br />
+			<h3 style="color:#999;">Need Help?</h3>
+			<hr />
+			<li class="first item18"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
+			<li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
 		</ul>
 	</div>
 
@@ -50,6 +51,7 @@
 			
 			<tbody>
 				<?php foreach ($orders as $order): ?>
+					<?php if(empty($order->cancel)): ?>
 					<tr class="alt$x" style="border-bottom:1px solid #ddd;">
 						<td><?=date('M d, Y', $order->date_created->sec); ?></td>
 						<td>
@@ -66,28 +68,39 @@
 						<?php endif ?>
 						<td>
 						<?php foreach ($items as $item): ?>
+							<?php if(empty($item["cancel"])) : ?>
 								<strong><?=$item['description']?></strong><br />
 								<span style="font-size:12px;">Color: <?=$item['color']?></span><br />
 								<span style="font-size:12px;">Size: <?=$item['size']?></span><br />
 								<span style="font-size:12px;">Quantity: <?=$item['quantity']?></span><br />
+							<?php endif ?>
 						<?php endforeach ?>
 						</td>
-						<?php if (!empty($order->tracking_numbers)): ?>
-							<td>
+						<td>
+							<?php if (!empty($trackingNumbers) || !empty($order->tracking_numbers)): ?>
 								Tracking Number(s):
-							<?php foreach ($order->tracking_numbers as $number): ?>
-								<?=$this->shipment->link($number, array('type' => 'UPS'))?>
-							<?php endforeach ?>
-							</td>
-							</td>
-						<?php else: ?>
-							<?php if ($shipDate["$order->_id"] > time()): ?>
-								<td>Estimated Ship Date: <br/><?=date('M d, Y', $shipDate["$order->_id"]); ?></td>
+								<?php if ($trackingNumbers): ?>
+									<?php if (!empty($trackingNumbers["$order->_id"])): ?>
+										<?php foreach ($trackingNumbers["$order->_id"] as $trackingNumber): ?>
+											<?=$this->shipment->link($trackingNumber['code'], array('type' => $trackingNumber['method']))?>
+										<?php endforeach ?>
+									<?php endif ?>
+								<?php endif ?>
+								<?php if (!empty($order->tracking_numbers)): ?>
+									<?php foreach ($order->tracking_numbers as $number): ?>
+										<?=$this->shipment->link($number, array('type' => 'UPS'))?>
+									<?php endforeach ?>
+								<?php endif ?>
 							<?php else: ?>
-								<td>-</td>
-							<?php endif ?>
+								<?php if ($shipDate["$order->_id"] > time()): ?>
+									Estimated Ship Date: <br/><?=date('M d, Y', $shipDate["$order->_id"]); ?>
+								<?php else: ?>
+									-
+								<?php endif ?>
 						<?php endif ?>
+						</td>
 					</tr>
+					<?php endif ?>
 				<?php endforeach ?>
 			</tbody>
 		

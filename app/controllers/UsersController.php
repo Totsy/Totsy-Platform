@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\controllers\BaseController;
 use app\models\User;
 use app\models\Menu;
+use app\models\Affiliate;
 use app\models\Invitation;
 use lithium\security\Auth;
 use lithium\storage\Session;
@@ -14,6 +15,8 @@ use li3_silverpop\extensions\Silverpop;
 use MongoDate;
 
 class UsersController extends BaseController {
+
+	public $sessionKey = 'userLogin';
 
 	/**
 	 * Performs registration functionality.
@@ -100,9 +103,9 @@ class UsersController extends BaseController {
 			if ($user->save($data)) {
 				$userLogin = array(
 					'_id' => (string) $user->_id,
-					'firstname' => $user->firstname,
-					'lastname' => $user->lastname,
-					'zip' => $user->zip,
+				//	'firstname' => $user->firstname,
+				//	'lastname' => $user->lastname,
+				//	'zip' => $user->zip,
 					'email' => $user->email
 				);
 				Session::write('userLogin', $userLogin, array('name'=>'default'));
@@ -182,7 +185,7 @@ class UsersController extends BaseController {
 					if (!empty($user->reset_token)) {
 						if (strlen($user->reset_token) > 1) {
 							$resetAuth = (sha1($password) == $user->reset_token) ? true : false;
-							$redirect = 'account/info';
+							$redirect = 'users/password';
 						}
 					}
 					if ($user->legacy == 1) {
@@ -223,13 +226,17 @@ class UsersController extends BaseController {
 	protected function autoLogin(){
 		$redirect = '/sales';
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie &&array_key_exists('autoLoginHash', $cookie)) {
+		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array('conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
 			if($user) {
 				if($cookie['user_id'] == $user->_id){
 					$sessionWrite = $this->writeSession($user->data());
 					$ipaddress = $this->request->env('REMOTE_ADDR');
 					User::log($ipaddress);
+					if(array_key_exists('redirect', $cookie) && $cookie['redirect'] ) {
+						$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$_SERVER['HTTP_HOST']));
+						unset($cookie['redirect']);
+					}
 					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 					if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) {
 						$this->redirect($this->request->url);
@@ -272,7 +279,7 @@ class UsersController extends BaseController {
 	}
 
 	/**
-	 * Updates the user information including password.
+	 * Updates the user information.
 	 *
 	 * @return array
 	 */
@@ -280,36 +287,33 @@ class UsersController extends BaseController {
 		$status = 'default';
 		$user = User::getUser();
 		if ($this->request->data) {
-			$oldPass = $this->request->data['password'];
-			$newPass = $this->request->data['new_password'];
-			if ($user->legacy == 1) {
-				$status = ($this->authIllogic($oldPass, $user)) ? 'true' : 'false';
-			} else {
-				$status = (sha1($oldPass) == $user->password) ? 'true' : 'false';
-			}
-			if (!empty($user->reset_token)) {
-				$status = ($user->reset_token == sha1($oldPass) || $user->password == sha1($oldPass)) ? 'true' : 'false';
-			}
-			if ($status == 'true') {
-				$user->password = sha1($newPass);
-				$user->legacy = 0;
-				$user->reset_token = '0';
-				unset($this->request->data['password']);
-				unset($this->request->data['new_password']);
-				if ($user->save($this->request->data, array('validate' => false))) {
-					$info = Session::read('userLogin');
-					$info['firstname'] = $this->request->data['firstname'];
-					$info['lastname'] = $this->request->data['lastname'];
-					Session::write('userLogin', $info, array('name'=>'default'));
+			$email = $this->request->data['email'];
+			$firstname = $this->request->data['firstname'];
+			$lastname = $this->request->data['lastname'];
+			if (preg_match("#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#", $email)) {
+				if((empty($firstname)) || (empty($lastname))) {
+					$status = "name";
+				} else {
+					$user->legacy = 0;
+					$user->reset_token = '0';
+					if ($user->save($this->request->data, array('validate' => false))) {
+							$info = Session::read('userLogin');
+							$info['firstname'] = $this->request->data['firstname'];
+							$info['lastname'] = $this->request->data['lastname'];
+							Session::write('userLogin', $info, array('name'=>'default'));
+							$status = 'true';
+						}
 				}
+			} else {
+				$status = "email";
 			}
 		}
 		return compact("user", "status");
 	}
 
 	public static function generateToken() {
-        return substr(md5(uniqid(rand(),1)), 1, 10);
-    }
+		return substr(md5(uniqid(rand(),1)), 1, 10);
+	}
 
     public static function randomString($length = 8, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890')
     {
@@ -399,13 +403,63 @@ class UsersController extends BaseController {
 				'status' => 'Accepted')
 		));
 
-		return compact('user','open', 'accepted', 'flashMessage');
+		$pixel = Affiliate::getPixels('invite', 'spinback');
+		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
+			                                            array('invite' => $_SERVER['REQUEST_URI'])
+			                                            );
+
+		return compact('user','open', 'accepted', 'flashMessage', 'spinback_fb');
 	}
 
 	public function upgrade() {
 		$this->_render['layout'] = 'upgrade';
 		$user = User::getUser();
 		return compact('user');
+	}
+
+	/**
+	 * Updates the user password.
+	 *
+	 * @return array
+	 */
+	public function password() {
+		$status = 'default';
+		$user = User::getUser(null, $this->sessionKey);
+		if ($this->request->data) {
+			$oldPass = $this->request->data['password'];
+			$newPass = $this->request->data['new_password'];
+			$confirmPass = $this->request->data['password_confirm'];
+			if ($user->legacy == 1) {
+				$status = ($this->authIllogic($oldPass, $user)) ? 'true' : 'false';
+			} else {
+				$status = (sha1($oldPass) == $user->password) ? 'true' : 'false';
+			}
+			if (!empty($user->reset_token)) {
+				$status = ($user->reset_token == sha1($oldPass) ||
+				 $user->password == sha1($oldPass)) ? 'true' : 'false';
+			}
+			if ($status == 'true') {
+				if(($newPass == $confirmPass)){
+					if(strlen($confirmPass) > 5){
+						$user->password = sha1($newPass);
+						$user->legacy = 0;
+						$user->reset_token = '0';
+						unset($this->request->data['password']);
+						unset($this->request->data['new_password']);
+						unset($this->request->data['password_confirm']);
+						if ($user->save($this->request->data, array('validate' => false))) {
+							$info = Session::read('userLogin');
+							Session::write('userLogin', $info, array('name'=>'default'));
+						}
+					} else {
+						$status = 'shortpass';
+					}
+				}else {
+					$status = 'errornewpass';
+				}
+			}
+		}
+		return compact("user", "status");
 	}
 }
 

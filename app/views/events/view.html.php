@@ -4,23 +4,12 @@
 <?=$this->html->script('jquery.countdown.min');?>
 <?=$this->html->style('jquery.countdown');?>
 
-	<div id="middle" class="fullwidth">				
-		
-		<div id="listingCountdown" class="listingCountdown"></div>
-		
+	<div id="middle" class="fullwidth">
+
 		<h1 class="page-title gray"><span class="red"><a href="/" title="Sales"><?=$type?> Sales</a> /</span> <?=$event->name; ?></h1>
-	
-		<div class="sm-actions fr">
-			<dl>
-				<dt><strong>Share</strong></dt>
-				<dd>
-					<ul>
-						<li><a href="http://www.facebook.com/sharer.php?u=<?=urlencode($shareurl);?>&t=<?=urlencode('Checking out the '.$event->name.' event on Totsy.com');?>" target="_blank" title="Share this sale with your friends on Facebook" class="sm-facebook sm-btn">Share this sale on Facebook</a></li>
-						<li><a href="http://twitter.com/home?status=Checking out the <?=$event->name; ?> event at Totsy.com: <?=$shareurl;?>" target="_blank" title="Tweet this sale to your followers" class="sm-twitter sm-btn">Tweet this sale on Twitter</a></li>
-					</ul>
-				</dd>
-			</dl>
-		</div>
+		<hr />
+
+
 		<div class="r-container clear">
 			<div class="tl"></div>
 			<div class="tr"></div>
@@ -31,22 +20,31 @@
 						if (!empty($event->images->event_image)) {
 							echo $this->html->image("/image/{$event->images->event_image}.jpg", array(
 								'alt' => $event->name), array(
-								'title' => $event->name, 
-								'width' => "169", 
-								'height'=> "193", 
+								'title' => $event->name,
+								'width' => "169",
+								'height'=> "193",
 								'style' => 'border:4px solid #fff;'
 							));
 						} else {
 							echo $this->html->image('/img/no-image-small.jpeg', array(
 								'alt' => 'Totsy'), array(
-									'title' => "No Image Available", 
-									'width' => "169", 
+									'title' => "No Image Available",
+									'width' => "169",
 									'height'=> "193"
-									)); 
+									));
 						}
 					?>
 				</div>
 				<div style="float:left; display:block; width:590px; margin-left:5px; line-height:22px; text-align:justify;">
+				<div id="listingCountdown" class="listingCountdown"></div>
+				<div style="clear:both;"></div><div class="sm-actions fr">
+			<dl>
+				<dd>
+					<?php echo $spinback_fb; ?>
+				</dd>
+			</dl>
+		</div>
+
 					<div style="width:300px;">
 						<!-- Display Logo Image -->
 						<?php if (!empty($event->images->logo_image)): ?>
@@ -54,8 +52,10 @@
 						<?php endif ?>
 						<div class="title table-cell v-bottom">
 							<!--  h1> <? //=$event->name; ?> </h1 -->
-							<div id="listingCountdown"></div>
+
+
 						</div>
+
 					</div>
 					<p><?php if (!empty($event->blurb)): ?>
 						<?php echo $event->blurb ?>
@@ -73,7 +73,7 @@
 				<option value="Strollers">Strollers</option>
 				<option value="Accessories">Accessories</option>
 			</select>
-			
+
 			<select id="by-size" name="by-size">
 				<option value="">View By Size</option>
 				<option value="Small">Small</option>
@@ -107,10 +107,10 @@
 					<div class="tl"></div>
 					<div class="tr"></div>
 					<div class="md-gray p-container">
-						<?php if ($item->total_quantity == 0): ?>
-								<?=$this->html->image('/img/soldout.gif', array(
+						<?php if ($item->total_quantity <= 0): ?>
+								<?=$this->html->image('/img/soldout.png', array(
 									'title' => "Sold Out",
-									'style' => 'z-index : 2; position : absolute; left:20%'
+									'style' => 'z-index : 2; position : absolute; left:69%; margin:10px;'
 								)); ?>
 						<?php endif ?>
 						<?=$this->html->link(
@@ -144,7 +144,7 @@
 				<!-- End product item -->
 			<?php endforeach ?>
 		<?php endif ?>
-		
+
 	</div>
 </div>
 </div>

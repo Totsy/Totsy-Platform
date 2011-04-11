@@ -13,6 +13,8 @@ class Shipment extends \lithium\template\Helper{
 
 		switch ($type) {
 			case 'UPS':
+			case 'NEXTDAY':
+			case 'UPSGROUND':
 				$html = "<a href=".$upsBase.$upsDetails.$number.$upsDetails2." target='_blank' title='Tracking Info'>$number</a>";
 				break;
 			default:

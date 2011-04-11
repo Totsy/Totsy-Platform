@@ -1,39 +1,40 @@
-<?php $this->title("Account Dashboard for " . $userInfo['firstname']); ?>
+<?php $this->title("Account Dashboard for ". $userInfo['email']); ?>
 <?=$this->html->script('jquery.equalheights'); ?>
 
 	<h1 class="p-header">My Account</h1>
 	<div id="left">
 		<ul class="menu main-nav">
-		<li class="firstitem17 active"><a href="/account" title="Account Dashboard"><span>Account Dashboard</span></a></li>
-	    <li class="item18"><a href="/account/info" title="Account Information"><span>Account Information</span></a></li>
-	    <li class="item19"><a href="/addresses" title="Address Book"><span>Address Book</span></a></li>
-	    <li class="item20"><a href="/orders" title="My Orders"><span>My Orders</span></a></li>
-	    <li class="item20"><a href="/Credits/view" title="My Credits"><span>My Credits</span></a></li>
-	    <li class="lastitem23"><a href="/Users/invite" title="My Invitations"><span>My Invitations</span></a></li>
-		  <br />
-		  <h3 style="color:#999;">Need Help?</h3>
-		  <hr />
-		  <li class="first item18"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
-		  <li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
+			<li class="firstitem17 active"><a href="/account" title="Account Dashboard"><span>Account Dashboard</span></a></li>
+			<li class="item18"><a href="/account/info" title="Account Information"><span>Account Information</span></a></li>
+			<li class="item18"><a href="/account/password" title="Change Password"><span>Change Password</span></a></li>
+			<li class="item19"><a href="/addresses" title="Address Book"><span>Address Book</span></a></li>
+			<li class="item20"><a href="/orders" title="My Orders"><span>My Orders</span></a></li>
+			<li class="item20"><a href="/Credits/view" title="My Credits"><span>My Credits</span></a></li>
+			<li class="lastitem23"><a href="/Users/invite" title="My Invitations"><span>My Invitations</span></a></li>
+			<br />
+			<h3 style="color:#999;">Need Help?</h3>
+			<hr />
+			<li class="first item18"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
+			<li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
 		</ul>
 	</div>
-	
+
 <div id="middle" class="noright">
 	<div class="tl"></div>
 	<div class="tr"></div>
 	<div id="page">
 		<!-- Replace with user's name -->
-		<h2 class="gray mar-b">Hello <?=$userInfo['firstname']?>!</h2>
+		<h2 class="gray mar-b">Hello <?=$userInfo['email'];?>!</h2>
 		<hr />
-	
+
 		<!-- Replace with account welcome message -->
 		<p>From your My Account Dashboard you have the ability to view a snapshot of your recent account activity and update your account information. Select a link below to view or edit information.</p>
 		</br><br>
 		<h2 class="gray mar-b">Account Information</h2>
 		<hr />
-	
+
 		<div class="col-2">
-	
+
 			<div class="r-container box-2 fl">
 				<div class="tl"></div>
 				<div class="tr"></div>
@@ -41,9 +42,14 @@
 					<h3 class="gray fl">Contact Information</h3>&nbsp;|&nbsp;<?=$this->html->link('Edit', '/account/info');?>
 					<br />
 					<br />
-					<?=$userInfo['firstname'].' '.$userInfo['lastname'] ?><br />
-					<?=$userInfo['email']?><br />
-					<?=$this->html->link('Change Password', '/account/info');?>
+					<?php if(array_key_exists('firstname', $userInfo) &&     !empty($userInfo['firstname'])):
+					?>
+					    <?=$userInfo['firstname'].' '.$userInfo['lastname'] ?><br />
+					<?php else: ?>
+					    Totsy Member<br />
+					<?php endif;?>
+					<?=$userInfo['email'];?><br />
+					<?=$this->html->link('Change Password', '/account/password');?>
 				</div>
 				<div class="bl"></div>
 				<div class="br"></div>
@@ -64,18 +70,18 @@
 							</ul>
 						</dd>
 					</dl>-->
-				
+
 				</div>
 				<div class="bl"></div>
 				<div class="br"></div>
 			</div>
-	
+
 		</div>
-	
+
 		<h2 class="gray fl">Address Book</h2>&nbsp;|&nbsp;<?=$this->html->link('Manage Addresses', '/addresses/view');?>
 		<hr />
 		<div class="col-2">
-	
+
 			<div class="r-container box-2 fl">
 				<div class="tl"></div>
 				<div class="tr"></div>
@@ -95,7 +101,7 @@
 				<div class="bl"></div>
 				<div class="br"></div>
 			</div>
-		
+
 			<div class="r-container box-2 fr">
 				<div class="tl"></div>
 				<div class="tr"></div>
@@ -115,7 +121,7 @@
 				<div class="bl"></div>
 				<div class="br"></div>
 			</div>
-	
+
 		</div>
 
 	</div>

@@ -28,8 +28,8 @@
 								<ul class="bugs columns-2">
 									<li>Exclusive sales for moms, children &amp; babies.</li>
 									<li>Sales last up to 3 days, plenty of time to shop.</li>
-									<li>Savings of up to 70% off retail.</li>
-									<li>For every purchase, one tree is planted.</li>
+									<li>Savings of up to 90% off retail.</li>
+									<li>A tree is planted for your first purchase.</li>
 									<li>Membership is free</li>
 									<li>We are 100% green.</li>
 								</ul>
@@ -88,6 +88,6 @@ $(document).ready(function () {
 		<li class="last"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
 	</ul>
 	
-	<span id="copyright">&copy; 2010 Totsy.com. All Rights Reserved.</span>
+	<span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved.  <br />10 West 18th Street, Floor 4 - New York, NY 10011</span>
 
 </div>

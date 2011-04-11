@@ -54,8 +54,17 @@ class FeedsController extends BaseController {
 					case 'signups':
 						Keyade::signups( $data );
 						break;
+					case 'signupsByReferral':
+						Keyade::signupsByReferral( $data );
+						break;
+					case 'sales':
+						Keyade::sales( $data );
+						break;
+					case 'referringSales':
+						Keyade::referringSales( $data );
+						break;
 					default:
-						var_dump( $data );
+						die;
 				}
 				break;
 		}

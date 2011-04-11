@@ -38,7 +38,6 @@ class AffiliatesController extends BaseController {
                     extract(UsersController::registration($user));
                     $success = $saved;
                     $errors = $user->errors();
-
                 }
             }
             $this->render(array('data'=>compact('success','errors'), 'layout' =>false));
@@ -54,7 +53,7 @@ class AffiliatesController extends BaseController {
         $message = false;
         $user = User::create();
         $urlredirect = '/sales';
-
+        $cookie = Session::read('cookieCrumb',array('name'=>'cookie'));
         if ( ($affiliate)){
             $pixel = Affiliate::getPixels('after_reg', $affiliate);
 
@@ -64,6 +63,26 @@ class AffiliatesController extends BaseController {
                 if (array_key_exists('redirect', $gdata)) {
                     $urlredirect = parse_url(htmlspecialchars_decode(urldecode($gdata['redirect'])), PHP_URL_PATH);
                 }
+            }
+            $cookie['affiliate'] = $affiliate;
+            Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
+
+            if(Session::check('userLogin', array('name' => 'default'))){
+
+                $userlogin = Session::read('userLogin');
+                if(preg_match('@^linkshare@i', $affiliate)){
+
+                    $user = User::find('first', array('conditions'=> array(
+                        'email' => $userlogin['email']
+                        )));
+
+                    $user->affiliate_share = array(
+                            'affiliate' => $affiliate ,
+                            'entryTime' => $cookie['entryTime']
+                        );
+                    $user->save();
+                }
+                $this->redirect($urlredirect);
             }
 
             if( ($pdata) ) {
@@ -88,15 +107,19 @@ class AffiliatesController extends BaseController {
                         'email' => $user->email
                     );
                    Session::write('userLogin', $userLogin, array('name'=>'default'));
+
+                  if(preg_match('@^(linkshare)@i', $affiliate)){
+                    $user = User::find('first', array('conditions' => array(
+                        '_id' => $userLogin['_id']
+                        )));
+                      $user->affiliate_share = array('affiliate' => $affiliate , 'landing_time' => $cookie['entryTime']);
+                       $user->save();
+                   }
                    $ipaddress = $this->request->env('REMOTE_ADDR');
-                    User::log($ipaddress);
-                    if($affiliate == 'linkshare'){
-                       if( array_key_exists('url', $gdata)){
-                            $this->redirect(htmlspecialchars($gdata['url']));
-                       }
-                    }
-                    Session::write('pixel',$pixel, array('name'=>'default'));
-                    $this->redirect($urlredirect);
+                   User::log($ipaddress);
+
+                   Session::write('pixel',$pixel, array('name'=>'default'));
+                   $this->redirect($urlredirect);
                 }
             }
         }

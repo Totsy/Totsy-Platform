@@ -9,17 +9,18 @@
 	<h1 class="p-header">My Account</h1>
 	<div id="left">
 		<ul class="menu main-nav">
-		<li class="firstitem17"><a href="/account" title="Account Dashboard"><span>Account Dashboard</span></a></li>
-	    <li class="item18"><a href="/account/info" title="Account Information"><span>Account Information</span></a></li>
-	    <li class="item19"><a href="/addresses" title="Address Book"><span>Address Book</span></a></li>
-	    <li class="item20 active"><a href="/orders" title="My Orders"><span>My Orders</span></a></li>
-	    <li class="item20"><a href="/Credits/view" title="My Credits"><span>My Credits</span></a></li>
-	    <li class="lastitem23"><a href="/Users/invite" title="My Invitations"><span>My Invitations</span></a></li>
-		  <br />
-		  <h3 style="color:#999;">Need Help?</h3>
-		  <hr />
-		  <li class="first item18"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
-		  <li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
+			<li class="firstitem17"><a href="/account" title="Account Dashboard"><span>Account Dashboard</span></a></li>
+			<li class="item18"><a href="/account/info" title="Account Information"><span>Account Information</span></a></li>
+			<li class="item18"><a href="/account/password" title="Change Password"><span>Change Password</span></a></li>
+			<li class="item19"><a href="/addresses" title="Address Book"><span>Address Book</span></a></li>
+			<li class="item20 active"><a href="/orders" title="My Orders"><span>My Orders</span></a></li>
+			<li class="item20"><a href="/Credits/view" title="My Credits"><span>My Credits</span></a></li>
+			<li class="lastitem23"><a href="/Users/invite" title="My Invitations"><span>My Invitations</span></a></li>
+			<br />
+			<h3 style="color:#999;">Need Help?</h3>
+			<hr />
+			<li class="first item18"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
+			<li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
 		</ul>
 	</div>
 
@@ -32,7 +33,7 @@
 							<tr>
 								<td valign="top">
 									<?php if ($new): ?>
-									<div class="rounded" style="color:#009900; margin:0px 10px 0px 0px; float: left; display:block; background:#ebffeb; border:1px solid #ddd; width:180px; text-align:center; padding:20px;">Shipping / Billing Info</div>
+<div style="display:none;">									<div class="rounded" style="color:#009900; margin:0px 10px 0px 0px; float: left; display:block; background:#ebffeb; border:1px solid #ddd; width:180px; text-align:center; padding:20px;">Shipping / Billing Info</div>
 									<div id="arrow-right">
 									  <div id="arrow-right-1"></div>
 									  <div id="arrow-right-2"></div>
@@ -43,6 +44,7 @@
 											<div id="arrow-right-2"></div>
 										</div><!--arrow-right-->
 										<div class="rounded" style="color:#009900; margin:0px 0px 0px 0px; float:left; display:block; background:#ebffeb; border:1px solid #ddd; width:188px; padding:20px; text-align:center;">Confirmation</div>
+										</div>
 										<div style="clear:both; margin-bottom:15px;"></div>
 										<div style="background:#f7f7f7; padding:10px; border:1px solid #ddd;"><h2>Thank you! Your order has been successfully placed! <span style="float:right;">Order #<?=$order->order_id;?></span></h2></div>
 										<div style="clear:both;"></div>
@@ -65,7 +67,7 @@
 										<?php else: ?>
 											<div class="rounded" style="border:1px solid #ddd; display:block; width:145px; float:left; text-align:center; padding:10px; margin-right:10px;">Pre-Shipment</div>
 										<?php endif ?>
-										<?php if ($shipped): ?>
+										<?php if ($shipped || $shipRecord): ?>
 											<div class="rounded" style="border:1px solid #ddd; display:block; width:145px; float:left; text-align:center; padding:10px; margin-right:0px; background:#ebffeb; color:#009900;">Shipped</div>
 										<?php else: ?>
 											<div class="rounded" style="border:1px solid #ddd; display:block; width:145px; float:left; text-align:center; padding:10px; margin-right:0px;">Shipped</div>
@@ -84,6 +86,7 @@
 										<table cellpadding="0" cellspacing="0" border="0" width="100%">
 
 											<?php foreach ($itemsByEvent as $key => $event): ?>
+												<?php if(!empty($openEvent[$orderEvents[$key]['_id']])): ?>
 												<tr>
 													<td colspan="2" style="padding:5px; text-align::left;"><?=$orderEvents[$key]['name']?></td>
 													<?php if (!empty($orderEvents[$key]['ship_message'])): ?>
@@ -96,7 +99,7 @@
 														<?php else: ?>
 															 <?=date('M d, Y', $shipDate)?>
 														<?php endif ?>
-														
+
 													</td>
 												</tr>
 												<tr style="background:#ddd;">
@@ -107,6 +110,7 @@
 													<td style="padding:5px; width:100px;"><strong>Subtotal</strong></td>
 												</tr>
 												<?php foreach ($event as $item): ?>
+													<?php if(empty($item['cancel'])): ?>
 													<tr>
 													<?php
 														if (!empty($item['primary_image'])) {
@@ -134,7 +138,9 @@
 														<td title="subtotal" style="padding:5px; color:#009900;">
 															$<?php echo number_format(($item['quantity'] * $item['sale_retail']),2)?>
 														</td>
+														<?php endif ?>
 												<?php endforeach ?>
+												<?php endif ?>
 											<?php endforeach ?>
 											</tr>
 
@@ -159,7 +165,7 @@
 												Credit Applied:
 													<br>
 												<?php endif ?>
-												<?php if ($order->promo_discount): ?>
+												<?php if (($order->promo_discount) && empty($order->promocode_disable)): ?>
 												Promotion Discount:
 													<br>
 												<?php endif ?>
@@ -180,7 +186,7 @@
 													-$<?=number_format(abs($order->credit_used),2); ?>
 													<br>
 												<?php endif ?>
-												<?php if ($order->promo_discount): ?>
+												<?php if (($order->promo_discount) && empty($order->promocode_disable)): ?>
 													-$<?=number_format(abs($order->promo_discount),2); ?>
 													<br>
 												<?php endif ?>
@@ -220,6 +226,14 @@
 							<tr>
 								<td colspan="4">
 									<table>
+									 <?php if($new): ?>
+
+									    <tr>
+									        <td>
+									            <?php echo $spinback_fb; ?>
+									        </td>
+									    </tr>
+									    <?php endif;?>
 										<tr>
 											<td>
 												<p>A TREE HAS BEEN PLANTED WITH THIS ORDER.

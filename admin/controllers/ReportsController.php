@@ -14,7 +14,8 @@ use MongoCode;
 use MongoDate;
 use MongoRegex;
 use li3_flash_message\extensions\storage\FlashMessage;
-use \lithium\data\Model;
+use lithium\data\Model;
+
 
 /**
  * The Reports Controller is the core for all reporting functionality.
@@ -141,10 +142,16 @@ class ReportsController extends BaseController {
 
 	public function affiliate() {
 		$search = Report::create($this->request->data);
+		$criteria = null;
 		if ($this->request->data) {
 			$criteria = $this->request->data;
 			$name = $this->request->data['affiliate'];
-			$affiliate = new MongoRegex("/^$name/i");
+			$subaff = $this->request->data['subaffiliate'];
+			if((bool)$subaff){
+				$affiliate = new MongoRegex('/^' . $name . '/i');
+			}else{
+				$affiliate = $name;
+			}
 			if ($this->request->data['min_date'] && $this->request->data['max_date']) {
 				//Conditions with date converted to the right timezone
 				$min = new MongoDate(strtotime($this->request->data['min_date']));
@@ -161,7 +168,7 @@ class ReportsController extends BaseController {
 						$users = User::find('all', array(
 							'conditions' => array(
 								'invited_by' => $affiliate,
-								'purchase_count' => array('$gt' => 1)
+								'purchase_count' => array('$gte' => 1)
 						)));
 						if ($users) {
 							$reportId = substr(md5(uniqid(rand(),1)), 1, 15);
@@ -178,12 +185,22 @@ class ReportsController extends BaseController {
 								if ($orders) {
 									foreach ($orders as $order) {
 										$order['date_created'] = new MongoDate($order['date_created']['sec']);
+										$order['subaff'] = $user->invited_by;
 										$collection->save(array('data' => $order, 'report_id' => $reportId));
 									}
 								}
 							}
 						}
-						$keys = new MongoCode("function(doc){return {'Date': doc.data.date_created.getMonth()}}");
+						if(($subaff)){
+							$keys = new MongoCode("function(doc){
+							return {
+								'Date': doc.data.date_created.getMonth(),
+								'subaff' : doc.data.subaff
+
+							}}");
+						}else{
+							$keys = new MongoCode("function(doc){return {'Date': doc.data.date_created.getMonth()}}");
+						}
 						$inital = array('total' => 0);
 						$reduce = new MongoCode('function(doc, prev){
 							prev.total += doc.data.total
@@ -217,7 +234,15 @@ class ReportsController extends BaseController {
 								if (!empty($date)) {
 									$conditions = $conditions + $date;
 								}
-							$keys = new MongoCode("function(doc){return {'Date': doc.$dateField.getMonth()}}");
+							if($subaff){
+								$keys = new MongoCode("function(doc){
+									return {
+										'Date': doc.$dateField.getMonth(),
+										'subaff':doc.invited_by
+									}}");
+							}else{
+								$keys = new MongoCode("function(doc){return {'Date': doc.$dateField.getMonth()}}");
+							}
 							$inital = array('total' => 0);
 							$reduce = new MongoCode('function(doc, prev){prev.total += 1}');
 							$collection = User::collection();
@@ -274,7 +299,9 @@ class ReportsController extends BaseController {
 							foreach ($orderData as $order) {
 								$items = $order['items'];
 								foreach ($items as $item) {
-									if (($item['item_id'] == $eventItem['_id']) && ((string) $key == $item['size'])){
+									$active = (empty($item['cancel']) || $item['cancel'] != true) ? true : false;
+									$itemValid = ($item['item_id'] == $eventItem['_id']) ? true : false;
+									if ($itemValid && ((string) $key == $item['size']) && $active){
 										$purchaseOrder[$inc]['Product Name'] = $eventItem['description'];
 										$purchaseOrder[$inc]['Product Color'] = $eventItem['color'];
 										$purchaseOrder[$inc]['Vendor Style'] = $eventItem['vendor_style'];
@@ -340,7 +367,7 @@ class ReportsController extends BaseController {
 									$others['Closed'] += ($orderEvent->end_date->sec < time()) ? 1 : 0;
 									$others['Open'] += ($orderEvent->end_date->sec > time()) ? 1 : 0;
 								}
-								if (($item['item_id'] == $eventItem['_id']) && $item['status'] != 'Order Canceled'){
+								if (($item['item_id'] == $eventItem['_id']) && (empty($item['cancel']) || $item['cancel'] != true)){
 									$orderList[$inc]['Select'] = ($others['Open'] != 0) ? '' : 'Checked';
 									$orderList[$inc]['Item'] = $eventItem['_id'];
 									$orderList[$inc]['Cart'] = $item['_id'];
@@ -498,7 +525,8 @@ class ReportsController extends BaseController {
 						foreach ($orders as $order) {
 							$items = $order['items'];
 							foreach ($items as $item) {
-								if (($item['item_id'] == $eventItem['_id']) && ($key == $item['size'])){
+								$active = (empty($item['cancel']) || $item['cancel'] != true) ? true : false;
+								if (($item['item_id'] == $eventItem['_id']) && ($key == $item['size']) && $active){
 									$fields[$inc]['SKU'] = $this->sku($eventItem['vendor_style'], $item['size']);
 									$fields[$inc]['Description'] = strtoupper(substr($eventItem['description'], 0, 40));
 									$fields[$inc]['WhsInsValue (Cost)'] = number_format($eventItem['sale_whol'], 2);
@@ -794,7 +822,7 @@ class ReportsController extends BaseController {
 		if ($this->request->data) {
 			$search = $this->request->data;
 			if (!empty($search['min_date']) && !empty($search['max_date'])) {
-	
+
 				$conditions = array('created_date' => array(
 					'$gt' => new MongoDate(strtotime($search['min_date'])),
 					'$lte' => new MongoDate(strtotime($search['max_date']))));
@@ -804,7 +832,7 @@ class ReportsController extends BaseController {
 				$userCollection->ensureIndex(array('firstname' => 1));
 				$userCollection->ensureIndex(array('lastname' => 1));
 				$userCollection->ensureIndex(array('created_date' => 1));
-				
+
 				$reg_usrs = $userCollection->find($conditions);
 
 				//Create the array that will simulate a CSV file

@@ -9,18 +9,20 @@
 <?php if (!empty($test)): ?>
 <?php $subTotal = 0; ?>
 <?=$this->form->create(); ?>
-	<h2 class="gray mar-b">My Cart</h2>
+	<h1 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> My Cart</h1>
+
 	<hr />
-	<div id='message'></div>
+	<div id='message'><?php echo $message; ?></div>
+	<div class='fr' style="padding:10px; background:#fffbd1; border-top:1px solid #D7D7D7; border-right:1px solid #D7D7D7; border-left:1px solid #D7D7D7;">Estimated Ship Date: <?=date('m-d-Y', $shipDate)?></div>
 	<div id="middle" class="fullwidth">
 		<table width="100%" class="cart-table">
 			<thead>
 				<tr>
 					<th>Item</th>
 					<th>Description</th>
-					<th>QTY</th>
 					<th>Price</th>
-					<th>Total Cost</th>
+					<th>Quantity</th>
+					<th>Total</th>
 					<th>Time Remaining</th>
 					<th>Remove Item</th>
 				</tr>
@@ -29,7 +31,7 @@
 	<?php $x = 0; ?>
 	<?php foreach ($cart as $item): ?>
 		<!-- Build Product Row -->
-					<tr id="<?=$item->_id?>" class="alt0" style="margin:0px!important; padding:0px!important;">
+					<tr id="<?=$item->_id?>" class="alt0">
 					<td class="cart-th">
 						<?php
 							if (!empty($item->primary_image)) {
@@ -43,40 +45,48 @@
 							$this->html->image("$productImage", array(
 								'width'=>'60',
 								'height'=>'60',
-						'style' => 'border:1px solid #ddd; background:#fff; margin:2px; display:block; padding:2px;')),
+						'style' => 'margin:2px; display:block; padding:4px;')),
 							array('Items::view', 'args' => $item->url),
 								array(
 								'id' => 'main-logo_', 'escape'=> false
 							)
 						); ?>
 					</td>
-					<td class="cart-desc">
+					<td class="cart-desc" style="width:325px;">
 						<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
-						<strong><?=$this->html->link($item->description,'sale/'.$item->event.'/'.$item->url); ?></strong><br>
+						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?></strong><br>
 						<strong>Color:</strong> <?=$item->color;?><br>
 						<strong>Size:</strong> <?=$item->size;?>
 					</td>
-					<td class="<?="qty-$x";?>">
-						<?=$this->form->text('', array(
-							'value' => $item->quantity,
-							'name' => 'qty',
-							'id' => $item->_id,
-							'class' => 'inputbox',
-							'size' => '1',
-							'maxlength' => 1
-							));
-						?>
 
-					</td>
-					<td class="<?="price-item-$x";?>">
+					<td class="<?="price-item-$x";?>" style="width:45px;">
 						<strong style="color:#009900;">$<?=number_format($item->sale_retail,2)?></strong>
 					</td>
-					<td class="<?="total-item-$x";?>">
+					<td class="<?="qty-$x";?>" style="width:65px; text-align:center">
+					<!-- Quantity Select -->
+					<?php
+						if($item->available < 9){
+							$qty = $item->available;
+							if($item->quantity > $qty){
+								$select = array_unique(array_merge(array('0'), range('1',(string)$item->quantity)));
+							}else{
+								$select = array_unique(array_merge(array('0'), range('1',(string)$qty)));
+							}
+						}else{
+							$select = array_unique(array_merge(array('0'), range('1','9')));
+						}
+					?>
+					<?=$this->form->select("cart[{$item->_id}]", $select, array(
+    					'id' => $item->_id, 'value' => $item->quantity
+					));
+					?>
+					</td>
+					<td class="<?="total-item-$x";?>" style="width:55px;">
 						<strong style="color:#009900;">$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
 					</td>
-					<td class="cart-time"><div id='<?php echo "itemCounter$x"; ?>'></div></td>
+					<td class="cart-time" style="width:220px;"><img src="/img/clock_icon.gif" class="fl"/><div id='<?php echo "itemCounter$x"; ?>' class="fl" style="margin-left:5px;"></div></td>
 					<td class="cart-actions">
-						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" class="delete">remove</a>
+						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" class="delete" onclick="return deletechecked('Are you sure you want to remove this item?');" style="color: red!important;">remove</a>
 					</td>
 				</tr>
 				<?php
@@ -86,42 +96,43 @@
 							var itemExpires = new Date();
 							itemExpires = new Date($date);
 							$(\"#itemCounter$x\").countdown('change', {until: itemExpires, $countLayout});
-							
-						$(\"#itemCounter$x\").countdown({until: itemExpires, 
-						    expiryText: '<div class=\"over\" style=\"color:#fff; background: #ff0000;\">This item is no longer reserved</div>', $countLayout});
+
+						$(\"#itemCounter$x\").countdown({until: itemExpires,
+						    expiryText: '<div class=\"over\" style=\"color:#fff; padding:5px; background: #ff0000;\">no longer reserved</div>', $countLayout});
 						var now = new Date()
 						if (itemExpires < now) {
-							$(\"#itemCounter$x\").html('<div class=\"over\" style=\"color:#fff; background: #ff0000;\">This item is no longer reserved</div>');
+							$(\"#itemCounter$x\").html('<div class=\"over\" style=\"color:#fff; padding:5px; background: #ff0000;\">no longer reserved</div>');
 						}
 						});
 						</script>";
 					$removeButtons[] = "<script type=\"text/javascript\" charset=\"utf-8\">
-							$('#remove$item->_id').click(function () { 
+							$('#remove$item->_id').click(function () {
 								$('#$item->_id').remove();
-								$.ajax({url: $.base + \"cart/remove\", data:'$item->_id', context: document.body, success: function(data){
-								      }});
+								$.post(\"/cart/remove\" , { id: '$item->_id' } );
 							    });
 						</script>";
 					$subTotal += $item->quantity * $item->sale_retail;
-					$x++; 
+					$x++;
 				?>
 	<?php endforeach ?>
+
 		<tr class="cart-total">
-			<td colspan="7" id='subtotal'><strong>Subtotal: <span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong></td>
-		    </td>
+
+			<td colspan="7" id='subtotal'><strong>Subtotal: <span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong><br/><hr/><?=$this->form->submit('Update Cart', array('class' => 'button'))?></td>
+
 		</tr>
 		<tr class="cart-buy">
-			<td colspan="5" class="return-policy">
+			<td colspan="4" class="return-policy">
 				<a href='../../pages/returns'><strong style="font-size:12px; font-weight:normal;">Refund &amp; Return Policy</strong></a><br />
 			</td>
-			<td class="cart-button" colspan="2">
-				<?=$this->html->link('Buy Now', 'Orders::add', array('class' => 'proceed-to-checkout')); ?>
-				<?=$this->html->link('Buy Now', 'Events::index', array('class' => 'continue-shopping')); ?>
+			<td class="cart-button" colspan="3">
+				<?=$this->html->link('Proceed To Checkout', 'Orders::add', array('class' => 'button')); ?>
+				<?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('class' => 'button', 'style' => 'margin-right:10px;')); ?>
 			</td>
 			</tbody>
 		</table>
-           
-    
+
+
 	</div>
 <?=$this->form->end(); ?>
 
@@ -138,13 +149,15 @@
 		<?php endforeach ?>
 	<?php endif ?>
 <?php else: ?>
-<div id='empty-cart'><h1><center>You have no items in your cart. <br> Take a look at our open sales to continue shopping.</center></h1><div>
-	
-<?php endif ?>
+	<h1 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> My Cart</h1>
 
+	<hr />
+<div><h1><center>You have no items in your cart. <br> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
+	</div>
+<?php endif ?>
 <script type="text/javascript" charset="utf-8">
-$(".inputbox").bind('keyup', function() {
-	var id = $(this).attr('id'); 
+	$(".inputbox").bind('keyup', function() {
+	var id = $(this).attr('id');
 	var qty = $(this).val();
 	var price = $(this).closest("tr").find("td[class^=price]").html().split("$")[1];
 	var cost = parseInt(qty) * parseFloat(price);
@@ -181,4 +194,14 @@ $(".inputbox").bind('keyup', function() {
 	$("#subtotal").html("<strong>Subtotal: $" + subTotalProper + "</strong>");
 });
 </script>
-
+<script>
+function deletechecked(message)
+        {
+            var answer = confirm(message)
+            if (answer){
+                document.messages.submit();
+                return false;
+            }
+            return false;
+        }
+</script>

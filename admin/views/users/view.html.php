@@ -58,7 +58,7 @@
 				<tbody>
 					<?php foreach ($orders as $order): ?>
 						<tr>
-							<td><?=date('m-d-Y', $order->date_created->sec);?></td>
+							<td><?=date('Y-m-d', $order->date_created->sec);?></td>
 							<td>
 								<?=$this->html->link($order->order_id, array(
 								'Orders::view',
@@ -130,9 +130,9 @@
 						<tr>
 							<td>
 								<?php if (!empty($credit->date_created->sec)): ?>
-									<?=date('m-d-Y', $credit->date_created->sec);?>
+									<?=date('Y-m-d', $credit->date_created->sec);?>
 								<?php else: ?>
-									<?=date('m-d-Y', $credit->created->sec);?>
+									<?=date('Y-m-d', $credit->created->sec);?>
 								<?php endif ?>
 							</td>
 							<td>

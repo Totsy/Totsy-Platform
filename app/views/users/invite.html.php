@@ -3,22 +3,23 @@
 	<h1 class="p-header">My Account</h1>
 	<div id="left">
 		<ul class="menu main-nav">
-		<li class="firstitem17"><a href="/account" title="Account Dashboard"><span>Account Dashboard</span></a></li>
-	    <li class="item18"><a href="/account/info" title="Account Information"><span>Account Information</span></a></li>
-	    <li class="item19"><a href="/addresses" title="Address Book"><span>Address Book</span></a></li>
-	    <li class="item20"><a href="/orders" title="My Orders"><span>My Orders</span></a></li>
-	    <li class="item20"><a href="/Credits/view" title="My Credits"><span>My Credits</span></a></li>
-	    <li class="lastitem23 active"><a href="/Users/invite" title="My Invitations"><span>My Invitations</span></a></li>
-		  <br />
-		  <h3 style="color:#999;">Need Help?</h3>
-		  <hr />
-		  <li class="first item18"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
-		  <li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
+			<li class="firstitem17"><a href="/account" title="Account Dashboard"><span>Account Dashboard</span></a></li>
+			<li class="item18"><a href="/account/info" title="Account Information"><span>Account Information</span></a></li>
+			<li class="item18"><a href="/account/password" title="Change Password"><span>Change Password</span></a></li>
+			<li class="item19"><a href="/addresses" title="Address Book"><span>Address Book</span></a></li>
+			<li class="item20"><a href="/orders" title="My Orders"><span>My Orders</span></a></li>
+			<li class="item20"><a href="/Credits/view" title="My Credits"><span>My Credits</span></a></li>
+			<li class="lastitem23 active"><a href="/Users/invite" title="My Invitations"><span>My Invitations</span></a></li>
+			<br />
+			<h3 style="color:#999;">Need Help?</h3>
+			<hr />
+			<li class="first item18"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
+			<li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
 		</ul>
 	</div>
 			<!-- Start Main Page Content -->
 		<div id="middle" class="noright">
-			
+
 			<div class="tl"></div>
 			<div class="tr"></div>
 			<div id="page">
@@ -57,14 +58,14 @@
 										<?=$this->form->label('Comments:'); ?>
 										<?=$this->form->textarea('message', array(
 											'class' => 'inputbox',
-											'id' => 'comments', 
+											'id' => 'comments',
 											'style' => "width:320px",
 											'value' => "Please accept this invitation to join Totsy",
 											'onblur' => "if(this.value=='') this.value='Please accept this invitation to join Totsy';",
 											'onfocus' => "if(this.value=='Please accept this invitation to join Totsy') this.value='';"
 											)); ?>
 										<br>
-										<?=$this->form->submit('Send', array('class' => 'send-btn fl')); ?>
+										<?=$this->form->submit('Send Invitations', array('class' => 'button')); ?>
 									<?=$this->form->end(); ?>
 									<br><br><br>
 									<?php if (is_object($user->invitation_codes)): ?>
@@ -82,25 +83,24 @@
 							<div class="tl"></div>
 							<div class="tr"></div>
 							<div class="r-box-2">
-				
+
 								<h2 class="gray mar-b">Share with your friends</h2>
 								<hr />
-								<a href="http://www.facebook.com/pages/Totsy/141535723466" title="Share Totsy with your Facebook friends" id="invite-facebook" target="_blank" class="invite-btn fl">Facebook</a>
-	              <a href="http://twitter.com/MyTotsy" title="Share Totsy with your Twitter followers" id="invite-twitter" target="_blank" class="invite-btn fr">Twitter</a>
-								
+								<?php echo $spinback_fb; ?>
+
 								<div class="dividing-line clear mar-b"><!-- --></div>
-								
+
 								<h2 class="gray clear mar-b">Invite from your address book</h2>
 								<hr />
 								<a href="#" title="Invite friends from your Gmail contacts" id="invite-gmail" class="invite-btn fl">Gmail</a>
 								<a href="#" title="Invite friends from your Yahoo! contacts" id="invite-yahoo" class="invite-btn fr">Yahoo!</a>
-								
+
 								<a href="#" title="Invite friends from your Outlook address book" id="invite-outlook" class="invite-btn fl">Outlook</a>
 								<a href="#" title="Invite friends from your AOL contacts" id="invite-aol" class="invite-btn fr">AOL</a>
-								
+
 								<a href="#" title="Invite friends from your MSN address book" id="invite-msn" class="invite-btn fl">MSN</a>
 								<a href="#" title="Invite friends" id="invite-others" class="invite-btn fr">Others</a>
-				
+
 							</div>
 							<div class="bl"></div>
 							<div class="br"></div>
@@ -108,8 +108,8 @@
 
 					</div>
 					<!-- End Send Invitations Tab -->
-						
-						
+
+
 					<!-- Start Open Invitations Tab -->
 					<div id="openinvites" class="ui-tabs-hide">
 						<?php if (!empty($open)): ?>
@@ -141,7 +141,7 @@
 						<?php endif ?>
 					</div>
 					<!-- End Open Invitations Tab -->
-					
+
 					<!-- Start Accepted Invitations Tab -->
 					<div id="acceptedinvites" class="ui-tabs-hide">
 						<?php if (!empty($accepted)): ?>
@@ -171,16 +171,16 @@
     <strong>This feature is being migrated to the new site.</strong><br>
 							We have your invitation history and will have it loaded soon.
 						<?php endif ?>
-					
+
 			    </div>
 					<!-- End Accepted Invitations Tab -->
-				
+
 				</div>
-									
+
 			</div>
 			<div class="bl"></div>
 			<div class="br"></div>
-			
+
 		</div>
 <script type="text/javascript">
 	$(document).ready(function() {
