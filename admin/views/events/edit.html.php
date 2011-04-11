@@ -292,9 +292,16 @@ tinyMCE.init({
 			<h3 id="current_items">Current Items</h3>
             <hr />
 			<?=$this->form->create(null, array('url' => 'Items::itemUpdate', 'name' => 'item-update')); ?>
-				<?=$this->form->hidden('event', array('value' => $event->_id)); ?>
-				<?=$this->form->submit('Submit'); ?>
+				<?=$this->form->hidden('id', array('value' => $event->_id)); ?>
+				<div style="float:right; font: bold; font-size: 18px;">
+					<?=$this->form->submit('Update Items'); ?>
+				</div>
+				<br \>
+				<br \>
 				<?=$this->items->build($eventItems);?>
+				<div style="float:right; font: bold; font-size: 18px;">
+					<?=$this->form->submit('Update Items'); ?>
+				</div>
 			<?=$this->form->end(); ?>
 			
 			<br><br>

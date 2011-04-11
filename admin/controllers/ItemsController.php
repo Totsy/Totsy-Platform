@@ -6,6 +6,7 @@ use admin\models\Item;
 use admin\models\Event;
 use MongoRegex;
 use MongoDate;
+use MongoId;
 use \li3_flash_message\extensions\storage\FlashMessage;
 
 /**
@@ -151,8 +152,15 @@ class ItemsController extends BaseController {
 	}
 
 	public function itemUpdate() {
+		$itemsCollection = Item::Collection();
 		if ($this->request->data) {
-			die(var_dump($this->request->data));
+			$datas = $this->request->data;
+			$id = $datas['id'];
+			foreach($datas as $key => $data) {
+				if($key != 'id') {
+					$itemsCollection->update(array("_id" => new MongoId($key)), array('$set' => array("blurb" => $data)));
+				}
+			}
 			$this->redirect(array('Events::edit','args' => array($id)));
 		}
 	}
