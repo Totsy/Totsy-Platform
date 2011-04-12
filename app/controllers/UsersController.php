@@ -294,7 +294,7 @@ class UsersController extends BaseController {
 		$status = 'default';
 		$user = User::getUser();
 		$linked = (empty($user->facebook_info) ? false : true);
-
+		$connected = false;
 		if ($linked) {
 			$userId = $user->facebook_info->id;
 			$connected = true;
