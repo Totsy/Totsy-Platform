@@ -52,7 +52,10 @@ class Affiliate extends Base {
 
 		$pixel = NULL;
 
-		$user = User::find('first', array('conditions' => array('_id' => $cookie['user_id'])));
+
+		if (!empty($cookie['user_id'])) {
+			$user = User::find('first', array('conditions' => array('_id' => $cookie['user_id'])));
+		}
 
 		if($url == '/orders/view'){
             if(array_key_exists('affiliate',$cookie) && preg_match('@^(linkshare)@i',$cookie['affiliate'])){
