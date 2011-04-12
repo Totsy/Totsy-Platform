@@ -293,11 +293,21 @@ class UsersController extends BaseController {
 	public function info() {
 		$status = 'default';
 		$user = User::getUser();
-		$connected = (empty($user->facebook_info) ? false : true);
-		FacebookProxy::setSession(null);
+		$linked = (empty($user->facebook_info) ? false : true);
+
+		if ($linked) {
+			$userId = $user->facebook_info->id;
+			$connected = true;
+			try {
+				$accessToken = FacebookProxy::getAccessToken();
+				$authCheck = FacebookProxy::api("/$userId?access_token=$accessToken");
+				$connected = (!empty($authCheck['email'])) ? true : false;
+			} catch (\Exception $e) {
+				$connected = false;
+			}
+		}
 		$fbsession = FacebookProxy::getSession();
-		if ($fbsession && $connected == false) {
-			$userfb = FacebookProxy::api('/me');
+		if ($fbsession && $linked == false) {
 			$check = User::find('first', array(
 				'conditions' => array(
 						'facebook_info.id' => $userfb['id']

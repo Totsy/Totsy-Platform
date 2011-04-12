@@ -76,7 +76,7 @@
 		</fieldset>
 	</div>
 <div style="width:48%; margin-left:10px; float:left;">
-	<?php if ($connected || $fbsession): ?>
+	<?php if ($connected): ?>
 		<h2 class="gray mar-b">You're Connected With Totsy</h2>
 		<hr />
 		<img src="https://graph.facebook.com/<?=$user->facebook_info['id']?>/picture">
@@ -101,13 +101,11 @@
       cookie  : true, // enable cookies to allow the server to access the session
       xfbml   : true // parse XFBML
     });
-
     // whenever the user logs in, we refresh the page
     FB.Event.subscribe('auth.login', function() {
       window.location.reload();
     });
   };
-
   (function() {
     var e = document.createElement('script');
     e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
