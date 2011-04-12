@@ -21,12 +21,11 @@
 	<div class="tl"></div>
 	<div class="tr"></div>
 	<div id="page">
-
+ 	<div style="width:50%; float:left;">
 		<h2 class="gray mar-b">Edit Account Information</h2>
 		<hr />
 		<fieldset id="" class="">
-			<div>
-				<?php
+			<?php
 					switch ($status) {
 						case 'true' :
 							echo "<div class=\"standard-message\">Your information has been updated.</div>";
@@ -37,13 +36,14 @@
 						case 'name' :
 							echo "<div class=\"standard-error-message\">Your current first name and last name are incorrect. Please try again.</div>";
 							break;
-						default:
-							echo "Please enter in your new information below and submit.";
-							break;
+						case 'badfacebook':
+							echo "<div class=\"standard-error-message\">Sorry, This facebook account is already connected.</div>";
+						// default:
+						//	echo "Please enter in your new information below and submit.";
+						//	break;
 					}
 				?>
-			</div>
-			<br>
+
 			<?=$this->form->create(null, array('class' => "fl") );?>
 				<div class="form-row">
 					<?=$this->form->label('firstname', 'First Name', array('class' => 'account' )); ?>
@@ -71,11 +71,45 @@
 					;?>
 				</div>
 
-			<?=$this->form->submit('Submit', array('class' => 'submit-btn fr')); ?>
+			<?=$this->form->submit('Update Account Information', array('class' => 'button fr')); ?>
 			<?=$this->form->end();?>
 		</fieldset>
-
+	</div>
+<div style="width:48%; margin-left:10px; float:left;">
+	<?php if ($connected): ?>
+		<h2 class="gray mar-b">You're Connected With Totsy</h2>
+		<hr />
+		<img src="https://graph.facebook.com/<?=$user->facebook_info['id']?>/picture">
+		<br /><b><?=$user->facebook_info['name']?></b>
+	<?php else: ?>
+		<h2 class="gray mar-b">Connect your Facebook Account with Totsy</h2>
+		<hr />
+		<fb:login-button perms="email,publish_stream, offline_access" size="large" length="long" v="2" style="text-align:center;">Connect With Facebook</fb:login-button>
+		<div id="fb-root"></div>
+	<?php endif ?>
+</div>
 	</div>
 	<div class="bl"></div>
 	<div class="br"></div>
 </div>
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId   : <?php echo $fbconfig['appId']; ?>,
+      session : <?php echo json_encode($fbsession); ?>, // don't refetch the session when PHP already has it
+      status  : true, // check login status
+      cookie  : true, // enable cookies to allow the server to access the session
+      xfbml   : true // parse XFBML
+    });
+    // whenever the user logs in, we refresh the page
+    FB.Event.subscribe('auth.login', function() {
+      window.location.reload();
+    });
+  };
+  (function() {
+    var e = document.createElement('script');
+    e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+    e.async = true;
+    document.getElementById('fb-root').appendChild(e);
+  }());
+</script>

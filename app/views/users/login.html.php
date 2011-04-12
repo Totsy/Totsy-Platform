@@ -41,12 +41,13 @@
 												//'name' => 'password',
 												'id' => 'password',
 												'type' => 'password'));?>
-										<?=$this->form->checkbox('remember_me', array('class' =>              'fl checkbox')); ?> Remember Me <br/>
-										<?=$this->form->submit('Sign In', array('class'=>"button"));?>
-
-										<p style='margin-top: 5px'> <?=$this->html->link('Forgot your password?','/reset', array('class'=>"md", 'title'=>"Forgot your password?"))?> </p>
+										<?=$this->form->checkbox('remember_me', array('class' => 'fl checkbox')); ?> Remember Me <br/>
+										<?=$this->form->submit('Sign In', array('class'=>"button fr"));?> 
 										<?=$this->form->end();?>
-
+										<div style="clear:both;"></div>
+										<p style='margin-top: 10px'> <?=$this->html->link('Forgot your password?','/reset', array('class'=>"md", 'title'=>"Forgot your password?"))?> </p>
+										<hr />
+										<fb:login-button perms="email,publish_stream, offline_access" size="large" length="long" v="2" style="text-align:center;">Login with Facebook</fb:login-button>
 									</div>
 									<div class="bl"></div>
 									<div class="br"></div>
