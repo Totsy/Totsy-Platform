@@ -308,13 +308,19 @@ class UsersController extends BaseController {
 		}
 		$fbsession = FacebookProxy::getSession();
 		if ($fbsession && $linked == false) {
-			$check = User::find('first', array(
-				'conditions' => array(
-						'facebook_info.id' => $userfb['id']
-			)));
+			try {
+				$userfb = FacebookProxy::api('/me');
+				$check = User::find('first', array(
+					'conditions' => array(
+							'facebook_info.id' => $userfb['id']
+				)));
+			} catch (\Exception $e) {
+				$connected = false;
+			}
 			if (empty($check)) {
 				$user->facebook_info = $userfb;
 				$user->save(null, array('validate' => false));
+				$connected = true;
 			} else {
 				$status = 'badfacebook';
 			}
