@@ -510,6 +510,8 @@ class UsersController extends BaseController {
 		if ($this->request->data) {
 			$data = $this->request->data;
 			$data['facebook_info'] = $fbuser;
+			$data['firstname'] = $fbuser['first_name'];
+			$data['lastname'] = $fbuser['last_name'];
 			static::registration($data);
 			$this->redirect('/sales');
 		}
