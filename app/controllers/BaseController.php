@@ -76,6 +76,14 @@ class BaseController extends \lithium\action\Controller {
 		parent::_init();
 	}
 
+	/**
+	 * @param array $sessionInfo
+	 * @return boolean
+	 */
+	public function writeSession($sessionInfo) {
+		return (Session::write('userLogin', $sessionInfo, array('name'=>'default')));
+	}
+
 }
 
 ?>
