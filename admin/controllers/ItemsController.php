@@ -160,11 +160,11 @@ class ItemsController extends BaseController {
 		if ($this->request->data) {
 			$data = $this->request->data;
 			$id = $data['id'];
-			foreach($data as $key => $value) {
-				if($key != 'id') {
-					$itemId = array("_id" => new MongoId($key));
-					$itemsCollection->update($itemId, array('$set' => array("blurb" => $value)));
-				}
+			unset($data['id']);
+			array_reverse($data);
+			foreach ($data as $key => $value) {
+				$itemId = array("_id" => new MongoId($key));
+				$itemsCollection->update($itemId, array('$set' => array("blurb" => $value)));
 			}
 			$this->redirect('/events/edit/'.$id.'#event_items');
 		}
