@@ -89,15 +89,13 @@
 									<?=$this->form->error('emailcheck'); ?>
 									<?=$this->form->error('password'); ?>
 									</div>
-									<div class="form-row t-and-c">
-										<?=$this->form->checkbox('terms', array('class'=>"", 'style'=>"float:left;margin-right:4px"));?>
-
-										<span class="reg-tos">
-												By requesting membership, I accept the 
-											<?=$this->html->link('Terms and Conditions','#')?> 
-											of Totsy, and accept to receive sale email newsletters. 
-											Totsy will never sell or give my email to any outside party.
-										</span>
+									<div class="form-row_">
+									<?=$this->form->checkbox('terms', array("checked" => "checked", 'style'=>"float:left;margin-right:4px; display: none;"));?>
+									</div>
+									<span class="sm reg-tos" style="overflow:visible!important;">
+											By clicking register you accept our 
+											<?=$this->html->link('Terms and Conditions','pages/terms')?>.
+									</span>
 										<?=$this->form->submit('Register', array('class' => 'register_button_grn')); ?>
 										<?=$this->form->error('terms'); ?>
 									</div>
