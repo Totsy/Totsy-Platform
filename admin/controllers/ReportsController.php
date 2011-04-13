@@ -673,7 +673,7 @@ class ReportsController extends BaseController {
 							$orderItem = array();
 							$orderItem['date'] = $order['date_created'];
 							$orderItem['quantity'] = (int) $item['quantity'];
-							$orderItem['total'] = $item['sale_retail'] * $item['quantity'];
+							$orderItem['total'] = $item['sale_retail'] * (int) $item['quantity'];
 							$orderItem['event_name'] = $item['event_name'];
 							$orderItem['report_id'] = $reportId;
 							$collection->save($orderItem);
