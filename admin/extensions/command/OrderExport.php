@@ -216,7 +216,7 @@ class OrderExport extends Base {
 							$orderFile[$inc]['ContactName'] = '';
 							$orderFile[$inc]['Date'] = date('m/d/Y');
 							if ($order['shippingMethod'] == 'ups') {
-							     $orderFile[$inc]['ShipMethod'] = 'UPSGROUND';
+							     $orderFile[$inc]['ShipMethod'] = 'SP';
 							} else {
 							     $orderFile[$inc]['ShipMethod'] = $order['shippingMethod'];
 							}
