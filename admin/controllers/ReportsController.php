@@ -572,10 +572,10 @@ class ReportsController extends BaseController {
 						$items = $order['items'];
 						$itemQuantity = 0;
 						foreach ($items as $item) {
-							$itemQuantity += $item['quantity'];
+							$itemQuantity += (int) $item['quantity'];
 						}
-							$orderSummary['tax'] = $order['tax'];
-							$orderSummary['total'] = $order['total'];
+							$orderSummary['tax'] = (float) $order['tax'];
+							$orderSummary['total'] = (float) $order['total'];
 							switch($order['shipping']['state']){
 								case 'NY':
 									$state = 'NY';
@@ -587,8 +587,8 @@ class ReportsController extends BaseController {
 									$state = 'Other';
 							}
 							$orderSummary['state'] = $state;
-							$orderSummary['handling'] = $order['handling'];
-							$orderSummary['quantity'] = $itemQuantity;
+							$orderSummary['handling'] = (float) $order['handling'];
+							$orderSummary['quantity'] = (int) $itemQuantity;
 							$orderSummary['date'] = $order['date_created'];
 							$orderSummary['report_id'] = $reportId;
 						$collection->save($orderSummary);
