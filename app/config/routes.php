@@ -45,6 +45,7 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
 });
 
 Router::connect('/register', 'Users::register');
+Router::connect('/register/facebook', 'Users::fbregister');
 Router::connect('/momoftheweek', 'MomOfTheWeeks::index');
 Router::connect('/momoftheweek/fbml', 'MomOfTheWeeks::fbml');
 Router::connect('/surveys', 'Surveys::index');

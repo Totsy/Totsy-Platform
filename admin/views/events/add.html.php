@@ -101,7 +101,7 @@ tinyMCE.init({
 		<?=$this->form->field('end_date', array('class' => 'general', 'id' => 'end_date'));?>
 	</div>
 	<br>
-	<h1 id="uploagded_media">Uploaded Media</h1>
+	<h1 id="uploaded_media">Uploaded Media</h1>
 	<div id="fileInfo"></div>
 	<br>
 

@@ -12,7 +12,7 @@ use PHPExcel;
 use PHPExcel_Cell;
 use PHPExcel_Cell_DataType;
 /**
- * Administrative functionality to create and edit events. 
+ * Administrative functionality to create and edit events.
  */
 class EventsController extends BaseController {
 
@@ -30,7 +30,7 @@ class EventsController extends BaseController {
 	);
 
 	/**
-	 * 
+	 *
 	 */
 	public function view($id = null) {
 		$event = Event::find($id);
@@ -42,30 +42,28 @@ class EventsController extends BaseController {
 	}
 
 	public function add() {
-	
+
 		if (empty($event)) {
 			$event = Event::create();
 		}
 
 		if (!empty($this->request->data)) {
-			echo "test";
 			$images = $this->parseImages();
-				var_dump($images);
 			$seconds = ':'.rand(10,60);
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
 			$url = $this->cleanUrl($this->request->data['name']);
 			$eventData = array_merge(
 				Event::castData($this->request->data),
-				compact('items'), 
-				compact('images'), 
+				compact('items'),
+				compact('images'),
 				array('created_date' => new MongoDate()),
 				array('url' => $url)
 			);
 			//Remove this when $_schema is setup
 			unset($eventData['itemTable_length']);
-			if ($event->save($eventData)) {	
-				//$this->redirect(array('Events::edit', 'args' => array($event->_id)));
+			if ($event->save($eventData)) {
+				$this->redirect(array('Events::edit', 'args' => array($event->_id)));
 			}
 		}
 
@@ -105,7 +103,7 @@ class EventsController extends BaseController {
 				array('url' => $url)
 			);
 			if ($event->save($eventData)) {
-				
+
 				$this->redirect(array(
 					'controller' => 'events', 'action' => 'edit',
 					'args' => array($event->_id)
@@ -252,26 +250,6 @@ class EventsController extends BaseController {
 		$preview = "Events";
 		return compact('event', 'items', 'shareurl', 'type', 'id', 'preview');
 
-	}
-	
-	public static function inventoryCheck($events) {
-		$events = $events->data();
-		foreach ($events as $eventItems) {
-			$count = 0;
-			$id = $eventItems['_id'] ;
-
-			if (isset($eventItems['items'])) {
-				foreach ($eventItems['items'] as $eventItem) {
-					if ($item = Item::first(array('conditions' => array('_id' => $eventItem)))) {
-						if ($item->total_quantity) {
-							$count += $item->total_quantity;
-						}
-					}
-				}
-			}
-			$itemCounts[$id] = $count;
-		}
-		return $itemCounts;
 	}
 }
 
