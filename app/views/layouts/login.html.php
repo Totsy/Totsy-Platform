@@ -1,9 +1,14 @@
 <?php use lithium\net\http\Router; ?>
 <!doctype html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:og="http://ogp.me/ns#"
+      xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
 	<?php echo $this->html->charset();?>
 	<title>Totsy, the private sale site for Moms</title>
+	<meta property="og:site_name" content="Totsy"/>
+    <meta property="og:description"
+          content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
 	<?php echo $this->html->style(array('base'), array('media' => 'screen')); ?>
 	<?=$this->html->script(array(
 		'jquery-1.4.2.min.js',
