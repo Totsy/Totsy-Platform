@@ -46,7 +46,7 @@
 			<?php foreach($total_days as $days) : ?>
 				<td>$<?=round($days,2)?></td>
 			<?php endforeach ?>
-			<td><?=round($total,2)?></td>
+			<td>$<?=round($total,2)?></td>
 		</tr>
 		</tfoot>
 	<?php endif ?>
