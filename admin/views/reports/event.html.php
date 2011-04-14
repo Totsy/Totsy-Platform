@@ -42,11 +42,11 @@
 		<?php endforeach ?>
 		<tfoot style = "width: auto">
 		<tr>
-			<td>TOTAL</td>
+			<td>Total</td>
 			<?php foreach($total_days as $days) : ?>
-				<td>$<?=round($days,2)?></td>
+				<td>$<?=round($days['total'],2)?> / <?=$days['quantity']?></td>
 			<?php endforeach ?>
-			<td>$<?=round($total,2)?></td>
+			<td>$<?=round($total,2)?> / <?=$total_quantity?></td>
 		</tr>
 		</tfoot>
 	<?php endif ?>

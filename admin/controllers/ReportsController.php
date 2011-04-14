@@ -954,14 +954,18 @@ class ReportsController extends BaseController {
 						$stat[$jm][$hr]['number']++;
 					}
 					if(empty($total_days[$jm])) {
-						$total_days[$jm] = 0;
+						$total_days[$jm]['total'] = 0;
+						$total_days[$jm]['quantity'] = 0;
 					}
 					if(empty($total)) {
 						$total = 0;
+						$total_quantity = 0;
 					}
 					//TOTAL DAYS
-					$total_days[$jm] += $res["total"];
+					$total_days[$jm]['total'] += $res["total"];
+					$total_days[$jm]['quantity'] += $res["quantity"];
 					$total += $res["total"];
+					$total_quantity += $res["quantity"];
 					if(empty($total_hours[$hr])) {
 						$total_hours[$hr]["total"] = 0;
 						$total_hours[$hr]["quantity"] = 0;
@@ -982,7 +986,7 @@ class ReportsController extends BaseController {
 				);
 			}
 		}
-		return compact('stat', 'total_days', 'total_hours', 'hours_setup','end_date','start_date', 'total', 'event_name');
+		return compact('stat', 'total_days', 'total_hours', 'hours_setup','end_date','start_date', 'total', 'total_quantity', 'event_name');
 	}
 }
 
