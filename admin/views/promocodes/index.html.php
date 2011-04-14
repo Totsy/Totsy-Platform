@@ -1,6 +1,9 @@
 <?=$this->html->script('jquery-1.4.2.min.js');?>
 <?=$this->html->script('jquery.dataTables.js');?>
+<?=$this->html->script('TableTools.min.js');?>
+<?=$this->html->script('ZeroClipboard.js');?>
 <?=$this->html->style('table');?>
+<?=$this->html->style('TableTools');?>
 
 <div class="grid_16">
 	<h2 id="page-heading"> Promocode List</h2>
@@ -28,7 +31,7 @@
 </div>
 
 <div class='grid_16 box'>
-    
+
     <table id='codeSummary' class='datatable' >
         <thead>
             <tr>
@@ -52,7 +55,7 @@
                 </td>
                 <td>
                     <?=$promocode->type; ?><br>
-                 </td>   
+                 </td>
                 <td>
                     <?php if($promocode->type == 'percentage'): ?>
                         <?php echo ($promocode->discount_amount * 100); ?>%
@@ -76,12 +79,12 @@
                 <td>
                     <?=$promocode->date_created; ?>
                 </td>
-                 
+
                 <td>
                     <?=$promocode->created_by; ?>
                 </td>
                 <td>
-                    <?=$promocode->enabled; ?> 
+                    <?=$promocode->enabled; ?>
                 </td>
 
                 <td>
@@ -92,3 +95,14 @@
         </tbody>
     </table>
 </div>
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function() {
+		TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
+		$('#codeSummary').dataTable({
+			"sDom": 'T<"clear">lfrtip',
+			'bLengthChange' : false,
+			"bPaginate": false
+		}
+		);
+	} );
+</script>

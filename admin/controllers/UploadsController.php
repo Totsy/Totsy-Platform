@@ -25,7 +25,9 @@ class UploadsController extends \lithium\action\Controller {
 	public function upload($type = null) {
 		$success = false;
 		$this->_render['template'] = in_array($type, array('item', 'event','banner','affiliate')) ? $type : 'upload';
+        if($type == ''){
 
+        }
 		// Check that we have a POST
 		if (($this->request->data) && $this->validate() && $this->write()) {
 			$id = $this->id;
@@ -99,7 +101,7 @@ class UploadsController extends \lithium\action\Controller {
 	 *
 	 * @return boolean
 	 */
-	protected function write() {
+	protected function write($meta = null) {
 		$success = false;
 		$this->_render['layout'] = false;
 		$grid = File::getGridFS();
@@ -113,7 +115,12 @@ class UploadsController extends \lithium\action\Controller {
 			$this->id = (string) $grid->storeUpload('Filedata', $this->fileName);
 			if ($this->id) {
 				$success = true;
+			    if($meta){
+			        $file = File::first(array('conditions' => array('_id' => $this->_id)));
+			        $file->save($meta);
+			   }
 			}
+
 		}
 		return $success;
 	}

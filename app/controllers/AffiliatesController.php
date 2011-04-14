@@ -22,7 +22,7 @@ class AffiliatesController extends BaseController {
 
 		if ($code) {
 			$count = Affiliate::count(array('conditions' => array('invitation_codes' => $code)));
-			if ( $count == 0 ) { 
+			if ( $count == 0 ) {
 				return compact('success', 'errors');
 			}
 			if ($this->request->data){
