@@ -13,6 +13,7 @@ use Mongo;
 use MongoCode;
 use MongoDate;
 use MongoRegex;
+use MongoId;
 use li3_flash_message\extensions\storage\FlashMessage;
 use lithium\data\Model;
 
@@ -675,6 +676,7 @@ class ReportsController extends BaseController {
 							$orderItem['quantity'] = (int) $item['quantity'];
 							$orderItem['total'] = $item['sale_retail'] * (int) $item['quantity'];
 							$orderItem['event_name'] = $item['event_name'];
+							$orderItem['event_id'] = $item['event_id'];
 							$orderItem['report_id'] = $reportId;
 							$collection->save($orderItem);
 						}
@@ -683,7 +685,8 @@ class ReportsController extends BaseController {
 				$keys = new MongoCode("
 					function(doc){
 						return {
-							'event' : doc.event_name
+							'event' : doc.event_name,
+							'id' : doc.event_id
 						}
 					}");
 				$inital = array(
@@ -710,6 +713,7 @@ class ReportsController extends BaseController {
 			} else {
 				FlashMessage::set('Please enter in a valid search date', array('class' => 'warning'));
 			}
+			
 		}
 		return compact('results', 'dates', 'total');
 	}
@@ -849,6 +853,140 @@ class ReportsController extends BaseController {
 				if($i>2) $this->render(array('layout' => false, 'data' => $users));
 			}
 		}
+	}
+
+	/**
+	* Generates a table which print the total of sales for One event by hours
+	* It will also give the total by days, and the average sales by hours
+	*/
+	public function event() {
+		if ($this->request->args) {
+			/**** CONFIGURATION ****/
+			$ordersCollection = Order::collection();
+			$eventsCollection = Event::collection();
+			$data = $this->request->args;
+			/**** OPTIMISATION ****/
+			$eventsCollection->ensureIndex(array('start_date' => 1));
+			$eventsCollection->ensureIndex(array('end_date' => 1));
+			$ordersCollection->ensureIndex(array('date_created' => 1));
+			//Check if we have start and end date range
+			if (!empty($data[1]) && !empty($data[2])) {
+				/**** CONFIGURATION ***/
+				$valid_1st_hour = false;
+				$idx = 0;
+				$total = 0;
+				$quantity = 0;
+				$event_id = $data[0];
+				$hour = 0;
+				//start date
+				$start_year = date("Y",$data[1]);
+				$start_month = date("n",$data[1]);
+				$start_day = date("j",$data[1]);;
+				$start_hour = 0;
+				$start_date = $data[1];
+				//end date
+				$end_year = date("Y",$data[2]);
+				$end_month = date("n",$data[2]);
+				$end_day = date("j",$data[2]);;
+				$end_hour = 0;
+				$end_date = $data[2];
+				/*********************************SCRIPT******************************************/
+				$event = $eventsCollection->findOne(array("_id" => new MongoId($event_id)));
+				$event_name = $event["name"];
+				do {
+					$start_for_selected_event = mktime(($start_hour + $hour), 0, 0, $start_month, $start_day, $start_year);
+					$end_for_selected_event = mktime(($start_hour + $hour + 1), 0, 0, $start_month, $start_day, $start_year);
+					if((date("Y",$event["start_date"]->sec) == date("Y",$start_for_selected_event))
+						&& (date("n",$event["start_date"]->sec) == date("n",$start_for_selected_event))
+						&& (date("j",$event["start_date"]->sec) == date("j",$start_for_selected_event))
+						&& (date("H",$event["start_date"]->sec) == date("H",$start_for_selected_event))) {
+							$valid_1st_hour = true;
+						} else {
+							$valid_1st_hour = false;
+					}
+					if((($event["start_date"]->sec <=  $start_for_selected_event) && ($event["end_date"]->sec >=  $start_for_selected_event)) || ($valid_1st_hour)) {
+						/**** Query Events **/
+						$conditions_order = array(
+								'date_created' => array(
+									'$gt' => new MongoDate($start_for_selected_event),
+									'$lte' => new MongoDate($end_for_selected_event)),
+								'items.event_id' => $event_id
+						);
+						/**** QUERY **/
+						$result_order = $ordersCollection->find($conditions_order, array('items' => 1));
+						/***LOOP***/
+						foreach ($result_order as $order) {
+							foreach ($order["items"] as $item) {
+								if ($item["event_id"] == $event_id) {
+									$total += ($item["sale_retail"] * (integer) $item["quantity"] );
+									$quantity += (integer) $item["quantity"];
+								}
+							}
+						}
+						$datas = array(
+							"event_id" => $event_id,
+							"total" => $total,
+							"date" => $start_for_selected_event,
+							"quantity" => $quantity
+						);
+						$result[] = $datas;
+						$total = 0;
+						$quantity = 0;
+					}
+					$hour ++;
+				} while ($end_date != $end_for_selected_event);
+				$idx = count($result);
+				/**** RESULT **/
+				foreach($result as $res) {
+					$hr = date( "H", $res["date"]);
+					$dd = date( "d", $res["date"]);
+					$dm = date( "m", $res["date"]);
+					//Set
+					$jm = $dd . "/" . $dm;
+					if(empty($stat[$jm][$hr])) {
+						$stat[$jm][$hr]['number'] = 0;
+						$stat[$jm][$hr]['total'] = 0;
+						$stat[$jm][$hr]['quantity'] = 0;
+					}
+					if($res["total"] != 0) {
+						$stat[$jm][$hr]['total'] += $res["total"];
+						$stat[$jm][$hr]['quantity'] += $res["quantity"];
+						$stat[$jm][$hr]['number']++;
+					}
+					if(empty($total_days[$jm])) {
+						$total_days[$jm]['total'] = 0;
+						$total_days[$jm]['quantity'] = 0;
+					}
+					if(empty($total)) {
+						$total = 0;
+						$total_quantity = 0;
+					}
+					//TOTAL DAYS
+					$total_days[$jm]['total'] += $res["total"];
+					$total_days[$jm]['quantity'] += $res["quantity"];
+					$total += $res["total"];
+					$total_quantity += $res["quantity"];
+					if(empty($total_hours[$hr])) {
+						$total_hours[$hr]["total"] = 0;
+						$total_hours[$hr]["quantity"] = 0;
+						$total_hours[$hr]["days"] = 0;
+					}
+					//TOTAL HOURS
+					$total_hours[$hr]["total"] += $res["total"];
+					$total_hours[$hr]["quantity"] += $res["quantity"];
+					$total_hours[$hr]["days"]++;
+				}
+				foreach($total_hours as $key => $value) {
+					$total_hours[$key]["average"] = round(($value["total"] / $value["days"]), 2);
+				}
+				//PRINT SETUP
+				$hours_setup = array(
+					"00","01","02","03","04","05","06","07","08","09","10","11",
+					"12","13","14","15","16","17","18","19","20","21","22","23"
+				);
+			}
+		}
+		return compact('stat', 'total_days', 'total_hours', 'hours_setup','end_date','start_date', 'total', 'total_quantity', 'event_name');
 	}
 }
 
