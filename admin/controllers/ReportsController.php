@@ -659,7 +659,7 @@ class ReportsController extends BaseController {
 				//Conditions with date converted to the right timezone
 				$conditions = array(
 					'date_created' => array(
-						'$gt' => new MongoDate(strtotime($this->request->data['min_date'])),
+						'$gte' => new MongoDate(strtotime($this->request->data['min_date'])),
 						'$lte' => new MongoDate(strtotime($this->request->data['max_date']))
 				));
 				$orderCollection = Order::collection();
