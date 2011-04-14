@@ -18,8 +18,7 @@
                                 Totsy</a>
                               </h1>
                             </div>
-
-
+							
 							<div id="intro-copy">
 								<h2 style="margin-top:20px"><span>Become a</span> MEMBER
 								<br />
@@ -30,18 +29,16 @@
 								<?php if($message){echo "$message"; } ?>
 							</div>
 
-							<div class="r-container clear">
+
+							<div id="" class="r-container clear">
 								<div class="tl"></div>
 								<div class="tr"></div>
 								<div class="r-box lt-gradient-1">
-                                 <div style="width:56%; display:block; float:left; margin-right:10px; ">
-                                <h3 style="color:#999; font-size:18px;">Register</h3>
-								<hr />
-								 
-                               
+                                <h2> <img src="https://graph.facebook.com/<?=$fbuser['id']?>/picture"> Hi <?=$fbuser['name']?> - you're one step away from joining with Facebook</h2>
+                                <hr />
 								<?=$this->form->create($user ,array('id'=>'registerForm')); ?>
 
-               						<!-- Commnented Firstname, Lastname and Zip code --->
+               <!-- Commnented Firstname, Lastname and Zip code --->
 
 									<!-- div class="form-row">
 										<?=$this->form->label('firstname', 'First Name <span>*</span>', array(
@@ -65,39 +62,36 @@
 										<?=$this->form->text('lastname', array('class' => 'inputbox')); ?>
 										<?=$this->form->error('lastname'); ?>
 									</div>
-									<div class="form-row">
+							<div class="form-row">
 										<?=$this->form->label('zip', 'Zip Code <span>*</span>', array(
 											'escape' => false,
 											'class' => 'required'
 											));
 										?>
-
 										<?=$this->form->text('zip', array('class' => 'inputbox', 'id' => 'zip')); ?>
 										<?=$this->form->error('zip'); ?>
 									</div -->
-
 									<!-- ************************************************************** -->
-									<div class="form-row_">
+									<div class="form-row">
 										<?=$this->form->label('email', 'Email <span>*</span>', array(
 											'escape' => false,
 											'class' => 'required'
 											));
 										?>
-										<?=$this->form->text('email', array('class' => 'inputbox', 'style' => 'width:188px')); ?>
+										<?=$this->form->text('email', array('class' => 'inputbox')); ?>
 										<?=$this->form->error('email'); ?>
 									</div>
-									<div class="form-row_">
+									<div class="form-row">
 										<?=$this->form->label('confirmemail', 'Confirm Email <span>*</span>', array(
 											'escape' => false,
 											'class' => 'required'
 											));
 										?>
-										<?=$this->form->text('confirmemail', array('class' => 'inputbox', 'style' => 'width:188px')); ?>
+										<?=$this->form->text('confirmemail', array('class' => 'inputbox')); ?>
 										<?=$this->form->error('confirmemail'); ?>
 										<?=$this->form->error('emailcheck'); ?>
 									</div>
-
-									<div class="form-row_">
+									<div class="form-row">
 									<?=$this->form->label('password','Password <span>*</span>', array(
 										'class'=>'required',
 										'escape' => false
@@ -106,7 +100,8 @@
 									<?=$this->form->password('password', array(
 											'class'=>"inputbox",
 											'name' => 'password',
-											'id' => 'password', 'style' => 'width:188px'));
+											'id' => 'password'
+										));
 									?>
 									<?=$this->form->error('password'); ?>
 									</div>
@@ -117,32 +112,21 @@
 											By clicking register you accept our 
 											<?=$this->html->link('Terms and Conditions','pages/terms')?>.
 									</span>
-									<br>
-									<?=$this->form->submit('Register', array('class' => 'button fr')); ?>
-									<?=$this->form->error('terms'); ?>
+										<?=$this->form->submit('Register', array('class' => 'button')); ?>
+										<?=$this->form->error('terms'); ?>
 									</div>
 								<?=$this->form->end(); ?>
-								
-								<div>
-								<h3 style="color:#999; font-size:18px;">Register With Facebook</h3>
-								<hr />
-								<fb:login-button perms="email,publish_stream, offline_access" size="large" length="long" v="2" style="text-align:center;">Register With Facebook</fb:login-button>
-
 								</div>
-								</div>
-								<div class="bl"></div>
-								<div class="br"></div>
-							</div>
-							<div class="r-container clear reg-list">
+								<div class="r-container clear reg-list">
 								<div class="tl"></div>
 								<div class="tr"></div>
 								<div class="r-box lt-gradient-1">
 									<strong class="red">Why you will love Totsy</strong>
 									<ul class="bugs columns-2">
-										<li>Exclusive sales for kids, moms and families</li>
+										<li>Exclusive sales for moms, children &amp; babies.</li>
 										<li>Sales last up to 3 days, plenty of time to shop.</li>
 										<li>Savings of up to 90% off retail.</li>
-										<li>A tree is planted for your first purchase.</li>
+										<li>For every purchase, one tree is planted.</li>
 										<li>Membership is free</li>
 										<li>We are 100% green.</li>
 									</ul>
@@ -150,10 +134,10 @@
 								<div class="bl"></div>
 								<div class="br"></div>
 							</div>
+							</div>
 						</div>
 					</div>
 				</div>
-
 				<div class="tb">
 					<div><!-- --></div>
 				</div>
@@ -176,3 +160,6 @@
 	<span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved. <br />10 West 18th Street, Floor 4 - New York, NY 10011</span>
 
 </div>
+<script>
+	document.getElementById("password").focus();
+</script>
