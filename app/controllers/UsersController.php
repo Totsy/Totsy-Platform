@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\controllers\BaseController;
 use app\models\User;
 use app\models\Menu;
 use app\models\Affiliate;
@@ -13,10 +12,18 @@ use app\extensions\Mailer;
 use app\extensions\Keyade;
 use li3_silverpop\extensions\Silverpop;
 use MongoDate;
+use li3_facebook\extension\FacebookProxy;
+
 
 class UsersController extends BaseController {
 
 	public $sessionKey = 'userLogin';
+
+	/**
+	 * Instances
+	 * @var array
+	 */
+	protected static $_instances = array();
 
 	/**
 	 * Performs registration functionality.
@@ -36,11 +43,12 @@ class UsersController extends BaseController {
 	public function register($invite_code = null, $affiliate_user_id = null) {
 		$message = false;
 		$data = $this->request->data;
+		$this->autoLogin();
 		/*
 		* redirects to the affiliate registration page if the left the page
 		* and then decided to register after words.
 		*/
-		if(Session::check('cookieCrumb', array('name' => 'cookie'))){
+		if (Session::check('cookieCrumb', array('name' => 'cookie'))){
 			$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 			if(preg_match('(/a/)', $cookie['landing_url'])){
 				$this->redirect($cookie['landing_url']);
@@ -169,6 +177,7 @@ class UsersController extends BaseController {
 	 * @return string The user is prompted with a message if authentication failed.
 	 */
 	public function login() {
+
 		$message = $resetAuth = $legacyAuth = $nativeAuth = false;
 		$rememberHash = '';
 		$this->autoLogin();
@@ -221,17 +230,20 @@ class UsersController extends BaseController {
 		}
 		//new login layout to account for fullscreen image JL
 		$this->_render['layout'] = 'login';
-		return compact('message');
+
+		return compact('message', 'fbsession', 'fbconfig');
 	}
+
 	protected function autoLogin(){
 		$redirect = '/sales';
+		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
+		static::facebookLogin(null, $cookie, $ipaddress);
 		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array('conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
 			if($user) {
 				if($cookie['user_id'] == $user->_id){
 					$sessionWrite = $this->writeSession($user->data());
-					$ipaddress = $this->request->env('REMOTE_ADDR');
 					User::log($ipaddress);
 					if(array_key_exists('redirect', $cookie) && $cookie['redirect'] ) {
 						$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$_SERVER['HTTP_HOST']));
@@ -247,6 +259,7 @@ class UsersController extends BaseController {
 			}
 		}
 	}
+
 	/**
 	 * Performs the logout action of the user removing '_id' from session details.
 	 */
@@ -256,7 +269,8 @@ class UsersController extends BaseController {
 		$cookie['autoLoginHash'] = null;
 		Session::delete('cookieCrumb', array('name' => 'cookie'));
 		$cookieSuccess = Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
-		$this->redirect(array('action'=>'login'));
+		FacebookProxy::setSession(null);
+		$this->redirect(array('action' => 'login'));
 	}
 	/**
 	 * This is only for legacy users that are coming with AuthLogic passwords and salt
@@ -270,13 +284,6 @@ class UsersController extends BaseController {
 	    }
 		return $digest == $user->password;
 	}
-	/**
-	 * @param array $sessionInfo
-	 * @return boolean
-	 */
-	private function writeSession($sessionInfo) {
-		return (Session::write('userLogin', $sessionInfo, array('name'=>'default')));
-	}
 
 	/**
 	 * Updates the user information.
@@ -286,6 +293,38 @@ class UsersController extends BaseController {
 	public function info() {
 		$status = 'default';
 		$user = User::getUser();
+		$linked = (empty($user->facebook_info) ? false : true);
+		$connected = false;
+		if ($linked) {
+			$userId = $user->facebook_info->id;
+			$connected = true;
+			try {
+				$accessToken = FacebookProxy::getAccessToken();
+				$authCheck = FacebookProxy::api("/$userId?access_token=$accessToken");
+				$connected = (!empty($authCheck['email'])) ? true : false;
+			} catch (\Exception $e) {
+				$connected = false;
+			}
+		}
+		$fbsession = FacebookProxy::getSession();
+		if ($fbsession && $linked == false) {
+			try {
+				$userfb = FacebookProxy::api('/me');
+				$check = User::find('first', array(
+					'conditions' => array(
+							'facebook_info.id' => $userfb['id']
+				)));
+			} catch (\Exception $e) {
+				$connected = false;
+			}
+			if (empty($check)) {
+				$user->facebook_info = $userfb;
+				$user->save(null, array('validate' => false));
+				$connected = true;
+			} else {
+				$status = 'badfacebook';
+			}
+		}
 		if ($this->request->data) {
 			$email = $this->request->data['email'];
 			$firstname = $this->request->data['firstname'];
@@ -308,7 +347,7 @@ class UsersController extends BaseController {
 				$status = "email";
 			}
 		}
-		return compact("user", "status");
+		return compact('user', 'status', 'connected', 'failed', 'userfb');
 	}
 
 	public static function generateToken() {
@@ -460,6 +499,73 @@ class UsersController extends BaseController {
 			}
 		}
 		return compact("user", "status");
+	}
+
+	/**
+	 * Register with a facebook account
+	 * @return compact
+	 */
+	public function fbregister() {
+		$message = null;
+		$user = null;
+		$fbuser = FacebookProxy::api('/me');
+		$user = User::create();
+		$user->email = $fbuser['email'];
+		$user->confirmemail = $fbuser['email'];
+		$this->_render['layout'] = 'login';
+		if ($this->request->data) {
+			$data = $this->request->data;
+			$data['facebook_info'] = $fbuser;
+			$data['firstname'] = $fbuser['first_name'];
+			$data['lastname'] = $fbuser['last_name'];
+			static::registration($data);
+			$this->redirect('/sales');
+		}
+
+		return compact('message', 'user', 'fbuser');
+	}
+
+	/**
+	 * Auto login a user if the facebook session has been set.
+	 *
+	 * If the user already exists in our system redirect them to sales.
+	 * If there is no account for the customer then send them to the registration page
+	 * for facebook.
+	 *
+	 * @param string $affiliate - Affiliate string
+	 * @param string $cookie - The affiliate cookie set from affiliate
+	 * @see Affiliates::register()
+	 * @see FacebookProxy::api()
+	 */
+	public static function facebookLogin($affiliate = null, $cookie = null, $ipaddress = null) {
+		$self = static::_object();
+		if ($self->fbsession) {
+			$userfb = FacebookProxy::api('/me');
+			$user = User::find('first', array(
+				'conditions' => array(
+					'$or' => array(
+						array('email' => strtolower($userfb['email'])),
+						array('facebook_info.id' => $userfb['id'])
+			))));
+			if ($user) {
+				$user->facebook_info = $userfb;
+				$user->save(null, array('validate' => false));
+				$sessionWrite = $self->writeSession($user->data());
+				AffiliatesController::linkshareCheck($user->_id, $affiliate, $cookie);
+				User::log($ipaddress);
+				$self->redirect('/sales');
+			} else {
+				$self->redirect('/register/facebook');
+			}
+		}
+	}
+
+	protected static function &_object() {
+		$class = get_called_class();
+		if (!isset(static::$_instances[$class])) {
+			static::$_instances[$class] = new $class();
+		}
+		return static::$_instances[$class];
 	}
 }
 
