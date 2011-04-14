@@ -126,8 +126,10 @@ class UploadsController extends \lithium\action\Controller {
 			        )));
 			        $search->tag = $meta['tag'];
 			        $search->save();
+
 			   }
 			}
+
 		}
 		return $success;
 	}

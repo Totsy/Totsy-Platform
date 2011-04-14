@@ -6,6 +6,7 @@
 <?=$this->html->script('swfupload.queue.js');?>
 <?=$this->html->script('fileprogress.js');?>
 <?=$this->html->script('handlers.js');?>
+<?=$this->html->script('jquery.editable-1.3.3.js');?>
 <?=$this->html->script('affiliate_upload.js');?>
 <?=$this->html->style('swfupload')?>
 <?=$this->html->style('jquery_ui_blitzer.css')?>
@@ -32,7 +33,7 @@
 		</tbody>
 	</table>
 </div>
-
+<div class="clear"></div>
 <div class="grid_2 box">
 	<div class='block forms'>
 		<?=$this->form->create(); ?>
@@ -49,8 +50,7 @@
 		<input type='button' name='edit_code' id='edit_code' value='edit code'/><br><br>
 	</div>
 </div> <!--end of box-->
-
-<div class ="grid_9 box">
+<div class ="grid_13 box">
 	<div class='block forms'>
 		<div id='tabs'>
 			<ul>
@@ -86,36 +86,21 @@
 				</div>
 				<div id='landing_panel'>
 					<br/>
-					<div id='templates'>
-					</div>
-					<div id='template_form'>
-						<label>Description </label>
-						<?=$this->form->text('description'); ?>
-						<label>Associated Keywords</label>
-						<?=$this->form->text('keywords'); ?>
-						<label>Associated URL </label>
-						<?=$this->form->text('url'); ?>
-						<h5 id="uploaded_media">Uploaded Media</h5>
-						<div id="fileInfo"></div>
-						<br>
+					<div id='template_panel'>
+						<label>Enable </label>
+						<?=$this->form->checkbox('landingpage_enable', array('value'=>'1', 'checked' => 'checked')); ?><br/>
 
-						<br>
-						<table>
-							<tr valign="top">
-								<td>
-									<div>
-										<div class="fieldset flash" id="fsUploadProgress1">
-											<span class="legend">Upload Status</span>
-										</div>
-										<div style="padding-left: 5px;">
-											<span id="spanButtonPlaceholder1"></span>
-											<input id="btnCancel1" type="button" value="Cancel Uploads" onclick="cancelQueue(upload1);" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />
-											<br />
-										</div>
-									</div>
-								</td>
-							</tr>
-						</table>
+						<label>Choose Template Type </label>
+						<?=$this->form->select('template_type', array(
+										'temp_1' => 'Template One',
+										'temp_2' => 'Template Two'
+							));
+						?>
+						<label>Specified Url:</label>
+						<?=$this->form->text('url'); ?>
+						<div id="template" style="margin: 0 5 0 0">
+							<?php echo $this->view()->render(array('element' => 'template1')); ?>
+						</div>
 					</div>
 				</div><!--end landing panel-->
 			</div><!--end landing page-->
@@ -125,8 +110,9 @@
 </div>
 		<br>
 		<br>
-	<div id='submit button' class="grid_16">
-		<div class="grid_7" >
+	<div class="clear"></div>
+	<div id='submit button' class="grid_2">
+		<div class="grid_2" >
 			<?=$this->form->submit('Create', array('id'=>'create')); ?>
 		</div>
 	</div>
@@ -225,4 +211,69 @@ $(document).ready(function() {
 			});
 		});
 	});
+</script>
+<script type="text/javascript">
+$(function(){
+    $('#headline_1').editable({
+        onEdit:begin,
+        onSubmit:submit,
+        type:'textarea'
+    });
+    function begin(){
+        this.append('Click any to submit');
+    }
+    function submit(){
+        $('input:hidden[name=headline_1]').val(function(){
+            return $('#headline_1').html();
+        });
+    }
+});
+$(function(){
+    $('#headline_2').editable({
+        onEdit:begin,
+        onSubmit:submit,
+        type:'textarea'
+    });
+    function begin(){
+        this.append('Click any to submit');
+    }
+     function submit(){
+         $('input:hidden[name=headline_2]').val(function(){
+            return $('#headline_2').html();
+        });
+    }
+});
+$(function(){
+    $('#headline_3').editable({
+        onEdit:begin,
+        onSubmit:submit,
+        type:'textarea'
+    });
+    function begin(){
+        this.append('Click any to submit');
+    }
+     function submit(){
+         $('input:hidden[name=headline_3]').val(function(){
+            return $('#headline_3').html();
+        });
+    }
+});
+$(function(){
+    $('#test').editable({
+        onEdit:begin,
+        type:'textarea'
+    });
+    function begin(){
+        this.append('Click any to submit');
+    }
+});
+$(function(){
+    $('#sub').editable({
+        onEdit:begin,
+        type:'textarea'
+    });
+    function begin(){
+        this.append('Click any to submit');
+    }
+});
 </script>

@@ -1,0 +1,29 @@
+/* Landing Page Moms and Baby's */
+
+#mb-wrapper	{width:900px; height:auto; float:left;}
+#mb-bg {background:url(/img/template/background/mb-bg.png) left; width:750px; height:591px; margin:40px 0px 0px 0px;}
+#mb-head	{width:662px; padding:42px 0px 0px 88px; height:auto; float:left;}
+#mb-head	h1	{font-family:Arial, Helvetica, sans-serif; color:#939598; font-size: 18px; font-weight:normal; margin:20px 0px 0px 20px;}
+#mb-logo	{float:left; width:120px; height:78px; display:block;}
+.mb-line		{background-image:url(/img/template/mb-totsylinehead.png); width:2px; height:59px; float:left; margin:0px 20px 0px 20px;}
+
+#mb-left	{width:360px; height:auto; float:left; padding:30px 0px 0px 90px;}
+#mb-left	h1	{font-family:Arial, Helvetica, sans-serif; font-size:16px; color:#5f6062; font-weight:bold;}
+#mb-left	ul,li {list-style-image:url(/img/template/mb-arrow.png); padding-top:10px; font-family:Arial, Helvetica, sans-serif; font-size:14px;}
+#mb-div		{width:auto; height:auto; float:left; padding:40px 0px 0px 90px; text-align:center; color:#808080;}
+.mb-f1		{font-size:20px;}
+.mb-f2		{font-size:50px; font-weight:normal; font-family:Helvetica, sans-serif;}
+.mb-f3		{font-size:20px;}
+
+#mb-right	{width:300px; height:auto; float:right; padding:30px 0px 0px 0px;}
+#mb-right	h1	{font-family:Arial, Helvetica, sans-serif; font-size:16px; color:#5f6062; font-weight:bold;}
+#mb-frmdiv	{width:270px; height:auto; float:left;}
+.mb-span	{float:left; font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:12px; display:block; width:260px; padding-left:6px;}
+#mb-frmdiv li {list-style:none;}
+.mb-input	{background-image:url(/img/template/mb-bgtxtbox.png); width:128px; height:18px; border:none; color:#b4b4b4; padding:6px 12px 6px 10px; background-repeat:no-repeat;}
+.mb-label	{width:23px; float:left; height:25px;}
+
+#mb-footer	{width:552px; height:30px; float:left; height:auto; display:block; margin:70px 0px 0px 0px; padding:0px 0px 0px 196px;}
+#mb-footer img {margin-left:6px;}
+#mb-footer	span {text-align:center;}
+#mb-footerinfo	{width:900px; height:30px; font-family:Arial, Helvetica, sans-serif; font-size:14px; font-weight:bold; text-align:center; float:left; padding:10px 0px 0px 0px; color:#FFF;}

@@ -10,6 +10,9 @@
 		Bkground
 	</th>
 	<th align="center">
+		Logo
+	</th>
+	<th align="center">
 		Feat. #1
 	</th>
 	<th align="center">
@@ -31,6 +34,9 @@
 	</td>
 	<td align="center">
 		<input type="checkbox" name="img_type[background]" value="<?=$id;?>">
+	</td>
+	<td align="center">
+		<input type="checkbox" name="img_type[logo]" value="<?=$id;?>">
 	</td>
 	<td align="center">
 		<input type="checkbox" name="img_type[feature_one]" value="<?=$id;?>">

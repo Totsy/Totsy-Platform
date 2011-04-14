@@ -74,7 +74,7 @@
 			<table id="report" class="datatable" border="1">
 				<thead>
 					<tr>
-						<th>Month</th>
+						<th>Month/Year</th>
 						<th>Total - <?=$searchType?></th>
 					</tr>
 				</thead>
@@ -114,7 +114,7 @@
 					    foreach ($results['retval'] as $result):
 					?>
 						<tr>
-							<td><?=date('F',  mktime(0, 0, 0, ($result['Date'] + 1)))?></td>
+							<td><?=date('F/Y',  mktime(0, 0, 0, ($result['Date'] + 1),30,($result['Year'])))?></td>
 							<?php if ($searchType == 'Revenue'): ?>
 								<td>$<?=number_format($result['total'], 2)?></td>
 							<?php else: ?>
