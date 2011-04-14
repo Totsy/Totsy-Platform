@@ -4,25 +4,17 @@ namespace admin\extensions\helper;
 
 class Items extends \lithium\template\Helper {
 	
-	protected $heading = array( 
-		'vendor',
-		'vendor_style',
-		'color',
-		'description',
-		'enabled'
-	);
-	protected $table = array(
-		'itemTable',
-		'datatable'
+	protected $heading = array(
+		'Primary Image',
+		'Description',
+		'Copy',
+		'Enabled'
 	);
 
 	public function build($itemRecords = null) {
 		$html = '';
-		if(!empty($itemRecords)) {
-			$itemData = $itemRecords->data();
-			//Setup the table
-			list($id, $class) = $this->table;
-			$html .= "<table id=\"$id\" class=\"$class\">";
+		if (!empty($itemRecords)) {
+			$html .= "<table id='itemtable'";
 			//We need the thead for jquery datatables
 			$html .=  '<thead>'; 
 			$html .= '<tr>';
@@ -34,18 +26,17 @@ class Items extends \lithium\template\Helper {
 			//Set ending tags for html table headings
 			$html .= '</tr></thead><tbody>';
 			//Lets start building the data fields
-			foreach ($itemData as $item) {
-				$details = array_intersect_key($item, array_flip($this->heading));
-				$ordered = $this->sortArrayByArray($details, $this->heading);
-				$ordered['enabled'] = ($ordered['enabled'] == 1) ? 'Yes' : 'No';
-				$link = "href=\"/items/edit/$item[_id]\"";
-				foreach ($ordered as $key => $value) {
-					if ($key == 'description') {
-						$html .= "<td><a $link>$value</a></td>";
-					} else {
-						$html .= "<td>$value</td>";
-					}
+			foreach ($itemRecords as $item) {
+				$html .= '<tr>';
+				if (!empty($item->primary_image)) {
+					$image = '/image/'. $item->primary_image . '.jpg';
+				} else {
+					$image = "/img/no-image-small.jpeg";
 				}
+				$html .= "<td width='100'><img src=$image/ width='75'></td>";
+				$html .= "<td width='200'>$item->description - <a href=\"/items/edit/$item[_id]\">Edit</a></td>";
+				$html .= "<td><textarea name='$item->_id' id='$item->_id'>$item->blurb</textarea></td>";
+				$html .= "<td>$item->enabled</td>";
 				$html .= '</tr>';
 			}
 			
@@ -55,17 +46,6 @@ class Items extends \lithium\template\Helper {
 		} else {
 			return $html = "There are no items";
 		}
-	}
-	
-	public function sortArrayByArray($array,$orderArray) {
-		$ordered = array();
-		foreach($orderArray as $key => $value) {
-			if(array_key_exists($value, $array)) {
-				$ordered[$value] = $array[$value];
-				unset($array[$value]);
-			}
-		}
-	    return $ordered + $array;
 	}
 }
 

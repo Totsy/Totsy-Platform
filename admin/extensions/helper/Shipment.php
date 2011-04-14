@@ -23,6 +23,10 @@ class Shipment extends \lithium\template\Helper {
 		$link = null;
 		switch ($type) {
 			case 'UPS':
+			case 'NEXTDAY':
+			case 'UPSGROUND':
+			case 'SP':
+			case 'UPS':
 			case 'ups':
 				$upsBase = 'http://wwwapps.ups.com/WebTracking/processInputRequest?sort_by=3D=status&';
 				$upsDetails = 'tracknums_displayed=3D1&TypeOfInquiryNumber=3DT&loc=3D=en_US&InquiryNumber1=';

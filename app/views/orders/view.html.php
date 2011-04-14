@@ -236,14 +236,16 @@
 									    <?php endif;?>
 										<tr>
 											<td>
-												<p>A TREE HAS BEEN PLANTED WITH THIS ORDER.
+											<?=$this->html->image('being_green/carbonzero.gif', array(
+												'align' => 'left', 'style' => 'margin-right: 15px; margin-bottom:10px;'
+											)); ?>
+												<p>A TREE WAS PLANTED WITH YOUR FIRST ORDER.<br />
+												IT IS WATERED WITH EVERY ADDITIONAL ORDER SO IT CAN GROW BIG AND STRONG TO HELP OUR EARTH!
 													<br>
-													<strong style="color:#E00000;font-weight:normal"></strong>
+													<strong style="color:#E00000;font-weight:normal"></strong><br />
 													<?=$this->html->link('Find out how every purchase makes a difference.', array('Pages::being_green')); ?>
+													Enjoy your order! We know you’re going to love it!
 												</p>
-											</td>
-											<td>
-												<img src="/img/email/tree-logo.jpg" alt="tree-logo" width="40" height="30" />
 											</td>
 										</tr>
 									</table>
