@@ -9,11 +9,9 @@
         </div>
         <div class="mb-line"></div>
         <h1 id="headline_1">Exclusive access to great deals for tots, moms & families!</h1>
-        <input type="hidden" name="headline_1" value=""/>
       </div>
       <div id="mb-left">
             <h1 id="headline_2">Why Do Moms Love Totsy?</h1>
-            <input type="hidden" name="headline_2" value=""/>
             <ul id="sub">
               <li>FREE Membership to private sales</li>
               <li>SAVE on apparel, toys, shoes, furniture & more</li>
@@ -24,7 +22,6 @@
       <div id="mb-right">
             <h1 id="headline_3">You’re One Baby Step Away<br />
               From Exclusive Daily Deals</h1>
-            <input type="hidden" name="headline_3" value=""/>
             <div id="mb-frmdiv">
                   <ul>
                     <li>
