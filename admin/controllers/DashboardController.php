@@ -60,7 +60,6 @@ class DashboardController extends \lithium\action\Controller {
 				$dates[$data['month']] = date('F', mktime(0, 0, 0, $data['month'] + 1, 1, $data['year']));
 			}
 		}
-		ksort($dates);
 		foreach ($summary['retval'] as $data) {
 			if ($data['type'] == 'revenue') {
 				$revenue[$data['month']] = $data['total'];
@@ -68,6 +67,7 @@ class DashboardController extends \lithium\action\Controller {
 				$registrations[$data['month']] = $data['total'];
 			}
 		}
+		ksort($dates);
 		ksort($revenue);
 		ksort($registrations);
 		$chartData[0][0] = "Revenue";
@@ -93,7 +93,7 @@ class DashboardController extends \lithium\action\Controller {
 		$params = array(
 			'caption=Daily Revenue and Registrations',
 			'subcaption=Comparision',
-			'xAxisName=Day',
+			'xAxisName=Days',
 			'pYAxisName=Revenue',
 			'sYAxisName=Total Registrations'
 		);
@@ -113,7 +113,7 @@ class DashboardController extends \lithium\action\Controller {
 				$currentReg[$record['date']['sec']] = $record['total'];
 			}
 		}
-
+		ksort($dates);
 		ksort($currentRevenue);
 		ksort($currentReg);
 		$chartData2[0][0] = "Revenue";
