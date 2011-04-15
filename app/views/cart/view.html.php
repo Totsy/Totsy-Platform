@@ -118,8 +118,14 @@
 
 		<tr class="cart-total">
 
-			<td colspan="7" id='subtotal'><strong>Subtotal: <span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong><br/><hr/><?=$this->form->submit('Update Cart', array('class' => 'button'))?></td>
-
+			<td colspan="7" id='subtotal'><strong>Subtotal: <span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong>
+					<?php if(!empty($savings)) : ?>
+						<br />
+				<strong>You're Saving : <span style="color:#009900;">$<?=number_format($savings,2)?></span></strong>
+					<?php endif ?>
+				<br/><hr/>
+				<?=$this->form->submit('Update Cart', array('class' => 'button'))?>
+			</td>
 		</tr>
 		<tr class="cart-buy">
 			<td colspan="4" class="return-policy">

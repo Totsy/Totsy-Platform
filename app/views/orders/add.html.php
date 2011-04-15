@@ -222,7 +222,12 @@
 			<?php endforeach ?>
 
 					<tr class="cart-total">
-						<td colspan="7" id='subtotal'><strong>Subtotal: </strong><strong style="color:#009900;">$<?=number_format($subTotal,2)?></strong><br/><hr/><?=$this->html->link('Edit Your Cart','/cart/view' ,array('id' => 'checkout-cart', 'class' => 'button fr')); ?></td>
+						<td colspan="7" id='subtotal'><strong>Subtotal: </strong><strong style="color:#009900;">$<?=number_format($subTotal,2)?></strong>
+							<?php if(!empty($savings)) : ?>
+								<br />
+						<strong>You're Saving : <span style="color:#009900;">$<?=number_format($savings,2)?></span></strong>
+							<?php endif ?>
+							<br/><hr/><?=$this->html->link('Edit Your Cart','/cart/view' ,array('id' => 'checkout-cart', 'class' => 'button fr')); ?></td>
 					</tr>
 				</tbody>
 			</table>

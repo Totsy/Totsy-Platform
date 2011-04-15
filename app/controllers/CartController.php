@@ -57,8 +57,9 @@ class CartController extends BaseController {
 				$returnUrl = $event->url;
 			}
 		}
-
-		return compact('cart', 'message', 'shipDate', 'returnUrl');
+		//calculate savings
+		$savings = Session::read('userSavings');
+		return compact('cart', 'message', 'shipDate', 'returnUrl', 'savings');
 	}
 
 	/**
@@ -100,6 +101,9 @@ class CartController extends BaseController {
 					if( $avail > 0 ){
 						++$cartItem->quantity;
 						$cartItem->save();
+						//calculate savings
+						$item[$item['_id']] = $cartItem->quantity;
+						$this->savings($item, 'add');
 					}else{
 						$cartItem->error = 'You can’t add this quantity in your cart. <a href="#5">Why?</a>';
 					$cartItem->save();
@@ -116,7 +120,9 @@ class CartController extends BaseController {
 				unset($item['_id']);
 				$info = array_merge($item, array('quantity' => 1));
 				if ($cart->addFields() && $cart->save($info)) {
-
+					//calculate savings
+					$item[$itemId] = 1;
+					$this->savings($item, 'add');
 				}
 			}
 			$this->redirect(array('Cart::view'));
@@ -175,10 +181,43 @@ class CartController extends BaseController {
 					$cart->error = $result['errors'];
 					$cart->save();
 				}
+				//build temp array
+				$items[$cart->item_id] = $quantity;
 			}
+			//calculate savings
+			$this->savings($items, 'update');
 		}
+		
 		$this->_render['layout'] = false;
 		$this->redirect('/cart/view');
+	}
+	
+	public function savings($items = null, $action) {
+		if($action == "update"){
+			$savings = 0;
+			if(!empty($items)) {
+				foreach($items as $key => $quantity) {
+					$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
+					if(!empty($itemInfo->msrp)){
+						$savings += $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
+					}
+				}
+			}
+		} else if($action == "add") {
+			$savings = Session::read('userSavings');
+			if(empty($savings)) {
+				$savings = 0;
+			}
+			if(!empty($items)) {
+				foreach($items as $key => $quantity) {
+					$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
+					if(!empty($itemInfo->msrp)){
+						$savings += $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
+					}
+				}
+			}
+		}
+		Session::write('userSavings', $savings);
 	}
 }
 
