@@ -90,9 +90,10 @@ class DashboardController extends \lithium\action\Controller {
 
 		$FC2 = new FusionCharts("MSColumn3DLineDY","850","350");
 		# Store chart attributes in a variable
+		$month = date('F', time());
 		$params = array(
 			'caption=Daily Revenue and Registrations',
-			'subcaption=Comparision',
+			"subcaption=For the Month of $month",
 			'xAxisName=Days',
 			'pYAxisName=Revenue',
 			'sYAxisName=Total Registrations'
