@@ -58,26 +58,28 @@ class DashboardController extends \lithium\action\Controller {
 		foreach ($summary['retval'] as $data) {
 			if (!in_array($data['month'], $monthList)) {
 				$monthList[] = $data['month'];
-				$dates[] = date('F', mktime(0, 0, 0, $data['month'] + 1, 0, $data['year']));
+				$dates[$data['month']] = date('F', mktime(0, 0, 0, $data['month'] + 1, 1, $data['year']));
 			}
 		}
-		$i = 2;
+		ksort($dates);
 		foreach ($summary['retval'] as $data) {
 			if ($data['type'] == 'revenue') {
-				$chartData[0][0] = "Revenue";
-				$chartData[0][1] = "numberPrefix=$;showValues=1";
-				$chartData[0][$i] = $data['total'];
-				++$i;
+				$revenue[$data['month']] = $data['total'];
+			} else {
+				$registrations[$data['month']] = $data['total'];
 			}
 		}
-		$i = 2;
-		foreach ($summary['retval'] as $data) {
-			if ($data['type'] == 'registration') {
-				$chartData[1][0] = "Registrations";
-				$chartData[1][1] = "parentYAxis=S";
-				$chartData[1][$i] = $data['total'];
-				++$i;
-			}
+		ksort($revenue);
+		ksort($registrations);
+		$chartData[0][0] = "Revenue";
+		$chartData[0][1] = "numberPrefix=$;showValues=1";
+		foreach ($revenue as $key => $value) {
+			$chartData[0][] = $value;
+		}
+		$chartData[1][0] = "Registrations";
+		$chartData[1][1] = "parentYAxis=S";
+		foreach ($registrations as $key => $value) {
+			$chartData[1][] = $value;
 		}
 		$FC->addChartDataFromArray($chartData, $dates);
 

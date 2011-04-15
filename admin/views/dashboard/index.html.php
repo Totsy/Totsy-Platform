@@ -45,7 +45,8 @@
 						<td><?=$registrationDetails[$i]->total?></td>
 						<td>
 						<?php if ($i <> 0): ?>
-							<?=number_format(100*($registrationDetails[$i]->total - $registrationDetails[$i-1]->total)/$registrationDetails[$i]->total, 2);?>%</td>
+							<?php $percent = 100*($registrationDetails[$i]->total - $registrationDetails[$i-1]->total)/$registrationDetails[$i]->total;?>
+							<?=number_format($percent, 2);?>%</td>
 						<?php else: ?>
 							-
 						<?php endif?>
@@ -71,7 +72,7 @@
 	$(document).ready(function() {
 		$('#sale_table').dataTable({
 			"bPaginate": true,
-			"bFilter": false
+			"bFilter": true
 		}
 		);
 	} );
