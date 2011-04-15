@@ -88,15 +88,14 @@ class DashboardController extends \lithium\action\Controller {
 		$current = Dashboard::find('all', compact('conditions'));
 		$current = $current->data();
 
-		$FC2 = new FusionCharts("MSColumn3DLineDY","850","350");
+		$FC2 = new FusionCharts("Line","850","350");
 		# Store chart attributes in a variable
 		$month = date('F', time());
 		$params = array(
-			'caption=Daily Revenue and Registrations',
+			'caption=Daily Revenue',
 			"subcaption=For the Month of $month",
-			'xAxisName=Days',
-			'pYAxisName=Revenue',
-			'sYAxisName=Total Registrations'
+			'xAxisName=Day',
+			'numberPrefix=$;showValues=1'
 		);
 	    $FC2->setChartParams(implode(';', $params));
 		$dateList = array();
@@ -104,7 +103,7 @@ class DashboardController extends \lithium\action\Controller {
 		foreach ($current as $data) {
 			if (!in_array($data['date'], $dateList)) {
 				$dateList[] = $data['date']['sec'];
-				$dates[$data['date']['sec']] = date('m/d', $data['date']['sec']);
+				$dates[$data['date']['sec']] = date('d', $data['date']['sec']);
 			}
 		}
 		foreach ($current as $record) {
@@ -117,18 +116,30 @@ class DashboardController extends \lithium\action\Controller {
 		ksort($dates);
 		ksort($currentRevenue);
 		ksort($currentReg);
-		$chartData2[0][0] = "Revenue";
-		$chartData2[0][1] = "numberPrefix=$;showValues=1";
+		$i = 0;
 		foreach ($currentRevenue as $key => $value) {
-			$chartData2[0][] = $value;
+			$chartData2[$i][0] = $dates[$key];
+			$chartData2[$i][1] = $value;
+			++$i;
 		}
-		$chartData2[1][0] = "Registrations";
-		$chartData2[1][1] = "parentYAxis=S";
+
+		$FC2->addChartDataFromArray($chartData2);
+		$FC3 = new FusionCharts("Line","850","350");
+		# Store chart attributes in a variable
+		$params = array(
+			'caption=Daily Registrations',
+			"subcaption=For the Month of $month",
+			'xAxisName=Day'
+		);
+	    $FC3->setChartParams(implode(';', $params));
+		$i = 0;
 		foreach ($currentReg as $key => $value) {
-			$chartData2[1][] = $value;
+			$chartData3[$i][0] = $dates[$key];
+			$chartData3[$i][1] = $value;
+			++$i;
 		}
-		$FC2->addChartDataFromArray($chartData2, $dates);
-		return compact('summary', 'registrationDetails', 'revenuDetails', 'FC', 'FC2');
+		$FC3->addChartDataFromArray($chartData3);
+		return compact('summary', 'registrationDetails', 'revenuDetails', 'FC', 'FC2', 'FC3');
     }
 }
 
