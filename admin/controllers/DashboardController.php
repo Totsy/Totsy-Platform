@@ -32,7 +32,7 @@ class DashboardController extends \lithium\action\Controller {
 		$date = array(
 			'date' => array(
 				'$gte' => new MongoDate(mktime(0, 0, 0, date("m") - 3, 1, date("Y"))),
-				'$lte' => new MongoDate()
+				'$lt' => new MongoDate(mktime(0, 0, 0, date("m"), 0, date("Y")))
 		));
 
 		$summary = $collection->group($keys, $inital, $reduce, $date);
@@ -41,7 +41,7 @@ class DashboardController extends \lithium\action\Controller {
 		$conditions = $date + array('type' => 'revenue');
 		$revenuDetails = Dashboard::find('all', compact('conditions'));
 
-		$FC = new FusionCharts("MSColumn3DLineDY","900","500");
+		$FC = new FusionCharts("MSColumn3DLineDY","850","350");
 
 	    # Store chart attributes in a variable
 		$params = array(
@@ -54,7 +54,6 @@ class DashboardController extends \lithium\action\Controller {
 		);
 	    $FC->setChartParams(implode(';', $params));
 		$monthList = array();
-		$i = 0;
 		foreach ($summary['retval'] as $data) {
 			if (!in_array($data['month'], $monthList)) {
 				$monthList[] = $data['month'];
@@ -82,8 +81,53 @@ class DashboardController extends \lithium\action\Controller {
 			$chartData[1][] = $value;
 		}
 		$FC->addChartDataFromArray($chartData, $dates);
+		$conditions = array(
+			'date' => array(
+				'$gte' => new MongoDate(mktime(0, 0, 0, date("m"), 1, date("Y")))
+		));
+		$current = Dashboard::find('all', compact('conditions'));
+		$current = $current->data();
 
-		return compact('summary', 'registrationDetails', 'revenuDetails', 'FC');
+		$FC2 = new FusionCharts("MSColumn3DLineDY","850","350");
+		# Store chart attributes in a variable
+		$params = array(
+			'caption=Daily Revenue and Registrations',
+			'subcaption=Comparision',
+			'xAxisName=Day',
+			'pYAxisName=Revenue',
+			'sYAxisName=Total Registrations'
+		);
+	    $FC2->setChartParams(implode(';', $params));
+		$dateList = array();
+		$dates = array();
+		foreach ($current as $data) {
+			if (!in_array($data['date'], $dateList)) {
+				$dateList[] = $data['date']['sec'];
+				$dates[$data['date']['sec']] = date('m/d', $data['date']['sec']);
+			}
+		}
+		foreach ($current as $record) {
+			if ($record['type'] == 'revenue') {
+				$currentRevenue[$record['date']['sec']] = $record['total'];
+			} else {
+				$currentReg[$record['date']['sec']] = $record['total'];
+			}
+		}
+
+		ksort($currentRevenue);
+		ksort($currentReg);
+		$chartData2[0][0] = "Revenue";
+		$chartData2[0][1] = "numberPrefix=$;showValues=1";
+		foreach ($currentRevenue as $key => $value) {
+			$chartData2[0][] = $value;
+		}
+		$chartData2[1][0] = "Registrations";
+		$chartData2[1][1] = "parentYAxis=S";
+		foreach ($currentReg as $key => $value) {
+			$chartData2[1][] = $value;
+		}
+		$FC2->addChartDataFromArray($chartData2, $dates);
+		return compact('summary', 'registrationDetails', 'revenuDetails', 'FC', 'FC2');
     }
 }
 

@@ -16,6 +16,7 @@
 <div class="clear"></div>
 <div class="grid_16">
 	<?=$FC->renderChart()?>
+	<?=$FC2->renderChart()?>
 </div>
 <div class="clear"></div>
 <div class="grid_16">
