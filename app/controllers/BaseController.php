@@ -22,6 +22,7 @@ class BaseController extends \lithium\action\Controller {
 		$userInfo = Session::read('userLogin');
 		$this->set(compact('userInfo'));
 		$cartCount = Cart::itemCount();
+        User::setupCookie();
 		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
 	    $logoutUrl = $logoutUrl."$_SERVER[SERVER_NAME]/logout";
 		/**
@@ -30,7 +31,6 @@ class BaseController extends \lithium\action\Controller {
 		$this->fbsession = $fbsession = FacebookProxy::getSession();
 		$fbconfig = FacebookProxy::config();
 		$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
-
 		if ($userInfo) {
 			$user = User::find('first', array(
 				'conditions' => array('_id' => $userInfo['_id']),
@@ -71,7 +71,7 @@ class BaseController extends \lithium\action\Controller {
 		$pixel .= Session::read('pixel');
 		Session::delete('pixel');
 		$this->set(compact('pixel'));
-		User::setupCookie();
+
 		$this->_render['layout'] = 'main';
 		parent::_init();
 	}

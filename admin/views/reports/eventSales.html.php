@@ -81,7 +81,9 @@
 			</thead>
 		<?php foreach ($results as $result): ?>
 			<tr>
-				<td><?=$result['event'];?></td>
+				<td>
+			<?=$this->html->link($result["event"],'reports/event/'.$result["id"]."/".strtotime($dates['min_date'])."/".strtotime($dates['max_date']))?>
+				</td>
 				<td><?=$result['quantity'];?></td>
 				<td><?=$result['total'];?></td>
 			</tr>
