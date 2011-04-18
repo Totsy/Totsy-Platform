@@ -31,7 +31,7 @@
 </style>
 
 <div class="grid_16">
-	<h2 id="page-heading">Totsy Dashboard - As of <?=date('m/d/Y g:i:s', $updateTime)?></h2>
+	<h2 id="page-heading">Totsy Dashboard - As of <?=date('m/d/Y', $updateTime)?></h2>
 	
 </div>
 <div class="clear"></div>
@@ -59,9 +59,6 @@
 		$currentRevenue = end($currentMonth['revenue'][1]);
 		$dayDiff = $currentRevenue - $lastRevenue;
 		$dayDiffPerct = 100 * $dayDiff/$currentRevenue;
-		if ($dayDiffPerct < 1) {
-			$dayClass = 'negative';
-		}
 		$lastMonthRevenue = array_sum($lastMonth['revenue'][0]);
 		$currentMonthRevenue = array_sum($currentMonth['revenue'][1]);
 		$monthDiff = $currentMonthRevenue - $lastMonthRevenue;
@@ -96,8 +93,8 @@
 				<td><b>Daily Total:</b></td>
 				<td>$<?=number_format($lastRevenue, 2)?></td>
 				<td>$<?=number_format($currentRevenue, 2)?></td>
-				<td><font class='<?=$dayClass?>'><?=number_format($dayDiff, 2)?></font></td>
-				<td><font class='<?=$dayClass?>'><?=number_format($dayDiffPerct, 2)?>%</font></td>
+				<td><?=number_format($dayDiff, 2)?></td>
+				<td><?=number_format($dayDiffPerct, 2)?>%</td>
 			</tr>
 			<tr>
 				<td><b>Last 7 Day Total:</b></td>
@@ -123,9 +120,6 @@
 			$currentRegistration = end($currentMonth['registration'][1]);
 			$dayDiff = $currentRegistration - $lastRegistration;
 			$dayDiffPerct = 100 * $dayDiff/$currentRevenue;
-			if ($dayDiffPerct < 1) {
-				$dayClass = 'negative';
-			}
 			$lastMonthRegistration = array_sum($lastMonth['registration'][0]);
 			$currentMonthRegistration = array_sum($currentMonth['registration'][1]);
 			$monthDiff = $currentMonthRegistration - $lastMonthRegistration;
@@ -160,8 +154,8 @@
 					<td><b>Daily Total:</b></td>
 					<td><?=number_format($lastRegistration, 0)?></td>
 					<td><?=number_format($currentRegistration, 0)?></td>
-					<td><font class='<?=$dayClass?>'><?=number_format($dayDiff, 0)?></font></td>
-					<td><font class='<?=$dayClass?>'><?=number_format($dayDiffPerct, 2)?>%</font></td>
+					<td><?=number_format($dayDiff, 0)?></td>
+					<td><?=number_format($dayDiffPerct, 2)?>%</td>
 				</tr>
 				<tr>
 					<td><b>Last 7 Day Total:</b></td>

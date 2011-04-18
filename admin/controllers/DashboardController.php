@@ -38,7 +38,7 @@ class DashboardController extends \lithium\action\Controller {
 		);
 		$date = array(
 			'date' => array(
-				'$gte' => new MongoDate(mktime(0, 0, 0, date("m") - 3, 1, date("Y"))),
+				'$gte' => new MongoDate(mktime(0, 0, 0, date("m") - 6, 1, date("Y"))),
 				'$lt' => new MongoDate(mktime(0, 0, 0, date("m"), 0, date("Y")))
 		));
 
@@ -66,14 +66,16 @@ class DashboardController extends \lithium\action\Controller {
 		foreach ($summary['retval'] as $data) {
 			if (!in_array($data['month'], $monthList)) {
 				$monthList[] = $data['month'];
-				$dates[$data['month']] = date('F', mktime(0, 0, 0, $data['month'] + 1, 1, $data['year']));
+				$date = mktime(0, 0, 0, $data['month'] + 1, 1, $data['year']);
+				$dates[$date] = date('F', mktime(0, 0, 0, $data['month'] + 1, 1, $data['year']));
 			}
 		}
 		foreach ($summary['retval'] as $data) {
+			$date = mktime(0, 0, 0, $data['month'] + 1, 1, $data['year']);
 			if ($data['type'] == 'revenue') {
-				$revenue[$data['month']] = $data['total'];
+				$revenue[$date] = $data['total'];
 			} else {
-				$registrations[$data['month']] = $data['total'];
+				$registrations[$date] = $data['total'];
 			}
 		}
 		ksort($dates);
@@ -140,8 +142,11 @@ class DashboardController extends \lithium\action\Controller {
 			true
 		);
 		$registration = $lastMonth['registration'] + $currentMonth['registration'];
+		
 		$registration[0][0] = "$lastMonthDesc Registrations";
+		$registration[0][1] = 'lineThickness=.5';
 		$registration[1][0] = "$currentMonthDesc Registrations";
+		$registration[1][1] = 'lineThickness=5';
 		ksort($registration[0]);
 		ksort($registration[1]);
 		$RegChart->addChartDataFromArray($registration, $currentMonth['dates']);
