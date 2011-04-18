@@ -181,8 +181,8 @@ class User extends Base {
 			   Session::write('cookieCrumb', $cookieInfo ,array('name' => 'cookie'));
 			}else{
 				$cookieInfo = Session::read('cookieCrumb', array('name' => 'cookie'));
-				$cookieInfo['entryTime'] = strtotime('now');
 				$cookieInfo['redirect'] = $urlredirect;
+				$cookieInfo['entryTime'] = strtotime('now');
 				Session::write('cookieCrumb', $cookieInfo ,array('name' => 'cookie'));
 			}
 		}
