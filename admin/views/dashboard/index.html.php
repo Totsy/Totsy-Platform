@@ -34,7 +34,7 @@
 	<h2 id="page-heading">Totsy Dashboard - As of <?=date('m/d/Y', $updateTime)?>*</h2>
 </div>
 <div class="clear"></div>
-<div class="grid_8">
+<div class="grid_16">
 	<h2>
 		Revenue Summary
 	</h2>
@@ -42,16 +42,8 @@
 		<?=$RevenueChart->renderChart()?>
 	</center>
 </div>
-<div class="grid_8">
-	<h2>
-		Registration Summary
-	</h2>
-	<center>
-		<?=$RegChart->renderChart()?>
-	</center>
-</div>
 <div class="clear"></div>
-<div class="grid_8">
+<div class="grid_16">
 	<?php
 		$dayClass = $weekClass = $monthClass = 'positive';
 		$lastRevenue = end($lastMonth['revenue'][0]);
@@ -112,7 +104,19 @@
 		</tbody>
 	</table>
 </div>
-<div class="grid_8">
+<div class="clear"></div>
+<br />
+<hr />
+<div class="grid_16">
+	<h2>
+		Registration Summary
+	</h2>
+	<center>
+		<?=$RegChart->renderChart()?>
+	</center>
+</div>
+<div class="clear"></div>
+<div class="grid_16">
 	<?php
 		$dayClass = $weekClass = $monthClass = 'positive';
 		$lastRegistration= end($lastMonth['registration'][0]);
