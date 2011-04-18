@@ -31,7 +31,7 @@ class CreateDashboard extends \lithium\console\Command  {
 	 */
 	public function run() {
 		Environment::set($this->env);
-		$startDate  = new MongoDate(mktime(0, 0, 0, date("m") - 3, 1, date("Y")));
+		$startDate  = new MongoDate(strtotime('Today'));
 		$endDate = new MongoDate();
 		$collection = User::collection();
 		$keys = new MongoCode("
@@ -51,7 +51,7 @@ class CreateDashboard extends \lithium\console\Command  {
 		$conditions = array(
 			'created_date' => array(
 				'$gte' => $startDate,
-				'$lte' => $endDate
+				'$lt' => $endDate
 		));
 		
 		$regDetails = $collection->group($keys, $inital, $reduce, $conditions);

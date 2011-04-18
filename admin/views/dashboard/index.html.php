@@ -31,8 +31,7 @@
 </style>
 
 <div class="grid_16">
-	<h2 id="page-heading">Totsy Dashboard - As of <?=date('m/d/Y', $updateTime)?></h2>
-	
+	<h2 id="page-heading">Totsy Dashboard - As of <?=date('m/d/Y', $updateTime)?>*</h2>
 </div>
 <div class="clear"></div>
 <div class="grid_8">
@@ -114,67 +113,68 @@
 	</table>
 </div>
 <div class="grid_8">
-		<?php
-			$dayClass = $weekClass = $monthClass = 'positive';
-			$lastRegistration= end($lastMonth['registration'][0]);
-			$currentRegistration = end($currentMonth['registration'][1]);
-			$dayDiff = $currentRegistration - $lastRegistration;
-			$dayDiffPerct = 100 * $dayDiff/$currentRevenue;
-			$lastMonthRegistration = array_sum($lastMonth['registration'][0]);
-			$currentMonthRegistration = array_sum($currentMonth['registration'][1]);
-			$monthDiff = $currentMonthRegistration - $lastMonthRegistration;
-			$monthDiffPerct = 100 * $monthDiff/$currentMonthRegistration;
-			if ($monthDiffPerct < 1) {
-				$monthClass = 'negative';
+	<?php
+		$dayClass = $weekClass = $monthClass = 'positive';
+		$lastRegistration= end($lastMonth['registration'][0]);
+		$currentRegistration = end($currentMonth['registration'][1]);
+		$dayDiff = $currentRegistration - $lastRegistration;
+		$dayDiffPerct = 100 * $dayDiff/$currentRevenue;
+		$lastMonthRegistration = array_sum($lastMonth['registration'][0]);
+		$currentMonthRegistration = array_sum($currentMonth['registration'][1]);
+		$monthDiff = $currentMonthRegistration - $lastMonthRegistration;
+		$monthDiffPerct = 100 * $monthDiff/$currentMonthRegistration;
+		if ($monthDiffPerct < 1) {
+			$monthClass = 'negative';
+		}
+		if (count($lastMonth['registration'][0]) >= 7) {
+			$lastWeek = array_splice($lastMonth['registration'][0], -7);
+			$lastWeekTotal = array_sum($lastWeek);
+			$currentWeek = array_splice($currentMonth['registration'][1], -7);
+			$currentWeekTotal = array_sum($currentWeek);
+			$weekDiff = $currentWeekTotal - $lastWeekTotal;
+			$weekDiffPerct = 100 * $weekDiff/$currentWeekTotal;
+			if ($weekDiffPerct < 1) {
+				$weekClass = 'negative';
 			}
-			if (count($lastMonth['registration'][0]) >= 7) {
-				$lastWeek = array_splice($lastMonth['registration'][0], -7);
-				$lastWeekTotal = array_sum($lastWeek);
-				$currentWeek = array_splice($currentMonth['registration'][1], -7);
-				$currentWeekTotal = array_sum($currentWeek);
-				$weekDiff = $currentWeekTotal - $lastWeekTotal;
-				$weekDiffPerct = 100 * $weekDiff/$currentWeekTotal;
-				if ($weekDiffPerct < 1) {
-					$weekClass = 'negative';
-				}
-			}
-		?>
-		<table id="registration_summary" class="" border="1">
-			<thead>
-				<tr>
-					<th></th>
-					<th><?=$lastMonthDesc?></th>
-					<th><?=$currentMonthDesc?></th>
-					<th>Diff (#)</th>
-					<th>Diff (%)</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td><b>Daily Total:</b></td>
-					<td><?=number_format($lastRegistration, 0)?></td>
-					<td><?=number_format($currentRegistration, 0)?></td>
-					<td><?=number_format($dayDiff, 0)?></td>
-					<td><?=number_format($dayDiffPerct, 2)?>%</td>
-				</tr>
-				<tr>
-					<td><b>Last 7 Day Total:</b></td>
-					<td><?=number_format($lastWeekTotal, 0)?></td>
-					<td><?=number_format($currentWeekTotal, 0)?></td>
-					<td><font class='<?=$weekClass?>'><?=number_format($weekDiff, 0)?></font></td>
-					<td><font class='<?=$weekClass?>'><?=number_format($weekDiffPerct, 2)?>%</font></td>
-				</tr>
-				<tr>
-					<td><b>Monthly Total:</b></td>
-					<td><?=number_format($lastMonthRegistration, 0)?></td>
-					<td><?=number_format($currentMonthRegistration, 0)?></td>
-					<td><font class='<?=$monthClass?>'><?=number_format($monthDiff, 0)?></font></td>
-					<td><font class='<?=$monthClass?>'><?=number_format($monthDiffPerct, 2)?>%</font></td>
-				</tr>
-			</tbody>
-		</table>
+		}
+	?>
+	<table id="registration_summary" class="" border="1">
+		<thead>
+			<tr>
+				<th></th>
+				<th><?=$lastMonthDesc?></th>
+				<th><?=$currentMonthDesc?></th>
+				<th>Diff (#)</th>
+				<th>Diff (%)</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><b>Daily Total:</b></td>
+				<td><?=number_format($lastRegistration, 0)?></td>
+				<td><?=number_format($currentRegistration, 0)?></td>
+				<td><?=number_format($dayDiff, 0)?></td>
+				<td><?=number_format($dayDiffPerct, 2)?>%</td>
+			</tr>
+			<tr>
+				<td><b>Last 7 Day Total:</b></td>
+				<td><?=number_format($lastWeekTotal, 0)?></td>
+				<td><?=number_format($currentWeekTotal, 0)?></td>
+				<td><font class='<?=$weekClass?>'><?=number_format($weekDiff, 0)?></font></td>
+				<td><font class='<?=$weekClass?>'><?=number_format($weekDiffPerct, 2)?>%</font></td>
+			</tr>
+			<tr>
+				<td><b>Monthly Total:</b></td>
+				<td><?=number_format($lastMonthRegistration, 0)?></td>
+				<td><?=number_format($currentMonthRegistration, 0)?></td>
+				<td><font class='<?=$monthClass?>'><?=number_format($monthDiff, 0)?></font></td>
+				<td><font class='<?=$monthClass?>'><?=number_format($monthDiffPerct, 2)?>%</font></td>
+			</tr>
+		</tbody>
+	</table>
 </div>
 <div class="clear"></div>
+<p>*Please note that dashboard is updated every 5 minutes.</p>
 <br />
 <hr />
 <div class="grid_16">
