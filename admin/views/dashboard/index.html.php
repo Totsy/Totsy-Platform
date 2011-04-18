@@ -14,17 +14,127 @@
 	<h2 id="page-heading">Totsy Dashboard</h2>
 </div>
 <div class="clear"></div>
-<div class="grid_16">
-	<?=$FC->renderChart()?>
+
+<div class="clear"></div>
+<div class="grid_10">
+	<?=$RevenueChart->renderChart()?>
+</div>
+<div class="grid_5">
+	<?php
+		$lastRevenue = end($lastMonth['revenue'][0]);
+		$currentRevenue = end($currentMonth['revenue'][1]);
+		$dayDiff = $currentRevenue - $lastRevenue;
+		$dayDiffPerct = 100 * $dayDiff/$currentRevenue;
+		$lastMonthRevenue = array_sum($lastMonth['revenue'][0]);
+		$currentMonthRevenue = array_sum($currentMonth['revenue'][1]);
+		$monthDiff = $currentMonthRevenue - $lastMonthRevenue;
+		$monthDiffPerct = 100 * $monthDiff/$currentMonthRevenue;
+	?>
+	<table id="revenue_summary" class="" border="1" style="margin:20px;width:500px">
+		<thead>
+			<tr>
+				<th></th>
+				<th><?=$lastMonthDesc?></th>
+				<th><?=$currentMonthDesc?></th>
+				<th>Diff ($)</th>
+				<th>Diff (%)</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><b>Daily Total:</b></td>
+				<td>$<?=number_format($lastRevenue, 2)?></td>
+				<td>$<?=number_format($currentRevenue, 2)?></td>
+				<td><?=number_format($dayDiff, 2)?></td>
+				<td><?=number_format($dayDiffPerct, 2)?>%</td>
+			</tr>
+			<tr>
+				<td><b>Monthly Total:</b></td>
+				<td>$<?=number_format($lastMonthRevenue, 2)?></td>
+				<td>$<?=number_format($currentMonthRevenue, 2)?></td>
+				<td><?=number_format($monthDiff, 2)?></td>
+				<td><?=number_format($monthDiffPerct, 2)?>%</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<div class="clear"></div>
+<div class="grid_10">
+	<?=$RegChart->renderChart()?>
+</div>
+<div class="grid_5">
+	<div style='margin:auto 0'>
+		<?php
+			$lastRegistration= end($lastMonth['registration'][0]);
+			$currentRegistration = end($currentMonth['registration'][1]);
+			$dayDiff = $currentRegistration - $lastRegistration;
+			$dayDiffPerct = 100 * $dayDiff/$currentRevenue;
+			$lastMonthRegistration = array_sum($lastMonth['registration'][0]);
+			$currentMonthRegistration = array_sum($currentMonth['registration'][1]);
+			$monthDiff = $currentMonthRegistration - $lastMonthRegistration;
+			$monthDiffPerct = 100 * $monthDiff/$currentMonthRegistration;
+		?>
+		<table id="registration_summary" class="" border="1" style="width:500px">
+			<thead>
+				<tr>
+					<th></th>
+					<th><?=$lastMonthDesc?></th>
+					<th><?=$currentMonthDesc?></th>
+					<th>Diff (#)</th>
+					<th>Diff (%)</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><b>Daily Total:</b></td>
+					<td><?=number_format($lastRegistration, 0)?></td>
+					<td><?=number_format($currentRegistration, 0)?></td>
+					<td><?=number_format($dayDiff, 0)?></td>
+					<td><?=number_format($dayDiffPerct, 2)?>%</td>
+				</tr>
+				<tr>
+					<td><b>Monthly Total:</b></td>
+					<td><?=number_format($lastMonthRegistration, 0)?></td>
+					<td><?=number_format($currentMonthRegistration, 0)?></td>
+					<td><?=number_format($monthDiff, 0)?></td>
+					<td><?=number_format($monthDiffPerct, 2)?>%</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="clear"></div>
+<div class="grid_10">
+	<?=$MonthComboChart->renderChart()?>
+</div>
+<div class="grid_5">
+	<table id="ytd_summary" class="" border="1" style="margin:20px;width:400px">
+		<thead>
+			<tr>
+				<th></th>
+				<th>Total Revenue</th>
+				<th>Total Registration</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><b>Year to Date:</b></td>
+				<?php foreach ($yearToDate as $data): ?>
+					<?php if ($data['type'] == 'revenue'): ?>
+						<td>$<?=number_format($data['total'], 2)?></td>
+					<?php endif ?>
+				<?php endforeach ?>
+				<?php foreach ($yearToDate as $data): ?>
+					<?php if ($data['type'] == 'registration'): ?>
+						<td><?=number_format($data['total'], 2)?></td>
+					<?php endif ?>
+				<?php endforeach ?>
+			</tr>
+		</tbody>
+	</table>
 </div>
 <div class="clear"></div>
 <div class="grid_16">
-	<?=$FC2->renderChart()?>
-	<?=$FC3->renderChart()?>
-</div>
-<div class="clear"></div>
-<div class="grid_16">
-	
 	<div class="box">
 		<h2>
 			<p>Data of Registration/Sale Figures</p>

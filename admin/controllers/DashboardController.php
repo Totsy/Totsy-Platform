@@ -11,7 +11,14 @@ use FusionCharts;
 
 class DashboardController extends \lithium\action\Controller {
 
+	/**
+	 *
+	 */
     public function index() {
+		/**
+		 * Build a MongoDB group call for the monthly revenue
+		 * numbers.
+		 */
 		$collection = Dashboard::collection();
 		$keys = new MongoCode("
 			function(doc){
@@ -40,8 +47,10 @@ class DashboardController extends \lithium\action\Controller {
 		$registrationDetails = Dashboard::find('all', compact('conditions'));
 		$conditions = $date + array('type' => 'revenue');
 		$revenuDetails = Dashboard::find('all', compact('conditions'));
-
-		$FC = new FusionCharts("MSColumn3DLineDY","850","350");
+		/**
+		 * BUild the chart functionality.
+		 */
+		$MonthComboChart = new FusionCharts("MSColumn3DLineDY","600","350");
 
 	    # Store chart attributes in a variable
 		$params = array(
@@ -52,7 +61,7 @@ class DashboardController extends \lithium\action\Controller {
 			'sYAxisName=Total Registrations',
 			'decimalPrecision=0'
 		);
-	    $FC->setChartParams(implode(';', $params));
+	    $MonthComboChart->setChartParams(implode(';', $params));
 		$monthList = array();
 		foreach ($summary['retval'] as $data) {
 			if (!in_array($data['month'], $monthList)) {
@@ -80,24 +89,97 @@ class DashboardController extends \lithium\action\Controller {
 		foreach ($registrations as $key => $value) {
 			$chartData[1][] = $value;
 		}
-		$FC->addChartDataFromArray($chartData, $dates);
-		$conditions = array(
-			'date' => array(
-				'$gte' => new MongoDate(mktime(0, 0, 0, date("m"), 1, date("Y")))
-		));
-		$current = Dashboard::find('all', compact('conditions'));
-		$current = $current->data();
-
-		$FC2 = new FusionCharts("Line","850","350");
-		# Store chart attributes in a variable
-		$month = date('F', time());
+		$MonthComboChart->addChartDataFromArray($chartData, $dates);
+		/**
+		 * Build chart data for revenue
+		 */
+		$RevenueChart = new FusionCharts("MSArea2D","600","350");
+		$currentMonthDesc = date('F', time());
+		$lastMonthDesc = date('F', strtotime('last month'));
 		$params = array(
 			'caption=Daily Revenue',
-			"subcaption=For the Month of $month",
-			'xAxisName=Day',
-			'numberPrefix=$;showValues=1'
+			"subcaption=For the Month of $currentMonthDesc",
+			'xAxisName=Day of Month',
+			'numberPrefix=$',
+			'showValues=0'
 		);
-	    $FC2->setChartParams(implode(';', $params));
+	    $RevenueChart->setChartParams(implode(';', $params));
+		$currentMonth = $this->monthData(array('group' => 1));
+		$lastMonth = $this->monthData(array(
+			'range' => true,
+			'min' => -1,
+			'max' => 0,
+			'group' => 0
+		));
+		$lastMonth['revenue'][0] = array_slice(
+			$lastMonth['revenue'][0],
+			0,
+			count($currentMonth['dates']),
+			true
+		);
+		$revenue = $lastMonth['revenue'] + $currentMonth['revenue'] ;
+		$revenue[0][0] = "$lastMonthDesc Revenue";
+		$revenue[0][1] = 'lineThickness=.5';
+		$revenue[1][0] = "$currentMonthDesc Revenue";
+		$revenue[1][1] = 'lineThickness=5';
+		ksort($revenue[0]);
+		ksort($revenue[1]);
+		$RevenueChart->addChartDataFromArray($revenue, $currentMonth['dates']);
+		$RegChart = new FusionCharts("MSArea2D","600","350");
+		$params = array(
+			'caption=Daily Regsistration',
+			"subcaption=For the Month as of $currentMonthDesc ",
+			'xAxisName=Day of Month',
+			'showValues=0'
+		);
+		$RegChart->setChartParams(implode(';', $params));
+		$lastMonth['registration'][0] = array_slice(
+			$lastMonth['registration'][0],
+			0,
+			count($currentMonth['dates']),
+			true
+		);
+		$registration = $lastMonth['registration'] + $currentMonth['registration'];
+		$registration[0][0] = "$lastMonthDesc Registrations";
+		$registration[1][0] = "$currentMonthDesc Registrations";
+		ksort($registration[0]);
+		ksort($registration[1]);
+		$RegChart->addChartDataFromArray($registration, $currentMonth['dates']);
+		$yearToDate = $this->yearToDate();
+
+		return compact(
+			'summary',
+			'currentMonth',
+			'lastMonth',
+			'registrationDetails',
+			'revenuDetails',
+			'MonthComboChart',
+			'RevenueChart',
+			'RegChart',
+			'currentMonthDesc',
+			'lastMonthDesc',
+			'yearToDate'
+		);
+    }
+
+	public function monthData(array $options = array()) {
+		$range = (empty($options['range'])) ? false : true;
+		$options['min'] = (empty($options['min'])) ? 0 : $options['min'];
+		$options['group'] = (empty($options['group'])) ? 0 : $options['group'];
+		if ($range == true) {
+			$conditions = array(
+				'date' => array(
+					'$gte' => new MongoDate(mktime(0, 0, 0, date("m") + $options['min'], 1, date("Y"))),
+					'$lte'=> new MongoDate(mktime(0, 0, 0, date("m") + $options['max'], 0, date("Y")))
+			));
+		} else {
+			$conditions = array(
+				'date' => array(
+					'$gte' => new MongoDate(mktime(0, 0, 0, date("m") + $options['min'], 1, date("Y")))
+			));
+		}
+		$current = Dashboard::find('all', compact('conditions'));
+		$current = $current->data();
 		$dateList = array();
 		$dates = array();
 		foreach ($current as $data) {
@@ -116,31 +198,44 @@ class DashboardController extends \lithium\action\Controller {
 		ksort($dates);
 		ksort($currentRevenue);
 		ksort($currentReg);
-		$i = 0;
+		$i = 2;
 		foreach ($currentRevenue as $key => $value) {
-			$chartData2[$i][0] = $dates[$key];
-			$chartData2[$i][1] = $value;
+			$revenue[$options['group']][$i] = $value;
 			++$i;
 		}
-
-		$FC2->addChartDataFromArray($chartData2);
-		$FC3 = new FusionCharts("Line","850","350");
-		# Store chart attributes in a variable
-		$params = array(
-			'caption=Daily Registrations',
-			"subcaption=For the Month of $month",
-			'xAxisName=Day'
-		);
-	    $FC3->setChartParams(implode(';', $params));
-		$i = 0;
+		$i = 2;
 		foreach ($currentReg as $key => $value) {
-			$chartData3[$i][0] = $dates[$key];
-			$chartData3[$i][1] = $value;
+			$registration[$options['group']][$i] = $value;
 			++$i;
 		}
-		$FC3->addChartDataFromArray($chartData3);
-		return compact('summary', 'registrationDetails', 'revenuDetails', 'FC', 'FC2', 'FC3');
-    }
+		return compact('dates', 'revenue', 'registration');
+	}
+
+	public function yearToDate() {
+		$collection = Dashboard::collection();
+		$keys = new MongoCode("
+			function(doc){
+				return {
+					'type' : doc.type
+				}
+			}"
+		);
+		$inital = array(
+			'total' => 0
+		);
+		$reduce = new MongoCode('function(doc, prev){
+				prev.total += doc.total
+			}'
+		);
+		$date = array(
+			'date' => array(
+				'$gte' => new MongoDate(strtotime('January')),
+				'$lt' => new MongoDate()
+		));
+
+		$summary = $collection->group($keys, $inital, $reduce, $date);
+		return $summary['retval'];
+	}
 }
 
 ?>
