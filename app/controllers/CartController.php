@@ -144,11 +144,14 @@ class CartController extends BaseController {
 					'conditions' => array(
 						'_id' => $data["id"]
 				)));
+				$quantity = $cart->quantity;
 				if(!empty($cart)){
 					Cart::remove(array('_id' => $data["id"]));
+					//calculate savings
+					$item[$cart->item_id] = $quantity;
+					$this->savings($item, 'remove');
 				}
 			}
-
 		$this->_render['layout'] = false;
 		$cartcount = Cart::itemCount();
 		return compact('cartcount');
@@ -214,6 +217,14 @@ class CartController extends BaseController {
 					if(!empty($itemInfo->msrp)){
 						$savings += $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
 					}
+				}
+			}
+		} else if($action == "remove") {
+			$savings = Session::read('userSavings');
+			foreach($items as $key => $quantity) {
+				$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
+				if(!empty($itemInfo->msrp)){
+					$savings -= $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
 				}
 			}
 		}
