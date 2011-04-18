@@ -50,7 +50,7 @@ class DashboardController extends \lithium\action\Controller {
 		/**
 		 * BUild the chart functionality.
 		 */
-		$MonthComboChart = new FusionCharts("MSColumn3DLineDY","600","350");
+		$MonthComboChart = new FusionCharts("MSColumn3DLineDY","800","350");
 
 	    # Store chart attributes in a variable
 		$params = array(
@@ -93,7 +93,7 @@ class DashboardController extends \lithium\action\Controller {
 		/**
 		 * Build chart data for revenue
 		 */
-		$RevenueChart = new FusionCharts("MSArea2D","600","350");
+		$RevenueChart = new FusionCharts("MSArea2D","460","350");
 		$currentMonthDesc = date('F', time());
 		$lastMonthDesc = date('F', strtotime('last month'));
 		$params = array(
@@ -125,7 +125,7 @@ class DashboardController extends \lithium\action\Controller {
 		ksort($revenue[0]);
 		ksort($revenue[1]);
 		$RevenueChart->addChartDataFromArray($revenue, $currentMonth['dates']);
-		$RegChart = new FusionCharts("MSArea2D","600","350");
+		$RegChart = new FusionCharts("MSArea2D","460","350");
 		$params = array(
 			'caption=Daily Regsistration',
 			"subcaption=For the Month as of $currentMonthDesc ",

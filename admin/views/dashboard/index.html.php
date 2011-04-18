@@ -32,16 +32,29 @@
 
 <div class="grid_16">
 	<h2 id="page-heading">Totsy Dashboard - As of <?=date('m/d/Y g:i:s', $updateTime)?></h2>
+	
 </div>
 <div class="clear"></div>
-
-<div class="clear"></div>
-<div class="grid_10">
-	<?=$RevenueChart->renderChart()?>
+<div class="grid_8">
+	<h2>
+		Revenue Summary
+	</h2>
+	<center>
+		<?=$RevenueChart->renderChart()?>
+	</center>
 </div>
-<div class="grid_5">
+<div class="grid_8">
+	<h2>
+		Registration Summary
+	</h2>
+	<center>
+		<?=$RegChart->renderChart()?>
+	</center>
+</div>
+<div class="clear"></div>
+<div class="grid_8">
 	<?php
-		$dayClass = $monthClass = 'positive';
+		$dayClass = $weekClass = $monthClass = 'positive';
 		$lastRevenue = end($lastMonth['revenue'][0]);
 		$currentRevenue = end($currentMonth['revenue'][1]);
 		$dayDiff = $currentRevenue - $lastRevenue;
@@ -56,8 +69,19 @@
 		if ($monthDiffPerct < 1) {
 			$monthClass = 'negative';
 		}
+		if (count($lastMonth['revenue'][0]) >= 7) {
+			$lastWeek = array_splice($lastMonth['revenue'][0], -7);
+			$lastWeekTotal = array_sum($lastWeek);
+			$currentWeek = array_splice($currentMonth['revenue'][1], -7);
+			$currentWeekTotal = array_sum($currentWeek);
+			$weekDiff = $currentWeekTotal - $lastWeekTotal;
+			$weekDiffPerct = 100 * $weekDiff/$currentWeekTotal;
+			if ($weekDiffPerct < 1) {
+				$weekClass = 'negative';
+			}
+		}
 	?>
-	<table id="revenue_summary" class="" border="1" style="margin:20px;width:500px">
+	<table id="revenue_summary" class="" border="1">
 		<thead>
 			<tr>
 				<th></th>
@@ -76,6 +100,13 @@
 				<td><font class='<?=$dayClass?>'><?=number_format($dayDiffPerct, 2)?>%</font></td>
 			</tr>
 			<tr>
+				<td><b>Last 7 Day Total:</b></td>
+				<td>$<?=number_format($lastWeekTotal, 2)?></td>
+				<td>$<?=number_format($currentWeekTotal, 2)?></td>
+				<td><font class='<?=$weekClass?>'><?=number_format($weekDiff, 2)?></font></td>
+				<td><font class='<?=$weekClass?>'><?=number_format($weekDiffPerct, 2)?>%</font></td>
+			</tr>
+			<tr>
 				<td><b>Monthly Total:</b></td>
 				<td>$<?=number_format($lastMonthRevenue, 2)?></td>
 				<td>$<?=number_format($currentMonthRevenue, 2)?></td>
@@ -85,14 +116,9 @@
 		</tbody>
 	</table>
 </div>
-<div class="clear"></div>
-<div class="grid_10">
-	<?=$RegChart->renderChart()?>
-</div>
-<div class="grid_5">
-	<div style='margin:auto 0'>
+<div class="grid_8">
 		<?php
-			$dayClass = $monthClass = 'positive';
+			$dayClass = $weekClass = $monthClass = 'positive';
 			$lastRegistration= end($lastMonth['registration'][0]);
 			$currentRegistration = end($currentMonth['registration'][1]);
 			$dayDiff = $currentRegistration - $lastRegistration;
@@ -107,8 +133,19 @@
 			if ($monthDiffPerct < 1) {
 				$monthClass = 'negative';
 			}
+			if (count($lastMonth['registration'][0]) >= 7) {
+				$lastWeek = array_splice($lastMonth['registration'][0], -7);
+				$lastWeekTotal = array_sum($lastWeek);
+				$currentWeek = array_splice($currentMonth['registration'][1], -7);
+				$currentWeekTotal = array_sum($currentWeek);
+				$weekDiff = $currentWeekTotal - $lastWeekTotal;
+				$weekDiffPerct = 100 * $weekDiff/$currentWeekTotal;
+				if ($weekDiffPerct < 1) {
+					$weekClass = 'negative';
+				}
+			}
 		?>
-		<table id="registration_summary" class="" border="1" style="width:500px">
+		<table id="registration_summary" class="" border="1">
 			<thead>
 				<tr>
 					<th></th>
@@ -127,6 +164,13 @@
 					<td><font class='<?=$dayClass?>'><?=number_format($dayDiffPerct, 2)?>%</font></td>
 				</tr>
 				<tr>
+					<td><b>Last 7 Day Total:</b></td>
+					<td><?=number_format($lastWeekTotal, 0)?></td>
+					<td><?=number_format($currentWeekTotal, 0)?></td>
+					<td><font class='<?=$weekClass?>'><?=number_format($weekDiff, 0)?></font></td>
+					<td><font class='<?=$weekClass?>'><?=number_format($weekDiffPerct, 2)?>%</font></td>
+				</tr>
+				<tr>
 					<td><b>Monthly Total:</b></td>
 					<td><?=number_format($lastMonthRegistration, 0)?></td>
 					<td><?=number_format($currentMonthRegistration, 0)?></td>
@@ -135,13 +179,15 @@
 				</tr>
 			</tbody>
 		</table>
-	</div>
 </div>
 <div class="clear"></div>
-<div class="grid_10">
-	<?=$MonthComboChart->renderChart()?>
-</div>
-<div class="grid_5">
+<br />
+<hr />
+<div class="grid_16">
+	<h2>
+		Monthly and YTD Summary
+	</h2>
+	<center>
 	<table id="ytd_summary" class="" border="1" style="margin:20px;width:400px">
 		<thead>
 			<tr>
@@ -160,12 +206,14 @@
 				<?php endforeach ?>
 				<?php foreach ($yearToDate as $data): ?>
 					<?php if ($data['type'] == 'registration'): ?>
-						<td><?=number_format($data['total'], 2)?></td>
+						<td><?=number_format($data['total'], 0)?></td>
 					<?php endif ?>
 				<?php endforeach ?>
 			</tr>
 		</tbody>
 	</table>
+	<?=$MonthComboChart->renderChart()?>
+	</center>
 </div>
 <div class="clear"></div>
 <div class="grid_16">
