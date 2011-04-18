@@ -146,8 +146,9 @@ class DashboardController extends \lithium\action\Controller {
 		ksort($registration[1]);
 		$RegChart->addChartDataFromArray($registration, $currentMonth['dates']);
 		$yearToDate = $this->yearToDate();
-
+		$updateTime = max(array_keys($currentMonth['dates']));
 		return compact(
+			'updateTime',
 			'summary',
 			'currentMonth',
 			'lastMonth',

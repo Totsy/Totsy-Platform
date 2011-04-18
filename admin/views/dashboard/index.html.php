@@ -9,9 +9,29 @@
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
 <?=$this->html->script('FusionCharts.js')?>
 
+<style type="text/css">
+	td {
+		font-size:12px;
+		text-align: center;
+	}
+	th {
+		font-size:12px;
+		text-align: center;
+	}
+	.positive{
+		font-size:12px;
+		font-weight:bold;
+		color:#00CC66;
+	}
+	.negative{
+		font-size:12px;
+		font-weight:bold;
+		color:#FF0000;
+	}
+</style>
 
 <div class="grid_16">
-	<h2 id="page-heading">Totsy Dashboard</h2>
+	<h2 id="page-heading">Totsy Dashboard - As of <?=date('m/d/Y g:i:s', $updateTime)?></h2>
 </div>
 <div class="clear"></div>
 
@@ -21,14 +41,21 @@
 </div>
 <div class="grid_5">
 	<?php
+		$dayClass = $monthClass = 'positive';
 		$lastRevenue = end($lastMonth['revenue'][0]);
 		$currentRevenue = end($currentMonth['revenue'][1]);
 		$dayDiff = $currentRevenue - $lastRevenue;
 		$dayDiffPerct = 100 * $dayDiff/$currentRevenue;
+		if ($dayDiffPerct < 1) {
+			$dayClass = 'negative';
+		}
 		$lastMonthRevenue = array_sum($lastMonth['revenue'][0]);
 		$currentMonthRevenue = array_sum($currentMonth['revenue'][1]);
 		$monthDiff = $currentMonthRevenue - $lastMonthRevenue;
 		$monthDiffPerct = 100 * $monthDiff/$currentMonthRevenue;
+		if ($monthDiffPerct < 1) {
+			$monthClass = 'negative';
+		}
 	?>
 	<table id="revenue_summary" class="" border="1" style="margin:20px;width:500px">
 		<thead>
@@ -45,15 +72,15 @@
 				<td><b>Daily Total:</b></td>
 				<td>$<?=number_format($lastRevenue, 2)?></td>
 				<td>$<?=number_format($currentRevenue, 2)?></td>
-				<td><?=number_format($dayDiff, 2)?></td>
-				<td><?=number_format($dayDiffPerct, 2)?>%</td>
+				<td><font class='<?=$dayClass?>'><?=number_format($dayDiff, 2)?></font></td>
+				<td><font class='<?=$dayClass?>'><?=number_format($dayDiffPerct, 2)?>%</font></td>
 			</tr>
 			<tr>
 				<td><b>Monthly Total:</b></td>
 				<td>$<?=number_format($lastMonthRevenue, 2)?></td>
 				<td>$<?=number_format($currentMonthRevenue, 2)?></td>
-				<td><?=number_format($monthDiff, 2)?></td>
-				<td><?=number_format($monthDiffPerct, 2)?>%</td>
+				<td><font class='<?=$monthClass?>'><?=number_format($monthDiff, 2)?></font></td>
+				<td><font class='<?=$monthClass?>'><?=number_format($monthDiffPerct, 2)?>%</font></td>
 			</tr>
 		</tbody>
 	</table>
@@ -65,14 +92,21 @@
 <div class="grid_5">
 	<div style='margin:auto 0'>
 		<?php
+			$dayClass = $monthClass = 'positive';
 			$lastRegistration= end($lastMonth['registration'][0]);
 			$currentRegistration = end($currentMonth['registration'][1]);
 			$dayDiff = $currentRegistration - $lastRegistration;
 			$dayDiffPerct = 100 * $dayDiff/$currentRevenue;
+			if ($dayDiffPerct < 1) {
+				$dayClass = 'negative';
+			}
 			$lastMonthRegistration = array_sum($lastMonth['registration'][0]);
 			$currentMonthRegistration = array_sum($currentMonth['registration'][1]);
 			$monthDiff = $currentMonthRegistration - $lastMonthRegistration;
 			$monthDiffPerct = 100 * $monthDiff/$currentMonthRegistration;
+			if ($monthDiffPerct < 1) {
+				$monthClass = 'negative';
+			}
 		?>
 		<table id="registration_summary" class="" border="1" style="width:500px">
 			<thead>
@@ -89,15 +123,15 @@
 					<td><b>Daily Total:</b></td>
 					<td><?=number_format($lastRegistration, 0)?></td>
 					<td><?=number_format($currentRegistration, 0)?></td>
-					<td><?=number_format($dayDiff, 0)?></td>
-					<td><?=number_format($dayDiffPerct, 2)?>%</td>
+					<td><font class='<?=$dayClass?>'><?=number_format($dayDiff, 0)?></font></td>
+					<td><font class='<?=$dayClass?>'><?=number_format($dayDiffPerct, 2)?>%</font></td>
 				</tr>
 				<tr>
 					<td><b>Monthly Total:</b></td>
 					<td><?=number_format($lastMonthRegistration, 0)?></td>
 					<td><?=number_format($currentMonthRegistration, 0)?></td>
-					<td><?=number_format($monthDiff, 0)?></td>
-					<td><?=number_format($monthDiffPerct, 2)?>%</td>
+					<td><font class='<?=$monthClass?>'><?=number_format($monthDiff, 0)?></font></td>
+					<td><font class='<?=$monthClass?>'><?=number_format($monthDiffPerct, 2)?>%</font></td>
 				</tr>
 			</tbody>
 		</table>
