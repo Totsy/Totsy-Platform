@@ -434,6 +434,7 @@ class Order extends \lithium\data\Model {
 			}
 		} else {
 			$preAfterDiscount = $subTotal;
+			$datas_order["promocode_disable"] = true;
 		}
 		/**************CREDITS TREATMENT**************/
 		if(isset($selected_order["credit_used"])){
@@ -446,7 +447,12 @@ class Order extends \lithium\data\Model {
 			} else {
 				$user_ord["total_credit"] = $selected_order["user_total_credits"];
 			}
-			$datas_user["total_credit"] = (float) $user_ord["total_credit"];
+			if(!empty($user_ord["total_credit"])) {
+				$datas_user["total_credit"] = (float) $user_ord["total_credit"];
+			} else {
+				$datas_user["total_credit"] = 0;
+				$user_ord["total_credit"] = 0;
+			}
 			//Set Initial Credits if not Set
 			if(empty($selected_order["initial_credit_used"])) {
 				$datas_order["initial_credit_used"] = $selected_order["credit_used"];
