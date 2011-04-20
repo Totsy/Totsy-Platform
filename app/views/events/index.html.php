@@ -207,7 +207,7 @@
 				$futureJs[] = "<script type=\"text/javascript\">
 					$(function () {var saleEnd = new Date();
 						saleEnd = new Date($date);
-						$(\"$splashid\").countdown({until: saleEnd, layout: '{dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+						$(\"$splashid\").countdown({until: saleEnd, layout: 'Opens in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
 					});
 				</script>";
 			?>
