@@ -95,7 +95,7 @@ class AffiliatesController extends BaseController {
 						'email' => $user->email
 					);
 					Session::write('userLogin', $userLogin, array('name'=>'default'));
-					Affliate::linkshareCheck($userLogin['_id'], $affiliate, $cookie);
+					Affiliate::linkshareCheck($userLogin['_id'], $affiliate, $cookie);
 					User::log($ipaddress);
 					Session::write('pixel',$pixel, array('name'=>'default'));
 					$this->redirect($urlredirect);
