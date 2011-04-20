@@ -70,16 +70,16 @@ class AffiliatesController extends BaseController {
 			Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 			if (Session::check('userLogin', array('name' => 'default'))) {
 				$userlogin = Session::read('userLogin');
-				static::linkshareCheck($userLogin['_id'], $affiliate, $cookie);
+				Affiliate::linkshareCheck($userlogin['_id'], $affiliate, $cookie);
 				$this->redirect($urlredirect);
 			}
 			UsersController::facebookLogin($affiliate, $cookie, $ipaddress);
 			if (($pdata)) {
 				$data['email'] = strtolower($pdata['email']);
-				$data['firstname'] = $pdata['firstname'];
-				$data['lastname'] = $pdata['lastname'];
+			//	$data['firstname'] = $pdata['firstname'];
+			//	$data['lastname'] = $pdata['lastname'];
 				$data['email'] = htmlspecialchars_decode(strtolower($pdata['email']));
-				$data['zip'] = $pdata['zip'];
+			//	$data['zip'] = $pdata['zip'];
 				$data['confirmemail'] = htmlspecialchars_decode(strtolower($pdata['email']));
 				$data['password'] = $pdata['password'];
 				$data['terms'] = (boolean) $pdata['terms'];
