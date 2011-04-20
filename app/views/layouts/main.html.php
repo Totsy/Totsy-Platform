@@ -53,7 +53,7 @@
 					<?php else:?>
 					    <?="{$userInfo['email']}"; ?>
 					<?php endif; ?>
-					<?php $logout = 'Users::logout' ?>
+					<?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
 					(<?=$this->html->link('Sign Out', $logout, array('title' => 'Sign Out')); ?>)
 				</div>
 
