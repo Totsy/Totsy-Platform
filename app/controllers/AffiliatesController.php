@@ -76,10 +76,10 @@ class AffiliatesController extends BaseController {
 			UsersController::facebookLogin($affiliate, $cookie, $ipaddress);
 			if (($pdata)) {
 				$data['email'] = strtolower($pdata['email']);
-				$data['firstname'] = $pdata['firstname'];
-				$data['lastname'] = $pdata['lastname'];
+			//	$data['firstname'] = $pdata['firstname'];
+			//	$data['lastname'] = $pdata['lastname'];
 				$data['email'] = htmlspecialchars_decode(strtolower($pdata['email']));
-				$data['zip'] = $pdata['zip'];
+			//	$data['zip'] = $pdata['zip'];
 				$data['confirmemail'] = htmlspecialchars_decode(strtolower($pdata['email']));
 				$data['password'] = $pdata['password'];
 				$data['terms'] = (boolean) $pdata['terms'];
