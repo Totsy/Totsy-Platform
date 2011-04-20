@@ -9,7 +9,7 @@
 		<?=$this->title() ?: 'Totsy, the private sale site for Moms'; ?>
 		<?=$this->title() ? '- Totsy' : ''; ?>
 	</title>
-	<?=$this->html->style(array('base.css'), array('media' => 'screen')); ?>
+	<?=$this->html->style(array('base.css', '960.css'), array('media' => 'screen')); ?>
 	<?=$this->html->script(array(
 		'jquery-1.4.2.min.js',
 		'jquery-ui-1.8.2.custom.min.js',
@@ -22,31 +22,70 @@
     <meta property="og:description"
           content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
 </head>
-<body class="app">
-<!--
-<div id="global_site_msg"><strong>Last minute message:</strong> our last promotional campaign that was intended for a select audience of our long-time members was unintentionally exposed to the general public. <br />This promotion has now been restored and will only work for members who received an email directly from Totsy containing a promocode.</div>
--->
-<div id="topper"></div>
-
-	<div id="wrapper">
-
-		<div id="header">
-
-			<div id="header-lt">
+<body>
+<div class="container_16" style="margin:10px auto;">
+<div class="grid_2 alpha">
 				<?=$this->html->link(
-					$this->html->image('logo.png', array('width'=>'155', 'height'=>'90')), '/sales', array(
-						'id' => 'main-logo', 'escape'=> false
+					$this->html->image('logo.png', array('width'=>'100')), '/sales', array(
+						'escape'=> false
 					)
 				); ?>
-			</div>
-
-			<div id="header-mid">
-
-				<?php if (!empty($userInfo)): ?>
-					<?=$this->html->link('Help Desk', 'Tickets::add', array('id' => 'cs')); ?>
-				<div id="welcome">
-
-				Hello,
+</div>
+<div class="grid_14">
+	<?php if (!empty($userInfo)): ?>
+	<div class="grid_6">
+	        <ul class="nav main" id="navlist">
+	            <li>
+	
+	                <a href="">All</a>
+	
+	                <ul>
+	                    <li><a href="">Search Orders</a></li>
+	
+	                    <li><a href="">Update Order Status</a></li>
+	                </ul>
+	            </li>
+	
+	            <li>
+	                <a href="#">Boys</a>
+	
+	                <ul>
+	                    <li><a href="#">Report on Credits</a></li>
+	
+	                    <li><a href="">Apply Credit by Event</a></li>
+	                </ul>
+	
+	            </li>
+	
+	            <li>
+	                <a href="">Girls</a>
+	
+	                <ul>
+	                    <li><a href="">Add New Event</a></li>
+	
+	                    <li><a href="">View Events</a></li>
+	
+	                    <li><a href="">Search for Items</a></li>
+	                </ul>
+	            </li>    
+	            
+	            <li>
+	                <a href="">Moms</a>
+	
+	                <ul>
+	                    <li><a href="">Add New Event</a></li>
+	
+	                    <li><a href="">View Events</a></li>
+	
+	                    <li><a href="">Search for Items</a></li>
+	                </ul>
+	            </li>    
+	                 
+	        </ul>
+	    </div>
+		
+		<div class="grid_8 alpha omega" style="text-align:right; padding:10px 0px;">
+					Hello,
 					<?php if(array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])):
 					?>
 						<?="{$userInfo['firstname']} {$userInfo['lastname']}"; ?>
@@ -54,42 +93,43 @@
 					    <?="{$userInfo['email']}"; ?>
 					<?php endif; ?>
 					<?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
-					(<?=$this->html->link('Sign Out', $logout, array('title' => 'Sign Out')); ?>)
-				</div>
-
+					(<?=$this->html->link('Sign Out', $logout, array('title' => 'Sign Out')); ?>) 
+					<br />
+					
+					<?=$this->html->link('Contact Us', 'Tickets::add'); ?>
+					/ 
+					<?php if (!empty($userInfo)): ?>
+					<?=$this->html->link('Checkout', array('Orders::add'), array(
+								'id' => 'checkout', 'title' => 'checkout'
+							)); ?> (<?=$cartCount;?>) 
+					
+					/
+ 
+			 			<?=$this->html->link('Cart', array('Cart::view')); ?> 
+					
+					/
+					<?=$this->html->link('My Credits', array('Credits::view')); ?>
+							
+							($<?=$credit?>) 
+								
+					/
+					<?=$this->html->link('Invite Friends. Get $15', array('/users/invite'));?>
+						
+				<?php endif ?>
+	</div>
+	
 				<?php endif ?>
 				<?php if (!(empty($userInfo))): ?>
-					<?=$this->menu->render('main-nav'); ?>
+					<?=$this->menu->render('main-nav__'); ?>
 				<?php endif ?>
-			</div>
-			<div id="header-rt">
-				<?=$this->html->link('Invite Friends. Get $15','/users/invite',array('title'=>'Invite Friends. Get $15', 'id'=>'if'));?>
-				<?php if (!empty($userInfo)): ?>
-					<p class="clear">
-						<span class="fr">
-							(<?=$cartCount;?>)
-							<?=$this->html->link('Checkout', array('Orders::add'), array(
-								'id' => 'checkout', 'title' => 'checkout'
-							)); ?>
-			 			</span>
-						<span class="fr"><?=$this->html->link('Cart', array('Cart::view'), array(
-							'id' => 'cart', 'title' => 'My Cart'
-						)); ?></span>
-			 			<span class="fr">
-							<?=$this->html->link('My Credits', array('Credits::view')); ?>
-							<?php if (!empty($credit)): ?>
-								($<?=$credit?>)
-							<?php endif ?>
-						</span>
-					</p>
-				<?php endif ?>
-			</div>
-		</div>
-		<div id="content">
-			<?php echo $this->content(); ?>
-		</div>
+			
+				</div>
 	</div>
-	<div id="botter"></div>
+	<div class="clear"></div>
+	</div>
+	<div class="container_16 roundy" style="background:#fff; margin:10px auto; padding:10px 0px 0px 0px; overflow:hidden;">
+		<?php echo $this->content(); ?>
+	</div>
 	<div id="footer">
 		<ul>
 			<li class="first"><a href="/pages/terms" title="Terms of Use">Terms of Use</a></li>

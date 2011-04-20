@@ -14,23 +14,9 @@
 	};
 })(jQuery);
 </script>
-	<h2 class="page-title gray"><span class="_red">Today's Sales</span>
-    <div class="sm-actions fr" style="font-size:12px; margin:7px 0px 0px 0px;">
-			<dl>
-				<dt><strong>Socialize With Us</strong></dt>
-				<dd>
-					<ul>
-						<li><a href="http://www.facebook.com/pages/Totsy/141535723466" target="_blank" title="Friend us on Facebook" class="sm-facebook sm-btn">Friend us on Facebook</a></li>
-						<li><a href="http://twitter.com/MyTotsy" target="_blank" title="Follow us on Twitter" class="sm-twitter sm-btn">Follow us on Twitter</a></li>
-					</ul>
-				</dd>
-			</dl>
-		</div>   
-	</h2>
-	<hr />
-
-<div class="fullwidth">
-
+<div class="grid_16">
+<h2 class="page-title gray">Today's Sales</h2>
+<hr />
 	<?php $x = 0; ?>
 	<?php $y = 0; ?>
 	<?php foreach ($openEvents as $event): ?>
@@ -144,7 +130,7 @@
 
 	<div style="margin-bottom:35px;" class="clear"></div>
 
-	<div class="coming-soon-sales">
+	<div class="grid_16 alpha omega">
 
 		<h2 class="page-title gray clear"><span class="_red">Upcoming Sales</span></h2>
 		<hr />

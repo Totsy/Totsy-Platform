@@ -4,18 +4,18 @@
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
 	$test = $cart->data();
 ?>
-
+<div class="grid_16">
+	<h2 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> My Cart</h2>
+	<hr />
+</div>
 <div class="message"></div>
 <?php if (!empty($test)): ?>
 <?php $subTotal = 0; ?>
 <?=$this->form->create(); ?>
-	<h1 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> My Cart</h1>
-
-	<hr />
+	
+	<div class="grid_12 roundy_cart">
 	<div id='message'><?php echo $message; ?></div>
-	<div class='fr' style="padding:10px; background:#fffbd1; border-top:1px solid #D7D7D7; border-right:1px solid #D7D7D7; border-left:1px solid #D7D7D7;">Estimated Ship Date: <?=date('m-d-Y', $shipDate)?></div>
-	<div id="middle" class="fullwidth">
-		<table width="100%" class="cart-table">
+		<table class="cart-table">
 			<thead>
 				<tr>
 					<th>Item</th>
@@ -24,7 +24,7 @@
 					<th>Quantity</th>
 					<th>Total</th>
 					<th>Time Remaining</th>
-					<th>Remove Item</th>
+					<th>Remove</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -86,7 +86,7 @@
 					</td>
 					<td class="cart-time" style="width:220px;"><img src="/img/clock_icon.gif" class="fl"/><div id='<?php echo "itemCounter$x"; ?>' class="fl" style="margin-left:5px;"></div></td>
 					<td class="cart-actions">
-						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" class="delete" onclick="return deletechecked('Are you sure you want to remove this item?');" style="color: red!important;">remove</a>
+						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" class="delete" onclick="return deletechecked('Are you sure you want to remove this item?');" style="color: red!important;"></a>
 					</td>
 				</tr>
 				<?php
@@ -119,19 +119,16 @@
 		<tr class="cart-total">
 
 			<td colspan="7" id='subtotal'><strong>Subtotal: <span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong>
-					<?php if(!empty($savings)) : ?>
-						<br />
-				<strong>You're Saving : <span style="color:#009900;">$<?=number_format($savings,2)?></span></strong>
-					<?php endif ?>
+				
 				<br/><hr/>
 				<?=$this->form->submit('Update Cart', array('class' => 'button'))?>
 			</td>
 		</tr>
 		<tr class="cart-buy">
-			<td colspan="4" class="return-policy">
+			<td colspan="2" class="return-policy">
 				<a href='../../pages/returns'><strong style="font-size:12px; font-weight:normal;">Refund &amp; Return Policy</strong></a><br />
 			</td>
-			<td class="cart-button" colspan="3">
+			<td class="cart-button" colspan="5">
 				<?=$this->html->link('Proceed To Checkout', 'Orders::add', array('class' => 'button')); ?>
 				<?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('class' => 'button', 'style' => 'margin-right:10px;')); ?>
 			</td>
@@ -154,20 +151,49 @@
 			<?php echo $button ?>
 		<?php endforeach ?>
 	<?php endif ?>
-<?php else: ?>
-	<h1 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> My Cart</h1>
-
-	<hr />
-<div><h1><center>You have no items in your cart. <br> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
+<div class="grid_4 omega">
+	<div class="roundy grey_inside">
+		<h3 class="gray">Your Savings</h3>
+		<hr />
+		<?php if(!empty($savings)) : ?>
+		This Purchase: <span style="color:#009900; font-size:16px; float:right;">$<?=number_format($savings,2)?></span>
+		<hr />
+		Total Savings: <span style="color:#009900; font-size:16px; float:right;">$<?=number_format($savings,2)?></span>
+		<?php endif ?>
 	</div>
+	<div class="clear"></div>
+	<div class="roundy grey_inside">
+		<h3 class="gray">Estimated Ship Date</h3>
+		<hr />
+		<span style="font-size:16px; font-weight:bold;"><?=date('m-d-Y', $shipDate)?></span>
+	</div>
+	<div class="clear"></div>
+	<div class="roundy grey_inside">
+		<h3 class="gray">Need Help?</h3>
+		<hr />
+		<ul>
+			<li>dfdfgdf</li>
+			<li>dfdfgdf</li>
+			<li>dfdfgdf</li>
+			<li>dfdfgdf</li>
+			<li>dfdfgdf</li>
+		</ul>
+	</div>
+</div>
+<div class="clear"></div>
+
+<?php else: ?>
+	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1><center>You have no items in your cart. <br> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
 <?php endif ?>
+
+
+
 <script type="text/javascript" charset="utf-8">
 	$(".inputbox").bind('keyup', function() {
 	var id = $(this).attr('id');
 	var qty = $(this).val();
 	var price = $(this).closest("tr").find("td[class^=price]").html().split("$")[1];
 	var cost = parseInt(qty) * parseFloat(price);
-
 	var itemCost = $().number_format(cost, {
 		numberOfDecimals: 2,
 		decimalSeparator: '.',
@@ -176,7 +202,6 @@
 
 	$(this).closest("tr").find("td[class^=total]").html("<strong>$" + itemCost + "</strong>");
 	var subTotal = 0;
-
 	$("td[class^=total]").each(function() {
 	    subTotal += parseFloat($(this).html().split("$")[1]);
 	});
@@ -200,7 +225,7 @@
 	$("#subtotal").html("<strong>Subtotal: $" + subTotalProper + "</strong>");
 });
 </script>
-<script>
+<script type="text/javascript" charset="utf-8">
 function deletechecked(message)
         {
             var answer = confirm(message)

@@ -1,10 +1,6 @@
-<?php
+<?php $this->title("Return Policy"); ?>
 
-	$this->title("Return Policy");
-	
-?>
-
-<h1 class="p-header">Return Policy</h1>
+<div class="grid_4 roundy grey_inside alpha">
 	<div id="left">
 		<ul class="menu main-nav">
 		  <h3 style="color:#999;">About Us</h3>
@@ -20,13 +16,12 @@
 		  <li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
 		</ul>
 	</div>
-	<div id="middle" class="noright">			
-			
-<div class="tl"><!-- --></div> 
-<div class="tr"><!-- --></div> 
+		
+</div>
 
-<div id="page">
-
+<div class="grid_12">
+<h1>Return Policy</h1>
+<hr />
 <p>(as of 09/01/2009)</p>
 
 <h2 class="gray mar-b">1. Final Sales</h2>
@@ -71,8 +66,6 @@
 
 
 </div> 
-<div class="bl"><!-- --></div> 
-<div class="br"><!-- --></div> 
 
 		</div> 
 

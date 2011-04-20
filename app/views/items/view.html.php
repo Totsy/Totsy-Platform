@@ -1,12 +1,80 @@
 <?=$this->html->script(array('jqzoom.pack.1.0.1','jquery.equalheights', 'cloud-zoom.1.0.2'));?>
 <?=$this->html->style('jquery.countdown');?>
 
-<h1 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a> / <?=$item->description?></h1>
+<div class="grid_16"><h2 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a> / <?=$item->description?> <?=$item->color?> <div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
+<hr />
+</div>
 
-	<hr />
-<div id="product-detail-right">
+<div class="grid_6">
+	<!-- Start product item -->
+		<?php if ($item->total_quantity <= 0): ?>
+					<?=$this->html->image('/img/soldout.png', array(
+						'title' => "Sold Out",
+						'style' => 'z-index : 2; position : absolute; left:69%; margin:10px;'
+					)); ?>
+			<?php endif ?>
+				<?php if (!empty($item->primary_image)): ?>
 
-	<div id="product-detail-right-top">
+<div class="zoom-section">
+  <div class="zoom-small-image">
+    <a href='/image/<?php echo $item->zoom_image; ?>.jpg' id='zoom1' class='cloud-zoom' rel="position: 'inside'">
+    <img src="/image/<?php echo $item->primary_image; ?>.jpg" alt='' border="0" title=""/></a>
+  </div>
+
+  	<!-- Start additional image view thumbnails -->
+	<div class="zoom-desc" style="margin-top:10px;">
+<?php
+			if (!empty($item->primary_image)) {
+				echo $this->html->link(
+				$this->html->image("/image/{$item->primary_image}.jpg", array(
+					'class' => "zoom-tiny-image",
+					'width' => "93",
+					'height' => "93",
+					'alt' => "product-thumb-fpo",
+					'rel' => "full_img_1")),
+					"/image/{$item->primary_image}.jpg", array(
+							'class' => "cloud-zoom-gallery",
+							'rel' => "useZoom: 'zoom1', smallImage: '/image/{$item->primary_image}.jpg'",
+							'escape'=> false
+				));
+			}
+		?>
+		<?php if (!empty($item->alternate_images)): ?>
+			<?php $x = 2; ?>
+			<?php foreach ($item->alternate_images as $value): ?>
+					<?=$this->html->link(
+					$this->html->image("/image/{$value}.jpg", array(
+						'class' => "zoom-tiny-image",
+						'width' => "93",
+						'height' => "93",
+						'alt' => "full_img_$x"
+						)),
+						"/image/$item->zoom_image.jpg", array(
+							'class' => "cloud-zoom-gallery",
+							'rel' => "useZoom: 'zoom1', smallImage: '/image/{$value}.jpg'",
+							'escape'=> false
+				));
+
+					?>
+
+					<?php $x++; ?>
+			<?php endforeach ?>
+		<?php endif ?>
+
+	<!-- End additional image view thumbnails -->
+	
+	</div>
+				<?php endif ?>
+				<?php if (!empty($item->alternate_images)): ?>
+					<?php $x = 2; ?>
+				<?php endif ?>
+	</div>
+	<!-- End product item -->
+</div>
+
+<div class="grid_10 omega">
+
+	<div id="product-detail-right-top"  style="width:405px;">
 
 		<div id="listingCountdown" class="listingCountdown"></div>
 		<?php $logo = $event->images->logo_image;?>
@@ -16,7 +84,7 @@
 
 	</div>
 <?=$this->form->create(null, array('url' => 'Cart::add')); ?>
-	<div id="detail-top-left">
+	<div id="detail-top-left"  style="width:405px;">
 		<h1><strong><?=$event->name?></strong> <?=$item->description." ".$item->color; ?></h1>
 
 		<div class="product-detail-attribute">
@@ -37,9 +105,8 @@
 
 	<div id="detail-top-right" class="r-container">
 
-		<div class="tl"></div>
-		<div class="tr"></div>
-		<div class="md-gray p-container">
+
+		<div class="md-gray p-container roundy">
 
 			<h2 class="caps" style="font-size:14px;">Totsy Price</h2>
 			<div style="padding: 10px 0px; color:#009900; font-size:24px;">$<?=number_format($item->sale_retail,2); ?></div>
@@ -50,8 +117,6 @@
 				<div id="all-reserved"></div>
 			<?php endif ?>
 		</div>
-		<div class="bl"></div>
-		<div class="br"></div>
 
 	</div>
 <?=$this->form->end(); ?>
@@ -130,76 +195,6 @@
 	<?php endif ?>
 	</div>
 	<!-- End Related Products -->
-</div>
-
-<div id="product-detail-left">
-
-	<!-- Start product item -->
-	<div class="r-container">
-
-			<?php if ($item->total_quantity <= 0): ?>
-					<?=$this->html->image('/img/soldout.png', array(
-						'title' => "Sold Out",
-						'style' => 'z-index : 2; position : absolute; left:69%; margin:10px;'
-					)); ?>
-			<?php endif ?>
-				<?php if (!empty($item->primary_image)): ?>
-
-<div class="zoom-section">
-  <div class="zoom-small-image">
-    <a href='/image/<?php echo $item->zoom_image; ?>.jpg' id='zoom1' class='cloud-zoom' rel="position: 'inside'">
-    <img src="/image/<?php echo $item->primary_image; ?>.jpg" alt='' border="0" title=""/></a>
-  </div>
-
-  	<!-- Start additional image view thumbnails -->
-	<div class="zoom-desc" style="margin-top:10px;">
-<?php
-			if (!empty($item->primary_image)) {
-				echo $this->html->link(
-				$this->html->image("/image/{$item->primary_image}.jpg", array(
-					'class' => "zoom-tiny-image",
-					'width' => "93",
-					'height' => "93",
-					'alt' => "product-thumb-fpo",
-					'rel' => "full_img_1")),
-					"/image/{$item->primary_image}.jpg", array(
-							'class' => "cloud-zoom-gallery",
-							'rel' => "useZoom: 'zoom1', smallImage: '/image/{$item->primary_image}.jpg'",
-							'escape'=> false
-				));
-			}
-		?>
-		<?php if (!empty($item->alternate_images)): ?>
-			<?php $x = 2; ?>
-			<?php foreach ($item->alternate_images as $value): ?>
-					<?=$this->html->link(
-					$this->html->image("/image/{$value}.jpg", array(
-						'class' => "zoom-tiny-image",
-						'width' => "93",
-						'height' => "93",
-						'alt' => "full_img_$x"
-						)),
-						"/image/$item->zoom_image.jpg", array(
-							'class' => "cloud-zoom-gallery",
-							'rel' => "useZoom: 'zoom1', smallImage: '/image/{$value}.jpg'",
-							'escape'=> false
-				));
-
-					?>
-
-					<?php $x++; ?>
-			<?php endforeach ?>
-		<?php endif ?>
-
-	<!-- End additional image view thumbnails -->
-  </div>
-</div>
-				<?php endif ?>
-				<?php if (!empty($item->alternate_images)): ?>
-					<?php $x = 2; ?>
-				<?php endif ?>
-	</div>
-	<!-- End product item -->
 </div>
 
 <script type="text/javascript">
