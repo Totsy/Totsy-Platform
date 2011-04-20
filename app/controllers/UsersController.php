@@ -551,7 +551,7 @@ class UsersController extends BaseController {
 				$user->facebook_info = $userfb;
 				$user->save(null, array('validate' => false));
 				$sessionWrite = $self->writeSession($user->data());
-				AffiliatesController::linkshareCheck($user->_id, $affiliate, $cookie);
+				Affiliate::linkshareCheck($user->_id, $affiliate, $cookie);
 				User::log($ipaddress);
 				$self->redirect('/sales');
 			} else {

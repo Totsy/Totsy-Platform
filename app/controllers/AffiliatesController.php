@@ -70,16 +70,7 @@ class AffiliatesController extends BaseController {
 			Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 			if (Session::check('userLogin', array('name' => 'default'))) {
 				$userlogin = Session::read('userLogin');
-				if (preg_match('@^linkshare@i', $affiliate)){
-					$user = User::find('first', array('conditions'=> array(
-					'email' => $userlogin['email']
-					)));
-					$user->affiliate_share = array(
-						'affiliate' => $affiliate ,
-						'entryTime' => $cookie['entryTime']
-					);
-					$user->save();
-				}
+				static::linkshareCheck($userLogin['_id'], $affiliate, $cookie);
 				$this->redirect($urlredirect);
 			}
 			UsersController::facebookLogin($affiliate, $cookie, $ipaddress);
@@ -104,7 +95,7 @@ class AffiliatesController extends BaseController {
 						'email' => $user->email
 					);
 					Session::write('userLogin', $userLogin, array('name'=>'default'));
-					static::linkshareCheck($userLogin['_id'], $affiliate, $cookie);
+					Affliate::linkshareCheck($userLogin['_id'], $affiliate, $cookie);
 					User::log($ipaddress);
 					Session::write('pixel',$pixel, array('name'=>'default'));
 					$this->redirect($urlredirect);
@@ -113,21 +104,6 @@ class AffiliatesController extends BaseController {
 		}
 		$this->_render['layout'] = 'login';
 		return compact('message', 'user');
-	}
-
-	/**
-	 * @todo Document me
-	 */
-	public static function linkshareCheck($userId, $affiliate, $cookie) {
-		$sucess = false;
-		if (preg_match('@^(linkshare)@i', $affiliate)){
-			$user = User::find('first', array('conditions' => array(
-				'_id' => $userId
-			)));
-			$user->affiliate_share = array('affiliate' => $affiliate , 'landing_time' => $cookie['entryTime']);
-			$sucess = ($user->save()) ? true : false;
-		}
-		return $sucess;
 	}
 }
 

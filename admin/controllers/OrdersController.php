@@ -153,6 +153,7 @@ class OrdersController extends BaseController {
 	public function manage_items() {
 		$current_user = Session::read('userLogin');
 		$orderCollection = Order::collection();
+		$userCollection = User::collection();
 		if($this->request->data){
 			$datas = $this->request->data;
 			$selected_order = $orderCollection->findOne(array("_id" => new MongoId($datas["id"])));
@@ -213,6 +214,43 @@ class OrdersController extends BaseController {
 			if(!empty($cancel_order)){
 				$this->cancel();
 				$order_temp = Order::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
+				//If the order is canceled, send an email
+				if(strlen($order_temp["user_id"]) > 10){
+					$user = $userCollection->findOne(array("_id" => new MongoId($order_temp->user_id)));
+				} else {
+					$user = $userCollection->findOne(array("_id" => $order_temp->user_id));
+				}
+				if(!is_int($order_temp->ship_date)){
+					$shipDate = $order_temp->ship_date->sec;
+				} else {
+					$shipDate = $order_temp->ship_date;
+				}
+				$data = array(
+					'order' => $order_temp,
+					'email' => $user["email"],
+					'shipDate' => $shipDate
+				);
+				Silverpop::send('orderCancel', $data);
+			}
+			//If order is updated without cancel, send email
+			if(($datas["save"] == 'true') && empty($cancel_order)) {
+				$order = Order::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
+				if(strlen($order_temp["user_id"]) > 10){
+					$user = $userCollection->findOne(array("_id" => new MongoId($order->user_id)));
+				} else {
+					$user = $userCollection->findOne(array("_id" => $order->user_id));
+				}
+				if(!is_int($order->ship_date)){
+					$shipDate = $order->ship_date->sec;
+				} else {
+					$shipDate = $order->ship_date;
+				}
+				$data = array(
+					'order' => $order,
+					'email' => $user["email"],
+					'shipDate' => $shipDate
+				);
+				Silverpop::send('orderUpdate', $data);
 			}
 		}
 		return $order_temp;
@@ -270,6 +308,7 @@ class OrdersController extends BaseController {
 	* @param string $id The _id of the order
 	*/
 	public function view($id = null) {
+		$userCollection = User::collection();
 		//Only view
 		$edit_mode = false;
 		//update the shipping address by adding the new one and pushing the old one.
@@ -278,6 +317,24 @@ class OrdersController extends BaseController {
 		}
 		if(!empty($datas["cancel_action"])){
 			$this->cancel();
+			//If the order is canceled, send an email
+			$order_temp = Order::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
+			if(strlen($order_temp["user_id"]) > 10){
+				$user = $userCollection->findOne(array("_id" => new MongoId($order_temp->user_id)));
+			} else {
+				$user = $userCollection->findOne(array("_id" => $order_temp->user_id));
+			}
+			if(!is_int($order_temp->ship_date)){
+				$shipDate = $order_temp->ship_date->sec;
+			} else {
+				$shipDate = $order_temp->ship_date;
+			}
+			$data = array(
+				'order' => $order_temp,
+				'email' => $user["email"],
+				'shipDate' => $shipDate
+			);
+			Silverpop::send('orderCancel', $data);
 		}
 		if(!empty($datas["save"])){
 			$order = $this->manage_items();

@@ -37,15 +37,9 @@
 										</div><br />
 									</div>
 									<div id="normal" style="display:block">
-									<?php if($edit_mode): ?>
 										<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
 										The order is expected to ship on <?=date('M d, Y', $shipDate)?>
 										</p>
-									<?php else : ?>
-										<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
-										The order has been shipped on <?=date('M d, Y', $shipDate)?>
-										</p>
-									<?php endif ?>
 									<?php if($edit_mode): ?>
 									<p style="text-align:center;">
 									<button id="cancel_button" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
