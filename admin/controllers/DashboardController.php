@@ -39,7 +39,7 @@ class DashboardController extends \lithium\action\Controller {
 		$date = array(
 			'date' => array(
 				'$gte' => new MongoDate(mktime(0, 0, 0, date("m") - 6, 1, date("Y"))),
-				'$lt' => new MongoDate(mktime(0, 0, 0, date("m"), 0, date("Y")))
+				'$lt' => new MongoDate(mktime(0, 0, 0, date("m"), 1, date("Y")))
 		));
 
 		$summary = $collection->group($keys, $inital, $reduce, $date);
