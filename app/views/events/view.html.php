@@ -157,19 +157,18 @@ $(function () {
 	saleEnd = new Date(<?php echo $event->end_date->sec * 1000?>);
 	if((now.getTime()) < <?php echo $event->start_date->sec * 1000 ?>) {
 		var diff = <?php echo $event->start_date->sec * 1000 ?> - (now.getTime());
-		if((diff * 1000) < (24 * 60 * 60) ) {
+		if((diff / 1000) < (24 * 60 * 60) ) {
 			$('#listingCountdown').countdown({until: saleStart, layout: 'Opens in {hnn}{sep}{mnn}{sep}{snn}'});
 		} else {
 			$('#listingCountdown').countdown({until: saleStart, layout: 'Opens in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
 		}
 	} else {
 			var diff = <?php echo $event->end_date->sec * 1000 ?> - (now.getTime());
-			if((diff * 1000) < (24 * 60 * 60) ) {
-				$('#listingCountdown').countdown({until: saleEnd, layout: 'Closes {hnn}{sep}{mnn}{sep}{snn}'});
+			if((diff / 1000) < (24 * 60 * 60) ) {
+				$('#listingCountdown').countdown({until: saleEnd, layout: 'Closes in {hnn}{sep}{mnn}{sep}{snn}'});
 			} else {
 				$('#listingCountdown').countdown({until: saleEnd, layout: 'Closes in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
 			}
-		
 	}
 });
 </script>
