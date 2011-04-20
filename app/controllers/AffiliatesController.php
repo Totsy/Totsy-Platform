@@ -89,13 +89,13 @@ class AffiliatesController extends BaseController {
 					$message = $saved;
 					$userLogin = array(
 						'_id' => (string) $user->_id,
-						'firstname' => $user->firstname,
-						'lastname' => $user->lastname,
-						'zip' => $user->zip,
+				//		'firstname' => $user->firstname,
+				//		'lastname' => $user->lastname,
+				//		'zip' => $user->zip,
 						'email' => $user->email
 					);
 					Session::write('userLogin', $userLogin, array('name'=>'default'));
-					Affliate::linkshareCheck($userLogin['_id'], $affiliate, $cookie);
+					Affiliate::linkshareCheck($userLogin['_id'], $affiliate, $cookie);
 					User::log($ipaddress);
 					Session::write('pixel',$pixel, array('name'=>'default'));
 					$this->redirect($urlredirect);
@@ -106,5 +106,4 @@ class AffiliatesController extends BaseController {
 		return compact('message', 'user');
 	}
 }
-
 ?>
