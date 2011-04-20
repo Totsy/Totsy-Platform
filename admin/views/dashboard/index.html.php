@@ -49,11 +49,11 @@
 		$lastRevenue = end($lastMonth['revenue'][0]);
 		$currentRevenue = end($currentMonth['revenue'][1]);
 		$dayDiff = $currentRevenue - $lastRevenue;
-		$dayDiffPerct = 100 * $dayDiff/$currentRevenue;
+		$dayDiffPerct = 100 * $dayDiff/$lastRevenue;
 		$lastMonthRevenue = array_sum($lastMonth['revenue'][0]);
 		$currentMonthRevenue = array_sum($currentMonth['revenue'][1]);
 		$monthDiff = $currentMonthRevenue - $lastMonthRevenue;
-		$monthDiffPerct = 100 * $monthDiff/$currentMonthRevenue;
+		$monthDiffPerct = 100 * $monthDiff/$lastMonthRevenue;
 		if ($monthDiffPerct < 1) {
 			$monthClass = 'negative';
 		}
@@ -63,7 +63,7 @@
 			$currentWeek = array_splice($currentMonth['revenue'][1], -7);
 			$currentWeekTotal = array_sum($currentWeek);
 			$weekDiff = $currentWeekTotal - $lastWeekTotal;
-			$weekDiffPerct = 100 * $weekDiff/$currentWeekTotal;
+			$weekDiffPerct = 100 * $weekDiff/$lastWeekTotal;
 			if ($weekDiffPerct < 1) {
 				$weekClass = 'negative';
 			}
@@ -122,11 +122,11 @@
 		$lastRegistration= end($lastMonth['registration'][0]);
 		$currentRegistration = end($currentMonth['registration'][1]);
 		$dayDiff = $currentRegistration - $lastRegistration;
-		$dayDiffPerct = 100 * $dayDiff/$currentRevenue;
+		$dayDiffPerct = 100 * $dayDiff/$lastRegistration;
 		$lastMonthRegistration = array_sum($lastMonth['registration'][0]);
 		$currentMonthRegistration = array_sum($currentMonth['registration'][1]);
 		$monthDiff = $currentMonthRegistration - $lastMonthRegistration;
-		$monthDiffPerct = 100 * $monthDiff/$currentMonthRegistration;
+		$monthDiffPerct = 100 * $monthDiff/$lastMonthRegistration;
 		if ($monthDiffPerct < 1) {
 			$monthClass = 'negative';
 		}
@@ -136,7 +136,7 @@
 			$currentWeek = array_splice($currentMonth['registration'][1], -7);
 			$currentWeekTotal = array_sum($currentWeek);
 			$weekDiff = $currentWeekTotal - $lastWeekTotal;
-			$weekDiffPerct = 100 * $weekDiff/$currentWeekTotal;
+			$weekDiffPerct = 100 * $weekDiff/$lastWeekTotal;
 			if ($weekDiffPerct < 1) {
 				$weekClass = 'negative';
 			}
