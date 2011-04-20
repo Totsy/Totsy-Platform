@@ -106,5 +106,4 @@ class AffiliatesController extends BaseController {
 		return compact('message', 'user');
 	}
 }
-
 ?>
