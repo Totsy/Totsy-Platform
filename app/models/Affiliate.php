@@ -237,7 +237,7 @@ class Affiliate extends Base {
         $insert ='';
         $insert .= ' pi=" http://' . $_SERVER['HTTP_HOST'] . $pi . '"';
        $insert .= ' pid="' . $pid . '"';
-       if($extra == "Invite Your Friends"){
+       if($extra == ' st="Invite Your Friends" '){
             $insert .= ' plp="http://' . $_SERVER['HTTP_HOST'] . $plp . '"';
        }else{
             $insert .= ' plp="http://' . $_SERVER['HTTP_HOST'] . '/a/spinback?redirect=http://' . $_SERVER['HTTP_HOST'] . $plp . '"';
