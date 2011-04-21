@@ -5,43 +5,22 @@
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
 ?>
 
-
-<h1 class="page-title gray"><span class="_red"><a href="/" title="Sales">Today's Sales</a></span> / <a href="/cart/view" title="My Cart">My Cart</a> / Checkout / Shipping &amp; Billing</h1>
-
+<div class="grid_16">
+	<h2 class="page-title gray"><span class="_red"><a href="/" title="Sales">Today's Sales</a></span> / <a href="/cart/view" title="My Cart">My Cart</a> / Checkout / Shipping &amp; Billing</h2>
 	<hr />
-<div id="middle" class="fullwidth">
+</div>
 
-	<div class="tl"></div>
-	<div class="tr"></div>
-	<div id="page">
-
+<div class="grid_6">
 <?php if (!empty($error)) { ?>
-                        <div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /><?=$error; ?></div>
-
+	<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /><?=$error; ?></div>
 <?php } ?>
-<div style="display:none;">
-           <div class="rounded" style="color: #009900; margin:0px 10px 0px 0px; float: left; display:block; background:#ebffeb; border:1px solid #ddd; width:230px; text-align:center; padding:20px;">Shipping / Billing Info</div>
-<div id="arrow-right">
-  <div id="arrow-right-1"></div>
-  <div id="arrow-right-2"></div>
-</div><!--arrow-right-->
-
-              <div class="rounded" style="color: #ff0000; margin:0px 10px 0px 0px; float: left; display:block; background:#ffebeb; border:1px solid #ddd; width:236px; padding:20px; text-align: center;">Payment</div>
-<div id="arrow-right-red">
-  <div id="arrow-right-1-red"></div>
-  <div id="arrow-right-2-red"></div>
-</div><!--arrow-right-->
-
-              <div class="rounded" style="color:#ff0000; margin:0px 0px 0px 0px; float:left; display:block; background:#ffebeb; border:1px solid #ddd; width:246px; padding:20px; text-align:center;">Confirmation</div>
-              </div>
-              
               
 	<ol id="checkout-process">
 		<?=$this->form->create($order, array('class' => 'checkout')); ?>
 
 		<!-- Start Billing Information -->
-		<div style="float:left; width:423px; margin:0px 10px 10px 0px;  display:block;"><li id="opc-billing">
-			<div id="checkout-process-billing">
+		
+		<li id="opc-billing">
 			<?php if (empty($billing)): ?>
 					<center><strong><?=$this->html->link('Please take a moment to add an Address', '#', array(
 						'class' => 'add-address')); ?></strong></center>
@@ -65,13 +44,13 @@
 						<?=$this->html->link('Add a new address', '#', array(
 							'class' => 'add-address')); ?>
 				<?php endif ?>
-			</div>
+		
 		</li>
-		  </div>
+	
 		<!-- End Billing Information -->
 
 		<!-- Start Shipping Information -->
-		<div style="float:left; width:445px; display:block;">
+		
 		  <li id="opc-shipping" class="step_" style="opacity:0.5">
 
 			<div id="checkout-process-shipping">
@@ -95,16 +74,15 @@
 			</div>
 
 		</li>
-		  </div>
-<div style="clear:both;"></div>
+		
 		<!-- End Shipping Information -->
 
 		<li id="shipping-method" class="step" style="display:none;">
 
-				<h2 class="gray mar-b">Shipping Method</h2>
+				<h2 style="color:#707070;">Shipping Method</h2>
 			<hr />
 
-			<div id="shipping-method-details">
+			
 			<fieldset>
 
 				<ul class="shipping-methods">
@@ -118,7 +96,7 @@
 				</ul>
 			</fieldset>
 
-			</div>
+			
 		</li>
 
 
@@ -130,12 +108,13 @@
 
 		<?=$this->form->end(); ?>
 
-			   <div style="clear:both; margin-top:90px;"></div>
+</div>
+
+<div class="grid_10">
 
 		<h2 style="color:#707070;">Order Summary</h2>
 		<hr />
 
-<div style="clear:both; margin-bottom:10px;"></div>
 
 	<!-- Begin Order Details -->
 	<?php if ($cartByEvent): ?>
@@ -234,21 +213,12 @@
 	<?php endif ?>
 	<!-- End Order Details -->
 	
-    <!-- begin thawte seal -->
-    <div id="thawteseal" title="Click to Verify - This site chose Thawte SSL for secure e-commerce and confidential communications." style="float: right!important; width:200px;">
-        <div style="float: left!important; width:100px; display:block;"><script type="text/javascript" src="https://seal.thawte.com/getthawteseal?host_name=www.totsy.com&amp;size=L&amp;lang=en"></script></div>
-
-    <div class="AuthorizeNetSeal" style="float: left!important; width:100px; display:block;"> <script type="text/javascript" language="javascript">var ANS_customer_id="98c2dcdf-499f-415d-9743-ca19c7d4381d";</script> <script type="text/javascript" language="javascript" src="//verify.authorize.net/anetseal/seal.js" ></script></div>
-    </div>
-    <!-- end thawte seal -->
+    
 
 	</ol>
 
-	</div>
-
-	<div class="bl"></div>
-	<div class="br"></div>
-
+	
+</div>
 </div>
 
 <div id="right">

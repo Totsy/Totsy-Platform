@@ -2,12 +2,11 @@
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
 
 <?php $this->title("Add / Edit Address Book "); ?>
-
+<?php if (!$isAjax): ?>
 <div class="grid_16">
 	<h2 class="page-title gray">Add / Edit Address Book </h2>
 	<hr />
 </div>
-
 <div class="grid_4 omega">
 	<div class="roundy grey_inside">
 		<h3 class="gray">My Account</h3>
@@ -34,8 +33,10 @@
 		</ul>
 	</div>
 </div>
+<?php endif ?>
 
-<div class="grid_11 omega roundy grey_inside b_side">
+
+<div class="grid_11 omega roundy grey_inside<?php if (!$isAjax): ?> b_side <?php endif ?>">
 
 	<?php if ($message): ?>
 		<div class="standard-message"><?=$message; ?></div>

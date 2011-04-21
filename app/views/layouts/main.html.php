@@ -13,8 +13,7 @@
 	<?=$this->html->script(array(
 		'jquery-1.4.2.min.js',
 		'jquery-ui-1.8.2.custom.min.js',
-		'jquery.countdown.min.js',
-		'jquery.backstretch.min.js'
+		'jquery.countdown.min.js'
 	)); ?>
 	
 	<?=$this->scripts(); ?>
@@ -143,6 +142,16 @@
 		</ul>
 		<span id="copyright" style="padding-top:4px;">&copy;2011 Totsy.com. All Rights Reserved.</span>
 	</div>
+	<div class="container_16">
+	<br />
+	<!-- begin thawte seal -->
+    <div id="thawteseal" title="Click to Verify - This site chose Thawte SSL for secure e-commerce and confidential communications.">
+        <div style="float: left!important; width:100px; display:block;"><script type="text/javascript" src="https://seal.thawte.com/getthawteseal?host_name=www.totsy.com&amp;size=L&amp;lang=en"></script></div>
+
+    <div class="AuthorizeNetSeal" style="float: left!important; width:100px; display:block;"> <script type="text/javascript" language="javascript">var ANS_customer_id="98c2dcdf-499f-415d-9743-ca19c7d4381d";</script> <script type="text/javascript" language="javascript" src="//verify.authorize.net/anetseal/seal.js" ></script></div>
+    </div>
+    <!-- end thawte seal -->
+    </div>
 	<script type="text/javascript">
 		$.base = '<?=rtrim(Router::match("/", $this->_request)); ?>';
 	  var _gaq = _gaq || [];
@@ -196,37 +205,6 @@
     <!--affiliate pixels-->
     <?php echo $pixel; ?>
    
-   <?php
-
-	use \DirectoryIterator;
-	use lithium\net\http\Media;
-	$images = array();
-	$imgDirectory = $this->_request->env('base') . '/img/login/';
-
-	/**
-	 * Get a random login image (of type jpg or png).
-	 */
-	foreach (new DirectoryIterator(Media::webroot(true) . '/img/login') as $file) {
-		if ($file->isDot() || !preg_match('/\.(png|jpg)$/', $file->getFilename())) {
-			continue;
-		}
-		$images[] = $file->getFilename();
-	}
-	$image = $images[array_rand($images)];
-
-
-	?>
-
-
-	<script type="text/javascript">
-
-	    jQuery(document).ready(function($){
-
-	    	$.backstretch("<?=$imgDirectory . $image;?>");
-
-	    });
-
-	</script>
 	</body>
 	 
 </html>
