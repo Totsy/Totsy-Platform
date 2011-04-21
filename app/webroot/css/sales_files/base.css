@@ -638,18 +638,9 @@ margin:0px auto 10px auto;
 border-radius: 12px;
 border:1px solid #D7D7D7;
 overflow: hidden;
-min-height: 332px;
+min-height: 391px;
+vertical-align:baseline;
 }
-
-.roundy_product a img {
-	-webkit-border-radius:12px 12px 0px 0px!important;
-	overflow: hidden!important;
-}
-div.splash-details {
-	-webkit-border-radius:0px 0px 12px 12px!important;
-	overflow: hidden!important;
-}
-
 .roundy_cart {
 -webkit-border-radius: 12px;
 -moz-border-radius: 12px;
@@ -901,22 +892,3 @@ overflow: hidden;
     background:fuchsia!important;
     font-size: 18px;
     }
-
-
-
-a.product-over {
-	opacity: 0; /* revealed on hover with jQuery */
-	filter: alpha(opacity = 0); /* IE hack */
-	position: absolute;
-	top: 10px;
-	left: 10px;
-	width: 180px;
-	height: 130px;
-	margin: 0;
-	padding: 10px;
-	font-size: .8em;
-	line-height: 2em;
-	text-decoration: none;
-	color: #888;
-	background: url(/images/zoom-bg-white.png) no-repeat bottom right;
-	}

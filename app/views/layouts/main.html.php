@@ -10,12 +10,17 @@
 		<?=$this->title() ? '- Totsy' : ''; ?>
 	</title>
 	<?=$this->html->style(array('base.css', '960.css'), array('media' => 'screen')); ?>
-	<?=$this->html->script(array(
-		'jquery-1.4.2.min.js',
-		'jquery-ui-1.8.2.custom.min.js',
-		'jquery.countdown.min.js'
-	)); ?>
 	
+	<script src="http://www.google.com/jsapi"></script>
+	<script> google.load("jquery", "1.5.2", {uncompressed:true});</script>
+	<script> google.load("jqueryui", "1.8.11", {uncompressed:true});</script>
+            <!-- end jQuery / jQuery UI -->
+            
+     <?=$this->html->script(array(
+		'jquery.countdown.min.js',
+		
+	)); ?>
+
 	<?=$this->scripts(); ?>
 	<?=$this->html->link('Icon', null, array('type' => 'icon')); ?>
 	<meta property="og:site_name" content="Totsy"/>
@@ -126,7 +131,7 @@
 	</div>
 	<div class="clear"></div>
 	</div>
-	<div class="container_16 roundy" style="background:#fff; margin:10px auto; padding:10px 0px 0px 0px; overflow:hidden;">
+	<div class="container_16 roundy" style="background:#fff; margin:10px auto; padding:10px 0px 10px 0px; overflow:hidden;">
 		<?php echo $this->content(); ?>
 	</div>
 	<div id="footer" class="container_16">

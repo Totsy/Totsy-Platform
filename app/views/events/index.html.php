@@ -14,33 +14,34 @@
 	};
 })(jQuery);
 </script>
-<div class="grid_16">
-<h2 class="page-title gray">Today's Sales</h2>
-<hr />
+<div class="container_16">
+	<div class="grid_16">
+		<h2 class="page-title gray">Today's Sales</h2>
+		<hr />
+	</div>
 	<?php $x = 0; ?>
 	<?php $y = 0; ?>
 	<?php foreach ($openEvents as $event): ?>
 		<!-- Start product item -->
 		<?php if ($y == 0): ?>
-			<div class="product-list-item featured r-container">
+			<div class="product-list-item featured r-container grid_6">
 		<?php endif ?>
 		<?php if ($y == 1): ?>
-			<div class="product-list-item featured middle r-container">
+			<div class="product-list-item featured middle r-container grid_6">
 		<?php endif ?>
+		
 		<?php if (($y == 2) || ($y == 4)): ?>
-			<div class="product-list-item r-container">
+			<div class="product-list-item r-container grid_4">
 		<?php endif ?>
 		<?php if ($y == 3): ?>
-			<div class="product-list-item middle r-container">
+			<div class="product-list-item middle r-container grid_4">
 		<?php endif ?>
 		<?php if ($y == 4): ?>
 			<?php $y = 1; ?>
 		<?php endif ?>
-				<div class="tl"></div>
-				<div class="tr"></div>
 
 
-                <div class="md-gray p-container">
+                <div class="p-container roundy_product">
 
 						<?php if ($itemCounts[ (string) $event->_id] == 0): ?>
 								<?=$this->html->image('/img/soldout.png', array(
@@ -70,8 +71,8 @@
 							$this->html->image("$productImage", array(
 							'title' => $event->name,
 							'alt' => $event->name,
-							'width' => '298',
-							'height' => '344'
+							'width' => '218',
+							'height' => '229'
 						)), "sale/$event->url", array('escape'=> false));
 
 						 ?>
@@ -91,8 +92,6 @@
 						</div>
 					</div>
 				</div>
-				<div class="bl"></div>
-				<div class="br"></div>
 			</div>
 
 		<!-- End product item -->
@@ -107,7 +106,7 @@
 				});</script>";
 		?>
 			<?php if ($x == 1): ?>
-				<div id="banner_container">
+				<div id="banner_container" class="grid_5">
 					<div><a href="/users/invite"><img src="/img/invite_girl.png" alt="" /></a></div>
 					<?php if(!empty($banner["img"])): ?>
 						<?php foreach($banner["img"] as $image): ?>
@@ -122,6 +121,7 @@
 						<?php endforeach ?>
 					<?php endif ?>
 				</div>
+				<div class="clear"></div>
 			<?php endif ?>
 		<?php $x++; ?>
 		<?php $y++; ?>
@@ -130,7 +130,7 @@
 
 	<div style="margin-bottom:35px;" class="clear"></div>
 
-	<div class="grid_16 alpha omega">
+	<div class="grid_16">
 
 		<h2 class="page-title gray clear"><span class="_red">Upcoming Sales</span></h2>
 		<hr />

@@ -86,7 +86,7 @@
 					</td>
 					<td class="cart-time" style="width:220px;"><img src="/img/clock_icon.gif" class="fl"/><div id='<?php echo "itemCounter$x"; ?>' class="fl" style="margin-left:5px;"></div></td>
 					<td class="cart-actions">
-						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" onclick="return deletechecked('Are you sure you want to remove this item?');" style="color: red!important;"><img src="http://icons.iconarchive.com/icons/visualpharm/must-have/256/Delete-icon.png" width="20" align="middle"style="margin-right:5px;" /></a>
+						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" onclick="return deletechecked('Are you sure you want to remove this item?');" style="color: red!important;"><img src="http://icons.iconarchive.com/icons/visualpharm/must-have/256/Delete-icon.png" width="20" align="middle"style="margin-right:20px;" /></a>
 					</td>
 				</tr>
 				<?php
