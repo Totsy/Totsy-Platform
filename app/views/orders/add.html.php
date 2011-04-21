@@ -10,109 +10,12 @@
 	<hr />
 </div>
 
-<div class="grid_6">
-<?php if (!empty($error)) { ?>
-	<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /><?=$error; ?></div>
-<?php } ?>
-              
-	<ol id="checkout-process">
-		<?=$this->form->create($order, array('class' => 'checkout')); ?>
+<div class="grid_11">
 
-		<!-- Start Billing Information -->
-		
-		<li id="opc-billing">
-			<?php if (empty($billing)): ?>
-					<center><strong><?=$this->html->link('Please take a moment to add an Address', '#', array(
-						'class' => 'add-address')); ?></strong></center>
-				<?php else: ?>
-					<h2 style="color:#707070;">Billing Address</h2><hr />
-					<p>Select a billing address from your address book.</p>
-						<?=$this->form->select('billing', $billing, array(
-							'id' => 'billing',
-							'target' => '#billing-new-address-form',
-							'value' => key($billing)
-						)); ?>
-						<fieldset>
-							<p>
-								<input type="radio" name="billing_shipping" id="billing:use_for_shipping_yes" value="1" checked="checked" />&nbsp;
-								<label for="billing:use_for_shipping_yes">Ship to this address</label>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								<input type="radio" name="billing_shipping" id="billing:use_for_shipping_no" value="0" />&nbsp;
-								<label for="billing:use_for_shipping_no">Ship to different address</label>
-							</p>
-						</fieldset>
-						<?=$this->html->link('Add a new address', '#', array(
-							'class' => 'add-address')); ?>
-				<?php endif ?>
-		
-		</li>
-	
-		<!-- End Billing Information -->
-
-		<!-- Start Shipping Information -->
-		
-		  <li id="opc-shipping" class="step_" style="opacity:0.5">
-
-			<div id="checkout-process-shipping">
-
-				<?php if (empty($shipping)): ?>
-
-				<?php else: ?>
-
-						<h2 style="color:#707070;">Shipping Address</h2>
-					<hr />
-					<p>Select a shipping address from your address book.</p>
-						<?=$this->form->select('shipping', $shipping, array(
-							'id' => 'shipping',
-							'target' => '#shipping-new-address-form',
-							'value' => key($shipping)
-						)); ?><br>
-						<?=$this->html->link('Add a new address', '#', array(
-							'class' => 'add-address')); ?>
-				<?php endif ?>
-
-			</div>
-
-		</li>
-		
-		<!-- End Shipping Information -->
-
-		<li id="shipping-method" class="step" style="display:none;">
-
-				<h2 style="color:#707070;">Shipping Method</h2>
-			<hr />
-
-			
-			<fieldset>
-
-				<ul class="shipping-methods">
-				<li>
-						<label>
-							<input type="radio" name="shipping_method" value="ups" checked="checked" />&nbsp;
-							<?=$this->html->image('ups-icon.jpg', array('title' => "UPS Shipping", 'alt' => "UPS Shipping", 'width' => "26", 'height' => "32")); ?>&nbsp;
-							UPS Ground
-						</label>
-				</li>
-				</ul>
-			</fieldset>
-
-			
-		</li>
-
-
-<hr />
-
-		<li class="step">
-			<?=$this->form->submit('Confirm & Continue', array('class' => 'button fr')); ?>
-		</li>
-
-		<?=$this->form->end(); ?>
-
-</div>
-
-<div class="grid_10">
-
-		<h2 style="color:#707070;">Order Summary</h2>
+		<h2 style="color:#707070; font-size:14px;">Order Summary <span style="float:right"><?php if(!empty($savings)) : ?>
+						<strong>You're Saving : <span style="color:#009900;">$<?=number_format($savings,2)?></span></strong>
+							<?php endif ?></span></h2>
+							
 		<hr />
 
 
@@ -122,9 +25,9 @@
 
 		<?php $x = 0; ?>
 		<?php foreach ($cartByEvent as $key => $event): ?>
-			<tr>
-				<td colspan="3" style="vertical-align:bottom; font-weight:bold; font-size:18px;"><?=$orderEvents[$key]['name']?> <td>
-				<td colspan="3"><div class='fr' style="padding:10px; background:#fffbd1; border-left:1px solid #D7D7D7; border-right:1px solid #D7D7D7; border-top:1px solid #D7D7D7;">Estimated Ship Date: <?=date('m-d-Y', $shipDate)?></div></td>
+			<tr style="margin-top:10px;">
+				<td colspan="2" style="vertical-align:bottom; font-weight:bold; font-size:18px;"><?=$orderEvents[$key]['name']?> <td>
+				<td colspan="4"><div class='fr' style="padding:10px; background:#fffbd1; border-left:1px solid #D7D7D7; border-right:1px solid #D7D7D7; border-top:1px solid #D7D7D7;">Estimated Ship Date: <?=date('m-d-Y', $shipDate)?></div></td>
 			</tr>
 			<tr>
 				<th>Item</th>
@@ -202,10 +105,7 @@
 
 					<tr class="cart-total">
 						<td colspan="7" id='subtotal'><strong>Subtotal: </strong><strong style="color:#009900;">$<?=number_format($subTotal,2)?></strong>
-							<?php if(!empty($savings)) : ?>
-								<br />
-						<strong>You're Saving : <span style="color:#009900;">$<?=number_format($savings,2)?></span></strong>
-							<?php endif ?>
+							
 							<br/><hr/><?=$this->html->link('Edit Your Cart','/cart/view' ,array('id' => 'checkout-cart', 'class' => 'button fr')); ?></td>
 					</tr>
 				</tbody>
@@ -216,8 +116,108 @@
     
 
 	</ol>
+</div>
 
+	<div class="grid_5">
+<?php if (!empty($error)) { ?>
+	<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /><?=$error; ?></div>
+<?php } ?>
+              
+	<ol id="checkout-process">
+		<?=$this->form->create($order, array('class' => 'checkout')); ?>
+
+		<!-- Start Billing Information -->
+		
+		<li id="opc-billing">
+			<?php if (empty($billing)): ?>
+					<center><strong><?=$this->html->link('Please take a moment to add an Address', '#', array(
+						'class' => 'add-address')); ?></strong></center>
+				<?php else: ?>
+					<h2 style="color:#707070;font-size:14px;">Billing Address</h2><hr />
+					<p>Select a billing address from your address book.</p>
+						<?=$this->form->select('billing', $billing, array(
+							'id' => 'billing',
+							'target' => '#billing-new-address-form',
+							'value' => key($billing)
+						)); ?>
+						<fieldset>
+							<p>
+								<input type="radio" name="billing_shipping" id="billing:use_for_shipping_yes" value="1" checked="checked" />&nbsp;
+								<label for="billing:use_for_shipping_yes">Ship to this address</label>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<input type="radio" name="billing_shipping" id="billing:use_for_shipping_no" value="0" />&nbsp;
+								<label for="billing:use_for_shipping_no">Ship to different address</label>
+							</p>
+						</fieldset>
+						<?=$this->html->link('Add a new address', '#', array(
+							'class' => 'add-address')); ?>
+				<?php endif ?>
+		
+		</li>
 	
+		<!-- End Billing Information -->
+
+		<!-- Start Shipping Information -->
+		
+		  <li id="opc-shipping" class="step_" style="opacity:0.5">
+
+			<div id="checkout-process-shipping">
+
+				<?php if (empty($shipping)): ?>
+
+				<?php else: ?>
+
+						<h2 style="color:#707070;font-size:14px;">Shipping Address</h2>
+					<hr />
+					<p>Select a shipping address from your address book.</p>
+						<?=$this->form->select('shipping', $shipping, array(
+							'id' => 'shipping',
+							'target' => '#shipping-new-address-form',
+							'value' => key($shipping)
+						)); ?><br>
+						<?=$this->html->link('Add a new address', '#', array(
+							'class' => 'add-address')); ?>
+				<?php endif ?>
+
+			</div>
+
+		</li>
+		
+		<!-- End Shipping Information -->
+
+		<li id="shipping-method" class="step" style="display:none;">
+
+				<h2 style="color:#707070;">Shipping Method</h2>
+			<hr />
+
+			
+			<fieldset>
+
+				<ul class="shipping-methods">
+				<li>
+						<label>
+							<input type="radio" name="shipping_method" value="ups" checked="checked" />&nbsp;
+							<?=$this->html->image('ups-icon.jpg', array('title' => "UPS Shipping", 'alt' => "UPS Shipping", 'width' => "26", 'height' => "32")); ?>&nbsp;
+							UPS Ground
+						</label>
+				</li>
+				</ul>
+			</fieldset>
+
+			
+		</li>
+
+
+<hr />
+
+		<li class="step">
+			<?=$this->form->submit('Confirm & Continue', array('class' => 'button fr')); ?>
+		</li>
+
+		<?=$this->form->end(); ?>
+
+</div>
+
 </div>
 </div>
 
