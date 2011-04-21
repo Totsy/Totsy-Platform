@@ -130,16 +130,18 @@
 	<div class="container_16 roundy" style="background:#fff; margin:10px auto; padding:10px 0px 0px 0px; overflow:hidden;">
 		<?php echo $this->content(); ?>
 	</div>
-	<div id="footer">
+	<div id="footer" class="container_16">
 		<ul>
-			<li class="first"><a href="/pages/terms" title="Terms of Use">Terms of Use</a></li>
-			<li><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
-			<li><a href="/pages/aboutus" title="About Us">About Us</a></li>
-			<li><a href="http://blog.totsy.com" title="Blog" target="_blank">Blog</a></li>
-			<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
-			<li class="last"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
+			<li class="first" style="padding-top:4px;"><a href="/pages/terms" title="Terms of Use">Terms of Use</a></li>
+			<li style="padding-top:4px;"><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
+			<li style="padding-top:4px;"><a href="/pages/aboutus" title="About Us">About Us</a></li>
+			<li style="padding-top:4px;"><a href="http://blog.totsy.com" title="Blog" target="_blank">Blog</a></li>
+			<li style="padding-top:4px;"><a href="/pages/faq" title="FAQ">FAQ</a></li>
+			<li class="last" style="padding-top:4px;"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
+			<li class="last" style="margin:0px 3px 0px 5px;"><a href="http://www.facebook.com/totsyfan" target="_blank"><img src="../img/icons/facebook_16.png" align="middle" /></a></li>
+			<li class="last"><a href="http://twitter.com/MyTotsy" target="_blank"><img src="../img/icons/twitter_16.png" align="middle" /></a></li>
 		</ul>
-		<span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved.</span>
+		<span id="copyright" style="padding-top:4px;">&copy;2011 Totsy.com. All Rights Reserved.</span>
 	</div>
 	<script type="text/javascript">
 		$.base = '<?=rtrim(Router::match("/", $this->_request)); ?>';
