@@ -117,7 +117,7 @@ li.item5 a:hover, li.item5.over a, li.active.item5 a { background-position:-244p
 
 #content { overflow:hidden; padding:20px }
 #left {  }
-#left ul.menu li { margin:15px 0 }
+#left ul.menu li { margin:9px 0 0 11px; }
 #left ul.menu a:link, #left ul.menu a:visited { color:#707070; text-decoration:none }
 #left ul.menu a:hover { color:#EB132C }
 #left ul.menu li.active a:link, #left ul.menu li.active a:visited { color:#EB132C; font-weight:bold }
@@ -181,7 +181,7 @@ ul.content-list { list-style:disc; margin:0 0 0 15px }
 #colors { overflow:hidden }
 #colors .color-swatch { border:1px solid #D7D7D7; margin:10px 5px 0 0; float:left; cursor:pointer }
 #colors .color-swatch.active { border:4px solid #D7D7D7; margin:7px 5px 0 0 }
-.product-bottom-wrapper { position:relative; z-index:1; top:-75px;}
+.product-bottom-wrapper { position:relative; z-index:1; top:-15px;}
 /* Tabs
 ----------------------------------*/
 .ui-tabs { position:relative; z-index:1; zoom: 1; }
@@ -649,6 +649,8 @@ border:1px solid #D7D7D7;
 overflow: hidden;
 }
 .grey_inside { background:#f7f7f7; padding:13px; }
+.grey_inside_np { background:#f7f7f7; padding:0px; }
+.b_side {padding:20px 17px!important; width:675px!important;}
 
 
 

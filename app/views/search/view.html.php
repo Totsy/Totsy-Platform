@@ -1,7 +1,7 @@
 <?php $this->title("Page Not Found"); ?>
 
-<h1>We're sorry <?="{$userInfo['firstname']}"; ?>, we couldn't find what you were looking for.</h1>
-
+<div class="grid_16">
+<h2 class="page-title gray">We're sorry, we couldn't find what you were looking for.</h2>
 <hr />
 
 <p>Please continue browsing <a href="/" title="Totsy's Sales">Today's Sales</a></p>
@@ -29,8 +29,4 @@
 </div>
 
 <div align="center"><img src="/img/error-img.jpg" alt="" /></div>
-
-	<?php if (!count($events)) { ?>
-        <?php return; ?>
-    <?php } ?>
-   
+</div>
