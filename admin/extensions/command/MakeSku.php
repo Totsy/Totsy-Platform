@@ -22,7 +22,8 @@ class MakeSku extends \lithium\console\Command  {
 		$start = time();
 		Environment::set($this->env);
 		$itemCollection = Item::connection()->connection->items;
-		$items = $itemCollection->find();
+		$conditions = array("sale_details" => array('$exists' => false));
+		$items = $itemCollection->find($conditions);
 		$i = 0;
 		foreach ($items as $item) {
 			$i++;
