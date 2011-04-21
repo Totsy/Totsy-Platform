@@ -113,7 +113,7 @@
 							($<?=$credit?>) 
 								
 					/
-					<?=$this->html->link('Invite Friends. Get $15', array('/users/invite'));?>
+					<?=$this->html->link('Invite Friends. Get $15', array('Users::invite'));?>
 						
 				<?php endif ?>
 	</div>

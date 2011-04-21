@@ -1,31 +1,42 @@
 <?php $this->title("My Credits"); ?>
 
-	<h1 class="p-header">My Account</h1>
-	<div id="left">
+<div class="grid_16">
+	<h2 class="page-title gray">My Credits</h2>
+	<hr />
+</div>
+
+<div class="grid_4 omega">
+	<div class="roundy grey_inside">
+		<h3 class="gray">My Account</h3>
+		<hr />
 		<ul class="menu main-nav">
-			<li class="firstitem17"><a href="/account" title="Account Dashboard"><span>Account Dashboard</span></a></li>
-			<li class="item18"><a href="/account/info" title="Account Information"><span>Account Information</span></a></li>
-			<li class="item18"><a href="/account/password" title="Change Password"><span>Change Password</span></a></li>
-			<li class="item19"><a href="/addresses" title="Address Book"><span>Address Book</span></a></li>
-			<li class="item20"><a href="/orders" title="My Orders"><span>My Orders</span></a></li>
-			<li class="item20 active"><a href="/Credits/view" title="My Credits"><span>My Credits</span></a></li>
-			<li class="lastitem23"><a href="/Users/invite" title="My Invitations"><span>My Invitations</span></a></li>
-			<br />
-			<h3 style="color:#999;">Need Help?</h3>
-			<hr />
-			<li class="first item18"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
-			<li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
+		<li><a href="/account" title="Account Dashboard">Account Dashboard</a></li>
+		<li><a href="/account/info" title="Account Information">Account Information</a></li>
+		<li><a href="/account/password" title="Change Password">Change Password</a></li>
+		<li class="active"><a href="/addresses" title="Address Book">Address Book</a></li>
+		<li><a href="/orders" title="My Orders">My Orders</a></li>
+		<li><a href="/Credits/view" title="My Credits">My Credits</a></li>
+		<li><a href="/Users/invite" title="My Invitations">My Invitations</a></li>
 		</ul>
 	</div>
+	<div class="clear"></div>
+	<div class="roundy grey_inside">
+		<h3 class="gray">Need Help?</h3>
+		<hr />
+		<ul class="menu main-nav">
+		    <li><a href="/tickets/add" title="Contact Us">Help Desk</a></li>
+			<li><a href="/pages/faq" title="Frequently Asked Questions">FAQ's</a></li>
+			<li><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
+			<li><a href="/pages/terms" title="Terms Of Use">Terms Of Use</a></li>
+		</ul>
+	</div>
+</div>
 
-<div id="middle" class="noright">
-	<div class="tl"></div>
-	<div class="tr"></div>
-	<div id="page">
-		<h2 class="gray mar-b">My Credits</h2>
-		<hr/>
-		
-		<?php if (!empty($credit)) { ?>
+<div class="grid_11 omega roundy grey_inside b_side">
+
+	<h2 class="page-title gray">My Credits</h2>
+	<hr />
+	<?php if (!empty($credit)) { ?>
 		<div id="name" style="padding:10px 10px 10px 5px; color:#009900;" class="order-table">
 			<strong class="fl">Total Credits: $<?=$credit?></strong>
 			<div style="clear:both;"></div>
@@ -57,7 +68,8 @@
 			<br />
 		</div>
 		<?php } ?>
-	</div>
-	<div class="bl"></div>
-	<div class="br"></div>
+	<br />
+
 </div>
+</div>
+<div class="clear"></div>

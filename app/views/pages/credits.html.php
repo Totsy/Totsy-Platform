@@ -1,33 +1,45 @@
-<?php $this->title("My Account Credits"); ?>
-	<h1 class="p-header">My Account</h1>
-	<div id="left">
+<?php $this->title("My Credits"); ?>
+
+<div class="grid_16">
+	<h2 class="page-title gray">My Credits</h2>
+	<hr />
+</div>
+
+<div class="grid_4 omega">
+	<div class="roundy grey_inside">
+		<h3 class="gray">About Us</h3>
+		<hr />
 		<ul class="menu main-nav">
-		<li class="firstitem17"><a href="/account" title="Account Dashboard"><span>Account Dashboard</span></a></li>
-	    <li class="item18"><a href="/account/info" title="Account Information"><span>Account Information</span></a></li>
-	    <li class="item19"><a href="/addresses" title="Address Book"><span>Address Book</span></a></li>
-	    <li class="item20"><a href="/orders" title="My Orders"><span>My Orders</span></a></li>
-	    <li class="item20 active"><a href="/Credits/view" title="My Credits"><span>My Credits</span></a></li>
-	    <li class="lastitem23"><a href="/Users/invite" title="My Invitations"><span>My Invitations</span></a></li>
-		  <br />
-		  <h3 style="color:#999;">Need Help?</h3>
-		  <hr />
-		  <li class="first item18"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
-		  <li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
+		    <li class="active"><a href="/pages/aboutus" title="About Totsy">How Totsy Works</a></li>
+		    <li><a href="/pages/moms" title="Meet The Moms">Meet The Moms</a></li>
+		    <li><a href="/pages/press" title="Press">Totsy in the Press</a></li>
+		    <li><a href="/pages/testimonials" title="Video Testimonials">Video Testimonials</a></li>
+		    <li><a href="/pages/being_green" title="Being Green">Being Green</a></li>
+		    <li><a href="http://blog.totsy.com" target="_blank" title="Blog">Totsy Blog</a></li>
 		</ul>
 	</div>
-
-<div id="middle" class="noright">
-	<div class="tl"></div>
-	<div class="tr"></div>
-	<div id="page">
-		
-		<h2 class="gray mar-b">My Credits</h2>
+	<div class="clear"></div>
+	<div class="roundy grey_inside">
+		<h3 class="gray">Need Help?</h3>
 		<hr />
-		<p>Credits from the old Totsy website have been moved over, and you should see that amount available at the top of the page next to the text "My Credits".</p>
+		<ul class="menu main-nav">
+		    <li><a href="/tickets/add" title="Contact Us">Help Desk</a></li>
+			<li><a href="/pages/faq" title="Frequently Asked Questions">FAQ's</a></li>
+			<li><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
+			<li><a href="/pages/terms" title="Terms Of Use">Terms Of Use</a></li>
+		</ul>
+	</div>
+</div>
+
+<div class="grid_11 omega roundy grey_inside b_side">
+
+	<h2 class="page-title gray">My Credits</h2>
+	<hr />
+	<p>Credits from the old Totsy website have been moved over, and you should see that amount available at the top of the page next to the text "My Credits".</p>
 		
 		<p>We've taken great pains to restore your credits from the old Totsy website; if you think your credits did not make it over from your original Totsy account, please <?=$this->html->link('contact us', array('Tickets::add')); ?> and we can verify the status of your account.</p>
-	
-	</div>
-	<div class="bl"></div>
-	<div class="br"></div>
+	<br />
+
 </div>
+</div>
+<div class="clear"></div>
