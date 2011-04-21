@@ -105,11 +105,13 @@ class Item extends \lithium\data\Model {
 			'color' => $color
 		);
 		foreach ($params as $key => $param) {
-			if ($key != 'vendor') {
-				$sku[] = strtoupper(substr(md5($param), 0, 3));
-			} else {
+			if ($key == 'vendor') {
 				$param = preg_replace('/[^(\x20-\x7F)]*/','', $param);
 				$sku[] = strtoupper(substr($param, 0, 3));
+			} else if ($key == 'style') {
+				$sku[] = strtoupper(substr(md5($param), 4, 6));
+			} else {
+				$sku[] = strtoupper(substr(md5($param), 0, 3));
 			}
 		}
 		return preg_replace('/\s*/m', '', implode('-', $sku));
