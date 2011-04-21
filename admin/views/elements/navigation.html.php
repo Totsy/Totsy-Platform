@@ -36,6 +36,14 @@
 		</ul>
 	</li>
 	<li>
+		<?php echo $this->html->link('Services', array('Services::index')); ?>
+		<ul>
+			<li>
+				<?php echo $this->html->link('Add New Service', 'Services::add'); ?>
+			</li>
+		</ul>
+	</li>
+	<li>
 		<?php echo $this->html->link('Banner Management', array('Banners::view')); ?>
 		<ul>
 			<li>
@@ -78,7 +86,7 @@
 			<li>
 				<?php echo $this->html->link('Promocode', 'promocodes/index'); ?>
 				<?php echo $this->html->link('Affiliate', 'Affiliates::index'); ?>
-				
+
 			</li>
 		</ul>
 	</li>
@@ -96,5 +104,5 @@
 	<li class="secondary">
 		<?php echo $this->html->link('Logout', 'Users::logout'); ?>
 	</li>
-	
+
 </ul>
