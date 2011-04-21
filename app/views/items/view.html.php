@@ -19,7 +19,7 @@
 <div class="zoom-section">
 	<div class="zoom-small-image">
     	<a href="/image/<?php echo $item->zoom_image; ?>.jpg" id="zoom1" class="cloud-zoom" rel="position: 'inside'">
-    	<img src="/image/<?php echo $item->primary_image; ?>.jpg" alt="" border="0" title=""/></a>
+    	<img src="/image/<?php echo $item->primary_image; ?>.jpg" alt="" border="0" title="" width="340"/></a>
   	</div>
 
   	<!-- Start additional image view thumbnails -->
@@ -29,8 +29,8 @@
 				echo $this->html->link(
 				$this->html->image("/image/{$item->primary_image}.jpg", array(
 					'class' => "zoom-tiny-image",
-					'width' => "93",
-					'height' => "93",
+					'width' => "75",
+					'height' => "75",
 					'alt' => "product-thumb-fpo",
 					'rel' => "full_img_1")),
 					"/image/{$item->primary_image}.jpg", array(
@@ -46,8 +46,8 @@
 					<?=$this->html->link(
 					$this->html->image("/image/{$value}.jpg", array(
 						'class' => "zoom-tiny-image",
-						'width' => "93",
-						'height' => "93",
+						'width' => "75",
+						'height' => "75",
 						'alt' => "full_img_$x"
 						)),
 						"/image/$item->zoom_image.jpg", array(
@@ -78,10 +78,6 @@
 	<div id="product-detail-right-top"  style="width:405px;">
 
 		<div id="listingCountdown" class="listingCountdown"></div>
-		<?php $logo = $event->images->logo_image;?>
-		<?=$this->html->image("/image/$logo.jpg", array(
-			'alt' => $event->name, 'width' => "148", 'height' => "52"
-		)); ?>
 
 	</div>
 <?=$this->form->create(null, array('url' => 'Cart::add')); ?>
@@ -118,7 +114,13 @@
 				<div id="all-reserved"></div>
 			<?php endif ?>
 		</div>
-
+		<br />
+		
+		<div class="roundy" style="text-align:center; padding:3px;"><?php $logo = $event->images->logo_image;?>
+		<?=$this->html->image("/image/$logo.jpg", array(
+			'alt' => $event->name, 'width' => "148", 'height' => "52"
+		)); ?>
+		</div>
 	</div>
 <?=$this->form->end(); ?>
 	<div class="clear"><!-- --></div>
@@ -132,8 +134,8 @@
 
 		<div id="tabs">
 			<ul>
-			    <li><a href="#description"><span>Description</span></a></li>
-			    <li><a href="#shipping"><span>Shipping &amp; Returns</span></a></li>
+			    <li><a href="#description">Description</a></li>
+			    <li><a href="#shipping">Shipping &amp; Returns</a></li>
 			    <!--<li><a href="#video"><span>Video</span></a></li>-->
 			</ul>
 
@@ -185,8 +187,9 @@
 				echo $this->html->link(
 					$this->html->image("$relatedImage", array(
 						"class" => "img-th",
-						"width" => "93",
-						"height" => "93")),
+						"style" => "border-radius:12px; overflow:hidden; -moz-border-radius: 12px; -webkit-border-radius:12px;",
+						"width" => "75",
+						"height" => "75")),
 						"/sale/$event->url/$relatedItem->url", array(
 							'id' => "$relatedItem->name",
 							'escape'=> false
