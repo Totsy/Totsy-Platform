@@ -1,8 +1,9 @@
 <?=$this->html->script(array('jqzoom.pack.1.0.1','jquery.equalheights', 'cloud-zoom.1.0.2'));?>
 <?=$this->html->style('jquery.countdown');?>
 
-<div class="grid_16"><h2 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a> / <?=$item->description?> <?=$item->color?> <div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
-<hr />
+<div class="grid_16">
+	<h2 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a> / <?=$item->description?> <?=$item->color?> 	<div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
+	<hr />
 </div>
 
 <div class="grid_6">
@@ -16,14 +17,14 @@
 				<?php if (!empty($item->primary_image)): ?>
 
 <div class="zoom-section">
-  <div class="zoom-small-image">
-    <a href='/image/<?php echo $item->zoom_image; ?>.jpg' id='zoom1' class='cloud-zoom' rel="position: 'inside'">
-    <img src="/image/<?php echo $item->primary_image; ?>.jpg" alt='' border="0" title=""/></a>
-  </div>
+	<div class="zoom-small-image">
+    	<a href="/image/<?php echo $item->zoom_image; ?>.jpg" id="zoom1" class="cloud-zoom" rel="position: 'inside'">
+    	<img src="/image/<?php echo $item->primary_image; ?>.jpg" alt="" border="0" title=""/></a>
+  	</div>
 
   	<!-- Start additional image view thumbnails -->
 	<div class="zoom-desc" style="margin-top:10px;">
-<?php
+		<?php
 			if (!empty($item->primary_image)) {
 				echo $this->html->link(
 				$this->html->image("/image/{$item->primary_image}.jpg", array(
@@ -155,7 +156,7 @@
 
 
 
-					</div>
+			</div>
 			<!-- End Shipping Tab -->
 
 			<!-- Start Video Tab -->
