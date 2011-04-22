@@ -49,15 +49,23 @@ class BaseController extends \lithium\action\Controller {
 		$invited_by = NULL;
 		 if ($userInfo) {
 			$user = User::find('first', array(
-				'conditions' => array('_id' => $userInfo['_id']),
-				'fields' => array('invited_by')
+				'conditions' => array('_id' => $userInfo['_id'])
 			));
+			$cookie = Session::read('cookieCrumb', array('name'=>'cookie'));
+			if(array_key_exists('affiliate',$cookie)){
+                Affiliate::linkshareCheck($user->_id, $cookie['affiliate'], $cookie);
+            }
 			if ($user){
 				if ($user->invited_by){
 					$invited_by = $user->invited_by;
-			    }
+			    }else if($user->affiliate_share){
+                    $invited_by = $user->affiliate_share['affiliate'];
+                }
 			}
 		}
+		/**
+		* If visitor lands on affliate url e.g www.totsy.com/a/afflilate123
+		**/
 		if (preg_match('/a/',$_SERVER['REQUEST_URI'])) {
 			$invited_by = substr($_SERVER['REQUEST_URI'], 3);
 			if (strpos($invited_by, '?')) {
@@ -67,9 +75,18 @@ class BaseController extends \lithium\action\Controller {
 				$invited_by = substr($invited_by,0,strpos($invited_by, '&'));
 			}
 		}
+		/**
+		* Retrieve any pixels that need to be fired
+		**/
 		$pixel = Affiliate::getPixels($_SERVER['REQUEST_URI'], $invited_by);
 		$pixel .= Session::read('pixel');
+		/**
+		* Remove pixel to avoid firing it again
+		**/
 		Session::delete('pixel');
+		/**
+		* Send pixel to layout
+		**/
 		$this->set(compact('pixel'));
 
 		$this->_render['layout'] = 'main';

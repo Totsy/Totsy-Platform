@@ -112,7 +112,6 @@ class Item extends \lithium\data\Model {
 				$sku[] = strtoupper(substr($param, 0, 3));
 			}
 		}
-
 		return preg_replace('/\s*/m', '', implode('-', $sku));
 	}
 }
