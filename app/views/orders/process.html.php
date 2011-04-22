@@ -285,10 +285,10 @@
 								$(\"#itemCounter-$x\").countdown('change', {until: itemProcessExpires, $countLayout});
 
 							$(\"#itemCounter-$x\").countdown({until: itemProcessExpires,
-							    expiryText: '<div class=\"over\" style=\"color:#fff; padding:5px; background: #ff0000;\">no longer reserved</div>', $countLayout});
+							    expiryText: '<div class=\"over\" style=\"color:#fff; padding:5px; background: #EB132C;\">no longer reserved</div>', $countLayout});
 							var now = new Date();
 							if (itemProcessExpires < now) {
-								$(\"#itemCounter-$x\").html('<div class=\"over\" style=\"color:#fff; padding:5px; background: #ff0000;\">no longer reserved</div>');
+								$(\"#itemCounter-$x\").html('<div class=\"over\" style=\"color:#fff; padding:5px; background: #EB132C;\">no longer reserved</div>');
 							}
 							});
 							</script>";

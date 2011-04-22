@@ -91,10 +91,10 @@
 										$(\"#checkout-counter-$x\").countdown('change', {until: itemCheckoutExpires, $countLayout});
 
 									$(\"#checkout-counter-$x\").countdown({until: itemCheckoutExpires,
-									    expiryText: '<div class=\"over\" style=\"color:#fff; padding:5px; background: #ff0000;\">no longer reserved</div>', $countLayout});
+									    expiryText: '<div class=\"over\" style=\"color:#fff; padding:5px; background: #EB132C;\">no longer reserved</div>', $countLayout});
 									var now = new Date();
 									if (itemCheckoutExpires < now) {
-										$(\"#checkout-counter-$x\").html('<div class=\"over\" style=\"color:#fff; padding:5px; background: #ff0000;\">no longer reserved</div>');
+										$(\"#checkout-counter-$x\").html('<div class=\"over\" style=\"color:#fff; padding:5px; background: #EB132C;\">no longer reserved</div>');
 									}
 									});
 									</script>";
