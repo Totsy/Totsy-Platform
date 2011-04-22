@@ -36,14 +36,27 @@ class ServicesController extends BaseController {
 		    $save['name'] = trim($data['name']);
 		    $save['start_date'] = new MongoDate(strtotime($data['start_date']));
 		    $save['end_date'] = new MongoDate(strtotime($data['end_date']));
-		    $save['trigger_type'] = $data['trigger_type'];
-		    $save['trigger_action'] = $data['trigger_action'];
-		    $save['trigger_value'] = (int)trim($data['trigger_value']);
+		    $save['eligible_trigger'] = array();
+		    $save['eligible_trigger']['trigger_type'] = $data['trigger_type'];
+		    $save['eligible_trigger']['trigger_action'] = $data['trigger_action'];
+		    $save['eligible_trigger']['trigger_value'] = (int)trim($data['trigger_value']);
+		    if($data['trigger_action'] == "pop_up"){
+		        $save['eligible_trigger']['popup_text'] = $data['popup_text'];
+		    }
+		    if($data['upsell_active']){
+		        $save['upsell_trigger']['trigger_type'] = $data['upsell_trigger_type'];
+		        $save['upsell_trigger']['trigger_action'] = $data['upsell_trigger_action'];
+		        $save['upsell_trigger']["min_value"] = $data['upsell_trigger_min'];
+		        $save['upsell_trigger']["max_value"] = $data['upsell_trigger_max'];
+		        if($data['upsell_trigger_action'] == "pop_up"){
+                    $save['upsell_trigger']['popup_text'] = $data['upsell_popup_text'];
+                }
+		    }
 		    $save['logo_image'] = $data['img'];
 		    if(!empty($data['in_stock'])){
-		        $save['in_stock'] = (int)$data['in_stock'];
+		        $save['in_stock'] = (integer)$data['in_stock'];
 		    }
-		    $whitelist = array('enabled','name','start_date','trigger_type', 'trigger_value', 'logo_image', 'in_stock', 'end_date', 'trigger_action');
+		    $whitelist = array('enabled','name','start_date','eligible_trigger', 'upsell_trigger', 'logo_image', 'in_stock', 'end_date');
 		    if($service->save($save, array('validate' => false,'whitelist'=>$whitelist))){
 			    $this->redirect(array('Services::index'));
 			}
@@ -71,16 +84,29 @@ class ServicesController extends BaseController {
 		    $save['name'] = trim($data['name']);
 		    $save['start_date'] = new MongoDate(strtotime($data['start_date']));
 		    $save['end_date'] = new MongoDate(strtotime($data['end_date']));
-		    $save['trigger_type'] = $data['trigger_type'];
-		    $save['trigger_action'] = $data['trigger_action'];
-		    $save['trigger_value'] = (int) trim($data['trigger_value']);
+		    $save['eligible_trigger'] = array();
+		    $save['eligible_trigger']['trigger_type'] = $data['trigger_type'];
+		    $save['eligible_trigger']['trigger_action'] = $data['trigger_action'];
+		    $save['eligible_trigger']['trigger_value'] = (int)trim($data['trigger_value']);
+		    if($data['trigger_action'] == "pop_up"){
+		        $save['eligible_trigger']['popup_text'] = $data['popup_text'];
+		    }
+		    if($data['upsell_active']){
+		        $save['upsell_trigger']['trigger_type'] = $data['upsell_trigger_type'];
+		        $save['upsell_trigger']['trigger_action'] = $data['upsell_trigger_action'];
+		        $save['upsell_trigger']["min_value"] = $data['upsell_trigger_min'];
+		        $save['upsell_trigger']["max_value"] = $data['upsell_trigger_max'];
+		        if($data['upsell_trigger_action'] == "pop_up"){
+                    $save['upsell_trigger']['popup_text'] = $data['upsell_popup_text'];
+                }
+		    }
 		    if(array_key_exists('img', $data) && $data['img']){
 		        $save['logo_image'] = $data['img'];
 		    }
 		    if(!empty($data['in_stock'])){
-		        $save['in_stock'] = (int) $data['in_stock'];
+		        $save['in_stock'] = (integer) $data['in_stock'];
 		    }
-		    $whitelist = array('enabled', 'name', 'start_date', 'trigger_type', 'trigger_value', 'logo_image', 'in_stock', 'end_date', 'trigger_action');
+		    $whitelist = array('enabled','name','start_date','eligible_trigger', 'upsell_trigger', 'logo_image', 'in_stock', 'end_date');
 		    if($service->save($save, array('validate' => false,'whitelist'=>$whitelist))){
 			    $this->redirect(array('Services::index'));
 			}

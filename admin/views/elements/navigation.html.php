@@ -38,6 +38,9 @@
 	<li>
 		<?php echo $this->html->link('Services', array('Services::index')); ?>
 		<ul>
+		    <li>
+				<?php echo $this->html->link('View Services', 'Services::index'); ?>
+			</li>
 			<li>
 				<?php echo $this->html->link('Add New Service', 'Services::add'); ?>
 			</li>

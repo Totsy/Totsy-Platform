@@ -14,7 +14,7 @@
 ?>
     <tr>
         <td><?php echo $service->name;?></td>
-        <td><?php echo $triggers[$service->trigger_type];?></td>
+        <td><?php echo $triggers[$service->eligible_trigger->trigger_type];?></td>
         <td><?php echo date("m/d/Y", $service->start_date->sec);?></td>
         <td><?php echo date("m/d/Y", $service->end_date->sec);?></td>
         <td><?php echo $service->enabled;?></td>
