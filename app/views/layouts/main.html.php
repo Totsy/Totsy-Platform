@@ -131,7 +131,7 @@
 	</div>
 	<div class="clear"></div>
 	</div>
-	<div class="container_16 roundy" style="background:#fff; margin:10px auto; padding:10px 0px 10px 0px; overflow:hidden;">
+	<div class="container_16 roundy glow">
 		<?php echo $this->content(); ?>
 	</div>
 	<div id="footer" class="container_16">

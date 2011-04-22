@@ -2,7 +2,7 @@
 <?=$this->html->style('jquery.countdown');?>
 
 <div class="grid_16">
-	<h2 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a> / <?=$item->description?> <?=$item->color?> 	<div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
+	<h2 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a><div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
 	<hr />
 </div>
 
@@ -141,16 +141,12 @@
 
 			<!-- Start Description Tab -->
 			<div id="description" class="ui-tabs-hide">
-			<h2 class="gray mar-b">Description: <span style="font-weight:normal;"><?=$event->name?> - <?=$item->description?></span></h2>
-			<hr />
 				<?php echo $item->blurb; ?>
 			</div>
 			<!-- End Description Tab -->
 
 			<!-- Start Shipping Tab -->
 			<div id="shipping" class="ui-tabs-hide">
-			<h2 class="gray mar-b">Shipping &amp; Returns</h2>
-			<hr />
 			<strong>Shipping:</strong> Totsy will ship this item via Standard UPS or Standard US Mail shipping based on your selection at the end of your <?=$this->html->link('checkout process', array('Orders::add')); ?>.
 			Complete shipping details are available at <?=$this->html->link('shipping terms', array('Pages::shipping')); ?>.
 
@@ -175,7 +171,7 @@
 	<div id="related-products">
 		<?php $relatedData = $related->data(); ?>
 		<?php if (!empty($relatedData)): ?>
-		<h2 class="gray mar-b">You would also love:</h2>
+		<h2 class="gray mar-b">You would also love</h2>
 		<hr />
 		<?php foreach ($related as $relatedItem): ?>
 			<?php
