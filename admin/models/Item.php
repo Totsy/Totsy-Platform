@@ -97,7 +97,7 @@ class Item extends \lithium\data\Model {
 	 * @param string $size
 	 * @param string $color
 	 */
-	public static function sku($vendor, $style, $size, $color) {
+	public static function sku($vendor, $style, $size, $color, $hash = 'md5') {
 		$params = array(
 			'vendor' => $vendor,
 			'style' => $style,
@@ -109,7 +109,11 @@ class Item extends \lithium\data\Model {
 				$param = preg_replace('/[^(\x20-\x7F)]*/','', $param);
 				$sku[] = strtoupper(substr($param, 0, 3));
 			} else if ($key == 'style') {
-				$sku[] = strtoupper(substr(md5($param), 4, 6));
+				if ($hash == 'sha256') {
+					$sku[] = strtoupper(substr(hash('sha256',$param.'Totsy@B6è!A'), 7, 3));
+				} else if ($hash == 'md5') {
+					$sku[] = strtoupper(substr(md5($param), 0, 3));
+				}
 			} else {
 				$sku[] = strtoupper(substr(md5($param), 0, 3));
 			}
