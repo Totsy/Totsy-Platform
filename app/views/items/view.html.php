@@ -108,7 +108,7 @@
 			<h2 class="caps" style="font-size:14px;">Totsy Price</h2>
 			<div style="padding: 10px 0px; color:#009900; font-size:24px;">$<?=number_format($item->sale_retail,2); ?></div>
 
-			<span class="original-price">Original: $<?=number_format($item->msrp,2); ?></span>
+			<span class="original-price" style="text-decoration:line-through; font-size:10px;">Original: $<?=number_format($item->msrp,2); ?></span>
 			<?php if ($item->total_quantity >= 1): ?>
 				<?=$this->form->submit('Add To Cart', array('class' => 'button')); ?>
 				<div id="all-reserved"></div>
@@ -121,6 +121,10 @@
 			'alt' => $event->name, 'width' => "148", 'height' => "52"
 		)); ?>
 		</div>
+		<script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script>
+		<fb:like href="<?php $url = (!empty($_SERVER['HTTPS'])) ? "https://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'] : "http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+ echo $url ?>" layout="button_count" show_faces="true" width="450" action="recommend" font=""></fb:like>
+ 
 	</div>
 <?=$this->form->end(); ?>
 	<div class="clear"><!-- --></div>
@@ -226,7 +230,7 @@ $(document).ready(function() {
 				if (data == 'false') {
 					$('#all-reserved').show();
 					$('.button').hide();
-					$('#all-reserved').html("<p style='background:#ff0000;padding:5px;text-align:center;color:#fff;border-radius:6px;'>All items are reserved <br>Check back in two minutes</p>");
+					$('#all-reserved').html("<p style='background:#EB132C;padding:5px;text-align:center;color:#fff;border-radius:6px;'>All items are reserved <br>Check back in two minutes</p>");
 				} else {
 					$('.button').show();
 					$('#all-reserved').hide();
