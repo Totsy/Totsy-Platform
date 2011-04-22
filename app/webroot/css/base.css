@@ -91,9 +91,9 @@ a#cs { float:right; text-transform:uppercase; background:url(../img/cs-icon.gif)
 a#if { display:block; width:214px; height:39px; background:url(../img/invite-btn-1.gif) left top no-repeat; text-indent:-9999px; float:right; margin:0 0 10px 0 }
 #header-rt p { line-height:36px; overflow:hidden }
 a#cart { display:block; height:28px; background:url(../img/cs-icon.gif) 0 0 no-repeat; padding-left:22px; margin:0 2px 0 8px; float:right }
-#main-nav { position:absolute; bottom:10px; ; z-index:200 }
+#main-nav { /*position:absolute; bottom:10px; */ z-index:999999; padding:12px; }
 #main-nav ul { }
-#main-nav li { float:left; padding-right:5px; margin-right:5px; background:url(../img/nav-div.gif) right 5px no-repeat; position:relative; z-index:200 }
+#main-nav li { float:left; padding-right:5px; margin-right:5px; background:url(../img/nav-div.gif) right 5px no-repeat; position:relative; z-index:99999!important; }
 #main-nav li.last { background:none; padding-right:0; margin-right:0; }
 #main-nav a { display:block; height:32px; background-image:url(../img/nav-sprite.gif); background-repeat:no-repeat; text-indent:-9999px; }
 li.item2 a { background-position:0 -32px; width:59px }
@@ -104,10 +104,10 @@ li.item4 a { background-position:-184px -32px; width:59px }
 li.item4 a:hover, li.item4.over a, li.active.item4 a { background-position:-184px 0 }
 li.item5 a { background-position:-244px -32px; width:117px }
 li.item5 a:hover, li.item5.over a, li.active.item5 a { background-position:-244px 0 }
-#main-nav li ul { position:absolute; left:-9999px; z-index:500; width:164px; top:32px; }
+#main-nav li ul { position:absolute; left:-9999px; z-index:500; width:300px; top:32px; }
 #main-nav li li { float:none; margin-right:0; background-image:none; background-color:#E7E7E8; border-left:1px solid #B3B3B3; border-right:1px solid #B3B3B3; padding:0 5px }
-#main-nav li li.first { background:url(../img/dd-bg.png) left top no-repeat; border:none; padding:5px 5px 0 5px }
-#main-nav li li.last { background:url(../img/dd-bg.png) left bottom no-repeat; border:none; padding:0 5px 5px 5px }
+#main-nav li li.first { background:#e7e7e8; border:none; padding:5px 5px 0 5px; -moz-border-radius:6px 6px 0px 0px; -webkit-border-radius:6px 6px 0px 0px; border-radius: 6px 6px 0px 0px; border-top:1px solid #c0c0c0; border-left:1px solid #c0c0c0; border-right:1px solid #c0c0c0;}
+#main-nav li li.last { background:#e7e7e8; border:none; padding:0 5px 5px 5px; -moz-border-radius:0px 0px 6px 6px; -webkit-border-radius: 0px 0px 6px 6px; border-radius: 0px 0px 6px 6px; border-bottom:1px solid #c0c0c0; border-left:1px solid #c0c0c0; border-right:1px solid #c0c0c0; }
 #main-nav li ul a:link, #main-nav li ul a:visited { height:auto; width:auto; background-image:none; text-indent:0; border-bottom:1px solid #B3B3B3; padding:5px; text-transform:uppercase; font-weight:bold; color:#636363; font-size:11px; white-space: nowrap;}
 #main-nav li ul li.last a { border-bottom:none }
 #main-nav li ul a:hover, #main-nav li ul li.active a:link, #main-nav li ul li.active a:visited { background:#FFF; color:#EB132C; text-decoration:none }
@@ -164,7 +164,7 @@ div.col-2 .box-2 { width:48% }
 .img-th.active { border:1px solid #EB132C; margin:7px 3px 0 0 }
 #product-detail-right { width:600px; float:right }
 #product-detail-right .sm-actions { margin:10px 0 0 0; position:absolute; right:0; top:0px; z-index:2 }
-#detail-top-right { width:175px; float:right; }
+#detail-top-right { width:165px; float:right; }
 #detail-top-right .p-container { padding:10px; text-align:center; color:#707070; }
 #detail-top-right .p-container h2 { font-size:18px; text-transform:uppercase; font-weight:bold; margin-bottom:5px }
 #detail-top-right .p-container p { font-size:12px; border-bottom:1px solid #CCC; padding-bottom:5px; margin-bottom:5px }
@@ -526,6 +526,7 @@ body.login .our365-login #intro-copy { width:310px; font-size:16px; padding:15px
 .cloud-zoom-loading { color:white; background:#222; padding:3px; border:none; }
 .zoom-desc { margin-top:10px; }
 .zoom-desc img { border:1px solid #eee; margin:0px; background:#FFF; padding:.01em; border-radius:12px; overflow:hidden;  -moz-border-radius: 12px; -webkit-border-radius:12px; }
+.mousetrap {z-index: 999!important;}
 /*----------------------------------------------------------------------------------------------------
 /* Back To Top
 ----------------------------------------------------------------------------------------------------*/
@@ -615,7 +616,7 @@ font-size: 14px; padding:5px; background: #eb132c; color:#fff; border-bottom: 1p
 }
 
 /************ Button ************/
-.button { display: inline-block; background:#EB132C  url('../img/btn-back-red.png') top left repeat-x !important;; border: 1px solid #EB132C !important; padding: 5px 8px 5px 8px !important; color: #fff !important; font-size: 12px !important; cursor: pointer; -moz-box-shadow:0 0 4px rgba(0, 0, 0, 0.3); border:2px solid #FFFFFF; text-transform: uppercase; }
+.button { display: inline-block; background:#EB132C!important;; border: 1px solid #EB132C !important; padding: 5px 8px 5px 8px !important; color: #fff !important; font-size: 12px !important; cursor: pointer; /* -moz-box-shadow:0 0 4px rgba(0, 0, 0, 0.3); border:2px solid #FFFFFF; */ text-transform: uppercase; }
 .button:hover { text-decoration: none; background: #EB132C!important; color: #fff !important; }
 .button:active { padding: 5px 8px 5px 8px !important; }
 .button { -moz-border-radius: 4px; -webkit-border-radius: 4px; }
@@ -631,6 +632,12 @@ font-size: 14px; padding:5px; background: #eb132c; color:#fff; border-bottom: 1p
 border-radius: 12px;
 border:1px solid #D7D7D7;
 margin:0px auto 10px auto;
+}
+.roundy_nav	{
+-webkit-border-radius: 12px;
+-moz-border-radius: 12px;
+border-radius: 12px;
+border:1px solid #D7D7D7;
 }
 .roundy_product	{
 -webkit-border-radius: 12px;

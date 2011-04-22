@@ -29,6 +29,7 @@
           content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
 </head>
 <body>
+
 <div class="container_16" style="margin:10px auto;">
 <div class="grid_2 alpha">
 				<?=$this->html->link(
@@ -40,12 +41,15 @@
 <div class="grid_14">
 	<?php if (!empty($userInfo)): ?>
 	<div class="grid_6">
-	        <ul class="nav main" id="navlist">
+	<?php if (!(empty($userInfo))): ?>
+					<?=$this->menu->render('main-nav'); ?>
+				<?php endif ?>
+	        <ul class="nav main" id="navlist" style="display:none;">
 	            <li>
 	
 	                <a href="">All</a>
 	
-	                <ul class="roundy grey_inside" style="padding:10px 20px;">
+	                <ul class="roundy_nav grey_inside_np" style="padding:10px 20px;">
 	                    <li><span><a href="">Link 1</a></span></li>
 	                    <li style="min-width:350px;"><a href="">Link 1</a></li>
 	                    <li style="min-width:350px;"><a href="">Link 1</a></li>
@@ -89,6 +93,9 @@
 							<li><a href="#" title="Item 1 2">Item 1 2</a></li>
 					</ul>
 	            </li>    
+	            
+	              
+
 	                 
 	        </ul>
 	    </div>
@@ -128,9 +135,7 @@
 	</div>
 	
 				<?php endif ?>
-				<?php if (!(empty($userInfo))): ?>
-					<?=$this->menu->render('main-nav__'); ?>
-				<?php endif ?>
+				
 			
 				</div>
 	</div>

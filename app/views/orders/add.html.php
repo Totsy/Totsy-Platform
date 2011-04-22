@@ -10,7 +10,7 @@
 	<hr />
 </div>
 
-<div class="grid_11">
+<div class="grid_12">
 
 		<h2 style="color:#707070; font-size:14px;">Order Summary <span style="float:right"><?php if(!empty($savings)) : ?>
 						<strong>You're Saving : <span style="color:#009900;">$<?=number_format($savings,2)?></span></strong>
@@ -118,7 +118,7 @@
 	</ol>
 </div>
 
-	<div class="grid_5">
+	<div class="grid_4 omega">
 <?php if (!empty($error)) { ?>
 	<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /><?=$error; ?></div>
 <?php } ?>
