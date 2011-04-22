@@ -9,6 +9,7 @@ use li3_payments\extensions\payments\exceptions\TransactionException;
 use MongoRegex;
 use lithium\analysis\Logger;
 use admin\models\User;
+use admin\models\Item;
 
 /**
 * The Orders Model is related to the Orders Collection in MongoDB.
@@ -86,6 +87,36 @@ class Order extends \lithium\data\Model {
 		return $result;
 	}
 
+	/**
+	 * Voids and Order
+	 *
+	 * @param array $order - Array of order information
+	 * @return boolean
+	 */
+	public static function void($order) {
+		$collection = static::collection();
+		$orderId = new MongoId($order['_id']);
+		try {
+			$auth = Payments::void('default', $order['authKey']);
+			return $collection->update(
+				array('_id' => $orderId),
+				array('$set' => array(
+					'void_date' => new MongoDate(),
+					'void_confirm' => $auth)),
+				array('upsert' => false)
+			);
+		} catch (TransactionException $e) {
+			$error = $e->getMessage();
+			Logger::error("order-void: Void Failed. Error $error thrown for $order[_id]");
+			$collection->update(
+				array('_id' => $orderId),
+				array('$set' => array(
+					'error_date' => new MongoDate(),
+					'auth_error' => $error)),
+				array('upsert' => false)
+			);
+		}
+	}
 	public static function process($order) {
 		$collection = static::collection();
 		$orderId = new MongoId($order['_id']);
@@ -155,38 +186,60 @@ class Order extends \lithium\data\Model {
 	 * And to find the author of this modification, we add a "cancel_by" field.
 	 * @param string $order_id,
 	 * @param string $author
+	 * @param string $comment
 	 */
-	public static function cancel($order_id, $author) {
+	public static function cancel($order_id, $author, $comment) {
+		$userCollection = User::collection();
 		//Get the actual datas of the order
 		$result = static::find('first', array('conditions' => array(
-			'_id' => $order_id
+			'_id' => new MongoId($order_id)
 		)));
 		$order = $result->data();
+		if(strlen($order["user_id"]) > 10){
+			$user = $userCollection->findOne(array("_id" => new MongoId($order["user_id"])));
+		} else {
+			$user = $userCollection->findOne(array("_id" => $order["user_id"]));
+		}
 		//Compare the cancel status, write modification datas and update cancel db status
 		$modification_datas["author"] = $author;
 		$modification_datas["date"] = new MongoDate(strtotime('now'));
 		if(empty($order["cancel"]) || ($order["cancel"] == false)){
 			$modification_datas["type"] = "cancel";
+			$modification_datas["comment"] = $comment;
 			static::collection()->update(array('_id' => new MongoId($order_id)),
 				array('$set' => array('cancel' => true)), array("upsert" => true));
+			//Authorize.Net Void
+			static::void($order);
 			//Cancel all the items
 			$items = $order["items"];
 			foreach($order["items"] as $key => $item){
 				$items[$key]["cancel"] = true;
+				//Reattribute original quantity
+				if(!empty($items[$key]["initial_quantity"])) {
+					$items[$key]["quantity"] = $items[$key]["initial_quantity"];
+				}
 			}
 			static::collection()->update(array('_id' => new MongoId($order_id)),
 				array('$set' => array('items' => $items)));
 		}
+		//Reattribute credits to the user
+		if(isset($order["credit_used"])) {
+			if(strlen($order["user_id"]) > 10){
+				$userCollection->update(array("_id" => new MongoId($order["user_id"])), array('$set' => array("total_credit" => (((float) abs($order["credit_used"])) + ((float) $user["total_credit"])))));
+			} else {
+				$userCollection->update(array("_id" => $order["user_id"]), array('$set' => array("total_credit" => (((float) abs($order["credit_used"])) + ((float) $user["total_credit"])))));
+			}
+		}
 		//Pushing modification datas to db
 		$result = static::collection()->update(array("_id" => new MongoId($order_id)),
 		array('$push' => array('modifications' => $modification_datas)), array('upsert' => true));
+		return $result;
 	}
 
 	public static function shipping($items) {
 		$cost = 7.95;
 		$orderCheck = $items;
-		if (count($orderCheck) == 1 && Item::first($orderCheck[0]['item_id'])->shipping_exempt
-		&& ((Item::first($orderCheck[0]['item_id'])->cancel == false) || empty(Item::first($orderCheck[0]['item_id'])->cancel)) ) {
+		if (count($orderCheck) == 1 && Item::first($orderCheck[0]['item_id'])->shipping_exempt && ((Item::first($orderCheck[0]['item_id'])->cancel == false) || empty(Item::first($orderCheck[0]['item_id'])->cancel)) ) {
 			$cost = 0;
 		}
 		if (count($orderCheck) == 1 && !Item::first($orderCheck[0]['item_id'])->shipping_exempt && Item::first($orderCheck[0]['item_id'])->shipping_oversize && ((Item::first($orderCheck[0]['item_id'])->cancel == false) || empty(Item::first($orderCheck[0]['item_id'])->cancel))) {
@@ -196,13 +249,13 @@ class Order extends \lithium\data\Model {
 	}
 
 	public static function overSizeShipping($items){
+		$itemsCollection = Item::collection();
 		$cost = 0;
 		foreach($items as $item) {
-			$info = Item::find("first", array("_id" => new MongoId($item['item_id'])));
-			if(array_key_exists('shipping_oversize', $info->data())){
-				$data = $info->data();
-				if(empty($data["cancel"]) || ($data["cancel"] == false)){
-					$cost += $data['shipping_rate'];
+			$info = $itemsCollection->findOne(array("_id" => new MongoId($item['item_id'])));
+			if(array_key_exists('shipping_oversize', $info)){
+				if(empty($info["cancel"]) || ($info["cancel"] == false)){
+					$cost += $info['shipping_rate'];
 				}
 			}
 		}
@@ -212,37 +265,41 @@ class Order extends \lithium\data\Model {
 	/**
 	 * Computes the sales tax for all order items, based on the shipping destination.
 	 *
-	 * @param object $order
-	 * @param object $shipping
-	 * @return float
+	 * @param object $current_order
+	 * @param array $items
 	 */
 	public static function tax($current_order,$items) {
-		$shipping = $current_order["shipping"];
+		$orderCollection = static::collection();
+		$order = $orderCollection->findOne(array("_id" => new MongoId($current_order["id"])), array('shipping' => 1));
+		$shipping = $order["shipping"];
 		$tax = 0;
 		foreach($items as $item){
 			if(($item["cancel"] == false) || (empty($item["cancel"]))){
-				$zipCheckPartial = in_array(substr($shipping->zip, 0, 3), static::_object()->_nyczips);
-				$zipCheckFull = in_array($shipping->zip, static::_object()->_nyczips);
+				$zipCheckPartial = in_array(substr($shipping["zip"], 0, 3), static::_object()->_nyczips);
+				$zipCheckFull = in_array($shipping["zip"], static::_object()->_nyczips);
 				$nysZip = ($zipCheckPartial || $zipCheckFull) ? true : false;
 				$nycExempt = ($nysZip && $item->sale_retail < 110) ? true : false;
-				if ($item->taxable != false || $nycExempt) {
-					switch ($shipping->state) {
+				if (!empty($item['taxable']) || $nycExempt) {
+					switch ($shipping["state"]) {
 						case 'NY':
 							$tax = ($nysZip) ? static::TAX_RATE : static::TAX_RATE_NYS;
 							break;
 						default:
-							$tax =  ($item->sale_retail < 110) ? 0 : static::TAX_RATE;
+							$tax =  ($item['sale_retail'] < 110) ? 0 : static::TAX_RATE;
 							break;
 					}
 				}
-				$tax += ($item['sale_retail'] * $item['tax']);
+				if(!empty($item['tax'])){
+					$tax += ($item['sale_retail'] * $item['tax']);
+				}
 			}
 		}
+		return $tax;
 	}
 
 	/**
 	* Computes the subtotal of all order items when it's not canceled
-	* @param object $order
+	* @param array $items
 	* @return float $subtotal
 	*/
 	public static function subTotal($items) {
@@ -259,30 +316,85 @@ class Order extends \lithium\data\Model {
 	* Save the datas of the temporary order to the DB
 	* @param object $selected_order
 	* @param array $items
+	* @param string $author
 	*/
-	public static function saveCurrentOrder($selected_order, $items = null) {
+	public static function saveCurrentOrder($selected_order, $items = null, $author) {
 		$orderCollection = static::collection();
 		$userCollection = User::collection();
 		/************* PREPARING DATAS **************/
 		$datas_order_prices = array(
 			'total' => $selected_order["total"],
 			'subTotal' => $selected_order["subTotal"],
-			'tax' => $selected_order["tax"],
 			'handling' => $selected_order["handling"],
 			'promocode_disable' => $selected_order["promocode_disable"],
-			'credit_used' => $selected_order["credit_used"],
-			'items' => $items
+			'comment' => $selected_order["comment"]
 		);
+		if(!empty($selected_order["tax"])) {
+			$datas_order_prices["tax"] = $selected_order["tax"];
+		}
+		if(!empty($selected_order["credit_used"])) {
+			$datas_order_prices["credit_used"] = $selected_order["credit_used"];
+		}
 		/**************UPDATE DB****************************/
 		if(isset($selected_order["user_total_credits"])){
 			if(strlen($selected_order["user_id"]) > 10){
-				$userCollection->update(array("_id" => new MongoId($selected_order["user_id"])), array('$set' => array("total_credit" => $selected_order["user_total_credits"])));
+				$userCollection->update(array("_id" => new MongoId($selected_order["user_id"])), array('$set' => array("total_credit" => (float) $selected_order["user_total_credits"])));
 			} else {
-				$userCollection->update(array("_id" => $selected_order["user_id"]), array('$set' => array("total_credit" =>  $selected_order["user_total_credits"])));
+				$userCollection->update(array("_id" => $selected_order["user_id"]), array('$set' => array("total_credit" => (float) $selected_order["user_total_credits"])));
 			}
 		}
 		$orderCollection->update(array("_id" => new MongoId($selected_order["id"])),array('$set' => $datas_order_prices));
-		return true;
+		//Update Items
+		foreach($items as $item) {
+			static::changeQuantity($selected_order["id"], $item["_id"], $item["quantity"], $item["initial_quantity"]);
+			static::cancelItem($selected_order["id"], $item["_id"], $item["cancel"]);
+		}
+		//Pushing modification datas to db
+		$modification_datas["author"] = $author;
+		$modification_datas["type"] = "items";
+		$modification_datas["date"] = new MongoDate(strtotime('now'));
+		$modification_datas["comment"] = $selected_order['comment'];
+		$result = static::collection()->update(array("_id" => new MongoId($selected_order["id"])),
+		array('$push' => array('modifications' => $modification_datas)), array('upsert' => true));
+		return $result;
+	}
+
+	/**
+	* Cancel or Uncancel an item from one Order
+	* @param string $order_id
+	* @param string $cart_id
+	* @param boolean $cancel
+	*/
+	public static function cancelItem($order_id, $cart_id, $cancel = true) {
+		$orderCollection = static::collection();
+		$order = $orderCollection->findOne(array("_id" => new MongoId($order_id)), array('items' => 1));
+		foreach($order["items"] as $key => $item) {
+			if($item["_id"] == new MongoId($cart_id)) {
+				$order["items"][$key]["cancel"] = $cancel;
+			}
+		}
+		$orderCollection->update(array("_id" => new MongoId($order_id)), array('$set' => array( "items" => $order["items"])));
+	}
+
+	/**
+	* Change the quantity of an order
+	* @param string $order_id
+	* @param string $cart_id
+	* @param float $quantity
+	* @param float $initial_quantity
+	*/
+	public static function changeQuantity($order_id, $cart_id, $quantity, $initial_quantity = null) {
+		$orderCollection = static::collection();
+		$order = $orderCollection->findOne(array("_id" => new MongoId($order_id)), array('items' => 1));
+		foreach($order["items"] as $key => $item) {
+			if($item["_id"] == new MongoId($cart_id)) {
+				$order["items"][$key]["quantity"] = $quantity;
+				if(!empty($initial_quantity)) {
+					$order["items"][$key]["initial_quantity"] = $initial_quantity;
+				}
+			}
+		}
+		$orderCollection->update(array("_id" => new MongoId($order_id)), array('$set' => array( "items" => $order["items"])));
 	}
 
 	/**
@@ -295,6 +407,7 @@ class Order extends \lithium\data\Model {
 		//Configuration
 		$orderCollection = static::collection();
 		$userCollection = User::collection();
+		$promocodeCollection = Promocode::collection();
 		//Save items status
 		if(!empty($items)){
 			$datas_order["items"] = $items;
@@ -305,32 +418,41 @@ class Order extends \lithium\data\Model {
 		$tax = static::tax($selected_order,$items);
 		$tax = $tax ? $tax + (($overSizeHandling + $handling) * static::TAX_RATE) : 0;
 		$subTotal = static::subTotal($items);
-		//Get Actual Promocodes variables
-		$regexObj = new MongoRegex("/".$selected_order["promo_code"]."/i"); 
-		$conditions = array("code" => $regexObj); 
-		$promocode = Promocode::find("first", $conditions);
 		/************PROMOCODES TREATMENT************/
-		echo "Minimum Promo : ".$promocode->minimum_purchase;
-		echo " Actual Credit Used : ".$selected_order["credit_used"];
-		echo " Initial Credit User : ".$selected_order["initial_credit_used"];
-		if( $subTotal <= $promocode->minimum_purchase){
+		if(!empty($selected_order["promo_code"])){
+			//Get Actual Promocodes variables
+			$regexObj = new MongoRegex("/" . $selected_order["promo_code"] . "/i");
+			$conditions = array("code" => $regexObj);
+			$promocode = $promocodeCollection->findOne($conditions);
+			if( $subTotal <= $promocode['minimum_purchase']){
+				$preAfterDiscount = $subTotal;
+				$datas_order["promocode_disable"] = true;
+			}
+			else {
+				$preAfterDiscount = $subTotal  + $selected_order["promo_discount"];
+				$datas_order["promocode_disable"] = false;
+			}
+		} else {
 			$preAfterDiscount = $subTotal;
 			$datas_order["promocode_disable"] = true;
 		}
-		else {
-			$preAfterDiscount = $subTotal  + $selected_order["promo_discount"];
-			$datas_order["promocode_disable"] = false;
-		}
-		echo " preAfterDiscount : ".$preAfterDiscount;
 		/**************CREDITS TREATMENT**************/
 		if(isset($selected_order["credit_used"])){
 			if(empty($selected_order["user_total_credits"])){
-				$user_ord = $userCollection->findOne(array("_id" => new MongoId($selected_order["user_id"])));
+				if(strlen($selected_order["user_id"]) > 10){
+					$user_ord = $userCollection->findOne(array("_id" => new MongoId($selected_order["user_id"])));
+				} else {
+					$user_ord = $userCollection->findOne(array("_id" => $selected_order["user_id"]));
+				}
 			} else {
 				$user_ord["total_credit"] = $selected_order["user_total_credits"];
 			}
-			$datas_user["total_credit"] = $user_ord["total_credit"];
-			echo " User Credit Before Calculation ".$user_ord["total_credit"];
+			if(!empty($user_ord["total_credit"])) {
+				$datas_user["total_credit"] = (float) $user_ord["total_credit"];
+			} else {
+				$datas_user["total_credit"] = 0;
+				$user_ord["total_credit"] = 0;
+			}
 			//Set Initial Credits if not Set
 			if(empty($selected_order["initial_credit_used"])) {
 				$datas_order["initial_credit_used"] = $selected_order["credit_used"];
@@ -338,28 +460,22 @@ class Order extends \lithium\data\Model {
 			}
 			//CASE (CREDITS > TOTAL)
 			if(abs($selected_order["credit_used"]) > $preAfterDiscount) {
-				echo " CASE (CREDITS > TOTAL) ";
 				$refill = abs($selected_order["credit_used"] + $preAfterDiscount);
 				$new_credits = $selected_order["credit_used"] + $refill;
-				echo " REFILL : ".$refill;
-				$datas_user["total_credit"] = $refill;
+				$datas_user["total_credit"] = ($datas_user["total_credit"] + $refill);
 				$afterDiscount = $preAfterDiscount  + $new_credits;
 				$datas_order["credit_used"] = $new_credits;
 			} else if(abs($selected_order["credit_used"]) == $preAfterDiscount) {
-				echo " CASE (CREDITS == TOTAL) ";
 				$afterDiscount = $preAfterDiscount + $selected_order["credit_used"];
 			} else if(abs($selected_order["credit_used"]) < $preAfterDiscount) {
-				echo " CASE (CREDITS < TOTAL) ";
 				//Get back credits from user
 				$initial_credits = ($user_ord["total_credit"] - abs($selected_order["initial_credit_used"] - $selected_order["credit_used"]));
 				if($selected_order["credit_used"] != $selected_order["initial_credit_used"]){
 					$datas_user["total_credit"] = $initial_credits;
 					}
 				if(abs($selected_order["initial_credit_used"]) > $preAfterDiscount) {
-					echo " CASE (INITAL > TOTAL) ";
 					$refill = abs($selected_order["initial_credit_used"] + $preAfterDiscount);
 					$new_credits = $selected_order["initial_credit_used"] + $refill;
-					echo " REFILL : ".$refill;
 					$datas_user["total_credit"] = ($refill + $user_ord["total_credit"]);
 					$afterDiscount = $preAfterDiscount  + $new_credits;
 					$datas_order["credit_used"] = $new_credits;
@@ -389,7 +505,6 @@ class Order extends \lithium\data\Model {
 		$new_datas_order = array_merge($new_datas_order, $datas_order);
 		//keep user credits infos
 		$new_datas_order["user_total_credits"] = $datas_user["total_credit"];
-		echo " User Credit After Calculation " . $new_datas_order["user_total_credits"];
 		$new_datas_order['initial_credit_used'] = $selected_order["initial_credit_used"];
 		/**************CREATE TEMP ORDER********************/
 		$temp_order = static::Create($new_datas_order);

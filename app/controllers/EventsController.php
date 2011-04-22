@@ -5,6 +5,7 @@ namespace app\controllers;
 use \app\controllers\BaseController;
 use \app\models\Event;
 use \app\models\Item;
+use app\models\Banner;
 use \MongoDate;
 use \lithium\storage\Session;
 use app\models\Affiliate;
@@ -13,6 +14,8 @@ use app\models\Affiliate;
 class EventsController extends BaseController {
 
 	public function index() {
+		$bannersCollection = Banner::collection();
+		$banner = $bannersCollection->findOne(array("enabled" => true, 'end_date' => array('$gte' => new MongoDate(strtotime('now')))));
 		$openEvents = Event::open();
 		$pendingEvents = Event::pending();
 
@@ -20,7 +23,7 @@ class EventsController extends BaseController {
 			'fields' => array('items')
 		)));
 
-		return compact('openEvents', 'pendingEvents', 'itemCounts');
+		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner');
 	}
 
 	public function view() {

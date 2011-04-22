@@ -31,6 +31,10 @@ class Item extends \lithium\data\Model {
 		'shipping_overweight'
 		);
 
+	public static function collection() {
+		return static::_connection()->connection->items;
+	}
+	
 	public static function castData($items, array $options = array()) {
 
 		foreach ($items as $key => $value) {
@@ -108,7 +112,6 @@ class Item extends \lithium\data\Model {
 				$sku[] = strtoupper(substr($param, 0, 3));
 			}
 		}
-
 		return preg_replace('/\s*/m', '', implode('-', $sku));
 	}
 }

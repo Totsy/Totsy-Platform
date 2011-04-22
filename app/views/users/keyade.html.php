@@ -29,7 +29,7 @@
 									<li>Exclusive sales for moms, children &amp; babies.</li>
 									<li>Sales last up to 3 days, plenty of time to shop.</li>
 									<li>Savings of up to 90% off retail.</li>
-									<li>For every purchase, one tree is planted.</li>
+									<li>A tree is planted for your first purchase.</li>
 									<li>Membership is free</li>
 									<li>We are 100% green.</li>
 								</ul>

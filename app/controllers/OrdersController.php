@@ -87,8 +87,14 @@ class OrdersController extends BaseController {
 		$preShipment = ($shipped || $shipRecord) ? true : false;
 		$itemsByEvent = $this->itemGroupByEvent($order);
 		$orderEvents = $this->orderEvents($order);
-
-
+		//Check if all items from one event are closed
+		foreach($itemsByEvent as $items_e) {
+			foreach($items_e as $item) {
+				if(empty($item['cancel'])) {
+					$openEvent[$item['event_id']] = true;
+				}
+			}
+		}
 		$pixel = Affiliate::getPixels('order', 'spinback');
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel, array('order' => $_SERVER['REQUEST_URI']));
 
@@ -103,7 +109,8 @@ class OrdersController extends BaseController {
 			'preShipment',
 			'spinback_fb',
 			'shipRecord',
-			'preShipment'
+			'preShipment',
+			'openEvent'
 		);
 	}
 

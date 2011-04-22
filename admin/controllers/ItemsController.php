@@ -6,6 +6,7 @@ use admin\models\Item;
 use admin\models\Event;
 use MongoRegex;
 use MongoDate;
+use MongoId;
 use \li3_flash_message\extensions\storage\FlashMessage;
 
 /**
@@ -148,6 +149,25 @@ class ItemsController extends BaseController {
 			)));
 		}
 		return compact('items');
+	}
+	
+	/**
+	 * Update Items from Items Collection
+	 * Based on the event _id items will be update from the Item collection.
+	 */
+	public function itemUpdate() {
+		$itemsCollection = Item::Collection();
+		if ($this->request->data) {
+			$data = $this->request->data;
+			$id = $data['id'];
+			unset($data['id']);
+			array_reverse($data);
+			foreach ($data as $key => $value) {
+				$itemId = array("_id" => new MongoId($key));
+				$itemsCollection->update($itemId, array('$set' => array("blurb" => $value)));
+			}
+			$this->redirect('/events/edit/'.$id.'#event_items');
+		}
 	}
 }
 

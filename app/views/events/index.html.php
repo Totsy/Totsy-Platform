@@ -117,18 +117,31 @@
 				$(function () {
 					var saleEnd = new Date();
 					saleEnd = new Date($date);
-					$(\"$splashid\").countdown({until: saleEnd, layout: 'Closes in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+					var now = new Date();
+					var diff = $date - (now.getTime());
+					if((diff / 1000) < (24 * 60 * 60) ) {
+						$(\"$splashid\").countdown({until: saleEnd, layout: 'Closes in {hnn}{sep}{mnn}{sep}{snn}'});
+					} else {
+						$(\"$splashid\").countdown({until: saleEnd, layout: 'Closes in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+					}
 				});</script>";
 		?>
 			<?php if ($x == 1): ?>
-			
-<div id="banner_container">
-    <div><a href="/users/invite"><img src="/img/invite_girl.png" alt="" /></a></div>
-    <div><img src="/img/banners/shoeBan_1.jpg" alt="Shoe Month" /></div>
-    <div><img src="/img/banners/shoeBan_2.jpg" alt="Shoe Month 2" /></div>
-    <div><img src="/img/banners/shoeBan_3.jpg" alt="Shoe Month 3" /></div>
-    <div><img src="/img/banners/shoeBan_4.jpg" alt="Shoe Month 4" /></div>
-</div>
+				<div id="banner_container">
+					<div><a href="/users/invite"><img src="/img/invite_girl.png" alt="" /></a></div>
+					<?php if(!empty($banner["img"])): ?>
+						<?php foreach($banner["img"] as $image): ?>
+							<div><?php if(!empty($image["url"])):?>
+								<a href="<?=$image["url"]?>">
+									<img src="/image/<?=$image["_id"]?>.jpeg" alt="" />
+								</a>
+								<?php else: ?>
+									<img src="/image/<?=$image["_id"]?>.jpeg" alt="" />
+								<?php endif ?>
+							</div>
+						<?php endforeach ?>
+					<?php endif ?>
+				</div>
 			<?php endif ?>
 		<?php $x++; ?>
 		<?php $y++; ?>
@@ -198,9 +211,15 @@
 				$date = $event->start_date->sec * 1000;
 				$splashid = "#futuresplash$x";
 				$futureJs[] = "<script type=\"text/javascript\">
-					$(function () {var saleEnd = new Date();
-						saleEnd = new Date($date);
-						$(\"$splashid\").countdown({until: saleEnd, layout: '{dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+					$(function () {var saleStart = new Date();
+						saleStart = new Date($date);
+						var now = new Date();
+						var diff = $date - (now.getTime());
+						if((diff / 1000) < (24 * 60 * 60) ) {
+							$(\"$splashid\").countdown({until: saleStart, layout: 'Opens in {hnn}{sep}{mnn}{sep}{snn}'});
+						} else {
+							$(\"$splashid\").countdown({until: saleStart, layout: 'Opens in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+						}
 					});
 				</script>";
 			?>

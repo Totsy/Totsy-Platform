@@ -11,18 +11,16 @@ class Affiliate extends Base {
     protected $_meta = array('source'=> 'affiliates');
 	public $validates = array();
     /**
-    * Retrieves active pixels relate to active affiliates
+    * Retrieves active pixels related to active affiliates
     *
     * @param $url the pixel needs to be placed
     * @param $invited_by the affiliate associated with the user
     * @return the pixels associated to the affiliate and url
     */
 	public static function getPixels($url, $invited_by) {
+	    $cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
         $orderid = NULL;
-        $cookie = Session::read('cookieCrumb',array('name' => 'cookie'));
-        if(array_key_exists('affiliated', $cookie) && $cookie['affiliated']){
-            $invited_by = $cookie['affiliated'];
-        }
+
         if(strpos($url, '&')) {
             $url = substr($url,0,strpos($url, '&'));
         }
@@ -36,7 +34,6 @@ class Affiliate extends Base {
         if($index = strpos($invited_by, '_')) {
             $invited_by = substr($invited_by, 0 , $index);
         }
-
         $conditions['active'] = true;
         $conditions['level'] = 'super';
         $conditions['pixel'] = array('$elemMatch' => array(
@@ -44,19 +41,26 @@ class Affiliate extends Base {
                                     'enable' => true
                                 ));
         $conditions['invitation_codes'] = $invited_by;
-
-		$options = array('conditions' => $conditions,
+        $options = array('conditions' => $conditions,
 		                'fields'=>array(
 		                    'pixel.pixel' => 1, 'pixel.page' => 1
 		                    ));
 		$pixels = Affiliate::find('all', $options );
 		$pixels = $pixels->data();
-
 		$pixel = NULL;
-
+		if (!empty($cookie['user_id'])) {
+			$user = User::find('first', array('conditions' => array('_id' => $cookie['user_id'])));
+		}
+        if($url == '/orders/view'){
+            if($user->affiliate_share){
+                $cookie['affiliate'] = $user->affiliate_share['affiliate'];
+                $cookie['entryTime'] = $user->affiliate_share['landing_time'];
+                Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
+                static::generatePixel($cookie['affiliate'], '', array( 'orderid' => $orderid));
+            }
+        }
 		foreach($pixels as $data) {
 			foreach($data['pixel'] as $index) {
-
                 if(in_array($url, $index['page'])) {
                     if($url == '/orders/view'){
                         $pixel .= static::generatePixel($invited_by, $index['pixel'], array( 'orderid' => $orderid));
@@ -114,14 +118,15 @@ class Affiliate extends Base {
         if($invited_by == 'w4'){
             $transid = 'totsy' . static::randomString();
             return '<br/>' . str_replace('$', $transid,$pixel );
-        }else if($invited_by == 'spinback' && ($options)) {
+        }
+        if($invited_by == 'spinback' && ($options)) {
             $insert = '';
             if (array_key_exists('invite', $options) && ($options['invite'])){
                 $session = Session::read('userLogin');
                 $user = User::find('first', array('conditions' => array(
                     'email' => $session['email']
                 )));
-               // $insert = static::spinback_share('/img/logo.jpg', $order->order_id, '/sales', 'Great Deals on Totsy', '' ,"I just saved on Totsy.");
+                $insert = static::spinback_share('/img/logo.png', $user->_id, '/join/' . $user->invitation_codes[0], 'The best brands for kids, moms & families up to 90% off!', '' ,"I saved tons on Totsy and you can too! Membership is FREE so join today!", ' st="Invite Your Friends" ');
                 return str_replace('$' , $insert, $pixel);
             }
             if (array_key_exists('orderid', $options) && ($options['orderid'])) {
@@ -145,7 +150,7 @@ class Affiliate extends Base {
                     'order_id' => $orderid
                 )));
 
-                $insert = static::spinback_share('/img/logo.jpg', $order->order_id, '/sales', 'Great Deals on Totsy', '' ,"I just saved on Totsy.");
+                $insert = static::spinback_share('/img/logo.png', $order->order_id, '/sales', 'Great Deals on Totsy', '' ,"I just saved on Totsy.", ' st="Share Your Order" ');
                 return str_replace('$',$insert,$pixel);
             }
             if (array_key_exists('product', $options) && ($options['product'])) {
@@ -158,7 +163,7 @@ class Affiliate extends Base {
                         'url' => $item),
                     'order' => array('modified_date' => 'DESC'
                 )));
-                $insert = static::spinback_share('/image/' . $item->primary_image . '.jpeg',$item->_id, $product,  $item->description, $item->vendor, "Check out this great deal on Totsy!"  );
+                $insert = static::spinback_share('/image/' . $item->primary_image . '.jpeg',$item->_id, $product,  htmlspecialchars($item->description), htmlspecialchars($item->vendor), "Check out this great deal on Totsy!"  );
 
                return str_replace('$',$insert,$pixel);
             }
@@ -169,11 +174,13 @@ class Affiliate extends Base {
                 $event = Event::find('first', array('conditions' => array(
                             'url' => $vendorurl
                         )));
-                $insert = static::spinback_share('/image/' .$event->logo_image . '.gif',$event->_id, $options['event'],  $event->name, $event->name, "Check out this SALE on Totsy!"  );
+                $insert = static::spinback_share('/image/' .$event->logo_image . '.gif',$event->_id, $options['event'],  htmlspecialchars($event->name), htmlspecialchars($event->name), "Check out this SALE on Totsy!", ' st="Share this Sale!"'  );
                return str_replace('$',$insert,$pixel);
             }
-        }else if($invited_by == 'linkshare') {
+        }
+        if($invited_by == 'linkshare') {
             if( array_key_exists('orderid', $options) && $options['orderid']) {
+
                 $raw = '';
                 if (array_key_exists('trans_type', $options) && $options['trans_type']) {
                     $trans_type = $options['trans_type'];
@@ -188,8 +195,19 @@ class Affiliate extends Base {
                 $user = User::find('first', array('conditions' => array(
                             '_id' => $order->user_id
                         )));
-                $raw = static::linkshareRaw($order, $user, $user->created_date->sec, $trans_type);
+                if($user->affiliate_share){
+                    $track = $user->affiliate_share['affiliate'];
+                    $entryTime = $user->affiliate_share['entryTime'];
+                }elseif(array_key_exists('affiliate', $cookie) && $cookie['affiliate']){
+                    $track = $cookie['affiliate'];
+                    $entryTime = $cookie['entryTime'];
+                }
+                $raw = static::linkshareRaw($order, $track, $entryTime, $trans_type);
 
+                if(($pixel)){
+                    $insert = static::linkshareRaw($order, $track, $entryTime, null);
+                    $pixel  = str_replace('$',$insert,$pixel);
+                }
                 //Encrypting raw message
                  $base64 = base64_encode($raw);
                 $msg = str_replace('-','_',str_replace('+','/',$base64));
@@ -200,9 +218,8 @@ class Affiliate extends Base {
                 $data = 'http://track.linksynergy.com/nvp?mid=36138&msg=' . urlencode($msg) . '&md5=' . urlencode($md5) . '&xml=1';
                 static::transaction($data, 'linkshare', $orderid, $trans_type);
             }
-        }else{
-            return '<br/>' . $pixel . '<br/>';
         }
+        return '<br/>' . $pixel . '<br/>';
     }
 
     /**
@@ -216,25 +233,28 @@ class Affiliate extends Base {
     * @param $msg message to display
     * @return string of variables for javascript
     */
-    private static function spinback_share($pi, $pid, $plp, $pn, $m, $msg){
+    private static function spinback_share($pi, $pid, $plp, $pn, $m, $msg, $extra = null){
         $insert ='';
-        $insert .= ' pi= http://' . $_SERVER['HTTP_HOST'] . $pi;
-       $insert .= ' pid=' . $pid;
-       $insert .= ' plp=http://' . $_SERVER['HTTP_HOST'] . '/a/spinback?redirect=http://' . $_SERVER['HTTP_HOST'] . $plp ;
+        $insert .= ' pi=" http://' . $_SERVER['HTTP_HOST'] . $pi . '"';
+       $insert .= ' pid="' . $pid . '"';
+       $insert .= ' plp="http://' . $_SERVER['HTTP_HOST'] . '/a/spinback?redirect=http://' . $_SERVER['HTTP_HOST'] . $plp . '"';
        $insert .= ' pn="' .$pn . '"';
        $insert .= ' m="' . $m. '"';
        $insert .= 'msg= "' . $msg . '"';
+       $insert .= $extra;
         return $insert;
     }
     /**
     *
     **/
-    public static function linkshareRaw($order, $user, $entryTime, $trans_type){
+    public static function linkshareRaw($order, $tr, $entryTime, $trans_type){
         $raw = '';
         $raw .= 'ord=' . $order->order_id . '&';
-        $raw .= 'tr=' . substr($user->invited_by, strlen('linkshare')+1) . '&';
-        $raw .= 'land=' . date('Ymd_Hi', $entryTime) . '&';
-        $raw .= 'date=' . date('Ymd_Hi', $order->date_created->sec) . '&';
+        if(($trans_type)){
+            $raw .= 'tr=' . substr($tr, strlen('linkshare')+1) . '&';
+            $raw .= 'land=' . date('Ymd_Hi', $entryTime) . '&';
+            $raw .= 'date=' . date('Ymd_Hi', $order->date_created->sec) . '&';
+        }
         $skulist = array();
         $namelist = array();
         $qlist = array();
@@ -305,6 +325,18 @@ class Affiliate extends Base {
         $trans['created_date'] = new MongoDate(strtotime('now'));
         return static::collection()->save($trans);
     }
+    /**
+	 * @todo Document me
+	 */
+	public static function linkshareCheck($userId, $affiliate, $cookie) {
+		$success = false;
+		if (preg_match('@^(linkshare)@i', $affiliate)){
+			$user = User::collection();
+			$user->find(array( '_id' => $userId));
+			$affiliate_share = array('affiliate' => $affiliate , 'landing_time' => $cookie['entryTime']);
+			$success = ($user->update(array( '_id' => $userId), array('$set' => array('affiliate_share' => $affiliate_share)))) ? true : false;
+		}
+		return $success;
+	}
 }
-
 ?>

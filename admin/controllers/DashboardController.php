@@ -4,607 +4,244 @@ namespace admin\controllers;
 
 use admin\models\Order;
 use admin\models\User;
+use admin\models\Dashboard;
 use MongoDate;
 use MongoCode;
+use FusionCharts;
 
 class DashboardController extends \lithium\action\Controller {
 
+	/**
+	 *
+	 */
     public function index() {
-    
-    //set the timezone to the US Eastern time
-    //date_default_timezone_set(ini_get('date.timezone')); 
-    
-    //sets today date with time of the day.
-    $date_test = mktime(0, 0, 0, date("09"), date("01"), date("2010"));
-    $startOfToday = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
-    $today = strtotime('now');
-    
-    
-    //sets yesterday with timeof day based on today's time. basically yesterday at exact same time as today
-    $yesterday_sametime = strtotime('-1 day');
-    $startOfyesterday = mktime(0, 0, 0, date("m")  , date("d")-1, date("Y"));
-    
-    //set the date variables for 
-    // start of the month current month
-    // end of first week current month
-    // end of 2nd week current month
-    // end of 3 week current month
-    // end of month current month
-    $startOfTheMonth  = mktime(0, 0, 0, date("m"), 1, date("Y"));
-    $endOfFirstWeek = mktime(0, 0, 0, date("m"), 8, date("Y"));
-    $endOfSecondWeek = mktime(0, 0, 0, date("m"), 15, date("Y"));
-    $endOfThirdWeek =  mktime(0, 0, 0, date("m"), 22, date("Y"));
-    $endOfMonth = mktime(0, 0, 0, date("m")+1, 1, date("Y"));
-    
-    
-    //getting all the orders and Users from Mongo
-    $orderCollections = Order::collection();
-    $userCollections = User::collection();
-    
-    
-    $conditions = array(
-          'created_date' => array(
-            '$lte' => new MongoDate($date_test)
-        ));
-    
-    $total_NewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
-    
-    //sets the date conditions for the search for today for the Orders
-    $conditions = array(
-          'date_created' => array(
-            '$gt' => new MongoDate($startOfToday),
-            '$lte' => new MongoDate($today)
-        ));
-    
-    
-    $todayRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
-    
-    //sets the date conditions for the search for today for the Users
-    $conditions = array(
-          'created_date' => array(
-            '$gt' => new MongoDate($startOfToday),
-            '$lte' => new MongoDate($today)
-        ));
-    
-    
-    $todayNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
-    
-    //sets the date conditions for the search for yesterday
-     $conditions = array(
-          'date_created' => array(
-            '$gt' => new MongoDate($startOfyesterday),
-            '$lte' => new MongoDate($yesterday_sametime)
-        ));
-    
-   $yesterdayRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
-   
-   //sets the date conditions for the search for today for the Users
-    $conditions = array(
-          'created_date' => array(
-            '$gt' => new MongoDate($startOfyesterday),
-            '$lte' => new MongoDate($yesterday_sametime)
-        ));
-   
-   $yesterdayNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
-     
-    
-    //sets the date conditions for the search for 1st week of current month
-     $conditions = array(
-          'date_created' => array(
-            '$gt' => new MongoDate($startOfTheMonth),
-            '$lte' => new MongoDate($endOfFirstWeek)
-        ));
-    
-   $FirstWeekRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
-   
-   //sets the date conditions for the search for today for the Users
-    $conditions = array(
-          'created_date' => array(
-            '$gt' => new MongoDate($startOfTheMonth),
-            '$lte' => new MongoDate($endOfFirstWeek)
-        ));
-   
-   
-   $FirstWeekNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
-    
-    //sets the date conditions for the search for the second  weeks of current month
-     $conditions = array(
-          'date_created' => array(
-            '$gt' => new MongoDate($endOfFirstWeek),
-            '$lte' => new MongoDate($endOfSecondWeek)
-        ));
-   
-  
-   if ($today > $endOfFirstWeek) {
-   
-   $secondWeekRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
-   
-    }else{
-      
-      $secondWeekRevenue = 0;
-    }
-    
-   //sets the date conditions for the search for today for the Users
-    $conditions = array(
-          'created_date' => array(
-            '$gt' => new MongoDate($endOfFirstWeek),
-            '$lte' => new MongoDate($endOfSecondWeek)
-        ));
-        
-   if ($today > $endOfFirstWeek) {
-   
-   $secondWeekNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
-   
-    }else{
-      
-      $secondWeekNewUsers = 0;
-    }
-   
-     
-    //sets the date conditions for the search for first 3 weeks of current month
-     $conditions = array(
-          'date_created' => array(
-            '$gt' => new MongoDate($endOfSecondWeek),
-            '$lte' => new MongoDate($endOfThirdWeek)
-        ));
-    
-    
-   if ($today > $endOfSecondWeek) {
-   
-   $thirdWeekRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
-   
-    }else{
-      
-      $thirdWeekRevenue = 0;
-    }
-     
-   
-   
-   //sets the date conditions for the search for today for the Users
-    $conditions = array(
-          'created_date' => array(
-            '$gt' => new MongoDate($endOfSecondWeek),
-            '$lte' => new MongoDate($endOfThirdWeek)
-        ));
-   
-   
-   if ($today > $endOfSecondWeek) {
-   
-   $thirdWeekNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
-   
-    }else{
-      
-      $thirdWeekNewUsers = 0;
-    }
-    
-   
-   
-   
-   $conditions = array(
-         'date_created' => array(
-            '$gt' => new MongoDate($endOfThirdWeek),
-            '$lte' => new MongoDate($endOfMonth)
-        ));
-   
-   if ($today > $endOfThirdWeek) {
-   
-   $currentMonthRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
-   $currentMonthRevenue =+ $FirstWeekRevenue + $secondWeekRevenue + $thirdWeekRevenue;
-   
-    }else{
-      
-      $currentMonthRevenue = $FirstWeekRevenue + $secondWeekRevenue + $thirdWeekRevenue;
-   
-    }
-     
-   
-   //sets the date conditions for the search for today for the Users
-   $conditions = array(
-          'created_date' => array(
-            '$gt' => new MongoDate($endOfThirdWeek),
-            '$lte' => new MongoDate($endOfMonth)
-        ));
-   
-    if ($today > $endOfThirdWeek) {
-   
-   $currentMonthNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
-   $currentMonthNewUsers =+ $FirstWeekNewUsers + $secondWeekNewUsers + $thirdWeekNewUsers;
-    
-    }else{
-      
-      $currentMonthNewUsers = $FirstWeekNewUsers + $secondWeekNewUsers + $thirdWeekNewUsers;
-   
-    }
-    
-   
-   
-  
-  //*****************************************************************************************************
-  //********************************   end of current months number   ***********************************
-  //*****************************************************************************************************
-  
-  //*****************************************************************************************************
-  //********************************   Beginning of Last months number   ********************************
-  //*****************************************************************************************************
-  
-    
-    //set the date variables for 
-    // start of date the last month
-    // end of first week last month
-    // end of 2nd week last month
-    // end of 3 week last month
-    // end of month last month
-    
-    $startOfTheLastMonth  = mktime(0, 0, 0, date("m")-1, 1, date("Y"));
-    $endOfLastMonthFirstWeek = mktime(0, 0, 0, date("m")-1, 8, date("Y"));
-    $endOfLastMonthSecondWeek = mktime(0, 0, 0, date("m")-1, 15, date("Y"));
-    $endOfLastMonthThirdWeek = mktime(0, 0, 0, date("m")-1, 22, date("Y"));
-    $endOfLastMonth = mktime(0, 0, 0, date("m"), 1, date("Y"));
-    $startOfTheLast3Month  = mktime(0, 0, 0, date("m")-3, date("d"), date("Y"));
-    $startOfTheLast6Month  = mktime(0, 0, 0, date("m")-6, date("d"), date("Y"));
-   
-  //*****************************************************************************************
-   //sets the date conditions for the search for last month first  week for Users and Orders
-   //*****************************************************************************************
-  
-    $conditions = array(
-          'date_created' => array(
-            '$gt' => new MongoDate($startOfTheLastMonth),
-            '$lte' => new MongoDate($endOfLastMonthFirstWeek)
-            
-        ));
-        
-   $lastMonthFirstWeekRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
-   
-     $conditions = array(
-          'created_date' => array(
-            '$gt' => new MongoDate($startOfTheLastMonth),
-            '$lte' => new MongoDate($endOfLastMonthFirstWeek)
-        ));
-    
-   $lastMonthFirstWeekNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
-   
-   //*****************************************************************************************
-   //sets the date conditions for the search for last month first 2 week for Users and Orders
-   //*****************************************************************************************
-   
-    $conditions = array(
-          'date_created' => array(
-            '$gt' => new MongoDate($endOfLastMonthFirstWeek),
-            '$lte' => new MongoDate($endOfLastMonthSecondWeek)
-            
-        ));
-        
-   
-   if ($today > $endOfFirstWeek) {
-   
-   $lastMonthSecondWeekRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
-   
-    }else{
-      
-      $lastMonthSecondWeekRevenue = 0;
-    }
-   
-   
-   
-   
-   
-    
-    //sets the date conditions for the search for first 2 weeks of current month
-     $conditions = array(
-          'created_date' => array(
-            '$gt' => new MongoDate($endOfLastMonthFirstWeek),
-            '$lte' => new MongoDate($endOfLastMonthSecondWeek)
-        ));
-    
-   
-   if ($today > $endOfFirstWeek) {
-   
-   $lastMonthSecondWeekNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
-   
-    }else{
-      
-       $lastMonthSecondWeekNewUsers = 0;
-    
-    }
-   
-   
-   
-    
-    
-    
-   //*****************************************************************************************
-   //sets the date conditions for the search for last month first 3 week for Users and Orders
-   //*****************************************************************************************
-   
-    $conditions = array(
-          'date_created' => array(
-            '$gt' => new MongoDate($endOfLastMonthSecondWeek),
-            '$lte' => new MongoDate($endOfLastMonthThirdWeek)
-            
-        ));
-   
-   
-   if ($today > $endOfSecondWeek) {
-   
-   $lastMonthThirdWeekRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
-   
-    }else{
-      
-       $lastMonthThirdWeekRevenue = 0;
-    
-    }     
-   
-   
-   
-    
-    //sets the date conditions for the search for first 2 weeks of current month
-     $conditions = array(
-          'created_date' => array(
-            '$gt' => new MongoDate($endOfLastMonthSecondWeek),
-            '$lte' => new MongoDate($endOfLastMonthThirdWeek)
-        ));
-   
-   if ($today > $endOfSecondWeek) {
-   
-   $lastMonthThirdWeekNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
-   
-    }else{
-      
-     //$lastMonthThirdWeekNewUsers = 0;
-    
-    }  
-     
-   
-    
-    
-    //*****************************************************************************************
-   //sets the date conditions for the search for last month for Users and Orders
-   //*****************************************************************************************
-   
-    $conditions = array(
-          'date_created' => array(
-            '$gt' => new MongoDate($startOfTheLastMonth),
-            '$lte' => new MongoDate($endOfLastMonth)
-            
-        ));
-    
-   
-   $lastMonthRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
-   
-  
-   
-   
-   
-    
-    //sets the date conditions for the search for first 2 weeks of current month
-     $conditions = array(
-          'created_date' => array(
-            '$gt' => new MongoDate($startOfTheLastMonth),
-            '$lte' => new MongoDate($endOfLastMonth)
-        ));
-   
-   
-   
-   $lastMonthNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
-   
-  
-   
-   
-   
-    //*****************************************************************************************
-   //sets the date conditions for the search for last 3 month for Users and Orders
-   //*****************************************************************************************
-   
-    $conditions = array(
-          'date_created' => array(
-            '$gt' => new MongoDate($startOfTheLast3Month)
-            
-        ));
-        
-   $last3MonthRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
-   
-   
-    
-    //sets the date conditions for the search for first 2 weeks of current month
-     $conditions = array(
-          'created_date' => array(
-            '$gt' => new MongoDate($startOfTheLast3Month)
-            
-        ));
-   $last3MonthNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
-   $last3MonthNewUsers += 81300;
-   
-    //*****************************************************************************************
-   //sets the date conditions for the search for 3 to 6 month for Users and Orders
-   //*****************************************************************************************
-   
-    $conditions = array(
-          'date_created' => array(
-            '$gt' => new MongoDate($startOfTheLast6Month),
-            '$lte' => new MongoDate($startOfTheLast3Month)
-            
-        ));
-        
-   $last6MonthRevenue = $this->_revenue(array('conditions' => $conditions), $orderCollections);
-   
-   
-    
-    //sets the date conditions for the search for first 2 weeks of current month
-     $conditions = array(
-          'created_date' => array(
-            '$gt' => new MongoDate($startOfTheLast6Month),
-            '$lte' => new MongoDate($startOfTheLast3Month)
-        ));
-        
-   $last6MonthNewUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
-   $last6MonthNewUsers += 81300;
-   
-   $conditions = array();
-        
-   $totalUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
-   
-   /**
-   ////////////////////////////////////////////////////////////////////////
-  
-   $start= mktime(0, 0, 0, date("m")-1, 1, date("Y"));
-   $end = mktime(0, 0, 0, date("m"), 1, date("Y"));
-   
-   //$conditions = array(
-   //       'created_date' => array(
-   //         '$gt' => new MongoDate($start_for_selected),
-   //         '$lte' => new MongoDate($end_for_selected)
-   //     ));
-    
-    $conditions = array(
-          'created_date' => array(
-            '$gt' => new MongoDate($start),
-            '$lte' => new MongoDate($end)
-        ));    
-    
-   //$totalSelectedUsers = $this->_registration(array('conditions' => $conditions), $userCollections);
-   
-   $totalSelectedUsers = $this->_selectedUsers(array('conditions' => $conditions), $userCollections);
-   //foreach($totalSelectedUsers as $user) {
-     //var_dump($user);
-   //}
-   //var_dump($totalSelectedUsers);
-   
-   $conditions = array(
-          'date_created' => array(
-            '$gt' => new MongoDate($start),
-            '$lte' => new MongoDate($end)
-            
-        ));
-   echo "test 1";
-   $totalRevenueSelectedUsers = $this->_ltv(array('conditions' => $conditions), $orderCollections, $totalSelectedUsers);
-   
-   ////////////////////////////////////////////////////////////////////////
-   **/
-   
-    //Return all the goodies to the Dashboard View
-    
-    return compact(
-    'today', 
-    'yesterday_sametime', 
-    'startOfToday', 
-    'startOfyesterday', 
-    'todayRevenue', 
-    'todayRegistration', 
-    'todayRevenue',
-    'yesterdayRevenue', 
-    'FirstWeekRevenue',
-    'secondWeekRevenue',
-    'thirdWeekRevenue',
-    'currentMonthRevenue',
-    'todayNewUsers', 
-    'yesterdayNewUsers', 
-    'FirstWeekNewUsers', 
-    'secondWeekNewUsers',
-    'thirdWeekNewUsers',
-    'currentMonthNewUsers',
-    'lastMonthFirstWeekRevenue',
-    'lastMonthSecondWeekRevenue',
-    'lastMonthThirdWeekRevenue',
-    'lastMonthRevenue',
-    'lastMonthFirstWeekNewUsers',
-    'lastMonthSecondWeekNewUsers',
-    'lastMonthThirdWeekNewUsers',
-    'lastMonthNewUsers',
-    'startOfTheLastMonth',
-    'startOfTheLast3Month',
-    'startOfTheLast6Month',
-    'last3MonthRevenue',
-    'last3MonthNewUsers',
-    'last6MonthRevenue',
-    'last6MonthNewUsers',
-    'totalUsers',
-    'total_NewUsers',
-    'totalSelectedUsers',
-    'totalRevenueSelectedUsers'
-    );
-  }
+		/**
+		 * Build a MongoDB group call for the monthly revenue
+		 * numbers.
+		 */
+		$collection = Dashboard::collection();
+		$keys = new MongoCode("
+			function(doc){
+				return {
+					'month': doc.date.getMonth(),
+					'year': doc.date.getFullYear(),
+					'type' : doc.type
+				}
+			}"
+		);
+		$inital = array(
+			'total' => 0
+		);
+		$reduce = new MongoCode('function(doc, prev){
+				prev.total += doc.total
+			}'
+		);
+		$date = array(
+			'date' => array(
+				'$gte' => new MongoDate(mktime(0, 0, 0, date("m") - 6, 1, date("Y"))),
+				'$lt' => new MongoDate(mktime(0, 0, 0, date("m"), 1, date("Y")))
+		));
 
+		$summary = $collection->group($keys, $inital, $reduce, $date);
+		$conditions = $date + array('type' => 'registration');
+		$registrationDetails = Dashboard::find('all', compact('conditions'));
+		$conditions = $date + array('type' => 'revenue');
+		$revenuDetails = Dashboard::find('all', compact('conditions'));
+		/**
+		 * BUild the chart functionality.
+		 */
+		$MonthComboChart = new FusionCharts("MSColumn3DLineDY","800","350");
 
-  protected function _revenue($params, $data) {
-  
-    $conditions = $params['conditions'];
-    $orders = $data->find($conditions);
-  
-  if ($orders) {
-   $totalRevenue = 0;
-        foreach ($orders as $order) {
-        $totalRevenue += $order['total'];
-     }
-         
-    return $totalRevenue;             
+	    # Store chart attributes in a variable
+		$params = array(
+			'caption=Monthly Revenue and Registrations',
+			'subcaption=Comparision',
+			'xAxisName=Month',
+			'pYAxisName=Revenue',
+			'sYAxisName=Total Registrations',
+			'decimalPrecision=0'
+		);
+	    $MonthComboChart->setChartParams(implode(';', $params));
+		$monthList = array();
+		foreach ($summary['retval'] as $data) {
+			if (!in_array($data['month'], $monthList)) {
+				$monthList[] = $data['month'];
+				$date = mktime(0, 0, 0, $data['month'] + 1, 1, $data['year']);
+				$dates[$date] = date('F', mktime(0, 0, 0, $data['month'] + 1, 1, $data['year']));
+			}
+		}
+		foreach ($summary['retval'] as $data) {
+			$date = mktime(0, 0, 0, $data['month'] + 1, 1, $data['year']);
+			if ($data['type'] == 'revenue') {
+				$revenue[$date] = $data['total'];
+			} else {
+				$registrations[$date] = $data['total'];
+			}
+		}
+		ksort($dates);
+		ksort($revenue);
+		ksort($registrations);
+		$chartData[0][0] = "Revenue";
+		$chartData[0][1] = "numberPrefix=$;showValues=1";
+		foreach ($revenue as $key => $value) {
+			$chartData[0][] = $value;
+		}
+		$chartData[1][0] = "Registrations";
+		$chartData[1][1] = "parentYAxis=S";
+		foreach ($registrations as $key => $value) {
+			$chartData[1][] = $value;
+		}
+		$MonthComboChart->addChartDataFromArray($chartData, $dates);
+		/**
+		 * Build chart data for revenue
+		 */
+		$RevenueChart = new FusionCharts("MSArea2D","800","350");
+		$currentMonthDesc = date('F', time());
+		$lastMonthDesc = date('F', strtotime('last month'));
+		$params = array(
+			'caption=Daily Revenue',
+			"subcaption=For the Month of $currentMonthDesc",
+			'xAxisName=Day of Month',
+			'numberPrefix=$',
+			'showValues=0'
+		);
+	    $RevenueChart->setChartParams(implode(';', $params));
+		$currentMonth = $this->monthData(array('group' => 1));
+		$lastMonth = $this->monthData(array(
+			'range' => true,
+			'min' => -1,
+			'max' => 0,
+			'group' => 0
+		));
+		$lastMonth['revenue'][0] = array_slice(
+			$lastMonth['revenue'][0],
+			0,
+			count($currentMonth['dates']),
+			true
+		);
+		$revenue = $lastMonth['revenue'] + $currentMonth['revenue'] ;
+		$revenue[0][0] = "$lastMonthDesc Revenue";
+		$revenue[0][1] = 'lineThickness=.5';
+		$revenue[1][0] = "$currentMonthDesc Revenue";
+		$revenue[1][1] = 'lineThickness=5';
+		ksort($revenue[0]);
+		ksort($revenue[1]);
+		$RevenueChart->addChartDataFromArray($revenue, $currentMonth['dates']);
+		$RegChart = new FusionCharts("MSArea2D","800","350");
+		$params = array(
+			'caption=Daily Regsistration',
+			"subcaption=For the Month as of $currentMonthDesc ",
+			'xAxisName=Day of Month',
+			'showValues=0'
+		);
+		$RegChart->setChartParams(implode(';', $params));
+		$lastMonth['registration'][0] = array_slice(
+			$lastMonth['registration'][0],
+			0,
+			count($currentMonth['dates']),
+			true
+		);
+		$registration = $lastMonth['registration'] + $currentMonth['registration'];
+		
+		$registration[0][0] = "$lastMonthDesc Registrations";
+		$registration[0][1] = 'lineThickness=.5';
+		$registration[1][0] = "$currentMonthDesc Registrations";
+		$registration[1][1] = 'lineThickness=5';
+		ksort($registration[0]);
+		ksort($registration[1]);
+		$RegChart->addChartDataFromArray($registration, $currentMonth['dates']);
+		$yearToDate = $this->yearToDate();
+		$updateTime = max(array_keys($currentMonth['dates']));
+		return compact(
+			'updateTime',
+			'summary',
+			'currentMonth',
+			'lastMonth',
+			'registrationDetails',
+			'revenuDetails',
+			'MonthComboChart',
+			'RevenueChart',
+			'RegChart',
+			'currentMonthDesc',
+			'lastMonthDesc',
+			'yearToDate'
+		);
     }
 
-  }
+	public function monthData(array $options = array()) {
+		$range = (empty($options['range'])) ? false : true;
+		$options['min'] = (empty($options['min'])) ? 0 : $options['min'];
+		$options['group'] = (empty($options['group'])) ? 0 : $options['group'];
+		if ($range == true) {
+			$conditions = array(
+				'date' => array(
+					'$gte' => new MongoDate(mktime(0, 0, 0, date("m") + $options['min'], 1, date("Y"))),
+					'$lte'=> new MongoDate(mktime(0, 0, 0, date("m") + $options['max'], 0, date("Y")))
+			));
+		} else {
+			$conditions = array(
+				'date' => array(
+					'$gte' => new MongoDate(mktime(0, 0, 0, date("m") + $options['min'], 1, date("Y")))
+			));
+		}
+		$current = Dashboard::find('all', compact('conditions'));
+		$current = $current->data();
+		$dateList = array();
+		$dates = array();
+		foreach ($current as $data) {
+			if (!in_array($data['date'], $dateList)) {
+				$dateList[] = $data['date']['sec'];
+				$dates[$data['date']['sec']] = date('d', $data['date']['sec']);
+			}
+		}
+		foreach ($current as $record) {
+			if ($record['type'] == 'revenue') {
+				$currentRevenue[$record['date']['sec']] = $record['total'];
+			} else {
+				$currentReg[$record['date']['sec']] = $record['total'];
+			}
+		}
+		ksort($dates);
+		ksort($currentRevenue);
+		ksort($currentReg);
+		$i = 2;
+		foreach ($currentRevenue as $key => $value) {
+			$revenue[$options['group']][$i] = $value;
+			++$i;
+		}
+		$i = 2;
+		foreach ($currentReg as $key => $value) {
+			$registration[$options['group']][$i] = $value;
+			++$i;
+		}
+		return compact('dates', 'revenue', 'registration');
+	}
 
-  protected function _ltv($params, $data, $selected_users) {
-    
-  
-  $data->ensureIndex(array('date_created' => 1));
-  //echo "test 2";
-    $conditions = $params['conditions'];
-    $orders = $data->find($conditions,array(
-                        'user_id' => 1, 'total' => 1));
-      echo "test 3"; 
-     
-    //var_dump($orders);
-  if ($orders) {
-    echo "test 4";
-   $totalRevenue = 0;
-        foreach ($orders as $order) {
-           //var_dump($order['user_id']);
-          
-          foreach($selected_users as $user){
-            //var_dump($order["user_id"]);
-            
-            
-            if($user["_id"]  == new MongoId($order["user_id"])) {
-            $totalRevenue += $order["total"];
-            }
-              
-             
-          }
-        
-        }
-        
-  }
-  
-         
-    echo $totalRevenue;             
-  
- }
+	public function yearToDate() {
+		$collection = Dashboard::collection();
+		$keys = new MongoCode("
+			function(doc){
+				return {
+					'type' : doc.type
+				}
+			}"
+		);
+		$inital = array(
+			'total' => 0
+		);
+		$reduce = new MongoCode('function(doc, prev){
+				prev.total += doc.total
+			}'
+		);
+		$date = array(
+			'date' => array(
+				'$gte' => new MongoDate(strtotime('January')),
+				'$lt' => new MongoDate()
+		));
 
-  
-
-  protected function _selectedUsers($params, $data) {
-    
-    $data->ensureIndex(array('created_date' => 1));  
-    $conditions = $params['conditions'];
-    //var_dump($conditions);
-    $s_users = $data->find($conditions, array(
-                        '_id' => 1));
-   
-    
-    return $s_users;      
-    
-  }
-  protected function _registration($params, $data) {
-      
-    $conditions = $params['conditions'];
-    $numberOfUsers = $data->find($conditions)->count();
-   
-    
-    return $numberOfUsers;      
-    
-  }
-
-
-
+		$summary = $collection->group($keys, $inital, $reduce, $date);
+		return $summary['retval'];
+	}
 }
 
 ?>

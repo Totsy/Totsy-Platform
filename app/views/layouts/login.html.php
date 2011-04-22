@@ -1,9 +1,15 @@
 <?php use lithium\net\http\Router; ?>
 <!doctype html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:og="http://ogp.me/ns#"
+      xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
 	<?php echo $this->html->charset();?>
 	<title>Totsy, the private sale site for Moms</title>
+	<meta property="fb:app_id" content="181445585225391"/>
+	<meta property="og:site_name" content="Totsy"/>
+    <meta name="description"
+          content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
 	<?php echo $this->html->style(array('base'), array('media' => 'screen')); ?>
 	<?=$this->html->script(array(
 		'jquery-1.4.2.min.js',
@@ -27,10 +33,9 @@
 	</script>
 </head>
 <body class="app login">
+	<div id="fb-root"></div>
+		</body>
 	<?php echo $this->content(); ?>
-</body>
-
-
 	<?php
 
 	use \DirectoryIterator;
@@ -61,4 +66,27 @@
 	    });
 
 	</script>
+	<script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId   : <?php echo $fbconfig['appId']; ?>,
+          session : <?php echo json_encode($fbsession); ?>, // don't refetch the session when PHP already has it
+          status  : true, // check login status
+          cookie  : true, // enable cookies to allow the server to access the session
+          xfbml   : true // parse XFBML
+        });
+
+        // whenever the user logs in, we refresh the page
+        FB.Event.subscribe('auth.login', function() {
+          window.location.reload();
+        });
+      };
+
+      (function() {
+        var e = document.createElement('script');
+        e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+        e.async = true;
+        document.getElementById('fb-root').appendChild(e);
+      }());
+    </script>
 </html>

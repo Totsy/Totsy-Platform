@@ -1,30 +1,28 @@
 <?php use lithium\net\http\Router; ?>
 <!doctype html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:og="http://ogp.me/ns#"
+      xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
 	<?=$this->html->charset();?>
 	<title>
 		<?=$this->title() ?: 'Totsy, the private sale site for Moms'; ?>
 		<?=$this->title() ? '- Totsy' : ''; ?>
 	</title>
-	<?=$this->html->style(array('base.css?v=012346'), array('media' => 'screen')); ?>
+	<?=$this->html->style(array('base.css'), array('media' => 'screen')); ?>
 	<?=$this->html->script(array(
-		'jquery-1.4.2.min.js?v=012347',
-		'jquery-ui-1.8.2.custom.min.js?v=012347',
-		'jquery.countdown.min.js?v=012347'
+		'jquery-1.4.2.min.js',
+		'jquery-ui-1.8.2.custom.min.js',
+		'jquery.countdown.min.js'
 	)); ?>
 	<?=$this->scripts(); ?>
 	<?=$this->html->link('Icon', null, array('type' => 'icon')); ?>
+	<meta property="og:site_name" content="Totsy"/>
+	<meta property="fb:app_id" content="181445585225391"/>
+    <meta name="description"
+          content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
 </head>
 <body class="app">
-
-<!-- ClickTale Top part -->
-<script type="text/javascript">
-var WRInitTime=(new Date()).getTime();
-</script>
-<!-- ClickTale end of Top part -->
-
-
 <!--
 <div id="global_site_msg"><strong>Last minute message:</strong> our last promotional campaign that was intended for a select audience of our long-time members was unintentionally exposed to the general public. <br />This promotion has now been restored and will only work for members who received an email directly from Totsy containing a promocode.</div>
 -->
@@ -47,6 +45,7 @@ var WRInitTime=(new Date()).getTime();
 				<?php if (!empty($userInfo)): ?>
 					<?=$this->html->link('Help Desk', 'Tickets::add', array('id' => 'cs')); ?>
 				<div id="welcome">
+
 				Hello,
 					<?php if(array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])):
 					?>
@@ -54,7 +53,8 @@ var WRInitTime=(new Date()).getTime();
 					<?php else:?>
 					    <?="{$userInfo['email']}"; ?>
 					<?php endif; ?>
-					(<?=$this->html->link('Sign Out', 'Users::logout', array('title' => 'Sign Out')); ?>)
+					<?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
+					(<?=$this->html->link('Sign Out', $logout, array('title' => 'Sign Out')); ?>)
 				</div>
 
 				<?php endif ?>
@@ -153,21 +153,5 @@ var WRInitTime=(new Date()).getTime();
 
     <!--affiliate pixels-->
     <?php echo $pixel; ?>
-
-
-	    <!-- ClickTale Bottom part -->
-	<div id="ClickTaleDiv" style="display: none;"></div>
-	<script type='text/javascript'>
-	document.write(unescape("%3Cscript%20src='"+
-	 (document.location.protocol=='https:'?
-	  'https://clicktale.pantherssl.com/':
-	  'http://s.clicktale.net/')+
-	 "WRb6.js'%20type='text/javascript'%3E%3C/script%3E"));
-	</script>
-	<script type="text/javascript">
-	var ClickTaleSSL=1;
-	if(typeof ClickTale=='function') ClickTale(17040,1,"www02");
-	</script>
-	<!-- ClickTale end of Bottom part -->
 	</body>
 </html>
