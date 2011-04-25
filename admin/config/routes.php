@@ -11,7 +11,6 @@ use \lithium\core\Environment;
 use \lithium\storage\Session;
 use admin\models\File;
 use lithium\action\Response;
-use admin\models\User;
 
 /**
  * The following allows up to serve images right out of mongodb.
@@ -55,10 +54,8 @@ Router::connect('/search/{:search}', 'Search::view');
 /**
  * Hooking up ACLs
  */
-$userCollection = User::Collection();
-$user = $userCollection->findOne(array("_id" => new MongoId($session["_id"])));
-if (isset($user['acls'])) {
-	foreach ($user['acls'] as $acl) {
+if (isset($session['acls'])) {
+	foreach ($session['acls'] as $acl) {
 		Router::connect($acl['route'], $acl['connection']);
 	}
 }

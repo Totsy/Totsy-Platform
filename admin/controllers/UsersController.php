@@ -202,6 +202,9 @@ class UsersController extends \admin\controllers\BaseController {
 						$groupsCollection->update(array("_id" => new MongoId($group_user)),
 						array('$inc' => array( "total_users" => 1 )));
 					}
+					//SET USER ADMIN
+					$usersCollection->update(array("_id" => new MongoId($id)),
+						array('$set' => array('admin' => true)));
 				}//End of if groups to add condition
 			}//End of Id condition
 			//Get actual user informations and all groups
