@@ -16,34 +16,28 @@
 	<script> google.load("jqueryui", "1.8.11", {uncompressed:true});</script>
             <!-- end jQuery / jQuery UI -->
             
-     <?=$this->html->script(array(
-		'jquery.countdown.min.js',
-		
-	)); ?>
-
+    <?=$this->html->script(array('jquery.countdown.min.js')); ?>
 	<?=$this->scripts(); ?>
+	
 	<?=$this->html->link('Icon', null, array('type' => 'icon')); ?>
 	<meta property="og:site_name" content="Totsy"/>
 	<meta property="fb:app_id" content="181445585225391"/>
     <meta name="description"
           content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
+          
 </head>
 <body>
 
 <div class="container_16" style="margin:10px auto;">
 <div class="grid_2 alpha">
-				<?=$this->html->link(
-					$this->html->image('logo.png', array('width'=>'100')), '/sales', array(
-						'escape'=> false
-					)
-				); ?>
+	<?=$this->html->link($this->html->image('logo.png', array('width'=>'100')), '/sales', array('escape'=> false)); ?>
 </div>
 <div class="grid_14">
 	<?php if (!empty($userInfo)): ?>
 	<div class="grid_6">
 	<?php if (!(empty($userInfo))): ?>
-					<?=$this->menu->render('main-nav'); ?>
-				<?php endif ?>
+		<?=$this->menu->render('main-nav'); ?>
+	<?php endif ?>
 	        <ul class="nav main" id="navlist" style="display:none;">
 	            <li>
 	
@@ -92,11 +86,7 @@
 							<li><a href="#" title="Item 1 1">Item 1 1</a></li>
 							<li><a href="#" title="Item 1 2">Item 1 2</a></li>
 					</ul>
-	            </li>    
-	            
-	              
-
-	                 
+	            </li>       
 	        </ul>
 	    </div>
 		
@@ -135,8 +125,6 @@
 	</div>
 	
 				<?php endif ?>
-				
-			
 				</div>
 	</div>
 	<div class="clear"></div>
@@ -144,6 +132,7 @@
 	<div class="container_16 roundy glow">
 		<?php echo $this->content(); ?>
 	</div>
+	<div class="clear"></div>
 	<div id="footer" class="container_16">
 		<ul>
 			<li class="first" style="padding-top:4px;"><a href="/pages/terms" title="Terms of Use">Terms of Use</a></li>
@@ -155,10 +144,9 @@
 			<li class="last" style="margin:0px 3px 0px 5px;"><a href="http://www.facebook.com/totsyfan" target="_blank"><img src="../img/icons/facebook_16.png" align="middle" /></a></li>
 			<li class="last"><a href="http://twitter.com/MyTotsy" target="_blank"><img src="../img/icons/twitter_16.png" align="middle" /></a></li>
 		</ul>
-		<span id="copyright" style="padding-top:4px;">&copy;2011 Totsy.com. All Rights Reserved.</span>
+		<span id="copyright" style="padding-top:4px;" class="fl">&copy;2011 Totsy.com. All Rights Reserved.</span>
 	</div>
-	<div class="container_16">
-	<br />
+	<div class="container_16 clear">
 	<!-- begin thawte seal -->
     <div id="thawteseal" title="Click to Verify - This site chose Thawte SSL for secure e-commerce and confidential communications.">
         <div style="float: left!important; width:100px; display:block;"><script type="text/javascript" src="https://seal.thawte.com/getthawteseal?host_name=www.totsy.com&amp;size=L&amp;lang=en"></script></div>

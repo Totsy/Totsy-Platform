@@ -219,13 +219,9 @@
 </div>
 
 </div>
-</div>
-
-<div id="right">
 
 <div id="address-modal"></div>
 
-</div>
 
 
 <script>

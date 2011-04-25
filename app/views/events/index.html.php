@@ -87,8 +87,8 @@
 						 <p style="padding:0px; margin:-3px 0px 0px 0px; font-size:13px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;"><span id="<?php echo "todaysplash$x"; ?>"></span>
 						</div>
 
-						<div class="table-cell right" style="width:55px; display:block; padding:5px; margin:7px 0px 0px 0px; ">
-							<span><?=$this->html->link('Shop', 'sale/'.$event->url, array('class' => 'go-btn'));?></span>
+						<div class="table-cell right">
+							<?=$this->html->link('Shop', 'sale/'.$event->url, array('class' => 'button'));?>
 						</div>
 					</div>
 				</div>
