@@ -117,7 +117,13 @@
 				$(function () {
 					var saleEnd = new Date();
 					saleEnd = new Date($date);
-					$(\"$splashid\").countdown({until: saleEnd, layout: 'Closes in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+					var now = new Date();
+					var diff = $date - (now.getTime());
+					if((diff / 1000) < (24 * 60 * 60) ) {
+						$(\"$splashid\").countdown({until: saleEnd, layout: 'Closes in {hnn}{sep}{mnn}{sep}{snn}'});
+					} else {
+						$(\"$splashid\").countdown({until: saleEnd, layout: 'Closes in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+					}
 				});</script>";
 		?>
 			<?php if ($x == 1): ?>
@@ -205,9 +211,15 @@
 				$date = $event->start_date->sec * 1000;
 				$splashid = "#futuresplash$x";
 				$futureJs[] = "<script type=\"text/javascript\">
-					$(function () {var saleEnd = new Date();
-						saleEnd = new Date($date);
-						$(\"$splashid\").countdown({until: saleEnd, layout: 'Opens in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+					$(function () {var saleStart = new Date();
+						saleStart = new Date($date);
+						var now = new Date();
+						var diff = $date - (now.getTime());
+						if((diff / 1000) < (24 * 60 * 60) ) {
+							$(\"$splashid\").countdown({until: saleStart, layout: 'Opens in {hnn}{sep}{mnn}{sep}{snn}'});
+						} else {
+							$(\"$splashid\").countdown({until: saleStart, layout: 'Opens in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+						}
 					});
 				</script>";
 			?>
