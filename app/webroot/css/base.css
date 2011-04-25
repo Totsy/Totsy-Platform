@@ -349,7 +349,7 @@ h2:link .p-container .details strong { text-transform:uppercase; font-size:14px 
 	color: #009900; }
 .p-container .details .table-cell .original-price { font-size:10px; }
 .splash-details .left { float:left; padding:5px }
-.splash-details .right { float:right; padding:22px 20px 0 0 }
+.splash-details .right { position: absolute; right:8px; top:9px; }
 .details .left { float:left }
 .details .right { text-align:right; float:left }
 .product-list-item.middle { margin:0 10px 10px 10px }
@@ -626,6 +626,12 @@ font-size: 14px; padding:5px; background: #eb132c; color:#fff; border-bottom: 1p
     position: relative;
     top: 200px;
 }
+
+.button_small {
+    left: 574px;
+    position: relative;
+    top: 200px;
+}
 .roundy	{
 -webkit-border-radius: 12px;
 -moz-border-radius: 12px;
@@ -645,7 +651,7 @@ border:1px solid #D7D7D7;
 border-radius: 12px;
 border:1px solid #D7D7D7;
 overflow: hidden;
-min-height: 332px;
+min-height: 284px;
 }
 
 .roundy_product a img {

@@ -16,7 +16,7 @@
 	<script> google.load("jqueryui", "1.8.11", {uncompressed:true});</script>
             <!-- end jQuery / jQuery UI -->
             
-    <?=$this->html->script(array('jquery.countdown.min.js')); ?>
+    <?=$this->html->script(array('jquery.countdown.min.js',)); ?>
 	<?=$this->scripts(); ?>
 	
 	<?=$this->html->link('Icon', null, array('type' => 'icon')); ?>
@@ -40,19 +40,12 @@
 	<?php endif ?>
 	        <ul class="nav main" id="navlist" style="display:none;">
 	            <li>
-	
 	                <a href="">All</a>
 	
-	                <ul class="roundy_nav grey_inside_np" style="padding:10px 20px;">
-	                    <li><span><a href="">Link 1</a></span></li>
-	                    <li style="min-width:350px;"><a href="">Link 1</a></li>
-	                    <li style="min-width:350px;"><a href="">Link 1</a></li>
-	                    <li style="min-width:350px;"><a href="">Link 1</a></li>
-	                    <li style="min-width:350px;"><a href="">Link 1</a></li>
-	                    <li style="min-width:350px;"><a href="">Link 1</a></li>
-	                    <li style="min-width:350px;"><a href="">Link 1</a></li>
-						<li style="min-width:350px;"><a href="">Link 1</a></li>
-						<li style="min-width:350px;"><a href="">Link 1</a></li>
+	                <ul>
+							<li><a href="#" title="Item 1 0">Item 1 0</a></li>
+							<li><a href="#" title="Item 1 1">Item 1 1</a></li>
+							<li><a href="#" title="Item 1 2">Item 1 2</a></li>
 	    
 	                </ul>
 	            </li>
@@ -61,9 +54,9 @@
 	                <a href="#">Boys</a>
 	
 	                <ul>
-						<li><a href="#" title="Item 1 0">Item 1 0</a></li>
-						<li><a href="#" title="Item 1 1">Item 1 1</a></li>
-						<li><a href="#" title="Item 1 2">Item 1 2</a></li>
+							<li><a href="#" title="Item 1 0">Item 1 0</a></li>
+							<li><a href="#" title="Item 1 1">Item 1 1</a></li>
+							<li><a href="#" title="Item 1 2">Item 1 2</a></li>
 					</ul>
 	
 	            </li>
@@ -72,9 +65,9 @@
 	                <a href="">Girls</a>
 	
 	                <ul>
-						<li><a href="#" title="Item 1 0">Item 1 0</a></li>
-						<li><a href="#" title="Item 1 1">Item 1 1</a></li>
-						<li><a href="#" title="Item 1 2">Item 1 2</a></li>
+							<li><a href="#" title="Item 1 0">Item 1 0</a></li>
+							<li><a href="#" title="Item 1 1">Item 1 1</a></li>
+							<li><a href="#" title="Item 1 2">Item 1 2</a></li>
 					</ul>
 	            </li>    
 	            
@@ -129,9 +122,11 @@
 	</div>
 	<div class="clear"></div>
 	</div>
+	
 	<div class="container_16 roundy glow">
 		<?php echo $this->content(); ?>
 	</div>
+	
 	<div class="clear"></div>
 	<div id="footer" class="container_16">
 		<ul>
@@ -149,14 +144,14 @@
 	<div class="container_16 clear">
 	<!-- begin thawte seal -->
     <div id="thawteseal" title="Click to Verify - This site chose Thawte SSL for secure e-commerce and confidential communications.">
-        <div style="float: left!important; width:100px; display:block;"><script type="text/javascript" src="https://seal.thawte.com/getthawteseal?host_name=www.totsy.com&amp;size=L&amp;lang=en"></script></div>
+    <div style="float: left!important; width:100px; display:block;"><script type="text/javascript" src="https://seal.thawte.com/getthawteseal?host_name=www.totsy.com&amp;size=L&amp;lang=en"></script></div>
 
     <div class="AuthorizeNetSeal" style="float: left!important; width:100px; display:block;"> <script type="text/javascript" language="javascript">var ANS_customer_id="98c2dcdf-499f-415d-9743-ca19c7d4381d";</script> <script type="text/javascript" language="javascript" src="//verify.authorize.net/anetseal/seal.js" ></script></div>
     </div>
     <!-- end thawte seal -->
     </div>
 	<script type="text/javascript">
-		$.base = '<?=rtrim(Router::match("/", $this->_request)); ?>';
+	$.base = '<?=rtrim(Router::match("/", $this->_request)); ?>';
 	  var _gaq = _gaq || [];
 	  _gaq.push(['_setAccount', 'UA-675412-15']);
 	  _gaq.push(['_trackPageview']);
@@ -184,23 +179,6 @@
 					800);
 				});
 			});
-		</script>
-
-    	<div id='cart-modal'></div>
-
-	<script type="text/javascript">
-	/*$("#cart").click(function() {
-		$("#cart-modal").load($.base + 'cart/view').dialog({
-			autoOpen: false,
-			modal:true,
-			width: 900,
-			//height: 600,
-			close: function(ev, ui) {
-				location.reload();
-			}
-		});
-		$("#cart-modal").dialog('open');
-	}); */
 	</script>
 
     <div id='toTop'>^ Back to Top</div>
@@ -208,6 +186,5 @@
     <!--affiliate pixels-->
     <?php echo $pixel; ?>
    
-	</body>
-	 
+	</body> 
 </html>
