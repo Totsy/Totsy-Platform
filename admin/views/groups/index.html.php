@@ -33,6 +33,7 @@
 					<?php endforeach ?>
 				<?php endif ?>
 			<div class="clear"></div>
+<!---NEW ACLS-->
 			<div class="grid_16" style="background:#f7f7f7; border-bottom:1px solid #ddd; margin:0px 0px 5px 0px;">
 			<div>
 				<a href="#" id="add_acl" onclick="show_ad()" ><img src="/img/add.png" width="20" height="20"></a>
@@ -52,6 +53,7 @@
 			</div>
 			</div>
 			<div class="clear"></div>
+<!---END NEW ACLS-->
 			<div class="grid_16" style="background:#f7f7f7; border-bottom:1px solid #ddd; margin:0px 0px 5px 0px;">
 			<div>
 				<a href="#" id="button_view_users" onclick="show_users()" ><img src="/img/add.png" width="20" height="20"></a>

@@ -46,9 +46,9 @@
 							<td>
 							<?php
 							if($checked==true)
-									echo $this->form->checkbox( $group["name"], array('value' => '1', 'checked' => 'checked'));
+									echo $this->form->checkbox( $group["name"], array('value' => '1', 'checked' => 'checked', 'id' => $group["name"]));
 							else
-									echo $this->form->checkbox( $group["name"], array('value' => '1'));
+									echo $this->form->checkbox( $group["name"], array('value' => '1', 'id' => $group["name"]));
 								?>
 							</td>
 						</tr>

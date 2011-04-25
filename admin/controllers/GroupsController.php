@@ -25,30 +25,40 @@ class GroupsController extends \admin\controllers\BaseController {
 	public function index() {
 		if($this->request->data){
 			$datas = $this->request->data;
-			//Case : Create a group
-			if(!empty($datas["add_group"])){
+			if (!empty($datas["add_group"])) {
+				//Case : Create a group
 				$this->create($datas["add_group"]);
-			}//Case : Remove a group
-			elseif(!empty($datas["remove_group"]) && $datas["select_group"] == "undefined"){
-				if(strlen($datas["remove_group"]) > 2) {
+			} elseif (!empty($datas["remove_group"]) && $datas["select_group"] == "undefined") {
+				//Case : Remove a group
+				if (strlen($datas["remove_group"]) > 2) {
 					$this->remove($datas["remove_group"]);
 				}
-			}elseif($datas["select_group"] == "undefined"){
+			} elseif ($datas["select_group"] == "undefined"){
 				//Case Change selection
-			}//Case update ACLs of groups
-			else{
+			} else {
+				//Case update ACLs of groups
 				$group_selected = Group::find('first', array('conditions' =>
 				array('name' => $datas["select_group"])));
 				$search = User::find('all', array('conditions' =>
 				array('groups' => $group_selected["_id"])));
 				$users = $search->data();
+				$updated = false;
 				if(!empty($datas["current"])) {
 					if( (!empty($datas["select_group"])) && ($datas["select_group"] != "undefined") && ($datas["current"] == $datas["select_group"])) {
-							$group = Group::create($this->request->data);
-							if($group->validates()){
-								$this->update($group_selected["_id"]);
-							}
+						$group = Group::create($this->request->data);
+						if($group->validates()){
+							$this->update($group_selected["_id"]);
+							$updated = true;
+						}
 					}
+				}
+				//Clear fields after updated
+				if ($updated) {
+					for ($i = 0; $i < 4; $i++) {
+						$datas["newacl_route_".$i] = null;
+						$datas["newacl_connection_".$i] = null;
+					}
+					$group = Group::create($datas);
 				}
 				//Refresh Result after update
 				$search = User::find('all', array('conditions' =>
@@ -59,13 +69,13 @@ class GroupsController extends \admin\controllers\BaseController {
 			}
 		}
 		//fill empty datas
-		if(empty($group)) {
+		if (empty($group)) {
 			$group = null;
 		}
 		//Create Dropdown Menu
 		$groups = Group::find('all');
 		$ddm_groups["undefined"] = "select a group";
-		foreach($groups as $gro){
+		foreach($groups as $gro) {
 			$ddm_groups[$gro["name"]] = $gro["name"];
 		}
 		return compact('group','group_selected','ddm_groups','users');
@@ -167,13 +177,15 @@ class GroupsController extends \admin\controllers\BaseController {
 	public function cleanAclUsers($id = null)
 	{
 		$usersCollection = User::collection();
-		if(strlen($id) > 10) {
+		if (strlen($id) > 10) {
 			$id = new MongoId($id);
 		}
 		$user = User::find('first', array('conditions' => array('_id' => $id)));
 		$usersCollection->update(array("_id" => $id),
 			array('$unset' => array( "acls" => 1)));
-		if(!empty($user["groups"])){
+		$acls_pre_user = array();
+		$acls_user = array();
+		if (!empty($user["groups"])) {
 			foreach($user["groups"] as $user_group){
 				$group = Group::find("first", array('conditions' => array("_id" => $user_group)));
 				if(!empty($group["acls"])){
