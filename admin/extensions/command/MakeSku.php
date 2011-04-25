@@ -31,19 +31,19 @@ class MakeSku extends \lithium\console\Command  {
 			$hashBySha = false;
 			if (!empty($item['details'])) {
 				foreach ($item['details'] as $key => $value) {
-					$skulist[$key] = Item::sku($item['vendor'], $item['vendor_style'], $key, $item['color'],'md5');
+					$skulist[$key] = Item::sku($item['vendor'], $item['vendor_style'], $key, $item['color'], 'md5');
 				}
 				$items_tested = $itemCollection->find(array('skus' => array('$in' => $skulist)));
-				if(!empty($items_tested)) {
-					foreach($items_tested as $item_test) {
-						if($item["event"][0] == $item_test["event"][0]) {
-							if(($item["vendor_style"] != $item_test["vendor_style"]) || ($item["color"] != $item_test["color"])) {
+				if (!empty($items_tested)) {
+					foreach ($items_tested as $item_test) {
+						if ($item["event"][0] == $item_test["event"][0]) {
+							if (($item["vendor_style"] != $item_test["vendor_style"]) || ($item["color"] != $item_test["color"])) {
 								$hashBySha = true;
 							}
 						}
 					}
 				}
-				if(!empty($hashBySha)) {
+				if (!empty($hashBySha)) {
 					foreach ($item['details'] as $key => $value) {
 						$skulist[$key] = Item::sku($item['vendor'], $item['vendor_style'], $key, $item['color'],'sha256');
 					}

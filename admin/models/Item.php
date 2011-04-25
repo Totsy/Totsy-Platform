@@ -92,10 +92,11 @@ class Item extends \lithium\data\Model {
 	 * A MD5 hash is taken of each component and limited to 3 characters. This static method should
 	 * be used in any instance where SKUs are produced.
 	 *
-	 * @param string $vendor
-	 * @param string $style
-	 * @param string $size
-	 * @param string $color
+	 * @param string $vendor - Vendor name
+	 * @param string $style - Vendor Style
+	 * @param string $size - Size of Item
+	 * @param string $color - Color of Item
+	 * @param string $hash - Either md5 or sha256
 	 */
 	public static function sku($vendor, $style, $size, $color, $hash = 'md5') {
 		$params = array(
