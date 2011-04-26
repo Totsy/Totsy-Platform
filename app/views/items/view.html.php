@@ -1,6 +1,7 @@
 <?=$this->html->script(array('jqzoom.pack.1.0.1','jquery.equalheights', 'cloud-zoom.1.0.2'));?>
 <?=$this->html->style('jquery.countdown');?>
-
+<div id="modal">
+</div>
 <h1 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a> / <?=$item->description?></h1>
 
 	<hr />
@@ -103,6 +104,12 @@
 		</div>
 
 	</div>
+	<!--Disney -->
+      <div class="disney">
+          <p><strong>SPECIAL BONUS!</strong><hr/></p>
+       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" />( $10 value). <br/>
+       <span  id="disney">Offer & Refund Details</span></p>
+      </div>
 	<!-- Started Related Products -->
 	<div id="related-products">
 		<?php $relatedData = $related->data(); ?>
@@ -211,14 +218,24 @@ $(function () {
 </script>
 <script type="text/javascript">
 $(document).ready(function() {
-
 	//create tabs
 	$("#tabs").tabs();
 });
 </script>
-
 <script type="text/javascript">
-
+    $('#disney').click(function(){
+        $('#modal').load('/events/disney').dialog({
+            autoOpen: false,
+            modal:true,
+            width: 700,
+            height: 700,
+            position: 'top',
+            close: function(ev, ui) {}
+        });
+        $('#modal').dialog('open');
+    });
+</script>
+<script type="text/javascript">
 $(document).ready(function() {
 	var itemCheck = function(){
 		var item_id = $('#item_id').attr('value');
@@ -245,6 +262,4 @@ $(document).ready(function() {
 		itemCheck();
 	});
 });
-
-
 </script>

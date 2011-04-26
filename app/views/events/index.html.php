@@ -25,10 +25,13 @@
 					</ul>
 				</dd>
 			</dl>
-		</div>   
+		</div>
 	</h2>
 	<hr />
-
+    <!--Disney -->
+      <div class="disney">
+          <p><strong>SPECIAL BONUS!</strong> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" />( $10 value) <span  id="disney">Offer & Refund Details</span></p>
+      </div>
 <div class="fullwidth">
 
 	<?php $x = 0; ?>
@@ -228,6 +231,8 @@
 	<?php endforeach ?>
 	</div>
 </div>
+<div id="modal">
+</div>
 <!--Javascript Output for Today's Events -->
 <?php if (!empty($todayJs)): ?>
 	<?php foreach ($todayJs as $value): ?>
@@ -248,4 +253,17 @@
 		$("#banner_container").rotate();
 	});
 //-->
+</script>
+<script type="text/javascript">
+    $('#disney').click(function(){
+        $('#modal').load('/events/disney').dialog({
+            autoOpen: false,
+            modal:true,
+            width: 500,
+            height: 600,
+            position: 'top',
+            close: function(ev, ui) {}
+        });
+        $('#modal').dialog('open');
+    });
 </script>

@@ -4,7 +4,6 @@
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
 	$test = $cart->data();
 ?>
-
 <div class="message"></div>
 <?php if (!empty($test)): ?>
 <?php $subTotal = 0; ?>
@@ -115,7 +114,25 @@
 					$x++;
 				?>
 	<?php endforeach ?>
-
+    <?php
+        if(number_format($subTotal,2) >= 35 && number_format($subTotal,2) <= 44.99){
+            echo "<script type=\"text/javascript\">
+                $.post('/cart/modal',{modal: 'disney'},function(data){
+                    if(data == 'false'){
+                        $('#modal').load('/cart/upsell?subtotal=" . $subTotal ."').dialog({
+                            autoOpen: false,
+                            modal:true,
+                            width: 500,
+                            height: 200,
+                            position: 'top',
+                            close: function(ev, ui) {}
+                        });
+                        $('#modal').dialog('open');
+                    }
+                });
+                </script>";
+        }
+    ?>
 		<tr class="cart-total">
 
 			<td colspan="7" id='subtotal'><strong>Subtotal: <span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong><br/><hr/><?=$this->form->submit('Update Cart', array('class' => 'button'))?></td>
@@ -155,6 +172,9 @@
 <div><h1><center>You have no items in your cart. <br> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
 	</div>
 <?php endif ?>
+<div id="modal">
+
+</div>
 <script type="text/javascript" charset="utf-8">
 	$(".inputbox").bind('keyup', function() {
 	var id = $(this).attr('id');
