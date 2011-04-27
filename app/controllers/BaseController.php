@@ -20,8 +20,7 @@ class BaseController extends \lithium\action\Controller {
 	 */
 	protected function _init() {
 		$userInfo = Session::read('userLogin');
-		unset($userInfo['modal']);
-		Session::write('userLogin', $userInfo, array('name' => "default"));
+
 		$this->set(compact('userInfo'));
 		$cartCount = Cart::itemCount();
         User::setupCookie();
