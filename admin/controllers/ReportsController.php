@@ -1077,7 +1077,7 @@ class ReportsController extends BaseController {
 				# Create Column3D chart Object
 				$DailyCharts[$key] = new FusionCharts("Column3D","700","350");
 				#  Set chart attributes
-				$strParam = "caption=Sales - Total Revenues:  $" . round($graphic_datas[$key][5],2) . ";xAxisName=Days;yAxisName=Percentage;numberPrefix=%";
+				$strParam = "caption=Sales - Total Revenues:  $" . round($graphic_datas[$key][5],2) . ";xAxisName=Days;yAxisName=Percentage;numberSuffix=%";
 				$DailyCharts[$key]->setChartParams($strParam);
 				# add chart values and  category names
 				$DailyCharts[$key]->addChartDataFromArray($value);
