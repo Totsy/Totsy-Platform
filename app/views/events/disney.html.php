@@ -42,7 +42,7 @@ Address:  _________________________________________________<br/>
 <br/>
 City/State/Zip: ___________________________________________<br/>
 <br/>
-<?=$this->html->link('Print', "#", array('class' => 'button', 'id' => 'print', 'style' => 'margin-right:10px;')); ?>
+<?=$this->html->link('Print', "#", array('class' => 'button fr', 'id' => 'print', 'style' => 'margin-right:10px;')); ?>
 
 <script type="text/javascript">
     $('print').click(function(){
