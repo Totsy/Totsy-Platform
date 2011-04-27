@@ -65,6 +65,9 @@
 				<?php echo $this->html->link('Sale Details', 'Reports::saledetail'); ?>
 			</li>
 			<li>
+				<?php echo $this->html->link('Sales by Days', 'Reports::salesDays'); ?>
+			</li>
+			<li>
 				<?php echo $this->html->link('Event Sales', 'Reports::eventSales'); ?>
 			</li>
 			<li>
