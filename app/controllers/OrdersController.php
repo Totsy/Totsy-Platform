@@ -344,7 +344,6 @@ class OrdersController extends BaseController {
 				$orderPromo->saved_amount = 0;
 			}
 		}
-
 		$vars = compact(
 			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'userDoc', 'discountExempt'
@@ -366,6 +365,7 @@ class OrdersController extends BaseController {
 				$orderPromo->save();
 				$order->promo_code = $orderPromo->code;
 				$order->promo_discount = $orderPromo->saved_amount;
+				var_dump($order);
 			}
 			$order->ship_date = new MongoDate(Cart::shipDate($order));
 			$order->save();
@@ -384,7 +384,6 @@ class OrdersController extends BaseController {
 			Silverpop::send('orderConfirmation', $data);
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 		}
-
 		$cartEmpty = ($cart->data()) ? false : true;
 
 		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate');

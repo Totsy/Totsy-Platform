@@ -149,6 +149,7 @@ class PromocodesController extends \admin\controllers\BaseController {
 			}
 
 			$data = $this->request->data;
+			var_dump($data);
 			$data['enabled'] = 	Promocode::setToBool($this->request->data['enabled']);
 			//$data['limited_use'] = Promocode::setToBool($this->request->data['limited_use']);
 			$data['discount_amount'] = (float) $data['discount_amount'];
@@ -160,7 +161,7 @@ class PromocodesController extends \admin\controllers\BaseController {
 			$data['creaeted_by'] = Promocode::createdBy();
 
 			$promocode->save($data);
-			$this->redirect( array( 'Promocodes::index' ) );
+			//$this->redirect( array( 'Promocodes::index' ) );
 		}
 
 		return compact('promocode', 'admins');

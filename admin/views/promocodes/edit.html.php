@@ -68,11 +68,12 @@
           <?=$this->form->textarea('description', array( 'value' => $promocode->description ) ); ?><br>
 
           Code Type:
-           <?=$this->form->select('type', array('percentage' => 'percent',  'dollar'=> 'dollar amount', 'shipping'=> 'shipping'), array('id' => 'type' , 'value' => $promocode->type) ); ?><br>
-
-           <?=$this->form->label('Discount Amount:'); ?>
-           <?=$this->form->text('discount_amount', array( 'value' => $promocode->discount_amount)); ?><br>
-
+           <?=$this->form->select('type', array('percentage' => 'percent',  'dollar'=> 'dollar amount', 'shipping'=> 'shipping', 'free_shipping'=> 'free shipping'), array('id' => 'type' , 'value' => $promocode->type) ); ?><br>
+			
+			<div id="discount">
+				<?=$this->form->label('Discount Amount:'); ?>
+				<?=$this->form->text('discount_amount', array( 'value' => $promocode->discount_amount)); ?><br>
+			</div>
            <?=$this->form->label('Minimum Purchase:'); ?>
            <?=$this->form->text('minimum_purchase', array( 'value' => $promocode->minimum_purchase)); ?><br>
 
@@ -94,3 +95,12 @@
         </fieldset>
     </div>
 </div>
+<script type="text/javascript" >
+$('#type').change(function() {
+	if($('#type').val() == 'free_shipping') {
+		$("#discount").hide("slow");
+	} else {
+		$("#discount").show("slow");
+	};
+});
+</script>
