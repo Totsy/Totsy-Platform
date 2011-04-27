@@ -228,7 +228,25 @@
 			</table>
 	<?php endif ?>
 	<!-- End Order Details -->
-	<!-- Disney -->
+	<?php
+        if(number_format($subTotal,2) >= 35 && number_format($subTotal,2) <= 44.99){
+            echo "<script type=\"text/javascript\">
+                $.post('/cart/modal',{modal: 'disney'},function(data){
+                    if(data == 'false'){
+                        $('#modal').load('/cart/upsell?subtotal=" . $subTotal ."').dialog({
+                            autoOpen: false,
+                            modal:true,
+                            width: 500,
+                            height: 400,
+                            position: 'top',
+                            close: function(ev, ui) {}
+                        });
+                        $('#modal').dialog('open');
+                    }
+                });
+                </script>";
+        }
+    ?>
 	<!--Disney -->
       <div class="disney" style="float:left !important">
           <p><strong>SPECIAL BONUS!</strong><hr/></p>

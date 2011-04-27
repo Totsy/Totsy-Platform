@@ -1,7 +1,7 @@
 
     <img src="/img/disneyfamilyfunlogo.png" width="250"/>
     <p>
-    <div style="font-size: 16px"><strong>BONUS 1 YEAR SUBSCRIPTION TO DISNEY FAMILYFUN!</strong></div>
+<div style="font-size: 16px"><strong>BONUS 1 YEAR SUBSCRIPTION TO DISNEY FAMILYFUN!</strong></div>
     While supplies last, we'll <strong>include</strong> a year of Disney FamilyFun magazine ($10 value, 10 issues)
     with any purchase of $45 or more (excluding taxes and shipping & handling charges)!
     <strong>You will never receive a bill for this subscription and we will not share your credit card number
@@ -43,12 +43,15 @@
     <br/>
     City/State/Zip: ___________________________________________<br/>
     <br/>
-<?=$this->html->link('Print', "#", array('class' => 'button fr', 'id' => 'print', "onclick"=> "printPage()", 'style' => 'margin-right:10px;')); ?>
+
+
+
+    <?=$this->html->link('Print', "#", array('class' => 'button fr', 'id' => 'print', "onclick"=> "printPage()", 'style' => 'margin-right:10px;')); ?>
 
 <script type="text/javascript">
     function printPage(){
-        window.open('/events/disney', "_blank");
-        setTimeout("window.print()", 10000);
+        window.open('/events/disney', "disney");
+        disney.print();
         return false;
     }
 </script>
