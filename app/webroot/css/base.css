@@ -201,7 +201,7 @@ ul.content-list { list-style:disc; margin:0 0 0 15px }
 .ui-widget { }
 .ui-widget .ui-widget { }
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { }
-.ui-widget-content { padding-top:0px; }
+.ui-widget-content { background:#FFF; padding-top:0px; }
 .ui-widget-content a { }
 .ui-widget-header a { }
 /* Interaction states
@@ -629,4 +629,4 @@ font-size: 14px; padding:5px; background: #ed1c25; color:#fff; border-bottom: 1p
 }
 /****** Disney CSS ******/
 .disney p { color:#B3674A; }
-.disney span { color:#5F6062; text-dectoration:underline }
+.disney span { color:#5F6062; text-decoration:underline; cursor:pointer; }
