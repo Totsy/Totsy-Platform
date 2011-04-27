@@ -403,7 +403,7 @@ class UsersController extends BaseController {
 		$user = User::getUser();
 		$id = (string) $user->_id;
 		// Some documents have arrays, others have strings
-		if(is_array($user->invitation_codes)){
+		if(is_object($user->invitation_codes) && get_class($user->invitation_codes) == "lithium\data\collection\DocumentArray"){
 			$code = $user->invitation_codes[0];
 		} else {
 			$code = $user->invitation_codes;
