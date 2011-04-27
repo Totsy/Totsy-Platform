@@ -259,7 +259,7 @@
         $('#modal').load('/events/disney').dialog({
             autoOpen: false,
             modal:true,
-            width: 500,
+            width: 739,
             height: 700,
             position: 'top',
             close: function(ev, ui) {}

@@ -26,13 +26,13 @@
     <br/>
     <p>
     You must include a copy of your online order confirmation showing the date of purchase
-    and total purchase amount.
-    Submissions must be postmarked within 30 days of placing your order.
-    Incomplete and duplicate requests will not be processed.
-    Offer available to US residents only.
-    An independent auditing organization may contact you in connection with your accepted subscription to confirm your qualifying purchase with Totsy.
-    Limit one subscription/customer/household/year.
-    Offer valid while supplies last.
+    and total purchase amount.<br/>
+    Submissions must be postmarked within 30 days of placing your order.<br/>
+    Incomplete and duplicate requests will not be processed.<br/>
+    Offer available to US residents only.<br/>
+    An independent auditing organization may contact you in connection with your accepted subscription to confirm your qualifying purchase with Totsy.<br/>
+    Limit one subscription/customer/household/year.<br/>
+    Offer valid while supplies last.<br/>
     </p>
     <br/>
     First Name:  _______________________________________________<br/>
