@@ -260,7 +260,7 @@
             autoOpen: false,
             modal:true,
             width: 500,
-            height: 600,
+            height: 700,
             position: 'top',
             close: function(ev, ui) {}
         });

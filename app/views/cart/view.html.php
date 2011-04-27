@@ -123,7 +123,7 @@
                             autoOpen: false,
                             modal:true,
                             width: 500,
-                            height: 200,
+                            height: 400,
                             position: 'top',
                             close: function(ev, ui) {}
                         });
