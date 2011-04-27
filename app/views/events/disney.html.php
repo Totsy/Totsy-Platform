@@ -1,4 +1,4 @@
-<div class="print">
+
     <img src="/img/disneyfamilyfunlogo.png" width="250"/>
     <p>
     <div style="font-size: 16px"><strong>BONUS 1 YEAR SUBSCRIPTION TO DISNEY FAMILYFUN!</strong></div>
@@ -43,13 +43,12 @@
     <br/>
     City/State/Zip: ___________________________________________<br/>
     <br/>
-</div>
-<?=$this->html->link('Print', "#", array('class' => 'button fr', 'id' => 'print', 'style' => 'margin-right:10px;')); ?>
+<?=$this->html->link('Print', "#", array('class' => 'button fr', 'id' => 'print', "onclick"=> "printPage()", 'style' => 'margin-right:10px;')); ?>
 
 <script type="text/javascript">
-    $('#print').click(function(){
+    function printPage(){
         window.open('/events/disney', "_blank");
-        window.print();
+        setTimeout("window.print()", 10000);
         return false;
-    });
+    }
 </script>
