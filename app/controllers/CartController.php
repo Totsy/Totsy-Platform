@@ -199,7 +199,8 @@ class CartController extends BaseController {
         $this->_render['layout'] = 'base';
         if($query){
             $total_left = 45 - $query['subtotal'];
-            return compact('total_left');
+            $url = $query['redirect'];
+            return compact('total_left', 'url');
         }
 	}
 }

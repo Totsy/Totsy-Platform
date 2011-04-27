@@ -233,7 +233,7 @@
             echo "<script type=\"text/javascript\">
                 $.post('/cart/modal',{modal: 'disney'},function(data){
                     if(data == 'false'){
-                        $('#modal').load('/cart/upsell?subtotal=" . $subTotal ."').dialog({
+                        $('#modal').load('/cart/upsell?subtotal=" . $subTotal ."&redirect=".$itemUrl."').dialog({
                             autoOpen: false,
                             modal:true,
                             width: 500,
