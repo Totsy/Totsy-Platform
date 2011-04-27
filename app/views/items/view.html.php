@@ -107,7 +107,7 @@
 	<!--Disney -->
       <div class="disney">
           <p><strong>SPECIAL BONUS!</strong><hr/></p>
-       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" />( $10 value). <br/>
+       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value). <br/>
        <span  id="disney">Offer & Refund Details</span></p>
       </div>
 	<!-- Started Related Products -->
@@ -227,7 +227,7 @@ $(document).ready(function() {
         $('#modal').load('/events/disney').dialog({
             autoOpen: false,
             modal:true,
-            width: 700,
+            width: 739,
             height: 700,
             position: 'top',
             close: function(ev, ui) {}

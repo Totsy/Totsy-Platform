@@ -628,9 +628,5 @@ font-size: 14px; padding:5px; background: #ed1c25; color:#fff; border-bottom: 1p
 }
 /****** Disney CSS ******/
 .disney p { color:#B3674A; }
-<<<<<<< HEAD
-.disney span { color:#5F6062; text-dectoration:underline }
 .disney_splash { padding: 10px 0px; text-align: center;  }
-=======
 .disney span { color:#5F6062; text-decoration:underline; cursor:pointer; }
->>>>>>> 612c92d7643d4b4d080eafb3419077deec4e817f
