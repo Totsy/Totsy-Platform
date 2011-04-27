@@ -1065,7 +1065,7 @@ class ReportsController extends BaseController {
 					$chart_datas[$day][2][0] = '$' . round($graphic_datas[$day][2],2);
 					$chart_datas[$day][3][0] = '$' . round($graphic_datas[$day][3],2);
 					if (!empty($graphic_datas[$day][4])) {
-						$chart_datas[$day][4][0] = '$' . $graphic_datas[$day][4];
+						$chart_datas[$day][4][0] = '$' . round($graphic_datas[$day][4],2);
 						$chart_datas[$day][4][1] = ($graphic_datas[$day][4] / $graphic_datas[$day][5]) * 100;
 					}
 					$chart_datas[$day][0][1] = ($graphic_datas[$day][0] / $graphic_datas[$day][5]) * 100;
