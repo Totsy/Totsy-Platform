@@ -126,7 +126,7 @@
 								<div>
 								<h3 style="color:#999; font-size:18px;">Register With Facebook</h3>
 								<hr />
-								<fb:login-button perms="email,publish_stream, offline_access" size="large" length="long" v="2" style="text-align:center;">Register With Facebook</fb:login-button>
+								<fb:login-button perms="publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location" size="large" length="long" v="2" style="text-align:center;">Register With Facebook</fb:login-button>
 
 								</div>
 								</div>
