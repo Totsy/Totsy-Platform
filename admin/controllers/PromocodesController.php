@@ -193,7 +193,7 @@ class PromocodesController extends \admin\controllers\BaseController {
                     $col = Promocode::collection();
                     do{
                         $code = $this->request->data['code'];
-                        $rand = rand(1,$loop_number);
+                        $rand = static::randomString(3);
                         $code .= $rand;
                         $conditions = array('code' => $code, 'special' => true);
                     }while($col->count($conditions) > 0);
