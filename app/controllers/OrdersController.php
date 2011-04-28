@@ -324,7 +324,7 @@ class OrdersController extends BaseController {
 					if ($code->type == 'dollar') {
 						$orderPromo->saved_amount = -$code->discount_amount;
 					}
-					if ($code->type == 'free_shipping') {
+					if ($code->type == 'free_shipping' && !($orderPromo->errors())) {
 						$shippingCost = 0;
 						$overShippingCost = 0;
 						$orderPromo->type = "free_shipping";
