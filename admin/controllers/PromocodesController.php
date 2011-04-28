@@ -199,7 +199,7 @@ class PromocodesController extends \admin\controllers\BaseController {
                     $col = Promocode::collection();
                     do{
                         $code = $this->request->data['code'];
-                        $rand = static::randomString(7);
+                        $rand = static::randomString(7, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
                         $code .= $rand;
                         $conditions = array('code' => $code, 'special' => true);
                     }while($col->count($conditions) > 0);
