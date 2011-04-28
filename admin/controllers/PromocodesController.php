@@ -118,7 +118,7 @@ class PromocodesController extends \admin\controllers\BaseController {
 			$code['end_date'] = new MongoDate(strtotime($code['end_date']));
 			$code['date_created'] = new MongoDate(strtotime(date('D M d Y')));
 			$code['created_by'] = Promocode::createdBy();
-			
+
 			$result = $promoCode->save($code);
 			if ($result) {
 				$this->redirect( array( 'Promocodes::index' ) );
@@ -199,14 +199,18 @@ class PromocodesController extends \admin\controllers\BaseController {
                     $col = Promocode::collection();
                     do{
                         $code = $this->request->data['code'];
-                        $rand = static::randomString(3);
+                        $rand = static::randomString(7);
                         $code .= $rand;
                         $conditions = array('code' => $code, 'special' => true);
                     }while($col->count($conditions) > 0);
                     $data['code'] = $code;
                     $data['type'] = $this->request->data['type'];
+                    if ($this->request->data['type'] != 'free_shipping') {
+                        $code['discount_amount'] = (float) $data['discount_amount'];
+                    } else {
+                        $code['discount_amount'] = (float) 0;
+                    }
                     $data['enabled'] = 	Promocode::setToBool($this->request->data['enabled']);
-                    $data['discount_amount'] = (float) $this->request->data['discount_amount'];
                     $data['minimum_purchase'] = (int) $this->request->data['minimum_purchase'];
                     $data['max_use'] = (int) $this->request->data['max_use'];
                     $data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));

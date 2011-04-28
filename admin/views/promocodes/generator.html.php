@@ -59,7 +59,7 @@
                     <?=$this->form->label('Description:'); ?> <br>
                     <?=$this->form->textarea('description', array("width" =>50, "height" => 50 )); ?><br><br>
                    <?=$this->form->label('Code Type:'); ?>
-                   <?=$this->form->select( 'type', array('percentage' => 'percent',  'dollar'=> 'dollar amount', 'shipping'=> 'shipping') ); ?><br><br>
+                   <?=$this->form->select( 'type', array('percentage' => 'percent',  'dollar'=> 'dollar amount', 'shipping'=> 'shipping', 'free_shipping' => 'free shipping') ); ?><br><br>
                   <?=$this->form->label('Enter discount amount here:'); ?>
                    <?=$this->form->text( 'discount_amount'); ?><br>
                    <br>
@@ -78,6 +78,15 @@
                   <?=$this->form->submit('Generate'); ?><br><br>
         <?=$this->form->end();?>
     </div>
+    <script type="text/javascript" >
+$('#Type').change(function() {
+	if($('#Type').val() == 'free_shipping') {
+		$("#discount").hide("slow");
+	} else {
+		$("#discount").show("slow");
+	};
+});
+</script>
 <?php else:
     foreach($data['codes'] as $code){
 			print_r($code);
