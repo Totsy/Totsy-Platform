@@ -206,9 +206,9 @@ class PromocodesController extends \admin\controllers\BaseController {
                     $data['code'] = $code;
                     $data['type'] = $this->request->data['type'];
                     if ($this->request->data['type'] != 'free_shipping') {
-                        $code['discount_amount'] = (float) $this->request->data['discount_amount'];
+                        $data['discount_amount'] = (float) $this->request->data['discount_amount'];
                     } else {
-                        $code['discount_amount'] = (float) 0;
+                        $data['discount_amount'] = (float) 0;
                     }
                     $data['enabled'] = 	Promocode::setToBool($this->request->data['enabled']);
                     $data['minimum_purchase'] = (int) $this->request->data['minimum_purchase'];
