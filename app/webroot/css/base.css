@@ -201,7 +201,7 @@ ul.content-list { list-style:disc; margin:0 0 0 15px }
 .ui-widget { }
 .ui-widget .ui-widget { }
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { }
-.ui-widget-content { padding-top:0px; }
+.ui-widget-content { background:#FFF; padding-top:0px; }
 .ui-widget-content a { }
 .ui-widget-header a { }
 /* Interaction states
@@ -536,8 +536,7 @@ body.login .our365-login #intro-copy { width:310px; font-size:16px; padding:15px
 ----------------------------------------------------------------------------------------------------*/
 
 hr { height: 0; border: solid #ddd; border-width: 1px 0 0; }
-hr {
-... border-top: 1px solid #d8d8d8; border-bottom: 1px solid #fff; } /* yes, the "..." is a hack and you should leave it alone! -erictherobot */
+
 /*----------------------------------------------------------------------------------------------------
 /* FAQ's
 ----------------------------------------------------------------------------------------------------*/
@@ -627,3 +626,7 @@ font-size: 14px; padding:5px; background: #ed1c25; color:#fff; border-bottom: 1p
     position: relative;
     top: 200px;
 }
+/****** Disney CSS ******/
+.disney p { color:#B3674A; }
+.disney_splash { padding: 10px 0px; text-align: center;  }
+.disney span { color:#5F6062; text-decoration:underline; cursor:pointer; }
