@@ -196,10 +196,12 @@ class CartController extends BaseController {
 	}
 	public function upsell(){
         $query = $this->request->query;
+
         $this->_render['layout'] = 'base';
         if($query){
+            $last = strrpos($query['redirect'], '/');
+            $url = substr($query['redirect'], 0,$last);
             $total_left = 45 - $query['subtotal'];
-            $url = $query['redirect'];
             return compact('total_left', 'url');
         }
 	}
