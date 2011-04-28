@@ -105,14 +105,18 @@ class PromocodesController extends \admin\controllers\BaseController {
 			}
 			$code['enabled'] = 	Promocode::setToBool($this->request->data['enabled']);
 			$code['limited_use'] = Promocode::setToBool($this->request->data['limited_use']);
-			$code['discount_amount'] = (float) $code['discount_amount'];
+			if ($this->request->data['type'] != 'free_shipping') {
+				$code['discount_amount'] = (float) $data['discount_amount'];
+			} else {
+				$code['discount_amount'] = (float) 0;
+			}
 			$code['minimum_purchase'] = (int) $code['minimum_purchase'];
 			$code['max_use'] = (int) $code['max_use'];
 			$code['start_date'] = new MongoDate(strtotime($code['start_date']));
 			$code['end_date'] = new MongoDate(strtotime($code['end_date']));
 			$code['date_created'] = new MongoDate(strtotime(date('D M d Y')));
 			$code['created_by'] = Promocode::createdBy();
-
+			
 			$result = $promoCode->save($code);
 			if ($result) {
 				$this->redirect( array( 'Promocodes::index' ) );
@@ -147,18 +151,20 @@ class PromocodesController extends \admin\controllers\BaseController {
 					array('multiple' => true)
 				);
 			}
-
 			$data = $this->request->data;
 			$data['enabled'] = 	Promocode::setToBool($this->request->data['enabled']);
 			//$data['limited_use'] = Promocode::setToBool($this->request->data['limited_use']);
-			$data['discount_amount'] = (float) $data['discount_amount'];
+			if ($data['type'] != 'free_shipping') {
+				$data['discount_amount'] = (float) $data['discount_amount'];
+			} else {
+				$data['discount_amount'] = (float) 0;
+			}
 			$data['minimum_purchase'] = (int) $data['minimum_purchase'];
 			$data['max_use'] = (int) $data['max_use'];
 			$data['start_date'] = new MongoDate( strtotime( $data['start_date'] ) );
 			$data['end_date'] = new MongoDate( strtotime( $data['end_date'] ) );
 			$data['date_created'] = new MongoDate( strtotime( date('D M d Y') ) );
 			$data['creaeted_by'] = Promocode::createdBy();
-
 			$promocode->save($data);
 			$this->redirect( array( 'Promocodes::index' ) );
 		}

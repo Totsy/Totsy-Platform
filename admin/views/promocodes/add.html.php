@@ -64,11 +64,11 @@
                 <?=$this->form->textarea('description', array('value' => 'Enter description here')); ?><br><br>
 
                <?=$this->form->label('Code Type:'); ?>
-               <?=$this->form->select( 'type', array('percentage' => 'percent',  'dollar'=> 'dollar amount', 'shipping'=> 'shipping') ); ?><br><br>
-
-              <?=$this->form->label('Enter discount amount here:'); ?>
-               <?=$this->form->text( 'discount_amount', array( 'value' => 'Enter discount amount here') ); ?><br><br>
-
+               <?=$this->form->select( 'type', array('percentage' => 'percent',  'dollar'=> 'dollar amount', 'shipping'=> 'shipping', 'free_shipping' => 'free shipping') ); ?><br><br>
+				<div id="discount">
+					<?=$this->form->label('Enter discount amount here:'); ?>
+					<?=$this->form->text( 'discount_amount', array( 'value' => 'Enter discount amount here') ); ?><br><br>
+				</div>
               <?=$this->form->label('Enter minimum purchase amount:'); ?>
                <?=$this->form->text( 'minimum_purchase', array( 'value' => 'Enter minimum purchase') ); ?><br><br>
 
@@ -89,3 +89,12 @@
         </fieldset>
     </div>
 </div>
+<script type="text/javascript" >
+$('#Type').change(function() {
+	if($('#Type').val() == 'free_shipping') {
+		$("#discount").hide("slow");
+	} else {
+		$("#discount").show("slow");
+	};
+});
+</script>

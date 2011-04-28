@@ -221,7 +221,6 @@ class OrdersController extends BaseController {
 		$shippingCost = 0;
 		$overShippingCost = 0;
 		$billingAddr = $shippingAddr = null;
-
 		if (isset($data['billing_shipping']) && $data['billing_shipping'] == '1') {
 			$data['shipping'] = $data['billing'];
 		}
@@ -296,7 +295,6 @@ class OrdersController extends BaseController {
 		if (isset($this->request->data['code'])) {
 			$orderPromo->code = $this->request->data['code'];
 		}
-
 		if ($orderPromo->code) {
 			$code = Promocode::confirmCode($orderPromo->code);
 			if ($code) {
@@ -326,6 +324,11 @@ class OrdersController extends BaseController {
 					if ($code->type == 'dollar') {
 						$orderPromo->saved_amount = -$code->discount_amount;
 					}
+					if ($code->type == 'free_shipping' && !($orderPromo->errors())) {
+						$shippingCost = 0;
+						$overShippingCost = 0;
+						$orderPromo->type = "free_shipping";
+					}
 					Session::write('promocode', $orderPromo->code, array('name' => 'default'));
 				} else {
 					$orderPromo->errors(
@@ -344,7 +347,6 @@ class OrdersController extends BaseController {
 				$orderPromo->saved_amount = 0;
 			}
 		}
-
 		$vars = compact(
 			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'userDoc', 'discountExempt'
@@ -367,6 +369,16 @@ class OrdersController extends BaseController {
 				$order->promo_code = $orderPromo->code;
 				$order->promo_discount = $orderPromo->saved_amount;
 			}
+			if (!empty($orderPromo->type)) {
+				if ($orderPromo->type == 'free_shipping') {
+					Promocode::add((string) $code->_id, 0, $order->total);
+					$orderPromo->order_id = (string) $order->_id;
+					$orderPromo->code_id = (string) $code->_id;
+					$orderPromo->date_created = new MongoDate();
+					$orderPromo->save();
+					$order->promo_code = $orderPromo->code;
+				}
+			}
 			$order->ship_date = new MongoDate(Cart::shipDate($order));
 			$order->save();
 			Cart::remove(array('session' => Session::key('default')));
@@ -384,7 +396,6 @@ class OrdersController extends BaseController {
 			Silverpop::send('orderConfirmation', $data);
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 		}
-
 		$cartEmpty = ($cart->data()) ? false : true;
 
 		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate');
