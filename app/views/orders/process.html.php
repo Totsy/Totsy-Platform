@@ -207,7 +207,7 @@
 			<hr />
 <div style="clear:both; margin-bottom:10px;"></div>
 
-   
+
 	<!-- Begin Order Details -->
 	<?php if ($cartByEvent): ?>
 		<?php $x = 0; ?>
@@ -296,7 +296,7 @@
 	<?php endif ?>
 
 
-	
+
 
     <!-- begin thawte seal -->
     <div id="thawteseal" title="Click to Verify - This site chose Thawte SSL for secure e-commerce and confidential communications." style="float: right!important; width:200px;">
@@ -315,7 +315,28 @@
 	</div>
 
 </div>
-
+<div id="modal">
+</div>
+<?php
+    if(number_format((float) $total, 2) >= 35 && number_format((float) $total, 2) <= 44.99){
+        echo "<script type=\"text/javascript\">
+            $.post('/cart/modal',{modal: 'disney'},function(data){
+              //  alert(data);
+                if(data == 'false'){
+                    $('#modal').load('/cart/upsell?subtotal=" . (float)$total ."&redirect=".$itemUrl."').dialog({
+                        autoOpen: false,
+                        modal:true,
+                        width: 500,
+                        height: 317,
+                        position: 'top',
+                        close: function(ev, ui) {}
+                    });
+                    $('#modal').dialog('open');
+                }
+            });
+            </script>";
+    }
+?>
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function(){
 		$('#gift').bind('click', function() {
