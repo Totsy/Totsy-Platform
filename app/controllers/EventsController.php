@@ -93,6 +93,9 @@ class EventsController extends BaseController {
 		}
 		return $itemCounts;
 	}
+	public function disney(){
+	    $this->_render['layout'] = false;
+	}
 
 }
 

@@ -34,8 +34,8 @@
 
               <div class="rounded" style="color:#ff0000; margin:0px 0px 0px 0px; float:left; display:block; background:#ffebeb; border:1px solid #ddd; width:246px; padding:20px; text-align:center;">Confirmation</div>
               </div>
-              
-              
+
+
 	<ol id="checkout-process">
 		<?=$this->form->create($order, array('class' => 'checkout')); ?>
 
@@ -198,7 +198,7 @@
 									<strong style="color:#009900;">$<?=number_format($item['sale_retail'] * $item['quantity'] ,2)?></strong>
 								</td>
 								<td class="cart-time" style="border-right:1px solid #d7d7d7;"><img src="/img/clock_icon.gif" class="fl"/><div id='<?php echo "checkout-counter-$x"; ?>' class="fl" style="margin-left:5px;"></div></td>
-								
+
 							</tr>
 							<?php
 								//Allow users three extra minutes on their items for checkout.
@@ -228,7 +228,12 @@
 			</table>
 	<?php endif ?>
 	<!-- End Order Details -->
-	
+	<!--Disney -->
+      <div class="disney fl">
+          <p><strong>SPECIAL BONUS!</strong><hr/></p>
+       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value). <br/>
+       <span id="disney">Offer & Refund Details</span></p>
+      </div>
     <!-- begin thawte seal -->
     <div id="thawteseal" title="Click to Verify - This site chose Thawte SSL for secure e-commerce and confidential communications." style="float: right!important; width:200px;">
         <div style="float: left!important; width:100px; display:block;"><script type="text/javascript" src="https://seal.thawte.com/getthawteseal?host_name=www.totsy.com&amp;size=L&amp;lang=en"></script></div>
@@ -249,7 +254,7 @@
 <div id="right">
 
 <div id="address-modal"></div>
-
+<div id="modal"></div>
 </div>
 
 
@@ -282,6 +287,19 @@ $(".add-address").click(function() {
 	$("#address-modal").dialog('open');
 });
 
+</script>
+<script type="text/javascript">
+    $('#disney').click(function(){
+        $('#modal').load('/events/disney').dialog({
+            autoOpen: false,
+            modal:true,
+            width: 739,
+            height: 700,
+            position: 'top',
+            close: function(ev, ui) {}
+        });
+        $('#modal').dialog('open');
+    });
 </script>
 	<?php if ($cartEmpty == true):
 	?>

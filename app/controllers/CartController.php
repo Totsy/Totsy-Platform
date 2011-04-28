@@ -180,6 +180,30 @@ class CartController extends BaseController {
 		$this->_render['layout'] = false;
 		$this->redirect('/cart/view');
 	}
-}
+	public function modal(){
+	    $userinfo = Session::read('userLogin');
+	    $success = true;
+	    $this->_render['layout'] = false;
+	    if(!array_key_exists('modal', $userinfo)){
+	        if($this->request->data){
+                $data = $this->request->data;
+                $userinfo['modal'] ="disney";
+	        }
+	        Session::write('userLogin', $userinfo, array('name' => 'default'));
+	        $success = false;
+	    }
+	    echo json_encode($success);
+	}
+	public function upsell(){
+        $query = $this->request->query;
 
+        $this->_render['layout'] = 'base';
+        if($query){
+            $last = strrpos($query['redirect'], '/');
+            $url = substr($query['redirect'], 0,$last);
+            $total_left = 45 - $query['subtotal'];
+            return compact('total_left', 'url');
+        }
+	}
+}
 ?>
