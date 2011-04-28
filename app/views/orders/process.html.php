@@ -327,7 +327,7 @@
                         autoOpen: false,
                         modal:true,
                         width: 700,
-                        height: 440,
+                        height: 400,
                         position: 'top',
                         close: function(ev, ui) {}
                     });
