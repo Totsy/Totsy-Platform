@@ -206,7 +206,7 @@ class PromocodesController extends \admin\controllers\BaseController {
                     $data['code'] = $code;
                     $data['type'] = $this->request->data['type'];
                     if ($this->request->data['type'] != 'free_shipping') {
-                        $code['discount_amount'] = (float) $data['discount_amount'];
+                        $code['discount_amount'] = (float) $this->request->data['discount_amount'];
                     } else {
                         $code['discount_amount'] = (float) 0;
                     }
