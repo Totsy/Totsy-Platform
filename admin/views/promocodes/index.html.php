@@ -23,12 +23,15 @@
 			<tr>
 				<td><?php echo $this->html->link('View Promotions', 'promocodes/report'); ?></td>
 			</tr>
+			<tr>
+				<td><?php echo $this->html->link('Generate Promocodes', 'promocodes/generator'); ?></td>
+			</tr>
 		</tbody>
 	</table>
 </div>
 
 <div class='grid_16 box'>
-    
+
     <table id='codeSummary' class='datatable' >
         <thead>
             <tr>
@@ -52,7 +55,7 @@
                 </td>
                 <td>
                     <?=$promocode->type; ?><br>
-                 </td>   
+                 </td>
                 <td>
                     <?php if($promocode->type == 'percentage'): ?>
                         <?php echo ($promocode->discount_amount * 100); ?>%
@@ -76,12 +79,12 @@
                 <td>
                     <?=$promocode->date_created; ?>
                 </td>
-                 
+
                 <td>
                     <?=$promocode->created_by; ?>
                 </td>
                 <td>
-                    <?=$promocode->enabled; ?> 
+                    <?=$promocode->enabled; ?>
                 </td>
 
                 <td>
