@@ -4,7 +4,6 @@
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
 	$test = $cart->data();
 ?>
-
 <div class="message"></div>
 <?php if (!empty($test)): ?>
 <?php $subTotal = 0; ?>
@@ -155,6 +154,9 @@
 <div><h1><center>You have no items in your cart. <br> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
 	</div>
 <?php endif ?>
+<div id="modal">
+
+</div>
 <script type="text/javascript" charset="utf-8">
 	$(".inputbox").bind('keyup', function() {
 	var id = $(this).attr('id');
