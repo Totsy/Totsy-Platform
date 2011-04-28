@@ -7,9 +7,6 @@
 <div class="clear"></div>
 <br/>
 <br/>
-<br/>
-<br/>
-<?=$this->html->link('Continue Shopping', $url, array('class' => 'button fr')); ?>
-</div>
+<?=$this->html->link('Continue Shopping', $url, array('class' => 'button fr', 'style' => 'margin-left:10px')); ?></div>
 
 <div class="clear"></div>

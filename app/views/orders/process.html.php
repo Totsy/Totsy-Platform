@@ -326,8 +326,8 @@
                     $('#modal').load('/cart/upsell?subtotal=" . (float)$total ."&redirect=".$itemUrl."').dialog({
                         autoOpen: false,
                         modal:true,
-                        width: 700,
-                        height: 400,
+                        width: 550,
+                        height: 320,
                         position: 'top',
                         close: function(ev, ui) {}
                     });
