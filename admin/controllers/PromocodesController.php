@@ -220,7 +220,7 @@ class PromocodesController extends \admin\controllers\BaseController {
                     $data['created_by'] = Promocode::createdBy();
                     $whitelist = array_keys($data);
                     $result = $promoCode->save($data, array('whitelist' => $whitelist));
-                    $codes[] = $code;
+                    $codes[] = $promoCode->code;
                 }//end of forloop
                 if(!empty($codes)){
                     $this->render(array('layout' => false, 'data' => compact('codes')));
