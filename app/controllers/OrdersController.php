@@ -221,7 +221,6 @@ class OrdersController extends BaseController {
 		$shippingCost = 0;
 		$overShippingCost = 0;
 		$billingAddr = $shippingAddr = null;
-
 		if (isset($data['billing_shipping']) && $data['billing_shipping'] == '1') {
 			$data['shipping'] = $data['billing'];
 		}
@@ -296,7 +295,6 @@ class OrdersController extends BaseController {
 		if (isset($this->request->data['code'])) {
 			$orderPromo->code = $this->request->data['code'];
 		}
-
 		if ($orderPromo->code) {
 			$code = Promocode::confirmCode($orderPromo->code);
 			if ($code) {
@@ -325,6 +323,11 @@ class OrdersController extends BaseController {
 					}
 					if ($code->type == 'dollar') {
 						$orderPromo->saved_amount = -$code->discount_amount;
+					}
+					if ($code->type == 'free_shipping') {
+						$shippingCost = 0;
+						$overShippingCost = 0;
+						$orderPromo->type = "free_shipping";
 					}
 					Session::write('promocode', $orderPromo->code, array('name' => 'default'));
 				} else {
@@ -365,7 +368,16 @@ class OrdersController extends BaseController {
 				$orderPromo->save();
 				$order->promo_code = $orderPromo->code;
 				$order->promo_discount = $orderPromo->saved_amount;
-				var_dump($order);
+			}
+			if (!empty($orderPromo->type)) {
+				if ($orderPromo->type == 'free_shipping') {
+					Promocode::add((string) $code->_id, 0, $order->total);
+					$orderPromo->order_id = (string) $order->_id;
+					$orderPromo->code_id = (string) $code->_id;
+					$orderPromo->date_created = new MongoDate();
+					$orderPromo->save();
+					$order->promo_code = $orderPromo->code;
+				}
 			}
 			$order->ship_date = new MongoDate(Cart::shipDate($order));
 			$order->save();

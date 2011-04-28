@@ -34,7 +34,6 @@ class Order extends \lithium\data\Model {
 	}
 
 	public function process($order, $user, $data, $cart, $orderCredit, $orderPromo) {
-
 		foreach (array('billing', 'shipping') as $key) {
 			$addr = $data[$key];
 			${$key} = is_array($addr) ? Address::create($addr) : Address::first($addr);
@@ -61,8 +60,13 @@ class Order extends \lithium\data\Model {
 		$subTotal = array_sum($cart->subTotal());
 		$tax = array_sum($cart->tax($shipping));
 		$handling = Cart::shipping($cart, $shipping);
-		$overSizeHandling= Cart::overSizeShipping($cart);
-
+		$overSizeHandling = Cart::overSizeShipping($cart);
+		if(!empty($orderPromo->type)) {
+			if($orderPromo->type == 'free_shipping') {
+				$handling = 0;
+				$overSizeHandling = 0;
+			}
+		};
 		// if (!$handling) {
 		// 	$order->errors($order->errors() + array(
 		// 		'shipping' => 'A valid shipping address was not specified.'
@@ -77,7 +81,6 @@ class Order extends \lithium\data\Model {
 		    $afterDiscount = 0;
 		}
 		$total = $afterDiscount + $tax + $handling +$overSizeHandling;
-
 
 		$cart = $cart->data();
 		if ($cart) {

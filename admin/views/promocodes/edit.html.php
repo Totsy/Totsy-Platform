@@ -70,7 +70,10 @@
           Code Type:
            <?=$this->form->select('type', array('percentage' => 'percent',  'dollar'=> 'dollar amount', 'shipping'=> 'shipping', 'free_shipping'=> 'free shipping'), array('id' => 'type' , 'value' => $promocode->type) ); ?><br>
 			
-			<div id="discount">
+			<div id="discount"
+				<?php if($promocode->type == 'free_shipping') : ?>
+					style="display: none;"
+				<?php endif ?>>
 				<?=$this->form->label('Discount Amount:'); ?>
 				<?=$this->form->text('discount_amount', array( 'value' => $promocode->discount_amount)); ?><br>
 			</div>
