@@ -228,25 +228,6 @@
 			</table>
 	<?php endif ?>
 	<!-- End Order Details -->
-	<?php
-        if(number_format($subTotal,2) >= 35 && number_format($subTotal,2) <= 44.99){
-            echo "<script type=\"text/javascript\">
-                $.post('/cart/modal',{modal: 'disney'},function(data){
-                    if(data == 'false'){
-                        $('#modal').load('/cart/upsell?subtotal=" . $subTotal ."&redirect=".$itemUrl."').dialog({
-                            autoOpen: false,
-                            modal:true,
-                            width: 500,
-                            height: 317,
-                            position: 'top',
-                            close: function(ev, ui) {}
-                        });
-                        $('#modal').dialog('open');
-                    }
-                });
-                </script>";
-        }
-    ?>
 	<!--Disney -->
       <div class="disney fl">
           <p><strong>SPECIAL BONUS!</strong><hr/></p>
@@ -276,7 +257,26 @@
 <div id="modal"></div>
 </div>
 
-
+<?php
+        if(number_format($subTotal,2) >= 35 && number_format($subTotal,2) <= 44.99){
+            echo "<script type=\"text/javascript\">
+                $.post('/cart/modal',{modal: 'disney'},function(data){
+                    //alert(data);
+                    if(data == 'false'){
+                        $('#modal').load('/cart/upsell?subtotal=" . $subTotal ."&redirect=".$itemUrl."').dialog({
+                            autoOpen: false,
+                            modal:true,
+                            width: 500,
+                            height: 317,
+                            position: 'top',
+                            close: function(ev, ui) {}
+                        });
+                        $('#modal').dialog('open');
+                    }
+                });
+                </script>";
+        }
+    ?>
 <script>
 $(document).ready(function() {
 	$('input[name=billing_shipping]').bind('change', function() {
