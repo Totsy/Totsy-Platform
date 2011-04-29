@@ -36,7 +36,6 @@ class Promocode extends \lithium\data\Model {
 				'enabled' => true
 			)));
 	}
-
 	public static function add($_id, $discount, $revenue) {
 		$_id = new MongoId($_id);
 		$update = array(

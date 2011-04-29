@@ -9,6 +9,7 @@ use MongoDate;
 use MongoRegex;
 use MongoCollection;
 use lithium\util\Validator;
+use li3_flash_message\extensions\storage\FlashMessage;
 
 class PromocodesController extends \admin\controllers\BaseController {
 
@@ -57,7 +58,7 @@ class PromocodesController extends \admin\controllers\BaseController {
 	 * @todo Improve documentation
 	 */
     public function report() {
-		$promocodes = Promocode::all();
+		$promocodes = Promocode::find('all', array('conditions' => array('special' => array('$ne' => true))));
 		if ($this->request->data) {
 			$data = $this->request->data;
 			$search = $data['search'];
@@ -108,12 +109,17 @@ class PromocodesController extends \admin\controllers\BaseController {
 			$code['enabled'] = 	Promocode::setToBool($this->request->data['enabled']);
 			$code['limited_use'] = Promocode::setToBool($this->request->data['limited_use']);
 			if ($this->request->data['type'] != 'free_shipping') {
-				$code['discount_amount'] = (float) $data['discount_amount'];
+				$code['discount_amount'] = (float) $this->request->data['discount_amount'];
 			} else {
 				$code['discount_amount'] = (float) 0;
 			}
 			$code['minimum_purchase'] = (int) $code['minimum_purchase'];
 			$code['max_use'] = (int) $code['max_use'];
+			if($this->request->data['max_total'] == "UNLIMITED"){
+			    $code['max_total'] = "UNLIMITED";
+			}else{
+			    $code['max_total'] = (int) $code['max_total'];
+			}
 			$code['start_date'] = new MongoDate(strtotime($code['start_date']));
 			$code['end_date'] = new MongoDate(strtotime($code['end_date']));
 			$code['date_created'] = new MongoDate(strtotime(date('D M d Y')));
@@ -173,7 +179,10 @@ class PromocodesController extends \admin\controllers\BaseController {
 
 		return compact('promocode', 'admins');
 	}
-
+	/**
+	* Produces unique promocodes.
+	* POST
+	**/
 	public function generator(){
         $promoCode = Promocode::create($this->request->data);
         if ($this->request->data) {
@@ -216,6 +225,7 @@ class PromocodesController extends \admin\controllers\BaseController {
                     $data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
                     $data['end_date'] = new MongoDate(strtotime($this->request->data['end_date']));
                     $data['date_created'] = new MongoDate(strtotime(date('D M d Y')));
+                    $data['base_code'] = $this->request->data['code'];
                     $data['special'] = true;
                     $data['created_by'] = Promocode::createdBy();
                     $whitelist = array_keys($data);

@@ -21,6 +21,11 @@
         });
     </script>
     <h2>Promocode Generator</h2>
+    <div class= "grid_16">
+        <h5>This functionality is used to generate large amounts of unique promocodes at one time.<br/>
+        When the promocode is given to a certain individual, it can only be used by individual. </h5>
+    </div>
+     <br/>
      <div class='grid_3 menu'>
             <table>
                 <thead>
@@ -69,6 +74,7 @@
                   <?=$this->form->label('Enter maximum use:'); ?>
                    <?=$this->form->text( 'max_use'); ?><br>
                    <br>
+                    <?=$this->form->hidden('max_total', array( 'value' => 1)); ?>
                   <?=$this->form->label('Enter start date:'); ?>
                   <?=$this->form->text( 'start_date', array('id' => 'start_date') ); ?><br>
                   <br>

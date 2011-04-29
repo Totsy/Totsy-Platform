@@ -299,8 +299,17 @@ class OrdersController extends BaseController {
 			$code = Promocode::confirmCode($orderPromo->code);
 			if ($code) {
 				$count = Promotion::confirmCount($code->_id, $user['_id']);
+				$uses = Promotion::confirmNoUses($code->_id);
 				if ($code->max_use > 0) {
 					if ($count >= $code->max_use) {
+						$orderPromo->errors(
+							$orderPromo->errors() + array(
+								'promo' => "This promotion code has already been used"
+						));
+					}
+				}
+				if ($code->max_total !== "UNLIMITED") {
+					if ($uses >= $code->max_total) {
 						$orderPromo->errors(
 							$orderPromo->errors() + array(
 								'promo' => "This promotion code has already been used"

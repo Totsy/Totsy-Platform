@@ -12,7 +12,7 @@ class Promotion extends \lithium\data\Model {
 	);
 
 	public static function dates($name) {
-	     return new MongoDate(time() + static::_object()->_dates[$name]); 
+	     return new MongoDate(time() + static::_object()->_dates[$name]);
 	}
 
 	/**
@@ -26,6 +26,12 @@ class Promotion extends \lithium\data\Model {
 			'conditions' => array(
 				'code_id' => (string) $code_id,
 				'user_id' => $user
+		)));
+	}
+	public static function confirmNoUses($code_id) {
+		return static::count(array(
+			'conditions' => array(
+				'code_id' => (string) $code_id
 		)));
 	}
 }

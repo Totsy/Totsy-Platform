@@ -72,10 +72,13 @@
               <?=$this->form->label('Enter minimum purchase amount:'); ?>
                <?=$this->form->text( 'minimum_purchase', array( 'value' => 'Enter minimum purchase') ); ?><br><br>
 
-               <?=$this->form->label('Limit Per User:'); ?> <?=$this->form->checkbox('limited_use', array('checked'=>'checked', 'value' => '1')); ?> <br>
+               <?=$this->form->label('Assign by email:'); ?> <?=$this->form->checkbox('limited_use', array('checked'=>'checked', 'value' => '1')); ?> <br>
                 <br>
-              <?=$this->form->label('Enter maximum use:'); ?>
-               <?=$this->form->text( 'max_use', array( 'value' => 'Enter max use') ); ?><br><br>
+              <?=$this->form->label('Enter maximum individual use:'); ?>
+              <?=$this->form->text( 'max_use', array( 'value' => 'Enter max use') ); ?><br><br>
+
+              <?=$this->form->label('Enter maximum number people who can use it (if unlimited type in UNLIMITED)');?>
+              <?=$this->form->text('max_total', array( 'value' => 'UNLIMITED')); ?>
 
               <?=$this->form->label('Enter start date:'); ?>
               <?=$this->form->text( 'start_date', array('value' => 'Enter start date here', 'id' => 'start_date') ); ?><br><br>
