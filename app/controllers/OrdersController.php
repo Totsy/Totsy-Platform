@@ -97,6 +97,15 @@ class OrdersController extends BaseController {
 		}
 		$pixel = Affiliate::getPixels('order', 'spinback');
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel, array('order' => $_SERVER['REQUEST_URI']));
+		//Get Items Skus - Analytics
+		foreach($itemsByEvent as $key => $event) {
+			foreach($event as $key_b => $item) {
+				$itemRecord = Item::find($item['item_id']);
+				if (!empty($itemRecord)) {
+					$itemsByEvent[$key][$key_b]['sku'] = $itemRecord->sku_details[$item['size']];
+				}
+			}
+		}
 
 		return compact(
 			'order',
