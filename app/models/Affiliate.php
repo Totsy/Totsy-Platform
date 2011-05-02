@@ -115,7 +115,7 @@ class Affiliate extends Base {
     */
 	public static function generatePixel($invited_by, $pixel, $options = array()) {
 
-        if($invited_by == 'w4'){
+        if($invited_by == 'w4' && $invited_by == "popularmarketing"){
             $transid = 'totsy' . static::randomString();
             return '<br/>' . str_replace('$', $transid,$pixel );
         }
