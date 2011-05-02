@@ -2,8 +2,8 @@
 	$this->title("Order Confirmation");
 ?>
 <?php
-
-   $new = ($order->date_created->sec > (time() - 120)) ? true : false;
+	$brandNew = ($order->date_created->sec > (time() - 10)) ? true : false;
+	$new = ($order->date_created->sec > (time() - 120)) ? true : false;
 
 ?>
 	<h1 class="p-header">My Account</h1>
@@ -270,9 +270,8 @@
 	<strong>Sorry, we cannot locate the order that you are looking for.</strong>
 <?php endif ?>
 <!--- ECOMMERCE TRACKING -->
-<?php if ($new): ?>
+<?php if ($brandNew): ?>
 	<script type="text/javascript">
-
 	  var _gaq = _gaq || [];
 	  _gaq.push(['_setAccount', 'UA-675412-15']);
 	  _gaq.push(['_trackPageview']);
