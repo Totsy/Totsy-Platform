@@ -150,53 +150,54 @@ class PromocodesController extends \admin\controllers\BaseController {
 		}
 		return compact('promocode', 'admins');
 	}
+
 	/**
 	* Produces unique promocodes.
 	* POST
 	**/
 	public function generator(){
-        $promoCode = Promocode::create($this->request->data);
-        if ($this->request->data) {
-            Validator::add('greaterThan2', function($value){
-                    return ($value > 2)? true:false;
-            });
-            $rules = array(
-                'generate_amount' => array(
-                    array("notEmpty", "message" => "Please enter an amount"),
-                    array("numeric", "message" => "Please enter a numeric value eg. 1234"),
-                    array("greaterThan2", "message" =>"Please enter a value larger than 2")
-                ));
-            $validate = Validator::check($this->request->data, $rules);
-            $promoCode->errors( $promoCode->errors() + $validate);
-            if(empty($validate)){
-                $admins = User::all( array(
-                    'conditions' => array(
-                    'admin' => true
-                )));
-                /**
-                * Creating Parent Code
-                **/
-                $parent = Promocode::create();
-                $parent_id = $parent->createParent($this->request->data);
-                $loop_number = (int)$this->request->data['generate_amount'];
-                for($i=0; $i < $loop_number ; ++$i){
-                    $promoCode = Promocode::create();
-                    $col = Promocode::collection();
-                    do{
-                        $code = $this->request->data['code'];
-                        $rand = static::randomString(7, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
-                        $code .= $rand;
-                        $conditions = array('code' => $code, 'special' => true);
-                    }while($col->count($conditions) > 0);
-                    $data = $this->request->data;
-                    $data['code'] = $code;
-                    $promoCode->createChild($data, $parent_id);
-                    $codes[] = $promoCode->code;
-                }//end of forloop
-                if(!empty($codes)){
-                    $this->render(array('layout' => false, 'data' => compact('codes')));
-                }
-            }
+		$promoCode = Promocode::create($this->request->data);
+		if ($this->request->data) {
+			Validator::add('greaterThan2', function($value){
+					return ($value > 2)? true:false;
+			});
+			$rules = array(
+				'generate_amount' => array(
+					array("notEmpty", "message" => "Please enter an amount"),
+					array("numeric", "message" => "Please enter a numeric value eg. 1234"),
+					array("greaterThan2", "message" =>"Please enter a value larger than 2")
+				));
+			$validate = Validator::check($this->request->data, $rules);
+			$promoCode->errors( $promoCode->errors() + $validate);
+			if (empty($validate)){
+				$admins = User::all( array(
+					'conditions' => array(
+					'admin' => true
+				)));
+				/**
+				* Creating Parent Code
+				**/
+				$parent = Promocode::create();
+				$parent_id = $parent->createParent($this->request->data);
+				$loop_number = (int)$this->request->data['generate_amount'];
+				for($i=0; $i < $loop_number ; ++$i){
+					$promoCode = Promocode::create();
+					$col = Promocode::collection();
+					do{
+						$code = $this->request->data['code'];
+						$rand = static::randomString(7, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+						$code .= $rand;
+						$conditions = array('code' => $code, 'special' => true);
+					}while($col->count($conditions) > 0);
+					$data = $this->request->data;
+					$data['code'] = $code;
+					$promoCode->createChild($data, $parent_id);
+					$codes[] = $promoCode->code;
+				}//end of forloop
+				if (!empty($codes)){
+					$this->render(array('layout' => false, 'data' => compact('codes')));
+				}
+			}
 		}
 		return compact('promoCode');
 	}
