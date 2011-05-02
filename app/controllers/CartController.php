@@ -7,6 +7,7 @@ use app\models\Item;
 use app\models\Event;
 use lithium\storage\Session;
 use MongoId;
+use MongoDate;
 
 /**
  * Facilitates the app CRUD operations of a users cart (baskets).
@@ -77,12 +78,11 @@ class CartController extends BaseController {
 					if(($event->end_date->sec > ($now[0] + (15*60)))) {
 						$cart_temp = Cart::find('first', array(
 							'conditions' => array('_id' =>  $item['_id'])));
-						$cart_temp->expires->sec = $now[0] + (15*60);
+						$cart_temp->expires = new MongoDate($now[0] + (15*60));
 						$cart_temp->save();
 					}
 			}
 		}
-		$cart = Cart::create();
 		$message = null;
 		if ($this->request->data) {
 			$itemId = $this->request->data['item_id'];
@@ -133,7 +133,7 @@ class CartController extends BaseController {
 
 				}
 			}
-			//$this->redirect(array('Cart::view'));
+			$this->redirect(array('Cart::view'));
 		}
 		return compact('cart', 'message');
 	}
