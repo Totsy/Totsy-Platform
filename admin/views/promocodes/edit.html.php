@@ -31,6 +31,10 @@
 <div class="grid_16">
 	<h2 id="page-heading">Promocode Edit Panel</h2>
 </div>
+<?php if ($promocode->parent): ?>
+    Editing this will change all associated Unique promocode created using the generator.<br/>
+    <strong> Note: </strong> uniqueness has not been affected.<br/>
+<?php endif;?>
 
 <div class='grid_3 menu'>
 	<table>
@@ -53,15 +57,23 @@
 	</table>
 </div>
 <div class='grid_6 box'>
-    <h2>
-		<a href="#" id="toggle-forms">Edit Panel</a>
-	</h2>
+    <?php if ($promocode->parent): ?>
+        <h2>
+            <a href="#" id="toggle-forms">Edit Panel (Special)</a>
+        </h2>
+	<?php else: ?>
+        <h2>
+            <a href="#" id="toggle-forms">Edit Panel</a>
+        </h2>
+	<?php endif;?>
     <div class='block' id='forms'>
         <fieldset>
         <?=$this->form->create(); ?>
             <?php  $enable= (($promocode->enabled))? 'checked' : '' ?>
 			Enable: <?=$this->form->checkbox( 'enabled', array( 'checked'=>$enable, 'value' => '1' ) ); ?> <br>
-
+			<?php if ($promocode->parent): ?>
+                Number of associated promocodes: <?=$promocode->no_of_promos;?> <br/>
+            <?php endif; ?>
            Code: <?=$this->form->text('code', array( 'value' => $promocode->code ) ); ?><br>
 
           Description: <br>

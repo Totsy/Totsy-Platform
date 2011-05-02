@@ -74,7 +74,8 @@
                   <?=$this->form->label('Enter maximum use:'); ?>
                    <?=$this->form->text( 'max_use'); ?><br>
                    <br>
-                    <?=$this->form->hidden('max_total', array( 'value' => 1)); ?>
+                    <?=$this->form->hidden('max_total', array( 'value' => '1')); ?>
+
                   <?=$this->form->label('Enter start date:'); ?>
                   <?=$this->form->text( 'start_date', array('id' => 'start_date') ); ?><br>
                   <br>

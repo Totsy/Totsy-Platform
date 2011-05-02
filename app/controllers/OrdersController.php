@@ -325,7 +325,7 @@ class OrdersController extends BaseController {
 						));
 					}
 				}
-				if ($postCreditTotal > $code->minimum_purchase) {
+				if ($postCreditTotal >= $code->minimum_purchase) {
 					$orderPromo->user_id = $user['_id'];
 					if ($code->type == 'percentage') {
 						$orderPromo->saved_amount = $postCreditTotal * -$code->discount_amount;

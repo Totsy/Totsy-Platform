@@ -17,7 +17,7 @@ class Promotion extends \lithium\data\Model {
 
 	/**
 	 * The confirm method checks the total number of times the promotion code
-	 * has been used
+	 * has been used by an individual user
 	 * @param $code
 	 * @param $user
 	 */
@@ -28,6 +28,11 @@ class Promotion extends \lithium\data\Model {
 				'user_id' => $user
 		)));
 	}
+	/**
+	 * The confirm no of uses method checks the TOTAL number of times the promotion code
+	 * has been used
+	 * @param $code
+	 */
 	public static function confirmNoUses($code_id) {
 		return static::count(array(
 			'conditions' => array(
