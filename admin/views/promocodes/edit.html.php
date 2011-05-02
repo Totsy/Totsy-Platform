@@ -93,7 +93,8 @@
            <?=$this->form->text('minimum_purchase', array( 'value' => $promocode->minimum_purchase)); ?><br>
 
            <?php  $enable= (($promocode->limited_use))? 'checked' : '' ?>
-			Limit Per User: <?=$this->form->checkbox( 'limited_use', array( 'checked'=>$enable, 'value' => '1' ) ); ?> <br>
+			<?=$this->form->label('Assign by email:'); ?>
+			<?=$this->form->checkbox( 'limited_use', array( 'checked'=>$enable, 'value' => '1' ) ); ?> <br>
 
            <?=$this->form->label('Enter maximum individual use:'); ?>
            <?=$this->form->text( 'max_use', array( 'value' => $promocode->max_use) ); ?><br><br>

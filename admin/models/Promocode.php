@@ -107,7 +107,6 @@ class Promocode extends Base {
     }
 
     public function updateChildren($entity, $code_data){
-        var_dump($entity->_id);
         $children = static::find('all', array('conditions' => array(
                 'special' => true,
                 'parent_id' => $entity->_id
