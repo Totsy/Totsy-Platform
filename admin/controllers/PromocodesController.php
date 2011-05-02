@@ -9,6 +9,7 @@ use MongoDate;
 use MongoRegex;
 use MongoCollection;
 use lithium\util\Validator;
+use li3_flash_message\extensions\storage\FlashMessage;
 
 class PromocodesController extends \admin\controllers\BaseController {
 
@@ -57,7 +58,7 @@ class PromocodesController extends \admin\controllers\BaseController {
 	 * @todo Improve documentation
 	 */
     public function report() {
-		$promocodes = Promocode::all();
+		$promocodes = Promocode::find('all', array('conditions' => array('special' => array('$ne' => true))));
 		if ($this->request->data) {
 			$data = $this->request->data;
 			$search = $data['search'];
@@ -90,11 +91,6 @@ class PromocodesController extends \admin\controllers\BaseController {
 	 */
 	public function add() {
        if (!empty($this->request->data)) {
-			$promoCode = Promocode::create();
-			$admins = User::all( array(
-				'conditions' => array(
-				'admin' => true
-			)));
 			$code = $this->request->data;
 			$col = Promocode::collection();
 			$conditions = array('code' => $code['code']);
@@ -105,21 +101,9 @@ class PromocodesController extends \admin\controllers\BaseController {
 					array('multiple' => true)
 				);
 			}
-			$code['enabled'] = 	Promocode::setToBool($this->request->data['enabled']);
-			$code['limited_use'] = Promocode::setToBool($this->request->data['limited_use']);
-			if ($this->request->data['type'] != 'free_shipping') {
-				$code['discount_amount'] = (float) $data['discount_amount'];
-			} else {
-				$code['discount_amount'] = (float) 0;
-			}
-			$code['minimum_purchase'] = (int) $code['minimum_purchase'];
-			$code['max_use'] = (int) $code['max_use'];
-			$code['start_date'] = new MongoDate(strtotime($code['start_date']));
-			$code['end_date'] = new MongoDate(strtotime($code['end_date']));
-			$code['date_created'] = new MongoDate(strtotime(date('D M d Y')));
-			$code['created_by'] = Promocode::createdBy();
-			
-			$result = $promoCode->save($code);
+			$promocode = Promocode::create();
+			$data = $this->request->data;
+			$result = $promocode->createCode($data);
 			if ($result) {
 				$this->redirect( array( 'Promocodes::index' ) );
 			}
@@ -143,6 +127,9 @@ class PromocodesController extends \admin\controllers\BaseController {
 		if (array_key_exists('end_date', $obj_data) && !empty($obj_data['end_date'])){
 			$promocode->end_date = date('m/d/Y', $promocode->end_date->sec );
 		}
+		if ($promocode->parent){
+		    $promocode->no_of_promos = Promocode::countChildren($promocode->_id);
+		}
 
 		if ($this->request->data) {
 			$col = Promocode::collection();
@@ -154,74 +141,63 @@ class PromocodesController extends \admin\controllers\BaseController {
 				);
 			}
 			$data = $this->request->data;
-			$data['enabled'] = 	Promocode::setToBool($this->request->data['enabled']);
-			//$data['limited_use'] = Promocode::setToBool($this->request->data['limited_use']);
-			if ($data['type'] != 'free_shipping') {
-				$data['discount_amount'] = (float) $data['discount_amount'];
+			if ($promocode->parent){
+			    $promocode->updateParent($data);
 			} else {
-				$data['discount_amount'] = (float) 0;
+			    $promocode->updateCode($data);
 			}
-			$data['minimum_purchase'] = (int) $data['minimum_purchase'];
-			$data['max_use'] = (int) $data['max_use'];
-			$data['start_date'] = new MongoDate( strtotime( $data['start_date'] ) );
-			$data['end_date'] = new MongoDate( strtotime( $data['end_date'] ) );
-			$data['date_created'] = new MongoDate( strtotime( date('D M d Y') ) );
-			$data['creaeted_by'] = Promocode::createdBy();
-			$promocode->save($data);
 			$this->redirect( array( 'Promocodes::index' ) );
 		}
-
 		return compact('promocode', 'admins');
 	}
 
+	/**
+	* Produces unique promocodes.
+	* POST
+	**/
 	public function generator(){
-        $promoCode = Promocode::create($this->request->data);
-        if ($this->request->data) {
-            Validator::add('greaterThan2', function($value){
-                    return ($value > 2)? true:false;
-            });
-            $rules = array(
-                'generate_amount' => array(
-                    array("notEmpty", "message" => "Please enter an amount"),
-                    array("numeric", "message" => "Please enter a numeric value eg. 1234"),
-                    array("greaterThan2", "message" =>"Please enter a value larger than 2")
-                ));
-            $validate = Validator::check($this->request->data, $rules);
-            $promoCode->errors( $promoCode->errors() + $validate);
-            if(empty($validate)){
-                $admins = User::all( array(
-                    'conditions' => array(
-                    'admin' => true
-                )));
-                $loop_number = (int)$this->request->data['generate_amount'];
-                for($i=0; $i < $loop_number ; ++$i){
-                    $promoCode = Promocode::create();
-                    $col = Promocode::collection();
-                    do{
-                        $code = $this->request->data['code'];
-                        $rand = rand(1,$loop_number);
-                        $code .= $rand;
-                        $conditions = array('code' => $code, 'special' => true);
-                    }while($col->count($conditions) > 0);
-                    $data['code'] = $code;
-                    $data['type'] = $this->request->data['type'];
-                    $data['enabled'] = 	Promocode::setToBool($this->request->data['enabled']);
-                    $data['discount_amount'] = (float) $this->request->data['discount_amount'];
-                    $data['minimum_purchase'] = (int) $this->request->data['minimum_purchase'];
-                    $data['max_use'] = (int) $this->request->data['max_use'];
-                    $data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
-                    $data['end_date'] = new MongoDate(strtotime($this->request->data['end_date']));
-                    $data['date_created'] = new MongoDate(strtotime(date('D M d Y')));
-                    $data['special'] = true;
-                    $data['created_by'] = Promocode::createdBy();
-                    $whitelist = array_keys($data);
-                    $result = $promoCode->save($data, array('whitelist' => $whitelist));
-                    $codes[] = $code;
-                }//end of forloop
-                if(!empty($codes)){
-                    $this->render(array('layout' => false, 'data' => compact('codes')));
-                }
-            }
+		$promoCode = Promocode::create($this->request->data);
+		if ($this->request->data) {
+			Validator::add('greaterThan2', function($value){
+					return ($value > 2)? true:false;
+			});
+			$rules = array(
+				'generate_amount' => array(
+					array("notEmpty", "message" => "Please enter an amount"),
+					array("numeric", "message" => "Please enter a numeric value eg. 1234"),
+					array("greaterThan2", "message" =>"Please enter a value larger than 2")
+				));
+			$validate = Validator::check($this->request->data, $rules);
+			$promoCode->errors( $promoCode->errors() + $validate);
+			if (empty($validate)){
+				$admins = User::all( array(
+					'conditions' => array(
+					'admin' => true
+				)));
+				/**
+				* Creating Parent Code
+				**/
+				$parent = Promocode::create();
+				$parent_id = $parent->createParent($this->request->data);
+				$loop_number = (int)$this->request->data['generate_amount'];
+				for($i=0; $i < $loop_number ; ++$i){
+					$promoCode = Promocode::create();
+					$col = Promocode::collection();
+					do{
+						$code = $this->request->data['code'];
+						$rand = static::randomString(7, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+						$code .= $rand;
+						$conditions = array('code' => $code, 'special' => true);
+					}while($col->count($conditions) > 0);
+					$data = $this->request->data;
+					$data['code'] = $code;
+					$promoCode->createChild($data, $parent_id);
+					$codes[] = $promoCode->code;
+				}//end of forloop
+				if (!empty($codes)){
+					$this->render(array('layout' => false, 'data' => compact('codes')));
+				}
+			}
 		}
 		return compact('promoCode');
 	}

@@ -299,8 +299,17 @@ class OrdersController extends BaseController {
 			$code = Promocode::confirmCode($orderPromo->code);
 			if ($code) {
 				$count = Promotion::confirmCount($code->_id, $user['_id']);
+				$uses = Promotion::confirmNoUses($code->_id, $user['_id']);
 				if ($code->max_use > 0) {
 					if ($count >= $code->max_use) {
+						$orderPromo->errors(
+							$orderPromo->errors() + array(
+								'promo' => "This promotion code has already been used"
+						));
+					}
+				}
+				if ($code->max_total !== "UNLIMITED") {
+					if ($uses >= $code->max_total) {
 						$orderPromo->errors(
 							$orderPromo->errors() + array(
 								'promo' => "This promotion code has already been used"
@@ -316,7 +325,7 @@ class OrdersController extends BaseController {
 						));
 					}
 				}
-				if ($postCreditTotal > $code->minimum_purchase) {
+				if ($postCreditTotal >= $code->minimum_purchase) {
 					$orderPromo->user_id = $user['_id'];
 					if ($code->type == 'percentage') {
 						$orderPromo->saved_amount = $postCreditTotal * -$code->discount_amount;
