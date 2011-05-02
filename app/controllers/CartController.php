@@ -68,6 +68,20 @@ class CartController extends BaseController {
 	 * @return compact
 	 */
 	public function add() {
+		$actual_cart = Cart::active();
+		$items = $actual_cart->data();
+		if (!empty($items)) {
+			foreach ($items as $item) {
+					$event = Event::find('first',array('conditions' => array("_id" => $item['event'][0])));
+					$now = getdate();
+					if(($event->end_date->sec > ($now[0] + (15*60)))) {
+						$cart_temp = Cart::find('first', array(
+							'conditions' => array('_id' =>  $item['_id'])));
+						$cart_temp->expires->sec = $now[0] + (15*60);
+						$cart_temp->save();
+					}
+			}
+		}
 		$cart = Cart::create();
 		$message = null;
 		if ($this->request->data) {
@@ -119,7 +133,7 @@ class CartController extends BaseController {
 
 				}
 			}
-			$this->redirect(array('Cart::view'));
+			//$this->redirect(array('Cart::view'));
 		}
 		return compact('cart', 'message');
 	}
