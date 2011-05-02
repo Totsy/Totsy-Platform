@@ -21,6 +21,11 @@
         });
     </script>
     <h2>Promocode Generator</h2>
+    <div class= "grid_16">
+        <h5>This functionality is used to generate large amounts of unique promocodes at one time.<br/>
+        When the promocode is given to a certain individual, it can only be used by individual. </h5>
+    </div>
+     <br/>
      <div class='grid_3 menu'>
             <table>
                 <thead>
@@ -59,7 +64,7 @@
                     <?=$this->form->label('Description:'); ?> <br>
                     <?=$this->form->textarea('description', array("width" =>50, "height" => 50 )); ?><br><br>
                    <?=$this->form->label('Code Type:'); ?>
-                   <?=$this->form->select( 'type', array('percentage' => 'percent',  'dollar'=> 'dollar amount', 'shipping'=> 'shipping') ); ?><br><br>
+                   <?=$this->form->select( 'type', array('percentage' => 'percent',  'dollar'=> 'dollar amount', 'shipping'=> 'shipping', 'free_shipping' => 'free shipping') ); ?><br><br>
                   <?=$this->form->label('Enter discount amount here:'); ?>
                    <?=$this->form->text( 'discount_amount'); ?><br>
                    <br>
@@ -69,6 +74,8 @@
                   <?=$this->form->label('Enter maximum use:'); ?>
                    <?=$this->form->text( 'max_use'); ?><br>
                    <br>
+                    <?=$this->form->hidden('max_total', array( 'value' => '1')); ?>
+
                   <?=$this->form->label('Enter start date:'); ?>
                   <?=$this->form->text( 'start_date', array('id' => 'start_date') ); ?><br>
                   <br>
@@ -78,6 +85,15 @@
                   <?=$this->form->submit('Generate'); ?><br><br>
         <?=$this->form->end();?>
     </div>
+    <script type="text/javascript" >
+$('#Type').change(function() {
+	if($('#Type').val() == 'free_shipping') {
+		$("#discount").hide("slow");
+	} else {
+		$("#discount").show("slow");
+	};
+});
+</script>
 <?php else:
     foreach($data['codes'] as $code){
 			print_r($code);

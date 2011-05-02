@@ -2,8 +2,8 @@
 	$this->title("Order Confirmation");
 ?>
 <?php
-
-   $new = ($order->date_created->sec > (time() - 120)) ? true : false;
+	$brandNew = ($order->date_created->sec > (time() - 10)) ? true : false;
+	$new = ($order->date_created->sec > (time() - 120)) ? true : false;
 
 ?>
 	<h1 class="p-header">My Account</h1>
@@ -268,4 +268,47 @@
 
 <?php else: ?>
 	<strong>Sorry, we cannot locate the order that you are looking for.</strong>
+<?php endif ?>
+<!--- ECOMMERCE TRACKING -->
+<?php if ($brandNew): ?>
+	<script type="text/javascript">
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-675412-15']);
+	  _gaq.push(['_trackPageview']);
+	  _gaq.push(['_addTrans',
+	    '<?=$order->order_id?>',           // order ID - required
+	    '',  // affiliation or store name
+	    '<?=$order->total?>',          // total - required
+	    '<?=$order->tax?>',           // tax
+	    '<?=$order->handling?>',              // shipping
+	    '<?=$order->shipping->city?>',       // city
+	    '<?=$order->shipping->state?>',     // state or province
+	    'US'             // country
+	  ]);
+
+	   // add item might be called for every item in the shopping cart
+	   // where your ecommerce engine loops through each item in the cart and
+	   // prints out _addItem for each
+
+	  <?php foreach($itemsByEvent as $event): ?>
+			<?php foreach($event as $item): ?>
+				 _gaq.push(['_addItem',
+				'<?=$order->order_id?>',			// order ID - required
+				'<?=$item['sku']?>',			// SKU/code - required
+				'<?=$item['description']?>',		// product name
+				'<?=$item['color']?>',		// category or variation
+				'<?=$item['sale_retail']?>',        // unit price - required
+				'<?=$item['quantity']?>'         // quantity - required
+				 ]);
+			<?php endforeach ?>
+		<?php endforeach ?>
+	  _gaq.push(['_trackTrans']); //submits transaction to the Analytics servers
+
+	  (function() {
+	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+
+	</script>
 <?php endif ?>

@@ -97,6 +97,15 @@ class OrdersController extends BaseController {
 		}
 		$pixel = Affiliate::getPixels('order', 'spinback');
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel, array('order' => $_SERVER['REQUEST_URI']));
+		//Get Items Skus - Analytics
+		foreach($itemsByEvent as $key => $event) {
+			foreach($event as $key_b => $item) {
+				$itemRecord = Item::find($item['item_id']);
+				if (!empty($itemRecord)) {
+					$itemsByEvent[$key][$key_b]['sku'] = $itemRecord->sku_details[$item['size']];
+				}
+			}
+		}
 
 		return compact(
 			'order',
@@ -299,8 +308,17 @@ class OrdersController extends BaseController {
 			$code = Promocode::confirmCode($orderPromo->code);
 			if ($code) {
 				$count = Promotion::confirmCount($code->_id, $user['_id']);
+				$uses = Promotion::confirmNoUses($code->_id, $user['_id']);
 				if ($code->max_use > 0) {
 					if ($count >= $code->max_use) {
+						$orderPromo->errors(
+							$orderPromo->errors() + array(
+								'promo' => "This promotion code has already been used"
+						));
+					}
+				}
+				if ($code->max_total !== "UNLIMITED") {
+					if ($uses >= $code->max_total) {
 						$orderPromo->errors(
 							$orderPromo->errors() + array(
 								'promo' => "This promotion code has already been used"
@@ -316,7 +334,7 @@ class OrdersController extends BaseController {
 						));
 					}
 				}
-				if ($postCreditTotal > $code->minimum_purchase) {
+				if ($postCreditTotal >= $code->minimum_purchase) {
 					$orderPromo->user_id = $user['_id'];
 					if ($code->type == 'percentage') {
 						$orderPromo->saved_amount = $postCreditTotal * -$code->discount_amount;
