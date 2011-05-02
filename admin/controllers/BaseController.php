@@ -14,14 +14,14 @@ class BaseController extends \lithium\action\Controller {
 	}
 
 	public function sortArrayByArray($array, $orderArray) {
-	    $ordered = array();
-	    foreach($orderArray as $key) {
-	        if(array_key_exists($key,$array)) {
-	                $ordered[$key] = $array[$key];
-	                unset($array[$key]);
-	        }
-	    }
-	    return $ordered + $array;
+		$ordered = array();
+		foreach($orderArray as $key) {
+			if(array_key_exists($key,$array)) {
+					$ordered[$key] = $array[$key];
+					unset($array[$key]);
+			}
+		}
+		return $ordered + $array;
 	}
 
 	/**
@@ -40,13 +40,13 @@ class BaseController extends \lithium\action\Controller {
 	}
 
 	public static function randomString($length = 8, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890')
-    {
-        $chars_length = (strlen($chars) - 1);
-        $string = $chars{rand(0, $chars_length)};
-        for ($i = 1; $i < $length; $i = strlen($string)) {
-            $r = $chars{rand(0, $chars_length)};
-            if ($r != $string{$i - 1}) $string .=  $r;
-        }
-        return $string;
-    }
+	{
+		$chars_length = (strlen($chars) - 1);
+		$string = $chars{rand(0, $chars_length)};
+		for ($i = 1; $i < $length; $i = strlen($string)) {
+			$r = $chars{rand(0, $chars_length)};
+			if ($r != $string{$i - 1}) $string .=  $r;
+		}
+		return $string;
+	}
 }
