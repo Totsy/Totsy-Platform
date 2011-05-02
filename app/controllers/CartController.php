@@ -70,7 +70,9 @@ class CartController extends BaseController {
 	 */
 	public function add() {
 		$actual_cart = Cart::active();
-		$items = $actual_cart->data();
+		if (!empty($actual_cart)) {
+			$items = $actual_cart->data();
+		}
 		if (!empty($items)) {
 			foreach ($items as $item) {
 					$event = Event::find('first',array('conditions' => array("_id" => $item['event'][0])));
@@ -83,6 +85,7 @@ class CartController extends BaseController {
 					}
 			}
 		}
+		$cart = Cart::create();
 		$message = null;
 		if ($this->request->data) {
 			$itemId = $this->request->data['item_id'];
