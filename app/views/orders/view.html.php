@@ -276,13 +276,13 @@
 	  _gaq.push(['_setAccount', 'UA-675412-15']);
 	  _gaq.push(['_trackPageview']);
 	  _gaq.push(['_addTrans',
-	    <?="'".$order->order_id."'"?>,           // order ID - required
+	    '<?=$order->order_id?>',           // order ID - required
 	    '',  // affiliation or store name
-	    <?="'".$order->total."'"?>,          // total - required
-	    <?="'".$order->tax."'"?>,           // tax
-	    <?="'".$order->handling."'"?>,              // shipping
-	    <?="'".$order->shipping->city."'"?>,       // city
-	    <?="'".$order->shipping->state."'"?>,     // state or province
+	    '<?=$order->total?>',          // total - required
+	    '<?=$order->tax?>',           // tax
+	    '<?=$order->handling?>',              // shipping
+	    '<?=$order->shipping->city?>',       // city
+	    '<?=$order->shipping->state?>',     // state or province
 	    'US'             // country
 	  ]);
 
@@ -293,12 +293,12 @@
 	  <?php foreach($itemsByEvent as $event): ?>
 			<?php foreach($event as $item): ?>
 				 _gaq.push(['_addItem',
-				<?="'".$order->order_id."'"?>,			// order ID - required
-				<?="'".$item['sku']."'"?>,			// SKU/code - required
-				<?="'".$item['description']."'"?>,		// product name
-				<?="'".$item['color']."'"?>,		// category or variation
-				<?="'".$item['sale_retail']."'"?>,        // unit price - required
-				<?="'".$item['quantity']."'"?>         // quantity - required
+				'<?=$order->order_id?>',			// order ID - required
+				'<?=$item['sku']?>',			// SKU/code - required
+				'<?=$item['description']?>',		// product name
+				'<?=$item['color']?>',		// category or variation
+				'<?=$item['sale_retail']?>',        // unit price - required
+				'<?=$item['quantity']?>'         // quantity - required
 				 ]);
 			<?php endforeach ?>
 		<?php endforeach ?>
