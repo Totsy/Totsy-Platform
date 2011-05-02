@@ -37,8 +37,8 @@
                                  <div style="width:56%; display:block; float:left; margin-right:10px; ">
                                 <h3 style="color:#999; font-size:18px;">Register</h3>
 								<hr />
-								 
-                               
+
+
 								<?=$this->form->create($user ,array('id'=>'registerForm')); ?>
 
                						<!-- Commnented Firstname, Lastname and Zip code --->
@@ -114,7 +114,7 @@
 									<?=$this->form->checkbox('terms', array("checked" => "checked", 'style'=>"float:left;margin-right:4px; display: none;"));?>
 									</div>
 									<span class="sm reg-tos" style="overflow:visible!important;">
-											By clicking register you accept our 
+											By clicking register you accept our
 											<?=$this->html->link('Terms and Conditions','pages/terms')?>.
 									</span>
 									<br>
@@ -122,7 +122,7 @@
 									<?=$this->form->error('terms'); ?>
 									</div>
 								<?=$this->form->end(); ?>
-								
+
 								<div>
 								<h3 style="color:#999; font-size:18px;">Register With Facebook</h3>
 								<hr />

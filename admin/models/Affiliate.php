@@ -2,6 +2,7 @@
 
 namespace admin\models;
 
+
 class Affiliate extends Base {
 
 	protected $_meta = array('source' => 'affiliates');
@@ -12,6 +13,7 @@ class Affiliate extends Base {
 			'affiliate'=>array('type'=>'boolean', 'null'=>false, 'default'=>true),
 			'active'=>array('type'=>'boolean', 'null'=>false, 'default'=>true)
 			);
+
 
 	public static function pixelFormating($pixels, $codes){
 			if( empty($pixels) ){ return array(); }
@@ -39,6 +41,11 @@ class Affiliate extends Base {
 
 	public static function landingPages(){
 
+	}
+
+	public static function retrieveBackgrounds(){
+		$data = File::find('all',array('conditions' => array('tag' => 'background'), 'fields' => array('_id' => 1)));
+		return $data->data();
 	}
 }
 

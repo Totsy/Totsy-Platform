@@ -37,22 +37,22 @@
 		'class' => "fl",
 		'action' => "{$action}/{$address->_id}"
 	)); ?>
-		<fieldset> 
-			<legend class="no-show">New Address</legend> 
+		<fieldset>
+			<legend class="no-show">New Address</legend>
 			<?php if (!$isAjax): ?>
 				<div class="form-row">
-					<label class="addresses">Make Default</label> 
+					<label class="addresses">Make Default</label>
 					<input type="radio" name="default" value="1" checked> Yes<br>
 					<input type="radio" name="default" value="0"> No
 				</div>
 			<?php endif ?>
-			<div class="form-row"> 
+			<div class="form-row">
 				<?=$this->form->label('description', 'Description <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('description', array('class' => 'inputbox')); ?>
 				<?=$this->form->error('description'); ?>
 			<span style="font-size:10px;">(i.e. home, work, school, etc)</span>
             </div>
-            
+
 			<div class="form-row">
 				<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('firstname', array('class' => 'inputbox')); ?>
@@ -96,16 +96,16 @@
 			<div class="form-row">
 				<?=$this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('zip', array('class' => 'inputbox', 'id' => 'zip')); ?>
-			</div> 
+			</div>
 			<?=$this->form->submit('Update Address Book', array('class' => 'button')); ?>
-			
-		</fieldset> 
+
+		</fieldset>
 		<?php if ($isAjax): ?>
 			<?=$this->form->hidden('isAjax', array('value' => 1)); ?>
 		<?php endif ?>
-	<?=$this->form->end();?> 
-	
-</div> 
+	<?=$this->form->end();?>
+
+</div>
 <script type="text/javascript">
 jQuery(function($){
    $("#date").mask("99/99/9999");

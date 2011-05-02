@@ -115,7 +115,7 @@ class Affiliate extends Base {
     */
 	public static function generatePixel($invited_by, $pixel, $options = array()) {
 
-        if($invited_by == 'w4'){
+        if($invited_by == 'w4' && $invited_by == "popularmarketing"){
             $transid = 'totsy' . static::randomString();
             return '<br/>' . str_replace('$', $transid,$pixel );
         }
@@ -237,7 +237,11 @@ class Affiliate extends Base {
         $insert ='';
         $insert .= ' pi=" http://' . $_SERVER['HTTP_HOST'] . $pi . '"';
        $insert .= ' pid="' . $pid . '"';
-       $insert .= ' plp="http://' . $_SERVER['HTTP_HOST'] . '/a/spinback?redirect=http://' . $_SERVER['HTTP_HOST'] . $plp . '"';
+       if($extra == ' st="Invite Your Friends" '){
+            $insert .= ' plp="http://' . $_SERVER['HTTP_HOST'] . $plp . '"';
+       }else{
+            $insert .= ' plp="http://' . $_SERVER['HTTP_HOST'] . '/a/spinback?redirect=http://' . $_SERVER['HTTP_HOST'] . $plp . '"';
+       }
        $insert .= ' pn="' .$pn . '"';
        $insert .= ' m="' . $m. '"';
        $insert .= 'msg= "' . $msg . '"';

@@ -171,7 +171,6 @@ class User extends Base {
 		$urlredirect = ((array_key_exists('redirect',$_REQUEST))) ? $_REQUEST['redirect'] : null ;
 		if ( preg_match('(/|/a/|/login|/register|/join/|/invitation/)', $_SERVER['REQUEST_URI']) ) {
 			if(!Session::check('cookieCrumb', array('name' => 'cookie')) ) {
-
 				$cookieInfo = array(
 						'user_id' => Session::read('_id'),
 						'landing_url' => $_SERVER['REQUEST_URI'],

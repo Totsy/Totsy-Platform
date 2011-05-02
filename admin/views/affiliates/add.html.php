@@ -1,4 +1,3 @@
-<?=$this->html->script('tiny_mce/tiny_mce.js');?>
 <?=$this->html->script('jquery-1.4.2');?>
 <?=$this->html->script('jquery-dynamic-form.js');?>
 <?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
@@ -98,13 +97,45 @@
 						?>
 						<label>Specified Url:</label>
 						<?=$this->form->text('url'); ?>
+						<br/>
+						<br/>
+						<!--background selection-->
+						<a id="background_select">Click here to select a background </a> <br/>
+						<div id="background_selection">
+						</div>
+						<!-- Upload Section -->
+						<a id="upload">Click here to add backgrounds, feature images or logos </a>
+						<div id="upload_panel">
+							<h5 id="uploaded_media">Uploaded Media</h5>
+							<div id="fileInfo"></div>
+							<br>
+							<br>
+							<table>
+								<tr valign="top">
+									<td>
+										<div>
+											<div class="fieldset flash" id="fsUploadProgress1">
+												<span class="legend">Upload Status</span>
+											</div>
+											<div style="padding-left: 5px;">
+												<span id="spanButtonPlaceholder1" onclick="isBackground(upload1);"></span>
+												<input id="btnCancel1" type="button" value="Cancel Uploads" onclick="cancelQueue(upload1);" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />
+												<input id="isbackground" name="isbackground" type="checkbox" value='1' onclick="isBackground(upload1);" /> Is Background
+												<input id="isfeature" value='1' name="isfeature" type="checkbox" onclick="isFeature(upload1);" /> Is Feature On
+												<input id="islogo" value='1' name="islogo" type="checkbox" onclick="isLogo(upload1);" /> Is Logo
+												<br />
+											</div>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</div>
 						<div id="template" style="margin: 0 5 0 0">
 							<?php echo $this->view()->render(array('element' => 'template1')); ?>
 						</div>
 					</div>
 				</div><!--end landing panel-->
 			</div><!--end landing page-->
-
 		</div><!--end tabs-->
 	</div>
 </div>
@@ -120,14 +151,16 @@
 </div>
 
 <script type="text/javascript">
-$(document).ready(function() {
-	//create tabs
-	$("#tabs").tabs();
-});
+	$(document).ready(function() {
+		//create tabs
+		$("#tabs").tabs();
+	});
 </script>
 <script type='text/javascript'>
 		$('#pixel_panel').hide();
 		$('#landing_panel').hide();
+		$('#upload_panel').hide();
+		$('#background_selection').hide();
 	$(document).ready(function(){
 		$('input[name=active_pixel]').change(function(){
 			if( $('#ActivePixel:checked').val() == 1){
@@ -211,69 +244,74 @@ $(document).ready(function() {
 			});
 		});
 	});
+	$("#upload").click(function(){
+		if($('#upload_panel').css('display') == 'none'){
+			$('#upload_panel').show();
+		}else{
+			$('#upload_panel').hide();
+		}
+	});
+	$("#background_select").click(function(){
+		if($('#background_selection').css('display') == 'none'){
+			loadBackgrounds();
+			$('#background_selection').show();
+		}else{
+			$('#background_selection').hide();
+		}
+	});
 </script>
 <script type="text/javascript">
+	//background
+function loadBackgrounds(){
+	var background = $('#background');
+    $.post('/affiliates/background', function(data) {
+
+	 	var col_limit = 3;
+            var col = 0;
+            var json = $.parseJSON(data);
+            var table = "";
+            var html = "<table>";
+           // alert(json);
+            for(i=0;i < json.length; ++i){
+                if(col == 0){
+                    table += "<tr>";
+                }
+                table += '<td onclick="backgroundChange(\''+ json[i] + '\')"><a><img src="/image/' + json[i] + '.png" width="150"/></a></td>';
+                if(col == col_limit){
+                    table += "</tr>";
+                }
+                if(col < col_limit ){
+                    ++col;
+                }else{
+                    col = 0;
+                }
+            }
+            html += table + "</table>";
+        $("#background_selection").html(html);
+    });
+  //  timer();
+}
+function backgroundChange(image){
+		$("input:hidden[name='background_img']").val(image);
+		$('#mb-bg').css('background-image', 'url(/image/' + image + '.png)');
+}
+//Edit in place
 $(function(){
-    $('#headline_1').editable({
+    $('.editable').editable({
         onEdit:begin,
         onSubmit:submit,
         type:'textarea'
     });
     function begin(){
-        this.append('Click any to submit');
+        this.append('Click anywhere to submit');
     }
     function submit(){
-        $('input:hidden[name=headline_1]').val(function(){
-            return $('#headline_1').html();
-        });
+    	var id = $(this).attr('id');
+    	var html = $('#' + id).html();
+        $("input:hidden[name='" + id +"']").val(html);
     }
 });
-$(function(){
-    $('#headline_2').editable({
-        onEdit:begin,
-        onSubmit:submit,
-        type:'textarea'
-    });
-    function begin(){
-        this.append('Click any to submit');
-    }
-     function submit(){
-         $('input:hidden[name=headline_2]').val(function(){
-            return $('#headline_2').html();
-        });
-    }
-});
-$(function(){
-    $('#headline_3').editable({
-        onEdit:begin,
-        onSubmit:submit,
-        type:'textarea'
-    });
-    function begin(){
-        this.append('Click any to submit');
-    }
-     function submit(){
-         $('input:hidden[name=headline_3]').val(function(){
-            return $('#headline_3').html();
-        });
-    }
-});
-$(function(){
-    $('#test').editable({
-        onEdit:begin,
-        type:'textarea'
-    });
-    function begin(){
-        this.append('Click any to submit');
-    }
-});
-$(function(){
-    $('#sub').editable({
-        onEdit:begin,
-        type:'textarea'
-    });
-    function begin(){
-        this.append('Click any to submit');
-    }
-});
+function timer(){
+ window.setTimeout("loadBackgrounds();", 10000);
+}
 </script>

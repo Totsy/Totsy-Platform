@@ -16,7 +16,7 @@ use MongoRegex;
 use MongoId;
 use li3_flash_message\extensions\storage\FlashMessage;
 use lithium\data\Model;
-
+use FusionCharts;
 
 /**
  * The Reports Controller is the core for all reporting functionality.
@@ -713,7 +713,6 @@ class ReportsController extends BaseController {
 			} else {
 				FlashMessage::set('Please enter in a valid search date', array('class' => 'warning'));
 			}
-			
 		}
 		return compact('results', 'dates', 'total');
 	}
@@ -850,7 +849,9 @@ class ReportsController extends BaseController {
 					$users[$i]["email"] = $reg_usr['email'];
 					$i++;
 				}
-				if($i>2) $this->render(array('layout' => false, 'data' => $users));
+				if ($i > 2) {
+					$this->render(array('layout' => false, 'data' => $users));
+				}
 			}
 		}
 	}
@@ -987,6 +988,111 @@ class ReportsController extends BaseController {
 			}
 		}
 		return compact('stat', 'total_days', 'total_hours', 'hours_setup','end_date','start_date', 'total', 'total_quantity', 'event_name');
+	}
+
+	/**
+	* Generates graphics that shows the evolution of event sales.
+	* It started from the days of launching to 4 days later.
+	*/
+	public function salesDays() {
+		if ($this->request->data) {
+			$eventsCollection = Event::collection();
+			$ordersCollection = Order::collection();
+			/**** OPTIMISATION ****/
+			$eventsCollection->ensureIndex(array('start_date' => 1));
+			$eventsCollection->ensureIndex(array('end_date' => 1));
+			$ordersCollection->ensureIndex(array('date_created' => 1));
+			$data = $this->request->data;
+			if (!empty($data['min_date']) && !empty($data['max_date'])) {
+				//start date
+				$start_day = date("j",strtotime($data['min_date']));
+				$start_month = date("n",strtotime($data['min_date']));
+				$start_year = date("Y",strtotime($data['min_date']));
+				$start_date = mktime(0, 0, 0, $start_month, $start_day, $start_year);
+				//end date
+				$end_year = date("Y",strtotime($data['max_date']));
+				$end_month = date("n",strtotime($data['max_date']));
+				$end_day = date("j",strtotime($data['max_date']));
+				$end_date = mktime(0, 0, 0, $end_month, $end_day, $end_year);
+				$day = 0;
+				$conditions_event = array(
+					'start_date' => array(
+					'$gt' => new MongoDate($start_date),
+					'$lte' => new MongoDate($end_date)
+				));
+				$events = $eventsCollection->find($conditions_event, array('start_date' => 1));
+				foreach($events as $event) {
+					$day = 0;
+					$weekday = date('l',$event['start_date']->sec);
+					$selected_day = date('j', $event['start_date']->sec);
+					$selected_month = date('n', $event['start_date']->sec);
+					$selected_year = date('Y', $event['start_date']->sec);
+				 	do {
+						$start_for_selected_order = mktime(0, 0, 0, $selected_month, ($selected_day + $day), $selected_year);
+						$end_for_selected_order = mktime(0, 0, 0, $selected_month, ($selected_day + $day + 1), $selected_year);
+						if($day == 0) {
+							$weekday = date('l',$start_for_selected_order);
+						}
+						$conditions_order = array(
+							'date_created' => array(
+								'$gt' => new MongoDate($start_for_selected_order),
+								'$lte' => new MongoDate($end_for_selected_order)
+							),
+							'items.event_id' => (string) $event["_id"]
+						);
+						$orders = $ordersCollection->find($conditions_order);
+						if(empty($graphic_datas[$weekday][5])) {
+							$graphic_datas[$weekday][5] = 0;
+						}
+						if(empty($graphic_datas[$weekday][$day])) {
+							$graphic_datas[$weekday][$day] = 0;
+						}
+						foreach($orders as $order) {
+							foreach($order['items'] as $item) {
+								if($item["event_id"] == $event["_id"]) {
+									$graphic_datas[$weekday][5] += ($item["sale_retail"] * $item["quantity"]);
+									$graphic_datas[$weekday][$day] += ($item["sale_retail"] * $item["quantity"]);
+								}
+							}
+						}
+						$day++;
+					} while ($day != 5);
+				}
+			}
+			foreach($graphic_datas as $day => $data) {
+					$chart_datas[$day][0][0] = '$' . round($graphic_datas[$day][0],2);
+					$chart_datas[$day][1][0] = '$' . round($graphic_datas[$day][1],2);
+					$chart_datas[$day][2][0] = '$' . round($graphic_datas[$day][2],2);
+					$chart_datas[$day][3][0] = '$' . round($graphic_datas[$day][3],2);
+					if (!empty($graphic_datas[$day][4])) {
+						$chart_datas[$day][4][0] = '$' . round($graphic_datas[$day][4],2);
+						$chart_datas[$day][4][1] = ($graphic_datas[$day][4] / $graphic_datas[$day][5]) * 100;
+					}
+					$chart_datas[$day][0][1] = ($graphic_datas[$day][0] / $graphic_datas[$day][5]) * 100;
+					$chart_datas[$day][1][1] = ($graphic_datas[$day][1] / $graphic_datas[$day][5]) * 100;
+					$chart_datas[$day][2][1] = ($graphic_datas[$day][2] / $graphic_datas[$day][5]) * 100;
+					$chart_datas[$day][3][1] = ($graphic_datas[$day][3] / $graphic_datas[$day][5]) * 100;
+			}
+			foreach($chart_datas as $key => $value) {
+				# Create Column3D chart Object
+				$DailyCharts[$key] = new FusionCharts("Column3D","700","350");
+				#  Set chart attributes
+				$strParam = "caption=Sales - Total Revenues:  $" . round($graphic_datas[$key][5],2) . ";xAxisName=Days;yAxisName=Percentage;numberSuffix=%";
+				$DailyCharts[$key]->setChartParams($strParam);
+				# add chart values and  category names
+				$DailyCharts[$key]->addChartDataFromArray($value);
+			}
+		}
+		$days = array(
+			'0' => 'Sunday',
+			'1' => 'Monday',
+			'2'=> 'Tuesday',
+			'3' => 'Wednesday',
+			'4' => 'Thursday',
+			'5' => 'Friday',
+			'6' => 'Saturday'
+		);
+		return compact('DailyCharts','days','start_date','end_date');
 	}
 }
 

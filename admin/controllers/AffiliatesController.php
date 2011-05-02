@@ -53,10 +53,9 @@ class AffiliatesController extends \admin\controllers\BaseController {
 
 		$affiliate = Affiliate::create();
         $info = array();
-
+       // $backgrounds = Affiliate::retrieveBackgrounds();
 		$data = $this->request->data;
 		if ( ($data) ) {
-
             $info['active'] = (($data['active'] == '1' || $data['active'] == 'on')) ? true : false;
             $info['name'] = $data['affiliate_name'];
             $info['level'] = $data['level'];
@@ -69,10 +68,8 @@ class AffiliatesController extends \admin\controllers\BaseController {
 			                                                );
 			    }
 			}
-
 			$info['created_by'] = $affiliate->createdBy();
 			$info['date_created'] = new MongoDate( strtotime( date('D M d Y') ) );
-
 			if( ($affiliate->save($info)) ) {
 				$this->redirect( array( 'Affiliates::index' ) );
 			}
@@ -84,13 +81,10 @@ class AffiliatesController extends \admin\controllers\BaseController {
 
 	public function edit($id = NULL) {
         $affiliate = Affiliate::find($id);
-
         if( !$affiliate ) {
             $this->redirect( array('Affiliates::index') );
         }
-
         $data = $this->request->data;
-
         if( ($data) ) {
 
             $info['active'] = (($data['active'] == '1' || $data['active'] == 'on')) ? true : false;
@@ -122,7 +116,18 @@ class AffiliatesController extends \admin\controllers\BaseController {
 		$packages = $this->packages;
 		$affiliate = $affiliate->data();
         return compact('sitePages', 'packages','affiliate');
-
+	}
+	public function background(){
+        $data = Affiliate::retrieveBackgrounds();
+        $this->render(array('layout' => false));
+      //  $backgrounds = array();
+        foreach($data as $value){
+            $backgrounds[] = $value['_id'];
+        }
+        if(empty($data)){
+            $backgrounds = array();
+        }
+        echo json_encode($backgrounds);
 	}
 }
 

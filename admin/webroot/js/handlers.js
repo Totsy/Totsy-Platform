@@ -5,12 +5,12 @@ function cancelQueue(instance) {
 	document.getElementById(instance.customSettings.cancelButtonId).disabled = true;
 	instance.stopUpload();
 	var stats;
-	
+
 	do {
 		stats = instance.getStats();
 		instance.cancelUpload();
 	} while (stats.files_queued !== 0);
-	
+
 }
 
 /* **********************
@@ -82,7 +82,7 @@ function fileDialogComplete(numFilesSelected, numFilesQueued) {
 		if (this.getStats().files_queued > 0) {
 			document.getElementById(this.customSettings.cancelButtonId).disabled = false;
 		}
-		
+
 		/* I want auto start and I can do that here */
 		this.startUpload();
 	} catch (ex)  {
@@ -99,7 +99,7 @@ function uploadStart(file) {
 	}
 	catch (ex) {
 	}
-	
+
 	return true;
 }
 
@@ -133,7 +133,7 @@ function uploadComplete(file) {
 		if (this.getStats().files_queued === 0) {
 			document.getElementById(this.customSettings.cancelButtonId).disabled = true;
 			onSWFSuccess();
-		} else {	
+		} else {
 			this.startUpload();
 		}
 	} catch (ex) {
@@ -198,5 +198,29 @@ function uploadError(file, errorCode, message) {
 		}
 	} catch (ex) {
         this.debug(ex);
+    }
+}
+
+function isLogo(instance){
+    $('#isbackground').removeAttr("checked");
+    $('#isfeature').removeAttr("checked");
+    if( $('#islogo:checked').val() == 1){
+        instance.addPostParam('tag','logo');
+    }
+}
+function isBackground(instance){
+    $('#isfeature').removeAttr("checked");
+    $('#islogo').removeAttr("checked");
+
+    if( $('#isbackground:checked').val() == 1){
+        instance.addPostParam('tag','background');
+    }
+}
+function isFeature(instance){
+    $('#isbackground').removeAttr("checked");
+    $('#islogo').removeAttr("checked");
+
+    if( $('#isfeature:checked').val() == 1){
+        instance.addPostParam('tag','featureOn');
     }
 }

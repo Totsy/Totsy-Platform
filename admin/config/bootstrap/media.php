@@ -54,6 +54,4 @@ Dispatcher::applyFilter('_callable', function($self, $params, $chain) {
 	}
 	return $chain->next($self, $params, $chain);
 });
-
-
 ?>

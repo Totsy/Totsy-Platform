@@ -97,6 +97,15 @@ class OrdersController extends BaseController {
 		}
 		$pixel = Affiliate::getPixels('order', 'spinback');
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel, array('order' => $_SERVER['REQUEST_URI']));
+		//Get Items Skus - Analytics
+		foreach($itemsByEvent as $key => $event) {
+			foreach($event as $key_b => $item) {
+				$itemRecord = Item::find($item['item_id']);
+				if (!empty($itemRecord)) {
+					$itemsByEvent[$key][$key_b]['sku'] = $itemRecord->sku_details[$item['size']];
+				}
+			}
+		}
 
 		return compact(
 			'order',
@@ -221,7 +230,6 @@ class OrdersController extends BaseController {
 		$shippingCost = 0;
 		$overShippingCost = 0;
 		$billingAddr = $shippingAddr = null;
-
 		if (isset($data['billing_shipping']) && $data['billing_shipping'] == '1') {
 			$data['shipping'] = $data['billing'];
 		}
@@ -296,13 +304,21 @@ class OrdersController extends BaseController {
 		if (isset($this->request->data['code'])) {
 			$orderPromo->code = $this->request->data['code'];
 		}
-
 		if ($orderPromo->code) {
 			$code = Promocode::confirmCode($orderPromo->code);
 			if ($code) {
 				$count = Promotion::confirmCount($code->_id, $user['_id']);
+				$uses = Promotion::confirmNoUses($code->_id, $user['_id']);
 				if ($code->max_use > 0) {
 					if ($count >= $code->max_use) {
+						$orderPromo->errors(
+							$orderPromo->errors() + array(
+								'promo' => "This promotion code has already been used"
+						));
+					}
+				}
+				if ($code->max_total !== "UNLIMITED") {
+					if ($uses >= $code->max_total) {
 						$orderPromo->errors(
 							$orderPromo->errors() + array(
 								'promo' => "This promotion code has already been used"
@@ -318,13 +334,18 @@ class OrdersController extends BaseController {
 						));
 					}
 				}
-				if ($postCreditTotal > $code->minimum_purchase) {
+				if ($postCreditTotal >= $code->minimum_purchase) {
 					$orderPromo->user_id = $user['_id'];
 					if ($code->type == 'percentage') {
 						$orderPromo->saved_amount = $postCreditTotal * -$code->discount_amount;
 					}
 					if ($code->type == 'dollar') {
 						$orderPromo->saved_amount = -$code->discount_amount;
+					}
+					if ($code->type == 'free_shipping' && !($orderPromo->errors())) {
+						$shippingCost = 0;
+						$overShippingCost = 0;
+						$orderPromo->type = "free_shipping";
 					}
 					Session::write('promocode', $orderPromo->code, array('name' => 'default'));
 				} else {
@@ -344,7 +365,6 @@ class OrdersController extends BaseController {
 				$orderPromo->saved_amount = 0;
 			}
 		}
-
 		$vars = compact(
 			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'userDoc', 'discountExempt'
@@ -367,6 +387,16 @@ class OrdersController extends BaseController {
 				$order->promo_code = $orderPromo->code;
 				$order->promo_discount = $orderPromo->saved_amount;
 			}
+			if (!empty($orderPromo->type)) {
+				if ($orderPromo->type == 'free_shipping') {
+					Promocode::add((string) $code->_id, 0, $order->total);
+					$orderPromo->order_id = (string) $order->_id;
+					$orderPromo->code_id = (string) $code->_id;
+					$orderPromo->date_created = new MongoDate();
+					$orderPromo->save();
+					$order->promo_code = $orderPromo->code;
+				}
+			}
 			$order->ship_date = new MongoDate(Cart::shipDate($order));
 			$order->save();
 			Cart::remove(array('session' => Session::key('default')));
@@ -384,7 +414,6 @@ class OrdersController extends BaseController {
 			Silverpop::send('orderConfirmation', $data);
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 		}
-
 		$cartEmpty = ($cart->data()) ? false : true;
 
 		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate');

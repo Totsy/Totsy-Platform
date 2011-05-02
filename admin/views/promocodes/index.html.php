@@ -26,6 +26,9 @@
 			<tr>
 				<td><?php echo $this->html->link('View Promotions', 'promocodes/report'); ?></td>
 			</tr>
+			<tr>
+				<td><?php echo $this->html->link('Generate Promocodes', 'promocodes/generator'); ?></td>
+			</tr>
 		</tbody>
 	</table>
 </div>
