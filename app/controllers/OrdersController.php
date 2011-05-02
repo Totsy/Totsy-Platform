@@ -100,12 +100,13 @@ class OrdersController extends BaseController {
 		//Get Items Skus - Analytics
 		foreach($itemsByEvent as $key => $event) {
 			foreach($event as $key_b => $item) {
-				$result = $itemsCollection->findOne(array("_id" => new MongoId($item['item_id'])));
-				if (!empty($result)) {
-					$itemsByEvent[$key][$key_b]['sku'] = $result['skus']['0'];
+				$itemRecord = Item::find($item['item_id']);
+				if (!empty($itemRecord)) {
+					$itemsByEvent[$key][$key_b]['sku'] = $itemRecord->sku_details[$item['size']];
 				}
 			}
 		}
+
 		return compact(
 			'order',
 			'orderEvents',

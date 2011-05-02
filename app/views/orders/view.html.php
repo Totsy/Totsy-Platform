@@ -289,16 +289,19 @@
 	   // add item might be called for every item in the shopping cart
 	   // where your ecommerce engine loops through each item in the cart and
 	   // prints out _addItem for each
-	  <?php foreach($itemsByEvent as $event) ?>
-		<?php foreach($event as $item) ?>
-			  _gaq.push(['_addItem',
+
+	  <?php foreach($itemsByEvent as $event): ?>
+			<?php foreach($event as $item): ?>
+				 _gaq.push(['_addItem',
 				<?="'".$order->order_id."'"?>,			// order ID - required
 				<?="'".$item['sku']."'"?>,			// SKU/code - required
 				<?="'".$item['description']."'"?>,		// product name
 				<?="'".$item['color']."'"?>,		// category or variation
 				<?="'".$item['sale_retail']."'"?>,        // unit price - required
 				<?="'".$item['quantity']."'"?>         // quantity - required
-			  ]);
+				 ]);
+			<?php endforeach ?>
+		<?php endforeach ?>
 	  _gaq.push(['_trackTrans']); //submits transaction to the Analytics servers
 
 	  (function() {
