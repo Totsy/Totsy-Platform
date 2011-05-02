@@ -33,10 +33,11 @@ class Promotion extends \lithium\data\Model {
 	 * has been used
 	 * @param $code
 	 */
-	public static function confirmNoUses($code_id) {
+	public static function confirmNoUses($code_id, $user) {
 		return static::count(array(
 			'conditions' => array(
-				'code_id' => (string) $code_id
+				'code_id' => (string) $code_id,
+				'user_id' => array('$ne' => $user)
 		)));
 	}
 }

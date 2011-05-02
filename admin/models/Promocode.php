@@ -36,7 +36,7 @@ class Promocode extends Base {
 		} else {
 			$entity->discount_amount = (float) 0;
 		}
-		if ($code_data['max_total'] == "UNLIMITED"){
+		if (empty($code_data['max_total']) || $code_data['max_total'] == "UNLIMITED"){
 			$entity->max_total = "UNLIMITED";
 		} else {
 			$entity->max_total = (int) $code_data['max_total'];
