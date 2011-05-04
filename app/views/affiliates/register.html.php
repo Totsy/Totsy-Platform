@@ -37,8 +37,10 @@
                                  <div style="width:56%; display:block; float:left; margin-right:10px; ">
                                 <h3 style="color:#999; font-size:18px;">Register</h3>
 								<hr />
-								<h2> <img src="https://graph.facebook.com/<?=$fbuser['id']?>/picture"> Hi <?=$userfb['name']?> - you're one step away from joining with Facebook</h2>
-                                <hr />
+								<?php if ($userfb): ?>
+                                    <h2> <img src="https://graph.facebook.com/<?=$userfb['id']?>/picture"> Hi <?=$userfb['name']?> - you're one step away from joining with Facebook</h2>
+                                    <hr />
+                                <?php endif; ?>
 								<?=$this->form->create($user ,array('id'=>'registerForm')); ?>
 
                						<!-- Commnented Firstname, Lastname and Zip code --->
