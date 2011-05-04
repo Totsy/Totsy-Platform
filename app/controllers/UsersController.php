@@ -537,7 +537,7 @@ class UsersController extends BaseController {
 	 * @see Affiliates::register()
 	 * @see FacebookProxy::api()
 	 */
-	public static function facebookLogin($affiliate = null, $cookie = null, $ipaddress = null) {
+	public static function facebookLogin($affiliate = null, $affiliate_url = null, $cookie = null, $ipaddress = null) {
 		$self = static::_object();
 		if ($self->fbsession) {
 			$userfb = FacebookProxy::api('/me');
@@ -555,7 +555,11 @@ class UsersController extends BaseController {
 				User::log($ipaddress);
 				$self->redirect('/sales');
 			} else {
-				$self->redirect('/register/facebook');
+				if ($affiliate_url) {
+					$self->redirect($affiliate_url);
+				}else{
+					$self->redirect('/register/facebook');
+				}
 			}
 		}
 	}

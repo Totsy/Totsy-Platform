@@ -73,7 +73,7 @@ class AffiliatesController extends BaseController {
 				Affiliate::linkshareCheck($userlogin['_id'], $affiliate, $cookie);
 				$this->redirect($urlredirect);
 			}
-			UsersController::facebookLogin($affiliate, $cookie, $ipaddress);
+			UsersController::facebookLogin($affiliate, $_SERVER['REQUEST_URI'], $cookie, $ipaddress);
 			if (($pdata)) {
 				$data['email'] = strtolower($pdata['email']);
 			//	$data['firstname'] = $pdata['firstname'];
