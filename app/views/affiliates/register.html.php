@@ -1,4 +1,3 @@
-<?=$this->html->script('jquery.maskedinput-1.2.2')?>
 <div id="fullscreen">
 	<div id="login-box">
 		<div id="login-box-border" class="register-modal">
@@ -31,18 +30,18 @@
 								<?php if($message){echo "$message"; } ?>
 							</div>
 
-							
-
-							<div id="" class="r-container clear">
+							<div class="r-container clear">
 								<div class="tl"></div>
 								<div class="tr"></div>
 								<div class="r-box lt-gradient-1">
-								 <div style="width:56%; display:block; float:left; margin-right:10px; ">
+                                 <div style="width:56%; display:block; float:left; margin-right:10px; ">
                                 <h3 style="color:#999; font-size:18px;">Register</h3>
 								<hr />
+
+
 								<?=$this->form->create($user ,array('id'=>'registerForm')); ?>
 
-               <!-- Commnented Firstname, Lastname and Zip code --->
+               						<!-- Commnented Firstname, Lastname and Zip code --->
 
 									<!-- div class="form-row">
 										<?=$this->form->label('firstname', 'First Name <span>*</span>', array(
@@ -66,7 +65,7 @@
 										<?=$this->form->text('lastname', array('class' => 'inputbox')); ?>
 										<?=$this->form->error('lastname'); ?>
 									</div>
-							<div class="form-row">
+									<div class="form-row">
 										<?=$this->form->label('zip', 'Zip Code <span>*</span>', array(
 											'escape' => false,
 											'class' => 'required'
@@ -115,15 +114,15 @@
 									<?=$this->form->checkbox('terms', array("checked" => "checked", 'style'=>"float:left;margin-right:4px; display: none;"));?>
 									</div>
 									<span class="sm reg-tos" style="overflow:visible!important;">
-											By clicking register you accept our 
+											By clicking register you accept our
 											<?=$this->html->link('Terms and Conditions','pages/terms')?>.
 									</span>
-
-										<br>
-										<?=$this->form->submit('Register', array('class' => 'button fr')); ?>
-										<?=$this->form->error('terms'); ?>
+									<br>
+									<?=$this->form->submit('Register', array('class' => 'button fr')); ?>
+									<?=$this->form->error('terms'); ?>
 									</div>
 								<?=$this->form->end(); ?>
+
 								<div>
 								<h3 style="color:#999; font-size:18px;">Register With Facebook</h3>
 								<hr />
@@ -131,16 +130,19 @@
 
 								</div>
 								</div>
-								<div class="r-container clear reg-list">
+								<div class="bl"></div>
+								<div class="br"></div>
+							</div>
+							<div class="r-container clear reg-list">
 								<div class="tl"></div>
 								<div class="tr"></div>
 								<div class="r-box lt-gradient-1">
 									<strong class="red">Why you will love Totsy</strong>
 									<ul class="bugs columns-2">
-										<li>Exclusive sales for moms, children &amp; babies.</li>
+										<li>Exclusive sales for kids, moms and families</li>
 										<li>Sales last up to 3 days, plenty of time to shop.</li>
 										<li>Savings of up to 90% off retail.</li>
-										<li>For every purchase, one tree is planted.</li>
+										<li>A tree is planted for your first purchase.</li>
 										<li>Membership is free</li>
 										<li>We are 100% green.</li>
 									</ul>
@@ -148,8 +150,6 @@
 								<div class="bl"></div>
 								<div class="br"></div>
 							</div>
-							</div>
-
 						</div>
 					</div>
 				</div>
@@ -162,11 +162,6 @@
 		</div>
 	</div>
 </div>
-<script type="text/javascript">
-jQuery(function($){
-   $("#zip").mask("99999");
-});
-</script>
 <div id="footer">
 
 	<ul>
