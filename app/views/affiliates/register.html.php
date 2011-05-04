@@ -123,7 +123,7 @@
 
 								<div>
 								<?php if ($userfb): ?>
-								    <h2> <img src="https://graph.facebook.com/<?=$userfb['id']?>/picture"> Hi <?=$userfb['name']?> - you're one step away from joining with Facebook</h2>
+								    <h2> <img src="https://graph.facebook.com/<?=$userfb['id']?>/picture"> <br/> Hi <?=$userfb['name']?> - you're one step away from joining with Facebook</h2>
                                 <?php else: ?>
                                      <h3 style="color:#999; font-size:18px;">Register With Facebook</h3>
                                     <hr />
