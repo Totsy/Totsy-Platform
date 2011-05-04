@@ -238,7 +238,14 @@ class UsersController extends BaseController {
 		$redirect = '/sales';
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-		static::facebookLogin(null, $cookie, $ipaddress);
+		$result = static::facebookLogin(null, $cookie, $ipaddress);
+		extract($result);
+		if (!$success) {
+			if (!empty($userfb)) {
+				$self = static::_object();
+				$self->redirect('/register/facebook');
+			}
+		}
 		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array('conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
 			if($user) {
@@ -537,8 +544,11 @@ class UsersController extends BaseController {
 	 * @see Affiliates::register()
 	 * @see FacebookProxy::api()
 	 */
-	public static function facebookLogin($affiliate = null, $affiliate_url = null, $cookie = null, $ipaddress = null) {
+	public static function facebookLogin($affiliate = null, $cookie = null, $ipaddress = null) {
 		$self = static::_object();
+		//If the users already exists in the database
+		$success = false;
+		$userfb = array();
 		if ($self->fbsession) {
 			$userfb = FacebookProxy::api('/me');
 			$user = User::find('first', array(
@@ -554,10 +564,9 @@ class UsersController extends BaseController {
 				Affiliate::linkshareCheck($user->_id, $affiliate, $cookie);
 				User::log($ipaddress);
 				$self->redirect('/sales');
-			} else {
-				$self->redirect('/register/facebook');
 			}
 		}
+		return compact('success', 'userfb');
 	}
 
 	protected static function &_object() {
