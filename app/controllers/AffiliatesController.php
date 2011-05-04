@@ -59,6 +59,7 @@ class AffiliatesController extends BaseController {
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		if (($affiliate)) {
 			$pixel = Affiliate::getPixels('after_reg', $affiliate);
+			Session::write('pixel',$pixel, array('name'=>'default'));
 			$gdata = $this->request->query;
 			if (($gdata)) {
 				$affiliate = Affiliate::storeSubAffiliate($gdata, $affiliate);
@@ -97,7 +98,6 @@ class AffiliatesController extends BaseController {
 					Session::write('userLogin', $userLogin, array('name'=>'default'));
 					Affiliate::linkshareCheck($userLogin['_id'], $affiliate, $cookie);
 					User::log($ipaddress);
-					Session::write('pixel',$pixel, array('name'=>'default'));
 					$this->redirect($urlredirect);
 				}
 			}
