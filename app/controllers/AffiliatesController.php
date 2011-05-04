@@ -77,8 +77,10 @@ class AffiliatesController extends BaseController {
             extract($result);
             if (!$success) {
                 if (!empty($userfb)) {
-                    $user->email = $userfb['email'];
-                    $user->confirmemail = $userfb['email'];
+                    if ( !preg_match( '/@proxymail\.facebook\.com/', $fbuser['email'] )) {
+                        $user->email = $userfb['email'];
+                        $user->confirmemail = $userfb['email'];
+                    }
                 }
             }
 			if (($pdata)) {

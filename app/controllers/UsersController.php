@@ -517,8 +517,10 @@ class UsersController extends BaseController {
 		$user = null;
 		$fbuser = FacebookProxy::api('/me');
 		$user = User::create();
-		$user->email = $fbuser['email'];
-		$user->confirmemail = $fbuser['email'];
+		if ( !preg_match( '/@proxymail\.facebook\.com/', $fbuser['email'] )) {
+			$user->email = $fbuser['email'];
+			$user->confirmemail = $fbuser['email'];
+		}
 		$this->_render['layout'] = 'login';
 		if ($this->request->data) {
 			$data = $this->request->data;
