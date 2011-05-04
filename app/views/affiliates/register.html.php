@@ -37,10 +37,6 @@
                                  <div style="width:56%; display:block; float:left; margin-right:10px; ">
                                 <h3 style="color:#999; font-size:18px;">Register</h3>
 								<hr />
-								<?php if ($userfb): ?>
-                                    <h2> <img src="https://graph.facebook.com/<?=$userfb['id']?>/picture"> Hi <?=$userfb['name']?> - you're one step away from joining with Facebook</h2>
-                                    <hr />
-                                <?php endif; ?>
 								<?=$this->form->create($user ,array('id'=>'registerForm')); ?>
 
                						<!-- Commnented Firstname, Lastname and Zip code --->
@@ -126,10 +122,13 @@
 								<?=$this->form->end(); ?>
 
 								<div>
-								<h3 style="color:#999; font-size:18px;">Register With Facebook</h3>
-								<hr />
-								<fb:login-button perms="email,publish_stream, offline_access" size="large" length="long" v="2" style="text-align:center;">Register With Facebook</fb:login-button>
-
+								<?php if ($userfb): ?>
+								    <h2> <img src="https://graph.facebook.com/<?=$userfb['id']?>/picture"> Hi <?=$userfb['name']?> - you're one step away from joining with Facebook</h2>
+                                <?php else: ?>
+                                     <h3 style="color:#999; font-size:18px;">Register With Facebook</h3>
+                                    <hr />
+                                    <fb:login-button perms="email,publish_stream, offline_access" size="large" length="long" v="2" style="text-align:center;">Register With Facebook</fb:login-button>
+                                <?php endif;?>
 								</div>
 								</div>
 								<div class="bl"></div>
