@@ -88,9 +88,9 @@ class AffiliatesController extends BaseController {
 				$data['terms'] = (boolean) $pdata['terms'];
 				$data['invited_by'] = $affiliate;
 				if (!empty($userfb)) {
-				    $data['facebook_info'] = $fbuser;
-			        $data['firstname'] = $fbuser['first_name'];
-			        $data['lastname'] = $fbuser['last_name'];
+				    $data['facebook_info'] = $userfb;
+			        $data['firstname'] = $userfb['first_name'];
+			        $data['lastname'] = $userfb['last_name'];
 				}
 				extract(UsersController::registration($data));
 				if ($saved) {
