@@ -96,7 +96,7 @@ class AffiliatesController extends BaseController {
 				if ($saved) {
 					$message = $saved;
 					$userLogin = array(
-						'_id' => (string) $user->_id
+						'_id' => (string) $user->_id,
 						'email' => $user->email
 					);
 					Session::write('userLogin', $userLogin, array('name'=>'default'));
