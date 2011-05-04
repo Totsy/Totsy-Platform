@@ -238,7 +238,7 @@ class UsersController extends BaseController {
 		$redirect = '/sales';
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-		static::facebookLogin(null, $cookie, $ipaddress);
+		static::facebookLogin(null, null, $cookie, $ipaddress);
 		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array('conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
 			if($user) {
