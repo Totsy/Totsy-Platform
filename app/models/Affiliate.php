@@ -114,7 +114,6 @@ class Affiliate extends Base {
     * @TODO  Move the appending to the Helper
     */
 	public static function generatePixel($invited_by, $pixel, $options = array()) {
-        var_dump($invited_by, $pixel);
         if($invited_by == 'w4' || $invited_by == "pmk"){
             $transid = 'totsy' . static::randomString();
             return '<br/>' . str_replace('$', $transid,$pixel );

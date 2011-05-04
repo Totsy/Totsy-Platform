@@ -536,8 +536,8 @@ class UsersController extends BaseController {
 	 * Auto login a user if the facebook session has been set.
 	 *
 	 * If the user already exists in our system redirect them to sales.
-	 * If there is no account for the customer then send them to the registration page
-	 * for facebook.
+	 * If not then return false and the user facebook information to the
+	 * function who called it
 	 *
 	 * @param string $affiliate - Affiliate string
 	 * @param string $cookie - The affiliate cookie set from affiliate
