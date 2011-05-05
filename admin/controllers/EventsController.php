@@ -251,6 +251,26 @@ class EventsController extends BaseController {
 		return compact('event', 'items', 'shareurl', 'type', 'id', 'preview');
 
 	}
+	
+	public function inventoryCheck($events) {
+		$events = $events->data();
+		foreach ($events as $eventItems) {
+			$count = 0;
+			$id = $eventItems['_id'] ;
+
+			if (isset($eventItems['items'])) {
+				foreach ($eventItems['items'] as $eventItem) {
+					if ($item = Item::first(array('conditions' => array('_id' => $eventItem)))) {
+						if ($item->total_quantity) {
+							$count += $item->total_quantity;
+						}
+					}
+				}
+			}
+			$itemCounts[$id] = $count;
+		}
+		return $itemCounts;
+	}
 }
 
 ?>
