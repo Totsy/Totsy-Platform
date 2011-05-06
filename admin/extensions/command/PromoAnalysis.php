@@ -7,7 +7,6 @@ use admin\models\User;
 use admin\models\Order;
 use admin\models\Event;
 use admin\models\Item;
-use admin\models\Base;
 use admin\models\Report;
 use lithium\core\Environment;
 use Mongo;

@@ -153,7 +153,7 @@ class OrderExport extends Base {
 				if ($queue) {
 					$this->batchId = array('order_batch' => $queue->_id);
 					$this->log("Starting to process $queue->_id");
-					$this->time = date('Ymdis');
+					$this->time = date('ymdHis');
 					$queueData = $queue->data();
 					if ($queueData['orders']) {
 						$this->orderEvents = $queueData['orders'];
