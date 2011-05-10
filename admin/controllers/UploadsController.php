@@ -125,6 +125,7 @@ class UploadsController extends \lithium\action\Controller {
 			            'filename' => $this->fileName
 			        )));
 			        $search->tag = $meta['tag'];
+			        $this->tag = $meta['tag'];
 			        $search->save();
 
 			   }

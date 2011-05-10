@@ -14,16 +14,17 @@ class Affiliate extends Base {
 			);
 
 	public static function pixelFormating($pixels, $codes){
-			if( empty($pixels) ){ return array(); }
+			if ( empty($pixels) ){ return array(); }
 			$formatted = array();
 			foreach($pixels as $key=>$pixel){
-				if($pixel['enable'] == '1' || $pixel['enable'] == 'on'){
+				if ($pixel['enable'] == '1' || $pixel['enable'] == 'on'){
 					$temp['enable'] = true;
-				}else{
+				} else {
 					$temp['enable'] = false;
 				}
-
-				if($pixel['enable'] && array_key_exists('page', $pixel) && in_array('/a/', $pixel['page'])) {
+				if ($pixel['enable']
+					&& array_key_exists('page', $pixel)
+					&& in_array('/a/', $pixel['page'])) {
 					foreach($codes as $value){
 						$pixel['page'][] = '/a/' . $value;
 					}
@@ -38,6 +39,9 @@ class Affiliate extends Base {
 	}
 
 	public static function landingPages(){
+		$landing = array();
+
+
 
 	}
 }
