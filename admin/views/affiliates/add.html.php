@@ -10,7 +10,6 @@
 <?=$this->html->style('swfupload')?>
 <?=$this->html->style('jquery_ui_blitzer.css')?>
 
-
 <div class="grid_16">
 	<h2 id="page-heading">Affiliate Add Panel</h2>
 </div>
@@ -87,14 +86,13 @@
 					<br/>
 					<div id='template_panel'>
 						<label>Enable </label>
-						<?=$this->form->checkbox('landingpage_enable', array('value'=>'1', 'checked' => 'checked')); ?><br/>
+						<?=$this->form->checkbox('landing_enable', array('value'=>'1', 'checked' => 'checked')); ?><br/>
 
 						<label>Choose Template Type </label>
-						<?=$this->form->select('template_type', array(
-										'temp_1' => 'Template One',
-										'temp_2' => 'Template Two'
-							));
+						<?=$this->form->select('template_type', $templates, array('id' => 'templates') );
 						?>
+						<label>Name:</label>
+						<?=$this->form->text('name'); ?>
 						<label>Specified Url:</label>
 						<?=$this->form->text('url'); ?>
 						<br/>
@@ -130,8 +128,8 @@
 								</tr>
 							</table>
 						</div>
-						<div id="template" style="margin: 0 5 0 0">
-							<?php echo $this->view()->render(array('element' => 'template1')); ?>
+						<div id="template">
+							<?php echo $this->view()->render(array('element' => $template)); ?>
 						</div>
 					</div>
 				</div><!--end landing panel-->
@@ -157,11 +155,15 @@
 	});
 </script>
 <script type='text/javascript'>
-		$('#pixel_panel').hide();
-		$('#landing_panel').hide();
-		$('#upload_panel').hide();
-		$('#background_selection').hide();
+	$('#pixel_panel').hide();
+	$('#landing_panel').hide();
+	$('#upload_panel').hide();
+	$('#background_selection').hide();
 	$(document).ready(function(){
+		$('#templates').change(function(){
+			template = $(this).val();
+			$("#template").html(<?php $this->view()->render(array('element' => template)); ?>);
+		});
 		$('input[name=active_pixel]').change(function(){
 			if( $('#ActivePixel:checked').val() == 1){
 				$('#pixel_panel').show();
@@ -176,8 +178,7 @@
 				$('#landing_panel').hide();
 			}
 		});
-	});
-	$(document).ready(function(){
+
 		if( $('#Level').val() != 'regular' ){
 			$('#tabs').show();
 		}else{
@@ -192,14 +193,12 @@
 				$('#tabs').hide();
 			}
 		});
-	});
 	//this jquery is for adding/removing pixel entry fields
-	$(document).ready(function(){
+
 		var counter =2;
 
 		$('#add_pixel').click(function(){
 			var newPixelDiv = $(document.createElement('div')).attr("id", "pixel_"+counter);
-
 			newPixelDiv.html("<label> Pixel #" +counter + "</label> <br> Enable:"+
 				'<?=$this->form->checkbox("pixel['+(counter-1)+'][enable]", array("value"=>"1", "checked"=>"checked")); ?> <br> Select:'+
 				'<?=$this->form->select("pixel['+(counter-1)+'][page]", $sitePages, array("multiple"=>"multiple", "size"=>5)); ?><br> Pixel<br>'+
@@ -265,7 +264,6 @@
 function loadBackgrounds(){
 	var background = $('#background');
     $.post('/affiliates/background', function(data) {
-
 	 	var col_limit = 3;
             var col = 0;
             var json = $.parseJSON(data);
@@ -295,6 +293,10 @@ function backgroundChange(image){
 		$("input:hidden[name='background_img']").val(image);
 		$('#mb-bg').css('background-image', 'url(/image/' + image + '.png)');
 }
+function featureChange(){
+	id = $(this).attr('id');
+}
+
 //Edit in place
 $(function(){
     $('.editable').editable({
@@ -308,6 +310,9 @@ $(function(){
     function submit(){
     	var id = $(this).attr('id');
     	var html = $('#' + id).html();
+    	if (html == "") {
+    		html = "empty";
+    	}
         $("input:hidden[name='" + id +"']").val(html);
     }
 });
