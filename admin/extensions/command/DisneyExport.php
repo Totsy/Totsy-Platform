@@ -166,14 +166,16 @@ class DisneyExport extends \lithium\console\Command {
 						. $city
 						. $state
 						. $zip
-						. str_pad(('99999'.$order['order_id']),17)
+						. str_pad('99999',17,'0')
 						. 'FAF'
 						. 'N' //New/renewal Code
 						. '1' //Order Entry Type
-						. '10 ' //Term Of Order
+						. '010' //Term Of Order
 						. '01000' // Order Value
-						. str_pad('',21,'0') //Credit Card
-						. '0000'
+						. str_pad('',4) //Credit Card Type
+						. str_pad('',17,'0') //Credit Card
+						. '0000' //Credit Card Expire
+						. '0000' //Not Used
 						. '001' //Number Of Copies
 						. str_pad('PFTOT11',9,'0') //Document Key
 						. 'D' //Medium Code
@@ -235,8 +237,15 @@ class DisneyExport extends \lithium\console\Command {
 			'from_email' => 'no-reply@totsy.com',
 			'to_email' => $this->_user
 		);
+		$data_3 = array(
+			'file' => $file,
+			'records' => $records,
+			'from_email' => 'no-reply@totsy.com',
+			'to_email' => 'marti@strategicmediallc.com'
+		);
 		Silverpop::send('disney', $data);
 		Silverpop::send('disney', $data_2);
+		//Silverpop::send('disney', $data_3);
 	}
 
 	/**
