@@ -24,7 +24,7 @@ class DisneyExport extends \lithium\console\Command {
 	 * @var string
 	 */
 	protected $_server = 'cdsfiles.com';
-	
+
 	/**
 	 * FTP Server of 3PL we are sending files to.
 	 *
@@ -62,6 +62,20 @@ class DisneyExport extends \lithium\console\Command {
 	public $source = '/resources/totsy/tmp/';
 	
 	/**
+	 * Minimum price of order where disney offer is applied
+	 *
+	 * @var int
+	 */
+	public $min_price = 45;
+	
+	/**
+	 * Maximum field size for Disney Doc
+	 *
+	 * @var int
+	 */
+	public $max_field = 27;
+
+	/**
 	 * Instances
 	 */
 	public function run() {
@@ -87,13 +101,16 @@ class DisneyExport extends \lithium\console\Command {
 		$this->saveRecords($myFile, $records);
 	}
 
-	/**** Get Last Orders and Write Files ****/
+	/**
+	*  Get Last Orders and Write Files
+	* @param boolean $initial
+	* @return array
+	*/
 	public function getInformations($initial = false) {
 		Environment::set($this->env);
 		$infos = array();
-		$ordersCollection = Order::connection()->connection->orders;;
+		$ordersCollection = Order::collection();
 		/****Conditions****/
-		$min_price = 45;
 		//start date
 		$now = getdate();
 		if (!empty($initial)) {
@@ -102,14 +119,13 @@ class DisneyExport extends \lithium\console\Command {
 		} else {
 			$start_date = mktime($now['hours'],$now['minutes'],$now['seconds'],$now['mon'],($now['mday']) - 1,$now['year']);
 		}
-		$end_date = $now[0];
 		$conditions_order = array(
 			'date_created' => array(
 				'$gt' => new MongoDate($start_date),
-				'$lte' => new MongoDate($end_date)
+				'$lte' => new MongoDate()
 				),
 				'total' =>  array(
-					'$gt' => (float) $min_price
+					'$gt' => (float) $this->min_price
 				)
 		);
 		/****Query****/
@@ -120,26 +136,26 @@ class DisneyExport extends \lithium\console\Command {
 			/***Preparation of Datas***/
 			#NAME
 			$name = $order['shipping']['firstname'] . ' ' .  $order['shipping']['lastname'];
-			if(strlen($name) > 27) {
-				$name = substr($name, 0, 27);
+			if(strlen($name) > $this->max_field) {
+				$name = substr($name, 0, $this->max_field);
 			}
-			$name = str_pad(strtoupper(str_replace($search, $replace, $name)),27);
+			$name = str_pad(strtoupper(str_replace($search, $replace, $name)),$this->max_field);
 			#ADDRESS1
 			$address1 = $order['shipping']['address'];
-			if(strlen($address1) > 27) {
-				$address1 = substr($address1, 0, 27);
+			if(strlen($address1) > $this->max_field) {
+				$address1 = substr($address1, 0, $this->max_field);
 			}
-			$address1 = str_pad(strtoupper(str_replace($search, $replace, $address1)),27);
+			$address1 = str_pad(strtoupper(str_replace($search, $replace, $address1)),$this->max_field);
 			#ADDRESS2
 			if(!empty($order['shipping']['address_2'])) {
 				$address2 = $order['shipping']['address_2'];
-				if(strlen($address2) > 27) {
-					$address2 = substr($address2, 0, 27);
+				if(strlen($address2) > $this->max_field) {
+					$address2 = substr($address2, 0, $this->max_field);
 				}
 			} else {
 				$address2 = ' ';
 			}
-			$address2 = str_pad(strtoupper(str_replace($search, $replace, $address2)),27);
+			$address2 = str_pad(strtoupper(str_replace($search, $replace, $address2)),$this->max_field);
 			#CITY
 			$city = $order['shipping']['city'];
 			if(strlen($address1) > 13) {
@@ -202,8 +218,11 @@ class DisneyExport extends \lithium\console\Command {
 	}
 
 	/**
-	 * Save the file with datas in the temporary folder
-	 */
+	* Save the file with datas in the temporary folder
+	* @param string $info
+	* See Disney File Documentation
+	* @return string
+	*/
 	public function saveFile($infos) {
 		$now = getdate();
 		$day = date("d",$now["0"]);
@@ -222,8 +241,10 @@ class DisneyExport extends \lithium\console\Command {
 	}
 
 	/**
-	 * Send a log mail to disney and micah miller
-	 */
+	* Send a log mail to disney and micah miller
+	* @param string $file
+	* @param int $records
+	*/
 	public function sendMail($file, $records) {
 		$data = array(
 			'file' => $file,
@@ -249,8 +270,10 @@ class DisneyExport extends \lithium\console\Command {
 	}
 
 	/**
-	 * Put a file to the connected FTP Server.
-	 */
+	* Put a file to the connected FTP Server.
+	* @param string $file
+	* @param string $path
+	*/
 	public function transferFile($file, $path) {
 		$connection = ssh2_connect($this->_server, 22);
 		try {
@@ -278,13 +301,14 @@ class DisneyExport extends \lithium\console\Command {
 
 	/**
 	 * Save records in the DB
-	 */
+	* @param string $myFile
+	* @param int $records
+	*/
 	public function saveRecords($myFile, $records) {
-		$now = getdate();
 		$datas = array(
 						'file' => $myFile,
 						'records' => $records,
-						'date' =>  new MongoDate($now[0])
+						'date' => new MongoDate()
 		);
 		Disney::collection()->insert($datas);
 	}
