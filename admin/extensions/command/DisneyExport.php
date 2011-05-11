@@ -74,21 +74,49 @@ class DisneyExport extends \lithium\console\Command {
 	 * @var int
 	 */
 	public $max_field = 27;
+	
+	/**
+	 * Hour for orders requested
+	 *
+	 * @var int
+	 */
+	public $startHour = 10;
+	
+	/**
+	 * Day for orders requested
+	 *
+	 * @var int
+	 */
+	public $startDay = null;
+	
+	/**
+	 * Month for orders requested
+	 *
+	 * @var int
+	 */
+	public $startMonth = null;
+	
+	/**
+	 * Year for orders requested
+	 *
+	 * @var int
+	 */
+	public $startYear = null;
+	
+	/**
+	 * Year for orders requested
+	 *
+	 * @var int
+	 */
+	public $initial = false;
 
 	/**
 	 * Instances
 	 */
 	public function run() {
 		$infos = array();
-		//Get Parameters
-		$initial = false;
-		if(!empty($_SERVER['argv'][2])) {
-			if ($_SERVER['argv'][2] == 'initial') {
-				$initial = true;
-			}
-		}
 		#Get Informations Order from DB
-		$infos = $this->getInformations($initial);
+		$infos = $this->getInformations();
 		#Create the temporary file
 		$myFile = $this->saveFile($infos);
 		#Count of the records
@@ -106,23 +134,33 @@ class DisneyExport extends \lithium\console\Command {
 	* @param boolean $initial
 	* @return array
 	*/
-	public function getInformations($initial = false) {
+	public function getInformations() {
 		Environment::set($this->env);
 		$infos = array();
 		$ordersCollection = Order::collection();
 		/****Conditions****/
 		//start date
 		$now = getdate();
-		if (!empty($initial)) {
+		if (empty($this->startMonth)) { 
+			$MonthSel = $now['mon'];
+		}
+		if (empty($this->startDay)) { 
+			$DaySel = $now['mday'];
+		}
+		if (empty($this->startYear)) { 
+			$YearSel = $now['year'];
+		}
+		if (!empty($this->initial)) {
 			//4th April 2011, 10am
 			$start_date = mktime(10, 0, 0, 4, 1, 2011);
 		} else {
-			$start_date = mktime($now['hours'],$now['minutes'],$now['seconds'],$now['mon'],($now['mday']) - 1,$now['year']);
+			$start_date = mktime($this->startHour,0,0,$MonthSel,$DaySel - 1,$YearSel);
 		}
+		$end_date = mktime($this->startHour,0,0,$MonthSel,$DaySel,$YearSel);
 		$conditions_order = array(
 			'date_created' => array(
 				'$gt' => new MongoDate($start_date),
-				'$lte' => new MongoDate()
+				'$lte' => new MongoDate($end_date)
 				),
 				'total' =>  array(
 					'$gt' => (float) $this->min_price
@@ -275,28 +313,27 @@ class DisneyExport extends \lithium\console\Command {
 	* @param string $path
 	*/
 	public function transferFile($file, $path) {
-		$connection = ssh2_connect($this->_server, 22);
-		try {
-			ssh2_auth_password($connection, $this->_user, $this->_password);
-		} catch (Exception $e) {
-			Logger::alert($e);
-			Logger::alert("Authentication failed when connecting to $this->_server");
-		}
-		$sftp = ssh2_sftp($connection);	
-		$stream = @fopen("ssh2.sftp://$sftp" . $this->remote_directory . $file, 'wb');
-		try {
-			if (! $stream)
-				throw new Exception("Could not open file: $file");
-				$data_to_send = @file_get_contents($path . $file);
-				if ($data_to_send === false)
-					throw new Exception("Could not open local file: $file.");
-				if (@fwrite($stream, $data_to_send) === false)
-						throw new Exception("Could not send data from file: $file.");
-				} catch (Exception $e) {
-					echo $e->getMessage();
-		}
+		$connection = @ssh2_connect($this->_server, 22);
+		if (! $connection)
+			throw new Exception("Could not connect to $host on port $port.");
+		
+		if(! @ssh2_auth_password($connection, $this->_user, $this->_password))
+			throw new Exception("Could not authenticate with username and password.");
+			
+		$sftp = @ssh2_sftp($connection);	
+		$stream = @fopen("ssh2.sftp://$sftp" . $this->remote_directory . $file, 'w');
+		if (!$stream)
+			throw new Exception("Could not open file: $file");
+
+		$data_to_send = @file_get_contents($path . $file);
+		if ($data_to_send === false)
+			throw new Exception("Could not open local file: $file.");
+		
+		if (@fwrite($stream, $data_to_send) === false)
+			throw new Exception("Could not send data from file: $file.");
+	
 		@fclose($stream);
-		unlink(LITHIUM_APP_PATH . $this->source . $file);
+		unlink($path . $file);
 	}
 
 	/**
