@@ -177,7 +177,7 @@ class DisneyExport extends \lithium\console\Command {
 						. '0000' //Credit Card Expire
 						. '0000' //Not Used
 						. '001' //Number Of Copies
-						. str_pad('PFTOT11',9,'0') //Document Key
+						. 'PFTOT11  ' //Document Key
 						. 'D' //Medium Code
 						. '  ' //Source Code
 						. '000'
