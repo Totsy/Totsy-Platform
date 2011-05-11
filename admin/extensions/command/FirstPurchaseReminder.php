@@ -4,7 +4,7 @@ namespace admin\extensions\command;
 
 use admin\models\User;
 use admin\models\Order;
-
+use admin\models\Service;
 /**
  *
  */
@@ -21,17 +21,20 @@ class FirstPurchaseReminder extends \lithium\console\Command  {
 	 */
 	public function run() {
 		$usersCollection = User::collection();
+		$servicesCollection = Service::collection();
+		$now = new MongoDate();
 		#OPTIMIZATION
 		$usersCollection->ensureIndex(array('created_date' => 1));
 		$usersCollection->ensureIndex(array('purchase_count' => 1));
+		#RUNNING
+		$freeshipService = $servicesCollection->findOne(array('name' => 'Free Shipping'));
 		
-		$creation_date = mktime(0, 0, 0, 5, 18, 2011); 
+		$creation_date = $freeshipService['start_date'];
 		$conditions = array( 'purchase_count' => array('$exists' => false),
 							 'created_date' => array(
-					           '$gt' => new MongoDate($creation_date)
+					           '$gt' => $creation_date
 					)
 		);
-		
 		$usersCollection->find($conditions);
 	}
 }
