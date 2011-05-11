@@ -76,13 +76,6 @@ class DisneyExport extends \lithium\console\Command {
 	public $max_field = 27;
 	
 	/**
-	 * Hour for orders requested
-	 *
-	 * @var int
-	 */
-	public $startHour = 10;
-	
-	/**
 	 * Day for orders requested
 	 *
 	 * @var int
@@ -154,9 +147,9 @@ class DisneyExport extends \lithium\console\Command {
 			//4th April 2011, 10am
 			$start_date = mktime(10, 0, 0, 4, 1, 2011);
 		} else {
-			$start_date = mktime($this->startHour,0,0,$MonthSel,$DaySel - 1,$YearSel);
+			$start_date = mktime(0,0,0,$MonthSel,$DaySel - 1,$YearSel);
 		}
-		$end_date = mktime($this->startHour,0,0,$MonthSel,$DaySel,$YearSel);
+		$end_date = mktime(0,0,0,$MonthSel,$DaySel,$YearSel);
 		$conditions_order = array(
 			'date_created' => array(
 				'$gt' => new MongoDate($start_date),
