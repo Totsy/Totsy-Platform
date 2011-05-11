@@ -30,7 +30,7 @@ class DisneyExport extends \lithium\console\Command {
 	 *
 	 * @var string
 	 */
-	protected $remote_directory = '/CDSFiles/CDS/OFFLINE/Test/';
+	protected $remote_directory = '/CDSFiles/CDS/OFFLINE/';
 	
 	/**
 	 * FTP User Name.
@@ -229,7 +229,7 @@ class DisneyExport extends \lithium\console\Command {
 			'file' => $file,
 			'records' => $records,
 			'from_email' => 'no-reply@totsy.com',
-			'to_email' => 'troyer@totsy.com' //vendorfiles@cds-global.com
+			'to_email' => 'vendorfiles@cds-global.com'
 		);
 		$data_2 = array(
 			'file' => $file,
@@ -245,7 +245,7 @@ class DisneyExport extends \lithium\console\Command {
 		);
 		Silverpop::send('disney', $data);
 		Silverpop::send('disney', $data_2);
-		//Silverpop::send('disney', $data_3);
+		Silverpop::send('disney', $data_3);
 	}
 
 	/**
