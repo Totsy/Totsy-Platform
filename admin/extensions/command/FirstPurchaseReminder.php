@@ -25,15 +25,13 @@ class FirstPurchaseReminder extends \lithium\console\Command  {
 		$usersCollection->ensureIndex(array('created_date' => 1));
 		$usersCollection->ensureIndex(array('purchase_count' => 1));
 		
-		
-		$creation_date = mktime(0, 0, 0, date("m")-11, 1, date("Y")); 
-		$conditions_user_V1 = array(
-		         'created_date' => array(
-		           '$gt' => new MongoDate($creation_date)
-		));
-
+		$creation_date = mktime(0, 0, 0, 5, 18, 2011); 
 		$conditions = array( 'purchase_count' => array('$exists' => false),
-							 ''
-		)
+							 'created_date' => array(
+					           '$gt' => new MongoDate($creation_date)
+					)
+		);
+		
+		$usersCollection->find($conditions);
 	}
 }
