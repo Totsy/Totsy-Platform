@@ -306,26 +306,27 @@ class DisneyExport extends \lithium\console\Command {
 	* @param string $path
 	*/
 	public function transferFile($file, $path) {
-		$connection = @ssh2_connect($this->_server, 22);
+		$host = $this->_server;
+		$connection = ssh2_connect($this->_server, 22);
 		if (! $connection)
-			throw new Exception("Could not connect to $host on port $port.");
+			throw new Exception("Could not connect to $host on port 22.");
 		
-		if(! @ssh2_auth_password($connection, $this->_user, $this->_password))
+		if(! ssh2_auth_password($connection, $this->_user, $this->_password))
 			throw new Exception("Could not authenticate with username and password.");
 			
-		$sftp = @ssh2_sftp($connection);	
-		$stream = @fopen("ssh2.sftp://$sftp" . $this->remote_directory . $file, 'w');
+		$sftp = ssh2_sftp($connection);	
+		$stream = fopen("ssh2.sftp://$sftp" . $this->remote_directory . $file, 'w');
 		if (!$stream)
 			throw new Exception("Could not open file: $file");
 
-		$data_to_send = @file_get_contents($path . $file);
+		$data_to_send = file_get_contents($path . $file);
 		if ($data_to_send === false)
 			throw new Exception("Could not open local file: $file.");
 		
-		if (@fwrite($stream, $data_to_send) === false)
+		if (fwrite($stream, $data_to_send) === false)
 			throw new Exception("Could not send data from file: $file.");
 	
-		@fclose($stream);
+		fclose($stream);
 		unlink($path . $file);
 	}
 
