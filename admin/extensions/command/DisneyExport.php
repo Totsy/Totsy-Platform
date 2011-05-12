@@ -307,7 +307,7 @@ class DisneyExport extends \lithium\console\Command {
 	*/
 	public function transferFile($file, $path) {
 		$host = $this->_server;
-		$connection = @ssh2_connect($this->_server, 22);
+		$connection = ssh2_connect($this->_server, 22);
 		if (! $connection)
 			throw new Exception("Could not connect to $host on port 22.");
 		
