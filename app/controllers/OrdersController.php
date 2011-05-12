@@ -253,9 +253,9 @@ class OrdersController extends BaseController {
 			$overShippingCost = Cart::overSizeShipping($cart);
 			$tax = $tax ? $tax + (($overShippingCost + $shippingCost) * Cart::TAX_RATE) : 0;
 		}
-		$session = Session::read('services', array('name' => 'default'));
-		if ( $session && array_key_exists('freeshipping', $session)) {
-		    if ($session['freeshipping'] === 'eligible') {
+		$service = Session::read('services', array('name' => 'default'));
+		if ( $service && array_key_exists('freeshipping', $service)) {
+		    if ($service['freeshipping'] === 'eligible') {
 				$shippingCost = 0;
 				$overSizeHandling = 0;
 			}
@@ -392,6 +392,13 @@ class OrdersController extends BaseController {
 				$order->promo_code = $orderPromo->code;
 				$order->promo_discount = $orderPromo->saved_amount;
 			}
+		if ($service) {
+				$services = array();
+				if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
+					$services = array_merge($services, array("freeshipping"));
+				}
+				$order->service = $services;
+			}
 			if (!empty($orderPromo->type)) {
 				if ($orderPromo->type == 'free_shipping') {
 					Promocode::add((string) $code->_id, 0, $order->total);
@@ -470,7 +477,6 @@ class OrdersController extends BaseController {
 				}
 			}
 		}
-
 		return $eventItems;
 	}
 

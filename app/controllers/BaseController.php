@@ -120,7 +120,7 @@ class BaseController extends \lithium\action\Controller {
                     //checks if the user ever made a purchase
                     if ($user->purchase_count < 1) {
                             $sessionServices = Session::read('services', array('name' => 'default'));
-                            if ($sessionServices && !array_key_exists('freeshipping', $sessionServices)) {
+                            if ($sessionServices && array_key_exists('freeshipping', $sessionServices)) {
                                 $sessionServices['freeshipping'] = 'eligible';
                                 Session::write('services', $sessionServices, array('name' => 'default'));
                             }
