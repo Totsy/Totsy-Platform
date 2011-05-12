@@ -253,14 +253,19 @@ class OrdersController extends BaseController {
 			$overShippingCost = Cart::overSizeShipping($cart);
 			$tax = $tax ? $tax + (($overShippingCost + $shippingCost) * Cart::TAX_RATE) : 0;
 		}
-
+		$session = Session::read('services', array('name' => 'default'));
+		if ( $session && array_key_exists('freeshipping', $session)) {
+		    if ($session['freeshipping'] === 'eligible') {
+				$shippingCost = 0;
+				$overSizeHandling = 0;
+			}
+		}
 		$map = function($item) { return $item->sale_retail * $item->quantity; };
 		$subTotal = array_sum($cart->map($map)->data());
 
 		$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
 
 		$orderCredit = Credit::create();
-
 		if (Session::read('credit')) {
 			$orderCredit->credit_amount = Session::read('credit');
 		}

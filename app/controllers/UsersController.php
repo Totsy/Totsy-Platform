@@ -46,7 +46,7 @@ class UsersController extends BaseController {
 		$this->autoLogin();
 		/*
 		* redirects to the affiliate registration page if the left the page
-		* and then decided to register after words.
+		* and then decided to register afterwards.
 		*/
 		if (Session::check('cookieCrumb', array('name' => 'cookie'))){
 			$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
@@ -117,6 +117,7 @@ class UsersController extends BaseController {
 					'email' => $user->email
 				);
 				Session::write('userLogin', $userLogin, array('name'=>'default'));
+				Session::write('services', array('freeshipping' => 'eligible'), array('name'=>'default'));
 				$data = array(
 					'user' => $user,
 					'email' => $user->email

@@ -4,6 +4,7 @@ namespace app\models;
 
 use MongoId;
 use MongoDate;
+use lithium\storage\Session;
 use li3_payments\extensions\Payments;
 use li3_payments\extensions\payments\exceptions\TransactionException;
 
@@ -61,12 +62,19 @@ class Order extends \lithium\data\Model {
 		$tax = array_sum($cart->tax($shipping));
 		$handling = Cart::shipping($cart, $shipping);
 		$overSizeHandling = Cart::overSizeShipping($cart);
+		$session = Session::read('services', array('name' => 'default'));
 		if(!empty($orderPromo->type)) {
 			if($orderPromo->type == 'free_shipping') {
 				$handling = 0;
 				$overSizeHandling = 0;
 			}
 		};
+		if ( $session && array_key_exists('freeshipping', $session)) {
+		    if ($session['freeshipping'] === 'eligible') {
+				$handling = 0;
+				$overSizeHandling = 0;
+			}
+		}
 		// if (!$handling) {
 		// 	$order->errors($order->errors() + array(
 		// 		'shipping' => 'A valid shipping address was not specified.'
