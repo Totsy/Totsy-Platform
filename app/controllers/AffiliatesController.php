@@ -102,6 +102,7 @@ class AffiliatesController extends BaseController {
 						'email' => $user->email
 					);
 					Session::write('userLogin', $userLogin, array('name'=>'default'));
+					Session::write('services', array('freeshipping' => 'eligible'), array('name'=>'default'));
 		            Session::write('pixel',$pixel, array('name'=>'default'));
 					Affiliate::linkshareCheck($userLogin['_id'], $affiliate, $cookie);
 					User::log($ipaddress);
