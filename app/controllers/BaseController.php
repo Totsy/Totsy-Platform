@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use app\models\Cart;
 use app\models\User;
-use app\models\
+use app\models\Order;
 use app\models\Service;
 use lithium\storage\Session;
 use app\models\Affiliate;
