@@ -5,6 +5,7 @@
 				<div class="tt">
 					<div><!-- --></div>
 				</div>
+				<div class="free_shipping_banner"><img src="/img/freeShip-badge.png" /></div>
 
 				<div class="tm">
 
@@ -132,6 +133,7 @@
 								</div>
 								<div class="bl"></div>
 								<div class="br"></div>
+								
 							</div>
 							<div class="r-container clear reg-list">
 								<div class="tl"></div>
@@ -150,7 +152,11 @@
 								<div class="bl"></div>
 								<div class="br"></div>
 							</div>
+							<p class="login-sig clear">Exclusive access, Top brands. Great deals. <span class="red">The savvy mom shops at Totsy.com</span></p>
+							<p style="text-align:center; font-size:11px; color:#333;">* Offer expires 30 days after registration</p>
+
 						</div>
+						
 					</div>
 				</div>
 
