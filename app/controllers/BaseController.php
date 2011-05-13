@@ -114,7 +114,7 @@ class BaseController extends \lithium\action\Controller {
                     date('d',$created_date)+30,
                     date('Y',$created_date)
                 )); */
-                $dayThirty = date('m/d/Y',mktime(date('H',$created_date),date('i',$created_date) + 5,0,date('m',$created_date),
+                $dayThirty = date('m/d/Y H:i:s',mktime(date('H',$created_date),date('i',$created_date) + 15,date('s', $created_date),date('m',$created_date),
                     date('d',$created_date),
                     date('Y',$created_date)
                 ));
