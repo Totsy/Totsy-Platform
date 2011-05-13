@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Cart;
 use app\models\User;
+use app\models\Order;
 use app\models\Service;
 use lithium\storage\Session;
 use app\models\Affiliate;
@@ -109,29 +110,39 @@ class BaseController extends \lithium\action\Controller {
 	        $user = User::find('first', array('conditions' => array('_id' => $userInfo)));
 	        if ($user) {
                 $created_date = $user->created_date->sec;
-                $dayThirty = date('m/d/Y',mktime(0,0,0,date('m',$created_date),
+          /*   $dayThirty = date('m/d/Y',mktime(0,0,0,date('m',$created_date),
                     date('d',$created_date)+30,
+                    date('Y',$created_date)
+                )); */
+                $dayThirty = date('m/d/Y H:i:s',mktime(date('H',$created_date),date('i',$created_date) + 15,date('s', $created_date),date('m',$created_date),
+                    date('d',$created_date),
                     date('Y',$created_date)
                 ));
 	            //check if the user is still eligible for free shipping
                 if ( ($service->start_date->sec <= $created_date &&
                         $service->end_date->sec > $created_date) &&
-                    (date('m/d/Y') < $dayThirty)) {
+                    (date('m/d/Y H:i:s') < $dayThirty)) {
                     //checks if the user ever made a purchase
                     if ($user->purchase_count < 1) {
-                            $sessionServices = Session::read('services', array('name' => 'default'));
-                            if ($sessionServices && array_key_exists('freeshipping', $sessionServices)) {
-                                $sessionServices['freeshipping'] = 'eligible';
-                                Session::write('services', $sessionServices, array('name' => 'default'));
-                            }
-                        } else {
-                            if ($sessionServices &&
-                                    array_key_exists('freeshipping', $sessionServices)) {
-                                    $sessionServices['freeshipping'] = 'used';
-                                    Session::write('services', $sessionServices,array('name' => 'default'));
-                                }
+                        $sessionServices = Session::read('services', array('name' => 'default'));
+                        if ($sessionServices && array_key_exists('freeshipping', $sessionServices)) {
+                            $sessionServices['freeshipping'] = 'eligible';
+                            Session::write('services', $sessionServices, array('name' => 'default'));
                         }
-                }
+                    } else {
+                        if ($sessionServices &&
+                                array_key_exists('freeshipping', $sessionServices)) {
+                            $sessionServices['freeshipping'] = 'used';
+                            Session::write('services', $sessionServices,array('name' => 'default'));
+                        }
+                    }
+                } else { //mark freeshipping service as expired
+                        if ($sessionServices &&
+                                array_key_exists('freeshipping', $sessionServices)) {
+                            $sessionServices['freeshipping'] = 'expired';
+                            Session::write('services', $sessionServices,array('name' => 'default'));
+                        }
+                    }
 	        }
 	    }
 	}
