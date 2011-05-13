@@ -2,9 +2,13 @@
 
 namespace admin\extensions\command;
 
+use lithium\core\Environment;
 use admin\models\User;
 use admin\models\Order;
 use admin\models\Service;
+use MongoDate;
+use MongoId;
+use li3_silverpop\extensions\Silverpop;
 /**
  *
  */
@@ -20,21 +24,32 @@ class FirstPurchaseReminder extends \lithium\console\Command  {
 	 * 
 	 */
 	public function run() {
-		$usersCollection = User::collection();
+		Environment::set($this->env);
+		$usersCollection = User::connection()->connection->users;
 		$servicesCollection = Service::collection();
-		$now = new MongoDate();
-		#OPTIMIZATION
-		$usersCollection->ensureIndex(array('created_date' => 1));
-		$usersCollection->ensureIndex(array('purchase_count' => 1));
+		$idx = 0;
 		#RUNNING
-		$freeshipService = $servicesCollection->findOne(array('name' => 'Free Shipping'));
-		
-		$creation_date = $freeshipService['start_date'];
+		$freeshipService = Service::find('first', array('conditions' => array('name' => 'Free Shipping')));
 		$conditions = array( 'purchase_count' => array('$exists' => false),
 							 'created_date' => array(
-					           '$gt' => $creation_date
+								'$gt' => $freeshipService['start_date'],
+								'$lte' => $freeshipService['end_date']
 					)
 		);
-		$usersCollection->find($conditions);
+		$users = $usersCollection->find($conditions);
+		$now = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+		foreach ($users as $user) {
+			$verif_date = $user['created_date']->sec;
+			$day_target = mktime(0, 0, 0, date("m", $verif_date), date("d", $verif_date) + 23, date("Y", $verif_date));
+			if($day_target == $now) {
+				$data = array(
+				'from_email' => 'no-reply@totsy.com',
+				'to_email' => 'troyer@totsy.com'
+				);
+				//Silverpop::send('disney', $data);
+				$idx++;
+			}
+		}
+		echo $idx.' emails reminders have been sent';
 	}
 }
