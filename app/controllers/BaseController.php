@@ -110,8 +110,12 @@ class BaseController extends \lithium\action\Controller {
 	        $user = User::find('first', array('conditions' => array('_id' => $userInfo)));
 	        if ($user) {
                 $created_date = $user->created_date->sec;
-             $dayThirty = date('m/d/Y',mktime(0,0,0,date('m',$created_date),
+          /*   $dayThirty = date('m/d/Y',mktime(0,0,0,date('m',$created_date),
                     date('d',$created_date)+30,
+                    date('Y',$created_date)
+                )); */
+                $dayThirty = date('m/d/Y',mktime(date('H',$created_date),date('i',$created_date) + 5,0,date('m',$created_date),
+                    date('d',$created_date),
                     date('Y',$created_date)
                 ));
 	            //check if the user is still eligible for free shipping
@@ -132,7 +136,13 @@ class BaseController extends \lithium\action\Controller {
                             Session::write('services', $sessionServices,array('name' => 'default'));
                         }
                     }
-                }
+                } else { //mark freeshipping service as expired
+                        if ($sessionServices &&
+                                array_key_exists('freeshipping', $sessionServices)) {
+                            $sessionServices['freeshipping'] = 'expired';
+                            Session::write('services', $sessionServices,array('name' => 'default'));
+                        }
+                    }
 	        }
 	    }
 	}
