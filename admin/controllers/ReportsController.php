@@ -9,6 +9,7 @@ use admin\models\Event;
 use admin\models\Item;
 use admin\models\Base;
 use admin\models\Report;
+use admin\models\Service;
 use Mongo;
 use MongoCode;
 use MongoDate;
@@ -1093,6 +1094,91 @@ class ReportsController extends BaseController {
 			'6' => 'Saturday'
 		);
 		return compact('DailyCharts','days','start_date','end_date');
+	}
+	
+	/**
+	* Generates graphics that shows the evolution of event sales.
+	* It started from the days of launching to 4 days later.
+	*/
+	public function services() {
+		$usersCollection = User::connection()->connection->users;
+		$ordersCollection = Order::collection();
+		$servicesCollection = Service::collection();
+		$statistics["registered_user_purch_30"] = 0;
+		$statistics["registered_user_purch_23_30"] = 0;
+		$statistics["registered_user_purch_0_23"] = 0;
+		$idx = 0;
+		#RUNNING
+		$freeshipService = Service::find('first', array('conditions' => array('name' => 'Free Shipping')));
+		#REGISTERED USERS
+		$date_30days = mktime(0, 0, 0, date("m"), date("d")-30, date("Y"));
+		$conditions_A = array('created_date' => array(
+								'$gt' => $freeshipService['start_date'],
+								'$lte' => new MongoDate($date_30days)
+		));
+		$statistics["registered_user"] = $usersCollection->count($conditions_A);
+		#REGISTERED USERS / No Purchases
+		$conditions_B = array(	'purchase_count' => array('$exists' => false),
+								'created_date' => array(
+									'$gt' => $freeshipService['start_date'],
+									'$lte' => new MongoDate($date_30days)
+		));	
+		$statistics["registered_user_no_purch"] = $usersCollection->count($conditions_B);
+		$conditions_C = array('purchase_count' => array('$exists' => true),
+								'created_date' => array(
+									'$gt' => $freeshipService['start_date'],
+									'$lte' => new MongoDate($date_30days)
+		));	
+		$users_C = $usersCollection->find($conditions_C);
+		foreach ($users_C as $user) {
+			# 1st Purchase between 0 to 23 days
+			$day_target_23 = mktime(
+								date("G", $user['created_date']->sec),
+								date("i", $user['created_date']->sec),
+								date("s", $user['created_date']->sec),
+								date("m", $user['created_date']->sec),
+								date("d", $user['created_date']->sec) + 23,
+								date("Y", $user['created_date']->sec)
+						);
+			$day_target_30 = mktime(
+								date("G", $user['created_date']->sec),
+								date("i", $user['created_date']->sec),
+								date("s", $user['created_date']->sec),
+								date("m", $user['created_date']->sec),
+								date("d", $user['created_date']->sec) + 30,
+								date("Y", $user['created_date']->sec)
+						);
+			$conditions_order = array("user_id" => (string) $user["_id"]);
+			$order = $ordersCollection->findOne($conditions_order,array('date_created' => 1));
+			if($order['date_created']->sec > $day_target_30) {
+				$statistics["registered_user_purch_30"]++;
+			} else if (($order['date_created']->sec < $day_target_30) && ($order['date_created']->sec > $day_target_23)) {
+				$statistics["registered_user_purch_23_30"]++;
+			} else if (($order['date_created']->sec < $day_target_23)) {
+				$statistics["registered_user_purch_0_23"]++;
+			}
+		}
+		//titles
+		$chart_datas[0][0] = 'Registered Users';
+		$chart_datas[1][0] = 'w/ no Purchases';
+		$chart_datas[2][0] = '1st purchase 0-23d';
+		$chart_datas[3][0] = '1st purchase 23-30d';
+		$chart_datas[4][0] = '1st purchase <30';
+		//datas
+		$chart_datas[0][1] = $statistics["registered_user"];
+		$chart_datas[1][1] = $statistics["registered_user_no_purch"];
+		$chart_datas[2][1] = $statistics["registered_user_purch_0_23"];
+		$chart_datas[3][1] = $statistics["registered_user_purch_23_30"];
+		$chart_datas[4][1] = $statistics["registered_user_purch_30"];
+		
+		# Create Column3D chart Object
+		$ServiceCharts = new FusionCharts("Column3D","700","350");
+		#  Set chart attributes
+		$strParam = "caption=Tracking Users Campaign;xAxisName=People;yAxisName=Percentage;numberSuffix=";
+		$ServiceCharts->setChartParams($strParam);
+		# add chart values and  category names
+		$ServiceCharts->addChartDataFromArray($chart_datas);
+		return compact('ServiceCharts');
 	}
 }
 
