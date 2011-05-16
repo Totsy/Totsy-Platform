@@ -125,7 +125,12 @@ class Affiliate extends Base {
                 $user = User::find('first', array('conditions' => array(
                     'email' => $session['email']
                 )));
-                $insert = static::spinback_share('/img/logo.png', $user->_id, '/join/' . $user->invitation_codes[0], 'The best brands for kids, moms & families up to 90% off!', '' ,"I saved tons on Totsy and you can too! Membership is FREE so join today!", ' st="Invite Your Friends" ');
+                if (is_object($user->invitation_codes) && get_class($user->invitation_codes) == "lithium\data\collection\DocumentArray") {
+                    $code = $user->invitation_codes[0];
+                } else {
+                    $code = $user->invitation_codes;
+                }
+                $insert = static::spinback_share('/img/logo.png', $user->_id, '/join/' . $code, 'The best brands for kids, moms & families up to 90% off!', '' ,"I saved tons on Totsy and you can too! Membership is FREE so join today!", ' st="Invite Your Friends" ');
                 return str_replace('$' , $insert, $pixel);
             }
             if (array_key_exists('orderid', $options) && ($options['orderid'])) {
