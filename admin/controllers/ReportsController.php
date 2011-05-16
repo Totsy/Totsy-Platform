@@ -306,12 +306,8 @@ class ReportsController extends BaseController {
 										$purchaseOrder[$inc]['Product Name'] = $eventItem['description'];
 										$purchaseOrder[$inc]['Product Color'] = $eventItem['color'];
 										$purchaseOrder[$inc]['Vendor Style'] = $eventItem['vendor_style'];
-										$purchaseOrder[$inc]['SKU'] = Item::sku(
-											$eventItem['vendor'],
-											$eventItem['vendor_style'],
-											$item['size'],
-											$eventItem['color']
-										);
+										$itemRecord = Item::collection()->findOne(array('_id' => new MongoId($item['item_id'])));
+										$purchaseOrder[$inc]['SKU'] = $itemRecord['sku_details'][$item['size']];
 										$purchaseOrder[$inc]['Unit'] = $eventItem['sale_whol'];
 										if (empty($purchaseOrder[$inc]['Quantity'])) {
 											$purchaseOrder[$inc]['Quantity'] = $item['quantity'];

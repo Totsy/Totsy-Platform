@@ -224,12 +224,7 @@ class OrderExport extends Base {
 							$orderFile[$inc]['Tel'] = $order['shipping']['telephone'];
 							$orderFile[$inc]['Country'] = '';
 							$orderFile[$inc]['OrderNum'] = $order['order_id'];
-							$orderFile[$inc]['SKU'] = Item::sku(
-								$orderItem['vendor'],
-								$orderItem['vendor_style'],
-								$item['size'],
-								$orderItem['color']
-							);
+							$orderFile[$inc]['SKU'] = $orderItem['sku_details'][$item['size']];
 							$orderFile[$inc]['Qty'] = $item['quantity'];
 							$orderFile[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
 							$orderFile[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
@@ -314,7 +309,7 @@ class OrderExport extends Base {
 				$eventItems = $this->_getOrderItems($eventId);
 				foreach ($eventItems as $eventItem) {
 					foreach ($eventItem['details'] as $key => $value) {
-						$sku = Item::sku($eventItem['vendor'], $eventItem['vendor_style'], $key, $eventItem['color']);
+						$sku = $eventItem['sku_details'][$key];
 						$conditions = array('SKU' => $sku);
 						$itemMasterCheck = ItemMaster::count(compact('conditions'));
 						if ($itemMasterCheck == 0){
@@ -412,12 +407,7 @@ class OrderExport extends Base {
 								if ($itemValid && ((string) $key == $item['size']) && $active){
 									$purchaseOrder[$inc]['Supplier'] = $eventItem['vendor'];
 									$purchaseOrder[$inc]['PO # / RMA #'] = $poNumber;
-									$purchaseOrder[$inc]['SKU'] = Item::sku(
-										$eventItem['vendor'],
-										$eventItem['vendor_style'],
-										$item['size'],
-										$eventItem['color']
-									);
+									$purchaseOrder[$inc]['SKU'] = $eventItem['sku_details'][$item['size']];
 									if (empty($purchaseOrder[$inc]['Qty'])) {
 										$purchaseOrder[$inc]['Qty'] = $item['quantity'];
 									} else {
