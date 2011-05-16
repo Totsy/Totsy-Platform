@@ -69,12 +69,9 @@ class Order extends \lithium\data\Model {
 				$overSizeHandling = 0;
 			}
 		};
-		if ( $session && array_key_exists('freeshipping', $session)) {
-		    if ($session['freeshipping'] === 'eligible') {
-				$handling = 0;
-				$overSizeHandling = 0;
-			}
-		}
+		extract(Service::freeShippingCheck($handling, $overSizeHandling));
+		$handling = $shippingCost;
+
 		// if (!$handling) {
 		// 	$order->errors($order->errors() + array(
 		// 		'shipping' => 'A valid shipping address was not specified.'
@@ -84,7 +81,7 @@ class Order extends \lithium\data\Model {
 		// }
 
 		$tax = $tax ? $tax + (($overSizeHandling+$handling) * Cart::TAX_RATE) : 0;
-		$afterDiscount = $subTotal + $orderCredit->credit_amount + $orderPromo->saved_amount;
+		$afterDiscount = $subTotal + $orderCredit->credit_amount + $orderPromo->saved_amount + Service::tenOffFiftyCheck($subTotal);
 		if( $afterDiscount < 0 ){
 		    $afterDiscount = 0;
 		}

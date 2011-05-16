@@ -117,7 +117,6 @@ class UsersController extends BaseController {
 					'email' => $user->email
 				);
 				Session::write('userLogin', $userLogin, array('name'=>'default'));
-				Session::write('services', array('freeshipping' => 'eligible'), array('name'=>'default'));
 				$data = array(
 					'user' => $user,
 					'email' => $user->email

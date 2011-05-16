@@ -13,6 +13,7 @@ use app\models\Promotion;
 use app\models\Promocode;
 use app\models\Affiliate;
 use app\models\OrderShipped;
+use app\models\Service;
 use app\controllers\BaseController;
 use lithium\storage\Session;
 use lithium\util\Validator;
@@ -253,13 +254,13 @@ class OrdersController extends BaseController {
 			$overShippingCost = Cart::overSizeShipping($cart);
 			$tax = $tax ? $tax + (($overShippingCost + $shippingCost) * Cart::TAX_RATE) : 0;
 		}
+		/**
+		*	Handling services the user may be eligible for
+		*	@see app\models\Service::freeShippingCheck()
+		**/
 		$service = Session::read('services', array('name' => 'default'));
-		if ( $service && array_key_exists('freeshipping', $service)) {
-		    if ($service['freeshipping'] === 'eligible') {
-				$shippingCost = 0;
-				$overSizeHandling = 0;
-			}
-		}
+		extract(Service::freeShippingCheck($shippingCost, $overShippingCost));
+
 		$map = function($item) { return $item->sale_retail * $item->quantity; };
 		$subTotal = array_sum($cart->map($map)->data());
 
@@ -302,7 +303,9 @@ class OrdersController extends BaseController {
 		}
 
 		$orderPromo = Promotion::create();
-		$postCreditTotal = $subTotal + $orderCredit->credit_amount;
+		$orderServiceCredit = Service::tenOffFiftyCheck($subTotal);
+		$postServiceCredit = $subTotal + $orderServiceCredit;
+		$postCreditTotal = $postServiceCredit + $orderCredit->credit_amount;
 		if (Session::read('promocode')) {
 			$orderPromo->code = Session::read('promocode');
 		}
@@ -372,7 +375,7 @@ class OrdersController extends BaseController {
 		}
 		$vars = compact(
 			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
-			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'userDoc', 'discountExempt'
+			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'orderServiceCredit','userDoc', 'discountExempt'
 		);
 
 		if (($cart->data()) && (count($this->request->data) > 1) && $order->process($user, $data, $cart, $orderCredit, $orderPromo)) {
