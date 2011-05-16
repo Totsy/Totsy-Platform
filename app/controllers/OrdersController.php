@@ -395,10 +395,13 @@ class OrdersController extends BaseController {
 				$order->promo_code = $orderPromo->code;
 				$order->promo_discount = $orderPromo->saved_amount;
 			}
-		if ($service) {
+			if ($service) {
 				$services = array();
 				if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
 					$services = array_merge($services, array("freeshipping"));
+				}
+				if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible') {
+					$services = array_merge($services, array("10off50"));
 				}
 				$order->service = $services;
 			}
