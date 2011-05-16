@@ -29,7 +29,7 @@ class FirstPurchaseReminder extends \lithium\console\Command  {
 		$servicesCollection = Service::collection();
 		$idx = 0;
 		#RUNNING
-		$freeshipService = Service::find('first', array('conditions' => array('name' => 'Free Shipping')));
+		$freeshipService = Service::find('first', array('conditions' => array('name' => 'freeshipping')));
 		$conditions = array( 'purchase_count' => array('$exists' => false),
 							 'created_date' => array(
 								'$gt' => $freeshipService['start_date'],
