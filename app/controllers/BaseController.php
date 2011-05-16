@@ -119,10 +119,10 @@ class BaseController extends \lithium\action\Controller {
                 **/
                 $dayThirty = date('m/d/Y H:i:s',mktime(
                     date('H',$created_date),
-                    date('i',$created_date),
+                    date('i',$created_date) + 15,
                     date('s', $created_date),
                     date('m',$created_date),
-                    date('d',$created_date) + 2,
+                    date('d',$created_date),
                     date('Y',$created_date)
                 ));
 	            /**
@@ -131,28 +131,23 @@ class BaseController extends \lithium\action\Controller {
 	            *   starts and end; and the user uses the service with in thirty days
 	            *   of their registration
 	            */
+
                 if ( ($service->start_date->sec <= $created_date &&
                         $service->end_date->sec > $created_date) &&
                     (date('m/d/Y H:i:s') < $dayThirty)) {
+
                     //checks if the user ever made a purchase
                     if ($user->purchase_count < 1) {
                         $sessionServices = Session::read('services', array('name' => 'default'));
-                        if ($sessionServices && !array_key_exists('freeshipping', $sessionServices)) {
-                            $sessionServices['freeshipping'] = 'eligible';
-                            Session::write('services', $sessionServices, array('name' => 'default'));
-                        }
-
+                        $sessionServices['freeshipping'] = 'eligible';
+                        Session::write('services', $sessionServices, array('name' => 'default'));
                     } else {
-                        if ($sessionServices) {
-                            $sessionServices['freeshipping'] = 'used';
-                            Session::write('services', $sessionServices,array('name' => 'default'));
-                        }
-                    }
-                } else { //mark freeshipping service as expired
-                    if ($sessionServices) {
-                        $sessionServices['freeshipping'] = 'expired';
+                        $sessionServices['freeshipping'] = 'used';
                         Session::write('services', $sessionServices,array('name' => 'default'));
                     }
+                } else { //mark freeshipping service as expired
+                        $sessionServices['freeshipping'] = 'expired';
+                        Session::write('services', $sessionServices,array('name' => 'default'));
                 }
 	        }
 	    }
@@ -174,10 +169,10 @@ class BaseController extends \lithium\action\Controller {
                         **/
                         $expire_date = date('m/d/Y H:i:s',mktime(
                             date('H',$created_date),
-                            date('i',$created_date),
+                            date('i',$created_date) + 15,
                             date('s', $created_date),
                             date('m',$created_date),
-                            date('d',$created_date) + 2,
+                            date('d',$created_date),
                             date('Y',$created_date)
                         ));
                         /**
