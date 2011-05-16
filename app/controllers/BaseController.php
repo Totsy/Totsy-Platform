@@ -137,20 +137,19 @@ class BaseController extends \lithium\action\Controller {
                     //checks if the user ever made a purchase
                     if ($user->purchase_count < 1) {
                         $sessionServices = Session::read('services', array('name' => 'default'));
-                        if ($sessionServices && array_key_exists('freeshipping', $sessionServices)) {
+                        if ($sessionServices && !array_key_exists('freeshipping', $sessionServices)) {
                             $sessionServices['freeshipping'] = 'eligible';
                             Session::write('services', $sessionServices, array('name' => 'default'));
                         }
+
                     } else {
-                        if ($sessionServices &&
-                                array_key_exists('freeshipping', $sessionServices)) {
+                        if ($sessionServices) {
                             $sessionServices['freeshipping'] = 'used';
                             Session::write('services', $sessionServices,array('name' => 'default'));
                         }
                     }
                 } else { //mark freeshipping service as expired
-                    if ($sessionServices &&
-                            array_key_exists('freeshipping', $sessionServices)) {
+                    if ($sessionServices) {
                         $sessionServices['freeshipping'] = 'expired';
                         Session::write('services', $sessionServices,array('name' => 'default'));
                     }
@@ -192,7 +191,7 @@ class BaseController extends \lithium\action\Controller {
                             Session::write('services', $serviceSession,array('name' => 'default'));
                         }
                     } else {
-                        $serviceSession['10off50'] = 'used';
+                        $serviceSession['10off50'] = 'ineligible';
                         Session::write('services', $serviceSession,array('name' => 'default'));
                     }
                 }

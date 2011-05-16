@@ -375,7 +375,7 @@ class OrdersController extends BaseController {
 		}
 		$vars = compact(
 			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
-			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'orderServiceCredit','userDoc', 'discountExempt'
+			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
 		);
 
 		if (($cart->data()) && (count($this->request->data) > 1) && $order->process($user, $data, $cart, $orderCredit, $orderPromo)) {

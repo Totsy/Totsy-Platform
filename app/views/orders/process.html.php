@@ -110,7 +110,7 @@
 				<?php
 					if ($orderServiceCredit): ?>
 						<tr>
-							<td>You qualified for $10 off your purchase!</td><td>- $10.00</td>
+							<td>You qualify for $10 off your purchase!</td><td>- $10.00</td>
 						</tr>
 				<?php endif; ?>
 				<tr>
@@ -123,6 +123,12 @@
 						<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $overShippingCost, 2);?></td>
 					</tr>
 				<?php endif ?>
+				<?php
+					if ($freeshipping): ?>
+						<tr>
+							<td>You qualify for freeshipping!</td>
+						</tr>
+				<?php endif; ?>
 				<tr>
 					<td><strong>Sales Tax:</strong></td>
 					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $tax, 2);?>
