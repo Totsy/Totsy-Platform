@@ -122,7 +122,7 @@ class UsersController extends BaseController {
 					'user' => $user,
 					'email' => $user->email
 				);
-				Silverpop::send('registration', $data);
+				Silverpop::send('registrationNew', $data);
 				$ipaddress = $this->request->env('REMOTE_ADDR');
 				User::log($ipaddress);
 				$this->redirect('/sales');
@@ -162,7 +162,7 @@ class UsersController extends BaseController {
 							'user' => $user,
 							'email' => $user->email
 						);
-						Silverpop::send('registration', $data);
+						Silverpop::send('registrationNew', $data);
 					}
 				}
 			}

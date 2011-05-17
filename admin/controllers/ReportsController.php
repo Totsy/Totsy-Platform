@@ -1095,7 +1095,7 @@ class ReportsController extends BaseController {
 		);
 		return compact('DailyCharts','days','start_date','end_date');
 	}
-	
+
 	/**
 	* Generates graphics that shows behaviour of user with :
 	* Free shipping discount for the first order
@@ -1122,25 +1122,27 @@ class ReportsController extends BaseController {
 		$idx = 0;
 		#RUNNING
 		$freeshipService = Service::find('first', array('conditions' => array('name' => 'freeshipping')));
+		var_dump(date('m/d/Y', $freeshipService['start_date']->sec));
 		#REGISTERED USERS
-		$date_30days = mktime(0, 0, 0, date("m"), date("d")-30, date("Y"));
+		$date_30days = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
 		$conditions_A = array('created_date' => array(
 								'$gt' => $freeshipService['start_date'],
 								'$lte' => new MongoDate($date_30days)
 		));
 		$statistics["registered_user"] = $usersCollection->count($conditions_A);
+		var_dump($statistics["registered_user"]);
 		#REGISTERED USERS / No Purchases
 		$conditions_B = array(	'purchase_count' => array('$exists' => false),
 								'created_date' => array(
 									'$gt' => $freeshipService['start_date'],
 									'$lte' => new MongoDate($date_30days)
-		));	
+		));
 		$statistics["registered_user_no_purch"] = $usersCollection->count($conditions_B);
 		$conditions_C = array('purchase_count' => array('$exists' => true),
 								'created_date' => array(
 									'$gt' => $freeshipService['start_date'],
 									'$lte' => new MongoDate($date_30days)
-		));	
+		));
 		$users_C = $usersCollection->find($conditions_C);
 		foreach ($users_C as $user) {
 			$key = 0;
@@ -1213,7 +1215,7 @@ class ReportsController extends BaseController {
 			}
 			if($key == 1) {
 				$statistics["registered_user_no_2purch"]++;
-			}		
+			}
 		}
 		/**** 1ST Charts ****/
 		//titles
