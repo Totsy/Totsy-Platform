@@ -106,8 +106,10 @@ class BaseController extends \lithium\action\Controller {
 	public function freeShippingEligible($userInfo){
 	    $sessionServices = Session::read('services', array('name' => 'default'));
 	    $service = Service::find('first', array('conditions' => array('name' => 'freeshipping') ));
+	    var_dump($service);
 	    if ($userInfo && $service) {
 	        $user = User::find('first', array('conditions' => array('_id' => $userInfo['_id'])));
+	        var_dump($user);
 	        if ($user) {
                 $created_date = $user->created_date->sec;
           /*   $dayThirty = date('m/d/Y',mktime(0,0,0,date('m',$created_date),
