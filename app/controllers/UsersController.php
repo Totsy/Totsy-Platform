@@ -48,11 +48,10 @@ class UsersController extends BaseController {
 		* redirects to the affiliate registration page if the left the page
 		* and then decided to register afterwards.
 		*/
-		if (Session::check('cookieCrumb', array('name' => 'cookie'))){
-			$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-			if(preg_match('(/a/)', $cookie['landing_url'])){
-				$this->redirect($cookie['landing_url']);
-			}
+
+		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
+		if($cookie && preg_match('(/a/)', $cookie['landing_url'])){
+			$this->redirect($cookie['landing_url']);
 		}
 		if (isset($data) && $this->request->data) {
 			$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
@@ -116,7 +115,9 @@ class UsersController extends BaseController {
 				//	'zip' => $user->zip,
 					'email' => $user->email
 				);
-				Session::write('userLogin', $userLogin, array('name'=>'default'));
+				Session::write('userLogin', $userLogin, array('name' => 'default'));
+				$cookie['user_id'] = $user->_id;
+				Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 				$data = array(
 					'user' => $user,
 					'email' => $user->email
