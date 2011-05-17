@@ -1123,23 +1123,22 @@ class ReportsController extends BaseController {
 		#RUNNING
 		$freeshipService = Service::find('first', array('conditions' => array('name' => 'freeshipping')));
 		#REGISTERED USERS
-		$date_30days = mktime(0, 0, 0, date("m"), date("d")-30, date("Y"));
 		$conditions_A = array('created_date' => array(
 								'$gt' => $freeshipService['start_date'],
-								'$lte' => new MongoDate($date_30days)
+								'$lte' => new MongoDate()
 		));
 		$statistics["registered_user"] = $usersCollection->count($conditions_A);
 		#REGISTERED USERS / No Purchases
 		$conditions_B = array(	'purchase_count' => array('$exists' => false),
 								'created_date' => array(
 									'$gt' => $freeshipService['start_date'],
-									'$lte' => new MongoDate($date_30days)
+									'$lte' => new MongoDate()
 		));	
 		$statistics["registered_user_no_purch"] = $usersCollection->count($conditions_B);
 		$conditions_C = array('purchase_count' => array('$exists' => true),
 								'created_date' => array(
 									'$gt' => $freeshipService['start_date'],
-									'$lte' => new MongoDate($date_30days)
+									'$lte' => new MongoDate()
 		));	
 		$users_C = $usersCollection->find($conditions_C);
 		foreach ($users_C as $user) {
