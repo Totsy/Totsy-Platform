@@ -126,7 +126,7 @@
 				<?php
 					if ($freeshipping): ?>
 						<tr>
-							<td>You qualify for freeshipping!</td>
+							<td>You qualify for free shipping!</td>
 						</tr>
 				<?php endif; ?>
 				<tr>
