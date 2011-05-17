@@ -5,7 +5,7 @@
 				<div class="tt">
 					<div><!-- --></div>
 				</div>
-				<div class="free_shipping_banner"><img src="/img/freeShip-badge.png" /></div>
+				<div class="free_shipping_banner_reg"><img src="/img/freeShip-badge.png" /></div>
 
 				<div class="tm">
 
