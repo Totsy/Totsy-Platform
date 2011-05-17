@@ -131,7 +131,6 @@ class BaseController extends \lithium\action\Controller {
 	            *   starts and end; and the user uses the service with in thirty days
 	            *   of their registration
 	            */
-	            var_dump(date('m/d/Y H:i:s') < $dayThirty, $dayThirty);
                 if ( ($service->start_date->sec <= $created_date &&
                         $service->end_date->sec > $created_date) &&
                     (date('m/d/Y H:i:s') < $dayThirty)) {
