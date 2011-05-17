@@ -135,17 +135,19 @@ class BaseController extends \lithium\action\Controller {
                 if ( ($service->start_date->sec <= $created_date &&
                         $service->end_date->sec > $created_date) &&
                     (date('m/d/Y H:i:s') < $dayThirty)) {
-
+                    var_dump('Freeshipping eligible');
                     //checks if the user ever made a purchase
                     if ($user->purchase_count < 1) {
                         $sessionServices = Session::read('services', array('name' => 'default'));
                         $sessionServices['freeshipping'] = 'eligible';
                         Session::write('services', $sessionServices, array('name' => 'default'));
                     } else {
+                        var_dump('Freeshipping used');
                         $sessionServices['freeshipping'] = 'used';
                         Session::write('services', $sessionServices,array('name' => 'default'));
                     }
                 } else { //mark freeshipping service as expired
+                        var_dump('Freeshipping expired');
                         $sessionServices['freeshipping'] = 'expired';
                         Session::write('services', $sessionServices,array('name' => 'default'));
                 }
