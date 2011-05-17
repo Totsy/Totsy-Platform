@@ -106,10 +106,8 @@ class BaseController extends \lithium\action\Controller {
 	public function freeShippingEligible($userInfo){
 	    $sessionServices = Session::read('services', array('name' => 'default'));
 	    $service = Service::find('first', array('conditions' => array('name' => 'freeshipping') ));
-	    var_dump($service);
 	    if ($userInfo && $service) {
 	        $user = User::find('first', array('conditions' => array('_id' => $userInfo['_id'])));
-	        var_dump($user);
 	        if ($user) {
                 $created_date = $user->created_date->sec;
           /*   $dayThirty = date('m/d/Y',mktime(0,0,0,date('m',$created_date),
@@ -133,27 +131,20 @@ class BaseController extends \lithium\action\Controller {
 	            *   starts and end; and the user uses the service with in thirty days
 	            *   of their registration
 	            */
-	            var_dump(($service->start_date->sec <= $created_date &&
-                        $service->end_date->sec > $created_date) &&
-                    (date('m/d/Y H:i:s') < $dayThirty));
-
                 if ( ($service->start_date->sec <= $created_date &&
                         $service->end_date->sec > $created_date) &&
                     (date('m/d/Y H:i:s') < $dayThirty)) {
 
                     //checks if the user ever made a purchase
                     if ($user->purchase_count < 1) {
-                        var_dump('Freeshipping eligible');
                         $sessionServices = Session::read('services', array('name' => 'default'));
                         $sessionServices['freeshipping'] = 'eligible';
                         Session::write('services', $sessionServices, array('name' => 'default'));
                     } else {
-                        var_dump('Freeshipping used');
                         $sessionServices['freeshipping'] = 'used';
                         Session::write('services', $sessionServices,array('name' => 'default'));
                     }
                 } else { //mark freeshipping service as expired
-                        var_dump('Freeshipping expired');
                         $sessionServices['freeshipping'] = 'expired';
                         Session::write('services', $sessionServices,array('name' => 'default'));
                 }
