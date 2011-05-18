@@ -1122,14 +1122,12 @@ class ReportsController extends BaseController {
 		$idx = 0;
 		#RUNNING
 		$freeshipService = Service::find('first', array('conditions' => array('name' => 'freeshipping')));
-		var_dump(date('m/d/Y', $freeshipService['start_date']->sec));
 		#REGISTERED USERS
 		$conditions_A = array('created_date' => array(
 								'$gt' => $freeshipService['start_date'],
 								'$lte' => new MongoDate()
 		));
 		$statistics["registered_user"] = $usersCollection->count($conditions_A);
-		var_dump($statistics["registered_user"]);
 		#REGISTERED USERS / No Purchases
 		$conditions_B = array(	'purchase_count' => array('$exists' => false),
 								'created_date' => array(
@@ -1192,20 +1190,20 @@ class ReportsController extends BaseController {
 				}
 				//2nd purchase
 				if($key == 1) {
-					if($order['total'] > 50) {
+					if($order['total'] < 50) {
 						if($order['date_created']->sec > $day_2_target_30) {
 							$statistics["registered_user_2purch_30"]++;
-						} else if (($order['date_created']->sec < $day_2_target_30) && ($order['date_created']->sec > $day_2_target_15)) {
+						} else if (($order['date_created']->sec <= $day_2_target_30) && ($order['date_created']->sec > $day_2_target_15)) {
 							$statistics["registered_user_2purch_15_30"]++;
-						} else if (($order['date_created']->sec < $day_2_target_15)) {
+						} else if (($order['date_created']->sec <= $day_2_target_15)) {
 							$statistics["registered_user_2purch_0_15"]++;
 						}
 					} else {
 						if($order['date_created']->sec > $day_2_target_30) {
-							$statistics["registered_user_2purch_50_30"]++;
-						} else if (($order['date_created']->sec < $day_2_target_30) && ($order['date_created']->sec > $day_2_target_15)) {
+							$statistics["registered_user_2purch_30"]++;
+						} else if (($order['date_created']->sec <= $day_2_target_30) && ($order['date_created']->sec > $day_2_target_15)) {
 							$statistics["registered_user_2purch_50_15_30"]++;
-						} else if (($order['date_created']->sec < $day_2_target_15)) {
+						} else if (($order['date_created']->sec <= $day_2_target_15)) {
 							$statistics["registered_user_2purch_50_0_15"]++;
 						}
 					}
@@ -1252,7 +1250,7 @@ class ReportsController extends BaseController {
 		$chart_datas_2[3][1] = $statistics["registered_user_2purch_0_15"];
 		$chart_datas_2[4][1] = $statistics["registered_user_2purch_50_15_30"];
 		$chart_datas_2[5][1] = $statistics["registered_user_2purch_15_30"];
-		$chart_datas_2[6][1] = ($statistics["registered_user_2purch_50_30"] + $statistics["registered_user_2purch_30"]);
+		$chart_datas_2[6][1] = $statistics["registered_user_2purch_30"];
 		# Create Column3D chart Object
 		$Service2ndCharts = new FusionCharts("Column3D","700","350");
 		#  Set chart attributes
