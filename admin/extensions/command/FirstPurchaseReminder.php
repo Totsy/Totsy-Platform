@@ -40,7 +40,8 @@ class FirstPurchaseReminder extends \lithium\console\Command  {
 					)
 		);
 		$users = $usersCollection->find($conditions);
-		$now = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+		//$now = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+		$now = mktime(date("H"), date("i"), date("s"), date("m"), date("d"), date("Y"));
 		foreach ($users as $user) {
 			$verif_date = $user['created_date']->sec;
 			//$day_target = mktime(0, 0, 0, date("m", $verif_date), date("d", $verif_date) + 23, date("Y", $verif_date));

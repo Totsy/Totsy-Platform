@@ -32,7 +32,8 @@ class SecondPurchaseReminder extends \lithium\console\Command  {
 		$servicesCollection = Service::collection();
 		$ordersCollection = Order::collection();
 		$idx = 0;
-		$now = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+		//$now = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+        $now = mktime(date("H"), date("i"), date("s"), date("m"), date("d"), date("Y"));
 		#RUNNING
 		$off10Service = Service::find('first', array('conditions' => array('name' => '10off50')));
 		$conditions = array( 'purchase_count' => 1,
