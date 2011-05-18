@@ -21,7 +21,7 @@ class SecondPurchaseReminder extends \lithium\console\Command  {
 	public $env = 'development';
 
 	/**
-	 * 
+	 * @todo put back original time
 	 */
 	public function run() {
 		Environment::set($this->env);
@@ -40,7 +40,7 @@ class SecondPurchaseReminder extends \lithium\console\Command  {
 		);
 		$users = $usersCollection->find($conditions);
 		foreach ($users as $user) {
-			$conditions_order = array( 
+			$conditions_order = array(
 										'user_id' => (string) $user['_id'],
 			 							'service' => 'freeshipping'
 			);
@@ -48,13 +48,14 @@ class SecondPurchaseReminder extends \lithium\console\Command  {
 			if(!empty($order)) {
 					$verif_date = $order['date_created']->sec;
 					//Follow up email 1 week after first purchase with offer and end date
-					$day_target = mktime(0, 0, 0, date("m", $verif_date), date("d", $verif_date) + 23, date("Y", $verif_date));
+					//$day_target = mktime(0, 0, 0, date("m", $verif_date), date("d", $verif_date) + 23, date("Y", $verif_date));
+					$day_target = mktime(date("H", $verif_date), date("i", $verif_date) + 5, 0, date("m", $verif_date), date("d", $verif_date), date("Y", $verif_date));
 					if($day_target == $now) {
 						$data = array(
 						'from_email' => 'no-reply@totsy.com',
 						'to_email' => 'troyer@totsy.com'
 						);
-						//Silverpop::send('disney', $data);
+						Silverpop::send('10off50-reminder', $data);
 						$idx++;
 					}
 			}
