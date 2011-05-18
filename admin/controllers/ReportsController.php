@@ -1128,7 +1128,6 @@ class ReportsController extends BaseController {
 								'$lte' => new MongoDate()
 		));
 		$statistics["registered_user"] = $usersCollection->count($conditions_A);
-		var_dump($statistics["registered_user"]);
 		#REGISTERED USERS / No Purchases
 		$conditions_B = array(	'purchase_count' => array('$exists' => false),
 								'created_date' => array(
@@ -1194,17 +1193,17 @@ class ReportsController extends BaseController {
 					if($order['total'] < 50) {
 						if($order['date_created']->sec > $day_2_target_30) {
 							$statistics["registered_user_2purch_30"]++;
-						} else if (($order['date_created']->sec =< $day_2_target_30) && ($order['date_created']->sec > $day_2_target_15)) {
+						} else if (($order['date_created']->sec <= $day_2_target_30) && ($order['date_created']->sec > $day_2_target_15)) {
 							$statistics["registered_user_2purch_15_30"]++;
-						} else if (($order['date_created']->sec =< $day_2_target_15)) {
+						} else if (($order['date_created']->sec <= $day_2_target_15)) {
 							$statistics["registered_user_2purch_0_15"]++;
 						}
 					} else {
 						if($order['date_created']->sec > $day_2_target_30) {
 							$statistics["registered_user_2purch_30"]++;
-						} else if (($order['date_created']->sec =< $day_2_target_30) && ($order['date_created']->sec > $day_2_target_15)) {
+						} else if (($order['date_created']->sec <= $day_2_target_30) && ($order['date_created']->sec > $day_2_target_15)) {
 							$statistics["registered_user_2purch_50_15_30"]++;
-						} else if (($order['date_created']->sec =< $day_2_target_15)) {
+						} else if (($order['date_created']->sec <= $day_2_target_15)) {
 							$statistics["registered_user_2purch_50_0_15"]++;
 						}
 					}
