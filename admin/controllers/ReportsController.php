@@ -1122,7 +1122,6 @@ class ReportsController extends BaseController {
 		$idx = 0;
 		#RUNNING
 		$freeshipService = Service::find('first', array('conditions' => array('name' => 'freeshipping')));
-		var_dump(date('m/d/Y', $freeshipService['start_date']->sec));
 		#REGISTERED USERS
 		$conditions_A = array('created_date' => array(
 								'$gt' => $freeshipService['start_date'],

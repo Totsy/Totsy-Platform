@@ -9,8 +9,11 @@ use admin\models\Service;
 use MongoDate;
 use MongoId;
 use li3_silverpop\extensions\Silverpop;
+
 /**
- *
+ * Check if the user has used the second purchase $10 off discount
+ * 7 days before the end date of the offer.
+ * If not send an email reminder.
  */
 class SecondPurchaseReminder extends \lithium\console\Command  {
 
@@ -52,10 +55,9 @@ class SecondPurchaseReminder extends \lithium\console\Command  {
 					$day_target = mktime(date("H", $verif_date), date("i", $verif_date) + 5, 0, date("m", $verif_date), date("d", $verif_date), date("Y", $verif_date));
 					if($day_target == $now) {
 						$data = array(
-						'from_email' => 'no-reply@totsy.com',
-						'to_email' => 'troyer@totsy.com'
+							'email' => $user['email']
 						);
-						Silverpop::send('10off50-reminder', $data);
+						Silverpop::send('nextPurchaseReminder', $data);
 						$idx++;
 					}
 			}
