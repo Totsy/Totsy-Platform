@@ -32,8 +32,7 @@ class SecondPurchaseReminder extends \lithium\console\Command  {
 		$servicesCollection = Service::collection();
 		$ordersCollection = Order::collection();
 		$idx = 0;
-		//$now = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
-        $now = mktime(date("H"), date("i"), date("s"), date("m"), date("d"), date("Y"));
+		$now = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
 		#RUNNING
 		$off10Service = Service::find('first', array('conditions' => array('name' => '10off50')));
 		$conditions = array( 'purchase_count' => 1,
@@ -53,7 +52,7 @@ class SecondPurchaseReminder extends \lithium\console\Command  {
 					$verif_date = $order['date_created']->sec;
 					//Follow up email 1 week after first purchase with offer and end date
 					//$day_target = mktime(0, 0, 0, date("m", $verif_date), date("d", $verif_date) + 23, date("Y", $verif_date));
-					$day_target = mktime(date("H", $verif_date), date("i", $verif_date) + 5, 0, date("m", $verif_date), date("d", $verif_date), date("Y", $verif_date));
+					$day_target = mktime(0, 0, 0, date("m", $verif_date), date("d", $verif_date), date("Y", $verif_date));
 					if($day_target == $now) {
 						$data = array(
 							'email' => $user['email']
