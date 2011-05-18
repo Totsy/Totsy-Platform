@@ -430,6 +430,9 @@ class OrdersController extends BaseController {
 				'shipDate' => $shipDate
 			);
 			Silverpop::send('orderConfirmation', $data);
+			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
+				Silverpop::send('nextPurchase', $data);
+			}
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
