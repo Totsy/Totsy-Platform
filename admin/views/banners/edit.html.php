@@ -182,8 +182,15 @@ tinyMCE.init({
                             ?>
                             <input type="text" name="url[<?php echo $id; ?>]" value= "<?php echo  $bannerurl; ?>"/>
                         </td>
+                        <?php
+                                    if ($banner->newPage) {
+                                        $checkbox = 'checked';
+                                    } else {
+                                        $checkbox = "";
+                                    }
+                            ?>
                         <td align="center">
-                            <input type="checkbox" name="newPage" value="1"/>
+                            <input type="checkbox" name="newPage" value="1" checked="<? $checked?>" />
                         </td>
                          <td align="center">
                             <input type="hidden" name="img[]" value="<?php echo $id; ?>"/>
