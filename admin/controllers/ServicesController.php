@@ -52,7 +52,9 @@ class ServicesController extends BaseController {
                     $save['upsell_trigger']['popup_text'] = $data['upsell_popup_text'];
                 }
 		    }
-		    $save['logo_image'] = $data['img'];
+		    if(array_key_exists('img', $data) && $data['img']){
+		        $save['logo_image'] = $data['img'];
+		    }
 		    if(!empty($data['in_stock'])){
 		        $save['in_stock'] = (integer)$data['in_stock'];
 		    }
