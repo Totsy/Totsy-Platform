@@ -162,6 +162,9 @@ tinyMCE.init({
 					<th align="justify">
 						URL
 					</th>
+					<th align="justify">
+						Open New Page
+					</th>
 				</tr>
 				<?php foreach($banner->img as $image):?>
                     <tr>
@@ -178,6 +181,9 @@ tinyMCE.init({
                                     $id = "{$image['_id']}";
                             ?>
                             <input type="text" name="url[<?php echo $id; ?>]" value= "<?php echo  $bannerurl; ?>"/>
+                        </td>
+                        <td align="center">
+                            <input type="checkbox" name="newPage" value="1"/>
                         </td>
                          <td align="center">
                             <input type="hidden" name="img[]" value="<?php echo $id; ?>"/>

@@ -56,6 +56,11 @@ class BannersController extends \lithium\action\Controller {
 				} else {
 					$enabled = false;
 				}
+				if(!empty($data['newPage'])) {
+					$newPage = true;
+				} else {
+					$newPage = false;
+				}
 				//Create Datas Array
 				$bannerDatas = array(
 					"img" => $images,
@@ -63,7 +68,8 @@ class BannersController extends \lithium\action\Controller {
 					"name" => $datas['name'],
 					'author' => $author,
 					'created_date' =>  new MongoDate(strtotime('now')),
-					'enabled' => $enabled
+					'enabled' => $enabled,
+					'newPage' => $newPage
 				);
 				//Create and save the new banner
 				$banner = Banner::Create();
@@ -115,12 +121,18 @@ class BannersController extends \lithium\action\Controller {
 				} else {
 					$enabled = false;
 				}
+				if(!empty($data['newPage'])) {
+					$newPage = true;
+				} else {
+					$newPage = false;
+				}
                 $banner->img = $images;
                 $banner->end_date = $data['end_date'];
                 $banner->name = $data['name'];
                 $banner->author = $author;
                 $banner->created_date =  new MongoDate(strtotime('now'));
                 $banner->enabled = $enabled;
+                $banner->newPage = $newPage;
 				//Create and save the new banner
 				if ($banner->save()) {
 					//$this->redirect(array('Banner::edit', 'args' => array($event->_id)));
