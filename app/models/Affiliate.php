@@ -49,7 +49,7 @@ class Affiliate extends Base {
 		$pixels = Affiliate::find('all', $options );
 		$pixels = $pixels->data();
 		$pixel = NULL;
-		$user = User::find('first', array('conditions' => array('_id' => $cookie['user_id'])));
+		$user = User::find('first', array('conditions' => array('_id' => $userInfo['_id'])));
         if($url == '/orders/view'){
             if($user->affiliate_share){
                 $cookie['affiliate'] = $user->affiliate_share['affiliate'];
