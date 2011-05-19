@@ -110,19 +110,8 @@ class BaseController extends \lithium\action\Controller {
 	        $user = User::find('first', array('conditions' => array('_id' => $userInfo['_id'])));
 	        if ($user) {
                 $created_date = $user->created_date->sec;
-          /*   $dayThirty = date('m/d/Y',mktime(0,0,0,date('m',$created_date),
+             $dayThirty = date('m/d/Y',mktime(0,0,0,date('m',$created_date),
                     date('d',$created_date)+30,
-                    date('Y',$created_date)
-                )); */
-                /**
-                * NOTE: EXPIRATION DATE IS ACTUALLY 30 DAYS FROM THE FIRST PURCHASE NOT 15 MINUTES
-                **/
-                $dayThirty = date('m/d/Y H:i:s',mktime(
-                    date('H',$created_date),
-                    date('i',$created_date) + 15,
-                    date('s', $created_date),
-                    date('m',$created_date),
-                    date('d',$created_date),
                     date('Y',$created_date)
                 ));
 	            /**
@@ -159,28 +148,16 @@ class BaseController extends \lithium\action\Controller {
 	        $user = User::find('first', array('conditions' => array('_id' => $userInfo['_id'])));
             if ($user) {
                 $created_date = $user->created_date->sec;
-                $dayThirty = $dayThirty = date('m/d/Y H:i:s',mktime(
-                        date('H',$created_date),
-                        date('i',$created_date) + 10,
-                        date('s', $created_date),
-                        date('m',$created_date),
-                        date('d',$created_date),
-                        date('Y',$created_date)
-                    ));
-
+                $dayThirty = date('m/d/Y',mktime(0,0,0,date('m',$created_date),
+                    date('d',$created_date)+30,
+                    date('Y',$created_date)
+                ));
                 if ( ($service->start_date->sec <= $created_date && $service->end_date->sec > $created_date) ) {
                     if ($user->purchase_count == 1) {
                         $firstOrder = Order::find('first' , array('conditions' => array('user_id' => $userInfo['_id'])));
                         $order_date = $firstOrder->date_created->sec;
-                        /**
-                        * NOTE: EXPIRATION DATE IS ACTUALLY 30 DAYS FROM THE FIRST PURCHASE NOT 15 MINUTES
-                        **/
-                        $expire_date = date('m/d/Y H:i:s',mktime(
-                            date('H',$created_date),
-                            date('i',$created_date) + 10,
-                            date('s', $created_date),
-                            date('m',$created_date),
-                            date('d',$created_date),
+                        $expire_date = date('m/d/Y H:i:s',mktime(0,0,0, date('m',$created_date),
+                            date('d',$created_date) + 30,
                             date('Y',$created_date)
                         ));
                         /**

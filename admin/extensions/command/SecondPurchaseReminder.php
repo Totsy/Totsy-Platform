@@ -51,8 +51,7 @@ class SecondPurchaseReminder extends \lithium\console\Command  {
 			if(!empty($order)) {
 					$verif_date = $order['date_created']->sec;
 					//Follow up email 1 week after first purchase with offer and end date
-					//$day_target = mktime(0, 0, 0, date("m", $verif_date), date("d", $verif_date) + 23, date("Y", $verif_date));
-					$day_target = mktime(0, 0, 0, date("m", $verif_date), date("d", $verif_date), date("Y", $verif_date));
+					$day_target = mktime(0, 0, 0, date("m", $verif_date), date("d", $verif_date) + 23, date("Y", $verif_date));
 					if($day_target == $now) {
 						$data = array(
 							'email' => $user['email']
