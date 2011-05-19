@@ -180,7 +180,7 @@ tinyMCE.init({
                             <?php
                                     $bannerurl = "{$image['url']}";
                                     $id = "{$image['_id']}";
-                                     if ($image['newPage']) {
+                                     if (array_key_exists('newPage', $image) && $image['newPage']) {
                                         $checkbox = 'checked';
                                     } else {
                                         $checkbox = "";
