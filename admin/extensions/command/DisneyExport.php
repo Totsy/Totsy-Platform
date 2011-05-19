@@ -213,7 +213,7 @@ class DisneyExport extends \lithium\console\Command {
 						. $city
 						. $state
 						. $zip
-						. str_pad('99999',17,'0')
+						. str_pad('99999'.crc32($order['_id']),17,'0') //Audit Trail Number
 						. 'FAF'
 						. 'N' //New/renewal Code
 						. '1' //Order Entry Type
