@@ -29,9 +29,10 @@
 				4th Floor<br/>
 				New York, NY 10011<br/>
 				<br />
-				<strong>Support Email:</strong> <br />				 
-				<a href="mailto:support@totsy.com">support@totsy.com</a></p>
-		</div>
+				<h3 class="gray">Contact Support</h3>				 
+				<a href="mailto:support@totsy.com">support@totsy.com</a><br />
+				888-247-9444</p>
+	</div>
 	</div>
 	<div class="bl"><!-- --></div>
 	<div class="br"><!-- --></div>
