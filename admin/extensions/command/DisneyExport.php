@@ -115,9 +115,9 @@ class DisneyExport extends \lithium\console\Command {
 		#Count of the records
 		$records = count($infos);
 		#Send log email to Disney
-		//$this->sendMail($myFile, $records);
+		$this->sendMail($myFile, $records);
 		#Upload the file to specified ftp
-		//$this->transferFile($myFile, LITHIUM_APP_PATH . $this->source);
+		$this->transferFile($myFile, LITHIUM_APP_PATH . $this->source);
 		#Save log to DB
 		$this->saveRecords($myFile, $records);
 	}
@@ -131,8 +131,6 @@ class DisneyExport extends \lithium\console\Command {
 		Environment::set($this->env);
 		$infos = array();
 		$ordersCollection = Order::collection();
-		$results_logs = Disney::collection()->find()->sort(array('date' => -1))->limit(1);
-		var_dump($results_logs);
 		/****Conditions****/
 		//start date
 		$now = getdate();
@@ -215,7 +213,7 @@ class DisneyExport extends \lithium\console\Command {
 						. $city
 						. $state
 						. $zip
-						. str_pad('99999',17,'0') //Audit Trail Number
+						. str_pad('99999'.crc32($order['_id']),17,'0') //Audit Trail Number
 						. 'FAF'
 						. 'N' //New/renewal Code
 						. '1' //Order Entry Type
