@@ -234,7 +234,7 @@ class DisneyExport extends \lithium\console\Command {
 						. '00' // Number of issues sent
 						. ' ' //GIFT
 						. ' ' //Gift Card
-						. str_pad('',25,'0') //Gift Signature
+						. str_pad('',25) //Gift Signature
 						. 'A'
 						. str_pad('',5,'0')
 						. 'N'
