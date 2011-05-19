@@ -31,7 +31,8 @@
 				<br />
 				<h3 class="gray">Contact Support</h3>				 
 				<a href="mailto:support@totsy.com">support@totsy.com</a><br />
-				888-247-9444</p>
+				888-247-9444<br />
+				Office Hours: M-F 10am - 5pm EST</p>
 	</div>
 	</div>
 	<div class="bl"><!-- --></div>
