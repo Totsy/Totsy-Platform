@@ -19,6 +19,7 @@ class Affiliate extends Base {
     */
 	public static function getPixels($url, $invited_by) {
 	    $cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
+	    $userInfo = Session::read('userLogin', array('name' => 'default'));
         $orderid = NULL;
 
         if(strpos($url, '&')) {
@@ -48,9 +49,7 @@ class Affiliate extends Base {
 		$pixels = Affiliate::find('all', $options );
 		$pixels = $pixels->data();
 		$pixel = NULL;
-		if (!empty($cookie['user_id'])) {
-			$user = User::find('first', array('conditions' => array('_id' => $cookie['user_id'])));
-		}
+		$user = User::find('first', array('conditions' => array('_id' => $cookie['user_id'])));
         if($url == '/orders/view'){
             if($user->affiliate_share){
                 $cookie['affiliate'] = $user->affiliate_share['affiliate'];

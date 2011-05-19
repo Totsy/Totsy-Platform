@@ -169,6 +169,10 @@
 												Promotion Discount:
 													<br>
 												<?php endif ?>
+												<?php if (($order->discount)): ?>
+												Discount:
+													<br>
+												<?php endif ?>
 												Sales Tax:
 												<br>
 												Shipping:
@@ -188,6 +192,10 @@
 												<?php endif ?>
 												<?php if (($order->promo_discount) && empty($order->promocode_disable)): ?>
 													-$<?=number_format(abs($order->promo_discount),2); ?>
+													<br>
+												<?php endif ?>
+												<?php if (($order->discount)): ?>
+													-$<?=number_format(abs($order->discount),2); ?>
 													<br>
 												<?php endif ?>
 												$<?=number_format($order->tax,2); ?>
