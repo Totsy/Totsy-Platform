@@ -134,7 +134,7 @@
 					<div><a href="/users/invite"><img src="/img/invite_girl.png" alt="" /></a></div>
 					<?php if(!empty($banner["img"])): ?>
 						<?php foreach($banner["img"] as $image): ?>
-							<div><?php var_dump($image);if(!empty($image["url"])):?>
+							<div><?php if(!empty($image["url"])):?>
 								<a href="<?=$image["url"]?>"
 									<?php
 										if(array_key_exists('newPage', $image) && $image['newPage']) {
