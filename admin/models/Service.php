@@ -29,6 +29,7 @@ class Service extends Base {
     }
 
     **/
+    public $_meta = array('source' => 'services');
     public $validates = array(
 	    "name" => array(
 	        array('notEmpty', 'message' => 'Please enter a name')

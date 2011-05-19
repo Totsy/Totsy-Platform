@@ -84,6 +84,9 @@
 			<li>
 				<?php echo $this->html->link('Registered Users', 'Reports::registeredUsers'); ?>
 			</li>
+			<li>
+				<?php echo $this->html->link('Services', 'Reports::services'); ?>
+			</li>
 		</ul>
 	</li>
 	<li>

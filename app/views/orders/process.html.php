@@ -2,7 +2,7 @@
 	$this->html->script('application', array('inline' => false));
 	$this->form->config(array('text' => array('class' => 'inputbox')));
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
-	$preTotal = $subTotal + $orderCredit->credit_amount;
+	$preTotal = $subTotal + $orderCredit->credit_amount + $orderServiceCredit;
 	$afterDiscount = $preTotal + $orderPromo->saved_amount;
 	if ($afterDiscount < 0) {
 		$afterDiscount = 0;
@@ -107,6 +107,12 @@
 					<td><strong>Order Subtotal:</strong> </td>
 					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $subTotal, 2);?></td>
 				</tr>
+				<?php
+					if ($orderServiceCredit): ?>
+						<tr>
+							<td>You qualify for $10 off your purchase!</td><td>- $10.00</td>
+						</tr>
+				<?php endif; ?>
 				<tr>
 					<td><strong>Shipping:</strong> </td>
 					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $shippingCost, 2);?></td>
@@ -117,6 +123,12 @@
 						<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $overShippingCost, 2);?></td>
 					</tr>
 				<?php endif ?>
+				<?php
+					if ($freeshipping): ?>
+						<tr>
+							<td>You qualify for free shipping!</td>
+						</tr>
+				<?php endif; ?>
 				<tr>
 					<td><strong>Sales Tax:</strong></td>
 					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $tax, 2);?>
@@ -294,9 +306,6 @@
 				</tbody>
 			</table>
 	<?php endif ?>
-
-
-
 
     <!-- begin thawte seal -->
     <div id="thawteseal" title="Click to Verify - This site chose Thawte SSL for secure e-commerce and confidential communications." style="float: right!important; width:200px;">
