@@ -24,6 +24,8 @@
 	<div class="tr"></div>
 	<div id="page">
 			
+	<div style="float:left; width:350px;">
+	
 	<h2 class="gray mar-b">Contact Us</h2>
 	<hr />
 	
@@ -94,8 +96,22 @@
 	
 		<?=$this->form->submit('Send Information', array('class' => "button" )); ?>
 	<?=$this->form->end(); ?>
+	</div>
+	
+	<div id="message" style="float:left; width:150px; margin-left:20px;">
+				<strong>Corporate Address:</strong><br/>
+				10 West 18th Street<br/>
+				4th Floor<br/>
+				New York, NY 10011<br/>
+				<br />
+				<h3 class="gray">Contact Support</h3>				 
+				<a href="mailto:support@totsy.com">support@totsy.com</a><br />
+				888-247-9444<br />
+				Office Hours: M-F 10am - 5pm EST</p>
+	</div>	
 		
 	</div>
+		
 	<div class="bl"></div>
 	<div class="br"></div>
 </div>

@@ -30,8 +30,8 @@
 	<h2 class="gray mar-b">Where the savvy mom shops</h2>
 	<hr />
 	<p>
-		Totsy offers moms on-the-go and moms-to-be access to brand-specific sales, up to 70% off
-		retail, just for them and the kids, ages 0-7.
+		Totsy offers moms on-the-go and moms-to-be access to brand-specific sales, up to 90% off
+		retail, just for them and the kids, ages 0-8.
 	</p>
 	
 	<h2 class="gray mar-b">Top brands for mom, baby, and child</h2>
