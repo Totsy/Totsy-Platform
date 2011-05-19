@@ -153,6 +153,7 @@ tinyMCE.init({
 		</div>
 		<div id="banner_images">
 			<h3 id="current_images">Current Images</h3>
+			<strong>If you have add a url make sure the http:// is in the url.</strong>
             <hr />
 				<table border="1" cellspacing="30" cellpadding="30">
 				<tr>
@@ -161,6 +162,9 @@ tinyMCE.init({
 					</th>
 					<th align="justify">
 						URL
+					</th>
+					<th align="justify">
+						Open New Page
 					</th>
 				</tr>
 				<?php foreach($banner->img as $image):?>
@@ -176,8 +180,16 @@ tinyMCE.init({
                             <?php
                                     $bannerurl = "{$image['url']}";
                                     $id = "{$image['_id']}";
+                                     if ($image['newPage']) {
+                                        $checkbox = 'checked';
+                                    } else {
+                                        $checkbox = "";
+                                    }
                             ?>
                             <input type="text" name="url[<?php echo $id; ?>]" value= "<?php echo  $bannerurl; ?>"/>
+                        </td>
+                        <td align="center">
+                            <input type="checkbox" name="newPage" value="1" checked="<? $checked?>" />
                         </td>
                          <td align="center">
                             <input type="hidden" name="img[]" value="<?php echo $id; ?>"/>
