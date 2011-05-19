@@ -1161,7 +1161,7 @@ class ReportsController extends BaseController {
 								date("Y", $user['created_date']->sec)
 						);
 			$conditions_order = array("user_id" => (string) $user["_id"]);
-			$orders = $ordersCollection->find($conditions_order,array('date_created' => 1, 'total' => 1))->sort(array('date_created' => -1));
+			$orders = $ordersCollection->find($conditions_order,array('date_created' => 1, 'total' => 1));
 			foreach($orders as $order) {
 				if($key == 0) {
 					$day_2_target_15 = mktime(
