@@ -135,7 +135,13 @@
 					<?php if(!empty($banner["img"])): ?>
 						<?php foreach($banner["img"] as $image): ?>
 							<div><?php if(!empty($image["url"])):?>
-								<a href="<?=$image["url"]?>">
+								<a href="<?=$image["url"]?>" 
+									<?php
+										if(!empty($image['newPage'])) {
+											echo 'target="_blank"';
+										}
+									?>
+									>
 									<img src="/image/<?=$image["_id"]?>.jpeg" alt="" />
 								</a>
 								<?php else: ?>
