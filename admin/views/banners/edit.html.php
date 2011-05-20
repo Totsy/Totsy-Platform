@@ -180,7 +180,7 @@ tinyMCE.init({
                             <?php
                                     $bannerurl = "{$image['url']}";
                                     $id = "{$image['_id']}";
-                                     if (array_key_exists('newPage', $image) && $image['newPage']) {
+                                     if (array_key_exists('newPage', $image->data()) && $image['newPage']) {
                                         $checkbox = 'checked';
                                     } else {
                                         $checkbox = "";
@@ -189,7 +189,7 @@ tinyMCE.init({
                             <input type="text" name="url[<?php echo $id; ?>]" value= "<?php echo  $bannerurl; ?>"/>
                         </td>
                         <td align="center">
-                            <input type="checkbox" name="newPage" value="1" checked="<? $checkbox?>" />
+                            <?=$this->form->checkbox("newPage", array("value" => "1", "checked" => $checkbox)) ?>
                         </td>
                          <td align="center">
                             <input type="hidden" name="img[]" value="<?php echo $id; ?>"/>
