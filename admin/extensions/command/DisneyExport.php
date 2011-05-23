@@ -235,12 +235,12 @@ class DisneyExport extends \lithium\console\Command {
 						. ' ' //GIFT
 						. ' ' //Gift Card
 						. str_pad('',25) //Gift Signature
-						. 'A'
+						. 'A' //Codes
 						. str_pad('',5,'0')
-						. 'N'
+						. 'N' //Bulk Switch
 						. '0'
 						. str_pad('',10,'0') //Telephone Number
-						. str_pad('',7,'0') //General Gift Card
+						. str_pad('',7) //General Gift Card
 						. ' ' //Type Of Gift Card
 						. '  ' //Fax Number
 						. str_pad('',7);
