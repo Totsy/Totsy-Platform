@@ -242,12 +242,12 @@ class DisneyExport extends \lithium\console\Command {
 						. str_pad('',10,'0') //Telephone Number
 						. str_pad('',7) //General Gift Card
 						. str_pad('',1) //260-260 Type Of Gift Card
-						. str_pad('',8); // 261-268 Fax Number
+						. str_pad('',8) // 261-268 Fax Number
 						. str_pad('',7,'0') //269-275 - Group Numbers for Order
 						. str_pad('',1) //276-276 - Special Product Code
 						. str_pad('',7,'0') //277-283
 						. str_pad('',6) //284-289
-						. str_pad('',2) //290-291
+						. str_pad('',2); //290-291
 		}
 		return $infos;
 	}
