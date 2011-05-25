@@ -49,7 +49,8 @@ class OrdersController extends BaseController {
 			foreach ($shipRecords as $record) {
 				if (!in_array($record->{'Tracking #'}, $list)) {
 					$list[] = $record->{'Tracking #'};
-					$trackingNum[] = array('code' => $record->{'Tracking #'}, 'method' => $record->ShipMethod);
+					$shipMethod = (empty($record->ShipMethod) ? 'UPS' : $record->ShipMethod);
+					$trackingNum[] = array('code' => $record->{'Tracking #'}, 'method' => $shipMethod);
 				}
 			}
 			if ($trackingNum) {
