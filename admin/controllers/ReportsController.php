@@ -371,12 +371,8 @@ class ReportsController extends BaseController {
 									$orderList[$inc]['Cart'] = $item['_id'];
 									$orderList[$inc]['OrderNum'] = $order['order_id'];
 									$orderList[$inc]['id'] = $order['_id'];
-									$orderList[$inc]['SKU'] = Item::sku(
-										$eventItem['vendor'],
-										$eventItem['vendor_style'],
-										$item['size'],
-										$eventItem['color']
-									);
+									$itemRecord = Item::collection()->findOne(array('_id' => new MongoId($item['item_id'])));
+									$orderList[$inc]['SKU'] = $itemRecord['sku_details'][$item['size']];
 									$orderList[$inc]['Qty'] = $item['quantity'];
 									$orderList[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
 									$orderList[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
@@ -447,12 +443,7 @@ class ReportsController extends BaseController {
 						$orderFile[$inc]['Country'] = '';
 						$orderFile[$inc]['OrderNum'] = $order['order_id'];
 						$orderFile[$inc]['OldSKU'] = $this->oldsku($orderItem->vendor_style, $item['size']);
-						$orderFile[$inc]['SKU'] = Item::sku(
-							$orderItem->vendor,
-							$orderItem->vendor_style,
-							$item['size'],
-							$item['color']
-						);
+						$orderFile[$inc]['SKU'] = $orderItem->sku_details[$item['size']];
 						$orderFile[$inc]['Qty'] = $item['quantity'];
 						$orderFile[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
 						$orderFile[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
