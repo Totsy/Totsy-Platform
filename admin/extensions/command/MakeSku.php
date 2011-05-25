@@ -31,7 +31,12 @@ class MakeSku extends \lithium\console\Command  {
 			$hashBySha = false;
 			if (!empty($item['details'])) {
 				foreach ($item['details'] as $key => $value) {
-					$skulist[$key] = Item::sku($item['vendor'], $item['vendor_style'], $key, $item['color'], 'md5');
+					$sku = Item::sku($item['vendor'], $item['vendor_style'], $key, $item['color'], 'md5');
+					//Check duplicate Skus for the same item
+					if (in_array($sku, $skulist)) {
+						$sku = Item::sku($item['vendor'], $item['vendor_style'], $key, $item['color'], 'sha256');
+					}
+					$skulist[$key] = $sku;
 				}
 				$items_tested = $itemCollection->find(array('skus' => array('$in' => $skulist)));
 				if (!empty($items_tested)) {
