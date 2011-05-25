@@ -97,7 +97,7 @@
 			<li><a href="/pages/aboutus" title="About Us">About Us</a></li>
 			<li><a href="http://blog.totsy.com" title="Blog" target="_blank">Blog</a></li>
 			<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
-			<li><a href="/pages/affilliates" title="Affilliates">Affilliates</a></li>
+			<li><a href="/pages/affiliates" title="Affiliates">Affiliates</a></li>
 			
 			<! -- switch where this link points depending on whether they're logged in or not --> 
 			<?php if (empty($userInfo)){ ?>

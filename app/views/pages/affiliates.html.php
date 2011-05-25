@@ -1,4 +1,4 @@
-<?php $this->title("Affilliates"); ?>
+<?php $this->title("Affiliates"); ?>
 <h1 class="p-header">About Us</h1>
 <html>
 <head>
@@ -20,7 +20,7 @@
             <li class="first"><a href="/pages/testimonials" title="Video Testimonials"><span>Video Testimonials</span></a></li>
             <li class="first item17"><a href="/pages/being_green" title="Being Green"><span>Being Green</span></a></li>
             <li class="first item19"><a href="http://blog.totsy.com" target="_blank" title="Blog"><span>Totsy Blog</span></a></li>
-            <li class="first item15 active"><a href="/pages/affilliates" title="Affilliates"><span>Affilliates</span></a></li>
+            <li class="first item15 active"><a href="/pages/affiliates" title="Affiliates"><span>Affiliates</span></a></li>
             <li style="list-style: none">
                 <br>
 
