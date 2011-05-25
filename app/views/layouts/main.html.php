@@ -97,7 +97,14 @@
 			<li><a href="/pages/aboutus" title="About Us">About Us</a></li>
 			<li><a href="http://blog.totsy.com" title="Blog" target="_blank">Blog</a></li>
 			<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
+			<li><a href="/pages/affilliates" title="Affilliates">Affilliates</a></li>
+			
+			<! -- switch where this link points depending on whether they're logged in or not --> 
+			<?php if (empty($userInfo)){ ?>
 			<li class="last"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
+			<?php } else { ?>
+			<li class="last"><a href="/tickets/add" title="Contact Us">Contact Us</a></li>
+			<?php } ?>
 		</ul>
 		<span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved.</span>
 	</div>

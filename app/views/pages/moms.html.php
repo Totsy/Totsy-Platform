@@ -18,6 +18,7 @@ em {display: block; padding:5px; font-weight: bold; font-style: italic;}
     <li class="first"><a href="/pages/testimonials" title="Video Testimonials"><span>Video Testimonials</span></a></li>
     <li class="first item17"><a href="/pages/being_green" title="Being Green"><span>Being Green</span></a></li>
     <li class="first item19"><a href="http://blog.totsy.com" target="_blank" title="Blog"><span>Totsy Blog</span></a></li>
+    <li class="first item15"><a href="/pages/affilliates" target="_blank" title="Affilliates"><span>Affilliates</span></a></li>
     <br />
     <h3 style="color:#999;">Need Help?</h3>
     <hr />
