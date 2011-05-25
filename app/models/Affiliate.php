@@ -113,7 +113,12 @@ class Affiliate extends Base {
     * @TODO  Move the appending to the Helper
     */
 	public static function generatePixel($invited_by, $pixel, $options = array()) {
-        if($invited_by == 'w4' || $invited_by == "pmk"){
+	    /*
+	        This if else is for affiliates who want a dynamic string in their pixel
+	        The random string is created and is place where ever the $ is placed in the
+	        pixel.  The $ sign is a place holder for where the random string is will be
+	    */
+        if($invited_by == 'w4' || $invited_by == "pmk" || $invited_by = "emiles" ){
             $transid = 'totsy' . static::randomString();
             return '<br/>' . str_replace('$', $transid,$pixel );
         }
