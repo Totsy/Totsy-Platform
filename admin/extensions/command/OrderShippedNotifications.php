@@ -16,10 +16,10 @@ use MongoDate;
 use MongoRegex;
 use MongoId;
 use li3_silverpop\extensions\Silverpop;
-
+use admin\extensions\command\Pid;
 
 /**
- * Process payments from Authorize.net based on confirmed shipping log.
+ * Process email notifications for orders shipped.
  */
 class OrderShippedNotifications extends \lithium\console\Command  {
 	
@@ -31,10 +31,23 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 	 */
 	public $env = 'development';
 	
+	/**
+	 * Directory of tmp files.
+	 *
+	 * @var string
+	 */
+	public $tmp = '/resources/totsy/tmp/';
+	
 	public function run() {
 		Logger::info('Order Shipped Processor');
 		Environment::set($this->env);
-		$this->emailNotificationSender();
+		$this->tmp = LITHIUM_APP_PATH . $this->tmp;
+		$pid = new Pid($this->tmp,  'OrderExport');
+		if ($pid->already_running == false) {
+			$this->emailNotificationSender();
+		} else {
+			Logger::info("Already Running! Stoping Execution");
+		}
 		Logger::info('Order Shipped Finished');
 	}
 	
@@ -45,7 +58,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		$ordersShippedCollection = OrderShipped::collection();
 		$itemsCollection = Item::collection();
 		
-		$time = strtotime('2011-05-17');
+		$time = time();
 		$keys = array('OrderId' => true);
 		$inital = array('totalItems' => 0, 'totalTracking' => 0, 'TrackNums' => array() );
 		$reduce = new MongoCode("function(a,b){ 
@@ -58,7 +71,6 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 			b.TrackNums[a['Tracking #']].push(a['ItemId']);
 		}");
 		//Conditions with date converted to the right timezone
-		
 		$conditions = array(
 			'ShipDate' => array(
 				'$gt' => new MongoDate(strtotime('-1 day',$time)),
@@ -69,29 +81,22 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 			// do not send notification if it already send
 			'emailNotification' => array('$exists' => false)
 		);
-		/*
-		$conditions = array(
-			'ShipDate' => new MongoDate($time)
-		);
-		*/
+
 		$results = $ordersShippedCollection->group($keys, $inital, $reduce, $conditions);
 		$results = $results['retval'];
-		//$this->out(print_r($results, true));
 		
 		foreach ($results as $result){
 			if ($result['totalTracking']>0){
 				$data = array();
 				$data['order'] = Order::find('first', array('conditions' => array('_id' => $result['OrderId'])));
 				$data['user'] = $usersCollection->find(array('_id' => $data['order']->user_id));
-				//$data['email'] = $data['user']['email']; 
-				$data['email'] = 'skoshelevskiy@totsy.com'; 
+				$data['email'] = $data['user']['email']; 
 				$data['items'] = array();
 				foreach($result['TrackNums'] as $trackNum => $items){
 					foreach ($items as $item){
 						$data['items'][$trackNum][ (string) $item ] = Item::find('first', array('conditions' => array('_id' => $item)))->data();
 					}
 				}
-				$this->out(print_r($data, true));
 				Silverpop::send('orderShipped', $data);
 				unset($data);
 				//SET send email flag
@@ -105,7 +110,6 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 					}
 				}
 			}
-			break;
 		}
 		
 		
