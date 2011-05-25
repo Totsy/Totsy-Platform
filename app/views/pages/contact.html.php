@@ -1,5 +1,5 @@
 <h1 class="p-header"><?=$this->title("Contact Us"); ?></h1>
-				
+
 <div id="left">
 		<ul class="menu main-nav">
 		  <h3 style="color:#999;">About Us</h3>
@@ -18,9 +18,9 @@
 	<div id="middle" class="noright">
 
 
-	
-	<div class="tl"><!-- --></div> 
-	<div class="tr"><!-- --></div> 
+
+	<div class="tl"><!-- --></div>
+	<div class="tr"><!-- --></div>
 
 	<div id="page">
 		<div id="message">
@@ -29,9 +29,11 @@
 				4th Floor<br/>
 				New York, NY 10011<br/>
 				<br />
-				<strong>Support Email:</strong> <br />				 
-				<a href="mailto:support@totsy.com">support@totsy.com</a></p>
-		</div>
+				<h3 class="gray">Contact Support</h3>
+				<a href="mailto:support@totsy.com">support@totsy.com</a><br />
+				888-247-9444<br />
+				Office Hours:<br/> M-F 10am - 5pm EST</p>
+	</div>
 	</div>
 	<div class="bl"><!-- --></div>
 	<div class="br"><!-- --></div>

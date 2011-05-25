@@ -1,7 +1,7 @@
 <?php if (!empty($userInfo)): ?>
-			
+
 			<h1 class="p-header"><?=$this->title("Contact Us"); ?></h1>
-				
+
 <div id="left">
 		<ul class="menu main-nav">
 		  <h3 style="color:#999;">About Us</h3>
@@ -23,10 +23,12 @@
 	<div class="tl"></div>
 	<div class="tr"></div>
 	<div id="page">
-			
+
+	<div style="float:left; width:350px;">
+
 	<h2 class="gray mar-b">Contact Us</h2>
 	<hr />
-	
+
 	<?=$this->form->create(); ?>
 		<select id="parent" style="width:350px;" name="issue_type">
 			<option value="default">I need help with:</option>
@@ -40,7 +42,7 @@
 			<option value="business">Business Development &amp; Vendor Opportunities</option>
 			<option value="press">Press Inquiries</option>
 		</select>
-	
+
 		<br />
 		<select id="child" name="type" style="width:350px;">
 		<!-- orders -->
@@ -50,40 +52,40 @@
 					<option class="sub_order" value="<?=$key?>"><?=$value?></option>
 				<?php endforeach ?>
 			<?php endif ?>
-		
+
 		<!-- Tech -->
 			<option class="sub_tech" value="">Choose One</option>
 			<option class="sub_tech" value="5">Trouble with logging in.</option>
 			<option class="sub_tech" value="5">My cart items have expired.</option>
-		
+
 		<!-- Refund -->
 			<option class="sub_refunds" value="">Choose One</option>
 			<option class="sub_refunds" value="6">I would like a refund</option>
 			<option class="sub_refunds" value="7">What happened to my credits?</option>
-		
+
 		<!-- Merch -->
 			<option class="sub_merch" value="">Choose One</option>
 			<option class="sub_merch" value="6">Selling products on Totsy</option>
 			<option class="sub_merch" value="7">Merchandising information</option>
-		
-		<!-- Shipping -->	
+
+		<!-- Shipping -->
 			<option class="sub_shipping" value="">Choose One</option>
 			<option class="sub_shipping" value="6">I would like a return</option>
 			<option class="sub_shipping" value="7">Where is my order?</option>
-		
-		<!-- Business Dev -->	
+
+		<!-- Business Dev -->
 			<option class="sub_business" value="">Choose One</option>
 			<option class="sub_business" value="6">How can I sell my products on Totsy?</option>
 			<option class="sub_business" value="7">Can I run an exclusive sale on Totsy?</option>
-		
-		<!-- Press -->	
+
+		<!-- Press -->
 			<option class="sub_press" value="">Choose One</option>
 			<option class="sub_press" value="6">I would like more information about Totsy.</option>
 			<option class="sub_press" value="7">I'd like a media kit</option>
 		</select>
-	
+
 		<br />
-		
+
 		<h3>Your Message</h3>
 		<?=$this->form->textarea('message', array(
 			'class' => 'inputbox',
@@ -91,11 +93,25 @@
 		));
 		?>
 		<br />
-	
+
 		<?=$this->form->submit('Send Information', array('class' => "button" )); ?>
 	<?=$this->form->end(); ?>
-		
 	</div>
+
+	<div id="message" style="float:left; width:150px; margin-left:20px;">
+				<strong>Corporate Address:</strong><br/>
+				10 West 18th Street<br/>
+				4th Floor<br/>
+				New York, NY 10011<br/>
+				<br />
+				<h3 class="gray">Contact Support</h3>
+				<a href="mailto:support@totsy.com">support@totsy.com</a><br />
+				888-247-9444<br />
+				Office Hours:<br/> M-F 10am - 5pm EST</p>
+	</div>
+
+	</div>
+
 	<div class="bl"></div>
 	<div class="br"></div>
 </div>
@@ -105,14 +121,14 @@ function makeSublist(parent,child,isSubselectOptional,childVal)
 {
 	$("body").append("<select style='display:none' id='"+parent+child+"'></select>");
 	$('#'+parent+child).html($("#"+child+" option"));
-	
+
 		var parentValue = $('#'+parent).attr('value');
 		$('#'+child).html($("#"+parent+child+" .sub_"+parentValue).clone());
-	
+
 	childVal = (typeof childVal == "undefined")? "" : childVal ;
 	$("#"+child+' option[@value="'+ childVal +'"]').attr('selected','selected');
-	
-	$('#'+parent).change( 
+
+	$('#'+parent).change(
 		function()
 		{
 			var parentValue = $('#'+parent).attr('value');
@@ -126,9 +142,9 @@ function makeSublist(parent,child,isSubselectOptional,childVal)
 
 	$(document).ready(function()
 	{
-		makeSublist('child','grandsun', true, '');	
-		makeSublist('parent','child', false, '1');	
+		makeSublist('child','grandsun', true, '');
+		makeSublist('parent','child', false, '1');
 	});
 </script>
- 
+
 

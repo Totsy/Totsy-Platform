@@ -9,6 +9,7 @@ use admin\models\Event;
 use admin\models\Item;
 use admin\models\Base;
 use admin\models\Report;
+use admin\models\Service;
 use Mongo;
 use MongoCode;
 use MongoDate;
@@ -1089,6 +1090,171 @@ class ReportsController extends BaseController {
 			'6' => 'Saturday'
 		);
 		return compact('DailyCharts','days','start_date','end_date');
+	}
+
+	/**
+	* Generates graphics that shows behaviour of user with :
+	* Free shipping discount for the first order
+	* $10 off for the 2nd purchase of $50+
+	*/
+	public function services() {
+		$usersCollection = User::connection()->connection->users;
+		$ordersCollection = Order::collection();
+		$usersCollection->ensureIndex(array('created_date' => 1));
+		$usersCollection->ensureIndex(array('purchase_count' => 1));
+		$ordersCollection->ensureIndex(array('date_created' => 1));
+		$ordersCollection->ensureIndex(array('total' => 1));
+		$servicesCollection = Service::collection();
+		$statistics["registered_user_purch_30"] = 0;
+		$statistics["registered_user_purch_23_30"] = 0;
+		$statistics["registered_user_purch_0_23"] = 0;
+		$statistics["registered_user_no_2purch"] = 0;
+		$statistics["registered_user_2purch_50_0_15"] = 0;
+		$statistics["registered_user_2purch_0_15"] = 0;
+		$statistics["registered_user_2purch_50_15_30"] = 0;
+		$statistics["registered_user_2purch_15_30"] = 0;
+		$statistics["registered_user_2purch_50_30"] = 0;
+		$statistics["registered_user_2purch_30"] = 0;
+		$idx = 0;
+		#RUNNING
+		$freeshipService = Service::find('first', array('conditions' => array('name' => 'freeshipping')));
+		#REGISTERED USERS
+		$conditions_A = array('created_date' => array(
+								'$gt' => $freeshipService['start_date'],
+								'$lte' => new MongoDate()
+		));
+		$statistics["registered_user"] = $usersCollection->count($conditions_A);
+		#REGISTERED USERS / No Purchases
+		$conditions_B = array(	'purchase_count' => array('$exists' => false),
+								'created_date' => array(
+									'$gt' => $freeshipService['start_date'],
+									'$lte' => new MongoDate()
+		));
+		$statistics["registered_user_no_purch"] = $usersCollection->count($conditions_B);
+		$conditions_C = array('purchase_count' => array('$exists' => true),
+								'created_date' => array(
+									'$gt' => $freeshipService['start_date'],
+									'$lte' => new MongoDate()
+		));
+		$users_C = $usersCollection->find($conditions_C);
+		foreach ($users_C as $user) {
+			$key = 0;
+			# 1st Purchase between 0 to 23 days
+			$day_target_23 = mktime(
+								date("G", $user['created_date']->sec),
+								date("i", $user['created_date']->sec),
+								date("s", $user['created_date']->sec),
+								date("m", $user['created_date']->sec),
+								date("d", $user['created_date']->sec) + 23,
+								date("Y", $user['created_date']->sec)
+						);
+			$day_target_30 = mktime(
+								date("G", $user['created_date']->sec),
+								date("i", $user['created_date']->sec),
+								date("s", $user['created_date']->sec),
+								date("m", $user['created_date']->sec),
+								date("d", $user['created_date']->sec) + 30,
+								date("Y", $user['created_date']->sec)
+						);
+			$conditions_order = array("user_id" => (string) $user["_id"]);
+			$orders = $ordersCollection->find($conditions_order,array('date_created' => 1, 'total' => 1));
+			foreach($orders as $order) {
+				if($key == 0) {
+					$day_2_target_15 = mktime(
+										date("G", $order['date_created']->sec),
+										date("i", $order['date_created']->sec),
+										date("s", $order['date_created']->sec),
+										date("m", $order['date_created']->sec),
+										date("d", $order['date_created']->sec) + 15,
+										date("Y", $order['date_created']->sec)
+								);
+					$day_2_target_30 = mktime(
+										date("G", $order['date_created']->sec),
+										date("i", $order['date_created']->sec),
+										date("s", $order['date_created']->sec),
+										date("m", $order['date_created']->sec),
+										date("d", $order['date_created']->sec) + 30,
+										date("Y", $order['date_created']->sec)
+								);
+					if($order['date_created']->sec > $day_target_30) {
+						$statistics["registered_user_purch_30"]++;
+					} else if (($order['date_created']->sec < $day_target_30) && ($order['date_created']->sec > $day_target_23)) {
+						$statistics["registered_user_purch_23_30"]++;
+					} else if (($order['date_created']->sec < $day_target_23)) {
+						$statistics["registered_user_purch_0_23"]++;
+					}
+				}
+				//2nd purchase
+				if($key == 1) {
+					if($order['total'] < 50) {
+						if($order['date_created']->sec > $day_2_target_30) {
+							$statistics["registered_user_2purch_30"]++;
+						} else if (($order['date_created']->sec <= $day_2_target_30) && ($order['date_created']->sec > $day_2_target_15)) {
+							$statistics["registered_user_2purch_15_30"]++;
+						} else if (($order['date_created']->sec <= $day_2_target_15)) {
+							$statistics["registered_user_2purch_0_15"]++;
+						}
+					} else {
+						if($order['date_created']->sec > $day_2_target_30) {
+							$statistics["registered_user_2purch_30"]++;
+						} else if (($order['date_created']->sec <= $day_2_target_30) && ($order['date_created']->sec > $day_2_target_15)) {
+							$statistics["registered_user_2purch_50_15_30"]++;
+						} else if (($order['date_created']->sec <= $day_2_target_15)) {
+							$statistics["registered_user_2purch_50_0_15"]++;
+						}
+					}
+				}
+				$key++;
+			}
+			if($key == 1) {
+				$statistics["registered_user_no_2purch"]++;
+			}
+		}
+		/**** 1ST Charts ****/
+		//titles
+		$chart_datas[0][0] = 'Registered Users';
+		$chart_datas[1][0] = 'w/ no Purchases';
+		$chart_datas[2][0] = '1st purchase 0-23d';
+		$chart_datas[3][0] = '1st purchase 23-30d';
+		$chart_datas[4][0] = '1st purchase > 30d';
+		//datas
+		$chart_datas[0][1] = $statistics["registered_user"];
+		$chart_datas[1][1] = $statistics["registered_user_no_purch"];
+		$chart_datas[2][1] = $statistics["registered_user_purch_0_23"];
+		$chart_datas[3][1] = $statistics["registered_user_purch_23_30"];
+		$chart_datas[4][1] = $statistics["registered_user_purch_30"];
+		# Create Column3D chart Object
+		$ServiceCharts = new FusionCharts("Column3D","700","350");
+		#  Set chart attributes
+		$strParam = "yAxisName=Users;numberSuffix=";
+		$ServiceCharts->setChartParams($strParam);
+		# add chart values and  category names
+		$ServiceCharts->addChartDataFromArray($chart_datas);
+		/**** 2ND Charts ****/
+		//titles
+		$chart_datas_2[0][0] = 'Free Shipping';
+		$chart_datas_2[1][0] = 'No 2nd purchase';
+		$chart_datas_2[2][0] = 'Discount 0-15d';
+		$chart_datas_2[3][0] = '0-15d';
+		$chart_datas_2[4][0] = 'Discount 15-30d';
+		$chart_datas_2[5][0] = '15-30d';
+		$chart_datas_2[6][0] = '> 30d';
+		//datas
+		$chart_datas_2[0][1] = ($statistics["registered_user_purch_0_23"] + $statistics["registered_user_purch_23_30"]);
+		$chart_datas_2[1][1] = $statistics["registered_user_no_2purch"];
+		$chart_datas_2[2][1] = $statistics["registered_user_2purch_50_0_15"];
+		$chart_datas_2[3][1] = $statistics["registered_user_2purch_0_15"];
+		$chart_datas_2[4][1] = $statistics["registered_user_2purch_50_15_30"];
+		$chart_datas_2[5][1] = $statistics["registered_user_2purch_15_30"];
+		$chart_datas_2[6][1] = $statistics["registered_user_2purch_30"];
+		# Create Column3D chart Object
+		$Service2ndCharts = new FusionCharts("Column3D","700","350");
+		#  Set chart attributes
+		$strParam2 = "yAxisName=Users;numberSuffix=";
+		$Service2ndCharts->setChartParams($strParam2);
+		# add chart values and  category names
+		$Service2ndCharts->addChartDataFromArray($chart_datas_2);
+		return compact('ServiceCharts','Service2ndCharts');
 	}
 }
 
