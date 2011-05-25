@@ -28,11 +28,13 @@ class Shipment extends \lithium\template\Helper {
 			case 'SP':
 			case 'UPS':
 			case 'ups':
-				$upsBase = 'http://wwwapps.ups.com/WebTracking/processInputRequest?sort_by=3D=status&';
-				$upsDetails = 'tracknums_displayed=3D1&TypeOfInquiryNumber=3DT&loc=3D=en_US&InquiryNumber1=';
-				$upsDetails2 = '&track.x=3D0&track.y==3D0';
-				$url = $upsBase.$upsDetails.$number.$upsDetails2;
-				$link = $this->_context->html->link($number, $url, array('target' => '_blank'));
+				
+				if (strlen($number) == 22) {
+					$html = "<a href='http://www.ups-mi.net/packageID/PackageID.aspx?PID=$number' target='_blank' title='Tracking Info'>$number</a>";
+				} else {
+					$html = "<a href=".$upsBase.$upsDetails.$number.$upsDetails2." target='_blank' title='Tracking Info'>$number</a>";
+				}
+				
 				break;
 			default:
 				break;
