@@ -26,7 +26,7 @@ class PagesController extends BaseController {
 		}elseif ($path[0] == 'btrendie' ){
 			$this->_render['layout'] = 'blank';
 		}
-		$allowed = array('terms', 'faq', 'contact', 'privacy', 'aboutus', 'btrendie', 'moms', 'testimonials', 'being_green', 'press');
+		$allowed = array('terms', 'faq', 'contact', 'privacy', 'aboutus', 'btrendie', 'moms', 'testimonials', 'being_green', 'press','affiliates');
 		$userCheck = Session::read('userLogin');
 		if (empty($userCheck) && !in_array($path[0], $allowed)) {
 			$this->redirect('/');
