@@ -118,7 +118,7 @@ class Affiliate extends Base {
 	        The random string is created and is place where ever the $ is placed in the
 	        pixel.  The $ sign is a place holder for where the random string is will be
 	    */
-        if($invited_by == 'w4' || $invited_by == "pmk" || $invited_by = "emiles" ){
+        if($invited_by == 'w4' || $invited_by == "pmk" || $invited_by == "emiles" ){
             $transid = 'totsy' . static::randomString();
             return '<br/>' . str_replace('$', $transid,$pixel );
         }
