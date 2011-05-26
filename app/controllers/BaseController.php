@@ -109,7 +109,7 @@ class BaseController extends \lithium\action\Controller {
 	    if ($userInfo && $service) {
 	        $user = User::find('first', array('conditions' => array('_id' => $userInfo['_id'])));
 	        if ($user) {
-                $created_date = $user->created_date->sec;
+               $created_date = (is_object($user->created_date)) ? $user->created_date->sec : strtotime($user->created_date);
              $dayThirty = date('m/d/Y',mktime(0,0,0,date('m',$created_date),
                     date('d',$created_date)+30,
                     date('Y',$created_date)
@@ -147,7 +147,7 @@ class BaseController extends \lithium\action\Controller {
 	    if ($userInfo && $service) {
 	        $user = User::find('first', array('conditions' => array('_id' => $userInfo['_id'])));
             if ($user) {
-                $created_date = $user->created_date->sec;
+                $created_date = (is_object($user->created_date)) ? $user->created_date->sec : strtotime($user->created_date);
                 $dayThirty = date('m/d/Y',mktime(0,0,0,date('m',$created_date),
                     date('d',$created_date)+30,
                     date('Y',$created_date)
