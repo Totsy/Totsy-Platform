@@ -10,6 +10,9 @@
 		  <li class="first item17"><a href="/pages/moms" title="Meet The Moms"><span>Meet The Moms</span></a></li>
 		  <li class="first item16"><a href="/pages/press" title="Press"><span>Totsy in the Press</span></a></li>
 		  <li class="first item17"><a href="/pages/being_green" title="Being Green"><span>Being Green</span></a></li>
+		  <li class="first"><a href="/pages/testimonials" title="Video Testimonials"><span>Video Testimonials</span></a></li>
+          <li class="first item19"><a href="http://blog.totsy.com" target="_blank" title="Blog"><span>Totsy Blog</span></a></li>
+          <li class="first item15"><a href="/pages/affiliates" title="Affiliates"><span>Affiliates</span></a></li>
 		  <br />
 		  <h3 style="color:#999;">Need Help?</h3>
 		  <hr />
