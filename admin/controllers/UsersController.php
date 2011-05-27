@@ -74,10 +74,14 @@ class UsersController extends \admin\controllers\BaseController {
 					))));
 				$orders = Order::find('all', array('conditions' => array('user_id' => $id)));
 				$userData = $user->data();
+				if (array_key_exists('created_orig', $userData)) {
+				    $userData['register date'] = date("M d, Y", $userData['created_orig']['sec']);
+				} elseif (array_key_exists('created_date', $userData)) {
+				    $userData['register date'] = date("M d, Y",strtotime($info["created_date"]));
+				} elseif (array_key_exists('created_on', $userData)) {
+				    $userData['register date'] = date("M d, Y", $userData['created_on']['sec']);
+				}
 
-				$userData['register date'] = (array_key_exists('created_orig', $userData)) ?
-				date("M d, Y", $userData['created_orig']['sec']) :
-				date("M d, Y",strtotime($info["created_date"]));
 				$data = array_intersect_key($userData, array_flip($headings['user']));
 				$info = $this->sortArrayByArray($data, $headings['user']);
 			}
