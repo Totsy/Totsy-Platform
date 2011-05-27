@@ -8,130 +8,7 @@
 <div class="grid_16">
 	<h2 class="page-title gray"><span class="_red"><a href="/" title="Sales">Today's Sales</a></span> / <a href="/cart/view" title="My Cart">My Cart</a> / Checkout / Shipping &amp; Billing</h2>
 	<hr />
-<<<<<<< HEAD
 </div>
-=======
-<div id="middle" class="fullwidth">
-
-	<div class="tl"></div>
-	<div class="tr"></div>
-	<div id="page">
-
-<?php if (!empty($error)) { ?>
-                        <div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /><?=$error; ?></div>
-
-<?php } ?>
-<div style="display:none;">
-           <div class="rounded" style="color: #009900; margin:0px 10px 0px 0px; float: left; display:block; background:#ebffeb; border:1px solid #ddd; width:230px; text-align:center; padding:20px;">Shipping / Billing Info</div>
-<div id="arrow-right">
-  <div id="arrow-right-1"></div>
-  <div id="arrow-right-2"></div>
-</div><!--arrow-right-->
-
-              <div class="rounded" style="color: #ff0000; margin:0px 10px 0px 0px; float: left; display:block; background:#ffebeb; border:1px solid #ddd; width:236px; padding:20px; text-align: center;">Payment</div>
-<div id="arrow-right-red">
-  <div id="arrow-right-1-red"></div>
-  <div id="arrow-right-2-red"></div>
-</div><!--arrow-right-->
-
-              <div class="rounded" style="color:#ff0000; margin:0px 0px 0px 0px; float:left; display:block; background:#ffebeb; border:1px solid #ddd; width:246px; padding:20px; text-align:center;">Confirmation</div>
-              </div>
-
-
-	<ol id="checkout-process">
-		<?=$this->form->create($order, array('class' => 'checkout')); ?>
-
-		<!-- Start Billing Information -->
-		<div style="float:left; width:423px; margin:0px 10px 10px 0px;  display:block;"><li id="opc-billing">
-			<div id="checkout-process-billing">
-			<?php if (empty($billing)): ?>
-					<center><strong><?=$this->html->link('Please take a moment to add an Address', '#', array(
-						'class' => 'add-address')); ?></strong></center>
-				<?php else: ?>
-					<h2 style="color:#707070;">Billing Address</h2><hr />
-					<p>Select a billing address from your address book.</p>
-						<?=$this->form->select('billing', $billing, array(
-							'id' => 'billing',
-							'target' => '#billing-new-address-form',
-							'value' => key($billing)
-						)); ?>
-						<fieldset>
-							<p>
-								<input type="radio" name="billing_shipping" id="billing:use_for_shipping_yes" value="1" checked="checked" />&nbsp;
-								<label for="billing:use_for_shipping_yes">Ship to this address</label>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								<input type="radio" name="billing_shipping" id="billing:use_for_shipping_no" value="0" />&nbsp;
-								<label for="billing:use_for_shipping_no">Ship to different address</label>
-							</p>
-						</fieldset>
-						<?=$this->html->link('Add a new address', '#', array(
-							'class' => 'add-address')); ?>
-				<?php endif ?>
-			</div>
-		</li>
-		  </div>
-		<!-- End Billing Information -->
-
-		<!-- Start Shipping Information -->
-		<div style="float:left; width:445px; display:block;">
-		  <li id="opc-shipping" class="step_" style="opacity:0.5">
-
-			<div id="checkout-process-shipping">
-
-				<?php if (empty($shipping)): ?>
-
-				<?php else: ?>
-
-						<h2 style="color:#707070;">Shipping Address</h2>
-					<hr />
-					<p>Select a shipping address from your address book.</p>
-						<?=$this->form->select('shipping', $shipping, array(
-							'id' => 'shipping',
-							'target' => '#shipping-new-address-form',
-							'value' => key($shipping)
-						)); ?><br>
-						<?=$this->html->link('Add a new address', '#', array(
-							'class' => 'add-address')); ?>
-				<?php endif ?>
-
-			</div>
-
-		</li>
-		  </div>
-<div style="clear:both;"></div>
-		<!-- End Shipping Information -->
-
-		<li id="shipping-method" class="step" style="display:none;">
-
-				<h2 class="gray mar-b">Shipping Method</h2>
-			<hr />
-
-			<div id="shipping-method-details">
-			<fieldset>
-
-				<ul class="shipping-methods">
-				<li>
-						<label>
-							<input type="radio" name="shipping_method" value="ups" checked="checked" />&nbsp;
-							<?=$this->html->image('ups-icon.jpg', array('title' => "UPS Shipping", 'alt' => "UPS Shipping", 'width' => "26", 'height' => "32")); ?>&nbsp;
-							UPS Ground
-						</label>
-				</li>
-				</ul>
-			</fieldset>
-
-			</div>
-		</li>
-
-
-<hr />
-
-		<li class="step">
-			<?=$this->form->submit('Confirm & Continue', array('class' => 'button fr')); ?>
-		</li>
-
-		<?=$this->form->end(); ?>
->>>>>>> 5c257291821c231c17c6f556c8bddd3dc7bfc18d
 
 <div class="grid_12">
 
@@ -235,24 +112,7 @@
 			</table>
 	<?php endif ?>
 	<!-- End Order Details -->
-<<<<<<< HEAD
-	
-    
-=======
-	<!--Disney -->
-      <div class="disney fl">
-          <p><strong>SPECIAL BONUS!</strong><hr/></p>
-       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value). <br/>
-       <span id="disney">Offer & Refund Details</span></p>
-      </div>
-    <!-- begin thawte seal -->
-    <div id="thawteseal" title="Click to Verify - This site chose Thawte SSL for secure e-commerce and confidential communications." style="float: right!important; width:200px;">
-        <div style="float: left!important; width:100px; display:block;"><script type="text/javascript" src="https://seal.thawte.com/getthawteseal?host_name=www.totsy.com&amp;size=L&amp;lang=en"></script></div>
 
-    <div class="AuthorizeNetSeal" style="float: left!important; width:100px; display:block;"> <script type="text/javascript" language="javascript">var ANS_customer_id="98c2dcdf-499f-415d-9743-ca19c7d4381d";</script> <script type="text/javascript" language="javascript" src="//verify.authorize.net/anetseal/seal.js" ></script></div>
-    </div>
-    <!-- end thawte seal -->
->>>>>>> 5c257291821c231c17c6f556c8bddd3dc7bfc18d
 
 	</ol>
 </div>
@@ -360,13 +220,7 @@
 </div>
 
 <div id="address-modal"></div>
-<<<<<<< HEAD
-
-=======
 <div id="modal"></div>
-</div>
->>>>>>> 5c257291821c231c17c6f556c8bddd3dc7bfc18d
-
 
 <script>
 $(document).ready(function() {
@@ -417,18 +271,3 @@ $(".add-address").click(function() {
 			window.location.replace('/cart/view');
 		</script>
 	<?php endif ?>
-	<script type="text/javascript">
-	/**
-	$("#checkout-cart").click(function() {
-		$("#cart-modal").load($.base + 'cart/view').dialog({
-			autoOpen: false,
-			modal:true,
-			width: 900,
-			//height: 600,
-			close: function(ev, ui) {
-				location.reload();
-			}
-		});
-		$("#cart-modal").dialog('open');
-	}); **/
-</script>
