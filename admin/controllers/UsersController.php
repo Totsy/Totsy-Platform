@@ -28,6 +28,7 @@ class UsersController extends \admin\controllers\BaseController {
 			'firstname',
 			'lastname',
 			'email',
+			'created_date',
 			'zip',
 			'logincounter',
 			'purchase_count',
@@ -73,6 +74,7 @@ class UsersController extends \admin\controllers\BaseController {
 					))));
 				$orders = Order::find('all', array('conditions' => array('user_id' => $id)));
 				$data = array_intersect_key($user->data(), array_flip($headings['user']));
+				var_dump($data);
 				$info = $this->sortArrayByArray($data, $headings['user']);
 			}
 		}
