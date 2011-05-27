@@ -19,7 +19,7 @@
 		</h2>
 		<div class="block" id="user-table">
 			<table border="0" cellspacing="5" cellpadding="5" width="100">
-				<?php var_dump($info); foreach ($info as $key => $value): ?>
+				<?php foreach ($info as $key => $value): ?>
 					<?php if (in_array($key, array('lastlogin'))): ?>
 						<tr><td><?=$key?></td><td><?=date('m-d-Y', $value['sec']);?></td></tr>
 						<?php else: ?>
