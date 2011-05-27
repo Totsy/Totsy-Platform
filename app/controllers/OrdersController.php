@@ -187,9 +187,7 @@ class OrdersController extends BaseController {
 			}
 		}
 		$shipDate = Cart::shipDate($cart);
-		//calculate savings
-		$savings = Session::read('userSavings');
-		return $vars + compact('cartEmpty', 'cartByEvent', 'error', 'orderEvents', 'shipDate','savings');
+		return $vars + compact('cartEmpty', 'cartByEvent', 'error', 'orderEvents', 'shipDate');
 	}
 
 	/**
@@ -440,16 +438,8 @@ class OrdersController extends BaseController {
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
-		//calculate final savings
-		$savings = Session::read('userSavings');
-		if(!empty($orderPromo->saved_amount) && !empty($savings)) {
-			$savings += abs($orderPromo->saved_amount);
-		}
-		if(!empty($orderCredit->credit_amount) && !empty($savings)) {
-			$savings += abs($orderCredit->credit_amount);
-		}
-		//recalculate with promo and credits
-		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings');
+
+		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate');
 
 	}
 

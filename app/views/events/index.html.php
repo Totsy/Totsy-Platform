@@ -222,8 +222,8 @@
 	<?php endforeach ?>
 	</div>
 </div>
-<div id="modal">
 </div>
+<div id="modal"></div>
 <!--Javascript Output for Today's Events -->
 <?php if (!empty($todayJs)): ?>
 	<?php foreach ($todayJs as $value): ?>
