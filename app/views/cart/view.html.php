@@ -4,10 +4,13 @@
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
 	$test = $cart->data();
 ?>
+<<<<<<< HEAD
 <div class="grid_16">
 	<h2 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> My Cart</h2>
 	<hr />
 </div>
+=======
+>>>>>>> 5c257291821c231c17c6f556c8bddd3dc7bfc18d
 <div class="message"></div>
 <?php if (!empty($test)): ?>
 <?php $subTotal = 0; ?>
@@ -184,9 +187,15 @@
 <?php else: ?>
 	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1><center>You have no items in your cart. <br> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
 <?php endif ?>
+<<<<<<< HEAD
 
 
 
+=======
+<div id="modal">
+
+</div>
+>>>>>>> 5c257291821c231c17c6f556c8bddd3dc7bfc18d
 <script type="text/javascript" charset="utf-8">
 	$(".inputbox").bind('keyup', function() {
 	var id = $(this).attr('id');

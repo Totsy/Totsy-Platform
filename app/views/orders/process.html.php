@@ -2,7 +2,7 @@
 	$this->html->script('application', array('inline' => false));
 	$this->form->config(array('text' => array('class' => 'inputbox')));
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
-	$preTotal = $subTotal + $orderCredit->credit_amount;
+	$preTotal = $subTotal + $orderCredit->credit_amount + $orderServiceCredit;
 	$afterDiscount = $preTotal + $orderPromo->saved_amount;
 	if ($afterDiscount < 0) {
 		$afterDiscount = 0;
@@ -106,6 +106,12 @@
 					<td><strong>Order Subtotal:</strong> </td>
 					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $subTotal, 2);?></td>
 				</tr>
+				<?php
+					if ($orderServiceCredit): ?>
+						<tr>
+							<td>You qualify for $10 off your purchase!</td><td>- $10.00</td>
+						</tr>
+				<?php endif; ?>
 				<tr>
 					<td><strong>Shipping:</strong> </td>
 					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $shippingCost, 2);?></td>
@@ -116,6 +122,12 @@
 						<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $overShippingCost, 2);?></td>
 					</tr>
 				<?php endif ?>
+				<?php
+					if ($freeshipping): ?>
+						<tr>
+							<td>You qualify for free shipping!</td>
+						</tr>
+				<?php endif; ?>
 				<tr>
 					<td><strong>Sales Tax:</strong></td>
 					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $tax, 2);?>
@@ -212,7 +224,7 @@
 			<hr />
 <div style="clear:both; margin-bottom:10px;"></div>
 
-   
+
 	<!-- Begin Order Details -->
 	<?php if ($cartByEvent): ?>
 		<?php $x = 0; ?>
@@ -300,9 +312,6 @@
 			</table>
 	<?php endif ?>
 
-
-	
-
     <!-- begin thawte seal -->
     <div id="thawteseal" title="Click to Verify - This site chose Thawte SSL for secure e-commerce and confidential communications." style="float: right!important; width:200px;">
         <div style="float: left!important; width:100px; display:block;"><script type="text/javascript" src="https://seal.thawte.com/getthawteseal?host_name=www.totsy.com&amp;size=L&amp;lang=en"></script></div>
@@ -318,7 +327,28 @@
 	</div>
 
 </div>
-
+<div id="modal">
+</div>
+<?php
+    if(number_format((float) $total, 2) >= 35 && number_format((float) $total, 2) <= 44.99){
+        echo "<script type=\"text/javascript\">
+            $.post('/cart/modal',{modal: 'disney'},function(data){
+              //  alert(data);
+                if(data == 'false'){
+                    $('#modal').load('/cart/upsell?subtotal=" . (float)$total ."&redirect=".$itemUrl."').dialog({
+                        autoOpen: false,
+                        modal:true,
+                        width: 550,
+                        height: 320,
+                        position: 'top',
+                        close: function(ev, ui) {}
+                    });
+                    $('#modal').dialog('open');
+                }
+            });
+            </script>";
+    }
+?>
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function(){
 		$('#gift').bind('click', function() {
