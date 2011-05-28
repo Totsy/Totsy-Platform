@@ -102,7 +102,7 @@ class Order extends \lithium\data\Model {
                 $auth = Payments::void('default', $order['authKey']);
 			} else {
 			    $auth = -1;
-			    $error = "Can't capture because total is zero."
+			    $error = "Can't capture because total is zero.";
 			}
 			return $collection->update(
                     array('_id' => $orderId),
@@ -133,7 +133,7 @@ class Order extends \lithium\data\Model {
                 $auth = Payments::capture('default', $order['authKey'], round($order['total'], 2));
             } else {
                 $auth = -1;
-                $error = "Can't capture because total is zero."
+                $error = "Can't capture because total is zero.";
             }
                 Logger::info("process-payment: Processed payment for order_id $order[_id]");
                 return $collection->update(
