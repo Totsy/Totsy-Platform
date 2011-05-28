@@ -27,6 +27,7 @@
 </script>
 <div class="grid_16">
 	<h2 id="page-heading">Order Management</h2>
+	<h3>Authorize .Net keys that are alpha numerical are not really Auth.Net keys.  These are from customers with Orders of $0 </h3>
 </div>
 
 <div id="clear"></div>
@@ -70,7 +71,7 @@
 	<table id="orderTable" class="datatable" border="1">
 		<thead>
 			<tr>
-				<?php 
+				<?php
 				foreach ($headings as $heading) {
 					echo "<th>$heading</th>";
 				}
