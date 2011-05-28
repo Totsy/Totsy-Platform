@@ -27,7 +27,7 @@
 </script>
 <div class="grid_16">
 	<h2 id="page-heading">Order Management</h2>
-	<h3>Authorize .Net keys that are alpha numerical are not really Auth.Net keys.  These are from customers with Orders of $0 </h3>
+	<h5>Note: Authorize .Net keys that are not numeric are not really Auth.Net keys.  These are from customers with Orders of $0 </h5>
 </div>
 
 <div id="clear"></div>
