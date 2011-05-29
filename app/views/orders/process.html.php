@@ -9,7 +9,7 @@
 	}
 	$total = $afterDiscount + $tax + $shippingCost + $overShippingCost;
 ?>
-<h1 class="page-title gray"><span class="_red"><a href="/" title="Sales">Today's Sales</a></span> / <a href="/cart/view" title="My Cart">My Cart</a> / Checkout / Process Payment</h1>
+<h1 class="page-title gray"><span class="_red"><a href="/" title="Sales">Hello Today's Sales</a></span> / <a href="/cart/view" title="My Cart">My Cart</a> / Checkout / Process Payment</h1>
 <hr />
 <div id="middle" class="fullwidth">
 	<div class="tl"></div>
