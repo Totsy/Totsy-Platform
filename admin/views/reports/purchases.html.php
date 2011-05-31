@@ -6,7 +6,8 @@
 <?=$this->html->style('TableTools');?>
 
 <div class="grid_16">
-	<h2 id="page-heading">Purchase Order: <?=$poNumber; ?> (<?=$event->name?>)</h2>
+	<h2 id="page-heading">Purchase Order: <?=$poNumber; ?>
+	(<?=$event->name?>)</h2>
 </div>
 <div id="clear"></div>
 <div class="grid_8">
@@ -24,7 +25,7 @@
 			<table id="purchase_order" class="datatable" border="1">
 				<thead>
 					<tr>
-						<?php 
+						<?php
 						foreach ($purchaseHeading as $heading) {
 							echo "<th>$heading</th>";
 						}

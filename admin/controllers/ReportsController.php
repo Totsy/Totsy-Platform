@@ -16,6 +16,7 @@ use MongoDate;
 use MongoRegex;
 use MongoId;
 use li3_flash_message\extensions\storage\FlashMessage;
+use admin\models\PurchaseOrder;
 use lithium\data\Model;
 use FusionCharts;
 
@@ -275,60 +276,36 @@ class ReportsController extends BaseController {
 	 * @return mixed
 	 */
 	public function purchases($eventId = null) {
+		$poNumber = "";
+		$purchaseOrder = array();
+		$event = array();
+		$total = array("sum" => 0, "quantity" => 0);
+		$purchaseHeading = $this->_purchaseHeading;
 		if ($eventId) {
-			$purchaseHeading = $this->_purchaseHeading;
-			$total = array('sum' => 0, 'quantity' => 0);
-			$event = Event::find('first', array(
-				'conditions' => array(
-					'_id' => $eventId
-			)));
-			$vendorName = preg_replace('/[^(\x20-\x7F)]*/','', substr($this->_asciiClean($event->name), 0, 3));
-			$time = date('ymdis', $event->_id->getTimestamp());
-			$poNumber = 'TOT'.'-'.$vendorName.$time;
-			$eventItems = $this->getOrderItems($eventId);
+			$event = Event::find('first', array("conditions" =>
+				array("_id" => $eventId)
+			));
+			$po = PurchaseOrder::collections("vendorpo");
+			$results = $po->find(array("eventId" => $eventId));
 			$inc = 0;
-			foreach ($eventItems as $eventItem) {
-				foreach ($eventItem['details'] as $key => $value) {
-					$orders = Order::find('all', array(
-						'conditions' => array(
-							'items.item_id' => (string) $eventItem['_id'],
-							'items.size' => (string) $key,
-							'cancel' => array('$ne' => true)
-					)));
-					if ($orders) {
-						$orderData = $orders->data();
-						if (!empty($orderData)) {
-							foreach ($orderData as $order) {
-								$items = $order['items'];
-								foreach ($items as $item) {
-									$active = (empty($item['cancel']) || $item['cancel'] != true) ? true : false;
-									$itemValid = ($item['item_id'] == $eventItem['_id']) ? true : false;
-									if ($itemValid && ((string) $key == $item['size']) && $active){
-										$purchaseOrder[$inc]['Product Name'] = $eventItem['description'];
-										$purchaseOrder[$inc]['Product Color'] = $eventItem['color'];
-										$purchaseOrder[$inc]['Vendor Style'] = $eventItem['vendor_style'];
-										$itemRecord = Item::collection()->findOne(array('_id' => new MongoId($item['item_id'])));
-										$purchaseOrder[$inc]['SKU'] = $itemRecord['sku_details'][$item['size']];
-										$purchaseOrder[$inc]['Unit'] = $eventItem['sale_whol'];
-										if (empty($purchaseOrder[$inc]['Quantity'])) {
-											$purchaseOrder[$inc]['Quantity'] = $item['quantity'];
-										} else {
-											$purchaseOrder[$inc]['Quantity'] += $item['quantity'];
-										}
-										$purchaseOrder[$inc]['Total'] = $purchaseOrder[$inc]['Quantity'] * $eventItem['sale_whol'];
-										$purchaseOrder[$inc]['Size'] = $item['size'];
-										$purchaseOrder[$inc] = $this->sortArrayByArray($purchaseOrder[$inc], $purchaseHeading);
-									}
-								}
-							}
-							if (!empty($purchaseOrder[$inc]['Total'])) {
-								$total['sum'] += $purchaseOrder[$inc]['Total'];
-								$total['quantity'] += $purchaseOrder[$inc]['Quantity'];
-							}
-							++$inc;
-						}
-					}
+			foreach ($results as $result ) {
+				$purchaseOrder[$inc]["Vendor Style"] = $result["Vendor Style"];
+				$purchaseOrder[$inc]["Product Name"] = $result["Product Name"];
+				$purchaseOrder[$inc]["Product Color"] = $result["Product Color"];
+				$purchaseOrder[$inc]["SKU"] = $result["SKU"];
+				$purchaseOrder[$inc]["Unit"] = $result["Unit"];
+				$purchaseOrder[$inc]["Quantity"] = $result["Quantity"];
+				$purchaseOrder[$inc]["Total"] = $result["Total"];
+				$purchaseOrder[$inc]["Size"] = $result["Size"];
+				if (!empty($purchaseOrder[$inc]['Total'])) {
+					$total['sum'] += $purchaseOrder[$inc]['Total'];
+					$total['quantity'] += $purchaseOrder[$inc]['Quantity'];
 				}
+				if (empty($poNumber)){
+					$poNumber = $result["PO"];
+				}
+				$purchaseOrder[$inc] = $this->sortArrayByArray($purchaseOrder[$inc], $purchaseHeading);
+				++$inc;
 			}
 		}
 		return compact('poNumber', 'purchaseOrder', 'event', 'total', 'purchaseHeading');
