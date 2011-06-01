@@ -10,6 +10,7 @@ use lithium\core\Environment;
 use MongoDate;
 use MongoRegex;
 use MongoId;
+use MongoCursor;
 use admin\extensions\command\Base;
 use lithium\analysis\Logger;
 use admin\extensions\util\String;
@@ -100,6 +101,7 @@ class GeneratePO extends Base {
 	 * @return mixed
 	 */
 	protected function _purchases() {
+	    MongoCursor::$timeout = -1;
 		$this->log('Generating Purchase Orders');
 		$orderCollection = Order::collection();
 		foreach ($this->poEvents as $eventId) {
@@ -130,6 +132,8 @@ class GeneratePO extends Base {
 							'cancel' => array('$ne' => true)),
 						'fields' => array('items' => 1)
 						));
+					$count = count($orders);
+					$this->log("There are $count that has item $eventItem[_id]");
 					if ($orders) {
 						$orderData = $orders->data();
 						if (!empty($orderData)) {
@@ -186,6 +190,7 @@ class GeneratePO extends Base {
 			        'details' => 1)
 			));
 			$count = count($items);
+			$this->log('Event id $eventid has $items items.');
 			$items = $items->data();
 		}
 		return $items;
@@ -197,7 +202,8 @@ class GeneratePO extends Base {
 	    $condition = array();
         if (!empty($this->event)){
 	        $condition = array_merge($condition, array('_id' => $this->event));
-	    }else if (empty($this->initial)) {
+	    }
+	    if ($this->initial == "true") {
 	        if(empty($this->startrng)) {
 	            $this->out(var_dump($this->startrng));
 	            $this->startrng = date("m/d/Y");
@@ -219,6 +225,7 @@ class GeneratePO extends Base {
 	   	$expired = Event::find('all', array("conditions" => $condition, "fields" => array('_id' => 1)));
 	   	$this->poEvents = $expired;
 	    $amount = count($this->poEvents);
+	    $this->log('$amount event(s) have closed today.');
 	    $this->out("$amount event(s) are closed today.");
 	}
 
