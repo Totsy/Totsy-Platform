@@ -19,13 +19,13 @@ class EventsController extends BaseController {
 		$openEvents = Event::open();
 		$pendingEvents = Event::pending();
 
-		$itemCounts = $this->inventoryCheck(Event::open(array(
+		$soldout = $this->inventoryCheck(Event::open(array(
 			'fields' => array('items')
 		)));
 		//Sort events open/sold out
 		foreach ($openEvents as $key => $event) {
-			foreach ($itemCounts as $event_id => $quantity) {
-				if ($quantity == 0 && ((string)$event["_id"] == $event_id)) {
+			foreach ($soldout as $event_id => $value) {
+				if ($value == true && ((string)$event["_id"] == $event_id)) {
 					$events_closed[] = $openEvents[$key];
 					unset($openEvents[$key]);
 				}
@@ -40,7 +40,7 @@ class EventsController extends BaseController {
 				$openEvents = $events_closed;
 			}
 		}
-		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner');
+		return compact('openEvents', 'pendingEvents', 'soldout', 'banner');
 	}
 
 	public function view() {
@@ -110,20 +110,19 @@ class EventsController extends BaseController {
 		foreach ($events as $eventItems) {
 			$count = 0;
 			$id = $eventItems['_id'] ;
-
 			if (isset($eventItems['items'])) {
-				foreach ($eventItems['items'] as $eventItem) {
-					if ($item = Item::first(array('conditions' => array('_id' => $eventItem)))) {
-						if ($item->total_quantity) {
-							$count += $item->total_quantity;
-						}
-					}
+				$initial = count($eventItems['items']);
+				$results = Item::count(array('conditions' => array('event' => array($id), 'total_quantity' => 0)));
+				if ($initial == $results) {
+					$soldout[$id] = true;
+				} else {
+					$soldout[$id] = false;
 				}
 			}
-			$itemCounts[$id] = $count;
 		}
-		return $itemCounts;
+		return $soldout;
 	}
+
 	public function disney(){
 	    $this->_render['layout'] = false;
 	}
