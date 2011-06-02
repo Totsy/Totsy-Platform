@@ -121,7 +121,6 @@ class GeneratePO extends Base {
 			$eventItems = $this->_getOrderItems($eventId);
 			$purchaseOrder = array();
 			$po = PurchaseOrder::collections("vendorpo");
-			$po->remove(array("eventId" => $eventId));
 			$inc = 0;
 			foreach ($eventItems as $eventItem) {
 				foreach ($eventItem['details'] as $key => $value) {
@@ -133,7 +132,7 @@ class GeneratePO extends Base {
 						'fields' => array('items' => 1)
 						));
 					$count = count($orders);
-					$this->log("There are $count that has item $eventItem[_id]");
+					$this->log("There are $count orders with item $eventItem[_id] and size $key");
 					if ($orders) {
 						$orderData = $orders->data();
 						if (!empty($orderData)) {
@@ -161,6 +160,7 @@ class GeneratePO extends Base {
 									}
 								}
 							}
+							$po->remove(array("eventId" => $eventId, "SKU" => $purchaseOrder[$inc]['SKU']));
 							if (!empty($purchaseOrder[$inc])) {
 								$po->save($purchaseOrder[$inc]);
 							}
@@ -190,7 +190,7 @@ class GeneratePO extends Base {
 			        'details' => 1)
 			));
 			$count = count($items);
-			$this->log('Event id $eventid has $items items.');
+			$this->log("Event id $eventid has $items items.");
 			$items = $items->data();
 		}
 		return $items;
@@ -225,7 +225,7 @@ class GeneratePO extends Base {
 	   	$expired = Event::find('all', array("conditions" => $condition, "fields" => array('_id' => 1)));
 	   	$this->poEvents = $expired;
 	    $amount = count($this->poEvents);
-	    $this->log('$amount event(s) have closed today.');
+	    $this->log("$amount event(s) have closed today.");
 	    $this->out("$amount event(s) are closed today.");
 	}
 
