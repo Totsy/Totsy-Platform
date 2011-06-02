@@ -10,6 +10,7 @@ use lithium\core\Environment;
 use MongoDate;
 use MongoRegex;
 use MongoId;
+use MongoCursor;
 use admin\extensions\command\Base;
 use lithium\analysis\Logger;
 use admin\extensions\util\String;
@@ -64,6 +65,12 @@ class GeneratePO extends Base {
 	public $endrng = "";
 
 	/**
+	*
+	*
+	**/
+	public $event = "";
+
+	/**
 	 * Main method for generating POs when in the background
 	 *
 	 * The `run` method will query the pending event transactions
@@ -74,8 +81,12 @@ class GeneratePO extends Base {
 	 */
 	public function run() {
 	    Environment::set($this->env);
+	    $start = time();
 	    $this->_expiredEvents();
 	    $this->_purchases();
+	    $end = time();
+	    $finish = $end - $start;
+	    $this->out("It took ". $finish . "secs to finish");
 	}
 	/**
 	 * The purchases method generates the PO report for the logistics team. This report returns an associative array
@@ -90,6 +101,7 @@ class GeneratePO extends Base {
 	 * @return mixed
 	 */
 	protected function _purchases() {
+	    MongoCursor::$timeout = -1;
 		$this->log('Generating Purchase Orders');
 		$orderCollection = Order::collection();
 		foreach ($this->poEvents as $eventId) {
@@ -98,38 +110,36 @@ class GeneratePO extends Base {
 			$total = array('sum' => 0, 'quantity' => 0);
 			$event = Event::find('first', array(
 				'conditions' => array(
-					'_id' => $eventId
-			)));
+					'_id' => $eventId),
+				'fields' => array(
+				    '_id' => 1,
+				    'name' => 1
+				)));
 			$vendorName = preg_replace('/[^(\x20-\x7F)]*/','', substr(String::asciiClean($event->name), 0, 3));
 			$time = date('ymdis', $event->_id->getTimestamp());
 			$poNumber = 'TOT' . '-' . $vendorName . $time;
 			$eventItems = $this->_getOrderItems($eventId);
 			$purchaseOrder = array();
 			$po = PurchaseOrder::collections("vendorpo");
-			$po->remove(array("eventId" => $eventId));
 			$inc = 0;
-			$this->out("event $inc.");
 			foreach ($eventItems as $eventItem) {
 				foreach ($eventItem['details'] as $key => $value) {
 					$orders = Order::find('all', array(
 						'conditions' => array(
 							'items.item_id' => (string) $eventItem['_id'],
 							'items.size' => (string) $key,
-							'cancel' => array('$ne' => true)
-					)));
-					$count = Order::find('count', array(
-						'conditions' => array(
-							'items.item_id' => (string) $eventItem['_id'],
-							'items.size' => (string) $key,
-							'cancel' => array('$ne' => true)
-					)));
+							'cancel' => array('$ne' => true)),
+						'fields' => array('items' => 1)
+						));
+					$count = count($orders);
+					$this->log("There are $count orders with item $eventItem[_id] and size $key");
 					if ($orders) {
 						$orderData = $orders->data();
 						if (!empty($orderData)) {
 							foreach ($orderData as $order) {
 								$items = $order['items'];
 								foreach ($items as $item) {
-									$active = (empty($item['cancel']) || $item['cancel'] != true) ? true : false;
+									$active = (empty($item['cancel']) || !$item['cancel']) ? true : false;
 									$itemValid = ($item['item_id'] == $eventItem['_id']) ? true : false;
 									if ($itemValid && ((string) $key == $item['size']) && $active){
 										$purchaseOrder[$inc]['Product Name'] = $eventItem['description'];
@@ -150,8 +160,8 @@ class GeneratePO extends Base {
 									}
 								}
 							}
+							$po->remove(array("eventId" => $eventId, "SKU" => $purchaseOrder[$inc]['SKU']));
 							if (!empty($purchaseOrder[$inc])) {
-
 								$po->save($purchaseOrder[$inc]);
 							}
 							++$inc;
@@ -170,8 +180,17 @@ class GeneratePO extends Base {
 			$items = Item::find('all', array(
 				'conditions' => array(
 					'event' => array('$in' => array($eventId)
-			))));
+			    )),
+			    'fields' => array(
+			        '_id' => 1,
+			        'color' => 1,
+			        'description' => 1,
+			        'vendor_style' => 1,
+			        'sale_whol' => 1,
+			        'details' => 1)
+			));
 			$count = count($items);
+			$this->log("Event id $eventid has $items items.");
 			$items = $items->data();
 		}
 		return $items;
@@ -180,8 +199,11 @@ class GeneratePO extends Base {
 	* The expired events method retrieves all events that ended today between 10am - 11pm
 	*/
 	protected function _expiredEvents() {
-
-	    if ($this->initial) {
+	    $condition = array();
+        if (!empty($this->event)){
+	        $condition = array_merge($condition, array('_id' => $this->event));
+	    }
+	    if ($this->initial == "true") {
 	        if(empty($this->startrng)) {
 	            $this->out(var_dump($this->startrng));
 	            $this->startrng = date("m/d/Y");
@@ -203,6 +225,7 @@ class GeneratePO extends Base {
 	   	$expired = Event::find('all', array("conditions" => $condition, "fields" => array('_id' => 1)));
 	   	$this->poEvents = $expired;
 	    $amount = count($this->poEvents);
+	    $this->log("$amount event(s) have closed today.");
 	    $this->out("$amount event(s) are closed today.");
 	}
 
