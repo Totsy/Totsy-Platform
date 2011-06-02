@@ -136,13 +136,20 @@ class DisneyExport extends \lithium\console\Command {
 		$now = getdate();
 		if (empty($this->startMonth)) { 
 			$MonthSel = $now['mon'];
+		} else {
+			$MonthSel = $this->startMonth;
 		}
 		if (empty($this->startDay)) { 
 			$DaySel = $now['mday'];
+		} else {
+			$DaySel = $this->startDay;
 		}
 		if (empty($this->startYear)) { 
 			$YearSel = $now['year'];
+		} else {
+			$YearSel = $this->startYear;
 		}
+		
 		if (!empty($this->initial)) {
 			//4th April 2011, 10am
 			$start_date = mktime(10, 0, 0, 4, 1, 2011);
@@ -260,8 +267,16 @@ class DisneyExport extends \lithium\console\Command {
 	*/
 	public function saveFile($infos) {
 		$now = getdate();
-		$day = date("d",$now["0"]);
-		$month = date("m",$now["0"]);
+		if (empty($this->startMonth)) { 
+			$month = date("m",$now["0"]);
+		} else {
+			$month = $this->startMonth;
+		}
+		if (empty($this->startDay)) { 
+			$day = date("d",$now["0"]);
+		} else {
+			$day = $this->startDay;
+		}
 		$myFile =  "TOT" . $month . $day . "1.txt";
 		$myFilePath = LITHIUM_APP_PATH . $this->source . $myFile;
 		$fh = fopen($myFilePath, 'wb');
