@@ -54,6 +54,26 @@
 		<fieldset> 
 			<legend class="no-show">New Address</legend> 
 			<?php if (!$isAjax): ?>
+				<div class="demo">
+<form action="">
+    <label>Radio: <br>(choose size)</label>
+    <div id="radio">
+      <input type="radio"
+             id="radio1"
+             name="radio" />
+      <label for="radio1">Small</label>
+      <input type="radio"
+             id="radio2"
+             name="radio"/>
+      <label for="radio2">Medium</label>
+      <input type="radio"
+             id="radio3"
+             name="radio" />
+      <label for="radio3">Large</label>
+    </div>
+  </form>
+</div>
+				
 				<div class="form-row">
 					<label class="addresses">Make Default</label> 
 					<input type="radio" name="default" value="1" checked> Yes<br>
