@@ -22,7 +22,7 @@ use \lithium\data\Connections;
 			'host' => array('test')),
 		'development' => array(
 			'type' =>  'MongoDb',
-			'database' => array('totsy','totsy_dev'),
+			'database' => 'totsy',
 			'host' => 'localhost'),
 		'local' => array(
 			'type' =>  'MongoDb',
