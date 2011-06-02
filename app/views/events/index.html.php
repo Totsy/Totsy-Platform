@@ -59,7 +59,7 @@
 
                 <div class="md-gray p-container">
 
-						<?php if ($itemCounts[ (string) $event->_id] == 0): ?>
+						<?php if ($soldout[ (string) $event->_id] == true): ?>
 								<?=$this->html->image('/img/soldout.png', array(
 									'title' => "Sold Out",
 									'style' => 'z-index : 2; position : absolute; left:69%; margin:10px;'
