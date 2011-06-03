@@ -129,8 +129,10 @@ class FinancialExport extends \lithium\console\Command  {
 			'subTotal',
 			'total',
 			'date_created',
+			'promo_code',
 			'promo_discount',
 			'credit_used',
+			'credit_description',
 			'user_id',
 			'tax',
 			'payment_date'
@@ -156,6 +158,8 @@ class FinancialExport extends \lithium\console\Command  {
 		 */
 		foreach ($orders as $order) {
 			$orderItems = $order['items'];
+			$order['authKey'] = $order['authKey'];
+			$order['payment_type'] = $order['card_type'];
 			$order['city'] = $order['billing']['city'];
 			$order['state'] = $order['billing']['state'];
 			$order['zip'] = $order['billing']['zip'];
@@ -166,7 +170,7 @@ class FinancialExport extends \lithium\console\Command  {
 				$order['payment_date'] = 0;
 			}
 			foreach ($order as $key => $value) {
-				$checkList = array('credit_used', 'promo_discount', 'overSizeHandling');
+				$checkList = array('credit_description','credit_used', 'promo_code', 'promo_discount', 'overSizeHandling');
 				foreach ($checkList as $value) {
 					if (empty($order["$value"])) {
 						$order["$value"] = 0;
@@ -198,6 +202,8 @@ class FinancialExport extends \lithium\console\Command  {
 				if (empty($item['size'])) {
 					$item['size'] = "none";
 				}
+				$item['vendor'] = $item['vendor'];
+				$item['sub_category'] =
 				$item['order_id_fk'] = $order['_id'];
 				$item['order_id_short'] = $order['order_id'];
 				$item['sale_wholesale'] = $itemRecord['sale_whol'];
