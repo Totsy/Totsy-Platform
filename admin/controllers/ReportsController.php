@@ -1106,15 +1106,15 @@ class ReportsController extends BaseController {
 		do {
 			$month = date("F", $actual_month);
 			$year = date("Y", $actual_month);
-			$statistics[$month]["registered_user_purch_30"] = 0;
-			$statistics[$month]["registered_user_purch_23_30"] = 0;
-			$statistics[$month]["registered_user_purch_0_23"] = 0;
-			$statistics[$month]["registered_user_no_2purch"] = 0;
-			$statistics[$month]["registered_user_2purch_50_0_15"] = 0;
-			$statistics[$month]["registered_user_2purch_0_15"] = 0;
-			$statistics[$month]["registered_user_2purch_50_15_30"] = 0;
-			$statistics[$month]["registered_user_2purch_15_30"] = 0;
-			$statistics[$month]["registered_user_2purch_30"] = 0;
+			$statistics[$year][$month]["registered_user_purch_30"] = 0;
+			$statistics[$year][$month]["registered_user_purch_23_30"] = 0;
+			$statistics[$year][$month]["registered_user_purch_0_23"] = 0;
+			$statistics[$year][$month]["registered_user_no_2purch"] = 0;
+			$statistics[$year][$month]["registered_user_2purch_50_0_15"] = 0;
+			$statistics[$year][$month]["registered_user_2purch_0_15"] = 0;
+			$statistics[$year][$month]["registered_user_2purch_50_15_30"] = 0;
+			$statistics[$year][$month]["registered_user_2purch_15_30"] = 0;
+			$statistics[$year][$month]["registered_user_2purch_30"] = 0;
 			#REGISTERED USERS
 			$conditions_A = array('created_date' => array(
 									'$gt' => new MongoDate($actual_month),
@@ -1175,12 +1175,12 @@ class ReportsController extends BaseController {
 											date("Y", $order['date_created']->sec)
 									);
 						if($order['date_created']->sec > $day_target_30) {
-							$statistics[$month]["registered_user_purch_30"]++;
+							$statistics[$year][$month]["registered_user_purch_30"]++;
 						} else if (($order['date_created']->sec < $day_target_30) && ($order['date_created']->sec > $day_target_23)) {
-							$statistics[$month]["registered_user_purch_23_30"]++;
+							$statistics[$year][$month]["registered_user_purch_23_30"]++;
 							$key_2nd++;
 						} else if (($order['date_created']->sec < $day_target_23)) {
-							$statistics[$month]["registered_user_purch_0_23"]++;
+							$statistics[$year][$month]["registered_user_purch_0_23"]++;
 							$key_2nd++;
 						}
 					}
@@ -1188,26 +1188,26 @@ class ReportsController extends BaseController {
 					if(($key == 1) && ($key_2nd == 1)) {
 						if($order['total'] < 50) {
 							if($order['date_created']->sec > $day_2_target_30) {
-								$statistics[$month]["registered_user_2purch_30"]++;
+								$statistics[$year][$month]["registered_user_2purch_30"]++;
 							} else if (($order['date_created']->sec <= $day_2_target_30) && ($order['date_created']->sec > $day_2_target_15)) {
-								$statistics[$month]["registered_user_2purch_15_30"]++;
+								$statistics[$year][$month]["registered_user_2purch_15_30"]++;
 							} else if (($order['date_created']->sec <= $day_2_target_15)) {
-								$statistics[$month]["registered_user_2purch_0_15"]++;
+								$statistics[$year][$month]["registered_user_2purch_0_15"]++;
 							}
 						} else {
 							if($order['date_created']->sec > $day_2_target_30) {
-								$statistics[$month]["registered_user_2purch_30"]++;
+								$statistics[$year][$month]["registered_user_2purch_30"]++;
 							} else if (($order['date_created']->sec <= $day_2_target_30) && ($order['date_created']->sec > $day_2_target_15)) {
-								$statistics[$month]["registered_user_2purch_50_15_30"]++;
+								$statistics[$year][$month]["registered_user_2purch_50_15_30"]++;
 							} else if (($order['date_created']->sec <= $day_2_target_15)) {
-								$statistics[$month]["registered_user_2purch_50_0_15"]++;
+								$statistics[$year][$month]["registered_user_2purch_50_0_15"]++;
 							}
 						}
 					}
 					$key++;
 				}
 				if(($key == 1) && ($key_2nd == 1)) {
-					$statistics[$month]["registered_user_no_2purch"]++;
+					$statistics[$year][$month]["registered_user_no_2purch"]++;
 				}
 			}
 			$month_plus++;
@@ -1216,9 +1216,11 @@ class ReportsController extends BaseController {
 		} while ($actual_month < $now[0]);
 		/**** 1ST Charts ****/
 		$i = 0;
-		foreach($statistics as $key => $statistic) {
+		
+		foreach($statistics as $year => $stats) {
+			foreach($stats as $key => $statistic) {
 			//Categories
-			$arrCatNames[0 + $i] = $key;
+			$arrCatNames[0 + $i] = $key.' '.$year;
 			//Series
 			$arrData[0][0] = 'w/ no Purchases';
 			$arrData[0][1] = "color=0099FF";
@@ -1242,7 +1244,7 @@ class ReportsController extends BaseController {
 			$ServiceCharts->addChartDataFromArray($arrData,$arrCatNames);	
 			/**** 2ND Charts ****/
 			//Categories
-			$arrCatNames_2[0 + $i] = $key;
+			$arrCatNames_2[0 + $i] =  $key.' '.$year;
 			//titles
 			$arrData_2[0][0] = 'No 2nd purchase';
 			$arrData_2[0][1] = "color=FFFFCC";
@@ -1272,6 +1274,7 @@ class ReportsController extends BaseController {
 			# add chart values and  category names
 			$Service2ndCharts->addChartDataFromArray($arrData_2,$arrCatNames_2);
 			$i++;
+			}
 		}
 		return compact('ServiceCharts','Service2ndCharts');
 	}
