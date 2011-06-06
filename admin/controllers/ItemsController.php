@@ -51,9 +51,7 @@ class ItemsController extends BaseController {
 		#T Get all possibles value for the multiple filters select
 		$sel_filters = array();
 		$all_filters = array();
-		$m = new Mongo();
-		$db = $m->selectDB("totsy");
-		$result =  $db->command(array("distinct" => "items", "key" => "departments"));
+		$result =  Item::getDepartments();
 		foreach ($result['values'] as $value) {
 			$all_filters[$value] = $value;
 			if (array_key_exists('Momsdads',$all_filters) && !empty($all_filters['Momsdads'])) {

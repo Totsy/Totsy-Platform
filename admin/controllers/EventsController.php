@@ -77,9 +77,7 @@ class EventsController extends BaseController {
 		$seconds = ':'.rand(10,60);
 		$eventItems = Item::find('all', array('conditions' => array('event' => array($_id))));
 		#T Get all possibles value for the multiple departments select
-		$m = new Mongo();
-		$db = $m->selectDB("totsy");
-		$result =  $db->command(array("distinct" => "items", "key" => "departments"));
+		$result = Item::getDepartments();
 		$all_filters = array();
 		foreach ($result['values'] as $value) {
 			$all_filters[$value] = $value;
