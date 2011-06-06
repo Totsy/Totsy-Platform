@@ -1,6 +1,6 @@
 <?php
 
-$mongo = new Mongo();
+$mongo = new Mongo('mongodb://db1');
 $db = $mongo->selectDB("totsy");
 
 $orderCollection = $db->orders;
