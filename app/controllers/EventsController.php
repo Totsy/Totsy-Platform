@@ -110,25 +110,23 @@ class EventsController extends BaseController {
 		foreach ($events as $eventItems) {
 			$count = 0;
 			$id = $eventItems['_id'] ;
+
 			if (isset($eventItems['items'])) {
-				$initial = count($eventItems['items']);
-				$results = Item::count(array('conditions' => array('event' => array($id), 'total_quantity' => 0)));
-				if ($initial == $results) {
-					$soldout[$id] = true;
-				} else {
-					$soldout[$id] = false;
+				foreach ($eventItems['items'] as $eventItem) {
+					if ($item = Item::first(array('conditions' => array('_id' => $eventItem)))) {
+						if ($item->total_quantity) {
+							$count += $item->total_quantity;
+						}
+					}
 				}
 			}
+			$itemCounts[$id] = $count;
 		}
-		return $soldout;
+		return $itemCounts;
 	}
-
 	public function disney(){
 	    $this->_render['layout'] = false;
 	}
 
 }
-
-
-
 ?>
