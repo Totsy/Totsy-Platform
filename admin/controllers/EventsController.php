@@ -193,10 +193,12 @@ class EventsController extends BaseController {
 								$heading[] = $val;
 							} else {
 								if (!in_array($heading[$col], array('','NULL'))) {
-										if($heading[$col] == "departments") {
+										if(($heading[$col] == "department_1") ||
+												($heading[$col] == "department_2") ||
+													($heading[$col] == "department_3") ) {
 											if (!empty($val)) {
-												$val = array_unique(explode(",", trim($val)));
-												$eventItems[$row - 1][$heading[$col]] = $val;
+												$eventItems[$row - 1]['departments'][] = trim($val);
+												$eventItems[$row - 1]['departments'] = array_unique($eventItems[$row - 1]['departments']);
 											}
 										} else {
 											$eventItems[$row - 1][$heading[$col]] = $val;
