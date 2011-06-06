@@ -19,17 +19,17 @@ class EventsController extends BaseController {
 		$openEvents = Event::open();
 		$pendingEvents = Event::pending();
 
-		$soldout = $this->inventoryCheck(Event::open(array(
+		$itemCounts = $this->inventoryCheck(Event::open(array(
 			'fields' => array('items')
 		)));
 		//Sort events open/sold out
 		foreach ($openEvents as $key => $event) {
-			foreach ($soldout as $event_id => $value) {
-				if ($value == true && ((string)$event["_id"] == $event_id)) {
+			foreach ($itemCounts as $event_id => $quantity) {
+				if ($quantity == 0 && ((string)$event["_id"] == $event_id)) {
 					$events_closed[] = $openEvents[$key];
 					unset($openEvents[$key]);
 				}
-			} 
+			}
 		}
 		if (!empty($events_closed)) {
 			if (!empty($openEvents)) {
@@ -40,7 +40,7 @@ class EventsController extends BaseController {
 				$openEvents = $events_closed;
 			}
 		}
-		return compact('openEvents', 'pendingEvents', 'soldout', 'banner');
+		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner');
 	}
 
 	public function view() {
