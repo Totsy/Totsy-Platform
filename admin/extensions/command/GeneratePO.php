@@ -25,7 +25,7 @@ use admin\extensions\command\Pid;
  *
  * @see admin/controllers/ReportController::purchases
  */
-class GeneratePO extends Base {
+class GeneratePo extends Base {
 
 	/**
 	 * The environment to use when running the command. 'production' is the default.
@@ -190,7 +190,7 @@ class GeneratePO extends Base {
 			        'details' => 1)
 			));
 			$count = count($items);
-			$this->log("Event id $eventid has $items items.");
+			$this->log("Event id $eventId has $count items.");
 			$items = $items->data();
 		}
 		return $items;
@@ -202,8 +202,7 @@ class GeneratePO extends Base {
 	    $condition = array();
         if (!empty($this->event)){
 	        $condition = array_merge($condition, array('_id' => $this->event));
-	    }
-	    if ($this->initial == "true") {
+	    } else if ($this->initial == "true") {
 	        if(empty($this->startrng)) {
 	            $this->out(var_dump($this->startrng));
 	            $this->startrng = date("m/d/Y");
