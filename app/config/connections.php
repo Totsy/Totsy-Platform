@@ -24,7 +24,7 @@ use \lithium\data\Connections;
 			'persistent' => 'foo'),
 		'development' => array(
 			'type' =>  'MongoDb',
-			'database' => 'totsy_dev',
+			'database' => 'totsy',
 			'host' => 'localhost',
 			'persistent' => 'foo'),
 		'eric' => array(
