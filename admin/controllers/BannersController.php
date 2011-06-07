@@ -56,6 +56,7 @@ class BannersController extends \lithium\action\Controller {
 				} else {
 					$enabled = false;
 				}
+
 				//Create Datas Array
 				$bannerDatas = array(
 					"img" => $images,
@@ -166,12 +167,17 @@ class BannersController extends \lithium\action\Controller {
 	 */
 	public function parseImages($imageRecord = null) {
 		$images = array();
-		$datas = $this->request->data;
-		foreach ($datas["img"] as $key => $value) {
+		$data = $this->request->data;
+		foreach ($data["img"] as $key => $value) {
 			$images[$key]["_id"] = $value;
-			if(!empty($datas['url'][$value])) {
-				$images[$key]["url"] = $datas['url'][$value];
+			if(!empty($data['url'][$value])) {
+				$images[$key]["url"] = $data['url'][$value];
 			}
+			if(array_key_exists('newPage', $data) && $data['newPage'] == '1' ) {
+                $images[$key]["newPage"] = true;
+            } else {
+                $images[$key]["newPage"] = false;
+            }
 		}
 		return $images;
 	}

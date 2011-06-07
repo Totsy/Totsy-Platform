@@ -73,37 +73,46 @@ class AffiliatesController extends BaseController {
 				Affiliate::linkshareCheck($userlogin['_id'], $affiliate, $cookie);
 				$this->redirect($urlredirect);
 			}
-			UsersController::facebookLogin($affiliate, $cookie, $ipaddress);
+			$result = UsersController::facebookLogin($affiliate, $cookie, $ipaddress);
+            extract($result);
+            if (!$success) {
+                if (!empty($userfb)) {
+                    if ( !preg_match( '/@proxymail\.facebook\.com/', $fbuser['email'] )) {
+                        $user->email = $userfb['email'];
+                        $user->confirmemail = $userfb['email'];
+                    }
+                }
+            }
 			if (($pdata)) {
-				$data['email'] = strtolower($pdata['email']);
-			//	$data['firstname'] = $pdata['firstname'];
-			//	$data['lastname'] = $pdata['lastname'];
 				$data['email'] = htmlspecialchars_decode(strtolower($pdata['email']));
-			//	$data['zip'] = $pdata['zip'];
 				$data['confirmemail'] = htmlspecialchars_decode(strtolower($pdata['email']));
 				$data['password'] = $pdata['password'];
 				$data['terms'] = (boolean) $pdata['terms'];
 				$data['invited_by'] = $affiliate;
+				if (!empty($userfb)) {
+				    $data['facebook_info'] = $userfb;
+			        $data['firstname'] = $userfb['first_name'];
+			        $data['lastname'] = $userfb['last_name'];
+				}
 				extract(UsersController::registration($data));
 				if ($saved) {
 					$message = $saved;
 					$userLogin = array(
 						'_id' => (string) $user->_id,
-				//		'firstname' => $user->firstname,
-				//		'lastname' => $user->lastname,
-				//		'zip' => $user->zip,
 						'email' => $user->email
 					);
-					Session::write('userLogin', $userLogin, array('name'=>'default'));
+					Session::write('userLogin', $userLogin, array('name' => 'default'));
+					$cookie['user_id'] = $user->id;
+					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
+		            Session::write('pixel', $pixel, array('name' => 'default'));
 					Affiliate::linkshareCheck($userLogin['_id'], $affiliate, $cookie);
 					User::log($ipaddress);
-					Session::write('pixel',$pixel, array('name'=>'default'));
 					$this->redirect($urlredirect);
 				}
 			}
 		}
 		$this->_render['layout'] = 'login';
-		return compact('message', 'user');
+		return compact('message', 'user', 'userfb');
 	}
 }
 ?>

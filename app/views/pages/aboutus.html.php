@@ -16,6 +16,7 @@
 		    <li><a href="/pages/testimonials" title="Video Testimonials">Video Testimonials</a></li>
 		    <li><a href="/pages/being_green" title="Being Green">Being Green</a></li>
 		    <li><a href="http://blog.totsy.com" target="_blank" title="Blog">Totsy Blog</a></li>
+		    <li class="first item15"><a href="/pages/affiliates" title="Affiliates"><span>Affiliates</span></a></li>
 		</ul>
 	</div>
 	<div class="clear"></div>
@@ -36,8 +37,8 @@
 	<h2 class="page-title gray">Where the savvy mom shops</h2>
 	<hr />
 	<p>
-		Totsy offers moms on-the-go and moms-to-be access to brand-specific sales, up to 70% off
-		retail, just for them and the kids, ages 0-7.
+		Totsy offers moms on-the-go and moms-to-be access to brand-specific sales, up to 90% off
+		retail, just for them and the kids, ages 0-8.
 	</p>
 
 	<br />

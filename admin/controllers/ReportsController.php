@@ -9,6 +9,7 @@ use admin\models\Event;
 use admin\models\Item;
 use admin\models\Base;
 use admin\models\Report;
+use admin\models\Service;
 use Mongo;
 use MongoCode;
 use MongoDate;
@@ -16,7 +17,7 @@ use MongoRegex;
 use MongoId;
 use li3_flash_message\extensions\storage\FlashMessage;
 use lithium\data\Model;
-
+use FusionCharts;
 
 /**
  * The Reports Controller is the core for all reporting functionality.
@@ -306,12 +307,8 @@ class ReportsController extends BaseController {
 										$purchaseOrder[$inc]['Product Name'] = $eventItem['description'];
 										$purchaseOrder[$inc]['Product Color'] = $eventItem['color'];
 										$purchaseOrder[$inc]['Vendor Style'] = $eventItem['vendor_style'];
-										$purchaseOrder[$inc]['SKU'] = Item::sku(
-											$eventItem['vendor'],
-											$eventItem['vendor_style'],
-											$item['size'],
-											$eventItem['color']
-										);
+										$itemRecord = Item::collection()->findOne(array('_id' => new MongoId($item['item_id'])));
+										$purchaseOrder[$inc]['SKU'] = $itemRecord['sku_details'][$item['size']];
 										$purchaseOrder[$inc]['Unit'] = $eventItem['sale_whol'];
 										if (empty($purchaseOrder[$inc]['Quantity'])) {
 											$purchaseOrder[$inc]['Quantity'] = $item['quantity'];
@@ -374,12 +371,8 @@ class ReportsController extends BaseController {
 									$orderList[$inc]['Cart'] = $item['_id'];
 									$orderList[$inc]['OrderNum'] = $order['order_id'];
 									$orderList[$inc]['id'] = $order['_id'];
-									$orderList[$inc]['SKU'] = Item::sku(
-										$eventItem['vendor'],
-										$eventItem['vendor_style'],
-										$item['size'],
-										$eventItem['color']
-									);
+									$itemRecord = Item::collection()->findOne(array('_id' => new MongoId($item['item_id'])));
+									$orderList[$inc]['SKU'] = $itemRecord['sku_details'][$item['size']];
 									$orderList[$inc]['Qty'] = $item['quantity'];
 									$orderList[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
 									$orderList[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
@@ -450,12 +443,7 @@ class ReportsController extends BaseController {
 						$orderFile[$inc]['Country'] = '';
 						$orderFile[$inc]['OrderNum'] = $order['order_id'];
 						$orderFile[$inc]['OldSKU'] = $this->oldsku($orderItem->vendor_style, $item['size']);
-						$orderFile[$inc]['SKU'] = Item::sku(
-							$orderItem->vendor,
-							$orderItem->vendor_style,
-							$item['size'],
-							$item['color']
-						);
+						$orderFile[$inc]['SKU'] = $orderItem->sku_details[$item['size']];
 						$orderFile[$inc]['Qty'] = $item['quantity'];
 						$orderFile[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
 						$orderFile[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
@@ -713,7 +701,6 @@ class ReportsController extends BaseController {
 			} else {
 				FlashMessage::set('Please enter in a valid search date', array('class' => 'warning'));
 			}
-			
 		}
 		return compact('results', 'dates', 'total');
 	}
@@ -850,7 +837,9 @@ class ReportsController extends BaseController {
 					$users[$i]["email"] = $reg_usr['email'];
 					$i++;
 				}
-				if($i>2) $this->render(array('layout' => false, 'data' => $users));
+				if ($i > 2) {
+					$this->render(array('layout' => false, 'data' => $users));
+				}
 			}
 		}
 	}
@@ -987,6 +976,276 @@ class ReportsController extends BaseController {
 			}
 		}
 		return compact('stat', 'total_days', 'total_hours', 'hours_setup','end_date','start_date', 'total', 'total_quantity', 'event_name');
+	}
+
+	/**
+	* Generates graphics that shows the evolution of event sales.
+	* It started from the days of launching to 4 days later.
+	*/
+	public function salesDays() {
+		if ($this->request->data) {
+			$eventsCollection = Event::collection();
+			$ordersCollection = Order::collection();
+			/**** OPTIMISATION ****/
+			$eventsCollection->ensureIndex(array('start_date' => 1));
+			$eventsCollection->ensureIndex(array('end_date' => 1));
+			$ordersCollection->ensureIndex(array('date_created' => 1));
+			$data = $this->request->data;
+			if (!empty($data['min_date']) && !empty($data['max_date'])) {
+				//start date
+				$start_day = date("j",strtotime($data['min_date']));
+				$start_month = date("n",strtotime($data['min_date']));
+				$start_year = date("Y",strtotime($data['min_date']));
+				$start_date = mktime(0, 0, 0, $start_month, $start_day, $start_year);
+				//end date
+				$end_year = date("Y",strtotime($data['max_date']));
+				$end_month = date("n",strtotime($data['max_date']));
+				$end_day = date("j",strtotime($data['max_date']));
+				$end_date = mktime(0, 0, 0, $end_month, $end_day, $end_year);
+				$day = 0;
+				$conditions_event = array(
+					'start_date' => array(
+					'$gt' => new MongoDate($start_date),
+					'$lte' => new MongoDate($end_date)
+				));
+				$events = $eventsCollection->find($conditions_event, array('start_date' => 1));
+				foreach($events as $event) {
+					$day = 0;
+					$weekday = date('l',$event['start_date']->sec);
+					$selected_day = date('j', $event['start_date']->sec);
+					$selected_month = date('n', $event['start_date']->sec);
+					$selected_year = date('Y', $event['start_date']->sec);
+				 	do {
+						$start_for_selected_order = mktime(0, 0, 0, $selected_month, ($selected_day + $day), $selected_year);
+						$end_for_selected_order = mktime(0, 0, 0, $selected_month, ($selected_day + $day + 1), $selected_year);
+						if($day == 0) {
+							$weekday = date('l',$start_for_selected_order);
+						}
+						$conditions_order = array(
+							'date_created' => array(
+								'$gt' => new MongoDate($start_for_selected_order),
+								'$lte' => new MongoDate($end_for_selected_order)
+							),
+							'items.event_id' => (string) $event["_id"]
+						);
+						$orders = $ordersCollection->find($conditions_order);
+						if(empty($graphic_datas[$weekday][5])) {
+							$graphic_datas[$weekday][5] = 0;
+						}
+						if(empty($graphic_datas[$weekday][$day])) {
+							$graphic_datas[$weekday][$day] = 0;
+						}
+						foreach($orders as $order) {
+							foreach($order['items'] as $item) {
+								if($item["event_id"] == $event["_id"]) {
+									$graphic_datas[$weekday][5] += ($item["sale_retail"] * $item["quantity"]);
+									$graphic_datas[$weekday][$day] += ($item["sale_retail"] * $item["quantity"]);
+								}
+							}
+						}
+						$day++;
+					} while ($day != 5);
+				}
+			}
+			foreach($graphic_datas as $day => $data) {
+					$chart_datas[$day][0][0] = '$' . round($graphic_datas[$day][0],2);
+					$chart_datas[$day][1][0] = '$' . round($graphic_datas[$day][1],2);
+					$chart_datas[$day][2][0] = '$' . round($graphic_datas[$day][2],2);
+					$chart_datas[$day][3][0] = '$' . round($graphic_datas[$day][3],2);
+					if (!empty($graphic_datas[$day][4])) {
+						$chart_datas[$day][4][0] = '$' . round($graphic_datas[$day][4],2);
+						$chart_datas[$day][4][1] = ($graphic_datas[$day][4] / $graphic_datas[$day][5]) * 100;
+					}
+					$chart_datas[$day][0][1] = ($graphic_datas[$day][0] / $graphic_datas[$day][5]) * 100;
+					$chart_datas[$day][1][1] = ($graphic_datas[$day][1] / $graphic_datas[$day][5]) * 100;
+					$chart_datas[$day][2][1] = ($graphic_datas[$day][2] / $graphic_datas[$day][5]) * 100;
+					$chart_datas[$day][3][1] = ($graphic_datas[$day][3] / $graphic_datas[$day][5]) * 100;
+			}
+			foreach($chart_datas as $key => $value) {
+				# Create Column3D chart Object
+				$DailyCharts[$key] = new FusionCharts("Column3D","700","350");
+				#  Set chart attributes
+				$strParam = "caption=Sales - Total Revenues:  $" . round($graphic_datas[$key][5],2) . ";xAxisName=Days;yAxisName=Percentage;numberSuffix=%";
+				$DailyCharts[$key]->setChartParams($strParam);
+				# add chart values and  category names
+				$DailyCharts[$key]->addChartDataFromArray($value);
+			}
+		}
+		$days = array(
+			'0' => 'Sunday',
+			'1' => 'Monday',
+			'2'=> 'Tuesday',
+			'3' => 'Wednesday',
+			'4' => 'Thursday',
+			'5' => 'Friday',
+			'6' => 'Saturday'
+		);
+		return compact('DailyCharts','days','start_date','end_date');
+	}
+
+	/**
+	* Generates graphics that shows behaviour of user with :
+	* Free shipping discount for the first order
+	* $10 off for the 2nd purchase of $50+
+	*/
+	public function services() {
+		$usersCollection = User::connection()->connection->users;
+		$ordersCollection = Order::collection();
+		$usersCollection->ensureIndex(array('created_date' => 1));
+		$usersCollection->ensureIndex(array('purchase_count' => 1));
+		$ordersCollection->ensureIndex(array('date_created' => 1));
+		$ordersCollection->ensureIndex(array('total' => 1));
+		$servicesCollection = Service::collection();
+		$statistics["registered_user_purch_30"] = 0;
+		$statistics["registered_user_purch_23_30"] = 0;
+		$statistics["registered_user_purch_0_23"] = 0;
+		$statistics["registered_user_no_2purch"] = 0;
+		$statistics["registered_user_2purch_50_0_15"] = 0;
+		$statistics["registered_user_2purch_0_15"] = 0;
+		$statistics["registered_user_2purch_50_15_30"] = 0;
+		$statistics["registered_user_2purch_15_30"] = 0;
+		$statistics["registered_user_2purch_50_30"] = 0;
+		$statistics["registered_user_2purch_30"] = 0;
+		$idx = 0;
+		#RUNNING
+		$freeshipService = Service::find('first', array('conditions' => array('name' => 'freeshipping')));
+		#REGISTERED USERS
+		$conditions_A = array('created_date' => array(
+								'$gt' => $freeshipService['start_date'],
+								'$lte' => new MongoDate()
+		));
+		$statistics["registered_user"] = $usersCollection->count($conditions_A);
+		#REGISTERED USERS / No Purchases
+		$conditions_B = array(	'purchase_count' => array('$exists' => false),
+								'created_date' => array(
+									'$gt' => $freeshipService['start_date'],
+									'$lte' => new MongoDate()
+		));
+		$statistics["registered_user_no_purch"] = $usersCollection->count($conditions_B);
+		$conditions_C = array('purchase_count' => array('$exists' => true),
+								'created_date' => array(
+									'$gt' => $freeshipService['start_date'],
+									'$lte' => new MongoDate()
+		));
+		$users_C = $usersCollection->find($conditions_C);
+		foreach ($users_C as $user) {
+			$key = 0;
+			# 1st Purchase between 0 to 23 days
+			$day_target_23 = mktime(
+								date("G", $user['created_date']->sec),
+								date("i", $user['created_date']->sec),
+								date("s", $user['created_date']->sec),
+								date("m", $user['created_date']->sec),
+								date("d", $user['created_date']->sec) + 23,
+								date("Y", $user['created_date']->sec)
+						);
+			$day_target_30 = mktime(
+								date("G", $user['created_date']->sec),
+								date("i", $user['created_date']->sec),
+								date("s", $user['created_date']->sec),
+								date("m", $user['created_date']->sec),
+								date("d", $user['created_date']->sec) + 30,
+								date("Y", $user['created_date']->sec)
+						);
+			$conditions_order = array("user_id" => (string) $user["_id"]);
+			$orders = $ordersCollection->find($conditions_order,array('date_created' => 1, 'total' => 1));
+			foreach($orders as $order) {
+				if($key == 0) {
+					$day_2_target_15 = mktime(
+										date("G", $order['date_created']->sec),
+										date("i", $order['date_created']->sec),
+										date("s", $order['date_created']->sec),
+										date("m", $order['date_created']->sec),
+										date("d", $order['date_created']->sec) + 15,
+										date("Y", $order['date_created']->sec)
+								);
+					$day_2_target_30 = mktime(
+										date("G", $order['date_created']->sec),
+										date("i", $order['date_created']->sec),
+										date("s", $order['date_created']->sec),
+										date("m", $order['date_created']->sec),
+										date("d", $order['date_created']->sec) + 30,
+										date("Y", $order['date_created']->sec)
+								);
+					if($order['date_created']->sec > $day_target_30) {
+						$statistics["registered_user_purch_30"]++;
+					} else if (($order['date_created']->sec < $day_target_30) && ($order['date_created']->sec > $day_target_23)) {
+						$statistics["registered_user_purch_23_30"]++;
+					} else if (($order['date_created']->sec < $day_target_23)) {
+						$statistics["registered_user_purch_0_23"]++;
+					}
+				}
+				//2nd purchase
+				if($key == 1) {
+					if($order['total'] < 50) {
+						if($order['date_created']->sec > $day_2_target_30) {
+							$statistics["registered_user_2purch_30"]++;
+						} else if (($order['date_created']->sec <= $day_2_target_30) && ($order['date_created']->sec > $day_2_target_15)) {
+							$statistics["registered_user_2purch_15_30"]++;
+						} else if (($order['date_created']->sec <= $day_2_target_15)) {
+							$statistics["registered_user_2purch_0_15"]++;
+						}
+					} else {
+						if($order['date_created']->sec > $day_2_target_30) {
+							$statistics["registered_user_2purch_30"]++;
+						} else if (($order['date_created']->sec <= $day_2_target_30) && ($order['date_created']->sec > $day_2_target_15)) {
+							$statistics["registered_user_2purch_50_15_30"]++;
+						} else if (($order['date_created']->sec <= $day_2_target_15)) {
+							$statistics["registered_user_2purch_50_0_15"]++;
+						}
+					}
+				}
+				$key++;
+			}
+			if($key == 1) {
+				$statistics["registered_user_no_2purch"]++;
+			}
+		}
+		/**** 1ST Charts ****/
+		//titles
+		$chart_datas[0][0] = 'Registered Users';
+		$chart_datas[1][0] = 'w/ no Purchases';
+		$chart_datas[2][0] = '1st purchase 0-23d';
+		$chart_datas[3][0] = '1st purchase 23-30d';
+		$chart_datas[4][0] = '1st purchase > 30d';
+		//datas
+		$chart_datas[0][1] = $statistics["registered_user"];
+		$chart_datas[1][1] = $statistics["registered_user_no_purch"];
+		$chart_datas[2][1] = $statistics["registered_user_purch_0_23"];
+		$chart_datas[3][1] = $statistics["registered_user_purch_23_30"];
+		$chart_datas[4][1] = $statistics["registered_user_purch_30"];
+		# Create Column3D chart Object
+		$ServiceCharts = new FusionCharts("Column3D","700","350");
+		#  Set chart attributes
+		$strParam = "yAxisName=Users;numberSuffix=";
+		$ServiceCharts->setChartParams($strParam);
+		# add chart values and  category names
+		$ServiceCharts->addChartDataFromArray($chart_datas);
+		/**** 2ND Charts ****/
+		//titles
+		$chart_datas_2[0][0] = 'Free Shipping';
+		$chart_datas_2[1][0] = 'No 2nd purchase';
+		$chart_datas_2[2][0] = 'Discount 0-15d';
+		$chart_datas_2[3][0] = '0-15d';
+		$chart_datas_2[4][0] = 'Discount 15-30d';
+		$chart_datas_2[5][0] = '15-30d';
+		$chart_datas_2[6][0] = '> 30d';
+		//datas
+		$chart_datas_2[0][1] = ($statistics["registered_user_purch_0_23"] + $statistics["registered_user_purch_23_30"]);
+		$chart_datas_2[1][1] = $statistics["registered_user_no_2purch"];
+		$chart_datas_2[2][1] = $statistics["registered_user_2purch_50_0_15"];
+		$chart_datas_2[3][1] = $statistics["registered_user_2purch_0_15"];
+		$chart_datas_2[4][1] = $statistics["registered_user_2purch_50_15_30"];
+		$chart_datas_2[5][1] = $statistics["registered_user_2purch_15_30"];
+		$chart_datas_2[6][1] = $statistics["registered_user_2purch_30"];
+		# Create Column3D chart Object
+		$Service2ndCharts = new FusionCharts("Column3D","700","350");
+		#  Set chart attributes
+		$strParam2 = "yAxisName=Users;numberSuffix=";
+		$Service2ndCharts->setChartParams($strParam2);
+		# add chart values and  category names
+		$Service2ndCharts->addChartDataFromArray($chart_datas_2);
+		return compact('ServiceCharts','Service2ndCharts');
 	}
 }
 

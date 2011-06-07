@@ -4,6 +4,7 @@ namespace app\models;
 
 use MongoId;
 use MongoDate;
+use lithium\storage\Session;
 use li3_payments\extensions\Payments;
 use li3_payments\extensions\payments\exceptions\TransactionException;
 
@@ -34,7 +35,6 @@ class Order extends \lithium\data\Model {
 	}
 
 	public function process($order, $user, $data, $cart, $orderCredit, $orderPromo) {
-
 		foreach (array('billing', 'shipping') as $key) {
 			$addr = $data[$key];
 			${$key} = is_array($addr) ? Address::create($addr) : Address::first($addr);
@@ -61,7 +61,16 @@ class Order extends \lithium\data\Model {
 		$subTotal = array_sum($cart->subTotal());
 		$tax = array_sum($cart->tax($shipping));
 		$handling = Cart::shipping($cart, $shipping);
-		$overSizeHandling= Cart::overSizeShipping($cart);
+		$overSizeHandling = Cart::overSizeShipping($cart);
+		$session = Session::read('services', array('name' => 'default'));
+		if(!empty($orderPromo->type)) {
+			if($orderPromo->type == 'free_shipping') {
+				$handling = 0;
+				$overSizeHandling = 0;
+			}
+		};
+		extract(Service::freeShippingCheck($handling, $overSizeHandling));
+		$handling = $shippingCost;
 
 		// if (!$handling) {
 		// 	$order->errors($order->errors() + array(
@@ -72,12 +81,11 @@ class Order extends \lithium\data\Model {
 		// }
 
 		$tax = $tax ? $tax + (($overSizeHandling+$handling) * Cart::TAX_RATE) : 0;
-		$afterDiscount = $subTotal + $orderCredit->credit_amount + $orderPromo->saved_amount;
+		$afterDiscount = $subTotal + $orderCredit->credit_amount + $orderPromo->saved_amount + Service::tenOffFiftyCheck($subTotal);
 		if( $afterDiscount < 0 ){
 		    $afterDiscount = 0;
 		}
 		$total = $afterDiscount + $tax + $handling +$overSizeHandling;
-
 
 		$cart = $cart->data();
 		if ($cart) {

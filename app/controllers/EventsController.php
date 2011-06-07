@@ -22,7 +22,24 @@ class EventsController extends BaseController {
 		$itemCounts = $this->inventoryCheck(Event::open(array(
 			'fields' => array('items')
 		)));
-
+		//Sort events open/sold out
+		foreach ($openEvents as $key => $event) {
+			foreach ($itemCounts as $event_id => $quantity) {
+				if ($quantity == 0 && ((string)$event["_id"] == $event_id)) {
+					$events_closed[] = $openEvents[$key];
+					unset($openEvents[$key]);
+				}
+			} 
+		}
+		if (!empty($events_closed)) {
+			if (!empty($openEvents)) {
+				foreach ($events_closed as $event) {
+					$openEvents[] = $event;
+				}
+			} else {
+				$openEvents = $events_closed;
+			}
+		}
 		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner');
 	}
 
@@ -56,7 +73,21 @@ class EventsController extends BaseController {
 					$conditions = compact('_id') + array('enabled' => true);
 
 					if ($item = Item::first(compact('conditions'))) {
-						$items[] = $item;
+						if ($item->total_quantity <= 0) {
+							$items_closed[] = $item;
+						} else {
+							$items[] = $item;
+						}
+					}
+				}
+				//Sort items open/sold out
+				if (!empty($items_closed)) {
+					if(!empty($items)) {
+						foreach ($items_closed as $item) {
+							array_push($items, $item);
+						}
+					} else {
+						$items = $items_closed;
 					}
 				}
 			}
@@ -92,6 +123,9 @@ class EventsController extends BaseController {
 			$itemCounts[$id] = $count;
 		}
 		return $itemCounts;
+	}
+	public function disney(){
+	    $this->_render['layout'] = false;
 	}
 
 }

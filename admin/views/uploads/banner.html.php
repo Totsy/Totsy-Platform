@@ -9,6 +9,9 @@
 	<th align="justify">
 		URL
 	</th>
+	<th align="justify">
+		Open New Page
+	</th>
 </tr>
 <tr>
 	<td align="center" width="200">
@@ -22,6 +25,9 @@
 	</td>
 	<td align="center">
 		<input type="hidden" name="img[]" value="<?php echo $id; ?>">
+	</td>
+	<td align="center">
+		<input type="checkbox" name="newPage" value="1">
 	</td>
 </tr>
 </table>

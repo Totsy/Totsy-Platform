@@ -16,9 +16,9 @@
 		    <li class="active"><a href="/pages/testimonials" title="Video Testimonials">Video Testimonials</a></li>
 		    <li><a href="/pages/being_green" title="Being Green">Being Green</a></li>
 		    <li><a href="http://blog.totsy.com" target="_blank" title="Blog">Totsy Blog</a></li>
+		    <li class="first item15"><a href="/pages/affiliates" title="Affiliates"><span>Affiliates</span></a></li>
 		</ul>
 	</div>
-	<div class="clear"></div>
 	<div class="roundy grey_inside">
 		<h3 class="gray">Need Help?</h3>
 		<hr />
@@ -30,7 +30,6 @@
 		</ul>
 	</div>
 </div>
-
 <div class="grid_11 omega roundy grey_inside b_side">
 
 	<h2 class="page-title gray">Contact Us</h2>
@@ -45,6 +44,10 @@
 				<a href="mailto:support@totsy.com">support@totsy.com</a></p>
 				<br />
 
-</div>
+
+				<h3 class="gray">Contact Support</h3>
+				<a href="mailto:support@totsy.com">support@totsy.com</a><br />
+				888-247-9444<br />
+				Office Hours:<br/> M-F 10am - 5pm EST</p>
 </div>
 <div class="clear"></div>

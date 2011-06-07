@@ -16,6 +16,7 @@
 		    <li><a href="/pages/testimonials" title="Video Testimonials">Video Testimonials</a></li>
 		    <li class="active"><a href="/pages/being_green" title="Being Green">Being Green</a></li>
 		    <li><a href="http://blog.totsy.com" target="_blank" title="Blog">Totsy Blog</a></li>
+		    <li class="first item15"><a href="/pages/affiliates" title="Affiliates"><span>Affiliates</span></a></li>
 		</ul>
 	</div>
 	<div class="clear"></div>

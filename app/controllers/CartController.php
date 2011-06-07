@@ -57,9 +57,8 @@ class CartController extends BaseController {
 				$returnUrl = $event->url;
 			}
 		}
-		//calculate savings
-		$savings = Session::read('userSavings');
-		return compact('cart', 'message', 'shipDate', 'returnUrl', 'savings');
+
+		return compact('cart', 'message', 'shipDate', 'returnUrl');
 	}
 
 	/**
@@ -101,9 +100,6 @@ class CartController extends BaseController {
 					if( $avail > 0 ){
 						++$cartItem->quantity;
 						$cartItem->save();
-						//calculate savings
-						$item[$item['_id']] = $cartItem->quantity;
-						$this->savings($item, 'add');
 					}else{
 						$cartItem->error = 'You can’t add this quantity in your cart. <a href="#5">Why?</a>';
 					$cartItem->save();
@@ -120,9 +116,7 @@ class CartController extends BaseController {
 				unset($item['_id']);
 				$info = array_merge($item, array('quantity' => 1));
 				if ($cart->addFields() && $cart->save($info)) {
-					//calculate savings
-					$item[$itemId] = 1;
-					$this->savings($item, 'add');
+
 				}
 			}
 			$this->redirect(array('Cart::view'));
@@ -144,14 +138,11 @@ class CartController extends BaseController {
 					'conditions' => array(
 						'_id' => $data["id"]
 				)));
-				$quantity = $cart->quantity;
 				if(!empty($cart)){
 					Cart::remove(array('_id' => $data["id"]));
-					//calculate savings
-					$item[$cart->item_id] = $quantity;
-					$this->savings($item, 'remove');
 				}
 			}
+
 		$this->_render['layout'] = false;
 		$cartcount = Cart::itemCount();
 		return compact('cartcount');
@@ -184,52 +175,35 @@ class CartController extends BaseController {
 					$cart->error = $result['errors'];
 					$cart->save();
 				}
-				//build temp array
-				$items[$cart->item_id] = $quantity;
 			}
-			//calculate savings
-			$this->savings($items, 'update');
 		}
-		
 		$this->_render['layout'] = false;
 		$this->redirect('/cart/view');
 	}
-	
-	public function savings($items = null, $action) {
-		if($action == "update"){
-			$savings = 0;
-			if(!empty($items)) {
-				foreach($items as $key => $quantity) {
-					$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
-					if(!empty($itemInfo->msrp)){
-						$savings += $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
-					}
-				}
-			}
-		} else if($action == "add") {
-			$savings = Session::read('userSavings');
-			if(empty($savings)) {
-				$savings = 0;
-			}
-			if(!empty($items)) {
-				foreach($items as $key => $quantity) {
-					$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
-					if(!empty($itemInfo->msrp)){
-						$savings += $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
-					}
-				}
-			}
-		} else if($action == "remove") {
-			$savings = Session::read('userSavings');
-			foreach($items as $key => $quantity) {
-				$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
-				if(!empty($itemInfo->msrp)){
-					$savings -= $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
-				}
-			}
-		}
-		Session::write('userSavings', $savings);
+	public function modal(){
+	    $userinfo = Session::read('userLogin');
+	    $success = true;
+	    $this->_render['layout'] = false;
+	    if(!array_key_exists('modal', $userinfo)){
+	        if($this->request->data){
+                $data = $this->request->data;
+                $userinfo['modal'] ="disney";
+	        }
+	        Session::write('userLogin', $userinfo, array('name' => 'default'));
+	        $success = false;
+	    }
+	    echo json_encode($success);
+	}
+	public function upsell(){
+        $query = $this->request->query;
+
+        $this->_render['layout'] = 'base';
+        if($query){
+            $last = strrpos($query['redirect'], '/');
+            $url = substr($query['redirect'], 0,$last);
+            $total_left = 45 - $query['subtotal'];
+            return compact('total_left', 'url');
+        }
 	}
 }
-
 ?>
