@@ -180,9 +180,11 @@
 			
 			<! -- switch where this link points depending on whether they're logged in or not --> 
 			<?php if (empty($userInfo)){ ?>
-			<li class="last"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
+			<li><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
+			<li class="last"><a href="http://nytm.org/made" title="Contact Us" target="_blank">Contact Us</a></li>
 			<?php } else { ?>
-			<li class="last"><a href="/tickets/add" title="Contact Us">Contact Us</a></li>
+			<li><a href="/tickets/add" title="Contact Us">Contact Us</a></li>
+			<li class="last"><a href="http://nytm.org/made" title="Contact Us" target="_blank">Contact Us</a></li>
 			<?php } ?>
 		</ul>
 

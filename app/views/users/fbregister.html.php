@@ -155,7 +155,8 @@
 		<li><a href="/pages/aboutus" title="About Us">About Us</a></li>
 		<li><a href="/blog" title="Blog">Blog</a></li>
 		<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
-		<li class="last"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
+		<li><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
+		<li class="last"><a href="http://nytm.org/made" title="Contact Us" target="_blank">Contact Us</a></li>
 	</ul>
 
 	<span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved. <br />10 West 18th Street, Floor 4 - New York, NY 10011</span>
