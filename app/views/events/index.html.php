@@ -19,6 +19,11 @@
 		<h2 class="page-title gray">Today's Sales</h2>
 		<hr />
 	</div>
+    <!--Disney -->
+      <div class="disney disney_splash">
+          <p><strong>SPECIAL BONUS!</strong> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value) <span id="disney">Offer &amp; Refund Details</span></p>
+      </div>
+<div class="fullwidth">
 	<?php $x = 0; ?>
 	<?php $y = 0; ?>
 	<?php foreach ($openEvents as $event): ?>
@@ -116,7 +121,13 @@
 					<?php if(!empty($banner["img"])): ?>
 						<?php foreach($banner["img"] as $image): ?>
 							<div><?php if(!empty($image["url"])):?>
-								<a href="<?=$image["url"]?>">
+								<a href="<?=$image["url"]?>"
+									<?php
+										if(array_key_exists('newPage', $image) && $image['newPage']) {
+											echo 'target="_blank"';
+										}
+									?>
+									>
 									<img src="/image/<?=$image["_id"]?>.jpeg" alt="" />
 								</a>
 								<?php else: ?>
@@ -187,10 +198,7 @@
 								?>
 							</div>
 						</div>
-					</div>
-					<div class="bl"></div>
-					<div class="br"></div>
-				</div>
+				
 			<!-- End product item -->
 			<?php
 				$date = $event->start_date->sec * 1000;
@@ -213,6 +221,8 @@
 	<?php endforeach ?>
 	</div>
 </div>
+</div>
+<div id="modal"></div>
 <!--Javascript Output for Today's Events -->
 <?php if (!empty($todayJs)): ?>
 	<?php foreach ($todayJs as $value): ?>
@@ -228,9 +238,22 @@
 <?php endif ?>
 
 <script type="text/javascript">
-<!--
+//<!--
 	$(document).ready(function() {
 		$("#banner_container").rotate();
 	});
 //-->
+</script>
+<script type="text/javascript">
+    $('#disney').click(function(){
+        $('#modal').load('/events/disney').dialog({
+            autoOpen: false,
+            modal:true,
+            width: 739,
+            height: 700,
+            position: 'top',
+            close: function(ev, ui) {}
+        });
+        $('#modal').dialog('open');
+    });
 </script>

@@ -19,6 +19,7 @@ class Affiliate extends Base {
     */
 	public static function getPixels($url, $invited_by) {
 	    $cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
+	    $userInfo = Session::read('userLogin', array('name' => 'default'));
         $orderid = NULL;
 
         if(strpos($url, '&')) {
@@ -48,9 +49,7 @@ class Affiliate extends Base {
 		$pixels = Affiliate::find('all', $options );
 		$pixels = $pixels->data();
 		$pixel = NULL;
-		if (!empty($cookie['user_id'])) {
-			$user = User::find('first', array('conditions' => array('_id' => $cookie['user_id'])));
-		}
+		$user = User::find('first', array('conditions' => array('_id' => $userInfo['_id'])));
         if($url == '/orders/view'){
             if($user->affiliate_share){
                 $cookie['affiliate'] = $user->affiliate_share['affiliate'];
@@ -114,8 +113,12 @@ class Affiliate extends Base {
     * @TODO  Move the appending to the Helper
     */
 	public static function generatePixel($invited_by, $pixel, $options = array()) {
-
-        if($invited_by == 'w4'){
+	    /*
+	        This if else is for affiliates who want a dynamic string in their pixel
+	        The random string is created and is place where ever the $ is placed in the
+	        pixel.  The $ sign is a place holder for where the random string is will be
+	    */
+        if($invited_by == 'w4' || $invited_by == "pmk" || $invited_by == "emiles" ){
             $transid = 'totsy' . static::randomString();
             return '<br/>' . str_replace('$', $transid,$pixel );
         }
@@ -126,7 +129,12 @@ class Affiliate extends Base {
                 $user = User::find('first', array('conditions' => array(
                     'email' => $session['email']
                 )));
-                $insert = static::spinback_share('/img/logo.png', $user->_id, '/join/' . $user->invitation_codes[0], 'The best brands for kids, moms & families up to 90% off!', '' ,"I saved tons on Totsy and you can too! Membership is FREE so join today!", ' st="Invite Your Friends" ');
+                if (is_object($user->invitation_codes) && get_class($user->invitation_codes) == "lithium\data\collection\DocumentArray") {
+                    $code = $user->invitation_codes[0];
+                } else {
+                    $code = $user->invitation_codes;
+                }
+                $insert = static::spinback_share('/img/logo.png', $user->_id, '/join/' . $code, 'The best brands for kids, moms & families up to 90% off!', '' ,"I saved tons on Totsy and you can too! Membership is FREE so join today!", ' st="Invite Your Friends" ');
                 return str_replace('$' , $insert, $pixel);
             }
             if (array_key_exists('orderid', $options) && ($options['orderid'])) {
@@ -237,7 +245,11 @@ class Affiliate extends Base {
         $insert ='';
         $insert .= ' pi=" http://' . $_SERVER['HTTP_HOST'] . $pi . '"';
        $insert .= ' pid="' . $pid . '"';
-       $insert .= ' plp="http://' . $_SERVER['HTTP_HOST'] . '/a/spinback?redirect=http://' . $_SERVER['HTTP_HOST'] . $plp . '"';
+       if($extra == ' st="Invite Your Friends" '){
+            $insert .= ' plp="http://' . $_SERVER['HTTP_HOST'] . $plp . '"';
+       }else{
+            $insert .= ' plp="http://' . $_SERVER['HTTP_HOST'] . '/a/spinback?redirect=http://' . $_SERVER['HTTP_HOST'] . $plp . '"';
+       }
        $insert .= ' pn="' .$pn . '"';
        $insert .= ' m="' . $m. '"';
        $insert .= 'msg= "' . $msg . '"';

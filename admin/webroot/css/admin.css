@@ -40,7 +40,7 @@ line-height: 18px
 }
 
 a:link, a:visited {
-color: #EB132C;
+color: #ed1c25;
 text-decoration: none
 }
 a:hover {
@@ -68,7 +68,7 @@ margin: 0 0 20px 40px
 
 h1,h2,h3,h4,h5 {
 font-weight: normal;
-color: #EB132C;
+color: #ed1c25;
 line-height: normal
 }
 h1 {
@@ -136,7 +136,7 @@ color: #707070
 color: #FFF
 }
 .red {
-color: #EB132C
+color: #ed1c25
 }
 .no-show {
 display: none
@@ -312,7 +312,7 @@ font-weight: bold;
 padding: 0 0 0 10px
 }
 #welcome strong {
-color: #EB132C
+color: #ed1c25
 }
 a#cs {
 float: right;
@@ -454,7 +454,7 @@ border-bottom: none
 }
 #main-nav li ul a:hover,#main-nav li ul li.active a:link,#main-nav li ul li.active a:visited {
 background: #FFF;
-color: #EB132C;
+color: #ed1c25;
 text-decoration: none
 }
 #main-nav li:hover ul {
@@ -484,10 +484,10 @@ color: #707070;
 text-decoration: none
 }
 #left ul.menu a:hover {
-color: #EB132C
+color: #ed1c25
 }
 #left ul.menu li.active a:link,#left ul.menu li.active a:visited {
-color: #EB132C;
+color: #ed1c25;
 font-weight: bold
 }
 
@@ -807,7 +807,7 @@ border-bottom: 1px solid #B5B5B5
 }
 
 div.current {
-border-top: 4px solid #EB132C;
+border-top: 4px solid #ed1c25;
 padding: 20px 0
 }
 .tabs {
@@ -829,7 +829,7 @@ font-size: 12px;
 line-height: normal
 }
 .tabs dt:hover,.tabs dt.open {
-background: #EB132C
+background: #ed1c25
 }
 
 .send-left {
@@ -902,7 +902,7 @@ text-align: left;
 overflow: visible;
 padding: 15px;
 background: #707070;
-border: 1px solid #EB132C;
+border: 1px solid #ed1c25;
 -moz-border-radius: 20px;
 -webkit-border-radius: 20px;
 border-radius: 20px;

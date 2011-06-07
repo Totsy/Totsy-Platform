@@ -25,6 +25,7 @@ $(document).ready(function() {
 		    <li><a href="/pages/testimonials" title="Video Testimonials">Video Testimonials</a></li>
 		    <li><a href="/pages/being_green" title="Being Green">Being Green</a></li>
 		    <li><a href="http://blog.totsy.com" target="_blank" title="Blog">Totsy Blog</a></li>
+		    <li class="first item15"><a href="/pages/affiliates" title="Affiliates"><span>Affiliates</span></a></li>
 		</ul>
 	</div>
 	<div class="clear"></div>
@@ -124,7 +125,7 @@ $(document).ready(function() {
     <div class="faq_answer"><a id="13"></a><strong>Q:</strong> How will my order be shipped?</div>
     <div class="faq_question"><strong>A: </strong> Your order will be shipped to you by our shipping partner, UPS. </div>
     <div class="faq_answer"><a id="14"></a><strong>Q:</strong> How long will it take for me to get my order?</div>
-    <div class="faq_question"><strong>A: </strong> Totsy is a private sales company and we do not keep merchandise in stock. Our shipping process begins at the close of a sales event when Totsy places orders directly with the brand. In order to continue bringing you amazing deals on your favorite products, our shipping process takes between 3 and 5 weeks after a sales event closes. Please make sure you always consider this when choosing the size of an apparel item. <br/>
+    <div class="faq_question"><strong>A: </strong> Totsy is a private sales company and we do not keep merchandise in stock. Our shipping process begins at the close of a sales event when Totsy places orders directly with the brand. In order to continue bringing you amazing deals on your favorite products, our shipping process takes between 10 and 15 business days after a sales event closes. Please make sure you always consider this when choosing the size of an apparel item. <br/>
       <br/>
       Here is a detailed description of Totsy's shipping process: <br/>
       <ul>

@@ -46,13 +46,12 @@ class UsersController extends BaseController {
 		$this->autoLogin();
 		/*
 		* redirects to the affiliate registration page if the left the page
-		* and then decided to register after words.
+		* and then decided to register afterwards.
 		*/
-		if (Session::check('cookieCrumb', array('name' => 'cookie'))){
-			$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-			if(preg_match('(/a/)', $cookie['landing_url'])){
-				$this->redirect($cookie['landing_url']);
-			}
+
+		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
+		if($cookie && preg_match('(/a/)', $cookie['landing_url'])){
+			$this->redirect($cookie['landing_url']);
 		}
 		if (isset($data) && $this->request->data) {
 			$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
@@ -116,12 +115,14 @@ class UsersController extends BaseController {
 				//	'zip' => $user->zip,
 					'email' => $user->email
 				);
-				Session::write('userLogin', $userLogin, array('name'=>'default'));
+				Session::write('userLogin', $userLogin, array('name' => 'default'));
+				$cookie['user_id'] = $user->_id;
+				Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 				$data = array(
 					'user' => $user,
 					'email' => $user->email
 				);
-				Silverpop::send('registration', $data);
+				Silverpop::send('registrationNew', $data);
 				$ipaddress = $this->request->env('REMOTE_ADDR');
 				User::log($ipaddress);
 				$this->redirect('/sales');
@@ -161,7 +162,7 @@ class UsersController extends BaseController {
 							'user' => $user,
 							'email' => $user->email
 						);
-						Silverpop::send('registration', $data);
+						Silverpop::send('registrationNew', $data);
 					}
 				}
 			}
@@ -238,7 +239,14 @@ class UsersController extends BaseController {
 		$redirect = '/sales';
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-		static::facebookLogin(null, $cookie, $ipaddress);
+		$result = static::facebookLogin(null, $cookie, $ipaddress);
+		extract($result);
+		if (!$success) {
+			if (!empty($userfb)) {
+				$self = static::_object();
+				$self->redirect('/register/facebook');
+			}
+		}
 		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array('conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
 			if($user) {
@@ -267,6 +275,7 @@ class UsersController extends BaseController {
 		$success = Session::delete('userLogin');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 		$cookie['autoLoginHash'] = null;
+		Session::delete('services');
 		Session::delete('cookieCrumb', array('name' => 'cookie'));
 		$cookieSuccess = Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 		FacebookProxy::setSession(null);
@@ -403,7 +412,7 @@ class UsersController extends BaseController {
 		$user = User::getUser();
 		$id = (string) $user->_id;
 		// Some documents have arrays, others have strings
-		if(is_array($user->invitation_codes)){
+		if(is_object($user->invitation_codes) && get_class($user->invitation_codes) == "lithium\data\collection\DocumentArray"){
 			$code = $user->invitation_codes[0];
 		} else {
 			$code = $user->invitation_codes;
@@ -510,8 +519,10 @@ class UsersController extends BaseController {
 		$user = null;
 		$fbuser = FacebookProxy::api('/me');
 		$user = User::create();
-		$user->email = $fbuser['email'];
-		$user->confirmemail = $fbuser['email'];
+		if ( !preg_match( '/@proxymail\.facebook\.com/', $fbuser['email'] )) {
+			$user->email = $fbuser['email'];
+			$user->confirmemail = $fbuser['email'];
+		}
 		$this->_render['layout'] = 'login';
 		if ($this->request->data) {
 			$data = $this->request->data;
@@ -529,8 +540,8 @@ class UsersController extends BaseController {
 	 * Auto login a user if the facebook session has been set.
 	 *
 	 * If the user already exists in our system redirect them to sales.
-	 * If there is no account for the customer then send them to the registration page
-	 * for facebook.
+	 * If not then return false and the user facebook information to the
+	 * function who called it
 	 *
 	 * @param string $affiliate - Affiliate string
 	 * @param string $cookie - The affiliate cookie set from affiliate
@@ -539,6 +550,9 @@ class UsersController extends BaseController {
 	 */
 	public static function facebookLogin($affiliate = null, $cookie = null, $ipaddress = null) {
 		$self = static::_object();
+		//If the users already exists in the database
+		$success = false;
+		$userfb = array();
 		if ($self->fbsession) {
 			$userfb = FacebookProxy::api('/me');
 			$user = User::find('first', array(
@@ -554,10 +568,9 @@ class UsersController extends BaseController {
 				Affiliate::linkshareCheck($user->_id, $affiliate, $cookie);
 				User::log($ipaddress);
 				$self->redirect('/sales');
-			} else {
-				$self->redirect('/register/facebook');
 			}
 		}
+		return compact('success', 'userfb');
 	}
 
 	protected static function &_object() {
