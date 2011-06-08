@@ -83,8 +83,13 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		);
 
 		$results = $ordersShippedCollection->group($keys, $inital, $reduce, $conditions);
-		$results = $results['retval'];
 		
+		if (is_object($result) && get_class_name($results)=='MongoCursor'){
+			Logger::info('Found "'.$result::count().'" orders');
+		} else if ( is_array($result)){
+			$results = $results['retval'];
+			Logger::info('Found "'.count($results).'" orders');
+		}
 		foreach ($results as $result){
 			if ($result['totalTracking']>0){
 				$data = array();
@@ -97,6 +102,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 						$data['items'][$trackNum][ (string) $item ] = Item::find('first', array('conditions' => array('_id' => $item)))->data();
 					}
 				}
+				Logger::info('Sening email for order #'.$result['OrderId'].' to '.$data['email']);
 				Silverpop::send('orderShipped', $data);
 				unset($data);
 				//SET send email flag
