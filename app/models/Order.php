@@ -8,7 +8,7 @@ use lithium\storage\Session;
 use li3_payments\extensions\Payments;
 use li3_payments\extensions\payments\exceptions\TransactionException;
 
-class Order extends \lithium\data\Model {
+class Order extends Base {
 
 	protected $_dates = array(
 		'now' => 0
@@ -100,7 +100,7 @@ class Order extends \lithium\data\Model {
 				if ($total > 0) {
 					$authKey = Payments::authorize('default', $total, $card);
 				} else {
-					$authKey = null;
+					$authKey = $this->randomString(8,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz');
 				}
 				return $order->save(compact('total', 'subTotal', 'tax', 'handling','overSizeHandling') + array(
 					'user_id' => (string) $user['_id'],
