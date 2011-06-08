@@ -134,7 +134,6 @@ Auth::config(array('userLogin' => array(
 	'scope' => array('admin' => true)
 )));
 
-
 ini_set('memory_limit', '1024M');
 ini_set('max_execution_time', '20000');
 
