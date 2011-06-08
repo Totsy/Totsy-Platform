@@ -10,7 +10,7 @@ use lithium\storage\Session;
  * The Credit model performs form general cleanup before data is
  * added to the credits collection.
  */
-class Credit extends \lithium\data\Model {
+class Credit extends Base {
 
 	/**
 	 * Default to $15 credits.
