@@ -62,4 +62,7 @@ require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel.php';
 require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel/IOFactory.php';
 require LITHIUM_APP_PATH . '/libraries/swiftmailer/lib/swift_required.php';
 require LITHIUM_APP_PATH . '/libraries/FusionCharts/FusionCharts_Gen.php';
+require LITHIUM_APP_PATH . "/libraries/sailthru-php5-client/sailthru/Sailthru_Client_Exception.php";
+require LITHIUM_APP_PATH . "/libraries/sailthru-php5-client/sailthru/Sailthru_Client.php";
+require LITHIUM_APP_PATH . "/libraries/sailthru-php5-client/sailthru/Sailthru_Util.php";
 ?>
