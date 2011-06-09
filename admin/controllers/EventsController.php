@@ -75,7 +75,8 @@ class EventsController extends BaseController {
 		$itemsCollection = Item::collection();
 		$event = Event::find($_id);
 		$seconds = ':'.rand(10,60);
-		$eventItems = Item::find('all', array('conditions' => array('event' => array($_id))));
+		$itemsCollection->ensureIndex(array("date_created" => 1));
+		$eventItems = $itemsCollection->find(array('event' => array($_id)));
 		#T Get all possibles value for the multiple departments select
 		$result = Item::getDepartments();
 		$all_filters = array();
