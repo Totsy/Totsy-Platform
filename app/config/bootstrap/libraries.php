@@ -70,4 +70,3 @@ require LITHIUM_APP_PATH . "/libraries/sailthru-php5-client/sailthru/Sailthru_Cl
 require LITHIUM_APP_PATH . "/libraries/sailthru-php5-client/sailthru/Sailthru_Client.php";
 require LITHIUM_APP_PATH . "/libraries/sailthru-php5-client/sailthru/Sailthru_Util.php";
 ?>
-?>
