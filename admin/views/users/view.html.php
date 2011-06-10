@@ -41,7 +41,7 @@
 			<table id="orderTable" class="datatable" border="1">
 				<thead>
 					<tr>
-						<?php 
+						<?php
 						foreach ($headings['order'] as $heading) {
 							echo "<th>$heading</th>";
 						}
@@ -56,7 +56,7 @@
 								<?=$this->html->link($order->order_id, array(
 								'Orders::view',
 								'args'=>$order->_id),
-								array('target' => '_blank')); 
+								array('target' => '_blank'));
 								?>
 							</td>
 							<td>$<?=number_format($order->total, 2);?></td>
@@ -111,7 +111,7 @@
 			<table id="creditTable" class="datatable" border="1">
 				<thead>
 					<tr>
-						<?php 
+						<?php
 						foreach ($headings['credit'] as $heading) {
 							echo "<th>$heading</th>";
 						}

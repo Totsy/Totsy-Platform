@@ -16,10 +16,15 @@
 	<div id="page">
 <?php if ($errors = $order->errors()): ?>
 	<?php foreach ($errors as $error): ?>
-		<div class="checkout-error"><?=$error; ?></div>
+	    <?php if (is_array($error)): ?>
+	        <?php foreach($error as $msg): ?>
+	            <div class="checkout-error"><?=$msg; ?></div>
+	        <?php endforeach; ?>
+	    <?php else: ?>
+		    <div class="checkout-error"><?=$error; ?></div>
+		<?php endif; ?>
 	<?php endforeach ?>
 <?php endif ?>
-
 
 <table style="width:100%;">
 	<tr>
@@ -162,7 +167,13 @@
 				<tr>
 					<div style="padding:10px; background:#eee; margin:10px 0">
 						<?=$this->form->create($orderPromo); ?>
-							<?=$this->form->error('promo'); ?>
+							<?php if (is_array($this->form->error('promo'))): ?>
+                                <?php foreach($this->form->error('promo') as $msg) :?>
+                                    <?php echo $msg ?>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <?=$this->form->error('promo'); ?>
+							<?php endif; ?>
 							<?=$this->form->text('code', array('size' => 6)); ?>
 							<?=$this->form->submit('Apply Promo Code'); ?>
 							<hr />
