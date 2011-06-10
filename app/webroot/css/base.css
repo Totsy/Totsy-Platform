@@ -727,6 +727,7 @@ li.item5 a:hover,li.item5.over a,li.active.item5 a {
 .table-row {
 	overflow:hidden;
 	padding:0 9px 9px;
+	min-height:59px;
 }
 
 

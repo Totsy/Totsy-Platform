@@ -95,11 +95,11 @@
 						); ?>
 						<div class="details table-row">
 							
-							<a href="<?="/sale/$event->url/$item->url"?>" style="font-size:13px; color:#777!important;"><?=$item->description ?></a>
-							<br>
-							<div style="position:absolute; bottom:0;"><span class="original-price" style="text-decoration:line-through; font-size:10px;">Original $<?=number_format($item->msrp,2);?></span>
-							<span class="price" style="text-transform:uppercase; font-weight:normal; font-size:20px; color: #009900; position:absolute; right:-133px;">$<?=number_format($item->sale_retail,2);?></span>	
-							</div>
+							<div><a href="<?="/sale/$event->url/$item->url"?>" style="font-size:13px; color:#777!important;"><?=$item->description ?></a></div>
+							<div class="clear"></div>
+							<div class="original-price" style="bottom:0px; position: absolute; text-decoration:line-through; font-size:10px; display:block; width:50%; float:left;">Original $<?=number_format($item->msrp,2);?></div>
+							<div class="price" style="bottom:0px; position: absolute; text-transform:uppercase; font-weight:normal; font-size:20px; color: #009900; display:block; width:50%; text-align:right; float:left; right:5px;">$<?=number_format($item->sale_retail,2);?></div>	
+						
 						</div>
 					</div>
 				</div>
