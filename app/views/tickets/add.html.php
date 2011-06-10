@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php $this->title("Contact Us"); ?>
 
 <div class="grid_16">
@@ -11,12 +10,13 @@
 		<h3 class="gray">About Us</h3>
 		<hr />
 		<ul class="menu main-nav">
-		    <li><a href="/pages/aboutus" title="About Totsy">How Totsy Works</a></li>
+		    <li class="active"><a href="/pages/aboutus" title="About Totsy">How Totsy Works</a></li>
 		    <li><a href="/pages/moms" title="Meet The Moms">Meet The Moms</a></li>
 		    <li><a href="/pages/press" title="Press">Totsy in the Press</a></li>
-		    <li class="active"><a href="/pages/testimonials" title="Video Testimonials">Video Testimonials</a></li>
+		    <li><a href="/pages/testimonials" title="Video Testimonials">Video Testimonials</a></li>
 		    <li><a href="/pages/being_green" title="Being Green">Being Green</a></li>
 		    <li><a href="http://blog.totsy.com" target="_blank" title="Blog">Totsy Blog</a></li>
+		    <li><a href="/pages/affiliates" title="Affiliates"><span>Affiliates</span></a></li>
 		</ul>
 	</div>
 	<div class="clear"></div>
@@ -28,48 +28,15 @@
 			<li><a href="/pages/faq" title="Frequently Asked Questions">FAQ's</a></li>
 			<li><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
 			<li><a href="/pages/terms" title="Terms Of Use">Terms Of Use</a></li>
-=======
-<?php if (!empty($userInfo)): ?>
-
-			<h1 class="p-header"><?=$this->title("Contact Us"); ?></h1>
-
-<div id="left">
-		<ul class="menu main-nav">
-		  <h3 style="color:#999;">About Us</h3>
-		  <hr />
-		  <li class="first item15"><a href="/pages/aboutus" title="About Totsy"><span>How Totsy Works</span></a></li>
-		  <li class="first item17"><a href="/pages/moms" title="Meet The Moms"><span>Meet The Moms</span></a></li>
-		  <li class="first item16"><a href="/pages/press" title="Press"><span>Totsy in the Press</span></a></li>
-		  <li class="first item17"><a href="/pages/being_green" title="Being Green"><span>Being Green</span></a></li>
-		  <li class="first"><a href="/pages/testimonials" title="Video Testimonials"><span>Video Testimonials</span></a></li>
-          <li class="first item19"><a href="http://blog.totsy.com" target="_blank" title="Blog"><span>Totsy Blog</span></a></li>
-          <li class="first item15"><a href="/pages/affiliates" title="Affiliates"><span>Affiliates</span></a></li>
-		  <br />
-		  <h3 style="color:#999;">Need Help?</h3>
-		  <hr />
-		  <li class="first item18 active"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
-		  <li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
->>>>>>> 5c257291821c231c17c6f556c8bddd3dc7bfc18d
 		</ul>
 	</div>
 </div>
 
 <div class="grid_11 omega roundy grey_inside b_side">
-
-<<<<<<< HEAD
-	<h2 class="page-title gray">Contact Us</h2>
-=======
-<div id="middle" class="noright">
-	<div class="tl"></div>
-	<div class="tr"></div>
-	<div id="page">
-
-	<div style="float:left; width:350px;">
-
 	<h2 class="gray mar-b">Contact Us</h2>
->>>>>>> 5c257291821c231c17c6f556c8bddd3dc7bfc18d
 	<hr />
 
+	<div style="float:left; width:330px;">
 	<?=$this->form->create(); ?>
 		<select id="parent" style="width:350px;" name="issue_type">
 			<option value="default">I need help with:</option>
@@ -137,12 +104,7 @@
 
 		<?=$this->form->submit('Send Information', array('class' => "button" )); ?>
 	<?=$this->form->end(); ?>
-<<<<<<< HEAD
-
 </div>
-=======
-	</div>
-
 	<div id="message" style="float:left; width:150px; margin-left:20px;">
 				<strong>Corporate Address:</strong><br/>
 				10 West 18th Street<br/>
@@ -154,12 +116,9 @@
 				888-247-9444<br />
 				Office Hours:<br/> M-F 10am - 5pm EST</p>
 	</div>
+</div>
 
-	</div>
 
-	<div class="bl"></div>
-	<div class="br"></div>
->>>>>>> 5c257291821c231c17c6f556c8bddd3dc7bfc18d
 </div>
 <div class="clear"></div>
 
@@ -194,8 +153,4 @@ function makeSublist(parent,child,isSubselectOptional,childVal)
 		makeSublist('parent','child', false, '1');
 	});
 </script>
-<<<<<<< HEAD
-=======
-
->>>>>>> 5c257291821c231c17c6f556c8bddd3dc7bfc18d
 

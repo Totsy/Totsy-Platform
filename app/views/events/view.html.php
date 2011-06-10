@@ -93,12 +93,27 @@
 							"sale/$event->url/{$item->url}",
 							array('title' => $item->name, 'escape' => false)
 						); ?>
+						
+						<div class="table-cell left">
+								<table width="280">
+									<tr>
+										<td width="170" valign="top">
+											<a href="/sale/performance-headwear/fatigue-hat-w-photo-rhinestone-frame-lt-olive"><h2>Fatigue hat w/  photo rhinestone frame</h2></a>
+										</td>
+										<td align="right">
+											<font class="price">$13.00</font><br>
+
+											<font class="original-price">Original $19.99</font>
+										</td>
+								</table>
+							</div>
 						<div class="details table-row">
 							
-							<div><a href="<?="/sale/$event->url/$item->url"?>" style="font-size:13px; color:#777!important;"><?=$item->description ?></a></div>
+							<a href="<?="/sale/$event->url/$item->url"?>" style="font-size:11px; color:#777!important;"><?=$item->description ?></a>
 							<div class="clear"></div>
-							<div class="original-price" style="bottom:0px; position: absolute; text-decoration:line-through; font-size:10px; display:block; width:50%; float:left;">Original $<?=number_format($item->msrp,2);?></div>
-							<div class="price" style="bottom:0px; position: absolute; text-transform:uppercase; font-weight:normal; font-size:20px; color: #009900; display:block; width:50%; text-align:right; float:left; right:5px;">$<?=number_format($item->sale_retail,2);?></div>	
+							<div class="price" style="text-transform:uppercase; font-weight:normal; font-size:20px; color: #009900; float:right;">$<?=number_format($item->sale_retail,2);?><br>
+							<span class="original-price" style="text-decoration:line-through; font-size:10px;">Original $<?=number_format($item->msrp,2);?></span>
+</div>	
 						
 						</div>
 					</div>
