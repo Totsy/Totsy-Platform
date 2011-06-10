@@ -59,6 +59,8 @@ class FinancialExport extends \lithium\console\Command  {
 		'zip',
 		'order_date',
 		'authKey',
+		'auth_confirmation',
+		'auth_error',
 		'payment_type',
 		'payment_date',
 		'ship_date'
@@ -140,14 +142,16 @@ class FinancialExport extends \lithium\console\Command  {
 		 * setup for future queries via cron.
 		 */
 		$orderConditions = array(
-		//	'date_created' => array('$gte' => new MongoDate(strtotime('June 1, 2011')), '$lte' => new MongoDate(strtotime('June 7, 2011'))),
-			'payment_date' => array('$exists' => true),
-			'payment_date' => array('$gte' => new MongoDate(strtotime('June 1, 2011')), '$lte' => new MongoDate(strtotime('June 7, 2011')))
+			'date_created' => array('$gte' => new MongoDate(strtotime('Jan 1, 2011')), '$lte' => new MongoDate(strtotime("June 8, 2011")))
+		//	'payment_date' => array('$exists' => true),
+		//	'payment_date' => array('$gte' => new MongoDate(strtotime('May 28, 2011')), '$lte' => new MongoDate(strtotime('June 7, 2011')))
 		);
 		$fields = array(
 			'billing',
 			'authKey',
-			'payment_type',
+			'card_type',
+			'auth_confirmation',
+			'auth_error',
 			'handling',
 			'items',
 			'order_id',
@@ -163,6 +167,7 @@ class FinancialExport extends \lithium\console\Command  {
 			'payment_date'
 		);
 		$orders = Order::collection()->find($orderConditions, $fields)->sort(array('date_created' => -1));
+
 		$processedOrders = ProcessedOrder::connection()->connection->{'orders.processed'};
 		$orderSummary = $orderDetails = array();
 		/**
@@ -216,7 +221,7 @@ class FinancialExport extends \lithium\console\Command  {
 				}
 				if (array_key_exists('credit_used', $order)){
 				    $creditCollection = Credit::collection()->find(array('customer_id' => $order['user_id']));
-
+				   // var_dump(Credit::collection()->count(array('customer_id' => $order['user_id'])));
 				    foreach ($creditCollection as $credit) {
 				        $credit['issue_date'] = date('m/d/Y', $credit['date_created']['sec']);
 				        $credit['credit_type'] = $credit['type'];
@@ -229,7 +234,6 @@ class FinancialExport extends \lithium\console\Command  {
                         }
                         if (!empty($userCredit)){
                             var_dump($userCredit);
-                            die();
 				            fputcsv($cpDetail, $userCredit);
 				        }
 				    }
@@ -244,7 +248,23 @@ class FinancialExport extends \lithium\console\Command  {
 			} else {
 				$order['ship_date'] = 0;
 			}
+			if (array_key_exists('auth_confirmation', $order)) {
+			    $order['auth_confirmation'] = $order['auth_confirmation'];
+			} else {
+			    $order['auth_confirmation'] = "none";
+			}
+
+			if (array_key_exists('auth_error', $order) ) {
+			    if (is_array($order['auth_error'])){
+			        $order['auth_error'] = implode("/", $order['auth_error']);
+			    } else {
+			        $order['auth_error'] = $order['auth_error'];
+			    }
+			} else {
+			    $order['auth_error'] = "none";
+			}
 			$order = $this->sortArrayByArray($order, $this->summaryHeader);
+
 			fputcsv($fpSummary, $order);
 			foreach ($orderItems as $item) {
 				$itemRecord = Item::collection()->findOne(array('_id' => new MongoId($item['item_id'])));
