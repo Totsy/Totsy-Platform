@@ -67,7 +67,7 @@ if(!Session::check('userLogin')) {
 	return;
 }
 Router::connect('/', 'Events::index');
-Router::connect('/sales', 'Events::index');
+Router::connect('/sales/{:args}', 'Events::index');
 Router::connect('/{:action:login|logout}', array('controller' => 'users'));
 Router::connect('/addresses', 'Addresses::view');
 Router::connect('/addresses/edit{:args}', 'Addresses::edit');

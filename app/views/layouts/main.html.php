@@ -27,9 +27,7 @@
 <div id="global_site_msg"><strong>Last minute message:</strong> our last promotional campaign that was intended for a select audience of our long-time members was unintentionally exposed to the general public. <br />This promotion has now been restored and will only work for members who received an email directly from Totsy containing a promocode.</div>
 -->
 <div id="topper"></div>
-
 	<div id="wrapper">
-
 		<div id="header">
 
 			<div id="header-lt">
@@ -40,51 +38,54 @@
 				); ?>
 			</div>
 
-			<div id="header-mid">
-
-				<?php if (!empty($userInfo)): ?>
-					<?=$this->html->link('Help Desk', 'Tickets::add', array('id' => 'cs')); ?>
-				<div id="welcome">
-
-				Hello,
-					<?php if(array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])):
+			<div class="menu_top_left">
+			<?php if (!empty($userInfo)): ?>
+			Hello, <?php if(array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])):
 					?>
 						<?="{$userInfo['firstname']} {$userInfo['lastname']}"; ?>
 					<?php else:?>
-					    <?="{$userInfo['email']}"; ?>
+						<?="{$userInfo['email']}"; ?>
 					<?php endif; ?>
 					<?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
 					(<?=$this->html->link('Sign Out', $logout, array('title' => 'Sign Out')); ?>)
-				</div>
-
-				<?php endif ?>
-				<?php if (!(empty($userInfo))): ?>
-					<?=$this->menu->render('main-nav'); ?>
-				<?php endif ?>
+			<?php endif ?>
 			</div>
-			<div id="header-rt">
-				<?=$this->html->link('Invite Friends. Get $15','/users/invite',array('title'=>'Invite Friends. Get $15', 'id'=>'if'));?>
-				<?php if (!empty($userInfo)): ?>
-					<p class="clear">
-						<span class="fr">
-							(<?=$cartCount;?>)
-							<?=$this->html->link('Checkout', array('Orders::add'), array(
-								'id' => 'checkout', 'title' => 'checkout'
-							)); ?>
-			 			</span>
-						<span class="fr"><?=$this->html->link('Cart', array('Cart::view'), array(
-							'id' => 'cart', 'title' => 'My Cart'
-						)); ?></span>
-			 			<span class="fr">
-							<?=$this->html->link('My Credits', array('Credits::view')); ?>
-							<?php if (!empty($credit)): ?>
-								($<?=$credit?>)
-							<?php endif ?>
-						</span>
-					</p>
-				<?php endif ?>
+			
+			<div class="menu_top_right">
+			<?php if (!(empty($userInfo))) { ?>
+				<a href="/account" title="My Account">My Account</a>
+				<a href="/account/credits" title="My Credits $<?=$credit?>">My Credits $<?=$credit?></a>
+				<a href="/cart/view" class="cart_icon" title="My Cart (<?=$cartCount;?>)">My Cart (<?=$cartCount;?>)</a>
+				<a href="/users/invite" title="+ Invite Friends Get $15">+ Invite Friends Get $15</a>
+			<?php } else { ?>
+				<span style="text-align:right!important;">
+					<a href="/" title="Sign In">Sign In</a> 
+					<a href="/register" title="Sign Up">Sign Up</a>
+					<a href="/users/invite" title="+ Invite Friends Get $15">+ Invite Friends Get $15</a>
+				</span>
+			<?php } ?>
+			</div>
+			<div class="menu_main_global">
+			<?php if (!(empty($userInfo))): ?>
+				<ul class="nav main" id="navlist">
+					<li><a href="/sales" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0 || $_SERVER['REQUEST_URI'] == '/') {
+						echo 'class="active"';
+					} ?>>All Sales</a></li>
+					<li><a href="/sales/girls" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/girls') == 0) {
+						echo 'class="active"';
+					} ?>>Girls</a></li>
+					<li><a href="/sales/boys" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/boys') == 0)  {
+						echo 'class="active"';
+					} ?>>Boys</a></li>
+					<li><a href="/sales/momsdads" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/momsdads') == 0) {
+						echo 'class="active"';
+					} ?>>Moms &amp; Dads</a></li>
+				</ul>
+			<?php endif ?>
 			</div>
 		</div>
+		<div style="clear:both;"></div>
+		
 		<div id="content">
 			<?php echo $this->content(); ?>
 		</div>
@@ -140,22 +141,6 @@
 		</script>
 
     	<div id='cart-modal'></div>
-
-	<script type="text/javascript">
-	/*$("#cart").click(function() {
-		$("#cart-modal").load($.base + 'cart/view').dialog({
-			autoOpen: false,
-			modal:true,
-			width: 900,
-			//height: 600,
-			close: function(ev, ui) {
-				location.reload();
-			}
-		});
-		$("#cart-modal").dialog('open');
-	}); */
-	</script>
-
     <div id='toTop'>^ Back to Top</div>
 
     <!--affiliate pixels-->
