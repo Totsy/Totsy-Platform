@@ -3,15 +3,13 @@
 namespace admin\extensions\command;
 
 use lithium\core\Environment;
-use Sailthru_Util;
-use Sailthru_Client;
-use Sailthru_Client_Exception;
+use admin\extensions\SailThru;
 
 /**
  * Make a check for 0 records on the Disney Collection.
  * Redo the disney export at this specific date if it's the case
  */
-class SailThru extends \lithium\console\Command {
+class SailThruTest extends \lithium\console\Command {
 	
 	/**
 	 * The environment to use when running the command. 'production' is the default.
@@ -26,6 +24,6 @@ class SailThru extends \lithium\console\Command {
 	 */
 	public function run() {
 		Environment::set($this->env);
-		Sailthru_Client::send('Welcome Template','troyer@totsy.com');
+		SailThru::send('Welcome Template','troyer@totsy.com');
 	}
 }
