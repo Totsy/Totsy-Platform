@@ -39,50 +39,7 @@
 	<?php if (!(empty($userInfo))): ?>
 		<?=$this->menu->render('main-nav'); ?>
 	<?php endif ?>
-	        <ul class="nav main" id="navlist" style="display:none;">
-	            <li>
-	                <a href="">All</a>
-	
-	                <ul>
-							<li><a href="#" title="Item 1 0">Item 1 0</a></li>
-							<li><a href="#" title="Item 1 1">Item 1 1</a></li>
-							<li><a href="#" title="Item 1 2">Item 1 2</a></li>
-	    
-	                </ul>
-	            </li>
-	
-	            <li>
-	                <a href="#">Boys</a>
-	
-	                <ul>
-							<li><a href="#" title="Item 1 0">Item 1 0</a></li>
-							<li><a href="#" title="Item 1 1">Item 1 1</a></li>
-							<li><a href="#" title="Item 1 2">Item 1 2</a></li>
-					</ul>
-	
-	            </li>
-	
-	            <li>
-	                <a href="">Girls</a>
-	
-	                <ul>
-							<li><a href="#" title="Item 1 0">Item 1 0</a></li>
-							<li><a href="#" title="Item 1 1">Item 1 1</a></li>
-							<li><a href="#" title="Item 1 2">Item 1 2</a></li>
-					</ul>
-	            </li>    
-	            
-	            <li>
-	                <a href="">Moms</a>
-	
-					<ul>
-							<li><a href="#" title="Item 1 0">Item 1 0</a></li>
-							<li><a href="#" title="Item 1 1">Item 1 1</a></li>
-							<li><a href="#" title="Item 1 2">Item 1 2</a></li>
-					</ul>
-	            </li>       
-	        </ul>
-	    </div>
+	</div>
 		
 		<div class="grid_8 alpha omega" style="text-align:right; padding:10px 0px; font-size:14px;">
 					Hello,

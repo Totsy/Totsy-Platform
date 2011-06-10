@@ -3348,32 +3348,6 @@ a.nivo-prevNav {
 }
 
 .button_small {
-<<<<<<< HEAD
-    left: 574px;
-    position: relative;
-    top: 200px;
-}
-.roundy	{
--webkit-border-radius: 12px;
--moz-border-radius: 12px;
-border-radius: 12px;
-border:1px solid #D7D7D7;
-margin:0px auto 10px auto;
-}
-.roundy_nav	{
--webkit-border-radius: 12px;
--moz-border-radius: 12px;
-border-radius: 12px;
-border:1px solid #D7D7D7;
-}
-.roundy_product	{
--webkit-border-radius: 12px;
--moz-border-radius: 12px;
-border-radius: 12px;
-border:1px solid #D7D7D7;
-overflow: hidden;
-min-height: 340px;
-=======
 	left:574px;
 	position:relative;
 	top:200px;
@@ -3399,9 +3373,9 @@ min-height: 340px;
 	-moz-border-radius:12px;
 	border-radius:12px;
 	border:1px solid #D7D7D7;
+	margin:0 0 10px 0px;
 	overflow:hidden;
 	min-height:284px;
->>>>>>> c4b99961510804270d3a3517d6bc1f68261e10bf
 }
 
 .roundy_product a img {
@@ -3440,7 +3414,7 @@ div.splash-details {
 .glow {
 	background:#fff;
 	margin:10px auto;
-	padding:10px 0;
+	padding:10px 5px;
 	overflow:hidden;
 	-moz-box-shadow:0 0 12px rgba(0,0,0,0.2);
 	border:0 solid #FFFFFF;

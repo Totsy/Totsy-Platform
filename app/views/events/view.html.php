@@ -69,10 +69,10 @@
 				<!-- Start the product loop to output all products in this view -->
 				<!-- Start product item -->
 					<?php if (($y == 0) || ($y == 2)): ?>
-						<div class="product-list-item r-container grid_4">
+						<div class="grid_4">
 					<?php endif ?>
 					<?php if ($y == 1): ?>
-						<div class="product-list-item middle r-container grid_4 omega">
+						<div class="grid_4">
 					<?php endif ?>
 					<?php if ($y == 2): ?>
 						<?php $y = -1; ?>
@@ -88,8 +88,8 @@
 							$this->html->image($productImage, array(
 								'alt' => $item->name,
 								'title' => $item->name,
-								'width' => '218',
-								'height' => '264')),
+								'width' => '228',
+								'height' => '263')),
 							"sale/$event->url/{$item->url}",
 							array('title' => $item->name, 'escape' => false)
 						); ?>

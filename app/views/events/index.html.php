@@ -21,7 +21,7 @@
 	</div>
     <!--Disney -->
       <div class="disney disney_splash">
-          <p><strong>SPECIAL BONUS!</strong> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value) <span id="disney">Offer &amp; Refund Details</span></p>
+          <p><strong>SPECIAL BONUS!</strong> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value ) <span id="disney">Offer &amp; Refund Details</span></p>
       </div>
 <div class="fullwidth">
 	<?php $x = 0; ?>
@@ -29,19 +29,19 @@
 	<?php foreach ($openEvents as $event): ?>
 		<!-- Start product item -->
 		<?php if ($y == 0): ?>
-			<div class="product-list-item featured r-container grid_6">
+			<div class="grid_6">
 		<?php endif ?>
 		<?php if ($y == 1): ?>
-			<div class="product-list-item featured middle r-container grid_6">
+			<div class="grid_6">
 		<?php endif ?>
 		
-		<?php if (($y == 2) || ($y == 4)): ?>
-			<div class="product-list-item r-container grid_4">
-		<?php endif ?>
-		<?php if ($y == 3): ?>
-			<div class="product-list-item middle r-container grid_4">
+		<?php if (($y == 2) || ($y == 3)): ?>
+			<div class="grid_4">
 		<?php endif ?>
 		<?php if ($y == 4): ?>
+			<div class="grid_4">
+		<?php endif ?>
+		<?php if ($y == 3): ?>
 			<?php $y = 1; ?>
 		<?php endif ?>
 
@@ -76,8 +76,8 @@
 							$this->html->image("$productImage", array(
 							'title' => $event->name,
 							'alt' => $event->name,
-							'width' => '218',
-							'height' => '285'
+							'width' => '228',
+							'height' => '263'
 						)), "sale/$event->url", array('escape'=> false));
 
 						 ?>
