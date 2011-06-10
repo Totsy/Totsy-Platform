@@ -24,6 +24,6 @@ class SailThruTest extends \lithium\console\Command {
 	 */
 	public function run() {
 		Environment::set($this->env);
-		SailThru::send('Welcome Template','troyer@totsy.com');
+		SailThru::send('Micah Test','troyer@totsy.com');
 	}
 }
