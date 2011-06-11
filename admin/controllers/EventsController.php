@@ -251,7 +251,7 @@ class EventsController extends BaseController {
 		return compact('event', 'items', 'shareurl', 'type', 'id', 'preview');
 
 	}
-	
+
 	public function inventoryCheck($events) {
 		$events = $events->data();
 		foreach ($events as $eventItems) {
