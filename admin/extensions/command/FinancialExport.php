@@ -8,6 +8,7 @@ use admin\models\Event;
 use admin\models\Item;
 use admin\models\Credit;
 use admin\models\ProcessedOrder;
+use admin\models\OrderShipped;
 use lithium\core\Environment;
 use Mongo;
 use MongoCode;
@@ -63,7 +64,9 @@ class FinancialExport extends \lithium\console\Command  {
 		'auth_error',
 		'payment_type',
 		'payment_date',
-		'ship_date'
+		'estimated_ship_date',
+		'actual_ship_date',
+		'ship_records'
 	);
 
 	/**
@@ -106,7 +109,8 @@ class FinancialExport extends \lithium\console\Command  {
 		'billing',
 		'date_created',
 		'items',
-		'card_type'
+		'card_type',
+		'ship_date'
 	);
 
 	/**
@@ -136,7 +140,7 @@ class FinancialExport extends \lithium\console\Command  {
 		 * issue running on production just note that a new index will be created.
 		 */
 		Order::collection()->ensureIndex(array('date_created' => -1));
-		ProcessedOrder::connection()->connection->{'orders.processed'}->ensureIndex(array('Customer PO #' => 1));
+		OrderShipped::collection()->ensureIndex(array('OrderNum' => 1));
 		/**
 		 * Going for all the orders that were created after Nov 1, 2010. This may need to be dynamically
 		 * setup for future queries via cron.
@@ -163,12 +167,14 @@ class FinancialExport extends \lithium\console\Command  {
 			'promo_discount',
 			'credit_used',
 			'user_id',
+			'ship_date',
+			'ship_records',
 			'tax',
 			'payment_date'
 		);
 		$orders = Order::collection()->find($orderConditions, $fields)->sort(array('date_created' => -1));
 
-		$processedOrders = ProcessedOrder::connection()->connection->{'orders.processed'};
+		$ordersShipped = OrderShipped::collection();
 		$orderSummary = $orderDetails = array();
 		/**
 		 * Setup filenames for the order summary and epxort functionality.
@@ -212,6 +218,12 @@ class FinancialExport extends \lithium\console\Command  {
 			} else {
 				$order['payment_date'] = 0;
 			}
+			if (array_key_exists('ship_date', $order)) {
+				$order['estimated_ship_date'] =
+				    (is_int($order['ship_date'])) ? date('m/d/Y', $order['ship_date']) : date('m/d/Y', $order['ship_date']->sec);
+			} else {
+				$order['estimated_ship_date'] = 0;
+			}
 			foreach ($order as $key => $value) {
 				$checkList = array('credit_used', 'promo_code', 'promo_discount', 'overSizeHandling');
 				foreach ($checkList as $value) {
@@ -220,8 +232,10 @@ class FinancialExport extends \lithium\console\Command  {
 					}
 				}
 				if (array_key_exists('credit_used', $order)){
-				    $creditCollection = Credit::collection()->find(array('customer_id' => $order['user_id']));
-				   // var_dump(Credit::collection()->count(array('customer_id' => $order['user_id'])));
+				    $creditCollection = Credit::collection()->find(array('$or' => array(
+				        array('customer_id' => $order['user_id']),
+				        array('user_id' => $order['user_id'])
+				    )));
 				    foreach ($creditCollection as $credit) {
 				        $credit['issue_date'] = date('m/d/Y', $credit['date_created']['sec']);
 				        $credit['credit_type'] = $credit['type'];
@@ -233,7 +247,6 @@ class FinancialExport extends \lithium\console\Command  {
                             unset($credit['type']);
                         }
                         if (!empty($userCredit)){
-                            var_dump($userCredit);
 				            fputcsv($cpDetail, $userCredit);
 				        }
 				    }
@@ -242,18 +255,25 @@ class FinancialExport extends \lithium\console\Command  {
                     unset($order[$key]);
                 }
 			}
-			$shipRecord = $processedOrders->findOne(array('Customer PO #' => $order['_id']));
-			if ($shipRecord) {
-				$order['ship_date'] = date('m/d/Y', $shipRecord['_id']->getTimestamp());
+			$shipRecord = $ordersShipped->findOne(array('$or' => array(
+                array('OrderNum' => $order['order_id'])
+            )));
+			if (array_key_exists('ship_records', $order)) {
+			    $order['ship_records'] = "Yes";
 			} else {
-				$order['ship_date'] = 0;
+			    $order['ship_records'] = "No";
+			}
+
+			if ($shipRecord) {
+				$order['actual_ship_date'] = date("m/d/Y", $shipRecord['ShipDate']->sec);
+			} else {
+				$order['actual_ship_date'] = 0;
 			}
 			if (array_key_exists('auth_confirmation', $order)) {
 			    $order['auth_confirmation'] = $order['auth_confirmation'];
 			} else {
 			    $order['auth_confirmation'] = "none";
 			}
-
 			if (array_key_exists('auth_error', $order) ) {
 			    if (is_array($order['auth_error'])){
 			        $order['auth_error'] = implode("/", $order['auth_error']);
