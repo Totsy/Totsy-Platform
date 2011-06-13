@@ -47,7 +47,7 @@
 										<div style="clear:both;"></div>
 										<p style='margin-top: 10px'> <?=$this->html->link('Forgot your password?','/reset', array('class'=>"md", 'title'=>"Forgot your password?"))?> </p>
 										<hr />
-										<a href="javascript:;" onclick="fblogin();return false;"><img src="/img/fb_login_btn.png"></a>
+										<a href="#" onclick="fblogin();return false;"><img src="/img/fb_login_btn.png"></a>
 									</div>
 									<div class="bl"></div>
 									<div class="br"></div>

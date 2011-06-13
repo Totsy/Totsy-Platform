@@ -127,7 +127,7 @@
 								<div>
 								<h3 style="color:#999; font-size:18px;">Register With Facebook</h3>
 								<hr />
-								<a href="javascript:;" onclick="fblogin();return false;"><img src="/img/fb_register_btn.png"></a>
+								<a href="#" onclick="fblogin();return false;"><img src="/img/fb_register_btn.png"></a>
 
 								</div>
 								</div>
