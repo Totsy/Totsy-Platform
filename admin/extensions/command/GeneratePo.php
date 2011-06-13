@@ -25,7 +25,7 @@ use admin\extensions\command\Pid;
  *
  * @see admin/controllers/ReportController::purchases
  */
-class GeneratePO extends Base {
+class GeneratePo extends Base {
 
 	/**
 	 * The environment to use when running the command. 'production' is the default.
@@ -122,6 +122,7 @@ class GeneratePO extends Base {
 			$purchaseOrder = array();
 			$po = PurchaseOrder::collections("vendorpo");
 			$inc = 0;
+			Order::collection()->ensureIndex(array('items.item_id' => -1));
 			foreach ($eventItems as $eventItem) {
 				foreach ($eventItem['details'] as $key => $value) {
 					$orders = Order::find('all', array(
@@ -157,11 +158,11 @@ class GeneratePO extends Base {
 										$purchaseOrder[$inc]['Size'] = $item['size'];
 										$purchaseOrder[$inc]["PO"] = $poNumber;
 										$purchaseOrder[$inc]["eventId"] = $eventId;
+										$po->remove(array("eventId" => $eventId, "SKU" => $purchaseOrder[$inc]['SKU']));
 									}
 								}
 							}
-							$po->remove(array("eventId" => $eventId, "SKU" => $purchaseOrder[$inc]['SKU']));
-							if (!empty($purchaseOrder[$inc])) {
+							if (count($purchaseOrder) > $inc && !empty($purchaseOrder[$inc])) {
 								$po->save($purchaseOrder[$inc]);
 							}
 							++$inc;
@@ -190,7 +191,7 @@ class GeneratePO extends Base {
 			        'details' => 1)
 			));
 			$count = count($items);
-			$this->log("Event id $eventid has $items items.");
+			$this->log("Event id $eventId has $count items.");
 			$items = $items->data();
 		}
 		return $items;
@@ -202,8 +203,7 @@ class GeneratePO extends Base {
 	    $condition = array();
         if (!empty($this->event)){
 	        $condition = array_merge($condition, array('_id' => $this->event));
-	    }
-	    if ($this->initial == "true") {
+	    } else if ($this->initial == "true") {
 	        if(empty($this->startrng)) {
 	            $this->out(var_dump($this->startrng));
 	            $this->startrng = date("m/d/Y");
@@ -228,7 +228,5 @@ class GeneratePO extends Base {
 	    $this->log("$amount event(s) have closed today.");
 	    $this->out("$amount event(s) are closed today.");
 	}
-
-
-
 }
+?>

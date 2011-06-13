@@ -42,7 +42,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		Logger::info('Order Shipped Processor');
 		Environment::set($this->env);
 		$this->tmp = LITHIUM_APP_PATH . $this->tmp;
-		$pid = new Pid($this->tmp,  'OrderExport');
+		$pid = new Pid($this->tmp,  'OrderShippedNotification');
 		if ($pid->already_running == false) {
 			$this->emailNotificationSender();
 		} else {
@@ -54,51 +54,72 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 	protected function emailNotificationSender() {
 	// collections
 		$ordersCollection = Order::connection()->connection->orders;
-		$usersCollection = Order::connection()->connection->users;
+		$usersCollection = User::connection()->connection->users;
 		$ordersShippedCollection = OrderShipped::collection();
 		$itemsCollection = Item::collection();
 		
 		$time = time();
 		$keys = array('OrderId' => true);
-		$inital = array('totalItems' => 0, 'totalTracking' => 0, 'TrackNums' => array() );
+		$inital = array('totalItems' => 0, 'Tracking' => 0, 'TrackNums' => array());
 		$reduce = new MongoCode("function(a,b){ 
 			b.totalItems += 1;
-			if (typeof(b.TrackNums[a['Tracking #']]) == 'undefined'){
-				b.TrackNums[a['Tracking #']] = new Array();
-				b.totalTracking += 1;
+			if (b.Tracking == 0 && typeof(a['Tracking #']) != 'undefined'){
+				b.Tracking = a['Tracking #'];
 			}
 			
-			b.TrackNums[a['Tracking #']].push(a['ItemId']);
+			if (typeof(b.TrackNums[b.Tracking]) == 'undefined'){
+				b.TrackNums[b.Tracking] = new Array();
+			}
+			
+			b.TrackNums[b.Tracking].push(a['ItemId']);
 		}");
 		//Conditions with date converted to the right timezone
 		$conditions = array(
 			'ShipDate' => array(
-				'$gt' => new MongoDate(strtotime('-1 day',$time)),
-				'$lte' => new MongoDate($time)),
+				'$gte' => new MongoDate(strtotime('-1 day',$time)),
+				'$lt' => new MongoDate($time)),
 			'OrderId' => array('$ne' => null),
+			//'OrderNum' => '4DBA18C5F223',
+		    // don't validate TRCK # because sometimes there could shipped item without tracking # 
 			// validate tracking number
-			'Tracking #' => new MongoRegex("/^[1Z]{2}[A-Za-z0-9]+/i"),
+			//'Tracking #' => new MongoRegex("/^[1Z]{2}[A-Za-z0-9]+/i"),
 			// do not send notification if it already send
 			'emailNotification' => array('$exists' => false)
 		);
 
 		$results = $ordersShippedCollection->group($keys, $inital, $reduce, $conditions);
-		$results = $results['retval'];
 		
+		if (is_object($results) && get_class_name($results)=='MongoCursor'){
+			Logger::info('Found "'.$results::count().'" orders');
+		} else if ( is_array($results)){
+			$results = $results['retval'];
+			Logger::info('Found "'.count($results).'" orders');
+		}
+		$cc = 0;
 		foreach ($results as $result){
-			if ($result['totalTracking']>0){
+			if (count($result['TrackNums'])>0){
 				$data = array();
-				$data['order'] = Order::find('first', array('conditions' => array('_id' => $result['OrderId'])));
-				$data['user'] = $usersCollection->find(array('_id' => $data['order']->user_id));
-				$data['email'] = $data['user']['email']; 
+				$data['order'] = $ordersCollection->findOne(  array('_id' => $result['OrderId']));
+				$data['user'] = $usersCollection->findOne(array('_id' => $data['order']['user_id']));
+				$data['email'] = $data['user']['email']
 				$data['items'] = array();
+			
+				$ordItm = array();
+				foreach($data['order']['items'] as $itm){
+					$ordItm[$itm['item_id']] = $itm;
+				}
+				
 				foreach($result['TrackNums'] as $trackNum => $items){
 					foreach ($items as $item){
-						$data['items'][$trackNum][ (string) $item ] = Item::find('first', array('conditions' => array('_id' => $item)))->data();
+						$data['items'][$trackNum][ (string) $item ] = $ordItm[ (string) $item ];
 					}
 				}
+				unset($ordItm);
+				
+				Logger::info('Sening email for order #'.$result['OrderId'].' to '.$data['email']);
 				Silverpop::send('orderShipped', $data);
 				unset($data);
+				
 				//SET send email flag
 				foreach($result['TrackNums'] as $trackNum => $items){
 					foreach ($items as $item){
@@ -109,6 +130,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 						$ordersShippedCollection->update($conditions, array('$set' => array('emailNotificationSend' => new MongoDate())));
 					}
 				}
+				
 			}
 		}
 		
