@@ -29,7 +29,7 @@ class EventsController extends BaseController {
 					$events_closed[] = $openEvents[$key];
 					unset($openEvents[$key]);
 				}
-			} 
+			}
 		}
 		if (!empty($events_closed)) {
 			if (!empty($openEvents)) {
@@ -129,7 +129,4 @@ class EventsController extends BaseController {
 	}
 
 }
-
-
-
 ?>

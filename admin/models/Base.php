@@ -30,10 +30,10 @@ class Base extends \lithium\data\Model {
 	}
 
 	/**
-	 * This method gives direct access to the MongoDB collection object from any
-	 * model that extends the Base Model.  You can set it to a different associated collection
-	 * @return object
-	 */
+	* This method gives direct access to the MongoDB collection object from any
+	* model that extends the Base Model. You can set it to a different associated collection
+	* @return object
+	*/
 	public static function collections($source) {
 		static::meta('source', $source);
 		return static::_connection()->connection->{static::_object()->_meta['source']};
