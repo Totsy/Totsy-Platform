@@ -54,7 +54,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 	protected function emailNotificationSender() {
 	// collections
 		$ordersCollection = Order::connection()->connection->orders;
-		$usersCollection = Order::connection()->connection->users;
+		$usersCollection = User::connection()->connection->users;
 		$ordersShippedCollection = OrderShipped::collection();
 		$itemsCollection = Item::collection();
 		
