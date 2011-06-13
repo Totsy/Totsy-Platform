@@ -155,6 +155,10 @@ tinyMCE.init({
 								'value' => "$end_date"
 							));?>
 				</div>
+				<?=$this->form->label('Departments')?><br />
+				<table>
+					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?> 
+				</table>
 				<div id="tags">
 					<?=$this->form->label('Tags'); ?>
 					<?php if ($event->tags): ?>

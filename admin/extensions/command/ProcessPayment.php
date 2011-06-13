@@ -14,6 +14,7 @@ use MongoCode;
 use MongoDate;
 use MongoRegex;
 use MongoId;
+use MongoCursor;
 
 
 /**
@@ -47,6 +48,10 @@ class ProcessPayment extends \lithium\console\Command  {
 	 * an invitation request? Should an invite document be created?
 	 */
 	public function capture() {
+	    /**
+	        Continue to process no matter how long it takes
+	    **/
+	    MongoCursor::$timeout = -1;
 		$ordersCollection = Order::connection()->connection->orders;
 		$orders = $ordersCollection->find(array(
 			'ship_records' => array('$exists' => true),

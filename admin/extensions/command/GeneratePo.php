@@ -122,6 +122,7 @@ class GeneratePo extends Base {
 			$purchaseOrder = array();
 			$po = PurchaseOrder::collections("vendorpo");
 			$inc = 0;
+			Order::collection()->ensureIndex(array('items.item_id' => -1));
 			foreach ($eventItems as $eventItem) {
 				foreach ($eventItem['details'] as $key => $value) {
 					$orders = Order::find('all', array(
@@ -157,10 +158,10 @@ class GeneratePo extends Base {
 										$purchaseOrder[$inc]['Size'] = $item['size'];
 										$purchaseOrder[$inc]["PO"] = $poNumber;
 										$purchaseOrder[$inc]["eventId"] = $eventId;
+										$po->remove(array("eventId" => $eventId, "SKU" => $purchaseOrder[$inc]['SKU']));
 									}
 								}
 							}
-							$po->remove(array("eventId" => $eventId, "SKU" => $purchaseOrder[$inc]['SKU']));
 							if (!empty($purchaseOrder[$inc])) {
 								$po->save($purchaseOrder[$inc]);
 							}
@@ -227,7 +228,5 @@ class GeneratePo extends Base {
 	    $this->log("$amount event(s) have closed today.");
 	    $this->out("$amount event(s) are closed today.");
 	}
-
-
-
 }
+?>
