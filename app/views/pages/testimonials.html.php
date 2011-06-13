@@ -5,7 +5,7 @@
 	<hr />
 </div>
 
-<div class="grid_4 omega">
+<div class="grid_4">
 	<div class="roundy grey_inside">
 		<h3 class="gray">About Us</h3>
 		<hr />
@@ -44,11 +44,11 @@
      </iframe>
 </div>
      
-<div syle="margin:0px 0px 0px 0px; width:250px; float:left;"><img src="/img/vidTest-question.jpg" alt="" /><br />
-	<a href="http://record.videogenie.com/media/?uid=279c6ca9-6bf4-4042-bfd5-a681150d0136"><img src="/img/vidTest-btn.jpg" alt="" /></a>
+<div syle="margin:0px 0px 0px 0px; width:250px; float:left;"><img src="/img/vidTest-question.png" alt="" /><br />
+	<a href="http://record.videogenie.com/media/?uid=279c6ca9-6bf4-4042-bfd5-a681150d0136"><img src="/img/vidTest-btn.png" alt="" /></a>
 </div>
 
-	<img src="/img/iStock_000010072649XSmall.jpg" alt="" />	<br />
+	<img src="/img/iStock_000010072649XSmall.png" alt="" />	<br />
 
 </div>
 </div>

@@ -5,7 +5,7 @@
 	<hr />
 </div>
 
-<div class="grid_4 omega">
+<div class="grid_4">
 	<div class="roundy grey_inside">
 		<h3 class="gray">About Us</h3>
 		<hr />
@@ -34,7 +34,7 @@
 
 <div class="grid_11 omega roundy grey_inside b_side">
 
-	<h2 class="gray mar-b">Totsy Affiliate Program</h2>
+	<h2 class="page-title gray">Totsy Affiliate Program</h2>
             <hr />
 
             <p>Totsy is the premier private sales site that provides up to 90% off the best brands for kids, moms and families!</p>

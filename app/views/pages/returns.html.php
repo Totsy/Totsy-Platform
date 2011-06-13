@@ -1,10 +1,11 @@
 <?php $this->title("Return Policy"); ?>
+
 <div class="grid_16">
 	<h2 class="page-title gray">Return Policy</h2>
 	<hr />
 </div>
 
-<div class="grid_4 omega">
+<div class="grid_4">
 	<div class="roundy grey_inside">
 		<h3 class="gray">About Us</h3>
 		<hr />

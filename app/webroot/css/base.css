@@ -3408,8 +3408,8 @@ div.splash-details {
 }
 
 .b_side {
-	padding:20px 17px!important;
-	width:675px!important;
+	padding:20px 15px!important;
+	width:677px!important;
 }
 
 .glow {
@@ -3947,3 +3947,16 @@ a.cart_icon {
 
 
 option { width:200px; padding:20px!important; background:#000!important; }
+
+.free_shipping_banner_login img {
+    position: absolute;
+    right: -41px;
+    top: 413px;
+    z-index: 9999;
+}
+.free_shipping_banner_reg img {
+    position: absolute;
+    right: -41px;
+    top: 495px;
+    z-index: 9999;
+}

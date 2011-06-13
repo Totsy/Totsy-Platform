@@ -5,7 +5,7 @@
 	<hr />
 </div>
 
-<div class="grid_4 omega">
+<div class="grid_4">
 	<div class="roundy grey_inside">
 		<h3 class="gray">About Us</h3>
 		<hr />
@@ -40,10 +40,6 @@
 				4th Floor<br/>
 				New York, NY 10011<br/>
 				<br />
-				<strong>Support Email:</strong> <br />				 
-				<a href="mailto:support@totsy.com">support@totsy.com</a></p>
-				<br />
-
 
 				<h3 class="gray">Contact Support</h3>
 				<a href="mailto:support@totsy.com">support@totsy.com</a><br />

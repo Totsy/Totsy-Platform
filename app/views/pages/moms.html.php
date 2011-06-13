@@ -6,13 +6,15 @@
 	em {display: block; padding:5px; font-weight: bold; font-style: italic;}
 	.bigger {font-size:20px; margin-bottom:10px;}
 </style>
+
 <?php $this->title("Meet the Moms"); ?>
+
 <div class="grid_16">
 	<h2 class="page-title gray">Meet The Moms</h2>
 	<hr />
 </div>
 
-<div class="grid_4 omega">
+<div class="grid_4">
 	<div class="roundy grey_inside">
 		<h3 class="gray">About Us</h3>
 		<hr />

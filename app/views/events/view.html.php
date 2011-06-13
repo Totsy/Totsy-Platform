@@ -103,28 +103,19 @@
 							array('title' => $item->name, 'escape' => false)
 						); ?>
 						
-						<div class="table-cell left">
-								<table width="280">
+						
+								<table style="margin:5px;">
 									<tr>
 										<td width="170" valign="top">
-											<a href="/sale/performance-headwear/fatigue-hat-w-photo-rhinestone-frame-lt-olive"><h2>Fatigue hat w/  photo rhinestone frame</h2></a>
+											<a href="<?="/sale/$event->url/$item->url"?>"><h2><?=$item->description ?></h2></a>
 										</td>
 										<td align="right">
-											<font class="price">$13.00</font><br>
-
-											<font class="original-price">Original $19.99</font>
+											<span class="price" style="text-transform:uppercase; font-weight:normal; font-size:20px; color: #009900; float:right;">$<?=number_format($item->sale_retail,2);?></span><br>
+											<span class="original-price" style="font-size:10px; white-space:nowrap;">Original $<?=number_format($item->msrp,2);?></span>
 										</td>
+									</tr>
 								</table>
-							</div>
-						<div class="details table-row">
-							
-							<a href="<?="/sale/$event->url/$item->url"?>" style="font-size:11px; color:#777!important;"><?=$item->description ?></a>
-							<div class="clear"></div>
-							<div class="price" style="text-transform:uppercase; font-weight:normal; font-size:20px; color: #009900; float:right;">$<?=number_format($item->sale_retail,2);?><br>
-							<span class="original-price" style="text-decoration:line-through; font-size:10px;">Original $<?=number_format($item->msrp,2);?></span>
-</div>	
-						
-						</div>
+								
 					</div>
 				</div>
 				<?php $y++ ?>
