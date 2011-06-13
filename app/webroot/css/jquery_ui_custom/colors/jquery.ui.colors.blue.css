@@ -23,11 +23,7 @@
 	div.selector span,div.uploader span.action, div.button, div.checker, div.radio
 	{
 		color: #333333;
-		border-color: #dddddd;
-		background: #ffffff;
-		background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#f2f2f2));
-		background: -moz-linear-gradient(top, #ffffff,  #f2f2f2);
-		filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f2f2f2');
+
 	}
 
 /**
@@ -55,11 +51,6 @@
 	div.selector.focus span, div.selector.hover span, div.selector:hover span
 	{ 
 		color: #ffffff;
-		border-color: #dddddd; 
-		background: #EB132C;
-		background: -webkit-gradient(linear, left top, left bottom, from(#EB132C), to(#EB132C));
-		background: -moz-linear-gradient(top, #EB132C,  #EB132C);
-		filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#EB132C', endColorstr='#EB132C');
 	}
 
 /**
