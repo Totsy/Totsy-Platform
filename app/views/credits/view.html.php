@@ -5,7 +5,7 @@
 	<hr />
 </div>
 
-<div class="grid_4 omega">
+<div class="grid_4">
 	<div class="roundy grey_inside">
 		<h3 class="gray">My Account</h3>
 		<hr />
@@ -62,9 +62,7 @@
 			<?php endforeach ?>
 		</table>
 		<?php } else { ?>
-		<div id="name" style="padding:10px 10px 10px 5px;" class="order-table">
-			<strong class="fl">Earn credits by <a href="/users/invite" title="inviting your friends and family">inviting your friends and family.</a></strong>
-			<div style="clear:both;"></div>
+		<center><strong>Earn credits by <a href="/users/invite" title="inviting your friends and family">inviting your friends and family.</a></strong></center>
 			<br />
 		</div>
 		<?php } ?>
