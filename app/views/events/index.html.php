@@ -61,6 +61,13 @@
 							$productImage = ($x <= 1) ? "/img/no-image-large.jpeg" : "/img/no-image-small.jpeg";
 						}
 					?>
+					<?php 
+						if(empty($departments)) {
+							$url = $event->url;
+						} else {
+							$url = $event->url.'/?filter='.$departments;
+						}
+					?>
 					<?php if ($x <= 1): ?>
 						<?=$this->html->link(
 							$this->html->image("$productImage", array(
@@ -69,7 +76,7 @@
 							'width' => '355',
 							'height' => '410',
 					'style' => 'margin:0px 0px -6px 0px;'
-							)), "sale/$event->url", array('escape'=> false));
+							)), "sale/$url", array('escape'=> false));
 						?>
 					<?php else: ?>
 						<?=$this->html->link(
@@ -78,12 +85,9 @@
 							'alt' => $event->name,
 							'width' => '228',
 							'height' => '263'
-						)), "sale/$event->url", array('escape'=> false));
-
+						)), "sale/$url", array('escape'=> false));
 						 ?>
-
 					<?php endif ?>
-
 
                 <div class="splash-details">
 						<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
@@ -245,15 +249,15 @@
 //-->
 </script>
 <script type="text/javascript">
-    $('#disney').click(function(){
-        $('#modal').load('/events/disney').dialog({
-            autoOpen: false,
-            modal:true,
-            width: 739,
-            height: 700,
-            position: 'top',
-            close: function(ev, ui) {}
-        });
-        $('#modal').dialog('open');
-    });
+	$('#disney').click(function(){
+		$('#modal').load('/events/disney').dialog({
+			autoOpen: false,
+			modal:true,
+			width: 739,
+			height: 700,
+			position: 'top',
+			close: function(ev, ui) {}
+		});
+		$('#modal').dialog('open');
+	});
 </script>

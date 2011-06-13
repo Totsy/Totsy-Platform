@@ -55,6 +55,8 @@ Environment::is(function($request) {
 			return 'test';
 		case 'dev.totsy.com':
 			return 'development';
+		case 'tom.totsy.com':
+			return 'local';
 		default:
 			return 'local';
 	}

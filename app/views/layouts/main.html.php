@@ -27,62 +27,65 @@
           content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
           
 </head>
-<body>
+<body class="app">
+	
+	<div class="container_16 roundy glow">
+		<div class="grid_3 alpha" style="margin:5px 0px 0px 5px;">
+				<?=$this->html->link($this->html->image('logo.png', array('width'=>'120')), '/sales', array('escape'=> false)); ?>
+			</div>
 
-<div class="container_16" style="margin:10px auto;">
-<div class="grid_2 alpha">
-	<?=$this->html->link($this->html->image('logo.png', array('width'=>'100')), '/sales', array('escape'=> false)); ?>
-</div>
-<div class="grid_14">
-	<?php if (!empty($userInfo)): ?>
-	<div class="grid_6">
-	<?php if (!(empty($userInfo))): ?>
-		<?=$this->menu->render('main-nav'); ?>
-	<?php endif ?>
-	</div>
-		
-		<div class="grid_8 alpha omega" style="text-align:right; padding:10px 0px; font-size:14px;">
-					Hello,
-					<?php if(array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])):
+			<div class="menu_top_left">
+			<?php if (!empty($userInfo)): ?>
+			Hello, <?php if(array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])):
+
 					?>
 						<?="{$userInfo['firstname']} {$userInfo['lastname']}"; ?>
 					<?php else:?>
-					    <?="{$userInfo['email']}"; ?>
+						<?="{$userInfo['email']}"; ?>
 					<?php endif; ?>
 					<?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
 					(<?=$this->html->link('Sign Out', $logout, array('title' => 'Sign Out')); ?>) 
-					<br />
-					
-					<?=$this->html->link('Contact Us', 'Tickets::add'); ?>
-					/ 
-					<?php if (!empty($userInfo)): ?>
-					<?=$this->html->link('Checkout', array('Orders::add'), array(
-								'id' => 'checkout', 'title' => 'checkout'
-							)); ?> (<?=$cartCount;?>) 
-					
-					/
- 
-			 			<?=$this->html->link('Cart', array('Cart::view')); ?> 
-					
-					/
-					<?=$this->html->link('My Credits', array('Credits::view')); ?>
-							
-							($<?=$credit?>) 
-								
-					/
-					<?=$this->html->link('Invite Friends. Get $15', array('Users::invite'));?>
 						
 				<?php endif ?>
-	</div>
-	
-				<?php endif ?>
-				</div>
-	</div>
-	<div class="clear"></div>
-	</div>
-	
-	<div class="container_16 roundy glow">
+			</div>
+			
+			<div class="menu_top_right">
+			<?php if (!(empty($userInfo))) { ?>
+				<a href="/account" title="My Account">My Account</a>
+				<a href="/account/credits" title="My Credits $<?=$credit?>">My Credits $<?=$credit?></a>
+				<a href="/cart/view" class="cart_icon" title="My Cart (<?=$cartCount;?>)">My Cart (<?=$cartCount;?>)</a>
+				<a href="/users/invite" title="+ Invite Friends Get $15">+ Invite Friends Get $15</a>
+			<?php } else { ?>
+				<span style="text-align:right!important;">
+					<a href="/" title="Sign In">Sign In</a> 
+					<a href="/register" title="Sign Up">Sign Up</a>
+					<a href="/users/invite" title="+ Invite Friends Get $15">+ Invite Friends Get $15</a>
+				</span>
+			<?php } ?>
+			</div>
+			<div class="menu_main_global">
+			<?php if (!(empty($userInfo))): ?>
+				<ul class="nav main" id="navlist">
+					<li><a href="/sales" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0 || $_SERVER['REQUEST_URI'] == '/') {
+						echo 'class="active"';
+					} ?>>All Sales</a></li>
+					<li><a href="/sales/girls" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/girls') == 0) {
+						echo 'class="active"';
+					} ?>>Girls</a></li>
+					<li><a href="/sales/boys" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/boys') == 0)  {
+						echo 'class="active"';
+					} ?>>Boys</a></li>
+					<li><a href="/sales/momsdads" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/momsdads') == 0) {
+						echo 'class="active"';
+					} ?>>Moms &amp; Dads</a></li>
+				</ul>
+			<?php endif ?>
+		</div>
+		<!-- end header -->
+<div class="clear"></div>
 		<?php echo $this->content(); ?>
+		<!-- main content -->
+
 	</div>
 	
 	<div class="clear"></div>

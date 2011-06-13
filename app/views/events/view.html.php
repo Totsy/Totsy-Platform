@@ -36,10 +36,19 @@
 						<?php echo $event->blurb ?>
 					<?php endif ?>
 					</div>
-                    </div>
+</div>
 
 			</div>
 		</div>
+		<br />
+		<?php if(!empty($filters)): ?>
+		<div id='filterb' style='text-align:right'>
+			<?=$this->form->create(null, array('id' => 'filterform')); ?>
+			<?=$this->form->label("filterby", "View by:", array('style' => 'font-weight:bold; font-size:13px;')); ?>
+			<?=$this->form->select('filterby',$filters, array('onchange' => "filter()", 'id' => 'filterby', 'value' => array($departments => $departments))); ?>
+			<?=$this->form->end(); ?>
+		</div>
+		<?php endif ?>
 			<div>
 			<!-- div class="sort-by" -->
 			<!-- select id="by-category" name="by-category">
@@ -149,4 +158,11 @@ $(function () {
 			}
 	}
 });
+function filter() {
+	var filter = $('#filterby').val();
+	_gaq.push(['_setAccount', 'UA-675412-15']);
+	_gaq.push(['_trackPageview']);
+	_gaq.push(['_trackEvent', 'departments', 'dropdown', filter]);
+	$('#filterform').submit();
+};
 </script>
