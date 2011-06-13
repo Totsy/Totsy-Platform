@@ -42,7 +42,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		Logger::info('Order Shipped Processor');
 		Environment::set($this->env);
 		$this->tmp = LITHIUM_APP_PATH . $this->tmp;
-		$pid = new Pid($this->tmp,  'OredrShippedNotification');
+		$pid = new Pid($this->tmp,  'OrderShippedNotification');
 		if ($pid->already_running == false) {
 			$this->emailNotificationSender();
 		} else {
