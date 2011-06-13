@@ -73,8 +73,11 @@ class CartController extends BaseController {
 		if (!empty($actual_cart)) {
 			$items = $actual_cart->data();
 		}
+		#T - Refresh the counter of each timer to 15 min
 		if (!empty($items)) {
-			foreach ($items as $item) {
+			//Security Check - Max 25 items
+			if(count($items) < 25) {
+				foreach ($items as $item) {
 					$event = Event::find('first',array('conditions' => array("_id" => $item['event'][0])));
 					$now = getdate();
 					if(($event->end_date->sec > ($now[0] + (15*60)))) {
@@ -83,8 +86,10 @@ class CartController extends BaseController {
 						$cart_temp->expires = new MongoDate($now[0] + (15*60));
 						$cart_temp->save();
 					}
+				}
 			}
 		}
+		#T
 		$cart = Cart::create();
 		$message = null;
 		if ($this->request->data) {
