@@ -12,11 +12,11 @@
 <div id="clear"></div>
 <div class="grid_8">
 	<div id="box">
-		<?php if ($total['sum'] == 0 ): ?>
+		<?php if ($total['sum'] == 0 && count($purchaseOrder) == 0): ?>
 			<h2>No product has been sold for this event.</h2>
 		<?php else: ?>
-		<p>Total Quantity - <?=$total['quantity']?></p>
-		<p>Order Total - $<?=number_format($total['sum'], 2)?></p>
+            <p>Total Quantity - <?=$total['quantity']?></p>
+            <p>Order Total - $<?=number_format($total['sum'], 2)?></p>
 		<?php endif ?>
 	</div>
 </div>

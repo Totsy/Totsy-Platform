@@ -299,6 +299,8 @@ class ReportsController extends BaseController {
 				$purchaseOrder[$inc]["Size"] = $result["Size"];
 				if (!empty($purchaseOrder[$inc]['Total'])) {
 					$total['sum'] += $purchaseOrder[$inc]['Total'];
+				}
+				if (!empty($purchaseOrder[$inc]['Quantity'])) {
 					$total['quantity'] += $purchaseOrder[$inc]['Quantity'];
 				}
 				if (empty($poNumber)){
