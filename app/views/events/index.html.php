@@ -51,7 +51,7 @@
 						<?php if ($itemCounts[ (string) $event->_id] == 0): ?>
 								<?=$this->html->image('/img/soldout.png', array(
 									'title' => "Sold Out",
-									'style' => 'z-index : 2; position : absolute; left:69%; margin:10px;'
+									'style' => 'z-index : 2; position : absolute; left:58%; margin:10px;'
 								)); ?>
 					<?php endif ?>
 					<?php
@@ -224,6 +224,8 @@
 			<?php $y++; ?>
 	<?php endforeach ?>
 	</div>
+</div>
+</div>
 </div>
 </div>
 <div id="modal"></div>

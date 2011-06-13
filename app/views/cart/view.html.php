@@ -152,7 +152,7 @@
 			<?php echo $button ?>
 		<?php endforeach ?>
 	<?php endif ?>
-<div class="grid_4">
+<div class="grid_4 omega">
 	<div class="roundy grey_inside">
 		<h3 class="gray">Your Savings</h3>
 		<hr />

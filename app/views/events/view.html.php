@@ -22,7 +22,7 @@
 						}
 					?>
 				</div>
-				<div class="grid_11 omega">
+				<div class="grid_11 omega" style="padding:10px 0px;">
 				<?php echo $spinback_fb; ?>
 					<div class="grid_3 alpha omega">
 						<!-- Display Logo Image -->
@@ -41,15 +41,8 @@
 			</div>
 		</div>
 		<br />
-		<?php if(!empty($filters)): ?>
-		<div id='filterb' style='text-align:right'>
-			<?=$this->form->create(null, array('id' => 'filterform')); ?>
-			<?=$this->form->label("filterby", "View by:", array('style' => 'font-weight:bold; font-size:13px;')); ?>
-			<?=$this->form->select('filterby',$filters, array('onchange' => "filter()", 'id' => 'filterby', 'value' => array($departments => $departments))); ?>
-			<?=$this->form->end(); ?>
-		</div>
-		<?php endif ?>
-			<div>
+		
+			<div class="grid_16" style="text-align:right; margin:0px 5px 10px 0px;">
 			<!-- div class="sort-by" -->
 			<!-- select id="by-category" name="by-category">
 				<option value="">View By Category</option>
@@ -63,7 +56,16 @@
 				<option value="Medium">Medium</option>
 				<option value="Large">Large</option>
 			</select -->
+			<?php if(!empty($filters)): ?>
+		<div id='filterb' style='text-align:right'>
+			<?=$this->form->create(null, array('id' => 'filterform')); ?>
+			<?=$this->form->label("filterby", "View by:", array('style' => 'font-weight:bold; font-size:13px;')); ?>
+			<?=$this->form->select('filterby',$filters, array('onchange' => "filter()", 'id' => 'filterby', 'value' => array($departments => $departments))); ?>
+			<?=$this->form->end(); ?>
 		</div>
+		<?php endif ?>
+		</div>
+		<br />
 		<?php if (!empty($items)): ?>
 			<?php $y = 0; ?>
 			<?php foreach ($items as $item): ?>

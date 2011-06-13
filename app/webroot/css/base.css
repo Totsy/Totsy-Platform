@@ -3414,7 +3414,7 @@ div.splash-details {
 
 .glow {
 	background:#fff;
-	margin:10px auto;
+	margin:20px auto 10px auto;
 	padding:10px 5px;
 	overflow:hidden;
 	-moz-box-shadow:0 0 12px rgba(0,0,0,0.2);
@@ -3945,8 +3945,6 @@ a.cart_icon {
 	padding: 7px 0px 0px 24px;
 }
 
-
-option { width:200px; padding:20px!important; background:#000!important; }
 
 .free_shipping_banner_login img {
     position: absolute;

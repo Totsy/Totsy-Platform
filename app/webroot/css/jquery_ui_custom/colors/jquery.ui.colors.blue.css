@@ -5,7 +5,7 @@
 	/* Widget: none, base states */
 	.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default,.ui-widget-header,
 	/* Widget: tabs, header */	
-	.ui-tabs .ui-widget-header,
+	/*.ui-tabs*/ .ui-widget-header,
 	/* Widget: slider, handle */
 	.ui-slider-handle,
 	/* Widget: datepicker, focussed date and previous/next button */
