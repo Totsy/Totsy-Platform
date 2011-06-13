@@ -162,7 +162,7 @@ class GeneratePo extends Base {
 									}
 								}
 							}
-							if (!empty($purchaseOrder[$inc])) {
+							if (count($purchaseOrder) > $inc && !empty($purchaseOrder[$inc])) {
 								$po->save($purchaseOrder[$inc]);
 							}
 							++$inc;
