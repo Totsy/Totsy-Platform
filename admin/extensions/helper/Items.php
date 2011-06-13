@@ -39,10 +39,7 @@ class Items extends \lithium\template\Helper {
 					Color: $item[color] <br />
 					Vendor Style: $item[vendor_style]
 				</td>";
-				if(empty($item["blurb"])) {
-					$item["blurb"] = '';			
-				} 
-				$html .= "<td><textarea name='$item[_id]' id='$item[_id]>$item[blurb]</textarea></td>";
+				$html .= "<td><textarea name='$item[_id]' id='$item[_id]'>$item[blurb]</textarea></td>";
 				$html .= "<td>$item[enabled]</td>";
 				$html .= '</tr>';
 			}
