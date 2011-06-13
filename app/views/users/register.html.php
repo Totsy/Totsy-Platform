@@ -127,7 +127,7 @@
 								<div>
 								<h3 style="color:#999; font-size:18px;">Register With Facebook</h3>
 								<hr />
-								<fb:login-button perms="publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location" size="large" length="long" v="2" style="text-align:center;">Register With Facebook</fb:login-button>
+								<a href="javascript:;" onclick="fblogin();return false;"><img src="/img/fb_register_btn.png"></a>
 
 								</div>
 								</div>
@@ -182,3 +182,11 @@
 	<span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved. <br />10 West 18th Street, Floor 4 - New York, NY 10011</span>
 
 </div>
+
+<script>
+	//your fb login function
+	function fblogin() {
+	FB.login(function(response) {
+		}, {perms:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
+	}
+</script>

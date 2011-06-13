@@ -47,7 +47,7 @@
 										<div style="clear:both;"></div>
 										<p style='margin-top: 10px'> <?=$this->html->link('Forgot your password?','/reset', array('class'=>"md", 'title'=>"Forgot your password?"))?> </p>
 										<hr />
-										<fb:login-button perms="publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location" size="large" length="long" v="2" style="text-align:center;">Login with Facebook</fb:login-button>
+										<a href="javascript:;" onclick="fblogin();return false;"><img src="/img/fb_login_btn.png"></a>
 									</div>
 									<div class="bl"></div>
 									<div class="br"></div>
@@ -106,3 +106,11 @@
 	<span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved. <br />10 West 18th Street, Floor 4 - New York, NY 10011</span>
 
 </div>
+
+<script>
+	//your fb login function
+	function fblogin() {
+	FB.login(function(response) {
+		}, {perms:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
+	}
+</script>
