@@ -78,8 +78,8 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 			'ShipDate' => array(
 				'$gte' => new MongoDate(strtotime('-1 day',$time)),
 				'$lt' => new MongoDate($time)),
-			//'OrderId' => array('$ne' => null),
-			'OrderNum' => '4DBA18C5F223',
+			'OrderId' => array('$ne' => null),
+			//'OrderNum' => '4DBA18C5F223',
 		    // don't validate TRCK # because sometimes there could shipped item without tracking # 
 			// validate tracking number
 			//'Tracking #' => new MongoRegex("/^[1Z]{2}[A-Za-z0-9]+/i"),
