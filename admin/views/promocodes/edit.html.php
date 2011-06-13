@@ -31,6 +31,10 @@
 <div class="grid_16">
 	<h2 id="page-heading">Promocode Edit Panel</h2>
 </div>
+<?php if ($promocode->parent): ?>
+    Editing this will change all associated Unique promocode created using the generator.<br/>
+    <strong> Note: </strong> uniqueness has not been affected.<br/>
+<?php endif;?>
 
 <div class='grid_3 menu'>
 	<table>
@@ -53,15 +57,23 @@
 	</table>
 </div>
 <div class='grid_6 box'>
-    <h2>
-		<a href="#" id="toggle-forms">Edit Panel</a>
-	</h2>
+    <?php if ($promocode->parent): ?>
+        <h2>
+            <a href="#" id="toggle-forms">Edit Panel (Special)</a>
+        </h2>
+	<?php else: ?>
+        <h2>
+            <a href="#" id="toggle-forms">Edit Panel</a>
+        </h2>
+	<?php endif;?>
     <div class='block' id='forms'>
         <fieldset>
         <?=$this->form->create(); ?>
             <?php  $enable= (($promocode->enabled))? 'checked' : '' ?>
 			Enable: <?=$this->form->checkbox( 'enabled', array( 'checked'=>$enable, 'value' => '1' ) ); ?> <br>
-
+			<?php if ($promocode->parent): ?>
+                Number of associated promocodes: <?=$promocode->no_of_promos;?> <br/>
+            <?php endif; ?>
            Code: <?=$this->form->text('code', array( 'value' => $promocode->code ) ); ?><br>
 
           Description: <br>
@@ -69,7 +81,7 @@
 
           Code Type:
            <?=$this->form->select('type', array('percentage' => 'percent',  'dollar'=> 'dollar amount', 'shipping'=> 'shipping', 'free_shipping'=> 'free shipping'), array('id' => 'type' , 'value' => $promocode->type) ); ?><br>
-			
+
 			<div id="discount"
 				<?php if($promocode->type == 'free_shipping') : ?>
 					style="display: none;"
@@ -81,10 +93,14 @@
            <?=$this->form->text('minimum_purchase', array( 'value' => $promocode->minimum_purchase)); ?><br>
 
            <?php  $enable= (($promocode->limited_use))? 'checked' : '' ?>
-			Limit Per User: <?=$this->form->checkbox( 'limited_use', array( 'checked'=>$enable, 'value' => '1' ) ); ?> <br>
+			<?=$this->form->label('Assign by email:'); ?>
+			<?=$this->form->checkbox( 'limited_use', array( 'checked'=>$enable, 'value' => '1' ) ); ?> <br>
 
-           <?=$this->form->label('Enter maximum uses:'); ?>
+           <?=$this->form->label('Enter maximum individual use:'); ?>
            <?=$this->form->text( 'max_use', array( 'value' => $promocode->max_use) ); ?><br><br>
+
+            <?=$this->form->label('Enter maximum number people who can use it (if unlimited type in UNLIMITED)');?>
+            <?=$this->form->text('max_total', array( 'value' => $promocode->max_total)); ?> <br>
 
            <?=$this->form->label('Start Date:'); ?>
            <?=$this->form->text('start_date', array('value' => $promocode->start_date, 'id'=>'start_date')); ?><br>

@@ -2,7 +2,7 @@
 	$this->html->script('application', array('inline' => false));
 	$this->form->config(array('text' => array('class' => 'inputbox')));
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
-	$preTotal = $subTotal + $orderCredit->credit_amount;
+	$preTotal = $subTotal + $orderCredit->credit_amount + $orderServiceCredit;
 	$afterDiscount = $preTotal + $orderPromo->saved_amount;
 	if ($afterDiscount < 0) {
 		$afterDiscount = 0;
@@ -17,10 +17,15 @@
 	<div id="page">
 <?php if ($errors = $order->errors()): ?>
 	<?php foreach ($errors as $error): ?>
-		<div class="checkout-error"><?=$error; ?></div>
+	    <?php if (is_array($error)): ?>
+	        <?php foreach($error as $msg): ?>
+	            <div class="checkout-error"><?=$msg; ?></div>
+	        <?php endforeach; ?>
+	    <?php else: ?>
+		    <div class="checkout-error"><?=$error; ?></div>
+		<?php endif; ?>
 	<?php endforeach ?>
 <?php endif ?>
-
 
 <table style="width:100%;">
 	<tr>
@@ -107,6 +112,12 @@
 					<td><strong>Order Subtotal:</strong> </td>
 					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $subTotal, 2);?></td>
 				</tr>
+				<?php
+					if ($orderServiceCredit): ?>
+						<tr>
+							<td>You qualify for $10 off your purchase!</td><td>- $10.00</td>
+						</tr>
+				<?php endif; ?>
 				<tr>
 					<td><strong>Shipping:</strong> </td>
 					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $shippingCost, 2);?></td>
@@ -117,6 +128,12 @@
 						<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $overShippingCost, 2);?></td>
 					</tr>
 				<?php endif ?>
+				<?php
+					if ($freeshipping): ?>
+						<tr>
+							<td>You qualify for free shipping!</td>
+						</tr>
+				<?php endif; ?>
 				<tr>
 					<td><strong>Sales Tax:</strong></td>
 					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $tax, 2);?>
@@ -151,7 +168,13 @@
 				<tr>
 					<div style="padding:10px; background:#eee; margin:10px 0">
 						<?=$this->form->create($orderPromo); ?>
-							<?=$this->form->error('promo'); ?>
+							<?php if (is_array($this->form->error('promo'))): ?>
+                                <?php foreach($this->form->error('promo') as $msg) :?>
+                                    <?php echo $msg ?>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <?=$this->form->error('promo'); ?>
+							<?php endif; ?>
 							<?=$this->form->text('code', array('size' => 6)); ?>
 							<?=$this->form->submit('Apply Promo Code'); ?>
 							<hr />
@@ -294,9 +317,6 @@
 				</tbody>
 			</table>
 	<?php endif ?>
-
-
-
 
     <!-- begin thawte seal -->
     <div id="thawteseal" title="Click to Verify - This site chose Thawte SSL for secure e-commerce and confidential communications." style="float: right!important; width:200px;">

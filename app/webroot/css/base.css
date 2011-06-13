@@ -630,3 +630,6 @@ font-size: 14px; padding:5px; background: #ed1c25; color:#fff; border-bottom: 1p
 .disney p { color:#B3674A; }
 .disney_splash { padding: 10px 0px; text-align: center;  }
 .disney span { color:#5F6062; text-decoration:underline; cursor:pointer; }
+
+.free_shipping_banner_login img { position:absolute; top:413px; right:-41px; z-index: 9999; }
+.free_shipping_banner_reg img { position:absolute; top:495px; right:-41px; z-index: 9999; }

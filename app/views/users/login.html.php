@@ -1,16 +1,15 @@
 <?php if ($message){ echo $message; } ?>
-
 <div id="fullscreen">
 
 	<div id="login-box">
 
 		<div id="login-box-border" class="login-modal">
-
 			<div id="login-box-container">
 
 				<div class="tt">
 					<div></div>
 				</div>
+				<div class="free_shipping_banner_login"><img src="/img/freeShip-badge.png" /></div>
 
 				<div class="tm">
 					<div class="ti">
@@ -31,6 +30,7 @@
 								<div id="sign-in-box" class="r-container">
 									<div class="tl"></div>
 									<div class="tr"></div>
+									
 									<div class="r-box lt-gradient-1">
 										<h2>Member Sign In</h2>
 
@@ -47,7 +47,7 @@
 										<div style="clear:both;"></div>
 										<p style='margin-top: 10px'> <?=$this->html->link('Forgot your password?','/reset', array('class'=>"md", 'title'=>"Forgot your password?"))?> </p>
 										<hr />
-										<fb:login-button perms="email,publish_stream, offline_access" size="large" length="long" v="2" style="text-align:center;">Login with Facebook</fb:login-button>
+										<fb:login-button perms="publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location" size="large" length="long" v="2" style="text-align:center;">Login with Facebook</fb:login-button>
 									</div>
 									<div class="bl"></div>
 									<div class="br"></div>
@@ -72,6 +72,7 @@
 							</div>
 
 							<p class="login-sig clear">Exclusive access, Top brands. Great deals. <span class="red">The savvy mom shops at Totsy.com</span></p>
+							<p style="text-align:center; font-size:11px; color:#333;">* Offer expires 30 days after registration</p>
 
 						</div>
 
@@ -98,6 +99,7 @@
 		<li><a href="/pages/aboutus" title="About Us">About Us</a></li>
 		<li><a href="/blog" title="Blog">Blog</a></li>
 		<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
+		<li><a href="/pages/affiliates" title="Affiliates">Affiliates</a></li>
 		<li class="last"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
 	</ul>
 

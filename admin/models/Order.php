@@ -97,14 +97,21 @@ class Order extends \lithium\data\Model {
 		$collection = static::collection();
 		$orderId = new MongoId($order['_id']);
 		try {
-			$auth = Payments::void('default', $order['authKey']);
+		    $error = null;
+		    if ($order['total'] != 0 && is_numeric($order['authKey'])){
+                $auth = Payments::void('default', $order['authKey']);
+			} else {
+			    $auth = -1;
+			    $error = "Can't capture because total is zero.";
+			}
 			return $collection->update(
-				array('_id' => $orderId),
-				array('$set' => array(
-					'void_date' => new MongoDate(),
-					'void_confirm' => $auth)),
-				array('upsert' => false)
-			);
+                    array('_id' => $orderId),
+                    array('$set' => array(
+                        'void_date' => new MongoDate(),
+                        'void_confirm' => $auth),
+                        'auth_error' => $error),
+                    array('upsert' => false)
+                );
 		} catch (TransactionException $e) {
 			$error = $e->getMessage();
 			Logger::error("order-void: Void Failed. Error $error thrown for $order[_id]");
@@ -121,16 +128,22 @@ class Order extends \lithium\data\Model {
 		$collection = static::collection();
 		$orderId = new MongoId($order['_id']);
 		try {
-			$auth = Payments::capture('default', $order['authKey'], round($order['total'], 2));
-			Logger::info("process-payment: Processed payment for order_id $order[_id]");
-			return $collection->update(
-				array('_id' => $orderId),
-				array('$set' => array(
-					'payment_date' => new MongoDate(),
-					'auth_confirmation' => $auth,
-					'auth_error' => null)),
-				array('upsert' => false)
-			);
+		    $error = null;
+		    if ($order['total'] != 0 && is_numeric($order['authKey'])) {
+                $auth = Payments::capture('default', $order['authKey'], round($order['total'], 2));
+            } else {
+                $auth = -1;
+                $error = "Can't capture because total is zero.";
+            }
+                Logger::info("process-payment: Processed payment for order_id $order[_id]");
+                return $collection->update(
+                    array('_id' => $orderId),
+                    array('$set' => array(
+                        'payment_date' => new MongoDate(),
+                        'auth_confirmation' => $auth,
+                        'auth_error' => $error)),
+                    array('upsert' => false)
+                );
 		} catch (TransactionException $e) {
 			$error = $e->getMessage();
 			Logger::info("process-payment: Failed to process payment for order_id $order[_id]");

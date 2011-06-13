@@ -33,10 +33,10 @@ class Promocode extends \lithium\data\Model {
 				'code' => $code,
 				'start_date' => array('$lt' => static::dates('now')),
 				'end_date' => array('$gt' => static::dates('now')),
+				'parent' => array('$ne' => true),
 				'enabled' => true
 			)));
 	}
-
 	public static function add($_id, $discount, $revenue) {
 		$_id = new MongoId($_id);
 		$update = array(
@@ -45,6 +45,11 @@ class Promocode extends \lithium\data\Model {
 				"total_discounts" => $discount,
 				"total_revenue" => $revenue
 		));
+		$promocode = static::find('first', array('conditions' => array('_id' => $_id)));
+		if ($promocode->special) {
+		    $parent_id = $promocode->parent_id;
+		    static::collection()->update(array('_id' => $parent_id), $update);
+		}
 		return static::collection()->update(array('_id' => $_id), $update);
 	}
 }
