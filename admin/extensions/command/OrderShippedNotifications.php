@@ -101,7 +101,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 				$data = array();
 				$data['order'] = $ordersCollection->findOne(  array('_id' => $result['OrderId']));
 				$data['user'] = $usersCollection->findOne(array('_id' => $data['order']['user_id']));
-				$data['email'] = $data['user']['email']
+				$data['email'] = $data['user']['email'];
 				$data['items'] = array();
 			
 				$ordItm = array();
