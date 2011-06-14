@@ -72,6 +72,7 @@ class EventsController extends BaseController {
 	}
 
 	public function edit($_id = null) {
+		$itemsCollection = Item::Collection();
 		$event = Event::find($_id);
 		$seconds = ':'.rand(10,60);
 		$eventItems = Item::find('all', array('conditions' => array('event' => array($_id)),
@@ -187,7 +188,7 @@ class EventsController extends BaseController {
 					$highestColumn = $worksheet->getHighestColumn();
 					$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
 					for ($row = 1; $row <= $highestRow; ++ $row) {
-						for ($col = 0; $col < ($highestColumnIndex - 1); $col++) {
+						for ($col = 0; $col < $highestColumnIndex; $col++) {
 							$cell = $worksheet->getCellByColumnAndRow($col, $row);
 							$val = $cell->getValue();
 							if ($row == 1) {
