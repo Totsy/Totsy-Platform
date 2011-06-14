@@ -22,7 +22,7 @@ use admin\extensions\command\Pid;
  * Process email notifications for orders shipped.
  */
 class OrderShippedNotifications extends \lithium\console\Command  {
-	
+
 	/**
 	 * The environment to use when running the command. 'production' is the default.
 	 * Set to 'development' or 'test' if you want to execute command on a different database.
@@ -30,14 +30,14 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 	 * @var string
 	 */
 	public $env = 'development';
-	
+
 	/**
 	 * Directory of tmp files.
 	 *
 	 * @var string
 	 */
 	public $tmp = '/resources/totsy/tmp/';
-	
+
 	public function run() {
 		Logger::info('Order Shipped Processor');
 		Environment::set($this->env);
@@ -50,27 +50,27 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		}
 		Logger::info('Order Shipped Finished');
 	}
-	
+
 	protected function emailNotificationSender() {
 	// collections
 		$ordersCollection = Order::connection()->connection->orders;
 		$usersCollection = User::connection()->connection->users;
 		$ordersShippedCollection = OrderShipped::collection();
 		$itemsCollection = Item::collection();
-		
+
 		$time = time();
 		$keys = array('OrderId' => true);
 		$inital = array('totalItems' => 0, 'Tracking' => 0, 'TrackNums' => array());
-		$reduce = new MongoCode("function(a,b){ 
+		$reduce = new MongoCode("function(a,b){
 			b.totalItems += 1;
 			if (b.Tracking == 0 && typeof(a['Tracking #']) != 'undefined'){
 				b.Tracking = a['Tracking #'];
 			}
-			
+
 			if (typeof(b.TrackNums[b.Tracking]) == 'undefined'){
 				b.TrackNums[b.Tracking] = new Array();
 			}
-			
+
 			b.TrackNums[b.Tracking].push(a['ItemId']);
 		}");
 		//Conditions with date converted to the right timezone
@@ -80,7 +80,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 				'$lt' => new MongoDate($time)),
 			'OrderId' => array('$ne' => null),
 			//'OrderNum' => '4DBA18C5F223',
-		    // don't validate TRCK # because sometimes there could shipped item without tracking # 
+		    // don't validate TRCK # because sometimes there could shipped item without tracking #
 			// validate tracking number
 			//'Tracking #' => new MongoRegex("/^[1Z]{2}[A-Za-z0-9]+/i"),
 			// do not send notification if it already send
@@ -88,7 +88,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		);
 
 		$results = $ordersShippedCollection->group($keys, $inital, $reduce, $conditions);
-		
+
 		if (is_object($results) && get_class_name($results)=='MongoCursor'){
 			Logger::info('Found "'.$results::count().'" orders');
 		} else if ( is_array($results)){
@@ -101,40 +101,40 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 				$data = array();
 				$data['order'] = $ordersCollection->findOne(  array('_id' => $result['OrderId']));
 				$data['user'] = $usersCollection->findOne(array('_id' => $data['order']['user_id']));
-				$data['email'] = $data['user']['email']
+				$data['email'] = $data['user']['email'];
 				$data['items'] = array();
-			
+
 				$ordItm = array();
 				foreach($data['order']['items'] as $itm){
 					$ordItm[$itm['item_id']] = $itm;
 				}
-				
+
 				foreach($result['TrackNums'] as $trackNum => $items){
 					foreach ($items as $item){
 						$data['items'][$trackNum][ (string) $item ] = $ordItm[ (string) $item ];
 					}
 				}
 				unset($ordItm);
-				
+
 				Logger::info('Sening email for order #'.$result['OrderId'].' to '.$data['email']);
 				Silverpop::send('orderShipped', $data);
 				unset($data);
-				
+
 				//SET send email flag
 				foreach($result['TrackNums'] as $trackNum => $items){
 					foreach ($items as $item){
 						$conditions = array(
-								'ItemId' =>  $item, 
+								'ItemId' =>  $item,
 								'OrderId' => $result['OrderId']
 						);
 						$ordersShippedCollection->update($conditions, array('$set' => array('emailNotificationSend' => new MongoDate())));
 					}
 				}
-				
+
 			}
 		}
-		
-		
+
+
 	}
 }
 
