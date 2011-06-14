@@ -69,10 +69,6 @@ tinyMCE.init({
 						'class' => 'general',
 						'value' => $item->age
 					));?>
-					<?=$this->form->label('Departments')?><br />
-					<table>
-						<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple','value' => $sel_filters)); ?> 
-					</table>
 					<div id="item_status">
 						<h2 id="item_status">Item Status</h2>
 						<?php if ($item->enabled == 1): ?>
