@@ -22,8 +22,9 @@
 						}
 					?>
 				</div>
+				
 				<div class="grid_11 omega" style="padding:10px 0px;">
-				<?php echo $spinback_fb; ?>
+				<div style="float:right;"><?php echo $spinback_fb; ?></div>
 					<div class="grid_3 alpha omega">
 						<!-- Display Logo Image -->
 						<?php if (!empty($event->images->logo_image)): ?>

@@ -205,7 +205,7 @@
 	</div>
 	<!-- End Related Products -->
 </div>
-
+<div id="modal" style="background:#fff!important; z-index:9999999999;"></div>
 <script type="text/javascript">
 $(function () {
 	var saleEnd = new Date();
@@ -225,7 +225,7 @@ $(document).ready(function() {
             autoOpen: false,
             modal:true,
             width: 739,
-            height: 700,
+            height: 750,
             position: 'top',
             close: function(ev, ui) {}
         });

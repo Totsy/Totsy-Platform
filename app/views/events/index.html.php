@@ -228,7 +228,7 @@
 </div>
 </div>
 </div>
-<div id="modal"></div>
+<div id="modal" style="background:#fff!important;"></div>
 <!--Javascript Output for Today's Events -->
 <?php if (!empty($todayJs)): ?>
 	<?php foreach ($todayJs as $value): ?>
@@ -256,7 +256,7 @@
 			autoOpen: false,
 			modal:true,
 			width: 739,
-			height: 700,
+			height: 750,
 			position: 'top',
 			close: function(ev, ui) {}
 		});
