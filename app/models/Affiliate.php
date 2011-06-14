@@ -120,7 +120,7 @@ class Affiliate extends Base {
 	    */
         if($invited_by == 'w4' || $invited_by == "pmk" || $invited_by == "emiles" ){
             $transid = 'totsy' . static::randomString();
-            return '<br/>' . str_replace('$', $transid,$pixel );
+            return '<br/>' . str_replace('$', $transid,$pixel);
         }
         if($invited_by == 'spinback' && ($options)) {
             $insert = '';
