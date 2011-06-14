@@ -47,7 +47,7 @@ class GeneratePo extends Base {
 	public $verbose = 'false';
 
 	/**
-	* Process initial set of purchase_orders
+	* Process initial set of purchase_orders (default = false)
 	*
 	*/
 	public $initial = 'false';
@@ -63,10 +63,13 @@ class GeneratePo extends Base {
 	* Used in combination to initial param
 	**/
 	public $endrng = "";
-
 	/**
-	*
-	*
+	* Generate POs 4 days in advance of the current date.  (default = true)
+	**/
+	public $advance = "false";
+	/**
+	* Generate the Purchase Orders for a specific event.  Pass in the
+	* id of the event as a string.
 	**/
 	public $event = "";
 
@@ -205,13 +208,20 @@ class GeneratePo extends Base {
 	        $condition = array_merge($condition, array('_id' => $this->event));
 	    } else if ($this->initial == "true") {
 	        if(empty($this->startrng)) {
-	            $this->out(var_dump($this->startrng));
+
 	            $this->startrng = date("m/d/Y");
 	        }
 	        if(empty($this->endrng)) {
-	            $this->out(var_dump($this->endrng));
+
 	            $this->endrng = date("m/d/Y");
 	        }
+	        $condition = array("end_date" => array(
+            '$gte' => new MongoDate(strtotime($this->startrng . "10:00:00")),
+            '$lte' => new MongoDate(strtotime($this->endrng . "10:59:59"))
+           ));
+	    } else if ($this->advance == "true") {
+	        $this->startrng = date("m/d/Y");
+	        $this->endrng = date("m/d/Y", strtotime('+3 day'));
 	        $condition = array("end_date" => array(
             '$gte' => new MongoDate(strtotime($this->startrng . "10:00:00")),
             '$lte' => new MongoDate(strtotime($this->endrng . "10:59:59"))
