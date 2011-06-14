@@ -1839,9 +1839,9 @@ h2:link .p-container .details strong {
 }
 
 .splash-details .right {
-	position:absolute;
-	right:8px;
-	top:9px;
+    position: absolute;
+    right: 5px;
+    top: 20px;
 }
 
 .details .left {
@@ -3352,26 +3352,27 @@ a.nivo-prevNav {
 	position:relative;
 	top:200px;
 }
+.small{height:10px; line-height:13px; margin:7px 0px!important; font-size:12px!important;}
 
 .roundy {
-	-webkit-border-radius:12px;
-	-moz-border-radius:12px;
-	border-radius:12px;
+	-webkit-border-radius:8px;
+	-moz-border-radius:8px;
+	border-radius:8px;
 	border:1px solid #D7D7D7;
 	margin:0 auto 10px;
 }
 
 .roundy_nav {
-	-webkit-border-radius:12px;
-	-moz-border-radius:12px;
-	border-radius:12px;
+	-webkit-border-radius:8px;
+	-moz-border-radius:8px;
+	border-radius:8px;
 	border:1px solid #D7D7D7;
 }
 
 .roundy_product {
-	-webkit-border-radius:12px;
-	-moz-border-radius:12px;
-	border-radius:12px;
+	-webkit-border-radius:8px;
+	-moz-border-radius:8px;
+	border-radius:8px;
 	border:1px solid #D7D7D7;
 	margin:0 0 10px 0px;
 	overflow:hidden;
@@ -3379,19 +3380,19 @@ a.nivo-prevNav {
 }
 
 .roundy_product a img {
-	-webkit-border-radius:12px 12px 0 0!important;
+	-webkit-border-radius:8px 8px 0 0!important;
 	overflow:hidden!important;
 }
 
 div.splash-details {
-	-webkit-border-radius:0 0 12px 12px!important;
+	-webkit-border-radius:0 0 8px 8px!important;
 	overflow:hidden!important;
 }
 
 .roundy_cart {
-	-webkit-border-radius:12px;
-	-moz-border-radius:12px;
-	border-radius:12px;
+	-webkit-border-radius:8px;
+	-moz-border-radius:8px;
+	border-radius:8px;
 	border:1px solid #D7D7D7;
 	overflow:hidden;
 }
@@ -3911,7 +3912,7 @@ ul.nav li a {
 }
 
 .menu_main_global {
-	width:730px;
+	width:785px;
     float: left;
     font-size: 12px;
     padding: 10px 0 0;
@@ -3920,17 +3921,17 @@ ul.nav li a {
 .menu_top_left {
 	display: block;
 	width:310px;
-	padding:15px 0px 0px 0px;
+	padding:5px 0px 0px 0px;
 	text-align: left;
 	float: left;
 }
 
 .menu_top_right {
-	display: block;
-	width:420px;
-	padding:15px 0px 0px 0px;
-	text-align: left;
-	float: right;
+    display: block;
+    float: right;
+    padding: 5px 5px 0 0;
+    text-align: right;
+    width: 420px;
 }
 
 .menu_top_right a:link {

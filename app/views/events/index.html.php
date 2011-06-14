@@ -91,12 +91,12 @@
 
                 <div class="splash-details">
 						<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
-						 <p style="padding:0px; margin:0px; font-size:16px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
-						 <p style="padding:0px; margin:-3px 0px 0px 0px; font-size:13px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;"><span id="<?php echo "todaysplash$x"; ?>"></span>
+						 <p style="padding:0px; margin:0px; font-size:15px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
+						 <p style="padding:0px; margin:-3px 0px 0px 0px; font-size:12px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;"><span id="<?php echo "todaysplash$x"; ?>"></span>
 						</div>
 
 						<div class="table-cell right">
-							<?=$this->html->link('Shop', 'sale/'.$event->url, array('class' => 'button'));?>
+							<?=$this->html->link('Shop', 'sale/'.$event->url, array('class' => 'button small'));?>
 						</div>
 					</div>
 				</div>
@@ -113,9 +113,9 @@
 					var now = new Date();
 					var diff = $date - (now.getTime());
 					if((diff / 1000) < (24 * 60 * 60) ) {
-						$(\"$splashid\").countdown({until: saleEnd, layout: 'Closes in {hnn}{sep}{mnn}{sep}{snn}'});
+						$(\"$splashid\").countdown({until: saleEnd, layout: 'Ends in {hnn}{sep}{mnn}{sep}{snn}'});
 					} else {
-						$(\"$splashid\").countdown({until: saleEnd, layout: 'Closes in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+						$(\"$splashid\").countdown({until: saleEnd, layout: 'Ends in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
 					}
 				});</script>";
 		?>

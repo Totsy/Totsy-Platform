@@ -113,16 +113,11 @@
 				<div id="all-reserved"></div>
 			<?php endif ?>
 		</div>
-		<br />
 		
-		<div class="roundy" style="text-align:center; padding:3px;"><?php $logo = $event->images->logo_image;?>
+		<?php $logo = $event->images->logo_image;?>
 		<?=$this->html->image("/image/$logo.jpg", array(
-			'alt' => $event->name, 'width' => "148", 'height' => "52"
+			'alt' => $event->name, 'width' => "148", 'height' => ""
 		)); ?>
-		</div>
-		<script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script>
-		<fb:like href="<?php $url = (!empty($_SERVER['HTTPS'])) ? "https://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'] : "http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
- echo $url ?>" layout="button_count" show_faces="true" width="450" action="recommend" font=""></fb:like>
  
 	</div>
 <?=$this->form->end(); ?>
@@ -210,7 +205,7 @@
 $(function () {
 	var saleEnd = new Date();
 	saleEnd = new Date(<?php echo $event->end_date->sec * 1000?>);
-	$('#listingCountdown').countdown({until: saleEnd, layout: 'Closes in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+	$('#listingCountdown').countdown({until: saleEnd, layout: 'Ends in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
 });
 </script>
 <script type="text/javascript">
