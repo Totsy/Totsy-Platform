@@ -29,8 +29,10 @@ class AffiliatesController extends BaseController {
 				$data = $this->request->data;
 				if (isset($data['password'])) {
 					// New user, need to register here
-					$user['firstname'] = $data['fname'];
-					$user['lastname'] = $data['lname'];
+					if (array_key_exists('fname',$data)){ $user['firstname'] = $data['fname']; }
+					else { $user['firstname'] = ''; }
+					if (array_key_exists('lname',$data)){ $user['lastname'] = $data['lname']; }
+					else { $user['lastname'] = ''; }
 					$user['email'] = strtolower($data['email']);
 					$user['zip'] = $data['zip'];
 					$user['confirmemail'] = strtolower($data['email']);
