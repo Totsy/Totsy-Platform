@@ -28,22 +28,19 @@ class Items extends \lithium\template\Helper {
 			//Lets start building the data fields
 			foreach ($itemRecords as $item) {
 				$html .= '<tr>';
-				if (!empty($item["primary_image"])) {
-					$image = '/image/'. $item["primary_image"] . '.jpg';
+				if (!empty($item->primary_image)) {
+					$image = '/image/'. $item->primary_image . '.jpg';
 				} else {
 					$image = "/img/no-image-small.jpeg";
 				}
 				$html .= "<td width='100'><img src=$image/ width='75'></td>";
-				$html .= "<td width='200'><a href=\"/items/edit/$item[_id]\">$item[description]</a>
+				$html .= "<td width='200'><a href=\"/items/edit/$item->_id\">$item->description</a>
 				<br />
-					Color: $item[color] <br />
-					Vendor Style: $item[vendor_style]
+					Color: $item->color <br />
+					Vendor Style: $item->vendor_style
 				</td>";
-				if(empty($item["blurb"])) {
-					$item["blurb"] = '';			
-				} 
-				$html .= "<td><textarea name='$item[_id]' id='$item[_id]>$item[blurb]</textarea></td>";
-				$html .= "<td>$item[enabled]</td>";
+				$html .= "<td><textarea name='$item->_id' id='$item->_id'>$item->blurb</textarea></td>";
+				$html .= "<td>$item->enabled</td>";
 				$html .= '</tr>';
 			}
 			

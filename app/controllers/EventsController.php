@@ -64,20 +64,22 @@ class EventsController extends BaseController {
 			$this->redirect('/sales ');
 		}
 		$pending = ($event->start_date->sec > time() ? true : false);
-
+		
 		if ($pending == false) {
 			++$event->views;
 			$event->save();
 			if (!empty($event->items)) {
-				foreach ($event->items as $_id) {
-					$conditions = compact('_id') + array('enabled' => true);
-
-					if ($item = Item::first(compact('conditions'))) {
-						if ($item->total_quantity <= 0) {
-							$items_closed[] = $item;
-						} else {
-							$items[] = $item;
-						}
+				$eventItems = Item::find('all', array( 'conditions' => array(
+													'event' => array((string)$event->_id),
+													'enabled' => true
+												),
+												'order' => array('created_date' => 'ASC')
+											));
+				foreach($eventItems as $eventItem) {
+					if ($eventItem->total_quantity <= 0) {
+						$items_closed[] = $eventItem;
+					} else {
+						$items[] = $eventItem;
 					}
 				}
 				//Sort items open/sold out
@@ -96,7 +98,7 @@ class EventsController extends BaseController {
 			$items = null;
 			$type = 'Coming Soon';
 		}
-
+		
 		$pixel = Affiliate::getPixels('event', 'spinback');
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
 			                                            array('event' => $_SERVER['REQUEST_URI'])
