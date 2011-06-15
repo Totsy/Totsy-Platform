@@ -211,6 +211,7 @@ class EventsController extends BaseController {
  						}
  					}
 				}
+				
 				foreach ($eventItems as $itemDetail) {
 					$itemAttributes = array_diff_key($itemDetail, array_flip($standardHeader));
 					foreach ($itemAttributes as $key => $value) {
