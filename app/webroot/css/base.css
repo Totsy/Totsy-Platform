@@ -1839,9 +1839,9 @@ h2:link .p-container .details strong {
 }
 
 .splash-details .right {
-    position: absolute;
-    right: 5px;
-    top: 20px;
+	position:absolute;
+	right:5px;
+	top:20px;
 }
 
 .details .left {
@@ -3352,7 +3352,13 @@ a.nivo-prevNav {
 	position:relative;
 	top:200px;
 }
-.small{height:10px; line-height:13px; margin:7px 0px!important; font-size:12px!important;}
+
+.small {
+	height:10px;
+	line-height:13px;
+	margin:7px 0!important;
+	font-size:12px!important;
+}
 
 .roundy {
 	-webkit-border-radius:8px;
@@ -3374,7 +3380,7 @@ a.nivo-prevNav {
 	-moz-border-radius:8px;
 	border-radius:8px;
 	border:1px solid #D7D7D7;
-	margin:0 0 10px 0px;
+	margin:0 0 10px;
 	overflow:hidden;
 	min-height:284px;
 }
@@ -3387,6 +3393,22 @@ a.nivo-prevNav {
 div.splash-details {
 	-webkit-border-radius:0 0 8px 8px!important;
 	overflow:hidden!important;
+}
+
+.soldout {
+	background:url(../img/gray-80-bg.png) repeat scroll 0 0 transparent;
+	padding:5px 10px 4px;
+	display:block;
+	color:#eb132c;
+	font-size:14px;
+	font-weight:bold;
+	position:absolute;
+	top:25px;
+	right:-8px;
+	width:62px;
+	-webkit-border-radius:8px;
+	-moz-border-radius:8px;
+	border-radius:8px;
 }
 
 .roundy_cart {
@@ -3414,7 +3436,7 @@ div.splash-details {
 
 .glow {
 	background:#fff;
-	margin:20px auto 10px auto;
+	margin:20px auto 10px;
 	padding:10px 5px;
 	overflow:hidden;
 	-moz-box-shadow:0 0 12px rgba(0,0,0,0.2);
@@ -3780,6 +3802,7 @@ li.secondary_main a {
 }
 
 
+	
 /****** Disney CSS ******/
 .disney p {
 	color:#B3674A;
@@ -3796,6 +3819,8 @@ li.secondary_main a {
 	cursor:pointer;
 }
 
+
+	
 /****** New Header / Main Navigation CSS ******/
 ul#navlist {
 	margin-top:9px;
@@ -3821,7 +3846,7 @@ ul#navlist {
 	text-decoration:none;
 }
 
-#navlist li a.active, #navlist a:hover {
+#navlist li a.active,#navlist a:hover {
 	background-color:#EB132C;
 	border-radius:6px 6px 6px 6px;
 	color:#fff;
@@ -3913,48 +3938,48 @@ ul.nav li a {
 
 .menu_main_global {
 	width:785px;
-    float: left;
-    font-size: 12px;
-    padding: 10px 0 0;
+	float:left;
+	font-size:12px;
+	padding:10px 0 0;
 }
 
 .menu_top_left {
-	display: block;
+	display:block;
 	width:310px;
-	padding:5px 0px 0px 3px;
-	text-align: left;
-	float: left;
+	padding:5px 0 0 3px;
+	text-align:left;
+	float:left;
 }
 
 .menu_top_right {
-    display: block;
-    float: right;
-    padding: 5px 5px 0 0;
-    text-align: right;
-    width: 420px;
+	display:block;
+	float:right;
+	padding:5px 5px 0 0;
+	text-align:right;
+	width:420px;
 }
 
 .menu_top_right a:link {
-	margin:0px 5px;
+	margin:0 5px;
 }
 
 a.cart_icon {
-	background-image: url(../img/cart_bag_icon.png);
-	background-repeat: no-repeat;
-	background-position: 0 50%;
-	padding: 7px 0px 0px 24px;
+	background-image:url(../img/cart_bag_icon.png);
+	background-repeat:no-repeat;
+	background-position:0 50%;
+	padding:7px 0 0 24px;
 }
-
 
 .free_shipping_banner_login img {
-    position: absolute;
-    right: -41px;
-    top: 413px;
-    z-index: 9999;
+	position:absolute;
+	right:-41px;
+	top:413px;
+	z-index:9999;
 }
+
 .free_shipping_banner_reg img {
-    position: absolute;
-    right: -41px;
-    top: 495px;
-    z-index: 9999;
+	position:absolute;
+	right:-41px;
+	top:495px;
+	z-index:9999;
 }

@@ -49,10 +49,8 @@
                 <div class="p-container roundy_product">
 
 						<?php if ($itemCounts[ (string) $event->_id] == 0): ?>
-								<?=$this->html->image('/img/soldout.png', array(
-									'title' => "Sold Out",
-									'style' => 'z-index : 2; position : absolute; left:58%; margin:10px;'
-								)); ?>
+								<div class="soldout">Sold Out</div>
+								
 					<?php endif ?>
 					<?php
 						if (!empty($event->images->splash_big_image)) {
