@@ -149,7 +149,7 @@
 			});
 	</script>
 
-    <div id='toTop'>^ Back to Top</div>
+    <div id='toTop'>^ Top</div>
 
     <!--affiliate pixels-->
     <?php echo $pixel; ?>
