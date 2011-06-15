@@ -297,7 +297,7 @@
 						<td class="<?="total-item-$x";?>">
 							<strong style="color:#009900;">$<?=number_format($item['sale_retail'] * $item['quantity'] ,2)?></strong>
 						</td>
-						<td class="cart-time"><img src="/img/clock_icon.gif" class="fl"/><div id='<?php echo "itemCounter-$x"; ?>' class="fl" style="margin-left:5px;"></div></td>
+						<td class="cart-time"><img src="/img/old_clock.png" align="absmiddle" width="23" class="fl"/><div id='<?php echo "itemCounter-$x"; ?>' class="fl" style="margin:5px 0px 0px 5px;"></div></td>
 					</tr>
 					<?php
 						//Allow users three extra minutes on their items for checkout.

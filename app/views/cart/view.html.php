@@ -85,9 +85,9 @@
 					<td class="<?="total-item-$x";?>" style="width:55px;">
 						<strong style="color:#009900;">$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
 					</td>
-					<td class="cart-time" style="width:220px;"><img src="/img/clock_icon.gif" class="fl"/><div id='<?php echo "itemCounter$x"; ?>' class="fl" style="margin-left:5px;"></div></td>
+					<td class="cart-time" style="width:220px;"><img src="/img/old_clock.png" align="absmiddle" width="23" class="fl"/><div id='<?php echo "itemCounter$x"; ?>' class="fl" style="margin:5px 0px 0px 5px;"></div></td>
 					<td class="cart-actions">
-						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" onclick="return deletechecked('Are you sure you want to remove this item?');" style="color: red!important;"><img src="http://icons.iconarchive.com/icons/visualpharm/must-have/256/Delete-icon.png" width="20" align="middle"style="margin-right:20px;" /></a>
+						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" onclick="return deletechecked('Are you sure you want to remove this item?');" style="color: red!important;"><img src="/img/trash.png" width="20" align="absmiddle" style="margin-right:20px;" /></a>
 					</td>
 				</tr>
 				<?php

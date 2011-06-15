@@ -91,18 +91,18 @@
 	<div class="clear"></div>
 	<div id="footer" class="container_16">
 		<ul>
-			<li class="first"><a href="/pages/terms" title="Terms of Use">Terms of Use</a></li>
-			<li><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
-			<li><a href="/pages/aboutus" title="About Us">About Us</a></li>
-			<li><a href="http://blog.totsy.com" title="Blog" target="_blank">Blog</a></li>
-			<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
-			<li><a href="/pages/affiliates" title="Affiliates">Affiliates</a></li>
+			<li class="first" style="padding-top:4px;"><a href="/pages/terms" title="Terms of Use">Terms of Use</a></li>
+			<li style="padding-top:4px;"><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
+			<li style="padding-top:4px;"><a href="/pages/aboutus" title="About Us">About Us</a></li>
+			<li style="padding-top:4px;"><a href="http://blog.totsy.com" title="Blog" target="_blank">Blog</a></li>
+			<li style="padding-top:4px;"><a href="/pages/faq" title="FAQ">FAQ</a></li>
+			<li style="padding-top:4px;"><a href="/pages/affiliates" title="Affiliates">Affiliates</a></li>
 			
 			<! -- switch where this link points depending on whether they're logged in or not --> 
 			<?php if (empty($userInfo)){ ?>
-			<li class="last"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
+			<li class="last" style="padding-top:4px;"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
 			<?php } else { ?>
-			<li class="last"><a href="/tickets/add" title="Contact Us">Contact Us</a></li>
+			<li class="last" style="padding-top:4px;"><a href="/tickets/add" title="Contact Us">Contact Us</a></li>
 			<?php } ?>
 			<li class="last" style="margin:0px 3px 0px 5px;"><a href="http://www.facebook.com/totsyfan" target="_blank"><img src="../img/icons/facebook_16.png" align="middle" /></a></li>
 			<li class="last"><a href="http://twitter.com/MyTotsy" target="_blank"><img src="../img/icons/twitter_16.png" align="middle" /></a></li>
