@@ -174,9 +174,9 @@
 									<option value="<?=$value?>"><?=$value?></option>
 							<?php endforeach ?>
 						</select>
+						<hr />
 				<?php endif ?>
 			<?php endif ?>
-			<hr />
 			<h2 class="caps" style="font-size:14px;">Totsy Price</h2>
 			<div style="padding: 10px 0px; color:#009900; font-size:24px;">$<?=number_format($item->sale_retail,2); ?></div>
 
