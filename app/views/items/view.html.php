@@ -196,9 +196,8 @@
 	</div>
 <?=$this->form->end(); ?>
 
-<div class="fr">
+		<div style="padding:10px 0px; text-align:center;">
 			<?php echo $spinback_fb; ?>
-			<div class='clear'></div>
 		</div>
 		
 		</div>
