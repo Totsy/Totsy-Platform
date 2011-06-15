@@ -3921,7 +3921,7 @@ ul.nav li a {
 .menu_top_left {
 	display: block;
 	width:310px;
-	padding:5px 0px 0px 0px;
+	padding:5px 0px 0px 3px;
 	text-align: left;
 	float: left;
 }
