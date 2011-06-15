@@ -301,7 +301,7 @@ class FinancialExport extends \lithium\console\Command  {
 				if (empty($item['size'])) {
 					$item['size'] = "none";
 				}
-				$event = Event::find('first', array('_id' => $item['event_id']));
+				$event = Event::collection()->findOne(array('_id' => new MongoId($item['event_id'])));
 				if (array_key_exists('vendor', $item)) {
 				    $item['vendor'] = $item['vendor'];
 				} else {
