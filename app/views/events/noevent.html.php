@@ -8,7 +8,7 @@
 </div>
 
 <div align="center">
-    <img src="/img/error-img.jpg" alt="Error 404">
+    <img src="/img/error-img.png" alt="Error 404">
 </div>
 
 <div class="clear"></div>

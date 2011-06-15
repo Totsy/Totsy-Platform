@@ -38,9 +38,6 @@
 	<h2 class="page-title gray">Account Dashboard</h2>
 	<hr />
 
-		<p>From your My Account Dashboard you have the ability to view a snapshot of your recent account activity and update your account information. Select a link below to view or edit information.</p>
-
-
 		<div class="col-2">
 
 			<div class="r-container box-2 fl">
