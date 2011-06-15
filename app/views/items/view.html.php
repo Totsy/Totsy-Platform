@@ -128,11 +128,11 @@
        <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value ) 
        <span id="disney">Offer & Refund Details</span>
       </div>
-	<!-- Started Related Products -->
+	<br><!-- Started Related Products -->
 	<div id="related-products">
 		<?php $relatedData = $related->data(); ?>
 		<?php if (!empty($relatedData)): ?>
-		<h2 class="gray mar-b">You would also love</h2>
+		<h2 style="color:#707070;font-size:14px;">You would also love</h2>
 		<hr />
 		<?php foreach ($related as $relatedItem): ?>
 			<?php

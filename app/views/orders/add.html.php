@@ -60,16 +60,15 @@
 
 				<?php else: ?>
 
-						<h2 style="color:#707070;font-size:14px;">Shipping Address</h2>
+						<h2 style="color:#707070;font-size:14px;">Shipping Address <span style="float:right;"><?=$this->html->link('Add a new address', '#', array(
+							'class' => 'add-address')); ?></span></h2>
 					<hr />
 					<p>Select a shipping address from your address book.</p>
 						<?=$this->form->select('shipping', $shipping, array(
 							'id' => 'shipping',
 							'target' => '#shipping-new-address-form',
 							'value' => key($shipping)
-						)); ?><br>
-						<?=$this->html->link('Add a new address', '#', array(
-							'class' => 'add-address')); ?>
+						)); ?>
 				<?php endif ?>
 
 			</div>
@@ -100,7 +99,7 @@
 			
 		</li>
 
-
+<br>
 <hr />
 
 		<li class="step">
@@ -124,7 +123,7 @@
 		<?php foreach ($cartByEvent as $key => $event): ?>
 		<?php foreach ($event as $item): ?>
 		<?php $itemUrl = "sale/".$orderEvents[$key]['url'].'/'.$item['url'];?>
-							
+		<div style="float:left; width:85px;">					
 									<?php
 										if (!empty($item['primary_image'])) {
 											$image = $item['primary_image'];
@@ -133,16 +132,18 @@
 											$productImage = "/img/no-image-small.jpeg";
 										}
 									?>
+		
 									<?=$this->html->link(
 										$this->html->image("$productImage", array(
-											'width'=>'120',
-									'style' => 'padding:4px; margin:2px; float:left;')),
+											'width'=>'75',
+									'style' => 'margin:2px;')),
 											'',
 											array( 'escape'=> false
 										),
 										$itemUrl
 									); ?>
-				<div style="min-height:113px;">
+				</div>
+				<div style="float:left; width:236px;">
 				<strong style="font-size:14px;"><?=$orderEvents[$key]['name']?></strong><br>
 				
 			
@@ -180,9 +181,9 @@
 									</script>";
 								$x++;
 							?>
-							
+						
 							</div>
-							<br/>
+							<div class="clear"></div>
 							<hr/>
 				<?php endforeach ?>
 			<?php endforeach ?>
