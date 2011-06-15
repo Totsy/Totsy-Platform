@@ -7,6 +7,7 @@ use app\models\Item;
 use app\models\Event;
 use lithium\storage\Session;
 use MongoId;
+use MongoDate;
 
 /**
  * Facilitates the app CRUD operations of a users cart (baskets).
@@ -68,6 +69,27 @@ class CartController extends BaseController {
 	 * @return compact
 	 */
 	public function add() {
+		$actual_cart = Cart::active();
+		if (!empty($actual_cart)) {
+			$items = $actual_cart->data();
+		}
+		#T - Refresh the counter of each timer to 15 min
+		if (!empty($items)) {
+			//Security Check - Max 25 items
+			if(count($items) < 25) {
+				foreach ($items as $item) {
+					$event = Event::find('first',array('conditions' => array("_id" => $item['event'][0])));
+					$now = getdate();
+					if(($event->end_date->sec > ($now[0] + (15*60)))) {
+						$cart_temp = Cart::find('first', array(
+							'conditions' => array('_id' =>  $item['_id'])));
+						$cart_temp->expires = new MongoDate($now[0] + (15*60));
+						$cart_temp->save();
+					}
+				}
+			}
+		}
+		#T
 		$cart = Cart::create();
 		$message = null;
 		if ($this->request->data) {
