@@ -188,10 +188,11 @@
 		</div>
 		
 		<?php $logo = $event->images->logo_image;?>
+		<div style="padding:0px 0px 0px 13px;">
 		<?=$this->html->image("/image/$logo.jpg", array(
-			'alt' => $event->name, 'width' => "148", 'height' => ""
+			'alt' => $event->name, 'width' => "148"
 		)); ?>
- 
+ 		</div>
 	</div>
 <?=$this->form->end(); ?>
 
