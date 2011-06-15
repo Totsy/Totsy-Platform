@@ -72,7 +72,7 @@
 	<!-- End product item -->
 </div>
 
-<div class="grid_10 omega">
+<div class="grid_7">
 
 	<div id="product-detail-right-top"  style="width:405px;">
 
@@ -82,53 +82,11 @@
 <?=$this->form->create(null, array('url' => 'Cart::add')); ?>
 	<div id="detail-top-left"  style="width:405px;">
 		<h1><strong><?=$event->name?></strong> <?=$item->description." ".$item->color; ?></h1>
-
-		<div class="product-detail-attribute">
-
-			<?php if (!empty($sizes)): ?>
-				<?php if ( !((string)$sizes[0] ==='no size')): ?>
-					<label for="size" class="required">Size<span>*</span></label>&nbsp;
-						<select name="item_size" id="size-select">
-							<?php foreach ($sizes as $value): ?>
-									<option value="<?=$value?>"><?=$value?></option>
-							<?php endforeach ?>
-						</select>
-				<?php endif ?>
-			<?php endif ?>
-		</div>
 	</div>
-	<?=$this->form->hidden("item_id", array('value' => "$item->_id", 'id'=>'item_id')); ?>
-
-	<div id="detail-top-right" class="r-container">
+	
 
 
-		<div class="md-gray p-container roundy">
-
-			<h2 class="caps" style="font-size:14px;">Totsy Price</h2>
-			<div style="padding: 10px 0px; color:#009900; font-size:24px;">$<?=number_format($item->sale_retail,2); ?></div>
-
-			<span class="original-price" style="text-decoration:line-through; font-size:10px;">Original: $<?=number_format($item->msrp,2); ?></span>
-			<?php if ($item->total_quantity >= 1): ?>
-				<?=$this->form->submit('Add To Cart', array('class' => 'button')); ?>
-				<div id="all-reserved"></div>
-			<?php endif ?>
-		</div>
-		
-		<?php $logo = $event->images->logo_image;?>
-		<?=$this->html->image("/image/$logo.jpg", array(
-			'alt' => $event->name, 'width' => "148", 'height' => ""
-		)); ?>
- 
-	</div>
-<?=$this->form->end(); ?>
-	<div class="clear"><!-- --></div>
-
-	<div class="product-bottom-wrapper">
-
-		<div class="sm-actions fr">
-			<?php echo $spinback_fb; ?>
-			<div class='clear'></div>
-		</div>
+		<div class="clear"></div>
 
 		<div id="tabs">
 			<ul>
@@ -164,12 +122,11 @@
 
 		</div>
 
-	</div>
-	<!--Disney -->
+<!--Disney -->
       <div class="disney">
-          <p><strong>SPECIAL BONUS!</strong><hr/></p>
-       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value). <br/>
-       <span  id="disney">Offer & Refund Details</span></p>
+          <strong>SPECIAL BONUS!</strong><hr/></p>
+       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value ) 
+       <span id="disney">Offer & Refund Details</span>
       </div>
 	<!-- Started Related Products -->
 	<div id="related-products">
@@ -199,7 +156,56 @@
 	<?php endif ?>
 	</div>
 	<!-- End Related Products -->
-</div>
+
+	</div>
+	
+	
+	<div class="grid_3"><?=$this->form->hidden("item_id", array('value' => "$item->_id", 'id'=>'item_id')); ?>
+
+	<div id="detail-top-right" class="r-container">
+
+
+		<div class="md-gray p-container roundy">
+<?php if (!empty($sizes)): ?>
+				<?php if ( !((string)$sizes[0] ==='no size')): ?>
+					<label for="size" class="required" style="width:20px;">Size<span>*</span></label>&nbsp;
+						<select name="item_size" id="size-select">
+							<?php foreach ($sizes as $value): ?>
+									<option value="<?=$value?>"><?=$value?></option>
+							<?php endforeach ?>
+						</select>
+				<?php endif ?>
+			<?php endif ?>
+			<hr />
+			<h2 class="caps" style="font-size:14px;">Totsy Price</h2>
+			<div style="padding: 10px 0px; color:#009900; font-size:24px;">$<?=number_format($item->sale_retail,2); ?></div>
+
+			<span class="original-price" style="text-decoration:line-through; font-size:10px;">Original: $<?=number_format($item->msrp,2); ?></span>
+			<?php if ($item->total_quantity >= 1): ?>
+				<?=$this->form->submit('Add To Cart', array('class' => 'button')); ?>
+				<div id="all-reserved"></div>
+			<?php endif ?>
+		</div>
+		
+		<?php $logo = $event->images->logo_image;?>
+		<?=$this->html->image("/image/$logo.jpg", array(
+			'alt' => $event->name, 'width' => "148", 'height' => ""
+		)); ?>
+ 
+	</div>
+<?=$this->form->end(); ?>
+
+<div class="fr">
+			<?php echo $spinback_fb; ?>
+			<div class='clear'></div>
+		</div>
+		
+		</div>
+	<div class="clear"></div>
+	
+	
+	
+	</div>
 <div id="modal" style="background:#fff!important; z-index:9999999999;"></div>
 <script type="text/javascript">
 $(function () {
