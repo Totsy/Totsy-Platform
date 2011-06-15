@@ -168,8 +168,8 @@
 		<div class="md-gray p-container roundy">
 <?php if (!empty($sizes)): ?>
 				<?php if ( !((string)$sizes[0] ==='no size')): ?>
-					<label for="size" class="required" style="width:20px;">Size<span>*</span></label>&nbsp;
 						<select name="item_size" id="size-select">
+									<option value="">Please Select Size</option>
 							<?php foreach ($sizes as $value): ?>
 									<option value="<?=$value?>"><?=$value?></option>
 							<?php endforeach ?>
@@ -177,11 +177,12 @@
 						<hr />
 				<?php endif ?>
 			<?php endif ?>
-			<h2 class="caps" style="font-size:14px;">Totsy Price</h2>
-			<div style="padding: 10px 0px; color:#009900; font-size:24px;">$<?=number_format($item->sale_retail,2); ?></div>
+			<h2 class="caps" style="font-size:14px; padding-top:5px">Totsy Price</h2>
+			<div style="padding: 10px 0px 0px 0px; color:#009900; font-size:24px;">$<?=number_format($item->sale_retail,2); ?></div>
 
-			<span class="original-price" style="text-decoration:line-through; font-size:10px;">Original: $<?=number_format($item->msrp,2); ?></span>
+			<div class="original-price" style="font-size:11px; padding-bottom:10px;">Original: $<?=number_format($item->msrp,2); ?></div>
 			<?php if ($item->total_quantity >= 1): ?>
+				<div id="hidden-div" style="display:none; color:#eb132c; font-weight:bold;">Please Select Size!</div>
 				<?=$this->form->submit('Add To Cart', array('class' => 'button')); ?>
 				<div id="all-reserved"></div>
 			<?php endif ?>
@@ -261,3 +262,27 @@ $(document).ready(function() {
 	});
 });
 </script>
+
+  <script type="text/javascript" charset="utf-8">
+    $(document).ready(function () {
+      checkOptions();
+      $("select").change(checkOptions);
+
+      function checkOptions() {
+        var yesFound = false;
+        $("select").each(function(index, element) {
+          if ( $(element).val() == "" ) {
+            yesFound = true;
+          }
+        });
+        
+        if (yesFound) {
+          $("#hidden-div").show();
+          $("input[type=Submit]").attr("disabled","disabled");
+        } else {
+          $("#hidden-div").hide();
+          $("input[type=Submit]").removeAttr("disabled");
+        };
+      }
+    });
+  </script> 

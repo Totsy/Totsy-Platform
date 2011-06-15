@@ -76,7 +76,6 @@
 	{
 		color: #ffffff;
 		border-color: #dddddd;  
-		background: #EB132C;
 		background: -webkit-gradient(linear, left top, left bottom, from(#EB132C), to(#EB132C));
 		background: -moz-linear-gradient(top, #EB132C,  #EB132C);
 		filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#EB132C', endColorstr='#EB132C');

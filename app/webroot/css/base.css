@@ -852,7 +852,6 @@ div.col-2 .box-2 {
 	font-size:18px;
 	text-transform:uppercase;
 	font-weight:bold;
-	margin-bottom:5px;
 }
 
 #detail-top-right .p-container p {
@@ -1436,13 +1435,7 @@ input.inputbox,textarea.inputbox {
 	margin-bottom:5px;
 }
 
-select {
-	height:22px;
-	background-color:#EBEBEB;
-	margin-bottom:5px;
-	margin-top:2px;
-	border:1px solid #DEDEDE;
-}
+
 
 .listingCountdown {
 	font-size:20px;
@@ -3322,10 +3315,14 @@ a.nivo-prevNav {
 	font-weight:bold;
 }
 
+[disabled] { /* Text and background colour, medium red on light yellow */
+    color:#fff!important;
+    background-color:#666!important;
+    border:none!important;
+    }
+
 .button:hover {
 	text-decoration:none;
-	background:#ed1c25!important;
-	color:#fff!important;
 }
 
 .button:active {
