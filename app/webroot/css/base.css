@@ -3280,7 +3280,7 @@ a.nivo-prevNav {
 /* Spinback Hackery Code for image resizing */
 #sb_share_link img {
 	border:medium none;
-	margin:-9px -2px 0 0!important;
+	margin:5px 0px 10px 8px!important;
 }
 
 #sb_content h3 {
