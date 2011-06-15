@@ -142,9 +142,9 @@
 										),
 										$itemUrl
 									); ?>
-				<div style="font-size:14px;">
-				<strong><?=$orderEvents[$key]['name']?></strong>
-				</div>
+				<div style="min-height:113px;">
+				<strong style="font-size:14px;"><?=$orderEvents[$key]['name']?></strong><br>
+				
 			
 		
 			
@@ -153,7 +153,9 @@
 									<?=$this->form->hidden("item$x", array('value' => $item['_id'])); ?>
 									<strong><?=$this->html->link($item['description'], $itemUrl);
 									?></strong><br>
+									<?php if ($item['color']) { ?>
 									<strong>Color:</strong> <?=$item['color'];?><br>
+									<?php } ?>
 									<strong>Size:</strong> <?=$item['size'];?><br>
 									<strong>Quantity:</strong> <?=$item['quantity'];?><br>
 									<strong>Price:</strong> <strong style="color:#009900;">$<?=number_format($item['sale_retail'],2)?></strong> / 
@@ -178,12 +180,14 @@
 									</script>";
 								$x++;
 							?>
+							
+							</div>
 							<br/>
 							<hr/>
 				<?php endforeach ?>
 			<?php endforeach ?>
 
-						<div style="text-align:right; font-size:16px;"><strong>Subtotal: </strong><strong style="color:#009900;">$<?=number_format($subTotal,2)?></strong></div>
+						<div style="text-align:right; font-size:16px; margin-top:12px;"><strong>Subtotal: </strong><strong style="color:#009900;">$<?=number_format($subTotal,2)?></strong></div>
 				
 	<?php endif ?>
 	<!-- End Order Details -->
