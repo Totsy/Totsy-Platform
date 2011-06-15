@@ -20,8 +20,8 @@
 			<thead>
 				<tr>
 					<th>Item</th>
-					<th>Description</th>
-					<th>Price</th>
+					<th style="width:220px;">Description</th>
+					<th style="width:65px;">Price</th>
 					<th>Quantity</th>
 					<th>Total</th>
 					<th>Time Remaining</th>
@@ -53,14 +53,14 @@
 							)
 						); ?>
 					</td>
-					<td class="cart-desc" style="width:325px;">
+					<td class="cart-desc" style="width:220px;">
 						<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
 						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?></strong><br>
 						<strong>Color:</strong> <?=$item->color;?><br>
 						<strong>Size:</strong> <?=$item->size;?>
 					</td>
 
-					<td class="<?="price-item-$x";?>" style="width:45px;">
+					<td class="<?="price-item-$x";?>" style="width:65px;">
 						<strong style="color:#009900;">$<?=number_format($item->sale_retail,2)?></strong>
 					</td>
 					<td class="<?="qty-$x";?>" style="width:65px; text-align:center">
@@ -156,7 +156,7 @@
 	<div class="roundy grey_inside">
 		<h3 class="gray">Your Savings</h3>
 		<hr />
-		<?php if(!empty($savings)) : ?>
+		<?php if(empty($savings)) : ?>
 		This Purchase: <span style="color:#009900; font-size:16px; float:right;">$<?=number_format($savings,2)?></span>
 		<hr />
 		Total Savings: <span style="color:#009900; font-size:16px; float:right;">$<?=number_format($savings,2)?></span>

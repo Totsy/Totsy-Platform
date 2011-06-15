@@ -57,8 +57,10 @@ class CartController extends BaseController {
 				$returnUrl = $event->url;
 			}
 		}
-
-		return compact('cart', 'message', 'shipDate', 'returnUrl');
+		
+		//calculate savings
+		$savings = Session::read('userSavings');
+		return compact('cart', 'message', 'shipDate', 'returnUrl', 'savings');
 	}
 
 	/**
