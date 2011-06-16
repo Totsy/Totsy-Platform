@@ -977,7 +977,7 @@ ul.content-list {
 
 .ui-tabs .ui-tabs-panel {
 	display:block;
-	padding:0;
+	padding:10px 0px;
 	border-top:2px solid #ed1c25;
 }
 
