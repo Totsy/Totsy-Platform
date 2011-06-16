@@ -121,8 +121,8 @@
 
 			<td colspan="7" id='subtotal'><strong>Subtotal: <span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong>
 				
-				<br/><hr/>
-				<?=$this->form->submit('Update Cart', array('class' => 'button'))?>
+				<hr/>
+			
 			</td>
 		</tr>
 		<tr class="cart-buy">
@@ -154,13 +154,10 @@
 	<?php endif ?>
 <div class="grid_4 omega">
 	<div class="roundy grey_inside">
-		<h3 class="gray">Your Savings</h3>
-		<hr />
-		<?php if(empty($savings)) : ?>
-		This Purchase: <span style="color:#009900; font-size:16px; float:right;">$<?=number_format($savings,2)?></span>
-		<hr />
-		Total Savings: <span style="color:#009900; font-size:16px; float:right;">$<?=number_format($savings,2)?></span>
-		<?php endif ?>
+		<h3 class="gray">Your Savings <span class="fr"><?php if (empty($savings)) : ?>
+		<span style="color:#009900; font-size:16px; float:right;">$<?=number_format($savings,2)?></span>
+		<?php endif ?></span></h3>
+		
 	</div>
 	<div class="clear"></div>
 	<div class="roundy grey_inside">
@@ -169,16 +166,7 @@
 		<span style="font-size:16px; font-weight:bold;"><?=date('m-d-Y', $shipDate)?></span>
 	</div>
 	<div class="clear"></div>
-	<div class="roundy grey_inside">
-		<h3 class="gray">Need Help?</h3>
-		<hr />
-		<ul class="menu main-nav">
-		    <li><a href="/tickets/add" title="Contact Us">Help Desk</a></li>
-			<li><a href="/pages/faq" title="Frequently Asked Questions">FAQ's</a></li>
-			<li><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
-			<li><a href="/pages/terms" title="Terms Of Use">Terms Of Use</a></li>
-		</ul>
-	</div>
+	
 </div>
 <div class="clear"></div>
 
@@ -238,3 +226,11 @@ function deletechecked(message)
             return false;
         }
 </script>
+
+    <script type="text/javascript">
+        $(function () {
+            $("select").live("change keyup", function () {
+                $("form").submit();
+            });
+        });
+    </script>

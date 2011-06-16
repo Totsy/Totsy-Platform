@@ -166,6 +166,13 @@
 
 
 		<div class="md-gray p-container roundy">
+
+    <div id="radio">
+      <input type="radio" id="radio1" name="radio" />
+      <label for="radio1">Small</label>
+      <input type="radio" id="radio2" name="radio"/>
+      <label for="radio2">Medium</label>
+    </div>
 <?php if (!empty($sizes)): ?>
 				<?php if ( !((string)$sizes[0] ==='no size')): ?>
 						<select name="item_size" id="size-select">

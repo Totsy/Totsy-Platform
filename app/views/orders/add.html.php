@@ -113,6 +113,17 @@
 
 
 <div class="grid_6 omega">
+<div class="roundy grey_inside">
+		<h3 class="gray">Your Savings <span class="fr"><?php if (empty($savings)) : ?>
+		<span style="color:#009900; font-size:16px; float:right;">$<?=number_format($savings,2)?></span>
+		<?php endif ?></span></h3>
+		
+	</div>
+	<div class="roundy grey_inside">
+		<h3 class="gray">Estimated Ship Date<span style="font-size:16px; font-weight:bold; float:right;"><?=date('m-d-Y', $shipDate)?></span></h3>
+		
+	</div>
+	
 	<div class="roundy grey_inside">
 		<h2 style="color:#707070;font-size:14px; font-weight:normal;">My Cart (<?=$this->html->link('edit','/cart/view'); ?>) <span style="float:right;"><?=$cartCount;?> items</span></h2>
 		<hr />
@@ -144,24 +155,16 @@
 									); ?>
 				</div>
 				<div style="float:left; width:236px;">
-				<strong style="font-size:14px;"><?=$orderEvents[$key]['name']?></strong><br>
-				
-			
-		
-			
-								
-								
+				<?=$orderEvents[$key]['name']?><br>
+
 									<?=$this->form->hidden("item$x", array('value' => $item['_id'])); ?>
-									<strong><?=$this->html->link($item['description'], $itemUrl);
-									?></strong><br>
+									<?=$item['description'];?><br>
 									<?php if ($item['color']) { ?>
-									<strong>Color:</strong> <?=$item['color'];?><br>
+									Color: <?=$item['color'];?><br>
 									<?php } ?>
-									<strong>Size:</strong> <?=$item['size'];?><br>
-									<strong>Quantity:</strong> <?=$item['quantity'];?><br>
-									<strong>Price:</strong> <strong style="color:#009900;">$<?=number_format($item['sale_retail'],2)?></strong> / 
-									<strong>Total Price:</strong> <strong style="color:#009900;">$<?=number_format($item['sale_retail'] * $item['quantity'] ,2)?></strong><br>
-								
+									Size: <?=$item['size'];?><br>
+									Quantity: <?=$item['quantity'];?> (<strong style="color:#009900;">$<?=number_format($item['sale_retail'],2)?></strong>)<br>
+																	
 
 							<?php
 								//Allow users three extra minutes on their items for checkout.
@@ -197,22 +200,7 @@
 		</div>
 
 	<div class="clear"></div>
-	<div class="roundy grey_inside">
-		<h3 class="gray">Estimated Ship Date</h3>
-		<hr />
-		<span style="font-size:16px; font-weight:bold;"><?=date('m-d-Y', $shipDate)?></span>
-	</div>
-	<div class="clear"></div>
-	<div class="roundy grey_inside">
-		<h3 class="gray">Need Help?</h3>
-		<hr />
-		<ul class="menu main-nav">
-		    <li><a href="/tickets/add" title="Contact Us">Help Desk</a></li>
-			<li><a href="/pages/faq" title="Frequently Asked Questions">FAQ's</a></li>
-			<li><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
-			<li><a href="/pages/terms" title="Terms Of Use">Terms Of Use</a></li>
-		</ul>
-	</div>
+	
 </div>
 <div class="clear"></div>
 

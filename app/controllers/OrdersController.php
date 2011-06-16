@@ -186,8 +186,9 @@ class OrdersController extends BaseController {
 				$error = "Shipping and Delivery Information Missing";
 			}
 		}
+		$savings = Session::read('userSavings');
 		$shipDate = Cart::shipDate($cart);
-		return $vars + compact('cartEmpty', 'cartByEvent', 'error', 'orderEvents', 'shipDate');
+		return $vars + compact('cartEmpty', 'cartByEvent', 'error', 'orderEvents', 'shipDate', 'savings');
 	}
 
 	/**
