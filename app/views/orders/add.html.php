@@ -120,7 +120,7 @@
 		
 	</div>
 	<div class="roundy grey_inside">
-		<h3 class="gray">Estimated Ship Date<span style="font-size:16px; font-weight:bold; float:right;"><?=date('m-d-Y', $shipDate)?></span></h3>
+		<h3 class="gray">Estimated Ship Date<span style="font-weight:bold; float:right;"><?=date('m-d-Y', $shipDate)?></span></h3>
 		
 	</div>
 	
