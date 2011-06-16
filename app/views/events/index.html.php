@@ -73,7 +73,7 @@
 							$this->html->image("$productImage", array(
 							'title' => $event->name,
 							'alt' => $event->name,
-							'width' => '355',
+							'width' => '350',
 							'height' => '410',
 					'style' => 'margin:0px 0px -6px 0px;'
 							)), "sale/$url", array('escape'=> false));
