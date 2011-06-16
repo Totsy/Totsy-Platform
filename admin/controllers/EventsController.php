@@ -188,7 +188,7 @@ class EventsController extends BaseController {
 					$highestColumn = $worksheet->getHighestColumn();
 					$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
 					for ($row = 1; $row <= $highestRow; ++ $row) {
-						for ($col = 0; $col < $highestColumnIndex; $col++) {
+						for ($col = 0; $col < $highestColumnIndex; ++ $col) {
 							$cell = $worksheet->getCellByColumnAndRow($col, $row);
 							$val = $cell->getValue();
 							if ($row == 1) {
