@@ -52,13 +52,12 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 	}
 	
 	protected function emailNotificationSender() {
-	// collections
-		$ordersCollection = Order::connection()->connection->orders;
+	// collections;		
+	    $ordersCollection = Order::connection()->connection->orders;
 		$usersCollection = User::connection()->connection->users;
 		$ordersShippedCollection = OrderShipped::collection();
 		$itemsCollection = Item::collection();
 		
-		$time = time();
 		$keys = array('OrderId' => true);
 		$inital = array('totalItems' => 0, 'Tracking' => 0, 'TrackNums' => array());
 		$reduce = new MongoCode("function(a,b){ 
@@ -76,15 +75,16 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		//Conditions with date converted to the right timezone
 		$conditions = array(
 			'ShipDate' => array(
-				'$gte' => new MongoDate(strtotime('-1 day',$time)),
-				'$lt' => new MongoDate($time)),
-			'OrderId' => array('$ne' => null),
+				'$gte' => new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y"))),
+				'$lt' => new MongoDate(mktime(0, 0, 0, date("m"), date("d")-4, date("Y")))
+			),
+			'OrderId' => array('$ne' => null)//,
 			//'OrderNum' => '4DBA18C5F223',
 		    // don't validate TRCK # because sometimes there could shipped item without tracking # 
 			// validate tracking number
 			//'Tracking #' => new MongoRegex("/^[1Z]{2}[A-Za-z0-9]+/i"),
 			// do not send notification if it already send
-			'emailNotification' => array('$exists' => false)
+			//'emailNotification' => array('$exists' => false)
 		);
 
 		$results = $ordersShippedCollection->group($keys, $inital, $reduce, $conditions);
@@ -92,9 +92,15 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		if (is_object($results) && get_class_name($results)=='MongoCursor'){
 			Logger::info('Found "'.$results::count().'" orders');
 		} else if ( is_array($results)){
+			if (array_key_exists('errmsg',$results)){
+				Logger::info('ERROR: "'.$results['errmsg']);
+				// to make shure that process closes correctly
+				return false;
+			}
 			$results = $results['retval'];
 			Logger::info('Found "'.count($results).'" orders');
 		}
+		
 		$cc = 0;
 		foreach ($results as $result){
 			if (count($result['TrackNums'])>0){
@@ -115,7 +121,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 					}
 				}
 				unset($ordItm);
-				
+
 				Logger::info('Sening email for order #'.$result['OrderId'].' to '.$data['email']);
 				Silverpop::send('orderShipped', $data);
 				unset($data);
