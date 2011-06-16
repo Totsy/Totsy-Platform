@@ -203,7 +203,7 @@
 	
 	<div class="roundy grey_inside">
 		<?php if ($billingAddr): ?>
-								<h1 style="color:#707070; font-size:14px">Billing Address</h1>
+								<h3 class="gray">Billing Address <span class="fr">(<a href="#" class="add-address">edit</a>)</span></h3>
 								<hr />
 								<address class="billing-address">
 									<?=$billingAddr->address; ?> <?=$billingAddr->address_2; ?><br />
@@ -213,7 +213,7 @@
 						<?php endif ?>
 						<br />
 						<?php if ($shippingAddr): ?>
-								<h1 style="color:#707070; font-size:14px">Shipping Address</h1>
+								<h3 class="gray">Shipping Address <span class="fr">(<a href="#" class="add-address">edit</a>)</span></h3>
 								<hr />
 								<address class="shipping-address">
 									<?=$shippingAddr->address; ?> <?=$shippingAddr->address_2; ?><br />
@@ -292,9 +292,7 @@
 				<?php endforeach ?>
 			<?php endforeach ?>
 
-						<div style="text-align:right; font-size:16px; margin-top:12px;"><strong>Subtotal: </strong><strong style="color:#009900;">$<?=number_format($subTotal,2)?></strong></div>
-				
-	<?php endif ?>
+							<?php endif ?>
 	<!-- End Order Details -->
 
 
@@ -304,8 +302,22 @@
 	
 </div>
 <div class="clear"></div>
-<div id="modal">
-</div>
+<div id="modal"></div>
+<div id="address-modal"></div>
+<script type="text/javascript">
+$(".add-address").click(function() {
+	$("#address-modal").load($.base + 'addresses/add').dialog({
+		autoOpen: false,
+		modal:true,
+		width: 500,
+		height: 600,
+		position: 'top',
+		close: function(ev, ui) {}
+	});
+	$("#address-modal").dialog('open');
+});
+
+</script>
 <?php
     if(number_format((float) $total, 2) >= 35 && number_format((float) $total, 2) <= 44.99){
         echo "<script type=\"text/javascript\">
