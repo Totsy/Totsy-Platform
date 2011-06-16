@@ -99,10 +99,10 @@
 							$(\"#itemCounter$x\").countdown('change', {until: itemExpires, $countLayout});
 
 						$(\"#itemCounter$x\").countdown({until: itemExpires,
-						    expiryText: '<div class=\"over\" style=\"color:#fff; padding:5px; background: #EB132C;\">no longer reserved</div>', $countLayout});
+						    expiryText: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">no longer reserved</div>', $countLayout});
 						var now = new Date()
 						if (itemExpires < now) {
-							$(\"#itemCounter$x\").html('<div class=\"over\" style=\"color:#fff; padding:5px; background: #EB132C;\">no longer reserved</div>');
+							$(\"#itemCounter$x\").html('<div class=\"over\" style=\"color:#EB132C; padding:5px;\">no longer reserved</div>');
 						}
 						});
 						</script>";
@@ -119,7 +119,7 @@
 
 		<tr class="cart-total">
 
-			<td colspan="7" id='subtotal'><strong>Subtotal: <span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong>
+			<td colspan="7" id='subtotal'><div style="text-align: right; font-size: 16px;"><strong>Subtotal: </strong><span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong></div>
 				
 				<hr/>
 			
