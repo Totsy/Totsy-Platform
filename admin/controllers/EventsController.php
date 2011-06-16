@@ -267,12 +267,14 @@ class EventsController extends BaseController {
 		$pending = ($event->start_date->sec > time() ? true : false);
 
 		if (!empty($event->items)) {
-			foreach ($event->items as $_id) {
-				$conditions = compact('_id') + array('enabled' => true);
-
-				if ($item = Item::first(compact('conditions'))) {
-					$items[] = $item;
-				}
+			$eventItems = Item::find('all', array( 'conditions' => array(
+													'event' => array($_id),
+													'enabled' => true
+												),
+												'order' => array('created_date' => 'ASC')
+			));										
+			foreach($eventItems as $eventItem) {
+				$items[] = $eventItem;
 			}
 		}
 		if ($pending == false) {
