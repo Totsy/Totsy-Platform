@@ -92,7 +92,7 @@
                 <div class="splash-details">
 						<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
 						 <p style="padding:0px; margin:0px; font-size:15px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
-						 <p style="padding:0px; margin:-3px 0px 0px 0px; font-size:12px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;"><span id="<?php echo "todaysplash$x"; ?>"></span>
+						 <p style="padding:0px; margin:-3px 0px 0px 0px; font-size:12px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;"><span id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $event->end_date->sec * 1000; ?>" class="counter end"></span>
 						</div>
 
 						<div class="table-cell right">
@@ -102,23 +102,6 @@
 				</div>
 			</div>
 
-		<!-- End product item -->
-		<?php
-			$date = $event->end_date->sec * 1000;
-			$splashid = "#todaysplash$x";
-			$todayJs[] = "<script type=\"text/javascript\">
-				$(function () {
-					var saleEnd = new Date();
-					saleEnd = new Date($date);
-					var now = new Date();
-					var diff = $date - (now.getTime());
-					if((diff / 1000) < (24 * 60 * 60) ) {
-						$(\"$splashid\").countdown({until: saleEnd, layout: 'Ends in {hnn}{sep}{mnn}{sep}{snn}'});
-					} else {
-						$(\"$splashid\").countdown({until: saleEnd, layout: 'Ends in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
-					}
-				});</script>";
-		?>
 			<?php if ($x == 1): ?>
 				<div id="banner_container" class="grid_5">
 					<div><a href="/users/invite"><img src="/img/invite_girl.png" alt="" /></a></div>
@@ -193,7 +176,7 @@
 <div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
 							<p style="padding:0px; margin:0px; font-size:16px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
 							<p style="padding:0px; margin:-3px 0px 0px 0px; font-size:13px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;">
-<span id="<?php echo "futuresplash$x"; ?>"></span>
+<span id="<?php echo "futuresplash$x"; ?>" title="<?php echo $date = $event->start_date->sec * 1000; ?>" class="counter start"></span>
 							</div>
 
 							<div class="table-cell right" style="width:55px; display:block; padding:5px; margin:7px 0px 0px 0px;">
@@ -203,23 +186,6 @@
 							</div>
 						</div>
 				
-			<!-- End product item -->
-			<?php
-				$date = $event->start_date->sec * 1000;
-				$splashid = "#futuresplash$x";
-				$futureJs[] = "<script type=\"text/javascript\">
-					$(function () {var saleStart = new Date();
-						saleStart = new Date($date);
-						var now = new Date();
-						var diff = $date - (now.getTime());
-						if((diff / 1000) < (24 * 60 * 60) ) {
-							$(\"$splashid\").countdown({until: saleStart, layout: 'Opens in {hnn}{sep}{mnn}{sep}{snn}'});
-						} else {
-							$(\"$splashid\").countdown({until: saleStart, layout: 'Opens in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
-						}
-					});
-				</script>";
-			?>
 			<?php $x++; ?>
 			<?php $y++; ?>
 	<?php endforeach ?>
@@ -232,14 +198,14 @@
 <!--Javascript Output for Today's Events -->
 <?php if (!empty($todayJs)): ?>
 	<?php foreach ($todayJs as $value): ?>
-		<?php echo $value ?>
+		<?php //echo $value ?>
 	<?php endforeach ?>
 <?php endif ?>
 
 <!--Javascript Output for Future Events-->
 <?php if (!empty($futureJs)): ?>
 	<?php foreach ($futureJs as $value): ?>
-		<?php echo $value ?>
+		<?php //echo $value ?>
 	<?php endforeach ?>
 <?php endif ?>
 
@@ -248,6 +214,31 @@
 	$(document).ready(function() {
 		$("#banner_container").rotate();
 	});
+	
+	$(".counter").each( function () {
+			
+			var fecha  = parseInt(this.title);
+			var saleTime = new Date(fecha);
+			var now = new Date();
+			var diff = saleTime - (now.getTime());
+			
+			//check if its and end date or start date
+			if($("#" + this.id).hasClass("start"))
+			{
+				if((diff / 1000) < (24 * 60 * 60) ) {
+				    $("#" + this.id).countdown({until: saleTime, layout: 'Opens in {hnn}{sep}{mnn}{sep}{snn}'});
+				} else {
+				    $("#" + this.id).countdown({until: saleTime, layout: 'Opens in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+				}
+			} else {
+				if((diff / 1000) < (24 * 60 * 60) ) {
+					$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {hnn}{sep}{mnn}{sep}{snn}'});
+				} else {
+					$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+				}
+			} 
+	 });
+			
 //-->
 </script>
 <script type="text/javascript">
