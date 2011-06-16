@@ -93,7 +93,7 @@
 						<?php if ($item->total_quantity <= 0): ?>
 								<?=$this->html->image('/img/soldout.png', array(
 									'title' => "Sold Out",
-									'style' => 'z-index : 2; position : absolute; left:57%; margin:10px;'
+									'style' => 'z-index : 2; position : absolute; right:0;'
 								)); ?>
 						<?php endif ?>
 						<?=$this->html->link(
