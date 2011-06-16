@@ -203,7 +203,7 @@
 	
 	<div class="roundy grey_inside">
 		<?php if ($billingAddr): ?>
-								<h1 style="color:#707070; font-size:22px">Billing Address</h1>
+								<h1 style="color:#707070; font-size:14px">Billing Address</h1>
 								<hr />
 								<address class="billing-address">
 									<?=$billingAddr->address; ?> <?=$billingAddr->address_2; ?><br />
@@ -213,7 +213,7 @@
 						<?php endif ?>
 						<br />
 						<?php if ($shippingAddr): ?>
-								<h1 style="color:#707070; font-size:22px">Shipping Address</h1>
+								<h1 style="color:#707070; font-size:14px">Shipping Address</h1>
 								<hr />
 								<address class="shipping-address">
 									<?=$shippingAddr->address; ?> <?=$shippingAddr->address_2; ?><br />
