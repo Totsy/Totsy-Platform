@@ -169,7 +169,7 @@
 <?php if (!empty($sizes)): ?>
 				<?php if ( !((string)$sizes[0] ==='no size')): ?>
 						<select name="item_size" id="size-select">
-									<option value="">Please Select Size</option>
+									<option value="no size">Please Select Size</option>
 							<?php foreach ($sizes as $value): ?>
 									<option value="<?=$value?>"><?=$value?></option>
 							<?php endforeach ?>
@@ -269,14 +269,14 @@ $(document).ready(function() {
       $("select").change(checkOptions);
 
       function checkOptions() {
-        var yesFound = false;
+        var getSize = false;
         $("select").each(function(index, element) {
-          if ( $(element).val() == "" ) {
-            yesFound = true;
+          if ( $(element).val() == "no size" ) {
+            getSize = true;
           }
         });
         
-        if (yesFound) {
+        if (getSize) {
           $("#hidden-div").show();
           $("input[type=Submit]").attr("disabled","disabled");
         } else {
