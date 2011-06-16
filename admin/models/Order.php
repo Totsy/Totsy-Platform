@@ -98,7 +98,7 @@ class Order extends \lithium\data\Model {
 		$orderId = new MongoId($order['_id']);
 		try {
 		    $error = null;
-		    if (is_numeric($order['authKey'])){
+		    if ($order['total'] != 0 && is_numeric($order['authKey'])){
                 $auth = Payments::void('default', $order['authKey']);
 			} else {
 			    $auth = -1;
@@ -129,7 +129,7 @@ class Order extends \lithium\data\Model {
 		$orderId = new MongoId($order['_id']);
 		try {
 		    $error = null;
-		    if (is_numeric($order['authkey'])) {
+		    if ($order['total'] != 0 && is_numeric($order['authKey'])) {
                 $auth = Payments::capture('default', $order['authKey'], round($order['total'], 2));
             } else {
                 $auth = -1;
