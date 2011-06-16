@@ -79,7 +79,7 @@
 		<div id="listingCountdown" class="listingCountdown"></div>
 
 	</div>
-<?=$this->form->create(null, array('url' => 'Cart::add')); ?>
+
 	<div id="detail-top-left"  style="width:405px;">
 		<h1><strong><?=$event->name?></strong> <?=$item->description." ".$item->color; ?></h1>
 	</div>
@@ -160,16 +160,18 @@
 	</div>
 	
 	
-	<div class="grid_3"><?=$this->form->hidden("item_id", array('value' => "$item->_id", 'id'=>'item_id')); ?>
+	<div class="grid_3">
 
 	<div id="detail-top-right" class="r-container">
 
 
 		<div class="md-gray p-container roundy">
+		
+<?=$this->form->create(null, array('url' => 'Cart::add')); ?>		
 <?php if (!empty($sizes)): ?>
 				<?php if ( !((string)$sizes[0] ==='no size')): ?>
 						<select name="item_size" id="size-select">
-									<option value="no size">Please Select Size</option>
+									<option value="">Please Select Size</option>
 							<?php foreach ($sizes as $value): ?>
 									<option value="<?=$value?>"><?=$value?></option>
 							<?php endforeach ?>
@@ -177,6 +179,7 @@
 						<hr />
 				<?php endif ?>
 			<?php endif ?>
+			<?=$this->form->hidden("item_id", array('value' => "$item->_id", 'id'=>'item_id')); ?>
 			<h2 class="caps" style="font-size:14px; padding-top:5px">Totsy Price</h2>
 			<div style="padding: 10px 0px 0px 0px; color:#009900; font-size:24px;">$<?=number_format($item->sale_retail,2); ?></div>
 
@@ -193,9 +196,11 @@
 		<?=$this->html->image("/image/$logo.jpg", array(
 			'alt' => $event->name, 'width' => "148"
 		)); ?>
+<?=$this->form->end(); ?>
+
  		</div>
 	</div>
-<?=$this->form->end(); ?>
+
 
 		<div style="padding:10px 0px; text-align:center;">
 			<?php echo $spinback_fb; ?>
@@ -271,7 +276,7 @@ $(document).ready(function() {
       function checkOptions() {
         var getSize = false;
         $("select").each(function(index, element) {
-          if ( $(element).val() == "no size" ) {
+          if ( $(element).val() == "" ) {
             getSize = true;
           }
         });
