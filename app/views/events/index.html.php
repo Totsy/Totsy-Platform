@@ -51,7 +51,7 @@
 						<?php if ($itemCounts[ (string) $event->_id] == 0): ?>
 								<?=$this->html->image('/img/soldout.png', array(
 									'title' => "Sold Out",
-									'style' => 'z-index : 9999; position : absolute; right:0;'
+									'style' => 'z-index : 99999; position : absolute; right:0;'
 								)); ?>
 					<?php endif ?>
 					<?php

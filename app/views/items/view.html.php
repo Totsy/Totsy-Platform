@@ -1,4 +1,4 @@
-<?=$this->html->script(array('jqzoom.pack.1.0.1','jquery.equalheights', 'cloud-zoom.1.0.2'));?>
+<?=$this->html->script(array('jqzoom.pack.1.0.1', 'cloud-zoom.1.0.2'));?>
 <?=$this->html->style('jquery.countdown');?>
 <div class="grid_16">
 	<h2 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a><div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
@@ -10,7 +10,7 @@
 		<?php if ($item->total_quantity <= 0): ?>
 					<?=$this->html->image('/img/soldout.png', array(
 						'title' => "Sold Out",
-						'style' => 'z-index : 9999; position : absolute; right:0;'
+						'style' => 'z-index : 99999; position : absolute; right:0;'
 					)); ?>
 			<?php endif ?>
 				<?php if (!empty($item->primary_image)): ?>
