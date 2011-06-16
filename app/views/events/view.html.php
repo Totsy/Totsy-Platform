@@ -24,7 +24,6 @@
 				</div>
 				
 				<div class="grid_11 omega" style="padding:10px 0px;">
-				<div style="float:right!important;"><?php echo $spinback_fb; ?></div>
 					<div class="grid_3 alpha omega">
 						<!-- Display Logo Image -->
 						<?php if (!empty($event->images->logo_image)): ?>
@@ -44,6 +43,7 @@
 		<br />
 		
 			<div class="grid_16" style="text-align:right; margin:0px 5px 10px 0px;">
+			<div><?php echo $spinback_fb; ?></div>
 			<!-- div class="sort-by" -->
 			<!-- select id="by-category" name="by-category">
 				<option value="">View By Category</option>
