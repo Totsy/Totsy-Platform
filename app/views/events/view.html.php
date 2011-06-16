@@ -41,7 +41,7 @@
 			</div>
 		</div>
 		<br />
-			<div class="grid_13 omega" style="text-align:left; margin:0px 5px 10px 0px;"><?php echo $spinback_fb; ?></div>
+			<div class="grid_13 omega" style="text-align:left; height:34px"><?php echo $spinback_fb; ?></div>
 			<div class="grid_3" style="text-align:right; margin:0px 5px 10px 0px;">
 			<!-- div class="sort-by" -->
 			<!-- select id="by-category" name="by-category">

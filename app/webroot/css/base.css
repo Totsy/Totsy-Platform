@@ -3196,7 +3196,7 @@ a.nivo-prevNav {
 	margin:5px 0px 10px 8px!important;
 }
 
-#spinback-spincycle{margin-top:-34px;}
+#spinback-spincycle{position:absolute; top:0px;}
 
 #sb_content h3 {
 	color:#F3072B!important;
