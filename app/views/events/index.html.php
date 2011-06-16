@@ -104,7 +104,7 @@
 
 			<?php if ($x == 1): ?>
 				<div id="banner_container" class="grid_5">
-					<div><a href="/users/invite"><img src="/img/invite_girl.png" alt="" /></a></div>
+					<div><a href="/users/invite"><img src="/img/invite_girl.png" alt="" height="404"/></a></div>
 					<?php if(!empty($banner["img"])): ?>
 						<?php foreach($banner["img"] as $image): ?>
 							<div><?php if(!empty($image["url"])):?>
