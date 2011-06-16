@@ -2877,7 +2877,7 @@ body.login .our365-login #intro-copy {
 	border:1px solid #eee;
 	margin:0;
 	background:#FFF;
-	padding:.01em;
+	padding:0.25em;
 	border-radius:12px;
 	overflow:hidden;
 	-moz-border-radius:12px;
