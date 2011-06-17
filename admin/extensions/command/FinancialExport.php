@@ -322,7 +322,6 @@ class FinancialExport extends \lithium\console\Command  {
 
 				    }
 				}
-
 				if (array_key_exists('vendor', $item)) {
 				    $item['vendor'] = $item['vendor'];
 				} else {
