@@ -89,7 +89,7 @@
     	<td valign="top">
 			<table style=" margin:0 10px;">
 				<tr>
-					<h1 style="color:#707070; font-size:14px;"><?php if ($credit = '0') { ?>Credits &amp; <?php } ?>Promotional Codes</h1>
+					<h1 style="color:#707070; font-size:14px;"><?php if (!$credit == '0') { ?>Credits &amp; <?php } ?>Promotional Codes</h1>
 					<hr />
 				</tr>
 				<tr>
@@ -100,7 +100,7 @@
 				<tr>
 					<td>
 							<strong>Promo Savings:</strong></td>
-							<td><?php if (!empty($orderPromo)): ?>
+							<td style="text-align:left; padding-left:10px;"><?php if (!empty($orderPromo)): ?>
 								-$<?=number_format((float) abs($orderPromo->saved_amount), 2);?>
 							<?php else: ?>
 								-$<?=number_format((float) 0, 2);?>
