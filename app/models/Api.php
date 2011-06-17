@@ -3,6 +3,21 @@
 namespace app\models;
 
 /*
+ * 2011-06-16 Upadte notes
+ *  - Api::errorCodes(): array_key_exists firrst parameter must be integer or string fixed
+ *  - Api::doAuthorization() & Api::doTokenization(): 
+ *  	error handeling fixed
+ *  - Api::doAuthorization(): calls proper Api::validateAuthToken()
+ *  - Api::validateAuthToken(): error handling fixed
+ *  - Api::validate_Sig(): removed tmp_token checker
+ *  - Api::validate_Sig(): auth_key replced with auth_token
+ *  - Api::validate_Sig(): private_key replaced with private_token
+ *  - Api::validate_Sig() & Api::validateAuthToken(): 
+ *  	Api::findAuthKey() replaced with private_token
+ *  - Api::validateAuthToken(): return value fixed
+ */
+
+/*
  * approximate schema for API.credentials
  * {{{
  * 		"_id" : ObjectId("4d6dda33538926843a0026ad"),
@@ -109,7 +124,7 @@ class Api extends Base {
 	}
 	
 	private static function doAuthorization($query){
-		if (($code=static::validate_AuthToken($query))!==true) { return self::errorCodes($code); }
+		if (($error=static::validateAuth($query))!==true) { return $error; }
 		$for = self::findAuthToken($query['auth_token']);
 		if (!is_array($for) || (is_array($for) && !array_key_exists('auth_token', $for))){
 			return static::errorCodes(199);
@@ -123,10 +138,10 @@ class Api extends Base {
 	}
 
 	private static function doTokenization($query){
-		if (($code=static::validate_Token($query))!==true) { return self::errorCodes($code); }
+		if (($error=static::validateToken($query))!==true) { return $error; }
 		$for = self::findToken($query['token']);
 		if (!is_array($for) || (is_array($for) && !array_key_exists('auth_token', $for))){
-			return static::errorCodes(199);
+			return static::errorCodes(196);
 		}
 		return  self::generateToken($for);
 	}
@@ -134,11 +149,13 @@ class Api extends Base {
 	public static function generateToken ($user){
 		
 		if (!is_array($user)) { return static::errorCodes(500); }
-		$token_expires = strtotime( (string) $user['last_active'])  * 60 * self::$_token_expires;
-		if ( $token_expires >time()) return $user['token'];
-		
-		$user['token'] = md5(mktime().uniqid(mt_rand()).'+'.$token_expires);
-		$user['last_active'] = new MongoDate();
+		$token_expires = $user['last_active']->sec  + 60 * self::$_token_expires;
+		if ( $token_expires > time()) {
+			$user['last_active'] = new MongoDate();
+		} else {
+			$user['token'] = md5(mktime().uniqid(mt_rand()).'+'.$token_expires);
+			$user['last_active'] = new MongoDate();
+		}
 		static::collection()->save($user);
 		return $user['token'];
 	}
@@ -158,12 +175,12 @@ class Api extends Base {
 	}
 		
 	public static function validateAuth($query){		
-		if (($code=static::validate_AuthKey($query))!==true) { return array('error' => self::errorCodes($code)); }
+		if (($code=static::validate_AuthToken($query))!==true) { return self::errorCodes($code); }
 		if (static::$_isSecure === false){
-			if (($code=static::validate_Time($query))!==true) { return array('error' => self::errorCodes($code)); }
-			if (($code=static::validate_Sig($query))!==true) { return array('error' => self::errorCodes($code)); }
+			if (($code=static::validate_Time($query))!==true) { return self::errorCodes($code); }
+			if (($code=static::validate_Sig($query))!==true) { return self::errorCodes($code); }
 		}
-		return self::findAuthKey($query['auth_key']);
+		return true;
 	}
 	
 	public static function errorCodes($status = 500){
@@ -198,6 +215,9 @@ class Api extends Base {
 			 99 => 'Request-URI Too short',
 			100 => 'Continue', 		    
 			101 => 'Switching Protocols',
+			195 => 'Invalid TOKEN',
+			196 => 'Unknown TOKEN',
+			197 => 'Unknown AUTH_TOKEN',
 			198 => 'Authorization failed',
 			199 => 'Invalid AUTH_TOKEN', 		    
 			200 => 'OK', 		    
@@ -241,7 +261,7 @@ class Api extends Base {
 			505 => 'HTTP Version Not Supported' 		
 		);  
 				
-		if (array_key_exists($status, $codes)) { 
+		if (is_numeric($status) && array_key_exists($status, $codes)) { 
 			$error = array('code' => $status, 'message' => $codes[$status]);
 		} else {
 			// in case unknown error code ocurred
@@ -253,7 +273,7 @@ class Api extends Base {
 
 	protected function validate_AuthToken ($value){
 		if (!is_array($value)) { return 2; }
-		if (!array_key_exists('auth_token', $value)) { return 3; }
+		if (!array_key_exists('auth_token', $value)) { return 197; }
 		// in case there is more than 40 charctres alowed
 		if ( strlen(trim($value['auth_token'])) != 40) { return 6; }
 		// replace all non hash caractres to ""
@@ -332,20 +352,16 @@ class Api extends Base {
 		unset($data['sig']);
 		ksort($data);
 		
-		if (array_key_exists('auth_key', $data)){
-			$creds = self::findAuthKey($data['auth_key']);
-			if (!is_array($creds) || (is_array($creds) && !array_key_exists('auth_key', $creds))) return 81;
-		} else if (array_key_exists('tmp_token', $data)){
-			$creds = self::findTmpToken($data['tmp_token']);
-			if (!is_array($creds) || (is_array($creds) && !array_key_exists('tmp_token', $creds))) return 82;
+		$creds['private_token'] = null;
+		if (array_key_exists('auth_token', $data)){
+			$creds = self::findAuthToken($data['auth_token']);
+			if (!is_array($creds) || (is_array($creds) && !array_key_exists('auth_token', $creds))) return 81;
 		} else if (array_key_exists('token', $data)){
 			$creds = self::findToken($data['token']);
 			if (!is_array($creds) || (is_array($creds) && !array_key_exists('token', $creds))) return 83;
 		}
 
-		
-		
-		$sig_confirm = md5((isset($creds['private_key'])?$creds['private_key']:'').implode("", $data));
+		$sig_confirm = md5($creds['private_token'].implode("", $data));
 		if ($sig != $sig_confirm) { return 86; }			
 		
 		return true;

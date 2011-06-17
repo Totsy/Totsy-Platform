@@ -1,5 +1,10 @@
 <?php
 
+/*
+ * 2011-05-16 updates
+ * 	- output format checker fixed APIController::index()
+ */
+
 namespace app\controllers;
 
 //use admin\controllers\EventsController;
@@ -12,6 +17,7 @@ use \lithium\util\Validator;
 use app\models\Api;
 use app\models\Item;
 use app\models\Event;
+use MongoId;
 
 
 class APIController extends  \lithium\action\Controller {
@@ -35,28 +41,21 @@ class APIController extends  \lithium\action\Controller {
 	// TODO: add request method handeling
 	public function index(){
 		// check the format of the output data
-		$format = array_pop( explode('.', $this->request->url) );
-		var_dump ($format);
-		echo '<br>';
-		if (!is_null($format)) $format = strtolower($format);
-		else $format = 'json';
+		$format = null;
+		$params = $this->request->args;
 		
-		var_dump ($format);
-		echo '<br>';
-		
+		if (!preg_match("/[\.]{1}/", $this->request->url)){
+			$format = 'json';
+		} else { 
+			$format = array_pop( explode('.', $this->request->url) );
+			if (!is_null($format)) $format = strtolower($format);
+		}		
 		// format validator
-		if (!in_array($format, static::$_formats)){
+		if (!is_null($format) && !in_array($format, static::$_formats)){
 			$this->format = 'json';
 			$this->display( Api::errorCodes(415) );
 		}
-		/*
-		echo '<pre>';
-		print_r($this->request);
-		print_r($format);
-		echo '</pre>';
-		exit(0);
-		*/
-		$params = $this->request->args;
+		
 		// set protocol HTTP OR HTTPS 
 		Api::init($this->request);
 		
@@ -153,20 +152,20 @@ class APIController extends  \lithium\action\Controller {
 		$items = array();
 		foreach ($openEvents as $event){
 			$ev = $event->data();
-			if ( !array_key_exists('items', $ev) || ( is_array($ev['item']) && count($ev['item']))) continue;
+			if ( !array_key_exists('items', $ev) || ( is_array($ev['items']) && count($ev['items'])==0)) continue;
 			
 			$mItems  = array();
 			foreach ($ev['items'] as $item){
-				$mItems[] = new MonogoId($item);
+				$mItems[] = new MongoId($item);
 			}
-			unset($mItems);
+			
 			
 			$itms = Item::all(array(
 				'conditions' => array(
 					'_id' => array( '$in' => $mItems  )
 				)
 			));
-			
+			unset($mItems);
 			foreach ($itms as $itm){
 				$items[] = $itm->data();
 			}
@@ -175,6 +174,8 @@ class APIController extends  \lithium\action\Controller {
 		return $items;				
 	}
 	
+	//TODO: add xml output format handling
+	//TODO: add "layouts" processing
 	private function display ($data){
 		switch ($this->_format){
 			case 'json':
