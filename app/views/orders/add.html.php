@@ -6,7 +6,7 @@
 ?>
 
 <div class="grid_16">
-	<h2 class="page-title gray">Checkout / Confirm Shipping &amp; Billing</h2>
+	<h2 class="page-title gray">Checkout / Shipping &amp; Billing Address</h2>
 	<hr />
 	<?php if (!empty($error)) { ?>
 	<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /><?=$error; ?></div>
