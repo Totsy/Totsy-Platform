@@ -143,7 +143,6 @@
 				echo $this->html->link(
 					$this->html->image("$relatedImage", array(
 						"class" => "img-th",
-						"style" => "border-radius:12px; overflow:hidden; -moz-border-radius: 12px; -webkit-border-radius:12px;",
 						"width" => "75",
 						"height" => "75")),
 						"/sale/$event->url/$relatedItem->url", array(

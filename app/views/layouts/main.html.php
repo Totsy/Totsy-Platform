@@ -52,7 +52,7 @@
 			<div class="menu_top_right">
 			<?php if (!(empty($userInfo))) { ?>
 				<a href="/account" title="My Account">My Account</a>
-				<?php if ($credit = '0') { ?>
+				<?php if (!$credit == '0') { ?>
 				<a href="/account/credits" title="My Credits $<?=$credit?>">My Credits $<?=$credit?></a>
 				<?php } ?>
 				<a href="/cart/view" class="cart_icon" title="My Cart (<?=$cartCount;?>)">My Cart (<?=$cartCount;?>)</a>
