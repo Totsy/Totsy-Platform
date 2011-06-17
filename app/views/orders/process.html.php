@@ -305,7 +305,7 @@
 </div>
 <div class="clear"></div>
 <div id="modal"></div>
-<div id="address-modal" style="background:#fff!important; z-index:9999999999!important;"></div>
+<div id="address-modal" style="z-index:9999999999!important;"></div>
 <script type="text/javascript">
 $(".add-address").click(function() {
 	$("#address-modal").load($.base + 'addresses/add').dialog({
