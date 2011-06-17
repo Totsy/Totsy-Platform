@@ -14,6 +14,7 @@ use lithium\core\Environment;
 use MongoDate;
 use MongoRegex;
 use MongoId;
+use MongoCursor;
 use admin\extensions\command\Base;
 use admin\extensions\command\Exchanger;
 use lithium\analysis\Logger;
@@ -138,6 +139,7 @@ class OrderExport extends Base {
 	 * @todo Make sure a queue cannot contain two empty arrays.
 	 */
 	public function run() {
+	     MongoCursor::$timeout = -1;
 		Environment::set($this->env);
 		$this->tmp = LITHIUM_APP_PATH . $this->tmp;
 		$this->processed = LITHIUM_APP_PATH . $this->processed;
@@ -189,6 +191,7 @@ class OrderExport extends Base {
 	 * @return boolean
 	 */
 	protected function _orderGenerator() {
+	    MongoCursor::$timeout = -1;
 		$this->log("Starting to process Orders");
 		$orderCollection = Order::collection();
 		$itemCollection = Item::connection()->connection->items;
@@ -291,6 +294,7 @@ class OrderExport extends Base {
 	 * @param array $eventId Array of events.
 	 */
 	protected function _itemGenerator() {
+	     MongoCursor::$timeout = -1;
 		$this->log('Generating Items');
 		$filename = 'TOTIT'.$this->time.'.csv';
 		$handle = $this->tmp.$filename;
@@ -370,6 +374,7 @@ class OrderExport extends Base {
 	 * @return mixed
 	 */
 	protected function _purchases() {
+	     MongoCursor::$timeout = -1;
 		$this->log('Generating Purchase Orders');
 		$orderCollection = Order::collection();
 		foreach ($this->poEvents as $eventId) {
