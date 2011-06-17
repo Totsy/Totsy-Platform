@@ -92,7 +92,6 @@ class EventsController extends BaseController {
 				$filters = array('All' => 'All');
 			}
 			if (!empty($event->items)) {
-					$conditions = compact('_id') + array('enabled' => true);
 					$eventItems = Item::find('all', array( 'conditions' => array(
 													'event' => array((string)$event->_id),
 													'enabled' => true
