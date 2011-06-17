@@ -94,7 +94,9 @@ class FinancialExport extends \lithium\console\Command  {
 	    'customer_id',
 	    'credit_type',
 	    'description',
+	    'reason',
 	    'amount',
+	    'credit_amount',
 	    'issued_date'
 	);
 
@@ -146,7 +148,7 @@ class FinancialExport extends \lithium\console\Command  {
 		 * setup for future queries via cron.
 		 */
 		$orderConditions = array(
-			'date_created' => array('$gte' => new MongoDate(strtotime('Jan 1, 2011')), '$lte' => new MongoDate(strtotime("June 8, 2011")))
+			'date_created' => array('$gte' => new MongoDate(strtotime('Aug 1, 2010')), '$lte' => new MongoDate(strtotime("Dec 31, 2010")))
 		//	'payment_date' => array('$exists' => true),
 		//	'payment_date' => array('$gte' => new MongoDate(strtotime('May 28, 2011')), '$lte' => new MongoDate(strtotime('June 7, 2011')))
 		);
@@ -301,7 +303,26 @@ class FinancialExport extends \lithium\console\Command  {
 				if (empty($item['size'])) {
 					$item['size'] = "none";
 				}
-				$event = Event::find('first', array('_id' => $item['event_id']));
+				if (array_key_exists('event_id' , $item)) {
+				    $event = Event::collection()->findOne(array('_id' => new MongoId($item['event_id'])));
+				    $start_date = (is_object($event['start_date'])) ? date('m/d/Y', $event['start_date']->sec) : $event['start_date'];
+				    $end_date = (is_object($event['end_date'])) ? date('m/d/Y', $event['end_date']->sec) : $event['end_date']['sec'];
+				} else {
+				    $event = Event::collection()->findOne(array('_id' => new MongoId($itemRecord['event'][0])));
+
+				    if ($event) {
+				        $item['event_id'] = (string) $event['_id'];
+				        $start_date = (is_object($event['start_date'])) ? date('m/d/Y', $event['start_date']->sec) : $event['start_date'];
+				        $end_date = (is_object($event['end_date'])) ? date('m/d/Y', $event['end_date']->sec) : $event['end_date']['sec'];
+				    } else {
+				        $item['event_id'] = "none";
+				        $start_date = "none";
+				        $end_date = "none";
+				        $event["name"] = "none";
+
+				    }
+				}
+
 				if (array_key_exists('vendor', $item)) {
 				    $item['vendor'] = $item['vendor'];
 				} else {
@@ -312,8 +333,8 @@ class FinancialExport extends \lithium\console\Command  {
 				} else {
 				    $item['sub_category'] = "none";
 				}
-				$item['event_start_date'] = date('m/d/Y', $event['start_date']->sec);
-				$item['event_end_date'] = date('m/d/Y', $event['end_date']->sec);
+				$item['event_start_date'] = $start_date;
+				$item['event_end_date'] = $end_date;
 				$item['order_id_fk'] = $order['_id'];
 				$item['order_id_short'] = $order['order_id'];
 				$item['sale_wholesale'] = $itemRecord['sale_whol'];
