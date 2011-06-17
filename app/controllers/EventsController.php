@@ -100,8 +100,9 @@ class EventsController extends BaseController {
 												'order' => array('created_date' => 'ASC')
 											));
 					foreach ($eventItems as $eventItem) {
-						if (array_key_exists('departments',$eventItem) && !empty($eventItem->departments)) {
-							if(in_array($departments,$eventItem->departments) ) {
+						$result = $eventItem->data();
+						if (array_key_exists('departments',$result) && !empty($result['departments'])) {
+							if(in_array($departments,$result['departments']) ) {
 								if ($eventItem->total_quantity <= 0) {
 									$items_closed[] = $eventItem;
 								} else {
