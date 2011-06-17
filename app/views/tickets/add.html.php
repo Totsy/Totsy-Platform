@@ -94,7 +94,7 @@
 		</select>
 
 		<br />
-
+		<br />
 		<h3>Your Message</h3>
 		<?=$this->form->textarea('message', array(
 			'class' => 'inputbox',
