@@ -342,7 +342,7 @@
 												<?php endif ?>
 												Sales Tax: <span class="fr">$<?=number_format($order->tax,2); ?></span>
 												<br>
-												Shipping:
+												Shipping: 
 												<?php if ( array_key_exists('overSizeHandling', $order->data()) && $order->overSizeHandling !=0): ?>
                                                     <br>
                                                     Oversize Shipping: <span class="fr">$<?=number_format($order->overSizeHandling,2); ?></span>
