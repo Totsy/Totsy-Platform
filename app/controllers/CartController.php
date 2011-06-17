@@ -7,6 +7,7 @@ use app\models\Item;
 use app\models\Event;
 use lithium\storage\Session;
 use MongoId;
+use MongoDate;
 
 /**
  * Facilitates the app CRUD operations of a users cart (baskets).
@@ -70,6 +71,27 @@ class CartController extends BaseController {
 	 * @return compact
 	 */
 	public function add() {
+		$actual_cart = Cart::active();
+		if (!empty($actual_cart)) {
+			$items = $actual_cart->data();
+		}
+		#T - Refresh the counter of each timer to 15 min
+		if (!empty($items)) {
+			//Security Check - Max 25 items
+			if(count($items) < 25) {
+				foreach ($items as $item) {
+					$event = Event::find('first',array('conditions' => array("_id" => $item['event'][0])));
+					$now = getdate();
+					if(($event->end_date->sec > ($now[0] + (15*60)))) {
+						$cart_temp = Cart::find('first', array(
+							'conditions' => array('_id' =>  $item['_id'])));
+						$cart_temp->expires = new MongoDate($now[0] + (15*60));
+						$cart_temp->save();
+					}
+				}
+			}
+		}
+		#T
 		$cart = Cart::create();
 		$message = null;
 		if ($this->request->data) {
@@ -102,9 +124,12 @@ class CartController extends BaseController {
 					if( $avail > 0 ){
 						++$cartItem->quantity;
 						$cartItem->save();
-					}else{
+						//calculate savings
+						$item[$item['_id']] = $cartItem->quantity;
+						$this->savings($item, 'add');
+					} else {
 						$cartItem->error = 'You can’t add this quantity in your cart. <a href="#5">Why?</a>';
-					$cartItem->save();
+						$cartItem->save();
 					}
 				}else{
 					$cartItem->error = 'You have reached the maximum of 9 per item.';
@@ -118,7 +143,9 @@ class CartController extends BaseController {
 				unset($item['_id']);
 				$info = array_merge($item, array('quantity' => 1));
 				if ($cart->addFields() && $cart->save($info)) {
-
+					//calculate savings
+					$item[$itemId] = 1;
+					$this->savings($item, 'add');
 				}
 			}
 			$this->redirect(array('Cart::view'));
@@ -140,8 +167,12 @@ class CartController extends BaseController {
 					'conditions' => array(
 						'_id' => $data["id"]
 				)));
+				$quantity = $cart->quantity;
 				if(!empty($cart)){
 					Cart::remove(array('_id' => $data["id"]));
+					//calculate savings
+					$item[$cart->item_id] = $quantity;
+					$this->savings($item, 'remove');
 				}
 			}
 
@@ -177,7 +208,11 @@ class CartController extends BaseController {
 					$cart->error = $result['errors'];
 					$cart->save();
 				}
+				//build temp array
+				$items[$cart->item_id] = $quantity;
 			}
+			//calculate savings
+			$this->savings($items, 'update');
 		}
 		$this->_render['layout'] = false;
 		$this->redirect('/cart/view');
@@ -206,6 +241,41 @@ class CartController extends BaseController {
             $total_left = 45 - $query['subtotal'];
             return compact('total_left', 'url');
         }
+	}
+	public function savings($items = null, $action) {
+		if($action == "update"){
+			$savings = 0;
+			if(!empty($items)) {
+				foreach($items as $key => $quantity) {
+					$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
+					if(!empty($itemInfo->msrp)){
+						$savings += $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
+					}
+				}
+			}
+		} else if($action == "add") {
+			$savings = Session::read('userSavings');
+			if(empty($savings)) {
+				$savings = 0;
+			}
+			if(!empty($items)) {
+				foreach($items as $key => $quantity) {
+					$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
+					if(!empty($itemInfo->msrp)){
+						$savings += $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
+					}
+				}
+			}
+		} else if($action == "remove") {
+			$savings = Session::read('userSavings');
+			foreach($items as $key => $quantity) {
+				$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
+				if(!empty($itemInfo->msrp)){
+					$savings -= $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
+				}
+			}
+		}
+		Session::write('userSavings', $savings);
 	}
 }
 ?>

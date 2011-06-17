@@ -34,6 +34,8 @@ class OrdersController extends BaseController {
 	 * @return compact
 	 */
 	public function index() {
+		$itemsCollection = Item::collection();
+		$lifeTimeSavings = 0;
 		$user = Session::read('userLogin');
 		$orders = Order::find('all', array(
 			'conditions' => array(
@@ -41,7 +43,7 @@ class OrdersController extends BaseController {
 			'order' => array('date_created' => 'DESC')
 		));
 		$trackingNumbers = array();
-		foreach ($orders as $order) {
+		foreach ($orders as $key => $order) {
 			$list = $trackingNum = array();
 			$shipDate["$order->_id"] = Cart::shipDate($order);
 			$conditions = array('OrderId' => $order->_id);
@@ -56,9 +58,20 @@ class OrdersController extends BaseController {
 			if ($trackingNum) {
 				$trackingNumbers["$order->_id"] = $trackingNum;
 			}
+			//Calculatings LifeTime Savings
+			if (empty($order["cancel"])) {
+				$savings = 0;
+				foreach ($order["items"] as $item) {
+					$itemInfo = $itemsCollection->findOne(array("_id" => new MongoId($item["item_id"])));
+					if (empty($item->cancel)) {
+						$lifeTimeSavings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
+						$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
+					}
+				}
+				$orderSavings[$key] = $savings;
+			}
 		}
-
-		return (compact('orders', 'shipDate', 'trackingNumbers'));
+		return (compact('orders', 'shipDate', 'trackingNumbers', 'orderSavings', 'lifeTimeSavings'));
 	}
 
 	/**
@@ -71,6 +84,7 @@ class OrdersController extends BaseController {
 	 * @return mixed
 	 */
 	public function view($order_id) {
+		$itemsCollection = Item::collection();
 		$user = Session::read('userLogin');
 		$order = Order::find('first', array(
 			'conditions' => array(
@@ -108,7 +122,14 @@ class OrdersController extends BaseController {
 				}
 			}
 		}
-
+		//Calculatings Savings
+		$savings = 0;
+		foreach ($order->items as $item) {
+			$itemInfo = $itemsCollection->findOne(array("_id" => new MongoId($item["item_id"])));
+			if (empty($item->cancel)) {
+				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
+			}
+		}
 		return compact(
 			'order',
 			'orderEvents',
@@ -121,7 +142,8 @@ class OrdersController extends BaseController {
 			'spinback_fb',
 			'shipRecord',
 			'preShipment',
-			'openEvent'
+			'openEvent',
+			'savings'
 		);
 	}
 
@@ -188,6 +210,8 @@ class OrdersController extends BaseController {
 		}
 		$savings = Session::read('userSavings');
 		$shipDate = Cart::shipDate($cart);
+		//calculate savings
+		$savings = Session::read('userSavings');
 		return $vars + compact('cartEmpty', 'cartByEvent', 'error', 'orderEvents', 'shipDate', 'savings');
 	}
 
@@ -433,15 +457,23 @@ class OrdersController extends BaseController {
 				'shipDate' => $shipDate
 			);
 			Silverpop::send('orderConfirmation', $data);
+			//Re Initialize userSavings
+			Session::write('userSavings', 0);
 			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
 				Silverpop::send('nextPurchase', $data);
 			}
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
-		
-		//calculate savings
+		//calculate final savings
 		$savings = Session::read('userSavings');
+		if(!empty($orderPromo->saved_amount) && !empty($savings)) {
+			$savings += abs($orderPromo->saved_amount);
+		}
+		if(!empty($orderCredit->credit_amount) && !empty($savings)) {
+			$savings += abs($orderCredit->credit_amount);
+		}
+		//recalculate with promo and credits
 		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings');
 
 	}

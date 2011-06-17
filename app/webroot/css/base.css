@@ -812,12 +812,10 @@ div.col-2 .box-2 {
 .img-th {
 	float:left;
 	cursor:pointer;
-	border:1px solid #D7D7D7;
 	margin:7px 3px 0 0;
 }
 
 .img-th.active {
-	border:1px solid #ed1c25;
 	margin:7px 3px 0 0;
 }
 

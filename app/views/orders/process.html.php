@@ -89,7 +89,7 @@
     	<td valign="top">
 			<table style=" margin:0 10px;">
 				<tr>
-					<h1 style="color:#707070; font-size:14px;">Credits &amp; Promotional Codes</h1>
+					<h1 style="color:#707070; font-size:14px;"><?php if ($credit = '0') { ?>Credits &amp; <?php } ?>Promotional Codes</h1>
 					<hr />
 				</tr>
 				<tr>
@@ -146,7 +146,9 @@
 							<div style="clear:both"></div>
 						</div>
 					<?php else : ?>
+						<?php if ($credit = '0') { ?>
 						<div style="padding:10px; background:#eee;"><h1 style="color:#707070; font-size:14px;">Credits: <span style="color:#009900; float:right;">$0.00</span></h1></div>
+						<?php } ?>
 					<?php endif ?>
 				</tr>
 				<tr>

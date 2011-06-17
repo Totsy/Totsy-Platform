@@ -52,7 +52,9 @@
 			<div class="menu_top_right">
 			<?php if (!(empty($userInfo))) { ?>
 				<a href="/account" title="My Account">My Account</a>
+				<?php if (!$credit == '0') { ?>
 				<a href="/account/credits" title="My Credits $<?=$credit?>">My Credits $<?=$credit?></a>
+				<?php } ?>
 				<a href="/cart/view" class="cart_icon" title="My Cart (<?=$cartCount;?>)">My Cart (<?=$cartCount;?>)</a>
 				<a href="/users/invite" title="+ Invite Friends Get $15">+ Invite Friends Get $15</a>
 			<?php } else { ?>
@@ -82,7 +84,7 @@
 			<?php endif ?>
 		</div>
 		<!-- end header -->
-<div class="clear"></div>
+		<div class="clear"></div>
 		<?php echo $this->content(); ?>
 		<!-- main content -->
 
@@ -97,15 +99,16 @@
 			<li style="padding-top:4px;"><a href="http://blog.totsy.com" title="Blog" target="_blank">Blog</a></li>
 			<li style="padding-top:4px;"><a href="/pages/faq" title="FAQ">FAQ</a></li>
 			<li style="padding-top:4px;"><a href="/pages/affiliates" title="Affiliates">Affiliates</a></li>
-			
-			<! -- switch where this link points depending on whether they're logged in or not --> 
 			<?php if (empty($userInfo)){ ?>
-			<li class="last" style="padding-top:4px;"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
+			<li style="padding-top:4px;"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
+			<li style="padding-top:4px;" class="last"><a href="http://nytm.org/made" title="Made in NYC" target="_blank">Made in NYC</a></li>
 			<?php } else { ?>
-			<li class="last" style="padding-top:4px;"><a href="/tickets/add" title="Contact Us">Contact Us</a></li>
+			<li style="padding-top:4px;"><a href="/tickets/add" title="Contact Us">Contact Us</a></li>
+			<li style="padding-top:4px;" class="last"><a href="http://nytm.org/made" title="Made in NYC" target="_blank">Made in NYC</a></li>
 			<?php } ?>
 			<li class="last" style="margin:0px 3px 0px 5px;"><a href="http://www.facebook.com/totsyfan" target="_blank"><img src="/img/icons/facebook_16.png" align="middle" /></a></li>
 			<li class="last"><a href="http://twitter.com/MyTotsy" target="_blank"><img src="/img/icons/twitter_16.png" align="middle" /></a></li>
+		</ul>
 		</ul>
 		<span id="copyright" style="padding-top:4px;" class="fl">&copy;2011 Totsy.com. All Rights Reserved.</span>
 	</div>
