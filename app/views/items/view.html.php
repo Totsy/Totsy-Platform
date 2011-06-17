@@ -1,5 +1,4 @@
-<?=$this->html->script(array('jqzoom.pack.1.0.1', 'cloud-zoom.1.0.2'));?>
-<?=$this->html->style('jquery.countdown');?>
+<?=$this->html->script(array('cloud-zoom.1.0.2'));?>
 <div class="grid_16">
 	<h2 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a><div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
 	<hr />
@@ -166,8 +165,12 @@
 
 
 		<div class="md-gray p-container roundy">
-		
-<?=$this->form->create(null, array('url' => 'Cart::add')); ?>		
+			<h2 class="caps" style="font-size:14px; padding-top:5px">Totsy Price</h2>
+			<div style="padding: 10px 0px 0px 0px; color:#009900; font-size:24px;">$<?=number_format($item->sale_retail,2); ?></div>
+
+			<div class="original-price" style="font-size:11px; padding-bottom:10px;">Original: $<?=number_format($item->msrp,2); ?></div>
+			
+			<?=$this->form->create(null, array('url' => 'Cart::add')); ?>		
 <?php if (!empty($sizes)): ?>
 				<?php if ( !((string)$sizes[0] ==='no size')): ?>
 						<select name="item_size" id="size-select">
@@ -180,10 +183,6 @@
 				<?php endif ?>
 			<?php endif ?>
 			<?=$this->form->hidden("item_id", array('value' => "$item->_id", 'id'=>'item_id')); ?>
-			<h2 class="caps" style="font-size:14px; padding-top:5px">Totsy Price</h2>
-			<div style="padding: 10px 0px 0px 0px; color:#009900; font-size:24px;">$<?=number_format($item->sale_retail,2); ?></div>
-
-			<div class="original-price" style="font-size:11px; padding-bottom:10px;">Original: $<?=number_format($item->msrp,2); ?></div>
 			<?php if ($item->total_quantity >= 1): ?>
 				<div id="hidden-div" style="display:none; color:#eb132c; font-weight:bold;">Please Select Size!</div>
 				<?=$this->form->submit('Add To Cart', array('class' => 'button')); ?>
@@ -192,7 +191,7 @@
 		</div>
 		
 		<?php $logo = $event->images->logo_image;?>
-		<div style="padding:0px 0px 0px 13px;">
+		<div style="padding:0px 0px 0px 7px;">
 		<?=$this->html->image("/image/$logo.jpg", array(
 			'alt' => $event->name, 'width' => "148"
 		)); ?>
@@ -212,7 +211,7 @@
 	
 	
 	</div>
-<div id="modal" style="background:#fff!important; z-index:9999999999;"></div>
+<div id="modal" style="background:#fff!important; z-index:9999999999!important;"></div>
 <script type="text/javascript">
 $(function () {
 	var saleEnd = new Date();
@@ -230,11 +229,14 @@ $(document).ready(function() {
     $('#disney').click(function(){
         $('#modal').load('/events/disney').dialog({
             autoOpen: false,
-            modal:true,
-            width: 739,
-            height: 750,
-            position: 'top',
-            close: function(ev, ui) {}
+        	resizable: false,
+        	modal: true,
+            width: 750,
+            height: 770,
+            title: 'Basic Dialog',
+            overlay: { backgroundColor: "#000", opacity: 0.5 },
+            close: function(ev, ui) { $(this).remove(); },
+
         });
         $('#modal').dialog('open');
     });

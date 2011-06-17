@@ -160,7 +160,7 @@
                                 <?=$this->form->error('promo'); ?>
 							<?php endif; ?>
 							<?=$this->form->text('code', array('size' => 6)); ?>
-							<?=$this->form->submit('Apply Promo Code'); ?>
+							<?=$this->form->submit('Apply Promo Code', array('class' => 'button')); ?>
 							<hr />
 							<strong>Promo Savings:</strong>
 							<?php if (!empty($orderPromo)): ?>
@@ -303,14 +303,14 @@
 </div>
 <div class="clear"></div>
 <div id="modal"></div>
-<div id="address-modal"></div>
+<div id="address-modal" style="background:#fff!important; z-index:9999999999!important;"></div>
 <script type="text/javascript">
 $(".add-address").click(function() {
 	$("#address-modal").load($.base + 'addresses/add').dialog({
 		autoOpen: false,
 		modal:true,
-		width: 500,
-		height: 600,
+		width: 415,
+		height: 497,
 		position: 'top',
 		close: function(ev, ui) {}
 	});

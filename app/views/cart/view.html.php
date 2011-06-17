@@ -173,10 +173,9 @@
 	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1><center>You have no items in your cart. <br> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
 <?php endif ?>
 
-<div id="modal">
 
 </div>
-
+<div id="modal" style="background:#fff!important; z-index:9999999999!important;"></div>
 <script type="text/javascript" charset="utf-8">
 	$(".inputbox").bind('keyup', function() {
 	var id = $(this).attr('id');

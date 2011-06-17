@@ -84,7 +84,7 @@
 							'title' => $event->name,
 							'alt' => $event->name,
 							'width' => '228',
-							'height' => '263'
+							'height' => '266'
 						)), "sale/$url", array('escape'=> false));
 						 ?>
 					<?php endif ?>
@@ -249,7 +249,8 @@
 			width: 739,
 			height: 750,
 			position: 'top',
-			close: function(ev, ui) {}
+			close: function(ev, ui) { $(this).close(); }
+
 		});
 		$('#modal').dialog('open');
 	});

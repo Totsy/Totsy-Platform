@@ -2,8 +2,10 @@
 {
 	position: absolute;
 	padding: 0.0em;
-	width: 300px;
+	width: auto;
 	overflow: hidden;
+	background: #fff;
+	height:auto;
 }
 .ui-dialog .ui-dialog-title
 {
@@ -19,18 +21,19 @@
 	margin: -10px 0 0 0;
 	padding: 0px;
 	height: 45px;
-	border-width: 1px;
-	border-style: solid;
+	text-indent: -9999px!important;
 }
 .ui-dialog .ui-dialog-titlebar-close span
 {
 	display: block;
 	margin: 1px;
+	text-indent: -9999px!important;
 }
 .ui-dialog .ui-dialog-titlebar-close:hover, 
 .ui-dialog .ui-dialog-titlebar-close:focus
 {
 	padding: 0;
+	ext-indent: -9999px!important;
 }
 .ui-dialog .ui-dialog-content
 {
@@ -71,7 +74,7 @@
 
 .ui-dialog .ui-dialog-titlebar
 {
-	padding: .5em 1em .3em;
+	padding: 1em 1em .3em;
 	position: relative;
 	-moz-border-radius-bottomleft: 0px;
 	-webkit-border-bottom-left-radius: 0px;
@@ -83,6 +86,8 @@
 	font-size: 1.5em;
 	font-weight: normal;
 }
+
+.ui-icon .ui-icon-closethick span {text-indent:-99999px;}
 
 .ui-dialog .ui-dialog-content .ui-tabs
 {
