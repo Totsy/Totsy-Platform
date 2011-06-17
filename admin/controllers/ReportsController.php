@@ -16,6 +16,7 @@ use MongoDate;
 use MongoRegex;
 use MongoId;
 use li3_flash_message\extensions\storage\FlashMessage;
+use admin\models\PurchaseOrder;
 use lithium\data\Model;
 use FusionCharts;
 
