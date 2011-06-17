@@ -96,6 +96,17 @@
 					<td><strong>Order Subtotal:</strong> </td>
 					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $subTotal, 2);?></td>
 				</tr>
+				
+				<tr>
+					<td>
+							<strong>Promo Savings:</strong></td>
+							<td><?php if (!empty($orderPromo)): ?>
+								-$<?=number_format((float) abs($orderPromo->saved_amount), 2);?>
+							<?php else: ?>
+								-$<?=number_format((float) 0, 2);?>
+							<?php endif ?>
+				</tr>
+				
 				<?php
 					if ($orderServiceCredit): ?>
 						<tr>
@@ -163,14 +174,8 @@
 							<?php endif; ?>
 							<?=$this->form->text('code', array('size' => 6)); ?>
 							<?=$this->form->submit('Apply Promo Code', array('class' => 'button')); ?>
-							<hr />
-							<strong>Promo Savings:</strong>
-							<?php if (!empty($orderPromo)): ?>
-								-$<?=number_format((float) abs($orderPromo->saved_amount), 2);?>
-							<?php else: ?>
-								-$<?=number_format((float) 0, 2);?>
-							<?php endif ?>
-						<?=$this->form->end(); ?>
+							
+							<?=$this->form->end(); ?></td>
 						<div style="clear:both"></div>
 					</div>
 				</tr>
