@@ -16,12 +16,12 @@
 
 <div class="zoom-section">
 	<div class="zoom-small-image">
-    	<a href="/image/<?php echo $item->zoom_image; ?>.jpg" id="zoom1" class="cloud-zoom" rel="position: 'inside'">
-    	<img src="/image/<?php echo $item->primary_image; ?>.jpg" alt="" border="0" title="" width="340"/></a>
+    	<a href="/image/<?php echo $item->zoom_image; ?>.jpg" id="zoom1" class="cloud-zoom" rel="position: 'inside'" style="overflow:hidden;">
+    	<img src="/image/<?php echo $item->primary_image; ?>.jpg" alt="" border="0" title="" width="348"/></a>
   	</div>
 
   	<!-- Start additional image view thumbnails -->
-	<div class="zoom-desc" style="margin-top:10px;">
+	<div class="zoom-desc" style="margin-top:6px;">
 		<?php
 			if (!empty($item->primary_image)) {
 				echo $this->html->link(

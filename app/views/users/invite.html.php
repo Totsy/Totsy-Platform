@@ -35,7 +35,15 @@
 
 <div class="grid_11 omega roundy grey_inside b_side">
 
-	<h2 class="page-title gray">My Invitations</h2>
+<?php if (is_object($user->invitation_codes)): ?>
+										<?php foreach ($user->invitation_codes as $code): ?>
+											<?php $invite = "http://www.totsy.com/join/" . $code;?>
+										<?php endforeach ?>
+									<?php else: ?>
+										<?php $invite = "http://www.totsy.com/join/" . $user->invitation_codes;?>
+									<?php endif ?>
+
+	<h2 class="page-title gray">My Invitations <span class="fr" style="font-size:12px; margin-top:-10px;">Share this link with your friends: <br><span style="word-wrap:break-word;"><strong><a href="<?=$invite?>" title="Your Invite Link"><?=$invite?></a></strong></span></span></h2>
 	<hr />
 		<div id="tabs">
 					<?php if (!empty($flashMessage)): ?>
@@ -52,7 +60,7 @@
 						<div class="send-left">
 							<h2 class="gray mar-b">Send Invitations</h2>
 							<hr />
-							<p>For each friend you invite, Totsy will credit your account with $15 after your friend's place their first order.</p>
+							<p>For each friend you invite, Totsy will credit your account with <span style="color:#009900;">$15</span> after your friend's place their first order.</p>
 								<fieldset>
 									<br>
 									<?=$this->form->create(); ?>
@@ -80,15 +88,8 @@
 										<?=$this->form->submit('Send Invitations', array('class' => 'button')); ?>
 									<?=$this->form->end(); ?>
 									<br><br><br>
-									<?php if (is_object($user->invitation_codes)): ?>
-										<?php foreach ($user->invitation_codes as $code): ?>
-											<?php $invite = "http://www.totsy.com/join/" . $code;?>
-										<?php endforeach ?>
-									<?php else: ?>
-										<?php $invite = "http://www.totsy.com/join/" . $user->invitation_codes;?>
-									<?php endif ?>
-									<p>Share this link with your friends:</p>
-									<p style="word-wrap:break-word;"><strong><?=$invite?></strong></p>
+									
+									
 								</fieldset>
 						</div>
 						<div class="send-right r-container">

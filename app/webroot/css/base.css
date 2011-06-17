@@ -2841,27 +2841,21 @@ body.login .our365-login #intro-copy {
 }
 
 .zoom-small-image {
-	width:340px;
-	-moz-border-radius:12px;
-	-webkit-border-radius:12px;
-	border-radius:12px;
-	overflow:hidden;
-	border:1px solid #eee;
-	padding:1px;
+	width:348px;
+	overflow:hidden!important;
+	border:0px solid #eee;
+	padding:0px;
 }
 
 .cloud-zoom-big {
-	-moz-border-radius:12px;
-	-webkit-border-radius:12px;
-	border-radius:12px;
-	overflow:hidden;
+	overflow:hidden!important;
 	padding:0;
 }
 
 .cloud-zoom-loading {
 	color:white;
 	background:#222;
-	padding:3px;
+	padding:0px;
 	border:none;
 }
 
@@ -2870,18 +2864,16 @@ body.login .our365-login #intro-copy {
 }
 
 .zoom-desc img {
-	border:1px solid #eee;
+	border:0px solid #eee;
 	margin:0;
-	background:#FFF;
-	padding:0.25em;
-	border-radius:12px;
-	overflow:hidden;
-	-moz-border-radius:12px;
-	-webkit-border-radius:12px;
+	padding:0em;
+	overflow:hidden!important;
+
 }
 
 .mousetrap {
 	z-index:999!important;
+	overflow:hidden!important;
 }
 
 

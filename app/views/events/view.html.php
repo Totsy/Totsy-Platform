@@ -59,7 +59,7 @@
 			<?php if(!empty($filters)): ?>
 		<div id='filterb' style='text-align:right'>
 			<?=$this->form->create(null, array('id' => 'filterform')); ?>
-			<?=$this->form->label("filterby", "View by:", array('style' => 'font-weight:bold; font-size:13px;')); ?>
+			<?=$this->form->label("filterby", "View by: ", array('style' => 'font-weight:bold; font-size:13px;')); ?>
 			<?=$this->form->select('filterby',$filters, array('onchange' => "filter()", 'id' => 'filterby', 'value' => array($departments => $departments))); ?>
 			<?=$this->form->end(); ?>
 		</div>
