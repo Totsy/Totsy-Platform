@@ -31,7 +31,7 @@
 
 
 <?php if ($order): ?>
-<div class="grid_11 omega roundy grey_inside b_side" style="float:right">
+<div class="grid_11 omega roundy grey_inside b_side">
 		<table class="cart-table" cellspacing="0" cellpadding="0" border="0" width="695">
 				<tr>
 					<td colspan="4">
@@ -287,7 +287,7 @@
 														
 		<div>
 							
-							<div class="grid_11 omega roundy grey_inside b_side" style="float:right">
+							<div class="grid_11 omega roundy grey_inside b_side">
 							<div>
 											<div class="grid_4"  style="valign='top'">
 												Order Subtotal:
@@ -357,7 +357,7 @@
 									    <?php endif;?>
 										
 							</div>
-							<div class="grid_11 omega roundy grey_inside b_side" style="float:right; padding-bottom: 15px">
+							<div class="grid_11 omega roundy grey_inside b_side" style="padding-bottom: 15px">
 										<div>
 												<div class="grid_6" style="display:block; margin-bottom:10px; width:320px;">
 												  <strong>Shipping Address:</strong><br />												<?=$order->shipping->firstname;?> <?=$order->shipping->lastname;?><br>
