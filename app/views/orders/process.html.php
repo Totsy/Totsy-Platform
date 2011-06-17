@@ -9,6 +9,7 @@
 	}
 	$total = $afterDiscount + $tax + $shippingCost + $overShippingCost;
 ?>
+<?=$this->html->script('jquery.maskedinput-1.2.2')?>
 <div class="grid_16">
 	<h2 class="page-title gray">Checkout / Process Payment</h2>
 	<hr />
@@ -50,7 +51,7 @@
 								</p>
 								<p>
 									<label for="cc" class="required">Card Number<span>*</span></label>
-									<?=$this->form->text('card[number]', array('id' => 'cc', 'class' => 'inputbox', 'width' => 15)); ?>
+									<?=$this->form->text('card[number]', array('id' => 'cc', 'class' => 'inputbox', 'size' => '16', 'maxlength' => '16')); ?>
 								</p>
 								<p>
 									<label for="cc-exp" class="required">Expiration Date<span>*</span></label>
@@ -77,7 +78,7 @@
 								</p>
 								<p>
 									<label for="cc-ccv" class="required">CVV2 Code<span>*</span></label>
-									<?=$this->form->text('card[code]', array('class' => 'inputbox')); ?>
+									<?=$this->form->text('card[code]', array('id' => 'CVV2','class' => 'inputbox', 'maxlength' => '4', 'size' => '4')); ?>
 								</p>
 							<?=$this->form->submit('Place Your Order', array('class' => 'button submit')); ?>
 							<?=$this->form->hidden('credit_amount', array('value' => $orderCredit->credit_amount)); ?>
@@ -304,7 +305,7 @@
 </div>
 <div class="clear"></div>
 <div id="modal"></div>
-<div id="address-modal" style="background:#fff!important; z-index:9999999999!important;"></div>
+<div id="address-modal" style="z-index:9999999999!important;"></div>
 <script type="text/javascript">
 $(".add-address").click(function() {
 	$("#address-modal").load($.base + 'addresses/add').dialog({
@@ -356,3 +357,11 @@ $(".add-address").click(function() {
 		window.location.replace('/cart/view');
 	</script>
 <?php endif ?>
+
+
+<script type="text/javascript">
+jQuery(function($){
+   $("#cc").mask("9999999999999999");
+   $("#CVV2").mask("9999");
+});
+</script>
