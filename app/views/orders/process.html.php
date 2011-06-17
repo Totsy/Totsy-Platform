@@ -178,12 +178,7 @@
 					<td style="text-align:left; color:#707070; font-size:22px;"><hr /><strong>Order Total:</td>
 					<td style="text-align:right; color:#009900; font-size:22px; padding-left:10px"><hr />$<?=number_format((float) $total, 2);?></td>
 				</tr>
-				<?php if(!empty($savings)) : ?>
-				<tr>
-					<td style="text-align:left; color:#707070; font-size:18px;"><hr /><strong>You're Saving : </strong> </td>
-					<td style="text-align:right; color:#009900; font-size:18px;"><hr />$<?=number_format((float) $savings, 2);?></td>
-				</tr>
-				<?php endif ?>
+				
 			</table>
 		</td>
 	</tr>
@@ -193,10 +188,9 @@
 
 <div class="grid_6 omega">
 <div class="roundy grey_inside">
-		<h3 class="gray">Your Savings <span class="fr"><?php if (empty($savings)) : ?>
-		<span style="color:#009900; font-size:16px; float:right;">$<?=number_format($savings,2)?></span>
+		<h3 class="gray">Your Savings <span class="fr"><?php if (!empty($savings)) : ?>
+		<span style="color:#009900; font-size:16px; float:right;">$<?=number_format((float) $savings, 2);?></span>
 		<?php endif ?></span></h3>
-		
 	</div>
 	<div class="roundy grey_inside">
 		<h3 class="gray">Estimated Ship Date<span style="font-weight:bold; float:right;"><?=date('m-d-Y', $shipDate)?></span></h3>
