@@ -27,7 +27,20 @@
 			<li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
 		</ul>
 		</div>
+		
+		<div class="roundy grey_inside">
+		<?=$this->html->image('being_green/carbonzero.gif', array('style' => 'margin-right: 10px; margin-bottom:20px; float:left;'
+											)); ?>
+											<p>A tree was planted with your first order. It is watered with every additional order so it can grow big and strong to help our earth!
+													<br>
+													<strong style="color:#E00000;font-weight:normal"></strong><br />
+													<?=$this->html->link('Learn how every purchase helps', array('Pages::being_green')); ?>
+												</p>
+
+		</div>
 	</div>
+	
+	
 
 
 <?php if ($order): ?>
@@ -51,7 +64,6 @@
 										</div><!--arrow-right-->
 										<div class="rounded" style="color:#009900; margin:0px 0px 0px 0px; float:left; display:block; background:#ebffeb; border:1px solid #ddd; width:188px; padding:20px; text-align:center;">Confirmation</div>
 										</div>
-										<div style="clear:both; margin-bottom:15px;"></div>
 										<div style="background:#f7f7f7; padding:10px; border:1px solid #ddd;"><h2>Thank you! Your order has been successfully placed! <span style="float:right;">Order #<?=$order->order_id;?></span></h2></div>
 										<div style="clear:both;"></div>
 										<!--
@@ -282,74 +294,7 @@
 				<tr>
 				</tr>
 		</table>
-		</div>
-							<!-- <div class="grid_12"  style="padding:0px 0px 5px 0px; margin:0px;"><hr /></div> -->
-														
-		<div>
-							
-							<div class="grid_11 omega roundy grey_inside b_side">
-							<div>
-											<div class="grid_4"  style="valign='top'">
-												Order Subtotal:
-												<br>
-												<?php if ($order->credit_used): ?>
-												Credit Applied:
-													<br>
-												<?php endif ?>
-												<?php if (($order->promo_discount) && empty($order->promocode_disable)): ?>
-												Promotion Discount:
-													<br>
-												<?php endif ?>
-												<?php if (($order->discount)): ?>
-												Discount:
-													<br>
-												<?php endif ?>
-												Sales Tax:
-												<br>
-												Shipping:
-												<?php if ( array_key_exists('overSizeHandling', $order->data()) && $order->overSizeHandling !=0): ?>
-                                                    <br>
-                                                    Oversize Shipping:
-                                                <?php endif; ?>
-												<!-- <br><br><br> --><br>
-												<strong style="font-weight:bold;color:#606060">Total:</strong>
-											</div>
-											<div class="grid_4" style="padding-left:15px;valign='top'">
-												$<?=number_format($order->subTotal,2); ?>
-												<br>
-												<?php if ($order->credit_used): ?>
-													-$<?=number_format(abs($order->credit_used),2); ?>
-													<br>
-												<?php endif ?>
-												<?php if (($order->promo_discount) && empty($order->promocode_disable)): ?>
-													-$<?=number_format(abs($order->promo_discount),2); ?>
-													<br>
-												<?php endif ?>
-												<?php if (($order->discount)): ?>
-													-$<?=number_format(abs($order->discount),2); ?>
-													<br>
-												<?php endif ?>
-												$<?=number_format($order->tax,2); ?>
-												<br>
-												$<?=number_format($order->handling,2); ?> <br>
-												<?php if ( array_key_exists('overSizeHandling', $order->data()) && $order->overSizeHandling !=0): ?>
-
-                                                    $<?=number_format($order->overSizeHandling,2); ?>
-                                                <?php endif; ?>
-												<!--<br><br><br> -->
-												
-												<strong style="font-weight:bold;color:#009900;">$<?=number_format($order->total,2); ?></strong>
-											</div>
-							</div>				
-							</div>
-
-							<div class="grid_11" style="float:right; padding:10px">
-
-								Thank you again for your order,
-								<br/>
-								<strong>Totsy</strong>
-							</div>
-
+																		
 							<div>
 									 <?php if($new): ?>
 
@@ -357,40 +302,61 @@
 									    <?php endif;?>
 										
 							</div>
-							<div class="grid_11 omega roundy grey_inside b_side" style="padding-bottom: 15px">
-										<div>
-												<div class="grid_6" style="display:block; margin-bottom:10px; width:320px;">
-												  <strong>Shipping Address:</strong><br />												<?=$order->shipping->firstname;?> <?=$order->shipping->lastname;?><br>
+												<div class="grid_4">
+												  <strong>Shipping Address</strong><hr />												<?=$order->shipping->firstname;?> <?=$order->shipping->lastname;?><br>
                                                                                                 <?=$order->shipping->address; ?> <?=$order->shipping->address_2; ?><br />
                                                                                                 <?=$order->shipping->city; ?>, <?=$order->shipping->state; ?>
-                                                                                                <?=$order->shipping->zip; ?>
-												</div>
-												<div class="grid_4" style=" width:320px; display:block;"><strong>Payment Info:</strong> <br /><?=strtoupper($order->card_type)?> ending with <?=$order->card_number?></div>
-										</div>
-									</div>
-									
-		</div>
-		
-		<div class="grid_12" style="float:right">
-											<span>
-											<?=$this->html->image('being_green/carbonzero.gif', array(
-												'align' => 'left', 'style' => 'margin-right: 15px; margin-bottom:10px;'
-											)); ?>
-												<p>A TREE WAS PLANTED WITH YOUR FIRST ORDER.<br />
-												IT IS WATERED WITH EVERY ADDITIONAL ORDER SO IT CAN GROW BIG AND STRONG TO HELP OUR EARTH!
+                                                                                                <?=$order->shipping->zip; ?><br><br>
+												
+												
+											</div>
+											<div class="grid_4"><strong>Payment Method</strong> <hr /><?=strtoupper($order->card_type)?> XXXX-XXXX-XXXX-<?=$order->card_number?></div>
+											<div class="grid_3">
+											<strong>Order Information</strong>
+											<hr />
+												Order Subtotal: <span class="fr">$<?=number_format($order->subTotal,2); ?></span>
+												<br>
+												<?php if ($order->credit_used): ?>
+												Credit Applied: <span class="fr">-$<?=number_format(abs($order->credit_used),2); ?></span>
 													<br>
-													<strong style="color:#E00000;font-weight:normal"></strong><br />
-													<?=$this->html->link('Find out how every purchase makes a difference.', array('Pages::being_green')); ?>
-													Enjoy your order! We know you’re going to love it!
-												</p>
-											</span>
-										</div>
+												<?php endif ?>
+												<?php if (($order->promo_discount) && empty($order->promocode_disable)): ?>
+												Promotion Discount: <span class="fr">-$<?=number_format(abs($order->promo_discount),2); ?></span>
+													<br>
+												<?php endif ?>
+												<?php if (($order->discount)): ?>
+												Discount: <span class="fr">-$<?=number_format(abs($order->discount),2); ?></span>
+													<br>
+												<?php endif ?>
+												Sales Tax: <span class="fr">$<?=number_format($order->tax,2); ?></span>
+												<br>
+												Shipping:
+												<?php if ( array_key_exists('overSizeHandling', $order->data()) && $order->overSizeHandling !=0): ?>
+                                                    <br>
+                                                    Oversize Shipping: <span class="fr">$<?=number_format($order->overSizeHandling,2); ?></span>
+                                                <?php endif; ?>
+												<!-- <br><br><br> --><br>
+												<hr/>
+												<strong style="font-weight:bold;color:#606060; font-size:16px;">Total:</strong> <strong style="font-weight:bold;color:#009900; font-size:16px; float:right;">$<?=number_format($order->total,2); ?></strong>
 										
+												</div>
+												
+<div class="clear"></div>
+<br>
+<hr/>
+											
+											<div class="grid_11">
+												<p style="text-align: center; font-size:18px; margin-top:10px;">Thank you for shopping on Totsy.com!</p>
+										</div>
 		
-
+</div>
 <?php else: ?>
 	<strong>Sorry, we cannot locate the order that you are looking for.</strong>
 <?php endif ?>
+		</div>
+														
+		
+
 <!--- ECOMMERCE TRACKING -->
 <?php if ($brandNew): ?>
 	<script type="text/javascript">
