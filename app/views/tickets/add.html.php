@@ -37,8 +37,9 @@
 	<hr />
 
 	<div style="float:left; width:330px;">
+	<div id="hidden-div" style="display:none; color:#eb132c; font-weight:bold;">Please Choose A Help Topic </div>
 	<?=$this->form->create(); ?>
-		<select id="parent" style="width:350px;" name="issue_type">
+		<select id="parent" name="issue_type">
 			<option value="default">I need help with:</option>
 			<?php if ($orders): ?>
 				<option value="order">My Order(s)</option>
@@ -51,7 +52,7 @@
 			<option value="press">Press Inquiries</option>
 		</select>
 
-		<br />
+		<br /><br />
 		<select id="child" name="type" style="width:350px;">
 		<!-- orders -->
 			<?php if ($orders): ?>
@@ -154,3 +155,28 @@ function makeSublist(parent,child,isSubselectOptional,childVal)
 	});
 </script>
 
+
+
+  <script type="text/javascript" charset="utf-8">
+    $(document).ready(function () {
+      checkOptions();
+      $("select").change(checkOptions);
+
+      function checkOptions() {
+        var getSize = false;
+        $("select").each(function(index, element) {
+          if ( $(element).val() == "default" ) {
+            getSize = true;
+          }
+        });
+        
+        if (getSize) {
+          $("#hidden-div").show();
+          $("input[type=Submit]").attr("disabled","disabled");
+        } else {
+          $("#hidden-div").hide();
+          $("input[type=Submit]").removeAttr("disabled");
+        };
+      }
+    });
+  </script> 
