@@ -9,7 +9,8 @@
 		<?php if ($item->total_quantity <= 0): ?>
 					<?=$this->html->image('/img/soldout.png', array(
 						'title' => "Sold Out",
-						'style' => 'z-index : 99999; position : absolute; right:0;'
+						'style' => 'z-index : 99999; position : absolute; right:0;',
+						'id'=>'sold_out_img'
 					)); ?>
 			<?php endif ?>
 				<?php if (!empty($item->primary_image)): ?>
@@ -237,6 +238,9 @@ $(document).ready(function() {
             close: function(ev, ui) { $(this).remove(); },
 
         });
+        
+        $("#sold_out_img").css("z-index", 999);
+        
         $('#modal').dialog('open');
     });
 </script>
