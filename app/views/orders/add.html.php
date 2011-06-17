@@ -114,7 +114,7 @@
 
 <div class="grid_6 omega">
 <div class="roundy grey_inside">
-		<h3 class="gray">Your Savings <span class="fr"><?php if (empty($savings)) : ?>
+		<h3 class="gray">Your Savings <span class="fr"><?php if (!empty($savings)) : ?>
 		<span style="color:#009900; font-size:16px; float:right;">$<?=number_format($savings,2)?></span>
 		<?php endif ?></span></h3>
 		
