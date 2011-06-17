@@ -50,7 +50,7 @@
 								</p>
 								<p>
 									<label for="cc" class="required">Card Number<span>*</span></label>
-									<?=$this->form->text('card[number]', array('id' => 'cc', 'class' => 'inputbox', 'width' => 15)); ?>
+									<?=$this->form->text('card[number]', array('id' => 'cc', 'class' => 'inputbox', 'size' => '16', 'maxlength' => '16')); ?>
 								</p>
 								<p>
 									<label for="cc-exp" class="required">Expiration Date<span>*</span></label>
@@ -77,7 +77,7 @@
 								</p>
 								<p>
 									<label for="cc-ccv" class="required">CVV2 Code<span>*</span></label>
-									<?=$this->form->text('card[code]', array('class' => 'inputbox')); ?>
+									<?=$this->form->text('card[code]', array('class' => 'inputbox', 'maxlength' => '4', 'size' => '4')); ?>
 								</p>
 							<?=$this->form->submit('Place Your Order', array('class' => 'button submit')); ?>
 							<?=$this->form->hidden('credit_amount', array('value' => $orderCredit->credit_amount)); ?>
