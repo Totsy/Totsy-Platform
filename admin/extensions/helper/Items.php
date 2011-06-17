@@ -34,7 +34,7 @@ class Items extends \lithium\template\Helper {
 					$image = "/img/no-image-small.jpeg";
 				}
 				$html .= "<td width='100'><img src=$image/ width='75'></td>";
-				$html .= "<td width='200'><a href=\"/items/edit/$item[_id]\">$item->description</a>
+				$html .= "<td width='200'><a href=\"/items/edit/$item->_id\">$item->description</a>
 				<br />
 					Color: $item->color <br />
 					Vendor Style: $item->vendor_style

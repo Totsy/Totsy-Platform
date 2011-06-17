@@ -5,8 +5,9 @@ namespace admin\controllers;
 use admin\controllers\BaseController;
 use admin\models\Event;
 use admin\models\Item;
-use \MongoDate;
-use \MongoId;
+use MongoDate;
+use MongoId;
+use Mongo;
 use PHPExcel_IOFactory;
 use PHPExcel;
 use PHPExcel_Cell;
@@ -71,14 +72,37 @@ class EventsController extends BaseController {
 	}
 
 	public function edit($_id = null) {
+		$itemsCollection = Item::Collection();
 		$event = Event::find($_id);
 		$seconds = ':'.rand(10,60);
-		$eventItems = Item::find('all', array('conditions' => array('event' => array($_id))));
-
+		$eventItems = Item::find('all', array('conditions' => array('event' => array($_id)),
+												'order' => array('created_date' => 'ASC')
+												)); 			
+		#T Get all possibles value for the multiple departments select
+		$result = Item::getDepartments();
+		$all_filters = array();
+		foreach ($result['values'] as $value) {
+			$all_filters[$value] = $value;
+			if (array_key_exists('Momsdads',$all_filters) && !empty($all_filters['Momsdads'])) {
+				$all_filters['Momsdads'] = 'Moms & Dads';
+			}
+		}
+		#END T
 		if (empty($event)) {
 			$this->redirect(array('controller' => 'events', 'action' => 'add'));
 		}
 		if (!empty($this->request->data)) {
+			if(!empty($this->request->data['departments'])) {
+				foreach($this->request->data['departments'] as $value) {
+					if(!empty($value)) {
+						$departments[] = ucfirst($value);
+					}
+				}
+				foreach($eventItems as $item) {
+					$itemsCollection->update(array('_id' => $item->_id), array('$set' => array("departments" => $departments)));
+				}
+				unset($this->request->data['departments']);
+			}
 			unset($this->request->data['itemTable_length']);
 			$enableItems = $this->request->data['enable_items'];
 			if ($_FILES['upload_file']['error'] == 0 && $_FILES['upload_file']['size'] > 0) {
@@ -119,7 +143,7 @@ class EventsController extends BaseController {
 			}
 		}
 
-		return compact('event', 'eventItems', 'items');
+		return compact('event', 'eventItems', 'items', 'all_filters');
 	}
 	/**
 	 * This method parses the item file that is uploaded in the Events Edit View.
@@ -136,6 +160,7 @@ class EventsController extends BaseController {
 			'vendor',
 			'vendor_style',
 			'age',
+			'departments',
 			'category',
 			'sub_category',
 			'description',
@@ -169,7 +194,17 @@ class EventsController extends BaseController {
 								$heading[] = $val;
 							} else {
 								if (!in_array($heading[$col], array('','NULL'))) {
-									$eventItems[$row - 1][$heading[$col]] = $val;
+										if(($heading[$col] == "department_1") ||
+												($heading[$col] == "department_2") ||
+													($heading[$col] == "department_3") ) {
+											if (!empty($val)) {
+												$eventItems[$row - 1]['departments'][] = trim($val);
+												$eventItems[$row - 1]['departments'] = array_unique($eventItems[$row - 1]['departments']);
+											}
+										} else {
+											$eventItems[$row - 1][$heading[$col]] = $val;
+										}
+									
 								}
 							}
  						}
@@ -231,12 +266,14 @@ class EventsController extends BaseController {
 		$pending = ($event->start_date->sec > time() ? true : false);
 
 		if (!empty($event->items)) {
-			foreach ($event->items as $_id) {
-				$conditions = compact('_id') + array('enabled' => true);
-
-				if ($item = Item::first(compact('conditions'))) {
-					$items[] = $item;
-				}
+			$eventItems = Item::find('all', array( 'conditions' => array(
+													'event' => array($_id),
+													'enabled' => true
+												),
+												'order' => array('created_date' => 'ASC')
+			));										
+			foreach($eventItems as $eventItem) {
+				$items[] = $eventItem;
 			}
 		}
 		if ($pending == false) {
@@ -250,7 +287,7 @@ class EventsController extends BaseController {
 		return compact('event', 'items', 'shareurl', 'type', 'id', 'preview');
 
 	}
-
+	
 	public function inventoryCheck($events) {
 		$events = $events->data();
 		foreach ($events as $eventItems) {
