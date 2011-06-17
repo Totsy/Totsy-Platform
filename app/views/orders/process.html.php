@@ -33,7 +33,7 @@
 <table style="width:100%;">
 	<tr>
 		<td valign="top">
-			<table style="width:303px;">
+			<table>
 				<tr>
 					<td>
 						<?=$this->form->create(); ?>
