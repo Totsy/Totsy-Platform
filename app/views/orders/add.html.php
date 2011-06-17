@@ -233,7 +233,7 @@ $(".add-address").click(function() {
 		autoOpen: false,
 		modal:true,
 		width: 500,
-		height: 600,
+		height: 471,
 		position: 'top',
 		close: function(ev, ui) {}
 	});

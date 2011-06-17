@@ -1273,10 +1273,10 @@ p.modal-copy {
 }
 
 #footer li {
-	float:left;
-	padding-right:5px;
-	margin-right:5px;
-	border-right:1px solid #707070;
+    border-right: 1px solid #AAAAAA;
+    float: left;
+    margin-right: 8px;
+    padding-right: 5px;
 }
 
 #footer li.last {
