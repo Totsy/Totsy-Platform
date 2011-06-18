@@ -167,7 +167,10 @@ class APIController extends  \lithium\action\Controller {
 			));
 			unset($mItems);
 			foreach ($itms as $itm){
-				$items[] = $itm->data();
+				 $it = $itm->data();
+				 $it['base_url'] = $base_url;
+				 $it['event_url'] = $ev['url'];
+				 $items[] = $it;
 			}
 		}
 
@@ -176,12 +179,37 @@ class APIController extends  \lithium\action\Controller {
 	
 	//TODO: add xml output format handling
 	//TODO: add "layouts" processing
+	/*
+	 * template structure :
+	 * {{{
+	 * views => (
+	 * 		api => (
+	 * 			xml => (
+	 * 				sales => (
+	 * 					criteo.php
+	 * 					facebook.com
+	 * 				)
+	 * 				items => (
+	 * 					criteo.php
+	 * 					facebook.php	
+	 * 				)
+	 * 			)
+	 * 		)
+	 * )
+	 * }}}
+	 */
 	private function display ($data){
 		switch ($this->_format){
+			
+			case 'xml':
+				//$this->
+			break;
+			
 			case 'json':
 			default:
 				echo json_encode($data);
-			break; 
+			break;
+
 		}
 		exit(0);
 	}
