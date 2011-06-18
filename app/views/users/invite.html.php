@@ -1,5 +1,4 @@
 <?php $this->title("My Invitations"); ?>
-<?=$this->html->script(array('jquery.equalheights')); ?>
 
 <div class="grid_16">
 	<h2 class="page-title gray">My Invitations</h2>
@@ -54,56 +53,50 @@
 						<li><a href="#sendinvites"><span>Send</span></a></li>
 					    <li><a href="#openinvites"><span>Open Invitations</span></a></li>
 					    <li><a href="#acceptedinvites"><span>Accepted</span></a></li>
+					    
 					</ul>
 					<!-- Start Open Invitations Tab -->
 					<div id="sendinvites" class="ui-tabs-hide">
-						<div class="send-left">
+						<div class="grid_6">
 							<h2 class="gray mar-b">Send Invitations</h2>
 							<hr />
 							<p>For each friend you invite, Totsy will credit your account with <span style="color:#009900;">$15</span> after your friend's place their first order.</p>
 								<fieldset>
 									<br>
 									<?=$this->form->create(); ?>
-										<?=$this->form->label('To:'); ?>
+										<?=$this->form->label('Enter Your Friends Email Addresses:'); ?>
 										<br>
 										<?=$this->form->textarea('to', array(
 											'class' => 'inputbox',
 											'id' => 'recipient_list',
-											'style' => "width:320px",
+											'style' => "width:339px; height:100px;",
 											'value' => 'Separate email addresses by commas',
 											'onblur' => "if(this.value=='') this.value='Separate email addresses by commas';",
 											'onfocus' => "if(this.value=='Separate email addresses by commas') this.value='';"
 											)); ?>
 										<br>
-										<?=$this->form->label('Comments:'); ?>
+										<?=$this->form->label('Personalized Message To Friends:'); ?>
 										<?=$this->form->textarea('message', array(
 											'class' => 'inputbox',
 											'id' => 'comments',
-											'style' => "width:320px",
+											'style' => "width:339px; height:100px",
 											'value' => "Please accept this invitation to join Totsy",
 											'onblur' => "if(this.value=='') this.value='Please accept this invitation to join Totsy';",
 											'onfocus' => "if(this.value=='Please accept this invitation to join Totsy') this.value='';"
 											)); ?>
 										<br>
-										<?=$this->form->submit('Send Invitations', array('class' => 'button')); ?>
+										<?=$this->form->submit('Send Invitations', array('class' => 'button fr')); ?>
 									<?=$this->form->end(); ?>
 									<br><br><br>
 									
 									
 								</fieldset>
 						</div>
-						<div class="send-right r-container">
-							<div class="tl"></div>
-							<div class="tr"></div>
-							<div class="r-box-2">
-
+						<div class="grid_5">
 								<h2 class="gray mar-b">Share with your friends</h2>
 								<hr />
 								<?php echo $spinback_fb; ?>
-
-								<div class="dividing-line clear mar-b"><!-- --></div>
-
-								<h2 class="gray clear mar-b">Invite from your address book</h2>
+								<h2 class="gray clear mar-b">Invite friends from your address book</h2>
 								<hr />
 								<a href="#" title="Invite friends from your Gmail contacts" id="invite-gmail" class="invite-btn fl">Gmail</a>
 								<a href="#" title="Invite friends from your Yahoo! contacts" id="invite-yahoo" class="invite-btn fr">Yahoo!</a>
@@ -114,9 +107,6 @@
 								<a href="#" title="Invite friends from your MSN address book" id="invite-msn" class="invite-btn fl">MSN</a>
 								<a href="#" title="Invite friends" id="invite-others" class="invite-btn fr">Others</a>
 
-							</div>
-							<div class="bl"></div>
-							<div class="br"></div>
 						</div>
 
 					</div>
@@ -203,12 +193,6 @@
 	});
 </script>
 
-<!-- This equals the hight of all the boxes to the same height -->
-<script type="text/javascript">
-	$(document).ready(function() {
-		$(".r-box").equalHeights(100,300);
-	});
-</script>
 <script type="text/javascript" charset="utf-8">
 	$('.form')
 </script>
