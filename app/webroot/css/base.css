@@ -3377,6 +3377,7 @@ div.splash-details {
 	padding:10px 5px;
 	overflow:hidden;
 	-moz-box-shadow:0 0 12px rgba(0,0,0,0.2);
+	-webkit-box-shadow:0 0 12px rgba(0,0,0,0.2);
 	border:0 solid #FFFFFF;
 }
 
