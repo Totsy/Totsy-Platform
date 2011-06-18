@@ -191,10 +191,13 @@ hr.no-show {
 button {
 	cursor:pointer;
 	overflow:visible;
+	-webkit-appearance: none;
 }
 
 button:-moz-focus-inner {
 	border:none;
+	-webkit-appearance: none;
+
 }
 
 .caps {
@@ -3216,6 +3219,8 @@ a.nivo-prevNav {
 	color:#fff!important;
 	font-size:12px!important;
 	cursor:pointer;
+	-webkit-appearance: none;
+
 
 	
 /* -moz-box-shadow:0 0 4px rgba(0, 0, 0, 0.3); border:2px solid #FFFFFF; */
@@ -3242,6 +3247,8 @@ a.nivo-prevNav {
 .button {
 	-moz-border-radius:4px;
 	-webkit-border-radius:4px;
+	-webkit-appearance: none;
+
 }
 
 .button a {
