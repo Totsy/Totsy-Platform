@@ -133,27 +133,25 @@
 
 	<div style="margin-bottom:35px;" class="clear"></div>
 
+	<div class="container_16">
 	<div class="grid_16">
-
-		<h2 class="page-title gray clear"><span class="_red">Upcoming Sales</span></h2>
+		<h2 class="page-title gray">Upcoming Sales</h2>
 		<hr />
-
-         <div class="clear"></div>
+	</div>
+         
 		<?php $x = 0; ?>
 		<?php $y = 0; ?>
 		<?php foreach ($pendingEvents as $event): ?>
 			<?php if (($y == 0) || ($y == 2)): ?>
-				<div class="product-list-item r-container">
+				<div class="grid_4">
 			<?php endif ?>
 			<?php if ($y == 1): ?>
-				<div class="product-list-item middle r-container">
+				<div class="grid_4">
 			<?php endif ?>
 			<?php if ($y == 2): ?>
 				<?php $y = -1; ?>
 			<?php endif ?>
-					<div class="tl"></div>
-					<div class="tr"></div>
-					<div class="md-gray p-container">
+					<div class="p-container roundy_product">
 						<?php
 							if (!empty($event->images->splash_small_image)) {
 								$productImage = "/image/{$event->images->splash_small_image}.jpg";
@@ -165,27 +163,25 @@
 						$this->html->image("$productImage", array(
 							'title' => $event->name,
 							'alt' => $event->name,
-							'width' => '298',
-							'height' => '344'
+							'width' => '228',
+							'height' => '266'
 						)), 'sale/'.$event->url, array('escape'=> false));
-						 ?>
-
-						<div class="splash-details">
-
-
-<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
-							<p style="padding:0px; margin:0px; font-size:16px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
-							<p style="padding:0px; margin:-3px 0px 0px 0px; font-size:13px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;">
-<span id="<?php echo "futuresplash$x"; ?>" title="<?php echo $date = $event->start_date->sec * 1000; ?>" class="counter start"></span>
-							</div>
-
-							<div class="table-cell right" style="width:55px; display:block; padding:5px; margin:7px 0px 0px 0px;">
-								<?=$this->html->link('View', 'sale/'.$event->url, array('class' => 'preview-btn')
-									);
-								?>
-							</div>
+						 ?>				
+				<div class="splash-details">
+						<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
+						 <p style="padding:0px; margin:0px; font-size:15px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
+						 <p style="padding:0px; margin:-3px 0px 0px 0px; font-size:12px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;">
+						 <span id="<?php echo "futuresplash$x"; ?>" title="<?php echo $date = $event->start_date->sec * 1000; ?>" class="counter start"></span>
 						</div>
-				
+
+						<div class="table-cell right">
+							<?=$this->html->link('View', 'sale/'.$event->url, array('class' => 'button small'));?>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			
 			<?php $x++; ?>
 			<?php $y++; ?>
 	<?php endforeach ?>
