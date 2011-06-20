@@ -233,7 +233,7 @@ $(function () {
 		});
 		$("#sold_out_img").css("z-index", 999);
 		$('#modal').dialog('open');
-		});        
+	});        
 
 </script>
 
