@@ -170,25 +170,7 @@
 </div>
 
 <div id="footer">
-
-	<ul>
-		<li class="first"><a href="/pages/terms" title="Terms of Use">Terms of Use</a></li>
-		<li><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
-		<li><a href="/pages/aboutus" title="About Us">About Us</a></li>
-		<li><a href="/blog" title="Blog">Blog</a></li>
-		<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
-		<li><a href="/pages/affiliates" title="Affiliates">Affiliates</a></li>
-		<?php if (empty($userInfo)){ ?>
-		<li><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
-		<li class="last"><a href="http://nytm.org/made" title="Made in NYC" target="_blank">Made in NYC</a></li>
-		<?php } else { ?>
-		<li><a href="/tickets/add" title="Contact Us">Contact Us</a></li>
-		<li class="last"><a href="http://nytm.org/made" title="Made in NYC" target="_blank">Made in NYC</a></li>
-		<?php } ?>
-	</ul>
-
-	<span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved. <br />10 West 18th Street, Floor 4 - New York, NY 10011</span>
-
+	<?php echo $this->view()->render(array('element' => 'footerNavPublic')); ?>
 </div>
 
 <script>
