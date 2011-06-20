@@ -221,21 +221,18 @@ $(function () {
 </script>
 <script type="text/javascript">
     $('#disney').click(function(){
-        $('#modal').load('/events/disney').dialog({
-            autoOpen: false,
-        	resizable: false,
-        	modal: true,
-            width: 750,
-            height: 770,
-            title: 'Basic Dialog',
-            overlay: { backgroundColor: "#000", opacity: 0.5 },
-            close: function(ev, ui) { $(this).remove(); },
+		$('#modal').load('/events/disney').dialog({
+			autoOpen: false,
+			modal:true,
+			width: 739,
+			height: 750,
+			position: 'top',
+			close: function(ev, ui) { $(this).close(); }
 
-        });
-        
-        $("#sold_out_img").css("z-index", 999);
-        $('#modal').dialog('open');
-    });
+		});
+		$("#sold_out_img").css("z-index", 999);
+		$('#modal').dialog('open');
+		});        
 </script>
 <script type="text/javascript">
 $(document).ready(function() {
