@@ -1,19 +1,4 @@
 <?=$this->html->script(array('jquery.nivo.slider.pack'));?>
-<script>
-(function($) {
-	$.fn.rotate = function() {
-		var container = $(this);
-		var totale = container.find("div").size();
-		var current = 0;
-		var i = setInterval(function() {
-			if (current >= totale) current = 0;
-			container.find("div").filter(":eq("+current+")").fadeIn("slow").end().not(":eq("+current+")").fadeOut("slow");
-			current++;
-		}, 5000);
-		return container;
-	};
-})(jQuery);
-</script>
 <div class="container_16">
 	<div class="grid_16">
 		<h2 class="page-title gray">Today's Sales</h2>
@@ -250,4 +235,20 @@
 		});
 		$('#modal').dialog('open');
 	});
+</script>
+
+<script>
+(function($) {
+	$.fn.rotate = function() {
+		var container = $(this);
+		var totale = container.find("div").size();
+		var current = 0;
+		var i = setInterval(function() {
+			if (current >= totale) current = 0;
+			container.find("div").filter(":eq("+current+")").fadeIn("slow").end().not(":eq("+current+")").fadeOut("slow");
+			current++;
+		}, 5000);
+		return container;
+	};
+})(jQuery);
 </script>
