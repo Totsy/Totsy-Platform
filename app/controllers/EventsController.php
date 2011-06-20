@@ -47,8 +47,9 @@ class EventsController extends BaseController {
 				$openEvents = $events_closed;
 			}
 		}
-		
 		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner', 'departments');
+		
+		
 	}
 
 	public function view() {
