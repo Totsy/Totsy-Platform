@@ -265,7 +265,10 @@
 									<?php if ($item['color']) { ?>
 									Color: <?=$item['color'];?><br>
 									<?php } ?>
+									<?php if (!$item['size'] == 'no size') { ?>
 									Size: <?=$item['size'];?><br>
+									<?php } else { ?>
+									<?php } ?>
 									Quantity: <?=$item['quantity'];?> (<strong style="color:#009900;">$<?=number_format($item['sale_retail'],2)?></strong>)<br>
 																	
 
