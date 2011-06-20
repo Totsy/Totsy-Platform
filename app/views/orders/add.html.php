@@ -64,9 +64,6 @@
 							'class' => 'add-address')); ?></span></h2>
 					<hr />
 					<p>Select a shipping address from your address book.</p>
-						<input name="shipping" />
-						
-						
 						<?=$this->form->select('shipping', $shipping, array(
 							'id' => 'shipping',
 							'target' => '#shipping-new-address-form',

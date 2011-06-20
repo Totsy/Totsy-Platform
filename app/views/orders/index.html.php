@@ -6,30 +6,8 @@
 </div>
 
 <div class="grid_4">
-	<div class="roundy grey_inside">
-		<h3 class="gray">My Account</h3>
-		<hr />
-		<ul class="menu main-nav">
-		<li><a href="/account" title="Account Dashboard">Account Dashboard</a></li>
-		<li><a href="/account/info" title="Account Information">Account Information</a></li>
-		<li><a href="/account/password" title="Change Password">Change Password</a></li>
-		<li class="active"><a href="/addresses" title="Address Book">Address Book</a></li>
-		<li><a href="/orders" title="My Orders">My Orders</a></li>
-		<li><a href="/Credits/view" title="My Credits">My Credits</a></li>
-		<li><a href="/Users/invite" title="My Invitations">My Invitations</a></li>
-		</ul>
-	</div>
-	<div class="clear"></div>
-	<div class="roundy grey_inside">
-		<h3 class="gray">Need Help?</h3>
-		<hr />
-		<ul class="menu main-nav">
-		    <li><a href="/tickets/add" title="Contact Us">Help Desk</a></li>
-			<li><a href="/pages/faq" title="Frequently Asked Questions">FAQ's</a></li>
-			<li><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
-			<li><a href="/pages/terms" title="Terms Of Use">Terms Of Use</a></li>
-		</ul>
-	</div>
+	<?php echo $this->view()->render(array('element' => 'myAccountNav')); ?>
+	<?php echo $this->view()->render(array('element' => 'helpNav')); ?>
 </div>
 
 <div class="grid_11 omega roundy grey_inside b_side">
@@ -131,55 +109,3 @@
 </div>
 </div>
 <div class="clear"></div>
-
-
-
-
-<script type="text/javascript" src="../js/jquery.equalheights.js"></script>
-<script type="text/javascript" src="../js/jquery.tools.min.js"></script>
-
-<!-- This equals the hight of all the boxes to the same height -->
-<script type="text/javascript">
-	$(document).ready(function() {
-		
-		$(".r-box").equalHeights(100,300);
-		
-		//process modal pop-ups
-		//$("#placed-modal").dialog({height:250,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
-		//$("#secured-modal").dialog({height:250,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
-		//$("#warehouse-modal").dialog({height:250,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
-		//$("#shipped-modal").dialog({height:250,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
-		//$("#recieved-modal").dialog({height:250,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
-		//$("#process-modal").dialog({height:650,modal:true,draggable:false,resizable:false,width:680,autoOpen:false});
-		
-		$("#placed-btn").click(function(){
-			$("#placed-modal").dialog('open');
-		});
-		
-		$("#secured-btn").click(function(){
-			$("#secured-modal").dialog('open');
-		});
-		
-		$("#warehouse-btn").click(function(){
-			$("#warehouse-modal").dialog('open');
-		});
-		
-		$("#shipped-btn").click(function(){
-			$("#shipped-modal").dialog('open');
-		});
-		
-		$("#recieved-btn").click(function(){
-			$("#recieved-modal").dialog('open');
-		});
-		
-		$("#process-btn").click(function(){
-			$("#process-modal").dialog('open');
-		});
-		
-		//tool tips
-		$(".tip").tooltip();
-
-		
-	});
-	
-</script>

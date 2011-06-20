@@ -863,11 +863,6 @@ div.col-2 .box-2 {
 	font-size:13px;
 }
 
-#detail-top-right .p-container button {
-	font-size:12px;
-	padding:10px 20px;
-}
-
 #detail-top-left {
 	width:425px;
 	float:left;
@@ -1277,7 +1272,14 @@ p.modal-copy {
     border-right: 1px solid #AAAAAA;
     float: left;
     margin-right: 8px;
-    padding-right: 5px;
+    padding:4px 5px 0px 0px;
+    
+}
+
+#footer span {
+    float: left;
+    padding:4px 5px 0px 0px;
+    
 }
 
 #footer li.last {

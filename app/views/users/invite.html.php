@@ -6,30 +6,8 @@
 </div>
 
 <div class="grid_4">
-	<div class="roundy grey_inside">
-		<h3 class="gray">My Account</h3>
-		<hr />
-		<ul class="menu main-nav">
-		<li><a href="/account" title="Account Dashboard">Account Dashboard</a></li>
-		<li><a href="/account/info" title="Account Information">Account Information</a></li>
-		<li><a href="/account/password" title="Change Password">Change Password</a></li>
-		<li class="active"><a href="/addresses" title="Address Book">Address Book</a></li>
-		<li><a href="/orders" title="My Orders">My Orders</a></li>
-		<li><a href="/Credits/view" title="My Credits">My Credits</a></li>
-		<li><a href="/Users/invite" title="My Invitations">My Invitations</a></li>
-		</ul>
-	</div>
-	<div class="clear"></div>
-	<div class="roundy grey_inside">
-		<h3 class="gray">Need Help?</h3>
-		<hr />
-		<ul class="menu main-nav">
-		    <li><a href="/tickets/add" title="Contact Us">Help Desk</a></li>
-			<li><a href="/pages/faq" title="Frequently Asked Questions">FAQ's</a></li>
-			<li><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
-			<li><a href="/pages/terms" title="Terms Of Use">Terms Of Use</a></li>
-		</ul>
-	</div>
+	<?php echo $this->view()->render(array('element' => 'myAccountNav')); ?>
+	<?php echo $this->view()->render(array('element' => 'helpNav')); ?>
 </div>
 
 <div class="grid_11 omega roundy grey_inside b_side">
@@ -184,14 +162,6 @@
 </div>
 </div>
 <div class="clear"></div>
-
-
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		$("#tabs").tabs();
-	});
-</script>
 
 <script type="text/javascript" charset="utf-8">
 	$('.form')
