@@ -11,6 +11,8 @@ namespace app\controllers;
 
 //use app\controllers\EventsController;
 
+use app\extensions\helper\ApiHelper;
+
 use lithium\action\Request;
 use \lithium\data\Connections;
 use \lithium\util\Validator;
@@ -22,10 +24,13 @@ use MongoId;
 
 class APIController extends  \lithium\action\Controller {
 	
+	
 	protected static $_formats = array(
 		'json', 'xml'
 	);
+	protected $_method = null;
 	protected $_format = null;
+	protected $_view = null;
 	
 	/**
 	 * Index functon to handle api actions and errors.
@@ -66,6 +71,7 @@ class APIController extends  \lithium\action\Controller {
 		$methods = get_class_methods(get_class($this));
 
 		if (in_array($params[0].'Api',$methods)){
+			$this->_method = $params[0];
 			$this->display( $this->{$params[0].'Api'}() );
 		} else {
 			$this->display( Api::errorCodes(405) );
@@ -141,6 +147,13 @@ class APIController extends  \lithium\action\Controller {
 		return Api::changePassword($token);
 	}
 	
+	/**
+	 * Method to show available active items by active 
+	 * event for current date. 
+	 * 
+	 * min protocol HTTP
+	 * method GET
+	 */
 	protected function itemsApi() {
 		$token = Api::authorizeTokenize($this->request->query);
 		if (is_array($token) && array_key_exists('error', $token)) {
@@ -173,13 +186,14 @@ class APIController extends  \lithium\action\Controller {
 				 $items[] = $it;
 			}
 		}
-
+		$this->setView(1);
 		return $items;				
 	}
 	
-	//TODO: add xml output format handling
-	//TODO: add "layouts" processing
-	/*
+	
+	/**
+	 * Mwthod to handle templates aka views.
+	 * 
 	 * template structure :
 	 * {{{
 	 * views => (
@@ -199,10 +213,19 @@ class APIController extends  \lithium\action\Controller {
 	 * }}}
 	 */
 	private function display ($data){
+		
 		switch ($this->_format){
 			
 			case 'xml':
-				//$this->
+				if (!is_null($this->_view)){
+					$path = $this->_format.'/'.$this->_method.'/'.$this->_view.'.php';
+					if (!file_exists(LITHIUM_APP_PATH . '/views/api/'.$path)) {
+						echo ApiHelper::converter(Api::errorCodes(415),$this->_format);
+					}
+					require_once LITHIUM_APP_PATH . '/views/api/'.$path;
+				} else {
+					echo ApiHelper::converter(Api::errorCodes(415),$this->_format);
+				}
 			break;
 			
 			case 'json':
@@ -212,6 +235,16 @@ class APIController extends  \lithium\action\Controller {
 
 		}
 		exit(0);
+	}
+	
+	private function setView($param){
+		$params = $this->request->args;
+		if (is_array($params) && count($params)>2){
+			$pc = count($params);
+			if ($pc>$param){
+				$this->view = str_replace('.'.$this->_format, '', $params[$param]);
+			} 
+		}
 	}
 }
 
