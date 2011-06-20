@@ -27,23 +27,3 @@
 		</span>
 		<?php } ?>
 	</div>
-	
-	<div class="menu_main_global">
-		<?php if (!(empty($userInfo))): ?>
-		<ul class="nav main" id="navlist">
-			<li><a href="/sales" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0 || $_SERVER['REQUEST_URI'] == '/') {
-			echo 'class="active"';
-			} ?>>All Sales</a></li>
-			<li><a href="/sales/girls" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/girls') == 0) {
-			echo 'class="active"';
-			} ?>>Girls</a></li>
-			<li><a href="/sales/boys" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/boys') == 0)  {
-			echo 'class="active"';
-			} ?>>Boys</a></li>
-			<li><a href="/sales/momsdads" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/momsdads') == 0) {
-			echo 'class="active"';
-			} ?>>Moms &amp; Dads</a></li>
-		</ul>
-		<?php endif ?>
-</div>
-<!-- end header -->
