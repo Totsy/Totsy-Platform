@@ -1,7 +1,7 @@
 <?php $this->title("Video Testimonials"); ?>
 
 <div class="grid_16">
-	<h2 class="page-title gray">Video Testimonials</h2>
+	<h2 class="page-title gray">About Us</h2>
 	<hr />
 </div>
 

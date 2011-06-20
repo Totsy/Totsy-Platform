@@ -10,7 +10,7 @@
 <?php $this->title("Meet the Moms"); ?>
 
 <div class="grid_16">
-	<h2 class="page-title gray">Meet The Moms</h2>
+	<h2 class="page-title gray">About Us</h2>
 	<hr />
 </div>
 

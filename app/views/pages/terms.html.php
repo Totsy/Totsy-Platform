@@ -1,7 +1,7 @@
 <?php $this->title("Terms Of Use"); ?>
 
 <div class="grid_16">
-	<h2 class="page-title gray">Terms Of Use</h2>
+	<h2 class="page-title gray">About Us</h2>
 	<hr />
 </div>
 

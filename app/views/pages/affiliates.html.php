@@ -13,7 +13,7 @@
 
 <div class="grid_11 omega roundy grey_inside b_side">
 
-	<h2 class="page-title gray">Totsy Affiliate Program</h2>
+	<h2 class="page-title gray">Affiliate Program</h2>
             <hr />
 
             <p>Totsy is the premier private sales site that provides up to 90% off the best brands for kids, moms and families!</p>

@@ -1,7 +1,7 @@
 <?php $this->title("Shipping &amp; Tax"); ?>
 
 <div class="grid_16">
-	<h2 class="page-title gray">Shipping &amp; Tax</h2>
+	<h2 class="page-title gray">About Us</h2>
 	<hr />
 </div>
 
@@ -12,7 +12,7 @@
 
 <div class="grid_11 omega roundy grey_inside b_side">
 
-<h2 class="page-title gray">Shipping Time</h2>
+<h2 class="page-title gray">Shipping &amp; Tax</h2>
 	<hr />
 	<p>For delivery, orders will be processed, ordered to the brand, received at Totsy, quality controlled, and then shipped, and delivered within 3-5 weeks after the sale close. Your items are ordered to the brand after you purchase them so some brands might be a bit slow to ship those items to us. Make sure you always consider this when choosing the size when ordering an apparel item. When your order is shipped, you will be able to access a tracking number on your personal account page.</p>
 
