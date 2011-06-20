@@ -31,7 +31,13 @@ class CartController extends BaseController {
 	*/
 	public function view() {
 		if ($this->request->data) {
-			$this->update();
+			$datas = $this->request->data;
+			var_dump($datas);
+			if(!empty($datas['rmv_item_id'])) {
+				$this->remove($datas['rmv_item_id']);
+			} else {
+				$this->update();
+			}
 		}
 		Cart::increaseExpires();
 		$message = '';
@@ -160,9 +166,12 @@ class CartController extends BaseController {
 	* @see app/models/Cart::remove()
 	* @return compact
 	*/
-	public function remove() {
+	public function remove($id = null) {
 		if ($this->request->data) {
 				$data = $this->request->data;
+				if(!empty($id)) {
+					$data["id"] = $id;
+				}
 				$cart = Cart::find('first', array(
 					'conditions' => array(
 						'_id' => $data["id"]
@@ -175,10 +184,9 @@ class CartController extends BaseController {
 					$this->savings($item, 'remove');
 				}
 			}
-
 		$this->_render['layout'] = false;
 		$cartcount = Cart::itemCount();
-		return compact('cartcount');
+		$this->redirect(array('Cart::view'));
 	}
 
 	/**
