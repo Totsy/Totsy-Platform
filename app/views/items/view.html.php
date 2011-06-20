@@ -220,6 +220,7 @@ $(function () {
 });
 </script>
 <script type="text/javascript">
+
     $('#disney').click(function(){
 		$('#modal').load('/events/disney').dialog({
 			autoOpen: false,
@@ -233,7 +234,9 @@ $(function () {
 		$("#sold_out_img").css("z-index", 999);
 		$('#modal').dialog('open');
 		});        
+
 </script>
+
 <script type="text/javascript">
 $(document).ready(function() {
 	var itemCheck = function(){
