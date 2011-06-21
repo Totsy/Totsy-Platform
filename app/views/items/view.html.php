@@ -62,7 +62,7 @@
 		<?php endif ?>
 
 	<!-- End additional image view thumbnails -->
-	
+
 	</div>
 				<?php endif ?>
 				<?php if (!empty($item->alternate_images)): ?>
@@ -83,7 +83,7 @@
 	<div id="detail-top-left"  style="width:405px;">
 		<h1><strong><?=$event->name?></strong> <?=$item->description." ".$item->color; ?></h1>
 	</div>
-	
+
 
 
 		<div class="clear"></div>
@@ -125,7 +125,7 @@
 <!--Disney -->
       <div class="disney">
           <strong>SPECIAL BONUS!</strong><hr/></p>
-       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value ) 
+       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value )
        <span id="disney">Offer & Refund Details</span>
       </div>
 	<br><!-- Started Related Products -->
@@ -157,8 +157,8 @@
 	<!-- End Related Products -->
 
 	</div>
-	
-	
+
+
 	<div class="grid_3">
 
 	<div id="detail-top-right" class="r-container">
@@ -169,8 +169,8 @@
 			<div style="padding: 10px 0px 0px 0px; color:#009900; font-size:24px;">$<?=number_format($item->sale_retail,2); ?></div>
 
 			<div class="original-price" style="font-size:11px; padding-bottom:10px;">Original: $<?=number_format($item->msrp,2); ?></div>
-			
-			<?=$this->form->create(null, array('url' => 'Cart::add')); ?>		
+
+			<?=$this->form->create(null, array('url' => 'Cart::add')); ?>
 <?php if (!empty($sizes)): ?>
 				<?php if ( !((string)$sizes[0] ==='no size')): ?>
 						<select name="item_size" id="size-select">
@@ -189,7 +189,7 @@
 				<div id="all-reserved"></div>
 			<?php endif ?>
 		</div>
-		
+
 		<?php $logo = $event->images->logo_image;?>
 		<div style="padding:0px 0px 0px 7px;">
 		<?=$this->html->image("/image/$logo.jpg", array(
@@ -204,12 +204,12 @@
 		<div style="padding:10px 0px; text-align:center;">
 			<?php echo $spinback_fb; ?>
 		</div>
-		
+
 		</div>
 	<div class="clear"></div>
-	
-	
-	
+
+
+
 	</div>
 <div id="modal" style="background:#fff!important; z-index:9999999999!important;"></div>
 <script type="text/javascript">
@@ -233,8 +233,7 @@ $(function () {
 		});
 		$("#sold_out_img").css("z-index", 999);
 		$('#modal').dialog('open');
-	});        
-
+	});
 </script>
 
 <script type="text/javascript">
@@ -242,21 +241,23 @@ $(document).ready(function() {
 	var itemCheck = function(){
 		var item_id = $('#item_id').attr('value');
 		var item_size = $('#size-select').attr('value');
-		$.ajax({
-			url: $.base + 'items/available',
-			data: "item_id=" + item_id + "&" + "item_size=" + item_size,
-			context: document.body,
-			success: function(data){
-				if (data == 'false') {
-					$('#all-reserved').show();
-					$('.button').hide();
-					$('#all-reserved').html("<p style='background:#EB132C;padding:5px;text-align:center;color:#fff;border-radius:6px;'>All items are reserved <br>Check back in two minutes</p>");
-				} else {
-					$('.button').show();
-					$('#all-reserved').hide();
-				}
-		     }
-		});
+		if (item_size == "Please Select Size") {
+            $.ajax({
+                url: $.base + 'items/available',
+                data: "item_id=" + item_id + "&" + "item_size=" + item_size,
+                context: document.body,
+                success: function(data){
+                    if (data == 'false') {
+                        $('#all-reserved').show();
+                        $('.button').hide();
+                        $('#all-reserved').html("<p style='background:#EB132C;padding:5px;text-align:center;color:#fff;border-radius:6px;'>All items are reserved <br>Check back in two minutes</p>");
+                    } else {
+                        $('.button').show();
+                        $('#all-reserved').hide();
+                    }
+                 }
+            });
+		}
 	};
 	itemCheck();
 
@@ -278,7 +279,7 @@ $(document).ready(function() {
             getSize = true;
           }
         });
-        
+
         if (getSize) {
           $("#hidden-div").show();
           $("input[type=Submit]").attr("disabled","disabled");
@@ -288,4 +289,4 @@ $(document).ready(function() {
         };
       }
     });
-  </script> 
+  </script>

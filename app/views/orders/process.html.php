@@ -37,10 +37,10 @@
 			<table>
 				<tr>
 					<td>
-						<?=$this->form->create(); ?>
+						<?=$this->form->create($order); ?>
 							<h1 style="color:#707070; font-size:14px;">Payment Information <span class="fr" style="font-size:12px; font-weight:normal;"><span class="red ">*</span> Required</span></h1>
 							<hr />
-								
+
 								<p>
 									<label for="cc-type" class="required">Credit Card Type<span>*</span></label>
 									<?=$this->form->select('card[type]', array(
@@ -97,17 +97,20 @@
 					<td><strong>Order Subtotal:</strong> </td>
 					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $subTotal, 2);?></td>
 				</tr>
-				
+
 				<tr>
 					<td>
-							<strong>Promo Savings:</strong></td>
-							<td style="text-align:left; padding-left:10px;"><?php if (!empty($orderPromo)): ?>
-								-$<?=number_format((float) abs($orderPromo->saved_amount), 2);?>
-							<?php else: ?>
-								-$<?=number_format((float) 0, 2);?>
-							<?php endif ?>
+							<strong>Promo Savings:</strong>
+					</td>
+							<td style="text-align:left; padding-left:10px;">
+                                <?php if (!empty($orderPromo)): ?>
+                                    -$<?=number_format((float) abs($orderPromo->saved_amount), 2);?>
+                                <?php else: ?>
+                                    -$<?=number_format((float) 0, 2);?>
+                                <?php endif ?>
+							</td>
 				</tr>
-				
+
 				<?php
 					if ($orderServiceCredit): ?>
 						<tr>
@@ -143,40 +146,15 @@
 						</tr>
 					<?php endif ?>
 				<tr>
-					<?php if ($credit): ?>
-						<div style="padding:10px; background:#eee;"><?php $orderCredit->credit_amount = abs($orderCredit->credit_amount); ?>
-							<?=$this->form->create($orderCredit); ?>
-							<?=$this->form->error('amount'); ?>
-							You have $<?=number_format((float) $userDoc->total_credit, 2);?> in credits
-							<hr />
-							<?=$this->form->text('credit_amount', array('size' => 6, 'maxlength' => '6')); ?>
-									<?=$this->form->submit('Apply Credit', array('class' => 'button')); ?>
-									<hr />
-										<strong>Credit:</strong>
-								-$<?=number_format((float) $orderCredit->credit_amount, 2);?>
-							<?=$this->form->end(); ?>
-							<div style="clear:both"></div>
-						</div>
-					<?php else : ?>
-						<?php if ($credit = '0') { ?>
-						<div style="padding:10px; background:#eee;"><h1 style="color:#707070; font-size:14px;">Credits: <span style="color:#009900; float:right;">$0.00</span></h1></div>
-						<?php } ?>
-					<?php endif ?>
+				    <?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $orderCredit, 'credit' => $credit, 'userDoc' => $userDoc)); ?>
 				</tr>
 				<tr>
 					<div style="padding:10px; background:#eee; margin:10px 0">
-						<?=$this->form->create($orderPromo); ?>
-							<?php if (is_array($this->form->error('promo'))): ?>
-                                <?php foreach($this->form->error('promo') as $msg) :?>
-                                    <?php echo $msg ?>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <?=$this->form->error('promo'); ?>
-							<?php endif; ?>
-							<?=$this->form->text('code', array('size' => 6)); ?>
-							<?=$this->form->submit('Apply Promo Code', array('class' => 'button')); ?>
-							
-							<?=$this->form->end(); ?></td>
+
+					    <?=$this->view()->render(array('element' => 'promocode'),
+					            array('order' => $order, 'orderPromo' => $orderPromo)
+					            ); ?>
+						</td>
 						<div style="clear:both"></div>
 					</div>
 				</tr>
@@ -184,7 +162,7 @@
 					<td style="text-align:left; color:#707070; font-size:22px;"><hr /><strong>Order Total:</td>
 					<td style="text-align:right; color:#009900; font-size:22px; padding-left:10px"><hr />$<?=number_format((float) $total, 2);?></td>
 				</tr>
-				
+
 			</table>
 		</td>
 	</tr>
@@ -200,9 +178,9 @@
 	</div>
 	<div class="roundy grey_inside">
 		<h3 class="gray">Estimated Ship Date<span style="font-weight:bold; float:right;"><?=date('m-d-Y', $shipDate)?></span></h3>
-		
+
 	</div>
-	
+
 	<div class="roundy grey_inside">
 		<?php if ($billingAddr): ?>
 								<h3 class="gray">Billing Address <span class="fr">(<a href="#" class="add-address">edit</a>)</span></h3>
@@ -224,9 +202,9 @@
 								</address>
 						<?php endif ?>
 
-		
+
 	</div>
-	
+
 	<div class="roundy grey_inside">
 		<h2 style="color:#707070;font-size:14px; font-weight:normal;">My Cart (<?=$this->html->link('edit','/cart/view'); ?>) <span style="float:right;"><?=$cartCount;?> items</span></h2>
 		<hr />
@@ -237,7 +215,7 @@
 		<?php foreach ($cartByEvent as $key => $event): ?>
 		<?php foreach ($event as $item): ?>
 		<?php $itemUrl = "sale/".$orderEvents[$key]['url'].'/'.$item['url'];?>
-		<div style="float:left; width:85px;">					
+		<div style="float:left; width:85px;">
 									<?php
 										if (!empty($item['primary_image'])) {
 											$image = $item['primary_image'];
@@ -246,7 +224,7 @@
 											$productImage = "/img/no-image-small.jpeg";
 										}
 									?>
-		
+
 									<?=$this->html->link(
 										$this->html->image("$productImage", array(
 											'width'=>'75',
@@ -270,7 +248,7 @@
 									<?php } else { ?>
 									<?php } ?>
 									Quantity: <?=$item['quantity'];?> (<strong style="color:#009900;">$<?=number_format($item['sale_retail'],2)?></strong>)<br>
-																	
+
 
 							<?php
 								//Allow users three extra minutes on their items for checkout.
@@ -290,7 +268,7 @@
 									</script>";
 								$x++;
 							?>
-						
+
 							</div>
 							<div class="clear"></div>
 							<hr/>
@@ -304,7 +282,7 @@
 		</div>
 
 	<div class="clear"></div>
-	
+
 </div>
 <div class="clear"></div>
 <div id="modal"></div>

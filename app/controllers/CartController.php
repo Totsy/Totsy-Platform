@@ -95,6 +95,9 @@ class CartController extends BaseController {
 					}
 				}
 			}
+		} else {
+			#Reset Savings on Session
+			Session::write('userSavings', 0);
 		}
 		#T
 		$cart = Cart::create();
