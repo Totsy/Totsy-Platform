@@ -185,7 +185,9 @@
 			<?=$this->form->hidden("item_id", array('value' => "$item->_id", 'id'=>'item_id')); ?>
 			<?php if ($item->total_quantity >= 1): ?>
 				<div id="hidden-div" style="display:none; color:#eb132c; font-weight:bold;">Please Select Size!</div>
+				<span style="display: inline-block;">
 				<?=$this->form->submit('Add To Cart', array('class' => 'button')); ?>
+				</span>
 				<div id="all-reserved"></div>
 			<?php endif ?>
 		</div>
