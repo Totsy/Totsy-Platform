@@ -273,7 +273,7 @@ class OrdersController extends BaseController {
 				)));
 			}
 		}
-
+		var_dump($this->request->data);
 		if ($shippingAddr) {
 			$tax = array_sum($cart->tax($shippingAddr));
 			$shippingCost = Cart::shipping($cart, $shippingAddr);
@@ -293,112 +293,24 @@ class OrdersController extends BaseController {
 		$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
 
 		$orderCredit = Credit::create();
-		if (Session::read('credit')) {
-			$orderCredit->credit_amount = Session::read('credit');
-		}
-
-		if (isset($this->request->data['credit_amount'])) {
-			$credit = number_format((float)$this->request->data['credit_amount'], 2);
-			$lower = -0.999;
-			$upper = (!empty($userDoc->total_credit)) ? $userDoc->total_credit + 0.01 : 0;
-			$inRange = Validator::isInRange($credit, null, compact('lower', 'upper'));
-			$isMoney = Validator::isMoney($credit);
-			if (!$isMoney) {
-				$orderCredit->error = "Please apply credits that are in the form of $0.00";
-				$orderCredit->errors(
-					$orderCredit->errors() + array('amount' => "Please apply credits that are in the form of $0.00")
-				);
-			}
-			if (!$inRange) {
-				$orderCredit->errors(
-					$orderCredit->errors() + array(
-						'amount' => "Please apply credits that are greater than $0 and less than $$userDoc->total_credit"
-					));
-			}
-			$isValid = ($subTotal >= $credit) ? true : false;
-			if (!$isValid) {
-				$orderCredit->errors(
-					$orderCredit->errors() + array(
-						'amount' => "Please apply credits that is $$subTotal or less"
-					));
-			}
-			if ($isMoney && $inRange && $isValid) {
-				$orderCredit->credit_amount = -$credit;
-				Session::write('credit', -$credit, array('name' => 'default'));
-			}
-		}
+		$credit_amount = isset($this->request->data['credit_amount']) ? $this->request->data['credit_amount'] : 0;
+		$orderCredit->checkCredit($credit_amount, $subTotal, $userDoc);
 
 		$orderPromo = Promotion::create();
 		$orderServiceCredit = Service::tenOffFiftyCheck($subTotal);
 		$postServiceCredit = $subTotal + $orderServiceCredit;
 		$postCreditTotal = $postServiceCredit + $orderCredit->credit_amount;
+
+		$promo_code = NULL;
 		if (Session::read('promocode')) {
-			$orderPromo->code = Session::read('promocode');
+			$promo_code = Session::read('promocode');
 		}
-		if (isset($this->request->data['code'])) {
-			$orderPromo->code = $this->request->data['code'];
+		if (array_key_exists('code', $this->request->data)) {
+			$promo_code = $this->request->data['code'];
+			var_dump("promo came here");
 		}
-		if ($orderPromo->code) {
-			$code = Promocode::confirmCode($orderPromo->code);
-			if ($code) {
-				$count = Promotion::confirmCount($code->_id, $user['_id']);
-				$uses = Promotion::confirmNoUses($code->_id, $user['_id']);
-				if ($code->max_use > 0) {
-					if ($count >= $code->max_use) {
-						$orderPromo->errors(
-							$orderPromo->errors() + array(
-								'promo' => "This promotion code has already been used"
-						));
-					}
-				}
-				if ($code->max_total !== "UNLIMITED") {
-					if ($uses >= $code->max_total) {
-						$orderPromo->errors(
-							$orderPromo->errors() + array(
-								'promo' => "This promotion code has already been used"
-						));
-					}
-				}
-				if ($code->limited_use == true) {
-					$userPromotions = ($userDoc->promotions) ? $userDoc->promotions->data() : null;
-					if (!is_array($userPromotions) || !in_array((string) $code->_id, $userPromotions)) {
-						$orderPromo->errors(
-							$orderPromo->errors() + array(
-								'promo' => "Your promotion code is invalid"
-						));
-					}
-				}
-				if ($postCreditTotal >= $code->minimum_purchase) {
-					$orderPromo->user_id = $user['_id'];
-					if ($code->type == 'percentage') {
-						$orderPromo->saved_amount = $postCreditTotal * -$code->discount_amount;
-					}
-					if ($code->type == 'dollar') {
-						$orderPromo->saved_amount = -$code->discount_amount;
-					}
-					if ($code->type == 'free_shipping' && !($orderPromo->errors())) {
-						$shippingCost = 0;
-						$overShippingCost = 0;
-						$orderPromo->type = "free_shipping";
-					}
-					Session::write('promocode', $orderPromo->code, array('name' => 'default'));
-				} else {
-					$orderPromo->errors(
-						$orderPromo->errors() + array(
-							'promo' => "You need a minimum order total of $$code->minimum_purchase to use this promotion code. Shipping and sales tax is not included."
-					));
-				}
-			} else {
-				$orderPromo->errors(
-					$orderPromo->errors() + array(
-						'promo' => 'Your promotion code is invalid'
-				));
-			}
-			$errors = $orderPromo->errors();
-			if ($errors) {
-				$orderPromo->saved_amount = 0;
-			}
-		}
+
+		$orderPromo->promoCheck($promo_code, $userDoc, compact('postCreditTotal', 'shippingCost', 'overShippingCost'));
 		$vars = compact(
 			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
@@ -525,6 +437,22 @@ class OrdersController extends BaseController {
 		}
 		return $eventItems;
 	}
+
+	/**
+	*
+	**/
+	public function applyPromo() {
+		$this->render(array('layout' => false));
+		var_dump('ajax');
+		$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
+		$data = $this->request->data;
+		if (isset($this->request->data['code'])) {
+			$promo_code = $this->request->data['code'];
+		}
+		$orderPromo->promoCheck($promo_code, $userDoc, compact('postCreditTotal', 'shippingCost', 'overShippingCost'));
+		return json_encode($orderPromo->error());
+	}
+
 
 	/**
 	 * Return all the events of an order.
