@@ -5,7 +5,7 @@
         You have $<?=number_format((float) $userDoc->total_credit, 2);?> in credits
         <hr />
         <?=$this->form->text('credit_amount', array('size' => 6, 'maxlength' => '6')); ?>
-                <?=$this->form->submit('Apply Credit', array('class' => 'button')); ?>
+                <?=$this->form->submit('Apply Credit'); ?>
                 <hr />
                     <strong>Credit:</strong>
             -$<?=number_format((float) $orderCredit->credit_amount, 2);?>

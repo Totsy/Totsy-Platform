@@ -7,7 +7,7 @@
         <?=$this->form->error('promo'); ?>
     <?php endif; ?>
     <?=$this->form->text('code', array('size' => 6)); ?>
-    <?=$this->form->submit('Apply Promo Code', array('class' => 'button')); ?>
+    <?=$this->form->submit('Apply Promo Code'); ?>
 <?=$this->form->end(); ?>
 
 
@@ -15,7 +15,11 @@
 $().ready(function(){
     $('#promo-form').submit(function(){
         var code = $('input[name="code"]').val();
-        var card = $('input[name="card"]').val();
+        var card['type'] = $('#card_type option:selected').val();
+        var card['number'] = $('input[name="card[number]"]').val();
+        var card['code'] = $('input[name="card[code]"]').val();
+        var card['month'] = $('#card_month option:selected').val();
+        var card['year'] = $('#card_year option:selected').val();
         $.ajax({
             url:"/orders/process",
             type:"post",

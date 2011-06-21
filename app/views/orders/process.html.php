@@ -47,7 +47,7 @@
 										'visa' => 'Visa',
 										'mc' => 'MasterCard',
 										'amex' => 'American Express'
-									)); ?>
+									), array('id' => 'card_type')); ?>
 								</p>
 								<p>
 									<label for="cc" class="required">Card Number<span>*</span></label>
@@ -69,12 +69,12 @@
 										10 => 'October',
 										11 => 'November',
 										12 => 'December'
-									)); ?>
+									), array('id'=>"card_month")); ?>
 									<?php
 										$now = intval(date('Y'));
 										$years = array_combine(range($now, $now + 15), range($now, $now + 15));
 									?>
-									<?=$this->form->select('card[year]', array('' => 'Year') + $years); ?>
+									<?=$this->form->select('card[year]', array('' => 'Year') + $years, array('id' => "card_year")); ?>
 								</p>
 								<p>
 									<label for="cc-ccv" class="required">CVV2 Code<span>*</span></label>
