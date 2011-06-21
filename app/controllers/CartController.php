@@ -179,11 +179,15 @@ class CartController extends BaseController {
 						'_id' => $data["id"]
 				)));
 				$quantity = $cart->quantity;
+				$now = getdate();
+				$expires_date = $cart->expires->sec;
 				if(!empty($cart)){
 					Cart::remove(array('_id' => $data["id"]));
 					//calculate savings
-					$item[$cart->item_id] = $quantity;
-					$this->savings($item, 'remove');
+					if($now[0] < $cart->expires->sec) {
+						$item[$cart->item_id] = $quantity;
+						$this->savings($item, 'remove');
+					}
 				}
 			}
 		$this->_render['layout'] = false;
