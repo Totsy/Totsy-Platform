@@ -11,7 +11,7 @@
 <div class="message"></div>
 <?php if (!empty($test)): ?>
 <?php $subTotal = 0; ?>
-<?=$this->form->create(); ?>
+<?=$this->form->create(null ,array('id'=>'cartForm')); ?>
 	
 	<div class="grid_12 roundy_cart">
 	<div id='message'><?php echo $message; ?></div>
@@ -86,7 +86,7 @@
 					</td>
 					<td class="cart-time" style="width:220px;"><img src="/img/old_clock.png" align="absmiddle" width="23" class="fl"/><div id='<?php echo "itemCounter$x"; ?>' class="fl" style="margin:5px 0px 0px 5px;"></div></td>
 					<td class="cart-actions">
-						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" onclick="return deletechecked('Are you sure you want to remove this item?');" style="color: red!important;"><img src="/img/trash.png" width="20" align="absmiddle" style="margin-right:20px;" /></a>
+						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" onclick="deletechecked('Are you sure you want to remove this item?','<?=$item->_id; ?>');" style="color: red!important;"><img src="/img/trash.png" width="20" align="absmiddle" style="margin-right:20px;" /></a>
 					</td>
 				</tr>
 				<?php
@@ -105,17 +105,10 @@
 						}
 						});
 						</script>";
-					$removeButtons[] = "<script type=\"text/javascript\" charset=\"utf-8\">
-							$('#remove$item->_id').click(function () {
-								$('#$item->_id').remove();
-								$.post(\"/cart/remove\" , { id: '$item->_id' } );
-							    });
-						</script>";
 					$subTotal += $item->quantity * $item->sale_retail;
 					$x++;
 				?>
 	<?php endforeach ?>
-
 		<tr class="cart-total">
 
 			<td colspan="7" id='subtotal'><div style="text-align: right; font-size: 16px;"><strong>Subtotal: </strong><span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong></div>
@@ -138,7 +131,11 @@
 
 	</div>
 <?=$this->form->end(); ?>
-
+<div id="remove_form" style="display:none">
+	<?=$this->form->create(null ,array('id'=>'removeForm')); ?>
+	<?=$this->form->hidden('rmv_item_id', array('class' => 'inputbox', 'id' => 'rmv_item_id')); ?>
+	<?=$this->form->end();?>
+</div>
 
 	<?php if (!empty($itemCounters)): ?>
 		<?php foreach ($itemCounters as $counter): ?>
@@ -213,21 +210,24 @@
 });
 </script>
 <script type="text/javascript" charset="utf-8">
-function deletechecked(message)
-        {
-            var answer = confirm(message)
-            if (answer){
-                document.messages.submit();
-                return false;
-            }
-            return false;
-        }
+function deletechecked(message, id) {
+	var answer = confirm(message)
+	if (answer){
+		$('input[name="rmv_item_id"]').val(id);
+		$('#removeForm').submit();
+	}
+	return false;
+}
 </script>
-
-    <script type="text/javascript">
-        $(function () {
-            $("select").live("change keyup", function () {
-                $("form").submit();
-            });
-        });
-    </script>
+<script type="text/javascript">
+	$(function () {
+		$("select").live("change keyup", function () {
+		if($("select").val() == 0) {
+			$('input[name="rmv_item_id"]').val($(this).attr('id'));
+			$('#removeForm').submit();
+		} else {
+			$("#cartForm").submit();
+		}
+	});
+});
+</script>
