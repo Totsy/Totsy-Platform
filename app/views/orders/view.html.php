@@ -380,3 +380,17 @@
 
 	</script>
 <?php endif ?>
+
+<script language="javascript">
+<!-- Upsellit.com confirmation
+var siteID = "6525";
+var productID = "77";
+var position = "1";
+var orderID ="<?=$order->order_id?>"; //To be filled in by site
+
+var orderAmt ="<?=$order->total?>"; //To be filled in by site
+var command = "REPORT"
+var upsellit_tag = "<scr" + "ipt " + "SRC='http" + (document.location.protocol=='https:'?'s://www':'://www') + ".upsellit.com/upsellitReporting.jsp?command="+command+"&siteID=" + siteID + "&productID=" + productID + "&position=" + position + "&orderID=" + orderID + "&orderAmt=" + orderAmt +"'><\/scr" + "ipt>";
+document.write(upsellit_tag);
+// -->
+</script>
