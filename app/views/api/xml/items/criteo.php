@@ -1,11 +1,11 @@
 <?php echo '<?xml version="1.0"?>'; ?>
 <root>
-<?php if (isset($token)){ ?>
-	<token><?php echo $token?></token>
+<?php if (isset($data['token'])){ ?>
+	<token><?php echo $data['token']?></token>
 <?php } ?>
-<?php if (is_array($items)){ ?>`
+<?php if (is_array($data['items'])){ ?>`
 	<products>
-	<?php foreach($items as $item){ ?>
+	<?php foreach($data['items'] as $item){ ?>
 		<product id="<?php echo $item['_id']?>">
 			<name><?php echo $item['description'] ?></name>
 			<producturl><?php echo $item['base_url'].'/sale/'.$item['event_url'].'/'.$item['url'];?></producturl>

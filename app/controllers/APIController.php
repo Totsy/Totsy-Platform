@@ -53,11 +53,11 @@ class APIController extends  \lithium\action\Controller {
 			$format = 'json';
 		} else { 
 			$format = array_pop( explode('.', $this->request->url) );
-			if (!is_null($format)) $format = strtolower($format);
+			if (!is_null($format)) $this->_format = strtolower($format);
 		}		
 		// format validator
 		if (!is_null($format) && !in_array($format, static::$_formats)){
-			$this->format = 'json';
+			$this->_format = 'json';
 			$this->display( ApiHelper::errorCodes(415) );
 		}
 		
@@ -187,7 +187,7 @@ class APIController extends  \lithium\action\Controller {
 			}
 		}
 		$this->setView(1);
-		return $items;				
+		return (compact('items', 'token'));
 	}
 	
 	
@@ -213,7 +213,6 @@ class APIController extends  \lithium\action\Controller {
 	 * }}}
 	 */
 	private function display ($data){
-		
 		switch ($this->_format){
 			
 			case 'xml':
@@ -239,10 +238,10 @@ class APIController extends  \lithium\action\Controller {
 	
 	private function setView($param){
 		$params = $this->request->args;
-		if (is_array($params) && count($params)>2){
+		if (is_array($params) && count($params)>=2){
 			$pc = count($params);
 			if ($pc>$param){
-				$this->view = str_replace('.'.$this->_format, '', $params[$param]);
+				$this->_view = str_replace('.'.$this->_format, '', $params[$param]);
 			} 
 		}
 	}
