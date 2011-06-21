@@ -122,8 +122,8 @@
 				<a href='../../pages/returns'><strong style="font-size:12px; font-weight:normal;">Refund &amp; Return Policy</strong></a><br />
 			</td>
 			<td class="cart-button" colspan="5">
-				<?=$this->html->link('Proceed To Checkout', 'Orders::add', array('class' => 'button')); ?>
-				<?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('class' => 'button', 'style' => 'margin-right:10px;')); ?>
+				<?=$this->html->link('Checkout', 'Orders::add', array('class' => 'button')); ?>
+				<?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style' => 'margin:7px 10px 0px 0px;')); ?>
 			</td>
 			</tbody>
 		</table>

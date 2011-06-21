@@ -32,7 +32,6 @@ class CartController extends BaseController {
 	public function view() {
 		if ($this->request->data) {
 			$datas = $this->request->data;
-			var_dump($datas);
 			if(!empty($datas['rmv_item_id'])) {
 				$this->remove($datas['rmv_item_id']);
 			} else {
