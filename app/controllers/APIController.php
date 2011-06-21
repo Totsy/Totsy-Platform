@@ -58,14 +58,14 @@ class APIController extends  \lithium\action\Controller {
 		// format validator
 		if (!is_null($format) && !in_array($format, static::$_formats)){
 			$this->format = 'json';
-			$this->display( Api::errorCodes(415) );
+			$this->display( ApiHelper::errorCodes(415) );
 		}
 		
 		// set protocol HTTP OR HTTPS 
 		Api::init($this->request);
 		
 		if (empty($params) || ( is_array($params) && count($params)==0)){
-			$this->display( Api::errorCodes(405) );
+			$this->display( ApiHelper::errorCodes(405) );
 		}
 		
 		$methods = get_class_methods(get_class($this));
@@ -74,7 +74,7 @@ class APIController extends  \lithium\action\Controller {
 			$this->_method = $params[0];
 			$this->display( $this->{$params[0].'Api'}() );
 		} else {
-			$this->display( Api::errorCodes(405) );
+			$this->display( ApiHelper::errorCodes(405) );
 		}		
 	}	
 	
@@ -137,11 +137,11 @@ class APIController extends  \lithium\action\Controller {
 		// do not allow requests via HTTP
 		// HTTPS only
 		if(Api::isSecure() == false){
-			return Api::errorCodes(403);
+			return ApiHelper::errorCodes(403);
 		}
 		// check request method
 		if (Api::isPost() == false){
-			return Api::errorCodes(400);
+			return ApiHelper::errorCodes(400);
 		}
 		
 		return Api::changePassword($token);
@@ -220,11 +220,11 @@ class APIController extends  \lithium\action\Controller {
 				if (!is_null($this->_view)){
 					$path = $this->_format.'/'.$this->_method.'/'.$this->_view.'.php';
 					if (!file_exists(LITHIUM_APP_PATH . '/views/api/'.$path)) {
-						echo ApiHelper::converter(Api::errorCodes(415),$this->_format);
+						echo ApiHelper::converter(ApiHelper::errorCodes(415),$this->_format);
 					}
 					require_once LITHIUM_APP_PATH . '/views/api/'.$path;
 				} else {
-					echo ApiHelper::converter(Api::errorCodes(415),$this->_format);
+					echo ApiHelper::converter(ApiHelper::errorCodes(415),$this->_format);
 				}
 			break;
 			

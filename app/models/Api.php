@@ -3,6 +3,12 @@
 namespace app\models;
 
 /*
+ * 2011-06-21 Upadte notes
+ *  - Moved errorCodes Method to ApiHelper::errorCodes();
+ *  - Removed unused methods as validate_auth_key item atc.
+ */
+
+/*
  * 2011-06-16 Upadte notes
  *  - Api::errorCodes(): array_key_exists firrst parameter must be integer or string fixed
  *  - Api::doAuthorization() & Api::doTokenization(): 
@@ -48,6 +54,8 @@ namespace app\models;
  */
 
 //use admin\models\User;
+
+use app\extensions\helper\ApiHelper;
 
 use lithium\util\Validator;
 use MongoId;
@@ -113,13 +121,13 @@ class Api extends Base {
 	}
 	
 	public static function authorizeTokenize ($query){
-		if (!is_array($query)) { return static::errorCodes(407); }		
+		if (!is_array($query)) { return ApiHelper::errorCodes(407); }		
 		if (array_key_exists('auth_token', $query)){
 			return self::doAuthorization($query);
 		} else if (array_key_exists('token', $query)) {
 			return self::doTokenization($query);
 		} else {
-			return static::errorCodes(198);
+			return ApiHelper::errorCodes(198);
 		}
 	}
 	
@@ -127,13 +135,13 @@ class Api extends Base {
 		if (($error=static::validateAuth($query))!==true) { return $error; }
 		$for = self::findAuthToken($query['auth_token']);
 		if (!is_array($for) || (is_array($for) && !array_key_exists('auth_token', $for))){
-			return static::errorCodes(199);
+			return ApiHelper::errorCodes(199);
 		}
 		$expires = strtotime($for['last_active']) * 60 * self::$_token_expires ;
 		if ($expires> time()){
 			return self::generateToken($for);
 		} else {
-			return static::errorCodes(198);
+			return ApiHelper::errorCodes(198);
 		}
 	}
 
@@ -141,14 +149,14 @@ class Api extends Base {
 		if (($error=static::validateToken($query))!==true) { return $error; }
 		$for = self::findToken($query['token']);
 		if (!is_array($for) || (is_array($for) && !array_key_exists('auth_token', $for))){
-			return static::errorCodes(196);
+			return ApiHelper::errorCodes(196);
 		}
 		return  self::generateToken($for);
 	}
 	
 	public static function generateToken ($user){
 		
-		if (!is_array($user)) { return static::errorCodes(500); }
+		if (!is_array($user)) { return ApiHelper::errorCodes(500); }
 		$token_expires = $user['last_active']->sec  + 60 * self::$_token_expires;
 		if ( $token_expires > time()) {
 			$user['last_active'] = new MongoDate();
@@ -166,111 +174,23 @@ class Api extends Base {
 	} 
 
 	public static function validateToken($query){
-		if (($code=static::validate_Token($query))!==true) { return array('error' => self::errorCodes($code)); }
+		if (($code=static::validate_Token($query))!==true) { return array('error' => ApiHelper::errorCodes($code)); }
 		if (static::$_isSecure === false){
-			if (($code=static::validate_Time($query))!==true) { return array('error' => self::errorCodes($code)); }
-			if (($code=static::validate_Sig($query))!==true) { return array('error' => self::errorCodes($code)); }
+			if (($code=static::validate_Time($query))!==true) { return array('error' => ApiHelper::errorCodes($code)); }
+			if (($code=static::validate_Sig($query))!==true) { return array('error' => ApiHelper::errorCodes($code)); }
 		}			
 		return true;
 	}
 		
 	public static function validateAuth($query){		
-		if (($code=static::validate_AuthToken($query))!==true) { return self::errorCodes($code); }
+		if (($code=static::validate_AuthToken($query))!==true) { return ApiHelper::errorCodes($code); }
 		if (static::$_isSecure === false){
-			if (($code=static::validate_Time($query))!==true) { return self::errorCodes($code); }
-			if (($code=static::validate_Sig($query))!==true) { return self::errorCodes($code); }
+			if (($code=static::validate_Time($query))!==true) { return ApiHelper::errorCodes($code); }
+			if (($code=static::validate_Sig($query))!==true) { return ApiHelper::errorCodes($code); }
 		}
 		return true;
 	}
 	
-	public static function errorCodes($status = 500){
-		$codes = Array(
-			  2 => 'Missing HTTP-Request Parameter',
-			  3 => 'Unknown AUTH_KEY',
-			  4 => 'Unknown TIME',
-			  5 => 'Unknown SIG',
-			  6 => 'Invalid AUTH_KEY',
-			  7 => 'Paremeter TIME is out of range',
-			  8 => 'Invalid SIG',
-			  9 => 'Unknown TMP_TOKEN',
-			 10 => 'Invalid TMP_TOKEN',
-			 11 => 'Expired TMP_TOKEN',
-			 12 => 'Unknown TOKEN',
-			 13 => 'Invalid TOKEN',
-			 14 => 'Expired TOKEN',
-			 15 => 'Unknown ITEM_ID',
-			 16 => 'Invalid ITEM_ID',			 
-			 81 => 'sig 1',
-			 82 => 'sig 2',
-			 83 => 'sig 3',
-			 84 => 'sig 4',
-			 85 => 'sig 5',
-			 86 => 'sig 6',
-			 93 => 'Variable "control" invalid',
-			 94 => 'Variable "time" invalid',	 
-			 95 => 'Variable "auth_id" invalid',
-		 	 96 => 'No "auth_id" variable in the request',	    
-			 97 => 'No "time" variable in the request',
-			 98 => 'No "control" variable in the request',
-			 99 => 'Request-URI Too short',
-			100 => 'Continue', 		    
-			101 => 'Switching Protocols',
-			195 => 'Invalid TOKEN',
-			196 => 'Unknown TOKEN',
-			197 => 'Unknown AUTH_TOKEN',
-			198 => 'Authorization failed',
-			199 => 'Invalid AUTH_TOKEN', 		    
-			200 => 'OK', 		    
-			201 => 'Created', 		    
-			202 => 'Accepted', 		    
-			203 => 'Non-Authoritative Information', 		    
-			204 => 'No Content', 		    
-			205 => 'Reset Content', 		    
-			206 => 'Partial Content', 		    
-			300 => 'Multiple Choices', 		    
-			301 => 'Moved Permanently', 		    
-			302 => 'Found', 		    
-			303 => 'See Other', 		    
-			304 => 'Not Modified', 		    
-			305 => 'Use Proxy', 		    
-			306 => '(Unused)', 		    
-			307 => 'Temporary Redirect', 		    
-			400 => 'Bad Request', 		    
-			401 => 'Unauthorized', 		    
-			402 => 'Payment Required', 		    
-			403 => 'Forbidden', 		    
-			404 => 'Not Found', 		    
-			405 => 'Method Not Found', 		    
-			406 => 'Not Acceptable', 		    
-			407 => 'Proxy Authentication Required', 		    
-			408 => 'Request Timeout', 		    
-			409 => 'Conflict', 		    
-			410 => 'Gone', 		    
-			411 => 'Length Required', 		   
-			412 => 'Precondition Failed', 		    
-			413 => 'Request Entity Too Large', 		    
-			414 => 'Request-URI Too Long', 		    
-			415 => 'Unsupported Media Type', 		    
-			416 => 'Requested Range Not Satisfiable', 		    
-			417 => 'Expectation Failed', 		    
-			500 => 'Internal Server Error', 		    
-			501 => 'Not Implemented', 		    
-			502 => 'Bad Gateway', 		    
-			503 => 'Service Unavailable', 		    
-			504 => 'Gateway Timeout', 		    
-			505 => 'HTTP Version Not Supported' 		
-		);  
-				
-		if (is_numeric($status) && array_key_exists($status, $codes)) { 
-			$error = array('code' => $status, 'message' => $codes[$status]);
-		} else {
-			// in case unknown error code ocurred
-			$error = array('code' => 500, 'message' => $codes['500']); 
-		}
-		
-		return compact('error');
-	}
-
 	protected function validate_AuthToken ($value){
 		if (!is_array($value)) { return 2; }
 		if (!array_key_exists('auth_token', $value)) { return 197; }
@@ -283,34 +203,6 @@ class Api extends Base {
 		return true;
 	}
 	
-	protected function validate_AuthKey ($value){
-		
-		if (!is_array($value)) { return 2; }
-		if (!array_key_exists('auth_key', $value)) { return 3; }
-		// in case there is more than 32 charctres alowed
-		if ( strlen(trim($value['auth_key'])) != 32) { return 6; }
-		// replace all non hash caractres to ""
-		$auth_key = preg_replace("/[^a-f0-9]+/", "", strtolower($value['auth_key']));
-		// in case replaced carartecs 
-		if ( strlen($auth_key) != 32) { return 6; }
-		
-		return true; 
-	}
-
-	protected function validate_TmpToken ($value){
-		
-		if (!is_array($value)) { return 2; }
-		if (!array_key_exists('tmp_token', $value)) { return 9; }
-		// in case there is more than 32 charctres alowed
-		if ( strlen(trim($value['tmp_token'])) != 20) { return 10; }
-		// replace all non hash caractres to ""
-		$auth_key = preg_replace("/[^a-f0-9]+/", "", strtolower($value['tmp_token']));
-		// in case replaced carartecs 
-		if ( strlen($auth_key) != 20) { return 10; }
-		
-		return true; 
-	}
-
 	protected function validate_Token ($value){
 		
 		if (!is_array($value)) { return 2; }
@@ -366,21 +258,6 @@ class Api extends Base {
 		
 		return true;
 	}
-	
-	protected function validate_ItemId ($value){
-		
-		if (!is_array($value)) { return 2; }
-		if (!array_key_exists('item_id', $value)) { return 15; }
-		// in case there is more than 32 charctres alowed
-		if ( strlen(trim($value['item_id'])) != 24) { return 16; }
-		// replace all non hash caractres to ""
-		$item_id = preg_replace("/[^a-f0-9]+/", "", strtolower($value['item_id']));
-		// in case replaced carartecs 
-		if ( strlen($item_id) != 24) { return 16; }
-		
-		return true; 
-	}
-	
 	
 }
 ?>
