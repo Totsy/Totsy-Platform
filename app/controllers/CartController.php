@@ -32,7 +32,6 @@ class CartController extends BaseController {
 	public function view() {
 		if ($this->request->data) {
 			$datas = $this->request->data;
-			var_dump($datas);
 			if(!empty($datas['rmv_item_id'])) {
 				$this->remove($datas['rmv_item_id']);
 			} else {
@@ -96,6 +95,9 @@ class CartController extends BaseController {
 					}
 				}
 			}
+		} else {
+			#Reset Savings on Session
+			Session::write('userSavings', 0);
 		}
 		#T
 		$cart = Cart::create();
