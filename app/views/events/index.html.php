@@ -223,6 +223,7 @@
 //-->
 </script>
 <script type="text/javascript">
+
 	$('#disney').click(function(){
 		$('#modal').load('/events/disney').dialog({
 			autoOpen: false,

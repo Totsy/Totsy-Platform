@@ -14,6 +14,7 @@
 } 
 .ui-dialog .ui-dialog-titlebar-close
 {
+	background: none repeat scroll 0 0 !important;
 	position: absolute;
 	right: .6em;
 	top: 50%;
