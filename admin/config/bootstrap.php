@@ -99,7 +99,7 @@ require __DIR__ . '/bootstrap/payments.php';
 
 require __DIR__ . '/bootstrap/mail.php';
 
-require __DIR__ . '/bootstrap/avatax.php';
+//require __DIR__ . '/bootstrap/avatax.php';
 
 /**
  * This file configures the analysis behavior which includes Logging.

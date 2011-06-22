@@ -110,7 +110,7 @@ require __DIR__ . '/bootstrap/payments.php';
 
 require __DIR__ . '/bootstrap/mail.php';
 
-require __DIR__ . '/bootstrap/avatax.php';
+// require __DIR__ . '/bootstrap/avatax.php';
 
 /**
  * This configures your session storage. The Cookie storage adapter must be connected first, since
