@@ -80,10 +80,10 @@
 				<!-- Start the product loop to output all products in this view -->
 				<!-- Start product item -->
 					<?php if (($y == 0) || ($y == 2)): ?>
-						<div class="grid_4_three_column_hack">
+						<div class="grid_4">
 					<?php endif ?>
 					<?php if ($y == 1): ?>
-						<div class="grid_4_three_column_hack">
+						<div class="grid_4">
 					<?php endif ?>
 					<?php if ($y == 2): ?>
 						<?php $y = -1; ?>
@@ -99,9 +99,8 @@
 							$this->html->image($productImage, array(
 								'alt' => $item->name,
 								'title' => $item->name,
-								'width' => '310',
-								//'height' => '263'
-								)),
+								'width' => '228',
+								'height' => '263')),
 							"sale/$event->url/{$item->url}",
 							array('title' => $item->name, 'escape' => false)
 						); ?>
@@ -109,7 +108,7 @@
 						
 								<table style="margin:5px;">
 									<tr>
-										<td width="230" valign="top">
+										<td width="170" valign="top">
 											<a href="<?="/sale/$event->url/$item->url"?>"><h2><?=$item->description ?></h2></a>
 										</td>
 										<td align="right">

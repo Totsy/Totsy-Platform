@@ -38,8 +38,8 @@ use \lithium\data\Connections;
     		'setSlaveOkay' => true,
     		'type' =>  'MongoDb',
 			'database' => 'totsy',
-			'host' => 'localhost'
-			//, 'adapter' => 'app\extensions\adapter\mongo\Db'
+			'host' => 'localhost',
+			'adapter' => 'app\extensions\adapter\mongo\Db'
     		)
 	));
 
