@@ -23,20 +23,24 @@ use \lithium\data\Connections;
 			'host' => array('test'),
 			'persistent' => 'foo'),
 		'development' => array(
+			'persistent' => true,	
 			'type' =>  'MongoDb',
-			'database' => 'totsy_dev',
-			'host' => 'localhost',
-			'persistent' => 'foo'),
+			'database' => 'totsy',
+			'host' => 'db4.totsy.com'),
 		'eric' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy_eric',
 			'host' => 'localhost',
 			'persistent' => 'foo'),
 		'local' => array(
-			'type' =>  'MongoDb',
+    		'persistent' => 'foo',
+			//'replicaSet' => true,
+    		'setSlaveOkay' => true,
+    		'type' =>  'MongoDb',
 			'database' => 'totsy',
 			'host' => 'localhost',
-			'persistent' => 'foo')
+			'adapter' => 'app\extensions\adapter\mongo\Db'
+    		)
 	));
 
 ?>

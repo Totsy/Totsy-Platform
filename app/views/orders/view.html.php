@@ -380,7 +380,6 @@
 
 	</script>
 <?php endif ?>
-
 <script language="javascript">
 <!-- Upsellit.com confirmation
 var siteID = "6525";

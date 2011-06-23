@@ -23,11 +23,15 @@ use \lithium\data\Connections;
 		'development' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy',
-			'host' => 'localhost'),
+			'host' => 'db4.totsy.com',
+			'setSlaveOkay' => true,
+			'persistent' => 'foo',
+			'adapter' => 'admin\extensions\adapter\mongo\Db'
+		), // for li3 cronjob application
 		'local' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy',
-			'host' => 'localhost')
+			'host' => 'localhost') // for web admin application
 	));
 
 ?>

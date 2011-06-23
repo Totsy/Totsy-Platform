@@ -46,6 +46,7 @@ require __DIR__ . '/bootstrap/libraries.php';
 
 use lithium\core\Environment;
 
+
 Environment::is(function($request) {
 	switch ($request->env('HTTP_HOST')) {
 		case 'www.totsy.com':
@@ -56,6 +57,7 @@ Environment::is(function($request) {
 		case 'dev.totsy.com':
 			return 'development';
 		case 'tom.totsy.com':
+		case 'adminslav.totsy.com':
 			return 'local';
 		default:
 			return 'local';
@@ -107,6 +109,8 @@ require __DIR__ . '/bootstrap/g11n.php';
 require __DIR__ . '/bootstrap/payments.php';
 
 require __DIR__ . '/bootstrap/mail.php';
+
+require __DIR__ . '/bootstrap/avatax.php';
 
 /**
  * This configures your session storage. The Cookie storage adapter must be connected first, since

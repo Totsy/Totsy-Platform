@@ -135,6 +135,14 @@ class AuthorizeNet extends \lithium\core\Object {
 	}
 
 	public function void($transaction, array $options = array()) {
+		$type = Transaction::TYPE_VOID;
+		$data = $this->_serialize($type, compact('transaction'));
+		$response = $this->_sendAim('default', $data);
+
+		if (intval($response['Response Code']) == 1) {
+			return $response['Transaction ID'];
+		}
+		throw new TransactionException($response['Response Reason Text']);
 	}
 
 	/**

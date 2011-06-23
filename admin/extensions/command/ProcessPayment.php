@@ -10,6 +10,7 @@ use admin\models\Item;
 use admin\models\Credit;
 use admin\models\OrderShipped;
 use admin\models\Invitation;
+use admin\extensions\command\ProcesPayment;
 use MongoCode;
 use MongoDate;
 use MongoRegex;
@@ -58,7 +59,9 @@ class ProcessPayment extends \lithium\console\Command  {
 			'auth_confirmation' => array('$exists' => false)
 		));
 		if ($orders) {
+			$processTax = new ProcessTax();
 			foreach ($orders as $order) {
+				$processTax->commitTax($order['order_id']);
 				$conditions = array('_id' => $order['user_id']);
 				$user = User::find('first', compact('conditions'));
 				if (Order::process($order) && $user->purchase_count == 1) {
@@ -89,6 +92,7 @@ class ProcessPayment extends \lithium\console\Command  {
 					}
 				}
 			}
+			unset($processTax);
 		}
 	}
 
