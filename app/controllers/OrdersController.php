@@ -20,7 +20,6 @@ use lithium\util\Validator;
 use MongoDate;
 use MongoId;
 use li3_silverpop\extensions\Silverpop;
-use app\extensions\AvaTax;
 
 /**
  * The Orders Controller
@@ -256,7 +255,6 @@ class OrdersController extends BaseController {
 			$cartValue->event_id = $cartValue->event[0];
 			unset($cartValue->event);
 		}
-		$tax = 0;
 		$shippingCost = 0;
 		$overShippingCost = 0;
 		$billingAddr = $shippingAddr = null;
@@ -278,14 +276,11 @@ class OrdersController extends BaseController {
 		}
 		$tax = 0;
 		if ($shippingAddr) {
-			//$tax = array_sum($cart->tax($shippingAddr));
+			$tax = array_sum($cart->tax($shippingAddr));
 			$shippingCost = Cart::shipping($cart, $shippingAddr);
 			$overShippingCost = Cart::overSizeShipping($cart);
-			//$tax = $tax ? $tax + (($overShippingCost + $shippingCost) * Cart::TAX_RATE) : 0;
-			//$tax =  $tax + $shippingCost + $overShippingCost;
-			$tax=  AvaTax::getTax( compact('cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
-		}  else {
-			$tax=  AvaTax::getTax( compact('cartByEvent', 'billingAddr', 'shippingAddr') );	
+			$tax = $tax ? $tax + (($overShippingCost + $shippingCost) * Cart::TAX_RATE) : 0;
+			$tax =  $tax + $shippingCost + $overShippingCost;
 		}
 		/**
 		*	Handling services the user may be eligible for
@@ -359,12 +354,7 @@ class OrdersController extends BaseController {
 					$order->promo_code = $orderPromo->code;
 				}
 			}
-			
-			AvaTax::postTax( compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
-			
-			$order->tax = $tax;
 			$order->ship_date = new MongoDate(Cart::shipDate($order));
-			$order->avatax = true;
 			$order->save();
 			Cart::remove(array('session' => Session::key('default')));
 			foreach ($cart as $item) {

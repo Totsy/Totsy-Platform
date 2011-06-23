@@ -44,8 +44,6 @@ use lithium\core\Environment;
 
 Environment::is(function($request) {
 	switch ($request->env('HTTP_HOST')) {
-		case 'adminslav.totsy.com':
-			return 'local';
 		case 'www.totsy.com':
 		case 'totsy.com':
 		case 'admin.totsy.com':
@@ -98,8 +96,6 @@ require __DIR__ . '/bootstrap/g11n.php';
 require __DIR__ . '/bootstrap/payments.php';
 
 require __DIR__ . '/bootstrap/mail.php';
-
-require __DIR__ . '/bootstrap/avatax.php';
 
 /**
  * This file configures the analysis behavior which includes Logging.

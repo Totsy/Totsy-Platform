@@ -350,3 +350,29 @@ jQuery(function($){
 <script language="javascript">
 document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s://www':'://www')+ '.upsellit.com/upsellitJS4.jsp?qs=263250249222297345328277324311272279294304313337314308344289&siteID=6525"><\/sc'+'ript>')
 </script>
+
+
+<!-- PROMOCODES FORM AJAX SCRIPT -->
+<script type="text/javascript">
+	$(document).ready(function(){
+	    $('#promo-form').submit(function(){
+	        var data = {
+	        	code : $('input[name="code"]').val(),
+	        	'card[type]' : $('#card_type option:selected').text(),
+	        	'card[number]' : $('card[number]').val(),
+	        	'card[code]' : $('input[name="card[code]"]').val(),
+	        	'card[month]' : $('#card_month option:selected').text(),
+	        	'card[year]' : $('#card_year option:selected').text()
+	        };
+	   	$.ajax({
+	            url: "/orders/process",
+	            type: 'POST',
+	            data : 'test',
+	            proccess: function(data){
+	            	console.log(data);
+	            }
+	        });
+	    });
+	});
+</script>
+<!-- END OF AJAX SCRIPT -->
