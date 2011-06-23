@@ -341,7 +341,7 @@ $(".add-address").click(function() {
 
 
 <script type="text/javascript">
-jQuery(function($){
+(function($){
    $("#cc").mask("9999999999999999");
    $("#CVV2").mask("9999");
 });
@@ -356,7 +356,7 @@ document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s:
 <script type="text/javascript">
 	$(document).ready(function(){
 	    $('#promo-form').submit(function(){
-	        var data = {
+	        var data_test = {
 	        	code : $('input[name="code"]').val(),
 	        	'card[type]' : $('#card_type option:selected').text(),
 	        	'card[number]' : $('card[number]').val(),
@@ -366,13 +366,17 @@ document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s:
 	        };
 	   	$.ajax({
 	            url: "/orders/process",
-	            type: 'POST',
-	            data : 'test',
-	            proccess: function(data){
-	            	console.log(data);
+	            data: data_test,
+	            context: document.body,
+	            
+	            type: "POST",
+	            success: function(data){
+	            	var cc_obj = data;
+	            	console.log(cc_obj);
 	            }
-	        });
+	        });    
 	    });
+		return false;
 	});
 </script>
 <!-- END OF AJAX SCRIPT -->

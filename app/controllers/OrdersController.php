@@ -223,6 +223,8 @@ class OrdersController extends BaseController {
 	 */
 	public function process() {
 	
+	
+	
 		$order = Order::create();
 		$user = Session::read('userLogin');
 		$data = $user['checkout'] + $this->request->data;
@@ -385,10 +387,12 @@ class OrdersController extends BaseController {
 		if(!empty($orderCredit->credit_amount) && !empty($savings)) {
 			$savings += abs($orderCredit->credit_amount);
 		}
-		//exit();
-		//recalculate with promo and credits
-		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings');
 
+		if(!empty($_GET['json'])) {
+			echo json_encode($vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings'));
+		} else {
+			return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings');
+		}
 	}
 
 	/**
