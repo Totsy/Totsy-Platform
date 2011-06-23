@@ -222,6 +222,7 @@ class OrdersController extends BaseController {
 	 * @todo Make this method lighter by taking out promocode/credit validation
 	 */
 	public function process() {
+	
 		$order = Order::create();
 		$user = Session::read('userLogin');
 		$data = $user['checkout'] + $this->request->data;
@@ -273,13 +274,13 @@ class OrdersController extends BaseController {
 				)));
 			}
 		}
-		var_dump($this->request->data);
 		if ($shippingAddr) {
 			$tax = array_sum($cart->tax($shippingAddr));
 			$shippingCost = Cart::shipping($cart, $shippingAddr);
 			$overShippingCost = Cart::overSizeShipping($cart);
 			$tax = $tax ? $tax + (($overShippingCost + $shippingCost) * Cart::TAX_RATE) : 0;
 		}
+		print_r($this->request->data);
 		/**
 		*	Handling services the user may be eligible for
 		*	@see app\models\Service::freeShippingCheck()
@@ -307,7 +308,6 @@ class OrdersController extends BaseController {
 		}
 		if (array_key_exists('code', $this->request->data)) {
 			$promo_code = $this->request->data['code'];
-			var_dump("promo came here");
 		}
 
 		$orderPromo->promoCheck($promo_code, $userDoc, compact('postCreditTotal', 'shippingCost', 'overShippingCost'));
@@ -315,7 +315,6 @@ class OrdersController extends BaseController {
 			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
 		);
-
 		if (($cart->data()) && (count($this->request->data) > 1) && $order->process($user, $data, $cart, $orderCredit, $orderPromo)) {
 			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 			if ($orderCredit->credit_amount) {
@@ -385,6 +384,7 @@ class OrdersController extends BaseController {
 		if(!empty($orderCredit->credit_amount) && !empty($savings)) {
 			$savings += abs($orderCredit->credit_amount);
 		}
+		//exit();
 		//recalculate with promo and credits
 		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings');
 
@@ -441,7 +441,7 @@ class OrdersController extends BaseController {
 	/**
 	*
 	**/
-	public function applyPromo() {
+	/**public function applyPromo() {
 		$this->render(array('layout' => false));
 		var_dump('ajax');
 		$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
@@ -451,7 +451,7 @@ class OrdersController extends BaseController {
 		}
 		$orderPromo->promoCheck($promo_code, $userDoc, compact('postCreditTotal', 'shippingCost', 'overShippingCost'));
 		return json_encode($orderPromo->error());
-	}
+	}**/
 
 
 	/**
