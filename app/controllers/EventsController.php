@@ -92,35 +92,33 @@ class EventsController extends BaseController {
 				$filters = array('All' => 'All');
 			}
 			if (!empty($event->items)) {
-				foreach ($event->items as $_id) {
-					$conditions = compact('_id') + array('enabled' => true);
-					if ($item = Item::first(compact('conditions'))) {
-						$result = $item->data();
-						if(array_key_exists('departments',$result) && !empty($result['departments'])) {
-							if(in_array($departments,$result['departments']) ) {
-								if ($item->total_quantity <= 0) {
-									$items_closed[] = $item;
-								} else {
-									$items[] = $item;
-								}
-							}
-							foreach($result['departments'] as $value) {
+				$eventItems = Item::find('all', array( 'conditions' => array(
+													'event' => array((string)$event->_id),
+													'enabled' => true
+												),
+												'order' => array('created_date' => 'ASC')
+											));
+				foreach($eventItems as $eventItem) {
+					if ($eventItem->total_quantity <= 0) {
+						$items_closed[] = $eventItem;
+					} else {
+						$items[] = $eventItem;
+					}
+					foreach($eventItem->departments as $value) {
 								$filters[$value] = $value;
-							}
-						}
+					}
 						if($departments == 'All') {
-							if ($item->total_quantity <= 0) {
-								$items_closed[] = $item;
+							if ($eventItem->total_quantity <= 0) {
+								$items_closed[] = $eventItem;
 							} else {
-								$items[] = $item;
+								$items[] = $eventItem;
 							}
-							if(!empty($result['departments'])) {
-								foreach($result['departments'] as $value) {
+							if(!empty($eventItem->departments)) {
+								foreach($eventItem->departments as $value) {
 									$filters[$value] = $value;
 								}
 							}
 						}
-					}
 				}
 				if (!empty($filters) && !empty($departments)) {
 					$filters = array_unique($filters);
@@ -144,7 +142,7 @@ class EventsController extends BaseController {
 			$items = null;
 			$type = 'Coming Soon';
 		}
-
+		
 		$pixel = Affiliate::getPixels('event', 'spinback');
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
 			                                            array('event' => $_SERVER['REQUEST_URI'])
