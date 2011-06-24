@@ -93,32 +93,37 @@ class EventsController extends BaseController {
 			}
 			if (!empty($event->items)) {
 				$eventItems = Item::find('all', array( 'conditions' => array(
-													'event' => array((string)$event->_id),
-													'enabled' => true
-												),
-												'order' => array('created_date' => 'ASC')
-											));
-				foreach($eventItems as $eventItem) {
-					if ($eventItem->total_quantity <= 0) {
-						$items_closed[] = $eventItem;
-					} else {
-						$items[] = $eventItem;
-					}
-					foreach($eventItem->departments as $value) {
-								$filters[$value] = $value;
-					}
-						if($departments == 'All') {
+												'event' => array((string)$event->_id),
+												'enabled' => true
+											),
+											'order' => array('created_date' => 'ASC')
+										));
+				foreach ($eventItems as $eventItem) {
+					$result = $eventItem->data();
+					if (array_key_exists('departments',$result) && !empty($result['departments'])) {
+						if(in_array($departments,$result['departments']) ) {
 							if ($eventItem->total_quantity <= 0) {
 								$items_closed[] = $eventItem;
 							} else {
 								$items[] = $eventItem;
 							}
-							if(!empty($eventItem->departments)) {
-								foreach($eventItem->departments as $value) {
-									$filters[$value] = $value;
-								}
+						}
+						foreach($eventItem->departments as $value) {
+							$filters[$value] = $value;
+						}
+					}
+					if ($departments == 'All') {
+						if ($eventItem->total_quantity <= 0) {
+							$items_closed[] = $eventItem;
+						} else {
+							$items[] = $eventItem;
+						}
+						if(!empty($eventItem->departments)) {
+							foreach($eventItem->departments as $value) {
+								$filters[$value] = $value;
 							}
 						}
+					}
 				}
 				if (!empty($filters) && !empty($departments)) {
 					$filters = array_unique($filters);
@@ -136,8 +141,8 @@ class EventsController extends BaseController {
 						$items = $items_closed;
 					}
 				}
-			}
-			$type = 'Today\'s';
+		}
+		$type = 'Today\'s';
 		} else {
 			$items = null;
 			$type = 'Coming Soon';
@@ -148,7 +153,6 @@ class EventsController extends BaseController {
 			                                            array('event' => $_SERVER['REQUEST_URI'])
 			                                            );
 		return compact('event', 'items', 'shareurl', 'type', 'spinback_fb', 'departments', 'filters');
-
 	}
 
 	public function inventoryCheck($events) {
