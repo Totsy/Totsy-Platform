@@ -311,8 +311,8 @@ class FinancialExport extends \lithium\console\Command  {
 				} else {
 				    $item['vendor'] = $event['name'];
 				}
-				if (array_key_exists('sub_category', $item)) {
-				    $item['sub_category'] = $item['sub_category'];
+				if (array_key_exists('sub_category', $itemRecord)) {
+				    $item['sub_category'] = $itemRecord['sub_category'];
 				} else {
 				    $item['sub_category'] = "none";
 				}
