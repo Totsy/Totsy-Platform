@@ -17,6 +17,7 @@ use MongoId;
 use MongoCursor;
 use admin\extensions\command\Base;
 use admin\extensions\command\Exchanger;
+use admin\extensions\command\MakeSku;
 use lithium\analysis\Logger;
 use li3_silverpop\extensions\Silverpop;
 use admin\extensions\util\String;
@@ -173,7 +174,7 @@ class OrderExport extends Base {
 						$queue->save();
 						$this->summary['from_email'] = 'no-reply@totsy.com';
 						$this->summary['to_email'] = 'logistics@totsy.com';
-						Silverpop::send('exportSummary', $this->summary);
+					//	Silverpop::send('exportSummary', $this->summary);
 					}
 				}
 			}
@@ -216,6 +217,30 @@ class OrderExport extends Base {
 					foreach ($items as $item) {
 						if (empty($item['cancel']) || $item['cancel'] != true) {
 							$orderItem = $itemCollection->findOne(array('_id' => new MongoId($item['item_id'])));
+							 /**
+                            * Checking if sku exists, if not find it in the item master
+                            * If not in item master create one
+                            **/
+                             $description = implode(' ', array(
+								$item['color'],
+								$item['size'],
+								$item['description']
+							));
+                            if (!array_key_exists('sku_details', $orderItem)){
+                                $sku = $this->findSku(String::asciiClean($description), $item["size"]);
+                                var_dump("Find sku " . $sku);
+                                if (!($sku)) {
+                                    var_dump("sku generated");
+                                    $makeSku = new MakeSku();
+                                    $makeSku->generateSku(array($orderItem));
+                                    $orderItem = Item::find('first', array(
+                                        'conditions' => array(
+                                        '_id' => $orderItem['_id']
+                                    )));
+                                }
+                            } else {
+                                $sku = $orderItem['sku_details'][$item['size']];
+                            }
 							$orderFile[$inc]['ContactName'] = '';
 							$orderFile[$inc]['Date'] = date('m/d/Y');
 							if ($order['shippingMethod'] == 'ups') {
@@ -224,10 +249,14 @@ class OrderExport extends Base {
 							     $orderFile[$inc]['ShipMethod'] = $order['shippingMethod'];
 							}
 							$orderFile[$inc]['RushOrder (Y/N)'] = '';
-							$orderFile[$inc]['Tel'] = $order['shipping']['telephone'];
+							if (array_key_exists('telephone',$order['shipping'] )) {
+							    $orderFile[$inc]['Tel'] = $order['shipping']['telephone'];
+							} else {
+							    $orderFile[$inc]['Tel'] = '';
+							}
 							$orderFile[$inc]['Country'] = '';
 							$orderFile[$inc]['OrderNum'] = $order['order_id'];
-							$orderFile[$inc]['SKU'] = $orderItem['sku_details'][$item['size']];
+							$orderFile[$inc]['SKU'] = $sku;
 							$orderFile[$inc]['Qty'] = $item['quantity'];
 							$orderFile[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
 							$orderFile[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
@@ -270,7 +299,11 @@ class OrderExport extends Base {
 				}
 			}
 			fclose($fp);
-			rename($handle, $this->pending.$filename);
+			if (!rename($handle, $this->pending.$filename)) {
+			    $this->log("Failed to move file " . $handle . " Filesize was " . filesize($handle));
+			    $new_location = $this->pending.$filename;
+			    shell_exec("mv ". $handle . " " . $new_location);
+			}
 			$totalOrders = count($orderArray);
 			$this->summary['order']['count'] = count($orderArray);
 			$this->summary['order']['lines'] = $inc;
@@ -313,7 +346,28 @@ class OrderExport extends Base {
 				$eventItems = $this->_getOrderItems($eventId);
 				foreach ($eventItems as $eventItem) {
 					foreach ($eventItem['details'] as $key => $value) {
-						$sku = $eventItem['sku_details'][$key];
+					    $description = implode(' ', array(
+								$eventItem['color'],
+								$key,
+								$eventItem['description']
+							));
+						/**
+						* Checking if sku exists, if not find it in the item master
+						* If not in item master create one
+						**/
+					    if (array_key_exists('sku_details', $eventItem)){
+					        $sku = $eventItem['sku_details'][$key];
+					    } else {
+					        $sku = $this->findSku(String::asciiClean($description), $key);
+					        if (!($sku)) {
+					            $makeSku = new MakeSku();
+					            $makeSku->generateSku(array($eventItem));
+                              $eventItem = Item::find('first', array(
+                                'conditions' => array(
+                                '_id' => $eventItem['_id']
+                                )));
+					        }
+					    }
 						$conditions = array('SKU' => $sku);
 						$itemMasterCheck = ItemMaster::count(compact('conditions'));
 						if ($itemMasterCheck == 0){
@@ -321,11 +375,6 @@ class OrderExport extends Base {
 							if ($this->verbose == 'true') {
 								$this->log("Adding SKU: $sku to $handle");
 							}
-							$description = implode(' ', array(
-								$eventItem['color'],
-								$key,
-								$eventItem['description']
-							));
 							$fields[$inc]['Description'] = String::asciiClean($description);
 							$fields[$inc]['WhsInsValue (Cost)'] = number_format($eventItem['sale_whol'], 2);
 							$fields[$inc]['Description for Customs'] = (!empty($eventItem['category']) ? $eventItem['category'] : "");
@@ -354,7 +403,10 @@ class OrderExport extends Base {
 			}
 		}
 		fclose($fp);
-		rename($handle, $this->pending.$filename);
+		if ( !rename($handle, $this->pending.$filename) ){
+		    $this->log("Failed to move file " . $handle . " Filesize was " . filesize($handle));
+		    shell_exec("mv " . $handle . " " . $this->pending.$filename);
+		}
 		$this->summary['item']['count'] = $count;
 		$this->summary['item']['filename'] = $filename;
 		$this->log("There were $count items generated and saved to the item master and $handle");
@@ -436,6 +488,21 @@ class OrderExport extends Base {
 			fclose($fp);
 			rename($handle, $this->pending.$filename);
 		}
+	}
+
+	/**
+	* Find the sku of an item
+	* returns the sku if it is found or false if otherwise
+	**/
+	protected function findSku($description, $size) {
+	    $conditions = array('Description' => $description, 'Ref2' => $size );
+	    $item_master = ItemMaster::collection()->findOne($conditions);
+
+	    if ( $item_master) {
+	        return $item_master['SKU'];
+	    } else {
+	        return false;
+	    }
 	}
 
 	/**
