@@ -53,7 +53,7 @@ Save up to 90% Off on top brands for babies, kids & moms!
 </div>
 
 <div style="top:600px; left: 750px; position:absolute; z-index:-1; padding-bottom:150px">
-<a href="http://livingsocial.com"><img src="/img/living_social_logo.png"></a>
+<a href="http://livingsocial.com"><img src="/img/living_social_logo.png" border=0></a>
 </div>
 
 </body>
