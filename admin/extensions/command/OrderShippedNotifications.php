@@ -136,7 +136,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 				if ($do_break===true){
 					Logger::info('skip ['.$data['order']['order_id'].']');
 					$do_break = false;
-					$skipped[] = array('OrderId'=>$data['order']['order_id'], 'MongoId'=>$result['OrderId'], 'problem' = $problem);
+					$skipped[] = array('OrderId'=>$data['order']['order_id'], 'MongoId'=>$result['OrderId'], 'problem' => $problem);
 					continue;
 				}
 				unset($itemSkus);
