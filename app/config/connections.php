@@ -15,28 +15,23 @@ use \lithium\data\Connections;
 		'production' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy',
-			'host' => '172.20.15.42',
-			'persistent' => 'foo'),
+			'host' => '172.20.15.42'),
 		'test' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy_test',
-			'host' => array('test'),
-			'persistent' => 'foo'),
+			'host' => array('test')),
 		'development' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy_dev',
-			'host' => 'localhost',
-			'persistent' => 'foo'),
+			'host' => 'localhost'),
 		'eric' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy_eric',
-			'host' => 'localhost',
-			'persistent' => 'foo'),
+			'host' => 'localhost'),
 		'local' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy',
-			'host' => 'localhost',
-			'persistent' => 'foo')
+			'host' => 'localhost')
 	));
 
 ?>
