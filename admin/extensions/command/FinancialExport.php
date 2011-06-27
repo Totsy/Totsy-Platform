@@ -148,7 +148,7 @@ class FinancialExport extends \lithium\console\Command  {
 		 * setup for future queries via cron.
 		 */
 		$orderConditions = array(
-			'date_created' => array('$gte' => new MongoDate(strtotime('Aug 1, 2010')), '$lte' => new MongoDate(strtotime("Dec 31, 2010")))
+			'date_created' => array('$gte' => new MongoDate(strtotime('Jan 1, 2011')), '$lte' => new MongoDate(strtotime("now")))
 		//	'payment_date' => array('$exists' => true),
 		//	'payment_date' => array('$gte' => new MongoDate(strtotime('May 28, 2011')), '$lte' => new MongoDate(strtotime('June 7, 2011')))
 		);
