@@ -55,6 +55,7 @@ Router::connect('/affiliate/{:args}', 'Affiliates::registration');
 Router::connect('/a/{:args:[a-zA-Z0-9&\?\.=:/]+}', 'Affiliates::register');
 Router::connect('/reset', 'Users::reset');
 Router::connect('/pages/{:args}', 'Pages::view');
+Router::connect('/livingsocial', array('Pages::view', 'args' => array('living_social')));
 Router::connect('/blog', 'Blog::index');
 Router::connect('/feeds/{:args}', 'Feeds::home');
 
