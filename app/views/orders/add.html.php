@@ -6,241 +6,56 @@
 ?>
 
 <div class="grid_16">
-	<h2 class="page-title gray">Checkout / Shipping &amp; Billing Address</h2>
+	<h2 class="page-title gray">Shipping Information</h2>
 	<hr />
 	<?php if (!empty($error)) { ?>
 	<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /><?=$error; ?></div>
 <?php } ?>
 </div>
 
-<div class="grid_10 roundy grey_inside" style="width:562px!important;">
-
-		<ol id="checkout-process">
-		<?=$this->form->create($order, array('class' => 'checkout')); ?>
-
-		<!-- Start Billing Information -->
-		
-		<li id="opc-billing">
-			<?php if (empty($billing)): ?>
-					<center><strong><?=$this->html->link('Please take a moment to add an Address', '#', array(
-						'class' => 'add-address')); ?></strong></center>
-				<?php else: ?>
-					<h2 style="color:#707070;font-size:14px;">Billing Address <span style="float:right;"><?=$this->html->link('Add a new address', '#', array(
-							'class' => 'add-address')); ?></span></h2><hr />
-					<p>Select a billing address from your address book.</p>
-						<?=$this->form->select('billing', $billing, array(
-							'id' => 'billing',
-							'target' => '#billing-new-address-form',
-							'value' => key($billing)
-						)); ?>
-						<fieldset>
-						<br>
-							<p>
-								<input type="radio" name="billing_shipping" id="billing:use_for_shipping_yes" value="1" checked="checked" />&nbsp;
-								<label for="billing:use_for_shipping_yes">Ship to this address</label>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								<input type="radio" name="billing_shipping" id="billing:use_for_shipping_no" value="0" />&nbsp;
-								<label for="billing:use_for_shipping_no">Ship to different address</label>
-							</p>
-						</fieldset>
-						
-				<?php endif ?>
-		
-		</li>
-	
-		<!-- End Billing Information -->
-
-		<!-- Start Shipping Information -->
-		<br>
-		  <li id="opc-shipping" class="step_" style="opacity:0.5">
-
-			<div id="checkout-process-shipping">
-
-				<?php if (empty($shipping)): ?>
-
-				<?php else: ?>
-
-						<h2 style="color:#707070;font-size:14px;">Shipping Address <span style="float:right;"><?=$this->html->link('Add a new address', '#', array(
-							'class' => 'add-address')); ?></span></h2>
-					<hr />
-					<p>Select a shipping address from your address book.</p>
-						<?=$this->form->select('shipping', $shipping, array(
-							'id' => 'shipping',
-							'target' => '#shipping-new-address-form',
-							'value' => key($shipping)
-						)); ?>
-				<?php endif ?>
-
-			</div>
-
-		</li>
-		
-		<!-- End Shipping Information -->
-
-		<li id="shipping-method" class="step" style="display:none;">
-
-				<h2 style="color:#707070;">Shipping Method</h2>
-			<hr />
-
+<div class="grid_10">
+<?=$this->form->create($address, array(
+		'id' => 'addressForm',
+		'class' => "fl",
+		'action' => "{$action}/{$address->_id}"
+	)); ?>
 			
-			<fieldset>
 
-				<ul class="shipping-methods">
-				<li>
-						<label>
-							<input type="radio" name="shipping_method" value="ups" checked="checked" />&nbsp;
-							<?=$this->html->image('ups-icon.jpg', array('title' => "UPS Shipping", 'alt' => "UPS Shipping", 'width' => "26", 'height' => "32")); ?>&nbsp;
-							UPS Ground
-						</label>
-				</li>
-				</ul>
-			</fieldset>
+				<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+				<?=$this->form->text('firstname', array('class' => 'inputbox')); ?>
+				<?=$this->form->error('firstname'); ?>
 
-			
-		</li>
+				<?=$this->form->label('lastname', 'Last Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+				<?=$this->form->text('lastname', array('class' => 'inputbox')); ?>
+				<?=$this->form->error('lastname'); ?>
 
-<br>
-<hr />
+				<?=$this->form->label('telephone', 'Telephone', array('escape' => false,'class' => 'addresses')); ?>
+				<?=$this->form->text('telephone', array('class' => 'inputbox', 'id' => 'phone')); ?>
 
-		<li class="step">
-			<?=$this->form->submit('Confirm & Continue', array('class' => 'button fr')); ?>
-		</li>
+				<?=$this->form->label('address', 'Street Address <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+				<?=$this->form->text('address', array('class' => 'inputbox')); ?>
+				<?=$this->form->error('address'); ?>
 
-		<?=$this->form->end(); ?>
+				<?=$this->form->label('address_2', 'Street Address 2', array('escape' => false,'class' => 'addresses')); ?>
+				<?=$this->form->text('address_2', array('class' => 'inputbox')); ?>
 
+				<?=$this->form->label('city', 'City <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+				<?=$this->form->text('city', array('class' => 'inputbox')); ?>
+				<?=$this->form->error('city'); ?>
+
+				<label for="state" class='required'>State <span>*</span></label>
+				<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state')); ?>
+				<?=$this->form->error('state'); ?>
+
+				<?=$this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+				<?=$this->form->text('zip', array('class' => 'inputbox', 'id' => 'zip')); ?>
+			<?=$this->form->submit('Shipping Information', array('class' => 'button fr')); ?>
+
+<?=$this->form->end();?> 
 </div>
 
-
-
-<div class="grid_6 omega">
-<div class="roundy grey_inside">
-		<h3 class="gray">Your Savings <span class="fr"><?php if (!empty($savings)) : ?>
-		<span style="color:#009900; font-size:16px; float:right;">$<?=number_format($savings,2)?></span>
-		<?php endif ?></span></h3>
-		
-	</div>
-	<div class="roundy grey_inside">
-		<h3 class="gray">Estimated Ship Date<span style="font-weight:bold; float:right;"><?=date('m-d-Y', $shipDate)?></span></h3>
-		
-	</div>
-	
-	<div class="roundy grey_inside">
-		<h2 style="color:#707070;font-size:14px; font-weight:normal;">My Cart (<?=$this->html->link('edit','/cart/view'); ?>) <span style="float:right;"><?=$cartCount;?> items</span></h2>
-		<hr />
-		<!-- Begin Order Details -->
-	<?php if ($cartByEvent): ?>
-
-		<?php $x = 0; ?>
-		<?php foreach ($cartByEvent as $key => $event): ?>
-		<?php foreach ($event as $item): ?>
-		<?php $itemUrl = "sale/".$orderEvents[$key]['url'].'/'.$item['url'];?>
-		<div style="float:left; width:85px;">					
-									<?php
-										if (!empty($item['primary_image'])) {
-											$image = $item['primary_image'];
-											$productImage = "/image/$image.jpg";
-										} else {
-											$productImage = "/img/no-image-small.jpeg";
-										}
-									?>
-		
-									<?=$this->html->link(
-										$this->html->image("$productImage", array(
-											'width'=>'75',
-									'style' => 'margin:2px;')),
-											'',
-											array( 'escape'=> false
-										),
-										$itemUrl
-									); ?>
-				</div>
-				<div style="float:left; width:236px;">
-				<?=$orderEvents[$key]['name']?><br>
-
-									<?=$this->form->hidden("item$x", array('value' => $item['_id'])); ?>
-									<?=$item['description'];?><br>
-									<?php if ($item['color']) { ?>
-									Color: <?=$item['color'];?><br>
-									<?php } ?>
-									Size: <?=$item['size'];?><br>
-									Quantity: <?=$item['quantity'];?> (<strong style="color:#009900;">$<?=number_format($item['sale_retail'],2)?></strong>)<br>
-																	
-
-							<?php
-								//Allow users three extra minutes on their items for checkout.
-								$date = ($item['expires']['sec'] * 1000);
-								$checkoutCounters[] = "<script type=\"text/javascript\">
-									$(function () {
-										var itemCheckoutExpires = new Date($date);
-										$(\"#checkout-counter-$x\").countdown('change', {until: itemCheckoutExpires, $countLayout});
-
-									$(\"#checkout-counter-$x\").countdown({until: itemCheckoutExpires,
-									    expiryText: '<div class=\"over\" style=\"color:#fff; padding:5px; background: #EB132C;\">no longer reserved</div>', $countLayout});
-									var now = new Date();
-									if (itemCheckoutExpires < now) {
-										$(\"#checkout-counter-$x\").html('<div class=\"over\" style=\"color:#fff; padding:5px; background: #EB132C;\">no longer reserved</div>');
-									}
-									});
-									</script>";
-								$x++;
-							?>
-						
-							</div>
-							<div class="clear"></div>
-							<hr/>
-				<?php endforeach ?>
-			<?php endforeach ?>
-
-						<div style="text-align:right; font-size:16px; margin-top:12px;"><strong>Subtotal: </strong><strong style="color:#009900;">$<?=number_format($subTotal,2)?></strong></div>
-				
-	<?php endif ?>
-	<!-- End Order Details -->
-
-
-		</div>
-
-	<div class="clear"></div>
-	
-</div>
 <div class="clear"></div>
-
-
-
 </div>
-
-<div id="address-modal"></div>
-<div id="modal"></div>
-
-<script>
-$(document).ready(function() {
-	$('input[name=billing_shipping]').bind('change', function() {
-		on = ($(this).val() != 1);
-		$('#opc-shipping').css('opacity', on ? 1 : 0.5);
-		$('#shipping').attr('disabled', on ? '' : 'disabled').trigger('change');
-	}).first().trigger('change');
-});
-</script>
-
-<?php if (!empty($checkoutCounters)): ?>
-	<?php foreach ($checkoutCounters as $cc): ?>
-		<?php echo $cc ?>
-	<?php endforeach ?>
-<?php endif ?>
-
-<script type="text/javascript">
-$(".add-address").click(function() {
-	$("#address-modal").load($.base + 'addresses/add').dialog({
-		autoOpen: false,
-		modal:true,
-		width: 500,
-		height: 471,
-		position: 'top',
-		close: function(ev, ui) {}
-	});
-	$("#address-modal").dialog('open');
-});
-
-</script>
 <script type="text/javascript">
     $('#disney').click(function(){
         $('#modal').load('/events/disney').dialog({
@@ -259,4 +74,4 @@ $(".add-address").click(function() {
 		<script>
 			window.location.replace('/cart/view');
 		</script>
-	<?php endif ?>
+<?php endif ?>
