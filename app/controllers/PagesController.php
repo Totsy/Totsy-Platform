@@ -15,7 +15,7 @@ class PagesController extends BaseController {
 	protected function _init() {
 		parent::_init();
 	}
-	
+
 	public function view() {
 		$path = func_get_args();
 		if (empty($path)) {
@@ -30,6 +30,13 @@ class PagesController extends BaseController {
 		$userCheck = Session::read('userLogin');
 		if (empty($userCheck) && !in_array($path[0], $allowed)) {
 			$this->redirect('/');
+		}
+		if (in_array($path[0], $allowed) && $path[0] == "living_social") {
+		    $today = date('m/d/Y');
+		    if (!(($today >= '06/27/2011') && ($today <= '08/01/2011'))) {
+		        $this->redirect('/');
+		    }
+
 		}
 		$this->render(array('template' => $path[0]));
 	}
