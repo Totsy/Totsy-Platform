@@ -52,12 +52,12 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 	}
 
 	protected function emailNotificationSender() {
+
 	// collections;		
 	    $ordersCollection = Order::collection();
 		$usersCollection = User::collection();
 		$ordersShippedCollection = OrderShipped::collection();
 		$itemsCollection = Item::collection();
-
 		$time = time();
 		$keys = array('OrderId' => true);
 		$inital = array('totalItems' => 0, 'Tracking' => 0, 'TrackNums' => array());
@@ -85,7 +85,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 			// validate tracking number
 			//'Tracking #' => new MongoRegex("/^[1Z]{2}[A-Za-z0-9]+/i"),
 			// do not send notification if it already send
-			'emailNotification' => array('$exists' => false)
+			//'emailNotification' => array('$exists' => false)
 		);
 		
 		$results = $ordersShippedCollection->group($keys, $inital, $reduce, $conditions);
@@ -96,6 +96,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 			if (array_key_exists('errmsg',$results)){
 				Logger::info('ERROR: "'.$results['errmsg']);
 				// to make shure that process closes correctly
+
 				if (coun($results['retval'])==0){
 					return false;
 				}
@@ -103,6 +104,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 			$results = $results['retval'];
 			Logger::info('Found "'.count($results).'" orders');
 		}
+
 		$cc = 0;
 		
 		foreach ($results as $result){

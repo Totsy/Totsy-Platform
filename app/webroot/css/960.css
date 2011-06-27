@@ -14,6 +14,10 @@
   Note: IE6 works fine without this fix.
 */
 
+.container_16 .grid_4_hack {
+    width: 310px;
+}
+
 body {
   min-width: 960px;
 }
@@ -45,7 +49,8 @@ body {
 .grid_13,
 .grid_14,
 .grid_15,
-.grid_16 {
+.grid_16,
+.grid_4_hack {
 	display:inline;
 	float: left;
 	position: relative;
