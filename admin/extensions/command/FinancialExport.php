@@ -210,10 +210,21 @@ class FinancialExport extends \lithium\console\Command  {
 			} else {
 			    $order['payment_type'] = "none";
 			}
-
-			$order['city'] = $order['billing']['city'];
-			$order['state'] = $order['billing']['state'];
-			$order['zip'] = $order['billing']['zip'];
+			if (array_key_exists('city', $order['billing'])) {
+			    $order['city'] = $order['billing']['city'];
+			} else {
+			    $order['city'] = 'N/A';
+			}
+			if (array_key_exists('state', $order['billing'])) {
+			    $order['state'] = $order['billing']['state'];
+			} else {
+			    $order['state'] = 'N/A';
+			}
+			if (array_key_exists('zip', $order['billing'])) {
+			    $order['zip'] = $order['billing']['zip'];
+			} else {
+			    $order['zip'] = 'N/A';
+			}
 			$order['order_date'] = date('m/d/Y', $order['date_created']->sec);
 			if (!empty($order['payment_date'])) {
 				$order['payment_date'] = date('m/d/Y',$order['payment_date']->sec);
@@ -311,7 +322,7 @@ class FinancialExport extends \lithium\console\Command  {
 				} else {
 				    $item['vendor'] = $event['name'];
 				}
-				if (array_key_exists('sub_category', $itemRecord)) {
+				if (!empty($itemRecord) && array_key_exists('sub_category', $itemRecord)) {
 				    $item['sub_category'] = $itemRecord['sub_category'];
 				} else {
 				    $item['sub_category'] = "none";
