@@ -1217,20 +1217,19 @@ class ReportsController extends BaseController {
 		} while ($actual_month < $now[0]);
 		/**** 1ST Charts ****/
 		$i = 0;
-		
 		foreach($statistics as $year => $stats) {
 			foreach($stats as $key => $statistic) {
 			//Categories
 			$arrCatNames[0 + $i] = $key.' '.$year;
 			//Series
 			$arrData[0][0] = 'w/ no Purchases';
-			$arrData[0][1] = "color=0099FF";
+			$arrData[0][1] = "color=69D2E7";
 			$arrData[1][0] = '1st purchase 0-23d';
-			$arrData[1][1] = "color=009999";
+			$arrData[1][1] = "color=A7DBD8";
 			$arrData[2][0] = '1st purchase 23-30d';
-			$arrData[2][1] = "color=009933";
+			$arrData[2][1] = "color=E0E4CC";
 			$arrData[3][0] = '1st purchase > 30d';
-			$arrData[3][1] = 'color=006666';
+			$arrData[3][1] = 'color=F38630';
 			//datas
 			$arrData[0][2 + $i] = 100 * ($statistic["registered_user_no_purch"] / $statistic["registered_user"]);
 			$arrData[1][2 + $i] = 100 * ($statistic["registered_user_purch_0_23"] / $statistic["registered_user"]);
@@ -1248,15 +1247,15 @@ class ReportsController extends BaseController {
 			$arrCatNames_2[0 + $i] =  $key.' '.$year;
 			//titles
 			$arrData_2[0][0] = 'No 2nd purchase';
-			$arrData_2[0][1] = "color=FFFFCC";
+			$arrData_2[0][1] = "color=CFF09E";
 			$arrData_2[1][0] = 'Discount 0-15d';
-			$arrData_2[1][1] = "color=FFFF33";
+			$arrData_2[1][1] = "color=A8DBA8";
 			$arrData_2[2][0] = '0-15d';
-			$arrData_2[2][1] = "color=FFCC99";
+			$arrData_2[2][1] = "color=79BD9A";
 			$arrData_2[3][0] = 'Discount 15-30d';
-			$arrData_2[3][1] = "color=FFCC00";
+			$arrData_2[3][1] = "color=3B8686";
 			$arrData_2[4][0] = '15-30d';
-			$arrData_2[4][1] = "color=FF9999";
+			$arrData_2[4][1] = "color=0B486B";
 			$arrData_2[5][0] = '> 30d';
 			$arrData_2[5][1] = "color=FF9900";
 			//datas
