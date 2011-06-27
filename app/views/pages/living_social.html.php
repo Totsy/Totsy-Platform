@@ -12,9 +12,10 @@
     
     #content { visibility: hidden !important }
     
-    ul { 
+    ul li{ 
 	color: #bdd124; 
 	list-style-type: disc;
+	padding-bottom:15px;
 	}
 	
 	.litext{
@@ -41,12 +42,12 @@ Save up to 90% Off on top brands for babies, kids & moms!
 
 <ul>
 
-<li><span class="litext">Exclusive sales for kids, moms and families</span></li><br>
-<li><span class="litext">Find apparel, accessories, toys, shoes, maternity items, organic products, and more!</span></li><br>
-<li><span class="litext">Sales last up to 3 days; Plenty of time to shop</span></li><br>
-<li><span class="litext">Savings of up to 90% off retail</span></li><br>
-<li><span class="litext">Membership is free</span></li><br>
-<li><span class="litext">We are 100% green</span></li><br>
+<li><span class="litext">Exclusive sales for kids, moms and families</span></li>
+<li><span class="litext">Find apparel, accessories, toys, shoes, maternity items, organic products, and more!</span></li>
+<li><span class="litext">Sales last up to 3 days; Plenty of time to shop</span></li>
+<li><span class="litext">Savings of up to 90% off retail</span></li>
+<li><span class="litext">Membership is free</span></li>
+<li><span class="litext">We are 100% green</span></li>
 
 </ul>
 
