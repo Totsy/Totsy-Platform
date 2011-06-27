@@ -149,16 +149,17 @@
 				<tr>
 					<?php if ($credit): ?>
 						<div style="padding:10px; background:#eee;"><?php $orderCredit->credit_amount = abs($orderCredit->credit_amount); ?>
-							<?=$this->form->create($orderCredit); ?>
-							<?=$this->form->error('amount'); ?>
-							You have $<?=number_format((float) $userDoc->total_credit, 2);?> in credits
-							<hr />
-							<?=$this->form->text('credit_amount', array('size' => 6, 'maxlength' => '6')); ?>
-									<?=$this->form->submit('Apply Credit'); ?>
-									<hr />
-										<strong>Credit:</strong>
-								-$<?=number_format((float) $orderCredit->credit_amount, 2);?>
-							<?=$this->form->end(); ?>
+							<form method="POST" id="promo_code_form">
+	                           <input type="text" name="code" id="promo_code" size="12" class="inputbox"/>
+	                           <input type="submit" value="Apply Promo Code" />
+	                           <hr />
+	                           <strong>Promo Savings:</strong>
+	                           <?php if (!empty($orderPromo)): ?>
+	                               -$<?=number_format((float) abs($orderPromo->saved_amount), 2);?>
+	                           <?php else: ?>
+	                               -$<?=number_format((float) 0, 2);?>
+	                           <?php endif ?>
+                       	</form>
 							<div style="clear:both"></div>
 						</div>
 					<?php else : ?>
@@ -374,3 +375,7 @@
 		window.location.replace('/cart/view');
 	</script>
 <?php endif ?>
+
+<script language="javascript">
+document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s://www':'://www')+ '.upsellit.com/upsellitJS4.jsp?qs=263250249222297345328277324311272279294304313337314308344289&siteID=6525"><\/sc'+'ript>')
+</script>
