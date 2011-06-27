@@ -110,12 +110,20 @@
 				?>
 	<?php endforeach ?>
 		<tr class="cart-total">
-
 			<td colspan="7" id='subtotal'><div style="text-align: right; font-size: 16px;"><strong>Subtotal: </strong><span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong></div>
 				
 				<hr/>
 			
 			</td>
+		</tr>
+		<tr>
+		<td>
+			Add Credits / Optional Code
+			<?=$this->form->create(null); ?>
+			<?=$this->form->text('promocode', array('id' => 'promocode','class' => 'inputbox')); ?>
+			<?=$this->form->text('credits', array('id' => 'credits','class' => 'inputbox')); ?>
+			<?=$this->form->submit('Update', array('class' => 'button submit')); ?>
+		</td>
 		</tr>
 		<tr class="cart-buy">
 			<td colspan="2" class="return-policy">
