@@ -9,12 +9,16 @@
 	}
 	$total = $afterDiscount + $tax + $shippingCost + $overShippingCost;
 ?>
-<h1 class="page-title gray"><span class="_red"><a href="/" title="Sales">Today's Sales</a></span> / <a href="/cart/view" title="My Cart">My Cart</a> / Checkout / Process Payment</h1>
-<hr />
-<div id="middle" class="fullwidth">
-	<div class="tl"></div>
-	<div class="tr"></div>
-	<div id="page">
+<?=$this->html->script('jquery.maskedinput-1.2.2')?>
+<div class="grid_16">
+	<h2 class="page-title gray">Checkout / Process Payment</h2>
+	<hr />
+</div>
+
+<div class="grid_10 roundy grey_inside" style="width:562px!important;">
+
+
+
 <?php if ($errors = $order->errors()): ?>
 	<?php foreach ($errors as $error): ?>
 	    <?php if (is_array($error)): ?>
@@ -30,24 +34,24 @@
 <table style="width:100%;">
 	<tr>
 		<td valign="top">
-			<table style="width:303px;">
+			<table>
 				<tr>
 					<td>
-						<?=$this->form->create(); ?>
-							<h1 style="color:#707070; font-size:22px;">Payment Information <span style="font-size:12px; font-weight:normal;"><span class="red">*</span> Required Fields</span></h1>
+						<?=$this->form->create($order); ?>
+							<h1 style="color:#707070; font-size:14px;">Payment Information <span class="fr" style="font-size:12px; font-weight:normal;"><span class="red ">*</span> Required</span></h1>
 							<hr />
-								<legend class="no-show">New Payment Method</legend>
+
 								<p>
 									<label for="cc-type" class="required">Credit Card Type<span>*</span></label>
 									<?=$this->form->select('card[type]', array(
 										'visa' => 'Visa',
 										'mc' => 'MasterCard',
 										'amex' => 'American Express'
-									)); ?>
+									), array('id' => 'card_type')); ?>
 								</p>
 								<p>
 									<label for="cc" class="required">Card Number<span>*</span></label>
-									<?=$this->form->text('card[number]', array('id' => 'cc', 'class' => 'inputbox', 'width' => 15)); ?>
+									<?=$this->form->text('card[number]', array('id' => 'cc', 'class' => 'inputbox', 'size' => '16', 'maxlength' => '16')); ?>
 								</p>
 								<p>
 									<label for="cc-exp" class="required">Expiration Date<span>*</span></label>
@@ -65,53 +69,48 @@
 										10 => 'October',
 										11 => 'November',
 										12 => 'December'
-									)); ?>
+									), array('id'=>"card_month")); ?>
 									<?php
 										$now = intval(date('Y'));
 										$years = array_combine(range($now, $now + 15), range($now, $now + 15));
 									?>
-									<?=$this->form->select('card[year]', array('' => 'Year') + $years); ?>
+									<?=$this->form->select('card[year]', array('' => 'Year') + $years, array('id' => "card_year")); ?>
 								</p>
 								<p>
 									<label for="cc-ccv" class="required">CVV2 Code<span>*</span></label>
-									<?=$this->form->text('card[code]', array('class' => 'inputbox')); ?>
+									<?=$this->form->text('card[code]', array('id' => 'CVV2','class' => 'inputbox', 'maxlength' => '4', 'size' => '4')); ?>
 								</p>
-							<?=$this->form->submit('Place Your Order', array('class' => 'button submit fr button_hack')); ?>
+							<?=$this->form->submit('Place Your Order', array('class' => 'button submit')); ?>
 							<?=$this->form->hidden('credit_amount', array('value' => $orderCredit->credit_amount)); ?>
 						<?=$this->form->end(); ?>
-						<?php if ($billingAddr): ?>
-								<h1 style="color:#707070; font-size:22px">Billing Address</h1>
-								<hr />
-								<address class="billing-address">
-									<?=$billingAddr->address; ?> <?=$billingAddr->address_2; ?><br />
-									<?=$billingAddr->city; ?>, <?=$billingAddr->state; ?>
-									<?=$billingAddr->zip; ?>
-								</address>
-						<?php endif ?>
-						<br />
-						<?php if ($shippingAddr): ?>
-								<h1 style="color:#707070; font-size:22px">Shipping Address</h1>
-								<hr />
-								<address class="shipping-address">
-									<?=$shippingAddr->address; ?> <?=$shippingAddr->address_2; ?><br />
-									<?=$shippingAddr->city; ?>, <?=$shippingAddr->state; ?>
-									<?=$shippingAddr->zip; ?>
-								</address>
-						<?php endif ?>
-					</td>
+											</td>
 				</tr>
 			</table>
 		</td>
     	<td valign="top">
-			<table style="width:300px; margin:0 10px;">
+			<table style=" margin:0 10px;">
 				<tr>
-					<h1 style="color:#707070; font-size:22px;">Credits &amp; Promotional Codes</h1>
+					<h1 style="color:#707070; font-size:14px;"><?php if (!$credit == '0') { ?>Credits &amp; <?php } ?>Promotional Codes</h1>
 					<hr />
 				</tr>
 				<tr>
 					<td><strong>Order Subtotal:</strong> </td>
 					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $subTotal, 2);?></td>
 				</tr>
+
+				<tr>
+					<td>
+							<strong>Promo Savings:</strong>
+					</td>
+							<td style="text-align:left; padding-left:10px;">
+                                <?php if (!empty($orderPromo)): ?>
+                                    -$<?=number_format((float) abs($orderPromo->saved_amount), 2);?>
+                                <?php else: ?>
+                                    -$<?=number_format((float) 0, 2);?>
+                                <?php endif ?>
+							</td>
+				</tr>
+
 				<?php
 					if ($orderServiceCredit): ?>
 						<tr>
@@ -147,59 +146,44 @@
 						</tr>
 					<?php endif ?>
 				<tr>
-					<?php if ($credit): ?>
-						<div style="padding:10px; background:#eee;"><?php $orderCredit->credit_amount = abs($orderCredit->credit_amount); ?>
-							<?=$this->form->create($orderCredit); ?>
-							<?=$this->form->error('amount'); ?>
-							You have $<?=number_format((float) $userDoc->total_credit, 2);?> in credits
-							<hr />
-							<?=$this->form->text('credit_amount', array('size' => 6, 'maxlength' => '6')); ?>
-									<?=$this->form->submit('Apply Credit'); ?>
-									<hr />
-										<strong>Credit:</strong>
-								-$<?=number_format((float) $orderCredit->credit_amount, 2);?>
-							<?=$this->form->end(); ?>
-							<div style="clear:both"></div>
-						</div>
-					<?php else : ?>
-						<div style="padding:10px; background:#eee;"><h1 style="color:#707070; font-size:22px;">Credits: <span style="color:#009900; float:right;">$0.00</span></h1></div>
-					<?php endif ?>
+				    <?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $orderCredit, 'credit' => $credit, 'userDoc' => $userDoc)); ?>
 				</tr>
 				<tr>
 					<div style="padding:10px; background:#eee; margin:10px 0">
-						<?=$this->form->create($orderPromo); ?>
-							<?php if (is_array($this->form->error('promo'))): ?>
-                                <?php foreach($this->form->error('promo') as $msg) :?>
-                                    <?php echo $msg ?>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <?=$this->form->error('promo'); ?>
-							<?php endif; ?>
-							<?=$this->form->text('code', array('size' => 6)); ?>
-							<?=$this->form->submit('Apply Promo Code'); ?>
-							<hr />
-							<strong>Promo Savings:</strong>
-							<?php if (!empty($orderPromo)): ?>
-								-$<?=number_format((float) abs($orderPromo->saved_amount), 2);?>
-							<?php else: ?>
-								-$<?=number_format((float) 0, 2);?>
-							<?php endif ?>
-						<?=$this->form->end(); ?>
+
+					    <?=$this->view()->render(array('element' => 'promocode'),
+					            array('order' => $order, 'orderPromo' => $orderPromo)
+					            ); ?>
+						</td>
 						<div style="clear:both"></div>
 					</div>
 				</tr>
 				<tr>
-					<td style="text-align:left; color:#707070; font-size:22px;"><hr /><strong>Order Total:</strong> </td>
-					<td style="text-align:right; color:#009900; font-size:22px;"><hr />$<?=number_format((float) $total, 2);?></td>
+					<td style="text-align:left; color:#707070; font-size:22px;"><hr /><strong>Order Total:</td>
+					<td style="text-align:right; color:#009900; font-size:22px; padding-left:10px"><hr />$<?=number_format((float) $total, 2);?></td>
 				</tr>
+
 			</table>
 		</td>
-    	<!-- <td valign="top">
-			<table style="width:250px;">
-				<tr>
-					<td>
-						<?php if ($billingAddr): ?>
-								<h1 style="color:#707070; font-size:22px">Billing Address</h1>
+	</tr>
+</table>
+</div>
+
+
+<div class="grid_6 omega">
+<div class="roundy grey_inside">
+		<h3 class="gray">Your Savings <span class="fr"><?php if (!empty($savings)) : ?>
+		<span style="color:#009900; font-size:16px; float:right;">$<?=number_format((float) $savings, 2);?></span>
+		<?php endif ?></span></h3>
+	</div>
+	<div class="roundy grey_inside">
+		<h3 class="gray">Estimated Ship Date<span style="font-weight:bold; float:right;"><?=date('m-d-Y', $shipDate)?></span></h3>
+
+	</div>
+
+	<div class="roundy grey_inside">
+		<?php if ($billingAddr): ?>
+								<h3 class="gray">Billing Address <span class="fr">(<a href="#" class="add-address">edit</a>)</span></h3>
 								<hr />
 								<address class="billing-address">
 									<?=$billingAddr->address; ?> <?=$billingAddr->address_2; ?><br />
@@ -209,7 +193,7 @@
 						<?php endif ?>
 						<br />
 						<?php if ($shippingAddr): ?>
-								<h1 style="color:#707070; font-size:22px">Shipping Address</h1>
+								<h3 class="gray">Shipping Address <span class="fr">(<a href="#" class="add-address">edit</a>)</span></h3>
 								<hr />
 								<address class="shipping-address">
 									<?=$shippingAddr->address; ?> <?=$shippingAddr->address_2; ?><br />
@@ -217,126 +201,106 @@
 									<?=$shippingAddr->zip; ?>
 								</address>
 						<?php endif ?>
-					</td>
-				</tr>
-			</table>
-		</td> -->
-	</tr>
-</table>
-
-		<hr/>
-		<div style="clear:both; margin-top:90px;"></div>
-		<h1 style="color:#707070;">Order Summary</h1>
-			<hr />
-<div style="clear:both; margin-bottom:10px;"></div>
 
 
-	<!-- Begin Order Details -->
+	</div>
+
+	<div class="roundy grey_inside">
+		<h2 style="color:#707070;font-size:14px; font-weight:normal;">My Cart (<?=$this->html->link('edit','/cart/view'); ?>) <span style="float:right;"><?=$cartCount;?> items</span></h2>
+		<hr />
+		<!-- Begin Order Details -->
 	<?php if ($cartByEvent): ?>
+
 		<?php $x = 0; ?>
 		<?php foreach ($cartByEvent as $key => $event): ?>
-		<table width="100%" class="cart-table">
-			<thead>
-				<tr >
-					<td colspan="3" style="vertical-align:bottom; font-weight:bold; font-size:18px;"><?=$orderEvents[$key]['name']?><td>
-					<td></td>
-					<td colspan="3"><div class="fr" style="padding:10px; background:#fffbd1; border-left:1px solid #D7D7D7; border-right:1px solid #D7D7D7; border-top:1px solid #D7D7D7;">Estimated Ship Date: <?=date('M d, Y', $shipDate)?></div></td>
-				</tr>
-				<tr>
-					<th>Item</th>
-					<th>Description</th>
-					<th>Price</th>
-					<th>Qty</th>
-					<th>Total Cost</th>
-					<th>Time Remaining</th>
-				</tr>
-			</thead>
-			<tbody>
 		<?php foreach ($event as $item): ?>
-			<!-- Build Product Row -->
-						<tr id="<?=$item['_id']?>" class="alt<?=$x?>" style="margin-top:10px;">
-						<td class="cart-th">
-							<?php $itemUrl = "sale/".$orderEvents[$key]['url'].'/'.$item['url'];?>
+		<?php $itemUrl = "sale/".$orderEvents[$key]['url'].'/'.$item['url'];?>
+		<div style="float:left; width:85px;">
+									<?php
+										if (!empty($item['primary_image'])) {
+											$image = $item['primary_image'];
+											$productImage = "/image/$image.jpg";
+										} else {
+											$productImage = "/img/no-image-small.jpeg";
+										}
+									?>
+
+									<?=$this->html->link(
+										$this->html->image("$productImage", array(
+											'width'=>'75',
+									'style' => 'margin:2px;')),
+											'',
+											array( 'escape'=> false
+										),
+										$itemUrl
+									); ?>
+				</div>
+				<div style="float:left; width:236px;">
+				<?=$orderEvents[$key]['name']?><br>
+
+									<?=$this->form->hidden("item$x", array('value' => $item['_id'])); ?>
+									<?=$item['description'];?><br>
+									<?php if ($item['color']) { ?>
+									Color: <?=$item['color'];?><br>
+									<?php } ?>
+									<?php if (!$item['size'] == 'no size') { ?>
+									Size: <?=$item['size'];?><br>
+									<?php } else { ?>
+									<?php } ?>
+									Quantity: <?=$item['quantity'];?> (<strong style="color:#009900;">$<?=number_format($item['sale_retail'],2)?></strong>)<br>
+
+
 							<?php
-								if (!empty($item['primary_image'])) {
-									$image = $item['primary_image'];
-									$productImage = "/image/$image.jpg";
-								} else {
-									$productImage = "/img/no-image-small.jpeg";
-								}
+								//Allow users three extra minutes on their items for checkout.
+								$date = ($item['expires']['sec'] * 1000);
+								$checkoutCounters[] = "<script type=\"text/javascript\">
+									$(function () {
+										var itemCheckoutExpires = new Date($date);
+										$(\"#checkout-counter-$x\").countdown('change', {until: itemCheckoutExpires, $countLayout});
+
+									$(\"#checkout-counter-$x\").countdown({until: itemCheckoutExpires,
+									    expiryText: '<div class=\"over\" style=\"color:#fff; padding:5px; background: #EB132C;\">no longer reserved</div>', $countLayout});
+									var now = new Date();
+									if (itemCheckoutExpires < now) {
+										$(\"#checkout-counter-$x\").html('<div class=\"over\" style=\"color:#fff; padding:5px; background: #EB132C;\">no longer reserved</div>');
+									}
+									});
+									</script>";
+								$x++;
 							?>
-							<?=$this->html->link(
-								$this->html->image("$productImage", array(
-									'width'=>'60',
-									'height'=>'60',
-									'style' => 'margin:2px; padding:4px;',)),
-									'',
-									array(
-									'id' => 'main-logo_', 'escape'=> false
-								)
-							); ?>
-						</td>
-						<td class="cart-desc">
-							<?=$this->form->hidden("item$x", array('value' => $item['_id'])); ?>
-							<strong><?=$this->html->link($item['description'], $itemUrl);
-							?></strong><br>
-							<strong>Color:</strong> <?=$item['color'];?><br>
-							<strong>Size:</strong> <?=$item['size'];?>
-						</td>
-						<td class="<?="price-item-$x";?>">
-							<strong style="color:#009900;">$<?=number_format($item['sale_retail'],2)?></strong>
-						</td>
-						<td class="<?="qty-$x";?>">
-							<?=$item['quantity'];?>
-						</td>
-						<td class="<?="total-item-$x";?>">
-							<strong style="color:#009900;">$<?=number_format($item['sale_retail'] * $item['quantity'] ,2)?></strong>
-						</td>
-						<td class="cart-time"><img src="/img/clock_icon.gif" class="fl"/><div id='<?php echo "itemCounter-$x"; ?>' class="fl" style="margin-left:5px;"></div></td>
-					</tr>
-					<?php
-						//Allow users three extra minutes on their items for checkout.
-						$date = ($item['expires']['sec'] * 1000);
-						$itemCounters[] = "<script type=\"text/javascript\">
-							$(function () {
-								var itemProcessExpires = new Date($date);
-								$(\"#itemCounter-$x\").countdown('change', {until: itemProcessExpires, $countLayout});
 
-							$(\"#itemCounter-$x\").countdown({until: itemProcessExpires,
-							    expiryText: '<div class=\"over\" style=\"color:#fff; padding:5px; background: #ff0000;\">no longer reserved</div>', $countLayout});
-							var now = new Date();
-							if (itemProcessExpires < now) {
-								$(\"#itemCounter-$x\").html('<div class=\"over\" style=\"color:#fff; padding:5px; background: #ff0000;\">no longer reserved</div>');
-							}
-							});
-							</script>";
-						$x++;
-					?>
+							</div>
+							<div class="clear"></div>
+							<hr/>
+				<?php endforeach ?>
 			<?php endforeach ?>
-		<?php endforeach ?>
-				</tbody>
-			</table>
-	<?php endif ?>
 
-    <!-- begin thawte seal -->
-    <div id="thawteseal" title="Click to Verify - This site chose Thawte SSL for secure e-commerce and confidential communications." style="float: right!important; width:200px;">
-        <div style="float: left!important; width:100px; display:block;"><script type="text/javascript" src="https://seal.thawte.com/getthawteseal?host_name=www.totsy.com&amp;size=L&amp;lang=en"></script></div>
+							<?php endif ?>
+	<!-- End Order Details -->
 
-    <div class="AuthorizeNetSeal" style="float: left!important; width:100px; display:block;"> <script type="text/javascript" language="javascript">var ANS_customer_id="98c2dcdf-499f-415d-9743-ca19c7d4381d";</script> <script type="text/javascript" language="javascript" src="//verify.authorize.net/anetseal/seal.js" ></script></div>
-    </div>
 
-    <!-- end thawte seal -->
+		</div>
 
-	</div>
-
-	<div class="bl"></div>
-	<div class="br"></div>
-
-	</div>
+	<div class="clear"></div>
 
 </div>
-<div id="modal">
-</div>
+<div class="clear"></div>
+<div id="modal"></div>
+<div id="address-modal" style="z-index:9999999999!important;"></div>
+<script type="text/javascript">
+$(".add-address").click(function() {
+	$("#address-modal").load($.base + 'addresses/add').dialog({
+		autoOpen: false,
+		modal:true,
+		width: 415,
+		height: 497,
+		position: 'top',
+		close: function(ev, ui) {}
+	});
+	$("#address-modal").dialog('open');
+});
+
+</script>
 <?php
     if(number_format((float) $total, 2) >= 35 && number_format((float) $total, 2) <= 44.99){
         echo "<script type=\"text/javascript\">
@@ -374,3 +338,45 @@
 		window.location.replace('/cart/view');
 	</script>
 <?php endif ?>
+
+
+<script type="text/javascript">
+(function($){
+   $("#cc").mask("9999999999999999");
+   $("#CVV2").mask("9999");
+});
+</script>
+
+<script language="javascript">
+document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s://www':'://www')+ '.upsellit.com/upsellitJS4.jsp?qs=263250249222297345328277324311272279294304313337314308344289&siteID=6525"><\/sc'+'ript>')
+</script>
+
+
+<!-- PROMOCODES FORM AJAX SCRIPT -->
+<script type="text/javascript">
+	$(document).ready(function(){
+	    $('#promo-form').submit(function(){
+	        var data_test = {
+	        	code : $('input[name="code"]').val(),
+	        	'card[type]' : $('#card_type option:selected').text(),
+	        	'card[number]' : $('card[number]').val(),
+	        	'card[code]' : $('input[name="card[code]"]').val(),
+	        	'card[month]' : $('#card_month option:selected').text(),
+	        	'card[year]' : $('#card_year option:selected').text()
+	        };
+	   	$.ajax({
+	            url: "/orders/process",
+	            data: data_test,
+	            context: document.body,
+	            
+	            type: "POST",
+	            success: function(data){
+	            	var cc_obj = data;
+	            	console.log(cc_obj);
+	            }
+	        });    
+	    });
+		return false;
+	});
+</script>
+<!-- END OF AJAX SCRIPT -->

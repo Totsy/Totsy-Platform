@@ -1,67 +1,75 @@
 <?php $this->title("Privacy Policy"); ?>
-<h1 class="p-header">Privacy Policy</h1>
-<div id="left">
-  <ul class="menu main-nav">
-  <h3 style="color:#999;">About Us</h3>
-	<hr />
-    <li class="first item15"><a href="/pages/aboutus" title="About Totsy"><span>How Totsy Works</span></a></li>
-    <li class="first item17"><a href="/pages/moms" title="Meet The Moms"><span>Meet The Moms</span></a></li>
-    <li class="first item16"><a href="/pages/press" title="Press"><span>Totsy in the Press</span></a></li>
-    <li class="first"><a href="/pages/testimonials" title="Video Testimonials"><span>Video Testimonials</span></a></li>
-    <li class="first item17"><a href="/pages/being_green" title="Being Green"><span>Being Green</span></a></li>
-    <li class="first item19"><a href="http://blog.totsy.com" target="_blank" title="Blog"><span>Totsy Blog</span></a></li>
-    <li class="first item15"><a href="/pages/affiliates" title="Affiliates"><span>Affiliates</span></a></li>
-    <br />
-    <h3 style="color:#999;">Need Help?</h3>
-    <hr />
-    <li class="first item18"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
-    <li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
-    <li class="first item19 active"><a href="/pages/privacy" title="Privacy Policy"><span>Privacy Policy</span></a></li>
-    <li class="first item19"><a href="/pages/terms" title="Terms Of Use"><span>Terms Of Use</span></a></li>
-  </ul>
-</div>
-<div id="middle" class="noright">
 
-<div class="tl"><!-- --></div> 
-<div class="tr"><!-- --></div> 
-<div id="page"> 
-	<p><strong>Totsy's Privacy Policy</strong> (valid as of September 1, 2009)</p> 
+<div class="grid_16">
+	<h2 class="page-title gray">About Us</h2>
+	<hr />
+</div>
+
+<div class="grid_4">
+	<?php echo $this->view()->render(array('element' => 'aboutUsNav')); ?>
+	<?php echo $this->view()->render(array('element' => 'helpNav')); ?>
+</div>
+
+<div class="grid_11 omega roundy grey_inside b_side">
+
+	<h2 class="page-title gray">Privacy Policy</h2>
+	<hr />
 
 	<p>The privacy of our Members is important to us. Please read our Privacy Policy below so you understand how we collect information about our Members, what type of information we collect about our Members, why we collect such information, how we protect personal information about our Members and in which limited circumstances TOTSY may have to share such information with other parties.</p>
 	
-	<p><strong>1. TOTSY's Privacy Policy.</strong></p>
-
+	<br />
+	<h2 class="page-title gray">1. TOTSY's Privacy Policy.</h2>
+	<hr />
 	<p>The information we collect through our Site helps us provide you with information specific to your needs and interests. This privacy policy (the "Privacy Policy") covers TOTSY's website (the "Site"). Please read below to review our Privacy Policy and the types of information we gather through our Site. In this Privacy Policy, "we", "us", "our" and other similar references mean TOTSY and "you" and "your" and other similar references mean a specific user of the Site. By visiting the Site, you accept the practices described in this Privacy Policy.</p>
 
-	<p><strong>2. How TOTSY Gather and Use Information About Its Members?</strong></p>
-
+	
+	<br />
+	<h2 class="page-title gray">2. How TOTSY Gather and Use Information About Its Members?</h2>
+	<hr />
 	<p><strong>(i) Cookies.</strong> Cookies are pieces of data assigned by a web server that uniquely identify the browser on your PC. Websites typically use temporary cookies called "session" cookies to ensure that you are recognized when you move from page to page within one site and that any information you have entered is remembered. For example, if an e-commerce site did not use session cookies then items placed in a shopping basket would disappear by the time you reach the checkout. Websites also use cookies called "persistent" cookies to enable a website to remember you on subsequent visits, speeding up or enhancing your experience of services or functions offered. TOTSY attempts to install both persistent and session cookies when a user arrives at our Site. Cookies enable our systems to gather information about your navigational patterns through the site. Viewers have the option to accept or disable cookies at any time through their browsers. For more information about how to delete cookies from your web browser, you will usually find responses in the "help" menu of your web browser. Please note that if you block or refuse to accept cookies, or delete cookies between visits to the site, you may not be able to access or use certain features or functions of our Site.</p>
 
 	<p><strong>(ii) Server Statistics.</strong> We collect general statistics to track user trends on our Site. These statistics include hits to our server, the types of browsers used to access our Site, page views, and navigational patterns. The information that is collected in this manner does NOT provide us with any personally identifiable information about our users. It helps us track "where" our users are coming from. This allows us to pinpoint high traffic areas and determine the most effective ways to communicate with our users. As part of that ongoing analysis, TOTSY also uses devices called "web beacons" to help us identify when emails sent to you have been received and read. In order to prevent the introduction of viruses and hackers into the TOTSY site we may collect information, such as IP addresses, into a log file to be used to identify potential hackers of the TOTSY site.</p>
 
 	<p><strong>(iii) Personal Information You Provide To Us.</strong> For the purposes of this Privacy Policy, "Personal Information" is any information that identifies you, would enable someone to contact you, or that describes your relationship with TOTSY. We collect and store Personal Information when you register to use our Site, ask a question, complete a form, conduct a transaction, or send us an email. While you are not required to submit any information to our Site, if you do not provide the requested information, you may not be able to access or use some of the features and functions of our Site and we may not be able to provide you with certain services. TOTSY uses your Personal Information to complete transactions, respond to your requests, deliver the products and services you request, and notify you of promotions, updates, or special offers that we think may interest you.</p>
 
-	<p><strong>3. What Security Procedures Does TOTSY Use To Protect Personal Information of Its Members?</strong></p>
-
+	
+	<br />
+	<h2 class="page-title gray">3. What Security Procedures Does TOTSY Use To Protect Personal Information of Its Members?</h2>
+	<hr />
 	<p>The privacy of our members is important to us. We use physical, electronic, and administrative safeguards to assist us in preventing unauthorized access, maintaining data accuracy, and correctly using your Personal Information. Except as specified in this Privacy Policy, we use commercially reasonable efforts to limit access to your Personal Information to the employees, agents, and officers of TOTSY who need the information for the performance of their jobs.</p>
 
-	<p><strong>4. Will TOTSY Disclose The Information It Collects To Outside Parties?</strong></p>
+	
+	<br />
+	<h2 class="page-title gray">4. Will TOTSY Disclose The Information It Collects To Outside Parties?</h2>
+	<hr />
 
 	<p>TOTSY warrants that its employees, agents, officer and directors, consultants or subcontractors are obligated to and will hold any Personal Information in strict confidence and to take all reasonable measures to ensure that confidentiality is respected. TOTSY may share information with carefully selected vendors and business partners with whom we work. This includes companies that offer affinity, frequent-user, and reward programs; and, companies that perform marketing services and other business operations for us (including providing goods and services to our users, as necessary to complete transactions you request). All companies that act on our behalf are contractually obligated to keep all information confidential and to use the Member information only to provide the services we ask them to perform for you and us. We may provide aggregate statistics about our Members, sales, traffic patterns and related site information to reputable third party vendors, but these statistics do not include Personal Information. We may disclose Personal Information we collect from you if required by law, or in the good-faith belief that disclosure is necessary (a) to obey the law or comply with legal process served on us or our affiliates; (b) to protect and defend our rights or property or the rights or property of other users of our Site; or (c) to act in an emergency to protect the personal safety of users of our Site or the public.</p>
 
-	<p><strong>5. External Links. About Other Entities Which May Have Links on Their Sites to Our Site.</strong></p>
+	
+	<br />
+	<h2 class="page-title gray">5. External Links. About Other Entities Which May Have Links on Their Sites to Our Site.</h2>
+	<hr />
 
 	<p>We are not responsible for how non affiliated companies or organizations collect, use, disclose, or secure the information that you provide to them. If you choose to access a third party website linked to our Site, you do so at your own risk and subject to any terms of service or privacy policy (if any) associated with such third party websites.</p>
 
-	<p><strong>6. Collection Of Information From Children.</strong></p>
+	
+	<br />
+	<h2 class="page-title gray">6. Collection Of Information From Children.</h2>
+	<hr />
 
 	<p>TOTSY does not direct any of our content specifically to children. Users of our Site are required to be at least 18 years old, and any user under 18 is not an authorized user. If we learn that a user is under thirteen (13) years of age, we will promptly delete any Personal Information we have collected about that user.</p>
 
-	<p><strong>7. Consent To Processing In The United States.</strong></p>
+	
+	<br />
+	<h2 class="page-title gray">7. Consent To Processing In The United States.</h2>
+	<hr />
 
 	<p>By providing any Personal Information to TOTSY, all users, including, without limitation, users in Canada and the member states of the European Union, fully understand and unambiguously consent to this Privacy Policy and to the transfer of such Personal Information across international borders in accordance with TOTSY's standard operations, including the collection, storage, and processing of such information in the United States of America, and waive any rights that they may have under their local laws which would conflict with TOTSY's Privacy Policy.</p>
 
-	<p><strong>8. Your California Privacy Rights.</strong></p>
+	
+	<br />
+	<h2 class="page-title gray">8. Your California Privacy Rights.</h2>
+	<hr />
 
 	<p>As provided by California Civil Code Section 1798.83, a California resident who has provided Personal Information to a business with whom he/she has established a business relationship for personal, family, or household purposes ("California Member") is entitled to request information about whether the business has disclosed Personal Information to any third parties for the third parties' direct marketing purposes. In general, if the business has made such a disclosure of Personal Information, upon receipt of a request by a California Member, the business is required to provide a list of all third parties to whom Personal Information was disclosed in the preceding calendar year, as well as a list of the categories of Personal Information that were disclosed.</p>
 
@@ -71,22 +79,25 @@
 
 	<p>California Member may request further information about our compliance with this law by contacting us on our website under the CONTACT US menu. Please note that we are only required to respond to one request per Member each year, and we are not required to respond to requests made by means other than through our Site.</p>
 
-	<p><strong>9. Modification And Notification Of Changes.</strong></p>
+	
+	<br />
+	<h2 class="page-title gray">9. Modification And Notification Of Changes.</h2>
+	<hr />
 
 	<p>TOTSY may at its sole discretion edit this Privacy Policy. Notice of all changes to the Privacy Policy will be provided as specified in Section 12 (Modification and Notification of Changes) of our <?=$this->html->link('terms of service', array('Pages::terms')); ?>.</p>
 
-	<p><strong>10. In Summary.</strong></p>
+	
+	<br />
+	<h2 class="page-title gray">10. In Summary.</h2>
+	<hr />
 
 	<p>TOTSY is committed to protecting your privacy. The information collected from our Site helps us better understand our market and consumer interests. This allows us to serve our Members and business associates with the level of satisfaction they deserve.</p>
 
-	<p>If you have questions or suggestions regarding this Privacy Policy or our privacy practices please <?=$this->html->link('contact us', array('Pages::contact')); ?>. Thank you.</p> 
- 
-</div> 
-<div class="bl"><!-- --></div> 
-<div class="br"><!-- --></div> 
-			
-		</div> 
-		
-	</div>
+	<p>If you have questions or suggestions regarding this Privacy Policy or our privacy practices please <?=$this->html->link('contact us', array('Pages::contact')); ?>. Thank you.</p>
 	
+	<p><strong>Totsy's Privacy Policy</strong> (valid as of September 1, 2009)</p> 
+	<br />
+
 </div>
+</div>
+<div class="clear"></div>

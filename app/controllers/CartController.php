@@ -31,7 +31,12 @@ class CartController extends BaseController {
 	*/
 	public function view() {
 		if ($this->request->data) {
-			$this->update();
+			$datas = $this->request->data;
+			if(!empty($datas['rmv_item_id'])) {
+				$this->remove($datas['rmv_item_id']);
+			} else {
+				$this->update();
+			}
 		}
 		Cart::increaseExpires();
 		$message = '';
@@ -58,8 +63,10 @@ class CartController extends BaseController {
 				$returnUrl = $event->url;
 			}
 		}
-
-		return compact('cart', 'message', 'shipDate', 'returnUrl');
+		
+		//calculate savings
+		$savings = Session::read('userSavings');
+		return compact('cart', 'message', 'shipDate', 'returnUrl', 'savings');
 	}
 
 	/**
@@ -88,6 +95,9 @@ class CartController extends BaseController {
 					}
 				}
 			}
+		} else {
+			#Reset Savings on Session
+			Session::write('userSavings', 0);
 		}
 		#T
 		$cart = Cart::create();
@@ -122,9 +132,12 @@ class CartController extends BaseController {
 					if( $avail > 0 ){
 						++$cartItem->quantity;
 						$cartItem->save();
-					}else{
+						//calculate savings
+						$item[$item['_id']] = $cartItem->quantity;
+						$this->savings($item, 'add');
+					} else {
 						$cartItem->error = 'You can’t add this quantity in your cart. <a href="#5">Why?</a>';
-					$cartItem->save();
+						$cartItem->save();
 					}
 				}else{
 					$cartItem->error = 'You have reached the maximum of 9 per item.';
@@ -138,7 +151,9 @@ class CartController extends BaseController {
 				unset($item['_id']);
 				$info = array_merge($item, array('quantity' => 1));
 				if ($cart->addFields() && $cart->save($info)) {
-
+					//calculate savings
+					$item[$itemId] = 1;
+					$this->savings($item, 'add');
 				}
 			}
 			$this->redirect(array('Cart::view'));
@@ -153,21 +168,31 @@ class CartController extends BaseController {
 	* @see app/models/Cart::remove()
 	* @return compact
 	*/
-	public function remove() {
+	public function remove($id = null) {
 		if ($this->request->data) {
 				$data = $this->request->data;
+				if(!empty($id)) {
+					$data["id"] = $id;
+				}
 				$cart = Cart::find('first', array(
 					'conditions' => array(
 						'_id' => $data["id"]
 				)));
+				$quantity = $cart->quantity;
+				$now = getdate();
+				$expires_date = $cart->expires->sec;
 				if(!empty($cart)){
 					Cart::remove(array('_id' => $data["id"]));
+					//calculate savings
+					if($now[0] < $cart->expires->sec) {
+						$item[$cart->item_id] = $quantity;
+						$this->savings($item, 'remove');
+					}
 				}
 			}
-
 		$this->_render['layout'] = false;
 		$cartcount = Cart::itemCount();
-		return compact('cartcount');
+		$this->redirect(array('Cart::view'));
 	}
 
 	/**
@@ -197,7 +222,11 @@ class CartController extends BaseController {
 					$cart->error = $result['errors'];
 					$cart->save();
 				}
+				//build temp array
+				$items[$cart->item_id] = $quantity;
 			}
+			//calculate savings
+			$this->savings($items, 'update');
 		}
 		$this->_render['layout'] = false;
 		$this->redirect('/cart/view');
@@ -226,6 +255,41 @@ class CartController extends BaseController {
             $total_left = 45 - $query['subtotal'];
             return compact('total_left', 'url');
         }
+	}
+	public function savings($items = null, $action) {
+		if($action == "update"){
+			$savings = 0;
+			if(!empty($items)) {
+				foreach($items as $key => $quantity) {
+					$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
+					if(!empty($itemInfo->msrp)){
+						$savings += $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
+					}
+				}
+			}
+		} else if($action == "add") {
+			$savings = Session::read('userSavings');
+			if(empty($savings)) {
+				$savings = 0;
+			}
+			if(!empty($items)) {
+				foreach($items as $key => $quantity) {
+					$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
+					if(!empty($itemInfo->msrp)){
+						$savings += $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
+					}
+				}
+			}
+		} else if($action == "remove") {
+			$savings = Session::read('userSavings');
+			foreach($items as $key => $quantity) {
+				$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
+				if(!empty($itemInfo->msrp)){
+					$savings -= $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
+				}
+			}
+		}
+		Session::write('userSavings', $savings);
 	}
 }
 ?>

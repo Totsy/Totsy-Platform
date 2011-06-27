@@ -1,39 +1,45 @@
-<?php if (!empty($userInfo)): ?>
+<?php $this->title("Contact Us"); ?>
 
-			<h1 class="p-header"><?=$this->title("Contact Us"); ?></h1>
+<div class="grid_16">
+	<h2 class="page-title gray">Contact Us</h2>
+	<hr />
+</div>
 
-<div id="left">
+<div class="grid_4">
+	<div class="roundy grey_inside">
+		<h3 class="gray">About Us</h3>
+		<hr />
 		<ul class="menu main-nav">
-		  <h3 style="color:#999;">About Us</h3>
-		  <hr />
-		  <li class="first item15"><a href="/pages/aboutus" title="About Totsy"><span>How Totsy Works</span></a></li>
-		  <li class="first item17"><a href="/pages/moms" title="Meet The Moms"><span>Meet The Moms</span></a></li>
-		  <li class="first item16"><a href="/pages/press" title="Press"><span>Totsy in the Press</span></a></li>
-		  <li class="first item17"><a href="/pages/being_green" title="Being Green"><span>Being Green</span></a></li>
-		  <li class="first"><a href="/pages/testimonials" title="Video Testimonials"><span>Video Testimonials</span></a></li>
-          <li class="first item19"><a href="http://blog.totsy.com" target="_blank" title="Blog"><span>Totsy Blog</span></a></li>
-          <li class="first item15"><a href="/pages/affiliates" title="Affiliates"><span>Affiliates</span></a></li>
-		  <br />
-		  <h3 style="color:#999;">Need Help?</h3>
-		  <hr />
-		  <li class="first item18 active"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
-		  <li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
+		    <li class="active"><a href="/pages/aboutus" title="About Totsy">How Totsy Works</a></li>
+		    <li><a href="/pages/moms" title="Meet The Moms">Meet The Moms</a></li>
+		    <li><a href="/pages/press" title="Press">Totsy in the Press</a></li>
+		    <li><a href="/pages/testimonials" title="Video Testimonials">Video Testimonials</a></li>
+		    <li><a href="/pages/being_green" title="Being Green">Being Green</a></li>
+		    <li><a href="http://blog.totsy.com" target="_blank" title="Blog">Totsy Blog</a></li>
+		    <li><a href="/pages/affiliates" title="Affiliates"><span>Affiliates</span></a></li>
 		</ul>
 	</div>
-<?php endif ?>
+	<div class="clear"></div>
+	<div class="roundy grey_inside">
+		<h3 class="gray">Need Help?</h3>
+		<hr />
+		<ul class="menu main-nav">
+		    <li><a href="/tickets/add" title="Contact Us">Help Desk</a></li>
+			<li><a href="/pages/faq" title="Frequently Asked Questions">FAQ's</a></li>
+			<li><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
+			<li><a href="/pages/terms" title="Terms Of Use">Terms Of Use</a></li>
+		</ul>
+	</div>
+</div>
 
-<div id="middle" class="noright">
-	<div class="tl"></div>
-	<div class="tr"></div>
-	<div id="page">
-
-	<div style="float:left; width:350px;">
-
+<div class="grid_11 omega roundy grey_inside b_side">
 	<h2 class="gray mar-b">Contact Us</h2>
 	<hr />
 
+	<div style="float:left; width:330px;">
+	<div id="hidden-div" style="display:none; color:#eb132c; font-weight:bold;">Please Choose A Help Topic </div>
 	<?=$this->form->create(); ?>
-		<select id="parent" style="width:350px;" name="issue_type">
+		<select id="parent" name="issue_type">
 			<option value="default">I need help with:</option>
 			<?php if ($orders): ?>
 				<option value="order">My Order(s)</option>
@@ -46,7 +52,7 @@
 			<option value="press">Press Inquiries</option>
 		</select>
 
-		<br />
+		<br /><br />
 		<select id="child" name="type" style="width:350px;">
 		<!-- orders -->
 			<?php if ($orders): ?>
@@ -88,7 +94,7 @@
 		</select>
 
 		<br />
-
+		<br />
 		<h3>Your Message</h3>
 		<?=$this->form->textarea('message', array(
 			'class' => 'inputbox',
@@ -99,8 +105,7 @@
 
 		<?=$this->form->submit('Send Information', array('class' => "button" )); ?>
 	<?=$this->form->end(); ?>
-	</div>
-
+</div>
 	<div id="message" style="float:left; width:150px; margin-left:20px;">
 				<strong>Corporate Address:</strong><br/>
 				10 West 18th Street<br/>
@@ -112,12 +117,12 @@
 				888-247-9444<br />
 				Office Hours:<br/> M-F 10am - 5pm EST</p>
 	</div>
-
-	</div>
-
-	<div class="bl"></div>
-	<div class="br"></div>
 </div>
+
+
+</div>
+<div class="clear"></div>
+
 
 <script language="javascript">
 function makeSublist(parent,child,isSubselectOptional,childVal)
@@ -151,3 +156,27 @@ function makeSublist(parent,child,isSubselectOptional,childVal)
 </script>
 
 
+
+  <script type="text/javascript" charset="utf-8">
+    $(document).ready(function () {
+      checkOptions();
+      $("select").change(checkOptions);
+
+      function checkOptions() {
+        var getSize = false;
+        $("select").each(function(index, element) {
+          if ( $(element).val() == "default" ) {
+            getSize = true;
+          }
+        });
+        
+        if (getSize) {
+          $("#hidden-div").show();
+          $("input[type=Submit]").attr("disabled","disabled");
+        } else {
+          $("#hidden-div").hide();
+          $("input[type=Submit]").removeAttr("disabled");
+        };
+      }
+    });
+  </script> 
