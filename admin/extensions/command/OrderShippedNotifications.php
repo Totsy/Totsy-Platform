@@ -48,7 +48,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 	 * Example for production:
 	 * protected $debugModeEmail = null;
 	 */
-	protected $debugModeEmail = "skosh@totsy.com";
+	protected $debugModeEmail = null;
 		
 	
 	public function run() {
