@@ -332,6 +332,7 @@ class OrderExport extends Base {
 		$filename = 'TOTIT'.$this->time.'.csv';
 		$handle = $this->tmp.$filename;
 		$eventIds = array_unique(array_merge($this->orderEvents, $this->poEvents, $this->addEvents));
+		$thi->log("Total Number of Events encountered: " count($eventIds));
 		$this->log("Opening item file $handle");
 		$fp = fopen($handle, 'w');
 		$count = 0;
