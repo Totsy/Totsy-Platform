@@ -3398,6 +3398,8 @@ ul#navlist {
 #navlist li a.active, #navlist a:hover {
 	background-color:#EB132C;
 	border-radius:6px 6px 6px 6px;
+	-moz-border-radius:6px 6px 6px 6px;
+	-webkit-border-radius:6px 6px 6px 6px;
 	color:#fff;
 	margin:0 2px;
 	text-decoration:none;
