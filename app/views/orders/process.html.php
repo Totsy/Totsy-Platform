@@ -149,7 +149,7 @@
 				<tr>
 					<?php if ($credit): ?>
 						<div style="padding:10px; background:#eee;"><?php $orderCredit->credit_amount = abs($orderCredit->credit_amount); ?>
-							<?=$this->form->create($orderCredit); ?>
+													<?=$this->form->create($orderCredit); ?>
 							<?=$this->form->error('amount'); ?>
 							You have $<?=number_format((float) $userDoc->total_credit, 2);?> in credits
 							<hr />
@@ -167,7 +167,7 @@
 				</tr>
 				<tr>
 					<div style="padding:10px; background:#eee; margin:10px 0">
-						<?=$this->form->create($orderPromo); ?>
+						<?=$this->form->create($orderPromo,array('id'=>'promo_code_form')); ?>
 							<?php if (is_array($this->form->error('promo'))): ?>
                                 <?php foreach($this->form->error('promo') as $msg) :?>
                                     <?php echo $msg ?>
@@ -175,7 +175,7 @@
                             <?php else: ?>
                                 <?=$this->form->error('promo'); ?>
 							<?php endif; ?>
-							<?=$this->form->text('code', array('size' => 6)); ?>
+							<?=$this->form->text('code', array('id'=>'promo_code','size' => 6)); ?>
 							<?=$this->form->submit('Apply Promo Code'); ?>
 							<hr />
 							<strong>Promo Savings:</strong>
@@ -374,3 +374,7 @@
 		window.location.replace('/cart/view');
 	</script>
 <?php endif ?>
+
+<script language="javascript">
+document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s://www':'://www')+ '.upsellit.com/upsellitJS4.jsp?qs=263250249222297345328277324311272279294304313337314308344289&siteID=6525"><\/sc'+'ript>')
+</script>
