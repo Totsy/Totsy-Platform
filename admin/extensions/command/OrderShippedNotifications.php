@@ -38,6 +38,19 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 	 */
 	public $tmp = '/resources/totsy/tmp/';
 	
+	/**
+	 * 
+	 * Flag for debug mode and email address - 
+	 * if non-null, we're debugging and sending 
+	 * info to the specified email address. 
+	 * Example for debug:
+	 * protected $debugModeEmail = "skosh@totsy.com";
+	 * Example for production:
+	 * protected $debugModeEmail = null;
+	 */
+	protected $debugModeEmail = "skosh@totsy.com";
+		
+	
 	public function run() {
 		Logger::info('Order Shipped Processor');
 		Environment::set($this->env);
@@ -102,12 +115,18 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		$skipped = array();
 		$c = 0;
 		foreach ($results as $result){
+			
 			if (count($result['TrackNums'])>0){
 				$do_break = false;	
 				$data = array();
 				$data['order'] = $ordersCollection->findOne(  array('_id' => $result['OrderId'] ));
 				$data['user'] = $usersCollection->findOne(array('_id' => $this->getUserId($data['order']['user_id']) ));
-				$data['email'] = $data['user']['email'];
+				
+				if (is_null($this->debugModeEmail)) {
+					$data['email'] = $data['user']['email'];
+				} else {
+					$data['email'] = $this->debugModeEmail;
+				}
 				$data['items'] = array();
 				$itemSkus = $this->getSkus($data['order']['items']);
 				$problem = '';
@@ -144,22 +163,39 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 				Silverpop::send('orderShipped', $data);
 				unset($data);  
 				
-				//SET send email flag
-				foreach($result['TrackNums'] as $trackNum => $items){
-					foreach ($items as $item){
-						$conditions = array(
-								'ItemId' =>  $item, 
-								'OrderId' => $result['OrderId']
-						);
-						$ordersShippedCollection->update($conditions, array('$set' => array('emailNotificationSend' => new MongoDate())));
+				if(is_null($this->debugModeEmail)) {
+					//SET send email flag
+					foreach($result['TrackNums'] as $trackNum => $items){
+						foreach ($items as $item){
+							$conditions = array(
+									'ItemId' =>  $item, 
+									'OrderId' => $result['OrderId']
+							);
+							$ordersShippedCollection->update($conditions, array('$set' => array('emailNotificationSend' => new MongoDate())));
+						}
 					}
 				}
 			}
+			
+			// don't send more than 10 emails in debug mode
+			if (!is_null($this->debugModeEmail)) {
+				if ($c==10){
+					break;
+				}
+				$c++;
+			}
+			
 		}
 		
 		if (count($skipped)>0){
 			$data['skipped'] = $skipped;
-			$data['email'] = 'email-notifiations@totsy.com';
+			
+			if(is_null($this->debugModeEmail)) {
+				$data['email'] = 'email-notifiations@totsy.com';
+			}
+			else {
+				$data['email'] = $this->debugModeEmail;
+			}
 			Silverpop::send('ordersSkipped', $data);
 			unset($data);
 		}
