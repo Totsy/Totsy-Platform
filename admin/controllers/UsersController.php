@@ -9,6 +9,8 @@ use lithium\data\Connections;
 use admin\models\Cart;
 use admin\models\Credit;
 use admin\models\Order;
+use MongoId;
+use MongoDate;
 
 
 
@@ -32,7 +34,9 @@ class UsersController extends \admin\controllers\BaseController {
 			'zip',
 			'logincounter',
 			'purchase_count',
-			'invited_by'
+			'invited_by',
+			'deactivated_date',
+			'reactivate_date'
 			),
 		'order' => array(
 			'Date',
@@ -87,13 +91,24 @@ class UsersController extends \admin\controllers\BaseController {
 				if (array_key_exists('created_on', $userData)) {
 				    $userData['register date'] = date("M d, Y", $userData['created_on']['sec']);
 				}
+				if (array_key_exists('deactivated_date', $userData)) {
+				    $userData['deactivated_date'] = date("M d, Y", $userData['deactivated_date']['sec']);
+				}
+				if (array_key_exists('reactivate_date', $userData)) {
+				    $userData['reactivate_date'] = date("M d, Y", $userData['reactivate_date']['sec']);
+				}
+				if (array_key_exists('deactivated', $userData)) {
+				    $deactivated = $userData['deactivated'];
+				} else {
+				    $deactivated = false;
+				}
 
 				$data = array_intersect_key($userData, array_flip($headings['user']));
 				$info = $this->sortArrayByArray($data, $headings['user']);
 			}
 		}
 
-		return compact('user', 'credits', 'orders', 'headings', 'info', 'reasons', 'admin');
+		return compact('user', 'credits', 'orders', 'headings', 'info', 'reasons', 'admin', 'deactivated');
 	}
 	/**
 	 * Performs login authentication for a user going directly to the database.
@@ -129,6 +144,36 @@ class UsersController extends \admin\controllers\BaseController {
 	private function writeSession($sessionInfo) {
 		return (Session::write('userLogin', $sessionInfo));
 	}
+
+	/**
+	* Deactivate/Activate Users
+	**/
+	public function accountStatus($id = null) {
+	    $this->_render['layout'] = false;
+	    $type = $this->request->data['type'];
+	    $collection = User::collection();
+	    $user = $collection->find(array('_id' => new MongoId($id)));
+
+	    if ($user) {
+	        if ($type == "deactivate") {
+	            $collection->update(array('_id' => new MongoId($id)), array('$unset'=>array('reactivate_date' => 1),
+	            '$set'=>array(
+	                'deactivated' => true,
+	                'deactivated_date' => new MongoDate(strtotime("now"))
+	                )));
+	        } else {
+	            $collection->update(array('_id' => new MongoId($id)), array(
+	                '$unset'=>array('deactivated_date' => 1),
+	                '$set'=>array(
+	                    'deactivated' => false,
+	                    'reactivate_date' =>  new MongoDate(strtotime("now"))
+	                )));
+	        }
+	    }
+	    $this->redirect(array('Users::view', 'args' => array($id)));
+	}
+
+
 
 
 }

@@ -12,6 +12,19 @@
 	<h2 id="page-heading">User Management</h2>
 </div>
 <div id="clear"></div>
+<div class="grid_16">
+<?php if ($deactivated): ?>
+    <h4 style="float:left;">Account Status: <span style="color:#FF0000"> Inactive </span></h4>
+    &nbsp
+    <input type="button" value="Activate Account" onclick="accountStatus('<?php echo $user->_id?>', 'activate')"/>
+
+<?php else: ?>
+    <h4 style="float:left;">Account Status: <span style="color:#008000">Active </span></h4>
+    &nbsp
+    <input type="button"  class="button" value="Deactivate Account" onclick="accountStatus('<?php echo $user->_id?>', 'deactivate')"/>
+<?php endif; ?>
+</div>
+<div id="clear"></div>
 <div class="grid_6">
 	<div class="box">
 		<h2>
@@ -164,4 +177,12 @@ jQuery(function($){
 	$.mask.definitions['~']='[+-]';
 	$("#credit_amount").mask("~9.99 ~9.99 999");
 });
+</script>
+<script type="text/javascript">
+function accountStatus(id, type) {
+    $.post("/users/accountStatus/" + id,{type:type}, function(){
+        location.reload();
+    });
+
+}
 </script>

@@ -190,7 +190,9 @@ class UsersController extends BaseController {
 			//Grab User Record
 			$user = User::lookup($email);
 			$redirect = '/sales';
-			if (strlen($password) > 0) {
+			if ($user->deactivated) {
+				$message = '<div class="error_flash">Your account has been deactivated.  Please contact Customer Service at 888-247-9444 to reactivate your account</div>';
+			} else if (strlen($password) > 0) {
 				if($user){
 					if (!empty($user->reset_token)) {
 						if (strlen($user->reset_token) > 1) {
