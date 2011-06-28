@@ -107,7 +107,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 				$data = array();
 				$data['order'] = $ordersCollection->findOne(  array('_id' => $result['OrderId'] ));
 				$data['user'] = $usersCollection->findOne(array('_id' => $this->getUserId($data['order']['user_id']) ));
-				$data['email'] = $data['user']['email'];;
+				$data['email'] = $data['user']['email'];
 				$data['items'] = array();
 				$itemSkus = $this->getSkus($data['order']['items']);
 				$problem = '';
@@ -118,7 +118,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 						break;
 					}
 					if ( $do_break===false ){
-						$tI = 0;
+						$itemCount = 0;
 						foreach ($items as $item){
 							if (!array_key_exists($item['sku'],$itemSkus)){
 								Logger::info('Items don\'t match ['.$data['order']['order_id'].']');
@@ -126,9 +126,8 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 								$do_break = true;
 								break;
 							}
-							$o = $itemSkus[ $item['sku'] ];
-							$data['items'][$trackNum][ (string) $item['id'] ] = $o;
-							$tI++;
+							$data['items'][$trackNum][ (string) $item['id'] ] = $itemSkus[ $item['sku'] ];
+							$itemCount++;
 						}
 					}
 				}
@@ -141,7 +140,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 				}
 				unset($itemSkus);
 				unset($do_break);
-				Logger::info('Trying to send email for order #'.$data['order']['order_id'].'('.$result['OrderId'].' to '.$data['email'].' (tottal items: '.$tI.')');
+				Logger::info('Trying to send email for order #'.$data['order']['order_id'].'('.$result['OrderId'].' to '.$data['email'].' (tottal items: '.$itemCount.')');
 				Silverpop::send('orderShipped', $data);
 				unset($data);  
 				
@@ -155,17 +154,13 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 						$ordersShippedCollection->update($conditions, array('$set' => array('emailNotificationSend' => new MongoDate())));
 					}
 				}
-				
-			};
+			}
 		}
 		
 		if (count($skipped)>0){
 			$data['skipped'] = $skipped;
 			$data['email'] = 'email-notifiations@totsy.com';
-			//$data['email'] = 'lhanson@totsy.com';
-			foreach ($emails as $email){
-				Silverpop::send('ordersSkipped', $data);
-			}
+			Silverpop::send('ordersSkipped', $data);
 			unset($data);
 		}
 	}
@@ -178,6 +173,11 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		}
 	}
 	
+	/**
+	 * Method to get array of skus out of the array of shipped items for a particular order
+	 * 
+	 * @param array $itms
+	 */
 	private function getSkus ($itms){
 		$itemsCollection = Item::collection();
 		
