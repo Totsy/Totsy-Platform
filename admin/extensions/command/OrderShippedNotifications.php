@@ -20,6 +20,9 @@ use admin\extensions\command\Pid;
 
 /**
  * Process email notifications for orders shipped.
+ * 
+ * Since 06-29-2011 supports command line params. 
+ * (only for public or protected variables)
  */
 class OrderShippedNotifications extends \lithium\console\Command  {
 	
@@ -42,11 +45,15 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 	 * 
 	 * Flag for debug mode and email address - 
 	 * if non-null, we're debugging and sending 
-	 * info to the specified email address. 
+	 * info to the specified email address.
+	 *  
 	 * Example for debug:
 	 * protected $debugModeEmail = "skosh@totsy.com";
 	 * Example for production:
 	 * protected $debugModeEmail = null;
+	 * 
+	 * Example for debug specefied in cli:
+	 * li3 order-shipped-notifications --debugModeEmail=skosh@totsy.com
 	 */
 	protected $debugModeEmail = null;
 		
@@ -57,6 +64,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		$this->tmp = LITHIUM_APP_PATH . $this->tmp;
 		$pid = new Pid($this->tmp,  'OrderShippedNotification');
 		if ($pid->already_running == false) {
+			$this->getCommandLineParams();
 			$this->emailNotificationSender();
 		} else {
 			Logger::info("Already Running! Stoping Execution");
@@ -240,6 +248,16 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		unset($items);
 		return $itemSkus;
 	}
+	
+	private function getCommandLineParams(){
+		$params = $this->request->params;
+		$vars = get_class_vars(get_class($this));
+		foreach ($vars as $var=>$value){
+			if (array_key_exists($var,$params)){
+				$this->{$var} = $params[$var];
+			}
+		}
+	} 
 }
 
 ?>
