@@ -149,17 +149,16 @@
 				<tr>
 					<?php if ($credit): ?>
 						<div style="padding:10px; background:#eee;"><?php $orderCredit->credit_amount = abs($orderCredit->credit_amount); ?>
-							<form method="POST" id="promo_code_form">
-	                           <input type="text" name="code" id="promo_code" size="12" class="inputbox"/>
-	                           <input type="submit" value="Apply Promo Code" />
-	                           <hr />
-	                           <strong>Promo Savings:</strong>
-	                           <?php if (!empty($orderPromo)): ?>
-	                               -$<?=number_format((float) abs($orderPromo->saved_amount), 2);?>
-	                           <?php else: ?>
-	                               -$<?=number_format((float) 0, 2);?>
-	                           <?php endif ?>
-                       	</form>
+													<?=$this->form->create($orderCredit); ?>
+							<?=$this->form->error('amount'); ?>
+							You have $<?=number_format((float) $userDoc->total_credit, 2);?> in credits
+							<hr />
+							<?=$this->form->text('credit_amount', array('size' => 6, 'maxlength' => '6')); ?>
+									<?=$this->form->submit('Apply Credit'); ?>
+									<hr />
+										<strong>Credit:</strong>
+								-$<?=number_format((float) $orderCredit->credit_amount, 2);?>
+							<?=$this->form->end(); ?>
 							<div style="clear:both"></div>
 						</div>
 					<?php else : ?>
@@ -168,7 +167,7 @@
 				</tr>
 				<tr>
 					<div style="padding:10px; background:#eee; margin:10px 0">
-						<?=$this->form->create($orderPromo); ?>
+						<?=$this->form->create($orderPromo,array('id'=>'promo_code_form')); ?>
 							<?php if (is_array($this->form->error('promo'))): ?>
                                 <?php foreach($this->form->error('promo') as $msg) :?>
                                     <?php echo $msg ?>
@@ -176,7 +175,7 @@
                             <?php else: ?>
                                 <?=$this->form->error('promo'); ?>
 							<?php endif; ?>
-							<?=$this->form->text('code', array('size' => 6)); ?>
+							<?=$this->form->text('code', array('id'=>'promo_code','size' => 6)); ?>
 							<?=$this->form->submit('Apply Promo Code'); ?>
 							<hr />
 							<strong>Promo Savings:</strong>

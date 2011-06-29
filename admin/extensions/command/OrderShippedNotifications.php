@@ -40,7 +40,11 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 	 * @var string
 	 */
 	public $tmp = '/resources/totsy/tmp/';
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> 5f78bea51b3cc1634561c1bd9606f0537d6d664e
 	/**
 	 * 
 	 * Flag for debug mode and email address - 
@@ -56,8 +60,13 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 	 * li3 order-shipped-notifications --debugModeEmail=skosh@totsy.com
 	 */
 	protected $debugModeEmail = null;
+<<<<<<< HEAD
 		
 	
+=======
+
+
+>>>>>>> 5f78bea51b3cc1634561c1bd9606f0537d6d664e
 	public function run() {
 		Logger::info('Order Shipped Processor');
 		Environment::set($this->env);
@@ -77,7 +86,10 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 	    $ordersCollection = Order::collection();
 		$usersCollection = User::collection();
 		$ordersShippedCollection = OrderShipped::collection();
+<<<<<<< HEAD
 		
+=======
+>>>>>>> 5f78bea51b3cc1634561c1bd9606f0537d6d664e
 		$keys = array('OrderId' => true);
 		$inital = array('totalItems' => 0, 'Tracking' => 0, 'TrackNums' => array());
 		$reduce = new MongoCode("function(a,b){ 
@@ -98,7 +110,12 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 				'$lt' => new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y"))) 
 			),
 			'OrderId' => array('$ne' => null),
+<<<<<<< HEAD
 		    // don't validate TRCK # because sometimes there could shipped item without tracking # 
+=======
+			//'OrderNum' => '4DBA18C5F223',
+		    // don't validate TRCK # because sometimes there could shipped item without tracking #
+>>>>>>> 5f78bea51b3cc1634561c1bd9606f0537d6d664e
 			// validate tracking number
 			//'Tracking #' => new MongoRegex("/^[1Z]{2}[A-Za-z0-9]+/i"),
 			// do not send notification if it already send
@@ -129,11 +146,24 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 				$data = array();
 				$data['order'] = $ordersCollection->findOne(  array('_id' => $result['OrderId'] ));
 				$data['user'] = $usersCollection->findOne(array('_id' => $this->getUserId($data['order']['user_id']) ));
+<<<<<<< HEAD
 				
+=======
+
+>>>>>>> 5f78bea51b3cc1634561c1bd9606f0537d6d664e
 				if (is_null($this->debugModeEmail)) {
 					$data['email'] = $data['user']['email'];
 				} else {
 					$data['email'] = $this->debugModeEmail;
+<<<<<<< HEAD
+=======
+				}
+				$data['items'] = array();
+
+				$ordItm = array();
+				foreach($data['order']['items'] as $itm){
+					$ordItm[$itm['item_id']] = $itm;
+>>>>>>> 5f78bea51b3cc1634561c1bd9606f0537d6d664e
 				}
 				$data['items'] = array();
 				$itemSkus = $this->getSkus($data['order']['items']);
@@ -158,7 +188,10 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 						}
 					}
 				}
+<<<<<<< HEAD
 				
+=======
+>>>>>>> 5f78bea51b3cc1634561c1bd9606f0537d6d664e
 				if ($do_break===true){
 					Logger::info('skip ['.$data['order']['order_id'].']');
 					$do_break = false;
@@ -170,7 +203,11 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 				Logger::info('Trying to send email for order #'.$data['order']['order_id'].'('.$result['OrderId'].' to '.$data['email'].' (tottal items: '.$itemCount.')');
 				Silverpop::send('orderShipped', $data);
 				unset($data);  
+<<<<<<< HEAD
 				
+=======
+
+>>>>>>> 5f78bea51b3cc1634561c1bd9606f0537d6d664e
 				if(is_null($this->debugModeEmail)) {
 					//SET send email flag
 					foreach($result['TrackNums'] as $trackNum => $items){
@@ -184,7 +221,11 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 					}
 				}
 			}
+<<<<<<< HEAD
 			
+=======
+
+>>>>>>> 5f78bea51b3cc1634561c1bd9606f0537d6d664e
 			// don't send more than 10 emails in debug mode
 			if (!is_null($this->debugModeEmail)) {
 				if ($c==10){
@@ -192,6 +233,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 				}
 				$c++;
 			}
+<<<<<<< HEAD
 			
 		}
 		
@@ -217,6 +259,35 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		}
 	}
 	
+=======
+
+		}
+
+		if (count($skipped)>0){
+			$data['skipped'] = $skipped;
+
+			if(is_null($this->debugModeEmail)) {
+				$data['email'] = 'email-notifiations@totsy.com';
+			}
+			else {
+				$data['email'] = $this->debugModeEmail;
+			}
+			Silverpop::send('ordersSkipped', $data);
+			unset($data);
+		}
+
+
+	}
+
+	private function getUserId($id) {
+		if (strlen($id)<10){ 
+			return $id; 
+		} else {
+			return new MongoId($id);
+		}
+	}
+
+>>>>>>> 5f78bea51b3cc1634561c1bd9606f0537d6d664e
 	/**
 	 * Method to get array of skus out of the array of shipped items for a particular order
 	 * 
@@ -224,11 +295,19 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 	 */
 	private function getSkus ($itms){
 		$itemsCollection = Item::collection();
+<<<<<<< HEAD
 		
 		$ids = array();
 		$items = array();
 		$itemSkus = array();
 		
+=======
+
+		$ids = array();
+		$items = array();
+		$itemSkus = array();
+
+>>>>>>> 5f78bea51b3cc1634561c1bd9606f0537d6d664e
 		foreach($itms as $itm){
 			$items[$itm['item_id']] = $itm;
 			$ids[] = new MongoId($itm['item_id']);
@@ -239,7 +318,11 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		foreach ($iSkus as $i){
 			$iSs[ (string) $i['_id'] ] = $i;
 		}
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> 5f78bea51b3cc1634561c1bd9606f0537d6d664e
 		foreach ($itms as $itm){
 			$sku = $iSs[ $itm['item_id'] ]['sku_details'][ $itm['size'] ];
 			$itemSkus[ $sku ] = $itm;
@@ -248,7 +331,11 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		unset($items);
 		return $itemSkus;
 	}
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> 5f78bea51b3cc1634561c1bd9606f0537d6d664e
 	private function getCommandLineParams(){
 		$params = $this->request->params;
 		$vars = get_class_vars(get_class($this));
