@@ -9,6 +9,7 @@
 	}
 	$total = $afterDiscount + $tax + $shippingCost + $overShippingCost;
 ?>
+<?=$this->html->script('jquery.maskedinput-1.2.2')?>
 <h1 class="page-title gray"><span class="_red"><a href="/" title="Sales">Today's Sales</a></span> / <a href="/cart/view" title="My Cart">My Cart</a> / Checkout / Process Payment</h1>
 <hr />
 <div id="middle" class="fullwidth">
@@ -153,7 +154,7 @@
 							<?=$this->form->error('amount'); ?>
 							You have $<?=number_format((float) $userDoc->total_credit, 2);?> in credits
 							<hr />
-							<?=$this->form->text('credit_amount', array('size' => 6, 'maxlength' => '6')); ?>
+							<?=$this->form->text('credit_amount', array('id' => 'credit', 'size' => 7 , 'maxlength' => '7')); ?>
 									<?=$this->form->submit('Apply Credit'); ?>
 									<hr />
 										<strong>Credit:</strong>
@@ -378,3 +379,7 @@
 <script language="javascript">
 document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s://www':'://www')+ '.upsellit.com/upsellitJS4.jsp?qs=263250249222297345328277324311272279294304313337314308344289&siteID=6525"><\/sc'+'ript>')
 </script>
+<script type="text/javascript">
+jQuery(function($){
+   $("#credit").mask("9999.99");
+});
