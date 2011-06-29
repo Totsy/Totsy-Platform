@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\Cart;
 use app\models\Item;
 use app\models\Event;
+use app\models\Promocode;
 use lithium\storage\Session;
 use MongoId;
 use MongoDate;
@@ -63,8 +64,7 @@ class CartController extends BaseController {
 				$returnUrl = $event->url;
 			}
 		}
-		
-		//calculate savings
+		//Calculate savings
 		$savings = Session::read('userSavings');
 		return compact('cart', 'message', 'shipDate', 'returnUrl', 'savings');
 	}
@@ -205,6 +205,11 @@ class CartController extends BaseController {
 		$message = null;
 		$data = $this->request->data;
 		if ($data) {
+			if(!empty($data['promocode'])) {
+				$test = Promocode::confirmCode($data['promocode']);
+				var_dump($test);
+				die();
+			}
 			$carts = $data['cart'];
 			foreach ($carts as $id => $quantity) {
 				$result = Cart::check((integer) $quantity, (string) $id);
@@ -231,6 +236,7 @@ class CartController extends BaseController {
 		$this->_render['layout'] = false;
 		$this->redirect('/cart/view');
 	}
+	
 	public function modal(){
 	    $userinfo = Session::read('userLogin');
 	    $success = true;
@@ -245,6 +251,7 @@ class CartController extends BaseController {
 	    }
 	    echo json_encode($success);
 	}
+	
 	public function upsell(){
         $query = $this->request->query;
 
@@ -256,6 +263,11 @@ class CartController extends BaseController {
             return compact('total_left', 'url');
         }
 	}
+	
+	/**
+	* This method allows to manage (update/delete/add) the savings of the current order
+	*
+	*/
 	public function savings($items = null, $action) {
 		if($action == "update"){
 			$savings = 0;

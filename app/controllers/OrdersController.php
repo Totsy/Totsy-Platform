@@ -222,9 +222,6 @@ class OrdersController extends BaseController {
 	 * @todo Make this method lighter by taking out promocode/credit validation
 	 */
 	public function process() {
-	
-	
-	
 		$order = Order::create();
 		$user = Session::read('userLogin');
 		$data = $user['checkout'] + $this->request->data;
