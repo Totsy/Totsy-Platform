@@ -54,6 +54,8 @@
 					<th>Event PO #</th>
 					<th><center>Queue Order</center></th>
 					<th><center>Queue PO</center></th>
+					<th><center>Processed Order</center></th>
+					<th><center>Processed PO</center></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -63,17 +65,23 @@
 						<td><?=date('m-d-Y', $event->end_date->sec)?></td>
 						<td><?=Event::poNumber($event)?></td>
 						<td>
+						    <center><input type="checkbox" name="orders[]" value="<?=$event->_id?>" /></center>
+						</td>
+						<td>
+						    <center><input type="checkbox" name="pos[]" value="<?=$event->_id?>" /></center>
+						</td>
+						<td>
 						<?php if (in_array((string) $event->_id, $processedOrders)): ?>
 							<center>Processed</center>
 						<?php else: ?>
-							<center><input type="checkbox" name="orders[]" value="<?=$event->_id?>" /></center>
+
 						<?php endif ?>
 						</td>
 						<td>
 						<?php if (in_array((string) $event->_id, $processedPOs)): ?>
 							<center>Processed</center>
 						<?php else: ?>
-							<center><input type="checkbox" name="pos[]" value="<?=$event->_id?>" /></center>
+
 						<?php endif ?>
 						</td>
 					</tr>

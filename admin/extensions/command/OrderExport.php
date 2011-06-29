@@ -167,14 +167,17 @@ class OrderExport extends Base {
 						$this->_purchases();
 					}
 					$this->_itemGenerator();
+					$this->log("Finised processing: $queue->_id");
 					if ($queueData['orders'] || $queueData['purchase_orders']) {
 						$queue->summary = $this->summary;
 						$queue->processed = true;
 						$queue->processed_date = new MongoDate();
 						$queue->save();
-						$this->summary['from_email'] = 'no-reply@totsy.com';
-						$this->summary['to_email'] = 'logistics@totsy.com';
-					//	Silverpop::send('exportSummary', $this->summary);
+						if ($this->test != 'true') {
+                            $this->summary['from_email'] = 'no-reply@totsy.com';
+                            $this->summary['to_email'] = 'logistics@totsy.com';
+                        	Silverpop::send('exportSummary', $this->summary);
+					    }
 					}
 				}
 			}
@@ -332,7 +335,7 @@ class OrderExport extends Base {
 		$filename = 'TOTIT'.$this->time.'.csv';
 		$handle = $this->tmp.$filename;
 		$eventIds = array_unique(array_merge($this->orderEvents, $this->poEvents, $this->addEvents));
-		$thi->log("Total Number of Events encountered: " count($eventIds));
+		$this->log("Total Number of Events encountered: " . count($eventIds));
 		$this->log("Opening item file $handle");
 		$fp = fopen($handle, 'w');
 		$count = 0;
@@ -345,6 +348,7 @@ class OrderExport extends Base {
 				)));
 				$inc = 1;
 				$eventItems = $this->_getOrderItems($eventId);
+				$this->log("Event $eventId has " . count($eventItems) . " items");
 				foreach ($eventItems as $eventItem) {
 					foreach ($eventItem['details'] as $key => $value) {
 					    $description = implode(' ', array(
@@ -405,7 +409,7 @@ class OrderExport extends Base {
 		}
 		fclose($fp);
 		if ( !rename($handle, $this->pending.$filename) ){
-		    $this->log("Failed to move file " . $handle . " Filesize was " . filesize($handle));
+		    $this->log("Failed to move file " . $handle . " File size was " . filesize($handle));
 		    shell_exec("mv " . $handle . " " . $this->pending.$filename);
 		}
 		$this->summary['item']['count'] = $count;
