@@ -28,7 +28,6 @@ class MakeSku extends \lithium\console\Command  {
 	public function run() {
 		$start = time();
 		Environment::set($this->env);
-
 		$pid = new Pid($this->tmp,  'MakeSku');
 		if ($pid->already_running == false) {
             $itemCollection = Item::connection()->connection->items;
@@ -44,44 +43,42 @@ class MakeSku extends \lithium\console\Command  {
 	public function generateSku($items) {
 	    $itemCollection = Item::connection()->connection->items;
 	    	foreach ($items as $item) {
-                $this->item_count++;
-                $skulist = array();
-                $hashBySha = false;
-                if (!empty($item['details'])) {
-                    foreach ($item['details'] as $key => $value) {
-                        $sku = Item::sku($item['vendor'], $item['vendor_style'], $key, $item['color'], 'md5');
-                        //Check duplicate Skus for the same item
-                        if (in_array($sku, $skulist)) {
-                            $sku = Item::sku($item['vendor'], $item['vendor_style'], $key, $item['color'], 'sha256');
-                        }
-                        $skulist[$key] = $sku;
-                    }
-                    $items_tested = $itemCollection->find(array('skus' => array('$in' => $skulist)));
-                    if (!empty($items_tested)) {
-                        foreach ($items_tested as $item_test) {
-                            if ($item["event"][0] == $item_test["event"][0]) {
-                                if (($item["vendor_style"] != $item_test["vendor_style"]) || ($item["color"] != $item_test["color"])) {
-                                    $hashBySha = true;
-                                }
-                            }
-                        }
-                    }
-                    if (!empty($hashBySha)) {
-                        foreach ($item['details'] as $key => $value) {
-                            $skulist[$key] = Item::sku($item['vendor'], $item['vendor_style'], $key, $item['color'],'sha256');
-                        }
-                    }
-                    $itemCollection->update(
-                        array('_id' => $item['_id']),
-                        array('$set' => array('sku_details' => $skulist)),
-                        array('upsert' => true)
-                    );
-                    $itemCollection->update(
-                        array('_id' => $item['_id']),
-                        array('$set' => array('skus' => array_values($skulist))),
-                        array('upsert' => true)
-                    );
-                }
-            }
+			$i++;
+			$skulist = array();
+			$hashBySha = false;
+			if (!empty($item['details'])) {
+				foreach ($item['details'] as $key => $value) {
+					$sku = Item::sku($item['vendor'], $item['vendor_style'], $key, $item['color'], 'md5');
+					//Check duplicate Skus for the same item
+					if (in_array($sku, $skulist)) {
+						$sku = Item::sku($item['vendor'], $item['vendor_style'], $key, $item['color'], 'sha256');
+					}
+					$skulist[$key] = $sku;
+				}
+				$items_tested = $itemCollection->find(array('skus' => array('$in' => $skulist)));
+				if (!empty($items_tested)) {
+					foreach ($items_tested as $item_test) {
+							if (($item["vendor_style"] != $item_test["vendor_style"]) || ($item["color"] != $item_test["color"])) {
+								$hashBySha = true;
+							}
+					}
+				}
+				if (!empty($hashBySha)) {
+					foreach ($item['details'] as $key => $value) {
+						$skulist[$key] = Item::sku($item['vendor'], $item['vendor_style'], $key, $item['color'],'sha256');
+					}
+				}
+				$itemCollection->update(
+					array('_id' => $item['_id']),
+					array('$set' => array('sku_details' => $skulist)),
+					array('upsert' => true)
+				);
+				$itemCollection->update(
+					array('_id' => $item['_id']),
+					array('$set' => array('skus' => array_values($skulist))),
+					array('upsert' => true)
+				);
+			}
+		}
 	}
 }
