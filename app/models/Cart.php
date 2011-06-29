@@ -237,6 +237,18 @@ class Cart extends \lithium\data\Model {
 
 		if (count($cartCheck) == 1 && Item::first($cartCheck[0]['item_id'])->shipping_exempt) {
 			$cost = 0;
+		} else {
+		    $exempt = true;
+		    foreach ($cartCheck as $item) {
+		        if (!Item::first($item['item_id'])->shipping_exempt) {
+		            $exempt = false;
+		            break;
+		        }
+		    }
+
+		    if ($exempt) {
+		        $cost = 0;
+		    }
 		}
 
 		if (count($cartCheck) == 1 && !Item::first($cartCheck[0]['item_id'])->shipping_exempt && Item::first($cartCheck[0]['item_id'])->shipping_oversize ) {
