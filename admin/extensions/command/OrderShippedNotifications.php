@@ -22,6 +22,7 @@ use admin\extensions\command\Pid;
  * Process email notifications for orders shipped.
  *
  * Since 06-29-2011 supports command line params.
+>>>>>>> dev-upsellit-nongrid
  * (only for public or protected variables)
  */
 class OrderShippedNotifications extends \lithium\console\Command  {
@@ -94,7 +95,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 				'$lt' => new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y")))
 			),
 			'OrderId' => array('$ne' => null),
-		    // don't validate TRCK # because sometimes there could shipped item without tracking #
+
 			// validate tracking number
 			//'Tracking #' => new MongoRegex("/^[1Z]{2}[A-Za-z0-9]+/i"),
 			// do not send notification if it already send
@@ -119,7 +120,6 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		$skipped = array();
 		$c = 0;
 		foreach ($results as $result){
-
 			if (count($result['TrackNums'])>0){
 				$do_break = false;
 				$data = array();
@@ -153,7 +153,6 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 						}
 					}
 				}
-
 				if ($do_break===true){
 					Logger::info('skip ['.$data['order']['order_id'].']');
 					$do_break = false;
@@ -200,6 +199,56 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 			}
 			Silverpop::send('ordersSkipped', $data);
 			unset($data);
+		}
+	}
+
+	private function getUserId($id) {
+		if (strlen($id)<10){
+			return $id;
+		} else {
+			return new MongoId($id);
+		}
+	}
+
+	/**
+	 * Method to get array of skus out of the array of shipped items for a particular order
+	 *
+	 * @param array $itms
+	 */
+	private function getSkus ($itms){
+		$itemsCollection = Item::collection();
+
+		$ids = array();
+		$items = array();
+		$itemSkus = array();
+
+		foreach($itms as $itm){
+			$items[$itm['item_id']] = $itm;
+			$ids[] = new MongoId($itm['item_id']);
+		}
+		$iSkus = $itemsCollection->find(array('_id' => array( '$in' => $ids )));
+		unset($ids);
+		$iSs = array();
+		foreach ($iSkus as $i){
+			$iSs[ (string) $i['_id'] ] = $i;
+		}
+
+		foreach ($itms as $itm){
+			$sku = $iSs[ $itm['item_id'] ]['sku_details'][ $itm['size'] ];
+			$itemSkus[ $sku ] = $itm;
+		}
+		unset($iSs);
+		unset($items);
+		return $itemSkus;
+	}
+
+	private function getCommandLineParams(){
+		$params = $this->request->params;
+		$vars = get_class_vars(get_class($this));
+		foreach ($vars as $var=>$value){
+			if (array_key_exists($var,$params)){
+				$this->{$var} = $params[$var];
+			}
 		}
 	}
 
