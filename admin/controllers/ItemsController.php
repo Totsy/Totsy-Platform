@@ -13,30 +13,30 @@ use \li3_flash_message\extensions\storage\FlashMessage;
 /**
  * Handles the users main account information.
  */
- 
+
 class ItemsController extends BaseController {
-	
+
 	/**
 	 * Main display of item data
 	 */
 	public function index() {
 		$created_date = 0;
 		$modified_date = 0;
-		$files = 0; 
+		$files = 0;
 		$items = Item::find('all', array(
-			'fields' => compact(
-				'created_date', 
-				'modified_date', 
-				'files'
-		)));
+				'fields' => compact(
+					'created_date',
+					'modified_date',
+					'files'
+				)));
 		return compact('items');
 	}
 	/**
 	 * Edits a product/item based on a preloaded CSV file.
-	 * 
+	 *
 	 * The edit method has several parts that need to be parsed
 	 * before saved to the database. This primarily applies to the
-	 * images that are attached to the item. 
+	 * images that are attached to the item.
 	 * @param string
 	 * @return array
 	 */
@@ -60,7 +60,7 @@ class ItemsController extends BaseController {
 			}
 		}
 		#T Get selected values of filters
-		
+
 		if(!empty($item->departments)) {
 			$values = $item->departments->data();
 			foreach ($values as $value) {
@@ -94,9 +94,9 @@ class ItemsController extends BaseController {
 			}
 			if ($item->save($data)) {
 				$this->redirect(array(
-					'controller' => 'items', 'action' => 'edit',
-					'args' => array($item->_id)
-				));
+						'controller' => 'items', 'action' => 'edit',
+						'args' => array($item->_id)
+					));
 			}
 		}
 		return compact('item', 'details', 'event', 'all_filters', 'sel_filters');
@@ -109,15 +109,15 @@ class ItemsController extends BaseController {
 			$this->redirect('/');
 		} else {
 			$event = Event::find('first', array(
-				'conditions' => array(
-					'enabled' => true,
-					'url' => $eventUrl
-			)));
+					'conditions' => array(
+						'enabled' => true,
+						'url' => $eventUrl
+					)));
 			$items = Item::find('all', array(
-				'conditions' => array(
-					'enabled' => true,
-					'url' => $itemUrl
-			)));
+					'conditions' => array(
+						'enabled' => true,
+						'url' => $itemUrl
+					)));
 			$matches = $items->data();
 			foreach ($matches as $match) {
 				if (in_array($match['_id'], $event->items->data())) {
@@ -128,9 +128,9 @@ class ItemsController extends BaseController {
 				$this->redirect('/');
 			} else {
 				$event = Event::find('first', array(
-					'conditions' => array(
-						'items' => array((string) $item->_id)
-				)));
+						'conditions' => array(
+							'items' => array((string) $item->_id)
+						)));
 				$related = Item::related($item);
 				$sizes = Item::sizes($item);
 				$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
@@ -172,49 +172,48 @@ class ItemsController extends BaseController {
 			$itemCollection = Item::connection()->connection->items;
 			$items = $itemCollection->find(
 				array('$or' => array(
-					array('description' => new MongoRegex("/$search/i")),
-					array('vendor' => new MongoRegex("/$search/i")),
-					array('vendor_style' => new MongoRegex("/$search/i")),
-					array('skus' => array('$in' => array(new MongoRegex("/$search/i"))))
-			)));
+						array('description' => new MongoRegex("/$search/i")),
+						array('vendor' => new MongoRegex("/$search/i")),
+						array('vendor_style' => new MongoRegex("/$search/i")),
+						array('skus' => array('$in' => array(new MongoRegex("/$search/i"))))
+					)));
 		}
 		return compact('items');
 	}
-		
+
 	/**
 	 * Update Items from Items Collection
 	 * Based on the event _id items will be update from the Item collection.
 	 */
 	public function itemUpdate() {
 		$itemsCollection = Item::Collection();
-		$itemId = Array();
-		
+		$itemId = array();
+
 		if ($this->request->data) {
 			$data = $this->request->data;
 			$id = $data['id'];
 			unset($data['id']);
 			array_reverse($data);
-						
+			
 			foreach ($data as $key => $value) {
-				//check if this is the related items (dropdown selection) or the description (text area)			
+				//check if this is the related items (dropdown selection) or the description (text area)
 				if(substr_count($key, '_')==0) {
 					$itemId = array("_id" => new MongoId($key));
 					//setting the copy
 					if($value) {
 						$itemsCollection->update($itemId, array('$set' => array("blurb" => $value)));
 					}
-					
-				} else {									
+				} else {
 					//setting the related item
 					if($value){
 						//parse out the related#_ portion from the string
-												
-						$itemsCollection->update(array("_id" => new MongoId(substr($key, (strrpos($key, "_") + 1)))), array('$addToSet' => array('related_items' => $value)));	
-					}	
+						$itemsCollection->update(array("_id" => new MongoId(substr($key, (strrpos($key, "_") + 1)))), array('$addToSet' => array('related_items' => $value)));
+					}
 				}
 			}
-			
+
 			$this->redirect('/events/edit/'.$id.'#event_items');
+
 		}
 	}
 }

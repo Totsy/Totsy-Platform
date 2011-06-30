@@ -43,8 +43,6 @@ class Items extends \lithium\template\Helper {
 			$i = 0;
 			$image = "";
 
-			//print_r($itemRecords);
-
 			//Set ending tags for html table headings
 			$html .= '</tr></thead><tbody>';
 
@@ -60,22 +58,33 @@ class Items extends \lithium\template\Helper {
 				//check if one of these items is a related item, and select it
 				if(isset($item->related_items)) {
 					//check if the related items field is an object
-					if(is_object($item->related_items) && $printed == false) {
+					if(is_object($item->related_items)) {
 
-						$count = 0;
+						//for counting the amount of related items
+						$count = 1;
+
 						//create dropdowns for related items
 						foreach ($item->related_items as $ir) {
 							$item_dropdown = "";
 
-							$html .= "<select class='related' name='related".$count."_".$item->_id."' id='related".$count."_".$item->_id."'>";
+							$html .= "<select name='related".$count."_".$item->_id."' id='related".$count."_".$item->_id."'>";
 							$html .= "<option value='' selected='selected'>Select an item</option>";
 
 							foreach( $all_items as $key=>$value ) {
+								$text = "";
+
+								if($value['color']){
+									$text = $value['color']." - ".$value['description'];
+								} else {
+									$text = $value['description'];
+								}
+
 								if($key == $ir){
 									$item_dropdown .= "<option value='".$ir."' selected='selected'>".$text."</option>";
 								} else {
 									$item_dropdown .= "<option value='".$ir."'>".$text."</option>";
 								}
+								//$printed = true;
 							}
 
 							$html .= $item_dropdown;
@@ -86,11 +95,21 @@ class Items extends \lithium\template\Helper {
 
 						//there could be a a maximum of 3 related items per item
 						//if the # of related items is 2, add the 3rd dropdown
-						if($count==2){
-							$html .= "<select name='related".$count."_".$item->_id."' id='related".$count."_".$item->_id."'>";
+						if($count==2) {
+							$item_dropdown = "";
+
+							$html .= "<select name='related3_".$item->_id."' id='related".$count."_".$item->_id."'>";
 							$html .= "<option value='' selected='selected'>Select an item</option>";
 
 							foreach( $all_items as $key=>$value ) {
+								$text = "";
+
+								if($value['color']){
+									$text = $value['color']." - ".$value['description'];
+								} else {
+									$text = $value['description'];
+								}
+
 								$item_dropdown .= "<option value='".$ir."'>".$text."</option>";
 							}
 
@@ -99,61 +118,79 @@ class Items extends \lithium\template\Helper {
 						}
 
 					} else {
-						//create 3 dropdowns when the related items field as a string
+						
+						//create 3 dropdowns when the related items field is a string
 						for ($i=1; $i<4; $i++) {
-							$item_dropdown = "";
-
+						$item_dropdown = "";
+							
 							$html .= "<select name='related".$i."_".$item->_id."' id='related".$i."_".$item->_id."'>";
-							$html .= "<option value='' selected='selected'>Select an item</option>";
+							$html .= "<option value=''>Select an item</option>";
 
-							//go through all items and select the option where all_items->_id matches $item->related_items
+							//go through all items and select the option where key matches $item->related_items
 							foreach( $all_items as $key=>$value ) {
 								$text = "";
 
+								if($value['color']){
+									$text = $value['color']." - ".$value['description'];
+								} else {
+									$text = $value['description'];
+								}
+
 								if( $key == $item->related_items && $printed==false) {
 									$item_dropdown .= "<option value='".$key."' selected='selected'>".$text."</option>";
+									//registering the related item as 'printed' 
 									$printed = true;
-								}        }
+								} else {
+									$item_dropdown .= "<option value='".$key."'>".$text."</option>";
+								}
+							}
 
 							$html .= $item_dropdown;
 							$html .= "</select>";
 						}
-
-						$html .= "</td>";
-
-						if (!empty($item->primary_image)) {
-							$image = '/image/'. $item->primary_image . '.jpg';
-						} else {
-							$image = "/img/no-image-small.jpeg";
-						}
-
-						$html .= "<td width='100'><img src=$image/ width='30'></td>";
-						$html .= "<td width='200'><a href=\"/items/edit/$item->_id\">$item->description</a><br />
-				Color: $item->color <br />
-				Vendor Style: $item->vendor_style
-			</td>";
-						$html .= "<td height='100' width='100'><textarea rows='5' cols='20' name='$item->_id' id='$item->_id'>$item->blurb</textarea></td>";
-						$html .= "<td width='30'>$item->enabled</td>";
-						$html .= '</tr>';
 					}
 				} else {
+					
 					//create 3 dropdowns when there are no related items for this given item
 					for ($i=1; $i<4; $i++) {
 						$item_dropdown = "";
-
+						
 						$html .= "<select name='related".$i."_".$item->_id."' id='related".$i."_".$item->_id."'>";
 						$html .= "<option value='' selected='selected'>Select an item</option>";
 
 						//go through all items and select the option where all_items->_id matches $item->related_items
 						foreach( $all_items as $key=>$value ) {
+						
+							if($value['color']) {
+								$text = $value['color']." - ".$value['description'];
+							} else {
+								$text = $value['description'];
+							}
+						
 							$item_dropdown .= "<option value='".$key."'>".$text."</option>";
 						}
-
+						
 						$html .= $item_dropdown;
 						$html .= "</select>";
 					}
-					$item_dropdown .= "<option value='".$key."'>".$text."</option>";
 				}
+				
+				if (!empty($item->primary_image)) {
+					$image = '/image/'. $item->primary_image . '.jpg';
+				} else {
+					$image = "/img/no-image-small.jpeg";
+				}
+
+				$html .= "</td>";
+				$html .= "<td width='100'><img src=$image/ width='30'></td>";
+				$html .= "<td width='200'><a href=\"/items/edit/$item->_id\">$item->description</a><br />
+				Color: $item->color <br />
+				Vendor Style: $item->vendor_style
+			</td>";
+				$html .= "<td height='100' width='100'><textarea rows='5' cols='20' name='$item->_id' id='$item->_id'>$item->blurb</textarea></td>";
+				$html .= "<td width='30'>$item->enabled</td>";
+				$html .= '</tr>';
+
 			}
 
 			$html .= "</tbody>";
