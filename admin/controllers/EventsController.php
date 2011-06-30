@@ -29,10 +29,7 @@ class EventsController extends BaseController {
 		'end_date',
 		'enabled'
 	);
-
-	/**
-	 *
-	 */
+	 
 	public function view($id = null) {
 		$event = Event::find($id);
 		if (empty($event)) {

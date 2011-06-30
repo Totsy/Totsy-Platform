@@ -19,6 +19,24 @@
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
 
 <script type="text/javascript">
+
+$(document).ready(function(){
+
+$(".related_item").hover(function(){
+		var img = this.title;
+		
+		console.log(this.title);
+		this.css( "background-image", "url(" + img + ")" );
+	});
+
+$(".related").change(function(){
+
+
+
+})
+
+});
+
 tinyMCE.init({
 	// General options
 	mode : "textareas",
@@ -26,24 +44,36 @@ tinyMCE.init({
 	plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,preview,searchreplace,print,contextmenu,paste,directionality,noneditable,visualchars,nonbreaking,xhtmlxtras",
 
 	// Theme options
-	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
-	theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,code,|,forecolor,backcolor",
-	theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,charmap,iespell,advhr",
-	theme_advanced_buttons4 : "spellchecker,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking,blockquote,pagebreak",
+	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull",
+	
+	theme_advanced_buttons2: "styleselect,formatselect,fontselect,fontsizeselect",
+	
+	theme_advanced_buttons3 : "cut,copy,paste,pastetext,pasteword,|,bullist,numlist,|,indent,blockquote,|,anchor,code,|,forecolor,backcolor",
+	/* theme_advanced_button3: 
+	 theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,charmap,iespell,advhr",
+	 theme_advanced_buttons4 : "spellchecker,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking,blockquote,pagebreak", */
 	theme_advanced_toolbar_location : "top",
 	theme_advanced_toolbar_align : "left",
 	theme_advanced_statusbar_location : "bottom",
 	theme_advanced_resizing : false,
 
-
 });
+
+$(document).ready(function() {
+$('.table_link').click(function() {  
+        $('tr').hide();
+      $('tr .').toggle('slow');
+    });
+    
+});
+
 </script>
 
 <script type="text/javascript"> 
 	$(document).ready(function(){	
 		$("#duplicate").dynamicForm("#plus", "#minus", {limit:15, createColor: 'yellow', removeColor: 'red'});
-	});
-</script>
+		});
+		</script>
 
 <script type="text/javascript" charset="utf-8">
 	$(function() {

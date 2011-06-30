@@ -13,6 +13,7 @@ use \li3_flash_message\extensions\storage\FlashMessage;
 /**
  * Handles the users main account information.
  */
+ 
 class ItemsController extends BaseController {
 	
 	/**
@@ -179,22 +180,40 @@ class ItemsController extends BaseController {
 		}
 		return compact('items');
 	}
-	
+		
 	/**
 	 * Update Items from Items Collection
 	 * Based on the event _id items will be update from the Item collection.
 	 */
 	public function itemUpdate() {
 		$itemsCollection = Item::Collection();
+		$itemId = Array();
+		
 		if ($this->request->data) {
 			$data = $this->request->data;
 			$id = $data['id'];
 			unset($data['id']);
 			array_reverse($data);
+						
 			foreach ($data as $key => $value) {
-				$itemId = array("_id" => new MongoId($key));
-				$itemsCollection->update($itemId, array('$set' => array("blurb" => $value)));
+				//check if this is the related items (dropdown selection) or the description (text area)			
+				if(substr_count($key, '_')==0) {
+					$itemId = array("_id" => new MongoId($key));
+					//setting the copy
+					if($value) {
+						$itemsCollection->update($itemId, array('$set' => array("blurb" => $value)));
+					}
+					
+				} else {									
+					//setting the related item
+					if($value){
+						//parse out the related#_ portion from the string
+												
+						$itemsCollection->update(array("_id" => new MongoId(substr($key, (strrpos($key, "_") + 1)))), array('$addToSet' => array('related_items' => $value)));	
+					}	
+				}
 			}
+			
 			$this->redirect('/events/edit/'.$id.'#event_items');
 		}
 	}
