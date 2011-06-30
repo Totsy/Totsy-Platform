@@ -40,7 +40,6 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 	 * @var string
 	 */
 	public $tmp = '/resources/totsy/tmp/';
-
 	/**
 	 *
 	 * Flag for debug mode and email address -
@@ -56,8 +55,6 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 	 * li3 order-shipped-notifications --debugemail=skosh@totsy.com
 	 */
 	protected $debugemail = null;
-
-
 	public function run() {
 		Logger::info('Order Shipped Processor');
 		Environment::set($this->env);
@@ -77,7 +74,6 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 	    $ordersCollection = Order::collection();
 		$usersCollection = User::collection();
 		$ordersShippedCollection = OrderShipped::collection();
-
 		$keys = array('OrderId' => true);
 		$inital = array('totalItems' => 0, 'Tracking' => 0, 'TrackNums' => array());
 		$reduce = new MongoCode("function(a,b){
@@ -169,7 +165,6 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 				Logger::info('Trying to send email for order #'.$data['order']['order_id'].'('.$result['OrderId'].' to '.$data['email'].' (tottal items: '.$itemCount.')');
 				Silverpop::send('orderShipped', $data);
 				unset($data);
-
 				if(is_null($this->debugemail)) {
 					//SET send email flag
 					foreach($result['TrackNums'] as $trackNum => $items){

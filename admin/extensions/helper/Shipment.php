@@ -38,6 +38,6 @@ class Shipment extends \lithium\template\Helper {
 				break;
 		}
 		return $html;
-		
 	}
 }
+?>

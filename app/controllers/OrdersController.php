@@ -49,7 +49,8 @@ class OrdersController extends BaseController {
 			foreach ($shipRecords as $record) {
 				if (!in_array($record->{'Tracking #'}, $list)) {
 					$list[] = $record->{'Tracking #'};
-					$trackingNum[] = array('code' => $record->{'Tracking #'}, 'method' => $record->ShipMethod);
+					$shipMethod = (empty($record->ShipMethod) ? 'UPS' : $record->ShipMethod);
+					$trackingNum[] = array('code' => $record->{'Tracking #'}, 'method' => $shipMethod);
 				}
 			}
 			if ($trackingNum) {
@@ -272,7 +273,7 @@ class OrdersController extends BaseController {
 		}
 
 		if (isset($this->request->data['credit_amount'])) {
-			$credit = number_format((float)$this->request->data['credit_amount'], 2);
+			$credit = (float)number_format((float)$this->request->data['credit_amount'],2,'.','');
 			$lower = -0.999;
 			$upper = (!empty($userDoc->total_credit)) ? $userDoc->total_credit + 0.01 : 0;
 			$inRange = Validator::isInRange($credit, null, compact('lower', 'upper'));

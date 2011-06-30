@@ -113,10 +113,21 @@ class Affiliate extends Base {
     * @TODO  Move the appending to the Helper
     */
 	public static function generatePixel($invited_by, $pixel, $options = array()) {
-        if($invited_by == 'w4' || $invited_by == "pmk"){
+	    /**
+	    *   This if block is for affiliates who want a dynamic string in their pixel
+	    *   The random string is created and is place where ever the $ is placed in the
+	    *   pixel.  The $ sign is a place holder for where the random string is will be
+	    */
+        if($invited_by == 'w4' || $invited_by == "pmk" || $invited_by == "emiles" ){
             $transid = 'totsy' . static::randomString();
-            return '<br/>' . str_replace('$', $transid,$pixel );
+            return '<br/>' . str_replace('$', $transid,$pixel);
         }
+        /**
+        *   This if block is for spinback.  It appends the appropriate information
+        *   to their spinback button that are located in various places on the site
+        *   - the events page, product page, order confirmation page, and invite a friend page
+        *   The options variable holds what which page is calling the function.
+        */
         if($invited_by == 'spinback' && ($options)) {
             $insert = '';
             if (array_key_exists('invite', $options) && ($options['invite'])){
@@ -174,6 +185,12 @@ class Affiliate extends Base {
                 $event = $options['event'];
                 $last = strrpos($event, '/');
                 $vendorurl = substr($event, $last + 1);
+                if ( preg_match('/filter/', $vendorurl)){
+                    $len = strlen($vendorurl);
+                    $url = substr($event,0, $last);
+                    $last = strrpos($url, '/');
+                    $vendorurl = substr($url, $last + 1);
+                }
                 $event = Event::find('first', array('conditions' => array(
                             'url' => $vendorurl
                         )));

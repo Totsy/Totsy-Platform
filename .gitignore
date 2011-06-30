@@ -27,6 +27,7 @@ admin/libraries/swiftmailer
 libraries
 
 # admin resource stuff
+admin/resources
 admin/resources/totsy/shipfiles/CSH*
 admin/resources/totsy/processed/*.csv
 admin/resources/totsy/processed/*.txt

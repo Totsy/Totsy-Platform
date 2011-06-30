@@ -17,7 +17,7 @@ function debug( $thingie ){
 if($_SERVER['USER'] == 'lhanson'){
     $mhost = '127.0.0.1';
 }else{
-    $mhost = 'test';
+    $mhost = 'db1';
 }
 $mdb = 'totsy';
 $minutes = 17; // set this to the number of MINUTES your expiration needs

@@ -9,6 +9,7 @@
 	}
 	$total = $afterDiscount + $tax + $shippingCost + $overShippingCost;
 ?>
+<?=$this->html->script('jquery.maskedinput-1.2.2')?>
 <h1 class="page-title gray"><span class="_red"><a href="/" title="Sales">Today's Sales</a></span> / <a href="/cart/view" title="My Cart">My Cart</a> / Checkout / Process Payment</h1>
 <hr />
 <div id="middle" class="fullwidth">
@@ -17,10 +18,15 @@
 	<div id="page">
 <?php if ($errors = $order->errors()): ?>
 	<?php foreach ($errors as $error): ?>
-		<div class="checkout-error"><?=$error; ?></div>
+	    <?php if (is_array($error)): ?>
+	        <?php foreach($error as $msg): ?>
+	            <div class="checkout-error"><?=$msg; ?></div>
+	        <?php endforeach; ?>
+	    <?php else: ?>
+		    <div class="checkout-error"><?=$error; ?></div>
+		<?php endif; ?>
 	<?php endforeach ?>
 <?php endif ?>
-
 
 <table style="width:100%;">
 	<tr>
@@ -144,11 +150,11 @@
 				<tr>
 					<?php if ($credit): ?>
 						<div style="padding:10px; background:#eee;"><?php $orderCredit->credit_amount = abs($orderCredit->credit_amount); ?>
-							<?=$this->form->create($orderCredit); ?>
+													<?=$this->form->create($orderCredit); ?>
 							<?=$this->form->error('amount'); ?>
 							You have $<?=number_format((float) $userDoc->total_credit, 2);?> in credits
 							<hr />
-							<?=$this->form->text('credit_amount', array('size' => 6, 'maxlength' => '6')); ?>
+							<?=$this->form->text('credit_amount', array('id' => 'credit', 'size' => 7 , 'maxlength' => '7')); ?>
 									<?=$this->form->submit('Apply Credit'); ?>
 									<hr />
 										<strong>Credit:</strong>
@@ -162,9 +168,15 @@
 				</tr>
 				<tr>
 					<div style="padding:10px; background:#eee; margin:10px 0">
-						<?=$this->form->create($orderPromo); ?>
-							<?=$this->form->error('promo'); ?>
-							<?=$this->form->text('code', array('size' => 6)); ?>
+						<?=$this->form->create($orderPromo,array('id'=>'promo_code_form')); ?>
+							<?php if (is_array($this->form->error('promo'))): ?>
+                                <?php foreach($this->form->error('promo') as $msg) :?>
+                                    <?php echo $msg ?>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <?=$this->form->error('promo'); ?>
+							<?php endif; ?>
+							<?=$this->form->text('code', array('id'=>'promo_code','size' => 6)); ?>
 							<?=$this->form->submit('Apply Promo Code'); ?>
 							<hr />
 							<strong>Promo Savings:</strong>
@@ -363,3 +375,11 @@
 		window.location.replace('/cart/view');
 	</script>
 <?php endif ?>
+
+<script language="javascript">
+document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s://www':'://www')+ '.upsellit.com/upsellitJS4.jsp?qs=263250249222297345328277324311272279294304313337314308344289&siteID=6525"><\/sc'+'ript>')
+</script>
+<script type="text/javascript">
+jQuery(function($){
+   $("#credit").mask("9999.99");
+});

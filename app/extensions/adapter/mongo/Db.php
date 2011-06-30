@@ -164,7 +164,7 @@ class Db extends \lithium\data\source\MongoDb {
 		if ($cs>0){
 			$slaveId = 0;
 			if ($cs>1) { $slaveId = mt_rand(0,$cs-1); }
-			static::logChooser($slaves[$slaveId]['name']);
+			//static::logChooser($slaves[$slaveId]['name']);
 			$this->server_manager_config['slave'] = $slaves[$slaveId]['name']; 
 		}
 		return $isMaster;
@@ -195,15 +195,6 @@ class Db extends \lithium\data\source\MongoDb {
 			$this->triesToGetConnection = 0;
 			}			
 		} else {
-			$fh = fopen('/tmp/brokenPipe_1.log','a');
-			ob_start();
-			print_r($this->server);
-			echo "write: ";
-			var_dump($write);
-			echo "\ntry #".$try;
-			$no = ob_get_clean();
-			fwrite($fh,date('[ d-m-Y H:i:s ]')."\n".$no."\n\n");
-			fclose($fh);
 			// just to prevent 8 on a side loop ;) 
 			if ( $try<=5 ){
 				$try++;
