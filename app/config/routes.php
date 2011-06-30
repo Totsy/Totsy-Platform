@@ -108,7 +108,7 @@ Router::connect('/account/password', 'Users::password');
 	Shopping Cart Routes
 **/
 Router::connect('/checkout/review', 'Cart::view');
-Router::connect('/checkout/shipping', 'Orders::add');
+Router::connect('/checkout/shipping', 'Orders::addShipping');
 Router::connect('/checkout/payment', 'Orders::payment');
 Router::connect('/checkout/process', 'Orders::process');
 /**

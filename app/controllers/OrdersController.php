@@ -215,6 +215,36 @@ class OrdersController extends BaseController {
 		return $vars + compact('cartEmpty', 'cartByEvent', 'error', 'orderEvents', 'shipDate', 'savings');
 	}
 
+	public function addShipping() {
+		$usersCollection = User::Collection();
+		$fields = array(
+			'item_id',
+			'color',
+			'category',
+			'description',
+			'product_weight',
+			'quantity',
+			'sale_retail',
+			'size',
+			'url',
+			'primary_image',
+			'expires',
+			'event_name',
+			'event'
+		);
+		if ($user = Session::read('userLogin')) {
+			$address = Address::first(array(
+				'conditions' => array('user_id' => (string) $user['_id'])
+			));
+		}
+		$cart = Cart::active(array(
+				'fields' => $fields,
+				'time' => '-5min'
+		));
+		$cartEmpty = ($cart->data()) ? false : true;
+		return compact('address','cartEmpty');
+	}
+	
 	/**
 	 * Processes an order by capturing payment.
 	 * @return compact

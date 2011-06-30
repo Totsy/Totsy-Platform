@@ -5,7 +5,10 @@ namespace app\controllers;
 use app\models\Cart;
 use app\models\Item;
 use app\models\Event;
-use app\models\Promocode;
+use app\models\User;
+use app\models\Credit;
+use app\models\Service;
+use app\models\Promotion;
 use lithium\storage\Session;
 use MongoId;
 use MongoDate;
@@ -31,12 +34,17 @@ class CartController extends BaseController {
 	* @return compact
 	*/
 	public function view() {
+		$cartPromo = null; 
+		$cartCredit = null;
+		$user = Session::read('userLogin');
+		$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
+		$vars = compact('cartPromo','cartCredit');
 		if ($this->request->data) {
 			$datas = $this->request->data;
 			if(!empty($datas['rmv_item_id'])) {
 				$this->remove($datas['rmv_item_id']);
 			} else {
-				$this->update();
+				$vars = $this->update();
 			}
 		}
 		Cart::increaseExpires();
@@ -66,7 +74,9 @@ class CartController extends BaseController {
 		}
 		//Calculate savings
 		$savings = Session::read('userSavings');
-		return compact('cart', 'message', 'shipDate', 'returnUrl', 'savings');
+		$credit = Session::read('credit');
+		$promocodes = Session::read('promocode');
+		return $vars + compact('cart', 'message', 'shipDate', 'returnUrl', 'savings', 'credit', 'userDoc');
 	}
 
 	/**
@@ -205,36 +215,81 @@ class CartController extends BaseController {
 		$message = null;
 		$data = $this->request->data;
 		if ($data) {
-			if(!empty($data['promocode'])) {
-				$test = Promocode::confirmCode($data['promocode']);
-				var_dump($test);
-				die();
-			}
-			$carts = $data['cart'];
-			foreach ($carts as $id => $quantity) {
-				$result = Cart::check((integer) $quantity, (string) $id);
-				$cart = Cart::find('first', array(
-					'conditions' => array('_id' =>  (string) $id)
-				));
-				if ($result['status']) {
-					if($quantity == 0){
-				        Cart::remove(array('_id' => $id));
-				    }else {
-						$cart->quantity = (integer) $quantity;
+			if(!empty($data['cart'])) {
+				$carts = $data['cart'];
+				foreach ($carts as $id => $quantity) {
+					$result = Cart::check((integer) $quantity, (string) $id);
+					$cart = Cart::find('first', array(
+						'conditions' => array('_id' =>  (string) $id)
+					));
+					if ($result['status']) {
+						if($quantity == 0){
+					        Cart::remove(array('_id' => $id));
+					    }else {
+							$cart->quantity = (integer) $quantity;
+							$cart->save();
+						}
+					} else {
+						$cart->error = $result['errors'];
 						$cart->save();
 					}
-				} else {
-					$cart->error = $result['errors'];
-					$cart->save();
+					//build temp array
+					$items[$cart->item_id] = $quantity;
 				}
-				//build temp array
-				$items[$cart->item_id] = $quantity;
 			}
+			#T Manage Promocodes use
+			$user = Session::read('userLogin');
+			$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
+			$fields = array(
+			'item_id',
+			'color',
+			'category',
+			'description',
+			'product_weight',
+			'quantity',
+			'sale_retail',
+			'size',
+			'url',
+			'primary_image',
+			'expires',
+			'event',
+			'discount_exempt'
+			);
+			$cart = Cart::active(array('fields' => $fields, 'time' => 'now'));
+			$service = Session::read('services', array('name' => 'default'));
+			extract(Service::freeShippingCheck(7.48, 0));
+			$map = function($item) { return $item->sale_retail * $item->quantity; };
+			$subTotal = array_sum($cart->map($map)->data());
+			$cartCredit = Credit::create();
+			$credit_amount = isset($data['credit_amount']) ? $data['credit_amount'] : 0;
+			$cartCredit->checkCredit($credit_amount, $subTotal, $userDoc);
+			$orderServiceCredit = Service::tenOffFiftyCheck($subTotal);
+			$postServiceCredit = $subTotal + $orderServiceCredit;
+			$postCreditTotal = $postServiceCredit + $cartCredit->credit_amount;
+			$promo_code = NULL;
+			if (Session::read('promocode')) {
+				$promo_code = Session::read('promocode');
+			}
+			if (array_key_exists('code', $this->request->data)) {
+				$promo_code = $this->request->data['code'];
+			}
+
+			$cartPromo = Promotion::create();
+			$promo_code = NULL;
+			if (Session::read('promocode')) {
+				$promo_code = Session::read('promocode');
+			}
+			if (array_key_exists('code', $data)) {
+				$promo_code = $data['code'];
+			}
+			$cartPromo->promoCheck($promo_code, $userDoc, compact('postCreditTotal', 'shippingCost', 'overShippingCost'));
+			#END OF T
 			//calculate savings
-			$this->savings($items, 'update');
+			$this->savings($cart, 'update');
 		}
-		$this->_render['layout'] = false;
-		$this->redirect('/cart/view');
+		//$this->_render['layout'] = false;
+		//$this->redirect('/cart/view');
+		return compact('cartPromo', 'cartCredit');
 	}
 	
 	public function modal(){

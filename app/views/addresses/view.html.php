@@ -12,11 +12,12 @@
 <div class="grid_11 omega roundy grey_inside b_side">
 	<h2 class="page-title gray">Address Book <span style="float:right; font-weight:normal; font-size:12px;"><?=$this->html->link('Add New Address','Addresses::add'); ?></span></h2>
 	<hr />
-		<?php if (!empty($address)): ?> 
+		<?php if (!empty($addresses)): ?> 
 		<table width="100%" class="cart-table">
 			<tbody>
 			<?php $x = 0?>
 			<?php foreach ($addresses as $address): ?>
+				test
 				<?php $x++; ?>
 				<tr id="<?=$address->_id?>">
 				<td>

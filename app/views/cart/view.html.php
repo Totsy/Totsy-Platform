@@ -119,13 +119,12 @@
 					<td colspan="7">
 							<?=$this->form->create(null); ?>
 							<div id="promo" style="display:none">
-								<?=$this->form->text('promocode', array('id' => 'promocode','class' => 'inputbox')); ?>
-								<?=$this->form->submit('Update'); ?>
+								<?=$this->view()->render(array('element' => 'promocode'), array( 'orderPromo' => $cartPromo)); ?>
 							</div>
 							<div id="cred" style="display:none">								
-								<?=$this->form->text('credits', array('id' => 'credits','class' => 'inputbox')); ?>
-								<?=$this->form->submit('Update'); ?>
+				   				<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'userDoc' => $userDoc)); ?>
 							</div>
+							<div class="clear"></div>
 					</td>
 				</tr>
 				<tr class="cart-buy">
@@ -133,7 +132,7 @@
 						<a href='../../pages/returns'><strong style="font-size:12px; font-weight:normal;">Refund &amp; Return Policy</strong></a><br />
 					</td>
 					<td class="cart-button" colspan="5">
-						<?=$this->html->link('Checkout', 'Orders::add', array('class' => 'button')); ?>
+						<?=$this->html->link('Checkout', 'Orders::addShipping', array('class' => 'button')); ?>
 						<?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style' => 'margin:7px 10px 0px 0px;')); ?>
 					</td>
 				</tr>
@@ -236,22 +235,22 @@ $(function () {
 function open_credit() {
 	if ($("#cred").is(":hidden")) {
 		if(! $("#promo").is(":hidden")) {
-			$("#promo").slideToggle("fast");
+			//$("#promo").slideToggle("fast");
 		}
 		$("#cred").slideToggle("fast");
 	} else {
-		$("#cred").slideToggle();
+		$("#cred").slideToggle("fast");
 	}
 };
 //HIDE / SHOW PROMOS INPUT
 function open_promo() {
 	if ($("#promo").is(":hidden")) {
 		if(! $("#cred").is(":hidden")) {
-			$("#cred").slideToggle("fast");
+			//$("#cred").slideToggle("fast");
 		}
 		$("#promo").slideToggle("fast");
 	} else {
-		$("#promo").slideToggle();
+		$("#promo").slideToggle("fast");
 	}
 };
 </script>
