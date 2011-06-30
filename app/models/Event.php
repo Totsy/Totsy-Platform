@@ -2,6 +2,8 @@
 
 namespace app\models;
 use MongoDate;
+use MongoId;
+use app\models\Item;
 
 /**
 * The Event Class
@@ -55,9 +57,9 @@ class Event extends \lithium\data\Model {
 	 *
 	 * @return Object
 	 */
-	public static function open($params = null, array $options = array()) {
+	public static function open($params = null, array $options = array(), $departments = null) {
 		$fields = $params['fields'];
-		return Event::all(compact('fields') + array(
+		$events = Event::all(compact('fields') + array(
 			'conditions' => array(
 				'enabled' => true,
 				'start_date' => array('$lte' => new MongoDate()),
@@ -65,6 +67,35 @@ class Event extends \lithium\data\Model {
 			),
 			'order' => array('start_date' => 'DESC')
 		));
+		//Filter events results if settled
+		if(!empty($departments)){
+			$itemsCollection = Item::collection();
+			foreach($events as $key_event =>$event) {
+				$events_id[] = (string) $event["_id"];
+			}
+			$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'departments' => array('$in' => array($departments))), array('event' => 1));
+			$events_id_filtered = array();
+			if(!empty($items)) {
+				foreach($items as $item) {
+					foreach($item["event"] as $event_id) {
+						$events_id_filtered[] = $event_id;
+					}
+				}
+			}
+			$events_id_filtered = array_unique($events_id_filtered);
+			if(!empty($events_id_filtered)) {
+				$events = Event::all(compact('fields') + array(
+					'conditions' => array(
+						'_id' => array('$in' => $events_id_filtered),
+						'enabled' => true,
+						'start_date' => array('$lte' => new MongoDate()),
+						'end_date' => array('$gt' => new MongoDate())
+					),
+					'order' => array('start_date' => 'DESC')
+				));
+			}
+		}
+		return $events;
 	}
 
 	/**
@@ -73,14 +104,40 @@ class Event extends \lithium\data\Model {
 	 *
 	 * @return Object
 	 */
-	public static function pending() {
-		return Event::all(array(
+	public static function pending($params = null, array $options = array(), $departments = null) {
+		$events = Event::all(array(
 			'conditions' => array(
 				'enabled' => true,
 				'start_date' => array(
 					'$gt' => new MongoDate())),
 			'order' => array('start_date' => 'ASC')
 		));
+		//Filter events results if settled
+		if(!empty($departments)){
+			$itemsCollection = Item::collection();
+			foreach($events as $key_event =>$event) {
+				$events_id[] = (string) $event["_id"];
+			}
+			$events_id_filtered = array();
+			if(!empty($events_id)) {
+				$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'departments' => array('$in' => array($departments))), array('event' => 1));	
+				foreach($items as $item) {
+					foreach($item["event"] as $event_id) {
+						$events_id_filtered[] = $event_id;
+					}
+				}
+			}
+			$events_id_filtered = array_unique($events_id_filtered);
+			$events = Event::all(array(
+				'conditions' => array(
+					'_id' => array('$in' => $events_id_filtered),
+					'enabled' => true,
+					'start_date' => array(
+						'$gt' => new MongoDate())),
+				'order' => array('start_date' => 'ASC')
+			));
+		}
+		return $events;
 	}
 
 }
