@@ -249,7 +249,8 @@ class OrdersController extends BaseController {
 				)));
 			}
 		}
-		$tax = 0;
+		
+		// Calculate tax
 		if ($shippingAddr) {
 			//$tax = array_sum($cart->tax($shippingAddr));
 			$shippingCost = Cart::shipping($cart, $shippingAddr);

@@ -4,14 +4,13 @@ namespace admin\models;
 
 use MongoId;
 use MongoDate;
+use MongoRegex;
 use li3_payments\extensions\Payments;
 use li3_payments\extensions\payments\exceptions\TransactionException;
-use MongoRegex;
 use lithium\analysis\Logger;
 use admin\models\User;
 use admin\models\Item;
-use AvaTaxWrap;
-use Mongo;
+use admin\extensions\AvaTax;
 
 /**
 * The Orders Model is related to the Orders Collection in MongoDB.
@@ -226,8 +225,7 @@ class Order extends \lithium\data\Model {
 			//Authorize.Net Void
 			static::void($order);
 			//Push cancel status to Avalara
-			AvaTaxWrap::commitTax($order['order_id']);
-			AvaTaxWrap::cancelTax($order['order_id']);
+			AvaTax::cancelTax($order['order_id']);
 			//Cancel all the items
 			$items = $order["items"];
 			foreach($order["items"] as $key => $item){
@@ -558,11 +556,11 @@ class Order extends \lithium\data\Model {
 		}
 	
 		if ($update === false){
-			return AvaTaxWrap::adminGetTax(compact('order','items'));
+			return AvaTax::getTax(compact('order','items'));
 		} else {
-			AvaTaxWrap::cancelTax($order['order_id']);
+			AvaTax::cancelTax($order['order_id']);
 			$admin = 1;
-			return AvaTaxWrap::getAndCommitTax(compact('order','items','admin'));
+			return AvaTax::commitTax(compact('order','items','admin'));
 		}
 	}
 }

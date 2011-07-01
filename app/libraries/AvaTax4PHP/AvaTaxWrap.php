@@ -5,6 +5,7 @@ abstract class AvaTaxWrap {
 	protected static $_config = null;
 	protected static $_environment = null;
 	protected static $_tax = null;
+	protected static $_retriesNumber = 2;
 	
 	public static function __init($env,$config){
 		static::registerAutoload();
@@ -43,13 +44,22 @@ abstract class AvaTaxWrap {
 		$request->setDocType('SalesInvoice');
 		$request->setCompanyCode(static::$_config['companyCode']); 
 		$request->setCancelCode( CancelCode::$DocDeleted );
-		$result = $client->cancelTax($request);
 		
-		if ($result->getResultCode() != "Success") {
-			return true;
+		try {
+			$result = $client->cancelTax($request);
+		
+			if ($result->getResultCode() != "Success") {
+				return true;
+	  		} else {
+					$str = '';
+					foreach($getTaxResult->getMessages() as $msg) {
+						$str.= $msg->getName().": ".$msg->getSummary()."\n";
+					}
+					throw new Exception ($str);
+			}
+	    } catch ( Exception $e ) {
+			throw new Exeption ('tax process error',0,$e);
 		}
-		return false;
-		
   	}
   	
   	public static function getAndCommitTax($data){
@@ -74,15 +84,19 @@ abstract class AvaTaxWrap {
 		$request->setCompanyCode(static::$_config['companyCode']); 
 
 		try{
-			
 			$result = $client->commitTax($request);
-			if ($result->getResultCode()!= SeverityLevel::$Success) return true;
-			else return false;
-			
-		}catch (Exception $e) {
-			var_dump($e);
-			exit(0);
-		}
+			if ($result->getResultCode()!= SeverityLevel::$Success) {
+				return true;
+			} else {
+				$str = '';
+				foreach($getTaxResult->getMessages() as $msg) {
+					$str.= $msg->getName().": ".$msg->getSummary()."\n";
+				}
+				throw new Exception ($str);
+			}
+	    } catch ( Exception $e ) {
+			throw new Exeption ('tax process error',0,$e);
+		}  	
   	}
   	
   	public static function postTax(){
@@ -101,12 +115,16 @@ abstract class AvaTaxWrap {
 	    try{    
 		    if ($result->getResultCode()!=SeverityLevel::$Success){
 		    	return true;	
-		    } else return true;
-		    
-	    } catch(SoapFault $exception){
-			return 'ERROR';
-		}
-		    
+		    } else {
+				$str = '';
+				foreach($getTaxResult->getMessages() as $msg) {
+					$str.= $msg->getName().": ".$msg->getSummary()."\n";
+				}
+				throw new Exception ($str);
+			}
+	    } catch ( Exception $e ) {
+			throw new Exeption ('tax process error',0,$e);
+		}		    
   	}
   	
   	public static function returnTax($data){
@@ -115,70 +133,6 @@ abstract class AvaTaxWrap {
 		static::commitTax($data['order']['order_id']);
   	}
   	
-  	/*
-	public static function getTax($data){
-		
-		if (!is_array($data)) return 0;
-		if (!array_key_exists('cartByEvent',$data)) return 0;
-		if (!is_array($data['cartByEvent'])) return 0;
-		if (count($data['cartByEvent']) == 0) return 0;
-
-		if (array_key_exists('doctype',$data) && $data['doctype'] == 'record' )
-			$DocType = DocumentType::$SalesInvoice;
-		else $DocType = DocumentType::$SalesInvoice;
-		
-		$client = new TaxServiceSoap(static::$_environment);
-		$request= new GetTaxRequest();
-		$request->setOriginAddress(static::__addresser($data['billingAddr'])); // Origin Address
-		$request->setDestinationAddress	(static::__addresser($data['shippingAddr'])); // Desctionation Address
-		$request->setCompanyCode(static::$_config['companyCode']);
-		$request->setDocType($DocType); 
-		$request->setLines(static::__eventLiner($data['cartByEvent']));
-		
-		$dateTime=new DateTime();
-		if (array_key_exists('order',$data)) {
-			$docCode = $data['order']->order_id; 
-		} else {
-			$docCode= "TOTSYTest-".date_format($dateTime,"dmyGis");
-		}
-	    
-		//    invoice number
-		$request->setDocCode($docCode);
-		//date
-	    $request->setDocDate(date_format($dateTime,"Y-m-d"));
-	    // string Optional
-	    $request->setSalespersonCode("");
-	    //string Required
-	    $request->setCustomerCode("Cust1234");
-	    //string   Entity Usage        
-	    $request->setCustomerUsageType("");
-	    //decimal
-	    $request->setDiscount(0.00);     
-	    //string Optional       
-	    $request->setPurchaseOrderNo("");
-	    //string   if not using ECMS which keys on customer code
-	    $request->setExemptionNo("");         
-	    //Summary or Document or Line or Tax or Diagnostic
-	    $request->setDetailLevel(DetailLevel::$Tax);
-	    $request->setLocationCode("");        //string Optional - aka outlet id for tax forms
-		
-		$getTaxResult = $client->getTax($request);
-		
-		//var_dump($getTaxResult);
-		//exit(0);
-		
-		if ($getTaxResult->getResultCode() == SeverityLevel::$Success) {
-	        //throw new Exception ($getTaxResult->getTotalTax());
-			static::$_tax['DocCode'] = $request->getDocCode();
-			static::$_tax['totalAmount'] = $getTaxResult->getTotalAmount();
-			static::$_tax['totalTax'] = $getTaxResult->getTotalTax();
-			static::$_tax['date'] = date_format($dateTime,"Y-m-d");
-			return static::$_tax['totalTax'];
-		} //else throw new Exception ('dzvasvf');
-
-	    
-	}
-	*/
 	public static function sender(){
 		return static::__addresser( array(
 			'address' => '300 Nixon Line',
@@ -189,7 +143,7 @@ abstract class AvaTaxWrap {
 		) );
 	} 
 	
-	public static function getTax($data){
+	public static function getTax($data,$retry = 0){
 		
 		if (!is_array($data)) return 0;
 		if (!array_key_exists('items',$data)) return 0;
@@ -208,57 +162,65 @@ abstract class AvaTaxWrap {
 		
 		$client = new TaxServiceSoap(static::$_environment);
 		$request= new GetTaxRequest();
-
-		$request->setOriginAddress(static::sender()); // Origin Address
-		$request->setDestinationAddress	(static::__addresser($shipping)); // Desctionation Address
-		$request->setCompanyCode(static::$_config['companyCode']);
-		$request->setDocType($DocType); 
-		$request->setLines(static::__liner($data['items']));
 		
-		$dateTime=new DateTime();
-		if (array_key_exists('order',$data)) {
-			$docCode = $data['order']['order_id']; 
-		} else {
-			$docCode= "TOTSYTest-".date_format($dateTime,"dmyGis");
+		try{
+		
+			$request->setOriginAddress(static::sender()); // Origin Address
+			$request->setDestinationAddress	(static::__addresser($shipping)); // Desctionation Address
+			$request->setCompanyCode(static::$_config['companyCode']);
+			$request->setDocType($DocType); 
+			$request->setLines(static::__liner($data['items']));
+			
+			$dateTime=new DateTime();
+			if (array_key_exists('order',$data)) {
+				$docCode = $data['order']['order_id']; 
+			} else {
+				$docCode= "TOTSYTest-".date_format($dateTime,"dmyGis");
+			}
+		    
+			//    invoice number
+			$request->setDocCode($docCode);
+			//date
+			if (isset($data['date'])){
+				$request->setDocDate($data['date']);
+			} else {
+				$request->setDocDate(date_format($dateTime,"Y-m-d"));
+		    }
+		    // string Optional
+		    $request->setSalespersonCode("");
+		    //string Required
+		    $request->setCustomerCode("Totsy");
+		    //string   Entity Usage        
+		    $request->setCustomerUsageType("");
+		    //decimal
+		    $request->setDiscount(0.00);     
+		    //string Optional       
+		    $request->setPurchaseOrderNo("");
+		    //string   if not using ECMS which keys on customer code
+		    $request->setExemptionNo("");         
+		    //Summary or Document or Line or Tax or Diagnostic
+		    $request->setDetailLevel(DetailLevel::$Tax);
+		    $request->setLocationCode("");        //string Optional - aka outlet id for tax forms
+			$getTaxResult = $client->getTax($request);
+			
+			if ($getTaxResult->getResultCode() == SeverityLevel::$Success) {
+		        //throw new Exception ($getTaxResult->getTotalTax());
+				static::$_tax['DocCode'] = $request->getDocCode();
+				static::$_tax['totalAmount'] = $getTaxResult->getTotalAmount();
+				static::$_tax['totalTax'] = $getTaxResult->getTotalTax();
+				static::$_tax['date'] = date_format($dateTime,"Y-m-d");
+				return static::$_tax['totalTax'];
+			} else {
+				$str = '';
+				foreach($getTaxResult->getMessages() as $msg) {
+					$str.= $msg->getName().": ".$msg->getSummary()."\n";
+				}
+				throw new Exception ($str);
+			}
+		} catch ( Exception $e ) {
+			throw new Exeption ('tax process error',0,$e);
 		}
-	    
-		//    invoice number
-		$request->setDocCode($docCode);
-		//date
-		if (isset($data['date'])){
-			$request->setDocDate($data['date']);
-		} else {
-			$request->setDocDate(date_format($dateTime,"Y-m-d"));
-	    }
-	    // string Optional
-	    $request->setSalespersonCode("");
-	    //string Required
-	    $request->setCustomerCode("Totsy");
-	    //string   Entity Usage        
-	    $request->setCustomerUsageType("");
-	    //decimal
-	    $request->setDiscount(0.00);     
-	    //string Optional       
-	    $request->setPurchaseOrderNo("");
-	    //string   if not using ECMS which keys on customer code
-	    $request->setExemptionNo("");         
-	    //Summary or Document or Line or Tax or Diagnostic
-	    $request->setDetailLevel(DetailLevel::$Tax);
-	    $request->setLocationCode("");        //string Optional - aka outlet id for tax forms
-		$getTaxResult = $client->getTax($request);
-		
-		if ($getTaxResult->getResultCode() == SeverityLevel::$Success) {
-	        //throw new Exception ($getTaxResult->getTotalTax());
-			static::$_tax['DocCode'] = $request->getDocCode();
-			static::$_tax['totalAmount'] = $getTaxResult->getTotalAmount();
-			static::$_tax['totalTax'] = $getTaxResult->getTotalTax();
-			static::$_tax['date'] = date_format($dateTime,"Y-m-d");
-			return static::$_tax['totalTax'];
-		} //else throw new Exception ('dzvasvf');
-
-	    
 	}
-	
 	
 	protected static function __addresser ($address){
 		//Add Address
@@ -311,7 +273,9 @@ abstract class AvaTaxWrap {
 			    	  // Client specific reference field.
 			    	  ->setRef2("")
 			    	  //string
-			    	  ->setExemptionNo("") 
+			    	  ->setExemptionNo("")
+			    	  // boolean
+			    	  ->setTaxIncluded( isset($item['taxIncluded'])?$item['taxIncluded']:false) 
 			    	  //string
 			    	  ->setCustomerUsageType("");  
 			   $iterator++;
@@ -349,7 +313,9 @@ abstract class AvaTaxWrap {
 			    	  // Client specific reference field.
 			    	  ->setRef2("")
 			    	  //string
-			    	  ->setExemptionNo("") 
+			    	  ->setExemptionNo("")
+					  // boolean
+			    	  ->setTaxIncluded( isset($item['taxIncluded'])?$item['taxIncluded']:false) 
 			    	  //string
 			    	  ->setCustomerUsageType(""); 
 			   $iterator++;
@@ -369,7 +335,6 @@ abstract class AvaTaxWrap {
 			)
 		);
 	}
-	
 }
 
 ?>

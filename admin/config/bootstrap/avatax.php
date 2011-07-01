@@ -8,7 +8,9 @@ Environment::set('test', array(
 	    'account' => '1100058465',
 	    'license' => 'C4930DB03091446E',
 		'companyCode' => 'totsy',
-	    'trace' => true
+	    'trace' => true,
+		'retriesNumber' => 2,
+		'logEmail' = 'skosh@totsy.com'
 	)
 ));
 
@@ -18,7 +20,9 @@ Environment::set('development', array(
 	    'account' => '1100058465',
 	    'license' => 'C4930DB03091446E',
 		'companyCode' => 'totsy',
-	    'trace' => true
+	    'trace' => true,
+		'retriesNumber' => 2,
+		'logEmail' = 'skosh@totsy.com'
 	)
 ));
 
@@ -28,7 +32,9 @@ Environment::set('local', array(
 	    'account' => '1100058465',
 	    'license' => 'C4930DB03091446E',
 		'companyCode' => 'totsy',
-	    'trace' => true
+	    'trace' => true,
+		'retriesNumber' => 2,
+		'logEmail' = 'skosh@totsy.com'
 	)
 ));
 
@@ -38,7 +44,9 @@ Environment::set('production', array(
 	    'account' => '< prod account number >',
 	    'license' => '< prod license key >',
 		'companyCode' => '< prod company code >',
-	    'trace' => false
+	    'trace' => false,
+		'retriesNumber' => 1,
+		'logEmail' = 'skosh@totsy.com'
 	)
 ));
 

@@ -20,7 +20,7 @@ use PHPExcel_Cell;
 use PHPExcel_Cell_DataType;
 use li3_flash_message\extensions\storage\FlashMessage;
 use li3_silverpop\extensions\Silverpop;
-use AvaTaxWrap;
+use admin\extensions\AvaTax;
 
 /**
  * The Orders Controller
@@ -615,7 +615,7 @@ class OrdersController extends BaseController {
 				}
 				$order['return'] = $ord_ver;
 				$data['order']['order_id'] = $data['order']['order_id'].'.'.$ord_ver;
-				$tax = AvaTaxWrap::getTax($data);
+				$tax = AvaTax::getTax($data);
 				$order['tax'] = $order['tax'] - $tax;
 				$order['subTotal'] = $order['subTotal'] - $sub;
 				$order['total'] = $order['total'] - ( $sub + $tax);  
@@ -628,7 +628,7 @@ class OrdersController extends BaseController {
 				$data['items'][$k] = $v;
 			}			
 
-			AvaTaxWrap::returnTax($data);
+			AvaTax::returnTax($data);
 		}
 		
 		$this->redirect(array('Orders::view::'.$this->request->data['id']));
@@ -643,7 +643,8 @@ class OrdersController extends BaseController {
 				'category' => 'Shipping',
 				'description' => 'shipping',
 				'quantity' => 1,
-				'sale_retail' => $data['shippingCost']
+				'sale_retail' => $data['shippingCost'],
+				'taxIncluded' => true
 			);	
 		}
 
@@ -654,7 +655,8 @@ class OrdersController extends BaseController {
 				'category' => 'Shipping',
 				'description' => 'Over shipping',
 				'quantity' => 1,
-				'sale_retail' => $data['overShippingCost']
+				'sale_retail' => $data['overShippingCost'],
+				'taxIncluded' => true
 			);	
 		}
 	}
