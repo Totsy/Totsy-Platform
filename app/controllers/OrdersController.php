@@ -232,17 +232,38 @@ class OrdersController extends BaseController {
 			'event_name',
 			'event'
 		);
-		if ($user = Session::read('userLogin')) {
+		if (!empty($this->request->data['address_id'])) {
 			$address = Address::first(array(
+				'conditions' => array('_id' => new MongoId($this->request->data['address_id']))));
+		}
+		if (!empty($this->request->data) && empty($this->request->data['address_id'])) {
+			$address = Address::create($this->request->data);
+			if ($address->validates()) {
+				Session::write('shipping', $this->request->data);
+				$this->redirect(array('Orders::payment'));
+			}
+		}
+		
+		if ($user = Session::read('userLogin')) {
+			if(empty($address)) {
+				$address = Address::first(array(
+					'conditions' => array('user_id' => (string) $user['_id'])
+				));
+			}
+			$datas_add = Address::all(array(
 				'conditions' => array('user_id' => (string) $user['_id'])
 			));
+		}
+		//Prepare addresses datas for the dropdown
+		foreach($datas_add as $value) {
+			$addresses[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address']; 
 		}
 		$cart = Cart::active(array(
 				'fields' => $fields,
 				'time' => '-5min'
 		));
 		$cartEmpty = ($cart->data()) ? false : true;
-		return compact('address','cartEmpty');
+		return compact('address', 'addresses', 'cartEmpty');
 	}
 	
 	/**
