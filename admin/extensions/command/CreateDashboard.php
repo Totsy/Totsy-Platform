@@ -28,12 +28,19 @@ class CreateDashboard extends \lithium\console\Command  {
 	public $env = 'development';
 
 	/**
-	 * Find all the orders that haven't been shipped which have stock status.
+	* Set when the data should start calculating
+	**/
+	public $beginning = "Today";
+
+	/**
+	 * Generate data to be used for the dashbaord.  Gather data about net reveue, gross revenue,
+	 * and registration.
+	 * @see docs/admin/controllers/DashboardController
 	 */
 	public function run() {
 	    MongoCursor::$timeout = -1;
 		Environment::set($this->env);
-		$startDate  = new MongoDate(strtotime('-1 day'));
+		$startDate  = new MongoDate(strtotime($this->$beginning));
 		$endDate = new MongoDate();
 		$collection = User::collection();
 		$keys = new MongoCode("
