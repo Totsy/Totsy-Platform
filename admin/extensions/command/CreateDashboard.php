@@ -40,7 +40,7 @@ class CreateDashboard extends \lithium\console\Command  {
 	public function run() {
 	    MongoCursor::$timeout = -1;
 		Environment::set($this->env);
-		$startDate  = new MongoDate(strtotime($this->$beginning));
+		$startDate  = new MongoDate(strtotime($this->beginning));
 		$endDate = new MongoDate();
 		$collection = User::collection();
 		$keys = new MongoCode("
