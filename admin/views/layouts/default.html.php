@@ -51,7 +51,6 @@
 		<!-- HEADER -->
 		<div id="header">
 			<div class="grid_3">
-			    hello
 				<?=$this->html->link($this->html->image('logo.png', array(
 						'width'=>'155',
 						'height'=>'90'
