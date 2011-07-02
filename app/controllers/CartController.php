@@ -48,6 +48,7 @@ class CartController extends BaseController {
 			$item->event_url = $events[0]->url;
 			$item->available = $itemInfo->details->{$item->size} - Cart::reserved($item->item_id, $item->size);
 			$itemlist[$item->created->sec] = $item->event[0];
+			var_dump($item->created->sec);
 		}
 		$shipDate = Cart::shipDate($cart);
 		if ($cart) {

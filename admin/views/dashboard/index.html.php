@@ -33,10 +33,87 @@
 <div class="grid_16">
 	<h2 id="page-heading">Totsy Dashboard - As of <?=date('m/d/Y', $updateTime)?>*</h2>
 </div>
+<!--Gross Revenue Summary Begins Here-->
 <div class="clear"></div>
 <div class="grid_16">
 	<h2>
-		Revenue Summary
+		Gross Revenue Summary
+	</h2>
+	<center>
+		<?=$GrossRevChart->renderChart()?>
+	</center>
+</div>
+<div class="clear"></div>
+<div class="grid_16">
+	<?php
+	    ini_set("display_errors", 0);
+		$dayClass = $weekClass = $monthClass = 'positive';
+		$lastRevenue = end($lastMonth['gross'][0]);
+		$currentRevenue = end($currentMonth['gross'][1]);
+		$dayDiff = $currentRevenue - $lastRevenue;
+		$dayDiffPerct = 100 * $dayDiff/$lastRevenue;
+		$lastMonthRevenue = array_sum($lastMonth['gross'][0]);
+		$currentMonthRevenue = array_sum($currentMonth['gross'][1]);
+		$monthDiff = $currentMonthRevenue - $lastMonthRevenue;
+		$monthDiffPerct = 100 * $monthDiff/$lastMonthRevenue;
+		if ($monthDiffPerct < 1) {
+			$monthClass = 'negative';
+		}
+		if (count($lastMonth['gross'][0]) >= 7) {
+			$lastWeek = array_splice($lastMonth['gross'][0], -7);
+			$lastWeekTotal = array_sum($lastWeek);
+			$currentWeek = array_splice($currentMonth['gross'][1], -7);
+			$currentWeekTotal = array_sum($currentWeek);
+			$weekDiff = $currentWeekTotal - $lastWeekTotal;
+			$weekDiffPerct = 100 * $weekDiff/$lastWeekTotal;
+			if ($weekDiffPerct < 1) {
+				$weekClass = 'negative';
+			}
+		}
+	?>
+	<table id="gross_revenue_summary" class="" border="1">
+		<thead>
+			<tr>
+				<th></th>
+				<th><?=$lastMonthDesc?></th>
+				<th><?=$currentMonthDesc?></th>
+				<th>Diff ($)</th>
+				<th>Diff (%)</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><b>Daily Total:</b></td>
+				<td>$<?=number_format($lastRevenue, 2)?></td>
+				<td>$<?=number_format($currentRevenue, 2)?></td>
+				<td><?=number_format($dayDiff, 2)?></td>
+				<td><?=number_format($dayDiffPerct, 2)?>%</td>
+			</tr>
+			<tr>
+				<td><b>Last 7 Day Total:</b></td>
+				<td>$<?=number_format($lastWeekTotal, 2)?></td>
+				<td>$<?=number_format($currentWeekTotal, 2)?></td>
+				<td><font class='<?=$weekClass?>'><?=number_format($weekDiff, 2)?></font></td>
+				<td><font class='<?=$weekClass?>'><?=number_format($weekDiffPerct, 2)?>%</font></td>
+			</tr>
+			<tr>
+				<td><b>Monthly Total:</b></td>
+				<td>$<?=number_format($lastMonthRevenue, 2)?></td>
+				<td>$<?=number_format($currentMonthRevenue, 2)?></td>
+				<td><font class='<?=$monthClass?>'><?=number_format($monthDiff, 2)?></font></td>
+				<td><font class='<?=$monthClass?>'><?=number_format($monthDiffPerct, 2)?>%</font></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<!--Net Revenue Summary Begins Here-->
+<div class="clear"></div>
+<br />
+<hr />
+<div class="grid_16">
+	<h2>
+		Net Revenue Summary
 	</h2>
 	<center>
 		<?=$RevenueChart->renderChart()?>
@@ -190,7 +267,7 @@
 		<thead>
 			<tr>
 				<th></th>
-				<th>Total Revenue</th>
+				<th>Total Gross Revenue</th>
 				<th>Total Registration</th>
 			</tr>
 		</thead>
@@ -198,7 +275,7 @@
 			<tr>
 				<td><b>Year to Date:</b></td>
 				<?php foreach ($yearToDate as $data): ?>
-					<?php if ($data['type'] == 'revenue'): ?>
+					<?php if ($data['type'] == 'gross'): ?>
 						<td>$<?=number_format($data['total'], 2)?></td>
 					<?php endif ?>
 				<?php endforeach ?>

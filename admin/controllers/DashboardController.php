@@ -12,7 +12,8 @@ use FusionCharts;
 class DashboardController extends \lithium\action\Controller {
 
 	/**
-	 *
+	 * Generates the dashboard report of Totsy's revenue and registration
+	 * @see
 	 */
     public function index() {
 		/**
@@ -47,6 +48,8 @@ class DashboardController extends \lithium\action\Controller {
 		$registrationDetails = Dashboard::find('all', compact('conditions'));
 		$conditions = $date + array('type' => 'revenue');
 		$revenuDetails = Dashboard::find('all', compact('conditions'));
+		$conditions = $date + array('type' => 'gross');
+		$grossDetails = Dashboard::find('all', compact('conditions'));
 		/**
 		 * BUild the chart functionality.
 		 */
@@ -74,16 +77,20 @@ class DashboardController extends \lithium\action\Controller {
 			$date = mktime(0, 0, 0, $data['month'] + 1, 1, $data['year']);
 			if ($data['type'] == 'revenue') {
 				$revenue[$date] = $data['total'];
-			} else {
+			} else if ($data['type'] == 'registration'){
 				$registrations[$date] = $data['total'];
+			} else {
+			    $gross[$date] = $data['total'];
 			}
 		}
+
 		ksort($dates);
 		ksort($revenue);
 		ksort($registrations);
-		$chartData[0][0] = "Revenue";
+		ksort($gross);
+		$chartData[0][0] = "Gross Revenue";
 		$chartData[0][1] = "numberPrefix=$;showValues=1";
-		foreach ($revenue as $key => $value) {
+		foreach ($gross as $key => $value) {
 			$chartData[0][] = $value;
 		}
 		$chartData[1][0] = "Registrations";
@@ -93,13 +100,13 @@ class DashboardController extends \lithium\action\Controller {
 		}
 		$MonthComboChart->addChartDataFromArray($chartData, $dates);
 		/**
-		 * Build chart data for revenue
+		 * Build chart data for net revenue
 		 */
 		$RevenueChart = new FusionCharts("MSArea2D","800","350");
 		$currentMonthDesc = date('F', time());
 		$lastMonthDesc = date('F', strtotime('last month'));
 		$params = array(
-			'caption=Daily Revenue',
+			'caption=Daily Net Revenue',
 			"subcaption=For the Month of $currentMonthDesc",
 			'xAxisName=Day of Month',
 			'numberPrefix=$',
@@ -127,6 +134,41 @@ class DashboardController extends \lithium\action\Controller {
 		ksort($revenue[0]);
 		ksort($revenue[1]);
 		$RevenueChart->addChartDataFromArray($revenue, $currentMonth['dates']);
+
+		/**
+		* Build chart for gross revenue
+		**/
+
+		$GrossRevChart = new FusionCharts("MSArea2D","800","350");
+		$currentMonthDesc = date('F', time());
+		$lastMonthDesc = date('F', strtotime('last month'));
+		$params = array(
+			'caption=Daily Gross Revenue',
+			"subcaption=For the Month of $currentMonthDesc",
+			'xAxisName=Day of Month',
+			'numberPrefix=$',
+			'showValues=0'
+		);
+	    $GrossRevChart->setChartParams(implode(';', $params));
+		$currentMonth = $this->monthData(array('group' => 1));
+		$lastMonth['gross'][0] = array_slice(
+			$lastMonth['gross'][0],
+			0,
+			count($currentMonth['dates']),
+			true
+		);
+		$gross = $lastMonth['gross'] + $currentMonth['gross'] ;
+		$gross[0][0] = "$lastMonthDesc Revenue";
+		$gross[0][1] = 'lineThickness=.5';
+		$gross[1][0] = "$currentMonthDesc Revenue";
+		$gross[1][1] = 'lineThickness=5';
+		ksort($gross[0]);
+		ksort($gross[1]);
+		$GrossRevChart->addChartDataFromArray($gross, $currentMonth['dates']);
+
+		/**
+		* Build chart for registration
+		**/
 		$RegChart = new FusionCharts("MSArea2D","800","350");
 		$params = array(
 			'caption=Daily Regsistration',
@@ -142,7 +184,7 @@ class DashboardController extends \lithium\action\Controller {
 			true
 		);
 		$registration = $lastMonth['registration'] + $currentMonth['registration'];
-		
+
 		$registration[0][0] = "$lastMonthDesc Registrations";
 		$registration[0][1] = 'lineThickness=.5';
 		$registration[1][0] = "$currentMonthDesc Registrations";
@@ -161,6 +203,7 @@ class DashboardController extends \lithium\action\Controller {
 			'revenuDetails',
 			'MonthComboChart',
 			'RevenueChart',
+			'GrossRevChart',
 			'RegChart',
 			'currentMonthDesc',
 			'lastMonthDesc',
@@ -188,6 +231,9 @@ class DashboardController extends \lithium\action\Controller {
 		$current = $current->data();
 		$dateList = array();
 		$dates = array();
+		$currentRevenue = array();
+		$currentGrossRev = array();
+		$currentReg = array();
 		foreach ($current as $data) {
 			if (!in_array($data['date'], $dateList)) {
 				$dateList[] = $data['date']['sec'];
@@ -197,13 +243,22 @@ class DashboardController extends \lithium\action\Controller {
 		foreach ($current as $record) {
 			if ($record['type'] == 'revenue') {
 				$currentRevenue[$record['date']['sec']] = $record['total'];
+			} else if ($record['type'] == 'gross'){
+			    $currentGrossRev[$record['date']['sec']] = $record['total'];
 			} else {
 				$currentReg[$record['date']['sec']] = $record['total'];
 			}
 		}
 		ksort($dates);
 		ksort($currentRevenue);
+		ksort($currentGrossRev);
 		ksort($currentReg);
+		$registration = array();
+		$i = 2;
+		foreach ($currentGrossRev as $key => $value) {
+			$gross[$options['group']][$i] = $value;
+			++$i;
+		}
 		$i = 2;
 		foreach ($currentRevenue as $key => $value) {
 			$revenue[$options['group']][$i] = $value;
@@ -214,7 +269,7 @@ class DashboardController extends \lithium\action\Controller {
 			$registration[$options['group']][$i] = $value;
 			++$i;
 		}
-		return compact('dates', 'revenue', 'registration');
+		return compact('dates', 'revenue', 'registration', 'gross');
 	}
 
 	public function yearToDate() {
