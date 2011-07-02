@@ -31,9 +31,13 @@ class PromocodesController extends \admin\controllers\BaseController {
 			}
 			if (!empty( $obj_data['created_by'] )) {
 				$conditions = array('conditions'=>array('_id'=>$obj_data['created_by']));
-				$user = User::find('all', $conditions);
-				$user = $user[0]->data();
-				$promocode->created_by = $user['firstname'] . '' . $user['lastname'];
+				$user = User::find('first', $conditions);
+				$user = $user->data();
+				if (array_key_exists('firstname', $user)) {
+					$promocode->created_by = $user['firstname'] . ' ' . $user['lastname'];
+				} else {
+					$promocode->created_by = $user['email'];
+				}
 			}
 		}
 		return compact('promocodes');

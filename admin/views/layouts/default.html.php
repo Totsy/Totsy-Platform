@@ -11,10 +11,10 @@
 <head>
 	<?php echo $this->html->charset();?>
 	<title>Totsy Admin <?php echo $this->title(); ?></title>
-	
+
 	<?php echo $this->scripts(); ?>
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
-	
+
 	<?php
 		// add the name of the style sheets you want to include here.
 		$styles = array('reset', 'debug', 'text', '960', 'ie6', 'ie', 'layout', 'nav', 'flash', 'custom');
@@ -29,8 +29,8 @@
 					default:
 						echo $this->html->style($css);
 				}
-			} 
-		endforeach; 
+			}
+		endforeach;
 		// end checking for css files
 
 		// add the name of the scripts you want to include here.
@@ -41,39 +41,48 @@
 			} else { // files are in li3_grid
 				echo $this->html->script('../../li3_grid/js/'.$js);
 			}
-		endforeach; 
+		endforeach;
 		// end checking for script files
 	?>
-	
+
 </head>
 <body>
 	<div class="container_16">
 		<!-- HEADER -->
 		<div id="header">
 			<div class="grid_3">
-				<?php echo $this->html->image('logo.png', array('id' => 'headerimage')); ?>
+			    hello
+				<?=$this->html->link($this->html->image('logo.png', array(
+						'width'=>'155',
+						'height'=>'90'
+					)),
+					'/',
+					array(
+						'id'=>'headerimage',
+						'escape'=>false
+					));?>
 			</div>
 			<div class="14">
 				<h1 id="sitetitle"></h1>
 			</div>
 		</div>
 		<!-- END HEADER -->
-		
+
 		<div class="clearfix"></div>
-	
+
 		<div id="navigation">
 			<?php echo $this->view()->render(array('element' => 'navigation')); ?>
 		</div>
-		
+
 		<div class="clearfix"></div>
-		
+
 		<div id="content">
 			<?php echo $this->flashMessage->output(); ?>
 			<?php echo $this->content(); ?>
 		</div>
-		
+
 		<div class="clearfix"></div>
-		
+
 	</div>
 
 	<!-- END FOOTER -->

@@ -126,7 +126,7 @@ class DashboardController extends \lithium\action\Controller {
 			count($currentMonth['dates']),
 			true
 		);
-		$revenue = $lastMonth['revenue'] + $currentMonth['revenue'] ;
+		$revenue = $lastMonth['revenue'] + $currentMonth['revenue'];
 		$revenue[0][0] = "$lastMonthDesc Revenue";
 		$revenue[0][1] = 'lineThickness=.5';
 		$revenue[1][0] = "$currentMonthDesc Revenue";
