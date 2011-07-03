@@ -14,12 +14,26 @@ class Item extends \lithium\data\Model {
 	}
 
 	public static function related($item) {
-		return static::all(array('conditions' => array(
+				
+		$color_and_copy_matches = "";
+		$related_items = "";
+				
+		$color_and_copy_matches = static::all(Array('conditions' => Array(
 			'enabled' => true,
 			'description' => $item->description,
 			'color' => array('$ne' => $item->color),
 			'event' => $item->event[0]
 		)));
+		
+		if($item->related_items){
+			$related_items = static::all(Array('conditions' => Array(
+			'_id' => Array('$in' => $item->related_items->data())
+		)));
+		
+			return array_merge($related_items->data(), $color_and_copy_matches->data());;
+		} else {
+			return $color_and_copy_matches->data();
+		}
 	}
 
 	public static function sizes($item) {

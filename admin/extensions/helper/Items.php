@@ -14,7 +14,7 @@ class Items extends \lithium\template\Helper {
 
 	public function build($itemRecords = null) {
 
-		$html = '';
+		$html = "";
 		$all_items = array();
 
 		//building an array of all items to be used in creating dropdowns
@@ -67,9 +67,6 @@ class Items extends \lithium\template\Helper {
 						foreach ($item->related_items as $ir) {
 							$item_dropdown = "";
 
-							$html .= "<select name='related".$count."_".$item->_id."' id='related".$count."_".$item->_id."'>";
-							$html .= "<option value='' selected='selected'>Select an item</option>";
-
 							foreach( $all_items as $key=>$value ) {
 								$text = "";
 
@@ -80,12 +77,14 @@ class Items extends \lithium\template\Helper {
 								}
 
 								if($key == $ir){
-									$item_dropdown .= "<option value='".$ir."' selected='selected'>".$text."</option>";
+									$item_dropdown .= "<option value='".$key."' selected='selected' class='related_item'>".$text."</option>";
 								} else {
-									$item_dropdown .= "<option value='".$ir."'>".$text."</option>";
+									$item_dropdown .= "<option value='".$key."' class='related_item'>".$text."</option>";
 								}
-								//$printed = true;
 							}
+
+							$html .= "<select name='related".$count."_".$item->_id."' id='related".$count."_".$item->_id."'>";
+							$html .= "<option value='' class='related_item'>Select an item</option>";
 
 							$html .= $item_dropdown;
 							$html .= "</select>";
@@ -95,86 +94,59 @@ class Items extends \lithium\template\Helper {
 
 						//there could be a a maximum of 3 related items per item
 						//if the # of related items is 2, add the 3rd dropdown
-						if($count==2) {
-							$item_dropdown = "";
+						if($count < 4) {
 
-							$html .= "<select name='related3_".$item->_id."' id='related".$count."_".$item->_id."'>";
-							$html .= "<option value='' selected='selected'>Select an item</option>";
+							for($i=0; $i<(4-$count);$i++){
+								$item_dropdown = "";
 
-							foreach( $all_items as $key=>$value ) {
-								$text = "";
+								$inc = $i + $count;
 
-								if($value['color']){
-									$text = $value['color']." - ".$value['description'];
-								} else {
-									$text = $value['description'];
+								$html .= "<select name='related".$inc."_".$item->_id."' id='related".$inc."_".$item->_id."'>";
+								$html .= "<option value='' selected='selected' size='".count($all_items)."' class='related_item'>Select an item</option>";
+
+								foreach( $all_items as $key=>$value ) {
+									$text = "";
+
+									if($value['color']){
+										$text = $value['color']." - ".$value['description'];
+									} else {
+										$text = $value['description'];
+									}
+
+									$item_dropdown .= "<option value='".$key."' class='related_item'>".$text."</option>";
 								}
 
-								$item_dropdown .= "<option value='".$ir."'>".$text."</option>";
+								$html .= $item_dropdown;
+								$html .= "</select>";
 							}
-
-							$html .= $item_dropdown;
-							$html .= "</select>";
 						}
 
-					} else {
-						
-						//create 3 dropdowns when the related items field is a string
-						for ($i=1; $i<4; $i++) {
-						$item_dropdown = "";
-							
-							$html .= "<select name='related".$i."_".$item->_id."' id='related".$i."_".$item->_id."'>";
-							$html .= "<option value=''>Select an item</option>";
-
-							//go through all items and select the option where key matches $item->related_items
-							foreach( $all_items as $key=>$value ) {
-								$text = "";
-
-								if($value['color']){
-									$text = $value['color']." - ".$value['description'];
-								} else {
-									$text = $value['description'];
-								}
-
-								if( $key == $item->related_items && $printed==false) {
-									$item_dropdown .= "<option value='".$key."' selected='selected'>".$text."</option>";
-									//registering the related item as 'printed' 
-									$printed = true;
-								} else {
-									$item_dropdown .= "<option value='".$key."'>".$text."</option>";
-								}
-							}
-
-							$html .= $item_dropdown;
-							$html .= "</select>";
-						}
 					}
 				} else {
-					
 					//create 3 dropdowns when there are no related items for this given item
 					for ($i=1; $i<4; $i++) {
 						$item_dropdown = "";
-						
+
 						$html .= "<select name='related".$i."_".$item->_id."' id='related".$i."_".$item->_id."'>";
-						$html .= "<option value='' selected='selected'>Select an item</option>";
+						$html .= "<option value='' selected='selected' class='related_item'>Select an item</option>";
 
 						//go through all items and select the option where all_items->_id matches $item->related_items
 						foreach( $all_items as $key=>$value ) {
-						
+
 							if($value['color']) {
 								$text = $value['color']." - ".$value['description'];
 							} else {
 								$text = $value['description'];
 							}
-						
-							$item_dropdown .= "<option value='".$key."'>".$text."</option>";
+
+							$item_dropdown .= "<option value='".$key."' class='related_item'>".$text."</option>";
 						}
-						
+
 						$html .= $item_dropdown;
 						$html .= "</select>";
 					}
 				}
-				
+
 				if (!empty($item->primary_image)) {
 					$image = '/image/'. $item->primary_image . '.jpg';
 				} else {
@@ -186,7 +158,7 @@ class Items extends \lithium\template\Helper {
 				$html .= "<td width='200'><a href=\"/items/edit/$item->_id\">$item->description</a><br />
 				Color: $item->color <br />
 				Vendor Style: $item->vendor_style
-			</td>";
+				</td>";
 				$html .= "<td height='100' width='100'><textarea rows='5' cols='20' name='$item->_id' id='$item->_id'>$item->blurb</textarea></td>";
 				$html .= "<td width='30'>$item->enabled</td>";
 				$html .= '</tr>';

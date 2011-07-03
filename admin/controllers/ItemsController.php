@@ -188,32 +188,56 @@ class ItemsController extends BaseController {
 	public function itemUpdate() {
 		$itemsCollection = Item::Collection();
 		$itemId = array();
-
+		$related_items = array();
+		
 		if ($this->request->data) {
 			$data = $this->request->data;
+						
 			$id = $data['id'];
 			unset($data['id']);
 			array_reverse($data);
-			
+									
+			//build selected items array
 			foreach ($data as $key => $value) {
 				//check if this is the related items (dropdown selection) or the description (text area)
-				if(substr_count($key, '_')==0) {
-					$itemId = array("_id" => new MongoId($key));
-					//setting the copy
-					if($value) {
-						$itemsCollection->update($itemId, array('$set' => array("blurb" => $value)));
-					}
+				if(substr_count($key, 'related')>0) {
+					$item_id = substr($key, (strrpos($key, "_") + 1));
+
+					$related_items[$item_id][] = $value;
+
 				} else {
-					//setting the related item
-					if($value){
-						//parse out the related#_ portion from the string
-						$itemsCollection->update(array("_id" => new MongoId(substr($key, (strrpos($key, "_") + 1)))), array('$addToSet' => array('related_items' => $value)));
+					if($value) {
+						$itemId = array("_id" => new MongoId($key));
+						$itemsCollection->update($itemId, array('$set' => array("blurb" => $value)));
 					}
 				}
 			}
-
-			$this->redirect('/events/edit/'.$id.'#event_items');
-
+												
+			//run through related_items array and update the items
+			foreach($related_items as $key=>$value) {
+				$temp = Array();
+				$i = 0;		
+				
+				foreach($related_items[$key] as $k) {
+					
+					//check if its an empty value (ie the user chose 'select an item' instead of a related item)
+					if($k==''){
+						$i++;
+					} else {
+						$temp[] = $k;
+					}
+				}
+				
+				if($i==3){
+					$itemsCollection->update(array("_id" => new MongoId($key)), array('$unset' => array('related_items'=> 1)));	
+				} else {
+					$itemsCollection->update(array("_id" => new MongoId($key)), array('$set' => array('related_items' => $temp)));
+				}
+				
+				unset($temp);
+			}
+									
+		$this->redirect('/events/edit/'.$id.'#event_items');			
 		}
 	}
 }

@@ -22,20 +22,7 @@
 
 $(document).ready(function(){
 
-$(".related_item").hover(function(){
-		var img = this.title;
-		
-		console.log(this.title);
-		this.css( "background-image", "url(" + img + ")" );
-	});
-
-$(".related").change(function(){
-
-
-
-})
-
-});
+//});
 
 tinyMCE.init({
 	// General options
@@ -59,11 +46,37 @@ tinyMCE.init({
 
 });
 
-$(document).ready(function() {
+//$(document).ready(function() {
 $('.table_link').click(function() {  
         $('tr').hide();
       $('tr .').toggle('slow');
     });
+    
+$('select').change(function(){
+
+//if 1 - check 2 nd 3
+//if 2 - check 1 and 3
+//if 3 - check 1 and 2
+
+//parse out the current item's id
+var item_id = this.id.substring(9, this.id.length);
+
+//create strings of the dropdown id's
+var related1 = 'related1_' + item_id;
+var related2 = 'related2_' + item_id;
+var related3 = 'related3_' + item_id;
+
+//check what the user selected and compare it to the other 2 dropdowns (they should have been named with the same item id after the underscore)
+if( $("#" + this.id).val()!=='' ){
+	if( $("#" + related1).val()==$("#" + related2).val() ||  $("#" + related1).val()==$("#" + related3).val() ){
+		alert("Please select a different item to relate"); 
+		//reset this to the default : 'select an item'
+		$("#" + this.id).get(0).selectedIndex = 0;
+		return false;
+	} 
+}
+
+});    
     
 });
 
