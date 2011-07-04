@@ -55,6 +55,7 @@ Router::connect('/affiliate/{:args}', 'Affiliates::registration');
 Router::connect('/a/{:args:[a-zA-Z0-9&\?\.=:/]+}', 'Affiliates::register');
 Router::connect('/reset', 'Users::reset');
 Router::connect('/pages/{:args}', 'Pages::view');
+Router::connect('/livingsocial', array('Pages::view', 'args' => array('living_social')));
 Router::connect('/blog', 'Blog::index');
 Router::connect('/feeds/{:args}', 'Feeds::home');
 
@@ -67,7 +68,7 @@ if(!Session::check('userLogin')) {
 	return;
 }
 Router::connect('/', 'Events::index');
-Router::connect('/sales', 'Events::index');
+Router::connect('/sales/{:args}', 'Events::index');
 Router::connect('/{:action:login|logout}', array('controller' => 'users'));
 Router::connect('/addresses', 'Addresses::view');
 Router::connect('/addresses/edit{:args}', 'Addresses::edit');
