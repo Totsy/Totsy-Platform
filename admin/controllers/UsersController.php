@@ -130,6 +130,11 @@ class UsersController extends \admin\controllers\BaseController {
 		return (Session::write('userLogin', $sessionInfo));
 	}
 
+	public function adminManager() {
+	    $admins = User::find('all', array('admin' => true));
+	    return compact($admins);
+	}
+
 
 }
 

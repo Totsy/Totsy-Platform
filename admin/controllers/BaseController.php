@@ -3,8 +3,19 @@
 namespace admin\controllers;
 use admin\models\Event;
 use lithium\util\Inflector;
+use \lithium\core\Environment;
 
 class BaseController extends \lithium\action\Controller {
+
+    public function _init() {
+
+        if(!Environment::is('production')){
+            $branch = "<h4>Current branch " . $this->currentBranch() ."</h4>";
+           // var_dump($branch);
+            $this->set(compact('branch'));
+        }
+		parent::_init();
+    }
 
 	/**
 	 * Common method to clean URLs
@@ -48,5 +59,12 @@ class BaseController extends \lithium\action\Controller {
 			if ($r != $string{$i - 1}) $string .=  $r;
 		}
 		return $string;
+	}
+
+	public function currentBranch() {
+        $out = shell_exec("git branch --no-color");
+        preg_match('#(\*)\s(\w+)-(\w+)#', $out, $parse);
+        $pos = stripos($parse[0], " ");
+        return trim(substr($parse[0], $pos));
 	}
 }
