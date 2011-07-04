@@ -28,13 +28,13 @@ class MakeSku extends \lithium\console\Command  {
 	public function run() {
 		$start = time();
 		Environment::set($this->env);
-		$pid = new Pid($this->tmp,  'MakeSku');
-		if ($pid->already_running == false) {
-            $itemCollection = Item::connection()->connection->items;
-            $conditions = array("skus" => array('$exists' => false));
-            $items = $itemCollection->find($conditions);
-            $this->generateSku($items);
-		}
+        $itemCollection = Item::connection()->connection->items;
+        $conditions = array('$or' => array(
+            array('skus' => array('$exists' => false)),
+            array('sku_details' => array('$exists' => false ))
+        ));
+        $items = $itemCollection->find($conditions);
+        $this->generateSku($items);
 		$end = time();
 		$time = $end - $start;
 		$this->out("We updated " . $this->item_count . " items in $time seconds!");
@@ -42,6 +42,7 @@ class MakeSku extends \lithium\console\Command  {
 
 	public function generateSku($items) {
 	    $itemCollection = Item::connection()->connection->items;
+	    $i =0;
 	    	foreach ($items as $item) {
 			$i++;
 			$skulist = array();
@@ -80,5 +81,6 @@ class MakeSku extends \lithium\console\Command  {
 				);
 			}
 		}
+		$this->item_count = $i;
 	}
 }

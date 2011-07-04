@@ -147,6 +147,7 @@ class OrderExport extends Base {
 		$this->pending = LITHIUM_APP_PATH . $this->pending;
 		$this->log("...Waking up...");
 		$pid = new Pid($this->tmp,  'OrderExport');
+		$start = time();
 		if ($pid->already_running == false) {
 			$conditions = array('processed' => array('$ne' => true));
 			$records = Queue::find('all', compact('conditions'));
@@ -184,6 +185,9 @@ class OrderExport extends Base {
 		} else {
 			$this->log("Already Running! Stoping Execution");
 		}
+		$end = time();
+		$finish = $end - $start;
+		$this->log("Processing $this->batchId took $finish secs");
 	}
 
 	/**
@@ -502,7 +506,7 @@ class OrderExport extends Base {
 	**/
 	protected function findSku($description, $size) {
 	    $conditions = array('Description' => $description, 'Ref2' => $size );
-	    $item_master = ItemMaster::collection()->findOne($conditions);
+	    $item_master = ItemMaster::collection()->findOne($conditions, array('SKU' => true));
 
 	    if ( $item_master) {
 	        return $item_master['SKU'];
