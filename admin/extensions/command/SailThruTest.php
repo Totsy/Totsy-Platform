@@ -6,8 +6,7 @@ use lithium\core\Environment;
 use admin\extensions\SailThru;
 
 /**
- * Make a check for 0 records on the Disney Collection.
- * Redo the disney export at this specific date if it's the case
+ * Make a check for a normal transaction email.
  */
 class SailThruTest extends \lithium\console\Command {
 	
@@ -18,12 +17,23 @@ class SailThruTest extends \lithium\console\Command {
 	 * @var string
 	 */
 	public $env = 'development';
-	
+	/**
+	 * Email address to send
+	 *
+	 * @var string
+	 */
+	public 	$email = 'troyer@totsy.com';
+	/**
+	 * Sailthru Template to use.
+	 *
+	 * @var string
+	 */
+	public $template = 'Micah Test';	
 	/**
 	 * Instances
 	 */
 	public function run() {
 		Environment::set($this->env);
-		SailThru::send('Micah Test','troyer@totsy.com');
+		SailThru::send($this->template, $this->email);
 	}
 }
