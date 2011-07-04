@@ -49,11 +49,10 @@ class Affiliate extends Base {
 		$pixels = Affiliate::find('all', $options );
 		$pixels = $pixels->data();
 		$pixel = NULL;
-		$user = User::find('first', array('conditions' => array('_id' => $userInfo['_id'])));
         if($url == '/orders/view'){
-            if($user->affiliate_share){
-                $cookie['affiliate'] = $user->affiliate_share['affiliate'];
-                $cookie['entryTime'] = $user->affiliate_share['landing_time'];
+            if(array_key_exists('affiliate_share', $userInfo['affiliate_share'])){
+                $cookie['affiliate'] = $userInfo['affiliate_share']['affiliate'];
+                $cookie['entryTime'] = $userInfo['affiliate_share']['landing_time'];
                 Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
                 static::generatePixel($cookie['affiliate'], '', array( 'orderid' => $orderid));
             }
@@ -212,13 +211,14 @@ class Affiliate extends Base {
                 $order = Order::find('first', array('conditions' => array(
                         'order_id' => $orderid
                     )));
-                $user = User::find('first', array('conditions' => array(
-                            '_id' => $order->user_id
-                        )));
+                $user = User::find('first', array(
+                    'conditions' => array('_id' => $order->user_id),
+                    'fields' => array('affiliate_share' => true)
+                    ));
                 if($user->affiliate_share){
                     $track = $user->affiliate_share['affiliate'];
                     $entryTime = $user->affiliate_share['entryTime'];
-                }elseif(array_key_exists('affiliate', $cookie) && $cookie['affiliate']){
+                }else if(array_key_exists('affiliate', $cookie) && $cookie['affiliate']){
                     $track = $cookie['affiliate'];
                     $entryTime = $cookie['entryTime'];
                 }
@@ -229,7 +229,7 @@ class Affiliate extends Base {
                     $pixel  = str_replace('$',$insert,$pixel);
                 }
                 //Encrypting raw message
-                 $base64 = base64_encode($raw);
+                $base64 = base64_encode($raw);
                 $msg = str_replace('-','_',str_replace('+','/',$base64));
 
                 //Used for authenticity

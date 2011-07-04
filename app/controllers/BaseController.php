@@ -37,9 +37,18 @@ class BaseController extends \lithium\action\Controller {
 		if ($userInfo) {
 			$user = User::find('first', array(
 				'conditions' => array('_id' => $userInfo['_id']),
-				'fields' => array('total_credit')
+				'fields' => array('total_credit', 'deactivated')
 			));
 			if ($user) {
+			    /**
+			    * If the users account has been deactivated during login,
+			    * destroy the users session.
+			    **/
+			    if ($user->deactivated) {
+			        Session::clear(array('name' => 'default'));
+			        Session::delete('appcookie', array('name' => 'cookie'));
+		            FacebookProxy::setSession(null);
+			    }
 				$decimal = ($user->total_credit < 1) ? 2 : 0;
 				$credit = ($user->total_credit > 0) ? number_format($user->total_credit, $decimal) : 0;
 			}
@@ -52,20 +61,15 @@ class BaseController extends \lithium\action\Controller {
 		**/
 		$invited_by = NULL;
 		 if ($userInfo) {
-			$user = User::find('first', array(
-				'conditions' => array('_id' => $userInfo['_id'])
-			));
 			$cookie = Session::read('cookieCrumb', array('name'=>'cookie'));
 			if(array_key_exists('affiliate',$cookie)){
                 Affiliate::linkshareCheck($user->_id, $cookie['affiliate'], $cookie);
             }
-			if ($user){
-				if ($user->invited_by){
-					$invited_by = $user->invited_by;
-			    }else if($user->affiliate_share){
-                    $invited_by = $user->affiliate_share['affiliate'];
-                }
-			}
+            if (array_key_exists('invited_by',$userInfo)){
+                $invited_by = $userInfo['invited_by'];
+            }else if(array_key_exists('affiliate_share',$userInfo)){
+                $invited_by = $userInfo['affiliate_share']['affiliate'];
+            }
 		}
 		/**
 		* If visitor lands on affliate url e.g www.totsy.com/a/afflilate123
