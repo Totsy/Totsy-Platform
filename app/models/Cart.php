@@ -41,7 +41,7 @@ use MongoId;
 * }}}
 * @see app/models/Order::process()
 */
-class Cart extends \lithium\data\Model {
+class Cart extends Base {
 
 	/**
 	 * The # of business days to be added to an event to determine the estimated
@@ -282,8 +282,7 @@ class Cart extends \lithium\data\Model {
 			'conditions' => array(
 				'session' => Session::key('default'),
 				'item_id' => "$itemId",
-				'size' => "$size",
-				'expires' => array('$gt' => static::dates('now'))
+				'size' => "$size"
 		)));
 	}
 
