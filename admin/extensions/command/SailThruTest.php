@@ -3,7 +3,7 @@
 namespace admin\extensions\command;
 
 use lithium\core\Environment;
-use admin\extensions\SailThru;
+use admin\extensions\Mailer;
 
 /**
  * Make a check for a normal transaction email.
@@ -28,12 +28,12 @@ class SailThruTest extends \lithium\console\Command {
 	 *
 	 * @var string
 	 */
-	public $template = 'Micah Test 2';	
+	public $template = 'Welcome';	
 	/**
 	 * Instances
 	 */
 	public function run() {
 		Environment::set($this->env);
-		SailThru::send($this->template, $this->email);
+		Mailer::send($this->template, $this->email);
 	}
 }
