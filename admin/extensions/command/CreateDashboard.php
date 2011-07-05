@@ -74,7 +74,8 @@ class CreateDashboard extends \lithium\console\Command  {
 			}"
 		);
 		$inital = array(
-			'total' => 0
+			'total' => 0,
+			'promo_discount' => 0
 		);
 		$reduce = new MongoCode('function(doc, prev){
 				prev.total += Number(doc.total)
@@ -86,7 +87,15 @@ class CreateDashboard extends \lithium\console\Command  {
 				'$lte' => $endDate
 		));
 		$reduceGross = new MongoCode('function(doc, prev){
-				prev.total += (Number(doc.subTotal) + Number(doc.handling) + Number(doc.tax))
+				prev.total += (Number(doc.subTotal) + Number(doc.handling) + Number(doc.tax));
+
+				if (doc.promo_discount != null) {
+				    prev.total += (Number(doc.promo_discount  * -1));
+				}
+				if (doc.credit_used != null) {
+				    prev.total += (Number(doc.credit_used  * -1));
+				}
+
 			}'
 		);
 		$revenueDetail = $OrdCollection->group($keys, $inital, $reduce, $conditions);
@@ -105,6 +114,7 @@ class CreateDashboard extends \lithium\console\Command  {
 			$condition = array('date' => $details['date'], 'type' => $details['type']);
 			$DashCollection->update($condition, $details, array('upsert' => true));
 		}
+		var_dump($grossRevenueDetail);
 		foreach ($grossRevenueDetail['retval'] as $details) {
 			$details['date'] = new MongoDate(strtotime($details['date']));
 			$details['type'] = 'gross';

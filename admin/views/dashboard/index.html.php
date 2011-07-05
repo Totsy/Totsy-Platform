@@ -39,6 +39,7 @@
 	<h2>
 		Gross Revenue Summary
 	</h2>
+	<p>(Promocodes and Credits included)</p>
 	<center>
 		<?=$GrossRevChart->renderChart()?>
 	</center>
@@ -115,6 +116,7 @@
 	<h2>
 		Net Revenue Summary
 	</h2>
+	<p>(After promocodes and credits are deducted)</p>
 	<center>
 		<?=$RevenueChart->renderChart()?>
 	</center>
