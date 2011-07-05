@@ -9,6 +9,7 @@ use MongoDate;
 use MongoCode;
 use lithium\analysis\Logger;
 use lithium\core\Environment;
+use MongoCursor;
 
 /**
  * Li3 Command to Create Dashboard Data.
@@ -27,11 +28,19 @@ class CreateDashboard extends \lithium\console\Command  {
 	public $env = 'development';
 
 	/**
-	 * Find all the orders that haven't been shipped which have stock status.
+	* Set when the data should start calculating
+	**/
+	public $beginning = "Today";
+
+	/**
+	 * Generate data to be used for the dashbaord.  Gather data about net reveue, gross revenue,
+	 * and registration.
+	 * @see docs/admin/controllers/DashboardController
 	 */
 	public function run() {
+	    MongoCursor::$timeout = -1;
 		Environment::set($this->env);
-		$startDate  = new MongoDate(strtotime('Today'));
+		$startDate  = new MongoDate(strtotime($this->beginning));
 		$endDate = new MongoDate();
 		$collection = User::collection();
 		$keys = new MongoCode("
@@ -53,9 +62,9 @@ class CreateDashboard extends \lithium\console\Command  {
 				'$gte' => $startDate,
 				'$lt' => $endDate
 		));
-		
+
 		$regDetails = $collection->group($keys, $inital, $reduce, $conditions);
-		
+
 		$OrdCollection = Order::collection();
 		$keys = new MongoCode("
 			function(doc){
@@ -76,7 +85,20 @@ class CreateDashboard extends \lithium\console\Command  {
 				'$gte' => $startDate,
 				'$lte' => $endDate
 		));
+		$reduceGross = new MongoCode('function(doc, prev){
+				prev.total += (Number(doc.subTotal) + Number(doc.handling) + Number(doc.tax));
+
+				if (doc.promo_discount != null) {
+				    prev.total += (Number(doc.promo_discount)  * -1);
+				}
+				if (doc.credit_used != null) {
+				    prev.total += (Number(doc.credit_used)  * -1);
+				}
+
+			}'
+		);
 		$revenueDetail = $OrdCollection->group($keys, $inital, $reduce, $conditions);
+		$grossRevenueDetail = $OrdCollection->group($keys, $inital, $reduceGross, $conditions);
 		$DashCollection = Dashboard::collection();
 		foreach ($regDetails['retval'] as $details) {
 			$details['date'] = new MongoDate(strtotime($details['date']));
@@ -88,6 +110,12 @@ class CreateDashboard extends \lithium\console\Command  {
 		foreach ($revenueDetail['retval'] as $details) {
 			$details['date'] = new MongoDate(strtotime($details['date']));
 			$details['type'] = 'revenue';
+			$condition = array('date' => $details['date'], 'type' => $details['type']);
+			$DashCollection->update($condition, $details, array('upsert' => true));
+		}
+		foreach ($grossRevenueDetail['retval'] as $details) {
+			$details['date'] = new MongoDate(strtotime($details['date']));
+			$details['type'] = 'gross';
 			$condition = array('date' => $details['date'], 'type' => $details['type']);
 			$DashCollection->update($condition, $details, array('upsert' => true));
 		}
