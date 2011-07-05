@@ -131,7 +131,9 @@ class UsersController extends \admin\controllers\BaseController {
 	}
 
 	public function adminManager() {
-	    $admins = User::find('all', array('admin' => true));
+	    $admins = User::find('all', array(
+	        'conditions' => array('admin' => true),
+	        'fields' => array('email' => true, 'firstname' => true, 'lastname' => true, 'admin'=> true, 'superadmin' => true)));
 	    return compact($admins);
 	}
 
