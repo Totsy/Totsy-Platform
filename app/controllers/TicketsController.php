@@ -6,7 +6,7 @@ use app\models\Ticket;
 use app\models\Order;
 use app\controllers\BaseController;
 use \lithium\storage\Session;
-use li3_silverpop\extensions\Silverpop;
+use app\extensions\Mailer;
 
 class TicketsController extends BaseController {
 	
@@ -30,11 +30,13 @@ class TicketsController extends BaseController {
 
 		$list = Ticket::$issueList;
 		$agent = array('user_agent' => $this->request->env('HTTP_USER_AGENT'));
-		$data = array('issue' => $this->request->data) + array('user' => $user) + $agent;
-		if (($this->request->data) && $ticket->save($data)) {
-			$email = array('email' => $list[$data['issue']['issue_type']]);
-			$data = $data + $email;
-			Silverpop::send('ticket', $data);
+		$args = array('issue' => $this->request->data) + array('user' => $user) + $agent;
+		if (($this->request->data) && $ticket->save($args)) {
+			$email = $list[$args['issue']['issue_type']];
+			$args['issue_type'] = $args['issue']['issue_type']; 
+			$args['message'] = $args['issue']['message']; 
+			$args['type'] = $args['issue']['type']; 
+			Mailer::send('Tickets', $email, $args);
 			//$this->redirect('tickets/sent');
 			$this->_render['template'] = 'sent';
 		}

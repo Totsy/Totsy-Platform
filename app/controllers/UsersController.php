@@ -10,7 +10,6 @@ use lithium\security\Auth;
 use lithium\storage\Session;
 use app\extensions\Mailer;
 use app\extensions\Keyade;
-use li3_silverpop\extensions\Silverpop;
 use MongoDate;
 use li3_facebook\extension\FacebookProxy;
 
@@ -118,11 +117,7 @@ class UsersController extends BaseController {
 				Session::write('userLogin', $userLogin, array('name' => 'default'));
 				$cookie['user_id'] = $user->_id;
 				Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
-				$data = array(
-					'user' => $user,
-					'email' => $user->email
-				);
-				Silverpop::send('registrationNew', $data);
+				Mailer::send('Welcome', $user->email);
 				$ipaddress = $this->request->env('REMOTE_ADDR');
 				User::log($ipaddress);
 				$this->redirect('/sales');
@@ -158,11 +153,7 @@ class UsersController extends BaseController {
 						$data['invitation_codes'] = array(static::randomString());
 					}
 					if ($saved = $user->save($data)) {
-						$data = array(
-							'user' => $user,
-							'email' => $user->email
-						);
-						Silverpop::send('registrationNew', $data);
+						Mailer::send('Welcome', $user->email);
 					}
 				}
 			}
@@ -389,12 +380,7 @@ class UsersController extends BaseController {
 				$user->reset_token = sha1($token);
 				$user->legacy = 0;
 				if ($user->save(null, array('validate' => false))) {
-					$data = array(
-						'user' => $user,
-						'email' => $user->email,
-						'token' => $token
-					);
-					Silverpop::send('reset', $data);
+					Mailer::send('Reset_Password', $user->email, array('token' => $token));
 					$message = "Your password has been reset. Please check your email.";
 					$success = true;
 				} else {
@@ -431,12 +417,14 @@ class UsersController extends BaseController {
 			foreach ($to as $email) {
 				$invitation = Invitation::create();
 				Invitation::add($invitation, $id, $code, $email);
-				$data = array(
-					'user' => $user,
-					'email' => $email,
-					'message' => $message
+				$args = array(
+					'firstname' => $user->firstname,
+					'message' => $message,
+					'email_from' => $user->email,
+					'domain' => 'http://www.totsy.com',
+					'invitation_codes' => $user->invitation_codes
 				);
-				Silverpop::send('invite', $data);
+				Mailer::send('Friend_Invite', $email, $args);
 			}
 			$flashMessage = "Your invitations have been sent";
 		}

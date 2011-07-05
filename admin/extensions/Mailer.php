@@ -9,7 +9,7 @@ use lithium\action\Request;
 
 class Mailer {
 	public static function send($template, $email, $vars = array(), $options = array(), $schedule_time = null) {
-		Sailthru::send($template, $email);
+		Sailthru::send($template, $email, $vars, $options, $schedule_time);
 	}
 }
 
