@@ -7,6 +7,7 @@ use Sailthru_Client;
 use Sailthru_Client_Exception;
 use lithium\core\Environment;
 use lithium\action\Request;
+use lithium\analysis\Logger;
 
 class SailThru {
 
@@ -26,6 +27,9 @@ class SailThru {
 	
 	public static function send($template, $email, $vars = array(), $options = array(), $schedule_time = null) {
 		$client = static::buildClient();
-		$client->send($template, $email);
+		$result = $client->send($template, $email);
+		if(array_key_exists('error', $result)) {
+			Logger::info('SAILTHRU ERROR: '.$result['errormsg']);
+		};
 	}
 }

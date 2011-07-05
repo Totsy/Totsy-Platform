@@ -28,7 +28,7 @@ class SailThruTest extends \lithium\console\Command {
 	 *
 	 * @var string
 	 */
-	public $template = 'Micah Test';	
+	public $template = 'Micah Test 2';	
 	/**
 	 * Instances
 	 */
