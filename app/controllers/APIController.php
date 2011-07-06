@@ -97,7 +97,7 @@ class APIController extends  \lithium\action\Controller {
 		if (is_array($token) && array_key_exists('error', $token)) {
 			return $token;
 		}
-		return compact('token','data');		
+		return compact('token');		
 	}
 	
 	/**
