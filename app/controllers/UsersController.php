@@ -10,9 +10,9 @@ use lithium\security\Auth;
 use lithium\storage\Session;
 use app\extensions\Mailer;
 use app\extensions\Keyade;
-use li3_silverpop\extensions\Silverpop;
 use MongoDate;
 use li3_facebook\extension\FacebookProxy;
+use li3_silverpop\extensions\Silverpop;
 
 
 class UsersController extends BaseController {
@@ -122,7 +122,8 @@ class UsersController extends BaseController {
 					'user' => $user,
 					'email' => $user->email
 				);
-				Silverpop::send('registrationNew', $data);
+				Mailer::send('registrationNew', $data['email'],$data);
+				Mailer::addToMailingList($data['email']);
 				$ipaddress = $this->request->env('REMOTE_ADDR');
 				User::log($ipaddress);
 				$this->redirect('/sales');
@@ -162,7 +163,11 @@ class UsersController extends BaseController {
 							'user' => $user,
 							'email' => $user->email
 						);
-						Silverpop::send('registrationNew', $data);
+						Mailer::send('registrationNew', $data['email'],$data);
+						$name = null;
+						if (isset($data['firstname'])) $name = $data['firstname'];
+						if (isset($data['lastname'])) $name = is_null($name)?$data['lastname']:$name.$data['lastname'];  
+						Mailer::addToMailingList($data['email'],is_null($name)?array():$name);
 					}
 				}
 			}
