@@ -265,7 +265,7 @@ class CartController extends BaseController {
 			$user['email'],
 			$itemToSend,
 			array(
-				'incomplete' => true,
+				'incomplete' => 1,
 				'message_id' => hash('sha256',Session::key('default').substr(strrev( (string) $user['_id']),0,8))
 			)
 		);
