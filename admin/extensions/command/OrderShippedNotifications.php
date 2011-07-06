@@ -15,8 +15,8 @@ use MongoCode;
 use MongoDate;
 use MongoRegex;
 use MongoId;
-use li3_silverpop\extensions\Silverpop;
 use admin\extensions\command\Pid;
+use admin\extensions\Mailer;
 
 /**
  * Process email notifications for orders shipped.
@@ -162,7 +162,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 				unset($itemSkus);
 				unset($do_break);
 				Logger::info('Trying to send email for order #'.$data['order']['order_id'].'('.$result['OrderId'].' to '.$data['email'].' (tottal items: '.$itemCount.')');
-				Silverpop::send('orderShipped', $data);
+				Mailer::send('Order_Shipped', $user->email, $data);
 				unset($data);
 				if(is_null($this->debugemail)) {
 					//SET send email flag
@@ -197,7 +197,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 			else {
 				$data['email'] = $this->debugemail;
 			}
-			Silverpop::send('ordersSkipped', $data);
+			Mailer::send('Order_Skipped', $user->email, $data);
 			unset($data);
 		}
 	}

@@ -122,7 +122,7 @@ class UsersController extends BaseController {
 					'user' => $user,
 					'email' => $user->email
 				);
-				Mailer::send('Welcome', $user->email);
+				Mailer::send('Welcome_Free_Shipping', $user->email);
 				Mailer::addToMailingList($data['email']);
 				$ipaddress = $this->request->env('REMOTE_ADDR');
 				User::log($ipaddress);
@@ -163,7 +163,7 @@ class UsersController extends BaseController {
 							'user' => $user,
 							'email' => $user->email
 						);
-						Mailer::send('Welcome', $user->email);
+						Mailer::send('Welcome_Free_Shipping', $user->email);
 						$name = null;
 						if (isset($data['firstname'])) $name = $data['firstname'];
 						if (isset($data['lastname'])) $name = is_null($name)?$data['lastname']:$name.$data['lastname'];  
