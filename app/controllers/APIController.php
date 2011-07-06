@@ -234,6 +234,7 @@ class APIController extends  \lithium\action\Controller {
 		switch ($this->_format){
 			
 			case 'xml':
+				header("Content-type: text/xml");
 				if (!is_null($this->_view)){
 					$path = $this->_format.'/'.$this->_method.'/'.$this->_view.'.php';
 					if (!file_exists(LITHIUM_APP_PATH . '/views/api/'.$path)) {
@@ -247,6 +248,7 @@ class APIController extends  \lithium\action\Controller {
 			
 			case 'json':
 			default:
+				header("Content-type: text/javascript");
 				echo json_encode($data);
 			break;
 
