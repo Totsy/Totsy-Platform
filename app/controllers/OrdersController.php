@@ -19,7 +19,6 @@ use lithium\storage\Session;
 use lithium\util\Validator;
 use MongoDate;
 use MongoId;
-use li3_silverpop\extensions\Silverpop;
 use app\extensions\Mailer;
 
 /**
