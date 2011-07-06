@@ -108,7 +108,35 @@ class OrdersController extends BaseController {
 				}
 			}
 		}
-
+		
+		if ($new === true){
+			$items = array(); 
+			$base_url = 'http://'.$_SERVER['HTTP_HOST'].'/';
+			foreach($itemsByEvent as $eid => $event) {
+				$eventInfo = Event::find($eid);
+				foreach($event as $key_b => $item) {
+					$items[] = array( 
+						'id' => $item['_id'],
+						'qty' => $item['quantity'],
+						'title' => $item['description'],
+						'price' => $item['sale_retail']*100,
+					 	'url' => $base_url.'sale/'.$eventInfo['url'].'/'.$item['url']
+					);
+				}
+				unset($eventInfo);
+			}
+			
+			Mailer::purchase(
+				$user['email'],
+				$items,
+				array(
+					'message_id'=> hash('sha256',Session::key('default').substr(strrev( (string) $user['_id']),0,8)),
+					'incomplete' => 0
+				)
+			);
+			unset($items);
+		}
+		
 		return compact(
 			'order',
 			'orderEvents',

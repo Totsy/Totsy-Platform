@@ -12,6 +12,7 @@ use app\extensions\Mailer;
 use app\extensions\Keyade;
 use MongoDate;
 use li3_facebook\extension\FacebookProxy;
+use li3_silverpop\extensions\Silverpop;
 
 
 class UsersController extends BaseController {
@@ -117,7 +118,12 @@ class UsersController extends BaseController {
 				Session::write('userLogin', $userLogin, array('name' => 'default'));
 				$cookie['user_id'] = $user->_id;
 				Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
+				$data = array(
+					'user' => $user,
+					'email' => $user->email
+				);
 				Mailer::send('Welcome', $user->email);
+				Mailer::addToMailingList($data['email']);
 				$ipaddress = $this->request->env('REMOTE_ADDR');
 				User::log($ipaddress);
 				$this->redirect('/sales');
@@ -153,7 +159,16 @@ class UsersController extends BaseController {
 						$data['invitation_codes'] = array(static::randomString());
 					}
 					if ($saved = $user->save($data)) {
+						$data = array(
+							'user' => $user,
+							'email' => $user->email
+						);
 						Mailer::send('Welcome', $user->email);
+						$name = null;
+						if (isset($data['firstname'])) $name = $data['firstname'];
+						if (isset($data['lastname'])) $name = is_null($name)?$data['lastname']:$name.$data['lastname'];  
+						Mailer::addToMailingList($data['email'],is_null($name)?array():$name);
+
 					}
 				}
 			}
