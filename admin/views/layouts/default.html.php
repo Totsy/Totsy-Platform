@@ -52,7 +52,15 @@
 		<div id="header">
 		    <?php echo $branch?>
 			<div class="grid_3">
-				<?php echo $this->html->image('logo.png', array('id' => 'headerimage')); ?>
+				<?=$this->html->link($this->html->image('logo.png', array(
+						'width'=>'155',
+						'height'=>'90'
+					)),
+					'/',
+					array(
+						'id'=>'headerimage',
+						'escape'=>false
+					));?>
 			</div>
 			<div class="14">
 				<h1 id="sitetitle"></h1>
