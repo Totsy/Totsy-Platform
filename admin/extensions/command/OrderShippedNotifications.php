@@ -17,6 +17,7 @@ use MongoRegex;
 use MongoId;
 use li3_silverpop\extensions\Silverpop;
 use admin\extensions\command\Pid;
+use admin\extensions\helper\Shipment;
 
 /**
  * Process email notifications for orders shipped.
@@ -119,6 +120,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		}
 		$skipped = array();
 		$c = 0;
+		$shipment = new Shipment();
 		foreach ($results as $result){
 			if (count($result['TrackNums'])>0){
 				$do_break = false;
@@ -149,6 +151,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 								break;
 							}
 							$data['items'][$trackNum][ (string) $item['id'] ] = $itemSkus[ $item['sku'] ];
+							$data['items'][$trackNum][ (string) $item['id'] ]['trackingURL'] = $shipment->link($trackNum);
 							$itemCount++;
 						}
 					}
