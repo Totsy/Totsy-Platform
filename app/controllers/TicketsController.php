@@ -32,10 +32,7 @@ class TicketsController extends BaseController {
 		$agent = array('user_agent' => $this->request->env('HTTP_USER_AGENT'));
 		$args = array('issue' => $this->request->data) + array('user' => $user) + $agent;
 		if (($this->request->data) && $ticket->save($args)) {
-			$email = $list[$args['issue']['issue_type']];
-			$args['issue_type'] = $args['issue']['issue_type']; 
-			$args['message'] = $args['issue']['message']; 
-			$args['type'] = $args['issue']['type']; 
+			$email = $list[$args['issue']['issue_type']]; 
 			Mailer::send('Tickets', $email, $args);
 			//$this->redirect('tickets/sent');
 			$this->_render['template'] = 'sent';

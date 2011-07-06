@@ -427,13 +427,12 @@ class OrdersController extends BaseController {
 			++$user->purchase_count;
 			$user->save(null, array('validate' => false));
 			$data = array(
-				'order' => $order,
-				'email' => $user->email,
-				'shipDate' => $shipDate
+				'order' => $order->data(),
+				'shipDate' => date('M d, Y', $shipDate)
 			);
-			Silverpop::send('orderConfirmation', $data);
+			Mailer::send('Order_Confirmation', $user->email, $data);
 			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
-				Silverpop::send('nextPurchase', $data);
+				Mailer::send('nextPurchase', $user->email, $data);
 			}
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 		}
