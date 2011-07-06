@@ -137,7 +137,7 @@ class Api extends Base {
 		if (!is_array($for) || (is_array($for) && !array_key_exists('auth_token', $for))){
 			return ApiHelper::errorCodes(199);
 		}
-		$expires = strtotime($for['last_active']) * 60 * self::$_token_expires ;
+		$expires = $for['last_active']->sec * 60 * self::$_token_expires ;
 		if ($expires> time()){
 			return self::generateToken($for);
 		} else {

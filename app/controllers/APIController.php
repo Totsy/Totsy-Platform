@@ -190,6 +190,24 @@ class APIController extends  \lithium\action\Controller {
 		return (compact('items', 'token'));
 	}
 	
+	/**
+	 * Method to show available(active) events 
+	 * for current date. 
+	 * 
+	 * min protocol HTTP
+	 * method GET
+	 */
+	protected function eventsApi() {
+		$openEvents = Event::open();
+		
+		$base_url = 'http://'.$_SERVER['HTTP_HOST'].'/';
+		$events = array();
+		foreach ($openEvents as $event){
+			$events[] = $event->data();
+		}
+		$this->setView(1);
+		return (compact('events'));
+	}	
 	
 	/**
 	 * Mwthod to handle templates aka views.
