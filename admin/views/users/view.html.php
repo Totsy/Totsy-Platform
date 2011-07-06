@@ -43,35 +43,6 @@
 </div>
 <div class="clear"></div>
 <div id="modal"></div>
-<!--<div id="status_history" class="grid_16">
-    <div class="box">
-        <h2 >Deactivation History</h2>
-        <div class="bock">
-            <table id="historyTable" class="datatable" border="1">
-                <thead>
-                    <th>Deactivation Date</th>
-                    <th>Reason</th>
-                    <th>Comment</th>
-                    <th>Deactivated By</th>
-                </thead>
-                <tbody>
-                <?php
-                    foreach($history as $entry):
-                ?>
-                <tr>
-                    <td><?=$entry['date_created']?></td>
-                    <td><?=$entry['reason']?></td>
-                    <td><?=$entry['comment']?></td>
-                     <td><?=$entry['created_by']?></td>
-                </tr>
-                <?php
-                    endforeach;
-                ?>
-                <tbody>
-            </table>
-        </div>
-    </div>
-</div> -->
 <br/>
 <div id="clear"></div>
 <div class="grid_6">
