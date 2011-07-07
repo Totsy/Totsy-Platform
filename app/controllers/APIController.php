@@ -1,8 +1,8 @@
 <?php
 
 /*
- * 2011-05-16 updates
- * 	- output format checker fixed APIController::index()
+ * 2011-07-07 updates
+ * 	- took off methods: events, changePassword
  */
 
 namespace app\controllers;
@@ -21,7 +21,7 @@ use app\models\Item;
 use app\models\Event;
 use MongoId;
 
-
+// TODO: needs better doccumentation
 class APIController extends  \lithium\action\Controller {
 	
 	
@@ -125,11 +125,13 @@ class APIController extends  \lithium\action\Controller {
 	 * Beside regular auth, first checks if 
 	 * protocol is secure,then request method.
 	 * 
+	 * SK: is not ready yet.
+	 * 
 	 * @protocol HTTPS
 	 * @method POST
 	 * 
 	 */
-	protected function chnagePasswordApi (){
+	protected function chnagePassword (){
 		$token = Api::authorizeTokenize($this->request->query);
 		if (is_array($token) && array_key_exists('error', $token)) {
 			return $token;
@@ -194,10 +196,12 @@ class APIController extends  \lithium\action\Controller {
 	 * Method to show available(active) events 
 	 * for current date. 
 	 * 
+	 * SK: temporary taking off this method. Reason  unsecure.
+	 * 
 	 * min protocol HTTP
 	 * method GET
 	 */
-	protected function eventsApi() {
+	protected function events() {
 		$openEvents = Event::open();
 		
 		$base_url = 'http://'.$_SERVER['HTTP_HOST'].'/';

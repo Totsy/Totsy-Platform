@@ -12,39 +12,6 @@ use \lithium\core\Environment;
 use \lithium\storage\Session;
 use app\models\File;
 use lithium\action\Response;
-use app\extensions\helper\ApiHelper;
-
-Media::type(
-	'apixml',
-	array('application/xml', 'text/xml'),
-	array(
-		'cast' => true, 
-		'encode' => function($data) {
-			return ApiHelper::converter($data);
-		}, 
-		'decode' => function($data) {
-			return simplexml_load_string($data);
-		}
-	)
-);
-
-Media::type(
-	'csv',
-	//array('application/csv', 'text/csv'),
-	array('text/plain'),
-	array(
-		'cast' => true, 
-		'encode' => function($data) {
-			return ApiHelper::converter($data,'csv');
-		}, 
-		'decode' => function($data) {
-			//return simplexml_load_string($data,'csv');
-			return $data;
-		}
-	)
-);
-
-Media::type( 'api', array('text/plain') );
 
 /**
  * The following allows up to serve images right out of mongodb.
@@ -78,27 +45,7 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
      ));
 });
 
-/*
-Router::connect('/api/{:args}.csv', array(
-   'http:method' => 'GET', 
-   'controller' => 'API', 
-   'action' => 'index', 
-   'type' => 'csv')
-);
-
-Router::connect('/api/{:args}.xml', array(
-   'http:method' => 'GET', 
-   'controller' => 'API', 
-   'action' => 'index', 
-   'type' => 'apixml')
-);
-*/
-Router::connect('/api/{:args}', array(
-   //'http:method' => 'GET', 
-   'controller' => 'API', 
-   'action' => 'index'//, 
-   //'type' => 'api'
-));
+Router::connect('/api/{:args}', array('controller' => 'API', 'action' => 'index'));
 
 Router::connect('/register', 'Users::register');
 Router::connect('/register/facebook', 'Users::fbregister');
