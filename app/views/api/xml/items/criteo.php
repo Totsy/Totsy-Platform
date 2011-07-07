@@ -3,7 +3,7 @@
 <?php if (isset($data['token'])){ ?>
 	<token><?php echo $data['token']?></token>
 <?php } ?>
-<?php if (is_array($data['items'])){ ?>`
+<?php if (is_array($data['items'])){ ?>
 	<products>
 	<?php foreach($data['items'] as $item){ ?>
 		<product id="<?php echo $item['_id']?>">
