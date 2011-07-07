@@ -12,8 +12,6 @@ use app\extensions\Mailer;
 use app\extensions\Keyade;
 use MongoDate;
 use li3_facebook\extension\FacebookProxy;
-use li3_silverpop\extensions\Silverpop;
-
 
 class UsersController extends BaseController {
 

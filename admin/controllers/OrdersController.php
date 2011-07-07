@@ -19,7 +19,7 @@ use PHPExcel;
 use PHPExcel_Cell;
 use PHPExcel_Cell_DataType;
 use li3_flash_message\extensions\storage\FlashMessage;
-use li3_silverpop\extensions\Silverpop;
+use admin\extensions\Mailer;
 
 /**
  * The Orders Controller
@@ -227,10 +227,9 @@ class OrdersController extends BaseController {
 				}
 				$data = array(
 					'order' => $order_temp,
-					'email' => $user["email"],
 					'shipDate' => $shipDate
 				);
-				Silverpop::send('orderCancel', $data);
+				Mailer::send('Cancel_Order', $user["email"], $data);
 			}
 			//If order is updated without cancel, send email
 			if(($datas["save"] == 'true') && empty($cancel_order)) {
@@ -247,10 +246,9 @@ class OrdersController extends BaseController {
 				}
 				$data = array(
 					'order' => $order,
-					'email' => $user["email"],
 					'shipDate' => $shipDate
 				);
-				Silverpop::send('orderUpdate', $data);
+				Mailer::send('Order_Update', $user["email"], $data);
 			}
 		}
 		return $order_temp;
@@ -331,10 +329,9 @@ class OrdersController extends BaseController {
 			}
 			$data = array(
 				'order' => $order_temp,
-				'email' => $user["email"],
 				'shipDate' => $shipDate
 			);
-			Silverpop::send('orderCancel', $data);
+			Mailer::send('Cancel_Order', $user["email"], $data);
 		}
 		if(!empty($datas["save"])){
 			$order = $this->manage_items();
@@ -465,7 +462,7 @@ class OrdersController extends BaseController {
 								'email' => $shipRecord['Email'],
 								'details' => $details
 							);
-							Silverpop::send('orderShipped', $data);
+							Mailer::send('Order_Shipped', $shipRecord['Email'], $data);
 						}
 						if (Order::setTrackingNumber($order->order_id, $shipRecord['Tracking #'])){
 							if (empty($order->auth_confirmation)) {
