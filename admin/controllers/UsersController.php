@@ -193,9 +193,9 @@ class UsersController extends \admin\controllers\BaseController {
 	                "date_created" => $date,
 	                "created_by" => User::createdBy()
 	            ));
-	            $data['email'] = $user['email'];
+	            $data['to_email'] = $user['email'];
 	            $data['from_email'] = 'support@totsy.com';
-	            $data['type'] = $type;
+	            $data['reason'] = $type;
 	            Silverpop::send('accountStatus', $data);
 	        } else {
 	            $collection->update(array('_id' => new MongoId($id)), array(
