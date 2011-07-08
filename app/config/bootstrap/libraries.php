@@ -65,7 +65,4 @@ Libraries::add('li3_facebook', array(
 ));
 
 require LITHIUM_APP_PATH . '/libraries/swiftmailer/lib/swift_required.php';
-require LITHIUM_APP_PATH . "/libraries/sailthru-php5-client/sailthru/Sailthru_Client_Exception.php";
-require LITHIUM_APP_PATH . "/libraries/sailthru-php5-client/sailthru/Sailthru_Client.php";
-require LITHIUM_APP_PATH . "/libraries/sailthru-php5-client/sailthru/Sailthru_Util.php";
 ?>
