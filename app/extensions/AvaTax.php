@@ -4,7 +4,7 @@ namespace app\extensions;
 use lithium\analysis\Logger;
 use lithium\core\Environment;
 use lithium\action\Request;
-use li3_silverpop\extensions\Silverpop;
+use app\extensions\Mailer;
 use AvaTaxWrap;
 
 /**
@@ -20,8 +20,21 @@ class AvaTax {
 			$data['items'] = static::getCartItems($data['cartByEvent']);
 			static::shipping($data);
 		} 
+		$data['totalDiscount'] = 0;
 		if (is_object($data['shippingAddr'])){ $data['shippingAddr'] = $data['shippingAddr']->data(); }
 		if (is_object($data['billingAddr'])){ $data['billingAddr'] = $data['billingAddr']->data(); }
+		if (array_key_exists('orderPromo',$data)){
+			$data['totalDiscount'] = $data['totalDiscount'] + $data['orderPromo']->saved_amount;
+			unset($data['orderPromo']);
+		}
+		if (array_key_exists('orderCredit',$data)){
+			$data['totalDiscount'] = $data['totalDiscount'] + $data['orderCredit']->credit_amount;
+			unset($data['orderCredit']);
+		}
+		if (array_key_exists('orderServiceCredit',$data)){
+			$data['totalDiscount'] = $data['totalDiscount'] + abs($data['orderServiceCredit']);
+			unset($data['orderServiceCredit']);
+		}
 		$settings = Environment::get(Environment::get());
 		try{		
 			return AvaTaxWrap::getTax($data);
@@ -31,8 +44,7 @@ class AvaTax {
 			if ($tryNumber <= $settings['avatax']['retriesNumber']){
 				return self::getTax($data,++$tryNumber);
 			} else {
-				Silverpop::send('TaxProcessError', array(
-					'email' => $setting['avatax']['logEmail'],
+				Mailer::send('TaxProcessError', $setting['avatax']['logEmail'], array(
 					'message' => $e->getMessage(),
 					'trace' => $e->getTraceAsStirng(),
 					'info' => $data
@@ -57,8 +69,7 @@ class AvaTax {
 			if ($tryNumber <= $settings['avatax']['retriesNumber']){
 				return self::postTax($data,++$tryNumber);
 			} else {
-				Silverpop::send('TaxProcessError', array(
-					'email' => $setting['avatax']['logEmail'],
+				Mailer::send('TaxProcessError', $setting['avatax']['logEmail'], array(
 					'message' => $e->getMessage(),
 					'trace' => $e->getTraceAsStirng(),
 					'info' => $data

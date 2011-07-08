@@ -192,8 +192,15 @@ abstract class AvaTaxWrap {
 		    $request->setCustomerCode("Totsy");
 		    //string   Entity Usage        
 		    $request->setCustomerUsageType("");
-		    //decimal
-		    $request->setDiscount(0.00);     
+		    
+		    if (isset($data['totalDiscount']){
+			    //decimal
+			    $request->setDiscount($data['totalDiscount']);     
+		    } else {
+			    //decimal
+			    $request->setDiscount(0.00);
+		    } 
+		    
 		    //string Optional       
 		    $request->setPurchaseOrderNo("");
 		    //string   if not using ECMS which keys on customer code
