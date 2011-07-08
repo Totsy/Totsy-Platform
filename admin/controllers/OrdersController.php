@@ -226,7 +226,7 @@ class OrdersController extends BaseController {
 					$shipDate = $order_temp->ship_date;
 				}
 				$data = array(
-					'order' => $order_temp,
+					'order' => $order_temp->data(),
 					'shipDate' => $shipDate
 				);
 				Mailer::send('Cancel_Order', $user["email"], $data);
@@ -245,7 +245,7 @@ class OrdersController extends BaseController {
 					$shipDate = $order->ship_date;
 				}
 				$data = array(
-					'order' => $order,
+					'order' => $order->data(),
 					'shipDate' => $shipDate
 				);
 				Mailer::send('Order_Update', $user["email"], $data);
@@ -328,7 +328,7 @@ class OrdersController extends BaseController {
 				$shipDate = $order_temp->ship_date;
 			}
 			$data = array(
-				'order' => $order_temp,
+				'order' => $order_temp->data(),
 				'shipDate' => $shipDate
 			);
 			Mailer::send('Cancel_Order', $user["email"], $data);
@@ -458,7 +458,7 @@ class OrdersController extends BaseController {
 						$user = User::find('first', array('condition' => array('_id' => $order->user_id)));
 						if (empty($trackingNum) && $sendEmail) {
 							$data = array(
-								'order' => $order,
+								'order' => $order->data(),
 								'email' => $shipRecord['Email'],
 								'details' => $details
 							);
