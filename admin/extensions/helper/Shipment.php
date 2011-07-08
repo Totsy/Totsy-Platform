@@ -61,7 +61,7 @@ class Shipment extends \lithium\template\Helper {
 					$html = $upsBase.$upsDetails.$number.$upsDetails2;
 				}
 				break;
-			case: 'USPS':
+			case 'USPS':
 					$html = "http://trkcnfrm1.smi.usps.com/PTSInternetWeb/InterLabelInquiry.do?strOrigTrackNum=".$number;
 				break;
 			default:

@@ -93,7 +93,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		//Conditions with date converted to the right timezone
 		$conditions = array(
 			'ShipDate' => array(
-				'$gte' => new MongoDate(mktime(0, 0, 0, date("m"), date("d")-20, date("Y"))),
+				'$gte' => new MongoDate(mktime(0, 0, 0, date("m"), date("d")-2, date("Y"))),
 				'$lt' => new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y")))
 			),
 			'OrderId' => array('$ne' => null),
