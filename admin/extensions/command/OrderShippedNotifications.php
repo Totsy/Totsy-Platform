@@ -57,6 +57,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 	 * li3 order-shipped-notifications --debugemail=skosh@totsy.com
 	 */
 	protected $debugemail = null;
+	
 	public function run() {
 		Logger::info('Order Shipped Processor');
 		Environment::set($this->env);
@@ -92,7 +93,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		//Conditions with date converted to the right timezone
 		$conditions = array(
 			'ShipDate' => array(
-				'$gte' => new MongoDate(mktime(0, 0, 0, date("m"), date("d")-2, date("Y"))),
+				'$gte' => new MongoDate(mktime(0, 0, 0, date("m"), date("d")-20, date("Y"))),
 				'$lt' => new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y")))
 			),
 			'OrderId' => array('$ne' => null),
@@ -151,7 +152,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 								break;
 							}
 							$data['items'][$trackNum][ (string) $item['id'] ] = $itemSkus[ $item['sku'] ];
-							$data['items'][$trackNum][ (string) $item['id'] ]['trackingURL'] = $shipment->link($trackNum,array('type'=>'UPS'));
+							$data['urls'][$trackNum] = $shipment->linkNoHTML($trackNum,array('type'=>'UPS'));
 							$itemCount++;
 						}
 					}
@@ -162,10 +163,11 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 					$skipped[] = array('OrderId'=>$data['order']['order_id'], 'MongoId'=>$result['OrderId'], 'problem' => $problem);
 					continue;
 				}
+				
 				unset($itemSkus);
 				unset($do_break);
 				Logger::info('Trying to send email for order #'.$data['order']['order_id'].'('.$result['OrderId'].' to '.$data['email'].' (tottal items: '.$itemCount.')');
-				Mailer::send('Order_Shipped', $user->email, $data);
+				Mailer::send('Order_Shipped', $data['email'], $data);
 				unset($data);
 				if(is_null($this->debugemail)) {
 					//SET send email flag
@@ -200,7 +202,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 			else {
 				$data['email'] = $this->debugemail;
 			}
-			Mailer::send('Order_Skipped', $user->email, $data);
+			Mailer::send('Order_Skipped', $data['email'], $data);
 			unset($data);
 		}
 	}
