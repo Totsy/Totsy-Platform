@@ -37,7 +37,7 @@ class AvaTax {
 	
 	public static function getTax($data,$tryNumber=0){
 		$settings = Environment::get(Environment::get());
-		if (isset($settings['avatax']['useAvatax'])) static::$useAvatax = isset($settings['avatax']['useAvatax'];
+		if (isset($settings['avatax']['useAvatax'])) { static::$useAvatax = $settings['avatax']['useAvatax']; }
 		
 		
 		$data['totalDiscount'] = 0;

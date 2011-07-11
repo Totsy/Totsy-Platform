@@ -26,7 +26,7 @@ class Mailer {
 		));
 	}
 
-	public static function send($template, $subject, array $to, array $data) {
+	public static function send($template, $to, array $data) {
 		$config = Environment::get('production');
 
 		// get a transport

@@ -46,7 +46,15 @@ class PostTaxResult //extends BaseResult
  * Accessor
  * @return array
  */
-    public function getMessages() { return EnsureIsArray($this->Messages->Message); }
+    public function getMessages() { 
+    	
+    	echo '<pre>';
+    	print_r($this);
+    	echo '</pre>';
+    	exit(0);
+    	//return EnsureIsArray($this->Messages->Message); 
+    
+    }
 
 
 }

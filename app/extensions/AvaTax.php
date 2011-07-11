@@ -7,6 +7,7 @@ use lithium\action\Request;
 use app\extensions\Mailer;
 use app\models\Cart;
 use AvaTaxWrap;
+use Exception;
 
 /**
  * 
@@ -24,7 +25,7 @@ class AvaTax {
 	
 	public static function getTax($data,$tryNumber=0){
 		$settings = Environment::get(Environment::get());
-		if (isset($settings['avatax']['useAvatax'])) static::$useAvatax = isset($settings['avatax']['useAvatax'];
+		if (isset($settings['avatax']['useAvatax'])) { static::$useAvatax = $settings['avatax']['useAvatax']; }
 		
 		if ( is_array($data) && array_key_exists('cartByEvent',$data)){
 			$data['items'] = static::getCartItems($data['cartByEvent']);
@@ -54,38 +55,45 @@ class AvaTax {
 			);			
 		}
 		
-		try{		
-			return array( 
-				'tax' => AvaTaxWrap::getTax($data),
+		try{
+			$tax = 	AvaTaxWrap::getTax($data);
+			if (is_object($tax) && (get_class($tax) =='Exception' || get_class($tax) =='SoapFault')){
+				throw  new Exception($tax->getMessage());
+			}
+			$return = array( 
+				'tax' => $tax,
 				'avatax' => static::$useAvatax
 			);
 		} catch (Exception $e){
+			
 			// if we got an error try $settings['avatax']['retriesNumber'] times then
 			// try to do it with default totsy tax calculation functon 
 			// On error return '0'
 			
 			// Try again or return 0;
-			Logger::error($e->getMessage()."\n".$e->getTraceAsStirng() );
+			
+			Logger::error($e->getMessage()."\n".$e->getTraceAsString() );
 			if ($tryNumber <= $settings['avatax']['retriesNumber']){
-				return self::getTax($data,++$tryNumber);
+				$return = self::getTax($data,++$tryNumber);
 			} else {
-				Mailer::send('TaxProcessError', $setting['avatax']['logEmail'], array(
+				Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
 					'message' => $e->getMessage(),
-					'trace' => $e->getTraceAsStirng(),
+					'trace' => $e->getTraceAsString(),
 					'info' => $data
 				));
 				
 				try {	
-					return array( 
+					$return = array( 
 						'tax'=>static::totsyCalculateTax($data),
 						'avatax' => static::$useAvatax
 					);
 				} catch (Exception $m){
-						Logger::error($m->getMessage()."\n".$m->getTraceAsStirng() );
-						return 0;		
+						Logger::error($m->getMessage()."\n".$m->getTraceAsString() );
+						$return = 0;		
 				}
 			}
 		}
+		return $return;
 	} 
 	
   	public static function postTax($data,$tryNumber=0){
@@ -96,21 +104,22 @@ class AvaTax {
 		}  		
   		$data['admin'] = 1;
   		try {
-  			return AvaTaxWrap::getAndCommitTax($data);
+  			$return = AvaTaxWrap::getAndCommitTax($data);
   		} catch (Exception $e){
 			// Try again or return 0;
 			Logger::error($e->getMessage()."\n".$e->getTraceAsStirng() );
 			if ($tryNumber <= $settings['avatax']['retriesNumber']){
-				return self::postTax($data,++$tryNumber);
+				$return = self::postTax($data,++$tryNumber);
 			} else {
 				Mailer::send('TaxProcessError', $setting['avatax']['logEmail'], array(
 					'message' => $e->getMessage(),
 					'trace' => $e->getTraceAsStirng(),
 					'info' => $data
 				));
-				return 0;
+				$return = 0;
 			}
 		}
+		return $return;
   	}
 	
   	private static function totsyCalculateTax ($data) {
