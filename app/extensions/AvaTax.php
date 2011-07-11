@@ -15,6 +15,12 @@ use AvaTaxWrap;
 
 class AvaTax {
 	
+	/**
+	 * Switcher for avalara/totsy tax calculation system
+	 * 
+	 */
+	protected useAvalara = true;
+	
 	public static function getTax($data,$tryNumber=0){
 		if ( is_array($data) && array_key_exists('cartByEvent',$data)){
 			$data['items'] = static::getCartItems($data['cartByEvent']);
@@ -79,6 +85,10 @@ class AvaTax {
 		}
   	}
 	
+  	private static function totsyCalculateTax ($data) {
+  		return $tax ? $tax + (($overShippingCost + $shippingCost) * Cart::TAX_RATE) : 0;
+  	}
+  	
 	protected static function getCartItems($cartByEvent){
 		$items = array();
 		foreach ($cartByEvent as $key => $event){
