@@ -24,19 +24,19 @@
 	var_dump($topDoc->data());
 	$mainMenu = $this->MenuList->build($topDoc, $options);
 
-?>	
+?>
 
 <body class="sec content my-account app">
 	<div id="wrapper">
 		<div id="header">
 			<div id="header-lt">
 				<?=$this->html->link($this->html->image('logo.png', array(
-						'width'=>'155', 
+						'width'=>'155',
 						'height'=>'90'
 					)),
-					'',
+					'admin.totsy.com',
 					array(
-						'id'=>'main-logo', 
+						'id'=>'main-logo',
 						'escape'=>false
 					));?>
 			</div>
@@ -44,13 +44,13 @@
 				<div id="welcome">
 					<strong>Hello! </strong><?php if(isset($userInfo['firstname'])){echo $userInfo['firstname']." ".$userInfo['lastname'];};?> (<?=$this->html->link('Sign Out',array(
 							'controller' => 'users','action'=>'logout'),
-							array('title'=>'Sign Out'));?>	)				
+							array('title'=>'Sign Out'));?>	)
 				</div>
 				<?php echo $mainMenu;?>
 			</div>
 			<div id="header-rt">
 			</div>
-		</div>	
+		</div>
 		<div id="content">
 				<?php echo $this->content(); ?>
 				<br><br>
@@ -59,5 +59,5 @@
 	<div id="botter"></div>
 	<div id="footer"></div>
 
-	</body>	
+	</body>
 </html>
