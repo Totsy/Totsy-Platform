@@ -40,7 +40,7 @@ Environment::set('local', array(
 	    'trace' => true,
 		'retriesNumber' => 2,
 		'logEmail' => 'skosh@totsy.com',
-		'useAvatax' => true
+ 		'useAvatax' => true
 	)
 ));
 

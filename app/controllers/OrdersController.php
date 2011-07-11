@@ -216,7 +216,7 @@ class OrdersController extends BaseController {
 			'event',
 			'discount_exempt'
 		);
-		$cart = Cart::active(array('fields' => $fields, 'time' => 'now'));
+		$cart = $taxCart = Cart::active(array('fields' => $fields, 'time' => 'now'));
 		$shipDate = Cart::shipDate($cart);
 		$cartByEvent = $this->itemGroupByEvent($cart);
 		$orderEvents = $this->orderEvents($cart);
@@ -379,11 +379,11 @@ class OrdersController extends BaseController {
 			}
 		}
 		
-		$taxArray = AvaTax::getTax( compact(
+		extract( AvaTax::getTax( compact(
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
-			'orderCredit', 'orderPromo', 'orderServiceCredit', 'cart') );
-		extract($taxArray,EXTR_OVERWRITE);
-		unset($taxArray);
+			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart') )
+		,EXTR_OVERWRITE);
+		unset($taxArray,$taxCart);
 		$vars = compact(
 			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'

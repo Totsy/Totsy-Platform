@@ -73,7 +73,7 @@ class AvaTax {
 			// Try again or return 0;
 			
 			Logger::error($e->getMessage()."\n".$e->getTraceAsString() );
-			if ($tryNumber <= $settings['avatax']['retriesNumber']){
+			if ($tryNumber < $settings['avatax']['retriesNumber']){
 				$return = self::getTax($data,++$tryNumber);
 			} else {
 				Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
@@ -82,15 +82,16 @@ class AvaTax {
 					'info' => $data
 				));
 				
-				try {	
+				if (isset($data['taxCart'])){
 					$return = array( 
 						'tax'=>static::totsyCalculateTax($data),
 						'avatax' => static::$useAvatax
 					);
-				} catch (Exception $m){
-						Logger::error($m->getMessage()."\n".$m->getTraceAsString() );
-						$return = 0;		
-				}
+				} else {
+					$return = array( 
+						'tax'=>static::totsyCalculateTax($data),
+						'avatax' => static::$useAvatax
+					);				}
 			}
 		}
 		return $return;
@@ -125,8 +126,7 @@ class AvaTax {
   	private static function totsyCalculateTax ($data) {
   		if (!array_key_exists('overShippingCost',$data)) { $data['overShippingCost'] = 0; }
   		if (!array_key_exists('shippingCost',$data)) { $data['shippingCost'] = 0; }
-  		
-  		$tax = array_sum($data['cart']->tax($data['shippingAddr']));
+  		$tax = array_sum($data['taxCart']->tax($data['shippingAddr']));
   		return $tax ? $tax + (($data['overShippingCost'] + $data['shippingCost']) * Cart::TAX_RATE) : 0;
   	}
   	
