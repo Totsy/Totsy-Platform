@@ -19,6 +19,11 @@ use lithium\util\Inflector;
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
 <?=$this->html->script('http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js')?>
 <?=$this->html->script('jquery.iframe-transport.js')?>
+<?=$this->html->script('jquery.fileupload.js')?>
+<?=$this->html->script('jquery.fileupload-ui.js')?>
+<?=$this->html->script('uploader.js')?>
+<?=$this->html->style('jquery.fileupload-ui.css');?>
+<?=$this->html->style('uploader.css');?>
 <?=$this->html->style('selectlist.css');?>
 <?=$this->html->script('jquery.selectlist.min.js')?>
 <?=$this->html->script('jquery.selectlist.pack.js')?>
@@ -189,7 +194,7 @@ for ( i=1; i<6; i++ ) {
 
 		//this loads the event/inventory iframe src when the tab is clicked
 		$("#inventoryLink").click(function(){
-			$("#inventoryIframe").attr('src', "/events/inventory/<?php echo $event->_id; ?>");
+			$("#inventoryIframe").attr('src', "/events/inventory/<?=$event->_id; ?>");
 		});
 
 
@@ -348,7 +353,7 @@ $(function() {
 					<?php if ($event->tags): ?>
 						<select name="tags[]" id="tags" multiple="multiple" size="5">
 							<?php foreach (Event::$tags as $tag): ?>
-								<?php if (is_array($event->tags)): ?>
+								<?php if (is_array($event->tags) && in_array($tag, $event->tags)): ?>
 									<option value="<?=$tag?>" selected><?=$tag?> </option>
 								<?php else: ?>
 									<option value="<?=$tag?>"><?=$tag?> </option>
@@ -357,7 +362,7 @@ $(function() {
 						</select>
 					<?php else: ?>
 						<?=$this->form->select('tags', Event::$tags, array('size' => 5, 'multiple' => 'multiple')); ?>
-					<?php endif ?>
+					<?php endif;?>
 				</div>
 				<br>
 
@@ -422,16 +427,14 @@ $(function() {
 				<p>Will item/product ship for Christmas?:</p>
 					<input type="radio" name="miss_christmas" value="0" id="miss_christmas" checked>Yes, ships before 12.23<br>
 					<input type="radio" name="miss_christmas" value="1" id="miss_christmas">NO AFTER XMAS<br><br>
-
-
 					<!--
 					<?php echo $this->form->label('Upload Event (Excel Files): '); ?>
 					<?php echo $this->form->file('upload_file'); ?>
 					-->
 				<?=$this->form->field('items_submit', array('type' => 'textarea', 'rows' => '7', 'cols' => '50', 'name' => 'ItemsSubmit'));?><br>
 
-
-			<?=$this->form->submit('Update Event')?>
+            <hr />
+			<br><br>
 			<?=$this->form->end(); ?>
 			</div>
 
