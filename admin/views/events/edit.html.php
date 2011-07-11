@@ -1,7 +1,7 @@
 <?php ini_set("display_erros", 0); ?>
 <?php use admin\models\Event; ?>
 <?=$this->html->script('tiny_mce/tiny_mce.js');?>
-<?=$this->html->script('jquery-1.4.2');?>
+<?//=$this->html->script('jquery-1.4.2');?>
 <?=$this->html->script('jquery-dynamic-form.js');?>
 <?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
 <?=$this->html->script('swfupload.js');?>
@@ -18,6 +18,13 @@
 <?=$this->html->script('jquery.countdown.min');?>
 <?=$this->html->style('jquery.countdown');?>
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
+<?=$this->html->script('http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js')?>
+<?=$this->html->script('jquery.iframe-transport.js')?>
+<?=$this->html->script('jquery.fileupload.js')?>
+<?=$this->html->script('jquery.fileupload-ui.js')?>
+<?=$this->html->script('uploader.js')?>
+<?=$this->html->style('jquery.fileupload-ui.css');?>
+<?=$this->html->style('uploader.css');?>
 <?=$this->html->style('selectlist.css');?>
 <?=$this->html->script('jquery.selectlist.min.js')?>
 <?=$this->html->script('jquery.selectlist.pack.js')?>
@@ -49,11 +56,11 @@ tinyMCE.init({
 
 	// Theme options
 	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull",
-	
+
 	theme_advanced_buttons2: "styleselect,formatselect,fontselect,fontsizeselect",
-	
+
 	theme_advanced_buttons3 : "cut,copy,paste,pastetext,pasteword,|,bullist,numlist,|,indent,blockquote,|,anchor,code,|,forecolor,backcolor",
-	/* theme_advanced_button3: 
+	/* theme_advanced_button3:
 	 theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,charmap,iespell,advhr",
 	 theme_advanced_buttons4 : "spellchecker,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking,blockquote,pagebreak", */
 	theme_advanced_toolbar_location : "top",
@@ -63,19 +70,19 @@ tinyMCE.init({
 
 });
 
-$('.table_link').click(function() {  
+$('.table_link').click(function() {
         $('tr').hide();
       $('tr .').toggle('slow');
     });
 
-$('.related_items').selectList({ 
-	addAnimate: function (item, callback) { 
-	$(item).slideDown(500, callback); 
-	}, 
-	removeAnimate: function (item, callback) { 
-	$(item).slideUp(500, callback); 
-	} 
-}); 
+$('.related_items').selectList({
+	addAnimate: function (item, callback) {
+	$(item).slideDown(500, callback);
+	},
+	removeAnimate: function (item, callback) {
+	$(item).slideUp(500, callback);
+	}
+});
 
 $('.related_items').change(function() {
 
@@ -86,13 +93,13 @@ var list_position = this.id.substring(7,8);
 //create strings of the dropdown id's
 for ( i=1; i<6; i++ ) {
 
-	var related_item_id = 'related'+ i + '_' + item_id;	
+	var related_item_id = 'related'+ i + '_' + item_id;
 	//if its not the current dropdown
 	//and its value is the same as the current dropdown's value AND
 	//the item's value isn't an empty string
 	//than throw an alert message
 	if(i!=list_position && $("#" + related_item_id + " option:selected").val()!=="" ) {
-				
+
 		if( $("#" + related_item_id + " option:selected").val() == $("#" + this.id + " option:selected").val() ) {
 			$("#" + this.id).val(0);
 			alert("please select a different item");
@@ -101,8 +108,8 @@ for ( i=1; i<6; i++ ) {
 	}
 }
 
-});    
-    
+});
+
 });
 
 </script>
@@ -238,7 +245,7 @@ for ( i=1; i<6; i++ ) {
 					<?php if ($event->tags): ?>
 						<select name="tags[]" id="tags" multiple="multiple" size="5">
 							<?php foreach (Event::$tags as $tag): ?>
-								<?php if (in_array($tag, $event->tags)): ?>
+								<?php if (is_array($event->tags) && in_array($tag, $event->tags)): ?>
 									<option value="<?=$tag?>" selected><?=$tag?> </option>
 								<?php else: ?>
 									<option value="<?=$tag?>"><?=$tag?> </option>
@@ -369,10 +376,94 @@ for ( i=1; i<6; i++ ) {
 				<?=$this->form->submit('Update Event')?>
 				<?=$this->form->label('Upload Event (Excel Files): '); ?>
 <!--
-		<iframe id="upload_frame" name="upload_frame" src="/events/upload/<?=$event->_id?>" frameborder=0 scrolling=no width=400 height=250></iframe>		
+		<iframe id="upload_frame" name="upload_frame" src="/events/upload/<?=$event->_id?>" frameborder=0 scrolling=no width=400 height=250></iframe>
 		<div id="upload_error" name="upload_error" style="color:#ff0000; width:400px; float:right; height:250px; overflow:scroll;">(spreadsheet upload errors will appear here)</div>
 
--->				
+-->
+			<br><br>
+			<h3 id="">Upload Images</h3>
+
+
+			<div id="fileupload">
+			    <form action="upload.php" method="POST" enctype="multipart/form-data">
+			        <div class="fileupload-buttonbar">
+			            <label class="fileinput-button">
+			                <span>Add files...</span>
+			                <input type="file" name="files[]" multiple>
+			            </label>
+			            <button type="submit" class="start">Start upload</button>
+			            <button type="reset" class="cancel">Cancel upload</button>
+			            <button type="button" class="delete">Delete files</button>
+			        </div>
+			    </form>
+			    <div class="fileupload-content">
+			        <table class="files"></table>
+			        <div class="fileupload-progressbar"></div>
+			    </div>
+			</div>
+			<script id="template-upload" type="text/x-jquery-tmpl">
+    			<tr class="template-upload{{if error}} ui-state-error{{/if}}">
+        			<td class="preview"></td>
+        			<td class="name">${name}</td>
+        			<td class="size">${sizef}</td>
+        			{{if error}}
+            		<td class="error" colspan="2">Error:
+                		{{if error === 'maxFileSize'}}File is too big
+                		{{else error === 'minFileSize'}}File is too small
+                		{{else error === 'acceptFileTypes'}}Filetype not allowed
+                		{{else error === 'maxNumberOfFiles'}}Max number of files exceeded
+                		{{else}}${error}
+                		{{/if}}
+            		</td>
+        			{{else}}
+            			<td class="progress"><div></div></td>
+            			<td class="start"><button>Start</button></td>
+        			{{/if}}
+        			<td class="cancel"><button>Cancel</button></td>
+    			</tr>
+			</script>
+			<script id="template-download" type="text/x-jquery-tmpl">
+    			<tr class="template-download{{if error}} ui-state-error{{/if}}">
+        			{{if error}}
+            			<td></td>
+            			<td class="name">${name}</td>
+            			<td class="size">${sizef}</td>
+            			<td class="error" colspan="2">Error:
+                			{{if error === 1}}File exceeds upload_max_filesize (php.ini directive)
+                			{{else error === 2}}File exceeds MAX_FILE_SIZE (HTML form directive)
+                			{{else error === 3}}File was only partially uploaded
+                			{{else error === 4}}No File was uploaded
+                			{{else error === 5}}Missing a temporary folder
+                			{{else error === 6}}Failed to write file to disk
+                			{{else error === 7}}File upload stopped by extension
+                			{{else error === 'maxFileSize'}}File is too big
+                			{{else error === 'minFileSize'}}File is too small
+                			{{else error === 'acceptFileTypes'}}Filetype not allowed
+                			{{else error === 'maxNumberOfFiles'}}Max number of files exceeded
+                			{{else error === 'uploadedBytes'}}Uploaded bytes exceed file size
+                			{{else error === 'emptyResult'}}Empty file upload result
+                			{{else}}${error}
+                			{{/if}}
+            			</td>
+        			{{else}}
+            		<td class="preview">
+                		{{if thumbnail_url}}
+                    		<a href="${url}" target="_blank"><img src="${thumbnail_url}"></a>
+                		{{/if}}
+            		</td>
+            		<td class="name">
+                		<a href="${url}"{{if thumbnail_url}} target="_blank"{{/if}}>${name}</a>
+            		</td>
+            		<td class="size">${sizef}</td>
+            		<td colspan="2"></td>
+        			{{/if}}
+        			<td class="delete">
+            			<button data-type="${delete_type}" data-url="${delete_url}">Delete</button>
+        			</td>
+    			</tr>
+			</script>
+
+            <hr />
 			<br><br>
 			<?=$this->form->end(); ?>
 			<h3 id="current_items">Current Items</h3>
@@ -382,10 +473,10 @@ for ( i=1; i<6; i++ ) {
 				<?=$this->form->hidden('id', array('value' => $event->_id)); ?>
 				<div style="float:left; font: bold; font-size: 18px;">
 					Total Items:
-					<?php 
+					<?php
 						echo count($eventItems);
 					?>
-					
+
 				</div>
 
 				<div style="float:right; font: bold; font-size: 18px;">
