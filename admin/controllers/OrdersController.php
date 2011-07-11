@@ -227,7 +227,7 @@ class OrdersController extends BaseController {
 				}
 				$data = array(
 					'order' => $order_temp->data(),
-					'shipDate' => $shipDate
+					'shipDate' => date('M d, Y', $shipDate)
 				);
 				Mailer::send('Cancel_Order', $user["email"], $data);
 			}
@@ -246,7 +246,7 @@ class OrdersController extends BaseController {
 				}
 				$data = array(
 					'order' => $order->data(),
-					'shipDate' => $shipDate
+					'shipDate' => date('M d, Y', $shipDate)
 				);
 				Mailer::send('Order_Update', $user["email"], $data);
 			}
@@ -329,7 +329,7 @@ class OrdersController extends BaseController {
 			}
 			$data = array(
 				'order' => $order_temp->data(),
-				'shipDate' => $shipDate
+				'shipDate' => date('M d, Y', $shipDate)
 			);
 			Mailer::send('Cancel_Order', $user["email"], $data);
 		}
