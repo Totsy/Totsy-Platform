@@ -1,26 +1,33 @@
 <?php ini_set("display_erros", 0); ?>
 <?php use admin\models\Event; ?>
-<?php echo $this->html->script('tiny_mce/tiny_mce.js');?>
-<?php echo $this->html->script('jquery-1.4.2');?>
-<?php echo $this->html->script('jquery-dynamic-form.js');?>
-<?php echo $this->html->script('jquery-ui-1.8.2.custom.min.js');?>
-<?php echo $this->html->script('swfupload.js');?>
-<?php echo $this->html->script('swfupload.queue.js');?>
-<?php echo $this->html->script('fileprogress.js');?>
-<?php echo $this->html->script('handlers.js');?>
-<?php echo $this->html->script('event_upload.js');?>
-<?php echo $this->html->style('swfupload')?>
-<?php echo $this->html->style('jquery_ui_blitzer.css')?>
-<?php echo $this->html->script('jquery.dataTables.js');?>
-<?php echo $this->html->style('table');?>
-<?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
-<?php echo $this->html->style('timepicker'); ?>
-<?php echo $this->html->script('jquery.countdown.min');?>
-<?php echo $this->html->style('jquery.countdown');?>
-<?php echo $this->html->script('jquery.maskedinput-1.2.2')?>
-<?php echo $this->html->style('selectlist.css');?>
-<?php echo $this->html->script('jquery.selectlist.min.js')?>
-<?php echo $this->html->script('jquery.selectlist.pack.js')?>
+
+<?=$this->html->script('tiny_mce/tiny_mce.js');?>
+<?=$this->html->script('jquery-dynamic-form.js');?>
+<?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
+<?=$this->html->script('swfupload.js');?>
+<?=$this->html->script('swfupload.queue.js');?>
+<?=$this->html->script('fileprogress.js');?>
+<?=$this->html->script('handlers.js');?>
+<?=$this->html->script('event_upload.js');?>
+<?=$this->html->style('swfupload')?>
+<?=$this->html->style('jquery_ui_blitzer.css')?>
+<?=$this->html->script('jquery.dataTables.js');?>
+<?=$this->html->style('table');?>
+<?=$this->html->script('jquery-ui-timepicker.min.js');?>
+<?=$this->html->style('timepicker'); ?>
+<?=$this->html->script('jquery.countdown.min');?>
+<?=$this->html->style('jquery.countdown');?>
+<?=$this->html->script('jquery.maskedinput-1.2.2')?>
+<?=$this->html->script('http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js')?>
+<?=$this->html->script('jquery.iframe-transport.js')?>
+<?=$this->html->script('jquery.fileupload.js')?>
+<?=$this->html->script('jquery.fileupload-ui.js')?>
+<?=$this->html->script('uploader.js')?>
+<?=$this->html->style('jquery.fileupload-ui.css');?>
+<?=$this->html->style('uploader.css');?>
+<?=$this->html->style('selectlist.css');?>
+<?=$this->html->script('jquery.selectlist.min.js')?>
+<?=$this->html->script('jquery.selectlist.pack.js')?>
 
 <style type="text/css">
 
@@ -180,15 +187,15 @@ for ( i=1; i<6; i++ ) {
 		$('#Short').focusout(function(){
 			return limitTextArea($(this),$('#short_description_characters_counter'),limit);
 		});
-		
+
 		//this loads the event/inventory iframe src when the tab is clicked
 		$("#inventoryLink").click(function(){
-			$("#inventoryIframe").attr('src', "/events/inventory/<?php echo $event->_id; ?>");	
+			$("#inventoryIframe").attr('src', "/events/inventory/<?php echo $event->_id; ?>");
 		});
-		
-		
-		
-		
+
+
+
+
 	});
 
 	function limitTextArea(text,info,limiter){
@@ -311,8 +318,8 @@ for ( i=1; i<6; i++ ) {
 					<?php if ($event->tags): ?>
 						<select name="tags[]" id="tags" multiple="multiple" size="5">
 							<?php foreach (Event::$tags as $tag): ?>
-								<?php if (in_array($tag, $event->tags)): ?>
-									<option value="<?php echo $tag?>" selected><?php echo $tag?> </option>
+								<?php if (is_array($event->tags) && in_array($tag, $event->tags)): ?>
+									<option value="<?=$tag?>" selected><?=$tag?> </option>
 								<?php else: ?>
 									<option value="<?php echo $tag?>"><?php echo $tag?> </option>
 								<?php endif ?>
@@ -459,8 +466,6 @@ for ( i=1; i<6; i++ ) {
 
 			<div style="clear:both; height:30px;"></div>
 
-
-
 			<h3 id="current_items">Current Items</h3>
 
             <hr />
@@ -535,7 +540,7 @@ for ( i=1; i<6; i++ ) {
 		<div id="event_inventory">
 			<iframe id="inventoryIframe" src="" style="width:900px; height:400px;"></iframe>
 		</div>
-		
+
 	</div>
 </div>
 <script type="text/javascript">

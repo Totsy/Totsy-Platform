@@ -38,12 +38,15 @@ ini_set('display_errors', 0);
 		// end checking for css files
 
 		// add the name of the scripts you want to include here.
-		$script = array('jquery-1.4.2.min', 'jquery-fluid16', 'jquery-ui-1.8.2.custom.min');
+		$script = array( 'jquery-fluid16', 'jquery-ui-1.8.2.custom.min');
+		echo $this->html->script('http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js');
 		foreach ($script as $js):
 			if (file_exists("js/".$js.".js")) { // files are in APP/webroot
 				echo $this->html->script($js);
-			} else { // files are in li3_grid
+			} else if (file_exists('../../li3_grid/js/'.$js)) { // files are in li3_grid
 				echo $this->html->script('../../li3_grid/js/'.$js);
+			} else {
+				echo $this->html->script($js);
 			}
 		endforeach;
 		// end checking for script files
