@@ -258,9 +258,7 @@ class OrdersController extends BaseController {
 			//$tax = $tax ? $tax + (($overShippingCost + $shippingCost) * Cart::TAX_RATE) : 0;
 			
 			//$tax=  AvaTax::getTax( compact('cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
-		} else {
-			//$tax=  AvaTax::getTax( compact('cartByEvent', 'billingAddr', 'shippingAddr') );	
-		}
+		} 
 		/**
 		*	Handling services the user may be eligible for
 		*	@see app\models\Service::freeShippingCheck()
@@ -381,9 +379,11 @@ class OrdersController extends BaseController {
 			}
 		}
 		
-		$tax = AvaTax::getTax( compact(
+		$taxArray = AvaTax::getTax( compact(
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
-			'orderCredit', 'orderPromo', 'orderServiceCredit') );
+			'orderCredit', 'orderPromo', 'orderServiceCredit', 'cart') );
+		extract($taxArray,EXTR_OVERWRITE);
+		unset($taxArray);
 		$vars = compact(
 			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
@@ -427,10 +427,12 @@ class OrdersController extends BaseController {
 					$order->promo_code = $orderPromo->code;
 				}
 			}
-			AvaTax::postTax( compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
 			
+			if($avatax === true){
+				AvaTax::postTax( compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
+			}
 			$order->tax = $tax;
-			$order->avatax = true;
+			$order->avatax = $avatax;
 			$order->ship_date = new MongoDate(Cart::shipDate($order));
 			$order->save();
 			Cart::remove(array('session' => Session::key('default')));

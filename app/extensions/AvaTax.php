@@ -5,6 +5,7 @@ use lithium\analysis\Logger;
 use lithium\core\Environment;
 use lithium\action\Request;
 use app\extensions\Mailer;
+use app\models\Cart;
 use AvaTaxWrap;
 
 /**
@@ -19,9 +20,12 @@ class AvaTax {
 	 * Switcher for avalara/totsy tax calculation system
 	 * 
 	 */
-	protected useAvalara = true;
+	protected static $useAvatax = true;
 	
 	public static function getTax($data,$tryNumber=0){
+		$settings = Environment::get(Environment::get());
+		if (isset($settings['avatax']['useAvatax'])) static::$useAvatax = isset($settings['avatax']['useAvatax'];
+		
 		if ( is_array($data) && array_key_exists('cartByEvent',$data)){
 			$data['items'] = static::getCartItems($data['cartByEvent']);
 			static::shipping($data);
@@ -41,10 +45,25 @@ class AvaTax {
 			$data['totalDiscount'] = $data['totalDiscount'] + abs($data['orderServiceCredit']);
 			unset($data['orderServiceCredit']);
 		}
-		$settings = Environment::get(Environment::get());
+		
+		
+		if (static::$useAvatax === false){
+			return array( 
+				'tax'=>static::totsyCalculateTax($data),
+				'avatax' => static::$useAvatax
+			);			
+		}
+		
 		try{		
-			return AvaTaxWrap::getTax($data);
+			return array( 
+				'tax' => AvaTaxWrap::getTax($data),
+				'avatax' => static::$useAvatax
+			);
 		} catch (Exception $e){
+			// if we got an error try $settings['avatax']['retriesNumber'] times then
+			// try to do it with default totsy tax calculation functon 
+			// On error return '0'
+			
 			// Try again or return 0;
 			Logger::error($e->getMessage()."\n".$e->getTraceAsStirng() );
 			if ($tryNumber <= $settings['avatax']['retriesNumber']){
@@ -55,7 +74,16 @@ class AvaTax {
 					'trace' => $e->getTraceAsStirng(),
 					'info' => $data
 				));
-				return 0;
+				
+				try {	
+					return array( 
+						'tax'=>static::totsyCalculateTax($data),
+						'avatax' => static::$useAvatax
+					);
+				} catch (Exception $m){
+						Logger::error($m->getMessage()."\n".$m->getTraceAsStirng() );
+						return 0;		
+				}
 			}
 		}
 	} 
@@ -86,7 +114,11 @@ class AvaTax {
   	}
 	
   	private static function totsyCalculateTax ($data) {
-  		return $tax ? $tax + (($overShippingCost + $shippingCost) * Cart::TAX_RATE) : 0;
+  		if (!array_key_exists('overShippingCost',$data)) { $data['overShippingCost'] = 0; }
+  		if (!array_key_exists('shippingCost',$data)) { $data['shippingCost'] = 0; }
+  		
+  		$tax = array_sum($data['cart']->tax($data['shippingAddr']));
+  		return $tax ? $tax + (($data['overShippingCost'] + $data['shippingCost']) * Cart::TAX_RATE) : 0;
   	}
   	
 	protected static function getCartItems($cartByEvent){

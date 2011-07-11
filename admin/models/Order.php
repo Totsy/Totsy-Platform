@@ -433,7 +433,7 @@ class Order extends \lithium\data\Model {
 		//Get Actual Taxes and Handling
 		$handling = static::shipping($items);
 		$overSizeHandling = static::overSizeShipping($items);
-		$tax = static::recalculateTax($selected_order,$items);
+		extract(static::recalculateTax($selected_order,$items));
 		//$tax = static::tax($selected_order,$items);
 		//$tax = $tax ? $tax + (($overSizeHandling + $handling) * static::TAX_RATE) : 0;
 		$subTotal = static::subTotal($items);
@@ -556,7 +556,8 @@ class Order extends \lithium\data\Model {
 		}
 	
 		if ($update === false){
-			return AvaTax::getTax(compact('order','items'));
+			$ordermodel = self;
+			return AvaTax::getTax(compact('order','items','ordermodel','current_order','itms'));
 		} else {
 			AvaTax::cancelTax($order['order_id']);
 			$admin = 1;

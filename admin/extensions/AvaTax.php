@@ -36,6 +36,10 @@ class AvaTax {
 	}
 	
 	public static function getTax($data,$tryNumber=0){
+		$settings = Environment::get(Environment::get());
+		if (isset($settings['avatax']['useAvatax'])) static::$useAvatax = isset($settings['avatax']['useAvatax'];
+		
+		
 		$data['totalDiscount'] = 0;
 		if ( is_array($data) && array_key_exists('cartByEvent',$data)){
 			$data['items'] = static::getCartItems($data['cartByEvent']);
@@ -55,9 +59,19 @@ class AvaTax {
 			$data['totalDiscount'] = $data['totalDiscount'] + abs($data['orderServiceCredit']);
 			unset($data['orderServiceCredit']);
 		}
-		$settings = Environment::get(Environment::get());
-		try{		
-			return AvaTaxWrap::getTax($data);
+
+		if (static::$useAvatax === false){
+			return array( 
+				'tax'=>static::totsyCalculateTax($data),
+				'avatax' => static::$useAvatax
+			);			
+		}
+		
+		try{	
+			return array( 
+				'tax'=> AvaTaxWrap::getTax($data),
+				'avatax' => static::$useAvatax
+			);	
 		} catch (Exception $e){
 			// Try again or return 0;
 			Logger::error($e->getMessage()."\n".$e->getTraceAsStirng() );
@@ -69,7 +83,15 @@ class AvaTax {
 					'trace' => $e->getTraceAsStirng(),
 					'info' => $data
 				));
-				return 0;
+				try {	
+					return array( 
+						'tax'=>static::totsyCalculateTax($data),
+						'avatax' => static::$useAvatax
+					);
+				} catch (Exception $m){
+						Logger::error($m->getMessage()."\n".$m->getTraceAsStirng() );
+						return 0;		
+				}
 			}
 		}
 	} 
@@ -140,6 +162,14 @@ class AvaTax {
 			}
 		}
 	}
+	
+  	private static function totsyCalculateTax ($data) {
+  		if (!array_key_exists('overShippingCost',$data)) { $data['overShippingCost'] = 0; }
+  		if (!array_key_exists('shippingCost',$data)) { $data['shippingCost'] = 0; }
+  		
+  		$tax = array_sum($data['ordermodel']::tax($data['current_order'],$data['itms']));
+  		return $tax ? $tax + (($data['overShippingCost'] + $data['shippingCost']) * $data['ordermodel']::TAX_RATE) : 0;
+  	}
 	
 	protected static function getCartItems($cartByEvent){
 		$items = array();
