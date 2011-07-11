@@ -29,8 +29,8 @@ class Item extends \lithium\data\Model {
 			$related_items = static::all(Array('conditions' => Array(
 			'_id' => Array('$in' => $item->related_items->data())
 		)));
-		
-			return array_merge($related_items->data(), $color_and_copy_matches->data());;
+			
+			return array_merge($related_items->data());;
 		} else {
 			return $color_and_copy_matches->data();
 		}
