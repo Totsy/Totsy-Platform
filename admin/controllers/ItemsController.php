@@ -221,7 +221,7 @@ class ItemsController extends BaseController {
 				foreach($related_items[$key] as $k) {
 					
 					//check if its an empty value (ie the user chose 'select an item' instead of a related item)
-					if($k==''){
+					if($k=='') {
 						$i++;
 					} else {
 						$temp[] = $k;

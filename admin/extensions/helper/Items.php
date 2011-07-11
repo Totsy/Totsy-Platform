@@ -94,9 +94,9 @@ class Items extends \lithium\template\Helper {
 
 						//there could be a a maximum of 3 related items per item
 						//if the # of related items is 2, add the 3rd dropdown
-						if($count < 4) {
+						if($count < 6) {
 
-							for($i=0; $i<(4-$count);$i++){
+							for($i=0; $i<(6-$count);$i++){
 								$item_dropdown = "";
 
 								$inc = $i + $count;
@@ -124,7 +124,7 @@ class Items extends \lithium\template\Helper {
 					}
 				} else {
 					//create 3 dropdowns when there are no related items for this given item
-					for ($i=1; $i<4; $i++) {
+					for ($i=1; $i<6; $i++) {
 						$item_dropdown = "";
 
 						$html .= "<select name='related".$i."_".$item->_id."' id='related".$i."_".$item->_id."'>";
@@ -154,7 +154,7 @@ class Items extends \lithium\template\Helper {
 				}
 
 				$html .= "</td>";
-				$html .= "<td width='100'><img src=$image/ width='30'></td>";
+				$html .= "<td width='100'><img src=$image/ width='75'></td>";
 				$html .= "<td width='200'><a href=\"/items/edit/$item->_id\">$item->description</a><br />
 				Color: $item->color <br />
 				Vendor Style: $item->vendor_style
