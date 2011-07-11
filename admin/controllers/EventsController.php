@@ -79,7 +79,7 @@ class EventsController extends BaseController {
 		$result = Item::getDepartments();
 		$all_filters = array();
 		foreach ($result['values'] as $value) {
-			$all_filters[$value] = $value;
+			//$all_filters[$value] = $value;
 			if (array_key_exists('Momsdads',$all_filters) && !empty($all_filters['Momsdads'])) {
 				$all_filters['Momsdads'] = 'Moms & Dads';
 			}
@@ -179,6 +179,7 @@ class EventsController extends BaseController {
 			'shipping_dimensions',
 			'related_items'
 		);
+		
 		if ($this->request->data) {
 			if ($_FILES['upload_file']['error'] == 0) {
 				$file = $_FILES['upload_file']['tmp_name'];
@@ -188,15 +189,15 @@ class EventsController extends BaseController {
 					$highestRow = $worksheet->getHighestRow();
 					$highestColumn = $worksheet->getHighestColumn();
 					$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
-					for ($row = 1; $row <= $highestRow; ++ $row) {
-						for ($col = 0; $col < $highestColumnIndex; ++ $col) {
+					for ($row = 1; $row <= $highestRow; ++ $row ) {
+						for ($col = 0; $col < ($highestColumnIndex - 1); ++ $col) {
 							$cell = $worksheet->getCellByColumnAndRow($col, $row);
 							$val = $cell->getCalculatedValue();
 							
 							if ($row == 1) {
 								$heading[] = $val;
 							} else {
-								if (!in_array($heading[$col], array('','NULL'))) {
+								if (!in_array($heading[$col], array('','NULL'))) {							
 										if(($heading[$col] == "department_1") ||
 												($heading[$col] == "department_2") ||
 													($heading[$col] == "department_3")) {
@@ -214,13 +215,24 @@ class EventsController extends BaseController {
 									    		$eventItems[$row - 1]['related_items'] = array_unique($eventItems[$row - 1]['related_items']);
 									    	}
 										} else {
-										    $eventItems[$row - 1][$heading[$col]] = $val;
+											if (!empty($val)) {
+										    	$eventItems[$row - 1][$heading[$col]] = $val;
+											}
 										}
 								}
 							}
+							
  						}
  					}
 				}	
+				
+				/*
+				echo "<pre>";
+				print_r($eventItems);
+				echo "</pre>";
+				
+				exit();
+				*/
 												
 				foreach ($eventItems as $itemDetail) {
 				

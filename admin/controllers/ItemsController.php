@@ -228,7 +228,7 @@ class ItemsController extends BaseController {
 					}
 				}
 				
-				if($i==3){
+				if($i==5){
 					$itemsCollection->update(array("_id" => new MongoId($key)), array('$unset' => array('related_items'=> 1)));	
 				} else {
 					$itemsCollection->update(array("_id" => new MongoId($key)), array('$set' => array('related_items' => $temp)));
