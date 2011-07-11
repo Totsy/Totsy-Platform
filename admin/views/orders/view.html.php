@@ -2,7 +2,7 @@
 <?=$this->html->script('jquery-1.4.2');?>
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
 <?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->style(array('jquery_ui_blitzer.css', 'table'));?> 
+<?=$this->html->style(array('jquery_ui_blitzer.css', 'table'));?>
 <?php
 	$this->title(" - Order Confirmation");
 ?>
@@ -23,7 +23,7 @@
 										The order has been canceled
 									</p><br />
 								<?php else: ?>
-								
+
 									<div id='confirm_cancel_div' style="display:none">
 									<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
 										Are you really sure you want to cancel this order ? You won't be able to go back.
@@ -262,7 +262,7 @@
 							<?=$this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
 												<tr class="item_line"
 												<?php if($item["cancel"] == true) {
-													echo "style='background-color:red;opacity:.5'"; 
+													echo "style='background-color:red;opacity:.5'";
 													} ?>
 													 id="<?=$key?>">
 												<?php
@@ -328,7 +328,7 @@
 												<?php if($edit_mode): ?>
 												<td>
 													<div style="text-align:center;">
-														<?php if($item["cancel"] == true){ ?>	
+														<?php if($item["cancel"] == true){ ?>
 									<a href="#" onclick="open_item('<?=$key?>')" id="open_button">
 															<img src="/img/success-icon.png" width="20" height="20"></a>
 														<?php } else {?>
@@ -340,7 +340,7 @@
 												<?php endif ?>
 											<?php endforeach ?>
 											</tr>
-									
+
 										</table>
 								</td><!-- end order detail table -->
 							</tr>
@@ -376,14 +376,14 @@
 												<br>
 												<?php endif ?>
 												<?php if (($order->promo_discount) && (empty($order->promocode_disable))): ?>
-												Promotion Discount:
+												Discount:
 													<br>
 												<?php endif ?>
 												Sales Tax:
 												<br>
 												Shipping:
 												<br><br><br>
-												<strong style="font-weight:bold;color:#606060">Total:</strong> 
+												<strong style="font-weight:bold;color:#606060">Total:</strong>
 											</td>
 											<td style="padding-left:15px; text-align:right;" valign="top">
 											$<?=number_format($order->subTotal,2); ?>
@@ -424,14 +424,14 @@
 												<div style=" width:320px; display:block;"><strong>Payment Info:</strong> <br /><?=strtoupper($order->card_type)?> ending with <?=$order->card_number?></div>
 											</td>
 											<td>
-											
+
 											</td>
 										</tr>
 										<tr>
 											<td>
 											</td>
 											<td>
-											
+
 											</td>
 										</tr>
 									</table>
@@ -440,7 +440,7 @@
 							</tr>
 		<tr>
 			<td style="padding:0px 0px 5px 0px;"><hr></td>
-		</tr>	
+		</tr>
 	</table>
 	<?php if($edit_mode): ?>
 	<?php if($itemscanceled == false): ?>

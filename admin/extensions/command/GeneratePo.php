@@ -107,6 +107,7 @@ class GeneratePo extends Base {
 	    MongoCursor::$timeout = -1;
 		$this->log('Generating Purchase Orders');
 		$orderCollection = Order::collection();
+		var_dump($orderCollection);
 		foreach ($this->poEvents as $eventId) {
 		    $eventId = (string) $eventId->_id;
 			//$purchaseHeading = ProcessedOrder::$_purchaseHeading;

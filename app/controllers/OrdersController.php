@@ -19,8 +19,8 @@ use lithium\storage\Session;
 use lithium\util\Validator;
 use MongoDate;
 use MongoId;
-use li3_silverpop\extensions\Silverpop;
 use app\extensions\AvaTax;
+use app\extensions\Mailer;
 
 /**
  * The Orders Controller
@@ -277,7 +277,7 @@ class OrdersController extends BaseController {
 		}
 
 		if (isset($this->request->data['credit_amount'])) {
-			$credit = number_format((float)$this->request->data['credit_amount'], 2);
+			$credit = (float)number_format((float)$this->request->data['credit_amount'],2,'.','');
 			$lower = -0.999;
 			$upper = (!empty($userDoc->total_credit)) ? $userDoc->total_credit + 0.01 : 0;
 			$inRange = Validator::isInRange($credit, null, compact('lower', 'upper'));
@@ -443,13 +443,12 @@ class OrdersController extends BaseController {
 			++$user->purchase_count;
 			$user->save(null, array('validate' => false));
 			$data = array(
-				'order' => $order,
-				'email' => $user->email,
-				'shipDate' => $shipDate
+				'order' => $order->data(),
+				'shipDate' => date('M d, Y', $shipDate)
 			);
-			Silverpop::send('orderConfirmation', $data);
+			Mailer::send('Order_Confirmation', $user->email, $data);
 			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
-				Silverpop::send('nextPurchase', $data);
+				Mailer::send('Welcome_10_Off', $user->email, $data);
 			}
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 		}
