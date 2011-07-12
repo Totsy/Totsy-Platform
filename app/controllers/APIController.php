@@ -59,6 +59,8 @@ class APIController extends  \lithium\action\Controller {
 		if (!is_null($format) && !in_array($format, static::$_formats)){
 			$this->_format = 'json';
 			$this->display( ApiHelper::errorCodes(415) );
+		} else {
+			$this->_format = $format;
 		}
 		
 		// set protocol HTTP OR HTTPS 
@@ -196,48 +198,61 @@ class APIController extends  \lithium\action\Controller {
 	 * Method to show available(active) events 
 	 * for current date. 
 	 * 
-	 * SK: temporary taking off this method. Reason  unsecure.
-	 * 
-	 * min protocol HTTP
+	 * min protocol HTTPS
 	 * method GET
 	 */
 	protected function eventsApi() {
+		
+		//$token = Api::authorizeTokenize($this->request->query);
+		//if (is_array($token) && array_key_exists('error', $token)) {
+		//	return $token;
+		//}
+		
 		$openEvents = Event::open();
 		
 		$base_url = 'http://'.$_SERVER['HTTP_HOST'].'/';
 		$events = array();
+		
 		foreach ($openEvents as $event){
+			
 			$data =  $event->data();
 			$data['base_url'] = $base_url;
 			$data['available_items'] = false;
 			$data['maxDiscount'] = 0;
-			$data['vendor'] = null;
+			$data['vendor'] = '';
 			
-			if (count($data['items'])>0){
-				
+			if (!array_key_exists('event_image',$data)) { $data['event_image'] = $base_url.'img/no-image-small.jpeg'; }
+			else { $data['event_image'] = $base_url.'image/'.$data['event_image'].'.jpg'; }
+			 
+			if ( isset($data['items']) && count($data['items'])>0){
+
 				$mItems  = array();
-				foreach ($event['items'] as $item){
+				foreach ($data['items'] as $item){
 					$mItems[] = new MongoId($item);
 				}
 				
-				$items = Items::all(array(
-					'conditions' => array( '$in' => $mItems ),
-					'fields' => array('vendor','total_quantity','percent_off')
+				$itms = Item::all(array(
+					'conditions' => array(
+					'_id' => array( '$in' => $mItems  )
+					)
 				));
 				unset($mItems);
 				
-				foreach ($items as $itm){
-					$itmem = $itm->data();
-					$item['percent_off'] = $item['percent_off'] * 100; 
-					if (is_null($event['vendor'])){ $event['vendor'] = $item['vendor']; }
-					if ($item['percent_off'] > $data['maxDiscount']) { $data['maxDiscount'] = $item['percent_off']; }
-					if ($item['total_quantity']>0 && $data['available_items'] === false) { $data['available_items'] = true; }
-					unset($item);
+				foreach ($itms as $itm){
+					$it = $itm->data();
+					$it['percent_off'] = $it['percent_off'] * 100; 
+					if ( isset($it['vendor']) && (is_null($data['vendor']) || strlen(trim($data['vendor']))==0)){ 
+						$data['vendor'] = $it['vendor']; 
+					}
+					
+					if ($it['percent_off'] > $data['maxDiscount']) { $data['maxDiscount'] = $it['percent_off']; }
+					if ($it['total_quantity']>0 && $data['available_items'] === false) { $data['available_items'] = true; }
 				}
-				unset($items);
+				
 			}
-			$event[] = $data;
+			$events[] = $data;
 		}
+		
 		$this->setView(1);
 		return (compact('events'));
 	}	
@@ -264,6 +279,8 @@ class APIController extends  \lithium\action\Controller {
 	 * }}}
 	 */
 	private function display ($data){
+
+		
 		switch ($this->_format){
 			
 			case 'xml':
@@ -287,6 +304,7 @@ class APIController extends  \lithium\action\Controller {
 					if (!file_exists(LITHIUM_APP_PATH . '/views/api/'.$path)) {
 						echo ApiHelper::converter(ApiHelper::errorCodes(415),$this->_format);
 					}
+					extract($data);
 					require_once LITHIUM_APP_PATH . '/views/api/'.$path;
 				} else {
 					echo json_encode($data);
