@@ -148,7 +148,8 @@ class Db extends \lithium\data\source\MongoDb {
 		$availableHosts = $server->getHosts();
 		$slaves = array();
 		if (is_array($availableHosts) && count($availableHosts)>0){
-			foreach ($availableHosts as $aH){
+			foreach ($availableHosts as $name=>$aH){
+				$aH['name'] = $name;
 				if ($aH['state'] == 2 && preg_match("/".$aH['name']."/",$host)){
 					$isMaster = false;
 				}
