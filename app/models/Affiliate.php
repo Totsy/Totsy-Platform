@@ -50,7 +50,7 @@ class Affiliate extends Base {
 		$pixels = $pixels->data();
 		$pixel = NULL;
         if($url == '/orders/view'){
-            if(array_key_exists('affiliate_share', $userInfo['affiliate_share'])){
+            if($userInfo && array_key_exists('affiliate_share', $userInfo) && $userInfo['affiliate_share']){
                 $cookie['affiliate'] = $userInfo['affiliate_share']['affiliate'];
                 $cookie['entryTime'] = $userInfo['affiliate_share']['landing_time'];
                 Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
