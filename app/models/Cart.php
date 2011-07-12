@@ -41,7 +41,7 @@ use MongoId;
 * }}}
 * @see app/models/Order::process()
 */
-class Cart extends \lithium\data\Model {
+class Cart extends Base {
 
 	/**
 	 * The # of business days to be added to an event to determine the estimated
@@ -237,6 +237,18 @@ class Cart extends \lithium\data\Model {
 
 		if (count($cartCheck) == 1 && Item::first($cartCheck[0]['item_id'])->shipping_exempt) {
 			$cost = 0;
+		} else {
+		    $exempt = true;
+		    foreach ($cartCheck as $item) {
+		        if (!Item::first($item['item_id'])->shipping_exempt) {
+		            $exempt = false;
+		            break;
+		        }
+		    }
+
+		    if ($exempt) {
+		        $cost = 0;
+		    }
 		}
 
 		if (count($cartCheck) == 1 && !Item::first($cartCheck[0]['item_id'])->shipping_exempt && Item::first($cartCheck[0]['item_id'])->shipping_oversize ) {
@@ -270,8 +282,7 @@ class Cart extends \lithium\data\Model {
 			'conditions' => array(
 				'session' => Session::key('default'),
 				'item_id' => "$itemId",
-				'size' => "$size",
-				'expires' => array('$gt' => static::dates('now'))
+				'size' => "$size"
 		)));
 	}
 
