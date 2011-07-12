@@ -201,20 +201,49 @@ class APIController extends  \lithium\action\Controller {
 	 * min protocol HTTP
 	 * method GET
 	 */
-	protected function events() {
+	protected function eventsApi() {
 		$openEvents = Event::open();
 		
 		$base_url = 'http://'.$_SERVER['HTTP_HOST'].'/';
 		$events = array();
 		foreach ($openEvents as $event){
-			$events[] = $event->data();
+			$data =  $event->data();
+			$data['base_url'] = $base_url;
+			$data['available_items'] = false;
+			$data['maxDiscount'] = 0;
+			$data['vendor'] = null;
+			
+			if (count($data['items'])>0){
+				
+				$mItems  = array();
+				foreach ($event['items'] as $item){
+					$mItems[] = new MongoId($item);
+				}
+				
+				$items = Items::all(array(
+					'conditions' => array( '$in' => $mItems ),
+					'fields' => array('vendor','total_quantity','percent_off')
+				));
+				unset($mItems);
+				
+				foreach ($items as $itm){
+					$itmem = $itm->data();
+					$item['percent_off'] = $item['percent_off'] * 100; 
+					if (is_null($event['vendor'])){ $event['vendor'] = $item['vendor']; }
+					if ($item['percent_off'] > $data['maxDiscount']) { $data['maxDiscount'] = $item['percent_off']; }
+					if ($item['total_quantity']>0 && $data['available_items'] === false) { $data['available_items'] = true; }
+					unset($item);
+				}
+				unset($items);
+			}
+			$event[] = $data;
 		}
 		$this->setView(1);
 		return (compact('events'));
 	}	
 	
 	/**
-	 * Mwthod to handle templates aka views.
+	 * Method to handle templates aka views.
 	 * 
 	 * template structure :
 	 * {{{
@@ -253,7 +282,15 @@ class APIController extends  \lithium\action\Controller {
 			case 'json':
 			default:
 				header("Content-type: text/javascript");
-				echo json_encode($data);
+				if (!is_null($this->_view)){
+					$path = $this->_format.'/'.$this->_method.'/'.$this->_view.'.php';
+					if (!file_exists(LITHIUM_APP_PATH . '/views/api/'.$path)) {
+						echo ApiHelper::converter(ApiHelper::errorCodes(415),$this->_format);
+					}
+					require_once LITHIUM_APP_PATH . '/views/api/'.$path;
+				} else {
+					echo json_encode($data);
+				}
 			break;
 
 		}
