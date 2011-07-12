@@ -22,8 +22,6 @@
 
 $(document).ready(function(){
 
-//});
-
 tinyMCE.init({
 	// General options
 	mode : "textareas",
@@ -46,34 +44,33 @@ tinyMCE.init({
 
 });
 
-//$(document).ready(function() {
 $('.table_link').click(function() {  
         $('tr').hide();
       $('tr .').toggle('slow');
     });
     
-$('select').change(function(){
-
-//if 1 - check 2 nd 3
-//if 2 - check 1 and 3
-//if 3 - check 1 and 2
+$('select').change(function() {
 
 //parse out the current item's id
 var item_id = this.id.substring(9, this.id.length);
+var list_position = this.id.substring(7,8);
 
 //create strings of the dropdown id's
-var related1 = 'related1_' + item_id;
-var related2 = 'related2_' + item_id;
-var related3 = 'related3_' + item_id;
+for ( i=1; i<6; i++ ) {
 
-//check what the user selected and compare it to the other 2 dropdowns (they should have been named with the same item id after the underscore)
-if( $("#" + this.id).val()!=='' ){
-	if( $("#" + related1).val()==$("#" + related2).val() ||  $("#" + related1).val()==$("#" + related3).val() ){
-		alert("Please select a different item to relate"); 
-		//reset this to the default : 'select an item'
-		$("#" + this.id).get(0).selectedIndex = 0;
-		return false;
-	} 
+	var related_item_id = 'related'+ i + '_' + item_id;	
+	//if its not the current dropdown
+	//and its value is the same as the current dropdown's value AND
+	//the item's value isn't an empty string
+	//than throw an alert message
+	if(i!=list_position && $("#" + related_item_id + " option:selected").val()!=="" ) {
+				
+		if( $("#" + related_item_id + " option:selected").val() == $("#" + this.id + " option:selected").val() ) {
+			$("#" + this.id).val(0);
+			alert("please select a different item");
+			break;
+		}
+	}
 }
 
 });    
