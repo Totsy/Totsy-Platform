@@ -27,6 +27,13 @@
 						<?php endif ?>
 				<?php endforeach ?>
 			</table>
+				<p style="font-weight:bold;font-size:12px;text-align:right;">
+						<?=$this->html->link("Update Information", array(
+						'Users::update',
+						'args'=>$user['_id']),
+						array('target' => '_blank'));
+						?>
+				</p><br />
 		</div>
 	</div>
 </div>

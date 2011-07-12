@@ -51,16 +51,15 @@ Router::connect('/', 'Dashboard::index');
 
 Router::connect('/search/{:search}', 'Search::view');
 
-
 /**
  * Hooking up ACLs
  */
 if (isset($session['acls'])) {
 	foreach ($session['acls'] as $acl) {
-		$connect = implode('::', array($acl['controller'], $acl['action']));
-		Router::connect($acl['route'], $connect);
+		Router::connect($acl['route'], $acl['connection']);
 	}
 }
+
 /**
  * Hooking up someone is only an admin.
  */
@@ -70,6 +69,7 @@ if ($session['admin'] && !isset($session['acls'])) {
 	Router::connect('/account/add/{:args}', 'Account::add');
 	Router::connect('/events', 'Events::index');
 	Router::connect('/users/view/{:args}', 'Users::view');
+	Router::connect('/users/update/{:args}', 'Users::update');
 	Router::connect('/select/event/{:args}', 'Base::selectEvent');
 	Router::connect('/items/preview/{:event:[a-z0-9\-]+}/{:item:[a-z0-9\-]+}', 'Items::preview');
 
