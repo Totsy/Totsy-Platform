@@ -3925,3 +3925,7 @@ Text Align > left / right
 
 .align_right { text-align:right; }
 .align_left { text-align:left; }
+
+.label_break {
+	clear:both;
+}

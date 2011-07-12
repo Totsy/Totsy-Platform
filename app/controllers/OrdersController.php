@@ -508,6 +508,11 @@ class OrdersController extends BaseController {
 
 		return $orderEvents;
 	}
+	
+	public function payment() {
+	
+	
+	}
 
 }
 
