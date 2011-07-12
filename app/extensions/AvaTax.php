@@ -85,13 +85,14 @@ class AvaTax {
 				if (isset($data['taxCart'])){
 					$return = array( 
 						'tax'=>static::totsyCalculateTax($data),
-						'avatax' => static::$useAvatax
+						'avatax' => false
 					);
 				} else {
 					$return = array( 
-						'tax'=>static::totsyCalculateTax($data),
-						'avatax' => static::$useAvatax
-					);				}
+						'tax'=>0,
+						'avatax' => false
+					);
+				}
 			}
 		}
 		return $return;
