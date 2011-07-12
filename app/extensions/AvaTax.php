@@ -98,7 +98,7 @@ class AvaTax {
 	} 
 	
   	public static function postTax($data,$tryNumber=0){
-  		
+  		$settings = Environment::get(Environment::get());
   		if (is_array($data) && array_key_exists('cartByEvent',$data) ){
 			$data['items'] = static::getCartItems($data['cartByEvent']);
 			static::shipping($data);
@@ -108,13 +108,13 @@ class AvaTax {
   			$return = AvaTaxWrap::getAndCommitTax($data);
   		} catch (Exception $e){
 			// Try again or return 0;
-			Logger::error($e->getMessage()."\n".$e->getTraceAsStirng() );
+			Logger::error($e->getMessage()."\n".$e->getTraceAsString() );
 			if ($tryNumber <= $settings['avatax']['retriesNumber']){
 				$return = self::postTax($data,++$tryNumber);
 			} else {
-				Mailer::send('TaxProcessError', $setting['avatax']['logEmail'], array(
+				Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
 					'message' => $e->getMessage(),
-					'trace' => $e->getTraceAsStirng(),
+					'trace' => $e->getTraceAsString(),
 					'info' => $data
 				));
 				$return = 0;
