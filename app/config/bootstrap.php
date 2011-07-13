@@ -46,7 +46,6 @@ require __DIR__ . '/bootstrap/libraries.php';
 
 use lithium\core\Environment;
 
-
 Environment::is(function($request) {
 	switch ($request->env('HTTP_HOST')) {
 		case 'www.totsy.com':

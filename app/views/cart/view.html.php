@@ -108,7 +108,10 @@
 				<tr class="cart-total">
 					<td colspan="7" id='subtotal'>
 						<span style="float: left; font-size: 12px;">
-							<strong>Add <a href="#" id='credits_lnk' onclick="open_credit();" >Credits</a> / <a href="#" id='promos_lnk' onclick="open_promo();">Optional Code</a></strong>
+							<strong>Add <?php if(!empty($credit)) { ?>
+								<a href="#" id='credits_lnk' onclick="open_credit();" >Credits</a> /
+							<?php } ?> 
+								<a href="#" id='promos_lnk' onclick="open_promo();">Optional Code</a></strong>
 						</span>
 						<span style="float: right; font-size: 16px;">
 							<strong>Subtotal: <span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong>

@@ -4,7 +4,6 @@
 	$this->form->config(array('text' => array('class' => 'inputbox')));
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
 ?>
-<?=$this->html->script('creditcard')?>
 <div class="grid_16">
 	<h2 class="page-title gray">Payment Information</h2>
 	<hr />
@@ -15,7 +14,7 @@
 
 <div class="grid_10">
 <?=$this->form->create(null, array(
-		'id' => 'paymentBillingform',
+		'id' => 'paymentForm',
 		'class' => "fl"
 	)); ?>
 			
@@ -29,8 +28,12 @@
 				<?=$this->form->error('card[name]'); ?>
 				<br />
 				<?=$this->form->label('card[number]', 'Card Number', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('card[number]', array('class' => 'inputbox','id' => 'card[number]')); ?>
+				<?=$this->form->text('card[number]', array('class' => 'inputbox','id' => 'card[number]', 'onblur' => 'validCC()')); ?>
+				<?=$this->form->hidden('card[valid]', array('class' => 'inputbox', 'id' => 'card[valid]')); ?>
 				<?=$this->form->error('card[number]'); ?>
+				<div id='error_valid' style="display:none;">
+					Wrong Credit Card Number
+				</div>
 				<br />
 				<?=$this->form->label('card[number]', 'Expiration Date', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->select('card[month]', array(
@@ -91,4 +94,42 @@
 
 <?=$this->form->end();?> 
 </div>
-$(function() {$("#myform").validate({rules: {cardnum: {creditcard2: function(){ return $('#cardType').val(); }}}		});
+<script>
+function isValidCard(cardNumber){
+	var ccard = new Array(cardNumber.length);
+	var i     = 0;
+        var sum   = 0;
+
+	// 6 digit is issuer identifier
+	// 1 last digit is check digit
+	// most card number > 11 digit
+	if(cardNumber.length < 11){
+		return false;
+	}
+	// Init Array with Credit Card Number
+	for(i = 0; i < cardNumber.length; i++){
+		ccard[i] = parseInt(cardNumber.charAt(i));
+	}
+	// Run step 1-5 above above
+	for(i = 0; i < cardNumber.length; i = i+2){
+		ccard[i] = ccard[i] * 2;
+		if(ccard[i] > 9){
+			ccard[i] = ccard[i] - 9;
+		}
+	}
+	for(i = 0; i < cardNumber.length; i++){
+		sum = sum + ccard[i];
+	}
+	return ((sum%10) == 0);
+  }
+
+function validCC() {
+	var test = isValidCard($("input[name='card[number]']").val());
+	$("input[name='card[valid]']").val(test);
+	if(!test) {
+		$('#error_valid').show();
+	} else {
+		$('#error_valid').hide()();
+	}
+}
+</script>
