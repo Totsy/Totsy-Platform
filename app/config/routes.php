@@ -44,20 +44,35 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
      ));
 });
 
-Router::connect('/register', 'Users::register');
-Router::connect('/register/facebook', 'Users::fbregister');
+/* 
 Router::connect('/momoftheweek', 'MomOfTheWeeks::index');
 Router::connect('/momoftheweek/fbml', 'MomOfTheWeeks::fbml');
+*/
+
+/**
+	Static Pages Routes
+**/
+Router::connect('/pages/{:args}', 'Pages::view');
+Router::connect('/livingsocial', array('Pages::view', 'args' => array('living_social')));
+Router::connect('/blog', 'Blog::index');
+Router::connect('/feeds/{:args}', 'Feeds::home');
 Router::connect('/surveys', 'Surveys::index');
+
+/**
+	Registeration / Login Routes
+**/
+Router::connect('/register', 'Users::register');
+Router::connect('/register/facebook', 'Users::fbregister');
 Router::connect('/invitation/{:args}', 'Users::register');
 Router::connect('/join/{:args}', 'Users::register');
 Router::connect('/affiliate/{:args}', 'Affiliates::registration');
 Router::connect('/a/{:args:[a-zA-Z0-9&\?\.=:/]+}', 'Affiliates::register');
 Router::connect('/reset', 'Users::reset');
-Router::connect('/pages/{:args}', 'Pages::view');
-Router::connect('/livingsocial', array('Pages::view', 'args' => array('living_social')));
-Router::connect('/blog', 'Blog::index');
-Router::connect('/feeds/{:args}', 'Feeds::home');
+
+/**
+ * Login / Logout
+*/
+Router::connect('/{:action:login|logout}', array('controller' => 'users'));
 
 /**
  * Redirect all non-authenticated users to
@@ -67,23 +82,35 @@ if(!Session::check('userLogin')) {
 	Router::connect('/{:args}', 'Users::login');
 	return;
 }
+
+/**
+	Events / Sales / Items Routes
+**/
 Router::connect('/', 'Events::index');
 Router::connect('/sales/{:args}', 'Events::index');
-Router::connect('/{:action:login|logout}', array('controller' => 'users'));
+Router::connect('/events/view/{:item:[a-z0-9\-]+}', 'Events::view');
+Router::connect('/sale/{:event:[a-z0-9\-]+}', 'Events::view');
+Router::connect('/sale/{:event:[a-z0-9\-]+}/{:item:[a-z0-9\-]+}', 'Items::view');
+
+Router::connect('/upgrade', 'Users::upgrade');
+Router::connect('/welcome', 'Users::affiliate');
 Router::connect('/addresses', 'Addresses::view');
 Router::connect('/addresses/edit{:args}', 'Addresses::edit');
+/**
+	My Account Routes
+**/
 Router::connect('/account/info', 'Users::info');
 Router::connect('/account/credits', 'Credits::view');
 Router::connect('/account/invites', 'Users::invite');
 Router::connect('/account/password', 'Users::password');
-Router::connect('/shopping/cart', 'Cart::index');
-Router::connect('/shopping/checkout.{:type}', 'Orders::add');
-Router::connect('/shopping/checkout', 'Orders::add');
-Router::connect('/upgrade', 'Users::upgrade');
-Router::connect('/events/view/{:item:[a-z0-9\-]+}', 'Events::view');
-Router::connect('/welcome', 'Users::affiliate');
-Router::connect('/sale/{:event:[a-z0-9\-]+}', 'Events::view');
-Router::connect('/sale/{:event:[a-z0-9\-]+}/{:item:[a-z0-9\-]+}', 'Items::view');
+
+/**
+	Shopping Cart Routes
+**/
+Router::connect('/checkout/review', 'Cart::view');
+Router::connect('/checkout/shipping', 'Orders::addShipping');
+Router::connect('/checkout/payment', 'Orders::payment');
+Router::connect('/checkout/process', 'Orders::process');
 /**
 * Taking this route out, as the menu helper is not ready
 * for custom routes.

@@ -5,6 +5,10 @@ namespace app\controllers;
 use app\models\Cart;
 use app\models\Item;
 use app\models\Event;
+use app\models\User;
+use app\models\Credit;
+use app\models\Service;
+use app\models\Promotion;
 use lithium\storage\Session;
 use MongoId;
 use MongoDate;
@@ -30,8 +34,18 @@ class CartController extends BaseController {
 	* @return compact
 	*/
 	public function view() {
+		$cartPromo = null; 
+		$cartCredit = null;
+		$user = Session::read('userLogin');
+		$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
+		$vars = compact('cartPromo','cartCredit');
 		if ($this->request->data) {
-			$this->update();
+			$datas = $this->request->data;
+			if(!empty($datas['rmv_item_id'])) {
+				$this->remove($datas['rmv_item_id']);
+			} else {
+				$vars = $this->update();
+			}
 		}
 		Cart::increaseExpires();
 		$message = '';
@@ -58,8 +72,11 @@ class CartController extends BaseController {
 				$returnUrl = $event->url;
 			}
 		}
-
-		return compact('cart', 'message', 'shipDate', 'returnUrl');
+		//Calculate savings
+		$savings = Session::read('userSavings');
+		$credit = Session::read('credit');
+		$promocodes = Session::read('promocode');
+		return $vars + compact('cart', 'message', 'shipDate', 'returnUrl', 'savings', 'credit', 'userDoc');
 	}
 
 	/**
@@ -88,6 +105,9 @@ class CartController extends BaseController {
 					}
 				}
 			}
+		} else {
+			#Reset Savings on Session
+			Session::write('userSavings', 0);
 		}
 		#T
 		$cart = Cart::create();
@@ -122,9 +142,12 @@ class CartController extends BaseController {
 					if( $avail > 0 ){
 						++$cartItem->quantity;
 						$cartItem->save();
-					}else{
+						//calculate savings
+						$item[$item['_id']] = $cartItem->quantity;
+						$this->savings($item, 'add');
+					} else {
 						$cartItem->error = 'You can’t add this quantity in your cart. <a href="#5">Why?</a>';
-					$cartItem->save();
+						$cartItem->save();
 					}
 				}else{
 					$cartItem->error = 'You have reached the maximum of 9 per item.';
@@ -138,7 +161,9 @@ class CartController extends BaseController {
 				unset($item['_id']);
 				$info = array_merge($item, array('quantity' => 1));
 				if ($cart->addFields() && $cart->save($info)) {
-
+					//calculate savings
+					$item[$itemId] = 1;
+					$this->savings($item, 'add');
 				}
 			}
 			$this->redirect(array('Cart::view'));
@@ -153,21 +178,31 @@ class CartController extends BaseController {
 	* @see app/models/Cart::remove()
 	* @return compact
 	*/
-	public function remove() {
+	public function remove($id = null) {
 		if ($this->request->data) {
 				$data = $this->request->data;
+				if(!empty($id)) {
+					$data["id"] = $id;
+				}
 				$cart = Cart::find('first', array(
 					'conditions' => array(
 						'_id' => $data["id"]
 				)));
+				$quantity = $cart->quantity;
+				$now = getdate();
+				$expires_date = $cart->expires->sec;
 				if(!empty($cart)){
 					Cart::remove(array('_id' => $data["id"]));
+					//calculate savings
+					if($now[0] < $cart->expires->sec) {
+						$item[$cart->item_id] = $quantity;
+						$this->savings($item, 'remove');
+					}
 				}
 			}
-
 		$this->_render['layout'] = false;
 		$cartcount = Cart::itemCount();
-		return compact('cartcount');
+		$this->redirect(array('Cart::view'));
 	}
 
 	/**
@@ -180,28 +215,83 @@ class CartController extends BaseController {
 		$message = null;
 		$data = $this->request->data;
 		if ($data) {
-			$carts = $data['cart'];
-			foreach ($carts as $id => $quantity) {
-				$result = Cart::check((integer) $quantity, (string) $id);
-				$cart = Cart::find('first', array(
-					'conditions' => array('_id' =>  (string) $id)
-				));
-				if ($result['status']) {
-					if($quantity == 0){
-				        Cart::remove(array('_id' => $id));
-				    }else {
-						$cart->quantity = (integer) $quantity;
+			if(!empty($data['cart'])) {
+				$carts = $data['cart'];
+				foreach ($carts as $id => $quantity) {
+					$result = Cart::check((integer) $quantity, (string) $id);
+					$cart = Cart::find('first', array(
+						'conditions' => array('_id' =>  (string) $id)
+					));
+					if ($result['status']) {
+						if($quantity == 0){
+					        Cart::remove(array('_id' => $id));
+					    }else {
+							$cart->quantity = (integer) $quantity;
+							$cart->save();
+						}
+					} else {
+						$cart->error = $result['errors'];
 						$cart->save();
 					}
-				} else {
-					$cart->error = $result['errors'];
-					$cart->save();
+					//build temp array
+					$items[$cart->item_id] = $quantity;
 				}
 			}
+			#T Manage Promocodes use
+			$user = Session::read('userLogin');
+			$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
+			$fields = array(
+			'item_id',
+			'color',
+			'category',
+			'description',
+			'product_weight',
+			'quantity',
+			'sale_retail',
+			'size',
+			'url',
+			'primary_image',
+			'expires',
+			'event',
+			'discount_exempt'
+			);
+			$cart = Cart::active(array('fields' => $fields, 'time' => 'now'));
+			$service = Session::read('services', array('name' => 'default'));
+			extract(Service::freeShippingCheck(7.48, 0));
+			$map = function($item) { return $item->sale_retail * $item->quantity; };
+			$subTotal = array_sum($cart->map($map)->data());
+			$cartCredit = Credit::create();
+			$credit_amount = isset($data['credit_amount']) ? $data['credit_amount'] : 0;
+			$cartCredit->checkCredit($credit_amount, $subTotal, $userDoc);
+			$orderServiceCredit = Service::tenOffFiftyCheck($subTotal);
+			$postServiceCredit = $subTotal + $orderServiceCredit;
+			$postCreditTotal = $postServiceCredit + $cartCredit->credit_amount;
+			$promo_code = NULL;
+			if (Session::read('promocode')) {
+				$promo_code = Session::read('promocode');
+			}
+			if (array_key_exists('code', $this->request->data)) {
+				$promo_code = $this->request->data['code'];
+			}
+
+			$cartPromo = Promotion::create();
+			$promo_code = NULL;
+			if (Session::read('promocode')) {
+				$promo_code = Session::read('promocode');
+			}
+			if (array_key_exists('code', $data)) {
+				$promo_code = $data['code'];
+			}
+			$cartPromo->promoCheck($promo_code, $userDoc, compact('postCreditTotal', 'shippingCost', 'overShippingCost'));
+			#END OF T
+			//calculate savings
+			$this->savings($cart, 'update');
 		}
-		$this->_render['layout'] = false;
-		$this->redirect('/cart/view');
+		//$this->_render['layout'] = false;
+		//$this->redirect('/cart/view');
+		return compact('cartPromo', 'cartCredit');
 	}
+	
 	public function modal(){
 	    $userinfo = Session::read('userLogin');
 	    $success = true;
@@ -216,6 +306,7 @@ class CartController extends BaseController {
 	    }
 	    echo json_encode($success);
 	}
+	
 	public function upsell(){
         $query = $this->request->query;
 
@@ -226,6 +317,46 @@ class CartController extends BaseController {
             $total_left = 45 - $query['subtotal'];
             return compact('total_left', 'url');
         }
+	}
+	
+	/**
+	* This method allows to manage (update/delete/add) the savings of the current order
+	*
+	*/
+	public function savings($items = null, $action) {
+		if($action == "update"){
+			$savings = 0;
+			if(!empty($items)) {
+				foreach($items as $key => $quantity) {
+					$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
+					if(!empty($itemInfo->msrp)){
+						$savings += $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
+					}
+				}
+			}
+		} else if($action == "add") {
+			$savings = Session::read('userSavings');
+			if(empty($savings)) {
+				$savings = 0;
+			}
+			if(!empty($items)) {
+				foreach($items as $key => $quantity) {
+					$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
+					if(!empty($itemInfo->msrp)){
+						$savings += $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
+					}
+				}
+			}
+		} else if($action == "remove") {
+			$savings = Session::read('userSavings');
+			foreach($items as $key => $quantity) {
+				$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
+				if(!empty($itemInfo->msrp)){
+					$savings -= $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
+				}
+			}
+		}
+		Session::write('userSavings', $savings);
 	}
 }
 ?>

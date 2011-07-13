@@ -178,7 +178,6 @@ class UsersController extends BaseController {
 	 * @return string The user is prompted with a message if authentication failed.
 	 */
 	public function login() {
-
 		$message = $resetAuth = $legacyAuth = $nativeAuth = false;
 		$rememberHash = '';
 		$this->autoLogin();

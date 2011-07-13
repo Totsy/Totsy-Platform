@@ -40,14 +40,10 @@ use \lithium\data\Connections;
 			'database' => 'totsy_eric',
 			'host' => 'localhost'),
 		'local' => array(
-			'type' =>  'MongoDb',
+    		'type' =>  'MongoDb',
 			'database' => 'totsy',
-			'host' => array(
-    			'devdb1.totsy.com',
-    			'devdb2.totsy.com',
-    			'devdb3.totsy.com'
-    		),
-			'adapter' => 'app\extensions\adapter\mongo\Db')
-	));
+			'host' => 'localhost'
+    		)
+));
 
 ?>

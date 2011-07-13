@@ -10,6 +10,7 @@ use MongoRegex;
 use lithium\analysis\Logger;
 use admin\models\User;
 use admin\models\Item;
+use Mongo;
 
 /**
 * The Orders Model is related to the Orders Collection in MongoDB.
@@ -66,10 +67,15 @@ class Order extends \lithium\data\Model {
 	protected $_dates = array(
 		'now' => 0
 	);
-
+	
 	public static function collection() {
 		return static::_connection()->connection->orders;
 	}
+	
+	/*
+	public static function collection() {
+		return static::_connection()->connection->orders;
+	} */
 
 	public $validates = array(
 		'authKey' => 'Could not secure payment.',
@@ -222,7 +228,7 @@ class Order extends \lithium\data\Model {
 			static::collection()->update(array('_id' => new MongoId($order_id)),
 				array('$set' => array('cancel' => true)), array("upsert" => true));
 			//Authorize.Net Void
-			static::void($order);
+			static::void($order);		
 			//Cancel all the items
 			$items = $order["items"];
 			foreach($order["items"] as $key => $item){

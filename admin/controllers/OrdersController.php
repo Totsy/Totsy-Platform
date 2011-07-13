@@ -142,7 +142,6 @@ class OrdersController extends BaseController {
 		$datas = $this->request->data;
 		if ($datas["id"]) {
 			$status = Order::cancel($datas["id"], $current_user["email"], $datas["comment"]);
-			$selected_order = $orderCollection->findOne(array("_id" => new MongoId($datas["id"])));
 		}
 	}
 
@@ -541,6 +540,30 @@ class OrdersController extends BaseController {
 			}
 		}
 		return $shipDate;
+	}
+
+	protected function shipping (&$data){
+		if (array_key_exists('shippingCost', $data) && $data['shippingCost']>0 ){
+			$data['items'][] = array(
+				'_id' => 'Shipping',
+				'item_id' => 'Shipping',
+				'category' => 'Shipping',
+				'description' => 'shipping',
+				'quantity' => 1,
+				'sale_retail' => $data['shippingCost']
+			);	
+		}
+
+		if (array_key_exists('overShippingCost', $data) && $data['overShippingCost']>0 ){
+			$data['items'][] = array(
+				'_id' => 'OverShipping',
+				'item_id' => 'OverShipping',
+				'category' => 'Shipping',
+				'description' => 'Over shipping',
+				'quantity' => 1,
+				'sale_retail' => $data['overShippingCost']
+			);	
+		}
 	}
 }
 

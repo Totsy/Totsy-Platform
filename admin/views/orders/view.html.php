@@ -231,7 +231,7 @@
 											<?=$this->form->create(null ,array('id'=>'itemsForm','enctype' => "multipart/form-data")); ?>
 											<?php $items = $order->items; ?>
 											<?php foreach ($items as $key => $item): ?>
-											<?php $name = "items[".strval($key)."][cancel]"; ?>
+											<?php $name = "items[".strval($key)."][cancel]"; ?>											  
 							<?=$this->form->hidden($name, array('class' => 'inputbox', 'id' => $name, 'value' => (string) $item["cancel"])); ?>
 							<?=$this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
 												<tr class="item_line"
@@ -273,7 +273,7 @@
 												</td>
 												<td style="padding:5px;" title="quantity">
 												<?php if($edit_mode): ?>
-													<?php
+												<?php  
 													if(!empty($item['initial_quantity'])) {
 														$limit = $item['initial_quantity'];
 													} else {
