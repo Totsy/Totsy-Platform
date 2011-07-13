@@ -10,7 +10,7 @@ if (is_array($events)){
 		$evnt['description'] = $event['blurb'];
 		$evnt['availableItems'] = $event['available_items']==true?'YES':'NO';
 		$evnt['brandName'] = $event['vendor'];
-		$evnt['image'] = $base_url.$event['event_image'];
+		$evnt['image'] = $event['event_image'];
 		$evnt['discount'] = number_format($event['maxDiscount'],2);
 		$evnt['url'] = $base_url.'sale/'.$event['url'];
 		$out['events'][] = $evnt;

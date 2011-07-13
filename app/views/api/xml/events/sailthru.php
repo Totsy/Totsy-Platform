@@ -11,7 +11,7 @@
 			<description><?php echo htmlspecialchars( $event['blurb'] ) ?></description>
 			<availableItems><?php echo $event['available_items']==true?'YES':'NO';?></availableItems>
 			<brandName><?php echo $event['vendor']?></brandName>
-			<image><?php echo $base_url.$event['event_image']; ?></image>
+			<image><?php echo $event['event_image']; ?></image>
 			<discount><?php echo number_format($event['maxDiscount'],2); ?></discount>
 			<url><?php echo $base_url.'sale/'.$event['url']; ?></url>
 		</event>
