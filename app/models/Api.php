@@ -171,7 +171,7 @@ class Api extends \lithium\data\Model {
 		if ( $token_expires > time()) {
 			$user['last_active'] = new MongoDate();
 		} else {
-			$user['token'] = md5(mktime().uniqid(mt_rand()).'+'.$token_expires);
+			$user['token'] = md5(time().uniqid(mt_rand()).'+'.$token_expires);
 			$user['last_active'] = new MongoDate();
 		}
 		static::collection()->save($user);
