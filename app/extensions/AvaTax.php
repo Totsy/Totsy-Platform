@@ -5,6 +5,7 @@ use lithium\analysis\Logger;
 use lithium\core\Environment;
 use lithium\action\Request;
 use app\extensions\Mailer;
+use app\extensions\BlackBox;
 use app\models\Cart;
 use AvaTaxWrap;
 use Exception;
@@ -71,23 +72,32 @@ class AvaTax {
 			// On error return '0'
 			
 			// Try again or return 0;
+			BlackBox::tax('can not calculate tax via avalara.');
 			
-			Logger::error($e->getMessage()."\n".$e->getTraceAsString() );
+			BlackBox::taxError($e->getMessage()."\n".$e->getTraceAsString() );
 			if ($tryNumber < $settings['avatax']['retriesNumber']){
+				BlackBox::tax(($tryNumber+1).' attempt of '.$settings['avatax']['retriesNumber']);
 				$return = self::getTax($data,++$tryNumber);
 			} else {
-				Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
-					'message' => $e->getMessage(),
-					'trace' => $e->getTraceAsString(),
-					'info' => $data
-				));
 				
 				if (isset($data['taxCart'])){
+					BlackBox::tax('Trying old way.');
+					Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
+						'message' => 'Avatax system is unreachable. Do on a old way.',
+						'trace' => date('Y-m-d H:i:s'),
+						'info' => $data
+					));
 					$return = array( 
 						'tax'=>static::totsyCalculateTax($data),
 						'avatax' => false
 					);
 				} else {
+					BlackBox::tax('ERROR returns 0');
+					Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
+						'message' => 'All systems are down. Return 0',
+						'trace' => date('Y-m-d H:i:s'),
+						'info' => $data
+					));
 					$return = array( 
 						'tax'=>0,
 						'avatax' => false
