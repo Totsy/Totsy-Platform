@@ -63,7 +63,11 @@ class APIController extends  \lithium\action\Controller {
 			$this->_format = $format;
 		}
 		
-		// set protocol HTTP OR HTTPS 
+		/* set protocol HTTP OR HTTPS 
+		 *
+		 * remember to set proper virtual host nginx config
+		 * @see Api::setProtocol() comments
+		 */
 		Api::init($this->request);
 		
 		if (empty($params) || ( is_array($params) && count($params)==0)){
@@ -203,20 +207,20 @@ class APIController extends  \lithium\action\Controller {
 	 */
 	protected function eventsApi() {
 		
-		//$token = Api::authorizeTokenize($this->request->query);
-		//if (is_array($token) && array_key_exists('error', $token)) {
-		//	return $token;
-		//}
+		$token = Api::authorizeTokenize($this->request->query);
+		if (is_array($token) && array_key_exists('error', $token)) {
+			return $token;
+		}
 		
 		$openEvents = Event::open();
 		
 		$base_url = 'http://'.$_SERVER['HTTP_HOST'].'/';
 		$events = array();
+		$closing = array();
 		
 		foreach ($openEvents as $event){
 			
 			$data =  $event->data();
-			$data['base_url'] = $base_url;
 			$data['available_items'] = false;
 			$data['maxDiscount'] = 0;
 			$data['vendor'] = '';
@@ -240,7 +244,17 @@ class APIController extends  \lithium\action\Controller {
 				
 				foreach ($itms as $itm){
 					$it = $itm->data();
-					$it['percent_off'] = $it['percent_off'] * 100; 
+					
+					if (preg_match('/[\%]+/',$it['percent_off'])){
+						$it['percent_off'] = substr($it['percent_off'],0,-1);
+						if (is_float($it['percent_off']) ) $it['percent_off'] = round($it['percent_off'],2);
+					} else if (is_float($it['percent_off'])) {
+						$it['percent_off'] = round($it['percent_off']*100,2);
+					} else {
+						$it['percent_off'] = preg_replace('/[/D]+/','',$it['percent_off']);
+						if ($it['percent_off']>74) $it['percent_off'] = 0;	
+					}
+					
 					if ( isset($it['vendor']) && (is_null($data['vendor']) || strlen(trim($data['vendor']))==0)){ 
 						$data['vendor'] = $it['vendor']; 
 					}
@@ -250,11 +264,18 @@ class APIController extends  \lithium\action\Controller {
 				}
 				
 			}
+			if ($data['end_date']['sec'] < mktime(0, 0, 0, date("m"), date("d")+1, date("Y")) ){
+				$closing[] = $data;
+			}
 			$events[] = $data;
 		}
-		
+		$pendingEvents = Event::pending();
+		$pending = array();
+		foreach ($pendingEvents as $pending){
+			$pending[] = $pending->data();
+		}
 		$this->setView(1);
-		return (compact('events'));
+		return (compact('events','pending','closing','base_url'));
 	}	
 	
 	/**
@@ -290,6 +311,7 @@ class APIController extends  \lithium\action\Controller {
 					if (!file_exists(LITHIUM_APP_PATH . '/views/api/'.$path)) {
 						echo ApiHelper::converter(ApiHelper::errorCodes(415),$this->_format);
 					}
+					extract($data);
 					require_once LITHIUM_APP_PATH . '/views/api/'.$path;
 				} else {
 					echo ApiHelper::converter(ApiHelper::errorCodes(415),$this->_format);
