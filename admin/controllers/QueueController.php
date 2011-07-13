@@ -4,6 +4,7 @@ namespace admin\controllers;
 
 use admin\models\Event;
 use admin\models\Queue;
+use admin\models\Order;
 use admin\controllers\BaseController;
 use lithium\storage\Session;
 use MongoDate;
@@ -32,7 +33,9 @@ class QueueController extends BaseController {
 			'end_date' => array(
 				'$gte' => new MongoDate(strtotime("-5 week")),
 				'$lte' => new MongoDate(time())
-		));
+		    ),
+		    'name' => array('$nin' => array(new MongoRegex("/test/i"),new MongoRegex("/micah/i") ))
+		);
 		if ($this->request->data) {
 			$search = $this->request->data['search'];
 			$conditions = array('name' => new MongoRegex("/$search/i"));
@@ -42,6 +45,40 @@ class QueueController extends BaseController {
 		$queue = Queue::all(compact('conditions'));
 		$conditions = array('processed' => true);
 		$recent = Queue::all(compact('conditions'));
+		/**
+		* Get the approx number of orders and lines files to be processed
+		*/
+		foreach($queue as $data) {
+		    if (array_key_exists('orders', $data->data()) && $data['orders']) {
+                $conditions = array(
+                    'items.event_id' => array('$in' => $data['orders']->data()),
+                    'cancel' => array('$ne' => true)
+                );
+                $order_count = Order::count(compact('conditions'));
+
+                $fields = array('items' => true);
+                $orders = Order::find('all',compact('conditions','fields'));
+                $cancel_count = 0;
+                $line_count = 0;
+                foreach($orders as $order) {
+                    $line_count += count($order['items']);
+                    $items = $order['items']->data();
+                    array_walk_recursive($items, function($item, $key, $cancel_count){
+                        if ($key === 'cancel' && $item == true) {
+                            ++$cancel_count;
+                        }
+                    }, $cancel_count);
+                }
+                $line_count -= $cancel_count;
+                $conditions = array(
+                    'items.event_id' => array('$in' => $data['orders']->data()),
+                    'items.cancel' => true
+                );
+                $item_count = Order::count(compact('conditions'));
+                $data['order_count'] = $order_count - $item_count;
+                $data['line_count'] = $line_count;
+            }
+		}
 		/**
 		 * Show all the data
 		 */
@@ -60,7 +97,7 @@ class QueueController extends BaseController {
 
 	/**
 	 * Adds an event id to the queue and flags it for order and/or PO processing.
-	 * 
+	 *
 	 * The view will contain a checkboxes that will directly correspond to the
 	 * document that should be saved to the queue collection.
 	 *
@@ -97,7 +134,46 @@ class QueueController extends BaseController {
 		}
 		return compact('orderEvents');
 	}
-	
 
-	
+	public function currentQueue() {
+	    $conditions = array('processed' => array('$ne' => true));
+		$queue = Queue::all(compact('conditions'));
+
+		/**
+		* Get the approx number of orders and lines files to be processed
+		*/
+		foreach($queue as $data) {
+		    if (array_key_exists('orders', $data->data()) && $data['orders']) {
+                $conditions = array(
+                    'items.event_id' => array('$in' => $data['orders']->data()),
+                    'cancel' => array('$ne' => true)
+                );
+                $order_count = Order::count(compact('conditions'));
+
+                $fields = array('items' => true);
+                $orders = Order::find('all',compact('conditions','fields'));
+                $cancel_count = 0;
+                $line_count = 0;
+                foreach($orders as $order) {
+                    $line_count += count($order['items']);
+                    $items = $order['items']->data();
+                    array_walk_recursive($items, function($item, $key, $cancel_count){
+                        if ($key === 'cancel' && $item == true) {
+                            ++$cancel_count;
+                        }
+                    }, $cancel_count);
+                }
+                $line_count -= $cancel_count;
+                $conditions = array(
+                    'items.event_id' => array('$in' => $data['orders']->data()),
+                    'items.cancel' => true
+                );
+                $item_count = Order::count(compact('conditions'));
+                $data['order_count'] = $order_count - $item_count;
+                $data['line_count'] = $line_count;
+            }
+		}
+	}
+
+
 }

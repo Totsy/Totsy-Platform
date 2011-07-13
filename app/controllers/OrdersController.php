@@ -257,6 +257,7 @@ class OrdersController extends BaseController {
 		}
 		/**
 		*	Handling services the user may be eligible for
+		*   Returns $shippingCost, $overShippingCost, (boolean)$freeshipping
 		*	@see app\models\Service::freeShippingCheck()
 		**/
 		$service = Session::read('services', array('name' => 'default'));
