@@ -5,26 +5,14 @@ register_shutdown_function('myErrorHandler');
 
 function myErrorHandler() {
 	
-	echo '<br>Error<br><pre>';
-	print_r(func_get_args());
-	echo '</pre>';
-	
-	//header("HTTP/1.0 500 Internal Server Error");
+	$lastError = error_get_last(); 
+	if ( !is_null($lastError) ){
+		header("HTTP/1.0 500 Internal Server Error");
+	}
 	flush();
 	exit(0);
 }
 
-function myShundownHandler() {
-	
-	echo '<br>shuntdown<br><pre>';
-	print_r(func_get_args());
-	print_r(getcwd());
-	echo '</pre>';
-	
-	//header("HTTP/1.0 500 Internal Server Error");
-	flush();
-	exit(0);
-}
 /**
  * Lithium: the most rad php framework
  *
