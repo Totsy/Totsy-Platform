@@ -19,9 +19,9 @@ use admin\extensions\command\Base;
 use admin\extensions\command\Exchanger;
 use admin\extensions\command\MakeSku;
 use lithium\analysis\Logger;
-use li3_silverpop\extensions\Silverpop;
 use admin\extensions\util\String;
 use admin\extensions\command\Pid;
+use admin\extensions\Mailer;
 
 /**
  * This command is the main processor to manage the transmission of files to our 3PL
@@ -183,16 +183,13 @@ class OrderExport extends Base {
 					$this->_itemGenerator();
 					$this->log("Finised processing: $queue->_id");
 					if ($queueData['orders'] || $queueData['purchase_orders']) {
-						$this->queue->summary = $this->summary;
-						$this->queue->processed = true;
-						$this->queue->processed_date = new MongoDate();
-						$this->queue->status = NULL;
-						$this->queue->save();
-						if ($this->test != 'true') {
-                            $this->summary['from_email'] = 'no-reply@totsy.com';
-                            $this->summary['to_email'] = 'logistics@totsy.com';
-                        //	Silverpop::send('exportSummary', $this->summary);
-					    }
+						$queue->summary = $this->summary;
+						$queue->processed = true;
+						$queue->processed_date = new MongoDate();
+						$queue->save();
+						$this->summary['from_email'] = 'no-reply@totsy.com';
+						$this->summary['to_email'] = 'logistics@totsy.com';
+						//Mailer::send('Order_Export', $this->summary['to_email'], $this->summary);
 					}
 				}
 			}
