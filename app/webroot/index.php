@@ -5,12 +5,14 @@ register_shutdown_function('myErrorHandler');
 
 function myErrorHandler() {
 	
-	$lastError = error_get_last(); 
+	$lastError = error_get_last();
+	
 	if ( !is_null($lastError) ){
 		header("HTTP/1.0 500 Internal Server Error");
+		flush();
+		exit(0);
 	}
 	flush();
-	exit(0);
 }
 
 /**
