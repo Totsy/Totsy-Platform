@@ -244,15 +244,36 @@ class OrderExport extends Base {
 		$order_total = $orders->count();
 		if ($orders) {
 			$inc = 1;
-
-			if ($this->queue->summary && array_key_exists('summary', $this->queue->summary)) {
-               if ($this->queue->summary['order']['filename']) {
+			/**
+			* Checks if this queue already started this process once before
+			* If so, just continue with the same file, if not created a new file.
+			**/
+			if ($this->queue->summary) {
+               if (!empty($this->queue->summary['order']['filename'])) {
                    $filename = $this->queue->summary['order']['filename'];
                    $handle = $this->tmp.$filename;
-			       $fp = fopen($handle, 'a');
-
+			       $fp = fopen($handle, 'a+');
+			       $this->log("Queue ran before. Appending to file $filename");
+                    /**
+                    * Retrieve the number of orders already processed
+                    * @returns $last_order - last order entered in the file
+                    * @returns $last_order_size - Number of line items
+                    * already processed for that order
+                    * @returns $split_number - number of orders to skip
+                    **/
 			       extract($this->lastOrder($fp));
-
+			       var_dump($split_number);
+			       die();
+			       $this->log("The last order entered into the file was $last_order");
+			       $conditions = array('order_id' => $last_order);
+			       $lastOrder = $orderCollection->findOne(compact('conditions'));
+			       $orderItem = count($lastOrder['items']);
+			       if (($processCheck > 0) && ($processCheck == $orderItem)) {
+			            $this->log("All the items was processed for the last entered order.");
+			            $split_number += 1;
+			       }
+			       $orders = array_slice($orders, $split_number));
+			       $this->log("Removing the first " . $split_number ." already processed orders.");
                 }
 			} else {
 			    $filename = 'TOTOrd'.$this->time.'.txt';
@@ -598,18 +619,24 @@ class OrderExport extends Base {
 
 	/**
 	* Retrieve last order entered in order file
-	*
+	* @returns $last_order - last order entered in the file
+    * @returns $last_order_size - Number of line items
+    * already processed for that order
+    * @returns $split_number - number of orders to skip
 	**/
 	protected function lastOrder($openFile) {
 	    $orders = array();
 	    while( ($data = fgetcsv($openFile,0,"\t")) != FALSE) {
-	        if ( !in_array($data[5], $orders) ) {
-	            $orders[] = $data[5];
-	        }
+	            $orders[$data[5]][] = $data[6];
 	    }
-	    $last_order = $orders[count($orders) - 1];
-	    $split_number = count($orders);
-	    return compact('last_order','split_number');
+	    $orders = array_reverse($orders);
+	    $last_order = key($orders);
+	    $last_order_size = count($orders[$last_order]);
+	    /**
+	    * This count will not include the last order
+	    **/
+	    $split_number = count($orders) - 1;
+	    return compact('last_order','last_order_size','split_number');
 	}
 
 	/**
