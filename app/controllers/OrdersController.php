@@ -215,7 +215,7 @@ class OrdersController extends BaseController {
 		return $vars + compact('cartEmpty', 'cartByEvent', 'error', 'orderEvents', 'shipDate', 'savings');
 	}
 
-	public function addShipping() {
+	public function shipping() {
 		$user = Session::read('userLogin');
 		$fields = array(
 			'item_id',

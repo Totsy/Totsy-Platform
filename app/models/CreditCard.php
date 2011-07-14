@@ -5,26 +5,20 @@ namespace app\models;
 class CreditCard extends \lithium\data\Model {
 
 	public $validates = array(
-		'description' => array(
+		'number' => array(
 			'notEmpty', 'required' => false, 'message' => 'Please add a credit card number'
 		),
-		'firstname' => array(
-			'notEmpty', 'required' => true, 'message' => 'Please add a first name'
+		'name' => array(
+			'notEmpty', 'required' => true, 'message' => 'Please add the name of the credit card owner'
 		),
-		'lastname' => array(
-			'notEmpty', 'required' => true, 'message' => 'Please add a last name'
+		'year' => array(
+			'notEmpty', 'required' => true, 'message' => 'Please select the expiration year'
 		),
-		'address' => array(
-			'notEmpty', 'required' => true, 'message' => 'Please add an address'
+		'month' => array(
+			'notEmpty', 'required' => true, 'message' => 'Please select the expiration month'
 		),
-		'city' => array(
-			'notEmpty', 'required' => true, 'message' => 'Please add a city'
-		),
-		'state' => array(
-			'state', 'required' => true, 'message' => 'Please select a state or province'
-		),
-		'zip' => array(
-			'notEmpty', 'required' => true, 'message' => 'Please add a zip code'
+		'code' => array(
+			'notEmpty', 'required' => true, 'message' => 'Please add the security code'
 		)
 	);
 }

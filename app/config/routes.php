@@ -63,7 +63,7 @@ Router::connect('/feeds/{:args}', 'Feeds::home');
 	Shopping Cart Routes
 **/
 Router::connect('/checkout/review', 'Cart::view');
-Router::connect('/checkout/shipping', 'Orders::addShipping');
+Router::connect('/checkout/shipping', 'Orders::shipping');
 Router::connect('/checkout/payment', 'Orders::payment');
 Router::connect('/checkout/process', 'Orders::process');
 
