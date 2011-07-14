@@ -13,7 +13,7 @@
 </div>
 
 <div class="grid_10">
-<?=$this->form->create(null, array(
+<?=$this->form->create($address, array(
 		'id' => 'paymentForm',
 		'class' => "fl"
 	)); ?>
@@ -58,9 +58,15 @@
 				<br />
 				<?=$this->form->label('card[code]', 'Security Code', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('card[code]', array('id' => 'CVV2','class' => 'inputbox', 'maxlength' => '4', 'size' => '4')); ?>
-	
+				<?php 
+				if(empty($checked)) {
+					$checked = false;
+				}
+				?>
 				<h3>Billing Address</h3>
 				<hr />
+				Use my shipping address as my billing address: <?=$this->form->checkbox("shipping", array('onclick' => 'replace_address()' , "checked" => $checked, "value" => "1")) ?>
+				<br />
 				<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('firstname', array('class' => 'inputbox')); ?>
 				<?=$this->form->error('firstname'); ?>
@@ -90,7 +96,7 @@
 				<?=$this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('zip', array('class' => 'inputbox', 'id' => 'zip')); ?>
 				<br />
-			<?=$this->form->submit('Shipping Information', array('class' => 'button fr')); ?>
+			<?=$this->form->submit('CONTINUE', array('class' => 'button fr')); ?>
 
 <?=$this->form->end();?> 
 </div>
@@ -132,4 +138,8 @@ function validCC() {
 		$('#error_valid').hide()();
 	}
 }
+
+function replace_address() {
+  $("#paymentForm").submit();
+};
 </script>

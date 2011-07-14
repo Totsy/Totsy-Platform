@@ -18,10 +18,11 @@
 		'id' => 'addressForm',
 		'class' => "fl"
 	)); ?>
-			
-				Choose your address :
-				<?=$this->form->select('addresses', $addresses, array("id" => 'addresses'));?>
-				<hr />
+				<?php if(!empty($addresses)) : ?>
+					Choose your address :
+					<?=$this->form->select('addresses', $addresses, array("id" => 'addresses'));?>
+					<hr />
+				<?php endif ?>
 				<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('firstname', array('class' => 'inputbox')); ?>
 				<?=$this->form->error('firstname'); ?>
@@ -51,7 +52,7 @@
 				<?=$this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('zip', array('class' => 'inputbox', 'id' => 'zip')); ?>
 				<br />
-			<?=$this->form->submit('Shipping Information', array('class' => 'button fr')); ?>
+			<?=$this->form->submit('Continue', array('class' => 'button fr')); ?>
 
 <?=$this->form->end();?> 
 </div>
