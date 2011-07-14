@@ -83,7 +83,7 @@ class AvaTax {
 				if (isset($data['taxCart'])){
 					BlackBox::tax('Trying old way.');
 					Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
-						'message' => 'Avatax system is unreachable. Do on a old way.',
+						'message' => 'Avatax system was unreachable.<br>Tax calculation was performed internally using default state tax.',
 						'trace' => date('Y-m-d H:i:s'),
 						'info' => $data
 					));
@@ -92,9 +92,9 @@ class AvaTax {
 						'avatax' => false
 					);
 				} else {
-					BlackBox::tax('ERROR returns 0');
+					BlackBox::tax('ERROR tax returns 0');
 					Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
-						'message' => 'All systems are down. Return 0',
+						'message' => 'Was unable to calculate tax. Charged $0 tax for this order.',
 						'trace' => date('Y-m-d H:i:s'),
 						'info' => $data
 					));
@@ -119,14 +119,14 @@ class AvaTax {
   			$return = AvaTaxWrap::getAndCommitTax($data);
   		} catch (Exception $e){
 			// Try again or return 0;
-			Logger::error($e->getMessage()."\n".$e->getTraceAsString() );
+			BlackBox::taxError($e->getMessage()."\n".$e->getTraceAsString() );
 			if ($tryNumber <= $settings['avatax']['retriesNumber']){
 				$return = self::postTax($data,++$tryNumber);
 			} else {
 				Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
-					'message' => $e->getMessage(),
-					'trace' => $e->getTraceAsString(),
-					'info' => $data
+						'message' => 'Was unable to post avalara tax.<br>Returned $0 tax for this order.',
+						'trace' => date('Y-m-d H:i:s'),
+						'info' => $data
 				));
 				$return = 0;
 			}

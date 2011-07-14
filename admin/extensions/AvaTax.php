@@ -5,6 +5,7 @@ use lithium\analysis\Logger;
 use lithium\core\Environment;
 use lithium\action\Request;
 use admin\extensions\Mailer;
+use admin\extensions\BlackBox;
 use AvaTaxWrap;
 
 /**
@@ -21,13 +22,14 @@ class AvaTax {
 			AvaTaxWrap::cancelTax($order);
 		} catch (Exception $e) {
 			// Try again or return 0;
-			Logger::error($e->getMessage()."\n".$e->getTraceAsStirng() );
+			BlackBox::tax('can not process tax cancelation via avalara.');
+			BlackBox::taxError($e->getMessage()."\n".$e->getTraceAsString() );
 			if ($tryNumber <= $settings['avatax']['retriesNumber']){
 				return self::getTax($data,++$tryNumber);
 			} else {
 				Mailer::send('TaxProcessError', $setting['avatax']['logEmail'], array(
-					'message' => $e->getMessage(),
-					'trace' => $e->getTraceAsStirng(),
+					'message' => 'Avatax system is unreachable. Can NOT process tax canselation' ,
+					'trace' => 'ADMIN @ '.date('Y-m-d H:i:s'),
 					'info' => $order
 				));
 				return 0;
@@ -74,23 +76,31 @@ class AvaTax {
 			);	
 		} catch (Exception $e){
 			// Try again or return 0;
-			Logger::error($e->getMessage()."\n".$e->getTraceAsStirng() );
+			BlackBox::tax('can not calculate tax via avalara.');
+			BlackBox::taxError($e->getMessage()."\n".$e->getTraceAsString() );
 			if ($tryNumber <= $settings['avatax']['retriesNumber']){
+				BlackBox::tax(($tryNumber+1).' attempt of '.$settings['avatax']['retriesNumber']);
 				return self::getTax($data,++$tryNumber);
 			} else {
-				Mailer::send('TaxProcessError', $setting['avatax']['logEmail'], array(
-					'message' => $e->getMessage(),
-					'trace' => $e->getTraceAsStirng(),
-					'info' => $data
-				));
-				try {	
+				try {
+					BlackBox::tax('Trying old way.');
+					Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
+						'message' => 'Avatax system was unreachable.<br>Tax calculation was performed internally using default state tax.',
+						'trace' => 'ADMIN @ '.date('Y-m-d H:i:s'),
+						'info' => $data
+					));	
 					return array( 
 						'tax'=>static::totsyCalculateTax($data),
 						'avatax' => static::$useAvatax
 					);
 				} catch (Exception $m){
-						Logger::error($m->getMessage()."\n".$m->getTraceAsStirng() );
-						return 0;		
+					BlackBox::tax('ERROR tax returns 0');
+					Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
+						'message' => 'Was unable to calculate tax. Charged $0 tax for this order.',
+						'trace' => 'ADMIN @ 'date('Y-m-d H:i:s'),
+						'info' => $data
+					));
+					return 0;		
 				}
 			}
 		}
@@ -106,14 +116,17 @@ class AvaTax {
   		try {
   			return AvaTaxWrap::getAndCommitTax($data);
   		} catch (Exception $e){
+  			BlackBox::tax('can not post tax to avalara.');
+			BlackBox::taxError($e->getMessage()."\n".$e->getTraceAsString() );
 			// Try again or return 0;
-			Logger::error($e->getMessage()."\n".$e->getTraceAsStirng() );
 			if ($tryNumber <= $settings['avatax']['retriesNumber']){
+				BlackBox::tax(($tryNumber+1).' attempt of '.$settings['avatax']['retriesNumber']);
 				return self::postTax($data,++$tryNumber);
 			} else {
-				Silverpop::send('TaxProcessError', $setting['avatax']['logEmail'], array(
-					'message' => $e->getMessage(),
-					'trace' => $e->getTraceAsStirng(),
+				BlackBox::tax('ERROR tax returns 0');
+				Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
+					'message' => 'Was unable to post tax.',
+					'trace' => 'ADMIN @ 'date('Y-m-d H:i:s'),
 					'info' => $data
 				));
 				return 0;
@@ -128,14 +141,16 @@ class AvaTax {
 	  		static::getTax($data);
 			static::commitTax($data['order']['order_id']);
 		} catch (Exception $e){
-			// Try again or return 0;
-			Logger::error($e->getMessage()."\n".$e->getTraceAsStirng() );
+			BlackBox::tax('can not return tax via avalara.');
+			BlackBox::taxError($e->getMessage()."\n".$e->getTraceAsString() );
 			if ($tryNumber <= $settings['avatax']['retriesNumber']){
+				BlackBox::tax(($tryNumber+1).' attempt of '.$settings['avatax']['retriesNumber']);
 				return self::returnTax($data,++$tryNumber);
 			} else {
-				Silverpop::send('TaxProcessError', $setting['avatax']['logEmail'], array(
-					'message' => $e->getMessage(),
-					'trace' => $e->getTraceAsStirng(),
+				BlackBox::tax('ERROR tax returns 0');
+				Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
+					'message' => 'Was unable to process return tax.',
+					'trace' => 'ADMIN @ 'date('Y-m-d H:i:s'),
 					'info' => $data
 				));
 				return 0;
@@ -148,14 +163,16 @@ class AvaTax {
 		try{
 			AvaTaxWrap::commitTax($order);
 		} catch (Exception $e) {
-			// Try again or return 0;
-			Logger::error($e->getMessage()."\n".$e->getTraceAsStirng() );
+			BlackBox::tax('can not commit tax via avalara.');
+			BlackBox::taxError($e->getMessage()."\n".$e->getTraceAsString() );
 			if ($tryNumber <= $settings['avatax']['retriesNumber']){
+				BlackBox::tax(($tryNumber+1).' attempt of '.$settings['avatax']['retriesNumber']);
 				return self::commitTax($data,++$tryNumber);
 			} else {
-				Silverpop::send('TaxProcessError', $setting['avatax']['logEmail'], array(
-					'message' => $e->getMessage(),
-					'trace' => $e->getTraceAsStirng(),
+				BlackBox::tax('ERROR tax returns 0');
+				Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
+					'message' => 'Was unable to commit tax.',
+					'trace' => 'ADMIN @ 'date('Y-m-d H:i:s'),
 					'info' => $data
 				));
 				return 0;
