@@ -5,6 +5,7 @@ namespace admin\controllers;
 use admin\controllers\BaseController;
 use admin\models\Event;
 use admin\models\Item;
+use lithium\storage\Session;
 use MongoDate;
 use MongoId;
 use Mongo;
@@ -72,6 +73,8 @@ class EventsController extends BaseController {
 	}
 
 	public function edit($_id = null) {
+		$current_user = Session::read('userLogin');
+
 		$itemsCollection = Item::Collection();
 		$event = Event::find($_id);
 		$seconds = ':'.rand(10,60);
@@ -117,6 +120,12 @@ class EventsController extends BaseController {
 				}
 			}
 			$images = $this->parseImages($event->images);
+			
+			//Saving the original start and end and ship dates for comparison
+			$start_date = $this->request->data['start_date'];
+			$end_date = $this->request->data['end_date'];
+			$ship_date = $this->request->data['ship_date'];
+						
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
 			$url = $this->cleanUrl($this->request->data['name']);
@@ -126,6 +135,57 @@ class EventsController extends BaseController {
 				compact('images'),
 				array('url' => $url)
 			);
+			
+			// Comparison of OLD Event attributes and the NEW Event attributes
+			$changed = "";
+			
+			if (abs(strcmp($eventData[name], $event->name))  > 0) {
+				$changed .= "Name changed from <strong>{$event->name}</strong> to <strong>{$eventData[name]}</strong><br/>";
+			}
+	
+			if (abs(strcmp($eventData[blurb], $event->blurb))  > 0) {
+				$changed .= "Blurb changed from <strong>{$event->blurb}</strong> to <strong>{$eventData[blurb]}</strong><br/>";
+			}
+
+			if ($eventData[enabled] != $event->enabled) {
+				$changed .= "Enabled changed from <strong>{$event->enabled}</strong> to <strong>{$eventData[enabled]}</strong><br/>";
+			}
+
+			if (strtotime($start_date) != $event->start_date->sec) {
+				$temp =  date('m/d/Y H:i:S', $event->start_date->sec);
+				$changed .= "Start Date changed from <strong>{$temp}</strong> to <strong>{$start_date}</strong><br/>";
+			}
+			
+			if (strtotime($end_date) != $event->end_date->sec) {
+				$temp =  date('m/d/Y H:i:s', $event->end_date->sec);
+				$changed .= "End Date changed from  <strong>{$temp}</strong> to <strong>{$end_date}</strong><br/>";
+			}
+			
+			if (abs(strcmp($eventData[ship_message], $event->ship_message))  > 0) {
+				$changed .= "Ship Message changed from <strong>{$event->ship_message}</strong> to <strong>{$eventData[ship_message]}</strong><br/>";
+			}
+			
+			if (strtotime($ship_date) != $event->ship_date->sec) {
+				$temp =  date('m/d/Y H:i:s', $event->ship_date->sec);
+				$changed .= "Ship Date changed from  <strong>{$temp}</strong> to <strong>{$ship_date}</strong><br/>";
+			}			
+			
+			if ($eventData[enable_items] != $event->enable_items) {
+				$changed .= "Enabled Items from <strong>{$event->enable_items}</strong> to <strong>{$eventData[enable_items]}</strong><br/>";
+			}
+
+			$modification_datas["author"] = $current_user['email'];
+			$modification_datas["date"] = new MongoDate(strtotime('now'));
+			$modification_datas["type"] = "modification";
+			$modification_datas["changed"] = $changed;
+
+			//Pushing modification datas to db
+			$modifications = $event->modifications;
+			$modifications[] = $modification_datas;
+			$eventData[modifications] = $modifications;
+		
+			// End of Comparison of OLD Event Attributes and NEW event attributes
+
 			if ($event->save($eventData)) {
 
 				$this->redirect(array(
