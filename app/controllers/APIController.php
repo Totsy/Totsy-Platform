@@ -264,15 +264,16 @@ class APIController extends  \lithium\action\Controller {
 				}
 				
 			}
-			if ($data['end_date']['sec'] < mktime(0, 0, 0, date("m"), date("d")+1, date("Y")) ){
+			
+			if ($data['end_date']['sec'] <= strtotime(date('d-m-Y 23:59:59',strtotime('+1 day'))) ){
 				$closing[] = $data;
 			}
 			$events[] = $data;
 		}
 		$pendingEvents = Event::pending();
 		$pending = array();
-		foreach ($pendingEvents as $pending){
-			$pending[] = $pending->data();
+		foreach ($pendingEvents as $pendingEvent){
+			$pending[] = $pendingEvent->data();
 		}
 		$this->setView(1);
 		return (compact('events','pending','closing','base_url'));
