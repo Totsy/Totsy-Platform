@@ -51,6 +51,7 @@ class FinancialExport extends \lithium\console\Command  {
 		'overSizeHandling',
 		'promo_discount',
 		'promo_code',
+		'service',
 		'subTotal',
 		'tax',
 		'total',
@@ -73,36 +74,40 @@ class FinancialExport extends \lithium\console\Command  {
 	 * The detailed header to be used in the detailed CSV file.
 	 */
 	protected $detailHeader = array(
-		'_id',
-		'category',
-		'sub_category',
-		'color',
-		'description',
-		'item_id',
-		'quantity',
-		'sale_retail',
-		'sale_wholesale',
-		'size',
-		'event_id',
-		'vendor',
-		'event_start_date',
-		'event_end_date',
-		'order_id_short',
-		'order_id_fk'
+		"_id",
+		"category",
+		"sub_category",
+		"color",
+		"description",
+		"item_id",
+		"quantity",
+		"sale_retail",
+		"sale_wholesale",
+		"size",
+		"event_id",
+		"vendor",
+		"event_start_date",
+		"event_end_date",
+		"order_id_short",
+		"order_id_fk"
 	);
 	protected $creditHeader = array(
+	    '_id',
 	    'customer_id',
 	    'credit_type',
-	    'description',
 	    'reason',
-	    'amount',
+	    'description',
 	    'credit_amount',
 	    'issued_date'
 	);
 
 	protected $creditUnsetKey = array(
 		'date_created',
-		'type'
+		'type',
+		'credit_amount',
+		'created',
+		'error',
+		'user_id'
 	);
 	/**
 	 * Some standard order data fields to be unset.
@@ -172,7 +177,8 @@ class FinancialExport extends \lithium\console\Command  {
 			'ship_date',
 			'ship_records',
 			'tax',
-			'payment_date'
+			'payment_date',
+			'service'
 		);
 		$orders = Order::collection()->find($orderConditions, $fields)->sort(array('date_created' => -1));
 
@@ -191,9 +197,9 @@ class FinancialExport extends \lithium\console\Command  {
 		/**
 		 * Setup the file headers
 		 */
-		fputcsv($fpSummary, $this->summaryHeader);
-		fputcsv($fpDetail, $this->detailHeader);
-		fputcsv($cpDetail, $this->creditHeader);
+		fputcsv($fpSummary, $this->summaryHeader,',',chr(34));
+		fputcsv($fpDetail, $this->detailHeader,',',chr(34));
+		fputcsv($cpDetail, $this->creditHeader,',',chr(34));
 		/**
 		 * Build the files
 		 */
@@ -237,6 +243,61 @@ class FinancialExport extends \lithium\console\Command  {
 			} else {
 				$order['estimated_ship_date'] = 0;
 			}
+			if (array_key_exists('service', $order)) {
+				if (in_array('freeshipping', $order['service'])){
+				    $order['service'] = 'freeshipping';
+				} else if(in_array('10off50', $order)) {
+				    $order['service'] = '10off50';
+				}else {
+				    $order['service'] = "none";
+				}
+			} else {
+				$order['service'] = "none";
+			}
+			/*
+			* Grab credit information
+			*/
+			if (array_key_exists('credit_used', $order)){
+				    $creditCollection = Credit::collection()->find(array(
+				    '$or' => array(
+				        array('customer_id' => $order['user_id']),
+				        array('user_id' => $order['user_id'])
+				    )));
+				    foreach ($creditCollection as $credit) {
+				        if (array_key_exists('date_created', $credit)) {
+				            $credit['issue_date'] = date('m/d/Y', $credit['date_created']->sec);
+				        } else {
+				            $credit['issue_date'] = date('m/d/Y', $credit['created']->sec);
+				        }
+				        if (array_key_exists('type', $credit)) {
+				            $credit['credit_type'] = $credit['type'];
+				        }
+
+				        if (array_key_exists('user_id', $credit)) {
+				            $credit['customer_id'] = $credit['user_id'];
+				        }
+
+				        if (array_key_exists('amount', $credit)) {
+				            $credit['credit_amount'] = $credit['amount'];
+				        }
+				        if (!array_key_exists('description', $credit)) {
+				            $credit['description'] = "none";
+				        }
+				        if (!array_key_exists('reason', $credit))  {
+				            $credit['reason'] = "none";
+				        }
+				        $userCredit = $this->sortArrayByArray($credit, $this->creditHeader);
+				        foreach($this->creditUnsetKey as $key) {
+				            unset($userCredit[$key]);
+				        }
+                        if (!empty($userCredit)){
+				            fputcsv($cpDetail, $userCredit,',',chr(34));
+				        }
+				    }
+				}
+			/*
+			* Get credit, promocodes,  and oversize handling information
+			*/
 			foreach ($order as $key => $value) {
 				$checkList = array('credit_used', 'promo_code', 'promo_discount', 'overSizeHandling');
 				foreach ($checkList as $value) {
@@ -244,30 +305,11 @@ class FinancialExport extends \lithium\console\Command  {
 						$order["$value"] = 0;
 					}
 				}
-				if (array_key_exists('credit_used', $order)){
-				    $creditCollection = Credit::collection()->find(array('$or' => array(
-				        array('customer_id' => $order['user_id']),
-				        array('user_id' => $order['user_id'])
-				    )));
-				    foreach ($creditCollection as $credit) {
-				        $credit['issue_date'] = date('m/d/Y', $credit['date_created']['sec']);
-				        $credit['credit_type'] = $credit['type'];
-				        $userCredit = $this->sortArrayByArray($credit, $this->creditHeader);
-				        if (in_array('date_created', $this->creditUnsetKey)) {
-                            unset($credit['date_created']);
-                        }
-                        if (in_array('type', $this->creditUnsetKey)) {
-                            unset($credit['type']);
-                        }
-                        if (!empty($userCredit)){
-				            fputcsv($cpDetail, $userCredit);
-				        }
-				    }
-				}
 				if (is_array($value) || in_array($key, $this->orderUnsetKey)) {
                     unset($order[$key]);
                 }
 			}
+			// Check if this order has a 'shipped' record
 			$shipRecord = $ordersShipped->findOne(array('$or' => array(
                 array('OrderNum' => $order['order_id'])
             )));
@@ -298,7 +340,9 @@ class FinancialExport extends \lithium\console\Command  {
 			}
 			$order = $this->sortArrayByArray($order, $this->summaryHeader);
 
-			fputcsv($fpSummary, $order);
+			fputcsv($fpSummary, $order,',',chr(34));
+
+			//Get detailed information about the items sold
 			foreach ($orderItems as $item) {
 				$itemRecord = Item::collection()->findOne(array('_id' => new MongoId($item['item_id'])));
 				foreach ($this->itemUnsetKey as $key) {
@@ -333,7 +377,7 @@ class FinancialExport extends \lithium\console\Command  {
 				$item['order_id_short'] = $order['order_id'];
 				$item['sale_wholesale'] = $itemRecord['sale_whol'];
 				$item = $this->sortArrayByArray($item, $this->detailHeader);
-				fputcsv($fpDetail, $item);
+				fputcsv($fpDetail, $item,',',chr(34));
 			}
 		}
 		fclose($fpSummary);
@@ -347,7 +391,7 @@ class FinancialExport extends \lithium\console\Command  {
 		$ordered = array();
 		foreach($orderArray as $key) {
 			if(array_key_exists($key,$array)) {
-				$ordered[$key] = $array[$key];
+				$ordered[$key] = (string) $array[$key];
 				unset($array[$key]);
 			}
 		}
