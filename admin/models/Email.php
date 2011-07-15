@@ -38,7 +38,7 @@ class Email extends Base {
 		'delayedEmail' => 'Delayed Email (general)',
 		'orderCredit' => 'Apply Credit',
 		'orderIssue' => 'Order Issue',
-		'accountNotification' => 'Account Notification'
+		'Account_Notification' => 'Account Notification'
 	);
 }
 
