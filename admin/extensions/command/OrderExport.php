@@ -14,12 +14,13 @@ use lithium\core\Environment;
 use MongoDate;
 use MongoRegex;
 use MongoId;
+use MongoCursor;
 use admin\extensions\command\Base;
 use admin\extensions\command\Exchanger;
 use lithium\analysis\Logger;
-use li3_silverpop\extensions\Silverpop;
 use admin\extensions\util\String;
 use admin\extensions\command\Pid;
+use admin\extensions\Mailer;
 
 /**
  * This command is the main processor to manage the transmission of files to our 3PL
@@ -138,6 +139,7 @@ class OrderExport extends Base {
 	 * @todo Make sure a queue cannot contain two empty arrays.
 	 */
 	public function run() {
+	     MongoCursor::$timeout = -1;
 		Environment::set($this->env);
 		$this->tmp = LITHIUM_APP_PATH . $this->tmp;
 		$this->processed = LITHIUM_APP_PATH . $this->processed;
@@ -171,7 +173,7 @@ class OrderExport extends Base {
 						$queue->save();
 						$this->summary['from_email'] = 'no-reply@totsy.com';
 						$this->summary['to_email'] = 'logistics@totsy.com';
-						Silverpop::send('exportSummary', $this->summary);
+						Mailer::send('Order_Export', $this->summary['to_email'], $this->summary);
 					}
 				}
 			}
@@ -189,6 +191,7 @@ class OrderExport extends Base {
 	 * @return boolean
 	 */
 	protected function _orderGenerator() {
+	    MongoCursor::$timeout = -1;
 		$this->log("Starting to process Orders");
 		$orderCollection = Order::collection();
 		$itemCollection = Item::connection()->connection->items;
@@ -224,12 +227,7 @@ class OrderExport extends Base {
 							$orderFile[$inc]['Tel'] = $order['shipping']['telephone'];
 							$orderFile[$inc]['Country'] = '';
 							$orderFile[$inc]['OrderNum'] = $order['order_id'];
-							$orderFile[$inc]['SKU'] = Item::sku(
-								$orderItem['vendor'],
-								$orderItem['vendor_style'],
-								$item['size'],
-								$orderItem['color']
-							);
+							$orderFile[$inc]['SKU'] = $orderItem['sku_details'][$item['size']];
 							$orderFile[$inc]['Qty'] = $item['quantity'];
 							$orderFile[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
 							$orderFile[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
@@ -296,6 +294,7 @@ class OrderExport extends Base {
 	 * @param array $eventId Array of events.
 	 */
 	protected function _itemGenerator() {
+	     MongoCursor::$timeout = -1;
 		$this->log('Generating Items');
 		$filename = 'TOTIT'.$this->time.'.csv';
 		$handle = $this->tmp.$filename;
@@ -314,7 +313,7 @@ class OrderExport extends Base {
 				$eventItems = $this->_getOrderItems($eventId);
 				foreach ($eventItems as $eventItem) {
 					foreach ($eventItem['details'] as $key => $value) {
-						$sku = Item::sku($eventItem['vendor'], $eventItem['vendor_style'], $key, $eventItem['color']);
+						$sku = $eventItem['sku_details'][$key];
 						$conditions = array('SKU' => $sku);
 						$itemMasterCheck = ItemMaster::count(compact('conditions'));
 						if ($itemMasterCheck == 0){
@@ -375,6 +374,7 @@ class OrderExport extends Base {
 	 * @return mixed
 	 */
 	protected function _purchases() {
+	     MongoCursor::$timeout = -1;
 		$this->log('Generating Purchase Orders');
 		$orderCollection = Order::collection();
 		foreach ($this->poEvents as $eventId) {
@@ -412,12 +412,7 @@ class OrderExport extends Base {
 								if ($itemValid && ((string) $key == $item['size']) && $active){
 									$purchaseOrder[$inc]['Supplier'] = $eventItem['vendor'];
 									$purchaseOrder[$inc]['PO # / RMA #'] = $poNumber;
-									$purchaseOrder[$inc]['SKU'] = Item::sku(
-										$eventItem['vendor'],
-										$eventItem['vendor_style'],
-										$item['size'],
-										$eventItem['color']
-									);
+									$purchaseOrder[$inc]['SKU'] = $eventItem['sku_details'][$item['size']];
 									if (empty($purchaseOrder[$inc]['Qty'])) {
 										$purchaseOrder[$inc]['Qty'] = $item['quantity'];
 									} else {

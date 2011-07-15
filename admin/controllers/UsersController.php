@@ -28,6 +28,7 @@ class UsersController extends \admin\controllers\BaseController {
 			'firstname',
 			'lastname',
 			'email',
+			'register date',
 			'zip',
 			'logincounter',
 			'purchase_count',
@@ -72,7 +73,22 @@ class UsersController extends \admin\controllers\BaseController {
 							array('customer_id' => $id)
 					))));
 				$orders = Order::find('all', array('conditions' => array('user_id' => $id)));
-				$data = array_intersect_key($user->data(), array_flip($headings['user']));
+				$userData = $user->data();
+				if (array_key_exists('created_orig', $userData)) {
+				    $userData['register date'] = date("M d, Y", $userData['created_orig']['sec']);
+				}
+				if (array_key_exists('created_date', $userData)) {
+				    if(is_array($userData['created_date'])){
+				        $userData['register date'] = date("M d, Y",$userData["created_date"]['sec']);
+				    } else {
+				        $userData['register date'] = date("M d, Y",strtotime($userData["created_date"]));
+				    }
+				}
+				if (array_key_exists('created_on', $userData)) {
+				    $userData['register date'] = date("M d, Y", $userData['created_on']['sec']);
+				}
+
+				$data = array_intersect_key($userData, array_flip($headings['user']));
 				$info = $this->sortArrayByArray($data, $headings['user']);
 			}
 		}

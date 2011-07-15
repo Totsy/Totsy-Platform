@@ -6,16 +6,17 @@
 <?=$this->html->style('TableTools');?>
 
 <div class="grid_16">
-	<h2 id="page-heading">Purchase Order: <?=$poNumber; ?> (<?=$event->name?>)</h2>
+	<h2 id="page-heading">Purchase Order: <?=$poNumber; ?>
+	(<?=$event->name?>)</h2>
 </div>
 <div id="clear"></div>
 <div class="grid_8">
 	<div id="box">
-		<?php if ($total['sum'] == 0 ): ?>
+		<?php if ($total['sum'] == 0 && count($purchaseOrder) == 0): ?>
 			<h2>No product has been sold for this event.</h2>
 		<?php else: ?>
-		<p>Total Quantity - <?=$total['quantity']?></p>
-		<p>Order Total - $<?=number_format($total['sum'], 2)?></p>
+            <p>Total Quantity - <?=$total['quantity']?></p>
+            <p>Order Total - $<?=number_format($total['sum'], 2)?></p>
 		<?php endif ?>
 	</div>
 </div>
@@ -24,7 +25,7 @@
 			<table id="purchase_order" class="datatable" border="1">
 				<thead>
 					<tr>
-						<?php 
+						<?php
 						foreach ($purchaseHeading as $heading) {
 							echo "<th>$heading</th>";
 						}

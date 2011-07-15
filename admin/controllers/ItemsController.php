@@ -7,6 +7,7 @@ use admin\models\Event;
 use MongoRegex;
 use MongoDate;
 use MongoId;
+use Mongo;
 use \li3_flash_message\extensions\storage\FlashMessage;
 
 /**
@@ -47,6 +48,25 @@ class ItemsController extends BaseController {
 		} else {
 			$this->redirect(array('controller' => 'items', 'action' => 'index'));
 		}
+		#T Get all possibles value for the multiple filters select
+		$sel_filters = array();
+		$all_filters = array();
+		$result =  Item::getDepartments();
+		foreach ($result['values'] as $value) {
+			$all_filters[$value] = $value;
+			if (array_key_exists('Momsdads',$all_filters) && !empty($all_filters['Momsdads'])) {
+				$all_filters['Momsdads'] = 'Moms & Dads';
+			}
+		}
+		#T Get selected values of filters
+		
+		if(!empty($item->departments)) {
+			$values = $item->departments->data();
+			foreach ($values as $value) {
+				$sel_filters[$value] = $value;
+			}
+		}
+		#END T
 		if ($this->request->data) {
 			$alternate_images = array();
 			foreach ($this->request->data as $key => $value) {
@@ -62,6 +82,15 @@ class ItemsController extends BaseController {
 			$this->request->data['url'] = $this->cleanUrl($dirtyUrl);
 			$this->request->data['modified_date'] = new MongoDate();
 			$data = array_merge(Item::castData($this->request->data), compact('alternate_images'));
+			//Clean filters posts
+			if(!empty($data["departments"])) {
+				foreach($data["departments"] as $value) {
+					if(!empty($value)) {
+						$departments[] = ucfirst($value);
+					}
+				}
+				$data["departments"] = $departments;
+			}
 			if ($item->save($data)) {
 				$this->redirect(array(
 					'controller' => 'items', 'action' => 'edit',
@@ -69,7 +98,7 @@ class ItemsController extends BaseController {
 				));
 			}
 		}
-		return compact('item', 'details', 'event');
+		return compact('item', 'details', 'event', 'all_filters', 'sel_filters');
 	}
 
 	public function preview() {

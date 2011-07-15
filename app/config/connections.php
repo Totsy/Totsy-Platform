@@ -31,34 +31,20 @@ use \lithium\data\Connections;
 		'test' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy_test',
-			'host' => array('test'),
-    		'setSlaveOkay' => true,
-			'persistent' => 'foo',
-			'replicaSet' => true,
-			'adapter' => 'app\extensions\adapter\mongo\Db'),
-		'development' => array(    			
+			'host' => array('test')),
+		'development' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy',
-			'host' => 'localhost',
-    		'setSlaveOkay' => true,
-			'persistent' => 'foo',
-			'replicaSet' => true,
-			'adapter' => 'app\extensions\adapter\mongo\Db'),
+			'host' => 'localhost'),
 		'eric' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy_eric',
-			'host' => 'localhost',
-    		'setSlaveOkay' => true,
-			'persistent' => 'foo',
-			'replicaSet' => true,
-			'adapter' => 'app\extensions\adapter\mongo\Db'),
-		'local' =>  array(
-    		'persistent' => 'foo',
-			'replicaSet' => true,
-    		'setSlaveOkay' => true,
-    		'type' =>  'MongoDb',
+			'host' => 'localhost'),
+		'local' => array(
+			'type' =>  'MongoDb',
 			'database' => 'totsy',
-			'host' => 'localhost') 
+			'host' => 'localhost',
+			'adapter' => 'app\extensions\adapter\mongo\Db')
 	));
 
 ?>
