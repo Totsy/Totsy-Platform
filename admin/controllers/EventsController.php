@@ -139,11 +139,11 @@ class EventsController extends BaseController {
 			// Comparison of OLD Event attributes and the NEW Event attributes
 			$changed = "";
 			
-			if (abs(strcmp($eventData[name], $event->name))  > 0) {
+			if ($eventData[name] != $event->name) {
 				$changed .= "Name changed from <strong>{$event->name}</strong> to <strong>{$eventData[name]}</strong><br/>";
 			}
 	
-			if (abs(strcmp($eventData[blurb], $event->blurb))  > 0) {
+			if ($eventData[blurb] != $event->blurb) {
 				$changed .= "Blurb changed from <strong>{$event->blurb}</strong> to <strong>{$eventData[blurb]}</strong><br/>";
 			}
 
@@ -161,7 +161,7 @@ class EventsController extends BaseController {
 				$changed .= "End Date changed from  <strong>{$temp}</strong> to <strong>{$end_date}</strong><br/>";
 			}
 			
-			if (abs(strcmp($eventData[ship_message], $event->ship_message))  > 0) {
+			if ($eventData[ship_message] != $event->ship_message) {
 				$changed .= "Ship Message changed from <strong>{$event->ship_message}</strong> to <strong>{$eventData[ship_message]}</strong><br/>";
 			}
 			
