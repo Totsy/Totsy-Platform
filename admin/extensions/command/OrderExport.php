@@ -18,9 +18,9 @@ use MongoCursor;
 use admin\extensions\command\Base;
 use admin\extensions\command\Exchanger;
 use lithium\analysis\Logger;
-use li3_silverpop\extensions\Silverpop;
 use admin\extensions\util\String;
 use admin\extensions\command\Pid;
+use admin\extensions\Mailer;
 
 /**
  * This command is the main processor to manage the transmission of files to our 3PL
@@ -173,7 +173,7 @@ class OrderExport extends Base {
 						$queue->save();
 						$this->summary['from_email'] = 'no-reply@totsy.com';
 						$this->summary['to_email'] = 'logistics@totsy.com';
-						Silverpop::send('exportSummary', $this->summary);
+						Mailer::send('Order_Export', $this->summary['to_email'], $this->summary);
 					}
 				}
 			}
