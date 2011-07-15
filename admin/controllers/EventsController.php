@@ -4,6 +4,7 @@ namespace admin\controllers;
 
 use admin\controllers\BaseController;
 use admin\models\Event;
+use admin\models\User;
 use admin\models\Item;
 use lithium\storage\Session;
 use MongoDate;
@@ -80,7 +81,7 @@ class EventsController extends BaseController {
 		$seconds = ':'.rand(10,60);
 		$eventItems = Item::find('all', array('conditions' => array('event' => array($_id)),
 												'order' => array('created_date' => 'ASC')
-												)); 			
+												));
 		#T Get all possibles value for the multiple departments select
 		$result = Item::getDepartments();
 		$all_filters = array();
@@ -120,12 +121,12 @@ class EventsController extends BaseController {
 				}
 			}
 			$images = $this->parseImages($event->images);
-			
+
 			//Saving the original start and end and ship dates for comparison
 			$start_date = $this->request->data['start_date'];
 			$end_date = $this->request->data['end_date'];
 			$ship_date = $this->request->data['ship_date'];
-						
+
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
 			$url = $this->cleanUrl($this->request->data['name']);
@@ -135,14 +136,14 @@ class EventsController extends BaseController {
 				compact('images'),
 				array('url' => $url)
 			);
-			
+
 			// Comparison of OLD Event attributes and the NEW Event attributes
 			$changed = "";
-			
+
 			if ($eventData[name] != $event->name) {
 				$changed .= "Name changed from <strong>{$event->name}</strong> to <strong>{$eventData[name]}</strong><br/>";
 			}
-	
+
 			if ($eventData[blurb] != $event->blurb) {
 				$changed .= "Blurb changed from <strong>{$event->blurb}</strong> to <strong>{$eventData[blurb]}</strong><br/>";
 			}
@@ -155,26 +156,29 @@ class EventsController extends BaseController {
 				$temp =  date('m/d/Y H:i:S', $event->start_date->sec);
 				$changed .= "Start Date changed from <strong>{$temp}</strong> to <strong>{$start_date}</strong><br/>";
 			}
-			
+
 			if (strtotime($end_date) != $event->end_date->sec) {
 				$temp =  date('m/d/Y H:i:s', $event->end_date->sec);
 				$changed .= "End Date changed from  <strong>{$temp}</strong> to <strong>{$end_date}</strong><br/>";
 			}
-			
+
 			if ($eventData[ship_message] != $event->ship_message) {
 				$changed .= "Ship Message changed from <strong>{$event->ship_message}</strong> to <strong>{$eventData[ship_message]}</strong><br/>";
 			}
-			
+
 			if (strtotime($ship_date) != $event->ship_date->sec) {
 				$temp =  date('m/d/Y H:i:s', $event->ship_date->sec);
 				$changed .= "Ship Date changed from  <strong>{$temp}</strong> to <strong>{$ship_date}</strong><br/>";
-			}			
-			
+			}
+
 			if ($eventData[enable_items] != $event->enable_items) {
 				$changed .= "Enabled Items from <strong>{$event->enable_items}</strong> to <strong>{$eventData[enable_items]}</strong><br/>";
 			}
 
-			$modification_datas["author"] = $current_user['email'];
+			/**
+			* Changed author save from email to user id because email can change even if it is a Totsy Email
+			**/
+			$modification_datas["author"] = $current_user['_id'];
 			$modification_datas["date"] = new MongoDate(strtotime('now'));
 			$modification_datas["type"] = "modification";
 			$modification_datas["changed"] = $changed;
@@ -183,7 +187,7 @@ class EventsController extends BaseController {
 			$modifications = $event->modifications;
 			$modifications[] = $modification_datas;
 			$eventData[modifications] = $modifications;
-		
+
 			// End of Comparison of OLD Event Attributes and NEW event attributes
 
 			if ($event->save($eventData)) {
@@ -192,6 +196,23 @@ class EventsController extends BaseController {
 					'controller' => 'events', 'action' => 'edit',
 					'args' => array($event->_id)
 				));
+			}
+		}
+		/**
+		* Retrieving firstname and lastname/emails of modifiers
+		**/
+		if ($event->modifications) {
+			foreach($event->modifications as $log){
+				$user = User::find('first', array(
+					'conditions' => array('_id' => $log['author'])
+					));
+				if($user){
+					if ($user->firstname) {
+						$log['author'] = $user->firstname . " " . $user->lastname;
+					} else {
+						$log['author'] = $user->email;
+					}
+				}
 			}
 		}
 		if ($event->items) {
@@ -265,7 +286,7 @@ class EventsController extends BaseController {
 										} else {
 											$eventItems[$row - 1][$heading[$col]] = $val;
 										}
-									
+
 								}
 							}
  						}
@@ -332,7 +353,7 @@ class EventsController extends BaseController {
 													'enabled' => true
 												),
 												'order' => array('created_date' => 'ASC')
-			));										
+			));
 			foreach($eventItems as $eventItem) {
 				$items[] = $eventItem;
 			}
@@ -348,7 +369,7 @@ class EventsController extends BaseController {
 		return compact('event', 'items', 'shareurl', 'type', 'id', 'preview');
 
 	}
-	
+
 	public function inventoryCheck($events) {
 		$events = $events->data();
 		foreach ($events as $eventItems) {
