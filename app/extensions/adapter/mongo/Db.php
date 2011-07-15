@@ -164,9 +164,9 @@ class Db extends \lithium\data\source\MongoDb {
 		$cs = count($slaves);
 		if ($cs>0){
 			$slaveId = 0;
-			if ($cs>1) { $slaveId = mt_rand(0,$cs-1); }
+			if ($cs>1) { $slave = join(',', $slaves); }
 			//static::logChooser($slaves[$slaveId]['name']);
-			$this->server_manager_config['slave'] = $slaves[$slaveId]['name']; 
+			$this->server_manager_config['slave'] = $slave; 
 		}
 		return $isMaster;
 	}
