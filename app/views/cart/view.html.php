@@ -1,17 +1,61 @@
 <?php
+
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
 	$test = $cart->data();
-?>
-<div class="grid_16">
-	<h2 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> My Cart</h2>
-	<hr />
+	
+	$cartInfo = $cart->data();
+	$cartExpirationDate =  $cartInfo[0]['expires']['sec'];
+	
+?>										
+
+<div style="margin-top:10px; margin-bottom:10px">
+<div class="grid_8">
+	<div style="float:left">
+	<h2 class="page-title gray">
+	<!--<span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> My Cart</h2> -->
+		<span class="red">Shopping Cart</span></h2>
+	</div>
+	<div style="float:right; font-weight: bold">
+	Item reserved for: <span id="itemCounter">Dummy cart expiration date</span>
+    </div>
 </div>
+<div class="grid_8">
+	 <div style="float:left;">
+	 <span style="font-weight: bold">Estimated Shipping Date: </span>
+         <span style="float:right;">&nbsp;&nbsp;<?=date('m-d-Y', $shipDate)?></span>
+     </div>
+     <div class="cart-button">
+	     <?=$this->html->link('Checkout', 'Orders::addShipping', array('class' => 'button', 'style'=>'float:right')); ?>
+	 </div>
+</div>
+
+<script type="text/javascript">
+
+	$( function () {
+	    
+	    var itemExpires = new Date();
+	    itemExpires = new Date(<?=$cartExpirationDate?>);
+	    							
+	    $("#itemCounter").countdown('change', {until: itemExpires, layout: '{mnn}{sep}{snn} minutes'});
+		$('#itemCounter').countdown( {until: itemExpires, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
+	
+		var now = new Date();
+		
+		if (itemExpires < now ) {
+		    $('#itemCounter').html("<span class='over' style='color:#EB132C; padding:5px;'>no longer reserved</span>");
+		}
+	
+	});
+	
+</script>
+
 <div class="message"></div>
 <?php if (!empty($test)): ?>
 <?=$this->form->create(null ,array('id'=>'cartForm')); ?>
-	<div class="grid_12 roundy_cart">
+	<div class="grid_16 roundy_cart">
 	<div id='message'><?php echo $message; ?></div>
 		<table class="cart-table">
+			<!--
 			<thead>
 				<tr>
 					<th>Item</th>
@@ -23,6 +67,7 @@
 					<th></th>
 				</tr>
 			</thead>
+			-->
 			<tbody>
 			<?php $x = 0; ?>
 			<?php $subTotal = 0; ?>
@@ -49,7 +94,7 @@
 							)
 						); ?>
 					</td>
-					<td class="cart-desc" style="width:220px;">
+					<td class="cart-desc" style="width:400px;">
 						<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
 						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?></strong><br>
 						<strong>Color:</strong> <?=$item->color;?><br>
@@ -65,10 +110,10 @@
 							$qty = $item->available;
 							if($item->quantity > $qty){
 								$select = array_unique(array_merge(array('0'), range('1',(string)$item->quantity)));
-							}else{
+							} else {
 								$select = array_unique(array_merge(array('0'), range('1',(string)$qty)));
 							}
-						}else{
+						} else {
 							$select = array_unique(array_merge(array('0'), range('1','9')));
 						}
 					?>
@@ -77,28 +122,40 @@
 					));
 					?>
 					</td>
-					<td class="<?="total-item-$x";?>" style="width:55px;">
-						<strong style="color:#009900;">$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
-					</td>
-					<td class="cart-time" style="width:220px;"><img src="/img/old_clock.png" align="absmiddle" width="23" class="fl"/><div id='<?php echo "itemCounter$x"; ?>' class="fl" style="margin:5px 0px 0px 5px;"></div></td>
 					<td class="cart-actions">
 						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" onclick="deletechecked('Are you sure you want to remove this item?','<?=$item->_id; ?>');" style="color: red!important;"><img src="/img/trash.png" width="20" align="absmiddle" style="margin-right:20px;" /></a>
 					</td>
+					
+					<td class="cart-time" style="width:220px;"><!-- <img src="/img/old_clock.png" align="absmiddle" width="23" class="fl"/>--> <div id='<?php echo "itemCounter$x"; ?>' class="fl" style="margin:5px 0px 0px 5px;"></div></td>
+					<td class="<?="total-item-$x";?>" style="width:55px;">
+						<strong style="color:#009900;">$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
+					</td>
+					
 				</tr>
 				<?php
-					$date = $item->expires->sec * 1000;
-					$itemCounters[] = "<script type=\"text/javascript\">
-						$(function () {
-							var itemExpires = new Date();
-							itemExpires = new Date($date);
-							$(\"#itemCounter$x\").countdown('change', {until: itemExpires, $countLayout});
-
-						$(\"#itemCounter$x\").countdown({until: itemExpires,
-						    expiryText: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">no longer reserved</div>', $countLayout});
-						var now = new Date()
-						if (itemExpires < now) {
-							$(\"#itemCounter$x\").html('<div class=\"over\" style=\"color:#EB132C; padding:5px;\">no longer reserved</div>');
-						}
+					
+					$date = $cartItemEventEndDates[$x] * 1000;
+										
+					$itemCounters[] = "<script type=\"text/javascript\">	
+					
+					var itemExpires = new Date();
+					itemExpires = new Date($date);
+					var now = new Date();
+					    						
+					var expireNotice = (itemExpires.valueOf() - 60000) ;
+					expireNotice = new Date(expireNotice);
+					
+					function test(){
+						$(\"#itemCounter$x\").countdown({until: itemExpires, expiryText: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This sale is no longer reserved</div>', $countLayout });
+					}				
+					
+    					$(function () {
+							
+							console.log(expireNotice);
+							console.log(itemExpires);
+														
+							$(\"#itemCounter$x\").countdown({until: expireNotice, expiryText: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This event will expire in 2 minutes</div>', $countLayout, onExpiry: test() });
+																					
 						});
 						</script>";
 					$subTotal += $item->quantity * $item->sale_retail;
@@ -106,37 +163,82 @@
 				?>
 			<?php endforeach ?>
 				<tr class="cart-total">
-					<td colspan="7" id='subtotal'>
-						<span style="float: left; font-size: 12px;">
-							<strong>Add <?php if(!empty($credit)) { ?>
-								<a href="#" id='credits_lnk' onclick="open_credit();" >Credits</a> /
-							<?php } ?> 
-								<a href="#" id='promos_lnk' onclick="open_promo();">Optional Code</a></strong>
-						</span>
-						<span style="float: right; font-size: 16px;">
-							<strong>Subtotal: <span style="color:#009900;">$<?=number_format($subTotal,2)?></span></strong>
-						</span>
+					<td colspan="4" id='subtotal' valign='top'>
+						
+						<div style="float: left; ">
+							
+							<div style="font-size: 12px;">
+								<strong>Add <?php if(!empty($credit)) { ?>
+									<a href="#" id='credits_lnk' onclick="open_credit();" >Credits</a> /
+								<?php } ?> 
+									<a href="#" id='promos_lnk' onclick="open_promo();">Optional Code</a></strong>
+							</div>
+							
+							<div style="clear:both"></div>
+							
+							<div>
+							<?=$this->form->create(null); ?>
+								<div id="promo" style="display:none">
+									<?=$this->view()->render(array('element' => 'promocode'), array( 'orderPromo' => $cartPromo)); ?>
+								</div>
+								<div id="cred" style="display:none">								
+				   					<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'userDoc' => $userDoc)); ?>
+								</div>
+							</div>
+							
+						</div>
+						
+					</td>	
+					<td colspan="3">	
+						<div style="font-weight:bold">
+								<span style="float: left;">Subtotal:</span>
+								<span style="color:#009900; float:right">$<?=number_format($subTotal,2)?></span>
+						</div>
+						<div style="clear:both"></div>
+						<div style="font-weight:bold">
+								<span style="float: left;">Shipping:</span> 
+								<span style="color:#009900; float:right">$7.95</span>
+						</div>
+						<div style="clear:both"></div>
+						<div style="font-weight:bold">
+								<span style="float: left;">Estimated Tax:</span> 
+								<span style="color:#009900; float:right">$0.00</span>
+						</div>	
+						<div style="clear:both"><hr /></div>						
+						<div style="font-weight:bold">
+							<span style="float: left;">Your Saving 
+								<?php if (!empty($savings)) : ?>
+								$<?=number_format($savings,2)?>
+								<?php endif ?> 
+							</span>
+							<span style="float:right">Order Total: 
+								<span style="color:#009900;">$<?=number_format($subTotal,2)?></span>
+							</span>
+						</div>			
 					</td>
 				</tr>
+				<!--
 				<tr>
 					<td colspan="7">
-							<?=$this->form->create(null); ?>
+							/*$this->form->create(null); */
 							<div id="promo" style="display:none">
-								<?=$this->view()->render(array('element' => 'promocode'), array( 'orderPromo' => $cartPromo)); ?>
+								/*$this->view()->render(array('element' => 'promocode'), array( 'orderPromo' => $cartPromo));*/ 
 							</div>
 							<div id="cred" style="display:none">								
-				   				<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'userDoc' => $userDoc)); ?>
+				   				/*$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'userDoc' => $userDoc));*/
 							</div>
 							<div class="clear"></div>
 					</td>
 				</tr>
+				-->
 				<tr class="cart-buy">
-					<td colspan="2" class="return-policy">
-						<a href='../../pages/returns'><strong style="font-size:12px; font-weight:normal;">Refund &amp; Return Policy</strong></a><br />
+					<td colspan="2" class="cart-button">
+					<?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('class' => 'button', 'style'=>'float:left')); ?>
+						<!--<a href='../../pages/returns'><strong style="font-size:12px; font-weight:normal;">Refund &amp; Return Policy</strong></a><br /> -->
 					</td>
 					<td class="cart-button" colspan="5">
-						<?=$this->html->link('Checkout', 'Orders::addShipping', array('class' => 'button')); ?>
-						<?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style' => 'margin:7px 10px 0px 0px;')); ?>
+						<?=$this->html->link('Checkout', 'Orders::addShipping', array('class' => 'button', 'style'=>'float:right')); ?>
+						<!-- $this->html->link('Continue Shopping', "sale/$returnUrl", array('style' => 'margin:7px 10px 0px 0px;')); -->
 					</td>
 				</tr>
 			</tbody>
@@ -158,18 +260,23 @@
 			<?php echo $button ?>
 		<?php endforeach ?>
 	<?php endif ?>
+	
+<!--	
 <div class="grid_4 omega">
 	<div class="roundy grey_inside">
-		<h3 class="gray">Your Savings <span class="fr"><?php if (!empty($savings)) : ?>
-		<span style="color:#009900; font-size:16px; float:right;">$<?=number_format($savings,2)?></span>
-		<?php endif ?></span></h3>
+		<h3 class="gray">Your Savings <span class="fr"><?php //if (!empty($savings)) : ?>
+		<span style="color:#009900; font-size:16px; float:right;">$<?php //number_format($savings,2)?></span>
+		<?php //endif ?></span></h3>
 	</div>
 	<div class="clear"></div>
 	<div class="roundy grey_inside">
-		<h3 class="gray">Estimated Ship Date<span style="font-weight:bold; float:right;"><?=date('m-d-Y', $shipDate)?></span></h3>
+		<h3 class="gray">Estimated Ship Date<span style="font-weight:bold; float:right;"><?php //date('m-d-Y', $shipDate)?></span>
+		</h3>
 	</div>
 	<div class="clear"></div>
 </div>
+-->
+
 <div class="clear"></div>
 <?php else: ?>
 	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1><center><span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
