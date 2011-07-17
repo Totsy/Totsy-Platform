@@ -51,6 +51,10 @@ class CartController extends BaseController {
 		$message = '';
 		$itemlist = array();
 		$cart = Cart::active(array('time' => '-3min'));
+		
+		$i=0;
+		$cartItemEventEndDates = Array();
+		
 		foreach($cart as $item){
 			if (array_key_exists('error', $item->data()) && !empty($item->error)){
 				$message .= $item->error . '<br/>';
@@ -59,10 +63,16 @@ class CartController extends BaseController {
 			}
 			$events = Event::find('all', array('conditions' => array('_id' => $item->event[0])));
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
+			
+			$cartItemEventEndDates[$i] = $events[0]->end_date->sec;
+						
 			$item->event_url = $events[0]->url;
 			$item->available = $itemInfo->details->{$item->size} - Cart::reserved($item->item_id, $item->size);
 			$itemlist[$item->created->sec] = $item->event[0];
+			
+			$i++;
 		}
+				
 		$shipDate = Cart::shipDate($cart);
 		if ($cart) {
 			krsort($itemlist);
@@ -70,13 +80,14 @@ class CartController extends BaseController {
 			$event = Event::find('first', compact('conditions'));
 			if ($event) {
 				$returnUrl = $event->url;
-			}
+			}	
 		}
+		
 		//Calculate savings
 		$savings = Session::read('userSavings');
 		$credit = Session::read('credit');
 		$promocodes = Session::read('promocode');
-		return $vars + compact('cart', 'message', 'shipDate', 'returnUrl', 'savings', 'credit', 'userDoc');
+		return $vars + compact('cart', 'message', 'shipDate', 'returnUrl', 'savings', 'credit', 'userDoc','cartItemEventEndDates');
 	}
 
 	/**
