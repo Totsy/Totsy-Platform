@@ -142,7 +142,7 @@
 						itemExpires = new Date($date);
 						var now = new Date();	
 						
-						var expireNotice = (itemExpires.valueOf() - 120000) ;
+						var expireNotice = ( itemExpires.valueOf() - 120000 ) ;
 						expireNotice = new Date( expireNotice );
 											
 						$(\"#itemCounter$x\").countdown('change', { until: expireNotice, layout: '{mnn}{sep}{snn} minutes' });
@@ -153,18 +153,20 @@
 						    layout: '{mnn}{sep}{snn} minutes',
 						    onExpiry: test(itemExpires) }
 						 );
-						 							 
-						 console.log(expireNotice);
-						 console.log(itemExpires);
 						 
-						 function test (exp){
-							
-							$(\"#itemCounter$x\").countdown('destroy');
-							$(\"#itemCounter$x\").countdown('change', { until: exp, layout: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This item will expire in 2 minutes</div>' });
-													
-							$(\"#itemCounter$x\").countdown({
-							    until: exp,
-						        expiryText: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This item is no longer reserved</div>', 
+						 console.log('the first counter has started');
+						 
+						function test (exp){
+						
+						    $(\"#itemCounter$x\").countdown('destroy');
+						    
+						    console.log('the second counter has started');
+						    
+						    $(\"#itemCounter$x\").countdown('change', { until: exp, layout: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This item will expire in 2 minutes</div>' });
+						    						
+						    $(\"#itemCounter$x\").countdown({
+						        until: exp,
+						        expiryText: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This sale has ended</div>', 
 						        layout: '{mnn}{sep}{snn} minutes',
 						    });
 						}
