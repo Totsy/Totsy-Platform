@@ -277,21 +277,13 @@ class CartController extends BaseController {
 			$orderServiceCredit = Service::tenOffFiftyCheck($subTotal);
 			$postServiceCredit = $subTotal + $orderServiceCredit;
 			$postCreditTotal = $postServiceCredit + $cartCredit->credit_amount;
+			$cartPromo = Promotion::create();
 			$promo_code = NULL;
 			if (Session::read('promocode')) {
 				$promo_code = Session::read('promocode');
 			}
 			if (array_key_exists('code', $this->request->data)) {
 				$promo_code = $this->request->data['code'];
-			}
-
-			$cartPromo = Promotion::create();
-			$promo_code = NULL;
-			if (Session::read('promocode')) {
-				$promo_code = Session::read('promocode');
-			}
-			if (array_key_exists('code', $data)) {
-				$promo_code = $data['code'];
 			}
 			$cartPromo->promoCheck($promo_code, $userDoc, compact('postCreditTotal', 'shippingCost', 'overShippingCost'));
 			#END OF T

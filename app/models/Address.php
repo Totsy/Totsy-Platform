@@ -143,7 +143,7 @@ class Address extends \lithium\data\Model {
 	 * $conditions = array('user_id' => Session::read('_id'))
 	 */
 	public static function count($conditions = array()) {
-		$collection = Address::_connection()->connection->totsy->addresses;
+		$collection = Address::_connection()->connection->addresses;
 		return $collection->count($conditions);
 	}
 

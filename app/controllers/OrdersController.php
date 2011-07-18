@@ -216,7 +216,7 @@ class OrdersController extends BaseController {
 	}
 
 	public function addShipping() {
-		$usersCollection = User::Collection();
+		$user = Session::read('userLogin');
 		$fields = array(
 			'item_id',
 			'color',
@@ -240,6 +240,11 @@ class OrdersController extends BaseController {
 			$address = Address::create($this->request->data);
 			if ($address->validates()) {
 				Session::write('shipping', $this->request->data);
+				$count = Address::count(array('user_id' => $user['_id']));
+				if ($count == 0) {
+					$address->user_id = (string) $user['_id'];
+					$address->save();
+				}
 				$this->redirect(array('Orders::payment'));
 			}
 		}
@@ -254,8 +259,10 @@ class OrdersController extends BaseController {
 			));
 		}
 		//Prepare addresses datas for the dropdown
-		foreach($datas_add as $value) {
-			$addresses[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address']; 
+		if(!empty($datas_add)) {
+			foreach($datas_add as $value) {
+				$addresses[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address']; 
+			}
 		}
 		$cart = Cart::active(array(
 				'fields' => $fields,
@@ -531,7 +538,41 @@ class OrdersController extends BaseController {
 	}
 	
 	public function payment() {
-	
+		$usersCollection = User::Collection();
+		$fields = array(
+			'item_id',
+			'color',
+			'category',
+			'description',
+			'product_weight',
+			'quantity',
+			'sale_retail',
+			'size',
+			'url',
+			'primary_image',
+			'expires',
+			'event_name',
+			'event'
+		);
+		$address = null;
+		if (!empty($this->request->data['shipping'])) {
+			$checked = true;
+			$shipping = Session::read('shipping');
+			$address = Address::create($shipping);
+		}
+		if (!empty($this->request->data) && empty($this->request->data['shipping'])) {
+			$address = Address::create($this->request->data);
+			if ($address->validates()) {
+				Session::write('billing', $this->request->data);
+				$this->redirect(array('Orders::payment'));
+			}
+		}
+		$cart = Cart::active(array(
+				'fields' => $fields,
+				'time' => '-5min'
+		));
+		$cartEmpty = ($cart->data()) ? false : true;
+		return compact('address', 'cartEmpty', 'checked');
 	}
 
 }
