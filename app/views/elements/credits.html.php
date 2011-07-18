@@ -6,8 +6,9 @@
     	?>
         <?=$this->form->create($orderCredit); ?>
         <?=$this->form->error('amount'); ?>
-        You have $<?=number_format((float) $userDoc->total_credit, 2);?> in credits
         <hr />
+        You have $<?=number_format((float) $userDoc->total_credit, 2);?> in credits
+        <br />
         <?=$this->form->text('credit_amount', array('size' => 6, 'maxlength' => '6')); ?>
                 <?=$this->form->submit('Apply Credit'); ?>
                 <hr />
@@ -20,7 +21,4 @@
         	<?php endif ?>
         	<?=$this->form->end(); ?>
 <?php else : ?>
-    <?php if ($credit == '0') { ?>
-    Credits: $0.00
-    <?php } ?>
 <?php endif ?>

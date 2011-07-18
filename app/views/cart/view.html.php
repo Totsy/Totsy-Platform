@@ -127,7 +127,6 @@
 					<td class="cart-actions">
 						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" onclick="deletechecked('Are you sure you want to remove this item?','<?=$item->_id; ?>');" style="color: red!important;"><img src="/img/trash.png" width="20" align="absmiddle" style="margin-right:20px;" /></a>
 					</td>
-					
 					<td class="cart-time" style="width:220px;"><!-- <img src="/img/old_clock.png" align="absmiddle" width="23" class="fl"/>--> <div id='<?php echo "itemCounter$x"; ?>' class="fl" style="margin:5px 0px 0px 5px;"></div></td>
 					<td class="<?="total-item-$x";?>" style="width:55px;">
 						<strong style="color:#009900;">$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
@@ -188,21 +187,19 @@
 						
 						<div style="float: left; ">
 							
-							<div style="font-size: 12px;">
+							<div style="font-size: 12px; text-align:left !important">
 								<strong>Add <?php if(!empty($credit)) { ?>
 									<a href="#" id='credits_lnk' onclick="open_credit();" >Credits</a> /
 								<?php } ?> 
-									<a href="#" id='promos_lnk' onclick="open_promo();">Optional Code</a></strong>
+									<a href='#' id='promos_lnk' onclick='open_promo();'>Optional Code</a></strong>
 							</div>
-							
-							<div style="clear:both"></div>
-							
+							<div style='clear:both'></div>
 							<div>
 							<?=$this->form->create(null); ?>
-								<div id="promo" style="display:none">
+								<div id='promo' style='display:none'>
 									<?=$this->view()->render(array('element' => 'promocode'), array( 'orderPromo' => $cartPromo)); ?>
 								</div>
-								<div id="cred" style="display:none">								
+								<div id='cred' style='display:none; text-align:left !important'>								
 				   					<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'userDoc' => $userDoc)); ?>
 								</div>
 							</div>
@@ -224,7 +221,14 @@
 						<div style="font-weight:bold">
 								<span style="float: left;">Estimated Tax:</span> 
 								<span style="color:#009900; float:right">$0.00</span>
-						</div>	
+						</div>
+						<?php if ($credit !== '0') { ?>
+						<div style="clear:both"></div>
+						<div style="font-weight:bold">
+    							<span style="float: left;">Credits:</span> 
+    							<span style="color:#009900; float:right">$ <?=number_format($credit,2)?></span>
+    					</div>
+   						 <?php } ?>	
 						<div style="clear:both"><hr /></div>						
 						<div style="font-weight:bold">
 							<span style="float: left;">Your Saving 
@@ -233,7 +237,17 @@
 								<?php endif ?> 
 							</span>
 							<span style="float:right">Order Total: 
-								<span style="color:#009900;">$<?=number_format($subTotal,2)?></span>
+								<span style="color:#009900;">$<?php 
+									if($credit) {
+										if($credit > ($subTotal)){
+											echo number_format(0 ,2 );
+										} else {
+											echo number_format(($subtotal)-$credit);
+										}
+									} else {
+										echo number_format(($subtotal));
+									}
+								?></span>
 							</span>
 						</div>			
 					</td>
@@ -258,9 +272,9 @@
 						<!--<a href='../../pages/returns'><strong style="font-size:12px; font-weight:normal;">Refund &amp; Return Policy</strong></a><br /> -->
 					</td>
 					<td class="cart-button" colspan="5">
-						<?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button')); ?>
-						<?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style' => 'margin:7px 10px 0px 0px;')); ?>
-				</td>
+						<?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:right')); ?>
+						<!-- $this->html->link('Continue Shopping', "sale/$returnUrl", array('style' => 'margin:7px 10px 0px 0px;')); -->
+					</td>
 				</tr>
 			</tbody>
 		</table>

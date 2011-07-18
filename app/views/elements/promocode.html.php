@@ -7,7 +7,7 @@
         <?=$this->form->error('promo'); ?>
     <?php endif; ?>
     <?=$this->form->text('code', array('size' => 6)); ?>
-    <div id='promobtn'>
+    <span id='promobtn'>
     	<?=$this->form->submit('Apply Promo Code'); ?>
-    </div>
+    </span>
 <?=$this->form->end(); ?>
