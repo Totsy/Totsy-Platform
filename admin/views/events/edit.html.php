@@ -1,3 +1,5 @@
+<?php ini_set("display_erros", 0); ?>
+
 <?php use admin\models\Event; ?>
 <?=$this->html->script('tiny_mce/tiny_mce.js');?>
 <?=$this->html->script('jquery-1.4.2');?>
@@ -17,6 +19,24 @@
 <?=$this->html->script('jquery.countdown.min');?>
 <?=$this->html->style('jquery.countdown');?>
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
+<?=$this->html->style('selectlist.css');?>
+<?=$this->html->script('jquery.selectlist.min.js')?>
+<?=$this->html->script('jquery.selectlist.pack.js')?>
+
+<style type="text/css">
+
+.selectlist-list {
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+}
+
+selectlist.css (line 1)
+.selectlist-list {
+    width: 12em;
+}
+
+</style>
 
 <script type="text/javascript">
 
@@ -48,6 +68,8 @@ $('.table_link').click(function() {
         $('tr').hide();
       $('tr .').toggle('slow');
     });
+
+$('select').selectList(); 
     
 $('select').change(function() {
 

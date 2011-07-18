@@ -192,18 +192,21 @@ class ItemsController extends BaseController {
 		
 		if ($this->request->data) {
 			$data = $this->request->data;
-						
+																		
 			$id = $data['id'];
 			unset($data['id']);
 			array_reverse($data);
+			
+			/* echo "<pre>";
+			print_r($data);
+			echo "</pre>"; */ 
 									
 			//build selected items array
 			foreach ($data as $key => $value) {
 				//check if this is the related items (dropdown selection) or the description (text area)
 				if(substr_count($key, 'related')>0) {
 					$item_id = substr($key, (strrpos($key, "_") + 1));
-
-					$related_items[$item_id][] = $value;
+					$related_items[$item_id] = $value;
 
 				} else {
 					if($value) {
@@ -212,7 +215,10 @@ class ItemsController extends BaseController {
 					}
 				}
 			}
-												
+			
+			/* print_r($related_items);
+			exit(); */ 
+															
 			//run through related_items array and update the items
 			foreach($related_items as $key=>$value) {
 				$temp = Array();
