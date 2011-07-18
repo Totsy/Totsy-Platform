@@ -8,7 +8,7 @@ use admin\models\Order;
 use admin\models\Service;
 use MongoDate;
 use MongoId;
-use li3_silverpop\extensions\Silverpop;
+use admin\extensions\Mailer;
 
 /**
  * Check if the user has used the first purchase free shipping discount
@@ -45,10 +45,7 @@ class FirstPurchaseReminder extends \lithium\console\Command  {
 			$verif_date = $user['created_date']->sec;
 			$day_target = mktime(0, 0, 0, date("m", $verif_date), date("d", $verif_date) + 23, date("Y", $verif_date));
 			if($day_target == $now) {
-				$data = array(
-					'email' => $user['email']
-				);
-				Silverpop::send('registrationReminder', $data);
+				Mailer::send('Welcome_Free_Shipping_Reminder', $user['email']);
 				$idx++;
 			}
 		}

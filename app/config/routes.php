@@ -6,6 +6,7 @@
  * @license       http://opensource.org/licenses/bsd-license.php The BSD License
  */
 
+use lithium\net\http\Media;
 use \lithium\net\http\Router;
 use \lithium\core\Environment;
 use \lithium\storage\Session;
@@ -43,6 +44,8 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
           'body' => File::first($request->id)->file->getBytes()
      ));
 });
+
+Router::connect('/api/{:args}', array('controller' => 'API', 'action' => 'index'));
 
 Router::connect('/register', 'Users::register');
 Router::connect('/register/facebook', 'Users::fbregister');
