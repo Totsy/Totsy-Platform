@@ -215,9 +215,6 @@ class ItemsController extends BaseController {
 					}
 				}
 			}
-			
-			/* print_r($related_items);
-			exit(); */ 
 															
 			//run through related_items array and update the items
 			foreach($related_items as $key=>$value) {

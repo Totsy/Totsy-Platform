@@ -68,7 +68,14 @@ $('.table_link').click(function() {
       $('tr .').toggle('slow');
     });
 
-$('select').selectList(); 
+$('select').selectList({ 
+	addAnimate: function (item, callback) { 
+	$(item).slideDown(500, callback); 
+	}, 
+	removeAnimate: function (item, callback) { 
+	$(item).slideUp(500, callback); 
+	} 
+}); 
     
 $('select').change(function() {
 

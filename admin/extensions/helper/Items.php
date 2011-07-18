@@ -15,7 +15,7 @@ class Items extends \lithium\template\Helper {
 	//returns an array of all items in this event with the items's id as the key and the description + color as the value
 	public function dropDownText($itemRecords){
 
-		$items = Array();
+		$items = array();
 
 		//building an array of all items to be used in creating dropdowns
 		foreach($itemRecords as $item) {
@@ -32,9 +32,9 @@ class Items extends \lithium\template\Helper {
 		return $items;
 	}
 
-	//writes out html select lists of items in an event and selects the related items
-	public function buildDropDown($all_items, $related_items = Array()){
-	
+	//writes out html dropdowns of items in an event, and selects the related items
+	public function buildDropDown($all_items, $related_items = array()){
+
 		$itemDropDown = "";
 
 		if(!empty($related_items)){
@@ -105,11 +105,11 @@ class Items extends \lithium\template\Helper {
 				if(isset($item->related_items) && !empty($item->related_items)) {
 					$related_items = $item->related_items->data();
 				}
-				
+
 				$hasRelated = false;
 
 				$html .= "<select multiple='multiple' id='related_".$item->_id."' name='related_".$item->_id."[]' title='Select an item'>";
-				
+
 				//build dropdowns - if there are no related items, a dropdown with no selected will be built
 				$itemDropDown = $this->buildDropDown($all_items, $related_items);
 
