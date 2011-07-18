@@ -137,25 +137,28 @@
 					$date = $cartItemEventEndDates[$x] * 1000;
 										
 					$itemCounters[] = "<script type=\"text/javascript\">	
-					
-					var itemExpires = new Date();
-					itemExpires = new Date($date);
-					var now = new Date();
-					    						
-					var expireNotice = (itemExpires.valueOf() - 60000) ;
-					expireNotice = new Date(expireNotice);
-					
-					function test(){
-						$(\"#itemCounter$x\").countdown({until: itemExpires, expiryText: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This sale is no longer reserved</div>', $countLayout });
-					}				
-					
+
     					$(function () {
 							
-							console.log(expireNotice);
-							console.log(itemExpires);
-														
-							$(\"#itemCounter$x\").countdown({until: expireNotice, expiryText: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This event will expire in 2 minutes</div>', $countLayout, onExpiry: test() });
-																					
+							var itemExpires = new Date();
+							itemExpires = new Date($date);
+							var now = new Date();
+							    						
+							var expireNotice = (itemExpires.valueOf() - 120000) ;
+							expireNotice = new Date(expireNotice);
+							
+							$(\"#itemCounter$x\").countdown('change', {until: itemExpires, layout: '{mnn}{sep}{snn} minutes'});
+							$(\"#itemCounter$x\").hide();
+							
+							if( itemExpires > now && now > expireNotice ){
+								$(\"#itemCounter$x\").show();
+								$(\"#itemCounter$x\").html('<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This item will expire in 2 minutes</div>');	
+							}
+							
+							if( itemExpires < now ){
+								$(\"#itemCounter$x\").show();
+								$(\"#itemCounter$x\").html('<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This sale is no longer reserved</div>');
+							}																					
 						});
 						</script>";
 					$subTotal += $item->quantity * $item->sale_retail;
