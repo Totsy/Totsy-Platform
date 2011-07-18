@@ -588,6 +588,7 @@ class OrdersController extends BaseController {
 		$address = null;
 		$payment = null;
 		$checked = false;
+		$card = array();
 		#Check Datas Form
 		if (!empty($this->request->data)) {
 			$datas = $this->request->data;
@@ -597,29 +598,26 @@ class OrdersController extends BaseController {
 				$shipping = Session::read('shipping');
 				$address = Address::create($shipping);
 			}
-			#Get Credit Card Infos
-			if(!empty($datas['card_number'])) {
-				#Get Only the card informations
-				foreach($datas as $key => $value) {
-					$card_array = explode("_", $key);
-					if ($card_array[0] == 'card') {
-						$card[$card_array[1]] = $value;
-					}
+			#Get Only the card informations
+			foreach($datas as $key => $value) {
+				$card_array = explode("_", $key);
+				if ($card_array[0] == 'card') {
+					$card[$card_array[1]] = $value;
 				}
-				$cc_infos = CreditCard::create($card);
-				#Check credits cards informations
-				if($cc_infos->validates()) {
-					#Encrypt CC Infos with mcrypt
-					$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
-  					$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-					$key = md5($user['_id']);
-					foreach	($cc_infos as $key => $cc_info) {
-						$crypt_info = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $cc_info, MCRYPT_MODE_CFB, $iv);
-						$cc_encrypt[$key] = $crypt_info;
-					}
-					Session::write('cc_infos', $cc_encrypt);
-					$cc_passed = true;
-				}			
+			}
+			$cc_infos = CreditCard::create($card);
+			#Check credits cards informations
+			if($cc_infos->validates()) {
+				#Encrypt CC Infos with mcrypt
+				$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
+					$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+				$key = md5($user['_id']);
+				foreach	($cc_infos as $key => $cc_info) {
+					$crypt_info = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $cc_info, MCRYPT_MODE_CFB, $iv);
+					$cc_encrypt[$key] = $crypt_info;
+				}
+				Session::write('cc_infos', $cc_encrypt);
+				$cc_passed = true;
 			}
 			#In case of normal submit (no ajax one with the checkbox)
 			if(empty($datas['shipping_select'])) {
@@ -644,7 +642,7 @@ class OrdersController extends BaseController {
 			if (!empty($address)) {
 				$data_add = $address->data();
 			}
-			$payment = Address::create(array_merge($datas, $data_add));
+			$payment = Address::create(array_merge($data_add,$card));
 			#Init datas
 			$payment->shipping_select = '0';
 		}
