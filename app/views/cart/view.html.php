@@ -3,6 +3,8 @@
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
 	$test = $cart->data();
 	
+	$cartExpirationDate = "";
+	
 	if($test){
 		$cartInfo = $cart->data();
 		$cartExpirationDate =  $cartInfo[0]['expires']['sec'];
