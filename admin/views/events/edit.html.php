@@ -1,5 +1,4 @@
 <?php ini_set("display_erros", 0); ?>
-
 <?php use admin\models\Event; ?>
 <?=$this->html->script('tiny_mce/tiny_mce.js');?>
 <?=$this->html->script('jquery-1.4.2');?>

@@ -12,22 +12,70 @@ class Items extends \lithium\template\Helper {
 		'Enabled'
 	);
 
-	public function build($itemRecords = null) {
+	//returns an array of all items in this event with the items's id as the key and the description + color as the value
+	public function dropDownText($itemRecords){
 
-		$html = "";
-		$all_items = array();
+		$items = Array();
 
 		//building an array of all items to be used in creating dropdowns
 		foreach($itemRecords as $item) {
 
 			if($item->color){
-				$all_items["".$item->_id.""]['color'] = $item->color;
+				$items["".$item->_id.""]['color'] = $item->color;
 			} else {
-				$all_items["".$item->_id.""]['color'] = "";
+				$items["".$item->_id.""]['color'] = "";
 			}
 
-			$all_items["".$item->_id.""]['description'] = $item->description;
+			$items["".$item->_id.""]['description'] = $item->description;
 		}
+
+		return $items;
+	}
+
+	//writes out html select lists of items in an event and selects the related items
+	public function buildDropDown($all_items, $related_items = Array()){
+	
+		$itemDropDown = "";
+
+		if(!empty($related_items)){
+			foreach( $all_items as $key=>$value ) {
+				$text = "";
+
+				if($value['color']){
+					$text = $value['color']." - ".$value['description'];
+				} else {
+					$text = $value['description'];
+				}
+
+				//if a related item is found
+				if(!in_array($key, $related_items)) {
+					$itemDropDown .= "<option value='".$key."' >" . $text . "</option>";
+				} else {
+					$hasRelated = true;
+					$itemDropDown .= "<option value='".$key."' disabled='1' selected='selected'>".$text."</option>";
+				}
+			}
+		} else {
+			foreach( $all_items as $key=>$value ) {
+				if($value['color']) {
+					$text = $value['color']." - ".$value['description'];
+				} else {
+					$text = $value['description'];
+				}
+				$itemDropDown .= "<option value='".$key."'>".$text."</option>";
+			}
+		}
+
+		return $itemDropDown;
+	}
+
+	public function build($itemRecords = null) {
+
+		$html = "";
+		$itemDropDown = "";
+
+		//set list of items with id as key and description + color as the value
+		$all_items = $this->dropDownText($itemRecords);
 
 		if (!empty($itemRecords)) {
 			$html .= "<table id='itemtable'";
@@ -50,52 +98,24 @@ class Items extends \lithium\template\Helper {
 			foreach ($itemRecords as $item) {
 				$html .= "<tr class=''>";
 				$html .= "<td width='400px'>";
+
+				$related_items = array();
+				$itemDropDown = "";
+
+				if(isset($item->related_items) && !empty($item->related_items)) {
+					$related_items = $item->related_items->data();
+				}
 				
-				$itemDropdown = "";
 				$hasRelated = false;
 
 				$html .= "<select multiple='multiple' id='related_".$item->_id."' name='related_".$item->_id."[]' title='Select an item'>";
-
-				//check if one of these items is a related item, and select it
-				if(isset($item->related_items)) {
-					//go through all event items
-					foreach( $all_items as $key=>$value ) {
-						$text = "";
-
-						if($value['color']){
-							$text = $value['color']." - ".$value['description'];
-						} else {
-							$text = $value['description'];
-						}
-						
-						//if a related item is found
-						if(!in_array($key, $item->related_items->data())) {
-							$itemDropdown .= "<option value='".$key."' >" . $text . "</option>";
-						} else {
-							$hasRelated = true;
-							$itemDropdown .= "<option value='".$key."' disabled='1' selected='selected'>".$text."</option>";
-						}
-					}
-					
-				} else {
-					
-					foreach( $all_items as $key=>$value ) {
-
-						if($value['color']) {
-							$text = $value['color']." - ".$value['description'];
-						} else {
-							$text = $value['description'];
-						}
-
-						$itemDropdown .= "<option value='".$key."'>".$text."</option>";
-					}
-
-					
-				}
 				
-				$html .= $itemDropdown;
+				//build dropdowns - if there are no related items, a dropdown with no selected will be built
+				$itemDropDown = $this->buildDropDown($all_items, $related_items);
+
+				$html .= $itemDropDown;
 				$html .= "</select>";
-				
+
 				$html .= "</td>";
 
 				if (!empty($item->primary_image)) {
@@ -103,7 +123,7 @@ class Items extends \lithium\template\Helper {
 				} else {
 					$image = "/img/no-image-small.jpeg";
 				}
-				
+
 				$html .= "<td width='100'><img src=$image/ width='75'></td>";
 				$html .= "<td width='200'><a href=\"/items/edit/$item->_id\">$item->description</a><br />
 				Color: $item->color <br />
