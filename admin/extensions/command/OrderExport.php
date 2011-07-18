@@ -245,6 +245,8 @@ class OrderExport extends Base {
 			* Checks if this queue already started this process once before
 			* If so, just continue with the same file, if not created a new file.
 			**/
+			$split_number = 0;
+			$lines = 0;
 			if ($this->queue->summary) {
                if (!empty($this->queue->summary['order']['filename'])) {
                    $filename = $this->queue->summary['order']['filename'];
@@ -259,18 +261,22 @@ class OrderExport extends Base {
                     * @returns $split_number - number of orders to skip
                     **/
 			       extract($this->lastOrder($fp));
-			       var_dump($split_number);
-			       die();
-			       $this->log("The last order entered into the file was $last_order");
-			       $conditions = array('order_id' => $last_order);
-			       $lastOrder = $orderCollection->findOne(compact('conditions'));
-			       $orderItem = count($lastOrder['items']);
-			       if (($processCheck > 0) && ($processCheck == $orderItem)) {
-			            $this->log("All the items was processed for the last entered order.");
-			            $split_number += 1;
+			       if ($lines != 0) {
+                       $this->log("The last order entered into the file was $last_order");
+                       $conditions = array('order_id' => $last_order);
+                       $lastOrder = $orderCollection->findOne(compact('conditions'));
+                       $orderItem = count($lastOrder['items']);
+                       if (($processCheck > 0) && ($processCheck == $orderItem)) {
+                            $this->log("All the items was processed for the last entered order.");
+                            $split_number += 1;
+                       }
+                       $this->log("Number of orders found " . $orders->count());
+                       $this->log("Skipping the first " . $split_number ." already processed orders.");
+                       $orders = $orders->skip($split_number);
+                       $this->log("Remaining number of orders found " . $orders->count(true));
+			       } else {
+			        $this->log("Empty file");
 			       }
-			       $orders = array_slice($orders, $split_number));
-			       $this->log("Removing the first " . $split_number ." already processed orders.");
                 }
 			} else {
 			    $filename = 'TOTOrd'.$this->time.'.txt';
@@ -388,8 +394,8 @@ class OrderExport extends Base {
 			    shell_exec("mv ". $handle . " " . $new_location);
 			}
 			$totalOrders = count($orderArray);
-			$this->summary['order']['count'] = count($orderArray);
-			$this->summary['order']['lines'] = $inc;
+			$this->summary['order']['count'] = count($orderArray) + $split_number;
+			$this->summary['order']['lines'] = $inc + $lines;
 			$this->summary['order']['filename'] = $filename;
 			$this->log("$handle was created total of $totalOrders orders generated with $inc lines");
 		} else {
@@ -623,17 +629,29 @@ class OrderExport extends Base {
 	**/
 	protected function lastOrder($openFile) {
 	    $orders = array();
+	    $lines = 0;
 	    while( ($data = fgetcsv($openFile,0,"\t")) != FALSE) {
+	            ++$lines;
 	            $orders[$data[5]][] = $data[6];
 	    }
-	    $orders = array_reverse($orders);
-	    $last_order = key($orders);
-	    $last_order_size = count($orders[$last_order]);
-	    /**
-	    * This count will not include the last order
-	    **/
-	    $split_number = count($orders) - 1;
-	    return compact('last_order','last_order_size','split_number');
+	    if (count($orders) != 0 ) {
+            $orders = array_reverse($orders);
+            $last_order = key($orders);
+            $last_order_size = count($orders[$last_order]);
+             /**
+            * This count will not include the last order
+            **/
+            $split_number = count($orders) - 1;
+	    } else {
+	        $last_order = null;
+            $last_order_size = 0;
+             /**
+            * This count will not include the last order
+            **/
+            $split_number = 0;
+	    }
+
+	    return compact('last_order','last_order_size','split_number', 'lines');
 	}
 
 	/**

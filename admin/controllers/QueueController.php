@@ -9,6 +9,7 @@ use admin\controllers\BaseController;
 use lithium\storage\Session;
 use MongoDate;
 use MongoRegex;
+use MongoCursor;
 use MongoId;
 use li3_flash_message\extensions\storage\FlashMessage;
 use admin\extensions\util\String;
@@ -26,7 +27,11 @@ class QueueController extends BaseController {
 	 * This method provides the first step in select all the events
 	 * that should be added to the queue for processing.
 	 * @see admin\models\Event
-	 * @return compact $events
+	 * @return compact $events - current events
+	 * @return compact $queue - current events in queue
+	 * @return compact $recent - recently processed
+	 * @return compact $processedOrders - list of events that were processed for Orders
+	 * @return compact $processedPOs - list of events that were processed for POs
 	 */
 	public function index() {
 		$conditions = array(
@@ -41,44 +46,9 @@ class QueueController extends BaseController {
 			$conditions = array('name' => new MongoRegex("/$search/i"));
 		}
 		$events = Event::find('all', compact('conditions'));
-		$conditions = array('processed' => array('$ne' => true));
-		$queue = Queue::all(compact('conditions'));
 		$conditions = array('processed' => true);
 		$recent = Queue::all(compact('conditions'));
-		/**
-		* Get the approx number of orders and lines files to be processed
-		*/
-		foreach($queue as $data) {
-		    if (array_key_exists('orders', $data->data()) && $data['orders']) {
-                $conditions = array(
-                    'items.event_id' => array('$in' => $data['orders']->data()),
-                    'cancel' => array('$ne' => true)
-                );
-                $order_count = Order::count(compact('conditions'));
 
-                $fields = array('items' => true);
-                $orders = Order::find('all',compact('conditions','fields'));
-                $cancel_count = 0;
-                $line_count = 0;
-                foreach($orders as $order) {
-                    $line_count += count($order['items']);
-                    $items = $order['items']->data();
-                    array_walk_recursive($items, function($item, $key, $cancel_count){
-                        if ($key === 'cancel' && $item == true) {
-                            ++$cancel_count;
-                        }
-                    }, $cancel_count);
-                }
-                $line_count -= $cancel_count;
-                $conditions = array(
-                    'items.event_id' => array('$in' => $data['orders']->data()),
-                    'items.cancel' => true
-                );
-                $item_count = Order::count(compact('conditions'));
-                $data['order_count'] = $order_count - $item_count;
-                $data['line_count'] = $line_count;
-            }
-		}
 		/**
 		 * Show all the data
 		 */
@@ -92,7 +62,8 @@ class QueueController extends BaseController {
 				$processedPOs = array_unique(array_merge($processedPOs, $records['purchase_orders']));
 			}
 		}
-		return compact('events', 'queue', 'recent', 'processedOrders', 'processedPOs');
+		//return compact('events', 'queue', 'recent', 'processedOrders', 'processedPOs');
+		return compact('events', 'recent', 'processedOrders', 'processedPOs');
 	}
 
 	/**
@@ -136,16 +107,30 @@ class QueueController extends BaseController {
 	}
 
 	public function currentQueue() {
+	    MongoCursor::$timeout = -1;
+	    $this->_render['layout'] = false;
 	    $conditions = array('processed' => array('$ne' => true));
 		$queue = Queue::all(compact('conditions'));
 
 		/**
 		* Get the approx number of orders and lines files to be processed
 		*/
+		$size = 0;
+		$json = array();
+		$queue = $queue->data();
+
 		foreach($queue as $data) {
-		    if (array_key_exists('orders', $data->data()) && $data['orders']) {
+		    $data['created_date'] = date('m-d-Y', $data['created_date']['sec']);
+		    $data['percent'] =  number_format($data['percent'], 1);
+		    if (array_key_exists('purchase_orders', $data) && $data['purchase_orders']) {
+		        $data['purchase_orders'] = count($data['purchase_orders']);
+		        $data['order_count'] = 0;
+                $data['line_count'] = 0;
+                $data['orders'] = 0;
+		    }
+		    if (array_key_exists('orders', $data) && $data['orders']) {
                 $conditions = array(
-                    'items.event_id' => array('$in' => $data['orders']->data()),
+                    'items.event_id' => array('$in' => $data['orders']),
                     'cancel' => array('$ne' => true)
                 );
                 $order_count = Order::count(compact('conditions'));
@@ -154,9 +139,10 @@ class QueueController extends BaseController {
                 $orders = Order::find('all',compact('conditions','fields'));
                 $cancel_count = 0;
                 $line_count = 0;
+                $data['purchase_orders'] = count($data['purchase_orders']);
                 foreach($orders as $order) {
                     $line_count += count($order['items']);
-                    $items = $order['items']->data();
+                    $items = $order['items'];
                     array_walk_recursive($items, function($item, $key, $cancel_count){
                         if ($key === 'cancel' && $item == true) {
                             ++$cancel_count;
@@ -165,14 +151,19 @@ class QueueController extends BaseController {
                 }
                 $line_count -= $cancel_count;
                 $conditions = array(
-                    'items.event_id' => array('$in' => $data['orders']->data()),
+                    'items.event_id' => array('$in' => $data['orders']),
                     'items.cancel' => true
                 );
                 $item_count = Order::count(compact('conditions'));
+                $data['orders'] = count($data['orders']);
                 $data['order_count'] = $order_count - $item_count;
                 $data['line_count'] = $line_count;
             }
+            unset($data['summary']);
+            $json[$size] = $data;
+            ++$size;
 		}
+	    echo json_encode($json);
 	}
 
 

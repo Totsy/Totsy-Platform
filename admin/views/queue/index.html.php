@@ -9,7 +9,7 @@
 <div class="grid_16">
 	<h2 id="page-heading">Order Management</h2>
 </div>
-<div class="grid_10" id="current_queue">
+<div class="grid_11" id="current_queue">
     <?=$this->view()->render(array('element' => 'queue'), array('queue' => $queue)); ?>
 </div>
 <div class="grid_16">
