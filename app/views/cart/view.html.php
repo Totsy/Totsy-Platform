@@ -136,30 +136,44 @@
 					
 					$date = $cartItemEventEndDates[$x] * 1000;
 										
-					$itemCounters[] = "<script type=\"text/javascript\">	
+					$itemCounters[] = "<script type=\"text/javascript\">
+					
+						var itemExpires = new Date();
+						itemExpires = new Date($date);
+						var now = new Date();	
+						
+						var expireNotice = (itemExpires.valueOf() - 120000) ;
+						expireNotice = new Date( expireNotice );
+											
+						$(\"#itemCounter$x\").countdown('change', { until: expireNotice, layout: '{mnn}{sep}{snn} minutes' });
+						
+						$(\"#itemCounter$x\").countdown({
+						    until: expireNotice,
+						    expiryText: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This item will expire in 2 minutes</div>', 
+						    layout: '{mnn}{sep}{snn} minutes',
+						    onExpiry: test(itemExpires) }
+						 );
+						 							 
+						 console.log(expireNotice);
+						 console.log(itemExpires);
+						 
+						 function test (exp){
+							
+							$(\"#itemCounter$x\").countdown('destroy');
+							$(\"#itemCounter$x\").countdown('change', { until: exp, layout: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This item will expire in 2 minutes</div>' });
+													
+							$(\"#itemCounter$x\").countdown({
+							    until: exp,
+						        expiryText: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This item is no longer reserved</div>', 
+						        layout: '{mnn}{sep}{snn} minutes',
+						    });
+						}
+						
+						function test2 (){
+							console.log('test');
+						}
 
-    					$(function () {
-							
-							var itemExpires = new Date();
-							itemExpires = new Date($date);
-							var now = new Date();
-							    						
-							var expireNotice = (itemExpires.valueOf() - 120000) ;
-							expireNotice = new Date(expireNotice);
-							
-							$(\"#itemCounter$x\").countdown('change', {until: itemExpires, layout: '{mnn}{sep}{snn} minutes'});
-							$(\"#itemCounter$x\").hide();
-							
-							if( itemExpires > now && now > expireNotice ){
-								$(\"#itemCounter$x\").show();
-								$(\"#itemCounter$x\").html('<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This item will expire in 2 minutes</div>');	
-							}
-							
-							if( itemExpires < now ){
-								$(\"#itemCounter$x\").show();
-								$(\"#itemCounter$x\").html('<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This sale is no longer reserved</div>');
-							}																					
-						});
+						
 						</script>";
 					$subTotal += $item->quantity * $item->sale_retail;
 					$x++;
