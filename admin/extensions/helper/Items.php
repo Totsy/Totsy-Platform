@@ -110,7 +110,7 @@ class Items extends \lithium\template\Helper {
 
 				$html .= "<select multiple='multiple' id='related_".$item->_id."' name='related_".$item->_id."[]' title='Select an item'>";
 
-				//build dropdowns - if there are no related items, a dropdown with no selected will be built
+				//build dropdown options - if there are no related items, a dropdown with no selected will be built
 				$itemDropDown = $this->buildDropDown($all_items, $related_items);
 
 				$html .= $itemDropDown;
