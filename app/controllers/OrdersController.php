@@ -561,6 +561,12 @@ class OrdersController extends BaseController {
 		return $orderEvents;
 	}
 	
+	/**
+	 * The user choose his billing address and enter his credit card information.
+	 * - He can use a checkbox to apply shipping address as billing address
+	 * - There is a jquery check for the credit card number
+	 * @return compact
+	 */
 	public function payment() {
 		$user = Session::read('userLogin');
 		$fields = array(
@@ -593,15 +599,17 @@ class OrdersController extends BaseController {
 			}
 			#Get Credit Card Infos
 			if(!empty($datas['card_number'])) {
-				foreach($datas as $key => $data) {
-					$test = explode("_", $key);
-					if ($test[0] == 'card') {
-						$card[$test[1]] = $data;
+				#Get Only the card informations
+				foreach($datas as $key => $value) {
+					$card_array = explode("_", $key);
+					if ($card_array[0] == 'card') {
+						$card[$card_array[1]] = $value;
 					}
 				}
 				$cc_infos = CreditCard::create($card);
+				#Check credits cards informations
 				if($cc_infos->validates()) {
-					#Encrypt CC Infos
+					#Encrypt CC Infos with mcrypt
 					$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
   					$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
 					$key = md5($user['_id']);
@@ -613,18 +621,22 @@ class OrdersController extends BaseController {
 					$cc_passed = true;
 				}			
 			}
+			#In case of normal submit (no ajax one with the checkbox)
 			if(empty($datas['shipping_select'])) {
+				#Get Only address informations
 				foreach($datas as $key => $data) {
 					if (strlen(strstr($key,'card')) == 0) {
 						$address_post[$key] = $data;
 					}
 				}
 				$address = Address::create($address_post);
+				#Check addresses informations
 				if ($address->validates()) {
 					Session::write('billing', $address->data());
 					$billing_passed = true;
 				}
 			}
+			#If both billing and credit card correct
 			if(!empty($billing_passed) && !empty($cc_passed)) {
 				$this->redirect(array('Orders::process'));
 			}
@@ -633,15 +645,14 @@ class OrdersController extends BaseController {
 				$data_add = $address->data();
 			}
 			$payment = Address::create(array_merge($datas, $data_add));
+			#Init datas
+			$payment->shipping_select = '0';
 		}
 		$cart = Cart::active(array(
 				'fields' => $fields,
 				'time' => '-5min'
 		));
 		$cartEmpty = ($cart->data()) ? false : true;
-		if(!empty($payment)) {
-			$payment->shipping_select = '0';
-		}
 		return compact('address', 'cartEmpty', 'checked', 'payment');
 	}
 
