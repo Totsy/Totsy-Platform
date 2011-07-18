@@ -13,30 +13,30 @@
 </div>
 
 <div class="grid_10">
-<?=$this->form->create($address, array(
+<?=$this->form->create($payment, array(
 		'id' => 'paymentForm',
 		'class' => "fl"
 	)); ?>
-			
+		
 				<h3>Pay with Credit Card :</h3>
 				<hr />
-				<?=$this->form->label('card[type]', 'Card Type', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->select('card[type]', array('visa' => 'Visa', 'mc' => 'MasterCard','amex' => 'American Express'), array('id' => 'card_type')); ?>
+				<?=$this->form->label('card_type', 'Card Type', array('escape' => false,'class' => 'required')); ?>
+				<?=$this->form->select('card_type', array('visa' => 'Visa', 'mc' => 'MasterCard','amex' => 'American Express'), array('id' => 'card_type')); ?>
 				<br />
-				<?=$this->form->label('card[name]', 'Name On Card', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('card[name]', array('class' => 'inputbox')); ?>
-				<?=$this->form->error('card[name]'); ?>
+				<?=$this->form->label('card_name', 'Name On Card', array('escape' => false,'class' => 'required')); ?>
+				<?=$this->form->text('card_name', array('class' => 'inputbox')); ?>
+				<?=$this->form->error('card_name'); ?>
 				<br />
-				<?=$this->form->label('card[number]', 'Card Number', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('card[number]', array('class' => 'inputbox','id' => 'card[number]', 'onblur' => 'validCC()')); ?>
-				<?=$this->form->hidden('card[valid]', array('class' => 'inputbox', 'id' => 'card[valid]')); ?>
-				<?=$this->form->error('card[number]'); ?>
+				<?=$this->form->label('card_number', 'Card Number', array('escape' => false,'class' => 'required')); ?>
+				<?=$this->form->text('card_number', array('class' => 'inputbox','id' => 'card_number', 'onblur' => 'validCC()')); ?>
+				<?=$this->form->hidden('card_valid', array('class' => 'inputbox', 'id' => 'card_valid')); ?>
+				<?=$this->form->error('card_number'); ?>
 				<div id='error_valid' style="display:none;">
 					Wrong Credit Card Number
 				</div>
 				<br />
-				<?=$this->form->label('card[number]', 'Expiration Date', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->select('card[month]', array(
+				<?=$this->form->label('card_month', 'Expiration Date', array('escape' => false,'class' => 'required')); ?>
+				<?=$this->form->select('card_month', array(
 										'' => 'Month',
 										1 => 'January',
 										2 => 'February',
@@ -54,10 +54,10 @@
 				<?php
 					$now = intval(date('Y'));
 					$years = array_combine(range($now, $now + 15), range($now, $now + 15)); ?>					
-				<?=$this->form->select('card[year]', array('' => 'Year') + $years, array('id' => "card_exp[year]")); ?>
+				<?=$this->form->select('card_year', array('' => 'Year') + $years, array('id' => "card_year")); ?>
 				<br />
-				<?=$this->form->label('card[code]', 'Security Code', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('card[code]', array('id' => 'CVV2','class' => 'inputbox', 'maxlength' => '4', 'size' => '4')); ?>
+				<?=$this->form->label('card_code', 'Security Code', array('escape' => false,'class' => 'required')); ?>
+				<?=$this->form->text('card_code', array('id' => 'CVV2','class' => 'inputbox', 'maxlength' => '4', 'size' => '4')); ?>
 				<?php 
 				if(empty($checked)) {
 					$checked = false;
@@ -65,7 +65,7 @@
 				?>
 				<h3>Billing Address</h3>
 				<hr />
-				Use my shipping address as my billing address: <?=$this->form->checkbox("shipping", array('onclick' => 'replace_address()' , "checked" => $checked, "value" => "1")) ?>
+				Use my shipping address as my billing address: <?=$this->form->checkbox("shipping", array('id' => 'shipping', 'onclick' => 'replace_address()' , "checked" => $checked)) ?>
 				<br />
 				<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('firstname', array('class' => 'inputbox')); ?>
@@ -82,8 +82,8 @@
 				<?=$this->form->text('address', array('class' => 'inputbox')); ?>
 				<?=$this->form->error('address'); ?>
 				<br />
-				<?=$this->form->label('address_2', 'Street Address 2', array('escape' => false,'class' => 'addresses')); ?>
-				<?=$this->form->text('address_2', array('class' => 'inputbox')); ?>
+				<?=$this->form->label('address2', 'Street Address 2', array('escape' => false,'class' => 'addresses')); ?>
+				<?=$this->form->text('address2', array('class' => 'inputbox')); ?>
 				<br />
 				<?=$this->form->label('city', 'City <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('city', array('class' => 'inputbox')); ?>
@@ -96,8 +96,10 @@
 				<?=$this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('zip', array('class' => 'inputbox', 'id' => 'zip')); ?>
 				<br />
+				<?=$this->form->hidden('description', array('id' => 'description' , 'value' => 'billing')); ?>
+				<?=$this->form->hidden('shipping_select', array('id' => 'shipping_select')); ?>
+				
 			<?=$this->form->submit('CONTINUE', array('class' => 'button fr')); ?>
-
 <?=$this->form->end();?> 
 </div>
 <script>
@@ -130,8 +132,8 @@ function isValidCard(cardNumber){
   }
 
 function validCC() {
-	var test = isValidCard($("input[name='card[number]']").val());
-	$("input[name='card[valid]']").val(test);
+	var test = isValidCard($("input[name='card_number']").val());
+	$("input[name='card_valid']").val(test);
 	if(!test) {
 		$('#error_valid').show();
 	} else {
@@ -140,6 +142,10 @@ function validCC() {
 }
 
 function replace_address() {
-  $("#paymentForm").submit();
+	$("#shipping_select").val('2');
+	if(!$("#shipping").is(':checked')) {
+		$("input[name='shipping']").val(0);
+	}
+	$("#paymentForm").submit();
 };
 </script>

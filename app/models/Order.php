@@ -45,8 +45,17 @@ class Order extends Base {
 				);
 			}
 		}
-
-		$card = Payments::create('default', 'creditCard', $data['card'] + array(
+		#Read Credit Card Informations
+		$user = Session::read('userLogin');
+		$cc_encrypt = Session::read('cc_infos');	
+		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
+ 		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+ 		$key = md5($user['_id']);
+		foreach	($cc_encrypt as $key => $cc_info) {
+			$crypt_info = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $cc_info, MCRYPT_MODE_CFB, $iv);
+			$card[$key] = $crypt_info;
+		}
+		$card = Payments::create('default', 'creditCard', $card + array(
 			'billing' => Payments::create('default', 'address', array(
 				'firstName' => $billing->firstname,
 				'lastName'  => $billing->lastname,

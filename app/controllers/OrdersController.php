@@ -10,6 +10,7 @@ use app\models\Address;
 use app\models\Order;
 use app\models\Event;
 use app\models\Promotion;
+use app\models\CreditCard;
 use app\models\Promocode;
 use app\models\Affiliate;
 use app\models\OrderShipped;
@@ -215,6 +216,12 @@ class OrdersController extends BaseController {
 		return $vars + compact('cartEmpty', 'cartByEvent', 'error', 'orderEvents', 'shipDate', 'savings');
 	}
 
+	/**
+	 * The user choose his shipping address for his order by :
+	 * - Adding a new one
+	 * - Selecting one already saved
+	 * @return compact
+	 */
 	public function shipping() {
 		$user = Session::read('userLogin');
 		$fields = array(
@@ -232,44 +239,58 @@ class OrdersController extends BaseController {
 			'event_name',
 			'event'
 		);
-		if (!empty($this->request->data['address_id'])) {
-			$address = Address::first(array(
-				'conditions' => array('_id' => new MongoId($this->request->data['address_id']))));
-		}
-		if (!empty($this->request->data) && empty($this->request->data['address_id'])) {
-			$address = Address::create($this->request->data);
-			if ($address->validates()) {
-				Session::write('shipping', $this->request->data);
-				$count = Address::count(array('user_id' => $user['_id']));
-				if ($count == 0) {
-					$address->user_id = (string) $user['_id'];
-					$address->save();
-				}
-				$this->redirect(array('Orders::payment'));
-			}
-		}
-		if ($user = Session::read('userLogin')) {
-			if(empty($address)) {
+		#Prepare datas
+		$address = null;
+		$selected = null;
+		#Check Datas Form
+		if (!empty($this->request->data)) {
+			$datas = $this->request->data;
+			# If address selected ddwn, get infos from DB
+			if (!empty($datas['address_id'])) {
 				$address = Address::first(array(
-					'conditions' => array('user_id' => (string) $user['_id'])
-				));
+					'conditions' => array('_id' => new MongoId($datas['address_id'])
+				)));
+			} else {
+				$address = Address::create($datas);
+				#Check Infos and save it on Session
+				if ($address->validates()) {
+					Session::write('shipping', $datas);
+					#If no address is link with the user, save the current one
+					$count = Address::count(array('user_id' => $user['_id']));
+					if ($count == 0) {
+						$address->user_id = $user['_id'];
+						$address->save();
+					}
+					$this->redirect(array('Orders::payment'));
+				} else {
+					$error = true;
+				}
 			}
-			$datas_add = Address::all(array(
-				'conditions' => array('user_id' => (string) $user['_id'])
-			));
-		}
-		//Prepare addresses datas for the dropdown
-		if(!empty($datas_add)) {
-			foreach($datas_add as $value) {
-				$addresses[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address']; 
+		} 
+		#Get all addresses of the current user
+		$addresses = Address::all(array(
+			'conditions' => array('user_id' => (string) $user['_id'])
+		));		
+		#Prepare addresses datas for the dropdown
+		if (!empty($addresses)) {
+			$idx = 0;
+			foreach ($addresses as $value) {
+				if ((($idx == 0 || $value['default'] == '1') && empty($datas['address_id'])))
+					$address = $value;
+				#Get selected ddwn address
+				if((string)$value['_id'] == $address['_id']) 
+					$selected = (string) $value['_id'];
+				$addresses_ddwn[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address']; 
+				$idx++;
 			}
 		}
+		#Check Cart Validty
 		$cart = Cart::active(array(
 				'fields' => $fields,
 				'time' => '-5min'
 		));
 		$cartEmpty = ($cart->data()) ? false : true;
-		return compact('address', 'addresses', 'cartEmpty');
+		return compact('address', 'addresses_ddwn', 'cartEmpty', 'error', 'selected');
 	}
 	
 	/**
@@ -279,9 +300,12 @@ class OrdersController extends BaseController {
 	 * @todo Make this method lighter by taking out promocode/credit validation
 	 */
 	public function process() {
+		$cc_encrypt = Session::read('cc_infos');
+		var_dump($cc_encrypt);
 		$order = Order::create();
 		$user = Session::read('userLogin');
-		$data = $user['checkout'] + $this->request->data;
+		var_dump($user);
+		$data = $this->request->data;
 		$fields = array(
 			'item_id',
 			'color',
@@ -538,7 +562,7 @@ class OrdersController extends BaseController {
 	}
 	
 	public function payment() {
-		$usersCollection = User::Collection();
+		$user = Session::read('userLogin');
 		$fields = array(
 			'item_id',
 			'color',
@@ -554,25 +578,71 @@ class OrdersController extends BaseController {
 			'event_name',
 			'event'
 		);
+		#Prepare datas
 		$address = null;
-		if (!empty($this->request->data['shipping'])) {
-			$checked = true;
-			$shipping = Session::read('shipping');
-			$address = Address::create($shipping);
-		}
-		if (!empty($this->request->data) && empty($this->request->data['shipping'])) {
-			$address = Address::create($this->request->data);
-			if ($address->validates()) {
-				Session::write('billing', $this->request->data);
-				$this->redirect(array('Orders::payment'));
+		$payment = null;
+		$checked = false;
+		#Check Datas Form
+		if (!empty($this->request->data)) {
+			$datas = $this->request->data;
+			#Get billing address from shipping one in session
+			if (!empty($datas['shipping'])) {
+				$checked = true;
+				$shipping = Session::read('shipping');
+				$address = Address::create($shipping);
 			}
+			#Get Credit Card Infos
+			if(!empty($datas['card_number'])) {
+				foreach($datas as $key => $data) {
+					$test = explode("_", $key);
+					if ($test[0] == 'card') {
+						$card[$test[1]] = $data;
+					}
+				}
+				$cc_infos = CreditCard::create($card);
+				if($cc_infos->validates()) {
+					#Encrypt CC Infos
+					$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
+  					$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+					$key = md5($user['_id']);
+					foreach	($cc_infos as $key => $cc_info) {
+						$crypt_info = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $cc_info, MCRYPT_MODE_CFB, $iv);
+						$cc_encrypt[$key] = $crypt_info;
+					}
+					Session::write('cc_infos', $cc_encrypt);
+					$cc_passed = true;
+				}			
+			}
+			if(empty($datas['shipping_select'])) {
+				foreach($datas as $key => $data) {
+					if (strlen(strstr($key,'card')) == 0) {
+						$address_post[$key] = $data;
+					}
+				}
+				$address = Address::create($address_post);
+				if ($address->validates()) {
+					Session::write('billing', $address->data());
+					$billing_passed = true;
+				}
+			}
+			if(!empty($billing_passed) && !empty($cc_passed)) {
+				$this->redirect(array('Orders::process'));
+			}
+			$data_add = array();
+			if (!empty($address)) {
+				$data_add = $address->data();
+			}
+			$payment = Address::create(array_merge($datas, $data_add));
 		}
 		$cart = Cart::active(array(
 				'fields' => $fields,
 				'time' => '-5min'
 		));
 		$cartEmpty = ($cart->data()) ? false : true;
-		return compact('address', 'cartEmpty', 'checked');
+		if(!empty($payment)) {
+			$payment->shipping_select = '0';
+		}
+		return compact('address', 'cartEmpty', 'checked', 'payment');
 	}
 
 }
