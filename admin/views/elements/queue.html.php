@@ -54,7 +54,7 @@ function updateCurrentQueue() {
                         table = table +  "<td>" + queue[index].status +
                             " (" + queue[index].percent + "%)" + "</td>";
                     } else{
-                         table = table +  "<td>Not Running Yet</td>";
+                         table = table +  "<td></td>";
                     }
                     table += "</tr>";
 
