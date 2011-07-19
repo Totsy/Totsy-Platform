@@ -588,15 +588,11 @@ class OrdersController extends BaseController {
 		$address = null;
 		$payment = null;
 		$checked = false;
+		#Get billing address from shipping one in session
+		$shipping = json_encode(Session::read('shipping'));
 		#Check Datas Form
 		if (!empty($this->request->data)) {
 			$datas = $this->request->data;
-			#Get billing address from shipping one in session
-			if (!empty($datas['shipping'])) {
-				$checked = true;
-				$shipping = Session::read('shipping');
-				$address = Address::create($shipping);
-			}
 			#Get Credit Card Infos
 			if(!empty($datas['card_number'])) {
 				#Get Only the card informations
@@ -653,7 +649,7 @@ class OrdersController extends BaseController {
 				'time' => '-5min'
 		));
 		$cartEmpty = ($cart->data()) ? false : true;
-		return compact('address', 'cartEmpty', 'checked', 'payment');
+		return compact('address', 'cartEmpty','payment','shipping');
 	}
 
 }

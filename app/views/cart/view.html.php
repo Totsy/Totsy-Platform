@@ -1,13 +1,15 @@
 <?php
 
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
-	$test = $cart->data();
 	
 	$cartExpirationDate = "";
+	$test = Array();
 	
-	if($test){
+	if($cart->data()){
+		$test = $cart->data();
+	
 		$cartInfo = $cart->data();
-		$cartExpirationDate =  $cartInfo[0]['expires']['sec'];
+		$cartExpirationDate =  $cartInfo[0]['expires']['sec'];		
 	}
 	
 ?>										
@@ -129,7 +131,9 @@
 					<td class="cart-actions">
 						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" onclick="deletechecked('Are you sure you want to remove this item?','<?=$item->_id; ?>');" style="color: red!important;"><img src="/img/trash.png" width="20" align="absmiddle" style="margin-right:20px;" /></a>
 					</td>
-					<td class="cart-time" style="width:220px;"><!-- <img src="/img/old_clock.png" align="absmiddle" width="23" class="fl"/>--> <div id='<?php echo "itemCounter$x"; ?>' class="fl" style="margin:5px 0px 0px 5px;"></div></td>
+					<td class="cart-time" style="width:220px;"><!-- <img src="/img/old_clock.png" align="absmiddle" width="23" class="fl"/>--> <div id='<?php echo "itemCounter$x"; ?>' class="fl" style="margin:5px 0px 0px 5px;"></div>
+				<div id='<?php echo "itemCounter_2$x"; ?>' class="fl" style="margin:5px 0px 0px 5px;"></div>	
+					</td>
 					<td class="<?="total-item-$x";?>" style="width:55px;">
 						<strong style="color:#009900;">$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
 					</td>
@@ -147,39 +151,37 @@
 						
 						var expireNotice = ( itemExpires.valueOf() - 120000 ) ;
 						expireNotice = new Date( expireNotice );
-											
-						$(\"#itemCounter$x\").countdown('change', { until: expireNotice, layout: '{mnn}{sep}{snn} minutes' });
-						
+																	
 						$(\"#itemCounter$x\").countdown({
-						    until: expireNotice,
-						    expiryText: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This item will expire in 2 minutes</div>', 
-						    layout: '{mnn}{sep}{snn} minutes',
-						    onExpiry: test(itemExpires) }
-						 );
+						    until: itemExpires,
+						    expiryText: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This sale has ended</div>', 
+						    layout: '',
+						    onTick: watchCountDown() 
+						 });
 						 
-						 console.log('the first counter has started');
+						 function watchCountDown() { 
+						 	var itemExpires = new Date();
+							itemExpires = new Date($date);
 						 
-						function test (exp){
+						 	var now = new Date();	
+							var expireNotice = ( itemExpires.valueOf() - 120000 ) ;
+							expireNotice = new Date( expireNotice );
+						 
+						 	if(now > expireNotice){						 	
+						 		$(\"#itemCounter$x\").hide();
+						 		$(\"#itemCounter_2$x\").show();
+    							$(\"#itemCounter_2$x\").html('<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This sale has 2 minutes to go</div>'); 
+    						}
+    						
+    						if (now == itemExpires){
+    							$(\"#itemCounter_2$x\").hide();
+    							$(\"#itemCounter$x\").show();
+    							$(\"#itemCounter_2$x\").html('<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This sale has ended</div>'); 		
+    						}
+						 }
 						
-						    $(\"#itemCounter$x\").countdown('destroy');
-						    
-						    console.log('the second counter has started');
-						    
-						    $(\"#itemCounter$x\").countdown('change', { until: exp, layout: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This item will expire in 2 minutes</div>' });
-						    						
-						    $(\"#itemCounter$x\").countdown({
-						        until: exp,
-						        expiryText: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This sale has ended</div>', 
-						        layout: '{mnn}{sep}{snn} minutes',
-						    });
-						}
-						
-						function test2 (){
-							console.log('test');
-						}
-
-						
-						</script>";
+					</script>";
+					
 					$subTotal += $item->quantity * $item->sale_retail;
 					$x++;
 				?>
@@ -244,10 +246,10 @@
 										if($credit > ($subTotal)){
 											echo number_format(0 ,2 );
 										} else {
-											echo number_format(($subtotal)-$credit);
+											echo number_format(($subTotal-$credit), 2);
 										}
 									} else {
-										echo number_format(($subtotal));
+										echo number_format($subTotal, 2);
 									}
 								?></span>
 							</span>
