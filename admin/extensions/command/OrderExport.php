@@ -189,7 +189,9 @@ class OrderExport extends Base {
 						$queue->save();
 						$this->summary['from_email'] = 'no-reply@totsy.com';
 						$this->summary['to_email'] = 'logistics@totsy.com';
-						//Mailer::send('Order_Export', $this->summary['to_email'], $this->summary);
+						if ($this->test != 'true') {
+                           Mailer::send('Order_Export', $this->summary['to_email'], $this->summary);
+                        }
 					}
 				}
 			}
