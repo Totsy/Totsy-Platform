@@ -640,7 +640,7 @@ class OrderExport extends Base {
             $orders = array_reverse($orders);
             $last_order = key($orders);
             $last_order_size = count($orders[$last_order]);
-             /**
+            /**
             * This count will not include the last order
             **/
             $split_number = count($orders) - 1;
