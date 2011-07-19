@@ -79,7 +79,6 @@ class APIController extends  \lithium\action\Controller {
 		if (is_array($params) && count($params)==1){
 			$params[0] = str_replace('.'.$this->_format,'',$params[0]);
 		}
-		
 		$methods = get_class_methods(get_class($this));
 		if (in_array($params[0].'Api',$methods)){
 			$this->_method = $params[0];
@@ -88,6 +87,22 @@ class APIController extends  \lithium\action\Controller {
 			$this->display( ApiHelper::errorCodes(405) );
 		}		
 	}	
+	
+	protected function help() {
+		$all_methods = get_class_methods(get_class($this));
+		$methods = array();
+		foreach($all_methods as $method){
+			if(preg_match('/Api/',$method) ){
+				$clear = str_replace('Api','',$method);
+				$methods[] = array(
+					'name'=>strtoupper(substr($clear,0,1)).substr($clear,1),
+					'clear' => $clear
+				);
+			}
+		}
+		
+		return compact('methods');
+	}
 	
 	/**
 	 * Authorize function
