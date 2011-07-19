@@ -62,7 +62,7 @@ class APIController extends  \lithium\action\Controller {
 		} else {
 			$this->_format = $format;
 		}
-		
+
 		/* set protocol HTTP OR HTTPS 
 		 *
 		 * remember to set proper virtual host nginx config
@@ -74,8 +74,13 @@ class APIController extends  \lithium\action\Controller {
 			$this->display( ApiHelper::errorCodes(405) );
 		}
 		
+		// in case we have only method anf format specified in url
+		// so it means to remove form form the method name
+		if (is_array($params) && count($params)==1){
+			$params[0] = str_replace('.'.$this->_format,'',$params[0]);
+		}
+		
 		$methods = get_class_methods(get_class($this));
-
 		if (in_array($params[0].'Api',$methods)){
 			$this->_method = $params[0];
 			$this->display( $this->{$params[0].'Api'}() );
@@ -188,10 +193,22 @@ class APIController extends  \lithium\action\Controller {
 			));
 			unset($mItems);
 			foreach ($itms as $itm){
-				 $it = $itm->data();
-				 $it['base_url'] = $base_url;
-				 $it['event_url'] = $ev['url'];
-				 $items[] = $it;
+				$it = $itm->data();
+				$it['base_url'] = $base_url;
+				$it['event_url'] = $ev['url'];
+				 
+				if (preg_match('/[\%]+/',$it['percent_off'])){
+					$it['percent_off'] = substr($it['percent_off'],0,-1);
+					if (is_float($it['percent_off']) ) $it['percent_off'] = round($it['percent_off'],2);
+				} else if (is_float($it['percent_off'])) {
+					$it['percent_off'] = round($it['percent_off']*100,2);
+				} else {
+					$it['percent_off'] = preg_replace('/[/D]+/','',$it['percent_off']);
+					if ($it['percent_off']>74) $it['percent_off'] = 0;	
+				} 
+				$it['start_date'] = $ev['start_date'];
+				$it['end_date'] = $ev['end_date']; 
+				$items[] = $it;
 			}
 		}
 		$this->setView(1);
@@ -217,6 +234,7 @@ class APIController extends  \lithium\action\Controller {
 		$base_url = 'http://'.$_SERVER['HTTP_HOST'].'/';
 		$events = array();
 		$closing = array();
+		$maxOff = 0;
 		
 		foreach ($openEvents as $event){
 			
@@ -254,7 +272,7 @@ class APIController extends  \lithium\action\Controller {
 						$it['percent_off'] = preg_replace('/[/D]+/','',$it['percent_off']);
 						if ($it['percent_off']>74) $it['percent_off'] = 0;	
 					}
-					
+					if ($it['percent_off'] > $maxOff) { $maxOff = $it['percent_off']; }
 					if ( isset($it['vendor']) && (is_null($data['vendor']) || strlen(trim($data['vendor']))==0)){ 
 						$data['vendor'] = $it['vendor']; 
 					}
@@ -276,7 +294,7 @@ class APIController extends  \lithium\action\Controller {
 			$pending[] = $pendingEvent->data();
 		}
 		$this->setView(1);
-		return (compact('events','pending','closing','base_url'));
+		return (compact('events','pending','closing','base_url','maxOff'));
 	}	
 	
 	/**
@@ -314,8 +332,11 @@ class APIController extends  \lithium\action\Controller {
 					}
 					extract($data);
 					require_once LITHIUM_APP_PATH . '/views/api/'.$path;
+				} else if ($this->_method == 'authorize'){
+					ApiHelper::converter($data,'xml');
 				} else {
-					echo ApiHelper::converter(ApiHelper::errorCodes(415),$this->_format);
+					$this->_view = 'default';
+					$this->display($data);
 				}
 			break;
 			
@@ -329,8 +350,11 @@ class APIController extends  \lithium\action\Controller {
 					}
 					extract($data);
 					require_once LITHIUM_APP_PATH . '/views/api/'.$path;
-				} else {
+				} else if ($this->_method == 'authorize'){
 					echo json_encode($data);
+				} else {
+					$this->_view = 'default';
+					$this->display($data);
 				}
 			break;
 
