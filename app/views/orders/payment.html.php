@@ -21,10 +21,13 @@ var paymentForm = new Object();
         //if its not true, set it to false. 
         //used to avoid overwriting the submitted 
         //value on refresh, persiting whether a 
-        //form submit was made or not        
-    	if(paymentForm.submitted!==true) {
+        //form submit was made or not    
+                    
+    	if(!paymentForm.submitted) {
     		paymentForm.submitted=false;  	
-    	} 
+    	} else {
+    		$("#submitted").val(paymentForm.submitted);	
+    	}
     	    	
     	//detach the plugin from the form if it hasn't been submitted yet
     	if(paymentForm.submitted==false){
@@ -88,6 +91,7 @@ var paymentForm = new Object();
 				<div class="grid_8">
 				<h3>Pay with Credit Card :</h3>
 				<hr />
+				<?=$this->form->hidden('submitted', array('class'=>'inputbox', 'id' => 'submitted')); ?>
 				<?=$this->form->label('card_type', 'Card Type', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->select('card_type', array('visa' => 'Visa', 'mc' => 'MasterCard','amex' => 'American Express'), array('id' => 'card_type', 'class'=>'inputbox')); ?>
 				<br />
