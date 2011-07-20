@@ -12,8 +12,10 @@
  */
 (function($) {
 
-    var methods = {
+	var valid_fields = "";
 
+    var methods = {
+    
         /**
          * Kind of the constructor, called before any action
          * @param {Map} user options
@@ -183,7 +185,7 @@
             var form = field.closest('form');
             var options = form.data('jqv');
             // validate the current field
-            methods._validateField(field, options);
+            methods._validateField(field, options,'' ,false);
         },
         /**
          * Called when the form is submited, shows prompts accordingly
@@ -195,10 +197,10 @@
         _onSubmitEvent: function() {
             var form = $(this);
  			var options = form.data('jqv');
-   
+ 			 			   
 			// validate each field (- skip field ajax validation, no necessary since we will perform an ajax form validation)
-            var r=methods._validateFields(form, true);
-		
+            var r=methods._validateFields(form, true, true);
+            		
             if (r && options.ajaxFormValidation) {
                 methods._validateFormWithAjax(form, options);
                 return false;
@@ -208,6 +210,7 @@
                 options.onValidationComplete(form, r);
                 return false;
             }
+            
             return r;
         },
 
@@ -237,7 +240,7 @@
          *
          * @return true if form is valid, false if not, undefined if ajax form validation is done
          */
-        _validateFields: function(form, skipAjaxValidation) {
+        _validateFields: function(form, skipAjaxValidation, noPrompt) {
             var options = form.data('jqv');
 
             // this variable is set to true if an error is found
@@ -248,8 +251,9 @@
             // first, evaluate status of non ajax fields
             form.find('[class*=validate]').not(':hidden').each( function() {
                 var field = $(this);
-                errorFound |= methods._validateField(field, options, skipAjaxValidation);
+                errorFound |= methods._validateField(field, options, skipAjaxValidation, noPrompt);
             });
+            
             // second, check to see if all ajax calls completed ok
             // errorFound |= !methods._checkAjaxStatus(options);
 			
@@ -394,7 +398,7 @@
          *            user options
          * @return true if field is valid
          */
-        _validateField: function(field, options, skipAjaxValidation) {
+        _validateField: function(field, options, skipAjaxValidation, noPrompt) {
             if (!field.attr("id"))
                 $.error("jQueryValidate: an ID attribute is required for this field: " + field.attr("name") + " class:" +
                 field.attr("class"));
@@ -422,6 +426,10 @@
                     case "required":
                         required = true;
                         errorMsg = methods._required(field, rules, i, options);
+                        
+                        //create an array using these valid fields
+            			valid_fields[i] = field;
+                        
                         break;
                     case "custom":
                         errorMsg = methods._customRegex(field, rules, i, options);
@@ -490,11 +498,14 @@
             }
 
             if (options.isError){
-				
-                methods._showPrompt(field, promptText, "", false, options);
+				//console.log(field);
+				if(noPrompt==false){
+                	methods._showPrompt(field, promptText, "", false, options);
+                }
             }else{
 				if (!isAjaxValidator) methods._closePrompt(field);
 			}
+						
 			field.trigger("jqv.field.result", [field, options.isError, promptText]);
             return options.isError;
         },
@@ -540,7 +551,7 @@
                     if (!field.find("option:selected").val())
                         return options.allrules[rules[i]].alertText;
                     break;
-            }
+            }            
         },
         /**
          * Validate Regex rules
