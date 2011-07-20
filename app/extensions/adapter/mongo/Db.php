@@ -171,7 +171,7 @@ class Db extends \lithium\data\source\MongoDb {
 			}
 			else { $slave = $slaves[0]; }
 			//static::logChooser($slaves[$slaveId]['name']);
-			$this->server_manager_config['slave'] = $slaves[$serverId]['name']; 
+			$this->server_manager_config['slave'] = $slaves; 
 		}
 		return $isMaster;
 	}
