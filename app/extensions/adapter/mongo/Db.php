@@ -168,8 +168,8 @@ class Db extends \lithium\data\source\MongoDb {
 			if ($cs>1) { 
 				//$slave = join(',', $slaves);
 				$slaveId = mt_rand(0,count($slaves)-1); 
-			}
-			else { $slave = $slaves[0]; }
+			} else { $slave = $slaves[0]; }
+			
 			//static::logChooser($slaves[$slaveId]['name']);
 			$this->server_manager_config['slave'] = $slaves; 
 		}
