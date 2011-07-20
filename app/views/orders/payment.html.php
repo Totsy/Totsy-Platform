@@ -1,9 +1,12 @@
+<script type="text/javascript">
+var paymentForm = new Object();
+</script>
+
 <?php
 	use app\models\Address;
 	$this->html->script('application', array('inline' => false));
 	$this->form->config(array('text' => array('class' => 'inputbox')));
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
-	
 ?>
 
 <link rel="stylesheet" type="text/css" href="/css/validation-engine.jquery.css" media="screen" />
@@ -14,32 +17,56 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
-        
-    	if($("#paymentForm").submitted==false) {
-    		$("#paymentForm").validationEngine('detach');  	
-    	} else {
-        	$("#paymentForm").validationEngine('attach');        
-    		$("#paymentForm").validationEngine('init', { promptPosition : "centerRight", scroll: false } );    
+            
+        //if its not true, set it to false. 
+        //used to avoid overwriting the submitted 
+        //value on refresh, persiting whether a 
+        //form submit was made or not        
+    	if(paymentForm.submitted!==true) {
+    		paymentForm.submitted=false;  	
+    	} 
+    	    	
+    	//detach the plugin from the form if it hasn't been submitted yet
+    	if(paymentForm.submitted==false){
+    		$("#paymentForm").validationEngine('detach');
     	}
     	
+    	//highlight the invalid fields and show a prompt for the first of those highlighted
     	$("#paymentForm").submit(function() {
-    		this.submitted = true;
+    		paymentForm.submitted = true;
+    		paymentForm.form = $(this).serializeArray(); 
     		
-    		paymentForm = $(this).serializeArray();    		
+    		var invalid_count = 0;
+    		
+    		//alert(paymentForm.submitted);
+    		$("#paymentForm").validationEngine('attach');        
+    		$("#paymentForm").validationEngine('init', { promptPosition : "centerRight", scroll: false } );      		
     		    		    		
-    		$.each(	paymentForm, function(i, field) {	
-    			    			
-    			if(!field.value) {
-    		 		
+    		$.each(	paymentForm.form, function(i, field) {	
+    		    if(field.value=="" && field.name!=="phone" && field.name!=="address2") {
     		 		if(i==1) {
     		 			$('#' + field.name + "").validationEngine('showPrompt','test', '', true);
     		 			$('#' + field.name + "").validationEngine({ promptPosition : "centerRight", scroll: false });
     		 		}
+    		 		$('#' + field.name + "").attr('style', 'background: #98AFC7 !important');
     		 		
-    		 		$('#' + field.name + "").attr('style', 'background: #ffff00 !important');
-    		 	}
+    		 		invalid_count ++;
+    		 	} 
 			});
-    	});     	
+			    
+			if(invalid_count>0){	
+    		    return false;
+    		} 		
+    	});
+    	
+    	//if the form has been, hide propmts on a given element's blur event
+    	//controls only show a prompt when they have focus and aren't valid
+    	$(".inputbox").blur(function(){ 
+    		if(paymentForm.submitted==true){  		
+				$('#' + this.id + "").validationEngine('hide');	
+			}	    		
+    	});
+    	     	
     });
 
 </script>
@@ -69,10 +96,10 @@
 				<?=$this->form->error('card_name'); ?>
 				<br />
 				<?=$this->form->label('card_number', 'Card Number', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('card_number', array('class'=>'validate[required] inputbox','id' => 'card_number', 'onblur' => 'validCC()')); ?>
+				<?=$this->form->text('card_number', array('class'=>'validate[required] inputbox','id' => 'card_number')); ?>
 				<?=$this->form->hidden('card_valid', array('class'=>'inputbox', 'id' => 'card_valid')); ?>
 				<?=$this->form->error('card_number'); ?>
-				<div id='error_valid' style="display:none;">
+				<div id="error_valid" style="display:none;">
 					Wrong Credit Card Number
 				</div>
 				<br />
@@ -154,6 +181,10 @@
 	
 var shippingAddress = <?php echo $shipping; ?>
 
+$("#card_number").blur(function(){
+	validCC();
+});
+
 function replace_address() {
 	if($("#shipping").is(':checked')) {
 		//run through shippinAddress object and set values for corresponding fields	
@@ -171,7 +202,7 @@ function replace_address() {
 
 function isValidCard(cardNumber){
 	var ccard = new Array(cardNumber.length);
-	var i     = 0;
+	var i = 0;
         var sum   = 0;
 
 	// 6 digit is issuer identifier
@@ -198,12 +229,12 @@ function isValidCard(cardNumber){
   }
 
 function validCC() {
-	var test = isValidCard($("input[name='card_number']").val());
-	$("input[name='card_valid']").val(test);
+	var test = isValidCard($("#card_number").val());
+	$("#card_valid").val(test);
 	if(!test) {
 		$('#error_valid').show();
 	} else {
-		$('#error_valid').hide()();
+		$('#error_valid').hide();
 	}
 }
 
