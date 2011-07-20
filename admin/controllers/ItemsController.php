@@ -189,23 +189,24 @@ class ItemsController extends BaseController {
 		$itemsCollection = Item::Collection();
 		$itemId = array();
 		$related_items = array();
+		$event_items = array();
 		
 		if ($this->request->data) {
 			$data = $this->request->data;
-																		
-			$id = $data['id'];
+																					
+			$id = $data['id'];			
+			$event_items = Item::find('all', array('fields'=>array('_id'),'conditions'=>array('event'=>$id))); 
+			
+			$event_items = array_values($event_items->data());
+			
 			unset($data['id']);
 			array_reverse($data);
-			
-			/* echo "<pre>";
-			print_r($data);
-			echo "</pre>"; */ 
-									
+												
 			//build selected items array
 			foreach ($data as $key => $value) {
 				//check if this is the related items (dropdown selection) or the description (text area)
-				if(substr_count($key, 'related')>0) {
-					$item_id = substr($key, (strrpos($key, "_") + 1));
+				if(substr_count($key, 'related') > 0) {
+					$item_id = substr($key, (strrpos($key, "_") + 1));					
 					$related_items[$item_id] = $value;
 
 				} else {
@@ -215,32 +216,25 @@ class ItemsController extends BaseController {
 					}
 				}
 			}
-															
+			
 			//run through related_items array and update the items
-			foreach($related_items as $key=>$value) {
-				$temp = Array();
-				$i = 0;		
+			foreach($event_items as $key=>$value){
 				
-				foreach($related_items[$key] as $k) {
-					
-					//check if its an empty value (ie the user chose 'select an item' instead of a related item)
-					if($k=='') {
-						$i++;
-					} else {
+				if(isset($related_items[$value['_id']])) {
+					foreach($related_items[$value['_id']] as $k) {
 						$temp[] = $k;
 					}
-				}
-				
-				if($i==5){
-					$itemsCollection->update(array("_id" => new MongoId($key)), array('$unset' => array('related_items'=> 1)));	
+					//print "update item:".$value['_id']." and set related items to ". implode(", ", $temp). "<br />";
+					$itemsCollection->update(array("_id" => new MongoId($value['_id'])), array('$set' => array('related_items' => $temp)));
+					unset($temp);
 				} else {
-					$itemsCollection->update(array("_id" => new MongoId($key)), array('$set' => array('related_items' => $temp)));
-				}
-				
-				unset($temp);
+					//print "remove related items for item of ID:".$value['_id']. "<br />";
+					$itemsCollection->update(array("_id" => new MongoId($value['_id'])), array('$unset' => array('related_items'=> 1)));
+				}	
 			}
-									
+															
 		$this->redirect('/events/edit/'.$id.'#event_items');			
+		
 		}
 	}
 }
