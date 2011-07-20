@@ -7,10 +7,10 @@
 	<events>
 	<?php foreach($events as $event){ ?>
 		<event>
-			<name><?php echo $event['name'] ?></name>
+			<name><?php echo htmlspecialchars($event['name']) ?></name>
 			<description><?php echo htmlspecialchars( sailthru_xml_cut_string($event['blurb'],90) ) ?></description>
 			<availableItems><?php echo $event['available_items']==true?'YES':'NO';?></availableItems>
-			<brandName><?php echo $event['vendor']?></brandName>
+			<brandName><?php echo htmlspecialchars$event['vendor'])?></brandName>
 			<image><?php echo $event['event_image']; ?></image>
 			<discount><?php echo number_format($event['maxDiscount'],2); ?></discount>
 			<url><?php echo $base_url.'sale/'.$event['url']; ?></url>
@@ -21,7 +21,7 @@
 	<pendingEvents>
 	<?php foreach($pending as $event){ ?>
 		<pendingEvent>
-			<name><?php echo $event['name'] ?></name>
+			<name><?php echo htmlspecialchars($event['name']) ?></name>
 			<url><?php echo $base_url.'sale/'.$event['url']; ?></url>
 		</pendingEvent>
 	<?php } ?>
@@ -29,7 +29,7 @@
 	<closingEvents>
 	<?php foreach($closing as $event){ ?>
 		<closingEvent>
-			<name><?php echo $event['name'] ?></name>
+			<name><?php echo htmlspecialchars($event['name']) ?></name>
 			<url><?php echo $base_url.'sale/'.$event['url']; ?></url>
 			<endDate><?php date('F j',$event['end_date']['sec']); ?></endDate>
 		</closingEvent>
