@@ -4,12 +4,13 @@ namespace admin\models;
 
 use MongoId;
 use MongoDate;
+use MongoRegex;
 use li3_payments\extensions\Payments;
 use li3_payments\extensions\payments\exceptions\TransactionException;
-use MongoRegex;
 use lithium\analysis\Logger;
 use admin\models\User;
 use admin\models\Item;
+use admin\extensions\AvaTax;
 
 /**
 * The Orders Model is related to the Orders Collection in MongoDB.
@@ -223,6 +224,8 @@ class Order extends \lithium\data\Model {
 				array('$set' => array('cancel' => true)), array("upsert" => true));
 			//Authorize.Net Void
 			static::void($order);
+			//Push cancel status to Avalara
+			AvaTax::cancelTax($order['order_id']);
 			//Cancel all the items
 			$items = $order["items"];
 			foreach($order["items"] as $key => $item){
@@ -349,6 +352,8 @@ class Order extends \lithium\data\Model {
 		if(!empty($selected_order["credit_used"])) {
 			$datas_order_prices["credit_used"] = $selected_order["credit_used"];
 		}
+		/**************UPDATE TAX****************************/
+		static::recalculateTax($selected_order,$items,true);
 		/**************UPDATE DB****************************/
 		if(isset($selected_order["user_total_credits"])){
 			if(strlen($selected_order["user_id"]) > 10){
@@ -429,8 +434,9 @@ class Order extends \lithium\data\Model {
 		//Get Actual Taxes and Handling
 		$handling = static::shipping($items);
 		$overSizeHandling = static::overSizeShipping($items);
-		$tax = static::tax($selected_order,$items);
-		$tax = $tax ? $tax + (($overSizeHandling + $handling) * static::TAX_RATE) : 0;
+		extract(static::recalculateTax($selected_order,$items));
+		//$tax = static::tax($selected_order,$items);
+		//$tax = $tax ? $tax + (($overSizeHandling + $handling) * static::TAX_RATE) : 0;
 		$subTotal = static::subTotal($items);
 		/************PROMOCODES TREATMENT************/
 		if(!empty($selected_order["promo_code"])){
@@ -527,6 +533,41 @@ class Order extends \lithium\data\Model {
 		/**************CREATE TEMP ORDER********************/
 		$temp_order = static::Create($new_datas_order);
 		return $temp_order;
+	}
+	
+	/**
+	 * Method to recalculate sales tax for renewated order. Tax is based on a Avalara.
+	 * SK: I hope they calculate sales tax based on sipping destination ;)
+	 * 
+	 * @param object $current_order
+	 * @param array $itms
+	 *
+	 */
+	protected static function recalculateTax ($current_order,$itms,$update=false){
+		$orderCollection = static::collection();
+		$order = $orderCollection->findOne(
+			array("_id" => new MongoId($current_order["id"])),
+			array(
+				'billing'=>1,
+				'shipping'=>1,
+				'order_id'=>1
+			)
+		);
+		$items = array();
+		foreach($itms as $itm){
+			if(($itm["cancel"] == false) || (empty($itm["cancel"]))){
+				$items[] = $itm;
+			}
+		}
+	
+		if ($update === false){
+			$ordermodel = self;
+			return AvaTax::getTax(compact('order','items','ordermodel','current_order','itms'));
+		} else {
+			AvaTax::cancelTax($order['order_id']);
+			$admin = 1;
+			return AvaTax::commitTax(compact('order','items','admin'));
+		}
 	}
 }
 
