@@ -9,10 +9,9 @@ use lithium\data\Connections;
 use admin\models\Cart;
 use admin\models\Credit;
 use admin\models\Order;
-use li3_silverpop\extensions\Silverpop;
 use MongoId;
 use MongoDate;
-
+use admin\extensions\Mailer;
 
 
 /**
@@ -164,6 +163,7 @@ class UsersController extends \admin\controllers\BaseController {
 
 	/**
 	* Deactivate/Activate Users
+	*
 	**/
 	public function accountStatus($id = null) {
 	    $this->_render['layout'] = false;
@@ -196,7 +196,8 @@ class UsersController extends \admin\controllers\BaseController {
 	            $data['to_email'] = $user['email'];
 	            $data['from_email'] = 'support@totsy.com';
 	            $data['reason'] = $type;
-	            Silverpop::send('accountStatus', $data);
+	         //   Mailer::send('Account_Status', $data['to_email']);
+	           Mailer::optOut($data['to_email'], null, array('internal_tests_eric' => 0));
 	        } else {
 	            $collection->update(array('_id' => new MongoId($id)), array(
 	                '$unset'=>array('deactivated_date' => 1),
@@ -204,6 +205,9 @@ class UsersController extends \admin\controllers\BaseController {
 	                    'deactivated' => false,
 	                    'reactivate_date' =>  new MongoDate(strtotime("now"))
 	                )));
+	           // Mailer::send('Account_Status', $data['to_email'], $data['type']);
+	            Mailer::optOut($data['to_email'], null, array('internal_tests_eric' => 1));
+	            Mailer::optOut($data['to_email'], null, array('internal_tests_eric' => 1));
 	        }
 	    }
 	    $this->redirect(array('Users::view', 'args' => array($id)));
