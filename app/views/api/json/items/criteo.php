@@ -10,7 +10,7 @@ if (is_array($items)){
 		$itm['id'] = $item['_id'];
 		$itm['name'] = $item['description'];
 		$itm['producturl'] = $item['base_url'].'/sale/'.$item['event_url'].'/'.$item['url'];
-		$itm['bigimmage'] = $item['base_url'].'/image/'.$item['zoom_image'].'.jpg';
+		$itm['bigimage'] = $item['base_url'].'/image/'.$item['zoom_image'].'.jpg';
 		$itm['smallimage'] = $item['base_url'].'/image/'.$item['primary_image'].'.jpg';
 		$itm['instock'] = $item['total_quantity']>0?true:false;
 		$out['products'][] = $itm;
