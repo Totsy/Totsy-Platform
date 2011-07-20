@@ -157,7 +157,7 @@ class Db extends \lithium\data\source\MongoDb {
 				if ($aH['state'] == 1) {
 					$this->server_manager_config['master'] = $aH['name'];
 				} else if ($aH['state'] == 2){
-					$slaves[] = $aH;
+					$slaves[] = $aH['name'];
 				}
 			}
 		} 
@@ -169,9 +169,9 @@ class Db extends \lithium\data\source\MongoDb {
 				//$slave = join(',', $slaves);
 				$slaveId = mt_rand(0,count($slaves)-1); 
 			}
-			//else { $slave = $slaves[0]; }
+			else { $slave = $slaves[0]; }
 			//static::logChooser($slaves[$slaveId]['name']);
-			$this->server_manager_config['slave'] = $slaves[$serverId]; 
+			$this->server_manager_config['slave'] = $slaves[$serverId]['name']; 
 		}
 		return $isMaster;
 	}
