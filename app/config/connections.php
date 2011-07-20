@@ -41,16 +41,7 @@ use \lithium\data\Connections;
 		'local' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy',
-			'setSlaveOkay' => true,
-			'replicaSet' => true,
-			'host' => array(
-    			'db1',
-    			'db2',
-    			'db3',
-    			'db4',
-    			'db5',
-    			'db6'
-    		),
+			'host' => 'localhost',
 			'adapter' => 'app\extensions\adapter\mongo\Db')
 	));
 
