@@ -8,8 +8,8 @@
 	<?php foreach($data['items'] as $item){ ?>
 		<item id="<?php echo $item['_id']?>">
 			<name><?php echo htmlspecialchars($item['description']) ?></name>
-			<url><?php echo $item['base_url'].'/sale/'.$item['event_url'].'/'.$item['url'];?></url>
-			<image><?php echo $item['base_url'].'/image/'.$item['primary_image'].'.jpg';?></image>
+			<url><?php echo $item['base_url'].'sale/'.$item['event_url'].'/'.$item['url'];?></url>
+			<image><?php echo $item['base_url'].'image/'.$item['primary_image'].'.jpg';?></image>
 			<instock><?php echo $item['total_quantity']>0?true:false;?></instock>
 			<discount><?php echo floor($item['precent_off']); ?></discount>
 			<?php 
