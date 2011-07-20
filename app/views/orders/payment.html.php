@@ -45,7 +45,7 @@ var paymentForm = new Object();
     		$.each(	paymentForm.form, function(i, field) {	
     		    if(field.value=="" && field.name!=="phone" && field.name!=="address2") {
     		 		if(i==1) {
-    		 			$('#' + field.name + "").validationEngine('showPrompt','test', '', true);
+    		 			$('#' + field.name + "").validationEngine('showPrompt','This field is required', '', true);
     		 			$('#' + field.name + "").validationEngine({ promptPosition : "centerRight", scroll: false });
     		 		}
     		 		$('#' + field.name + "").attr('style', 'background: #98AFC7 !important');
