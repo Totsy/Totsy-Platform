@@ -190,7 +190,7 @@ class OrderExport extends Base {
 						$this->summary['from_email'] = 'no-reply@totsy.com';
 						$this->summary['to_email'] = 'logistics@totsy.com';
 						if ($this->test != 'true') {
-                           Mailer::send('Order_Export', $this->summary['to_email'], $this->summary);
+                         //  Mailer::send('Order_Export', $this->summary['to_email'], $this->summary);
                         }
 					}
 				}
@@ -665,18 +665,6 @@ class OrderExport extends Base {
 			$items = Item::find('all', array(
 				'conditions' => array(
 					'event' => array('$in' => array($eventId)
-			    ),
-			    'fields' => array(
-			        'sale_whol' => true,
-			        'category' => true,
-			        'orig_whol' => true,
-			        '_id' => true,
-			        'color' => true,
-			        'product_weight' => true,
-			        'vendor_style' => true,
-			        'sku_details' => true,
-			        'description' => true,
-			        'details' => true
 			    )
 			)));
 			$items = $items->data();
