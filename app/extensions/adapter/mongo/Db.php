@@ -70,7 +70,8 @@ class Db extends \lithium\data\source\MongoDb {
 			if ($isMaster === true){
 				static::$server_manager['master'] = $server;
 				if(!is_null($this->server_manager_config['slave'])){
-					static::$server_manager['slave'] = new Mongo('mongodb://'.$this->server_manager_config['slave'], $options);
+					$connect = is_array($this->server_manager_config['slave']) ? join(',', $this->server_manager_config['slave']) : $this->server_manager_config['slave'];
+					static::$server_manager['slave'] = new Mongo('mongodb://'.$connect, $options);
 				}
 			} 
 			unset($server);
