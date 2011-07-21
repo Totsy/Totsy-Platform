@@ -63,6 +63,16 @@ class EventsController extends BaseController {
 				array('created_date' => new MongoDate()),
 				array('url' => $url)
 			);
+			$changed = "<strong>Created " . $this->request->data['name'] . " Event</strong><br/>";
+			$modification_datas["author"] = User::createdby();
+			$modification_datas["date"] = new MongoDate(strtotime('now'));
+			$modification_datas["type"] = "modification";
+			$modification_datas["changed"] = $changed;
+
+			//Pushing modification datas to db
+			$modifications = $event->modifications;
+			$modifications[] = $modification_datas;
+			$eventData[modifications] = $modifications;
 			//Remove this when $_schema is setup
 			unset($eventData['itemTable_length']);
 			if ($event->save($eventData)) {
