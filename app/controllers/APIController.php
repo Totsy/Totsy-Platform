@@ -88,7 +88,7 @@ class APIController extends  \lithium\action\Controller {
 		}		
 	}	
 	
-	protected function help() {
+	public function help() {
 		$all_methods = get_class_methods(get_class($this));
 		$methods = array();
 		foreach($all_methods as $method){
