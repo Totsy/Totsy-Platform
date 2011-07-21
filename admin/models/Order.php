@@ -291,7 +291,7 @@ class Order extends \lithium\data\Model {
 				$zipCheckPartial = in_array(substr($shipping["zip"], 0, 3), static::_object()->_nyczips);
 				$zipCheckFull = in_array($shipping["zip"], static::_object()->_nyczips);
 				$nysZip = ($zipCheckPartial || $zipCheckFull) ? true : false;
-				$nycExempt = ($nysZip && $item->sale_retail < 110) ? true : false;
+				$nycExempt = ($nysZip && $item['sale_retail'] < 110) ? true : false;
 				if (!empty($item['taxable']) || $nycExempt) {
 					switch ($shipping["state"]) {
 						case 'NY':
@@ -339,6 +339,7 @@ class Order extends \lithium\data\Model {
 			'total' => $selected_order["total"],
 			'subTotal' => $selected_order["subTotal"],
 			'handling' => $selected_order["handling"],
+			'promo_discount' => $selected_order["promo_discount"],
 			'promocode_disable' => $selected_order["promocode_disable"],
 			'comment' => $selected_order["comment"]
 		);
@@ -442,7 +443,11 @@ class Order extends \lithium\data\Model {
 				$datas_order["promocode_disable"] = true;
 			}
 			else {
-				$preAfterDiscount = $subTotal  + $selected_order["promo_discount"];
+				if ($promocode['type'] == 'percentage') {
+					$selected_order["promo_discount"] = - ($subTotal * $promocode['discount_amount']);
+					$datas_order["promo_discount"] = $selected_order["promo_discount"];
+				} 
+				$preAfterDiscount = $subTotal + $selected_order["promo_discount"];	
 				$datas_order["promocode_disable"] = false;
 			}
 		} else {
