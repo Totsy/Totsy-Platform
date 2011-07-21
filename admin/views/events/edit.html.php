@@ -39,8 +39,8 @@ tinyMCE.init({
 });
 </script>
 
-<script type="text/javascript"> 
-	$(document).ready(function(){	
+<script type="text/javascript">
+	$(document).ready(function(){
 		$("#duplicate").dynamicForm("#plus", "#minus", {limit:15, createColor: 'yellow', removeColor: 'red'});
 	});
 </script>
@@ -77,7 +77,7 @@ tinyMCE.init({
 
 		/* Init the table */
 		oTable = $('#itemTable').dataTable();
-		
+
 	} );
 
 	function fnGetSelected( oTableLocal )
@@ -142,23 +142,23 @@ tinyMCE.init({
 				</div>
 				<div id="event_duration">
 					<h4 id="event_duration">Event Duration</h4>
-					<?php 
+					<?php
 						$start_date = date('m/d/Y H:i', $event->start_date->sec);
 						$end_date =  date('m/d/Y H:i', $event->end_date->sec);
 						echo $this->form->field('start_date', array(
-								'class' => 'general', 
-								'id' => 'start_date', 
+								'class' => 'general',
+								'id' => 'start_date',
 								'value' => "$start_date"
 							));
 					 	echo $this->form->field('end_date', array(
-								'class' => 'general', 
-								'id' => 'end_date', 
+								'class' => 'general',
+								'id' => 'end_date',
 								'value' => "$end_date"
 							));?>
 				</div>
 				<?=$this->form->label('Departments')?><br />
 				<table>
-					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?> 
+					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?>
 				</table>
 				<div id="tags">
 					<?=$this->form->label('Tags'); ?>
@@ -308,10 +308,10 @@ tinyMCE.init({
 					<?=$this->form->submit('Update Items'); ?>
 				</div>
 			<?=$this->form->end(); ?>
-			
+
 			<br><br>
-			
-			
+
+
 			<h2 id="">Delete Items</h2>
 				<p>Click the button below to delete all items from this event. <strong>WARNING - This action cannot be undone. All items associated with this event will be deleted!!!!!!<strong></p>
 				<?=$this->form->create(null, array('url' => 'Items::removeItems', 'name' => 'item-delete')); ?>
@@ -320,38 +320,37 @@ tinyMCE.init({
 				<?=$this->form->end(); ?>
 		</div>
 		<div id="event_history">
-				<?
+				<?php
 					if (sizeof($event->modifications) > 0) {
 				?>
-				
+
 				<table>
 					<tr>
 						<td>User</td>
 						<td>Date</td>
 						<td>Changed</td>
 					</tr>
-				<?
+				<?php
 						$i = 0;
 						while ($i < sizeof($event->modifications)) {
-				
-				
+
 				?>
 				<tr>
 					<td><?=$event->modifications[$i]->author;?></td>
 					<td>
-					<? 
+					<?php
 							$date_changed = $event->modifications[$i]->date;
 							print date('Y-M-d h:i:s', $date_changed->sec);
 					?>
 					</td>
 					<td><?=$event->modifications[$i]->changed;?></td>
 				</tr>
-				<?
+				<?php
 							$i++;
 						}
-				?>			
+				?>
 				</table>
-				<?
+				<?php
 					} else {
 						print 'No event modifications have been made.';
 					}
@@ -359,7 +358,7 @@ tinyMCE.init({
 		</div>
 	</div>
 
-	
+
 
 
 </div>
