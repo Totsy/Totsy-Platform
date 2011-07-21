@@ -9,39 +9,8 @@
 <div class="grid_16">
 	<h2 id="page-heading">Order Management</h2>
 </div>
-<div class="grid_10">
-	<div class="box">
-	<h2>
-		<a href="#" id="toggle-queue">Currently in Queue</a>
-	</h2>
-	<div class="block" id="queue">
-		<?php if (!empty($queue)): ?>
-			<table border="0" cellspacing="5" cellpadding="5">
-				<tr>
-					<th>#</th>
-					<th>Date</th>
-					<th>Event Orders Queued</th>
-					<th>Event POs Queued</th>
-				</tr>
-			<?php $i = 0; ?>
-			<?php foreach ($queue as $data): ?>
-				<?php $i++?>
-					<tr>
-						<td><?=$i?></td>
-						<td><?=date('m-d-Y', $data['created_date']->sec)?></td>
-						<td><?=count($data['orders'])?></td>
-						<td><?=count($data['purchase_orders'])?></td>
-					</tr>
-			<?php endforeach ?>
-			<?php if ($i == 0): ?>
-				<td colspan="5"><center>Nothing in the queue!</center></td>
-			<?php endif ?>
-			</table>
-		<?php else: ?>
-			<h4>Nothing in the queue!</h4>
-		<?php endif ?>
-	</div>
-	</div>
+<div class="grid_11" id="current_queue">
+    <?=$this->view()->render(array('element' => 'queue'), array('queue' => $queue)); ?>
 </div>
 <div class="grid_16">
 	<?=$this->form->create(null, array('url' => 'Queue::add')); ?>
@@ -53,7 +22,9 @@
 					<th>Event End Date</th>
 					<th>Event PO #</th>
 					<th><center>Queue Order</center></th>
+					<th><center>Processed Order</center></th>
 					<th><center>Queue PO</center></th>
+					<th><center>Processed PO</center></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -63,17 +34,23 @@
 						<td><?=date('m-d-Y', $event->end_date->sec)?></td>
 						<td><?=Event::poNumber($event)?></td>
 						<td>
+						    <center><input type="checkbox" name="orders[]" value="<?=$event->_id?>" /></center>
+						</td>
+						<td>
 						<?php if (in_array((string) $event->_id, $processedOrders)): ?>
 							<center>Processed</center>
 						<?php else: ?>
-							<center><input type="checkbox" name="orders[]" value="<?=$event->_id?>" /></center>
+
 						<?php endif ?>
+						</td>
+						<td>
+						    <center><input type="checkbox" name="pos[]" value="<?=$event->_id?>" /></center>
 						</td>
 						<td>
 						<?php if (in_array((string) $event->_id, $processedPOs)): ?>
 							<center>Processed</center>
 						<?php else: ?>
-							<center><input type="checkbox" name="pos[]" value="<?=$event->_id?>" /></center>
+
 						<?php endif ?>
 						</td>
 					</tr>
