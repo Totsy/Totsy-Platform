@@ -132,60 +132,21 @@
     					'id' => $item->_id, 'value' => $item->quantity
 					));
 					?>
+					<?php 
+						$date = $cartItemEventEndDates[$x] * 1000;
+					?>
 					</td>
 					<td class="cart-actions">
 						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" onclick="deletechecked('Are you sure you want to remove this item?','<?=$item->_id; ?>');" style="color: red!important;"><img src="/img/trash.png" width="20" align="absmiddle" style="margin-right:20px;" /></a>
 					</td>
-					<td class="cart-time" style="width:220px;"><!-- <img src="/img/old_clock.png" align="absmiddle" width="23" class="fl"/>--> <div id='<?php echo "itemCounter$x"; ?>' class="fl" style="margin:5px 0px 0px 5px;"></div>
-				<div id='<?php echo "itemCounter_2$x"; ?>' class="fl" style="margin:5px 0px 0px 5px;"></div>	
+					<td class="cart-time" style="width:220px;"><!-- <img src="/img/old_clock.png" align="absmiddle" width="23" class="fl"/>--> <div id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?=$date?>'></div>
+					<div id='<?php echo "itemCounter$x"; ?>_display' style="margin:5px 0px 0px 5px;" title='<?=$date?>'></div>
 					</td>
 					<td class="<?="total-item-$x";?>" style="width:55px;">
 						<strong style="color:#009900;">$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
 					</td>
-					
 				</tr>
-				<?php
-					
-					$date = $cartItemEventEndDates[$x] * 1000;
-										
-					$itemCounters[] = "<script type=\"text/javascript\">
-					
-						var itemExpires = new Date();
-						itemExpires = new Date($date);
-						var now = new Date();	
-						
-						var expireNotice = ( itemExpires.valueOf() - 120000 ) ;
-						expireNotice = new Date( expireNotice );
-																	
-						$(\"#itemCounter$x\").countdown({
-						    until: itemExpires,
-						    expiryText: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This sale has ended</div>', 
-						    layout: '',
-						    onTick: watchCountDown() 
-						 });
-						 
-						 function watchCountDown() { 
-						 	var itemExpires = new Date();
-							itemExpires = new Date($date);
-						 
-						 	var now = new Date();	
-							var expireNotice = ( itemExpires.valueOf() - 120000 ) ;
-							expireNotice = new Date( expireNotice );
-						 
-						 	if(now > expireNotice){						 	
-						 		$(\"#itemCounter$x\").hide();
-						 		$(\"#itemCounter_2$x\").show();
-    							$(\"#itemCounter_2$x\").html('<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This sale has 2 minutes to go</div>'); 
-    						}
-    						
-    						if (now == itemExpires){
-    							$(\"#itemCounter_2$x\").hide();
-    							$(\"#itemCounter$x\").show();
-    							$(\"#itemCounter_2$x\").html('<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This sale has ended</div>'); 		
-    						}
-						 }
-						
-					</script>";
+				<?php					
 					
 					$subTotal += $item->quantity * $item->sale_retail;
 					$x++;
@@ -261,20 +222,6 @@
 						</div>			
 					</td>
 				</tr>
-				<!--
-				<tr>
-					<td colspan="7">
-							/*$this->form->create(null); */
-							<div id="promo" style="display:none">
-								/*$this->view()->render(array('element' => 'promocode'), array( 'orderPromo' => $cartPromo));*/ 
-							</div>
-							<div id="cred" style="display:none">								
-				   				/*$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'userDoc' => $userDoc));*/
-							</div>
-							<div class="clear"></div>
-					</td>
-				</tr>
-				-->
 				<tr class="cart-buy">
 					<td colspan="2" class="cart-button">
 					<?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('class' => 'button', 'style'=>'float:left')); ?>
@@ -296,37 +243,68 @@
 </div>
 	<?php if (!empty($itemCounters)): ?>
 		<?php foreach ($itemCounters as $counter): ?>
-			<?php echo $counter ?>
+			<?php //echo $counter ?>
 		<?php endforeach ?>
 	<?php endif ?>
 	<?php if (!empty($removeButtons)): ?>
 		<?php foreach ($removeButtons as $button): ?>
-			<?php echo $button ?>
+			<?php //echo $button ?>
 		<?php endforeach ?>
 	<?php endif ?>
 	
-<!--	
-<div class="grid_4 omega">
-	<div class="roundy grey_inside">
-		<h3 class="gray">Your Savings <span class="fr"><?php //if (!empty($savings)) : ?>
-		<span style="color:#009900; font-size:16px; float:right;">$<?php //number_format($savings,2)?></span>
-		<?php //endif ?></span></h3>
-	</div>
-	<div class="clear"></div>
-	<div class="roundy grey_inside">
-		<h3 class="gray">Estimated Ship Date<span style="font-weight:bold; float:right;"><?php //date('m-d-Y', $shipDate)?></span>
-		</h3>
-	</div>
-	<div class="clear"></div>
-</div>
--->
-
+<script type="text/javascript" charset="utf-8">
+		
+	$(".counter").each( function() {
+	    				
+	    var fecha  = parseInt(this.title);
+	    var itemExpires = new Date();
+	    var now = new Date();
+	    
+	    itemExpires = new Date(fecha);	
+	    
+	    var expireNotice = ( itemExpires.valueOf() - 120000 );
+	    expireNotice = new Date( expireNotice );
+	    
+	    //show 2 minutes notice
+	    if(expireNotice < now && itemExpires > now){
+	    	$("#" + this.id + "_display").html('<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item will expire in 2 minutes</div>');
+	    } 
+	    
+	   	//show item expired notice
+	    if(now > itemExpires) {
+	    	$("#" + this.id + "_display").html('<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>');
+	    }
+	    
+	    $("#" + this.id).countdown({until: expireNotice, 
+	    							expiryText: '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item will expire in 2 minutes</div>', 
+	    							layout: '{mnn}{sep}{snn} seconds',
+	    							onExpiry: resetTimer
+	    							});
+	    
+	    //call 2 minutes before the item expires							
+	    function resetTimer() {	
+	    	$("#" + this.id + "_display").html( $("#" + this.id).countdown('settings', 'expiryText') );
+			$("#" + this.id).countdown('change', { until: itemExpires, 
+												   onExpiry: notifyEnding,
+												   expiryText: '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>'
+												   });
+		}		
+		
+		//call when item expires
+		function notifyEnding() {
+			$("#" + this.id + "_display").html( '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>' );
+		}					
+	});		
+				
+</script>	
+	
 <div class="clear"></div>
 <?php else: ?>
 	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1><center><span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
 <?php endif ?>
 </div>
 <div id="modal" style="background:#fff!important; z-index:9999999999!important;"></div>
+
 <script type="text/javascript" charset="utf-8">
 	$(".inputbox").bind('keyup', function() {
 	var id = $(this).attr('id');
