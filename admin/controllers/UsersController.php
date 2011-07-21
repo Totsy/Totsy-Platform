@@ -197,7 +197,7 @@ class UsersController extends \admin\controllers\BaseController {
 	            $data['from_email'] = 'support@totsy.com';
 	            $data['reason'] = $type;
 	         //   Mailer::send('Account_Status', $data['to_email']);
-	           Mailer::optOut($data['to_email'], null, array('internal_tests_eric' => 0));
+	        //   Mailer::optOut($data['to_email'], null, array('internal_tests_eric' => 0));
 	        } else {
 	            $collection->update(array('_id' => new MongoId($id)), array(
 	                '$unset'=>array('deactivated_date' => 1),
@@ -206,8 +206,6 @@ class UsersController extends \admin\controllers\BaseController {
 	                    'reactivate_date' =>  new MongoDate(strtotime("now"))
 	                )));
 	           // Mailer::send('Account_Status', $data['to_email'], $data['type']);
-	            Mailer::optOut($data['to_email'], null, array('internal_tests_eric' => 1));
-	            Mailer::optOut($data['to_email'], null, array('internal_tests_eric' => 1));
 	        }
 	    }
 	    $this->redirect(array('Users::view', 'args' => array($id)));
