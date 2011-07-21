@@ -86,7 +86,7 @@
 			<a href="#" id="toggle-forms">PromoCode Summary</a>
 		</h2>
 	    <div class='block forms'>
-	    <table>
+	    <table id='promo_list' class='datatable'>
 	        <thead>
 	            <tr>
 	                <th> Promocode </th>
@@ -189,6 +189,12 @@
 	$(document).ready(function() {
 		TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
 		$('#promoSummary').dataTable({
+			"sDom": 'T<"clear">lfrtip',
+			"bPaginate": true,
+			"bFilter": false
+		}
+		);
+		$('#promo_list').dataTable({
 			"sDom": 'T<"clear">lfrtip',
 			"bPaginate": true,
 			"bFilter": false
