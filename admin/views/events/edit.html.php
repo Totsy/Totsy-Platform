@@ -1,3 +1,4 @@
+<?php ini_set("display_erros", 0); ?>
 <?php use admin\models\Event; ?>
 <?=$this->html->script('tiny_mce/tiny_mce.js');?>
 <?=$this->html->script('jquery-1.4.2');?>
@@ -17,8 +18,29 @@
 <?=$this->html->script('jquery.countdown.min');?>
 <?=$this->html->style('jquery.countdown');?>
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
+<?=$this->html->style('selectlist.css');?>
+<?=$this->html->script('jquery.selectlist.min.js')?>
+<?=$this->html->script('jquery.selectlist.pack.js')?>
+
+<style type="text/css">
+
+.selectlist-list {
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+}
+
+selectlist.css (line 1)
+.selectlist-list {
+    width: 12em;
+}
+
+</style>
 
 <script type="text/javascript">
+
+$(document).ready(function(){
+
 tinyMCE.init({
 	// General options
 	mode : "textareas",
@@ -26,24 +48,70 @@ tinyMCE.init({
 	plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,preview,searchreplace,print,contextmenu,paste,directionality,noneditable,visualchars,nonbreaking,xhtmlxtras",
 
 	// Theme options
-	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
-	theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,code,|,forecolor,backcolor",
-	theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,charmap,iespell,advhr",
-	theme_advanced_buttons4 : "spellchecker,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking,blockquote,pagebreak",
+	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull",
+	
+	theme_advanced_buttons2: "styleselect,formatselect,fontselect,fontsizeselect",
+	
+	theme_advanced_buttons3 : "cut,copy,paste,pastetext,pasteword,|,bullist,numlist,|,indent,blockquote,|,anchor,code,|,forecolor,backcolor",
+	/* theme_advanced_button3: 
+	 theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,charmap,iespell,advhr",
+	 theme_advanced_buttons4 : "spellchecker,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking,blockquote,pagebreak", */
 	theme_advanced_toolbar_location : "top",
 	theme_advanced_toolbar_align : "left",
 	theme_advanced_statusbar_location : "bottom",
 	theme_advanced_resizing : false,
 
-
 });
+
+$('.table_link').click(function() {  
+        $('tr').hide();
+      $('tr .').toggle('slow');
+    });
+
+$('select').selectList({ 
+	addAnimate: function (item, callback) { 
+	$(item).slideDown(500, callback); 
+	}, 
+	removeAnimate: function (item, callback) { 
+	$(item).slideUp(500, callback); 
+	} 
+}); 
+    
+$('select').change(function() {
+
+//parse out the current item's id
+var item_id = this.id.substring(9, this.id.length);
+var list_position = this.id.substring(7,8);
+
+//create strings of the dropdown id's
+for ( i=1; i<6; i++ ) {
+
+	var related_item_id = 'related'+ i + '_' + item_id;	
+	//if its not the current dropdown
+	//and its value is the same as the current dropdown's value AND
+	//the item's value isn't an empty string
+	//than throw an alert message
+	if(i!=list_position && $("#" + related_item_id + " option:selected").val()!=="" ) {
+				
+		if( $("#" + related_item_id + " option:selected").val() == $("#" + this.id + " option:selected").val() ) {
+			$("#" + this.id).val(0);
+			alert("please select a different item");
+			break;
+		}
+	}
+}
+
+});    
+    
+});
+
 </script>
 
 <script type="text/javascript"> 
 	$(document).ready(function(){	
 		$("#duplicate").dynamicForm("#plus", "#minus", {limit:15, createColor: 'yellow', removeColor: 'red'});
-	});
-</script>
+		});
+		</script>
 
 <script type="text/javascript" charset="utf-8">
 	$(function() {
@@ -319,9 +387,6 @@ tinyMCE.init({
 				<?=$this->form->end(); ?>
 		</div>
 	</div>
-
-	
-
 
 </div>
 <script type="text/javascript">

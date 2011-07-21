@@ -22,7 +22,6 @@ var paymentForm = new Object();
         //used to avoid overwriting the submitted 
         //value on refresh, persiting whether a 
         //form submit was made or not    
-                    
     	if(!paymentForm.submitted) {
     		paymentForm.submitted=false;  	
     	} else {
@@ -51,7 +50,7 @@ var paymentForm = new Object();
     		 			$('#' + field.name + "").validationEngine('showPrompt','This field is required', '', true);
     		 			$('#' + field.name + "").validationEngine({ promptPosition : "centerRight", scroll: false });
     		 		}
-    		 		$('#' + field.name + "").attr('style', 'background: #98AFC7 !important');
+    		 		$('#' + field.name + "").attr('style', 'background: #FFFFC5 !important');
     		 		
     		 		invalid_count ++;
     		 	} 
@@ -64,12 +63,15 @@ var paymentForm = new Object();
     	
     	//if the form has been, hide propmts on a given element's blur event
     	//controls only show a prompt when they have focus and aren't valid
-    	$(".inputbox").blur(function(){ 
-    		if(paymentForm.submitted==true){  		
+    	$(".inputbox").blur(function() { 
+    		if(paymentForm.submitted==true) {  		
 				$('#' + this.id + "").validationEngine('hide');	
+				//if they fill it in and make it valid, reset the background of the control to white again
+				if($('#' + this.id + "").val()!==""){
+					$('#' + this.id + "").attr('style', 'background: #FFF !important');
+				} 
 			}	    		
     	});
-    	     	
     });
 
 </script>
@@ -165,7 +167,7 @@ var paymentForm = new Object();
 				<?=$this->form->error('city'); ?>
 				<br />
 				<label for="state" class='required'>State <span>*</span></label>
-				<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state')); ?>
+				<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'id'=>'state')); ?>
 				<?=$this->form->error('state'); ?>
 				<br />
 				<?=$this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
@@ -181,7 +183,7 @@ var paymentForm = new Object();
 				
 <?=$this->form->end();?> 
 </div>
-<script>
+<script>  
 	
 var shippingAddress = <?php echo $shipping; ?>
 
@@ -192,13 +194,31 @@ $("#card_number").blur(function(){
 function replace_address() {
 	if($("#shipping").is(':checked')) {
 		//run through shippinAddress object and set values for corresponding fields	
-		$.each(	shippingAddress, function(k, v) {				
-			$("#" + k + "").val(v);
+		$.each(	shippingAddress, function(k, v) {
+		
+			if(k=="state" || k=="card_month" || k=="card_year"){
+				$("#" + k + " option['" + v + "']").attr("selected","selected");
+			} else {
+				$("#" + k + "").val(v);
 			}
-		);
+				
+			if(paymentForm.submitted==true && v!=="") {  		
+				$('#' + k + "").attr('style', 'background: #FFF !important');
+			}	
+		});		
 	} else {
-		$.each(	shippingAddress, function(k, v) {				
-			$("#" + k + "").val("");
+		$.each(	shippingAddress, function(k, v) {
+		
+			//if(k=="state" || k=="card_month" || k=="card_year"){				
+			//	$("#" + k + " option:eq(0)").attr("selected", "selected");
+			//} else {
+				$("#" + k + "").val("");
+			//}
+			
+			if(paymentForm.submitted==true) {  		
+				$('#' + k + "").attr('style', 'background: #FFFFC5 !important');
+			}	
+			
 			}
 		);
 	}	
