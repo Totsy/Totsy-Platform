@@ -84,7 +84,8 @@ class CartController extends BaseController {
 			}	
 		}
 		#Calculate savings
-		$savings = Session::read('userSavings');
+		$userSavings = Session::read('userSavings');
+		$savings = $userSavings['items'] + $userSavings['discount'];
 		$credits = Session::read('credit');
 		$postDiscount = ($subTotal + $vars['services']['tenOffFitfy']);
 		if(!empty($vars['cartCredit']['credit_amount'])) {
@@ -95,10 +96,10 @@ class CartController extends BaseController {
 		}
 		if(!empty($vars['cartPromo']['type'])) {
 			if($vars['cartPromo']['type'] === 'free_shipping') {
-				$shipping_discount = (-$shipping);
+				$shipping_discount = $shipping;
 			}
 		}
-		$total = ($postDiscount + $shipping + $shipping_discount);
+		$total = ($postDiscount + $shipping - $shipping_discount);
 		return $vars + compact('cart', 'message', 'subTotal', 'total', 'shipDate', 'returnUrl', 'savings','shipping_discount', 'credits', 'userDoc','cartItemEventEndDates');
 	}
 
@@ -166,7 +167,7 @@ class CartController extends BaseController {
 						$cartItem->save();
 						//calculate savings
 						$item[$item['_id']] = $cartItem->quantity;
-						$this->savings($item, 'add');
+						Cart::updateSavings($item,'add');
 					} else {
 						$cartItem->error = 'You can’t add this quantity in your cart. <a href="#5">Why?</a>';
 						$cartItem->save();
@@ -185,7 +186,7 @@ class CartController extends BaseController {
 				if ($cart->addFields() && $cart->save($info)) {
 					//calculate savings
 					$item[$itemId] = 1;
-					$this->savings($item, 'add');
+					Cart::updateSavings($item, 'add');
 				}
 			}
 			$this->redirect(array('Cart::view'));
@@ -218,7 +219,7 @@ class CartController extends BaseController {
 				#calculate savings
 				if($now[0] < $cart->expires->sec) {
 					$item[$cart->item_id] = $quantity;
-					$this->savings($item, 'remove');
+					Cart::updateSavings($item, 'remove');
 				}
 			}
 		}
@@ -254,7 +255,7 @@ class CartController extends BaseController {
 				}
 			}
 			#update savings
-			$this->savings($cart, 'update');
+			Cart::updateSavings($cart, 'update');
 		}
 	}
 	
@@ -344,46 +345,6 @@ class CartController extends BaseController {
             $total_left = 45 - $query['subtotal'];
             return compact('total_left', 'url');
         }
-	}
-	
-	/**
-	* This method allows to manage (update/delete/add) the savings of the current order
-	*
-	*/
-	public function savings($items = null, $action) {
-		$savings = 0;
-		if ($action == "update") {
-			if(!empty($items)) {
-				foreach($items as $key => $quantity) {
-					$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
-					if(!empty($itemInfo->msrp)){
-						$savings += $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
-					}
-				}
-			}
-		} else if($action == "add") {
-			$savings = Session::read('userSavings');
-			if(empty($savings)) {
-				$savings = 0;
-			}
-			if(!empty($items)) {
-				foreach($items as $key => $quantity) {
-					$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
-					if(!empty($itemInfo->msrp)){
-						$savings += $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
-					}
-				}
-			}
-		} else if($action == "remove") {
-			$savings = Session::read('userSavings');
-			foreach($items as $key => $quantity) {
-				$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
-				if(!empty($itemInfo->msrp)){
-					$savings -= $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
-				}
-			}
-		}
-		Session::write('userSavings', $savings);
-	}
+	}	
 }
 ?>

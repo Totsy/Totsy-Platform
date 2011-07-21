@@ -53,15 +53,14 @@ class Credit extends \lithium\data\Model {
 					));
 			}
 			$isValid = ($subTotal >= $credit) ? true : false;
-			if (!$isValid) {
-				$entity->errors(
-					$entity->errors() + array(
-						'amount' => "Please apply credits that is $$subTotal or less"
-					));
-			}
-			if ($isMoney && $inRange && $isValid) {
-				$entity->credit_amount = -$credit;
-				Session::write('credit', $credit, array('name' => 'default'));
+			if ($isMoney && $inRange) {
+			 	if($isValid) {
+			 		$entity->credit_amount = -$credit;
+					Session::write('credit', $credit, array('name' => 'default'));
+			 	} else {
+			 		$entity->credit_amount = -$subTotal;
+					Session::write('credit', $subTotal, array('name' => 'default'));
+			 	}
 			}
 		}
 	}

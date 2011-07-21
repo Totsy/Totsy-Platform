@@ -4,6 +4,7 @@ namespace app\models;
 
 use MongoDate;
 use app\models\Promocode;
+use app\models\Cart;
 use lithium\storage\Session;
 
 class Promotion extends Base {
@@ -80,16 +81,18 @@ class Promotion extends Base {
                         $entity->user_id = $user['_id'];
                         if ($code->type == 'percentage') {
                             $entity->saved_amount = $postDiscountTotal * -$code->discount_amount;
+                            Cart::updateSavings(null, 'discount', $postDiscountTotal * $code->discount_amount);
                         }
                         if ($code->type == 'dollar') {
                             $entity->saved_amount = -$code->discount_amount;
+                            Cart::updateSavings(null, 'discount', $code->discount_amount);
                         }
                         if ($code->type == 'free_shipping' && !($entity->errors())) {
-                            $shippingCost = 0;
-                            $overShippingCost = 0;
                             $entity->type = "free_shipping";
+                            Cart::updateSavings(null, 'discount', 7.95 + $overShippingCost);
                         }
                         Session::write('promocode', $code , array('name' => 'default'));
+                        
                     } else {
                         $entity->errors(
                             $entity->errors() + array(
@@ -104,6 +107,9 @@ class Promotion extends Base {
                 }
                 $errors = $entity->errors();
                 if ($errors) {
+                	if(Session::read('promocode') === $code) {
+                		Session::delete('promocode');
+                	}
                     $entity->saved_amount = 0;
                 } else{
 				    $entity->code_id = (string) $code->_id;

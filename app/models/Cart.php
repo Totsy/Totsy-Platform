@@ -423,6 +423,49 @@ class Cart extends Base {
 		}
 		return $ids;
 	}
+	
+	/**
+	* This method allows to manage (update/delete/add) the savings of the current order
+	*
+	*/
+	public static function updateSavings($items = null, $action, $amount = null) {
+		$savings = Session::read('userSavings');
+		if ($action == "update") {
+			$savings['items'] = 0;
+			if(!empty($items)) {
+				foreach($items as $key => $quantity) {
+					$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
+					if(!empty($itemInfo->msrp)){
+						$savings['items'] += $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
+					}
+				}
+			}
+		} else if($action == "add") {
+			$savings = Session::read('userSavings');
+			if(empty($savings)) {
+				$savings['items'] = 0;
+			}
+			if(!empty($items)) {
+				foreach($items as $key => $quantity) {
+					$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
+					if(!empty($itemInfo->msrp)){
+						$savings['items'] += $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
+					}
+				}
+			}
+		} else if($action == "remove") {
+			$savings = Session::read('userSavings');
+			foreach($items as $key => $quantity) {
+				$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
+				if(!empty($itemInfo->msrp)){
+					$savings['items'] -= $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
+				}
+			}
+		} else if ($action == 'discount') {
+			$savings['discount'] = $amount;
+		}
+		Session::write('userSavings', $savings);
+	}
 }
 
 ?>

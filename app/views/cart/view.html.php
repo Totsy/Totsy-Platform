@@ -232,21 +232,21 @@
 						<div style="clear:both"></div>
 						<div style="font-weight:bold">
     							<span style="float: left;">Credits:</span> 
-    							<span style="color:#009900; float:right">$ <?=number_format(abs($credits),2)?></span>
+    							<span style="color:#009900; float:right">- $<?=number_format(abs($credits),2)?></span>
     					</div>
    						<?php endif ?>
    						<?php if (!empty($cartPromo['saved_amount'])):?>
 						<div style="clear:both"></div>
 						<div style="font-weight:bold">
     							<span style="float: left;">Discount :</span> 
-    							<span style="color:#009900; float:right">$ <?=number_format(abs($cartPromo['saved_amount']),2)?></span>
+    							<span style="color:#009900; float:right">- $<?=number_format(abs($cartPromo['saved_amount']),2)?></span>
     					</div>
    						<?php endif ?>
 						<?php if (!empty($shipping_discount)):?>
 						<div style="clear:both"></div>
 						<div style="font-weight:bold">
     							<span style="float: left;">Complimentary Shipping :</span> 
-    							<span style="color:#009900; float:right">$<?=number_format($shipping_discount,2)?></span>
+    							<span style="color:#009900; float:right">- $<?=number_format($shipping_discount,2)?></span>
     					</div>
    						<?php endif ?>
 						<div style="clear:both"><hr /></div>						
@@ -262,20 +262,6 @@
 						</div>			
 					</td>
 				</tr>
-				<!--
-				<tr>
-					<td colspan="7">
-							/*$this->form->create(null); */
-							<div id="promo" style="display:none">
-								/*$this->view()->render(array('element' => 'promocode'), array( 'orderPromo' => $cartPromo));*/ 
-							</div>
-							<div id="cred" style="display:none">								
-				   				/*$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'userDoc' => $userDoc));*/
-							</div>
-							<div class="clear"></div>
-					</td>
-				</tr>
-				-->
 				<tr class="cart-buy">
 					<td colspan="2" class="cart-button">
 					<?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left')); ?>
