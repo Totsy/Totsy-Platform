@@ -26,7 +26,7 @@ class Credit extends \lithium\data\Model {
 		$credit->reason = $reason;
 		return static::_object()->save($credit);
 	}
-
+	
 	public function checkCredit($entity, $credit_amount, $subTotal, $userDoc) {
 
 		if (Session::read('credit')) {
@@ -35,7 +35,7 @@ class Credit extends \lithium\data\Model {
 
 		if ($credit_amount) {
 		    $entity->credit_amount = $credit_amount;
-			$credit = number_format((float)$entity->credit_amount, 2);
+			$credit = (float) number_format((float)$credit_amount,2,'.','');
 			$lower = -0.999;
 			$upper = (!empty($userDoc->total_credit)) ? $userDoc->total_credit + 0.01 : 0;
 			$inRange = Validator::isInRange($credit, null, compact('lower', 'upper'));
@@ -61,7 +61,7 @@ class Credit extends \lithium\data\Model {
 			}
 			if ($isMoney && $inRange && $isValid) {
 				$entity->credit_amount = -$credit;
-				Session::write('credit', -$credit, array('name' => 'default'));
+				Session::write('credit', $credit, array('name' => 'default'));
 			}
 		}
 	}

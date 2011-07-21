@@ -300,11 +300,8 @@ class OrdersController extends BaseController {
 	 * @todo Make this method lighter by taking out promocode/credit validation
 	 */
 	public function process() {
-		$cc_encrypt = Session::read('cc_infos');
-		var_dump($cc_encrypt);
 		$order = Order::create();
 		$user = Session::read('userLogin');
-		var_dump($user);
 		$data = $this->request->data;
 		$fields = array(
 			'item_id',
@@ -588,21 +585,19 @@ class OrdersController extends BaseController {
 		$address = null;
 		$payment = null;
 		$checked = false;
-		$card = array();
+		#Get billing address from shipping one in session
+		$shipping = json_encode(Session::read('shipping'));
 		#Check Datas Form
 		if (!empty($this->request->data)) {
 			$datas = $this->request->data;
-			#Get billing address from shipping one in session
-			if (!empty($datas['shipping'])) {
-				$checked = true;
-				$shipping = Session::read('shipping');
-				$address = Address::create($shipping);
-			}
-			#Get Only the card informations
-			foreach($datas as $key => $value) {
-				$card_array = explode("_", $key);
-				if ($card_array[0] == 'card') {
-					$card[$card_array[1]] = $value;
+			#Get Credit Card Infos
+			if(!empty($datas['card_number'])) {
+				#Get Only the card informations
+				foreach($datas as $key => $value) {
+					$card_array = explode("_", $key);
+					if ($card_array[0] == 'card') {
+						$card[$card_array[1]] = $value;
+					}
 				}
 			}
 			$cc_infos = CreditCard::create($card);
@@ -651,7 +646,7 @@ class OrdersController extends BaseController {
 				'time' => '-5min'
 		));
 		$cartEmpty = ($cart->data()) ? false : true;
-		return compact('address', 'cartEmpty', 'checked', 'payment');
+		return compact('address', 'cartEmpty','payment','shipping');
 	}
 
 }

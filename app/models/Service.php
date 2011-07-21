@@ -14,7 +14,7 @@ class Service extends Base {
     * @param float order sized handling
     * @return array of shipping and oversized handling
     **/
-    public static function freeShippingCheck($shippingCost, $overSizeHandling) {
+    public static function freeShippingCheck($shippingCost = 7.95, $overSizeHandling = 0) {
         $freeshipping = false;
         $service = Session::read('services', array('name' => 'default'));
 		if ( $service && array_key_exists('freeshipping', $service)) {

@@ -3,7 +3,24 @@
 	$this->html->script('application', array('inline' => false));
 	$this->form->config(array('text' => array('class' => 'inputbox')));
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
+	
 ?>
+
+<link rel="stylesheet" type="text/css" href="/css/validation-engine.jquery.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="/css/validation-template.css" media="screen" />
+<script type="text/javascript" src="/js/form_validator/jquery.validation-engine.js" charset="utf-8"></script>    
+<script type="text/javascript" src="/js/form_validator/languages/jquery.validation-engine-en.js" charset="utf-8"></script> 
+
+<script>
+
+    $(document).ready(function() {
+        $("#paymentForm").validationEngine('attach');        
+		//$("#paymentForm").validationEngine({  validationEventTrigger: "focus" });
+    	$("#paymentForm").validationEngine('init', { promptPosition : "centerRight", scroll: false });       
+    });
+
+</script>
+
 <div class="grid_16">
 	<h2 class="page-title gray">Payment Information</h2>
 	<hr />
@@ -12,24 +29,24 @@
 	<?php } ?>
 </div>
 
-<div class="grid_10">
-<?=$this->form->create($payment, array(
+<div class="container_16">
+<?=$this->form->create($payment, array (
 		'id' => 'paymentForm',
 		'class' => "fl"
 	)); ?>
-		
+				<div class="grid_8">
 				<h3>Pay with Credit Card :</h3>
 				<hr />
 				<?=$this->form->label('card_type', 'Card Type', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->select('card_type', array('visa' => 'Visa', 'mc' => 'MasterCard','amex' => 'American Express'), array('id' => 'card_type')); ?>
+				<?=$this->form->select('card_type', array('visa' => 'Visa', 'mc' => 'MasterCard','amex' => 'American Express'), array('id' => 'card_type', 'class'=>'inputbox')); ?>
 				<br />
 				<?=$this->form->label('card_name', 'Name On Card', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('card_name', array('class' => 'inputbox')); ?>
+				<?=$this->form->text('card_name', array('class' => 'validate[required] inputbox','id'=>'card_name')); ?>
 				<?=$this->form->error('card_name'); ?>
 				<br />
 				<?=$this->form->label('card_number', 'Card Number', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('card_number', array('class' => 'inputbox','id' => 'card_number', 'onblur' => 'validCC()')); ?>
-				<?=$this->form->hidden('card_valid', array('class' => 'inputbox', 'id' => 'card_valid')); ?>
+				<?=$this->form->text('card_number', array('class'=>'validate[required] inputbox','id' => 'card_number', 'onblur' => 'validCC()')); ?>
+				<?=$this->form->hidden('card_valid', array('class'=>'inputbox', 'id' => 'card_valid')); ?>
 				<?=$this->form->error('card_number'); ?>
 				<div id='error_valid' style="display:none;">
 					Wrong Credit Card Number
@@ -50,43 +67,46 @@
 										10 => 'October',
 										11 => 'November',
 										12 => 'December'
-				), array('id'=>"card_month")); ?>
+				), array('id'=>"card_month", 'class'=>'validate[required]')); ?>
 				<?php
 					$now = intval(date('Y'));
 					$years = array_combine(range($now, $now + 15), range($now, $now + 15)); ?>					
-				<?=$this->form->select('card_year', array('' => 'Year') + $years, array('id' => "card_year")); ?>
+				<?=$this->form->select('card_year', array('' => 'Year') + $years, array('id' => "card_year", 'class'=>'validate[required]')); ?>
 				<br />
 				<?=$this->form->label('card_code', 'Security Code', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('card_code', array('id' => 'CVV2','class' => 'inputbox', 'maxlength' => '4', 'size' => '4')); ?>
+				<?=$this->form->text('card_code', array('id' => 'CVV2','class'=>'validate[required] inputbox', 'maxlength' => '4', 'size' => '4')); ?>
 				<?php 
 				if(empty($checked)) {
 					$checked = false;
 				}
 				?>
+				</div>
+				
+				<div class="grid_8">
 				<h3>Billing Address</h3>
 				<hr />
 				Use my shipping address as my billing address: <?=$this->form->checkbox("shipping", array('id' => 'shipping', 'onclick' => 'replace_address()' , "checked" => $checked)) ?>
 				<br />
 				<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('firstname', array('class' => 'inputbox')); ?>
+				<?=$this->form->text('firstname', array('class' => 'validate[required] inputbox', 'id'=>'firstname')); ?>
 				<?=$this->form->error('firstname'); ?>
 				<br />
 				<?=$this->form->label('lastname', 'Last Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('lastname', array('class' => 'inputbox')); ?>
+				<?=$this->form->text('lastname', array('class' => 'validate[required] inputbox', 'id'=>'lastname')); ?>
 				<?=$this->form->error('lastname'); ?>
 				<br />
 				<?=$this->form->label('telephone', 'Telephone', array('escape' => false,'class' => 'addresses')); ?>
-				<?=$this->form->text('telephone', array('class' => 'inputbox', 'id' => 'phone')); ?>
+				<?=$this->form->text('telephone', array('class' => 'validate[custom[phone]] inputbox', 'id' => 'phone')); ?>
 				<br />
 				<?=$this->form->label('address', 'Street Address <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('address', array('class' => 'inputbox')); ?>
+				<?=$this->form->text('address', array('class' => 'validate[required] inputbox', 'id'=>'address')); ?>
 				<?=$this->form->error('address'); ?>
 				<br />
 				<?=$this->form->label('address2', 'Street Address 2', array('escape' => false,'class' => 'addresses')); ?>
-				<?=$this->form->text('address2', array('class' => 'inputbox')); ?>
+				<?=$this->form->text('address2', array('class' => 'inputbox', 'id'=>'address2')); ?>
 				<br />
 				<?=$this->form->label('city', 'City <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('city', array('class' => 'inputbox')); ?>
+				<?=$this->form->text('city', array('class' => 'validate[required] inputbox', 'id'=>'city')); ?>
 				<?=$this->form->error('city'); ?>
 				<br />
 				<label for="state" class='required'>State <span>*</span></label>
@@ -94,15 +114,37 @@
 				<?=$this->form->error('state'); ?>
 				<br />
 				<?=$this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('zip', array('class' => 'inputbox', 'id' => 'zip')); ?>
+				<?=$this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
 				<br />
 				<?=$this->form->hidden('description', array('id' => 'description' , 'value' => 'billing')); ?>
 				<?=$this->form->hidden('shipping_select', array('id' => 'shipping_select')); ?>
+				</div>
+			
+			<div class="grid_16">	
+				<?=$this->form->submit('CONTINUE', array('class' => 'button fr')); ?>
+			</div>	
 				
-			<?=$this->form->submit('CONTINUE', array('class' => 'button fr')); ?>
 <?=$this->form->end();?> 
 </div>
 <script>
+
+var shippingAddress = <?php echo $shipping; ?>
+
+function replace_address() {
+	if($("#shipping").is(':checked')) {
+		//run through shippinAddress object and set values for corresponding fields	
+		$.each(	shippingAddress, function(k, v) {				
+			$("#" + k + "").val(v);
+			}
+		);
+	} else {
+		$.each(	shippingAddress, function(k, v) {				
+			$("#" + k + "").val("");
+			}
+		);
+	}	
+};
+
 function isValidCard(cardNumber){
 	var ccard = new Array(cardNumber.length);
 	var i     = 0;
@@ -141,11 +183,4 @@ function validCC() {
 	}
 }
 
-function replace_address() {
-	$("#shipping_select").val('2');
-	if(!$("#shipping").is(':checked')) {
-		$("input[name='shipping']").val(0);
-	}
-	$("#paymentForm").submit();
-};
 </script>

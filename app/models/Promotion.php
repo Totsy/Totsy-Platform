@@ -47,7 +47,7 @@ class Promotion extends Base {
             $entity->code = $code;
             $success = false;
             if ($entity->code) {
-                $code = Promocode::confirmCode($entity->code);
+                $code = Promocode::confirmCode($code);
                 if ($code) {
                     $count = static::confirmCount($code->_id, $user['_id']);
                     $uses = static::confirmNoUses($code->_id, $user['_id']);
@@ -76,20 +76,20 @@ class Promotion extends Base {
                             ));
                         }
                     }
-                    if ($postCreditTotal >= $code->minimum_purchase) {
+                    if ($postDiscountTotal >= $code->minimum_purchase) {
                         $entity->user_id = $user['_id'];
                         if ($code->type == 'percentage') {
-                            $entity->saved_amount = $postCreditTotal * -$code->discount_amount;
+                            $entity->saved_amount = $postDiscountTotal * -$code->discount_amount;
                         }
                         if ($code->type == 'dollar') {
                             $entity->saved_amount = -$code->discount_amount;
                         }
-                        if ($code->type == 'free_shipping' && !($this->errors())) {
+                        if ($code->type == 'free_shipping' && !($entity->errors())) {
                             $shippingCost = 0;
                             $overShippingCost = 0;
                             $entity->type = "free_shipping";
                         }
-                        Session::write('promocode', $entity->code, array('name' => 'default'));
+                        Session::write('promocode', $code , array('name' => 'default'));
                     } else {
                         $entity->errors(
                             $entity->errors() + array(

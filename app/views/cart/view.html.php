@@ -1,13 +1,15 @@
 <?php
 
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
-	$test = $cart->data();
 	
 	$cartExpirationDate = "";
+	$test = Array();
 	
-	if($test){
+	if($cart->data()){
+		$test = $cart->data();
+	
 		$cartInfo = $cart->data();
-		$cartExpirationDate =  $cartInfo[0]['expires']['sec'];
+		$cartExpirationDate =  $cartInfo[0]['expires']['sec'];		
 	}
 	
 ?>										
@@ -74,7 +76,6 @@
 			-->
 			<tbody>
 			<?php $x = 0; ?>
-			<?php $subTotal = 0; ?>
 			<?php foreach ($cart as $item): ?>
 				<!-- Build Product Row -->
 				<tr id="<?=$item->_id?>" class="alt0">
@@ -129,7 +130,9 @@
 					<td class="cart-actions">
 						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" onclick="deletechecked('Are you sure you want to remove this item?','<?=$item->_id; ?>');" style="color: red!important;"><img src="/img/trash.png" width="20" align="absmiddle" style="margin-right:20px;" /></a>
 					</td>
-					<td class="cart-time" style="width:220px;"><!-- <img src="/img/old_clock.png" align="absmiddle" width="23" class="fl"/>--> <div id='<?php echo "itemCounter$x"; ?>' class="fl" style="margin:5px 0px 0px 5px;"></div></td>
+					<td class="cart-time" style="width:220px;"><!-- <img src="/img/old_clock.png" align="absmiddle" width="23" class="fl"/>--> <div id='<?php echo "itemCounter$x"; ?>' class="fl" style="margin:5px 0px 0px 5px;"></div>
+				<div id='<?php echo "itemCounter_2$x"; ?>' class="fl" style="margin:5px 0px 0px 5px;"></div>	
+					</td>
 					<td class="<?="total-item-$x";?>" style="width:55px;">
 						<strong style="color:#009900;">$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
 					</td>
@@ -147,40 +150,36 @@
 						
 						var expireNotice = ( itemExpires.valueOf() - 120000 ) ;
 						expireNotice = new Date( expireNotice );
-											
-						$(\"#itemCounter$x\").countdown('change', { until: expireNotice, layout: '{mnn}{sep}{snn} minutes' });
-						
+																	
 						$(\"#itemCounter$x\").countdown({
-						    until: expireNotice,
-						    expiryText: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This item will expire in 2 minutes</div>', 
-						    layout: '{mnn}{sep}{snn} minutes',
-						    onExpiry: test(itemExpires) }
-						 );
+						    until: itemExpires,
+						    expiryText: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This sale has ended</div>', 
+						    layout: '',
+						    onTick: watchCountDown() 
+						 });
 						 
-						 console.log('the first counter has started');
+						 function watchCountDown() { 
+						 	var itemExpires = new Date();
+							itemExpires = new Date($date);
 						 
-						function test (exp){
+						 	var now = new Date();	
+							var expireNotice = ( itemExpires.valueOf() - 120000 ) ;
+							expireNotice = new Date( expireNotice );
+						 
+						 	if(now > expireNotice){						 	
+						 		$(\"#itemCounter$x\").hide();
+						 		$(\"#itemCounter_2$x\").show();
+    							$(\"#itemCounter_2$x\").html('<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This sale has 2 minutes to go</div>'); 
+    						}
+    						
+    						if (now == itemExpires){
+    							$(\"#itemCounter_2$x\").hide();
+    							$(\"#itemCounter$x\").show();
+    							$(\"#itemCounter_2$x\").html('<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This sale has ended</div>'); 		
+    						}
+						 }
 						
-						    $(\"#itemCounter$x\").countdown('destroy');
-						    
-						    console.log('the second counter has started');
-						    
-						    $(\"#itemCounter$x\").countdown('change', { until: exp, layout: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This item will expire in 2 minutes</div>' });
-						    						
-						    $(\"#itemCounter$x\").countdown({
-						        until: exp,
-						        expiryText: '<div class=\"over\" style=\"color:#EB132C; padding:5px;\">This sale has ended</div>', 
-						        layout: '{mnn}{sep}{snn} minutes',
-						    });
-						}
-						
-						function test2 (){
-							console.log('test');
-						}
-
-						
-						</script>";
-					$subTotal += $item->quantity * $item->sale_retail;
+					</script>";
 					$x++;
 				?>
 			<?php endforeach ?>
@@ -190,9 +189,9 @@
 						<div style="float: left; ">
 							
 							<div style="font-size: 12px; text-align:left !important">
-								<strong>Add <?php if(!empty($credit)) { ?>
+								<strong>Add <?php if(!empty($credit)): ?>
 									<a href="#" id='credits_lnk' onclick="open_credit();" >Credits</a> /
-								<?php } ?> 
+								<?php endif ?> 
 									<a href='#' id='promos_lnk' onclick='open_promo();'>Optional Code</a></strong>
 							</div>
 							<div style='clear:both'></div>
@@ -224,13 +223,27 @@
 								<span style="float: left;">Estimated Tax:</span> 
 								<span style="color:#009900; float:right">$0.00</span>
 						</div>
-						<?php if ($credit !== '0') { ?>
+						<?php if (!empty($credits)):?>
 						<div style="clear:both"></div>
 						<div style="font-weight:bold">
     							<span style="float: left;">Credits:</span> 
-    							<span style="color:#009900; float:right">$ <?=number_format($credit,2)?></span>
+    							<span style="color:#009900; float:right">$ <?=number_format(abs($credits),2)?></span>
     					</div>
-   						 <?php } ?>	
+   						<?php endif ?>
+   						<?php if (!empty($cartPromo['saved_amount'])):?>
+						<div style="clear:both"></div>
+						<div style="font-weight:bold">
+    							<span style="float: left;">Discount :</span> 
+    							<span style="color:#009900; float:right">$ <?=number_format(abs($cartPromo['saved_amount']),2)?></span>
+    					</div>
+   						<?php endif ?>
+						<?php if (!empty($shipping_discount)):?>
+						<div style="clear:both"></div>
+						<div style="font-weight:bold">
+    							<span style="float: left;">Complimentary Shipping :</span> 
+    							<span style="color:#009900; float:right">$<?=number_format($shipping_discount,2)?></span>
+    					</div>
+   						<?php endif ?>
 						<div style="clear:both"><hr /></div>						
 						<div style="font-weight:bold">
 							<span style="float: left;">Your Saving 
@@ -239,17 +252,7 @@
 								<?php endif ?> 
 							</span>
 							<span style="float:right">Order Total: 
-								<span style="color:#009900;">$<?php 
-									if($credit) {
-										if($credit > ($subTotal)){
-											echo number_format(0 ,2 );
-										} else {
-											echo number_format(($subtotal)-$credit);
-										}
-									} else {
-										echo number_format(($subtotal));
-									}
-								?></span>
+								<span style="color:#009900;">$ <?=number_format($total,2)?> </span>
 							</span>
 						</div>			
 					</td>
@@ -270,7 +273,7 @@
 				-->
 				<tr class="cart-buy">
 					<td colspan="2" class="cart-button">
-					<?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('class' => 'button', 'style'=>'float:left')); ?>
+					<?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left')); ?>
 						<!--<a href='../../pages/returns'><strong style="font-size:12px; font-weight:normal;">Refund &amp; Return Policy</strong></a><br /> -->
 					</td>
 					<td class="cart-button" colspan="5">
@@ -328,30 +331,27 @@
 	var cost = parseInt(qty) * parseFloat(price);
 	var itemCost = $().number_format(cost, {
 		numberOfDecimals: 2,
-		decimalSeparator: '.',
-		thousandSeparator: ','
-	});
-
-	$(this).closest("tr").find("td[class^=total]").html("<strong>$" + itemCost + "</strong>");
+		decimalSeparator: ".",
+		thousandSeparator: "," });
+	$(this).closest('tr').find('td[class^=total]').html('<strong>$' + itemCost + '</strong>');
 	var subTotal = 0;
-	$("td[class^=total]").each(function() {
-	    subTotal += parseFloat($(this).html().split("$")[1]);
-	});
-
+	$('td[class^=total]').each(
+		function() {
+	    	subTotal += parseFloat($(this).html().split("$")[1]);
+		});
 	var subTotalProper = $().number_format(subTotal, {
 		numberOfDecimals: 2,
 		decimalSeparator: '.',
 		thousandSeparator: ','
 	});
-
 	$.ajax({
 		url: $.base + 'cart/update',
-		data: "_id=" + id + "&" + "qty=" + qty,
+		data: '_id=' + id + '&' + 'qty=' + qty,
 		context: document.body,
 		success: function(message) {
-			$('#message').addClass("cart-message");
-			$('#message').css("padding: 0pt 0.7em;");
-			$('#message').html('<center>' + message + '</center>');
+			$("#message").addClass("cart-message");
+			$("#message").css("padding: 0pt 0.7em;");
+			$("#message").html("<center>" + message + "</center>");
 		}
 	});
 	$("#subtotal").html("<strong>Subtotal: $" + subTotalProper + "</strong>");
@@ -362,7 +362,7 @@
 function deletechecked(message, id) {
 	var answer = confirm(message)
 	if (answer){
-		$('input[name="rmv_item_id"]').val(id);
+		$("input[name='rmv_item_id']").val(id);
 		$('#removeForm').submit();
 	}
 	return false;
@@ -374,16 +374,13 @@ $(function () {
 			$('input[name="rmv_item_id"]').val($(this).attr('id'));
 			$('#removeForm').submit();
 		} else {
-			$("#cartForm").submit();
+			$('#cartForm').submit();
 		}
 	});
 });
 //HIDE / SHOW CREDITS INPUT
 function open_credit() {
 	if ($("#cred").is(":hidden")) {
-		if(! $("#promo").is(":hidden")) {
-			//$("#promo").slideToggle("fast");
-		}
 		$("#cred").slideToggle("fast");
 	} else {
 		$("#cred").slideToggle("fast");
@@ -392,9 +389,6 @@ function open_credit() {
 //HIDE / SHOW PROMOS INPUT
 function open_promo() {
 	if ($("#promo").is(":hidden")) {
-		if(! $("#cred").is(":hidden")) {
-			//$("#cred").slideToggle("fast");
-		}
 		$("#promo").slideToggle("fast");
 	} else {
 		$("#promo").slideToggle("fast");

@@ -1147,7 +1147,7 @@
             var userOptions = $.extend({
 
                 // Name of the event triggering field validation
-                validationEventTrigger: "blur",
+                validationEventTrigger: "focus",
                 // Automatically scroll viewport to the first error
                 scroll: true,
                 // Opening box position, possible locations are: topLeft,
