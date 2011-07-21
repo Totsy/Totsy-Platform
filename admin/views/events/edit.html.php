@@ -111,6 +111,7 @@ tinyMCE.init({
 		    <li><a href="#event_info"><span>Event Info</span></a></li>
 			<li><a href="#event_images"><span>Event Images</span></a></li>
 		    <li><a href="#event_items"><span>Event Items</span></a></li>
+		    <li><a href="#event_history"><span>Event History</span></a></li>
 		</ul>
 
 		<div id="event_info">
@@ -317,6 +318,44 @@ tinyMCE.init({
 					<?=$this->form->hidden('event', array('value' => $event->_id)); ?>
 					<?=$this->form->submit('Delete All Items'); ?>
 				<?=$this->form->end(); ?>
+		</div>
+		<div id="event_history">
+				<?
+					if (sizeof($event->modifications) > 0) {
+				?>
+				
+				<table>
+					<tr>
+						<td>User</td>
+						<td>Date</td>
+						<td>Changed</td>
+					</tr>
+				<?
+						$i = 0;
+						while ($i < sizeof($event->modifications)) {
+				
+				
+				?>
+				<tr>
+					<td><?=$event->modifications[$i]->author;?></td>
+					<td>
+					<? 
+							$date_changed = $event->modifications[$i]->date;
+							print date('Y-M-d h:i:s', $date_changed->sec);
+					?>
+					</td>
+					<td><?=$event->modifications[$i]->changed;?></td>
+				</tr>
+				<?
+							$i++;
+						}
+				?>			
+				</table>
+				<?
+					} else {
+						print 'No event modifications have been made.';
+					}
+				?>
 		</div>
 	</div>
 
