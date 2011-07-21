@@ -3,6 +3,7 @@
 namespace admin\controllers;
 use admin\models\Event;
 use lithium\util\Inflector;
+use li3_flash_message\extensions\storage\FlashMessage;
 
 class BaseController extends \lithium\action\Controller {
 
