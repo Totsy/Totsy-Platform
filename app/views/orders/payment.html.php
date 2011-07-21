@@ -1,9 +1,12 @@
+<script type="text/javascript">
+var paymentForm = new Object();
+</script>
+
 <?php
 	use app\models\Address;
 	$this->html->script('application', array('inline' => false));
 	$this->form->config(array('text' => array('class' => 'inputbox')));
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
-	
 ?>
 
 <link rel="stylesheet" type="text/css" href="/css/validation-engine.jquery.css" media="screen" />
@@ -11,12 +14,64 @@
 <script type="text/javascript" src="/js/form_validator/jquery.validation-engine.js" charset="utf-8"></script>    
 <script type="text/javascript" src="/js/form_validator/languages/jquery.validation-engine-en.js" charset="utf-8"></script> 
 
-<script>
+<script type="text/javascript">
 
     $(document).ready(function() {
-        $("#paymentForm").validationEngine('attach');        
-		//$("#paymentForm").validationEngine({  validationEventTrigger: "focus" });
-    	$("#paymentForm").validationEngine('init', { promptPosition : "centerRight", scroll: false });       
+            
+        //if its not true, set it to false. 
+        //used to avoid overwriting the submitted 
+        //value on refresh, persiting whether a 
+        //form submit was made or not    
+    	if(!paymentForm.submitted) {
+    		paymentForm.submitted=false;  	
+    	} else {
+    		$("#submitted").val(paymentForm.submitted);	
+    	}
+    	    	
+    	//detach the plugin from the form if it hasn't been submitted yet
+    	if(paymentForm.submitted==false){
+    		$("#paymentForm").validationEngine('detach');
+    	}
+    	
+    	//highlight the invalid fields and show a prompt for the first of those highlighted
+    	$("#paymentForm").submit(function() {
+    		paymentForm.submitted = true;
+    		paymentForm.form = $(this).serializeArray(); 
+    		
+    		var invalid_count = 0;
+    		
+    		//alert(paymentForm.submitted);
+    		$("#paymentForm").validationEngine('attach');        
+    		$("#paymentForm").validationEngine('init', { promptPosition : "centerRight", scroll: false } );      		
+    		    		    		
+    		$.each(	paymentForm.form, function(i, field) {	
+    		    if(field.value=="" && field.name!=="phone" && field.name!=="address2") {
+    		 		if(i==1) {
+    		 			$('#' + field.name + "").validationEngine('showPrompt','This field is required', '', true);
+    		 			$('#' + field.name + "").validationEngine({ promptPosition : "centerRight", scroll: false });
+    		 		}
+    		 		$('#' + field.name + "").attr('style', 'background: #FFFFC5 !important');
+    		 		
+    		 		invalid_count ++;
+    		 	} 
+			});
+			    
+			if(invalid_count>0){	
+    		    return false;
+    		} 		
+    	});
+    	
+    	//if the form has been, hide propmts on a given element's blur event
+    	//controls only show a prompt when they have focus and aren't valid
+    	$(".inputbox").blur(function() { 
+    		if(paymentForm.submitted==true) {  		
+				$('#' + this.id + "").validationEngine('hide');	
+				//if they fill it in and make it valid, reset the background of the control to white again
+				if($('#' + this.id + "").val()!==""){
+					$('#' + this.id + "").attr('style', 'background: #FFF !important');
+				} 
+			}	    		
+    	});
     });
 
 </script>
@@ -32,11 +87,13 @@
 <div class="container_16">
 <?=$this->form->create($payment, array (
 		'id' => 'paymentForm',
-		'class' => "fl"
+		'class' => 'fl',
+		''
 	)); ?>
 				<div class="grid_8">
 				<h3>Pay with Credit Card :</h3>
 				<hr />
+				<?=$this->form->hidden('submitted', array('class'=>'inputbox', 'id' => 'submitted')); ?>
 				<?=$this->form->label('card_type', 'Card Type', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->select('card_type', array('visa' => 'Visa', 'mc' => 'MasterCard','amex' => 'American Express'), array('id' => 'card_type', 'class'=>'inputbox')); ?>
 				<br />
@@ -45,10 +102,10 @@
 				<?=$this->form->error('card_name'); ?>
 				<br />
 				<?=$this->form->label('card_number', 'Card Number', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('card_number', array('class'=>'validate[required] inputbox','id' => 'card_number', 'onblur' => 'validCC()')); ?>
+				<?=$this->form->text('card_number', array('class'=>'validate[required] inputbox','id' => 'card_number')); ?>
 				<?=$this->form->hidden('card_valid', array('class'=>'inputbox', 'id' => 'card_valid')); ?>
 				<?=$this->form->error('card_number'); ?>
-				<div id='error_valid' style="display:none;">
+				<div id="error_valid" style="display:none;">
 					Wrong Credit Card Number
 				</div>
 				<br />
@@ -74,7 +131,7 @@
 				<?=$this->form->select('card_year', array('' => 'Year') + $years, array('id' => "card_year", 'class'=>'validate[required]')); ?>
 				<br />
 				<?=$this->form->label('card_code', 'Security Code', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('card_code', array('id' => 'CVV2','class'=>'validate[required] inputbox', 'maxlength' => '4', 'size' => '4')); ?>
+				<?=$this->form->text('card_code', array('id' => 'card_code','class'=>'validate[required] inputbox', 'maxlength' => '4', 'size' => '4')); ?>
 				<?php 
 				if(empty($checked)) {
 					$checked = false;
@@ -95,14 +152,14 @@
 				<?=$this->form->text('lastname', array('class' => 'validate[required] inputbox', 'id'=>'lastname')); ?>
 				<?=$this->form->error('lastname'); ?>
 				<br />
-				<?=$this->form->label('telephone', 'Telephone', array('escape' => false,'class' => 'addresses')); ?>
+				<?=$this->form->label('telephone', 'Telephone', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('telephone', array('class' => 'validate[custom[phone]] inputbox', 'id' => 'phone')); ?>
 				<br />
 				<?=$this->form->label('address', 'Street Address <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('address', array('class' => 'validate[required] inputbox', 'id'=>'address')); ?>
 				<?=$this->form->error('address'); ?>
 				<br />
-				<?=$this->form->label('address2', 'Street Address 2', array('escape' => false,'class' => 'addresses')); ?>
+				<?=$this->form->label('address2', 'Street Address 2', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('address2', array('class' => 'inputbox', 'id'=>'address2')); ?>
 				<br />
 				<?=$this->form->label('city', 'City <span>*</span>', array('escape' => false,'class' => 'required')); ?>
@@ -110,7 +167,7 @@
 				<?=$this->form->error('city'); ?>
 				<br />
 				<label for="state" class='required'>State <span>*</span></label>
-				<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state')); ?>
+				<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'id'=>'state')); ?>
 				<?=$this->form->error('state'); ?>
 				<br />
 				<?=$this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
@@ -126,20 +183,42 @@
 				
 <?=$this->form->end();?> 
 </div>
-<script>
-
+<script>  
+	
 var shippingAddress = <?php echo $shipping; ?>
+
+$("#card_number").blur(function(){
+	validCC();
+});
 
 function replace_address() {
 	if($("#shipping").is(':checked')) {
 		//run through shippinAddress object and set values for corresponding fields	
-		$.each(	shippingAddress, function(k, v) {				
-			$("#" + k + "").val(v);
+		$.each(	shippingAddress, function(k, v) {
+		
+			if(k=="state" || k=="card_month" || k=="card_year"){
+				$("#" + k + " option['" + v + "']").attr("selected","selected");
+			} else {
+				$("#" + k + "").val(v);
 			}
-		);
+				
+			if(paymentForm.submitted==true && v!=="") {  		
+				$('#' + k + "").attr('style', 'background: #FFF !important');
+			}	
+		});		
 	} else {
-		$.each(	shippingAddress, function(k, v) {				
-			$("#" + k + "").val("");
+		$.each(	shippingAddress, function(k, v) {
+		
+			//if(k=="state" || k=="card_month" || k=="card_year"){				
+			//	$("#" + k + " option:eq(0)").attr("selected", "selected");
+			//} else {
+				$("#" + k + "").val("");
+			//}
+			
+			if(paymentForm.submitted==true) {  		
+				$('#' + k + "").attr('style', 'background: #FFFFC5 !important');
+			}	
+			
 			}
 		);
 	}	
@@ -147,7 +226,7 @@ function replace_address() {
 
 function isValidCard(cardNumber){
 	var ccard = new Array(cardNumber.length);
-	var i     = 0;
+	var i = 0;
         var sum   = 0;
 
 	// 6 digit is issuer identifier
@@ -174,12 +253,12 @@ function isValidCard(cardNumber){
   }
 
 function validCC() {
-	var test = isValidCard($("input[name='card_number']").val());
-	$("input[name='card_valid']").val(test);
+	var test = isValidCard($("#card_number").val());
+	$("#card_valid").val(test);
 	if(!test) {
 		$('#error_valid').show();
 	} else {
-		$('#error_valid').hide()();
+		$('#error_valid').hide();
 	}
 }
 

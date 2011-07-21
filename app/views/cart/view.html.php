@@ -14,27 +14,6 @@
 	
 ?>										
 
-<div style="margin-top:10px; margin-bottom:10px">
-<div class="grid_8">
-	<div style="float:left">
-	<h2 class="page-title gray">
-	<!--<span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> My Cart</h2> -->
-		<span class="red">Shopping Cart</span></h2>
-	</div>
-	<div style="float:right; font-weight: bold">
-	Item reserved for: <span id="itemCounter">Dummy cart expiration date</span>
-    </div>
-</div>
-<div class="grid_8">
-	 <div style="float:left;">
-	 <span style="font-weight: bold">Estimated Shipping Date: </span>
-         <span style="float:right;">&nbsp;&nbsp;<?=date('m-d-Y', $shipDate)?></span>
-     </div>
-     <div class="cart-button">
-	     <?=$this->html->link('Checkout', 'Orders::addShipping', array('class' => 'button', 'style'=>'float:right')); ?>
-	 </div>
-</div>
-
 <script type="text/javascript">
 
 	$( function () {
@@ -54,6 +33,32 @@
 	});
 	
 </script>
+
+<?php  if(!empty($test)) { ?>
+<div style="margin-top:10px; margin-bottom:10px">
+
+	<div class="grid_8" style="padding-bottom:10px">
+		<div style="float:left">
+		<h2 class="page-title gray">
+			<span class="red">Shopping Cart</span></h2>
+		</div>
+		<div style="float:right; font-weight: bold">
+		Item reserved for: <br />
+		<span id="itemCounter">Dummy cart expiration date</span>
+	    </div>
+	</div>
+	
+	<div class="grid_8" style="padding-bottom:10px">
+		 <div style="float:left;">
+		 <span style="font-weight: bold">Estimated Shipping Date: </span><br />
+	         <span style="float:right;">&nbsp;&nbsp;<?=date('m-d-Y', $shipDate)?></span>
+	     </div>
+	     <div class="cart-button">
+		     <?=$this->html->link('Checkout', 'Orders::addShipping', array('class' => 'button', 'style'=>'float:right')); ?>
+		 </div>
+	</div>
+
+<?php } ?>
 
 <div class="message"></div>
 <?php if (!empty($test)): ?>

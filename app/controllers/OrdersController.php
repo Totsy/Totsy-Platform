@@ -557,7 +557,7 @@ class OrdersController extends BaseController {
 
 		return $orderEvents;
 	}
-	
+
 	/**
 	 * The user choose his billing address and enter his credit card information.
 	 * - He can use a checkbox to apply shipping address as billing address
