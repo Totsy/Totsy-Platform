@@ -78,6 +78,37 @@ class APIController extends  \lithium\action\Controller {
 		}		
 	}	
 	
+	public function help() {
+		$all_methods = get_class_methods(get_class($this));
+		$methods = array();
+		if (array_key_exists('args', $this->request->params) && is_array($this->request->params['args']) && count($this->request->params['args'])>1){
+			$current_method = strtolower($this->request->params['args'][1]);
+		} else {
+			$current_method = 'intro';
+		}
+		
+		foreach($all_methods as $method){
+			if(preg_match('/Api/',$method) ){
+				$clear = str_replace('Api','',$method);
+				$methods[] = array(
+					'name'=>strtoupper(substr($clear,0,1)).substr($clear,1),
+					'clear' => $clear
+				);
+			}
+		}
+		if (file_exists(LITHIUM_APP_PATH . '/views/api/help/'.$current_method.'.php')) {
+			ob_start();
+			require LITHIUM_APP_PATH . '/views/api/help/'.$current_method.'.php';
+			$content = ob_get_clean();
+		} else {
+			$current_method = 'intro';
+			ob_start();
+			require LITHIUM_APP_PATH . '/views/api/help/intro.php';
+			$content = ob_get_clean();
+		} 
+		return compact('methods', 'current_method', 'content');
+	}
+	
 	/**
 	 * Authorize function
 	 * 
@@ -125,11 +156,13 @@ class APIController extends  \lithium\action\Controller {
 	 * Beside regular auth, first checks if 
 	 * protocol is secure,then request method.
 	 * 
+	 * SK: is not ready yet.
+	 * 
 	 * @protocol HTTPS
 	 * @method POST
 	 * 
 	 */
-	protected function chnagePasswordApi (){
+	protected function chnagePassword (){
 		$token = Api::authorizeTokenize($this->request->query);
 		if (is_array($token) && array_key_exists('error', $token)) {
 			return $token;
@@ -180,10 +213,22 @@ class APIController extends  \lithium\action\Controller {
 			));
 			unset($mItems);
 			foreach ($itms as $itm){
-				 $it = $itm->data();
-				 $it['base_url'] = $base_url;
-				 $it['event_url'] = $ev['url'];
-				 $items[] = $it;
+				$it = $itm->data();
+				$it['base_url'] = $base_url;
+				$it['event_url'] = $ev['url'];
+				 
+				if (preg_match('/[\%]+/',$it['percent_off'])){
+					$it['percent_off'] = substr($it['percent_off'],0,-1);
+					if (is_float($it['percent_off']) ) $it['percent_off'] = round($it['percent_off'],2);
+				} else if (is_float($it['percent_off'])) {
+					$it['percent_off'] = round($it['percent_off']*100,2);
+				} else {
+					$it['percent_off'] = preg_replace('/[/D]+/','',$it['percent_off']);
+					if ($it['percent_off']>74) $it['percent_off'] = 0;	
+				} 
+				$it['start_date'] = $ev['start_date'];
+				$it['end_date'] = $ev['end_date']; 
+				$items[] = $it;
 			}
 		}
 		$this->setView(1);
@@ -194,23 +239,86 @@ class APIController extends  \lithium\action\Controller {
 	 * Method to show available(active) events 
 	 * for current date. 
 	 * 
-	 * min protocol HTTP
+	 * min protocol HTTPS
 	 * method GET
 	 */
 	protected function eventsApi() {
+		
+		$token = Api::authorizeTokenize($this->request->query);
+		if (is_array($token) && array_key_exists('error', $token)) {
+			return $token;
+		}
+		
 		$openEvents = Event::open();
 		
 		$base_url = 'http://'.$_SERVER['HTTP_HOST'].'/';
 		$events = array();
+		$closing = array();
+		$maxOff = 0;
+		
 		foreach ($openEvents as $event){
-			$events[] = $event->data();
+			
+			$data =  $event->data();
+			$data['available_items'] = false;
+			$data['maxDiscount'] = 0;
+			$data['vendor'] = '';
+			
+			if (!array_key_exists('event_image',$data)) { $data['event_image'] = $base_url.'img/no-image-small.jpeg'; }
+			else { $data['event_image'] = $base_url.'image/'.$data['event_image'].'.jpg'; }
+			 
+			if ( isset($data['items']) && count($data['items'])>0){
+
+				$mItems  = array();
+				foreach ($data['items'] as $item){
+					$mItems[] = new MongoId($item);
+				}
+				
+				$itms = Item::all(array(
+					'conditions' => array(
+					'_id' => array( '$in' => $mItems  )
+					)
+				));
+				unset($mItems);
+				
+				foreach ($itms as $itm){
+					$it = $itm->data();
+					
+					if (preg_match('/[\%]+/',$it['percent_off'])){
+						$it['percent_off'] = substr($it['percent_off'],0,-1);
+						if (is_float($it['percent_off']) ) $it['percent_off'] = round($it['percent_off'],2);
+					} else if (is_float($it['percent_off'])) {
+						$it['percent_off'] = round($it['percent_off']*100,2);
+					} else {
+						$it['percent_off'] = preg_replace('/[/D]+/','',$it['percent_off']);
+						if ($it['percent_off']>74) $it['percent_off'] = 0;	
+					}
+					if ($it['percent_off'] > $maxOff) { $maxOff = $it['percent_off']; }
+					if ( isset($it['vendor']) && (is_null($data['vendor']) || strlen(trim($data['vendor']))==0)){ 
+						$data['vendor'] = $it['vendor']; 
+					}
+					
+					if ($it['percent_off'] > $data['maxDiscount']) { $data['maxDiscount'] = $it['percent_off']; }
+					if ($it['total_quantity']>0 && $data['available_items'] === false) { $data['available_items'] = true; }
+				}
+				
+			}
+			
+			if ($data['end_date']['sec'] <= strtotime(date('d-m-Y 23:59:59',strtotime('+1 day'))) ){
+				$closing[] = $data;
+			}
+			$events[] = $data;
+		}
+		$pendingEvents = Event::pending();
+		$pending = array();
+		foreach ($pendingEvents as $pendingEvent){
+			$pending[] = $pendingEvent->data();
 		}
 		$this->setView(1);
-		return (compact('events'));
+		return (compact('events','pending','closing','base_url','maxOff'));
 	}	
 	
 	/**
-	 * Mwthod to handle templates aka views.
+	 * Method to handle templates aka views.
 	 * 
 	 * template structure :
 	 * {{{
@@ -231,6 +339,8 @@ class APIController extends  \lithium\action\Controller {
 	 * }}}
 	 */
 	private function display ($data){
+
+		
 		switch ($this->_format){
 			
 			case 'xml':
@@ -240,16 +350,32 @@ class APIController extends  \lithium\action\Controller {
 					if (!file_exists(LITHIUM_APP_PATH . '/views/api/'.$path)) {
 						echo ApiHelper::converter(ApiHelper::errorCodes(415),$this->_format);
 					}
+					extract($data);
 					require_once LITHIUM_APP_PATH . '/views/api/'.$path;
+				} else if ($this->_method == 'authorize'){
+					ApiHelper::converter($data,'xml');
 				} else {
-					echo ApiHelper::converter(ApiHelper::errorCodes(415),$this->_format);
+					$this->_view = 'default';
+					$this->display($data);
 				}
 			break;
 			
 			case 'json':
 			default:
 				header("Content-type: text/javascript");
-				echo json_encode($data);
+				if (!is_null($this->_view)){
+					$path = $this->_format.'/'.$this->_method.'/'.$this->_view.'.php';
+					if (!file_exists(LITHIUM_APP_PATH . '/views/api/'.$path)) {
+						echo ApiHelper::converter(ApiHelper::errorCodes(415),$this->_format);
+					}
+					extract($data);
+					require_once LITHIUM_APP_PATH . '/views/api/'.$path;
+				} else if ($this->_method == 'authorize'){
+					echo json_encode($data);
+				} else {
+					$this->_view = 'default';
+					$this->display($data);
+				}
 			break;
 
 		}
