@@ -6,7 +6,7 @@
     <?php else: ?>
         <?=$this->form->error('promo'); ?>
     <?php endif; ?>
-    <?=$this->form->text('code', array('size' => 6)); ?>
+    <input type="text" name="code" style='width:70px;' />
     <span id='promobtn'>
     	<?=$this->form->submit('Apply Promo Code'); ?>
     </span>

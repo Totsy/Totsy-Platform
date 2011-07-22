@@ -48,7 +48,6 @@ class CartController extends BaseController {
 		#Update the Cart
 		if (!empty($this->request->data))
 			$this->update();
-		
 		#Get current Discount
 		$vars = $this->getDiscount();
 		Cart::increaseExpires();
@@ -86,18 +85,24 @@ class CartController extends BaseController {
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
 		$savings = $userSavings['items'] + $userSavings['discount'];
-		$credits = Session::read('credit');
 		$postDiscount = ($subTotal + $vars['services']['tenOffFitfy']);
-		if(!empty($vars['cartCredit']['credit_amount'])) {
-		 	$postDiscount += $vars['cartCredit']['credit_amount'];
+		if(Session::read('credit')) {
+			$credits = Session::read('credit');
+		 	$postDiscount += $credits;
 		}
 		if(!empty($vars['cartPromo']['saved_amount'])) {
 		 	$postDiscount += $vars['cartPromo']['saved_amount'];
+		}
+		if(!empty($vars['services']['tenOffFitfy'])) {
+			$postDiscount -= $vars['services']['tenOffFitfy'];
 		}
 		if(!empty($vars['cartPromo']['type'])) {
 			if($vars['cartPromo']['type'] === 'free_shipping') {
 				$shipping_discount = $shipping;
 			}
+		}
+		if(!empty($vars['services']['freeshipping']['enable'])) {
+			$shipping_discount = $shipping;
 		}
 		$total = ($postDiscount + $shipping - $shipping_discount);
 		return $vars + compact('cart', 'message', 'subTotal', 'total', 'shipDate', 'returnUrl', 'savings','shipping_discount', 'credits', 'userDoc','cartItemEventEndDates');
@@ -297,11 +302,8 @@ class CartController extends BaseController {
 		$services['freeshipping'] = Service::freeShippingCheck();
 		$services['tenOffFitfy'] = Service::tenOffFiftyCheck($subTotal);
 		#Apply Credits
-		$credit_amount = 0;
+		$credit_amount = 0.00;
 		$cartCredit = Credit::create();
-		if (Session::read('credit')) {
-			$credit_amount = Session::read('credit');			
-		}
 		if (array_key_exists('credit_amount', $this->request->data)) {
 			$credit_amount = $this->request->data['credit_amount'];
 		}
@@ -318,7 +320,7 @@ class CartController extends BaseController {
 		}
 		if (!empty($promo_code)) {
 			$postDiscountTotal = ($subTotal + $services['tenOffFitfy'] + $cartCredit->credit_amount);
-			$cartPromo->promoCheck($promo_code, $userDoc, compact('postDiscountTotal', 'shippingCost', 'overShippingCost'));	
+			$cartPromo->promoCheck($promo_code, $userDoc, compact('postDiscountTotal', 'shippingCost', 'overShippingCost', 'services'));	
 		}
 		return compact('cartPromo', 'cartCredit', 'services');
 	}

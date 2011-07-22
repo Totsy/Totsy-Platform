@@ -145,10 +145,7 @@
 						<strong style="color:#009900;">$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
 					</td>
 				</tr>
-				<?php		
-					$subTotal += $item->quantity * $item->sale_retail;
-					$x++;
-				?>
+				<?php $x++; ?>
 			<?php endforeach ?>
 				<tr class="cart-total">
 					<td colspan="4" id='subtotal' valign='top'>
