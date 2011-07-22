@@ -262,7 +262,7 @@
 	    
 	    itemExpires = new Date(fecha);	
 	    
-	    var expireNotice = ( itemExpires.valueOf() - 120000 );
+	    var expireNotice = (itemExpires.valueOf() - 120000);
 	    expireNotice = new Date( expireNotice );
 	    
 	    //show 2 minutes notice
@@ -281,19 +281,21 @@
 	    							onExpiry: resetTimer
 	    							});
 	    
+	    //call when item expires
+		function notifyEnding() {
+			$("#" + this.id).countdown('change', { expiryText: '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>'});
+		
+			$("#" + this.id + "_display").html( '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>' );
+		}
+	    
 	    //call 2 minutes before the item expires							
 	    function resetTimer() {	
 	    	$("#" + this.id + "_display").html( $("#" + this.id).countdown('settings', 'expiryText') );
 			$("#" + this.id).countdown('change', { until: itemExpires, 
-												   onExpiry: notifyEnding,
-												   expiryText: '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>'
+												   expiryText: '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>',
+												    onExpiry: notifyEnding
 												   });
-		}		
-		
-		//call when item expires
-		function notifyEnding() {
-			$("#" + this.id + "_display").html( '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>' );
-		}					
+		}							
 	});		
 				
 </script>	
