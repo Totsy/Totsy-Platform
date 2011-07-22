@@ -91,6 +91,12 @@ class APIController extends  \lithium\action\Controller {
 	public function help() {
 		$all_methods = get_class_methods(get_class($this));
 		$methods = array();
+		if (array_key_exists('args', $this->request->params) && is_array($this->request->params['args']) && count($this->request->params['args'])>1){
+			$current_method = strtolower($this->request->params['args'][1]);
+		} else {
+			$current_method = 'intro';
+		}
+		
 		foreach($all_methods as $method){
 			if(preg_match('/Api/',$method) ){
 				$clear = str_replace('Api','',$method);
@@ -100,8 +106,17 @@ class APIController extends  \lithium\action\Controller {
 				);
 			}
 		}
-		
-		return compact('methods');
+		if (file_exists(LITHIUM_APP_PATH . '/views/api/help/'.$current_method.'.php')) {
+			ob_start();
+			require LITHIUM_APP_PATH . '/views/api/help/'.$current_method.'.php';
+			$content = ob_get_clean();
+		} else {
+			$current_method = 'intro';
+			ob_start();
+			require LITHIUM_APP_PATH . '/views/api/help/intro.php';
+			$content = ob_get_clean();
+		} 
+		return compact('methods', 'current_method', 'content');
 	}
 	
 	/**
