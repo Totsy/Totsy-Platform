@@ -245,17 +245,19 @@ class CartController extends BaseController {
 				if ($result['status']) {
 					if($quantity == 0){
 				        Cart::remove(array('_id' => $id));
-				    }else {
+				    } else {
 						$cart->quantity = (integer) $quantity;
 						$cart->save();
+						$items[$cart->item_id] = $quantity;
 					}
 				} else {
 					$cart->error = $result['errors'];
 					$cart->save();
 				}
+				
 			}
 			#update savings
-			Cart::updateSavings($cart, 'update');
+			Cart::updateSavings($items, 'update');
 		}
 	}
 	

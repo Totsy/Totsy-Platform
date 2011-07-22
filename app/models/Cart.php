@@ -429,19 +429,20 @@ class Cart extends Base {
 	*
 	*/
 	public static function updateSavings($items = null, $action, $amount = null) {
-		$savings = Session::read('userSavings');
+		$savings = array('items' => 0, 'discount' => 0);
+		if(Session::read('userSavings'))
+			$savings = Session::read('userSavings');
 		if ($action == "update") {
 			$savings['items'] = 0;
 			if(!empty($items)) {
 				foreach($items as $key => $quantity) {
-					$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
+					$itemInfo = Item::find('first', array('conditions' => array('_id' => new MongoId($key))));
 					if(!empty($itemInfo->msrp)){
 						$savings['items'] += $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
 					}
 				}
 			}
 		} else if($action == "add") {
-			$savings = Session::read('userSavings');
 			if(empty($savings)) {
 				$savings['items'] = 0;
 			}
@@ -454,7 +455,6 @@ class Cart extends Base {
 				}
 			}
 		} else if($action == "remove") {
-			$savings = Session::read('userSavings');
 			foreach($items as $key => $quantity) {
 				$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
 				if(!empty($itemInfo->msrp)){
