@@ -150,7 +150,7 @@ class APIController extends  \lithium\action\Controller {
 	 * @method GET
 	 * @return sales_list
 	 */
-	protected function salesApi(){
+	protected function sales(){
 		
 		$token = Api::authorizeTokenize($this->request->query);
 		if (is_array($token) && array_key_exists('error', $token)) {

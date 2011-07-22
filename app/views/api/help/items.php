@@ -97,7 +97,7 @@
 								<div style="padding-left: 10px;">
 									<div>&lt;item id='{ item id }'&gt;</div>
 									<div style="padding-left: 10px;">
-										<div>&lt;name&gt;{your-new-token}&lt;/name&gt;</div>
+										<div>&lt;name&gt;{ item name }&lt;/name&gt;</div>
 										<div>&lt;description&gt;{ item description }&lt;/description&gt;</div>
 										<div>&lt;startDate&gt;{ event start date }&lt;/startDate&gt;</div>
 										<div>&lt;endDate&gt;{ event end date }&lt;/endDate&gt;</div>
