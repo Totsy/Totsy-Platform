@@ -1,8 +1,8 @@
 <?php
 
 /*
- * 2011-05-16 updates
- * 	- output format checker fixed APIController::index()
+ * 2011-07-07 updates
+ * 	- took off methods: events, changePassword
  */
 
 namespace app\controllers;
@@ -21,7 +21,7 @@ use app\models\Item;
 use app\models\Event;
 use MongoId;
 
-
+// TODO: needs better doccumentation
 class APIController extends  \lithium\action\Controller {
 	
 	
@@ -59,17 +59,27 @@ class APIController extends  \lithium\action\Controller {
 		if (!is_null($format) && !in_array($format, static::$_formats)){
 			$this->_format = 'json';
 			$this->display( ApiHelper::errorCodes(415) );
+		} else {
+			$this->_format = $format;
 		}
-		
-		// set protocol HTTP OR HTTPS 
+
+		/* set protocol HTTP OR HTTPS 
+		 *
+		 * remember to set proper virtual host nginx config
+		 * @see Api::setProtocol() comments
+		 */
 		Api::init($this->request);
 		
 		if (empty($params) || ( is_array($params) && count($params)==0)){
 			$this->display( ApiHelper::errorCodes(405) );
 		}
 		
+		// in case we have only method anf format specified in url
+		// so it means to remove form form the method name
+		if (is_array($params) && count($params)==1){
+			$params[0] = str_replace('.'.$this->_format,'',$params[0]);
+		}
 		$methods = get_class_methods(get_class($this));
-
 		if (in_array($params[0].'Api',$methods)){
 			$this->_method = $params[0];
 			$this->display( $this->{$params[0].'Api'}() );

@@ -62,7 +62,7 @@ use MongoId;
 use MongoDate;
 use User;
 
-class Api extends Base {
+class Api extends \lithium\data\Model {
 	
 	protected static $_tmp_token_expires = 30; // in seconds
 	protected static $_token_expires = 15; // in minutes
@@ -89,8 +89,18 @@ class Api extends Base {
 		return static::collection()->findOne(array ( 'token' => $key ) );
 	}
 	
+	/*
+	 *  !!! IMPORTANT !!!
+	 *  at virtual host nginx config
+	 *  for ssl virtual host we need to add
+	 *  the following line needs to be put in the .Location 
+	 *  of the nginx config handling php
+	 *  "fastcgi_param HTTPS on;"
+	 * 
+	 */
 	public static function setProtocol (&$request){
-		if ($request->env('SERVER_PORT') == static::$_securePort && $request->env('HTTPS') == true ){
+
+		if ($request->env('SERVER_PORT') == static::$_securePort && ($request->env('HTTPS') == true || $request->env('HTTPS') == 'on')){
 			static::$_isSecure = true;
 		} else {
 			static::$_isSecure = false;
@@ -161,7 +171,7 @@ class Api extends Base {
 		if ( $token_expires > time()) {
 			$user['last_active'] = new MongoDate();
 		} else {
-			$user['token'] = md5(mktime().uniqid(mt_rand()).'+'.$token_expires);
+			$user['token'] = md5(time().uniqid(mt_rand()).'+'.$token_expires);
 			$user['last_active'] = new MongoDate();
 		}
 		static::collection()->save($user);
@@ -191,7 +201,7 @@ class Api extends Base {
 		return true;
 	}
 	
-	protected function validate_AuthToken ($value){
+	protected static function validate_AuthToken ($value){
 		if (!is_array($value)) { return 2; }
 		if (!array_key_exists('auth_token', $value)) { return 197; }
 		// in case there is more than 40 charctres alowed
@@ -203,7 +213,7 @@ class Api extends Base {
 		return true;
 	}
 	
-	protected function validate_Token ($value){
+	protected static function validate_Token ($value){
 		
 		if (!is_array($value)) { return 2; }
 		if (!array_key_exists('token', $value)) { return 12; }
@@ -217,7 +227,7 @@ class Api extends Base {
 		return true; 
 	}
 	
-	protected function validate_Time($value){
+	protected static function validate_Time($value){
 
 		if (!is_array($value)) { return 2; }
 		if (!array_key_exists('time', $value)) { return 4; }
@@ -231,7 +241,7 @@ class Api extends Base {
 
 	}
 	
-	protected function validate_Sig($value) {
+	protected static function validate_Sig($value) {
 		
 		if (!is_array($value)) { return 2; }
 		if (!array_key_exists('sig', $value)) { return 5; }
