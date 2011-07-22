@@ -46,8 +46,8 @@ var paymentForm = new Object();
     		    		    		
     		$.each(	paymentForm.form, function(i, field) {	
     		    if(field.value=="" && field.name!=="phone" && field.name!=="address2") {
-    		 		if(i==1) {
-    		 			$('#' + field.name + "").validationEngine('showPrompt','This field is required', '', true);
+    		 		if( i==1 ) {
+    		 			$('#' + field.name + "").validationEngine('showPrompt','*This field is required', '', true);
     		 			$('#' + field.name + "").validationEngine({ promptPosition : "centerRight", scroll: false });
     		 		}
     		 		$('#' + field.name + "").attr('style', 'background: #FFFFC5 !important');
@@ -66,7 +66,7 @@ var paymentForm = new Object();
     	$(".inputbox").blur(function() { 
     		if(paymentForm.submitted==true) {  		
 				$('#' + this.id + "").validationEngine('hide');	
-				//if they fill it in and make it valid, reset the background of the control to white again
+				//if they validate the field by filling it in, reset the background of the control to white again
 				if($('#' + this.id + "").val()!==""){
 					$('#' + this.id + "").attr('style', 'background: #FFF !important');
 				} 
@@ -124,7 +124,7 @@ var paymentForm = new Object();
 										10 => 'October',
 										11 => 'November',
 										12 => 'December'
-				), array('id'=>"card_month", 'class'=>'validate[required]')); ?>
+				), array('id'=>"card_month", 'class'=>'validate[required] inputbox')); ?>
 				<?php
 					$now = intval(date('Y'));
 					$years = array_combine(range($now, $now + 15), range($now, $now + 15)); ?>					
@@ -167,7 +167,7 @@ var paymentForm = new Object();
 				<?=$this->form->error('city'); ?>
 				<br />
 				<label for="state" class='required'>State <span>*</span></label>
-				<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'id'=>'state')); ?>
+				<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'id'=>'state','class' => 'validate[required] inputbox',)); ?>
 				<?=$this->form->error('state'); ?>
 				<br />
 				<?=$this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
@@ -208,12 +208,8 @@ function replace_address() {
 		});		
 	} else {
 		$.each(	shippingAddress, function(k, v) {
-		
-			//if(k=="state" || k=="card_month" || k=="card_year"){				
-			//	$("#" + k + " option:eq(0)").attr("selected", "selected");
-			//} else {
-				$("#" + k + "").val("");
-			//}
+
+			$("#" + k + "").val("");
 			
 			if(paymentForm.submitted==true) {  		
 				$('#' + k + "").attr('style', 'background: #FFFFC5 !important');
