@@ -68,7 +68,7 @@ $('.table_link').click(function() {
       $('tr .').toggle('slow');
     });
 
-$('select').selectList({ 
+$('.related_items').selectList({ 
 	addAnimate: function (item, callback) { 
 	$(item).slideDown(500, callback); 
 	}, 
@@ -77,7 +77,7 @@ $('select').selectList({
 	} 
 }); 
     
-$('select').change(function() {
+$('.related_items').change(function() {
 
 //parse out the current item's id
 var item_id = this.id.substring(9, this.id.length);
