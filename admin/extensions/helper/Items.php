@@ -11,6 +11,8 @@ class Items extends \lithium\template\Helper {
 		'Copy',
 		'Enabled'
 	);
+	
+	public $current_item_id = "";
 
 	//returns an array of all items in this event with the items's id as the key and the description + color as the value
 	public function dropDownText($itemRecords){
@@ -19,16 +21,14 @@ class Items extends \lithium\template\Helper {
 
 		//building an array of all items to be used in creating dropdowns
 		foreach($itemRecords as $item) {
-
-			if($item->color){
-				$items["".$item->_id.""]['color'] = $item->color;
-			} else {
-				$items["".$item->_id.""]['color'] = "";
-			}
-
+				if($item->color){
+					$items["".$item->_id.""]['color'] = $item->color;
+				} else {
+					$items["".$item->_id.""]['color'] = "";
+				}
 			$items["".$item->_id.""]['description'] = $item->description;
 		}
-
+				
 		return $items;
 	}
 
@@ -39,30 +39,35 @@ class Items extends \lithium\template\Helper {
 
 		if(!empty($related_items)){
 			foreach( $all_items as $key=>$value ) {
-				$text = "";
-
-				if($value['color']){
-					$text = $value['color']." - ".$value['description'];
-				} else {
-					$text = $value['description'];
-				}
-
-				//if a related item is found
-				if(!in_array($key, $related_items)) {
-					$itemDropDown .= "<option value='".$key."' >" . $text . "</option>";
-				} else {
-					$hasRelated = true;
-					$itemDropDown .= "<option value='".$key."' disabled='1' selected='selected'>".$text."</option>";
+				if($key!==$this->current_item_id){
+				    $text = "";
+				    	
+				    if($value['color']){
+				    	$text = $value['color']." - ".$value['description'];
+				    } else {
+				    	$text = $value['description'];
+				    }
+				    
+				    //if a related item is found
+				    if(!in_array($key, $related_items) ) {
+				    	$itemDropDown .= "<option value='".$key."' >" . $text . "</option>";
+				    } else {
+				    	$hasRelated = true;
+				    	$itemDropDown .= "<option value='".$key."' disabled='1' selected='selected'>".$text."</option>";
+				    }
 				}
 			}
 		} else {
 			foreach( $all_items as $key=>$value ) {
-				if($value['color']) {
-					$text = $value['color']." - ".$value['description'];
-				} else {
-					$text = $value['description'];
+				if($key!==$this->current_item_id){
+					if($value['color']) {
+						$text = $value['color']." - ".$value['description'];
+					} else {
+						$text = $value['description'];
+					}
+					
+					$itemDropDown .= "<option value='".$key."'>".$text."</option>";
 				}
-				$itemDropDown .= "<option value='".$key."'>".$text."</option>";
 			}
 		}
 
@@ -73,10 +78,11 @@ class Items extends \lithium\template\Helper {
 
 		$html = "";
 		$itemDropDown = "";
-
+		
+		$all_items = Array();
 		//set list of items with id as key and description + color as the value
 		$all_items = $this->dropDownText($itemRecords);
-
+		
 		if (!empty($itemRecords)) {
 			$html .= "<table id='itemtable'";
 			//We need the thead for jquery datatables
@@ -98,6 +104,8 @@ class Items extends \lithium\template\Helper {
 			foreach ($itemRecords as $item) {
 				$html .= "<tr class=''>";
 				$html .= "<td width='400px'>";
+				
+				$this->current_item_id = "".$item->_id."";
 
 				$related_items = array();
 				$itemDropDown = "";
@@ -109,8 +117,7 @@ class Items extends \lithium\template\Helper {
 				$hasRelated = false;
 
 				$html .= "<select multiple='multiple' id='related_".$item->_id."' class='related_items' name='related_".$item->_id."[]' title='Select an item'>";
-
-				//build dropdown options - if there are no related items, a dropdown with no selected will be built
+				
 				$itemDropDown = $this->buildDropDown($all_items, $related_items);
 
 				$html .= $itemDropDown;
