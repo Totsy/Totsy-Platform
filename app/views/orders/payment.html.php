@@ -40,25 +40,31 @@ var paymentForm = new Object();
     		
     		var invalid_count = 0;
     		
-    		//alert(paymentForm.submitted);
     		$("#paymentForm").validationEngine('attach');        
     		$("#paymentForm").validationEngine('init', { promptPosition : "centerRight", scroll: false } );      		
-    		    		    		
+    		    		    		    		
     		$.each(	paymentForm.form, function(i, field) {	
-    		    if(field.value=="" && field.name!=="phone" && field.name!=="address2") {
+    		    if(	field.value=="" && 
+    		    	field.name!=="telephone" && 
+    		    	field.name!=="address2" && 
+    		    	field.name!=="submitted" && 
+    		    	field.name!=="shipping" && 
+    		    	field.name!=="shipping_select" && 
+    		    	field.name!=="card_valid" ) {
+    		    	
     		 		if( i==1 ) {
     		 			$('#' + field.name + "").validationEngine('showPrompt','*This field is required', '', true);
     		 			$('#' + field.name + "").validationEngine({ promptPosition : "centerRight", scroll: false });
     		 		}
     		 		$('#' + field.name + "").attr('style', 'background: #FFFFC5 !important');
     		 		
-    		 		invalid_count ++;
+    		 		invalid_count++;
     		 	} 
 			});
-			    
-			if(invalid_count>0){	
+			
+			if(invalid_count > 0 ) {
     		    return false;
-    		} 		
+    		}		
     	});
     	
     	//if the form has been, hide propmts on a given element's blur event
@@ -69,7 +75,9 @@ var paymentForm = new Object();
 				//if they validate the field by filling it in, reset the background of the control to white again
 				if($('#' + this.id + "").val()!==""){
 					$('#' + this.id + "").attr('style', 'background: #FFF !important');
-				} 
+				} else {
+					$('#' + this.id + "").attr('style', 'background: #FFFFC5 !important');
+				}
 			}	    		
     	});
     });
@@ -90,7 +98,7 @@ var paymentForm = new Object();
 		'class' => 'fl',
 		''
 	)); ?>
-				<div class="grid_8">
+				<div class="grid_16">
 				<h3>Pay with Credit Card :</h3>
 				<hr />
 				<?=$this->form->hidden('submitted', array('class'=>'inputbox', 'id' => 'submitted')); ?>
@@ -128,7 +136,7 @@ var paymentForm = new Object();
 				<?php
 					$now = intval(date('Y'));
 					$years = array_combine(range($now, $now + 15), range($now, $now + 15)); ?>					
-				<?=$this->form->select('card_year', array('' => 'Year') + $years, array('id' => "card_year", 'class'=>'validate[required]')); ?>
+				<?=$this->form->select('card_year', array('' => 'Year') + $years, array('id' => "card_year", 'class'=>'validate[required inputbox')); ?>
 				<br />
 				<?=$this->form->label('card_code', 'Security Code', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('card_code', array('id' => 'card_code','class'=>'validate[required] inputbox', 'maxlength' => '4', 'size' => '4')); ?>
@@ -137,9 +145,7 @@ var paymentForm = new Object();
 					$checked = false;
 				}
 				?>
-				</div>
-				
-				<div class="grid_8">
+
 				<h3>Billing Address</h3>
 				<hr />
 				Use my shipping address as my billing address: <?=$this->form->checkbox("shipping", array('id' => 'shipping', 'onclick' => 'replace_address()' , "checked" => $checked)) ?>
@@ -167,7 +173,7 @@ var paymentForm = new Object();
 				<?=$this->form->error('city'); ?>
 				<br />
 				<label for="state" class='required'>State <span>*</span></label>
-				<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'id'=>'state','class' => 'validate[required] inputbox',)); ?>
+				<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'id'=>'state','class' => 'validate[required] inputbox')); ?>
 				<?=$this->form->error('state'); ?>
 				<br />
 				<?=$this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
@@ -187,43 +193,39 @@ var paymentForm = new Object();
 	
 var shippingAddress = <?php echo $shipping; ?>
 
-$("#card_number").blur(function(){
+$("#card_number").blur( function(){
 	validCC();
 });
 
 function replace_address() {
-	if($("#shipping").is(':checked')) {
-		//run through shippinAddress object and set values for corresponding fields	
-		$.each(	shippingAddress, function(k, v) {
-		
-			if(k=="state" || k=="card_month" || k=="card_year"){
-				$("#" + k + " option['" + v + "']").attr("selected","selected");
-			} else {
-				$("#" + k + "").val(v);
-			}
-				
-			if(paymentForm.submitted==true && v!=="") {  		
-				$('#' + k + "").attr('style', 'background: #FFF !important');
-			}	
-		});		
-	} else {
-		$.each(	shippingAddress, function(k, v) {
-
-			$("#" + k + "").val("");
-			
-			if(paymentForm.submitted==true) {  		
-				$('#' + k + "").attr('style', 'background: #FFFFC5 !important');
-			}	
-			
-			}
-		);
-	}	
+    if($("#shipping").is(":checked")) {
+    	//run through shippinAddress object and set values for corresponding fields	
+    	$.each ( shippingAddress, function(k, v) {
+    		
+    		$("#" + k + "").val(v);
+    		
+    		console.log(v);
+    			
+    		if(paymentForm.submitted==true && v!=="") {  		
+    			$('#' + k + "").attr("style", "background: #FFF !important");
+    		}	
+    	});		
+    } else {
+    	$.each ( shippingAddress, function(k, v) {
+    		$("#" + k + "").val("");
+    		if(paymentForm.submitted==true) {  		
+    			$('#' + k + "").attr("style", "background: #FFFFC5 !important");
+    		}	
+    		
+    		}
+    	);
+    }	
 };
 
-function isValidCard(cardNumber){
+function isValidCard(cardNumber) {
 	var ccard = new Array(cardNumber.length);
 	var i = 0;
-        var sum   = 0;
+    var sum   = 0;
 
 	// 6 digit is issuer identifier
 	// 1 last digit is check digit
