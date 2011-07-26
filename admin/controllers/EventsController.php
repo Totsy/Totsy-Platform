@@ -234,7 +234,19 @@ class EventsController extends BaseController {
 					$i=0;
 
 					$itemAttributes = array_diff_key($itemDetail, array_flip($standardHeader));
+					
+          			//check radio box for 'final sale' text append
+          			$enableFinalsale = $this->request->data['enable_finalsale'];
 
+          			//check if final sale radio box was checked or not
+          			if($enableFinalsale==1){
+          			  $blurb = "<p><strong>Final Sale</strong></p>";
+          			}
+          			//if not make blurb var blank for good form
+          			else{
+          			  $blurb = "";
+          			}
+					
 					foreach ($itemAttributes as $key => $value) {
 						unset($itemDetail[$key]);
 
@@ -252,6 +264,7 @@ class EventsController extends BaseController {
 						'details' => $itemCleanAttributes,
 						'event' => array((string) $_id),
 						'url' => $url,
+						'blurb' => $blurb,
 						'taxable' => true
 					);
 
