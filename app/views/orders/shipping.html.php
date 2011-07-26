@@ -10,14 +10,27 @@
 <script type="text/javascript" src="/js/form_validator/jquery.validation-engine.js" charset="utf-8"></script>    
 <script type="text/javascript" src="/js/form_validator/languages/jquery.validation-engine-en.js" charset="utf-8"></script>    
 
-<script>
+<script type="text/javascript">
 
     $(document).ready(function() {
         $("#addressForm").validationEngine('attach');        
 		$("#addressForm").validationEngine({ promptPosition : "centerRight", scroll: false });
-    	$("#addressForm").validationEngine('init', { promptPosition : "centerRight", scroll: false });       
+    	$("#addressForm").validationEngine('init', { promptPosition : "centerRight", scroll: false });   
+    	
+    	 
+    	$(".inputbox").blur(function() { 
+    	    
+			$('#' + this.id + "").validationEngine('hide');	
+			//if they validate the field by filling it in, reset the background of the control to white again
+			if($('#' + this.id + "").val()!==""){
+			    $('#' + this.id + "").attr('style', 'background: #FFF !important');
+			} else {
+			    $('#' + this.id + "").attr('style', 'background: #FFFFC5 !important');
+			}
+    	});
+    	    
     });
-
+   
 </script>
 
 <div class="grid_16">
@@ -29,6 +42,7 @@
 </div>
 
 <div class="container_16">
+
 <?=$this->form->create($address, array(
 		'id' => 'addressForm',
 		'class' => "fl"
@@ -66,21 +80,23 @@
 		<?=$this->form->error('city'); ?>
 		<br />
 		<label for="state" class='required'>State <span>*</span></label>
-		<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'class' => 'validate[required] required', 'id'=>'state')); ?>
+		<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'class' => 'validate[required] inputbox', 'id'=>'state')); ?>
 		<?=$this->form->error('state'); ?>
 		<br />
 		<?=$this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
 	</div>
 	
-	<div class="grid_16">
+	<div class="grid_8">
+		<?=$this->html->link('Continue Shopping', "sales", array('style'=>'float:left')); ?>
+	</div>
+	<div class="grid_8">
 			<?=$this->form->submit('Continue', array('class' => 'button fr')); ?>
 	</div>
 
 <?=$this->form->end();?> 
 
 </div>
-
 
 <div id="address_form" style="display:none">
 	<?=$this->form->create(null ,array('id'=>'selectForm')); ?>
