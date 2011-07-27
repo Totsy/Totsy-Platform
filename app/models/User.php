@@ -73,6 +73,7 @@ class User extends Base {
 		)
 	);
 
+
 	public static function __init(array $options = array()) {
 		parent::__init($options);
 
