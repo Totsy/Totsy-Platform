@@ -151,7 +151,7 @@ class OrderExport extends Base {
 		$this->tmp = LITHIUM_APP_PATH . $this->tmp;
 		$this->processed = LITHIUM_APP_PATH . $this->processed;
 		$this->pending = LITHIUM_APP_PATH . $this->pending;
-		$this->log("...Waking up...");
+		echo("...Waking up...");
 		$pid = new Pid($this->tmp,  'OrderExport');
 		$start = time();
 		if ($pid->already_running == false) {
@@ -159,10 +159,10 @@ class OrderExport extends Base {
 			$records = Queue::find('all', compact('conditions'));
 			foreach ($records as $queue) {
 				$this->summary = array();
-				$this->log("Processing Queue Record: $queue->_id");
+				echo("Processing Queue Record: $queue->_id");
 				if ($queue) {
 					$this->batchId = array('order_batch' => $queue->_id);
-					$this->log("Starting to process $queue->_id");
+					echo("Starting to process $queue->_id");
 					$this->time = date('ymdHis');
 					$queueData = $queue->data();
 					$this->queue = $queue;
@@ -181,7 +181,7 @@ class OrderExport extends Base {
 					$this->queue->status = "Processing Item File";
 					$this->queue->save();
 					$this->_itemGenerator();
-					$this->log("Finised processing: $queue->_id");
+					echo("Finised processing: $queue->_id");
 					if ($queueData['orders'] || $queueData['purchase_orders']) {
 						$queue->summary = $this->summary;
 						$queue->processed = true;
@@ -196,11 +196,11 @@ class OrderExport extends Base {
 				}
 			}
 		} else {
-			$this->log("Already Running! Stoping Execution");
+			echo("Already Running! Stoping Execution");
 		}
 		$end = time();
 		$finish = $end - $start;
-		$this->log("It took $finish secs");
+		echo("It took $finish secs");
 	}
 
 	/**
@@ -213,7 +213,7 @@ class OrderExport extends Base {
 	 */
 	protected function _orderGenerator() {
 	    MongoCursor::$timeout = -1;
-		$this->log("Starting to process Orders");
+		echo("Starting to process Orders");
 		$orderCollection = Order::collection();
 		$itemCollection = Item::connection()->connection->items;
 		$orderFile = array();
@@ -241,6 +241,12 @@ class OrderExport extends Base {
 		    'user_id' => true
 		));
 		$order_total = $orders->count();
+		
+		
+		
+		//total same until here 345pm
+		
+		
 		if ($orders) {
 			$inc = 1;
 			/**
@@ -254,7 +260,7 @@ class OrderExport extends Base {
                    $filename = $this->queue->summary['order']['filename'];
                    $handle = $this->tmp.$filename;
 			       $fp = fopen($handle, 'a+');
-			       $this->log("Queue ran before. Appending to file $filename");
+			       echo("Queue ran before. Appending to file $filename");
                     /**
                     * Retrieve the number of orders already processed
                     * @returns $last_order - last order entered in the file
@@ -264,20 +270,20 @@ class OrderExport extends Base {
                     **/
 			       extract($this->lastOrder($fp));
 			       if ($lines != 0) {
-                       $this->log("The last order entered into the file was $last_order");
+                       echo("The last order entered into the file was $last_order");
                        $conditions = array('order_id' => $last_order);
                        $lastOrder = $orderCollection->findOne(compact('conditions'));
                        $orderItem = count($lastOrder['items']);
                        if (($processCheck > 0) && ($processCheck == $orderItem)) {
-                            $this->log("All the items was processed for the last entered order.");
+                            echo("All the items was processed for the last entered order.");
                             $split_number += 1;
                        }
-                       $this->log("Number of orders found " . $orders->count());
-                       $this->log("Skipping the first " . $split_number ." already processed orders.");
+                       echo("Number of orders found " . $orders->count());
+                       echo("Skipping the first " . $split_number ." already processed orders.");
                        $orders = $orders->skip($split_number);
-                       $this->log("Remaining number of orders found " . $orders->count(true));
+                       echo("Remaining number of orders found " . $orders->count(true));
 			       } else {
-			        $this->log("Empty file");
+			        echo("Empty file");
 			       }
                 }
 			} else {
@@ -292,20 +298,37 @@ class OrderExport extends Base {
 			$orderArray = array();
 			$ecounter = 0;
 			
-			//counter vars for skipped count to email
-			$ecounter_skipped = 0;
-			$items_skipped = 0;
-
+			//new counts for email breakdown
+			$allitems = 0;
+			$unprocessed_orders = 0;
+			$unprocessed_orders_items = 0;
+			$processed_orders = 0;
+			$processed_orders_items = 0;
+			
 			foreach ($orders as $order) {
 				$conditions = array('Customer PO #' => array('$in' => array((string) $order['_id'], $order['_id'])));
 				$processCheck = ProcessedOrder::count(compact('conditions'));
 				++$ecounter;
+				
+				//get items in order before check here
+				$items = $order['items'];
+
+				//total of items count to add to each subtotal
+				$raw_item_count = count($items);
+				
+				//add to raw item count
+				$allitems += $raw_item_count;
+
 				if ($processCheck == 0) {
+				
+					//this is unprocessed total for orders, items
+					$unprocessed_orders++;
+					$unprocessed_orders_items += $raw_item_count;
+
 					$user = User::find('first', array(
 					    'conditions' => array('_id' => $order['user_id']),
 					    'fields' => array('email' => true)
 					    ));
-					$items = $order['items'];
 					foreach ($items as $item) {
 						if (empty($item['cancel']) || $item['cancel'] != true) {
                                 $orderItem = $itemCollection->findOne(
@@ -380,7 +403,7 @@ class OrderExport extends Base {
 								$processedOrder = ProcessedOrder::connection()->connection->{'orders.processed'};
 								$processedOrder->save($orderFile[$inc] + $this->batchId);
 							}
-							$this->log("Adding order $order[_id] to $handle");
+							echo("Adding order $order[_id] to $handle");
 							fputcsv($fp, $orderFile[$inc], chr(9));
 							++$inc;
 						}
@@ -390,42 +413,39 @@ class OrderExport extends Base {
                         $this->queue->save();
                     }
 				} else {
-					$this->log("Already processed $order[_id]");
-
-					//increment skipped orders count
-					$ecounter_skipped++;
-					
-					//get items in skipped order, add to skipped items count
-					$items = $order['items'];
-					$items_skipped += count($items);
+					//if already processed, make totals of orders, items for that
+					$processed_orders++;
+					$processed_orders_items += $raw_item_count;
+					echo("Already processed $order[_id]");
 				}
 			}
 			fclose($fp);
 			if (!rename($handle, $this->pending.$filename)) {
-			    $this->log("Failed to move file " . $handle . " Filesize was " . filesize($handle));
+			    echo("Failed to move file " . $handle . " Filesize was " . filesize($handle));
 			    $new_location = $this->pending.$filename;
-			     $this->log("Using shell command to move file");
+			     echo("Using shell command to move file");
 			    shell_exec("mv ". $handle . " " . $new_location);
 			}
 			$totalOrders = count($orderArray);
+
+			//new totals for breakdown in email
+			$this->summary['order']['unprocessed_orders'] = $unprocessed_orders;
+			$this->summary['order']['processed_orders'] = $processed_orders;
+
+			$this->summary['order']['unprocessed_orders_items'] = $unprocessed_orders_items;
+			$this->summary['order']['processed_orders_items'] = $processed_orders_items;
+
+			$this->summary['order']['queue_total_orders'] = $ecounter;
+			$this->summary['order']['queue_total_items'] = $allitems;
+
+
+
 			$this->summary['order']['count'] = count($orderArray) + $split_number;
 			$this->summary['order']['lines'] = $inc + $lines;
 			$this->summary['order']['filename'] = $filename;
-			
-			//new addition to send total count, lines of those skipped
-			$this->summary['order']['count_skipped'] = $ecounter_skipped;
-			$this->summary['order']['lines_skipped'] = $items_skipped;
-			
-			//new addition to send total count, lines of those not skipped
-			$this->summary['order']['count_notskipped'] = $this->summary['order']['count'] - $this->summary['order']['count_skipped'];
-			$this->summary['order']['lines_notskipped'] = $this->summary['order']['lines'] - $this->summary['order']['lines_skipped'];
-
-
-			$this->log("$handle was created total of $totalOrders orders generated with $inc lines");
-			$this->log("******* $ecounter_skipped skipped orders with $items_skipped skipped items");
-
+			echo("$handle was created total of $totalOrders orders generated with $inc lines");
 		} else {
-			$this->log('No orders found');
+			echo('No orders found');
 		}
 		return true;
 	}
@@ -443,13 +463,13 @@ class OrderExport extends Base {
 	 */
 	protected function _itemGenerator() {
 	    MongoCursor::$timeout = -1;
-		$this->log('Generating Items');
+		echo('Generating Items');
 		$filename = 'TOTIT'.$this->time.'.csv';
 		$handle = $this->tmp.$filename;
 		$eventIds = array_unique(array_merge($this->orderEvents, $this->poEvents, $this->addEvents));
 		$event_count =  count($eventIds);
-		$this->log("Total Number of Events encountered: " . $event_count);
-		$this->log("Opening item file $handle");
+		echo("Total Number of Events encountered: " . $event_count);
+		echo("Opening item file $handle");
 		$fp = fopen($handle, 'w');
 		$count = 0;
 		if ($eventIds) {
@@ -461,7 +481,7 @@ class OrderExport extends Base {
 				)));
 				$inc = 1;
 				$eventItems = $this->_getOrderItems($eventId);
-				$this->log("Event $eventId has " . count($eventItems) . " items");
+				echo("Event $eventId has " . count($eventItems) . " items");
 				foreach ($eventItems as $eventItem) {
 					foreach ($eventItem['details'] as $key => $value) {
 					    $description = implode(' ', array(
@@ -502,7 +522,7 @@ class OrderExport extends Base {
 						if ($itemMasterCheck == 0){
 							$fields[$inc]['SKU'] = $sku;
 							if ($this->verbose == 'true') {
-								$this->log("Adding SKU: $sku to $handle");
+								echo("Adding SKU: $sku to $handle");
 							}
 							$fields[$inc]['Description'] = String::asciiClean($description);
 							$fields[$inc]['WhsInsValue (Cost)'] = number_format($eventItem['sale_whol'], 2);
@@ -537,12 +557,12 @@ class OrderExport extends Base {
 		}
 		fclose($fp);
 		if ( !rename($handle, $this->pending.$filename) ){
-		    $this->log("Failed to move file " . $handle . " File size was " . filesize($handle));
+		    echo("Failed to move file " . $handle . " File size was " . filesize($handle));
 		    shell_exec("mv " . $handle . " " . $this->pending.$filename);
 		}
 		$this->summary['item']['count'] = $count;
 		$this->summary['item']['filename'] = $filename;
-		$this->log("There were $count items generated and saved to the item master and $handle");
+		echo("There were $count items generated and saved to the item master and $handle");
 		return true;
 	}
 
@@ -560,7 +580,7 @@ class OrderExport extends Base {
 	 */
 	protected function _purchases() {
 	     MongoCursor::$timeout = -1;
-		$this->log('Generating Purchase Orders');
+		echo('Generating Purchase Orders');
 		$orderCollection = Order::collection();
 		$event_count = count($this->poEvents);
 		$ecount = 0;
@@ -577,7 +597,7 @@ class OrderExport extends Base {
 			$poNumber = 'TOT'.'-'.$vendorName.$time;
 			$filename = 'TOTitpo'.$vendorName.$time.'.csv';
 			$handle = $this->tmp.$filename;
-			$this->log("Opening PO file $handle");
+			echo("Opening PO file $handle");
 			$fp = fopen($handle, 'w');
 			$this->summary['purchase_orders'][] = $filename;
 
