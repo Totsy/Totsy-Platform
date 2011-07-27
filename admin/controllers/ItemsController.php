@@ -8,7 +8,7 @@ use MongoRegex;
 use MongoDate;
 use MongoId;
 use Mongo;
-use \li3_flash_message\extensions\storage\FlashMessage;
+use li3_flash_message\extensions\storage\FlashMessage;
 
 /**
  * Handles the users main account information.
@@ -29,6 +29,7 @@ class ItemsController extends BaseController {
 					'modified_date',
 					'files'
 				)));
+
 		return compact('items');
 	}
 	/**
