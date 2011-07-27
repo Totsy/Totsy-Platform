@@ -291,11 +291,6 @@ class OrderExport extends Base {
 
 			$orderArray = array();
 			$ecounter = 0;
-			
-			//counter vars for skipped count to email
-			$ecounter_skipped = 0;
-			$items_skipped = 0;
-
 			foreach ($orders as $order) {
 				$conditions = array('Customer PO #' => array('$in' => array((string) $order['_id'], $order['_id'])));
 				$processCheck = ProcessedOrder::count(compact('conditions'));
@@ -391,13 +386,6 @@ class OrderExport extends Base {
                     }
 				} else {
 					$this->log("Already processed $order[_id]");
-
-					//increment skipped orders count
-					$ecounter_skipped++;
-					
-					//get items in skipped order, add to skipped items count
-					$items = $order['items'];
-					$items_skipped += count($items);
 				}
 			}
 			fclose($fp);
@@ -411,19 +399,7 @@ class OrderExport extends Base {
 			$this->summary['order']['count'] = count($orderArray) + $split_number;
 			$this->summary['order']['lines'] = $inc + $lines;
 			$this->summary['order']['filename'] = $filename;
-			
-			//new addition to send total count, lines of those skipped
-			$this->summary['order']['count_skipped'] = $ecounter_skipped;
-			$this->summary['order']['lines_skipped'] = $items_skipped;
-			
-			//new addition to send total count, lines of those not skipped
-			$this->summary['order']['count_notskipped'] = $this->summary['order']['count'] - $this->summary['order']['count_skipped'];
-			$this->summary['order']['lines_notskipped'] = $this->summary['order']['lines'] - $this->summary['order']['lines_skipped'];
-
-
 			$this->log("$handle was created total of $totalOrders orders generated with $inc lines");
-			$this->log("******* $ecounter_skipped skipped orders with $items_skipped skipped items");
-
 		} else {
 			$this->log('No orders found');
 		}
