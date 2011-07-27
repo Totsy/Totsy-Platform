@@ -194,7 +194,6 @@ class OrderExport extends Base {
                         }
 					}
 				}
-				
 			}
 		} else {
 			$this->log("Already Running! Stoping Execution");
