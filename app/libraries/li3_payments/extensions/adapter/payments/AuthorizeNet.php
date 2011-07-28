@@ -116,7 +116,7 @@ class AuthorizeNet extends \lithium\core\Object {
 				$data = $this->_serialize($type, 
 					compact('payment', 'amount') + 
 					$options + 
-					array('cust_id'=>$user['_id']));
+					array('cust_id'=>$user['_id'], 'customer_ip'=>$user['lastip']));
 				
 				$auth_attempt = AuthAttempt::create();
 				$auth_attempt->customer_ip = $user['lastip'];
@@ -258,7 +258,7 @@ class AuthorizeNet extends \lithium\core\Object {
 			}
 			unset($data['payment']);
 		}
-		$data['customer_ip'] = $_SERVER[REMOTE_ADDR];
+		$data['customer_ip'] = $params['customer_ip'];
 		$data['cust_id'] = $params['cust_id'];
 		foreach (array('amount' => 'amount', 'transaction' => 'trans_id') as $source => $dest) {
 			if (isset($params[$source])) {
