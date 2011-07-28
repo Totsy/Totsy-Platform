@@ -72,13 +72,13 @@ class PromocodesController extends \admin\controllers\BaseController {
 				$promotions  = Promotion::all(compact('conditions'));
 				$promocodeDetail = Promocode::all(compact('conditions'));
 			}
-			if (!empty($data['start']) && !empty($data['end'])) {
-				$start = new MongoDate(strtotime($data['start']));
-				$end = new MongoDate(strtotime($data['end']));
+			if (!empty($data['start_date']) && !empty($data['end_date'])) {
+				$start_date = new MongoDate(strtotime($data['start_date']));
+				$end_date = new MongoDate(strtotime($data['end_date']));
 				$promotions = Promotion::find('all', array(
 					'conditions'=> array(
 						'date_created' => array(
-							'$gt' => $start, '$lte' => $end
+							'$gt' => $start_date, '$lte' => $end_date
 				))));
 			}
 			foreach ($promotions as $promotion) {

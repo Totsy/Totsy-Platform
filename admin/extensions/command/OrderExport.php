@@ -304,7 +304,7 @@ class OrderExport extends Base {
 			$unprocessed_orders_items = 0;
 			$processed_orders = 0;
 			$processed_orders_items = 0;
-			
+
 			foreach ($orders as $order) {
 				$conditions = array('Customer PO #' => array('$in' => array((string) $order['_id'], $order['_id'])));
 				$processCheck = ProcessedOrder::count(compact('conditions'));
@@ -416,7 +416,7 @@ class OrderExport extends Base {
 					//if already processed, make totals of orders, items for that
 					$processed_orders++;
 					$processed_orders_items += $raw_item_count;
-					echo("Already processed $order[_id]");
+					$this->log("Already processed $order[_id]");
 				}
 			}
 			fclose($fp);
@@ -443,7 +443,7 @@ class OrderExport extends Base {
 			$this->summary['order']['count'] = count($orderArray) + $split_number;
 			$this->summary['order']['lines'] = $inc + $lines;
 			$this->summary['order']['filename'] = $filename;
-			echo("$handle was created total of $totalOrders orders generated with $inc lines");
+			$this->log("$handle was created total of $totalOrders orders generated with $inc lines");
 		} else {
 			echo('No orders found');
 		}
