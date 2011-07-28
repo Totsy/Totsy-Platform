@@ -20,7 +20,7 @@ class Service extends Base {
         $service = Session::read('services', array('name' => 'default'));
 		if ( $service && array_key_exists('freeshipping', $service)) {
 		    if ($service['freeshipping'] === 'eligible') {
-		    	Cart::updateSavings(null, 'discount', ($shippingCost + $overSizeHandling));
+		    	Cart::updateSavings(null, 'services', ($shippingCost + $overSizeHandling));
 				$shippingCost = 0;
 				$overSizeHandling = 0;
 				$enable = true;
@@ -41,10 +41,10 @@ class Service extends Base {
 		    if ($service['10off50'] === 'eligible') {
 		        if ((float) $subTotal >= 50.00) {
 		            $savings = 10.00;
+		            Cart::updateSavings(null, 'services', $savings);
 		        }
 			}
 		}
-		Cart::updateSavings(null, 'discount', $savings);
 		return $savings;
     }
 

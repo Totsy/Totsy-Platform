@@ -115,6 +115,7 @@ class Promotion extends Base {
                 	if(Session::read('promocode') === $code) {
                 		Session::delete('promocode');
                 	}
+                	Cart::updateSavings(null, 'discount', 0);
                     $entity->saved_amount = 0;
                 } else{
 				    $entity->code_id = (string) $code->_id;

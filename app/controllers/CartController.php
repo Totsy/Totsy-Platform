@@ -53,7 +53,7 @@ class CartController extends BaseController {
 		Cart::increaseExpires();
 		$cart = Cart::active(array('time' => '-3min'));
 		$cartItemEventEndDates = Array();
-		$i=0;
+		$i = 0;
 		$subTotal = 0;
 		$itemlist = array();
 		foreach($cart as $item){
@@ -84,7 +84,7 @@ class CartController extends BaseController {
 		}
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
-		$savings = $userSavings['items'] + $userSavings['discount'];
+		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
 		$postDiscount = ($subTotal + $vars['services']['tenOffFitfy']);
 		if(Session::read('credit')) {
 			$credits = Session::read('credit');
@@ -304,7 +304,7 @@ class CartController extends BaseController {
 		#Apply Credits
 		$credit_amount = 0.00;
 		$cartCredit = Credit::create();
-		if (array_key_exists('credit_amount', $this->request->data)) {
+		if (!empty($this->request->data['credit_amount'])) {
 			$credit_amount = $this->request->data['credit_amount'];
 		}
 		$cartCredit->checkCredit($credit_amount, $subTotal, $userDoc);
@@ -315,7 +315,7 @@ class CartController extends BaseController {
 			$promo_session = Session::read('promocode');
 			$promo_code = $promo_session['code'];
 		}
-		if (array_key_exists('code', $this->request->data)) {
+		if (!empty($this->request->data['code'])) {
 			$promo_code = $this->request->data['code'];
 		}
 		if (!empty($promo_code)) {

@@ -118,6 +118,12 @@ class UsersController extends BaseController {
 				Session::write('userLogin', $userLogin, array('name' => 'default'));
 				$cookie['user_id'] = $user->_id;
 				Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
+				/**Remove Temporary Session Datas**/
+				Session::delete('userSavings');	
+				Session::delete('promocode');
+				Session::delete('credit');
+				Session::delete('services');
+				/***/				
 				$data = array(
 					'user' => $user,
 					'email' => $user->email
@@ -215,6 +221,12 @@ class UsersController extends BaseController {
 						}
             			Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 						User::rememberMeWrite($this->request->data['remember_me']);
+						/**Remove Temporary Session Datas**/
+						Session::delete('userSavings');	
+						Session::delete('promocode');
+						Session::delete('credit');
+						Session::delete('services');
+						/***/					
 						if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) {
 							$this->redirect($this->request->url);
 						} else {

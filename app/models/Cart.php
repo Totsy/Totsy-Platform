@@ -429,7 +429,7 @@ class Cart extends Base {
 	*
 	*/
 	public static function updateSavings($items = null, $action, $amount = null) {
-		$savings = array('items' => 0, 'discount' => 0);
+		$savings = array('items' => 0, 'discount' => 0, 'services' => 0);
 		if(Session::read('userSavings'))
 			$savings = Session::read('userSavings');
 		if ($action == "update") {
@@ -443,9 +443,6 @@ class Cart extends Base {
 				}
 			}
 		} else if($action == "add") {
-			if(empty($savings)) {
-				$savings['items'] = 0;
-			}
 			if(!empty($items)) {
 				foreach($items as $key => $quantity) {
 					$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
@@ -463,6 +460,8 @@ class Cart extends Base {
 			}
 		} else if ($action == 'discount') {
 			$savings['discount'] = $amount;
+		} else if ($action == 'services') {
+			$savings['services'] = $amount;
 		}
 		Session::write('userSavings', $savings);
 	}

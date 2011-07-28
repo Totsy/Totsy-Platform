@@ -177,12 +177,26 @@
 								<span style="float: left;">Subtotal:</span>
 								<span style="color:#009900; float:right">$<?=number_format($subTotal,2)?></span>
 						</div>
+						<?php if (!empty($cartPromo['saved_amount'])):?>
+						<div style="clear:both"></div>
+						<div style="font-weight:bold">
+    							<span style="float: left;">Discount :</span> 
+    							<span style="color:#009900; float:right">- $<?=number_format(abs($cartPromo['saved_amount']),2)?></span>
+    					</div>
+   						<?php endif ?>
 						<div style="clear:both"></div>
 						<div style="font-weight:bold">
 								<span style="float: left;">Shipping:</span> 
 								<span style="color:#009900; float:right">$7.95</span>
 						</div>
+						<?php if (!empty($shipping_discount)):?>
 						<div style="clear:both"></div>
+						<div style="font-weight:bold">
+    							<span style="float: left;">Complimentary Shipping :</span> 
+    							<span style="color:#009900; float:right">- $<?=number_format($shipping_discount,2)?></span>
+    					</div>
+   						<?php endif ?>
+						<div style="clear:both"></div>						
 						<div style="font-weight:bold">
 								<span style="float: left;">Estimated Tax:</span> 
 								<span style="color:#009900; float:right">$0.00</span>
@@ -192,20 +206,6 @@
 						<div style="font-weight:bold">
     							<span style="float: left;">Credits:</span> 
     							<span style="color:#009900; float:right">- $<?=number_format(abs($credits),2)?></span>
-    					</div>
-   						<?php endif ?>
-   						<?php if (!empty($cartPromo['saved_amount'])):?>
-						<div style="clear:both"></div>
-						<div style="font-weight:bold">
-    							<span style="float: left;">Discount :</span> 
-    							<span style="color:#009900; float:right">- $<?=number_format(abs($cartPromo['saved_amount']),2)?></span>
-    					</div>
-   						<?php endif ?>
-						<?php if (!empty($shipping_discount)):?>
-						<div style="clear:both"></div>
-						<div style="font-weight:bold">
-    							<span style="float: left;">Complimentary Shipping :</span> 
-    							<span style="color:#009900; float:right">- $<?=number_format($shipping_discount,2)?></span>
     					</div>
    						<?php endif ?>
 						<div style="clear:both"><hr /></div>						
