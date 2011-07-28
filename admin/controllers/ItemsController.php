@@ -8,34 +8,34 @@ use MongoRegex;
 use MongoDate;
 use MongoId;
 use Mongo;
-use \li3_flash_message\extensions\storage\FlashMessage;
+use li3_flash_message\extensions\storage\FlashMessage;
 
 /**
  * Handles the users main account information.
  */
 class ItemsController extends BaseController {
-	
+
 	/**
 	 * Main display of item data
 	 */
 	public function index() {
 		$created_date = 0;
 		$modified_date = 0;
-		$files = 0; 
+		$files = 0;
 		$items = Item::find('all', array(
 			'fields' => compact(
-				'created_date', 
-				'modified_date', 
+				'created_date',
+				'modified_date',
 				'files'
 		)));
 		return compact('items');
 	}
 	/**
 	 * Edits a product/item based on a preloaded CSV file.
-	 * 
+	 *
 	 * The edit method has several parts that need to be parsed
 	 * before saved to the database. This primarily applies to the
-	 * images that are attached to the item. 
+	 * images that are attached to the item.
 	 * @param string
 	 * @return array
 	 */
@@ -59,7 +59,7 @@ class ItemsController extends BaseController {
 			}
 		}
 		#T Get selected values of filters
-		
+
 		if(!empty($item->departments)) {
 			$values = $item->departments->data();
 			foreach ($values as $value) {
@@ -179,7 +179,7 @@ class ItemsController extends BaseController {
 		}
 		return compact('items');
 	}
-	
+
 	/**
 	 * Update Items from Items Collection
 	 * Based on the event _id items will be update from the Item collection.

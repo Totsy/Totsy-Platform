@@ -153,17 +153,25 @@ class User extends Base {
 	    if( (boolean)$rememberme && Session::check('cookieCrumb', array('name' => 'cookie'))) {
             $rememberHash = static::generateToken() . static::randomString();
             $cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
+
             $userInfo = Session::read('userLogin');
+            $user = static::collection();
+            $info = $user->findOne(array(
+                    'email' => $userInfo['email']
+                    ),array('autologinHash' => 1, '_id' => -1));
+            if ($info && array_key_exists('autologinHash', $info)) {
+            	$rememberHash = $info['autologinHash'];
+            } else {
+				$user->update(array(
+						'email' => $userInfo['email']
+						), array(
+							'$set' => array(
+								'autologinHash' => $rememberHash
+						)));
+            }
             $cookie['user_id'] = $userInfo['_id'];
             $cookie['autoLoginHash'] = $rememberHash;
             Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
-            $user = static::collection();
-            $user->update(array(
-                    'email' => $userInfo['email']
-                    ), array(
-                        '$set' => array(
-                            'autologinHash' => $rememberHash
-                    )));
         }
 	}
 	public static function setupCookie() {

@@ -70,7 +70,8 @@ class Db extends \lithium\data\source\MongoDb {
 			if ($isMaster === true){
 				static::$server_manager['master'] = $server;
 				if(!is_null($this->server_manager_config['slave'])){
-					static::$server_manager['slave'] = new Mongo('mongodb://'.$this->server_manager_config['slave'], $options);
+					$connect = is_array($this->server_manager_config['slave']) ? join(',', $this->server_manager_config['slave']) : $this->server_manager_config['slave'];
+					static::$server_manager['slave'] = new Mongo('mongodb://'.$connect, $options);
 				}
 			} 
 			unset($server);
@@ -156,17 +157,21 @@ class Db extends \lithium\data\source\MongoDb {
 				if ($aH['state'] == 1) {
 					$this->server_manager_config['master'] = $aH['name'];
 				} else if ($aH['state'] == 2){
-					$slaves[] = $aH;
+					$slaves[] = $aH['name'];
 				}
 			}
 		} 
 		unset($availableHosts);
 		$cs = count($slaves);
+		$serverId = 0;
 		if ($cs>0){
-			if ($cs>1) { $slave = join(',', $slaves); }
-			else { $slave = $slaves[0]; }
+			if ($cs>1) { 
+				//$slave = join(',', $slaves);
+				$slaveId = mt_rand(0,count($slaves)-1); 
+			} else { $slave = $slaves[0]; }
+			
 			//static::logChooser($slaves[$slaveId]['name']);
-			$this->server_manager_config['slave'] = $slave; 
+			$this->server_manager_config['slave'] = $slaves; 
 		}
 		return $isMaster;
 	}
