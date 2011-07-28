@@ -304,6 +304,19 @@ class EventsController extends BaseController {
 				}
 				foreach ($eventItems as $itemDetail) {
 					$itemAttributes = array_diff_key($itemDetail, array_flip($standardHeader));
+
+					//check radio box for 'final sale' text append
+					$enableFinalsale = $this->request->data['enable_finalsale'];
+					
+					//check if final sale radio box was checked or not
+					if($enableFinalsale==1){
+						$blurb = "<p><strong>Final Sale</strong></p>";
+					}
+					//if not make blurb var blank for good form
+					else{
+						$blurb = "";
+					}
+					
 					foreach ($itemAttributes as $key => $value) {
 						unset($itemDetail[$key]);
 						$itemCleanAttributes[trim($key)] = $value;
@@ -311,12 +324,14 @@ class EventsController extends BaseController {
 					$item = Item::create();
 					$date = new MongoDate();
 					$url = $this->cleanUrl($itemDetail['description']." ".$itemDetail['color']);
+
 					$details = array(
 						'enabled' => (bool) $enabled,
 						'created_date' => $date,
 						'details' => $itemCleanAttributes,
 						'event' => array((string) $_id),
 						'url' => $url,
+						'blurb' => $blurb,
 						'taxable' => true
 					);
 					$newItem = array_merge(Item::castData($itemDetail), Item::castData($details));
