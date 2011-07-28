@@ -68,7 +68,7 @@
             <nbsp>  OR
                  <nbsp> <nbsp>
                 start date range:
-                <?=$this->form->text('start_date', array('id'=>'start_end')); ?>
+                <?=$this->form->text('start_date', array('id'=>'start_date')); ?>
                 end date range:
                 <?=$this->form->text('end_date', array('id'=>'end_date' ) ); ?>
 

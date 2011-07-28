@@ -32,9 +32,6 @@ class EventsController extends BaseController {
 		'enabled'
 	);
 
-	/**
-	 *
-	 */
 	public function view($id = null) {
 		$event = Event::find($id);
 		if (empty($event)) {
@@ -90,13 +87,14 @@ class EventsController extends BaseController {
 		$event = Event::find($_id);
 		$seconds = ':'.rand(10,60);
 		$eventItems = Item::find('all', array('conditions' => array('event' => array($_id)),
-												'order' => array('created_date' => 'ASC')
-												));
+				'order' => array('created_date' => 'ASC')
+			));
+
 		#T Get all possibles value for the multiple departments select
 		$result = Item::getDepartments();
 		$all_filters = array();
 		foreach ($result['values'] as $value) {
-			$all_filters[$value] = $value;
+			//$all_filters[$value] = $value;
 			if (array_key_exists('Momsdads',$all_filters) && !empty($all_filters['Momsdads'])) {
 				$all_filters['Momsdads'] = 'Moms & Dads';
 			}
@@ -203,9 +201,9 @@ class EventsController extends BaseController {
 			if ($event->save($eventData)) {
 
 				$this->redirect(array(
-					'controller' => 'events', 'action' => 'edit',
-					'args' => array($event->_id)
-				));
+						'controller' => 'events', 'action' => 'edit',
+						'args' => array($event->_id)
+					));
 			}
 		}
 		/**
@@ -247,6 +245,9 @@ class EventsController extends BaseController {
 	protected function parseItems($_FILES, $_id, $enabled = false) {
 		$items = array();
 		$itemIds = array();
+		$relatedItems = array();
+		$rowToItemIdMap = "";
+
 		// Default column headers from csv file
 		$standardHeader = array(
 			'vendor',
@@ -267,8 +268,10 @@ class EventsController extends BaseController {
 			'product_weight',
 			'product_dimensions',
 			'shipping_weight',
-			'shipping_dimensions'
+			'shipping_dimensions',
+			'related_items'
 		);
+
 		if ($this->request->data) {
 			if ($_FILES['upload_file']['error'] == 0) {
 				$file = $_FILES['upload_file']['tmp_name'];
@@ -278,54 +281,141 @@ class EventsController extends BaseController {
 					$highestRow = $worksheet->getHighestRow();
 					$highestColumn = $worksheet->getHighestColumn();
 					$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
-					for ($row = 1; $row <= $highestRow; ++ $row) {
-						for ($col = 0; $col < $highestColumnIndex; ++ $col) {
+					for ($row = 1; $row <= $highestRow; ++ $row ) {
+						for ($col = 0; $col < ($highestColumnIndex - 1); ++ $col) {
 							$cell = $worksheet->getCellByColumnAndRow($col, $row);
-							$val = $cell->getValue();
+							$val = $cell->getCalculatedValue();
+
 							if ($row == 1) {
 								$heading[] = $val;
 							} else {
 								if (!in_array($heading[$col], array('','NULL'))) {
-										if(($heading[$col] == "department_1") ||
-												($heading[$col] == "department_2") ||
-													($heading[$col] == "department_3") ) {
+									if(($heading[$col] == "department_1") ||
+										($heading[$col] == "department_2") ||
+										($heading[$col] == "department_3")) {
+										if (!empty($val)) {
+											$eventItems[$row - 1]['departments'][] = ucfirst(strtolower(trim($val)));
+											$eventItems[$row - 1]['departments'] = array_unique($eventItems[$row - 1]['departments']);
+										}
+									} else if (($heading[$col] == "related_1") ||
+											($heading[$col] == "related_2") ||
+											($heading[$col] == "related_3") ||
+											($heading[$col] == "related_4") ||
+											($heading[$col] == "related_5")) {
 											if (!empty($val)) {
-												$eventItems[$row - 1]['departments'][] = trim($val);
-												$eventItems[$row - 1]['departments'] = array_unique($eventItems[$row - 1]['departments']);
+												$eventItems[$row - 1]['related_items'][] = trim($val);
+												$eventItems[$row - 1]['related_items'] = array_unique($eventItems[$row - 1]['related_items']);
 											}
 										} else {
+										if (!empty($val)) {
 											$eventItems[$row - 1][$heading[$col]] = $val;
 										}
+									}
 
 								}
 							}
- 						}
- 					}
+
+						}
+					}
 				}
+
 				foreach ($eventItems as $itemDetail) {
+
+					$i=0;
+
 					$itemAttributes = array_diff_key($itemDetail, array_flip($standardHeader));
+					
+          			//check radio box for 'final sale' text append
+          			$enableFinalsale = $this->request->data['enable_finalsale'];
+
+          			//check if final sale radio box was checked or not
+          			if($enableFinalsale==1){
+          			  $blurb = "<p><strong>Final Sale</strong></p>";
+          			}
+          			//if not make blurb var blank for good form
+          			else{
+          			  $blurb = "";
+          			}
+					
 					foreach ($itemAttributes as $key => $value) {
 						unset($itemDetail[$key]);
-						$itemCleanAttributes[trim($key)] = $value;
+
+						if($key!=="color_description_style") {
+							$itemCleanAttributes[trim($key)] = $value;
+						}
 					}
+
 					$item = Item::create();
 					$date = new MongoDate();
 					$url = $this->cleanUrl($itemDetail['description']." ".$itemDetail['color']);
+
 					$details = array(
 						'enabled' => (bool) $enabled,
 						'created_date' => $date,
 						'details' => $itemCleanAttributes,
 						'event' => array((string) $_id),
 						'url' => $url,
+						'blurb' => $blurb,
 						'taxable' => true
 					);
+
 					$newItem = array_merge(Item::castData($itemDetail), Item::castData($details));
+					$newItem['vendor_style'] = (string) $newItem['vendor_style'];
+
 					if ((array_sum($newItem['details']) > 0) && $item->save($newItem)) {
 						$items[] = (string) $item->_id;
+
+						//related items will be added later, after ihe items in this event actually HAVE unique ID's
+						//each related item will momentarily be a string made of the color, description and style separated by pipes
+						if( !empty($itemDetail['related_items']) ) {
+
+							$k=0;
+
+							foreach( $itemDetail['related_items'] as $key=>$value ) {
+								//build array of related items using color, description and style
+								//the color and the description are for the buyer to see, but we use the style number
+								//here to persist the related items
+								//and later update each item using it and the event hash to query and get the id
+								$fields = explode("|", $value);
+
+								$related_items[(string) $item->_id][$k]['vendor_style'] = $fields[2];
+								$related_items[(string) $item->_id][$k]['event'] = (string) $_id;
+
+								$k++;
+							}
+						}
 					}
+					$i++;
 				}
+
+				$itemsCollection = Item::Collection();
+
+				foreach ( $related_items as $key => $value ) {
+
+					$rel_items = array();
+
+					//aggregate related item id's
+					for ($i=0; $i<count($related_items[$key]); $i++) {
+
+						$style = trim($related_items[$key][$i]['vendor_style']);
+						$event = trim($related_items[$key][$i]['event']);
+
+						//query for this item
+						$rel_item = Item::find('first', array('conditions' => array(
+									'event' => array($event),
+									'vendor_style' => $style
+								)));
+
+						$rel_items[] = (string) $rel_item['_id'];
+
+					}
+
+					$itemsCollection->update(array("_id" => new MongoId($key)), array('$set' => array('related_items' => $rel_items)));
+				}
+
 			}
 		}
+
 		return $items;
 	}
 
@@ -351,19 +441,20 @@ class EventsController extends BaseController {
 
 		$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 		$event = Event::first(array(
-			'conditions' => array(
-				'_id' => $_id
-		)));
+				'conditions' => array(
+					'_id' => $_id
+				)));
 
 		$pending = ($event->start_date->sec > time() ? true : false);
 
 		if (!empty($event->items)) {
 			$eventItems = Item::find('all', array( 'conditions' => array(
-													'event' => array($_id),
-													'enabled' => true
-												),
-												'order' => array('created_date' => 'ASC')
-			));
+						'event' => array($_id),
+						'enabled' => true
+					),
+					'order' => array('created_date' => 'ASC')
+				));
+
 			foreach($eventItems as $eventItem) {
 				$items[] = $eventItem;
 			}
