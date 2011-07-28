@@ -295,9 +295,18 @@ tinyMCE.init({
 			<br><br>
 			<?=$this->form->end(); ?>
 			<h3 id="current_items">Current Items</h3>
+
             <hr />
 			<?=$this->form->create(null, array('url' => 'Items::itemUpdate', 'name' => 'item-update')); ?>
 				<?=$this->form->hidden('id', array('value' => $event->_id)); ?>
+				<div style="float:left; font: bold; font-size: 18px;">
+					Total Items:
+					<?php 
+						echo count($eventItems);
+					?>
+					
+				</div>
+
 				<div style="float:right; font: bold; font-size: 18px;">
 					<?=$this->form->submit('Update Items'); ?>
 				</div>
