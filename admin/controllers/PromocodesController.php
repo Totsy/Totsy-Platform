@@ -5,6 +5,7 @@ use admin\models\Promocode;
 use admin\models\Promotion;
 use admin\models\User;
 use admin\models\Order;
+use MongoId;
 use MongoDate;
 use MongoRegex;
 use MongoCollection;
@@ -18,6 +19,7 @@ class PromocodesController extends \admin\controllers\BaseController {
 	 */
 	public function index() {
 		$promocodes = Promocode::find('all', array('conditions' => array('special' => array('$ne' => true))));
+		$userCollection = User::collection();
 		foreach ($promocodes as $promocode){
 			$obj_data = $promocode->data();
 			if (!empty($obj_data['start_date'])) {
@@ -31,8 +33,7 @@ class PromocodesController extends \admin\controllers\BaseController {
 			}
 			if (!empty( $obj_data['created_by'] )) {
 				$conditions = array('conditions'=>array('_id'=>$obj_data['created_by']));
-				$user = User::find('first', $conditions);
-				$user = $user->data();
+				$user = $userCollection->findOne( array('_id' => new MongoId($obj_data['created_by'])) );
 				if (array_key_exists('firstname', $user)) {
 					$promocode->created_by = $user['firstname'] . ' ' . $user['lastname'];
 				} else {
