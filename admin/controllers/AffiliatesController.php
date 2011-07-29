@@ -31,25 +31,28 @@ class AffiliatesController extends \admin\controllers\BaseController {
 	);
 
 	public function index() {
-	   $affiliates = Affiliate::find('all',array('conditions'=>array('affiliate'=>true)));
-
-        foreach($affiliates as $affiliate){
-            $obj_data = $affiliate->data();
+	   $affiliates = Affiliate::collection()->find(array('affiliate'=>true));
+	   $userCollection = User::collection();
+	   $afs = array();
+       foreach($affiliates as $affiliate){
+            $obj_data = $affiliate;
             if(!empty( $obj_data['date_created'] )) {
-             $affiliate->date_created = date( 'm/d/Y', $affiliate->date_created->sec);
+				$obj_data['date_created'] = date( 'm/d/Y', $affiliate['date_created']->sec);
             }
 
             if(!empty( $obj_data['created_by'] )) {
-               	// $conditions = array('conditions'=>array('_id' => new MongoId($obj_data['created_by'])));
-                $user = User::collection()->findOne( array('_id' => new MongoId($obj_data['created_by'])) );
+               $user = $userCollection->findOne( array('_id' => new MongoId($obj_data['created_by'])) );
+                
                 if (array_key_exists('firstname', $user)) {
-                    $affiliate->created_by = $user['firstname'] . ' ' . $user['lastname'];
+                    $obj_data['created_by'] = $user['firstname'] . ' ' . $user['lastname'];
                 } else {
-                    $affiliate->created_by = $user['email'];
+                    $obj_data['created_by'] = $user['email'];
                 }
-
             }
+            $afs[] = $obj_data;
+            unset($obj_data);
         }
+        $affiliates = $afs;
         return compact('affiliates');
 	}
 
