@@ -67,6 +67,7 @@ Router::connect('/unsubcentral/unsubscribed/{:args}', array('controller' => 'uns
 Router::connect('/unsubcentral/del', array('controller' => 'unsubcentral', 'action' => 'del'));
 
 Router::connect('/register', 'Users::register');
+Router::connect('/register/{:locale}', 'Users::register');
 Router::connect('/register/facebook', 'Users::fbregister');
 Router::connect('/register/{:locale}', 'Users::register');
 Router::connect('/momoftheweek', 'MomOfTheWeeks::index');
@@ -126,9 +127,4 @@ if (!Environment::is('production')) {
 Router::connect('/{:controller}/{:action}/{:id:[0-9a-f]{24}}.{:type}', array('id' => null));
 Router::connect('/{:controller}/{:action}/{:id:[0-9a-f]{24}}');
 Router::connect('/{:controller}/{:action}/{:args}');
-
-<<<<<<< HEAD
 ?>
-=======
-?>
->>>>>>> d6e8ddcd1c12969d6ab88a0478750d0a39153314
