@@ -40,8 +40,8 @@ class AffiliatesController extends \admin\controllers\BaseController {
             }
 
             if(!empty( $obj_data['created_by'] )) {
-                $conditions = array('conditions'=>array('_id' => $obj_data['created_by']));
-                $user = User::find( 'first', $conditions );
+               	// $conditions = array('conditions'=>array('_id' => new MongoId($obj_data['created_by'])));
+                $user = User::collection()->findOne( array('_id' => new MongoId($obj_data['created_by'])) );
                 $user = $user->data();
                 if (array_key_exists('firstname', $user)) {
                     $affiliate->created_by = $user['firstname'] . ' ' . $user['lastname'];
