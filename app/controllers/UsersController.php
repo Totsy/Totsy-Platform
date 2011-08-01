@@ -118,12 +118,11 @@ class UsersController extends BaseController {
 				Session::write('userLogin', $userLogin, array('name' => 'default'));
 				$cookie['user_id'] = $user->_id;
 				Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
-				/**Remove Temporary Session Datas**/
+				#Remove Temporary Session Datas**/
 				Session::delete('userSavings');	
 				Session::delete('promocode');
 				Session::delete('credit');
 				Session::delete('services');
-				/***/				
 				$data = array(
 					'user' => $user,
 					'email' => $user->email

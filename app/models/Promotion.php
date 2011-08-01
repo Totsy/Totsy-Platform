@@ -82,7 +82,7 @@ class Promotion extends Base {
                            $entity->errors() + array(
                          		'promo' => "You have already used a shipping discount"
                         ));
-					}				
+					}	
                     if ($postDiscountTotal >= $code->minimum_purchase && !($entity->errors())) {
                         $entity->user_id = $user['_id'];
                         if ($code->type == 'percentage') {

@@ -1,40 +1,18 @@
-<?php
-
-	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
-	
-	$cartExpirationDate = "";
-	$test = Array();
-	
-	if($cart->data()){
-		$test = $cart->data();
-	
-		$cartInfo = $cart->data();
-		$cartExpirationDate =  $cartInfo[0]['expires']['sec'];		
-	}
-	
-?>										
-
-<script type="text/javascript">
-
+<script type="text/javascript">	
 	$( function () {
-	    
-	    var itemExpires = new Date();
-	    itemExpires = new Date(<?=$cartExpirationDate?>);
-	    							
-	    $("#itemCounter").countdown('change', {until: itemExpires, layout: '{mnn}{sep}{snn} minutes'});
-		$('#itemCounter').countdown( {until: itemExpires, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
-	
+	    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	    
 		var now = new Date();
-		
-		if (itemExpires < now ) {
-		    $('#itemCounter').html("<span class='over' style='color:#EB132C; padding:5px;'>no longer reserved</span>");
+		$('#itemCounter').countdown( {until: itemExpires, onExpiry: refreshCart, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
+		if (itemExpires < now) {
+			$('#itemCounter').html("<span class='over' style='color:#EB132C; padding:5px;'>no longer reserved</span>");
 		}
-	
+		function refreshCart() {
+			window.location.reload(true);
+		}
 	});
-	
 </script>
 
-<?php  if(!empty($test)) { ?>
+<?php  if(!empty($subTotal)): ?>
 <div style="margin-top:10px; margin-bottom:10px">
 
 	<div class="grid_8" style="padding-bottom:10px">
@@ -58,10 +36,10 @@
 		 </div>
 	</div>
 
-<?php } ?>
+<?php endif ?>
 
 <div class="message"></div>
-<?php if (!empty($test)): ?>
+<?php if (!empty($subTotal)): ?>
 <?=$this->form->create(null ,array('id'=>'cartForm')); ?>
 	<div class="grid_16 roundy_cart">
 	<div id='message'><?php echo $message; ?></div>
@@ -180,7 +158,7 @@
 						<?php if (!empty($cartPromo['saved_amount'])):?>
 						<div style="clear:both"></div>
 						<div style="font-weight:bold">
-    							<span style="float: left;">Discount :</span> 
+    							<span style="float: left;">Discount <?php if($promocode['code']) echo '[' . $promocode['code'] . ']'; ?>:</span> 
     							<span style="color:#009900; float:right">- $<?=number_format(abs($cartPromo['saved_amount']),2)?></span>
     					</div>
    						<?php endif ?>
@@ -192,7 +170,7 @@
 						<?php if (!empty($shipping_discount)):?>
 						<div style="clear:both"></div>
 						<div style="font-weight:bold">
-    							<span style="float: left;">Complimentary Shipping :</span> 
+    							<span style="float: left;">Complimentary Shipping <?php if($promocode['code']) echo '[' . $promocode['code'] . ']'; ?>:</span> 
     							<span style="color:#009900; float:right">- $<?=number_format($shipping_discount,2)?></span>
     					</div>
    						<?php endif ?>

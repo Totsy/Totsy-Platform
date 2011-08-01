@@ -31,9 +31,12 @@ class Credit extends \lithium\data\Model {
 
 		if (Session::read('credit')) {
 			$entity->credit_amount = Session::read('credit');
+			if ($credit_amount == null) {
+				$credit_amount = $entity->credit_amount;
+			}
+			
 		}
-
-		if ($credit_amount) {
+		if ((float) $credit_amount >= 0.00) {
 		    $entity->credit_amount = $credit_amount;
 			$credit = (float) number_format((float)$credit_amount,2,'.','');
 			$lower = -0.999;
