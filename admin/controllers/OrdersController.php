@@ -145,12 +145,70 @@ class OrdersController extends BaseController {
 			$selected_order = $orderCollection->findOne(array("_id" => new MongoId($datas["id"])));
 		}
 	}
+	
+	public function cancelMultipleItems() {
+		$current_user = Session::read('userLogin');
+	
+		$order 		= $this->request->data['order'];
+		$line_number= $this->request->data['line_number'];
+		$item_id	= $this->request->data['id'];
+		
+		while ($i < sizeof($order)) {
+			$line_num = $line_number[$i];
+				
+			if (strlen($order[$i]) > 2) {		
+			
+				$order_a= Order::find('first', array('conditions' => array('_id' => new MongoId($order[$i]))));
+				
+				$order_data = $order_a->data();
+				$order_data[id] = $order_data[_id];
+				$order_data[items][$line_num][quantity] = 0;
+				$order_data[items][$line_num][initial_quantity] = $order_data[items][$line_num][quantity];
+				$order_data[items][$line_num][cancel] = true;
+				$order_data[save] = true;
+				$order_data[comment] = 'Bulk Cancel of Item';
+				
+				$this->request->data = $order_data;
+								
+				$order_m_i = $this->manage_items();
+			}
+			$i++;
+		}
+		
+		$this->redirect('/items/bulkCancel/'.$item_id);
+	}
+
+	public function cancelOneItem() {
+		$current_user = Session::read('userLogin');
+	
+		$order_id 	= $this->request->query['order_id'];
+		$sku		= $this->request->query['sku'];
+		$item_id	= $this->request->query['item_id'];
+		$line_number= $this->request->query['line_number'];
+		
+		$order_a= Order::find('first', array('conditions' => array('_id' => new MongoId($order_id))));
+		
+		$order_data = $order_a->data();
+		$order_data[id] = $order_data[_id];
+		$order_data[items][$line_number][quantity] = 0;
+		$order_data[items][$line_number][initial_quantity] = $order_data[items][$line_number][quantity];
+		$order_data[items][$line_number][cancel] = true;
+		$order_data[save] = true;
+		$order_data[comment] = 'Bulk Cancel of Item';
+		
+		$this->request->data = $order_data;
+						
+		$order = $this->manage_items();
+		
+		$this->redirect('/items/bulkCancel/'.$sku);
+	}
 
 	/**
 	* The manage_items method update the temporary order.
 	* If the variable save is set to true, it apply the changes.
 	*/
 	public function manage_items() {
+
 		$current_user = Session::read('userLogin');
 		$orderCollection = Order::collection();
 		$userCollection = User::collection();

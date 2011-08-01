@@ -6,6 +6,11 @@
  * @license       http://opensource.org/licenses/bsd-license.php The BSD License
  */
 
+// Same as error_reporting(E_ALL);
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors',1);
+
+
 /**
  * This is the path to the class libraries used by your application, and must contain a copy of the
  * Lithium core.  By default, this directory is named 'libraries', and resides in the same

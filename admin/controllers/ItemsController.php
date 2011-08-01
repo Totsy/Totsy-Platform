@@ -2,6 +2,7 @@
 
 namespace admin\controllers;
 use admin\controllers\BaseController;
+use admin\models\Order;
 use admin\models\Item;
 use admin\models\Event;
 use MongoRegex;
@@ -198,6 +199,79 @@ class ItemsController extends BaseController {
 			$this->redirect('/events/edit/'.$id.'#event_items');
 		}
 	}
+	
+	public function bulkCancel($search = null) {
+	
+			if ($this->request->data || $search) {
+				if ($this->request->data['search']) {
+					$search = $this->request->data['search'];
+				}
+				$itemCollection = Item::connection()->connection->items;
+				$items = $itemCollection->find(
+					array('$or' => array(
+						array('_id' => new MongoId($search)),
+						array('skus' => array('$in' => array(new MongoRegex("/$search/i"))))
+				)));
+				$items = iterator_to_array($items);
+
+/*
+				if (strpos($search, "-")) { //detect if there is a '-' in the string, which means it is a SKU and not just an item_id
+					$items = iterator_to_array($items);
+					$item_id = key($items);
+					$search_sku = $search;
+					$search_item_id = $item_id;					
+				} else {
+					$item_id = $search;
+					$search_item_id = $item_id;
+				}
+*/
+
+				return compact("items","search_item_id","search_sku");	
+			}
+
+	}
+	
+/*
+bulkcanceling items
+
+use case
+1) short shipment comes in, show last X orders and cancel them from one screen
+2) search for a specific item # and type (color, size, etc) and show the orders that contain it and then cancel it from there
+
+---
+
+	
+	public function bulkCancel($search = null) {
+			$itemCollection = Item::connection()->connection->items;
+			$items = $itemCollection->find(
+				array('$or' => array(
+					array('_id' => new MongoId($search)),
+					array('skus' => array('$in' => array(new MongoRegex("/$search/i"))))
+			)));
+			
+			$items = iterator_to_array($items);
+
+			$orderCollection = Order::connection()->connection->orders;
+
+			foreach($items as $item) {
+				$item_id = 	$item[_id];
+				
+				$orders = Order::find('all',array('fields'=>array('_id','items'),'conditions'=> array('items.item_id' => $item_id)));
+				print_r($orders);
+
+				$orders_for_item[0] = iterator_to_array($orders);
+			}
+			
+			print "<pre>";
+			print_r($orders_for_item);
+			print "</pre>";
+			die();
+
+			return compact("items","orders_for_item");
+
+*/
+
+	
 }
 
 ?>
