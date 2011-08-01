@@ -72,7 +72,6 @@ Libraries::add('totsy_common');
 Libraries::add('li3_fixtures');
 Libraries::add('li3_docs');
 Libraries::add('Imagine');
-
 require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel.php';
 require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel/IOFactory.php';
 //require LITHIUM_APP_PATH . '/libraries/swiftmailer/lib/swift_required.php';
