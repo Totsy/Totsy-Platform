@@ -153,6 +153,7 @@ class OrdersController extends BaseController {
 		$line_number= $this->request->data['line_number'];
 		$item_id	= $this->request->data['id'];
 		
+		$i=0;		
 		while ($i < sizeof($order)) {
 			$line_num = $line_number[$i];
 				

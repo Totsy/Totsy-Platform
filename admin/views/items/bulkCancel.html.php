@@ -16,7 +16,7 @@ use admin\models\Order;
 
 <script>
 
-function cancelLineItem()
+function confirmSubmit()
 {
 
 var agree=confirm("Are you sure you wish to continue?");
