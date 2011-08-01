@@ -88,7 +88,6 @@ class User extends Base {
 			else{
 				return true;
 			}
-
 		});
 
 		Validator::add('isUniqueEmail', function ($value) {
