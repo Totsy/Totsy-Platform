@@ -57,7 +57,7 @@ class User extends Base {
 			array('email', 'message' => 'Email is not valid'),
 			array('notEmpty', 'required' => true, 'message' => 'Please add an email address'),
 			array('isUniqueEmail', 'message' => 'This email address is already registered'),
-			array('isEmailFacebookLegal', 'message' => 'Your Facebook email is not set to be shared, please enter a real email address')
+			array('isEmailFacebookLegal', 'required' => true, 'message' => 'Your Facebook email is not set to be shared, please enter a real email address')
 		),
 		'password' => array(
 			'notEmpty', 'required' => true, 'message' => 'Please submit a password'
@@ -82,13 +82,8 @@ class User extends Base {
 		});
 
 		Validator::add('isEmailFacebookLegal', function ($value) {
-			if (preg_match('/@proxymail\.facebook\.com/', $value)) {
-				return false;			
-			}
-			
-			else{
-				return true;
-			}
+			$facebooklegal = preg_match('/@proxymail\.facebook\.com/', $value);
+			return ($facebooklegal ==  true) ? false : true;
 		});
 
 		Validator::add('isUniqueEmail', function ($value) {
