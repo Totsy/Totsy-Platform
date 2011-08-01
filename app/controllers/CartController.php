@@ -95,8 +95,8 @@ class CartController extends BaseController {
 		$message = null;
 		if ($this->request->data) {
 			$itemId = $this->request->data['item_id'];
-			$size = (empty($this->request->data['item_size'])) ?
-			 "no size": $this->request->data['item_size'];
+			$size = (!array_key_exists('item_size', $this->request->data)) ?
+				"no size": $this->request->data['item_size'];
 			$item = Item::find('first', array(
 				'conditions' => array(
 					'_id' => "$itemId"),
