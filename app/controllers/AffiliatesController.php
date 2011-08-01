@@ -66,13 +66,20 @@ class AffiliatesController extends BaseController {
 		if (($affiliate)) {
 			$pixel = Affiliate::getPixels('after_reg', $affiliate);
 			$gdata = $this->request->query;
+			$params = $this->request->params;
 			if (($gdata)) {
 				$affiliate = Affiliate::storeSubAffiliate($gdata, $affiliate);
 				if (array_key_exists('redirect', $gdata)) {
 					$urlredirect = parse_url(htmlspecialchars_decode(urldecode($gdata['redirect'])), PHP_URL_PATH);
 				}
 			}
+
+			$cookie['landing_url'] = $_SERVER['REQUEST_URI'];
 			$cookie['affiliate'] = $affiliate;
+			if ($cookie['affiliate'] === 'keyade') {
+			    $cookie['keyadeId'] = $params['args'][1];
+			}
+
 			Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 			if (Session::check('userLogin', array('name' => 'default'))) {
 				$userlogin = Session::read('userLogin');
@@ -89,6 +96,7 @@ class AffiliatesController extends BaseController {
                     }
                 }
             }
+
 			if (($pdata)) {
 				$data['email'] = htmlspecialchars_decode(strtolower($pdata['email']));
 				$data['confirmemail'] = htmlspecialchars_decode(strtolower($pdata['email']));
@@ -100,6 +108,17 @@ class AffiliatesController extends BaseController {
 			        $data['firstname'] = $userfb['first_name'];
 			        $data['lastname'] = $userfb['last_name'];
 				}
+				switch ($affiliate) {
+                    case 'our365':
+                    case 'our365widget':
+                     //   $this->_render['template'] = 'our365';
+                        break;
+                    case 'keyade':
+                      //  $this->_render['template'] = 'keyade';
+                        if(count($params['args'] > 1)){
+                            $data['keyade_user_id'] = $params['args'][1];
+                        }
+                }
 				extract(UsersController::registration($data));
 				if ($saved) {
 					$message = $saved;

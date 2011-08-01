@@ -60,12 +60,15 @@ class UsersController extends BaseController {
 			$email = $data['email'];
 			$data['password'] = sha1($this->request->data['password']);
 			$data['created_date'] = new MongoDate();
-			$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
+			$data['invitation_codes'] = array(substr($email, 0, strpos($email, '@')));
 			$data['invited_by'] = $invite_code;
 			$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));
 			if ($inviteCheck > 0) {
 				$data['invitation_codes'] = array(static::randomString());
 			}
+			/**
+			* this block handles the invitations.
+			**/
 			if ($invite_code) {
 				$inviter = User::find('first', array(
 					'conditions' => array(
@@ -76,7 +79,10 @@ class UsersController extends BaseController {
 						'conditions' => array(
 							'user_id' => (string) $inviter->_id,
 							'email' => $email
-					)))	;
+					)));
+					if ($inviter->invited_by === 'keyade') {
+						$data['keyade_referral_user_id'] = $inviter->keyade_user_id;
+					}
 					if ($invited) {
 						$invited->status = 'Accepted';
 						$invited->date_updated = Invitation::dates('now');
@@ -85,6 +91,10 @@ class UsersController extends BaseController {
 							Invitation::reject($inviter->_id, $email);
 						}
 					} else {
+					/**
+					* This block was included because users can pass on their
+					* invite url by mouth @_@
+					**/
 						$invitation = Invitation::create();
 						$invitation->user_id = $inviter->_id;
 						$invitation->email = $email;
@@ -164,7 +174,7 @@ class UsersController extends BaseController {
 						Mailer::send('Welcome_Free_Shipping', $user->email);
 						$name = null;
 						if (isset($data['firstname'])) $name = $data['firstname'];
-						if (isset($data['lastname'])) $name = is_null($name)?$data['lastname']:$name.$data['lastname'];  
+						if (isset($data['lastname'])) $name = is_null($name)?$data['lastname']:$name.$data['lastname'];
 						Mailer::addToMailingList($data['email'],is_null($name)?array():$name);
 
 					}
