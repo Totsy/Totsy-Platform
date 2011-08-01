@@ -194,7 +194,9 @@ class UsersController extends BaseController {
 			//Grab User Record
 			$user = User::lookup($email);
 			$redirect = '/sales';
-			if (strlen($password) > 0) {
+			if ($user->deactivated) {
+				$message = '<div class="error_flash">Your account has been deactivated.  Please contact Customer Service at 888-247-9444 to reactivate your account</div>';
+			} else if (strlen($password) > 0) {
 				if($user){
 					if (!empty($user->reset_token)) {
 						if (strlen($user->reset_token) > 1) {
@@ -252,9 +254,13 @@ class UsersController extends BaseController {
 			}
 		}
 		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
-			$user = User::find('first', array('conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
+			$user = User::find('first', array(
+				'conditions' => array('autologinHash' => $cookie['autoLoginHash']),
+				'fields' => array('_id' => 1)));
 			if($user) {
-				if($cookie['user_id'] == $user->_id){
+				if ($user->deactivate) {
+					return;
+				} else if($cookie['user_id'] == $user->_id){
 					$sessionWrite = $this->writeSession($user->data());
 					User::log($ipaddress);
 					if(array_key_exists('redirect', $cookie) && $cookie['redirect'] ) {
@@ -267,6 +273,9 @@ class UsersController extends BaseController {
 					} else {
 						$this->redirect($redirect);
 					}
+				} else {
+					$cookie['autoLoginHash'] = null;
+					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 				}
 			}
 		}
@@ -276,9 +285,15 @@ class UsersController extends BaseController {
 	 * Performs the logout action of the user removing '_id' from session details.
 	 */
 	public function logout() {
+		$loginInfo = Session::read('userLogin');
+		$user = User::collection();
+		$user->update(
+			array('email' => $loginInfo['email']),
+			array('$unset' => array('autologinHash' => 1))
+			);
 		$success = Session::delete('userLogin');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-		$cookie['autoLoginHash'] = null;
+		unset($cookie['autoLoginHash']);
 		Session::delete('services');
 		Session::delete('cookieCrumb', array('name' => 'cookie'));
 		$cookieSuccess = Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));

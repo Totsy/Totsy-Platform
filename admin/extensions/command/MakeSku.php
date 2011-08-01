@@ -14,6 +14,13 @@ class MakeSku extends \lithium\console\Command  {
 	 * @var string
 	 */
 	public $env = 'development';
+    /**
+     * Directory of tmp files.
+     *
+     * @var string
+     */
+    public $tmp = '/resources/totsy/tmp/';
+	private $item_count = 0;
 
 	/**
 	 * Find all the orders that haven't been shipped which have stock status.
@@ -21,11 +28,22 @@ class MakeSku extends \lithium\console\Command  {
 	public function run() {
 		$start = time();
 		Environment::set($this->env);
-		$itemCollection = Item::connection()->connection->items;
-		$conditions = array("skus" => array('$exists' => false));
-		$items = $itemCollection->find($conditions);
-		$i = 0;
-		foreach ($items as $item) {
+        $itemCollection = Item::connection()->connection->items;
+        $conditions = array('$or' => array(
+            array('skus' => array('$exists' => false)),
+            array('sku_details' => array('$exists' => false ))
+        ));
+        $items = $itemCollection->find($conditions);
+        $this->generateSku($items);
+		$end = time();
+		$time = $end - $start;
+		$this->out("We updated " . $this->item_count . " items in $time seconds!");
+	}
+
+	public function generateSku($items) {
+	    $itemCollection = Item::connection()->connection->items;
+	    $i =0;
+	    	foreach ($items as $item) {
 			$i++;
 			$skulist = array();
 			$hashBySha = false;
@@ -63,8 +81,6 @@ class MakeSku extends \lithium\console\Command  {
 				);
 			}
 		}
-		$end = time();
-		$time = $end - $start;
-		$this->out("We updated $i items in $time seconds!");
+		$this->item_count = $i;
 	}
 }

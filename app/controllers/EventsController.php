@@ -2,11 +2,11 @@
 
 namespace app\controllers;
 
-use \app\controllers\BaseController;
-use \app\models\Event;
-use \app\models\Item;
+use app\controllers\BaseController;
+use app\models\Event;
+use app\models\Item;
 use app\models\Banner;
-use \MongoDate;
+use MongoDate;
 use \lithium\storage\Session;
 use app\models\Affiliate;
 
@@ -26,13 +26,13 @@ class EventsController extends BaseController {
 			$openEvents = Event::open(null,array(),$departments);
 			$pendingEvents = Event::pending(null,array(),$departments);
 		}
-		
+
 		/*
 		$itemCounts = $this->inventoryCheck(Event::open(array(
 			'fields' => array('items')
 		)));
 		*/
-		
+
 		//Sort events open/sold out
 		foreach ($openEvents as $key => $event) {
 			foreach ($itemCounts as $event_id => $quantity) {
@@ -51,7 +51,6 @@ class EventsController extends BaseController {
 				$openEvents = $events_closed;
 			}
 		}
-		
 		return compact('openEvents', 'pendingEvents', 'banner', 'departments');
 	}
 
@@ -59,7 +58,7 @@ class EventsController extends BaseController {
 		$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 		$url = $this->request->event;
 		$departments = '';
-		if(!empty($this->request->query['filter'])) {	
+		if(!empty($this->request->query['filter'])) {
 			$departments = ucwords($this->request->query['filter']);
 		}
 		if($this->request->data){
@@ -86,7 +85,7 @@ class EventsController extends BaseController {
 			$this->redirect('/sales ');
 		}
 		$pending = ($event->start_date->sec > time() ? true : false);
-		
+
 		if ($pending == false) {
 			++$event->views;
 			$event->save();
@@ -151,7 +150,7 @@ class EventsController extends BaseController {
 			$items = null;
 			$type = 'Coming Soon';
 		}
-		
+
 		$pixel = Affiliate::getPixels('event', 'spinback');
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
 			                                            array('event' => $_SERVER['REQUEST_URI'])

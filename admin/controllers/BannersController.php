@@ -2,8 +2,8 @@
 
 namespace admin\controllers;
 
-use \admin\models\Banner;
-use \admin\controllers\EventsController;
+use admin\models\Banner;
+use admin\controllers\EventsController;
 use admin\models\Event;
 use admin\models\Item;
 use li3_flash_message\extensions\storage\FlashMessage;

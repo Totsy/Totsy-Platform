@@ -19,6 +19,7 @@ use lithium\storage\Session;
 use lithium\util\Validator;
 use MongoDate;
 use MongoId;
+use app\extensions\AvaTax;
 use app\extensions\Mailer;
 
 /**
@@ -215,7 +216,7 @@ class OrdersController extends BaseController {
 			'event',
 			'discount_exempt'
 		);
-		$cart = Cart::active(array('fields' => $fields, 'time' => 'now'));
+		$cart = $taxCart = Cart::active(array('fields' => $fields, 'time' => 'now'));
 		$shipDate = Cart::shipDate($cart);
 		$cartByEvent = $this->itemGroupByEvent($cart);
 		$orderEvents = $this->orderEvents($cart);
@@ -248,15 +249,19 @@ class OrdersController extends BaseController {
 				)));
 			}
 		}
-
+		
+		// Calculate tax
 		if ($shippingAddr) {
-			$tax = array_sum($cart->tax($shippingAddr));
+			//$tax = array_sum($cart->tax($shippingAddr));
 			$shippingCost = Cart::shipping($cart, $shippingAddr);
 			$overShippingCost = Cart::overSizeShipping($cart);
-			$tax = $tax ? $tax + (($overShippingCost + $shippingCost) * Cart::TAX_RATE) : 0;
-		}
+			//$tax = $tax ? $tax + (($overShippingCost + $shippingCost) * Cart::TAX_RATE) : 0;
+			
+			//$tax=  AvaTax::getTax( compact('cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
+		} 
 		/**
 		*	Handling services the user may be eligible for
+		*   Returns $shippingCost, $overShippingCost, (boolean)$freeshipping
 		*	@see app\models\Service::freeShippingCheck()
 		**/
 		$service = Session::read('services', array('name' => 'default'));
@@ -273,11 +278,12 @@ class OrdersController extends BaseController {
 		}
 
 		if (isset($this->request->data['credit_amount'])) {
+			$credit = $this->request->data['credit_amount'];
+			$isMoney = Validator::isMoney($credit);
 			$credit = (float)number_format((float)$this->request->data['credit_amount'],2,'.','');
 			$lower = -0.999;
 			$upper = (!empty($userDoc->total_credit)) ? $userDoc->total_credit + 0.01 : 0;
 			$inRange = Validator::isInRange($credit, null, compact('lower', 'upper'));
-			$isMoney = Validator::isMoney($credit);
 			if (!$isMoney) {
 				$orderCredit->error = "Please apply credits that are in the form of $0.00";
 				$orderCredit->errors(
@@ -374,6 +380,12 @@ class OrdersController extends BaseController {
 				$orderPromo->saved_amount = 0;
 			}
 		}
+		
+		extract( AvaTax::getTax( compact(
+			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
+			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart') )
+		,EXTR_OVERWRITE);
+		unset($taxArray,$taxCart);
 		$vars = compact(
 			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
@@ -417,6 +429,12 @@ class OrdersController extends BaseController {
 					$order->promo_code = $orderPromo->code;
 				}
 			}
+			
+			if($avatax === true){
+				AvaTax::postTax( compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
+			}
+			$order->tax = $tax;
+			$order->avatax = $avatax;
 			$order->ship_date = new MongoDate(Cart::shipDate($order));
 			$order->save();
 			Cart::remove(array('session' => Session::key('default')));
@@ -439,7 +457,6 @@ class OrdersController extends BaseController {
 		$cartEmpty = ($cart->data()) ? false : true;
 
 		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate');
-
 	}
 
 	/**
