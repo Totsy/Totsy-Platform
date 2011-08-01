@@ -44,5 +44,4 @@ Environment::set('test', array(
 	'browserUrl' => 'http://totsy'
 ));
 
-
 ?>
