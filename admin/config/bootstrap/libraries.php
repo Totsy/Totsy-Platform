@@ -57,8 +57,17 @@ Libraries::add('admin', array('default' => true));
 Libraries::add('li3_fixtures');
 Libraries::add('li3_docs');
 Libraries::add('li3_payments');
+Libraries::add('PEAR', array(
+    'prefix' => false,
+    'includePath' => true,
+    'transform' => function($class, $config) {
+        $file = $config['path'] . '/' . str_replace('_', '/', $class) . $config['suffix'];
+        return file_exists($file) ? $file : null;
+    }
+));
 require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel.php';
 require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel/IOFactory.php';
 //require LITHIUM_APP_PATH . '/libraries/swiftmailer/lib/swift_required.php';
 require LITHIUM_APP_PATH . '/libraries/FusionCharts/FusionCharts_Gen.php';
+
 ?>
