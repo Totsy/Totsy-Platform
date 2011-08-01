@@ -85,6 +85,7 @@ class User extends Base {
 			if (preg_match('/@proxymail\.facebook\.com/', $value)) {
 				return false;			
 			}
+			
 			else{
 				return true;
 			}
