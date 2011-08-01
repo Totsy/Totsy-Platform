@@ -391,10 +391,10 @@ class APIController extends  \lithium\action\Controller {
 	 *
 	 */
 	protected function signupsByReferralApi (){
-		//$data = $this->signupsApi();
-		//if (is_array($data) && array_key_exists('error', data)) {
-		//	return $data;
-		//}
+		$data = $this->signupsApi();
+		if (is_array($data) && array_key_exists('error', data)) {
+			return $data;
+		}
 		$from = $to = null;
 		if (array_key_exists('from',$this->request->query)){
 			$from = $this->request->query['from'];
@@ -411,38 +411,11 @@ class APIController extends  \lithium\action\Controller {
 		if ((!isset($from) || empty($from)) && (!isset($to) || empty($to))){
 			return ApiHelper::errorCodes(416);
 		}
-		$options = array(
-			'invited_by' => 'keyade',
-			'created_date' =>  array(
-				'$gte' => new MongoDate($from),
-				'$lte' => new MongoDate($to)
-			)
-		);
 		// Run that sucker!
-		$cursor = User::collection()->find( $options );
-		// Loop through the cursor, and identify users that were invited by keyade users
-		$referrals = array();
-		echo 'total: '.$cursor->count();
-		//foreach($cursor AS $user){
-			//print_r();
-			//$inviter = User::collection()->findOne( array( 'invitation_codes' => $user['invited_by'], 'keyade_user_id' => array('$exists' => true)));
-			//if($inviter != null){
-				// We got a user invited from a keyade referral
-				//$user['keyade_user_id'] = $inviter['keyade_user_id'];
-				//$referrals[] = $user;
-			//}
-		//}
-		exit(0);
-		$referrals = array();
-		foreach($data['cursor'] AS $user){
-			$inviter = User::collection()->findOne( array( 'invitation_codes' => $user['invited_by'], 'keyade_user_id' => array('$exists' => true)));
-			if($inviter != null){
-				// We got a user invited from a keyade referral
-				$user['keyade_user_id'] = $inviter['keyade_user_id'];
-				$referrals[] = $user;
-			}
-		}
-		$data['cursor'] = $referrals;
+		$cursor = User::collection()->find( array(
+			'keyade_referral_user_id' => array('$exists' => true)
+		));
+		$data['cursor'] = $cursor;
 		return $data;
 	}
 	
