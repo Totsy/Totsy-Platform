@@ -136,5 +136,4 @@ Router::connect('/{:category:[a-z_]+}', array(), function($request) {
 Router::connect('/{:controller}/{:action}/{:id:[0-9a-f]{24}}.{:type}', array('id' => null));
 Router::connect('/{:controller}/{:action}/{:id:[0-9a-f]{24}}');
 Router::connect('/{:controller}/{:action}/{:args}');
-
 ?>
