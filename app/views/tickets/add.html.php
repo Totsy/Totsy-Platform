@@ -58,33 +58,33 @@
 
 		<!-- Tech -->
 			<option class="sub_tech" value="">Choose One</option>
-			<option class="sub_tech" value="5">Trouble with logging in.</option>
-			<option class="sub_tech" value="5">My cart items have expired.</option>
+			<option class="sub_tech" value="Trouble with logging in.">Trouble with logging in.</option>
+			<option class="sub_tech" value="My cart items have expired.">My cart items have expired.</option>
 
 		<!-- Refund -->
 			<option class="sub_refunds" value="">Choose One</option>
-			<option class="sub_refunds" value="6">I would like a refund</option>
-			<option class="sub_refunds" value="7">What happened to my credits?</option>
+			<option class="sub_refunds" value="I would like a refund">I would like a refund</option>
+			<option class="sub_refunds" value="What happened to my credits?">What happened to my credits?</option>
 
 		<!-- Merch -->
 			<option class="sub_merch" value="">Choose One</option>
-			<option class="sub_merch" value="6">Selling products on Totsy</option>
-			<option class="sub_merch" value="7">Merchandising information</option>
+			<option class="sub_merch" value="Selling products on Totsy">Selling products on Totsy</option>
+			<option class="sub_merch" value="Merchandising information">Merchandising information</option>
 
 		<!-- Shipping -->
 			<option class="sub_shipping" value="">Choose One</option>
-			<option class="sub_shipping" value="6">I would like a return</option>
-			<option class="sub_shipping" value="7">Where is my order?</option>
+			<option class="sub_shipping" value="I would like a return">I would like a return</option>
+			<option class="sub_shipping" value="Where is my order?">Where is my order?</option>
 
 		<!-- Business Dev -->
 			<option class="sub_business" value="">Choose One</option>
-			<option class="sub_business" value="6">How can I sell my products on Totsy?</option>
-			<option class="sub_business" value="7">Can I run an exclusive sale on Totsy?</option>
+			<option class="sub_business" value="How can I sell my products on Totsy?">How can I sell my products on Totsy?</option>
+			<option class="sub_business" value="Can I run an exclusive sale on Totsy?">Can I run an exclusive sale on Totsy?</option>
 
 		<!-- Press -->
 			<option class="sub_press" value="">Choose One</option>
-			<option class="sub_press" value="6">I would like more information about Totsy.</option>
-			<option class="sub_press" value="7">I'd like a media kit</option>
+			<option class="sub_press" value="I would like more information about Totsy.">I would like more information about Totsy.</option>
+			<option class="sub_press" value="I'd like a media kit">I'd like a media kit</option>
 		</select>
 
 		<br />

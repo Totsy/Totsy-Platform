@@ -2,7 +2,7 @@
 
 namespace admin\models;
 
-class ItemMaster extends \lithium\data\Model {
+class ItemMaster extends Base {
 
 	public $validates = array();
 

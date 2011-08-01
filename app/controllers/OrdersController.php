@@ -261,6 +261,7 @@ class OrdersController extends BaseController {
 		} 
 		/**
 		*	Handling services the user may be eligible for
+		*   Returns $shippingCost, $overShippingCost, (boolean)$freeshipping
 		*	@see app\models\Service::freeShippingCheck()
 		**/
 		$service = Session::read('services', array('name' => 'default'));
@@ -277,11 +278,12 @@ class OrdersController extends BaseController {
 		}
 
 		if (isset($this->request->data['credit_amount'])) {
+			$credit = $this->request->data['credit_amount'];
+			$isMoney = Validator::isMoney($credit);
 			$credit = (float)number_format((float)$this->request->data['credit_amount'],2,'.','');
 			$lower = -0.999;
 			$upper = (!empty($userDoc->total_credit)) ? $userDoc->total_credit + 0.01 : 0;
 			$inRange = Validator::isInRange($credit, null, compact('lower', 'upper'));
-			$isMoney = Validator::isMoney($credit);
 			if (!$isMoney) {
 				$orderCredit->error = "Please apply credits that are in the form of $0.00";
 				$orderCredit->errors(
@@ -455,7 +457,6 @@ class OrdersController extends BaseController {
 		$cartEmpty = ($cart->data()) ? false : true;
 
 		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate');
-
 	}
 
 	/**
