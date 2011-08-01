@@ -169,6 +169,10 @@
 												Promotion Discount:
 													<br>
 												<?php endif ?>
+												<?php if (($order->discount)): ?>
+												Discount:
+													<br>
+												<?php endif ?>
 												Sales Tax:
 												<br>
 												Shipping:
@@ -188,6 +192,10 @@
 												<?php endif ?>
 												<?php if (($order->promo_discount) && empty($order->promocode_disable)): ?>
 													-$<?=number_format(abs($order->promo_discount),2); ?>
+													<br>
+												<?php endif ?>
+												<?php if (($order->discount)): ?>
+													-$<?=number_format(abs($order->discount),2); ?>
 													<br>
 												<?php endif ?>
 												$<?=number_format($order->tax,2); ?>
@@ -311,4 +319,43 @@
 	  })();
 
 	</script>
+<?php endif ?>
+
+<script language="javascript">
+	<!-- Upsellit.com confirmation
+	var siteID = "6525";
+	var productID = "77";
+	var position = "1";
+	var orderID ="<?=$order->order_id?>"; //To be filled in by site
+	
+	var orderAmt ="<?=$order->total?>"; //To be filled in by site
+	var command = "REPORT"
+	var upsellit_tag = "<scr" + "ipt " + "SRC='http" + (document.location.protocol=='https:'?'s://www':'://www') + ".upsellit.com/upsellitReporting.jsp?command="+command+"&siteID=" + siteID + "&productID=" + productID + "&position=" + position + "&orderID=" + orderID + "&orderAmt=" + orderAmt +"'><\/scr" + "ipt>";
+	document.write(upsellit_tag);
+	// -->
+</script>
+
+<?php if ($new): ?>
+<!-- Google Code for acheteurs Remarketing List -->
+
+<script type="text/javascript">
+	/* <![CDATA[ */
+	var google_conversion_id = 1019183989;
+	var google_conversion_language = "en";
+	var google_conversion_format = "3";
+	var google_conversion_color = "666666";
+	var google_conversion_label = "SeX0CLn9igIQ9Yb-5QM";
+	var google_conversion_value = 0;
+	/* ]]> */
+</script>
+
+<script type="text/javascript" src="http://www.googleadservices.com/pagead/conversion.js"></script>
+
+<noscript>
+	<div style="display:inline;">
+		<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=SeX0CLn9igIQ9Yb-5QM&amp;guid=ON&amp;script=0"/>
+	</div>
+</noscript>
+
+<!-- END OF Google Code for acheteurs Remarketing List --> 
 <?php endif ?>

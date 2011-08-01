@@ -28,10 +28,10 @@
 		</div>
 	</h2>
 	<hr />
-    <!--Disney -->
-      <div class="disney disney_splash">
-          <p><strong>SPECIAL BONUS!</strong> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value) <span id="disney">Offer &amp; Refund Details</span></p>
-      </div>
+		<!--Disney -->
+			<div class="disney disney_splash">
+				<p><strong>SPECIAL BONUS!</strong> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value) <span id="disney">Offer &amp; Refund Details</span></p>
+			</div>
 <div class="fullwidth">
 
 	<?php $x = 0; ?>
@@ -58,18 +58,21 @@
 
 
                 <div class="md-gray p-container">
-
-						<?php if ($itemCounts[ (string) $event->_id] == 0): ?>
-								<?=$this->html->image('/img/soldout.png', array(
-									'title' => "Sold Out",
-									'style' => 'z-index : 2; position : absolute; left:69%; margin:10px;'
-								)); ?>
-					<?php endif ?>
+                  
+						<!-- this is where the items count was -->
+						
 					<?php
 						if (!empty($event->images->splash_big_image)) {
 							$productImage = "/image/{$event->images->splash_big_image}.jpg";
 						} else {
 							$productImage = ($x <= 1) ? "/img/no-image-large.jpeg" : "/img/no-image-small.jpeg";
+						}
+					?>
+					<?php 
+						if(empty($departments)) {
+							$url = $event->url;
+						} else {
+							$url = $event->url.'/?filter='.$departments;
 						}
 					?>
 					<?php if ($x <= 1): ?>
@@ -80,7 +83,7 @@
 							'width' => '355',
 							'height' => '410',
 					'style' => 'margin:0px 0px -6px 0px;'
-							)), "sale/$event->url", array('escape'=> false));
+							)), "sale/$url", array('escape'=> false));
 						?>
 					<?php else: ?>
 						<?=$this->html->link(
@@ -89,12 +92,9 @@
 							'alt' => $event->name,
 							'width' => '298',
 							'height' => '344'
-						)), "sale/$event->url", array('escape'=> false));
-
+						)), "sale/$url", array('escape'=> false));
 						 ?>
-
 					<?php endif ?>
-
 
                 <div class="splash-details">
 
@@ -135,7 +135,13 @@
 					<?php if(!empty($banner["img"])): ?>
 						<?php foreach($banner["img"] as $image): ?>
 							<div><?php if(!empty($image["url"])):?>
-								<a href="<?=$image["url"]?>">
+								<a href="<?=$image["url"]?>"
+									<?php
+										if(array_key_exists('newPage', $image) && $image['newPage']) {
+											echo 'target="_blank"';
+										}
+									?>
+									>
 									<img src="/image/<?=$image["_id"]?>.jpeg" alt="" />
 								</a>
 								<?php else: ?>
@@ -255,15 +261,38 @@
 //-->
 </script>
 <script type="text/javascript">
-    $('#disney').click(function(){
-        $('#modal').load('/events/disney').dialog({
-            autoOpen: false,
-            modal:true,
-            width: 739,
-            height: 700,
-            position: 'top',
-            close: function(ev, ui) {}
-        });
-        $('#modal').dialog('open');
-    });
+	$('#disney').click(function(){
+		$('#modal').load('/events/disney').dialog({
+			autoOpen: false,
+			modal:true,
+			width: 739,
+			height: 700,
+			position: 'top',
+			close: function(ev, ui) {}
+		});
+		$('#modal').dialog('open');
+	});
 </script>
+
+<!-- Google Code for inscrits Remarketing List -->
+<script type="text/javascript">
+
+/* <![CDATA[ */
+	var google_conversion_id = 1019183989;
+	var google_conversion_language = "en";
+	var google_conversion_format = "3";
+	var google_conversion_color = "666666";
+	var google_conversion_label = "E1ZLCMH8igIQ9Yb-5QM";
+	var google_conversion_value = 0;
+/* ]]> */
+
+</script>
+
+<script type="text/javascript" src="http://www.googleadservices.com/pagead/conversion.js"></script>
+
+<noscript>
+	<div style="display:inline;">
+		<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=E1ZLCMH8igIQ9Yb-5QM&amp;guid=ON&amp;script=0"/>
+	</div>
+</noscript>
+<!-- END OF Google Code for inscrits Remarketing List --> 

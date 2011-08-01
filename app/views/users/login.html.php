@@ -1,16 +1,15 @@
 <?php if ($message){ echo $message; } ?>
-
 <div id="fullscreen">
 
 	<div id="login-box">
 
 		<div id="login-box-border" class="login-modal">
-
 			<div id="login-box-container">
 
 				<div class="tt">
 					<div></div>
 				</div>
+				<div class="free_shipping_banner_login"><img src="/img/freeShip-badge.png" /></div>
 
 				<div class="tm">
 					<div class="ti">
@@ -31,6 +30,7 @@
 								<div id="sign-in-box" class="r-container">
 									<div class="tl"></div>
 									<div class="tr"></div>
+									
 									<div class="r-box lt-gradient-1">
 										<h2>Member Sign In</h2>
 
@@ -72,6 +72,7 @@
 							</div>
 
 							<p class="login-sig clear">Exclusive access, Top brands. Great deals. <span class="red">The savvy mom shops at Totsy.com</span></p>
+							<p style="text-align:center; font-size:11px; color:#333;">* Offer expires 30 days after registration</p>
 
 						</div>
 
@@ -98,9 +99,37 @@
 		<li><a href="/pages/aboutus" title="About Us">About Us</a></li>
 		<li><a href="/blog" title="Blog">Blog</a></li>
 		<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
-		<li class="last"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
+		<li><a href="/pages/affiliates" title="Affiliates">Affiliates</a></li>
+		<?php if (empty($userInfo)){ ?>
+		<li><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
+		<li class="last"><a href="http://nytm.org/made" title="Made in NYC" target="_blank">Made in NYC</a></li>
+		<?php } else { ?>
+		<li><a href="/tickets/add" title="Contact Us">Contact Us</a></li>
+		<li class="last"><a href="http://nytm.org/made" title="Made in NYC" target="_blank">Made in NYC</a></li>
+		<?php } ?>
 	</ul>
 
 	<span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved. <br />10 West 18th Street, Floor 4 - New York, NY 10011</span>
 
 </div>
+
+<!-- Google Code for Homepage Remarketing List -->
+<script type="text/javascript">
+/* <![CDATA[ */
+	var google_conversion_id = 1019183989;
+	var google_conversion_language = "en";
+	var google_conversion_format = "3";
+	var google_conversion_color = "666666";
+	var google_conversion_label = "8xkfCIH8iwIQ9Yb-5QM";
+	var google_conversion_value = 0;
+/* ]]> */
+</script>
+
+<script type="text/javascript" src="http://www.googleadservices.com/pagead/conversion.js"></script>
+
+<noscript>
+	<div style="display:inline;">
+		<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=8xkfCIH8iwIQ9Yb-5QM&amp;guid=ON&amp;script=0"/>
+	</div>
+</noscript>
+<!-- END OF Google Code for Homepage Remarketing List -->

@@ -19,6 +19,7 @@ class Affiliate extends Base {
     */
 	public static function getPixels($url, $invited_by) {
 	    $cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
+	    $userInfo = Session::read('userLogin', array('name' => 'default'));
         $orderid = NULL;
 
         if(strpos($url, '&')) {
@@ -48,13 +49,10 @@ class Affiliate extends Base {
 		$pixels = Affiliate::find('all', $options );
 		$pixels = $pixels->data();
 		$pixel = NULL;
-		if (!empty($cookie['user_id'])) {
-			$user = User::find('first', array('conditions' => array('_id' => $cookie['user_id'])));
-		}
         if($url == '/orders/view'){
-            if($user->affiliate_share){
-                $cookie['affiliate'] = $user->affiliate_share['affiliate'];
-                $cookie['entryTime'] = $user->affiliate_share['landing_time'];
+            if($userInfo && array_key_exists('affiliate_share', $userInfo) && $userInfo['affiliate_share']){
+                $cookie['affiliate'] = $userInfo['affiliate_share']['affiliate'];
+                $cookie['entryTime'] = $userInfo['affiliate_share']['landing_time'];
                 Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
                 static::generatePixel($cookie['affiliate'], '', array( 'orderid' => $orderid));
             }
@@ -114,10 +112,21 @@ class Affiliate extends Base {
     * @TODO  Move the appending to the Helper
     */
 	public static function generatePixel($invited_by, $pixel, $options = array()) {
-        if($invited_by == 'w4' || $invited_by == "pmk"){
+	    /**
+	    *   This if block is for affiliates who want a dynamic string in their pixel
+	    *   The random string is created and is place where ever the $ is placed in the
+	    *   pixel.  The $ sign is a place holder for where the random string is will be
+	    */
+        if($invited_by == 'w4' || $invited_by == "pmk" || $invited_by == "emiles" ){
             $transid = 'totsy' . static::randomString();
-            return '<br/>' . str_replace('$', $transid,$pixel );
+            return '<br/>' . str_replace('$', $transid,$pixel);
         }
+        /**
+        *   This if block is for spinback.  It appends the appropriate information
+        *   to their spinback button that are located in various places on the site
+        *   - the events page, product page, order confirmation page, and invite a friend page
+        *   The options variable holds what which page is calling the function.
+        */
         if($invited_by == 'spinback' && ($options)) {
             $insert = '';
             if (array_key_exists('invite', $options) && ($options['invite'])){
@@ -125,7 +134,12 @@ class Affiliate extends Base {
                 $user = User::find('first', array('conditions' => array(
                     'email' => $session['email']
                 )));
-                $insert = static::spinback_share('/img/logo.png', $user->_id, '/join/' . $user->invitation_codes[0], 'The best brands for kids, moms & families up to 90% off!', '' ,"I saved tons on Totsy and you can too! Membership is FREE so join today!", ' st="Invite Your Friends" ');
+                if (is_object($user->invitation_codes) && get_class($user->invitation_codes) == "lithium\data\collection\DocumentArray") {
+                    $code = $user->invitation_codes[0];
+                } else {
+                    $code = $user->invitation_codes;
+                }
+                $insert = static::spinback_share('/img/logo.png', $user->_id, '/join/' . $code, 'The best brands for kids, moms & families up to 90% off!', '' ,"I saved tons on Totsy and you can too! Membership is FREE so join today!", ' st="Invite Your Friends" ');
                 return str_replace('$' , $insert, $pixel);
             }
             if (array_key_exists('orderid', $options) && ($options['orderid'])) {
@@ -170,6 +184,12 @@ class Affiliate extends Base {
                 $event = $options['event'];
                 $last = strrpos($event, '/');
                 $vendorurl = substr($event, $last + 1);
+                if ( preg_match('/filter/', $vendorurl)){
+                    $len = strlen($vendorurl);
+                    $url = substr($event,0, $last);
+                    $last = strrpos($url, '/');
+                    $vendorurl = substr($url, $last + 1);
+                }
                 $event = Event::find('first', array('conditions' => array(
                             'url' => $vendorurl
                         )));
@@ -191,13 +211,14 @@ class Affiliate extends Base {
                 $order = Order::find('first', array('conditions' => array(
                         'order_id' => $orderid
                     )));
-                $user = User::find('first', array('conditions' => array(
-                            '_id' => $order->user_id
-                        )));
+                $user = User::find('first', array(
+                    'conditions' => array('_id' => $order->user_id),
+                    'fields' => array('affiliate_share' => true)
+                    ));
                 if($user->affiliate_share){
                     $track = $user->affiliate_share['affiliate'];
                     $entryTime = $user->affiliate_share['entryTime'];
-                }elseif(array_key_exists('affiliate', $cookie) && $cookie['affiliate']){
+                }else if(array_key_exists('affiliate', $cookie) && $cookie['affiliate']){
                     $track = $cookie['affiliate'];
                     $entryTime = $cookie['entryTime'];
                 }
@@ -208,7 +229,7 @@ class Affiliate extends Base {
                     $pixel  = str_replace('$',$insert,$pixel);
                 }
                 //Encrypting raw message
-                 $base64 = base64_encode($raw);
+                $base64 = base64_encode($raw);
                 $msg = str_replace('-','_',str_replace('+','/',$base64));
 
                 //Used for authenticity

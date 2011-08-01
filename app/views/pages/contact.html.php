@@ -1,26 +1,33 @@
 <h1 class="p-header"><?=$this->title("Contact Us"); ?></h1>
-				
+
 <div id="left">
 		<ul class="menu main-nav">
-		  <h3 style="color:#999;">About Us</h3>
-		  <hr />
-		  <li class="first item15"><a href="/pages/aboutus" title="About Totsy"><span>How Totsy Works</span></a></li>
-		  <li class="first item17"><a href="/pages/moms" title="Meet The Moms"><span>Meet The Moms</span></a></li>
-		  <li class="first item16"><a href="/pages/press" title="Press"><span>Totsy in the Press</span></a></li>
-		  <li class="first item17"><a href="/pages/being_green" title="Being Green"><span>Being Green</span></a></li>
-		  <br />
-		  <h3 style="color:#999;">Need Help?</h3>
-		  <hr />
-		  <li class="first item18 active"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
-		  <li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
-		</ul>
+  <h3 style="color:#999;">About Us</h3>
+	<hr />
+    <li class="first item15"><a href="/pages/aboutus" title="About Totsy"><span>How Totsy Works</span></a></li>
+    <li class="first item17"><a href="/pages/moms" title="Meet The Moms"><span>Meet The Moms</span></a></li>
+    <li class="first item16"><a href="/pages/press" title="Press"><span>Totsy in the Press</span></a></li>
+    <li class="first"><a href="/pages/testimonials" title="Video Testimonials"><span>Video Testimonials</span></a></li>
+    <li class="first item17"><a href="/pages/being_green" title="Being Green"><span>Being Green</span></a></li>
+    <li class="first item19"><a href="http://blog.totsy.com" target="_blank" title="Blog"><span>Totsy Blog</span></a></li>
+    <li class="first item15"><a href="/pages/affiliates" title="Affiliates"><span>Affiliates</span></a></li>
+
+    <br />
+    <h3 style="color:#999;">Need Help?</h3>
+    <hr />
+    <li class="first item18"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
+    <li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
+    <li class="first item19"><a href="/pages/privacy" title="Privacy Policy"><span>Privacy Policy</span></a></li>
+    <li class="first item19"><a href="/pages/terms" title="Terms Of Use"><span>Terms Of Use</span></a></li>
+  </ul>
+
 	</div>
 	<div id="middle" class="noright">
 
 
-	
-	<div class="tl"><!-- --></div> 
-	<div class="tr"><!-- --></div> 
+
+	<div class="tl"><!-- --></div>
+	<div class="tr"><!-- --></div>
 
 	<div id="page">
 		<div id="message">
@@ -29,9 +36,11 @@
 				4th Floor<br/>
 				New York, NY 10011<br/>
 				<br />
-				<strong>Support Email:</strong> <br />				 
-				<a href="mailto:support@totsy.com">support@totsy.com</a></p>
-		</div>
+				<h3 class="gray">Contact Support</h3>
+				<a href="mailto:support@totsy.com">support@totsy.com</a><br />
+				888-247-9444<br />
+				Office Hours:<br/> M-F 10am - 5pm EST</p>
+	</div>
 	</div>
 	<div class="bl"><!-- --></div>
 	<div class="br"><!-- --></div>

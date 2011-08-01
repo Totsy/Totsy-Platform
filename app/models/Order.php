@@ -4,10 +4,11 @@ namespace app\models;
 
 use MongoId;
 use MongoDate;
+use lithium\storage\Session;
 use li3_payments\extensions\Payments;
 use li3_payments\extensions\payments\exceptions\TransactionException;
 
-class Order extends \lithium\data\Model {
+class Order extends Base {
 
 	protected $_dates = array(
 		'now' => 0
@@ -61,12 +62,16 @@ class Order extends \lithium\data\Model {
 		$tax = array_sum($cart->tax($shipping));
 		$handling = Cart::shipping($cart, $shipping);
 		$overSizeHandling = Cart::overSizeShipping($cart);
+		$session = Session::read('services', array('name' => 'default'));
 		if(!empty($orderPromo->type)) {
 			if($orderPromo->type == 'free_shipping') {
 				$handling = 0;
 				$overSizeHandling = 0;
 			}
 		};
+		extract(Service::freeShippingCheck($handling, $overSizeHandling));
+		$handling = $shippingCost;
+
 		// if (!$handling) {
 		// 	$order->errors($order->errors() + array(
 		// 		'shipping' => 'A valid shipping address was not specified.'
@@ -76,7 +81,7 @@ class Order extends \lithium\data\Model {
 		// }
 
 		$tax = $tax ? $tax + (($overSizeHandling+$handling) * Cart::TAX_RATE) : 0;
-		$afterDiscount = $subTotal + $orderCredit->credit_amount + $orderPromo->saved_amount;
+		$afterDiscount = $subTotal + $orderCredit->credit_amount + $orderPromo->saved_amount + Service::tenOffFiftyCheck($subTotal);
 		if( $afterDiscount < 0 ){
 		    $afterDiscount = 0;
 		}
@@ -95,7 +100,7 @@ class Order extends \lithium\data\Model {
 				if ($total > 0) {
 					$authKey = Payments::authorize('default', $total, $card);
 				} else {
-					$authKey = null;
+					$authKey = $this->randomString(8,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz');
 				}
 				return $order->save(compact('total', 'subTotal', 'tax', 'handling','overSizeHandling') + array(
 					'user_id' => (string) $user['_id'],
