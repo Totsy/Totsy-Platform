@@ -62,6 +62,7 @@ Router::connect('/unsubcentral/del', array('controller' => 'unsubcentral', 'acti
 Router::connect('/login', 'Users::login');
 Router::connect('/register', 'Users::register');
 Router::connect('/register/facebook', 'Users::fbregister');
+Router::connect('/register/{:locale}', 'Users::register');
 Router::connect('/momoftheweek', 'MomOfTheWeeks::index');
 Router::connect('/momoftheweek/fbml', 'MomOfTheWeeks::fbml');
 Router::connect('/surveys', 'Surveys::index');
