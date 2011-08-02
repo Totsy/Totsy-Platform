@@ -19,6 +19,10 @@ use \lithium\util\Validator;
 use app\models\Api;
 use app\models\Item;
 use app\models\Event;
+use app\models\User;
+use MongoCode;
+use MongoDate;
+use MongoRegex;
 use MongoId;
 
 // TODO: needs better doccumentation
@@ -339,6 +343,83 @@ class APIController extends  \lithium\action\Controller {
 	}	
 	
 	/**
+	 * Subscriber list, provided by date
+	 *
+	 */
+	
+	protected function signupsApi (){
+		
+		$token = Api::authorizeTokenize($this->request->query);
+		if (is_array($token) && array_key_exists('error', $token)) {
+			return $token;
+		}
+		$from = $to = null;
+		if (array_key_exists('from',$this->request->query)){
+			$from = $this->request->query['from'];
+			if (preg_match("/[\d]{4}-[\d]{2}-[\d]{2}/",$from)){
+				$from = strtotime($from.'17:59:59');
+			} 
+		}
+		if (array_key_exists('to',$this->request->query)){
+			$to = $this->request->query['to'];
+			if (preg_match("/[\d]{4}-[\d]{2}-[\d]{2}/",$to)){
+				$to = strtotime($to. '17:59:59');
+			}
+		}
+		if ((!isset($from) || empty($from)) && (!isset($to) || empty($to))){
+			return ApiHelper::errorCodes(416);
+		}
+		
+		$options = array(
+			'invited_by' => 'keyade',
+			'keyade_user_id' => array( '$exists' => true ),
+			'created_date' =>  array(
+			 '$gte' => new MongoDate($from),
+                         '$lte' => new MongoDate($to)
+
+			)
+		);
+		// Run that sucker!
+		$cursor = User::collection()->find( $options );
+		$this->setView(1);
+		
+		return compact('token','cursor');
+	}
+	
+	/**
+	 * Signups by Referral list
+	 *
+	 */
+	protected function signupsByReferralApi (){
+		$data = $this->signupsApi();
+		if (is_array($data) && array_key_exists('error', data)) {
+			return $data;
+		}
+		$from = $to = null;
+		if (array_key_exists('from',$this->request->query)){
+			$from = $this->request->query['from'];
+			if (preg_match("/[\d]{4}-[\d]{2}-[\d]{2}/",$from)){
+				$from = strtotime($from.' 0:00:00');
+			} 
+		}
+		if (array_key_exists('to',$this->request->query)){
+			$to = $this->request->query['to'];
+			if (preg_match("/[\d]{4}-[\d]{2}-[\d]{2}/",$to)){
+				$to = strtotime($to. '23:59:00');
+			}
+		}
+		if ((!isset($from) || empty($from)) && (!isset($to) || empty($to))){
+			return ApiHelper::errorCodes(416);
+		}
+		// Run that sucker!
+		$cursor = User::collection()->find( array(
+			'keyade_referral_user_id' => array('$exists' => true)
+		));
+		$data['cursor'] = $cursor;
+		return $data;
+	}
+	
+	/**
 	 * Method to handle templates aka views.
 	 * 
 	 * template structure :
@@ -361,6 +442,11 @@ class APIController extends  \lithium\action\Controller {
 	 */
 	private function display ($data){
 
+		if (isset($data['error']['code']) && $data['error']['code'] >0){
+			if($this->_firmat == 'xml'){ echo ApiHelper::converter($data,$this->_format); }
+			else { echo json_encode($data); }
+			exit(0);
+		}
 		
 		switch ($this->_format){
 			
