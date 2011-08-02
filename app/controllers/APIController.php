@@ -88,9 +88,15 @@ class APIController extends  \lithium\action\Controller {
 		}		
 	}	
 	
-	protected function help() {
+	public function help() {
 		$all_methods = get_class_methods(get_class($this));
 		$methods = array();
+		if (array_key_exists('args', $this->request->params) && is_array($this->request->params['args']) && count($this->request->params['args'])>1){
+			$current_method = strtolower($this->request->params['args'][1]);
+		} else {
+			$current_method = 'intro';
+		}
+		
 		foreach($all_methods as $method){
 			if(preg_match('/Api/',$method) ){
 				$clear = str_replace('Api','',$method);
@@ -100,8 +106,17 @@ class APIController extends  \lithium\action\Controller {
 				);
 			}
 		}
-		
-		return compact('methods');
+		if (file_exists(LITHIUM_APP_PATH . '/views/api/help/'.$current_method.'.php')) {
+			ob_start();
+			require LITHIUM_APP_PATH . '/views/api/help/'.$current_method.'.php';
+			$content = ob_get_clean();
+		} else {
+			$current_method = 'intro';
+			ob_start();
+			require LITHIUM_APP_PATH . '/views/api/help/intro.php';
+			$content = ob_get_clean();
+		} 
+		return compact('methods', 'current_method', 'content');
 	}
 	
 	/**
@@ -135,7 +150,7 @@ class APIController extends  \lithium\action\Controller {
 	 * @method GET
 	 * @return sales_list
 	 */
-	protected function salesApi(){
+	protected function sales(){
 		
 		$token = Api::authorizeTokenize($this->request->query);
 		if (is_array($token) && array_key_exists('error', $token)) {
@@ -244,6 +259,14 @@ class APIController extends  \lithium\action\Controller {
 			return $token;
 		}
 		
+		if (is_array($this->request->query) && array_key_exists ('start_date', $this->request->query)){
+			if (preg_match('/[[\d]{4}[\-][\d]{2}[\-][\d]{2}]/',$this->request->query['start_date'])){
+				$start_date = strtotime($this->request->query['start_date']);
+			} else if ($start_date == 'today'){
+				$start_date = strtotime(date('Y-m-d'));
+			}
+		}
+		
 		$openEvents = Event::open();
 		
 		$base_url = 'http://'.$_SERVER['HTTP_HOST'].'/';
@@ -254,6 +277,9 @@ class APIController extends  \lithium\action\Controller {
 		foreach ($openEvents as $event){
 			
 			$data =  $event->data();
+			if (isset($start_date) && $start_date <= $data['start_date']['sec'] ) { 
+				continue; 
+			}
 			$data['available_items'] = false;
 			$data['maxDiscount'] = 0;
 			$data['vendor'] = '';

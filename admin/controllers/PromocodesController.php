@@ -5,6 +5,7 @@ use admin\models\Promocode;
 use admin\models\Promotion;
 use admin\models\User;
 use admin\models\Order;
+use MongoId;
 use MongoDate;
 use MongoRegex;
 use MongoCollection;
@@ -18,6 +19,7 @@ class PromocodesController extends \admin\controllers\BaseController {
 	 */
 	public function index() {
 		$promocodes = Promocode::find('all', array('conditions' => array('special' => array('$ne' => true))));
+		$userCollection = User::collection();
 		foreach ($promocodes as $promocode){
 			$obj_data = $promocode->data();
 			if (!empty($obj_data['start_date'])) {
@@ -31,8 +33,7 @@ class PromocodesController extends \admin\controllers\BaseController {
 			}
 			if (!empty( $obj_data['created_by'] )) {
 				$conditions = array('conditions'=>array('_id'=>$obj_data['created_by']));
-				$user = User::find('first', $conditions);
-				$user = $user->data();
+				$user = $userCollection->findOne( array('_id' => new MongoId($obj_data['created_by'])) );
 				if (array_key_exists('firstname', $user)) {
 					$promocode->created_by = $user['firstname'] . ' ' . $user['lastname'];
 				} else {
@@ -72,13 +73,13 @@ class PromocodesController extends \admin\controllers\BaseController {
 				$promotions  = Promotion::all(compact('conditions'));
 				$promocodeDetail = Promocode::all(compact('conditions'));
 			}
-			if (!empty($data['start']) && !empty($data['end'])) {
-				$start = new MongoDate(strtotime($data['start']));
-				$end = new MongoDate(strtotime($data['end']));
+			if (!empty($data['start_date']) && !empty($data['end_date'])) {
+				$start_date = new MongoDate(strtotime($data['start_date']));
+				$end_date = new MongoDate(strtotime($data['end_date']));
 				$promotions = Promotion::find('all', array(
 					'conditions'=> array(
 						'date_created' => array(
-							'$gt' => $start, '$lte' => $end
+							'$gt' => $start_date, '$lte' => $end_date
 				))));
 			}
 			foreach ($promotions as $promotion) {
