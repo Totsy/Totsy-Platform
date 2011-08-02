@@ -12,6 +12,7 @@ use admin\models\Order;
 use MongoId;
 use MongoDate;
 use admin\extensions\Mailer;
+use MongoRegex;
 
 
 /**
@@ -20,7 +21,7 @@ use admin\extensions\Mailer;
  * but it will be expanded to handle the full end to end CRUD.
  */
 
-class UsersController extends \admin\controllers\BaseController {
+class UsersController extends admin\controllers\BaseController {
 
 	/**
 	 * Associative array of headings used in view.
@@ -163,9 +164,13 @@ class UsersController extends \admin\controllers\BaseController {
 
 	public function adminManager() {
 	    $admins = User::find('all', array(
-	        'conditions' => array('admin' => true),
-	        'fields' => array('email' => true, 'firstname' => true, 'lastname' => true, 'admin'=> true, 'superadmin' => true)));
-	    return compact($admins);
+	        'conditions' => array('$or'=> array(
+	            array('admin' => array('$exists'=>true)),
+	            array('email' => new MongoRegex('/@totsy.com/i'))
+	        )),
+	        'fields' => array('email' => true, 'firstname' => true, 'lastname' => true, 'admin'=> true, 'superadmin' => true, 'created_date' => true, 'created_orig' => true)));
+	    $admins = $admins->data();
+	    return compact('admins');
 	}
 	/**
 	* Deactivate/Activate Users
