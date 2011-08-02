@@ -117,6 +117,8 @@ class AffiliatesController extends BaseController {
                       //  $this->_render['template'] = 'keyade';
                         if(count($params['args'] > 1)){
                             $data['keyade_user_id'] = $params['args'][1];
+                        } else {
+                            $data['keyade_user_id'] = 0;
                         }
                 }
 				extract(UsersController::registration($data));
