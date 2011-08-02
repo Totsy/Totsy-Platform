@@ -31,6 +31,7 @@ function print_usage {
 	echo " - run-app-tests     Runs app tests."
 	echo " - optimize-repo     Perform GC on local git repository."
 	echo " - source-subs       Initialize and update all submodules."
+	echo " - source-sabre      Download and symlink SabreDAV."
 	echo " - source-pear       Install symlink to PEAR."
 	echo " - source-selenium   Install dependencies."
 	echo " - clear-cache       Clears file caches on admin and app."
@@ -172,6 +173,30 @@ case $COMMAND in
 			-firefoxProfileTemplate $PROJECT_DIR/selenium/tzp8knyf.selenium \
 			-log $PROJECT_DIR/selenium/selenium.log \
 			-browserSideLog
+		;;
+
+	source-sabre)
+		VERSION="1.4.4"
+		TARGET_SOURCE=_source/sabredav
+		TARGET_LINK=Sabre
+
+		cd $PROJECT_DIR/libraries
+
+		echo "Removing old..."
+		test -d $TARGET_SOURCE && rm -r $TARGET_SOURCE
+		test -L $TARGET_LINK && rm $TARGET_LINK
+
+		echo "Downloading source..."
+		hg clone \
+			-u version-$VERSION \
+			https://code.google.com/p/sabredav/ \
+			$TARGET_SOURCE
+
+		echo "Removing history..."
+		rm -r $TARGET_SOURCE/.hg*
+
+		echo "Symlinking..."
+		ln -v -s  _source/sabredav/lib/Sabre ./Sabre
 		;;
 
 	source-pear)
