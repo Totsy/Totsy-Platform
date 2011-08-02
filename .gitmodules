@@ -28,3 +28,21 @@
 [submodule "libraries/_source/Imagine"]
 	path = libraries/_source/Imagine
 	url = git://github.com/avalanche123/Imagine.git
+[submodule "libraries/li3_docs"]
+	path = libraries/li3_docs
+	url = git://github.com/UnionOfRAD/li3_docs.git
+[submodule "libraries/li3_flash_message"]
+	path = libraries/li3_flash_message
+	url = code@dev.lithify.me:li3_flash_message.git
+[submodule "libraries/li3_payments"]
+	path = libraries/li3_payments
+	url = git@github.com:Totsy/li3_payments.git
+[submodule "admin/libraries/swiftmailer"]
+	path = admin/libraries/swiftmailer
+	url = git://github.com/swiftmailer/swiftmailer.git
+[submodule "libraries/li3_fixtures"]
+	path = libraries/li3_fixtures
+	url = git://github.com/daschl/li3_fixtures.git
+[submodule "libraries/li3_facebook"]
+	path = libraries/li3_facebook
+	url = git@github.com:Totsy/li3_facebook.git
