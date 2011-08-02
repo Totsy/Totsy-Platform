@@ -9,7 +9,7 @@ Environment::set('production', array(
 	    'license' => 'E96C0C6042CDD179',
 		'companyCode' => 'totsy',
 	    'trace' => false,
-		'retriesNumber' => 1,
+		'retriesNumber' => 2,
 		'logEmail' => 'tax-notifications@totsy.com'
 	)
 ));

@@ -220,7 +220,8 @@ class ReportsController extends BaseController {
 						$results['total'] = number_format($results['total']);
 						$results['total'] = "$".$results['total'];
 						$collection->remove($conditions);
-						break;
+					break;
+					
 					case 'Registrations':
 						switch ($name) {
 							case 'trendytogs':
@@ -228,18 +229,17 @@ class ReportsController extends BaseController {
 									'trendytogs_signup' => array('$exists' => true)
 								);
 								$dateField = 'date_created';
-								break;
+							break;
 							case 'keyade':
 								$conditions = array(
 									'invited_by' => $affiliate,
-									'keyade_user_id' => array( '$exists' => true )
+									'keyade_user_id' => array('$exists' => true )
 								);
 								$dateField = 'created_date';
 								if (!empty($date)) {
 									$conditions = $conditions + $date;
-								}								
+								}
 							break;
-							
 							default:
 								$conditions = array(
 									'invited_by' => $affiliate,
@@ -249,7 +249,7 @@ class ReportsController extends BaseController {
 									$conditions = $conditions + $date;
 								}
 							break;
-						}	
+						}
 						if($subaff){
 							$keys = new MongoCode("function(doc){
 								return {
@@ -269,7 +269,7 @@ class ReportsController extends BaseController {
 							$results['total'] += $result['total'];
 						}
 						$results['total'] = number_format($results['total']);
-						
+					break;
 				}
 			}
 		}
