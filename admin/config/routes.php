@@ -35,7 +35,7 @@ Router::connect('/token', 'Users::token');
 Router::connect('/', 'Dashboard::index');
 Router::connect('/search/{:search}', 'Search::view');
 
-
+Router::connect('/dav/*', 'Dav::handle');
 Router::connect('/register', 'Users::register');
 Router::connect('/addresses', 'Addresses::view');
 Router::connect('/account/add/{:args}', 'Account::add');
