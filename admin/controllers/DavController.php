@@ -4,6 +4,7 @@ namespace admin\controllers;
 
 use lithium\core\Libraries;
 use lithium\core\Environment;
+use admin\extensions\dav\Auth;
 use Sabre_DAV_Server;
 use Sabre_DAV_FS_Directory;
 use Sabre_DAV_Locks_Backend_File;
@@ -24,13 +25,16 @@ class DavController extends \lithium\action\Controller {
 		$server->debugExceptions = !Environment::is('production');
 		$server->setBaseUri('/dav');
 
-
 		$backend = new Sabre_DAV_Locks_Backend_File($resources . '/dav/locks.dat');
 		$plugin = new Sabre_DAV_Locks_Plugin($backend);
 		$server->addPlugin($plugin);
 
 		$plugin = new Sabre_DAV_TemporaryFileFilterPlugin($resources . '/dav/temporary');
-		 $server->addPlugin($plugin);
+		$server->addPlugin($plugin);
+
+		$backend = new Auth();
+		$plugin = new Sabre_DAV_Auth_Plugin($backend, 'Totsy DAV'); /* 2nd arg is the realm. */
+		$server->addPlugin($plugin);
 
 		$server->exec();
 		exit;
