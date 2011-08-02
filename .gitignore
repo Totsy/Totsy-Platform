@@ -34,3 +34,7 @@ admin/resources/totsy/shipfiles/backup/
 
 # selenium
 selenium/server.jar
+
+# stuff for selenium etc.
+libraries/PEAR
+selenium
