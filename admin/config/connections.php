@@ -15,6 +15,8 @@ use \lithium\data\Connections;
 		'production' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy',
+			'setSlaveOkay' => true,
+			'replicaSet' => true,
 			'host' => array(
     			'db1',
     			'db2',
