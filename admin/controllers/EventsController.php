@@ -424,7 +424,7 @@ class EventsController extends BaseController {
 		/**
 		* Retrieving firstname and lastname/emails of modifiers
 		**/
-		if ($event->modifications) {
+		if (!empty($event->modifications)) {
 			foreach($event->modifications as $log){
 				$user = User::find('first', array(
 					'conditions' => array('_id' => $log['author'])
@@ -438,7 +438,7 @@ class EventsController extends BaseController {
 				}
 			}
 		}
-		if ($event->items) {
+		if (!empty($event->items)) {
 			foreach ($event->items as $_id) {
 				$conditions = compact('_id') + array('enabled' => true);
 
