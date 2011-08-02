@@ -300,6 +300,30 @@ case $COMMAND in
 			-firefoxProfileTemplate $PROJECT_DIR/selenium/tzp8knyf.selenium
 		;;
 
+	source-sabre)
+		VERSION="1.4.4"
+		TARGET_SOURCE=_source/sabredav
+		TARGET_LINK=Sabre
+
+		cd $PROJECT_DIR/libraries
+
+		echo "Removing old..."
+		test -d $TARGET_SOURCE && rm -r $TARGET_SOURCE
+		test -L $TARGET_LINK && rm $TARGET_LINK
+
+		echo "Downloading source..."
+		hg clone \
+			-u version-$VERSION \
+			https://code.google.com/p/sabredav/ \
+			$TARGET_SOURCE
+
+		echo "Removing history..."
+		rm -r $TARGET_SOURCE/.hg*
+
+		echo "Symlinking..."
+		ln -v -s  _source/sabredav/lib/Sabre ./Sabre
+		;;
+
 	source-pear)
 		PEAR=$(pear config-show  | grep php_dir | awk '{ print $4 }')
 
