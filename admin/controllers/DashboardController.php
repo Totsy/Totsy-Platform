@@ -141,7 +141,7 @@ class DashboardController extends \lithium\action\Controller {
 			count($currentMonth['dates']),
 			true
 		);
-		$revenue = $lastMonth['revenue'] + $currentMonth['revenue'];
+		$revenue = (is_numeric($currentMonth['revenue'])) ? $lastMonth['revenue'] + $currentMonth['revenue']:$lastMonth['revenue'];
 		$revenue[0][0] = "$lastMonthDesc Revenue";
 		$revenue[0][1] = 'lineThickness=.5';
 		$revenue[1][0] = "$currentMonthDesc Revenue";
@@ -170,7 +170,7 @@ class DashboardController extends \lithium\action\Controller {
 			count($currentMonth['dates']),
 			true
 		);
-		$gross = $lastMonth['gross'] + $currentMonth['gross'] ;
+		$gross = (is_numeric($currentMonth['gross'])) ? $lastMonth['gross'] + $currentMonth['gross']:$lastMonth['gross'];
 		$gross[0][0] = "$lastMonthDesc Revenue";
 		$gross[0][1] = 'lineThickness=.5';
 		$gross[1][0] = "$currentMonthDesc Revenue";
