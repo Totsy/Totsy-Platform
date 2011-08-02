@@ -18,9 +18,10 @@ use lithium\action\Response;
  *
  */
 Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request) {
+	$file = File::first($request->id);
 	return new Response(array(
 		'headers' => array('Content-type' => "image/{$request->type}"),
-		'body' => File::first($request->id)->file->getBytes()
+		'body' => !empty($file) ? $file->file->getBytes():''
 	));
 });
 Router::connect('/uploads', 'Uploads::index');
