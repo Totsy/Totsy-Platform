@@ -41,27 +41,9 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 Router::connect('/uploads', 'Uploads::index');
 Router::connect('/uploads/upload{:args}', 'Uploads::upload');
 
-/**
- * Redirect all non-authenticated users to
- */
-if (!Session::check('userLogin')) {
-	Router::connect('/{:args}', 'Users::login');
-}
-
-$session = Session::read('userLogin');
-
 Router::connect('/login', 'Users::login');
 Router::connect('/logout', 'Users::logout');
-
-/**
- * Here, we are connecting '/' (base path) to controller called 'Pages',
- * its action called 'view', and we pass a param to select the view file
- * to use (in this case, /app/views/pages/home.html.php)...
- */
-//Router::connect('/', array('Pages::view', 'home'));
-/**
- * Leaving above code and comments, but redirecting to Dashboard
- */
+Router::connect('/token', 'Users::token');
 Router::connect('/', 'Dashboard::index');
 
 Router::connect('/search/{:search}', 'Search::view');
