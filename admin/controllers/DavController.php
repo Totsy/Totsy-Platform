@@ -12,7 +12,7 @@ use Sabre_DAV_Locks_Plugin;
 class DavController extends \lithium\action\Controller {
 
 	public function handle() {
-		$resources = Libraries::get('app', 'resources');
+		$resources = Libraries::get('admin', 'resources');
 
 		// @todo This is temporary and will be replaced by an implementation
 		//       storing files directly in GridFS.
