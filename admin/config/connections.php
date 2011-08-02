@@ -23,8 +23,8 @@ use \lithium\data\Connections;
     			'db3',
     			'db4',
     			'db5',
-    			'db6'
-    	)),
+    			'db6' ),
+			'adapter' => 'app\extensions\adapter\mongo\Db'),
 		'test' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy_test',
