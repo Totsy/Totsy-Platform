@@ -31,6 +31,7 @@ function print_usage {
 	echo " - optimize-repo     Perform GC on local git repository."
 	echo " - source-lithium    Install lithium."
 	echo " - source-subs       Initialize and update all submodules."
+	echo " - source-imagine    Initialize submodule and symlink Imagine Imaging library."
 	echo " - source-sabre      Download and symlink SabreDAV."
 	echo " - source-pear       Install symlink to PEAR."
 	echo " - source-selenium   Install dependencies."
@@ -134,6 +135,24 @@ case $COMMAND in
 
 		echo "Removing temporary directory..."
 		rm -fr $TMP
+		;;
+
+	source-imagine)
+		TARGET_SOURCE=_source/Imagine
+		TARGET_LINK=Imagine
+
+		echo "Initializing submodule..."
+		cd $PROJECT_DIR
+		git submodule update --init libraries/$TARGET_SOURCE
+
+		echo "Updating source..."
+		cd $PROJECT_DIR/libraries/$TARGET_SOURCE
+		git pull
+
+		echo "(Re)creating symlink..."
+		cd $PROJECT_DIR/libraries
+		test -L $TARGET_LINK && rm $TARGET_LINK
+		ln -v -s $TARGET_SOURCE/lib/Imagine ./$TARGET_LINK
 		;;
 
 	source-sabre)

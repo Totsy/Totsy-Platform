@@ -25,3 +25,6 @@
 [submodule "libraries/sailthru/sailthru-php5-client"]
 	path = libraries/sailthru/sailthru-php5-client
 	url = git://github.com/sailthru/sailthru-php5-client.git
+[submodule "libraries/_source/Imagine"]
+	path = libraries/_source/Imagine
+	url = git://github.com/avalanche123/Imagine.git
