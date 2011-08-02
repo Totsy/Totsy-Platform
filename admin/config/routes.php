@@ -65,21 +65,7 @@ Router::connect('/logout', 'Users::logout');
 Router::connect('/', 'Dashboard::index');
 
 Router::connect('/search/{:search}', 'Search::view');
-
-
-/**
- * Hooking up ACLs
- */
-if (isset($session['acls'])) {
-	foreach ($session['acls'] as $acl) {
-		$connect = implode('::', array($acl['controller'], $acl['action']));
-		Router::connect($acl['route'], $connect);
-	}
-}
-/**
- * Hooking up someone is only an admin.
- */
-if ($session['admin'] && !isset($session['acls'])) {
+Router::connect('/dav/*', 'Dav::handle');
 Router::connect('/register', 'Users::register');
 Router::connect('/addresses', 'Addresses::view');
 Router::connect('/account/add/{:args}', 'Account::add');
@@ -89,7 +75,7 @@ Router::connect('/users/view/{:args}', 'Users::view');
 Router::connect('/users/accountStatus/{:args}', 'Users::accountStatus');
 Router::connect('/select/event/{:args}', 'Base::selectEvent');
 Router::connect('/token', 'Users::token');
-#items 
+#items
 Router::connect('/items/preview/{:event:[a-z0-9\-]+}/{:item:[a-z0-9\-]+}', 'Items::preview');
 Router::connect('/items/removeItems/', 'Items::removeItems');
 Router::connect('/items/images/order/{:item:[a-z0-9\-]+}', 'Items::orderImages');
