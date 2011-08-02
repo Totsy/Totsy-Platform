@@ -23,7 +23,7 @@ use lithium\util\Inflector;
 <?=$this->html->script('jquery.fileupload-ui.js')?>
 <?=$this->html->script('uploader.js')?>
 <?=$this->html->style('jquery.fileupload-ui.css');?>
-<?=$this->html->style('uploader.css');?>
+<?php //=$this->html->style('uploader.css');?>
 <?=$this->html->style('selectlist.css');?>
 <?=$this->html->script('jquery.selectlist.min.js')?>
 <?=$this->html->script('jquery.selectlist.pack.js')?>
