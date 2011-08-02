@@ -34,7 +34,7 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 			'Content-type' => $file->mimeType(),
 			'Etag' => '"' . $file->md5  . '"'
 		),
-		'body' => $file->file->getBytes()
+		'body' => !empty($file) ? $file->file->getBytes():''
 	));
 });
 
@@ -100,4 +100,4 @@ Router::connect('/{:controller}/{:action}/{:args}');
 }
 
 
-
+?>
