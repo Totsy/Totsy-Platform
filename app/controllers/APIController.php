@@ -357,13 +357,13 @@ class APIController extends  \lithium\action\Controller {
 		if (array_key_exists('from',$this->request->query)){
 			$from = $this->request->query['from'];
 			if (preg_match("/[\d]{4}-[\d]{2}-[\d]{2}/",$from)){
-				$from = strtotime($from.'17:59:59');
+				$from = strtotime($from.' 0:00:00');
 			} 
 		}
 		if (array_key_exists('to',$this->request->query)){
 			$to = $this->request->query['to'];
 			if (preg_match("/[\d]{4}-[\d]{2}-[\d]{2}/",$to)){
-				$to = strtotime($to. '17:59:59');
+				$to = strtotime($to. ' 23:59:59');
 			}
 		}
 		if ((!isset($from) || empty($from)) && (!isset($to) || empty($to))){
@@ -375,10 +375,10 @@ class APIController extends  \lithium\action\Controller {
 			'keyade_user_id' => array( '$exists' => true ),
 			'created_date' =>  array(
 			 '$gte' => new MongoDate($from),
-                         '$lte' => new MongoDate($to)
-
+             '$lte' => new MongoDate($to)
 			)
 		);
+		
 		// Run that sucker!
 		$cursor = User::collection()->find( $options );
 		$this->setView(1);
@@ -405,7 +405,7 @@ class APIController extends  \lithium\action\Controller {
 		if (array_key_exists('to',$this->request->query)){
 			$to = $this->request->query['to'];
 			if (preg_match("/[\d]{4}-[\d]{2}-[\d]{2}/",$to)){
-				$to = strtotime($to. '23:59:00');
+				$to = strtotime($to. ' 23:59:00');
 			}
 		}
 		if ((!isset($from) || empty($from)) && (!isset($to) || empty($to))){
