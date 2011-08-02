@@ -8,6 +8,7 @@ use Sabre_DAV_Server;
 use Sabre_DAV_FS_Directory;
 use Sabre_DAV_Locks_Backend_File;
 use Sabre_DAV_Locks_Plugin;
+use Sabre_DAV_TemporaryFileFilterPlugin;
 
 class DavController extends \lithium\action\Controller {
 
@@ -16,17 +17,20 @@ class DavController extends \lithium\action\Controller {
 
 		// @todo This is temporary and will be replaced by an implementation
 		//       storing files directly in GridFS.
-		$root = new Sabre_DAV_FS_Directory($resources . '/tmp');
+		$root = new Sabre_DAV_FS_Directory($resources . '/dav/share');
 
 		$server = new Sabre_DAV_Server($root);
 
 		$server->debugExceptions = !Environment::is('production');
 		$server->setBaseUri('/dav');
 
-		$lockBackend = new Sabre_DAV_Locks_Backend_File($resources . '/dav_locks');
-		$lockPlugin = new Sabre_DAV_Locks_Plugin($lockBackend);
 
-		$server->addPlugin($lockPlugin);
+		$backend = new Sabre_DAV_Locks_Backend_File($resources . '/dav/locks.dat');
+		$plugin = new Sabre_DAV_Locks_Plugin($backend);
+		$server->addPlugin($plugin);
+
+		$plugin = new Sabre_DAV_TemporaryFileFilterPlugin($resources . '/dav/temporary');
+		 $server->addPlugin($plugin);
 
 		$server->exec();
 		exit;
