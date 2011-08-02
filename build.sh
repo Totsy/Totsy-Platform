@@ -339,7 +339,7 @@ case $COMMAND in
 		rm -r $TARGET_SOURCE/.hg*
 
 		echo "Symlinking..."
-		ln -v -s  _source/sabredav/lib/Sabre ./Sabre
+		ln -v -s $TARGET_SOURCE/lib/Sabre ./$TARGET_LINK
 		;;
 
 	source-pear)
