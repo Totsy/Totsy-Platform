@@ -1,6 +1,5 @@
 <?=$this->html->script('jquery.dataTables.js');?>
 <?=$this->html->script('TableTools.min.js');?>
-<?=$this->html->script('ZeroClipboard.js');?>
 <?=$this->html->style('jquery_ui_blitzer.css')?>
 <?=$this->html->style('TableTools');?>
 <?=$this->html->style('table');?>
