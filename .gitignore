@@ -31,3 +31,6 @@ admin/resources/tmp/logs/*.*
 admin/resources/tmp/logs/
 admin/resources/tmp/cache/
 admin/resources/totsy/shipfiles/backup/
+
+# selenium
+selenium/server.jar
