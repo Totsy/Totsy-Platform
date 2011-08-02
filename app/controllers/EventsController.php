@@ -180,7 +180,6 @@ class EventsController extends BaseController {
 	public function disney(){
 		$this->_render['layout'] = false;
 	}
-
 }
 
 
