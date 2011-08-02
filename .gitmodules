@@ -46,3 +46,6 @@
 [submodule "libraries/li3_facebook"]
 	path = libraries/li3_facebook
 	url = git@github.com:Totsy/li3_facebook.git
+[submodule "libraries/sailthru/sailthru-php5-client"]
+	path = libraries/sailthru/sailthru-php5-client
+	url = https://github.com/sailthru/sailthru-php5-client.git

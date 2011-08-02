@@ -26,11 +26,9 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 Router::connect('/uploads', 'Uploads::index');
 Router::connect('/uploads/upload{:args}', 'Uploads::upload');
 
-
 Router::connect('/login', 'Users::login');
 Router::connect('/logout', 'Users::logout');
 Router::connect('/token', 'Users::token');
-
 
 Router::connect('/', 'Dashboard::index');
 Router::connect('/search/{:search}', 'Search::view');
