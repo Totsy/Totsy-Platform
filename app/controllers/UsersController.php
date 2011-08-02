@@ -10,10 +10,8 @@ use lithium\security\Auth;
 use lithium\storage\Session;
 use app\extensions\Mailer;
 use app\extensions\Keyade;
-use li3_silverpop\extensions\Silverpop;
 use MongoDate;
 use li3_facebook\extension\FacebookProxy;
-
 
 class UsersController extends BaseController {
 
@@ -122,7 +120,8 @@ class UsersController extends BaseController {
 					'user' => $user,
 					'email' => $user->email
 				);
-				Silverpop::send('registrationNew', $data);
+				Mailer::send('Welcome_Free_Shipping', $user->email);
+				Mailer::addToMailingList($data['email']);
 				$ipaddress = $this->request->env('REMOTE_ADDR');
 				User::log($ipaddress);
 				$this->redirect('/sales');
@@ -162,7 +161,12 @@ class UsersController extends BaseController {
 							'user' => $user,
 							'email' => $user->email
 						);
-						Silverpop::send('registrationNew', $data);
+						Mailer::send('Welcome_Free_Shipping', $user->email);
+						$name = null;
+						if (isset($data['firstname'])) $name = $data['firstname'];
+						if (isset($data['lastname'])) $name = is_null($name)?$data['lastname']:$name.$data['lastname'];  
+						Mailer::addToMailingList($data['email'],is_null($name)?array():$name);
+
 					}
 				}
 			}
@@ -190,7 +194,9 @@ class UsersController extends BaseController {
 			//Grab User Record
 			$user = User::lookup($email);
 			$redirect = '/sales';
-			if (strlen($password) > 0) {
+			if ($user->deactivated) {
+				$message = '<div class="error_flash">Your account has been deactivated.  Please contact Customer Service at 888-247-9444 to reactivate your account</div>';
+			} else if (strlen($password) > 0) {
 				if($user){
 					if (!empty($user->reset_token)) {
 						if (strlen($user->reset_token) > 1) {
@@ -248,9 +254,13 @@ class UsersController extends BaseController {
 			}
 		}
 		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
-			$user = User::find('first', array('conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
+			$user = User::find('first', array(
+				'conditions' => array('autologinHash' => $cookie['autoLoginHash']),
+				'fields' => array('_id' => 1)));
 			if($user) {
-				if($cookie['user_id'] == $user->_id){
+				if ($user->deactivate) {
+					return;
+				} else if($cookie['user_id'] == $user->_id){
 					$sessionWrite = $this->writeSession($user->data());
 					User::log($ipaddress);
 					if(array_key_exists('redirect', $cookie) && $cookie['redirect'] ) {
@@ -263,6 +273,9 @@ class UsersController extends BaseController {
 					} else {
 						$this->redirect($redirect);
 					}
+				} else {
+					$cookie['autoLoginHash'] = null;
+					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 				}
 			}
 		}
@@ -272,9 +285,15 @@ class UsersController extends BaseController {
 	 * Performs the logout action of the user removing '_id' from session details.
 	 */
 	public function logout() {
+		$loginInfo = Session::read('userLogin');
+		$user = User::collection();
+		$user->update(
+			array('email' => $loginInfo['email']),
+			array('$unset' => array('autologinHash' => 1))
+			);
 		$success = Session::delete('userLogin');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-		$cookie['autoLoginHash'] = null;
+		unset($cookie['autoLoginHash']);
 		Session::delete('services');
 		Session::delete('cookieCrumb', array('name' => 'cookie'));
 		$cookieSuccess = Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
@@ -389,12 +408,7 @@ class UsersController extends BaseController {
 				$user->reset_token = sha1($token);
 				$user->legacy = 0;
 				if ($user->save(null, array('validate' => false))) {
-					$data = array(
-						'user' => $user,
-						'email' => $user->email,
-						'token' => $token
-					);
-					Silverpop::send('reset', $data);
+					Mailer::send('Reset_Password', $user->email, array('token' => $token));
 					$message = "Your password has been reset. Please check your email.";
 					$success = true;
 				} else {
@@ -431,12 +445,14 @@ class UsersController extends BaseController {
 			foreach ($to as $email) {
 				$invitation = Invitation::create();
 				Invitation::add($invitation, $id, $code, $email);
-				$data = array(
-					'user' => $user,
-					'email' => $email,
-					'message' => $message
+				$args = array(
+					'firstname' => $user->firstname,
+					'message' => $message,
+					'email_from' => $user->email,
+					'domain' => 'http://www.totsy.com',
+					'invitation_codes' => $user->invitation_codes
 				);
-				Silverpop::send('invite', $data);
+				Mailer::send('Friend_Invite', $email, $args);
 			}
 			$flashMessage = "Your invitations have been sent";
 		}
