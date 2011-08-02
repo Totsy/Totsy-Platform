@@ -25,3 +25,7 @@
 [submodule "app/libraries/lithium"]
 	path = app/libraries/lithium
 	url = git@github.com:UnionOfRAD/lithium.git
+[submodule "libraries/_source/Imagine"]
+	path = libraries/_source/Imagine
+	url = git://github.com/avalanche123/Imagine.git
+

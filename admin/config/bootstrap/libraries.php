@@ -68,6 +68,8 @@ Libraries::add('Sabre', array(
 	'prefix' => 'Sabre_',
 	'bootstrap' => 'autoload.php'
 ));
+Libraries::add('Imagine');
+
 require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel.php';
 require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel/IOFactory.php';
 //require LITHIUM_APP_PATH . '/libraries/swiftmailer/lib/swift_required.php';
