@@ -1,7 +1,7 @@
 <?php ini_set("display_erros", 0); ?>
 <?php use admin\models\Event; ?>
 <?=$this->html->script('tiny_mce/tiny_mce.js');?>
-<?//=$this->html->script('jquery-1.4.2');?>
+<?php //=$this->html->script('jquery-1.4.2');?>
 <?=$this->html->script('jquery-dynamic-form.js');?>
 <?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
 <?=$this->html->script('swfupload.js');?>
@@ -24,7 +24,7 @@
 <?=$this->html->script('jquery.fileupload-ui.js')?>
 <?=$this->html->script('uploader.js')?>
 <?=$this->html->style('jquery.fileupload-ui.css');?>
-<?=$this->html->style('uploader.css');?>
+<?php //=$this->html->style('uploader.css');?>
 <?=$this->html->style('selectlist.css');?>
 <?=$this->html->script('jquery.selectlist.min.js')?>
 <?=$this->html->script('jquery.selectlist.pack.js')?>
@@ -37,7 +37,6 @@
     padding: 0;
 }
 
-selectlist.css (line 1)
 .selectlist-list {
     width: 12em;
 }
