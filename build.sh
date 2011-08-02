@@ -300,6 +300,24 @@ case $COMMAND in
 			-firefoxProfileTemplate $PROJECT_DIR/selenium/tzp8knyf.selenium
 		;;
 
+	source-imagine)
+		TARGET_SOURCE=_source/Imagine
+		TARGET_LINK=Imagine
+
+		echo "Initializing submodule..."
+		cd $PROJECT_DIR
+		git submodule update --init libraries/$TARGET_SOURCE
+
+		echo "Updating source..."
+		cd $PROJECT_DIR/libraries/$TARGET_SOURCE
+		git pull
+
+		echo "(Re)creating symlink..."
+		cd $PROJECT_DIR/libraries
+		test -L $TARGET_LINK && rm $TARGET_LINK
+		ln -v -s $TARGET_SOURCE/lib/Imagine ./$TARGET_LINK
+		;;
+
 	source-sabre)
 		VERSION="1.4.4"
 		TARGET_SOURCE=_source/sabredav
