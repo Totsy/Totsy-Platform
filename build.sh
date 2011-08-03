@@ -33,6 +33,7 @@ function print_usage {
 	echo " - source-subs       Initialize and update all submodules."
 	echo " - source-imagine    Initialize submodule and symlink Imagine Imaging library."
 	echo " - source-sabre      Download and symlink SabreDAV."
+	echo " - run-tests         Runs lithium, app, admin and library tests."
 	echo " - source-pear       Install symlink to PEAR."
 	echo " - source-selenium   Install dependencies."
 	echo " - selenium-server   Start the selenium server."
@@ -180,6 +181,17 @@ case $COMMAND in
 
 		echo "Symlinking..."
 		ln -v -s $TARGET_SOURCE/lib/Sabre ./$TARGET_LINK
+		;;
+
+	# This section collects all commands required to run
+	# all tests contained within libraries and apps accross
+	# the entire codebase.
+	run-tests)
+		LI3=$PROJECT_DIR/libraries/lithium/console/li3
+
+		echo "Running Lithium unit tests..."
+		cd $PROJECT_DIR
+		$LI3 test libraries/lithium/tests/cases
 		;;
 
 	source-pear)
