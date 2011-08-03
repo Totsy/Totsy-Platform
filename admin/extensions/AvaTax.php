@@ -16,6 +16,12 @@ use AvaTaxWrap;
 
 class AvaTax {
 	
+	/**
+	 * Switcher for avalara/totsy tax calculation system
+	 * 
+	 */
+	protected static $useAvatax = true;
+	
 	public static function  cancelTax($order,$tryNumber=0){
 		try{
 			AvaTaxWrap::commitTax($order);
@@ -97,7 +103,7 @@ class AvaTax {
 					BlackBox::tax('ERROR tax returns 0');
 					Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
 						'message' => 'Was unable to calculate tax. Charged $0 tax for this order.',
-						'trace' => 'ADMIN @ 'date('Y-m-d H:i:s'),
+						'trace' => 'ADMIN @ '.date('Y-m-d H:i:s'),
 						'info' => $data
 					));
 					return 0;		
@@ -126,7 +132,7 @@ class AvaTax {
 				BlackBox::tax('ERROR tax returns 0');
 				Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
 					'message' => 'Was unable to post tax.',
-					'trace' => 'ADMIN @ 'date('Y-m-d H:i:s'),
+					'trace' => 'ADMIN @ '.date('Y-m-d H:i:s'),
 					'info' => $data
 				));
 				return 0;
@@ -150,7 +156,7 @@ class AvaTax {
 				BlackBox::tax('ERROR tax returns 0');
 				Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
 					'message' => 'Was unable to process return tax.',
-					'trace' => 'ADMIN @ 'date('Y-m-d H:i:s'),
+					'trace' => 'ADMIN @ '.date('Y-m-d H:i:s'),
 					'info' => $data
 				));
 				return 0;
@@ -172,7 +178,7 @@ class AvaTax {
 				BlackBox::tax('ERROR tax returns 0');
 				Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
 					'message' => 'Was unable to commit tax.',
-					'trace' => 'ADMIN @ 'date('Y-m-d H:i:s'),
+					'trace' => 'ADMIN @ '.date('Y-m-d H:i:s'),
 					'info' => $data
 				));
 				return 0;
