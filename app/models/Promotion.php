@@ -83,11 +83,11 @@ class Promotion extends Base {
                          		'promo' => "You have already used a shipping discount"
                         ));
 					}	
-                    if ($postDiscountTotal >= $code->minimum_purchase && !($entity->errors())) {
+                    if ($postSubtotal >= $code->minimum_purchase && !($entity->errors())) {
                         $entity->user_id = $user['_id'];
                         if ($code->type == 'percentage') {
-                            $entity->saved_amount = $postDiscountTotal * -$code->discount_amount;
-                            Cart::updateSavings(null, 'discount', $postDiscountTotal * $code->discount_amount);
+                            $entity->saved_amount = $postSubtotal * -$code->discount_amount;
+                            Cart::updateSavings(null, 'discount', $postSubtotal * $code->discount_amount);
                         }
                         if ($code->type == 'dollar') {
                             $entity->saved_amount = -$code->discount_amount;
@@ -95,6 +95,7 @@ class Promotion extends Base {
                         }
                         if ($code->type == 'free_shipping' && !($entity->errors()) && empty($services['freeshipping']['enable'])) {
                             $entity->type = "free_shipping";
+                             $entity->saved_amount = -(7.95 + $overShippingCost);
                             Cart::updateSavings(null, 'discount', 7.95 + $overShippingCost);
                         }
                         Session::write('promocode', $code , array('name' => 'default'));   
@@ -112,9 +113,9 @@ class Promotion extends Base {
                 }
                 $errors = $entity->errors();
                 if ($errors) {
-                	if(Session::read('promocode') === $code) {
+           
                 		Session::delete('promocode');
-                	}
+                	
                 	Cart::updateSavings(null, 'discount', 0);
                     $entity->saved_amount = 0;
                 } else{

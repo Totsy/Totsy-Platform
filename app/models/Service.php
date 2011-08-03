@@ -16,14 +16,15 @@ class Service extends Base {
     * @return array of shipping and oversized handling
     **/
     public static function freeShippingCheck($shippingCost = 7.95, $overSizeHandling = 0.00) {
-        $freeshipping = false;
+        $enable = false;
         $service = Session::read('services', array('name' => 'default'));
 		if ( $service && array_key_exists('freeshipping', $service)) {
 		    if ($service['freeshipping'] === 'eligible') {
 		    	Cart::updateSavings(null, 'services', ($shippingCost + $overSizeHandling));
+				$enable = true;
+			} else {
 				$shippingCost = 0;
 				$overSizeHandling = 0;
-				$enable = true;
 			}
 		}
 		return compact('shippingCost', 'overSizeHandling', 'enable');

@@ -177,11 +177,11 @@
 						<div style="clear:both"></div>
 						<div style="font-weight:bold">
     							<span style="float: left;">Complimentary Shipping 
-    							<?php if(!empty($services['freeshipping'])) {
-										echo '[FreeShipping]';    							
-    								} else if(!empty($promocode)) {
-    									echo '[' . $promocode['code'] . ']';
-    								}?>		
+    							<?php 
+    							if(!empty($promocode)) {
+    								if($promocode['type'] === 'freeshipping')
+    									echo '[' . $promocode['code'] . ']';	
+    							}?>		
     							:</span> 
     							<span style="color:#009900; float:right">- $<?=number_format($shipping_discount,2)?></span>
     					</div>

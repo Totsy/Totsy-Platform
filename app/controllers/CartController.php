@@ -316,13 +316,8 @@ class CartController extends BaseController {
 		$services = array();
 		$services['freeshipping'] = Service::freeShippingCheck();
 		$services['tenOffFitfy'] = Service::tenOffFiftyCheck($subTotal);
-		#Apply Credits
-		$credit_amount = null;
-		$cartCredit = Credit::create();
-		if (array_key_exists('credit_amount', $this->request->data)) {
-			$credit_amount = $this->request->data['credit_amount'];
-		}
-		$cartCredit->checkCredit($credit_amount, $subTotal, $userDoc);	
+		#Calculation of the subtotal with shipping and services discount
+		$postSubtotal = ($subTotal + $shippingCost + $overShippingCost + $services['tenOffFitfy'] - $services['freeshipping']['shippingCost']  - $services['freeshipping']['overSizeHandling']);
 		#Apply Promocodes
 		$cartPromo = Promotion::create();
 		$promo_code = null;
@@ -334,9 +329,16 @@ class CartController extends BaseController {
 			$promo_code = $this->request->data['code'];
 		}
 		if (!empty($promo_code)) {
-			$postDiscountTotal = ($subTotal + $services['tenOffFitfy'] + $cartCredit->credit_amount +  $shippingCost + $overShippingCost);
-			$cartPromo->promoCheck($promo_code, $userDoc, compact('postDiscountTotal', 'shippingCost', 'overShippingCost', 'services'));	
+			$cartPromo->promoCheck($promo_code, $userDoc, compact('postSubtotal', 'shippingCost', 'overShippingCost', 'services'));  
 		}
+		#Apply Credits
+		$credit_amount = null;
+		$cartCredit = Credit::create();
+		if (array_key_exists('credit_amount', $this->request->data)) {
+			$credit_amount = $this->request->data['credit_amount'];
+		}
+		$postDiscountTotal = ($postSubtotal + $cartPromo['saved_amount']);
+		$cartCredit->checkCredit($credit_amount, $postDiscountTotal, $userDoc);
 		return compact('cartPromo', 'cartCredit', 'services');
 	}
 	
