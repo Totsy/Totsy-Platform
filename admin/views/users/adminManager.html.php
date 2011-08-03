@@ -2,7 +2,6 @@
 <?=$this->html->script('TableTools.min.js');?>
 <?=$this->html->script('jquery-ui-timepicker.min.js');?>
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
-<?=$this->html->script('ZeroClipboard.js');?>
 <?=$this->html->style('jquery_ui_blitzer.css')?>
 <?=$this->html->style('TableTools');?>
 <?=$this->html->style('timepicker'); ?>
@@ -22,14 +21,15 @@
         <th> Last Name </th>
         <th> Admin Access Status </th>
         <th>Grant/Remove Admin Access</th>
+        <th>Grant/Remove Super-Admin Access</th>
     </thead>
     <tbody>
         <?php foreach($admins as $admin): ?>
             <tr>
                 <?php if (array_key_exists('created_date', $admin)): ?>
-                    <td><?php echo date('m/d/Y', $admin['created_date']);?></td>
+                    <td><?php echo date('m/d/Y', $admin['created_date']->sec);?></td>
                 <?php else:?>
-                    <td><?php echo date('m/d/Y', $admin['created_orig']['sec']);?></td>
+                    <td><?php echo date('m/d/Y', $admin['created_orig']->sec);?></td>
                 <?php endif;?>
                 <td><?php echo $admin['email'];?></td>
                  <?php if (array_key_exists('firstname', $admin)): ?>
@@ -48,9 +48,18 @@
                    <td>No Access</td>
                 <?php endif;?>
                 <?php if (array_key_exists('admin', $admin) && $admin['admin']): ?>
-                   <td><input type="button" name="Deny" value="Deny"></td>
+                   <td><input type="button" name="Deny" value="Deny" onclick="changeAccess('<?php echo $admin[_id]?>','deny','admin')"></td>
                 <?php else:?>
-                   <td><input type="button" name="Allow" value="Allow"></td>
+                   <td><input type="button" name="Allow" value="Allow" onclick="changeAccess('<?php echo $admin[_id]?>','allow','admin')"></td>
+                <?php endif;?>
+                <?php if (array_key_exists('superadmin', $admin) && $admin['superadmin']): ?>
+                   <td><input type="button" name="Deny" value="Deny"onclick="changeAccess('<?php echo $admin[_id]?>','deny','admin')"></td>
+                <?php else:?>
+                   <td><input type="button" name="Allow" value="Allow" onclick="changeAccess('<?php echo $admin[_id]?>','allow','admin')"></td>
+                <?php else:?>
+                   <td><input type="button" name="Allow" value="Allow"onclick="changeAccess('<?php echo $admin[_id]?>','deny','superadmin')"></td>
+                <?php else:?>
+                   <td><input type="button" name="Allow" value="Allow" onclick="changeAccess('<?php echo $admin[_id]?>','allow','superadmin')"></td>
                 <?php endif;?>
             </tr>
         <?php endforeach; ?>
@@ -63,9 +72,8 @@
 		$('#admin_table').dataTable();
 	} );
 </script>
-<script type="text/javascript">
-jQuery(function($){
-	$.mask.definitions['~']='[+-]';
-	$("#credit_amount").mask("~9.99 ~9.99 999");
-});
+<script type="text/javascript" charset="utf-8">
+	function changeAccess(userid,access,level) {
+
+	}
 </script>

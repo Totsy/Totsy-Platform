@@ -21,7 +21,7 @@ use MongoRegex;
  * but it will be expanded to handle the full end to end CRUD.
  */
 
-class UsersController extends admin\controllers\BaseController {
+class UsersController extends \admin\controllers\BaseController {
 
 	/**
 	 * Associative array of headings used in view.
@@ -103,22 +103,6 @@ class UsersController extends admin\controllers\BaseController {
 				} else {
 				    $deactivated = false;
 				}
-				//Retrieve Deactivation History
-			/*	$collection = User::collections("deactivation.log");
-				$results = $collection->find(array('user_id' => $id));
-				foreach($results as $entry) {
-				    User::meta('source','users');
-				    $conditions = array('conditions'=>array('_id' => new MongoId($entry['created_by'])));
-                    $admin = User::find( 'first', $conditions );
-                    $admin = $admin->data();
-                    if (array_key_exists('firstname', $admin)) {
-                        $entry['created_by'] = $admin['firstname'] . ' ' . $admin['lastname'];
-                    } else {
-                        $entry['created_by'] = $admin['email'];
-                    }
-				    $entry['date_created'] = date("M d, Y", $entry['date_created']->sec);
-				    $history[] = $entry;
-				} */
 
 				$data = array_intersect_key($userData, array_flip($headings['user']));
 				$info = $this->sortArrayByArray($data, $headings['user']);
@@ -163,13 +147,21 @@ class UsersController extends admin\controllers\BaseController {
 	}
 
 	public function adminManager() {
-	    $admins = User::find('all', array(
-	        'conditions' => array('$or'=> array(
-	            array('admin' => array('$exists'=>true)),
+	    $admins = User::collection()->find(
+	    array('$or'=> array(
+	            array('admin' => array('$exists' => true)),
 	            array('email' => new MongoRegex('/@totsy.com/i'))
-	        )),
-	        'fields' => array('email' => true, 'firstname' => true, 'lastname' => true, 'admin'=> true, 'superadmin' => true, 'created_date' => true, 'created_orig' => true)));
-	    $admins = $admins->data();
+	        ),
+	        'firstname' => array('$ne' => 'Affiliate')),
+	        array(
+	            'email' => true,
+	            'firstname' => true,
+	            'lastname' => true,
+	            'admin'=> true,
+	            'superadmin' => true,
+	            'created_date' => true,
+	            'created_orig' => true)
+	    );
 	    return compact('admins');
 	}
 	/**
