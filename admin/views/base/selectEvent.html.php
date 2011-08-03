@@ -9,7 +9,7 @@
 <div>
 	<?=$this->form->create(null, array('id' => 'monthform')); ?>
 	<?=$this->form->label("month_delay", "Events created from Last ", array('style' => 'font-weight:bold; font-size:13px;')); ?>
-	<?=$this->form->select('month_delay',array('select' => 'select', '1' => '1','3' => '3', '6' => '6', '9' => '9', '12' => '12'), array('onchange' => "filter()", 'id' => 'month_delay', 'style' => 'width:120px;')); ?>
+	<?=$this->form->select('month_delay',array('select' => 'select', '1' => '1','3' => '3', '6' => '6', '9' => '9', '12' => '12', '24' => '24'), array('onchange' => "filter()", 'id' => 'month_delay', 'style' => 'width:120px;')); ?>
 	<?=$this->form->label("month_delay", " Months", array('style' => 'font-weight:bold; font-size:13px;')); ?>
 	<?=$this->form->end(); ?>
 </div>

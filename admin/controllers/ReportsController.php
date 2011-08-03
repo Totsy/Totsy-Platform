@@ -220,7 +220,8 @@ class ReportsController extends BaseController {
 						$results['total'] = number_format($results['total']);
 						$results['total'] = "$".$results['total'];
 						$collection->remove($conditions);
-						break;
+					break;
+					
 					case 'Registrations':
 						switch ($name) {
 							case 'trendytogs':
@@ -228,7 +229,17 @@ class ReportsController extends BaseController {
 									'trendytogs_signup' => array('$exists' => true)
 								);
 								$dateField = 'date_created';
-								break;
+							break;
+							case 'keyade':
+								$conditions = array(
+									'invited_by' => $affiliate,
+									'keyade_user_id' => array('$exists' => true )
+								);
+								$dateField = 'created_date';
+								if (!empty($date)) {
+									$conditions = $conditions + $date;
+								}
+							break;
 							default:
 								$conditions = array(
 									'invited_by' => $affiliate,
@@ -237,26 +248,28 @@ class ReportsController extends BaseController {
 								if (!empty($date)) {
 									$conditions = $conditions + $date;
 								}
-							if($subaff){
-								$keys = new MongoCode("function(doc){
-									return {
-										'Date': doc.$dateField.getMonth(),
-										'subaff':doc.invited_by
-									}}");
-							}else{
-								$keys = new MongoCode("function(doc){return {'Date': doc.$dateField.getMonth()}}");
-							}
-							$inital = array('total' => 0);
-							$reduce = new MongoCode('function(doc, prev){prev.total += 1}');
-							$collection = User::collection();
-							$results = $collection->group($keys, $inital, $reduce, $conditions);
-							$results['total'] = 0;
-							foreach ($results['retval'] as $result)
-							{
-								$results['total'] += $result['total'];
-							}
-							$results['total'] = number_format($results['total']);
+							break;
 						}
+						if($subaff){
+							$keys = new MongoCode("function(doc){
+								return {
+									'Date': doc.$dateField.getMonth(),
+									'subaff':doc.invited_by
+								}}");
+						}else{
+							$keys = new MongoCode("function(doc){return {'Date': doc.$dateField.getMonth()}}");
+						}
+						$inital = array('total' => 0);
+						$reduce = new MongoCode('function(doc, prev){prev.total += 1}');
+						$collection = User::collection();
+						$results = $collection->group($keys, $inital, $reduce, $conditions);
+						$results['total'] = 0;
+						foreach ($results['retval'] as $result)
+						{
+							$results['total'] += $result['total'];
+						}
+						$results['total'] = number_format($results['total']);
+					break;
 				}
 			}
 		}
