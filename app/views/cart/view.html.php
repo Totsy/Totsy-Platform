@@ -158,7 +158,13 @@
 						<?php if (!empty($cartPromo['saved_amount'])):?>
 						<div style="clear:both"></div>
 						<div style="font-weight:bold">
-    							<span style="float: left;">Discount <?php if($promocode['code']) echo '[' . $promocode['code'] . ']'; ?>:</span> 
+    							<span style="float: left;">Discount 
+    							<?php if(!empty($services['10off50'])) {
+										echo '[10$ Off]';    							
+    								} else if(!empty($promocode)) {
+    									echo '[' . $promocode['code'] . ']';
+    								}?>	
+    							:</span> 
     							<span style="color:#009900; float:right">- $<?=number_format(abs($cartPromo['saved_amount']),2)?></span>
     					</div>
    						<?php endif ?>
@@ -170,7 +176,13 @@
 						<?php if (!empty($shipping_discount)):?>
 						<div style="clear:both"></div>
 						<div style="font-weight:bold">
-    							<span style="float: left;">Complimentary Shipping <?php if($promocode['code']) echo '[' . $promocode['code'] . ']'; ?>:</span> 
+    							<span style="float: left;">Complimentary Shipping 
+    							<?php if(!empty($services['freeshipping'])) {
+										echo '[FreeShipping]';    							
+    								} else if(!empty($promocode)) {
+    									echo '[' . $promocode['code'] . ']';
+    								}?>		
+    							:</span> 
     							<span style="color:#009900; float:right">- $<?=number_format($shipping_discount,2)?></span>
     					</div>
    						<?php endif ?>
