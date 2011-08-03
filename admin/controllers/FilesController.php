@@ -5,7 +5,7 @@ namespace admin\controllers;
 use lithium\core\Libraries;
 use lithium\core\Environment;
 use admin\models\File;
-use admin\extensions\dav\Auth;
+use admin\extensions\sabre\dav\auth\backend\Lithium as Sabre_DAV_Auth_Backend_Lithium;
 use Sabre_DAV_Server;
 use Sabre_DAV_FS_Directory;
 use Sabre_DAV_Locks_Backend_File;
@@ -67,7 +67,7 @@ class FilesController extends \lithium\action\Controller {
 		$plugin = new Sabre_DAV_TemporaryFileFilterPlugin($resources . '/dav/temporary');
 		$server->addPlugin($plugin);
 
-		$backend = new Auth();
+		$backend = new Sabre_DAV_Auth_Backend_Lithium();
 		$plugin = new Sabre_DAV_Auth_Plugin($backend, 'Totsy DAV'); /* 2nd arg is the realm. */
 		$server->addPlugin($plugin);
 
