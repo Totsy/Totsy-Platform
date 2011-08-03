@@ -89,7 +89,7 @@ case $COMMAND in
 		;;
 
 	# This section collects all commands required to run
-	# all tests contained within libraries and apps across
+	# all tests contained within libraries and apps accross
 	# the entire codebase.
 	run-tests)
 		echo "Running payment related tests..."
@@ -113,6 +113,19 @@ case $COMMAND in
 		libraries/lithium/console/li3 test ../libraries/li3_payments/tests
 
 		echo
+		LI3=$PROJECT_DIR/libraries/lithium/console/li3
+
+		echo "Running Lithium unit tests..."
+		cd $PROJECT_DIR
+		$LI3 test libraries/lithium/tests/cases
+
+		echo "Running SabreDAV tests..."
+		cd $PROJECT_DIR/libraries/_source/sabredav/tests
+		phpunit
+
+		echo "Running Imagine tests..."
+		cd $PROJECT_DIR/libraries/_source/Imagine
+		phpunit
 		;;
 
 	optimize-repo)
@@ -215,17 +228,6 @@ case $COMMAND in
 
 		echo "Symlinking..."
 		ln -v -s $TARGET_SOURCE/lib/Sabre ./$TARGET_LINK
-		;;
-
-	# This section collects all commands required to run
-	# all tests contained within libraries and apps accross
-	# the entire codebase.
-	run-tests)
-		LI3=$PROJECT_DIR/libraries/lithium/console/li3
-
-		echo "Running Lithium unit tests..."
-		cd $PROJECT_DIR
-		$LI3 test libraries/lithium/tests/cases
 		;;
 
 	source-pear)
