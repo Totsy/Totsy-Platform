@@ -8,7 +8,7 @@ use admin\models\File;
  * This controller works with SWFUpload to provide flash/javascript
  * file upload functionality with lithium.
  */
-class UploadsController extends \lithium\action\Controller {
+class FilesController extends \lithium\action\Controller {
 
 
 	/**
