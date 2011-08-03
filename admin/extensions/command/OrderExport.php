@@ -188,11 +188,10 @@ class OrderExport extends Base {
 						$queue->processed_date = new MongoDate();
 						$queue->save();
 						$this->summary['from_email'] = 'no-reply@totsy.com';
-						//$this->summary['to_email'] = 'logistics@totsy.com';
-						$this->summary['to_email'] = 'jwidro@totsy.com';
-						//if ($this->test != 'true') {
+						$this->summary['to_email'] = 'logistics@totsy.com';
+						if ($this->test != 'true') {
                            Mailer::send('Order_Export', $this->summary['to_email'], $this->summary);
-                        //}
+                        }
 					}
 				}
 			}
@@ -242,6 +241,11 @@ class OrderExport extends Base {
 		    'user_id' => true
 		));
 		$order_total = $orders->count();
+		
+		
+		
+		//total same until here 345pm
+		
 		
 		if ($orders) {
 			$inc = 1;
@@ -295,8 +299,11 @@ class OrderExport extends Base {
 			$ecounter = 0;
 			
 			//new counts for email breakdown
+			$allitems = 0;
 			$unprocessed_orders = 0;
+			$unprocessed_orders_items = 0;
 			$processed_orders = 0;
+			$processed_orders_items = 0;
 
 			foreach ($orders as $order) {
 				$conditions = array('Customer PO #' => array('$in' => array((string) $order['_id'], $order['_id'])));
@@ -306,10 +313,17 @@ class OrderExport extends Base {
 				//get items in order before check here
 				$items = $order['items'];
 
+				//total of items count to add to each subtotal
+				$raw_item_count = count($items);
+				
+				//add to raw item count
+				$allitems += $raw_item_count;
+
 				if ($processCheck == 0) {
 				
 					//this is unprocessed total for orders, items
 					$unprocessed_orders++;
+					$unprocessed_orders_items += $raw_item_count;
 
 					$user = User::find('first', array(
 					    'conditions' => array('_id' => $order['user_id']),
@@ -387,7 +401,7 @@ class OrderExport extends Base {
 							}
 							if ($this->test != 'true') {
 								$processedOrder = ProcessedOrder::connection()->connection->{'orders.processed'};
-								$processedOrder->save($orderFile[$inc] + $this->batchId);
+						`		$processedOrder->save($orderFile[$inc] + $this->batchId);
 							}
 							$this->log("Adding order $order[_id] to $handle");
 							fputcsv($fp, $orderFile[$inc], chr(9));
@@ -401,6 +415,7 @@ class OrderExport extends Base {
 				} else {
 					//if already processed, make totals of orders, items for that
 					$processed_orders++;
+					$processed_orders_items += $raw_item_count;
 					$this->log("Already processed $order[_id]");
 				}
 			}
@@ -416,6 +431,14 @@ class OrderExport extends Base {
 			//new totals for breakdown in email
 			$this->summary['order']['unprocessed_orders'] = $unprocessed_orders;
 			$this->summary['order']['processed_orders'] = $processed_orders;
+
+			$this->summary['order']['unprocessed_orders_items'] = $unprocessed_orders_items;
+			$this->summary['order']['processed_orders_items'] = $processed_orders_items;
+
+			$this->summary['order']['queue_total_orders'] = $ecounter;
+			$this->summary['order']['queue_total_items'] = $allitems;
+
+
 
 			$this->summary['order']['count'] = count($orderArray) + $split_number;
 			$this->summary['order']['lines'] = $inc + $lines;
@@ -449,7 +472,6 @@ class OrderExport extends Base {
 		$this->log("Opening item file $handle");
 		$fp = fopen($handle, 'w');
 		$count = 0;
-		$count_skipped = 0;
 		if ($eventIds) {
 			$productHeading = ProcessedOrder::$_productHeading;
 			foreach ($eventIds as $eventId) {
@@ -520,14 +542,9 @@ class OrderExport extends Base {
 							if ($this->test != 'true') {
 								$itemMasterEntry = ItemMaster::create();
 								$itemMasterEntry->save($productFile[$inc] + $this->batchId);
+								++$count;
 							}
-							//count of items processed
-							++$count;
 							fputcsv($fp, $productFile[$inc]);
-						}
-						else{
-							//count of items not processed
-							++$count_skipped;
 						}
 						++$inc;
 					}
@@ -544,7 +561,6 @@ class OrderExport extends Base {
 		    shell_exec("mv " . $handle . " " . $this->pending.$filename);
 		}
 		$this->summary['item']['count'] = $count;
-		$this->summary['item']['count_unprocessed_items'] = $count_skipped;
 		$this->summary['item']['filename'] = $filename;
 		$this->log("There were $count items generated and saved to the item master and $handle");
 		return true;
@@ -610,13 +626,6 @@ class OrderExport extends Base {
 									} else {
 										$purchaseOrder[$inc]['Qty'] += $item['quantity'];
 									}
-
-									//new additions
-									$purchaseOrder[$inc]['Vendor Name'] = $vendorName;
-									$purchaseOrder[$inc]['Item Description'] = $eventItem['description'];
-									$purchaseOrder[$inc]['Promised Ship-by Date'] = $order['ship_date'];
-									$purchaseOrder[$inc]['Event End Date'] = $event->end_date;
-
 									$purchaseOrder[$inc] = $this->sortArrayByArray($purchaseOrder[$inc], $purchaseHeading);
 								}
 							}
