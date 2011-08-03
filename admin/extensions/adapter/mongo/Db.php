@@ -1,6 +1,6 @@
 <?php 
 
-namespace app\extensions\adapter\mongo;
+namespace admin\extensions\adapter\mongo;
 
 use Mongo;
 use MongoId;
