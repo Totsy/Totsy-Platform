@@ -6,7 +6,11 @@
 <?php echo $this->html->style('swfupload')?>
 
 <h1>Upload files for a particular item</h1>
-
+<p>
+	You may also use WebDAV for uploading files.
+	Open your WebDAV client and connect to
+	<?=$this->html->link($this->url('Files::dav', array('absolute' => true)), 'Files::dav'); ?>.
+</p>
 <br>
 <table>
 	<tr valign="top">
