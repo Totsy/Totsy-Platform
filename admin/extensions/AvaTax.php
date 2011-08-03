@@ -16,6 +16,12 @@ use AvaTaxWrap;
 
 class AvaTax {
 	
+	/**
+	 * Switcher for avalara/totsy tax calculation system
+	 * 
+	 */
+	protected static $useAvatax = true;
+	
 	public static function  cancelTax($order,$tryNumber=0){
 		try{
 			AvaTaxWrap::commitTax($order);
