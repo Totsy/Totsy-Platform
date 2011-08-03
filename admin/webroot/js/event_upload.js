@@ -3,7 +3,7 @@ var upload1;
 window.onload = function() {
 	upload1 = new SWFUpload({
 		// Backend Settings
-		upload_url: "/uploads/upload/event",
+		upload_url: "/files/upload/event",
 
 		// File Upload Settings
 		file_size_limit : "102400",	// 100MB
