@@ -266,7 +266,7 @@ class APIController extends  \lithium\action\Controller {
 		if (is_array($this->request->query) && array_key_exists ('start_date', $this->request->query)){
 			if (preg_match('/[[\d]{4}[\-][\d]{2}[\-][\d]{2}]/',$this->request->query['start_date'])){
 				$start_date = strtotime($this->request->query['start_date']);
-			} else if ($start_date == 'today'){
+			} else if ($this->request->query['start_date'] == 'today'){
 				$start_date = strtotime(date('Y-m-d'));
 			}
 		}
@@ -281,7 +281,7 @@ class APIController extends  \lithium\action\Controller {
 		foreach ($openEvents as $event){
 			
 			$data =  $event->data();
-			if (isset($start_date) && $start_date <= $data['start_date']['sec'] ) { 
+			if (isset($start_date) && $start_date > $data['start_date']['sec'] ) { 
 				continue; 
 			}
 			$data['available_items'] = false;
