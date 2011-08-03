@@ -135,7 +135,6 @@ class FilesController extends \lithium\action\Controller {
 	 * @return array
 	 */
 	public function upload($type = null) {
-
 		switch (strtolower($type)) {
 			case 'all':
 			case 'event':
@@ -244,11 +243,9 @@ class FilesController extends \lithium\action\Controller {
 		}
 		return true;
 	}
-
 	/**
 	 * Parses file upload error code into human-readable phrase.
 	 *
-	 * @deprecated
 	 * @param int $err PHP file upload error constant.
 	 * @return string human-readable phrase to explain issue.
 	 */
