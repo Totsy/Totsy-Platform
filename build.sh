@@ -342,6 +342,17 @@ case $COMMAND in
 		ln -v -s $TARGET_SOURCE/lib/Sabre ./$TARGET_LINK
 		;;
 
+	# This section collects all commands required to run
+	# all tests contained within libraries and apps accross
+	# the entire codebase.
+	run-tests)
+		LI3=$PROJECT_DIR/libraries/lithium/console/li3
+
+		echo "Running Lithium unit tests..."
+		cd $PROJECT_DIR
+		$LI3 test libraries/lithium/tests/cases
+		;;
+
 	source-pear)
 		PEAR=$(pear config-show  | grep php_dir | awk '{ print $4 }')
 
