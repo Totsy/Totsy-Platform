@@ -24,8 +24,8 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 		'body' => !empty($file) ? $file->file->getBytes():''
 	));
 });
-Router::connect('/uploads', 'Uploads::index');
-Router::connect('/uploads/upload{:args}', 'Uploads::upload');
+Router::connect('/files', 'Files::index');
+Router::connect('/files/upload{:args}', 'Files::upload');
 
 Router::connect('/login', 'Users::login');
 Router::connect('/logout', 'Users::logout');
