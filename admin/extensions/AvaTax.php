@@ -7,6 +7,8 @@ use lithium\action\Request;
 use admin\extensions\Mailer;
 use admin\extensions\BlackBox;
 use AvaTaxWrap;
+use Exception;
+
 
 /**
  * 
@@ -27,6 +29,7 @@ class AvaTax {
 			AvaTaxWrap::commitTax($order);
 			AvaTaxWrap::cancelTax($order);
 		} catch (Exception $e) {
+
 			// Try again or return 0;
 			BlackBox::tax('can not process tax cancelation via avalara.');
 			BlackBox::taxError($e->getMessage()."\n".$e->getTraceAsString() );
