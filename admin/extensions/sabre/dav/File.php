@@ -2,6 +2,7 @@
 
 namespace admin\extensions\sabre\dav;
 
+use lithium\net\http\Media;
 use lithium\core\ConfigException;
 use admin\models\File as FileModel;
 use Sabre_DAV_Exception_Forbidden;
@@ -24,7 +25,12 @@ class File implements \Sabre_DAV_IFile {
 	}
 
 	public function __toString() {
-		return $this->_config['value'];
+		$name = $this->_config['value'];
+
+		if ($extension = $this->getExtension()) {
+			$name .= ".{$extension}";
+		}
+		return $name;
 	}
 
 	public function getName() {
@@ -93,14 +99,27 @@ class File implements \Sabre_DAV_IFile {
 		return time();
 	}
 
+	public function getExtension() {
+		if ($contentType = $this->getContentType()) {
+			return Media::type($contenType);
+		}
+	}
+
 	/**
 	 * Returns the mime-type for a file
 	 *
 	 * If null is returned, we'll assume application/octet-stream
 	 */
 	public function getContentType() {
-		return null;
-		// return File::mimeType($this->_file()->file->getBytes());
+		if ($file = $this->_file()) {
+			$data = fopen('php://temp', 'wb');
+			fwrite($data, $file->file->getBytes());
+
+			$result = File::mimeType($data);
+
+			fclose($data);
+			return $result;
+		}
 	}
 
 	/**
