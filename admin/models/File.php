@@ -131,7 +131,6 @@ class File extends \lithium\data\Model {
 	public static function pending($conditions = array()) {
 		return static::all(array('conditions' => array('pending' => true) + $conditions));
 	}
-
 	/**
 	 * Retrieves all files flagged as orphaned. As detecting orphans is an
 	 * expensive task flagging needs to happen through running a command.
