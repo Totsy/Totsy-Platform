@@ -281,6 +281,11 @@ class APIController extends  \lithium\action\Controller {
 		foreach ($openEvents as $event){
 			
 			$data =  $event->data();
+			
+			if ($data['end_date']['sec'] <= strtotime(date('d-m-Y 23:59:59',strtotime('+1 day'))) ){
+				$closing[] = $data;
+			}
+			
 			if (isset($start_date) && $start_date > $data['start_date']['sec'] ) { 
 				continue; 
 			}
@@ -326,10 +331,6 @@ class APIController extends  \lithium\action\Controller {
 					if ($it['total_quantity']>0 && $data['available_items'] === false) { $data['available_items'] = true; }
 				}
 				
-			}
-			
-			if ($data['end_date']['sec'] <= strtotime(date('d-m-Y 23:59:59',strtotime('+1 day'))) ){
-				$closing[] = $data;
 			}
 			$events[] = $data;
 		}
