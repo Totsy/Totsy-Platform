@@ -41,7 +41,7 @@ class File extends \lithium\data\Model {
 		return $count;
 	}
 
-	public static mimeType($data) {
+	public static function mimeType($data) {
 		$context = finfo_open(FILEINFO_NONE);
 
 		rewind($data);
