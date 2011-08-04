@@ -188,13 +188,13 @@ class Cart extends Base {
 	public function tax($cart, $shipping) {
 		$item = Item::first($cart->item_id);
 		$tax = 0;
-		$zipCheckPartial = in_array(substr($shipping->zip, 0, 3), $this->_nyczips);
-		$zipCheckFull = in_array($shipping->zip, $this->_nyczips);
+		$zipCheckPartial = in_array(substr($shipping['zip'], 0, 3), $this->_nyczips);
+		$zipCheckFull = in_array($shipping['zip'], $this->_nyczips);
 		$nysZip = ($zipCheckPartial || $zipCheckFull) ? true : false;
 		$nycExempt = ($nysZip && $cart->sale_retail < 110) ? true : false;
 
 		if ($item->taxable != false || $nycExempt) {
-			switch ($shipping->state) {
+			switch ($shipping['state']) {
 				case 'NY':
 					$tax = ($nysZip) ? static::TAX_RATE : static::TAX_RATE_NYS;
 					break;
@@ -464,6 +464,64 @@ class Cart extends Base {
 			$savings['services'] = $amount;
 		}
 		Session::write('userSavings', $savings);
+	}
+	
+	/**
+	* The getDiscount method check credits, promocodes and services available 
+	* @see app/models/Cart::check()
+	*/
+	public function getDiscount($shippingCost = 7.95, $overShippingCost = 0) {
+		#Get User Infos
+		$fields = array(
+		'item_id',
+		'color',
+		'category',
+		'description',
+		'product_weight',
+		'quantity',
+		'sale_retail',
+		'size',
+		'url',
+		'primary_image',
+		'expires',
+		'event',
+		'discount_exempt'
+		);
+		$user = Session::read('userLogin');
+		$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
+		$cart = Cart::active(array('fields' => $fields, 'time' => 'now'));
+		#Get Subtotal
+		$map = function($item) { return $item->sale_retail * $item->quantity; };
+		$subTotal = array_sum($cart->map($map)->data());
+		/** Services, Promocodes,Credits Management **/
+		#Apply Services
+		$services = array();
+		$services['freeshipping'] = Service::freeShippingCheck($shippingCost, $overShippingCost);
+		$services['tenOffFitfy'] = Service::tenOffFiftyCheck($subTotal);
+		#Calculation of the subtotal with shipping and services discount
+		$postSubtotal = ($subTotal + $shippingCost + $overShippingCost - $services['tenOffFitfy'] - $services['freeshipping']['shippingCost']  - $services['freeshipping']['overSizeHandling']);
+		#Apply Promocodes
+		$cartPromo = Promotion::create();
+		$promo_code = null;
+		if (Session::read('promocode')) {
+			$promo_session = Session::read('promocode');
+			$promo_code = $promo_session['code'];
+		}
+		if (!empty($this->request->data['code'])) {
+			$promo_code = $this->request->data['code'];
+		}
+		if (!empty($promo_code)) {
+			$cartPromo->promoCheck($promo_code, $userDoc, compact('postSubtotal', 'shippingCost', 'overShippingCost', 'services'));  
+		}
+		#Apply Credits
+		$credit_amount = null;
+		$cartCredit = Credit::create();
+		if (array_key_exists('credit_amount', $this->request->data)) {
+			$credit_amount = $this->request->data['credit_amount'];
+		}
+		$postDiscountTotal = ($postSubtotal + $cartPromo['saved_amount']);
+		$cartCredit->checkCredit($credit_amount, $postDiscountTotal, $userDoc);
+		return compact('cartPromo', 'cartCredit', 'services', 'postDiscountTotal');
 	}
 }
 

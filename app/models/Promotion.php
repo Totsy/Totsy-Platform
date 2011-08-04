@@ -98,7 +98,7 @@ class Promotion extends Base {
                              $entity->saved_amount = -(7.95 + $overShippingCost);
                             Cart::updateSavings(null, 'discount', 7.95 + $overShippingCost);
                         }
-                        Session::write('promocode', $code , array('name' => 'default'));   
+                        Session::write('promocode', $code->data(), array('name' => 'default'));   
                     } else {
                         $entity->errors(
                             $entity->errors() + array(
@@ -113,9 +113,7 @@ class Promotion extends Base {
                 }
                 $errors = $entity->errors();
                 if ($errors) {
-           
-                		Session::delete('promocode');
-                	
+                	Session::delete('promocode');
                 	Cart::updateSavings(null, 'discount', 0);
                     $entity->saved_amount = 0;
                 } else{

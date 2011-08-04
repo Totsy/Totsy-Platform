@@ -47,10 +47,11 @@ class CartController extends BaseController {
 		$user = Session::read('userLogin');
 		$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
 		#Update the Cart
-		if (!empty($this->request->data))
+		if (!empty($this->request->data)) {
 			$this->update();
+		}
 		#Get current Discount
-		$vars = $this->getDiscount();
+		$vars = Cart::getDiscount();
 		//Cart::increaseExpires();
 		$cart = Cart::active();
 		$test = $cart->data();
@@ -96,31 +97,24 @@ class CartController extends BaseController {
 		}
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
-		//var_dump($userSavings);
 		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
-		$postDiscount = ($subTotal + $vars['services']['tenOffFitfy']);
-		if(Session::read('credit')) {
+		$postDiscount = ($subTotal - $vars['services']['tenOffFitfy']);
+		$services = $vars['services'];
+		if(!empty($vars['cartCredit'])) {
 			$credits = Session::read('credit');
-		 	$postDiscount -= $credits;
+		 	$vars['postDiscountTotal'] -= $credits;
 		}
 		if(!empty($vars['cartPromo']['saved_amount'])) {
-		 	$postDiscount += $vars['cartPromo']['saved_amount'];
-			$promocode = Session::read('promocode');
-		}
-		if(!empty($vars['services']['tenOffFitfy'])) {
-			$postDiscount -= $vars['services']['tenOffFitfy'];
-		}
-		if(!empty($vars['cartPromo']['type'])) {
-			if($vars['cartPromo']['type'] === 'free_shipping') {
+		 	$promocode = Session::read('promocode');
+		 	if($promocode['type'] === 'free_shipping') {
 				$shipping_discount = $shipping;
-				$promocode = Session::read('promocode');
 			}
 		}
-		if(!empty($vars['services']['freeshipping']['enable'])) {
+		if(!empty($services['freeshipping']['enable'])) {
 			$shipping_discount = $shipping;
 		}
-		$total = ($postDiscount + $shipping - $shipping_discount);
-		return $vars + compact('cart', 'message', 'subTotal', 'total', 'shipDate', 'returnUrl', 'promocode', 'savings','shipping_discount', 'credits', 'userDoc','cartItemEventEndDates', 'cartExpirationDate');
+		$total = $vars['postDiscountTotal'];
+		return $vars + compact('cart', 'message', 'subTotal', 'services', 'total', 'shipDate', 'returnUrl', 'promocode', 'savings','shipping_discount', 'credits', 'userDoc','cartItemEventEndDates', 'cartExpirationDate');
 	}
 
 	/**
@@ -130,30 +124,8 @@ class CartController extends BaseController {
 	 * @return compact
 	 */
 	public function add() {
-		$actual_cart = Cart::active();
-		if (!empty($actual_cart)) {
-			$items = $actual_cart->data();
-		}
-		#T - Refresh the counter of each timer to 15 min
-		if (!empty($items)) {
-			//Security Check - Max 25 items
-			if(count($items) < 25) {
-				foreach ($items as $item) {
-					$event = Event::find('first',array('conditions' => array("_id" => $item['event'][0])));
-					$now = getdate();
-					if(($event->end_date->sec > ($now[0] + (15*60)))) {
-						$cart_temp = Cart::find('first', array(
-							'conditions' => array('_id' =>  $item['_id'])));
-						$cart_temp->expires = new MongoDate($now[0] + (1*60));
-						$cart_temp->save();
-					}
-				}
-			}
-		} else {
-			#Reset Savings on Session
-			Session::write('userSavings', 0);
-		}
-		#T
+		#Check Cart and Refresh Timer
+		$this->refreshTimer();
 		$cart = Cart::create();
 		if ($this->request->data) {
 			$itemId = $this->request->data['item_id'];
@@ -269,12 +241,13 @@ class CartController extends BaseController {
 						$cart->quantity = (integer) $quantity;
 						$cart->save();
 						$items[$cart->item_id] = $quantity;
+						#Check Cart and Refresh Timer
+						$this->refreshTimer();
 					}
 				} else {
 					$cart->error = $result['errors'];
 					$cart->save();
 				}
-				
 			}
 			#update savings
 			Cart::updateSavings($items, 'update');
@@ -282,64 +255,33 @@ class CartController extends BaseController {
 	}
 	
 	/**
-	* The getDiscount metho check credits, promocodes and services available 
+	* Refresh the timer for each timer in the cart 
 	* @see app/models/Cart::check()
 	*/
-	public function getDiscount() {
-		#Initialize datas
-		$shippingCost = 7.95;
-		$overShippingCost = 0;
-		#Get User Infos
-		$fields = array(
-		'item_id',
-		'color',
-		'category',
-		'description',
-		'product_weight',
-		'quantity',
-		'sale_retail',
-		'size',
-		'url',
-		'primary_image',
-		'expires',
-		'event',
-		'discount_exempt'
-		);
-		$user = Session::read('userLogin');
-		$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
-		$cart = Cart::active(array('fields' => $fields, 'time' => 'now'));
-		#Get Subtotal
-		$map = function($item) { return $item->sale_retail * $item->quantity; };
-		$subTotal = array_sum($cart->map($map)->data());
-		/** Services, Promocodes,Credits Management **/
-		#Apply Services
-		$services = array();
-		$services['freeshipping'] = Service::freeShippingCheck();
-		$services['tenOffFitfy'] = Service::tenOffFiftyCheck($subTotal);
-		#Calculation of the subtotal with shipping and services discount
-		$postSubtotal = ($subTotal + $shippingCost + $overShippingCost + $services['tenOffFitfy'] - $services['freeshipping']['shippingCost']  - $services['freeshipping']['overSizeHandling']);
-		#Apply Promocodes
-		$cartPromo = Promotion::create();
-		$promo_code = null;
-		if (Session::read('promocode')) {
-			$promo_session = Session::read('promocode');
-			$promo_code = $promo_session['code'];
+	public function refreshTimer() {
+		$actual_cart = Cart::active();
+		if (!empty($actual_cart)) {
+			$items = $actual_cart->data();
 		}
-		if (!empty($this->request->data['code'])) {
-			$promo_code = $this->request->data['code'];
+		#T - Refresh the counter of each timer to 15 min
+		if (!empty($items)) {
+			//Security Check - Max 25 items
+			if(count($items) < 25) {
+				foreach ($items as $item) {
+					$event = Event::find('first',array('conditions' => array("_id" => $item['event'][0])));
+					$now = getdate();
+					if(($event->end_date->sec > ($now[0] + (15*60)))) {
+						$cart_temp = Cart::find('first', array(
+							'conditions' => array('_id' =>  $item['_id'])));
+						$cart_temp->expires = new MongoDate($now[0] + (15 * 60));
+						$cart_temp->save();
+					}
+				}
+			} else {
+				#Reset Savings on Session
+				Session::write('userSavings', 0);
+			}
 		}
-		if (!empty($promo_code)) {
-			$cartPromo->promoCheck($promo_code, $userDoc, compact('postSubtotal', 'shippingCost', 'overShippingCost', 'services'));  
-		}
-		#Apply Credits
-		$credit_amount = null;
-		$cartCredit = Credit::create();
-		if (array_key_exists('credit_amount', $this->request->data)) {
-			$credit_amount = $this->request->data['credit_amount'];
-		}
-		$postDiscountTotal = ($postSubtotal + $cartPromo['saved_amount']);
-		$cartCredit->checkCredit($credit_amount, $postDiscountTotal, $userDoc);
-		return compact('cartPromo', 'cartCredit', 'services');
 	}
 	
 	public function modal(){

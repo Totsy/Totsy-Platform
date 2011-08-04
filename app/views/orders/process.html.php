@@ -2,8 +2,8 @@
 	$this->html->script('application', array('inline' => false));
 	$this->form->config(array('text' => array('class' => 'inputbox')));
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
-	$preTotal = $subTotal + $orderCredit->credit_amount + $orderServiceCredit;
-	$afterDiscount = $preTotal + $orderPromo->saved_amount;
+	$preTotal = $subTotal + $cartCredit->credit_amount + $services['tenOffFitfy'];
+	$afterDiscount = $preTotal + $cartPromo->saved_amount;
 	if ($afterDiscount < 0) {
 		$afterDiscount = 0;
 	}
@@ -78,7 +78,7 @@
 									<?=$this->form->text('card[code]', array('id' => 'CVV2','class' => 'inputbox', 'maxlength' => '4', 'size' => '4')); ?>
 								</p>
 							<?=$this->form->submit('Place Your Order', array('class' => 'button submit')); ?>
-							<?=$this->form->hidden('credit_amount', array('value' => $orderCredit->credit_amount)); ?>
+							<?=$this->form->hidden('credit_amount', array('value' => $cartCredit->credit_amount)); ?>
 						<?=$this->form->end(); ?>
 											</td>
 				</tr>
@@ -100,8 +100,8 @@
 							<strong>Promo Savings:</strong>
 					</td>
 							<td style="text-align:left; padding-left:10px;">
-                                <?php if (!empty($orderPromo)): ?>
-                                    -$<?=number_format((float) abs($orderPromo->saved_amount), 2);?>
+                                <?php if (!empty($cartPromo)): ?>
+                                    -$<?=number_format((float) abs($cartPromo->saved_amount), 2);?>
                                 <?php else: ?>
                                     -$<?=number_format((float) 0, 2);?>
                                 <?php endif ?>
@@ -109,7 +109,7 @@
 				</tr>
 
 				<?php
-					if ($orderServiceCredit): ?>
+					if ($services['tenOffFitfy']): ?>
 						<tr>
 							<td>You qualify for $10 off your purchase!</td><td>- $10.00</td>
 						</tr>
@@ -125,7 +125,7 @@
 					</tr>
 				<?php endif ?>
 				<?php
-					if ($freeshipping): ?>
+					if ($services['freeshipping']): ?>
 						<tr>
 							<td>You qualify for free shipping!</td>
 						</tr>
@@ -143,13 +143,13 @@
 						</tr>
 					<?php endif ?>
 				<tr>
-				    <?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $orderCredit, 'credit' => $credit, 'userDoc' => $userDoc)); ?>
+				    <?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'userDoc' => $userDoc)); ?>
 				</tr>
 				<tr>
 					<div style="padding:10px; background:#eee; margin:10px 0">
 
 					    <?=$this->view()->render(array('element' => 'promocode'),
-					            array('order' => $order, 'orderPromo' => $orderPromo)
+					            array('order' => $order, 'orderPromo' => $cartPromo)
 					            ); ?>
 						</td>
 						<div style="clear:both"></div>
@@ -193,9 +193,9 @@
 								<h3 class="gray">Shipping Address <span class="fr">(<a href="#" class="add-address">edit</a>)</span></h3>
 								<hr />
 								<address class="shipping-address">
-									<?=$shippingAddr->address; ?> <?=$shippingAddr->address_2; ?><br />
-									<?=$shippingAddr->city; ?>, <?=$shippingAddr->state; ?>
-									<?=$shippingAddr->zip; ?>
+									<?=$shippingAddr['address']; ?> <?=$shippingAddr['address_2']; ?><br />
+									<?=$shippingAddr['city']; ?>, <?=$shippingAddr['state']; ?>
+									<?=$shippingAddr['zip']; ?>
 								</address>
 						<?php endif ?>
 
