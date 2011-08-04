@@ -65,7 +65,9 @@ class File implements \Sabre_DAV_IFile {
 	 * @return mixed
 	 */
 	public function get() {
-		return $this->_file()->file->getBytes();
+		if ($file = $this->_file()) {
+			return $file->file->getBytes();
+		}
 	}
 
 	/**
@@ -74,7 +76,10 @@ class File implements \Sabre_DAV_IFile {
 	 * @return int
 	 */
 	public function getSize() {
-		return $this->_file()->file->getSize();
+		if ($file = $this->_file()) {
+			return $file->file->getSize();
+		}
+		return 0;
 	}
 
 	/**
@@ -87,7 +92,9 @@ class File implements \Sabre_DAV_IFile {
 	 * @return mixed Return null if the ETag can not effectively be determined
 	 */
 	public function getETag() {
-		return $this->_file()->md5;
+		if ($file = $this->_file()) {
+			return $file->md5;
+		}
 	}
 
 	/**
