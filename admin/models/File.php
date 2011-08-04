@@ -12,7 +12,6 @@ use MongoCode;
 class File extends \lithium\data\Model {
 
 	protected $_meta = array('source' => 'fs.files');
-
 	/**
 	 * Enable/disable deduping.
 	 *
@@ -237,7 +236,6 @@ class File extends \lithium\data\Model {
 		stream_copy_to_stream($stream, $upgrade);
 
 		return $upgrade;
-	}
 }
 
 /**
