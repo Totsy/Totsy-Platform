@@ -184,16 +184,18 @@ case $COMMAND in
 		test -L $TARGET_LINK && rm $TARGET_LINK
 
 		echo "Downloading source..."
-		hg clone \
-			-u version-$VERSION \
-			https://code.google.com/p/sabredav/ \
-			$TARGET_SOURCE
+		TMP_DIR=$(mktemp -d -t totsy)
+		curl http://sabredav.googlecode.com/files/SabreDAV-$VERSION.zip \
+			--O $TMP_DIR/sabre.zip
 
-		echo "Removing history..."
-		rm -r $TARGET_SOURCE/.hg*
+		unzip $TMP_DIR/sabre.zip -d $TMP_DIR
+		mv $TMP_DIR/SabreDAV $TARGET_SOURCE
 
 		echo "Symlinking..."
 		ln -v -s $TARGET_SOURCE/lib/Sabre ./$TARGET_LINK
+
+		echo "Cleaning up temporary directory..."
+		rm -r $TMP_DIR
 		;;
 
 	source-pear)
