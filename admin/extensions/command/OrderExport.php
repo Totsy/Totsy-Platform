@@ -34,6 +34,21 @@ use admin\extensions\Mailer;
  * @see admin/extensions/command/Exchanger
  * @see admin/controllers/QueueController
  */
+ 
+
+//sets maxlifetime to 5 hours
+ini_set("session.gc_maxlifetime", "18000");
+
+//check the maxlifetime
+//echo ini_get("session.gc_maxlifetime");
+
+//specifies session path to avoid default maxlifetime value of 24 mins to override
+session_save_path('/www/admin/resources/totsy/tmp');
+
+//to check the session path 
+//echo session_save_path();
+
+
 class OrderExport extends Base {
 
 	/**
@@ -135,6 +150,8 @@ class OrderExport extends Base {
 	 */
 	protected $queue = array();
 
+
+
 	/**
 	 * Main method for exporting Order and PO files.
 	 *
@@ -188,10 +205,10 @@ class OrderExport extends Base {
 						$queue->processed_date = new MongoDate();
 						$queue->save();
 						$this->summary['from_email'] = 'no-reply@totsy.com';
-						$this->summary['to_email'] = 'logistics@totsy.com';
-						if ($this->test != 'true') {
+						$this->summary['to_email'] = 'jwidro@totsy.com';
+						//if ($this->test != 'true') {
                            Mailer::send('Order_Export', $this->summary['to_email'], $this->summary);
-                        }
+                       // }
 					}
 				}
 			}
@@ -241,12 +258,6 @@ class OrderExport extends Base {
 		    'user_id' => true
 		));
 		$order_total = $orders->count();
-		
-		
-		
-		//total same until here 345pm
-		
-		
 		if ($orders) {
 			$inc = 1;
 			/**
@@ -297,38 +308,16 @@ class OrderExport extends Base {
 
 			$orderArray = array();
 			$ecounter = 0;
-			
-			//new counts for email breakdown
-			$allitems = 0;
-			$unprocessed_orders = 0;
-			$unprocessed_orders_items = 0;
-			$processed_orders = 0;
-			$processed_orders_items = 0;
-
 			foreach ($orders as $order) {
 				$conditions = array('Customer PO #' => array('$in' => array((string) $order['_id'], $order['_id'])));
 				$processCheck = ProcessedOrder::count(compact('conditions'));
 				++$ecounter;
-				
-				//get items in order before check here
-				$items = $order['items'];
-
-				//total of items count to add to each subtotal
-				$raw_item_count = count($items);
-				
-				//add to raw item count
-				$allitems += $raw_item_count;
-
 				if ($processCheck == 0) {
-				
-					//this is unprocessed total for orders, items
-					$unprocessed_orders++;
-					$unprocessed_orders_items += $raw_item_count;
-
 					$user = User::find('first', array(
 					    'conditions' => array('_id' => $order['user_id']),
 					    'fields' => array('email' => true)
 					    ));
+					$items = $order['items'];
 					foreach ($items as $item) {
 						if (empty($item['cancel']) || $item['cancel'] != true) {
                                 $orderItem = $itemCollection->findOne(
@@ -401,7 +390,7 @@ class OrderExport extends Base {
 							}
 							if ($this->test != 'true') {
 								$processedOrder = ProcessedOrder::connection()->connection->{'orders.processed'};
-						`		$processedOrder->save($orderFile[$inc] + $this->batchId);
+								$processedOrder->save($orderFile[$inc] + $this->batchId);
 							}
 							$this->log("Adding order $order[_id] to $handle");
 							fputcsv($fp, $orderFile[$inc], chr(9));
@@ -413,9 +402,6 @@ class OrderExport extends Base {
                         $this->queue->save();
                     }
 				} else {
-					//if already processed, make totals of orders, items for that
-					$processed_orders++;
-					$processed_orders_items += $raw_item_count;
 					$this->log("Already processed $order[_id]");
 				}
 			}
@@ -427,19 +413,6 @@ class OrderExport extends Base {
 			    shell_exec("mv ". $handle . " " . $new_location);
 			}
 			$totalOrders = count($orderArray);
-
-			//new totals for breakdown in email
-			$this->summary['order']['unprocessed_orders'] = $unprocessed_orders;
-			$this->summary['order']['processed_orders'] = $processed_orders;
-
-			$this->summary['order']['unprocessed_orders_items'] = $unprocessed_orders_items;
-			$this->summary['order']['processed_orders_items'] = $processed_orders_items;
-
-			$this->summary['order']['queue_total_orders'] = $ecounter;
-			$this->summary['order']['queue_total_items'] = $allitems;
-
-
-
 			$this->summary['order']['count'] = count($orderArray) + $split_number;
 			$this->summary['order']['lines'] = $inc + $lines;
 			$this->summary['order']['filename'] = $filename;
@@ -626,6 +599,18 @@ class OrderExport extends Base {
 									} else {
 										$purchaseOrder[$inc]['Qty'] += $item['quantity'];
 									}
+
+									//new additions
+									$purchaseOrder[$inc]['Vendor Style'] = $eventItem['vendor_style'];
+									$purchaseOrder[$inc]['Vendor Name'] = $vendorName;
+									$purchaseOrder[$inc]['Item Color'] = $item['color'];
+									$purchaseOrder[$inc]['Item Size'] = $item['size'];
+									$purchaseOrder[$inc]['Item Description'] = $eventItem['description'];
+									$purchaseOrder[$inc]['Promised Ship-by Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $order['ship_date']));
+									$purchaseOrder[$inc]['Event Name'] = $event->name;
+									$purchaseOrder[$inc]['Event End Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $event->end_date));
+
+
 									$purchaseOrder[$inc] = $this->sortArrayByArray($purchaseOrder[$inc], $purchaseHeading);
 								}
 							}
