@@ -260,6 +260,9 @@ case $COMMAND in
 
 		echo "Symlinking..."
 		ln -v -s $TARGET_SOURCE/lib/Sabre ./$TARGET_LINK
+
+		echo "Cleaning up temporary directory..."
+		rm -r $TMP_DIR
 		;;
 
 	# This section collects all commands required to run
