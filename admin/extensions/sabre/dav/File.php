@@ -7,6 +7,7 @@ use lithium\core\ConfigException;
 use admin\models\File as FileModel;
 use Sabre_DAV_Exception_Forbidden;
 use Sabre_DAV_Exception_FileNotFound;
+use Sabre_DAV_Exception_NotImplemented;
 
 class File implements \Sabre_DAV_IFile {
 
@@ -148,10 +149,8 @@ class File implements \Sabre_DAV_IFile {
 		throw new Sabre_DAV_Exception_Forbidden('Permission denied to rename file');
 	}
 
-	protected function _file($id) {
-		return FileModel::find('first', array(
-			'conditions' => compact('id')
-		));
+	protected function _file() {
+		throw new Sabre_DAV_Exception_NotImplemented('Method not implemented.');
 	}
 }
 
