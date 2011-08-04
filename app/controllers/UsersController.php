@@ -159,7 +159,7 @@ class UsersController extends BaseController {
 					$email = $data['email'];
 					$data['password'] = sha1($data['password']);
 					$data['created_date'] = User::dates('now');
-					$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
+					$data['invitation_codes'] = array(substr($email, 0, strpos($email, '@')));
 					$inviteCheck = User::count( array(
 							'invitation_codes' => $data['invitation_codes']
 							));
@@ -436,6 +436,7 @@ class UsersController extends BaseController {
 		$user = User::getUser();
 		$id = (string) $user->_id;
 		// Some documents have arrays, others have strings
+
 		if(is_object($user->invitation_codes) && get_class($user->invitation_codes) == "lithium\data\collection\DocumentArray"){
 			$code = $user->invitation_codes[0];
 		} else {
@@ -460,7 +461,7 @@ class UsersController extends BaseController {
 					'message' => $message,
 					'email_from' => $user->email,
 					'domain' => 'http://www.totsy.com',
-					'invitation_codes' => $user->invitation_codes
+					'invitation_codes' => $code
 				);
 				Mailer::send('Friend_Invite', $email, $args);
 			}
