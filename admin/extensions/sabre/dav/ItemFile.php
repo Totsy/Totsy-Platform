@@ -8,7 +8,7 @@ class ItemFile extends \admin\extensions\sabre\dav\File {
 
 	public function put($data) {
 		if ($file = $this->_file()) {
-			$count = File::used($file->_id)
+			$count = File::used($file->_id);
 
 			/* The current item this file is attached to is included in the count. */
 			if ($count === 1) {
