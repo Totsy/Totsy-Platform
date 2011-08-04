@@ -20,8 +20,7 @@ use admin\extensions\sabre\dav\auth\backend\Lithium as Sabre_DAV_Auth_Backend_Li
 use Sabre_DAV_Server;
 // use Sabre_DAV_FS_Directory;
 // use admin\extensions\sabre\dav\TotsyTree;
-use admin\extensions\sabre\dav\StructuredDirectory;
-use admin\extensions\sabre\dav\FlatDirectory;
+use admin\extensions\sabre\dav\ModelDirectory;
 use Sabre_DAV_Locks_Backend_File;
 use Sabre_DAV_Locks_Plugin;
 use Sabre_DAV_TemporaryFileFilterPlugin;
@@ -303,11 +302,8 @@ class FilesController extends \lithium\action\Controller {
 		//       storing files directly in GridFS.
 		// $root = new Sabre_DAV_FS_Directory($resources . '/dav/share');
 		$root = array(
-			new FlatDirectory('pending'),
-			new FlatDirectory('failed'),
-			new StructuredDirectory('events'),
-			new StructuredDirectory('items')
-			// 'events' => new StructuredDirectory(array('model' => '\admin\models\Event')),
+			new ModelDirectory(array('value' => '\admin\models\Event')),
+			// new ModelDirectory('items')
 		);
 		$server = new Sabre_DAV_Server($root);
 
