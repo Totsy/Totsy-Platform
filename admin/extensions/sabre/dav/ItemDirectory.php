@@ -16,7 +16,7 @@ class ItemDirectory extends \admin\extensions\sabre\dav\Directory {
 	}
 
 	public function getChildren() {
-		$this->_model();
+		$model = $this->_model();
 		$data = $model::find('first', array(
 			'conditions' => $this->_conditions()
 		));
