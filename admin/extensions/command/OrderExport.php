@@ -34,6 +34,7 @@ use admin\extensions\Mailer;
  * @see admin/extensions/command/Exchanger
  * @see admin/controllers/QueueController
  */
+ 
 
 
 //sets maxlifetime to 5 hours
@@ -45,7 +46,7 @@ ini_set("session.gc_maxlifetime", "18000");
 //specifies session path to avoid default maxlifetime value of 24 mins to override
 session_save_path('/www/admin/resources/totsy/tmp');
 
-//to check the session path 
+//to check the session path
 //echo session_save_path();
 
 ini_set('session.gc_probability', 1);
@@ -53,8 +54,7 @@ ini_set('session.gc_probability', 1);
 //check the gc_probability
 //echo ini_get("session.gc_probability");
 
-
-
+ 
 class OrderExport extends Base {
 
 	/**
@@ -159,7 +159,7 @@ class OrderExport extends Base {
 	/**
 	 * Main method for exporting Order and PO files.
 	 *
-	 * The `run` method will query the pending event transactions
+	 * The run method will query the pending event transactions
 	 * that have not yet been processed. This queuing system will be managed
 	 * from the admin dashboard.
 	 *
@@ -422,7 +422,7 @@ class OrderExport extends Base {
 							}
 							if ($this->test != 'true') {
 								$processedOrder = ProcessedOrder::connection()->connection->{'orders.processed'};
-						`		$processedOrder->save($orderFile[$inc] + $this->batchId);
+								$processedOrder->save($orderFile[$inc] + $this->batchId);
 							}
 							$this->log("Adding order $order[_id] to $handle");
 							fputcsv($fp, $orderFile[$inc], chr(9));
