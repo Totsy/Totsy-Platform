@@ -242,6 +242,7 @@ class OrdersController extends BaseController {
 		#Prepare datas
 		$address = null;
 		$selected = null;
+		$cartExpirationDate = 0;
 		#Check Datas Form
 		if (!empty($this->request->data)) {
 			$datas = $this->request->data;
@@ -289,8 +290,13 @@ class OrdersController extends BaseController {
 				'fields' => $fields,
 				'time' => '-5min'
 		));
+		foreach($cart as $item){
+			if($cartExpirationDate < $item['expires']->sec) {
+				$cartExpirationDate = $item['expires']->sec;
+			}
+		}
 		$cartEmpty = ($cart->data()) ? false : true;
-		return compact('address', 'addresses_ddwn', 'cartEmpty', 'error', 'selected');
+		return compact('address', 'addresses_ddwn', 'cartEmpty', 'error', 'selected', 'cartExpirationDate');
 	}
 	
 	/**
@@ -555,6 +561,7 @@ class OrdersController extends BaseController {
 			'event'
 		);
 		#Prepare datas
+		$cartExpirationDate = 0;
 		$address = null;
 		$payment = null;
 		$checked = false;
@@ -618,8 +625,13 @@ class OrdersController extends BaseController {
 				'fields' => $fields,
 				'time' => '-5min'
 		));
+		foreach($cart as $item){
+			if($cartExpirationDate < $item['expires']->sec) {
+				$cartExpirationDate = $item['expires']->sec;
+			}
+		}
 		$cartEmpty = ($cart->data()) ? false : true;
-		return compact('address', 'cartEmpty','payment','shipping');
+		return compact('address', 'cartEmpty','payment','shipping','cartExpirationDate');
 	}
 
 }

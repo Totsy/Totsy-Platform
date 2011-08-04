@@ -1,3 +1,16 @@
+<script type="text/javascript">	
+	$( function () {
+	    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	    
+		var now = new Date();
+		$('#itemCounter').countdown( {until: itemExpires, onExpiry: refreshCart, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
+		if (itemExpires < now) {
+			$('#itemCounter').html("<span class='over' style='color:#EB132C; padding:5px;'>no longer reserved</span>");
+		}
+		function refreshCart() {
+			window.location.reload(true);
+		}
+	});
+</script>
 <?php
 	use app\models\Address;
 	$this->html->script('application', array('inline' => false));
