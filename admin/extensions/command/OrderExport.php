@@ -48,6 +48,10 @@ session_save_path('/www/admin/resources/totsy/tmp');
 //to check the session path 
 //echo session_save_path();
 
+ini_set('session.gc_probability', 1);
+
+//check the gc_probability
+//echo ini_get("session.gc_probability");
 
 
 
