@@ -138,7 +138,7 @@ class OrderExport extends Base {
 	/**
 	 * Main method for exporting Order and PO files.
 	 *
-	 * The `run` method will query the pending event transactions
+	 * The run method will query the pending event transactions
 	 * that have not yet been processed. This queuing system will be managed
 	 * from the admin dashboard.
 	 *
@@ -401,7 +401,7 @@ class OrderExport extends Base {
 							}
 							if ($this->test != 'true') {
 								$processedOrder = ProcessedOrder::connection()->connection->{'orders.processed'};
-						`		$processedOrder->save($orderFile[$inc] + $this->batchId);
+								$processedOrder->save($orderFile[$inc] + $this->batchId);
 							}
 							$this->log("Adding order $order[_id] to $handle");
 							fputcsv($fp, $orderFile[$inc], chr(9));
