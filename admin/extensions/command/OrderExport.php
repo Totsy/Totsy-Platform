@@ -34,6 +34,23 @@ use admin\extensions\Mailer;
  * @see admin/extensions/command/Exchanger
  * @see admin/controllers/QueueController
  */
+
+
+//sets maxlifetime to 5 hours
+ini_set("session.gc_maxlifetime", "18000");
+
+//check the maxlifetime
+//echo ini_get("session.gc_maxlifetime");
+
+//specifies session path to avoid default maxlifetime value of 24 mins to override
+session_save_path('/www/admin/resources/totsy/tmp');
+
+//to check the session path 
+//echo session_save_path();
+
+
+
+
 class OrderExport extends Base {
 
 	/**
