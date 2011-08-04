@@ -26,6 +26,18 @@ class Directory implements \Sabre_DAV_ICollection {
 		return $this->_config['value'];
 	}
 
+	public function getName() {
+		return $this->__toString();
+	}
+
+	public function getValue() {
+		return $this->_config['value'];
+	}
+
+	public function getParent() {
+		return $this->_config['parent'];
+	}
+
 	/**
 	 * Creates a new file in the directory
 	 *
@@ -46,14 +58,6 @@ class Directory implements \Sabre_DAV_ICollection {
 	 */
 	public function createDirectory($name) {
 		throw new Sabre_DAV_Exception_Forbidden('Permission denied to create directory');
-	}
-
-	public function getValue() {
-		return $this->_config['value'];
-	}
-
-	public function getParent() {
-		return $this->_config['parent'];
 	}
 
 	/**
@@ -87,10 +91,6 @@ class Directory implements \Sabre_DAV_ICollection {
 	 */
 	public function delete() {
         throw new Sabre_DAV_Exception_Forbidden('Permission denied to delete node');
-	}
-
-	public function getName() {
-		return $this->__toString();
 	}
 
 	/**
