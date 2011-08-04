@@ -54,4 +54,6 @@ Dispatcher::applyFilter('_callable', function($self, $params, $chain) {
 	}
 	return $chain->next($self, $params, $chain);
 });
+Media::type('png', 'image/png');
+Media::type('jpg', 'image/jpeg');
 ?>
