@@ -3,30 +3,26 @@
 namespace admin\extensions\sabre\dav;
 
 use admin\models\File;
+		// d(__FUNCTION__ . ' ' . $this->getName());
+
 
 class ItemFile extends \admin\extensions\sabre\dav\File {
 
 	public function put($data) {
-		if ($file = $this->_file()) {
+		if ($file = $this->_file()) { /* This object represent an existing file. */
 			$count = File::used($file->_id);
 
-			/* The current item this file is attached to is included in the count. */
+			/* This object is included in the count. */
 			if ($count === 1) {
 				$file->delete();
 			}
 		}
-		if ($file = File::dupe($data)) {
-			$id = $file->_id;
-		} else {
-			$grid = File::getGridFS();
-
-			rewind($data);
-			$id = $grid->storeBytes($data);
-			$file = File::first(array('conditions' => array('_id' => $id)));
-		}
-
+		$file = File::write($data);
 		$item = $this->_item();
-		$item->images[$this->getValue()] = $id;
+
+		$item->images = array(
+			$this->getValue() => $file->_id
+		) + $item->images->data();
 
 		return $item->save();
 	}
