@@ -49,21 +49,29 @@ class FilesController extends \lithium\action\Controller {
 		exit();
 
 		$success = false;
-		$meta = null;
 
 		$enabled = array('item', 'event', 'banner', 'service', 'affilate');
 		$this->_render['template'] = in_array($type, $enabled) ? $type : 'upload';
 
-		// Check if there are any tags associated with the image.
-		if (array_key_exists('tag', $this->request->data)){
-			$meta = array('tag' => $this->request->data['tag']);
-		}
+		/* Check that we have POST data. */
+		if ($this->request->data && $this->_validate($this->request->data)) {
+			$this->_render['layout'] = false;
 
-		// Check that we have a POST.
-		if (($this->request->data) && $this->_validate() && $this->_write($meta)) {
-			$id = $this->id;
-			$fileName = $this->fileName;
-			$tag = $this->tag;
+			$handle = fopen($this->request->data['Filedata']['tmp_name'], 'rb');
+			$meta['name'] = $this->request->data['Filedata']['name'];
+
+			/* Check if there are any tags associated with the image. */
+			if (array_key_exists('tag', $this->request->data)){
+				$meta['tag'] = $this->request->data['tag'];
+			}
+
+			$file = File::write($handle, $meta);
+			fclose($handle);
+
+			if ($file) {
+				/* We're using name -> fileName here for BC. */
+				return array('id' => $file->_id, 'fileName' => $meta['name']);
+			}
 		}
 		return compact('id', 'fileName', 'tag');
 	}
@@ -215,40 +223,6 @@ class FilesController extends \lithium\action\Controller {
 		}
 
 		return $message;
-	}
-
-	/**
-	 * Writes uploaded file to GridFS and sets the MongoId of the file if it doesn't
-	 * already exist in MongoDb.
-	 *
-	 * If the file has already been uploaded then set the id accordingly.
-	 *
-	 * @return boolean|array
-	 */
-	protected function _write($data, $meta = null) {
-		$grid = File::getGridFS();
-		$name = $data['Filedata']['name'];
-		$md5 = md5_file($data['Filedata']['tmp_name']);
-
-		$file = File::first(array('conditions' => array('md5' => $md5)));
-
-		if ($file) {
-			return compact('name') + array('id' => (string) $file->_id);
-		} else {
-			$id = (string) $grid->storeUpload('Filedata', $name);
-
-			if ($id) {
-				if ($meta) {
-					$search = File::first(array(
-						'conditions' => array('filename' => $name)
-					));
-					$search->tag = $meta['tag'];
-					$search->save();
-				}
-				return compact('id', 'name');
-			}
-		}
-		return false;
 	}
 }
 
