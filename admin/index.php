@@ -8,4 +8,11 @@
 
 require 'webroot/index.php';
 
+function d($a) {
+	ob_start();
+	var_dump($a);
+	$dump = ob_get_clean();
+	Logger::debug($dump);
+}
+
 ?>
