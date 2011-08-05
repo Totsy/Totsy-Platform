@@ -68,7 +68,11 @@ class File extends \lithium\data\Model {
 		} else {
 			$handle = $data;
 		}
-		rewind($handle);
+
+		$meta = stream_get_meta_data($handle);
+		if ($meta['seekable']) {
+			rewind($handle);
+		}
 
 		$context = hash_init('md5');
 		hash_update_stream($context, $handle);
