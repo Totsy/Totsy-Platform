@@ -193,6 +193,13 @@ case $COMMAND in
 
 		echo "Symlinking..."
 		ln -v -s $TARGET_SOURCE/lib/Sabre ./$TARGET_LINK
+		;;
+
+	# This section collects all commands required to run
+	# all tests contained within libraries and apps accross
+	# the entire codebase.
+	run-tests)
+		LI3=$PROJECT_DIR/libraries/lithium/console/li3
 
 		echo "Cleaning up temporary directory..."
 		rm -r $TMP_DIR
