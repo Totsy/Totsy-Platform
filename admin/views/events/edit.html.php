@@ -4,12 +4,8 @@
 <?=$this->html->script('tiny_mce/tiny_mce.js');?>text within it.
 <?=$this->html->script('jquery-dynamic-form.js');?>
 <?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
-<?=$this->html->script('swfupload.js');?>
-<?=$this->html->script('swfupload.queue.js');?>
 <?=$this->html->script('fileprogress.js');?>
 <?=$this->html->script('handlers.js');?>
-<?=$this->html->script('event_upload.js');?>
-<?=$this->html->style('swfupload')?>
 <?=$this->html->style('jquery_ui_blitzer.css')?>
 <?=$this->html->script('jquery.dataTables.js');?>
 <?=$this->html->style('table');?>
@@ -24,13 +20,16 @@
 <?=$this->html->script('jquery.fileupload-ui.js')?>
 <?=$this->html->script('uploader.js')?>
 <?=$this->html->style('jquery.fileupload-ui.css');?>
-<?php //=$this->html->style('uploader.css');?>
 <?=$this->html->style('selectlist.css');?>
 <?=$this->html->script('jquery.selectlist.min.js')?>
 <?=$this->html->script('jquery.selectlist.pack.js')?>
 
-<style type="text/css">
+<?=$this->html->script('jquery.flash.min.js')?>
+<?=$this->html->script('agile-uploader-3.0.js')?>
+<?=$this->html->style('agile_uploader.css');?>
+<?=$this->html->style('admin_common.css');?>
 
+<style type="text/css">
 .selectlist-list {
     list-style: none outside none;
     margin: 0;
@@ -40,7 +39,9 @@
 .selectlist-list {
     width: 12em;
 }
-
+#event_media {
+	font-weight: normal;
+}
 </style>
 
 <script type="text/javascript">
@@ -220,10 +221,10 @@ for ( i=1; i<6; i++ ) {
 	<div id="tabs">
 		<ul>
 		    <li><a href="#event_info"><span>Event Info</span></a></li>
-			<li><a href="#event_images"><span>Event Images</span></a></li>
 		    <li><a href="#event_items"><span>Event Items</span></a></li>
 		    <li><a href="#event_history"><span>Event History</span></a></li>
 		    <li><a href="#event_inventory" id="inventoryLink"><span>Event Inventory</span></a></li>
+			<li><a href="#event_media"><span>Upload Event Media</span></a></li>
 		</ul>
 
 		<div id="event_info">
@@ -338,101 +339,14 @@ for ( i=1; i<6; i++ ) {
 					<p>This date will override the calcualted ship date for orders.</p>
 					<?php echo $this->form->text('ship_date', array('id' => 'ship_date', 'value' => $event->ship_date)); ?>
 				</div>
-				<br>
-			<?php echo $this->form->submit('Update Event')?>
+			</div>
+
+			<div class="clear"></div>
+			<div class="tab_bottom_submit">
+				<div class="submit_button"><?=$this->form->submit('Update Event', array('class' => 'submit_event'))?></div><div class="cancel"><a href="/admin/select/event">Cancel</a></div>
+			</div>
 		</div>
-		<div id="event_images">
-			<h3 id="current_images">Current Images</h3>
-            <hr />
-				<table border="1" cellspacing="30" cellpadding="30">
-				<tr>
-					<th align="justify">
-						Image Location
-					</th>
-					<th align="justify">
-						Image
-					</th>
-				</tr>
-				<tr>
-					<td>Big Splash Image</td>
-					<td align="center">
-						<?php
-							if (!empty($event->images->splash_big_image)) {
-								$eventImage = "/image/{$event->images->splash_big_image}.jpg";
-							} else {
-								$eventImage = "/img/no-image-large.jpeg";
-							}
-						?>
-						<?php echo $this->html->image("$eventImage", array('alt' => 'altText')); ?>
-					</td>
-				</tr>
-				<tr>
-					<td>Small Splash Image</td>
-					<td align="center">
-						<?php
-							if (!empty($event->images->splash_small_image)) {
-								$eventImage = "/image/{$event->images->splash_small_image}.jpg";
-							} else {
-								$eventImage = "/img/no-image-small.jpeg";
-							}
-						?>
-						<?php echo $this->html->image("$eventImage", array('alt' => 'altText')); ?>
-					</td>
-				</tr>
-				<tr>
-					<td>Event Image</td>
-					<td align="center">
-						<?php
-							if (!empty($event->images->event_image)) {
-								$eventImage = "/image/{$event->images->event_image}.jpg";
-							} else {
-								$eventImage = "/img/no-image-small.jpeg";
-							}
-						?>
-						<?php echo $this->html->image("$eventImage", array('alt' => 'altText')); ?>
-					</td>
-				</tr>
-				<tr>
-					<td>Logo Image</td>
-					<td align="center">
-						<?php
-							if (!empty($event->images->logo_image)) {
-								$eventImage = "/image/{$event->images->logo_image}.jpg";
-							} else {
-								$eventImage = "/img/no-image-small.jpeg";
-							}
-						?>
-						<?php echo $this->html->image("$eventImage", array('alt' => 'altText')); ?>
-					</td>
-				</tr>
-				</table>
 
-			<h3 id="uploaded_media">Uploaded Media</h3>
-            <hr />
-			<div id="fileInfo"></div>
-			<br>
-
-			<br>
-			<table>
-				<tr valign="top">
-					<td>
-						<div>
-							<div class="fieldset flash" id="fsUploadProgress1">
-								<span class="legend">Upload Status</span>
-							</div>
-							<div style="padding-left: 5px;">
-								<span id="spanButtonPlaceholder1"></span>
-								<input id="btnCancel1" type="button" value="Cancel Uploads" onclick="cancelQueue(upload1);" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />
-								<br />
-							</div>
-						</div>
-					</td>
-				</tr>
-			</table>
-
-			<br>
-			<?php echo $this->form->submit('Update Event')?>
-		</div>
 		<div id="event_items">
 			<h3 id="">Item Management</h3>
 			<hr />
@@ -539,7 +453,48 @@ for ( i=1; i<6; i++ ) {
 		<div id="event_inventory">
 			<iframe id="inventoryIframe" src="" style="width:900px; height:400px;"></iframe>
 		</div>
+		<div id="event_media">
+			<h3 id="uploaded_media">Upload Media</h3>
+			<p>
+				Upload all event media here. This includes event images as well as item images. Please ensure all filenames follow proper naming convention.
+			</p>
+			<p>
+				The event URL is: <?=$event->url; ?><br />
+				So for example, files names would be; event_image_<?=$event->url; ?>.jpg, splash_big_image_<?=$event->url; ?>.jpg, splash_small_image_<?=$event->url; ?>.jpg, logo_image_<?=$event->url; ?>.jpg
+			</p>
+            <hr />
 
+			<form id="EventMedia">
+			</form>
+			<div id="agile_file_upload"></div>
+			<script type="text/javascript">
+
+				$('#agile_file_upload').agileUploader({
+					flashSrc: '/admin/swf/agile-uploader.swf',
+					//submitRedirect: $('#EventEdit').attr('action'),
+					//formId: 'EventEdit',
+					formId: 'EventMedia',
+					removeIcon: '/admin/img/agile_uploader/trash-icon.png',
+					flashVars: {
+						button_up: '/admin/img/agile_uploader/add-file.png',
+						button_down: '/admin/img/agile_uploader/add-file.png',
+						button_over: '/admin/img/agile_uploader/add-file.png',
+						//form_action: $('#EventEdit').attr('action'),
+						form_action: '/admin/files/upload/event',
+						file_limit: 4,
+						max_height: '1000',
+						max_width: '1000',
+						file_filter: '*.jpg;*.jpeg;*.gif;*.png;*.JPG;*.JPEG;*.GIF;*.PNG',
+						resize: 'jpg,jpeg,gif',
+						force_preview_thumbnail: 'true',
+						firebug: 'true'
+					}
+				});
+
+			</script>
+
+			<a href="#" onClick="document.getElementById('agileUploaderSWF').submit();">Upload</a>
+		</div>
 	</div>
 </div>
 <script type="text/javascript">
