@@ -2,6 +2,9 @@
 
 namespace app\extensions\adapter\data\source;
 
+use Mongo;
+use lithium\core\NetworkException;
+
 class MongoDb extends \lithium\data\source\MongoDb {
 
 	/**
