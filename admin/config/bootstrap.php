@@ -124,6 +124,7 @@ Session::config(array(
     'flash_message' => array('adapter' => 'admin\extensions\adapter\session\Model', 'model' => 'MongoSession')
 ));
 
+/*
 use lithium\security\Auth;
 Auth::config(array('userLogin' => array(
 	'model' => 'User',
@@ -131,7 +132,7 @@ Auth::config(array('userLogin' => array(
 	'fields' => array('email', 'password'),
 	'scope' => array('admin' => true)
 )));
-
+*/
 
 ini_set('memory_limit', '1024M');
 ini_set('max_execution_time', '20000');
