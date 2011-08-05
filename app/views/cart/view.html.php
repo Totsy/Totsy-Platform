@@ -13,29 +13,36 @@
 </script>
 
 <?php  if(!empty($subTotal)): ?>
-<div style="margin-top:10px; margin-bottom:10px">
+<div style="margin:10px; margin-bottom:10px">
 
-	<div class="grid_8" style="padding-bottom:10px">
+	<div class="grid_11" style="padding-bottom:10px; margin:20px auto auto auto;">
 		<div style="float:left">
 		<h2 class="page-title gray">
+			<span class="cart_steps_on">1</span>
+			<span class="cart_steps_off">2</span>
+			<span class="cart_steps_off">3</span>
+			<span class="cart_steps_off">4</span>
 			<span class="red">Shopping Cart</span></h2>
 		</div>
-		<div style="float:right; font-weight: bold">
+	</div>
+	
+	<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto;">
+		 <div style="float:right; font-weight: bold">
 		Item reserved for: <br />
 		<span id="itemCounter">Dummy cart expiration date</span>
 	    </div>
-	</div>
-	
-	<div class="grid_8" style="padding-bottom:10px">
-		 <div style="float:left;">
+	    <div style="float:left;">
 		 <span style="font-weight: bold">Estimated Shipping Date: </span><br />
 	         <span style="float:right;">&nbsp;&nbsp;<?=date('m-d-Y', $shipDate)?></span>
 	     </div>
-	     <div class="cart-button">
-		     <?=$this->html->link('Checkout', 'Orders::addShipping', array('class' => 'button', 'style'=>'float:right')); ?>
-		 </div>
 	</div>
-
+	<div class="clear"></div>
+	<hr/>
+	     <div class="cart-button fr" style="margin:20px 5px 20px 0px;">
+		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
+		      <?=$this->html->link('Checkout', 'Orders::addShipping', array('class' => 'button', 'style'=>'float:left')); ?>
+		     <div class="clear"></div>
+		 </div>
 <?php endif ?>
 
 <div class="message"></div>
@@ -88,6 +95,9 @@
 						<strong>Color:</strong> <?=$item->color;?><br>
 						<strong>Size:</strong> <?=$item->size;?>
 					</td>
+					<td style="width:150px;">
+					<div id='<?php echo "itemCounter$x"; ?>_display' style="margin:5px 0px 0px 5px;" title='<?=$date?>'></div>
+					</td>
 					<td class="<?="price-item-$x";?>" style="width:65px;">
 						<strong style="color:#009900;">$<?=number_format($item->sale_retail,2)?></strong>
 					</td>
@@ -116,8 +126,8 @@
 					<td class="cart-actions">
 						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" onclick="deletechecked('Are you sure you want to remove this item?','<?=$item->_id; ?>');" style="color: red!important;"><img src="/img/trash.png" width="20" align="absmiddle" style="margin-right:20px;" /></a>
 					</td>
-					<td class="cart-time" style="width:220px;"><!-- <img src="/img/old_clock.png" align="absmiddle" width="23" class="fl"/>--> <div id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?=$date?>'></div>
-					<div id='<?php echo "itemCounter$x"; ?>_display' style="margin:5px 0px 0px 5px;" title='<?=$date?>'></div>
+					<td class="cart-time"><!-- <img src="/img/old_clock.png" align="absmiddle" width="23" class="fl"/>--> <div id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?=$date?>'></div>
+					
 					</td>
 					<td class="<?="total-item-$x";?>" style="width:55px;">
 						<strong style="color:#009900;">$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
@@ -126,11 +136,11 @@
 				<?php $x++; ?>
 			<?php endforeach ?>
 				<tr class="cart-total">
-					<td colspan="4" id='subtotal' valign='top'>
+					<td colspan="3" id='subtotal' valign='top'>
 						
-						<div style="float: left; ">
+						<div style="float: left;">
 							
-							<div style="font-size: 12px; text-align:left !important">
+							<div style="font-size: 12px; text-align:left!important">
 								<strong>Add <?php if(!empty($credit)): ?>
 									<a href="#" id='credits_lnk' onclick="open_credit();" >Credits</a> /
 								<?php endif ?> 
@@ -150,7 +160,7 @@
 						</div>
 						
 					</td>	
-					<td colspan="3">	
+					<td colspan="5">	
 						<div style="font-weight:bold">
 								<span style="float: left;">Subtotal:</span>
 								<span style="color:#009900; float:right">$<?=number_format($subTotal,2)?></span>
@@ -211,14 +221,13 @@
 						</div>			
 					</td>
 				</tr>
-				<tr class="cart-buy">
-					<td colspan="2" class="cart-button">
-					<?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left')); ?>
-						<!--<a href='../../pages/returns'><strong style="font-size:12px; font-weight:normal;">Refund &amp; Return Policy</strong></a><br /> -->
-					</td>
-					<td class="cart-button" colspan="5">
-						<?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:right')); ?>
-						<!-- $this->html->link('Continue Shopping', "sale/$returnUrl", array('style' => 'margin:7px 10px 0px 0px;')); -->
+				<tr>
+					<td colspan="8">
+					<div class="cart-button fr" style="margin:20px 0px 20px 0px;">
+		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
+		      <?=$this->html->link('Checkout', 'Orders::addShipping', array('class' => 'button', 'style'=>'float:left')); ?>
+		     <div class="clear"></div>
+		 </div>
 					</td>
 				</tr>
 			</tbody>

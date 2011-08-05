@@ -34,7 +34,13 @@
 </script>
 
 <div class="grid_16">
-	<h2 class="page-title gray">Shipping Information</h2>
+	<h2 class="page-title gray">
+			<span class="cart_steps_off">1</span>
+			<span class="cart_steps_on">2</span>
+			<span class="cart_steps_off">3</span>
+			<span class="cart_steps_off">4</span>
+			<span class="red">Shipping Information</span>
+	</h2>
 	<hr />
 	<?php if (!empty($error)) { ?>
 		<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2></div>

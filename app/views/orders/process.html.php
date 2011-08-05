@@ -11,12 +11,14 @@
 ?>
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
 <div class="grid_16">
-	<h2 class="page-title gray">Checkout / Process Payment</h2>
+	<h2 class="page-title gray">
+			<span class="cart_steps_off">1</span>
+			<span class="cart_steps_off">2</span>
+			<span class="cart_steps_off">3</span>
+			<span class="cart_steps_on">4</span>
+			<span class="red">Review your Shipping and Payment Information. Then Place Your Order.</span></h2>
 	<hr />
-</div>
-
-<div class="grid_10 roundy grey_inside" style="width:562px!important;">
-<?php if ($errors = $order->errors()): ?>
+	<?php if ($errors = $order->errors()): ?>
 	<?php foreach ($errors as $error): ?>
 	    <?php if (is_array($error)): ?>
 	        <?php foreach($error as $msg): ?>
@@ -27,6 +29,32 @@
 		<?php endif; ?>
 	<?php endforeach ?>
 <?php endif ?>
+</div>
+
+<div class="container_16">
+	<div class="grid_8 roundy gray">
+	Shipping Address <span style="float:right;">(<a href="#change" title="Change">Change</a></span>)
+	<hr />
+	<strong>The Girl In The White Coat</strong><br/>
+	40 Broadway Avenue</br>
+	1234567890
+	</div>
+	<div class="grid_4 roundy gray">
+		Payment Method (<a href="#change" title="Change">Change</a>)<br/>
+		<hr/>
+		MasterCard</br>
+		Ends in 2834<br/>
+		Expires 12/2012
+	</div>
+	<div class="grid_4 roundy gray" style="text-align:center;">
+		Order Total $98.95<br/>
+		<?=$this->form->submit('Place Your Order', array('class' => 'button submit')); ?><br/>
+		Your payment method will be changed
+	</div>
+</div>
+
+
+<div class="grid_10 roundy grey_inside" style="width:562px!important; display:none;" >
 
 <table style="width:100%;">
 	<tr>
@@ -35,7 +63,7 @@
 				<tr>
 					<td>
 						<?=$this->form->create($order); ?>
-							<h1 style="color:#707070; font-size:14px;">Payment Information <span class="fr" style="font-size:12px; font-weight:normal;"><span class="red ">*</span> Required</span></h1>
+							<h1 style="color:#707070; font-size:14px;">Payment Information <span class="fr" style="font-size:12px; font-weight:normal;"><span class="red">*</span> Required</span></h1>
 							<hr />
 
 								<p>

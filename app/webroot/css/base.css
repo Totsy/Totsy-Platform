@@ -3215,8 +3215,22 @@ a.nivo-prevNav {
 	font-size:12px!important;
 	cursor:pointer;
 	-webkit-appearance: none;
+	/* -moz-box-shadow:0 0 4px rgba(0, 0, 0, 0.3); border:2px solid #FFFFFF; */
+	text-transform:uppercase;
+	font-weight:bold;
+	display: table-cell !important;
+    vertical-align: middle !important;
+   }
 
-
+.button_border {
+	/*display:inline-block;*/
+	background:#fff!important;
+	border:1px solid #ed1c25!important;
+	padding:5px 8px!important;
+	color:#ed1c25!important;
+	font-size:12px!important;
+	cursor:pointer;
+	-webkit-appearance: none;
 	
 /* -moz-box-shadow:0 0 4px rgba(0, 0, 0, 0.3); border:2px solid #FFFFFF; */
 	text-transform:uppercase;
@@ -3247,6 +3261,27 @@ a.nivo-prevNav {
 }
 
 .button a {
+	margin:0;
+	padding:0;
+	font-size:12px;
+}
+
+.button_border:hover {
+	text-decoration:none;
+}
+
+.button_border:active {
+	padding:5px 8px!important;
+}
+
+.button_border {
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	-webkit-appearance: none;
+
+}
+
+.button_border a {
 	margin:0;
 	padding:0;
 	font-size:12px;
@@ -3930,4 +3965,35 @@ Text Align > left / right
 
 .label_break {
 	clear:both;
+}
+/* cart steps (circles) on = grey */
+.cart_steps_off {
+	-moz-border-radius:40px; 
+	-webkit-border-radius:40px; 
+	border-radius:40px; 
+	background:#ddd; 
+	color:#fff; 
+	padding:3px; 
+	width:18px; 
+	height:18px; 
+	display: block; 
+	text-align:center; 
+	float:left; 
+	margin-right:5px;
+}
+
+/* cart steps (circles) on = red */
+.cart_steps_on {
+	-moz-border-radius:40px; 
+	-webkit-border-radius:40px; 
+	border-radius:40px; 
+	background:#EB132C; 
+	color:#fff; 
+	padding:3px; 
+	width:18px; 
+	height:18px; 
+	display: block; 
+	text-align:center; 
+	float:left; 
+	margin-right:5px;
 }
