@@ -165,17 +165,20 @@
 								<span style="float: left;">Subtotal:</span>
 								<span style="color:#009900; float:right">$<?=number_format($subTotal,2)?></span>
 						</div>
-						<?php if (!empty($cartPromo['saved_amount'])):?>
+						<?php if (!empty($promocode['discount_amount']) && ($promocode['type'] != 'free_shipping') ):?>
 						<div style="clear:both"></div>
 						<div style="font-weight:bold">
     							<span style="float: left;">Discount 
-    							<?php if(!empty($services['10off50'])) {
-										echo '[10$ Off]';    							
-    								} else if(!empty($promocode)) {
-    									echo '[' . $promocode['code'] . ']';
-    								}?>	
+    							<?php echo '[' . $promocode['code'] . ']'; ?>	
     							:</span> 
-    							<span style="color:#009900; float:right">- $<?=number_format(abs($cartPromo['saved_amount']),2)?></span>
+    							<span style="color:#009900; float:right">- $<?=number_format(abs($promocode['discount_amount']),2)?></span>
+    					</div>
+   						<?php endif ?>
+   						<?php if (!empty($services['tenOffFitfy'])):?>
+						<div style="clear:both"></div>
+						<div style="font-weight:bold">
+    							<span style="float: left;">Discount [10$ Off] :</span> 
+    							<span style="color:#009900; float:right">- $<?=number_format($services['tenOffFitfy'],2)?></span>
     					</div>
    						<?php endif ?>
 						<div style="clear:both"></div>
@@ -187,11 +190,11 @@
 						<div style="clear:both"></div>
 						<div style="font-weight:bold">
     							<span style="float: left;">Complimentary Shipping 
-    							<?php if(!empty($services['freeshipping'])) {
-										echo '[FreeShipping]';    							
-    								} else if(!empty($promocode)) {
-    									echo '[' . $promocode['code'] . ']';
-    								}?>		
+    							<?php 
+    							if(!empty($promocode)) {
+    								if($promocode['type'] === 'free_shipping')
+    									echo '[' . $promocode['code'] . ']';	
+    							}?>		
     							:</span> 
     							<span style="color:#009900; float:right">- $<?=number_format($shipping_discount,2)?></span>
     					</div>

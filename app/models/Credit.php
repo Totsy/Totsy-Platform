@@ -34,7 +34,6 @@ class Credit extends \lithium\data\Model {
 			if ($credit_amount == null) {
 				$credit_amount = $entity->credit_amount;
 			}
-			
 		}
 		if ((float) $credit_amount >= 0.00) {
 		    $entity->credit_amount = $credit_amount;
@@ -42,13 +41,13 @@ class Credit extends \lithium\data\Model {
 			$lower = -0.999;
 			$upper = (!empty($userDoc->total_credit)) ? $userDoc->total_credit + 0.01 : 0;
 			$inRange = Validator::isInRange($credit, null, compact('lower', 'upper'));
-			$isMoney = Validator::isMoney($credit);
+			/**$isMoney = Validator::isMoney((string) '$'.$credit);
 			if (!$isMoney) {
 				$entity->error = "Please apply credits that are in the form of $0.00";
 				$entity->errors(
 					$entity->errors() + array('amount' => "Please apply credits that are in the form of $0.00")
 				);
-			}
+			}**/
 			if (!$inRange) {
 				$entity->errors(
 					$entity->errors() + array(
@@ -56,7 +55,7 @@ class Credit extends \lithium\data\Model {
 					));
 			}
 			$isValid = ($subTotal >= $credit) ? true : false;
-			if ($isMoney && $inRange) {
+			if ($inRange) {
 			 	if($isValid) {
 			 		$entity->credit_amount = -$credit;
 					Session::write('credit', $credit, array('name' => 'default'));

@@ -242,6 +242,7 @@ class OrdersController extends BaseController {
 		#Prepare datas
 		$address = null;
 		$selected = null;
+		$cartExpirationDate = 0;
 		#Check Datas Form
 		if (!empty($this->request->data)) {
 			$datas = $this->request->data;
@@ -289,8 +290,13 @@ class OrdersController extends BaseController {
 				'fields' => $fields,
 				'time' => '-5min'
 		));
+		foreach($cart as $item){
+			if($cartExpirationDate < $item['expires']->sec) {
+				$cartExpirationDate = $item['expires']->sec;
+			}
+		}
 		$cartEmpty = ($cart->data()) ? false : true;
-		return compact('address', 'addresses_ddwn', 'cartEmpty', 'error', 'selected');
+		return compact('address', 'addresses_ddwn', 'cartEmpty', 'error', 'selected', 'cartExpirationDate');
 	}
 	
 	/**
@@ -301,7 +307,9 @@ class OrdersController extends BaseController {
 	 */
 	public function process() {
 		$order = Order::create();
+		#Get Users Informations
 		$user = Session::read('userLogin');
+		$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
 		$data = $this->request->data;
 		$fields = array(
 			'item_id',
@@ -324,33 +332,22 @@ class OrdersController extends BaseController {
 		
 		$orderEvents = $this->orderEvents($cart);
 		$discountExempt = $this->_discountExempt($cart);
+		$subTotal = 0;
 		foreach ($cart as $cartValue) {
 			$event = Event::find('first', array(
 				'conditions' => array('_id' => $cartValue->event[0])
 			));
 			$cartValue->event_name = $event->name;
 			$cartValue->event_id = $cartValue->event[0];
+			$subTotal += $cartValue->quantity * $cartValue->sale_retail;
 			unset($cartValue->event);
 		}
 		$shippingCost = 0;
 		$overShippingCost = 0;
-		$billingAddr = $shippingAddr = null;
-		if (isset($data['billing_shipping']) && $data['billing_shipping'] == '1') {
-			$data['shipping'] = $data['billing'];
-		}
-
-		foreach (array('billing', 'shipping') as $key) {
-			$var = $key . 'Addr';
-
-			if (isset($data[$key])) {
-				$addr = $data[$key];
-				${$var} = Address::find('first', array(
-					'conditions' => array(
-						'_id' => $addr,
-						'user_id' => (string) $user['_id']
-				)));
-			}
-		}
+	
+		$shippingAddr = Session::read('shipping');
+		$billingAddr = Session::read('billing');
+		
 		$tax = 0;
 		if ($shippingAddr) {
 			$tax = array_sum($cart->tax($shippingAddr));
@@ -359,57 +356,48 @@ class OrdersController extends BaseController {
 			$tax = $tax ? $tax + (($overShippingCost + $shippingCost) * Cart::TAX_RATE) : 0;
 			$tax =  $tax + $shippingCost + $overShippingCost;
 		}
-		/**
-		*	Handling services the user may be eligible for
-		*	@see app\models\Service::freeShippingCheck()
-		**/
+		#Get current Discount
+		$vars = Cart::getDiscount($shippingCost, $overShippingCost);
+		#Calculate savings
+		$userSavings = Session::read('userSavings');
+		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
+		$postDiscount = ($subTotal - $vars['services']['tenOffFitfy']);
 		$service = Session::read('services', array('name' => 'default'));
-		extract(Service::freeShippingCheck($shippingCost, $overShippingCost));
-
-		$map = function($item) { return $item->sale_retail * $item->quantity; };
-		$subTotal = array_sum($cart->map($map)->data());
-
-		$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
-
-		$orderCredit = Credit::create();
-
-		$credit_amount = isset($this->request->data['credit_amount']) ? $this->request->data['credit_amount'] : 0;
-		$orderCredit->checkCredit($credit_amount, $subTotal, $userDoc);
-		$orderPromo = Promotion::create();
-		$orderServiceCredit = Service::tenOffFiftyCheck($subTotal);
-		$postServiceCredit = $subTotal + $orderServiceCredit;
-		$postCreditTotal = $postServiceCredit + $orderCredit->credit_amount;
-		
-
-		$promo_code = NULL;
-		if (Session::read('promocode')) {
-			$promo_code = Session::read('promocode');
+		if(!empty($vars['cartCredit'])) {
+			$credits = Session::read('credit');
+		 	$vars['postDiscountTotal'] -= $credits;
 		}
-		if (array_key_exists('code', $this->request->data)) {
-			$promo_code = $this->request->data['code'];
-		}
-
-		$orderPromo->promoCheck($promo_code, $userDoc, compact('postCreditTotal', 'shippingCost', 'overShippingCost'));
-		$vars = compact(
-			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
-			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
-		);
-		if (($cart->data()) && (count($this->request->data) > 1) && $order->process($user, $data, $cart, $orderCredit, $orderPromo)) {
-			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
-			if ($orderCredit->credit_amount) {
-				User::applyCredit($user['_id'], $orderCredit->credit_amount);
-				Credit::add($orderCredit, $user['_id'], $orderCredit->credit_amount, "Used Credit");
-				Session::delete('credit');
-				$order->credit_used = $orderCredit->credit_amount;
+		if(!empty($vars['cartPromo']['saved_amount'])) {
+		 	$promocode = Session::read('promocode');
+		 	if($promocode['type'] === 'free_shipping') {
+				$shipping_discount = $shipping;
 			}
-			if ($orderPromo->saved_amount) {
-				Promocode::add((string) $code->_id, $orderPromo->saved_amount, $order->total);
-				$orderPromo->order_id = (string) $order->_id;
-				$orderPromo->code_id = (string) $code->_id;
-				$orderPromo->date_created = new MongoDate();
-				$orderPromo->save();
-				$order->promo_code = $orderPromo->code;
-				$order->promo_discount = $orderPromo->saved_amount;
+		}
+		if(!empty($services['freeshipping']['enable'])) {
+			$shipping_discount = $shipping;
+		}
+		$total = $vars['postDiscountTotal'];
+		
+		$vars = $vars + compact(
+			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
+			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'cartCredit', 'cartPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
+		);
+		if (($cart->data()) && (count($this->request->data) > 1) && $order->process($user, $data, $cart, $vars['cartCredit'], $vars['cartPromo'])) {
+			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
+			if ($vars['cartCredit']->credit_amount) {
+				User::applyCredit($user['_id'], $vars['cartCredit']->credit_amount);
+				Credit::add($orderCredit, $user['_id'], $vars['cartCredit']->credit_amount, "Used Credit");
+				Session::delete('credit');
+				$order->credit_used = $vars['cartCredit']->credit_amount;
+			}
+			if ($vars['cartPromo']->saved_amount) {
+				Promocode::add((string) $code->_id, $vars['cartPromo']->saved_amount, $order->total);
+				$vars['cartPromo']->order_id = (string) $order->_id;
+				$vars['cartPromo']->code_id = (string) $code->_id;
+				$vars['cartPromo']->date_created = new MongoDate();
+				$vars['cartPromo']->save();
+				$order->promo_code = $vars['cartPromo']->code;
+				$order->promo_discount = $vars['cartPromo']->saved_amount;
 			}
 			if ($service) {
 				$services = array();
@@ -422,14 +410,14 @@ class OrdersController extends BaseController {
 				}
 				$order->service = $services;
 			}
-			if (!empty($orderPromo->type)) {
-				if ($orderPromo->type == 'free_shipping') {
+			if (!empty($vars['cartPromo']->type)) {
+				if ($vars['cartPromo']->type == 'free_shipping') {
 					Promocode::add((string) $code->_id, 0, $order->total);
-					$orderPromo->order_id = (string) $order->_id;
-					$orderPromo->code_id = (string) $code->_id;
-					$orderPromo->date_created = new MongoDate();
-					$orderPromo->save();
-					$order->promo_code = $orderPromo->code;
+					$vars['cartPromo']->order_id = (string) $order->_id;
+					$vars['cartPromo']->code_id = (string) $code->_id;
+					$vars['cartPromo']->date_created = new MongoDate();
+					$vars['cartPromo']->save();
+					$order->promo_code = $vars['cartPromo']->code;
 				}
 			}
 			$order->ship_date = new MongoDate(Cart::shipDate($order));
@@ -455,15 +443,6 @@ class OrdersController extends BaseController {
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
-		//calculate final savings
-		$savings = Session::read('userSavings');
-		if(!empty($orderPromo->saved_amount) && !empty($savings)) {
-			$savings += abs($orderPromo->saved_amount);
-		}
-		if(!empty($orderCredit->credit_amount) && !empty($savings)) {
-			$savings += abs($orderCredit->credit_amount);
-		}
-
 		if(!empty($_GET['json'])) {
 			echo json_encode($vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings'));
 		} else {
@@ -582,6 +561,7 @@ class OrdersController extends BaseController {
 			'event'
 		);
 		#Prepare datas
+		$cartExpirationDate = 0;
 		$address = null;
 		$payment = null;
 		$checked = false;
@@ -645,8 +625,13 @@ class OrdersController extends BaseController {
 				'fields' => $fields,
 				'time' => '-5min'
 		));
+		foreach($cart as $item){
+			if($cartExpirationDate < $item['expires']->sec) {
+				$cartExpirationDate = $item['expires']->sec;
+			}
+		}
 		$cartEmpty = ($cart->data()) ? false : true;
-		return compact('address', 'cartEmpty','payment','shipping');
+		return compact('address', 'cartEmpty','payment','shipping','cartExpirationDate');
 	}
 
 }
