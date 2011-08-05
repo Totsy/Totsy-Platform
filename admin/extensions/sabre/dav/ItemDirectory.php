@@ -4,6 +4,7 @@ namespace admin\extensions\sabre\dav;
 
 use admin\extensions\sabre\dav\ItemFile;
 use admin\models\File;
+use Sabre_DAV_Exception_FileNotFound;
 
 class ItemDirectory extends \admin\extensions\sabre\dav\Directory {
 
@@ -12,6 +13,9 @@ class ItemDirectory extends \admin\extensions\sabre\dav\Directory {
 		$data = $model::find('first', array(
 			'conditions' => $this->_conditions()
 		));
+		if (!isset($data->images[$name])) {
+			throw new Sabre_DAV_Exception_FileNotFound("File `{$name}` not found,");
+		}
 		return new ItemFile(array('value' => $data->images[$name], 'parent' => $this));
 	}
 
