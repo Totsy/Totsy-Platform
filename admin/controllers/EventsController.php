@@ -724,7 +724,6 @@ class EventsController extends BaseController {
 	 */
 	protected function _parseImages($imageRecord = null) {
 		$images = array();
-
 		foreach ($this->request->data as $key => $value) {
 			if (substr($key, -6) == '_image' ) {
 				$images["$key"] = $value;
