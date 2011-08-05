@@ -33,10 +33,12 @@ class ItemDirectory extends \admin\extensions\sabre\dav\Directory {
 	}
 
 	public function childExists($name) {
-		$this->_model();
+		$model = $this->_model();
 		$data = $model::find('first', array(
 			'conditions' => $this->_conditions()
 		));
+
+		$name = pathinfo($name, PATHINFO_FILENAME);
 		return isset($data->images[$name]);
 	}
 
