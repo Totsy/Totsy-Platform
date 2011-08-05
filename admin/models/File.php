@@ -68,10 +68,10 @@ class File extends \lithium\data\Model {
 		} else {
 			$handle = $data;
 		}
-		rewind($data);
+		rewind($handle);
 
 		$context = hash_init('md5');
-		hash_update_stream($context, $data);
+		hash_update_stream($context, $handle);
 		$hash = hash_final($context);
 
 		if ($close) {
