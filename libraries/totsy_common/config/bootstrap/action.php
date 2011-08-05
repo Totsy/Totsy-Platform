@@ -17,10 +17,11 @@
  * @see lithium\util\collection\Filters
  */
 
-use lithium\core\Libraries;
-use lithium\net\http\Router;
-use lithium\core\Environment;
-use lithium\action\Dispatcher;
+use \lithium\core\Libraries;
+use \lithium\net\http\Router;
+use \lithium\core\Environment;
+use \lithium\action\Dispatcher;
+use lithium\analysis\Logger;
 
 /**
  * This filter intercepts the `run()` of the `Dispatcher`, and first passes the `'request'`
@@ -40,6 +41,7 @@ use lithium\action\Dispatcher;
  * @see lithium\net\http\Router
  */
 Dispatcher::applyFilter('run', function($self, $params, $chain) {
+	Logger::debug($params['request']->url);
 	Environment::set($params['request']);
 
 	foreach (array_reverse(Libraries::get()) as $name => $config) {
