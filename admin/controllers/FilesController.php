@@ -5,6 +5,7 @@ namespace admin\controllers;
 use lithium\core\Libraries;
 use lithium\core\Environment;
 use admin\models\File;
+use admin\models\EventImage;
 use admin\extensions\sabre\dav\auth\backend\Lithium as Sabre_DAV_Auth_Backend_Lithium;
 use Sabre_DAV_Server;
 // use Sabre_DAV_FS_Directory;
@@ -33,22 +34,100 @@ class FilesController extends \lithium\action\Controller {
 	 * @return array
 	 */
 	public function upload($type = null) {
-		$success = false;
-		$this->_render['template'] = in_array($type, array('item', 'event','banner','service', 'affiliate')) ? $type : 'upload';
 
-        //Check if there are any tags associated with the image
-        if(array_key_exists('tag',$this->request->data)){
-            $meta = array('tag' => $this->request->data['tag'] );
-        }else{
-            $meta = null;
-        }
-		// Check that we have a POST
-		if (($this->request->data) && $this->validate() && $this->write($meta)) {
+		switch(strtolower($type)) {
+			case 'event':
+				static::processEventImages();
+				static::processEventItemImages();
+				break;
+
+		}
+
+		//echo 'console.dir('.json_encode($this->request->data).');';
+
+		echo 'console.dir('.json_encode($event_images).');';
+
+		exit();
+
+		$success = false;
+
+		$enabled = array('item', 'event', 'banner', 'service', 'affilate');
+		$this->_render['template'] = in_array($type, $enabled) ? $type : 'upload';
+
+		// Check if there are any tags associated with the image.
+		if (array_key_exists('tag', $this->request->data)){
+			$meta = array('tag' => $this->request->data['tag'] );
+		} else {
+			$meta = null;
+		}
+
+		// Check that we have a POST.
+		if (($this->request->data) && $this->_validate() && $this->_write($meta)) {
 			$id = $this->id;
 			$fileName = $this->fileName;
 			$tag = $this->tag;
 		}
 		return compact('id', 'fileName', 'tag');
+	}
+
+	/**
+	 * Processes event images uploaded from a web browser via the admin UI.
+	 *
+	 * @return
+	*/
+	public static function processEventImages() {
+		$event_images = array();
+		if(isset($this->request->data['Filedata']) && !empty($this->request->data['Filedata'])) {
+			foreach($this->request->data['Filedata'] as $file) {
+				// Event Image
+				if(preg_match('/^e\_\_i\_\_/i', $file['name'])) {
+					$event_images['event_image'] = $file;
+				}
+				// Event Logo
+				if(preg_match('/^e\_\_l\_\_/i', $file['name'])) {
+					$event_images['event_logo'] = $file;
+				}
+				// Event Big Splash Image
+				if(preg_match('/^e\_\_sbi\_\_/i', $file['name'])) {
+					$event_images['splash_big_image'] = $file;
+				}
+				// Event Small Splash Image
+				if(preg_match('/^e\_\_ssi\_\_/i', $file['name'])) {
+					$event_images['splash_small_image'] = $file;
+				}
+			}
+		}
+
+	}
+
+	/**
+	 * Processes event item images uploaded from a web browser via the admin UI.
+	 *
+	 * @return
+	*/
+	public static function processEventItemImages() {
+		$item_images = array();
+		if(isset($this->request->data['Filedata']) && !empty($this->request->data['Filedata'])) {
+			foreach($this->request->data['Filedata'] as $file) {
+				// Event Image
+				if(preg_match('/^e\_\_i\_\_/i', $file['name'])) {
+					$event_images['event_image'] = $file;
+				}
+				// Event Logo
+				if(preg_match('/^e\_\_l\_\_/i', $file['name'])) {
+					$event_images['event_logo'] = $file;
+				}
+				// Event Big Splash Image
+				if(preg_match('/^e\_\_sbi\_\_/i', $file['name'])) {
+					$event_images['splash_big_image'] = $file;
+				}
+				// Event Small Splash Image
+				if(preg_match('/^e\_\_ssi\_\_/i', $file['name'])) {
+					$event_images['splash_small_image'] = $file;
+				}
+			}
+		}
+
 	}
 
 	public function dav() {
