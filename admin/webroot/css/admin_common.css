@@ -1,0 +1,39 @@
+.tab_region_left_col {
+	width: 440px;
+	margin: 0 20px 0 0;
+	display: block;
+	float: left;
+}
+.tab_region_right_col {
+	width: 440px;
+	float: left;
+	display: block;
+}
+label {
+	font-weight: bold;
+}
+#blurb_div, .input_field {
+	margin-top: 10px;
+}
+.document_status_input {
+	padding: 0 0 0 5px;
+}
+.tab_top_submit, .tab_bottom_submit {
+	float: right;
+	margin: 5px;
+	clear: left;
+}
+.tab_bottom_submit {
+	float: left;
+}
+.tab_top_submit input, .tab_bottom_submit input, .tab_top_submit button, .tab_bottom_submit button  {
+	padding: 3px;
+}
+.tab_top_submit .submit_button, .tab_bottom_submit .submit_button {
+	float: left;
+	margin-right: 5px;
+}
+.tab_top_submit .cancel, .tab_bottom_submit .cancel {
+	float: left;
+	padding-top: 3px;
+}
