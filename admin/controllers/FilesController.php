@@ -49,15 +49,14 @@ class FilesController extends \lithium\action\Controller {
 		exit();
 
 		$success = false;
+		$meta = null;
 
 		$enabled = array('item', 'event', 'banner', 'service', 'affilate');
 		$this->_render['template'] = in_array($type, $enabled) ? $type : 'upload';
 
 		// Check if there are any tags associated with the image.
 		if (array_key_exists('tag', $this->request->data)){
-			$meta = array('tag' => $this->request->data['tag'] );
-		} else {
-			$meta = null;
+			$meta = array('tag' => $this->request->data['tag']);
 		}
 
 		// Check that we have a POST.
@@ -164,22 +163,20 @@ class FilesController extends \lithium\action\Controller {
 	 *
 	 * @return boolean
 	 */
-	protected function _validate() {
-		$post = $this->request->data['Filedata'];
-		$uploadError = $this->request->data['Filedata']['error'];
-		$tmpFile = $this->request->data['Filedata']["tmp_name"];
-		$dataRecieved = is_uploaded_file($tmpFile);
-
-		if (!isset($post)) {
-			$this->setError = 'Validation failed. Expected file upload field to be named Filedata.';
+	protected function _validate($data) {
+		if (!isset($data['Filedata'])) {
+			// 'Validation failed. Expected file upload field to be named Filedata.';
+			return false;
 		}
-		if (!$dataRecieved) {
-			$this->setError = "Upload is not a file. PHP didn't like it.";
+		if (!is_uploaded_file($tmp = $data['Filedata']['tmp_name'])) {
+			// "Upload is not a file. PHP didn't like it.";
+			return false;
 		}
-		if ($uploadError) {
-			$this->setError = 'Validation failed. ' . $this->_errorMessage($uploadError);
+		if ($error = $data['Filedata']['error']) {
+			// 'Validation failed. ' . $this->_errorMessage($error);
+			return false;
 		}
-		return !$uploadError && $post && $tmpFile;
+		return true;
 	}
 
 	/**
@@ -226,38 +223,32 @@ class FilesController extends \lithium\action\Controller {
 	 *
 	 * If the file has already been uploaded then set the id accordingly.
 	 *
-	 * @return boolean
+	 * @return boolean|array
 	 */
-	protected function _write($meta = null) {
-		$success = false;
-		$this->_render['layout'] = false;
-
+	protected function _write($data, $meta = null) {
 		$grid = File::getGridFS();
-		$this->fileName = $this->request->data['Filedata']['name'];
-		$md5 = md5_file($this->request->data['Filedata']['tmp_name']);
+		$name = $data['Filedata']['name'];
+		$md5 = md5_file($data['Filedata']['tmp_name']);
 
 		$file = File::first(array('conditions' => array('md5' => $md5)));
 
 		if ($file) {
-			$success = true;
-			$this->id = (string) $file->_id;
+			return compact('name') + array('id' => (string) $file->_id);
 		} else {
-			$this->id = (string) $grid->storeUpload('Filedata', $this->fileName);
+			$id = (string) $grid->storeUpload('Filedata', $name);
 
-			if ($this->id) {
-				$success = true;
-			    if($meta){
-			        $search = File::first(array('conditions' => array(
-			            'filename' => $this->fileName
-			        )));
-			        $this->tag = $meta['tag'];
-			        $search->tag = $this->tag;
-			        $search->save();
-
-			   }
+			if ($id) {
+				if ($meta) {
+					$search = File::first(array(
+						'conditions' => array('filename' => $name)
+					));
+					$search->tag = $meta['tag'];
+					$search->save();
+				}
+				return compact('id', 'name');
 			}
 		}
-		return $this->id;
+		return false;
 	}
 }
 
