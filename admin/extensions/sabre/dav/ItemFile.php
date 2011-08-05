@@ -34,9 +34,12 @@ class ItemFile extends \admin\extensions\sabre\dav\File {
 			$file->delete();
 		}
 		$item = $this->_item();
-		unset($item->images[$this->getValue()]);
 
-		return $item->save();
+		$images = $item->images->data();
+		unset($images[$this->getValue()]);
+		$item->images = $images;
+
+		return (boolean) $item->save();
 	}
 
 	protected function _model() {
