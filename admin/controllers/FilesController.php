@@ -158,9 +158,9 @@ class FilesController extends \lithium\action\Controller {
 		$plugin = new Sabre_DAV_TemporaryFileFilterPlugin($resources . '/dav/temporary');
 		$server->addPlugin($plugin);
 
-		$backend = new Sabre_DAV_Auth_Backend_Lithium();
-		$plugin = new Sabre_DAV_Auth_Plugin($backend, 'Totsy DAV'); /* 2nd arg is the realm. */
-		$server->addPlugin($plugin);
+//		$backend = new Sabre_DAV_Auth_Backend_Lithium();
+//		$plugin = new Sabre_DAV_Auth_Plugin($backend, 'Totsy DAV'); /* 2nd arg is the realm. */
+//		$server->addPlugin($plugin);
 
 		$server->exec();
 		exit;
