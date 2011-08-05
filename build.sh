@@ -191,6 +191,11 @@ case $COMMAND in
 		unzip $TMP_DIR/sabre.zip -d $TMP_DIR
 		mv $TMP_DIR/SabreDAV $TARGET_SOURCE
 
+		echo "Setting permissions..."
+		find $TARGET_SOURCE -type f -exec chmod 0644 {} \;
+		find $TARGET_SOURCE -type d -exec chmod 0755 {} \;
+		find $TARGET_SOURCE -name '*.sh' -exec chmod 0744 {} \;
+
 		echo "Symlinking..."
 		ln -v -s $TARGET_SOURCE/lib/Sabre ./$TARGET_LINK
 		;;
