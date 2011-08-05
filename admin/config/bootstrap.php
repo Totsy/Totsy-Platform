@@ -124,15 +124,44 @@ Session::config(array(
     'flash_message' => array('adapter' => 'admin\extensions\adapter\session\Model', 'model' => 'MongoSession')
 ));
 
-/*
+/**
+ * Configure Authtentication and Access Control. Request are first checked
+ * against the HTTP auth * adapter than the session based form adapter will be
+ * used to authenticate the request.
+ *
+ * @todo Either switch to digest auth and/or change the admin password!
+ */
 use lithium\security\Auth;
-Auth::config(array('userLogin' => array(
-	'model' => 'User',
-	'adapter' => 'Form',
-	'fields' => array('email', 'password'),
-	'scope' => array('admin' => true)
-)));
-*/
+use lithium\action\Dispatcher;
+use lithium\action\Response;
+
+Auth::config(array(
+	/*
+	'userLogin' => array(
+		'model' => 'User',
+		'adapter' => 'Form',
+		'fields' => array('email', 'password'),
+		'scope' => array('admin' => true)
+	),
+	*/
+	'http' => array(
+		'adapter' => 'Http',
+		'method' => 'basic',
+		'users' => array('admin' => 'lbNUx5Ff!ND')
+	)
+));
+
+Dispatcher::applyFilter('run', function($self, $params, $chain) {
+	$granted = Auth::check('http', $params['request'], array(
+		'writeSession' => false, 'checkSession' => false
+	));
+	/* $granted = $granted || Auth::check('userLogin', $params['request']); */
+
+	if (!$granted) {
+		return new Response(array('status' => 401, 'body' => 'Access denied.'));
+	}
+	return $chain->next($self, $params, $chain);
+});
 
 ini_set('memory_limit', '1024M');
 ini_set('max_execution_time', '20000');
