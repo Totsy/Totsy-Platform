@@ -18,12 +18,13 @@ use lithium\action\Response;
  *
  */
 Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request) {
-	$file = File::first($request->id);	
+	$file = File::first($request->id);
 	return new Response(array(
 		'headers' => array('Content-type' => "image/{$request->type}"),
 		'body' => !empty($file) ? $file->file->getBytes():file_get_contents(LITHIUM_APP_PATH . DIRECTORY_SEPARATOR . 'webroot' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'no-image-small.jpeg')
 	));
 });
+
 Router::connect('/files', 'Files::index');
 Router::connect('/files/upload/{:args}', 'Files::upload');
 Router::connect('/files/dav', 'Files::dav');
