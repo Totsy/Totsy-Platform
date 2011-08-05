@@ -28,9 +28,9 @@ class File implements \Sabre_DAV_IFile {
 	public function __toString() {
 		$name = $this->_config['value'];
 
-		if ($extension = $this->getExtension()) {
-			$name .= ".{$extension}";
-		}
+		// if ($extension = $this->getExtension()) {
+		//	$name .= ".{$extension}";
+		// }
 		return $name;
 	}
 
