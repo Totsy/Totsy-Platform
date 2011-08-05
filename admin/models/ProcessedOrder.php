@@ -106,8 +106,15 @@ class ProcessedOrder extends \lithium\data\Model {
 		'Supplier' => null,
 		'PO # / RMA #' => null,
 		'SKU' => null,
-		'Qty' => null
+		'Qty' => null,
+		'Vendor Style' => null,
+		'Vendor Name' => null,
+		'Item Color' => null,
+		'Item Size' => null,
+		'Item Description' => null,
+		'Promised Ship-by Date' => null,
+		'Event Name' => null,
+		'Event End Date' => null
 	);
 }
-
 ?>
