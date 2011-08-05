@@ -9,14 +9,14 @@ use Sabre_DAV_Exception_FileNotFound;
 class ItemDirectory extends \admin\extensions\sabre\dav\Directory {
 
 	public function getChild($name) {
-		$this->_model();
+		$model = $this->_model();
 		$data = $model::find('first', array(
 			'conditions' => $this->_conditions()
 		));
 		if (!isset($data->images[$name])) {
 			throw new Sabre_DAV_Exception_FileNotFound("File `{$name}` not found,");
 		}
-		return new ItemFile(array('value' => $data->images[$name], 'parent' => $this));
+		return new ItemFile(array('value' => $name, 'parent' => $this));
 	}
 
 	public function getChildren() {
