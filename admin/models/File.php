@@ -45,16 +45,39 @@ class File extends \lithium\data\Model {
 		return static::_connection()->connection->getGridFS();
 	}
 
+	/**
+	 * Searches for files already stored using a hash of given data.
+	 *
+	 * @param $data resource|string Either an already open handle, a string
+	 *        with raw bytes or a string containing the path to a readable file.
+	 * @return object Either the found dupe document or false.
+	 */
 	public static function dupe($data) {
+		$close = false;
+
+		if (is_string($data)) {
+			/* Only handles we open inside here are also closed here. */
+			$close = true;
+
+			if (is_file($data)) {
+				$handle = fopen($data, 'rb');
+			} else {
+				$handle = fopen('php://temp', 'w+b');
+				fwrite($handle, $data);
+			}
+		} else {
+			$handle = $data;
+		}
 		rewind($data);
 
 		$context = hash_init('md5');
 		hash_update_stream($context, $data);
 		$hash = hash_final($context);
 
-		return File::first(array(
-			'conditions' => array('md5' => $hash)
-		));
+		if ($close) {
+			fclose($handle);
+		}
+		return File::first(array('conditions' => array('md5' => $hash)));
 	}
 
 	public static function used($id) {
