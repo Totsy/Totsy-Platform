@@ -41,7 +41,11 @@ use \lithium\data\Connections;
 		'local' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy',
-			'host' => 'localhost',
+			'host' => array(
+    			'devdb1.totsy.com',
+    			'devdb2.totsy.com',
+    			'devdb3.totsy.com'
+    		),
 			'adapter' => 'app\extensions\adapter\data\source\MongoDb')
 	));
 
