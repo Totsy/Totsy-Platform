@@ -9,6 +9,8 @@ use lithium\util\Inflector;
 <?=$this->html->script('jquery-dynamic-form.js');?>
 <?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
 <?=$this->html->script('handlers.js');?>
+<?=$this->html->script('fileprogress.js');?>
+<?=$this->html->script('handlers.js');?>
 <?=$this->html->style('jquery_ui_blitzer.css')?>
 <?=$this->html->script('jquery.dataTables.js');?>
 <?=$this->html->style('table');?>
@@ -23,7 +25,6 @@ use lithium\util\Inflector;
 <?=$this->html->script('jquery.fileupload-ui.js')?>
 <?=$this->html->script('uploader.js')?>
 <?=$this->html->style('jquery.fileupload-ui.css');?>
-<?php //=$this->html->style('uploader.css');?>
 <?=$this->html->style('selectlist.css');?>
 <?=$this->html->script('jquery.selectlist.min.js')?>
 <?=$this->html->script('jquery.selectlist.pack.js')?>
@@ -32,7 +33,6 @@ use lithium\util\Inflector;
 <?=$this->html->script('agile-uploader-3.0.js')?>
 <?=$this->html->style('agile_uploader.css');?>
 <?=$this->html->style('admin_common.css');?>
-
 <?=$this->html->script('files.js');?>
 <?=$this->html->style('files.css');?>
 
@@ -377,6 +377,7 @@ $(function() {
 					<?=$this->form->text('ship_date', array('id' => 'ship_date', 'value' => $event->ship_date)); ?>
 				</div>
 
+<<<<<<< HEAD
 				<br />
 				<?=$this->form->submit('Update Event')?>
 			</div>
@@ -432,6 +433,38 @@ $(function() {
 					<?php echo $this->form->file('upload_file'); ?>
 					-->
 				<?=$this->form->field('items_submit', array('type' => 'textarea', 'rows' => '7', 'cols' => '50', 'name' => 'ItemsSubmit'));?><br>
+=======
+			</div>
+
+			<div class="clear"></div>
+
+			<div class="tab_bottom_submit">
+				<div class="submit_button"><?=$this->form->submit('Update Event', array('class' => 'submit_event'))?></div><div class="cancel"><a href="/admin/select/event">Cancel</a></div>
+			</div>
+		</div>
+
+		<div id="event_items">
+			<h3 id="">Item Management</h3>
+			<hr />
+			<h3 id="">Upload Items</h3>
+            <hr />
+			<p>Please select the default option for all items being uploaded:</p>
+				<input type="radio" name="enable_items" value="1" id="enable_items"> Enable All <br>
+				<input type="radio" name="enable_items" value="0" id="enable_items" checked> Disable All <br><br>
+			<p>Add "Final Sale" to the item description?:</p>
+				<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
+				<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
+				<?=$this->form->file('upload_file'); ?>
+				<?=$this->form->submit('Update Event')?>
+				<?=$this->form->label('Upload Event (Excel Files): '); ?>
+<!--
+		<iframe id="upload_frame" name="upload_frame" src="/events/upload/<?=$event->_id?>" frameborder=0 scrolling=no width=400 height=250></iframe>
+		<div id="upload_error" name="upload_error" style="color:#ff0000; width:400px; float:right; height:250px; overflow:scroll;">(spreadsheet upload errors will appear here)</div>
+
+-->
+			<br><br>
+
+>>>>>>> uploader. event images.
 
             <hr />
 			<br><br>
@@ -514,6 +547,7 @@ $(function() {
 		<div id="event_inventory">
 			<iframe id="inventoryIframe" src="" style="width:900px; height:400px;"></iframe>
 		</div>
+<<<<<<< HEAD
 		<!-- Tab -->
 		<div id="event_media_upload">
 			<p>
@@ -594,6 +628,50 @@ $(function() {
 			<div id="event_media_status_data"><!-- Populated through AJAX request. --></div>
 		</div>
 		<!-- End Tab -->
+=======
+		<div id="event_media">
+			<h3 id="uploaded_media">Upload Media</h3>
+			<p>
+				Upload all event media here. This includes event images as well as item images. Please ensure all filenames follow proper naming convention.
+			</p>
+			<p>
+				The event URL is: <?=$event->url; ?><br />
+				So for example, files names would be; event_image_<?=$event->url; ?>.jpg, splash_big_image_<?=$event->url; ?>.jpg, splash_small_image_<?=$event->url; ?>.jpg, logo_image_<?=$event->url; ?>.jpg
+			</p>
+            <hr />
+
+			<form id="EventMedia">
+			</form>
+			<div id="agile_file_upload"></div>
+			<script type="text/javascript">
+
+				$('#agile_file_upload').agileUploader({
+					flashSrc: '/admin/swf/agile-uploader.swf',
+					//submitRedirect: $('#EventEdit').attr('action'),
+					//formId: 'EventEdit',
+					formId: 'EventMedia',
+					removeIcon: '/admin/img/agile_uploader/trash-icon.png',
+					flashVars: {
+						button_up: '/admin/img/agile_uploader/add-file.png',
+						button_down: '/admin/img/agile_uploader/add-file.png',
+						button_over: '/admin/img/agile_uploader/add-file.png',
+						//form_action: $('#EventEdit').attr('action'),
+						form_action: '/admin/files/upload/event',
+						file_limit: 4,
+						max_height: '1000',
+						max_width: '1000',
+						file_filter: '*.jpg;*.jpeg;*.gif;*.png;*.JPG;*.JPEG;*.GIF;*.PNG',
+						resize: 'jpg,jpeg,gif',
+						force_preview_thumbnail: 'true',
+						firebug: 'true'
+					}
+				});
+
+			</script>
+
+			<a href="#" onClick="document.getElementById('agileUploaderSWF').submit();">Upload</a>
+		</div>
+>>>>>>> uploader. event images.
 	</div>
 	<!-- End Tabs -->
 </div>

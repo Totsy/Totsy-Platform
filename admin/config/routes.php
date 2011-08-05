@@ -20,21 +20,10 @@ use \lithium\storage\Session;
  * this URL changes.
  */
 Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request) {
-	if (!$file = File::first($request->id)) {
-		return new Response(array('status' => 404));
-	}
-	if ($etag = $request->get('http:if_none_match')) {
-		if ($file->md5 == trim($etag, '"')) {
-			return new Response(array('status' => 304));
-		}
-	}
+	$file = File::first($request->id);
 	return new Response(array(
-		'headers' => array(
-			'Content-length' => $file->file->getSize(),
-			'Content-type' => $file->mimeType(),
-			'Etag' => '"' . $file->md5  . '"'
-		),
-		'body' => !empty($file) ? $file->file->getBytes():''
+		'headers' => array('Content-type' => "image/{$request->type}"),
+		'body' => !empty($file) ? $file->file->getBytes():file_get_contents(LITHIUM_APP_PATH . DIRECTORY_SEPARATOR . 'webroot' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'no-image-small.jpeg')
 	));
 });
 Router::connect('/files/dav', 'Files::dav');

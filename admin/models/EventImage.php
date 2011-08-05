@@ -63,5 +63,4 @@ class EventImage extends \admin\models\Image {
 		)
 	);
 }
-
 ?>
