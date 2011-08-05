@@ -42,6 +42,22 @@ class ItemDirectory extends \admin\extensions\sabre\dav\Directory {
 		return isset($data->images[$name]);
 	}
 
+	public function createFile($name, $data = null) {
+		$name = pathinfo($name, PATHINFO_FILENAME);
+		$model = $this->_model();
+
+		$file = File::write($data);
+
+		$item = $model::find('first', array(
+			'conditions' => $this->_conditions()
+		));
+		$item->images = array(
+			$name => $file->_id
+		) + $item->images->data();
+
+		return (boolean) $item->save();
+	}
+
 	protected function _conditions() {
 		return array(
 			'url' => $this->getValue()
