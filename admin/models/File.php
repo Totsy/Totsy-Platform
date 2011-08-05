@@ -11,6 +11,36 @@ class File extends \lithium\data\Model {
 
 	protected $_meta = array('source' => 'fs.files');
 
+	/**
+	 * Writes contents of an open handle to GridFS. Deduplication will take
+	 * place as me data is detected to be already stored.
+	 *
+	 * @return object|boolean
+	 */
+	public static function write($handle, $meta = array()) {
+		if ($dupe = File::dupe($handle)) {
+			return $dupe;
+		}
+
+		/* As long as GridFS does not operate on file handles we've got
+		   to dump the data into a variable first. */
+		rewind($handle);
+		$bytes = stream_get_contents($handle);
+
+		if (!$id = static::getGridFS()->storeBytes($bytes)) {
+			return false;
+		}
+
+		/* We'll need the complete document. */
+		$file = File::first(array('conditions' => array('_id' => $id)));
+
+		if ($meta) {
+			$file->set($meta);
+			$file->save();
+		}
+		return $file;
+	}
+
 	public static function getGridFS() {
 		return static::_connection()->connection->getGridFS();
 	}
