@@ -131,8 +131,15 @@ Session::config(array(
     'flash_message' => array('adapter' => 'admin\extensions\adapter\session\Model', 'model' => 'MongoSession')
 ));
 
-/*
+/**
+ * Configure Authtentication and Access Control. Request are first checked
+ * against the HTTP auth * adapter than the session based form adapter will be
+ * used to authenticate the request.
+ *
+ * @todo Either switch to digest auth and/or change the admin password!
+ */
 use lithium\security\Auth;
+
 Auth::config(array('userLogin' => array(
 	'model' => 'User',
 	'adapter' => 'Form',
