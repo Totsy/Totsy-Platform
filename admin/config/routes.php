@@ -29,9 +29,11 @@ Router::connect('/uploads/upload{:args}', 'Uploads::upload');
 /**
  * Redirect all non-authenticated users to
  */
+/*
 if (!Session::check('userLogin')) {
 	Router::connect('/{:args}', 'Users::login');
 }
+*/
 
 $session = Session::read('userLogin');
 
@@ -65,7 +67,7 @@ if (isset($session['acls'])) {
 /**
  * Hooking up someone is only an admin.
  */
-if ($session['admin'] && !isset($session['acls'])) {
+// if ($session['admin'] && !isset($session['acls'])) {
 	Router::connect('/register', 'Users::register');
 	Router::connect('/addresses', 'Addresses::view');
 	Router::connect('/account/add/{:args}', 'Account::add');
@@ -93,6 +95,6 @@ if ($session['admin'] && !isset($session['acls'])) {
 	Router::connect('/{:controller}/{:action}/{:id:[0-9]+}.{:type}', array('id' => null));
 	Router::connect('/{:controller}/{:action}/{:id:[0-9]+}');
 	Router::connect('/{:controller}/{:action}/{:args}');
-}
+// }
 
 ?>

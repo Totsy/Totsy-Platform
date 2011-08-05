@@ -131,6 +131,7 @@ Session::config(array(
     'flash_message' => array('adapter' => 'admin\extensions\adapter\session\Model', 'model' => 'MongoSession')
 ));
 
+/*
 use lithium\security\Auth;
 Auth::config(array('userLogin' => array(
 	'model' => 'User',
