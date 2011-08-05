@@ -6,9 +6,8 @@
  * @license       http://opensource.org/licenses/bsd-license.php The BSD License
  */
 
-use \lithium\net\http\Router;
-use \lithium\core\Environment;
-use \lithium\storage\Session;
+use lithium\net\http\Router;
+use lithium\core\Environment;
 use admin\models\File;
 use lithium\action\Response;
 
@@ -37,8 +36,6 @@ Router::connect('/token', 'Users::token');
 Router::connect('/', 'Dashboard::index');
 Router::connect('/search/{:search}', 'Search::view');
 
-Router::connect('/dav', 'Dav::handle');
-Router::connect('/dav/{:file:.*}', 'Dav::handle');
 Router::connect('/register', 'Users::register');
 Router::connect('/addresses', 'Addresses::view');
 Router::connect('/account/add/{:args}', 'Account::add');
