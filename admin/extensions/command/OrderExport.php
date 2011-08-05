@@ -35,7 +35,8 @@ use admin\extensions\Mailer;
  * @see admin/controllers/QueueController
  */
  
- 
+
+
 //sets maxlifetime to 5 hours
 ini_set("session.gc_maxlifetime", "18000");
 
@@ -45,11 +46,15 @@ ini_set("session.gc_maxlifetime", "18000");
 //specifies session path to avoid default maxlifetime value of 24 mins to override
 session_save_path('/www/admin/resources/totsy/tmp');
 
-//to check the session path 
+//to check the session path
 //echo session_save_path();
 
+ini_set('session.gc_probability', 1);
 
+//check the gc_probability
+//echo ini_get("session.gc_probability");
 
+ 
 class OrderExport extends Base {
 
 	/**
@@ -154,7 +159,7 @@ class OrderExport extends Base {
 	/**
 	 * Main method for exporting Order and PO files.
 	 *
-	 * The `run` method will query the pending event transactions
+	 * The run method will query the pending event transactions
 	 * that have not yet been processed. This queuing system will be managed
 	 * from the admin dashboard.
 	 *
@@ -257,11 +262,6 @@ class OrderExport extends Base {
 		    'user_id' => true
 		));
 		$order_total = $orders->count();
-		
-		
-		
-		//total same until here 345pm
-		
 		
 		if ($orders) {
 			$inc = 1;
@@ -642,6 +642,16 @@ class OrderExport extends Base {
 									} else {
 										$purchaseOrder[$inc]['Qty'] += $item['quantity'];
 									}
+									//new additions
+									$purchaseOrder[$inc]['Vendor Style'] = $eventItem['vendor_style'];
+									$purchaseOrder[$inc]['Vendor Name'] = $vendorName;
+									$purchaseOrder[$inc]['Item Color'] = $item['color'];
+									$purchaseOrder[$inc]['Item Size'] = $item['size'];
+									$purchaseOrder[$inc]['Item Description'] = $eventItem['description'];
+									$purchaseOrder[$inc]['Promised Ship-by Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $order['ship_date']));
+									$purchaseOrder[$inc]['Event Name'] = $event->name;
+									$purchaseOrder[$inc]['Event End Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $event->end_date));
+
 									$purchaseOrder[$inc] = $this->sortArrayByArray($purchaseOrder[$inc], $purchaseHeading);
 								}
 							}
