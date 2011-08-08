@@ -26,16 +26,16 @@ class File implements \Sabre_DAV_IFile {
 	}
 
 	public function __toString() {
-		$name = $this->_config['value'];
-
-		// if ($extension = $this->getExtension()) {
-		//	$name .= ".{$extension}";
-		// }
-		return $name;
+		return $this->_config['value'];
 	}
 
 	public function getName() {
-		return $this->__toString();
+		$name = $this->_config['value'];
+
+		if ($extension = $this->getExtension()) {
+			$name .= ".{$extension}";
+		}
+		return $name;
 	}
 
 	public function getValue() {
