@@ -103,13 +103,15 @@ class File extends \lithium\data\Model {
 	}
 
 	public static function mimeType($data) {
-		$context = finfo_open(FILEINFO_NONE);
+		$context = finfo_open(FILEINFO_MIME);
 
 		rewind($data);
-		$result = finfo_buffer($context, $data);
+		$peekBytes = 1000000;
+		$result = finfo_buffer($context, fgets($data, $peekBytes));
+		list($type, $attributes) = explode(';', $result, 2);
 
 		finfo_close($context);
-		return $result;
+		return $type;
 	}
 }
 
