@@ -94,7 +94,7 @@ class File implements \Sabre_DAV_IFile {
 	 */
 	public function getETag() {
 		if ($file = $this->_file()) {
-			return $file->md5;
+			return '"' . $file->md5 . '"';
 		}
 	}
 
