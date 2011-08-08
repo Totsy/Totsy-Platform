@@ -26,7 +26,9 @@ class ItemFile extends \admin\extensions\sabre\dav\File {
 	}
 
 	public function delete() {
-		$file = $this->_file();
+		if (!$file = $this->_file()) {
+			return;
+		}
 
 		if (File::used($file->_id) === 1) {
 			$file->delete();
