@@ -13,6 +13,8 @@ class ItemDirectory extends \admin\extensions\sabre\dav\Directory {
 		$data = $model::find('first', array(
 			'conditions' => $this->_conditions()
 		));
+
+		$name = pathinfo($name, PATHINFO_FILENAME);
 		if (!isset($data->images[$name])) {
 			throw new Sabre_DAV_Exception_FileNotFound("File `{$name}` not found,");
 		}
