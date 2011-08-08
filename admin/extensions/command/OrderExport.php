@@ -443,7 +443,7 @@ class OrderExport extends Base {
 			if (!rename($handle, $this->pending.$filename)) {
 			    $this->log("Failed to move file " . $handle . " Filesize was " . filesize($handle));
 			    $new_location = $this->pending.$filename;
-			     $this->log("Using shell command to move file");
+			    $this->log("Using shell command to move file");
 			    shell_exec("mv ". $handle . " " . $new_location);
 			}
 			$totalOrders = count($orderArray);

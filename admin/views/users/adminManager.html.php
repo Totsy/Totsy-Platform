@@ -50,26 +50,31 @@
                     <?php else:?>
                         <td><?php echo ""?></td>
                     <?php endif;?>
+
                     <?php if (array_key_exists('lastname', $user)): ?>
                        <td><?php echo $user['lastname'];?></td>
                     <?php else:?>
                         <td><?php echo ""?></td>
                     <?php endif;?>
+
                     <?php if (array_key_exists('admin', $user) && $user['admin']): ?>
                        <td>Access</td>
                     <?php else:?>
                        <td>No Access</td>
                     <?php endif;?>
+
                     <?php if (array_key_exists('admin', $user) && $user['admin']): ?>
-                       <td><input type="button" name="Deny" value="Deny" onclick="changeAccess('<?php echo $user[email]?>','deny','admin')"></td>
+                       <td><input type="button" name="Deny" value="Deny" onclick="changeAccess('<?php echo $user[email]?>','deny','admin')"/></td>
                     <?php else:?>
-                       <td><input type="button" name="Allow" value="Allow" onclick="changeAccess('<?php echo $user[email]?>','allow','admin')"></td>
+                       <td><input type="button" name="Allow" value="Allow" onclick="changeAccess('<?php echo $user[email]?>','allow','admin')"/></td>
                     <?php endif;?>
+
                     <?php if (array_key_exists('superadmin', $user) && $user['superadmin']): ?>
-                       <td><input type="button" name="Deny" value="Deny"onclick="changeAccess('<?php echo $user[email]?>','deny','superadmin')"></td>
+                       <td><input type="button" name="Deny" value="Deny"onclick="changeAccess('<?php echo $user[email]?>','deny','superadmin')"/></td>
                     <?php else:?>
-                       <td><input type="button" name="Allow" value="Allow" onclick="changeAccess('<?php echo $user[email]?>','allow','superadmin')"></td>
+                       <td><input type="button" name="Allow" value="Allow" onclick="changeAccess('<?php echo $user[email]?>','allow','superadmin')"/></td>
                     <?php endif;?>
+
                 </tr>
             <?php endforeach; ?>
         </tbody>
