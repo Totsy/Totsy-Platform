@@ -294,6 +294,14 @@ class FilesController extends \lithium\action\Controller {
 
 	}
 
+	/**
+	 * Provides a single point of entry for all DAV requests. This action
+	 * configures any SabreDAV classes, plugins and custom VFS implementations.
+	 * Any URLs below the route leading to this action are mapped/handled by
+	 * SabreDAV.
+	 *
+	 * @return void
+	 */
 	public function dav() {
 		/*
 		   At this point lithium\action\Request has already opened
