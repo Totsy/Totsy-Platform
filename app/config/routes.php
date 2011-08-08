@@ -9,7 +9,6 @@
 use lithium\net\http\Media;
 use lithium\net\http\Router;
 use lithium\core\Environment;
-use lithium\storage\Session;
 use app\models\File;
 use lithium\action\Response;
 
