@@ -125,7 +125,7 @@ use lithium\storage\Session;
 
 Session::config(array(
 	'default' => array(
-		'adapter' => 'admin\extensions\adapter\session\Model',
+		'adapter' => 'app\extensions\adapter\session\Model',
 		'model' => 'MongoSession'
 	),
 	'cookie' => array(
