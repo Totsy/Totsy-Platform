@@ -26,13 +26,10 @@ use lithium\util\Collection;
 Collection::formats('lithium\net\http\Media');
 
 /**
- * This filter is a convenience method which allows you to automatically route requests for static
- * assets stored within active plugins. For example, given a JavaScript file `bar.js` inside the
- * `li3_foo` plugin installed in an application, requests to `http://app/path/li3_foo/js/bar.js`
- * will be routed to `/path/to/app/libraries/plugins/li3_foo/webroot/js/bar.js` on the filesystem.
- * In production, it is recommended that you disable this filter in favor of symlinking each
- * plugin's `webroot` directory into your main application's `webroot` directory, or adding routing
- * rules in your web server's configuration.
+ * Registering image types as well as attaching a simple
+ * passthru decode handler to preserve binary data.
+ *
+ * @see admin\controllers\FilesController
  */
 use lithium\action\Dispatcher;
 use lithium\action\Response;
@@ -62,7 +59,6 @@ Dispatcher::applyFilter('_callable', function($self, $params, $chain) {
  *
  * @see admin\controllers\FilesController
  */
-use \lithium\net\http\Media;
 
 $decode = function($data) { return $data; };
 Media::type('png', 'image/png', compact('decode'));
