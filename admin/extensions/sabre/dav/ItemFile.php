@@ -61,7 +61,7 @@ class ItemFile extends \admin\extensions\sabre\dav\File {
 
 		return File::find('first', array(
 			'conditions' => array(
-				'id' => $item->images[$this->getValue()]
+				'_id' => $item->images[$this->getValue()]
 			)
 		));
 	}
