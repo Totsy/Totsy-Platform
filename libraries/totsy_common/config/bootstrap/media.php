@@ -62,6 +62,8 @@ Dispatcher::applyFilter('_callable', function($self, $params, $chain) {
  *
  * @see admin\controllers\FilesController
  */
+use \lithium\net\http\Media;
+
 $decode = function($data) { return $data; };
 Media::type('png', 'image/png', compact('decode'));
 Media::type('jpg', 'image/jpeg', compact('decode'));
