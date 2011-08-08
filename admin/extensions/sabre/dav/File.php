@@ -55,7 +55,7 @@ class File implements \Sabre_DAV_IFile {
 	 * @return void
 	 */
 	public function put($data) {
-		throw new Sabre_DAV_Exception_Forbidden('Permission denied to change data');
+		return (boolean) File::write($data);
 	}
 
 	/**
