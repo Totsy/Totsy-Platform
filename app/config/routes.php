@@ -13,43 +13,35 @@ use app\models\File;
 use lithium\action\Response;
 
 /**
- * The following allows up to serve images right out of mongodb.
- * This needs to be first so that we don't get a controller error.
- *
+ * The following allows up to serve images right out of MongoDB's GridFS.
+ * This needs to be first so that we don't get a controller error. The md5 of
+ * each file object will be used to generate the _etag_ for the response. This
+ * enables HTTP caching while still giving full control in case the resource for
+ * this URL changes.
  */
 Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request) {
-	$request->type = ($request->type == 'jpg') ? 'jpeg' : $request->type;
-
-
-	if ($file = File::first($request->id)) {
-		$bytes = $file->file->getBytes();
-	} else {
+	if (!$file = File::first($request->id)) {
 		return new Response(array('status' => 404));
 	}
-
+	if ($etag = $request->get('http:if_none_match')) {
+		if ($file->md5 == trim($etag, '"')) {
+			return new Response(array('status' => 304));
+		}
+	}
+	if ($file->mime_type) {
+		$type = $file->mime_type;
+	} else {
+		$type = Media::type($request->type);
+		$type = $type['content'];
+	}
 	return new Response(array(
 		'headers' => array(
-			'Content-type' => "image/{$request->type}",
-			'Pragma' => 'cache',
-			'Expires' => date("r", strtotime("+10 years")),
-			'Cache-control' => 'max-age=999999',
-			'Last-modified' => 'Mon, 29 Jun 1998 02:28:12 GMT'
+			'Content-type' => $type,
+			'Etag' => '"' . $file->md5  . '"'
 		),
-		'body' => $bytes
+		'body' => $file->file->getBytes()
 	));
 });
-
-/*
- * The following allows up to serve images right out of mongodb.
- * This needs to be first so that we don't get a controller error.
- */
-Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
-     return new Response(array(
-          'type' => 'image/gif',
-          'body' => File::first($request->id)->file->getBytes()
-     ));
-});
-
 
 Router::connect('/api/help/{:args}', array('controller' => 'API', 'action' => 'help'));
 Router::connect('/api/{:args}', array('controller' => 'API', 'action' => 'index'));
