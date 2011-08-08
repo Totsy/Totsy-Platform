@@ -15,14 +15,15 @@ use \lithium\data\Connections;
 		'production' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy',
+			'setSlaveOkay' => true,
+			'replicaSet' => true,
 			'host' => array(
     			'db1',
     			'db2',
     			'db3',
     			'db4',
     			'db5',
-    			'db6'
-    	)),
+    			'db6' )),
 		'test' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy_test',
@@ -35,6 +36,5 @@ use \lithium\data\Connections;
 			'type' =>  'MongoDb',
 			'database' => 'totsy',
 			'host' => 'localhost')
-	));
-
+		));
 ?>
