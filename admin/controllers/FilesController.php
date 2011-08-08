@@ -25,6 +25,7 @@ use Sabre_DAV_Locks_Backend_File;
 use Sabre_DAV_Locks_Plugin;
 use Sabre_DAV_TemporaryFileFilterPlugin;
 use Sabre_DAV_Auth_Plugin;
+use Sabre_HTTP_Request;
 
 /**
  * This controller works with SWFUpload to provide flash/javascript
@@ -296,6 +297,22 @@ class FilesController extends \lithium\action\Controller {
 	}
 
 	public function dav() {
+		/*
+		   At this point lithium\action\Request has already opened
+		   `php://input` and read from it. The following provides a workaround
+		   and re-enables Sabre's request object to read the body.
+		*/
+		if ($this->request->is('put')) {
+			$stream = fopen('php://temp', 'w+b');
+			fwrite($stream, current($this->request->data));
+			rewind($stream);
+
+			Sabre_HTTP_Request::$defaultInputStream = $stream;
+
+			/* Uncomment to unset data if this gets to heavy on memory. */
+			// unset($this->request->data);
+		}
+
 		$resources = Libraries::get('admin', 'resources');
 
 		// @todo This is temporary and will be replaced by an implementation
