@@ -147,7 +147,10 @@ class UsersController extends \admin\controllers\BaseController {
 	}
 
 	public function adminManager() {
-	    $admins = User::collection()->find(
+	    $UserCollection = User::collection();
+	    $admin = Session::read('userLogin');
+
+	    $admins = $UserCollection->find(
 	    array('$or'=> array(
 	            array('admin' => array('$exists' => true)),
 	            array('email' => new MongoRegex('/@totsy.com/i'))
@@ -162,7 +165,24 @@ class UsersController extends \admin\controllers\BaseController {
 	            'created_date' => true,
 	            'created_orig' => true)
 	    );
-	    return compact('admins');
+	    if ($this->request->data) {
+	        $email = $this->request->data['email'];
+	        $access = $this->request->data['access'];
+	        $level = $this->request->data['type'];
+
+	        if ($access == "deny") {
+	            $access = false;
+	        } else {
+	            $access = true;
+	        }
+
+	        $conditions = array("email" => $email);
+	        $set = array('$set' => array($level => $access));
+
+	        $UserCollection->update($conditions, $set);
+
+	    }
+	    return compact('admins', 'admin');
 	}
 	/**
 	* Deactivate/Activate Users
