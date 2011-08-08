@@ -3,8 +3,6 @@
 namespace admin\extensions\sabre\dav;
 
 use admin\models\File;
-		// d(__FUNCTION__ . ' ' . $this->getName());
-
 
 class ItemFile extends \admin\extensions\sabre\dav\File {
 
