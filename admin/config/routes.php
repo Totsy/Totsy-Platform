@@ -10,7 +10,7 @@ use lithium\net\http\Router;
 use lithium\core\Environment;
 use admin\models\File;
 use lithium\action\Response;
-use \lithium\storage\Session;
+use lithium\net\http\Media;
 
 /**
  * The following allows up to serve images right out of MongoDB's GridFS.
@@ -28,9 +28,15 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 			return new Response(array('status' => 304));
 		}
 	}
+	if ($file->mime_type) {
+		$type = $file->mime_type;
+	} else {
+		$type = Media::type($request->type);
+		$type = $type['content'];
+	}
 	return new Response(array(
 		'headers' => array(
-			'Content-type' => "image/{$request->type}",
+			'Content-type' => $type,
 			'Etag' => '"' . $file->md5  . '"'
 		),
 		'body' => $file->file->getBytes()
