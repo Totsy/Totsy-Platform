@@ -102,6 +102,19 @@ class File extends \lithium\data\Model {
 		return $count;
 	}
 
+	// @todo replace with map reduce
+	public static function pending() {
+		$data = static::all();
+		$results = array();
+
+		foreach ($data as $item) {
+			if (!static::used($item->_id)) {
+				$results[] = $item;
+			}
+		}
+		return $results;
+	}
+
 	public static function mimeType($data) {
 		$context = finfo_open(FILEINFO_MIME);
 
