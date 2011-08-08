@@ -109,7 +109,7 @@ class File implements \Sabre_DAV_IFile {
 
 	public function getExtension() {
 		if ($contentType = $this->getContentType()) {
-			return Media::type($contenType);
+			return Media::type($contentType);
 		}
 	}
 
