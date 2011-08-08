@@ -67,14 +67,4 @@ Environment::set('test', array(
 	'browserUrl' => 'http://totsy'
 ));
 
-/**
- * Setup testing environment variables. `browser*` settings are used within *
- * selenium tests. Please note that `*chrome` will select Firefox as a browser
- * not as one would expect Google Chrome.
- */
-Environment::set('test', array(
-	'browser' => '*chrome',
-	'browserUrl' => 'http://totsy'
-));
-
 ?>
