@@ -198,6 +198,9 @@ class Model extends \lithium\core\Object {
 		$_data = $this->_data;
 
 		return function($self, $params, $chain) use (&$_data) {
+			if (!$_data || !is_object($_data)) {
+				return false;
+			}
 			if ($_data->{$params['key']} !== null) {
 				$_data->{$params['key']} = null;
 				return true;
@@ -252,6 +255,9 @@ class Model extends \lithium\core\Object {
 		$_data =& $this->_data;
 
 		return function($self, $params, $chain) use (&$_data) {
+			if (!$_data || !is_object($_data)) {
+				return false;
+			}
 			$_data->set(array($params['key'] => $params['value']));
 			return true;
 		};
