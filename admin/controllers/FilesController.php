@@ -18,8 +18,6 @@ use admin\models\File;
 use admin\models\EventImage;
 use admin\extensions\sabre\dav\auth\backend\Lithium as Sabre_DAV_Auth_Backend_Lithium;
 use Sabre_DAV_Server;
-// use Sabre_DAV_FS_Directory;
-// use admin\extensions\sabre\dav\TotsyTree;
 use admin\extensions\sabre\dav\ModelDirectory;
 use Sabre_DAV_Locks_Backend_File;
 use Sabre_DAV_Locks_Plugin;
@@ -313,19 +311,17 @@ class FilesController extends \lithium\action\Controller {
 			// unset($this->request->data);
 		}
 
-		$resources = Libraries::get('admin', 'resources');
-
-		// @todo This is temporary and will be replaced by an implementation
-		//       storing files directly in GridFS.
-		// $root = new Sabre_DAV_FS_Directory($resources . '/dav/share');
 		$root = array(
 			new ModelDirectory(array('value' => '\admin\models\Event')),
-			// new ModelDirectory('items')
+			new ModelDirectory(array('value' => '\admin\models\Item')),
 		);
 		$server = new Sabre_DAV_Server($root);
 
 		$server->debugExceptions = !Environment::is('production');
 		$server->setBaseUri('/files/dav');
+
+		/* Filtering and locking are still using local files. */
+		$resources = Libraries::get('admin', 'resources');
 
 		$backend = new Sabre_DAV_Locks_Backend_File($resources . '/dav/locks.dat');
 		$plugin = new Sabre_DAV_Locks_Plugin($backend);
