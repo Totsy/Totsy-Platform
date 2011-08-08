@@ -14,8 +14,14 @@ Logger::config(array(
 
 function d($a) {
 	ob_start();
+	$backup = ini_get('html_errors');
+	ini_set('html_errors', 'Off');
+
 	var_dump($a);
 	$dump = ob_get_clean();
+
+
+	ini_set('html_errors', $backup);
 	Logger::debug($dump);
 }
 
