@@ -55,7 +55,7 @@ Router::connect('/{:category:[a-z_]+}', array(), function($request) {
        'action' => 'register',
        'args' => array($request->query['a'], $request->category)
    );
-   
+
    return $request;
 });
 
@@ -66,6 +66,7 @@ Router::connect('/api/{:args}', array('controller' => 'API', 'action' => 'index'
 Router::connect('/unsubcentral/unsubscribed/{:args}', array('controller' => 'unsubcentral', 'action' => 'unsubscribed'));
 Router::connect('/unsubcentral/del', array('controller' => 'unsubcentral', 'action' => 'del'));
 
+Router::connect('/login', 'Users::login');
 Router::connect('/register', 'Users::register');
 Router::connect('/register/facebook', 'Users::fbregister');
 Router::connect('/momoftheweek', 'MomOfTheWeeks::index');

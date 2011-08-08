@@ -22,8 +22,8 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	$granted = $granted || Auth::check('userLogin', $params['request']);
 
 	if (!$granted) {
-		/* Redirect all non-authenticated users to login page. */
-		return new Response(array('location' => 'Users::login'));
+		/* Redirect all non-authenticated users to register page. */
+		return new Response(array('location' => 'Users::register'));
 	}
 	return $chain->next($self, $params, $chain);
 });
