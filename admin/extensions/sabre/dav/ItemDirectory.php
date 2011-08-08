@@ -45,10 +45,10 @@ class ItemDirectory extends \admin\extensions\sabre\dav\Directory {
 	}
 
 	public function createFile($name, $data = null) {
-		$name = pathinfo($name, PATHINFO_FILENAME);
 		$model = $this->_model();
 
-		$file = File::write($data);
+		$file = File::write($data, compact('name'));
+		$name = pathinfo($name, PATHINFO_FILENAME);
 
 		$item = $model::find('first', array(
 			'conditions' => $this->_conditions()
