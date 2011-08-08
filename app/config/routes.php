@@ -128,8 +128,4 @@ Router::connect('/{:controller}/{:action}/{:id:[0-9a-f]{24}}.{:type}', array('id
 Router::connect('/{:controller}/{:action}/{:id:[0-9a-f]{24}}');
 Router::connect('/{:controller}/{:action}/{:args}');
 
-<<<<<<< master
 ?>
-=======
-?>
->>>>>>> HEAD~18
