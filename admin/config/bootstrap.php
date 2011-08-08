@@ -151,7 +151,7 @@ Auth::config(array(
 	)
 ));
 
-Dispatcher::applyFilter('run', function($self, $params, $chain) {
+Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	$granted = Auth::check('http', $params['request'], array(
 		'writeSession' => false, 'checkSession' => false
 	));
