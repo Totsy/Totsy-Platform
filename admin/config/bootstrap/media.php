@@ -54,6 +54,14 @@ Dispatcher::applyFilter('_callable', function($self, $params, $chain) {
 	}
 	return $chain->next($self, $params, $chain);
 });
-Media::type('png', 'image/png');
-Media::type('jpg', 'image/jpeg');
+
+/**
+ * Registering image types as well as attaching a simple
+ * passthru decode handler to preserve binary data.
+ *
+ * @see admin\controllers\FilesController
+ */
+$decode = function($data) { return $data; };
+Media::type('png', 'image/png', compact('decode'));
+Media::type('jpg', 'image/jpeg', compact('decode'));
 ?>
