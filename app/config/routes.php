@@ -129,7 +129,6 @@ Router::connect('/{:category:[a-z_]+}', array(), function($request) {
 
    return $request;
 });
-
 /**
  * Finally, connect the default routes.
  */
