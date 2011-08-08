@@ -104,6 +104,14 @@ class File implements \Sabre_DAV_IFile {
 	 * @return int
 	 */
 	public function getLastModified() {
+		if ($file = $this->_file()) {
+			if ($file->created_date) {
+				/* Files in GridFS never get modified so we can just use the
+				   created_date field. However some files may not even yet
+				   feature that field. */
+				return $file->created_date->sec;
+			}
+		}
 		return time();
 	}
 
@@ -120,10 +128,16 @@ class File implements \Sabre_DAV_IFile {
 	 */
 	public function getContentType() {
 		if ($file = $this->_file()) {
+			if ($file->mime_type) {
+				return $file->mime_type;
+			}
+			/* Some files in GridFS may not yet have a `mime_type` field.
+			   This field was added later so the code segement below
+			   provides BC for that. */
 			$data = fopen('php://temp', 'wb');
 			fwrite($data, $file->file->getBytes());
 
-			$result = File::mimeType($data);
+			$result = FileModel::mimeType($data);
 
 			fclose($data);
 			return $result;
