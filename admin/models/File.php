@@ -102,10 +102,13 @@ class File extends \lithium\data\Model {
 		/* We'll need the complete document. */
 		$file = File::first(array('conditions' => array('_id' => $id)));
 
-		if ($meta) {
-			$file->set($meta);
-			$file->save();
-		}
+		$meta += array(
+			'created_date' => new MongoDate(),
+			'mime_type' => static::mimeType($handle)
+		);
+		$file->set($meta);
+		$file->save();
+
 		return $file;
 	}
 
