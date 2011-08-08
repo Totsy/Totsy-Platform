@@ -29,10 +29,6 @@ class ItemFile extends \admin\extensions\sabre\dav\File {
 		if (!$file = $this->_file()) {
 			return;
 		}
-
-		if (File::used($file->_id) === 1) {
-			$file->delete();
-		}
 		$item = $this->_item();
 
 		$images = $item->images->data();
