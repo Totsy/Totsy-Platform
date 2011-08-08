@@ -154,7 +154,7 @@ class OrdersController extends BaseController {
 			'expires',
 			'event_name',
 			'event'
-		);
+			);
 
 		$order = Order::create();
 
@@ -214,7 +214,8 @@ class OrdersController extends BaseController {
 			'primary_image',
 			'expires',
 			'event',
-			'discount_exempt'
+			'discount_exempt',
+			'taxIncluded'
 		);
 		$cart = $taxCart = Cart::active(array('fields' => $fields, 'time' => 'now'));
 		$shipDate = Cart::shipDate($cart);
@@ -382,15 +383,26 @@ class OrdersController extends BaseController {
 		extract( AvaTax::getTax( compact(
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart') )
-		,EXTR_OVERWRITE);
+		,EXTR_OVERWRITE );	
+										
 		unset($taxArray,$taxCart);
+		
 		$vars = compact(
-			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
-			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
+			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order','tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'orderCredit','orderPromo','orderServiceCredit','freeshipping','userDoc', 'discountExempt'
 		);
-
+		
+		$i=0;
+		
+		//updating the cart and adding line tax for each item
+		//for later use
+		foreach($cart as $cart_item=>$value){
+			$value->taxIncluded = $items[$i]['taxIncluded'];
+			$i++;
+		}
+				
 		if (($cart->data()) && (count($this->request->data) > 1) && $order->process($user, $data, $cart, $orderCredit, $orderPromo)) {
 			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
+						
 			if ($orderCredit->credit_amount) {
 				User::applyCredit($user['_id'], $orderCredit->credit_amount);
 				Credit::add($orderCredit, $user['_id'], $orderCredit->credit_amount, "Used Credit");
@@ -434,7 +446,9 @@ class OrdersController extends BaseController {
 			$order->tax = $tax;
 			$order->avatax = $avatax;
 			$order->ship_date = new MongoDate(Cart::shipDate($order));
+						
 			$order->save();
+			
 			Cart::remove(array('session' => Session::key('default')));
 			foreach ($cart as $item) {
 				Item::sold($item->item_id, $item->size, $item->quantity);

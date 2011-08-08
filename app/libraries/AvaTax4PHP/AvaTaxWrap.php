@@ -39,7 +39,7 @@ abstract class AvaTaxWrap {
   	public static function cancelTax($invoice){
   		
   		$client = new TaxServiceSoap(static::$_environment);
-  		$request= new CancelTaxRequest();
+  		$request = new CancelTaxRequest();
 		$request->setDocCode($invoice);
 		$request->setDocType('SalesInvoice');
 		$request->setCompanyCode(static::$_config['companyCode']); 
@@ -90,19 +90,19 @@ abstract class AvaTaxWrap {
 				$return = true;
 			} else {
 				$str = '';
-				foreach($getTaxResult->getMessages() as $msg) {
+				foreach($result->getMessages() as $msg) {
 					$str.= $msg->getName().": ".$msg->getSummary()."\n";
 				}
 				throw new Exception ($str);
 			}
 	    } catch ( Exception $e ) {
-			throw new Exeption ('tax process error',0,$e);
+			throw new Exception ('tax process error',0,$e);
 		}
 
 		return $return;
   	}
   	
-  	public static function postTax(){
+  	public static function postTax() {
   		$client = new TaxServiceSoap(static::$_environment);
   		$request= new PostTaxRequest();
   		
@@ -163,7 +163,6 @@ abstract class AvaTaxWrap {
 			$DocType = DocumentType::$ReturnInvoice;
 		else $DocType = DocumentType::$SalesOrder;
 		
-		
 		$client = new TaxServiceSoap(static::$_environment);
 		$request= new GetTaxRequest();
 		
@@ -171,16 +170,17 @@ abstract class AvaTaxWrap {
 		$request->setDestinationAddress	(static::__addresser($shipping)); // Desctionation Address
 		$request->setCompanyCode(static::$_config['companyCode']);
 		$request->setDocType($DocType); 
+		
 		$request->setLines(static::__liner($data['items']));
 		
-		$dateTime=new DateTime();
+		$dateTime = new DateTime();
 		if (array_key_exists('order',$data)) {
 			$docCode = $data['order']['order_id']; 
 		} else {
 			$docCode= "TOTSYTest-".date_format($dateTime,"dmyGis");
 		}
 		    
-		//    invoice number
+		//invoice number
 		$request->setDocCode($docCode);
 		//date
 		if (isset($data['date'])){
@@ -188,7 +188,8 @@ abstract class AvaTaxWrap {
 		} else {
 			$request->setDocDate(date_format($dateTime,"Y-m-d"));
 	    }
-	    // string Optional
+	    
+	    //string Optional
 	    $request->setSalespersonCode("");
 	    //string Required
 	    $request->setCustomerCode("Totsy");
@@ -208,19 +209,38 @@ abstract class AvaTaxWrap {
 	    //string   if not using ECMS which keys on customer code
 	    $request->setExemptionNo("");         
 	    //Summary or Document or Line or Tax or Diagnostic
+	    	    
 	    $request->setDetailLevel(DetailLevel::$Tax);
 	    $request->setLocationCode("");        //string Optional - aka outlet id for tax forms
-		
-	    try{
-			$getTaxResult = $client->getTax($request);
+	    
+	    $i = 0;
+	    	    	    	    		    		
+	    try {
+	    	
+			$getTaxResult = $client->getTax($request);		
 			
+			$taxlines = $getTaxResult->getTaxLines();
+			    					
+			foreach($taxlines as $key=>$value) {
+			    $tax = $value->getTaxDetails();	
+			    $taxDetail = $tax[0];
+			    $temp = $taxDetail->getTaxCalculated();
+			    	
+			    $data['items'][$i]['taxIncluded'] = $temp;
+			    $i++;				
+			} 
+																
 			if ($getTaxResult->getResultCode() == SeverityLevel::$Success) {
 		        //throw new Exception ($getTaxResult->getTotalTax());
 				static::$_tax['DocCode'] = $request->getDocCode();
 				static::$_tax['totalAmount'] = $getTaxResult->getTotalAmount();
 				static::$_tax['totalTax'] = $getTaxResult->getTotalTax();
 				static::$_tax['date'] = date_format($dateTime,"Y-m-d");
-				$return = static::$_tax['totalTax'];
+				$totalTax = static::$_tax['totalTax'];
+				$lineTax = $data['items']; 
+				
+				$return = compact("totalTax","lineTax");
+				
 			} else {
 				$str = '';
 				foreach($getTaxResult->getMessages() as $msg) {
@@ -228,7 +248,7 @@ abstract class AvaTaxWrap {
 				}
 				$return = new Exception ($str);
 			}
-	    } catch ( SoapFault $s){
+	    } catch ( SoapFault $s) {
 	    	$return = $s; 
 		} catch ( Exception $e ) {
 			$return = $e;
@@ -258,7 +278,7 @@ abstract class AvaTaxWrap {
 	
 	protected static function __eventLiner ($cartByEvent){
 		$lines = array();
-
+		
 		$iterator = 0;
 		foreach ($cartByEvent as $key => $event){
 
@@ -329,10 +349,9 @@ abstract class AvaTaxWrap {
 			    	  //string
 			    	  ->setExemptionNo("")
 			    	  //string
-			    	  ->setCustomerUsageType("");
+			    	  ->setCustomerUsageType("")
 					  // boolean
-			    $lines[$iterator]->setTaxIncluded( isset($item['taxIncluded'])?$item['taxIncluded']:false); 
-			    	  
+			    /*$lines[$iterator]*/->setTaxIncluded( isset($item['taxIncluded'])?$item['taxIncluded']:false); 
 			    	   
 			   $iterator++;
 		}

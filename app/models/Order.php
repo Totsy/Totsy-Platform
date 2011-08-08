@@ -34,7 +34,8 @@ class Order extends Base {
 		);
 	}
 
-	public function process($order, $user, $data, $cart, $orderCredit, $orderPromo) {
+	public function process($order, $user, $data, $cart, $orderCredit, $orderPromo) {	
+	
 		foreach (array('billing', 'shipping') as $key) {
 			$addr = $data[$key];
 			${$key} = is_array($addr) ? Address::create($addr) : Address::first($addr);
@@ -88,6 +89,7 @@ class Order extends Base {
 		$total = $afterDiscount + $tax + $handling +$overSizeHandling;
 
 		$cart = $cart->data();
+		
 		if ($cart) {
 			$inc = 0;
 			foreach ($cart as $item) {
@@ -98,7 +100,7 @@ class Order extends Base {
 			}
 			try {
 				if ($total > 0) {
-					$authKey = Payments::authorize('default', $total, $card);
+					//$authKey = Payments::authorize('default', $total, $card);
 				} else {
 					$authKey = $this->randomString(8,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz');
 				}
