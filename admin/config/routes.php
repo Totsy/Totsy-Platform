@@ -36,6 +36,7 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 	}
 	return new Response(array(
 		'headers' => array(
+			'Content-length' => $file->file->getSize(),
 			'Content-type' => $type,
 			'Etag' => '"' . $file->md5  . '"'
 		),
