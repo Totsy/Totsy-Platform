@@ -121,7 +121,7 @@ class File extends \lithium\data\Model {
 		rewind($data);
 		$peekBytes = 1000000;
 		$result = finfo_buffer($context, fgets($data, $peekBytes));
-		list($type, $attributes) = explode(';', $result, 2);
+		list($type, $attributes) = explode(';', $result, 2) + array(null, null);
 
 		finfo_close($context);
 		return $type;
