@@ -7,7 +7,7 @@ use MongoDate;
 use DateTime;
 use DateInterval;
 
-class MonthDirectory extends \admin\extensions\sabre\dav\Directory {
+class MonthDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 
 	public function getChild($name) {
 		return new ItemDirectory(array('value' => $name, 'parent' => $this));
