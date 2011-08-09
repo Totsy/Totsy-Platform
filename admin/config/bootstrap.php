@@ -142,6 +142,14 @@ Environment::set('test', array(
 	'browserUrl' => 'http://totsy'
 ));
 
+/**
+ * Constants used throughout the application.
+ */
+define('BYTE', 1);
+define('KILOBYTE', 1024 * BYTE);
+define('MEGABYTE', 1024 * KILOBYTE);
+define('GIGABYTE', 1024 * MEGABYTE);
+
 ini_set('memory_limit', '1024M');
 ini_set('max_execution_time', '20000');
 
