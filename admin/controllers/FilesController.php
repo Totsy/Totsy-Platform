@@ -52,16 +52,15 @@ class FilesController extends \lithium\action\Controller {
 
 		switch(strtolower($type)) {
 			case 'event':
-				static::processEventImages();
-				static::processEventItemImages();
+				$this->processEventImages();
+				$this->processEventItemImages();
 				break;
 
 		}
 
 		//echo 'console.dir('.json_encode($this->request->data).');';
 
-		echo 'console.dir('.json_encode($event_images).');';
-
+		//echo 'console.dir('.json_encode($event_images).');';
 		exit();
 
 		$success = false;
@@ -97,10 +96,13 @@ class FilesController extends \lithium\action\Controller {
 	 *
 	 * @return
 	*/
-	public static function processEventImages() {
+	public function processEventImages() {
 		$event_images = array();
 		if(isset($this->request->data['Filedata']) && !empty($this->request->data['Filedata'])) {
-			foreach($this->request->data['Filedata'] as $file) {
+			// Always want an array of objects, but if a single file was uploaded, it will come in as a single object that we can't loop the way we would an array of objects
+			$files = (isset($this->request->data['Filedata'][0])) ? $this->request->data['Filedata']:array(0 => $this->request->data['Filedata']);
+			// Now loop the array of files
+			foreach($files as $file) {
 				// Event Image
 				if(preg_match('/^e\_\_i\_\_/i', $file['name'])) {
 					$event_images['event_image'] = $file;
@@ -119,7 +121,12 @@ class FilesController extends \lithium\action\Controller {
 				}
 			}
 		}
-
+		if(!empty($event_images)) {
+			foreach($event_images as $image) {
+				$EventImage = EventImage::create();
+				$EventImage->write($image);
+			}
+		}
 	}
 
 	/**
@@ -127,7 +134,7 @@ class FilesController extends \lithium\action\Controller {
 	 *
 	 * @return
 	*/
-	public static function processEventItemImages() {
+	public function processEventItemImages() {
 		$item_images = array();
 		if(isset($this->request->data['Filedata']) && !empty($this->request->data['Filedata'])) {
 			foreach($this->request->data['Filedata'] as $file) {
