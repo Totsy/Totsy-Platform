@@ -177,7 +177,7 @@ case $COMMAND in
 		TARGET_SOURCE=_source/sabredav
 		TARGET_LINK=Sabre
 
-		cd $PROJECT_DIR/libraries
+		cd $PROJECT_DIR/admin/libraries
 
 		echo "Removing old..."
 		test -d $TARGET_SOURCE && rm -r $TARGET_SOURCE
