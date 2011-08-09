@@ -3,7 +3,8 @@
 namespace admin\controllers;
 use admin\models\Event;
 use lithium\util\Inflector;
-
+use li3_flash_message\extensions\storage\FlashMessage;
+use MongoDate;
 class BaseController extends \lithium\action\Controller {
 
 	/**
@@ -31,8 +32,18 @@ class BaseController extends \lithium\action\Controller {
 	 * @see /extensions/helpers/Events.php
 	 */
 	public function selectEvent($type = null) {
-		$events = Event::all();
-		return compact('events', 'type');
+		$month_delay = 1;
+		if(!empty($this->request->data)) {
+			$month_delay = (int) $this->request->data['month_delay']; 	
+		}
+		$date_limit = mktime(0, 0, 0, (date("m") - $month_delay), date("d"), date("Y"));
+		$conditions = array(
+			'created_date' => array(
+    		   '$gt' => new MongoDate($date_limit)
+		));
+		$events = Event::find('all', array('conditions' => $conditions));
+		
+		return compact('events', 'type', 'month_delay');
 	}
 
 	protected function _asciiClean($description) {

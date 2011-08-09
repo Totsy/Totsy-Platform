@@ -31,6 +31,7 @@
 		<?php endif ?>
 
 
+<<<<<<< HEAD
                 <div class="p-container roundy_product">
 
 						<?php if ($itemCounts[ (string) $event->_id] == 0): ?>
@@ -39,6 +40,12 @@
 									'style' => 'z-index : 99999; position : absolute; right:0;'
 								)); ?>
 					<?php endif ?>
+=======
+                <div class="md-gray p-container">
+                  
+						<!-- this is where the items count was -->
+						
+>>>>>>> 26a76dade13bb7ea33316bae11b15f24a0c252cb
 					<?php
 						if (!empty($event->images->splash_big_image)) {
 							$productImage = "/image/{$event->images->splash_big_image}.jpg";

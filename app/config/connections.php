@@ -15,6 +15,8 @@ use \lithium\data\Connections;
 		'production' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy',
+			'setSlaveOkay' => true,
+			'replicaSet' => true,
 			'host' => array(
     			'db1',
     			'db2',
@@ -23,10 +25,7 @@ use \lithium\data\Connections;
     			'db5',
     			'db6'
     		),
-    		'setSlaveOkay' => true,
-			'persistent' => 'foo',
-			'replicaSet' => true,
-			'adapter' => 'app\extensions\adapter\mongo\Db'),
+			'adapter' => 'app\extensions\adapter\data\source\MongoDb'),
 		'test' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy_test',
@@ -43,7 +42,7 @@ use \lithium\data\Connections;
     		'type' =>  'MongoDb',
 			'database' => 'totsy',
 			'host' => 'localhost'
-    		)
-));
-
+    		),
+			'adapter' => 'app\extensions\adapter\data\source\MongoDb')
+	));
 ?>

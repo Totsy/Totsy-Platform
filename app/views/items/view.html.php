@@ -130,26 +130,37 @@
       </div>
 	<br><!-- Started Related Products -->
 	<div id="related-products">
-		<?php $relatedData = $related->data(); ?>
+		<?php $relatedData = $related; ?>		
 		<?php if (!empty($relatedData)): ?>
 		<h2 style="color:#707070;font-size:14px;">You would also love</h2>
 		<hr />
 		<?php foreach ($related as $relatedItem): ?>
+			
 			<?php
-				if (empty($relatedItem->primary_image)) {
+			
+				if (empty($relatedItem['primary_image'])) {
 					$relatedImage = '/img/no-image-small.jpeg';
 				} else {
-					$relatedImage = "/image/{$relatedItem->primary_image}.jpg";
+					$relatedImage = "/image/".$relatedItem['primary_image'].".jpg";
 				}
+				
 				echo $this->html->link(
-					$this->html->image("$relatedImage", array(
+					$this->html->image($relatedImage, array(
 						"class" => "img-th",
+<<<<<<< HEAD
 						"width" => "75",
 						"height" => "75")),
 						"/sale/$event->url/$relatedItem->url", array(
 							'id' => "$relatedItem->name",
+=======
+						"width" => "93",
+						"height" => "93")),
+						"/sale/$event->url/".$relatedItem['url'], array(
+							'id' => $relatedItem['description'],
+>>>>>>> 26a76dade13bb7ea33316bae11b15f24a0c252cb
 							'escape'=> false
 				));
+				
 			?>
 		<?php endforeach ?>
 	<?php endif ?>

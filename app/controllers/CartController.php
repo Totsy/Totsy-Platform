@@ -12,6 +12,7 @@ use app\models\Promotion;
 use lithium\storage\Session;
 use MongoId;
 use MongoDate;
+use app\extensions\Mailer;
 
 /**
  * Facilitates the app CRUD operations of a users cart (baskets).
@@ -129,8 +130,8 @@ class CartController extends BaseController {
 		$cart = Cart::create();
 		if ($this->request->data) {
 			$itemId = $this->request->data['item_id'];
-			$size = (empty($this->request->data['item_size'])) ?
-			 "no size": $this->request->data['item_size'];
+			$size = (!array_key_exists('item_size', $this->request->data)) ?
+				"no size": $this->request->data['item_size'];
 			$item = Item::find('first', array(
 				'conditions' => array(
 					'_id' => "$itemId"),
@@ -156,6 +157,7 @@ class CartController extends BaseController {
 					//Make sure the items are available
 					if( $avail > 0 ){
 						++$cartItem->quantity;
+						
 						$cartItem->save();
 						//calculate savings
 						$item[$item['_id']] = $cartItem->quantity;
@@ -163,13 +165,16 @@ class CartController extends BaseController {
 					} else {
 						$cartItem->error = 'You can’t add this quantity in your cart. <a href="#5">Why?</a>';
 						$cartItem->save();
+						$this->addIncompletePurchase(Cart::active());
 					}
 				}else{
 					$cartItem->error = 'You have reached the maximum of 9 per item.';
 					$cartItem->save();
+					$this->addIncompletePurchase(Cart::active());
 				}
 			} else {
 				$item = $item->data();
+				$item_id = (string) $item['_id'];
 				$item['size'] = $size;
 				$item['item_id'] = $itemId;
 				unset($item['details']);
@@ -179,6 +184,7 @@ class CartController extends BaseController {
 					//calculate savings
 					$item[$itemId] = 1;
 					Cart::updateSavings($item, 'add');
+					$this->addIncompletePurchase(Cart::active());
 				}
 			}
 			$this->redirect(array('Cart::view'));
@@ -212,6 +218,7 @@ class CartController extends BaseController {
 				if($now[0] < $cart->expires->sec) {
 					$item[$cart->item_id] = $quantity;
 					Cart::updateSavings($item, 'remove');
+					$this->addIncompletePurchase(Cart::active());
 				}
 			}
 		}
@@ -237,9 +244,11 @@ class CartController extends BaseController {
 				if ($result['status']) {
 					if($quantity == 0){
 				        Cart::remove(array('_id' => $id));
+				        $this->addIncompletePurchase(Cart::active());
 				    } else {
 						$cart->quantity = (integer) $quantity;
 						$cart->save();
+						$this->addIncompletePurchase(Cart::active());
 						$items[$cart->item_id] = $quantity;
 						#Check Cart and Refresh Timer
 						$this->refreshTimer();
@@ -247,6 +256,7 @@ class CartController extends BaseController {
 				} else {
 					$cart->error = $result['errors'];
 					$cart->save();
+					$this->addIncompletePurchase(Cart::active());
 				}
 			}
 			#update savings
@@ -308,6 +318,40 @@ class CartController extends BaseController {
             $total_left = 45 - $query['subtotal'];
             return compact('total_left', 'url');
         }
-	}	
+	}
+	
+	protected function addIncompletePurchase($items){
+		
+
+		if (is_object($items)) $items = $items->data();
+		
+
+		
+		$user = Session::read('userLogin');
+		$base_url = 'http://'.$_SERVER['HTTP_HOST'].'/';
+		$itemToSend = array();
+		foreach ($items as $item){
+			$eventInfo = Event::find($item['event'][0]);
+			if (is_object($eventInfo)) $eventInfo = $eventInfo->data();
+			$itemToSend[] = array(
+				'id' => $item['_id'],
+				'qty' => $item['quantity'],
+				'title' => $item['description'],
+				'price' => $item['sale_retail']*100,
+			 	'url' => $base_url.'sale/'.$eventInfo['url'].'/'.$item['url']
+			);
+
+			unset($eventInfo);
+		}		
+		Mailer::purchase(
+			$user['email'],
+			$itemToSend,
+			array(
+				'incomplete' => 1,
+				'message_id' => hash('sha256',Session::key('default').substr(strrev( (string) $user['_id']),0,8))
+			)
+		);
+		unset($itemToSend,$user);
+	}
 }
 ?>

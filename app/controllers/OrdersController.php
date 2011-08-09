@@ -20,7 +20,8 @@ use lithium\storage\Session;
 use lithium\util\Validator;
 use MongoDate;
 use MongoId;
-use li3_silverpop\extensions\Silverpop;
+use app\extensions\AvaTax;
+use app\extensions\Mailer;
 
 /**
  * The Orders Controller
@@ -326,7 +327,7 @@ class OrdersController extends BaseController {
 			'event',
 			'discount_exempt'
 		);
-		$cart = Cart::active(array('fields' => $fields, 'time' => 'now'));
+		$cart = $taxCart = Cart::active(array('fields' => $fields, 'time' => 'now'));
 		$shipDate = Cart::shipDate($cart);
 		$cartByEvent = $this->itemGroupByEvent($cart);
 		
@@ -344,17 +345,16 @@ class OrdersController extends BaseController {
 		}
 		$shippingCost = 0;
 		$overShippingCost = 0;
-	
 		$shippingAddr = Session::read('shipping');
 		$billingAddr = Session::read('billing');
 		
 		$tax = 0;
 		if ($shippingAddr) {
-			$tax = array_sum($cart->tax($shippingAddr));
+			//$tax = array_sum($cart->tax($shippingAddr));
 			$shippingCost = Cart::shipping($cart, $shippingAddr);
 			$overShippingCost = Cart::overSizeShipping($cart);
-			$tax = $tax ? $tax + (($overShippingCost + $shippingCost) * Cart::TAX_RATE) : 0;
-			$tax =  $tax + $shippingCost + $overShippingCost;
+			//$tax = $tax ? $tax + (($overShippingCost + $shippingCost) * Cart::TAX_RATE) : 0;
+			//$tax=  AvaTax::getTax( compact('cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
 		}
 		#Get current Discount
 		$vars = Cart::getDiscount($shippingCost, $overShippingCost);
@@ -377,8 +377,14 @@ class OrdersController extends BaseController {
 			$shipping_discount = $shipping;
 		}
 		$total = $vars['postDiscountTotal'];
-		
 		$vars = $vars + compact(
+		extract( AvaTax::getTax( compact(
+			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
+			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart') )
+		,EXTR_OVERWRITE);
+		unset($taxArray,$taxCart);
+		$vars = compact(
+>>>>>>> 26a76dade13bb7ea33316bae11b15f24a0c252cb
 			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'cartCredit', 'cartPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
 		);
@@ -420,6 +426,12 @@ class OrdersController extends BaseController {
 					$order->promo_code = $vars['cartPromo']->code;
 				}
 			}
+			
+			if($avatax === true){
+				AvaTax::postTax( compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
+			}
+			$order->tax = $tax;
+			$order->avatax = $avatax;
 			$order->ship_date = new MongoDate(Cart::shipDate($order));
 			$order->save();
 			Cart::remove(array('session' => Session::key('default')));
@@ -430,24 +442,32 @@ class OrdersController extends BaseController {
 			++$user->purchase_count;
 			$user->save(null, array('validate' => false));
 			$data = array(
-				'order' => $order,
-				'email' => $user->email,
-				'shipDate' => $shipDate
+				'order' => $order->data(),
+				'shipDate' => date('M d, Y', $shipDate)
 			);
+<<<<<<< HEAD
 			Silverpop::send('orderConfirmation', $data);
 			//Re Initialize userSavings
 			Session::write('userSavings', 0);
+=======
+			Mailer::send('Order_Confirmation', $user->email, $data);
+>>>>>>> 26a76dade13bb7ea33316bae11b15f24a0c252cb
 			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
-				Silverpop::send('nextPurchase', $data);
+				Mailer::send('Welcome_10_Off', $user->email, $data);
 			}
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
+<<<<<<< HEAD
 		if(!empty($_GET['json'])) {
 			echo json_encode($vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings'));
 		} else {
 			return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings');
 		}
+=======
+
+		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate');
+>>>>>>> 26a76dade13bb7ea33316bae11b15f24a0c252cb
 	}
 
 	/**

@@ -15,8 +15,9 @@ use MongoCode;
 use MongoDate;
 use MongoRegex;
 use MongoId;
-use li3_silverpop\extensions\Silverpop;
 use admin\extensions\command\Pid;
+use admin\extensions\Mailer;
+use admin\extensions\helper\Shipment;
 
 /**
  * Process email notifications for orders shipped.
@@ -56,6 +57,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 	 * li3 order-shipped-notifications --debugemail=skosh@totsy.com
 	 */
 	protected $debugemail = null;
+	
 	public function run() {
 		Logger::info('Order Shipped Processor');
 		Environment::set($this->env);
@@ -134,6 +136,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 <<<<<<< HEAD
 		$skipped = array();
 		$c = 0;
+		$shipment = new Shipment();
 		foreach ($results as $result){
 			if (count($result['TrackNums'])>0){
 				$do_break = false;
@@ -190,6 +193,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 								break;
 							}
 							$data['items'][$trackNum][ (string) $item['id'] ] = $itemSkus[ $item['sku'] ];
+							$data['urls'][$trackNum] = $shipment->linkNoHTML($trackNum,array('type'=>'UPS'));
 							$itemCount++;
 						}
 					}
@@ -200,10 +204,11 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 					$skipped[] = array('OrderId'=>$data['order']['order_id'], 'MongoId'=>$result['OrderId'], 'problem' => $problem);
 					continue;
 				}
+				
 				unset($itemSkus);
 				unset($do_break);
 				Logger::info('Trying to send email for order #'.$data['order']['order_id'].'('.$result['OrderId'].' to '.$data['email'].' (tottal items: '.$itemCount.')');
-				Silverpop::send('orderShipped', $data);
+				Mailer::send('Order_Shipped', $data['email'], $data);
 				unset($data);
 				if(is_null($this->debugemail)) {
 					//SET send email flag
@@ -238,7 +243,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 			else {
 				$data['email'] = $this->debugemail;
 			}
-			Silverpop::send('ordersSkipped', $data);
+			Mailer::send('Order_Skipped', $data['email'], $data);
 			unset($data);
 =======
 						
