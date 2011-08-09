@@ -143,10 +143,19 @@ class FilesController extends \lithium\action\Controller {
 		$item_images = array();
 		if(isset($this->request->data['Filedata']) && !empty($this->request->data['Filedata'])) {
 			foreach($this->request->data['Filedata'] as $file) {
-				// TODO: Regex for event item images and then resize and save...
+				if(preg_match('/^items\_.+\_primary\..*/i', $file['name'])) {
+					$item_images['primary'] = $file;
+				}
+				
 			}
 		}
-
+		
+		// Resize and save
+		if(!empty($event_images)) {
+			foreach($event_images as $k => $v) {
+				ItemImage::resizeAndSave($k, $v);
+			}
+		}
 	}
 
 	/**
