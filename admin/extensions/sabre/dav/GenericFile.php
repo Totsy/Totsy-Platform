@@ -4,12 +4,12 @@ namespace admin\extensions\sabre\dav;
 
 use lithium\net\http\Media;
 use lithium\core\ConfigException;
-use admin\models\File as FileModel;
+use admin\models\File;
 use Sabre_DAV_Exception_Forbidden;
 use Sabre_DAV_Exception_FileNotFound;
 use Sabre_DAV_Exception_NotImplemented;
 
-class File implements \Sabre_DAV_IFile {
+class GenericFile implements \Sabre_DAV_IFile {
 
 	protected $_config = array();
 
@@ -137,7 +137,7 @@ class File implements \Sabre_DAV_IFile {
 			$data = fopen('php://temp', 'wb');
 			fwrite($data, $file->file->getBytes());
 
-			$result = FileModel::mimeType($data);
+			$result = File::mimeType($data);
 
 			fclose($data);
 			return $result;

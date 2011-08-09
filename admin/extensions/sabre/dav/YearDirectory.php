@@ -4,7 +4,7 @@ namespace admin\extensions\sabre\dav;
 
 use admin\extensions\sabre\dav\MonthDirectory;
 
-class YearDirectory extends \admin\extensions\sabre\dav\Directory {
+class YearDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 
 	public function getChild($name) {
 		return new MonthDirectory(array('value' => $name, 'parent' => $this));

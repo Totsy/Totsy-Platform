@@ -4,7 +4,7 @@ namespace admin\extensions\sabre\dav;
 
 use admin\extensions\sabre\dav\YearDirectory;
 
-class ModelDirectory extends \admin\extensions\sabre\dav\Directory {
+class ModelDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 
 	public function __toString() {
 		$model = $this->_config['value'];

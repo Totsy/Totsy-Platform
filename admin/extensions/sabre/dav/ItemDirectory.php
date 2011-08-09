@@ -6,7 +6,7 @@ use admin\extensions\sabre\dav\ItemFile;
 use admin\models\File;
 use Sabre_DAV_Exception_FileNotFound;
 
-class ItemDirectory extends \admin\extensions\sabre\dav\Directory {
+class ItemDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 
 	public function getChild($name) {
 		$model = $this->_model();

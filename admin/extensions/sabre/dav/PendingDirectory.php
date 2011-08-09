@@ -2,19 +2,19 @@
 
 namespace admin\extensions\sabre\dav;
 
-use admin\models\File as FileModel;
-use admin\extensions\sabre\dav\File;
+use admin\models\File;
+use admin\extensions\sabre\dav\GenericFile;
 use Exception;
 use Sabre_DAV_Exception_FileNotFound;
 
-class PendingDirectory extends \admin\extensions\sabre\dav\Directory {
+class PendingDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 
 	public function __construct(array $config = array()) {
 		parent::__construct($config + array('value' => 'pending'));
 	}
 
 	public function getChild($name) {
-		$item = FileModel::first(array(
+		$item = File::first(array(
 			'conditions' => array(
 				'name' => $name
 			)
@@ -22,21 +22,21 @@ class PendingDirectory extends \admin\extensions\sabre\dav\Directory {
 		if (!$item) {
 			throw new Sabre_DAV_Exception_FileNotFound("File `{$name}` not found,");
 		}
-		return new File(array('value' => $name, 'parent' => $this));
+		return new GenericFile(array('value' => $name, 'parent' => $this));
 	}
 
 	public function getChildren() {
 		$children = array();
 
-		foreach (FileModel::pending() as $item) {
-			$children[] = new File(array('value' => $item->name, 'parent' => $this));
+		foreach (File::pending() as $item) {
+			$children[] = new GenericFile(array('value' => $item->name, 'parent' => $this));
 		}
 		return $children;
 	}
 
 	public function childExists($name) {
 		// @todo must also check if is pending
-		$item = FileModel::first(array(
+		$item = File::first(array(
 			'conditions' => array(
 				'name' => $name
 			)
@@ -45,7 +45,7 @@ class PendingDirectory extends \admin\extensions\sabre\dav\Directory {
 	}
 
 	public function createFile($name, $data = null) {
-		return (boolean) FileModel::write($data, compact('name'));
+		return (boolean) File::write($data, compact('name'));
 	}
 }
 
