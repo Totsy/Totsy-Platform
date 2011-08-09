@@ -25,9 +25,10 @@ class AvaTax {
 	protected static $useAvatax = true;
 	
 	public static function getTax($data,$tryNumber=0){
+			
 		$settings = Environment::get(Environment::get());
 		if (isset($settings['avatax']['useAvatax'])) { static::$useAvatax = $settings['avatax']['useAvatax']; }
-		
+				
 		if ( is_array($data) && array_key_exists('cartByEvent',$data)){
 			$data['items'] = static::getCartItems($data['cartByEvent']);
 			static::shipping($data);
@@ -48,7 +49,6 @@ class AvaTax {
 			unset($data['orderServiceCredit']);
 		}
 		
-		
 		if (static::$useAvatax === false){
 			return array( 
 				'tax'=>static::totsyCalculateTax($data),
@@ -56,13 +56,21 @@ class AvaTax {
 			);			
 		}
 		
-		try{
-			$tax = 	AvaTaxWrap::getTax($data);
+		try {
+				
+			$temp = AvaTaxWrap::getTax($data);
+			
+			$tax = $temp['totalTax'];
+			$items = $temp['lineTax'];
+			
+			$data['items'] = $items;
+						
 			if (is_object($tax) && (get_class($tax) =='Exception' || get_class($tax) =='SoapFault')){
 				throw  new Exception($tax->getMessage());
 			}
 			$return = array( 
 				'tax' => $tax,
+				'items'=> $items,
 				'avatax' => static::$useAvatax
 			);
 		} catch (Exception $e){
