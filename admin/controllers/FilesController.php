@@ -22,7 +22,6 @@ use admin\extensions\sabre\dav\PendingDirectory;
 use Sabre_DAV_Locks_Backend_File;
 use Sabre_DAV_Locks_Plugin;
 use Sabre_DAV_TemporaryFileFilterPlugin;
-use Sabre_DAV_Auth_Plugin;
 use Sabre_HTTP_Request;
 
 /**
