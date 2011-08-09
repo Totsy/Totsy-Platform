@@ -135,49 +135,53 @@ class DashboardController extends \lithium\action\Controller {
 			'max' => 0,
 			'group' => 0
 		));
-		$lastMonth['revenue'][0] = array_slice(
-			$lastMonth['revenue'][0],
-			0,
-			count($currentMonth['dates']),
-			true
-		);
-		$revenue = (is_numeric($currentMonth['revenue'])) ? $lastMonth['revenue'] + $currentMonth['revenue']:$lastMonth['revenue'];
-		$revenue[0][0] = "$lastMonthDesc Revenue";
-		$revenue[0][1] = 'lineThickness=.5';
-		$revenue[1][0] = "$currentMonthDesc Revenue";
-		$revenue[1][1] = 'lineThickness=5';
-		ksort($revenue[0]);
-		ksort($revenue[1]);
-		$RevenueChart->addChartDataFromArray($revenue, $currentMonth['dates']);
+		if ($revenue) {
+			$lastMonth['revenue'][0] = array_slice(
+				$lastMonth['revenue'][0],
+				0,
+				count($currentMonth['dates']),
+				true
+			);
+			$revenue = (is_numeric($currentMonth['revenue'])) ? $lastMonth['revenue'] + $currentMonth['revenue']:$lastMonth['revenue'];
+			$revenue[0][0] = "$lastMonthDesc Revenue";
+			$revenue[0][1] = 'lineThickness=.5';
+			$revenue[1][0] = "$currentMonthDesc Revenue";
+			$revenue[1][1] = 'lineThickness=5';
+			ksort($revenue[0]);
+			ksort($revenue[1]);
+			$RevenueChart->addChartDataFromArray($revenue, $currentMonth['dates']);
+		}
 		/**
 		* Build chart for gross revenue
 		**/
 		$GrossRevChart = new FusionCharts("MSArea2D","800","350");
-		$currentMonthDesc = date('F', time());
-		$lastMonthDesc = date('F', strtotime('last month'));
-		$params = array(
-			'caption=Daily Gross Revenue',
-			"subcaption=For the Month of $currentMonthDesc",
-			'xAxisName=Day of Month',
-			'numberPrefix=$',
-			'showValues=0'
-		);
-	    $GrossRevChart->setChartParams(implode(';', $params));
-		$currentMonth = $this->monthData(array('group' => 1));
-		$lastMonth['gross'][0] = array_slice(
-			$lastMonth['gross'][0],
-			0,
-			count($currentMonth['dates']),
-			true
-		);
-		$gross = (is_numeric($currentMonth['gross'])) ? $lastMonth['gross'] + $currentMonth['gross']:$lastMonth['gross'];
-		$gross[0][0] = "$lastMonthDesc Revenue";
-		$gross[0][1] = 'lineThickness=.5';
-		$gross[1][0] = "$currentMonthDesc Revenue";
-		$gross[1][1] = 'lineThickness=5';
-		ksort($gross[0]);
-		ksort($gross[1]);
-		$GrossRevChart->addChartDataFromArray($gross, $currentMonth['dates']);
+		if ($gross) {
+			$currentMonthDesc = date('F', time());
+			$lastMonthDesc = date('F', strtotime('last month'));
+			$params = array(
+				'caption=Daily Gross Revenue',
+				"subcaption=For the Month of $currentMonthDesc",
+				'xAxisName=Day of Month',
+				'numberPrefix=$',
+				'showValues=0'
+			);
+			$GrossRevChart->setChartParams(implode(';', $params));
+			$currentMonth = $this->monthData(array('group' => 1));
+			$lastMonth['gross'][0] = array_slice(
+				$lastMonth['gross'][0],
+				0,
+				count($currentMonth['dates']),
+				true
+			);
+			$gross = (is_numeric($currentMonth['gross'])) ? $lastMonth['gross'] + $currentMonth['gross']:$lastMonth['gross'];
+			$gross[0][0] = "$lastMonthDesc Revenue";
+			$gross[0][1] = 'lineThickness=.5';
+			$gross[1][0] = "$currentMonthDesc Revenue";
+			$gross[1][1] = 'lineThickness=5';
+			ksort($gross[0]);
+			ksort($gross[1]);
+			$GrossRevChart->addChartDataFromArray($gross, $currentMonth['dates']);
+		}
 
 		/**
 		* Build chart for registration
@@ -209,7 +213,6 @@ class DashboardController extends \lithium\action\Controller {
 		}
 
 		$yearToDate = $this->yearToDate();
-
 		$updateTime = time();
 		if ($currentMonth['dates'] && ($max = max(array_keys($currentMonth['dates'])))) {
 			$updateTime = $max;
