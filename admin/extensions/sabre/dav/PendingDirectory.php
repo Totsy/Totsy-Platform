@@ -14,31 +14,34 @@ class PendingDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 	}
 
 	public function getChild($name) {
+		$name = pathinfo($name, PATHINFO_FILENAME);
 		$item = File::first(array(
 			'conditions' => array(
-				'name' => $name
+				'_id' => $name
 			)
 		));
 		if (!$item) {
 			throw new Sabre_DAV_Exception_FileNotFound("File `{$name}` not found,");
 		}
-		return new GenericFile(array('value' => $name, 'parent' => $this));
+		return new PendingFile(array('value' => $name, 'parent' => $this));
 	}
 
 	public function getChildren() {
 		$children = array();
 
 		foreach (File::pending() as $item) {
-			$children[] = new GenericFile(array('value' => $item->name, 'parent' => $this));
+			$children[] = new PendingFile(array('value' => (string) $item->_id, 'parent' => $this));
 		}
 		return $children;
 	}
 
 	public function childExists($name) {
+		$name = pathinfo($name, PATHINFO_FILENAME);
+
 		// @todo must also check if is pending
 		$item = File::first(array(
 			'conditions' => array(
-				'name' => $name
+				'_id' => $name
 			)
 		));
 		return (boolean) $item;
