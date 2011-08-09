@@ -6,7 +6,7 @@ use lithium\core\ConfigException;
 use Sabre_DAV_Exception_Forbidden;
 use Sabre_DAV_Exception_FileNotFound;
 
-class Directory implements \Sabre_DAV_ICollection {
+class GenericDirectory implements \Sabre_DAV_ICollection {
 
 	protected $_config = array();
 
