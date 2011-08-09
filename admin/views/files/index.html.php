@@ -38,9 +38,11 @@
 <div id="fileInfo"></div>
 
 <h2>Manage Pending</h2>
+
 <p>
 	Files not yet associated with any item or event.
 </p>
 <div id="pending">
+	<?=$this->html->link('Pending', 'Files::pending'); ?>
 	<!-- This holds all pending files and is populated through an AJAX request. -->
 </div>
