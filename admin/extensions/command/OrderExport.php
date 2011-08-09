@@ -209,10 +209,10 @@ class OrderExport extends Base {
 						$queue->processed_date = new MongoDate();
 						$queue->save();
 						$this->summary['from_email'] = 'no-reply@totsy.com';
-						$this->summary['to_email'] = 'logistics@totsy.com';
-						if ($this->test != 'true') {
+						$this->summary['to_email'] = 'jwidro@totsy.com';
+						//if ($this->test != 'true') {
                            Mailer::send('Order_Export', $this->summary['to_email'], $this->summary);
-                        }
+                        //}
 					}
 				}
 			}
@@ -630,6 +630,7 @@ class OrderExport extends Base {
 					if ($orders) {
 						foreach ($orders as $order) {
 							$items = $order['items'];
+							$date_created = $order['date_created'];
 							foreach ($items as $item) {
 								$active = (empty($item['cancel']) || $item['cancel'] != true) ? true : false;
 								$itemValid = ($item['item_id'] == $eventItem['_id']) ? true : false;
@@ -648,9 +649,13 @@ class OrderExport extends Base {
 									$purchaseOrder[$inc]['Item Color'] = $item['color'];
 									$purchaseOrder[$inc]['Item Size'] = $item['size'];
 									$purchaseOrder[$inc]['Item Description'] = $eventItem['description'];
+									$purchaseOrder[$inc]['Order Creation Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $order['date_created']));
 									$purchaseOrder[$inc]['Promised Ship-by Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $order['ship_date']));
 									$purchaseOrder[$inc]['Event Name'] = $event->name;
 									$purchaseOrder[$inc]['Event End Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $event->end_date));
+
+
+
 
 									$purchaseOrder[$inc] = $this->sortArrayByArray($purchaseOrder[$inc], $purchaseHeading);
 								}
