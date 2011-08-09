@@ -112,6 +112,7 @@ class ProcessedOrder extends \lithium\data\Model {
 		'Item Color' => null,
 		'Item Size' => null,
 		'Item Description' => null,
+		'Order Creation Date' => null,
 		'Promised Ship-by Date' => null,
 		'Event Name' => null,
 		'Event End Date' => null
