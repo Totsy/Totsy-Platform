@@ -1,6 +1,5 @@
 <?=$this->html->script('fileprogress.js');?>
 <?=$this->html->script('handlers.js');?>
-
 <?=$this->html->script('files.js')?>
 <?=$this->html->script('jquery.flash.min.js')?>
 <?=$this->html->script('agile-uploader-3.0.js')?>
