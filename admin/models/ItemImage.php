@@ -61,5 +61,4 @@ class ItemImage extends \admin\models\Image {
 //		)
 	);
 }
-
 ?>
