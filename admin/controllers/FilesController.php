@@ -30,6 +30,19 @@ class FilesController extends \lithium\action\Controller {
 		return compact('files');
 	}
 
+	public function delete() {
+		$file = File::create(array('_id' => $this->request->id), array('exists' => true));
+		$result = $file->delete();
+
+		if ($this->request->is('ajax')) {
+			return $this->render(array(
+				'status' => $result ? 200 : 500,
+				'head' => true
+			));
+		}
+		return $this->redirect($this->request->referer());
+	}
+
 	/**
 	 * Get the uploaded file from $POST and write it to GridFS if valid.
 	 *

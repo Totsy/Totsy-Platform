@@ -16,6 +16,10 @@
 				}
 			?>
 			(<?=implode(', ', $meta) ?>)
+
+			<div class="actions">
+			<?=$this->html->link('delete', array('action' => 'delete', 'id' => $file->_id)); ?>
+			</div>
 		</li>
 	<?php endforeach; ?>
 	</ul>
