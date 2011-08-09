@@ -190,22 +190,13 @@ class Cart extends Base {
 	public function tax($cart, $shipping) {
 		$item = Item::first($cart->item_id);
 		$tax = 0;
-<<<<<<< HEAD
 		$zipCheckPartial = in_array(substr($shipping['zip'], 0, 3), $this->_nyczips);
 		$zipCheckFull = in_array($shipping['zip'], $this->_nyczips);
-=======
-		$zipCheckPartial = in_array(substr(is_object($shipping)?$shipping->zip:$shipping['zip'], 0, 3), $this->_nyczips);
-		$zipCheckFull = in_array(is_object($shipping)?$shipping->zip:$shipping['zip'], $this->_nyczips);
->>>>>>> 26a76dade13bb7ea33316bae11b15f24a0c252cb
 		$nysZip = ($zipCheckPartial || $zipCheckFull) ? true : false;
 		$nycExempt = ($nysZip && $cart->sale_retail < 110) ? true : false;
 
 		if ($item->taxable != false || $nycExempt) {
-<<<<<<< HEAD
 			switch ($shipping['state']) {
-=======
-			switch (is_object($shipping)?$shipping->state:$shipping['state']) {
->>>>>>> 26a76dade13bb7ea33316bae11b15f24a0c252cb
 				case 'NY':
 					$tax = ($nysZip) ? static::TAX_RATE : static::TAX_RATE_NYS;
 					break;

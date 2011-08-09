@@ -377,17 +377,18 @@ class OrdersController extends BaseController {
 			$shipping_discount = $shipping;
 		}
 		$total = $vars['postDiscountTotal'];
-		$vars = $vars + compact(
-		extract( AvaTax::getTax( compact(
-			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
-			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart') )
-		,EXTR_OVERWRITE);
-		unset($taxArray,$taxCart);
 		$vars = compact(
->>>>>>> 26a76dade13bb7ea33316bae11b15f24a0c252cb
 			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'cartCredit', 'cartPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
 		);
+		/** MERGE CHECK **/
+		$vars = $vars + compact(
+		extract(AvaTax::getTax(compact(
+			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
+			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'))
+		,EXTR_OVERWRITE);
+		unset($taxArray,$taxCart);
+		
 		if (($cart->data()) && (count($this->request->data) > 1) && $order->process($user, $data, $cart, $vars['cartCredit'], $vars['cartPromo'])) {
 			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 			if ($vars['cartCredit']->credit_amount) {
@@ -445,29 +446,21 @@ class OrdersController extends BaseController {
 				'order' => $order->data(),
 				'shipDate' => date('M d, Y', $shipDate)
 			);
-<<<<<<< HEAD
-			Silverpop::send('orderConfirmation', $data);
+
+			Mailer::send('Order_Confirmation', $user->email, $data);
 			//Re Initialize userSavings
 			Session::write('userSavings', 0);
-=======
-			Mailer::send('Order_Confirmation', $user->email, $data);
->>>>>>> 26a76dade13bb7ea33316bae11b15f24a0c252cb
 			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
 				Mailer::send('Welcome_10_Off', $user->email, $data);
 			}
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
-<<<<<<< HEAD
 		if(!empty($_GET['json'])) {
 			echo json_encode($vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings'));
 		} else {
 			return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings');
 		}
-=======
-
-		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate');
->>>>>>> 26a76dade13bb7ea33316bae11b15f24a0c252cb
 	}
 
 	/**

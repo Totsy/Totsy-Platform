@@ -147,17 +147,10 @@
 				echo $this->html->link(
 					$this->html->image($relatedImage, array(
 						"class" => "img-th",
-<<<<<<< HEAD
-						"width" => "75",
-						"height" => "75")),
-						"/sale/$event->url/$relatedItem->url", array(
-							'id' => "$relatedItem->name",
-=======
 						"width" => "93",
 						"height" => "93")),
 						"/sale/$event->url/".$relatedItem['url'], array(
 							'id' => $relatedItem['description'],
->>>>>>> 26a76dade13bb7ea33316bae11b15f24a0c252cb
 							'escape'=> false
 				));
 				

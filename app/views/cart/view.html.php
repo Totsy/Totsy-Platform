@@ -40,7 +40,7 @@
 	<hr/>
 	     <div class="cart-button fr" style="margin:20px 5px 20px 0px;">
 		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
-		      <?=$this->html->link('Checkout', 'Orders::addShipping', array('class' => 'button', 'style'=>'float:left')); ?>
+		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
 		     <div class="clear"></div>
 		 </div>
 <?php endif ?>
@@ -228,7 +228,7 @@
 					<td colspan="8">
 					<div class="cart-button fr" style="margin:20px 0px 20px 0px;">
 		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
-		      <?=$this->html->link('Checkout', 'Orders::addShipping', array('class' => 'button', 'style'=>'float:left')); ?>
+		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
 		     <div class="clear"></div>
 		 </div>
 					</td>
