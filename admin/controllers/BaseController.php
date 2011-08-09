@@ -12,7 +12,6 @@ class BaseController extends \lithium\action\Controller {
 
         if(!Environment::is('production')){
             $branch = "<h4 id='#global_site_msg'>Current branch " . $this->currentBranch() ."</h4>";
-           // var_dump($branch);
             $this->set(compact('branch'));
         }
 		parent::_init();
@@ -45,7 +44,7 @@ class BaseController extends \lithium\action\Controller {
 	public function selectEvent($type = null) {
 		$month_delay = 1;
 		if(!empty($this->request->data)) {
-			$month_delay = (int) $this->request->data['month_delay']; 	
+			$month_delay = (int) $this->request->data['month_delay'];
 		}
 		$date_limit = mktime(0, 0, 0, (date("m") - $month_delay), date("d"), date("Y"));
 		$conditions = array(
@@ -53,7 +52,7 @@ class BaseController extends \lithium\action\Controller {
     		   '$gt' => new MongoDate($date_limit)
 		));
 		$events = Event::find('all', array('conditions' => $conditions));
-		
+
 		return compact('events', 'type', 'month_delay');
 	}
 
@@ -74,7 +73,7 @@ class BaseController extends \lithium\action\Controller {
 
 	public function currentBranch() {
         $out = shell_exec("git branch --no-color");
-        preg_match('#(\*)\s(\w+)-(\w+)#', $out, $parse);
+        preg_match('#(\*)\s(\w+)-(+)#', $out, $parse);
         $pos = stripos($parse[0], " ");
         return trim(substr($parse[0], $pos));
 	}

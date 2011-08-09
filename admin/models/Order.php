@@ -89,7 +89,7 @@ class Order extends \lithium\data\Model {
 	}
 
 	/**
-	 * Voids and Order
+	 * Voids an Order
 	 *
 	 * @param array $order - Array of order information
 	 * @return boolean
@@ -452,8 +452,8 @@ class Order extends \lithium\data\Model {
 				if ($promocode['type'] == 'percentage') {
 					$selected_order["promo_discount"] = - ($subTotal * $promocode['discount_amount']);
 					$datas_order["promo_discount"] = $selected_order["promo_discount"];
-				} 
-				$preAfterDiscount = $subTotal + $selected_order["promo_discount"];	
+				}
+				$preAfterDiscount = $subTotal + $selected_order["promo_discount"];
 				$datas_order["promocode_disable"] = false;
 			}
 		} else {
@@ -534,11 +534,11 @@ class Order extends \lithium\data\Model {
 		$temp_order = static::Create($new_datas_order);
 		return $temp_order;
 	}
-	
+
 	/**
 	 * Method to recalculate sales tax for renewated order. Tax is based on a Avalara.
 	 * SK: I hope they calculate sales tax based on sipping destination ;)
-	 * 
+	 *
 	 * @param object $current_order
 	 * @param array $itms
 	 *
@@ -559,7 +559,7 @@ class Order extends \lithium\data\Model {
 				$items[] = $itm;
 			}
 		}
-	
+
 		if ($update === false){
 			$ordermodel = self;
 			return AvaTax::getTax(compact('order','items','ordermodel','current_order','itms'));
