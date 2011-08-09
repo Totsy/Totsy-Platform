@@ -4,7 +4,7 @@ namespace admin\extensions\sabre\dav;
 
 use admin\models\File;
 
-class ItemFile extends \admin\extensions\sabre\dav\File {
+class ItemFile extends \admin\extensions\sabre\dav\GenericFile {
 
 	public function put($data) {
 		if ($file = $this->_file()) { /* This object represent an existing file. */
