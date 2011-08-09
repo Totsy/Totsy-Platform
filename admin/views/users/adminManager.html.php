@@ -92,7 +92,7 @@
 <script type="text/javascript" charset="utf-8">
 	function changeAccess(email,access,level) {
 	    $.post('/users/adminManager', {email:email,access:access,type:level},function(){
-	        load.reload();
+	        location.reload();
 	    });
 	}
 </script>
