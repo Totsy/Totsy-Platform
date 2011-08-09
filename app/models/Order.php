@@ -100,7 +100,7 @@ class Order extends Base {
 			}
 			try {
 				if ($total > 0) {
-					//$authKey = Payments::authorize('default', $total, $card);
+					$authKey = Payments::authorize('default', $total, $card);
 				} else {
 					$authKey = $this->randomString(8,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz');
 				}
