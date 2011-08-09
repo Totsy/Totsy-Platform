@@ -45,6 +45,8 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 });
 
 Router::connect('/files', 'Files::index');
+Router::connect('/files/pending', 'Files::pending');
+Router::connect('/files/delete/{:id:[0-9a-f]{24}}', 'Files::delete');
 Router::connect('/files/upload/{:args}', 'Files::upload');
 Router::connect('/files/dav', 'Files::dav');
 Router::connect('/files/dav/{:file:.*}', 'Files::dav');
