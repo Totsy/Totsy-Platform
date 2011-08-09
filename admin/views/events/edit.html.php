@@ -638,6 +638,12 @@ $(function() {
 				The event URL is: <?=$event->url; ?><br />
 				So for example, files names would be; events_<?=$event->url; ?>.jpg, events_<?=$event->url; ?>_logo.jpg, events_<?=$event->url; ?>_small_splash.jpg, events_<?=$event->url; ?>_big_splash.jpg
 			</p>
+			<p>
+				You can also upload event item images here as well. These also follow a naming convention, for example:<br />
+				items_shirt_primary.jpg, items_shirt_zoom.jpg<br />
+				...and for various colors: items_shirt_yellow_primary.jpg, items_shirt_yellow_zoom.jpg<br />
+				...and alternate images: items_shirt_blue_alternate.jpg, items_shirt_blue_alternateB.jpg, items_shirt_blue_alternate0.jpg
+			</p>
             <hr />
 
 			<form id="EventMedia">
