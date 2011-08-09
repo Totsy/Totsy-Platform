@@ -25,6 +25,11 @@ class FilesController extends \lithium\action\Controller {
 	 */
 	public function index() {}
 
+	public function pending() {
+		$files = File::pending();
+		return compact('files');
+	}
+
 	/**
 	 * Get the uploaded file from $POST and write it to GridFS if valid.
 	 *
