@@ -468,7 +468,7 @@ for ( i=1; i<6; i++ ) {
 			</p>
 			<p>
 				The event URL is: <?=$event->url; ?><br />
-				So for example, files names would be; event_image_<?=$event->url; ?>.jpg, splash_big_image_<?=$event->url; ?>.jpg, splash_small_image_<?=$event->url; ?>.jpg, logo_image_<?=$event->url; ?>.jpg
+				So for example, files names would be; E__I__<?=$event->url; ?>.jpg, E__SBI__<?=$event->url; ?>.jpg, E__SSI__<?=$event->url; ?>.jpg, E__L__<?=$event->url; ?>.jpg
 			</p>
             <hr />
 
