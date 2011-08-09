@@ -287,7 +287,8 @@ class Cart extends Base {
 			'conditions' => array(
 				'session' => Session::key('default'),
 				'item_id' => "$itemId",
-				'size' => "$size"
+				'size' => "$size",
+				'expires' => array('$gt' => static::dates('now'))
 		)));
 	}
 

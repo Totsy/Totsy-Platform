@@ -342,6 +342,7 @@ class Order extends \lithium\data\Model {
 			'total' => $selected_order["total"],
 			'subTotal' => $selected_order["subTotal"],
 			'handling' => $selected_order["handling"],
+			'promo_discount' => $selected_order["promo_discount"],
 			'promocode_disable' => $selected_order["promocode_disable"],
 			'comment' => $selected_order["comment"]
 		);
@@ -448,7 +449,11 @@ class Order extends \lithium\data\Model {
 				$datas_order["promocode_disable"] = true;
 			}
 			else {
-				$preAfterDiscount = $subTotal  + $selected_order["promo_discount"];
+				if ($promocode['type'] == 'percentage') {
+					$selected_order["promo_discount"] = - ($subTotal * $promocode['discount_amount']);
+					$datas_order["promo_discount"] = $selected_order["promo_discount"];
+				} 
+				$preAfterDiscount = $subTotal + $selected_order["promo_discount"];	
 				$datas_order["promocode_disable"] = false;
 			}
 		} else {

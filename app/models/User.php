@@ -56,7 +56,8 @@ class User extends Base {
 		'email' => array(
 			array('email', 'message' => 'Email is not valid'),
 			array('notEmpty', 'required' => true, 'message' => 'Please add an email address'),
-			array('isUniqueEmail', 'message' => 'This email address is already registered')
+			array('isUniqueEmail', 'message' => 'This email address is already registered'),
+			array('isEmailFacebookLegal', 'required' => true, 'message' => 'Your Facebook email is not set to be shared, please enter a real email address')
 		),
 		'password' => array(
 			'notEmpty', 'required' => true, 'message' => 'Please submit a password'
@@ -72,11 +73,17 @@ class User extends Base {
 		)
 	);
 
+
 	public static function __init(array $options = array()) {
 		parent::__init($options);
 
 		Validator::add('isEmailMatch', function ($value) {
 			return ($value ==  true) ? true : false;
+		});
+
+		Validator::add('isEmailFacebookLegal', function ($value) {
+			$facebooklegal = preg_match('/@proxymail\.facebook\.com/', $value);
+			return ($facebooklegal ==  true) ? false : true;
 		});
 
 		Validator::add('isUniqueEmail', function ($value) {
@@ -153,17 +160,25 @@ class User extends Base {
 	    if( (boolean)$rememberme && Session::check('cookieCrumb', array('name' => 'cookie'))) {
             $rememberHash = static::generateToken() . static::randomString();
             $cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
+
             $userInfo = Session::read('userLogin');
+            $user = static::collection();
+            $info = $user->findOne(array(
+                    'email' => $userInfo['email']
+                    ),array('autologinHash' => 1, '_id' => -1));
+            if ($info && array_key_exists('autologinHash', $info)) {
+            	$rememberHash = $info['autologinHash'];
+            } else {
+				$user->update(array(
+						'email' => $userInfo['email']
+						), array(
+							'$set' => array(
+								'autologinHash' => $rememberHash
+						)));
+            }
             $cookie['user_id'] = $userInfo['_id'];
             $cookie['autoLoginHash'] = $rememberHash;
             Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
-            $user = static::collection();
-            $user->update(array(
-                    'email' => $userInfo['email']
-                    ), array(
-                        '$set' => array(
-                            'autologinHash' => $rememberHash
-                    )));
         }
 	}
 	public static function setupCookie() {

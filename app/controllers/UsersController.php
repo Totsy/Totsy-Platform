@@ -60,12 +60,15 @@ class UsersController extends BaseController {
 			$email = $data['email'];
 			$data['password'] = sha1($this->request->data['password']);
 			$data['created_date'] = new MongoDate();
-			$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
+			$data['invitation_codes'] = array(substr($email, 0, strpos($email, '@')));
 			$data['invited_by'] = $invite_code;
 			$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));
 			if ($inviteCheck > 0) {
 				$data['invitation_codes'] = array(static::randomString());
 			}
+			/**
+			* this block handles the invitations.
+			**/
 			if ($invite_code) {
 				$inviter = User::find('first', array(
 					'conditions' => array(
@@ -76,7 +79,10 @@ class UsersController extends BaseController {
 						'conditions' => array(
 							'user_id' => (string) $inviter->_id,
 							'email' => $email
-					)))	;
+					)));
+					if ($inviter->invited_by === 'keyade') {
+						$data['keyade_referral_user_id'] = $inviter->keyade_user_id;
+					}
 					if ($invited) {
 						$invited->status = 'Accepted';
 						$invited->date_updated = Invitation::dates('now');
@@ -85,6 +91,10 @@ class UsersController extends BaseController {
 							Invitation::reject($inviter->_id, $email);
 						}
 					} else {
+					/**
+					* This block was included because users can pass on their
+					* invite url by mouth @_@
+					**/
 						$invitation = Invitation::create();
 						$invitation->user_id = $inviter->_id;
 						$invitation->email = $email;
@@ -149,7 +159,7 @@ class UsersController extends BaseController {
 					$email = $data['email'];
 					$data['password'] = sha1($data['password']);
 					$data['created_date'] = User::dates('now');
-					$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
+					$data['invitation_codes'] = array(substr($email, 0, strpos($email, '@')));
 					$inviteCheck = User::count( array(
 							'invitation_codes' => $data['invitation_codes']
 							));
@@ -164,7 +174,7 @@ class UsersController extends BaseController {
 						Mailer::send('Welcome_Free_Shipping', $user->email);
 						$name = null;
 						if (isset($data['firstname'])) $name = $data['firstname'];
-						if (isset($data['lastname'])) $name = is_null($name)?$data['lastname']:$name.$data['lastname'];  
+						if (isset($data['lastname'])) $name = is_null($name)?$data['lastname']:$name.$data['lastname'];
 						Mailer::addToMailingList($data['email'],is_null($name)?array():$name);
 
 					}
@@ -194,7 +204,9 @@ class UsersController extends BaseController {
 			//Grab User Record
 			$user = User::lookup($email);
 			$redirect = '/sales';
-			if (strlen($password) > 0) {
+			if ($user->deactivated) {
+				$message = '<div class="error_flash">Your account has been deactivated.  Please contact Customer Service at 888-247-9444 to reactivate your account</div>';
+			} else if (strlen($password) > 0) {
 				if($user){
 					if (!empty($user->reset_token)) {
 						if (strlen($user->reset_token) > 1) {
@@ -252,9 +264,13 @@ class UsersController extends BaseController {
 			}
 		}
 		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
-			$user = User::find('first', array('conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
+			$user = User::find('first', array(
+				'conditions' => array('autologinHash' => $cookie['autoLoginHash']),
+				'fields' => array('_id' => 1)));
 			if($user) {
-				if($cookie['user_id'] == $user->_id){
+				if ($user->deactivate) {
+					return;
+				} else if($cookie['user_id'] == $user->_id){
 					$sessionWrite = $this->writeSession($user->data());
 					User::log($ipaddress);
 					if(array_key_exists('redirect', $cookie) && $cookie['redirect'] ) {
@@ -267,6 +283,9 @@ class UsersController extends BaseController {
 					} else {
 						$this->redirect($redirect);
 					}
+				} else {
+					$cookie['autoLoginHash'] = null;
+					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 				}
 			}
 		}
@@ -276,9 +295,15 @@ class UsersController extends BaseController {
 	 * Performs the logout action of the user removing '_id' from session details.
 	 */
 	public function logout() {
+		$loginInfo = Session::read('userLogin');
+		$user = User::collection();
+		$user->update(
+			array('email' => $loginInfo['email']),
+			array('$unset' => array('autologinHash' => 1))
+			);
 		$success = Session::delete('userLogin');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-		$cookie['autoLoginHash'] = null;
+		unset($cookie['autoLoginHash']);
 		Session::delete('services');
 		Session::delete('cookieCrumb', array('name' => 'cookie'));
 		$cookieSuccess = Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
@@ -411,6 +436,7 @@ class UsersController extends BaseController {
 		$user = User::getUser();
 		$id = (string) $user->_id;
 		// Some documents have arrays, others have strings
+
 		if(is_object($user->invitation_codes) && get_class($user->invitation_codes) == "lithium\data\collection\DocumentArray"){
 			$code = $user->invitation_codes[0];
 		} else {
@@ -435,7 +461,7 @@ class UsersController extends BaseController {
 					'message' => $message,
 					'email_from' => $user->email,
 					'domain' => 'http://www.totsy.com',
-					'invitation_codes' => $user->invitation_codes
+					'invitation_codes' => $code
 				);
 				Mailer::send('Friend_Invite', $email, $args);
 			}

@@ -52,13 +52,13 @@ abstract class AvaTaxWrap {
 				$return = true;
 	  		} else {
 					$str = '';
-					foreach($getTaxResult->getMessages() as $msg) {
+					foreach($result->getMessages() as $msg) {
 						$str.= $msg->getName().": ".$msg->getSummary()."\n";
 					}
 					throw new Exception ($str);
 			}
 	    } catch ( Exception $e ) {
-			throw new Exeption ('tax process error',0,$e);
+			throw new Exception ('tax process error',0,$e);
 		}
 		return $return;
   	}
@@ -93,7 +93,8 @@ abstract class AvaTaxWrap {
 				foreach($result->getMessages() as $msg) {
 					$str.= $msg->getName().": ".$msg->getSummary()."\n";
 				}
-				throw new Exception ($str);
+				throw new Exception ($str,911);
+				
 			}
 	    } catch ( Exception $e ) {
 			throw new Exception ('tax process error',0,$e);
