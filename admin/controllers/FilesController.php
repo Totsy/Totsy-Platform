@@ -55,40 +55,34 @@ class FilesController extends \lithium\action\Controller {
 				$this->processEventImages();
 				$this->processEventItemImages();
 				break;
+			default:
+				// This was the old upload() method code...
+				$success = false;
+				$enabled = array('item', 'event', 'banner', 'service');
+				$this->_render['template'] = in_array($type, $enabled) ? $type : 'upload';
 
+				/* Check that we have POST data. */
+				if ($this->request->data && $this->_validate($this->request->data)) {
+					$this->_render['layout'] = false;
+
+					$handle = fopen($this->request->data['Filedata']['tmp_name'], 'rb');
+					$meta['name'] = $this->request->data['Filedata']['name'];
+
+					/* Check if there are any tags associated with the image. */
+					if (array_key_exists('tag', $this->request->data)){
+						$meta['tag'] = $this->request->data['tag'];
+					}
+
+					$file = File::write($handle, $meta);
+					fclose($handle);
+
+					if ($file) {
+						/* We're using name -> fileName here for BC. */
+						return array('id' => $file->_id, 'fileName' => $meta['name']);
+					}
+				}
+				break;
 		}
-
-		//echo 'console.dir('.json_encode($this->request->data).');';
-
-		//echo 'console.dir('.json_encode($event_images).');';
-		exit();
-
-		$success = false;
-
-		$enabled = array('item', 'event', 'banner', 'service', 'affilate');
-		$this->_render['template'] = in_array($type, $enabled) ? $type : 'upload';
-
-		/* Check that we have POST data. */
-		if ($this->request->data && $this->_validate($this->request->data)) {
-			$this->_render['layout'] = false;
-
-			$handle = fopen($this->request->data['Filedata']['tmp_name'], 'rb');
-			$meta['name'] = $this->request->data['Filedata']['name'];
-
-			/* Check if there are any tags associated with the image. */
-			if (array_key_exists('tag', $this->request->data)){
-				$meta['tag'] = $this->request->data['tag'];
-			}
-
-			$file = File::write($handle, $meta);
-			fclose($handle);
-
-			if ($file) {
-				/* We're using name -> fileName here for BC. */
-				return array('id' => $file->_id, 'fileName' => $meta['name']);
-			}
-		}
-		return compact('id', 'fileName', 'tag');
 	}
 
 	/**
@@ -103,37 +97,41 @@ class FilesController extends \lithium\action\Controller {
 			$files = (isset($this->request->data['Filedata'][0])) ? $this->request->data['Filedata']:array(0 => $this->request->data['Filedata']);
 			// Now loop the array of files
 			foreach($files as $file) {
-				// Event Image
-				if(preg_match('/^e\_\_i\_\_/i', $file['name'])) {
-					$event_images['event_image'] = $file;
+				// Event Image (2 ways to name)
+				if(preg_match('/^events\_.+\_image\..*/i', $file['name'])) {
+					$event_images['image'] = $file;
+				}
+				// matches: events_pretty-url.jpg 
+				// ...but events_pretty-url_anything... won't be matched.
+				if(preg_match('/^events\_.+(?<!\_)\..*/i', $file['name'])) {
+					$event_images['image'] = $file;
 				}
 				// Event Logo
-				if(preg_match('/^e\_\_l\_\_/i', $file['name'])) {
-					$event_images['event_logo'] = $file;
+				if(preg_match('/^events\_.+\_logo\..*/i', $file['name'])) {
+					$event_images['logo'] = $file;
 				}
-				// Event Big Splash Image
-				if(preg_match('/^e\_\_sbi\_\_/i', $file['name'])) {
+				// Event Big Splash Image (2 ways to name)
+				if(preg_match('/^events\_.+\_big\_splash\..*/i', $file['name'])) {
 					$event_images['splash_big_image'] = $file;
 				}
-				// Event Small Splash Image
-				if(preg_match('/^e\_\_ssi\_\_/i', $file['name'])) {
+				if(preg_match('/^events\_.+\_splash\_big\..*/i', $file['name'])) {
+					$event_images['splash_big_image'] = $file;
+				}
+				// Event Small Splash Image (2 ways to name)
+				if(preg_match('/^events\_.+\_small\_splash\..*/i', $file['name'])) {
+					$event_images['splash_small_image'] = $file;
+				}
+				if(preg_match('/^events\_.+\_splash\_small\..*/i', $file['name'])) {
 					$event_images['splash_small_image'] = $file;
 				}
 			}
 		}
-<<<<<<< HEAD
-
-=======
-
-
-
+		// Resize and save
 		if(!empty($event_images)) {
-			foreach($event_images as $image) {
-				$EventImage = EventImage::create();
-				$EventImage->write($image);
+			foreach($event_images as $k => $v) {
+				EventImage::resizeAndSave($k, $v);
 			}
 		}
->>>>>>> evenimage model
 	}
 
 	/**
@@ -145,22 +143,7 @@ class FilesController extends \lithium\action\Controller {
 		$item_images = array();
 		if(isset($this->request->data['Filedata']) && !empty($this->request->data['Filedata'])) {
 			foreach($this->request->data['Filedata'] as $file) {
-				// Event Image
-				if(preg_match('/^e\_\_i\_\_/i', $file['name'])) {
-					$event_images['event_image'] = $file;
-				}
-				// Event Logo
-				if(preg_match('/^e\_\_l\_\_/i', $file['name'])) {
-					$event_images['event_logo'] = $file;
-				}
-				// Event Big Splash Image
-				if(preg_match('/^e\_\_sbi\_\_/i', $file['name'])) {
-					$event_images['splash_big_image'] = $file;
-				}
-				// Event Small Splash Image
-				if(preg_match('/^e\_\_ssi\_\_/i', $file['name'])) {
-					$event_images['splash_small_image'] = $file;
-				}
+				// TODO: Regex for event item images and then resize and save...
 			}
 		}
 
