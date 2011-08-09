@@ -5,13 +5,20 @@
 <?php echo $this->html->script('upload.js');?>
 <?php echo $this->html->style('swfupload')?>
 
-<h1>Upload files for a particular item</h1>
+<h1>Files</h1>
+<h2>Upload via WebDAV</h2>
 <p>
-	You may also use WebDAV for uploading files.
 	Open your WebDAV client and connect to
 	<?=$this->html->link($this->url('Files::dav', array('absolute' => true)), 'Files::dav'); ?>.
+	<?=$this->html->link('Cyberduck', 'http://cyberduck.ch/', array('target' => 'new')); ?>
+	is the recommended WebDAV client and works under both Windows and OSX.
 </p>
-<br>
+
+<h2>Upload via Form</h2>
+<p>
+	Use this form to upload new files. These files will be marked as <em>pending</em> as long they are not
+	associated with an event or item.
+</p>
 <table>
 	<tr valign="top">
 		<td>
@@ -29,5 +36,11 @@
 	</tr>
 </table>
 <div id="fileInfo"></div>
-<br>
 
+<h2>Manage Pending</h2>
+<p>
+	Files not yet associated with any item or event.
+</p>
+<div id="pending">
+	<!-- This holds all pending files and is populated through an AJAX request. -->
+</div>
