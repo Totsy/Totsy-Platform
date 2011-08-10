@@ -11,42 +11,44 @@ class EventImage extends File {
 	protected $_meta = array("source" => "fs.files");
 
 	/**
-	 * Image sizes for event images.
-	 * Specified in width, height
-	 * 
-	 * @var type array
+	 * Image sizes for event images. With associated dimensions width and
+	 * height. The names correspond to the keys of an event document's `images`
+	 * array with the expception that `_image` is appended.
+	 *
+	 * @var types array
 	 */
-	static $image_sizes = array(
-		'logo' => array(148, 52),
-		'image' => array(300, 193),
-		'splash_big_image' => array(355, 410),
-		'splash_small_image' => array(100, 100)
+	public static $types = array(
+		'event'        => array('dimensions' => array(300, 193)),
+		'logo'         => array('dimensions' => array(148, 52)),
+		'splash_big'   => array('dimensions' =>  array(355, 410)),
+		'splash_small' => array('dimensions' => array(100, 100)
 	);
-	
+
 	public static function resizeAndSave($position=null, $data=null) {
-		if(empty($data) || !in_array($position, array_keys(EventImage::$image_sizes))) {
+		if(empty($data) || !isset(static::$types[$position])) {
 			return false;
 		}
-		
+		list($width, $height) = static::$types[$position];
+
 		// Resize the image
 		$tmp_file = (isset($data['tmp_name'])) ? $data['tmp_name']:null;
 		$imagine = new Imagine();
 		$image = $imagine->open($tmp_file);
-		$resized_image = $image->resize(new Box(EventImage::$image_sizes[$position][0], EventImage::$image_sizes[$position][1]))->save(sys_get_temp_dir() . DIRECTORY_SEPARATOR . $data['name']);
-		
+		$resized_image = $image->resize(new Box($width, $height))->save(sys_get_temp_dir() . DIRECTORY_SEPARATOR . $data['name']);
+
 		// Set the meta data to be stored on the document in GridFS
 		$meta = array(
 			'name' => $data['name']
 		);
-		
+
 		// Write the image to GridFS
 		$handle = fopen($resized_image);
 		self::write($handle, $meta);
 		fclose($handle);
-		
+
 		// Tidy up
 		unlink($resized_image);
 	}
-	
+
 }
 ?>
