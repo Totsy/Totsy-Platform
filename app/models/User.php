@@ -209,9 +209,10 @@ class User extends Base {
 	 */
 	public static function validateContactUs(array $data){
 		$rules = array(
-		    'firstname' => array('notEmpty' => 'Please enter a First Name'),
+		    'firstname' => array('notEmpty', 'message' => 'Please enter a First Name'),
 		    'lastname' => array('notEmpty', 'message' => 'Please enter a Last Name'),
-			'telephone' => array('notEmpty', 'message' => 'Please enter a Telephone number')
+			'telephone' => array('notEmpty', 'message' => 'Please enter a Telephone number'),
+			'message' => array('notEmpty', 'message' => 'Please type your message')
 		);
 		$result = array();
 		$result = Validator::check($data, $rules);
@@ -219,23 +220,7 @@ class User extends Base {
 		if (is_array($result) && count($result)==0){
 			return true;
 		} else { 
-			foreach ($result as $k=>$r){
-				if (is_array($r)){
-					foreach ($r as $a=>$s){
-						if ($s == 0) unset($result[$k][$a]);
-					}
-					if (is_array($r) && count($r)==0){
-						unset($result[$k]);
-					}
-				} else if ($r == 0) {
-					unset($result[$k]);
-				}
-			}
-			if (is_array($result) && count($result) == 0){
-				return true;
-			} else {
-				return $result;
-			} 
+			return $result;
 		}
 	}
 }

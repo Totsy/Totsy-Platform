@@ -31,7 +31,6 @@
 
 	<h2 class="gray mar-b">Contact Us</h2>
 	<hr />
-
 	<?=$this->form->create(); ?>
 	<h3 style="margin:10px auto;" class="gray">Your contact information</h3>
 	<div class="form-row">
@@ -122,6 +121,10 @@
 			'style' => 'width:300px;height:120px'
 		));
 		?>
+		<? if (is_array($error) && array_key_exists('telephone',$error)){?>
+			<br>	
+			<?=$error['telephone'][0];?>
+		<? } ?>	
 		<br />
 
 		<?=$this->form->submit('Send Information', array('class' => "button" )); ?>
