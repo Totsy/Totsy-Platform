@@ -440,7 +440,7 @@ class OrdersController extends BaseController {
 					$orderPromo->save();
 					$order->promo_code = $orderPromo->code;
 				}
-			}
+			}						
 			
 			if($avatax === true){
 				AvaTax::postTax( compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
@@ -448,7 +448,7 @@ class OrdersController extends BaseController {
 			$order->tax = $tax;
 			$order->avatax = $avatax;
 			$order->ship_date = new MongoDate(Cart::shipDate($order));
-						
+			
 			$order->save();
 			
 			Cart::remove(array('session' => Session::key('default')));

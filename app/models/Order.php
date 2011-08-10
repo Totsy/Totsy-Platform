@@ -61,6 +61,7 @@ class Order extends Base {
 		));
 		$subTotal = array_sum($cart->subTotal());
 		$tax = array_sum($cart->tax($shipping));
+		
 		$handling = Cart::shipping($cart, $shipping);
 		$overSizeHandling = Cart::overSizeShipping($cart);
 		$session = Session::read('services', array('name' => 'default'));
