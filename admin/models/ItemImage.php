@@ -42,7 +42,7 @@ class ItemImage extends File {
 		);
 
 		// Write the image to GridFS
-		$handle = fopen($resized_image);
+		$handle = fopen($resized_image, 'rb');
 		self::write($handle, $meta);
 		fclose($handle);
 
