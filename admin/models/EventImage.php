@@ -28,13 +28,14 @@ class EventImage extends File {
 		if(empty($data) || !isset(static::$types[$position])) {
 			return false;
 		}
-		list($width, $height) = static::$types[$position];
+		list($width, $height) = static::$types[$position]['dimensions'];
 
 		// Resize the image
 		$tmp_file = (isset($data['tmp_name'])) ? $data['tmp_name']:null;
 		$imagine = new Imagine();
 		$image = $imagine->open($tmp_file);
-		$resized_image = $image->resize(new Box($width, $height))->save(sys_get_temp_dir() . DIRECTORY_SEPARATOR . $data['name']);
+		$resized_image_path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $data['name'];
+		$image->resize(new Box($width, $height))->save($resized_image_path);
 
 		// Set the meta data to be stored on the document in GridFS
 		$meta = array(
@@ -42,12 +43,12 @@ class EventImage extends File {
 		);
 
 		// Write the image to GridFS
-		$handle = fopen($resized_image, 'rb');
-		self::write($handle, $meta);
+		$handle = fopen($resized_image_path, 'rb');
+		static::write($handle, $meta);
 		fclose($handle);
 
 		// Tidy up
-		unlink($resized_image);
+		unlink($resized_image_path);
 	}
 
 }
