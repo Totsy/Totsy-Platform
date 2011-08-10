@@ -27,7 +27,6 @@
 				break;
 			case 'server_response':
 				// this one is different, it doesn't get the file data, it gets the server response
-				eval(event.response);
 				$.fn.agileUploaderServerResponse(event.response);
 				break;
 			case 'http_status':
