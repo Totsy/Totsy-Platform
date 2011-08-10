@@ -56,7 +56,12 @@ class FilesController extends \lithium\action\Controller {
 				$this->processEventImages();
 				$this->processEventItemImages();
 				break;
-            default:
+			case 'all':
+				$this->processEventImages();
+				$this->processEventItemImages();
+				break;
+
+			default:
 				// This was the old upload() method code...
 				$success = false;
 				$enabled = array('item', 'event', 'banner', 'service');
@@ -138,19 +143,22 @@ class FilesController extends \lithium\action\Controller {
 				if($event_url) {
 					// So save it and return the File document object.
 					$file = EventImage::resizeAndSave($k, $v);
-					
+
 					// The event document to update is determined by pretty URL (from the file name).
 					// Update the event document.
 					if(!empty($file)) {
-						Event::update(
+						//d('SAVING: images.' . $k . '_image => ' . (string)$file->_id);
+						$update = Event::update(
 							// query
-							array('$set' => array('images.' . $k . '_image' => (string)$file->_id)), 
+							array('$set' => array('images.' . $k . '_image' => (string)$file->_id)),
 							// conditions
-							array('url' => $event_url), 
+							array('url' => $event_url),
 							array('atomic' => false)
 						);
+						//d($update);
 					}
-					
+
+					$file = false;
 				}
 			}
 		}
@@ -168,10 +176,10 @@ class FilesController extends \lithium\action\Controller {
 				if(preg_match('/^items\_.+\_primary\..*/i', $file['name'])) {
 					$item_images['primary'] = $file;
 				}
-				
+
 			}
 		}
-		
+
 		// Resize and save
 		if(!empty($event_images)) {
 			foreach($event_images as $k => $v) {
