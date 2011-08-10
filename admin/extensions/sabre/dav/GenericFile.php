@@ -13,15 +13,16 @@ class GenericFile implements \Sabre_DAV_IFile {
 	protected $_config = array();
 
 	public function __construct(array $config = array()) {
+		if (!isset($config['value'])) {
+			throw new ConfigException("Key `value` not specified.");
+		}
+		$config['value'] = pathinfo($config['value'], PATHINFO_FILENAME);
+
 		$defaults = array(
 			'value' => null,
 			'parent' => null
 		);
 		$this->_config = $config + $defaults;
-
-		if (!isset($this->_config['value'])) {
-			throw new ConfigException("Key `value` not specified.");
-		}
 	}
 
 	public function __toString() {

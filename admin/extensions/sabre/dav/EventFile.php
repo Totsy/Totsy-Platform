@@ -8,19 +8,11 @@ use admin\models\Event;
 class EventFile extends \admin\extensions\sabre\dav\GenericFile {
 
 	public function put($data) {
-		if ($file = $this->_file()) { /* This object represent an existing file. */
-			$count = File::used($file->_id);
-
-			/* This object is included in the count. */
-			if ($count === 1) {
-				$file->delete();
-			}
-		}
 		$file = File::write($data);
 		$item = $this->_item();
 
 		$item->images = array(
-			$this->getValue() => $file->_id
+			$this->getParent()->getValue() . '_image' => $file->_id
 		) + $item->images->data();
 
 		return $item->save();
@@ -33,7 +25,7 @@ class EventFile extends \admin\extensions\sabre\dav\GenericFile {
 		$item = $this->_item();
 
 		$images = $item->images->data();
-		unset($images[$this->getValue()]);
+		unset($images[$this->getParent()->getValue() . '_image']);
 		$item->images = $images;
 
 		return (boolean) $item->save();
@@ -42,19 +34,13 @@ class EventFile extends \admin\extensions\sabre\dav\GenericFile {
 	protected function _item() {
 		return Event::first(array(
 			'conditions' => array(
-				'url' => $this->getParent()->getValue()
+				'url' => $this->getParent()->getParent()->getValue()
 			)
 		));
 	}
 
 	protected function _file() {
-		$item = $this->_item();
-
-		return File::first(array(
-			'conditions' => array(
-				'_id' => $item->images[$this->getValue()]
-			)
-		));
+		return File::first(array('conditions' => array('_id' => $this->getValue())));
 	}
 }
 
