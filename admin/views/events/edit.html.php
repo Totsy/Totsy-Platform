@@ -485,7 +485,7 @@ for ( i=1; i<6; i++ ) {
 
 				$('#agile_file_upload').agileUploader({
 					flashSrc: '/admin/swf/agile-uploader.swf',
-					//submitRedirect: $('#EventEdit').attr('action'),
+					submitRedirect: $('#EventEdit').attr('action'),
 					//formId: 'EventEdit',
 					formId: 'EventMedia',
 					removeIcon: '/admin/img/agile_uploader/trash-icon.png',
@@ -495,13 +495,13 @@ for ( i=1; i<6; i++ ) {
 						button_over: '/admin/img/agile_uploader/add-file.png',
 						//form_action: $('#EventEdit').attr('action'),
 						form_action: '/admin/files/upload/event',
-						file_limit: 4,
+						file_limit: 30,
 						max_height: '1000',
 						max_width: '1000',
 						file_filter: '*.jpg;*.jpeg;*.gif;*.png;*.JPG;*.JPEG;*.GIF;*.PNG',
 						resize: 'jpg,jpeg,gif',
 						force_preview_thumbnail: 'true',
-						firebug: 'true'
+						firebug: 'false'
 					}
 				});
 

@@ -56,6 +56,10 @@ class FilesController extends \lithium\action\Controller {
 				$this->processEventImages();
 				$this->processEventItemImages();
 				break;
+			case 'all':
+				$this->processEventImages();
+				$this->processEventItemImages();
+				break;
 			default:
 				// This was the old upload() method code...
 				$success = false;
@@ -142,15 +146,18 @@ class FilesController extends \lithium\action\Controller {
 					// The event document to update is determined by pretty URL (from the file name).
 					// Update the event document.
 					if(!empty($file)) {
-						Event::update(
+						//d('SAVING: images.' . $k . '_image => ' . (string)$file->_id);
+						$update = Event::update(
 							// query
 							array('$set' => array('images.' . $k . '_image' => (string)$file->_id)), 
 							// conditions
 							array('url' => $event_url), 
 							array('atomic' => false)
 						);
+						//d($update);
 					}
 					
+					$file = false;
 				}
 			}
 		}
