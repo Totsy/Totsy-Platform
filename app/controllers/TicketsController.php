@@ -49,15 +49,15 @@ class TicketsController extends BaseController {
 				$name = $data['firstname'].' '.$data['lastname'];
 				if (is_object($user)){
 					if (isset($user->email) && !empty($user->email)){ 
-						$options['replyto'] = $options['behalf_email'] = '"'.$name.'" <'.$user->email.'>';
+						$options['replyto'] = $options['behalf_email'] = $user->email;
 					} else if (isset($user->confirmemail) && !empty($user->confirmemail)){
-						$options['replyto'] = $options['behalf_email'] = '"'.$name.'" <'.$user->confirmemail.'>';
+						$options['replyto'] = $options['behalf_email'] = $user->confirmemail;
 					}
 				} else if (is_array($user)){
 					if (array_key_exists('email',$user) && !empty($user['email'])){
-						$options['replyto'] = $options['behalf_email'] = '"'.$name.'" <'.$user['email'].'>';
+						$options['replyto'] = $options['behalf_email'] = $user['email'];
 					} else if (array_key_exists('confirmemail',$user) && !empty($user['confirmemail'])){
-						$options['replyto'] = $options['behalf_email'] = '"'.$name.'" <'.$user['confirmemail'].'>';
+						$options['replyto'] = $options['behalf_email'] = $user['confirmemail'];
 					} 
 				}
 				Mailer::send('Tickets', $email, $args, $options);
