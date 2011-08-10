@@ -39,8 +39,8 @@ class TicketsController extends BaseController {
 		if ($this->request->data){
 			$data = $this->request->data;
 			$error = User::validateContactUs($data);
-		}
-
+		} 
+			
 		if (!is_null($data) && !is_array($error)) {
 
 			if (($this->request->data) && $ticket->save($args)) {
