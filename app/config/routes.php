@@ -6,7 +6,6 @@
  * @license       http://opensource.org/licenses/bsd-license.php The BSD License
  */
 
-use lithium\net\http\Media;
 use lithium\net\http\Router;
 use lithium\core\Environment;
 use app\models\File;
@@ -28,16 +27,10 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 			return new Response(array('status' => 304));
 		}
 	}
-	if ($file->mime_type) {
-		$type = $file->mime_type;
-	} else {
-		$type = Media::type($request->type);
-		$type = $type['content'];
-	}
 	return new Response(array(
 		'headers' => array(
 			'Content-length' => $file->file->getSize(),
-			'Content-type' => $type,
+			'Content-type' => $file->mimeType(),
 			'Etag' => '"' . $file->md5  . '"'
 		),
 		'body' => $file->file->getBytes()
