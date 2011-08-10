@@ -231,7 +231,7 @@ class User extends Base {
 					unset($result[$k]);
 				}
 			}
-			if ($is_array($result) && count($result) == 0){
+			if (is_array($result) && count($result) == 0){
 				return true;
 			} else {
 				return $result;
