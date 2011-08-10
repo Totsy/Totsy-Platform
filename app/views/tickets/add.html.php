@@ -36,7 +36,7 @@
 	<h3 style="margin:10px auto;" class="gray">Your contact information</h3>
 	<div class="form-row">
 				<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('firstname', array('class' => 'inputbox', 'value'=>is_null($data)?$user['firstname']:data['firstname']));?>  
+				<?=$this->form->text('firstname', array('class' => 'inputbox', 'value'=>is_null($data)?$user['firstname']:$data['firstname']));?>  
 				<? if (is_array($error) && array_key_exists('firstname',$error)){?>
 					<?=$error['firstname'][0];?>
 				<? } ?>
@@ -45,7 +45,7 @@
 
 			<div class="form-row">
 				<?=$this->form->label('lastname', 'Last Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('lastname', array('class' => 'inputbox', 'value'=>is_null($data)?$user['lastname']:data['lastname']));?>  
+				<?=$this->form->text('lastname', array('class' => 'inputbox', 'value'=>is_null($data)?$user['lastname']:$data['lastname']));?>  
 				<? if (is_array($error) && array_key_exists('lastname',$error)){?>
 					<?=$error['lastname'][0];?>
 				<? } ?>
@@ -54,7 +54,7 @@
 
 			<div class="form-row">
 				<?=$this->form->label('telephone', 'Telephone <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('firstname', array('class' => 'inputbox', 'id' => 'phone', 'value'=>is_null($data)?$user['telephone']:data['telephone']));?> 
+				<?=$this->form->text('firstname', array('class' => 'inputbox', 'id' => 'phone', 'value'=>is_null($data)?$user['telephone']:$data['telephone']));?> 
 				<? if (is_array($error) && array_key_exists('telephone',$error)){?>
 					<?=$error['firstname'][0];?>
 				<? } ?>				
