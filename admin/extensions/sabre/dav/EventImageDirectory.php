@@ -2,7 +2,6 @@
 
 namespace admin\extensions\sabre\dav;
 
-use admin\extensions\sabre\dav\EventImageDirectory;
 use admin\extensions\sabre\dav\EventFile;
 use admin\models\File;
 use admin\models\Event;
