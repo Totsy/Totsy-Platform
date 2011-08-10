@@ -143,17 +143,21 @@ class File extends \lithium\data\Model {
 		return static::detectDimensions($entity->file->getBytes());
 	}
 
-	public function extension($entity) {
-		return Media::type($entity->mimeType());
-	}
-
-	public function url($entity) {
+	public function basename($entity) {
 		$name = $entity->_id;
 
 		if ($extension = $entity->extension()) {
 			$name .= ".{$extension}";
 		}
-		return "/image/{$name}";
+		return $name;
+	}
+
+	public function extension($entity) {
+		return Media::type($entity->mimeType());
+	}
+
+	public function url($entity) {
+		return '/image/' . $entity->basename();
 	}
 
 	public static function detectMimeType($data) {
