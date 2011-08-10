@@ -3,8 +3,9 @@
 namespace admin\extensions\sabre\dav;
 
 use admin\models\File;
+use admin\models\Event;
 
-class ItemFile extends \admin\extensions\sabre\dav\GenericFile {
+class EventFile extends \admin\extensions\sabre\dav\GenericFile {
 
 	public function put($data) {
 		if ($file = $this->_file()) { /* This object represent an existing file. */
@@ -38,14 +39,8 @@ class ItemFile extends \admin\extensions\sabre\dav\GenericFile {
 		return (boolean) $item->save();
 	}
 
-	protected function _model() {
-		return $this->getParent()->getParent()->getParent()->getParent()->getValue();
-	}
-
 	protected function _item() {
-		$model = $this->_model();
-
-		return $model::find('first', array(
+		return Event::first(array(
 			'conditions' => array(
 				'url' => $this->getParent()->getValue()
 			)
@@ -55,7 +50,7 @@ class ItemFile extends \admin\extensions\sabre\dav\GenericFile {
 	protected function _file() {
 		$item = $this->_item();
 
-		return File::find('first', array(
+		return File::first(array(
 			'conditions' => array(
 				'_id' => $item->images[$this->getValue()]
 			)
