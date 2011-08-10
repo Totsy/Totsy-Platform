@@ -2,39 +2,33 @@
 
 namespace admin\extensions\sabre\dav;
 
-use admin\extensions\sabre\dav\ItemDirectory;
+use admin\extensions\sabre\dav\EventDirectory;
 use MongoDate;
 use DateTime;
 use DateInterval;
 
-class MonthDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
+class EventsMonthDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 
 	public function getChild($name) {
-		return new ItemDirectory(array('value' => $name, 'parent' => $this));
+		return new EventDirectory(array('value' => $name, 'parent' => $this));
 	}
 
 	public function getChildren() {
-		$model = $this->_model();
-		$data = $model::find('all', array(
+		$items = Event::all(array(
 			'conditions' => $this->_conditions()
 		));
 
 		$children = array();
-		foreach ($data as $item) {
-			$children[] = new ItemDirectory(array('value' => $item->url, 'parent' => $this));
+		foreach ($items as $item) {
+			$children[] = new EventDirectory(array('value' => $item->url, 'parent' => $this));
 		}
 		return $children;
 	}
 
 	public function childExists($name) {
-		$model = $this->_model();
-		return (boolean) $model::find('count', array(
+		return (boolean) Event::first(array(
 			'conditions' => array('url' => $name)
 		));
-	}
-
-	protected function _model() {
-		return $this->getParent()->getParent()->getValue();
 	}
 
 	protected function _conditions() {

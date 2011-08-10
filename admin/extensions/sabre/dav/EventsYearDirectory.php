@@ -2,19 +2,19 @@
 
 namespace admin\extensions\sabre\dav;
 
-use admin\extensions\sabre\dav\MonthDirectory;
+use admin\extensions\sabre\dav\EventsMonthDirectory;
 
-class YearDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
+class EventsYearDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 
 	public function getChild($name) {
-		return new MonthDirectory(array('value' => $name, 'parent' => $this));
+		return new EventsMonthDirectory(array('value' => $name, 'parent' => $this));
 	}
 
 	public function getChildren() {
 		$children = array();
 
 		foreach ($this->_range() as $month) {
-			$children[] = new MonthDirectory(array('value' => $month, 'parent' => $this));
+			$children[] = new EventsMonthDirectory(array('value' => $month, 'parent' => $this));
 		}
 		return $children;
 	}
