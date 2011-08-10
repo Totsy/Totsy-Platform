@@ -38,7 +38,7 @@
 				<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<? if (is_array($error) && array_key_exists('telephone',$error)){
 					echo $this->form->text('firstname', array('class' => 'inputbox', 'value'=>$data['firstname']));  
-					echo $error['firstname'];
+					echo $error['firstname'][0];
 				} else { ?>
 					<?=$this->form->text('firstname', array('class' => 'inputbox')); ?>
 				<? } ?>
@@ -49,7 +49,7 @@
 				<?=$this->form->label('lastname', 'Last Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 			<? if (is_array($error) && array_key_exists('telephone',$error)){
 				echo $this->form->text('lastname', array('class' => 'inputbox', 'value'=>$data['lastname']));  
-				echo $error['lastname'];
+				echo $error['lastname'][0];
 			} else { ?>
 				<?=$this->form->text('lastname', array('class' => 'inputbox')); ?>
 			<? } ?>	
@@ -60,7 +60,7 @@
 				<?=$this->form->label('telephone', 'Telephone <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<? if (is_array($error) && array_key_exists('telephone',$error)){
 					echo $this->form->text('telephone', array('class' => 'inputbox', 'id' => 'phone', 'value'=>$data['telephone'])); 
-					echo $error['telephone'];
+					echo $error['telephone'][0];
 				} else { ?>
 					<?=$this->form->text('telephone', array('class' => 'inputbox', 'id' => 'phone')); ?>
 				<? } ?>				

@@ -40,9 +40,9 @@ class TicketsController extends BaseController {
 			$data = $this->request->data;
 			$error = User::validateContactUs($data);
 		}
-		
-		if (!is_null($data) && (is_null($error) || $error==true)) {
-		
+
+		if (!is_null($data) && !is_array($error)) {
+
 			if (($this->request->data) && $ticket->save($args)) {
 				$email = $list[$args['issue']['issue_type']];
 				$options = array();

@@ -209,18 +209,9 @@ class User extends Base {
 	 */
 	public static function validateContactUs(array $data){
 		$rules = array(
-		    'firstname' => array(
-				array('notEmpty' => 'Please enter a First Name'),
-				array('required' => true)
-			),
-		    'lastname' => array(
-				array('notEmpty', 'message' => 'Please enter a Last Name'),
-				array('required' => true)
-		    ),
-			'telethone' => array(
-				array('notEmpty', 'message' => 'Please enter a Telephone number'),
-				array('required' => true)
-			)
+		    'firstname' => array('notEmpty' => 'Please enter a First Name'),
+		    'lastname' => array('notEmpty', 'message' => 'Please enter a Last Name'),
+			'telephone' => array('notEmpty', 'message' => 'Please enter a Telephone number')
 		);
 		$result = array();
 		$result = Validator::check($data, $rules);
