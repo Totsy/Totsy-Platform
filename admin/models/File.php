@@ -3,10 +3,11 @@
 namespace admin\models;
 
 use lithium\data\Connections;
-
+use lithium\net\http\Media;
 use admin\models\Event;
 use admin\models\Item;
 use MongoDate;
+use Imagine\Gd\Imagine;
 
 class File extends \lithium\data\Model {
 
@@ -37,7 +38,8 @@ class File extends \lithium\data\Model {
 
 		$meta += array(
 			'created_date' => new MongoDate(),
-			'mime_type' => static::mimeType($handle)
+			'mime_type' => static::detectMimeType($handle),
+			'dimensions' => static::detectDimensions($bytes)
 		);
 		$file->set($meta);
 		$file->save();
@@ -115,16 +117,61 @@ class File extends \lithium\data\Model {
 		return $results;
 	}
 
-	public static function mimeType($data) {
+	public function mimeType($entity) {
+		if ($entity->mime_type) {
+			return $entity->mime_type;
+		}
+		/* Some files in GridFS may not yet have a `mime_type` field.
+		   This field was added later so the code segement below
+		   provides BC for that. */
+
+		return static::detectMimeType($entity->file->getBytes());
+	}
+
+	public function dimensions($entity) {
+		if ($entity->dimensions) {
+			return $entity->dimensions;
+		}
+		return static::detectDimensions($entity->file->getBytes());
+	}
+
+	public function extension($entity) {
+		return Media::type($entity->mimeType());
+	}
+
+	public function url($entity) {
+		$name = $entity->_id;
+
+		if ($extension = $entity->extension()) {
+			$name .= ".{$extension}";
+		}
+		return "/image/{$name}";
+	}
+
+	public static function detectMimeType($data) {
 		$context = finfo_open(FILEINFO_MIME);
 
-		rewind($data);
-		$peekBytes = 1000000;
-		$result = finfo_buffer($context, fgets($data, $peekBytes));
+		if (is_resource($data)) {
+			rewind($data);
+			$peekBytes = 1000000;
+			$result = finfo_buffer($context, fgets($data, $peekBytes));
+		} else {
+			$result = finfo_buffer($context, $data);
+		}
 		list($type, $attributes) = explode(';', $result, 2) + array(null, null);
 
 		finfo_close($context);
 		return $type;
+	}
+
+	public static function detectDimensions($data) {
+		$imagine = new Imagine();
+		$box = $imagine->load($data)->getSize();
+
+		return array(
+			'width' => $box->getWidth(),
+			'height' => $box->getHeight()
+		);
 	}
 }
 
