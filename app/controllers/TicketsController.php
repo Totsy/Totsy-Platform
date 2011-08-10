@@ -48,12 +48,16 @@ class TicketsController extends BaseController {
 				$options = array();
 				$name = $data['firstname'].' '.$data['lastname'];
 				if (is_object($user)){
+					$args['email']->firstname = $data['firstname'];
+					$args['email']->lastname = $data['lastname'];
 					if (isset($user->email) && !empty($user->email)){ 
 						$options['replyto'] = $options['behalf_email'] = $user->email;
 					} else if (isset($user->confirmemail) && !empty($user->confirmemail)){
 						$options['replyto'] = $options['behalf_email'] = $user->confirmemail;
 					}
 				} else if (is_array($user)){
+					$args['email']['firstname'] = $data['firstname'];
+					$args['email']['lastname'] = $data['lastname'];
 					if (array_key_exists('email',$user) && !empty($user['email'])){
 						$options['replyto'] = $options['behalf_email'] = $user['email'];
 					} else if (array_key_exists('confirmemail',$user) && !empty($user['confirmemail'])){
