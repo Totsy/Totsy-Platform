@@ -91,17 +91,25 @@ class File extends \lithium\data\Model {
 	}
 
 	public static function used($id) {
-		$count  = Event::count(array(
+		$result = Event::all(array(
 			'conditions' => array(
-				'images' => $id
+				'images.event_image' => $id,
+				'images.logo_image' => $id,
+				'images.splash_big_image' => $id,
+				'images.splash_small_image' => $id
 			)
 		));
-		$count += Item::count(array(
+		if ($result->count()) {
+			return true;
+		}
+		$result = Item::all(array(
 			'conditions' => array(
-				'images' => $id
+				'alternate_images' => $id,
+				'primary_image' => $id,
+				'zoom_image' => $id
 			)
 		));
-		return $count;
+		return (boolean) $result->count();
 	}
 
 	// @todo replace with map reduce
