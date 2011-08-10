@@ -21,7 +21,7 @@ class EventImage extends File {
 		'event'        => array('dimensions' => array(300, 193)),
 		'logo'         => array('dimensions' => array(148, 52)),
 		'splash_big'   => array('dimensions' =>  array(355, 410)),
-		'splash_small' => array('dimensions' => array(100, 100)
+		'splash_small' => array('dimensions' => array(100, 100))
 	);
 
 	public static function resizeAndSave($position=null, $data=null) {
