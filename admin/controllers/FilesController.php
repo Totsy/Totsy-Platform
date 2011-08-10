@@ -104,7 +104,7 @@ class FilesController extends \lithium\action\Controller {
 				}
 				// matches: events_pretty-url.jpg 
 				// ...but events_pretty-url_anything... won't be matched.
-				if(preg_match('/^events\_.+(?<!\_)\..*/i', $file['name'])) {
+				if(preg_match('/^events\_.+(?<!\_|\_logo|\_big\_splash|\_small\_splash|\_splash\_small|\_splash\_big)\..*/i', $file['name'])) {
 					$event_images['event'] = $file;
 				}
 				// Event Logo
