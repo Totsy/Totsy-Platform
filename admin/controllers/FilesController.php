@@ -7,7 +7,7 @@ use lithium\core\Environment;
 use admin\models\File;
 use admin\models\EventImage;
 use Sabre_DAV_Server;
-use admin\extensions\sabre\dav\ModelDirectory;
+use admin\extensions\sabre\dav\EventsDirectory;
 use admin\extensions\sabre\dav\PendingDirectory;
 use Sabre_DAV_Locks_Backend_File;
 use Sabre_DAV_Locks_Plugin;
@@ -184,8 +184,7 @@ class FilesController extends \lithium\action\Controller {
 		}
 
 		$root = array(
-			new ModelDirectory(array('value' => '\admin\models\Event')),
-			new ModelDirectory(array('value' => '\admin\models\Item')),
+			new EventsDirectory(),
 			new PendingDirectory()
 		);
 		$server = new Sabre_DAV_Server($root);
