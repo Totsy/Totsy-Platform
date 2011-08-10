@@ -85,17 +85,16 @@ if (!empty($user['token'])) {
 				<div id="agile_file_upload"></div>
 				<script type="text/javascript">
 					$('#agile_file_upload').agileUploader({
-						flashSrc: '<?=$this->url('/swf/agile-uploader.swf'); ?>',
-						submitRedirect: '<?=$this->url('/files'); ?>',
+						flashSrc: '/admin/swf/agile-uploader.swf',
+						submitRedirect: '/admin/files',
 						formId: 'Media',
-						flashWidth: 70,
-						removeIcon: '<?=$this->url('/img/agile_uploader/trash-icon.png'); ?>',
+						removeIcon: '/admin/img/agile_uploader/trash-icon.png',
 						flashVars: {
-							button_up: '<?=$this->url('/img/agile_uploader/add-file.png?v=1'); ?>',
-							button_down: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
-							button_over: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
+							button_up: '/admin/img/agile_uploader/add-file.png',
+							button_down: '/admin/img/agile_uploader/add-file.png',
+							button_over: '/admin/img/agile_uploader/add-file.png',
 							//form_action: $('#EventEdit').attr('action'),
-							form_action: '<?=$this->url('/files/upload/all'); ?>',
+							form_action: '/admin/files/upload/all',
 							file_limit: 30,
 							max_height: '1000',
 							max_width: '1000',
