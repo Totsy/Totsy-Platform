@@ -47,7 +47,9 @@ class GenericDirectory implements \Sabre_DAV_ICollection {
 	 * @param resource $data Initial payload
 	 * @return void
 	 */
-	public function createFile($name, $data = null) {}
+	public function createFile($name, $data = null) {
+		throw new Sabre_DAV_Exception_Forbidden('Permission denied to create file');
+	}
 
 	/**
 	 * We block creating directories here as users are allowed to drop files
