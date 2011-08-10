@@ -138,7 +138,7 @@ class File extends \lithium\data\Model {
 
 	public function dimensions($entity) {
 		if ($entity->dimensions) {
-			return $entity->dimensions;
+			return $entity->dimensions->data();
 		}
 		return static::detectDimensions($entity->file->getBytes());
 	}
