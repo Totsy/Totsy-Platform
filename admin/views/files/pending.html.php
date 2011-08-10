@@ -2,6 +2,7 @@
 	<ul>
 	<?php foreach($files as $file): ?>
 		<li>
+			<?=$this->html->image($file->url(), array('alt' => 'image') + $file->dimensions()); ?>
 			<?=$file->name ?: $file->_id; ?>
 			<?php
 				$meta = array();
