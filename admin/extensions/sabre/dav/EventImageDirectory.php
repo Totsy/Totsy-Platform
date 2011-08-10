@@ -31,7 +31,7 @@ class EventImageDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 		));
 
 		return array(
-			new EventFile(array('value' => $file->basename(), 'parent' => $this))
+			new EventFile(array('value' => $file->_id, 'parent' => $this))
 		);
 	}
 
