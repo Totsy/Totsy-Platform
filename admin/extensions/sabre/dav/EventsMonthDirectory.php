@@ -3,6 +3,7 @@
 namespace admin\extensions\sabre\dav;
 
 use admin\extensions\sabre\dav\EventDirectory;
+use admin\models\Event;
 use MongoDate;
 use DateTime;
 use DateInterval;
