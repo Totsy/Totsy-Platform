@@ -154,13 +154,13 @@ class EventsController extends BaseController {
 
 				//update enabled
 				$oitem['enabled'] = (bool)$enabled;
-				
+
 				//create a new item instance
 				$newItem = Item::create();
 
 				//set total quant
 				$oitem['total_quantity'] = (int)$total_quantity_new;
-				
+
 				//set new price
 				if($item_price_new){
 					unset($oitem['sale_retail']);
@@ -199,13 +199,13 @@ class EventsController extends BaseController {
 		$event = Event::find($_id);
 
 		$eventItems = array();
-		
+
 		$alleventids = array($_id);
 
 		foreach($alleventids as $thiseventid){
 			$eventItems = Item::find('all', array('conditions' => array('event' => $alleventids),
 					'order' => array('created_date' => 'ASC')
-				));	
+				));
 		}
 		return compact('eventItems','event');
 	}
@@ -244,11 +244,11 @@ class EventsController extends BaseController {
 		    $modification_datas["date"] = new MongoDate(strtotime('now'));
 		    $modification_datas["type"] = "modification";
 		    $modification_datas["changed"] = $changed;
-		
+
 		    //Pushing modification datas to db
 		    $modifications = $event->modifications;
 		    $modifications[] = $modification_datas;
-		    $eventData[modifications] = $modifications;
+		    $eventData['modifications'] = $modifications;
 		    //Remove this when $_schema is setup
 		    unset($eventData['itemTable_length']);
 		    if ($event->save($eventData)) {
@@ -411,7 +411,7 @@ class EventsController extends BaseController {
 			//Pushing modification datas to db
 			$modifications = $event->modifications;
 			$modifications[] = $modification_datas;
-			$eventData[modifications] = $modifications;
+			$eventData['modifications'] = $modifications;
 
 			// End of Comparison of OLD Event Attributes and NEW event attributes
 
