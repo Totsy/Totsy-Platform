@@ -35,33 +35,34 @@
 			<p>
 				Use this form to upload new files. These files will be marked as <em>pending</em> as long they are not
 				associated with an event or item.
-			</p>
-			<form id="Media"></form>
-			<div id="agile_file_upload"></div>
-			<script type="text/javascript">
-				$('#agile_file_upload').agileUploader({
-					flashSrc: '/admin/swf/agile-uploader.swf',
-					submitRedirect: '/admin/files',
-					formId: 'Media',
-					removeIcon: '/admin/img/agile_uploader/trash-icon.png',
-					flashVars: {
-						button_up: '/admin/img/agile_uploader/add-file.png',
-						button_down: '/admin/img/agile_uploader/add-file.png',
-						button_over: '/admin/img/agile_uploader/add-file.png',
-						//form_action: $('#EventEdit').attr('action'),
-						form_action: '/admin/files/upload/all',
-						file_limit: 30,
-						max_height: '1000',
-						max_width: '1000',
-						file_filter: '*.jpg;*.jpeg;*.gif;*.png;*.JPG;*.JPEG;*.GIF;*.PNG',
-						resize: 'jpg,jpeg,gif',
-						force_preview_thumbnail: 'true',
-						firebug: 'false'
-					}
-				});	
-			</script>
+			
+				<form id="Media"></form>
+				<div id="agile_file_upload"></div>
+				<script type="text/javascript">
+					$('#agile_file_upload').agileUploader({
+						flashSrc: '/admin/swf/agile-uploader.swf',
+						submitRedirect: '/admin/files',
+						formId: 'Media',
+						removeIcon: '/admin/img/agile_uploader/trash-icon.png',
+						flashVars: {
+							button_up: '/admin/img/agile_uploader/add-file.png',
+							button_down: '/admin/img/agile_uploader/add-file.png',
+							button_over: '/admin/img/agile_uploader/add-file.png',
+							//form_action: $('#EventEdit').attr('action'),
+							form_action: '/admin/files/upload/all',
+							file_limit: 30,
+							max_height: '1000',
+							max_width: '1000',
+							file_filter: '*.jpg;*.jpeg;*.gif;*.png;*.JPG;*.JPEG;*.GIF;*.PNG',
+							resize: 'jpg,jpeg,gif',
+							force_preview_thumbnail: 'true',
+							firebug: 'false'
+						}
+					});	
+				</script>
 
-			<a href="#" onClick="document.getElementById('agileUploaderSWF').submit();">Upload</a>
+				<a href="#" onClick="document.getElementById('agileUploaderSWF').submit();">Upload</a>
+			</p>
 		</div>
 	</div>
 	
