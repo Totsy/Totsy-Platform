@@ -386,7 +386,7 @@ class OrdersController extends BaseController {
 		extract(AvaTax::getTax(compact(
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'))
-		,EXTR_OVERWRITE);
+		,EXTR_OVERWRITE));
 		unset($taxArray,$taxCart);
 		
 		if (($cart->data()) && (count($this->request->data) > 1) && $order->process($user, $data, $cart, $vars['cartCredit'], $vars['cartPromo'])) {

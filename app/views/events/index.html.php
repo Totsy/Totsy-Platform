@@ -30,13 +30,7 @@
 			<?php $y = 1; ?>
 		<?php endif ?>
                 <div class="p-container roundy_product">
-
-						<?php if ($itemCounts[ (string) $event->_id] == 0): ?>
-								<?=$this->html->image('/img/soldout.png', array(
-									'title' => "Sold Out",
-									'style' => 'z-index : 99999; position : absolute; right:0;'
-								)); ?>
-					<?php endif ?>
+					<!-- this is where the items count was -->
 					<?php
 						if (!empty($event->images->splash_big_image)) {
 							$productImage = "/image/{$event->images->splash_big_image}.jpg";
