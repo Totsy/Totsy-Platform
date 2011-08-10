@@ -248,7 +248,7 @@ class EventsController extends BaseController {
 		    //Pushing modification datas to db
 		    $modifications = $event->modifications;
 		    $modifications[] = $modification_datas;
-		    $eventData[modifications] = $modifications;
+		    $eventData['modifications'] = $modifications;
 		    //Remove this when $_schema is setup
 		    unset($eventData['itemTable_length']);
 		    if ($event->save($eventData)) {
