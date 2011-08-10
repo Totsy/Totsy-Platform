@@ -6,6 +6,7 @@ use lithium\core\Libraries;
 use lithium\core\Environment;
 use admin\models\File;
 use admin\models\EventImage;
+use admin\models\Event;
 use Sabre_DAV_Server;
 use admin\extensions\sabre\dav\EventsDirectory;
 use admin\extensions\sabre\dav\PendingDirectory;
@@ -129,7 +130,28 @@ class FilesController extends \lithium\action\Controller {
 		// Resize and save
 		if(!empty($event_images)) {
 			foreach($event_images as $k => $v) {
-				EventImage::resizeAndSave($k, $v);
+				preg_match('/^events\_(.+)\_.*/i', $v['name'], $matches);
+				$event_url = (isset($matches[1])) ? $matches[1]:false;
+				// If we don't have an event URL, what's the point of saving the image?
+				// We could never associate it and the file was named incorrectly.
+				// This won't be the case.
+				if($event_url) {
+					// So save it and return the File document object.
+					$file = EventImage::resizeAndSave($k, $v);
+					
+					// The event document to update is determined by pretty URL (from the file name).
+					// Update the event document.
+					if(!empty($file)) {
+						Event::update(
+							// query
+							array('$set' => array('images.' . $k . '_image' => (string)$file->_id)), 
+							// conditions
+							array('url' => $event_url), 
+							array('atomic' => false)
+						);
+					}
+					
+				}
 			}
 		}
 	}
