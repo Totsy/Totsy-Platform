@@ -54,7 +54,7 @@
 
 			<div class="form-row">
 				<?=$this->form->label('telephone', 'Telephone <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('telephone', array('class' => 'inputbox', 'id' => 'phone', 'value'=>is_null($data)?$user['telephone']:$data['telephone']));?> 
+				<?=$this->form->text('telephone', array('class' => 'inputbox', 'id' => 'phone', 'value'=>is_null($data)?'':$data['telephone']));?> 
 				<? if (is_array($error) && array_key_exists('telephone',$error)){?>
 					<?=$error['telephone'][0];?>
 				<? } ?>				
