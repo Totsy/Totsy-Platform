@@ -99,12 +99,12 @@ class FilesController extends \lithium\action\Controller {
 			foreach($files as $file) {
 				// Event Image (2 ways to name)
 				if(preg_match('/^events\_.+\_image\..*/i', $file['name'])) {
-					$event_images['image'] = $file;
+					$event_images['event'] = $file;
 				}
 				// matches: events_pretty-url.jpg 
 				// ...but events_pretty-url_anything... won't be matched.
 				if(preg_match('/^events\_.+(?<!\_)\..*/i', $file['name'])) {
-					$event_images['image'] = $file;
+					$event_images['event'] = $file;
 				}
 				// Event Logo
 				if(preg_match('/^events\_.+\_logo\..*/i', $file['name'])) {
@@ -112,17 +112,17 @@ class FilesController extends \lithium\action\Controller {
 				}
 				// Event Big Splash Image (2 ways to name)
 				if(preg_match('/^events\_.+\_big\_splash\..*/i', $file['name'])) {
-					$event_images['splash_big_image'] = $file;
+					$event_images['splash_big'] = $file;
 				}
 				if(preg_match('/^events\_.+\_splash\_big\..*/i', $file['name'])) {
-					$event_images['splash_big_image'] = $file;
+					$event_images['splash_big'] = $file;
 				}
 				// Event Small Splash Image (2 ways to name)
 				if(preg_match('/^events\_.+\_small\_splash\..*/i', $file['name'])) {
-					$event_images['splash_small_image'] = $file;
+					$event_images['splash_small'] = $file;
 				}
 				if(preg_match('/^events\_.+\_splash\_small\..*/i', $file['name'])) {
-					$event_images['splash_small_image'] = $file;
+					$event_images['splash_small'] = $file;
 				}
 			}
 		}
