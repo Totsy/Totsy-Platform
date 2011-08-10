@@ -227,10 +227,8 @@ abstract class AvaTaxWrap {
 			    $taxDetail = $tax[0];
 			    $temp = $taxDetail->getTaxCalculated();
 			    
-			    if($key!=="Shipping") {	
-			    	$data['items'][$i]['taxIncluded'] = $temp;
-			    }
-			    
+			    $data['items'][$i]['taxIncluded'] = $temp;
+			    			    
 			    $i++;				
 			} 
 			
