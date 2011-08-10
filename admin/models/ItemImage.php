@@ -24,6 +24,12 @@ class ItemImage extends File {
 		// 'alternate' => array('dimensions' => array())
 	);
 
+	/*
+	 * 
+	 * @param string $position The item image position (primary, zoom, etc.)
+	 * @param array $data The file data array from the POST data - a single file
+	 * @return 
+	*/
 	public static function resizeAndSave($position=null, $data=null) {
 		if(empty($data) || !isset(static::$types[$position])) {
 			return false;
@@ -45,11 +51,14 @@ class ItemImage extends File {
 		// Write the image to GridFS
 		$handle = fopen($resized_image_path, 'rb');
 		
-		static::write($handle, $meta);
+		$file = static::write($handle, $meta);
 		fclose($handle);
 
 		// Tidy up
 		unlink($resized_image_path);
+		
+		// Return what should be the file object that write() returns... this will have an id to associate
+		return $file;
 	}
 
 }

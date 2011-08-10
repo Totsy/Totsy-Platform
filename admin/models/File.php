@@ -21,7 +21,6 @@ class File extends \lithium\data\Model {
 	 */
 	public static function write($handle, $meta = array()) {
 		if ($dupe = File::dupe($handle)) {
-			d($dupe);exit();
 			return $dupe;
 		}
 
