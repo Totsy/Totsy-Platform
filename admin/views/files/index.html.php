@@ -75,7 +75,6 @@ if (!empty($user['token'])) {
 			</p>
 		</div>
 	</div>
-
 	<div class="box">
 		<h2>Upload via Form</h2>
 		<div class="block">
