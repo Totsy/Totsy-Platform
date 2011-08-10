@@ -201,6 +201,34 @@ class User extends Base {
 			}
 		}
 	}
+	
+	/**
+	 * method to validate some contact us form fields
+	 * In case of no error return boolean true
+	 * Otherwise return errors array 
+	 */
+	public static function validateContactUs(array $data){
+		$rules = array(
+		    'firstname' => array(
+				array('notEmpty' => 'Please enter a First Name'),
+				array('required' => true)
+			),
+		    'lastname' => array(
+				array('notEmpty', 'message' => 'Please enter a Last Name'),
+				array('required' => true)
+		    ),
+			'telethone' => array(
+				array('notEmpty', 'message' => 'Please enter a Telephone number'),
+				array('required' => true)
+			)
+		);
+		$result = array();
+		$result = Validator::check($data, $rules);
+		
+		if (is_array($result) && count($result)==0){
+			return true;
+		} else { return $result; }
+	}
 }
 
 

@@ -36,19 +36,34 @@
 	<h3 style="margin:10px auto;" class="gray">Your contact information</h3>
 	<div class="form-row">
 				<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('firstname', array('class' => 'inputbox')); ?>
-				<?=$this->form->error('firstname'); ?>
+				<? if (is_array($error) && array_key_exists('telephone',$error)){
+					echo $this->form->text('firstname', array('class' => 'inputbox', 'value'=>$data['firstname']));  
+					echo $error['firstname'];
+				} else { ?>
+					<?=$this->form->text('firstname', array('class' => 'inputbox')); ?>
+				<? } ?>
+				<? //=$this->form->error('firstname'); ?>
 			</div>
 
 			<div class="form-row">
 				<?=$this->form->label('lastname', 'Last Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+			<? if (is_array($error) && array_key_exists('telephone',$error)){
+				echo $this->form->text('lastname', array('class' => 'inputbox', 'value'=>$data['lastname']));  
+				echo $error['lastname'];
+			} else { ?>
 				<?=$this->form->text('lastname', array('class' => 'inputbox')); ?>
-				<?=$this->form->error('lastname'); ?>
+			<? } ?>	
+				<? //=$this->form->error('lastname'); ?>
 			</div>
 
 			<div class="form-row">
 				<?=$this->form->label('telephone', 'Telephone <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('telephone', array('class' => 'inputbox', 'id' => 'phone')); ?>
+				<? if (is_array($error) && array_key_exists('telephone',$error)){
+					echo $this->form->text('telephone', array('class' => 'inputbox', 'id' => 'phone', 'value'=>$data['telephone'])); 
+					echo $error['telephone'];
+				} else { ?>
+					<?=$this->form->text('telephone', array('class' => 'inputbox', 'id' => 'phone')); ?>
+				<? } ?>				
 			</div>
 			<h3 style="margin:10px auto;" class="gray">Please describe your issue below: </h3>
 		<select id="parent" style="width:350px;" name="issue_type">
