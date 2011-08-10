@@ -3,7 +3,9 @@
 	<?php foreach($files as $file): ?>
 		<li>
 			<?=$this->html->image($file->url(), array('alt' => 'image') + $file->dimensions()); ?>
-			<?=$file->name ?: $file->_id; ?>
+			<div class="name"><?=$file->name ?></div>
+			<div class="id"><?=$file->_id ?></div>
+			<div class="meta">
 			<?php
 				$meta = array();
 
@@ -16,10 +18,10 @@
 					$meta[] = $file->mime_type;
 				}
 			?>
-			(<?=implode(', ', $meta) ?>)
-
+			<?=implode(', ', $meta) ?>
+			</div>
 			<div class="actions">
-			<?=$this->html->link('delete', array('action' => 'delete', 'id' => $file->_id)); ?>
+				<?=$this->html->link('delete', array('action' => 'delete', 'id' => $file->_id)); ?>
 			</div>
 		</li>
 	<?php endforeach; ?>
