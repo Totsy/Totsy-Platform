@@ -218,7 +218,25 @@ class User extends Base {
 		
 		if (is_array($result) && count($result)==0){
 			return true;
-		} else { return $result; }
+		} else { 
+			foreach ($result as $k=>$r){
+				if (is_array($r)){
+					foreach ($r as $a=>$s){
+						if ($s == 0) unset($result[$k][$a]);
+					}
+					if (is_array($r) && count($r)==0){
+						unset($result[$k]);
+					}
+				} else if ($r == 0) {
+					unset($result[$k]);
+				}
+			}
+			if ($is_array($result) && count($result) == 0){
+				return true;
+			} else {
+				return $result;
+			} 
+		}
 	}
 }
 
