@@ -8,6 +8,7 @@ use admin\models\Event;
 use admin\models\Item;
 use MongoDate;
 use MongoCode;
+use Imagine\Gd\Imagine;
 
 class File extends \lithium\data\Model {
 
@@ -68,6 +69,7 @@ class File extends \lithium\data\Model {
 		$meta += array(
 			'created_date' => new MongoDate(),
 			'mime_type' => static::detectMimeType($handle),
+			'dimensions' => static::detectDimensions($bytes)
 		);
 
 		if ($close) {
@@ -212,7 +214,7 @@ class File extends \lithium\data\Model {
 		if (is_resource($data)) {
 			rewind($data);
 			$peekBytes = 1000000;
-			$result = finfo_buffer($context, fread($data, $peekBytes));
+			$result = finfo_buffer($context, fgets($data, $peekBytes));
 		} else {
 			$result = finfo_buffer($context, $data);
 		}
@@ -235,7 +237,7 @@ class File extends \lithium\data\Model {
 		stream_copy_to_stream($stream, $upgrade);
 
 		return $upgrade;
-}
+    }
 
 /**
  * Ensure only unused files can be deleted.

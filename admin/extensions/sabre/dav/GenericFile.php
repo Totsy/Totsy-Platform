@@ -2,7 +2,6 @@
 
 namespace admin\extensions\sabre\dav;
 
-use lithium\net\http\Media;
 use lithium\core\ConfigException;
 use admin\models\File;
 use Sabre_DAV_Exception_Forbidden;
@@ -116,8 +115,8 @@ class GenericFile implements \Sabre_DAV_IFile {
 	}
 
 	public function getExtension() {
-		if ($contentType = $this->getContentType()) {
-			return Media::type($contentType);
+		if ($file = $this->_file()) {
+			return $file->extension();
 		}
 	}
 
@@ -128,19 +127,7 @@ class GenericFile implements \Sabre_DAV_IFile {
 	 */
 	public function getContentType() {
 		if ($file = $this->_file()) {
-			if ($file->mime_type) {
-				return $file->mime_type;
-			}
-			/* Some files in GridFS may not yet have a `mime_type` field.
-			   This field was added later so the code segement below
-			   provides BC for that. */
-			$data = fopen('php://temp', 'wb');
-			fwrite($data, $file->file->getBytes());
-
-			$result = File::mimeType($data);
-
-			fclose($data);
-			return $result;
+			return $file->mimeType();
 		}
 	}
 
