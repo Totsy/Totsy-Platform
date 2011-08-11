@@ -142,7 +142,7 @@ class FilesController extends \lithium\action\Controller {
 				// We could never associate it and the file was probably named incorrectly.
 				if($event_url) {
 					// So save it and return the File document object.
-					$file = EventImage::resizeAndSave($k, $v);
+					$file = EventImage::resizeAndSave($k, $v, array('name' => $v['name']));
 
 					// The event document to update is determined by pretty URL (from the file name).
 					// Update the event document.
@@ -217,6 +217,7 @@ class FilesController extends \lithium\action\Controller {
 				// We could never associate it and the file was probably named incorrectly.
 				if($item_url) {
 					// So save it and return the File document object.
+					$file = ItemImage::resizeAndSave($type, $v, array('name' => $v['name']));
 					$file = ItemImage::resizeAndSave($type, $v);
 
 					// The item document to update is determined by pretty URL (from the file name).
