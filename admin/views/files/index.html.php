@@ -5,7 +5,7 @@
 <?php //$this->html->script('upload.js');?>
 <?php //$this->html->style('swfupload')?>
 
-
+<?=$this->html->script('files_pending.js')?>
 <?=$this->html->script('jquery.flash.min.js')?>
 <?=$this->html->script('agile-uploader-3.0.js')?>
 <?=$this->html->style('agile_uploader.css');?>
@@ -101,18 +101,20 @@
 			</p>
 		</div>
 	</div>
-	
+
 </div>
 
 <div class="clear"></div>
-
 <div class="box">
 	<h2>Manage Pending &amp; Orphan Files</h2>
+	<div class="actions">
+		<?=$this->html->link('refresh', '#', array('id' => 'refresh-pending')); ?>
+	</div>
 	<div class="block">
 		<p>
 			Files not yet associated with any item or event.
 		</p>
-		<div id="pending">
+		<div id="pending" target="<?=$this->url('Files::pending'); ?>">
 			<?=$this->html->link('Pending', 'Files::pending'); ?>
 			<!-- This holds all pending files and is populated through an AJAX request. -->
 		</div>
