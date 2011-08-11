@@ -34,8 +34,6 @@ else
 		Bulk Cancellation Tool
 		<? if ($search_sku) { ?>
 			- Searching for SKU <?=$search_sku;?>
-		<? } else if ($search_item_id) { ?>
-			- Searching for Item ID <?=$search_item_id;?>
 		<? } ?>
 	</h2>
 </div>
@@ -62,7 +60,7 @@ else
 					));
 				?>
 				<?=$this->form->submit('Submit'); ?>
-				(Search By: Item ID or SKU)
+				(Search By SKU only)
 			<?=$this->form->end(); ?>
 		</fieldset>
 	</div>
@@ -72,11 +70,13 @@ else
 <div id="clear"></div>
 <div id="clear"></div>
 
-
-
 <div class="grid_16">
 <?php if (!empty($items)): ?>
-	<table border="1">
+			<?php 
+				$x=0;						
+				foreach ($items as $item):
+			?>
+		<table border="1">
 		<thead>
 			<tr>
 				<th>Image</th>
@@ -91,10 +91,7 @@ else
 			</tr>
 		</thead>
 		<tbody>
-			<?php 
-								
-				foreach ($items as $item): 
-			?>
+
 				<tr>
 					<?php
 						if (!empty($item['primary_image'])) {
@@ -140,8 +137,17 @@ else
 					<?=$this->form->create(null, array('url'=>'/orders/cancelMultipleItems')); ?>
 
 					<?=$this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $item["_id"])); ?>
+					<?=$this->form->hidden('sku', array('class' => 'inputbox', 'sku' => 'sku', 'value' => $search_sku)); ?>
 
-						<table id="orderTable" class="datatable" >
+<?
+	
+					$item_id =  $item['_id']->__toString();
+										
+					$orders = Order::find('all',array('conditions'=> array('items.item_id' => $item_id)));
+?>
+
+
+						<table id="orderTable_<?=$x;?>" class="datatable" >
 		<thead>
 								<tr>
 									<th><div class="controls">
@@ -162,11 +168,9 @@ else
 								<fieldset>
 								<tbody>
 						<?
+
+						$i=0;
 						
-	
-					$item_id =  $item['_id']->__toString();
-					$orders = Order::find('all',array('conditions'=> array('items.item_id' => $item_id)));
-				
 						foreach($orders as $order) {
 								$order_temp = $order->data();
 								$o=0;
@@ -183,38 +187,27 @@ else
 										$sku = $value;
 									}
 								endforeach;
-							/*	
-								//sku based search
-								if ($search_sku && ($search_sku == $sku)) {
-									?>
-										<tr>
-											<td><input type="checkbox" id="<?=$order[_id];?>" name="order[]" value="<?=$order[_id];?>" class="cb-element" ></td>
-											<td><?=$order[_id];?></td>
-											<td><?=$sku;?></td>
-											<td><?=$order->billing->firstname." ".$order->billing->lastname;?></td>
-											<td><?=$line_item[quantity];?></td>
-											<td><?=$line_item[size];?></td>
-											<td>
-								<?php if (empty($line_item['color'])): ?>
-									None
-								<?php else: ?>
-									<?=$line_item['color']?>
-								<?php endif ?>
-											</td>
-											<td><?=date('Y-M-d h:i:s',$order_temp[date_created]['sec']);?></td>
-											<td><a href="/orders/view/<?=$order[_id];?>">View Order Details</a></td>
-										</tr>
-									<?
-						 		} else if ($search_item_id && !$search_sku) {*/
+								
+
+
+								if ($sku == $search_sku) {
+								
 									?>
 								
 										<tr>
 											<td>
-											<? if ($line_item[cancel]) {?>
-											<div style="display: none;"><input type="type" id="<?=$order[_id];?>" name="order[]" value="" class="cb-element" ></div>
-											<? } ?>
 											
-											<? if (!$line_item[cancel] || $line_item[cancel] == 0) { ?><input type="checkbox" id="<?=$order[_id];?>" name="order[]" value="<?=$order[_id];?>" class="cb-element" ><? } ?></td>
+		<div style="display: none;">
+			<input type="type" id="<?=$order[_id];?>" name="order[<?=$i;?>]" value="" class="cb-element" >
+			<input type="hidden" id="line_number[<?=$i;?>]" name="line_number[<?=$i;?>]" value="<?=$line_item[line_number];?>">
+
+		</div>
+													
+<? if (!$line_item[cancel] || $line_item[cancel] == 0) { ?>
+		<input type="checkbox" id="<?=$order[_id];?>" name="order[<?=$i;?>]" value="<?=$order[_id];?>" class="cb-element" >											
+		<input type="hidden" id="line_number[<?=$i;?>]" name="line_number[<?=$i;?>]" value="<?=$line_item[line_number];?>">
+<? } ?>
+											</td>
 											<td><?=$order[_id];?></td>
 											<td><? if ($line_item[cancel] == 1) { ?><strong>Cancelled</strong><? } else {?><?=$line_item[status];?><? } ?></td>
 											<td><?=$sku;?></td>
@@ -230,42 +223,67 @@ else
 											</td>
 											<td><?=date('Y-M-d h:i:s',$order_temp[date_created]['sec']);?></td>
 											<td>
-											<input type="hidden" id="line_number[]" name="line_number[]" value="<?=$line_item[line_number];?>">
 
 											<a href="/orders/view/<?=$order[_id];?>">View Order</a>
 											<? if ($line_item[cancel] != 1) {?> | <a href="/orders/cancelOneItem?line_number=<?=$line_item[line_number];?>&order_id=<?=$order[_id];?>&item_id=<?=$item_id;?>&sku=<?=$sku;?>" onclick="return cancelLineItem();">Cancel</a><? } ?></td>
 										</tr>
 									<?
-						 		/*
-						 		}*/
-						  }
+						 		$i++;
+						 		} //end of search for sku
+						  }  //end of orders TR
 						?>
 							</tbody>
 							</fieldset>
-						</table>
-						
-
+						</table> 
+						<!-- end of orders table within items table -->
+				
 					</td>
 				</tr>
 
-			<?php  endforeach ?>
+
+			
 		</tbody>
 	</table>
 	
-							<input type="submit" id="submit"  value="Bulk Cancel these Line Items" onClick="return confirmSubmit()"/>
+					<br/>		<input type="submit" id="submit"  value="Bulk Cancel these Line Items" onClick="return confirmSubmit()"/>
 						<?=$this->form->end();?>
+<br/><br/>
+<hr/>
+
+			<?php  
+			$x++;
+
+			endforeach  //end of items foreach
+			
+			?>	
+	<!-- end of items table -->
+	
+
 						
 <?php  endif ?>
 </div>
 
+						
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
 		TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
-		$('#orderTable').dataTable({
+		
+		<?
+			$a=0;
+			while ($a < $x) {
+		?>
+		$('#orderTable_<?=$a;?>').dataTable({
 			"sDom": 'T<"clear">lfrtip',
 			"aaSorting": [[ 8, "desc" ]],
+			"bStateSave": true,
 			"aoColumnDefs": [ {"bSortable": false, "aTargets": [0] } ]
 		});
+		
+		<?
+				$a++;
+			}		
+		?>
+
 	} 
 	);
 

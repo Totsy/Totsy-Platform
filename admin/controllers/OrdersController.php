@@ -152,31 +152,33 @@ class OrdersController extends BaseController {
 		$order 		= $this->request->data['order'];
 		$line_number= $this->request->data['line_number'];
 		$item_id	= $this->request->data['id'];
+		$sku		= $this->request->data['sku'];
 		
-		$i=0;		
-		while ($i < sizeof($order)) {
-			$line_num = $line_number[$i];
-				
-			if (strlen($order[$i]) > 2) {		
+		foreach($order as $key => $value) {		
+			$line_num = $line_number[$key];		
+			if (strlen($value) > 2) {		
 			
-				$order_a= Order::find('first', array('conditions' => array('_id' => new MongoId($order[$i]))));
+				$order_a= Order::find('first', array('conditions' => array('_id' => new MongoId($value))));
 				
 				$order_data = $order_a->data();
-				$order_data[id] = $order_data[_id];
-				$order_data[items][$line_num][quantity] = 0;
-				$order_data[items][$line_num][initial_quantity] = $order_data[items][$line_num][quantity];
-				$order_data[items][$line_num][cancel] = true;
-				$order_data[save] = true;
-				$order_data[comment] = 'Bulk Cancel of Item';
 				
-				$this->request->data = $order_data;
+				$order_data[id] = $order_data[_id];
+				$order_data[items][$line_num][initial_quantity] = $order_data[items][$line_num][quantity];
+				$order_data[items][$line_num][cancel] = "true";
+				$order_data[save] = 'true';
+				$order_data[comment] = 'Bulk Cancel of Item';
+
+				$this->request->data = $order_data;			
 								
 				$order_m_i = $this->manage_items();
+
+//				$this->updateShipping($order_data[id]);
+				
 			}
 			$i++;
 		}
 		
-		$this->redirect('/items/bulkCancel/'.$item_id);
+		$this->redirect('/items/bulkCancel/'.$sku);
 	}
 
 	public function cancelOneItem() {
@@ -191,9 +193,8 @@ class OrdersController extends BaseController {
 		
 		$order_data = $order_a->data();
 		$order_data[id] = $order_data[_id];
-		$order_data[items][$line_number][quantity] = 0;
 		$order_data[items][$line_number][initial_quantity] = $order_data[items][$line_number][quantity];
-		$order_data[items][$line_number][cancel] = true;
+		$order_data[items][$line_number][cancel] = "true";
 		$order_data[save] = true;
 		$order_data[comment] = 'Bulk Cancel of Item';
 		
@@ -310,6 +311,10 @@ class OrdersController extends BaseController {
 				Mailer::send('Order_Update', $user["email"], $data);
 			}
 		}
+		
+		
+
+		
 		return $order_temp;
 	}
 
@@ -438,6 +443,7 @@ class OrdersController extends BaseController {
 			$itemscanceled = false;
 		}
 		$shipDate = $this->shipDate($order);
+			
 		return compact('order', 'shipDate', 'sku', 'itemscanceled','edit_mode');
 	}
 
@@ -454,6 +460,7 @@ class OrdersController extends BaseController {
 			'SKU',
 			'Email'
 		);
+	
 		if ($this->request->data) {
 			$sendEmail = (boolean) $this->request->data['send_email'];
 			if ($_FILES['upload']['error'] == 0) {
