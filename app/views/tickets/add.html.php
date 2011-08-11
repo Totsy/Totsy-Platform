@@ -42,7 +42,6 @@
 				<div class="form-row">
 				<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('firstname', array('class' => 'inputbox', 'value'=>is_null($data)?$user['firstname']:$data['firstname']));?>  
-				<? //=$this->form->error('firstname'); ?>
 			</div>
 				<? if (is_array($error) && array_key_exists('lastname',$error)){?>
 				<div class="standard-message" style="border:0px!important; background:none!important;">
@@ -54,7 +53,6 @@
 				<?=$this->form->label('lastname', 'Last Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('lastname', array('class' => 'inputbox', 'value'=>is_null($data)?$user['lastname']:$data['lastname']));?>  
 				
-				<? //=$this->form->error('lastname'); ?>
 			</div>
 			<? if (is_array($error) && array_key_exists('telephone',$error)){?>
 			<div class="standard-message" style="border:0px!important; background:none!important;">
