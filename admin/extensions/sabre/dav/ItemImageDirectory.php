@@ -12,7 +12,6 @@ class ItemImageDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 
 	public function getChild($name) {
 		$name = pathinfo($name, PATHINFO_FILENAME);
-
 		return new ItemFile(array('value' => $name, 'parent' => $this));
 	}
 
