@@ -3,9 +3,19 @@
 namespace admin\controllers;
 use admin\models\Event;
 use lithium\util\Inflector;
+use \lithium\core\Environment;
 use li3_flash_message\extensions\storage\FlashMessage;
 use MongoDate;
 class BaseController extends \lithium\action\Controller {
+
+    public function _init() {
+
+        if(!Environment::is('production')){
+            $branch = "<h4 id='#global_site_msg'>Current branch " . $this->currentBranch() ."</h4>";
+            $this->set(compact('branch'));
+        }
+		parent::_init();
+    }
 
 	/**
 	 * Common method to clean URLs
@@ -34,7 +44,7 @@ class BaseController extends \lithium\action\Controller {
 	public function selectEvent($type = null) {
 		$month_delay = 1;
 		if(!empty($this->request->data)) {
-			$month_delay = (int) $this->request->data['month_delay']; 	
+			$month_delay = (int) $this->request->data['month_delay'];
 		}
 		$date_limit = mktime(0, 0, 0, (date("m") - $month_delay), date("d"), date("Y"));
 		$conditions = array(
@@ -42,7 +52,7 @@ class BaseController extends \lithium\action\Controller {
     		   '$gt' => new MongoDate($date_limit)
 		));
 		$events = Event::find('all', array('conditions' => $conditions));
-		
+
 		return compact('events', 'type', 'month_delay');
 	}
 
@@ -59,5 +69,12 @@ class BaseController extends \lithium\action\Controller {
 			if ($r != $string{$i - 1}) $string .=  $r;
 		}
 		return $string;
+	}
+
+	public function currentBranch() {
+        $out = shell_exec("git branch --no-color");
+        preg_match('#(\*)\s(\w+)-(\w+)#', $out, $parse);
+        $pos = stripos($parse[0], " ");
+        return trim(substr($parse[0], $pos));
 	}
 }
