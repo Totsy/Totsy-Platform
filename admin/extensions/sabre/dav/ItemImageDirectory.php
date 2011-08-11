@@ -3,7 +3,6 @@
 namespace admin\extensions\sabre\dav;
 
 use admin\extensions\sabre\dav\ItemFile;
-use admin\models\File;
 use admin\models\Item;
 use admin\models\ItemImage;
 use Sabre_DAV_Exception_FileNotFound;
@@ -50,7 +49,7 @@ class ItemImageDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 	}
 
 	public function createFile($name, $data = null) {
-		$file = File::write($data, compact('name'));
+		$file = ItemImage::resizeAndSave($this->getValue(), $data, compact('name'));
 		$item = $this->_item();
 
 		if (($value = $this->getValue()) == 'alternate') {

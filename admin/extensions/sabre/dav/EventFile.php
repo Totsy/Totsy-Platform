@@ -2,14 +2,16 @@
 
 namespace admin\extensions\sabre\dav;
 
-use admin\models\File;
+use admin\models\EventImage;
 use admin\models\Event;
 
 class EventFile extends \admin\extensions\sabre\dav\GenericFile {
 
 	public function put($data) {
-		$file = File::write($data);
+		$position = $this->getParent()->getValue();
 		$item = $this->_item();
+
+		$file = EventImage::resizeAndSave($position, $data);
 
 		$item->images = array(
 			$this->getParent()->getValue() . '_image' => $file->_id
@@ -40,7 +42,7 @@ class EventFile extends \admin\extensions\sabre\dav\GenericFile {
 	}
 
 	protected function _file() {
-		return File::first(array('conditions' => array('_id' => $this->getValue())));
+		return EventImage::first(array('conditions' => array('_id' => $this->getValue())));
 	}
 }
 
