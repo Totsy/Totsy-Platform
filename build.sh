@@ -118,6 +118,14 @@ case $COMMAND in
 		echo "Running (admin) Lithium unit tests..."
 		cd $PROJECT_DIR/admin
 		libraries/lithium/console/li3 --env=test test libraries/lithium/tests/cases
+		echo
+
+		echo "Running admin tests..."
+		cd $PROJECT_DIR/admin
+		libraries/lithium/console/li3 test tests/cases/models
+		# libraries/lithium/console/li3 test tests/cases/controllers
+		# libraries/lithium/console/li3 test tests/cases/extensions
+		echo
 
 		echo "Running SabreDAV tests..."
 		cd $PROJECT_DIR/admin/libraries/_source/sabredav/tests
@@ -126,6 +134,7 @@ case $COMMAND in
 		echo "Running Imagine tests..."
 		cd $PROJECT_DIR/admin/libraries/_source/Imagine/tests
 		phpunit
+		echo
 		;;
 
 	optimize-repo)
