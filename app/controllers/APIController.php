@@ -30,7 +30,7 @@ class APIController extends  \lithium\action\Controller {
 	
 	
 	protected static $_formats = array(
-		'json', 'xml'
+		'json', 'xml', 'rss'
 	);
 	protected $_method = null;
 	protected $_format = null;
@@ -452,6 +452,7 @@ class APIController extends  \lithium\action\Controller {
 		switch ($this->_format){
 			
 			case 'xml':
+			case 'rss':
 				header("Content-type: text/xml");
 				if (!is_null($this->_view)){
 					$path = $this->_format.'/'.$this->_method.'/'.$this->_view.'.php';
