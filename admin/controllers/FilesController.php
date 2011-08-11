@@ -107,7 +107,7 @@ class FilesController extends \lithium\action\Controller {
 				if(preg_match('/^events\_.+\_image\..*/i', $file['name'])) {
 					$event_images['event'] = $file;
 				}
-				// matches: events_pretty-url.jpg 
+				// matches: events_pretty-url.jpg
 				// ...but events_pretty-url_anything... won't be matched.
 				if(preg_match('/^events\_.+(?<!\_|\_logo|\_big\_splash|\_small\_splash|\_splash\_small|\_splash\_big)\..*/i', $file['name'])) {
 					$event_images['event'] = $file;
@@ -141,22 +141,22 @@ class FilesController extends \lithium\action\Controller {
 				// We could never associate it and the file was probably named incorrectly.
 				if($event_url) {
 					// So save it and return the File document object.
-					$file = EventImage::resizeAndSave($k, $v);
-					
+					$file = EventImage::resizeAndSave($k, $v, array('name' => $v['name']));
+
 					// The event document to update is determined by pretty URL (from the file name).
 					// Update the event document.
 					if(!empty($file)) {
 						//d('SAVING: images.' . $k . '_image => ' . (string)$file->_id);
 						$update = Event::update(
 							// query
-							array('$set' => array('images.' . $k . '_image' => (string)$file->_id)), 
+							array('$set' => array('images.' . $k . '_image' => (string)$file->_id)),
 							// conditions
-							array('url' => $event_url), 
+							array('url' => $event_url),
 							array('atomic' => false)
 						);
 						//d($update);
 					}
-					
+
 					$file = false;
 				}
 			}
@@ -166,8 +166,8 @@ class FilesController extends \lithium\action\Controller {
 	/**
 	 * Processes event item images uploaded from a web browser via the admin UI.
 	 * Example Item URL: horses-velour-top-pants-set-fuschia
-	 * 
-	 * @return 
+	 *
+	 * @return
 	*/
 	public function processEventItemImages() {
 		$item_images = array();
@@ -182,7 +182,7 @@ class FilesController extends \lithium\action\Controller {
 				if(preg_match('/^items\_.+\_zoom\..*/i', $file['name'])) {
 					$item_images['zoom'] = $file;
 				}
-				
+
 					// NOT STORED IN THE GRID
 //					// Image in cart
 //					if(preg_match('/^items\_.+\_cart\..*/i', $file['name'])) {
@@ -192,7 +192,7 @@ class FilesController extends \lithium\action\Controller {
 //					if(preg_match('/^items\_.+\_event_thumbnail\..*/i', $file['name'])) {
 //						$item_images['event_thumbnail'] = $file;
 //					}
-				
+
 				// Can be multiple alternative images
 				if(preg_match('/^items\_.+\_alternate.+\..*/i', $file['name'])) {
 					$item_images['alternate' . $i] = $file;
@@ -200,7 +200,7 @@ class FilesController extends \lithium\action\Controller {
 				$i++;
 			}
 		}
-		
+
 		// Resize and save
 		if(!empty($item_images)) {
 			foreach($item_images as $k => $v) {
@@ -209,15 +209,16 @@ class FilesController extends \lithium\action\Controller {
 				if(substr($k, 0, 8) == 'alternate') {
 					$type = 'alternate';
 				}
-				
+
 				preg_match('/^items\_(.+)\_.*/i', $v['name'], $matches);
 				$item_url = (isset($matches[1])) ? $matches[1]:false;
 				// If we don't have an item URL, what's the point of saving the image?
 				// We could never associate it and the file was probably named incorrectly.
 				if($item_url) {
 					// So save it and return the File document object.
+					$file = ItemImage::resizeAndSave($type, $v, array('name' => $v['name']));
 					$file = ItemImage::resizeAndSave($type, $v);
-					
+
 					// The item document to update is determined by pretty URL (from the file name).
 					// Update the event document.
 					if(!empty($file)) {
@@ -225,22 +226,22 @@ class FilesController extends \lithium\action\Controller {
 						if($type == 'alternate') {
 							// alternate_images
 							$update = Item::update(
-								array('$addToSet' => array('alternate_images' => (string)$file->_id)), 
-								array('url' => $item_url), 
+								array('$addToSet' => array('alternate_images' => (string)$file->_id)),
+								array('url' => $item_url),
 								array('atomic' => false)
 							);
 						} else {
 							$update = Item::update(
 								// query
-								array('$set' => array($type . '_image' => (string)$file->_id)), 
+								array('$set' => array($type . '_image' => (string)$file->_id)),
 								// conditions
-								array('url' => $item_url), 
+								array('url' => $item_url),
 								array('atomic' => false)
 							);
 						}
 						//d($update);
 					}
-					
+
 					$file = false;
 				}
 			}
