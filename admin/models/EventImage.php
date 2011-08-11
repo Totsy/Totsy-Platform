@@ -42,6 +42,9 @@ class EventImage extends File {
 			$image = $imagine->open($data['tmp_file']);
 		} elseif (is_string($data)) { /* bytes */
 			$image = $imagine->load($data);
+		} elseif (is_resource($data)) {
+			rewind($data);
+			$image = $imagine->load(stream_get_contents($data));
 		} else {
 			return false;
 		}
@@ -49,7 +52,7 @@ class EventImage extends File {
 
 		// Write the image to GridFS
 		// Return what should be the file object that write() returns... this will have an id to associate
-		return static::write($bytes, $meta);
+		return static::write($bytes, $meta + array('mime_type' => 'image/png'));
 	}
 }
 
