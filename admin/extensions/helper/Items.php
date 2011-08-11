@@ -141,7 +141,7 @@ class Items extends \lithium\template\Helper {
 				$html .= "</td>";
 
 				if (!empty($item->primary_image)) {
-					$image = '/image/'. $item->primary_image . '.jpg';
+					$image = '/admin/image/'. $item->primary_image . '.jpg';
 				} else {
 					$image = "/img/no-image-small.jpeg";
 				}
