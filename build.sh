@@ -115,16 +115,16 @@ case $COMMAND in
 		echo
 		LI3=$PROJECT_DIR/libraries/lithium/console/li3
 
-		echo "Running Lithium unit tests..."
-		cd $PROJECT_DIR
-		$LI3 test libraries/lithium/tests/cases
+		echo "Running (admin) Lithium unit tests..."
+		cd $PROJECT_DIR/admin
+		libraries/lithium/console/li3 --env=test test libraries/lithium/tests/cases
 
 		echo "Running SabreDAV tests..."
-		cd $PROJECT_DIR/libraries/_source/sabredav/tests
+		cd $PROJECT_DIR/admin/libraries/_source/sabredav/tests
 		phpunit
 
 		echo "Running Imagine tests..."
-		cd $PROJECT_DIR/libraries/_source/Imagine
+		cd $PROJECT_DIR/admin/libraries/_source/Imagine/tests
 		phpunit
 		;;
 
