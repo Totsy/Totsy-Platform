@@ -25,40 +25,32 @@ class EventImage extends File {
 	);
 
 	/*
-	 * 
+	 *
 	 * @param string $position The event image position (event, logo, splash_big, etc.)
-	 * @param array $data The file data array from the POST data - a single file
-	 * @return 
+	 * @param array $data The file data array from the POST data - a single file or raw bytes.
+	 * @return
 	*/
-	public static function resizeAndSave($position=null, $data=null) {
-		if(empty($data) || !isset(static::$types[$position])) {
+	public static function resizeAndSave($position, $data, $meta = array()) {
+		if (empty($data) || !isset(static::$types[$position])) {
 			return false;
 		}
 		list($width, $height) = static::$types[$position]['dimensions'];
 
-		// Resize the image
-		$tmp_file = (isset($data['tmp_name'])) ? $data['tmp_name']:null;
 		$imagine = new Imagine();
-		$image = $imagine->open($tmp_file);
-		$resized_image_path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $data['name'];
-		$image->resize(new Box($width, $height))->save($resized_image_path);
 
-		// Set the meta data to be stored on the document in GridFS
-		$meta = array(
-			'name' => $data['name']
-		);
+		if (is_array($data) && isset($data['tmp_file'])) { /* fileupload */
+			$image = $imagine->open($data['tmp_file']);
+		} elseif (is_string($data)) { /* bytes */
+			$image = $imagine->load($data);
+		} else {
+			return false;
+		}
+		$bytes = $image->resize(new Box($width, $height))->get('png');
 
 		// Write the image to GridFS
-		$handle = fopen($resized_image_path, 'rb');
-		$file = static::write($handle, $meta);
-		fclose($handle);
-
-		// Tidy up
-		unlink($resized_image_path);
-		
 		// Return what should be the file object that write() returns... this will have an id to associate
-		return $file;
+		return static::write($bytes, $meta);
 	}
-
 }
+
 ?>
