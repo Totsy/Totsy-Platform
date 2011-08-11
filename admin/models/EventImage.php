@@ -2,7 +2,6 @@
 
 namespace admin\models;
 
-
 class EventImage extends \admin\models\Image {
 
 	public static $types = array(

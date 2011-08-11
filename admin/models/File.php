@@ -33,7 +33,6 @@ class File extends \lithium\data\Model {
 		/* Normalize $data */
 		$close = false;
 
-
 		if (is_string($data)) {
 			/* Only handles we open inside here are also closed here. */
 			$close = true;
