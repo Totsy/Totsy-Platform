@@ -8,6 +8,7 @@ use admin\models\File;
 use admin\models\EventImage;
 use admin\models\Event;
 use admin\models\Item;
+use admin\models\ItemImage;
 use Sabre_DAV_Server;
 use admin\extensions\sabre\dav\EventsDirectory;
 use admin\extensions\sabre\dav\PendingDirectory;
@@ -99,6 +100,7 @@ class FilesController extends \lithium\action\Controller {
 	 * @return
 	*/
 	public function processEventImages() {
+		$update = false;
 		$event_images = array();
 		if(isset($this->request->data['Filedata']) && !empty($this->request->data['Filedata'])) {
 			// Always want an array of objects, but if a single file was uploaded, it will come in as a single object that we can't loop the way we would an array of objects
@@ -163,6 +165,7 @@ class FilesController extends \lithium\action\Controller {
 				}
 			}
 		}
+		return $update;
 	}
 
 	/**
@@ -172,10 +175,13 @@ class FilesController extends \lithium\action\Controller {
 	 * @return
 	*/
 	public function processEventItemImages() {
+		$update = false;
 		$item_images = array();
 		if(isset($this->request->data['Filedata']) && !empty($this->request->data['Filedata'])) {
+			// Always want an array of objects, but if a single file was uploaded, it will come in as a single object that we can't loop the way we would an array of objects
+			$files = (isset($this->request->data['Filedata'][0])) ? $this->request->data['Filedata']:array(0 => $this->request->data['Filedata']);
 			$i=0;
-			foreach($this->request->data['Filedata'] as $file) {
+			foreach($files as $file) {
 				// Primary
 				if(preg_match('/^items\_.+\_primary\..*/i', $file['name'])) {
 					$item_images['primary'] = $file;
@@ -224,7 +230,7 @@ class FilesController extends \lithium\action\Controller {
 					// The item document to update is determined by pretty URL (from the file name).
 					// Update the event document.
 					if(!empty($file)) {
-						//d('SAVING: images.' . $k . '_image => ' . (string)$file->_id);
+						//d('SAVING: ' . $type . '_image => ' . (string)$file->_id);
 						if($type == 'alternate') {
 							// alternate_images
 							$update = Item::update(
@@ -248,6 +254,7 @@ class FilesController extends \lithium\action\Controller {
 				}
 			}
 		}
+		return $update;
 	}
 
 	/**

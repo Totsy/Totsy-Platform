@@ -37,11 +37,11 @@ class ItemImage extends File {
 			return false;
 		}
 		list($width, $height) = static::$types[$position]['dimensions'];
-
+		
 		$imagine = new Imagine();
 
-		if (is_array($data) && isset($data['tmp_file'])) { /* fileupload */
-			$image = $imagine->open($data['tmp_file']);
+		if (is_array($data) && isset($data['tmp_name'])) { /* fileupload */
+			$image = $imagine->open($data['tmp_name']);
 		} elseif (is_string($data)) { /* bytes */
 			$image = $imagine->load($data);
 		} elseif (is_resource($data)) {
@@ -50,6 +50,7 @@ class ItemImage extends File {
 		} else {
 			return false;
 		}
+		
 		$bytes = $image->resize(new Box($width, $height))->get('png');
 
 		// Write the image to GridFS
