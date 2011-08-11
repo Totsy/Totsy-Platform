@@ -28,6 +28,8 @@ class FilesController extends \lithium\action\Controller {
 	public function index() {}
 
 	public function pending() {
+		$this->_render['layout'] = !$this->request->is('ajax');
+
 		$files = File::pending();
 		return compact('files');
 	}
