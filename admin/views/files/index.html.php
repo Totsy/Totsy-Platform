@@ -156,5 +156,6 @@ if (!empty($user['token'])) {
 			Files must be flagged as orphaned, to do so run the <em>file-orphaned command</em>.
 		</p>
 		<div id="orphaned-data"><!-- Populated through an AJAX request. --></div>
+
 	</div>
 </div>
