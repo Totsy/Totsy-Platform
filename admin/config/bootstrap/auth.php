@@ -36,7 +36,7 @@ Auth::config(array(
 	),
 	'http' => array(
 		'adapter' => 'Http',
-		'method' => 'basic',
+		'method' => 'digest',
 		'users' => array(
 			'admin' => 'lbNUx5Ff!ND'
 		)
