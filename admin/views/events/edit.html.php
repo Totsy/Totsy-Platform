@@ -352,7 +352,6 @@ for ( i=1; i<6; i++ ) {
 		<div id="event_items">
 			<h3 id="">Item Management</h3>
 			<hr />
-<!--
 			<h3 id="">Upload Items</h3>
             <hr />
 			<p>Please select the default option for all items being uploaded:</p>
@@ -364,10 +363,11 @@ for ( i=1; i<6; i++ ) {
 				<?=$this->form->file('upload_file'); ?>
 				<?=$this->form->submit('Update Event')?>
 				<?=$this->form->label('Upload Event (Excel Files): '); ?>
--->				
+<!--
 		<iframe id="upload_frame" name="upload_frame" src="/events/upload/<?=$event->_id?>" frameborder=0 scrolling=no width=400 height=250></iframe>		
 		<div id="upload_error" name="upload_error" style="color:#ff0000; width:400px; float:right; height:250px; overflow:scroll;">(spreadsheet upload errors will appear here)</div>
 
+-->				
 			<br><br>
 			<?=$this->form->end(); ?>
 			<h3 id="current_items">Current Items</h3>
