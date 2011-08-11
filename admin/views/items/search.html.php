@@ -86,8 +86,8 @@
 					<td><?=$item[_id];?></td>
 					<td width="5%">
 						<?=$this->html->image("$image", array(
-							'width' => "110",
-							'height' => "110",
+							'width' => "100",
+							'height' => "100",
 							'style' => "margin:2px; padding:2px; background:#fff; border:1px solid #ddd;"
 							));
 						?>
@@ -111,7 +111,7 @@
 					</td>
 					<td>
 						<?php foreach ($item['sku_details'] as $key => $value): ?>
-							<a href="/items/bulkCancel/<?=$value;?>"><?=$value?></a><br />
+							<span style="white-space:nowrap"><a href="/items/bulkCancel/<?=$value;?>"><?=$value?></a></span><br />
 						<?php endforeach ?>
 					</td>
 				</tr>
