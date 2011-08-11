@@ -123,9 +123,11 @@ class Upload extends \lithium\data\Model {
 									if (!empty($val)) {
 										$eventItems[$row - 1]['departments'][] = ucfirst(strtolower(trim($val)));
 										$eventItems[$row - 1]['departments'] = array_unique($eventItems[$row - 1]['departments']);
-									}
-									if (!in_array($val, $check_departments)) {
-										$errors[] = "$heading[$col] is incorrect in row #$row";
+
+										if (!in_array($val, $check_departments)) {
+											$errors[] = "$heading[$col] is incorrect in row #$row";
+										}
+
 									}
 									
 								} else if (($heading[$col] === "related_1") ||
