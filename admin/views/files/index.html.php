@@ -89,10 +89,10 @@
 				items_shirt_primary.jpg<br />
 				<strong>Zoom Image</strong><br />
 				items_shirt_zoom.jpg<br />
-				<strong>For Various Colors</strong><br />
-				items_shirt_yellow_primary.jpg, items_shirt_yellow_zoom.jpg<br />
+				<strong>For Various Colors <em>(colors are a part of the url)</em></strong><br />
+				items_shirt-yellow_primary.jpg, items_shirt-yellow_zoom.jpg<br />
 				<strong>For Alternate Versions</strong><br />
-				items_shirt_blue_alternate.jpg, items_shirt_blue_alternateB.jpg, items_shirt_blue_alternate0.jpg, etc.
+				items_shirt-blue_alternate.jpg, items_shirt-blue_alternateB.jpg, items_shirt-blue_alternate0.jpg, etc.
 			</p>
 		</div>
 	</div>

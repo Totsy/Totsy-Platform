@@ -7,6 +7,7 @@ use lithium\core\Environment;
 use admin\models\File;
 use admin\models\EventImage;
 use admin\models\Event;
+use admin\models\Item;
 use Sabre_DAV_Server;
 use admin\extensions\sabre\dav\EventsDirectory;
 use admin\extensions\sabre\dav\PendingDirectory;
@@ -138,8 +139,7 @@ class FilesController extends \lithium\action\Controller {
 				preg_match('/^events\_(.+)\_.*/i', $v['name'], $matches);
 				$event_url = (isset($matches[1])) ? $matches[1]:false;
 				// If we don't have an event URL, what's the point of saving the image?
-				// We could never associate it and the file was named incorrectly.
-				// This won't be the case.
+				// We could never associate it and the file was probably named incorrectly.
 				if($event_url) {
 					// So save it and return the File document object.
 					$file = EventImage::resizeAndSave($k, $v);
@@ -166,24 +166,84 @@ class FilesController extends \lithium\action\Controller {
 
 	/**
 	 * Processes event item images uploaded from a web browser via the admin UI.
+	 * Example Item URL: horses-velour-top-pants-set-fuschia
 	 *
 	 * @return
 	*/
 	public function processEventItemImages() {
 		$item_images = array();
 		if(isset($this->request->data['Filedata']) && !empty($this->request->data['Filedata'])) {
+			$i=0;
 			foreach($this->request->data['Filedata'] as $file) {
+				// Primary
 				if(preg_match('/^items\_.+\_primary\..*/i', $file['name'])) {
 					$item_images['primary'] = $file;
 				}
+				// Zoom
+				if(preg_match('/^items\_.+\_zoom\..*/i', $file['name'])) {
+					$item_images['zoom'] = $file;
+				}
 
+					// NOT STORED IN THE GRID
+//					// Image in cart
+//					if(preg_match('/^items\_.+\_cart\..*/i', $file['name'])) {
+//						$item_images['cart'] = $file;
+//					}
+//					// Thumbnail in events
+//					if(preg_match('/^items\_.+\_event_thumbnail\..*/i', $file['name'])) {
+//						$item_images['event_thumbnail'] = $file;
+//					}
+
+				// Can be multiple alternative images
+				if(preg_match('/^items\_.+\_alternate.+\..*/i', $file['name'])) {
+					$item_images['alternate' . $i] = $file;
+				}
+				$i++;
 			}
 		}
 
 		// Resize and save
-		if(!empty($event_images)) {
-			foreach($event_images as $k => $v) {
-				ItemImage::resizeAndSave($k, $v);
+		if(!empty($item_images)) {
+			foreach($item_images as $k => $v) {
+				$type = $k;
+				// There can be multiple alternate images (this key holds an array of arrays)
+				if(substr($k, 0, 8) == 'alternate') {
+					$type = 'alternate';
+				}
+
+				preg_match('/^items\_(.+)\_.*/i', $v['name'], $matches);
+				$item_url = (isset($matches[1])) ? $matches[1]:false;
+				// If we don't have an item URL, what's the point of saving the image?
+				// We could never associate it and the file was probably named incorrectly.
+				if($item_url) {
+					// So save it and return the File document object.
+					$file = ItemImage::resizeAndSave($type, $v);
+
+					// The item document to update is determined by pretty URL (from the file name).
+					// Update the event document.
+					if(!empty($file)) {
+						//d('SAVING: images.' . $k . '_image => ' . (string)$file->_id);
+						if($type == 'alternate') {
+							// alternate_images
+							$update = Item::update(
+								array('$addToSet' => array('alternate_images' => (string)$file->_id)),
+								array('url' => $item_url),
+								array('atomic' => false)
+							);
+						} else {
+							$update = Item::update(
+								// query
+								array('$set' => array($type . '_image' => (string)$file->_id)),
+								// conditions
+								array('url' => $item_url),
+								array('atomic' => false)
+							);
+						}
+						//d($update);
+					}
+
+					$file = false;
+				}
 			}
 		}
 	}
