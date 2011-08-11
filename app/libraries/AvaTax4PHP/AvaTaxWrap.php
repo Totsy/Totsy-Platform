@@ -213,7 +213,7 @@ abstract class AvaTaxWrap {
 	    	    
 	    $request->setDetailLevel(DetailLevel::$Tax);
 	    $request->setLocationCode("");        //string Optional - aka outlet id for tax forms
-	    
+	    	    
 	    $i = 0;
 	    	    	    	    		    		
 	    try {
@@ -226,10 +226,17 @@ abstract class AvaTaxWrap {
 			    $tax = $value->getTaxDetails();	
 			    $taxDetail = $tax[0];
 			    $temp = $taxDetail->getTaxCalculated();
-			    	
+			    
 			    $data['items'][$i]['taxIncluded'] = $temp;
+			    			    
 			    $i++;				
 			} 
+			
+			/*
+			echo "Items before processing:<br />"; 
+			echo "<pre>";    	
+			print_r($data['items']);    	
+			echo "</pre>"; */
 																
 			if ($getTaxResult->getResultCode() == SeverityLevel::$Success) {
 		        //throw new Exception ($getTaxResult->getTotalTax());
