@@ -74,7 +74,7 @@ class Upload extends \lithium\data\Model {
 			
 			
 			//arrays of header names to check stuff
-			$check_required = array("vendor", "vendor_style", "category", "sub-category", "description", "color", "no size", "quantity");
+			$check_required = array("vendor", "vendor_style", "category", "sub-category", "description", "color", "quantity");
 			$check_badchars = array("vendor", "vendor_style", "age", "category", "sub-category", "description", "color", "no size");
 			$check_decimals = array("msrp", "sale_retail", "percentage_off", "orig_wholesale", "sale_wholesale", "imu");
 			$check_departments = array("Girls", "Boys", "Momsdads");
@@ -123,9 +123,11 @@ class Upload extends \lithium\data\Model {
 									if (!empty($val)) {
 										$eventItems[$row - 1]['departments'][] = ucfirst(strtolower(trim($val)));
 										$eventItems[$row - 1]['departments'] = array_unique($eventItems[$row - 1]['departments']);
-									}
-									if (!in_array($val, $check_departments)) {
-										$errors[] = "$heading[$col] is incorrect in row #$row";
+
+										if (!in_array($val, $check_departments)) {
+											$errors[] = "$heading[$col] is incorrect in row #$row";
+										}
+
 									}
 									
 								} else if (($heading[$col] === "related_1") ||
