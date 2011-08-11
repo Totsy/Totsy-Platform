@@ -17,10 +17,30 @@ class File extends \lithium\data\Model {
 	 * Writes contents of an open handle to GridFS. Deduplication will take
 	 * place as me data is detected to be already stored.
 	 *
+	 * @param $data resource|string Either an already open handle, a string
+	 *        with raw bytes or a string containing the path to a readable file.
 	 * @return object|boolean
 	 */
-	public static function write($handle, $meta = array()) {
-		if ($dupe = File::dupe($handle)) {
+	public static function write($data, $meta = array()) {
+		/* Normalize $data */
+		$close = false;
+
+		if (is_string($data)) {
+			/* Only handles we open inside here are also closed here. */
+			$close = true;
+
+			if (is_file($data)) {
+				$handle = fopen($data, 'rb');
+			} else {
+				$handle = fopen('php://temp', 'w+b');
+				fwrite($handle, $data);
+			}
+		} else {
+			$handle = $data;
+		}
+
+		/* Dupe detection */
+		if ($dupe = File::_dupe($handle)) {
 			return $dupe;
 		}
 
@@ -41,6 +61,10 @@ class File extends \lithium\data\Model {
 			'mime_type' => static::detectMimeType($handle),
 			'dimensions' => static::detectDimensions($bytes)
 		);
+
+		if ($close) {
+			fclose($handle);
+		}
 		$file->set($meta);
 		$file->save();
 
@@ -54,39 +78,16 @@ class File extends \lithium\data\Model {
 	/**
 	 * Searches for files already stored using a hash of given data.
 	 *
-	 * @param $data resource|string Either an already open handle, a string
-	 *        with raw bytes or a string containing the path to a readable file.
+	 * @param $handle resource An already open handle.
 	 * @return object Either the found dupe document or false.
 	 */
-	public static function dupe($data) {
-		$close = false;
-
-		if (is_string($data)) {
-			/* Only handles we open inside here are also closed here. */
-			$close = true;
-
-			if (is_file($data)) {
-				$handle = fopen($data, 'rb');
-			} else {
-				$handle = fopen('php://temp', 'w+b');
-				fwrite($handle, $data);
-			}
-		} else {
-			$handle = $data;
-		}
-
-		$meta = stream_get_meta_data($handle);
-		if ($meta['seekable']) {
-			rewind($handle);
-		}
+	protected static function _dupe($handle) {
+		rewind($handle);
 
 		$context = hash_init('md5');
 		hash_update_stream($context, $handle);
 		$hash = hash_final($context);
 
-		if ($close) {
-			fclose($handle);
-		}
 		return File::first(array('conditions' => array('md5' => $hash)));
 	}
 
@@ -109,7 +110,7 @@ class File extends \lithium\data\Model {
 				'zoom_image' => $id
 			)
 		));
-		
+
 		return (boolean) $result->count();
 	}
 
