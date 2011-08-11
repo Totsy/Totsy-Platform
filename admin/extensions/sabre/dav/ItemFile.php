@@ -2,14 +2,16 @@
 
 namespace admin\extensions\sabre\dav;
 
-use admin\models\File;
+use admin\models\ItemImage;
 use admin\models\Item;
 
 class ItemFile extends \admin\extensions\sabre\dav\GenericFile {
 
 	public function put($data) {
-		$file = File::write($data);
+		$position = $this->getParent()->getValue();
 		$item = $this->_item();
+
+		$file = ItemImage::resizeAndSave($position, $data);
 
 		if (($value = $this->getParent()->getValue()) == 'alternate') {
 			$images = $item->alternate_images->data();
@@ -52,7 +54,7 @@ class ItemFile extends \admin\extensions\sabre\dav\GenericFile {
 	}
 
 	protected function _file() {
-		return File::first(array('conditions' => array('_id' => $this->getValue())));
+		return ItemImage::first(array('conditions' => array('_id' => $this->getValue())));
 	}
 }
 

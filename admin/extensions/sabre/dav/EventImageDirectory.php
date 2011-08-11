@@ -3,7 +3,6 @@
 namespace admin\extensions\sabre\dav;
 
 use admin\extensions\sabre\dav\EventFile;
-use admin\models\File;
 use admin\models\Event;
 use admin\models\EventImage;
 use Sabre_DAV_Exception_FileNotFound;
@@ -21,7 +20,7 @@ class EventImageDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 		if (!isset($item->images[$this->getValue() . '_image'])) {
 			return array();
 		}
-		$file = File::first(array(
+		$file = EventImage::first(array(
 			'conditions' => array('_id' => $item->images[$this->getValue() . '_image'])
 		));
 
@@ -33,11 +32,11 @@ class EventImageDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 	public function childExists($name) {
 		$name = pathinfo($name, PATHINFO_FILENAME);
 
-		return (boolean) File::first($name);
+		return (boolean) EventImage::first($name);
 	}
 
 	public function createFile($name, $data = null) {
-		$file = File::write($data, compact('name'));
+		$file = EventImage::resizeAndSave($this->getValue(), $data, compact('name'));
 		$item = $this->_item();
 
 		$item->images = array(
