@@ -19,6 +19,7 @@ use PHPExcel;
 use PHPExcel_Cell;
 use PHPExcel_Cell_DataType;
 use li3_flash_message\extensions\storage\FlashMessage;
+use admin\extensions\AvaTax;
 use admin\extensions\Mailer;
 
 /**
@@ -419,6 +420,9 @@ class OrdersController extends BaseController {
 			if(empty($orderData["void_confirm"]) && empty($orderData["auth_confirmation"])) {
 				$edit_mode = true;
 			}
+			if(array_key_exists('tax_commit',$orderData)){
+				$edit_mode = false;
+			}
 			$orderItems = $orderData['items'];
 			if(!empty($orderItems)){
 				foreach ($orderItems as $key => $orderItem) {
@@ -604,6 +608,120 @@ class OrdersController extends BaseController {
 			}
 		}
 		return $shipDate;
+	}
+	
+	public function taxreturn(){
+		
+		if ($this->request->data) {
+			
+			//get order details
+			$order = Order::collection()->findOne(array('_id' => new MongoId($this->request->data['id']) ));
+
+			// show the form for partial order tax return
+			if(array_key_exists('partordertaxreturn_action',$this->request->data)){
+				$orderItems = $order['items'];
+				if(!empty($orderItems)){
+					foreach ($orderItems as $key => $orderItem) {
+						$item = Item::find('first', array(
+							'conditions' => array('_id' => $orderItem['item_id']
+						)));
+						$sku["$orderItem[item_id]"] = $item->vendor_style;
+						//Check if items are all canceled
+						if(empty($orderItem["cancel"])) {
+							$itemscanceled = false;
+						} else {
+							if($orderItem["cancel"] == false) {
+								$itemscanceled = false;
+							}
+						}
+					}
+				}
+				return array('order'=>$order, 'sku' => $sku, 'itemscanceled' => false, 'edit_mode' => false);
+			}
+			
+			// FULL order tax return
+			if(array_key_exists('fullordertaxreturn_action',$this->request->data)){
+				$data['order'] = $order;
+				$data['items'] = $order['items'];
+				$data['shippingCost'] = $data['order']['handling'];
+				$data['overShippingCost'] = $data['order']['overSizeHandling'];
+				$data['order']['date'] = date('Y-m-d',$data['order']['date_created']->sec);
+				$data['order']['order_id'] = $data['order']['order_id'].'.1';
+				$data['order']['return'] = 'full';
+				$order['return'] = 'full'; 
+				$this->shipping($data);	
+				Order::save($order);
+			}
+			
+			// Partial order tax return
+			if (isset($this->request->data['return_check']) && is_array($this->request->data['return_check']) && count($this->request->data['return_check'])>0){
+				$data['order'] = $order;
+				$data['order']['date'] = date('Y-m-d',$order['date_created']->sec);
+				if (array_key_exists('return',$data['order'])) {
+					$ord_ver = $data['order']['return'] +1;
+				} else {
+					$ord_ver = 1;
+				}
+				$data['items'] = array();
+				$sub = 0;
+				foreach ($data['order']['items'] as $k=>$item){
+					if (in_array($item['item_id'],$this->request->data['return_check'])){
+						$rq = $this->request->data['return_quantity'][$item['item_id']];
+						$quantity = $item['quantity'] - $rq;
+						$item['return'][$ord_ver] = $rq;
+						$sub = $sub + $rq * $item['sale_retail'];
+						$item['quantity'] = $rq;
+						$data['items'][] = $item;
+						$item['quantity'] = $quantity;
+						$order['items'][$k]=$item;
+					}
+				}
+				$order['return'] = $ord_ver;
+				$data['order']['order_id'] = $data['order']['order_id'].'.'.$ord_ver;
+				$tax = AvaTax::getTax($data);
+				$order['tax'] = $order['tax'] - $tax;
+				$order['subTotal'] = $order['subTotal'] - $sub;
+				$order['total'] = $order['total'] - ( $sub + $tax);  
+				Order::collection()->save($order);
+			}
+
+			// remember to set for all returned items to negative amount 
+			foreach ($data['items'] as $k=>$v){
+				$v['sale_retail'] = '-'.$v['sale_retail'];
+				$data['items'][$k] = $v;
+			}			
+
+			AvaTax::returnTax($data);
+		}
+		
+		$this->redirect(array('Orders::view::'.$this->request->data['id']));
+		exit(0);
+	}
+	
+	protected function shipping (&$data){
+		if (array_key_exists('shippingCost', $data) && $data['shippingCost']>0 ){
+			$data['items'][] = array(
+				'_id' => 'Shipping',
+				'item_id' => 'Shipping',
+				'category' => 'Shipping',
+				'description' => 'shipping',
+				'quantity' => 1,
+				'sale_retail' => $data['shippingCost'],
+				'taxIncluded' => true
+			);	
+		}
+
+		if (array_key_exists('overShippingCost', $data) && $data['overShippingCost']>0 ){
+			$data['items'][] = array(
+				'_id' => 'OverShipping',
+				'item_id' => 'OverShipping',
+				'category' => 'Shipping',
+				'description' => 'Over shipping',
+				'quantity' => 1,
+				'sale_retail' => $data['overShippingCost'],
+				'taxIncluded' => true
+			);	
+		}
 	}
 }
 
