@@ -12,11 +12,6 @@ class EventImageDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 
 	public function getChild($name) {
 		$name = pathinfo($name, PATHINFO_FILENAME);
-		$item = $this->_item();
-
-		if (!isset($item->images[$name])) {
-			throw new Sabre_DAV_Exception_FileNotFound("File `{$name}` not found,");
-		}
 		return new EventFile(array('value' => $name, 'parent' => $this));
 	}
 
