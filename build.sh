@@ -119,6 +119,7 @@ case $COMMAND in
 		cd $PROJECT_DIR/admin
 		libraries/lithium/console/li3 --env=test test libraries/lithium/tests/cases
 		echo
+
 		echo "Running admin tests..."
 		cd $PROJECT_DIR/admin
 		libraries/lithium/console/li3 --env=test test tests/cases/controllers/BannersControllerTest.php
@@ -138,7 +139,7 @@ case $COMMAND in
 
 		echo "Running li3_flash_message tests..."
 		cd $PROJECT_DIR/admin
-		libraries/lithium/console/li3 --env=test test libraries/li3_flash_message/tests/
+		libraries/lithium/console/li3 --env=test test libraries/li3_flash_message/tests/.
 		echo
 
 		echo "Running SabreDAV tests..."
