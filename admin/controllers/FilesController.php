@@ -18,6 +18,7 @@ use admin\models\File;
 use admin\models\EventImage;
 use admin\models\Event;
 use admin\models\Item;
+use admin\models\ItemImage;
 use Sabre_DAV_Server;
 use admin\extensions\sabre\dav\EventsDirectory;
 use admin\extensions\sabre\dav\PendingDirectory;
