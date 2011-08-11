@@ -139,7 +139,6 @@ class Items extends \lithium\template\Helper {
 				$html .= "</select>";
 
 				$html .= "</td>";
-
 				$imagesHtml = $this->_images($item);
 				$html .= "<td width='100'>{$imagesHtml}</td>";
 				$html .= "<td width='200'><a href=\"/items/edit/$item->_id\">$item->description</a><br />

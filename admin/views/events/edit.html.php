@@ -641,8 +641,8 @@ $(function() {
 			<p>
 				You can also upload event item images here as well. These also follow a naming convention, for example:<br />
 				items_shirt_primary.jpg, items_shirt_zoom.jpg<br />
-				...and for various colors: items_shirt_yellow_primary.jpg, items_shirt_yellow_zoom.jpg<br />
-				...and alternate images: items_shirt_blue_alternate.jpg, items_shirt_blue_alternateB.jpg, items_shirt_blue_alternate0.jpg
+				...and for various colors: items_shirt-yellow_primary.jpg, items_shirt-yellow_zoom.jpg<br />
+				...and alternate images: items_shirt-blue_alternate.jpg, items_shirt-blue_alternateB.jpg, items_shirt-blue_alternate0.jpg
 			</p>
             <hr />
 
