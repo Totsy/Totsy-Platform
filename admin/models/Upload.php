@@ -74,7 +74,7 @@ class Upload extends \lithium\data\Model {
 			
 			
 			//arrays of header names to check stuff
-			$check_required = array("vendor", "vendor_style", "category", "sub-category", "description", "color", "no size", "quantity");
+			$check_required = array("vendor", "vendor_style", "category", "sub-category", "description", "color", "quantity");
 			$check_badchars = array("vendor", "vendor_style", "age", "category", "sub-category", "description", "color", "no size");
 			$check_decimals = array("msrp", "sale_retail", "percentage_off", "orig_wholesale", "sale_wholesale", "imu");
 			$check_departments = array("Girls", "Boys", "Momsdads");
