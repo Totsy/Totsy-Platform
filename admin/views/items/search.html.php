@@ -61,6 +61,7 @@
 	<table id="itemTable" class="datatable" border="1">
 		<thead>
 			<tr>
+				<th>id</th>
 				<th>Image</th>
 				<th>Sale Retail</th>
 				<th>MSRP</th>
@@ -82,6 +83,7 @@
 							$image = "/img/no-image-small.jpeg";
 						}
 					?>
+					<td><?=$item[_id];?></td>
 					<td width="5%">
 						<?=$this->html->image("$image", array(
 							'width' => "110",
@@ -109,7 +111,7 @@
 					</td>
 					<td>
 						<?php foreach ($item['sku_details'] as $key => $value): ?>
-							<?=$value?><br />
+							<a href="/items/bulkCancel/<?=$value;?>"><?=$value?></a><br />
 						<?php endforeach ?>
 					</td>
 				</tr>
