@@ -1,6 +1,5 @@
 <?php
-
-use lithium\security\Auth;
+use \lithium\security\Auth;
 ini_set('display_errors', 0);
 
 /**
