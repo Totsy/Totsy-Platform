@@ -103,7 +103,8 @@ class EventsController extends BaseController {
 
 				//checks if current sku_details sku is in form-submitted SKU array
 				if(in_array($sku_details, $items_skus)){
-					if(in_array($sku_details, $items_skus_used)){
+
+<<<<<<< HEAD	if(in_array($sku_details, $items_skus_used)){
 						$addnewitem = false;
 					}
 					else{
@@ -371,6 +372,7 @@ class EventsController extends BaseController {
 
 			if ($eventData['tangible'] != $event->tangible) {
 				$changed .= 'Tangible changed from <strong>'.(int)$event->tangible.'</strong> to <strong>'.(int)$eventData['tangible'].'</strong><br/>';
+
 			}
 
 			if (strtotime($start_date) != $event->start_date->sec) {
