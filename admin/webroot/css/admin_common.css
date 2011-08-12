@@ -37,3 +37,17 @@ label {
 	float: left;
 	padding-top: 3px;
 }
+
+#event_items img.primary {
+	height: 160px;
+	width: auto;
+}
+
+#event_items img.secondary {
+	height: 40px;
+	width: auto;
+	margin-top: .5em;
+}
+#event_items img.secondary + img {
+	margin-left: 5px;
+}
