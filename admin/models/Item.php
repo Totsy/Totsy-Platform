@@ -2,6 +2,8 @@
 
 namespace admin\models;
 
+use admin\models\ItemImage;
+
 /**
  * The `Item` class extends the generic `lithium\data\Model` class to provide
  * access to the Item MongoDB collection. This collection contains all product items.
@@ -138,6 +140,29 @@ class Item extends \lithium\data\Model {
 		}
 
 		return $gross;
+	}
+	public function images($entity) {
+		$results = array();
+
+		foreach (ItemImage::$types as $name => $type) {
+			$results[$name] = $type['multiple'] ? array() : null;
+
+			if (!$entity->{$type['field']}) {
+				continue;
+			}
+			if ($type['multiple']) {
+				foreach ($entity->{$type['field']} as $key => $value) {
+					$results[$name][$key] = ItemImage::first(array(
+						'conditions' => array('_id' => $value)
+					));
+				}
+			} else {
+				$results[$name] = ItemImage::first(array(
+					'conditions' => array('_id' => $entity->{$type['field']})
+				));
+			}
+		}
+		return $results;
 	}
 }
 
