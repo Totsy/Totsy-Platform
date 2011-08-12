@@ -17,7 +17,6 @@ $(function() {
 	$('.file a[href*="/delete/"]').live('click', function(e) {
 		e.preventDefault();
 		var item = $(this).parent().parent();
-
 		$.ajax({
 			async: false,
 			type: "DELETE",

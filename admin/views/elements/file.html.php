@@ -1,4 +1,4 @@
-<?
+<?php
 
 extract(array(
 	'item' => null,
