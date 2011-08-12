@@ -22,6 +22,11 @@ class BaseController extends \lithium\action\Controller {
 	 * Get the userinfo for the rest of the site from the session.
 	 */
 	protected function _init() {
+	     if(!Environment::is('production')){
+            $branch = "<h4 id='global_site_msg'>Current branch: " . $this->currentBranch() ."</h4>";
+           // var_dump($branch);
+            $this->set(compact('branch'));
+        }
 		$userInfo = Session::read('userLogin');
 		$this->set(compact('userInfo'));
 		$cartCount = Cart::itemCount();
@@ -190,7 +195,15 @@ class BaseController extends \lithium\action\Controller {
 	public function writeSession($sessionInfo) {
 		return (Session::write('userLogin', $sessionInfo, array('name'=>'default')));
 	}
-
+	/**
+	* Displays what git branch you are currently developing in
+	**/
+	public function currentBranch() {
+        $out = shell_exec("git branch --no-color");
+        preg_match('#(\*)\s(\w+)-(\w+)#', $out, $parse);
+        $pos = stripos($parse[0], " ");
+        return trim(substr($parse[0], $pos));
+	}
 }
 
 ?>

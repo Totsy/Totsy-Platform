@@ -90,7 +90,7 @@ class Order extends \lithium\data\Model {
 	}
 
 	/**
-	 * Voids and Order
+	 * Voids an Order
 	 *
 	 * @param array $order - Array of order information
 	 * @return boolean
