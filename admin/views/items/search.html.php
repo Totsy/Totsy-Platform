@@ -106,7 +106,7 @@
 					</td>
 					<td>
 						<?php foreach ($item['sku_details'] as $key => $value): ?>
-							<?=$key?><br />
+							<span style="white-space:nowrap"><?=$key?></span><br />
 						<?php endforeach ?>
 					</td>
 					<td>
