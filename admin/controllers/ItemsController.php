@@ -273,8 +273,30 @@ class ItemsController extends BaseController {
 			}
 
 		$this->redirect('/events/edit/'.$id.'#event_items');
-
 		}
+	}
+
+	/* The assumption is first is being primary, rest alternate images. */
+	public function orderImages() {
+		$result = false;
+
+		$item = Item::first(array(
+			'conditions' => array('_id' => $this->request->item)
+		));
+		if ($item && ($images = $this->request->data['image'])) {
+			$item->primary_image = array_shift($images);
+			$item->alternate_images = array_values($images); /* keys start at zero */
+
+			$result = (boolean) $item->save();
+		}
+
+		if ($this->request->is('ajax')) {
+			return $this->render(array(
+				'status' => $result ? 200 : 500,
+				'head' => true
+			));
+		}
+		return $this->redirect($this->request->referer());
 	}
 
 	public function bulkCancel($search = null) {

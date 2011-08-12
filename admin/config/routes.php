@@ -60,6 +60,7 @@ Router::connect('/users/view/{:args}', 'Users::view');
 Router::connect('/users/accountStatus/{:args}', 'Users::accountStatus');
 Router::connect('/select/event/{:args}', 'Base::selectEvent');
 Router::connect('/items/preview/{:event:[a-z0-9\-]+}/{:item:[a-z0-9\-]+}', 'Items::preview');
+Router::connect('/items/images/order/{:item:[a-z0-9\-]+}', 'Items::orderImages');
 
 Router::connect('/pages/{:args}', 'Pages::view');
 

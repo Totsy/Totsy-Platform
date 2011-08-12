@@ -38,16 +38,31 @@ label {
 	padding-top: 3px;
 }
 
-#event_items img.primary {
+#event_items .images li:first-child img {
 	height: 160px;
 	width: auto;
 }
-
-#event_items img.secondary {
-	height: 40px;
+#event_items .images img {
+	height: 80px;
 	width: auto;
 	margin-top: .5em;
 }
-#event_items img.secondary + img {
+#event_items .images img + img {
 	margin-left: 5px;
 }
+
+#event_items ul.images {
+	list-style: none;
+}
+#event_items .images li {
+	margin: 0;
+	padding: 0;
+}
+#event_items .sortable li.placeholder {
+	margin: .5em 0;
+	width: 160px;
+	height: 160px;
+	background-color: #ED1C25;
+	opacity: .7;
+}
+
