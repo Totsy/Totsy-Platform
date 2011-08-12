@@ -45,9 +45,16 @@ Auth::config(array(
 
 Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	$skip = array('login', 'logout');
+	$url = $params['request']->url;
 
-	$granted = in_array($params['request']->url, $skip);
-	$granted = $granted || Auth::check('userLogin', $params['request']);
+	if (in_array($url, $skip)) {
+		return $chain->next($self, $params, $chain);
+	}
+	$granted = Auth::check('userLogin', $params['request']);
+
+	if ($url == '/' && !$granted) { /* Redirect visitors to root to login first. */
+		return new Response(array('location' => 'Users::login'));
+	}
 	$granted = $granted || Auth::check('http', $params['request'], array(
 		'writeSession' => false, 'checkSession' => false
 	));
