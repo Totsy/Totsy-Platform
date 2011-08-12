@@ -1,0 +1,26 @@
+.file img {
+	height: auto;
+	width: 50px;
+}
+li.file {
+	margin: 0;
+	list-style: none;
+}
+.file + .file {
+	margin-top: 1em;
+}
+.file .meta {
+	display: inline-block;
+	width: 260px;
+	margin-left: 10px;
+}
+.file .meta .name {
+	font-weight: bold;
+}
+.file .meta .id {
+	font-family: monospace;
+}
+.file .actions {
+	display: inline-block;
+	margin-left: 10px;
+}
