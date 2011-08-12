@@ -9,12 +9,13 @@ class EventFile extends \admin\extensions\sabre\dav\GenericFile {
 
 	public function put($data) {
 		$position = $this->getParent()->getValue();
+		$type = EventImage::$type[$this->getParent()->getValue()];
 		$item = $this->_item();
 
 		$file = EventImage::resizeAndSave($position, $data);
 
 		$item->images = array(
-			$this->getParent()->getValue() . '_image' => $file->_id
+			$type['field'] => $file->_id
 		) + $item->images->data();
 
 		return $item->save();
@@ -24,10 +25,11 @@ class EventFile extends \admin\extensions\sabre\dav\GenericFile {
 		if (!$file = $this->_file()) {
 			return;
 		}
+		$type = EventImage::$type[$this->getParent()->getValue()];
 		$item = $this->_item();
 
 		$images = $item->images->data();
-		unset($images[$this->getParent()->getValue() . '_image']);
+		unset($images[$type['field']]);
 		$item->images = $images;
 
 		return (boolean) $item->save();
