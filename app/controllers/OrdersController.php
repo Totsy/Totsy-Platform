@@ -249,16 +249,16 @@ class OrdersController extends BaseController {
 				)));
 			}
 		}
-		
+
 		// Calculate tax
 		if ($shippingAddr) {
 			//$tax = array_sum($cart->tax($shippingAddr));
 			$shippingCost = Cart::shipping($cart, $shippingAddr);
 			$overShippingCost = Cart::overSizeShipping($cart);
 			//$tax = $tax ? $tax + (($overShippingCost + $shippingCost) * Cart::TAX_RATE) : 0;
-			
+
 			//$tax=  AvaTax::getTax( compact('cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
-		} 
+		}
 		/**
 		*	Handling services the user may be eligible for
 		*   Returns $shippingCost, $overShippingCost, (boolean)$freeshipping
@@ -380,7 +380,7 @@ class OrdersController extends BaseController {
 				$orderPromo->saved_amount = 0;
 			}
 		}
-		
+
 		extract( AvaTax::getTax( compact(
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart') )
@@ -395,7 +395,7 @@ class OrdersController extends BaseController {
 			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 			if ($orderCredit->credit_amount) {
 				User::applyCredit($user['_id'], $orderCredit->credit_amount);
-				Credit::add($orderCredit, $user['_id'], $orderCredit->credit_amount, "Used Credit");
+				Credit::add($orderCredit, $user['_id'], $orderCredit->credit_amount, "Used Credit",$order->order_id);
 				Session::delete('credit');
 				$order->credit_used = $orderCredit->credit_amount;
 			}
@@ -429,7 +429,7 @@ class OrdersController extends BaseController {
 					$order->promo_code = $orderPromo->code;
 				}
 			}
-			
+
 			if($avatax === true){
 				AvaTax::postTax( compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
 			}

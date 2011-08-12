@@ -177,8 +177,11 @@ class UsersController extends \admin\controllers\BaseController {
 	    if ($user) {
 	        if ($type == "deactivate") {
 	            $date = new MongoDate(strtotime("now"));
+	            if ($id > 10) {
+	                $id = new MongoId($id);
+	            }
                 $collection->update(
-                    array('_id' => new MongoId($id)),
+                    array('_id' => $id),
                     array(
                         '$unset'=>array('reactivate_date' => 1),
                         '$set'=>array(

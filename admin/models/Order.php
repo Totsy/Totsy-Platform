@@ -11,6 +11,7 @@ use lithium\analysis\Logger;
 use admin\models\User;
 use admin\models\Item;
 use admin\extensions\AvaTax;
+use admin\models\Credit;
 
 /**
 * The Orders Model is related to the Orders Collection in MongoDB.
@@ -202,7 +203,7 @@ class Order extends \lithium\data\Model {
 	 * @param string $author
 	 * @param string $comment
 	 */
-	public static function cancel($order_id, $author, $comment) {
+	public static function cancel($order_id, $author, $comment, $test = false) {
 		$userCollection = User::collection();
 		//Get the actual datas of the order
 		$result = static::find('first', array('conditions' => array(
@@ -214,6 +215,7 @@ class Order extends \lithium\data\Model {
 		} else {
 			$user = $userCollection->findOne(array("_id" => $order["user_id"]));
 		}
+		$item_amount = 0;
 		//Compare the cancel status, write modification datas and update cancel db status
 		$modification_datas["author"] = $author;
 		$modification_datas["date"] = new MongoDate(strtotime('now'));
@@ -223,14 +225,19 @@ class Order extends \lithium\data\Model {
 			static::collection()->update(array('_id' => new MongoId($order_id)),
 				array('$set' => array('cancel' => true)), array("upsert" => true));
 			//Authorize.Net Void
-			static::void($order);
+			if (!$test) {
+			    static::void($order);
+			}
 			//Push cancel status to Avalara
 			AvaTax::cancelTax($order['order_id']);
 			//Cancel all the items
 			$items = $order["items"];
+			$item_names = array();
 			foreach($order["items"] as $key => $item){
 				$items[$key]["cancel"] = true;
 				//Reattribute original quantity
+				$item_amount += $item['sale_retail'];
+				$item_names[] = $item['description'];
 				if(!empty($items[$key]["initial_quantity"])) {
 					$items[$key]["quantity"] = $items[$key]["initial_quantity"];
 				}
@@ -241,9 +248,24 @@ class Order extends \lithium\data\Model {
 		//Reattribute credits to the user
 		if(isset($order["credit_used"])) {
 			if(strlen($order["user_id"]) > 10){
-				$userCollection->update(array("_id" => new MongoId($order["user_id"])), array('$set' => array("total_credit" => (((float) abs($order["credit_used"])) + ((float) $user["total_credit"])))));
+			    $new_credit = $order['credit_used'];
+			    $creditData = array(
+			            'user_id' => $order['user_id'],
+			            'order_id' => $order['_id'],
+			            'order_number' => $order_id,
+			            'amount' => $new_credit,
+			            'reason' => "Credit Adjustment",
+			            'description' => "Item " . implode(' ', $item_names) . "was/were cancelled."
+			        );
+			    Credit::add($creditData);
+				$userCollection->update(array(
+				    "_id" => new MongoId($order["user_id"])),
+				    array('$set' => array(
+				        "total_credit" => (((float) abs($new_credit)) +
+				        ((float) $user["total_credit"])))
+				    ));
 			} else {
-				$userCollection->update(array("_id" => $order["user_id"]), array('$set' => array("total_credit" => (((float) abs($order["credit_used"])) + ((float) $user["total_credit"])))));
+				$userCollection->update(array("_id" => $order["user_id"]), array('$set' => array("total_credit" => (((float) abs($new_credit)) + ((float) $user["total_credit"])))));
 			}
 		}
 		//Pushing modification datas to db
@@ -350,12 +372,23 @@ class Order extends \lithium\data\Model {
 			$datas_order_prices["tax"] = $selected_order["tax"];
 		}
 		if(!empty($selected_order["credit_used"])) {
-			$datas_order_prices["credit_used"] = $selected_order["credit_used"];
+			$datas_order_prices["credit_used"] = (float) $selected_order["credit_used"];
 		}
 		/**************UPDATE TAX****************************/
 		static::recalculateTax($selected_order,$items,true);
 		/**************UPDATE DB****************************/
 		if(isset($selected_order["user_total_credits"])){
+			$new_credit = $selected_order['credit_used'];
+            $creditData = array(
+                    'user_id' => $selected_order['user_id'],
+                    'order_id' => $selected_order['_id'],
+                    'order_number' => $selected_order['order_id'],
+                    'amount' => $new_credit,
+                    'reason' => "Credit Adjustment",
+                    'description' => "Item " . implode(' ', $item_names) . " was/were cancelled."
+                );
+            Credit::add($creditData);
+
 			if(strlen($selected_order["user_id"]) > 10){
 				$userCollection->update(array("_id" => new MongoId($selected_order["user_id"])), array('$set' => array("total_credit" => (float) $selected_order["user_total_credits"])));
 			} else {
@@ -447,13 +480,12 @@ class Order extends \lithium\data\Model {
 			if( $subTotal <= $promocode['minimum_purchase']){
 				$preAfterDiscount = $subTotal;
 				$datas_order["promocode_disable"] = true;
-			}
-			else {
+			}else {
 				if ($promocode['type'] == 'percentage') {
 					$selected_order["promo_discount"] = - ($subTotal * $promocode['discount_amount']);
 					$datas_order["promo_discount"] = $selected_order["promo_discount"];
-				} 
-				$preAfterDiscount = $subTotal + $selected_order["promo_discount"];	
+				}
+				$preAfterDiscount = $subTotal + $selected_order["promo_discount"];
 				$datas_order["promocode_disable"] = false;
 			}
 		} else {
@@ -522,7 +554,8 @@ class Order extends \lithium\data\Model {
 			'tax' => $tax,
 			'handling' => $handling,
 			'promocode_disable' => $datas_order["promocode_disable"],
-			'credit_used' => $selected_order["credit_used"]
+			'original_credit_used' => $selected_order["credit_used"],
+			'credit_used' => ""
 		);
 		$datas_order = array_merge($datas_order_prices, $datas_order);
 		$new_datas_order = $orderCollection->findOne(array("_id" => new MongoId($selected_order["id"])));
@@ -534,11 +567,11 @@ class Order extends \lithium\data\Model {
 		$temp_order = static::Create($new_datas_order);
 		return $temp_order;
 	}
-	
+
 	/**
 	 * Method to recalculate sales tax for renewated order. Tax is based on a Avalara.
 	 * SK: I hope they calculate sales tax based on sipping destination ;)
-	 * 
+	 *
 	 * @param object $current_order
 	 * @param array $itms
 	 *
@@ -559,7 +592,7 @@ class Order extends \lithium\data\Model {
 				$items[] = $itm;
 			}
 		}
-	
+
 		if ($update === false){
 			$ordermodel = self;
 			return AvaTax::getTax(compact('order','items','ordermodel','current_order','itms'));
@@ -568,6 +601,27 @@ class Order extends \lithium\data\Model {
 			$admin = 1;
 			return AvaTax::commitTax(compact('order','items','admin'));
 		}
+	}
+
+	/**
+	* This function checks if a given order has been canceled or any of its items has been canceled
+	* @params (string) $order_id : short id of the order
+	* @return false if the order has never been canceled or has canceled items, else it returns true
+	**/
+	public static function checkOrderCancel($order_id){
+	    $cancel_count = $this->collection()->count(array(
+	        'order_id' => $order_id,
+	        '$or' => array(
+	            array('item.cancel' => true),
+	            array('cancel' => true)
+	        )
+	    ));
+
+	    if ($cancel_count == 0) {
+	        return false;
+	    } else {
+	        return true;
+	    }
 	}
 }
 

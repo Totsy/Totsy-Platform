@@ -150,6 +150,10 @@ class OrdersController extends BaseController {
 	/**
 	* The manage_items method update the temporary order.
 	* If the variable save is set to true, it apply the changes.
+	* @see admin\models\Order::saveCurrentOrder()
+	* @see admin\models\Order::refreshTempOrder()
+	* @see admin\controllers\OrdersController::refreshTempOrder()
+	* @see admin\controllers\OrdersController::checkOrderCancel()
 	*/
 	public function manage_items() {
 		$current_user = Session::read('userLogin');
@@ -158,6 +162,15 @@ class OrdersController extends BaseController {
 		if($this->request->data){
 			$datas = $this->request->data;
 			$selected_order = $orderCollection->findOne(array("_id" => new MongoId($datas["id"])));
+
+			/**
+			* This sets the field original credit used, in order to keep a record in the order
+			* before any changes are made to the credit
+			*/
+			if (!Order::checkOrderCancel($selected_order['order_id'])) {
+				$selected_order["original_credit_used"] = $selected_order["credit_used"];
+			}
+
 			$datas["user_id"] = $selected_order["user_id"];
 			$items = $selected_order["items"];
 			foreach($datas["items"] as $key => $item) {
@@ -305,6 +318,10 @@ class OrdersController extends BaseController {
 	* A pop-up will be called if you click on cancel button to confirm the action
 	* Confirm the shipping form will update the "shipping" array and push the old datas on "old_shippings"
 	* @param string $id The _id of the order
+	* @see admin\controllers\OrdersController::manage_items()
+	* @see admin\controllers\OrdersController::shipDate()
+	* @see admin\controllers\OrdersController::updateShipping()
+	* @see admin\controllers\OrdersController::cancel()
 	*/
 	public function view($id = null) {
 		$userCollection = User::collection();
@@ -543,11 +560,11 @@ class OrdersController extends BaseController {
 		}
 		return $shipDate;
 	}
-	
+
 	public function taxreturn(){
-		
+
 		if ($this->request->data) {
-			
+
 			//get order details
 			$order = Order::collection()->findOne(array('_id' => new MongoId($this->request->data['id']) ));
 
@@ -572,7 +589,7 @@ class OrdersController extends BaseController {
 				}
 				return array('order'=>$order, 'sku' => $sku, 'itemscanceled' => false, 'edit_mode' => false);
 			}
-			
+
 			// FULL order tax return
 			if(array_key_exists('fullordertaxreturn_action',$this->request->data)){
 				$data['order'] = $order;
@@ -582,11 +599,11 @@ class OrdersController extends BaseController {
 				$data['order']['date'] = date('Y-m-d',$data['order']['date_created']->sec);
 				$data['order']['order_id'] = $data['order']['order_id'].'.1';
 				$data['order']['return'] = 'full';
-				$order['return'] = 'full'; 
-				$this->shipping($data);	
+				$order['return'] = 'full';
+				$this->shipping($data);
 				Order::save($order);
 			}
-			
+
 			// Partial order tax return
 			if (isset($this->request->data['return_check']) && is_array($this->request->data['return_check']) && count($this->request->data['return_check'])>0){
 				$data['order'] = $order;
@@ -615,23 +632,23 @@ class OrdersController extends BaseController {
 				$tax = AvaTax::getTax($data);
 				$order['tax'] = $order['tax'] - $tax;
 				$order['subTotal'] = $order['subTotal'] - $sub;
-				$order['total'] = $order['total'] - ( $sub + $tax);  
+				$order['total'] = $order['total'] - ( $sub + $tax);
 				Order::collection()->save($order);
 			}
 
-			// remember to set for all returned items to negative amount 
+			// remember to set for all returned items to negative amount
 			foreach ($data['items'] as $k=>$v){
 				$v['sale_retail'] = '-'.$v['sale_retail'];
 				$data['items'][$k] = $v;
-			}			
+			}
 
 			AvaTax::returnTax($data);
 		}
-		
+
 		$this->redirect(array('Orders::view::'.$this->request->data['id']));
 		exit(0);
 	}
-	
+
 	protected function shipping (&$data){
 		if (array_key_exists('shippingCost', $data) && $data['shippingCost']>0 ){
 			$data['items'][] = array(
@@ -642,7 +659,7 @@ class OrdersController extends BaseController {
 				'quantity' => 1,
 				'sale_retail' => $data['shippingCost'],
 				'taxIncluded' => true
-			);	
+			);
 		}
 
 		if (array_key_exists('overShippingCost', $data) && $data['overShippingCost']>0 ){
@@ -654,7 +671,7 @@ class OrdersController extends BaseController {
 				'quantity' => 1,
 				'sale_retail' => $data['overShippingCost'],
 				'taxIncluded' => true
-			);	
+			);
 		}
 	}
 }

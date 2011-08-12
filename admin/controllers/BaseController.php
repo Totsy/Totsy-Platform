@@ -32,17 +32,17 @@ class BaseController extends \lithium\action\Controller {
 	 * @see /extensions/helpers/Events.php
 	 */
 	public function selectEvent($type = null) {
-		$month_delay = 1;
+	/*	$month_delay = 1;
 		if(!empty($this->request->data)) {
-			$month_delay = (int) $this->request->data['month_delay']; 	
+			$month_delay = (int) $this->request->data['month_delay'];
 		}
 		$date_limit = mktime(0, 0, 0, (date("m") - $month_delay), date("d"), date("Y"));
 		$conditions = array(
 			'created_date' => array(
     		   '$gt' => new MongoDate($date_limit)
-		));
-		$events = Event::find('all', array('conditions' => $conditions));
-		
+		));*/
+		$events = Event::all();
+
 		return compact('events', 'type', 'month_delay');
 	}
 
