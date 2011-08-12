@@ -1,16 +1,17 @@
 <?=$this->html->script('fileprogress.js');?>
 <?=$this->html->script('handlers.js');?>
 
-<?=$this->html->script('files_pending.js')?>
+<?=$this->html->script('files.js')?>
 <?=$this->html->script('jquery.flash.min.js')?>
 <?=$this->html->script('agile-uploader-3.0.js')?>
+<?=$this->html->style('files.css');?>
 <?=$this->html->style('agile_uploader.css');?>
 <?=$this->html->style('admin_common.css');?>
 
 <h1>Files</h1>
 
 <div class="tab_region_left_col">
-	
+
 	<div class="box">
 		<h2>Upload via WebDAV</h2>
 		<div class="block">
