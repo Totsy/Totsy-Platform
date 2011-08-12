@@ -3,7 +3,7 @@
 <div id="modal">
 </div>
 <h1 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a> / <?=$item->description?></h1>
-
+ 
 	<hr />
 <div id="product-detail-right">
 
