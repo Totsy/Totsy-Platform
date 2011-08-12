@@ -19,11 +19,31 @@ class ItemImage extends File {
 	 * @var types array
 	 */
 	public static $types = array(
-		'primary'		  => array('dimensions' => array(298, 300), 'multiple' => false),
-		'zoom'			  => array('dimensions' => array(596, 600), 'multiple' => false),
-		'alternate'		  => array('dimensions' => array(298, 300), 'multiple' => true),
-		'cart'			  => array('dimensions' => array(60, 60), 'multiple' => false),
-		'event_thumbnail' => array('dimensions' => array(93, 93), 'multiple' => false)
+		'primary' => array(
+			'dimensions' => array(298, 300),
+			'field' => 'primary_image',
+			'multiple' => false
+		),
+		'zoom' => array(
+			'dimensions' => array(596, 600),
+			'field' => 'zoom_image',
+			'multiple' => false
+		),
+		'alternate' => array(
+			'dimensions' => array(298, 300),
+			'field' => 'alternate_images',
+			'multiple' => true
+		),
+		'cart' => array(
+			'dimensions' => array(60, 60),
+			'field' => 'cart_image',
+			'multiple' => false
+		),
+		'event_thumbnail' => array(
+			'dimensions' => array(93, 93),
+			'field' => 'event_thumbnail_image',
+			'multiple' => false
+		)
 	);
 
 	/*
