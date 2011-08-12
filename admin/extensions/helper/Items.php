@@ -6,7 +6,7 @@ class Items extends \lithium\template\Helper {
 
 	protected $heading = array(
 		'Relate Items',
-		'Primary Image',
+		'Images',
 		'Description',
 		'Copy',
 		'Enabled'
@@ -78,7 +78,7 @@ class Items extends \lithium\template\Helper {
 
 		$html = "";
 		$itemDropDown = "";
-		
+
 		//create blank array to check for duplicate color/description
 		$itemUrlCheck = array();
 
@@ -108,16 +108,16 @@ class Items extends \lithium\template\Helper {
 			foreach ($itemRecords as $item) {
 				$html .= "<tr class=''>";
 				$html .= "<td width='400px'>";
-				
+
 				//make mini array of color/description
 				$isurlduplicate = false;
 				$urlcheckminiarray = array($item->url);
-				
+
 				if(in_array($urlcheckminiarray, $itemUrlCheck)){
 					$isurlduplicate = true;
 				}
 				else{
-					$itemUrlCheck[] = $urlcheckminiarray; 
+					$itemUrlCheck[] = $urlcheckminiarray;
 				}
 
 				$this->current_item_id = "".$item->_id."";
@@ -140,26 +140,20 @@ class Items extends \lithium\template\Helper {
 
 				$html .= "</td>";
 
-				if (!empty($item->primary_image)) {
-					$image = '/admin/image/'. $item->primary_image . '.jpg';
-				} else {
-					$image = "/img/no-image-small.jpeg";
-				}
-
-				$html .= "<td width='100'><img src=$image/ width='75'></td>";
-				
+				$imagesHtml = $this->_images($item);
+				$html .= "<td width='100'>{$imagesHtml}</td>";
 				$html .= "<td width='200'><a href=\"/items/edit/$item->_id\">$item->description</a><br />
 				Color: $item->color <br />
 				Vendor Style: $item->vendor_style
 				</td>";
 				$html .= "<td height='100' width='100'><textarea rows='5' cols='20' name='$item->_id' id='$item->_id'>$item->blurb</textarea></td>";
 				$html .= "<td width='30'>$item->enabled<br>";
-				
+
 
 				if($item->miss_christmas){
-					$html .= "wont ship for xmas";				
+					$html .= "wont ship for xmas";
 				}
-				
+
 				//check to show flag for duplicate color/description url
 				if($isurlduplicate){
 					$html .= "<br><span style='color:#ff0000;'>color and/or description are duplicated!</span>";
@@ -181,6 +175,28 @@ class Items extends \lithium\template\Helper {
 		} else {
 			return $html = "There are no items";
 		}
+	}
+
+	protected function _images($item) {
+		$images = $item->images();
+		$fallback = '/img/no-image-small.jpeg';
+		$html = '';
+
+		if ($images['primary']) {
+			$html .= $this->_context->html->image($images['primary']->url(), array(
+				'id' => 'file-' . $images['primary']->_id,
+				'alt' => 'item image',
+				'class' => 'primary'
+			));
+		}
+		foreach ($images['alternate'] as $image) {
+			$html .= $this->_context->html->image($image->url(), array(
+				'id' => 'file-' . $image->_id,
+				'alt' => 'item image',
+				'class' => 'secondary'
+			));
+		}
+		return $html;
 	}
 }
 
