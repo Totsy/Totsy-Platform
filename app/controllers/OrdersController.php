@@ -417,17 +417,6 @@ class OrdersController extends BaseController {
 				}
 				$order->service = $services;
 			}
-			if (!empty($vars['cartPromo']->type)) {
-				if ($vars['cartPromo']->type == 'free_shipping') {
-					Promocode::add((string) $code->_id, 0, $order->total);
-					$vars['cartPromo']->order_id = (string) $order->_id;
-					$vars['cartPromo']->code_id = (string) $code->_id;
-					$vars['cartPromo']->date_created = new MongoDate();
-					$vars['cartPromo']->save();
-					$order->promo_code = $vars['cartPromo']->code;
-				}
-			}
-			
 			if($avatax === true){
 				AvaTax::postTax( compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
 			}

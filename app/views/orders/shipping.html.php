@@ -66,7 +66,7 @@
 		'id' => 'addressForm',
 		'class' => "fl"
 )); ?>
-	<?php if(!empty($addresses_ddwn)) : ?>
+	<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
 		Choose your address :
 		<?=$this->form->select('addresses', $addresses_ddwn, array("id" => 'addresses', 'value' => $selected));?>
 		<hr />

@@ -53,8 +53,8 @@ class CartController extends BaseController {
 		}
 		#Get current Discount
 		$vars = Cart::getDiscount();
-		//Cart::increaseExpires();
-		$cart = Cart::active();
+		Cart::increaseExpires();
+		$cart = Cart::active(array('time' => '-3min'));
 		$test = $cart->data();
 		if(empty($test)) {
 			#Remove Temporary Session Datas**/
