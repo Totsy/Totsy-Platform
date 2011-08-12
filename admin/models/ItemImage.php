@@ -19,11 +19,11 @@ class ItemImage extends File {
 	 * @var types array
 	 */
 	public static $types = array(
-		'primary'		  => array('dimensions' => array(298, 300)),
-		'zoom'			  => array('dimensions' => array(596, 600)),
-		'alternate'		  => array('dimensions' => array(298, 300)),
-		'cart'			  => array('dimensions' => array(60, 60)),
-		'event_thumbnail' => array('dimensions' => array(93, 93)),
+		'primary'		  => array('dimensions' => array(298, 300), 'multiple' => true),
+		'zoom'			  => array('dimensions' => array(596, 600), 'multiple' => false),
+		'alternate'		  => array('dimensions' => array(298, 300), 'multiple' => true),
+		'cart'			  => array('dimensions' => array(60, 60), 'multiple' => false),
+		'event_thumbnail' => array('dimensions' => array(93, 93), 'multiple' => false)
 	);
 
 	/*
@@ -37,7 +37,7 @@ class ItemImage extends File {
 			return false;
 		}
 		list($width, $height) = static::$types[$position]['dimensions'];
-		
+
 		$imagine = new Imagine();
 		$filename = null;
 
@@ -52,7 +52,7 @@ class ItemImage extends File {
 		} else {
 			return false;
 		}
-		
+
 		$bytes = $image->resize(new Box($width, $height))->get('png');
 
 		// Write the image to GridFS
