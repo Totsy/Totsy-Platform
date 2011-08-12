@@ -114,9 +114,13 @@ class File extends \lithium\data\Model {
 		return (boolean) $result->count();
 	}
 
-	// @todo replace with map reduce
 	public static function pending() {
-		$data = static::all();
+		return static::all(array('conditions' => array('pending' => true)));
+	}
+
+	// @todo replace with map reduce
+	public static function orphaned() {
+		$data = static::all(array('conditions' => array('pending' => false)));
 		$results = array();
 
 		foreach ($data as $item) {

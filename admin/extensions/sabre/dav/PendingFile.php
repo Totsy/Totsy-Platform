@@ -7,6 +7,10 @@ use Sabre_DAV_Exception_Forbidden;
 
 class PendingFile extends \admin\extensions\sabre\dav\GenericFile {
 
+	public function put($data) {
+		return (boolean) File::write($data, array('pending' => true));
+	}
+
 	public function delete() {
 		if (!$file = $this->_file()) {
 			return;

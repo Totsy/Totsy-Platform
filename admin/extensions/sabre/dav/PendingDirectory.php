@@ -48,7 +48,7 @@ class PendingDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 	}
 
 	public function createFile($name, $data = null) {
-		return (boolean) File::write($data, compact('name'));
+		return (boolean) File::write($data, compact('name') + array('pending' => true));
 	}
 }
 
