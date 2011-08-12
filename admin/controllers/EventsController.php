@@ -365,16 +365,19 @@ class EventsController extends BaseController {
 			// Comparison of OLD Event attributes and the NEW Event attributes
 			$changed = "";
 
-			if ($eventData[name] != $event->name) {
+			if ($eventData['name'] != $event->name) {
 				$changed .= "Name changed from <strong>{$event->name}</strong> to <strong>{$eventData[name]}</strong><br/>";
 			}
 
-			if ($eventData[blurb] != $event->blurb) {
+			if ($eventData['blurb'] != $event->blurb) {
 				$changed .= "Blurb changed from <strong>{$event->blurb}</strong> to <strong>{$eventData[blurb]}</strong><br/>";
 			}
+			if ($eventData['enabled'] != $event->enabled) {
+				$changed .= 'Enabled changed from <strong>'.(int)$event->enabled.'</strong> to <strong>'.(int)$eventData['enabled'].'</strong><br/>';
+			}
 
-			if ($eventData[enabled] != $event->enabled) {
-				$changed .= "Enabled changed from <strong>{$event->enabled}</strong> to <strong>{$eventData[enabled]}</strong><br/>";
+			if ($eventData['tangible'] != $event->tangible) {
+				$changed .= 'Tangible changed from <strong>'.(int)$event->tangible.'</strong> to <strong>'.(int)$eventData['tangible'].'</strong><br/>';
 			}
 
 			if (strtotime($start_date) != $event->start_date->sec) {
@@ -387,7 +390,7 @@ class EventsController extends BaseController {
 				$changed .= "End Date changed from  <strong>{$temp}</strong> to <strong>{$end_date}</strong><br/>";
 			}
 
-			if ($eventData[ship_message] != $event->ship_message) {
+			if ($eventData['ship_message'] != $event->ship_message) {
 				$changed .= "Ship Message changed from <strong>{$event->ship_message}</strong> to <strong>{$eventData[ship_message]}</strong><br/>";
 			}
 
@@ -395,9 +398,8 @@ class EventsController extends BaseController {
 				$temp =  date('m/d/Y H:i:s', $event->ship_date->sec);
 				$changed .= "Ship Date changed from  <strong>{$temp}</strong> to <strong>{$ship_date}</strong><br/>";
 			}
-
-			if ($eventData[enable_items] != $event->enable_items) {
-				$changed .= "Enabled Items from <strong>{$event->enable_items}</strong> to <strong>{$eventData[enable_items]}</strong><br/>";
+			if ($eventData['enable_items'] != $event->enable_items) {
+				$changed .= 'Enabled Items from <strong>'.(int)$event->enable_items.'</strong> to <strong>'.(int)$eventData['enable_items'].'</strong><br/>';
 			}
 
 			/**
@@ -529,54 +531,51 @@ class EventsController extends BaseController {
 				}
 			}
 		}
+				foreach ($eventItems as $itemDetail) {
+					$i=0;
+					$itemAttributes = array_diff_key($itemDetail, array_flip($standardHeader));
 
-		foreach ($eventItems as $itemDetail) {
-			$i=0;
-			$itemAttributes = array_diff_key($itemDetail, array_flip($standardHeader));
+          			//check radio box for 'final sale' text append
+          			$enableFinalsale = $this->request->data['enable_finalsale'];
 
-  			//check radio box for 'final sale' text append
-  			$enableFinalsale = $this->request->data['enable_finalsale'];
+          			//check radio box for 'final sale' text append
+  			        $miss_christmas = $this->request->data['miss_christmas'];
 
-  			//check radio box for 'final sale' text append
-  			$miss_christmas = $this->request->data['miss_christmas'];
+          			//check if final sale radio box was checked or not
+          			$blurb = "";
+                    //check if final sale radio box was checked or not
+                    if($enableFinalsale==1){
+                      $blurb = "<p><strong>Final Sale</strong></p>";
+                    }
+					$itemCleanAttributes = null;
+					foreach ($itemAttributes as $key => $value) {
+						unset($itemDetail[$key]);
 
-  			//check if final sale radio box was checked or not
-  			if($enableFinalsale==1){
-  			  $blurb = "<p><strong>Final Sale</strong></p>";
-  			}
-  			//if not make blurb var blank for good form
-  			else{
-  			  $blurb = "";
-  			}
-			$itemCleanAttributes = null;
-			foreach ($itemAttributes as $key => $value) {
-				unset($itemDetail[$key]);
+						if($key!=="color_description_style") {
+							$itemCleanAttributes[trim($key)] = $value;
+						}
+					}
+					$item = Item::create();
+					$date = new MongoDate();
+					$url = $this->cleanUrl($itemDetail['description']." ".$itemDetail['color']);
 
-				if($key!=="color_description_style") {
-					$itemCleanAttributes[trim($key)] = $value;
-				}
-			}
-			$item = Item::create();
-			$date = new MongoDate();
-			$url = $this->cleanUrl($itemDetail['description']." ".$itemDetail['color']);
+					$details = array(
+                        'enabled' => (bool) $enabled,
+                        'miss_christmas' => (bool) $miss_christmas,
+                        'created_date' => $date,
+                        'details' => $itemCleanAttributes,
+                        'details_original' => $itemCleanAttributes,
+                        'event' => array((string) $_id),
+                        'url' => $url,
+                        'blurb' => $blurb,
+                        'taxable' => true
+                    );
 
-			$details = array(
-				'enabled' => (bool) $enabled,
-				'miss_christmas' => (bool) $miss_christmas,
-				'created_date' => $date,
-				'details' => $itemCleanAttributes,
-				'details_original' => $itemCleanAttributes,
-				'event' => array((string) $_id),
-				'url' => $url,
-				'blurb' => $blurb,
-				'taxable' => true
-			);
+					$newItem = array_merge(Item::castData($itemDetail), Item::castData($details));
+					$newItem['vendor_style'] = (string) $newItem['vendor_style'];
 
-			$newItem = array_merge(Item::castData($itemDetail), Item::castData($details));
-			$newItem['vendor_style'] = (string) $newItem['vendor_style'];
-
-			if ((array_sum($newItem['details']) > 0) && $item->save($newItem)) {
-				$items[] = (string) $item->_id;
+					if ((array_sum($newItem['details']) > 0) && $item->save($newItem)) {
+						$items[] = (string) $item->_id;
 
 				//related items will be added later, after ihe items in this event actually HAVE unique ID's
 				//each related item will momentarily be a string made of the color, description and style separated by pipes
