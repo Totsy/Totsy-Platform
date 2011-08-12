@@ -107,7 +107,9 @@ class File extends \lithium\data\Model {
 			'conditions' => array(
 				'alternate_images' => $id,
 				'primary_image' => $id,
-				'zoom_image' => $id
+				'zoom_image' => $id,
+				'cart_image' => $id,
+				'event_thumbnail_image' => $id
 			)
 		));
 
