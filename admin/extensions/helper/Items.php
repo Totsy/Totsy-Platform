@@ -6,7 +6,7 @@ class Items extends \lithium\template\Helper {
 
 	protected $heading = array(
 		'Relate Items',
-		'Primary Image',
+		'Images',
 		'Description',
 		'Copy',
 		'Enabled'
@@ -140,14 +140,9 @@ class Items extends \lithium\template\Helper {
 
 				$html .= "</td>";
 
-				if (!empty($item->primary_image)) {
-					$image = '/admin/image/'. $item->primary_image . '.jpg';
-				} else {
-					$image = "/img/no-image-small.jpeg";
-				}
+				$imagesHtml = $this->_images($item);
 
-				$html .= "<td width='100'><img src=$image/ width='75'></td>";
-				
+				$html .= "<td width='100'>{$imagesHtml}</td>";
 				$html .= "<td width='200'><a href=\"/items/edit/$item->_id\">$item->description</a><br />
 				Color: $item->color <br />
 				Vendor Style: $item->vendor_style
@@ -181,6 +176,28 @@ class Items extends \lithium\template\Helper {
 		} else {
 			return $html = "There are no items";
 		}
+	}
+
+	protected function _images($item) {
+		$images = $item->images();
+		$fallback = '/img/no-image-small.jpeg';
+		$html = '';
+
+		if ($images['primary']) {
+			$html .= $this->_context->html->image($images['primary']->url(), array(
+				'id' => 'file-' . $images['primary']->_id,
+				'alt' => 'item image',
+				'class' => 'primary'
+			));
+		}
+		foreach ($images['alternate'] as $image) {
+			$html .= $this->_context->html->image($image->url(), array(
+				'id' => 'file-' . $image->_id,
+				'alt' => 'item image',
+				'class' => 'secondary'
+			));
+		}
+		return $html;
 	}
 }
 
