@@ -214,6 +214,7 @@ for ( i=1; i<6; i++ ) {
 		}
 	}
 </script>
+
 <!-- Sorting of primary/secondary event item images -->
 <script>
 $(function() {
@@ -237,6 +238,7 @@ $(function() {
 	});
 });
 </script>
+
 <?=$this->form->create(null, array('id' => "events_edit", 'enctype' => "multipart/form-data")); ?>
 <div class="grid_16">
 	<h2>Editing Event <em><?=$event->name; ?></em></h2>
@@ -376,8 +378,6 @@ $(function() {
 					<p>This date will override the calcualted ship date for orders.</p>
 					<?=$this->form->text('ship_date', array('id' => 'ship_date', 'value' => $event->ship_date)); ?>
 				</div>
-
-<<<<<<< HEAD
 				<br />
 				<?=$this->form->submit('Update Event')?>
 			</div>
@@ -433,38 +433,7 @@ $(function() {
 					<?php echo $this->form->file('upload_file'); ?>
 					-->
 				<?=$this->form->field('items_submit', array('type' => 'textarea', 'rows' => '7', 'cols' => '50', 'name' => 'ItemsSubmit'));?><br>
-=======
-			</div>
 
-			<div class="clear"></div>
-
-			<div class="tab_bottom_submit">
-				<div class="submit_button"><?=$this->form->submit('Update Event', array('class' => 'submit_event'))?></div><div class="cancel"><a href="/admin/select/event">Cancel</a></div>
-			</div>
-		</div>
-
-		<div id="event_items">
-			<h3 id="">Item Management</h3>
-			<hr />
-			<h3 id="">Upload Items</h3>
-            <hr />
-			<p>Please select the default option for all items being uploaded:</p>
-				<input type="radio" name="enable_items" value="1" id="enable_items"> Enable All <br>
-				<input type="radio" name="enable_items" value="0" id="enable_items" checked> Disable All <br><br>
-			<p>Add "Final Sale" to the item description?:</p>
-				<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
-				<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
-				<?=$this->form->file('upload_file'); ?>
-				<?=$this->form->submit('Update Event')?>
-				<?=$this->form->label('Upload Event (Excel Files): '); ?>
-<!--
-		<iframe id="upload_frame" name="upload_frame" src="/events/upload/<?=$event->_id?>" frameborder=0 scrolling=no width=400 height=250></iframe>
-		<div id="upload_error" name="upload_error" style="color:#ff0000; width:400px; float:right; height:250px; overflow:scroll;">(spreadsheet upload errors will appear here)</div>
-
--->
-			<br><br>
-
->>>>>>> uploader. event images.
 
             <hr />
 			<br><br>
@@ -547,7 +516,6 @@ $(function() {
 		<div id="event_inventory">
 			<iframe id="inventoryIframe" src="" style="width:900px; height:400px;"></iframe>
 		</div>
-<<<<<<< HEAD
 		<!-- Tab -->
 		<div id="event_media_upload">
 			<p>
@@ -628,53 +596,6 @@ $(function() {
 			<div id="event_media_status_data"><!-- Populated through AJAX request. --></div>
 		</div>
 		<!-- End Tab -->
-=======
-		<div id="event_media">
-			<h3 id="uploaded_media">Upload Media</h3>
-			<p>
-				Upload all event media here. This includes event images as well as item images. Please ensure all filenames follow proper naming convention.
-			</p>
-			<p>
-				The event URL is: <?=$event->url; ?><br />
-				So for example, files names would be; events_<?=$event->url; ?>.jpg, events_<?=$event->url; ?>_logo.jpg, events_<?=$event->url; ?>_small_splash.jpg, events_<?=$event->url; ?>_big_splash.jpg
-			</p>
-			<p>
-				You can also upload event item images here as well. These also follow a naming convention, for example:<br />
-				items_shirt_primary.jpg, items_shirt_zoom.jpg<br />
-				...and for various colors: items_shirt-yellow_primary.jpg, items_shirt-yellow_zoom.jpg<br />
-				...and alternate images: items_shirt-blue_alternate.jpg, items_shirt-blue_alternateB.jpg, items_shirt-blue_alternate0.jpg
-			</p>
-            <hr />
-
-			<form id="EventMedia">
-			</form>
-			<div id="agile_file_upload"></div>
-			<script type="text/javascript">
-				$('#agile_file_upload').agileUploader({
-					flashSrc: <?=$this->url('/swf/agile-uploader.swf'); ?>,
-					submitRedirect: '/admin/files',
-					formId: 'Media',
-					removeIcon: <?=$this->url('/img/agile_uploader/trash-icon.png'); ?>,
-					flashVars: {
-						button_up: <?=$this->url('/img/agile_uploader/add-file.png'); ?>,
-						button_down: <?=$this->url('/img/agile_uploader/add-file.png'); ?>,
-						button_over: <?=$this->url('/img/agile_uploader/add-file.png'); ?>,
-						//form_action: $('#EventEdit').attr('action'),
-						form_action: <?=$this->url('/files/upload/all'); ?>,
-						file_limit: 30,
-						max_height: '1000',
-						max_width: '1000',
-						file_filter: '*.jpg;*.jpeg;*.gif;*.png;*.JPG;*.JPEG;*.GIF;*.PNG',
-						resize: 'jpg,jpeg,gif',
-						force_preview_thumbnail: 'true',
-						firebug: 'false'
-					}
-				});
-			</script>
-
-			<a href="#" onClick="document.getElementById('agileUploaderSWF').submit();">Upload</a>
-		</div>
->>>>>>> uploader. event images.
 	</div>
 	<!-- End Tabs -->
 </div>

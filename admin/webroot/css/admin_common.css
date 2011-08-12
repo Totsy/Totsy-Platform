@@ -58,7 +58,6 @@ label {
 	padding-top: 3px;
 }
 
-<<<<<<< HEAD
 #event_items .images li:first-child img {
 	height: 160px;
 	width: auto;
@@ -117,18 +116,5 @@ label {
 	border-bottom: none;
 	padding: 6px;
 	height: 55px;
-=======
-#event_items img.primary {
-	height: 160px;
-	width: auto;
 }
 
-#event_items img.secondary {
-	height: 40px;
-	width: auto;
-	margin-top: .5em;
-}
-#event_items img.secondary + img {
-	margin-left: 5px;
->>>>>>> Enabling primary, secondary images in events edit.
-}

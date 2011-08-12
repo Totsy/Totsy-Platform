@@ -55,6 +55,7 @@ Router::connect('/select/event/{:args}', 'Base::selectEvent');
 Router::connect('/token', 'Users::token');
 #items
 Router::connect('/items/preview/{:event:[a-z0-9\-]+}/{:item:[a-z0-9\-]+}', 'Items::preview');
+<<<<<<< HEAD
 Router::connect('/items/removeItems/', 'Items::removeItems');
 Router::connect('/items/images/order/{:item:[a-z0-9\-]+}', 'Items::orderImages');
 #events
@@ -74,6 +75,9 @@ Router::connect('/files/associate/{:scope:(all|pending|orphaned)}/{:on:[a-z0-9\-
 Router::connect('/files/associate/{:scope:(all|pending|orphaned)}/{:on:[a-z0-9\-]+}/{:search_type:(affiliate|event)}', 'Files::associate');
 Router::connect('/files/associate/{:id:[0-9a-f]{24}}', 'Files::associate');
 Router::connect('/files/upload/{:args}', 'Files::upload');
+=======
+Router::connect('/items/images/order/{:item:[a-z0-9\-]+}', 'Items::orderImages');
+>>>>>>> Making event item images sortable.
 
 /**
  * ...and connect the rest of 'Pages' controller's urls.

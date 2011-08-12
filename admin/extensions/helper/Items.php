@@ -50,7 +50,7 @@ class Items extends \lithium\template\Helper {
 
 				    //if a related item is found
 				    if(!in_array($key, $related_items) ) {
-				    	$itemDropDown .= "<option value='".$key."' >" . $text . "</option>";
+	    	$itemDropDown .= "<option value='".$key."' >" . $text . "</option>";
 				    } else {
 				    	$hasRelated = true;
 				    	$itemDropDown .= "<option value='".$key."' disabled='1' selected='selected'>".$text."</option>";
@@ -174,7 +174,6 @@ class Items extends \lithium\template\Helper {
 			return $html = "There are no items";
 		}
 	}
-
 	protected function _images($item=null) {
 		if(is_object($item)) {
 			$images = $item->images();

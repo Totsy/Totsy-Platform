@@ -298,7 +298,6 @@ class ItemsController extends BaseController {
 		$item = Item::first(array(
 			'conditions' => array('_id' => $this->request->item)
 		));
-
 		if ($item && ($images = $this->request->data['image'])) {
 			Logger::debug('Reordering images `' . implode(', ', array_values($images)) . '`');
 
