@@ -116,6 +116,9 @@
 	<li>
 		<?php echo $this->html->link('Email Management', array('Base::selectEvent', 'args'=>'email')); ?>
 	</li>
+	<li>
+		<?php echo $this->html->link('File Management', array('Files::index')); ?>
+	</li>
 	<li class="secondary">
 		<?php echo $this->html->link('Logout', 'Users::logout'); ?>
 	</li>
