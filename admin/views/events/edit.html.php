@@ -211,8 +211,30 @@ for ( i=1; i<6; i++ ) {
 	}
 </script>
 
+<!-- Sorting of primary/secondary event item images -->
+<script>
+$(function() {
+	$(".images.sortable").sortable({
+		opacity: 0.7,
+		placeholder: "placeholder",
+		containment: 'document',
+		dropOnEmpty: false,
+		revert: 100,
+		scrollSensitivity: 50,
+		scrollSpeed: 70,
+		update: function(event, ui) {
+			data = $(this).sortable("serialize");
 
-<?=$this->form->create(null, array('id' => "events_edit", 'enctype' => "multipart/form-data")); ?>
+			$.ajax({
+				type: "POST",
+				url: $(this).attr('target'),
+				data: data
+			});
+		}
+	});
+});
+</script>
+<?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
 <div class="grid_16">
 	<h2>Editing Event - <?=$event->name?></h2>
 </div>

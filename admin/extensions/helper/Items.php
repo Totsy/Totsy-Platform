@@ -180,23 +180,30 @@ class Items extends \lithium\template\Helper {
 
 	protected function _images($item) {
 		$images = $item->images();
-		$fallback = '/img/no-image-small.jpeg';
-		$html = '';
+
+		$html = '<ul class="images sortable"';
+		$html .= ' target="';
+		$html .= $this->_context->url(array(
+			'controller' => 'items', 'action' => 'orderImages',
+			'item' => (string) $item->_id
+		));
+		$html .= '">';
 
 		if ($images['primary']) {
+			$html .= '<li id="image-' . $images['primary']->_id . '">';
 			$html .= $this->_context->html->image($images['primary']->url(), array(
-				'id' => 'file-' . $images['primary']->_id,
-				'alt' => 'item image',
-				'class' => 'primary'
+				'alt' => 'item image'
 			));
+			$html .= '</li>';
 		}
 		foreach ($images['alternate'] as $image) {
+			$html .= '<li id="image-' . $image->_id . '">';
 			$html .= $this->_context->html->image($image->url(), array(
-				'id' => 'file-' . $image->_id,
-				'alt' => 'item image',
-				'class' => 'secondary'
+				'alt' => 'item image'
 			));
+			$html .= '</li>';
 		}
+		$html .= '</ul>';
 		return $html;
 	}
 }
