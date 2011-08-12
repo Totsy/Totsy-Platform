@@ -18,10 +18,10 @@ class EventImage extends File {
 	 * @var types array
 	 */
 	public static $types = array(
-		'event'        => array('dimensions' => array(300, 193)),
-		'logo'         => array('dimensions' => array(148, 52)),
-		'splash_big'   => array('dimensions' =>  array(355, 410)),
-		'splash_small' => array('dimensions' => array(298, 344))
+		'event'        => array('dimensions' => array(300, 193), 'multiple' => false),
+		'logo'         => array('dimensions' => array(148, 52), 'multiple' => false),
+		'splash_big'   => array('dimensions' =>  array(355, 410), 'multiple' => false),
+		'splash_small' => array('dimensions' => array(298, 344), 'multiple' => false)
 	);
 
 	/*
