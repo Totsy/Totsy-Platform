@@ -9,20 +9,20 @@ class ItemFile extends \admin\extensions\sabre\dav\GenericFile {
 
 	public function put($data) {
 		$position = $this->getParent()->getValue();
+		$type = ItemImage::$type[$this->getParent()->getValue()];
 		$item = $this->_item();
 
 		$file = ItemImage::resizeAndSave($position, $data);
 
-		$value = $this->getParent()->getValue();
-		if (ItemImage::$types[$value]['multiple']) {
-			$images = $item->{"{$value}_images"}->data();
+		if ($type['multiple']) {
+			$images = $item->{$type['field']}->data();
 
 			if (!in_array($file->_id, $images)) {
 				$images[] = $file->_id;
 			}
-			$item->{"{$value}_images"} = $images;
+			$item->{$type['field']} = $images;
 		} else {
-			$item->{"{$value}_image"} = $file->_id;
+			$item->{$type['field']} = $file->_id;
 		}
 		return (boolean) $item->save();
 	}
@@ -31,18 +31,18 @@ class ItemFile extends \admin\extensions\sabre\dav\GenericFile {
 		if (!$file = $this->_file()) {
 			return;
 		}
+		$type = ItemImage::$type[$this->getParent()->getValue()];
 		$item = $this->_item();
 
-		$value = $this->getParent()->getValue();
-		if (ItemImage::$types[$value]['multiple']) {
-			$images = $item->{"{$value}_images"}->data();
+		if ($type['multiple']) {
+			$images = $item->{$type['field']}->data();
 
 			$key = array_search((string) $file->_id, $images);
 			unset($images[$key]);
 
-			$item->{"{$value}_images"} = $images;
+			$item->{$type['field']} = $images;
 		} else {
-			$item->{"{$value}_image"} = null;
+			$item->{$type['field']} = null;
 		}
 		return (boolean) $item->save();
 	}
