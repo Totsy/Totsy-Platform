@@ -35,6 +35,13 @@ class FilesController extends \lithium\action\Controller {
 		return compact('files');
 	}
 
+	public function orphaned() {
+		$this->_render['layout'] = !$this->request->is('ajax');
+
+		$files = File::orphaned();
+		return compact('files');
+	}
+
 	public function delete() {
 		$file = File::create(array('_id' => $this->request->id), array('exists' => true));
 		$result = $file->delete();
