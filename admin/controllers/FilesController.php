@@ -12,6 +12,7 @@ use admin\models\ItemImage;
 use Sabre_DAV_Server;
 use admin\extensions\sabre\dav\EventsDirectory;
 use admin\extensions\sabre\dav\PendingDirectory;
+use admin\extensions\sabre\dav\OrphanedDirectory;
 use Sabre_DAV_Locks_Backend_File;
 use Sabre_DAV_Locks_Plugin;
 use Sabre_DAV_TemporaryFileFilterPlugin;
@@ -292,7 +293,8 @@ class FilesController extends \lithium\action\Controller {
 
 		$root = array(
 			new EventsDirectory(),
-			new PendingDirectory()
+			new PendingDirectory(),
+			new OrphanedDirectory()
 		);
 		$server = new Sabre_DAV_Server($root);
 
