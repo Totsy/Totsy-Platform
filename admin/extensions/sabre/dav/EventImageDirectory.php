@@ -15,14 +15,16 @@ class EventImageDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 	}
 
 	public function getChildren() {
+		$type = EventImage::$type[$this->getValue()];
 		$item = $this->_item();
+
 		$children = array();
 
-		if (!isset($item->images[$this->getValue() . '_image'])) {
+		if (!isset($item->images[$type['field']])) {
 			return array();
 		}
 		$file = EventImage::first(array(
-			'conditions' => array('_id' => $item->images[$this->getValue() . '_image'])
+			'conditions' => array('_id' => $item->images[$type['field']])
 		));
 
 		if ($file) {
@@ -39,10 +41,11 @@ class EventImageDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 
 	public function createFile($name, $data = null) {
 		$file = EventImage::resizeAndSave($this->getValue(), $data, compact('name'));
+		$type = EventImage::$type[$this->getValue()];
 		$item = $this->_item();
 
 		$item->images = array(
-			$this->getValue() . '_image' => $file->_id
+			$type['field'] => $file->_id
 		) + $item->images->data();
 
 		return (boolean) $item->save();
