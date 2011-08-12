@@ -16,14 +16,13 @@ class ItemImageDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 
 	public function getChildren() {
 		$item = $this->_item();
-
 		$children = array();
 
-		if (($value = $this->getValue()) == 'alternate') {
-			if (!$item->alternate_images) {
+		if (ItemImage::$types[$value = $this->getValue()]['multiple']) {
+			if (!$item->{"{$value}_images"}) {
 				return $children;
 			}
-			foreach ($item->alternate_images as $id) {
+			foreach ($item->{"{$value}_images"} as $id) {
 				$children[] = new ItemFile(array('value' => $id, 'parent' => $this));
 			}
 			return $children;
@@ -39,11 +38,11 @@ class ItemImageDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 		$name = pathinfo($name, PATHINFO_FILENAME);
 		$item = $this->_item();
 
-		if (($value = $this->getValue()) == 'alternate') {
-			if (!$item->alternate_images) {
+		if (ItemImage::$types[$value = $this->getValue()]['multiple']) {
+			if (!$item->{"{$value}_images"}) {
 				return false;
 			}
-			return in_array($name, $item->alternate_images->data());
+			return in_array($name, $item->{"{$value}_images"}->data());
 		}
 		return isset($item->{"{$value}_image"});
 	}
@@ -52,13 +51,13 @@ class ItemImageDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 		$file = ItemImage::resizeAndSave($this->getValue(), $data, compact('name'));
 		$item = $this->_item();
 
-		if (($value = $this->getValue()) == 'alternate') {
-			$images = $item->alternate_images ? $item->alternate_images->data() : array();
+		if (ItemImage::$types[$value = $this->getValue()]['multiple']) {
+			$images = $item->{"{$value}_images"} ? $item->{"{$value}_images"}->data() : array();
 
 			if (!in_array($file->_id, $images)) {
 				$images[] = $file->_id;
 			}
-			$item->alternate_images = $images;
+			$item->{"{$value}_images"} = $images;
 		} else {
 			$item->{"{$value}_image"} = $file->_id;
 		}

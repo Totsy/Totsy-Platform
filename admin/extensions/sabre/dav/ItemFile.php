@@ -13,13 +13,14 @@ class ItemFile extends \admin\extensions\sabre\dav\GenericFile {
 
 		$file = ItemImage::resizeAndSave($position, $data);
 
-		if (($value = $this->getParent()->getValue()) == 'alternate') {
-			$images = $item->alternate_images->data();
+		$value = $this->getParent()->getValue();
+		if (ItemImage::$types[$value]['multiple']) {
+			$images = $item->{"{$value}_images"}->data();
 
 			if (!in_array($file->_id, $images)) {
 				$images[] = $file->_id;
 			}
-			$item->alternate_images = $images;
+			$item->{"{$value}_images"} = $images;
 		} else {
 			$item->{"{$value}_image"} = $file->_id;
 		}
@@ -32,13 +33,14 @@ class ItemFile extends \admin\extensions\sabre\dav\GenericFile {
 		}
 		$item = $this->_item();
 
-		if (($value = $this->getParent()->getValue()) == 'alternate') {
-			$images = $item->alternate_images->data();
+		$value = $this->getParent()->getValue();
+		if (ItemImage::$types[$value]['multiple']) {
+			$images = $item->{"{$value}_images"}->data();
 
 			$key = array_search((string) $file->_id, $images);
 			unset($images[$key]);
 
-			$item->alternate_images = $images;
+			$item->{"{$value}_images"} = $images;
 		} else {
 			$item->{"{$value}_image"} = null;
 		}
