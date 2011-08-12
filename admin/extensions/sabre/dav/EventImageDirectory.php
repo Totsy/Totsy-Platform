@@ -16,6 +16,7 @@ class EventImageDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 
 	public function getChildren() {
 		$item = $this->_item();
+		$children = array();
 
 		if (!isset($item->images[$this->getValue() . '_image'])) {
 			return array();
@@ -24,9 +25,10 @@ class EventImageDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
 			'conditions' => array('_id' => $item->images[$this->getValue() . '_image'])
 		));
 
-		return array(
-			new EventFile(array('value' => $file->_id, 'parent' => $this))
-		);
+		if ($file) {
+			$children[] = new EventFile(array('value' => $file->_id, 'parent' => $this));
+		}
+		return $children;
 	}
 
 	public function childExists($name) {
