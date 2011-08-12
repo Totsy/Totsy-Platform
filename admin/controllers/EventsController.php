@@ -149,19 +149,19 @@ class EventsController extends BaseController {
 			// Comparison of OLD Event attributes and the NEW Event attributes
 			$changed = "";
 
-			if ($eventData[name] != $event->name) {
+			if ($eventData['name'] != $event->name) {
 				$changed .= "Name changed from <strong>{$event->name}</strong> to <strong>{$eventData[name]}</strong><br/>";
 			}
 
-			if ($eventData[blurb] != $event->blurb) {
+			if ($eventData['blurb'] != $event->blurb) {
 				$changed .= "Blurb changed from <strong>{$event->blurb}</strong> to <strong>{$eventData[blurb]}</strong><br/>";
 			}
 
-			if ($eventData[enabled] != $event->enabled) {
+			if ($eventData['enabled'] != $event->enabled) {
 				$changed .= 'Enabled changed from <strong>'.(int)$event->enabled.'</strong> to <strong>'.(int)$eventData[enabled].'</strong><br/>';
 			}
 
-			if ($eventData[tangible] != $event->tangible) {
+			if ($eventData['tangible'] != $event->tangible) {
 				$changed .= 'Tangible changed from <strong>'.(int)$event->tangible.'</strong> to <strong>'.(int)$eventData[tangible].'</strong><br/>';
 			}
 
@@ -175,7 +175,7 @@ class EventsController extends BaseController {
 				$changed .= "End Date changed from  <strong>{$temp}</strong> to <strong>{$end_date}</strong><br/>";
 			}
 
-			if ($eventData[ship_message] != $event->ship_message) {
+			if ($eventData['ship_message'] != $event->ship_message) {
 				$changed .= "Ship Message changed from <strong>{$event->ship_message}</strong> to <strong>{$eventData[ship_message]}</strong><br/>";
 			}
 
@@ -184,7 +184,7 @@ class EventsController extends BaseController {
 				$changed .= "Ship Date changed from  <strong>{$temp}</strong> to <strong>{$ship_date}</strong><br/>";
 			}
 
-			if ($eventData[enable_items] != $event->enable_items) {
+			if ($eventData['enable_items'] != $event->enable_items) {
 				$changed .= 'Enabled Items from <strong>'.(int)$event->enable_items.'</strong> to <strong>'.(int)$eventData[enable_items].'</strong><br/>';
 			}
 
@@ -199,7 +199,7 @@ class EventsController extends BaseController {
 			//Pushing modification datas to db
 			$modifications = $event->modifications;
 			$modifications[] = $modification_datas;
-			$eventData[modifications] = $modifications;
+			$eventData['modifications'] = $modifications;
 
 			// End of Comparison of OLD Event Attributes and NEW event attributes
 
@@ -326,7 +326,7 @@ class EventsController extends BaseController {
 				foreach ($eventItems as $itemDetail) {
 					$i=0;
 					$itemAttributes = array_diff_key($itemDetail, array_flip($standardHeader));
-					
+
           			//check radio box for 'final sale' text append
           			$enableFinalsale = $this->request->data['enable_finalsale'];
 
@@ -362,7 +362,7 @@ class EventsController extends BaseController {
 
 					$newItem = array_merge(Item::castData($itemDetail), Item::castData($details));
 					$newItem['vendor_style'] = (string) $newItem['vendor_style'];
-					
+
 					if ((array_sum($newItem['details']) > 0) && $item->save($newItem)) {
 						$items[] = (string) $item->_id;
 
