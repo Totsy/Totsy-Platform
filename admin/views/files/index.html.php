@@ -18,21 +18,42 @@
 			<p>
 				Open your WebDAV client and connect to
 				<?=$this->html->link($this->url('Files::dav', array('absolute' => true)), 'Files::dav'); ?>.
-			</p>
-			<p>
 				<?=$this->html->link('Cyberduck', 'http://cyberduck.ch/', array('target' => 'new')); ?>
 				is the recommended WebDAV client and works under both Windows and OSX.
 			</p>
+			<p>
+				When opening the WebDAV share you'll be presented with the following directory structure.
+				<dl>
+					<dt>events</dt>
+					<dd>
+						Contains events and event items. Dropping files into image folders
+						will associate them with the item. Deleting files from the folders
+						will cause the files to be <em>disassociated</em>.
+					</dd>
+
+					<dt>orphaned</dt>
+					<dd>
+						Items in this folder can be deleted only.
+					</dd>
+
+					<dt>pending</dt>
+					<dd>
+						Drop files here that belong to future events/items that don't exist yet.
+						Files can be added to and delted from this folder.
+					</dd>
+
+				</dl>
+			</p>
 		</div>
 	</div>
-	
+
 	<div class="box">
 		<h2>Upload via Form</h2>
 		<div class="block">
 			<p>
 				Use this form to upload new files. These files will be marked as <em>pending</em> as long they are not
 				associated with an event or item.
-			
+
 				<form id="Media"></form>
 				<div id="agile_file_upload"></div>
 				<script type="text/javascript">

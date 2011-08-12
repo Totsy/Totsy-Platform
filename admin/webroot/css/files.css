@@ -24,3 +24,9 @@ li.file {
 	display: inline-block;
 	margin-left: 10px;
 }
+dt {
+	font-weight: bold;
+}
+dd + dt {
+	margin-top: .5em;
+}
