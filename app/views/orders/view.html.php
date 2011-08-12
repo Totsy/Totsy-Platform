@@ -358,4 +358,21 @@
 </noscript>
 
 <!-- END OF Google Code for acheteurs Remarketing List --> 
+
+<!--  E-COMMERCE -->
+<script type="text/javascript">
+document.write("<img src=\""+document.location.protocol+"//dis.us.criteo.com/dis/dis.aspx?p1="+escape("v=2&wi=7714288&s=1&t=<?=$order->order_id?><?php 
+	    $iCounter = 1;
+		foreach($itemsByEvent as $event){ 
+			 foreach($event as $item){ 
+			 	?>&i<?=$iCounter;?>=<? echo (string) $item['_id'];?>&<? 
+			 	?>p<?=$iCounter;?>=<?=$item['sale_retail']?>&<?
+			 	?>q<?=$iCounter;?>=<?=$item['quantity']?><?
+			 	
+				$iCounter++;
+			} 
+		} 
+?>")+"&t1=transaction&p=3290&c=2&resptype=gif\" width=\"1\" height=\"1\" />");
+</script>
+<!--  END OF E-COMMERCE -->
 <?php endif ?>
