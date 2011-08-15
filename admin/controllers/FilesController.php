@@ -156,7 +156,6 @@ class FilesController extends \lithium\action\Controller {
 					return $this->render(array('status' => 500, 'head' => true));
 				}
 				Logger::debug('Receiving uploaded file.');
-
 				/* Always want an array of objects, but if a single file was uploaded,
 				   it will come in as a single object that we can't loop the way we would
 				   an array of objects. */

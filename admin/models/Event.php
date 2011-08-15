@@ -83,6 +83,7 @@ class Event extends \lithium\data\Model {
 		$time = date('ymdis', $event->_id->getTimestamp());
 		return 'TOT'.'-'.$vendorName.$time;
 	}
+
 	public static function makecell($content, $error = false) {
 		if($error){
 			return "<div class=xls_cell_error>$content</div>";
@@ -243,7 +244,6 @@ class Event extends \lithium\data\Model {
 		}
 		return $items;
 	}
-
 	/* Handling of attached images. */
 
 	public function attachImage($entity, $name, $id) {
@@ -272,7 +272,6 @@ class Event extends \lithium\data\Model {
 
 	public function images($entity) {
 		$results = array();
-
 		foreach (EventImage::$types as $name => $type) {
 			$results[$name] = $type['multiple'] ? array() : null;
 

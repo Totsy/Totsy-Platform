@@ -36,7 +36,6 @@ class Image extends \admin\models\File {
 		);
 		return parent::write($data, $meta);
 	}
-
 	/*
 	 *
 	 * @param string $position The item image position (primary, zoom, etc.)
@@ -59,13 +58,11 @@ class Image extends \admin\models\File {
 			$image = $imagine->load($data);
 		} elseif (is_resource($data)) {
 			$data = static::_upgrade($data);
-
 			rewind($data);
 			$image = $imagine->load(stream_get_contents($data));
 		} else {
 			return false;
 		}
-
 		// Do not resize if the uploaded image is smaller than the dimensions used on the site
 		$uploaded_image_box = $image->getSize();
 		$uploaded_image_width = $uploaded_image_box->getWidth();
@@ -159,12 +156,12 @@ class Image extends \admin\models\File {
 					$item = $model::first(array('conditions' => array('vendor_style' => $vendor_style, 'event' => $meta['event_id'])));
 					Logger::debug("Found item `{$item->_id}` by vendor style for `{$meta['name']}`.");
 				}
-				
+
 				//elseif ($model == 'admin\models\Banner' && isset($meta['banner_id'])) {
 				//	$banner = Banner::find($meta['banner_id']);
 				//	Logger::error("Found banner");
 				//}
-				
+
 				else {
 					$item = $model::first(array('conditions' => compact('url')));
 					Logger::debug("Found item `{$item->_id}` by URL for `{$meta['name']}`.");
