@@ -62,17 +62,35 @@ class FilesController extends \lithium\action\Controller {
 	 * @return array
 	 */
 	public function upload($type = null) {
-
-		switch(strtolower($type)) {
-			case 'event':
-				$this->processEventImages();
-				$this->processEventItemImages();
-				break;
+		switch (strtolower($type)) {
 			case 'all':
-				$this->processEventImages();
-				$this->processEventItemImages();
-				break;
+			case 'event':
+				if (empty($this->request->data['Filedata'])) {
+					break;
+				}
+				/* Always want an array of objects, but if a single file was uploaded,
+				   it will come in as a single object that we can't loop the way we would
+				   an array of objects. */
+				if (isset($this->request->data['Filedata'][0])) {
+					$files = $this->request->data['Filedata'];
+				} else {
+					$files = array(0 => $this->request->data['Filedata']);
+				}
 
+				foreach ($files as $file) {
+					if (EventImage::process($file)) {
+						continue;
+					}
+					if (ItemImage::process($file)) {
+						continue;
+					}
+
+					/* All unmatched files are not resized and saved as pending. */
+					$handle = fopen($file['tmp_name'], 'rb');
+					static::write($handle, array('name' => $file['name'], 'pending' => true));
+					fclose($handle);
+				}
+			break;
 			default:
 				// This was the old upload() method code...
 				$success = false;
@@ -99,171 +117,8 @@ class FilesController extends \lithium\action\Controller {
 						return array('id' => $file->_id, 'fileName' => $meta['name']);
 					}
 				}
-				break;
+			break;
 		}
-	}
-
-	/**
-	 * Processes event images uploaded from a web browser via the admin UI.
-	 *
-	 * @return
-	*/
-	public function processEventImages() {
-		$update = false;
-		$event_images = array();
-		if(isset($this->request->data['Filedata']) && !empty($this->request->data['Filedata'])) {
-			// Always want an array of objects, but if a single file was uploaded, it will come in as a single object that we can't loop the way we would an array of objects
-			$files = (isset($this->request->data['Filedata'][0])) ? $this->request->data['Filedata']:array(0 => $this->request->data['Filedata']);
-			// Now loop the array of files
-			foreach($files as $file) {
-				// Event Image (2 ways to name)
-				if(preg_match('/^events\_.+\_image\..*/i', $file['name'])) {
-					$event_images['event'] = $file;
-				}
-				// matches: events_pretty-url.jpg
-				// ...but events_pretty-url_anything... won't be matched.
-				if(preg_match('/^events\_.+(?<!\_|\_logo|\_big\_splash|\_small\_splash|\_splash\_small|\_splash\_big)\..*/i', $file['name'])) {
-					$event_images['event'] = $file;
-				}
-				// Event Logo
-				if(preg_match('/^events\_.+\_logo\..*/i', $file['name'])) {
-					$event_images['logo'] = $file;
-				}
-				// Event Big Splash Image (2 ways to name)
-				if(preg_match('/^events\_.+\_big\_splash\..*/i', $file['name'])) {
-					$event_images['splash_big'] = $file;
-				}
-				if(preg_match('/^events\_.+\_splash\_big\..*/i', $file['name'])) {
-					$event_images['splash_big'] = $file;
-				}
-				// Event Small Splash Image (2 ways to name)
-				if(preg_match('/^events\_.+\_small\_splash\..*/i', $file['name'])) {
-					$event_images['splash_small'] = $file;
-				}
-				if(preg_match('/^events\_.+\_splash\_small\..*/i', $file['name'])) {
-					$event_images['splash_small'] = $file;
-				}
-			}
-		}
-		// Resize and save
-		if(!empty($event_images)) {
-			foreach($event_images as $k => $v) {
-				preg_match('/^events\_(.+)\_.*/i', $v['name'], $matches);
-				$event_url = (isset($matches[1])) ? $matches[1]:false;
-				// If we don't have an event URL, what's the point of saving the image?
-				// We could never associate it and the file was probably named incorrectly.
-				if($event_url) {
-					// So save it and return the File document object.
-					$file = EventImage::resizeAndSave($k, $v, array('name' => $v['name']));
-
-					// The event document to update is determined by pretty URL (from the file name).
-					// Update the event document.
-					if(!empty($file)) {
-						//d('SAVING: images.' . $k . '_image => ' . (string)$file->_id);
-						$update = Event::update(
-							// query
-							array('$set' => array('images.' . $k . '_image' => (string)$file->_id)),
-							// conditions
-							array('url' => $event_url),
-							array('atomic' => false)
-						);
-						//d($update);
-					}
-
-					$file = false;
-				}
-			}
-		}
-		return $update;
-	}
-
-	/**
-	 * Processes event item images uploaded from a web browser via the admin UI.
-	 * Example Item URL: horses-velour-top-pants-set-fuschia
-	 *
-	 * @return
-	*/
-	public function processEventItemImages() {
-		$update = false;
-		$item_images = array();
-		if(isset($this->request->data['Filedata']) && !empty($this->request->data['Filedata'])) {
-			// Always want an array of objects, but if a single file was uploaded, it will come in as a single object that we can't loop the way we would an array of objects
-			$files = (isset($this->request->data['Filedata'][0])) ? $this->request->data['Filedata']:array(0 => $this->request->data['Filedata']);
-			$i=0;
-			foreach($files as $file) {
-				// Primary
-				if(preg_match('/^items\_.+\_primary\..*/i', $file['name'])) {
-					$item_images['primary'] = $file;
-				}
-				// Zoom
-				if(preg_match('/^items\_.+\_zoom\..*/i', $file['name'])) {
-					$item_images['zoom'] = $file;
-				}
-
-					// NOT STORED IN THE GRID
-//					// Image in cart
-//					if(preg_match('/^items\_.+\_cart\..*/i', $file['name'])) {
-//						$item_images['cart'] = $file;
-//					}
-//					// Thumbnail in events
-//					if(preg_match('/^items\_.+\_event_thumbnail\..*/i', $file['name'])) {
-//						$item_images['event_thumbnail'] = $file;
-//					}
-
-				// Can be multiple alternative images
-				if(preg_match('/^items\_.+\_alternate.+\..*/i', $file['name'])) {
-					$item_images['alternate' . $i] = $file;
-				}
-				$i++;
-			}
-		}
-
-		// Resize and save
-		if(!empty($item_images)) {
-			foreach($item_images as $k => $v) {
-				$type = $k;
-				// There can be multiple alternate images (this key holds an array of arrays)
-				if(substr($k, 0, 8) == 'alternate') {
-					$type = 'alternate';
-				}
-
-				preg_match('/^items\_(.+)\_.*/i', $v['name'], $matches);
-				$item_url = (isset($matches[1])) ? $matches[1]:false;
-				// If we don't have an item URL, what's the point of saving the image?
-				// We could never associate it and the file was probably named incorrectly.
-				if($item_url) {
-					// So save it and return the File document object.
-					$file = ItemImage::resizeAndSave($type, $v, array('name' => $v['name']));
-					$file = ItemImage::resizeAndSave($type, $v);
-
-					// The item document to update is determined by pretty URL (from the file name).
-					// Update the event document.
-					if(!empty($file)) {
-						//d('SAVING: ' . $type . '_image => ' . (string)$file->_id);
-						if($type == 'alternate') {
-							// alternate_images
-							$update = Item::update(
-								array('$addToSet' => array('alternate_images' => (string)$file->_id)),
-								array('url' => $item_url),
-								array('atomic' => false)
-							);
-						} else {
-							$update = Item::update(
-								// query
-								array('$set' => array($type . '_image' => (string)$file->_id)),
-								// conditions
-								array('url' => $item_url),
-								array('atomic' => false)
-							);
-						}
-						//d($update);
-					}
-
-					$file = false;
-				}
-			}
-		}
-		return $update;
 	}
 
 	/**
