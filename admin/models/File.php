@@ -20,7 +20,11 @@ class File extends \lithium\data\Model {
 	 *        with raw bytes or a string containing the path to a readable file.
 	 * @return object|boolean
 	 */
-	public static function write($data, $meta = array()) {
+	public static function write($data, $meta = array(), array $options = array()) {
+		$options += array(
+			'dedupe' => true
+		);
+
 		/* Normalize $data */
 		$close = false;
 
@@ -39,7 +43,7 @@ class File extends \lithium\data\Model {
 		}
 
 		/* Dupe detection */
-		if ($dupe = File::_dupe($handle)) {
+		if ($options['dedupe'] && ($dupe = static::_dupe($handle))) {
 			return $dupe;
 		}
 
@@ -86,7 +90,7 @@ class File extends \lithium\data\Model {
 		hash_update_stream($context, $handle);
 		$hash = hash_final($context);
 
-		return File::first(array('conditions' => array('md5' => $hash)));
+		return static::first(array('conditions' => array('md5' => $hash)));
 	}
 
 	public static function used($id) {
