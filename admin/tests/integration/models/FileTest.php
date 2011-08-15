@@ -43,7 +43,6 @@ class FileTest extends \lithium\test\Integration {
 		fclose($handle);
 	}
 
-
 	public function testWriteMeta() {
 		$file = File::write(uniqid(), array('foo' => 'bar'));
 
@@ -96,11 +95,9 @@ class FileTest extends \lithium\test\Integration {
 
 	public function testPending() {
 		$before = File::pending()->count();
-
 		$fileA = File::write('test-a');
 		$fileB = File::write('test-b', array('pending' => true));
 		$fileC = File::write('test-c', array('pending' => true));
-
 		$result = File::pending()->count() - $before;
 		$expected = 2;
 		$this->assertEqual($expected, $result);
@@ -123,7 +120,6 @@ class FileTest extends \lithium\test\Integration {
 		$fileA->delete();
 		$fileB->delete();
 	}
-
 	public function testDetectMimeTypeFromBytes() {
 		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
 		$bytes = file_get_contents($file);
