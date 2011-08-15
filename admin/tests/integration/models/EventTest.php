@@ -1,11 +1,11 @@
 <?php
 
-namespace admin\tests\cases\models;
+namespace admin\tests\integration\models;
 
 use admin\models\Event;
 use li3_fixtures\test\Fixture;
 
-class EventTest extends \lithium\test\Unit {
+class EventTest extends \lithium\test\Integration {
 
 	public function testUpdateKeepsModifications() {
 		$fixtures = Fixture::load('Event');
