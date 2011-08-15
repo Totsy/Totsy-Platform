@@ -30,3 +30,9 @@ dt {
 dd + dt {
 	margin-top: .5em;
 }
+h2 + .actions {
+	margin-top: 1em;
+}
+.actions a + a:before {
+	content: " / ";
+}
