@@ -26,6 +26,13 @@ class Image extends \admin\models\File {
 	 */
 	public static $types = array();
 
+	public static function write($data, $meta = array()) {
+		$meta += array(
+			'dimensions' => static::detectDimensions($bytes)
+		);
+		return parent::write($data, $meta);
+	}
+
 	/*
 	 *
 	 * @param string $position The item image position (primary, zoom, etc.)
@@ -103,6 +110,23 @@ class Image extends \admin\models\File {
 			}
 		}
 		return false;
+	}
+
+	public function dimensions($entity) {
+		if ($entity->dimensions) {
+			return $entity->dimensions->data();
+		}
+		return static::detectDimensions($entity->file->getBytes());
+	}
+
+	public static function detectDimensions($data) {
+		$imagine = new Imagine();
+		$box = $imagine->load($data)->getSize();
+
+		return array(
+			'width' => $box->getWidth(),
+			'height' => $box->getHeight()
+		);
 	}
 }
 
