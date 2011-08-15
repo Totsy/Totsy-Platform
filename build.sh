@@ -122,7 +122,7 @@ case $COMMAND in
 
 		echo "Running admin tests..."
 		cd $PROJECT_DIR/admin
-		libraries/lithium/console/li3 test tests/cases/models/EventTest.php
+		libraries/lithium/console/li3 test tests/integration/models/EventTest.php
 		# libraries/lithium/console/li3 test tests/cases/models
 		# libraries/lithium/console/li3 test tests/cases/controllers
 		# libraries/lithium/console/li3 test tests/cases/extensions
