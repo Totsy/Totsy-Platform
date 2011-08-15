@@ -113,7 +113,6 @@ class Image extends \admin\models\File {
 			$message = "This method can only be called from a subclass i.e. `EventImage`.";
 			throw new BadMethodCallException($message);
 		}
-
 		$model = str_replace('Image', '', get_called_class());
 		$source = $model::meta('source');
 
