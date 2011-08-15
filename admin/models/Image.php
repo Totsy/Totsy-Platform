@@ -66,18 +66,25 @@ class Image extends \admin\models\File {
 	 *
 	 * @return boolean
 	 */
-	public static function process($file) {
+	public static function process($data, $meta = array()) {
 		$model = str_replace('Image', '', get_called_class());
 		$source = $model::meta('source');
+
+		if (!isset($meta['name'])) {
+			$message  = 'No value provided for `name` for meta; ';
+			$message .= 'but a name is neeeded in order to match against, failing.';
+			trigger_error($message, E_USER_WARNING);
+			return false;
+		}
 
 		foreach (static::$types as $name => $type) {
 			foreach ($type['regex'] as $regex) {
 				/* Resize and save matched files. */
-				if (!preg_match($regex, $file['name'])) {
+				if (!preg_match($regex, $meta['name'])) {
 					continue;
 				}
 
-				preg_match('/^' . $source . '\_(.+)\_.*/i', $file['name'], $matches);
+				preg_match('/^' . $source . '\_(.+)\_.*/i', $meta['name'], $matches);
 				$url = isset($matches[1]) ? $matches[1] : false;
 
 				/* If we don't have an event URL, what's the point of saving the image?
@@ -87,7 +94,7 @@ class Image extends \admin\models\File {
 				}
 
 				/* So save it and return the File document object. */
-				$file = static::resizeAndSave($name, $file, array('name' => $file['name']));
+				$file = static::resizeAndSave($name, $data, $meta);
 
 				if (!$file) {
 					continue;

@@ -57,6 +57,27 @@ class FilesController extends \lithium\action\Controller {
 		return $this->redirect($this->request->referer());
 	}
 
+	public function associate() {
+		$result = false;
+
+		if ($file = File::first(array('_id' => $this->request->id))) {
+			$meta = array('name' => $file->name);
+			$bytes = $file->file->getBytes();
+
+			if (EventImage::process($bytes, $meta) || ItemImage::process($bytes, $meta)) {
+				/* This implicitly moves it into the "orphaned" state. */
+				$result = (boolean) $file->save(array('pending' => false));
+			}
+		}
+		if ($this->request->is('ajax')) {
+			return $this->render(array(
+				'status' => $result ? 200 : 500,
+				'head' => true
+			));
+		}
+		return $this->redirect($this->request->referer());
+	}
+
 	/**
 	 * Get the uploaded file from $POST and write it to GridFS if valid.
 	 *
@@ -79,22 +100,22 @@ class FilesController extends \lithium\action\Controller {
 				} else {
 					$files = array(0 => $this->request->data['Filedata']);
 				}
-
 				foreach ($files as $file) {
-					if (EventImage::process($file)) {
-						Logger::debug('File processed as event image.');
-						continue;
-					}
-					if (ItemImage::process($file)) {
-						Logger::debug('File processed as item image.');
-						continue;
-					}
-					/* All unmatched files are not resized and saved as pending. */
 					$handle = fopen($file['tmp_name'], 'rb');
-					File::write($handle, array('name' => $file['name'], 'pending' => true));
-					fclose($handle);
+					$meta = array('name' => $file['name']);
 
-					Logger::debug('Saving unmatched file as pending.');
+					if (EventImage::process($handle, $meta)) {
+						Logger::debug('File processed as event image.');
+
+					} elseif (ItemImage::process($handle, $meta)) {
+						Logger::debug('File processed as item image.');
+
+					} else { /* All unmatched files are not resized and saved as pending. */
+						File::write($handle, $meta + array('pending' => true));
+						Logger::debug('Saving unmatched file as pending.');
+
+					}
+					fclose($handle);
 				}
 			break;
 			default:
