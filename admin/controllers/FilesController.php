@@ -92,7 +92,7 @@ class FilesController extends \lithium\action\Controller {
 				}
 			break;
 			default:
-				// This was the old upload() method code...
+				/* @deprecated This was the old upload() method code... */
 				$success = false;
 				$enabled = array('item', 'event', 'banner', 'service');
 				$this->_render['template'] = in_array($type, $enabled) ? $type : 'upload';
@@ -173,6 +173,7 @@ class FilesController extends \lithium\action\Controller {
 	/**
 	 * Validate the file that is being uploaded.
 	 *
+	 * @deprecated
 	 * @return boolean
 	 */
 	protected function _validate($data) {
@@ -194,6 +195,7 @@ class FilesController extends \lithium\action\Controller {
 	/**
 	 * Parses file upload error code into human-readable phrase.
 	 *
+	 * @deprecated
 	 * @param int $err PHP file upload error constant.
 	 * @return string human-readable phrase to explain issue.
 	 */
