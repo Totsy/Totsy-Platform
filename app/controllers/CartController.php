@@ -43,7 +43,7 @@ class CartController extends BaseController {
 		$cartPromo = null; 
 		$cartCredit = null;
 		$services = null;
-		$message = '';	
+		$message = '';
 		#Get Users Informations
 		$user = Session::read('userLogin');
 		$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
@@ -52,7 +52,7 @@ class CartController extends BaseController {
 			$this->update();
 		}
 		#Get current Discount
-		$vars = Cart::getDiscount();
+		$vars = Cart::getDiscount(null,null,$this->request->data);
 		Cart::increaseExpires();
 		$cart = Cart::active(array('time' => '-3min'));
 		$test = $cart->data();
@@ -67,6 +67,7 @@ class CartController extends BaseController {
 		$i = 0;
 		$subTotal = 0;
 		$itemlist = array();
+
 		foreach($cart as $item){
 			if($cartExpirationDate < $item['expires']->sec) {
 				$cartExpirationDate = $item['expires']->sec;

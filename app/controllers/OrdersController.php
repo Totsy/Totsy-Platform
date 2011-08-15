@@ -355,7 +355,7 @@ class OrdersController extends BaseController {
 			//$tax=  AvaTax::getTax( compact('cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
 		}
 		#Get current Discount
-		$vars = Cart::getDiscount($shippingCost, $overShippingCost);
+		$vars = Cart::getDiscount($shippingCost, $overShippingCost,$this->request->data);
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
 		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
