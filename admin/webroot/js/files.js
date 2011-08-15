@@ -18,12 +18,14 @@ $(function() {
 		if (event.which != 1) {
 			return;
 		}
+		var item = $(this).parent().parent();
+
 		$.ajax({
 			async: false,
 			type: "DELETE",
 			url: $(this).attr('href'),
 			success: function() {
-				$(this).parent().parent().fadeOut("normal", function() {
+				item.fadeOut("normal", function() {
 					$(this).remove();
 				});
 			},
