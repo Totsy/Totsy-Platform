@@ -43,7 +43,7 @@ class BaseController extends \lithium\action\Controller {
 	 */
 	public function selectEvent($type = null) {
 		$events = null;
-		if(!empty($this->request->data)) {
+	/*	if(!empty($this->request->data)) {
 			$month_delay = (int) $this->request->data['month_delay'];
 			if ($month_delay === 48) {
 				$events = Event::find('all');
@@ -55,7 +55,8 @@ class BaseController extends \lithium\action\Controller {
 				));
 				$events = Event::find('all', array('conditions' => $conditions));
 			}
-		}
+		} */
+	    $events = Event::find('all');
 		return compact('events', 'type', 'month_delay');
 	}
 
