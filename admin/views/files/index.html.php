@@ -7,6 +7,7 @@
 <?=$this->html->style('agile_uploader.css');?>
 <?=$this->html->style('admin_common.css');?>
 
+
 <?php
 
 $url = null;
@@ -75,12 +76,17 @@ if (!empty($user['token'])) {
 			</p>
 			<p>
 				When opening the WebDAV share you'll be presented with the following directory structure.
+
 				<dl>
 					<dt>events</dt>
 					<dd>
 						Contains events and event items. Dropping files into image folders
 						will associate them with the item. Deleting files from the folders
 						will cause the files to be <em>disassociated</em>.
+
+						Please note that in contrast to uploading files via form,
+						files uploaded via WebDAV don't need to stick to the naming conventions
+						unless these files are added as pending.
 					</dd>
 
 					<dt>orphaned</dt>
@@ -92,8 +98,8 @@ if (!empty($user['token'])) {
 					<dd>
 						Drop files here that belong to future events/items that don't exist yet.
 						Files can be added to and deleted from this folder.
+						Files added should stick to the naming conventions in order to enable <em>auto-association</em>.
 					</dd>
-
 				</dl>
 			</p>
 		</div>
