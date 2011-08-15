@@ -77,7 +77,7 @@
 							)
 						); ?>
 					</td>
-					<td class="cart-desc" style="width:400px;">
+					<td class="cart-desc" style="width:475px;">
 						<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
 						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?></strong><br>
 						<strong>Color:</strong> <?=$item->color;?><br>
@@ -123,10 +123,10 @@
 				</tr>
 				<?php $x++; ?>
 			<?php endforeach ?>
-				<tr class="cart-total">
+				<tr class="cart-total" style="margin-top:30px !important">
 					<td colspan="3" id='subtotal' valign='top'>
 						
-						<div style="float: left;">
+						<div style="float: left">
 							
 							<div style="font-size: 12px; text-align:left!important">
 								<strong>Add <?php if(!empty($credit)): ?>
@@ -135,7 +135,7 @@
 									<a href='#' id='promos_lnk' onclick='open_promo();'>Optional Code</a></strong>
 							</div>
 							<div style='clear:both'></div>
-							<div>
+							<div id='promos_and_credit'>
 							<?=$this->form->create(null); ?>
 								<div id='promo' style='display:none'>
 									<?=$this->view()->render(array('element' => 'promocode'), array( 'orderPromo' => $cartPromo)); ?>
@@ -342,7 +342,7 @@ function deletechecked(message, id) {
 }
 //SUBMIT QUANTITY IN CASE OF DDWN CHANGE
 $(function () {
-	$("select").live("change keyup", function () {
+	$("'").live("change keyup", function () {
 		if($("select").val() == 0) {
 			$('input[name="rmv_item_id"]').val($(this).attr('id'));
 			$('#removeForm').submit();
