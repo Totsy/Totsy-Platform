@@ -4,6 +4,7 @@ namespace admin\controllers;
 
 use lithium\core\Libraries;
 use lithium\core\Environment;
+use lithium\analysis\Logger;
 use admin\models\File;
 use admin\models\EventImage;
 use admin\models\Event;
@@ -68,6 +69,8 @@ class FilesController extends \lithium\action\Controller {
 				if (empty($this->request->data['Filedata'])) {
 					break;
 				}
+				Logger::debug('Receiving uploaded file.');
+
 				/* Always want an array of objects, but if a single file was uploaded,
 				   it will come in as a single object that we can't loop the way we would
 				   an array of objects. */
@@ -79,9 +82,11 @@ class FilesController extends \lithium\action\Controller {
 
 				foreach ($files as $file) {
 					if (EventImage::process($file)) {
+						Logger::debug('File processed as event image.');
 						continue;
 					}
 					if (ItemImage::process($file)) {
+						Logger::debug('File processed as item image.');
 						continue;
 					}
 
@@ -89,6 +94,8 @@ class FilesController extends \lithium\action\Controller {
 					$handle = fopen($file['tmp_name'], 'rb');
 					static::write($handle, array('name' => $file['name'], 'pending' => true));
 					fclose($handle);
+
+					Logger::debug('Saving unmatched file as pending.');
 				}
 			break;
 			default:
