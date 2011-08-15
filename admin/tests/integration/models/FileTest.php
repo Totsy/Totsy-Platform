@@ -52,10 +52,6 @@ class FileTest extends \lithium\test\Integration {
 		$expected = 'image/jpeg';
 		$this->assertEqual($expected, $result);
 
-		$result = $file->dimensions->data();
-		$expected = array('width' => 70, 'height' => 47);
-		$this->assertEqual($expected, $result);
-
 		$result = $file->created_date->sec;
 		$this->assertTrue(is_integer($result));
 
@@ -116,15 +112,6 @@ class FileTest extends \lithium\test\Integration {
 	public function testDetectMimeTypeFail() {
 		$result = File::detectMimeType('');
 		$this->assertFalse($result);
-	}
-
-	public function testDetectDimensions() {
-		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
-		$bytes = file_get_contents($file);
-
-		$expected = array('width' => 70, 'height' => 47);
-		$result = File::detectDimensions($bytes);
-		$this->assertEqual($expected, $result);
 	}
 }
 

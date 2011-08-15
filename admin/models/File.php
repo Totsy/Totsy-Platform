@@ -7,7 +7,6 @@ use lithium\net\http\Media;
 use admin\models\Event;
 use admin\models\Item;
 use MongoDate;
-use Imagine\Gd\Imagine;
 
 class File extends \lithium\data\Model {
 
@@ -59,7 +58,6 @@ class File extends \lithium\data\Model {
 		$meta += array(
 			'created_date' => new MongoDate(),
 			'mime_type' => static::detectMimeType($handle),
-			'dimensions' => static::detectDimensions($bytes)
 		);
 
 		if ($close) {
@@ -144,13 +142,6 @@ class File extends \lithium\data\Model {
 		return static::detectMimeType($entity->file->getBytes());
 	}
 
-	public function dimensions($entity) {
-		if ($entity->dimensions) {
-			return $entity->dimensions->data();
-		}
-		return static::detectDimensions($entity->file->getBytes());
-	}
-
 	public function basename($entity) {
 		$name = $entity->_id;
 
@@ -185,16 +176,6 @@ class File extends \lithium\data\Model {
 		if ($type != 'application/x-empty') {
 			return $type;
 		}
-	}
-
-	public static function detectDimensions($data) {
-		$imagine = new Imagine();
-		$box = $imagine->load($data)->getSize();
-
-		return array(
-			'width' => $box->getWidth(),
-			'height' => $box->getHeight()
-		);
 	}
 }
 
