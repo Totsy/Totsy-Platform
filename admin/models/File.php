@@ -92,25 +92,29 @@ class File extends \lithium\data\Model {
 	public static function used($id) {
 		$result = Event::all(array(
 			'conditions' => array(
-				'images.event_image' => $id,
-				'images.logo_image' => $id,
-				'images.splash_big_image' => $id,
-				'images.splash_small_image' => $id
+				'$or' => array(
+					array('images.event_image' => $id),
+					array('images.logo_image' => $id),
+					array('images.splash_big_image' => $id),
+					array('images.splash_small_image' => $id),
+				)
 			)
 		));
 		if ($result->count()) {
 			return true;
 		}
+
 		$result = Item::all(array(
 			'conditions' => array(
-				'alternate_images' => $id,
-				'primary_image' => $id,
-				'zoom_image' => $id,
-				'cart_image' => $id,
-				'event_thumbnail_image' => $id
+				'$or' => array(
+					array('alternate_images' => $id),
+					array('primary_image' => $id),
+					array('zoom_image' => $id),
+					array('cart_image' => $id),
+					array('event_thumbnail_image' => $id)
+				)
 			)
 		));
-
 		return (boolean) $result->count();
 	}
 
