@@ -66,10 +66,10 @@ Router::connect('/feeds/{:args}', 'Feeds::home');
 /**
 	Shopping Cart Routes
 **/
-Router::connect('/checkout/review', 'Cart::view');
+Router::connect('/checkout/view', 'Cart::view');
 Router::connect('/checkout/shipping', 'Orders::shipping');
 Router::connect('/checkout/payment', 'Orders::payment');
-Router::connect('/checkout/process', 'Orders::process');
+Router::connect('/checkout/review', 'Orders::review');
 
 /**
  * Redirect all non-authenticated users to
