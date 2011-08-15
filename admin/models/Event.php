@@ -249,7 +249,6 @@ class Event extends \lithium\data\Model {
 	public function attachImage($entity, $name, $id) {
 		$id = (string) $id;
 		$type = EventImage::$types[$name];
-
 		$images = $entity->images ? $entity->images->data() : array();
 		$images[$type['field']] = $id;
 
