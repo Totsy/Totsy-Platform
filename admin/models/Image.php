@@ -26,11 +26,11 @@ class Image extends \admin\models\File {
 	 */
 	public static $types = array();
 
-	public static function write($data, $meta = array()) {
+	public static function write($data, $meta = array(), array $options = array()) {
 		$meta += array(
-			'dimensions' => static::detectDimensions($bytes)
+			'dimensions' => static::detectDimensions($data)
 		);
-		return parent::write($data, $meta);
+		return parent::write($data, $meta, $options);
 	}
 
 	/*
