@@ -98,11 +98,13 @@ class FileTest extends \lithium\test\Integration {
 	}
 
 	public function testPending() {
+		$before = File::pending()->count();
+
 		$fileA = File::write('test-a');
 		$fileB = File::write('test-b', array('pending' => true));
 		$fileC = File::write('test-c', array('pending' => true));
 
-		$result = File::pending()->count();
+		$result = File::pending()->count() - $before;
 		$expected = 2;
 		$this->assertEqual($expected, $result);
 
