@@ -68,7 +68,6 @@ class File extends \lithium\data\Model {
 		$meta += array(
 			'created_date' => new MongoDate(),
 			'mime_type' => static::detectMimeType($handle),
-			'dimensions' => static::detectDimensions($bytes)
 		);
 
 		if ($close) {
@@ -226,7 +225,6 @@ class File extends \lithium\data\Model {
 			return $type;
 		}
 	}
-
 	protected static function _upgrade($stream) {
 		$meta = stream_get_meta_data($stream);
 
@@ -237,7 +235,7 @@ class File extends \lithium\data\Model {
 		stream_copy_to_stream($stream, $upgrade);
 
 		return $upgrade;
-    }
+	}
 
 /**
  * Ensure only unused files can be deleted.
