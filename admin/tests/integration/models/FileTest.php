@@ -42,10 +42,7 @@ class FileTest extends \lithium\test\Integration {
 	}
 
 	public function testWriteMeta() {
-		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
-		$bytes = file_get_contents($file);
-
-		$file = File::write($bytes, array('foo' => 'bar'));
+		$file = File::write(uniqid(), array('foo' => 'bar'));
 
 		$result = $file->foo;
 		$expected = 'bar';
@@ -71,8 +68,7 @@ class FileTest extends \lithium\test\Integration {
 	}
 
 	public function testWriteDoesDeduping() {
-		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
-		$bytes = file_get_contents($file);
+		$bytes = uniqid();
 
 		$file = File::write($bytes);
 
@@ -84,8 +80,7 @@ class FileTest extends \lithium\test\Integration {
 	}
 
 	public function testWriteDoesNotUpdateDupeMeta() {
-		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
-		$bytes = file_get_contents($file);
+		$bytes = uniqid();
 
 		$file = File::write($bytes, array('name' => 'a.jpg'));
 
