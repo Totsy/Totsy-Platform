@@ -43,6 +43,7 @@ class FileTest extends \lithium\test\Integration {
 		fclose($handle);
 	}
 
+
 	public function testWriteMeta() {
 		$file = File::write(uniqid(), array('foo' => 'bar'));
 
