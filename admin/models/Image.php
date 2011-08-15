@@ -67,7 +67,7 @@ class Image extends \admin\models\File {
 	 * @return boolean
 	 */
 	public static function process($file) {
-		$model = str_replace('Image', '', get_class());
+		$model = str_replace('Image', '', get_called_class());
 		$source = $model::meta('source');
 
 		foreach (static::$types as $name => $type) {

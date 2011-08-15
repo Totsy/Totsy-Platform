@@ -89,10 +89,9 @@ class FilesController extends \lithium\action\Controller {
 						Logger::debug('File processed as item image.');
 						continue;
 					}
-
 					/* All unmatched files are not resized and saved as pending. */
 					$handle = fopen($file['tmp_name'], 'rb');
-					static::write($handle, array('name' => $file['name'], 'pending' => true));
+					File::write($handle, array('name' => $file['name'], 'pending' => true));
 					fclose($handle);
 
 					Logger::debug('Saving unmatched file as pending.');
