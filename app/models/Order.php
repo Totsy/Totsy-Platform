@@ -34,7 +34,7 @@ class Order extends Base {
 		);
 	}
 
-	public function process($order, $user, $data, $cart, $orderCredit, $orderPromo) {
+	public function process($order, $user, $data, $cart, $orderCredit, $orderPromo, $tax) {
 		foreach (array('billing', 'shipping') as $key) {
 			$addr = $data[$key];
 			${$key} = is_array($addr) ? Address::create($addr) : Address::first($addr);
@@ -59,7 +59,7 @@ class Order extends Base {
 			))
 		));
 		$subTotal = array_sum($cart->subTotal());
-		$tax = array_sum($cart->tax($shipping));
+		//$tax = array_sum($cart->tax($shipping));
 		$handling = Cart::shipping($cart, $shipping);
 		$overSizeHandling = Cart::overSizeShipping($cart);
 		$session = Session::read('services', array('name' => 'default'));
@@ -80,14 +80,14 @@ class Order extends Base {
 		// 	return false;
 		// }
 
-		$tax = $tax ? $tax + (($overSizeHandling+$handling) * Cart::TAX_RATE) : 0;
+		//$tax = $tax ? $tax + (($overSizeHandling+$handling) * Cart::TAX_RATE) : 0;
 		$afterDiscount = $subTotal + $orderCredit->credit_amount + $orderPromo->saved_amount + Service::tenOffFiftyCheck($subTotal);
 		if( $afterDiscount < 0 ){
 		    $afterDiscount = 0;
 		}
 		$total = $afterDiscount + $tax + $handling +$overSizeHandling;
 
-		$cart = $cart->data();
+		$cart = $cart->data();		
 		if ($cart) {
 			$inc = 0;
 			foreach ($cart as $item) {
