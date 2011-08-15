@@ -25,7 +25,7 @@ class ImageTest extends \lithium\test\Integration {
 		$bytes = file_get_contents($file);
 
 		$expected = array('width' => 70, 'height' => 47);
-		$result = File::detectDimensions($bytes);
+		$result = Image::detectDimensions($bytes);
 		$this->assertEqual($expected, $result);
 	}
 }
