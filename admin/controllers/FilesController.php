@@ -14,6 +14,7 @@ use admin\models\Affiliate;
 use admin\models\AffiliateImage;
 use lithium\core\Libraries;
 use lithium\core\Environment;
+use lithium\analysis\Logger;
 use admin\models\File;
 use admin\models\EventImage;
 use admin\models\Event;
@@ -202,6 +203,8 @@ class FilesController extends \lithium\action\Controller {
 
 					}
 					fclose($handle);
+
+					Logger::debug('Saving unmatched file as pending.');
 				}
 				return $this->render(array('status' => 200, 'head' => true));
 			break;
