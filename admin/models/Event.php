@@ -247,13 +247,27 @@ class Event extends \lithium\data\Model {
 	public static function updateImage($name, $id, $conditions = array()) {
 		$type = EventImage::$types[$name];
 
-		return (boolean) static::update(
+		if ($event = static::first(compact('conditions'))) {
+			$images = $event->images->data();
+			$images[$type['field']] = (string) $id;
+			$event->images = $images;
+
+			return (boolean) $event->save();
+		}
+		return false;
+
+		/* The implementation below would be preferable, but doesn't work because
+		   when an event is created  with an empty images array, it isn't
+		   represented by an object (which we'd  need for $set to succeed). */
+		/*
+		return static::update(
 			array(
-				'$set' => array('images.' . $name . '_image' => $id)
+				'$set' => array('images.' . $type['field'] => (string) $id)
 			),
 			$conditions,
 			array('atomic' => false)
 		);
+		*/
 	}
 
 	public function images($entity) {
