@@ -8,7 +8,7 @@
 <?=$this->html->style('agile_uploader.css');?>
 <?=$this->html->style('admin_common.css');?>
 
-<h1>Files</h1>
+<h1>File Management</h1>
 
 <div class="tab_region_left_col">
 
@@ -20,15 +20,17 @@
 				<?=$this->html->link($this->url('Files::dav', array('absolute' => true)), 'Files::dav'); ?>.
 				<?=$this->html->link('Cyberduck', 'http://cyberduck.ch/', array('target' => 'new')); ?>
 				is the recommended WebDAV client and works under both Windows and OSX.
-			</p>
-			<p>
-				When opening the WebDAV share you'll be presented with the following directory structure.
+				Following a quick explanation of the directory structure.
 				<dl>
 					<dt>events</dt>
 					<dd>
 						Contains events and event items. Dropping files into image folders
 						will associate them with the item. Deleting files from the folders
 						will cause the files to be <em>disassociated</em>.
+
+						Please note that in contrast to uploading files via form,
+						files uploaded via WebDAV don't need to stick to the naming conventions
+						unless these files are added as pending.
 					</dd>
 
 					<dt>orphaned</dt>
@@ -40,8 +42,8 @@
 					<dd>
 						Drop files here that belong to future events/items that don't exist yet.
 						Files can be added to and deleted from this folder.
+						Files added should stick to the naming conventions in order to enable <em>auto-association</em>.
 					</dd>
-
 				</dl>
 			</p>
 		</div>
@@ -90,35 +92,45 @@
 	<div class="box">
 		<h2>Event Image File Naming Conventions</h2>
 		<div class="block">
-			<p>
-				<strong>Event Image</strong><br />
-				events_the-name.jpg <em>or</em> events_the-name_image.jpg<br />
-				<strong>Event Logo</strong><br />
-				events_the-name_logo.jpg<br />
-				<strong>Event Small Splash Image</strong><br />
-				events_the-name_small_splash.jpg <em>or</em> events_the-name_splash_small.jpg<br />
-				<strong>Event Big Splash Image</strong><br />
-				events_the-name_big_splash.jpg <em>or</em> events_the-name_splash_big.jpg<br />
-			</p>
+		<dl>
+			<dt>Image</dt>
+			<dd>events_the-name.jpg <em>or</em></dd>
+			<dd>events_the-name_image.jpg</dd>
+
+			<dt>Logo</dt>
+			<dd>events_the-name_logo.jpg</dd>
+
+			<dt>Small Splash Image</dt>
+			<dd>events_the-name_small_splash.jpg <em>or</em></dd>
+			<dd>events_the-name_splash_small.jpg</dd>
+
+			<dt>Big Splash Image</dt>
+			<dd>events_the-name_big_splash.jpg <em>or</em></dd>
+			<dd>events_the-name_splash_big.jpg</dd>
+		</dl>
 		</div>
 	</div>
 	<div class="box">
 		<h2>Item Image File Naming Conventions</h2>
 		<div class="block">
-			<p>
+		<dl>
+			<dt>Primary Image</dt>
+			<dd>items_shirt_primary.jpg</dd>
 
-				<strong>Primary Image</strong><br />
-				items_shirt_primary.jpg<br />
-				<strong>Zoom Image</strong><br />
-				items_shirt_zoom.jpg<br />
-				<strong>For Various Colors <em>(colors are a part of the url)</em></strong><br />
-				items_shirt-yellow_primary.jpg, items_shirt-yellow_zoom.jpg<br />
-				<strong>For Alternate Versions</strong><br />
-				items_shirt-blue_alternate.jpg, items_shirt-blue_alternateB.jpg, items_shirt-blue_alternate0.jpg, etc.
-			</p>
+			<dt>Zoom Image</dt>
+			<dd>items_shirt_zoom.jpg</dd>
+
+			<dt>For Various Colors <em>(colors are a part of the url)</em></dt>
+			<dd>items_shirt-yellow_primary.jpg</dd>
+			<dd>items_shirt-yellow_zoom.jpg</dd>
+
+			<dt>For Alternate Versions</dt>
+			<dd>items_shirt-blue_alternate.jpg</dd>
+			<dd>items_shirt-blue_alternateB.jpg</dd>
+			<dd>items_shirt-blue_alternate0.jpg <em>etc.</em></dd>
+		</dl>
 		</div>
 	</div>
-
 </div>
 
 <div class="clear"></div>
