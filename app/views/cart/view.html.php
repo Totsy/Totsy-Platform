@@ -134,7 +134,7 @@
 								<?php endif ?> 
 									<a href='#' id='promos_lnk' onclick='open_promo();'>Optional Code</a></strong>
 							</div>
-							<div style='clear:both'></div>
+							<div style="clear:both"></div>
 							<div id='promos_and_credit'>
 							<?=$this->form->create(null); ?>
 								<div id='promo' style='display:none'>
