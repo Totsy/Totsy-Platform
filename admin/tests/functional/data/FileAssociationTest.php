@@ -9,10 +9,7 @@ use admin\models\File;
 class FileAssociationTest extends \lithium\test\Integration {
 
 	public function testAssociateWithEvent() {
-		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
-		$bytes = file_get_contents($file);
-
-		$file = File::write($bytes);
+		$file = File::write(uniqid());
 
 		$event = Event::create(array(
 			'title' => 'Test',
@@ -33,15 +30,11 @@ class FileAssociationTest extends \lithium\test\Integration {
 	}
 
 	public function testAssociateWithItem() {
-		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
-		$bytes = file_get_contents($file);
-
-		$file = File::write($bytes);
+		$file = File::write(uniqid());
 
 		$item = Item::create(array(
 			'title' => 'Test',
-			'url' => $url = uniqid('test-'),
-			'images' => array()
+			'url' => $url = uniqid('test-')
 		));
 		$item->save();
 
