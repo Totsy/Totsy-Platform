@@ -138,7 +138,7 @@ class File extends \lithium\data\Model {
 			return $entity->mime_type;
 		}
 		/* Some files in GridFS may not yet have a `mime_type` field.
-		   This field was added later so the code segement below
+		   This field was added later so the code segment below
 		   provides BC for that. */
 
 		return static::detectMimeType($entity->file->getBytes());
