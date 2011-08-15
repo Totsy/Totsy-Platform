@@ -29,7 +29,11 @@ class File extends \lithium\data\Model {
 	 *        with raw bytes or a string containing the path to a readable file.
 	 * @return object|boolean
 	 */
-	public static function write($data, $meta = array()) {
+	public static function write($data, $meta = array(), array $options = array()) {
+		$options += array(
+			'dedupe' => true
+		);
+
 		/* Normalize $data */
 		$close = false;
 
@@ -49,7 +53,11 @@ class File extends \lithium\data\Model {
 		}
 
 		/* Dupe detection */
+<<<<<<< HEAD
 		if (static::$dedupe && ($dupe = static::_dupe($handle))) {
+=======
+		if ($options['dedupe'] && ($dupe = static::_dupe($handle))) {
+>>>>>>> Adding option to disable deduping for testing purposes.
 			return $dupe;
 		}
 
