@@ -61,6 +61,7 @@
 	<table id="itemTable" class="datatable" border="1">
 		<thead>
 			<tr>
+				<th>id</th>
 				<th>Image</th>
 				<th>Sale Retail</th>
 				<th>MSRP</th>
@@ -82,10 +83,11 @@
 							$image = "/img/no-image-small.jpeg";
 						}
 					?>
+					<td><?=$item[_id];?></td>
 					<td width="5%">
 						<?=$this->html->image("$image", array(
-							'width' => "110",
-							'height' => "110",
+							'width' => "100",
+							'height' => "100",
 							'style' => "margin:2px; padding:2px; background:#fff; border:1px solid #ddd;"
 							));
 						?>
@@ -104,12 +106,12 @@
 					</td>
 					<td>
 						<?php foreach ($item['sku_details'] as $key => $value): ?>
-							<?=$key?><br />
+							<span style="white-space:nowrap"><?=$key?></span><br />
 						<?php endforeach ?>
 					</td>
 					<td>
 						<?php foreach ($item['sku_details'] as $key => $value): ?>
-							<?=$value?><br />
+							<span style="white-space:nowrap"><a href="/items/bulkCancel/<?=$value;?>"><?=$value?></a></span><br />
 						<?php endforeach ?>
 					</td>
 				</tr>
