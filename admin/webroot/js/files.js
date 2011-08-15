@@ -13,11 +13,8 @@ $(function() {
 		});
 	}).click();
 
-	$('.file a[href*="/delete/"]').live('click', function(event) {
-		event.preventDefault();
-		if (event.which != 1) {
-			return;
-		}
+	$('.file a[href*="/delete/"]').live('click', function(e) {
+		e.preventDefault();
 		var item = $(this).parent().parent();
 
 		$.ajax({
@@ -27,6 +24,26 @@ $(function() {
 			success: function() {
 				item.fadeOut("normal", function() {
 					$(this).remove();
+				});
+			},
+			error: function() {
+				$(this).addClass('error');
+			}
+		});
+	});
+
+	$('.file a[href*="/associate/"]').live('click', function(e) {
+		e.preventDefault();
+		var item = $(this).parent().parent();
+
+		$.ajax({
+			async: false,
+			type: "POST",
+			url: $(this).attr('href'),
+			success: function() {
+				item.fadeOut("normal", function() {
+					$(this).remove();
+					$('[target="#oprhaned"]').click();
 				});
 			},
 			error: function() {
