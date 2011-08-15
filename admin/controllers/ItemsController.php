@@ -2,6 +2,7 @@
 
 namespace admin\controllers;
 use admin\controllers\BaseController;
+use admin\models\Order;
 use admin\models\Item;
 use admin\models\Event;
 use MongoRegex;
@@ -238,6 +239,33 @@ class ItemsController extends BaseController {
 		
 		}
 	}
+	
+	public function bulkCancel($search = null) {
+	
+			if ($this->request->data || $search) {
+				if ($this->request->data['search']) {
+					$search = $this->request->data['search'];
+				}
+				$itemCollection = Item::connection()->connection->items;
+				$items = $itemCollection->find(
+					array('$or' => array(
+						array('_id') => new MongoRegex("/$search/i"),
+						array('skus' => array('$in' => array(new MongoRegex("/$search/i"))))
+				)));
+				$items = iterator_to_array($items);
+				
+				if (strpos($search, "-")) { //detect if there is a '-' in the string, which means it is a SKU and not just an item_id
+					$item_id = key($items);
+					$search_sku = $search;
+					$search_item_id = $item_id;					
+				}
+				
+				return compact("items","search_item_id","search_sku");	
+			}
+
+	}
+	
+	
 }
 
 ?>

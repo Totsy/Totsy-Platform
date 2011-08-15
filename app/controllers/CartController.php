@@ -47,7 +47,7 @@ class CartController extends BaseController {
 			$events = Event::find('all', array('conditions' => array('_id' => $item->event[0])));
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
 			$item->event_url = $events[0]->url;
-			$item->available = $itemInfo->details->{$item->size} - Cart::reserved($item->item_id, $item->size);
+			$item->available = $itemInfo->details->{$item->size} - (Cart::reserved($item->item_id, $item->size) - $item->quantity);
 			$itemlist[$item->created->sec] = $item->event[0];
 		}
 		$shipDate = Cart::shipDate($cart);
@@ -193,19 +193,26 @@ class CartController extends BaseController {
 				$cart = Cart::find('first', array(
 					'conditions' => array('_id' =>  (string) $id)
 				));
-				if ($result['status']) {
-					if($quantity == 0){
-				        Cart::remove(array('_id' => $id));
-				        $this->addIncompletePurchase(Cart::active());
-				    }else {
-						$cart->quantity = (integer) $quantity;
+				$status = $this->itemAvailable($cart->item_id, $cart->quantity, $cart->size, $quantity);
+				if(!$status['available']) {
+					$cart->quantity = (integer) $status['quantity'];
+					$cart->save();
+					$this->addIncompletePurchase(Cart::active());
+				} else {
+					if ($result['status']) {
+						if($quantity == 0){
+				        	Cart::remove(array('_id' => $id));
+				        	$this->addIncompletePurchase(Cart::active());
+				    	} else {
+							$cart->quantity = (integer) $quantity;
+							$cart->save();
+							$this->addIncompletePurchase(Cart::active());
+						}
+					} else {
+						$cart->error = $result['errors'];
 						$cart->save();
 						$this->addIncompletePurchase(Cart::active());
 					}
-				} else {
-					$cart->error = $result['errors'];
-					$cart->save();
-					$this->addIncompletePurchase(Cart::active());
 				}
 			}
 		}
@@ -270,6 +277,28 @@ class CartController extends BaseController {
 			)
 		);
 		unset($itemToSend,$user);
+	}
+	
+	/**
+	 * Checks the availability of an item.
+	 *
+	 * The method checks if a single item (color/size) is available for purchase.
+	 * A boolean of `true` is returned if the actual quantity available less reserved
+	 * items in the cart is greater than zero.
+	 *
+	 * @see app/models/Cart::reserved()
+	 * @return boolean
+	 */
+	public function itemAvailable($item_id, $original_quantity, $size, $qty_req) {
+		$available = false;
+		$reserved = Cart::reserved($item_id, $size);
+		$item = Item::find('first', array(
+			'conditions' => array(
+				'_id' => $item_id
+		)));
+		$status['quantity'] = $item->details->{$size} - ($reserved - $original_quantity);
+		$status['available'] = ($status['quantity'] > 0 && $status['quantity'] >= $qty_req) ? true : false;
+		return $status;
 	}
 }
 ?>
