@@ -181,7 +181,10 @@ class File extends \lithium\data\Model {
 		list($type, $attributes) = explode(';', $result, 2) + array(null, null);
 
 		finfo_close($context);
-		return $type;
+
+		if ($type != 'application/x-empty') {
+			return $type;
+		}
 	}
 
 	public static function detectDimensions($data) {
