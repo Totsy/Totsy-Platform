@@ -330,7 +330,6 @@ class OrdersController extends BaseController {
 		$cart = $taxCart = Cart::active(array('fields' => $fields, 'time' => 'now'));
 		$shipDate = Cart::shipDate($cart);
 		$cartByEvent = $this->itemGroupByEvent($cart);
-		
 		$orderEvents = $this->orderEvents($cart);
 		$discountExempt = $this->_discountExempt($cart);
 		$subTotal = 0;
@@ -356,12 +355,11 @@ class OrdersController extends BaseController {
 			//$tax=  AvaTax::getTax( compact('cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
 		}
 		#Get current Discount
-		$vars = Cart::getDiscount($shippingCost, $overShippingCost);
+		$vars = Cart::getDiscount($shippingCost, $overShippingCost,$this->request->data);
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
 		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
 		$postDiscount = ($subTotal - $vars['services']['tenOffFitfy']);
-		$service = Session::read('services', array('name' => 'default'));
 		if(!empty($vars['cartCredit'])) {
 			$credits = Session::read('credit');
 		 	$vars['postDiscountTotal'] -= $credits;
@@ -386,9 +384,9 @@ class OrdersController extends BaseController {
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'))
 		,EXTR_OVERWRITE));
-		unset($taxArray,$taxCart);	
+		unset($taxArray,$taxCart);
 		if (($cart->data()) && (count($this->request->data) > 1) && $order->process($user, $data, $cart, $vars['cartCredit'], $vars['cartPromo'])) {
-			$this->process();
+			$this->recordOrder($vars, $order, $avatax);
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
 		if(!empty($_GET['json'])) {
@@ -398,7 +396,8 @@ class OrdersController extends BaseController {
 		}
 	}
 	
-	public function process() {
+	public function recordOrder($vars, $order, $avatax) {
+			$service = Session::read('services', array('name' => 'default'));
 			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 			if ($vars['cartCredit']->credit_amount) {
 				User::applyCredit($user['_id'], $vars['cartCredit']->credit_amount);
@@ -444,13 +443,15 @@ class OrdersController extends BaseController {
 				'order' => $order->data(),
 				'shipDate' => date('M d, Y', $shipDate)
 			);
-
+			#Send Order Confirmation Email
 			Mailer::send('Order_Confirmation', $user->email, $data);
-			//Re Initialize userSavings
-			Session::write('userSavings', 0);
+			#Clear Savings Information
+			Session::delete('userSavings');
+			#In Case Of First Order, Send an Email About 10$ Off Discount
 			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
 				Mailer::send('Welcome_10_Off', $user->email, $data);
 			}
+			#Redirect To
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 	}
 

@@ -476,7 +476,7 @@ class Cart extends Base {
 	* The getDiscount method check credits, promocodes and services available 
 	* @see app/models/Cart::check()
 	*/
-	public function getDiscount($shippingCost = 7.95, $overShippingCost = 0) {
+	public static function getDiscount($shippingCost = 7.95, $overShippingCost = 0, $data) {
 		#Get User Infos
 		$fields = array(
 		'item_id',
@@ -513,8 +513,8 @@ class Cart extends Base {
 			$promo_session = Session::read('promocode');
 			$promo_code = $promo_session['code'];
 		}
-		if (!empty($this->request->data['code'])) {
-			$promo_code = $this->request->data['code'];
+		if (!empty($data['code'])) {
+			$promo_code = $data['code'];
 		}
 		if (!empty($promo_code)) {
 			$cartPromo->promoCheck($promo_code, $userDoc, compact('postSubtotal', 'shippingCost', 'overShippingCost', 'services'));  
@@ -522,8 +522,8 @@ class Cart extends Base {
 		#Apply Credits
 		$credit_amount = null;
 		$cartCredit = Credit::create();
-		if (array_key_exists('credit_amount', $this->request->data)) {
-			$credit_amount = $this->request->data['credit_amount'];
+		if (array_key_exists('credit_amount', $data)) {
+			$credit_amount = $data['credit_amount'];
 		}
 		$postDiscountTotal = ($postSubtotal + $cartPromo['saved_amount']);
 		$cartCredit->checkCredit($credit_amount, $postDiscountTotal, $userDoc);
