@@ -125,7 +125,6 @@ class File extends \lithium\data\Model {
 				)
 			)
 		));
-
 		return (boolean) $result->count();
 	}
 
