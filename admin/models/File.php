@@ -47,17 +47,13 @@ class File extends \lithium\data\Model {
 				$handle = fopen('php://temp', 'w+b');
 				fwrite($handle, $data);
 			}
-		} else {
+		} else {admin/tests/functional/data/FileAssociationTest.php
 			$handle = static::_upgrade($data);
 			$close = $handle != $data;
 		}
 
 		/* Dupe detection */
-<<<<<<< HEAD
 		if (static::$dedupe && ($dupe = static::_dupe($handle))) {
-=======
-		if ($options['dedupe'] && ($dupe = static::_dupe($handle))) {
->>>>>>> Adding option to disable deduping for testing purposes.
 			return $dupe;
 		}
 
