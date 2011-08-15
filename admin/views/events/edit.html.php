@@ -360,9 +360,14 @@ for ( i=1; i<6; i++ ) {
 			<p>Add "Final Sale" to the item description?:</p>
 				<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
 				<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
-				<?=$this->form->label('Upload Event (Excel Files): '); ?>
 				<?=$this->form->file('upload_file'); ?>
 				<?=$this->form->submit('Update Event')?>
+				<?=$this->form->label('Upload Event (Excel Files): '); ?>
+<!--
+		<iframe id="upload_frame" name="upload_frame" src="/events/upload/<?=$event->_id?>" frameborder=0 scrolling=no width=400 height=250></iframe>		
+		<div id="upload_error" name="upload_error" style="color:#ff0000; width:400px; float:right; height:250px; overflow:scroll;">(spreadsheet upload errors will appear here)</div>
+
+-->				
 			<br><br>
 			<?=$this->form->end(); ?>
 			<h3 id="current_items">Current Items</h3>
