@@ -22,7 +22,7 @@ class ImageTest extends \lithium\test\Integration {
 		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
 		$bytes = file_get_contents($file);
 
-		$file = Image::write($bytes);
+		$file = Image::write($bytes, array(), array('dedupe' => false));
 
 		$result = $file->dimensions->data();
 		$expected = array('width' => 70, 'height' => 47);
