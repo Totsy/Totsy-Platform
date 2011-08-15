@@ -39,7 +39,7 @@
 					<dt>pending</dt>
 					<dd>
 						Drop files here that belong to future events/items that don't exist yet.
-						Files can be added to and delted from this folder.
+						Files can be added to and deleted from this folder.
 					</dd>
 
 				</dl>
