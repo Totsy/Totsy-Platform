@@ -5,6 +5,8 @@ namespace admin\models;
 use lithium\data\Connections;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
+use Imagine\Image\Color;
+use Imagine\Image\Point;
 
 class Image extends \admin\models\File {
 
@@ -37,7 +39,7 @@ class Image extends \admin\models\File {
 	 *
 	 * @param string $position The item image position (primary, zoom, etc.)
 	 * @param array $data The file data array from the POST data - a single file
-	 * @return
+	 * @returnand we c
 	*/
 	public static function resizeAndSave($position, $data, $meta = array()) {
 		if (empty($data) || !isset(static::$types[$position])) {
@@ -59,8 +61,21 @@ class Image extends \admin\models\File {
 		} else {
 			return false;
 		}
-
-		$bytes = $image->resize(new Box($width, $height))->get('png');
+		
+		// Do not resize if the uploaded image is smaller than the dimensions used on the site
+		$uploaded_image_box = $image->getSize();
+		$uploaded_image_width = $uploaded_image_box->getWidth();
+		$uploaded_image_height = $uploaded_image_box->getHeight();
+		if($uploaded_image_width < $width || $uploaded_image_height < $height) {
+			// Instead, put the smaller image, centered, inside a white box that meets the required dimensions
+			$fill_image = $imagine->create(new Box($width, $height), new Color('fff', 100));
+			// Figure out the x, y that places the pasted (smaller) image in the center
+			$x = floor(($width / 2) - ($uploaded_image_width / 2));
+			$y = floor(($height / 2) - ($uploaded_image_height / 2));
+			$bytes = $fill_image->paste($image, new Point($x, $y))->get('png');
+		} else {
+			$bytes = $image->resize(new Box($width, $height))->get('png');
+		}
 
 		// Write the image to GridFS
 		// Return what should be the file object that write() returns... this will have an id to associate
