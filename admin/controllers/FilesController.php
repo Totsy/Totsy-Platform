@@ -165,11 +165,9 @@ class FilesController extends \lithium\action\Controller {
 				} else {
 					$files = array(0 => $this->request->data['Filedata']);
 				}
-
 				foreach ($files as $file) {
 					$handle = fopen($file['tmp_name'], 'rb');
 					$meta = array('name' => $file['name']);
-
 					// An event id may be passed along if the files are Item images.
 					// Item images can only be uploaded with a reference to the event id.
 					// Any item image uploaded without an event_id reference will not be saved.
@@ -200,11 +198,8 @@ class FilesController extends \lithium\action\Controller {
 						$this->set(compact('id'));
 						Logger::debug("the file has id $id");
 						Logger::debug("Saving unmatched file `{$file['name']}` as pending.");
-
 					}
 					fclose($handle);
-
-					Logger::debug('Saving unmatched file as pending.');
 				}
 				return $this->render(array('status' => 200, 'head' => true));
 			break;
