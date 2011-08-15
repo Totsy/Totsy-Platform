@@ -306,7 +306,7 @@ class OrdersController extends BaseController {
 	 * @todo Improve documentation
 	 * @todo Make this method lighter by taking out promocode/credit validation
 	 */
-	public function process() {
+	public function review() {
 		$order = Order::create();
 		#Get Users Informations
 		$user = Session::read('userLogin');
@@ -347,7 +347,6 @@ class OrdersController extends BaseController {
 		$overShippingCost = 0;
 		$shippingAddr = Session::read('shipping');
 		$billingAddr = Session::read('billing');
-		
 		$tax = 0;
 		if ($shippingAddr) {
 			//$tax = array_sum($cart->tax($shippingAddr));
@@ -387,9 +386,19 @@ class OrdersController extends BaseController {
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'))
 		,EXTR_OVERWRITE));
-		unset($taxArray,$taxCart);
-		
+		unset($taxArray,$taxCart);	
 		if (($cart->data()) && (count($this->request->data) > 1) && $order->process($user, $data, $cart, $vars['cartCredit'], $vars['cartPromo'])) {
+			$this->process();
+		}
+		$cartEmpty = ($cart->data()) ? false : true;
+		if(!empty($_GET['json'])) {
+			echo json_encode($vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings'));
+		} else {
+			return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings');
+		}
+	}
+	
+	public function process() {
 			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 			if ($vars['cartCredit']->credit_amount) {
 				User::applyCredit($user['_id'], $vars['cartCredit']->credit_amount);
@@ -443,13 +452,6 @@ class OrdersController extends BaseController {
 				Mailer::send('Welcome_10_Off', $user->email, $data);
 			}
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
-		}
-		$cartEmpty = ($cart->data()) ? false : true;
-		if(!empty($_GET['json'])) {
-			echo json_encode($vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings'));
-		} else {
-			return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings');
-		}
 	}
 
 	/**
@@ -613,7 +615,7 @@ class OrdersController extends BaseController {
 			}
 			#If both billing and credit card correct
 			if(!empty($billing_passed) && !empty($cc_passed)) {
-				$this->redirect(array('Orders::process'));
+				$this->redirect(array('Orders::review'));
 			}
 			$data_add = array();
 			if (!empty($address)) {

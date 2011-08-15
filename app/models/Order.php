@@ -47,7 +47,7 @@ class Order extends Base {
 		}
 		#Read Credit Card Informations
 		$user = Session::read('userLogin');
-		$cc_encrypt = Session::read('cc_infos');	
+		$cc_encrypt = Session::read('cc_infos');
 		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
  		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
  		$key = md5($user['_id']);
