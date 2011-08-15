@@ -95,17 +95,9 @@ class FileTest extends \lithium\test\Integration {
 
 	public function testPending() {
 		$before = File::pending()->count();
-<<<<<<< HEAD
 		$fileA = File::write('test-a');
 		$fileB = File::write('test-b', array('pending' => true));
 		$fileC = File::write('test-c', array('pending' => true));
-=======
-
-		$fileA = File::write('test-a');
-		$fileB = File::write('test-b', array('pending' => true));
-		$fileC = File::write('test-c', array('pending' => true));
-
->>>>>>> Work arround non empty collection.
 		$result = File::pending()->count() - $before;
 		$expected = 2;
 		$this->assertEqual($expected, $result);
