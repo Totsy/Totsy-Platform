@@ -3,7 +3,6 @@
 namespace admin\tests\integration\models;
 
 use admin\models\File;
-use li3_fixtures\test\Fixture;
 
 class FileTest extends \lithium\test\Integration {
 
