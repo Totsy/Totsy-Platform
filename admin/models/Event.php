@@ -4,6 +4,7 @@ namespace admin\models;
 use MongoId;
 use MongoDate;
 use admin\extensions\util\String;
+use admin\models\EventImage;
 
 class Event extends \lithium\data\Model {
 
@@ -78,6 +79,29 @@ class Event extends \lithium\data\Model {
 		$vendorName = preg_replace('/[^(\x20-\x7F)]*/','', substr(String::asciiClean($event->name), 0, 3));
 		$time = date('ymdis', $event->_id->getTimestamp());
 		return 'TOT'.'-'.$vendorName.$time;
+	}
+
+	public static function updateImage($name, $id, $conditions = array()) {
+		$type = EventImage::$types[$name];
+
+		return (boolean) static::update(
+			array(
+				'$set' => array('images.' . $name . '_image' => $id)
+			),
+			$conditions,
+			array('atomic' => false)
+		);
+	}
+
+	public function images($entity) {
+		$results = array();
+
+		foreach ($entity->images as $name => $id) {
+			$results[$name] = EventImage::first(array(
+				'conditions' => array('_id' => $id)
+			));
+		}
+		return $results;
 	}
 }
 

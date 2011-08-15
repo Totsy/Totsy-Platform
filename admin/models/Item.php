@@ -127,6 +127,20 @@ class Item extends \lithium\data\Model {
 		return preg_replace('/\s*/m', '', implode('-', $sku));
 	}
 
+	public static function updateImage($name, $id, $conditions = array()) {
+		$type = ItemImage::$types[$name];
+
+		return (boolean) static::update(
+			array(
+				$type['multiple'] ? '$addToSet' : '$set' => array(
+					$type['field'] => $id
+				)
+			),
+			$conditions,
+			array('atomic' => false)
+		);
+	}
+
 	public function images($entity) {
 		$results = array();
 
