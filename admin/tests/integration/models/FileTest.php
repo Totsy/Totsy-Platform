@@ -42,6 +42,19 @@ class FileTest extends \lithium\test\Integration {
 		fclose($handle);
 	}
 
+	public function testWriteMeta() {
+		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
+		$bytes = file_get_contents($file);
+
+		$file = File::write($bytes, array('foo' => 'bar'));
+
+		$result = $file->foo;
+		$expected = 'bar';
+		$this->assertEqual($expected, $result);
+
+		$file->delete();
+	}
+
 	public function testWriteAutoMeta() {
 		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
 		$bytes = file_get_contents($file);
@@ -82,6 +95,20 @@ class FileTest extends \lithium\test\Integration {
 		$this->assertEqual($expected, $result);
 
 		$file->delete();
+	}
+
+	public function testPending() {
+		$fileA = File::write('test-a');
+		$fileB = File::write('test-b', array('pending' => true));
+		$fileC = File::write('test-c', array('pending' => true));
+
+		$result = File::pending()->count();
+		$expected = 2;
+		$this->assertEqual($expected, $result);
+
+		$fileA->delete();
+		$fileB->delete();
+		$fileC->delete();
 	}
 
 	public function testDetectMimeTypeFromBytes() {
