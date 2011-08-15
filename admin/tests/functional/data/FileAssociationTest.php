@@ -67,12 +67,10 @@ class FileAssociationTest extends \lithium\test\Integration {
 
 		$result = File::used($file->_id);
 		$this->assertTrue($result);
-
 		$event->delete();
 
 		$result = File::used($file->_id);
 		$this->assertFalse($result);
-
 		$file->delete();
 	}
 
@@ -97,14 +95,12 @@ class FileAssociationTest extends \lithium\test\Integration {
 		$this->assertIdentical($expected, $result);
 
 		$event->delete();
-
 		$expected = 0;
 		$result = count(File::orphaned()) - $before;
 		$this->assertIdentical($expected, $result);
 
 		$command = new FileOrphaned();
 		$command->run();
-
 		$expected = 1;
 		$result = count(File::orphaned()) - $before;
 		$this->assertIdentical($expected, $result);
