@@ -48,6 +48,77 @@ class FileAssociationTest extends \lithium\test\Integration {
 		$item->delete();
 		$file->delete();
 	}
+
+	public function testUsed() {
+		$file = File::write(uniqid());
+
+		$result = File::used($file->_id);
+		$this->assertFalse($result);
+
+		$event = Event::create(array(
+			'title' => 'Test',
+			'url' => $url = uniqid('test-'),
+			'images' => array(
+				'logo_image' => $file->_id
+			)
+		));
+		$event->save();
+
+		$result = File::used($file->_id);
+		$this->assertTrue($result);
+
+		$result = Event::first(array('conditions' => array('_id' => $event->_id)))->data();
+
+		$event->delete();
+		$file->delete();
+	}
+
+	public function testOrphaned() {
+		$file = File::write(uniqid());
+		$before = count(File::orphaned());
+
+		$event = Event::create(array(
+			'title' => 'Test',
+			'url' => $url = uniqid('test-'),
+			'images' => array(
+				'logo_image' => $file->_id
+			)
+		));
+		$event->save();
+
+		$expected = 0;
+		$result = count(File::orphaned()) - $before;
+		$this->assertIdentical($expected, $result);
+
+		$event->delete();
+
+		$expected = 1;
+		$result = count(File::orphaned()) - $before;
+		$this->assertIdentical($expected, $result);
+
+		$file->delete();
+	}
+
+	public function testAssociatedFilesCannotBeDeleted() {
+		$file = File::write(uniqid());
+
+		$event = Event::create(array(
+			'title' => 'Test',
+			'url' => $url = uniqid('test-'),
+			'images' => array(
+				'logo_image' => $file->_id
+			)
+		));
+		$event->save();
+
+		$result = $file->delete();
+		$this->assertFalse($result);
+
+		$event->delete();
+
+		$result = $file->delete();
+		$this->assertTrue($result);
+	}
 }
 
 ?>
