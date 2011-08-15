@@ -38,7 +38,7 @@
 	</div>
 	<div class="clear"></div>
 	<hr/>
-	     <div class="cart-button fr" style="margin:20px 5px 20px 0px;">
+	     <div class="cart-button fr" style="margin:20px 0px 20px 0px;">
 		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
 		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
 		     <div class="clear"></div>
@@ -47,23 +47,11 @@
 
 <div class="message"></div>
 <?php if (!empty($subTotal)): ?>
+
+<div class="roundy_cart" style="width:935px !important">
 <?=$this->form->create(null ,array('id'=>'cartForm')); ?>
-	<div class="grid_16 roundy_cart">
 	<div id='message'><?php echo $message; ?></div>
 		<table class="cart-table">
-			<!--
-			<thead>
-				<tr>
-					<th>Item</th>
-					<th style="width:220px;">Description</th>
-					<th style="width:65px;">Price</th>
-					<th>Quantity</th>
-					<th>Total</th>
-					<th>Time Remaining</th>
-					<th></th>
-				</tr>
-			</thead>
-			-->
 			<tbody>
 			<?php $x = 0; ?>
 			<?php foreach ($cart as $item): ?>
@@ -129,7 +117,7 @@
 					<td class="cart-time"><!-- <img src="/img/old_clock.png" align="absmiddle" width="23" class="fl"/>--> <div id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?=$date?>'></div>
 					
 					</td>
-					<td class="<?="total-item-$x";?>" style="width:55px;">
+					<td class="<?="total-item-$x";?>" style="width:55px; text-align:right; padding-right:10px">
 						<strong style="color:#009900;">$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
 					</td>
 				</tr>
@@ -224,19 +212,19 @@
 						</div>			
 					</td>
 				</tr>
-				<tr>
-					<td colspan="8">
-					<div class="cart-button fr" style="margin:20px 0px 20px 0px;">
-		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
-		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
-		     <div class="clear"></div>
-		 </div>
-					</td>
-				</tr>
 			</tbody>
 		</table>
 </div>
+
+<div class="cart-button fr" style="margin:20px 0px 20px 0px;">
+		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
+		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
+	<div class="clear"></div>
+
+
 <?=$this->form->end(); ?>
+</div>
+
 <div id="remove_form" style="display:none">
 	<?=$this->form->create(null ,array('id'=>'removeForm')); ?>
 	<?=$this->form->hidden('rmv_item_id', array('class' => 'inputbox', 'id' => 'rmv_item_id')); ?>
