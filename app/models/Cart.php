@@ -476,7 +476,7 @@ class Cart extends Base {
 	* The getDiscount method check credits, promocodes and services available 
 	* @see app/models/Cart::check()
 	*/
-	public function getDiscount($shippingCost = 7.95, $overShippingCost = 0) {
+	public static function getDiscount($shippingCost = 7.95, $overShippingCost = 0) {
 		#Get User Infos
 		$fields = array(
 		'item_id',
