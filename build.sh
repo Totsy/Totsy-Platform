@@ -130,6 +130,7 @@ case $COMMAND in
 		libraries/lithium/console/li3 --env=test test tests/integration
 		libraries/lithium/console/li3 --env=test test tests/functional/WebDavTest.php
 		libraries/lithium/console/li3 --env=test test tests/functional/data/FileAssociationTest.php
+		libraries/lithium/console/li3 test tests/integration/models/EventTest.php
 		echo
 
 		echo "Running li3_fixtures tests..."
