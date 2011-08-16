@@ -143,6 +143,16 @@ case $COMMAND in
 		libraries/lithium/console/li3 --env=test test libraries/li3_flash_message/tests/.
 		echo
 
+		echo "Running li3_fixtures tests..."
+		cd $PROJECT_DIR/admin
+		libraries/lithium/console/li3 --env=test test ../libraries/li3_fixtures/tests/
+		echo
+
+		echo "Running li3_flash_message tests..."
+		cd $PROJECT_DIR/admin
+		libraries/lithium/console/li3 --env=test test libraries/li3_flash_message/tests/
+		echo
+
 		echo "Running SabreDAV tests..."
 		cd $PROJECT_DIR/admin/libraries/li3_dav/libraries/_source/sabredav/tests
 		phpunit
