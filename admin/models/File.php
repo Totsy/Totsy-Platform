@@ -132,6 +132,9 @@ class File extends \lithium\data\Model {
 
 	// @todo replace with map reduce
 	public static function orphaned() {
+		// @todo Temporarily disabled.
+		return array();
+
 		$data = static::all(array(
 			'conditions' => array(
 				'$or' => array(
