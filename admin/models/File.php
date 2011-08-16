@@ -120,7 +120,7 @@ class File extends \lithium\data\Model {
 		));
 		if ($result->count()) {
 			return true;
-		}
+		}admin/tests/functional/WebDavTest.php
 
 		$result = Item::all(array(
 			'conditions' => array(
