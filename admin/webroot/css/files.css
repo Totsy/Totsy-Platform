@@ -36,3 +36,7 @@ h2 + .actions {
 .actions a + a:before {
 	content: " / ";
 }
+
+.file.error {
+	width: auto;
+}
