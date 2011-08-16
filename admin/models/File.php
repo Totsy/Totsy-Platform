@@ -7,6 +7,7 @@ use lithium\net\http\Media;
 use admin\models\Event;
 use admin\models\Item;
 use MongoDate;
+use MongoCode;
 
 class File extends \lithium\data\Model {
 
@@ -142,10 +143,26 @@ class File extends \lithium\data\Model {
 		return static::all(array('conditions' => array('pending' => true)));
 	}
 
-	// @todo replace with map reduce
+	// @todo Temporarily disabled.
 	public static function orphaned() {
-		// @todo Temporarily disabled.
 		return array();
+
+		// @todo replace with map reduce
+		/*
+		$map = new MongoCode('
+
+		');
+		$reduce = new MongoCode('
+
+		');
+
+		$db = static::connection()->connection;
+		$result = $db->command(array(
+			'mapreduce' => 'events',
+		) + compact('map', 'reduce'));
+
+		return $result;
+		*/
 
 		$data = static::all(array(
 			'conditions' => array(
