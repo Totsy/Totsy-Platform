@@ -67,9 +67,11 @@ class FileAssociationTest extends \lithium\test\Integration {
 		$result = File::used($file->_id);
 		$this->assertTrue($result);
 
-		$result = Event::first(array('conditions' => array('_id' => $event->_id)))->data();
-
 		$event->delete();
+
+		$result = File::used($file->_id);
+		$this->assertFalse($result);
+
 		$file->delete();
 	}
 
