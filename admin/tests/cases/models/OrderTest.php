@@ -136,6 +136,8 @@ class OrderTest extends \lithium\test\Unit {
 		$result_user = User::find('first', array('conditions' => array(
 			'_id' => $user["_id"]
 		)));
+		$this->skipIf(!$result_user, 'Cannot continue test; precondition failed.');
+
 		$user = $result_user->data();
 		$check_user = false;
 		foreach($order["modifications"] as $modif)

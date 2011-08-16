@@ -12,6 +12,11 @@ use lithium\storage\Session;
 
 class OrdersControllerTest extends \lithium\test\Unit {
 
+	public function skip() {
+		$message = "SAPI has no session support.";
+		$this->skipIf(PHP_SAPI == 'cli', $message);
+	}
+
 	/*
 	* Testing the Cancel method from the OrdersController
 	*/
