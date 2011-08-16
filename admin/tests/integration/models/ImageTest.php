@@ -20,6 +20,20 @@ class ImageTest extends \lithium\test\Integration {
 		$file->delete();
 	}
 
+	public function testDimensionsBc() {
+		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
+		$bytes = file_get_contents($file);
+
+		$id = Image::getGridFS()->storeBytes($bytes);
+		$file = Image::first(array('conditions' => array('_id' => $id)));
+
+		$result = $file->dimensions();
+		$expected = array('width' => 70, 'height' => 47);
+		$this->assertEqual($expected, $result);
+
+		$file->delete();
+	}
+
 	public function testDetectDimensions() {
 		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
 		$bytes = file_get_contents($file);

@@ -136,6 +136,20 @@ class FileTest extends \lithium\test\Integration {
 		$result = File::detectMimeType('');
 		$this->assertFalse($result);
 	}
+
+	public function testDimensionsBc() {
+		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
+		$bytes = file_get_contents($file);
+
+		$id = File::getGridFS()->storeBytes($bytes);
+		$file = File::first(array('conditions' => array('_id' => $id)));
+
+		$result = $file->mimeType();
+		$expected = 'image/jpeg';
+		$this->assertEqual($expected, $result);
+
+		$file->delete();
+	}
 }
 
 ?>
