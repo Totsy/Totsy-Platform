@@ -49,10 +49,10 @@ class Order extends Base {
 		$user = Session::read('userLogin');
 		$cc_encrypt = Session::read('cc_infos');
 		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
- 		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+ 		$iv =  base64_decode(Session::read('vi'));// mcrypt_create_iv($iv_size, MCRYPT_RAND);
  		$key = md5($user['_id']);
-		foreach	($cc_encrypt as $key => $cc_info) {
-			$crypt_info = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $cc_info, MCRYPT_MODE_CFB, $iv);
+		foreach	($cc_encrypt as $k => $cc_info) {
+			$crypt_info = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key.sha1($k), base64_decode($cc_info), MCRYPT_MODE_CFB, $iv);
 			$card[$key] = $crypt_info;
 		}
 		$card = Payments::create('default', 'creditCard', $card + array(

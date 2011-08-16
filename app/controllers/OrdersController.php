@@ -306,6 +306,7 @@ class OrdersController extends BaseController {
 	 * @todo Improve documentation
 	 */
 	public function review() {
+		
 		$order = Order::create();
 		#Get Users Informations
 		$user = Session::read('userLogin');
@@ -578,11 +579,12 @@ class OrdersController extends BaseController {
 			if($cc_infos->validates()) {
 				#Encrypt CC Infos with mcrypt
 				$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
-					$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+				$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+				Session::write('vi',base64_encode($iv));
 				$key = md5($user['_id']);
-				foreach	($cc_infos as $key => $cc_info) {
-					$crypt_info = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $cc_info, MCRYPT_MODE_CFB, $iv);
-					$cc_encrypt[$key] = $crypt_info;
+				foreach	($cc_infos as $k => $cc_info) {
+					$crypt_info = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key.sha1($k), $cc_info, MCRYPT_MODE_CFB, $iv);
+					$cc_encrypt[$k] = base64_encode($crypt_info);
 				}
 				Session::write('cc_infos', $cc_encrypt);
 				$cc_passed = true;
