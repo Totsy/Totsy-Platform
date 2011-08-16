@@ -22,6 +22,14 @@ class File extends \lithium\data\Model {
 	public static $dedupe = true;
 
 	/**
+	 * Enable/disable deduping.
+	 *
+	 * @see admin\models\File::write()
+	 * @var boolean
+	 */
+	public static $dedupe = true;
+
+	/**
 	 * Writes contents of an open handle to GridFS. Deduplication will take
 	 * place as me data is detected to be already stored.
 	 *
@@ -29,11 +37,7 @@ class File extends \lithium\data\Model {
 	 *        with raw bytes or a string containing the path to a readable file.
 	 * @return object|boolean
 	 */
-	public static function write($data, $meta = array(), array $options = array()) {
-		$options += array(
-			'dedupe' => true
-		);
-
+	public static function write($data, $meta = array()) {
 		/* Normalize $data */
 		$close = false;
 
@@ -69,7 +73,7 @@ class File extends \lithium\data\Model {
 		/* We'll need the complete document. */
 		$file = File::first(array('conditions' => array('_id' => $id)));
 
-		$meta = (array) $meta + array(
+		$meta += array(
 			'created_date' => new MongoDate(),
 			'mime_type' => static::detectMimeType($handle),
 		);

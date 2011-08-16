@@ -22,7 +22,7 @@ class ImageTest extends \lithium\test\Integration {
 		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
 		$bytes = file_get_contents($file);
 
-		$file = Image::write($bytes, array(), array('dedupe' => false));
+		$file = Image::write($bytes);
 
 		$result = $file->dimensions->data();
 		$expected = array('width' => 70, 'height' => 47);
@@ -72,7 +72,7 @@ class ImageTest extends \lithium\test\Integration {
 			'mime_type' => 'image/jpeg'
 		);
 
-		$file = Image::resizeAndSave('logo', $data, null, array('dedupe' => false));
+		$file = Image::resizeAndSave('logo', $data);
 
 		$result = $file->dimensions->data();
 		$expected = array('width' => 3, 'height' => 5);
@@ -99,7 +99,7 @@ class ImageTest extends \lithium\test\Integration {
 			)
 		);
 
-		$file = Image::resizeAndSave('logo', $bytes, null, array('dedupe' => false));
+		$file = Image::resizeAndSave('logo', $bytes);
 
 		$result = $file->dimensions->data();
 		$expected = array('width' => 500, 'height' => 300);
