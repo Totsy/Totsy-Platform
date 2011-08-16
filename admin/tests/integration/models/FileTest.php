@@ -107,6 +107,20 @@ class FileTest extends \lithium\test\Integration {
 		$fileC->delete();
 	}
 
+	public function testPendingWithFlaggedFalse() {
+		$before = File::pending()->count();
+
+		$fileA = File::write('test-a', array('pending' => true));
+		$fileB = File::write('test-b', array('pending' => false));
+
+		$result = File::pending()->count() - $before;
+		$expected = 1;
+		$this->assertEqual($expected, $result);
+
+		$fileA->delete();
+		$fileB->delete();
+	}
+
 	public function testDetectMimeTypeFromBytes() {
 		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
 		$bytes = file_get_contents($file);
