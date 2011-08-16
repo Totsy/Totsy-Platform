@@ -391,7 +391,7 @@ class OrdersController extends BaseController {
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
 		);
 
-		if (($cart->data()) && (count($this->request->data) > 1) && $order->process($user, $data, $cart, $orderCredit, $orderPromo)) {
+		if (($cart->data()) && (count($this->request->data) > 1) && $order->process( $user, $data, $cart, $orderCredit, $orderPromo, $tax)) {
 			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 			if ($orderCredit->credit_amount) {
 				User::applyCredit($user['_id'], $orderCredit->credit_amount);
@@ -413,11 +413,13 @@ class OrdersController extends BaseController {
 				if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
 					$services = array_merge($services, array("freeshipping"));
 				}
-				if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible') {
+				if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible' && $subTotal >= 50) {
 					$order->discount = -10.00;
 					$services = array_merge($services, array("10off50"));
 				}
-				$order->service = $services;
+				if(!empty($services)) {
+					$order->service = $services;
+				}
 			}
 			if (!empty($orderPromo->type)) {
 				if ($orderPromo->type == 'free_shipping') {
@@ -429,11 +431,9 @@ class OrdersController extends BaseController {
 					$order->promo_code = $orderPromo->code;
 				}
 			}
-			
 			if($avatax === true){
 				AvaTax::postTax( compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
 			}
-			$order->tax = $tax;
 			$order->avatax = $avatax;
 			$order->ship_date = new MongoDate(Cart::shipDate($order));
 			$order->save();
