@@ -102,8 +102,9 @@ class Order extends Base {
 				} else {
 					$authKey = $this->randomString(8,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz');
 				}
-				return $order->save(compact('total', 'subTotal', 'tax', 'handling','overSizeHandling') + array(
+				return $order->save(compact('total', 'subTotal', 'handling','overSizeHandling') + array(
 					'user_id' => (string) $user['_id'],
+					'tax' => (float) $tax,
 					'card_type' => $card->type,
 					'card_number' => substr($card->number, -4),
 					'date_created' => static::dates('now'),
