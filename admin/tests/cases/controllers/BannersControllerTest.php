@@ -10,7 +10,12 @@ use MongoId;
 use lithium\action\Request;
 
 class BannersControllerTest extends \lithium\test\Unit {
-	
+
+	public function skip() {
+		$message = "SAPI has no session support.";
+		$this->skipIf(PHP_SAPI == 'cli', $message);
+	}
+
 	/*
 	* Testing the check method from the BannersController
 	*/

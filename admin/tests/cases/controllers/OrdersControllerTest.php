@@ -14,7 +14,6 @@ use MongoId;
 use MongoDate;
 
 class OrdersControllerTest extends \lithium\test\Unit {
-
 	public $controller;
 
 	public function setUp() {
@@ -100,6 +99,14 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$order2->delete();
 	}
 
+	public function skip() {
+		$message = "SAPI has no session support.";
+		$this->skipIf(PHP_SAPI == 'cli', $message);
+	}
+
+	/*
+	* Testing the Cancel method from the OrdersController
+	*/
 	public function testCancel() {
 		$order_id = new MongoId("8788727dsds3782738dsdsds728");
 		$user_id = new MongoId("787878787zazazag78dsdsdsds78");
