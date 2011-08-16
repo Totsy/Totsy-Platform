@@ -26,7 +26,8 @@ class ItemImage extends \admin\models\Image {
 			'field' => 'alternate_images',
 			'multiple' => true,
 			'regex' => array(
-				'/^items\_.+\_alternate.+\..*/i'
+				'/^items\_.+\_alternate.+\..*/i',
+				'/^items\_.+\_alternate\..*/i'
 			)
 		),
 		/* Not stored in GridFS. */
