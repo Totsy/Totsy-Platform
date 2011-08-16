@@ -42,21 +42,20 @@ class BaseController extends \lithium\action\Controller {
 	 * @see /extensions/helpers/Events.php
 	 */
 	public function selectEvent($type = null) {
-		$events = null;
-		if(!empty($this->request->data)) {
-			$month_delay = (int) $this->request->data['month_delay'];
-			if ($month_delay === 48) {
-				$events = Event::find('all');
-			} else {
-				$date_limit = mktime(0, 0, 0, (date("m") - $month_delay), date("d"), date("Y"));
-				$conditions = array(
-					'created_date' => array(
-    		   		'$gt' => new MongoDate($date_limit)
-				));
-				$events = Event::find('all', array('conditions' => $conditions));
-			}
+		/**TOM - TEMPORARY FIX FOR MEMORY LIMIT ON DEV**/
+		$environment = Environment::get();
+		if ($environment == 'local') {
+			#DEV SERVER - LIMIT TO LAST 3 MONTHS EVENT
+			$date_limit = mktime(0, 0, 0, (date("m") - 3), date("d"), date("Y"));
+			$conditions = array(
+				'created_date' => array(
+					'$gt' => new MongoDate($date_limit)
+			));
+			$events = Event::find('all', array('conditions' => $conditions));
+		} else {
+			$events = Event::all();
 		}
-		return compact('events', 'type', 'month_delay');
+		return compact('events', 'type', 'environment');
 	}
 
 	protected function _asciiClean($description) {
