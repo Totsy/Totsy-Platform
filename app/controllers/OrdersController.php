@@ -413,11 +413,13 @@ class OrdersController extends BaseController {
 				if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
 					$services = array_merge($services, array("freeshipping"));
 				}
-				if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible') {
+				if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible' && $subTotal >= 50) {
 					$order->discount = -10.00;
 					$services = array_merge($services, array("10off50"));
 				}
-				$order->service = $services;
+				if(!empty($services)) {
+					$order->service = $services;
+				}
 			}
 			if (!empty($orderPromo->type)) {
 				if ($orderPromo->type == 'free_shipping') {
