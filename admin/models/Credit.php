@@ -51,6 +51,7 @@ class Credit extends Base {
 	 * @return boolean
 	 */
 	public static function add(array $data = array(), $options = array()) {
+
 		$credit = static::_object()->create();
 		$user = Session::read('userLogin');
 		$credit->created = static::dates('now');
@@ -61,8 +62,11 @@ class Credit extends Base {
 			$amount = $data['sign'].$data['amount'];
 			$credit->reason = $data['reason'];
 		}
-		if (!empty($data['event_id']) || !empty($data['order_id'])) {
+		if (!empty($data['event_id']) ) {
 			$credit->event_id = $data['event_id'];
+		}
+
+		if (!empty($data['order_id'])) {
 			$credit->order_number = $data['order_number'];
 			$credit->order_id = $data['order_id'];
 		}

@@ -279,7 +279,7 @@ class OrdersController extends BaseController {
 
 		if (isset($this->request->data['credit_amount'])) {
 			$credit = $this->request->data['credit_amount'];
-			$isMoney = Validator::isMoney($credit);
+			$isMoney = Validator::isMoney("$" . $credit);
 			$credit = (float)number_format((float)$this->request->data['credit_amount'],2,'.','');
 			$lower = -0.999;
 			$upper = (!empty($userDoc->total_credit)) ? $userDoc->total_credit + 0.01 : 0;
@@ -296,7 +296,7 @@ class OrdersController extends BaseController {
 						'amount' => "Please apply credits that are greater than $0 and less than $$userDoc->total_credit"
 					));
 			}
-			$isValid = ($subTotal >= $credit) ? true : false;
+			$isValid = (round($subTotal,2) >= $credit) ? true : false;
 			if (!$isValid) {
 				$orderCredit->errors(
 					$orderCredit->errors() + array(
