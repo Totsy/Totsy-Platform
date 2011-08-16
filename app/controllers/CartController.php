@@ -8,6 +8,7 @@ use app\models\Event;
 use lithium\storage\Session;
 use MongoId;
 use MongoDate;
+use app\extensions\Mailer;
 
 /**
  * Facilitates the app CRUD operations of a users cart (baskets).
@@ -46,7 +47,7 @@ class CartController extends BaseController {
 			$events = Event::find('all', array('conditions' => array('_id' => $item->event[0])));
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
 			$item->event_url = $events[0]->url;
-			$item->available = $itemInfo->details->{$item->size} - Cart::reserved($item->item_id, $item->size);
+			$item->available = $itemInfo->details->{$item->size} - (Cart::reserved($item->item_id, $item->size) - $item->quantity);
 			$itemlist[$item->created->sec] = $item->event[0];
 		}
 		$shipDate = Cart::shipDate($cart);
@@ -94,8 +95,8 @@ class CartController extends BaseController {
 		$message = null;
 		if ($this->request->data) {
 			$itemId = $this->request->data['item_id'];
-			$size = (empty($this->request->data['item_size'])) ?
-			 "no size": $this->request->data['item_size'];
+			$size = (!array_key_exists('item_size', $this->request->data)) ?
+				"no size": $this->request->data['item_size'];
 			$item = Item::find('first', array(
 				'conditions' => array(
 					'_id' => "$itemId"),
@@ -121,24 +122,29 @@ class CartController extends BaseController {
 					//Make sure the items are available
 					if( $avail > 0 ){
 						++$cartItem->quantity;
+						
 						$cartItem->save();
+						$this->addIncompletePurchase(Cart::active());
 					}else{
 						$cartItem->error = 'You can’t add this quantity in your cart. <a href="#5">Why?</a>';
 					$cartItem->save();
+					$this->addIncompletePurchase(Cart::active());
 					}
 				}else{
 					$cartItem->error = 'You have reached the maximum of 9 per item.';
 					$cartItem->save();
+					$this->addIncompletePurchase(Cart::active());
 				}
 			} else {
 				$item = $item->data();
+				$item_id = (string) $item['_id'];
 				$item['size'] = $size;
 				$item['item_id'] = $itemId;
 				unset($item['details']);
 				unset($item['_id']);
 				$info = array_merge($item, array('quantity' => 1));
 				if ($cart->addFields() && $cart->save($info)) {
-
+					$this->addIncompletePurchase(Cart::active());
 				}
 			}
 			$this->redirect(array('Cart::view'));
@@ -162,6 +168,7 @@ class CartController extends BaseController {
 				)));
 				if(!empty($cart)){
 					Cart::remove(array('_id' => $data["id"]));
+					$this->addIncompletePurchase(Cart::active());
 				}
 			}
 
@@ -186,16 +193,26 @@ class CartController extends BaseController {
 				$cart = Cart::find('first', array(
 					'conditions' => array('_id' =>  (string) $id)
 				));
-				if ($result['status']) {
-					if($quantity == 0){
-				        Cart::remove(array('_id' => $id));
-				    }else {
-						$cart->quantity = (integer) $quantity;
-						$cart->save();
-					}
-				} else {
-					$cart->error = $result['errors'];
+				$status = $this->itemAvailable($cart->item_id, $cart->quantity, $cart->size, $quantity);
+				if(!$status['available']) {
+					$cart->quantity = (integer) $status['quantity'];
 					$cart->save();
+					$this->addIncompletePurchase(Cart::active());
+				} else {
+					if ($result['status']) {
+						if($quantity == 0){
+				        	Cart::remove(array('_id' => $id));
+				        	$this->addIncompletePurchase(Cart::active());
+				    	} else {
+							$cart->quantity = (integer) $quantity;
+							$cart->save();
+							$this->addIncompletePurchase(Cart::active());
+						}
+					} else {
+						$cart->error = $result['errors'];
+						$cart->save();
+						$this->addIncompletePurchase(Cart::active());
+					}
 				}
 			}
 		}
@@ -226,6 +243,62 @@ class CartController extends BaseController {
             $total_left = 45 - $query['subtotal'];
             return compact('total_left', 'url');
         }
+	}
+	
+	protected function addIncompletePurchase($items){
+		
+
+		if (is_object($items)) $items = $items->data();
+		
+
+		
+		$user = Session::read('userLogin');
+		$base_url = 'http://'.$_SERVER['HTTP_HOST'].'/';
+		$itemToSend = array();
+		foreach ($items as $item){
+			$eventInfo = Event::find($item['event'][0]);
+			if (is_object($eventInfo)) $eventInfo = $eventInfo->data();
+			$itemToSend[] = array(
+				'id' => $item['_id'],
+				'qty' => $item['quantity'],
+				'title' => $item['description'],
+				'price' => $item['sale_retail']*100,
+			 	'url' => $base_url.'sale/'.$eventInfo['url'].'/'.$item['url']
+			);
+
+			unset($eventInfo);
+		}		
+		Mailer::purchase(
+			$user['email'],
+			$itemToSend,
+			array(
+				'incomplete' => 1,
+				'message_id' => hash('sha256',Session::key('default').substr(strrev( (string) $user['_id']),0,8))
+			)
+		);
+		unset($itemToSend,$user);
+	}
+	
+	/**
+	 * Checks the availability of an item.
+	 *
+	 * The method checks if a single item (color/size) is available for purchase.
+	 * A boolean of `true` is returned if the actual quantity available less reserved
+	 * items in the cart is greater than zero.
+	 *
+	 * @see app/models/Cart::reserved()
+	 * @return boolean
+	 */
+	public function itemAvailable($item_id, $original_quantity, $size, $qty_req) {
+		$available = false;
+		$reserved = Cart::reserved($item_id, $size);
+		$item = Item::find('first', array(
+			'conditions' => array(
+				'_id' => $item_id
+		)));
+		$status['quantity'] = $item->details->{$size} - ($reserved - $original_quantity);
+		$status['available'] = ($status['quantity'] > 0 && $status['quantity'] >= $qty_req) ? true : false;
+		return $status;
 	}
 }
 ?>

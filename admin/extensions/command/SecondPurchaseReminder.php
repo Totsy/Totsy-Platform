@@ -8,7 +8,7 @@ use admin\models\Order;
 use admin\models\Service;
 use MongoDate;
 use MongoId;
-use li3_silverpop\extensions\Silverpop;
+use admin\extensions\Mailer;
 
 /**
  * Check if the user has used the second purchase $10 off discount
@@ -53,10 +53,7 @@ class SecondPurchaseReminder extends \lithium\console\Command  {
 					//Follow up email 1 week after first purchase with offer and end date
 					$day_target = mktime(0, 0, 0, date("m", $verif_date), date("d", $verif_date) + 23, date("Y", $verif_date));
 					if($day_target == $now) {
-						$data = array(
-							'email' => $user['email']
-						);
-						Silverpop::send('nextPurchaseReminder', $data);
+						Mailer::send('Welcome_10_Off_Reminder', $user['email']);
 						$idx++;
 					}
 			}

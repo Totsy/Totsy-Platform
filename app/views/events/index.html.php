@@ -58,13 +58,9 @@
 
 
                 <div class="md-gray p-container">
-
-						<?php if ($itemCounts[ (string) $event->_id] == 0): ?>
-								<?=$this->html->image('/img/soldout.png', array(
-									'title' => "Sold Out",
-									'style' => 'z-index : 2; position : absolute; left:69%; margin:10px;'
-								)); ?>
-					<?php endif ?>
+                  
+						<!-- this is where the items count was -->
+						
 					<?php
 						if (!empty($event->images->splash_big_image)) {
 							$productImage = "/image/{$event->images->splash_big_image}.jpg";
@@ -292,11 +288,11 @@
 
 </script>
 
-<script type="text/javascript" src="http://www.googleadservices.com/pagead/conversion.js"></script>
+<script type="text/javascript" src="https://www.googleadservices.com/pagead/conversion.js"></script>
 
 <noscript>
 	<div style="display:inline;">
-		<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=E1ZLCMH8igIQ9Yb-5QM&amp;guid=ON&amp;script=0"/>
+		<img height="1" width="1" style="border-style:none;" alt="" src="https://www.googleadservices.com/pagead/conversion/1019183989/?label=E1ZLCMH8igIQ9Yb-5QM&amp;guid=ON&amp;script=0"/>
 	</div>
 </noscript>
 <!-- END OF Google Code for inscrits Remarketing List --> 

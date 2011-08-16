@@ -2,7 +2,7 @@
 
 namespace admin\controllers;
 
-use \admin\models\Vendor;
+use admin\models\Vendor;
 
 class VendorsController extends \lithium\action\Controller {
 

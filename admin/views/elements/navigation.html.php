@@ -33,6 +33,9 @@
 			<li>
 				<?php echo $this->html->link('Search for Items', 'Items::search'); ?>
 			</li>
+			<li>
+				<?php echo $this->html->link('Bulk Cancelation of Items', 'Items::bulkCancel'); ?>			
+			</li>
 		</ul>
 	</li>
 	<li>
