@@ -28,11 +28,11 @@ class Image extends \admin\models\File {
 	 */
 	public static $types = array();
 
-	public static function write($data, $meta = array(), array $options = array()) {
+	public static function write($data, $meta = array()) {
 		$meta += array(
 			'dimensions' => static::detectDimensions($data)
 		);
-		return parent::write($data, $meta, $options);
+		return parent::write($data, $meta);
 	}
 
 	/*
@@ -41,7 +41,7 @@ class Image extends \admin\models\File {
 	 * @param array $data The file data array from the POST data - a single file
 	 * @returnand we c
 	*/
-	public static function resizeAndSave($position, $data, $meta = array(), array $options = array()) {
+	public static function resizeAndSave($position, $data, $meta = array()) {
 		if (empty($data) || !isset(static::$types[$position])) {
 			return false;
 		}
@@ -79,9 +79,9 @@ class Image extends \admin\models\File {
 
 		// Write the image to GridFS
 		// Return what should be the file object that write() returns... this will have an id to associate
-		return static::write($bytes, (array) $meta + array(
+		return static::write($bytes, $meta + array(
 			'name' => $filename, 'mime_type' => 'image/png'
-		), $options);
+		));
 	}
 
 	/**
