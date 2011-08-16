@@ -7,6 +7,7 @@ use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
 use Imagine\Image\Color;
 use Imagine\Image\Point;
+use BadMethodCallException;
 
 class Image extends \admin\models\File {
 
@@ -91,6 +92,11 @@ class Image extends \admin\models\File {
 	 * @return boolean
 	 */
 	public static function process($data, $meta = array()) {
+		if (get_called_class() == get_class()) {
+			$message = "This method can only be called from a subclass i.e. `EventImage`.";
+			throw new BadMethodCallException($message);
+		}
+
 		$model = str_replace('Image', '', get_called_class());
 		$source = $model::meta('source');
 
