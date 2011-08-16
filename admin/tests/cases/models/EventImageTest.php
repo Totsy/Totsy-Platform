@@ -1,7 +1,6 @@
 <?php
 
 namespace admin\tests\cases\models;
-
 use admin\tests\mocks\models\EventMock;
 use admin\tests\mocks\models\EventImageMock;
 
