@@ -74,9 +74,9 @@ class FileAssociationTest extends \lithium\test\Integration {
 	}
 
 	public function testOrphaned() {
-		$file = File::write(uniqid());
 		$before = count(File::orphaned());
 
+		$file = File::write(uniqid());
 		$event = Event::create(array(
 			'title' => 'Test',
 			'url' => $url = uniqid('test-'),
