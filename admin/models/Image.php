@@ -42,7 +42,7 @@ class Image extends \admin\models\File {
 	 * @param array $data The file data array from the POST data - a single file
 	 * @returnand we c
 	*/
-	public static function resizeAndSave($position, $data, $meta = array()) {
+	public static function resizeAndSave($position, $data, $meta = array(), array $options = array()) {
 		if (empty($data) || !isset(static::$types[$position])) {
 			return false;
 		}
