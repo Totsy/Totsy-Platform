@@ -4,6 +4,7 @@ $(function() {
 
 		var item = $(this);
 		var target = $(item.attr('target'));
+		target.html('<div class="loading">Loading…</div>');
 
 		$.ajax({
 			url: item.attr('href'),
@@ -27,7 +28,7 @@ $(function() {
 				});
 			},
 			error: function() {
-				$(this).addClass('error');
+				item.addClass('error');
 			}
 		});
 	});
@@ -47,7 +48,7 @@ $(function() {
 				});
 			},
 			error: function() {
-				$(this).addClass('error');
+				item.addClass('error');
 			}
 		});
 	});
