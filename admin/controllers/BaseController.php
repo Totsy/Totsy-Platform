@@ -42,8 +42,20 @@ class BaseController extends \lithium\action\Controller {
 	 * @see /extensions/helpers/Events.php
 	 */
 	public function selectEvent($type = null) {
-		$events = Event::all();
-		return compact('events', 'type');
+		/**TOM - TEMPORARY FIX FOR MEMORY LIMIT ON DEV**/
+		$environment = Environment::get();
+		if ($environment == 'local') {
+			#DEV SERVER - LIMIT TO LAST 3 MONTHS EVENT
+			$date_limit = mktime(0, 0, 0, (date("m") - 3), date("d"), date("Y"));
+			$conditions = array(
+				'created_date' => array(
+					'$gt' => new MongoDate($date_limit)
+			));
+			$events = Event::find('all', array('conditions' => $conditions));
+		} else {
+			$events = Event::all();
+		}
+		return compact('events', 'type', 'environment');
 	}
 
 	protected function _asciiClean($description) {

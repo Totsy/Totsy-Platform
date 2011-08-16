@@ -3,7 +3,11 @@
 <?=$this->html->style('table');?>
 
 <div class="grid_16">
-	<h2 id="page-heading">Select Event for <?=$type?> Administration</h2>
+	<h2 id="page-heading">Select Event for <?=$type?> Administration
+	<?php if ($environment == 'local'): ?>
+		 - Dev Environment - Only Last 3 Months Events
+	<?php endif ?>
+	</h2>
 </div>
 <div class='clear'></div>
 <div class="grid_16">
