@@ -34,7 +34,7 @@ use admin\extensions\Mailer;
  * @see admin/extensions/command/Exchanger
  * @see admin/controllers/QueueController
  */
- 
+
 
 
 //sets maxlifetime to 5 hours
@@ -54,7 +54,7 @@ ini_set('session.gc_probability', 1);
 //check the gc_probability
 //echo ini_get("session.gc_probability");
 
- 
+
 class OrderExport extends Base {
 
 	/**
@@ -262,12 +262,7 @@ class OrderExport extends Base {
 		    'user_id' => true
 		));
 		$order_total = $orders->count();
-		
-		
-		
 		//total same until here 345pm
-		
-		
 		if ($orders) {
 			$inc = 1;
 			/**
@@ -318,7 +313,7 @@ class OrderExport extends Base {
 
 			$orderArray = array();
 			$ecounter = 0;
-			
+
 			//new counts for email breakdown
 			$allitems = 0;
 			$unprocessed_orders = 0;
@@ -330,18 +325,18 @@ class OrderExport extends Base {
 				$conditions = array('Customer PO #' => array('$in' => array((string) $order['_id'], $order['_id'])));
 				$processCheck = ProcessedOrder::count(compact('conditions'));
 				++$ecounter;
-				
+
 				//get items in order before check here
 				$items = $order['items'];
 
 				//total of items count to add to each subtotal
 				$raw_item_count = count($items);
-				
+
 				//add to raw item count
 				$allitems += $raw_item_count;
 
 				if ($processCheck == 0) {
-				
+
 					//this is unprocessed total for orders, items
 					$unprocessed_orders++;
 					$unprocessed_orders_items += $raw_item_count;
@@ -420,10 +415,9 @@ class OrderExport extends Base {
 							if (!in_array($orderFile[$inc]['OrderNum'], $orderArray)) {
 								$orderArray[] = $orderFile[$inc]['OrderNum'];
 							}
-							if ($this->test != 'true') {
+
 								$processedOrder = ProcessedOrder::connection()->connection->{'orders.processed'};
 								$processedOrder->save($orderFile[$inc] + $this->batchId);
-							}
 							$this->log("Adding order $order[_id] to $handle");
 							fputcsv($fp, $orderFile[$inc], chr(9));
 							++$inc;
@@ -444,7 +438,7 @@ class OrderExport extends Base {
 			if (!rename($handle, $this->pending.$filename)) {
 			    $this->log("Failed to move file " . $handle . " Filesize was " . filesize($handle));
 			    $new_location = $this->pending.$filename;
-			     $this->log("Using shell command to move file");
+			    $this->log("Using shell command to move file");
 			    shell_exec("mv ". $handle . " " . $new_location);
 			}
 			$totalOrders = count($orderArray);
@@ -635,6 +629,7 @@ class OrderExport extends Base {
 					if ($orders) {
 						foreach ($orders as $order) {
 							$items = $order['items'];
+							$date_created = $order['date_created'];
 							foreach ($items as $item) {
 								$active = (empty($item['cancel']) || $item['cancel'] != true) ? true : false;
 								$itemValid = ($item['item_id'] == $eventItem['_id']) ? true : false;
@@ -647,6 +642,20 @@ class OrderExport extends Base {
 									} else {
 										$purchaseOrder[$inc]['Qty'] += $item['quantity'];
 									}
+									//new additions
+									$purchaseOrder[$inc]['Vendor Style'] = $eventItem['vendor_style'];
+									$purchaseOrder[$inc]['Vendor Name'] = $vendorName;
+									$purchaseOrder[$inc]['Item Color'] = $item['color'];
+									$purchaseOrder[$inc]['Item Size'] = $item['size'];
+									$purchaseOrder[$inc]['Item Description'] = $eventItem['description'];
+									$purchaseOrder[$inc]['Order Creation Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $order['date_created']));
+									$purchaseOrder[$inc]['Promised Ship-by Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $order['ship_date']));
+									$purchaseOrder[$inc]['Event Name'] = $event->name;
+									$purchaseOrder[$inc]['Event End Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $event->end_date));
+
+
+
+
 									$purchaseOrder[$inc] = $this->sortArrayByArray($purchaseOrder[$inc], $purchaseHeading);
 								}
 							}
