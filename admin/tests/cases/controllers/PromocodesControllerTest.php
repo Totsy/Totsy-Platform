@@ -6,12 +6,6 @@ use \admin\controllers\PromocodesController;
 
 class PromocodesControllerTest extends \lithium\test\Unit {
 
-	public function setUp() {
-		
-	}
-
-	public function tearDown() {}
-	
 	public function testCreatingPromocodes() {
 		
 		$remote = new PromocodesController();
