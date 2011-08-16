@@ -114,7 +114,7 @@ class Image extends \admin\models\File {
 					continue;
 				}
 
-				preg_match('/^' . $source . '\_(.+)\_.*/i', $meta['name'], $matches);
+				preg_match('/^[a-z]+\_(.+)\_.*/i', $meta['name'], $matches);
 				$url = isset($matches[1]) ? $matches[1] : false;
 
 				/* If we don't have an event URL, what's the point of saving the image?
