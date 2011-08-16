@@ -246,7 +246,6 @@ class FileTest extends \lithium\test\Integration {
 
 		File::$dedupe = $this->_backup['dedupe'];
 	}
-
 	public function testDimensionsBc() {
 		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
 		$bytes = file_get_contents($file);
