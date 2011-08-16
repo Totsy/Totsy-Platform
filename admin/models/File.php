@@ -128,7 +128,14 @@ class File extends \lithium\data\Model {
 
 	// @todo replace with map reduce
 	public static function orphaned() {
-		$data = static::all(array('conditions' => array('pending' => false)));
+		$data = static::all(array(
+			'conditions' => array(
+				'$or' => array(
+					array('pending' => false),
+					array('pending' => array('$exists' => false)) /* BC */
+				)
+			)
+		));
 		$results = array();
 
 		foreach ($data as $item) {
