@@ -32,16 +32,6 @@ class File extends \lithium\data\Model {
 		/* Normalize $data */
 		$close = false;
 
-		/* Silently upgrade non seekable streams. */
-		$meta = stream_get_meta_data($stream);
-		if (!$meta['seekable']) {
-			$close = true;
-
-			$upgrade = fopen('php://temp', 'w+b');
-			stream_copy_to_stream($stream, $upgrade);
-
-			$stream = $upgrade;
-		}
 
 		if (is_string($data)) {
 			/* Only handles we open inside here are also closed here. */
@@ -55,6 +45,17 @@ class File extends \lithium\data\Model {
 			}
 		} else {
 			$handle = $data;
+
+			/* Silently upgrade non seekable streams. */
+			$meta = stream_get_meta_data($handle);
+			if (!$meta['seekable']) {
+				$close = true;
+
+				$upgrade = fopen('php://temp', 'w+b');
+				stream_copy_to_stream($handle, $upgrade);
+
+				$handle = $upgrade;
+			}
 		}
 
 		/* Dupe detection */
