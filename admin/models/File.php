@@ -59,7 +59,7 @@ class File extends \lithium\data\Model {
 		/* We'll need the complete document. */
 		$file = File::first(array('conditions' => array('_id' => $id)));
 
-		$meta += array(
+		$meta = (array) $meta + array(
 			'created_date' => new MongoDate(),
 			'mime_type' => static::detectMimeType($handle),
 		);
