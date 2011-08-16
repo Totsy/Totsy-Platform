@@ -72,7 +72,7 @@ class ImageTest extends \lithium\test\Integration {
 			'mime_type' => 'image/jpeg'
 		);
 
-		$file = Image::resizeAndSave('logo', $data);
+		$file = Image::resizeAndSave('logo', $data, null, array('dedupe' => false));
 
 		$result = $file->dimensions->data();
 		$expected = array('width' => 3, 'height' => 5);
@@ -99,59 +99,16 @@ class ImageTest extends \lithium\test\Integration {
 			)
 		);
 
-		$file = Image::resizeAndSave('logo', $bytes);
+		$file = Image::resizeAndSave('logo', $bytes, null, array('dedupe' => false));
 
 		$result = $file->dimensions->data();
-		$this->assertTrue($result['width'] <= 500);
-		$this->assertTrue($result['height'] <= 300);
+		$expected = array('width' => 500, 'height' => 300);
+		$this->assertEqual($expected, $result);
 
 		$file->delete();
 		Image::$types = $backup;
 	}
 
-	public function testResizeAndSaveBigImage() {
-		$backup = Image::$types;
-
-		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg_big.jpg';
-		$bytes = file_get_contents($file);
-
-		Image::$types = array(
-			'splash_big' => array(
-				'dimensions' =>  array(355, 410)
-			)
-		);
-
-		$file = Image::resizeAndSave('splash_big', $bytes);
-
-		$result = $file->dimensions->data();
-		$this->assertTrue($result['width'] <= 355);
-		$this->assertTrue($result['height'] <= 410);
-
-		$file->delete();
-		Image::$types = $backup;
-	}
-
-	public function testResizeAndSaveSmallImage() {
-		$backup = Image::$types;
-
-		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg_small.jpg';
-		$bytes = file_get_contents($file);
-
-		Image::$types = array(
-			'splash_big' => array(
-				'dimensions' =>  array(355, 410)
-			)
-		);
-
-		$file = Image::resizeAndSave('splash_big', $bytes);
-
-		$result = $file->dimensions->data();
-		$this->assertTrue($result['width'] <= 355);
-		$this->assertTrue($result['height'] <= 410);
-
-		$file->delete();
-		Image::$types = $backup;
-	}
 	public function testDimensionsBc() {
 		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
 		$bytes = file_get_contents($file);
