@@ -34,7 +34,7 @@ class Order extends Base {
 		);
 	}
 
-	public function process($order, $user, $data, $cart, $orderCredit, $orderPromo) {
+	public function process($order, $user, $data, $cart, $orderCredit, $orderPromo, $tax) {
 		foreach (array('billing', 'shipping') as $key) {
 			$addr = $data[$key];
 			${$key} = is_array($addr) ? Address::create($addr) : Address::first($addr);
@@ -68,7 +68,6 @@ class Order extends Base {
 			))
 		));
 		$subTotal = array_sum($cart->subTotal());
-		$tax = array_sum($cart->tax($shipping));
 		$handling = Cart::shipping($cart, $shipping);
 		$overSizeHandling = Cart::overSizeShipping($cart);
 		$session = Session::read('services', array('name' => 'default'));
@@ -80,16 +79,6 @@ class Order extends Base {
 		};
 		extract(Service::freeShippingCheck($handling, $overSizeHandling));
 		$handling = $shippingCost;
-
-		// if (!$handling) {
-		// 	$order->errors($order->errors() + array(
-		// 		'shipping' => 'A valid shipping address was not specified.'
-		// 	));
-		// 	$order->set($data);
-		// 	return false;
-		// }
-
-		$tax = $tax ? $tax + (($overSizeHandling+$handling) * Cart::TAX_RATE) : 0;
 		$afterDiscount = $subTotal + $orderCredit->credit_amount + $orderPromo->saved_amount + Service::tenOffFiftyCheck($subTotal);
 		if( $afterDiscount < 0 ){
 		    $afterDiscount = 0;
@@ -111,8 +100,9 @@ class Order extends Base {
 				} else {
 					$authKey = $this->randomString(8,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz');
 				}
-				return $order->save(compact('total', 'subTotal', 'tax', 'handling','overSizeHandling') + array(
+				return $order->save(compact('total', 'subTotal','handling','overSizeHandling') + array(
 					'user_id' => (string) $user['_id'],
+					'tax' => (float) $tax,
 					'card_type' => $card->type,
 					'card_number' => substr($card->number, -4),
 					'date_created' => static::dates('now'),
