@@ -116,7 +116,13 @@ class Image extends \admin\models\File {
 
 				preg_match('/^[a-z]+\_(.+)\_.*/i', $meta['name'], $matches);
 				$url = isset($matches[1]) ? $matches[1] : false;
-
+				
+				// for file names like events_the-name.jpg (that do not use an additional underscore)
+				if(!$url) {
+					preg_match('/^[a-z]+\_(.+)\..*/i', $meta['name'], $matches);
+					$url = isset($matches[1]) ? $matches[1] : false;
+				}
+				
 				/* If we don't have an event URL, what's the point of saving the image?
 				   We could never associate it and the file was probably named incorrectly. */
 				if (!$url) {
