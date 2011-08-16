@@ -5,6 +5,7 @@ namespace admin\controllers;
 use lithium\core\Libraries;
 use lithium\core\Environment;
 use lithium\analysis\Logger;
+use lithium\net\http\Router;
 use admin\models\File;
 use admin\models\EventImage;
 use admin\models\Event;
@@ -181,7 +182,7 @@ class FilesController extends \lithium\action\Controller {
 		$server = new Sabre_DAV_Server($root);
 
 		$server->debugExceptions = !Environment::is('production');
-		$server->setBaseUri('/files/dav');
+		$server->setBaseUri(Router::match('Files::dav'));
 
 		/* Filtering and locking are still using local files. */
 		$resources = Libraries::get('admin', 'resources');
