@@ -1,7 +1,7 @@
 <?php
 
 
-namespace admin\extensions\sabre\dav\auth\backend;
+namespace admin\extensions\dav\auth\backend;
 
 use lithium\security\Auth;
 

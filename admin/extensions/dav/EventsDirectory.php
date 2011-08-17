@@ -1,11 +1,11 @@
 <?php
 
-namespace admin\extensions\sabre\dav;
+namespace admin\extensions\dav;
 
 use admin\models\Event;
-use admin\extensions\sabre\dav\EventsYearDirectory;
+use admin\extensions\dav\EventsYearDirectory;
 
-class EventsDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
+class EventsDirectory extends \admin\extensions\dav\GenericDirectory {
 
 	public function __construct(array $config = array()) {
 		parent::__construct($config + array('value' => Event::meta('source')));
