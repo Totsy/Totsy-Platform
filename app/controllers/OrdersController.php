@@ -536,7 +536,7 @@ class OrdersController extends BaseController {
 			'item_id',
 			'color',
 			'category',
-			'description',
+			'opt_description',
 			'product_weight',
 			'quantity',
 			'sale_retail',
@@ -583,10 +583,10 @@ class OrdersController extends BaseController {
 				$cc_passed = true;
 			}
 			#In case of normal submit (no ajax one with the checkbox)
-			if(empty($datas['shipping_select'])) {
+			if(empty($datas['opt_shipping_select'])) {
 				#Get Only address informations
 				foreach($datas as $key => $data) {
-					if (strlen(strstr($key,'card')) == 0) {
+					if (strlen(strstr($key,'card')) == 0 && strlen(strstr($key,'opt')) == 0) {
 						$address_post[$key] = $data;
 					}
 				}

@@ -38,7 +38,7 @@ var paymentForm = new Object();
     	if(!paymentForm.submitted) {
     		paymentForm.submitted=false;  	
     	} else {
-    		$("#submitted").val(paymentForm.submitted);	
+    		$("#opt_submitted").val(paymentForm.submitted);	
     	}
     	    	
     	//detach the plugin from the form if it hasn't been submitted yet
@@ -60,9 +60,9 @@ var paymentForm = new Object();
     		    if(	field.value=="" && 
     		    	field.name!=="telephone" && 
     		    	field.name!=="address2" && 
-    		    	field.name!=="submitted" && 
-    		    	field.name!=="shipping" && 
-    		    	field.name!=="shipping_select" && 
+    		    	field.name!=="opt_submitted" && 
+    		    	field.name!=="opt_shipping" && 
+    		    	field.name!=="opt_shipping_select" && 
     		    	field.name!=="card_valid" ) {
     		    	
     		 		if( i==1 ) {
@@ -119,7 +119,7 @@ var paymentForm = new Object();
 				<div class="grid_16">
 				<h3>Pay with Credit Card :</h3>
 				<hr />
-				<?=$this->form->hidden('submitted', array('class'=>'inputbox', 'id' => 'submitted')); ?>
+				<?=$this->form->hidden('opt_submitted', array('class'=>'inputbox', 'id' => 'opt_submitted')); ?>
 				<?=$this->form->label('card_type', 'Card Type', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->select('card_type', array('visa' => 'Visa', 'mc' => 'MasterCard','amex' => 'American Express'), array('id' => 'card_type', 'class'=>'inputbox')); ?>
 				<br />
@@ -166,7 +166,7 @@ var paymentForm = new Object();
 
 				<h3>Billing Address</h3>
 				<hr />
-				Use my shipping address as my billing address: <?=$this->form->checkbox("shipping", array('id' => 'shipping', 'onclick' => 'replace_address()' , "checked" => $checked)) ?>
+				Use my shipping address as my billing address: <?=$this->form->checkbox("opt_shipping", array('id' => 'opt_shipping', 'onclick' => 'replace_address()' , "checked" => $checked)) ?>
 				<br />
 				<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('firstname', array('class' => 'validate[required] inputbox', 'id'=>'firstname')); ?>
@@ -197,8 +197,8 @@ var paymentForm = new Object();
 				<?=$this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
 				<br />
-				<?=$this->form->hidden('description', array('id' => 'description' , 'value' => 'billing')); ?>
-				<?=$this->form->hidden('shipping_select', array('id' => 'shipping_select')); ?>
+				<?=$this->form->hidden('opt_description', array('id' => 'opt_description' , 'value' => 'billing')); ?>
+				<?=$this->form->hidden('opt_shipping_select', array('id' => 'opt_shipping_select')); ?>
 				</div>
 			
 			<div class="grid_16">	
@@ -216,7 +216,7 @@ $("#card_number").blur( function(){
 });
 
 function replace_address() {
-    if($("#shipping").is(":checked")) {
+    if($("#opt_shipping").is(":checked")) {
     	//run through shippinAddress object and set values for corresponding fields	
     	$.each ( shippingAddress, function(k, v) {
     		
@@ -224,14 +224,14 @@ function replace_address() {
     		
     		console.log(v);
     			
-    		if(paymentForm.submitted==true && v!=="") {  		
+    		if(paymentForm.opt_submitted==true && v!=="") {  		
     			$('#' + k + "").attr("style", "background: #FFF !important");
     		}	
     	});		
     } else {
     	$.each ( shippingAddress, function(k, v) {
     		$("#" + k + "").val("");
-    		if(paymentForm.submitted==true) {  		
+    		if(paymentForm.opt_submitted==true) {  		
     			$('#' + k + "").attr("style", "background: #FFFFC5 !important");
     		}	
     		
