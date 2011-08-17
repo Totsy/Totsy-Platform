@@ -108,12 +108,12 @@
 			});
 		// end back to top
 
-	$("input:file,select").uniform();
+	$("input:file, select").uniform();
 	// end uniform inputs
-	
 		$(document).ready(function() {
 		$("#tabs").tabs();
 	});
+	
 	// end tabs
 </script>
 

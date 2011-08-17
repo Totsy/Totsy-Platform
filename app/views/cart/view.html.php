@@ -1,6 +1,5 @@
 <script type="text/javascript" src="/js/tipsy/src/javascripts/jquery.tipsy.js"></script>
 
-
 <link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
 
 

@@ -87,8 +87,9 @@ div.selector span {
 	margin-right: 20px;
 }
 
-div.selector select {
+div.selector select{
 	top: 0px;
+	line-height:10px !important;
 	left: 0px;
 	position: absolute;
 	height: 100%;
