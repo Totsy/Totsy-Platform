@@ -46,7 +46,7 @@
    
 </script>
 
-<div class="container_16">
+<div class="container_16" style="height:1000px">
 
 	<div class="grid_8">
 		<h2 class="page-title gray">
@@ -64,7 +64,7 @@
 	<div class="grid_8">
 		<div style="float:right; font-weight: bold">
 				Item reserved for: <br />
-				<span id="itemCounter" style="color:#009900;">Dummy cart expiration date
+				<span id="itemCounter" style="color:#009900;">
 				</span>
 		</div>
 	</div>
@@ -108,7 +108,7 @@
 		<?=$this->form->error('city'); ?>
 		<br />
 		<label for="state" class='required'>State <span>*</span></label>
-		<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'class' => 'validate[required] inputbox cart-select', 'id'=>'state')); ?>
+		<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'class' => 'validate[required] inputbox','id'=>'state')); ?>
 		<?=$this->form->error('state'); ?>
 		<br />
 		<?=$this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
