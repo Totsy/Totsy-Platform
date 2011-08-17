@@ -1,12 +1,12 @@
 <?php
 
-namespace admin\extensions\sabre\dav;
+namespace admin\extensions\dav;
 
-use admin\extensions\sabre\dav\ItemImageDirectory;
+use admin\extensions\dav\ItemImageDirectory;
 use admin\models\ItemImage;
 use Sabre_DAV_Exception_FileNotFound;
 
-class ItemDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
+class ItemDirectory extends \admin\extensions\dav\GenericDirectory {
 
 	public function getChild($name) {
 		if (!isset(ItemImage::$types[$name])) {

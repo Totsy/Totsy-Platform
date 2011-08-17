@@ -1,11 +1,11 @@
 <?php
 
-namespace admin\extensions\sabre\dav;
+namespace admin\extensions\dav;
 
 use admin\models\File;
 use Sabre_DAV_Exception_Forbidden;
 
-class OrphanedFile extends \admin\extensions\sabre\dav\GenericFile {
+class OrphanedFile extends \admin\extensions\dav\GenericFile {
 
 	public function delete() {
 		if (!$file = $this->_file()) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace admin\tests\mocks\extensions\sabre\dav;
+namespace admin\tests\mocks\extensions\dav;
 
 class ResponseMock extends \Sabre_HTTP_Response {
 

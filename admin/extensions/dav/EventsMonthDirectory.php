@@ -1,14 +1,14 @@
 <?php
 
-namespace admin\extensions\sabre\dav;
+namespace admin\extensions\dav;
 
-use admin\extensions\sabre\dav\EventDirectory;
+use admin\extensions\dav\EventDirectory;
 use admin\models\Event;
 use MongoDate;
 use DateTime;
 use DateInterval;
 
-class EventsMonthDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
+class EventsMonthDirectory extends \admin\extensions\dav\GenericDirectory {
 
 	public function getChild($name) {
 		return new EventDirectory(array('value' => $name, 'parent' => $this));

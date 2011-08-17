@@ -1,11 +1,11 @@
 <?php
 
-namespace admin\extensions\sabre\dav;
+namespace admin\extensions\dav;
 
 use admin\models\File;
 use Sabre_DAV_Exception_Forbidden;
 
-class PendingFile extends \admin\extensions\sabre\dav\GenericFile {
+class PendingFile extends \admin\extensions\dav\GenericFile {
 
 	public function put($data) {
 		return (boolean) File::write($data, array('pending' => true));

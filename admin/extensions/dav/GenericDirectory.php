@@ -1,6 +1,6 @@
 <?php
 
-namespace admin\extensions\sabre\dav;
+namespace admin\extensions\dav;
 
 use lithium\core\ConfigException;
 use Sabre_DAV_Exception_Forbidden;
