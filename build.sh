@@ -83,10 +83,6 @@ case $COMMAND in
 		find $PROJECT_DIR/{app,admin}/resources -type f -exec chmod -f 0666 {} \;
 		find $PROJECT_DIR/{app,admin}/resources -type d -exec chmod -f 0777 {} \;
 
-		echo "Setting permissions on libraries resource directories/files..."
-		find $PROJECT_DIR/admin/libraries/li3_dav/resources -type f -exec chmod 0666 {} \;
-		find $PROJECT_DIR/admin/libraries/li3_dav/resources -type d -exec chmod 0777 {} \;
-
 		echo "Setting permissions on data directory/files..."
 		find $PROJECT_DIR/data -type f -exec chmod -f 0640 {} \;
 		find $PROJECT_DIR/data -type d -exec chmod -f 0750 {} \;
