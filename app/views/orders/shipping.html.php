@@ -20,8 +20,8 @@
 
 <link rel="stylesheet" type="text/css" href="/css/validation-engine.jquery.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="/css/validation-template.css" media="screen" />
-<script type="text/javascript" src="/js/form_validator/jquery.validation-engine.js" charset="utf-8"></script>    
-<script type="text/javascript" src="/js/form_validator/languages/jquery.validation-engine-en.js" charset="utf-8"></script>    
+<script type="text/javascript" src="/js/form_validator/jquery.validation-engine.js" charset="utf-8"></script>   
+<script type="text/javascript" src="/js/form_validator/languages/jquery.validation-engine-en.js" charset="utf-8"></script>
 
 <script type="text/javascript">
 
@@ -31,12 +31,12 @@
     	$("#addressForm").validationEngine('init', { promptPosition : "centerRight", scroll: false });   
     	
     	 
-    	$(".inputbox").blur(function() { 
+    	$(".inputbox").blur( function() { 
     	    
 			$('#' + this.id + "").validationEngine('hide');	
 			//if they validate the field by filling it in, reset the background of the control to white again
-			if($('#' + this.id + "").val()!==""){
-			    $('#' + this.id + "").attr('style', 'background: #FFF !important');
+			if($('#' + this.id + "").val()!="" || this.id=="phone" || this.id=="address_2") { 
+			     $('#' + this.id + "").attr('style', 'background: #FFF !important');
 			} else {
 			    $('#' + this.id + "").attr('style', 'background: #FFFFC5 !important');
 			}
@@ -46,33 +46,42 @@
    
 </script>
 
-<div class="grid_16">
-	<h2 class="page-title gray">
-			<span class="cart_steps_off">1</span>
-			<span class="cart_steps_on">2</span>
-			<span class="cart_steps_off">3</span>
-			<span class="cart_steps_off">4</span>
-			<span class="red">Shipping Information</span>
-	</h2>
-	<hr />
-	<?php if (!empty($error)) { ?>
-		<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2></div>
-	<?php } ?>
-</div>
-
 <div class="container_16">
 
-<?=$this->form->create($address, array(
+	<div class="grid_8">
+		<h2 class="page-title gray">
+				<span class="cart_steps_off">1</span>
+				<span class="cart_steps_on">2</span>
+				<span class="cart_steps_off">3</span>
+				<span class="cart_steps_off">4</span>
+				<span class="red">Shipping Information</span>
+		</h2>
+		<?php if (!empty($error)) { ?>
+		<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2></div>
+		<?php } ?>
+	</div>
+	
+	<div class="grid_8">
+		<div style="float:right; font-weight: bold">
+				Item reserved for: <br />
+				<span id="itemCounter" style="color:#009900;">Dummy cart expiration date
+				</span>
+		</div>
+	</div>
+	
+	<?=$this->form->create($address, array(
 		'id' => 'addressForm',
 		'class' => "fl"
 )); ?>
+
 	<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
+		<hr />
 		Choose your address :
 		<?=$this->form->select('addresses', $addresses_ddwn, array("id" => 'addresses', 'value' => $selected));?>
 		<hr />
 		<?php endif ?>
-		
-	<div class="grid_8">
+			
+	<div class="grid_16">
 		<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('firstname', array('class' => 'validate[required] inputbox', 'id'=>'firstname')); ?>
 		<?=$this->form->error('firstname'); ?>
@@ -88,9 +97,9 @@
 		<?=$this->form->text('address', array('class' => 'validate[required] inputbox', 'id'=>'address' )); ?>
 		<?=$this->form->error('address'); ?>
 		<br />
-	</div>
+	<!-- </div>
 	
-	<div class="grid_8">
+	<div class="grid_8"> -->
 		<?=$this->form->label('address_2', 'Street Address 2', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('address_2', array('class' => 'inputbox', 'id'=>'address_2')); ?>
 		<br />
@@ -99,18 +108,15 @@
 		<?=$this->form->error('city'); ?>
 		<br />
 		<label for="state" class='required'>State <span>*</span></label>
-		<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'class' => 'validate[required] inputbox', 'id'=>'state')); ?>
+		<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'class' => 'validate[required] inputbox cart-select', 'id'=>'state')); ?>
 		<?=$this->form->error('state'); ?>
 		<br />
 		<?=$this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
 	</div>
 	
-	<div class="grid_8">
-		<?=$this->html->link('Continue Shopping', "sales", array('style'=>'float:left')); ?>
-	</div>
-	<div class="grid_8">
-			<?=$this->form->submit('Continue', array('class' => 'button fr')); ?>
+	<div class="grid_16">
+			<?=$this->form->submit('Payment', array('class' => 'button fr', 'style'=>'float:right')); ?>
 	</div>
 
 <?=$this->form->end();?> 

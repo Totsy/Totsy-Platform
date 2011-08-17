@@ -1,3 +1,9 @@
+<script type="text/javascript" src="/js/tipsy/src/javascripts/jquery.tipsy.js"></script>
+
+
+<link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
+
+
 <script type="text/javascript">	
 	$( function () {
 	    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	    
@@ -9,7 +15,13 @@
 		function refreshCart() {
 			window.location.reload(true);
 		}
+		
+		//applying tooltip
+		$('#shipping').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
+		$('#estimated_tax').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
+		
 	});
+	
 </script>
 
 <?php  if(!empty($subTotal)): ?>
@@ -29,11 +41,11 @@
 	<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto;">
 		 <div style="float:right; font-weight: bold">
 		Item reserved for: <br />
-		<span id="itemCounter">Dummy cart expiration date</span>
+		<span id="itemCounter" style="color:#009900;">Dummy cart expiration date</span>
 	    </div>
 	    <div style="float:left;">
 		 <span style="font-weight: bold">Estimated Shipping Date: </span><br />
-	         <span style="float:right;">&nbsp;&nbsp;<?=date('m-d-Y', $shipDate)?></span>
+	         <span style="float:right; color:#009900;">&nbsp;&nbsp;<?=date('m-d-Y', $shipDate)?></span>
 	     </div>
 	</div>
 	<div class="clear"></div>
@@ -77,7 +89,7 @@
 							)
 						); ?>
 					</td>
-					<td class="cart-desc" style="width:400px;">
+					<td class="cart-desc" style="width:475px;">
 						<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
 						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?></strong><br>
 						<strong>Color:</strong> <?=$item->color;?><br>
@@ -87,7 +99,7 @@
 					<div id='<?php echo "itemCounter$x"; ?>_display' style="margin:5px 0px 0px 5px;" title='<?=$date?>'></div>
 					</td>
 					<td class="<?="price-item-$x";?>" style="width:65px;">
-						<strong style="color:#009900;">$<?=number_format($item->sale_retail,2)?></strong>
+						<strong>$<?=number_format($item->sale_retail,2)?></strong>
 					</td>
 					<td class="<?="qty-$x";?>" style="width:65px; text-align:center">
 					<!-- Quantity Select -->
@@ -118,24 +130,22 @@
 					
 					</td>
 					<td class="<?="total-item-$x";?>" style="width:55px; text-align:right; padding-right:10px">
-						<strong style="color:#009900;">$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
+						<strong>$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
 					</td>
 				</tr>
 				<?php $x++; ?>
 			<?php endforeach ?>
-				<tr class="cart-total">
-					<td colspan="3" id='subtotal' valign='top'>
-						
-						<div style="float: left;">
-							
-							<div style="font-size: 12px; text-align:left!important">
+				<tr valign="top">
+					<td colspan="2" id="subtotal" style="padding:10px 0px 50px 10px">
+						<div style="float: left">
+							<div style="font-size: 12px; text-align:left !important;">
 								<strong>Add <?php if(!empty($credit)): ?>
-									<a href="#" id='credits_lnk' onclick="open_credit();" >Credits</a> /
+									<a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a> /
 								<?php endif ?> 
-									<a href='#' id='promos_lnk' onclick='open_promo();'>Optional Code</a></strong>
+									<a href="#" id="promos_lnk" onclick="open_promo();">Optional Code</a></strong>
 							</div>
-							<div style='clear:both'></div>
-							<div>
+							<div style="clear:both"></div>
+							<div id="promos_and_credit">
 							<?=$this->form->create(null); ?>
 								<div id='promo' style='display:none'>
 									<?=$this->view()->render(array('element' => 'promocode'), array( 'orderPromo' => $cartPromo)); ?>
@@ -144,72 +154,75 @@
 				   					<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'userDoc' => $userDoc)); ?>
 								</div>
 							</div>
-							
 						</div>
+					</td>
 						
-					</td>	
-					<td colspan="5">	
-						<div style="font-weight:bold">
-								<span style="float: left;">Subtotal:</span>
-								<span style="color:#009900; float:right">$<?=number_format($subTotal,2)?></span>
-						</div>
-						<?php if (!empty($promocode['discount_amount']) && ($promocode['type'] != 'free_shipping') ):?>
-						<div style="clear:both"></div>
-						<div style="font-weight:bold">
-    							<span style="float: left;">Discount 
-    							<?php echo '[' . $promocode['code'] . ']'; ?>	
-    							:</span> 
-    							<span style="color:#009900; float:right">- $<?=number_format(abs($promocode['discount_amount']),2)?></span>
-    					</div>
-   						<?php endif ?>
-   						<?php if (!empty($services['tenOffFitfy'])):?>
-						<div style="clear:both"></div>
-						<div style="font-weight:bold">
-    							<span style="float: left;">Discount [10$ Off] :</span> 
-    							<span style="color:#009900; float:right">- $<?=number_format($services['tenOffFitfy'],2)?></span>
-    					</div>
-   						<?php endif ?>
-						<div style="clear:both"></div>
-						<div style="font-weight:bold">
-								<span style="float: left;">Shipping:</span> 
-								<span style="color:#009900; float:right">$7.95</span>
-						</div>
-						<?php if (!empty($shipping_discount)):?>
-						<div style="clear:both"></div>
-						<div style="font-weight:bold">
-    							<span style="float: left;">Complimentary Shipping 
-    							<?php 
-    							if(!empty($promocode)) {
-    								if($promocode['type'] === 'free_shipping')
-    									echo '[' . $promocode['code'] . ']';	
-    							}?>		
-    							:</span> 
-    							<span style="color:#009900; float:right">- $<?=number_format($shipping_discount,2)?></span>
-    					</div>
-   						<?php endif ?>
-						<div style="clear:both"></div>						
-						<div style="font-weight:bold">
-								<span style="float: left;">Estimated Tax:</span> 
-								<span style="color:#009900; float:right">$0.00</span>
-						</div>
-						<?php if (!empty($credits)):?>
-						<div style="clear:both"></div>
-						<div style="font-weight:bold">
-    							<span style="float: left;">Credits:</span> 
-    							<span style="color:#009900; float:right">- $<?=number_format(abs($credits),2)?></span>
-    					</div>
-   						<?php endif ?>
-						<div style="clear:both"><hr /></div>						
-						<div style="font-weight:bold">
-							<span style="float: left;">Your Saving 
-								<?php if (!empty($savings)) : ?>
-								$<?=number_format($savings,2)?>
-								<?php endif ?> 
-							</span>
-							<span style="float:right">Order Total: 
-								<span style="color:#009900;">$ <?=number_format($total,2)?> </span>
-							</span>
-						</div>			
+					<td colspan="6">	
+					<div style="padding-top:10px">
+							<div style="font-weight:bold" class="subtotal">
+									<span style="float: left;">Subtotal:</span>
+									<span style="float:right">$<?=number_format($subTotal,2)?></span>
+							</div>
+							<?php if (!empty($promocode['discount_amount']) && ($promocode['type'] != 'free_shipping') ):?>
+							<div style="clear:both"></div>
+							<div style="font-weight:bold" class="subtotal">
+    								<span style="float: left;">Discount 
+    								<?php echo '[' . $promocode['code'] . ']'; ?>	
+    								:</span> 
+    								<span style="float:right">- $<?=number_format(abs($promocode['discount_amount']),2)?></span>
+    						</div>
+   							<?php endif ?>
+   							<?php if (!empty($services['tenOffFitfy'])):?>
+							<div style="clear:both"></div>
+							<div style="font-weight:bold" class="subtotal">
+    								<span style="float: left;">Discount [10$ Off] :</span> 
+    								<span style="float:right">- $<?=number_format($services['tenOffFitfy'],2)?></span>
+    						</div>
+   							<?php endif ?>
+							<div style="clear:both"></div>
+							<div style="font-weight:bold" class="subtotal">
+									<span style="float: left;" id="shipping" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute.">Shipping:</span> 
+									<span style="float:right">$7.95</span>
+							</div>
+							<?php if (!empty($shipping_discount)):?>
+							<div style="clear:both"></div>
+							<div style="font-weight:bold" class="subtotal">
+    								<span style="float: left;">Complimentary Shipping 
+    								<?php 
+    								if(!empty($promocode)) {
+    									if($promocode['type'] === 'free_shipping')
+    										echo '[' . $promocode['code'] . ']';	
+    								}?>		
+    								:</span> 
+    								<span style="color:#009900; float:right">- $<?=number_format($shipping_discount,2)?></span>
+    						</div>
+   							<?php endif ?>
+							<div style="clear:both"></div>						
+							<div style="font-weight:bold" class="subtotal">
+									<span id="estimated_tax" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute." style="float: left;">Estimated Tax:</span> 
+									<span style="float:right">$0.00</span>
+							</div>
+							<?php if (!empty($credits)):?>
+							<div style="clear:both"></div>
+							<div style="font-weight:bold" class="subtotal">
+    								<span style="float: left;">Credits:</span> 
+    								<span style="float:right">- $<?=number_format(abs($credits),2)?></span>
+    						</div>
+   							<?php endif ?>
+							<div style="clear:both" class="subtotal"><hr /></div>			
+							<div>
+								<div class="savings">Your Saving: 
+									<span style="color:#ff6d1d; font-weight:bold"><?php if (!empty($savings)) : ?>
+									$<?=number_format($savings,2)?>
+									<?php endif ?>
+									</span> 
+								</div>
+								<div class="subtotal">
+								<span style="font-size:15px; font-weight:bold">Order Total:</span> 
+									<span style="font-size:15px; color:#009900; float:right">$ <?=number_format($total,2)?> </span></div>
+									
+						</div>	
+					</div>				
 					</td>
 				</tr>
 			</tbody>
@@ -342,7 +355,7 @@ function deletechecked(message, id) {
 }
 //SUBMIT QUANTITY IN CASE OF DDWN CHANGE
 $(function () {
-	$("select").live("change keyup", function () {
+	$("'").live("change keyup", function () {
 		if($("select").val() == 0) {
 			$('input[name="rmv_item_id"]').val($(this).attr('id'));
 			$('#removeForm').submit();
