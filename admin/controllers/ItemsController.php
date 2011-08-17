@@ -33,6 +33,12 @@ class ItemsController extends BaseController {
 
 		return compact('items');
 	}
+
+	public function view() {
+		$item = Item::first(array('conditions' => array('_id' => $this->request->id)));
+		return compact('item');
+	}
+
 	/**
 	 * Edits a product/item based on a preloaded CSV file.
 	 *
