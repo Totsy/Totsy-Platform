@@ -24,7 +24,6 @@
 		<dt>Color</dt>
 		<dd><?=$item->color; ?></dd>
 	</dl>
-
 	<h3>Filenames for Form Uploads</h3>
 	<?php $names = $item->uploadNames(); ?>
 	<dl>
