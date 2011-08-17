@@ -3,7 +3,7 @@
 	  "name": "test1",
 	  "blurb": "",
 	  "enabled": false,
-	  "images": null,
+	  "images": [],
 	  "url": "test1",
 	  "modifications": [
 		{
