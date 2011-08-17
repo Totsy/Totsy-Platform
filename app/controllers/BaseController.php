@@ -12,9 +12,11 @@ use MongoRegex;
 use li3_facebook\extension\FacebookProxy;
 use lithium\core\Environment;
 
+
+
 /**
 * The base controller will setup functionality used throughout the app.
-* @see app/models/Affiliate
+* @see app/models/Affiliate::getPixels()
 */
 class BaseController extends \lithium\action\Controller {
 
@@ -22,6 +24,7 @@ class BaseController extends \lithium\action\Controller {
 	 * Get the userinfo for the rest of the site from the session.
 	 */
 	protected function _init() {
+		parent::_init();
 	     if(!Environment::is('production')){
             $branch = "<h4 id='global_site_msg'>Current branch: " . $this->currentBranch() ."</h4>";
            // var_dump($branch);
@@ -42,7 +45,7 @@ class BaseController extends \lithium\action\Controller {
 		if ($userInfo) {
 			$user = User::find('first', array(
 				'conditions' => array('_id' => $userInfo['_id']),
-				'fields' => array('total_credit', 'deactivated')
+				'fields' => array('total_credit', 'deactivated','affiliate_share')
 			));
 			if ($user) {
 			    /**
@@ -65,33 +68,31 @@ class BaseController extends \lithium\action\Controller {
 		* Get the pixels for a particular url.
 		**/
 		$invited_by = NULL;
-		 if ($userInfo) {
+		
+		 if ($user) {
 			$cookie = Session::read('cookieCrumb', array('name'=>'cookie'));
+			$userData = $user->data();
 			if(array_key_exists('affiliate',$cookie)){
                 Affiliate::linkshareCheck($user->_id, $cookie['affiliate'], $cookie);
             }
             if (array_key_exists('invited_by',$userInfo)){
                 $invited_by = $userInfo['invited_by'];
-            }else if(array_key_exists('affiliate_share',$userInfo)){
-                $invited_by = $userInfo['affiliate_share']['affiliate'];
+            }else if(array_key_exists('affiliate_share',$userData)){
+                $invited_by = $userData['affiliate_share']['affiliate'];
             }
 		}
 		/**
 		* If visitor lands on affliate url e.g www.totsy.com/a/afflilate123
 		**/
-		if (preg_match('/a/',$_SERVER['REQUEST_URI'])) {
-			$invited_by = substr($_SERVER['REQUEST_URI'], 3);
-			if (strpos($invited_by, '?')) {
-				$invited_by = substr($invited_by, 0, strpos($invited_by, '?'));
-			}
-			if (strpos($invited_by, '&')) {
-				$invited_by = substr($invited_by,0,strpos($invited_by, '&'));
-			}
+		if ($this->request->params['controller']  == "affiliates" &&  
+			$this->request->params['action'] == "register" & empty($invited_by)) {
+			$invited_by = $this->request->args[0];
 		}
+		
 		/**
-		* Retrieve any pixels that need to be fired
+		* Retrieve any pixels that need to be fired off
 		**/
-		$pixel = Affiliate::getPixels($_SERVER['REQUEST_URI'], $invited_by);
+		$pixel = Affiliate::getPixels($this->request->url, $invited_by);
 		$pixel .= Session::read('pixel');
 		/**
 		* Remove pixel to avoid firing it again
@@ -103,7 +104,7 @@ class BaseController extends \lithium\action\Controller {
 		$this->set(compact('pixel'));
 
 		$this->_render['layout'] = 'main';
-		parent::_init();
+		
 	}
 
 	/**
