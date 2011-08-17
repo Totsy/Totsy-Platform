@@ -57,12 +57,14 @@ class Image extends \admin\models\File {
 		} elseif (is_string($data)) { /* bytes */
 			$image = $imagine->load($data);
 		} elseif (is_resource($data)) {
+			$data = static::_upgrade($data);
+
 			rewind($data);
 			$image = $imagine->load(stream_get_contents($data));
 		} else {
 			return false;
 		}
-		
+
 		// Do not resize if the uploaded image is smaller than the dimensions used on the site
 		$uploaded_image_box = $image->getSize();
 		$uploaded_image_width = $uploaded_image_box->getWidth();

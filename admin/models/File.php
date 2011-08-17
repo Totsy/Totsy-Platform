@@ -45,18 +45,8 @@ class File extends \lithium\data\Model {
 				fwrite($handle, $data);
 			}
 		} else {
-			$handle = $data;
-
-			/* Silently upgrade non seekable streams. */
-			$streamMeta = stream_get_meta_data($handle);
-			if (!$streamMeta['seekable']) {
-				$close = true;
-
-				$upgrade = fopen('php://temp', 'w+b');
-				stream_copy_to_stream($handle, $upgrade);
-
-				$handle = $upgrade;
-			}
+			$handle = static::_upgrade($data);
+			$close = $handle != $data;
 		}
 
 		/* Dupe detection */
@@ -227,6 +217,18 @@ class File extends \lithium\data\Model {
 		if ($type != 'application/x-empty') {
 			return $type;
 		}
+	}
+
+	protected static function _upgrade($stream) {
+		$meta = stream_get_meta_data($stream);
+
+		if ($meta['seekable']) {
+			return $stream;
+		}
+		$upgrade = fopen('php://temp', 'w+b');
+		stream_copy_to_stream($stream, $upgrade);
+
+		return $upgrade;
 	}
 }
 
