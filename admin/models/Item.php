@@ -220,6 +220,10 @@ class Item extends \lithium\data\Model {
 		return $results;
 	}
 
+	public static function imagesWhitelist() {
+		return Set::extract(static::$types, '/field');
+	}
+
 	public function uploadNames($entity) {
 		$results = array();
 
