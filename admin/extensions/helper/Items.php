@@ -177,33 +177,39 @@ class Items extends \lithium\template\Helper {
 		}
 	}
 
-	protected function _images($item) {
-		$images = $item->images();
+	protected function _images($item=null) {
+		if(is_object($item)) {
+			$images = $item->images();
 
-		$html = '<ul class="images sortable"';
-		$html .= ' target="';
-		$html .= $this->_context->url(array(
-			'controller' => 'items', 'action' => 'orderImages',
-			'item' => (string) $item->_id
-		));
-		$html .= '">';
+			$html = '<ul class="images sortable"';
+			$html .= ' target="';
+			$html .= $this->_context->url(array(
+				'controller' => 'items', 'action' => 'orderImages',
+				'item' => (string) $item->_id
+			));
+			$html .= '">';
 
-		if ($images['primary']) {
-			$html .= '<li id="image-' . $images['primary']->_id . '">';
-			$html .= $this->_context->html->image($images['primary']->url(), array(
-				'alt' => 'item image'
-			));
-			$html .= '</li>';
+			if (isset($images['primary'])) {
+				$html .= '<li id="image-' . $images['primary']->_id . '">';
+				$html .= $this->_context->html->image($images['primary']->url(), array(
+					'alt' => 'item image'
+				));
+				$html .= '</li>';
+			}
+			if(isset($images['alternate'])) {
+				foreach ($images['alternate'] as $image) {
+					if(!empty($image)) {
+						$html .= '<li id="image-' . $image->_id . '">';
+						$html .= $this->_context->html->image($image->url(), array(
+							'alt' => 'item image'
+						));
+						$html .= '</li>';
+					}
+				}
+			}
+			$html .= '</ul>';
+			return $html;
 		}
-		foreach ($images['alternate'] as $image) {
-			$html .= '<li id="image-' . $image->_id . '">';
-			$html .= $this->_context->html->image($image->url(), array(
-				'alt' => 'item image'
-			));
-			$html .= '</li>';
-		}
-		$html .= '</ul>';
-		return $html;
 	}
 }
 
