@@ -45,8 +45,7 @@ class EventImageDirectory extends \admin\extensions\dav\GenericDirectory {
 		$item = $this->_item();
 
 		$item->attachImage($position, $file->_id);
-
-		return $item->save();
+		return $item->save(null, Event::imagesWhitelist());
 	}
 
 	protected function _item() {

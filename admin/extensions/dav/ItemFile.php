@@ -12,9 +12,9 @@ class ItemFile extends \admin\extensions\dav\GenericFile {
 		$item = $this->_item();
 
 		$file = ItemImage::resizeAndSave($position, $data);
-		$item->attachImage($position, $file->_id);
 
-		return $item->save();
+		$item->attachImage($position, $file->_id);
+		return $item->save(null, Item::imagesWhitelist());
 	}
 
 	public function delete() {
@@ -25,8 +25,7 @@ class ItemFile extends \admin\extensions\dav\GenericFile {
 		$item = $this->_item();
 
 		$item->detachImage($position, $file->_id);
-
-		return $item->save();
+		return $item->save(null, Item::imagesWhitelist());
 	}
 
 	protected function _item() {
