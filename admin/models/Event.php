@@ -147,7 +147,6 @@ class Event extends \lithium\data\Model {
 		$check_departments = array("Girls", "Boys", "Momsdads");
 		$check_dept = array("department_1", "department_2", "department_3");
 		$check_related = array("related_1", "related_2", "related_3", "related_4", "related_5");
-
 		$highestRow = $array[0];
 		$totalrows = count($array);
 		$totalcols = count($highestRow);
@@ -253,7 +252,6 @@ class Event extends \lithium\data\Model {
 		$images[$type['field']] = $id;
 
 		$entity->images = $images;
-
 		return $entity;
 	}
 

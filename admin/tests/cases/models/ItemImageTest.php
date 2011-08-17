@@ -2,7 +2,6 @@
 
 namespace admin\tests\cases\models;
 
-
 use admin\tests\mocks\models\ItemMock;
 use admin\tests\mocks\models\ItemImageMock;
 
