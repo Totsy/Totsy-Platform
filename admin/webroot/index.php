@@ -22,6 +22,10 @@ require dirname(__DIR__) . '/config/bootstrap.php';
  * and query string parameters, request content (i.e. POST or PUT data), and HTTP method and header
  * information.
  *
+ * The RequestSelector will determine the correct Request class for this
+ * request. Currently it detects and selects between `lithium\action\Request`
+ * and `li3_dav\extensions\action\DavRequest`.
+ *
  * The `Request` is then used by the `Dispatcher` (in conjunction with the `Router`) to determine
  * the correct controller to dispatch to, and the correct response type to render. The response
  * information is then encapsulated in a `Response` object, which is returned from the controller
@@ -29,10 +33,13 @@ require dirname(__DIR__) . '/config/bootstrap.php';
  * be written, and its response body to be written in a buffer loop.
  *
  * @see lithium\action\Request
+ * @see li3_dav\extensions\action\DavRequest
  * @see lithium\action\Response
  * @see lithium\action\Dispatcher
  * @see lithium\net\http\Router
  */
-echo lithium\action\Dispatcher::run(new lithium\action\Request());
+
+$request = li3_dav\extensions\action\RequestSelector::create();
+echo lithium\action\Dispatcher::run($request);
 
 ?>
