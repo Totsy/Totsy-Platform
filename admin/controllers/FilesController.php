@@ -16,13 +16,6 @@ use lithium\core\Libraries;
 use lithium\core\Environment;
 use lithium\analysis\Logger;
 use lithium\net\http\Router;
-use Sabre_DAV_Server;
-use admin\extensions\sabre\dav\EventsDirectory;
-use admin\extensions\sabre\dav\PendingDirectory;
-use Sabre_DAV_Locks_Backend_File;
-use Sabre_DAV_Locks_Plugin;
-use Sabre_DAV_TemporaryFileFilterPlugin;
-use Sabre_HTTP_Request;
 
 /**
  * This controller works with SWFUpload to provide flash/javascript
