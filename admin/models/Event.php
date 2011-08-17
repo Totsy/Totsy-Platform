@@ -147,7 +147,6 @@ class Event extends \lithium\data\Model {
 		$check_departments = array("Girls", "Boys", "Momsdads");
 		$check_dept = array("department_1", "department_2", "department_3");
 		$check_related = array("related_1", "related_2", "related_3", "related_4", "related_5");
-
 		$highestRow = $array[0];
 		$totalrows = count($array);
 		$totalcols = count($highestRow);
@@ -245,29 +244,30 @@ class Event extends \lithium\data\Model {
 		return $items;
 	}
 	public static function updateImage($name, $id, $conditions = array()) {
+	/* Handling of attached images. */
+
+	public function attachImage($entity, $name, $id) {
+		$id = (string) $id;
 		$type = EventImage::$types[$name];
 
-		if ($event = static::first(compact('conditions'))) {
-			$images = $event->images->data();
-			$images[$type['field']] = (string) $id;
-			$event->images = $images;
+		$images = $entity->images ? $entity->images->data() : array();
+		$images[$type['field']] = $id;
 
-			return (boolean) $event->save();
-		}
-		return false;
+		$entity->images = $images;
 
-		/* The implementation below would be preferable, but doesn't work because
-		   when an event is created  with an empty images array, it isn't
-		   represented by an object (which we'd  need for $set to succeed). */
-		/*
-		return static::update(
-			array(
-				'$set' => array('images.' . $type['field'] => (string) $id)
-			),
-			$conditions,
-			array('atomic' => false)
-		);
-		*/
+		return $entity;
+	}
+
+	public function detachImage($entity, $name, $id) {
+		$id = (string) $id;
+		$type = EventImage::$types[$name];
+
+		$images = $event->images->data();
+		$images[$type['field']] = null;
+
+		$entity->images = $images;
+
+		return $entity;
 	}
 
 	public function images($entity) {

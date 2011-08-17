@@ -140,18 +140,40 @@ class Item extends \lithium\data\Model {
 
 		return $gross;
 	}
-	public static function updateImage($name, $id, $conditions = array()) {
+	/* Handling of attached images. */
+
+	public function attachImage($entity, $name, $id) {
+		$id = (string) $id;
 		$type = ItemImage::$types[$name];
 
-		return (boolean) static::update(
-			array(
-				$type['multiple'] ? '$addToSet' : '$set' => array(
-					$type['field'] => $id
-				)
-			),
-			$conditions,
-			array('atomic' => false)
-		);
+		if ($type['multiple']) {
+			$images = $entity->{$type['field']} ? $entity->{$type['field']}->data() : array();
+
+			if (!in_array($id, $images)) {
+				$images[] = $id;
+			}
+			$entity->{$type['field']} = $images;
+		} else {
+			$entity->{$type['field']} = $id;
+		}
+		return $entity;
+	}
+
+	public function detachImage($entity, $name, $id) {
+		$id = (string) $id;
+		$type = ItemImage::$types[$name];
+
+		if ($type['multiple']) {
+			$images = $entity->{$type['field']}->data();
+
+			if ($key = array_search($id, $images)) {
+				unset($images[$key]);
+			}
+			$entity->{$type['field']} = $images;
+		} else {
+			$entity->{$type['field']} = null;
+		}
+		return $entity;
 	}
 	public function images($entity) {
 		$results = array();
