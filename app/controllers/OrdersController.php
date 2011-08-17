@@ -304,14 +304,13 @@ class OrdersController extends BaseController {
 	 * Processes an order by capturing payment.
 	 * @return compact
 	 * @todo Improve documentation
-	 * @todo Make this method lighter by taking out promocode/credit validation
 	 */
 	public function review() {
+		
 		$order = Order::create();
 		#Get Users Informations
 		$user = Session::read('userLogin');
 		$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
-		$data = $this->request->data;
 		$fields = array(
 			'item_id',
 			'color',
@@ -342,17 +341,15 @@ class OrdersController extends BaseController {
 			$subTotal += $cartValue->quantity * $cartValue->sale_retail;
 			unset($cartValue->event);
 		}
+		#Get Shipping / Billing Infos + Costs
 		$shippingCost = 0;
 		$overShippingCost = 0;
 		$shippingAddr = Session::read('shipping');
 		$billingAddr = Session::read('billing');
 		$tax = 0;
 		if ($shippingAddr) {
-			//$tax = array_sum($cart->tax($shippingAddr));
 			$shippingCost = Cart::shipping($cart, $shippingAddr);
 			$overShippingCost = Cart::overSizeShipping($cart);
-			//$tax = $tax ? $tax + (($overShippingCost + $shippingCost) * Cart::TAX_RATE) : 0;
-			//$tax=  AvaTax::getTax( compact('cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
 		}
 		#Get current Discount
 		$vars = Cart::getDiscount($shippingCost, $overShippingCost,$this->request->data);
@@ -378,14 +375,13 @@ class OrdersController extends BaseController {
 			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'cartCredit', 'cartPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
 		);
-		/** MERGE CHECK **/
 		$vars = $vars + compact(
 		extract(AvaTax::getTax(compact(
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'))
 		,EXTR_OVERWRITE));
 		unset($taxArray,$taxCart);
-		if (($cart->data()) && (count($this->request->data) > 1) && $order->process($user, $data, $cart, $vars['cartCredit'], $vars['cartPromo'])) {
+		if (($cart->data()) && (count($this->request->data) > 1) && $order->process($user, $this->request->data, $cart, $vars['cartCredit'], $vars['cartPromo'], $tax)) {
 			$this->recordOrder($vars, $order, $avatax);
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
@@ -396,15 +392,21 @@ class OrdersController extends BaseController {
 		}
 	}
 	
+	/**
+	 * Record in DB all informations linked with the order
+	 * @return redirect
+	 */
 	public function recordOrder($vars, $order, $avatax) {
 			$service = Session::read('services', array('name' => 'default'));
 			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
+			#Save Credits Used
 			if ($vars['cartCredit']->credit_amount) {
 				User::applyCredit($user['_id'], $vars['cartCredit']->credit_amount);
 				Credit::add($orderCredit, $user['_id'], $vars['cartCredit']->credit_amount, "Used Credit");
 				Session::delete('credit');
 				$order->credit_used = $vars['cartCredit']->credit_amount;
 			}
+			#Save Promocode Used
 			if ($vars['cartPromo']->saved_amount) {
 				Promocode::add((string) $code->_id, $vars['cartPromo']->saved_amount, $order->total);
 				$vars['cartPromo']->order_id = (string) $order->_id;
@@ -414,6 +416,7 @@ class OrdersController extends BaseController {
 				$order->promo_code = $vars['cartPromo']->code;
 				$order->promo_discount = $vars['cartPromo']->saved_amount;
 			}
+			#Save Services Used (10$Off / Free Shipping)
 			if ($service) {
 				$services = array();
 				if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
@@ -425,33 +428,35 @@ class OrdersController extends BaseController {
 				}
 				$order->service = $services;
 			}
+			#Save Tax Infos
 			if($avatax === true){
 				AvaTax::postTax( compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
 			}
-			$order->tax = $tax;
 			$order->avatax = $avatax;
 			$order->ship_date = new MongoDate(Cart::shipDate($order));
 			$order->save();
 			Cart::remove(array('session' => Session::key('default')));
+			#Clear Savings Information
+			Session::delete('userSavings');
+			#Update quantity of items
 			foreach ($cart as $item) {
 				Item::sold($item->item_id, $item->size, $item->quantity);
 			}
+			#Update amount of user's orders 
 			$user = User::getUser();
 			++$user->purchase_count;
 			$user->save(null, array('validate' => false));
+			#Send Order Confirmation Email
 			$data = array(
 				'order' => $order->data(),
 				'shipDate' => date('M d, Y', $shipDate)
-			);
-			#Send Order Confirmation Email
+			);	
 			Mailer::send('Order_Confirmation', $user->email, $data);
-			#Clear Savings Information
-			Session::delete('userSavings');
 			#In Case Of First Order, Send an Email About 10$ Off Discount
 			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
 				Mailer::send('Welcome_10_Off', $user->email, $data);
 			}
-			#Redirect To
+			#Redirect To Confirmation Page
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 	}
 
@@ -502,22 +507,6 @@ class OrdersController extends BaseController {
 		}
 		return $eventItems;
 	}
-
-	/**
-	*
-	**/
-	/**public function applyPromo() {
-		$this->render(array('layout' => false));
-		var_dump('ajax');
-		$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
-		$data = $this->request->data;
-		if (isset($this->request->data['code'])) {
-			$promo_code = $this->request->data['code'];
-		}
-		$orderPromo->promoCheck($promo_code, $userDoc, compact('postCreditTotal', 'shippingCost', 'overShippingCost'));
-		return json_encode($orderPromo->error());
-	}**/
-
 
 	/**
 	 * Return all the events of an order.
@@ -590,11 +579,12 @@ class OrdersController extends BaseController {
 			if($cc_infos->validates()) {
 				#Encrypt CC Infos with mcrypt
 				$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
-					$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+				$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+				Session::write('vi',base64_encode($iv));
 				$key = md5($user['_id']);
-				foreach	($cc_infos as $key => $cc_info) {
-					$crypt_info = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $cc_info, MCRYPT_MODE_CFB, $iv);
-					$cc_encrypt[$key] = $crypt_info;
+				foreach	($cc_infos as $k => $cc_info) {
+					$crypt_info = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key.sha1($k), $cc_info, MCRYPT_MODE_CFB, $iv);
+					$cc_encrypt[$k] = base64_encode($crypt_info);
 				}
 				Session::write('cc_infos', $cc_encrypt);
 				$cc_passed = true;

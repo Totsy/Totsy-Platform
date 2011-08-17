@@ -34,7 +34,7 @@ class Order extends Base {
 		);
 	}
 
-	public function process($order, $user, $data, $cart, $orderCredit, $orderPromo) {
+	public function process($order, $user, $data, $cart, $orderCredit, $orderPromo, $tax) {
 		foreach (array('billing', 'shipping') as $key) {
 			$addr = $data[$key];
 			${$key} = is_array($addr) ? Address::create($addr) : Address::first($addr);
@@ -49,10 +49,10 @@ class Order extends Base {
 		$user = Session::read('userLogin');
 		$cc_encrypt = Session::read('cc_infos');
 		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
- 		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+ 		$iv =  base64_decode(Session::read('vi'));// mcrypt_create_iv($iv_size, MCRYPT_RAND);
  		$key = md5($user['_id']);
-		foreach	($cc_encrypt as $key => $cc_info) {
-			$crypt_info = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $cc_info, MCRYPT_MODE_CFB, $iv);
+		foreach	($cc_encrypt as $k => $cc_info) {
+			$crypt_info = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key.sha1($k), base64_decode($cc_info), MCRYPT_MODE_CFB, $iv);
 			$card[$key] = $crypt_info;
 		}
 		$card = Payments::create('default', 'creditCard', $card + array(
@@ -68,7 +68,6 @@ class Order extends Base {
 			))
 		));
 		$subTotal = array_sum($cart->subTotal());
-		$tax = array_sum($cart->tax($shipping));
 		$handling = Cart::shipping($cart, $shipping);
 		$overSizeHandling = Cart::overSizeShipping($cart);
 		$session = Session::read('services', array('name' => 'default'));
@@ -80,16 +79,6 @@ class Order extends Base {
 		};
 		extract(Service::freeShippingCheck($handling, $overSizeHandling));
 		$handling = $shippingCost;
-
-		// if (!$handling) {
-		// 	$order->errors($order->errors() + array(
-		// 		'shipping' => 'A valid shipping address was not specified.'
-		// 	));
-		// 	$order->set($data);
-		// 	return false;
-		// }
-
-		$tax = $tax ? $tax + (($overSizeHandling+$handling) * Cart::TAX_RATE) : 0;
 		$afterDiscount = $subTotal + $orderCredit->credit_amount + $orderPromo->saved_amount + Service::tenOffFiftyCheck($subTotal);
 		if( $afterDiscount < 0 ){
 		    $afterDiscount = 0;
@@ -111,8 +100,9 @@ class Order extends Base {
 				} else {
 					$authKey = $this->randomString(8,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz');
 				}
-				return $order->save(compact('total', 'subTotal', 'tax', 'handling','overSizeHandling') + array(
+				return $order->save(compact('total', 'subTotal','handling','overSizeHandling') + array(
 					'user_id' => (string) $user['_id'],
+					'tax' => (float) $tax,
 					'card_type' => $card->type,
 					'card_number' => substr($card->number, -4),
 					'date_created' => static::dates('now'),
