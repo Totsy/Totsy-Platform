@@ -67,15 +67,32 @@ class Image extends \admin\models\File {
 		$uploaded_image_box = $image->getSize();
 		$uploaded_image_width = $uploaded_image_box->getWidth();
 		$uploaded_image_height = $uploaded_image_box->getHeight();
+		// Setup a $fill_image for any uploaded or resized image that is smaller than the required dimensions
+		$fill_image = $imagine->create(new Box($width, $height), new Color('fff', 100));
+		
 		if($uploaded_image_width < $width || $uploaded_image_height < $height) {
-			// Instead, put the smaller image, centered, inside a white box that meets the required dimensions
-			$fill_image = $imagine->create(new Box($width, $height), new Color('fff', 100));
 			// Figure out the x, y that places the pasted (smaller) image in the center
 			$x = floor(($width / 2) - ($uploaded_image_width / 2));
 			$y = floor(($height / 2) - ($uploaded_image_height / 2));
 			$bytes = $fill_image->paste($image, new Point($x, $y))->get('png');
 		} else {
-			$bytes = $image->resize(new Box($width, $height))->get('png');
+			// resize() will not respect aspect ratio
+			// $bytes = $image->resize(new Box($width, $height))->get('png');
+			
+			// Use thumbnail() instead to resize the image, it respects aspect ratio
+			$resized_image = $image->thumbnail(new Box($width, $height));
+			$resized_image_box = $resized_image->getSize();
+			$resized_image_width = $resized_image_box->getWidth();
+			$resized_image_height = $resized_image_box->getHeight();
+			
+			// Now paste the resized image in $fill_image (centered if smaller)
+			if($resized_image_width < $width || $resized_image_height < $height) {
+				$x = floor(($width / 2) - ($resized_image_width / 2));
+				$y = floor(($height / 2) - ($resized_image_height / 2));
+				$bytes = $fill_image->paste($image, new Point($x, $y))->get('png');
+			} else {
+				$bytes = $fill_image->paste($image, new Point(0, 0))->get('png');
+			}
 		}
 
 		// Write the image to GridFS
