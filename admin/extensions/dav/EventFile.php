@@ -9,7 +9,7 @@ class EventFile extends \admin\extensions\dav\GenericFile {
 
 	public function put($data) {
 		$position = $this->getParent()->getValue();
-		$type = EventImage::$type[$this->getParent()->getValue()];
+		$type = EventImage::$types[$this->getParent()->getValue()];
 		$item = $this->_item();
 
 		$file = EventImage::resizeAndSave($position, $data);
@@ -25,7 +25,7 @@ class EventFile extends \admin\extensions\dav\GenericFile {
 		if (!$file = $this->_file()) {
 			return;
 		}
-		$type = EventImage::$type[$this->getParent()->getValue()];
+		$type = EventImage::$types[$this->getParent()->getValue()];
 		$item = $this->_item();
 
 		$images = $item->images->data();
