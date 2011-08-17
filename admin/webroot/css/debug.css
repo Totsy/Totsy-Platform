@@ -1,7 +1,7 @@
 /**
  * Lithium: the most rad php framework
  *
- * @copyright     Copyright 2010, Union of RAD (http://union-of-rad.org)
+ * @copyright     Copyright 2011, Union of RAD (http://union-of-rad.org)
  * @license       http://opensource.org/licenses/bsd-license.php The BSD License
  */
 * {
@@ -11,7 +11,10 @@
 
 body.test-dashboard {
 	font-family: Helvetica, Arial, sans-serif;
-	font-size: 16px;
+	font-size: 14px;
+	line-height: 1.5em;
+	color: #0d0d0d;
+	background-color: #fff;
 	margin: 0;
 	min-width: 800px;
 }
@@ -21,7 +24,7 @@ body.test-dashboard a {
 }
 
 body.test-dashboard #header h1 {
-	margin: 0;
+	margin: .25em 1% 0 0;
 	float:right;
 	font-weight: normal;
 }
@@ -54,7 +57,7 @@ body.test-dashboard .article {
 
 body.test-dashboard .test-content {
 	float:left;
-	padding: 2em 2% 4em;
+	padding: 0 2% 4em;
 	width: 74%;
 }
 
@@ -126,7 +129,6 @@ body.test-dashboard .test-menu {
 	padding: .75em 0 1em 1%;
 	width: 20%;
 	background: #f6f6f6;
-	font-size: .85em;
 }
 
 .test-dashboard .test-menu > ul {
@@ -177,7 +179,7 @@ a.test-all {
 	background: #e6e6e6;
 }
 a.test-all:hover {
-	background: #60AF12;
+	background: #00a6f5;
 	-moz-box-shadow: inset 0 0 12px rgba(0,0,0,.25);
 	-webkit-box-shadow: inset 0 0 12px rgba(0,0,0,.25);
 	box-shadow: inset 0 0 12px rgba(0,0,0,.25);
@@ -203,22 +205,18 @@ a.menu-folder:before {
 	content: '\25B2' !important;
 }
 ul.menu a:hover:before, a.menu-folder:hover:before, ul.metrics li:hover:before {
-	color: #60AF12;
+	color: #00A6F5;
 }
 
 /*--- Benchmarking ---*/
 table.metrics {
 	border: 1px solid #e6e6e6;
-	-moz-box-shadow: 0 0 6px rgba(0,0,0,.15);
-	-webkit-box-shadow: 0 0 6px rgba(0,0,0,.15);
-	box-shadow: 0 0 6px rgba(0,0,0,.15);
 }
 table.metrics {
 	border-collapse: collapse;
 }
 table.metrics th {
 	padding: .5em 	1em;
-	font-size: 1.1em;
 	color: black;
 	background: #e6e6e6;
 	font-weight: normal;
@@ -266,26 +264,27 @@ ul.metrics li {
 /*--- Test Results ---*/
 div.test-result {
 	clear: both;
-	margin: 1em 0 .5em;
+	margin: 1em 0 1.5em;
 	padding: .75em 1em .55em;
 	color: #FFFFFF;
 	background: #666;
-	border: 1px solid #000000;
-	border-width: 0 0 4px 0;
+	border-radius: 4px;
+}
+
+.test-dashboard .test-result {
 	font-size: 1.15em;
-	-moz-box-shadow: inset 0 0 12px rgba(0,0,0,.25);
-	-webkit-box-shadow: inset 0 0 12px rgba(0,0,0,.25);
-	box-shadow: inset 0 0 12px rgba(0,0,0,.25);
-	text-shadow: 0px 0px 6px rgba(0,0,0,.5);
+}
+.test-dashboard .digit {
+	font-weight: bold;
 }
 
 div.test-result-success {
-	background-color: #62B212;
+	background-color: #4ddb4a;
 	border-color: #467F0D;
 }
 
 div.test-result-fail {
-	background-color: #CC1414;
+	background-color: #d13ef2;
 	border-color: #7F0D0D;
 }
 
@@ -294,29 +293,17 @@ div.test-result-exception {
 	border-color: #995F0F;
 }
 div.test-result-notice {
-	background-color: #E5D416;
-	border-color: #B2A511;
-}
-
-div.test-result code {
-	background: rgba(0,0,0,.25);
-	color: rgba(255,255,255,.85);
-	border: none;
-	font-size: .75em;
-	padding: .1em .5em !important;
-	text-shadow: none;
+	background-color: #00a6f5;
+	border-color: #8EA7CF;
 }
 
 div.test-assert, div.test-exception, div.test-skip {
-	margin: 1px 0 0 0;
-	padding: .5em 0 .5em 1em;
+	margin: 0 0 1.5em -14px;
+	padding: 0 0 0 10px;
 	color: #000000;
-	font-family: 'Andale Mono', Monaco, Courier, monospace !important;
-	font-size: 1em;
-	line-height: 1.5em;
-	position: relative;
 	border: 1px solid rgba(0,0,0,.05);
-	border-width:0 0 1px 8px;
+	border-width: 0 0 0 4px;
+	font-size: 16px;
 }
 
 div.test-assert-passed {
@@ -347,25 +334,19 @@ div.test-skip {
 	display: block;
 	clear: both;
 	white-space: pre;
-	color: #777;
-	font-size: .9em;
+	color: #111;
+	font-size: 12px;
 	padding: .5em 1em;
 	margin: .5em 0;
 	background: #fafafa;
 	border: 1px solid rgba(0,0,0,.1);
-	-moz-box-shadow: inset 0 0 6px rgba(0,0,0,.15);
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.15);
-	box-shadow: inset 0 0 6px rgba(0,0,0,.15);
+	font-family: 'Andale Mono', Monaco, Courier, monospace !important;
 }
 
 .test-assert span.trace {
 	padding: 0 .5em;
 	margin: .25em 0 .25em .5em;
 	background: #FAFAFA;
-}
-
-div.test-exception span.trace {
-	font-style: italic;
 }
 
 div.test-skip span.content {
@@ -401,6 +382,16 @@ pre.lithium-debug {
 	margin-top: 1em;
 	overflow: auto;
 	position: relative;
+}
+
+div.lithium-exception-class, div.lithium-exception-location {
+	font-weight: bold;
+}
+
+div.lithium-exception-message {
+	color: #000;
+	background: #f0f0f0;
+	padding: 1em;
 }
 
 div.lithium-stack-trace {
@@ -440,7 +431,6 @@ div.lithium-code-dump pre, div.lithium-code-dump pre code {
 
 div.lithium-code-dump span.code-highlight {
 	background-color: #ff0;
-	padding: 4px;
 }
 
 /*--- Code Coverage Analysis ---*/
@@ -470,7 +460,7 @@ span.filters a:hover, span.filters a.active {
 }
 
 span.filters a.active {
-	background: #62B212;
+	background: #00a6f5;
 	text-shadow: 0px 0px 6px rgba(0,0,0,.5);
 	color: white;
 }
@@ -587,5 +577,31 @@ div.code-coverage-results span.result-ok {
 }
 
 div.code-coverage-results span.result-good {
+	color: #0a0;
+}
+
+/*--- Application Home Page ---*/
+.app .test-result {
+	width: 640px;
+	margin-bottom: 0;
+}
+.app .test-result.solution {
+	padding: 0;
+	margin: .5em 0 1.5em 0;
+	color: #111;
+	background: none;
+}
+.app .test-result.solution ol {
+	margin-left: 1.5em;
+}
+.app .additional-resources {
+	list-style: none;
+	margin: 0;
+}
+.app .indicator {
+	float: right;
+	color: #a00;
+}
+.app .indicator.enabled {
 	color: #0a0;
 }
