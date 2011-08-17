@@ -16,9 +16,9 @@
 			window.location.reload(true);
 		}
 		
+		//applying tooltip
 		$('#shipping').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
 		$('#estimated_tax').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
-		//$('#shipping').tipsy();
 		
 	});
 	

@@ -46,32 +46,41 @@
    
 </script>
 
-<div class="grid_16">
-	<h2 class="page-title gray">
-			<span class="cart_steps_off">1</span>
-			<span class="cart_steps_on">2</span>
-			<span class="cart_steps_off">3</span>
-			<span class="cart_steps_off">4</span>
-			<span class="red">Shipping Information</span>
-	</h2>
-	<hr />
-	<?php if (!empty($error)) { ?>
-		<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2></div>
-	<?php } ?>
-</div>
-
 <div class="container_16">
 
-<?=$this->form->create($address, array(
+	<div class="grid_8">
+		<h2 class="page-title gray">
+				<span class="cart_steps_off">1</span>
+				<span class="cart_steps_on">2</span>
+				<span class="cart_steps_off">3</span>
+				<span class="cart_steps_off">4</span>
+				<span class="red">Shipping Information</span>
+		</h2>
+		<?php if (!empty($error)) { ?>
+		<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2></div>
+		<?php } ?>
+	</div>
+	
+	<div class="grid_8">
+		<div style="float:right; font-weight: bold">
+				Item reserved for: <br />
+				<span id="itemCounter" style="color:#009900;">Dummy cart expiration date
+				</span>
+		</div>
+	</div>
+	
+	<?=$this->form->create($address, array(
 		'id' => 'addressForm',
 		'class' => "fl"
 )); ?>
+
 	<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
+		<hr />
 		Choose your address :
 		<?=$this->form->select('addresses', $addresses_ddwn, array("id" => 'addresses', 'value' => $selected));?>
 		<hr />
 		<?php endif ?>
-		
+			
 	<div class="grid_16">
 		<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('firstname', array('class' => 'validate[required] inputbox', 'id'=>'firstname')); ?>
