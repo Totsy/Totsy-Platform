@@ -36,8 +36,6 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 		'body' => $file->file->getBytes()
 	));
 });
-Router::connect('/files/dav', 'Files::dav');
-Router::connect('/files/dav/{:file:.*}', 'Files::dav');
 
 Router::connect('/login', 'Users::login');
 Router::connect('/logout', 'Users::logout');
@@ -52,8 +50,8 @@ Router::connect('/account/add/{:args}', 'Account::add');
 Router::connect('/users/view/{:args}', 'Users::view');
 Router::connect('/users/accountStatus/{:args}', 'Users::accountStatus');
 Router::connect('/select/event/{:args}', 'Base::selectEvent');
-Router::connect('/token', 'Users::token');
 #items
+Router::connect('/items/view/{:id:[a-z0-9\-]+}', 'Items::view');
 Router::connect('/items/preview/{:event:[a-z0-9\-]+}/{:item:[a-z0-9\-]+}', 'Items::preview');
 Router::connect('/items/removeItems/', 'Items::removeItems');
 Router::connect('/items/images/order/{:item:[a-z0-9\-]+}', 'Items::orderImages');

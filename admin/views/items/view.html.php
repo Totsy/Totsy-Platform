@@ -3,7 +3,6 @@
 
 <div class="grid_16">
 	<h2 id="page-heading">View Item</h2>
-
 	<h3></h3>
 	<dl>
 		<dt>ID</dt>
