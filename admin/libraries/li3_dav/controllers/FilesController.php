@@ -22,21 +22,7 @@ class FilesController extends \lithium\action\Controller {
 	 * @return void
 	 */
 	public function dav() {
-		/*
-		   At this point lithium\action\Request has already opened
-		   `php://input` and read from it. The following provides a workaround
-		   and re-enables Sabre's request object to read the body.
-		*/
-		if ($this->request->is('put')) {
-			$stream = fopen('php://temp', 'w+b');
-			fwrite($stream, current($this->request->data));
-			rewind($stream);
-
-			Sabre_HTTP_Request::$defaultInputStream = $stream;
-
-			/* Uncomment to unset data if this gets to heavy on memory. */
-			// unset($this->request->data);
-		}
+		Sabre_HTTP_Request::$defaultInputStream = $this->request->stream();
 
 		$root = array();
 		foreach (Libraries::get('li3_dav', 'tree') as $node) {
