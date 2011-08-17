@@ -14,7 +14,7 @@ class ItemsDirectory extends \admin\extensions\dav\GenericDirectory {
 	}
 
 	public function __toString() {
-		return '_' . $this->_config['value'];
+		return '_'. $this->_config['value'];
 	}
 
 	public function getChild($name) {
@@ -31,10 +31,7 @@ class ItemsDirectory extends \admin\extensions\dav\GenericDirectory {
 		));
 		$children = array();
 		foreach ($items as $item) {
-			$children[] = new ItemDirectory(array(
-				'value' => $item->vendor_style,
-				'parent' => $this
-			));
+			$children[] = new ItemDirectory(array('value' => $item->url, 'parent' => $this));
 		}
 		return $children;
 	}
@@ -45,7 +42,7 @@ class ItemsDirectory extends \admin\extensions\dav\GenericDirectory {
 
 		return (boolean) Item::first(array(
 			'conditions' => array(
-				'vendor_style' => $name,
+				'url' => $name,
 				'event' => $id
 			)
 		));

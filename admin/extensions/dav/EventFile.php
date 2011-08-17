@@ -9,10 +9,14 @@ class EventFile extends \admin\extensions\dav\GenericFile {
 
 	public function put($data) {
 		$position = $this->getParent()->getValue();
+		$type = EventImage::$type[$this->getParent()->getValue()];
 		$item = $this->_item();
 
 		$file = EventImage::resizeAndSave($position, $data);
-		$item->attachImage($position, $file->_id);
+
+		$item->images = array(
+			$type['field'] => $file->_id
+		) + $item->images->data();
 
 		return $item->save();
 	}
@@ -21,12 +25,14 @@ class EventFile extends \admin\extensions\dav\GenericFile {
 		if (!$file = $this->_file()) {
 			return;
 		}
-		$position = $this->getParent()->getValue();
+		$type = EventImage::$type[$this->getParent()->getValue()];
 		$item = $this->_item();
 
-		$item->detachImage($position, $file->_id);
+		$images = $item->images->data();
+		unset($images[$type['field']]);
+		$item->images = $images;
 
-		return $item->save();
+		return (boolean) $item->save();
 	}
 
 	protected function _item() {

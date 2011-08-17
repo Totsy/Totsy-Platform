@@ -3,7 +3,6 @@
 namespace admin\extensions\dav;
 
 use admin\extensions\dav\ItemFile;
-use admin\models\Event;
 use admin\models\Item;
 use admin\models\ItemImage;
 use Sabre_DAV_Exception_FileNotFound;
@@ -17,21 +16,20 @@ class ItemImageDirectory extends \admin\extensions\dav\GenericDirectory {
 
 	public function getChildren() {
 		$item = $this->_item();
-		$position = $this->getValue();
-		$type = ItemImage::$types[$position];
-
 		$children = array();
 
-		if (!$item->{$type['field']}) {
-			return $children;
-		}
-		if ($type['multiple']) {
-			foreach ($item->{$type['field']} as $id) {
+		if (ItemImage::$types[$value = $this->getValue()]['multiple']) {
+			if (!$item->{"{$value}_images"}) {
+				return $children;
+			}
+			foreach ($item->{"{$value}_images"} as $id) {
 				$children[] = new ItemFile(array('value' => $id, 'parent' => $this));
 			}
-		} else {
-			$id = $item->{$type['field']};
-			$children[] = new ItemFile(array('value' => $id, 'parent' => $this));
+			return $children;
+		}
+
+		if ($id = $item->{"{$value}_image"}) {
+			$children[] = new EventFile(array('value' => $id, 'parent' => $this));
 		}
 		return $children;
 	}
@@ -39,37 +37,36 @@ class ItemImageDirectory extends \admin\extensions\dav\GenericDirectory {
 	public function childExists($name) {
 		$name = pathinfo($name, PATHINFO_FILENAME);
 		$item = $this->_item();
-		$position = $this->getValue();
-		$type = ItemImage::$types[$position];
 
-		if (!$item->{$type['field']}) {
-			return false;
+		if (ItemImage::$types[$value = $this->getValue()]['multiple']) {
+			if (!$item->{"{$value}_images"}) {
+				return false;
+			}
+			return in_array($name, $item->{"{$value}_images"}->data());
 		}
-		if ($type['multiple']) {
-			return in_array($name, $item->{$type['field']}->data());
-		}
-		return isset($item->{$type['field']});
+		return isset($item->{"{$value}_image"});
 	}
 
 	public function createFile($name, $data = null) {
-		$position = $this->getValue();
+		$file = ItemImage::resizeAndSave($this->getValue(), $data, compact('name'));
 		$item = $this->_item();
 
-		$file = ItemImage::resizeAndSave($position, $data, compact('name'));
-		$item->attachImage($position, $file->_id);
+		if (ItemImage::$types[$value = $this->getValue()]['multiple']) {
+			$images = $item->{"{$value}_images"} ? $item->{"{$value}_images"}->data() : array();
 
-		return true;
+			if (!in_array($file->_id, $images)) {
+				$images[] = $file->_id;
+			}
+			$item->{"{$value}_images"} = $images;
+		} else {
+			$item->{"{$value}_image"} = $file->_id;
+		}
+		return (boolean) $item->save();
 	}
 
 	protected function _item() {
-		/* Gets value from EventDirectory. */
-		$url = $this->getParent()->getParent()->getParent()->getValue();
-		$id = Event::first(array('conditions' => compact('url')))->_id;
 		return Item::first(array(
-			'conditions' => array(
-				'vendor_style' => $this->getParent()->getValue(),
-				'event' => (string) $id
-			)
+			'conditions' => array('url' => $this->getParent()->getValue())
 		));
 	}
 }
