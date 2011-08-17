@@ -1,11 +1,11 @@
 <?php
 
-namespace admin\extensions\sabre\dav;
+namespace admin\extensions\dav;
 
 use admin\models\ItemImage;
 use admin\models\Item;
 
-class ItemFile extends \admin\extensions\sabre\dav\GenericFile {
+class ItemFile extends \admin\extensions\dav\GenericFile {
 
 	public function put($data) {
 		$position = $this->getParent()->getValue();

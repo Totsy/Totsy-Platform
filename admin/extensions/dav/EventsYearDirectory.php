@@ -1,10 +1,10 @@
 <?php
 
-namespace admin\extensions\sabre\dav;
+namespace admin\extensions\dav;
 
-use admin\extensions\sabre\dav\EventsMonthDirectory;
+use admin\extensions\dav\EventsMonthDirectory;
 
-class EventsYearDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
+class EventsYearDirectory extends \admin\extensions\dav\GenericDirectory {
 
 	public function getChild($name) {
 		return new EventsMonthDirectory(array('value' => $name, 'parent' => $this));

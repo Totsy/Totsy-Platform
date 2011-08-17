@@ -1,13 +1,13 @@
 <?php
 
-namespace admin\extensions\sabre\dav;
+namespace admin\extensions\dav;
 
 use admin\models\Event;
 use admin\models\Item;
-use admin\extensions\sabre\dav\ItemDirectory;
+use admin\extensions\dav\ItemDirectory;
 use Sabre_DAV_Exception_FileNotFound;
 
-class ItemsDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
+class ItemsDirectory extends \admin\extensions\dav\GenericDirectory {
 
 	public function __construct(array $config = array()) {
 		parent::__construct($config + array('value' => Item::meta('source')));

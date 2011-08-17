@@ -1,13 +1,13 @@
 <?php
 
-namespace admin\extensions\sabre\dav;
+namespace admin\extensions\dav;
 
-use admin\extensions\sabre\dav\EventImageDirectory;
-use admin\extensions\sabre\dav\ItemsDirectory;
+use admin\extensions\dav\EventImageDirectory;
+use admin\extensions\dav\ItemsDirectory;
 use admin\models\EventImage;
 use Sabre_DAV_Exception_FileNotFound;
 
-class EventDirectory extends \admin\extensions\sabre\dav\GenericDirectory {
+class EventDirectory extends \admin\extensions\dav\GenericDirectory {
 
 	public function getChild($name) {
 		if ($name == '_items') {

@@ -4,10 +4,10 @@ namespace admin\tests\functional;
 
 use Sabre_DAV_Server;
 use Sabre_HTTP_Request as Request;
-use admin\tests\mocks\extensions\sabre\dav\ResponseMock;
-use admin\extensions\sabre\dav\EventsDirectory;
-use admin\extensions\sabre\dav\PendingDirectory;
-use admin\extensions\sabre\dav\OrphanedDirectory;
+use admin\tests\mocks\extensions\dav\ResponseMock;
+use admin\extensions\dav\EventsDirectory;
+use admin\extensions\dav\PendingDirectory;
+use admin\extensions\dav\OrphanedDirectory;
 use admin\models\File;
 
 class WebDavTest extends \lithium\test\Unit {
