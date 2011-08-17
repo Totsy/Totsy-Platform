@@ -2,23 +2,12 @@
 
 namespace admin\controllers;
 
-use lithium\core\Libraries;
-use lithium\core\Environment;
 use lithium\analysis\Logger;
-use lithium\net\http\Router;
 use admin\models\File;
 use admin\models\EventImage;
 use admin\models\Event;
 use admin\models\Item;
 use admin\models\ItemImage;
-use Sabre_DAV_Server;
-use admin\extensions\sabre\dav\EventsDirectory;
-use admin\extensions\sabre\dav\PendingDirectory;
-use admin\extensions\sabre\dav\OrphanedDirectory;
-use Sabre_DAV_Locks_Backend_File;
-use Sabre_DAV_Locks_Plugin;
-use Sabre_DAV_TemporaryFileFilterPlugin;
-use Sabre_HTTP_Request;
 
 /**
  * This controller works with SWFUpload to provide flash/javascript
@@ -148,55 +137,6 @@ class FilesController extends \lithium\action\Controller {
 
 			break;
 		}
-	}
-
-	/**
-	 * Provides a single point of entry for all DAV requests. This action
-	 * configures any SabreDAV classes, plugins and custom VFS implementations.
-	 * Any URLs below the route leading to this action are mapped/handled by
-	 * SabreDAV.
-	 *
-	 * @return void
-	 */
-	public function dav() {
-		/*
-		   At this point lithium\action\Request has already opened
-		   `php://input` and read from it. The following provides a workaround
-		   and re-enables Sabre's request object to read the body.
-		*/
-		if ($this->request->is('put')) {
-			$stream = fopen('php://temp', 'w+b');
-			fwrite($stream, current($this->request->data));
-			rewind($stream);
-
-			Sabre_HTTP_Request::$defaultInputStream = $stream;
-
-			/* Uncomment to unset data if this gets to heavy on memory. */
-			// unset($this->request->data);
-		}
-
-		$root = array(
-			new EventsDirectory(),
-			new PendingDirectory(),
-			new OrphanedDirectory()
-		);
-		$server = new Sabre_DAV_Server($root);
-
-		$server->debugExceptions = !Environment::is('production');
-		$server->setBaseUri(Router::match('Files::dav'));
-
-		/* Filtering and locking are still using local files. */
-		$resources = Libraries::get('admin', 'resources');
-
-		$backend = new Sabre_DAV_Locks_Backend_File($resources . '/dav/locks.dat');
-		$plugin = new Sabre_DAV_Locks_Plugin($backend);
-		$server->addPlugin($plugin);
-
-		$plugin = new Sabre_DAV_TemporaryFileFilterPlugin($resources . '/dav/temporary');
-		$server->addPlugin($plugin);
-
-		$server->exec();
-		exit;
 	}
 
 	/**
