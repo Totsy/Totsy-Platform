@@ -48,8 +48,8 @@ class File extends \lithium\data\Model {
 			$handle = $data;
 
 			/* Silently upgrade non seekable streams. */
-			$meta = stream_get_meta_data($handle);
-			if (!$meta['seekable']) {
+			$streamMeta = stream_get_meta_data($handle);
+			if (!$streamMeta['seekable']) {
 				$close = true;
 
 				$upgrade = fopen('php://temp', 'w+b');
