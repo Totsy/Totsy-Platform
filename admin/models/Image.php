@@ -78,13 +78,11 @@ class Image extends \admin\models\File {
 		} else {
 			// resize() will not respect aspect ratio
 			// $bytes = $image->resize(new Box($width, $height))->get('png');
-
 			// Use thumbnail() instead to resize the image, it respects aspect ratio
 			$resized_image = $image->thumbnail(new Box($width, $height));
 			$resized_image_box = $resized_image->getSize();
 			$resized_image_width = $resized_image_box->getWidth();
 			$resized_image_height = $resized_image_box->getHeight();
-
 			// Now paste the resized image in $fill_image (centered if smaller)
 			if($resized_image_width < $width || $resized_image_height < $height) {
 				$x = floor(($width / 2) - ($resized_image_width / 2));
