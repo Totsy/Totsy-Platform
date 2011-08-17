@@ -64,10 +64,6 @@ Libraries::add('PEAR', array(
 Libraries::add('totsy_common');
 Libraries::add('li3_fixtures');
 Libraries::add('li3_docs');
-Libraries::add('Sabre', array(
-	'prefix' => 'Sabre_',
-	'bootstrap' => 'autoload.php'
-));
 Libraries::add('Imagine');
 
 require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel.php';
