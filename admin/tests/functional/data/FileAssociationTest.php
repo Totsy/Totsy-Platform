@@ -18,7 +18,7 @@ class FileAssociationTest extends \lithium\test\Integration {
 		));
 		$event->save();
 
-		$result = Event::updateImage('logo', $file->_id, compact('url'));
+		$result = $event->attachImage('logo', $file->_id)->save();
 		$this->assertTrue($result);
 
 		$expected = array('logo_image' => (string) $file->_id);
@@ -38,7 +38,7 @@ class FileAssociationTest extends \lithium\test\Integration {
 		));
 		$item->save();
 
-		$result = Item::updateImage('zoom', $file->_id, compact('url'));
+		$result = $item->attachImage('zoom', $file->_id)->save();
 		$this->assertTrue($result);
 
 		$expected = (string) $file->_id;

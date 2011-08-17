@@ -152,7 +152,13 @@ class Image extends \admin\models\File {
 				if (!$file) {
 					continue;
 				}
-				return $model::updateImage($name, (string) $file->_id, compact('url'));
+				$item = $model::first(array('conditions' => compact('url')));
+
+				if (!$item) {
+					return false;
+				}
+				$item->attachImage($name, $file->_id);
+				return $item->save();
 			}
 		}
 		return false;
