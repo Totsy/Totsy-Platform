@@ -55,12 +55,29 @@ class RevenueController extends \lithium\action\Controller {
 		}
 		
 		return compact(
-			'updateTime',
 			'net_revenue',
 			'gross_revenue'
 		);
 	}
 
+	public function promocodes() {
+		$month = strtotime("6 months ago");
+		$month_string = date("Y-m",strtotime(date("m",$month).'/01/'.date("y",$month)));
+		
+		$promocodes = array();
+		
+		for($i=0;$i<6;$i++) {
+			$promocodes[$month_string] = $this->findPromocodeData($month_string);
+			
+			$month = strtotime("next month",$month);
+			$month_string = date("Y-m",strtotime(date("m",$month).'/01/'.date("y",$month)));
+		}
+		
+		return compact(
+			'promocodes'
+		);
+	}
+	
 	public function findNetDetailData($start_date, $end_date) {
 		$conditions = array(
 			'type' => 'revenue',
@@ -196,6 +213,50 @@ class RevenueController extends \lithium\action\Controller {
 		
 		return $gross_total;
 	}
+
+	// $month = 'YYYY-MM'
+	public function findPromocodeData($month) {
+		$conditions = array(
+			'type' => 'promocodes',
+			'date_string' => array(
+				'like' => "/^$month/"
+		));
+		
+		$promocodes = Dashboard::find('all', compact('conditions'));
+		$promocodes = $promocodes->data();
+		
+		$promocodes_total = array();
+		$promocodes_total['Total'] = array();
+		$promocodes_total['Total']['code'] = 'Total';
+		
+		foreach($promocodes as $promocode_day) {
+			foreach ($promocode_day['codes'] as $promocode) {
+				$code = $promocode['code'];
+				
+				if (!isset($promocodes_total[$code])) {
+					$promocodes_total[$code] = array();
+					$promocodes_total[$code]['code'] = $code;
+					$promocodes_total[$code]['value'] = $promocode['code_value'];
+					$promocodes_total[$code]['type'] = $promocode['code_type'];
+				}
+				
+				// Total for this code
+				$promocodes_total[$code]['amount_saved'] += $promocode['amount_saved'];
+				$promocodes_total[$code]['net'] += $promocode['net_total'];
+				$promocodes_total[$code]['gross'] += $promocode['gross_total'];
+				$promocodes_total[$code]['number_used'] += $promocode['number_used'];
+				
+				// Total for the month
+				$promocodes_total['Total']['amount_saved'] += $promocode['amount_saved'];
+				$promocodes_total['Total']['net'] += $promocode['net_total'];
+				$promocodes_total['Total']['gross'] += $promocode['gross_total'];
+				$promocodes_total['Total']['number_used'] += $promocode['number_used'];
+			}
+		}
+		
+		return $promocodes_total;
+	}
+
 }
 
 ?>
