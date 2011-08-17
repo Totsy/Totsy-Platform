@@ -50,7 +50,7 @@ class FilesController extends \lithium\action\Controller {
 		)));
 
 		/* Filtering and locking are still using local files. */
-		$resources = Libraries::get('li3_dav', 'resources');
+		$resources = Libraries::get(true, 'resources');
 
 		$backend = new Sabre_DAV_Locks_Backend_File($resources . '/dav/locks.dat');
 		$plugin = new Sabre_DAV_Locks_Plugin($backend);
