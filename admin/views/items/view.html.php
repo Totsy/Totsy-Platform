@@ -1,5 +1,4 @@
 <?=$this->html->style('files.css');?>
-<?=$this->html->style('agile_uploader.css');?>
 <?=$this->html->style('admin_common.css');?>
 
 <div class="grid_16">
