@@ -71,6 +71,7 @@
 				<th>Color</th>
 				<th>Size</th>
 				<th>Totsy SKU</th>
+				<th>Actions</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -117,6 +118,9 @@
 						<?php foreach ($item['sku_details'] as $key => $value): ?>
 							<span style="white-space:nowrap"><a href="/items/bulkCancel/<?php echo $value;?>"><?php echo $value?></a></span><br />
 						<?php endforeach ?>
+					</td>
+					<td>
+						<?=$this->html->link('view', array('action' => 'view', 'id' => (string) $item['_id'])); ?>
 					</td>
 				</tr>
 			<?php endforeach ?>

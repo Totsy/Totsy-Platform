@@ -3,6 +3,7 @@
 namespace admin\models;
 
 use admin\models\ItemImage;
+use lithium\util\String;
 
 /**
  * The `Item` class extends the generic `lithium\data\Model` class to provide
@@ -194,6 +195,18 @@ class Item extends \lithium\data\Model {
 					'conditions' => array('_id' => $entity->{$type['field']})
 				));
 			}
+		}
+		return $results;
+	}
+
+	public function uploadNames($entity) {
+		$results = array();
+
+		foreach (ItemImage::$types as $name => $type) {
+			$results['form'][$name] = String::insert($type['uploadName']['form'], array(
+				'url' => $entity->url,
+				'name' => $name
+			));
 		}
 		return $results;
 	}

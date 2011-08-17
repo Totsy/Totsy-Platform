@@ -11,6 +11,10 @@ class ItemImage extends \admin\models\Image {
 			'multiple' => false,
 			'regex' => array(
 				'/^items\_.+\_primary\..*/i'
+			),
+			'uploadName' => array(
+				'form' => 'items_{:url}_{:name}.jpg',
+				'dav' => '/events/{:year}/{:month}/{:event}/_items/{:item}/{:name}/{:file}.jpg'
 			)
 		),
 		'zoom' => array(
@@ -19,6 +23,10 @@ class ItemImage extends \admin\models\Image {
 			'multiple' => false,
 			'regex' => array(
 				'/^items\_.+\_zoom\..*/i'
+			),
+			'uploadName' => array(
+				'form' => 'items_{:url}_{:name}.jpg',
+				'dav' => '/events/{:year}/{:month}/{:event}/_items/{:item}/{:name}/{:file}.jpg'
 			)
 		),
 		'alternate' => array(
@@ -28,6 +36,10 @@ class ItemImage extends \admin\models\Image {
 			'regex' => array(
 				'/^items\_.+\_alternate.+\..*/i',
 				'/^items\_.+\_alternate\..*/i'
+			),
+			'uploadName' => array(
+				'form' => 'items_{:url}_{:name}.jpg',
+				'dav' => '/events/{:year}/{:month}/{:event}/_items/{:item}/{:name}/{:file}.jpg'
 			)
 		),
 		/* Not stored in GridFS. */
