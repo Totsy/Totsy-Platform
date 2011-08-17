@@ -33,20 +33,15 @@ class Order extends Base {
 			(string) $order->order_id => $order->order_id.'- Order Total: $'.number_format($order->total, 2)
 		);
 	}
-
-	public function process($order, $user, $data, $cart, $orderCredit, $orderPromo, $tax) {
-		foreach (array('billing', 'shipping') as $key) {
-			$addr = $data[$key];
-			${$key} = is_array($addr) ? Address::create($addr) : Address::first($addr);
-
-			if (!${$key}->validates()) {
-				$order->errors(
-					$order->errors() + array($key => "Please use a valid {$key} address")
-				);
-			}
-		}
-		#Read Credit Card Informations
+	
+	/**
+	 * Process all datas of the order and create an authorize.net transaction
+	 *
+	 * @return object
+	 */
+	public function process($order, $total, $subTotal, $data, $cart, $orderCredit, $orderPromo, $tax, $handling, $overSizeHandling) {
 		$user = Session::read('userLogin');
+		#Read Credit Card Informations
 		$cc_encrypt = Session::read('cc_infos');
 		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
  		$iv =  base64_decode(Session::read('vi'));
@@ -55,36 +50,19 @@ class Order extends Base {
 			$crypt_info = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key.sha1($k), base64_decode($cc_info), MCRYPT_MODE_CFB, $iv);
 			$card[$key] = $crypt_info;
 		}
+		#Create Payment
 		$card = Payments::create('default', 'creditCard', $card + array(
 			'billing' => Payments::create('default', 'address', array(
-				'firstName' => $billing->firstname,
-				'lastName'  => $billing->lastname,
-				'company'   => $billing->company,
-				'address'   => trim($billing->address . ' ' . $billing->address_2),
-				'city'      => $billing->city,
-				'state'     => $billing->state,
-				'zip'       => $billing->zip,
-				'country'   => $billing->country
+				'firstName' => $billingAddr->firstname,
+				'lastName'  => $billingAddr->lastname,
+				'company'   => $billingAddr->company,
+				'address'   => trim($billingAddr->address . ' ' . $billingAddr->address_2),
+				'city'      => $billingAddr->city,
+				'state'     => $billingAddr->state,
+				'zip'       => $billingAddr->zip,
+				'country'   => $billingAddr->country
 			))
 		));
-		$subTotal = array_sum($cart->subTotal());
-		$handling = Cart::shipping($cart, $shipping);
-		$overSizeHandling = Cart::overSizeShipping($cart);
-		$session = Session::read('services', array('name' => 'default'));
-		if(!empty($orderPromo->type)) {
-			if($orderPromo->type == 'free_shipping') {
-				$handling = 0;
-				$overSizeHandling = 0;
-			}
-		};
-		extract(Service::freeShippingCheck($handling, $overSizeHandling));
-		$handling = $shippingCost;
-		$afterDiscount = $subTotal + $orderCredit->credit_amount + $orderPromo->saved_amount + Service::tenOffFiftyCheck($subTotal);
-		if( $afterDiscount < 0 ){
-		    $afterDiscount = 0;
-		}
-		$total = $afterDiscount + $tax + $handling +$overSizeHandling;
-
 		$cart = $cart->data();
 		if ($cart) {
 			$inc = 0;
@@ -96,6 +74,7 @@ class Order extends Base {
 			}
 			try {
 				if ($total > 0) {
+					#Process Payment
 					$authKey = Payments::authorize('default', $total, $card);
 				} else {
 					$authKey = $this->randomString(8,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz');
@@ -107,8 +86,8 @@ class Order extends Base {
 					'card_number' => substr($card->number, -4),
 					'date_created' => static::dates('now'),
 					'authKey' => $authKey,
-					'billing' => $billing->data(),
-					'shipping' => $shipping->data(),
+					'billing' => $billingAddr->data(),
+					'shipping' => $shippingAddr->data(),
 					'shippingMethod' => $data['shipping_method'],
 					'items' => $items
 				));

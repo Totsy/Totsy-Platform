@@ -306,7 +306,6 @@ class OrdersController extends BaseController {
 	 * @todo Improve documentation
 	 */
 	public function review() {
-		
 		$order = Order::create();
 		#Get Users Informations
 		$user = Session::read('userLogin');
@@ -370,26 +369,20 @@ class OrdersController extends BaseController {
 		if(!empty($services['freeshipping']['enable'])) {
 			$shipping_discount = $shipping;
 		}
-		$total = $vars['postDiscountTotal'];
+		$avatax = AvaTax::getTax(compact(
+			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
+			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'));
+		$total = $vars['postDiscountTotal'] + $avaTax['tax'];
 		$vars = compact(
-			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
+			'user', 'cart', 'subTotal', 'order',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'cartCredit', 'cartPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
 		);
-		$vars = $vars + compact(
-		extract(AvaTax::getTax(compact(
-			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
-			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'))
-		,EXTR_OVERWRITE));
-		unset($taxArray,$taxCart);
-		if (($cart->data()) && (count($this->request->data) > 1) && $order->process($user, $this->request->data, $cart, $vars['cartCredit'], $vars['cartPromo'], $tax)) {
+		if (($cart->data()) && (count($this->request->data) > 1) 
+				&& $order->process($total, $subTotal, $this->request->data, $cart, $vars['cartCredit'], $vars['cartPromo'], $avatax, $shippingCost, $overShippingCost)) {
 			$this->recordOrder($vars, $order, $avatax);
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
-		if(!empty($_GET['json'])) {
-			echo json_encode($vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings'));
-		} else {
-			return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings');
-		}
+		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings');
 	}
 	
 	/**
