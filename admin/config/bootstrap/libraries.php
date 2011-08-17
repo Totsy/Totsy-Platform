@@ -65,10 +65,6 @@ Libraries::add('PEAR', array(
         return file_exists($file) ? $file : null;
     }
 ));
-Libraries::add('Sabre', array(
-	'prefix' => 'Sabre_',
-	'bootstrap' => 'autoload.php'
-));
 Libraries::add('Imagine');
 
 require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel.php';
