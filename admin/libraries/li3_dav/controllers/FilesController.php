@@ -46,7 +46,7 @@ class FilesController extends \lithium\action\Controller {
 
 		$server->debugExceptions = !Environment::is('production');
 		$server->setBaseUri(Router::match(array(
-			'library' => 'li3_docs', 'controller' => 'files', 'action' => 'dav'
+			'library' => 'li3_dav', 'controller' => 'files', 'action' => 'dav'
 		)));
 
 		/* Filtering and locking are still using local files. */
