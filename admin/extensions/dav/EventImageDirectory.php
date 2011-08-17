@@ -40,15 +40,13 @@ class EventImageDirectory extends \admin\extensions\dav\GenericDirectory {
 	}
 
 	public function createFile($name, $data = null) {
-		$file = EventImage::resizeAndSave($this->getValue(), $data, compact('name'));
-		$type = EventImage::$types[$this->getValue()];
+		$position = $this->getValue();
+		$file = EventImage::resizeAndSave($position, $data, compact('name'));
 		$item = $this->_item();
 
-		$item->images = array(
-			$type['field'] => $file->_id
-		) + $item->images->data();
+		$item->attachImage($position, $file->_id);
 
-		return (boolean) $item->save();
+		return $item->save();
 	}
 
 	protected function _item() {
