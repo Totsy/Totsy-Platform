@@ -15,10 +15,6 @@
 		font-size:12px;
 		text-align: center;
 	}
-	.negative{
-		font-size:12px;
-		color:#FF0000;
-	}
 </style>
 
 <div class="grid_16">
@@ -45,11 +41,6 @@
 			<?php
 			foreach ($promocodes as $month => $promocode_month) {
 				foreach ($promocode_month as $promocode) {
-// 					echo '<tr><td><b>'.$month;
-// 					if ( $promocode['code'] == 'Total' ) {
-// 						echo ' Total';
-// 						$promocode['code'] = '';
-// 					}
 					if ( $promocode['code'] == 'Total' ) {
 						echo '<tr class="parent" id="'.$month.'"><td><b>'.$month.'</b></td>';
 						$promocode['code'] = '';

@@ -78,7 +78,7 @@ class RevenueController extends \lithium\action\Controller {
 		);
 	}
 	
-	public function findNetDetailData($start_date, $end_date) {
+	private function findNetDetailData($start_date, $end_date) {
 		$conditions = array(
 			'type' => 'revenue',
 			'date' => array(
@@ -118,7 +118,7 @@ class RevenueController extends \lithium\action\Controller {
 		return $net_revenue;
 	}
 
-	public function findGrossDetailData($start_date, $end_date) {
+	private function findGrossDetailData($start_date, $end_date) {
 		$conditions = array(
 			'type' => 'gross',
 			'date' => array(
@@ -149,7 +149,7 @@ class RevenueController extends \lithium\action\Controller {
 	}
 	
 	// $month = 'YYYY-MM'
-	public function findNetMonthData($month) {
+	private function findNetMonthData($month) {
 		$conditions = array(
 			'type' => 'revenue',
 			'date_string' => array(
@@ -187,7 +187,7 @@ class RevenueController extends \lithium\action\Controller {
 	}
 
 	// $month = 'YYYY-MM'
-	public function findGrossMonthData($month) {
+	private function findGrossMonthData($month) {
 		$conditions = array(
 			'type' => 'gross',
 			'date_string' => array(
@@ -215,7 +215,7 @@ class RevenueController extends \lithium\action\Controller {
 	}
 
 	// $month = 'YYYY-MM'
-	public function findPromocodeData($month) {
+	private function findPromocodeData($month) {
 		$conditions = array(
 			'type' => 'promocodes',
 			'date_string' => array(
@@ -253,6 +253,8 @@ class RevenueController extends \lithium\action\Controller {
 				$promocodes_total['Total']['number_used'] += $promocode['number_used'];
 			}
 		}
+		
+		asort($promocodes_total);
 		
 		return $promocodes_total;
 	}
