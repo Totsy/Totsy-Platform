@@ -4,6 +4,7 @@ namespace admin\models;
 
 use admin\models\ItemImage;
 use lithium\util\String;
+use lithium\util\Set;
 
 /**
  * The `Item` class extends the generic `lithium\data\Model` class to provide
@@ -197,6 +198,10 @@ class Item extends \lithium\data\Model {
 			}
 		}
 		return $results;
+	}
+
+	public static function imagesWhitelist() {
+		return Set::extract(static::$types, '/field');
 	}
 
 	public function uploadNames($entity) {
