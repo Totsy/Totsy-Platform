@@ -10,7 +10,6 @@ use lithium\util\Inflector;
 <?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
 <?=$this->html->script('handlers.js');?>
 <?=$this->html->script('fileprogress.js');?>
-<?=$this->html->script('handlers.js');?>
 <?=$this->html->style('jquery_ui_blitzer.css')?>
 <?=$this->html->script('jquery.dataTables.js');?>
 <?=$this->html->style('table');?>
@@ -21,10 +20,6 @@ use lithium\util\Inflector;
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
 <?=$this->html->script('http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js')?>
 <?=$this->html->script('jquery.iframe-transport.js')?>
-<?=$this->html->script('jquery.fileupload.js')?>
-<?=$this->html->script('jquery.fileupload-ui.js')?>
-<?=$this->html->script('uploader.js')?>
-<?=$this->html->style('jquery.fileupload-ui.css');?>
 <?=$this->html->style('selectlist.css');?>
 <?=$this->html->script('jquery.selectlist.min.js')?>
 <?=$this->html->script('jquery.selectlist.pack.js')?>
