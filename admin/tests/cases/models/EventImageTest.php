@@ -2,6 +2,7 @@
 
 namespace admin\tests\cases\models;
 
+use admin\tests\mocks\models\EventMock;
 use admin\tests\mocks\models\EventImageMock;
 
 class EventImageTest extends \lithium\test\Unit {
@@ -14,7 +15,7 @@ class EventImageTest extends \lithium\test\Unit {
 		foreach ($names as $name) {
 			$result = EventImageMock::process(uniqid(), compact('name'));
 			$expected = 'event';
-			$result = $result[0];
+			$result = EventMock::$attachImageArgs[1];
 			$this->assertEqual($expected, $result, "Name `{$name}` wasn't mapped to `{$expected}`.");
 		}
 	}
@@ -26,7 +27,7 @@ class EventImageTest extends \lithium\test\Unit {
 		foreach ($names as $name) {
 			$result = EventImageMock::process(uniqid(), compact('name'));
 			$expected = 'logo';
-			$result = $result[0];
+			$result = EventMock::$attachImageArgs[1];
 			$this->assertEqual($expected, $result, "Name `{$name}` wasn't mapped to `{$expected}`.");
 		}
 	}
@@ -39,7 +40,7 @@ class EventImageTest extends \lithium\test\Unit {
 		foreach ($names as $name) {
 			$result = EventImageMock::process(uniqid(), compact('name'));
 			$expected = 'splash_small';
-			$result = $result[0];
+			$result = EventMock::$attachImageArgs[1];
 			$this->assertEqual($expected, $result, "Name `{$name}` wasn't mapped to `{$expected}`.");
 		}
 	}
@@ -52,7 +53,7 @@ class EventImageTest extends \lithium\test\Unit {
 		foreach ($names as $name) {
 			$result = EventImageMock::process(uniqid(), compact('name'));
 			$expected = 'splash_big';
-			$result = $result[0];
+			$result = EventMock::$attachImageArgs[1];
 			$this->assertEqual($expected, $result, "Name `{$name}` wasn't mapped to `{$expected}`.");
 		}
 	}

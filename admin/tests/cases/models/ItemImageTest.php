@@ -2,6 +2,7 @@
 
 namespace admin\tests\cases\models;
 
+use admin\tests\mocks\models\ItemMock;
 use admin\tests\mocks\models\ItemImageMock;
 
 class ItemImageTest extends \lithium\test\Unit {
@@ -14,7 +15,7 @@ class ItemImageTest extends \lithium\test\Unit {
 		foreach ($names as $name) {
 			$result = ItemImageMock::process(uniqid(), compact('name'));
 			$expected = 'primary';
-			$result = $result[0];
+			$result = ItemMock::$attachImageArgs[1];
 			$this->assertEqual($expected, $result, "Name `{$name}` wasn't mapped to `{$expected}`.");
 		}
 	}
@@ -27,7 +28,7 @@ class ItemImageTest extends \lithium\test\Unit {
 		foreach ($names as $name) {
 			$result = ItemImageMock::process(uniqid(), compact('name'));
 			$expected = 'zoom';
-			$result = $result[0];
+			$result = ItemMock::$attachImageArgs[1];
 			$this->assertEqual($expected, $result, "Name `{$name}` wasn't mapped to `{$expected}`.");
 		}
 	}
@@ -42,7 +43,7 @@ class ItemImageTest extends \lithium\test\Unit {
 		foreach ($names as $name) {
 			$result = ItemImageMock::process(uniqid(), compact('name'));
 			$expected = 'alternate';
-			$result = $result[0];
+			$result = ItemMock::$attachImageArgs[1];
 			$this->assertEqual($expected, $result, "Name `{$name}` wasn't mapped to `{$expected}`.");
 		}
 	}
