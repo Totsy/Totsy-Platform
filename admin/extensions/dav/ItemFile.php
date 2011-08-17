@@ -9,7 +9,7 @@ class ItemFile extends \admin\extensions\dav\GenericFile {
 
 	public function put($data) {
 		$position = $this->getParent()->getValue();
-		$type = ItemImage::$type[$this->getParent()->getValue()];
+		$type = ItemImage::$types[$this->getParent()->getValue()];
 		$item = $this->_item();
 
 		$file = ItemImage::resizeAndSave($position, $data);
@@ -31,7 +31,7 @@ class ItemFile extends \admin\extensions\dav\GenericFile {
 		if (!$file = $this->_file()) {
 			return;
 		}
-		$type = ItemImage::$type[$this->getParent()->getValue()];
+		$type = ItemImage::$types[$this->getParent()->getValue()];
 		$item = $this->_item();
 
 		if ($type['multiple']) {
