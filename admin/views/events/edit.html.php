@@ -4,7 +4,6 @@
 <?php //=$this->html->script('jquery-1.4.2');?>
 <?=$this->html->script('jquery-dynamic-form.js');?>
 <?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
-<?=$this->html->script('fileprogress.js');?>
 <?=$this->html->script('handlers.js');?>
 <?=$this->html->style('jquery_ui_blitzer.css')?>
 <?=$this->html->script('jquery.dataTables.js');?>
@@ -16,10 +15,6 @@
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
 <?=$this->html->script('http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js')?>
 <?=$this->html->script('jquery.iframe-transport.js')?>
-<?=$this->html->script('jquery.fileupload.js')?>
-<?=$this->html->script('jquery.fileupload-ui.js')?>
-<?=$this->html->script('uploader.js')?>
-<?=$this->html->style('jquery.fileupload-ui.css');?>
 <?=$this->html->style('selectlist.css');?>
 <?=$this->html->script('jquery.selectlist.min.js')?>
 <?=$this->html->script('jquery.selectlist.pack.js')?>
@@ -501,15 +496,15 @@ $(function() {
 			<script type="text/javascript">
 				$('#agile_file_upload').agileUploader({
 					flashSrc: '<?=$this->url('/swf/agile-uploader.swf'); ?>',
-					submitRedirect: '<?=$this->url('/files'); ?>',
-					formId: 'Media',
+					submitRedirect: '<?=$this->url('/events/edit/' . (string)$event->_id); ?>',
+					formId: 'EventMedia',
 					removeIcon: '<?=$this->url('/img/agile_uploader/trash-icon.png'); ?>',
 					flashVars: {
 						button_up: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
 						button_down: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
 						button_over: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
 						//form_action: $('#EventEdit').attr('action'),
-						form_action: '<?=$this->url('/events/edit/' . (string)$event->_id); ?>',
+						form_action: '<?=$this->url('/files/upload/all'); ?>',
 						file_limit: 30,
 						max_height: '1000',
 						max_width: '1000',
