@@ -57,6 +57,13 @@ Libraries::add('admin', array('default' => true));
 Libraries::add('li3_fixtures');
 Libraries::add('li3_docs');
 Libraries::add('li3_payments');
+Libraries::add('li3_dav', array(
+	'tree' => array(
+		'admin\extensions\dav\EventsDirectory',
+		'admin\extensions\dav\PendingDirectory',
+		'admin\extensions\dav\OrphanedDirectory'
+	)
+));
 Libraries::add('PEAR', array(
     'prefix' => false,
     'includePath' => true,
