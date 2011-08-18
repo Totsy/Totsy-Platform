@@ -8,6 +8,44 @@ use li3_fixtures\test\Fixture;
 
 class EventTest extends \lithium\test\Integration {
 
+	public function testAttachDetachImage() {
+		$fixtures = Fixture::load('Event');
+
+		$fileA = File::write(uniqid());
+		$fileB = File::write(uniqid());
+
+		$event = Event::create($fixtures->first());
+		$event->save();
+
+		$event->attachImage('splash_big', $fileA->_id);
+		$expected = array(
+			'splash_big_image' => (string) $fileA->_id
+		);
+		$result = $event->images->data();
+		$this->assertEqual($expected, $result);
+
+		$event->attachImage('logo', $fileB->_id);
+		$expected = array(
+			'splash_big_image' => (string) $fileA->_id,
+			'logo_image' => (string) $fileB->_id
+		);
+		$result = $event->images->data();
+		$this->assertEqual($expected, $result);
+
+		$event->detachImage('splash_big', $fileA->_id);
+		$expected = array(
+			'splash_big_image' => null,
+			'logo_image' => (string) $fileB->_id
+		);
+		$event->save();
+		$result = $event->images->data();
+		$this->assertEqual($expected, $result);
+
+		$event->delete();
+		$fileA->delete();
+		$fileB->delete();
+	}
+
 	public function testUpdateKeepsModifications() {
 		$fixtures = Fixture::load('Event');
 
