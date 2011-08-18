@@ -227,8 +227,6 @@ class OrdersController extends BaseController {
 			* before any changes are made to the credit
 			*/
 			if (!Order::checkForCancellations($selected_order['order_id'])) {
-				var_dump("Why am I in here?!");
-				die();
 				$selected_order["original_credit_used"] = $selected_order["credit_used"];
 				$datas["original_credit_used"] = $selected_order["credit_used"];
 			}

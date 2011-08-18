@@ -203,7 +203,7 @@ class Order extends \lithium\data\Model {
 	 * @param string $author
 	 * @param string $comment
 	 * @param boolean $credits_recored - prevent the user from being
-	 * twice if admin user cancelled all line items instead of just 
+	 * twice if admin user cancelled all line items instead of just
 	 * clicking cancel order
 	 */
 	public static function cancel($order_id, $author, $comment, $credits_recorded = false, $test = false) {
@@ -642,8 +642,6 @@ class Order extends \lithium\data\Model {
 	            array('cancel' => true)
 	        )
 	    ));
-	     var_dump($order_id);
-	    var_dump($cancel_count);
 	    if ($cancel_count == 0) {
 	        return false;
 	    } else {
