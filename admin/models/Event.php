@@ -117,10 +117,6 @@ class Event extends \lithium\data\Model {
 		}
 		return $results;
 	}
-
-	public static function imagesWhitelist() {
-		return array('images');
-	}
 }
 
 ?>

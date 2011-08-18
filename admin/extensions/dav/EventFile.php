@@ -12,9 +12,9 @@ class EventFile extends \admin\extensions\dav\GenericFile {
 		$item = $this->_item();
 
 		$file = EventImage::resizeAndSave($position, $data);
-
 		$item->attachImage($position, $file->_id);
-		return $item->save(null, Event::imagesWhitelist());
+
+		return $item->save();
 	}
 
 	public function delete() {
@@ -25,7 +25,8 @@ class EventFile extends \admin\extensions\dav\GenericFile {
 		$item = $this->_item();
 
 		$item->detachImage($position, $file->_id);
-		return $item->save(null, Event::imagesWhitelist());
+
+		return $item->save();
 	}
 
 	protected function _item() {
