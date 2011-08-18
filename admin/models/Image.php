@@ -72,7 +72,7 @@ class Image extends \admin\models\File {
 		// Setup a $fill_image for any uploaded or resized image that is smaller than the required dimensions
 		$fill_image = $imagine->create(new Box($width, $height), new Color('fff', 100));
 		
-		if($uploaded_image_width < $width || $uploaded_image_height < $height) {
+		if($uploaded_image_width < $width && $uploaded_image_height < $height) {
 			// Figure out the x, y that places the pasted (smaller) image in the center
 			$x = floor(($width / 2) - ($uploaded_image_width / 2));
 			$y = floor(($height / 2) - ($uploaded_image_height / 2));
@@ -91,7 +91,7 @@ class Image extends \admin\models\File {
 			if($resized_image_width < $width || $resized_image_height < $height) {
 				$x = floor(($width / 2) - ($resized_image_width / 2));
 				$y = floor(($height / 2) - ($resized_image_height / 2));
-				$bytes = $fill_image->paste($image, new Point($x, $y))->get('png');
+				$bytes = $fill_image->paste($resized_image, new Point($x, $y))->get('png');
 			} else {
 				$bytes = $fill_image->paste($image, new Point(0, 0))->get('png');
 			}
