@@ -103,11 +103,9 @@ class EventsController extends BaseController {
 
 				//checks if current sku_details sku is in form-submitted SKU array
 				if(in_array($sku_details, $items_skus)){
-
-<<<<<<< HEAD	if(in_array($sku_details, $items_skus_used)){
+					if(in_array($sku_details, $items_skus_used)){
 						$addnewitem = false;
-					}
-					else{
+					} else {
 						$items_skus_used[] = $sku_details;
 
 						//this is a match, get the index of the sku_details

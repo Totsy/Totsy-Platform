@@ -28,10 +28,7 @@ use lithium\util\Inflector;
 <?=$this->html->script('agile-uploader-3.0.js')?>
 <?=$this->html->style('agile_uploader.css');?>
 <?=$this->html->style('admin_common.css');?>
-<<<<<<< HEAD
 <?=$this->html->script('files.js');?>
-=======
->>>>>>> Rewording; adding style.
 <?=$this->html->style('files.css');?>
 
 <style type="text/css">
