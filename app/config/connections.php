@@ -41,7 +41,9 @@ use \lithium\data\Connections;
 		'local' => array(
     		'type' =>  'MongoDb',
 			'database' => 'totsy',
-			'host' => 'localhost',
+			'host' => array(
+    			'localhost'
+    		),
 			'adapter' => 'app\extensions\adapter\data\source\MongoDb')
 	));
 ?>
