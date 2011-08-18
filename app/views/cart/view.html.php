@@ -1,16 +1,13 @@
-<script type="text/javascript" src="/js/tipsy/src/javascripts/jquery.tipsy.js"></script>
-
-<link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
-
-
 <script type="text/javascript">	
+
 	$( function () {
 	    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	    
 		var now = new Date();
 		$('#itemCounter').countdown( {until: itemExpires, onExpiry: refreshCart, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
 		if (itemExpires < now) {
-			$('#itemCounter').html("<span class='over' style='color:#EB132C; padding:5px;'>no longer reserved</span>");
+			$('#itemCounter').html("<span class='over' style='color:#EB132C; padding:5px;'>No longer reserved</span>");
 		}
+		
 		function refreshCart() {
 			window.location.reload(true);
 		}
@@ -19,9 +16,12 @@
 		$('#shipping').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
 		$('#estimated_tax').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
 		
-	});
+	}); 
 	
 </script>
+
+<script type="text/javascript" src="/js/tipsy/src/javascripts/jquery.tipsy.js"></script>
+<link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
 
 <?php  if(!empty($subTotal)): ?>
 <div style="margin:10px; margin-bottom:10px">
@@ -115,7 +115,7 @@
 						}
 					?>
 					<?=$this->form->select("cart[{$item->_id}]", $select, array(
-    					'id' => $item->_id, 'value' => $item->quantity
+    					'id' => $item->_id, 'value' => $item->quantity, 'class'=>'quantity'
 					));
 					?>
 					<?php 
@@ -309,40 +309,46 @@
 <div id="modal" style="background:#fff!important; z-index:9999999999!important;"></div>
 
 <script type="text/javascript" charset="utf-8">
-	$(".inputbox").bind('keyup', function() {
-	var id = $(this).attr('id');
-	var qty = $(this).val();
-	var price = $(this).closest("tr").find("td[class^=price]").html().split("$")[1];
-	var cost = parseInt(qty) * parseFloat(price);
-	var itemCost = $().number_format(cost, {
-		numberOfDecimals: 2,
-		decimalSeparator: ".",
-		thousandSeparator: "," });
-	$(this).closest('tr').find('td[class^=total]').html('<strong>$' + itemCost + '</strong>');
-	var subTotal = 0;
-	$('td[class^=total]').each(
-		function() {
-	    	subTotal += parseFloat($(this).html().split("$")[1]);
+
+$(document).ready( function() {
+
+	$(".quantity").bind('click', function() {
+				
+		var id = $(this).attr('id');
+		var qty = $(this).val();
+		var price = $(this).closest("tr").find("td[class^=price]").html().split("$")[1];
+		var cost = parseInt(qty) * parseFloat(price);
+		var itemCost = $().number_format(cost, {
+			numberOfDecimals: 2,
+			decimalSeparator: ".",
+			thousandSeparator: "," });
+		$(this).closest('tr').find('td[class^=total]').html('<strong>$' + itemCost + '</strong>');
+		var subTotal = 0;
+		$('td[class^=total]').each(
+			function() {
+		    	subTotal += parseFloat($(this).html().split("$")[1]);
+			});
+		var subTotalProper = $().number_format(subTotal, {
+			numberOfDecimals: 2,
+			decimalSeparator: '.',
+			thousandSeparator: ','
 		});
-	var subTotalProper = $().number_format(subTotal, {
-		numberOfDecimals: 2,
-		decimalSeparator: '.',
-		thousandSeparator: ','
-	});
-	$.ajax({
-		url: $.base + 'cart/update',
-		data: '_id=' + id + '&' + 'qty=' + qty,
-		context: document.body,
-		success: function(message) {
-			$("#message").addClass("cart-message");
-			$("#message").css("padding: 0pt 0.7em;");
-			$("#message").html("<center>" + message + "</center>");
-		}
-	});
+		
+		$.ajax({
+			url: $.base + 'cart/update',
+			data: '_id=' + id + '&' + 'qty=' + qty,
+			context: document.body,
+			success: function(message) {
+				$("#message").addClass("cart-message");
+				$("#message").css("padding: 0pt 0.7em;");
+				$("#message").html("<center>" + message + "</center>");
+			}
+		});
+		
 	$("#subtotal").html("<strong>Subtotal: $" + subTotalProper + "</strong>");
 });
-</script>
-<script type="text/javascript" charset="utf-8">
+});
+
 //SUBMIT THE ITEM WHICH IS DELETED
 function deletechecked(message, id) {
 	var answer = confirm(message)
@@ -379,4 +385,6 @@ function open_promo() {
 		$("#promo").slideToggle("fast");
 	}
 };
+
+
 </script>
