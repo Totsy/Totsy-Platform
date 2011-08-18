@@ -356,6 +356,7 @@ class OrdersController extends BaseController {
 		$userSavings = Session::read('userSavings');
 		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
 		$postDiscount = ($subTotal - $vars['services']['tenOffFitfy']);
+		#Calculate Total with Credits, Promo, Service and Tax
 		if(!empty($vars['cartCredit'])) {
 			$credits = Session::read('credit');
 		 	$vars['postDiscountTotal'] -= $credits;
