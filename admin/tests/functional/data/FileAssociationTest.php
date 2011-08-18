@@ -5,6 +5,7 @@ namespace admin\tests\functional\data;
 use admin\models\Event;
 use admin\models\Item;
 use admin\models\File;
+use admin\extensions\command\FileOrphaned;
 
 class FileAssociationTest extends \lithium\test\Integration {
 
@@ -93,6 +94,13 @@ class FileAssociationTest extends \lithium\test\Integration {
 		$this->assertIdentical($expected, $result);
 
 		$event->delete();
+
+		$expected = 0;
+		$result = count(File::orphaned()) - $before;
+		$this->assertIdentical($expected, $result);
+
+		$command = new FileOrphaned();
+		$command->run();
 
 		$expected = 1;
 		$result = count(File::orphaned()) - $before;
