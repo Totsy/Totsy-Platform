@@ -96,7 +96,7 @@ class Order extends Base {
 	 * Record in DB all informations linked with the order
 	 * @return redirect
 	 */
-	public function recordOrder($vars, $order, $avatax) {
+	public static function recordOrder($vars, $order, $avatax) {
 			#Save Order Infos
 			$order->save(compact('total', 'subTotal','handling','overSizeHandling') + array(
 					'user_id' => (string) $user['_id'],
