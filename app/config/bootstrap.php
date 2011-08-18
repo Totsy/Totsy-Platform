@@ -25,6 +25,8 @@ define('LITHIUM_APP_PATH', dirname(__DIR__));
  * Locate and load Lithium core library files.  Throws a fatal error if the core can't be found.
  * If your Lithium core directory is named something other than 'lithium', change the string below.
  */
+// Uncomment this and comment the line below to use lithium core from app/libraries/lithium. */
+// if (!include LITHIUM_APP_PATH . '/libraries/lithium/core/Libraries.php') {
 if (!include LITHIUM_LIBRARY_PATH . '/lithium/core/Libraries.php') {
 	$message  = "Lithium core could not be found.  Check the value of LITHIUM_LIBRARY_PATH in ";
 	$message .= "config/bootstrap.php.  It should point to the directory containing your ";
