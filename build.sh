@@ -29,6 +29,7 @@ function print_usage {
 	echo " - fix-perms         Set default permissions on app, admin and resources (excl. libraries)."
 	echo " - run-tests         Runs lithium, app, admin and library tests."
 	echo " - optimize-repo     Perform GC on local git repository."
+	echo " - source-lithium    Install lithium."
 	echo " - source-subs       Initialize and update all submodules."
 }
 
@@ -102,6 +103,20 @@ case $COMMAND in
 	source-subs)
 		echo "Updating and initialising all registered submodules recursively..."
 		git submodule update --init --recursive
+		;;
+
+	source-lithium)
+		TARGET=$PROJECT_DIR/admin/libraries/lithium
+
+		echo "Removing old..."
+		test -d $TARGET && rm -r $TARGET
+
+		git clone git://github.com/UnionOfRAD/lithium.git $TARGET
+		cd $TARGET
+		git merge origin/data
+
+		echo "Removing history..."
+		rm -fr .git
 		;;
 
 	*)
