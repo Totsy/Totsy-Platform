@@ -48,20 +48,12 @@ class ItemImageDirectory extends \admin\extensions\dav\GenericDirectory {
 	}
 
 	public function createFile($name, $data = null) {
-		$file = ItemImage::resizeAndSave($this->getValue(), $data, compact('name'));
+		$position = $this->getValue();
 		$item = $this->_item();
 
-		if (ItemImage::$types[$value = $this->getValue()]['multiple']) {
-			$images = $item->{"{$value}_images"} ? $item->{"{$value}_images"}->data() : array();
-
-			if (!in_array($file->_id, $images)) {
-				$images[] = $file->_id;
-			}
-			$item->{"{$value}_images"} = $images;
-		} else {
-			$item->{"{$value}_image"} = $file->_id;
-		}
-		return (boolean) $item->save();
+		$file = ItemImage::resizeAndSave($position, $data, compact('name'));
+		$item->attachImage($position, $file->_id);
+		return $item->save();
 	}
 
 	protected function _item() {
