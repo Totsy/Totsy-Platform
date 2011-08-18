@@ -23,6 +23,7 @@
 <?=$this->html->script('agile-uploader-3.0.js')?>
 <?=$this->html->style('agile_uploader.css');?>
 <?=$this->html->style('admin_common.css');?>
+<?=$this->html->style('files.css');?>
 
 <style type="text/css">
 .selectlist-list {
@@ -472,13 +473,12 @@ $(function() {
 		<div id="event_media">
 			<h3 id="uploaded_media">Upload Media</h3>
 			<p>
-				Upload all event media here. This includes event images as well as item images. Please ensure all filenames follow proper naming convention.
-				You can also upload event item images here as well. These also follow a naming convention.
+				Upload all event media here.
+				This includes event images <em>as well as item images</em>.
+				Please ensure all event images follow the naming conventions below.
 
 				For more information and other methods to upload files please see <?=$this->html->link('File Management', 'Files::index'); ?>.
 			</p>
-
-			<h4>Naming files when uploading via form</h4>
 			<?php $names = $event->uploadNames(); ?>
 			<dl>
 				<?php foreach ($names['form'] as $type => $name): ?>
