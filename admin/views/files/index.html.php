@@ -8,16 +8,32 @@
 <?=$this->html->style('agile_uploader.css');?>
 <?=$this->html->style('admin_common.css');?>
 
-<h1>File Management</h1>
+<?php $user = lithium\storage\Session::read('userLogin'); ?>
 
+<h1>File Management</h1>
 <div class="tab_region_left_col">
 
 	<div class="box">
 		<h2>Upload via WebDAV</h2>
 		<div class="block">
+			<?php if (empty($user['token'])): ?>
 			<p>
-				Open your WebDAV client and connect to
-				<?=$this->html->link($this->url('Files::dav', array('absolute' => true)), 'Files::dav'); ?>.
+				You currently have <strong>no token</strong>,
+				you can <?=$this->html->link('generate one', 'Users::token'); ?> now.
+				A token is needed to authenticate when using WebDAV.
+			</p>
+			<?php else: ?>
+			<p>
+				Open your WebDAV client and connect to the following URL.
+				<?php $url = $this->url(array(
+					'library' => 'li3_dav',
+					'controller' => 'files', 'action' => 'dav',
+					'token' => $user['token']
+				), array('absolute' => true)); ?>
+				<pre><?=$this->html->link($url, $url); ?></pre>
+			</p>
+			<?php endif; ?>
+			<p>
 				<?=$this->html->link('Cyberduck', 'http://cyberduck.ch/', array('target' => 'new')); ?>
 				is the recommended WebDAV client and works under both Windows and OSX.
 				Following a quick explanation of the directory structure.
@@ -89,6 +105,24 @@
 </div>
 
 <div class="tab_region_right_col">
+	<div class="box">
+		<h2>Token</h2>
+		<?php if (empty($user['token'])): ?>
+		<p>
+			You currently have no token,
+			you can <?=$this->html->link('generate one', 'Users::token'); ?> now.
+		</p>
+		<?php else: ?>
+		<div class="actions">
+			<?=$this->html->link('regenerate', 'Users::token'); ?>
+		</div>
+		<p>
+			A token is needed to authenticate i.e. for <em>uploading via WebDAV</em>.
+			You may regenerate your token any time causing the old token to expire immediately.
+		</p>
+		<pre><?=$user['token']; ?></pre>
+		<?php endif; ?>
+	</div>
 
 	<div class="box">
 		<h2>Event Image File Naming Conventions</h2>
