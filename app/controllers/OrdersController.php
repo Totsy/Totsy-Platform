@@ -345,7 +345,6 @@ class OrdersController extends BaseController {
 		$overShippingCost = 0;
 		$shippingAddr = Session::read('shipping');
 		$billingAddr = Session::read('billing');
-		$tax = 0;
 		if ($shippingAddr) {
 			$shippingCost = Cart::shipping($cart, $shippingAddr);
 			$overShippingCost = Cart::overSizeShipping($cart);
@@ -374,84 +373,17 @@ class OrdersController extends BaseController {
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'));
 		$total = $vars['postDiscountTotal'] + $avaTax['tax'];
+		$tax = $avaTax['tax'];
 		$vars = compact(
 			'user', 'cart', 'subTotal', 'order',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'cartCredit', 'cartPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
 		);
-		if (($cart->data()) && (count($this->request->data) > 1) 
-				&& $order->process($total, $subTotal, $this->request->data, $cart, $vars['cartCredit'], $vars['cartPromo'], $avatax, $shippingCost, $overShippingCost)) {
-			$this->recordOrder($vars, $order, $avatax);
-		}
+		#TEST CASE - TO UNCOMMENT
+		//if ( ($cart->data()) && (count($this->request->data) > 1)) {
+			Order::process($order, $total, $subTotal, $this->request->data, $cart, $vars, $avatax, $shippingCost, $overShippingCost);
+		//}
 		$cartEmpty = ($cart->data()) ? false : true;
 		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings');
-	}
-	
-	/**
-	 * Record in DB all informations linked with the order
-	 * @return redirect
-	 */
-	public function recordOrder($vars, $order, $avatax) {
-			$service = Session::read('services', array('name' => 'default'));
-			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
-			#Save Credits Used
-			if ($vars['cartCredit']->credit_amount) {
-				User::applyCredit($user['_id'], $vars['cartCredit']->credit_amount);
-				Credit::add($orderCredit, $user['_id'], $vars['cartCredit']->credit_amount, "Used Credit");
-				Session::delete('credit');
-				$order->credit_used = $vars['cartCredit']->credit_amount;
-			}
-			#Save Promocode Used
-			if ($vars['cartPromo']->saved_amount) {
-				Promocode::add((string) $code->_id, $vars['cartPromo']->saved_amount, $order->total);
-				$vars['cartPromo']->order_id = (string) $order->_id;
-				$vars['cartPromo']->code_id = (string) $code->_id;
-				$vars['cartPromo']->date_created = new MongoDate();
-				$vars['cartPromo']->save();
-				$order->promo_code = $vars['cartPromo']->code;
-				$order->promo_discount = $vars['cartPromo']->saved_amount;
-			}
-			#Save Services Used (10$Off / Free Shipping)
-			if ($service) {
-				$services = array();
-				if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
-					$services = array_merge($services, array("freeshipping"));
-				}
-				if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible') {
-					$order->discount = -10.00;
-					$services = array_merge($services, array("10off50"));
-				}
-				$order->service = $services;
-			}
-			#Save Tax Infos
-			if($avatax === true){
-				AvaTax::postTax( compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
-			}
-			$order->avatax = $avatax;
-			$order->ship_date = new MongoDate(Cart::shipDate($order));
-			$order->save();
-			Cart::remove(array('session' => Session::key('default')));
-			#Clear Savings Information
-			Session::delete('userSavings');
-			#Update quantity of items
-			foreach ($cart as $item) {
-				Item::sold($item->item_id, $item->size, $item->quantity);
-			}
-			#Update amount of user's orders 
-			$user = User::getUser();
-			++$user->purchase_count;
-			$user->save(null, array('validate' => false));
-			#Send Order Confirmation Email
-			$data = array(
-				'order' => $order->data(),
-				'shipDate' => date('M d, Y', $shipDate)
-			);	
-			Mailer::send('Order_Confirmation', $user->email, $data);
-			#In Case Of First Order, Send an Email About 10$ Off Discount
-			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
-				Mailer::send('Welcome_10_Off', $user->email, $data);
-			}
-			#Redirect To Confirmation Page
-			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 	}
 
 	/**
