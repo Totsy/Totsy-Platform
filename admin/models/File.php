@@ -177,7 +177,7 @@ class File extends \lithium\data\Model {
 		if (is_resource($data)) {
 			rewind($data);
 			$peekBytes = 1000000;
-			$result = finfo_buffer($context, fgets($data, $peekBytes));
+			$result = finfo_buffer($context, fread($data, $peekBytes));
 		} else {
 			$result = finfo_buffer($context, $data);
 		}

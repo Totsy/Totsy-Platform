@@ -6,6 +6,8 @@ use admin\models\File;
 
 class FileTest extends \lithium\test\Integration {
 
+	protected $_backup = array();
+
 	public function testWriteUsingBytes() {
 		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
 		$bytes = file_get_contents($file);
@@ -128,6 +130,13 @@ class FileTest extends \lithium\test\Integration {
 		$expected = 'image/jpeg';
 		$result = File::detectMimeType($bytes);
 		$this->assertEqual($expected, $result);
+
+		$file = LITHIUM_APP_PATH . '/tests/data/image_png.png';
+		$bytes = file_get_contents($file);
+
+		$expected = 'image/png';
+		$result = File::detectMimeType($bytes);
+		$this->assertEqual($expected, $result);
 	}
 
 	public function testDetectMimeTypeFromStream() {
@@ -140,6 +149,15 @@ class FileTest extends \lithium\test\Integration {
 
 		fseek($handle, 10);
 		$expected = 'image/jpeg';
+		$result = File::detectMimeType($handle);
+		$this->assertEqual($expected, $result);
+
+		fclose($handle);
+
+		$file = LITHIUM_APP_PATH . '/tests/data/image_png.png';
+		$handle = fopen($file, 'rb');
+
+		$expected = 'image/png';
 		$result = File::detectMimeType($handle);
 		$this->assertEqual($expected, $result);
 
