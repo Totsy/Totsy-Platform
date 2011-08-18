@@ -30,6 +30,7 @@ admin/resources/totsy/processed/*.txt
 admin/resources/tmp/logs/*.*
 admin/resources/tmp/logs/
 admin/resources/tmp/cache/
+admin/resources/tmp/dav/
 admin/resources/totsy/shipfiles/backup/
 
 # selenium
