@@ -1,26 +1,26 @@
 <?php ini_set("display_erros", 0); ?>
 <?php use admin\models\Event; ?>
-<?=$this->html->script('tiny_mce/tiny_mce.js');?>
-<?=$this->html->script('jquery-1.4.2');?>
-<?=$this->html->script('jquery-dynamic-form.js');?>
-<?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
-<?=$this->html->script('swfupload.js');?>
-<?=$this->html->script('swfupload.queue.js');?>
-<?=$this->html->script('fileprogress.js');?>
-<?=$this->html->script('handlers.js');?>
-<?=$this->html->script('event_upload.js');?>
-<?=$this->html->style('swfupload')?>
-<?=$this->html->style('jquery_ui_blitzer.css')?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->style('table');?>
-<?=$this->html->script('jquery-ui-timepicker.min.js');?>
-<?=$this->html->style('timepicker'); ?>
-<?=$this->html->script('jquery.countdown.min');?>
-<?=$this->html->style('jquery.countdown');?>
-<?=$this->html->script('jquery.maskedinput-1.2.2')?>
-<?=$this->html->style('selectlist.css');?>
-<?=$this->html->script('jquery.selectlist.min.js')?>
-<?=$this->html->script('jquery.selectlist.pack.js')?>
+<?php echo $this->html->script('tiny_mce/tiny_mce.js');?>
+<?php echo $this->html->script('jquery-1.4.2');?>
+<?php echo $this->html->script('jquery-dynamic-form.js');?>
+<?php echo $this->html->script('jquery-ui-1.8.2.custom.min.js');?>
+<?php echo $this->html->script('swfupload.js');?>
+<?php echo $this->html->script('swfupload.queue.js');?>
+<?php echo $this->html->script('fileprogress.js');?>
+<?php echo $this->html->script('handlers.js');?>
+<?php echo $this->html->script('event_upload.js');?>
+<?php echo $this->html->style('swfupload')?>
+<?php echo $this->html->style('jquery_ui_blitzer.css')?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->style('table');?>
+<?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
+<?php echo $this->html->style('timepicker'); ?>
+<?php echo $this->html->script('jquery.countdown.min');?>
+<?php echo $this->html->style('jquery.countdown');?>
+<?php echo $this->html->script('jquery.maskedinput-1.2.2')?>
+<?php echo $this->html->style('selectlist.css');?>
+<?php echo $this->html->script('jquery.selectlist.min.js')?>
+<?php echo $this->html->script('jquery.selectlist.pack.js')?>
 
 <style type="text/css">
 
@@ -44,7 +44,7 @@ $(document).ready(function(){
 tinyMCE.init({
 	// General options
 	mode : "exact",
-	elements: allitemids, 
+	elements: "Blurb,ShipMessage,"+allitemids, 
 	theme : "advanced",
 	plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,preview,searchreplace,print,contextmenu,paste,directionality,noneditable,visualchars,nonbreaking,xhtmlxtras",
 
@@ -168,24 +168,25 @@ for ( i=1; i<6; i++ ) {
 	}
 	
 	function submitForm(){
-	
-		//alert('submit it via js baby');
-		var handler = "/events/uploadcheck";
-		var items_submit = document.getElementById("items_submit").value;
-			console.log(items_submit);
-		
-		//alert(items_raw);
-		$.post(handler, {"items_submit" : items_submit}, function(result) {
-			console.log(result);
 
-			if(result=="success"){
-				$("#events_edit").submit();
-			}
-			else{
-				console.log("dinkers");
-				$("#items_errors").html(result);
-			}
-		});
+		var handler = "/events/uploadcheck";
+		var items_submit = document.getElementById("ItemsSubmit").value;
+		
+		if(items_submit){
+			$.post(handler, {"items_submit" : items_submit}, function(result) {
+				console.log(result);
+	
+				if(result=="success"){
+					$("#events_edit").submit();
+				}
+				else{
+					console.log("dinkers");
+					document.getElementById("ItemsSubmit").value = "";
+	
+					$("#items_errors").html(result);
+				}
+			});
+		}
 
 	
 	}
@@ -238,9 +239,9 @@ div.xls_cell:hover{
 
 
 
-<?=$this->form->create(null, array('id' => "events_edit", 'enctype' => "multipart/form-data")); ?>
+<?php echo $this->form->create(null, array('id' => "events_edit", 'enctype' => "multipart/form-data")); ?>
 <div class="grid_16">
-	<h2>Editing Event - <?=$event->name?></h2>
+	<h2>Editing Event - <?php echo $event->name?></h2>
 </div>
 
 <div class="grid_16">
@@ -259,12 +260,12 @@ div.xls_cell:hover{
 				</p>
 			</div>
 			<div id="event_preview">
-				<p> To see a preview of the event please <?=$this->html->link('click here.',"/events/preview/$event->_id")?></p>
+				<p> To see a preview of the event please <?php echo $this->html->link('click here.',"/events/preview/$event->_id")?></p>
 			</div>
 			<h4 id="article-heading">Event Description</h4>
-			    <?=$this->form->field('name', array('value' => $event->name, 'class' => 'general'));?>
+			    <?php echo $this->form->field('name', array('value' => $event->name, 'class' => 'general'));?>
 				<div id="blurb_div">
-					<?=$this->form->field('blurb', array('type' => 'textarea', 'name' => 'content', 'value' => $event->blurb));?><br>
+					<?php echo $this->form->field('blurb', array('type' => 'textarea', 'name' => 'content', 'value' => $event->blurb));?><br>
 				</div>
 				<div id="event_status">
 					<h4 id="event_status">Event Status</h4>
@@ -294,41 +295,41 @@ div.xls_cell:hover{
 								'value' => "$end_date"
 							));?>
 				</div>
-				<?=$this->form->label('Departments')?><br />
+				<?php echo $this->form->label('Departments')?><br />
 				<table>
-					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?>
+					<?php echo $this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?>
 				</table>
 				<div id="tags">
-					<?=$this->form->label('Tags'); ?>
+					<?php echo $this->form->label('Tags'); ?>
 					<?php if ($event->tags): ?>
 						<select name="tags[]" id="tags" multiple="multiple" size="5">
 							<?php foreach (Event::$tags as $tag): ?>
 								<?php if (in_array($tag, $event->tags)): ?>
-									<option value="<?=$tag?>" selected><?=$tag?> </option>
+									<option value="<?php echo $tag?>" selected><?php echo $tag?> </option>
 								<?php else: ?>
-									<option value="<?=$tag?>"><?=$tag?> </option>
+									<option value="<?php echo $tag?>"><?php echo $tag?> </option>
 								<?php endif ?>
 							<?php endforeach ?>
 						</select>
 					<?php else: ?>
-						<?=$this->form->select('tags', Event::$tags, array('size' => 5, 'multiple' => 'multiple')); ?>
+						<?php echo $this->form->select('tags', Event::$tags, array('size' => 5, 'multiple' => 'multiple')); ?>
 					<?php endif ?>
 				</div>
 				<br>
 				<div id="shipMessage">
-					<?=$this->form->label('Shipping Message'); ?>
-					<?=$this->form->textarea('ship_message', array('value' => $event->ship_message)); ?>
+					<?php echo $this->form->label('Shipping Message'); ?>
+					<?php echo $this->form->textarea('ship_message', array('value' => $event->ship_message)); ?>
 				</div>
 				<div id="shipDateOverride">
-					<?=$this->form->label('Estimated Ship Date'); ?>
+					<?php echo $this->form->label('Estimated Ship Date'); ?>
 					<p>This date will override the calcualted ship date for orders.</p>
-					<?=$this->form->text('ship_date', array('id' => 'ship_date', 'value' => $event->ship_date)); ?>
+					<?php echo $this->form->text('ship_date', array('id' => 'ship_date', 'value' => $event->ship_date)); ?>
 				</div>
 				<br>
-			<!--<?=$this->form->submit('Update Event')?>-->
+			<!--<?php echo $this->form->submit('Update Event')?>-->
 
 
-			<input type="button" onclick="submitForm(); return false;" value="Update Event New">
+			<input type="button" onclick="submitForm(); return false;" value="Update Event">
 
 
 		</div>
@@ -354,7 +355,7 @@ div.xls_cell:hover{
 								$eventImage = "/img/no-image-large.jpeg";
 							}
 						?>
-						<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						<?php echo $this->html->image("$eventImage", array('alt' => 'altText')); ?>
 					</td>
 				</tr>
 				<tr>
@@ -367,7 +368,7 @@ div.xls_cell:hover{
 								$eventImage = "/img/no-image-small.jpeg";
 							}
 						?>
-						<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						<?php echo $this->html->image("$eventImage", array('alt' => 'altText')); ?>
 					</td>
 				</tr>
 				<tr>
@@ -380,7 +381,7 @@ div.xls_cell:hover{
 								$eventImage = "/img/no-image-small.jpeg";
 							}
 						?>
-						<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						<?php echo $this->html->image("$eventImage", array('alt' => 'altText')); ?>
 					</td>
 				</tr>
 				<tr>
@@ -393,7 +394,7 @@ div.xls_cell:hover{
 								$eventImage = "/img/no-image-small.jpeg";
 							}
 						?>
-						<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						<?php echo $this->html->image("$eventImage", array('alt' => 'altText')); ?>
 					</td>
 				</tr>
 				</table>
@@ -422,8 +423,8 @@ div.xls_cell:hover{
 			</table>
 
 			<br>
-			<!--<?=$this->form->submit('Update Event')?>-->
-			<input type="button" onclick="submitForm(); return false;" value="Update Event New">
+			<!--<?php echo $this->form->submit('Update Event')?>-->
+			<input type="button" onclick="submitForm(); return false;" value="Update Event">
 		</div>
 		<div id="event_items">
 
@@ -431,7 +432,7 @@ div.xls_cell:hover{
 			<h3 id="">Item Management</h3>
 			<hr />
 
-			<div style="width:300px; height:300px; float:left">
+			<div style="width:300px; height:400px; float:left">
 				<h3 id="">Upload Items</h3>
 	            <hr />
 				<p>Please select the default option for all items being uploaded:</p>
@@ -442,22 +443,21 @@ div.xls_cell:hover{
 					<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
 	
 					<!--
-					<?=$this->form->label('Upload Event (Excel Files): '); ?>
-					<?=$this->form->file('upload_file'); ?>
+					<?php echo $this->form->label('Upload Event (Excel Files): '); ?>
+					<?php echo $this->form->file('upload_file'); ?>
 					-->
 					
-				<textarea id="items_submit" name="items_submit" rows="4" cols="10"></textarea>
+				<?php echo $this->form->field('items_submit', array('type' => 'textarea', 'name' => 'ItemsSubmit'));?><br>
 				<br><br>
-				<!--<?=$this->form->submit('Update Event')?>-->
-				<input type="button" onclick="submitForm(); return false;" value="Update Event New">
+
+				<input type="button" onclick="submitForm(); return false;" value="Update Event">
 				<br><br>
-				<?=$this->form->end(); ?>
+				<?php echo $this->form->end(); ?>
 			</div>
 
-			<div id="items_errors" name="items_errors" style="float:right; width:500px; height:150px;overflow:scroll;">
-			</div>
+			<div id="items_errors" name="items_errors" style="float:right; width:500px; height:400px;overflow:scroll;"></div>
 
-			<div style="clear:both"></div>
+			<div style="clear:both; height:30px;"></div>
 
 
 
@@ -466,8 +466,8 @@ div.xls_cell:hover{
 			<h3 id="current_items">Current Items</h3>
 
             <hr />
-			<?=$this->form->create(null, array('url' => 'Items::itemUpdate', 'name' => 'item-update')); ?>
-				<?=$this->form->hidden('id', array('value' => $event->_id)); ?>
+			<?php echo $this->form->create(null, array('url' => 'Items::itemUpdate', 'name' => 'item-update')); ?>
+				<?php echo $this->form->hidden('id', array('value' => $event->_id)); ?>
 				<div style="float:left; font: bold; font-size: 18px;">
 					Total Items:
 					<?php 
@@ -477,27 +477,27 @@ div.xls_cell:hover{
 				</div>
 
 				<div style="float:right; font: bold; font-size: 18px;">
-					<?=$this->form->submit('Update Items'); ?>
+					<?php echo $this->form->submit('Update Items'); ?>
 				</div>
 				<br \>
 				<br \>
 
-				<?=$this->items->build($eventItems);?>
+				<?php echo $this->items->build($eventItems);?>
 
 				<div style="float:right; font: bold; font-size: 18px;">
-					<?=$this->form->submit('Update Items'); ?>
+					<?php echo $this->form->submit('Update Items'); ?>
 				</div>
-			<?=$this->form->end(); ?>
+			<?php echo $this->form->end(); ?>
 
 			<br><br>
 
 
 			<h2 id="">Delete Items</h2>
 				<p>Click the button below to delete all items from this event. <strong>WARNING - This action cannot be undone. All items associated with this event will be deleted!!!!!!<strong></p>
-				<?=$this->form->create(null, array('url' => 'Items::removeItems', 'name' => 'item-delete')); ?>
-					<?=$this->form->hidden('event', array('value' => $event->_id)); ?>
-					<?=$this->form->submit('Delete All Items'); ?>
-				<?=$this->form->end(); ?>
+				<?php echo $this->form->create(null, array('url' => 'Items::removeItems', 'name' => 'item-delete')); ?>
+					<?php echo $this->form->hidden('event', array('value' => $event->_id)); ?>
+					<?php echo $this->form->submit('Delete All Items'); ?>
+				<?php echo $this->form->end(); ?>
 		</div>
 		<div id="event_history">
 				<?php
@@ -516,14 +516,14 @@ div.xls_cell:hover{
 
 				?>
 				<tr>
-					<td><?=$event->modifications[$i]->author;?></td>
+					<td><?php echo $event->modifications[$i]->author;?></td>
 					<td>
 					<?php
 							$date_changed = $event->modifications[$i]->date;
 							print date('Y-M-d h:i:s', $date_changed->sec);
 					?>
 					</td>
-					<td><?=$event->modifications[$i]->changed;?></td>
+					<td><?php echo $event->modifications[$i]->changed;?></td>
 				</tr>
 				<?php
 							$i++;
