@@ -133,43 +133,14 @@ class File extends \lithium\data\Model {
 		return static::all(array('conditions' => array('pending' => true)));
 	}
 
-	// @todo Temporarily disabled.
+	/**
+	 * Retrieves all files flagged as orphaned. As detecting orphans is an
+	 * expensive task flagging needs to happen through running a command.
+	 *
+	 * @see admin\extensions\command\FileOrphan
+	 */
 	public static function orphaned() {
-		return array();
-
-		// @todo replace with map reduce
-		/*
-		$map = new MongoCode('
-
-		');
-		$reduce = new MongoCode('
-
-		');
-
-		$db = static::connection()->connection;
-		$result = $db->command(array(
-			'mapreduce' => 'events',
-		) + compact('map', 'reduce'));
-
-		return $result;
-		*/
-
-		$data = static::all(array(
-			'conditions' => array(
-				'$or' => array(
-					array('pending' => false),
-					array('pending' => array('$exists' => false)) /* BC */
-				)
-			)
-		));
-		$results = array();
-
-		foreach ($data as $item) {
-			if (!static::used($item->_id)) {
-				$results[] = $item;
-			}
-		}
-		return $results;
+		return static::all(array('conditions' => array('orphaned' => true)));
 	}
 
 	public function mimeType($entity) {
