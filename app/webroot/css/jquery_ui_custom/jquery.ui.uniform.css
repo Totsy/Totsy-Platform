@@ -64,6 +64,7 @@ div.selector {
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
 	border: 1px solid #c1c1c1;
+	line-height: 14px !important;
 	position: relative;
 	overflow: hidden;
 	color:#333!important;
@@ -79,6 +80,7 @@ div.selector span {
 	-moz-border-radius-bottomleft: 4px; -webkit-border-bottom-left-radius: 4px; border-bottom-left-radius: 4px;
 	border-right: 1px solid #c1c1c1;
 	display: block;
+	line-height: 14px !important;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -89,9 +91,9 @@ div.selector span {
 
 div.selector select{
 	top: 0px;
-	line-height:10px !important;
 	left: 0px;
 	position: absolute;
+	line-height: 14px !important;
 	height: 100%;
 	border: 1px solid;
 	background: none;

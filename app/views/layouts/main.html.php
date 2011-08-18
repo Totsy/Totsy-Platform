@@ -110,7 +110,7 @@
 
 	$("input:file, select").uniform();
 	// end uniform inputs
-		$(document).ready(function() {
+	$(document).ready(function() {
 		$("#tabs").tabs();
 	});
 	
