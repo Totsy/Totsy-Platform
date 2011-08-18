@@ -38,4 +38,5 @@ Media::type('png', 'image/png', compact('decode'));
 Media::type('jpg', 'image/jpeg', compact('decode'));
 Media::type('gif', 'image/gif', compact('decode'));
 Media::type('tiff', 'image/tiff', compact('decode'));
+Media::type('txt', 'text/plain', compact('decode'));
 ?>
