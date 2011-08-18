@@ -24,7 +24,7 @@ class Affiliate extends Base {
 		$userCollection = User::collection();
 		$user = $userCollection->findOne(array('email' => $userInfo['email']));
         $orderid = NULL;
-		
+
         if(preg_match('(orders/view/)',$url)) {
             $orderid = substr($url,12);
             $url = '/orders/view';
@@ -34,7 +34,7 @@ class Affiliate extends Base {
         }
 		/**
 		* This detaches the invited by from the unique identifier
-		* for affiliate invited by retrieved from 
+		* for affiliate invited by retrieved from
 		* the user's record.  e.g. linkshare_1x3uebdu395769
 		**/
         if($index = strpos($invited_by, '_')) {
@@ -55,13 +55,13 @@ class Affiliate extends Base {
 		$pixels = Affiliate::find('all', $options );
 		$pixels = $pixels->data();
 		$pixel = NULL;
-		
+
         if($url == '/orders/view'){
             if($user && array_key_exists('affiliate_share', $user) && $user['affiliate_share']){
      			$cookie['affiliate'] = $user['affiliate_share']['affiliate'];
                 $cookie['entryTime'] = $user['affiliate_share']['landing_time'];
                 Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
-				
+
             }
         }
 		foreach($pixels as $data) {
@@ -217,17 +217,17 @@ class Affiliate extends Base {
                 $order = Order::find('first', array('conditions' => array(
                         'order_id' => $orderid
                     )));
-				
+
 				/**
-				* This line prevents the linkshare rev pixel from firing if the 
+				* This line prevents the linkshare rev pixel from firing if the
 				* user goes to the /order/view page just to see an old order
 				**/
 				$order_age = ($order->date_created->sec > (time() - 30)) ? true : false;
 				//reset the pixel if the order is 30 secs or more old
 				if (!$order_age) {
 					$pixel = "";
-				} 
-				
+				}
+
                 $user = User::find('first', array(
                     'conditions' => array('_id' => $order->user_id),
                     'fields' => array('affiliate_share' => true)
@@ -293,8 +293,10 @@ class Affiliate extends Base {
         $raw .= 'ord=' . $order->order_id . '&';
         if(($trans_type)){
             $raw .= 'tr=' . substr($tr, strlen('linkshare')+1) . '&';
-            $raw .= 'land=' . date('Ymd_Hi', $entryTime) . '&';
+            $raw .= 'land=' . date('Ymd_Hi', (int) $entryTime) . '&';
             $raw .= 'date=' . date('Ymd_Hi', $order->date_created->sec) . '&';
+        } else {
+            $raw .= 'mid=' . substr($tr, strlen('linkshare')+1) . '&';
         }
         $skulist = array();
         $namelist = array();

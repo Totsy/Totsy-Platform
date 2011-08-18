@@ -41,8 +41,12 @@ class AffiliatesController extends \admin\controllers\BaseController {
             }
 
             if(!empty( $obj_data['created_by'] )) {
-               $user = $userCollection->findOne( array('_id' => new MongoId($obj_data['created_by'])) );
-                
+                if (strlen($obj_data['created_by']) > 10) {
+                     $user = $userCollection->findOne( array('_id' => new MongoId($obj_data['created_by'])) );
+                } else {
+                    $user = $userCollection->findOne( array('_id' => $obj_data['created_by']) );
+               }
+
                 if (array_key_exists('firstname', $user)) {
                     $obj_data['created_by'] = $user['firstname'] . ' ' . $user['lastname'];
                 } else {
