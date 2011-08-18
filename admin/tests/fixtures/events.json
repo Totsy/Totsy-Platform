@@ -7,7 +7,7 @@
 	  "url": "test1",
 	  "modifications": [
 		{
-		  "author": null,
+		  "author": "4e4ced78267a9eba09000017",
 		  "type": "modification",
 		  "changed": "<strong>Created test1 Event<\/strong><br\/>"
 		}
