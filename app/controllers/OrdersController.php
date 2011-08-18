@@ -379,7 +379,7 @@ class OrdersController extends BaseController {
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'cartCredit', 'cartPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
 		);
 		#TEST CASE - TO UNCOMMENT
-		//if ( ($cart->data()) && (count($this->request->data) > 1)) {
+		//if ( ($cart->data()) && (count($this->request->data) > 1) && ($total > 0)) {
 			Order::process($order, $total, $subTotal, $this->request->data, $cart, $vars, $avatax, $shippingCost, $overShippingCost);
 		//}
 		$cartEmpty = ($cart->data()) ? false : true;

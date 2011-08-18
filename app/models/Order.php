@@ -53,14 +53,14 @@ class Order extends Base {
 		#Create Payment
 		$card = Payments::create('default', 'creditCard', $card + array(
 			'billing' => Payments::create('default', 'address', array(
-				'firstName' => $billingAddr->firstname,
-				'lastName'  => $billingAddr->lastname,
-				'company'   => $billingAddr->company,
-				'address'   => trim($billingAddr->address . ' ' . $billingAddr->address_2),
-				'city'      => $billingAddr->city,
-				'state'     => $billingAddr->state,
-				'zip'       => $billingAddr->zip,
-				'country'   => $billingAddr->country
+				'firstName' => $vars['billingAddr']->firstname,
+				'lastName'  => $vars['billingAddr']->lastname,
+				'company'   => $vars['billingAddr']->company,
+				'address'   => trim($vars['billingAddr']->address . ' ' . $vars['billingAddr']->address_2),
+				'city'      => $vars['billingAddr']->city,
+				'state'     => $vars['billingAddr']->state,
+				'zip'       => $vars['billingAddr']->zip,
+				'country'   => $vars['billingAddr']->country
 			))
 		));
 		if ($cart) {
@@ -72,14 +72,11 @@ class Order extends Base {
 				++$inc;
 			}
 			try {
-				if ($total > 0) {
-					#Process Payment
-					$authKey = Payments::authorize('default', $total, $card);
-				} else {
-					$authKey = $this->randomString(8,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz');
-				}
+				#Process Payment
+				$authKey = Payments::authorize('default', $total, $card);
 				Order::recordOrder($vars, $order,$avatax);
 			} catch (TransactionException $e) {
+				
 				$order->set($data);
 				$order->errors($order->errors() + array($e->getMessage()));
 			}
@@ -105,8 +102,8 @@ class Order extends Base {
 					'card_number' => substr($card->number, -4),
 					'date_created' => static::dates('now'),
 					'authKey' => $authKey,
-					'billing' => $billingAddr->data(),
-					'shipping' => $shippingAddr->data(),
+					'billing' => $vars['billingAddr']->data(),
+					'shipping' => $vars['shippingAddr']->data(),
 					'shippingMethod' => $data['shipping_method'],
 					'items' => $items
 			));
