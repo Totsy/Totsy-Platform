@@ -7,7 +7,6 @@
 <?=$this->html->style('agile_uploader.css');?>
 <?=$this->html->style('admin_common.css');?>
 
-
 <?php
 
 $url = null;
@@ -25,7 +24,6 @@ if (!empty($user['token'])) {
 }
 
 ?>
-
 <h1>File Management</h1>
 <div class="tab_region_left_col">
 
