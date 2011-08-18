@@ -43,7 +43,8 @@ $(document).ready(function(){
 
 tinyMCE.init({
 	// General options
-	mode : "textareas",
+	mode : "exact",
+	elements: allitemids, 
 	theme : "advanced",
 	plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,preview,searchreplace,print,contextmenu,paste,directionality,noneditable,visualchars,nonbreaking,xhtmlxtras",
 
@@ -63,6 +64,7 @@ tinyMCE.init({
 
 });
 
+
 $('.table_link').click(function() {  
         $('tr').hide();
       $('tr .').toggle('slow');
@@ -76,7 +78,7 @@ $('.related_items').selectList({
 	$(item).slideUp(500, callback); 
 	} 
 }); 
-    
+
 $('.related_items').change(function() {
 
 //parse out the current item's id
@@ -164,11 +166,79 @@ for ( i=1; i<6; i++ ) {
 		eventItems.innerHTML = eventItems.innerHTML + aReturn;
 		return aReturn;
 	}
+	
+	function submitForm(){
+	
+		//alert('submit it via js baby');
+		var handler = "/events/uploadcheck";
+		var items_submit = document.getElementById("items_submit").value;
+			console.log(items_submit);
+		
+		//alert(items_raw);
+		$.post(handler, {"items_submit" : items_submit}, function(result) {
+			console.log(result);
 
+			if(result=="success"){
+				$("#events_edit").submit();
+			}
+			else{
+				console.log("dinkers");
+				$("#items_errors").html(result);
+			}
+		});
+
+	
+	}
 
 </script>
 
-<?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
+<style>
+
+
+div.xls_cell{
+	width:100px; 
+	height: 20px; 
+	display:block; 
+	float:left;
+	overflow:hidden;
+	border:1px solid #000000;
+}
+
+
+div.xls_cell_error{
+	width:100px; 
+	height: 20px; 
+	display:block; 
+	float:left;
+	overflow:hidden;
+	border:1px solid #000000;
+	background:#ff0000;
+	color:#ffffff;
+}
+
+div.xls_cell:hover{
+	background:#eeeeee;
+	width:100px; 
+	height: 20px; 
+	display:block; 
+	float:left;
+}
+
+.xls_holder{
+	width:800px;
+	height:400px;
+	overflow:scroll;
+}
+
+.xls_holder_inner{
+	width:4200px;
+}
+
+</style>
+
+
+
+<?=$this->form->create(null, array('id' => "events_edit", 'enctype' => "multipart/form-data")); ?>
 <div class="grid_16">
 	<h2>Editing Event - <?=$event->name?></h2>
 </div>
@@ -255,7 +325,12 @@ for ( i=1; i<6; i++ ) {
 					<?=$this->form->text('ship_date', array('id' => 'ship_date', 'value' => $event->ship_date)); ?>
 				</div>
 				<br>
-			<?=$this->form->submit('Update Event')?>
+			<!--<?=$this->form->submit('Update Event')?>-->
+
+
+			<input type="button" onclick="submitForm(); return false;" value="Update Event New">
+
+
 		</div>
 		<div id="event_images">
 			<h3 id="current_images">Current Images</h3>
@@ -347,29 +422,47 @@ for ( i=1; i<6; i++ ) {
 			</table>
 
 			<br>
-			<?=$this->form->submit('Update Event')?>
+			<!--<?=$this->form->submit('Update Event')?>-->
+			<input type="button" onclick="submitForm(); return false;" value="Update Event New">
 		</div>
 		<div id="event_items">
+
+
 			<h3 id="">Item Management</h3>
 			<hr />
-			<h3 id="">Upload Items</h3>
-            <hr />
-			<p>Please select the default option for all items being uploaded:</p>
-				<input type="radio" name="enable_items" value="1" id="enable_items"> Enable All <br>
-				<input type="radio" name="enable_items" value="0" id="enable_items" checked> Disable All <br><br>
-			<p>Add "Final Sale" to the item description?:</p>
-				<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
-				<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
-				<?=$this->form->file('upload_file'); ?>
-				<?=$this->form->submit('Update Event')?>
-				<?=$this->form->label('Upload Event (Excel Files): '); ?>
-<!--
-		<iframe id="upload_frame" name="upload_frame" src="/events/upload/<?=$event->_id?>" frameborder=0 scrolling=no width=400 height=250></iframe>		
-		<div id="upload_error" name="upload_error" style="color:#ff0000; width:400px; float:right; height:250px; overflow:scroll;">(spreadsheet upload errors will appear here)</div>
 
--->				
-			<br><br>
-			<?=$this->form->end(); ?>
+			<div style="width:300px; height:300px; float:left">
+				<h3 id="">Upload Items</h3>
+	            <hr />
+				<p>Please select the default option for all items being uploaded:</p>
+					<input type="radio" name="enable_items" value="1" id="enable_items"> Enable All <br>
+					<input type="radio" name="enable_items" value="0" id="enable_items" checked> Disable All <br><br>
+				<p>Add "Final Sale" to the item description?:</p>
+					<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
+					<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
+	
+					<!--
+					<?=$this->form->label('Upload Event (Excel Files): '); ?>
+					<?=$this->form->file('upload_file'); ?>
+					-->
+					
+				<textarea id="items_submit" name="items_submit" rows="4" cols="10"></textarea>
+				<br><br>
+				<!--<?=$this->form->submit('Update Event')?>-->
+				<input type="button" onclick="submitForm(); return false;" value="Update Event New">
+				<br><br>
+				<?=$this->form->end(); ?>
+			</div>
+
+			<div id="items_errors" name="items_errors" style="float:right; width:500px; height:150px;overflow:scroll;">
+			</div>
+
+			<div style="clear:both"></div>
+
+
+
+
+
 			<h3 id="current_items">Current Items</h3>
 
             <hr />
@@ -444,10 +537,6 @@ for ( i=1; i<6; i++ ) {
 				?>
 		</div>
 	</div>
-
-
-
-
 </div>
 <script type="text/javascript">
 $(document).ready(function() {
