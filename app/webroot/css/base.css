@@ -1952,6 +1952,15 @@ span.citem.active-th {
 	border-bottom:1px solid #D7D7D7;
 }
 
+/*
+.cart-form input[type='text'] {
+margin-top: 15px;
+}
+
+.cart-form select {
+margin-top: 15px;
+} */
+
 tr.alt0 td {
 	background:#f7f7f7;
 	height:50px;
