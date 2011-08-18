@@ -37,14 +37,12 @@ class EventTest extends \lithium\test\Integration {
 		$event = Event::first(array('conditions' => array('_id' => $id)));
 		$event->save();
 
-		$result = Event::first(array('conditions' => array('_id' => $id)))->data();
-		$this->assertTrue(isset($result['modifications']));
-		$this->assertFalse(isset($result['']['modifications']));
-
 		$event = Event::first(array('conditions' => array('_id' => $id)));
 		$event->save();
 
-		$result = Event::first(array('conditions' => array('_id' => $id)))->data();
+		$event = Event::first(array('conditions' => array('_id' => $id)));
+
+		$result = $event->data();
 		$this->assertTrue(isset($result['modifications']));
 		$this->assertFalse(isset($result['']['modifications']));
 
@@ -66,14 +64,14 @@ class EventTest extends \lithium\test\Integration {
 		$event->save();
 
 		$result = Event::first(array('conditions' => array('_id' => $id)))->data();
-		$this->assertTrue(isset($result['modifications']));
-		$this->assertFalse(isset($result['']['modifications']));
 
 		$event = Event::first(array('conditions' => array('_id' => $id)));
 		$event->attachImage('event', $fileB->_id);
 		$event->save();
 
-		$result = Event::first(array('conditions' => array('_id' => $id)))->data();
+		$event = Event::first(array('conditions' => array('_id' => $id)));
+
+		$result = $event->data();
 		$this->assertTrue(isset($result['modifications']));
 		$this->assertFalse(isset($result['']['modifications']));
 
