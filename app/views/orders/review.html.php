@@ -48,69 +48,19 @@
 	</div>
 	<div class="grid_4 roundy gray" style="text-align:center;">
 		Order Total $98.95<br/>
+		<?=$this->form->create($order); ?>
 		<?=$this->form->submit('Place Your Order', array('class' => 'button submit')); ?><br/>
 		Your payment method will be changed
+		<?=$this->form->end(); ?>
 	</div>
 </div>
 
 
-<div class="grid_10 roundy grey_inside" style="width:562px!important; display:none;" >
+<div class="grid_10 roundy grey_inside" style="width:562px!important;" >
 
 <table style="width:100%;">
 	<tr>
 		<td valign="top">
-			<table>
-				<tr>
-					<td>
-						<?=$this->form->create($order); ?>
-							<h1 style="color:#707070; font-size:14px;">Payment Information <span class="fr" style="font-size:12px; font-weight:normal;"><span class="red">*</span> Required</span></h1>
-							<hr />
-
-								<p>
-									<label for="cc-type" class="required">Credit Card Type<span>*</span></label>
-									<?=$this->form->select('card[type]', array(
-										'visa' => 'Visa',
-										'mc' => 'MasterCard',
-										'amex' => 'American Express'
-									), array('id' => 'card_type')); ?>
-								</p>
-								<p>
-									<label for="cc" class="required">Card Number<span>*</span></label>
-									<?=$this->form->text('card[number]', array('id' => 'cc', 'class' => 'inputbox', 'size' => '16', 'maxlength' => '16')); ?>
-								</p>
-								<p>
-									<label for="cc-exp" class="required">Expiration Date<span>*</span></label>
-									<?=$this->form->select('card[month]', array(
-										'' => 'Month',
-										1 => 'January',
-										2 => 'February',
-										3 => 'March',
-										4 => 'April',
-										5 => 'May',
-										6 => 'June',
-										7 => 'July',
-										8 => 'August',
-										9 => 'September',
-										10 => 'October',
-										11 => 'November',
-										12 => 'December'
-									), array('id'=>"card_month")); ?>
-									<?php
-										$now = intval(date('Y'));
-										$years = array_combine(range($now, $now + 15), range($now, $now + 15));
-									?>
-									<?=$this->form->select('card[year]', array('' => 'Year') + $years, array('id' => "card_year")); ?>
-								</p>
-								<p>
-									<label for="cc-ccv" class="required">CVV2 Code<span>*</span></label>
-									<?=$this->form->text('card[code]', array('id' => 'CVV2','class' => 'inputbox', 'maxlength' => '4', 'size' => '4')); ?>
-								</p>
-							<?=$this->form->submit('Place Your Order', array('class' => 'button submit')); ?>
-							<?=$this->form->hidden('credit_amount', array('value' => $cartCredit->credit_amount)); ?>
-						<?=$this->form->end(); ?>
-											</td>
-				</tr>
-			</table>
 		</td>
     	<td valign="top">
 			<table style=" margin:0 10px;">
@@ -375,32 +325,3 @@ $(".add-address").click(function() {
 document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s://www':'://www')+ '.upsellit.com/upsellitJS4.jsp?qs=263250249222297345328277324311272279294304313337314308344289&siteID=6525"><\/sc'+'ript>')
 </script>
 
-
-<!-- PROMOCODES FORM AJAX SCRIPT -->
-<script type="text/javascript">
-	$(document).ready(function(){
-	    $('#promo-form').submit(function(){
-	        var data_test = {
-	        	code : $('input[name="code"]').val(),
-	        	'card[type]' : $('#card_type option:selected').text(),
-	        	'card[number]' : $('card[number]').val(),
-	        	'card[code]' : $('input[name="card[code]"]').val(),
-	        	'card[month]' : $('#card_month option:selected').text(),
-	        	'card[year]' : $('#card_year option:selected').text()
-	        };
-	   	$.ajax({
-	            url: "/orders/process",
-	            data: data_test,
-	            context: document.body,
-	            
-	            type: "POST",
-	            success: function(data){
-	            	var cc_obj = data;
-	            	console.log(cc_obj);
-	            }
-	        });    
-	    });
-		return false;
-	});
-</script>
-<!-- END OF AJAX SCRIPT -->
