@@ -3,6 +3,7 @@
 namespace admin\tests\integration\models;
 
 use admin\models\Event;
+use admin\models\File;
 use li3_fixtures\test\Fixture;
 
 class EventTest extends \lithium\test\Integration {
@@ -22,6 +23,62 @@ class EventTest extends \lithium\test\Integration {
 		$this->assertTrue(isset($result['modifications']));
 		$this->assertFalse(isset($result['']['modifications']));
 
+		$event->delete();
+	}
+
+	public function testMultipleUpdatesDoNotCorruptDocument() {
+		$fixtures = Fixture::load('Event');
+
+		$event = Event::create();
+		$event->save($fixtures->first());
+
+		$id = $event->_id;
+
+		$event = Event::first(array('conditions' => array('_id' => $id)));
+		$event->save();
+
+		$result = Event::first(array('conditions' => array('_id' => $id)))->data();
+		$this->assertTrue(isset($result['modifications']));
+		$this->assertFalse(isset($result['']['modifications']));
+
+		$event = Event::first(array('conditions' => array('_id' => $id)));
+		$event->save();
+
+		$result = Event::first(array('conditions' => array('_id' => $id)))->data();
+		$this->assertTrue(isset($result['modifications']));
+		$this->assertFalse(isset($result['']['modifications']));
+
+		$event->delete();
+	}
+
+	public function testAttachingFilesDoesNotCorruptDocument() {
+		$fixtures = Fixture::load('Event');
+		$fileA = File::write(uniqid());
+		$fileB = File::write(uniqid());
+
+		$event = Event::create();
+		$event->save($fixtures->first());
+
+		$id = $event->_id;
+
+		$event = Event::first(array('conditions' => array('_id' => $id)));
+		$event->attachImage('splash_big', $fileA->_id);
+		$event->save();
+
+		$result = Event::first(array('conditions' => array('_id' => $id)))->data();
+		$this->assertTrue(isset($result['modifications']));
+		$this->assertFalse(isset($result['']['modifications']));
+
+		$event = Event::first(array('conditions' => array('_id' => $id)));
+		$event->attachImage('event', $fileB->_id);
+		$event->save();
+
+		$result = Event::first(array('conditions' => array('_id' => $id)))->data();
+		$this->assertTrue(isset($result['modifications']));
+		$this->assertFalse(isset($result['']['modifications']));
+
+		$fileA->delete();
+		$fileB->delete();
 		$event->delete();
 	}
 }
