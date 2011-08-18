@@ -49,7 +49,7 @@ class BaseController extends \lithium\action\Controller {
 			    * If the users account has been deactivated during login,
 			    * destroy the users session.
 			    **/
-			    if ($user->deactivated) {
+			    if ($user->deactivated == true) {
 			        Session::clear(array('name' => 'default'));
 			        Session::delete('appcookie', array('name' => 'cookie'));
 		            FacebookProxy::setSession(null);

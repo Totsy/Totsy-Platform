@@ -75,7 +75,7 @@ class BaseController extends \lithium\action\Controller {
 
 	public function currentBranch() {
         $out = shell_exec("git branch --no-color");
-        preg_match('#(\*)\s(\w+)-(\w+)#', $out, $parse);
+        preg_match('#(\*)\s[a-zA-Z0-9_-]*(.)*#', $out, $parse);
         $pos = stripos($parse[0], " ");
         return trim(substr($parse[0], $pos));
 	}
