@@ -169,6 +169,87 @@ class FileTest extends \lithium\test\Integration {
 		$this->assertFalse($result);
 	}
 
+	public function testExtension() {
+		$this->_backup['dedupe'] = File::$dedupe;
+		File::$dedupe = false;
+
+		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
+		$bytes = file_get_contents($file);
+		$file = File::write($bytes);
+
+		$expected = 'jpg';
+		$result = $file->extension();
+		$this->assertEqual($expected, $result);
+
+		$file->delete();
+
+		$file = LITHIUM_APP_PATH . '/tests/data/image_png.png';
+		$bytes = file_get_contents($file);
+		$file = File::write($bytes);
+
+		$expected = 'png';
+		$result = $file->extension();
+		$this->assertEqual($expected, $result);
+
+		$file->delete();
+
+		$bytes = 'This is some text.';
+		$file = File::write($bytes);
+
+		$expected = 'txt';
+		$result = $file->extension();
+		$this->assertEqual($expected, $result);
+
+		$file->delete();
+
+		File::$dedupe = $this->_backup['dedupe'];
+	}
+
+	public function testExtensionWithNameHinting() {
+		$this->_backup['dedupe'] = File::$dedupe;
+		File::$dedupe = false;
+
+		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
+		$bytes = file_get_contents($file);
+		$file = File::write($bytes, array('name' => 'image.jpg'));
+
+		$expected = 'jpg';
+		$result = $file->extension();
+		$this->assertEqual($expected, $result);
+
+		$file->delete();
+
+		$file = LITHIUM_APP_PATH . '/tests/data/image_png.png';
+		$bytes = file_get_contents($file);
+		$file = File::write($bytes, array('name' => 'image.png'));
+
+		$expected = 'png';
+		$result = $file->extension();
+		$this->assertEqual($expected, $result);
+
+		$file->delete();
+
+		$bytes = 'This is some text.';
+		$file = File::write($bytes, array('name' => 'image.txt'));
+
+		$expected = 'txt';
+		$result = $file->extension();
+		$this->assertEqual($expected, $result);
+
+		$file->delete();
+
+		$bytes = 'This is some text.';
+		$file = File::write($bytes, array('name' => 'image.TXT'));
+
+		$expected = 'txt';
+		$result = $file->extension();
+		$this->assertEqual($expected, $result);
+
+		$file->delete();
+
+		File::$dedupe = $this->_backup['dedupe'];
+	}
+
 	public function testDimensionsBc() {
 		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
 		$bytes = file_get_contents($file);

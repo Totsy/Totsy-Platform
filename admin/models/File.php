@@ -164,7 +164,15 @@ class File extends \lithium\data\Model {
 	}
 
 	public function extension($entity) {
-		return Media::type($entity->mimeType());
+		if ($result = strtolower(pathinfo($entity->name, PATHINFO_EXTENSION))) {
+			return $result;
+		}
+		$result = Media::type($entity->mimeType());
+
+		if (is_array($result)) {
+			return current($result);
+		}
+		return $result;
 	}
 
 	public function url($entity) {
