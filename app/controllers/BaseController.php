@@ -49,7 +49,7 @@ class BaseController extends \lithium\action\Controller {
 			    * If the users account has been deactivated during login,
 			    * destroy the users session.
 			    **/
-			    if ($user->deactivated) {
+			    if ($user->deactivated == true) {
 			        Session::clear(array('name' => 'default'));
 			        Session::delete('appcookie', array('name' => 'cookie'));
 		            FacebookProxy::setSession(null);
@@ -200,7 +200,7 @@ class BaseController extends \lithium\action\Controller {
 	**/
 	public function currentBranch() {
         $out = shell_exec("git branch --no-color");
-        preg_match('#(\*)\s(\w+)-(\w+)#', $out, $parse);
+        preg_match('#(\*)\s[a-zA-Z0-9_-]*(.)*#', $out, $parse);
         $pos = stripos($parse[0], " ");
         return trim(substr($parse[0], $pos));
 	}
