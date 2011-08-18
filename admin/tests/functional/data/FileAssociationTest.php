@@ -77,6 +77,9 @@ class FileAssociationTest extends \lithium\test\Integration {
 	}
 
 	public function testOrphaned() {
+		$command = new FileOrphaned();
+		$command->run();
+
 		$before = count(File::orphaned());
 
 		$file = File::write(uniqid());
