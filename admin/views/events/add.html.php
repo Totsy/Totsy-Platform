@@ -145,28 +145,6 @@ tinyMCE.init({
 		<?=$this->form->field('start_date', array('class' => 'general', 'id' => 'start_date'));?>
 		<?=$this->form->field('end_date', array('class' => 'general', 'id' => 'end_date'));?>
 	</div>
-	<br>
-	<h1 id="uploaded_media">Uploaded Media</h1>
-	<div id="fileInfo"></div>
-	<br>
-
-	<br>
-	<table>
-		<tr valign="top">
-			<td>
-				<div>
-					<div class="fieldset flash" id="fsUploadProgress1">
-						<span class="legend">Upload Status</span>
-					</div>
-					<div style="padding-left: 5px;">
-						<span id="spanButtonPlaceholder1"></span>
-						<input id="btnCancel1" type="button" value="Cancel Uploads" onclick="cancelQueue(upload1);" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />
-						<br />
-					</div>
-				</div>
-			</td>
-		</tr>
-	</table>
-	<br>
+	<br />
 	<?=$this->form->submit('Add Event')?>
 <?=$this->form->end(); ?>

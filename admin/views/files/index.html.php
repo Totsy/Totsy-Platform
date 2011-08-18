@@ -97,7 +97,8 @@
 					});
 				</script>
 
-				<a href="#" onClick="document.getElementById('agileUploaderSWF').submit();">Upload</a>
+				<a href="#" class="upload_files_link" onClick="document.getElementById('agileUploaderSWF').submit();">Upload <?=$this->html->image('agile_uploader/upload-icon.png', array('height' => '24')); ?></a>
+				<br style="clear: left;" />
 			</p>
 		</div>
 	</div>
