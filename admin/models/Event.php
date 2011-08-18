@@ -262,7 +262,7 @@ class Event extends \lithium\data\Model {
 		$id = (string) $id;
 		$type = EventImage::$types[$name];
 
-		$images = $event->images->data();
+		$images = $entity->images->data();
 		$images[$type['field']] = null;
 
 		$entity->images = $images;
