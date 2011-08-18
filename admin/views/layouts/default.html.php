@@ -1,6 +1,6 @@
 <?php
 
-ini_set('display_errors', 0); 
+ini_set('display_errors', 0);
 
 /**
  * Lithium: the most rad php framework
@@ -74,7 +74,11 @@ ini_set('display_errors', 0);
 		<div class="clearfix"></div>
 
 		<div id="navigation">
-			<?php echo $this->view()->render(array('element' => 'navigation')); ?>
+			<?php
+			if (Auth::check('userLogin')) {
+				echo $this->view()->render(array('element' => 'navigation'));
+			}
+			?>
 		</div>
 
 		<div class="clearfix"></div>
