@@ -16,20 +16,21 @@ class ItemImageDirectory extends \admin\extensions\dav\GenericDirectory {
 
 	public function getChildren() {
 		$item = $this->_item();
+		$position = $this->getValue();
+		$type = ItemImage::$types[$position];
+
 		$children = array();
 
-		if (ItemImage::$types[$value = $this->getValue()]['multiple']) {
-			if (!$item->{"{$value}_images"}) {
-				return $children;
-			}
-			foreach ($item->{"{$value}_images"} as $id) {
-				$children[] = new ItemFile(array('value' => $id, 'parent' => $this));
-			}
+		if (!$item->{$type['field']}) {
 			return $children;
 		}
-
-		if ($id = $item->{"{$value}_image"}) {
-			$children[] = new EventFile(array('value' => $id, 'parent' => $this));
+		if ($type['multiple']) {
+			foreach ($item->{$type['field']} as $id) {
+				$children[] = new ItemFile(array('value' => $id, 'parent' => $this));
+			}
+		} else {
+			$id = $item->{$type['field']};
+			$children[] = new ItemFile(array('value' => $id, 'parent' => $this));
 		}
 		return $children;
 	}
@@ -37,14 +38,16 @@ class ItemImageDirectory extends \admin\extensions\dav\GenericDirectory {
 	public function childExists($name) {
 		$name = pathinfo($name, PATHINFO_FILENAME);
 		$item = $this->_item();
+		$position = $this->getValue();
+		$type = ItemImage::$types[$position];
 
-		if (ItemImage::$types[$value = $this->getValue()]['multiple']) {
-			if (!$item->{"{$value}_images"}) {
-				return false;
-			}
-			return in_array($name, $item->{"{$value}_images"}->data());
+		if (!$item->{$type['field']}) {
+			return $children;
 		}
-		return isset($item->{"{$value}_image"});
+		if ($type['multiple']) {
+			return in_array($name, $item->{$type['field']}->data());
+		}
+		return isset($item->{$type['field']});
 	}
 
 	public function createFile($name, $data = null) {
