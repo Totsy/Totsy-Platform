@@ -65,4 +65,20 @@ label {
 	background-color: #ED1C25;
 	opacity: .7;
 }
-
+.upload_files_link {
+	float: left;
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+.upload_files_link img {
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+#agileUploaderAttachArea {
+	width: 340px;
+	margin: 0;
+	padding: 0;
+	float: left;
+}

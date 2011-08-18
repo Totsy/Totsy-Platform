@@ -1,5 +1,5 @@
-<?php echo $this->html->script(array('tiny_mce/tiny_mce.js', 'swfupload.js', 'swfupload.queue.js', 'fileprogress.js', 'handlers.js', 'event_upload.js', 'jquery.dataTables.js', 'jquery-ui-timepicker.min.js'));?>
-<?php echo $this->html->style(array('swfupload', 'jquery_ui_blitzer', 'table', 'timepicker'));?>
+<?=$this->html->script(array('tiny_mce/tiny_mce.js', 'swfupload.js', 'swfupload.queue.js', 'fileprogress.js', 'handlers.js', 'event_upload.js', 'jquery.dataTables.js', 'jquery-ui-timepicker.min.js'));?>
+<?=$this->html->style(array('swfupload', 'jquery_ui_blitzer', 'table', 'timepicker'));?>
 <script type="text/javascript">
 tinyMCE.init({
 	// General options
@@ -80,7 +80,7 @@ tinyMCE.init({
 <script type="text/javascript" charset="utf-8">
 	var limit = <?php echo $shortDescLimit;?>;
 	$(document).ready(function() {
-		
+
 		$('#Short').keyup(function(){
 			return limitTextArea($(this),$('#short_description_characters_counter'),limit);
 		});
@@ -145,28 +145,6 @@ tinyMCE.init({
 		<?php echo $this->form->field('start_date', array('class' => 'general', 'id' => 'start_date'));?>
 		<?php echo $this->form->field('end_date', array('class' => 'general', 'id' => 'end_date'));?>
 	</div>
-	<br>
-	<h1 id="uploaded_media">Uploaded Media</h1>
-	<div id="fileInfo"></div>
-	<br>
-
-	<br>
-	<table>
-		<tr valign="top">
-			<td>
-				<div>
-					<div class="fieldset flash" id="fsUploadProgress1">
-						<span class="legend">Upload Status</span>
-					</div>
-					<div style="padding-left: 5px;">
-						<span id="spanButtonPlaceholder1"></span>
-						<input id="btnCancel1" type="button" value="Cancel Uploads" onclick="cancelQueue(upload1);" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />
-						<br />
-					</div>
-				</div>
-			</td>
-		</tr>
-	</table>
-	<br>
-	<?php echo $this->form->submit('Add Event')?>
-<?php echo $this->form->end(); ?>
+	<br />
+	<?=$this->form->submit('Add Event')?>
+<?=$this->form->end(); ?>
