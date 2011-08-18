@@ -174,9 +174,8 @@ class Image extends \admin\models\File {
 				if (!$item) {
 					return false;
 				}
-
 				$item->attachImage($name, $file->_id);
-				return $item->save(null, $model::imagesWhiteslist());
+				return $item->save();
 			}
 		}
 		Logger::debug("Failed processing.");
