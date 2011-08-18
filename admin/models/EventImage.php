@@ -15,6 +15,10 @@ class EventImage extends \admin\models\Image {
 				/* Matches: events_pretty-url.jpg */
 				/* ...but events_pretty-url_anything... won't be matched. */
 				'/^events\_.+(?<!\_|\_logo|\_big\_splash|\_small\_splash|\_splash\_small|\_splash\_big)\..*/i'
+			),
+			'uploadName' => array(
+				'form' => 'events_{:url}_image.jpg',
+				'dav' => '/events/{:year}/{:month}/{:event}/event/{:file}.jpg'
 			)
 		),
 		'logo' => array(
@@ -23,6 +27,10 @@ class EventImage extends \admin\models\Image {
 			'multiple' => false,
 			'regex' => array(
 				'/^events\_.+\_logo\..*/i'
+			),
+			'uploadName' => array(
+				'form' => 'events_{:url}_{:name}.jpg',
+				'dav' => '/events/{:year}/{:month}/{:event}/{:name}/{:file}.jpg'
 			)
 		),
 		'splash_big' => array(
@@ -33,6 +41,10 @@ class EventImage extends \admin\models\Image {
 				/* Event Big Splash Image (2 ways to name) */
 				'/^events\_.+\_big\_splash\..*/i',
 				'/^events\_.+\_splash\_big\..*/i'
+			),
+			'uploadName' => array(
+				'form' => 'events_{:url}_{:name}.jpg',
+				'dav' => '/events/{:year}/{:month}/{:event}/{:name}/{:file}.jpg'
 			)
 		),
 		'splash_small' => array(
@@ -43,6 +55,10 @@ class EventImage extends \admin\models\Image {
 				/* Event Small Splash Image (2 ways to name) */
 				'/^events\_.+\_small\_splash\..*/i',
 				'/^events\_.+\_splash\_small\..*/i'
+			),
+			'uploadName' => array(
+				'form' => 'events_{:url}_{:name}.jpg',
+				'dav' => '/events/{:year}/{:month}/{:event}/{:name}/{:file}.jpg'
 			)
 		)
 	);

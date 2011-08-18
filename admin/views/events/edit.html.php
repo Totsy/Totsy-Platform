@@ -477,17 +477,20 @@ $(function() {
 			<h3 id="uploaded_media">Upload Media</h3>
 			<p>
 				Upload all event media here. This includes event images as well as item images. Please ensure all filenames follow proper naming convention.
+				You can also upload event item images here as well. These also follow a naming convention.
+
+				For more information and other methods to upload files please see <?=$this->html->link('File Management', 'Files::index'); ?>.
 			</p>
-			<p>
-				The event URL is: <?=$event->url; ?><br />
-				So for example, files names would be; events_<?=$event->url; ?>.jpg, events_<?=$event->url; ?>_logo.jpg, events_<?=$event->url; ?>_small_splash.jpg, events_<?=$event->url; ?>_big_splash.jpg
-			</p>
-			<p>
-				You can also upload event item images here as well. These also follow a naming convention, for example:<br />
-				items_shirt_primary.jpg, items_shirt_zoom.jpg<br />
-				...and for various colors: items_shirt-yellow_primary.jpg, items_shirt-yellow_zoom.jpg<br />
-				...and alternate images: items_shirt-blue_alternate.jpg, items_shirt-blue_alternateB.jpg, items_shirt-blue_alternate0.jpg
-			</p>
+
+			<h4>Naming files when uploading via form</h4>
+			<?php $names = $event->uploadNames(); ?>
+			<dl>
+				<?php foreach ($names['form'] as $type => $name): ?>
+					<dt><?=$type; ?></dt>
+					<dd><?=$name; ?></dd>
+				<?php endforeach; ?>
+			</dl>
+
             <hr />
 
 			<form id="EventMedia">
