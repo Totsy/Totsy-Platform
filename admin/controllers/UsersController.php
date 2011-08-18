@@ -6,6 +6,7 @@ use admin\models\User;
 use lithium\security\Auth;
 use lithium\storage\Session;
 use lithium\data\Connections;
+use lithium\util\String;
 use admin\models\Cart;
 use admin\models\Credit;
 use admin\models\Order;
@@ -265,7 +266,21 @@ class UsersController extends \admin\controllers\BaseController {
         return compact('history');
 	}
 
+	public function token() {
+		$session = Session::read('userLogin');
 
+		do { /* Ensure we don't have a dot in the token. */
+			$token = String::random(6, array('encode' => String::ENCODE_BASE_64));
+		} while (strpos($token, '.') !== false);
+
+		$user = User::first(array('conditions' => array('_id' => $session['_id'])));
+		$user->save(compact('token'));
+
+		$session['token'] = $token;
+		Session::write('userLogin', $session);
+
+		return $this->redirect($this->request->referer());
+	}
 }
 
 ?>
