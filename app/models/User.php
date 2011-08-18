@@ -184,7 +184,7 @@ class User extends Base {
 	public static function setupCookie() {
 		$cookieInfo = null;
 		$urlredirect = ((array_key_exists('redirect',$_REQUEST))) ? $_REQUEST['redirect'] : null ;
-		if ( preg_match('(/|/a/|/login|/register|/join/|/invitation/)', $_SERVER['REQUEST_URI']) ) {
+		if ( preg_match('(#|/a/|/login|/register|/join/|/invitation/#)', $_SERVER['REQUEST_URI']) ) {
 			if(!Session::check('cookieCrumb', array('name' => 'cookie')) ) {
 				$cookieInfo = array(
 						'user_id' => Session::read('_id'),
@@ -201,11 +201,11 @@ class User extends Base {
 			}
 		}
 	}
-	
+
 	/**
 	 * method to validate some contact us form fields
 	 * In case of no error return boolean true
-	 * Otherwise return errors array 
+	 * Otherwise return errors array
 	 */
 	public static function validateContactUs(array $data){
 		$rules = array(
@@ -216,10 +216,10 @@ class User extends Base {
 		);
 		$result = array();
 		$result = Validator::check($data, $rules);
-		
+
 		if (is_array($result) && count($result)==0){
 			return true;
-		} else { 
+		} else {
 			return $result;
 		}
 	}

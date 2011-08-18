@@ -234,8 +234,8 @@ class Affiliate extends Base {
                     ));
                 if($user->affiliate_share){
                     $track = $user->affiliate_share['affiliate'];
-                    $entryTime = $user->affiliate_share['entryTime'];
-                }else if(array_key_exists('affiliate', $cookie) && $cookie['affiliate']){
+                    $entryTime = $user->affiliate_share['landing_time'];
+                }else if(array_key_exists('affiliate', $cookie) && preg_match('@^(linkshare)@i', $cookie['affiliate'])){
                     $track = $cookie['affiliate'];
                     $entryTime = $cookie['entryTime'];
                 }
@@ -291,12 +291,13 @@ class Affiliate extends Base {
     public static function linkshareRaw($order, $tr, $entryTime, $trans_type){
         $raw = '';
         $raw .= 'ord=' . $order->order_id . '&';
+        var_dump($entryTime);
         if(($trans_type)){
             $raw .= 'tr=' . substr($tr, strlen('linkshare')+1) . '&';
             $raw .= 'land=' . date('Ymd_Hi', (int) $entryTime) . '&';
             $raw .= 'date=' . date('Ymd_Hi', $order->date_created->sec) . '&';
         } else {
-            $raw .= 'mid=' . substr($tr, strlen('linkshare')+1) . '&';
+            $raw .= 'mid=36138&';
         }
         $skulist = array();
         $namelist = array();
@@ -375,9 +376,12 @@ class Affiliate extends Base {
 		$success = false;
 		if (preg_match('@^(linkshare)@i', $affiliate)){
 			$user = User::collection();
-			$user->find(array( '_id' => $userId));
-			$affiliate_share = array('affiliate' => $affiliate , 'landing_time' => $cookie['entryTime']);
-			$success = ($user->update(array( '_id' => $userId), array('$set' => array('affiliate_share' => $affiliate_share)))) ? true : false;
+			$user->find(array( '_id' => $userId),
+                    'fields' => array('affiliate_share' => true));
+            if (!($user->affiliate_share) || ($user->affiliate_share['affiliate'] != $affiliate) {
+                $affiliate_share = array('affiliate' => $affiliate , 'landing_time' => $cookie['entryTime']);
+                $success = ($user->update(array( '_id' => $userId), array('$set' => array('affiliate_share' => $affiliate_share)))) ? true : false;
+			}
 		}
 		return $success;
 	}
