@@ -18,7 +18,6 @@ class ItemTest extends \lithium\test\Integration {
 	public function tearDown() {
 		File::$dedupe = $this->_backup['dedupe'];
 	}
-
 	public function testAttachDetachImage() {
 		$fixtures = Fixture::load('Item');
 
