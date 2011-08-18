@@ -53,17 +53,17 @@ class Order extends Base {
 		#Create Payment
 		$card = Payments::create('default', 'creditCard', $card + array(
 			'billing' => Payments::create('default', 'address', array(
-				'firstName' => $vars['billingAddr']->firstname,
-				'lastName'  => $vars['billingAddr']->lastname,
-				'company'   => $vars['billingAddr']->company,
-				'address'   => trim($vars['billingAddr']->address . ' ' . $vars['billingAddr']->address_2),
-				'city'      => $vars['billingAddr']->city,
-				'state'     => $vars['billingAddr']->state,
-				'zip'       => $vars['billingAddr']->zip,
-				'country'   => $vars['billingAddr']->country
-			))
-		));
-		if ($cart) {
+				'firstName' => $vars['billingAddr']['firstname'],
+				'lastName'  => $vars['billingAddr']['lastname'],
+				'company'   => $vars['billingAddr']['company'],
+				'address'   => trim($vars['billingAddr']['address'] . ' ' . $vars['billingAddr']['address_2']),
+				'city'      => $vars['billingAddr']['city'],
+				'state'     => $vars['billingAddr']['state'],
+				'zip'       => $vars['billingAddr']['zip'],
+				'country'   => $vars['billingAddr']['country']
+				))
+			));
+			if ($cart) {
 			$inc = 0;
 			foreach ($cart as $item) {
 				$item['line_number'] = $inc;
@@ -89,24 +89,11 @@ class Order extends Base {
 		}
 	}
 	
-		/**
+	/**
 	 * Record in DB all informations linked with the order
 	 * @return redirect
 	 */
 	public static function recordOrder($vars, $order, $avatax) {
-			#Save Order Infos
-			$order->save(compact('total', 'subTotal','handling','overSizeHandling') + array(
-					'user_id' => (string) $user['_id'],
-					'tax' => (float) $avatax['tax'],
-					'card_type' => $card->type,
-					'card_number' => substr($card->number, -4),
-					'date_created' => static::dates('now'),
-					'authKey' => $authKey,
-					'billing' => $vars['billingAddr']->data(),
-					'shipping' => $vars['shippingAddr']->data(),
-					'shippingMethod' => $data['shipping_method'],
-					'items' => $items
-			));
 			$service = Session::read('services', array('name' => 'default'));
 			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 			#Save Credits Used
@@ -131,23 +118,37 @@ class Order extends Base {
 				$services = array();
 				if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
 					$services = array_merge($services, array("freeshipping"));
+					#In Case Of First Order, Send an Email About 10$ Off Discount
+					Mailer::send('Welcome_10_Off', $user->email, $data);
 				}
 				if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible') {
 					$order->discount = -10.00;
 					$services = array_merge($services, array("10off50"));
 				}
-				$order->service = $services;
+				if(!empty($services)) {
+					$order->service = $services;
+				}
 			}
 			#Save Tax Infos
 			if($avatax === true){
 				AvaTax::postTax( compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
 			}
-			$order->avatax = $avatax;
-			$order->ship_date = new MongoDate(Cart::shipDate($order));
-			$order->save();
+			#Save Order Infos
+			$order->save(compact('total', 'subTotal','handling','overSizeHandling') + array(
+					'user_id' => (string) $user['_id'],
+					'tax' => (float) $avatax['tax'],
+					'card_type' => $card->type,
+					'card_number' => substr($card->number, -4),
+					'date_created' => static::dates('now'),
+					'authKey' => $authKey,
+					'billing' => $vars['billingAddr']->data(),
+					'shipping' => $vars['shippingAddr']->data(),
+					'shippingMethod' => $data['shipping_method'],
+					'items' => $items,
+					'avatax' => $avatax,
+					'ship_date' => new MongoDate(Cart::shipDate($order)),		
+			));
 			Cart::remove(array('session' => Session::key('default')));
-			#Clear Savings Information
-			Session::delete('userSavings');
 			#Update quantity of items
 			foreach ($cart as $item) {
 				Item::sold($item->item_id, $item->size, $item->quantity);
@@ -162,10 +163,9 @@ class Order extends Base {
 				'shipDate' => date('M d, Y', $shipDate)
 			);	
 			Mailer::send('Order_Confirmation', $user->email, $data);
-			#In Case Of First Order, Send an Email About 10$ Off Discount
-			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
-				Mailer::send('Welcome_10_Off', $user->email, $data);
-			}
+			#Clear Savings Information
+			Session::delete('userSavings');
+			Session::delete('cc_infos');
 			#Redirect To Confirmation Page
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 	}
