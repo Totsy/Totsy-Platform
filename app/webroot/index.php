@@ -1,5 +1,4 @@
 <?php
-/*
 ini_set('display_errors', 0);
 set_error_handler("myErrorHandler");
 register_shutdown_function('myErrorHandler');
@@ -14,6 +13,8 @@ function myErrorHandler() {
 // die();
 
 
+	$lastError = error_get_last();
+
 	if ( !is_null($lastError) ){
 		header("HTTP/1.0 500 Internal Server Error");
 		flush();
@@ -21,7 +22,6 @@ function myErrorHandler() {
 	}
 	flush();
 }
-*/
 
 /**
  * Lithium: the most rad php framework
