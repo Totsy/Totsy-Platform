@@ -325,11 +325,14 @@ class OrdersController extends BaseController {
 			'event',
 			'discount_exempt'
 		);
+		#Get Current Cart
 		$cart = $taxCart = Cart::active(array('fields' => $fields, 'time' => 'now'));
 		$shipDate = Cart::shipDate($cart);
 		$cartByEvent = $this->itemGroupByEvent($cart);
 		$orderEvents = $this->orderEvents($cart);
+		#Check If Discount could be Applied
 		$discountExempt = $this->_discountExempt($cart);
+		#Get Value Of Each and Sum It
 		$subTotal = 0;
 		foreach ($cart as $cartValue) {
 			$event = Event::find('first', array(
@@ -360,31 +363,39 @@ class OrdersController extends BaseController {
 			$credits = Session::read('credit');
 		 	$vars['postDiscountTotal'] -= $credits;
 		}
+		#Get Promocodes and eventual Shipping Discount
 		if(!empty($vars['cartPromo']['saved_amount'])) {
 		 	$promocode = Session::read('promocode');
 		 	if($promocode['type'] === 'free_shipping') {
-				$shipping_discount = $shipping;
+				$shipping_discount = $shippingCost + $overShippingCost;
 			}
 		}
+		#Check Free Shipping Services
 		if(!empty($services['freeshipping']['enable'])) {
-			$shipping_discount = $shipping;
+			$shipping_discount = $shippingCost + $overShippingCost;
 		}
+		#Getting Tax by Avatax
 		$avatax = AvaTax::getTax(compact(
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'));
-		$total = $vars['postDiscountTotal'] + $avaTax['tax'];
 		$tax = $avaTax['tax'];
+		#Calculate Order Total
+		$total = $vars['postDiscountTotal'] + $tax;
 		$vars = compact(
 			'user', 'cart', 'subTotal', 'order',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'cartCredit', 'cartPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
 		);
 		#TEST CASE - TO UNCOMMENT
 		//if ( ($cart->data()) && (count($this->request->data) > 1) && ($total > 0)) {
-			Order::process($order, $total, $subTotal, $this->request->data, $cart, $vars, $avatax, $shippingCost, $overShippingCost);
+			$success = Order::process($order, $total, $subTotal, $this->request->data, $cart, $vars, $avatax, $shippingCost, $overShippingCost);
+			if ($success) {
+				#Redirect To Confirmation Page
+				return $this->redirect(array('Orders::view', 'args' => $order->order_id));
+			}
 		//}
 		$cartEmpty = ($cart->data()) ? false : true;
 		if (Session::check('cc_error')){
-			$this->redirect(array('Orders::payment'));
+			//$this->redirect(array('Orders::payment'));
 		}
 		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings');
 	}

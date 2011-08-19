@@ -7,6 +7,7 @@ use MongoDate;
 use lithium\storage\Session;
 use li3_payments\extensions\Payments;
 use li3_payments\extensions\payments\exceptions\TransactionException;
+use app\extensions\Mailer;
 
 class Order extends Base {
 
@@ -48,7 +49,6 @@ class Order extends Base {
 			'billing' => Payments::create('default', 'address', array(
 				'firstName' => $vars['billingAddr']['firstname'],
 				'lastName'  => $vars['billingAddr']['lastname'],
-				//'company'   => $vars['billingAddr']['company'],
 				'address'   => trim($vars['billingAddr']['address'] . ' ' . $vars['billingAddr']['address2']),
 				'city'      => $vars['billingAddr']['city'],
 				'state'     => $vars['billingAddr']['state'],
@@ -68,7 +68,8 @@ class Order extends Base {
 			try {
 				#Process Payment
 				$authKey = Payments::authorize('default', $total, $card);
-				Order::recordOrder($vars, $order,$avatax);
+				Order::recordOrder($vars, $order, $avatax, $authKey);
+				return true;
 			} catch (TransactionException $e) {
 				Session::write('cc_error',$e->getMessage());
 				Session::write('cc_billingAddr',$vars['billingAddr']);
@@ -88,7 +89,7 @@ class Order extends Base {
 	 * Record in DB all informations linked with the order
 	 * @return redirect
 	 */
-	public static function recordOrder($vars, $order, $avatax) {
+	public static function recordOrder($vars, $order, $avatax, $authKey) {
 			$service = Session::read('services', array('name' => 'default'));
 			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 			#Save Credits Used
@@ -136,8 +137,8 @@ class Order extends Base {
 					'card_number' => substr($card->number, -4),
 					'date_created' => static::dates('now'),
 					'authKey' => $authKey,
-					'billing' => $vars['billingAddr']->data(),
-					'shipping' => $vars['shippingAddr']->data(),
+					'billing' => $vars['billingAddr'],
+					'shipping' => $vars['shippingAddr'],
 					'shippingMethod' => $data['shipping_method'],
 					'items' => $items,
 					'avatax' => $avatax,
@@ -159,13 +160,13 @@ class Order extends Base {
 			);	
 			Mailer::send('Order_Confirmation', $user->email, $data);
 			#Clear Savings Information
-			Session::delete('userSavings');
-			Session::delete('cc_infos');
-			#Redirect To Confirmation Page
-			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
+			User::cleanSession();
 	}
 	
-	public static function creditCardDecrypt($user_id){
+	/**
+	 * Decrypt credit card informations stored in the Session
+	 */
+	public static function creditCardDecrypt($user_id) {
 		$cc_encrypt = Session::read('cc_infos');
 		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
  		$iv =  base64_decode(Session::read('vi'));
@@ -177,6 +178,9 @@ class Order extends Base {
 		return $card;
 	}
 	
+	/**
+	 * Encrypt all credits card informations with MCRYPT and store it in the Session
+	 */
 	public static function creditCardEncrypt ($cc_infos, $user_id,$save_iv_in_session = false) {
 		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
 		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
@@ -190,7 +194,6 @@ class Order extends Base {
 		}
 		return $cc_encrypt;
 	}
-	
 }
 
 ?>
