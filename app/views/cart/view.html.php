@@ -12,7 +12,8 @@ var discountErrors = new Object();
 				show_code_errors("credits");
 				show_code_errors("promo");
 			} else {
-				console.log("No errors");
+				discountErrors.promo==false;
+				discountErrors.credits==false;  
 			}
 			
 		}
