@@ -211,7 +211,11 @@ class DashboardController extends \lithium\action\Controller {
 		}
 
 		$yearToDate = $this->yearToDate();
-		$updateTime = $currentMonth['dates'] ? max(array_keys($currentMonth['dates'])) : time();
+
+		$updateTime = time();
+		if ($currentMonth['dates'] && ($max = max(array_keys($currentMonth['dates'])))) {
+			$updateTime = $max;
+		}
 
 		return compact(
 			'updateTime',
@@ -260,6 +264,9 @@ class DashboardController extends \lithium\action\Controller {
 			}
 		}
 		foreach ($current as $record) {
+			if (!isset($record['total'])) {
+				continue;
+			}
 			if ($record['type'] == 'revenue') {
 				$currentRevenue[$record['date']['sec']] = $record['total'];
 			} else if ($record['type'] == 'gross'){
