@@ -200,7 +200,8 @@
 	<div class="block">
 		<p>
 			Files that have been associated with an item or event but are <em>not in use</em> anymore.
-			These files can probably be deleted in order to <em>free space</em>.
+			These files can probably be deleted in order to free space.<br/>
+			Files must be flagged as orphaned, to do so run the <em>file-orphaned command</em>.
 		</p>
 		<div id="orphaned"><!-- Populated through an AJAX request. --></div>
 	</div>
