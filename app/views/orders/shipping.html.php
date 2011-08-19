@@ -48,6 +48,7 @@
 
 <div class="container_16" style="height:1000px">
 
+	<div style="margin:10px">
 	<div class="grid_8" style="padding-bottom:10px; margin:20px auto auto auto;">
 		<div style="float:left">
 			<h2 class="page-title gray">
@@ -63,12 +64,11 @@
 		</div>
 	</div>
 	
-	<div class="grid_8">
-		<div style="float:right; font-weight: bold">
-				Item reserved for: <br />
-				<span id="itemCounter" style="color:#009900;">
-				</span>
-		</div>
+	<div class="grid_8" style="padding-bottom:10px; margin:20px auto auto auto;">
+		<div style="float:right;">
+		Item Reserved For: <br />
+		<span id="itemCounter" style="color:#009900; float:right !important">Dummy cart expiration date</span>
+	    </div>
 	</div>
 	
 	<?=$this->form->create($address, array(
@@ -115,8 +115,9 @@
 		<div>
 		<?=$this->form->label('state', 'State <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'class' => 'validate[required] inputbox','id'=>'state')); ?>
-		<?=$this->form->error('state'); ?>
-		</div><div><?=$this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+		<?=$this->form->error('state'); ?></div>
+		<div>
+		<?=$this->form->label('zip', 'Zip Code<span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
 		</div>
 	</div>
@@ -127,6 +128,7 @@
 
 <?=$this->form->end();?> 
 
+</div>
 </div>
 
 <div id="address_form" style="display:none">

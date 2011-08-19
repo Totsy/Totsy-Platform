@@ -15,7 +15,6 @@ var discountErrors = new Object();
 				discountErrors.promo==false;
 				discountErrors.credits==false;  
 			}
-			
 		}
 	);
 	
@@ -61,18 +60,18 @@ var discountErrors = new Object();
 	</div>
 	
 	<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto;">
-		 <div style="float:right; font-weight: bold">
-		Item reserved for: <br />
-		<span id="itemCounter" style="color:#009900;">Dummy cart expiration date</span>
+		 <div style="float:right;">
+		Item Reserved For: <br />
+		<span id="itemCounter" style="color:#009900; float:right !important">Dummy cart expiration date</span>
 	    </div>
 	    <div style="float:left;">
-		 <span style="font-weight: bold">Estimated Shipping Date: </span><br />
-	         <span style="float:right; color:#009900;">&nbsp;&nbsp;<?=date('m-d-Y', $shipDate)?></span>
+		 <div>Estimated Shipping Date: </div>
+	         <div style="float:right; color:#009900;">&nbsp;&nbsp;<?=date('m-d-Y', $shipDate)?></div>
 	     </div>
 	</div>
 	<div class="clear"></div>
 	<hr/>
-	     <div class="cart-button fr" style="margin:20px 0px 20px 0px;">
+	     <div class="cart-button fr" style="margin:10px 0px 20px 0px;">
 		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
 		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
 		     <div class="clear"></div>
@@ -213,19 +212,19 @@ var discountErrors = new Object();
 							<?php if (!empty($shipping_discount)):?>
 							<div style="clear:both"></div>
 							<div style="font-weight:bold" class="subtotal">
-    								<span style="float: left;">Complimentary Shipping 
+    							<span style="float: left;">Free Shipping 
     								<?php 
     								if(!empty($promocode)) {
     									if($promocode['type'] === 'free_shipping')
     										echo '[' . $promocode['code'] . ']';	
     								}?>		
     								:</span> 
-    								<span style="color:#009900; float:right" class="fees_and_discounts">- $<?=number_format($shipping_discount,2)?></span>
+    								<span style="color:#707070; float:right" class="fees_and_discounts">- $<?=number_format($shipping_discount,2)?></span>
     						</div>
    							<?php endif ?>
 							<div style="clear:both"></div>	
 							<div style="font-weight:bold" class="subtotal">
-
+						
 									<span id="estimated_tax" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute." style="float: left;">Estimated Tax:</span> 
 									<span style="float:right" class="fees_and_discounts">$0.00</span>
 							</div>
