@@ -60,5 +60,4 @@ require __DIR__ . '/bootstrap/auth.php';
  * user or web service * authentication..
  */
 require __DIR__ . '/bootstrap/session.php';
-
 ?>
