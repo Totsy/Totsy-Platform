@@ -62,6 +62,9 @@ class ItemsController extends BaseController {
 		$all_filters = array();
 		$result =  Item::getDepartments();
 		foreach ($result['values'] as $value) {
+			if (!is_scalar($value)) {
+				continue;
+			}
 			$all_filters[$value] = $value;
 			if (array_key_exists('Momsdads',$all_filters) && !empty($all_filters['Momsdads'])) {
 				$all_filters['Momsdads'] = 'Moms & Dads';
