@@ -119,10 +119,16 @@ case $COMMAND in
 		cd $PROJECT_DIR/admin
 		libraries/lithium/console/li3 --env=test test libraries/lithium/tests/cases
 		echo
-
 		echo "Running admin tests..."
 		cd $PROJECT_DIR/admin
-		libraries/lithium/console/li3 --env=test test tests/
+		libraries/lithium/console/li3 --env=test test tests/cases/controllers/BannersControllerTest.php
+		libraries/lithium/console/li3 --env=test test tests/cases/controllers/OrdersControllerTest.php
+		libraries/lithium/console/li3 --env=test test tests/cases/extensions
+		libraries/lithium/console/li3 --env=test test tests/cases/models/EventImageTest.php
+		libraries/lithium/console/li3 --env=test test tests/cases/models/ItemImageTest.php
+		libraries/lithium/console/li3 --env=test test tests/integration
+		libraries/lithium/console/li3 --env=test test tests/functional/WebDavTest.php
+		libraries/lithium/console/li3 --env=test test tests/functional/data/FileAssociationTest.php
 		echo
 
 		echo "Running li3_fixtures tests..."
@@ -136,11 +142,11 @@ case $COMMAND in
 		echo
 
 		echo "Running SabreDAV tests..."
-		cd $PROJECT_DIR/admin/libraries/_source/sabredav/tests
+		cd $PROJECT_DIR/admin/libraries/li3_dav/libraries/_source/sabredav/tests
 		phpunit
 
 		echo "Running Imagine tests..."
-		cd $PROJECT_DIR/admin/libraries/_source/Imagine/tests
+		cd $PROJECT_DIR/admin/libraries/_source/Imagine
 		phpunit
 		echo
 		;;
