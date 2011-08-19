@@ -25,11 +25,12 @@ class FileOrphaned extends \lithium\console\Command {
 		));
 		foreach ($data as $item) {
 			$before = $item->orphaned;
+			$size = round($item->file->getSize() / KILOBYTE);
 
 			if ($item->orphaned = !File::used($item->_id)) {
-				$this->out("File `{$item->_id}` flagged as orphaned.");
+				$this->out("File `{$item->_id}` ({$size} kB) flagged as orphaned.");
 			} elseif ($before) {
-				$this->out("File `{$item->_id}` unflagged.");
+				$this->out("File `{$item->_id}` ({$size} kB) unflagged.");
 			}
 			if ($before != $item->orphaned) {
 				$item->save();
