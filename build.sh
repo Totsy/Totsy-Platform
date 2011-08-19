@@ -253,14 +253,18 @@ case $COMMAND in
 	selenium-server)
 		echo "NOTE: If firefox doesn't start correctly on OSX execute the following steps."
 		echo
+		echo "----------------------------------------------------------------------------"
 		echo 'cd /Applications/Firefox.app/Contents/MacOS'
 		echo 'mv firefox-bin firefox-bin.original'
 		echo 'ditto --arch i386 firefox-bin.original firefox-bin'
+		echo "----------------------------------------------------------------------------"
 		echo
 
 		java \
 			-jar $PROJECT_DIR/selenium/server.jar \
-			-firefoxProfileTemplate $PROJECT_DIR/selenium/tzp8knyf.selenium
+			-firefoxProfileTemplate $PROJECT_DIR/selenium/tzp8knyf.selenium \
+			-log $PROJECT_DIR/selenium/selenium.log \
+			-browserSideLog
 		;;
 
 	*)
