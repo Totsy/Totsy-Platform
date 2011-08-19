@@ -41,5 +41,6 @@ h2 + .actions {
 	width: auto;
 }
 #pending, #orphaned {
+	margin-top: 2em;
 	min-height: 5em;
 }
