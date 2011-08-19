@@ -230,36 +230,68 @@ tinyMCE.init({
 			<?=$this->form->submit('Update Item'); ?>
 		</div>
 		<div id="item_images">
-			<br>
-			<h2>Upload Media for Item</h2>
-			<form id="ItemMedia">
-			</form>
-			<div id="agile_file_upload"></div>
-			<script type="text/javascript">
-				$('#agile_file_upload').agileUploader({
-					flashSrc: '<?=$this->url('/swf/agile-uploader.swf'); ?>',
-					submitRedirect: '<?=$this->url('/items/edit/' . (string)$item->_id); ?>',
-					formId: 'ItemMedia',
-					removeIcon: '<?=$this->url('/img/agile_uploader/trash-icon.png'); ?>',
-					flashVars: {
-						button_up: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
-						button_down: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
-						button_over: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
-						//form_action: $('#EventEdit').attr('action'),
-						form_action: '<?=$this->url('/files/upload/all'); ?>',
-						file_limit: 30,
-						max_height: '1000',
-						max_width: '1000',
-						file_filter: '*.jpg;*.jpeg;*.gif;*.png;*.JPG;*.JPEG;*.GIF;*.PNG',
-						resize: 'jpg,jpeg,gif',
-						force_preview_thumbnail: 'true',
-						firebug: 'false'
-					}
-				});	
-			</script>
+			<br />
 			
-			<a href="#" class="upload_files_link" onClick="document.getElementById('agileUploaderSWF').submit();">Start Upload <?=$this->html->image('agile_uploader/upload-icon.png', array('height' => '24')); ?></a>
+			<div class="tab_region_left_col">
+				<div class="box">
+					<h2>Upload Media for Item</h2>
+					<div class="block">
+						<form id="ItemMedia">
+						</form>
+						<div id="agile_file_upload"></div>
+						<script type="text/javascript">
+							$('#agile_file_upload').agileUploader({
+								flashSrc: '<?=$this->url('/swf/agile-uploader.swf'); ?>',
+								submitRedirect: '<?=$this->url('/items/edit/' . (string)$item->_id); ?>',
+								formId: 'ItemMedia',
+								removeIcon: '<?=$this->url('/img/agile_uploader/trash-icon.png'); ?>',
+								flashVars: {
+									button_up: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
+									button_down: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
+									button_over: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
+									//form_action: $('#EventEdit').attr('action'),
+									form_action: '<?=$this->url('/files/upload/all'); ?>',
+									file_limit: 30,
+									max_height: '1000',
+									max_width: '1000',
+									file_filter: '*.jpg;*.jpeg;*.gif;*.png;*.JPG;*.JPEG;*.GIF;*.PNG',
+									resize: 'jpg,jpeg,gif',
+									force_preview_thumbnail: 'true',
+									firebug: 'false'
+								}
+							});	
+						</script>
 
+						<a href="#" class="upload_files_link" onClick="document.getElementById('agileUploaderSWF').submit();">Start Upload <?=$this->html->image('agile_uploader/upload-icon.png', array('height' => '24')); ?></a>
+					</div>
+				</div>
+			</div>
+			
+			<div class="tab_region_right_col">
+				<div class="box">
+					<h2>Item Image File Naming Conventions</h2>
+					<div class="block">
+					<dl>
+						<dt>Primary Image</dt>
+						<dd>items_shirt_primary.jpg</dd>
+
+						<dt>Zoom Image</dt>
+						<dd>items_shirt_zoom.jpg</dd>
+
+						<dt>For Various Colors <em>(colors are a part of the url)</em></dt>
+						<dd>items_shirt-yellow_primary.jpg</dd>
+						<dd>items_shirt-yellow_zoom.jpg</dd>
+
+						<dt>For Alternate Versions</dt>
+						<dd>items_shirt-blue_alternate.jpg</dd>
+						<dd>items_shirt-blue_alternateB.jpg</dd>
+						<dd>items_shirt-blue_alternate0.jpg <em>etc.</em></dd>
+					</dl>
+					</div>
+				</div>
+			</div>
+
+			<div class="clear"></div>
 			<br style="clear: left;" />
 			<?php if ($item->primary_image || $item->zoom_image || $item->alternate_images): ?>
 
