@@ -394,7 +394,7 @@ class EventsController extends BaseController {
 				$changed .= "Ship Message changed from <strong>{$event->ship_message}</strong> to <strong>{$eventData[ship_message]}</strong><br/>";
 			}
 
-			if (strtotime($ship_date) != $event->ship_date->sec) {
+			if ($event->ship_date && strtotime($ship_date) != $event->ship_date->sec) {
 				$temp =  date('m/d/Y H:i:s', $event->ship_date->sec);
 				$changed .= "Ship Date changed from  <strong>{$temp}</strong> to <strong>{$ship_date}</strong><br/>";
 			}
