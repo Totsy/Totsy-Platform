@@ -158,12 +158,12 @@ class Image extends \admin\models\File {
 	}
 
 	public static function extractUrl($name) {
-		preg_match('/^[a-z]+\_(.+)\_.*/i', $name, $matches);
+		preg_match('/^[a-z]+\_([a-z0-9\-]+)\_.*/i', $name, $matches);
 		$url = isset($matches[1]) ? $matches[1] : false;
 
 		// for file names like events_the-name.jpg (that do not use an additional underscore)
 		if (!$url) {
-			preg_match('/^[a-z]+\_(.+)\..*/i', $name, $matches);
+			preg_match('/^[a-z]+\_([a-z0-9\-]+)\..*/i', $name, $matches);
 			$url = isset($matches[1]) ? $matches[1] : false;
 		}
 		return $url;
