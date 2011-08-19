@@ -291,7 +291,6 @@ class Affiliate extends Base {
     public static function linkshareRaw($order, $tr, $entryTime, $trans_type){
         $raw = '';
         $raw .= 'ord=' . $order->order_id . '&';
-        var_dump($entryTime);
         if(($trans_type)){
             $raw .= 'tr=' . substr($tr, strlen('linkshare')+1) . '&';
             $raw .= 'land=' . date('Ymd_Hi', (int) $entryTime) . '&';
@@ -377,11 +376,10 @@ class Affiliate extends Base {
 		if (preg_match('@^(linkshare)@i', $affiliate)){
 			$user = User::collection();
 			$user->find(array( '_id' => $userId),
-                    'fields' => array('affiliate_share' => true));
-            if (!($user->affiliate_share) || ($user->affiliate_share['affiliate'] != $affiliate) {
+                    array('fields' => array('affiliate_share' => true))
+                    );
                 $affiliate_share = array('affiliate' => $affiliate , 'landing_time' => $cookie['entryTime']);
                 $success = ($user->update(array( '_id' => $userId), array('$set' => array('affiliate_share' => $affiliate_share)))) ? true : false;
-			}
 		}
 		return $success;
 	}
