@@ -273,19 +273,15 @@ tinyMCE.init({
 					<div class="block">
 					<dl>
 						<dt>Primary Image</dt>
-						<dd>items_shirt_primary.jpg</dd>
+						<dd>items_<?=$item->url; ?>_primary.jpg</dd>
 
 						<dt>Zoom Image</dt>
-						<dd>items_shirt_zoom.jpg</dd>
-
-						<dt>For Various Colors <em>(colors are a part of the url)</em></dt>
-						<dd>items_shirt-yellow_primary.jpg</dd>
-						<dd>items_shirt-yellow_zoom.jpg</dd>
+						<dd>items_<?=$item->url; ?>_zoom.jpg</dd>
 
 						<dt>For Alternate Versions</dt>
-						<dd>items_shirt-blue_alternate.jpg</dd>
-						<dd>items_shirt-blue_alternateB.jpg</dd>
-						<dd>items_shirt-blue_alternate0.jpg <em>etc.</em></dd>
+						<dd>items_<?=$item->url; ?>_alternate.jpg</dd>
+						<dd>items_<?=$item->url; ?>_alternateB.jpg</dd>
+						<dd>items_<?=$item->url; ?>_alternate0.jpg <em>etc.</em></dd>
 					</dl>
 					</div>
 				</div>
