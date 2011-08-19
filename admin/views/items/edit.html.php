@@ -278,6 +278,12 @@ tinyMCE.init({
 						<dt>Zoom Image</dt>
 						<dd>items_<?=$item->url; ?>_zoom.jpg</dd>
 
+						<!--
+						<dt>For Various Colors <em>(colors are a part of the url)</em></dt>
+						<dd>items_<?=$item->url; ?>_primary.jpg</dd>
+						<dd>items_<?=$item->url; ?>_zoom.jpg</dd>
+						-->
+
 						<dt>For Alternate Versions</dt>
 						<dd>items_<?=$item->url; ?>_alternate.jpg</dd>
 						<dd>items_<?=$item->url; ?>_alternateB.jpg</dd>
