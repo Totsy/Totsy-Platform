@@ -1,9 +1,29 @@
 <script type="text/javascript">	
 
+var discountErrors = new Object();
+
+	$(document).ready( function(){
+					
+			if(discountErrors.promo==true) {	
+				show_code_errors("promo");
+			} else if (discountErrors.credits==true)  {
+				show_code_errors("credits");
+			} else if(discountErrors.credits==true && discountErrors.promo==true) {
+				show_code_errors("credits");
+				show_code_errors("promo");
+			} else {
+				console.log("No errors");
+			}
+			
+		}
+	);
+	
 	$( function () {
 	    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	    
 		var now = new Date();
-		$('#itemCounter').countdown( {until: itemExpires, onExpiry: refreshCart, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
+		
+		$('#itemCounter').countdown( { until: itemExpires, onExpiry: refreshCart, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
+		
 		if (itemExpires < now) {
 			$('#itemCounter').html("<span class='over' style='color:#EB132C; padding:5px;'>No longer reserved</span>");
 		}
@@ -149,7 +169,7 @@
 							<div id="promos_and_credit">
 							<?=$this->form->create(null); ?>
 								<div id='promo' style='display:none'>
-									<?=$this->view()->render(array('element' => 'promocode'), array( 'orderPromo' => $cartPromo)); ?>
+									<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo) ); ?>
 								</div>
 								<div id='cred' style='display:none; text-align:left !important'>								
 				   					<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'userDoc' => $userDoc)); ?>
@@ -317,63 +337,6 @@
 
 <script type="text/javascript" charset="utf-8">
 
-$( function () {
-
-	$(".quantity").bind('change', function() {
-											
-		var id = $(this).attr('id');
-		var qty = $(this).val();
-		var price = $(this).closest("tr").find("td[class^=price]").html().split("$")[1];
-		var cost = parseInt(qty) * parseFloat(price);
-		var itemCost = $().number_format(cost, {
-			numberOfDecimals: 2,
-			decimalSeparator: ".",
-			thousandSeparator: "," });
-		$(this).closest('tr').find('td[class^=total]').html('<strong>$' + itemCost + '</strong>');
-		
-		var subTotal = 0;
-		var orderTotal = 0;
-		
-		$('td[class^=total]').each(
-		function() {
-		    subTotal += parseFloat($(this).html().split("$")[1]);
-		});		
-		
-		//sum of all items
-		orderTotal = subTotal;
-		
-		$('.fees_and_discounts').each(
-			function() {
-		    orderTotal += parseFloat($(this).html().split("$")[1]);
-		});
-			
-		var formattedSubTotal = $().number_format(subTotal, {
-			numberOfDecimals: 2,
-			decimalSeparator: '.',
-			thousandSeparator: ','
-		});
-		
-		var formattedOrderTotal = $().number_format(orderTotal, {
-			numberOfDecimals: 2,
-			decimalSeparator: '.',
-			thousandSeparator: ','
-		});
-				
-		$.ajax({
-			url: $.base + 'cart/update',
-			data: '_id=' + id + '&' + 'quantity=' + qty,
-			context: document.body,
-			success: function(message) {
-				
-			}
-		});
-		
-		$("#subtotal").html("<strong>Subtotal: $" + formattedSubTotal + "</strong>");
-		$("#ordertotal").html(formattedOrderTotal);
-	
-	});
-});
-
 //SUBMIT THE ITEM WHICH IS DELETED
 function deletechecked(message, id) {
 	var answer = confirm(message)
@@ -385,7 +348,7 @@ function deletechecked(message, id) {
 }
 //SUBMIT QUANTITY IN CASE OF DDWN CHANGE
 $(function () {
-	$("'").live("change keyup", function () {
+	$(".quantity").live("change keyup", function () {
 		if($("select").val() == 0) {
 			$('input[name="rmv_item_id"]').val($(this).attr('id'));
 			$('#removeForm').submit();
@@ -402,6 +365,11 @@ function open_credit() {
 		$("#cred").slideToggle("fast");
 	}
 };
+
+function show_code_errors(id) {
+	$("#" + id).slideToggle("fast");
+}
+
 //HIDE / SHOW PROMOS INPUT
 function open_promo() {
 	if ($("#promo").is(":hidden")) {
@@ -410,6 +378,5 @@ function open_promo() {
 		$("#promo").slideToggle("fast");
 	}
 };
-
 
 </script>

@@ -10,6 +10,12 @@
     <?php endif; ?>
     </div>
     
+    <?php if($this->form->error('promo')) { ?>
+    	<script type="text/javascript">
+    		discountErrors.promo = true;
+    	</script>
+    <?php } ?>
+    
     <input type="text" name="code" style='width:70px;' />
     <span id='promobtn'>
     	<?=$this->form->submit('Apply Promo Code'); ?>

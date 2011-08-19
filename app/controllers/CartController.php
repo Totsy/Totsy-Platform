@@ -231,56 +231,36 @@ class CartController extends BaseController {
 	* @see app/models/Cart::check()
 	*/
 	public function update() {
-	
-		$data = $_REQUEST;	
 		
-		//ini_set('display_errors', 1);	
-			
+		$data = $this->request->data;
 		if(!empty($data['rmv_item_id'])) {
 			#Removing one item from cart
 			$this->remove($data['rmv_item_id']);
-		} else if(!empty($data)) {
-			$carts = $data;
-			
-			//foreach ($carts as $key => $value) {
-			$id = $carts['_id'];
-			$quantity = $carts['quantity'];
-			
-			$result = Cart::check((integer) $quantity, (string) $id);				
-			$cart = Cart::find('first', array(
+		} else if(!empty($data['cart'])) {
+			$carts = $data['cart'];
+			foreach ($carts as $id => $quantity) {
+				$result = Cart::check((integer) $quantity, (string) $id);
+				$cart = Cart::find('first', array(
 					'conditions' => array('_id' =>  (string) $id)
 				));
-								
-				$status = $this->itemAvailable($cart->item_id, $cart->quantity, $cart->size, $quantity);
-							
-				if(!$status['available']) {
-					$cart->quantity = (integer) $status['quantity'];					
-					$cart->save();
-										
-					$this->addIncompletePurchase(Cart::active());
-				} else {
-					if ($result['status']) {
-						if($quantity == 0){
-				        	Cart::remove(array('_id' => $id));
-				        	$this->addIncompletePurchase(Cart::active());
-				    	} else {
-							$cart->quantity = (integer) $quantity;
-							$cart->save();
-							$this->addIncompletePurchase(Cart::active());
-						}
-					} else {
-						$cart->error = $result['errors'];
+				if ($result['status']) {
+					if($quantity == 0){
+				        Cart::remove(array('_id' => $id));
+				    } else {
+						$cart->quantity = (integer) $quantity;
 						$cart->save();
-						$this->addIncompletePurchase(Cart::active());
 						$items[$cart->item_id] = $quantity;
 						#Check Cart and Refresh Timer
 						$this->refreshTimer();
 					}
+				} else {
+					$cart->error = $result['errors'];
+					$cart->save();
 				}
-			//}
+			}
 			#update savings
-			Cart::updateSavings($items, 'update');					
-		}
+			Cart::updateSavings($items, 'update');
+		}					
 	}
 	
 	/**

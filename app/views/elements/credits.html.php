@@ -13,5 +13,12 @@
 	 <div style='float:right !important; margin-left: 5px ; text-align:center; width:auto !important; height:auto !important'>
 	<?php echo $this->form->error('amount'); ?>
 	</div>
+	
+	<?php if($this->form->error('promo')) { ?>
+    	<script type="text/javascript">
+    		discountErrors.credit = true;
+    	</script>
+    <?php } ?>
+	
 <?php echo $this->form->end(); ?>
 <?php endif ?>
