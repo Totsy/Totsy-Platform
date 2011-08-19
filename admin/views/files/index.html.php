@@ -176,6 +176,9 @@
 		<?=$this->html->link('refresh', 'Files::pending', array(
 			'class' => 'refresh', 'target' => '#pending'
 		)); ?>
+		<?=$this->html->link('auto-associate all', array(
+			'action' => 'associate', 'scope' => 'pending'
+		)); ?>
 	</div>
 	<div class="block">
 		<p>

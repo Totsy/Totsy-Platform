@@ -33,6 +33,25 @@ $(function() {
 		});
 	});
 
+	$('a[href*="/associate/pending"]').live('click', function(e) {
+		e.preventDefault();
+
+		$('#pending').html('<div class="loading">Associating…</div>');
+
+		$.ajax({
+			async: false,
+			type: "POST",
+			url: $(this).attr('href'),
+			success: function() {
+				$('[target="#pending"]').click();
+				$('[target="#orphaned"]').click();
+			},
+			error: function() {
+				item.addClass('error');
+			}
+		});
+	});
+
 	$('.file a[href*="/associate/"]').live('click', function(e) {
 		e.preventDefault();
 		var item = $(this).parent().parent();
@@ -44,7 +63,7 @@ $(function() {
 			success: function() {
 				item.fadeOut("normal", function() {
 					$(this).remove();
-					$('[target="#oprhaned"]').click();
+					$('[target="#orphaned"]').click();
 				});
 			},
 			error: function() {

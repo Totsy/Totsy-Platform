@@ -48,15 +48,23 @@ class FilesController extends \lithium\action\Controller {
 	}
 
 	public function associate() {
-		$result = false;
+		$files = array();
+		$result = true;
 
-		if ($file = File::first(array('_id' => $this->request->id))) {
+		if ($this->request->scope == 'pending') {
+			$files = File::pending();
+		} else {
+			if ($file = File::first(array('_id' => $this->request->id))) {
+				$files[] = $file;
+			}
+		}
+		foreach ($files as $file) {
 			$meta = array('name' => $file->name);
 			$bytes = $file->file->getBytes();
 
 			if (EventImage::process($bytes, $meta) || ItemImage::process($bytes, $meta)) {
 				/* This implicitly moves it into the "orphaned" state. */
-				$result = (boolean) $file->save(array('pending' => false));
+				$result = $result && (boolean) $file->save(array('pending' => false));
 			}
 		}
 		if ($this->request->is('ajax')) {
