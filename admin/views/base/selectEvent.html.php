@@ -4,7 +4,11 @@
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
 
 <div class="grid_16">
-	<h2 id="page-heading">Select Event for <?=$type?> Administration</h2>
+	<h2 id="page-heading">Select Event for <?=$type?> Administration
+	<?php if ($environment == 'local'): ?>
+		 - Dev Environment - Only Last 3 Months Events
+	<?php endif ?>
+	</h2>
 </div>
 <div class='clear'></div>
 <div class='block' id="forms">
@@ -48,13 +52,13 @@ jQuery(function($){
 	function filter() {
 		$('#monthform').submit();
 	};
-	
+
 	$('#todays_checkbox').change(function(){
 		if ($('#todays_checkbox:checked').val() == '1'){
 			$('#end_date').attr('disabled', 'disabled');
             $('#start_date').attr('disabled', 'disabled');
             $("#search").attr('disabled', 'disabled');
-			
+
         }else{
             $('#end_date').removeAttr('disabled');
             $('#start_date').removeAttr('disabled');
