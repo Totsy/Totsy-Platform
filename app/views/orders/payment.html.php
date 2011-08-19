@@ -232,6 +232,9 @@ function replace_address() {
     } else {
     	$.each ( shippingAddress, function(k, v) {
     		$("#" + k + "").val("");
+    		
+    		
+    		
     		if(paymentForm.opt_submitted==true) {  		
     			$('#' + k + "").attr("style", "background: #FFFFC5 !important");
     		}	
