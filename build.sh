@@ -56,7 +56,10 @@ case $COMMAND in
 
 		$0 source-subs
 		$0 source-pear
-		$0 source-selenium
+		read -p "Do you want selenium support? (y/n) " CONFIRM
+		if [[ $CONFIRM == "y" ]]; then
+			$0 source-selenium
+		fi
 		$0 fix-perms
 
 		FILES=$(find $PROJECT_DIR/{app,admin} -type f -print0 | xargs -0 grep -l -i -E 'ini_set.*display_error.*(off|false|0)')
