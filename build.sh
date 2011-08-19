@@ -119,7 +119,6 @@ case $COMMAND in
 		cd $PROJECT_DIR/admin
 		libraries/lithium/console/li3 --env=test test libraries/lithium/tests/cases
 		echo
-
 		echo "Running admin tests..."
 		cd $PROJECT_DIR/admin
 		libraries/lithium/console/li3 --env=test test tests/cases/controllers/BannersControllerTest.php
