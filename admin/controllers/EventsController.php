@@ -632,25 +632,6 @@ class EventsController extends BaseController {
 		return $items;
 	}
 
-	/**
-	 * Parse the images from the request using the key
-	 * @param object
-	 * @return array
-	 */
-	protected function parseImages($imageRecord = null) {
-		$images = array();
-
-		foreach ($this->request->data as $key => $value) {
-			if (substr($key, -6) == '_image' ) {
-				$images["$key"] = $value;
-			}
-		}
-		if (empty($images) && !empty($imageRecord)) {
-			$images = $imageRecord->data();
-		}
-		return $images;
-	}
-
 	public function preview($_id = null) {
 
 		$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
@@ -704,7 +685,6 @@ class EventsController extends BaseController {
 		}
 		return $itemCounts;
 	}
-
 	private function description_cutter($str,$length=null){
 		$return = '';
 		$str = strip_tags($str);
@@ -727,6 +707,26 @@ class EventsController extends BaseController {
 		} else {
 			return $str;
 		}
+	}
+	/**
+	 * Parse the images from the request using the key
+	 *
+	 * @deprecated
+	 * @param object
+	 * @return array
+	 */
+	protected function parseImages($imageRecord = null) {
+		$images = array();
+
+		foreach ($this->request->data as $key => $value) {
+			if (substr($key, -6) == '_image' ) {
+				$images["$key"] = $value;
+			}
+		}
+		if (empty($images) && !empty($imageRecord)) {
+			$images = $imageRecord->data();
+		}
+		return $images;
 	}
 }
 
