@@ -42,28 +42,22 @@ class Order extends Base {
 	public static function process($order, $total, $subTotal, $data, $cart, $vars, $avatax, $handling, $overSizeHandling) {
 		$user = Session::read('userLogin');
 		#Read Credit Card Informations
-		$cc_encrypt = Session::read('cc_infos');
-		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
- 		$iv =  base64_decode(Session::read('vi'));
- 		$key = md5($user['_id']);
-		foreach	($cc_encrypt as $k => $cc_info) {
-			$crypt_info = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key.sha1($k), base64_decode($cc_info), MCRYPT_MODE_CFB, $iv);
-			$card[$key] = $crypt_info;
-		}
+		$card = self::creditCardDecrypt($user_id);
 		#Create Payment
 		$card = Payments::create('default', 'creditCard', $card + array(
 			'billing' => Payments::create('default', 'address', array(
 				'firstName' => $vars['billingAddr']['firstname'],
 				'lastName'  => $vars['billingAddr']['lastname'],
-				'company'   => $vars['billingAddr']['company'],
-				'address'   => trim($vars['billingAddr']['address'] . ' ' . $vars['billingAddr']['address_2']),
+				//'company'   => $vars['billingAddr']['company'],
+				'address'   => trim($vars['billingAddr']['address'] . ' ' . $vars['billingAddr']['address2']),
 				'city'      => $vars['billingAddr']['city'],
 				'state'     => $vars['billingAddr']['state'],
 				'zip'       => $vars['billingAddr']['zip'],
 				'country'   => $vars['billingAddr']['country']
-				))
-			));
-			if ($cart) {
+				
+			))
+		));
+		if ($cart) {
 			$inc = 0;
 			foreach ($cart as $item) {
 				$item['line_number'] = $inc;
@@ -76,9 +70,10 @@ class Order extends Base {
 				$authKey = Payments::authorize('default', $total, $card);
 				Order::recordOrder($vars, $order,$avatax);
 			} catch (TransactionException $e) {
-				
-				$order->set($data);
-				$order->errors($order->errors() + array($e->getMessage()));
+				Session::write('cc_error',$e->getMessage());
+				Session::write('cc_billingAddr',$vars['billingAddr']);
+				//$order->set($data);
+				//$order->errors($order->errors() + array($e->getMessage()));
 			}
 		} else {
 			 $order->errors(
@@ -169,6 +164,33 @@ class Order extends Base {
 			#Redirect To Confirmation Page
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 	}
+	
+	public static function creditCardDecrypt($user_id){
+		$cc_encrypt = Session::read('cc_infos');
+		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
+ 		$iv =  base64_decode(Session::read('vi'));
+ 		$key = md5($user_id);
+		foreach	($cc_encrypt as $k => $cc_info) {
+			$crypt_info = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key.sha1($k), base64_decode($cc_info), MCRYPT_MODE_CFB, $iv);
+			$card[$k] = $crypt_info;
+		}
+		return $card;
+	}
+	
+	public static function creditCardEncrypt ($cc_infos, $user_id,$save_iv_in_session = false) {
+		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
+		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+		if ($save_iv_in_session == true) {
+			Session::write('vi',base64_encode($iv));
+		}
+		$key = md5($user_id);
+		foreach	($cc_infos as $k => $cc_info) {
+			$crypt_info = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key.sha1($k), $cc_info, MCRYPT_MODE_CFB, $iv);
+			$cc_encrypt[$k] = base64_encode($crypt_info);
+		}
+		return $cc_encrypt;
+	}
+	
 }
 
 ?>

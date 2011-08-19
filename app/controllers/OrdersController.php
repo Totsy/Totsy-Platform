@@ -383,6 +383,9 @@ class OrdersController extends BaseController {
 			Order::process($order, $total, $subTotal, $this->request->data, $cart, $vars, $avatax, $shippingCost, $overShippingCost);
 		//}
 		$cartEmpty = ($cart->data()) ? false : true;
+		if (Session::check('cc_error')){
+			$this->redirect(array('Orders::payment'));
+		}
 		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings');
 	}
 
@@ -504,15 +507,7 @@ class OrdersController extends BaseController {
 			#Check credits cards informations
 			if($cc_infos->validates()) {
 				#Encrypt CC Infos with mcrypt
-				$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
-				$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-				Session::write('vi',base64_encode($iv));
-				$key = md5($user['_id']);
-				foreach	($cc_infos as $k => $cc_info) {
-					$crypt_info = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key.sha1($k), $cc_info, MCRYPT_MODE_CFB, $iv);
-					$cc_encrypt[$k] = base64_encode($crypt_info);
-				}
-				Session::write('cc_infos', $cc_encrypt);
+				Session::write('cc_infos', Order::creditCardEncrypt($cc_infos, $user_id, true));
 				$cc_passed = true;
 			}
 			#In case of normal submit (no ajax one with the checkbox)
@@ -552,6 +547,18 @@ class OrdersController extends BaseController {
 			}
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
+		
+		if (Session::check('cc_error')){
+			if (!isset($payment) || (isset($payment) && !is_object($payment))){
+				$card = Order::creditCardDecrypt($user_id);
+				$data_add = Session::read('cc_billingAddr');
+				$payment = Address::create(array_merge($data_add,$card));
+			}
+			$payment->errors( $payment->errors() + array( 'cc_error' => Session::read('cc_error')));
+			Session::delete('cc_error');
+			Session::delete('cc_billingAddr');
+		}
+				
 		return compact('address', 'cartEmpty','payment','shipping','cartExpirationDate');
 	}
 

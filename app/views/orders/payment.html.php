@@ -118,7 +118,8 @@ var paymentForm = new Object();
 	)); ?>
 				<div class="grid_16">
 				<h3>Pay with Credit Card :</h3>
-				<hr />
+				<hr /> 
+				<?=$this->form->error('cc_error'); ?>
 				<?=$this->form->hidden('opt_submitted', array('class'=>'inputbox', 'id' => 'opt_submitted')); ?>
 				<?=$this->form->label('card_type', 'Card Type', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->select('card_type', array('visa' => 'Visa', 'mc' => 'MasterCard','amex' => 'American Express'), array('id' => 'card_type', 'class'=>'inputbox')); ?>
