@@ -8,6 +8,17 @@ use li3_fixtures\test\Fixture;
 
 class ItemTest extends \lithium\test\Integration {
 
+	protected $_backup = array();
+
+	public function setUp() {
+		$this->_backup['dedupe'] = File::$dedupe;
+		File::$dedupe = false;
+	}
+
+	public function tearDown() {
+		File::$dedupe = $this->_backup['dedupe'];
+	}
+
 	public function testAttachDetachImage() {
 		$fixtures = Fixture::load('Item');
 
