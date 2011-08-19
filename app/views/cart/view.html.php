@@ -223,9 +223,9 @@ var discountErrors = new Object();
     								<span style="color:#009900; float:right" class="fees_and_discounts">- $<?=number_format($shipping_discount,2)?></span>
     						</div>
    							<?php endif ?>
-							<div style="clear:both"></div>						
+							<div style="clear:both"></div>	
 							<div style="font-weight:bold" class="subtotal">
-									<span><img src="/img/tooltip_icon.png"></span>
+
 									<span id="estimated_tax" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute." style="float: left;">Estimated Tax:</span> 
 									<span style="float:right" class="fees_and_discounts">$0.00</span>
 							</div>
