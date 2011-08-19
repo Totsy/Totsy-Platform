@@ -12,11 +12,12 @@
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
 <div class="grid_16">
 	<h2 class="page-title gray">
-			<span class="cart_steps_off">1</span>
-			<span class="cart_steps_off">2</span>
-			<span class="cart_steps_off">3</span>
-			<span class="cart_steps_on">4</span>
-			<span class="red">Review your Shipping and Payment Information. Then Place Your Order.</span></h2>
+			<span class="cart-step-status gray">Review your Shipping and Payment Information. Then Place Your Order.</span>
+			<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
+			<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
+			<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
+			<span class="cart-step-status"><img src="/img/cart_steps4.png"></span>
+	</h2>
 	<hr />
 	<?php if ($errors = $order->errors()): ?>
 	<?php foreach ($errors as $error): ?>
