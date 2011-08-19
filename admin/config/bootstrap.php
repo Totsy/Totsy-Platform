@@ -139,7 +139,7 @@ Session::config(array(
  */
 Environment::set('test', array(
 	'browser' => '*chrome',
-	'browserUrl' => 'http://totsy'
+	'browserUrl' => 'http://admin.totsy'
 ));
 
 /**
