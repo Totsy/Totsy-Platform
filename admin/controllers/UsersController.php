@@ -278,7 +278,7 @@ class UsersController extends \admin\controllers\BaseController {
 		$session = Session::read('userLogin');
 		do { /* Ensure we don't have a dot in the token. */
 			$token = String::random(6, array('encode' => String::ENCODE_BASE_64));
-		} while (strpos($token, '.') !== false);
+		} while (!preg_match('/[a-zA-Z0-9]+/', $token));
 
 		$user = User::first(array('conditions' => array('_id' => $session['_id'])));
 		$user->save(compact('token'));
