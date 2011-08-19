@@ -4,7 +4,7 @@
 <div class="grid_6 prefix_6">
 	<div class="box">
 		<h2>
-			<a href="#" id="toggle-forms">Forms</a>
+			<a href="#" id="toggle-forms">Totsy Admin Interface</a>
 		</h2>
 		<div class="block" id="forms">
 			<fieldset class="login">
