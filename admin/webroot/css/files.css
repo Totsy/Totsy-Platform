@@ -40,3 +40,6 @@ h2 + .actions {
 .file.error {
 	width: auto;
 }
+#pending, #orphaned {
+	min-height: 5em;
+}
