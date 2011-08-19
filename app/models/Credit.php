@@ -19,10 +19,11 @@ class Credit extends \lithium\data\Model {
 	     return new MongoDate(time() + static::_object()->_dates[$name]);
 	}
 
-	public static function add($credit, $user_id, $amount, $reason) {
+	public static function add($credit, $user_id, $amount, $reason, $orderid) {
 		$credit->created = static::dates('now');
 		$credit->user_id = (string) $user_id;
 		$credit->credit_amount = $amount;
+		$credit->order_id = $orderid;
 		$credit->reason = $reason;
 		return static::_object()->save($credit);
 	}

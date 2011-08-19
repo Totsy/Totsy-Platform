@@ -28,9 +28,9 @@ Environment::set('development', array(
 
 Environment::set('local', array(
 	'avatax' => array(
-	    'url' => 'https://development.avalara.net',
+	    'url' => 'https://avatax.avalara.net',
 	    'account' => '1100058465',
-	    'license' => 'C4930DB03091446E',
+	    'license' => 'E96C0C6042CDD179',
 		'companyCode' => 'totsy',
 	    'trace' => true,
 		'retriesNumber' => 2,

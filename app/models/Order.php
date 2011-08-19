@@ -34,7 +34,7 @@ class Order extends Base {
 			(string) $order->order_id => $order->order_id.'- Order Total: $'.number_format($order->total, 2)
 		);
 	}
-	
+
 	/**
 	 * Process all datas of the order and create an authorize.net transaction
 	 *

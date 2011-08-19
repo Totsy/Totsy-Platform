@@ -380,5 +380,4 @@ function open_promo() {
 		$("#promo").slideToggle("fast");
 	}
 };
-
 </script>
