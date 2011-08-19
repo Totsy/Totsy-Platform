@@ -83,7 +83,7 @@ var addressForm = new Object();
     });
    
 </script>
-
+<?php  if(empty($cartEmpty)): ?>
 <div class="container_16" style="height:1000px">
 
 	<div style="margin:10px">
@@ -176,6 +176,9 @@ var addressForm = new Object();
 </div>
 <div class="clear"></div>
 </div>
+<?php else: ?>
+	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1><center><span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
+<?php endif ?>
 <script>
 $(document).ready(function(){ 
 	$("#addresses").change(function () {

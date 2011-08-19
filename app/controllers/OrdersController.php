@@ -93,6 +93,7 @@ class OrdersController extends BaseController {
 				'order_id' => $order_id,
 				'user_id' => (string) $user['_id']
 		)));
+		var_dump($order_id);
 		$new = ($order->date_created->sec > (time() - 120)) ? true : false;
 		$shipDate = Cart::shipDate($order);
 		if (!empty($shipDate)) {
@@ -297,7 +298,7 @@ class OrdersController extends BaseController {
 			}
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
-		return compact('address', 'addresses_ddwn', 'cartEmpty', 'error', 'selected', 'cartExpirationDate');
+		return compact('address','addresses_ddwn','cartEmpty','error','selected','cartExpirationDate');
 	}
 	
 	/**
@@ -306,7 +307,6 @@ class OrdersController extends BaseController {
 	 * @todo Improve documentation
 	 */
 	public function review() {
-		$order = Order::create();
 		#Get Users Informations
 		$user = Session::read('userLogin');
 		$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
@@ -382,13 +382,13 @@ class OrdersController extends BaseController {
 		#Calculate Order Total
 		$total = $vars['postDiscountTotal'] + $tax;
 		$vars = compact(
-			'user', 'cart', 'subTotal', 'order',
+			'user', 'cart', 'subTotal',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'cartCredit', 'cartPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
 		);
 		#TEST CASE - TO UNCOMMENT
 		//if ( ($cart->data()) && (count($this->request->data) > 1) && ($total > 0)) {
-			$success = Order::process($order, $total, $subTotal, $this->request->data, $cart, $vars, $avatax, $shippingCost, $overShippingCost);
-			if ($success) {
+			$order = Order::process($total, $subTotal, $this->request->data, $cart, $vars, $avatax, $shippingCost, $overShippingCost);
+			if (empty($order->errors)) {
 				#Redirect To Confirmation Page
 				return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 			}
@@ -397,7 +397,7 @@ class OrdersController extends BaseController {
 		if (Session::check('cc_error')){
 			//$this->redirect(array('Orders::payment'));
 		}
-		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate', 'savings');
+		return $vars + compact('cartEmpty','order','cartByEvent','orderEvents','shipDate','savings');
 	}
 
 	/**
@@ -558,7 +558,6 @@ class OrdersController extends BaseController {
 			}
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
-		
 		if (Session::check('cc_error')){
 			if (!isset($payment) || (isset($payment) && !is_object($payment))){
 				$card = Order::creditCardDecrypt($user_id);
@@ -569,8 +568,7 @@ class OrdersController extends BaseController {
 			Session::delete('cc_error');
 			Session::delete('cc_billingAddr');
 		}
-				
-		return compact('address', 'cartEmpty','payment','shipping','cartExpirationDate');
+		return compact('address','cartEmpty','payment','shipping','cartExpirationDate');
 	}
 
 }

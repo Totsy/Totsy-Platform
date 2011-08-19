@@ -40,7 +40,8 @@ class Order extends Base {
 	 *
 	 * @return object
 	 */
-	public static function process($order, $total, $subTotal, $data, $cart, $vars, $avatax, $handling, $overSizeHandling) {
+	public static function process($total, $subTotal, $data, $cart, $vars, $avatax, $handling, $overSizeHandling) {
+		$order = Order::create(array('_id' => new MongoId()));
 		$user = Session::read('userLogin');
 		#Read Credit Card Informations
 		$card = self::creditCardDecrypt($user_id);
@@ -68,8 +69,8 @@ class Order extends Base {
 			try {
 				#Process Payment
 				$authKey = Payments::authorize('default', $total, $card);
-				Order::recordOrder($vars, $order, $avatax, $authKey);
-				return true;
+				$order = Order::recordOrder($vars, $order, $avatax, $authKey, $items);
+				return $order;
 			} catch (TransactionException $e) {
 				Session::write('cc_error',$e->getMessage());
 				Session::write('cc_billingAddr',$vars['billingAddr']);
@@ -89,7 +90,7 @@ class Order extends Base {
 	 * Record in DB all informations linked with the order
 	 * @return redirect
 	 */
-	public static function recordOrder($vars, $order, $avatax, $authKey) {
+	public static function recordOrder($vars, $order, $avatax, $authKey, $items) {
 			$service = Session::read('services', array('name' => 'default'));
 			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 			#Save Credits Used
@@ -129,6 +130,7 @@ class Order extends Base {
 			if($avatax === true){
 				AvaTax::postTax( compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
 			}
+		
 			#Save Order Infos
 			$order->save(compact('total', 'subTotal','handling','overSizeHandling') + array(
 					'user_id' => (string) $user['_id'],
@@ -161,6 +163,7 @@ class Order extends Base {
 			Mailer::send('Order_Confirmation', $user->email, $data);
 			#Clear Savings Information
 			User::cleanSession();
+			return $order;
 	}
 	
 	/**
