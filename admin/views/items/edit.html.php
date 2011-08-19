@@ -1,5 +1,11 @@
-<?php echo $this->html->script(array('tiny_mce/tiny_mce.js', 'jquery-1.4.2', 'jquery-dynamic-form.js', 'jquery-ui-1.8.2.custom.min.js', 'swfupload.js', 'swfupload.queue.js', 'fileprogress.js', 'handlers.js', 'item_upload.js'));?>
-<?php echo $this->html->style(array('swfupload', 'jquery_ui_blitzer.css', 'jquery.dataTables.js', 'table'))?>
+<?=$this->html->script(array('tiny_mce/tiny_mce.js', 'jquery-1.4.2', 'jquery-dynamic-form.js', 'jquery-ui-1.8.2.custom.min.js', 'handlers.js', 'item_upload.js'));?>
+<?=$this->html->style(array('jquery_ui_blitzer.css', 'jquery.dataTables.js', 'table'))?>
+
+<?=$this->html->script('jquery.flash.min.js')?>
+<?=$this->html->script('agile-uploader-3.0.js')?>
+<?=$this->html->style('agile_uploader.css');?>
+<?=$this->html->style('admin_common.css');?>
+<?=$this->html->style('files.css');?>
 
 <script type="text/javascript">
 tinyMCE.init({
@@ -69,7 +75,7 @@ tinyMCE.init({
 					));?>
 					<?php echo $this->form->label('Departments')?><br />
 					<table>
-						<?php echo $this->form->select('departments',$all_filters,array('multiple'=>'multiple','value' => $sel_filters)); ?> 
+						<?php echo $this->form->select('departments',$all_filters,array('multiple'=>'multiple','value' => $sel_filters)); ?>
 					</table>
 					<div id="item_status">
 						<h2 id="item_status">Item Status</h2>
@@ -224,27 +230,35 @@ tinyMCE.init({
 			<?php echo $this->form->submit('Update Item'); ?>
 		</div>
 		<div id="item_images">
-				<br>
-				<div id="fileInfo"></div>
-				<h1>Upload files for a particular item</h1>
+			<br>
+			<h2>Upload Media for Item</h2>
+			<form id="ItemMedia">
+			</form>
+			<div id="agile_file_upload"></div>
+			<script type="text/javascript">
+				$('#agile_file_upload').agileUploader({
+					flashSrc: '<?=$this->url('/swf/agile-uploader.swf'); ?>',
+					submitRedirect: '<?=$this->url('/items/edit/' . (string)$item->_id); ?>',
+					formId: 'ItemMedia',
+					removeIcon: '<?=$this->url('/img/agile_uploader/trash-icon.png'); ?>',
+					flashVars: {
+						button_up: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
+						button_down: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
+						button_over: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
+						//form_action: $('#EventEdit').attr('action'),
+						form_action: '<?=$this->url('/files/upload/all'); ?>',
+						file_limit: 30,
+						max_height: '1000',
+						max_width: '1000',
+						file_filter: '*.jpg;*.jpeg;*.gif;*.png;*.JPG;*.JPEG;*.GIF;*.PNG',
+						resize: 'jpg,jpeg,gif',
+						force_preview_thumbnail: 'true',
+						firebug: 'false'
+					}
+				});
+			</script>
 
-				<br>
-				<table>
-					<tr valign="top">
-						<td>
-							<div>
-								<div class="fieldset flash" id="fsUploadProgress1">
-									<span class="legend">Small File Upload Site</span>
-								</div>
-								<div style="padding-left: 5px;">
-									<span id="spanButtonPlaceholder1"></span>
-									<input id="btnCancel1" type="button" value="Cancel Uploads" onclick="cancelQueue(upload1);" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />
-									<br />
-								</div>
-							</div>
-						</td>
-					</tr>
-				</table>
+			<a href="#" class="upload_files_link" onClick="document.getElementById('agileUploaderSWF').submit();">Start Upload <?=$this->html->image('agile_uploader/upload-icon.png', array('height' => '24')); ?></a>
 
 				<br>
 			<?php if ($item->primary_image || $item->zoom_image || $item->alternate_images): ?>
