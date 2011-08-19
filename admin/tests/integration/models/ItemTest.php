@@ -52,6 +52,30 @@ class ItemTest extends \lithium\test\Integration {
 		$fileA->delete();
 		$fileB->delete();
 	}
+
+	public function testAttachImageAndSave() {
+		$fixtures = Fixture::load('Item');
+
+		$file = File::write(uniqid());
+
+		$item = Item::create($fixtures->first());
+		$item->save();
+
+		$item->attachImage('primary', $file->_id);
+		$expected = (string) $file->_id;
+		$result = $item->primary_image;
+		$this->assertEqual($expected, $result);
+
+		$item->save();
+
+		$item = Item::first(array('conditions' => array('_id' => $item->_id)));
+		$expected = (string) $file->_id;
+		$result = $item->primary_image;
+		$this->assertEqual($expected, $result);
+
+		$item->delete();
+		$file->delete();
+	}
 }
 
 ?>
