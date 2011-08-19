@@ -10,6 +10,7 @@
 	$total = $afterDiscount + $tax + $shippingCost + $overShippingCost;
 ?>
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
+<?php if(empty($cartEmpty)): ?>
 <div class="grid_16">
 	<h2 class="page-title gray">
 			<span class="cart-step-status gray">Review your Shipping and Payment Information. Then Place Your Order.</span>
@@ -263,6 +264,9 @@
 <div class="clear"></div>
 <div id="modal"></div>
 <div id="address-modal" style="z-index:9999999999!important;"></div>
+<?php else: ?>
+	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1><center><span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
+<?php endif ?>
 <script type="text/javascript">
 $(".add-address").click(function() {
 	$("#address-modal").load($.base + 'addresses/add').dialog({

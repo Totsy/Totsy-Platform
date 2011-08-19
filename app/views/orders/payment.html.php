@@ -96,7 +96,7 @@ var paymentForm = new Object();
     });
 
 </script>
-
+<?php  if(empty($cartEmpty)): ?>
 <div class="grid_16">
 		<h2 class="page-title gray">
 			<span class="cart-step-status gray">Payment</span>
@@ -209,6 +209,9 @@ var paymentForm = new Object();
 				
 <?=$this->form->end();?> 
 </div>
+<?php else: ?>
+	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1><center><span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
+<?php endif ?>
 <script>  
 	
 var shippingAddress = <?php echo $shipping; ?>
