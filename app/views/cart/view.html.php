@@ -157,7 +157,7 @@ var discountErrors = new Object();
 				<?php $x++; ?>
 			<?php endforeach ?>
 				<tr valign="top">
-					<td colspan="2" style="padding:10px 0px 50px 10px">
+					<td colspan="2" style="padding:10px 0px 50px 10px; border-bottom: 0px">
 						<div style="float: left">
 							<div style="font-size: 12px; text-align:left !important;">
 								<strong>Add <?php if(!empty($credit)): ?>
@@ -178,7 +178,7 @@ var discountErrors = new Object();
 						</div>
 					</td>
 						
-					<td colspan="6">	
+					<td colspan="6" style="border-bottom: 0px">	
 					<div style="padding-top:10px">
 							<div style="font-weight:bold" class="subtotal" >
 									<span style="float:left;">Subtotal:</span>

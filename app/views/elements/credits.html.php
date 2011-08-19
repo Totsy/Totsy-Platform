@@ -14,9 +14,9 @@
 	<?php echo $this->form->error('amount'); ?>
 	</div>
 	
-	<?php if($this->form->error('promo')) { ?>
+	<?php if($this->form->error('amount')) { ?>
     	<script type="text/javascript">
-    		discountErrors.credit = true;
+    		discountErrors.credits = true;
     	</script>
     <?php } ?>
 	
