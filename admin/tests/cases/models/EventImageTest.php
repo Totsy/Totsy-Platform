@@ -48,13 +48,31 @@ class EventImageTest extends \lithium\test\Unit {
 	public function testProcessMapBigSplash() {
 		$names = array(
 			'events_the-name_big_splash.jpg',
-			'events_the-name_splash_big.jpg'
+			'events_the-name_splash_big.jpg',
+			'events_test_splash_big.jpg',
 		);
 		foreach ($names as $name) {
-			$result = EventImageMock::process(uniqid(), compact('name'));
+			EventImageMock::process(uniqid(), compact('name'));
+
 			$expected = 'splash_big';
 			$result = EventMock::$attachImageArgs[1];
 			$this->assertEqual($expected, $result, "Name `{$name}` wasn't mapped to `{$expected}`.");
+		}
+	}
+
+	public function testExtractUrl() {
+		$names = array(
+			'events_the-name.jpg' => 'the-name',
+			'events_the-name_image.jpg' => 'the-name',
+			'events_the-name_big_splash.jpg' => 'the-name',
+			'events_the-name_splash_big.jpg' => 'the-name',
+			'events_test_splash_big.jpg' => 'test'
+		);
+		foreach ($names as $name => $url) {
+			$expected = $url;
+			$result = EventImageMock::extractUrl($name);
+			$message = "URL `{$url}` wasn't extracted from `{$name}`, but `{$result}`.";
+			$this->assertEqual($expected, $result, $message);
 		}
 	}
 }
