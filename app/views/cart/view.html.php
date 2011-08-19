@@ -45,7 +45,7 @@ var discountErrors = new Object();
 <link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
 
 <?php  if(!empty($subTotal)): ?>
-<div style="margin:10px; margin-bottom:10px">
+<div style="margin:10px;">
 
 	<div class="grid_11" style="padding-bottom:10px; margin:20px auto auto auto;">
 		<div style="float:left">

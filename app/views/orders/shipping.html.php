@@ -83,10 +83,9 @@ var addressForm = new Object();
     });
    
 </script>
-<?php  if(empty($cartEmpty)): ?>
-<div class="container_16" style="height:1000px">
 
-	<div style="margin:10px">
+<div style="height:700px; margin:10px">
+
 	<div class="grid_8" style="padding-bottom:10px; margin:20px auto auto auto;">
 		<div style="float:left">
 			<h2 class="page-title gray">
@@ -110,9 +109,7 @@ var addressForm = new Object();
 	</div>
 	
 	<?=$this->form->create($address, array(
-		'id' => 'addressForm',
-		'class' => "fl"
-)); ?>
+		'id' => 'addressForm')); ?>
 
 	<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
 		<hr />
@@ -161,12 +158,11 @@ var addressForm = new Object();
 	</div>
 	
 	<div class="grid_16">
-			<?=$this->form->submit('Payment', array('class' => 'button fr', 'style'=>'float:right')); ?>
+			<?=$this->form->submit('Payment', array('class' => 'button fr', 'style'=>'float:right; margin-right:10px;')); ?>
 	</div>
 
 <?=$this->form->end();?> 
 
-</div>
 </div>
 
 <div id="address_form" style="display:none">
@@ -176,9 +172,6 @@ var addressForm = new Object();
 </div>
 <div class="clear"></div>
 </div>
-<?php else: ?>
-	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1><center><span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
-<?php endif ?>
 <script>
 $(document).ready(function(){ 
 	$("#addresses").change(function () {
