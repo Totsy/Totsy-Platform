@@ -11,6 +11,10 @@
 		}
 	});
 </script>
+
+<script type="text/javascript">
+var addressForm = new Object();
+</script>
 <?php
 	use app\models\Address;
 	$this->html->script('application', array('inline' => false));
@@ -30,7 +34,41 @@
 		$("#addressForm").validationEngine({ promptPosition : "centerRight", scroll: false });
     	$("#addressForm").validationEngine('init', { promptPosition : "centerRight", scroll: false });   
     	
-    	 
+    	$("#addressForm").submit( function() {
+    	
+    		addressForm.submitted = true;
+    		addressForm.form = $(this).serializeArray(); 
+    		
+    		var invalid_count = 0;
+    		var set_bubble = false;
+    		
+    		$("#addressForm").validationEngine('attach');        
+    		$("#addressForm").validationEngine('init', { promptPosition : "centerRight", scroll: false } );      		
+    		    		    		    		
+    		$.each(	addressForm.form, function(i, field) {	
+    		    if(	field.value=="" && 
+    		    	field.name!=="telephone" && 
+    		    	field.name!=="address_2" && 
+    		    	field.name!=="submitted" ) {
+    		    	
+    		    	//the bubble will only be set for the first one in the set
+    		    	if(set_bubble==false){    		 		
+    		 		$('#' + field.name + "").validationEngine('showPrompt','*This field is required', '', true);
+    		 		$('#' + field.name + "").validationEngine({ promptPosition :"centerRight", scroll: false });
+    		 		set_bubble = true;
+    		 		}
+    		 		    		 		
+    		 		$('#' + field.name + "").attr('style', 'background: #FFFFC5 !important');
+    		 		
+    		 		invalid_count++;
+    		 	} 
+			});
+			
+			if(invalid_count > 0 ) {
+    		    return false;
+    		}		
+    	});
+    	
     	$(".inputbox").blur( function() { 
     	    
 			$('#' + this.id + "").validationEngine('hide');	
