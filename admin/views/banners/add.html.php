@@ -32,7 +32,7 @@ tinyMCE.init({
 			onSelect: function(selectedDate) {
 				var option = this.id == "end_date" ? "minDate" : "maxDate";
 				var instance = $(this).data("datetimepicker");
-				var date = $.datepicker.parseDate(instadnce.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+				var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
 				dates.not(this).datepicker("option", option, date);
 			}
 		});
