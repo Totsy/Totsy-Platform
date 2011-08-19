@@ -186,6 +186,7 @@ function filter() {
 	$('#filterform').submit();
 };
 </script>
+
 <script type="text/javascript">
 var cto_params = [];
 cto_params["kw"] = "<?=$event->name?>"; //REMOVE LINE IF NOT APPLICABLE
@@ -193,8 +194,10 @@ cto_params["kw"] = "<?=$event->name?>"; //REMOVE LINE IF NOT APPLICABLE
 <?php $iCounter = 1; ?>
 <?php foreach ($items as $item): ?>
 cto_params["i<?=$iCounter;?>"] = "<?php echo (string) $item->_id; ?>";
+<?php if($iCounter==5) break; ?>
 <?php $iCounter++; ?>
 <?php endforeach ?>
+<?php endif ?>
 var cto_conf = 't1=sendEvent&c=2&p=3290';
 var cto_conf_event = 'v=2&wi=7714287&pt1=3';
 var CRITEO=function(){var b={Load:function(d){var c=window.onload;window.onload=function(){if(c){c()}d()}}};function a(e){if(document.createElement){
