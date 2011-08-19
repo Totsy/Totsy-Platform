@@ -215,7 +215,7 @@ class File extends \lithium\data\Model {
  * Ensure only unused files can be deleted.
  */
 File::applyFilter('delete', function($self, $params, $chain) {
-	if (File::used($params['entity']->_id)) {
+	if (File::$dedupe && File::used($params['entity']->_id)) {
 		return false;
 	}
 	return $chain->next($self, $params, $chain);
