@@ -20,6 +20,7 @@
 	
 </script>
 
+<script type="text/javascript" src="/js/jquery.number_format.js"></script>
 <script type="text/javascript" src="/js/tipsy/src/javascripts/jquery.tipsy.js"></script>
 <link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
 
@@ -135,7 +136,7 @@
 				<?php $x++; ?>
 			<?php endforeach ?>
 				<tr valign="top">
-					<td colspan="2" id="subtotal" style="padding:10px 0px 50px 10px">
+					<td colspan="2" style="padding:10px 0px 50px 10px">
 						<div style="float: left">
 							<div style="font-size: 12px; text-align:left !important;">
 								<strong>Add <?php if(!empty($credit)): ?>
@@ -158,9 +159,9 @@
 						
 					<td colspan="6">	
 					<div style="padding-top:10px">
-							<div style="font-weight:bold" class="subtotal">
-									<span style="float: left;">Subtotal:</span>
-									<span style="float:right">$<?=number_format($subTotal,2)?></span>
+							<div style="font-weight:bold" class="subtotal" >
+									<span style="float:left;">Subtotal:</span>
+									<span style="float:right" id="subtotal">$<?=number_format($subTotal,2)?></span>
 							</div>
 							<?php if (!empty($promocode['discount_amount']) && ($promocode['type'] != 'free_shipping') ):?>
 							<div style="clear:both"></div>
@@ -168,20 +169,24 @@
     								<span style="float: left;">Discount 
     								<?php echo '[' . $promocode['code'] . ']'; ?>	
     								:</span> 
-    								<span style="float:right">- $<?=number_format(abs($promocode['discount_amount']),2)?></span>
+    								<span style="float:right" class="fees_and_discounts">-$
+    								<?=number_format(abs($promocode['discount_amount']),2)?>
+    								</span>	
     						</div>
    							<?php endif ?>
    							<?php if (!empty($services['tenOffFitfy'])):?>
 							<div style="clear:both"></div>
 							<div style="font-weight:bold" class="subtotal">
     								<span style="float: left;">Discount [10$ Off] :</span> 
-    								<span style="float:right">- $<?=number_format($services['tenOffFitfy'],2)?></span>
+    									<span style="float:right" class="fees_and_discounts">- $<?=number_format($services['tenOffFitfy'],2)?>
+    									</span>
+    								</span>
     						</div>
    							<?php endif ?>
 							<div style="clear:both"></div>
 							<div style="font-weight:bold" class="subtotal">
 									<span style="float: left;" id="shipping" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute.">Shipping:</span> 
-									<span style="float:right">$7.95</span>
+									<span style="float:right" class="fees_and_discounts">$7.95</span>
 							</div>
 							<?php if (!empty($shipping_discount)):?>
 							<div style="clear:both"></div>
@@ -193,19 +198,19 @@
     										echo '[' . $promocode['code'] . ']';	
     								}?>		
     								:</span> 
-    								<span style="color:#009900; float:right">- $<?=number_format($shipping_discount,2)?></span>
+    								<span style="color:#009900; float:right" class="fees_and_discounts">- $<?=number_format($shipping_discount,2)?></span>
     						</div>
    							<?php endif ?>
 							<div style="clear:both"></div>						
 							<div style="font-weight:bold" class="subtotal">
 									<span id="estimated_tax" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute." style="float: left;">Estimated Tax:</span> 
-									<span style="float:right">$0.00</span>
+									<span style="float:right" class="fees_and_discounts">$0.00</span>
 							</div>
 							<?php if (!empty($credits)):?>
 							<div style="clear:both"></div>
 							<div style="font-weight:bold" class="subtotal">
-    								<span style="float: left;">Credits:</span> 
-    								<span style="float:right">- $<?=number_format(abs($credits),2)?></span>
+    								<span style="float:left;">Credits:</span> 
+    								<span style="float:right" class="fees_and_discounts">- $<?=number_format(abs($credits),2)?></span>
     						</div>
    							<?php endif ?>
 							<div style="clear:both" class="subtotal"><hr /></div>			
@@ -218,7 +223,8 @@
 								</div>
 								<div class="subtotal">
 								<span style="font-size:15px; font-weight:bold">Order Total:</span> 
-									<span style="font-size:15px; color:#009900; float:right">$ <?=number_format($total,2)?> </span></div>
+									<span style="font-size:15px; color:#009900; float:right" id="ordertotal">$ <?=number_format($total,2)?> </span>
+								</div>
 									
 						</div>	
 					</div>				
@@ -310,10 +316,10 @@
 
 <script type="text/javascript" charset="utf-8">
 
-$(document).ready( function() {
+$( function () {
 
-	$(".quantity").bind('click', function() {
-				
+	$(".quantity").bind('change', function() {
+											
 		var id = $(this).attr('id');
 		var qty = $(this).val();
 		var price = $(this).closest("tr").find("td[class^=price]").html().split("$")[1];
@@ -323,30 +329,48 @@ $(document).ready( function() {
 			decimalSeparator: ".",
 			thousandSeparator: "," });
 		$(this).closest('tr').find('td[class^=total]').html('<strong>$' + itemCost + '</strong>');
+		
 		var subTotal = 0;
+		var orderTotal = 0;
+		
 		$('td[class^=total]').each(
+		function() {
+		    subTotal += parseFloat($(this).html().split("$")[1]);
+		});		
+		
+		//sum of all items
+		orderTotal = subTotal;
+		
+		$('.fees_and_discounts').each(
 			function() {
-		    	subTotal += parseFloat($(this).html().split("$")[1]);
-			});
-		var subTotalProper = $().number_format(subTotal, {
+		    orderTotal += parseFloat($(this).html().split("$")[1]);
+		});
+			
+		var formattedSubTotal = $().number_format(subTotal, {
 			numberOfDecimals: 2,
 			decimalSeparator: '.',
 			thousandSeparator: ','
 		});
 		
+		var formattedOrderTotal = $().number_format(orderTotal, {
+			numberOfDecimals: 2,
+			decimalSeparator: '.',
+			thousandSeparator: ','
+		});
+				
 		$.ajax({
 			url: $.base + 'cart/update',
-			data: '_id=' + id + '&' + 'qty=' + qty,
+			data: '_id=' + id + '&' + 'quantity=' + qty,
 			context: document.body,
 			success: function(message) {
-				$("#message").addClass("cart-message");
-				$("#message").css("padding: 0pt 0.7em;");
-				$("#message").html("<center>" + message + "</center>");
+				
 			}
 		});
 		
-	$("#subtotal").html("<strong>Subtotal: $" + subTotalProper + "</strong>");
-});
+		$("#subtotal").html("<strong>Subtotal: $" + formattedSubTotal + "</strong>");
+		$("#ordertotal").html(formattedOrderTotal);
+	
+	});
 });
 
 //SUBMIT THE ITEM WHICH IS DELETED

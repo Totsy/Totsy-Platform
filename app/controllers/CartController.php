@@ -231,21 +231,32 @@ class CartController extends BaseController {
 	* @see app/models/Cart::check()
 	*/
 	public function update() {
-		$data = $this->request->data;
+	
+		$data = $_REQUEST;	
+		
+		//ini_set('display_errors', 1);	
+			
 		if(!empty($data['rmv_item_id'])) {
 			#Removing one item from cart
 			$this->remove($data['rmv_item_id']);
-		} else if(!empty($data['cart'])) {
-			$carts = $data['cart'];
-			foreach ($carts as $id => $quantity) {
-				$result = Cart::check((integer) $quantity, (string) $id);
-				$cart = Cart::find('first', array(
+		} else if(!empty($data)) {
+			$carts = $data;
+			
+			//foreach ($carts as $key => $value) {
+			$id = $carts['_id'];
+			$quantity = $carts['quantity'];
+			
+			$result = Cart::check((integer) $quantity, (string) $id);				
+			$cart = Cart::find('first', array(
 					'conditions' => array('_id' =>  (string) $id)
 				));
+								
 				$status = $this->itemAvailable($cart->item_id, $cart->quantity, $cart->size, $quantity);
+							
 				if(!$status['available']) {
-					$cart->quantity = (integer) $status['quantity'];
+					$cart->quantity = (integer) $status['quantity'];					
 					$cart->save();
+										
 					$this->addIncompletePurchase(Cart::active());
 				} else {
 					if ($result['status']) {
@@ -266,9 +277,9 @@ class CartController extends BaseController {
 						$this->refreshTimer();
 					}
 				}
-			}
+			//}
 			#update savings
-			Cart::updateSavings($items, 'update');
+			Cart::updateSavings($items, 'update');					
 		}
 	}
 	
@@ -332,9 +343,7 @@ class CartController extends BaseController {
 		
 
 		if (is_object($items)) $items = $items->data();
-		
-
-		
+				
 		$user = Session::read('userLogin');
 		$base_url = 'http://'.$_SERVER['HTTP_HOST'].'/';
 		$itemToSend = array();
