@@ -52,6 +52,7 @@ var paymentForm = new Object();
     		paymentForm.form = $(this).serializeArray(); 
     		
     		var invalid_count = 0;
+    		var set_bubble= false;
     		
     		$("#paymentForm").validationEngine('attach');        
     		$("#paymentForm").validationEngine('init', { promptPosition : "centerRight", scroll: false } );      		
@@ -65,9 +66,10 @@ var paymentForm = new Object();
     		    	field.name!=="opt_shipping_select" && 
     		    	field.name!=="card_valid" ) {
     		    	
-    		 		if( i==1 ) {
+    		 		if(set_bubble==false){   
     		 			$('#' + field.name + "").validationEngine('showPrompt','*This field is required', '', true);
     		 			$('#' + field.name + "").validationEngine({ promptPosition : "centerRight", scroll: false });
+    		 			set_bubble=true;
     		 		}
     		 		$('#' + field.name + "").attr('style', 'background: #FFFFC5 !important');
     		 		
