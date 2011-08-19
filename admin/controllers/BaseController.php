@@ -3,9 +3,19 @@
 namespace admin\controllers;
 use admin\models\Event;
 use lithium\util\Inflector;
+use \lithium\core\Environment;
 use li3_flash_message\extensions\storage\FlashMessage;
 use MongoDate;
 class BaseController extends \lithium\action\Controller {
+
+    public function _init() {
+
+        if(!Environment::is('production')){
+            $branch = "<h4 id='#global_site_msg'>Current branch " . $this->currentBranch() ."</h4>";
+            $this->set(compact('branch'));
+        }
+		parent::_init();
+    }
 
 	/**
 	 * Common method to clean URLs
@@ -32,18 +42,20 @@ class BaseController extends \lithium\action\Controller {
 	 * @see /extensions/helpers/Events.php
 	 */
 	public function selectEvent($type = null) {
-		$month_delay = 1;
-		if(!empty($this->request->data)) {
-			$month_delay = (int) $this->request->data['month_delay']; 	
+		/**TOM - TEMPORARY FIX FOR MEMORY LIMIT ON DEV**/
+		$environment = Environment::get();
+		if ($environment == 'local') {
+			#DEV SERVER - LIMIT TO LAST 3 MONTHS EVENT
+			$date_limit = mktime(0, 0, 0, (date("m") - 3), date("d"), date("Y"));
+			$conditions = array(
+				'created_date' => array(
+					'$gt' => new MongoDate($date_limit)
+			));
+			$events = Event::find('all', array('conditions' => $conditions));
+		} else {
+			$events = Event::all();
 		}
-		$date_limit = mktime(0, 0, 0, (date("m") - $month_delay), date("d"), date("Y"));
-		$conditions = array(
-			'created_date' => array(
-    		   '$gt' => new MongoDate($date_limit)
-		));
-		$events = Event::find('all', array('conditions' => $conditions));
-		
-		return compact('events', 'type', 'month_delay');
+		return compact('events', 'type', 'environment');
 	}
 
 	protected function _asciiClean($description) {
@@ -59,5 +71,12 @@ class BaseController extends \lithium\action\Controller {
 			if ($r != $string{$i - 1}) $string .=  $r;
 		}
 		return $string;
+	}
+
+	public function currentBranch() {
+        $out = shell_exec("git branch --no-color");
+        preg_match('#(\*)\s[a-zA-Z0-9_-]*(.)*#', $out, $parse);
+        $pos = stripos($parse[0], " ");
+        return trim(substr($parse[0], $pos));
 	}
 }

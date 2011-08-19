@@ -34,7 +34,7 @@ use admin\extensions\Mailer;
  * @see admin/extensions/command/Exchanger
  * @see admin/controllers/QueueController
  */
- 
+
 
 
 //sets maxlifetime to 5 hours
@@ -54,7 +54,7 @@ ini_set('session.gc_probability', 1);
 //check the gc_probability
 //echo ini_get("session.gc_probability");
 
- 
+
 class OrderExport extends Base {
 
 	/**
@@ -264,7 +264,7 @@ class OrderExport extends Base {
 		    'user_id' => true
 		));
 		$order_total = $orders->count();
-		
+		//total same until here 345pm
 		if ($orders) {
 			$inc = 1;
 			/**
@@ -315,7 +315,7 @@ class OrderExport extends Base {
 
 			$orderArray = array();
 			$ecounter = 0;
-			
+
 			//new counts for email breakdown
 			$allitems = 0;
 			$unprocessed_orders = 0;
@@ -327,18 +327,18 @@ class OrderExport extends Base {
 				$conditions = array('Customer PO #' => array('$in' => array((string) $order['_id'], $order['_id'])));
 				$processCheck = ProcessedOrder::count(compact('conditions'));
 				++$ecounter;
-				
+
 				//get items in order before check here
 				$items = $order['items'];
 
 				//total of items count to add to each subtotal
 				$raw_item_count = count($items);
-				
+
 				//add to raw item count
 				$allitems += $raw_item_count;
 
 				if ($processCheck == 0) {
-				
+
 					//this is unprocessed total for orders, items
 					$unprocessed_orders++;
 					$unprocessed_orders_items += $raw_item_count;
@@ -421,10 +421,9 @@ class OrderExport extends Base {
 							if (!in_array($orderFile[$inc]['OrderNum'], $orderArray)) {
 								$orderArray[] = $orderFile[$inc]['OrderNum'];
 							}
-							if ($this->test != 'true') {
+
 								$processedOrder = ProcessedOrder::connection()->connection->{'orders.processed'};
 								$processedOrder->save($orderFile[$inc] + $this->batchId);
-							}
 							$this->log("Adding order $order[_id] to $handle");
 							fputcsv($fp, $orderFile[$inc], chr(9));
 							++$inc;
@@ -445,7 +444,7 @@ class OrderExport extends Base {
 			if (!rename($handle, $this->pending.$filename)) {
 			    $this->log("Failed to move file " . $handle . " Filesize was " . filesize($handle));
 			    $new_location = $this->pending.$filename;
-			     $this->log("Using shell command to move file");
+			    $this->log("Using shell command to move file");
 			    shell_exec("mv ". $handle . " " . $new_location);
 			}
 			$totalOrders = count($orderArray);
@@ -463,7 +462,7 @@ class OrderExport extends Base {
 
 
 			$this->summary['order']['count'] = count($orderArray) + $split_number;
-			$this->summary['order']['lines'] = $inc + $lines;
+			$this->summary['order']['lines'] = ($inc + $lines) - 1;
 			$this->summary['order']['filename'] = $filename;
 			$this->log("$handle was created total of $totalOrders orders generated with $inc lines");
 		} else {

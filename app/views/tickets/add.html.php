@@ -31,8 +31,41 @@
 
 	<h2 class="gray mar-b">Contact Us</h2>
 	<hr />
-
 	<?=$this->form->create(); ?>
+	<h3 style="margin:10px auto;" class="gray">Your contact information</h3>
+				<? if (is_array($error) && array_key_exists('firstname',$error)){?>
+				<div class="standard-message" style="border:0px!important; background:none!important;">
+					<?=$error['firstname'][0];?>
+				</div>
+				<div style="clear:both;"></div>
+				<? } ?>
+				<div class="form-row">
+				<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+				<?=$this->form->text('firstname', array('class' => 'inputbox', 'value'=>is_null($data)?$user['firstname']:$data['firstname']));?>  
+			</div>
+				<? if (is_array($error) && array_key_exists('lastname',$error)){?>
+				<div class="standard-message" style="border:0px!important; background:none!important;">
+					<?=$error['lastname'][0];?>
+				</div>
+				<div style="clear:both;"></div>
+				<? } ?>
+			<div class="form-row">
+				<?=$this->form->label('lastname', 'Last Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+				<?=$this->form->text('lastname', array('class' => 'inputbox', 'value'=>is_null($data)?$user['lastname']:$data['lastname']));?>  
+				
+			</div>
+			<? if (is_array($error) && array_key_exists('telephone',$error)){?>
+			<div class="standard-message" style="border:0px!important; background:none!important;">
+				<?=$error['telephone'][0];?>
+			</div>
+			<div style="clear:both;"></div>
+			<? } ?>
+			<div class="form-row">
+				<?=$this->form->label('telephone', 'Telephone <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+				<?=$this->form->text('telephone', array('class' => 'inputbox', 'id' => 'phone', 'value'=>is_null($data)?'':$data['telephone']));?> 
+			</div>
+
+			<h3 style="margin:10px auto;" class="gray">Please describe your issue below: </h3>
 		<select id="parent" style="width:350px;" name="issue_type">
 			<option value="default">I need help with:</option>
 			<?php if ($orders): ?>
@@ -52,7 +85,7 @@
 			<?php if ($orders): ?>
 				<option value="">Choose Your Order Number</option>
 				<?php foreach ($orders as $key => $value): ?>
-					<option class="sub_order" value="<?=$key?>"><?=$value?></option>
+					<option class="sub_order" value="<?=$key?>"> <?=$value?></option>
 				<?php endforeach ?>
 			<?php endif ?>
 
@@ -89,7 +122,12 @@
 
 		<br />
 
-		<h3>Your Message</h3>
+		<h3 style="margin:10px auto;" class="gray">Your Message</h3>
+		<? if (is_array($error) && array_key_exists('message',$error)){?>
+			<div class="standard-message" style="border:0px!important; background:none!important;">
+					<?=$error['message'][0];?>
+				</div>
+		<? } ?>	
 		<?=$this->form->textarea('message', array(
 			'class' => 'inputbox',
 			'style' => 'width:300px;height:120px'

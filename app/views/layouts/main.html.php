@@ -26,10 +26,10 @@
 <!--
 <div id="global_site_msg"><strong>Last minute message:</strong> our last promotional campaign that was intended for a select audience of our long-time members was unintentionally exposed to the general public. <br />This promotion has now been restored and will only work for members who received an email directly from Totsy containing a promocode.</div>
 -->
+<?php echo $branch; ?>
 <div id="topper"></div>
 	<div id="wrapper">
 		<div id="header">
-
 			<div id="header-lt">
 				<?=$this->html->link(
 					$this->html->image('logo.png', array('width'=>'155', 'height'=>'90')), '/sales', array(
@@ -50,7 +50,7 @@
 					(<?=$this->html->link('Sign Out', $logout, array('title' => 'Sign Out')); ?>)
 			<?php endif ?>
 			</div>
-			
+
 			<div class="menu_top_right">
 			<?php if (!(empty($userInfo))) { ?>
 				<a href="/account" title="My Account">My Account</a>
@@ -59,7 +59,7 @@
 				<a href="/users/invite" title="+ Invite Friends Get $15">+ Invite Friends Get $15</a>
 			<?php } else { ?>
 				<span style="text-align:right!important;">
-					<a href="/" title="Sign In">Sign In</a> 
+					<a href="/" title="Sign In">Sign In</a>
 					<a href="/register" title="Sign Up">Sign Up</a>
 					<a href="/users/invite" title="+ Invite Friends Get $15">+ Invite Friends Get $15</a>
 				</span>
@@ -85,7 +85,7 @@
 			</div>
 		</div>
 		<div style="clear:both;"></div>
-		
+
 		<div id="content">
 			<?php echo $this->content(); ?>
 		</div>
@@ -99,8 +99,8 @@
 			<li><a href="http://blog.totsy.com" title="Blog" target="_blank">Blog</a></li>
 			<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
 			<li><a href="/pages/affiliates" title="Affiliates">Affiliates</a></li>
-			
-			<! -- switch where this link points depending on whether they're logged in or not --> 
+
+			<! -- switch where this link points depending on whether they're logged in or not -->
 		<?php if (empty($userInfo)){ ?>
 		<li><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
 		<li class="last"><a href="http://nytm.org/made" title="Made in NYC" target="_blank">Made in NYC</a></li>
@@ -122,6 +122,10 @@
 	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
 	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 	  })();
+	</script>
+	
+	<script language="javascript">
+	document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s://www':'://www')+ '.upsellit.com/upsellitJS4.jsp?qs=237268202226312324343293280329277309292309329331334326345325&siteID=6605"><\/sc'+'ript>')
 	</script>
 
     <script type="text/javascript">
