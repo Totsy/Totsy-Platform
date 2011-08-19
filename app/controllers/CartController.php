@@ -52,16 +52,13 @@ class CartController extends BaseController {
 			$this->update();
 		}
 		#Get current Discount
-		$vars = Cart::getDiscount(null,null,$this->request->data);
+		$vars = Cart::getDiscount($shipping,0,$this->request->data);
 		Cart::increaseExpires();
 		$cart = Cart::active(array('time' => '-3min'));
 		$test = $cart->data();
 		if(empty($test)) {
 			#Remove Temporary Session Datas**/
-			Session::delete('userSavings');	
-			Session::delete('promocode');
-			Session::delete('credit');
-			Session::delete('services');	
+			User::cleanSession();
 		}
 		$cartItemEventEndDates = Array();
 		$i = 0;
@@ -100,7 +97,6 @@ class CartController extends BaseController {
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
 		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
-		$postDiscount = ($subTotal - $vars['services']['tenOffFitfy']);
 		$services = $vars['services'];
 		if(!empty($vars['cartCredit'])) {
 			$credits = Session::read('credit');
