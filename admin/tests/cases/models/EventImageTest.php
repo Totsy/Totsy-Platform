@@ -13,7 +13,8 @@ class EventImageTest extends \lithium\test\Unit {
 			'events_the-name_image.jpg'
 		);
 		foreach ($names as $name) {
-			$result = EventImageMock::process(uniqid(), compact('name'));
+			EventImageMock::process(uniqid(), compact('name'));
+
 			$expected = 'event';
 			$result = EventMock::$attachImageArgs[1];
 			$this->assertEqual($expected, $result, "Name `{$name}` wasn't mapped to `{$expected}`.");
@@ -25,7 +26,8 @@ class EventImageTest extends \lithium\test\Unit {
 			'events_the-name_logo.jpg'
 		);
 		foreach ($names as $name) {
-			$result = EventImageMock::process(uniqid(), compact('name'));
+			EventImageMock::process(uniqid(), compact('name'));
+
 			$expected = 'logo';
 			$result = EventMock::$attachImageArgs[1];
 			$this->assertEqual($expected, $result, "Name `{$name}` wasn't mapped to `{$expected}`.");
@@ -38,7 +40,8 @@ class EventImageTest extends \lithium\test\Unit {
 			'events_the-name_splash_small.jpg'
 		);
 		foreach ($names as $name) {
-			$result = EventImageMock::process(uniqid(), compact('name'));
+			EventImageMock::process(uniqid(), compact('name'));
+
 			$expected = 'splash_small';
 			$result = EventMock::$attachImageArgs[1];
 			$this->assertEqual($expected, $result, "Name `{$name}` wasn't mapped to `{$expected}`.");
