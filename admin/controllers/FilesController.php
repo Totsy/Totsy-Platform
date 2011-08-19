@@ -95,14 +95,14 @@ class FilesController extends \lithium\action\Controller {
 					$meta = array('name' => $file['name']);
 
 					if (EventImage::process($handle, $meta)) {
-						Logger::debug('File processed as event image.');
+						Logger::debug("File `{$file['name']}` matched & processed as event image.");
 
 					} elseif (ItemImage::process($handle, $meta)) {
-						Logger::debug('File processed as item image.');
+						Logger::debug("File `{$file['name']}` matched & processed as item image.");
 
 					} else { /* All unmatched files are not resized and saved as pending. */
 						File::write($handle, $meta + array('pending' => true));
-						Logger::debug('Saving unmatched file as pending.');
+						Logger::debug("Saving unmatched file `{$file['name']}` as pending.");
 
 					}
 					fclose($handle);
