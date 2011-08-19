@@ -260,7 +260,7 @@ tinyMCE.init({
 			
 			<a href="#" class="upload_files_link" onClick="document.getElementById('agileUploaderSWF').submit();">Start Upload <?=$this->html->image('agile_uploader/upload-icon.png', array('height' => '24')); ?></a>
 
-				<br>
+			<br style="clear: left;" />
 			<?php if ($item->primary_image || $item->zoom_image || $item->alternate_images): ?>
 
 					<table border="1" cellspacing="30" cellpadding="30">
