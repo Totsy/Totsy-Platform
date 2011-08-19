@@ -77,7 +77,6 @@ class ItemTest extends \lithium\test\Integration {
 		$item->delete();
 		$file->delete();
 	}
-
 	public function testAttachImageAndSave() {
 		$fixtures = Fixture::load('Item');
 
