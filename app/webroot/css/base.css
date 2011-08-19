@@ -1935,6 +1935,13 @@ span.citem.active-th {
 	margin:20px 0;
 }
 
+.cart-step-status {
+	display: table-cell;
+	padding-right: 5px !important;
+	vertical-align: middle; 
+	line-height:10px !important;	
+}
+
 .cart-table {
 	margin-bottom:10px;
 	width:100%;
@@ -1951,15 +1958,6 @@ span.citem.active-th {
 	padding:0;
 	border-bottom:1px solid #D7D7D7;
 }
-
-/*
-.cart-form input[type='text'] {
-margin-top: 15px;
-}
-
-.cart-form select {
-margin-top: 15px;
-} */
 
 tr.alt0 td {
 	background:#f7f7f7;

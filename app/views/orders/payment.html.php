@@ -98,12 +98,13 @@ var paymentForm = new Object();
 </script>
 
 <div class="grid_16">
-	<h2 class="page-title gray">
-			<span class="cart_steps_off">1</span>
-			<span class="cart_steps_off">2</span>
-			<span class="cart_steps_on">3</span>
-			<span class="cart_steps_off">4</span>
-			<span class="red">Payment Information</span></h2>
+		<h2 class="page-title gray">
+			<span class="cart-step-status gray">Payment</span>
+			<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
+			<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
+			<span class="cart-step-status"><img src="/img/cart_steps3.png"></span>
+			<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
+		</h2>
 	<hr />
 	<?php if (!empty($error)) { ?>
 		<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /></div>
@@ -232,6 +233,9 @@ function replace_address() {
     } else {
     	$.each ( shippingAddress, function(k, v) {
     		$("#" + k + "").val("");
+    		
+    		
+    		
     		if(paymentForm.opt_submitted==true) {  		
     			$('#' + k + "").attr("style", "background: #FFFFC5 !important");
     		}	
@@ -273,9 +277,10 @@ function validCC() {
 	var test = isValidCard($("#card_number").val());
 	$("#card_valid").val(test);
 	if(!test) {
-		$('#error_valid').show();
+		$("#card_number").validationEngine('showPrompt','*This field is required', '', true);
+		$("#card_number").attr('style', 'background: #FFFFC5 !important');
 	} else {
-		$('#error_valid').hide();
+		$("#card_number").attr('style', 'background: #FFFFFF !important');
 	}
 }
 

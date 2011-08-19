@@ -48,17 +48,19 @@
 
 <div class="container_16" style="height:1000px">
 
-	<div class="grid_8">
-		<h2 class="page-title gray">
-				<span class="cart_steps_off">1</span>
-				<span class="cart_steps_on">2</span>
-				<span class="cart_steps_off">3</span>
-				<span class="cart_steps_off">4</span>
-				<span class="red">Shipping Information</span>
-		</h2>
-		<?php if (!empty($error)) { ?>
-		<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2></div>
-		<?php } ?>
+	<div class="grid_8" style="padding-bottom:10px; margin:20px auto auto auto;">
+		<div style="float:left">
+			<h2 class="page-title gray">
+				<span class="cart-step-status gray">Shipping Information</span>
+				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
+				<span class="cart-step-status"><img src="/img/cart_steps2.png"></span>
+				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
+				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
+			</h2>
+			<?php if (!empty($error)) { ?>
+			<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2></div>
+			<?php } ?>
+		</div>
 	</div>
 	
 	<div class="grid_8">
