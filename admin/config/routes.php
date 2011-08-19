@@ -36,7 +36,6 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 		'body' => $file->file->getBytes()
 	));
 });
-
 Router::connect('/login', 'Users::login');
 Router::connect('/logout', 'Users::logout');
 Router::connect('/token', 'Users::token');

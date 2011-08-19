@@ -34,7 +34,6 @@ $(function() {
 
 	$('a[href*="/associate/pending"]').live('click', function(e) {
 		e.preventDefault();
-
 		$('#pending-data').html('<div class="loading">Associating…</div>');
 
 		$.ajax({

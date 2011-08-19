@@ -166,7 +166,6 @@ if (!empty($user['token'])) {
 
 <div class="clear"></div>
 <?=$this->view()->render(array('element' => 'files_pending'), compact('item')); ?>
-
 <div class="clear"></div>
 <div id="orphaned" class="box">
 	<h2>Manage Orphan Files</h2>
