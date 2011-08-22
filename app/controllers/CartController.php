@@ -123,7 +123,7 @@ class CartController extends BaseController {
 	 */
 	public function add() {
 		#Check Cart and Refresh Timer
-		$this->refreshTimer();
+		Cart::refreshTimer();
 		$cart = Cart::create();
 		if ($this->request->data) {
 			$itemId = $this->request->data['item_id'];
@@ -247,7 +247,7 @@ class CartController extends BaseController {
 						$cart->save();
 						$items[$cart->item_id] = $quantity;
 						#Check Cart and Refresh Timer
-						$this->refreshTimer();
+						Cart::refreshTimer();
 					}
 				} else {
 					$cart->error = $result['errors'];
