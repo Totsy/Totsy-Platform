@@ -232,7 +232,7 @@ div.xls_cell:hover{
 }
 
 .xls_holder_inner{
-	width:4200px;
+	width:5000px;
 }
 
 </style>
