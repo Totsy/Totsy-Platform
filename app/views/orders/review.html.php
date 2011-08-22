@@ -20,19 +20,18 @@
 			<span class="cart-step-status"><img src="/img/cart_steps4.png"></span>
 	</h2>
 	<hr />
-	<?php if ($errors = $order->errors()): ?>
-	<?php foreach ($errors as $error): ?>
-	    <?php if (is_array($error)): ?>
-	        <?php foreach($error as $msg): ?>
-	            <div class="checkout-error"><?=$msg; ?></div>
-	        <?php endforeach; ?>
-	    <?php else: ?>
-		    <div class="checkout-error"><?=$error; ?></div>
-		<?php endif; ?>
-	<?php endforeach ?>
-<?php endif ?>
+	<?php //if($errors == $order->errors()): ?>
+		<?php foreach ($errors as $error): ?>
+	    	<?php if (is_array($error)): ?>
+	        	<?php foreach($error as $msg): ?>
+	            	<div class="checkout-error"><?=$msg; ?></div>
+	        	<?php endforeach ?>
+	   		<?php else: ?>
+		    	<div class="checkout-error"><?=$error; ?></div>
+			<?php endif ?>
+		<?php endforeach ?>
+	<?php //endif ?>
 </div>
-
 <div class="container_16">
 	<div class="grid_8 roundy gray">
 	Shipping Address <span style="float:right;">(<a href="#change" title="Change">Change</a></span>)

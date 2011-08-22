@@ -290,7 +290,7 @@ class OrdersController extends BaseController {
 		#Check Cart Validty
 		$cart = Cart::active(array(
 				'fields' => $fields,
-				'time' => '-5min'
+				'time' => '-0min'
 		));
 		foreach($cart as $item){
 			if($cartExpirationDate < $item['expires']->sec) {
@@ -386,13 +386,13 @@ class OrdersController extends BaseController {
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'cartCredit', 'cartPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
 		);
 		#TEST CASE - TO UNCOMMENT
-		//if ( ($cart->data()) && (count($this->request->data) > 1) && ($total > 0)) {
+		if ( ($cart->data()) && (count($this->request->data) > 1) && ($total > 0)) {
 			$order = Order::process($total, $subTotal, $this->request->data, $cart, $vars, $avatax, $shippingCost, $overShippingCost);
 			if (empty($order->errors)) {
 				#Redirect To Confirmation Page
-				return $this->redirect(array('Orders::view', 'args' => $order->order_id));
+				//$this->redirect(array('Orders::view', 'args' => $order->order_id));
 			}
-		//}
+		}
 		$cartEmpty = ($cart->data()) ? false : true;
 		if (Session::check('cc_error')){
 			//$this->redirect(array('Orders::payment'));
