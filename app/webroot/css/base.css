@@ -642,7 +642,8 @@ li.item5 a:hover,li.item5.over a,li.active.item5 a {
 	position:absolute;
 	width:14px;
 	height:14px;
-	background-image:url(../img/corners.png);
+	/* removing rounded corners until CG tells us to put it back */
+	/* background-image:url(../img/corners.png); */
 	background-repeat:no-repeat;
 	z-index:100;
 }
