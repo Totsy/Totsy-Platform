@@ -369,6 +369,9 @@ $(function () {
 function open_credit() {
 	if ($("#cred").is(":hidden")) {
 		$("#cred").slideToggle("fast");
+		if (!$("#promo").is(":hidden")) {
+			$("#promo").slideToggle("fast");
+		}
 	} else {
 		$("#cred").slideToggle("fast");
 	}
@@ -383,6 +386,9 @@ function show_code_errors(id) {
 function open_promo() {
 	if ($("#promo").is(":hidden")) {
 		$("#promo").slideToggle("fast");
+		if (!$("#cred").is(":hidden")) {
+			$("#cred").slideToggle("fast");
+		}
 	} else {
 		$("#promo").slideToggle("fast");
 	}
