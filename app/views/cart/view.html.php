@@ -207,7 +207,7 @@ var discountErrors = new Object();
 							<div style="clear:both"></div>							
 							<div style="font-weight:bold;" >
 							<div class="subtotal">	
-							<span style="margin-left:-80px" id="shipping_tooltip" style="float:left" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
+							<span style="margin-left:-81px" id="shipping_tooltip" style="float:left" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
 									</span>
 								<span style="float: left;" id="shipping">
 								Shipping:</span> 
