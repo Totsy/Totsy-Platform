@@ -456,7 +456,7 @@ class OrderExport extends Base {
 
 
 			$this->summary['order']['count'] = count($orderArray) + $split_number;
-			$this->summary['order']['lines'] = $inc + $lines;
+			$this->summary['order']['lines'] = ($inc + $lines) - 1;
 			$this->summary['order']['filename'] = $filename;
 			$this->log("$handle was created total of $totalOrders orders generated with $inc lines");
 		} else {
