@@ -6,6 +6,8 @@ use lithium\util\Inflector;
 use \lithium\core\Environment;
 use li3_flash_message\extensions\storage\FlashMessage;
 use MongoDate;
+use MongoRegex;
+
 class BaseController extends \lithium\action\Controller {
 
     public function _init() {
@@ -42,18 +44,35 @@ class BaseController extends \lithium\action\Controller {
 	 * @see /extensions/helpers/Events.php
 	 */
 	public function selectEvent($type = null) {
-		/**TOM - TEMPORARY FIX FOR MEMORY LIMIT ON DEV**/
-		$environment = Environment::get();
-		if ($environment == 'local') {
-			#DEV SERVER - LIMIT TO LAST 3 MONTHS EVENT
-			$date_limit = mktime(0, 0, 0, (date("m") - 3), date("d"), date("Y"));
-			$conditions = array(
-				'created_date' => array(
-					'$gt' => new MongoDate($date_limit)
-			));
-			$events = Event::find('all', array('conditions' => $conditions));
-		} else {
-			$events = Event::all();
+		$events = array();
+		if($this->request->data) {
+			$conditions = array();
+			if (array_key_exists('todays', $this->request->data) && !empty($this->request->data['todays'])){
+				$conditions = array(
+					'start_date' => array('$gte'=> new MongoDate())
+				);
+			} elseif (array_key_exists('search', $this->request->data) && !empty($this->request->data['search'])) {
+			    if ($this->request->data['search'] == '&' || $this->request->data['search'] == 'and') {
+			        $this->request->data['search'] = '(&|and)';
+			    }
+				$conditions = array('name' => new MongoRegex("/" .trim($this->request->data['search']) ."/i"));
+			} elseif(array_key_exists('start_date', $this->request->data) && !empty($this->request->data['start_date'])) {
+				$conditions = array(
+					'start_date' => array('$gte'=> new MongoDate(strtotime($this->request->data['start_date'])))
+				);
+			}else {
+				$conditions = array(
+					'end_date' => array('$gte' => new MongoDate(strtotime($this->request->data['end_date'])))
+				);
+			}
+			$events = Event::find('all',array('conditions' => $conditions,
+				'fields' => array('name' => 1,
+				'start_date' => 1,
+				'end_date' => 1,
+				'blurb' => 1,
+				'enabled' => 1,
+				'_id' => 1
+				) ));
 		}
 		return compact('events', 'type', 'environment');
 	}
