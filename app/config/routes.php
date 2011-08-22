@@ -63,9 +63,7 @@ Router::connect('/livingsocial', array('Pages::view', 'args' => array('living_so
 Router::connect('/blog', 'Blog::index');
 Router::connect('/feeds/{:args}', 'Feeds::home');
 
-/**
-	Shopping Cart Routes
-**/
+/** Shopping Cart Routes **/
 Router::connect('/checkout/view', 'Cart::view');
 Router::connect('/checkout/shipping', 'Orders::shipping');
 Router::connect('/checkout/payment', 'Orders::payment');
@@ -79,6 +77,7 @@ if(!Session::check('userLogin')) {
 	Router::connect('/{:args}', 'Users::login');
 	return;
 }
+
 Router::connect('/', 'Events::index');
 Router::connect('/sales/{:args}', 'Events::index');
 Router::connect('/{:action:login|logout}', array('controller' => 'users'));

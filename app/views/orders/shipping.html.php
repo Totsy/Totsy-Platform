@@ -109,16 +109,15 @@ var addressForm = new Object();
 	</div>
 	
 	<?=$this->form->create($address, array(
-		'id' => 'addressForm')); ?>
-
-	<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
-		<hr />
-		Choose your address :
-		<?=$this->form->select('addresses', $addresses_ddwn, array("id" => 'addresses', 'value' => $selected));?>
-		<hr />
-		<?php endif ?>
+		'id' => 'addressForm')); ?>	
 			
 	<div class="grid_16">
+	
+	<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
+		<hr />Choose your address :<?=$this->form->select('addresses', $addresses_ddwn, array("id" => 'addresses', 'value' => $selected));?>
+		<hr />
+		<?php endif ?>
+	
 		<div>
 		<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('firstname', array('class' => 'validate[required] inputbox', 'id'=>'firstname')); ?>

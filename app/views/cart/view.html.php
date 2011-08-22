@@ -59,7 +59,7 @@ var discountErrors = new Object();
 		</div>
 	</div>
 	
-	<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto;">
+	<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px">
 		 <div style="float:right;">
 		Item Reserved For: <br />
 		<span id="itemCounter" style="color:#009900; float:right !important"></span>
@@ -207,7 +207,7 @@ var discountErrors = new Object();
 							<div style="clear:both"></div>							
 							<div style="font-weight:bold;" >
 							<div class="subtotal">	
-							<span style="margin-left:-81px" id="shipping_tooltip" style="float:left" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
+							<span style="" id="shipping_tooltip" style="float:left" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
 									</span>
 								<span style="float: left;" id="shipping">
 								Shipping:</span> 
@@ -277,17 +277,7 @@ var discountErrors = new Object();
 	<?=$this->form->hidden('rmv_item_id', array('class' => 'inputbox', 'id' => 'rmv_item_id')); ?>
 	<?=$this->form->end();?>
 </div>
-	<?php if (!empty($itemCounters)): ?>
-		<?php foreach ($itemCounters as $counter): ?>
-			<?php //echo $counter ?>
-		<?php endforeach ?>
-	<?php endif ?>
-	<?php if (!empty($removeButtons)): ?>
-		<?php foreach ($removeButtons as $button): ?>
-			<?php //echo $button ?>
-		<?php endforeach ?>
-	<?php endif ?>
-	
+		
 <script type="text/javascript" charset="utf-8">
 		
 	$(".counter").each( function() {
@@ -369,9 +359,6 @@ $(function () {
 function open_credit() {
 	if ($("#cred").is(":hidden")) {
 		$("#cred").slideToggle("fast");
-		if (!$("#promo").is(":hidden")) {
-			$("#promo").slideToggle("fast");
-		}
 	} else {
 		$("#cred").slideToggle("fast");
 	}
@@ -386,9 +373,6 @@ function show_code_errors(id) {
 function open_promo() {
 	if ($("#promo").is(":hidden")) {
 		$("#promo").slideToggle("fast");
-		if (!$("#cred").is(":hidden")) {
-			$("#cred").slideToggle("fast");
-		}
 	} else {
 		$("#promo").slideToggle("fast");
 	}

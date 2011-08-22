@@ -1,327 +1,381 @@
-<?php
-	$this->html->script('application', array('inline' => false));
-	$this->form->config(array('text' => array('class' => 'inputbox')));
-	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
-	$preTotal = $subTotal + $cartCredit->credit_amount + $services['tenOffFitfy'];
-	$afterDiscount = $preTotal + $cartPromo->saved_amount;
-	if ($afterDiscount < 0) {
-		$afterDiscount = 0;
-	}
-	$total = $afterDiscount + $tax + $shippingCost + $overShippingCost;
-?>
-<?=$this->html->script('jquery.maskedinput-1.2.2')?>
-<?php if(empty($cartEmpty)): ?>
-<div class="grid_16">
-	<h2 class="page-title gray">
-			<span class="cart-step-status gray">Review your Shipping and Payment Information. Then Place Your Order.</span>
-			<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-			<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-			<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-			<span class="cart-step-status"><img src="/img/cart_steps4.png"></span>
-	</h2>
-	<hr />
-	<?php //if($errors == $order->errors()): ?>
-		<?php foreach ($errors as $error): ?>
-	    	<?php if (is_array($error)): ?>
-	        	<?php foreach($error as $msg): ?>
-	            	<div class="checkout-error"><?=$msg; ?></div>
-	        	<?php endforeach ?>
-	   		<?php else: ?>
-		    	<div class="checkout-error"><?=$error; ?></div>
-			<?php endif ?>
-		<?php endforeach ?>
-	<?php //endif ?>
-</div>
-<div class="container_16">
-	<div class="grid_8 roundy gray">
-	Shipping Address <span style="float:right;">(<a href="#change" title="Change">Change</a></span>)
-	<hr />
-	<strong>The Girl In The White Coat</strong><br/>
-	40 Broadway Avenue</br>
-	1234567890
-	</div>
-	<div class="grid_4 roundy gray">
-		Payment Method (<a href="#change" title="Change">Change</a>)<br/>
-		<hr/>
-		MasterCard</br>
-		Ends in 2834<br/>
-		Expires 12/2012
-	</div>
-	<div class="grid_4 roundy gray" style="text-align:center;">
-		Order Total $98.95<br/>
-		<?=$this->form->create($order); ?>
-		<?=$this->form->submit('Place Your Order', array('class' => 'button submit')); ?><br/>
-		Your payment method will be changed
-		<?=$this->form->end(); ?>
-	</div>
-</div>
+<script type="text/javascript">	
 
+var discountErrors = new Object();
 
-<div class="grid_10 roundy grey_inside" style="width:562px!important;" >
+	$(document).ready( function(){
+					
+			if(discountErrors.promo==true) {	
+				show_code_errors("promo");
+			} else if (discountErrors.credits==true)  {
+				show_code_errors("cred");
+			} else if(discountErrors.credits==true && discountErrors.promo==true) {
+				show_code_errors("cred");
+				show_code_errors("promo");
+			} else {
+				discountErrors.promo=false;
+				discountErrors.credits=false;  
+			}
+		}
+	
+	
+	$( function () {
+	    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	    
+		var now = new Date();
+		
+		$('#itemCounter').countdown( { until: itemExpires, onExpiry: refreshCart, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
+		
+		if (itemExpires < now) {
+			$('#itemCounter').html("<span class='over' style='color:#EB132C; padding:5px;'>No longer reserved</span>");
+		}
+		
+		function refreshCart() {
+			window.location.reload(true);
+		}
+		
+		//applying tooltip
+		$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
+		$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
+		
+	}); 
+	
+	);
+	
+</script>
 
-<table style="width:100%;">
-	<tr>
-		<td valign="top">
-		</td>
-    	<td valign="top">
-			<table style=" margin:0 10px;">
-				<tr>
-					<h1 style="color:#707070; font-size:14px;"><?php if (!$credit == '0') { ?>Credits &amp; <?php } ?>Promotional Codes</h1>
-					<hr />
-				</tr>
-				<tr>
-					<td><strong>Order Subtotal:</strong> </td>
-					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $subTotal, 2);?></td>
-				</tr>
+<script type="text/javascript" src="/js/jquery.number_format.js"></script>
+<script type="text/javascript" src="/js/tipsy/src/javascripts/jquery.tipsy.js"></script>
+<link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
 
-				<tr>
-					<td>
-							<strong>Promo Savings:</strong>
-					</td>
-							<td style="text-align:left; padding-left:10px;">
-                                <?php if (!empty($cartPromo)): ?>
-                                    -$<?=number_format((float) abs($cartPromo->saved_amount), 2);?>
-                                <?php else: ?>
-                                    -$<?=number_format((float) 0, 2);?>
-                                <?php endif ?>
-							</td>
-				</tr>
+<?php  if(!empty($subTotal)): ?>
+<div style="margin:10px;">
 
-				<?php
-					if ($services['tenOffFitfy']): ?>
-						<tr>
-							<td>You qualify for $10 off your purchase!</td><td>- $10.00</td>
-						</tr>
-				<?php endif; ?>
-				<tr>
-					<td><strong>Shipping:</strong> </td>
-					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $shippingCost, 2);?></td>
-				</tr>
-				<?php if ($overShippingCost !=0): ?>
-					<tr>
-						<td><strong>Oversize Shipping:</strong> </td>
-						<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $overShippingCost, 2);?></td>
-					</tr>
-				<?php endif ?>
-				<?php
-					if ($services['freeshipping']): ?>
-						<tr>
-							<td>You qualify for free shipping!</td>
-						</tr>
-				<?php endif; ?>
-				<tr>
-					<td><strong>Sales Tax:</strong></td>
-					<td style="text-align:left; padding-left:10px;">$<?=number_format((float) $tax, 2);?>
-				</tr>
-					<?php if ($discountExempt): ?>
-						<tr>
-							<p>**Your order contains an item where promotions or credits cannot be applied.<br>
-								If you need to use credits or promotion codes, please do so on a separate order.<br>
-								We apologize for any inconvenience this may cause.
-							</p>
-						</tr>
-					<?php endif ?>
-				<tr>
-				    <?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'userDoc' => $userDoc)); ?>
-				</tr>
-				<tr>
-					<div style="padding:10px; background:#eee; margin:10px 0">
-
-					    <?=$this->view()->render(array('element' => 'promocode'),
-					            array('order' => $order, 'orderPromo' => $cartPromo)
-					            ); ?>
-						</td>
-						<div style="clear:both"></div>
-					</div>
-				</tr>
-				<tr>
-					<td style="text-align:left; color:#707070; font-size:22px;"><hr /><strong>Order Total:</td>
-					<td style="text-align:right; color:#009900; font-size:22px; padding-left:10px"><hr />$<?=number_format((float) $total, 2);?></td>
-				</tr>
-
-			</table>
-		</td>
-	</tr>
-</table>
-</div>
-
-
-<div class="grid_6 omega">
-<div class="roundy grey_inside">
-		<h3 class="gray">Your Savings <span class="fr"><?php if (!empty($savings)) : ?>
-		<span style="color:#009900; font-size:16px; float:right;">$<?=number_format((float) $savings, 2);?></span>
-		<?php endif ?></span></h3>
-	</div>
-	<div class="roundy grey_inside">
-		<h3 class="gray">Estimated Ship Date<span style="font-weight:bold; float:right;"><?=date('m-d-Y', $shipDate)?></span></h3>
-
-	</div>
-
-	<div class="roundy grey_inside">
-		<?php if ($billingAddr): ?>
-								<h3 class="gray">Billing Address <span class="fr">(<a href="#" class="add-address">edit</a>)</span></h3>
-								<hr />
-								<address class="billing-address">
-									<?=$billingAddr->address; ?> <?=$billingAddr->address_2; ?><br />
-									<?=$billingAddr->city; ?>, <?=$billingAddr->state; ?>
-									<?=$billingAddr->zip; ?>
-								</address>
-						<?php endif ?>
-						<br />
-						<?php if ($shippingAddr): ?>
-								<h3 class="gray">Shipping Address <span class="fr">(<a href="#" class="add-address">edit</a>)</span></h3>
-								<hr />
-								<address class="shipping-address">
-									<?=$shippingAddr['address']; ?> <?=$shippingAddr['address_2']; ?><br />
-									<?=$shippingAddr['city']; ?>, <?=$shippingAddr['state']; ?>
-									<?=$shippingAddr['zip']; ?>
-								</address>
-						<?php endif ?>
-
-
-	</div>
-
-	<div class="roundy grey_inside">
-		<h2 style="color:#707070;font-size:14px; font-weight:normal;">My Cart (<?=$this->html->link('edit','/cart/view'); ?>) <span style="float:right;"><?=$cartCount;?> items</span></h2>
-		<hr />
-		<!-- Begin Order Details -->
-	<?php if ($cartByEvent): ?>
-
-		<?php $x = 0; ?>
-		<?php foreach ($cartByEvent as $key => $event): ?>
-		<?php foreach ($event as $item): ?>
-		<?php $itemUrl = "sale/".$orderEvents[$key]['url'].'/'.$item['url'];?>
-		<div style="float:left; width:85px;">
-									<?php
-										if (!empty($item['primary_image'])) {
-											$image = $item['primary_image'];
-											$productImage = "/image/$image.jpg";
-										} else {
-											$productImage = "/img/no-image-small.jpeg";
-										}
-									?>
-
-									<?=$this->html->link(
-										$this->html->image("$productImage", array(
-											'width'=>'75',
-									'style' => 'margin:2px;')),
-											'',
-											array( 'escape'=> false
-										),
-										$itemUrl
-									); ?>
-				</div>
-				<div style="float:left; width:236px;">
-				<?=$orderEvents[$key]['name']?><br>
-
-									<?=$this->form->hidden("item$x", array('value' => $item['_id'])); ?>
-									<?=$item['description'];?><br>
-									<?php if ($item['color']) { ?>
-									Color: <?=$item['color'];?><br>
-									<?php } ?>
-									<?php if (!$item['size'] == 'no size') { ?>
-									Size: <?=$item['size'];?><br>
-									<?php } else { ?>
-									<?php } ?>
-									Quantity: <?=$item['quantity'];?> (<strong style="color:#009900;">$<?=number_format($item['sale_retail'],2)?></strong>)<br>
-
-
-							<?php
-								//Allow users three extra minutes on their items for checkout.
-								$date = ($item['expires']['sec'] * 1000);
-								$checkoutCounters[] = "<script type=\"text/javascript\">
-									$(function () {
-										var itemCheckoutExpires = new Date($date);
-										$(\"#checkout-counter-$x\").countdown('change', {until: itemCheckoutExpires, $countLayout});
-
-									$(\"#checkout-counter-$x\").countdown({until: itemCheckoutExpires,
-									    expiryText: '<div class=\"over\" style=\"color:#fff; padding:5px; background: #EB132C;\">no longer reserved</div>', $countLayout});
-									var now = new Date();
-									if (itemCheckoutExpires < now) {
-										$(\"#checkout-counter-$x\").html('<div class=\"over\" style=\"color:#fff; padding:5px; background: #EB132C;\">no longer reserved</div>');
-									}
-									});
-									</script>";
-								$x++;
-							?>
-
-							</div>
-							<div class="clear"></div>
-							<hr/>
-				<?php endforeach ?>
-			<?php endforeach ?>
-
-							<?php endif ?>
-	<!-- End Order Details -->
-
-
+	<div class="grid_11" style="padding-bottom:10px; margin:20px auto auto auto;">
+		<div style="float:left">
+			<h2 class="page-title gray">
+				<span class="cart-step-status gray">Review Your Shipping and Payment Information</span>
+				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
+				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
+				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
+				<span class="cart-step-status"><img src="/img/cart_steps4.png"></span>
+			</h2>
 		</div>
+	</div>
+	
+	<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px">
+		 <div style="float:right;">
+		Item Reserved For: <br />
+		<span id="itemCounter" style="color:#009900; float:right !important"></span>
+	    </div>
+	    <div style="float:left;">
+		 <div>Estimated Shipping Date: </div>
+	         <div style="float:right; color:#009900;">&nbsp;&nbsp;<?=date('m-d-Y', $shipDate)?></div>
+	     </div>
+	</div>
+	<div class="clear"></div>
+	<hr/>
+	
+	<!-- shipping and payment method -->
+	<div class="grid_8">Shipping Address</div>
+	<div class="grid_4">Payment Method</div>
+	<div class="grid_4">Place your order</div>
 
+<div class="message"></div>
+<?php if (!empty($subTotal)): ?>
+
+<div class="roundy_cart" style="width:935px !important">
+<?=$this->form->create(null ,array('id'=>'cartForm')); ?>
+	<div id='message'><?php echo $message; ?></div>
+		<table class="cart-table">
+			<tbody>
+			<?php $x = 0; ?>
+			<?php foreach ($cart as $item): ?>
+				<!-- Build Product Row -->
+				<tr id="<?=$item->_id?>" class="alt0">
+					<td class="cart-th">
+						<?php
+							if (!empty($item->primary_image)) {
+								$image = $item->primary_image;
+								$productImage = "/image/$image.jpg";
+							} else {
+								$productImage = "/img/no-image-small.jpeg";
+							}
+						?>
+						<?=$this->html->link(
+							$this->html->image("$productImage", array(
+								'width'=>'60',
+								'height'=>'60',
+						'style' => 'margin:2px; display:block; padding:4px;')),
+							array('Items::view', 'args' => $item->url),
+								array(
+								'id' => 'main-logo_', 'escape'=> false
+							)
+						); ?>
+					</td>
+					<td class="cart-desc" style="width:475px;">
+						<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
+						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?></strong><br>
+						<strong>Color:</strong> <?=$item->color;?><br>
+						<strong>Size:</strong> <?=$item->size;?>
+					</td>
+					<td style="width:150px;">
+					<div id='<?php echo "itemCounter$x"; ?>_display' style="margin:5px 0px 0px 5px;" title='<?=$date?>'></div>
+					</td>
+					<td class="<?="price-item-$x";?>" style="width:65px;">
+						<strong>$<?=number_format($item->sale_retail,2)?></strong>
+					</td>
+					<td class="<?="qty-$x";?>" style="width:65px; text-align:center">
+					<!-- Quantity Select -->
+					<?php
+						if($item->available < 9) {
+							$qty = $item->available;
+							if($item->quantity > $qty){
+								$select = array_unique(array_merge(array('0'), range('1',(string)$item->quantity)));
+							} else {
+								$select = array_unique(array_merge(array('0'), range('1',(string)$qty)));
+							}
+						} else {
+							$select = array_unique(array_merge(array('0'), range('1','9')));
+						}
+					?>
+					<?=$this->form->select("cart[{$item->_id}]", $select, array(
+    					'id' => $item->_id, 'value' => $item->quantity, 'class'=>'quantity'
+					));
+					?>
+					<?php 
+						$date = $cartItemEventEndDates[$x] * 1000;
+					?>
+					</td>
+					<td class="cart-actions">
+						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" onclick="deletechecked('Are you sure you want to remove this item?','<?=$item->_id; ?>');" style="color: red!important;"><img src="/img/trash.png" width="20" align="absmiddle" style="margin-right:20px;" /></a>
+					</td>
+					<td class="cart-time"><!-- <img src="/img/old_clock.png" align="absmiddle" width="23" class="fl"/>--> <div id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?=$date?>'></div>
+					
+					</td>
+					<td class="<?="total-item-$x";?>" style="width:55px; text-align:right; padding-right:10px">
+						<strong>$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
+					</td>
+				</tr>
+				<?php $x++; ?>
+			<?php endforeach ?>
+				<tr valign="top">
+					<td colspan="2" style="padding:10px 0px 50px 10px; border-bottom: 0px">
+						<div style="float: left">
+							<div style="font-size: 12px; text-align:left !important;">
+								<strong>Add <?php if(!empty($credit)): ?>
+									<a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a> /
+								<?php endif ?> 
+									<a href="#" id="promos_lnk" onclick="open_promo();">Optional Code</a></strong>
+							</div>
+							<div style="clear:both"></div>
+							<div id="promos_and_credit">
+							<?=$this->form->create(null); ?>
+								<div id='promo' style='display:none'>
+									<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo) ); ?>
+								</div>
+								<div id='cred' style='display:none; text-align:left !important'>								
+				   					<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'userDoc' => $userDoc)); ?>
+								</div>
+							</div>
+						</div>
+					</td>
+						
+					<td colspan="6" style="border-bottom: 0px">	
+					<div style="padding-top:10px">
+							<div style="font-weight:bold" class="subtotal" >
+									<span style="float:left;">Subtotal:</span>
+									<span style="float:right" id="subtotal">$<?=number_format($subTotal,2)?></span>
+							</div>
+							<?php if (!empty($promocode['discount_amount']) && ($promocode['type'] != 'free_shipping') ):?>
+							<div style="clear:both"></div>
+							<div style="font-weight:bold" class="subtotal">
+    								<span style="float: left;">Discount 
+    								<?php echo '[' . $promocode['code'] . ']'; ?>	
+    								:</span> 
+    								<span style="float:right" class="fees_and_discounts">-$
+    								<?=number_format(abs($promocode['discount_amount']),2)?>
+    								</span>	
+    						</div>
+   							<?php endif ?>
+   							<?php if (!empty($services['tenOffFitfy'])):?>
+							<div style="clear:both"></div>
+							<div style="font-weight:bold" class="subtotal">
+    								<span style="float: left;">Discount [10$ Off] :</span> 
+    									<span style="float:right" class="fees_and_discounts">- $<?=number_format($services['tenOffFitfy'],2)?>
+    									</span>
+    								</span>
+    						</div>
+   							<?php endif ?>
+							<div style="clear:both"></div>							
+							<div style="font-weight:bold;" >
+							<div class="subtotal">	
+							<span style="" id="shipping_tooltip" style="float:left" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
+									</span>
+								<span style="float: left;" id="shipping">
+								Shipping:</span> 
+								<span style="float:right" class="fees_and_discounts">$7.95</span>							</div>
+							</div>
+							<?php if (!empty($shipping_discount)):?>
+							<div style="clear:both"></div>
+							<div style="font-weight:bold" class="subtotal">
+    							<span style="float: left;">Free Shipping 
+    								<?php 
+    								if(!empty($promocode)) {
+    									if($promocode['type'] === 'free_shipping')
+    										echo '[' . $promocode['code'] . ']';	
+    								}?>		
+    								:</span> 
+    								<span style="color:#707070; float:right" class="fees_and_discounts">- $<?=number_format($shipping_discount,2)?></span>
+    						</div>
+   							<?php endif ?>
+							<div style="clear:both"></div>	
+							<div style="font-weight:bold">
+							<div class="subtotal">
+								<span style="margin-left:-110px;" id="tax_tooltip" style="float:left" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
+</span>		
+							<span id="estimated_tax" style="float: left;">Estimated Tax:</span> 
+									<span style="float:right" class="fees_and_discounts">$0.00</span>
+							</div>
+							</div>
+							<?php if (!empty($credits)):?>
+							<div style="clear:both"></div>
+							<div style="font-weight:bold" class="subtotal">
+    								<span style="float:left;">Credits:</span> 
+    								<span style="float:right" class="fees_and_discounts">- $<?=number_format(abs($credits),2)?></span>
+    						</div>
+   							<?php endif ?>
+							<div style="clear:both" class="subtotal"><hr /></div>			
+							<div>
+								<div class="savings">Your Saving: 
+									<span style="color:#ff6d1d; font-weight:bold"><?php if (!empty($savings)) : ?>
+									$<?=number_format($savings,2)?>
+									<?php endif ?>
+									</span> 
+								</div>
+								<div class="subtotal">
+								<span style="font-size:15px; font-weight:bold">Order Total:</span> 
+									<span style="font-size:15px; color:#009900; float:right" id="ordertotal">$ <?=number_format($total,2)?> </span>
+								</div>
+									
+						</div>	
+					</div>				
+					</td>
+				</tr>
+			</tbody>
+		</table>
+</div>
+
+<div class="cart-button fr" style="margin:20px 0px 20px 0px;">
+		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
+		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
 	<div class="clear"></div>
 
+
+<?=$this->form->end(); ?>
 </div>
+
+<div id="remove_form" style="display:none">
+	<?=$this->form->create(null ,array('id'=>'removeForm')); ?>
+	<?=$this->form->hidden('rmv_item_id', array('class' => 'inputbox', 'id' => 'rmv_item_id')); ?>
+	<?=$this->form->end();?>
+</div>
+		
+<script type="text/javascript" charset="utf-8">
+		
+	$(".counter").each( function() {
+	    				
+	    var fecha  = parseInt(this.title);
+	    var itemExpires = new Date();
+	    var now = new Date();
+	    
+	    itemExpires = new Date(fecha);	
+	    
+	    var expireNotice = (itemExpires.valueOf() - 120000);
+	    expireNotice = new Date( expireNotice );
+	    
+	    //show 2 minutes notice
+	    if(expireNotice < now && itemExpires > now){
+	    	$("#" + this.id + "_display").html('<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item will expire in 2 minutes</div>');
+	    } 
+	    
+	   	//show item expired notice
+	    if(now > itemExpires) {
+	    	$("#" + this.id + "_display").html('<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>');
+	    }
+	    
+	    $("#" + this.id).countdown({until: expireNotice, 
+	    							expiryText: '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item will expire in 2 minutes</div>', 
+	    							layout: '{mnn}{sep}{snn} seconds',
+	    							onExpiry: resetTimer
+	    							});
+	    
+	    //call when item expires
+		function notifyEnding() {
+			$("#" + this.id).countdown('change', { expiryText: '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>'});
+		
+			$("#" + this.id + "_display").html( '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>' );
+		}
+	    
+	    //call 2 minutes before the item expires							
+	    function resetTimer() {	
+	    	$("#" + this.id + "_display").html( $("#" + this.id).countdown('settings', 'expiryText') );
+			$("#" + this.id).countdown('change', { until: itemExpires, 
+												   expiryText: '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>',
+												    onExpiry: notifyEnding
+												   });
+		}							
+	});		
+				
+</script>	
+	
 <div class="clear"></div>
-<div id="modal"></div>
-<div id="address-modal" style="z-index:9999999999!important;"></div>
 <?php else: ?>
 	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1><center><span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
 <?php endif ?>
-<script type="text/javascript">
-$(".add-address").click(function() {
-	$("#address-modal").load($.base + 'addresses/add').dialog({
-		autoOpen: false,
-		modal:true,
-		width: 415,
-		height: 497,
-		position: 'top',
-		close: function(ev, ui) {}
-	});
-	$("#address-modal").dialog('open');
-});
+</div>
+<div id="modal" style="background:#fff!important; z-index:9999999999!important;"></div>
 
-</script>
-<?php
-    if(number_format((float) $total, 2) >= 35 && number_format((float) $total, 2) <= 44.99){
-        echo "<script type=\"text/javascript\">
-            $.post('/cart/modal',{modal: 'disney'},function(data){
-              //  alert(data);
-                if(data == 'false'){
-                    $('#modal').load('/cart/upsell?subtotal=" . (float)$total ."&redirect=".$itemUrl."').dialog({
-                        autoOpen: false,
-                        modal:true,
-                        width: 550,
-                        height: 320,
-                        position: 'top',
-                        close: function(ev, ui) {}
-                    });
-                    $('#modal').dialog('open');
-                }
-            });
-            </script>";
-    }
-?>
 <script type="text/javascript" charset="utf-8">
-	$(document).ready(function(){
-		$('#gift').bind('click', function() {
-			$('#gift-message').toggle();
-		});
+
+//SUBMIT THE ITEM WHICH IS DELETED
+function deletechecked(message, id) {
+	var answer = confirm(message)
+	if (answer){
+		$("input[name='rmv_item_id']").val(id);
+		$('#removeForm').submit();
+	}
+	return false;
+}
+//SUBMIT QUANTITY IN CASE OF DDWN CHANGE
+$(function () {
+	$(".quantity").live("change keyup", function () {
+		if($("select").val() == 0) {
+			$('input[name="rmv_item_id"]').val($(this).attr('id'));
+			$('#removeForm').submit();
+		} else {
+			$('#cartForm').submit();
+		}
 	});
-</script>
-<?php if (!empty($itemCounters)): ?>
-	<?php foreach ($itemCounters as $counter): ?>
-		<?php echo $counter ?>
-	<?php endforeach ?>
-<?php endif ?>
-<?php if ($cartEmpty == true): ?>
-	<script>
-		window.location.replace('/cart/view');
-	</script>
-<?php endif ?>
-
-<script type="text/javascript">
-(function($){
-   $("#cc").mask("9999999999999999");
-   $("#CVV2").mask("9999");
 });
-</script>
+//HIDE / SHOW CREDITS INPUT
+function open_credit() {
+	if ($("#cred").is(":hidden")) {
+		$("#cred").slideToggle("fast");
+	} else {
+		$("#cred").slideToggle("fast");
+	}
+};
 
+//for showing promo and discount errors after the promocode form has been submitted
+function show_code_errors(id) {
+	$("#" + id).slideToggle("fast");
+}
+
+//HIDE / SHOW PROMOS INPUT
+function open_promo() {
+	if ($("#promo").is(":hidden")) {
+		$("#promo").slideToggle("fast");
+	} else {
+		$("#promo").slideToggle("fast");
+	}
+};
+</script>
