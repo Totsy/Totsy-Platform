@@ -172,9 +172,15 @@ class ReportsController extends BaseController {
 							case 'keyade':
 							$conditions = array(
 								'purchase_count' => array('$gte' => 1),
-									'$or' => array(
-											array('keyade_referral_user_id' => array('$exists' => true )),
-											array('keyade_user_id' => array('$exists' => true ))
+								'$or' => array(
+										array(
+											'keyade_referral_user_id' => array('$ne' => NULL ),
+											'keyade_referral_user_id' => array('$exists' => true )
+										),
+										array(
+											'keyade_user_id' => array('$ne' => NULL ),
+											'keyade_user_id' => array('$exists' => true )
+										)
 								)
 							);
 							break;
@@ -248,8 +254,14 @@ class ReportsController extends BaseController {
 							case 'keyade':
 								$conditions = array(
 									'$or' => array(
-											array('keyade_referral_user_id' => array('$exists' => true )),
-											array('keyade_user_id' => array('$exists' => true ))
+											array(
+												'keyade_referral_user_id' => array('$ne' => NULL ),
+												'keyade_referral_user_id' => array('$exists' => true )
+											),
+											array(
+												'keyade_user_id' => array('$ne' => NULL ),
+												'keyade_user_id' => array('$exists' => true )
+											)
 									)
 								);
 								$dateField = 'created_date';
