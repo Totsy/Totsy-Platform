@@ -40,13 +40,11 @@ class Order extends Base {
 	 *
 	 * @return object
 	 */
-	public static function process($total, $subTotal, $data, $cart, $vars, $avatax, $handling, $overSizeHandling) {
+	public static function process($total, $data, $cart, $vars, $avatax) {
 		$order = Order::create(array('_id' => new MongoId()));
 		$user = Session::read('userLogin');
-		#Read Credit Card Informations
-		$card = self::creditCardDecrypt($user_id);
 		#Create Payment
-		$card = Payments::create('default', 'creditCard', $card + array(
+		$card = Payments::create('default', 'creditCard', $vars['creditCard'] + array(
 			'billing' => Payments::create('default', 'address', array(
 				'firstName' => $vars['billingAddr']['firstname'],
 				'lastName'  => $vars['billingAddr']['lastname'],
@@ -128,11 +126,10 @@ class Order extends Base {
 			}
 			#Save Tax Infos
 			if($avatax === true){
-				AvaTax::postTax( compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
+				AvaTax::postTax(compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
 			}
-		
 			#Save Order Infos
-			$order->save(compact('total', 'subTotal','handling','overSizeHandling') + array(
+			$order->save(compact('total', $vars['subTotal'],'handling','overSizeHandling') + array(
 					'user_id' => (string) $user['_id'],
 					'tax' => (float) $avatax['tax'],
 					'card_type' => $card->type,
