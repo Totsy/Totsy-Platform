@@ -381,13 +381,16 @@ class OrdersController extends BaseController {
 		$tax = $avaTax['tax'];
 		#Calculate Order Total
 		$total = $vars['postDiscountTotal'] + $tax;
-		$vars = compact(
-			'user', 'cart', 'subTotal',
-			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'cartCredit', 'cartPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
+		#Read Credit Card Informations
+		$creditCard = Order::creditCardDecrypt((string)$user['_id']);
+		#Organize Datas
+		$vars = $vars + compact(
+			'user', 'userDoc', 'cart', 'subTotal', 'creditCard',
+			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'discountExempt'
 		);
 		#TEST CASE - TO UNCOMMENT
 		if ( ($cart->data()) && (count($this->request->data) > 1) && ($total > 0)) {
-			$order = Order::process($total, $subTotal, $this->request->data, $cart, $vars, $avatax, $shippingCost, $overShippingCost);
+			$order = Order::process($total, $this->request->data, $cart, $vars, $avatax);
 			if (empty($order->errors)) {
 				#Redirect To Confirmation Page
 				//$this->redirect(array('Orders::view', 'args' => $order->order_id));
