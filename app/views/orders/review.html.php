@@ -16,7 +16,7 @@ var discountErrors = new Object();
 				discountErrors.credits=false;  
 			}
 		}
-	
+	);
 	
 	$( function () {
 	    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	    
@@ -38,8 +38,6 @@ var discountErrors = new Object();
 		
 	}); 
 	
-	);
-	
 </script>
 
 <script type="text/javascript" src="/js/jquery.number_format.js"></script>
@@ -52,7 +50,7 @@ var discountErrors = new Object();
 	<div class="grid_11" style="padding-bottom:10px; margin:20px auto auto auto;">
 		<div style="float:left">
 			<h2 class="page-title gray">
-				<span class="cart-step-status gray">Review Your Shipping and Payment Information</span>
+				<span class="cart-step-status gray">Review your Shipping and Payment Information</span>
 				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
 				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
 				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
@@ -74,15 +72,16 @@ var discountErrors = new Object();
 	<div class="clear"></div>
 	<hr/>
 	
-	<!-- shipping and payment method -->
-	<div class="grid_8">Shipping Address</div>
-	<div class="grid_4">Payment Method</div>
-	<div class="grid_4">Place your order</div>
+	<div class="grid_8">Shipping rectangle</div>
+	<div class="grid_4">Payment rectangle</div>
+	<div class="grid_3">Place your order</div>
+	    
+<?php endif ?>
 
 <div class="message"></div>
 <?php if (!empty($subTotal)): ?>
 
-<div class="roundy_cart" style="width:935px !important">
+<div style="overflow:hidden; width:935px !important">
 <?=$this->form->create(null ,array('id'=>'cartForm')); ?>
 	<div id='message'><?php echo $message; ?></div>
 		<table class="cart-table">
@@ -90,7 +89,7 @@ var discountErrors = new Object();
 			<?php $x = 0; ?>
 			<?php foreach ($cart as $item): ?>
 				<!-- Build Product Row -->
-				<tr id="<?=$item->_id?>" class="alt0">
+				<tr id="<?=$item->_id?>">
 					<td class="cart-th">
 						<?php
 							if (!empty($item->primary_image)) {
@@ -126,6 +125,7 @@ var discountErrors = new Object();
 					<td class="<?="qty-$x";?>" style="width:65px; text-align:center">
 					<!-- Quantity Select -->
 					<?php
+					/*
 						if($item->available < 9) {
 							$qty = $item->available;
 							if($item->quantity > $qty){
@@ -135,12 +135,9 @@ var discountErrors = new Object();
 							}
 						} else {
 							$select = array_unique(array_merge(array('0'), range('1','9')));
-						}
+						} */
 					?>
-					<?=$this->form->select("cart[{$item->_id}]", $select, array(
-    					'id' => $item->_id, 'value' => $item->quantity, 'class'=>'quantity'
-					));
-					?>
+					<?=$item->quantity;?>
 					<?php 
 						$date = $cartItemEventEndDates[$x] * 1000;
 					?>
