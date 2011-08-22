@@ -51,7 +51,6 @@ Libraries::add('li3_flash_message');
  * your main application, but generally you should not need to change any settings.
  */
 Libraries::add('admin', array('default' => true));
-
 /**
  * Add some plugins
  */
