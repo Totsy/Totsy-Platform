@@ -229,6 +229,7 @@ class User extends Base {
 		Session::delete('promocode');
 		Session::delete('credit');
 		Session::delete('services');
+		Session::delete('cc_infos');
 	}
 }
 

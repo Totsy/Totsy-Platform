@@ -188,10 +188,10 @@ var discountErrors = new Object();
 							<div style="clear:both"></div>
 							<div style="font-weight:bold" class="subtotal">
     								<span style="float: left;">Discount 
-    								<?php echo '[' . $promocode['code'] . ']'; ?>	
-    								:</span> 
-    								<span style="float:right" class="fees_and_discounts">-$
-    								<?=number_format(abs($promocode['discount_amount']),2)?>
+    									<?php echo '[' . $promocode['code'] . ']'; ?>:	
+    								</span> 
+    								<span style="float:right" class="fees_and_discounts">
+    								- $<?=number_format(abs($promocode['discount_amount']),2)?>
     								</span>	
     						</div>
    							<?php endif ?>
@@ -217,9 +217,9 @@ var discountErrors = new Object();
     								if(!empty($promocode)) {
     									if($promocode['type'] === 'free_shipping')
     										echo '[' . $promocode['code'] . ']';	
-    								}?>		
-    								:</span> 
-    								<span style="color:#707070; float:right" class="fees_and_discounts">- $<?=number_format($shipping_discount,2)?></span>
+    								}?>:
+    							</span> 
+    							<span style="color:#707070; float:right" class="fees_and_discounts">- $<?=number_format($shipping_discount,2)?></span>
     						</div>
    							<?php endif ?>
 							<div style="clear:both"></div>	
@@ -245,7 +245,7 @@ var discountErrors = new Object();
 								</div>
 								<div class="subtotal">
 								<span style="font-size:15px; font-weight:bold">Order Total:</span> 
-									<span style="font-size:15px; color:#009900; float:right" id="ordertotal">$ <?=number_format($total,2)?> </span>
+									<span style="font-size:15px; color:#009900; float:right" id="ordertotal">$<?=number_format($total,2)?> </span>
 								</div>
 									
 						</div>	
