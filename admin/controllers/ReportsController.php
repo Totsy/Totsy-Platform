@@ -168,11 +168,32 @@ class ReportsController extends BaseController {
 				$total = 0;
 				switch ($searchType) {
 					case 'Revenue':
+						switch ($name) {
+							case 'keyade':
+							$conditions = array(
+								'purchase_count' => array('$gte' => 1),
+								'$or' => array(
+										array(
+											'keyade_referral_user_id' => array('$ne' => NULL ),
+											'keyade_referral_user_id' => array('$exists' => true )
+										),
+										array(
+											'keyade_user_id' => array('$ne' => NULL ),
+											'keyade_user_id' => array('$exists' => true )
+										)
+								)
+							);
+							break;
+							default:
+								$conditions = array(
+										'invited_by' => $affiliate,
+										'purchase_count' => array('$gte' => 1)
+								);
+							break;
+						}
 						$users = User::find('all', array(
-							'conditions' => array(
-								'invited_by' => $affiliate,
-								'purchase_count' => array('$gte' => 1)
-						)));
+							'conditions' => $conditions
+						));
 						if ($users) {
 							$reportId = substr(md5(uniqid(rand(),1)), 1, 15);
 							$collection = Report::collection();
@@ -232,8 +253,16 @@ class ReportsController extends BaseController {
 							break;
 							case 'keyade':
 								$conditions = array(
-									'invited_by' => $affiliate,
-									'keyade_user_id' => array('$exists' => true )
+									'$or' => array(
+											array(
+												'keyade_referral_user_id' => array('$ne' => NULL ),
+												'keyade_referral_user_id' => array('$exists' => true )
+											),
+											array(
+												'keyade_user_id' => array('$ne' => NULL ),
+												'keyade_user_id' => array('$exists' => true )
+											)
+									)
 								);
 								$dateField = 'created_date';
 								if (!empty($date)) {
