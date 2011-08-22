@@ -6,6 +6,8 @@ use lithium\util\Inflector;
 use \lithium\core\Environment;
 use li3_flash_message\extensions\storage\FlashMessage;
 use MongoDate;
+use MongoRegex;
+
 class BaseController extends \lithium\action\Controller {
 
     public function _init() {
@@ -42,21 +44,37 @@ class BaseController extends \lithium\action\Controller {
 	 * @see /extensions/helpers/Events.php
 	 */
 	public function selectEvent($type = null) {
-		$events = null;
-		if(!empty($this->request->data)) {
-			$month_delay = (int) $this->request->data['month_delay'];
-			if ($month_delay === 48) {
-				$events = Event::find('all');
-			} else {
-				$date_limit = mktime(0, 0, 0, (date("m") - $month_delay), date("d"), date("Y"));
+		$events = array();
+		if($this->request->data) {
+			$conditions = array();
+			if (array_key_exists('todays', $this->request->data) && !empty($this->request->data['todays'])){
 				$conditions = array(
-					'created_date' => array(
-    		   		'$gt' => new MongoDate($date_limit)
-				));
-				$events = Event::find('all', array('conditions' => $conditions));
+					'start_date' => array('$gte'=> new MongoDate())
+				);
+			} elseif (array_key_exists('search', $this->request->data) && !empty($this->request->data['search'])) {
+			    if ($this->request->data['search'] == '&' || $this->request->data['search'] == 'and') {
+			        $this->request->data['search'] = '(&|and)';
+			    }
+				$conditions = array('name' => new MongoRegex("/" .trim($this->request->data['search']) ."/i"));
+			} elseif(array_key_exists('start_date', $this->request->data) && !empty($this->request->data['start_date'])) {
+				$conditions = array(
+					'start_date' => array('$gte'=> new MongoDate(strtotime($this->request->data['start_date'])))
+				);
+			}else {
+				$conditions = array(
+					'end_date' => array('$gte' => new MongoDate(strtotime($this->request->data['end_date'])))
+				);
 			}
+			$events = Event::find('all',array('conditions' => $conditions,
+				'fields' => array('name' => 1,
+				'start_date' => 1,
+				'end_date' => 1,
+				'blurb' => 1,
+				'enabled' => 1,
+				'_id' => 1
+				) ));
 		}
-		return compact('events', 'type', 'month_delay');
+		return compact('events', 'type', 'environment');
 	}
 
 	protected function _asciiClean($description) {
@@ -76,7 +94,7 @@ class BaseController extends \lithium\action\Controller {
 
 	public function currentBranch() {
         $out = shell_exec("git branch --no-color");
-        preg_match('#(\*)\s(\w+)-(\w+)#', $out, $parse);
+        preg_match('#(\*)\s[a-zA-Z0-9_-]*(.)*#', $out, $parse);
         $pos = stripos($parse[0], " ");
         return trim(substr($parse[0], $pos));
 	}
