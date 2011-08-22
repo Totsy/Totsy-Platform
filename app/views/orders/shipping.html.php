@@ -158,7 +158,7 @@ var addressForm = new Object();
 	</div>
 	
 	<div class="grid_16">
-			<?=$this->form->submit('Payment', array('class' => 'button fr', 'style'=>'float:right; margin-right:10px;')); ?>
+			<?=$this->form->submit('Payment', array('class' => 'button fr', 'style'=>'float:l; margin-right:10px;')); ?>
 	</div>
 
 <?=$this->form->end();?> 

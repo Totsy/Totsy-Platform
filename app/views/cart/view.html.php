@@ -7,13 +7,13 @@ var discountErrors = new Object();
 			if(discountErrors.promo==true) {	
 				show_code_errors("promo");
 			} else if (discountErrors.credits==true)  {
-				show_code_errors("credits");
+				show_code_errors("cred");
 			} else if(discountErrors.credits==true && discountErrors.promo==true) {
-				show_code_errors("credits");
+				show_code_errors("cred");
 				show_code_errors("promo");
 			} else {
-				discountErrors.promo==false;
-				discountErrors.credits==false;  
+				discountErrors.promo=false;
+				discountErrors.credits=false;  
 			}
 		}
 	);
@@ -33,8 +33,8 @@ var discountErrors = new Object();
 		}
 		
 		//applying tooltip
-		$('#shipping').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
-		$('#estimated_tax').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
+		$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
+		$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
 		
 	}); 
 	
@@ -204,10 +204,14 @@ var discountErrors = new Object();
     								</span>
     						</div>
    							<?php endif ?>
-							<div style="clear:both"></div>
-							<div style="font-weight:bold" class="subtotal">
-									<span style="float: left;" id="shipping" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute.">Shipping:</span> 
-									<span style="float:right" class="fees_and_discounts">$7.95</span>
+							<div style="clear:both"></div>							
+							<div style="font-weight:bold;" >
+							<div class="subtotal">	
+							<span style="margin-left:-80px" id="shipping_tooltip" style="float:left" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
+									</span>
+								<span style="float: left;" id="shipping">
+								Shipping:</span> 
+								<span style="float:right" class="fees_and_discounts">$7.95</span>							</div>
 							</div>
 							<?php if (!empty($shipping_discount)):?>
 							<div style="clear:both"></div>
@@ -223,10 +227,13 @@ var discountErrors = new Object();
     						</div>
    							<?php endif ?>
 							<div style="clear:both"></div>	
-							<div style="font-weight:bold" class="subtotal">
-						
-									<span id="estimated_tax" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute." style="float: left;">Estimated Tax:</span> 
+							<div style="font-weight:bold">
+							<div class="subtotal">
+								<span style="margin-left:-110px;" id="tax_tooltip" style="float:left" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
+</span>		
+							<span id="estimated_tax" style="float: left;">Estimated Tax:</span> 
 									<span style="float:right" class="fees_and_discounts">$0.00</span>
+							</div>
 							</div>
 							<?php if (!empty($credits)):?>
 							<div style="clear:both"></div>

@@ -228,8 +228,6 @@ function replace_address() {
     	$.each ( shippingAddress, function(k, v) {
     		
     		$("#" + k + "").val(v);
-    		
-    		console.log(v);
     			
     		if(paymentForm.opt_submitted==true && v!=="") {  		
     			$('#' + k + "").attr("style", "background: #FFF !important");
@@ -238,12 +236,10 @@ function replace_address() {
     } else {
     	$.each ( shippingAddress, function(k, v) {
     		$("#" + k + "").val("");
-    		
-    		
-    		
-    		if(paymentForm.opt_submitted==true) {  		
-    			$('#' + k + "").attr("style", "background: #FFFFC5 !important");
-    		}	
+        		
+    			if(paymentForm.opt_submitted==true) {  		
+    				$('#' + k + "").attr("style", "background: #FFFFC5 !important");
+    			}	
     		
     		}
     	);
@@ -282,7 +278,7 @@ function validCC() {
 	var test = isValidCard($("#card_number").val());
 	$("#card_valid").val(test);
 	if(!test) {
-		$("#card_number").validationEngine('showPrompt','*This field is required', '', true);
+		$("#card_number").validationEngine('showPrompt','*This is not a valid credit card number', '', true);
 		$("#card_number").attr('style', 'background: #FFFFC5 !important');
 	} else {
 		$("#card_number").attr('style', 'background: #FFFFFF !important');
