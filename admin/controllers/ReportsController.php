@@ -173,7 +173,6 @@ class ReportsController extends BaseController {
 							$conditions = array(
 								'purchase_count' => array('$gte' => 1),
 									'$or' => array(
-											array('invited_by' => $affiliate), 
 											array('keyade_referral_user_id' => array('$exists' => true )),
 											array('keyade_user_id' => array('$exists' => true ))
 								)
@@ -249,12 +248,10 @@ class ReportsController extends BaseController {
 							case 'keyade':
 								$conditions = array(
 									'$or' => array(
-											array('invited_by' => $affiliate), 
 											array('keyade_referral_user_id' => array('$exists' => true )),
 											array('keyade_user_id' => array('$exists' => true ))
 									)
 								);
-
 								$dateField = 'created_date';
 								if (!empty($date)) {
 									$conditions = $conditions + $date;
