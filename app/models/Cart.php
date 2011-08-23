@@ -504,6 +504,8 @@ class Cart extends Base {
 	
 	/**
 	* The getDiscount method check credits, promocodes and services available 
+	* And Apply it to the subtotal
+	* Return Credit, Promo, Services Objects and the PostDiscount Total 
 	* @see app/models/Cart::check()
 	*/
 	public static function getDiscount($shippingCost = 7.95, $overShippingCost = 0, $data) {
@@ -557,6 +559,10 @@ class Cart extends Base {
 		}
 		$postDiscountTotal = ($postSubtotal + $cartPromo['saved_amount']);
 		$cartCredit->checkCredit($credit_amount, $postDiscountTotal, $userDoc);
+		#Apply credit to the Total
+		if(!empty($cartCredit->credit_amount)) {
+			$postDiscountTotal += $cartCredit->credit_amount;
+		}
 		return compact('cartPromo', 'cartCredit', 'services', 'postDiscountTotal');
 	}
 }
