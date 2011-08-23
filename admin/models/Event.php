@@ -102,7 +102,10 @@ class Event extends \lithium\data\Model {
 		
 		foreach($rows as $thisrows){
 			$fields = explode("\t", $thisrows); 
-			$fullarray[] = $fields;
+			
+			if(($fields[0]!="")&&($fields[1]!="")){
+				$fullarray[] = $fields;
+			}
 		}
 		
 		return $fullarray;
