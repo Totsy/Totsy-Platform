@@ -110,13 +110,13 @@ var discountErrors = new Object();
 							)
 						); ?>
 					</td>
-					<td class="cart-desc" style="width:475px;">
+					<td class="cart-desc" style="width:470px;">
 						<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
 						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?></strong><br>
 						<strong>Color:</strong> <?=$item->color;?><br>
 						<strong>Size:</strong> <?=$item->size;?>
 					</td>
-					<td style="width:150px;">
+					<td style="width:120px;">
 					<div id='<?php echo "itemCounter$x"; ?>_display' style="margin:5px 0px 0px 5px;" title='<?=$date?>'></div>
 					</td>
 					<td class="<?="price-item-$x";?>" style="width:65px;">
@@ -164,7 +164,7 @@ var discountErrors = new Object();
 		<div class="clear"></div>
 		
 		<div class="grid_16" style="width:935px">
-
+			<div style="float: left; vertical-align: top">
 			<div style="font-size: 12px; text-align:left !important;">
 			    <strong>Add <?php if(!empty($credit)): ?>
 			    	<a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a> /
@@ -211,9 +211,9 @@ var discountErrors = new Object();
 				<div style="clear:both"></div>							
 				<div style="font-weight:bold;" >
 				<div class="subtotal">	
-				<span style="" id="shipping_tooltip" style="float:left" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
+				<span id="shipping_tooltip" style="float:left; margin-left:-12px;" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
 				    	</span>
-				    <span style="float: left;" id="shipping">
+				    <span style="float:left;" id="shipping">
 				    Shipping:</span> 
 				    <span style="float:right" class="fees_and_discounts">$7.95</span>							</div>
 				</div>
@@ -233,9 +233,9 @@ var discountErrors = new Object();
 				<div style="clear:both"></div>	
 				<div style="font-weight:bold">
 				<div class="subtotal">
-				    <span style="margin-left:-110px;" id="tax_tooltip" style="float:left" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
+				    <span id="tax_tooltip" style="float:left; margin-left:-12px;" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
 </span>			
-				<span id="estimated_tax" style="float: left;">Estimated Tax:</span> 
+					<span id="estimated_tax" style="float:left;">Estimated Tax:</span> 
 				    <span style="float:right" class="fees_and_discounts">$0.00</span>
 				</div>
 				</div>

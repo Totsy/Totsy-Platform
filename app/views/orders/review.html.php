@@ -80,7 +80,7 @@ var discountErrors = new Object();
 		<div style="height: 115px; width: 370px; border-style:solid;border-width:2px;margin:5px 5px 5px auto;float:left">
 		Shipping rectangle
 		</div>
-		<div style="height: 115px; width: 266px; border-style:solid;border-width:2px;margin:5px;float:left">
+		<div style="height: 115px; width: 266px; border-style:solid;border-width:2px;margin:5px;float:left" class="gray">
 		Payment rectangle
 		</div>
 		<div style="height: 115px; width: 266px; border-style:solid;border-width:2px;margin:5px;float:right">
@@ -206,7 +206,7 @@ var discountErrors = new Object();
 			    <div style="clear:both"></div>							
 			    <div style="font-weight:bold;" >
 			    <div class="subtotal">	
-			    <span style="" id="shipping_tooltip" style="float:left" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
+			    <span id="shipping_tooltip" style="float:left; margin-left:-12px;" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
 			        	</span>
 			        <span style="float: left;" id="shipping">
 			        Shipping:</span> 
@@ -228,7 +228,7 @@ var discountErrors = new Object();
 			    <div style="clear:both"></div>	
 			    <div style="font-weight:bold">
 			    <div class="subtotal">
-			        <span style="margin-left:-110px;" id="tax_tooltip" style="float:left" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
+			        <span id="tax_tooltip" style="float:left; margin-left:-12px;" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
 </span>		
 			    <span id="estimated_tax" style="float: left;">Estimated Tax:</span> 
 			        	<span style="float:right" class="fees_and_discounts">$0.00</span>
