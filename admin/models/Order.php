@@ -648,6 +648,20 @@ class Order extends \lithium\data\Model {
 	        return true;
 	    }
 	}
+
+	/**
+	* This function returns the any orders that have been errored
+	**/
+	public static function errorPaymentCapture(array $options = array()) {
+	    $coll = static::collection();
+
+	    $conditions = array();
+
+	    $default = array(
+
+	    );
+	    $results = $coll->find();
+	}
 }
 
 ?>
