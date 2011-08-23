@@ -349,13 +349,30 @@
 	/* ]]> */
 </script>
 
-<script type="text/javascript" src="https://www.googleadservices.com/pagead/conversion.js"></script>
+<script type="text/javascript" src="http://www.googleadservices.com/pagead/conversion.js"></script>
 
 <noscript>
 	<div style="display:inline;">
-		<img height="1" width="1" style="border-style:none;" alt="" src="https://www.googleadservices.com/pagead/conversion/1019183989/?label=SeX0CLn9igIQ9Yb-5QM&amp;guid=ON&amp;script=0"/>
+		<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=SeX0CLn9igIQ9Yb-5QM&amp;guid=ON&amp;script=0"/>
 	</div>
 </noscript>
 
 <!-- END OF Google Code for acheteurs Remarketing List --> 
+
+<!--  E-COMMERCE -->
+<script type="text/javascript">
+document.write("<img src=\""+document.location.protocol+"//dis.us.criteo.com/dis/dis.aspx?p1="+escape("v=2&wi=7714288&s=1&t=<?=$order->order_id?><?php 
+	    $iCounter = 1;
+		foreach($itemsByEvent as $event){ 
+			 foreach($event as $item){ 
+			 	?>&i<?=$iCounter;?>=<? echo (string) $item['_id'];?>&<? 
+			 	?>p<?=$iCounter;?>=<?=$item['sale_retail']?>&<?
+			 	?>q<?=$iCounter;?>=<?=$item['quantity']?><?
+
+				$iCounter++;
+			} 
+		} 
+?>")+"&t1=transaction&p=3290&c=2&resptype=gif\" width=\"1\" height=\"1\" />");
+</script>
+<!--  END OF E-COMMERCE -->
 <?php endif ?>
