@@ -327,9 +327,11 @@ class OrdersController extends BaseController {
 		);
 		#Get Current Cart
 		$cart = $taxCart = Cart::active(array('fields' => $fields, 'time' => 'now'));
-		$shipDate = Cart::shipDate($cart);
+		$cartEmpty = ($cart->data()) ? false : true;
 		$cartByEvent = $this->itemGroupByEvent($cart);
 		$orderEvents = $this->orderEvents($cart);
+		#Calculate Shipped Date
+		$shipDate = Cart::shipDate($cart);
 		#Check If Discount could be Applied
 		$discountExempt = $this->_discountExempt($cart);
 		#Get Value Of Each and Sum It
@@ -357,21 +359,22 @@ class OrdersController extends BaseController {
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
 		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
+		#Calculate subTotal with the 10$off
 		$postDiscount = ($subTotal - $vars['services']['tenOffFitfy']);
 		#Calculate Total with Credits, Promo, Service and Tax
-		if(!empty($vars['cartCredit'])) {
+		if (!empty($vars['cartCredit'])) {
 			$credits = Session::read('credit');
 		 	$vars['postDiscountTotal'] -= $credits;
 		}
 		#Get Promocodes and eventual Shipping Discount
-		if(!empty($vars['cartPromo']['saved_amount'])) {
+		if (!empty($vars['cartPromo']['saved_amount'])) {
 		 	$promocode = Session::read('promocode');
 		 	if($promocode['type'] === 'free_shipping') {
 				$shipping_discount = $shippingCost + $overShippingCost;
 			}
 		}
 		#Check Free Shipping Services
-		if(!empty($services['freeshipping']['enable'])) {
+		if (!empty($services['freeshipping']['enable'])) {
 			$shipping_discount = $shippingCost + $overShippingCost;
 		}
 		#Getting Tax by Avatax
@@ -385,20 +388,19 @@ class OrdersController extends BaseController {
 		$creditCard = Order::creditCardDecrypt((string)$user['_id']);
 		#Organize Datas
 		$vars = $vars + compact(
-			'user', 'userDoc', 'cart', 'subTotal', 'creditCard',
+			'user', 'userDoc', 'cart', 'total', 'subTotal', 'creditCard',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'discountExempt'
 		);
-		#TEST CASE - TO UNCOMMENT
-		if ( ($cart->data()) && (count($this->request->data) > 1) && ($total > 0)) {
-			$order = Order::process($total, $this->request->data, $cart, $vars, $avatax);
+		if ((!$cartEmpty) && (!empty($this->request->data['process'])) && ($total > 0)) {
+			$order = Order::process($this->request->data, $cart, $vars, $avatax);
 			if (empty($order->errors)) {
 				#Redirect To Confirmation Page
-				//$this->redirect(array('Orders::view', 'args' => $order->order_id));
+				$this->redirect(array('Orders::view', 'args' => $order->order_id));
 			}
 		}
-		$cartEmpty = ($cart->data()) ? false : true;
+		#In car of credit card error redirect to the payment page
 		if (Session::check('cc_error')){
-			//$this->redirect(array('Orders::payment'));
+			$this->redirect(array('Orders::payment'));
 		}
 		return $vars + compact('cartEmpty','order','cartByEvent','orderEvents','shipDate','savings');
 	}

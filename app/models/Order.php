@@ -40,7 +40,7 @@ class Order extends Base {
 	 *
 	 * @return object
 	 */
-	public static function process($total, $data, $cart, $vars, $avatax) {
+	public static function process($data, $cart, $vars, $avatax) {
 		$order = Order::create(array('_id' => new MongoId()));
 		$user = Session::read('userLogin');
 		#Create Payment
@@ -66,7 +66,7 @@ class Order extends Base {
 			}
 			try {
 				#Process Payment
-				$authKey = Payments::authorize('default', $total, $card);
+				$authKey = Payments::authorize('default', $vars['total'], $card);
 				$order = Order::recordOrder($vars, $order, $avatax, $authKey, $items);
 				return $order;
 			} catch (TransactionException $e) {

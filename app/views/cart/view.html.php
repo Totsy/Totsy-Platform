@@ -72,7 +72,7 @@ var discountErrors = new Object();
 	<div class="clear"></div>
 	<hr/>
 	     <div class="cart-button fr" style="margin:10px 0px 20px 0px;">
-		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
+		      <?=$this->html->link('Continue Shopping', "sales/", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
 		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
 		     <div class="clear"></div>
 		 </div>
@@ -157,7 +157,8 @@ var discountErrors = new Object();
 				<?php $x++; ?>
 			<?php endforeach ?>
 			</tbody>
-		</table>
+			</table>
+
 		</div>
 		
 		<div class="clear"></div>
@@ -260,7 +261,7 @@ var discountErrors = new Object();
 					</div>				
 			
 <div class="cart-button fr" style="margin:20px 0px 20px 0px;">
-		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
+		      <?=$this->html->link('Continue Shopping', "sales/", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
 		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
 	<div class="clear"></div>
 
