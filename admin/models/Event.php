@@ -117,7 +117,7 @@ class Event extends \lithium\data\Model {
 		$check_vendor_style = array();
 		
 		//arrays of header names to check stuff
-		$check_required = array("vendor", "vendor_style", "category", "sub-category", "description", "quantity");
+		$check_required = array("vendor", "vendor_style", "description", "quantity");
 		$check_badchars = array("vendor", "vendor_style", "age", "category", "sub-category", "description", "color", "no size");
 		$check_decimals = array("msrp", "sale_retail", "percentage_off", "orig_wholesale", "sale_wholesale", "imu");
 		$check_departments = array("Girls", "Boys", "Momsdads");
