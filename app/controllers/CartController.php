@@ -47,8 +47,6 @@ class CartController extends BaseController {
 		if (!empty($this->request->data)) {
 			$this->update();
 		}
-		#Get current Discount
-		$vars = Cart::getDiscount($shipping, 0, $this->request->data);
 		//Cart::increaseExpires();
 		$cart = Cart::active();
 		$cartEmpty = ($cart->data()) ? false : true;
@@ -82,6 +80,8 @@ class CartController extends BaseController {
 			$subTotal += $item->quantity * $item->sale_retail;
 			$i++;
 		}
+		#Get current Discount
+		$vars = Cart::getDiscount($subTotal, $shipping, 0, $this->request->data);
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
 		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];

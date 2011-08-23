@@ -355,7 +355,7 @@ class OrdersController extends BaseController {
 			$overShippingCost = Cart::overSizeShipping($cart);
 		}
 		#Get current Discount
-		$vars = Cart::getDiscount($shippingCost, $overShippingCost,$this->request->data);
+		$vars = Cart::getDiscount($subTotal, $shippingCost, $overShippingCost,$this->request->data);
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
 		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
