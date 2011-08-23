@@ -60,28 +60,40 @@ var discountErrors = new Object();
 	</div>
 	
 	<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px">
-		 <div style="float:right;">
-		Item Reserved For: <br />
-		<span id="itemCounter" style="color:#009900; float:right !important"></span>
+		 <div style="float:right">
+		 	<div>Item Reserved For: </div>
+			<span id="itemCounter" style="color:#009900; float:right">
+			</span>
+		</div>
+	    
+	    <div style="float:left">
+		 	<div>Estimated Shipping Date: </div>
+	        <span style="float:right; color:#009900;">&nbsp;&nbsp;<?=date('m-d-Y', $shipDate)?>
+	        </span>
 	    </div>
-	    <div style="float:left;">
-		 <div>Estimated Shipping Date: </div>
-	         <div style="float:right; color:#009900;">&nbsp;&nbsp;<?=date('m-d-Y', $shipDate)?></div>
-	     </div>
 	</div>
+	
 	<div class="clear"></div>
 	<hr/>
 	
-	<div class="grid_8">Shipping rectangle</div>
-	<div class="grid_4">Payment rectangle</div>
-	<div class="grid_3">Place your order</div>
+	<div class="grid_16" style="width:940px">
+		<div style="height: 115px; width: 370px; border-style:solid;border-width:2px;margin:5px 5px 5px auto;float:left">
+		Shipping rectangle
+		</div>
+		<div style="height: 115px; width: 266px; border-style:solid;border-width:2px;margin:5px;float:left">
+		Payment rectangle
+		</div>
+		<div style="height: 115px; width: 266px; border-style:solid;border-width:2px;margin:5px;float:right">
+		Place your order
+		</div>
+	</div>
 	    
 <?php endif ?>
 
 <div class="message"></div>
 <?php if (!empty($subTotal)): ?>
 
-<div style="overflow:hidden; width:935px !important">
+<div class="grid_16" style="overflow:hidden; width:935px">
 <?=$this->form->create(null ,array('id'=>'cartForm')); ?>
 	<div id='message'><?php echo $message; ?></div>
 		<table class="cart-table">
@@ -89,176 +101,160 @@ var discountErrors = new Object();
 			<?php $x = 0; ?>
 			<?php foreach ($cart as $item): ?>
 				<!-- Build Product Row -->
-				<tr id="<?=$item->_id?>">
-					<td class="cart-th">
-						<?php
-							if (!empty($item->primary_image)) {
-								$image = $item->primary_image;
-								$productImage = "/image/$image.jpg";
-							} else {
-								$productImage = "/img/no-image-small.jpeg";
-							}
-						?>
-						<?=$this->html->link(
-							$this->html->image("$productImage", array(
-								'width'=>'60',
-								'height'=>'60',
-						'style' => 'margin:2px; display:block; padding:4px;')),
-							array('Items::view', 'args' => $item->url),
-								array(
-								'id' => 'main-logo_', 'escape'=> false
-							)
-						); ?>
+				<tr id="<?=$item->_id?>" style="height: 110px !important">
+					<td colspan="1" class="cart-th" style="width:75px">
+						<span style="float:left; width:120px;line-height:15px !important">
+							<?php
+								if (!empty($item->primary_image)) {
+									$image = $item->primary_image;
+									$productImage = "/image/$image.jpg";
+								} else {
+									$productImage = "/img/no-image-small.jpeg";
+								}
+							?>
+							<?=$this->html->link(
+								$this->html->image("$productImage", array(
+									'width'=>'107',
+									'height'=>'107',
+							'style' => 'margin:2px; padding:4px;')),
+								array('Items::view', 'args' => $item->url),
+									array(
+									'id' => 'main-logo_', 'escape'=> false
+								)
+							); ?>
+						</span>
 					</td>
-					<td class="cart-desc" style="width:475px;">
-						<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
-						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?></strong><br>
-						<strong>Color:</strong> <?=$item->color;?><br>
-						<strong>Size:</strong> <?=$item->size;?>
-					</td>
-					<td style="width:150px;">
-					<div id='<?php echo "itemCounter$x"; ?>_display' style="margin:5px 0px 0px 5px;" title='<?=$date?>'></div>
-					</td>
-					<td class="<?="price-item-$x";?>" style="width:65px;">
-						<strong>$<?=number_format($item->sale_retail,2)?></strong>
-					</td>
-					<td class="<?="qty-$x";?>" style="width:65px; text-align:center">
-					<!-- Quantity Select -->
-					<?php
-					/*
-						if($item->available < 9) {
-							$qty = $item->available;
-							if($item->quantity > $qty){
-								$select = array_unique(array_merge(array('0'), range('1',(string)$item->quantity)));
-							} else {
-								$select = array_unique(array_merge(array('0'), range('1',(string)$qty)));
-							}
-						} else {
-							$select = array_unique(array_merge(array('0'), range('1','9')));
-						} */
-					?>
-					<?=$item->quantity;?>
-					<?php 
-						$date = $cartItemEventEndDates[$x] * 1000;
-					?>
-					</td>
-					<td class="cart-actions">
-						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" onclick="deletechecked('Are you sure you want to remove this item?','<?=$item->_id; ?>');" style="color: red!important;"><img src="/img/trash.png" width="20" align="absmiddle" style="margin-right:20px;" /></a>
-					</td>
-					<td class="cart-time"><!-- <img src="/img/old_clock.png" align="absmiddle" width="23" class="fl"/>--> <div id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?=$date?>'></div>
+					<td colspan="8" style="width:675px; margin-bottom:0px; ">	
 					
-					</td>
-					<td class="<?="total-item-$x";?>" style="width:55px; text-align:right; padding-right:10px">
-						<strong>$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
+					<div style="height:20px; margin-top:-20px; vertical-align:middle !important; line-height:15px !important">
+						<span class="cart-desc" style="width:540px; float:left;">
+								<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
+								<?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?>
+						</span>					
+						<span class="<?="price-item-$x";?>" style="width:75px;float:left; ">
+							<strong>$<?=number_format($item->sale_retail,2)?></strong>
+						</span>
+						<span class="<?="qty-$x";?>" style="width:100px; float:left;">
+							<span>Qty:<?=$item->quantity;?></span>
+						</span>						
+						<span class="cart-time">
+						<div id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?=$date?>'></div>
+						</span>
+						<span class="<?="total-item-$x";?>" style="width:75px; float:right; text-align:right; font-weight:bold;padding-right:10px; ">$<?=number_format($item->sale_retail * $item->quantity ,2)?>
+						</span>
+					</div>
+						<hr>
+					<div>
+						<div><span style="font-weight: bold">Color:</span> <?=$item->color;?></div>
+						<div><span style="font-weight: bold">Size:</span> <?=$item->size;?></div>
+					</div>	
 					</td>
 				</tr>
 				<?php $x++; ?>
 			<?php endforeach ?>
-				<tr valign="top">
-					<td colspan="2" style="padding:10px 0px 50px 10px; border-bottom: 0px">
-						<div style="float: left">
-							<div style="font-size: 12px; text-align:left !important;">
-								<strong>Add <?php if(!empty($credit)): ?>
-									<a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a> /
-								<?php endif ?> 
-									<a href="#" id="promos_lnk" onclick="open_promo();">Optional Code</a></strong>
-							</div>
-							<div style="clear:both"></div>
-							<div id="promos_and_credit">
-							<?=$this->form->create(null); ?>
-								<div id='promo' style='display:none'>
-									<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo) ); ?>
-								</div>
-								<div id='cred' style='display:none; text-align:left !important'>								
-				   					<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'userDoc' => $userDoc)); ?>
-								</div>
-							</div>
-						</div>
-					</td>
-						
-					<td colspan="6" style="border-bottom: 0px">	
-					<div style="padding-top:10px">
-							<div style="font-weight:bold" class="subtotal" >
-									<span style="float:left;">Subtotal:</span>
-									<span style="float:right" id="subtotal">$<?=number_format($subTotal,2)?></span>
-							</div>
-							<?php if (!empty($promocode['discount_amount']) && ($promocode['type'] != 'free_shipping') ):?>
-							<div style="clear:both"></div>
-							<div style="font-weight:bold" class="subtotal">
-    								<span style="float: left;">Discount 
-    								<?php echo '[' . $promocode['code'] . ']'; ?>	
-    								:</span> 
-    								<span style="float:right" class="fees_and_discounts">-$
-    								<?=number_format(abs($promocode['discount_amount']),2)?>
-    								</span>	
-    						</div>
-   							<?php endif ?>
-   							<?php if (!empty($services['tenOffFitfy'])):?>
-							<div style="clear:both"></div>
-							<div style="font-weight:bold" class="subtotal">
-    								<span style="float: left;">Discount [10$ Off] :</span> 
-    									<span style="float:right" class="fees_and_discounts">- $<?=number_format($services['tenOffFitfy'],2)?>
-    									</span>
-    								</span>
-    						</div>
-   							<?php endif ?>
-							<div style="clear:both"></div>							
-							<div style="font-weight:bold;" >
-							<div class="subtotal">	
-							<span style="" id="shipping_tooltip" style="float:left" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
-									</span>
-								<span style="float: left;" id="shipping">
-								Shipping:</span> 
-								<span style="float:right" class="fees_and_discounts">$7.95</span>							</div>
-							</div>
-							<?php if (!empty($shipping_discount)):?>
-							<div style="clear:both"></div>
-							<div style="font-weight:bold" class="subtotal">
-    							<span style="float: left;">Free Shipping 
-    								<?php 
-    								if(!empty($promocode)) {
-    									if($promocode['type'] === 'free_shipping')
-    										echo '[' . $promocode['code'] . ']';	
-    								}?>		
-    								:</span> 
-    								<span style="color:#707070; float:right" class="fees_and_discounts">- $<?=number_format($shipping_discount,2)?></span>
-    						</div>
-   							<?php endif ?>
-							<div style="clear:both"></div>	
-							<div style="font-weight:bold">
-							<div class="subtotal">
-								<span style="margin-left:-110px;" id="tax_tooltip" style="float:left" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
-</span>		
-							<span id="estimated_tax" style="float: left;">Estimated Tax:</span> 
-									<span style="float:right" class="fees_and_discounts">$0.00</span>
-							</div>
-							</div>
-							<?php if (!empty($credits)):?>
-							<div style="clear:both"></div>
-							<div style="font-weight:bold" class="subtotal">
-    								<span style="float:left;">Credits:</span> 
-    								<span style="float:right" class="fees_and_discounts">- $<?=number_format(abs($credits),2)?></span>
-    						</div>
-   							<?php endif ?>
-							<div style="clear:both" class="subtotal"><hr /></div>			
-							<div>
-								<div class="savings">Your Saving: 
-									<span style="color:#ff6d1d; font-weight:bold"><?php if (!empty($savings)) : ?>
-									$<?=number_format($savings,2)?>
-									<?php endif ?>
-									</span> 
-								</div>
-								<div class="subtotal">
-								<span style="font-size:15px; font-weight:bold">Order Total:</span> 
-									<span style="font-size:15px; color:#009900; float:right" id="ordertotal">$ <?=number_format($total,2)?> </span>
-								</div>
-									
-						</div>	
-					</div>				
-					</td>
-				</tr>
 			</tbody>
 		</table>
+		</div>
+		
+		<div class="clear"></div>
+		
+		<div class="grid_16" style="width:935px">
+			<div style="float: left; vertical-align: top">
+			    <div style="font-size: 12px; text-align:left !important;">
+			        <strong>Add <?php if(!empty($credit)): ?>
+			        	<a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a> /
+			        <?php endif ?> 
+			        	<a href="#" id="promos_lnk" onclick="open_promo();">Optional Code</a></strong>
+			    </div>
+			    <div style="clear:both"></div>
+			    <div id="promos_and_credit">
+			    <?=$this->form->create(null); ?>
+			        <div id="promo" style="display:none">
+			        	<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo) ); ?>
+			        </div>
+			        <div id="cred" style="display:none">				
+			        	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'userDoc' => $userDoc)); ?>
+			        </div>
+			    </div>
+			</div>	
+						
+			<div style="padding-top:10px; float:right; width:425px; vertical-align: top">
+			    <div style="font-weight:bold" class="subtotal" >
+			        	<span style="float:left;">Subtotal:</span>
+			        	<span style="float:right" id="subtotal">$<?=number_format($subTotal,2)?></span>
+			    </div>
+			    <?php if (!empty($promocode['discount_amount']) && ($promocode['type'] != 'free_shipping') ):?>
+			    <div style="clear:both"></div>
+			    <div style="font-weight:bold" class="subtotal">
+    		        	<span style="float: left;">Discount 
+    		        	<?php echo '[' . $promocode['code'] . ']'; ?>	
+    		        	:</span> 
+    		        	<span style="float:right" class="fees_and_discounts">-$
+    		        	<?=number_format(abs($promocode['discount_amount']),2)?>
+    		        	</span>	
+    		    </div>
+   			    <?php endif ?>
+   			    <?php if (!empty($services['tenOffFitfy'])):?>
+			    <div style="clear:both"></div>
+			    <div style="font-weight:bold" class="subtotal">
+    		        	<span style="float: left;">Discount [10$ Off] :</span> 
+    		        		<span style="float:right" class="fees_and_discounts">- $<?=number_format($services['tenOffFitfy'],2)?>
+    		        		</span>
+    		        	</span>
+    		    </div>
+   			    <?php endif ?>
+			    <div style="clear:both"></div>							
+			    <div style="font-weight:bold;" >
+			    <div class="subtotal">	
+			    <span style="" id="shipping_tooltip" style="float:left" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
+			        	</span>
+			        <span style="float: left;" id="shipping">
+			        Shipping:</span> 
+			        <span style="float:right" class="fees_and_discounts">$7.95</span>							</div>
+			    </div>
+			    <?php if (!empty($shipping_discount)):?>
+			    <div style="clear:both"></div>
+			    <div style="font-weight:bold" class="subtotal">
+    		        <span style="float: left;">Free Shipping 
+    		        	<?php 
+    		        	if(!empty($promocode)) {
+    		        		if($promocode['type'] === 'free_shipping')
+    		        			echo '[' . $promocode['code'] . ']';	
+    		        	}?>		
+    		        	:</span> 
+    		        	<span style="color:#707070; float:right" class="fees_and_discounts">- $<?=number_format($shipping_discount,2)?></span>
+    		    </div>
+   			    <?php endif ?>
+			    <div style="clear:both"></div>	
+			    <div style="font-weight:bold">
+			    <div class="subtotal">
+			        <span style="margin-left:-110px;" id="tax_tooltip" style="float:left" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
+</span>		
+			    <span id="estimated_tax" style="float: left;">Estimated Tax:</span> 
+			        	<span style="float:right" class="fees_and_discounts">$0.00</span>
+			    </div>
+			    </div>
+			    <?php if (!empty($credits)):?>
+			    <div style="clear:both"></div>
+			    <div style="font-weight:bold" class="subtotal">
+    		        	<span style="float:left;">Credits:</span> 
+    		        	<span style="float:right" class="fees_and_discounts">- $<?=number_format(abs($credits),2)?></span>
+    		    </div>
+   			    <?php endif ?>
+			    <div style="clear:both" class="subtotal"><hr /></div>			
+			    <div>
+			        <div class="savings">Your Saving: 
+			        	<span style="color:#ff6d1d; font-weight:bold"><?php if (!empty($savings)) : ?>
+			        	$<?=number_format($savings,2)?>
+			        	<?php endif ?>
+			        	</span> 
+			        </div>
+			        <div class="subtotal">
+			        <span style="font-size:15px; font-weight:bold">Order Total:</span> 
+			        	<span style="font-size:15px; color:#009900; float:right" id="ordertotal">$ <?=number_format($total,2)?> </span>
+			        </div>
+			    </div>	
+		</div>				
 </div>
 
 <div class="cart-button fr" style="margin:20px 0px 20px 0px;">

@@ -156,113 +156,109 @@ var discountErrors = new Object();
 				</tr>
 				<?php $x++; ?>
 			<?php endforeach ?>
-				<tr valign="top">
-					<td colspan="2" style="padding:10px 0px 50px 10px; border-bottom: 0px">
-						<div style="float: left">
-							<div style="font-size: 12px; text-align:left !important;">
-								<strong>Add <?php if(!empty($credit)): ?>
-									<a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a> /
-								<?php endif ?> 
-									<a href="#" id="promos_lnk" onclick="open_promo();">Optional Code</a></strong>
-							</div>
-							<div style="clear:both"></div>
-							<div id="promos_and_credit">
-							<?=$this->form->create(null); ?>
-								<div id='promo' style='display:none'>
-									<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo) ); ?>
-								</div>
-								<div id='cred' style='display:none; text-align:left !important'>								
-				   					<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'userDoc' => $userDoc)); ?>
-								</div>
-							</div>
-						</div>
-					</td>
-						
-					<td colspan="6" style="border-bottom: 0px">	
-					<div style="padding-top:10px">
-							<div style="font-weight:bold" class="subtotal" >
-									<span style="float:left;">Subtotal:</span>
-									<span style="float:right" id="subtotal">$<?=number_format($subTotal,2)?></span>
-							</div>
-							<?php if (!empty($promocode['discount_amount']) && ($promocode['type'] != 'free_shipping') ):?>
-							<div style="clear:both"></div>
-							<div style="font-weight:bold" class="subtotal">
-    								<span style="float: left;">Discount 
-    								<?php echo '[' . $promocode['code'] . ']'; ?>	
-    								:</span> 
-    								<span style="float:right" class="fees_and_discounts">-$
-    								<?=number_format(abs($promocode['discount_amount']),2)?>
-    								</span>	
-    						</div>
-   							<?php endif ?>
-   							<?php if (!empty($services['tenOffFitfy'])):?>
-							<div style="clear:both"></div>
-							<div style="font-weight:bold" class="subtotal">
-    								<span style="float: left;">Discount [10$ Off] :</span> 
-    									<span style="float:right" class="fees_and_discounts">- $<?=number_format($services['tenOffFitfy'],2)?>
-    									</span>
-    								</span>
-    						</div>
-   							<?php endif ?>
-							<div style="clear:both"></div>							
-							<div style="font-weight:bold;" >
-							<div class="subtotal">	
-							<span style="" id="shipping_tooltip" style="float:left" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
-									</span>
-								<span style="float: left;" id="shipping">
-								Shipping:</span> 
-								<span style="float:right" class="fees_and_discounts">$7.95</span>							</div>
-							</div>
-							<?php if (!empty($shipping_discount)):?>
-							<div style="clear:both"></div>
-							<div style="font-weight:bold" class="subtotal">
-    							<span style="float: left;">Free Shipping 
-    								<?php 
-    								if(!empty($promocode)) {
-    									if($promocode['type'] === 'free_shipping')
-    										echo '[' . $promocode['code'] . ']';	
-    								}?>		
-    								:</span> 
-    								<span style="color:#707070; float:right" class="fees_and_discounts">- $<?=number_format($shipping_discount,2)?></span>
-    						</div>
-   							<?php endif ?>
-							<div style="clear:both"></div>	
-							<div style="font-weight:bold">
-							<div class="subtotal">
-								<span style="margin-left:-110px;" id="tax_tooltip" style="float:left" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
-</span>		
-							<span id="estimated_tax" style="float: left;">Estimated Tax:</span> 
-									<span style="float:right" class="fees_and_discounts">$0.00</span>
-							</div>
-							</div>
-							<?php if (!empty($credits)):?>
-							<div style="clear:both"></div>
-							<div style="font-weight:bold" class="subtotal">
-    								<span style="float:left;">Credits:</span> 
-    								<span style="float:right" class="fees_and_discounts">- $<?=number_format(abs($credits),2)?></span>
-    						</div>
-   							<?php endif ?>
-							<div style="clear:both" class="subtotal"><hr /></div>			
-							<div>
-								<div class="savings">Your Saving: 
-									<span style="color:#ff6d1d; font-weight:bold"><?php if (!empty($savings)) : ?>
-									$<?=number_format($savings,2)?>
-									<?php endif ?>
-									</span> 
-								</div>
-								<div class="subtotal">
-								<span style="font-size:15px; font-weight:bold">Order Total:</span> 
-									<span style="font-size:15px; color:#009900; float:right" id="ordertotal">$ <?=number_format($total,2)?> </span>
-								</div>
-									
-						</div>	
-					</div>				
-					</td>
-				</tr>
 			</tbody>
 		</table>
-</div>
+		</div>
+		
+		<div class="clear"></div>
+		
+		<div class="grid_16" style="width:935px">
 
+			<div style="font-size: 12px; text-align:left !important;">
+			    <strong>Add <?php if(!empty($credit)): ?>
+			    	<a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a> /
+			    <?php endif ?> 
+			    	<a href="#" id="promos_lnk" onclick="open_promo();">Optional Code</a></strong>
+			</div>
+			<div style="clear:both"></div>
+			<div id="promos_and_credit">
+			<?=$this->form->create(null); ?>
+			    <div id='promo' style='display:none'>
+			    	<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo) ); ?>
+			    </div>
+			    <div id='cred' style='display:none; text-align:left !important'>								
+			    	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'userDoc' => $userDoc)); ?>
+			    </div>
+			</div>
+			</div>
+					
+			<div style="padding-top:10px; float:right; width:425px; vertical-align: top">
+				<div style="font-weight:bold" class="subtotal" >
+				   <span style="float:left;">Subtotal:</span>
+				   <span style="float:right" id="subtotal">$<?=number_format($subTotal,2)?></span>
+				</div>
+				<?php if (!empty($promocode['discount_amount']) && ($promocode['type'] != 'free_shipping') ):?>
+				<div style="clear:both"></div>
+				<div style="font-weight:bold" class="subtotal">
+    			    	<span style="float: left;">Discount 
+    			    	<?php echo '[' . $promocode['code'] . ']'; ?>	
+    			    	:</span> 
+    			    	<span style="float:right" class="fees_and_discounts">-$
+    			    	<?=number_format(abs($promocode['discount_amount']),2)?>
+    			    	</span>	
+    			</div>
+   				<?php endif ?>
+   				<?php if (!empty($services['tenOffFitfy'])):?>
+				<div style="clear:both"></div>
+				<div style="font-weight:bold" class="subtotal">
+    			    	<span style="float: left;">Discount [10$ Off] :</span> 
+    			    		<span style="float:right" class="fees_and_discounts">- $<?=number_format($services['tenOffFitfy'],2)?>
+    			    		</span>
+    			    	</span>
+    			</div>
+   				<?php endif ?>
+				<div style="clear:both"></div>							
+				<div style="font-weight:bold;" >
+				<div class="subtotal">	
+				<span style="" id="shipping_tooltip" style="float:left" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
+				    	</span>
+				    <span style="float: left;" id="shipping">
+				    Shipping:</span> 
+				    <span style="float:right" class="fees_and_discounts">$7.95</span>							</div>
+				</div>
+				<?php if (!empty($shipping_discount)):?>
+				<div style="clear:both"></div>
+				<div style="font-weight:bold" class="subtotal">
+    			    <span style="float: left;">Free Shipping 
+    			    	<?php 
+    			    	if(!empty($promocode)) {
+    			    		if($promocode['type'] === 'free_shipping')
+    			    			echo '[' . $promocode['code'] . ']';	
+    			    	}?>		
+    			    	:</span> 
+    			    	<span style="color:#707070; float:right" class="fees_and_discounts">- $<?=number_format($shipping_discount,2)?></span>
+    			</div>
+   				<?php endif ?>
+				<div style="clear:both"></div>	
+				<div style="font-weight:bold">
+				<div class="subtotal">
+				    <span style="margin-left:-110px;" id="tax_tooltip" style="float:left" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
+</span>			
+				<span id="estimated_tax" style="float: left;">Estimated Tax:</span> 
+				    <span style="float:right" class="fees_and_discounts">$0.00</span>
+				</div>
+				</div>
+				<?php if (!empty($credits)):?>
+				<div style="clear:both"></div>
+				<div style="font-weight:bold" class="subtotal">
+    			    	<span style="float:left;">Credits:</span> 
+    			    	<span style="float:right" class="fees_and_discounts">- $<?=number_format(abs($credits),2)?></span>
+    			</div>
+   				<?php endif ?>
+				<div style="clear:both" class="subtotal"><hr /></div>			
+				<div>
+				    <div class="savings">Your Saving: 
+				    	<span style="color:#ff6d1d; font-weight:bold"><?php if (!empty($savings)) : ?>
+				    	$<?=number_format($savings,2)?>
+				    	<?php endif ?>
+				    	</span> 
+				    </div>
+				    <div class="subtotal">
+				    <span style="font-size:15px; font-weight:bold">Order Total:</span> 
+				    	<span style="font-size:15px; color:#009900; float:right" id="ordertotal">$ <?=number_format($total,2)?> </span>
+				    </div>						    	
+					</div>				
+			
 <div class="cart-button fr" style="margin:20px 0px 20px 0px;">
 		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
 		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
@@ -345,6 +341,8 @@ function deletechecked(message, id) {
 	return false;
 }
 //SUBMIT QUANTITY IN CASE OF DDWN CHANGE
+$(document).ready( function(){
+
 $(function () {
 	$(".quantity").live("change keyup", function () {
 		if($("select").val() == 0) {
@@ -355,6 +353,8 @@ $(function () {
 		}
 	});
 });
+});
+
 //HIDE / SHOW CREDITS INPUT
 function open_credit() {
 	if ($("#cred").is(":hidden")) {
