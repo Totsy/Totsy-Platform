@@ -736,6 +736,68 @@ class OrdersController extends BaseController {
 			);
 		}
 	}
+
+	public function payments(){
+		$orderColl = Order::collection();
+		$conditions = array();
+		$payments = array();
+		$type = null;
+		if($this->request->data) {
+			$data = $this->request->data;
+			if (array_key_exists('todays',$data) && !empty($data['todays'])) {
+				$conditions = array('error_date' => array('$gte' => new MongoDate()));
+			}else{
+				if (array_key_exists('search',$data) && !empty($data['search'])) {
+					$conditions = array('order_id' => $data['search']);
+				} else{
+					switch($data['type']){
+						case 'processed':
+							$type = 'processed';
+							if (array_key_exists('start_date',$data) && !empty($data['start_date'])) {
+								$conditions['payment_date'] = array('$gte' => new MongoDate(strtotime($data['start_date'])));
+							}
+							if (array_key_exists('end_date',$data) && !empty($data['end_date'])) {
+								$conditions['payment_date'] = array_merge($conditions['payment_date'],array('$lte' => new MongoDate(strtotime($data['end_date']))));
+							}else {
+								$conditions['payment_date'] = array_merge($conditions['payment_date'],array('$lte' => new MongoDate()));
+							}
+							break;
+						case 'expired':
+							$type = 'expired';
+							break;
+						case 'expired':
+							$type = 'error';
+							if (array_key_exists('start_date',$data) && !empty($data['start_date'])) {
+								$conditions['error_date'] = array('$gte' => new MongoDate(strtotime($data['start_date'])));
+							}
+							if (array_key_exists('end_date',$data) && !empty($data['end_date'])) {
+								$conditions['error_date'] = array_merge($conditions['error_date'],array('$lte' => new MongoDate(strtotime($data['end_date']))));
+							}else {
+								$conditions['error_date'] = array_merge($conditions['error_date'],array('$lte' => new MongoDate()));
+							}
+							break;
+						default:
+							break;
+					}
+				}
+			}
+
+			$payments = $orderColl->find($conditions, array(
+				'_id' => 1,
+				'auth_error' => 1,
+				'order_id' => 1,
+				'error_date' => 1,
+				'date_created' => 1,
+				'payment_date' => 1,
+				'authKey' => 1,
+				'auth_confirmation' => 1,
+				'total' => 1
+			));
+		}
+
+
+		return compact('payments','type');
+	}
 }
 
 ?>
