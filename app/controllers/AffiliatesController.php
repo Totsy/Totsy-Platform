@@ -124,15 +124,12 @@ class AffiliatesController extends BaseController {
 				extract(UsersController::registration($data));
 				if ($saved) {
 					$message = $saved;
-					$userLogin = array(
-						'_id' => (string) $user->_id,
-						'email' => $user->email
-					);
-					Session::write('userLogin', $userLogin, array('name' => 'default'));
-					$cookie['user_id'] = $user->id;
+					Affiliate::linkshareCheck($user->_id, $affiliate, $cookie);
+					$this->writeSession($user->data());
+					$cookie['user_id'] = $user->_id;
 					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 		            Session::write('pixel', $pixel, array('name' => 'default'));
-					Affiliate::linkshareCheck($userLogin['_id'], $affiliate, $cookie);
+					Affiliate::linkshareCheck($user->_id, $affiliate, $cookie);
 					User::log($ipaddress);
 					$this->redirect($urlredirect);
 				}
