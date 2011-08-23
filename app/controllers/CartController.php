@@ -40,35 +40,34 @@ class CartController extends BaseController {
 		$shipping = 7.95;
 		$shipping_discount = 0;
 		$vars = compact('cartPromo','cartCredit', 'services');
-		$cartPromo = null; 
-		$cartCredit = null;
-		$services = null;
 		$message = '';
 		#Get Users Informations
 		$user = Session::read('userLogin');
-		$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
 		#Update the Cart
 		if (!empty($this->request->data)) {
 			$this->update();
 		}
 		#Get current Discount
-		$vars = Cart::getDiscount($shipping,0,$this->request->data);
+		$vars = Cart::getDiscount($shipping, 0, $this->request->data);
 		//Cart::increaseExpires();
 		$cart = Cart::active();
-		$test = $cart->data();
-		if(empty($test)) {
-			#Remove Temporary Session Datas**/
+		$cartEmpty = ($cart->data()) ? false : true;
+		if($cartEmpty) {
+			#Remove Temporary Session Datas
 			User::cleanSession();
 		}
+		#Init Datas Before Loop
 		$cartItemEventEndDates = Array();
 		$i = 0;
 		$subTotal = 0;
-		$itemlist = array();
-
-		foreach($cart as $item){
-			if($cartExpirationDate < $item['expires']->sec) {
+		$shipDate = Cart::shipDate($cart);
+		#Loop To Get Infos About Cart
+		foreach ($cart as $item) {
+			#Get Last Expiration Date 
+			if ($cartExpirationDate < $item['expires']->sec) {
 				$cartExpirationDate = $item['expires']->sec;
 			}
+			#Get Errors Message
 			if (array_key_exists('error', $item->data()) && !empty($item->error)){
 				$message .= $item->error . '<br/>';
 				$item->error = "";
@@ -76,43 +75,35 @@ class CartController extends BaseController {
 			}
 			$events = Event::find('all', array('conditions' => array('_id' => $item->event[0])));
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
-			
-			$cartItemEventEndDates[$i] = $events[0]->end_date->sec;
-						
+			#Get Event End Date
+			$cartItemEventEndDates[$i] = $events[0]->end_date->sec;		
 			$item->event_url = $events[0]->url;
 			$item->available = $itemInfo->details->{$item->size} - (Cart::reserved($item->item_id, $item->size) - $item->quantity);
-			$itemlist[$item->created->sec] = $item->event[0];
 			$subTotal += $item->quantity * $item->sale_retail;
 			$i++;
-		}
-		$shipDate = Cart::shipDate($cart);
-		if ($cart) {
-			krsort($itemlist);
-			$conditions = array('_id' => current($itemlist));
-			$event = Event::find('first', compact('conditions'));
-			if ($event) {
-				$returnUrl = $event->url;
-			}	
 		}
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
 		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
 		$services = $vars['services'];
+		#Get Credits
 		if(!empty($vars['cartCredit'])) {
 			$credits = Session::read('credit');
 		 	$vars['postDiscountTotal'] -= $credits;
 		}
+		#Apply Promocodes Free Shipping
 		if(!empty($vars['cartPromo']['saved_amount'])) {
 		 	$promocode = Session::read('promocode');
 		 	if($promocode['type'] === 'free_shipping') {
 				$shipping_discount = $shipping;
 			}
 		}
+		#Apply Freeshipping Service
 		if(!empty($services['freeshipping']['enable'])) {
 			$shipping_discount = $shipping;
 		}
 		$total = $vars['postDiscountTotal'];
-		return $vars + compact('cart', 'message', 'subTotal', 'services', 'total', 'shipDate', 'returnUrl', 'promocode', 'savings','shipping_discount', 'credits', 'userDoc','cartItemEventEndDates', 'cartExpirationDate');
+		return $vars + compact('cart', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate');
 	}
 
 	/**
@@ -197,26 +188,23 @@ class CartController extends BaseController {
 	* @return compact
 	*/
 	public function remove($id = null) {
-		if ($this->request->data) {
-			$data = $this->request->data;
-			if(!empty($id)) {
-				$data["id"] = $id;
-			}
-			$cart = Cart::find('first', array(
-				'conditions' => array(
-					'_id' => $data["id"]
-			)));
-			$quantity = $cart->quantity;
-			$now = getdate();
-			$expires_date = $cart->expires->sec;
-			if(!empty($cart)){
-				Cart::remove(array('_id' => $data["id"]));
-				#calculate savings
-				if($now[0] < $cart->expires->sec) {
-					$item[$cart->item_id] = $quantity;
-					Cart::updateSavings($item, 'remove');
-					$this->addIncompletePurchase(Cart::active());
-				}
+		$data = $this->request->data;
+		if (!empty($id)) {
+			$data["id"] = $id;
+		}
+		#Find The Item To Remove
+		$cart = Cart::find('first', array(
+			'conditions' => array(
+				'_id' => $data["id"]
+		)));
+		$now = getdate();
+		if(!empty($cart)){
+			Cart::remove(array('_id' => $data["id"]));
+			#calculate savings
+			if($now[0] < $cart->expires->sec) {
+				$item[$cart->item_id] = $cart->quantity;
+				Cart::updateSavings($item, 'remove');
+				$this->addIncompletePurchase(Cart::active());
 			}
 		}
 	}
@@ -227,7 +215,6 @@ class CartController extends BaseController {
 	* @see app/models/Cart::check()
 	*/
 	public function update() {
-		
 		$data = $this->request->data;
 		if(!empty($data['rmv_item_id'])) {
 			#Removing one item from cart
@@ -239,19 +226,26 @@ class CartController extends BaseController {
 				$cart = Cart::find('first', array(
 					'conditions' => array('_id' =>  (string) $id)
 				));
-				if ($result['status']) {
-					if($quantity == 0){
-				        Cart::remove(array('_id' => $id));
-				    } else {
-						$cart->quantity = (integer) $quantity;
-						$cart->save();
-						$items[$cart->item_id] = $quantity;
-						#Check Cart and Refresh Timer
-						Cart::refreshTimer();
-					}
-				} else {
-					$cart->error = $result['errors'];
+				$status = $this->itemAvailable($cart->item_id, $cart->quantity, $cart->size, $quantity);
+				if (!$status['available']) {
+					$cart->quantity = (integer) $status['quantity'];
 					$cart->save();
+					$this->addIncompletePurchase(Cart::active());
+				} else {
+					if ($result['status']) {
+						if($quantity == 0){
+					        Cart::remove(array('_id' => $id));
+					    } else {
+							$cart->quantity = (integer) $quantity;
+							$cart->save();
+							$items[$cart->item_id] = $quantity;
+							#Check Cart and Refresh Timer
+							Cart::refreshTimer();
+						}
+					} else {
+						$cart->error = $result['errors'];
+						$cart->save();
+					}		
 				}
 			}
 			#update savings
@@ -259,7 +253,10 @@ class CartController extends BaseController {
 		}					
 	}
 	
-	public function modal(){
+	/**
+	* Check If User Will Receive Disney Email
+	*/
+	public function modal() {
 	    $userinfo = Session::read('userLogin');
 	    $success = true;
 	    $this->_render['layout'] = false;
@@ -274,7 +271,7 @@ class CartController extends BaseController {
 	    echo json_encode($success);
 	}
 	
-	public function upsell(){
+	public function upsell() {
         $query = $this->request->query;
         $this->_render['layout'] = 'base';
         if($query){
@@ -285,11 +282,8 @@ class CartController extends BaseController {
         }
 	}
 	
-	protected function addIncompletePurchase($items){
-		
-
+	protected function addIncompletePurchase($items) {
 		if (is_object($items)) $items = $items->data();
-				
 		$user = Session::read('userLogin');
 		$base_url = 'http://'.$_SERVER['HTTP_HOST'].'/';
 		$itemToSend = array();
@@ -303,7 +297,6 @@ class CartController extends BaseController {
 				'price' => $item['sale_retail']*100,
 			 	'url' => $base_url.'sale/'.$eventInfo['url'].'/'.$item['url']
 			);
-
 			unset($eventInfo);
 		}		
 		Mailer::purchase(

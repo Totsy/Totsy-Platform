@@ -329,7 +329,28 @@ var discountErrors = new Object();
 	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1><center><span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
 <?php endif ?>
 </div>
-<div id="modal" style="background:#fff!important; z-index:9999999999!important;"></div>
+<div id="modal" style="background:#fff!important; z-index:9999999999!important;">
+<?php
+    if(number_format((float) $total, 2) >= 35 && number_format((float) $total, 2) <= 44.99){
+        echo "<script type=\"text/javascript\">
+            $.post('/cart/modal',{modal: 'disney'},function(data){
+              //  alert(data);
+                if(data == 'false'){
+                    $('#modal').load('/cart/upsell?subtotal=" . (float)$total ."&redirect=".$itemUrl."').dialog({
+                        autoOpen: false,
+                        modal:true,
+                        width: 550,
+                        height: 320,
+                        position: 'top',
+                        close: function(ev, ui) {}
+                    });
+                    $('#modal').dialog('open');
+                }
+            });
+            </script>";
+    }
+?>
+</div>
 
 <script type="text/javascript" charset="utf-8">
 
