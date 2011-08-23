@@ -174,12 +174,10 @@ class ReportsController extends BaseController {
 								'purchase_count' => array('$gte' => 1),
 								'$or' => array(
 										array(
-											'keyade_referral_user_id' => array('$ne' => NULL ),
-											'keyade_referral_user_id' => array('$exists' => true )
+											'keyade_referral_user_id' => array('$ne' => NULL )
 										),
 										array(
-											'keyade_user_id' => array('$ne' => NULL ),
-											'keyade_user_id' => array('$exists' => true )
+											'keyade_user_id' => array('$ne' => NULL )
 										)
 								)
 							);
@@ -255,12 +253,10 @@ class ReportsController extends BaseController {
 								$conditions = array(
 									'$or' => array(
 											array(
-												'keyade_referral_user_id' => array('$ne' => NULL ),
-												'keyade_referral_user_id' => array('$exists' => true )
+												'keyade_referral_user_id' => array('$ne' => NULL )	
 											),
 											array(
-												'keyade_user_id' => array('$ne' => NULL ),
-												'keyade_user_id' => array('$exists' => true )
+												'keyade_user_id' => array('$ne' => NULL )
 											)
 									)
 								);
