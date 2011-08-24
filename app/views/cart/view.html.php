@@ -163,7 +163,7 @@ var discountErrors = new Object();
 		
 		<div class="clear"></div>
 		
-		<div class="grid_16" style="width:935px">
+		<div class="grid_16" style="width:935px; padding-top:30px">
 			<div style="float: left; vertical-align: top">
 			<div style="font-size: 12px; text-align:left !important;">
 			    <strong>Add <?php if(!empty($credit)): ?>

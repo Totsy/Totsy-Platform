@@ -146,6 +146,7 @@ var discountErrors = new Object();
 					</div>
 						<hr>
 					<div>
+					<span><input type="hidden"></span>
 						<div><span style="font-weight: bold">Color:</span> <?=$item->color;?></div>
 						<div><span style="font-weight: bold">Size:</span> <?=$item->size;?></div>
 					</div>	
@@ -259,8 +260,7 @@ var discountErrors = new Object();
 </div>
 
 <div class="cart-button fr" style="margin:20px 0px 20px 0px;">
-		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
-		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
+		      <?=$this->html->link('Place Your Order', 'Orders::process', array('class' => 'button', 'style'=>'float:left')); ?>
 	<div class="clear"></div>
 
 
