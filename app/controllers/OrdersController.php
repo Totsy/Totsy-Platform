@@ -382,7 +382,7 @@ class OrdersController extends BaseController {
 		#Organize Datas
 		$vars = $vars + compact(
 			'user', 'cart', 'total', 'subTotal', 'creditCard',
-			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'discountExempt'
+			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'shipping_discount'
 		);
 		if ((!$cartEmpty) && (!empty($this->request->data['process'])) && ($total > 0)) {
 			$order = Order::process($this->request->data, $cart, $vars, $avatax);
@@ -395,7 +395,7 @@ class OrdersController extends BaseController {
 		if (Session::check('cc_error')){
 			$this->redirect(array('Orders::payment'));
 		}
-		return $vars + compact('cartEmpty','order','cartByEvent','orderEvents','shipDate','savings');
+		return $vars + compact('cartEmpty','order','cartByEvent','orderEvents','shipDate','savings', 'credits', 'promocode');
 	}
 
 	/**
