@@ -764,16 +764,22 @@ class OrdersController extends BaseController {
 							break;
 						case 'expired':
 							$type = 'expired';
+							$expirtion_date = mktime(0,0,0,date('m'),date('d') + 3, date('Y') );
+							$order_date_created_min = mktime(0,0,0,date('m',$expirtion_date),date('d',$expirtion_date) - 30, date('Y',$expirtion_date) );
+							$order_date_created_max = mktime(23,59,59,date('m',$expirtion_date),date('d',$expirtion_date) - 30, date('Y',$expirtion_date) );
+							$conditions['date_created'] = array('$gte' => new MongoDate($order_date_created_min), '$lte' => new MongoDate($order_date_created_max));
+							$conditions['auth_confirmation'] = array('$exists' => false);
+							$conditions['ship_records'] = array('$exists' => false);
 							break;
-						case 'expired':
+						case 'error':
 							$type = 'error';
 							if (array_key_exists('start_date',$data) && !empty($data['start_date'])) {
 								$conditions['error_date'] = array('$gte' => new MongoDate(strtotime($data['start_date'])));
 							}
 							if (array_key_exists('end_date',$data) && !empty($data['end_date'])) {
-								$conditions['error_date'] = array_merge($conditions['error_date'],array('$lte' => new MongoDate(strtotime($data['end_date']))));
+								$conditions['error_date'] = array_merge($conditions['error_date'],array('$lt' => new MongoDate(strtotime($data['end_date']))));
 							}else {
-								$conditions['error_date'] = array_merge($conditions['error_date'],array('$lte' => new MongoDate()));
+								$conditions['error_date'] = array_merge($conditions['error_date'],array('$lt' => new MongoDate()));
 							}
 							break;
 						default:
@@ -781,7 +787,6 @@ class OrdersController extends BaseController {
 					}
 				}
 			}
-
 			$payments = $orderColl->find($conditions, array(
 				'_id' => 1,
 				'auth_error' => 1,
@@ -793,6 +798,11 @@ class OrdersController extends BaseController {
 				'auth_confirmation' => 1,
 				'total' => 1
 			));
+			if ($payments->hasNext()) {
+			    FlashMessage::set("Results found" ,	array('class' => 'pass'));
+			} else {
+			    FlashMessage::set("No results found" ,	array('class' => 'fail'));
+			}
 		}
 
 

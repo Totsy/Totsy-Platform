@@ -7,7 +7,6 @@
  */
 
 use \lithium\data\Connections;
-//use \app\extensions\adapter\data\source\MongoDb;
 
 // MongoDB Connection
 
@@ -35,7 +34,14 @@ use \lithium\data\Connections;
 		'local' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy',
+			'setSlaveOkay' => true,
+			'replicaSet' => true,
 			'host' => array(
-    			'localhost' ))
+    			'db1',
+    			'db2',
+    			'db3',
+    			'db4',
+    			'db5',
+    			'db6' ))
 		));
 ?>

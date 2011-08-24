@@ -2,7 +2,7 @@
 
 namespace admin\models;
 
-class ProcessedOrder extends \lithium\data\Model {
+class ProcessedOrder extends Base {
 
 	public $validates = array();
 

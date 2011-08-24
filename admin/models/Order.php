@@ -49,12 +49,12 @@ use admin\models\Credit;
 *   }
 * }}}
 **/
-class Order extends \lithium\data\Model {
+class Order extends Base {
 
 	const TAX_RATE = 0.08875;
 
 	const TAX_RATE_NYS = 0.04375;
-
+	protected $_meta = array('source' => 'orders');
 	protected $_nyczips = array(
 		'100',
 		'104',
@@ -69,10 +69,7 @@ class Order extends \lithium\data\Model {
 		'now' => 0
 	);
 
-	public static function collection() {
-		return static::_connection()->connection->orders;
-	}
-
+	
 	public $validates = array(
 		'authKey' => 'Could not secure payment.',
 	);
@@ -662,6 +659,23 @@ class Order extends \lithium\data\Model {
 	    );
 	    $results = $coll->find();
 	}
+
+	/**
+	* Returns true, if order passed in payment capture failed, otherwise return false
+	* @params (string) $orderId : short id of the order
+	* @return boolean
+	**/
+	/*
+	public static function failedCaptureCheck($orderId = null) {
+	    $failed = false;
+	    $coll = static:collection();
+	    $count = $coll->count(array('order_id' => $orderId, 'payment_date' => array('$exists' => true)));
+	     if ($count == 0) {
+	        $failed = true;
+	     }
+
+	     return $failed;
+	}*/
 }
 
 ?>

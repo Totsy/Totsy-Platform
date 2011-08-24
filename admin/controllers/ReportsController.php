@@ -221,7 +221,7 @@ class ReportsController extends BaseController {
 						$results['total'] = "$".$results['total'];
 						$collection->remove($conditions);
 					break;
-					
+
 					case 'Registrations':
 						switch ($name) {
 							case 'trendytogs':
@@ -355,8 +355,7 @@ class ReportsController extends BaseController {
 				'conditions' => array(
 					'_id' => $eventId
 			)));
-			$eventItems = $this->getOrderItems($eventId);
-			$inc = 0;
+
 			foreach ($eventItems as $eventItem) {
 				$orders = Order::find('all', array(
 					'conditions' => array(
@@ -1254,7 +1253,7 @@ class ReportsController extends BaseController {
 			$strParam = "yAxisName=Users;numberSuffix=%";
 			$ServiceCharts->setChartParams($strParam);
 			# add chart values and  category names
-			$ServiceCharts->addChartDataFromArray($arrData,$arrCatNames);	
+			$ServiceCharts->addChartDataFromArray($arrData,$arrCatNames);
 			/**** 2ND Charts ****/
 			//Categories
 			$arrCatNames_2[0 + $i] =  $key.' '.$year;
