@@ -228,7 +228,11 @@ function replace_address() {
     	$.each ( shippingAddress, function(k, v) {
     		
     		$("#" + k + "").val(v);
-    			
+    		if(k == 'state') {
+    			$("#" + k + 'option:selected').next('option').attr('selected', 'selected');
+  				$("#" + k + "").change();
+    		}
+
     		if(paymentForm.opt_submitted==true && v!=="") {  		
     			$('#' + k + "").attr("style", "background: #FFF !important");
     		}	

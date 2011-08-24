@@ -320,7 +320,7 @@ class CartController extends BaseController {
 	 * @see app/models/Cart::reserved()
 	 * @return boolean
 	 */
-	public function itemAvailable($item_id, $original_quantity, $size, $qty_req) {
+	public function itemAvailable($item_id, $original_quantity, $size, $qty_requested) {
 		$available = false;
 		$reserved = Cart::reserved($item_id, $size);
 		$item = Item::find('first', array(
@@ -328,7 +328,7 @@ class CartController extends BaseController {
 				'_id' => $item_id
 		)));
 		$status['quantity'] = $item->details->{$size} - ($reserved - $original_quantity);
-		$status['available'] = ($status['quantity'] > 0 && $status['quantity'] >= $qty_req) ? true : false;
+		$status['available'] = ($status['quantity'] > 0 && $status['quantity'] >= $qty_requested) ? true : false;
 		return $status;
 	}
 }
