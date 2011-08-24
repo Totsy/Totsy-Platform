@@ -328,7 +328,7 @@ div.xls_cell:hover{
 				<br>
 			<!--<?=$this->form->submit('Update Event')?>-->
 
-			<?=$this->form->button('Update Event', array('onclick'=>'submitForm(); return false;'))?>
+			<?=$this->form->button('Update Event', array('value' => 'Update Event', 'onclick'=>'submitForm(); return false;'))?>
 
 
 
@@ -424,7 +424,7 @@ div.xls_cell:hover{
 
 			<br>
 			<!--<?=$this->form->submit('Update Event')?>-->
-			<?=$this->form->button('Update Event', array('onclick'=>'submitForm(); return false;'))?>
+			<?=$this->form->button('Update Event', array('value' => 'Update Event', 'onclick'=>'submitForm(); return false;'))?>
 		</div>
 		<div id="event_items">
 
