@@ -42,7 +42,6 @@ class Order extends Base {
 	 */
 	public static function process($data, $cart, $vars, $avatax) {
 		$order = Order::create(array('_id' => new MongoId()));
-		$user = Session::read('userLogin');
 		#Create Payment
 		$card = Payments::create('default', 'creditCard', $vars['creditCard'] + array(
 			'billing' => Payments::create('default', 'address', array(
@@ -71,7 +70,6 @@ class Order extends Base {
 				return $order;
 			} catch (TransactionException $e) {
 				Session::write('cc_error',$e->getMessage());
-				Session::write('cc_billingAddr',$vars['billingAddr']);
 				//$order->set($data);
 				//$order->errors($order->errors() + array($e->getMessage()));
 			}
@@ -89,6 +87,7 @@ class Order extends Base {
 	 * @return redirect
 	 */
 	public static function recordOrder($vars, $order, $avatax, $authKey, $items) {
+			$user = Session::read('userLogin');
 			$service = Session::read('services', array('name' => 'default'));
 			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 			#Save Credits Used
@@ -129,7 +128,11 @@ class Order extends Base {
 				AvaTax::postTax(compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
 			}
 			#Save Order Infos
-			$order->save(compact('total', $vars['subTotal'],'handling','overSizeHandling') + array(
+			$order->save(array(
+					'total' => $vars['total'],
+					'subTotal' => $vars['subTotal'],
+					'handling' => $vars['shippingCost'],
+					'overSizeHandling' => $vars['overShippingCost'],
 					'user_id' => (string) $user['_id'],
 					'tax' => (float) $avatax['tax'],
 					'card_type' => $card->type,
@@ -156,7 +159,7 @@ class Order extends Base {
 			$data = array(
 				'order' => $order->data(),
 				'shipDate' => date('M d, Y', $shipDate)
-			);	
+			);
 			Mailer::send('Order_Confirmation', $user->email, $data);
 			#Clear Savings Information
 			User::cleanSession();

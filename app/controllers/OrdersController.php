@@ -390,9 +390,6 @@ class OrdersController extends BaseController {
 			'user', 'cart', 'total', 'subTotal', 'creditCard',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'shipping_discount'
 		);
-		
-		var_dump($this->request->data['process']);
-		
 		if ((!$cartEmpty) && (!empty($this->request->data['process'])) && ($total > 0)) {
 			$order = Order::process($this->request->data, $cart, $vars, $avatax);
 			if (empty($order->errors)) {
@@ -401,7 +398,7 @@ class OrdersController extends BaseController {
 			}
 		}
 		#In car of credit card error redirect to the payment page
-		if (Session::check('cc_error')){
+		if (Session::check('cc_error')) {
 			$this->redirect(array('Orders::payment'));
 		}
 		return $vars + compact('cartEmpty','order','cartByEvent','orderEvents','shipDate','savings', 'credits', 'promocode', 'services', 'cartExpirationDate');
@@ -527,6 +524,8 @@ class OrdersController extends BaseController {
 				#Encrypt CC Infos with mcrypt
 				Session::write('cc_infos', Order::creditCardEncrypt($cc_infos, (string)$user['_id'], true));
 				$cc_passed = true;
+				#Remove Credit Card Errors
+				Session::delete('cc_error');
 			}
 			#In case of normal submit (no ajax one with the checkbox)
 			if(empty($datas['opt_shipping_select'])) {

@@ -230,6 +230,7 @@ class User extends Base {
 		Session::delete('credit');
 		Session::delete('services');
 		Session::delete('cc_infos');
+		Session::delete('cc_error');
 	}
 }
 
