@@ -8,7 +8,23 @@
 <?=$this->html->style('agile_uploader.css');?>
 <?=$this->html->style('admin_common.css');?>
 
-<?php $user = lithium\storage\Session::read('userLogin'); ?>
+<?php
+
+$url = null;
+$user = lithium\storage\Session::read('userLogin');
+
+if ($user['token']) {
+	try {
+		$url = $this->url(
+			array('library' => 'li3_dav', 'Files::dav', 'token' => $user['token']),
+			array('absolute' => true)
+		);
+	} catch (\Exception $e) {
+		$url = null;
+	}
+}
+
+?>
 
 <h1>File Management</h1>
 <div class="tab_region_left_col">
@@ -16,7 +32,7 @@
 	<div class="box">
 		<h2>Upload via WebDAV</h2>
 		<div class="block">
-			<?php if (empty($user['token'])): ?>
+			<?php if (!$url): ?>
 			<p>
 				You currently have <strong>no token</strong>,
 				you can <?=$this->html->link('generate one', 'Users::token'); ?> now.
@@ -24,12 +40,7 @@
 			</p>
 			<?php else: ?>
 			<p>
-				Open your WebDAV client and connect to the following URL.
-				<?php $url = $this->url(array(
-					'library' => 'li3_dav',
-					'controller' => 'files', 'action' => 'dav',
-					'token' => $user['token']
-				), array('absolute' => true)); ?>
+				Open your WebDAV client and connect to the following URL:
 				<pre><?=$this->html->link($url, $url); ?></pre>
 			</p>
 			<?php endif; ?>
