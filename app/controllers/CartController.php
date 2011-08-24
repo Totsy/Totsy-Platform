@@ -47,8 +47,6 @@ class CartController extends BaseController {
 		if (!empty($this->request->data)) {
 			$this->update();
 		}
-		#Get current Discount
-		$vars = Cart::getDiscount($shipping, 0, $this->request->data);
 		//Cart::increaseExpires();
 		$cart = Cart::active();
 		$cartEmpty = ($cart->data()) ? false : true;
@@ -82,26 +80,28 @@ class CartController extends BaseController {
 			$subTotal += $item->quantity * $item->sale_retail;
 			$i++;
 		}
+		#Get current Discount
+		$vars = Cart::getDiscount($subTotal, $shipping, 0, $this->request->data);
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
 		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
 		$services = $vars['services'];
 		#Get Credits
-		if(!empty($vars['cartCredit'])) {
+		if (!empty($vars['cartCredit'])) {
 			$credits = Session::read('credit');
-		 	$vars['postDiscountTotal'] -= $credits;
 		}
-		#Apply Promocodes Free Shipping
+		#Get Discount Promocodes Free Shipping
 		if(!empty($vars['cartPromo']['saved_amount'])) {
 		 	$promocode = Session::read('promocode');
 		 	if($promocode['type'] === 'free_shipping') {
 				$shipping_discount = $shipping;
 			}
 		}
-		#Apply Freeshipping Service
+		#Get Discount Freeshipping Service
 		if(!empty($services['freeshipping']['enable'])) {
 			$shipping_discount = $shipping;
 		}
+		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
 		return $vars + compact('cart', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate');
 	}

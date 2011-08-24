@@ -504,9 +504,11 @@ class Cart extends Base {
 	
 	/**
 	* The getDiscount method check credits, promocodes and services available 
+	* And Apply it to the subtotal
+	* Return Credit, Promo, Services Objects and the PostDiscount Total 
 	* @see app/models/Cart::check()
 	*/
-	public static function getDiscount($shippingCost = 7.95, $overShippingCost = 0, $data) {
+	public static function getDiscount($subTotal, $shippingCost = 7.95, $overShippingCost = 0, $data) {
 		#Get User Infos
 		$fields = array(
 		'item_id',
@@ -525,10 +527,6 @@ class Cart extends Base {
 		);
 		$user = Session::read('userLogin');
 		$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
-		$cart = Cart::active(array('fields' => $fields, 'time' => 'now'));
-		#Get Subtotal
-		$map = function($item) { return $item->sale_retail * $item->quantity; };
-		$subTotal = array_sum($cart->map($map)->data());
 		/** Services, Promocodes,Credits Management **/
 		#Apply Services
 		$services = array();
@@ -557,6 +555,10 @@ class Cart extends Base {
 		}
 		$postDiscountTotal = ($postSubtotal + $cartPromo['saved_amount']);
 		$cartCredit->checkCredit($credit_amount, $postDiscountTotal, $userDoc);
+		#Apply credit to the Total
+		if(!empty($cartCredit->credit_amount)) {
+			$postDiscountTotal += $cartCredit->credit_amount;
+		}
 		return compact('cartPromo', 'cartCredit', 'services', 'postDiscountTotal');
 	}
 }
