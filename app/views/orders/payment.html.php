@@ -99,7 +99,8 @@ var paymentForm = new Object();
 
 </script>
 <?php  if(empty($cartEmpty)): ?>
-<div class="grid_16">
+<div class="grid_8" style="padding-bottom:10px; margin:20px auto auto auto;">
+	<div style="float:left">
 		<h2 class="page-title gray">
 			<span class="cart-step-status gray" style="font-weight:bold">Payment</span>
 			<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
@@ -107,19 +108,31 @@ var paymentForm = new Object();
 			<span class="cart-step-status"><img src="/img/cart_steps3.png"></span>
 			<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
 		</h2>
-	<hr />
-	<?php if (!empty($error)) { ?>
-		<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /></div>
-	<?php } ?>
+		<?php if (!empty($error)) { ?>
+			<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /></div>
+		<?php } ?>
+	</div>
+</div>
+	
+<div class="grid_8" style="padding-bottom:10px; margin:20px auto auto auto;">
+	<div style="float:right;">
+	Item Reserved For: <br />
+	<span id="itemCounter" style="color:#009900; float:right !important">Dummy cart expiration date</span>
+    </div>
+
 </div>
 
+
+
 <div class="container_16">
+
 <?=$this->form->create($payment, array (
 		'id' => 'paymentForm',
 		'class' => 'fl',
 		''
 	)); ?>
 				<div class="grid_16">
+				<hr /><br />
 				<h3>Pay with Credit Card :</h3>
 				<hr /> 
 				<?=$this->form->error('cc_error'); ?>
@@ -167,7 +180,8 @@ var paymentForm = new Object();
 					$checked = false;
 				}
 				?>
-
+				<br />
+				<br />
 				<h3>Billing Address</h3>
 				<hr />
 				Use my shipping address as my billing address: <?=$this->form->checkbox("opt_shipping", array('id' => 'opt_shipping', 'onclick' => 'replace_address()' , "checked" => $checked)) ?>
