@@ -390,6 +390,9 @@ class OrdersController extends BaseController {
 			'user', 'cart', 'total', 'subTotal', 'creditCard',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'shipping_discount'
 		);
+		
+		var_dump($this->request->data['process']);
+		
 		if ((!$cartEmpty) && (!empty($this->request->data['process'])) && ($total > 0)) {
 			$order = Order::process($this->request->data, $cart, $vars, $avatax);
 			if (empty($order->errors)) {

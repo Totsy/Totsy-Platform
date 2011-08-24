@@ -41,6 +41,25 @@ var discountErrors = new Object();
 		$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
 		$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
 		
+		$('#cartForm').submit( function(){
+			$("#process").val(true);
+		});
+	
+	/*	
+	function update_order() {
+   		var test = $('#process').val();
+   		if(test == "") {
+   		    alert("Please fill the comment section before updating");
+   		    return false;
+   		} else {
+   		    if(confirm('Are you sure to apply the changes to the order?')) {
+   		        $('#save').val("true");
+   		        $('#itemsForm').submit();
+   		    }
+   		}
+	};	
+	*/
+		
 	}); 
 	
 </script>
@@ -84,7 +103,9 @@ var discountErrors = new Object();
 	<div class="grid_16" style="width:940px; padding-bottom:35px">
 		<div style="width: 368px; margin-right:10px" class="cart-review-edit">
 			<div class="page-title" style="font-weight:bold; margin: 15px; font-size:15px"><span style="color:#0f9f10;">Shipping Address</span>
-			<span style="float:right; font-size:10px">(Change)</span>
+			<span style="float:right; font-size:10px">
+				<a href="/checkout/shipping">(Change)</a>
+			</span>
 			<hr>
 				<div class="cart-review-edit-copy">
 					<?=$shippingAddr['firstname']." ".$shippingAddr['lastname'];?>
@@ -105,7 +126,9 @@ var discountErrors = new Object();
 		</div>
 		<div style="width: 270px; margin-left:10px; margin-right:10px" class="cart-review-edit">
 			<div class="page-title" style="font-weight:bold; margin: 15px; font-size:15px"><span style="color:#009900;">Payment Method</span>
-			<span style="float:right; font-size:10px">(Change)</span>
+				<span style="float:right; font-size:10px">
+					<a href="/checkout/payment">(Change)</a>
+				</span>
 			<hr>
 			<div class="cart-review-edit-copy">
 					<?php echo strtoupper($creditCard['type']);?>
@@ -126,7 +149,7 @@ var discountErrors = new Object();
 				    $ <?=number_format($total,2)?> </span>
 				</span>    
 				<span class="cart-button" style="text-align:center">
-			      <?=$this->html->link('Place Your Order', 'Orders::process', array('class' => 'button', 'style' => 'text-align:center')); ?>
+			      <?=$this->html->link('Place Your Order', 'Orders::review', array('class' => 'button checkout', 'style' => 'text-align:center')); ?>
 			 	</span>
 			</div>
 		</div>
@@ -189,7 +212,7 @@ var discountErrors = new Object();
 					</div>
 						<hr>
 					<div>
-					<span><input type="hidden"></span>
+					<span><input type="hidden" name="process"></span>
 						<div><span style="font-weight: bold">Color:</span> <?=$item->color;?></div>
 						<div><span style="font-weight: bold">Size:</span> <?=$item->size;?></div>
 					</div>	
@@ -218,7 +241,7 @@ var discountErrors = new Object();
 			        	<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo) ); ?>
 			        </div>
 			        <div id="cred" style="display:none">				
-			        	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
+			        	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'userDoc' => $userDoc)); ?>
 			        </div>
 			    </div>
 			</div>	
@@ -303,7 +326,7 @@ var discountErrors = new Object();
 </div>
 
 <div class="cart-button fr" style="margin:20px 0px 20px 0px;">
-		      <?=$this->html->link('Place Your Order', 'Orders::process', array('class' => 'button', 'style'=>'float:left')); ?>
+		      <?=$this->html->link('Place Your Order', 'Orders::review', array('class' => 'button ', 'style'=>'float:left')); ?>
 	<div class="clear"></div>
 
 
@@ -418,9 +441,6 @@ $(function () {
 function open_credit() {
 	if ($("#cred").is(":hidden")) {
 		$("#cred").slideToggle("fast");
-		if (!$("#promo").is(":hidden")) {
-			$("#promo").slideToggle("fast");
-		}
 	} else {
 		$("#cred").slideToggle("fast");
 	}
@@ -434,10 +454,7 @@ function show_code_errors(id) {
 //HIDE / SHOW PROMOS INPUT
 function open_promo() {
 	if ($("#promo").is(":hidden")) {
-		$("#promo").slideToggle("fast");	
-		if (!$("#cred").is(":hidden")) {
-			$("#cred").slideToggle("fast");
-		}
+		$("#promo").slideToggle("fast");
 	} else {
 		$("#promo").slideToggle("fast");
 	}
