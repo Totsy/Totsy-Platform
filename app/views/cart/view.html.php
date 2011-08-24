@@ -192,10 +192,10 @@ var discountErrors = new Object();
 				<div style="clear:both"></div>
 				<div style="font-weight:bold" class="subtotal">
     			    	<span style="float: left;">Discount 
-    			    	<?php echo '[' . $promocode['code'] . ']'; ?>	
-    			    	:</span> 
-    			    	<span style="float:right" class="fees_and_discounts">-$
-    			    	<?=number_format(abs($promocode['discount_amount']),2)?>
+    			    	<?php echo '[' . $promocode['code'] . ']'; ?>:
+    			    	</span> 
+    			    	<span style="float:right" class="fees_and_discounts">- 
+    			    	$<?=number_format(abs($promocode['discount_amount']),2)?>
     			    	</span>	
     			</div>
    				<?php endif ?>

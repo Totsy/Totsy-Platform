@@ -308,7 +308,6 @@ class OrdersController extends BaseController {
 	public function review() {
 		#Get Users Informations
 		$user = Session::read('userLogin');
-		$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
 		$fields = array(
 			'item_id',
 			'color',
@@ -382,7 +381,7 @@ class OrdersController extends BaseController {
 		$creditCard = Order::creditCardDecrypt((string)$user['_id']);
 		#Organize Datas
 		$vars = $vars + compact(
-			'user', 'userDoc', 'cart', 'total', 'subTotal', 'creditCard',
+			'user', 'cart', 'total', 'subTotal', 'creditCard',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'discountExempt'
 		);
 		if ((!$cartEmpty) && (!empty($this->request->data['process'])) && ($total > 0)) {
