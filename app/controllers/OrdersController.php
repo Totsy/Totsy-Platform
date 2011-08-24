@@ -359,6 +359,8 @@ class OrdersController extends BaseController {
 		if (!empty($vars['cartCredit'])) {
 			$credits = Session::read('credit');
 		}
+		#Get Services
+		$services = $vars['services'];
 		#Get Promocodes and eventual Shipping Discount
 		if (!empty($vars['cartPromo']['saved_amount'])) {
 		 	$promocode = Session::read('promocode');
@@ -395,7 +397,7 @@ class OrdersController extends BaseController {
 		if (Session::check('cc_error')){
 			$this->redirect(array('Orders::payment'));
 		}
-		return $vars + compact('cartEmpty','order','cartByEvent','orderEvents','shipDate','savings', 'credits', 'promocode');
+		return $vars + compact('cartEmpty','order','cartByEvent','orderEvents','shipDate','savings', 'credits', 'promocode', 'services');
 	}
 
 	/**
@@ -516,7 +518,7 @@ class OrdersController extends BaseController {
 			#Check credits cards informations
 			if($cc_infos->validates()) {
 				#Encrypt CC Infos with mcrypt
-				Session::write('cc_infos', Order::creditCardEncrypt($cc_infos, $user_id, true));
+				Session::write('cc_infos', Order::creditCardEncrypt($cc_infos, (string)$user['_id'], true));
 				$cc_passed = true;
 			}
 			#In case of normal submit (no ajax one with the checkbox)
@@ -558,7 +560,7 @@ class OrdersController extends BaseController {
 		$cartEmpty = ($cart->data()) ? false : true;
 		if (Session::check('cc_error')){
 			if (!isset($payment) || (isset($payment) && !is_object($payment))){
-				$card = Order::creditCardDecrypt($user_id);
+				$card = Order::creditCardDecrypt((string)$user['_id']);
 				$data_add = Session::read('cc_billingAddr');
 				$payment = Address::create(array_merge($data_add,$card));
 			}
