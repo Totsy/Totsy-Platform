@@ -196,7 +196,7 @@ var discountErrors = new Object();
 			        	<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo) ); ?>
 			        </div>
 			        <div id="cred" style="display:none">				
-			        	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'userDoc' => $userDoc)); ?>
+			        	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
 			        </div>
 			    </div>
 			</div>	

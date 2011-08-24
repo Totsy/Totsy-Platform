@@ -1,11 +1,10 @@
 <?php if ($credit): ?>
-    	<?php
-	if(!empty($orderCredit)) {
+<?php if(!empty($orderCredit)) {
 		$orderCredit->credit_amount = abs($orderCredit->credit_amount);
 	}
 ?>
 <?php echo $this->form->create($orderCredit); ?>
-	You have $<?php echo number_format((float) $userDoc->total_credit, 2);?> in credits
+	You have $<?php echo number_format((float) $user['total_credit'], 2);?> in credits
 	<br /><input type="text" name="credit_amount" style='width:70px;' />
 	<?php echo $this->form->submit('Apply Credit'); ?>
 	 <div style='float:right !important; margin-left: 5px ; text-align:center; width:auto !important; height:auto !important'>
