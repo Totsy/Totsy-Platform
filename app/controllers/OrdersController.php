@@ -93,7 +93,6 @@ class OrdersController extends BaseController {
 				'order_id' => $order_id,
 				'user_id' => (string) $user['_id']
 		)));
-		var_dump($order_id);
 		$new = ($order->date_created->sec > (time() - 120)) ? true : false;
 		$shipDate = Cart::shipDate($order);
 		if (!empty($shipDate)) {
@@ -332,8 +331,6 @@ class OrdersController extends BaseController {
 		$orderEvents = $this->orderEvents($cart);
 		#Calculate Shipped Date
 		$shipDate = Cart::shipDate($cart);
-		#Check If Discount could be Applied
-		$discountExempt = $this->_discountExempt($cart);
 		#Get Value Of Each and Sum It
 		$subTotal = 0;
 		foreach ($cart as $cartValue) {

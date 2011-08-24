@@ -103,7 +103,7 @@ class CartController extends BaseController {
 		}
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
-		return $vars + compact('cart', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate');
+		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate');
 	}
 
 	/**
