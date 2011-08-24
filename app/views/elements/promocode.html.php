@@ -1,5 +1,5 @@
 <?=$this->form->create($orderPromo,array('id' => 'promo-form')); ?>
-    <div style='float:right !important; margin-left: 10px; text-align:center'>
+    <div style='float:right !important; width:200px !important; margin-left: 10px; text-align:center'>
     <?php if (is_array($this->form->error('promo'))): ?>
         <?php foreach($this->form->error('promo') as $msg) :?>
             <?php echo $msg ?>

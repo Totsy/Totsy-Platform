@@ -3,6 +3,12 @@
 .cart-order-place-inner { position: absolute; top: 50%; }
 <![endif]-->
 
+<?php
+echo "<pre>";
+print_r($creditCard);
+echo "</pre>";
+?>
+
 <script type="text/javascript">	
 
 var discountErrors = new Object();
@@ -86,14 +92,42 @@ var discountErrors = new Object();
 			<div class="page-title" style="font-weight:bold; margin: 15px; font-size:15px">Shipping Address
 			<span style="float:right; font-size:10px">(Change)</span>
 			<hr>
-			<span style="font-size:10px; font-weight: normal">Test</span>
+				<div class="cart-review-edit-copy">
+					<?=$shippingAddr['firstname']." ".$shippingAddr['lastname'];?>
+				</div>
+				<div class="cart-review-edit-copy">
+					<?php 
+					if($shippingAddr['address_2']=="") {
+						echo $shippingAddr['address'];
+					} else {
+						echo $shippingAddr['address']."<br>".$shippingAddr['address_2'];
+					}
+					?>
+				</div>
+				<div class="cart-review-edit-copy">
+					<?=$shippingAddr['city'].", ".$shippingAddr['state']." ".$shippingAddr['zip'];?>
+				</div>
 			</div>
 		</div>
 		<div style="width: 270px; margin-left:10px; margin-right:10px" class="cart-review-edit">
 			<div class="page-title" style="font-weight:bold; margin: 15px; font-size:15px">Payment Method
 			<span style="float:right; font-size:10px">(Change)</span>
 			<hr>
-			<span style="font-size:10px; font-weight: normal">Test</span>
+			<div class="cart-review-edit-copy">
+					<?=$shippingAddr['firstname']." ".$shippingAddr['lastname'];?>
+				</div>
+				<div class="cart-review-edit-copy">
+					<?php 
+					if($shippingAddr['address_2']=="") {
+						echo $shippingAddr['address'];
+					} else {
+						echo $shippingAddr['address']."<br>".$shippingAddr['address_2'];
+					}
+					?>
+				</div>
+				<div class="cart-review-edit-copy">
+					<?=$shippingAddr['city'].", ".$shippingAddr['state']." ".$shippingAddr['zip'];?>
+				</div>
 			</div>
 		</div>
 		<div style="width: 250px; margin-left:10px" class="cart-order-place-outer">
@@ -196,7 +230,7 @@ var discountErrors = new Object();
 			        	<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo) ); ?>
 			        </div>
 			        <div id="cred" style="display:none">				
-			        	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
+			        	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'userDoc' => $userDoc)); ?>
 			        </div>
 			    </div>
 			</div>	
