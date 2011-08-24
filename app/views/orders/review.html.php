@@ -9,58 +9,38 @@ var discountErrors = new Object();
 
 	$(document).ready( function() {
 					
-			if(discountErrors.promo==true) {	
-				show_code_errors("promo");
-			} else if (discountErrors.credits==true)  {
-				show_code_errors("cred");
-			} else if(discountErrors.credits==true && discountErrors.promo==true) {
-				show_code_errors("cred");
-				show_code_errors("promo");
-			} else {
-				discountErrors.promo=false;
-				discountErrors.credits=false;  
+		if(discountErrors.promo==true) {	
+		    show_code_errors("promo");
+		} else if (discountErrors.credits==true)  {
+		    show_code_errors("cred");
+		} else if(discountErrors.credits==true && discountErrors.promo==true) {
+		    show_code_errors("cred");
+		    show_code_errors("promo");
+		} else {
+		    discountErrors.promo=false;
+		    discountErrors.credits=false;  
+		}
+		
+		
+		$( function () {
+		    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	    
+			var now = new Date();
+			
+			$('#itemCounter').countdown( { until: itemExpires, onExpiry: refreshCart, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
+			
+			if (itemExpires < now) {
+				$('#itemCounter').html("<span class='over' style='color:#EB132C; padding:5px;'>No longer reserved</span>");
 			}
-		}
-	);
-	
-	$( function () {
-	    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	    
-		var now = new Date();
-		
-		$('#itemCounter').countdown( { until: itemExpires, onExpiry: refreshCart, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
-		
-		if (itemExpires < now) {
-			$('#itemCounter').html("<span class='over' style='color:#EB132C; padding:5px;'>No longer reserved</span>");
-		}
-		
-		function refreshCart() {
-			window.location.reload(true);
-		}
-		
-		//applying tooltip
-		$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
-		$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
-		
-		$('#cartForm').submit( function(){
-			$("#process").val(true);
-		});
-	
-	/*	
-	function update_order() {
-   		var test = $('#process').val();
-   		if(test == "") {
-   		    alert("Please fill the comment section before updating");
-   		    return false;
-   		} else {
-   		    if(confirm('Are you sure to apply the changes to the order?')) {
-   		        $('#save').val("true");
-   		        $('#itemsForm').submit();
-   		    }
-   		}
-	};	
-	*/
-		
-	}); 
+			
+			function refreshCart() {
+				window.location.reload(true);
+			}
+			
+			//applying tooltip
+			$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
+			$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
+			});
+}); 
 	
 </script>
 
@@ -149,7 +129,7 @@ var discountErrors = new Object();
 				    $ <?=number_format($total,2)?> </span>
 				</span>    
 				<span class="cart-button" style="text-align:center">
-			      <?=$this->html->link('Place Your Order', 'Orders::review', array('class' => 'button checkout', 'style' => 'text-align:center')); ?>
+			      <?=$this->form->submit('Place Your Order', array('class' => 'button', 'style' => 'text-align:center', 'onclick'=>'updateOrder()')); ?>
 			 	</span>
 			</div>
 		</div>
@@ -212,7 +192,9 @@ var discountErrors = new Object();
 					</div>
 						<hr>
 					<div>
-					<span><input type="hidden" name="process"></span>
+					<span>
+					<input type="hidden" name="process" id="process">
+					</span>
 						<div><span style="font-weight: bold">Color:</span> <?=$item->color;?></div>
 						<div><span style="font-weight: bold">Size:</span> <?=$item->size;?></div>
 					</div>	
@@ -326,9 +308,8 @@ var discountErrors = new Object();
 </div>
 
 <div class="cart-button fr" style="margin:20px 0px 20px 0px;">
-		      <?=$this->html->link('Place Your Order', 'Orders::review', array('class' => 'button ', 'style'=>'float:left')); ?>
+		      <?=$this->form->submit('Place Your Order', array('class' => 'button ', 'style'=>'float:left', 'onclick'=>'updateOrder()')); ?>
 	<div class="clear"></div>
-
 
 <?=$this->form->end(); ?>
 </div>
@@ -416,6 +397,11 @@ var discountErrors = new Object();
 </div>
 
 <script type="text/javascript" charset="utf-8">
+
+function updateOrder() {	
+	$('#process').val("true");
+	$('#cartForm').submit();	    
+}
 
 //SUBMIT THE ITEM WHICH IS DELETED
 function deletechecked(message, id) {
