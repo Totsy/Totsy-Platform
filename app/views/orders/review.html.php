@@ -2,7 +2,7 @@
 
 var discountErrors = new Object();
 
-	$(document).ready( function(){
+	$(document).ready( function() {
 					
 			if(discountErrors.promo==true) {	
 				show_code_errors("promo");
@@ -48,9 +48,9 @@ var discountErrors = new Object();
 <div style="margin:10px;">
 
 	<div class="grid_11" style="padding-bottom:10px; margin:20px auto auto auto;">
-		<div style="float:left">
+		<div style="float:left;">
 			<h2 class="page-title gray">
-				<span class="cart-step-status gray">Review your Shipping and Payment Information</span>
+				<span class="cart-step-status gray" style="font-weight:bold">Review your Shipping and Payment Information</span>
 				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
 				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
 				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
@@ -76,15 +76,16 @@ var discountErrors = new Object();
 	<div class="clear"></div>
 	<hr/>
 	
-	<div class="grid_16" style="width:940px">
-		<div style="height: 115px; width: 370px; border-style:solid;border-width:2px;margin:5px 5px 5px auto;float:left">
-		Shipping rectangle
+	<div class="grid_16" style="width:940px; padding-bottom:35px">
+		<div style="height: 115px; width: 370px; border-style:solid;border-width:2px; border-color:#DDDDDD; margin:5px 5px 5px auto;float:left">
+		<h2><div class="page-title" style="font-weight:bold; margin: 15px">Shipping rectangle</div></h2>
+		
 		</div>
-		<div style="height: 115px; width: 266px; border-style:solid;border-width:2px;margin:5px;float:left" class="gray">
-		Payment rectangle
+		<div style="height: 115px; width: 266px; border-style:solid;border-width:2px;margin:5px; border-color:#DDDDDD; float:left" class="gray">
+		<div class="page-title" style="font-weight:bold; margin: 5px auto 15px">Payment rectangle</div>
 		</div>
-		<div style="height: 115px; width: 266px; border-style:solid;border-width:2px;margin:5px;float:right">
-		Place your order
+		<div style="height: 115px; width: 266px; border-style:solid;border-width:2px;margin:5px; border-color:#DDDDDD;float:right">
+		<div class="page-title" style="font-weight:bold; margin: 35px 15px auto 15px">Place your order</div>
 		</div>
 	</div>
 	    
@@ -102,8 +103,8 @@ var discountErrors = new Object();
 			<?php foreach ($cart as $item): ?>
 				<!-- Build Product Row -->
 				<tr id="<?=$item->_id?>" style="height: 110px !important">
-					<td colspan="1" class="cart-th" style="width:75px">
-						<span style="float:left; width:120px;line-height:15px !important">
+					<td colspan="1" class="cart-th" style="width:75px;">
+						<span style="float:left; width:120px;line-height:15px !important; border-style:solid; border-width:1px;border-color:#DDDDDD; margin:10px">
 							<?php
 								if (!empty($item->primary_image)) {
 									$image = $item->primary_image;
@@ -124,10 +125,10 @@ var discountErrors = new Object();
 							); ?>
 						</span>
 					</td>
-					<td colspan="8" style="width:675px; margin-bottom:0px; ">	
+					<td colspan="8" style="width:675px;">	
 					
-					<div style="height:20px; margin-top:-20px; vertical-align:middle !important; line-height:15px !important">
-						<span class="cart-desc" style="width:540px; float:left;">
+					<div style="height:20px; vertical-align:middle !important; line-height:15px !important">
+						<span class="cart-desc" style="width:515px; float:left;">
 								<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
 								<?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?>
 						</span>					
@@ -140,7 +141,7 @@ var discountErrors = new Object();
 						<span class="cart-time">
 						<div id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?=$date?>'></div>
 						</span>
-						<span class="<?="total-item-$x";?>" style="width:75px; float:right; text-align:right; font-weight:bold;padding-right:10px; ">$<?=number_format($item->sale_retail * $item->quantity ,2)?>
+						<span class="<?="total-item-$x";?>" style="width:75px; float:right; text-align:right; font-weight:bold;">$<?=number_format($item->sale_retail * $item->quantity ,2)?>
 						</span>
 					</div>
 						<hr>

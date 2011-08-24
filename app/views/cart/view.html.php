@@ -48,9 +48,9 @@ var discountErrors = new Object();
 <div style="margin:10px;">
 
 	<div class="grid_11" style="padding-bottom:10px; margin:20px auto auto auto;">
-		<div style="float:left">
+		<div style="float:left;">
 			<h2 class="page-title gray">
-				<span class="cart-step-status gray">Shopping Cart</span>
+				<span class="cart-step-status gray" style="font-weight:bold">Shopping Cart</span>
 				<span class="cart-step-status"><img src="/img/cart_steps1.png"></span>
 				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
 				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>

@@ -89,7 +89,7 @@ var addressForm = new Object();
 	<div class="grid_8" style="padding-bottom:10px; margin:20px auto auto auto;">
 		<div style="float:left">
 			<h2 class="page-title gray">
-				<span class="cart-step-status gray">Shipping Information</span>
+				<span class="cart-step-status gray" style="font-weight:bold">Shipping Information</span>
 				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
 				<span class="cart-step-status"><img src="/img/cart_steps2.png"></span>
 				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>

@@ -101,7 +101,7 @@ var paymentForm = new Object();
 <?php  if(empty($cartEmpty)): ?>
 <div class="grid_16">
 		<h2 class="page-title gray">
-			<span class="cart-step-status gray">Payment</span>
+			<span class="cart-step-status gray" style="font-weight:bold">Payment</span>
 			<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
 			<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
 			<span class="cart-step-status"><img src="/img/cart_steps3.png"></span>
