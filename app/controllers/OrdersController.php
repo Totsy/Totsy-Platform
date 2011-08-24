@@ -333,6 +333,10 @@ class OrdersController extends BaseController {
 		#Get Value Of Each and Sum It
 		$subTotal = 0;
 		foreach ($cart as $cartValue) {
+			#Get Last Expiration Date 
+			if ($cartExpirationDate < $cartValue['expires']->sec) {
+				$cartExpirationDate = $cartValue['expires']->sec;
+			}
 			$event = Event::find('first', array(
 				'conditions' => array('_id' => $cartValue->event[0])
 			));
@@ -397,7 +401,7 @@ class OrdersController extends BaseController {
 		if (Session::check('cc_error')){
 			$this->redirect(array('Orders::payment'));
 		}
-		return $vars + compact('cartEmpty','order','cartByEvent','orderEvents','shipDate','savings', 'credits', 'promocode', 'services');
+		return $vars + compact('cartEmpty','order','cartByEvent','orderEvents','shipDate','savings', 'credits', 'promocode', 'services', 'cartExpirationDate');
 	}
 
 	/**

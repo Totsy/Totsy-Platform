@@ -2,13 +2,6 @@
 .cart-order-place-outer { position: relative; }
 .cart-order-place-inner { position: absolute; top: 50%; }
 <![endif]-->
-
-<?php
-echo "<pre>";
-print_r($creditCard);
-echo "</pre>";
-?>
-
 <script type="text/javascript">	
 
 var discountErrors = new Object();
@@ -230,7 +223,7 @@ var discountErrors = new Object();
 			        	<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo) ); ?>
 			        </div>
 			        <div id="cred" style="display:none">				
-			        	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'userDoc' => $userDoc)); ?>
+			        	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
 			        </div>
 			    </div>
 			</div>	
@@ -430,6 +423,9 @@ $(function () {
 function open_credit() {
 	if ($("#cred").is(":hidden")) {
 		$("#cred").slideToggle("fast");
+		if (!$("#promo").is(":hidden")) {
+			$("#promo").slideToggle("fast");
+		}
 	} else {
 		$("#cred").slideToggle("fast");
 	}
@@ -443,7 +439,10 @@ function show_code_errors(id) {
 //HIDE / SHOW PROMOS INPUT
 function open_promo() {
 	if ($("#promo").is(":hidden")) {
-		$("#promo").slideToggle("fast");
+		$("#promo").slideToggle("fast");	
+		if (!$("#cred").is(":hidden")) {
+			$("#cred").slideToggle("fast");
+		}
 	} else {
 		$("#promo").slideToggle("fast");
 	}
