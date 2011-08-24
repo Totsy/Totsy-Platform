@@ -1,3 +1,8 @@
+<!--[if lte IE 7]>  
+.cart-order-place-outer { position: relative; }
+.cart-order-place-inner { position: absolute; top: 50%; }
+<![endif]-->
+
 <script type="text/javascript">	
 
 var discountErrors = new Object();
@@ -77,15 +82,31 @@ var discountErrors = new Object();
 	<hr/>
 	
 	<div class="grid_16" style="width:940px; padding-bottom:35px">
-		<div style="height: 115px; width: 370px; border-style:solid;border-width:2px; border-color:#DDDDDD; margin:5px 5px 5px auto;float:left">
-		<h2><div class="page-title" style="font-weight:bold; margin: 15px">Shipping rectangle</div></h2>
-		
+		<div style="width: 368px; margin-right:10px" class="cart-review-edit">
+			<div class="page-title" style="font-weight:bold; margin: 15px; font-size:15px">Shipping Address
+			<span style="float:right; font-size:10px">(Change)</span>
+			<hr>
+			<span style="font-size:10px; font-weight: normal">Test</span>
+			</div>
 		</div>
-		<div style="height: 115px; width: 266px; border-style:solid;border-width:2px;margin:5px; border-color:#DDDDDD; float:left" class="gray">
-		<div class="page-title" style="font-weight:bold; margin: 5px auto 15px">Payment rectangle</div>
+		<div style="width: 270px; margin-left:10px; margin-right:10px" class="cart-review-edit">
+			<div class="page-title" style="font-weight:bold; margin: 15px; font-size:15px">Payment Method
+			<span style="float:right; font-size:10px">(Change)</span>
+			<hr>
+			<span style="font-size:10px; font-weight: normal">Test</span>
+			</div>
 		</div>
-		<div style="height: 115px; width: 266px; border-style:solid;border-width:2px;margin:5px; border-color:#DDDDDD;float:right">
-		<div class="page-title" style="font-weight:bold; margin: 35px 15px auto 15px">Place your order</div>
+		<div style="width: 250px; margin-left:10px" class="cart-order-place-outer">
+			<div class="page-title cart-order-place-inner">
+				<span style="margin-bottom: 12px">
+				Order Total:
+				    <span style="color:#009900; text-align:center" id="ordertotal">
+				    $ <?=number_format($total,2)?> </span>
+				</span>    
+				<span class="cart-button" style="text-align:center">
+			      <?=$this->html->link('Place Your Order', 'Orders::process', array('class' => 'button', 'style' => 'text-align:center')); ?>
+			 	</span>
+			</div>
 		</div>
 	</div>
 	    
@@ -160,7 +181,7 @@ var discountErrors = new Object();
 		
 		<div class="clear"></div>
 		
-		<div class="grid_16" style="width:935px">
+		<div class="grid_16" style="width:935px; padding-top:30px">
 			<div style="float: left; vertical-align: top">
 			    <div style="font-size: 12px; text-align:left !important;">
 			        <strong>Add <?php if(!empty($credit)): ?>
