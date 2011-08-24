@@ -390,7 +390,7 @@ class OrdersController extends BaseController {
 			'user', 'cart', 'total', 'subTotal', 'creditCard',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'shipping_discount'
 		);
-		if ((!$cartEmpty) && (!empty($this->request->data['process'])) && ($total > 0)) {
+		if ((!$cartEmpty) && (!empty($this->request->data['process']))) {
 			$order = Order::process($this->request->data, $cart, $vars, $avatax);
 			if (empty($order->errors)) {
 				#Redirect To Confirmation Page
