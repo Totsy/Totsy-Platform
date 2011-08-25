@@ -65,7 +65,7 @@ var addressForm = new Object();
     		 		invalid_count++;
     		 	} 
 			});
-			
+						
 			if(invalid_count > 0 ) {
     		    return false;
     		}		
@@ -156,10 +156,9 @@ var addressForm = new Object();
 		<div>
 			Save this address <?=$this->form->checkbox("opt_save", array('id' => 'opt_save')) ?>
 		</div>
-	</div>
-	
-	<div class="grid_16">
-			<?=$this->form->submit('Payment', array('class' => 'button fr', 'style'=>'float:l; margin-right:10px;')); ?>
+		<div>
+				<?=$this->form->submit('Continue', array('class' => 'button fr', 'style'=>'margin-right:10px;')); ?>
+		</div>	
 	</div>
 
 <?=$this->form->end();?> 

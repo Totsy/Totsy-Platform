@@ -30,7 +30,7 @@ var paymentForm = new Object();
 <script type="text/javascript">
 
     $(document).ready( function() {
-            
+        	
         //if its not true, set it to false. 
         //used to avoid overwriting the submitted 
         //value on refresh, persiting whether a 
@@ -48,6 +48,10 @@ var paymentForm = new Object();
     	
     	//highlight the invalid fields and show a prompt for the first of those highlighted
     	$("#paymentForm").submit(function() {
+    	
+    		if(validCC()==false) {
+				return false;
+			}
     	    	
     		paymentForm.submitted = true;
     		paymentForm.form = $(this).serializeArray(); 
@@ -77,6 +81,7 @@ var paymentForm = new Object();
     		 		invalid_count++;
     		 	} 
 			});
+			
     	});
     	
     	//if the form has been, hide propmts on a given element's blur event
@@ -216,7 +221,7 @@ var paymentForm = new Object();
 				</div>
 			
 			<div class="grid_16">	
-				<?=$this->form->submit('CONTINUE', array('class' => 'button fr')); ?>
+				<?=$this->form->submit('CONTINUE', array('class' => 'button fr', 'style'=>'margin-right:10px;')); ?>
 			</div>	
 				
 </div>
@@ -299,8 +304,10 @@ function validCC() {
 	if(!test) {
 		$("#card_number").validationEngine('showPrompt','*This is not a valid credit card number', '', true);
 		$("#card_number").attr('style', 'background: #FFFFC5 !important');
+		return false;
 	} else {
 		$("#card_number").attr('style', 'background: #FFFFFF !important');
+		return true;
 	}
 }
 
