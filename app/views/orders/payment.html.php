@@ -99,7 +99,9 @@ var paymentForm = new Object();
 
 </script>
 <?php  if(empty($cartEmpty)): ?>
-<div class="grid_8" style="padding-bottom:10px; margin:20px auto auto auto;">
+
+<div class="container_16" style="margin:20px;">
+<div class="grid_8" style="padding-bottom:10px;">
 	<div style="float:left">
 		<h2 class="page-title gray">
 			<span class="cart-step-status gray" style="font-weight:bold">Payment</span>
@@ -122,19 +124,17 @@ var paymentForm = new Object();
 
 </div>
 
-
-
-<div class="container_16">
-
 <?=$this->form->create($payment, array (
 		'id' => 'paymentForm',
-		'class' => 'fl',
-		''
-	)); ?>
-				<div class="grid_16">
+	)); ?>	
+
+<div class="clear"></div>
+
+<div class="grid_16" style="margin:10px; width:935px !important">
 				<hr /><br />
 				<h3>Pay with Credit Card :</h3>
 				<hr /> 
+			
 				<?=$this->form->error('cc_error'); ?>
 				<?=$this->form->hidden('opt_submitted', array('class'=>'inputbox', 'id' => 'opt_submitted')); ?>
 				<?=$this->form->label('card_type', 'Card Type', array('escape' => false,'class' => 'required')); ?>
