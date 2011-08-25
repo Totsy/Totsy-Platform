@@ -49,7 +49,9 @@ var addressForm = new Object();
     		    if(	field.value=="" && 
     		    	field.name!=="telephone" && 
     		    	field.name!=="address_2" && 
-    		    	field.name!=="submitted" ) {
+    		    	field.name!=="submitted" &&
+    		    	field.name!=="opt_save"
+					) {
     		    	
     		    	//the bubble will only be set for the first one in the set
     		    	if(set_bubble==false){    		 		
@@ -153,6 +155,9 @@ var addressForm = new Object();
 		<div>
 		<?=$this->form->label('zip', 'Zip Code<span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
+		</div>
+		<div>
+			Save this address <?=$this->form->checkbox("opt_save", array('id' => 'opt_save')) ?>
 		</div>
 	</div>
 	

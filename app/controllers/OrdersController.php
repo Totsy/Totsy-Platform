@@ -247,6 +247,11 @@ class OrdersController extends BaseController {
 		#Check Datas Form
 		if (!empty($this->request->data)) {
 			$datas = $this->request->data;
+			#Check If the User want to save the current address
+			if(!empty($datas['opt_save'])) {
+				$save = true;
+				unset($datas['opt_save']);
+			}
 			# If address selected ddwn, get infos from DB
 			if (!empty($datas['address_id'])) {
 				$address = Address::first(array(
@@ -259,7 +264,7 @@ class OrdersController extends BaseController {
 					Session::write('shipping', $datas);
 					#If no address is link with the user, save the current one
 					$count = Address::count(array('user_id' => $user['_id']));
-					if ($count == 0) {
+					if ($count == 0 || !empty($save)) {
 						$address->user_id = $user['_id'];
 						$address->save();
 					}
