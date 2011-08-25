@@ -599,8 +599,13 @@ class EventsController extends BaseController {
 			}
 			$i++;
 		}
+        $itemsCollection = Item::Collection();
 
-		$itemsCollection = Item::Collection();
+        $related_items = isset($related_items) ? $related_items:array();
+
+        foreach ( $related_items as $key => $value ) {
+
+            $rel_items = array();
 
 		foreach ( $related_items as $key => $value ) {
 
@@ -627,6 +632,7 @@ class EventsController extends BaseController {
 
 		return $items;
 	}
+}
 
 	public function preview($_id = null) {
 
