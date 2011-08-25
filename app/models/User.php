@@ -231,6 +231,8 @@ class User extends Base {
 		Session::delete('services');
 		Session::delete('cc_infos');
 		Session::delete('cc_error');
+		Session::delete('shipping');
+		Session::delete('billing');
 	}
 }
 

@@ -127,6 +127,8 @@ class Order extends Base {
 			if($avatax === true){
 				AvaTax::postTax(compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
 			}
+			#Shipping Method - By Default UPS
+			$shippingMethod = 'ups';
 			#Save Order Infos
 			$order->save(array(
 					'total' => $vars['total'],
@@ -141,7 +143,7 @@ class Order extends Base {
 					'authKey' => $authKey,
 					'billing' => $vars['billingAddr'],
 					'shipping' => $vars['shippingAddr'],
-					'shippingMethod' => $data['shipping_method'],
+					'shippingMethod' => $shippingMethod,
 					'items' => $items,
 					'avatax' => $avatax,
 					'ship_date' => new MongoDate(Cart::shipDate($order)),		

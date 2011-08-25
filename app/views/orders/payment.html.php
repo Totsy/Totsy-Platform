@@ -137,6 +137,15 @@ var paymentForm = new Object();
 				<?=$this->form->select('card_type', array('visa' => 'Visa', 'mc' => 'MasterCard','amex' => 'American Express'), array('id' => 'card_type', 'class'=>'inputbox')); ?>
 				</span>
 				
+     <br />
+ 	
+     <?=$this->form->label('card_name', 'Name On Card', array('escape' => false,'class' => 'required')); ?>
+ 	
+      <?=$this->form->text('card_name', array('class' => 'validate[required] inputbox','id'=>'card_name')); ?>
+ 	
+       <?=$this->form->error('card_name'); ?>
+
+      <br />
 				<div style="clear:both; padding-top:5px !important"></div>
 				<?=$this->form->label('card_number', 'Card Number', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('card_number', array('class'=>'validate[required] inputbox','id' => 'card_number')); ?>
