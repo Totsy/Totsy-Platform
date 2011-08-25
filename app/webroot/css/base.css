@@ -3374,9 +3374,9 @@ a.nivo-prevNav {
 }
 
 .roundy_product {
-	-webkit-border-radius:8px;
+	/* -webkit-border-radius:8px;
 	-moz-border-radius:8px;
-	border-radius:8px;
+	border-radius:8px; */
 	border:1px solid #D7D7D7;
 	margin:0 0 10px;
 	overflow:hidden;
@@ -3385,32 +3385,32 @@ a.nivo-prevNav {
 
 .roundy_product_upcoming {
     border: 1px solid #D7D7D7;
-    -webkit-border-radius:8px;
+    /* -webkit-border-radius:8px;
 	-moz-border-radius:8px;
-	border-radius:8px;
+	border-radius:8px; */
     margin: 0 0 10px;
     min-height: 251px;
     overflow: hidden;
 }
 
 .roundy_product_upcoming a img {
-	-webkit-border-radius:8px 8px 0px 0px!important;
+	/* -webkit-border-radius:8px 8px 0px 0px!important;
 	-moz-border-radius:8px 8px 0px 0px!important;
-	border-radius:8px 8px 0px 0px!important;
+	border-radius:8px 8px 0px 0px!important; */
 	overflow:hidden!important;
 }
 
 .roundy_product a img {
-	-webkit-border-radius:8px 8px 0px 0px!important;
+	/* -webkit-border-radius:8px 8px 0px 0px!important;
 	-moz-border-radius:8px 8px 0px 0px!important;
-	border-radius:8px 8px 0px 0px!important;
+	border-radius:8px 8px 0px 0px!important; */
 	overflow:hidden!important;
 }
 
 div.splash-details {
-	-webkit-border-radius:0 0 8px 8px!important;
-	-moz-border-radius:0 0 8px 8px!important;
-	border-radius:0 0 8px 8px!important;
+	/* -webkit-border-radius:0 0 8px 8px!important;
+	-moz-border-radius:0 0 8px 8px!important; 
+	border-radius:0 0 8px 8px!important; */
 	overflow:hidden!important;
 }
 
