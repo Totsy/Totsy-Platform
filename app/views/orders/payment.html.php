@@ -48,6 +48,7 @@ var paymentForm = new Object();
     	
     	//highlight the invalid fields and show a prompt for the first of those highlighted
     	$("#paymentForm").submit(function() {
+    	    	
     		paymentForm.submitted = true;
     		paymentForm.form = $(this).serializeArray(); 
     		
@@ -59,13 +60,14 @@ var paymentForm = new Object();
     		    		    		    		
     		$.each(	paymentForm.form, function(i, field) {	
     		    if(	field.value=="" && 
+    		    	field.name!=="phone" && 
     		    	field.name!=="address2" && 
     		    	field.name!=="opt_submitted" && 
     		    	field.name!=="opt_shipping" && 
     		    	field.name!=="opt_shipping_select" && 
     		    	field.name!=="card_valid" ) {
     		    	
-    		 		if(set_bubble==false){   
+    		 		if(set_bubble==false) {   
     		 			$('#' + field.name + "").validationEngine('showPrompt','*This field is required', '', true);
     		 			$('#' + field.name + "").validationEngine({ promptPosition : "centerRight", scroll: false });
     		 			set_bubble=true;
@@ -75,10 +77,6 @@ var paymentForm = new Object();
     		 		invalid_count++;
     		 	} 
 			});
-			
-			if(invalid_count > 0 ) {
-    		    return false;
-    		}		
     	});
     	
     	//if the form has been, hide propmts on a given element's blur event
@@ -121,8 +119,7 @@ var paymentForm = new Object();
     </div>
 </div>
 <?=$this->form->create($payment, array (
-		'id' => 'paymentForm',
-	)); ?>	
+		'id' => 'paymentForm')); ?>	
 
 <div class="clear"></div>
 
@@ -223,11 +220,17 @@ var paymentForm = new Object();
 				<?=$this->form->submit('CONTINUE', array('class' => 'button fr')); ?>
 			</div>	
 				
-<?=$this->form->end();?> 
 </div>
 <?php else: ?>
-	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1><center><span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
+	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1>
+	<center>
+	<span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> <a href="/sales" title="Continue Shopping">Continue Shopping</a>
+	</center>
+	</h1>
+	</div>
 <?php endif ?>
+<?=$this->form->end();?> 
+
 <script>  
 	
 var shippingAddress = <?php echo $shipping; ?>
@@ -258,7 +261,6 @@ function replace_address() {
     			if(paymentForm.opt_submitted==true) {  		
     				$('#' + k + "").attr("style", "background: #FFFFC5 !important");
     			}	
-    		
     		}
     	);
     }	
