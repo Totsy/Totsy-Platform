@@ -286,6 +286,10 @@ class OrdersController extends BaseController {
 				$idx++;
 			}
 		}
+		#Get Shipping Address from Session
+		if (Session::read('shipping') && empty($datas['address_id'])) {
+			$address = Address::create(Session::read('shipping'));
+		}
 		#Check Cart Validty
 		$cart = Cart::active(array(
 				'fields' => $fields,
@@ -505,6 +509,10 @@ class OrdersController extends BaseController {
 		$checked = false;
 		#Get billing address from shipping one in session
 		$shipping = json_encode(Session::read('shipping'));
+		#Get Billing Address from Session
+		if (Session::read('billing')) {
+			$payment = Address::create(Session::read('billing'));
+		}
 		#Check Datas Form
 		if (!empty($this->request->data)) {
 			$datas = $this->request->data;
