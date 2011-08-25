@@ -187,7 +187,11 @@ class EventsController extends BaseController {
 			}
 
 			if ($eventData[enabled] != $event->enabled) {
-				$changed .= "Enabled changed from <strong>{$event->enabled}</strong> to <strong>{$eventData[enabled]}</strong><br/>";
+				$changed .= 'Enabled changed from <strong>'.(int)$event->enabled.'</strong> to <strong>'.(int)$eventData[enabled].'</strong><br/>';
+			}
+
+			if ($eventData[tangible] != $event->tangible) {
+				$changed .= 'Tangible changed from <strong>'.(int)$event->tangible.'</strong> to <strong>'.(int)$eventData[tangible].'</strong><br/>';
 			}
 
 			if (strtotime($start_date) != $event->start_date->sec) {
@@ -210,7 +214,7 @@ class EventsController extends BaseController {
 			}
 
 			if ($eventData[enable_items] != $event->enable_items) {
-				$changed .= "Enabled Items from <strong>{$event->enable_items}</strong> to <strong>{$eventData[enable_items]}</strong><br/>";
+				$changed .= 'Enabled Items from <strong>'.(int)$event->enable_items.'</strong> to <strong>'.(int)$eventData[enable_items].'</strong><br/>';
 			}
 
 			/**

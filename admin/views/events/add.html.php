@@ -95,6 +95,11 @@ tinyMCE.init({
 		<input type="radio" name="enabled" value="1" id="enabled"> Enable Event <br>
 		<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Event
 	</div>
+	<div id="event_type">
+		<h2 id="event_type">Event Type</h2>
+		<input type="radio" name="tangible" value="1" id="tangible" checked> Tangible <br>
+		<input type="radio" name="tangible" value="0" id="tangible"> Non Tangible
+	</div>
 	<div id="event_duration">
 		<h2 id="event_duration">Event Duration</h2>
 		<?=$this->form->field('start_date', array('class' => 'general', 'id' => 'start_date'));?>

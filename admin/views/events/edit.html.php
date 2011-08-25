@@ -279,6 +279,11 @@ div.xls_cell:hover{
 						<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Event
 					<?php endif ?>
 				</div>
+				<div id="event_type">
+					<h2 id="event_type">Event Type</h2>
+					<input type="radio" name="tangible" value="1" id="tangible" <?php if ($event->tangible == 1) echo 'checked'; ?> > Tangible <br>
+					<input type="radio" name="tangible" value="0" id="tangible" <?php if ($event->tangible == 0) echo 'checked'; ?> > Non Tangible
+				</div>
 				<div id="event_duration">
 					<h4 id="event_duration">Event Duration</h4>
 					<?php
