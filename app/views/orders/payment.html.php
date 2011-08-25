@@ -59,7 +59,6 @@ var paymentForm = new Object();
     		    		    		    		
     		$.each(	paymentForm.form, function(i, field) {	
     		    if(	field.value=="" && 
-    		    	field.name!=="telephone" && 
     		    	field.name!=="address2" && 
     		    	field.name!=="opt_submitted" && 
     		    	field.name!=="opt_shipping" && 
@@ -70,7 +69,7 @@ var paymentForm = new Object();
     		 			$('#' + field.name + "").validationEngine('showPrompt','*This field is required', '', true);
     		 			$('#' + field.name + "").validationEngine({ promptPosition : "centerRight", scroll: false });
     		 			set_bubble=true;
-    		 		}
+     		 		}
     		 		$('#' + field.name + "").attr('style', 'background: #FFFFC5 !important');
     		 		
     		 		invalid_count++;
@@ -131,16 +130,14 @@ var paymentForm = new Object();
 				<hr /><br />
 				<h3>Pay with Credit Card :</h3>
 				<hr /> 
-			
+				<span style="padding-left:1px">
 				<?=$this->form->error('cc_error'); ?>
 				<?=$this->form->hidden('opt_submitted', array('class'=>'inputbox', 'id' => 'opt_submitted')); ?>
 				<?=$this->form->label('card_type', 'Card Type', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->select('card_type', array('visa' => 'Visa', 'mc' => 'MasterCard','amex' => 'American Express'), array('id' => 'card_type', 'class'=>'inputbox')); ?>
-				<br />
-				<?=$this->form->label('card_name', 'Name On Card', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('card_name', array('class' => 'validate[required] inputbox','id'=>'card_name')); ?>
-				<?=$this->form->error('card_name'); ?>
-				<br />
+				</span>
+				
+				<div style="clear:both; padding-top:5px !important"></div>
 				<?=$this->form->label('card_number', 'Card Number', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('card_number', array('class'=>'validate[required] inputbox','id' => 'card_number')); ?>
 				<?=$this->form->hidden('card_valid', array('class'=>'inputbox', 'id' => 'card_valid')); ?>
@@ -148,7 +145,8 @@ var paymentForm = new Object();
 				<div id="error_valid" style="display:none;">
 					Wrong Credit Card Number
 				</div>
-				<br />
+				<div style="clear:both"></div>
+				<span style="padding-left:2px">
 				<?=$this->form->label('card_month', 'Expiration Date', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->select('card_month', array(
 										'' => 'Month',
@@ -165,18 +163,21 @@ var paymentForm = new Object();
 										11 => 'November',
 										12 => 'December'
 				), array('id'=>"card_month", 'class'=>'validate[required] inputbox')); ?>
+				</span>
+				<span style="padding-left:2px">
 				<?php
 					$now = intval(date('Y'));
 					$years = array_combine(range($now, $now + 15), range($now, $now + 15)); ?>					
 				<?=$this->form->select('card_year', array('' => 'Year') + $years, array('id' => "card_year", 'class'=>'validate[required inputbox')); ?>
-				<br />
+				<div style="clear:both; padding-top:5px !important"></div>
 				<?=$this->form->label('card_code', 'Security Code', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('card_code', array('id' => 'card_code','class'=>'validate[required] inputbox', 'maxlength' => '4', 'size' => '4')); ?>
 				<?php 
 				if(empty($checked)) {
-					$checked = false;
+					$checked = false; 
 				}
 				?>
+				</span>
 				<br />
 				<br />
 				<h3>Billing Address</h3>
@@ -186,32 +187,34 @@ var paymentForm = new Object();
 				<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('firstname', array('class' => 'validate[required] inputbox', 'id'=>'firstname')); ?>
 				<?=$this->form->error('firstname'); ?>
-				<br />
+				<div style="clear:both"></div>
 				<?=$this->form->label('lastname', 'Last Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('lastname', array('class' => 'validate[required] inputbox', 'id'=>'lastname')); ?>
 				<?=$this->form->error('lastname'); ?>
-				<br />
+				<div style="clear:both"></div>
 				<?=$this->form->label('telephone', 'Telephone', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('telephone', array('class' => 'validate[custom[phone]] inputbox', 'id' => 'phone')); ?>
-				<br />
+				<div style="clear:both"></div>
 				<?=$this->form->label('address', 'Street Address <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('address', array('class' => 'validate[required] inputbox', 'id'=>'address')); ?>
 				<?=$this->form->error('address'); ?>
-				<br />
+				<div style="clear:both"></div>
 				<?=$this->form->label('address2', 'Street Address 2', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('address2', array('class' => 'inputbox', 'id'=>'address2')); ?>
-				<br />
+				<div style="clear:both"></div>
 				<?=$this->form->label('city', 'City <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('city', array('class' => 'validate[required] inputbox', 'id'=>'city')); ?>
 				<?=$this->form->error('city'); ?>
-				<br />
+				<div style="clear:both"></div>
+				<span style="padding-left:2px">
 				<label for="state" class='required'>State <span>*</span></label>
 				<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'id'=>'state','class' => 'validate[required] inputbox')); ?>
 				<?=$this->form->error('state'); ?>
-				<br />
+				</span>
+				<div style="clear:both; padding-top:5px"></div>
 				<?=$this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
-				<br />
+				<div style="clear:both"></div>
 				<?=$this->form->hidden('opt_description', array('id' => 'opt_description' , 'value' => 'billing')); ?>
 				<?=$this->form->hidden('opt_shipping_select', array('id' => 'opt_shipping_select')); ?>
 				</div>
