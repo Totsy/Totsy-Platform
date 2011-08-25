@@ -53,7 +53,7 @@ class ProcessPayment extends \lithium\console\Command  {
 		Logger::info('Starting Payment Processor');
 		Environment::set($this->env);
 		$this->capture();
-		//$this->reportFailedCaptures();
+		$this->reportFailedCaptures();
 		Logger::info('Payment Processor Finished');
 	}
 
@@ -123,15 +123,24 @@ class ProcessPayment extends \lithium\console\Command  {
 		}
 	}
 
-	public function reportFailedCaptures(){
-	    $emailTo = "lhanson@totsy.com;gsuper@totsy.com;mmiller@totsy.com";
+	public function reportFailedCaptures() {
+
 	    $failedOrders = Order::collection()->find(array('order_id' => array('$in' => $this->failedCaptures)), array('order_id' => 1, 'authKey' => 1, 'date_created' => 1, 'auth_error', 'total' => 1));
 	    $tableInfo = array();
 	    foreach($failedOrders as $order) {
 	        $order['date_created'] = date('m/d/Y', $order['date_created']->sec);
 	        $tableInfo[] = $order;
 	    }
-        Mailer::send('Failed_Capture_Report', $emailto,compact('tableInfo'));
+	    $content['tableInfo'] = $tableInfo;
+	    if ($this->test != "true") {
+            Mailer::send('Failed_Capture_Report',"searnest@totsy.com",$content);
+            Mailer::send('Failed_Capture_Report',"gsuper@totsy.com",$content);
+            Mailer::send('Failed_Capture_Report',"kogrady@totsy.com",$content);
+            Mailer::send('Failed_Capture_Report',"mruiz@totsy.com",$content);
+        } else {
+             Mailer::send('Failed_Capture_Report',"lhanson@totsy.com",$content);
+             Mailer::send('Failed_Capture_Report',"gsuper@totsy.com",$content);
+        }
 	}
 
 }

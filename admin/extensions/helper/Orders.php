@@ -67,14 +67,14 @@ class Orders extends \lithium\template\Helper {
 				$html .=  "<th>$key</th>";
 			}
 			if ($options['type'] == 'expired'){
-				$html .=  "<th></th>";
+				$html .=  "<th><input type='checkbox' id='capture_all'> Capture</th>";
 			}
 			$html .= '</tr></thead><tbody>';
 			foreach ($payments as $payment) {
 				if ($options['type'] == 'expired') {
 					$payment['expire_date'] = new MongoDate(mktime(0,0,0,
 						date('m',$payment['date_created']->sec),
-						date('d',$payment['date_created']->sec) + 30, 
+						date('d',$payment['date_created']->sec) + 30,
 						date('Y',$payment['date_created']->sec)
 						));
 				}
@@ -93,7 +93,7 @@ class Orders extends \lithium\template\Helper {
 					$html .= "<td>$value</td>";
 				}
 				if ($options['type'] == 'expired'){
-						$html .=  "<td><button name='capture'>Capture</button></td>";
+						$html .=  "<td><input name='capture[]' type='checkbox' value=$payment[order_id] class='capture'/></td>";
 					}
 				$html .= '</tr>';
 			}

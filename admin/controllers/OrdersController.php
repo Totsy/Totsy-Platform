@@ -738,74 +738,20 @@ class OrdersController extends BaseController {
 	}
 
 	public function payments(){
-		$orderColl = Order::collection();
-		$conditions = array();
-		$payments = array();
-		$type = null;
-		if($this->request->data) {
-			$data = $this->request->data;
-			if (array_key_exists('todays',$data) && !empty($data['todays'])) {
-				$conditions = array('error_date' => array('$gte' => new MongoDate()));
-			}else{
-				if (array_key_exists('search',$data) && !empty($data['search'])) {
-					$conditions = array('order_id' => $data['search']);
-				} else{
-					switch($data['type']){
-						case 'processed':
-							$type = 'processed';
-							if (array_key_exists('start_date',$data) && !empty($data['start_date'])) {
-								$conditions['payment_date'] = array('$gte' => new MongoDate(strtotime($data['start_date'])));
-							}
-							if (array_key_exists('end_date',$data) && !empty($data['end_date'])) {
-								$conditions['payment_date'] = array_merge($conditions['payment_date'],array('$lte' => new MongoDate(strtotime($data['end_date']))));
-							}else {
-								$conditions['payment_date'] = array_merge($conditions['payment_date'],array('$lte' => new MongoDate()));
-							}
-							break;
-						case 'expired':
-							$type = 'expired';
-							$expirtion_date = mktime(0,0,0,date('m'),date('d') + 3, date('Y') );
-							$order_date_created_min = mktime(0,0,0,date('m',$expirtion_date),date('d',$expirtion_date) - 30, date('Y',$expirtion_date) );
-							$order_date_created_max = mktime(23,59,59,date('m',$expirtion_date),date('d',$expirtion_date) - 30, date('Y',$expirtion_date) );
-							$conditions['date_created'] = array('$gte' => new MongoDate($order_date_created_min), '$lte' => new MongoDate($order_date_created_max));
-							$conditions['auth_confirmation'] = array('$exists' => false);
-							$conditions['ship_records'] = array('$exists' => false);
-							break;
-						case 'error':
-							$type = 'error';
-							if (array_key_exists('start_date',$data) && !empty($data['start_date'])) {
-								$conditions['error_date'] = array('$gte' => new MongoDate(strtotime($data['start_date'])));
-							}
-							if (array_key_exists('end_date',$data) && !empty($data['end_date'])) {
-								$conditions['error_date'] = array_merge($conditions['error_date'],array('$lt' => new MongoDate(strtotime($data['end_date']))));
-							}else {
-								$conditions['error_date'] = array_merge($conditions['error_date'],array('$lt' => new MongoDate()));
-							}
-							break;
-						default:
-							break;
-					}
-				}
-			}
-			$payments = $orderColl->find($conditions, array(
-				'_id' => 1,
-				'auth_error' => 1,
-				'order_id' => 1,
-				'error_date' => 1,
-				'date_created' => 1,
-				'payment_date' => 1,
-				'authKey' => 1,
-				'auth_confirmation' => 1,
-				'total' => 1
-			));
-			if ($payments->hasNext()) {
-			    FlashMessage::set("Results found" ,	array('class' => 'pass'));
-			} else {
-			    FlashMessage::set("No results found" ,	array('class' => 'fail'));
-			}
-		}
-
-
+		$data = $this->request->data;
+		extract(Order::orderPaymentRequests($data));
+        if ($payments && $payments->hasNext()) {
+            if (!empty($message)) {
+                $class = 'notice';
+                $style = 'font-color:#fff';
+            } else {
+                $class = 'pass';
+                 $style = 'font-color:#000';
+            }
+            FlashMessage::set("Results found." . $message ,	array('class' => $class));
+        } else {
+            FlashMessage::set("No results found." . $message ,	array('class' => 'fail'));
+        }
 		return compact('payments','type');
 	}
 }

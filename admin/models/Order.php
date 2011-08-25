@@ -69,7 +69,7 @@ class Order extends Base {
 		'now' => 0
 	);
 
-	
+
 	public $validates = array(
 		'authKey' => 'Could not secure payment.',
 	);
@@ -126,10 +126,11 @@ class Order extends Base {
 	public static function process($order) {
 		$collection = static::collection();
 		$orderId = new MongoId($order['_id']);
+
 		try {
 		    $error = null;
 		    if ($order['total'] != 0 && is_numeric($order['authKey'])) {
-                $auth = Payments::capture('default', $order['authKey'], round($order['total'], 2));
+                $auth = Payments::capture('default', $order['authKey'], floor($order['total']*100)/100);
             } else {
                 $auth = -1;
                 $error = "Can't capture because total is zero.";
@@ -649,15 +650,94 @@ class Order extends Base {
 	/**
 	* This function returns the any orders that have been errored
 	**/
-	public static function errorPaymentCapture(array $options = array()) {
-	    $coll = static::collection();
-
+	public static function orderPaymentRequests($requests) {
+	    $orderColl = static::collection();
 	    $conditions = array();
+		$payments = array();
+		$message = "";
+		$type = null;
 
-	    $default = array(
+        if($requests) {
+            if (array_key_exists('capture', $requests) && !empty($requests['capture'])) {
 
-	    );
-	    $results = $coll->find();
+				    $capture = static::collection()->find(array('order_id' => array(
+				        '$in' => $requests['capture'])),
+				        array(
+				        'authKey' => 1,
+				        'total' => 1,
+				        'order_id' => 1,
+				        '_id' => 1
+				    ));
+				    foreach($capture as $order) {
+				        static::process($order);
+				    }
+				    $requests['type'] = 'error';
+				    $requests['start_date'] = date('m/d/Y');
+				    $message = " Capture Process has completed.  Here are today's failed captures.";
+			}
+			if (array_key_exists('todays',$requests) && !empty($requests['todays'])) {
+				$conditions = array('error_date' => array('$gte' => new MongoDate(strtotime(date("m/d/Y") . "00:00:00"))));
+			} else {
+				if (array_key_exists('search',$requests) && !empty($requests['search'])) {
+					$conditions = array('order_id' => $requests['search']);
+				} else {
+					switch($requests['type']){
+						case 'processed':
+							$type = 'processed';
+							if (array_key_exists('end_date',$requests) && !empty($requests['end_date'])) {
+								$conditions['payment_date'] = array_merge($conditions['payment_date'],array('$lte' => new MongoDate(strtotime($requests['end_date']))));
+							}else {
+								$conditions['payment_date'] = array_merge($conditions['payment_date'],array('$lte' => new MongoDate()));
+							}
+
+							if (array_key_exists('start_date',$requests) && !empty($requests['start_date'])) {
+								$conditions['payment_date'] = array('$gte' => new MongoDate(strtotime($requests['start_date'])));
+							} else {
+							    $conditions = array();
+							}
+							break;
+						case 'expired':
+							$type = 'expired';
+							$expirtion_date = mktime(0,0,0,date('m'),date('d') + 3, date('Y') );
+							$order_date_created_min = mktime(0,0,0,date('m',$expirtion_date),date('d',$expirtion_date) - 30, date('Y',$expirtion_date) );
+							$order_date_created_max = mktime(23,59,59,date('m',$expirtion_date),date('d',$expirtion_date) - 30, date('Y',$expirtion_date) );
+							$conditions['date_created'] = array('$gte' => new MongoDate($order_date_created_min), '$lte' => new MongoDate($order_date_created_max));
+							$conditions['auth_confirmation'] = array('$exists' => false);
+							$conditions['ship_records'] = array('$exists' => false);
+							break;
+						case 'error':
+							$type = 'error';
+							if (array_key_exists('end_date',$requests) && !empty($requests['end_date'])) {
+								$conditions['error_date'] = array('$lt' => new MongoDate(strtotime($requests['end_date'] . " 23:59:59")));
+							}else {
+								$conditions['error_date'] = array('$lt' => new MongoDate());
+							}
+							if (array_key_exists('start_date',$requests) && !empty($requests['start_date'])) {
+								$conditions['error_date'] = array_merge($conditions['error_date'],array('$gte' => new MongoDate(strtotime($requests['start_date'] . " 00:00:00"))));
+							} else {
+							    $conditions = array();
+							}
+							break;
+						default:
+							break;
+					}
+				}
+			}
+			if (!empty($conditions)) {
+                $payments = $orderColl->find($conditions, array(
+                    '_id' => 1,
+                    'auth_error' => 1,
+                    'order_id' => 1,
+                    'error_date' => 1,
+                    'date_created' => 1,
+                    'payment_date' => 1,
+                    'authKey' => 1,
+                    'auth_confirmation' => 1,
+                    'total' => 1
+                ));
+			}
+		}
+		return compact('payments','type', 'message');
 	}
 
 	/**
@@ -665,17 +745,17 @@ class Order extends Base {
 	* @params (string) $orderId : short id of the order
 	* @return boolean
 	**/
-	/*
+
 	public static function failedCaptureCheck($orderId = null) {
 	    $failed = false;
-	    $coll = static:collection();
+	    $coll = static::collection();
 	    $count = $coll->count(array('order_id' => $orderId, 'payment_date' => array('$exists' => true)));
 	     if ($count == 0) {
 	        $failed = true;
 	     }
 
 	     return $failed;
-	}*/
+	}
 }
 
 ?>
