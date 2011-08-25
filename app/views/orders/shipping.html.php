@@ -116,10 +116,9 @@ var addressForm = new Object();
 	
 	<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
 		<hr />Choose your address :<?=$this->form->select('addresses', $addresses_ddwn, array("id" => 'addresses', 'value' => $selected));?>
-		<hr />
 		<?php endif ?>
-	
 		<div style="clear:both"></div>
+		<hr />
 		<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('firstname', array('class' => 'validate[required] inputbox', 'id'=>'firstname')); ?>
 		<?=$this->form->error('firstname'); ?>

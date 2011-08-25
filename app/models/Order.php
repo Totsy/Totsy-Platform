@@ -112,8 +112,6 @@ class Order extends Base {
 				$services = array();
 				if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
 					$services = array_merge($services, array("freeshipping"));
-					#In Case Of First Order, Send an Email About 10$ Off Discount
-					Mailer::send('Welcome_10_Off', $user->email, null);
 				}
 				if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible') {
 					$order->discount = 10.00;
@@ -162,6 +160,10 @@ class Order extends Base {
 				'order' => $order->data(),
 				'shipDate' => date('M d, Y', $shipDate)
 			);
+			#In Case Of First Order, Send an Email About 10$ Off Discount
+			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
+				Mailer::send('Welcome_10_Off', $user->email, $data);
+			}
 			Mailer::send('Order_Confirmation', $user->email, $data);
 			#Clear Savings Information
 			User::cleanSession();
