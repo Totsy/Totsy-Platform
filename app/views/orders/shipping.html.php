@@ -85,7 +85,6 @@ var addressForm = new Object();
 </script>
 <?php  if(empty($cartEmpty)): ?>
 <div style="height:700px; margin:10px">
-
 	<div class="grid_8" style="padding-bottom:10px; margin:20px auto auto auto;">
 		<div style="float:left">
 			<h2 class="page-title gray">

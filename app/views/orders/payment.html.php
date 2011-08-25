@@ -29,7 +29,7 @@ var paymentForm = new Object();
 
 <script type="text/javascript">
 
-    $(document).ready(function() {
+    $(document).ready( function() {
             
         //if its not true, set it to false. 
         //used to avoid overwriting the submitted 
@@ -100,8 +100,8 @@ var paymentForm = new Object();
 </script>
 <?php  if(empty($cartEmpty)): ?>
 
-<div class="container_16" style="margin:20px;">
-<div class="grid_8" style="padding-bottom:10px;">
+<div style="margin:10px;">
+<div class="grid_11" style="padding-bottom:10px; margin:20px auto auto auto;">
 	<div style="float:left">
 		<h2 class="page-title gray">
 			<span class="cart-step-status gray" style="font-weight:bold">Payment</span>
@@ -115,22 +115,19 @@ var paymentForm = new Object();
 		<?php } ?>
 	</div>
 </div>
-	
-<div class="grid_8" style="padding-bottom:10px; margin:20px auto auto auto;">
+<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px">
 	<div style="float:right;">
 	Item Reserved For: <br />
-	<span id="itemCounter" style="color:#009900; float:right !important">Dummy cart expiration date</span>
+		<span id="itemCounter" style="color:#009900; float:right !important"></span>
     </div>
-
 </div>
-
 <?=$this->form->create($payment, array (
 		'id' => 'paymentForm',
 	)); ?>	
 
 <div class="clear"></div>
 
-<div class="grid_16" style="margin:10px; width:935px !important">
+<div class="grid_16" style=" width:935px !important">
 				<hr /><br />
 				<h3>Pay with Credit Card :</h3>
 				<hr /> 
