@@ -333,6 +333,10 @@ class OrdersController extends BaseController {
 		#Get Value Of Each and Sum It
 		$subTotal = 0;
 		foreach ($cart as $cartValue) {
+			#Get Last Expiration Date 
+			if ($cartExpirationDate < $cartValue['expires']->sec) {
+				$cartExpirationDate = $cartValue['expires']->sec;
+			}
 			$event = Event::find('first', array(
 				'conditions' => array('_id' => $cartValue->event[0])
 			));
@@ -386,7 +390,7 @@ class OrdersController extends BaseController {
 			'user', 'cart', 'total', 'subTotal', 'creditCard',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'shipping_discount'
 		);
-		if ((!$cartEmpty) && (!empty($this->request->data['process'])) && ($total > 0)) {
+		if ((!$cartEmpty) && (!empty($this->request->data['process']))) {
 			$order = Order::process($this->request->data, $cart, $vars, $avatax);
 			if (empty($order->errors)) {
 				#Redirect To Confirmation Page
@@ -394,10 +398,10 @@ class OrdersController extends BaseController {
 			}
 		}
 		#In car of credit card error redirect to the payment page
-		if (Session::check('cc_error')){
+		if (Session::check('cc_error')) {
 			$this->redirect(array('Orders::payment'));
 		}
-		return $vars + compact('cartEmpty','order','cartByEvent','orderEvents','shipDate','savings', 'credits', 'promocode', 'services');
+		return $vars + compact('cartEmpty','order','cartByEvent','orderEvents','shipDate','savings', 'credits', 'promocode', 'services', 'cartExpirationDate');
 	}
 
 	/**
@@ -520,6 +524,8 @@ class OrdersController extends BaseController {
 				#Encrypt CC Infos with mcrypt
 				Session::write('cc_infos', Order::creditCardEncrypt($cc_infos, (string)$user['_id'], true));
 				$cc_passed = true;
+				#Remove Credit Card Errors
+				Session::delete('cc_error');
 			}
 			#In case of normal submit (no ajax one with the checkbox)
 			if(empty($datas['opt_shipping_select'])) {

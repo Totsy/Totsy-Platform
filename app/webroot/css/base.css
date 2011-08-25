@@ -1949,14 +1949,15 @@ span.citem.active-th {
 
 .cart-review-edit-copy {
 font-size:10px; 
-font-weight: normal; 
+font-weight: bold; 
 line-height:12px;
 }
 
 .cart-review-edit{
 border-style:solid;
 border-width:1px; 
-border-color:#DDDDDD; 
+border-color: #DDDDDD; 
+background-color: #ECECEC;
 margin:5px 5px 5px auto;
 float:left;
 height: 115px;

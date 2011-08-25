@@ -3,51 +3,44 @@
 .cart-order-place-inner { position: absolute; top: 50%; }
 <![endif]-->
 
-<?php
-echo "<pre>";
-print_r($creditCard);
-echo "</pre>";
-?>
-
 <script type="text/javascript">	
 
 var discountErrors = new Object();
 
 	$(document).ready( function() {
 					
-			if(discountErrors.promo==true) {	
-				show_code_errors("promo");
-			} else if (discountErrors.credits==true)  {
-				show_code_errors("cred");
-			} else if(discountErrors.credits==true && discountErrors.promo==true) {
-				show_code_errors("cred");
-				show_code_errors("promo");
-			} else {
-				discountErrors.promo=false;
-				discountErrors.credits=false;  
+		if(discountErrors.promo==true) {	
+		    show_code_errors("promo");
+		} else if (discountErrors.credits==true)  {
+		    show_code_errors("cred");
+		} else if(discountErrors.credits==true && discountErrors.promo==true) {
+		    show_code_errors("cred");
+		    show_code_errors("promo");
+		} else {
+		    discountErrors.promo=false;
+		    discountErrors.credits=false;  
+		}
+		
+		
+		$( function () {
+		    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	    
+			var now = new Date();
+			
+			$('#itemCounter').countdown( { until: itemExpires, onExpiry: refreshCart, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
+			
+			if (itemExpires < now) {
+				$('#itemCounter').html("<span class='over' style='color:#EB132C; padding:5px;'>No longer reserved</span>");
 			}
-		}
-	);
-	
-	$( function () {
-	    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	    
-		var now = new Date();
-		
-		$('#itemCounter').countdown( { until: itemExpires, onExpiry: refreshCart, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
-		
-		if (itemExpires < now) {
-			$('#itemCounter').html("<span class='over' style='color:#EB132C; padding:5px;'>No longer reserved</span>");
-		}
-		
-		function refreshCart() {
-			window.location.reload(true);
-		}
-		
-		//applying tooltip
-		$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
-		$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
-		
-	}); 
+			
+			function refreshCart() {
+				window.location.reload(true);
+			}
+			
+			//applying tooltip
+			$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
+			$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
+			});
+}); 
 	
 </script>
 
@@ -89,8 +82,10 @@ var discountErrors = new Object();
 	
 	<div class="grid_16" style="width:940px; padding-bottom:35px">
 		<div style="width: 368px; margin-right:10px" class="cart-review-edit">
-			<div class="page-title" style="font-weight:bold; margin: 15px; font-size:15px">Shipping Address
-			<span style="float:right; font-size:10px">(Change)</span>
+			<div class="page-title" style="font-weight:bold; margin: 15px; font-size:15px"><span style="color:#0f9f10;">Shipping Address</span>
+			<span style="float:right; font-size:10px">
+				<a href="/checkout/shipping">(Change)</a>
+			</span>
 			<hr>
 				<div class="cart-review-edit-copy">
 					<?=$shippingAddr['firstname']." ".$shippingAddr['lastname'];?>
@@ -110,23 +105,19 @@ var discountErrors = new Object();
 			</div>
 		</div>
 		<div style="width: 270px; margin-left:10px; margin-right:10px" class="cart-review-edit">
-			<div class="page-title" style="font-weight:bold; margin: 15px; font-size:15px">Payment Method
-			<span style="float:right; font-size:10px">(Change)</span>
+			<div class="page-title" style="font-weight:bold; margin: 15px; font-size:15px"><span style="color:#009900;">Payment Method</span>
+				<span style="float:right; font-size:10px">
+					<a href="/checkout/payment">(Change)</a>
+				</span>
 			<hr>
 			<div class="cart-review-edit-copy">
-					<?=$shippingAddr['firstname']." ".$shippingAddr['lastname'];?>
+					<?php echo strtoupper($creditCard['type']);?>
 				</div>
 				<div class="cart-review-edit-copy">
-					<?php 
-					if($shippingAddr['address_2']=="") {
-						echo $shippingAddr['address'];
-					} else {
-						echo $shippingAddr['address']."<br>".$shippingAddr['address_2'];
-					}
-					?>
+					<?php echo "Ends in: ". substr($creditCard['number'], -4, strlen($creditCard['number']));?>
 				</div>
 				<div class="cart-review-edit-copy">
-					<?=$shippingAddr['city'].", ".$shippingAddr['state']." ".$shippingAddr['zip'];?>
+					<?php echo "Expires in: ". $creditCard['month'] ."/". $creditCard['year'];?>
 				</div>
 			</div>
 		</div>
@@ -138,7 +129,7 @@ var discountErrors = new Object();
 				    $ <?=number_format($total,2)?> </span>
 				</span>    
 				<span class="cart-button" style="text-align:center">
-			      <?=$this->html->link('Place Your Order', 'Orders::process', array('class' => 'button', 'style' => 'text-align:center')); ?>
+			      <?=$this->form->submit('Place Your Order', array('class' => 'button', 'style' => 'text-align:center', 'onclick'=>'updateOrder()')); ?>
 			 	</span>
 			</div>
 		</div>
@@ -201,7 +192,9 @@ var discountErrors = new Object();
 					</div>
 						<hr>
 					<div>
-					<span><input type="hidden"></span>
+					<span>
+					<input type="hidden" name="process" id="process">
+					</span>
 						<div><span style="font-weight: bold">Color:</span> <?=$item->color;?></div>
 						<div><span style="font-weight: bold">Size:</span> <?=$item->size;?></div>
 					</div>	
@@ -230,7 +223,7 @@ var discountErrors = new Object();
 			        	<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo) ); ?>
 			        </div>
 			        <div id="cred" style="display:none">				
-			        	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'userDoc' => $userDoc)); ?>
+			        	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
 			        </div>
 			    </div>
 			</div>	
@@ -315,9 +308,8 @@ var discountErrors = new Object();
 </div>
 
 <div class="cart-button fr" style="margin:20px 0px 20px 0px;">
-		      <?=$this->html->link('Place Your Order', 'Orders::process', array('class' => 'button', 'style'=>'float:left')); ?>
+		      <?=$this->form->submit('Place Your Order', array('class' => 'button ', 'style'=>'float:left', 'onclick'=>'updateOrder()')); ?>
 	<div class="clear"></div>
-
 
 <?=$this->form->end(); ?>
 </div>
@@ -406,6 +398,11 @@ var discountErrors = new Object();
 
 <script type="text/javascript" charset="utf-8">
 
+function updateOrder() {	
+	$('#process').val("true");
+	$('#cartForm').submit();	    
+}
+
 //SUBMIT THE ITEM WHICH IS DELETED
 function deletechecked(message, id) {
 	var answer = confirm(message)
@@ -430,6 +427,9 @@ $(function () {
 function open_credit() {
 	if ($("#cred").is(":hidden")) {
 		$("#cred").slideToggle("fast");
+		if (!$("#promo").is(":hidden")) {
+			$("#promo").slideToggle("fast");
+		}
 	} else {
 		$("#cred").slideToggle("fast");
 	}
@@ -443,7 +443,10 @@ function show_code_errors(id) {
 //HIDE / SHOW PROMOS INPUT
 function open_promo() {
 	if ($("#promo").is(":hidden")) {
-		$("#promo").slideToggle("fast");
+		$("#promo").slideToggle("fast");	
+		if (!$("#cred").is(":hidden")) {
+			$("#cred").slideToggle("fast");
+		}
 	} else {
 		$("#promo").slideToggle("fast");
 	}
