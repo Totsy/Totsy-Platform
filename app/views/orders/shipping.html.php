@@ -119,42 +119,41 @@ var addressForm = new Object();
 		<hr />
 		<?php endif ?>
 	
-		<div>
+		<div style="clear:both"></div>
 		<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('firstname', array('class' => 'validate[required] inputbox', 'id'=>'firstname')); ?>
 		<?=$this->form->error('firstname'); ?>
-		</div>
-		<div>
+		<div style="clear:both"></div>
 		<?=$this->form->label('lastname', 'Last Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('lastname', array('class' => 'validate[required] inputbox', 'id'=>'lastname')); ?>
 		<?=$this->form->error('lastname'); ?>
-		</div>
-		<div>
+		<div style="clear:both"></div>
 		<?=$this->form->label('telephone', 'Telephone', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('telephone', array('class' => 'validate[custom[phone]] inputbox', 'id' => 'phone')); ?>
-		</div>
-		<div>
+		<div style="clear:both"></div>
 		<?=$this->form->label('address', 'Street Address <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('address', array('class' => 'validate[required] inputbox', 'id'=>'address' )); ?>
 		<?=$this->form->error('address'); ?>
-		</div>
-		<div>
+		<div style="clear:both"></div>
 		<?=$this->form->label('address_2', 'Street Address 2', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('address_2', array('class' => 'inputbox', 'id'=>'address_2')); ?>
-		</div>
-		<div>
+		<div style="clear:both"></div>
 		<?=$this->form->label('city', 'City <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('city', array('class' => 'validate[required] inputbox', 'id'=>'city')); ?>
 		<?=$this->form->error('city'); ?>
-		</div>
-		<div>
+		<div style="clear:both"></div>
+		<span style="padding-left:2px">
 		<?=$this->form->label('state', 'State <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'class' => 'validate[required] inputbox','id'=>'state')); ?>
-		<?=$this->form->error('state'); ?></div>
-		<div>
+		<?=$this->form->error('state'); ?>
+		</span>
+		<div style="clear:both; padding-top:5px;"></div>
+		<span style="padding-left:1px">
 		<?=$this->form->label('zip', 'Zip Code<span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
+		</span>
 		</div>
+		<div style="clear:both"></div>
 		<div>
 			Save this address <?=$this->form->checkbox("opt_save", array('id' => 'opt_save')) ?>
 		</div>
