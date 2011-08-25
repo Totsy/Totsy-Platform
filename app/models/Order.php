@@ -66,7 +66,7 @@ class Order extends Base {
 			try {
 				#Process Payment
 				$authKey = Payments::authorize('default', $vars['total'], $card);
-				$order = Order::recordOrder($vars, $order, $avatax, $authKey, $items);
+				$order = Order::recordOrder($vars, $card, $order, $avatax, $authKey, $items);
 				return $order;
 			} catch (TransactionException $e) {
 				Session::write('cc_error',$e->getMessage());
@@ -86,7 +86,7 @@ class Order extends Base {
 	 * Record in DB all informations linked with the order
 	 * @return redirect
 	 */
-	public static function recordOrder($vars, $order, $avatax, $authKey, $items) {
+	public static function recordOrder($vars, $card, $order, $avatax, $authKey, $items) {
 			$user = Session::read('userLogin');
 			$service = Session::read('services', array('name' => 'default'));
 			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
@@ -95,7 +95,7 @@ class Order extends Base {
 				User::applyCredit($user['_id'], $vars['cartCredit']->credit_amount);
 				Credit::add($vars['cartCredit'], $user['_id'], $vars['cartCredit']->credit_amount, "Used Credit");
 				Session::delete('credit');
-				$order->credit_used = $vars['cartCredit']->credit_amount;
+				$order->credit_used = abs($vars['cartCredit']->credit_amount);
 			}
 			#Save Promocode Used
 			if ($vars['cartPromo']->saved_amount) {
@@ -105,7 +105,7 @@ class Order extends Base {
 				$vars['cartPromo']->date_created = new MongoDate();
 				$vars['cartPromo']->save();
 				$order->promo_code = $vars['cartPromo']->code;
-				$order->promo_discount = $vars['cartPromo']->saved_amount;
+				$order->promo_discount = abs($vars['cartPromo']->saved_amount);
 			}
 			#Save Services Used (10$Off / Free Shipping)
 			if ($service) {
@@ -116,7 +116,7 @@ class Order extends Base {
 					Mailer::send('Welcome_10_Off', $user->email, $data);
 				}
 				if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible') {
-					$order->discount = -10.00;
+					$order->discount = 10.00;
 					$services = array_merge($services, array("10off50"));
 				}
 				if(!empty($services)) {
