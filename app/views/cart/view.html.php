@@ -211,7 +211,7 @@ var discountErrors = new Object();
 				<div style="clear:both"></div>							
 				<div style="font-weight:bold;" >
 				<div class="subtotal">	
-				<span id="shipping_tooltip" style="float:left; margin-left:-12px;" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
+				<span id="shipping_tooltip" style="float:left; margin-left:-12px;" original-title="Shipping charges may vary depending on item type."><img src="/img/tooltip_icon.png">
 				    	</span>
 				    <span style="float:left;" id="shipping">
 				    Shipping:</span> 
@@ -233,7 +233,7 @@ var discountErrors = new Object();
 				<div style="clear:both"></div>	
 				<div style="font-weight:bold">
 				<div class="subtotal">
-				    <span id="tax_tooltip" style="float:left; margin-left:-12px;" original-title="Tipsy is a jQuery plugin for creating a Facebook-like tooltips effect based on an anchor tag's title attribute."><img src="/img/tooltip_icon.png">
+				    <span id="tax_tooltip" style="float:left; margin-left:-12px;" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary"><img src="/img/tooltip_icon.png">
 </span>			
 					<span id="estimated_tax" style="float:left;">Estimated Tax:</span> 
 				    <span style="float:right" class="fees_and_discounts">$0.00</span>
