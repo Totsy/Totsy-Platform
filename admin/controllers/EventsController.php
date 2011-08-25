@@ -390,6 +390,8 @@ class EventsController extends BaseController {
 				}
 
 				$itemsCollection = Item::Collection();
+				
+				$related_items = isset($related_items) ? $related_items:array();
 
 				foreach ( $related_items as $key => $value ) {
 
