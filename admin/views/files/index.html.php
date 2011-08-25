@@ -13,7 +13,7 @@
 $url = null;
 $user = lithium\storage\Session::read('userLogin');
 
-if ($user['token']) {
+if (!empty($user['token'])) {
 	try {
 		$url = $this->url(
 			array('library' => 'li3_dav', 'Files::dav', 'token' => $user['token']),
