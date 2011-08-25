@@ -112,8 +112,6 @@ class Order extends Base {
 				$services = array();
 				if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
 					$services = array_merge($services, array("freeshipping"));
-					#In Case Of First Order, Send an Email About 10$ Off Discount
-					Mailer::send('Welcome_10_Off', $user->email, $data);
 				}
 				if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible') {
 					$order->discount = 10.00;
@@ -127,6 +125,8 @@ class Order extends Base {
 			if($avatax === true){
 				AvaTax::postTax(compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
 			}
+			#Shipping Method - By Default UPS
+			$shippingMethod = 'ups';
 			#Save Order Infos
 			$order->save(array(
 					'total' => $vars['total'],
@@ -141,7 +141,7 @@ class Order extends Base {
 					'authKey' => $authKey,
 					'billing' => $vars['billingAddr'],
 					'shipping' => $vars['shippingAddr'],
-					'shippingMethod' => $data['shipping_method'],
+					'shippingMethod' => $shippingMethod,
 					'items' => $items,
 					'avatax' => $avatax,
 					'ship_date' => new MongoDate(Cart::shipDate($order)),		
@@ -160,6 +160,10 @@ class Order extends Base {
 				'order' => $order->data(),
 				'shipDate' => date('M d, Y', $shipDate)
 			);
+			#In Case Of First Order, Send an Email About 10$ Off Discount
+			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
+				Mailer::send('Welcome_10_Off', $user->email, $data);
+			}
 			Mailer::send('Order_Confirmation', $user->email, $data);
 			#Clear Savings Information
 			User::cleanSession();

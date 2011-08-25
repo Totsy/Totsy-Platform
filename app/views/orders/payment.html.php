@@ -30,7 +30,7 @@ var paymentForm = new Object();
 <script type="text/javascript">
 
     $(document).ready( function() {
-            
+        	
         //if its not true, set it to false. 
         //used to avoid overwriting the submitted 
         //value on refresh, persiting whether a 
@@ -48,6 +48,11 @@ var paymentForm = new Object();
     	
     	//highlight the invalid fields and show a prompt for the first of those highlighted
     	$("#paymentForm").submit(function() {
+    	
+    		if(validCC()==false) {
+				return false;
+			}
+    	    	
     		paymentForm.submitted = true;
     		paymentForm.form = $(this).serializeArray(); 
     		
@@ -59,13 +64,14 @@ var paymentForm = new Object();
     		    		    		    		
     		$.each(	paymentForm.form, function(i, field) {	
     		    if(	field.value=="" && 
+    		    	field.name!=="phone" && 
     		    	field.name!=="address2" && 
     		    	field.name!=="opt_submitted" && 
     		    	field.name!=="opt_shipping" && 
     		    	field.name!=="opt_shipping_select" && 
     		    	field.name!=="card_valid" ) {
     		    	
-    		 		if(set_bubble==false){   
+    		 		if(set_bubble==false) {   
     		 			$('#' + field.name + "").validationEngine('showPrompt','*This field is required', '', true);
     		 			$('#' + field.name + "").validationEngine({ promptPosition : "centerRight", scroll: false });
     		 			set_bubble=true;
@@ -76,9 +82,6 @@ var paymentForm = new Object();
     		 	} 
 			});
 			
-			if(invalid_count > 0 ) {
-    		    return false;
-    		}		
     	});
     	
     	//if the form has been, hide propmts on a given element's blur event
@@ -121,8 +124,7 @@ var paymentForm = new Object();
     </div>
 </div>
 <?=$this->form->create($payment, array (
-		'id' => 'paymentForm',
-	)); ?>	
+		'id' => 'paymentForm')); ?>	
 
 <div class="clear"></div>
 
@@ -136,7 +138,6 @@ var paymentForm = new Object();
 				<?=$this->form->label('card_type', 'Card Type', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->select('card_type', array('visa' => 'Visa', 'mc' => 'MasterCard','amex' => 'American Express'), array('id' => 'card_type', 'class'=>'inputbox')); ?>
 				</span>
-				
 				<div style="clear:both; padding-top:5px !important"></div>
 				<?=$this->form->label('card_number', 'Card Number', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('card_number', array('class'=>'validate[required] inputbox','id' => 'card_number')); ?>
@@ -220,14 +221,20 @@ var paymentForm = new Object();
 				</div>
 			
 			<div class="grid_16">	
-				<?=$this->form->submit('CONTINUE', array('class' => 'button fr')); ?>
+				<?=$this->form->submit('CONTINUE', array('class' => 'button fr', 'style'=>'margin-right:10px;')); ?>
 			</div>	
 				
-<?=$this->form->end();?> 
 </div>
 <?php else: ?>
-	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1><center><span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
+	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1>
+	<center>
+	<span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> <a href="/sales" title="Continue Shopping">Continue Shopping</a>
+	</center>
+	</h1>
+	</div>
 <?php endif ?>
+<?=$this->form->end();?> 
+
 <script>  
 	
 var shippingAddress = <?php echo $shipping; ?>
@@ -258,7 +265,6 @@ function replace_address() {
     			if(paymentForm.opt_submitted==true) {  		
     				$('#' + k + "").attr("style", "background: #FFFFC5 !important");
     			}	
-    		
     		}
     	);
     }	
@@ -298,8 +304,10 @@ function validCC() {
 	if(!test) {
 		$("#card_number").validationEngine('showPrompt','*This is not a valid credit card number', '', true);
 		$("#card_number").attr('style', 'background: #FFFFC5 !important');
+		return false;
 	} else {
 		$("#card_number").attr('style', 'background: #FFFFFF !important');
+		return true;
 	}
 }
 

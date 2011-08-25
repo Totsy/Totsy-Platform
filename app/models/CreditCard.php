@@ -8,9 +8,6 @@ class CreditCard extends \lithium\data\Model {
 		'number' => array(
 			'notEmpty', 'required' => false, 'message' => 'Please add a credit card number'
 		),
-		'name' => array(
-			'notEmpty', 'required' => true, 'message' => 'Please add the name of the credit card owner'
-		),
 		'year' => array(
 			'notEmpty', 'required' => true, 'message' => 'Please select the expiration year'
 		),
