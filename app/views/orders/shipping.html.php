@@ -49,7 +49,9 @@ var addressForm = new Object();
     		    if(	field.value=="" && 
     		    	field.name!=="telephone" && 
     		    	field.name!=="address_2" && 
-    		    	field.name!=="submitted" ) {
+    		    	field.name!=="submitted" &&
+    		    	field.name!=="opt_save"
+					) {
     		    	
     		    	//the bubble will only be set for the first one in the set
     		    	if(set_bubble==false){    		 		
@@ -85,7 +87,6 @@ var addressForm = new Object();
 </script>
 <?php  if(empty($cartEmpty)): ?>
 <div style="height:700px; margin:10px">
-
 	<div class="grid_8" style="padding-bottom:10px; margin:20px auto auto auto;">
 		<div style="float:left">
 			<h2 class="page-title gray">
@@ -154,6 +155,9 @@ var addressForm = new Object();
 		<?=$this->form->label('zip', 'Zip Code<span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
 		</div>
+		<div>
+			Save this address <?=$this->form->checkbox("opt_save", array('id' => 'opt_save')) ?>
+		</div>
 	</div>
 	
 	<div class="grid_16">
@@ -174,7 +178,6 @@ var addressForm = new Object();
 <?php else: ?>
 	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1><center><span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
 <?php endif ?>
-<script>  
 <script>
 $(document).ready(function(){ 
 	$("#addresses").change(function () {

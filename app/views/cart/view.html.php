@@ -46,7 +46,6 @@ var discountErrors = new Object();
 
 <?php  if(!empty($subTotal)): ?>
 <div style="margin:10px;">
-
 	<div class="grid_11" style="padding-bottom:10px; margin:20px auto auto auto;">
 		<div style="float:left;">
 			<h2 class="page-title gray">
@@ -169,7 +168,7 @@ var discountErrors = new Object();
 			    <strong>Add <?php if(!empty($credit)): ?>
 			    	<a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a> /
 			    <?php endif ?> 
-			    	<a href="#" id="promos_lnk" onclick="open_promo();">Optional Code</a></strong>
+			    	<a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
 			</div>
 			<div style="clear:both"></div>
 			<div id="promos_and_credit">
@@ -188,6 +187,7 @@ var discountErrors = new Object();
 				   <span style="float:left;">Subtotal:</span>
 				   <span style="float:right" id="subtotal">$<?=number_format($subTotal,2)?></span>
 				</div>
+				
 				<?php if (!empty($promocode['discount_amount']) && ($promocode['type'] != 'free_shipping') ):?>
 				<div style="clear:both"></div>
 				<div style="font-weight:bold" class="subtotal">
@@ -206,6 +206,13 @@ var discountErrors = new Object();
     			    		<span style="float:right" class="fees_and_discounts">- $<?=number_format($services['tenOffFitfy'],2)?>
     			    		</span>
     			    	</span>
+    			</div>
+   				<?php endif ?>
+   				<?php if (!empty($credits)):?>
+				<div style="clear:both"></div>
+				<div style="font-weight:bold" class="subtotal">
+    			    	<span style="float:left;">Credits:</span> 
+    			    	<span style="float:right" class="fees_and_discounts">- $<?=number_format(abs($credits),2)?></span>
     			</div>
    				<?php endif ?>
 				<div style="clear:both"></div>							
@@ -239,18 +246,14 @@ var discountErrors = new Object();
 				    <span style="float:right" class="fees_and_discounts">$0.00</span>
 				</div>
 				</div>
-				<?php if (!empty($credits)):?>
-				<div style="clear:both"></div>
-				<div style="font-weight:bold" class="subtotal">
-    			    	<span style="float:left;">Credits:</span> 
-    			    	<span style="float:right" class="fees_and_discounts">- $<?=number_format(abs($credits),2)?></span>
-    			</div>
-   				<?php endif ?>
+				
 				<div style="clear:both" class="subtotal"><hr /></div>			
 				<div>
-				    <div class="savings">Your Saving: 
-				    	<span style="color:#ff6d1d; font-weight:bold"><?php if (!empty($savings)) : ?>
-				    	$<?=number_format($savings,2)?>
+				    <div class="savings">
+				    <span style="color:#ff6d1d; font-weight:bold">
+				    <?php if (!empty($savings)) : ?>
+				    <span style="font-style:italic">Your Saving:</span> 
+				    $<?=number_format($savings,2)?>
 				    	<?php endif ?>
 				    	</span> 
 				    </div>
@@ -344,16 +347,16 @@ function deletechecked(message, id) {
 //SUBMIT QUANTITY IN CASE OF DDWN CHANGE
 $(document).ready( function(){
 
-$(function () {
-	$(".quantity").live("change keyup", function () {
-		if($("select").val() == 0) {
-			$('input[name="rmv_item_id"]').val($(this).attr('id'));
-			$('#removeForm').submit();
-		} else {
-			$('#cartForm').submit();
-		}
+	$(function () {
+		$(".quantity").live("change keyup", function () {
+			if($("select").val() == 0) {
+				$('input[name="rmv_item_id"]').val($(this).attr('id'));
+				$('#removeForm').submit();
+			} else {
+				$('#cartForm').submit();
+			}
+		});
 	});
-});
 });
 
 //HIDE / SHOW CREDITS INPUT

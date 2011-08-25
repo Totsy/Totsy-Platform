@@ -214,7 +214,7 @@ var discountErrors = new Object();
 			        <strong>Add <?php if(!empty($credit)): ?>
 			        	<a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a> /
 			        <?php endif ?> 
-			        	<a href="#" id="promos_lnk" onclick="open_promo();">Optional Code</a></strong>
+			        	<a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
 			    </div>
 			    <div style="clear:both"></div>
 			    <div id="promos_and_credit">
@@ -253,6 +253,13 @@ var discountErrors = new Object();
     		        	</span>
     		    </div>
    			    <?php endif ?>
+   			    <?php if (!empty($credits)):?>
+			    <div style="clear:both"></div>
+			    <div style="font-weight:bold" class="subtotal">
+    		        	<span style="float:left;">Credits:</span> 
+    		        	<span style="float:right" class="fees_and_discounts">- $<?=number_format(abs($credits),2)?></span>
+    		    </div>
+   			    <?php endif ?>
 			    <div style="clear:both"></div>							
 			    <div style="font-weight:bold;" >
 			    <div class="subtotal">	
@@ -284,17 +291,12 @@ var discountErrors = new Object();
 			        	<span style="float:right" class="fees_and_discounts">$0.00</span>
 			    </div>
 			    </div>
-			    <?php if (!empty($credits)):?>
-			    <div style="clear:both"></div>
-			    <div style="font-weight:bold" class="subtotal">
-    		        	<span style="float:left;">Credits:</span> 
-    		        	<span style="float:right" class="fees_and_discounts">- $<?=number_format(abs($credits),2)?></span>
-    		    </div>
-   			    <?php endif ?>
 			    <div style="clear:both" class="subtotal"><hr /></div>			
 			    <div>
-			        <div class="savings">Your Saving: 
-			        	<span style="color:#ff6d1d; font-weight:bold"><?php if (!empty($savings)) : ?>
+			        <div class="savings"> 
+			        	<span style="color:#ff6d1d; font-weight:bold">
+			        	<?php if (!empty($savings)) : ?>
+			        	<span style="font-style:italic">Your Saving:</span>
 			        	$<?=number_format($savings,2)?>
 			        	<?php endif ?>
 			        	</span> 
