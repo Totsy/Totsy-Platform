@@ -86,7 +86,7 @@ class FilesController extends \lithium\action\Controller {
 			case 'all':
 			case 'event':
 				if (empty($this->request->data['Filedata'])) {
-					break;
+					return $this->render(array('status' => 500, 'head' => true));
 				}
 				Logger::debug('Receiving uploaded file.');
 
@@ -115,6 +115,7 @@ class FilesController extends \lithium\action\Controller {
 					}
 					fclose($handle);
 				}
+				return $this->render(array('status' => 200, 'head' => true));
 			break;
 			default:
 				/* @deprecated This was the old upload() method code... */
