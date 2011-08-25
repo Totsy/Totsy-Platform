@@ -327,7 +327,7 @@
 	var productID = "77";
 	var position = "1";
 	var orderID ="<?=$order->order_id?>"; //To be filled in by site
-	
+
 	var orderAmt ="<?=$order->total?>"; //To be filled in by site
 	var command = "REPORT"
 	var upsellit_tag = "<scr" + "ipt " + "SRC='http" + (document.location.protocol=='https:'?'s://www':'://www') + ".upsellit.com/upsellitReporting.jsp?command="+command+"&siteID=" + siteID + "&productID=" + productID + "&position=" + position + "&orderID=" + orderID + "&orderAmt=" + orderAmt +"'><\/scr" + "ipt>";
@@ -357,21 +357,21 @@
 	</div>
 </noscript>
 
-<!-- END OF Google Code for acheteurs Remarketing List --> 
+<!-- END OF Google Code for acheteurs Remarketing List -->
 
 <!--  E-COMMERCE -->
 <script type="text/javascript">
-document.write("<img src=\""+document.location.protocol+"//dis.us.criteo.com/dis/dis.aspx?p1="+escape("v=2&wi=7714288&s=1&t=<?=$order->order_id?><?php 
+document.write("<img src=\""+document.location.protocol+"//dis.us.criteo.com/dis/dis.aspx?p1="+escape("v=2&wi=7714288&s=1&t=<?=$order->order_id?>"<?php
 	    $iCounter = 1;
-		foreach($itemsByEvent as $event){ 
-			 foreach($event as $item){ 
-			 	?>&i<?=$iCounter;?>=<? echo (string) $item['_id'];?>&<? 
-			 	?>p<?=$iCounter;?>=<?=$item['sale_retail']?>&<?
-			 	?>q<?=$iCounter;?>=<?=$item['quantity']?><?
+		foreach($itemsByEvent as $event){
+			 foreach($event as $item){
+			 	?>&i<?=$iCounter;?>=<?php echo (string) $item['_id'];?>&<?php
+			 	?>p<?=$iCounter;?>=<?=$item['sale_retail']?>&<?php
+			 	?>q<?=$iCounter;?>=<?=$item['quantity']?><?php
 
 				$iCounter++;
-			} 
-		} 
+			}
+		}
 ?>")+"&t1=transaction&p=3290&c=2&resptype=gif\" width=\"1\" height=\"1\" />");
 </script>
 <!--  END OF E-COMMERCE -->
