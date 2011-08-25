@@ -641,14 +641,14 @@ class EventsController extends BaseController {
 				if( !empty($itemDetail['related_items']) ) {
 
 					$k=0;
-
 					foreach( $itemDetail['related_items'] as $key=>$value ) {
 						//build array of related items using color, description and style
 						//the color and the description are for the buyer to see, but we use the style number
 						//here to persist the related items
 						//and later update each item using it and the event hash to query and get the id
 						$fields = explode("|", $value);
-
+						$itemsCollection = Item::Collection();
+						$related_items = isset($related_items) ? $related_items:array();
 						$related_items[(string) $item->_id][$k]['vendor_style'] = $fields[2];
 						$related_items[(string) $item->_id][$k]['event'] = (string) $_id;
 
