@@ -132,14 +132,16 @@ class ProcessPayment extends \lithium\console\Command  {
 	        $tableInfo[] = $order;
 	    }
 	    $content['tableInfo'] = $tableInfo;
-	    if ($this->test != "true") {
-            Mailer::send('Failed_Capture_Report',"searnest@totsy.com",$content);
-            Mailer::send('Failed_Capture_Report',"gsuper@totsy.com",$content);
-            Mailer::send('Failed_Capture_Report',"kogrady@totsy.com",$content);
-            Mailer::send('Failed_Capture_Report',"mruiz@totsy.com",$content);
-        } else {
-             Mailer::send('Failed_Capture_Report',"lhanson@totsy.com",$content);
-             Mailer::send('Failed_Capture_Report',"gsuper@totsy.com",$content);
+	    if ($failedOrders) {
+            if ($this->test != "true") {
+                Mailer::send('Failed_Capture_Report',"searnest@totsy.com",$content);
+                Mailer::send('Failed_Capture_Report',"gsuper@totsy.com",$content);
+                Mailer::send('Failed_Capture_Report',"kogrady@totsy.com",$content);
+                Mailer::send('Failed_Capture_Report',"mruiz@totsy.com",$content);
+            } else {
+                 Mailer::send('Failed_Capture_Report',"lhanson@totsy.com",$content);
+                 Mailer::send('Failed_Capture_Report',"kkim@totsy.com",$content);
+            }
         }
 	}
 

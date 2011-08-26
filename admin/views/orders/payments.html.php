@@ -6,8 +6,8 @@
 <?=$this->html->script('TableTools.min.js');?>
 <?=$this->html->style('TableTools');?>
 
-<div class="grid_16">
-<h2>Payment Management</h2>
+<div>
+<h2>Order Payment Status</h2>
 <p style="font-size:12px">
     This feature allows you to see which orders payment captures failed, succeeded, or
 	expiring within the next 3 days.  Search by Order Id <strong>OR</strong>
