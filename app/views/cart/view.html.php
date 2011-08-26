@@ -388,7 +388,6 @@ var discountErrors = new Object();
 			$("#promo").slideToggle("fast");
 		}
 	};
-});
 </script>
 <script type="text/javascript">
 var cto_params = []; 
