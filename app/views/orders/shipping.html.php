@@ -46,8 +46,7 @@ var addressForm = new Object();
     		$("#addressForm").validationEngine('init', { promptPosition : "centerRight", scroll: false } );      		
     		    		    		    		
     		$.each(	addressForm.form, function(i, field) {	
-    		    if(	field.value=="" && 
-    		    	field.name!=="telephone" && 
+    		    if(	field.value=="" &&  
     		    	field.name!=="address_2" && 
     		    	field.name!=="submitted" &&
     		    	field.name!=="opt_save"
@@ -75,7 +74,7 @@ var addressForm = new Object();
     	    
 			$('#' + this.id + "").validationEngine('hide');	
 			//if they validate the field by filling it in, reset the background of the control to white again
-			if($('#' + this.id + "").val()!="" || this.id=="phone" || this.id=="address_2") { 
+			if($('#' + this.id + "").val()!="" || this.id=="address_2") { 
 			     $('#' + this.id + "").attr('style', 'background: #FFF !important');
 			} else {
 			    $('#' + this.id + "").attr('style', 'background: #FFFFC5 !important');
@@ -105,7 +104,7 @@ var addressForm = new Object();
 	<div class="grid_8" style="padding-bottom:10px; margin:20px auto auto auto;">
 		<div style="float:right;">
 		Item Reserved For: <br />
-		<span id="itemCounter" style="color:#009900; float:right !important">Dummy cart expiration date</span>
+		<span id="itemCounter" style="color:#009900; font-weight:bold; float:right !important"></span>
 	    </div>
 	</div>
 	
@@ -127,8 +126,8 @@ var addressForm = new Object();
 		<?=$this->form->text('lastname', array('class' => 'validate[required] inputbox', 'id'=>'lastname')); ?>
 		<?=$this->form->error('lastname'); ?>
 		<div style="clear:both"></div>
-		<?=$this->form->label('telephone', 'Telephone', array('escape' => false,'class' => 'required')); ?>
-		<?=$this->form->text('telephone', array('class' => 'validate[custom[phone]] inputbox', 'id' => 'phone')); ?>
+		<?=$this->form->label('telephone', 'Telephone <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+		<?=$this->form->text('telephone', array('class' => 'validate[custom[phone]] inputbox', 'id' => 'telephone')); ?>
 		<div style="clear:both"></div>
 		<?=$this->form->label('address', 'Street Address <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('address', array('class' => 'validate[required] inputbox', 'id'=>'address' )); ?>

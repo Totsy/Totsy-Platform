@@ -1968,11 +1968,23 @@ font-weight:bold;
 font-size:15px; 
 margin: 0 auto; 
 width: 175px; 
-display: table-cell; 
+display: table-cell;
 vertical-align: middle; 
 width: 100%; 
 text-align: center;
 }
+
+.cart-order-place-inner input[type='submit']{
+font-weight:bold; 
+font-size:15px; 
+width: 175px; 
+display: table-cell;
+margin-left: 10px !important;
+vertical-align: middle; 
+width: auto; 
+text-align: center;
+}
+
 
 .cart-order-place-outer{
 height: 115px; 
@@ -3270,7 +3282,7 @@ a.nivo-prevNav {
 	/* -moz-box-shadow:0 0 4px rgba(0, 0, 0, 0.3); border:2px solid #FFFFFF; */
 	text-transform:uppercase;
 	font-weight:bold;
-	display: table-cell !important;
+	display: table-cell;
     vertical-align: middle !important;
    }
 

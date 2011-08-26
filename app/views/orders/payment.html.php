@@ -64,7 +64,6 @@ var paymentForm = new Object();
     		    		    		    		
     		$.each(	paymentForm.form, function(i, field) {	
     		    if(	field.value=="" && 
-    		    	field.name!=="phone" && 
     		    	field.name!=="address2" && 
     		    	field.name!=="opt_submitted" && 
     		    	field.name!=="opt_shipping" && 
@@ -81,7 +80,9 @@ var paymentForm = new Object();
     		 		invalid_count++;
     		 	} 
 			});
-			
+			if(invalid_count > 0 ) {
+    		    return false;
+    		}
     	});
     	
     	//if the form has been, hide propmts on a given element's blur event
@@ -89,7 +90,7 @@ var paymentForm = new Object();
     	$(".inputbox").blur(function() { 
     		if(paymentForm.submitted==true) {  		
 				$('#' + this.id + "").validationEngine('hide');	
-				//if they validate the field by filling it in, reset the background of the control to white again
+				//if they validate the field by filling it in, reset the background of the control to white
 				if($('#' + this.id + "").val()!==""){
 					$('#' + this.id + "").attr('style', 'background: #FFF !important');
 				} else {
@@ -120,7 +121,7 @@ var paymentForm = new Object();
 <div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px">
 	<div style="float:right;">
 	Item Reserved For: <br />
-		<span id="itemCounter" style="color:#009900; float:right !important"></span>
+		<span id="itemCounter" style="color:#009900; font-weight:bold; float:right !important"></span>
     </div>
 </div>
 <?=$this->form->create($payment, array (
@@ -193,8 +194,8 @@ var paymentForm = new Object();
 				<?=$this->form->text('lastname', array('class' => 'validate[required] inputbox', 'id'=>'lastname')); ?>
 				<?=$this->form->error('lastname'); ?>
 				<div style="clear:both"></div>
-				<?=$this->form->label('telephone', 'Telephone', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('telephone', array('class' => 'validate[custom[phone]] inputbox', 'id' => 'phone')); ?>
+				<?=$this->form->label('telephone', 'Telephone <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+				<?=$this->form->text('telephone', array('class' => 'validate[custom[phone]] inputbox', 'id' => 'telephone')); ?>
 				<div style="clear:both"></div>
 				<?=$this->form->label('address', 'Street Address <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('address', array('class' => 'validate[required] inputbox', 'id'=>'address')); ?>
@@ -239,6 +240,12 @@ var paymentForm = new Object();
 	
 var shippingAddress = <?php echo $shipping; ?>
 
+//validate card number when a correct card is entered
+$("#card_number").keyup( function(){
+	validCC();
+});
+
+//validate card number when a correct card is entered
 $("#card_number").blur( function(){
 	validCC();
 });
@@ -307,6 +314,7 @@ function validCC() {
 		return false;
 	} else {
 		$("#card_number").attr('style', 'background: #FFFFFF !important');
+		$("#card_number").validationEngine('hide');	
 		return true;
 	}
 }

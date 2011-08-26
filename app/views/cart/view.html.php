@@ -61,11 +61,11 @@ var discountErrors = new Object();
 	<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px">
 		 <div style="float:right;">
 		Item Reserved For: <br />
-		<span id="itemCounter" style="color:#009900; float:right !important"></span>
+		<span id="itemCounter" style="color:#009900; font-weight:bold; float:right !important"></span>
 	    </div>
 	    <div style="float:left;">
 		 <div>Estimated Shipping Date: </div>
-	         <div style="float:right; color:#009900;">&nbsp;&nbsp;<?=date('m-d-Y', $shipDate)?></div>
+	         <div style="float:right; font-weight:bold; color:#009900;">&nbsp;&nbsp;<?=date('m-d-Y', $shipDate)?></div>
 	     </div>
 	</div>
 	<div class="clear"></div>
@@ -218,7 +218,7 @@ var discountErrors = new Object();
 				<div style="clear:both"></div>							
 				<div style="font-weight:bold;" >
 				<div class="subtotal">	
-				<span id="shipping_tooltip" style="float:left; margin-left:-12px;" original-title="Shipping charges may vary depending on item type."><img src="/img/tooltip_icon.png">
+				<span id="shipping_tooltip" style="float:left; margin-left:-16px;" original-title="Shipping charges may vary depending on item type."><img src="/img/tooltip_icon.png">
 				    	</span>
 				    <span style="float:left;" id="shipping">
 				    Shipping:</span> 
@@ -240,7 +240,7 @@ var discountErrors = new Object();
 				<div style="clear:both"></div>	
 				<div style="font-weight:bold">
 				<div class="subtotal">
-				    <span id="tax_tooltip" style="float:left; margin-left:-12px;" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary"><img src="/img/tooltip_icon.png">
+				    <span id="tax_tooltip" style="float:left; margin-left:-16px;" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary"><img src="/img/tooltip_icon.png">
 </span>			
 					<span id="estimated_tax" style="float:left;">Estimated Tax:</span> 
 				    <span style="float:right" class="fees_and_discounts">$0.00</span>
