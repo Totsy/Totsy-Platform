@@ -209,11 +209,11 @@ class OrdersController extends BaseController {
 		$lastOrderErrorDateTime = Session::read('lastOrderErrorDateTime');
 		$comparision_lastOrderErrorDateTime = round(abs(time() - $lastOrderErrorDateTime) / 60,2);	
 
-		if ($comparision_lastOrderErrorDateTime < 5 && $orderErrors > 5) {
+		if ($comparision_lastOrderErrorDateTime < 5 && $orderErrors >= 5) {
 			return $this->redirect(array('Orders::error'));
 		} else if ($comparision_lastOrderErrorDateTime > 5) {
-			Session::write('orderErrors', null);
-			Session::write('lastOrderErrorDateTime', null);
+			Session::write('orderErrors', null, array('name' => 'default'));
+			Session::write('lastOrderErrorDateTime', null, array('name' => 'default'));
 		}
 
 		$order = Order::create();
@@ -478,8 +478,8 @@ class OrdersController extends BaseController {
 			
 		if ((sizeof($order->errors()) > 0) && preg_match("/unable/i", $order_errors[0])) {
 			$orderErrors++;
-			Session::write('orderErrors', $orderErrors);			
-			Session::write('lastOrderErrorDateTime', time());
+			Session::write('orderErrors', $orderErrors, array('name' => 'default'));			
+			Session::write('lastOrderErrorDateTime', time(), array('name' => 'default'));
 		}
 
 		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate');
