@@ -145,6 +145,7 @@ var discountErrors = new Object();
 	<div id='message'><?php echo $message; ?></div>
 		<table class="cart-table">
 			<tbody>
+			<?=$this->form->hidden("process", array('id'=>'process')); ?>
 			<?php $x = 0; ?>
 			<?php foreach ($cart as $item): ?>
 				<!-- Build Product Row -->
@@ -193,7 +194,6 @@ var discountErrors = new Object();
 						<hr>
 					<div>
 					<span>
-					<input type="hidden" name="process" id="process">
 					</span>
 						<div><span style="font-weight: bold">Color:</span> <?=$item->color;?></div>
 						<div><span style="font-weight: bold">Size:</span> <?=$item->size;?></div>
@@ -400,7 +400,7 @@ var discountErrors = new Object();
 
 <script type="text/javascript" charset="utf-8">
 
-function updateOrder() {	
+function updateOrder() {
 	$('#process').val("true");
 	$('#cartForm').submit();	    
 }

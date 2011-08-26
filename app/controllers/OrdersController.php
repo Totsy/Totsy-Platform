@@ -333,7 +333,7 @@ class OrdersController extends BaseController {
 		);
 		if ((!$cartEmpty) && (!empty($this->request->data['process']))) {
 			$order = Order::process($this->request->data, $cart, $vars, $avatax);
-			if (empty($order->errors)) {
+			if (empty($order->errors) && !(Session::check('cc_error'))) {
 				#Redirect To Confirmation Page
 				$this->redirect(array('Orders::view', 'args' => $order->order_id));
 			}
