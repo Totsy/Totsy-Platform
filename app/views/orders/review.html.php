@@ -205,7 +205,8 @@ var discountErrors = new Object();
 			</tbody>
 		</table>
 		</div>
-		
+		<?=$this->form->end(); ?>
+
 		<div class="clear"></div>
 		
 		<div class="grid_16" style="width:935px; padding-top:30px">

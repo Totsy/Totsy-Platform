@@ -159,27 +159,29 @@ var discountErrors = new Object();
 			</table>
 
 		</div>
-		
+		<?=$this->form->end(); ?>
+
 		<div class="clear"></div>
 		
-		<div class="grid_16" style="width:935px; padding-top:30px; text-align: top">
-			<div style="float: left;">
-			<div style="font-size: 12px; text-align:left !important;">
-			    <strong>Add <?php if(!empty($credit)): ?>
-			    	<a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a> /
-			    <?php endif ?> 
-			    	<a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
-			</div>
-			<div style="clear:both"></div>
-			<div id="promos_and_credit">
-			<?=$this->form->create(null); ?>
-			    <div id='promo' style='display:none'>
-			    	<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo) ); ?>
-			    </div>
-			    <div id='cred' style='display:none; text-align:left !important'>								
-			    	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
-			    </div>
-			</div>
+		<div class="grid_16" style="width:935px; padding-top:30px;">
+		
+			<div style="float: left; width:510px;">
+				<div style="font-size: 12px; text-align:left !important">
+				    <strong>Add <?php if(!empty($credit)): ?>
+				    	<a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a> /
+				    <?php endif ?> 
+				    	<a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
+				</div>
+				<div style="clear:both"></div>
+				<div id="promos_and_credit">
+				<?=$this->form->create(null); ?>
+				    <div id="promo" style="display:none">
+				    	<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo) ); ?>
+				    </div>
+				    <div id="cred" style="display:none; text-align:left !important">		
+				    	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
+				    </div>
+				</div>
 			</div>
 					
 			<div style="padding-top:10px; float:right; width:425px;">
@@ -265,10 +267,11 @@ var discountErrors = new Object();
 <div class="cart-button fr" style="margin:20px 0px 20px 0px;">
 		      <?=$this->html->link('Continue Shopping', "sales/", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
 		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
+		      
+<?=$this->form->end(); ?>
 	<div class="clear"></div>
 
 
-<?=$this->form->end(); ?>
 </div>
 
 <div id="remove_form" style="display:none">
@@ -334,56 +337,56 @@ var discountErrors = new Object();
 
 <script type="text/javascript" charset="utf-8">
 
-//SUBMIT THE ITEM WHICH IS DELETED
-function deletechecked(message, id) {
-	var answer = confirm(message)
-	if (answer){
-		$("input[name='rmv_item_id']").val(id);
-		$('#removeForm').submit();
+	//SUBMIT THE ITEM WHICH IS DELETED
+	function deletechecked(message, id) {
+		var answer = confirm(message)
+		if (answer){
+			$("input[name='rmv_item_id']").val(id);
+			$('#removeForm').submit();
+		}
+		return false;
 	}
-	return false;
-}
-//SUBMIT QUANTITY IN CASE OF DDWN CHANGE
-$(document).ready( function(){
-
-	$(function () {
-		$(".quantity").live("change keyup", function () {
-			if($("select").val() == 0) {
-				$('input[name="rmv_item_id"]').val($(this).attr('id'));
-				$('#removeForm').submit();
-			} else {
-				$('#cartForm').submit();
-			}
+	//SUBMIT QUANTITY IN CASE OF DDWN CHANGE
+	$(document).ready( function(){
+	
+		$(function () {
+			$(".quantity").live("change keyup", function () {
+				if($("select").val() == 0) {
+					$('input[name="rmv_item_id"]').val($(this).attr('id'));
+					$('#removeForm').submit();
+				} else {
+					$('#cartForm').submit();
+				}
+			});
 		});
 	});
-});
-
-//HIDE / SHOW CREDITS INPUT
-function open_credit() {
-	if ($("#cred").is(":hidden")) {
-		$("#cred").slideToggle("fast");
-		if (!$("#promo").is(":hidden")) {
-			$("#promo").slideToggle("fast");
-		}
-	} else {
-		$("#cred").slideToggle("fast");
-	}
-};
-
-//for showing promo and discount errors after the promocode form has been submitted
-function show_code_errors(id) {
-	$("#" + id).slideToggle("fast");
-}
-
-//HIDE / SHOW PROMOS INPUT
-function open_promo() {
-	if ($("#promo").is(":hidden")) {
-		$("#promo").slideToggle("fast");	
-		if (!$("#cred").is(":hidden")) {
+	
+	//HIDE / SHOW CREDITS INPUT
+	function open_credit() {
+		if ($("#cred").is(":hidden")) {
+			$("#cred").slideToggle("fast");
+			if (!$("#promo").is(":hidden")) {
+				$("#promo").slideToggle("fast");
+			}
+		} else {
 			$("#cred").slideToggle("fast");
 		}
-	} else {
-		$("#promo").slideToggle("fast");
+	};
+	
+	//for showing promo and discount errors after the promocode form has been submitted
+	function show_code_errors(id) {
+		$("#" + id).slideToggle("fast");
 	}
-};
+	
+	//HIDE / SHOW PROMOS INPUT
+	function open_promo() {
+		if ($("#promo").is(":hidden")) {
+			$("#promo").slideToggle("fast");	
+			if (!$("#cred").is(":hidden")) {
+				$("#cred").slideToggle("fast");
+			}
+		} else {
+			$("#promo").slideToggle("fast");
+		}
+	};
 </script>
