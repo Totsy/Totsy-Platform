@@ -85,9 +85,9 @@ class Order extends Base {
 		if( $afterDiscount < 0 ){
 		    $afterDiscount = 0;
 		}
-		$total = $afterDiscount + $tax + $handling +$overSizeHandling;
+		$total = round($afterDiscount + $tax + $handling +$overSizeHandling, 2);
 
-		$cart = $cart->data();		
+		$cart = $cart->data();
 		if ($cart) {
 			$inc = 0;
 			foreach ($cart as $item) {
