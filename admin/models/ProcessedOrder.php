@@ -15,8 +15,6 @@ class ProcessedOrder extends \lithium\data\Model {
 	 */
 	public static $_fileHeading = array(
 		'Date' => null,
-		'Order Creation Date' => null,
-		'Promised Ship-by Date' => null,
 		'ClientId' => 'TOT',
 		'DC' => 'ALN',
 		'ShipMethod' => null,
@@ -41,6 +39,8 @@ class ProcessedOrder extends \lithium\data\Model {
 		'Ref2' => null,
 		'Ref3' => null,
 		'Ref4' => null,
+		'Order Creation Date' => null,
+		'Promised Ship-by Date' => null,
 		'Ref5' => null,
 		'Ref6' => null,
 		'Ref7' => null,
