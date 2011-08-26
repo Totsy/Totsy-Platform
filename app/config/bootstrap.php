@@ -116,7 +116,7 @@ use lithium\storage\Session;
 
 Session::config(array(
  	'default' => array('adapter' => 'app\extensions\adapter\session\Model', 'model' => 'MongoSession'),
- 	'cookie' => array('adapter' => 'Cookie', 'expire' => '+1year')
+ 	'cookie' => array('adapter' => 'Cookie', 'expire' => '+30 days')
 ));
 
 use lithium\security\Auth;
