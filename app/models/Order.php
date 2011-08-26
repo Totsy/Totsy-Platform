@@ -99,9 +99,9 @@ class Order extends Base {
 			}
 			#Save Promocode Used
 			if ($vars['cartPromo']->saved_amount) {
-				Promocode::add((string) $code->_id, $vars['cartPromo']->saved_amount, $order->total);
+				Promocode::add($vars['cartPromo']->code_id, $vars['cartPromo']->saved_amount, $order->total);
 				$vars['cartPromo']->order_id = (string) $order->_id;
-				$vars['cartPromo']->code_id = (string) $code->_id;
+				$vars['cartPromo']->code_id = $vars['cartPromo']->code_id;
 				$vars['cartPromo']->date_created = new MongoDate();
 				$vars['cartPromo']->save();
 				$order->promo_code = $vars['cartPromo']->code;
