@@ -111,8 +111,8 @@ var discountErrors = new Object();
 					</td>
 					<td class="cart-desc" style="width:470px;">
 						<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
-						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?></strong><br>
-						<strong>Color:</strong> <?=$item->color;?><br>
+						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?></strong><br />
+						<strong>Color:</strong> <?=$item->color;?><br />
 						<strong>Size:</strong> <?=$item->size;?>
 					</td>
 					<td style="width:120px;">
@@ -146,8 +146,8 @@ var discountErrors = new Object();
 					<td class="cart-actions">
 						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" onclick="deletechecked('Are you sure you want to remove this item?','<?=$item->_id; ?>');" style="color: red!important;"><img src="/img/trash.png" width="20" align="absmiddle" style="margin-right:20px;" /></a>
 					</td>
-					<td class="cart-time"><!-- <img src="/img/old_clock.png" align="absmiddle" width="23" class="fl"/>--> <div id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?=$date?>'></div>
-					
+					<td class="cart-time">
+					<div id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?=$date?>'></div>
 					</td>
 					<td class="<?="total-item-$x";?>" style="width:55px; text-align:right; padding-right:10px">
 						<strong>$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
@@ -157,9 +157,8 @@ var discountErrors = new Object();
 			<?php endforeach ?>
 			</tbody>
 			</table>
-
+<?=$this->form->end(); ?>
 		</div>
-		<?=$this->form->end(); ?>
 
 		<div class="clear"></div>
 		
@@ -262,17 +261,17 @@ var discountErrors = new Object();
 				    <span style="font-size:15px; font-weight:bold">Order Total:</span> 
 				    	<span style="font-size:15px; color:#009900; float:right" id="ordertotal">$ <?=number_format($total,2)?> </span>
 				    </div>						    	
-					</div>				
+					</div>	
 			
 <div class="cart-button fr" style="margin:20px 0px 20px 0px;">
 		      <?=$this->html->link('Continue Shopping', "sales/", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
 		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
 		      
 <?=$this->form->end(); ?>
-	<div class="clear"></div>
-
 
 </div>
+
+<div class="clear"></div>
 
 <div id="remove_form" style="display:none">
 	<?=$this->form->create(null ,array('id'=>'removeForm')); ?>
@@ -327,13 +326,17 @@ var discountErrors = new Object();
 	});		
 				
 </script>	
-	
-<div class="clear"></div>
+
+<div class="clear"></div>	
 <?php else: ?>
-	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1><center><span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
+	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1><center><span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1>
+	</div>
 <?php endif ?>
 </div>
-<div id="modal" style="background:#fff!important; z-index:9999999999!important;"></div>
+</div>
+
+<div id="modal" style="background:#fff!important; z-index:9999999999!important;">
+</div>
 
 <script type="text/javascript" charset="utf-8">
 
