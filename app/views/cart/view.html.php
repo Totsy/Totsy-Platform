@@ -363,7 +363,6 @@ var discountErrors = new Object();
 			});
 		});
 	});
-	
 	//HIDE / SHOW CREDITS INPUT
 	function open_credit() {
 		if ($("#cred").is(":hidden")) {
@@ -392,4 +391,25 @@ var discountErrors = new Object();
 			$("#promo").slideToggle("fast");
 		}
 	};
+</script>
+<script type="text/javascript">
+var cto_params = []; 
+<?php $iCounter = 1;?> 
+<?php foreach ($cart as $item): ?>
+cto_params["i<?=$iCounter?>"] = "<?=$item->item_id?>";
+cto_params["p<?=$iCounter?>"] = "<?=number_format($item->sale_retail,2)?>";
+cto_params["q<?=$iCounter?>"] = "<?=$item->quantity?>";
+<?php $iCounter++;?>
+<?php endforeach ?>
+var cto_conf = 't1=transaction&c=2&p=3290';
+var cto_conf_event = 'v=2&wi=7714288&s=0';
+var CRITEO=function(){var b={Load:function(d){var c=window.onload;window.onload=function(){if(c){c()}d()}}};function a(e){if(document.createElement){
+var c=document.createElement((typeof(cto_container)!='undefined'&&cto_container=='img')?'img':'iframe');if(c){c.width='1px';c.height='1px';c.style.display='none';
+c.src=e;var d=document.getElementById('cto_mg_div');if(d!=null&&d.appendChild){d.appendChild(c)}}}}return{Load:function(c){
+document.write("<div id='cto_mg_div' style='display:none;'></div>");c+='&'+cto_conf;var f='';if(typeof(cto_conf_event)!='undefined')f=cto_conf_event;
+if(typeof(cto_container)!='undefined'){if(cto_container=='img')c+='&resptype=gif';}if(typeof(cto_params)!='undefined'){for(var key in cto_params){if(key!='kw')
+f+='&'+key+'='+encodeURIComponent(cto_params[key]);}if(cto_params['kw']!=undefined)c+='&kw='+encodeURIComponent(cto_params['kw']);}c+='&p1='+encodeURIComponent(f);
+c+='&cb='+Math.floor(Math.random()*99999999999);try{c+='&ref='+encodeURIComponent(document.referrer);}catch(e){}try{
+c+='&sc_r='+encodeURIComponent(screen.width+'x'+screen.height);}catch(e){}try{c+='&sc_d='+encodeURIComponent(screen.colorDepth);}catch(e){}b.Load(function(){
+a(c.substring(0,2000))})}}}();CRITEO.Load(document.location.protocol+'//dis.us.criteo.com/dis/dis.aspx?');
 </script>

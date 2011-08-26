@@ -3,7 +3,6 @@
 	<h2 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a><div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
 	<hr />
 </div>
-
 <div class="grid_6">
 	<!-- Start product item -->
 		<?php if ($item->total_quantity <= 0): ?>
@@ -14,7 +13,6 @@
 					)); ?>
 			<?php endif ?>
 				<?php if (!empty($item->primary_image)): ?>
-
 <div class="zoom-section">
 	<div class="zoom-small-image">
     	<a href="/image/<?php echo $item->zoom_image; ?>.jpg" id="zoom1" class="cloud-zoom" rel="position: 'inside'" style="overflow:hidden;">
@@ -272,6 +270,7 @@ $(document).ready(function() {
 	});
 });
 </script>
+<<<<<<< HEAD
 
   <script type="text/javascript" charset="utf-8">
     $(document).ready(function () {
@@ -296,3 +295,21 @@ $(document).ready(function() {
       }
     });
   </script>
+=======
+<script type="text/javascript">
+//cto product tag
+var cto_params = [];
+cto_params["i"] = $('#item_id').attr('value');
+var cto_conf = 't1=sendEvent&c=2&p=3290';
+var cto_conf_event = 'v=2&wi=7714287&pt1=2';
+var CRITEO=function(){var b={Load:function(d){var c=window.onload;window.onload=function(){if(c){c()}d()}}};function a(e){if(document.createElement){
+var c=document.createElement((typeof(cto_container)!='undefined'&&cto_container=='img')?'img':'iframe');if(c){c.width='1px';c.height='1px';c.style.display='none';
+c.src=e;var d=document.getElementById('cto_mg_div');if(d!=null&&d.appendChild){d.appendChild(c)}}}}return{Load:function(c){
+document.write("<div id='cto_mg_div' style='display:none;'></div>");c+='&'+cto_conf;var f='';if(typeof(cto_conf_event)!='undefined')f=cto_conf_event;
+if(typeof(cto_container)!='undefined'){if(cto_container=='img')c+='&resptype=gif';}if(typeof(cto_params)!='undefined'){for(var key in cto_params){if(key!='kw')
+f+='&'+key+'='+encodeURIComponent(cto_params[key]);}if(cto_params['kw']!=undefined)c+='&kw='+encodeURIComponent(cto_params['kw']);}c+='&p1='+encodeURIComponent(f);
+c+='&cb='+Math.floor(Math.random()*99999999999);try{c+='&ref='+encodeURIComponent(document.referrer);}catch(e){}try{
+c+='&sc_r='+encodeURIComponent(screen.width+'x'+screen.height);}catch(e){}try{c+='&sc_d='+encodeURIComponent(screen.colorDepth);}catch(e){}b.Load(function(){
+a(c.substring(0,2000))})}}}();CRITEO.Load(document.location.protocol+'//dis.us.criteo.com/dis/dis.aspx?');
+</script>
+>>>>>>> 878ed99dfe27c2efe8d63a57dcbc687349f34f0b
