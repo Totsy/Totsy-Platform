@@ -73,7 +73,7 @@
 						</div>
 
 						<div class="table-cell right">
-							<?=$this->html->link('Shop', 'sale/'.$event->url, array('class' => 'button small'));?>
+							<?=$this->html->link('Shop', 'sale/'.$event->url, array('class' => 'button small', 'style'=>'display:table-cell !important'));?>
 						</div>
 					</div>
 				</div>

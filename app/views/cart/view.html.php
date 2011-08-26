@@ -162,8 +162,8 @@ var discountErrors = new Object();
 		
 		<div class="clear"></div>
 		
-		<div class="grid_16" style="width:935px; padding-top:30px">
-			<div style="float: left; vertical-align: top">
+		<div class="grid_16" style="width:935px; padding-top:30px; text-align: top">
+			<div style="float: left;">
 			<div style="font-size: 12px; text-align:left !important;">
 			    <strong>Add <?php if(!empty($credit)): ?>
 			    	<a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a> /
@@ -182,12 +182,11 @@ var discountErrors = new Object();
 			</div>
 			</div>
 					
-			<div style="padding-top:10px; float:right; width:425px; vertical-align: top">
+			<div style="padding-top:10px; float:right; width:425px;">
 				<div style="font-weight:bold" class="subtotal" >
 				   <span style="float:left;">Subtotal:</span>
 				   <span style="float:right" id="subtotal">$<?=number_format($subTotal,2)?></span>
 				</div>
-				
 				<?php if (!empty($promocode['discount_amount']) && ($promocode['type'] != 'free_shipping') ):?>
 				<div style="clear:both"></div>
 				<div style="font-weight:bold" class="subtotal">
