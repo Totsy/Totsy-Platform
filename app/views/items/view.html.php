@@ -245,21 +245,23 @@ $(document).ready(function() {
 	var itemCheck = function(){
 		var item_id = $('#item_id').attr('value');
 		var item_size = $('#size-select').attr('value');
-        $.ajax({
-            url: $.base + 'items/available',
-            data: "item_id=" + item_id + "&" + "item_size=" + item_size,
-            context: document.body,
-            success: function(data){
-                if (data == 'false') {
-                    $('#all-reserved').show();
-                    $('.button').hide();
-                    $('#all-reserved').html("<p style='background:#EB132C;padding:5px;text-align:center;color:#fff;border-radius:6px;'>All items are reserved <br>Check back in two minutes</p>");
-                } else {
-                    $('.button').show();
-                    $('#all-reserved').hide();
-                }
-             }
-        });
+		if(item_size != '') {
+		    $.ajax({
+	            url: $.base + 'items/available',
+	            data: "item_id=" + item_id + "&" + "item_size=" + item_size,
+	            context: document.body,
+	            success: function(data){
+	                if (data == 'false') {
+	                    $('#all-reserved').show();
+	                    $('.button').hide();
+	                    $('#all-reserved').html("<p style='background:#EB132C;padding:5px;text-align:center;color:#fff;border-radius:6px;'>All items are reserved <br>Check back in two minutes</p>");
+	                } else {
+	                    $('.button').show();
+	                    $('#all-reserved').hide();
+	                }
+	             }
+	        });
+		}
 	};
 	itemCheck();
 
