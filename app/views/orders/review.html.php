@@ -165,23 +165,20 @@ var discountErrors = new Object();
 							); ?>
 						</span>
 					</td>
-					<td colspan="8" width="675">	
-					
+					<td colspan="8">	
 						<div style="height:20px; vertical-align:middle !important; line-height:15px !important">
-							<span style="width:515px !important">
-								<span class="cart-desc" style="width:315px; float:left;">
+							<span>
+								<span class="cart-desc" style="width:515px; float:left;">
 									<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
 									<?=$this->html->link($item->description,'sale'.$item->event_url.'/'.$item->url); ?>
-								</span>	
+				
 								<span class="cart-time" style="width:200px !important; float:left; display:none" id='<?php echo "itemCounter$x"; ?>' class="counter" title='<?=$date?>'></span>
 							</span>
 							
 							<span class="<?="price-item-$x";?>" style="width:75px;float:left; ">													
 								<strong>$<?=number_format($item->sale_retail,2)?></strong>
 							</span>
-							<span class="<?="qty-$x";?>" style="width:100px; float:left">
-								<span style="text-align:left">Qty: <?=$item->quantity;?></span>
-							</span>						
+							<span class="<?="qty-$x";?>" style="width:100px; float:left; text-align:left">Qty: <?=$item->quantity;?></span>						
 							<span class="<?="total-item-$x";?>" style="width:100px !important; float:right !important; font-weight:bold; text-align:right !important">$<?=number_format($item->sale_retail * $item->quantity ,2)?>
 							</span>
 						</div>
@@ -302,7 +299,7 @@ var discountErrors = new Object();
 </div>
 
 <div class="cart-button fr" style="margin:20px 0px 20px 0px;">
-		      <?=$this->form->submit('Place Your Order', array('class' => 'button ', 'style'=>'float:left; margin-right:55px;', 'onclick'=>'updateOrder()')); ?>
+		      <?=$this->form->submit('Place Your Order', array('class' => 'button ', 'style'=>'float:left', 'onclick'=>'updateOrder()')); ?>
 	<div class="clear"></div>
 
 <?=$this->form->end(); ?>

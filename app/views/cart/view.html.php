@@ -149,7 +149,7 @@ var discountErrors = new Object();
 						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" onclick="deletechecked('Are you sure you want to remove this item?','<?=$item->_id; ?>');" style="color: red!important;"><img src="/img/trash.png" width="20" align="absmiddle" style="margin-right:20px;" /></a>
 					</td>
 					<td class="cart-time">
-					<div id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?=$date?>'></div>
+						<div id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?=$date?>'></div>
 					</td>
 					<td class="<?="total-item-$x";?>" style="width:55px; text-align:right; padding-right:10px">
 						<strong>$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
