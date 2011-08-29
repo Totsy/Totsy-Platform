@@ -108,8 +108,7 @@ var addressForm = new Object();
 	    </div>
 	</div>
 	
-	<?=$this->form->create($address, array(
-		'id' => 'addressForm')); ?>	
+<?=$this->form->create($address, array('id' => 'addressForm')); ?>	
 			
 	<div class="grid_16">
 	
