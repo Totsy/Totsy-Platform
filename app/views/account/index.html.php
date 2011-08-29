@@ -11,15 +11,12 @@
 </div>
 
 <div class="grid_11 omega roundy grey_inside b_side">
-
 	<h2 class="page-title gray">Account Dashboard</h2>
 	<hr />
 
 		<p>From your My Account Dashboard you have the ability to view a snapshot of your recent account activity and update your account information. Select a link below to view or edit information.</p>
 
-
 		<div class="col-2">
-
 			<div class="r-container box-2 fl">
 				<div class="tl"></div>
 				<div class="tr"></div>
@@ -39,7 +36,6 @@
 				<div class="bl"></div>
 				<div class="br"></div>
 			</div>
-
 			<div class="r-container box-2 fr">
 				<div class="tl"></div>
 				<div class="tr"></div>
@@ -55,18 +51,14 @@
 							</ul>
 						</dd>
 					</dl>-->
-
 				</div>
 				<div class="bl"></div>
 				<div class="br"></div>
 			</div>
-
 		</div>
-
 		<h2 class="gray fl">Address Book</h2>&nbsp;|&nbsp;<?=$this->html->link('Manage Addresses', '/addresses/view');?>
 		<hr />
 		<div class="col-2">
-
 			<div class="r-container box-2 fl">
 				<div class="tl"></div>
 				<div class="tr"></div>
@@ -86,7 +78,6 @@
 				<div class="bl"></div>
 				<div class="br"></div>
 			</div>
-
 			<div class="r-container box-2 fr">
 				<div class="tl"></div>
 				<div class="tr"></div>
@@ -106,10 +97,8 @@
 				<div class="bl"></div>
 				<div class="br"></div>
 			</div>
-
 		</div>
 	<br />
-
 </div>
 </div>
 <div class="clear"></div>
