@@ -363,6 +363,22 @@ class Cart extends Base {
 			}
 		}
 	}
+	
+	public function cleanExpiredEventItems() {
+		$actual_cart = Cart::active();
+		if (!empty($actual_cart)) {
+			$items = $actual_cart->data();
+		}
+		if (!empty($items)) {
+			foreach ($items as $item) {
+				$event = Event::find('first',array('conditions' => array("_id" => $item['event'][0])));
+				$now = getdate();
+				if (($event->end_date->sec < $now[0])) {
+					static::remove(array('_id' => new MongoId( $item["_id"])));
+				}
+			}
+		}
+	}
 
 	/**
 	 * Check the quanity of an item and compare it to the request value.

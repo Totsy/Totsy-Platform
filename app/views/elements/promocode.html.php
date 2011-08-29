@@ -1,8 +1,9 @@
+<div class="fl">
 <?=$this->form->create($orderPromo,array('id' => 'promo-form')); ?>
     <div style='float:right !important; width:200px !important; margin-left: 10px; text-align:center'>
     <?php if (is_array($this->form->error('promo'))): ?>
         <?php foreach($this->form->error('promo') as $msg) :?>
-            <?php echo $msg ?>
+            <span style=""margin-left:-105px;><?php echo $msg ?></span>
         <?php endforeach; ?>
     <?php else: ?>
         <?=$this->form->error('promo');?>
@@ -16,3 +17,4 @@
     	<?=$this->form->submit('Apply Promo Code'); ?>
     </span>
 <?=$this->form->end(); ?>
+</div>

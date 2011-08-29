@@ -172,6 +172,8 @@ class OrdersController extends BaseController {
 			'event_name',
 			'event'
 		);
+		#Check Expires 
+		Cart::cleanExpiredEventItems();
 		#Prepare datas
 		$address = null;
 		$selected = null;
@@ -254,6 +256,8 @@ class OrdersController extends BaseController {
 		if (!Session::check('billing') || !Session::check('cc_infos')) {
 			$this->redirect(array('Orders::payment'));
 		}
+		#Check Expires 
+		Cart::cleanExpiredEventItems();
 		#Get Users Informations
 		$user = Session::read('userLogin');
 		$fields = array(
@@ -450,6 +454,8 @@ class OrdersController extends BaseController {
 			'event_name',
 			'event'
 		);
+		#Check Expires
+		Cart::cleanExpiredEventItems();
 		#Prepare datas
 		$cartExpirationDate = 0;
 		$address = null;
