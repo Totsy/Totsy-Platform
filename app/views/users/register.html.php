@@ -39,8 +39,14 @@
                                 <h3 style="color:#999; font-size:18px;">Register</h3>
 								<hr />
 								 
-                               
-								<?=$this->form->create($user ,array('id'=>'registerForm')); ?>
+<?php
+	 if (preg_match('/join/',$_SERVER['REQUEST_URI'])) {
+print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/join\']);">';
+	 } else {
+print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/register\']);">';
+	 }
+?>
+	
 
                						<!-- Commnented Firstname, Lastname and Zip code --->
 
