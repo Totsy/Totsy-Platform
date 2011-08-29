@@ -736,6 +736,24 @@ class OrdersController extends BaseController {
 			);
 		}
 	}
+
+	public function payments(){
+		$data = $this->request->data;
+		extract(Order::orderPaymentRequests($data));
+        if ($payments && $payments->hasNext()) {
+            if (!empty($message)) {
+                $class = 'notice';
+                $style = 'font-color:#fff';
+            } else {
+                $class = 'pass';
+                 $style = 'font-color:#000';
+            }
+            FlashMessage::set("Results found." . $message ,	array('class' => $class));
+        } else {
+            FlashMessage::set("No results found." . $message ,	array('class' => 'fail'));
+        }
+		return compact('payments','type');
+	}
 }
 
 ?>

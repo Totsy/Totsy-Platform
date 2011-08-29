@@ -70,8 +70,6 @@ class Order extends Base {
 				return $order;
 			} catch (TransactionException $e) {
 				Session::write('cc_error',$e->getMessage());
-				//$order->set($data);
-				//$order->errors($order->errors() + array($e->getMessage()));
 			}
 		} else {
 			 $order->errors(
