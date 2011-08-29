@@ -29,7 +29,7 @@
 		<?php if ($y == 3): ?>
 			<?php $y = 1; ?>
 		<?php endif ?>
-                <div class="p-container roundy_product">
+                <div class="p-container roundy_product_home">
 					<!-- this is where the items count was -->
 					<?php
 						if (!empty($event->images->splash_big_image)) {
@@ -128,7 +128,7 @@
 			<?php if ($y == 2): ?>
 				<?php $y = -1; ?>
 			<?php endif ?>
-					<div class="p-container roundy_product">
+					<div class="p-container roundy_product_home">
 						<?php
 							if (!empty($event->images->splash_small_image)) {
 								$productImage = "/image/{$event->images->splash_small_image}.jpg";

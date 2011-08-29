@@ -60,7 +60,7 @@ var discountErrors = new Object();
 	
 	<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px">
 		 <div style="float:right;">
-		Item Reserved For: <br />
+		Items Reserved For: <br />
 		<span id="itemCounter" style="color:#009900; font-weight:bold; float:right !important"></span>
 	    </div>
 	    <div style="float:left;">
@@ -251,16 +251,16 @@ var discountErrors = new Object();
 				<div style="clear:both" class="subtotal"><hr /></div>			
 				<div>
 				    <div class="savings">
-				    <span style="color:#ff6d1d; font-weight:bold">
+				    <span style="color:#ff6d1d; font-weight:bold; font-style:italic;">
 				    <?php if (!empty($savings)) : ?>
-				    <span style="font-style:italic">Your Saving:</span> 
+				    Your Savings:
 				    $<?=number_format($savings,2)?>
 				    	<?php endif ?>
 				    	</span> 
 				    </div>
 				    <div class="subtotal">
 				    <span style="font-size:15px; font-weight:bold">Order Total:</span> 
-				    	<span style="font-size:15px; color:#009900; float:right" id="ordertotal">$ <?=number_format($total,2)?> </span>
+				    	<span style="font-size:15px; color:#009900; float:right" id="ordertotal">$<?=number_format($total,2)?> </span>
 				    </div>						    	
 					</div>	
 			

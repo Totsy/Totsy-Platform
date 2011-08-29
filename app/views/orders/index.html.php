@@ -13,9 +13,9 @@
 <div class="grid_11 omega roundy grey_inside b_side">
 
 	<h2 class="page-title gray">My Orders
-	<span style="margin-left:290px;">Your Lifetime Savings : </span><span class="fr">
+	<span style="color:#ff6d1d; margin-left:290px;">Your Lifetime Savings: </span><span class="fr">
 		<?php if (!empty($lifeTimeSavings)) : ?>
-			<span style="color:#009900; font-size:18px; float:right;">$<?=number_format((float) $lifeTimeSavings, 2);?></span>
+			<span style="color:#ff6d1d; font-size:18px; float:right;">$<?=number_format((float) $lifeTimeSavings, 2);?></span>
 		<?php endif ?></span></h2>
 		<div class="clear"></div>
 	<hr />
