@@ -60,7 +60,7 @@ var discountErrors = new Object();
 	
 	<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px">
 		 <div style="float:right;">
-		Items Reserved For: <br />
+		Item Reserved For: <br />
 		<span id="itemCounter" style="color:#009900; font-weight:bold; float:right !important"></span>
 	    </div>
 	    <div style="float:left;">
@@ -157,8 +157,9 @@ var discountErrors = new Object();
 			<?php endforeach ?>
 			</tbody>
 			</table>
-<?=$this->form->end(); ?>
+
 		</div>
+		<?=$this->form->end(); ?>
 
 		<div class="clear"></div>
 		
@@ -181,7 +182,6 @@ var discountErrors = new Object();
 				    	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
 				    </div>
 				</div>
-			</div>
 			</div>
 					
 			<div style="padding-top:10px; float:right; width:425px;">
@@ -251,22 +251,25 @@ var discountErrors = new Object();
 				<div style="clear:both" class="subtotal"><hr /></div>			
 				<div>
 				    <div class="savings">
-				    <span style="color:#ff6d1d; font-weight:bold; font-style:italic;">
+				    <span style="color:#ff6d1d; font-weight:bold">
 				    <?php if (!empty($savings)) : ?>
-				    Your Savings:
+				    <span style="font-style:italic">Your Saving:</span> 
 				    $<?=number_format($savings,2)?>
 				    	<?php endif ?>
 				    	</span> 
 				    </div>
 				    <div class="subtotal">
 				    <span style="font-size:15px; font-weight:bold">Order Total:</span> 
-				    	<span style="font-size:15px; color:#009900; float:right" id="ordertotal">$<?=number_format($total,2)?> </span>
+				    	<span style="font-size:15px; color:#009900; float:right" id="ordertotal">$ <?=number_format($total,2)?> </span>
 				    </div>						    	
-					</div>	
+				</div>
+			</div>
+		</div>	
 			
 <div class="cart-button fr" style="margin:20px 0px 20px 0px;">
 		      <?=$this->html->link('Continue Shopping', "sales/", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
 		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
+		      <div class="clear"></div>
 		      
 <?=$this->form->end(); ?>
 

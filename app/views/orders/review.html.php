@@ -65,7 +65,7 @@ var discountErrors = new Object();
 	
 	<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px">
 		 <div style="float:right">
-		 	<div>Items Reserved For: </div>
+		 	<div>Item Reserved For: </div>
 			<span id="itemCounter" style="color:#009900;font-weight:bold; float:right">
 			</span>
 		</div>
@@ -183,7 +183,7 @@ var discountErrors = new Object();
 							<strong>$<?=number_format($item->sale_retail,2)?></strong>
 						</span>
 						<span class="<?="qty-$x";?>" style="width:100px; float:left;">
-							<span>Qty:<?=$item->quantity;?></span>
+							<span>Qty: <?=$item->quantity;?></span>
 						</span>						
 						<span class="cart-time">
 						<div id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?=$date?>'></div>
@@ -208,7 +208,6 @@ var discountErrors = new Object();
 		</div>
 
 		<div class="clear"></div>
-		
 		<div class="grid_16" style="width:935px; padding-top:30px">
 			<div style="float: left; vertical-align: top; width:510px">
 			    <div style="font-size: 12px; text-align:left !important;">
@@ -297,7 +296,7 @@ var discountErrors = new Object();
 			        <div class="savings"> 
 			        	<span style="color:#ff6d1d; font-weight:bold">
 			        	<?php if (!empty($savings)) : ?>
-			        	<span style="font-style:italic">Your Saving:</span>
+			        	<span style="font-style:italic">Your Savings:</span>
 			        	$<?=number_format($savings,2)?>
 			        	<?php endif ?>
 			        	</span> 
