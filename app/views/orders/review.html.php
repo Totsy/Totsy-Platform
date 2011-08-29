@@ -177,7 +177,7 @@ var discountErrors = new Object();
 					<div style="height:20px; vertical-align:middle !important; line-height:15px !important">
 						<span class="cart-desc" style="width:515px; float:left;">
 								<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
-								<?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?>
+								<?=$this->html->link($item->description,'sale'.$item->event_url.'/'.$item->url); ?>
 						</span>					
 						<span class="<?="price-item-$x";?>" style="width:75px;float:left; ">
 							<strong>$<?=number_format($item->sale_retail,2)?></strong>
@@ -210,7 +210,7 @@ var discountErrors = new Object();
 		<div class="clear"></div>
 		
 		<div class="grid_16" style="width:935px; padding-top:30px">
-			<div style="float: left; vertical-align: top">
+			<div style="float: left; vertical-align: top; width:510px">
 			    <div style="font-size: 12px; text-align:left !important;">
 			        <strong>Add <?php if(!empty($credit)): ?>
 			        	<a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a> /
