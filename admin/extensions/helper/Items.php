@@ -84,7 +84,7 @@ class Items extends \lithium\template\Helper {
 		$all_items = $this->dropDownText($itemRecords);
 		
 		if (!empty($itemRecords)) {
-			$html .= "<table id='itemtable'";
+			$html .= "<table id='itemtable'>";
 			//We need the thead for jquery datatables
 			$html .=  '<thead>';
 			$html .= '<tr>';
@@ -99,13 +99,14 @@ class Items extends \lithium\template\Helper {
 
 			//Set ending tags for html table headings
 			$html .= '</tr></thead><tbody>';
-
+			$itemslist = "nothing,";
 			//Lets start building the data fields
 			foreach ($itemRecords as $item) {
 				$html .= "<tr class=''>";
 				$html .= "<td width='400px'>";
 				
 				$this->current_item_id = "".$item->_id."";
+				$itemslist .= $this->current_item_id . ",";
 
 				$related_items = array();
 				$itemDropDown = "";
@@ -141,9 +142,14 @@ class Items extends \lithium\template\Helper {
 				$html .= '</tr>';
 
 			}
-
+			$itemslist = substr($itemslist, 0, -1);
 			$html .= "</tbody>";
 			$html .= "</table>";
+			$html .= "
+			<script>
+			var allitemids = '$itemslist';
+			</script>
+			";
 			return $html;
 		} else {
 			return $html = "There are no items";
