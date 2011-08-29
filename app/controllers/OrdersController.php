@@ -247,6 +247,13 @@ class OrdersController extends BaseController {
 	 * @todo Improve documentation
 	 */
 	public function review() {
+		#Check Users are in the correct step
+		if (!Session::check('shipping')) {
+			$this->redirect(array('Orders::shipping'));
+		}
+		if (!Session::check('billing') || !Session::check('cc_infos')) {
+			$this->redirect(array('Orders::payment'));
+		}
 		#Get Users Informations
 		$user = Session::read('userLogin');
 		$fields = array(
@@ -423,6 +430,10 @@ class OrdersController extends BaseController {
 	 * @return compact
 	 */
 	public function payment() {
+		#Check Users are in the correct step
+		if (!Session::check('shipping')) {
+			$this->redirect(array('Orders::shipping'));
+		}
 		$user = Session::read('userLogin');
 		$fields = array(
 			'item_id',
