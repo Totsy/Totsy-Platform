@@ -204,8 +204,8 @@ var discountErrors = new Object();
 			<?php endforeach ?>
 			</tbody>
 		</table>
-		</div>
 		<?=$this->form->end(); ?>
+		</div>
 
 		<div class="clear"></div>
 		

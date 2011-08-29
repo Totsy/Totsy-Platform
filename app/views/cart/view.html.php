@@ -111,8 +111,8 @@ var discountErrors = new Object();
 					</td>
 					<td class="cart-desc" style="width:470px;">
 						<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
-						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?></strong><br>
-						<strong>Color:</strong> <?=$item->color;?><br>
+						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?></strong><br />
+						<strong>Color:</strong> <?=$item->color;?><br />
 						<strong>Size:</strong> <?=$item->size;?>
 					</td>
 					<td style="width:120px;">
@@ -146,8 +146,8 @@ var discountErrors = new Object();
 					<td class="cart-actions">
 						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" onclick="deletechecked('Are you sure you want to remove this item?','<?=$item->_id; ?>');" style="color: red!important;"><img src="/img/trash.png" width="20" align="absmiddle" style="margin-right:20px;" /></a>
 					</td>
-					<td class="cart-time"><!-- <img src="/img/old_clock.png" align="absmiddle" width="23" class="fl"/>--> <div id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?=$date?>'></div>
-					
+					<td class="cart-time">
+					<div id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?=$date?>'></div>
 					</td>
 					<td class="<?="total-item-$x";?>" style="width:55px; text-align:right; padding-right:10px">
 						<strong>$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
@@ -157,9 +157,8 @@ var discountErrors = new Object();
 			<?php endforeach ?>
 			</tbody>
 			</table>
-
+<?=$this->form->end(); ?>
 		</div>
-		<?=$this->form->end(); ?>
 
 		<div class="clear"></div>
 		
@@ -182,6 +181,7 @@ var discountErrors = new Object();
 				    	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
 				    </div>
 				</div>
+			</div>
 			</div>
 					
 			<div style="padding-top:10px; float:right; width:425px;">
@@ -262,17 +262,17 @@ var discountErrors = new Object();
 				    <span style="font-size:15px; font-weight:bold">Order Total:</span> 
 				    	<span style="font-size:15px; color:#009900; float:right" id="ordertotal">$ <?=number_format($total,2)?> </span>
 				    </div>						    	
-					</div>				
+					</div>	
 			
 <div class="cart-button fr" style="margin:20px 0px 20px 0px;">
 		      <?=$this->html->link('Continue Shopping', "sales/", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
 		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
 		      
 <?=$this->form->end(); ?>
-	<div class="clear"></div>
-
 
 </div>
+
+<div class="clear"></div>
 
 <div id="remove_form" style="display:none">
 	<?=$this->form->create(null ,array('id'=>'removeForm')); ?>
@@ -327,13 +327,17 @@ var discountErrors = new Object();
 	});		
 				
 </script>	
-	
-<div class="clear"></div>
+
+<div class="clear"></div>	
 <?php else: ?>
-	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1><center><span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
+	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1><center><span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1>
+	</div>
 <?php endif ?>
 </div>
-<div id="modal" style="background:#fff!important; z-index:9999999999!important;"></div>
+</div>
+
+<div id="modal" style="background:#fff!important; z-index:9999999999!important;">
+</div>
 
 <script type="text/javascript" charset="utf-8">
 
@@ -360,6 +364,7 @@ var discountErrors = new Object();
 			});
 		});
 	});
+	
 	//HIDE / SHOW CREDITS INPUT
 	function open_credit() {
 		if ($("#cred").is(":hidden")) {
@@ -388,25 +393,4 @@ var discountErrors = new Object();
 			$("#promo").slideToggle("fast");
 		}
 	};
-</script>
-<script type="text/javascript">
-var cto_params = []; 
-<?php $iCounter = 1;?> 
-<?php foreach ($cart as $item): ?>
-cto_params["i<?=$iCounter?>"] = "<?=$item->item_id?>";
-cto_params["p<?=$iCounter?>"] = "<?=number_format($item->sale_retail,2)?>";
-cto_params["q<?=$iCounter?>"] = "<?=$item->quantity?>";
-<?php $iCounter++;?>
-<?php endforeach ?>
-var cto_conf = 't1=transaction&c=2&p=3290';
-var cto_conf_event = 'v=2&wi=7714288&s=0';
-var CRITEO=function(){var b={Load:function(d){var c=window.onload;window.onload=function(){if(c){c()}d()}}};function a(e){if(document.createElement){
-var c=document.createElement((typeof(cto_container)!='undefined'&&cto_container=='img')?'img':'iframe');if(c){c.width='1px';c.height='1px';c.style.display='none';
-c.src=e;var d=document.getElementById('cto_mg_div');if(d!=null&&d.appendChild){d.appendChild(c)}}}}return{Load:function(c){
-document.write("<div id='cto_mg_div' style='display:none;'></div>");c+='&'+cto_conf;var f='';if(typeof(cto_conf_event)!='undefined')f=cto_conf_event;
-if(typeof(cto_container)!='undefined'){if(cto_container=='img')c+='&resptype=gif';}if(typeof(cto_params)!='undefined'){for(var key in cto_params){if(key!='kw')
-f+='&'+key+'='+encodeURIComponent(cto_params[key]);}if(cto_params['kw']!=undefined)c+='&kw='+encodeURIComponent(cto_params['kw']);}c+='&p1='+encodeURIComponent(f);
-c+='&cb='+Math.floor(Math.random()*99999999999);try{c+='&ref='+encodeURIComponent(document.referrer);}catch(e){}try{
-c+='&sc_r='+encodeURIComponent(screen.width+'x'+screen.height);}catch(e){}try{c+='&sc_d='+encodeURIComponent(screen.colorDepth);}catch(e){}b.Load(function(){
-a(c.substring(0,2000))})}}}();CRITEO.Load(document.location.protocol+'//dis.us.criteo.com/dis/dis.aspx?');
 </script>
