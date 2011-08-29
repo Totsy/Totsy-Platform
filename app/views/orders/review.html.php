@@ -267,8 +267,16 @@ var discountErrors = new Object();
 			        	</span>
 			        <span style="float: left;" id="shipping">
 			        Shipping:</span> 
-			        <span style="float:right" class="fees_and_discounts">$7.95</span>							</div>
+			        <span style="float:right" class="fees_and_discounts">$<?=number_format($shippingCost,2)?></span>
 			    </div>
+			    </div>
+			    <?php if (!empty($overShippingCost)):?>
+			    <div style="clear:both"></div>
+			    <div style="font-weight:bold" class="subtotal">
+    		        <span style="float: left;">Oversize Shipping:</span> 
+    		        <span style="float:right" class="fees_and_discounts">$<?=number_format($overShippingCost,2)?></span>
+    		    </div>
+   			    <?php endif ?>
 			    <?php if (!empty($shipping_discount)):?>
 			    <div style="clear:both"></div>
 			    <div style="font-weight:bold" class="subtotal">
@@ -288,7 +296,7 @@ var discountErrors = new Object();
 			        <span id="tax_tooltip" style="float:left; margin-left:-16px;" original-title="Shipping charges may vary depending on item type."><img src="/img/tooltip_icon.png">
 </span>		
 			    <span id="estimated_tax" style="float: left;">Estimated Tax:</span> 
-			        	<span style="float:right" class="fees_and_discounts">$0.00</span>
+			        	<span style="float:right" class="fees_and_discounts">$<?=number_format($tax,2)?></span>
 			    </div>
 			    </div>
 			    <div style="clear:both" class="subtotal"><hr /></div>			

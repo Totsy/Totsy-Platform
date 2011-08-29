@@ -328,7 +328,7 @@ class OrdersController extends BaseController {
 		$avatax = AvaTax::getTax(compact(
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'));
-		$tax = $avaTax['tax'];
+		$tax = $avatax['tax'];
 		#Calculate Order Total
 		$total = $vars['postDiscountTotal'] + $tax;
 		#Read Credit Card Informations
