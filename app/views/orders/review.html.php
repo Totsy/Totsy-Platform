@@ -1,7 +1,3 @@
-<!--[if lte IE 7]>  
-.cart-order-place-outer { position: relative; }
-.cart-order-place-inner { position: absolute; top: 50%; }
-<![endif]-->
 
 <script type="text/javascript">	
 
@@ -63,19 +59,16 @@ var discountErrors = new Object();
 		</div>
 	</div>
 	
-	<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px">
-		 <div style="float:right">
-		 	<div>Item Reserved For: </div>
-			<span id="itemCounter" style="color:#009900;font-weight:bold; float:right">
-			</span>
-		</div>
-	    
-	    <div style="float:left">
-		 	<div>Estimated Shipping Date: </div>
-	        <span style="float:right;font-weight:bold; color:#009900;">&nbsp;&nbsp;<?=date('m-d-Y', $shipDate)?>
-	        </span>
-	    </div>
-	</div>
+	<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px !important; float:right !important">
+		<span style="float:right">
+		Item Reserved For:<br />
+			<span id="itemCounter" style="color:#009900; font-weight:bold;"></span>
+	 	</span>
+	 	<span style="float:left">
+		 Estimated Shipping Date: <br />
+	     	<span style="font-weight:bold; color:#009900;">&nbsp;&nbsp;<?=date('m-d-Y', $shipDate)?></span>
+		</span>	
+	</div>	
 	
 	<div class="clear"></div>
 	<hr/>
@@ -126,7 +119,7 @@ var discountErrors = new Object();
 				<span style="margin-bottom: 12px">
 				Order Total:
 				    <span style="color:#009900; text-align:center" id="ordertotal">
-				    $ <?=number_format($total,2)?> </span>
+				    $<?=number_format($total,2)?> </span>
 				</span>    
 				<div style="text-align:center; diplay:inline-block !important">
 			      <a href="#" class="button" style="float:none !important; diplay:block !important" onclick="updateOrder()">Place Your Order</a>
@@ -172,32 +165,30 @@ var discountErrors = new Object();
 							); ?>
 						</span>
 					</td>
-					<td colspan="8" style="width:675px;">	
+					<td colspan="8" width="675">	
 					
-					<div style="height:20px; vertical-align:middle !important; line-height:15px !important">
-						<span class="cart-desc" style="width:515px; float:left;">
+						<div style="height:20px; vertical-align:middle !important; line-height:15px !important">
+							<span class="cart-desc" style="width:515px; float:left;">
 								<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
 								<?=$this->html->link($item->description,'sale'.$item->event_url.'/'.$item->url); ?>
-						</span>					
-						<span class="<?="price-item-$x";?>" style="width:75px;float:left; ">
-							<strong>$<?=number_format($item->sale_retail,2)?></strong>
-						</span>
-						<span class="<?="qty-$x";?>" style="width:100px; float:left;">
-							<span>Qty: <?=$item->quantity;?></span>
-						</span>						
-						<span class="cart-time">
-						<div id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?=$date?>'></div>
-						</span>
-						<span class="<?="total-item-$x";?>" style="width:75px; float:right; text-align:right; font-weight:bold;">$<?=number_format($item->sale_retail * $item->quantity ,2)?>
-						</span>
-					</div>
-						<hr>
-					<div>
-					<span>
-					</span>
-						<div><span style="font-weight: bold">Color:</span> <?=$item->color;?></div>
-						<div><span style="font-weight: bold">Size:</span> <?=$item->size;?></div>
-					</div>	
+							</span>					
+							<span class="<?="price-item-$x";?>" style="width:75px;float:left; ">
+								<strong>$<?=number_format($item->sale_retail,2)?></strong>
+							</span>
+							<span class="<?="qty-$x";?>" style="width:100px;">
+								<span style="text-align:left">Qty: <?=$item->quantity;?></span>
+							</span>						
+							<span class="cart-time">
+							<span id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?=$date?>'>
+							</span>
+							<span class="<?="total-item-$x";?>" style="width:150px !important; float:right; font-weight:bold; text-align:right">$<?=number_format($item->sale_retail * $item->quantity ,2)?>
+							</span>
+						</div>
+							<hr>
+						<div>
+							<div><span style="font-weight: bold">Color:</span> <?=$item->color;?></div>
+							<div><span style="font-weight: bold">Size:</span> <?=$item->size;?></div>
+						</div>	
 					</td>
 				</tr>
 				<?php $x++; ?>
@@ -303,7 +294,7 @@ var discountErrors = new Object();
 			        </div>
 			        <div class="subtotal">
 			        <span style="font-size:15px; font-weight:bold">Order Total:</span> 
-			        	<span style="font-size:15px; color:#009900; float:right" id="ordertotal">$ <?=number_format($total,2)?> </span>
+			        	<span style="font-size:15px; color:#009900; float:right" id="ordertotal">$<?=number_format($total,2)?> </span>
 			        </div>
 			    </div>	
 		</div>				
