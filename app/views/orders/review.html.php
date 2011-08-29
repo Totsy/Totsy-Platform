@@ -309,7 +309,7 @@ var discountErrors = new Object();
 </div>
 
 <div class="cart-button fr" style="margin:20px 0px 20px 0px;">
-		      <?=$this->form->submit('Place Your Order', array('class' => 'button ', 'style'=>'float:left', 'onclick'=>'updateOrder()')); ?>
+		      <?=$this->form->submit('Place Your Order', array('class' => 'button ', 'style'=>'float:left; margin-right:55px;', 'onclick'=>'updateOrder()')); ?>
 	<div class="clear"></div>
 
 <?=$this->form->end(); ?>
