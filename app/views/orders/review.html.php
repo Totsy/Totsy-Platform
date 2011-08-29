@@ -168,23 +168,24 @@ var discountErrors = new Object();
 					<td colspan="8" width="675">	
 					
 						<div style="height:20px; vertical-align:middle !important; line-height:15px !important">
-							<span class="cart-desc" style="width:515px; float:left;">
-								<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
-								<?=$this->html->link($item->description,'sale'.$item->event_url.'/'.$item->url); ?>
-							</span>					
-							<span class="<?="price-item-$x";?>" style="width:75px;float:left; ">
+							<span style="width:515px !important">
+								<span class="cart-desc" style="width:315px; float:left;">
+									<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
+									<?=$this->html->link($item->description,'sale'.$item->event_url.'/'.$item->url); ?>
+								</span>	
+								<span class="cart-time" style="width:200px !important; float:left; display:none" id='<?php echo "itemCounter$x"; ?>' class="counter" title='<?=$date?>'></span>
+							</span>
+							
+							<span class="<?="price-item-$x";?>" style="width:75px;float:left; ">													
 								<strong>$<?=number_format($item->sale_retail,2)?></strong>
 							</span>
-							<span class="<?="qty-$x";?>" style="width:100px;">
+							<span class="<?="qty-$x";?>" style="width:100px; float:left">
 								<span style="text-align:left">Qty: <?=$item->quantity;?></span>
 							</span>						
-							<span class="cart-time">
-							<span id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?=$date?>'>
-							</span>
-							<span class="<?="total-item-$x";?>" style="width:150px !important; float:right; font-weight:bold; text-align:right">$<?=number_format($item->sale_retail * $item->quantity ,2)?>
+							<span class="<?="total-item-$x";?>" style="width:100px !important; float:right !important; font-weight:bold; text-align:right !important">$<?=number_format($item->sale_retail * $item->quantity ,2)?>
 							</span>
 						</div>
-							<hr>
+							<hr />
 						<div>
 							<div><span style="font-weight: bold">Color:</span> <?=$item->color;?></div>
 							<div><span style="font-weight: bold">Size:</span> <?=$item->size;?></div>
@@ -254,20 +255,12 @@ var discountErrors = new Object();
 			    <div style="clear:both"></div>							
 			    <div style="font-weight:bold;" >
 			    <div class="subtotal">	
-			    <span id="shipping_tooltip" style="float:left; margin-left:-16px;" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary"><img src="/img/tooltip_icon.png">
+			    <span id="shipping_tooltip" style="float:left; margin-left:-16px;" original-title="Shipping charges may vary depending on item type."><img src="/img/tooltip_icon.png">
 			        	</span>
 			        <span style="float: left;" id="shipping">
 			        Shipping:</span> 
-			        <span style="float:right" class="fees_and_discounts">$<?=number_format($shippingCost,2)?></span>
+			        <span style="float:right" class="fees_and_discounts">$7.95</span>							</div>
 			    </div>
-			    </div>
-			    <?php if (!empty($overShippingCost)):?>
-			    <div style="clear:both"></div>
-			    <div style="font-weight:bold" class="subtotal">
-    		        <span style="float: left;">Oversize Shipping:</span> 
-    		        <span style="float:right" class="fees_and_discounts">$<?=number_format($overShippingCost,2)?></span>
-    		    </div>
-   			    <?php endif ?>
 			    <?php if (!empty($shipping_discount)):?>
 			    <div style="clear:both"></div>
 			    <div style="font-weight:bold" class="subtotal">
@@ -284,10 +277,10 @@ var discountErrors = new Object();
 			    <div style="clear:both"></div>	
 			    <div style="font-weight:bold">
 			    <div class="subtotal">
-			        <span id="tax_tooltip" style="float:left; margin-left:-16px;" original-title="Shipping charges may vary depending on item type."><img src="/img/tooltip_icon.png">
+			        <span id="tax_tooltip" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary." style="float:left; margin-left:-16px;" ><img src="/img/tooltip_icon.png">
 </span>		
 			    <span id="estimated_tax" style="float: left;">Estimated Tax:</span> 
-			        	<span style="float:right" class="fees_and_discounts">$<?=number_format($tax,2)?></span>
+			        	<span style="float:right" class="fees_and_discounts">$0.00</span>
 			    </div>
 			    </div>
 			    <div style="clear:both" class="subtotal"><hr /></div>			
@@ -350,9 +343,14 @@ var discountErrors = new Object();
 	    							onExpiry: resetTimer
 	    							});
 	    
+	    function refreshCart() {
+				window.location.reload(true);
+			}
+	    
 	    //call when item expires
 		function notifyEnding() {
-			$("#" + this.id).countdown('change', { expiryText: '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>'});
+			$("#" + this.id).countdown('change', { expiryText: '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>', 
+													onExpiry: refreshCart});
 		
 			$("#" + this.id + "_display").html( '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>' );
 		}

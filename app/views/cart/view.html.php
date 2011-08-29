@@ -316,9 +316,15 @@ var discountErrors = new Object();
 	    
 	    //call when item expires
 		function notifyEnding() {
-			$("#" + this.id).countdown('change', { expiryText: '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>'});
+			$("#" + this.id).countdown('change', { expiryText: '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>', 
+			onExpiry: refreshCart
+			});
 		
 			$("#" + this.id + "_display").html( '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>' );
+		}
+		
+		function refreshCart() {
+			window.location.reload(true);
 		}
 	    
 	    //call 2 minutes before the item expires							
