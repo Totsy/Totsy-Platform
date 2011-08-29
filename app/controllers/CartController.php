@@ -235,9 +235,11 @@ class CartController extends BaseController {
 					if ($result['status']) {
 						if($quantity == 0){
 					        Cart::remove(array('_id' => $id));
+					        $this->addIncompletePurchase(Cart::active());
 					    } else {
 							$cart->quantity = (integer) $quantity;
 							$cart->save();
+							$this->addIncompletePurchase(Cart::active());
 							$items[$cart->item_id] = $quantity;
 							#Check Cart and Refresh Timer
 							Cart::refreshTimer();
@@ -245,6 +247,7 @@ class CartController extends BaseController {
 					} else {
 						$cart->error = $result['errors'];
 						$cart->save();
+						$this->addIncompletePurchase(Cart::active());
 					}		
 				}
 			}

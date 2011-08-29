@@ -66,7 +66,7 @@ class Order extends Base {
 			try {
 				#Process Payment
 				$authKey = Payments::authorize('default', $vars['total'], $card);
-				$order = Order::recordOrder($vars, $card, $order, $avatax, $authKey, $items);
+				$order = Order::recordOrder($vars, $cart, $card, $order, $avatax, $authKey, $items);
 				return $order;
 			} catch (TransactionException $e) {
 				Session::write('cc_error',$e->getMessage());
@@ -86,7 +86,7 @@ class Order extends Base {
 	 * Record in DB all informations linked with the order
 	 * @return redirect
 	 */
-	public static function recordOrder($vars, $card, $order, $avatax, $authKey, $items) {
+	public static function recordOrder($vars, $cart, $card, $order, $avatax, $authKey, $items) {
 			$user = Session::read('userLogin');
 			$service = Session::read('services', array('name' => 'default'));
 			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
