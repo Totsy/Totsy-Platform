@@ -270,9 +270,7 @@ $(document).ready(function() {
 	});
 });
 </script>
-<<<<<<< HEAD
-
-  <script type="text/javascript" charset="utf-8">
+<script type="text/javascript" charset="utf-8">
     $(document).ready(function () {
       checkOptions();
       $("select").change(checkOptions);
@@ -294,8 +292,7 @@ $(document).ready(function() {
         };
       }
     });
-  </script>
-=======
+</script>
 <script type="text/javascript">
 //cto product tag
 var cto_params = [];
@@ -312,4 +309,3 @@ c+='&cb='+Math.floor(Math.random()*99999999999);try{c+='&ref='+encodeURIComponen
 c+='&sc_r='+encodeURIComponent(screen.width+'x'+screen.height);}catch(e){}try{c+='&sc_d='+encodeURIComponent(screen.colorDepth);}catch(e){}b.Load(function(){
 a(c.substring(0,2000))})}}}();CRITEO.Load(document.location.protocol+'//dis.us.criteo.com/dis/dis.aspx?');
 </script>
->>>>>>> 878ed99dfe27c2efe8d63a57dcbc687349f34f0b
