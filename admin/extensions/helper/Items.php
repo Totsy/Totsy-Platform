@@ -99,7 +99,7 @@ class Items extends \lithium\template\Helper {
 
 			//Set ending tags for html table headings
 			$html .= '</tr></thead><tbody>';
-			$itemslist = "";
+			$itemslist = "nothing,";
 			//Lets start building the data fields
 			foreach ($itemRecords as $item) {
 				$html .= "<tr class=''>";
