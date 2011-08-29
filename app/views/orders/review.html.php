@@ -65,7 +65,7 @@ var discountErrors = new Object();
 	
 	<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px">
 		 <div style="float:right">
-		 	<div>Item Reserved For: </div>
+		 	<div>Items Reserved For: </div>
 			<span id="itemCounter" style="color:#009900;font-weight:bold; float:right">
 			</span>
 		</div>

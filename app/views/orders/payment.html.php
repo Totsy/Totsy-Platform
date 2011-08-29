@@ -120,7 +120,7 @@ var paymentForm = new Object();
 </div>
 <div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px">
 	<div style="float:right;">
-	Item Reserved For: <br />
+	Items Reserved For: <br />
 		<span id="itemCounter" style="color:#009900; font-weight:bold; float:right !important"></span>
     </div>
 </div>

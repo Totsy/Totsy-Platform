@@ -103,7 +103,7 @@ var addressForm = new Object();
 	
 	<div class="grid_8" style="padding-bottom:10px; margin:20px auto auto auto;">
 		<div style="float:right;">
-		Item Reserved For: <br />
+		Items Reserved For: <br />
 		<span id="itemCounter" style="color:#009900; font-weight:bold; float:right !important"></span>
 	    </div>
 	</div>
