@@ -39,6 +39,8 @@ class ProcessedOrder extends Base {
 		'Ref2' => null,
 		'Ref3' => null,
 		'Ref4' => null,
+		'Order Creation Date' => null,
+		'Promised Ship-by Date' => null,
 		'Ref5' => null,
 		'Ref6' => null,
 		'Ref7' => null,
@@ -57,9 +59,7 @@ class ProcessedOrder extends Base {
 		'COD (Y/N)' => null,
 		'Order COD Value' => null,
 		'COD: Require Payment By Cashier\'s Check/Money Order (Y/N)' => null,
-		'COD: Add Shipping Costs to COD Amount (Y/N)' => null,
-		'Order Creation Date' => null,
-		'Promised Ship-by Date' => null
+		'COD: Add Shipping Costs to COD Amount (Y/N)' => null
 	);
 
 	/**
