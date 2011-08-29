@@ -658,10 +658,6 @@ class OrderExport extends Base {
 									$purchaseOrder[$inc]['Promised Ship-by Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $order['ship_date']));
 									$purchaseOrder[$inc]['Event Name'] = $event->name;
 									$purchaseOrder[$inc]['Event End Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $event->end_date));
-
-
-
-
 									$purchaseOrder[$inc] = $this->sortArrayByArray($purchaseOrder[$inc], $purchaseHeading);
 								}
 							}
