@@ -59,6 +59,8 @@ class CartController extends BaseController {
 		$i = 0;
 		$subTotal = 0;
 		$shipDate = Cart::shipDate($cart);
+		#Check Expires 
+		Cart::cleanExpiredEventItems();
 		#Loop To Get Infos About Cart
 		foreach ($cart as $item) {
 			#Get Last Expiration Date 
