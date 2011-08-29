@@ -634,8 +634,7 @@ li.item5 a:hover,li.item5.over a,li.active.item5 a {
 	position:absolute;
 	width:14px;
 	height:14px;
-	/* removing rounded corners until CG tells us to put it back */
-	/* background-image:url(../img/corners.png); */
+	background-image:url(../img/corners.png);
 	background-repeat:no-repeat;
 	z-index:100;
 }
@@ -843,9 +842,6 @@ div.col-2 .box-2 {
 	padding:10px;
 	text-align:center;
 	color:#707070;
-	-moz-border-radius: 6px;
-	-webkit-border-radius:6px;
-	border-radius:6px;
 }
 
 #detail-top-right .p-container h2 {
@@ -3387,6 +3383,16 @@ a.nivo-prevNav {
 	-moz-border-radius:8px;
 	border-radius:8px;
 	border:1px solid #D7D7D7;
+}
+
+.roundy_product_home {
+	/* -webkit-border-radius:8px;
+	-moz-border-radius:8px;
+	border-radius:8px; */
+	border:1px solid #D7D7D7;
+	margin:0 0 10px;
+	overflow:hidden;
+	min-height:321px;
 }
 
 .roundy_product {
