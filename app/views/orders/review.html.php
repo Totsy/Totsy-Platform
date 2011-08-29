@@ -17,7 +17,6 @@ var discountErrors = new Object();
 		    discountErrors.credits=false;  
 		}
 		
-		
 		$( function () {
 		    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	    
 			var now = new Date();
@@ -35,7 +34,7 @@ var discountErrors = new Object();
 			//applying tooltip
 			$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
 			$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
-			});
+		});
 }); 
 	
 </script>
@@ -341,8 +340,8 @@ var discountErrors = new Object();
 	    							});
 	    
 	    function refreshCart() {
-				window.location.reload(true);
-			}
+			window.location.reload(true);
+		}
 	    
 	    //call when item expires
 		function notifyEnding() {
