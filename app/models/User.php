@@ -222,6 +222,17 @@ class User extends Base {
 			return $result;
 		}
 	}
+	
+	public static function cleanSession() {
+		Session::delete('userSavings');	
+		Session::delete('promocode');
+		Session::delete('credit');
+		Session::delete('services');
+		Session::delete('cc_infos');
+		Session::delete('cc_error');
+		Session::delete('shipping');
+		Session::delete('billing');
+	}
 }
 
 
