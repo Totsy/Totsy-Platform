@@ -404,6 +404,14 @@ class OrdersController extends BaseController {
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart') )
 		,EXTR_OVERWRITE);
 		unset($taxArray,$taxCart);
+		/**
+		* If Avalara returns an exception for some reason, use the old way
+		**/
+		if (preg_match('/(exception)/i', $tax)) {
+		    $tax = array_sum($cart->tax($shippingAddr));
+		    $tax = $tax ? $tax + (($overShippingCost + $shippingCost) * Cart::TAX_RATE) : 0;
+		}
+
 		$vars = compact(
 			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
