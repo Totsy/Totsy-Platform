@@ -115,8 +115,7 @@ class CartController extends BaseController {
 	 * @return compact
 	 */
 	public function add() {
-		#Check Cart and Refresh Timer
-		Cart::refreshTimer();
+		#Check Cart
 		$cart = Cart::create();
 		if ($this->request->data) {
 			$itemId = $this->request->data['item_id'];
@@ -173,6 +172,7 @@ class CartController extends BaseController {
 				if ($cart->addFields() && $cart->save($info)) {
 					//calculate savings
 					$item[$itemId] = 1;
+					Cart::refreshTimer();
 					Cart::updateSavings($item, 'add');
 					$this->addIncompletePurchase(Cart::active());
 				}
