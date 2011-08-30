@@ -45,7 +45,7 @@ var discountErrors = new Object();
 <?php  if(!empty($subTotal)): ?>
 <div style="margin:10px;">
 
-	<div class="grid_11" style="padding-bottom:10px; margin:20px auto auto auto;">
+	<div class="grid_11" style="padding-bottom:10px; margin:20px auto auto auto; width: auto !important">
 		<div style="float:left;">
 			<h2 class="page-title gray">
 				<span class="cart-step-status gray" style="font-weight:bold">Review your Shipping and Payment Information</span>
@@ -57,7 +57,7 @@ var discountErrors = new Object();
 		</div>
 	</div>
 	
-	<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px !important; float:right !important">
+	<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px !important; float:right !important;  line-height: 18px !important; font-size: 14px !important; width: 315px !important ">
 		<span style="float:right">
 		Item Reserved For:<br />
 			<span id="itemCounter" style="color:#009900; font-weight:bold;"></span>

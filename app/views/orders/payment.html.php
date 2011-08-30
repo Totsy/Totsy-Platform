@@ -118,7 +118,7 @@ var paymentForm = new Object();
 		<?php } ?>
 	</div>
 </div>
-<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px">
+<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px;  line-height: 18px !important; font-size: 14px !important; ">
 		<span style="float:right">
 		Item Reserved For:<br />
 			<span id="itemCounter" style="color:#009900; font-weight:bold;"></span>

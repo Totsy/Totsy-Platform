@@ -101,7 +101,7 @@ var addressForm = new Object();
 		</div>
 	</div>
 	
-	<div class="grid_8" style="padding-bottom:10px; margin:20px auto auto auto;float:right !important">
+	<div class="grid_8" style="padding-bottom:10px; margin:20px auto auto auto;float:right !important;  line-height: 18px !important;font-size: 14px !important; ">
 		<span style="float:right">
 		Item Reserved For:<br />
 			<span id="itemCounter" style="color:#009900; font-weight:bold;"></span>
