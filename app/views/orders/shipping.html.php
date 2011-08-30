@@ -127,7 +127,7 @@ var addressForm = new Object();
 		<?=$this->form->error('lastname'); ?>
 		<div style="clear:both"></div>
 		<?=$this->form->label('telephone', 'Telephone <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-		<?=$this->form->text('telephone', array('class' => 'validate[custom[phone]] inputbox', 'id' => 'telephone')); ?>
+		<?=$this->form->text('telephone', array('class' => 'validate[required] inputbox', 'id' => 'telephone')); ?>
 		<div style="clear:both"></div>
 		<?=$this->form->label('address', 'Street Address <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('address', array('class' => 'validate[required] inputbox', 'id'=>'address' )); ?>
@@ -142,7 +142,7 @@ var addressForm = new Object();
 		<div style="clear:both"></div>
 		<span style="padding-left:2px">
 		<?=$this->form->label('state', 'State <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-		<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'class' => 'validate[required] inputbox','id'=>'state')); ?>
+		<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'class' => 'validate[required] inputbox','id'=>'state', 'style'=>'width:auto !important')); ?>
 		<?=$this->form->error('state'); ?>
 		</span>
 		<div style="clear:both; padding-top:5px;"></div>
