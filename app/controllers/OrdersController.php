@@ -324,15 +324,8 @@ class OrdersController extends BaseController {
 		}
 		#Get Services
 		$services = $vars['services'];
-		#Get Promocodes and eventual Shipping Discount
-		if (!empty($vars['cartPromo']['saved_amount'])) {
-		 	$promocode = Session::read('promocode');
-		 	if($promocode['type'] === 'free_shipping') {
-				$shipping_discount = $shippingCost + $overShippingCost;
-			}
-		}
-		#Check Free Shipping Services
-		if (!empty($services['freeshipping']['enable'])) {
+		#Get Discount Freeshipping Service / Get Discount Promocodes Free Shipping
+		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
 			$shipping_discount = $shippingCost + $overShippingCost;
 		}
 		#Getting Tax by Avatax
@@ -360,7 +353,7 @@ class OrdersController extends BaseController {
 		if (Session::check('cc_error')) {
 			$this->redirect(array('Orders::payment'));
 		}
-		return $vars + compact('cartEmpty','order','cartByEvent','orderEvents','shipDate','savings', 'credits', 'promocode', 'services', 'cartExpirationDate');
+		return $vars + compact('cartEmpty','order','cartByEvent','orderEvents','shipDate','savings', 'credits', 'services', 'cartExpirationDate');
 	}
 
 	/**

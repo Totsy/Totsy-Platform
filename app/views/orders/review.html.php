@@ -120,7 +120,7 @@ var discountErrors = new Object();
 				    <span style="color:#009900; text-align:center" id="ordertotal">
 				    $<?=number_format($total,2)?> </span>
 				</span>    
-				<div style="text-align:center; diplay:inline-block !important">
+				<div style="text-align:center; dipromplay:inline-block !important">
 			      <a href="#" class="button" style="float:none !important; diplay:block !important" onclick="updateOrder()">Place Your Order</a>
 			 	</div>
 			</div>
@@ -221,14 +221,14 @@ var discountErrors = new Object();
 			        	<span style="float:left;">Subtotal:</span>
 			        	<span style="float:right" id="subtotal">$<?=number_format($subTotal,2)?></span>
 			    </div>
-			    <?php if (!empty($promocode['discount_amount']) && ($promocode['type'] != 'free_shipping') ):?>
+			    <?php if (!empty($cartPromo['saved_amount']) && ($cartPromo['type'] != 'free_shipping') ):?>
 			    <div style="clear:both"></div>
 			    <div style="font-weight:bold" class="subtotal">
     		        	<span style="float: left;">Discount 
-    		        	<?php echo '[' . $promocode['code'] . ']'; ?>	
+    		        	<?php echo '[' . $cartPromo['code'] . ']'; ?>	
     		        	:</span> 
     		        	<span style="float:right" class="fees_and_discounts">-$
-    		        	<?=number_format(abs($promocode['discount_amount']),2)?>
+    		        	<?=number_format(abs($cartPromo['saved_amount']),2)?>
     		        	</span>	
     		    </div>
    			    <?php endif ?>
@@ -262,9 +262,9 @@ var discountErrors = new Object();
 			    <div style="font-weight:bold" class="subtotal">
     		        <span style="float: left;">Free Shipping 
     		        	<?php 
-    		        	if(!empty($promocode)) {
-    		        		if($promocode['type'] === 'free_shipping')
-    		        			echo '[' . $promocode['code'] . ']';	
+    		        	if(!empty($cartPromo)) {
+    		        		if($cartPromo['type'] === 'free_shipping')
+    		        			echo '[' . $cartPromo['code'] . ']';	
     		        	}?>		
     		        	:</span> 
     		        	<span style="color:#707070; float:right" class="fees_and_discounts">- $<?=number_format($shipping_discount,2)?></span>

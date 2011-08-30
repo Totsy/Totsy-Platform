@@ -92,15 +92,8 @@ class CartController extends BaseController {
 		if (!empty($vars['cartCredit'])) {
 			$credits = Session::read('credit');
 		}
-		#Get Discount Promocodes Free Shipping
-		if(!empty($vars['cartPromo']['saved_amount'])) {
-		 	$promocode = Session::read('promocode');
-		 	if($promocode['type'] === 'free_shipping') {
-				$shipping_discount = $shipping;
-			}
-		}
-		#Get Discount Freeshipping Service
-		if(!empty($services['freeshipping']['enable'])) {
+		#Get Discount Freeshipping Service / Get Discount Promocodes Free Shipping
+		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
 			$shipping_discount = $shipping;
 		}
 		#Get Total of The Cart after Discount
