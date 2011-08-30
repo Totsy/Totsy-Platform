@@ -116,8 +116,7 @@ class Order extends Base {
 				));
 			} catch (TransactionException $e) {
 				$order->set($data);
-//				$order->errors($order->errors() + array($e->getMessage()));
-				$order->errors($order->errors() + array('Sorry, we are unable to charge this credit card. Please verify that the credit card #, expiration date, and CVV2# are accurate, and that the billing address you provided is the address where your credit card bill is mailed to you and click "place your order" again. Or, you can use a different credit card, or feel free to call customer service at 1-888-247-9444.'));
+				$order->errors($order->errors() + array($e->getMessage()));
 			}
 		} else {
 			 $order->errors(

@@ -61,12 +61,6 @@ class OrdersController extends BaseController {
 
 		return (compact('orders', 'shipDate', 'trackingNumbers'));
 	}
-	
-	/**
-	 * Shown to a user if there are 5 credit card errors within a 5 minute time span
-	 */
-	public function error() {
-	}
 
 	/**
 	 * View a specific order.
@@ -204,18 +198,6 @@ class OrdersController extends BaseController {
 	 * @todo Make this method lighter by taking out promocode/credit validation
 	 */
 	public function process() {
-
-		$orderErrors = Session::read('orderErrors');
-		$lastOrderErrorDateTime = Session::read('lastOrderErrorDateTime');
-		$comparision_lastOrderErrorDateTime = round(abs(time() - $lastOrderErrorDateTime) / 60,2);	
-
-		if ($comparision_lastOrderErrorDateTime < 5 && $orderErrors >= 5) {
-			return $this->redirect(array('Orders::error'));
-		} else if ($comparision_lastOrderErrorDateTime > 5) {
-			Session::write('orderErrors', null, array('name' => 'default'));
-			Session::write('lastOrderErrorDateTime', null, array('name' => 'default'));
-		}
-
 		$order = Order::create();
 		$user = Session::read('userLogin');
 		$data = $user['checkout'] + $this->request->data;
@@ -404,14 +386,6 @@ class OrdersController extends BaseController {
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart') )
 		,EXTR_OVERWRITE);
 		unset($taxArray,$taxCart);
-		/**
-		* If Avalara returns an exception for some reason, use the old way
-		**/
-		if (preg_match('/(exception)/i', $tax)) {
-		    $tax = array_sum($cart->tax($shippingAddr));
-		    $tax = $tax ? $tax + (($overShippingCost + $shippingCost) * Cart::TAX_RATE) : 0;
-		}
-
 		$vars = compact(
 			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
@@ -481,14 +455,6 @@ class OrdersController extends BaseController {
 			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
-
-		$order_errors = $order->errors();
-			
-		if ((sizeof($order->errors()) > 0) && preg_match("/unable/i", $order_errors[0])) {
-			$orderErrors++;
-			Session::write('orderErrors', $orderErrors, array('name' => 'default'));			
-			Session::write('lastOrderErrorDateTime', time(), array('name' => 'default'));
-		}
 
 		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate');
 	}
