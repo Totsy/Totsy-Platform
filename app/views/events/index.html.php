@@ -4,11 +4,11 @@
 		<h2 class="page-title gray">Today's Sales</h2>
 		<hr />
 	</div>
-    <!--Disney -->
-      <div class="disney disney_splash">
-          <p><strong>SPECIAL BONUS!</strong> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value ) <span id="disney">Offer &amp; Refund Details</span></p>
-      </div>
-<div class="fullwidth">
+	<!--Disney -->
+	<div class="disney disney_splash">
+		<p><strong>SPECIAL BONUS!</strong> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value ) <span id="disney">Offer &amp; Refund Details</span></p>
+	</div>
+
 	<?php $x = 0; ?>
 	<?php $y = 0; ?>
 	<?php foreach ($openEvents as $event): ?>
@@ -29,7 +29,7 @@
 		<?php if ($y == 3): ?>
 			<?php $y = 1; ?>
 		<?php endif ?>
-                <div class="p-container roundy_product_home">
+		<div class="p-container roundy_product_home">
 					<!-- this is where the items count was -->
 					<?php
 						if (!empty($event->images->splash_big_image)) {
@@ -66,7 +66,7 @@
 						 ?>
 					<?php endif ?>
 
-                <div class="splash-details">
+			<div class="splash-details">
 						<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
 						 <p style="padding:0px; margin:0px; font-size:15px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
 						 <p style="padding:0px; margin:-3px 0px 0px 0px; font-size:12px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;"><span id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $event->end_date->sec * 1000; ?>" class="counter end"></span>
@@ -107,7 +107,6 @@
 		<?php $y++; ?>
 	<?php endforeach ?>
 
-
 	<div style="margin-bottom:35px;" class="clear"></div>
 
 	<div class="container_16">
@@ -115,7 +114,6 @@
 		<h2 class="page-title gray">Upcoming Sales</h2>
 		<hr />
 	</div>
-         
 		<?php $x = 0; ?>
 		<?php $y = 0; ?>
 		<?php foreach ($pendingEvents as $event): ?>
@@ -152,18 +150,16 @@
 						</div>
 
 						<div class="table-cell right">
-							<?=$this->html->link('View', 'sale/'.$event->url, array('class' => 'button small'));?>
+							<?=$this->html->link('View', 'sale/'.$event->url, array('class' => 'button small', 'style'=>'display:table-cell !important'));?>
 						</div>
 					</div>
 				</div>
 			</div>
 			
-			
 			<?php $x++; ?>
 			<?php $y++; ?>
 	<?php endforeach ?>
 	</div>
-</div>
 </div>
 </div>
 </div>

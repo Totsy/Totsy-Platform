@@ -17,13 +17,12 @@
 	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
 	<!-- end jQuery / jQuery UI -->
 
-    	<?php echo $this->html->script('jquery.uniform.min.js'); ?>
-    
-    	<?php echo $this->html->script('jquery.countdown.min.js'); ?>
-    	<?php echo $this->scripts(); ?>
+	<?php echo $this->html->script('jquery.uniform.min.js'); ?>
+	<?php echo $this->html->script('jquery.countdown.min.js'); ?>
+	<?php echo $this->scripts(); ?>
 	<meta property="og:site_name" content="Totsy"/>
 	<meta property="fb:app_id" content="181445585225391"/>
-    	<meta name="description" content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
+	<meta name="description" content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
 
 </head>
 <body class="app">
@@ -54,12 +53,10 @@
 	</div>
 	<!-- end header nav -->
 	
-
 	<div class="container_16">
 		<?php echo $this->content(); ?>
 	</div>
 	<!-- main content -->
-	
 </div>
 <!-- end container_16 -->
 	
@@ -70,13 +67,13 @@
 
 	<div class="container_16 clear" style="margin-top:50px;">
 		<?php echo $this->view()->render(array('element' => 'footerIcons')); ?>
-    </div>
-    <!-- end footer icons -->
+	</div>
+	<!-- end footer icons -->
 
-    <div id='toTop'>^ Top</div>
+	<div id='toTop'>^ Top</div>
 
-     <!--affiliate pixels-->
-    <?php echo $pixel; ?>
+	<!--affiliate pixels-->
+	<?php echo $pixel; ?>
 
 <script type="text/javascript">
 	$.base = '<?php echo rtrim(Router::match("/", $this->_request)); ?>';
