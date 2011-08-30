@@ -253,9 +253,9 @@ var discountErrors = new Object();
 				<div style="clear:both" class="subtotal"><hr /></div>			
 				<div>
 				    <div class="savings">
-				    <span style="color:#ff6d1d; font-weight:bold">
+				    <span style="color:#ff6d1d; font-style: italic; font-weight:bold">
 				    <?php if (!empty($savings)) : ?>
-				    <span style="font-style:italic">Your Saving:</span> 
+				    Your Savings: 
 				    $<?=number_format($savings,2)?>
 				    	<?php endif ?>
 				    	</span> 
