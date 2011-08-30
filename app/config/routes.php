@@ -63,6 +63,12 @@ Router::connect('/livingsocial', array('Pages::view', 'args' => array('living_so
 Router::connect('/blog', 'Blog::index');
 Router::connect('/feeds/{:args}', 'Feeds::home');
 
+/** Shopping Cart Routes **/
+Router::connect('/checkout/view', 'Cart::view');
+Router::connect('/checkout/shipping', 'Orders::shipping');
+Router::connect('/checkout/payment', 'Orders::payment');
+Router::connect('/checkout/review', 'Orders::review');
+
 /**
  * Redirect all non-authenticated users to
 */
@@ -71,6 +77,7 @@ if(!Session::check('userLogin')) {
 	Router::connect('/{:args}', 'Users::login');
 	return;
 }
+
 Router::connect('/', 'Events::index');
 Router::connect('/sales/{:args}', 'Events::index');
 Router::connect('/{:action:login|logout}', array('controller' => 'users'));
@@ -113,5 +120,4 @@ if (!Environment::is('production')) {
 Router::connect('/{:controller}/{:action}/{:id:[0-9a-f]{24}}.{:type}', array('id' => null));
 Router::connect('/{:controller}/{:action}/{:id:[0-9a-f]{24}}');
 Router::connect('/{:controller}/{:action}/{:args}');
-
 ?>
