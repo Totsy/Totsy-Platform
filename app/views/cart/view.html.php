@@ -64,8 +64,8 @@ var discountErrors = new Object();
 			<span id="itemCounter" style="color:#009900; font-weight:bold;"></span>
 	 	</span>
 	 	<span style="float:left">
-		 Estimated Shipping Date: <br />
-	     	<span style="font-weight:bold; color:#009900;">&nbsp;&nbsp;<?=date('m-d-Y', $shipDate)?></span>
+		 Estimated Shipping Date:<br />
+	     	<span style="font-weight:bold; color:#009900;"><?=date('m-d-Y', $shipDate)?></span>
 		</span>	
 	</div>	
 	
@@ -191,14 +191,14 @@ var discountErrors = new Object();
 				   <span style="float:left;">Subtotal:</span>
 				   <span style="float:right" id="subtotal">$<?=number_format($subTotal,2)?></span>
 				</div>
-				<?php if (!empty($cartPromo['saved_amount']) && ($cartPromo['type'] != 'free_shipping') ):?>
+				<?php if (!empty($promocode['discount_amount']) && ($promocode['type'] != 'free_shipping') ):?>
 				<div style="clear:both"></div>
 				<div style="font-weight:bold" class="subtotal">
     			    	<span style="float: left;">Discount 
-    			    	<?php echo '[' . $cartPromo['code'] . ']'; ?>:
+    			    	<?php echo '[' . $promocode['code'] . ']'; ?>:
     			    	</span> 
     			    	<span style="float:right" class="fees_and_discounts">- 
-    			    	$<?=number_format(abs($cartPromo['saved_amount']),2)?>
+    			    	$<?=number_format(abs($promocode['discount_amount']),2)?>
     			    	</span>	
     			</div>
    				<?php endif ?>
@@ -232,9 +232,9 @@ var discountErrors = new Object();
 				<div style="font-weight:bold" class="subtotal">
     			    <span style="float: left;">Free Shipping 
     			    	<?php 
-    			    	if(!empty($cartPromo)) {
-    			    		if($cartPromo['type'] === 'free_shipping')
-    			    			echo '[' . $cartPromo['code'] . ']';	
+    			    	if(!empty($promocode)) {
+    			    		if($promocode['type'] === 'free_shipping')
+    			    			echo '[' . $promocode['code'] . ']';	
     			    	}?>		
     			    	:</span> 
     			    	<span style="color:#707070; float:right" class="fees_and_discounts">- $<?=number_format($shipping_discount,2)?></span>
