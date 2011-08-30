@@ -72,7 +72,7 @@ var discountErrors = new Object();
 	<hr/>
 	
 	<div class="grid_16" style="width:940px; padding-bottom:35px">
-		<div style="width: 368px; margin-right:10px" class="cart-review-edit">
+		<div style="width: 315px; margin-right:10px" class="cart-review-edit">
 			<div class="page-title" style="font-weight:bold; margin: 15px; font-size:15px"><span style="color:#707070;">Shipping Address</span>
 			<span style="float:right; font-size:10px">
 				<a href="/checkout/shipping">(Change)</a>
@@ -95,8 +95,8 @@ var discountErrors = new Object();
 				</div>
 			</div>
 		</div>
-		<div style="width: 270px; margin-left:10px; margin-right:10px" class="cart-review-edit">
-			<div class="page-title" style="font-weight:bold; margin: 15px; font-size:15px"><span style="color:#707070;">Payment Method</span>
+		<div style="width: 330px; margin-left:10px; margin-right:10px" class="cart-review-edit">
+			<div class="page-title" style="font-weight:bold; margin: 15px; font-size:15px"><span style="color:#707070;">Billing Address &amp; Payment Method</span>
 				<span style="float:right; font-size:10px">
 					<a href="/checkout/payment">(Change)</a>
 				</span>
