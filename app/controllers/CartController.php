@@ -139,7 +139,6 @@ class CartController extends BaseController {
 					//Make sure the items are available
 					if( $avail > 0 ){
 						++$cartItem->quantity;
-						
 						$cartItem->save();
 						//calculate savings
 						$item[$item['_id']] = $cartItem->quantity;

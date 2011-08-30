@@ -255,8 +255,16 @@ var discountErrors = new Object();
 			        	</span>
 			        <span style="float: left;" id="shipping">
 			        Shipping:</span> 
-			        <span style="float:right" class="fees_and_discounts">$7.95</span>							</div>
+			        <span style="float:right" class="fees_and_discounts">$<?=number_format($shippingCost,2)?></span>
 			    </div>
+			    </div>
+			    <?php if (!empty($overShippingCost)):?>
+			    <div style="clear:both"></div>
+			    <div style="font-weight:bold" class="subtotal">
+    		        <span style="float: left;">Oversize Shipping:</span> 
+    		        <span style="float:right" class="fees_and_discounts">$<?=number_format($overShippingCost,2)?></span>
+    		    </div>
+   			    <?php endif ?>
 			    <?php if (!empty($shipping_discount)):?>
 			    <div style="clear:both"></div>
 			    <div style="font-weight:bold" class="subtotal">
@@ -276,7 +284,7 @@ var discountErrors = new Object();
 			        <span id="tax_tooltip" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary." style="float:left; margin-left:-16px;" ><img src="/img/tooltip_icon.png">
 </span>		
 			    <span id="estimated_tax" style="float: left;">Estimated Tax:</span> 
-			        	<span style="float:right" class="fees_and_discounts">$0.00</span>
+			        	<span style="float:right" class="fees_and_discounts">$<?=number_format($tax,2)?></span>
 			    </div>
 			    </div>
 			    <div style="clear:both" class="subtotal"><hr /></div>			
