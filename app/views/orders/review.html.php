@@ -290,9 +290,9 @@ var discountErrors = new Object();
 			    <div style="clear:both" class="subtotal"><hr /></div>			
 			    <div>
 			        <div class="savings"> 
-			        	<span style="color:#ff6d1d; font-weight:bold">
+			        	<span style="font-style:italic; color:#ff6d1d; font-weight:bold">
 			        	<?php if (!empty($savings)) : ?>
-			        	<span style="font-style:italic">Your Savings:</span>
+			        	Your Savings:
 			        	$<?=number_format($savings,2)?>
 			        	<?php endif ?>
 			        	</span> 
@@ -306,7 +306,7 @@ var discountErrors = new Object();
 </div>
 
 <div class="cart-button fr" style="margin:20px 0px 20px 0px;">
-		      <?=$this->form->submit('Place Your Order', array('class' => 'button ', 'style'=>'float:left', 'onclick'=>'updateOrder()')); ?>
+		      <?=$this->form->submit('Place Your Order', array('class' => 'button ', 'style'=>'float:left;margin-right:55px;', 'onclick'=>'updateOrder()')); ?>
 	<div class="clear"></div>
 
 <?=$this->form->end(); ?>
