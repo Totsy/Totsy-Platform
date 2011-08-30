@@ -75,12 +75,6 @@ class OrdersController extends BaseController {
 		}
 		return (compact('orders', 'shipDate', 'trackingNumbers', 'orderSavings', 'lifeTimeSavings'));
 	}
-	
-	/**
-	 * Shown to a user if there are 5 credit card errors within a 5 minute time span
-	 */
-	public function error() {
-	}
 
 	/**
 	 * View a specific order.
