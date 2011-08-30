@@ -86,6 +86,7 @@ class Promotion extends Base {
                     if ($postSubtotal >= $code->minimum_purchase && !($entity->errors())) {
                         $entity->user_id = $user['_id'];
                         if ($code->type == 'percentage') {
+                        	$entity->type = "percentage";
                             $entity->saved_amount = $postSubtotal * -$code->discount_amount;
                             Cart::updateSavings(null, 'discount', $postSubtotal * $code->discount_amount);
                         }
