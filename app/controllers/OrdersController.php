@@ -299,6 +299,7 @@ class OrdersController extends BaseController {
 				'conditions' => array('_id' => $cartValue->event[0])
 			));
 			$cartValue->event_name = $event->name;
+			$cartValue->event_url = $event->url;
 			$cartValue->event_id = $cartValue->event[0];
 			$subTotal += $cartValue->quantity * $cartValue->sale_retail;
 			unset($cartValue->event);
