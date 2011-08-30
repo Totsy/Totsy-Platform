@@ -1,3 +1,5 @@
+<?php print_r($cart->data()); ?>
+
 <script type="text/javascript">	
 
 var discountErrors = new Object();

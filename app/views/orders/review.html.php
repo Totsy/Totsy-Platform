@@ -1,3 +1,4 @@
+<?php print_r($cart->data()); ?>
 
 <script type="text/javascript">	
 
@@ -144,6 +145,7 @@ var discountErrors = new Object();
 				<tr id="<?=$item->_id?>" style="height: 110px !important">
 					<td colspan="1" class="cart-th" style="width:75px;">
 						<span style="float:left; width:120px;line-height:15px !important; border-style:solid; border-width:1px;border-color:#DDDDDD; margin:10px">
+						
 							<?php
 								if (!empty($item->primary_image)) {
 									$image = $item->primary_image;
