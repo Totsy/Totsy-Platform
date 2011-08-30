@@ -569,7 +569,7 @@ class Cart extends Base {
 			$credit_amount = $data['credit_amount'];
 		}
 		$postDiscountTotal = ($postSubtotal + $cartPromo['saved_amount']);
-		$cartCredit->checkCredit($credit_amount, $postDiscountTotal, $userDoc);
+		$cartCredit->checkCredit($credit_amount, $subTotal, $userDoc);
 		#Apply credit to the Total
 		if(!empty($cartCredit->credit_amount)) {
 			$postDiscountTotal += $cartCredit->credit_amount;

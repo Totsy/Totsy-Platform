@@ -275,13 +275,14 @@
 				</tr>
 		</table>
 																		
-							<div>
+							<div style="float:right;margin-right:135px;">
 									 <?php if($new): ?>
 
 									            <?php echo $spinback_fb; ?>
 									    <?php endif;?>
 										
 							</div>
+<div class="clear"></div>
 												<div class="grid_4">
 												  <strong>Shipping Address</strong><hr />												<?=$order->shipping->firstname;?> <?=$order->shipping->lastname;?><br>
                                                                                                 <?=$order->shipping->address; ?> <?=$order->shipping->address_2; ?><br />

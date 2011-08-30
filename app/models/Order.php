@@ -157,7 +157,7 @@ class Order extends Base {
 			#Send Order Confirmation Email
 			$data = array(
 				'order' => $order->data(),
-				'shipDate' => date('M d, Y', $shipDate)
+				'shipDate' => date('M d, Y', Cart::shipDate($order))
 			);
 			#In Case Of First Order, Send an Email About 10$ Off Discount
 			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {

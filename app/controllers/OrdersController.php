@@ -234,13 +234,14 @@ class OrdersController extends BaseController {
 				'fields' => $fields,
 				'time' => '-0min'
 		));
+		$shipDate = Cart::shipDate($cart);
 		foreach($cart as $item){
 			if($cartExpirationDate < $item['expires']->sec) {
 				$cartExpirationDate = $item['expires']->sec;
 			}
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
-		return compact('address','addresses_ddwn','cartEmpty','error','selected','cartExpirationDate');
+		return compact('address','addresses_ddwn','shipDate','cartEmpty','error','selected','cartExpirationDate');
 	}
 	
 	/**
@@ -514,6 +515,7 @@ class OrdersController extends BaseController {
 				'fields' => $fields,
 				'time' => '-5min'
 		));
+		$shipDate = Cart::shipDate($cart);
 		foreach($cart as $item){
 			if($cartExpirationDate < $item['expires']->sec) {
 				$cartExpirationDate = $item['expires']->sec;
@@ -530,7 +532,7 @@ class OrdersController extends BaseController {
 			Session::delete('cc_error');
 			Session::delete('cc_billingAddr');
 		}
-		return compact('address','cartEmpty','payment','shipping','cartExpirationDate');
+		return compact('address','cartEmpty','payment','shipping','shipDate','cartExpirationDate');
 	}
 
 }
