@@ -1,5 +1,3 @@
-<?php print_r($cart->data()); ?>
-
 <script type="text/javascript">	
 
 var discountErrors = new Object();
@@ -115,7 +113,7 @@ var discountErrors = new Object();
 					</td>
 					<td class="cart-desc" style="width:470px;">
 						<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
-						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?></strong><br />
+						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url, array("target"=>"_blank")); ?></strong><br />
 						<strong>Color:</strong> <?=$item->color;?><br />
 						<strong>Size:</strong> <?=$item->size;?>
 					</td>

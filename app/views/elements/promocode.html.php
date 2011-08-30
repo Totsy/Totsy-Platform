@@ -3,7 +3,7 @@
     <div style='float:right !important; width:200px !important; margin-left: 10px; text-align:center'>
     <?php if (is_array($this->form->error('promo'))): ?>
         <?php foreach($this->form->error('promo') as $msg) :?>
-            <span style=""margin-left:-105px;><?php echo $msg ?></span>
+            <span style="margin-left:-105px"><?php echo $msg ?></span>
         <?php endforeach; ?>
     <?php else: ?>
         <?=$this->form->error('promo');?>

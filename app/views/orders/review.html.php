@@ -1,5 +1,3 @@
-<?php print_r($cart->data()); ?>
-
 <script type="text/javascript">	
 
 var discountErrors = new Object();
@@ -171,7 +169,7 @@ var discountErrors = new Object();
 							<span>
 								<span class="cart-desc" style="width:515px; float:left;">
 									<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
-									<?=$this->html->link($item->description,'sale'.$item->event_url.'/'.$item->url); ?>
+									<?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url, array("target"=>"_blank")); ?>
 				
 								<span class="cart-time" style="width:200px !important; float:left; display:none" id='<?php echo "itemCounter$x"; ?>' class="counter" title='<?=$date?>'></span>
 							</span>

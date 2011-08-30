@@ -1,4 +1,4 @@
-<?php if ($credit): ?>
+<?php //if ($credit): ?>
 <?php if(!empty($orderCredit)) {
 		$orderCredit->credit_amount = abs($orderCredit->credit_amount);
 	}
@@ -14,4 +14,4 @@
     	<script type="text/javascript">discountErrors.credits = true;</script>
     <?php } ?>
 <?php echo $this->form->end(); ?>
-<?php endif ?>
+<?php// endif ?>
