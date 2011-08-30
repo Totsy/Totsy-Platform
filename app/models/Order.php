@@ -112,8 +112,8 @@ class Order extends Base {
 					$services = array_merge($services, array("freeshipping"));
 					$order->discount = $vars['shippingCost'] + $vars['overShippingCost'];
 				}
-				if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible') {
-					$order->discount = 10.00;
+				if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible' && ($vars['subTotal'] >= 50.00)) {
+					$order->discount = 10.00; 
 					$services = array_merge($services, array("10off50"));
 				}
 				if(!empty($services)) {
