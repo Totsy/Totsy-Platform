@@ -101,13 +101,16 @@ var addressForm = new Object();
 		</div>
 	</div>
 	
-	<div class="grid_8" style="padding-bottom:10px; margin:20px auto auto auto;float:right !important;  line-height: 18px !important;font-size: 14px !important; ">
+	<div class="grid_8" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px !important; float:right !important;  line-height: 18px !important; font-size: 14px !important; width: 315px !important ">
 		<span style="float:right">
 		Item Reserved For:<br />
 			<span id="itemCounter" style="color:#009900; font-weight:bold;"></span>
 	 	</span>
-
-	</div>
+	 	<span style="float:left">
+		 Estimated Shipping Date: <br />
+	     	<span style="font-weight:bold; color:#009900;"><?=date('m-d-Y', $shipDate)?></span>
+		</span>	
+	</div>	
 	
 <?=$this->form->create($address, array('id' => 'addressForm')); ?>	
 			
