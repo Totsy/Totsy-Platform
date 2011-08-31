@@ -59,18 +59,9 @@ var discountErrors = new Object();
 	</div>
 	
 	<div class="grid_5" style="padding-bottom:0px; margin:20px auto auto auto; line-height: 18px !important; float:right !important; font-size: 14px !important; width: 315px !important">
-		<span style="float:right">
-		Item Reserved For:<br />
-			<span id="itemCounter" style="color:#009900; font-weight:bold; "></span>
-	 	</span>
-	 	<span style="float:left">
-		 Estimated Shipping Date:<br />
-	     	<span style="font-weight:bold; color:#009900;"><?=date('m-d-Y', $shipDate)?></span>
-		</span>	
+		<?=$this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
 	</div>	
-	
 	<div class="clear"></div>
-	
 	<hr/>
 	     <div class="cart-button fr" style="margin:10px 0px 20px 0px;">
 		      <?=$this->html->link('Continue Shopping', "sales/", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>

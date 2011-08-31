@@ -104,7 +104,7 @@ var paymentForm = new Object();
 <?php  if(empty($cartEmpty)): ?>
 
 <div style="margin:10px;">
-<div class="grid_11" style="padding-bottom:10px; margin:20px auto auto auto;">
+<div class="grid_11" style="padding-bottom:10px; margin:20px auto auto auto; width:500px !important">
 	<div style="float:left">
 		<h2 class="page-title gray">
 			<span class="cart-step-status gray" style="font-weight:bold">Payment</span>
@@ -118,15 +118,8 @@ var paymentForm = new Object();
 		<?php } ?>
 	</div>
 </div>
-<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px !important; float:right !important;  line-height: 18px !important; font-size: 14px !important;">
-		<span style="float:right">
-		Item Reserved For:<br />
-			<span id="itemCounter" style="color:#009900; font-weight:bold;"></span>
-	 	</span>
-	 	<span style="float:left">
-		 Estimated Shipping Date: <br />
-	     	<span style="font-weight:bold; color:#009900;"><?=date('m-d-Y', $shipDate)?></span>
-		</span>	
+<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px !important; float:right !important;  line-height: 18px !important; font-size: 14px !important; text-align:left; width: 315px !important">
+		<?=$this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
 </div>
 
 <?=$this->form->create($payment, array (
