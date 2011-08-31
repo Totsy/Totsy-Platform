@@ -200,6 +200,7 @@ class OrdersController extends BaseController {
 					$count = Address::count(array('user_id' => $user['_id']));
 					if ($count == 0 || !empty($save)) {
 						$address->user_id = $user['_id'];
+						$address->type = 'Shipping';
 						$address->save();
 					}
 					$this->redirect(array('Orders::payment'));
