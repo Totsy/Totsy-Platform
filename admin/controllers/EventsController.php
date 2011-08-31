@@ -48,6 +48,15 @@ class EventsController extends BaseController {
 		echo Event::check_spreadsheet($fullarray);
 	}
 	
+
+	public function uploadcheck_clearance() {
+	    $this->_render['layout'] = false;
+		$val = $_POST['items_submit'];
+		$fullarray = Event::convert_spreadsheet($val);
+		//print_r($fullarray);
+		echo Event::check_spreadsheet_clearance($fullarray);
+	}
+	
 	public function add() {
 
 		if (empty($event)) {
@@ -300,21 +309,41 @@ class EventsController extends BaseController {
 			'product_dimensions',
 			'shipping_weight',
 			'shipping_dimensions',
+			'departments',
+			'department_1',
+			'department_2',
+			'department_3',
 			'related_items'
 		);
 	
 		$highestRow = $array[0];
 		$totalrows = count($array);
 		$totalcols = count($highestRow);
+
+		$check_decimals = array("msrp", "sale_retail", "percentage_off", "percent_off", "orig_wholesale", "orig_whol", "sale_whol", "sale_wholesale", "imu");
+
 	
 		for ($row = 0; $row <= $totalrows; ++ $row ) {
 			for ($col = 0; $col < $totalcols; ++ $col) {
 				$val = $array[$row][$col];
+				$val = trim($val);
 				
 				if ($row == 0) {
 					$heading[] = $val;
 				} else {
 					if (isset($heading[$col])) {
+
+						
+						//check decimals here
+						if (in_array($heading[$col], $check_decimals)) {
+							if (!empty($val)) {
+								//if(is_numeric($val)){
+									$val = number_format($val, 2, '.', '');
+								//}
+							}
+						}
+
+
 						if(($heading[$col] === "department_1") || ($heading[$col] === "department_2") || ($heading[$col] === "department_3")) {
 							if (!empty($val)) {
 								$eventItems[$row - 1]['departments'][] = ucfirst(strtolower(trim($val)));
@@ -325,9 +354,11 @@ class EventsController extends BaseController {
 								$eventItems[$row - 1]['related_items'][] = trim($val);
 								$eventItems[$row - 1]['related_items'] = array_unique($eventItems[$row - 1]['related_items']);
 							}
+
+
 						} else {
 							if (!empty($val)) {
-							$eventItems[$row - 1][$heading[$col]] = $val;
+								$eventItems[$row - 1][$heading[$col]] = $val;
 							}
 						}
 					}
