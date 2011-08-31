@@ -8,6 +8,7 @@ use Imagine\Image\Box;
 use Imagine\Image\Color;
 use Imagine\Image\Point;
 use BadMethodCallException;
+use admin\models\Event;
 
 class Image extends \admin\models\File {
 
@@ -145,7 +146,14 @@ class Image extends \admin\models\File {
 				if (!$file) {
 					continue;
 				}
-				$item = $model::first(array('conditions' => compact('url')));
+				
+				// There are now different query conditions depending on the model (they both used to find by URL, now Items find by event id and item vendor_style instead of item url)
+				if($model == 'admin\models\Item' && isset($meta['event_id'])) {
+					$vendor_style = static::extractVendorStyle($meta['name']);
+					$item = $model::first(array('conditions' => array('vendor_style' => $vendor_style, 'event' => $meta['event_id'])));
+				} else {
+					$item = $model::first(array('conditions' => compact('url')));
+				}
 
 				if (!$item) {
 					return false;
@@ -157,6 +165,13 @@ class Image extends \admin\models\File {
 		return false;
 	}
 
+	/**
+	 * Extracts the URL from a file name (for events).
+	 * This assumes URLs can not contain underscores.
+	 * 
+	 * @param string $name The file name
+	 * @return mixed The friendly URL or false when not matched
+	*/
 	public static function extractUrl($name) {
 		preg_match('/^[a-z]+\_([a-z0-9\-]+)\_.*/i', $name, $matches);
 		$url = isset($matches[1]) ? $matches[1] : false;
@@ -167,6 +182,21 @@ class Image extends \admin\models\File {
 			$url = isset($matches[1]) ? $matches[1] : false;
 		}
 		return $url;
+	}
+	
+	/**
+	 * Extracts the vendor style value from an Item file name.
+	 * Vendor style values can contain underscores, spaces, etc.
+	 * which URLs can't.
+	 * 
+	 * @see extractUrl()
+	 * @param string $name The file name for the item
+	 * @return mixed The vendor_style value or false when not matched
+	*/
+	public static function extractVendorStyle($name) {
+		preg_match('/^[a-z]+\_(.+)\_.*/i', $name, $matches);
+		$vendor_style = isset($matches[1]) ? $matches[1] : false;
+		return $vendor_style;
 	}
 
 	public function dimensions($entity) {

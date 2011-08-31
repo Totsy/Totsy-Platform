@@ -101,7 +101,14 @@ class FilesController extends \lithium\action\Controller {
 				foreach ($files as $file) {
 					$handle = fopen($file['tmp_name'], 'rb');
 					$meta = array('name' => $file['name']);
-
+					
+					// An event id may be passed along if the files are Item images.
+					// Item images can only be uploaded with a reference to the event id.
+					// Any item image uploaded without an event_id reference will not be saved.
+					if(isset($this->request->data['event_id'])) {
+						$meta['event_id'] = $this->request->data['event_id'];
+					}
+					
 					if (EventImage::process($handle, $meta)) {
 						Logger::debug("File `{$file['name']}` matched & processed as event image.");
 

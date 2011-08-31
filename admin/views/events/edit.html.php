@@ -494,6 +494,8 @@ $(function() {
             <hr />
 
 			<form id="EventMedia">
+				<?php // Without this event_id being passed along with the files, Item images could not be saved. ?>
+				<input type="hidden" name="event_id" value="<?php echo (string)$event->_id; ?>" />
 			</form>
 			<div id="agile_file_upload"></div>
 			<script type="text/javascript">
