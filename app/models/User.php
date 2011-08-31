@@ -224,14 +224,31 @@ class User extends Base {
 	}
 	
 	public static function cleanSession() {
-		Session::delete('userSavings');	
-		Session::delete('promocode');
-		Session::delete('credit');
-		Session::delete('services');
-		Session::delete('cc_infos');
-		Session::delete('cc_error');
-		Session::delete('shipping');
-		Session::delete('billing');
+		if(Session::check('userSavings')) {
+			Session::delete('userSavings');
+		}
+		if(Session::check('promocode')) {
+			Session::delete('promocode');
+		}
+		if(Session::check('credit')) {
+			Session::delete('credit');
+		}
+		if(Session::check('services')) {
+			Session::delete('services');
+		}
+		if(Session::check('cc_infos')) {
+			Session::delete('cc_infos');
+		}
+		if(Session::check('cc_error')) {
+			Session::delete('cc_error');
+		}
+		if(Session::check('shipping')) {
+			Session::delete('shipping');
+		}
+		if(Session::check('billing')) {
+			Session::delete('billing');
+		}
+
 	}
 }
 
