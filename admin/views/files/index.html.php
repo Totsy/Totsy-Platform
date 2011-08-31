@@ -160,21 +160,18 @@ if (!empty($user['token'])) {
 	<div class="box">
 		<h2>Item Image File Naming Conventions</h2>
 		<div class="block">
+			<p><em>Note: Item images can only be uploaded from an events/edit page or through webDAV where there is a reference to the event. VENDOR_STYLE values can contain a mixture of uppercase, lowercase letters, as well as underscores, spaces, and dashes. These values are found in the uploaded excel file for each event.</em></p>
 		<dl>
 			<dt>Primary Image</dt>
-			<dd>items_shirt_primary.jpg</dd>
+			<dd>items_VENDOR_STYLE_primary.jpg</dd>
 
 			<dt>Zoom Image</dt>
-			<dd>items_shirt_zoom.jpg</dd>
-
-			<dt>For Various Colors <em>(colors are a part of the url)</em></dt>
-			<dd>items_shirt-yellow_primary.jpg</dd>
-			<dd>items_shirt-yellow_zoom.jpg</dd>
+			<dd>items_VENDOR_STYLE_zoom.jpg</dd>
 
 			<dt>For Alternate Versions</dt>
-			<dd>items_shirt-blue_alternate.jpg</dd>
-			<dd>items_shirt-blue_alternateB.jpg</dd>
-			<dd>items_shirt-blue_alternate0.jpg <em>etc.</em></dd>
+			<dd>items_VENDOR_STYLE_alternate.jpg</dd>
+			<dd>items_VENDOR_STYLE_alternateB.jpg</dd>
+			<dd>items_VENDOR_STYLE_alternate0.jpg <em>etc.</em></dd>
 		</dl>
 		</div>
 	</div>
