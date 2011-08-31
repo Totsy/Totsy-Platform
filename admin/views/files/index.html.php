@@ -159,7 +159,6 @@ if (!empty($user['token'])) {
 		<pre><?=$user['token']; ?></pre>
 		<?php endif; ?>
 	</div>
-
 	<?=$this->view()->render(array('element' => 'files_naming_event')); ?>
 	<?=$this->view()->render(array('element' => 'files_naming_item')); ?>
 </div>
