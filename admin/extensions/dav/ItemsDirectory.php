@@ -14,7 +14,7 @@ class ItemsDirectory extends \admin\extensions\dav\GenericDirectory {
 	}
 
 	public function __toString() {
-		return '_'. $this->_config['value'];
+		return '_' . $this->_config['value'];
 	}
 
 	public function getChild($name) {
