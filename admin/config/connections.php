@@ -7,7 +7,6 @@
  */
 
 use \lithium\data\Connections;
-//use \app\extensions\adapter\data\source\MongoDb;
 
 // MongoDB Connection
 
