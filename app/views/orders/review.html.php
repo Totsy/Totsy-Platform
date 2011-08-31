@@ -143,8 +143,7 @@ var discountErrors = new Object();
 				<tr id="<?=$item->_id?>" style="height: 110px !important">
 					<td colspan="1" class="cart-th" style="width:75px;">
 						<span style="float:left; width:120px;line-height:15px !important; border-style:solid; border-width:1px;border-color:#DDDDDD; margin:10px">
-						
-							<?php
+						<?php
 								if (!empty($item->primary_image)) {
 									$image = $item->primary_image;
 									$productImage = "/image/$image.jpg";
@@ -157,11 +156,10 @@ var discountErrors = new Object();
 									'width'=>'107',
 									'height'=>'107',
 							'style' => 'margin:2px; padding:4px;')),
-								array('Items::view', 'args' => 'sale/'.$item->event_url.'/'.$item->url),
+								array('Items::view', 'args' => $item->description,'sale/'.$item->event_url.'/'.$item->url),
 									array(
 									'id' => 'main-logo_', 'escape'=> false
-								)
-							); ?>
+								), $item->description,'sale/'.$item->event_url.'/'.$item->url); ?>
 						</span>
 					</td>
 					<td colspan="8">	
