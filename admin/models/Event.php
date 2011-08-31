@@ -103,7 +103,9 @@ class Event extends \lithium\data\Model {
 		foreach($rows as $thisrows){
 			$fields = explode("\t", $thisrows); 
 			
-			if(($fields[0]!="")&&($fields[1]!="")){
+			if(($fields[0]=="")&&($fields[1]=="")&&($fields[2]=="")&&($fields[3]=="")&&($fields[4]=="")){
+			}
+			else{
 				$fullarray[] = $fields;
 			}
 		}
@@ -120,9 +122,9 @@ class Event extends \lithium\data\Model {
 		$check_vendor_style = array();
 		
 		//arrays of header names to check stuff
-		$check_required = array("vendor", "vendor_style", "description", "quantity");
+		$check_required = array("vendor", "vendor_style", "description", "quantity", "department_1");
 		$check_badchars = array("vendor", "vendor_style", "age", "category", "sub-category", "description", "color", "no size");
-		$check_decimals = array("msrp", "sale_retail", "percentage_off", "orig_wholesale", "sale_wholesale", "imu");
+		$check_decimals = array("msrp", "sale_retail", "percentage_off", "percent_off", "orig_wholesale", "orig_whol", "sale_whol", "sale_wholesale", "imu");
 		$check_departments = array("Girls", "Boys", "Momsdads");
 		$check_dept = array("department_1", "department_2", "department_3");
 		$check_related = array("related_1", "related_2", "related_3", "related_4", "related_5");
@@ -132,104 +134,58 @@ class Event extends \lithium\data\Model {
 		$totalcols = count($highestRow);
 
 		for ($row = 0; $row <= $totalrows-1; ++ $row ) {
+			$output .= Event::makecell($row+1);
 			for ($col = 0; $col < $totalcols; ++ $col) {
 				$val = $array[$row][$col];
+				$val = trim($val);
+				$thiserror = "";
 				
 				if ($row == 0) {
-					$output .= Event::makecell($val);
 					$heading[] = $val;
+					if(strpos($val, "1/2")){
+						$thiserror = "header error - $heading[$col] is illegal - has a half";
+					}
 				} 
 				else {
 					if (isset($heading[$col])) {
-
-						//checking formulas in each row, checks to see if = is first char
-						if(substr($val, 0, 1)=="="){
-							$errors[] = "$heading[$col] has a formula in row #$row";
-							$output .= Event::makecell($val, true);
+						if ((in_array($heading[$col], $check_required))&&(empty($val))) {
+							$thiserror = "$heading[$col] (required) is blank for row #$row";
 						}
-					
-						//check required fields
-						if (in_array($heading[$col], $check_required)) {
-							if (empty($val)) {
-								$errors[] = "$heading[$col] (required) is blank for row #$row";
-								$output .= Event::makecell($val, true);
-							}
-						}
-						
-						//check for bad chars	
-						if (in_array($heading[$col], $check_badchars)) {
-					
-							if (!empty($val)) {
-								if(strpos($val, "&")){
-									if(!strpos($val, "\&")){
-										$errors[] = "$heading[$col] has an illegal character in row #$row";
-										$output .= Event::makecell($val, true);
-									}
+						else{
+							if ((in_array($heading[$col], $check_badchars))&&(!empty($val))) {
+								if((strpos($val, "&"))&&(!strpos($val, "\&"))){
+									$thiserror = "$heading[$col] has an illegal character in row #$row";
 								}
-								if(strpos($val, "!")){
-									if(!strpos($val, "\!")){
-										$errors[] = "$heading[$col] has an illegal character in row #$row";
-										$output .= Event::makecell($val, true);
-									}
+								if((strpos($val, "!"))&&(!strpos($val, "\!"))){
+									$thiserror = "$heading[$col] has an illegal character in row #$row";
+								}
+								if((strpos($val, "'"))&&(!strpos($val, "\'"))){
+									$thiserror = "$heading[$col] has an illegal character in row #$row";
 								}
 							}
-						}
-					
-						if (in_array($heading[$col], $check_dept)) {
-							if (!empty($val)) {	
-								$eventItems[$row - 1]['departments'][] = ucfirst(strtolower(trim($val)));
-								$eventItems[$row - 1]['departments'] = array_unique($eventItems[$row - 1]['departments']);
-	
-								if (!in_array($val, $check_departments)) {
-									$errors[] = "$heading[$col] is incorrect in row #$row";
-									$output .= Event::makecell($val, true);
+							if ($heading[$col] == "vendor_style"){
+								if(!strpos($val, "-")){
+									if(in_array($val, $check_vendor_style)){
+										$thiserror = "$heading[$col] is a duplicate in row #$row";
+									}
+									else{
+										$check_vendor_style[] = $val;
+									}
 								}
 								else{
-									$output .= Event::makecell($val);
+									$thiserror = "$heading[$col] has a - in row #$row";
 								}
-	
-							}
-						} elseif (in_array($heading[$col], $check_related)) {
-								if (!empty($val)) {
-									$eventItems[$row - 1]['related_items'][] = trim($val);
-									$eventItems[$row - 1]['related_items'] = array_unique($eventItems[$row - 1]['related_items']);
-									$output .= Event::makecell($val);
-								}
-						//check if vendor style is unique
-						} elseif ($heading[$col] === "vendor_style"){
-							if (empty($val)) {
-								$errors[] = "$heading[$col] is blank for row #$row";
-								$output .= Event::makecell($val, true);
-							}
-							if(in_array(trim($val), $check_vendor_style)){
-								//check if color/description is unique
-							
-							
-								$errors[] = "$heading[$col] is a duplicate in row #$row";
-								$output .= Event::makecell($val, true);
-							}else{
-								$check_vendor_style[] = trim($val);
-								$output .= Event::makecell($val);
-							}
-						
-						//check decimals here
-						} elseif (in_array($heading[$col], $check_decimals)) {
-							if (!empty($val)) {
-								if(is_numeric($val)){
-									$val = number_format($val, 2, '.', '');
-								}
-							}
-							$output .= Event::makecell($val);
-	
-						} else {
-							$output .= Event::makecell($val);
-							if (!empty($val)) {
-								$eventItems[$row - 1][$heading[$col]] = $val;
 							}
 						}
-
-					
 					}
+				}
+
+				if($thiserror){
+					$errors[] = $thiserror;
+					$output .= Event::makecell($val, true);
+				}
+				else{
+					$output .= Event::makecell($val);
 				}
 			}
 			$output .= "<div style=\"clear:both;\"></div>";
@@ -244,6 +200,12 @@ class Event extends \lithium\data\Model {
 		}
 			
 		if($error_output){
+			$output .= "<div>$error_output</div>";
+
+			$output .= "<div style=\"clear:both;\"></div>";
+
+
+
 			return "<div class=xls_holder_inner>$output</div>";
 		}
 		else{
