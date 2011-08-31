@@ -12,7 +12,7 @@
 	
 	<?php echo $this->html->style(array('base.css?v=1', '960.css?v=1', 'jquery_ui_custom/jquery.ui.all.css?v=1'), array('media' => 'screen')); ?>
 
-	<script src="http://www.google.com/jsapi"></script>
+	<script src="https://www.google.com/jsapi"></script>
 	<script> google.load("jquery", "1.6.1", {uncompressed:false});</script>
 	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
 	<!-- end jQuery / jQuery UI -->
