@@ -3,6 +3,7 @@
 namespace admin\extensions\dav;
 
 use admin\extensions\dav\ItemFile;
+use admin\models\Event;
 use admin\models\Item;
 use admin\models\ItemImage;
 use Sabre_DAV_Exception_FileNotFound;
@@ -60,8 +61,15 @@ class ItemImageDirectory extends \admin\extensions\dav\GenericDirectory {
 	}
 
 	protected function _item() {
+		/* Gets value from EventDirectory. */
+		$url = $this->getParent()->getParent()->getParent()->getValue();
+		$id = Event::first(array('conditions' => compact('url')))->_id;
+
 		return Item::first(array(
-			'conditions' => array('url' => $this->getParent()->getValue())
+			'conditions' => array(
+				'vendor_style' => $this->getParent()->getValue(),
+				'event' => $id
+			)
 		));
 	}
 }
