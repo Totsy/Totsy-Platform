@@ -31,7 +31,10 @@ class ItemsDirectory extends \admin\extensions\dav\GenericDirectory {
 		));
 		$children = array();
 		foreach ($items as $item) {
-			$children[] = new ItemDirectory(array('value' => $item->url, 'parent' => $this));
+			$children[] = new ItemDirectory(array(
+				'value' => $item->vendor_style,
+				'parent' => $this
+			));
 		}
 		return $children;
 	}
@@ -42,7 +45,7 @@ class ItemsDirectory extends \admin\extensions\dav\GenericDirectory {
 
 		return (boolean) Item::first(array(
 			'conditions' => array(
-				'url' => $name,
+				'vendor_style' => $name,
 				'event' => $id
 			)
 		));
