@@ -58,14 +58,7 @@ var discountErrors = new Object();
 	</div>
 	
 	<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px !important; float:right !important;  line-height: 18px !important; font-size: 14px !important; width: 315px !important ">
-		<span style="float:right">
-		Item Reserved For:<br />
-			<span id="itemCounter" style="color:#009900; font-weight:bold;"></span>
-	 	</span>
-	 	<span style="float:left">
-		 Estimated Shipping Date: <br />
-	     	<span style="font-weight:bold; color:#009900;"><?=date('m-d-Y', $shipDate)?></span>
-		</span>	
+		<?=$this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
 	</div>	
 	
 	<div class="clear"></div>
@@ -143,8 +136,7 @@ var discountErrors = new Object();
 				<tr id="<?=$item->_id?>" style="height: 110px !important">
 					<td colspan="1" class="cart-th" style="width:75px;">
 						<span style="float:left; width:120px;line-height:15px !important; border-style:solid; border-width:1px;border-color:#DDDDDD; margin:10px">
-						
-							<?php
+						<?php
 								if (!empty($item->primary_image)) {
 									$image = $item->primary_image;
 									$productImage = "/image/$image.jpg";
@@ -157,11 +149,10 @@ var discountErrors = new Object();
 									'width'=>'107',
 									'height'=>'107',
 							'style' => 'margin:2px; padding:4px;')),
-								array('Items::view', 'args' => 'sale/'.$item->event_url.'/'.$item->url),
+								array('Items::view', 'args' => $item->description,'sale/'.$item->event_url.'/'.$item->url),
 									array(
 									'id' => 'main-logo_', 'escape'=> false
-								)
-							); ?>
+								), $item->description,'sale/'.$item->event_url.'/'.$item->url); ?>
 						</span>
 					</td>
 					<td colspan="8">	
