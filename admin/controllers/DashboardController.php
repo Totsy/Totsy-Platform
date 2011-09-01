@@ -16,6 +16,8 @@ class DashboardController extends \lithium\action\Controller {
 	 * @see
 	 */
     public function index() {
+	$this->render(array('template' => 'foo'));
+	return;
 		/**
 		 * Build a MongoDB group call for the monthly revenue
 		 * numbers.

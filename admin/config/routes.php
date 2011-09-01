@@ -61,6 +61,7 @@ if (isset($session['acls'])) {
 		Router::connect($acl['route'], $connect);
 	}
 }
+
 /**
  * Hooking up someone is only an admin.
  */
