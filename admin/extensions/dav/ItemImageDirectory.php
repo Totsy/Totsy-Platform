@@ -64,11 +64,10 @@ class ItemImageDirectory extends \admin\extensions\dav\GenericDirectory {
 		/* Gets value from EventDirectory. */
 		$url = $this->getParent()->getParent()->getParent()->getValue();
 		$id = Event::first(array('conditions' => compact('url')))->_id;
-
 		return Item::first(array(
 			'conditions' => array(
 				'vendor_style' => $this->getParent()->getValue(),
-				'event' => $id
+				'event' => (string) $id
 			)
 		));
 	}
