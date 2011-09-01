@@ -275,13 +275,11 @@ var discountErrors = new Object();
 			    </div>
 			    <div style="clear:both" class="subtotal"><hr /></div>			
 			    <div>
-			        <div class="savings"> 
-			        	<span style="font-style:italic; color:#ff6d1d; font-weight:bold">
+			        <div class="cart-savings"> 
 			        	<?php if (!empty($savings)) : ?>
 			        	Your Savings:
 			        	$<?=number_format($savings,2)?>
 			        	<?php endif ?>
-			        	</span> 
 			        </div>
 			        <div class="subtotal">
 			        <span style="font-size:15px; font-weight:bold">Order Total:</span> 
