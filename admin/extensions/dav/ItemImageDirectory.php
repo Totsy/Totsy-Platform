@@ -43,7 +43,7 @@ class ItemImageDirectory extends \admin\extensions\dav\GenericDirectory {
 		$type = ItemImage::$types[$position];
 
 		if (!$item->{$type['field']}) {
-			return $children;
+			return false;
 		}
 		if ($type['multiple']) {
 			return in_array($name, $item->{$type['field']}->data());
