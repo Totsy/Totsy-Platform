@@ -102,7 +102,13 @@ class Order extends Base {
 				$vars['cartPromo']->code_id = $vars['cartPromo']->code_id;
 				$vars['cartPromo']->date_created = new MongoDate();
 				$vars['cartPromo']->save();
+				#If FreeShipping put Handling/OverSizeHandling to Zero
+				if($vars['cartPromo']->type == 'free_shipping') {
+					$vars['shippingCost'] = 0;
+					$vars['overShippingCost'] = 0;
+				}
 				$order->promo_code = $vars['cartPromo']->code;
+				$order->promo_type = $vars['cartPromo']->type;
 				$order->promo_discount = abs($vars['cartPromo']->saved_amount);
 			}
 			#Save Services Used (10$Off / Free Shipping)
@@ -110,6 +116,8 @@ class Order extends Base {
 				$services = array();
 				if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
 					$services = array_merge($services, array("freeshipping"));
+					$vars['shippingCost'] = 0;
+					$vars['overShippingCost'] = 0;
 					$order->discount = $vars['shippingCost'] + $vars['overShippingCost'];
 				}
 				if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible' && ($vars['subTotal'] >= 50.00)) {
