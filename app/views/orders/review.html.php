@@ -43,9 +43,8 @@ var discountErrors = new Object();
 <link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
 
 <?php  if(!empty($subTotal)): ?>
-<div style="margin:10px;">
-
-	<div class="grid_11" style="padding-bottom:10px; margin:20px auto auto auto; width: auto !important">
+<div class="cart-content">
+	<div class="grid_11 cart-header-left">
 		<div style="float:left;">
 			<h2 class="page-title gray">
 				<span class="cart-step-status gray" style="font-weight:bold">Review your Shipping and Payment Information</span>
@@ -56,18 +55,15 @@ var discountErrors = new Object();
 			</h2>
 		</div>
 	</div>
-	
-	<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px !important; float:right !important;  line-height: 18px !important; font-size: 14px !important; width: 315px !important ">
+	<div class="grid_5 cart-header-right">
 		<?=$this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
 	</div>	
-	
 	<div class="clear"></div>
 	<hr/>
-	
 	<div class="grid_16" style="width:940px; padding-bottom:35px">
-		<div style="width: 315px; margin-right:10px" class="cart-review-edit">
-			<div class="page-title" style="font-weight:bold; margin: 15px; font-size:15px"><span style="color:#707070;">Shipping Address</span>
-			<span style="float:right; font-size:10px">
+		<div class="cart-review-edit shipping">
+			<div class="page-title" style="font-weight:bold; margin: 15px; font-size:15px"><span class="cart-review-edit-header">Shipping Address</span>
+			<span class="cart-review-edit-change-button">
 				<a href="/checkout/shipping">(Change)</a>
 			</span>
 			<hr>
@@ -88,9 +84,9 @@ var discountErrors = new Object();
 				</div>
 			</div>
 		</div>
-		<div style="width: 330px; margin-left:10px; margin-right:10px" class="cart-review-edit">
-			<div class="page-title" style="font-weight:bold; margin: 15px; font-size:15px"><span style="color:#707070;">Billing Address &amp; Payment Method</span>
-				<span style="float:right; font-size:10px">
+		<div class="cart-review-edit billing">
+			<div class="page-title" style="font-weight:bold; margin: 15px; font-size:15px"><span class="cart-review-edit-header">Billing Address &amp; Payment Method</span>
+				<span class="cart-review-edit-change-button">
 					<a href="/checkout/payment">(Change)</a>
 				</span>
 			<hr>
@@ -105,11 +101,11 @@ var discountErrors = new Object();
 				</div>
 			</div>
 		</div>
-		<div style="width: 250px; margin-left:10px" class="cart-order-place-outer">
+		<div class="cart-order-place-outer">
 			<div class="page-title cart-order-place-inner">
 				<span style="margin-bottom: 12px">
 				Order Total:
-				    <span style="color:#009900; text-align:center" id="ordertotal">
+				    <span style="color:#009900; text-align:center">
 				    $<?=number_format($total,2)?> </span>
 				</span>    
 				<div style="text-align:center; diplay:inline-block !important">
@@ -124,7 +120,7 @@ var discountErrors = new Object();
 <div class="message"></div>
 <?php if (!empty($subTotal)): ?>
 
-<div class="grid_16" style="overflow:hidden; width:935px">
+<div class="grid_16" style="width:935px">
 <?=$this->form->create(null ,array('id'=>'cartForm')); ?>
 	<div id='message'><?php echo $message; ?></div>
 		<table class="cart-table">
@@ -133,9 +129,9 @@ var discountErrors = new Object();
 			<?php $x = 0; ?>
 			<?php foreach ($cart as $item): ?>
 				<!-- Build Product Row -->
-				<tr id="<?=$item->_id?>" style="height: 110px !important">
-					<td colspan="1" class="cart-th" style="width:75px;">
-						<span style="float:left; width:120px;line-height:15px !important; border-style:solid; border-width:1px;border-color:#DDDDDD; margin:10px">
+				<tr id="<?=$item->_id?>" style="">
+					<td colspan="1" class="cart-th">
+						<span class="cart-review-thumbnail">
 						<?php
 								if (!empty($item->primary_image)) {
 									$image = $item->primary_image;
@@ -156,26 +152,26 @@ var discountErrors = new Object();
 						</span>
 					</td>
 					<td colspan="8">	
-						<div style="height:20px; vertical-align:middle !important; line-height:15px !important">
+						<div class="cart-review-line-content">
 							<span>
-								<span class="cart-desc" style="width:515px; float:left;">
+								<span class="cart-review-desc">
 									<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
 									<?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url, array("target"=>"_blank")); ?>
 				
-								<span class="cart-time" style="width:200px !important; float:left; display:none" id='<?php echo "itemCounter$x"; ?>' class="counter" title='<?=$date?>'></span>
+								<span style="display:none" id='<?php echo "itemCounter$x"; ?>' class="counter cart-review-line-timer" title='<?=$date?>'></span>
 							</span>
 							
-							<span class="<?="price-item-$x";?>" style="width:75px;float:left; ">													
+							<span class="<?="price-item-$x";?> cart-review-line-price">													
 								<strong>$<?=number_format($item->sale_retail,2)?></strong>
 							</span>
-							<span class="<?="qty-$x";?>" style="width:100px; float:left; text-align:left">Qty: <?=$item->quantity;?></span>						
-							<span class="<?="total-item-$x";?>" style="width:100px !important; float:right !important; font-weight:bold; text-align:right !important">$<?=number_format($item->sale_retail * $item->quantity ,2)?>
+							<span class="<?="qty-$x";?> cart-review-line-qty">Qty: <?=$item->quantity;?></span>						
+							<span class="<?="total-item-$x";?> cart-review-line-total">$<?=number_format($item->sale_retail * $item->quantity ,2)?>
 							</span>
 						</div>
 							<hr />
 						<div>
-							<div><span style="font-weight: bold">Color:</span> <?=$item->color;?></div>
-							<div><span style="font-weight: bold">Size:</span> <?=$item->size;?></div>
+							<div><span class="cart-review-color-size">Color:</span> <?=$item->color;?></div>
+							<div><span class="cart-review-color-size">Size:</span> <?=$item->size;?></div>
 						</div>	
 					</td>
 				</tr>
@@ -188,8 +184,8 @@ var discountErrors = new Object();
 
 		<div class="clear"></div>
 		<div class="grid_16" style="width:935px; padding-top:30px">
-			<div style="float: left; vertical-align: top; width:510px">
-			    <div style="font-size: 12px; text-align:left !important;">
+			<div class="cart-codes">
+			    <div class="cart-code-buttons">
 			        <strong>Add <?php if(!empty($credit)): ?>
 			        	<a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a> /
 			        <?php endif ?> 
@@ -207,57 +203,57 @@ var discountErrors = new Object();
 			    </div>
 			</div>	
 						
-			<div style="padding-top:10px; float:right; width:425px; vertical-align: top">
-			    <div style="font-weight:bold" class="subtotal" >
+			<div class="cart-subtotal-content">
+			    <div class="subtotal" >
 			        	<span style="float:left;">Subtotal:</span>
 			        	<span style="float:right" id="subtotal">$<?=number_format($subTotal,2)?></span>
 			    </div>
 			    <?php if (!empty($cartPromo['saved_amount']) && ($cartPromo['type'] != 'free_shipping') ):?>
 			    <div style="clear:both"></div>
-			    <div style="font-weight:bold" class="subtotal">
+			    <div class="subtotal">
     		        	<span style="float: left;">Discount 
     		        	<?php echo '[' . $cartPromo['code'] . ']'; ?>	
     		        	:</span> 
-    		        	<span style="float:right" class="fees_and_discounts">-$<?=number_format(abs($cartPromo['saved_amount']),2)?>
+    		        	<span style="float:right">-$<?=number_format(abs($cartPromo['saved_amount']),2)?>
     		        	</span>	
     		    </div>
    			    <?php endif ?>
    			    <?php if (!empty($services['tenOffFitfy'])):?>
 			    <div style="clear:both"></div>
-			    <div style="font-weight:bold" class="subtotal">
+			    <div class="subtotal">
     		        	<span style="float: left;">Discount [10$ Off] :</span> 
-    		        		<span style="float:right" class="fees_and_discounts">- $<?=number_format($services['tenOffFitfy'],2)?>
+    		        		<span style="float:right">-$<?=number_format($services['tenOffFitfy'],2)?>
     		        		</span>
     		        	</span>
     		    </div>
    			    <?php endif ?>
    			    <?php if (!empty($credits)):?>
 			    <div style="clear:both"></div>
-			    <div style="font-weight:bold" class="subtotal">
+			    <div class="subtotal">
     		        	<span style="float:left;">Credits:</span> 
-    		        	<span style="float:right" class="fees_and_discounts">- $<?=number_format(abs($credits),2)?></span>
+    		        	<span style="float:right">- $<?=number_format(abs($credits),2)?></span>
     		    </div>
    			    <?php endif ?>
 			    <div style="clear:both"></div>							
 			    <div style="font-weight:bold;" >
 			    <div class="subtotal">	
-			    <span id="shipping_tooltip" style="float:left; margin-left:-16px;" original-title="Shipping charges may vary depending on item type."><img src="/img/tooltip_icon.png">
+			    <span id="shipping_tooltip" class="cart-tooltip" original-title="Shipping charges may vary depending on item type."><img src="/img/tooltip_icon.png">
 			        	</span>
 			        <span style="float: left;" id="shipping">
 			        Shipping:</span> 
-			        <span style="float:right" class="fees_and_discounts">$<?=number_format($shippingCost,2)?></span>
+			        <span style="float:right">$<?=number_format($shippingCost,2)?></span>
 			    </div>
 			    </div>
 			    <?php if (!empty($overShippingCost)):?>
 			    <div style="clear:both"></div>
-			    <div style="font-weight:bold" class="subtotal">
+			    <div class="subtotal">
     		        <span style="float: left;">Oversize Shipping:</span> 
-    		        <span style="float:right" class="fees_and_discounts">$<?=number_format($overShippingCost,2)?></span>
+    		        <span style="float:right">$<?=number_format($overShippingCost,2)?></span>
     		    </div>
    			    <?php endif ?>
 			    <?php if (!empty($shipping_discount)):?>
 			    <div style="clear:both"></div>
-			    <div style="font-weight:bold" class="subtotal">
+			    <div class="subtotal">
     		        <span style="float: left;">Free Shipping 
     		        	<?php 
     		        	if(!empty($cartPromo)) {
@@ -269,12 +265,12 @@ var discountErrors = new Object();
     		    </div>
    			    <?php endif ?>
 			    <div style="clear:both"></div>	
-			    <div style="font-weight:bold">
+			    <div>
 			    <div class="subtotal">
-			        <span id="tax_tooltip" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary." style="float:left; margin-left:-16px;" ><img src="/img/tooltip_icon.png">
+			        <span id="tax_tooltip" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary." class="cart-tooltip"><img src="/img/tooltip_icon.png">
 </span>		
 			    <span id="estimated_tax" style="float: left;">Estimated Tax:</span> 
-			        	<span style="float:right" class="fees_and_discounts">$<?=number_format($tax,2)?></span>
+			        	<span style="float:right">$<?=number_format($tax,2)?></span>
 			    </div>
 			    </div>
 			    <div style="clear:both" class="subtotal"><hr /></div>			
@@ -295,7 +291,7 @@ var discountErrors = new Object();
 		</div>				
 </div>
 
-<div class="cart-button fr" style="margin:20px 0px 20px 0px;">
+<div class="cart-button fr cart-nav-buttons">
 		      <?=$this->form->submit('Place Your Order', array('class' => 'button ', 'style'=>'float:left;margin-right:55px;', 'onclick'=>'updateOrder()')); ?>
 	<div class="clear"></div>
 
@@ -363,7 +359,11 @@ var discountErrors = new Object();
 	
 <div class="clear"></div>
 <?php else: ?>
-	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1><center><span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
+	<div class="grid_16 cart-empty">
+		<h1>
+			<span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> 	
+			<a href="/sales" title="Continue Shopping">Continue Shopping</a/></h1>
+	</div>
 <?php endif ?>
 </div>
 <div id="modal" style="background:#fff!important; z-index:9999999999!important;">
