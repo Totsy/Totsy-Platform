@@ -4,6 +4,7 @@ namespace admin\extensions\dav;
 
 use admin\models\ItemImage;
 use admin\models\Item;
+use admin\models\Event;
 
 class ItemFile extends \admin\extensions\dav\GenericFile {
 
@@ -30,9 +31,13 @@ class ItemFile extends \admin\extensions\dav\GenericFile {
 	}
 
 	protected function _item() {
+		/* Gets value from EventDirectory. */
+		$url = $this->getParent()->getParent()->getParent()->getParent()->getValue();
+		$id = Event::first(array('conditions' => compact('url')))->_id;
 		return Item::first(array(
 			'conditions' => array(
-				'url' => $this->getParent()->getParent()->getValue()
+				'vendor_style' => $this->getParent()->getParent()->getValue(),
+				'event' => (string) $id
 			)
 		));
 	}
