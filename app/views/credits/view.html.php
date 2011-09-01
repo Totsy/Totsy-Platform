@@ -34,7 +34,7 @@
 			<tr>
 				<th>Date</th>
 				<th>Amount</th>
-				<th>Description</th>
+				
 			</tr>
 			<?php foreach ($credits as $credit): ?>
 			<tr>
@@ -46,7 +46,7 @@
 					$<?=$credit->amount?>
 			<?php } ?>
 			</td>
-			<td><?=$credit->description?></td>
+			
 			<tr>
 			<?php endforeach ?>
 		</table>
