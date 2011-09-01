@@ -37,8 +37,10 @@
                                  <div style="width:56%; display:block; float:left; margin-right:10px; ">
                                 <h3 style="color:#999; font-size:18px;">Register</h3>
 								<hr />
-								<?=$this->form->create($user ,array('id'=>'registerForm')); ?>
-
+<?php
+print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/affiliate\']);">';
+?>
+	
                						<!-- Commnented Firstname, Lastname and Zip code --->
 
 									<!-- div class="form-row">

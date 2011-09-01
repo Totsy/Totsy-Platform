@@ -63,14 +63,14 @@ class Item extends \lithium\data\Model {
 	 */	
 	public static function sold($_id, $size, $quantity) {
 		if (!empty($_id) && ( +$quantity > 0)) {
-			$_id = new MongoId($_id);
+			$condition = array('_id' => new MongoId($_id));
 			$update = array(
 				'$inc' => array(
 					"sale_details.$size.sale_count" => +$quantity,
 					"details.$size" => -$quantity,
 					"total_quantity" => -$quantity
 			));
-			return static::collection()->update(array('_id' => $_id), $update);
+			return static::collection()->update($condition, $update);
 		}
 		return false;
 	}

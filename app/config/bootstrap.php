@@ -51,6 +51,8 @@ Environment::is(function($request) {
 		case 'www.totsy.com':
 		case 'totsy.com':
 			return 'production';
+		case 'cart.totsy.com':
+			return 'production';
 		case 'test.totsy.com':
 			return 'test';
 		case 'dev.totsy.com':
@@ -116,7 +118,7 @@ use lithium\storage\Session;
 
 Session::config(array(
  	'default' => array('adapter' => 'app\extensions\adapter\session\Model', 'model' => 'MongoSession'),
- 	'cookie' => array('adapter' => 'Cookie', 'expire' => '+1year')
+ 	'cookie' => array('adapter' => 'Cookie', 'expire' => '+30 days')
 ));
 
 use lithium\security\Auth;

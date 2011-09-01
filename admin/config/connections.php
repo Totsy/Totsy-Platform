@@ -8,7 +8,6 @@
 
 use \lithium\data\Connections;
 
-
 // MongoDB Connection
 
 	Connections::add('default', array(
@@ -35,6 +34,7 @@ use \lithium\data\Connections;
 		'local' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy',
-			'host' => 'localhost')
+			'host' => array(
+    			'localhost' ))
 		));
 ?>

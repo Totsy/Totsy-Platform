@@ -256,6 +256,8 @@ class OrderExport extends Base {
 		    '_id' => true,
 		    'billing' => true,
 		    'shipping' => true,
+		    'date_created' => true,
+		    'ship_date' => true,
 		    'items' => true,
 		    'order_id' => true,
 		    'shippingMethod' => true,
@@ -407,6 +409,10 @@ class OrderExport extends Base {
 							$orderFile[$inc]['Ref3'] = $item['color'];
 							$orderFile[$inc]['Ref4'] = String::asciiClean($item['description']);
 							$orderFile[$inc]['Customer PO #'] = $order['_id'];
+
+							$orderFile[$inc]['Order Creation Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $order['date_created']));
+							$orderFile[$inc]['Promised Ship-by Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $order['ship_date']));
+
 							$orderFile[$inc] = array_merge($heading, $orderFile[$inc]);
 							$orderFile[$inc] = $this->sortArrayByArray($orderFile[$inc], $heading);
 							if (!in_array($item['event_id'], $this->addEvents)) {
@@ -456,7 +462,7 @@ class OrderExport extends Base {
 
 
 			$this->summary['order']['count'] = count($orderArray) + $split_number;
-			$this->summary['order']['lines'] = $inc + $lines;
+			$this->summary['order']['lines'] = ($inc + $lines) - 1;
 			$this->summary['order']['filename'] = $filename;
 			$this->log("$handle was created total of $totalOrders orders generated with $inc lines");
 		} else {
@@ -652,10 +658,6 @@ class OrderExport extends Base {
 									$purchaseOrder[$inc]['Promised Ship-by Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $order['ship_date']));
 									$purchaseOrder[$inc]['Event Name'] = $event->name;
 									$purchaseOrder[$inc]['Event End Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $event->end_date));
-
-
-
-
 									$purchaseOrder[$inc] = $this->sortArrayByArray($purchaseOrder[$inc], $purchaseHeading);
 								}
 							}
