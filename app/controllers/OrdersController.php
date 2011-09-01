@@ -353,23 +353,6 @@ class OrdersController extends BaseController {
 	}
 
 	/**
-	 * Checks if the discountExempt flag is set in any of the cart items.
-	 * The method will return true if there is a discounted item and false if there isn't.
-	 *
-	 * @param array
-	 * @return boolean
-	 */
-	protected function _discountExempt($cart) {
-		$discountExempt = false;
-		foreach ($cart as $cartItem) {
-			if ($cartItem->discount_exempt) {
-				$discountExempt = true;
-			}
-		}
-		return $discountExempt;
-	}
-
-	/**
 	 * Group all the items in an order by their corresponding event.
 	 *
 	 * The $order object is assumed to have originated from one of model types; Order or Cart.
@@ -419,7 +402,6 @@ class OrdersController extends BaseController {
 				$orderEvents[$event['_id']] = $event;
 			}
 		}
-
 		return $orderEvents;
 	}
 
@@ -526,12 +508,12 @@ class OrdersController extends BaseController {
 		if (Session::check('cc_error')){
 			if (!isset($payment) || (isset($payment) && !is_object($payment))){
 				$card = Order::creditCardDecrypt((string)$user['_id']);
-				$data_add = Session::read('cc_billingAddr');
+				$data_add = Session::read('billing');
 				$payment = Address::create(array_merge($data_add,$card));
 			}
 			$payment->errors( $payment->errors() + array( 'cc_error' => Session::read('cc_error')));
 			Session::delete('cc_error');
-			Session::delete('cc_billingAddr');
+			Session::delete('billing');
 		}
 		return compact('address','cartEmpty','payment','shipping','shipDate','cartExpirationDate');
 	}
