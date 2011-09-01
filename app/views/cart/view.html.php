@@ -45,8 +45,8 @@ var discountErrors = new Object();
 <link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
 
 <?php  if(!empty($subTotal)): ?>
-<div style="margin:10px;">
-	<div class="grid_11" style="padding-bottom:0px; margin:20px auto auto auto; width: 500px !important">
+<div class="cart-content">
+	<div class="grid_11 cart-header-left">
 		<div style="float:left;">
 			<h2 class="page-title gray">
 				<span class="cart-step-status gray" style="font-weight:bold">Shopping Cart</span>
@@ -58,7 +58,7 @@ var discountErrors = new Object();
 		</div>
 	</div>
 	
-	<div class="grid_5" style="padding-bottom:0px; margin:20px auto auto auto; line-height: 18px !important; float:right !important; font-size: 14px !important; width: 315px !important">
+	<div class="grid_5 cart-header-right">
 		<?=$this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
 	</div>	
 	<div class="clear"></div>
@@ -102,19 +102,19 @@ var discountErrors = new Object();
 							)
 						); ?>
 					</td>
-					<td class="cart-desc" style="width:470px;">
+					<td class="cart-desc">
 						<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
 						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url, array("target"=>"_blank")); ?></strong><br />
 						<strong>Color:</strong> <?=$item->color;?><br />
 						<strong>Size:</strong> <?=$item->size;?>
 					</td>
-					<td style="width:120px;">
-					<div id='<?php echo "itemCounter$x"; ?>_display' style="margin:5px 0px 0px 5px;" title='<?=$date?>'></div>
+					<td class="cart-item-timer-td">
+					<div id='<?php echo "itemCounter$x"; ?>_display' class="cart-item-timer" title='<?=$date?>'></div>
 					</td>
-					<td class="<?="price-item-$x";?>" style="width:65px;">
+					<td class="<?="price-item-$x";?>" class="cart-item-price">
 						<strong>$<?=number_format($item->sale_retail,2)?></strong>
 					</td>
-					<td class="<?="qty-$x";?>" style="width:65px; text-align:center">
+					<td class="<?="qty-$x";?> cart-item-qty">
 					<!-- Quantity Select -->
 					<?php
 						if($item->available < 9) {
@@ -142,7 +142,7 @@ var discountErrors = new Object();
 					<td class="cart-time">
 						<div id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?=$date?>'></div>
 					</td>
-					<td class="<?="total-item-$x";?>" style="width:55px; text-align:right; padding-right:10px">
+					<td class="<?="total-item-$x";?> cart-line-total">
 						<strong>$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
 					</td>
 				</tr>
@@ -158,8 +158,8 @@ var discountErrors = new Object();
 		
 		<div class="grid_16" style="width:935px; padding-top:30px;">
 		
-			<div style="float: left; width:510px;">
-				<div style="font-size: 12px; text-align:left !important">
+			<div class="cart-codes">
+				<div class="cart-code-buttons">
 				    <strong>Add <?php if(!empty($credit)): ?>
 				    	<a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a> /
 				    <?php endif ?> 
@@ -176,90 +176,87 @@ var discountErrors = new Object();
 				    </div>
 				</div>
 			</div>
-					
-			<div style="padding-top:10px; float:right; width:425px;">
-				<div style="font-weight:bold" class="subtotal" >
+			<div class="cart-subtotal-content">
+				<div class="subtotal" >
 				   <span style="float:left;">Subtotal:</span>
 				   <span style="float:right" id="subtotal">$<?=number_format($subTotal,2)?></span>
 				</div>
 				<?php if (!empty($cartPromo['saved_amount']) && ($cartPromo['type'] != 'free_shipping') ):?>
 				<div style="clear:both"></div>
-				<div style="font-weight:bold" class="subtotal">
+				<div class="subtotal">
     			    	<span style="float: left;">Discount 
     			    	<?php echo '[' . $cartPromo['code'] . ']'; ?>:
     			    	</span> 
-    			    	<span style="float:right" class="fees_and_discounts">- 
+    			    	<span style="float:right">- 
     			    	$<?=number_format(abs($cartPromo['saved_amount']),2)?>
     			    	</span>	
     			</div>
    				<?php endif ?>
    				<?php if (!empty($services['tenOffFitfy'])):?>
 				<div style="clear:both"></div>
-				<div style="font-weight:bold" class="subtotal">
+				<div class="subtotal">
     			    	<span style="float: left;">Discount [10$ Off] :</span> 
-    			    		<span style="float:right" class="fees_and_discounts">- $<?=number_format($services['tenOffFitfy'],2)?>
+    			    		<span style="float:right">- $<?=number_format($services['tenOffFitfy'],2)?>
     			    		</span>
     			    	</span>
     			</div>
    				<?php endif ?>
    				<?php if (!empty($credits)):?>
 				<div style="clear:both"></div>
-				<div style="font-weight:bold" class="subtotal">
+				<div class="subtotal">
     			    	<span style="float:left;">Credits:</span> 
-    			    	<span style="float:right" class="fees_and_discounts">- $<?=number_format(abs($credits),2)?></span>
+    			    	<span style="float:right">- $<?=number_format(abs($credits),2)?></span>
     			</div>
    				<?php endif ?>
 				<div style="clear:both"></div>							
-				<div style="font-weight:bold;" >
+				<div>
 				<div class="subtotal">	
-				<span id="shipping_tooltip" style="float:left; margin-left:-16px;" original-title="Shipping charges may vary depending on item type."><img src="/img/tooltip_icon.png">
+				<span id="shipping_tooltip" class="cart-tooltip" original-title="Shipping charges may vary depending on item type."><img src="/img/tooltip_icon.png">
 				    	</span>
 				    <span style="float:left;" id="shipping">
 				    Shipping:</span> 
-				    <span style="float:right" class="fees_and_discounts">$7.95</span>							</div>
+				    <span style="float:right">$7.95</span>							</div>
 				</div>
 				<?php if (!empty($shipping_discount)):?>
 				<div style="clear:both"></div>
-				<div style="font-weight:bold" class="subtotal">
-    			    <span style="float: left;">Free Shipping 
+				<div class="subtotal">
+    			    <span style="float:left;">Free Shipping 
     			    	<?php 
     			    	if(!empty($promocode)) {
     			    		if($promocode['type'] === 'free_shipping')
     			    			echo '[' . $promocode['code'] . ']';	
     			    	}?>		
     			    	:</span> 
-    			    	<span style="color:#707070; float:right" class="fees_and_discounts">- $<?=number_format($shipping_discount,2)?></span>
+    			    	<span style="color:#707070; float:right">- $<?=number_format($shipping_discount,2)?></span>
     			</div>
    				<?php endif ?>
 				<div style="clear:both"></div>	
-				<div style="font-weight:bold">
+				<div>
 				<div class="subtotal">
-				    <span id="tax_tooltip" style="float:left; margin-left:-16px;" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary"><img src="/img/tooltip_icon.png">
+				    <span id="tax_tooltip" class="cart-tooltip" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary"><img src="/img/tooltip_icon.png">
 </span>			
 					<span id="estimated_tax" style="float:left;">Estimated Tax:</span> 
-				    <span style="float:right" class="fees_and_discounts">$0.00</span>
+				    <span style="float:right">$0.00</span>
 				</div>
 				</div>
 				
 				<div style="clear:both" class="subtotal"><hr /></div>			
 				<div>
-				    <div class="savings">
-				    <span style="color:#ff6d1d; font-style: italic; font-weight:bold">
+				    <div class="cart-savings">
 				    <?php if (!empty($savings)) : ?>
 				    Your Savings: 
 				    $<?=number_format($savings,2)?>
 				    	<?php endif ?>
-				    	</span> 
 				    </div>
 				    <div class="subtotal">
-				    <span style="font-size:15px; font-weight:bold">Order Total:</span> 
-				    	<span style="font-size:15px; color:#009900; float:right" id="ordertotal">$ <?=number_format($total,2)?> </span>
+				    <span class="cart-order-total">Order Total:</span> 
+				    	<span id="ordertotal">$ <?=number_format($total,2)?> </span>
 				    </div>						    	
 				</div>
 			</div>
 		</div>	
 			
-<div class="cart-button fr" style="margin:20px 0px 20px 0px;">
+<div class="cart-button fr cart-nav-buttons">
 		      <?=$this->html->link('Continue Shopping', "sales/", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
 		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
 		      <div class="clear"></div>
@@ -290,7 +287,7 @@ var discountErrors = new Object();
 	    expireNotice = new Date( expireNotice );
 	    
 	    //show 2 minutes notice
-	    if(expireNotice < now && itemExpires > now){
+	    if(expireNotice < now && itemExpires > now) {
 	    	$("#" + this.id + "_display").html('<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item will expire in 2 minutes</div>');
 	    } 
 	    
@@ -332,7 +329,10 @@ var discountErrors = new Object();
 
 <div class="clear"></div>	
 <?php else: ?>
-	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1><center><span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1>
+	<div class="grid_16 cart-empty">
+		<h1>
+			<span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> 	
+			<a href="/sales" title="Continue Shopping">Continue Shopping</a/></h1>
 	</div>
 <?php endif ?>
 </div>

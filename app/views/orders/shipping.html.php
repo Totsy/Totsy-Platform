@@ -85,8 +85,8 @@ var addressForm = new Object();
    
 </script>
 <?php  if(empty($cartEmpty)): ?>
-<div style="height:700px; margin:10px">
-	<div class="grid_8" style="padding-bottom:10px; margin:20px auto auto auto;">
+<div class="cart-content" style="height:700px">
+	<div class="grid_8 cart-header-left">
 		<div style="float:left">
 			<h2 class="page-title gray">
 				<span class="cart-step-status gray" style="font-weight:bold">Shipping Information</span>
@@ -101,7 +101,7 @@ var addressForm = new Object();
 		</div>
 	</div>
 	
-	<div class="grid_8" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px !important; float:right !important;  line-height: 18px !important; font-size: 14px !important; width: 315px !important ">
+	<div class="grid_8 cart-header-right">
 	<?=$this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
 	</div>	
 	
@@ -142,7 +142,7 @@ var addressForm = new Object();
 		<?=$this->form->error('state'); ?>
 		</span>
 		<div style="clear:both; padding-top:5px;"></div>
-		<span style="padding-left:1px">
+		<span class="cart-select">
 		<?=$this->form->label('zip', 'Zip Code<span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
 		</span>
@@ -168,7 +168,11 @@ var addressForm = new Object();
 <div class="clear"></div>
 </div>
 <?php else: ?>
-	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1><center><span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> <a href="/sales" title="Continue Shopping">Continue Shopping</a/></center></h1></div>
+	<div class="grid_16 cart-empty">
+		<h1>
+			<span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> 	
+			<a href="/sales" title="Continue Shopping">Continue Shopping</a/></h1>
+	</div>
 <?php endif ?>
 <script>
 $(document).ready(function(){ 

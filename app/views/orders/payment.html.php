@@ -104,7 +104,7 @@ var paymentForm = new Object();
 <?php  if(empty($cartEmpty)): ?>
 
 <div style="margin:10px;">
-<div class="grid_11" style="padding-bottom:10px; margin:20px auto auto auto; width:500px !important">
+<div class="grid_11 cart-header-left">
 	<div style="float:left">
 		<h2 class="page-title gray">
 			<span class="cart-step-status gray" style="font-weight:bold">Payment</span>
@@ -118,7 +118,7 @@ var paymentForm = new Object();
 		<?php } ?>
 	</div>
 </div>
-<div class="grid_5" style="padding-bottom:10px; margin:20px auto auto auto; line-height: 15px !important; float:right !important;  line-height: 18px !important; font-size: 14px !important; text-align:left; width: 315px !important">
+<div class="grid_5 cart-header-right">
 		<?=$this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
 </div>
 
@@ -131,7 +131,7 @@ var paymentForm = new Object();
 				<hr /><br />
 				<h3>Pay with Credit Card :</h3>
 				<hr /> 
-				<span style="padding-left:1px">
+				<span class="cart-select">
 				<?=$this->form->error('cc_error'); ?>
 				<?=$this->form->hidden('opt_submitted', array('class'=>'inputbox', 'id' => 'opt_submitted')); ?>
 				<?=$this->form->label('card_type', 'Card Type', array('escape' => false,'class' => 'required')); ?>
@@ -225,11 +225,10 @@ var paymentForm = new Object();
 				
 </div>
 <?php else: ?>
-	<div class="grid_16" style="padding:20px 0; margin:20px 0;"><h1>
-	<center>
-	<span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> <a href="/sales" title="Continue Shopping">Continue Shopping</a>
-	</center>
-	</h1>
+	<div class="grid_16 cart-empty">
+		<h1>
+			<span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> 	
+			<a href="/sales" title="Continue Shopping">Continue Shopping</a/></h1>
 	</div>
 <?php endif ?>
 <?=$this->form->end();?> 
