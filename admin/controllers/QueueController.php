@@ -39,7 +39,7 @@ class QueueController extends BaseController {
 				'$gte' => new MongoDate(strtotime("-5 week")),
 				'$lte' => new MongoDate(time())
 		    ),
-		    'name' => array('$nin' => array(new MongoRegex("/test/i"),new MongoRegex("/micah/i") ))
+		    'name' => array('$nin' => array(new MongoRegex("/(\btest\b|\btesting\b)/i"),new MongoRegex("/micah/i")))
 		);
 		if ($this->request->data) {
 			$search = $this->request->data['search'];
