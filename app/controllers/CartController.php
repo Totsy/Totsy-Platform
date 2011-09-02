@@ -132,12 +132,12 @@ class CartController extends BaseController {
 			)));
 			$cartItem = Cart::checkCartItem($itemId, $size);
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $itemId)));
+			$avail = $itemInfo->details->{$size} - Cart::reserved($itemId, $size);
 			if (!empty($cartItem)) {
-				$avail = $itemInfo->details->{$itemInfo->size} - Cart::reserved($itemId, $itemInfo->size);
 				//Make sure user does not add more than 9 items to the cart
-				if($cartItem->quantity < 9 ){
+				if($cartItem->quantity < 9 ) {
 					//Make sure the items are available
-					if( $avail > 0 ){
+					if( $avail > 0 ) {
 						++$cartItem->quantity;
 						$cartItem->save();
 						//calculate savings
@@ -154,19 +154,23 @@ class CartController extends BaseController {
 					$this->addIncompletePurchase(Cart::active());
 				}
 			} else {
-				$item = $item->data();
-				$item_id = (string) $item['_id'];
-				$item['size'] = $size;
-				$item['item_id'] = $itemId;
-				unset($item['details']);
-				unset($item['_id']);
-				$info = array_merge($item, array('quantity' => 1));
-				if ($cart->addFields() && $cart->save($info)) {
-					//calculate savings
-					$item[$itemId] = 1;
-					Cart::refreshTimer();
-					Cart::updateSavings($item, 'add');
-					$this->addIncompletePurchase(Cart::active());
+				if( $avail > 0 ) {
+					$item = $item->data();
+					$item_id = (string) $item['_id'];
+					$item['size'] = $size;
+					$item['item_id'] = $itemId;
+					unset($item['details']);
+					unset($item['_id']);
+					$info = array_merge($item, array('quantity' => 1));
+					if ($cart->addFields() && $cart->save($info)) {
+						//calculate savings
+						$item[$itemId] = 1;
+						Cart::refreshTimer();
+						Cart::updateSavings($item, 'add');
+						$this->addIncompletePurchase(Cart::active());
+					}
+				} else {
+					#Don't Add Anything To The Cart
 				}
 			}
 			$this->redirect(array('Cart::view'));
