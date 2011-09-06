@@ -559,6 +559,10 @@ class Cart extends Base {
 		if (!empty($data['code'])) {
 			$promo_code = $data['code'];
 		}
+		#Disable Promocode Uses if Services
+		if (!empty($services['freeshipping']['enable']) || !empty($services['tenOffFitfy'])) {
+			$promo_code = null;
+		}
 		if (!empty($promo_code)) {
 			$cartPromo->promoCheck($promo_code, $userDoc, compact('postSubtotal', 'shippingCost', 'overShippingCost', 'services'));  
 		}

@@ -36,6 +36,7 @@ class CartController extends BaseController {
 	*/
 	public function view() {
 		#Initialize Datas
+		$promocode_disable = false;
 		$cartExpirationDate = 0;
 		$shipping = 7.95;
 		$shipping_discount = 0;
@@ -92,13 +93,17 @@ class CartController extends BaseController {
 		if (!empty($vars['cartCredit'])) {
 			$credits = Session::read('credit');
 		}
+		#Disable Promocode Uses if Services
+		if (!empty($services['freeshipping']['enable']) || !empty($services['tenOffFitfy'])) {
+			$promocode_disable = true;
+		}
 		#Get Discount Freeshipping Service / Get Discount Promocodes Free Shipping
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
 			$shipping_discount = $shipping;
 		}
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
-		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate');
+		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable');
 	}
 
 	/**

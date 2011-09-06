@@ -277,6 +277,7 @@ class OrdersController extends BaseController {
 			'event',
 			'discount_exempt'
 		);
+		$promocode_disable = false;
 		#Get Current Cart
 		$cart = $taxCart = Cart::active(array('fields' => $fields, 'time' => 'now'));
 		$cartEmpty = ($cart->data()) ? false : true;
@@ -333,6 +334,10 @@ class OrdersController extends BaseController {
 		$total = $vars['postDiscountTotal'] + $tax;
 		#Read Credit Card Informations
 		$creditCard = Order::creditCardDecrypt((string)$user['_id']);
+		#Disable Promocode Uses if Services
+		if (!empty($services['freeshipping']['enable']) || !empty($services['tenOffFitfy'])) {
+			$promocode_disable = true;
+		}
 		#Organize Datas
 		$vars = $vars + compact(
 			'user', 'cart', 'total', 'subTotal', 'creditCard',
@@ -349,7 +354,7 @@ class OrdersController extends BaseController {
 		if (Session::check('cc_error')) {
 			$this->redirect(array('Orders::payment'));
 		}
-		return $vars + compact('cartEmpty','order','cartByEvent','orderEvents','shipDate','savings', 'credits', 'services', 'cartExpirationDate');
+		return $vars + compact('cartEmpty','order','cartByEvent','orderEvents','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable');
 	}
 
 	/**
