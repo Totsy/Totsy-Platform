@@ -80,16 +80,24 @@ class UsersController extends BaseController {
 							'user_id' => (string) $inviter->_id,
 							'email' => $email
 					)));
+					
+					//send notification to inviter that user just registered
+					//this will notify the inviter 
+					Mailer::send('Invited_Register', $inviter->email);
+										
 					if ($inviter->invited_by === 'keyade') {
 						$data['keyade_referral_user_id'] = $inviter->keyade_user_id;
 					}
 					if ($invited) {
+										
 						$invited->status = 'Accepted';
 						$invited->date_updated = Invitation::dates('now');
 						$invited->save();
+						
 						if ($invite_code != 'keyade') {
 							Invitation::reject($inviter->_id, $email);
 						}
+						
 					} else {
 					/**
 					* This block was included because users can pass on their
@@ -104,6 +112,7 @@ class UsersController extends BaseController {
 					}
 				}
 			}
+			
 			switch ($invite_code) {
 				case 'our365':
 				case 'our365widget':
