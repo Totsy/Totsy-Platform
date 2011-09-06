@@ -49,7 +49,7 @@ use lithium\core\Environment;
 Environment::is(function($request) {
 	switch ($request->env('HTTP_HOST')) {
 		case 'www.totsy.com':
-		case '*.totsy.com':
+		case 'web1-dc1.totsy.com':
 		case 'totsy.com':
 			return 'production';
 		case 'test.totsy.com':
