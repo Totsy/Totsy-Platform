@@ -145,7 +145,7 @@ var discountErrors = new Object();
 									'width'=>'107',
 									'height'=>'107',
 							'style' => 'margin:2px; padding:4px;')),
-								array('Items::view', 'args' => $item->description,'sale/'.$item->event_url.'/'.$item->url),
+								'sale/'.$item->event_url.'/'.$item->url,
 									array(
 									'id' => 'main-logo_', 'escape'=> false
 								), $item->description,'sale/'.$item->event_url.'/'.$item->url); ?>
