@@ -564,7 +564,7 @@ class Cart extends Base {
 			$promo_code = null;
 		}
 		if (!empty($promo_code)) {
-			$cartPromo->promoCheck($promo_code, $userDoc, compact('postSubtotal', 'shippingCost', 'overShippingCost', 'services'));  
+			$cartPromo->promoCheck($promo_code, $userDoc, compact('subTotal', 'shippingCost', 'overShippingCost', 'services'));  
 		}
 		#Apply Credits
 		$credit_amount = null;
