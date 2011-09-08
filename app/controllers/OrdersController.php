@@ -36,15 +36,13 @@ class OrdersController extends BaseController {
 	 * @return compact
 	 */
 	public function index() {
-		$itemsCollection = Item::collection();
-		$lifeTimeSavings = 0;
 		$user = Session::read('userLogin');
 		$orders = Order::find('all', array(
 			'conditions' => array(
 				'user_id' => (string) $user['_id']),
 			'order' => array('date_created' => 'DESC')
 		));
-		$trackingNumbers = array();
+		$lifeTimeSavings = 0;
 		foreach ($orders as $key => $order) {
 			$list = $trackingNum = array();
 			$shipDate["$order->_id"] = Cart::shipDate($order);
@@ -57,23 +55,21 @@ class OrdersController extends BaseController {
 					$trackingNum[] = array('code' => $record->{'Tracking #'}, 'method' => $shipMethod);
 				}
 			}
+			#Get All Tracking Numbers for One Order
 			if ($trackingNum) {
 				$trackingNumbers["$order->_id"] = $trackingNum;
 			}
-			//Calculatings LifeTime Savings
+			#Calculatings LifeTime Savings
 			if (empty($order["cancel"])) {
-				$savings = 0;
 				foreach ($order["items"] as $item) {
-					$itemInfo = $itemsCollection->findOne(array("_id" => new MongoId($item["item_id"])));
+					$itemInfo = Item::find('first', array('conditions' => array("_id" => new MongoId($item["item_id"]))));
 					if (empty($item->cancel)) {
-						$lifeTimeSavings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
-						$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
+						$lifeTimeSavings += ($item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']));
 					}
 				}
-				$orderSavings[$key] = $savings;
 			}
 		}
-		return (compact('orders', 'shipDate', 'trackingNumbers', 'orderSavings', 'lifeTimeSavings'));
+		return (compact('orders', 'shipDate', 'trackingNumbers', 'lifeTimeSavings'));
 	}
 
 	/**
@@ -86,7 +82,6 @@ class OrdersController extends BaseController {
 	 * @return mixed
 	 */
 	public function view($order_id) {
-		$itemsCollection = Item::collection();
 		$user = Session::read('userLogin');
 		$order = Order::find('first', array(
 			'conditions' => array(
@@ -127,7 +122,7 @@ class OrdersController extends BaseController {
 		//Calculatings Savings
 		$savings = 0;
 		foreach ($order->items as $item) {
-			$itemInfo = $itemsCollection->findOne(array("_id" => new MongoId($item["item_id"])));
+			$itemInfo = Item::find('first', array('conditions' => array("_id" => new MongoId($item["item_id"]))));
 			if (empty($item->cancel)) {
 				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
 			}
@@ -282,7 +277,6 @@ class OrdersController extends BaseController {
 		$cart = $taxCart = Cart::active(array('fields' => $fields, 'time' => 'now'));
 		$cartEmpty = ($cart->data()) ? false : true;
 		$cartByEvent = $this->itemGroupByEvent($cart);
-		$orderEvents = $this->orderEvents($cart);
 		#Calculate Shipped Date
 		$shipDate = Cart::shipDate($cart);
 		#Get Value Of Each and Sum It
@@ -354,7 +348,7 @@ class OrdersController extends BaseController {
 		if (Session::check('cc_error')) {
 			$this->redirect(array('Orders::payment'));
 		}
-		return $vars + compact('cartEmpty','order','cartByEvent','orderEvents','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable');
+		return $vars + compact('cartEmpty','order','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable');
 	}
 
 	/**
