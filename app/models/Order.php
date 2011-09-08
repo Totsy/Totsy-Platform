@@ -134,6 +134,9 @@ class Order extends Base {
 			}
 			#Shipping Method - By Default UPS
 			$shippingMethod = 'ups';
+			#Calculate savings
+			$userSavings = Session::read('userSavings');
+			$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
 			#Save Order Infos
 			$order->save(array(
 					'total' => $vars['total'],
@@ -151,7 +154,8 @@ class Order extends Base {
 					'shippingMethod' => $shippingMethod,
 					'items' => $items,
 					'avatax' => $avatax,
-					'ship_date' => new MongoDate(Cart::shipDate($order)),		
+					'ship_date' => new MongoDate(Cart::shipDate($order)),
+					'savings' => $savings		
 			));
 			Cart::remove(array('session' => Session::key('default')));
 			#Update quantity of items

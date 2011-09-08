@@ -84,12 +84,12 @@ class Promotion extends Base {
                          		'promo' => "You have already used a shipping discount"
                         ));
 					}	
-                    if ($postSubtotal >= $code->minimum_purchase && !($entity->errors())) {
+                    if ($subTotal >= $code->minimum_purchase && !($entity->errors())) {
                         $entity->user_id = $user['_id'];
                         if ($code->type == 'percentage') {
                         	$entity->type = "percentage";
-                            $entity->saved_amount = $postSubtotal * -$code->discount_amount;
-                            Cart::updateSavings(null, 'discount', $postSubtotal * $code->discount_amount);
+                            $entity->saved_amount = $subTotal * -$code->discount_amount;
+                            Cart::updateSavings(null, 'discount', $subTotal * $code->discount_amount);
                         }
                         if ($code->type == 'dollar') {
                             $entity->saved_amount = -$code->discount_amount;
