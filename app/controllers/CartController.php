@@ -37,6 +37,7 @@ class CartController extends BaseController {
 	public function view() {
 		#Initialize Datas
 		$cartExpirationDate = 0;
+		$ItemsCount = 0;
 		$shipping = 7.95;
 		$shipping_discount = 0;
 		$vars = compact('cartPromo','cartCredit', 'services');
@@ -79,6 +80,7 @@ class CartController extends BaseController {
 			$cartItemEventEndDates[$i] = $events[0]->end_date->sec;		
 			$item->event_url = $events[0]->url;
 			$item->available = $itemInfo->details->{$item->size} - (Cart::reserved($item->item_id, $item->size) - $item->quantity);
+			$ItemsCount += $item->quantity;
 			$subTotal += $item->quantity * $item->sale_retail;
 			$i++;
 		}
@@ -98,7 +100,7 @@ class CartController extends BaseController {
 		}
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
-		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate');
+		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate','ItemsCount');
 	}
 
 	/**
