@@ -6,7 +6,7 @@
 		<h2 class="page-title gray"><span class="red"><a href="/" title="Sales"><?=$type?> Sales</a> /</span> <?=$event->name; ?> <div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
 		<hr />
 <div class="md-gray roundy" style="overflow:hidden;">
-				<div class="grid_5 alpha omega">
+				<div class="grid_5 alpha omega" style="line-height:0px!important;">
 					<!-- Display Event Image -->
 					<?php
 						if (!empty($event->images->event_image)) {
