@@ -83,10 +83,18 @@ class CartController extends BaseController {
 			$item->event_url = $events[0]->url;
 			$item->available = $itemInfo->details->{$item->size} - (Cart::reserved($item->item_id, $item->size) - $item->quantity);
 			$subTotal += $item->quantity * $item->sale_retail;
-			
+			$itemlist[$item->created->sec] = $item->event[0];
 			$itemCount += $item->quantity;
-			
 			$i++;
+		}
+		#Get Last Url
+		if ($cart) {
+			krsort($itemlist);
+			$conditions = array('_id' => current($itemlist));
+			$event = Event::find('first', compact('conditions'));
+			if ($event) {
+				$returnUrl = $event->url;
+			}
 		}
 		#Get current Discount
 		$vars = Cart::getDiscount($subTotal, $shipping, 0, $this->request->data);
@@ -108,7 +116,7 @@ class CartController extends BaseController {
 		}
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
-		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount');
+		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl');
 	}
 
 	/**

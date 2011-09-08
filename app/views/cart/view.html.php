@@ -66,7 +66,7 @@ var discountErrors = new Object();
 	<div class="clear"></div>
 	<hr/>
 	     <div class="cart-button fr" style="margin:10px 0px 20px 0px;">
-		      <?=$this->html->link('Continue Shopping', "sales/", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
+		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
 		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
 		     <div class="clear"></div>
 		 </div>
@@ -106,7 +106,7 @@ var discountErrors = new Object();
 					</td>
 					<td class="cart-desc">
 						<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
-						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url, array("target"=>"_blank")); ?></strong><br />
+						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?></strong><br />
 						<strong>Color:</strong> <?=$item->color;?><br />
 						<?php if($item->size!=="no size") : ?>
 						<strong>Size:</strong> <?=$item->size;?>
@@ -264,7 +264,7 @@ var discountErrors = new Object();
 		</div>	
 			
 <div class="cart-button fr cart-nav-buttons">
-		      <?=$this->html->link('Continue Shopping', "sales/", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
+		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
 		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
 		      <div class="clear"></div>
 		      
