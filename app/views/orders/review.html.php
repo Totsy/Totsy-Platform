@@ -170,7 +170,9 @@ var discountErrors = new Object();
 						</div>
 							<hr />
 						<div>
+						<?php if($item->color) : ?>
 							<div><span class="cart-review-color-size">Color:</span> <?=$item->color;?></div>
+							<?php endif ?>
 							<?php if($item->size!=="no size") : ?>						
 							<div><span class="cart-review-color-size">Size:</span> <?=$item->size;?></div>
 							<?php endif ?>

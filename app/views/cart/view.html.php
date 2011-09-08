@@ -107,7 +107,9 @@ var discountErrors = new Object();
 					<td class="cart-desc">
 						<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
 						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?></strong><br />
+						<?php if($item->color) : ?>
 						<strong>Color:</strong> <?=$item->color;?><br />
+						<?php endif ?>
 						<?php if($item->size!=="no size") : ?>
 						<strong>Size:</strong> <?=$item->size;?>
 						<?php endif ?>
