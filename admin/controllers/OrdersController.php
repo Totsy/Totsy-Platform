@@ -462,9 +462,7 @@ class OrdersController extends BaseController {
 			$edit_mode = false;
 			$itemscanceled = false;
 		}
-		
-		print_r($order->data());
-		
+				
 		$shipDate = $this->shipDate($order);
 		return compact('order', 'shipDate', 'sku', 'itemscanceled','edit_mode');
 	}
