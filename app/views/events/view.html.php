@@ -5,7 +5,7 @@
 <div class="grid_16">
 		<h2 class="page-title gray"><span class="red"><a href="/" title="Sales"><?=$type?> Sales</a> /</span> <?=$event->name; ?> <div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
 		<hr />
-<div class="md-gray roundy" style="overflow:hidden;">
+<div class="md-gray" style="overflow:hidden; border: 1px solid #D7D7D7;">
 				<div class="grid_5 alpha omega" style="line-height:0px!important;">
 					<!-- Display Event Image -->
 					<?php
@@ -88,7 +88,7 @@
 					<?php if ($y == 2): ?>
 						<?php $y = -1; ?>
 					<?php endif ?>
-					<div class="md-gray p-container roundy_product">
+					<div class="md-gray p-container '_product">
 						<?php if ($item->total_quantity <= 0): ?>
 								<?=$this->html->image('/img/soldout.png', array(
 									'title' => "Sold Out",
