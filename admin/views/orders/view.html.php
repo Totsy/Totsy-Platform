@@ -381,7 +381,12 @@
 												Sales Tax:
 												<br>
 												Shipping:
-												<br><br><br>
+												<br>
+												<?php if ($order->overSizeHandling): ?>
+												Oversize Shipping:
+													<br>
+												<?php endif ?>
+												<br><br>
 												<strong style="font-weight:bold;color:#606060">Total:</strong>
 											</td>
 											<td style="padding-left:15px; text-align:right;" valign="top">
@@ -398,7 +403,12 @@
 											$<?=number_format($order->tax,2); ?>
 											<br>
 											$<?=number_format($order->handling,2); ?>
-											<br><br><br>
+											<?php if ($order->overSizeHandling): ?>
+												$<?=number_format($order->overSizeHandling,2); ?>
+												<br>
+											<?php endif ?>
+											<br>
+											<br><br>
 											<strong style="font-weight:bold;color:#009900;">$<?=number_format($order->total,2); ?></strong>
 											</td>
 										</tr>

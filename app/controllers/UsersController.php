@@ -80,6 +80,9 @@ class UsersController extends BaseController {
 							'user_id' => (string) $inviter->_id,
 							'email' => $email
 					)));
+					
+					Mailer::send('Invited_Register', $inviter->email);
+					
 					if ($inviter->invited_by === 'keyade') {
 						$data['keyade_referral_user_id'] = $inviter->keyade_user_id;
 					}
