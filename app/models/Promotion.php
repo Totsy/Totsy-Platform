@@ -49,6 +49,7 @@ class Promotion extends Base {
             $success = false;
             if ($entity->code) {
                 $code = Promocode::confirmCode($code);
+                $entity->code = $code->code;
                 if ($code) {
                     $count = static::confirmCount($code->_id, $user['_id']);
                     $uses = static::confirmNoUses($code->_id, $user['_id']);
@@ -96,8 +97,8 @@ class Promotion extends Base {
                         }
                         if ($code->type == 'free_shipping' && !($entity->errors()) && empty($services['freeshipping']['enable'])) {
                             $entity->type = "free_shipping";
-                             $entity->saved_amount = -(7.95 + $overShippingCost);
-                            Cart::updateSavings(null, 'discount', 7.95 + $overShippingCost);
+                             $entity->saved_amount = -($shippingCost + $overShippingCost);
+                            Cart::updateSavings(null, 'discount', $shippingCost + $overShippingCost);
                         }
                         Session::write('promocode', $code->data(), array('name' => 'default'));   
                     } else {

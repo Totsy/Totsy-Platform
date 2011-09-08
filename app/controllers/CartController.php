@@ -36,6 +36,7 @@ class CartController extends BaseController {
 	*/
 	public function view() {
 		#Initialize Datas
+		$promocode_disable = false;
 		$cartExpirationDate = 0;
 		$shipping = 7.95;
 		$shipping_discount = 0;
@@ -92,13 +93,17 @@ class CartController extends BaseController {
 		if (!empty($vars['cartCredit'])) {
 			$credits = Session::read('credit');
 		}
+		#Disable Promocode Uses if Services
+		if (!empty($services['freeshipping']['enable']) || !empty($services['tenOffFitfy'])) {
+			$promocode_disable = true;
+		}
 		#Get Discount Freeshipping Service / Get Discount Promocodes Free Shipping
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
 			$shipping_discount = $shipping;
 		}
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
-		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate');
+		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable');
 	}
 
 	/**
@@ -132,12 +137,12 @@ class CartController extends BaseController {
 			)));
 			$cartItem = Cart::checkCartItem($itemId, $size);
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $itemId)));
+			$avail = $itemInfo->details->{$size} - Cart::reserved($itemId, $size);
 			if (!empty($cartItem)) {
-				$avail = $itemInfo->details->{$itemInfo->size} - Cart::reserved($itemId, $itemInfo->size);
 				//Make sure user does not add more than 9 items to the cart
-				if($cartItem->quantity < 9 ){
+				if($cartItem->quantity < 9 ) {
 					//Make sure the items are available
-					if( $avail > 0 ){
+					if( $avail > 0 ) {
 						++$cartItem->quantity;
 						$cartItem->save();
 						//calculate savings
@@ -154,19 +159,23 @@ class CartController extends BaseController {
 					$this->addIncompletePurchase(Cart::active());
 				}
 			} else {
-				$item = $item->data();
-				$item_id = (string) $item['_id'];
-				$item['size'] = $size;
-				$item['item_id'] = $itemId;
-				unset($item['details']);
-				unset($item['_id']);
-				$info = array_merge($item, array('quantity' => 1));
-				if ($cart->addFields() && $cart->save($info)) {
-					//calculate savings
-					$item[$itemId] = 1;
-					Cart::refreshTimer();
-					Cart::updateSavings($item, 'add');
-					$this->addIncompletePurchase(Cart::active());
+				if( $avail > 0 ) {
+					$item = $item->data();
+					$item_id = (string) $item['_id'];
+					$item['size'] = $size;
+					$item['item_id'] = $itemId;
+					unset($item['details']);
+					unset($item['_id']);
+					$info = array_merge($item, array('quantity' => 1));
+					if ($cart->addFields() && $cart->save($info)) {
+						//calculate savings
+						$item[$itemId] = 1;
+						Cart::refreshTimer();
+						Cart::updateSavings($item, 'add');
+						$this->addIncompletePurchase(Cart::active());
+					}
+				} else {
+					#Don't Add Anything To The Cart
 				}
 			}
 			$this->redirect(array('Cart::view'));
