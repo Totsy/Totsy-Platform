@@ -17,7 +17,7 @@
 		<?php if (!(empty($credit))) { ?>
 		<a href="/account/credits" title="My Credits $<?php echo $credit?>">My Credits $<?php echo $credit?></a>
 		<?php } ?>
-		<a href="/cart/view" class="cart_icon" title="My Cart (<?php echo $cartCount;?>)">My Cart (<?php echo $cartCount;?>)</a>
+		<a href="/cart/view" class="cart_icon" title="My Cart (<?php echo $cartCount;?>)">My Cart (<span id="cart-count"><?php echo $cartCount;?></span>)</a>
 		<a href="/users/invite" title="+ Invite Friends Get $15">+ Invite Friends Get $15</a>
 		<?php } else { ?>
 		<span style="text-align:right!important;">

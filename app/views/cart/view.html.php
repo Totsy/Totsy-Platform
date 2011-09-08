@@ -18,6 +18,8 @@ var discountErrors = new Object();
 		}
 	);
 	
+	$("#cart-count").text(<?=$itemCount?>);
+	
 	$( function () {
 	    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	    
 		var now = new Date();

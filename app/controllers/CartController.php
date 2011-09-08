@@ -59,6 +59,8 @@ class CartController extends BaseController {
 		$cartItemEventEndDates = Array();
 		$i = 0;
 		$subTotal = 0;
+		$itemCount = 0;
+		
 		$shipDate = Cart::shipDate($cart);
 		#Check Expires 
 		Cart::cleanExpiredEventItems();
@@ -81,6 +83,9 @@ class CartController extends BaseController {
 			$item->event_url = $events[0]->url;
 			$item->available = $itemInfo->details->{$item->size} - (Cart::reserved($item->item_id, $item->size) - $item->quantity);
 			$subTotal += $item->quantity * $item->sale_retail;
+			
+			$itemCount += $item->quantity;
+			
 			$i++;
 		}
 		#Get current Discount
@@ -103,7 +108,7 @@ class CartController extends BaseController {
 		}
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
-		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable');
+		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount');
 	}
 
 	/**
