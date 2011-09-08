@@ -88,7 +88,7 @@
 					<?php if ($y == 2): ?>
 						<?php $y = -1; ?>
 					<?php endif ?>
-					<div class="md-gray p-container '_product">
+					<div class="md-gray p-container roundy_product">
 						<?php if ($item->total_quantity <= 0): ?>
 								<?=$this->html->image('/img/soldout.png', array(
 									'title' => "Sold Out",
