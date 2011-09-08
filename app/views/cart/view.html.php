@@ -108,7 +108,9 @@ var discountErrors = new Object();
 						<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
 						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url, array("target"=>"_blank")); ?></strong><br />
 						<strong>Color:</strong> <?=$item->color;?><br />
+						<?php if($item->size!=="no size") : ?>
 						<strong>Size:</strong> <?=$item->size;?>
+						<?php endif ?>
 					</td>
 					<td class="cart-item-timer-td">
 					<div id='<?php echo "itemCounter$x"; ?>_display' class="cart-item-timer" title='<?=$date?>'></div>
