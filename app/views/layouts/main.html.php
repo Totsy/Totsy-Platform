@@ -164,10 +164,7 @@
             Sailthru.setup({
                 domain: 'horizon.totsy.com',
                 spider: true,
-                concierge:  {
-            		delay: 500,
-            		offsetBottom: 20,
-            	},
+                concierge:  false,
             });
         };
     })();
