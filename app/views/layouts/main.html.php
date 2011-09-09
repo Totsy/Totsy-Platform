@@ -1,4 +1,5 @@
 <?php use lithium\net\http\Router; ?>
+<?php $request = $this->request(); ?>
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
@@ -23,10 +24,34 @@
 	<meta property="og:site_name" content="Totsy"/>
 	<meta property="fb:app_id" content="181445585225391"/>
 	<meta name="description" content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
+	<meta name="sailthru.date" content="<?=date('r')?>" /><?php
+	 
+		if(substr($request->url,0,5) == 'sales' || $_SERVER['REQUEST_URI'] == '/') {
+			$title = "Totsy index. Evenets.";
+			$tags = 'Sales'; 
+			if (array_key_exists ('args',$request->params) && isset($request->params['args'][0])){
+				$tags =  $request->params['args'][0]; 
+			} 
+		} else  {
+			if (isset($event) && isset($item)){
+				$edata = $event->data();
+				$idata = $item->data();
+				$title = $edata['name'] .' - '. $idata['description'];
+				$tags = $edata['name'].', '.implode(', ',$idata['departments']).', '.$idata['category'];
+				unset($edata, $idata);
+			} else if (isset($event)){ 
+				$edata = $event->data();
+				$title = $tags = $edata['name'];
+				unset($edata, $idata);
+			} 
+		}
+	?> 				
+	<meta name="sailthru.title" content="<?php echo strip_tags($title); ?>" />
+	<meta name="sailthru.tags" content="<?php echo strip_tags($tags); ?>" />
 
 </head>
 <body class="app">
-<?php echo $branch; ?>
+	<?php echo $branch; ?>
 <div class="container_16 roundy glow">
 	<div class="grid_3 alpha" style="margin:5px 0px 0px 5px;">
 		<?php echo $this->html->link($this->html->image('logo.png', array('width'=>'120')), '/sales', array('escape'=> false)); ?>
@@ -118,5 +143,34 @@
 	// end tabs
 </script>
 
+
+<!-- Sailthru Horizon --> 
+<script type="text/javascript">
+    (function() {
+        function loadHorizon() { 
+            var s = document.createElement('script'); 
+            s.type = 'text/javascript'; 
+            s.async = true;
+            s.src = ('https:' == location.protocol ? 'https://dyrkrau635c04.cloudfront.net' : 'http://cdn.sailthru.com') + '/horizon/v1.js';
+            var x = document.getElementsByTagName('script')[0]; 
+            x.parentNode.insertBefore(s, x);
+        }
+        loadHorizon();
+        var oldOnLoad = window.onload;
+        window.onload = function() {
+            if (typeof oldOnLoad === 'function') {
+                oldOnLoad();
+            }
+            Sailthru.setup({
+                domain: 'horizon.totsy.com',
+                spider: true,
+                concierge:  {
+            		delay: 500,
+            		offsetBottom: 20,
+            	},
+            });
+        };
+    })();
+</script>
 </body>
 </html>
