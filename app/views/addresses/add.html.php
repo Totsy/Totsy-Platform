@@ -31,14 +31,18 @@
 	)); ?>
 		<fieldset> 
 			<legend class="no-show">New Address</legend> 
-			<?php if (!$isAjax): ?>
-				
-				<div class="form-row">
-					<label class="addresses">Make Default</label> 
-					<input type="radio" name="default" value="1" checked> Yes<br>
-					<input type="radio" name="default" value="0"> No
-				</div>
-			<?php endif ?>
+			
+			<div class="form-row">
+				<label class="addresses">Make Default</label> 
+				<input type="radio" name="default" value="1" checked> Yes<br>
+				<input type="radio" name="default" value="0"> No
+			</div>
+			
+			<div class="form-row">
+				<?=$this->form->label('type', 'Type <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+				<?=$this->form->select('type',array('Shipping' => 'Shipping', 'Billing' => 'Billing'), array('id'=>'type')); ?>
+			</div>
+			
 			<div class="form-row"> 
 				<?=$this->form->label('description', 'Description <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('description', array('class' => 'inputbox')); ?>

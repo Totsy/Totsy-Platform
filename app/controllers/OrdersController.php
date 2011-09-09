@@ -206,17 +206,19 @@ class OrdersController extends BaseController {
 		} 
 		#Get all addresses of the current user
 		$addresses = Address::all(array(
-			'conditions' => array('user_id' => (string) $user['_id'])
+			'conditions' => array('user_id' => (string) $user['_id'], 'type' => 'Shipping')
 		));		
 		#Prepare addresses datas for the dropdown
 		if (!empty($addresses)) {
 			$idx = 0;
 			foreach ($addresses as $value) {
-				if ((($idx == 0 || $value['default'] == '1') && empty($datas['address_id'])))
+				if ((($idx == 0 || $value['default'] == '1') && empty($datas['address_id']))) {
 					$address = $value;
+				}
 				#Get selected ddwn address
-				if((string)$value['_id'] == $address['_id']) 
+				if((string)$value['_id'] == $address['_id']) {
 					$selected = (string) $value['_id'];
+				}
 				$addresses_ddwn[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address']; 
 				$idx++;
 			}
@@ -438,6 +440,7 @@ class OrdersController extends BaseController {
 		$address = null;
 		$payment = null;
 		$checked = false;
+		$card = array();
 		#Get billing address from shipping one in session
 		$shipping = json_encode(Session::read('shipping'));
 		#Get Billing Address from Session
@@ -447,6 +450,16 @@ class OrdersController extends BaseController {
 		#Check Datas Form
 		if (!empty($this->request->data)) {
 			$datas = $this->request->data;
+			#Check If the User want to save the current address
+			if(!empty($datas['opt_save'])) {
+				$save = true;
+				unset($datas['opt_save']);
+			}
+			if (!empty($datas['address_id'])) {
+				$address = Address::first(array(
+					'conditions' => array('_id' => new MongoId($datas['address_id'])
+				)));
+			}
 			#Get Credit Card Infos
 			if(!empty($datas['card_number'])) {
 				#Get Only the card informations
@@ -467,7 +480,7 @@ class OrdersController extends BaseController {
 				Session::delete('cc_error');
 			}
 			#In case of normal submit (no ajax one with the checkbox)
-			if(empty($datas['opt_shipping_select'])) {
+			if(empty($datas['opt_shipping_select']) && empty($datas['address_id'])) {
 				#Get Only address informations
 				foreach($datas as $key => $data) {
 					if (strlen(strstr($key,'card')) == 0 && strlen(strstr($key,'opt')) == 0) {
@@ -479,6 +492,11 @@ class OrdersController extends BaseController {
 				if ($address->validates()) {
 					Session::write('billing', $address->data());
 					$billing_passed = true;
+					if (!empty($save)) {
+						$address->user_id = $user['_id'];
+						$address->type = 'Billing';
+						$address->save();
+					}
 				}
 			}
 			#If both billing and credit card correct
@@ -492,6 +510,25 @@ class OrdersController extends BaseController {
 			$payment = Address::create(array_merge($data_add,$card));
 			#Init datas
 			$payment->shipping_select = '0';
+		}
+		#Get all addresses of the current user
+		$addresses = Address::all(array(
+			'conditions' => array('user_id' => (string) $user['_id'], 'type' => 'Billing')
+		));		
+		#Prepare addresses datas for the dropdown
+		if (!empty($addresses)) {
+			$idx = 0;
+			foreach ($addresses as $value) {
+				if ((($idx == 0 || $value['default'] == '1') && empty($datas['address_id']))) {
+					$address = $value;
+				}
+				#Get selected ddwn address
+				if((string)$value['_id'] == $address['_id']) {
+					$selected = (string) $value['_id'];
+				}
+				$addresses_ddwn[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address']; 
+				$idx++;
+			}
 		}
 		$cart = Cart::active(array(
 				'fields' => $fields,
@@ -514,7 +551,7 @@ class OrdersController extends BaseController {
 			Session::delete('cc_error');
 			Session::delete('billing');
 		}
-		return compact('address','cartEmpty','payment','shipping','shipDate','cartExpirationDate');
+		return compact('address','addresses_ddwn','selected','cartEmpty','payment','shipping','shipDate','cartExpirationDate');
 	}
 
 }
