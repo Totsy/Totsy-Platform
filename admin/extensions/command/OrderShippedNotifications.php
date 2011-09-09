@@ -168,6 +168,15 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 				unset($do_break);
 				Logger::info('Trying to send email for order #'.$data['order']['order_id'].'('.$result['OrderId'].' to '.$data['email'].' (tottal items: '.$itemCount.')');
 				Mailer::send('Order_Shipped', $data['email'], $data);
+				#Send An Email To The Person Who Invited during First Purchase Case				
+				if ($data['user']['purchase_count'] == 1 && !empty($data['user']['invited_by'])) {
+					$inviter = $usersCollection->findOne(array('invitation_codes' => $data['user']['invited_by']));
+					if (is_null($this->debugemail)) {
+						Mailer::send('Invited_First_Purchase', $inviter['email']);
+					} else {
+						Mailer::send('Invited_First_Purchase', $this->debugemail);
+					}
+				}
 				unset($data);
 				if(is_null($this->debugemail)) {
 					//SET send email flag
