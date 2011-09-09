@@ -2206,7 +2206,7 @@ text-align:right !important
 }
 
 .cart-review-color-size{
-font-weight: 
+font-weight: bold;
 }
 
 .cart-review-line-timer{
@@ -3428,7 +3428,7 @@ a.nivo-prevNav {
 
 #banner_container {
 	float:left;
-	width:180px;
+	width:230px;
 	height:415px;
 	overflow:hidden;
 	position:relative;

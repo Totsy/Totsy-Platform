@@ -36,15 +36,13 @@ class OrdersController extends BaseController {
 	 * @return compact
 	 */
 	public function index() {
-		$itemsCollection = Item::collection();
-		$lifeTimeSavings = 0;
 		$user = Session::read('userLogin');
 		$orders = Order::find('all', array(
 			'conditions' => array(
 				'user_id' => (string) $user['_id']),
 			'order' => array('date_created' => 'DESC')
 		));
-		$trackingNumbers = array();
+		$lifeTimeSavings = 0;
 		foreach ($orders as $key => $order) {
 			$list = $trackingNum = array();
 			$shipDate["$order->_id"] = Cart::shipDate($order);
@@ -57,23 +55,21 @@ class OrdersController extends BaseController {
 					$trackingNum[] = array('code' => $record->{'Tracking #'}, 'method' => $shipMethod);
 				}
 			}
+			#Get All Tracking Numbers for One Order
 			if ($trackingNum) {
 				$trackingNumbers["$order->_id"] = $trackingNum;
 			}
-			//Calculatings LifeTime Savings
+			#Calculatings LifeTime Savings
 			if (empty($order["cancel"])) {
-				$savings = 0;
 				foreach ($order["items"] as $item) {
-					$itemInfo = $itemsCollection->findOne(array("_id" => new MongoId($item["item_id"])));
+					$itemInfo = Item::find('first', array('conditions' => array("_id" => new MongoId($item["item_id"]))));
 					if (empty($item->cancel)) {
-						$lifeTimeSavings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
-						$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
+						$lifeTimeSavings += ($item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']));
 					}
 				}
-				$orderSavings[$key] = $savings;
 			}
 		}
-		return (compact('orders', 'shipDate', 'trackingNumbers', 'orderSavings', 'lifeTimeSavings'));
+		return (compact('orders', 'shipDate', 'trackingNumbers', 'lifeTimeSavings'));
 	}
 
 	/**
@@ -86,7 +82,6 @@ class OrdersController extends BaseController {
 	 * @return mixed
 	 */
 	public function view($order_id) {
-		$itemsCollection = Item::collection();
 		$user = Session::read('userLogin');
 		$order = Order::find('first', array(
 			'conditions' => array(
@@ -127,7 +122,7 @@ class OrdersController extends BaseController {
 		//Calculatings Savings
 		$savings = 0;
 		foreach ($order->items as $item) {
-			$itemInfo = $itemsCollection->findOne(array("_id" => new MongoId($item["item_id"])));
+			$itemInfo = Item::find('first', array('conditions' => array("_id" => new MongoId($item["item_id"]))));
 			if (empty($item->cancel)) {
 				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
 			}
@@ -277,11 +272,11 @@ class OrdersController extends BaseController {
 			'event',
 			'discount_exempt'
 		);
+		$promocode_disable = false;
 		#Get Current Cart
 		$cart = $taxCart = Cart::active(array('fields' => $fields, 'time' => 'now'));
 		$cartEmpty = ($cart->data()) ? false : true;
 		$cartByEvent = $this->itemGroupByEvent($cart);
-		$orderEvents = $this->orderEvents($cart);
 		#Calculate Shipped Date
 		$shipDate = Cart::shipDate($cart);
 		#Get Value Of Each and Sum It
@@ -333,6 +328,10 @@ class OrdersController extends BaseController {
 		$total = $vars['postDiscountTotal'] + $tax;
 		#Read Credit Card Informations
 		$creditCard = Order::creditCardDecrypt((string)$user['_id']);
+		#Disable Promocode Uses if Services
+		if (!empty($services['freeshipping']['enable']) || !empty($services['tenOffFitfy'])) {
+			$promocode_disable = true;
+		}
 		#Organize Datas
 		$vars = $vars + compact(
 			'user', 'cart', 'total', 'subTotal', 'creditCard',
@@ -349,24 +348,7 @@ class OrdersController extends BaseController {
 		if (Session::check('cc_error')) {
 			$this->redirect(array('Orders::payment'));
 		}
-		return $vars + compact('cartEmpty','order','cartByEvent','orderEvents','shipDate','savings', 'credits', 'services', 'cartExpirationDate');
-	}
-
-	/**
-	 * Checks if the discountExempt flag is set in any of the cart items.
-	 * The method will return true if there is a discounted item and false if there isn't.
-	 *
-	 * @param array
-	 * @return boolean
-	 */
-	protected function _discountExempt($cart) {
-		$discountExempt = false;
-		foreach ($cart as $cartItem) {
-			if ($cartItem->discount_exempt) {
-				$discountExempt = true;
-			}
-		}
-		return $discountExempt;
+		return $vars + compact('cartEmpty','order','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable');
 	}
 
 	/**
@@ -419,7 +401,6 @@ class OrdersController extends BaseController {
 				$orderEvents[$event['_id']] = $event;
 			}
 		}
-
 		return $orderEvents;
 	}
 
@@ -526,12 +507,12 @@ class OrdersController extends BaseController {
 		if (Session::check('cc_error')){
 			if (!isset($payment) || (isset($payment) && !is_object($payment))){
 				$card = Order::creditCardDecrypt((string)$user['_id']);
-				$data_add = Session::read('cc_billingAddr');
+				$data_add = Session::read('billing');
 				$payment = Address::create(array_merge($data_add,$card));
 			}
 			$payment->errors( $payment->errors() + array( 'cc_error' => Session::read('cc_error')));
 			Session::delete('cc_error');
-			Session::delete('cc_billingAddr');
+			Session::delete('billing');
 		}
 		return compact('address','cartEmpty','payment','shipping','shipDate','cartExpirationDate');
 	}

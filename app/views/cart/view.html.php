@@ -18,6 +18,8 @@ var discountErrors = new Object();
 		}
 	);
 	
+	$("#cart-count").text(<?=$itemCount?>);
+	
 	$( function () {
 	    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	    
 		var now = new Date();
@@ -64,7 +66,7 @@ var discountErrors = new Object();
 	<div class="clear"></div>
 	<hr/>
 	     <div class="cart-button fr" style="margin:10px 0px 20px 0px;">
-		      <?=$this->html->link('Continue Shopping', "sales/", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
+		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
 		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
 		     <div class="clear"></div>
 		 </div>
@@ -104,9 +106,13 @@ var discountErrors = new Object();
 					</td>
 					<td class="cart-desc">
 						<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
-						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url, array("target"=>"_blank")); ?></strong><br />
+						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?></strong><br />
+						<?php if($item->color) : ?>
 						<strong>Color:</strong> <?=$item->color;?><br />
+						<?php endif ?>
+						<?php if($item->size!=="no size") : ?>
 						<strong>Size:</strong> <?=$item->size;?>
+						<?php endif ?>
 					</td>
 					<td class="cart-item-timer-td">
 					<div id='<?php echo "itemCounter$x"; ?>_display' class="cart-item-timer" title='<?=$date?>'></div>
@@ -157,20 +163,23 @@ var discountErrors = new Object();
 		<div class="clear"></div>
 		
 		<div class="grid_16" style="width:935px; padding-top:30px;">
-		
-			<div class="cart-codes">
+		<div class="cart-codes">
 				<div class="cart-code-buttons">
-				    <strong>Add <?php if(!empty($credit)): ?>
-				    	<a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a> /
+				     <?php if(!empty($credit)): ?>
+				    	<strong>Add <a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a></strong> /
 				    <?php endif ?> 
-				    	<a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
+				    	<?php if(empty($promocode_disable)): ?>
+				    	<strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
+				    	<?php endif ?>
 				</div>
 				<div style="clear:both"></div>
 				<div id="promos_and_credit">
 				<?=$this->form->create(null); ?>
+					<?php if(empty($promocode_disable)): ?>
 				    <div id="promo" style="display:none">
 				    	<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo) ); ?>
 				    </div>
+				    <?php endif ?>
 				    <div id="cred" style="display:none; text-align:left !important">		
 				    	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
 				    </div>
@@ -257,7 +266,7 @@ var discountErrors = new Object();
 		</div>	
 			
 <div class="cart-button fr cart-nav-buttons">
-		      <?=$this->html->link('Continue Shopping', "sales/", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
+		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
 		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
 		      <div class="clear"></div>
 		      
