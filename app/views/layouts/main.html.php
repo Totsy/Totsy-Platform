@@ -31,7 +31,7 @@
 			$tags = 'Sales'; 
 			if (array_key_exists ('args',$request->params) && isset($request->params['args'][0])){
 				$tags =  $request->params['args'][0]; 
-			} 
+			}  
 		} else  {
 			if (isset($event) && isset($item)){
 				$edata = $event->data();
@@ -45,7 +45,7 @@
 				unset($edata, $idata);
 			} 
 		}
-	?> 				
+	?>
 	<meta name="sailthru.title" content="<?php echo strip_tags($title); ?>" />
 	<meta name="sailthru.tags" content="<?php echo strip_tags($tags); ?>" />
 
