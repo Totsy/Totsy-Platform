@@ -285,10 +285,12 @@ function isValidCard(cardNumber) {
 	if(cardNumber.length < 11){
 		return false;
 	}
+	
 	// Init Array with Credit Card Number
 	for(i = 0; i < cardNumber.length; i++){
 		ccard[i] = parseInt(cardNumber.charAt(i));
 	}
+	
 	// Run step 1-5 above above
 	for(i = 0; i < cardNumber.length; i = i+2){
 		ccard[i] = ccard[i] * 2;
@@ -296,19 +298,30 @@ function isValidCard(cardNumber) {
 			ccard[i] = ccard[i] - 9;
 		}
 	}
+	
 	for(i = 0; i < cardNumber.length; i++){
 		sum = sum + ccard[i];
 	}
-	return ((sum%10) == 0);
+	
+	if($('#card_type').val()=="amex") {
+		if(cardNumber.length >= 15){
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		return ((sum%10) == 0);
+	}
   }
 
 function validCC() {
 	var test = isValidCard($("#card_number").val());
 	$("#card_valid").val(test);
-	if(!test) {
+	
+	if(!test){
 		$("#card_number").validationEngine('showPrompt','*This is not a valid credit card number', '', true);
 		$("#card_number").attr('style', 'background: #FFFFC5 !important');
-		return false;
+		return false;	
 	} else {
 		$("#card_number").attr('style', 'background: #FFFFFF !important');
 		$("#card_number").validationEngine('hide');	
