@@ -129,7 +129,9 @@ class CartController extends BaseController {
 		#Check Cart
 		$cart = Cart::create();
 		if ($this->request->data) {
+			#Getting Size Selected
 			$itemId = $this->request->data['item_id'];
+			#If unselected, put no size as choice
 			$size = (!array_key_exists('item_size', $this->request->data)) ?
 				"no size": $this->request->data['item_size'];
 			$item = Item::find('first', array(
@@ -148,9 +150,10 @@ class CartController extends BaseController {
 					'vendor_style',
 					'discount_exempt'
 			)));
+			#Get Item from Cart if already added
 			$cartItem = Cart::checkCartItem($itemId, $size);
-			$itemInfo = Item::find('first', array('conditions' => array('_id' => $itemId)));
-			$avail = $itemInfo->details->{$size} - Cart::reserved($itemId, $size);
+			$avail = $item->details->{$size} - Cart::reserved($itemId, $size);
+			#Condition if Item Already in your Cart
 			if (!empty($cartItem)) {
 				//Make sure user does not add more than 9 items to the cart
 				if($cartItem->quantity < 9 ) {
@@ -166,7 +169,7 @@ class CartController extends BaseController {
 						$cartItem->save();
 						$this->addIncompletePurchase(Cart::active());
 					}
-				}else{
+				} else {
 					$cartItem->error = 'You have reached the maximum of 9 per item.';
 					$cartItem->save();
 					$this->addIncompletePurchase(Cart::active());
@@ -174,28 +177,25 @@ class CartController extends BaseController {
 			} else {
 				if( $avail > 0 ) {
 					$item = $item->data();
-					$item_id = (string) $item['_id'];
 					$item['size'] = $size;
 					$item['item_id'] = $itemId;
 					unset($item['details']);
 					unset($item['_id']);
 					$info = array_merge($item, array('quantity' => 1));
 					if ($cart->addFields() && $cart->save($info)) {
-						//calculate savings
-						$item[$itemId] = 1;
+						#Update Main Timer to 15min
 						Cart::refreshTimer();
+						#calculate savings
+						$item[$itemId] = 1;
 						Cart::updateSavings($item, 'add');
 						$this->addIncompletePurchase(Cart::active());
 					}
-				} else {
-					#Don't Add Anything To The Cart
 				}
 			}
 			$this->redirect(array('Cart::view'));
 		}
 		return compact('cart');
 	}
-
 
 	/**
 	* The remove method delete an item from the temporary cart.
@@ -205,6 +205,7 @@ class CartController extends BaseController {
 	*/
 	public function remove($id = null) {
 		$data = $this->request->data;
+		#Get Id Item to remove
 		if (!empty($id)) {
 			$data["id"] = $id;
 		}
@@ -217,11 +218,9 @@ class CartController extends BaseController {
 		if(!empty($cart)){
 			Cart::remove(array('_id' => $data["id"]));
 			#calculate savings
-			if($now[0] < $cart->expires->sec) {
-				$item[$cart->item_id] = $cart->quantity;
-				Cart::updateSavings($item, 'remove');
-				$this->addIncompletePurchase(Cart::active());
-			}
+			$item[$cart->item_id] = $cart->quantity;
+			Cart::updateSavings($item, 'remove');
+			$this->addIncompletePurchase(Cart::active());
 		}
 	}
 

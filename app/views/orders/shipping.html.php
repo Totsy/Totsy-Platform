@@ -109,8 +109,8 @@ var addressForm = new Object();
 			
 	<div class="grid_16">
 	
-	<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
-		<hr />Choose your address :<?=$this->form->select('addresses', $addresses_ddwn, array("id" => 'addresses', 'value' => $selected));?>
+		<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
+			<hr />Choose your address :<?=$this->form->select('addresses', $addresses_ddwn, array("id" => 'addresses', 'value' => $selected));?>
 		<?php endif ?>
 		<div style="clear:both"></div>
 		<hr />

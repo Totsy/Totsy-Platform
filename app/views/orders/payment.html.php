@@ -68,7 +68,9 @@ var paymentForm = new Object();
     		    	field.name!=="opt_submitted" && 
     		    	field.name!=="opt_shipping" && 
     		    	field.name!=="opt_shipping_select" && 
-    		    	field.name!=="card_valid" ) {
+    		    	field.name!=="card_valid" &&
+    		    	field.name!=="opt_save"
+    		    	) {
     		    	
     		 		if(set_bubble==false) {   
     		 			$('#' + field.name + "").validationEngine('showPrompt','*This field is required', '', true);
@@ -182,6 +184,11 @@ var paymentForm = new Object();
 				<br />
 				<h3>Billing Address</h3>
 				<hr />
+				<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
+					Choose your address :<?=$this->form->select('addresses', $addresses_ddwn, array("id" => 'addresses', 'value' => $selected));?>
+					<div style="clear:both"></div>
+				<hr />
+				<?php endif ?>
 				Use my shipping address as my billing address: <?=$this->form->checkbox("opt_shipping", array('id' => 'opt_shipping', 'onclick' => 'replace_address()' , "checked" => $checked)) ?>
 				<br />
 				<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
@@ -215,13 +222,16 @@ var paymentForm = new Object();
 				<?=$this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
 				<div style="clear:both"></div>
+				<div>
+					Save this address <?=$this->form->checkbox("opt_save", array('id' => 'opt_save')) ?>
+				</div>
 				<?=$this->form->hidden('opt_description', array('id' => 'opt_description' , 'value' => 'billing')); ?>
 				<?=$this->form->hidden('opt_shipping_select', array('id' => 'opt_shipping_select')); ?>
 				</div>
 			
 			<div class="grid_16">	
 				<?=$this->form->submit('CONTINUE', array('class' => 'button fr', 'style'=>'margin-right:10px;')); ?>
-			</div>	
+			</div>
 				
 </div>
 <?php else: ?>
@@ -232,7 +242,11 @@ var paymentForm = new Object();
 	</div>
 <?php endif ?>
 <?=$this->form->end();?> 
-
+<div id="address_form" style="display:none">
+	<?=$this->form->create(null ,array('id'=>'selectForm')); ?>
+	<?=$this->form->hidden('address_id', array('class' => 'inputbox', 'id' => 'address_id')); ?>
+	<?=$this->form->end();?>
+</div>
 <script>  
 	
 var shippingAddress = <?php echo $shipping; ?>
@@ -314,6 +328,7 @@ function isValidCard(cardNumber) {
 	}
   }
 
+
 function validCC() {
 	var test = isValidCard($("#card_number").val());
 	$("#card_valid").val(test);
@@ -329,4 +344,12 @@ function validCC() {
 	}
 }
 
+</script>
+<script>
+$(document).ready(function(){ 
+	$("#addresses").change(function () {
+		$("#address_id").val($("#addresses option:selected").val());
+		$("#selectForm").submit();
+	});
+});
 </script>
