@@ -19,6 +19,9 @@ class Address extends \lithium\data\Model {
 		'address' => array(
 			'notEmpty', 'required' => true, 'message' => 'Please add an address'
 		),
+		'telephone' => array(
+			'notEmpty', 'required' => true, 'message' => 'Please add a telephone number'
+		),
 		'city' => array(
 			'notEmpty', 'required' => true, 'message' => 'Please add a city'
 		),

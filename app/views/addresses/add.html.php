@@ -63,8 +63,9 @@
 			</div>
 
 			<div class="form-row">
-				<?=$this->form->label('telephone', 'Telephone', array('escape' => false,'class' => 'addresses')); ?>
+				<?=$this->form->label('telephone', 'Telephone <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('telephone', array('class' => 'inputbox', 'id' => 'phone')); ?>
+				<?=$this->form->error('telephone'); ?>
 			</div>
 
 			<div class="form-row">
