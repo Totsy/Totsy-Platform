@@ -53,7 +53,7 @@
 				<div class="br"></div>
 			</div>
 		</div>
-		<h2 class="gray fl">Address Book</h2>&nbsp;|&nbsp;<?=$this->html->link('Manage Addresses', '/addresses/view');?>
+		<strong>Address Book</strong> | <?=$this->html->link('Manage Addresses', '/addresses/view');?>
 		<hr />
 		<div class="col-2">
 			<div class="r-container box-2 fl">
