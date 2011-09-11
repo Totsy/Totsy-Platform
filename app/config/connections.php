@@ -46,5 +46,4 @@ use \lithium\data\Connections;
     		),
 			'adapter' => 'app\extensions\adapter\data\source\MongoDb')
 	));
-
 ?>

@@ -222,6 +222,34 @@ class User extends Base {
 			return $result;
 		}
 	}
+	
+	public static function cleanSession() {
+		if(Session::check('userSavings')) {
+			Session::delete('userSavings');
+		}
+		if(Session::check('promocode')) {
+			Session::delete('promocode');
+		}
+		if(Session::check('credit')) {
+			Session::delete('credit');
+		}
+		if(Session::check('services')) {
+			Session::delete('services');
+		}
+		if(Session::check('cc_infos')) {
+			Session::delete('cc_infos');
+		}
+		if(Session::check('cc_error')) {
+			Session::delete('cc_error');
+		}
+		if(Session::check('shipping')) {
+			Session::delete('shipping');
+		}
+		if(Session::check('billing')) {
+			Session::delete('billing');
+		}
+
+	}
 }
 
 

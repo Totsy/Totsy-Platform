@@ -1,43 +1,20 @@
-<script type="text/javascript">
-$(document).ready(function() {
-	if (hash = window.location.hash) {
-		$('html, body').animate({ scrollTop: $(hash).offset().top - 100 }, 500, 'linear', function() {
-			setTimeout(function() {  $(hash).animate({ backgroundColor: '#FFFFAA' }, 500)}, 250);
-		});
-	}
-});
-</script>
+<?php $this->title("Frequently Asked Questions"); ?>
 
-<h1 class="p-header">
-  <?=$this->title('Frequently Asked Questions'); ?>
-</h1>
-<div id="left">
-  <ul class="menu main-nav">
-  <h3 style="color:#999;">About Us</h3>
+<div class="grid_16">
+	<h2 class="page-title gray">About Us</h2>
 	<hr />
-    <li class="first item15"><a href="/pages/aboutus" title="About Totsy"><span>How Totsy Works</span></a></li>
-    <li class="first item17"><a href="/pages/moms" title="Meet The Moms"><span>Meet The Moms</span></a></li>
-    <li class="first item16"><a href="/pages/press" title="Press"><span>Totsy in the Press</span></a></li>
-    <li class="first"><a href="/pages/testimonials" title="Video Testimonials"><span>Video Testimonials</span></a></li>
-    <li class="first item17"><a href="/pages/being_green" title="Being Green"><span>Being Green</span></a></li>
-    <li class="first item19"><a href="http://blog.totsy.com" target="_blank" title="Blog"><span>Totsy Blog</span></a></li>
-    <li class="first item15"><a href="/pages/affiliates" title="Affiliates"><span>Affiliates</span></a></li>
-    <br />
-    <h3 style="color:#999;">Need Help?</h3>
-    <hr />
-    <li class="first item18"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
-    <li class="first item19 active"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
-    <li class="first item19"><a href="/pages/privacy" title="Privacy Policy"><span>Privacy Policy</span></a></li>
-    <li class="first item19"><a href="/pages/terms" title="Terms Of Use"><span>Terms Of Use</span></a></li>
-  </ul>
 </div>
-<div id="middle" class="noright">
-  <div class="tl"><!-- --></div>
-  <div class="tr"><!-- --></div>
-  <div id="page">
-    <h2 class="gray mar-b">FAQ's</h2>
-    <hr />
-    <ul>
+
+<div class="grid_4">
+	<?php echo $this->view()->render(array('element' => 'aboutUsNav')); ?>
+	<?php echo $this->view()->render(array('element' => 'helpNav')); ?>
+</div>
+
+<div class="grid_11 omega roundy grey_inside b_side">
+
+	<h2 class="page-title gray">Frequently Asked Questions</h2>
+	<hr />
+	<ul>
       <li><a href="#1">What is Totsy?</a></li>
       <li><a href="#2">How do I become a member of Totsy?</a></li>
       <li><a href="#3">When does a Totsy sale start?</a></li>
@@ -163,7 +140,18 @@ $(document).ready(function() {
     <div class="faq_question"><strong>A: </strong> When you are signed-in to Totsy you can click on the "My Account" link from the top of any page. Click on "Account Dashboard" from the drop-down menu. You can edit all of this information from the "Account Dashboard" page. </div>
     <div class="faq_answer"><a id="28"></a><strong>Q:</strong> Can I have multiple shipping addresses on file?</div>
     <div class="faq_question"><strong>A: </strong> Yes, you can add multiple shipping addresses to your Address Book found under the "My Account" link on the top of any page when you are signed-in to Tosy.</div>
-  </div>
-  <div class="bl"><!-- --></div>
-  <div class="br"><!-- --></div>
+	<br />
+
 </div>
+</div>
+<div class="clear"></div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	if (hash = window.location.hash) {
+		$('html, body').animate({ scrollTop: $(hash).offset().top - 100 }, 500, 'linear', function() {
+			setTimeout(function() {  $(hash).animate({ backgroundColor: '#FFFFAA' }, 500)}, 250);
+		});
+	}
+});
+</script>
