@@ -55,6 +55,12 @@ Environment::is(function($request) {
 		case 'web4-dc4.totsy.com':
 		case 'totsy.com':
 			return 'production';
+		case 'web1-dc1.totsy.com':
+		case 'web2-dc1.totsy.com':
+		case 'web3-dc1.totsy.com':
+		case 'web4-dc1.totsy.com':
+		case 'newprod.totsy.com':
+			return 'production';
 		case 'test.totsy.com':
 			return 'test';
 		case 'dev.totsy.com':

@@ -80,6 +80,9 @@ class UsersController extends BaseController {
 							'user_id' => (string) $inviter->_id,
 							'email' => $email
 					)));
+					
+					Mailer::send('Invited_Register', $inviter->email);
+					
 					if ($inviter->invited_by === 'keyade') {
 						$data['keyade_referral_user_id'] = $inviter->keyade_user_id;
 					}
@@ -126,6 +129,8 @@ class UsersController extends BaseController {
 				Session::write('userLogin', $userLogin, array('name' => 'default'));
 				$cookie['user_id'] = $user->_id;
 				Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
+				#Remove Temporary Session Datas**/
+				User::cleanSession();
 				$data = array(
 					'user' => $user,
 					'email' => $user->email
@@ -192,7 +197,6 @@ class UsersController extends BaseController {
 	 * @return string The user is prompted with a message if authentication failed.
 	 */
 	public function login() {
-
 		$message = $resetAuth = $legacyAuth = $nativeAuth = false;
 		$rememberHash = '';
 		$this->autoLogin();
@@ -232,6 +236,9 @@ class UsersController extends BaseController {
 						}
             			Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 						User::rememberMeWrite($this->request->data['remember_me']);
+						/**Remove Temporary Session Datas**/
+						User::cleanSession();
+						/***/					
 						if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) {
 							$this->redirect($this->request->url);
 						} else {

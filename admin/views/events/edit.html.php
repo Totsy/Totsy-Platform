@@ -76,7 +76,7 @@ $('.related_items').selectList({
 	$(item).slideUp(500, callback); 
 	} 
 }); 
-    
+
 $('.related_items').change(function() {
 
 //parse out the current item's id
@@ -449,10 +449,6 @@ for ( i=1; i<6; i++ ) {
 				?>
 		</div>
 	</div>
-
-
-
-
 </div>
 <script type="text/javascript">
 $(document).ready(function() {
