@@ -5,7 +5,7 @@
 <div class="grid_16">
 		<h2 class="page-title gray"><span class="red"><a href="/" title="Sales"><?=$type?> Sales</a> /</span> <?=$event->name; ?> <div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
 		<hr />
-<div class="md-gray" style="overflow:hidden; border: 1px solid #D7D7D7;">
+<div class="md-gray" style="overflow:hidden; border: 1px solid #D7D7D7;  margin-bottom:10px">
 				<div class="grid_5 alpha omega" style="line-height:0px!important;">
 					<!-- Display Event Image -->
 					<?php
@@ -59,7 +59,7 @@
 			<?php if(!empty($filters)): ?>
 		<div id='filterb' style='text-align:right'>
 			<?=$this->form->create(null, array('id' => 'filterform')); ?>
-			<?=$this->form->label("filterby", "View by: ", array('style' => 'font-weight:bold; font-size:13px;')); ?>
+			<label style="font-weight:bold; font-size:13px;">View by: &nbsp;</label>
 			<?=$this->form->select('filterby',$filters, array('onchange' => "filter()", 'id' => 'filterby', 'value' => array($departments => $departments))); ?>
 			<?=$this->form->end(); ?>
 		</div>
