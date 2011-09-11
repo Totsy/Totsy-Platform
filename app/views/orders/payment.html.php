@@ -206,8 +206,8 @@ var paymentForm = new Object();
 				<?=$this->form->text('address', array('class' => 'validate[required] inputbox', 'id'=>'address')); ?>
 				<?=$this->form->error('address'); ?>
 				<div style="clear:both"></div>
-				<?=$this->form->label('address2', 'Street Address 2', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('address2', array('class' => 'inputbox', 'id'=>'address2')); ?>
+				<?=$this->form->label('address_2', 'Street Address 2', array('escape' => false,'class' => 'required')); ?>
+				<?=$this->form->text('address_2', array('class' => 'inputbox', 'id'=>'address_2')); ?>
 				<div style="clear:both"></div>
 				<?=$this->form->label('city', 'City <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('city', array('class' => 'validate[required] inputbox', 'id'=>'city')); ?>
