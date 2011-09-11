@@ -13,23 +13,19 @@
 	<h2 class="page-title gray">Address Book <span style="float:right; font-weight:normal; font-size:12px;"><?=$this->html->link('Add New Address','Addresses::add'); ?></span></h2>
 	<hr />
 		<?php if (!empty($addresses)): ?> 
-		<table width="100%" class="cart-table">
-			<tbody>
+		<div class="grid_11">
+			
 			<?php $x = 0?>
 			<?php foreach ($addresses as $address): ?>
-				test
 				<?php $x++; ?>
-				<tr id="<?=$address->_id?>">
-				<td>
-						<strong>Location:</strong><?=$address->description?>
-						<hr/>
-						<?=$address->firstname." ".$address->lastname?>
-						<?=$address->address?><br>
-						<?=$address->address_2?><br>
-						<?=$address->city?>, <?=$address->state?>, <?=$address->zip?><br>
+				<div id="<?=$address->_id?>">
+						<strong>Location:</strong> <?=$address->description?><br />
+						<?=$address->firstname." ".$address->lastname?><br />
+						<?=$address->address?><br />
+						<?=$address->address_2?><br />
+						<?=$address->city?>, <?=$address->state?>, <?=$address->zip?><br />
 						<?=$this->html->link('Edit', array('controller' => 'Addresses', 'action' => 'edit', 'args' => $address->_id)); ?>
-					<a href="#" id="<?php echo "remove$address->_id"?>" title="Remove Address"><img src="/img/trash.png" width="25" /></a>
-				</td>
+					| <a href="javascript:;" id="<?php echo "remove$address->_id"?>" title="Remove Address">Remove</a>
 				<?php
 					$removeButtons[] = "<script type=\"text/javascript\" charset=\"utf-8\">
 							$('#remove$address->_id').click(function () { 
@@ -39,10 +35,13 @@
 							    });
 						</script>";
 				?>
+			<hr/>
 			<?php endforeach ?>
-				</tr>
-			</tbody>
-		</table>
+			
+				</div>
+				
+			
+		</div>
 		<?php else : ?>
 		<div style="text-align:center;">You don't have any addresses yet. </div>
 		<?php endif ?>
