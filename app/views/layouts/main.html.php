@@ -145,7 +145,7 @@
 
 
 <!-- Sailthru Horizon --> 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
     (function() {
         function loadHorizon() { 
             var s = document.createElement('script'); 
@@ -169,5 +169,6 @@
         };
     })();
 </script>
+-->
 </body>
 </html>
