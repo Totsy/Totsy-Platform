@@ -3,6 +3,7 @@
 namespace admin\controllers;
 
 use admin\controllers\BaseController;
+use admin\models\Base;
 use admin\models\Event;
 use admin\models\User;
 use admin\models\Item;
@@ -337,6 +338,7 @@ class EventsController extends BaseController {
 				} else {
 					if (isset($heading[$col])) {
 
+						$val = Event::convert_smart_quotes($val);
 						
 						//check decimals here
 						if (in_array($heading[$col], $check_decimals)) {
@@ -346,7 +348,6 @@ class EventsController extends BaseController {
 								//}
 							}
 						}
-
 
 						if(($heading[$col] === "department_1") || ($heading[$col] === "department_2") || ($heading[$col] === "department_3")) {
 							if (!empty($val)) {
