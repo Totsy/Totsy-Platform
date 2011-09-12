@@ -114,6 +114,25 @@ class Event extends \lithium\data\Model {
 		return $fullarray;
 	}
 	
+	public static function convert_smart_quotes($string){ 
+	    $search = array('Ò',
+	    				'Ó',
+	    				chr(145), 
+	                    chr(146), 
+	                    chr(147), 
+	                    chr(148), 
+	                    chr(151)); 
+	 
+	    $replace = array('"', 
+	    				 '"', 
+	    				 "'", 
+	                     "'", 
+	                     '"', 
+	                     '"', 
+	                     '-'); 
+	 
+	    return str_replace($search, $replace, $string); 
+	} 
 	
 	
 	public static function check_spreadsheet($array){
