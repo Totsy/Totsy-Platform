@@ -13,7 +13,6 @@
 	<h2 class="page-title gray">Address Book <span style="float:right; font-weight:normal; font-size:12px;"><?=$this->html->link('Add New Address','Addresses::add'); ?></span></h2>
 	<hr />
 		<?php if (!empty($addresses)): ?> 
-		<div class="grid_11">
 			
 			<?php $x = 0?>
 			<?php foreach ($addresses as $address): ?>
@@ -22,7 +21,9 @@
 						<strong>Location:</strong> <?=$address->description?><br />
 						<?=$address->firstname." ".$address->lastname?><br />
 						<?=$address->address?><br />
+						<?php if($address->address_2): ?>
 						<?=$address->address_2?><br />
+						<?php endif ?>
 						<?=$address->city?>, <?=$address->state?>, <?=$address->zip?><br />
 						<?=$this->html->link('Edit', array('controller' => 'Addresses', 'action' => 'edit', 'args' => $address->_id)); ?>
 					| <a href="javascript:;" id="<?php echo "remove$address->_id"?>" title="Remove Address">Remove</a>
@@ -35,20 +36,14 @@
 							    });
 						</script>";
 				?>
+			</div>	
 			<hr/>
 			<?php endforeach ?>
-			
-				</div>
-				
-			
-		</div>
 		<?php else : ?>
-		<div style="text-align:center;">You don't have any addresses yet. </div>
+		<div style="text-align:center;">You don't have any addresses yet.</div>
 		<?php endif ?>
 </div>
-</div>
-<div class="clear"></div>
-
+<div class="clear"></div>		
 <?php if (!empty($removeButtons)): ?>
 	<?php foreach ($removeButtons as $button): ?>
 		<?php echo $button ?>
