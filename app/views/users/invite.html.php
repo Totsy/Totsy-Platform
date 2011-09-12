@@ -164,7 +164,34 @@
 <div class="clear"></div>
 
 <script type="text/javascript" charset="utf-8">
-	$('.form')
+	$(document).ready(function(){
+	
+		function validateEmail(field) {
+    		var regex=/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i;
+    		return (regex.test(field)) ? true : false;
+    	}			
+		
+		$("#recipient_list").blur( function() {
+			var email_addresses = $("#recipient_list").val().split(",");
+						
+			if (typeof email_addresses == "object") {
+				for ( email in email_addresses ) {
+					var clean_email = email_addresses[email].replace(" ","");			
+					
+					if( validateEmail(clean_email)==false ) {
+						alert("Please correct this email, its not valid: " + clean_email);
+						return false;
+					}
+				}				
+			} else {
+				if( validateEmail(clean_email)==false ) {
+					alert("Please correct this email, its not valid: " + clean_email);
+					return false;
+				} 
+			}		
+		});
+		
+	})
 </script>
 <script type="text/javascript" charset="utf-8">
 	$('#invite-gmail, #invite-yahoo, #invite-outlook, #invite-aol, #invite-msn, #invite-others').click(function(){
