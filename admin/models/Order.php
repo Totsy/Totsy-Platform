@@ -69,7 +69,6 @@ class Order extends Base {
 		'now' => 0
 	);
 
-
 	public $validates = array(
 		'authKey' => 'Could not secure payment.',
 	);
