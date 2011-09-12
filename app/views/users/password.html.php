@@ -1,28 +1,20 @@
 <?php $this->title("Change Your Password"); ?>
-	<h1 class="p-header">My Account</h1>
-	<div id="left">
-		<ul class="menu main-nav">
-			<li class="firstitem17"><a href="/account" title="Account Dashboard"><span>Account Dashboard</span></a></li>
-			<li class="item18"><a href="/account/info" title="Account Information"><span>Account Information</span></a></li>
-			<li class="item18 active"><a href="/account/password" title="Change Password"><span>Change Password</span></a></li>
-			<li class="item19"><a href="/addresses" title="Address Book"><span>Address Book</span></a></li>
-			<li class="item20"><a href="/orders" title="My Orders"><span>My Orders</span></a></li>
-			<li class="item20"><a href="/Credits/view" title="My Credits"><span>My Credits</span></a></li>
-			<li class="lastitem23"><a href="/Users/invite" title="My Invitations"><span>My Invitations</span></a></li>
-			<br />
-			<h3 style="color:#999;">Need Help?</h3>
-			<hr />
-			<li class="first item18"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
-			<li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
-		</ul>
-	</div>
-<div id="middle" class="noright">
-	<div class="tl"></div>
-	<div class="tr"></div>
-	<div id="page">
-		<h2 class="gray mar-b">Change Your Password</h2>
-		<hr />
-		<fieldset id="" class="">
+
+<div class="grid_16">
+	<h2 class="page-title gray">Change Your Password</h2>
+	<hr />
+</div>
+
+<div class="grid_4">
+	<?php echo $this->view()->render(array('element' => 'myAccountNav')); ?>
+	<?php echo $this->view()->render(array('element' => 'helpNav')); ?>
+</div>
+
+<div class="grid_11 omega roundy grey_inside b_side">
+
+	<h2 class="page-title gray">Change Your Password</h2>
+	<hr />
+	<fieldset>
 			<div>
 				<?php
 					switch ($status) {
@@ -37,9 +29,6 @@
 							break;
 						case 'shortpass' :
 							echo "<div class=\"standard-error-message\">Password must be at least 6 characters.</div>";
-							break;
-						default:
-							echo "Please enter your current and new password below and submit.";
 							break;
 					}
 				?>
@@ -73,9 +62,8 @@
 			<?=$this->form->submit('Change Password', array('class' => 'button fr')); ?>
 			<?=$this->form->end();?>
 		</fieldset>
+	<br />
 
-	</div>
-	<div class="bl"></div>
-	<div class="br"></div>
 </div>
 </div>
+<div class="clear"></div>

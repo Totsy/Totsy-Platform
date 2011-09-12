@@ -395,6 +395,9 @@ class OrdersController extends BaseController {
 			$this->cancel();
 			//If the order is canceled, send an email
 			$order_temp = Order::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
+			
+			
+			
 			if(strlen($order_temp["user_id"]) > 10){
 				$user = $userCollection->findOne(array("_id" => new MongoId($order_temp->user_id)));
 			} else {
@@ -459,8 +462,10 @@ class OrdersController extends BaseController {
 			$edit_mode = false;
 			$itemscanceled = false;
 		}
+		
+		print_r($order->data());
+		
 		$shipDate = $this->shipDate($order);
-
 		return compact('order', 'shipDate', 'sku', 'itemscanceled','edit_mode');
 	}
 
