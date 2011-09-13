@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
 	<?php echo $this->html->charset();?>
-	<title>
+ 	<title>
 		<?php echo $this->title() ?: 'Totsy, the private sale site for Moms'; ?>
 		<?php echo $this->title() ? '- Totsy' : ''; ?>
 	</title>
