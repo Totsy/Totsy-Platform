@@ -11,23 +11,28 @@ use \lithium\storage\Session;
  */
 class AccountController extends BaseController {
 	
-	public function index(){
+	public function index () {
 
 		$user = Session::read('userLogin');
 
 		$billing = Address::find('first', array(
-			'conditions' => array(
-				'user_id' => (string) $user['_id'],
-				'type' => "Billing",
-				'default' => true
-		)));
+				'conditions' => array(
+					'$or' => array(
+						array('user_id' => (string) $user['_id'],
+							  'type' => "Billing"),
+						array('user_id' => (string) $user['_id'],
+							  'default' =>  "1",
+							  'type' => "Billing")))));				  
+							  
 		$shipping = Address::find('first', array(
-			'conditions' => array(
-				'user_id' => (string) $user['_id'],
-				'type' => "Shipping",
-				'default' => true
-		)));
-
+		    'conditions' => array(
+		    	'$or' => array(
+		    		array('user_id' => (string) $user['_id'],
+		    			  'type' => "Shipping"),
+		    		array('user_id' => (string) $user['_id'],
+		    			  'default' =>  "1",
+		    			  'type' => "Shipping"))))); 
+									  						
 		return compact('billing', 'shipping');
 	}
 }

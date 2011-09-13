@@ -98,6 +98,8 @@ class BaseController extends \lithium\action\Controller {
 		* Remove pixel to avoid firing it again
 		**/
 		Session::delete('pixel');
+		#Clean Credit Card Infos if out of Orders/CartController
+		$this->CleanCC();
 		/**
 		* Send pixel to layout
 		**/
@@ -204,6 +206,19 @@ class BaseController extends \lithium\action\Controller {
         preg_match('#(\*)\s[a-zA-Z0-9_-]*(.)*#', $out, $parse);
         $pos = stripos($parse[0], " ");
         return trim(substr($parse[0], $pos));
+	}
+	/**
+	* Clean Credits Card Infos if out of Cart/Orders/Search ??? Controller
+	**/
+	public function cleanCC() {
+		if ($this->request->params['controller']  != "orders"
+			&& $this->request->params['controller']  != "cart"
+			&& $this->request->params['controller']  != "search") 
+		{
+			if(Session::check('cc_infos')) {
+				Session::delete('cc_infos');
+			}
+		}
 	}
 }
 
