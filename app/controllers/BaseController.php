@@ -72,7 +72,7 @@ class BaseController extends \lithium\action\Controller {
 		 if ($user) {
 			$cookie = Session::read('cookieCrumb', array('name'=>'cookie'));
 			$userData = $user->data();
-			if(array_key_exists('affiliate',$cookie)){
+			if(is_array($cookie) && array_key_exists('affiliate',$cookie)){
                 Affiliate::linkshareCheck($user->_id, $cookie['affiliate'], $cookie);
             }
             if (array_key_exists('invited_by',$userInfo)){

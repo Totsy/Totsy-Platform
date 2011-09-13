@@ -1,11 +1,18 @@
 <?php
 ini_set('display_errors', 0);
-set_error_handler("myErrorHandler");
-register_shutdown_function('myErrorHandler');
+//set_error_handler("myErrorHandler");
+//register_shutdown_function('myErrorHandler');
 
 function myErrorHandler() {
-	
 	$lastError = error_get_last();
+
+/*
+echo "<pre>";
+print_r($lastError);
+print_r(\lithium\analysis\Debugger::trace());
+die();
+*/
+	
 	
 	if ( !is_null($lastError) ){
 		header("HTTP/1.0 500 Internal Server Error");

@@ -337,7 +337,7 @@ class Cart extends Base {
 	* Refresh the timer for each timer in the cart 
 	* @see app/models/Cart::check()
 	*/
-	public function refreshTimer() {
+	public static function refreshTimer() {
 		$actual_cart = Cart::active();
 		if (!empty($actual_cart)) {
 			$items = $actual_cart->data();
