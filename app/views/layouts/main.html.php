@@ -46,12 +46,14 @@
 			} 
 		}
 	?>
+	<?php if (isset($title) && isset($tags)){ ?>
 	<meta name="sailthru.title" content="<?php echo strip_tags($title); ?>" />
 	<meta name="sailthru.tags" content="<?php echo strip_tags($tags); ?>" />
+	<?php } ?>
 
 </head>
 <body class="app">
-	<?php echo $branch; ?>
+	<?php if(isset($branch)) { echo $branch; } ?>
 <div class="container_16 roundy glow">
 	<div class="grid_3 alpha" style="margin:5px 0px 0px 5px;">
 		<?php echo $this->html->link($this->html->image('logo.png', array('width'=>'120')), '/sales', array('escape'=> false)); ?>

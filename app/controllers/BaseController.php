@@ -47,7 +47,7 @@ class BaseController extends \lithium\action\Controller {
 				'conditions' => array('_id' => $userInfo['_id']),
 				'fields' => array('total_credit', 'deactivated','affiliate_share')
 			));
-			if ($user) {
+			if (isset($user) && $user) {
 			    /**
 			    * If the users account has been deactivated during login,
 			    * destroy the users session.
@@ -69,7 +69,7 @@ class BaseController extends \lithium\action\Controller {
 		**/
 		$invited_by = NULL;
 		
-		 if ($user) {
+		 if (isset($user) && $user) {
 			$cookie = Session::read('cookieCrumb', array('name'=>'cookie'));
 			$userData = $user->data();
 			if(is_array($cookie) && array_key_exists('affiliate',$cookie)){
@@ -84,7 +84,7 @@ class BaseController extends \lithium\action\Controller {
 		/**
 		* If visitor lands on affliate url e.g www.totsy.com/a/afflilate123
 		**/
-		if ($this->request->params['controller']  == "affiliates" &&  
+		if (is_object($this->request) && isset($this->request->params) && $this->request->params['controller']  == "affiliates" &&  
 			$this->request->params['action'] == "register" & empty($invited_by)) {
 			$invited_by = $this->request->args[0];
 		}
@@ -211,7 +211,7 @@ class BaseController extends \lithium\action\Controller {
 	* Clean Credits Card Infos if out of Cart/Orders/Search ??? Controller
 	**/
 	public function cleanCC() {
-		if ($this->request->params['controller']  != "orders"
+		if (is_object($this->request) && isset($this->request->params) && $this->request->params['controller']  != "orders"
 			&& $this->request->params['controller']  != "cart"
 			&& $this->request->params['controller']  != "search") 
 		{

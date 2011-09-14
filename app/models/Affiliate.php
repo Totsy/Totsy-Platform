@@ -66,7 +66,7 @@ class Affiliate extends Base {
         }
 		foreach($pixels as $data) {
 			foreach($data['pixel'] as $index) {
-                if(in_array($url, $index['page'])) {
+                if(is_array($index['page']) && in_array($url, $index['page'])) {
                     if($url == '/orders/view'){
                         $pixel .= static::generatePixel($invited_by, $index['pixel'], array( 'orderid' => $orderid));
                     }else{
