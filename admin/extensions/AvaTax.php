@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace admin\extensions;
 
 use lithium\analysis\Logger;
@@ -9,9 +9,8 @@ use admin\extensions\BlackBox;
 use AvaTaxWrap;
 use Exception;
 
-
 /**
- * 
+ *
  * AvaTax implementation for the aadmin app (there is another one for front-end app)
  *
  */
@@ -22,7 +21,7 @@ class AvaTax extends \lithium\core\StaticObject {
 
 	/**
 	 * Switcher for avalara/totsy tax calculation system
-	 * 
+	 *
 	 */
 	protected static $useAvatax = true;
 
@@ -79,17 +78,17 @@ class AvaTax extends \lithium\core\StaticObject {
 		}
 
 		if (static::$useAvatax === false){
-			return array( 
+			return array(
 				'tax'=>static::totsyCalculateTax($data),
 				'avatax' => static::$useAvatax
-			);			
+			);
 		}
-		
-		try{	
-			return array( 
+
+		try{
+			return array(
 				'tax'=> AvaTaxWrap::getTax($data),
 				'avatax' => static::$useAvatax
-			);	
+			);
 		} catch (Exception $e){
 			// Try again or return 0;
 			BlackBox::tax('can not calculate tax via avalara.');
@@ -104,8 +103,8 @@ class AvaTax extends \lithium\core\StaticObject {
 						'message' => 'Avatax system was unreachable.<br>Tax calculation was performed internally using default state tax.',
 						'trace' => 'ADMIN @ '.date('Y-m-d H:i:s'),
 						'info' => $data
-					));	
-					return array( 
+					));
+					return array(
 						'tax'=>static::totsyCalculateTax($data),
 						'avatax' => static::$useAvatax
 					);
@@ -116,18 +115,18 @@ class AvaTax extends \lithium\core\StaticObject {
 						'trace' => 'ADMIN @ '.date('Y-m-d H:i:s'),
 						'info' => $data
 					));
-					return 0;		
+					return 0;
 				}
 			}
 		}
-	} 
-	
+	}
+
   	public static function postTax($data,$tryNumber=0){
-  		
+
   		if (is_array($data) && array_key_exists('cartByEvent',$data) ){
 			$data['items'] = static::getCartItems($data['cartByEvent']);
 			static::shipping($data);
-		}  		
+		}
   		$data['admin'] = 1;
   		try {
   			return AvaTaxWrap::getAndCommitTax($data);
@@ -149,11 +148,11 @@ class AvaTax extends \lithium\core\StaticObject {
 			}
 		}
   	}
-	
+
   	public static function returnTax($data,$tryNumber=0){
   		$data['doctype'] = 'return';
 
-  		try{		
+  		try{
 	  		static::getTax($data);
 			static::commitTax($data['order']['order_id']);
 		} catch (Exception $e){
@@ -195,15 +194,15 @@ class AvaTax extends \lithium\core\StaticObject {
 			}
 		}
 	}
-	
+
   	private static function totsyCalculateTax ($data) {
   		if (!array_key_exists('overShippingCost',$data)) { $data['overShippingCost'] = 0; }
   		if (!array_key_exists('shippingCost',$data)) { $data['shippingCost'] = 0; }
-  		
+
   		$tax = array_sum($data['ordermodel']::tax($data['current_order'],$data['itms']));
   		return $tax ? $tax + (($data['overShippingCost'] + $data['shippingCost']) * $data['ordermodel']::TAX_RATE) : 0;
   	}
-	
+
 	protected static function getCartItems($cartByEvent){
 		$items = array();
 		foreach ($cartByEvent as $key => $event){
@@ -213,7 +212,7 @@ class AvaTax extends \lithium\core\StaticObject {
 		}
 		return $items;
 	}
-	
+
 	protected static function shipping (&$data){
 		if (array_key_exists('shippingCost', $data) && $data['shippingCost']>0 ){
 			$data['items'][] = array(
@@ -224,7 +223,7 @@ class AvaTax extends \lithium\core\StaticObject {
 				'quantity' => 1,
 				'sale_retail' => $data['shippingCost'],
 				'taxIncluded' => true
-			);	
+			);
 		}
 
 		if (array_key_exists('overShippingCost', $data) && $data['overShippingCost']>0 ){
@@ -236,9 +235,9 @@ class AvaTax extends \lithium\core\StaticObject {
 				'quantity' => 1,
 				'sale_retail' => $data['overShippingCost'],
 				'taxIncluded' => true
-			);	
+			);
 		}
-	} 
+	}
 }
 
 ?>
