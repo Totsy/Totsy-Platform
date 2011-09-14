@@ -66,7 +66,7 @@ class Affiliate extends Base {
         }
 		foreach($pixels as $data) {
 			foreach($data['pixel'] as $index) {
-                if(in_array($url, $index['page'])) {
+                if(is_array($index['page']) && in_array($url, $index['page'])) {
                     if($url == '/orders/view'){
                         $pixel .= static::generatePixel($invited_by, $index['pixel'], array( 'orderid' => $orderid));
                     }else{
@@ -200,7 +200,19 @@ class Affiliate extends Base {
                 $event = Event::find('first', array('conditions' => array(
                             'url' => $vendorurl
                         )));
-                $insert = static::spinback_share('/image/' .$event->logo_image . '.gif',$event->_id, $options['event'],  htmlspecialchars($event->name), htmlspecialchars($event->name), "Check out this SALE on Totsy!", ' st="Share this Sale!"'  );
+		if (is_object($event)){
+                	$insert = static::spinback_share(
+				'/image/' .$event->logo_image . '.gif',
+				$event->_id, 
+				$options['event'],  
+				htmlspecialchars($event->name), 
+				htmlspecialchars($event->name),
+				"Check out this SALE on Totsy!", 
+				' st="Share this Sale!"'  
+			);
+		} else {
+			$insert = '';
+		}
                return str_replace('$',$insert,$pixel);
             }
         }
