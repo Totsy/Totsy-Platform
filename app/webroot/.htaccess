@@ -4,8 +4,8 @@
 
     #RewriteCond %{HTTP_HOST} !^www\.totsystaging\.com [NC]
     #RewriteRule ^(.*)$ http://www.totsystaging.com/$1 [R=301,L]
-    RewriteCond %{HTTP_HOST} !^www\.totsy\.com [NC]
-    RewriteRule ^(.*)$ http://www.totsy.com/$1 [R=301,L]
+    #RewriteCond %{HTTP_HOST} !^www\.totsy\.com [NC]
+    #RewriteRule ^(.*)$ http://www.totsy.com/$1 [R=301,L]
 
     RewriteCond %{SERVER_PORT} !^443$
     RewriteRule ^checkout/(.*)$ https://%{SERVER_NAME}/checkout/$1 [NC,L]

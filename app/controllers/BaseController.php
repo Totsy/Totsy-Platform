@@ -92,7 +92,12 @@ class BaseController extends \lithium\action\Controller {
 		/**
 		* Retrieve any pixels that need to be fired off
 		**/
-		$pixel = Affiliate::getPixels($this->request->url, $invited_by);
+		if (is_object($this->request) && isset($this->request->url)){
+			$url = $this->request->url;
+		} else {
+			$url = $_SERVER['REQUEST_URI'];
+		}
+		$pixel = Affiliate::getPixels($url, $invited_by);
 		$pixel .= Session::read('pixel');
 		/**
 		* Remove pixel to avoid firing it again

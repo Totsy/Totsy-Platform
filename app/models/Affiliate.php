@@ -200,7 +200,19 @@ class Affiliate extends Base {
                 $event = Event::find('first', array('conditions' => array(
                             'url' => $vendorurl
                         )));
-                $insert = static::spinback_share('/image/' .$event->logo_image . '.gif',$event->_id, $options['event'],  htmlspecialchars($event->name), htmlspecialchars($event->name), "Check out this SALE on Totsy!", ' st="Share this Sale!"'  );
+		if (is_object($event)){
+                	$insert = static::spinback_share(
+				'/image/' .$event->logo_image . '.gif',
+				$event->_id, 
+				$options['event'],  
+				htmlspecialchars($event->name), 
+				htmlspecialchars($event->name),
+				"Check out this SALE on Totsy!", 
+				' st="Share this Sale!"'  
+			);
+		} else {
+			$insert = '';
+		}
                return str_replace('$',$insert,$pixel);
             }
         }
