@@ -174,7 +174,7 @@
 
 			<?=$this->form->create(null, array('url' => 'Cart::add')); ?>
 <?php if (!empty($sizes)): ?>
-				<?php if ( !((string)$sizes[0] ==='no size')): ?>
+				<?php if ( !((string)strtolower($sizes[0]) ==='no size')): ?>
 						<select name="item_size" id="size-select">
 									<option value="">Please Select Size</option>
 							<?php foreach ($sizes as $value): ?>
