@@ -258,18 +258,29 @@ class UsersController extends BaseController {
 		return compact('message', 'fbsession', 'fbconfig');
 	}
 
-	protected function autoLogin(){
+	protected function autoLogin() {
+	
 		$redirect = '/sales';
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 		$result = static::facebookLogin(null, $cookie, $ipaddress);
 		extract($result);
+		
+		$fbCancelFlag = false;
+		
+		if (array_key_exists('fbcancel', $this->request->query)) {
+			$fbCancelFlag = $this->request->query['fbcancel'];
+		}
+		
 		if (!$success) {
 			if (!empty($userfb)) {
-				$self = static::_object();
-				$self->redirect('/register/facebook');
+				$self = static::_object();			
+				if(!$fbCancelFlag) {
+					$self->redirect('/register/facebook');
+				}
 			}
 		}
+		
 		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
 				'conditions' => array('autologinHash' => $cookie['autoLoginHash']),
