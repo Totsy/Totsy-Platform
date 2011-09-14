@@ -29,7 +29,10 @@ function print_usage {
 	echo " - fix-perms         Set default permissions on app, admin and resources (excl. libraries)."
 	echo " - run-tests         Runs lithium, app, admin and library tests."
 	echo " - optimize-repo     Perform GC on local git repository."
+<<<<<<< HEAD
 	echo " - source-lithium    Install lithium."
+=======
+>>>>>>> eec8e34... Adding build script.
 	echo " - source-subs       Initialize and update all submodules."
 }
 
@@ -47,6 +50,7 @@ COMMAND=$1
 case $COMMAND in
 	init)
 		echo "Initializing codebase..."
+
 		$0 source-subs
 		$0 fix-perms
 
