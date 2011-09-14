@@ -255,7 +255,7 @@ class OrdersController extends BaseController {
 			if($datas["save"] == 'true') {
 				extract(Order::saveCurrentOrder($datas, $items, $current_user["email"]));
 				if($result == true) {
-					FlashMessage::set("Order items has been updated.", array('class' => 'pass'));
+					FlashMessage::write("Order items has been updated.", array('class' => 'pass'));
 				}
 				#Get Last Saved Order
 				$order_temp = Order::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
