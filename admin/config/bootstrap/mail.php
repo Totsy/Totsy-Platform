@@ -17,7 +17,7 @@ Environment::set('production', array(
 	)
 ));
 
-require_once LITHIUM_APP_PATH.'/libraries/sailthru/Sailthru.php';
+require_once LITHIUM_LIBRARY_PATH . '/sailthru/Sailthru.php';
 Sailthru::__init(Environment::get('development'));
 
 ?>
