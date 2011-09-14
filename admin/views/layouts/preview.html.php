@@ -42,7 +42,7 @@
 				<?=$this->html->link('Invite Friends. Get $15','#',array('title'=>'Invite Friends. Get $15', 'id'=>'if'));?>
 				<p class="clear">
 					<span class="fl">
-						<?=$this->html->link('My Credits', array('#')); ?>
+						<?=$this->html->link('My Credits', '#'); ?>
 						($0)
 					</span>
 					<?=$this->html->link('Cart', '#', array(
