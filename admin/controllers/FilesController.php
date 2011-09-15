@@ -87,7 +87,12 @@ class FilesController extends \lithium\action\Controller {
 
 			if (EventImage::process($bytes, $meta) || ItemImage::process($bytes, $meta)) {
 				/* This implicitly moves it into the "orphaned" state. */
-				$result = $result && (boolean) $file->save(array('pending' => false));
+				if (!$file->save(array('pending' => false))) {
+					$result = false;
+					break;
+				}
+			} else {
+				$result = false;
 			}
 		}
 		if ($this->request->is('ajax')) {
