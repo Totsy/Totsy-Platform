@@ -37,9 +37,6 @@
 .selectlist-list {
     width: 12em;
 }
-#event_media {
-	font-weight: normal;
-}
 </style>
 
 <script type="text/javascript">
