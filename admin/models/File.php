@@ -163,9 +163,14 @@ class File extends \lithium\data\Model {
 		return $name;
 	}
 
-	public function extension($entity) {
-		if ($result = strtolower(pathinfo($entity->name, PATHINFO_EXTENSION))) {
-			return $result;
+	public function extension($entity, array $options = array()) {
+		$defaults = array('quick' => true);
+		$options += $defaults;
+
+		if ($options['quick']) {
+			if ($result = strtolower(pathinfo($entity->name, PATHINFO_EXTENSION))) {
+				return $result;
+			}
 		}
 		$result = Media::type($entity->mimeType());
 
