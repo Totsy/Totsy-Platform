@@ -73,7 +73,7 @@ class FilesController extends \lithium\action\Controller {
 		if ($this->request->scope == 'pending') {
 			$conditions = array();
 			if ($on = $this->request->on) {
-				$conditions += compact('on');
+				$conditions += array('event_id' => $on);
 			}
 			$files = File::pending($conditions);
 		} else {
@@ -83,6 +83,10 @@ class FilesController extends \lithium\action\Controller {
 		}
 		foreach ($files as $file) {
 			$meta = array('name' => $file->name);
+
+			if ($file->event_id) {
+				$meta += array('event_id' => $file->event_id);
+			}
 			$bytes = $file->file->getBytes();
 
 			if (EventImage::process($bytes, $meta) || ItemImage::process($bytes, $meta)) {
