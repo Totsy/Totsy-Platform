@@ -252,7 +252,7 @@ class EventsController extends BaseController {
 		    //Remove this when $_schema is setup
 		    unset($eventData['itemTable_length']);
 		    if ($event->save($eventData)) {
-		    	$this->redirect(array('Events::edit', 'args' => array($event->_id . '#event_media')));
+				$this->redirect(array('Events::edit', 'args' => array($event->_id . '#event_media_upload')));
 		    }
 		}
 
