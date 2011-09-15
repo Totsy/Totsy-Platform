@@ -11,7 +11,6 @@ $renameUrl = $this->url(array(
 ));
 
 ?>
-
 <?=$this->html->image($item->url(), array('alt' => 'image')); ?>
 <div class="meta">
 	<?php if ($editable): ?>
