@@ -38,6 +38,9 @@ label {
 	padding-top: 3px;
 }
 
+.positive { color: green; }
+.negative { color: red; }
+
 #event_items .images li:first-child img {
 	height: 160px;
 	width: auto;
