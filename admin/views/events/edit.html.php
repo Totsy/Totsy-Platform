@@ -588,8 +588,6 @@ $(function() {
 				This tab show the status of media associated with the items of this event.
 			</p>
 			<div id="event_media_status_data"><!-- Populated through AJAX request. --></div>
-
-		</div>
 		<!-- End Tab -->
 	</div>
 	<!-- End Tabs -->
