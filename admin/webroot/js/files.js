@@ -72,5 +72,34 @@ $(function() {
 		});
 	});
 
+	/* On return/enter key blur thus trigger saving. */
+	$('[contenteditable]').live('keypress', function(e) {
+		if (e.which == 13) {
+			$(this).blur();
+		}
+	});
+
+	$('.file .name').live('blur', function(e) {
+		var item = $(this);
+		item.addClass('saving');
+
+		$.ajax({
+			type: "POST",
+			url: item.attr('target'),
+			data: {
+				name: item.html()
+			},
+			success: function(data) {
+				item.removeClass('saving');
+
+				/* Update name in case it has changed due fixing the extension. */
+				item.html(data.name);
+			},
+			error: function() {
+				item.removeClass('saving');
+				item.addClass('error');
+			}
+		});
+	});
 });
 
