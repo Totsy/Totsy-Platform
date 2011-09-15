@@ -401,6 +401,8 @@ $(function() {
 				This includes event images <em>as well as item images</em>.
 				Please ensure all event images follow the naming conventions below.
 
+				This page also allows to manage any pending files binded to this event.
+
 				For more information and other methods to upload files please see <?=$this->html->link('File Management', 'Files::index'); ?>.
 			</p>
 			<div class="tab_region_left_col">
@@ -438,42 +440,44 @@ $(function() {
 				</div>
 			</div>
 
-            <hr />
+			<div class="box uploader">
+				<form id="EventMedia">
+					<?php // Without this event_id being passed along with the files, Item images could not be saved. ?>
+					<input type="hidden" name="event_id" value="<?php echo (string)$event->_id; ?>" />
+				</form>
+				<div id="agile_file_upload"></div>
+				<script type="text/javascript">
+					$('#agile_file_upload').agileUploader({
+						flashSrc: '<?=$this->url('/swf/agile-uploader.swf'); ?>',
+						submitRedirect: '<?=$this->url('/events/edit/' . (string)$event->_id); ?>',
+						formId: 'EventMedia',
+						removeIcon: '<?=$this->url('/img/agile_uploader/trash-icon.png'); ?>',
+						flashVars: {
+							button_up: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
+							button_down: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
+							button_over: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
+							//form_action: $('#EventEdit').attr('action'),
+							form_action: '<?=$this->url('/files/upload/all'); ?>',
+							file_limit: 30,
+							max_height: '1000',
+							max_width: '1000',
+							file_filter: '*.jpg;*.jpeg;*.gif;*.png;*.JPG;*.JPEG;*.GIF;*.PNG',
+							resize: 'jpg,jpeg,gif',
+							force_preview_thumbnail: 'true',
+							firebug: 'false'
+						}
+					});
+				</script>
 
-			<form id="EventMedia">
-				<?php // Without this event_id being passed along with the files, Item images could not be saved. ?>
-				<input type="hidden" name="event_id" value="<?php echo (string)$event->_id; ?>" />
-			</form>
-			<div id="agile_file_upload"></div>
-			<script type="text/javascript">
-				$('#agile_file_upload').agileUploader({
-					flashSrc: '<?=$this->url('/swf/agile-uploader.swf'); ?>',
-					submitRedirect: '<?=$this->url('/events/edit/' . (string)$event->_id); ?>',
-					formId: 'EventMedia',
-					removeIcon: '<?=$this->url('/img/agile_uploader/trash-icon.png'); ?>',
-					flashVars: {
-						button_up: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
-						button_down: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
-						button_over: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
-						//form_action: $('#EventEdit').attr('action'),
-						form_action: '<?=$this->url('/files/upload/all'); ?>',
-						file_limit: 30,
-						max_height: '1000',
-						max_width: '1000',
-						file_filter: '*.jpg;*.jpeg;*.gif;*.png;*.JPG;*.JPEG;*.GIF;*.PNG',
-						resize: 'jpg,jpeg,gif',
-						force_preview_thumbnail: 'true',
-						firebug: 'false'
-					}
-				});
-			</script>
-			<a
-				href="#"
-				class="upload_files_link"
-				onClick="document.getElementById('agileUploaderSWF').submit();"
-			>
-				Start Upload <?=$this->html->image('agile_uploader/upload-icon.png', array('height' => '24')); ?>
-			</a>
+				<a
+					href="#"
+					class="upload_files_link"
+					onClick="document.getElementById('agileUploaderSWF').submit();"
+				>
+					Start Upload <?=$this->html->image('agile_uploader/upload-icon.png', array('height' => '24')); ?>
+				</a>
+			</div>
+			<?=$this->view()->render(array('element' => 'files_pending'), array('item' => $event)); ?>
 		</div>
 		<!-- Tab End -->
 
@@ -481,7 +485,6 @@ $(function() {
 		<div id="event_media_status">
 			<p>
 				This tab show the status of media associated with the items of this event.
-				It also allows to manage any pending files for this event or its items.
 			</p>
 			<div class="box">
 				<h2>Item Image Status</h2>
@@ -515,7 +518,6 @@ $(function() {
 					</tbody>
 				</table>
 			</div>
-			<?=$this->view()->render(array('element' => 'files_pending'), array('item' => $event)); ?>
 		</div>
 		<!-- Tab End -->
 	</div>
