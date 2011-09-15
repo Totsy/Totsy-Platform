@@ -96,6 +96,7 @@ class FilesController extends \lithium\action\Controller {
 					break;
 				}
 			} else {
+				Logger::debug("Was unable to associate `{$meta['name']}`.");
 				$result = false;
 			}
 		}
