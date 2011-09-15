@@ -12,6 +12,7 @@ use admin\models\User;
 use admin\models\Item;
 use admin\extensions\AvaTax;
 use admin\models\Credit;
+use Exception;
 
 /**
 * The Orders Model is related to the Orders Collection in MongoDB.
@@ -487,6 +488,11 @@ class Order extends Base {
 		}
 		//Get Actual Taxes
 		extract(static::recalculateTax($selected_order,$items));
+
+		if ($tax instanceof Exception) {
+			/* Rethrow exceptions recived while recalculating tax. */
+			throw $tax;
+		}
 		if (is_object($tax)) {
             //Avatax::totsyCalculateTax($selected_order);
             //$tax = static::tax($selected_order,$items);
