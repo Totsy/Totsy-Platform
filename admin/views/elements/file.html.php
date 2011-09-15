@@ -1,3 +1,10 @@
+<?
+
+extract(array(
+	'item' => null
+), EXTR_SKIP);
+
+?>
 <?=$this->html->image($item->url(), array('alt' => 'image')); ?>
 <div class="meta">
 	<div class="name"><?=$item->name ?></div>
