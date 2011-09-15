@@ -25,7 +25,7 @@ class FilesController extends \lithium\action\Controller {
 
 		$conditions = array();
 		if ($on = $this->request->on) {
-			$conditions += compact('on');
+			$conditions += array('event_id' => $on);
 		}
 
 		$files = File::pending($conditions);
