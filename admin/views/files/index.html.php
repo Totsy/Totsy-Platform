@@ -179,31 +179,14 @@ if (!empty($user['token'])) {
 </div>
 
 <div class="clear"></div>
-<div class="box">
-	<h2>Manage Pending Files</h2>
-	<div class="actions">
-		<?=$this->html->link('refresh', 'Files::pending', array(
-			'class' => 'refresh', 'target' => '#pending'
-		)); ?>
-		<?=$this->html->link('auto-associate all', array(
-			'action' => 'associate', 'scope' => 'pending'
-		)); ?>
-	</div>
-	<div class="block">
-		<p>
-			Files not yet associated with any item or event.
-			These files have not been resized and are umodified from their <em>original</em> state.
-		</p>
-		<div id="pending"><!-- Populated through an AJAX request. --></div>
-	</div>
-</div>
+<?=$this->view()->render(array('element' => 'files_pending'), compact('item')); ?>
 
 <div class="clear"></div>
-<div class="box">
+<div id="orphaned" class="box">
 	<h2>Manage Orphan Files</h2>
 	<div class="actions">
 		<?=$this->html->link('refresh', 'Files::orphaned', array(
-			'class' => 'refresh', 'target' => '#orphaned'
+			'class' => 'refresh', 'target' => '#orphaned-data'
 		)); ?>
 	</div>
 	<div class="block">
@@ -212,6 +195,6 @@ if (!empty($user['token'])) {
 			These files can probably be deleted in order to free space.<br/>
 			Files must be flagged as orphaned, to do so run the <em>file-orphaned command</em>.
 		</p>
-		<div id="orphaned"><!-- Populated through an AJAX request. --></div>
+		<div id="orphaned-data"><!-- Populated through an AJAX request. --></div>
 	</div>
 </div>

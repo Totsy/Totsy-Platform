@@ -36,15 +36,15 @@ $(function() {
 	$('a[href*="/associate/pending"]').live('click', function(e) {
 		e.preventDefault();
 
-		$('#pending').html('<div class="loading">Associating…</div>');
+		$('#pending-data').html('<div class="loading">Associating…</div>');
 
 		$.ajax({
 			async: false,
 			type: "POST",
 			url: $(this).attr('href'),
 			success: function() {
-				$('[target="#pending"]').click();
-				$('[target="#orphaned"]').click();
+				$('[target="#pending-data"]').click();
+				$('[target="#orphaned-data"]').click();
 			},
 			error: function() {
 				item.addClass('error');
@@ -63,7 +63,7 @@ $(function() {
 			success: function() {
 				item.fadeOut("normal", function() {
 					$(this).remove();
-					$('[target="#orphaned"]').click();
+					$('[target="#orphaned-data"]').click();
 				});
 			},
 			error: function() {
