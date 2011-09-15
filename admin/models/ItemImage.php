@@ -10,7 +10,7 @@ class ItemImage extends \admin\models\Image {
 			'field' => 'primary_image',
 			'multiple' => false,
 			'regex' => array(
-				'/^items\_.+\_primary\..*/i'
+				'/^items\_.+\_p(rimary)?\..*/i'
 			),
 			'uploadName' => array(
 				'form' => 'items_{:url}_{:name}.jpg',
@@ -22,7 +22,7 @@ class ItemImage extends \admin\models\Image {
 			'field' => 'zoom_image',
 			'multiple' => false,
 			'regex' => array(
-				'/^items\_.+\_zoom\..*/i'
+				'/^items\_.+\_z(oom)?\..*/i'
 			),
 			'uploadName' => array(
 				'form' => 'items_{:url}_{:name}.jpg',
@@ -34,8 +34,8 @@ class ItemImage extends \admin\models\Image {
 			'field' => 'alternate_images',
 			'multiple' => true,
 			'regex' => array(
-				'/^items\_.+\_alternate.+\..*/i',
-				'/^items\_.+\_alternate\..*/i'
+				'/^items\_.+\_a(lternate)?.+\..*/i',
+				'/^items\_.+\_a(lternate)?\..*/i'
 			),
 			'uploadName' => array(
 				'form' => 'items_{:url}_{:name}.jpg',
