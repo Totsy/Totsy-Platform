@@ -48,6 +48,9 @@ h2 + .actions {
 .files.naming {
 	font-weight: normal;
 }
+.files.naming dd {
+	font-family: monospace;
+}
 
 #event_media_status table {
 	margin: 1em; 0;
