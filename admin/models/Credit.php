@@ -57,6 +57,8 @@ class Credit extends Base {
 		$credit->created = static::dates('now');
 		$options['type'] = empty($options['type']) ? null : $options['type'];
 		$credit->description = empty($data['description']) ? null : $data['description'];
+		$amount = 0;
+
 		if ($user) {
 			$credit->admin_id = $user['_id'];
 			$amount = $data['sign'].$data['amount'];
