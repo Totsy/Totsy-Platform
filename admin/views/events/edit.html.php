@@ -23,6 +23,8 @@
 <?=$this->html->script('agile-uploader-3.0.js')?>
 <?=$this->html->style('agile_uploader.css');?>
 <?=$this->html->style('admin_common.css');?>
+
+<?=$this->html->script('files.js');?>
 <?=$this->html->style('files.css');?>
 
 <style type="text/css">
@@ -237,11 +239,12 @@ $(function() {
 <div class="grid_16">
 	<div id="tabs">
 		<ul>
-		    <li><a href="#event_info"><span>Event Info</span></a></li>
-		    <li><a href="#event_items"><span>Event Items</span></a></li>
-		    <li><a href="#event_history"><span>Event History</span></a></li>
+		    <li><a href="#event_info"><span>Info</span></a></li>
+		    <li><a href="#event_items"><span>Items</span></a></li>
+		    <li><a href="#event_history"><span>History</span></a></li>
 		    <li><a href="#event_inventory" id="inventoryLink"><span>Event Inventory</span></a></li>
-			<li><a href="#event_media"><span>Upload Event Media</span></a></li>
+			<li><a href="#event_media_upload"><span>Media Upload</span></a></li>
+			<li><a href="#event_media_status"><span>Media Status</span></a></li>
 		</ul>
 
 		<div id="event_info">
@@ -470,8 +473,8 @@ $(function() {
 		<div id="event_inventory">
 			<iframe id="inventoryIframe" src="" style="width:900px; height:400px;"></iframe>
 		</div>
-		<div id="event_media">
-			<h3 id="uploaded_media">Upload Media</h3>
+		<!-- Tab -->
+		<div id="event_media_upload">
 			<p>
 				Upload all event media here.
 				This includes event images <em>as well as item images</em>.
@@ -513,7 +516,7 @@ $(function() {
 					</div>
 				</div>
 			</div>
-			
+
             <hr />
 
 			<form id="EventMedia">
@@ -543,6 +546,48 @@ $(function() {
 			</script>
 			<a href="#" class="upload_files_link" onClick="document.getElementById('agileUploaderSWF').submit();">Start Upload <?=$this->html->image('agile_uploader/upload-icon.png', array('height' => '24')); ?></a>
 		</div>
+
+		<!-- Tab -->
+		<div id="event_media_status">
+			<p>
+				This tab show the status of media associated with the items of this event.
+				It also allows to manage any pending files for this event or its items.
+			</p>
+			<div class="box">
+				<h3>Item Image Status</h3>
+				<table>
+					<thead>
+						<tr>
+							<th>Vendor Style ID</th>
+							<th>Primary</th>
+							<th>Zoom</th>
+							<th>Alternates</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach ($eventItems as $item): ?>
+						<tr>
+							<?php $images = $item->images(); ?>
+							<td><?=$this->html->link($item->vendor_style, array(
+								'controller' => 'items', 'action' => 'view', 'id' => $item->_id
+							)); ?></td>
+							<td class="<?= $images['primary'] ? 'positive' : 'negative'; ?>">
+								<?=$images['primary'] ? '✔' : '✘'; ?>
+							</td>
+							<td class="<?= $images['zoom'] ? 'positive' : 'negative'; ?>">
+								<?=$images['zoom'] ? '✔' : '✘'; ?>
+							</td>
+							<td>
+								<?=$images['alternate'] ? count($images['alternate']) : '–'; ?>
+							</td>
+						</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+			</div>
+			<?=$this->view()->render(array('element' => 'files_pending'), array('item' => $event)); ?>
+		</div>
+		<!-- Tab End -->
 	</div>
 </div>
 <script type="text/javascript">
