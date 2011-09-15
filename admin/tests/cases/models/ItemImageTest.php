@@ -9,6 +9,7 @@ class ItemImageTest extends \lithium\test\Unit {
 
 	public function testProcessMapPrimary() {
 		$names = array(
+			'items_shirt_p.jpg',
 			'items_shirt_primary.jpg',
 			'items_shirt-yellow_primary.jpg'
 		);
@@ -22,6 +23,7 @@ class ItemImageTest extends \lithium\test\Unit {
 
 	public function testProcessMapZoom() {
 		$names = array(
+			'items_shirt_z.jpg',
 			'items_shirt_zoom.jpg',
 			'items_shirt-yellow_zoom.jpg'
 		);
@@ -35,6 +37,9 @@ class ItemImageTest extends \lithium\test\Unit {
 
 	public function testProcessMapAlternate() {
 		$names = array(
+			'items_shirt_a.jpg',
+			'items_shirt_aB.jpg',
+			'items_shirt_a0.jpg',
 			'items_shirt_alternate.jpg',
 			'items_shirt-blue_alternate.jpg',
 			'items_shirt-blue_alternate0.jpg',
