@@ -564,7 +564,7 @@ $(function() {
 				It also allows to manage any pending files for this event or its items.
 			</p>
 			<div class="box">
-				<h3>Item Image Status</h3>
+				<h2>Item Image Status</h2>
 				<table>
 					<thead>
 						<tr>
