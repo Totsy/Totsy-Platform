@@ -30,7 +30,7 @@ use lithium\util\Inflector;
 <?=$this->html->style('admin_common.css');?>
 <?=$this->html->script('files.js');?>
 <?=$this->html->style('files.css');?>
-
+HEAD
 <style type="text/css">
 .selectlist-list {
     list-style: none outside none;
