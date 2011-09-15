@@ -43,7 +43,6 @@ class FilesController extends \lithium\action\Controller {
 				break;
 			}
 		}
-
 		$files = File::pending($conditions);
 		return compact('files');
 	}
