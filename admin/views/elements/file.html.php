@@ -26,7 +26,7 @@ $renameUrl = $this->url(array(
 		if ($item->created_date) {
 			$meta[] = date('m/d/y', $item->created_date->sec);
 		}
-		$meta[] = sprintf('%.2f MB', $item->file->getSize() / MEGABYTE);
+		$meta[] = sprintf('%d KB', $item->file->getSize() / KILOBYTE);
 
 		if ($item->mime_type) {
 			$meta[] = $item->mime_type;
