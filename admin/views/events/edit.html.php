@@ -428,7 +428,7 @@ $(function() {
 
 			<br><br>
 			<h2 id="">Delete Items</h2>
-				<p>Click the button below to delete all items from this event. <strong>WARNING - This action cannot be undone. All items associated with this event will be deleted!!!!!!<strong></p>
+				<p>Click the button below to delete all items from this event. <strong>WARNING - This action cannot be undone. All items associated with this event will be deleted!!!!!!</strong></p>
 				<?=$this->form->create(null, array('url' => 'Items::removeItems', 'name' => 'item-delete')); ?>
 					<?=$this->form->hidden('event', array('value' => $event->_id)); ?>
 					<?=$this->form->submit('Delete All Items'); ?>
