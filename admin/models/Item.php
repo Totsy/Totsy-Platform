@@ -148,12 +148,11 @@ class Item extends \lithium\data\Model {
 		$type = ItemImage::$types[$name];
 
 		if ($type['multiple']) {
-			$images = $entity->{$type['field']} ? $entity->{$type['field']}->data() : array();
-
-			if (!in_array($id, $images)) {
-				$images[] = $id;
-			}
-			$entity->{$type['field']} = $images;
+			static::update(
+				array('$push' => array('alternate_images' => $id)),
+				array('_id' => (string) $entity->_id)
+			);
+			$entity = static::first(array('conditions' => array('_id' => $entity->_id)));
 		} else {
 			$entity->{$type['field']} = $id;
 		}
