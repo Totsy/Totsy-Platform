@@ -149,7 +149,7 @@ class Item extends \lithium\data\Model {
 
 		if ($type['multiple']) {
 			static::update(
-				array('$push' => array('alternate_images' => $id)),
+				array('$push' => array($type['field'] => $id)),
 				array('_id' => (string) $entity->_id)
 			);
 			$entity = static::first(array('conditions' => array('_id' => $entity->_id)));
