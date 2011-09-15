@@ -144,12 +144,24 @@ class File extends \lithium\data\Model {
 	}
 
 	public function rename($entity, $name) {
+		/* Mistakenly pasted tags. */
+		$name = strip_tags($name);
+
+		/* Names may contain slashes which confuse PHP's filename parsing
+		   mechanisms. However slashes are allowed as we're storing in
+		   GridFS. Also: Escape any other charactes that are valid i.e. Vendor
+		   Styles but not files. */
+		$escape = array('/' => '-+-');
+		$name = strtr($name, $escape);
+
 		$name = pathinfo($name, PATHINFO_FILENAME);
 		$extension = $entity->extension(array('quick' => false));
 
 		if ($extension) {
 			$name .= ".{$extension}";
 		}
+		$name = strtr($name, array_flip($escape));
+
 		$entity->name = $entity->file->name = $name;
 
 		return $entity;
