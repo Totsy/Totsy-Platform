@@ -129,8 +129,8 @@ class File extends \lithium\data\Model {
 		return (boolean) $result->count();
 	}
 
-	public static function pending() {
-		return static::all(array('conditions' => array('pending' => true)));
+	public static function pending($conditions = array()) {
+		return static::all(array('conditions' => array('pending' => true) + $conditions));
 	}
 
 	/**

@@ -23,7 +23,12 @@ class FilesController extends \lithium\action\Controller {
 	public function pending() {
 		$this->_render['layout'] = !$this->request->is('ajax');
 
-		$files = File::pending();
+		$conditions = array();
+		if ($on = $this->request->on) {
+			$conditions += compact('on');
+		}
+
+		$files = File::pending($conditions);
 		return compact('files');
 	}
 
@@ -52,7 +57,11 @@ class FilesController extends \lithium\action\Controller {
 		$result = true;
 
 		if ($this->request->scope == 'pending') {
-			$files = File::pending();
+			$conditions = array();
+			if ($on = $this->request->on) {
+				$conditions += compact('on');
+			}
+			$files = File::pending($conditions);
 		} else {
 			if ($file = File::first(array('_id' => $this->request->id))) {
 				$files[] = $file;
