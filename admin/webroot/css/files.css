@@ -40,7 +40,8 @@ h2 + .actions {
 .file.error {
 	width: auto;
 }
-#pending, #orphaned {
+#pending-data,
+#orphaned-data {
 	margin-top: 2em;
 	min-height: 5em;
 }
