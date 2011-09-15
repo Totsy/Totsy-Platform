@@ -77,7 +77,7 @@ class FilesController extends \lithium\action\Controller {
 			}
 			$files = File::pending($conditions);
 		} else {
-			if ($file = File::first(array('_id' => $this->request->id))) {
+			if ($file = File::first(array('conditions' => array('_id' => $this->request->id)))) {
 				$files[] = $file;
 			}
 		}
