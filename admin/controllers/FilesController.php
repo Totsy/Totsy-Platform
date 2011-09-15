@@ -39,6 +39,20 @@ class FilesController extends \lithium\action\Controller {
 		return compact('files');
 	}
 
+	public function rename() {
+		$file = File::first(array('conditions' => array('_id' => $this->request->id)));
+
+		$result = $file->rename($this->request->data['name'])->save();
+
+		if ($this->request->is('ajax')) {
+			$this->_render['type'] = 'json';
+			$this->_render['status'] = $result ? 200 : 500;
+
+			return array('name' => $file->name);
+		}
+		return $this->redirect($this->request->referer());
+	}
+
 	public function delete() {
 		$file = File::create(array('_id' => $this->request->id), array('exists' => true));
 		$result = $file->delete();

@@ -2,7 +2,10 @@
 	<ul>
 	<?php foreach($files as $item): ?>
 		<li class="file">
-			<?=$this->view()->render(array('element' => 'file'), compact('item')); ?>
+			<?=$this->view()->render(
+				array('element' => 'file'),
+				compact('item') + array('editable' => true)
+			); ?>
 			<div class="actions">
 				<?=$this->html->link('delete', array('action' => 'delete', 'id' => $item->_id)); ?>
 				<?=$this->html->link('auto-associate', array('action' => 'associate', 'id' => $item->_id)); ?>
