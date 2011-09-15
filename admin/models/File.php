@@ -160,7 +160,6 @@ class File extends \lithium\data\Model {
 		   Styles but not files. */
 		$escape = array('/' => '-+-');
 		$name = strtr($name, $escape);
-
 		$name = pathinfo($name, PATHINFO_FILENAME);
 		$extension = $entity->extension(array('quick' => false));
 
@@ -168,7 +167,6 @@ class File extends \lithium\data\Model {
 			$name .= ".{$extension}";
 		}
 		$name = strtr($name, array_flip($escape));
-
 		$entity->name = $entity->file->name = $name;
 
 		return $entity;
