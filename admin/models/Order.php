@@ -643,7 +643,7 @@ class Order extends Base {
 		}
 
 		if ($update === false){
-			$ordermodel = self;
+			$ordermodel = __CLASS__;
 			return AvaTax::getTax(compact('order','items','ordermodel','current_order','itms'));
 		} else {
 			AvaTax::cancelTax($order['order_id']);
