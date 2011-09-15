@@ -50,6 +50,7 @@ h2 + .actions {
 }
 .files.naming dd {
 	font-family: monospace;
+	font-size: .95em;
 }
 
 #event_media_status table {
