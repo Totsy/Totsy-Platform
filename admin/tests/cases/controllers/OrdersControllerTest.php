@@ -126,6 +126,10 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$result_user = User::find('first', array('conditions' => array(
 			'_id' => $user["_id"]
 		)));
+
+		$this->assertTrue($result_user);
+		$this->skipIf(!is_object($result_user), "Can't continue result is not an object.");
+
 		$user = $result_user->data();
 		$check_user = false;
 		foreach($order["modifications"] as $modif)
