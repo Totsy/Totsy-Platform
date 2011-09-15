@@ -470,8 +470,15 @@ $(function() {
 					}
 				});
 			</script>
-			<a href="#" class="upload_files_link" onClick="document.getElementById('agileUploaderSWF').submit();">Start Upload <?=$this->html->image('agile_uploader/upload-icon.png', array('height' => '24')); ?></a>
+			<a
+				href="#"
+				class="upload_files_link"
+				onClick="document.getElementById('agileUploaderSWF').submit();"
+			>
+				Start Upload <?=$this->html->image('agile_uploader/upload-icon.png', array('height' => '24')); ?>
+			</a>
 		</div>
+		<!-- Tab End -->
 
 		<!-- Tab -->
 		<div id="event_media_status">
@@ -516,6 +523,7 @@ $(function() {
 		<!-- Tab End -->
 	</div>
 </div>
+
 <script type="text/javascript">
 $(document).ready(function() {
 
