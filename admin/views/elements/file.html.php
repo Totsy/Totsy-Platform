@@ -33,4 +33,12 @@ $renameUrl = $this->url(array(
 		}
 	?>
 	<?=implode(', ', $meta) ?>
+	<?php if ($item->event_id): ?>
+	<div class="binding">
+		<?=$this->html->link('has event binding', array(
+			'controller' => 'events', 'action' => 'edit',
+			 'args' => array($item->event_id)
+		)); ?>
+	</div>
+	<?php endif; ?>
 </div>
