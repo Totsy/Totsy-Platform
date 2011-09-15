@@ -1,13 +1,24 @@
 <?
 
 extract(array(
-	'item' => null
+	'item' => null,
+	'editable' => false
 ), EXTR_SKIP);
 
+$renameUrl = $this->url(array(
+	'controller' => 'files', 'action' => 'rename',
+	'id' => $item->_id
+));
+
 ?>
+
 <?=$this->html->image($item->url(), array('alt' => 'image')); ?>
 <div class="meta">
-	<div class="name"><?=$item->name ?></div>
+	<?php if ($editable): ?>
+		<div class="name" contenteditable target="<?=$renameUrl; ?>"><?=$item->name ?></div>
+	<?php else: ?>
+		<div class="name"><?=$item->name ?></div>
+	<?php endif; ?>
 	<div class="id"><?=$item->_id ?></div>
 	<?php
 		$meta = array();

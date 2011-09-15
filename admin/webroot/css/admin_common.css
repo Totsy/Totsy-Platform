@@ -1,3 +1,28 @@
+
+/*--- Reusable Generic Styles ---*/
+.positive { color: green; }
+.negative { color: red; }
+
+[contenteditable] {
+	border: 1px solid transparent;
+}
+[contenteditable]:not(:focus):before {
+	content: "✎ ";
+}
+[contenteditable]:focus {
+	padding: 5px;
+	background: white;
+	border-color: #888;
+	box-shadow: 6px 6px 11px #6e6e6e;
+}
+
+.saving       { opacity: .5; }
+.saving:after { content: " saving…"; }
+
+label {
+	font-weight: bold;
+}
+
 .tab_region_left_col {
 	width: 440px;
 	margin: 0 20px 0 0;
@@ -8,9 +33,6 @@
 	width: 440px;
 	float: left;
 	display: block;
-}
-label {
-	font-weight: bold;
 }
 #blurb_div, .input_field {
 	margin-top: 10px;
@@ -37,9 +59,6 @@ label {
 	float: left;
 	padding-top: 3px;
 }
-
-.positive { color: green; }
-.negative { color: red; }
 
 #event_items .images li:first-child img {
 	height: 160px;

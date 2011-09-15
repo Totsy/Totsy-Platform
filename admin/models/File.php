@@ -143,6 +143,18 @@ class File extends \lithium\data\Model {
 		return static::all(array('conditions' => array('orphaned' => true)));
 	}
 
+	public function rename($entity, $name) {
+		$name = pathinfo($name, PATHINFO_FILENAME);
+		$extension = $entity->extension(array('quick' => false));
+
+		if ($extension) {
+			$name .= ".{$extension}";
+		}
+		$entity->name = $entity->file->name = $name;
+
+		return $entity;
+	}
+
 	public function mimeType($entity) {
 		if ($entity->mime_type) {
 			return $entity->mime_type;
