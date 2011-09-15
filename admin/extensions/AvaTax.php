@@ -35,6 +35,11 @@ class AvaTax extends \lithium\core\StaticObject {
 			AvaTaxWrap::commitTax($order);
 			AvaTaxWrap::cancelTax($order);
 		} catch (Exception $e) {
+			/* @fixme The line below has been added in order to prevent
+			   undefined variable errors. Obviously this can't be a real
+			   fix and possible results untintended behavior. However it's
+		       not clear what has been the intended behavior intially. */
+			$data = array();
 
 			// Try again or return 0;
 			BlackBox::tax('can not process tax cancelation via avalara.');
@@ -53,11 +58,15 @@ class AvaTax extends \lithium\core\StaticObject {
 		}
 	}
 
-	public static function getTax($data,$tryNumber=0){
-		if (isset(static::$_settings['useAvatax'])) { static::$useAvatax = static::$_settings['useAvatax']; }
-
-
-		$data['totalDiscount'] = 0;
+	public static function getTax($data, $tryNumber = 0){
+		if (isset(static::$_settings['useAvatax'])) {
+			static::$useAvatax = static::$_settings['useAvatax'];
+		}
+		$data = (array) $data + array(
+			'totalDiscount' => 0,
+			'shippingAddr' => null,
+			'billingAddr' => null
+		);
 		if ( is_array($data) && array_key_exists('cartByEvent',$data)){
 			$data['items'] = static::getCartItems($data['cartByEvent']);
 			static::shipping($data);
@@ -174,9 +183,9 @@ class AvaTax extends \lithium\core\StaticObject {
 
 	}
 
-	public static function  commitTax($data,$tryNumber=0){
+	public static function commitTax($data, $tryNumber=0){
 		try{
-			AvaTaxWrap::commitTax($order);
+			AvaTaxWrap::commitTax($data['order']);
 		} catch (Exception $e) {
 			BlackBox::tax('can not commit tax via avalara.');
 			BlackBox::taxError($e->getMessage()."\n".$e->getTraceAsString() );
