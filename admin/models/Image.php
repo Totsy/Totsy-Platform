@@ -2,6 +2,7 @@
 
 namespace admin\models;
 
+use lithium\analysis\Logger;
 use lithium\data\Connections;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
@@ -126,6 +127,7 @@ class Image extends \admin\models\File {
 			trigger_error($message, E_USER_WARNING);
 			return false;
 		}
+		Logger::debug("Processing {$source}-file `{$meta['name']}`...");
 
 		foreach (static::$types as $name => $type) {
 			foreach ($type['regex'] as $regex) {
@@ -133,11 +135,15 @@ class Image extends \admin\models\File {
 				if (!preg_match($regex, $meta['name'])) {
 					continue;
 				}
+				Logger::debug("Matched `{$meta['name']}` against `{$regex}`.");
 
-				/* If we don't have an event URL, what's the point of saving the image?
-				   We could never associate it and the file was probably named incorrectly. */
-				if (!$url = static::extractUrl($meta['name'])) {
-					continue;
+				if ($source == 'events') {
+					/* If we don't have an event URL, what's the point of saving the image?
+					   We could never associate it and the file was probably named incorrectly. */
+					if (!$url = static::extractUrl($meta['name'])) {
+						Logger::debug("Failed to extract URL from `{$meta['name']}`.");
+						continue;
+					}
 				}
 
 				/* So save it and return the File document object. */
@@ -162,6 +168,7 @@ class Image extends \admin\models\File {
 				return $item->save();
 			}
 		}
+		Logger::debug("Failed processing.");
 		return false;
 	}
 
