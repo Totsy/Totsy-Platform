@@ -483,7 +483,7 @@ $(function() {
 				For more information and other methods to upload files please see <?=$this->html->link('File Management', 'Files::index'); ?>.
 			</p>
 			<div class="tab_region_left_col">
-				<div class="box">
+				<div class="box files naming">
 					<h2>Item Image File Naming Conventions</h2>
 					<div class="block">
 						<?php $names = $event->uploadNames(); ?>
@@ -497,7 +497,7 @@ $(function() {
 				</div>
 			</div>
 			<div class="tab_region_right_col">
-				<div class="box">
+				<div class="box files naming">
 					<h2>Item Image File Naming Conventions</h2>
 					<div class="block">
 						<p><em>Note: VENDOR_STYLE values can contain a mixture of uppercase, lowercase letters, as well as underscores, spaces, and dashes. These values are found in the uploaded excel file for each event.</em></p>
