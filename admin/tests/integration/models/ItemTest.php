@@ -56,29 +56,27 @@ class ItemTest extends \lithium\test\Integration {
 	public function testAttachMultipleImage() {
 		$fixtures = Fixture::load('Item');
 
-		$fileA = File::write(uniqid());
-		$fileB = File::write(uniqid());
+		$file = File::write(uniqid());
 
 		$item = Item::create($fixtures->first());
 		$item->save();
 
-		$item->attachImage('alternate', $fileA->_id);
+		$item->attachImage('alternate', $file->_id);
 
 		/* Disabled as a work around for saving nested documents is in place. */
 		/*
-		$expected = array((string) $fileA->_id);
+		$expected = array((string) $file->_id);
 		$result = $item->alternate_images->data();
 		$this->assertEqual($expected, $result);
 		*/
 
 		$item = Item::first(array('conditions' => array('_id' => (string) $item->_id)));
-		$expected = array((string) $fileA->_id);
+		$expected = array((string) $file->_id);
 		$result = $item->alternate_images->data();
 		$this->assertEqual($expected, $result);
 
 		$item->delete();
-		$fileA->delete();
-		$fileB->delete();
+		$file->delete();
 	}
 
 	public function testAttachImageAndSave() {
