@@ -40,7 +40,8 @@ if (!empty($user['token'])) {
 			</p>
 			<?php else: ?>
 			<p>
-				Open your WebDAV client and connect to the following URL:
+				Open your <abbr title="Web-based Distributed Authoring and Versioning">WebDAV</abbr>
+				client and connect to the following URL:
 				<pre><?=$this->html->link($url, $url); ?></pre>
 			</p>
 			<?php endif; ?>
@@ -159,7 +160,7 @@ if (!empty($user['token'])) {
 	<div class="box">
 		<h2>Item Image File Naming Conventions</h2>
 		<div class="block">
-			<p><em>Note: Item images can only be uploaded from an events/edit page or through webDAV where there is a reference to the event. VENDOR_STYLE values can contain a mixture of uppercase, lowercase letters, as well as underscores, spaces, and dashes. These values are found in the uploaded excel file for each event.</em></p>
+			<p><em>Note: Item images can only be uploaded from an events/edit page or through WebDAV where there is a reference to the event. VENDOR_STYLE values can contain a mixture of uppercase, lowercase letters, as well as underscores, spaces, and dashes. These values are found in the uploaded excel file for each event.</em></p>
 		<dl>
 			<dt>Primary Image</dt>
 			<dd>items_VENDOR_STYLE_primary.jpg</dd>
