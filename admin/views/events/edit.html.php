@@ -199,6 +199,7 @@ $(function() {
 </div>
 
 <div class="grid_16">
+	<!-- Start Tabs -->
 	<div id="tabs">
 		<ul>
 		    <li><a href="#event_info"><span>Info</span></a></li>
@@ -208,93 +209,195 @@ $(function() {
 			<li><a href="#event_media_status"><span>Media Status</span></a></li>
 		</ul>
 
+		<!-- Start Tab -->
 		<div id="event_info">
 			<div id="event_note">
 				<p>
-					Hello administrator. Please edit an event by filling in all the information below. Thank You!
+					Hello administrator. Please edit an event by filling in
+					all the information below. Thank You!
 				</p>
 			</div>
 			<div id="event_preview">
-				<p> To see a preview of the event please <?=$this->html->link('click here.',"/events/preview/$event->_id")?></p>
+				<p>
+					To see a preview of the event please
+					<?=$this->html->link('click here.',"/events/preview/$event->_id")?>
+				</p>
 			</div>
 			<h4 id="article-heading">Event Description</h4>
-			    <?=$this->form->field('name', array('value' => $event->name, 'class' => 'general'));?>
-				<div id="blurb_div">
-					<?=$this->form->field('blurb', array('type' => 'textarea', 'name' => 'content', 'value' => $event->blurb));?><br>
-				</div>
-				<div id="event_status">
-					<h4 id="event_status">Event Status</h4>
-					<?php if ($event->enabled == 1): ?>
-						<p>The event is currently published for viewing</p><br>
-						<input type="radio" name="enabled" value="1" id="enabled" checked> Enable Event <br>
-						<input type="radio" name="enabled" value="0" id="enabled"> Disable Event
-					<?php else: ?>
-						<p>The event is NOT published for viewing</p><br>
-						<input type="radio" name="enabled" value="1" id="enabled"> Enable Event <br>
-						<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Event
-					<?php endif ?>
-				</div>
-				<div id="event_type">
-					<h2 id="event_type">Event Type</h2>
-					<input type="radio" name="tangible" value="1" id="tangible" <?php if ($event->tangible == 1) echo 'checked'; ?> > Tangible <br>
-					<input type="radio" name="tangible" value="0" id="tangible" <?php if ($event->tangible == 0) echo 'checked'; ?> > Non Tangible
-				</div>
-				<div id="event_duration">
-					<h4 id="event_duration">Event Duration</h4>
-					<?php
-						$start_date = date('m/d/Y H:i', $event->start_date->sec);
-						$end_date =  date('m/d/Y H:i', $event->end_date->sec);
-						echo $this->form->field('start_date', array(
-								'class' => 'general',
-								'id' => 'start_date',
-								'value' => "$start_date"
-							));
-					 	echo $this->form->field('end_date', array(
-								'class' => 'general',
-								'id' => 'end_date',
-								'value' => "$end_date"
-							));?>
-				</div>
-				<?=$this->form->label('Departments')?><br />
-				<table>
-					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?>
-				</table>
-				<div id="tags">
-					<?=$this->form->label('Tags'); ?>
-					<?php if ($event->tags): ?>
-						<select name="tags[]" id="tags" multiple="multiple" size="5">
-							<?php foreach (Event::$tags as $tag): ?>
-								<?php if (is_array($event->tags) && in_array($tag, $event->tags)): ?>
-									<option value="<?=$tag?>" selected><?=$tag?> </option>
-								<?php else: ?>
-									<option value="<?=$tag?>"><?=$tag?> </option>
-								<?php endif ?>
-							<?php endforeach ?>
-						</select>
-					<?php else: ?>
-						<?=$this->form->select('tags', Event::$tags, array('size' => 5, 'multiple' => 'multiple')); ?>
-					<?php endif ?>
-				</div>
+		    <?=$this->form->field('name', array('value' => $event->name, 'class' => 'general'));?>
+
+			<div id="blurb_div">
+				<?=$this->form->field('blurb', array(
+					'type' => 'textarea', 'name' => 'content', 'value' => $event->blurb
+				));?>
 				<br>
-				<div id="shipMessage">
-					<?=$this->form->label('Shipping Message'); ?>
-					<?=$this->form->textarea('ship_message', array('value' => $event->ship_message)); ?>
-				</div>
-				<div id="shipDateOverride">
-					<?=$this->form->label('Estimated Ship Date'); ?>
-					<p>This date will override the calcualted ship date for orders.</p>
-					<?=$this->form->text('ship_date', array('id' => 'ship_date', 'value' => $event->ship_date)); ?>
-				</div>
-
+			</div>
+			<div id="event_status">
+				<h4 id="event_status">Event Status</h4>
+				<?php if ($event->enabled == 1): ?>
+					<p>The event is currently published for viewing</p><br>
+					<input type="radio" name="enabled" value="1" id="enabled" checked> Enable Event <br>
+					<input type="radio" name="enabled" value="0" id="enabled"> Disable Event
+				<?php else: ?>
+					<p>The event is NOT published for viewing</p><br>
+					<input type="radio" name="enabled" value="1" id="enabled"> Enable Event <br>
+					<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Event
+				<?php endif ?>
+			</div>
+			<div id="event_type">
+				<h2 id="event_type">Event Type</h2>
+				<input type="radio" name="tangible" value="1" id="tangible" <?php if ($event->tangible == 1) echo 'checked'; ?> > Tangible <br>
+				<input type="radio" name="tangible" value="0" id="tangible" <?php if ($event->tangible == 0) echo 'checked'; ?> > Non Tangible
 			</div>
 
-			<div class="clear"></div>
-
-			<div class="tab_bottom_submit">
-				<div class="submit_button"><?=$this->form->submit('Update Event', array('class' => 'submit_event'))?></div><div class="cancel"><a href="/admin/select/event">Cancel</a></div>
+			<div id="event_duration">
+				<h4 id="event_duration">Event Duration</h4>
+				<?php
+					$start_date = date('m/d/Y H:i', $event->start_date->sec);
+					$end_date =  date('m/d/Y H:i', $event->end_date->sec);
+					echo $this->form->field('start_date', array(
+							'class' => 'general',
+							'id' => 'start_date',
+							'value' => "$start_date"
+					));
+					echo $this->form->field('end_date', array(
+							'class' => 'general',
+							'id' => 'end_date',
+							'value' => "$end_date"
+					));
+				?>
 			</div>
+			<?=$this->form->label('Departments')?><br />
+
+			<table>
+				<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?>
+			</table>
+
+			<div id="tags">
+				<?=$this->form->label('Tags'); ?>
+				<?php if ($event->tags): ?>
+					<select name="tags[]" id="tags" multiple="multiple" size="5">
+						<?php foreach (Event::$tags as $tag): ?>
+							<?php if (is_array($event->tags)): ?>
+								<option value="<?=$tag?>" selected><?=$tag?> </option>
+							<?php else: ?>
+								<option value="<?=$tag?>"><?=$tag?> </option>
+							<?php endif ?>
+						<?php endforeach ?>
+					</select>
+				<?php else: ?>
+					<?=$this->form->select('tags', Event::$tags, array('size' => 5, 'multiple' => 'multiple')); ?>
+				<?php endif ?>
+			</div>
+			<br>
+
+			<div id="shipMessage">
+				<?=$this->form->label('Shipping Message'); ?>
+				<?=$this->form->textarea('ship_message', array('value' => $event->ship_message)); ?>
+			</div>
+
+			<div id="shipDateOverride">
+				<?=$this->form->label('Estimated Ship Date'); ?>
+				<p>This date will override the calcualted ship date for orders.</p>
+				<?=$this->form->text('ship_date', array('id' => 'ship_date', 'value' => $event->ship_date)); ?>
+			</div>
+
+			<!-- Start Event Images -->
+			<div id="event_images">
+				<h3 id="current_images">Current Images</h3>
+
+				<table border="1" cellspacing="30" cellpadding="30">
+					<tr>
+						<th align="justify">Image Location</th>
+						<th align="justify">Image</th>
+					</tr>
+					<tr>
+						<td>Big Splash Image</td>
+						<td align="center">
+							<?php
+							if (!empty($event->images->splash_big_image)) {
+								$eventImage = "/image/{$event->images->splash_big_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-large.jpeg";
+							}
+							?>
+							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						</td>
+					</tr>
+					<tr>
+						<td>Small Splash Image</td>
+						<td align="center">
+							<?php
+							if (!empty($event->images->splash_small_image)) {
+								$eventImage = "/image/{$event->images->splash_small_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-small.jpeg";
+							}
+							?>
+							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						</td>
+					</tr>
+					<tr>
+						<td>Event Image</td>
+						<td align="center">
+							<?php
+							if (!empty($event->images->event_image)) {
+								$eventImage = "/image/{$event->images->event_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-large.jpeg";
+							}
+							?>
+							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						</td>
+					</tr>
+					<tr>
+					<td>Small Splash Image</td>
+						<td align="center">
+							<?php
+							if (!empty($event->images->splash_small_image)) {
+								$eventImage = "/image/{$event->images->splash_small_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-small.jpeg";
+							}
+							?>
+							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						</td>
+					</tr>
+					<tr>
+						<td>Event Image</td>
+						<td align="center">
+							<?php
+							if (!empty($event->images->event_image)) {
+								$eventImage = "/image/{$event->images->event_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-small.jpeg";
+							}
+							?>
+							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						</td>
+					</tr>
+					<tr>
+					<td>Logo Image</td>
+						<td align="center">
+							<?php
+							if (!empty($event->images->logo_image)) {
+								$eventImage = "/image/{$event->images->logo_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-small.jpeg";
+							}
+							?>
+							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<!-- End Event Images -->
+			<br />
+			<?=$this->form->submit('Update Event')?>
 		</div>
+		<!-- End Tab -->
 
+		<!-- Start Tab -->
 		<div id="event_items">
 			<h3 id="">Item Management</h3>
 			<hr />
@@ -393,8 +496,9 @@ $(function() {
 					}
 				?>
 		</div>
+		<!-- End Tab -->
 
-		<!-- Tab -->
+		<!-- Start Tab -->
 		<div id="event_media_upload">
 			<p>
 				Upload all event media here.
@@ -484,9 +588,9 @@ $(function() {
 			</div>
 			<?=$this->view()->render(array('element' => 'files_pending'), array('item' => $event)); ?>
 		</div>
-		<!-- Tab End -->
+		<!-- End Tab -->
 
-		<!-- Tab -->
+		<!-- Start Tab -->
 		<div id="event_media_status">
 			<p>
 				This tab show the status of media associated with the items of this event.
@@ -524,8 +628,9 @@ $(function() {
 				</table>
 			</div>
 		</div>
-		<!-- Tab End -->
+		<!-- End Tab -->
 	</div>
+	<!-- End Tabs -->
 </div>
 
 <script type="text/javascript">
