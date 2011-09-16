@@ -48,7 +48,6 @@
 	clear: left;
 	margin: 0px;
 	padding: 2px 6px 2px 2px;
-<<<<<<< HEAD
 	display: block;
 	overflow: hidden;
 	text-indent: 0px;
@@ -56,25 +55,12 @@
 	border-bottom: solid 1px #444;
 }
 #agileUploaderFileList li.alt {
-=======
-	display: block;
-	overflow: hidden;
-	text-indent: 0px;
-	background: #ccc;
-	border-bottom: solid 1px #444;
-}
-#agileUploaderFileList li.alt {
->>>>>>> uploader. event images.
 	background: #eee;
 }
 .agileUploaderCurrentProgress {
 	height: 50px;
 	width: 1%;
-<<<<<<< HEAD
 	background: #fff;
-=======
-	background: #000;
->>>>>>> uploader. event images.
 }
 .agileUploaderRemoveFile a, .agileUploaderRemoveFile a:hover {
 	text-decoration: none;
