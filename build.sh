@@ -45,7 +45,7 @@ COMMAND=$1
 
 case $COMMAND in
 	init)
-		echo "Setting up all sources..."
+		echo "Initializing codebase..."
 		$0 source-subs
 		$0 fix-perms
 
