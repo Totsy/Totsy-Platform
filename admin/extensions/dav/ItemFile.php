@@ -15,7 +15,7 @@ class ItemFile extends \admin\extensions\dav\GenericFile {
 		$file = ItemImage::resizeAndSave($position, $data);
 		$item->attachImage($position, $file->_id);
 
-		return $item->save();
+		return true;
 	}
 
 	public function delete() {
