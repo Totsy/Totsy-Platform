@@ -160,6 +160,8 @@ class EventsController extends BaseController {
 
 	public function inventoryCheck($events) {
 		$events = $events->data();
+		$itemCounts = array();
+		
 		foreach ($events as $eventItems) {
 			$count = 0;
 			$id = $eventItems['_id'] ;

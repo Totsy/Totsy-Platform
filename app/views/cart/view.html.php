@@ -114,6 +114,9 @@ var discountErrors = new Object();
 						<strong>Size:</strong> <?=$item->size;?>
 						<?php endif ?>
 					</td>
+					<?php 
+						$date = $cartItemEventEndDates[$x] * 1000;
+					?>
 					<td class="cart-item-timer-td">
 					<div id='<?php echo "itemCounter$x"; ?>_display' class="cart-item-timer" title='<?=$date?>'></div>
 					</td>
@@ -138,10 +141,7 @@ var discountErrors = new Object();
     					'id' => $item->_id, 'value' => $item->quantity, 'class'=>'quantity'
 					));
 					?>
-					<?php 
-						$date = $cartItemEventEndDates[$x] * 1000;
-					?>
-					</td>
+										</td>
 					<td class="cart-actions">
 						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" onclick="deletechecked('Are you sure you want to remove this item?','<?=$item->_id; ?>');" style="color: red!important;"><img src="/img/trash.png" width="20" align="absmiddle" style="margin-right:20px;" /></a>
 					</td>
