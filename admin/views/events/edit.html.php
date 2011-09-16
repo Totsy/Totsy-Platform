@@ -234,6 +234,7 @@ $(function() {
 </div>
 
 <div class="grid_16">
+	<!-- Start Tabs -->
 	<div id="tabs">
 		<ul>
 		    <li><a href="#event_info"><span>Info</span></a></li>
@@ -244,27 +245,35 @@ $(function() {
 			<li><a href="#event_media_status"><span>Media Status</span></a></li>
 		</ul>
 
+		<!-- Start Tab -->
 		<div id="event_info">
 			<div id="event_note">
 				<p>
-					Hello administrator. Please edit an event by filling in all the information below. Thank You!
+					Hello administrator. Please edit an event by filling in
+					all the information below. Thank You!
 				</p>
 			</div>
 			<div id="event_preview">
-				<p> To see a preview of the event please <?php echo $this->html->link('click here.',"/events/preview/$event->_id")?></p>
+				<p>
+				    To see a preview of the event please
+				    <?php echo $this->html->link('click here.',"/events/preview/$event->_id")?>
+				</p>
 			</div>
 			<h4 id="article-heading">Event Description</h4>
 			    <?php echo $this->form->field('name', array('value' => $event->name, 'class' => 'general'));?>
 				<div id="blurb_div">
-					<?php echo $this->form->field('blurb', array('type' => 'textarea',
-														 'name' => 'content',
-														 'value' => $event->blurb ));?><br>
+					<?php echo $this->form->field('blurb', array(
+					    'type' => 'textarea', 'name' => 'content', 'value' => $event->blurb
+					));?>
+					<br/>
 				</div>
 			    <div style="width:450px;">
-			    	<?php echo $this->form->field('short', array('type' => 'textarea',
-			    										 'name' => 'short_description',
-			    										 'class' => 'mceNoEditor shortDescription',
-			    										 'value' => isset($event->short)?$event->short:'' ));?>
+			    	<?php echo $this->form->field('short', array(
+			    	    'type' => 'textarea',
+			    	    'name' => 'short_description',
+			    	    'class' => 'mceNoEditor shortDescription',
+			    		'value' => isset($event->short)?$event->short:''
+			    	));?>
 			    	<div id="short_description_characters_wrapper">
 			    		Total:
 			    		<span id="short_description_characters_counter">
@@ -273,7 +282,8 @@ $(function() {
 			    			   } else {
 			    			   		echo '0';
 			    			   }?>
-			    		</span>/<?php echo $shortDescLimit;?></div>
+			    		</span>/<?php echo $shortDescLimit;?>
+			    	</div>
 			    </div>
 				<div id="event_status">
 					<h4 id="event_status">Event Status</h4>
@@ -305,23 +315,22 @@ $(function() {
 			<input type="radio" name="clearance" value="0" id="clearance" <?php if ($event->clearance == 0) echo 'checked'; ?>> Not Clearance
 		</div>
 
-
-				<div id="event_duration">
-					<h4 id="event_duration">Event Duration</h4>
-					<?php
-						$start_date = date('m/d/Y H:i', $event->start_date->sec);
-						$end_date =  date('m/d/Y H:i', $event->end_date->sec);
-						echo $this->form->field('start_date', array(
-								'class' => 'general',
-								'id' => 'start_date',
-								'value' => "$start_date"
-							));
-					 	echo $this->form->field('end_date', array(
-								'class' => 'general',
-								'id' => 'end_date',
-								'value' => "$end_date"
-							));?>
-				</div>
+        <div id="event_duration">
+            <h4 id="event_duration">Event Duration</h4>
+            <?php
+                $start_date = date('m/d/Y H:i', $event->start_date->sec);
+                $end_date =  date('m/d/Y H:i', $event->end_date->sec);
+                echo $this->form->field('start_date', array(
+                        'class' => 'general',
+                        'id' => 'start_date',
+                        'value' => "$start_date"
+                    ));
+                echo $this->form->field('end_date', array(
+                        'class' => 'general',
+                        'id' => 'end_date',
+                        'value' => "$end_date"
+                    ));?>
+			</div>
 				<?php echo $this->form->label('Departments')?><br />
 
 				<?php echo $event->departments?>
@@ -359,11 +368,103 @@ $(function() {
 			</div>
 
 			<div class="clear"></div>
+			<!-- Start Event Images -->
+			<div id="event_images">
+				<h3 id="current_images">Current Images</h3>
 			<div class="tab_bottom_submit">
 				<div class="submit_button"><?=$this->form->submit('Update Event', array('class' => 'submit_event'))?></div><div class="cancel"><a href="/admin/select/event">Cancel</a></div>
+            <table border="1" cellspacing="30" cellpadding="30">
+					<tr>
+						<th align="justify">Image Location</th>
+						<th align="justify">Image</th>
+					</tr>
+					<tr>
+						<td>Big Splash Image</td>
+						<td align="center">
+							<?php
+							if (!empty($event->images->splash_big_image)) {
+								$eventImage = "/image/{$event->images->splash_big_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-large.jpeg";
+							}
+							?>
+							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						</td>
+					</tr>
+					<tr>
+						<td>Small Splash Image</td>
+						<td align="center">
+							<?php
+							if (!empty($event->images->splash_small_image)) {
+								$eventImage = "/image/{$event->images->splash_small_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-small.jpeg";
+							}
+							?>
+							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						</td>
+					</tr>
+					<tr>
+						<td>Event Image</td>
+						<td align="center">
+							<?php
+							if (!empty($event->images->event_image)) {
+								$eventImage = "/image/{$event->images->event_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-large.jpeg";
+							}
+							?>
+							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						</td>
+					</tr>
+					<tr>
+					<td>Small Splash Image</td>
+						<td align="center">
+							<?php
+							if (!empty($event->images->splash_small_image)) {
+								$eventImage = "/image/{$event->images->splash_small_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-small.jpeg";
+							}
+							?>
+							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						</td>
+					</tr>
+					<tr>
+						<td>Event Image</td>
+						<td align="center">
+							<?php
+							if (!empty($event->images->event_image)) {
+								$eventImage = "/image/{$event->images->event_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-small.jpeg";
+							}
+							?>
+							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						</td>
+					</tr>
+					<tr>
+					<td>Logo Image</td>
+						<td align="center">
+							<?php
+							if (!empty($event->images->logo_image)) {
+								$eventImage = "/image/{$event->images->logo_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-small.jpeg";
+							}
+							?>
+							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						</td>
+					</tr>
+				</table>
 			</div>
+			<!-- End Event Images -->
+			<br />
+			<?=$this->form->submit('Update Event')?>
 		</div>
+		<!-- End Tab -->
 
+		<!-- Start Tab -->
 		<div id="event_items">
 			<h3 id="">Item Management</h3>
 			<hr />
@@ -559,9 +660,9 @@ $(function() {
 			</div>
 			<?=$this->view()->render(array('element' => 'files_pending'), array('item' => $event)); ?>
 		</div>
-		<!-- Tab End -->
+		<!-- End Tab -->
 
-		<!-- Tab -->
+		<!-- Start Tab -->
 		<div id="event_media_status">
 			<p>
 				This tab show the status of media associated with the items of this event.
@@ -599,8 +700,9 @@ $(function() {
 				</table>
 			</div>
 		</div>
-		<!-- Tab End -->
+		<!-- End Tab -->
 	</div>
+	<!-- End Tabs -->
 </div>
 
 <script type="text/javascript">
