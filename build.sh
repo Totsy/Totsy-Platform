@@ -56,7 +56,10 @@ case $COMMAND in
 		echo
 		echo "      $PROJECT_DIR/libraries/lithium"
 		echo
-		echo "NOTE: Errors are being surpressed in {app,admin}/webroot/index.php"
+		echo "NOTE: Some errors are being surpressed in:"
+		echo
+		echo "      $PROJECT_DIR/app/webroot/index.php"
+		echo "      $PROJECT_DIR/admin/config/bootstrap.php"
 		echo
 
 		echo
