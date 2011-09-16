@@ -10,6 +10,7 @@ use MongoDate;
 use MongoId;
 use Mongo;
 use li3_flash_message\extensions\storage\FlashMessage;
+use lithium\analysis\Logger;
 
 /**
  * Handles the users main account information.
@@ -292,11 +293,22 @@ class ItemsController extends BaseController {
 		$item = Item::first(array(
 			'conditions' => array('_id' => $this->request->item)
 		));
-		if ($item && ($images = $this->request->data['image'])) {
-			$item->primary_image = array_shift($images);
-			$item->alternate_images = array_values($images); /* keys start at zero */
 
-			$result = (boolean) $item->save();
+		if ($item && ($images = $this->request->data['image'])) {
+			Logger::debug('Reordering images `' . implode(', ', array_values($images)) . '`');
+
+			$primary = array_shift($images);
+			$alternate = array_values($images);
+
+			$item->detachImage('primary', $primary);
+			$item->detachImage('alternate', '*');
+
+			$item->attachImage('primary', $primary);
+			foreach ($alternate as $image) {
+				$item->attachImage('alternate', $image); /* keys start at zero */
+			}
+
+			$result = true;
 		}
 
 		if ($this->request->is('ajax')) {
