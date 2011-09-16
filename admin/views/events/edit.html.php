@@ -235,6 +235,7 @@ $(function() {
 </div>
 
 <div class="grid_16">
+	<!-- Start Tabs -->
 	<div id="tabs">
 		<ul>
 		    <li><a href="#event_info"><span>Info</span></a></li>
@@ -245,14 +246,19 @@ $(function() {
 			<li><a href="#event_media_status"><span>Media Status</span></a></li>
 		</ul>
 
+		<!-- Start Tab -->
 		<div id="event_info">
 			<div id="event_note">
 				<p>
-					Hello administrator. Please edit an event by filling in all the information below. Thank You!
+					Hello administrator. Please edit an event by filling in
+					all the information below. Thank You!
 				</p>
 			</div>
 			<div id="event_preview">
-				<p> To see a preview of the event please <?=$this->html->link('click here.',"/events/preview/$event->_id")?></p>
+				<p>
+					To see a preview of the event please
+					<?=$this->html->link('click here.',"/events/preview/$event->_id")?>
+				</p>
 			</div>
 			<h4 id="article-heading">Event Description</h4>
 			    <?=$this->form->field('name', array('value' => $event->name, 'class' => 'general'));?>
@@ -329,7 +335,8 @@ $(function() {
 
 				<br><br>
 
-				<table>					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?>
+				<table>					
+					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?>
 				</table>
 				<div id="tags">
 					<?=$this->form->label('Tags'); ?>
@@ -348,25 +355,116 @@ $(function() {
 					<?php endif ?>
 				</div>
 				<br>
-				<div id="shipMessage">
-					<?=$this->form->label('Shipping Message'); ?>
-					<?=$this->form->textarea('ship_message', array('value' => $event->ship_message)); ?>
-				</div>
-				<div id="shipDateOverride">
-					<?=$this->form->label('Estimated Ship Date'); ?>
-					<p>This date will override the calcualted ship date for orders.</p>
-					<?=$this->form->text('ship_date', array('id' => 'ship_date', 'value' => $event->ship_date)); ?>
-				</div>
+			</div>
+			<br>
 
+			<div id="shipMessage">
+				<?=$this->form->label('Shipping Message'); ?>
+				<?=$this->form->textarea('ship_message', array('value' => $event->ship_message)); ?>
 			</div>
 
-			<div class="clear"></div>
-
-			<div class="tab_bottom_submit">
-				<div class="submit_button"><?=$this->form->submit('Update Event', array('class' => 'submit_event'))?></div><div class="cancel"><a href="/admin/select/event">Cancel</a></div>
+			<div id="shipDateOverride">
+				<?=$this->form->label('Estimated Ship Date'); ?>
+				<p>This date will override the calcualted ship date for orders.</p>
+				<?=$this->form->text('ship_date', array('id' => 'ship_date', 'value' => $event->ship_date)); ?>
 			</div>
+
+			<!-- Start Event Images -->
+			<div id="event_images">
+				<h3 id="current_images">Current Images</h3>
+
+				<table border="1" cellspacing="30" cellpadding="30">
+					<tr>
+						<th align="justify">Image Location</th>
+						<th align="justify">Image</th>
+					</tr>
+					<tr>
+						<td>Big Splash Image</td>
+						<td align="center">
+							<?php
+							if (!empty($event->images->splash_big_image)) {
+								$eventImage = "/image/{$event->images->splash_big_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-large.jpeg";
+							}
+							?>
+							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						</td>
+					</tr>
+					<tr>
+						<td>Small Splash Image</td>
+						<td align="center">
+							<?php
+							if (!empty($event->images->splash_small_image)) {
+								$eventImage = "/image/{$event->images->splash_small_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-small.jpeg";
+							}
+							?>
+							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						</td>
+					</tr>
+					<tr>
+						<td>Event Image</td>
+						<td align="center">
+							<?php
+							if (!empty($event->images->event_image)) {
+								$eventImage = "/image/{$event->images->event_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-large.jpeg";
+							}
+							?>
+							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						</td>
+					</tr>
+					<tr>
+					<td>Small Splash Image</td>
+						<td align="center">
+							<?php
+							if (!empty($event->images->splash_small_image)) {
+								$eventImage = "/image/{$event->images->splash_small_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-small.jpeg";
+							}
+							?>
+							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						</td>
+					</tr>
+					<tr>
+						<td>Event Image</td>
+						<td align="center">
+							<?php
+							if (!empty($event->images->event_image)) {
+								$eventImage = "/image/{$event->images->event_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-small.jpeg";
+							}
+							?>
+							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						</td>
+					</tr>
+					<tr>
+					<td>Logo Image</td>
+						<td align="center">
+							<?php
+							if (!empty($event->images->logo_image)) {
+								$eventImage = "/image/{$event->images->logo_image}.jpg";
+							} else {
+								$eventImage = "/img/no-image-small.jpeg";
+							}
+							?>
+							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<!-- End Event Images -->
+			<br />
+			<?=$this->form->submit('Update Event')?>
 		</div>
+		<!-- End Tab -->
 
+		<!-- Start Tab -->
 		<div id="event_items">
 			<h3 id="">Item Management</h3>
 			<hr />
@@ -474,7 +572,7 @@ $(function() {
 		<div id="event_inventory">
 			<iframe id="inventoryIframe" src="" style="width:900px; height:400px;"></iframe>
 		</div>
-		<!-- Tab -->
+		<!-- Start Tab -->
 		<div id="event_media_upload">
 			<p>
 				Upload all event media here.
@@ -564,9 +662,9 @@ $(function() {
 			</div>
 			<?=$this->view()->render(array('element' => 'files_pending'), array('item' => $event)); ?>
 		</div>
-		<!-- Tab End -->
+		<!-- End Tab -->
 
-		<!-- Tab -->
+		<!-- Start Tab -->
 		<div id="event_media_status">
 			<p>
 				This tab show the status of media associated with the items of this event.
@@ -604,8 +702,9 @@ $(function() {
 				</table>
 			</div>
 		</div>
-		<!-- Tab End -->
+		<!-- End Tab -->
 	</div>
+	<!-- End Tabs -->
 </div>
 
 <script type="text/javascript">
