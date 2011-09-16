@@ -388,7 +388,7 @@ $(function() {
 								$eventImage = "/img/no-image-large.jpeg";
 							}
 							?>
-							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+							<?=$this->html->image("$eventImage", array('alt' => 'splash image')); ?>
 						</td>
 					</tr>
 					<tr>
@@ -401,7 +401,7 @@ $(function() {
 								$eventImage = "/img/no-image-small.jpeg";
 							}
 							?>
-							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+							<?=$this->html->image("$eventImage", array('alt' => 'splash small image')); ?>
 						</td>
 					</tr>
 					<tr>
@@ -414,33 +414,7 @@ $(function() {
 								$eventImage = "/img/no-image-large.jpeg";
 							}
 							?>
-							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
-						</td>
-					</tr>
-					<tr>
-					<td>Small Splash Image</td>
-						<td align="center">
-							<?php
-							if (!empty($event->images->splash_small_image)) {
-								$eventImage = "/image/{$event->images->splash_small_image}.jpg";
-							} else {
-								$eventImage = "/img/no-image-small.jpeg";
-							}
-							?>
-							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
-						</td>
-					</tr>
-					<tr>
-						<td>Event Image</td>
-						<td align="center">
-							<?php
-							if (!empty($event->images->event_image)) {
-								$eventImage = "/image/{$event->images->event_image}.jpg";
-							} else {
-								$eventImage = "/img/no-image-small.jpeg";
-							}
-							?>
-							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+							<?=$this->html->image("$eventImage", array('alt' => 'event image')); ?>
 						</td>
 					</tr>
 					<tr>
@@ -453,7 +427,7 @@ $(function() {
 								$eventImage = "/img/no-image-small.jpeg";
 							}
 							?>
-							<?=$this->html->image("$eventImage", array('alt' => 'altText')); ?>
+							<?=$this->html->image("$eventImage", array('alt' => 'logo image')); ?>
 						</td>
 					</tr>
 				</table>
