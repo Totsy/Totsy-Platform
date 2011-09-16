@@ -57,7 +57,8 @@ class ItemImageDirectory extends \admin\extensions\dav\GenericDirectory {
 
 		$file = ItemImage::resizeAndSave($position, $data, compact('name'));
 		$item->attachImage($position, $file->_id);
-		return $item->save();
+
+		return true;
 	}
 
 	protected function _item() {
