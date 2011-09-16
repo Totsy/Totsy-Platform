@@ -339,8 +339,12 @@ $(function() {
             ?>
         </div>
 				<?=$this->form->label('Departments')?><br />
+				
+				<?=$event->departments?>
 
-				<table>
+				<br><br>
+
+				<table>	
 					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?>
 				</table>
 
@@ -361,7 +365,6 @@ $(function() {
 					<?php endif;?>
 				</div>
 				<br>
-
 				<div id="shipMessage">
 					<?=$this->form->label('Shipping Message'); ?>
 					<?=$this->form->textarea('ship_message', array('value' => $event->ship_message)); ?>
@@ -399,6 +402,9 @@ $(function() {
 				</div>
 				<!-- End Event Images -->
 			</div>
+			<!-- End Event Images -->
+			<br />
+			<?=$this->form->submit('Update Event')?>
 		</div>
 		<!-- End Tab -->
 
@@ -510,7 +516,7 @@ $(function() {
 		<div id="event_inventory">
 			<iframe id="inventoryIframe" src="" style="width:900px; height:400px;"></iframe>
 		</div>
-		<!-- Tab -->
+		<!-- Start Tab -->
 		<div id="event_media_upload">
 			<p>
 				Upload all event media here.
