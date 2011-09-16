@@ -60,7 +60,7 @@
 .agileUploaderCurrentProgress {
 	height: 50px;
 	width: 1%;
-	background: #000;
+	background: #fff;
 }
 .agileUploaderRemoveFile a, .agileUploaderRemoveFile a:hover {
 	text-decoration: none;
