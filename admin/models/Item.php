@@ -4,6 +4,7 @@ namespace admin\models;
 
 use admin\models\ItemImage;
 use lithium\util\String;
+use lithium\analysis\Logger;
 
 /**
  * The `Item` class extends the generic `lithium\data\Model` class to provide
@@ -147,15 +148,24 @@ class Item extends \lithium\data\Model {
 		$type = ItemImage::$types[$name];
 
 		if ($type['multiple']) {
-			static::update(
-				array('$push' => array($type['field'] => $id)),
-				array('_id' => (string) $entity->_id)
-			);
-			$entity = static::first(array('conditions' => array('_id' => $entity->_id)));
+			if (is_array($id)) {
+				Logger::debug('Attaching files `' . implode(', ', $id) . "` as `$name` image.");
+				$data = array('$pushAll' => array($type['field'] => $id));
+			} else {
+				Logger::debug("Attaching file `{$id}` as `$name` image.");
+				$data = array('$push' => array($type['field'] => $id));
+			}
 		} else {
-			$entity->{$type['field']} = $id;
+			Logger::debug("Attaching file `{$id}` as `$name` image.");
+			$data = array('$set' => array($type['field'] => $id));
 		}
-		return $entity;
+		static::update(
+			$data,
+			array('_id' => (string) $entity->_id)
+		);
+		return static::first(array(
+			'conditions' => array('_id' => $entity->_id)
+		));
 	}
 
 	public function detachImage($entity, $name, $id) {
@@ -163,16 +173,27 @@ class Item extends \lithium\data\Model {
 		$type = ItemImage::$types[$name];
 
 		if ($type['multiple']) {
-			$images = $entity->{$type['field']}->data();
-
-			if ($key = array_search($id, $images)) {
-				unset($images[$key]);
+			if ($id === '*') {
+				Logger::debug("Detaching all files from `$name` image.");
+				$data = array('$set' => array($type['field'] => array()));
+			} elseif (is_array($id)) {
+				Logger::debug('Detaching files `' . implode(', ', $id) . "` from `$name` image.");
+				$data = array('$pullAll' => array($type['field'] => $id));
+			} else {
+				Logger::debug("Detaching file `{$id}` from `$name` image.");
+				$data = array('$pull' => array($type['field'] => $id));
 			}
-			$entity->{$type['field']} = $images;
 		} else {
-			$entity->{$type['field']} = null;
+			Logger::debug("Detaching file `{$id}` from `$name` image.");
+			$data = array('$unset' => array($type['field'] => true));
 		}
-		return $entity;
+		static::update(
+			$data,
+			array('_id' => (string) $entity->_id)
+		);
+		return static::first(array(
+			'conditions' => array('_id' => $entity->_id)
+		));
 	}
 	public function images($entity) {
 		$results = array();
