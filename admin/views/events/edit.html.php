@@ -378,7 +378,6 @@ $(function() {
 				<br />
 				<?=$this->form->submit('Update Event')?>
 			</div>
-
 			<div class="tab_region_right_col">
 				<!-- Start Event Images -->
 				<div id="event_images">
@@ -401,8 +400,6 @@ $(function() {
 					</table>
 				</div>
 				<!-- End Event Images -->
-			</div>
-			<!-- End Event Images -->
 			<br />
 			<?=$this->form->submit('Update Event')?>
 		</div>
