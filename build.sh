@@ -300,6 +300,36 @@ case $COMMAND in
 			-firefoxProfileTemplate $PROJECT_DIR/selenium/tzp8knyf.selenium
 		;;
 
+	source-pear)
+		PEAR=$(pear config-show  | grep php_dir | awk '{ print $4 }')
+
+		echo "Symlinking in PEAR from $PEAR..."
+		test -L $PROJECT_DIR/libraries/PEAR && rm $PROJECT_DIR/libraries/PEAR
+		ln -s $PEAR $PROJECT_DIR/libraries/PEAR
+		;;
+
+	source-selenium)
+		echo "Installing pear package..."
+		pear install Testing_Selenium-alpha
+
+		echo "Downloading server packages..."
+		curl http://selenium.googlecode.com/files/selenium-server-standalone-2.2.0.jar \
+			--O $PROJECT_DIR/selenium/server.jar
+		;;
+
+	selenium-server)
+		echo "NOTE: If firefox doesn't start correctly on OSX execute the following steps."
+		echo
+		echo 'cd /Applications/Firefox.app/Contents/MacOS'
+		echo 'mv firefox-bin firefox-bin.original'
+		echo 'ditto --arch i386 firefox-bin.original firefox-bin'
+		echo
+
+		java \
+			-jar $PROJECT_DIR/selenium/server.jar \
+			-firefoxProfileTemplate $PROJECT_DIR/selenium/tzp8knyf.selenium
+		;;
+
 	*)
 		echo "Unknown command '${COMMAND}'."
 		exit 1
