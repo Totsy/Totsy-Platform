@@ -514,7 +514,7 @@ class EventsController extends BaseController {
 
 		return compact('event');
 	}
-	
+
 	/**
 	 * This method parses the item file that is uploaded in the Events Edit View.
 	 *
@@ -716,6 +716,7 @@ class EventsController extends BaseController {
                 return $str;
             }
         }
+		
 	/**
 	 * Parse the images from the request using the key
 	 *
