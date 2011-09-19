@@ -219,7 +219,7 @@ class EventsController extends BaseController {
 		}
 
 		if (!empty($this->request->data)) {
-		    $images = $this->parseImages();
+		    $images = $this->_parseImages();
 		    $seconds = ':'.rand(10,60);
 		    $this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
 		    $this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
@@ -332,6 +332,7 @@ class EventsController extends BaseController {
 //				}
 //			}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 			$images = $this->_parseImages($event->images);
 
 			//Saving the original start and end and ship dates for comparison
