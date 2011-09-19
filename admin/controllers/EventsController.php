@@ -447,7 +447,7 @@ class EventsController extends BaseController {
 
 		return compact('event', 'eventItems', 'items', 'all_filters', 'shortDescLimit');
 	}
-
+	
 	public function preview($_id = null) {
 
 		$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
@@ -514,7 +514,7 @@ class EventsController extends BaseController {
 
 		return compact('event');
 	}
-
+	
 	/**
 	 * This method parses the item file that is uploaded in the Events Edit View.
 	 *
