@@ -93,7 +93,7 @@ if (!empty($user['token'])) {
 						flashWidth: 70,
 						removeIcon: '<?=$this->url('/img/agile_uploader/trash-icon.png'); ?>',
 						flashVars: {
-							button_up: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
+							button_up: '<?=$this->url('/img/agile_uploader/add-file.png?v=1'); ?>',
 							button_down: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
 							button_over: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
 							//form_action: $('#EventEdit').attr('action'),
