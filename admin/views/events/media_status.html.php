@@ -1,5 +1,6 @@
 <div class="box">
 	<h2>Item Image Status</h2>
+	<?php if ($event->items): ?>
 	<table>
 		<thead>
 			<tr>
@@ -29,4 +30,7 @@
 			<?php endforeach; ?>
 		</tbody>
 	</table>
+	<?php else: ?>
+		<span class="none-available">Currently no items available.</span>
+	<?php endif; ?>
 </div>
