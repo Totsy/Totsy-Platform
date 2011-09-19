@@ -252,14 +252,11 @@ $(function() {
 				<p>
 					Hello administrator. Please edit an event by filling in
 					all the information below. Thank You!
-				</p>
-			</div>
-			<div id="event_preview">
-				<p>
 					To see a preview of the event please
 					<?=$this->html->link('click here.',"/events/preview/$event->_id")?>
 				</p>
 			</div>
+	<div class="tab_region_left_col">
 			<h4 id="article-heading">Event Description</h4>
 			    <?=$this->form->field('name', array('value' => $event->name, 'class' => 'general'));?>
 				<div id="blurb_div">
@@ -357,84 +354,86 @@ $(function() {
 				<br>
 			</div>
 			<br>
+				<div id="shipMessage">
+					<?=$this->form->label('Shipping Message'); ?>
+					<?=$this->form->textarea('ship_message', array('value' => $event->ship_message)); ?>
+				</div>
 
-			<div id="shipMessage">
-				<?=$this->form->label('Shipping Message'); ?>
-				<?=$this->form->textarea('ship_message', array('value' => $event->ship_message)); ?>
+				<div id="shipDateOverride">
+					<?=$this->form->label('Estimated Ship Date'); ?>
+					<p>This date will override the calcualted ship date for orders.</p>
+					<?=$this->form->text('ship_date', array('id' => 'ship_date', 'value' => $event->ship_date)); ?>
+				</div>
+
+				<br />
+				<?=$this->form->submit('Update Event')?>
 			</div>
 
-			<div id="shipDateOverride">
-				<?=$this->form->label('Estimated Ship Date'); ?>
-				<p>This date will override the calcualted ship date for orders.</p>
-				<?=$this->form->text('ship_date', array('id' => 'ship_date', 'value' => $event->ship_date)); ?>
+			<div class="tab_region_right_col">
+				<!-- Start Event Images -->
+				<div id="event_images">
+					<h3>Media</h3>
+					<table border="1" cellspacing="30" cellpadding="30">
+						<tr>
+							<th align="justify">Type</th>
+							<th align="justify">Preview</th>
+						</tr>
+						<tr>
+							<td>Big Splash</td>
+							<td align="center">
+								<?php
+								if (!empty($event->images->splash_big_image)) {
+									$eventImage = "/image/{$event->images->splash_big_image}.jpg";
+								} else {
+									$eventImage = "/img/no-image-large.jpeg";
+								}
+								?>
+								<?=$this->html->image("$eventImage", array('alt' => 'splash image')); ?>
+							</td>
+						</tr>
+						<tr>
+							<td>Small Splash</td>
+							<td align="center">
+								<?php
+								if (!empty($event->images->splash_small_image)) {
+									$eventImage = "/image/{$event->images->splash_small_image}.jpg";
+								} else {
+									$eventImage = "/img/no-image-small.jpeg";
+								}
+								?>
+								<?=$this->html->image("$eventImage", array('alt' => 'splash small image')); ?>
+							</td>
+						</tr>
+						<tr>
+							<td>Event</td>
+							<td align="center">
+								<?php
+								if (!empty($event->images->event_image)) {
+									$eventImage = "/image/{$event->images->event_image}.jpg";
+								} else {
+									$eventImage = "/img/no-image-large.jpeg";
+								}
+								?>
+								<?=$this->html->image("$eventImage", array('alt' => 'event image')); ?>
+							</td>
+						</tr>
+						<tr>
+						<td>Logo</td>
+							<td align="center">
+								<?php
+								if (!empty($event->images->logo_image)) {
+									$eventImage = "/image/{$event->images->logo_image}.jpg";
+								} else {
+									$eventImage = "/img/no-image-small.jpeg";
+								}
+								?>
+								<?=$this->html->image("$eventImage", array('alt' => 'logo image')); ?>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<!-- End Event Images -->
 			</div>
-
-			<!-- Start Event Images -->
-			<div id="event_images">
-				<h3 id="current_images">Current Images</h3>
-
-				<table border="1" cellspacing="30" cellpadding="30">
-					<tr>
-						<th align="justify">Image Location</th>
-						<th align="justify">Image</th>
-					</tr>
-					<tr>
-						<td>Big Splash Image</td>
-						<td align="center">
-							<?php
-							if (!empty($event->images->splash_big_image)) {
-								$eventImage = "/image/{$event->images->splash_big_image}.jpg";
-							} else {
-								$eventImage = "/img/no-image-large.jpeg";
-							}
-							?>
-							<?=$this->html->image("$eventImage", array('alt' => 'splash image')); ?>
-						</td>
-					</tr>
-					<tr>
-						<td>Small Splash Image</td>
-						<td align="center">
-							<?php
-							if (!empty($event->images->splash_small_image)) {
-								$eventImage = "/image/{$event->images->splash_small_image}.jpg";
-							} else {
-								$eventImage = "/img/no-image-small.jpeg";
-							}
-							?>
-							<?=$this->html->image("$eventImage", array('alt' => 'splash small image')); ?>
-						</td>
-					</tr>
-					<tr>
-						<td>Event Image</td>
-						<td align="center">
-							<?php
-							if (!empty($event->images->event_image)) {
-								$eventImage = "/image/{$event->images->event_image}.jpg";
-							} else {
-								$eventImage = "/img/no-image-large.jpeg";
-							}
-							?>
-							<?=$this->html->image("$eventImage", array('alt' => 'event image')); ?>
-						</td>
-					</tr>
-					<tr>
-					<td>Logo Image</td>
-						<td align="center">
-							<?php
-							if (!empty($event->images->logo_image)) {
-								$eventImage = "/image/{$event->images->logo_image}.jpg";
-							} else {
-								$eventImage = "/img/no-image-small.jpeg";
-							}
-							?>
-							<?=$this->html->image("$eventImage", array('alt' => 'logo image')); ?>
-						</td>
-					</tr>
-				</table>
-			</div>
-			<!-- End Event Images -->
-			<br />
-			<?=$this->form->submit('Update Event')?>
 		</div>
 		<!-- End Tab -->
 
