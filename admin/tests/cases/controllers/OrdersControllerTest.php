@@ -4,7 +4,7 @@ namespace admin\tests\cases\controllers;
 
 use lithium\action\Request;
 use admin\controllers\OrdersController;
-use admin\models\Order;
+use admin\tests\mocks\models\OrderMock;
 use admin\models\User;
 use admin\models\Item;
 use MongoId;
@@ -21,7 +21,14 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$user_id = new MongoId("787878787zazazag78dsdsdsds78");
 		$item_id = new MongoId("4ddsqsdqszzz80f3ad53892614080076e0");
 		$comment = "Comment @ Test";
-		$remote = new OrdersController(array('request' => new Request()));
+
+		$remote = new OrdersController(array(
+			'request' => new Request(),
+			'classes' => array(
+				'tax' => 'admin\tests\mocks\extensions\AvaTaxMock'
+			)
+		));
+
 		$remote->request->data = array('id' => (string) $order_id, 'comment' => $comment);
 		$remote->request->params['type'] = 'html';
 		$user = Session::read('userLogin');
@@ -104,13 +111,13 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		);
 		$user = User::create();
 		$user->save($user_datas);
-		$order = Order::create();
+		$order = OrderMock::create();
 		$order->save($order_datas);
 		//Request the tested method
 		$remote->cancel();
 		//Check Datas Order
 		$check = true;
-		$result_order = Order::find('first', array('conditions' => array(
+		$result_order = OrderMock::find('first', array('conditions' => array(
 			'_id' => $order["_id"]
 		)));
 		$order = $result_order->data();
@@ -142,7 +149,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 			$check = false;
 		}
 		//Delete Temporary Documents
-		Order::remove(array("_id" => $order_id));
+		OrderMock::remove(array("_id" => $order_id));
 		User::remove(array("_id" => $user_id));
 		//Test result
 		$this->assertEqual( true , $check);
@@ -348,13 +355,21 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		);
 		$user = User::create();
 		$user->save($user_datas);
-		$order = Order::create();
+		$order = OrderMock::create();
 		$order->save($order_datas);
-		//Request the tested method
-		$remote = new OrdersController(array('request' => new Request()));
+
+		// Request the tested method.
+
+		$remote = new OrdersController(array(
+			'request' => new Request(),
+			'classes' => array(
+				'tax' => 'admin\tests\mocks\extensions\AvaTaxMock'
+			)
+		));
+
 		$datas = array(
-			'id' => (string) $order_id, 
-			'comment' => $comment, 
+			'id' => (string) $order_id,
+			'comment' => $comment,
 			'items' => $items,
 			'total' => 92.7,
 			'subTotal' => 76,
@@ -380,7 +395,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 			$check = false;
 		}
 		//Delete Temporary Documents
-		Order::remove(array("_id" => $order_id));
+		OrderMock::remove(array("_id" => $order_id));
 		User::remove(array("_id" => $user_id));
 		Item::remove(array("_id" => $item_id));
 		Item::remove(array("_id" => $item_id_2));
@@ -512,13 +527,21 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		);
 		$user = User::create();
 		$user->save($user_datas);
-		$order = Order::create();
+		$order = OrderMock::create();
 		$order->save($order_datas);
-		//Request the tested method
-		$remote = new OrdersController(array('request' => new Request()));
+
+		// Request the tested method.
+
+		$remote = new OrdersController(array(
+			'request' => new Request(),
+			'classes' => array(
+				'tax' => 'admin\tests\mocks\extensions\AvaTaxMock'
+			)
+		));
+
 		$datas = array(
-			'id' => (string) $order_id, 
-			'comment' => $comment, 
+			'id' => (string) $order_id,
+			'comment' => $comment,
 			'items' => $items,
 			'total' => 29.7,
 			'subTotal' => 13,
@@ -544,7 +567,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 			$check = false;
 		}
 		//Delete Temporary Documents
-		Order::remove(array("_id" => $order_id));
+		OrderMock::remove(array("_id" => $order_id));
 		User::remove(array("_id" => $user_id));
 		Item::remove(array("_id" => $item_id));
 		Item::remove(array("_id" => $item_id_2));

@@ -2,7 +2,7 @@
 
 namespace admin\tests\cases\models;
 
-use admin\models\Order;
+use admin\tests\mocks\models\OrderMock;
 use admin\models\User;
 use admin\models\Item;
 use MongoId;
@@ -12,19 +12,18 @@ class OrderTest extends \lithium\test\Unit {
 	/*
 	* Run Auth.Net Process For One Order
 	*/
-	public function testupdateOrderAuth() {
-		$orderCollection = Order::collection();
-		//configuration
+	public function testUpdateOrderAuth() {
+		$orderCollection = OrderMock::collection();
 		$order_id = "4d94ed00b3d8088719000013";
-		//Update authorize.net Total
-		var_dump($order_id);
-		if(!empty($order_id)) {
-			$order = $orderCollection->findOne(array("_id" => new MongoId($order_id)));
-			var_dump($order);
-			Order::process($order);
-		}
+
+		// Update authorize.net Total
+		$order = $orderCollection->findOne(array("_id" => new MongoId($order_id)));
+		$this->assertTrue($order);
+
+		$result = OrderMock::process($order);
+		$this->assertTrue($result);
 	}
-	
+
 	/*
 	* Testing the Cancel Method of the Order
 	*/
@@ -35,7 +34,7 @@ class OrderTest extends \lithium\test\Unit {
 		$user_id = "787878787zazazag78dsdsdsds78";
 		$order_id = "8788727dsds3782738dsdsds728";
 		//Create temporary documents
-		$remote = new Order();
+		$remote = new OrderMock();
 		$order_datas = array(
 			"_id" => new MongoId($order_id),
 			"authKey" => "090909099909",
@@ -112,7 +111,7 @@ class OrderTest extends \lithium\test\Unit {
 			"reset_token" => "0",
 			"total_credit" => 0
 		);
-		$order = Order::create();
+		$order = OrderMock::create();
 		$order->save($order_datas);
 		$user = User::create();
 		$user->save($user_datas);
@@ -120,7 +119,7 @@ class OrderTest extends \lithium\test\Unit {
 		$remote->cancel((string)$order["_id"], $author, $comment);
 		//Check Datas Order
 		$check = true;
-		$result_order = Order::find('first', array('conditions' => array(
+		$result_order = OrderMock::find('first', array('conditions' => array(
 			'_id' => $order["_id"]
 		)));
 		$order = $result_order->data();
@@ -152,19 +151,19 @@ class OrderTest extends \lithium\test\Unit {
 			$check = false;
 		}
 		//Delete Temporary Documents
-		Order::remove(array("_id" => $order_id));
+		OrderMock::remove(array("_id" => $order_id));
 		User::remove(array("_id" => $user_id));
 		//Test result
 		$this->assertEqual( true , $check);
 	}
-	
+
 	/*
 	* Testing the shipping Method of the Order
 	*/
 	public function testShipping() {
 		$item_id = new MongoId("4ddsqsdqszzz80f3ad53892614080076e0");
 		//Create temporary documents
-		$remote = new Order();
+		$remote = new OrderMock();
 		$items = array(
 			"0" => array(
 				"_id" => new MongoId("4ddsqsdqszzz80f3ad53892614080076e0"),
@@ -239,7 +238,7 @@ class OrderTest extends \lithium\test\Unit {
 	public function testOverSizeShipping() {
 		$item_id = new MongoId("4ddsqsdqszzz80f3ad53892614080076e0");
 		//Create temporary documents
-		$remote = new Order();
+		$remote = new OrderMock();
 		$items = array(
 			"0" => array(
 				"_id" => new MongoId("4ddsqsdqszzz80f3ad53892614080076e0"),
@@ -316,7 +315,7 @@ class OrderTest extends \lithium\test\Unit {
 		$order_id = "8788727dsds3782738dsdsds728";
 		$user_id = "787878787zazazag78dsdsdsds78";
 		//Create temporary documents
-		$remote = new Order();
+		$remote = new OrderMock();
 		$items = array(
 			"0" => array(
 				"_id" => new MongoId("4ddsqsdqszzz80f3ad53892614080076e0"),
@@ -455,21 +454,21 @@ class OrderTest extends \lithium\test\Unit {
 			"total" => 49.65,
 			"user_id" => $user_id
 		);
-		$order = Order::create();
+		$order = OrderMock::create();
 		$order->save($order_datas);
 		//Request the tested method
 		$result = $remote->tax($current_order, $items);
 		//Delete Temporary Documents
-		Order::remove(array("_id" => $order_id));
+		OrderMock::remove(array("_id" => $order_id));
 		//Test result
 		$this->assertEqual( 3 , $result);
 	}
-	
+
 	/*
 	* Testing the SubTotal Method of the Order
 	*/
 	public function testSubTotal() {
-		$remote = new Order();
+		$remote = new OrderMock();
 		$item_id = new MongoId("4ddsqsdqszzz80f3ad53892614080076e0");
 		//Create temporary documents
 		$items = array(
@@ -503,13 +502,13 @@ class OrderTest extends \lithium\test\Unit {
 		//Test result
 		$this->assertEqual( 15 , $result);
 	}
-	
+
 	/*
 	* Testing the saveCurrentOrder Method of the Order
 	*/
 	public function testsaveCurrentOrder() {
 		$userCollection = User::collection();
-		$orderCollection = Order::collection();
+		$orderCollection = OrderMock::collection();
 		$result = true;
 		$item_id = new MongoId("4ddsqsdqszzz80f3ad53892614080076e0");
 		$item_id_2 = new MongoId("0920909Z200IAOIOIZOAIIiioioioio");
@@ -519,7 +518,7 @@ class OrderTest extends \lithium\test\Unit {
 		$user_id = new MongoId("787878787zazazag78dsdsdsds78");
 		$order_id = new MongoId("8788727dsds3782738dsdsds728");
 		//Create temporary documents
-		$remote = new Order();
+		$remote = new OrderMock();
 		$items = array(
 			"0" => array(
 				"_id" => (string) $item_id,
@@ -683,7 +682,7 @@ class OrderTest extends \lithium\test\Unit {
 			"reset_token" => "0",
 			"total_credit" => 0
 		);
-		$order = Order::create();
+		$order = OrderMock::create();
 		$order->save($order_datas);
 		$user = User::create();
 		$user->save($user_datas);
@@ -703,22 +702,22 @@ class OrderTest extends \lithium\test\Unit {
 		}
 		//Delete Temporary Documents
 		User::remove(array("_id" => $user_id));
-		Order::remove(array("_id" => $order_id));
+		OrderMock::remove(array("_id" => $order_id));
 		//Test result
 		$this->assertEqual( true , $result);
 	}
-	
+
 	/*
 	* Testing the cancelItem Method of the Order
 	*/
 	public function testCancelItem() {
 		//Configuration Test
-		$orderCollection = Order::collection();
+		$orderCollection = OrderMock::collection();
 		$result = true;
 		$item_id = new MongoId("4ddsqsdqszzz80f3ad53892614080076e0");
 		$order_id = new MongoId("8788727dsds3782738dsdsds728");
 		//Create temporary documents
-		$remote = new Order();
+		$remote = new OrderMock();
 		$order_datas = array(
 			"_id" => $order_id,
 			"authKey" => "090909099909",
@@ -773,7 +772,7 @@ class OrderTest extends \lithium\test\Unit {
 			"tax" => 0,
 			"total" => 49.65
 		);
-		$order = Order::create();
+		$order = OrderMock::create();
 		$order->save($order_datas);
 		//Request the tested method
 		$remote->cancelItem((string) $order_id, (string) $item_id, true);
@@ -782,22 +781,22 @@ class OrderTest extends \lithium\test\Unit {
 		if($order["items"][0]["cancel"] != true) {
 			$result = false;
 		}
-		Order::remove(array("_id" => $order_id));
+		OrderMock::remove(array("_id" => $order_id));
 		//Test result
 		$this->assertEqual( true , $result);
 	}
-	
+
 	/*
 	* Testing the changeQuantity Method of the Order
 	*/
 	public function testChangeQuantity() {
 		//Configuration Test
-		$orderCollection = Order::collection();
+		$orderCollection = OrderMock::collection();
 		$result = true;
 		$item_id = new MongoId("4ddsqsdqszzz80f3ad53892614080076e0");
 		$order_id = new MongoId("8788727dsds3782738dsdsds728");
 		//Create temporary documents
-		$remote = new Order();
+		$remote = new OrderMock();
 		$order_datas = array(
 			"_id" => $order_id,
 			"authKey" => "090909099909",
@@ -852,7 +851,7 @@ class OrderTest extends \lithium\test\Unit {
 			"tax" => 0,
 			"total" => 49.65
 		);
-		$order = Order::create();
+		$order = OrderMock::create();
 		$order->save($order_datas);
 		//Request the tested method
 		$remote->changeQuantity((string) $order_id, (string) $item_id, 2, 5);
@@ -861,24 +860,24 @@ class OrderTest extends \lithium\test\Unit {
 		if($order["items"][0]["quantity"] != 2 || $order["items"][0]["initial_quantity"] != 5) {
 			$result = false;
 		}
-		Order::remove(array("_id" => $order_id));
+		OrderMock::remove(array("_id" => $order_id));
 		//Test result
 		$this->assertEqual( true , $result);
 	}
-	
+
 	/*
 	* Testing the refreshTempOrder Method of the Order
 	*/
 	public function testRefreshTempOrder() {
 		//Configuration Test
-		$orderCollection = Order::collection();
+		$orderCollection = OrderMock::collection();
 		$result = true;
 		$item_id = new MongoId("4ddsqsdqszzz80f3ad53892614080076e0");
 		$order_id = new MongoId("8788727dsds3782738dsdsds728");
 		$item_id_2 = new MongoId("0920909Z200IAOIOIZOAIIiioioioio");
 		$user_id = new MongoId("787878787zazazag78dsdsdsds78");
 		//Create temporary documents
-		$remote = new Order();
+		$remote = new OrderMock();
 		$selected_order = array(
 			"id" => (string) $order_id,
 			'total' => 7.95,
@@ -1110,12 +1109,12 @@ class OrderTest extends \lithium\test\Unit {
 		$item->save($item_datas);
 		$item2 = Item::create();
 		$item2->save($item_datas_2);
-		$order = Order::create();
+		$order = OrderMock::create();
 		$order->save($order_datas);
 		//Request the tested method
 		$result = $remote->refreshTempOrder($selected_order, $items);
 		//Test result
-		Order::remove(array("_id" => $order_id));
+		OrderMock::remove(array("_id" => $order_id));
 		//Test result
 		$this->assertEqual( true , $result);
 	}
