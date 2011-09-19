@@ -61,6 +61,7 @@ Router::connect('/users/accountStatus/{:args}', 'Users::accountStatus');
 /* Events */
 Router::connect('/events', 'Events::index');
 Router::connect('/select/event/{:args}', 'Base::selectEvent');
+Router::connect('/events/media-status/{:id:[a-z0-9\-]+}', 'Events::media_status');
 
 /* Items */
 Router::connect('/items/view/{:id:[a-z0-9\-]+}', 'Items::view');

@@ -64,6 +64,7 @@ $(function() {
 				item.fadeOut("normal", function() {
 					$(this).remove();
 					$('[target="#orphaned-data"]').click();
+					$('[target="#event_media_status_data"]').click();
 				});
 			},
 			error: function() {
