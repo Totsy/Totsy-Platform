@@ -49,7 +49,21 @@ use lithium\core\Environment;
 Environment::is(function($request) {
 	switch ($request->env('HTTP_HOST')) {
 		case 'www.totsy.com':
+		case 'web1-dc1.totsy.com':
+		case 'web2-dc2.totsy.com':
+		case 'web3-dc3.totsy.com':
+		case 'web4-dc4.totsy.com':
+		case 'totsystaging.com':
+		case 'www.totsystaging.com':
 		case 'totsy.com':
+			return 'production';
+		case 'web1-dc1.totsy.com':
+		case 'web2-dc1.totsy.com':
+		case 'web3-dc1.totsy.com':
+		case 'web4-dc1.totsy.com':
+                case 'totsystaging.com':
+                case 'www.totsystaging.com':
+		case 'newprod.totsy.com':
 			return 'production';
 		case 'test.totsy.com':
 			return 'test';
@@ -116,7 +130,7 @@ use lithium\storage\Session;
 
 Session::config(array(
  	'default' => array('adapter' => 'app\extensions\adapter\session\Model', 'model' => 'MongoSession'),
- 	'cookie' => array('adapter' => 'Cookie', 'expire' => '+1year')
+ 	'cookie' => array('adapter' => 'Cookie', 'expire' => '+30 days')
 ));
 
 use lithium\security\Auth;

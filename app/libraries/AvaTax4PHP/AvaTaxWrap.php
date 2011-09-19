@@ -52,13 +52,13 @@ abstract class AvaTaxWrap {
 				$return = true;
 	  		} else {
 					$str = '';
-					foreach($getTaxResult->getMessages() as $msg) {
+					foreach($result->getMessages() as $msg) {
 						$str.= $msg->getName().": ".$msg->getSummary()."\n";
 					}
 					throw new Exception ($str);
 			}
 	    } catch ( Exception $e ) {
-			throw new Exeption ('tax process error',0,$e);
+			throw new Exception ('tax process error',0,$e);
 		}
 		return $return;
   	}
@@ -90,13 +90,14 @@ abstract class AvaTaxWrap {
 				$return = true;
 			} else {
 				$str = '';
-				foreach($getTaxResult->getMessages() as $msg) {
+				foreach($result->getMessages() as $msg) {
 					$str.= $msg->getName().": ".$msg->getSummary()."\n";
 				}
-				throw new Exception ($str);
+				throw new Exception ($str,911);
+				
 			}
 	    } catch ( Exception $e ) {
-			throw new Exeption ('tax process error',0,$e);
+			throw new Exception ('tax process error',0,$e);
 		}
 
 		return $return;
@@ -219,8 +220,18 @@ abstract class AvaTaxWrap {
 				static::$_tax['DocCode'] = $request->getDocCode();
 				static::$_tax['totalAmount'] = $getTaxResult->getTotalAmount();
 				static::$_tax['totalTax'] = $getTaxResult->getTotalTax();
+				static::$_tax['shippingTax'] = 0;
 				static::$_tax['date'] = date_format($dateTime,"Y-m-d");
-				$return = static::$_tax['totalTax'];
+				foreach($getTaxResult->getTaxLines() as $ctl)
+				{
+					if ( trim($ctl->getTaxCode()) == 'FR020100'){
+						static::$_tax['shippingTax']  = $ctl->getTax();
+					}
+				}
+				
+				if ($shipping > 0 ){
+					$return = static::$_tax['totalTax'] - static::$_tax['shippingTax'];
+				} else { $return = static::$_tax['totalTax']; }
 			} else {
 				$str = '';
 				foreach($getTaxResult->getMessages() as $msg) {

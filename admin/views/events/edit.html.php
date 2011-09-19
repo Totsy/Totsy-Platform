@@ -76,7 +76,7 @@ $('.related_items').selectList({
 	$(item).slideUp(500, callback); 
 	} 
 }); 
-    
+
 $('.related_items').change(function() {
 
 //parse out the current item's id
@@ -207,6 +207,11 @@ for ( i=1; i<6; i++ ) {
 						<input type="radio" name="enabled" value="1" id="enabled"> Enable Event <br>
 						<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Event
 					<?php endif ?>
+				</div>
+				<div id="event_type">
+					<h2 id="event_type">Event Type</h2>
+					<input type="radio" name="tangible" value="1" id="tangible" <?php if ($event->tangible == 1) echo 'checked'; ?> > Tangible <br>
+					<input type="radio" name="tangible" value="0" id="tangible" <?php if ($event->tangible == 0) echo 'checked'; ?> > Non Tangible
 				</div>
 				<div id="event_duration">
 					<h4 id="event_duration">Event Duration</h4>
@@ -360,9 +365,14 @@ for ( i=1; i<6; i++ ) {
 			<p>Add "Final Sale" to the item description?:</p>
 				<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
 				<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
-				<?=$this->form->label('Upload Event (Excel Files): '); ?>
 				<?=$this->form->file('upload_file'); ?>
 				<?=$this->form->submit('Update Event')?>
+				<?=$this->form->label('Upload Event (Excel Files): '); ?>
+<!--
+		<iframe id="upload_frame" name="upload_frame" src="/events/upload/<?=$event->_id?>" frameborder=0 scrolling=no width=400 height=250></iframe>		
+		<div id="upload_error" name="upload_error" style="color:#ff0000; width:400px; float:right; height:250px; overflow:scroll;">(spreadsheet upload errors will appear here)</div>
+
+-->				
 			<br><br>
 			<?=$this->form->end(); ?>
 			<h3 id="current_items">Current Items</h3>
@@ -439,10 +449,6 @@ for ( i=1; i<6; i++ ) {
 				?>
 		</div>
 	</div>
-
-
-
-
 </div>
 <script type="text/javascript">
 $(document).ready(function() {

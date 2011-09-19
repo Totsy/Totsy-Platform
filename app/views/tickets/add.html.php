@@ -1,38 +1,76 @@
-<?php if (!empty($userInfo)): ?>
+<?php $this->title("Contact Us"); ?>
 
-			<h1 class="p-header"><?=$this->title("Contact Us"); ?></h1>
+<div class="grid_16">
+	<h2 class="page-title gray">Contact Us</h2>
+	<hr />
+</div>
 
-<div id="left">
+<div class="grid_4">
+	<div class="roundy grey_inside">
+		<h3 class="gray">About Us</h3>
+		<hr />
 		<ul class="menu main-nav">
-		  <h3 style="color:#999;">About Us</h3>
-		  <hr />
-		  <li class="first item15"><a href="/pages/aboutus" title="About Totsy"><span>How Totsy Works</span></a></li>
-		  <li class="first item17"><a href="/pages/moms" title="Meet The Moms"><span>Meet The Moms</span></a></li>
-		  <li class="first item16"><a href="/pages/press" title="Press"><span>Totsy in the Press</span></a></li>
-		  <li class="first item17"><a href="/pages/being_green" title="Being Green"><span>Being Green</span></a></li>
-		  <li class="first"><a href="/pages/testimonials" title="Video Testimonials"><span>Video Testimonials</span></a></li>
-          <li class="first item19"><a href="http://blog.totsy.com" target="_blank" title="Blog"><span>Totsy Blog</span></a></li>
-          <li class="first item15"><a href="/pages/affiliates" title="Affiliates"><span>Affiliates</span></a></li>
-		  <br />
-		  <h3 style="color:#999;">Need Help?</h3>
-		  <hr />
-		  <li class="first item18 active"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
-		  <li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
+		    <li class="active"><a href="/pages/aboutus" title="About Totsy">How Totsy Works</a></li>
+		    <li><a href="/pages/moms" title="Meet The Moms">Meet The Moms</a></li>
+		    <li><a href="/pages/press" title="Press">Totsy in the Press</a></li>
+		    <li><a href="/pages/testimonials" title="Video Testimonials">Video Testimonials</a></li>
+		    <li><a href="/pages/being_green" title="Being Green">Being Green</a></li>
+		    <li><a href="http://blog.totsy.com" target="_blank" title="Blog">Totsy Blog</a></li>
+		    <li><a href="/pages/affiliates" title="Affiliates"><span>Affiliates</span></a></li>
 		</ul>
 	</div>
-<?php endif ?>
+	<div class="clear"></div>
+	<div class="roundy grey_inside">
+		<h3 class="gray">Need Help?</h3>
+		<hr />
+		<ul class="menu main-nav">
+		    <li><a href="/tickets/add" title="Contact Us">Help Desk</a></li>
+			<li><a href="/pages/faq" title="Frequently Asked Questions">FAQ's</a></li>
+			<li><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
+			<li><a href="/pages/terms" title="Terms Of Use">Terms Of Use</a></li>
+		</ul>
+	</div>
+</div>
 
-<div id="middle" class="noright">
-	<div class="tl"></div>
-	<div class="tr"></div>
-	<div id="page">
-
-	<div style="float:left; width:350px;">
-
+<div class="grid_11 omega roundy grey_inside b_side">
+<div class="grid_8">
 	<h2 class="gray mar-b">Contact Us</h2>
 	<hr />
-
 	<?=$this->form->create(); ?>
+	<h3 style="margin:10px auto;" class="gray">Your contact information</h3>
+				<? if (is_array($error) && array_key_exists('firstname',$error)){?>
+				<div class="standard-message" style="border:0px!important; background:none!important;">
+					<?=$error['firstname'][0];?>
+				</div>
+				<div style="clear:both;"></div>
+				<? } ?>
+				<div class="form-row">
+				<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+				<?=$this->form->text('firstname', array('class' => 'inputbox', 'value'=>is_null($data)?$user['firstname']:$data['firstname']));?>  
+			</div>
+				<? if (is_array($error) && array_key_exists('lastname',$error)){?>
+				<div class="standard-message" style="border:0px!important; background:none!important;">
+					<?=$error['lastname'][0];?>
+				</div>
+				<div style="clear:both;"></div>
+				<? } ?>
+			<div class="form-row">
+				<?=$this->form->label('lastname', 'Last Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+				<?=$this->form->text('lastname', array('class' => 'inputbox', 'value'=>is_null($data)?$user['lastname']:$data['lastname']));?>  
+				
+			</div>
+			<? if (is_array($error) && array_key_exists('telephone',$error)){?>
+			<div class="standard-message" style="border:0px!important; background:none!important;">
+				<?=$error['telephone'][0];?>
+			</div>
+			<div style="clear:both;"></div>
+			<? } ?>
+			<div class="form-row">
+				<?=$this->form->label('telephone', 'Telephone <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+				<?=$this->form->text('telephone', array('class' => 'inputbox', 'id' => 'phone', 'value'=>is_null($data)?'':$data['telephone']));?> 
+			</div>
+
+			<h3 style="margin:10px auto;" class="gray">Please describe your issue below: </h3>
 		<select id="parent" style="width:350px;" name="issue_type">
 			<option value="default">I need help with:</option>
 			<?php if ($orders): ?>
@@ -46,13 +84,13 @@
 			<option value="press">Press Inquiries</option>
 		</select>
 
-		<br />
+		<br /><br />
 		<select id="child" name="type" style="width:350px;">
 		<!-- orders -->
 			<?php if ($orders): ?>
 				<option value="">Choose Your Order Number</option>
 				<?php foreach ($orders as $key => $value): ?>
-					<option class="sub_order" value="<?=$key?>"><?=$value?></option>
+					<option class="sub_order" value="<?=$key?>"> <?=$value?></option>
 				<?php endforeach ?>
 			<?php endif ?>
 
@@ -88,8 +126,12 @@
 		</select>
 
 		<br />
-
-		<h3>Your Message</h3>
+		<h3 style="margin:10px auto;" class="gray">Your Message</h3>
+		<? if (is_array($error) && array_key_exists('message',$error)){?>
+			<div class="standard-message" style="border:0px!important; background:none!important;">
+					<?=$error['message'][0];?>
+				</div>
+		<? } ?>	
 		<?=$this->form->textarea('message', array(
 			'class' => 'inputbox',
 			'style' => 'width:300px;height:120px'
@@ -99,10 +141,10 @@
 
 		<?=$this->form->submit('Send Information', array('class' => "button" )); ?>
 	<?=$this->form->end(); ?>
-	</div>
-
-	<div id="message" style="float:left; width:150px; margin-left:20px;">
-				<strong>Corporate Address:</strong><br/>
+</div>
+<div id="message" class="grid_3">
+				<h2 class="gray">Corporate Address</h2>
+				<hr />
 				10 West 18th Street<br/>
 				4th Floor<br/>
 				New York, NY 10011<br/>
@@ -111,13 +153,15 @@
 				<a href="mailto:support@totsy.com">support@totsy.com</a><br />
 				888-247-9444<br />
 				Office Hours:<br/> M-F 10am - 5pm EST</p>
-	</div>
-
-	</div>
-
-	<div class="bl"></div>
-	<div class="br"></div>
+	</div>	
 </div>
+
+
+</div>
+
+</div>
+<div class="clear"></div>
+
 
 <script language="javascript">
 function makeSublist(parent,child,isSubselectOptional,childVal)
@@ -151,3 +195,27 @@ function makeSublist(parent,child,isSubselectOptional,childVal)
 </script>
 
 
+
+  <script type="text/javascript" charset="utf-8">
+    $(document).ready(function () {
+      checkOptions();
+      $("select").change(checkOptions);
+
+      function checkOptions() {
+        var getSize = false;
+        $("select").each(function(index, element) {
+          if ( $(element).val() == "default" ) {
+            getSize = true;
+          }
+        });
+        
+        if (getSize) {
+          $("#hidden-div").show();
+          $("input[type=Submit]").attr("disabled","disabled");
+        } else {
+          $("#hidden-div").hide();
+          $("input[type=Submit]").removeAttr("disabled");
+        };
+      }
+    });
+  </script> 

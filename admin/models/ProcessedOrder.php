@@ -2,7 +2,7 @@
 
 namespace admin\models;
 
-class ProcessedOrder extends \lithium\data\Model {
+class ProcessedOrder extends Base {
 
 	public $validates = array();
 
@@ -39,6 +39,8 @@ class ProcessedOrder extends \lithium\data\Model {
 		'Ref2' => null,
 		'Ref3' => null,
 		'Ref4' => null,
+		'Order Creation Date' => null,
+		'Promised Ship-by Date' => null,
 		'Ref5' => null,
 		'Ref6' => null,
 		'Ref7' => null,
@@ -106,8 +108,16 @@ class ProcessedOrder extends \lithium\data\Model {
 		'Supplier' => null,
 		'PO # / RMA #' => null,
 		'SKU' => null,
-		'Qty' => null
+		'Qty' => null,
+		'Vendor Style' => null,
+		'Vendor Name' => null,
+		'Item Color' => null,
+		'Item Size' => null,
+		'Item Description' => null,
+		'Order Creation Date' => null,
+		'Promised Ship-by Date' => null,
+		'Event Name' => null,
+		'Event End Date' => null
 	);
 }
-
 ?>

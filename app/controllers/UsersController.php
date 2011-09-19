@@ -60,12 +60,15 @@ class UsersController extends BaseController {
 			$email = $data['email'];
 			$data['password'] = sha1($this->request->data['password']);
 			$data['created_date'] = new MongoDate();
-			$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
+			$data['invitation_codes'] = array(substr($email, 0, strpos($email, '@')));
 			$data['invited_by'] = $invite_code;
 			$inviteCheck = User::count(array('invitation_codes' => $data['invitation_codes']));
 			if ($inviteCheck > 0) {
 				$data['invitation_codes'] = array(static::randomString());
 			}
+			/**
+			* this block handles the invitations.
+			**/
 			if ($invite_code) {
 				$inviter = User::find('first', array(
 					'conditions' => array(
@@ -76,7 +79,13 @@ class UsersController extends BaseController {
 						'conditions' => array(
 							'user_id' => (string) $inviter->_id,
 							'email' => $email
-					)))	;
+					)));
+					
+					Mailer::send('Invited_Register', $inviter->email);
+					
+					if ($inviter->invited_by === 'keyade') {
+						$data['keyade_referral_user_id'] = $inviter->keyade_user_id;
+					}
 					if ($invited) {
 						$invited->status = 'Accepted';
 						$invited->date_updated = Invitation::dates('now');
@@ -85,6 +94,10 @@ class UsersController extends BaseController {
 							Invitation::reject($inviter->_id, $email);
 						}
 					} else {
+					/**
+					* This block was included because users can pass on their
+					* invite url by mouth @_@
+					**/
 						$invitation = Invitation::create();
 						$invitation->user_id = $inviter->_id;
 						$invitation->email = $email;
@@ -116,6 +129,8 @@ class UsersController extends BaseController {
 				Session::write('userLogin', $userLogin, array('name' => 'default'));
 				$cookie['user_id'] = $user->_id;
 				Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
+				#Remove Temporary Session Datas**/
+				User::cleanSession();
 				$data = array(
 					'user' => $user,
 					'email' => $user->email
@@ -149,7 +164,7 @@ class UsersController extends BaseController {
 					$email = $data['email'];
 					$data['password'] = sha1($data['password']);
 					$data['created_date'] = User::dates('now');
-					$data['invitation_codes'] = substr($email, 0, strpos($email, '@'));
+					$data['invitation_codes'] = array(substr($email, 0, strpos($email, '@')));
 					$inviteCheck = User::count( array(
 							'invitation_codes' => $data['invitation_codes']
 							));
@@ -164,7 +179,7 @@ class UsersController extends BaseController {
 						Mailer::send('Welcome_Free_Shipping', $user->email);
 						$name = null;
 						if (isset($data['firstname'])) $name = $data['firstname'];
-						if (isset($data['lastname'])) $name = is_null($name)?$data['lastname']:$name.$data['lastname'];  
+						if (isset($data['lastname'])) $name = is_null($name)?$data['lastname']:$name.$data['lastname'];
 						Mailer::addToMailingList($data['email'],is_null($name)?array():$name);
 
 					}
@@ -182,7 +197,6 @@ class UsersController extends BaseController {
 	 * @return string The user is prompted with a message if authentication failed.
 	 */
 	public function login() {
-
 		$message = $resetAuth = $legacyAuth = $nativeAuth = false;
 		$rememberHash = '';
 		$this->autoLogin();
@@ -222,6 +236,9 @@ class UsersController extends BaseController {
 						}
             			Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 						User::rememberMeWrite($this->request->data['remember_me']);
+						/**Remove Temporary Session Datas**/
+						User::cleanSession();
+						/***/					
 						if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) {
 							$this->redirect($this->request->url);
 						} else {
@@ -426,6 +443,7 @@ class UsersController extends BaseController {
 		$user = User::getUser();
 		$id = (string) $user->_id;
 		// Some documents have arrays, others have strings
+
 		if(is_object($user->invitation_codes) && get_class($user->invitation_codes) == "lithium\data\collection\DocumentArray"){
 			$code = $user->invitation_codes[0];
 		} else {
@@ -450,7 +468,7 @@ class UsersController extends BaseController {
 					'message' => $message,
 					'email_from' => $user->email,
 					'domain' => 'http://www.totsy.com',
-					'invitation_codes' => $user->invitation_codes
+					'invitation_codes' => $code
 				);
 				Mailer::send('Friend_Invite', $email, $args);
 			}

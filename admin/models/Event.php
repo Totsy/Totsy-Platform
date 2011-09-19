@@ -37,7 +37,8 @@ class Event extends \lithium\data\Model {
 	}
 
 	protected $_booleans = array(
-		'enabled'
+		'enabled',
+		'tangible'
 		);
 
 	public static function castData($event, array $options = array()) {

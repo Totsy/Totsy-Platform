@@ -94,7 +94,7 @@ class EventsController extends BaseController {
 		$result = Item::getDepartments();
 		$all_filters = array();
 		foreach ($result['values'] as $value) {
-			//$all_filters[$value] = $value;
+			$all_filters[$value] = $value;
 			if (array_key_exists('Momsdads',$all_filters) && !empty($all_filters['Momsdads'])) {
 				$all_filters['Momsdads'] = 'Moms & Dads';
 			}
@@ -157,7 +157,11 @@ class EventsController extends BaseController {
 			}
 
 			if ($eventData[enabled] != $event->enabled) {
-				$changed .= "Enabled changed from <strong>{$event->enabled}</strong> to <strong>{$eventData[enabled]}</strong><br/>";
+				$changed .= 'Enabled changed from <strong>'.(int)$event->enabled.'</strong> to <strong>'.(int)$eventData[enabled].'</strong><br/>';
+			}
+
+			if ($eventData[tangible] != $event->tangible) {
+				$changed .= 'Tangible changed from <strong>'.(int)$event->tangible.'</strong> to <strong>'.(int)$eventData[tangible].'</strong><br/>';
 			}
 
 			if (strtotime($start_date) != $event->start_date->sec) {
@@ -180,7 +184,7 @@ class EventsController extends BaseController {
 			}
 
 			if ($eventData[enable_items] != $event->enable_items) {
-				$changed .= "Enabled Items from <strong>{$event->enable_items}</strong> to <strong>{$eventData[enable_items]}</strong><br/>";
+				$changed .= 'Enabled Items from <strong>'.(int)$event->enable_items.'</strong> to <strong>'.(int)$eventData[enable_items].'</strong><br/>';
 			}
 
 			/**
@@ -282,26 +286,26 @@ class EventsController extends BaseController {
 					$highestColumn = $worksheet->getHighestColumn();
 					$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
 					for ($row = 1; $row <= $highestRow; ++ $row ) {
-						for ($col = 0; $col < ($highestColumnIndex - 1); ++ $col) {
+						for ($col = 0; $col < $highestColumnIndex; ++ $col) {
 							$cell = $worksheet->getCellByColumnAndRow($col, $row);
 							$val = $cell->getCalculatedValue();
 
 							if ($row == 1) {
 								$heading[] = $val;
 							} else {
-								if (!in_array($heading[$col], array('','NULL'))) {
-									if(($heading[$col] == "department_1") ||
-										($heading[$col] == "department_2") ||
-										($heading[$col] == "department_3")) {
+								if (isset($heading[$col])) {
+									if(($heading[$col] === "department_1") ||
+										($heading[$col] === "department_2") ||
+										($heading[$col] === "department_3")) {
 										if (!empty($val)) {
 											$eventItems[$row - 1]['departments'][] = ucfirst(strtolower(trim($val)));
 											$eventItems[$row - 1]['departments'] = array_unique($eventItems[$row - 1]['departments']);
 										}
-									} else if (($heading[$col] == "related_1") ||
-											($heading[$col] == "related_2") ||
-											($heading[$col] == "related_3") ||
-											($heading[$col] == "related_4") ||
-											($heading[$col] == "related_5")) {
+									} else if (($heading[$col] === "related_1") ||
+											($heading[$col] === "related_2") ||
+											($heading[$col] === "related_3") ||
+											($heading[$col] === "related_4") ||
+											($heading[$col] === "related_5")) {
 											if (!empty($val)) {
 												$eventItems[$row - 1]['related_items'][] = trim($val);
 												$eventItems[$row - 1]['related_items'] = array_unique($eventItems[$row - 1]['related_items']);
@@ -318,11 +322,8 @@ class EventsController extends BaseController {
 						}
 					}
 				}
-
 				foreach ($eventItems as $itemDetail) {
-
 					$i=0;
-
 					$itemAttributes = array_diff_key($itemDetail, array_flip($standardHeader));
 					
           			//check radio box for 'final sale' text append
@@ -336,7 +337,7 @@ class EventsController extends BaseController {
           			else{
           			  $blurb = "";
           			}
-					
+					$itemCleanAttributes = null;
 					foreach ($itemAttributes as $key => $value) {
 						unset($itemDetail[$key]);
 
@@ -344,7 +345,6 @@ class EventsController extends BaseController {
 							$itemCleanAttributes[trim($key)] = $value;
 						}
 					}
-
 					$item = Item::create();
 					$date = new MongoDate();
 					$url = $this->cleanUrl($itemDetail['description']." ".$itemDetail['color']);
@@ -361,7 +361,7 @@ class EventsController extends BaseController {
 
 					$newItem = array_merge(Item::castData($itemDetail), Item::castData($details));
 					$newItem['vendor_style'] = (string) $newItem['vendor_style'];
-
+					
 					if ((array_sum($newItem['details']) > 0) && $item->save($newItem)) {
 						$items[] = (string) $item->_id;
 
@@ -415,7 +415,6 @@ class EventsController extends BaseController {
 
 			}
 		}
-
 		return $items;
 	}
 

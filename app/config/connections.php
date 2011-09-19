@@ -25,7 +25,7 @@ use \lithium\data\Connections;
     			'db5',
     			'db6'
     		),
-			'adapter' => 'app\extensions\adapter\mongo\Db'),
+			'adapter' => 'app\extensions\adapter\data\source\MongoDb'),
 		'test' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy_test',
@@ -38,11 +38,12 @@ use \lithium\data\Connections;
 			'type' =>  'MongoDb',
 			'database' => 'totsy_eric',
 			'host' => 'localhost'),
-		'local' => array(
+		'local' =>array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy',
-			'host' => 'localhost',
-			'adapter' => 'app\extensions\adapter\mongo\Db')
+			'host' => array(
+    			'localhost'
+    		),
+			'adapter' => 'app\extensions\adapter\data\source\MongoDb')
 	));
-
 ?>
