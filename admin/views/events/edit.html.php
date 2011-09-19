@@ -256,10 +256,6 @@ $(function() {
 				<p>
 					Hello administrator. Please edit an event by filling in
 					all the information below. Thank You!
-				</p>
-			</div>
-			<div id="event_preview">
-				<p>
 					To see a preview of the event please
 					<?=$this->html->link('click here.',"/events/preview/$event->_id")?>
 				</p>
@@ -267,7 +263,6 @@ $(function() {
 			<div class="tab_region_left_col">
 				<h4 id="article-heading">Event Description</h4>
 				<?=$this->form->field('name', array('value' => $event->name, 'class' => 'general'));?>
-
 				<div id="blurb_div">
 					<?=$this->form->field('blurb', array(
 						'type' => 'textarea', 'name' => 'content', 'value' => $event->blurb
