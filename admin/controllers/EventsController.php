@@ -507,6 +507,19 @@ class EventsController extends BaseController {
 		return $itemCounts;
 	}
 
+	public function media_status() {
+		$id = $this->request->id;
+		$this->_render['layout'] = false;
+
+		$event = Event::first($id);
+		$event->items = Item::all(array(
+			'conditions' => array('event' => array($id)),
+			'order' => array('created_date' => 'ASC')
+		));
+
+		return compact('event');
+	}
+
 	/**
 	 * This method parses the item file that is uploaded in the Events Edit View.
 	 *

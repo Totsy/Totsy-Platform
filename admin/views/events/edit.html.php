@@ -638,41 +638,17 @@ $(function() {
 
 		<!-- Start Tab -->
 		<div id="event_media_status">
+			<div class="actions">
+				<?=$this->html->link('refresh', array(
+					'action' => 'media_status', 'id' => $event->_id
+				), array(
+					'class' => 'refresh', 'target' => '#event_media_status_data'
+				)); ?>
+			</div>
 			<p>
 				This tab show the status of media associated with the items of this event.
 			</p>
-			<div class="box">
-				<h2>Item Image Status</h2>
-				<table>
-					<thead>
-						<tr>
-							<th>Vendor Style ID</th>
-							<th>Primary</th>
-							<th>Zoom</th>
-							<th>Alternates</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php foreach ($eventItems as $item): ?>
-						<tr>
-							<?php $images = $item->images(); ?>
-							<td><?=$this->html->link($item->vendor_style, array(
-								'controller' => 'items', 'action' => 'view', 'id' => $item->_id
-							)); ?></td>
-							<td class="<?= $images['primary'] ? 'positive' : 'negative'; ?>">
-								<?=$images['primary'] ? '✔' : '✘'; ?>
-							</td>
-							<td class="<?= $images['zoom'] ? 'positive' : 'negative'; ?>">
-								<?=$images['zoom'] ? '✔' : '✘'; ?>
-							</td>
-							<td>
-								<?=$images['alternate'] ? count($images['alternate']) : '–'; ?>
-							</td>
-						</tr>
-						<?php endforeach; ?>
-					</tbody>
-				</table>
-			</div>
+			<div id="event_media_status_data"><!-- Populated through AJAX request. --></div>
 		</div>
 		<!-- End Tab -->
 	</div>
