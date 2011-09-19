@@ -371,6 +371,15 @@ class Order extends Base {
 		$userCollection = User::collection();
 		$credits_recorded = false;
 		/************* PREPARING DATAS **************/
+		$selected_order += array(
+			'order_id' => null,
+			'total' => null,
+			'subTotal' => null,
+			'handling' => null,
+			'promo_discount' => null,
+			'promocode_disable' => null,
+			'comment' => null
+		);
 		$datas_order_prices = array(
 			'total' => (float) $selected_order["total"],
 			'subTotal' => (float) $selected_order["subTotal"],
