@@ -240,6 +240,7 @@ class EventsController extends BaseController {
 
 		return compact('event', 'eventItems', 'items', 'all_filters');
 	}
+
 	/**
 	 * This method parses the item file that is uploaded in the Events Edit View.
 	 *
