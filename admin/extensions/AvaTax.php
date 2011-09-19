@@ -1,4 +1,5 @@
 <?php
+
 namespace admin\extensions;
 
 use lithium\analysis\Logger;
@@ -10,11 +11,8 @@ use AvaTaxWrap;
 use Exception;
 
 /**
- *
- * AvaTax implementation for the aadmin app (there is another one for front-end app)
- *
+ * AvaTax implementation for the aadmin app (there is another one for front-end app).
  */
-
 class AvaTax extends \lithium\core\StaticObject {
 
 	protected static $_settings = array();
