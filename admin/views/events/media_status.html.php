@@ -1,6 +1,6 @@
 <div class="box">
 	<h2>Item Image Status</h2>
-	<?php if ($event->items): ?>
+	<?php if (count($event->items)): ?>
 	<table>
 		<thead>
 			<tr>
