@@ -49,7 +49,7 @@ class EventsController extends BaseController {
 		}
 
 		if (!empty($this->request->data)) {
-			$images = $this->parseImages();
+			$images = $this->_parseImages();
 			$seconds = ':'.rand(10,60);
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
@@ -119,7 +119,7 @@ class EventsController extends BaseController {
 			unset($this->request->data['itemTable_length']);
 			$enableItems = $this->request->data['enable_items'];
 			if ($_FILES['upload_file']['error'] == 0 && $_FILES['upload_file']['size'] > 0) {
-				if (is_array($this->parseItems($_FILES, $event->_id, $enableItems))) {
+				if (is_array($this->_parseItems($_FILES, $event->_id, $enableItems))) {
 					unset($this->request->data['upload_file']);
 					$eventItems = Item::find('all', array('conditions' => array('event' => array($_id))));
 					if (!empty($eventItems)) {
@@ -129,7 +129,7 @@ class EventsController extends BaseController {
 					}
 				}
 			}
-			$images = $this->parseImages($event->images);
+			$images = $this->_parseImages($event->images);
 
 			//Saving the original start and end and ship dates for comparison
 			$start_date = $this->request->data['start_date'];
@@ -247,7 +247,7 @@ class EventsController extends BaseController {
 	 * @todo Add event to the header information for spreadsheet (event - this needs to replace vendor)
 	 * @todo Add vendor_description
 	 */
-	protected function parseItems($_FILES, $_id, $enabled = false) {
+	protected function _parseItems($_FILES, $_id, $enabled = false) {
 		$items = array();
 		$itemIds = array();
 		$relatedItems = array();
@@ -482,7 +482,7 @@ class EventsController extends BaseController {
 	 * @param object
 	 * @return array
 	 */
-	protected function parseImages($imageRecord = null) {
+	protected function _parseImages($imageRecord = null) {
 		$images = array();
 
 		foreach ($this->request->data as $key => $value) {
