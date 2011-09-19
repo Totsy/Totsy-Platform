@@ -88,7 +88,6 @@ label {
 	opacity: .7;
 }
 .upload_files_link {
-	float: left;
 	display: inline;
 	margin: 0;
 	padding: 0;
@@ -99,6 +98,9 @@ label {
 	margin: 0;
 	padding: 0;
 }
+#agileUploaderSWF {
+	margin-top: 2px;
+}
 #agileUploaderInfo {
 	background: #e8e8e8;
 	border: 1px solid #888;
@@ -107,7 +109,7 @@ label {
 	width: 415px;
 }
 #agileUploaderAttachArea {
-	width: 325px;
+	width: 320px;
 	margin: 0;
 	padding: 0;
 	float: left;
