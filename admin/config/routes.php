@@ -36,18 +36,22 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 		'body' => $file->file->getBytes()
 	));
 });
+
 Router::connect('/login', 'Users::login');
 Router::connect('/logout', 'Users::logout');
 Router::connect('/token', 'Users::token');
 Router::connect('/', 'Dashboard::index');
 
 Router::connect('/register', 'Users::register');
-Router::connect('/addresses', 'Addresses::view');
+Router::connect('/token', 'Users::token');
 Router::connect('/account/add/{:args}', 'Account::add');
 
 #users
 Router::connect('/users/view/{:args}', 'Users::view');
 Router::connect('/users/accountStatus/{:args}', 'Users::accountStatus');
+
+/* Events */
+Router::connect('/events', 'Events::index');
 Router::connect('/select/event/{:args}', 'Base::selectEvent');
 #items
 Router::connect('/items/view/{:id:[a-z0-9\-]+}', 'Items::view');
@@ -76,6 +80,9 @@ Router::connect('/files/upload/{:args}', 'Files::upload');
  * ...and connect the rest of 'Pages' controller's urls.
  */
 Router::connect('/pages/{:args}', 'Pages::view');
+Router::connect('/{:controller}/{:action}/{:id:[0-9]+}.{:type}', array('id' => null));
+Router::connect('/{:controller}/{:action}/{:id:[0-9]+}');
+Router::connect('/{:controller}/{:action}/{:args}');
 
 /**
  * Connect the testing routes.
