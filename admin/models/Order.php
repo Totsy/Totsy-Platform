@@ -10,7 +10,6 @@ use li3_payments\extensions\payments\exceptions\TransactionException;
 use lithium\analysis\Logger;
 use admin\models\User;
 use admin\models\Item;
-use admin\extensions\AvaTax;
 use admin\models\Credit;
 use Exception;
 
@@ -55,7 +54,13 @@ class Order extends Base {
 	const TAX_RATE = 0.08875;
 
 	const TAX_RATE_NYS = 0.04375;
+
+	protected static $_classes = array(
+		'tax' => 'admin\extensions\AvaTax'
+	);
+
 	protected $_meta = array('source' => 'orders');
+
 	protected $_nyczips = array(
 		'100',
 		'104',
@@ -205,6 +210,8 @@ class Order extends Base {
 	 * clicking cancel order
 	 */
 	public static function cancel($order_id, $author, $comment, $credits_recorded = false, $test = false) {
+		$tax = static::$_classes['tax'];
+
 		$userCollection = User::collection();
 		//Get the actual datas of the order
 		$result = static::find('first', array('conditions' => array(
@@ -230,7 +237,8 @@ class Order extends Base {
 			    static::void($order);
 			}
 			//Push cancel status to Avalara
-			AvaTax::cancelTax($order['order_id']);
+			$tax::cancelTax($order['order_id']);
+
 			//Cancel all the items
 			$items = $order["items"];
 			$item_names = array();
@@ -632,6 +640,8 @@ class Order extends Base {
 	 *
 	 */
 	protected static function recalculateTax ($current_order,$itms,$update=false){
+		$tax = static::$_classes['tax'];
+
 		$orderCollection = static::collection();
 		$order = $orderCollection->findOne(
 			array("_id" => new MongoId($current_order["id"])),
@@ -650,11 +660,11 @@ class Order extends Base {
 
 		if ($update === false){
 			$ordermodel = __CLASS__;
-			return AvaTax::getTax(compact('order','items','ordermodel','current_order','itms'));
+			return $tax::getTax(compact('order','items','ordermodel','current_order','itms'));
 		} else {
-			AvaTax::cancelTax($order['order_id']);
 			$admin = 1;
-			return AvaTax::commitTax(compact('order','items','admin'));
+			$tax::cancelTax($order['order_id']);
+			return $tax::commitTax(compact('order','items','admin'));
 		}
 	}
 
