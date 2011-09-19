@@ -611,7 +611,6 @@ class EventsController extends BaseController {
 
 		return $items;
 	}
-
 	public function preview($_id = null) {
 
 		$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
