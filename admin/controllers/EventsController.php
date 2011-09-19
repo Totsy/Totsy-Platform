@@ -322,7 +322,6 @@ class EventsController extends BaseController {
 				unset($this->request->data['departments']);
 			}
 			unset($this->request->data['itemTable_length']);
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //			if ($_FILES['upload_file']['error'] == 0 && $_FILES['upload_file']['size'] > 0) {
 //				if (is_array($this->parseItems($_FILES, $event->_id, $enableItems))) {
@@ -340,7 +339,7 @@ class EventsController extends BaseController {
 
 
 
-			$images = $this->parseImages($event->images);
+			$images = $this->_parseImages($event->images);
 
 			//Saving the original start and end and ship dates for comparison
 			$start_date = $this->request->data['start_date'];
@@ -462,7 +461,7 @@ class EventsController extends BaseController {
 	 * @todo Add event to the header information for spreadsheet (event - this needs to replace vendor)
 	 * @todo Add vendor_description
 	 */
-	protected function parseItems($array, $_id, $enabled = false) {
+	protected function _parseItems($array, $_id, $enabled = false) {
 		$eventItems = array();
 		$items = array();
 		$itemIds = array();
@@ -718,7 +717,7 @@ class EventsController extends BaseController {
 	 * @param object
 	 * @return array
 	 */
-	protected function parseImages($imageRecord = null) {
+	protected function _parseImages($imageRecord = null) {
 		$images = array();
 
 		foreach ($this->request->data as $key => $value) {
