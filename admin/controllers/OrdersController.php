@@ -19,7 +19,6 @@ use PHPExcel;
 use PHPExcel_Cell;
 use PHPExcel_Cell_DataType;
 use li3_flash_message\extensions\storage\FlashMessage;
-use admin\extensions\AvaTax;
 use admin\extensions\Mailer;
 
 /**
@@ -27,6 +26,10 @@ use admin\extensions\Mailer;
  *
  **/
 class OrdersController extends BaseController {
+
+	protected $_classes = array(
+		'tax' => 'admin\extensions\AvaTax'
+	);
 
 	/**
 	 * These headings are used in the datatable index view.
@@ -624,6 +627,7 @@ class OrdersController extends BaseController {
 	}
 
 	public function taxreturn(){
+		$taxClass = $this->_classes['tax'];
 
 		if ($this->request->data) {
 
@@ -691,7 +695,8 @@ class OrdersController extends BaseController {
 				}
 				$order['return'] = $ord_ver;
 				$data['order']['order_id'] = $data['order']['order_id'].'.'.$ord_ver;
-				$tax = AvaTax::getTax($data);
+
+				$tax = $taxClass::getTax($data);
 				$order['tax'] = $order['tax'] - $tax;
 				$order['subTotal'] = $order['subTotal'] - $sub;
 				$order['total'] = $order['total'] - ( $sub + $tax);
@@ -704,7 +709,7 @@ class OrdersController extends BaseController {
 				$data['items'][$k] = $v;
 			}
 
-			AvaTax::returnTax($data);
+			$taxClass::returnTax($data);
 		}
 
 		$this->redirect(array('Orders::view::'.$this->request->data['id']));
