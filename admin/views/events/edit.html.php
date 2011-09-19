@@ -571,6 +571,7 @@ $(function() {
 			<div class="tab_region_right_col">
 				<?=$this->view()->render(array('element' => 'files_naming_event'), array('item' => $event)); ?>
 				<?=$this->view()->render(array('element' => 'files_naming_item')); ?>
+
 			</div>
 			<div class="clear"></div>
 			<?=$this->view()->render(array('element' => 'files_pending'), array('item' => $event)); ?>
