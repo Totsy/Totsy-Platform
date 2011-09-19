@@ -606,6 +606,7 @@ $(function() {
 						flashSrc: '<?=$this->url('/swf/agile-uploader.swf'); ?>',
 						submitRedirect: '<?=$this->url('/events/edit/' . (string)$event->_id); ?>',
 						formId: 'EventMedia',
+						flashWidth: 70,
 						removeIcon: '<?=$this->url('/img/agile_uploader/trash-icon.png'); ?>',
 						flashVars: {
 							button_up: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
