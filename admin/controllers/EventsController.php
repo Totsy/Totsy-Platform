@@ -453,6 +453,60 @@ class EventsController extends BaseController {
 		return compact('event', 'eventItems', 'items', 'all_filters', 'shortDescLimit');
 	}
 
+	public function preview($_id = null) {
+
+		$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		$event = Event::first(array(
+				'conditions' => array(
+					'_id' => $_id
+				)));
+
+		$pending = ($event->start_date->sec > time() ? true : false);
+
+		if (!empty($event->items)) {
+			$eventItems = Item::find('all', array( 'conditions' => array(
+						'event' => array($_id),
+						'enabled' => true
+					),
+					'order' => array('created_date' => 'ASC')
+				));
+
+			foreach($eventItems as $eventItem) {
+				$items[] = $eventItem;
+			}
+		}
+		if ($pending == false) {
+			$type = 'Today\'s';
+		} else {
+			$type = 'Coming Soon';
+		}
+		$this->_render['layout'] = 'preview';
+		$id = $event->_id;
+		$preview = "Events";
+		return compact('event', 'items', 'shareurl', 'type', 'id', 'preview');
+
+	}
+
+	public function inventoryCheck($events) {
+		$events = $events->data();
+		foreach ($events as $eventItems) {
+			$count = 0;
+			$id = $eventItems['_id'] ;
+
+			if (isset($eventItems['items'])) {
+				foreach ($eventItems['items'] as $eventItem) {
+					if ($item = Item::first(array('conditions' => array('_id' => $eventItem)))) {
+						if ($item->total_quantity) {
+							$count += $item->total_quantity;
+						}
+					}
+				}
+			}
+			$itemCounts[$id] = $count;
+		}
+		return $itemCounts;
+	}
+
 	/**
 	 * This method parses the item file that is uploaded in the Events Edit View.
 	 *
@@ -631,84 +685,29 @@ class EventsController extends BaseController {
 		return $items;
 	}
 }
+    private function description_cutter($str,$length=null){
+            $return = '';
+            $str = strip_tags($str);
+            $split = preg_split("/[\s]+/",$str);
+            $len = 0;
+            if (is_array($split) && count($split)>0){
+                foreach($split as $splited){
+                    $tmp_len = $len + strlen($splited) +1;
+                    if ($tmp_len < $length){
+                        $len = $tmp_len;
+                        $return.= $splited.' ';
+                    } else {
+                        break;
+                    }
+                }
+            }
 
-	public function preview($_id = null) {
-
-		$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-		$event = Event::first(array(
-				'conditions' => array(
-					'_id' => $_id
-				)));
-
-		$pending = ($event->start_date->sec > time() ? true : false);
-
-		if (!empty($event->items)) {
-			$eventItems = Item::find('all', array( 'conditions' => array(
-						'event' => array($_id),
-						'enabled' => true
-					),
-					'order' => array('created_date' => 'ASC')
-				));
-
-			foreach($eventItems as $eventItem) {
-				$items[] = $eventItem;
-			}
-		}
-		if ($pending == false) {
-			$type = 'Today\'s';
-		} else {
-			$type = 'Coming Soon';
-		}
-		$this->_render['layout'] = 'preview';
-		$id = $event->_id;
-		$preview = "Events";
-		return compact('event', 'items', 'shareurl', 'type', 'id', 'preview');
-
-	}
-
-	public function inventoryCheck($events) {
-		$events = $events->data();
-		foreach ($events as $eventItems) {
-			$count = 0;
-			$id = $eventItems['_id'] ;
-
-			if (isset($eventItems['items'])) {
-				foreach ($eventItems['items'] as $eventItem) {
-					if ($item = Item::first(array('conditions' => array('_id' => $eventItem)))) {
-						if ($item->total_quantity) {
-							$count += $item->total_quantity;
-						}
-					}
-				}
-			}
-			$itemCounts[$id] = $count;
-		}
-		return $itemCounts;
-	}
-
-	private function description_cutter($str,$length=null){
-		$return = '';
-		$str = strip_tags($str);
-		$split = preg_split("/[\s]+/",$str);
-		$len = 0;
-		if (is_array($split) && count($split)>0){
-			foreach($split as $splited){
-				$tmp_len = $len + strlen($splited) +1;
-				if ($tmp_len < $length){
-					$len = $tmp_len;
-					$return.= $splited.' ';
-				} else {
-					break;
-				}
-			}
-		}
-
-		if (strlen($return)>0){
-			return $return;
-		} else {
-			return $str;
-		}
-    }
+            if (strlen($return)>0){
+                return $return;
+            } else {
+                return $str;
+            }
+        }
 	/**
 	 * Parse the images from the request using the key
 	 *
