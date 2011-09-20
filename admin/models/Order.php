@@ -508,7 +508,7 @@ class Order extends Base {
 		extract(static::recalculateTax($selected_order,$items));
 
 		if ($tax instanceof Exception) {
-			/* Rethrow exceptions recived while recalculating tax. */
+			/* Rethrow exceptions received while recalculating tax. */
 			throw $tax;
 		}
 		if (is_object($tax)) {
