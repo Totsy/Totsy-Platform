@@ -145,33 +145,42 @@ class Order extends Base {
 
 		try {
 		    $error = null;
-		    if ($order['total'] != 0 && is_numeric($order['authKey'])) {
-                $auth = Payments::capture('default', $order['authKey'], floor($order['total']*100)/100);
-            } else {
-                $auth = -1;
-                $error = "Can't capture because total is zero.";
-            }
-                Logger::info("process-payment: Processed payment for order_id $order[_id]");
-                return $collection->update(
-                    array('_id' => $orderId),
-                    array('$set' => array(
-                        'payment_date' => new MongoDate(),
-                        'auth_confirmation' => $auth,
-                        'auth_error' => $error)),
-                    array('upsert' => false)
-                );
-		} catch (TransactionException $e) {
-			$error = $e->getMessage();
-			Logger::info("process-payment: Failed to process payment for order_id $order[_id]");
-			Logger::error("process-payment: Error $error thrown for $order[_id]");
-			$collection->update(
+			if ($order['total'] != 0 && is_numeric($order['authKey'])) {
+				$auth = Payments::capture('default', $order['authKey'], floor($order['total']*100)/100);
+			} else {
+				$auth = -1;
+				$error = "Can't capture because total is zero.";
+			}
+			Logger::info("process-payment: Processed payment for order_id {$order['_id']}");
+
+			return $collection->update(
 				array('_id' => $orderId),
-				array('$set' => array(
-					'error_date' => new MongoDate(),
-					'auth_confirmation' => -1,
-					'auth_error' => $error)),
+				array(
+					'$set' => array(
+						'payment_date' => new MongoDate(),
+						'auth_confirmation' => $auth,
+						'auth_error' => $error
+					)
+				),
 				array('upsert' => false)
 			);
+		} catch (TransactionException $e) {
+			$error = $e->getMessage();
+			Logger::info("process-payment: Failed to process payment for order_id `{$order['_id']}`.");
+			Logger::error("process-payment: Error {$error} thrown for `{$order['_id']}`.");
+
+			$collection->update(
+				array('_id' => $orderId),
+				array(
+					'$set' => array(
+						'error_date' => new MongoDate(),
+						'auth_confirmation' => -1,
+						'auth_error' => $error
+					)
+				),
+				array('upsert' => false)
+			);
+			return false;
 		}
 	}
 
