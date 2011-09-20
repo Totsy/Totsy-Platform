@@ -572,5 +572,6 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		//Test result
 		$this->assertEqual( true , $check);
 	}
-
 }
+
+?>
