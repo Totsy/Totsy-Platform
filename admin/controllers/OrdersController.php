@@ -187,18 +187,17 @@ class OrdersController extends BaseController {
 
 				$order_data = $order_a->data();
 
-				$order_data[id] = $order_data[_id];
-				$order_data[items][$line_num][initial_quantity] = $order_data[items][$line_num][quantity];
-				$order_data[items][$line_num][cancel] = "true";
-				$order_data[save] = 'true';
-				$order_data[comment] = 'Bulk Cancel of Item';
+				$order_data['id'] = $order_data['_id'];
+				$order_data['items'][$line_num]['initial_quantity'] = $order_data['items'][$line_num]['quantity'];
+				$order_data['items'][$line_num]['cancel'] = "true";
+				$order_data['save'] = 'true';
+				$order_data['comment'] = 'Bulk Cancel of Item';
 
 				$this->request->data = $order_data;
 
 				$order_m_i = $this->manage_items();
 
 //				$this->updateShipping($order_data[id]);
-
 			}
 			$i++;
 		}
@@ -220,11 +219,11 @@ class OrdersController extends BaseController {
 		));
 
 		$order_data = $order_a->data();
-		$order_data[id] = $order_data[_id];
-		$order_data[items][$line_number][initial_quantity] = $order_data[items][$line_number][quantity];
-		$order_data[items][$line_number][cancel] = "true";
-		$order_data[save] = true;
-		$order_data[comment] = 'Bulk Cancel of Item';
+		$order_data['id'] = $order_data['_id'];
+		$order_data['items'][$line_number]['initial_quantity'] = $order_data['items'][$line_number]['quantity'];
+		$order_data['items'][$line_number]['cancel'] = "true";
+		$order_data['save'] = true;
+		$order_data['comment'] = 'Bulk Cancel of Item';
 
 		$this->request->data = $order_data;
 
