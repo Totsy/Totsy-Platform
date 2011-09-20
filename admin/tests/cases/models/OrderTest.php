@@ -506,7 +506,7 @@ class OrderTest extends \lithium\test\Unit {
 	/*
 	* Testing the saveCurrentOrder Method of the Order
 	*/
-	public function testsaveCurrentOrder() {
+	public function testSaveCurrentOrder() {
 		$userCollection = User::collection();
 		$orderCollection = OrderMock::collection();
 		$result = true;
