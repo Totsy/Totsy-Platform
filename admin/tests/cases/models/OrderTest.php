@@ -6,23 +6,41 @@ use admin\tests\mocks\models\OrderMock;
 use admin\models\User;
 use admin\models\Item;
 use MongoId;
+use li3_payments\extensions\Payments;
 
 class OrderTest extends \lithium\test\Unit {
 
 	/*
-	* Run Auth.Net Process For One Order
-	*/
-	public function testUpdateOrderAuth() {
-		$orderCollection = OrderMock::collection();
-		$order_id = "4d94ed00b3d8088719000013";
-
-		// Update authorize.net Total
-		$order = $orderCollection->findOne(array("_id" => new MongoId($order_id)));
-		$this->assertTrue($order);
+	public function testProcessWithTotalAndCaptureOnly() {
+		$data = array(
+			'total' => 1.23,
+			'authKey' => '090909099909'
+		);
+		$order = OrderMock::create($data);
+		$result = $order->save();
+		$this->assertTrue($result);
+		$orderId = $order->_id;
 
 		$result = OrderMock::process($order);
 		$this->assertTrue($result);
+
+		$order = OrderMock::first(array(
+			'conditions' => array('_id' => $order->_id)
+		));
+
+		$result = $order->payment_date;
+		$this->assertTrue($result);
+
+		$result = $order->auth_error;
+		$this->assertFalse($result);
+
+		$expected = $data['authKey'];
+		$result = $order->auth_confirmation;
+		$this->assertEqual($expected, $result);
+
+		OrderMock::remove(array('_id' => $orderId));
 	}
+	*/
 
 	/*
 	* Testing the Cancel Method of the Order
