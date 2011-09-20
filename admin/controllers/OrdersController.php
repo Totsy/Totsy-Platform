@@ -624,7 +624,7 @@ class OrdersController extends BaseController {
 						}
 						if ($orderClass::setTrackingNumber($order->order_id, $shipRecord['Tracking #'])){
 							if (empty($order->auth_confirmation)) {
-								if ($order->process() && $user->purchase_count == 1) {
+								if ($orderClass::process($order) && $user->purchase_count == 1) {
 									if ($user->invited_by) {
 										$inviter = User::find('first', array(
 											'conditions' => array(
