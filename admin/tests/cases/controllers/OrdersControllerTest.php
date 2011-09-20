@@ -401,7 +401,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		//Test result
 		$this->assertEqual( true , $check);
 	}
-	
+
 	/*
 	* Testing the ManageItems when the order is saved method from the OrdersController
 	*/
@@ -568,5 +568,6 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		//Test result
 		$this->assertEqual( true , $check);
 	}
-	
 }
+
+?>
