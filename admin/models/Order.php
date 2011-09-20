@@ -215,7 +215,7 @@ class Order extends Base {
 		$userCollection = User::collection();
 		//Get the actual datas of the order
 		$result = static::find('first', array('conditions' => array(
-			'_id' => new MongoId($order_id)
+			'_id' => $order_id instanceof MongoId ? $order_id : new MongoId($order_id)
 		)));
 		$order = $result->data();
 		if(strlen($order["user_id"]) > 10){
