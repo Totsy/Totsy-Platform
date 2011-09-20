@@ -163,106 +163,23 @@ class OrdersControllerTest extends \lithium\test\Unit {
 	* Testing the ManageItems method from the OrdersController
 	*/
 	public function testManageItemsUnsaved() {
-		//Configuration Test
-		$check = true;
-		$order_id = new MongoId("8788727dsds3782738dsdsds728");
-		$user_id = new MongoId("787878787zazazag78dsdsdsds78");
-		$item_id = new MongoId("4ddsqsdqszzz80f3ad53892614080076e0");
-		$item_id_2 = new MongoId("0920909Z200IAOIOIZOAIIiioioioio");
-		$comment = "Comment @ Test";
-		$user = Session::read('userLogin');
-		//Create temporary document
-		$items = array(
-			'0' => array(
-				'cancel' => 'true',
-				'initial_quantity' => '5',
-				'quantity' => '5'
-				),
-			'1' => array(
-				'cancel' => '',
-				'initial_quantity' => '2',
-				'quantity' => '1'
-		));
-		$order_datas = array(
-			"_id" => $order_id,
-			"authKey" => "090909099909",
-			"credit_used" => -5,
-			"date_created" => "Sat, 11 Dec 2010 09: 51: 15 -0500",
-			"handling" => 7.95,
-			"items" => array(
-				"0" => array(
-					"_id" => (string) $item_id,
-					"category" => "Baby Gear",
-					"color" => "",
-					"description" => "BabyGanics Alcohol Free Hand Sanitizer 250ml",
-					"discount_exempt" => false,
-					"expires" => array(
-						"sec" => 1292079402,
-						"usec" => 0
-					),
-					"item_id" => (string) $item_id,
-					"primary_image" => "4d015488ce64e5c072fc1e00",
-					"product_weight" => 0.64,
-					"quantity" => 5,
-					"sale_retail" => 10,
-					"size" => "no size",
-					"url" => "babyganics-alcohol-free-hand-sanitizer-250ml",
-					"event_name" => "Babyganics",
-					"event_id" => "4cfd1dd1ce64e5300aeb4100",
-					"line_number" => 0,
-					"status" => "Order Placed"
-			),
-			"1" => array(
-				"_id" => (string)$item_id_2,
-				"category" => "Baby Gear",
-				"color" => "",
-				"description" => "TESTSTYTYSTYT",
-				"discount_exempt" => false,
-				"expires" => array(
-					"sec" => 1292079402,
-					"usec" => 0
-				),
-				"item_id" => (string)$item_id_2,
-				"primary_image" => "4d015488ce64e5c072fc1e00",
-				"product_weight" => 0.64,
-				"quantity" => 2,
-				"sale_retail" => 13,
-				"size" => "no size",
-				"url" => "babyganics-alcohol-free-hand-sanitizer-250ml",
-				"event_name" => "Babyganics",
-				"event_id" => "4cfd1dd1ce64e5300aeb4100",
-				"line_number" => 0,
-				"status" => "Order Placed"
-			)),
-			"order_id" => "4D03KLKLLKL8FE3",
-			"promo_code" => "weekend10",
-			"promo_discount" => -10,
-			"ship_date" => 1294272000,
-			"ship_records" => array(
-				"0" => new MongoId("4d5c5a405389266032003bfd"),
-			),
-			"shipping" => array(
-				"_id" => "4cd779e1ce64e5aa45b60b00",
-				"description" => "Home",
-				"firstname" => "TEST",
-				"lastname" => "Test",
-				"telephone" => "",
-				"address" => "2731 Ross Rd",
-				"address_2" => "",
-				"city" => "Pafdo Alto",
-				"state" => "TE",
-				"zip" => "909904303",
-				"isAjax" => "1",
-				"user_id" => (string) $user_id
-			),
-			"shippingMethod" => "ups",
-			"subTotal" => 76,
-			"tax" => 0,
-			"total" => 92.7,
-			"user_id" => (string) $user_id
+		$data = array(
+			"active" => 1,
+			"email" => uniqid('test') . '@example.com',
+			"firstname" => "Test",
+			"lastname" => "User",
+			"legacy" => 0,
+			"password" => "0b505f152dc80b527035e3500925936fe9703d2c",
+			"purchase_count" => 2,
+			"total_credit" => 0
 		);
-		$item_datas = array(
-		  "_id" => $item_id,
+		$user = User::create($data);
+		$result = $user->save();
+		$this->assertTrue($result);
+
+		$userId = $user->_id;
+
+		$data = array(
 		  "category" => "Room D\u00e9cor",
 		  "color" => "",
 		  "created_date" => "Wed, 16 Mar 2011 13:30:21 -0400",
@@ -297,8 +214,13 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		  "vendor_style" => "SDDSER.SO16",
 		  "views" => 3
 		);
-		$item_datas_2 = array(
-		  "_id" => $item_id_2,
+		$item = Item::create($data);
+		$result = $item->save();
+		$this->assertTrue($result);
+
+		$item1Id = $item->_id;
+
+		$data = array(
 		  "category" => "Room D\u00e9cor",
 		  "color" => "",
 		  "created_date" => "Wed, 16 Mar 2011 13:30:21 -0400",
@@ -333,41 +255,110 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		  "vendor_style" => "SDDSER.SO16",
 		  "views" => 3
 		);
-		$item = Item::create();
-		$item->save($item_datas);
-		$item2 = Item::create();
-		$item2->save($item_datas_2);
-		$user_datas = array(
-			"_id" => $user_id,
-			"active" => 1,
-			"created_on" => "Wed, 22 Sep 2010 16: 50: 44 -0400",
-			"email" => "fdkflkdlskfd@gmail.com",
-			"firstname" => "KLKL",
-			"invitation_codes" => array(
-			"0" => "fdfdfdddd"
+		$item = Item::create($data);
+		$result = $item->save();
+		$this->assertTrue($result);
+
+		$item2Id = $item->_id;
+
+		$data = array(
+			"authKey" => "090909099909",
+			"credit_used" => -5,
+			"date_created" => "Sat, 11 Dec 2010 09: 51: 15 -0500",
+			"handling" => 7.95,
+			"items" => array(
+				"0" => array(
+					"_id" => (string) $item1Id,
+					"category" => "Baby Gear",
+					"color" => "",
+					"description" => "BabyGanics Alcohol Free Hand Sanitizer 250ml",
+					"discount_exempt" => false,
+					"expires" => array(
+						"sec" => 1292079402,
+						"usec" => 0
+					),
+					"item_id" => (string) $item1Id,
+					"primary_image" => "4d015488ce64e5c072fc1e00",
+					"product_weight" => 0.64,
+					"quantity" => 5,
+					"sale_retail" => 10,
+					"size" => "no size",
+					"url" => "babyganics-alcohol-free-hand-sanitizer-250ml",
+					"event_name" => "Babyganics",
+					"event_id" => "4cfd1dd1ce64e5300aeb4100",
+					"line_number" => 0,
+					"status" => "Order Placed"
 			),
-			"invited_by" => "fdfdfd",
-			"lastip" => "204.246.230.160",
-			"lastlogin" => "Thu, 10 Mar 2011 22: 42: 08 -0500",
-			"lastname" => "OPOo",
-			"legacy" => 0,
-			"logincounter" => 9,
-			"password" => "0b505f152dc80b527035e3500925936fe9703d2c",
-			"purchase_count" => 2,
-			"reset_token" => "0",
-			"total_credit" => 0
+			"1" => array(
+				"_id" => (string)$item2Id,
+				"category" => "Baby Gear",
+				"color" => "",
+				"description" => "TESTSTYTYSTYT",
+				"discount_exempt" => false,
+				"expires" => array(
+					"sec" => 1292079402,
+					"usec" => 0
+				),
+				"item_id" => (string)$item2Id,
+				"primary_image" => "4d015488ce64e5c072fc1e00",
+				"product_weight" => 0.64,
+				"quantity" => 2,
+				"sale_retail" => 13,
+				"size" => "no size",
+				"url" => "babyganics-alcohol-free-hand-sanitizer-250ml",
+				"event_name" => "Babyganics",
+				"event_id" => "4cfd1dd1ce64e5300aeb4100",
+				"line_number" => 0,
+				"status" => "Order Placed"
+			)),
+			"order_id" => "4D03KLKLLKL8FE3",
+			"promo_code" => "weekend10",
+			"promo_discount" => -10,
+			"ship_date" => 1294272000,
+			"ship_records" => array(
+				"0" => new MongoId("4d5c5a405389266032003bfd"),
+			),
+			"shipping" => array(
+				"_id" => "4cd779e1ce64e5aa45b60b00",
+				"description" => "Home",
+				"firstname" => "TEST",
+				"lastname" => "Test",
+				"telephone" => "",
+				"address" => "2731 Ross Rd",
+				"address_2" => "",
+				"city" => "Pafdo Alto",
+				"state" => "TE",
+				"zip" => "909904303",
+				"isAjax" => "1",
+				"user_id" => (string) $userId
+			),
+			"shippingMethod" => "ups",
+			"subTotal" => 76,
+			"tax" => 0,
+			"total" => 92.7,
+			"user_id" => (string) $userId
 		);
-		$user = User::create();
-		$user->save($user_datas);
-		$order = OrderMock::create();
-		$order->save($order_datas);
+		$order = OrderMock::create($data);
+		$result = $order->save($data);
+		$this->assertTrue($result);
 
-		// Request the tested method.
+		$orderId = $order->_id;
 
-		$remote = $this->controller;
+		$items = array(
+			'0' => array(
+				'cancel' => 'true',
+				'initial_quantity' => '5',
+				'quantity' => '5'
+				),
+			'1' => array(
+				'cancel' => '',
+				'initial_quantity' => '2',
+				'quantity' => '1'
+		));
+		$comment = "Comment @ Test";
 
-		$datas = array(
-			'id' => (string) $order_id,
+		$data = array(
+			'id' => (string) $orderId,
 			'comment' => $comment,
 			'items' => $items,
 			'total' => 92.7,
@@ -379,27 +370,27 @@ class OrdersControllerTest extends \lithium\test\Unit {
 			"promo_code" => "weekend10",
 			"promo_discount" => -10,
 			'comment' => $comment,
-			'user_id' => (string) $user_id,
+			'user_id' => (string) $userId,
 			'user_total_credits' => 1.75,
 			'save' => 'false'
-			);
-		$remote->request->data = $datas;
+		);
+
+		$remote = $this->controller;
+		$remote->request->data = $data;
 		$remote->request->params['type'] = 'html';
 		$result = $remote->manage_items();
-		$selected_order = $result->data();
-		if($selected_order["items"][0]["cancel"] != true){
-			$check = false;
-		}
-		if($selected_order["total"] != 29.7) {
-			$check = false;
-		}
-		//Delete Temporary Documents
-		OrderMock::remove(array("_id" => $order_id));
-		User::remove(array("_id" => $user_id));
-		Item::remove(array("_id" => $item_id));
-		Item::remove(array("_id" => $item_id_2));
-		//Test result
-		$this->assertEqual( true , $check);
+
+		$this->assertTrue($result->items[0]->cancel);
+		$this->assertFalse($result->items[1]->cancel);
+
+		$expected = 29.7;
+		$result = $result->total;
+		$this->assertEqual($expected, $result);
+
+		OrderMock::remove(array("_id" => $orderId));
+		User::remove(array("_id" => $userId));
+		Item::remove(array("_id" => $item1Id));
+		Item::remove(array("_id" => $item2Id));
 	}
 
 	/*
