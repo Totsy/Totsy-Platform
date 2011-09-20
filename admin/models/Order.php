@@ -386,7 +386,7 @@ class Order extends Base {
 			'handling' => (float) $selected_order["handling"],
 			'overSizeHandling' => (float) $selected_order["overSizeHandling"],
 			'handlingDiscount' => (float) $selected_order["handlingDiscount"],
-			'overSizeHandlingDiscount' => (float) $selected_order["overSizeHandlingDiscount"],		
+			'overSizeHandlingDiscount' => (float) $selected_order["overSizeHandlingDiscount"],
 			'promo_discount' => (float) $selected_order["promo_discount"],
 			'discount' => (float) $selected_order["discount"],
 			'promocode_disable' => $selected_order["promocode_disable"],
@@ -505,6 +505,7 @@ class Order extends Base {
 		}
 		//Get Actual Taxes
 		extract(static::recalculateTax($selected_order,$items));
+
 		if (is_object($tax)) {
             //Avatax::totsyCalculateTax($selected_order);
             //$tax = static::tax($selected_order,$items);
