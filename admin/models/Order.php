@@ -278,10 +278,12 @@ class Order extends Base {
 				$userCollection->update(array("_id" => $order["user_id"]), array('$set' => array("total_credit" => (((float) abs($new_credit)) + ((float) $user["total_credit"])))));
 			}
 		}
-		//Pushing modification datas to db
-		$result = static::collection()->update(array("_id" => new MongoId($order_id)),
-		array('$push' => array('modifications' => $modification_datas)), array('upsert' => true));
-		return $result;
+		// Pushing modification datas to db.
+		return static::collection()->update(
+			array("_id" => new MongoId($order_id)),
+			array('$push' => array('modifications' => $modification_datas)),
+			array('upsert' => true)
+		);
 	}
 
 	public static function shipping($items) {
@@ -460,12 +462,16 @@ class Order extends Base {
 	public static function cancelItem($order_id, $cart_id, $cancel = true) {
 		$orderCollection = static::collection();
 		$order = $orderCollection->findOne(array("_id" => new MongoId($order_id)), array('items' => 1));
+
 		foreach($order["items"] as $key => $item) {
 			if($item["_id"] == new MongoId($cart_id)) {
 				$order["items"][$key]["cancel"] = $cancel;
 			}
 		}
-		$orderCollection->update(array("_id" => new MongoId($order_id)), array('$set' => array( "items" => $order["items"])));
+		return $orderCollection->update(
+			array("_id" => new MongoId($order_id)),
+			array('$set' => array("items" => $order["items"]))
+		);
 	}
 
 	/**
