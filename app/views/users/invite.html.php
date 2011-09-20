@@ -195,7 +195,15 @@
 						
 						if( validateEmail(clean_email)==false) {
 							
-							$('#recipient_list').validationEngine('showPrompt','*This email is not valid: ' +  clean_email, '', true);
+							var error_msg = "";
+							
+								if(clean_email==""){
+									error_msg = "*One of your emails is blank, or remove that extra comma.";
+								} else {
+									error_msg = '*This email is not valid: ' +  clean_email;
+								}
+							
+							$('#recipient_list').validationEngine('showPrompt',error_msg, '', true);
     			 			$('#recipient_list').validationEngine({ promptPosition : "centerRight", scroll: false });
 							
 							$("input[type=Submit]").attr("disabled","disabled");
@@ -217,6 +225,11 @@
 						$("input[type=Submit]").removeAttr("disabled");
 					}
 				}		
+			} else {
+				$('#recipient_list').validationEngine('showPrompt','*Please enter an email', '', true);
+    			$('#recipient_list').validationEngine({ promptPosition : "centerRight", scroll: false });
+				$("input[type=Submit]").attr("disabled","disabled");
+				return false;	
 			}
 		});
 	});
