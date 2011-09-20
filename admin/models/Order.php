@@ -363,7 +363,11 @@ class Order extends Base {
 	}
 
 	/**
-	* Save the data of the temporary order to the DB
+	* Save the data of the temporary order to the DB.
+	*
+	* @todo Clarify handling of return vlaue of `recalculateTax()`. Currently
+	*       it'll the `extract()` will error on as it doesn't get an array under
+	*       certain conditions. Please see the docblock for `recalculateTax()`.
 	* @param object $selected_order
 	* @param array $items
 	* @param string $author
@@ -497,7 +501,11 @@ class Order extends Base {
 
 	/**
 	* Refresh the prices details and credits of the temporary order
-	* and return it to the view
+	* and return it to the view.
+	*
+	* @todo Clarify handling of return vlaue of `recalculateTax()`. Currently
+	*       it'll the `extract()` will error on as it doesn't get an array under
+	*       certain conditions. Please see the docblock for `recalculateTax()`.
 	* @param object $selected_order
 	* @param array $items
 	*/
@@ -646,9 +654,14 @@ class Order extends Base {
 	 * Method to recalculate sales tax for renewated order. Tax is based on a Avalara.
 	 * SK: I hope they calculate sales tax based on sipping destination ;)
 	 *
+	 * @todo `getTax()` returns an array, while `cancelTax()` returns a scalar
+	 *        value. That means depending on the $update flag this method will return a
+	 *        scalar/non-scalar value. This probably isn't intented as code calling this
+	 *        methods seems to always expect an array to be returned. See `saveCurrentOrder()`
+	 *        and `refreshTempOrder()` for an example.
+	 *
 	 * @param object $current_order
 	 * @param array $itms
-	 *
 	 */
 	protected static function recalculateTax ($current_order,$itms,$update=false){
 		$tax = static::$_classes['tax'];
@@ -668,14 +681,13 @@ class Order extends Base {
 				$items[] = $itm;
 			}
 		}
-
 		if ($update === false){
 			$ordermodel = __CLASS__;
 			return $tax::getTax(compact('order','items','ordermodel','current_order','itms'));
 		} else {
 			$admin = 1;
 			$tax::cancelTax($order['order_id']);
-			return $tax::commitTax(compact('order','items','admin'));
+			return $tax::commitTax(compact('order','items','admin')); /* Returns a scalar value. */
 		}
 	}
 
