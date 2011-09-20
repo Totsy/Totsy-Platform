@@ -4,7 +4,7 @@
 		<?php if(array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])):?>
 		<?php echo "{$userInfo['firstname']} {$userInfo['lastname']}"; ?>
 		<?php else:?>
-		<?php echo "{$userInfo['email']}"; ?>
+		<?php if (is_array($userInfo) && array_key_exists('email', $userInfo)) { echo $userInfo['email']; } ?>
 		<?php endif; ?>
 		<?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
 		(<?php echo $this->html->link('Sign Out', $logout, array('title' => 'Sign Out')); ?>)

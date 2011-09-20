@@ -128,6 +128,7 @@ class CartController extends BaseController {
 	public function add() {
 		#Check Cart
 		$cart = Cart::create();
+				
 		if ($this->request->data) {
 			#Getting Size Selected
 			$itemId = $this->request->data['item_id'];
@@ -156,10 +157,12 @@ class CartController extends BaseController {
 			#Condition if Item Already in your Cart
 			if (!empty($cartItem)) {
 				//Make sure user does not add more than 9 items to the cart
+				
 				if($cartItem->quantity < 9 ) {
 					//Make sure the items are available
 					if( $avail > 0 ) {
 						++$cartItem->quantity;
+						header("Location: /checkout/view");
 						$cartItem->save();
 						//calculate savings
 						$item[$item['_id']] = $cartItem->quantity;
@@ -192,7 +195,8 @@ class CartController extends BaseController {
 					}
 				}
 			}
-			$this->redirect(array('Cart::view'));
+			header("Location: " . \lithium\net\http\Router::match('Cart::view', $this->request), true, 302);
+			die();
 		}
 		return compact('cart');
 	}
