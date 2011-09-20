@@ -884,6 +884,7 @@ class OrderTest extends \lithium\test\Unit {
 			'subTotal' => 3.25,
 			'tax' => 0,
 			'handling' => 7.95,
+			'promo_discount' => 0,
 			'promocode_disable' => false,
 			'credit_used' => -3.25,
 			'user_id' => (string) $user_id,
