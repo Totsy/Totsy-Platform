@@ -184,7 +184,7 @@
     		return (regex.test(field)) ? true : false;
     	}			
 		
-		$("#recipient_list").blur( function() {
+		$("#recipient_list").keyup( function() {
 		
 			var email_addresses = $("#recipient_list").val().split(",");
 			
