@@ -77,8 +77,12 @@ class OrdersController extends BaseController {
 		if ($this->request->data) {
 			$search = $this->request->data['search'];
 			$searchType = $this->request->data['type'];
-			$date = array('date_created' => array('$gt' =>
-				new MongoDate(strtotime('August 3, 2010'))));
+			$date = array(
+				'date_created' => array(
+					'$gt' => new MongoDate(strtotime('August 3, 2010'))
+				)
+			);
+
 			if (!empty($search)) {
 				switch ($searchType) {
 					case 'order':
@@ -123,19 +127,22 @@ class OrdersController extends BaseController {
 			if (!empty($rawOrders)) {
 				if (get_class($rawOrders) == 'MongoCursor') {
 					foreach ($rawOrders as $order) {
-						FlashMessage::set("Results found for $searchType search of $search",
-							array('class' => 'pass'));
+						FlashMessage::set(
+							"Results found for $searchType search of $search",
+							array('class' => 'pass')
+						);
 						$orders[] = $this->sortArrayByArray($order, $headings);
 						$shipDate["$order[_id]"] = $this->shipDate($order);
 					}
 				}
 				if (empty($order)) {
-					FlashMessage::set("No results found for $searchType search of $search",
-						array('class' => 'warning'));
+					FlashMessage::set(
+						"No results found for $searchType search of $search",
+						array('class' => 'warning')
+					);
 				}
 			}
 		}
-
 		return compact('orders', 'headings', 'shipDate');
 	}
 
@@ -151,7 +158,12 @@ class OrdersController extends BaseController {
 		$datas = $this->request->data;
 
 		if ($datas["id"]) {
-			$status = $orderClass::cancel($datas["id"], $current_user["email"], $datas["comment"], $credits_recorded);
+			$status = $orderClass::cancel(
+				$datas["id"],
+				$current_user["email"],
+				$datas["comment"],
+				$credits_recorded
+			);
 			$selected_order = $orderCollection->findOne(array("_id" => new MongoId($datas["id"])));
 		}
 	}
@@ -160,10 +172,10 @@ class OrdersController extends BaseController {
 		$orderClass = $this->_classes['order'];
 		$current_user = Session::read('userLogin');
 
-		$order 		= $this->request->data['order'];
-		$line_number= $this->request->data['line_number'];
-		$item_id	= $this->request->data['id'];
-		$sku		= $this->request->data['sku'];
+		$order       = $this->request->data['order'];
+		$line_number = $this->request->data['line_number'];
+		$item_id     = $this->request->data['id'];
+		$sku         = $this->request->data['sku'];
 
 		foreach ($order as $key => $value) {
 			$line_num = $line_number[$key];
@@ -198,10 +210,10 @@ class OrdersController extends BaseController {
 		$orderClass = $this->_classes['order'];
 		$current_user = Session::read('userLogin');
 
-		$order_id 	= $this->request->query['order_id'];
-		$sku		= $this->request->query['sku'];
-		$item_id	= $this->request->query['item_id'];
-		$line_number= $this->request->query['line_number'];
+		$order_id    = $this->request->query['order_id'];
+		$sku         = $this->request->query['sku'];
+		$item_id     = $this->request->query['item_id'];
+		$line_number = $this->request->query['line_number'];
 
 		$order_a = $orderClass::first(array(
 			'conditions' => array('_id' => new MongoId($order_id))
@@ -218,7 +230,7 @@ class OrdersController extends BaseController {
 
 		$order = $this->manage_items();
 
-		$this->redirect('/items/bulkCancel/'.$sku);
+		$this->redirect('/items/bulkCancel/' . $sku);
 	}
 
 	/**
@@ -249,31 +261,36 @@ class OrdersController extends BaseController {
 			$datas["user_id"] = $selected_order["user_id"];
 			$datas["order_id"] = $selected_order["order_id"];
 			$items = $selected_order["items"];
+
 			foreach($datas["items"] as $key => $item) {
 				//Quantity
 				$items[$key]["initial_quantity"] = $item["initial_quantity"];
 				$items[$key]["quantity"] = $item["quantity"];
+
 				//Cancel Status
-				if(empty($item["cancel"])){
+				if (empty($item["cancel"])){
 					$cancelCheck = false;
 					$cancelEmptyCheck = false;
 				} else {
 					$cancelCheck = ($item["cancel"] == "true" ||  $item["cancel"] == 1) ? true : false;
 					$cancelEmptyCheck = (!empty($cancelCheck) || $item["cancel"] == "") ? true : false;
 				}
-				if(((!empty($cancelCheck)) && $item["quantity"] > 0) || ($item["quantity"] == 0 && ($item["cancel"] == false || $item["cancel"] == 1))) {
+
+				if (((!empty($cancelCheck)) && $item["quantity"] > 0) || ($item["quantity"] == 0 && ($item["cancel"] == false || $item["cancel"] == 1))) {
 					$items[$key]["cancel"] = true;
-				} else if(empty($cancelCheck)) {
+				} elseif (empty($cancelCheck)) {
 					$items[$key]["cancel"] = false;
-					if($items[$key]["quantity"] == 0) {
+
+					if ($items[$key]["quantity"] == 0) {
 						$items[$key]["quantity"] = $item["initial_quantity"];
 					}
 				}
 			}
-			if($datas["save"] == 'true') {
+			if ($datas["save"] == 'true') {
 				extract($orderClass::saveCurrentOrder($datas, $items, $current_user["email"]));
-				if($result == true) {
-					FlashMessage::set("Order items has been updated.", array('class' => 'pass'));
+
+				if ($result == true) {
+					FlashMessage::write("Order items has been updated.", array('class' => 'pass'));
 				}
 				#Get Last Saved Order
 				$order_temp = $orderClass::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
@@ -281,17 +298,19 @@ class OrdersController extends BaseController {
 				$order_temp = $orderClass::refreshTempOrder($datas, $items);
 			}
 			$test_order = $orderCollection->findOne(array("_id" => new MongoId($datas["id"])));
+
 			//Fill Logs Informations - Tracking Informations
-			if(!empty($test_order["modifications"])) {
+			if (!empty($test_order["modifications"])) {
 				$order_temp["modifications"] = $test_order["modifications"];
 			}
-			if(!empty($test_order["tracking_numbers"])) {
+			if (!empty($test_order["tracking_numbers"])) {
 				$order_temp["tracking_numbers"] = $test_order["tracking_numbers"];
 			}
+
 			//Check if all items are closed, close the order.
 			$cancel_order = true;
 			foreach($test_order["items"] as $item){
-				if(empty($item["cancel"])) {
+				if (empty($item["cancel"])) {
 					$cancel_order = false;
 				} else {
 				 	if($item["cancel"] != 'false') {
@@ -299,16 +318,19 @@ class OrdersController extends BaseController {
 					}
 				}
 			}
-			if(!empty($cancel_order)){
+			if (!empty($cancel_order)){
 				$this->cancel($credits_recorded);
-				$order_temp = $orderClass::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
-				//If the order is canceled, send an email
-				if(strlen($order_temp["user_id"]) > 10){
+				$order_temp = $orderClass::first(array(
+					'conditions' => array('_id' => new MongoId($datas["id"]))
+				));
+
+				// If the order is canceled, send an email
+				if (strlen($order_temp["user_id"]) > 10) {
 					$user = $userCollection->findOne(array("_id" => new MongoId($order_temp->user_id)));
 				} else {
 					$user = $userCollection->findOne(array("_id" => $order_temp->user_id));
 				}
-				if(!is_int($order_temp->ship_date)){
+				if (!is_int($order_temp->ship_date)){
 					$shipDate = $order_temp->ship_date->sec;
 				} else {
 					$shipDate = $order_temp->ship_date;
@@ -319,8 +341,9 @@ class OrdersController extends BaseController {
 				);
 				Mailer::send('Cancel_Order', $user["email"], $data);
 			}
-			//If order is updated without cancel, send email
-			if(($datas["save"] == 'true') && empty($cancel_order)) {
+
+			// If order is updated without cancel, send email
+			if (($datas["save"] == 'true') && empty($cancel_order)) {
 				$order = $orderClass::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
 				if(strlen($order_temp["user_id"]) > 10){
 					$user = $userCollection->findOne(array("_id" => new MongoId($order->user_id)));
@@ -352,20 +375,23 @@ class OrdersController extends BaseController {
 		$current_user = Session::read('userLogin');
 
 		$orderCollection = $orderClass::collection();
-		//Get datas from the shipping form
+
+		// Get datas from the shipping form.
 		$datas = $this->request->data;
 		$update = true;
 		$count = 0;
-		//check if form is well completed
-		foreach($datas as $data){
-			if($data == null){
+
+		// Check if form is well completed.
+		foreach ($datas as $data) {
+			if ($data == null){
 				$missing = true;
-			}else {
+			} else {
 				$count++;
 			}
 		}
-		//If yes, we prepare the array of modification datas
-		if((!$missing) && ($count > 6)){
+
+		// If yes, we prepare the array of modification datas.
+		if ((!$missing) && ($count > 6)) {
 			$order = $orderClass::find('first', array('conditions' => array('_id' => new MongoId($id))));
 			$modification_datas["author"] = $current_user["email"];
 			$modification_datas["date"] = new MongoDate(strtotime('now'));
@@ -378,12 +404,18 @@ class OrdersController extends BaseController {
 				"state" => $order["shipping"]["state"],
 				"zip" => $order["shipping"]["zip"],
 				"phone" => $order["shipping"]["phone"]
-				);
-			//We push the modifications datas with the old shipping
+			);
+
+			// We push the modifications datas with the old shipping.
 			$orderCollection->update(array("_id" => new MongoId($id)), array('$push' => array('modifications' => $modification_datas)), array('upsert' => true));
 			$orderCollection->update(array("_id" => new MongoId($id)), array('$set' => array('shipping' => $datas)));
 			FlashMessage::set("Shipping details has been updated.", array('class' => 'pass'));
-		}else FlashMessage::set("Some informations for the new shipping are missing", array('class' => 'warning'));
+		} else {
+			FlashMessage::set(
+				"Some informations for the new shipping are missing",
+				array('class' => 'warning')
+			);
+		}
 	}
 
 	/**
@@ -404,23 +436,26 @@ class OrdersController extends BaseController {
 
 		$userCollection = User::collection();
 		$orderCollection = Order::collection();
-		//Only view
+
+		// Only view
 		$edit_mode = false;
-		//update the shipping address by adding the new one and pushing the old one.
-		if($this->request->data){
+
+		// update the shipping address by adding the new one and pushing the old one.
+		if ($this->request->data) {
 		 	$datas = $this->request->data;
 		}
-		if(!empty($datas["cancel_action"])){
+		if (!empty($datas["cancel_action"])){
 			$this->cancel();
+
 			//If the order is canceled, send an email
 			$order_temp = $orderClass::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
 
-			if(strlen($order_temp["user_id"]) > 10){
+			if (strlen($order_temp["user_id"]) > 10){
 				$user = $userCollection->findOne(array("_id" => new MongoId($order_temp->user_id)));
 			} else {
 				$user = $userCollection->findOne(array("_id" => $order_temp->user_id));
 			}
-			if(!is_int($order_temp->ship_date)){
+			if (!is_int($order_temp->ship_date)){
 				$shipDate = $order_temp->ship_date->sec;
 			} else {
 				$shipDate = $order_temp->ship_date;
@@ -431,9 +466,9 @@ class OrdersController extends BaseController {
 			);
 			Mailer::send('Cancel_Order', $user["email"], $data);
 		}
-		if(!empty($datas["save"])){
+		if (!empty($datas["save"])){
 			$order = $this->manage_items();
-		}else {
+		} else {
 			$order = null;
 		}
 		if ($id && empty($datas["save"]) && empty($datas["cancel_action"]) && !empty($datas["phone"])) {
@@ -442,22 +477,26 @@ class OrdersController extends BaseController {
 			}
 		}
 		$this->_render['layout'] = 'base';
+
 		if ($id) {
 			$itemscanceled = true;
-			$order_current = Order::find('first', array('conditions' => array('_id' => new MongoId($id))));
-			if(empty($order)){
+			$order_current = $orderClass::find('first', array('conditions' => array('_id' => new MongoId($id))));
+
+			if (empty($order)) {
 				$order = $order_current;
 			}
 			$orderData = $order_current->data();
-			//Check if order has been authorize.net confirmed
-			if(empty($orderData["void_confirm"]) && empty($orderData["auth_confirmation"])) {
+
+			// Check if order has been authorize.net confirmed
+			if (empty($orderData["void_confirm"]) && empty($orderData["auth_confirmation"])) {
 				$edit_mode = true;
 			}
-			if(array_key_exists('tax_commit',$orderData)){
+			if (array_key_exists('tax_commit',$orderData)) {
 				$edit_mode = false;
 			}
 			$orderItems = $orderData['items'];
-			if(!empty($orderItems)){
+
+			if (!empty($orderItems)){
 				foreach ($orderItems as $key => $orderItem) {
 					$item = Item::find('first', array(
 						'conditions' => array('_id' => $orderItem['item_id']
@@ -474,8 +513,9 @@ class OrdersController extends BaseController {
 				}
 			}
 		}
-		//Check if order has been canceled
-		if(!empty($order->cancel)) {
+
+		// Check if order has been canceled
+		if (!empty($order->cancel)) {
 			$edit_mode = false;
 			$itemscanceled = false;
 		}
@@ -505,18 +545,22 @@ class OrdersController extends BaseController {
 
 		if ($this->request->data) {
 			$sendEmail = (boolean) $this->request->data['send_email'];
+
 			if ($_FILES['upload']['error'] == 0) {
 				$file = $_FILES['upload']['tmp_name'];
 				$objReader = PHPExcel_IOFactory::createReaderForFile("$file");
 				$objPHPExcel = $objReader->load("$file");
+
 				foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
 					$highestRow = $worksheet->getHighestRow();
 					$highestColumn = $worksheet->getHighestColumn();
 					$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
+
 					for ($row = 1; $row <= $highestRow; ++ $row) {
 						for ($col = 0; $col < $highestColumnIndex; ++ $col) {
 							$cell = $worksheet->getCellByColumnAndRow($col, $row);
 							$val = $cell->getValue();
+
 							if ($row == 1) {
 								$heading[] = $val;
 							} else {
@@ -530,9 +574,11 @@ class OrdersController extends BaseController {
 			}
 			if ($shipRecords) {
 				$updated = array();
+
 				foreach ($shipRecords as $shipRecord) {
 					$checkedItems = array();
 					$order = $orderClass::lookup(substr($shipRecord['OrderNum'], 0, 8));
+
 					if ($order && !empty($order->items)) {
 						$item = Item::find('first', array(
 							'conditions' => array(
@@ -541,6 +587,7 @@ class OrdersController extends BaseController {
 						if ($item) {
 							$itemId = (string) $item->_id;
 							$orderData = $order->data();
+
 							foreach ($orderData['items'] as $orderItem) {
 								if ($orderItem['item_id'] == $itemId) {
 									$orderItem['status'] = "Order Shipped";
@@ -564,6 +611,7 @@ class OrdersController extends BaseController {
 								'tracking_numbers' => $shipRecord['Tracking #']
 						)));
 						$user = User::find('first', array('condition' => array('_id' => $order->user_id)));
+
 						if (empty($trackingNum) && $sendEmail) {
 							$data = array(
 								'order' => $order->data(),
@@ -770,7 +818,8 @@ class OrdersController extends BaseController {
 
 		$data = $this->request->data;
 		extract($orderClass::orderPaymentRequests($data));
-        if ($payments && $payments->hasNext()) {
+
+		if ($payments && $payments->hasNext()) {
             if (!empty($message)) {
                 $class = 'notice';
                 $style = 'font-color:#fff';
