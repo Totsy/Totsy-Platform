@@ -7,7 +7,6 @@ use app\models\Cart;
 use app\models\Item;
 use app\models\Credit;
 use app\models\Address;
-use app\models\Order;
 use app\models\Event;
 use app\models\Promotion;
 use app\models\CreditCard;
@@ -20,7 +19,6 @@ use lithium\storage\Session;
 use lithium\util\Validator;
 use MongoDate;
 use MongoId;
-use app\extensions\AvaTax;
 use app\extensions\Mailer;
 
 /**
@@ -30,14 +28,21 @@ use app\extensions\Mailer;
  **/
 class OrdersController extends BaseController {
 
+	protected $_classes = array(
+		'tax'   => 'app\extensions\AvaTax',
+		'order' => 'app\models\Order'
+	);
+
 	/**
 	 * Allows the view of all the orders a customer has in descending order.
 	 * The ship date is also populated next to each order if applicable.
 	 * @return compact
 	 */
 	public function index() {
+		$orderClass = $this->_classes['order'];
+
 		$user = Session::read('userLogin');
-		$orders = Order::find('all', array(
+		$orders = $orderClass::find('all', array(
 			'conditions' => array(
 				'user_id' => (string) $user['_id']),
 			'order' => array('date_created' => 'DESC')
@@ -82,8 +87,10 @@ class OrdersController extends BaseController {
 	 * @return mixed
 	 */
 	public function view($order_id) {
+		$orderClass = $this->_classes['order'];
+
 		$user = Session::read('userLogin');
-		$order = Order::find('first', array(
+		$order = $orderClass::find('first', array(
 			'conditions' => array(
 				'order_id' => $order_id,
 				'user_id' => (string) $user['_id']
@@ -305,13 +312,16 @@ class OrdersController extends BaseController {
 		$cartEmpty = ($cart->data()) ? false : true;
 		return compact('address','addresses_ddwn','shipDate','cartEmpty','error','selected','cartExpirationDate','missChristmasCount','notmissChristmasCount');
 	}
-	
+
 	/**
 	 * Processes an order by capturing payment.
 	 * @return compact
 	 * @todo Improve documentation
 	 */
 	public function review() {
+		$taxClass   = $this->_classes['tax'];
+		$orderClass = $this->_classes['order'];
+
 		#Check Users are in the correct step
 		if (!Session::check('shipping')) {
 			$this->redirect(array('Orders::shipping'));
@@ -384,7 +394,7 @@ class OrdersController extends BaseController {
 			$overShippingCost = Cart::overSizeShipping($cart);
 		}
 		#Getting Tax by Avatax
-		$avatax = AvaTax::getTax(compact(
+		$avatax = $taxClass::getTax(compact(
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'));
 		
@@ -404,10 +414,11 @@ class OrdersController extends BaseController {
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
 			$shipping_discount = $shippingCost + $overShippingCost;
 		}
+
 		#Calculate Order Total
 		$total = $vars['postDiscountTotal'];
 		#Read Credit Card Informations
-		$creditCard = Order::creditCardDecrypt((string)$user['_id']);
+		$creditCard = $orderClass::creditCardDecrypt((string)$user['_id']);
 		#Disable Promocode Uses if Services
 		if (!empty($services['freeshipping']['enable']) || !empty($services['tenOffFitfy'])) {
 			$promocode_disable = true;
@@ -418,7 +429,7 @@ class OrdersController extends BaseController {
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'shipping_discount'
 		);
 		if ((!$cartEmpty) && (!empty($this->request->data['process']))) {
-			$order = Order::process($this->request->data, $cart, $vars, $avatax);
+			$order = $orderClass::process($this->request->data, $cart, $vars, $avatax);
 			if (empty($order->errors) && !(Session::check('cc_error'))) {
 				#Redirect To Confirmation Page
 				$this->redirect(array('Orders::view', 'args' => $order->order_id));
@@ -444,7 +455,7 @@ class OrdersController extends BaseController {
 		$eventItems = null;
 		if ($object) {
 			$model = $object->model();
-			if ($model == 'app\models\Order') {
+			if (strpos($model, 'app\models\Order') === 0) {
 				$orderItems = $object->items->data();
 				foreach ($orderItems as $item) {
 					$eventItems[$item['event_id']][] = $item;
@@ -491,6 +502,8 @@ class OrdersController extends BaseController {
 	 * @return compact
 	 */
 	public function payment() {
+		$orderClass = $this->_classes['order'];
+
 		#Check Users are in the correct step
 		if (!Session::check('shipping')) {
 			$this->redirect(array('Orders::shipping'));
@@ -556,7 +569,7 @@ class OrdersController extends BaseController {
 			#Check credits cards informations
 			if($cc_infos->validates()) {
 				#Encrypt CC Infos with mcrypt
-				Session::write('cc_infos', Order::creditCardEncrypt($cc_infos, (string)$user['_id'], true));
+				Session::write('cc_infos', $orderClass::creditCardEncrypt($cc_infos, (string)$user['_id'], true));
 				$cc_passed = true;
 				#Remove Credit Card Errors
 				Session::delete('cc_error');
@@ -632,7 +645,7 @@ class OrdersController extends BaseController {
 		$cartEmpty = ($cart->data()) ? false : true;
 		if (Session::check('cc_error')){
 			if (!isset($payment) || (isset($payment) && !is_object($payment))){
-				$card = Order::creditCardDecrypt((string)$user['_id']);
+				$card = $orderClass::creditCardDecrypt((string)$user['_id']);
 				$data_add = Session::read('billing');
 				$payment = Address::create(array_merge($data_add,$card));
 			}

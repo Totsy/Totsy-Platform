@@ -14,6 +14,10 @@ use app\models\FeatureToggles;
 
 class Order extends Base {
 
+	protected static $_classes = array(
+		'tax' => 'app\extensions\AvaTax'
+	);
+
 	protected $_dates = array(
 		'now' => 0
 	);
@@ -93,7 +97,8 @@ class Order extends Base {
 	 * @return redirect
 	 */
 	public static function recordOrder($vars, $cart, $card, $order, $avatax, $authKey, $items) {
-			#Get User Informations
+			$tax = static::$_classes['tax'];
+
 			$user = Session::read('userLogin');
 			$service = Session::read('services', array('name' => 'default'));
 			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
@@ -143,7 +148,11 @@ class Order extends Base {
 			}
 			#Save Tax Infos
 			if($avatax === true){
-				AvaTax::postTax(compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
+				$tax::postTax(compact(
+					'order', 'cartByEvent',
+					'billingAddr',
+					'shippingAddr', 'shippingCost', 'overShippingCost'
+				));
 			}
 			#Shipping Method - By Default UPS
 			$shippingMethod = 'ups';
