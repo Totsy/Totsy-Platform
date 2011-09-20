@@ -28,15 +28,32 @@ class OrderTest extends \lithium\test\Unit {
 	* Testing the Cancel Method of the Order
 	*/
 	public function testCancel() {
-		//Configuration Test
-		$author = "test";
-		$comment = "commment @test !";
-		$user_id = "787878787zazazag78dsdsdsds78";
-		$order_id = "8788727dsds3782738dsdsds728";
-		//Create temporary documents
-		$remote = new OrderMock();
-		$order_datas = array(
-			"_id" => new MongoId($order_id),
+		$data = array(
+			"active" => 1,
+			"created_on" => "Wed, 22 Sep 2010 16: 50: 44 -0400",
+			"email" => uniqid('test') . '@example.com',
+			"firstname" => "KLKL",
+			"invitation_codes" => array(
+			"0" => "fdfdfdddd"
+			),
+			"invited_by" => "fdfdfd",
+			"lastip" => "204.246.230.160",
+			"lastlogin" => "Thu, 10 Mar 2011 22: 42: 08 -0500",
+			"lastname" => "OPOo",
+			"legacy" => 0,
+			"logincounter" => 9,
+			"password" => "0b505f152dc80b527035e3500925936fe9703d2c",
+			"purchase_count" => 2,
+			"reset_token" => "0",
+			"total_credit" => 0
+		);
+		$user = User::create($data);
+		$result = $user->save();
+		$this->assertTrue($result);
+
+		$userId = $user->_id;
+
+		$data = array(
 			"authKey" => "090909099909",
 			"credit_used" => -5,
 			"date_created" => "Sat, 11 Dec 2010 09: 51: 15 -0500",
@@ -83,78 +100,48 @@ class OrderTest extends \lithium\test\Unit {
 				"state" => "TE",
 				"zip" => "909904303",
 				"isAjax" => "1",
-				"user_id" => $user_id
+				"user_id" => $user->_id
 			),
 			"shippingMethod" => "ups",
 			"subTotal" => 56.7,
 			"tax" => 0,
 			"total" => 49.65,
-			"user_id" => $user_id
+			"user_id" => $user->_id
 		);
-		$user_datas = array(
-			"_id" => new MongoId($user_id),
-			"active" => 1,
-			"created_on" => "Wed, 22 Sep 2010 16: 50: 44 -0400",
-			"email" => "fdkflkdlskfd@gmail.com",
-			"firstname" => "KLKL",
-			"invitation_codes" => array(
-			"0" => "fdfdfdddd"
-			),
-			"invited_by" => "fdfdfd",
-			"lastip" => "204.246.230.160",
-			"lastlogin" => "Thu, 10 Mar 2011 22: 42: 08 -0500",
-			"lastname" => "OPOo",
-			"legacy" => 0,
-			"logincounter" => 9,
-			"password" => "0b505f152dc80b527035e3500925936fe9703d2c",
-			"purchase_count" => 2,
-			"reset_token" => "0",
-			"total_credit" => 0
-		);
-		$order = OrderMock::create();
-		$order->save($order_datas);
-		$user = User::create();
-		$user->save($user_datas);
-		//Request the tested method
-		$remote->cancel((string)$order["_id"], $author, $comment);
-		//Check Datas Order
-		$check = true;
-		$result_order = OrderMock::find('first', array('conditions' => array(
-			'_id' => $order["_id"]
-		)));
-		$order = $result_order->data();
-		if($order["cancel"] != true) {
-			$check = false;
-		}
-		foreach($order["items"] as $item) {
-			if($item["cancel"] != true){
-				$check = false;
-			}
-		}
-		//Check Datas User
-		$result_user = User::find('first', array('conditions' => array(
-			'_id' => $user["_id"]
-		)));
+		$order = OrderMock::create($data);
+		$result = $order->save();
+		$this->assertTrue($result);
 
-		$this->assertTrue($result_user);
-		$this->skipIf(!is_object($result_user), "Can't continue result is not an object.");
+		$orderId = $order->_id;
 
-		$user = $result_user->data();
-		$check_user = false;
-		foreach($order["modifications"] as $modif)
-		{
-			if($modif["comment"] == $comment) {
-				$check_user = true;
-			}
+		$author = "test";
+		$comment = "commment @test !";
+		$remote = new OrderMock();
+		$result = $remote->cancel($order->_id, $author, $comment);
+		$this->assertTrue($result);
+
+		$order = OrderMock::find('first', array(
+			'conditions' => array('_id' => $order->_id)
+		));
+		$this->assertTrue($order->cancel);
+
+		foreach ($order->items as $item) {
+			$this->assertTrue($item['cancel'], "Item `{$item['_id']}` not flagged as canceled.");
 		}
-		if($check_user == false) {
-			$check = false;
+		foreach($order->modifications as $modif) {
+			$expected = $comment;
+			$result = $modif['comment'];
+			$this->assertEqual($expected, $result);
 		}
-		//Delete Temporary Documents
-		OrderMock::remove(array("_id" => $order_id));
-		User::remove(array("_id" => $user_id));
-		//Test result
-		$this->assertEqual( true , $check);
+
+		$user = User::find('first', array('conditions' => array(
+			'_id' => $id = $user->_id
+		)));
+		$this->assertTrue($user, "No user document with id `{$id}`.");
+
+		// Delete Temporary Documents
+		OrderMock::remove(array("_id" => $orderId));
+		User::remove(array("_id" => $userId));
 	}
 
 	/*
