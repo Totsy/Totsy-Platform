@@ -50,6 +50,8 @@ case $COMMAND in
 		$0 source-subs
 		$0 fix-perms
 
+		FILES=$(find $PROJECT_DIR/admin -type f -print0 | xargs -0 grep -l -i -E 'ini_set.*display_error.*(off|false|0)')
+
 		echo
 		echo "NOTE: There is currently *no lithium core for the app* shipped with"
 		echo "      the codebase. Please ensure to place one manually in the root"
@@ -59,8 +61,9 @@ case $COMMAND in
 		echo
 		echo "NOTE: Some errors are being surpressed in:"
 		echo
-		echo "      $PROJECT_DIR/app/webroot/index.php"
-		echo "      $PROJECT_DIR/admin/config/bootstrap.php"
+		for FILE in $FILES; do
+			echo "      $FILE"
+		done
 		echo
 
 		echo
