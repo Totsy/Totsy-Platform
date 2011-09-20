@@ -12,6 +12,19 @@ use lithium\storage\Session;
 
 class OrdersControllerTest extends \lithium\test\Unit {
 
+	public $controller;
+
+	public function setUp() {
+		$this->controller = new OrdersController(array(
+			'request' => new Request(),
+			'classes' => array(
+				'tax' => 'admin\tests\mocks\extensions\AvaTaxMock',
+				'order' => 'admin\tests\mocks\models\OrderMock'
+			)
+		));
+	}
+
+
 	/*
 	* Testing the Cancel method from the OrdersController
 	*/
@@ -22,12 +35,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$item_id = new MongoId("4ddsqsdqszzz80f3ad53892614080076e0");
 		$comment = "Comment @ Test";
 
-		$remote = new OrdersController(array(
-			'request' => new Request(),
-			'classes' => array(
-				'tax' => 'admin\tests\mocks\extensions\AvaTaxMock'
-			)
-		));
+		$remote = $this->controller;
 
 		$remote->request->data = array('id' => (string) $order_id, 'comment' => $comment);
 		$remote->request->params['type'] = 'html';
@@ -356,12 +364,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 
 		// Request the tested method.
 
-		$remote = new OrdersController(array(
-			'request' => new Request(),
-			'classes' => array(
-				'tax' => 'admin\tests\mocks\extensions\AvaTaxMock'
-			)
-		));
+		$remote = $this->controller;
 
 		$datas = array(
 			'id' => (string) $order_id,
@@ -528,12 +531,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 
 		// Request the tested method.
 
-		$remote = new OrdersController(array(
-			'request' => new Request(),
-			'classes' => array(
-				'tax' => 'admin\tests\mocks\extensions\AvaTaxMock'
-			)
-		));
+		$remote = $this->controller;
 
 		$datas = array(
 			'id' => (string) $order_id,
