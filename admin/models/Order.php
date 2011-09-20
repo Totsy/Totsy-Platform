@@ -378,7 +378,8 @@ class Order extends Base {
 			'handling' => null,
 			'promo_discount' => null,
 			'promocode_disable' => null,
-			'comment' => null
+			'comment' => null,
+			'initial_credit_used' => null
 		);
 		$datas_order_prices = array(
 			'total' => (float) $selected_order["total"],
