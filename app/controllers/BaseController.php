@@ -12,13 +12,19 @@ use MongoRegex;
 use li3_facebook\extension\FacebookProxy;
 use lithium\core\Environment;
 
-
-
 /**
 * The base controller will setup functionality used throughout the app.
 * @see app/models/Affiliate::getPixels()
 */
 class BaseController extends \lithium\action\Controller {
+
+	public function __construct(array $config = array()) {
+		/* Merge $_classes of parent. */
+		$vars = get_class_vars('\lithium\action\Controller');
+		$this->_classes += $vars['_classes'];
+
+		parent::__construct($config);
+	}
 
 	/**
 	 * Get the userinfo for the rest of the site from the session.
