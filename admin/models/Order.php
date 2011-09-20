@@ -128,6 +128,17 @@ class Order extends Base {
 			);
 		}
 	}
+
+	/**
+	 * Processes an order.
+	 *
+	 * @fixme This could be refactored as a concrete record method. It
+	 *        currently is static for backwards compat. with documents
+	 *        retrieved via native methods.
+	 * @see OrdersController::update()
+	 * @param array The order to process. Required fields are 'authKey', 'total' and '_id'.
+	 * @return boolean
+	 */
 	public static function process($order) {
 		$collection = static::collection();
 		$orderId = new MongoId($order['_id']);
