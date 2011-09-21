@@ -276,7 +276,7 @@ class Event extends \lithium\data\Model {
 		foreach (EventImage::$types as $name => $type) {
 			$results[$name] = $type['multiple'] ? array() : null;
 
-			if (!isset($entity->images[$type['field']]) {
+			if (!isset($entity->images[$type['field']])) {
 				continue;
 			}
 			if ($type['multiple']) {
