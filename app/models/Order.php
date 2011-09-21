@@ -203,7 +203,7 @@ class Order extends Base {
 				'shipDate' => date('M d, Y', Cart::shipDate($order))
 			);
 			#In Case Of First Order, Send an Email About 10$ Off Discount
-			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
+			if ($service && array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
 				Mailer::send('Welcome_10_Off', $user->email, $data);
 			}
 			Mailer::send('Order_Confirmation', $user->email, $data);
