@@ -152,6 +152,24 @@ class OrderTest extends \lithium\test\Unit {
 		$promocode->delete();
 		$item->delete();
 	}
+
+	public function testCreditCardCryptSymmetry() {
+		$this->skipIf(!extension_loaded('mcrypt'), 'No mcrypt extension.');
+
+		$creditCard = array(
+			 'number' => '4111111111111111',
+			 'month' => 11,
+			 'year' => 2023
+		);
+		Session::write('cc_infos', $creditCard);
+
+		$result = OrderMock::creditCardEncrypt($this->user->_id);
+		$this->assertTrue($result);
+
+		$expected = $creditCard;
+		$result = OrderMock::creditCardDecrypt($this->user->_id);
+		$this->assertEqual($expected, $result);
+	}
 }
 
 ?>
