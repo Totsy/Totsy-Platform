@@ -335,10 +335,6 @@ class EventsController extends BaseController {
 //				}
 //			}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
 			$images = $this->_parseImages($event->images);
 
 			//Saving the original start and end and ship dates for comparison
