@@ -322,7 +322,20 @@ class EventsController extends BaseController {
 				unset($this->request->data['departments']);
 			}
 			unset($this->request->data['itemTable_length']);
+			$enableItems = $this->request->data['enable_items'];
 
+			/* // This is handling the upload of the excel file. 
+			if ($_FILES['upload_file']['error'] == 0 && $_FILES['upload_file']['size'] > 0) {
+				if (is_array($this->_parseItems($_FILES, $event->_id, $enableItems))) {
+					unset($this->request->data['upload_file']);
+					$eventItems = Item::find('all', array('conditions' => array('event' => array($_id))));
+					if (!empty($eventItems)) {
+						foreach ($eventItems as $item) {
+							$items[] = (string) $item->_id;
+						}
+					}
+				}
+			}*/
 			$images = $this->_parseImages($event->images);
 
 			//Saving the original start and end and ship dates for comparison
