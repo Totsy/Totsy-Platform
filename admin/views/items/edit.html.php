@@ -247,11 +247,9 @@ tinyMCE.init({
 		</div>
 
 		<div id="item_images">
-			<br />
-
 			<div class="tab_region_left_col">
 				<div class="box">
-					<h2>Upload Media for Item</h2>
+					<h2>Upload Via Form</h2>
 					<div class="block">
 						<form id="ItemMedia">
 						</form>
