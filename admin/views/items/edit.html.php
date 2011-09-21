@@ -33,13 +33,14 @@ tinyMCE.init({
 <?=$this->form->create(); ?>
 	<div id="tabs">
 		<ul>
-		    <li><a href="#item_info"><span>Item Info</span></a></li>
-			<li><a href="#item_images"><span>Item Images</span></a></li>
-			<li><a href="#item_event_info"><span>Item Event Info</span></a></li>
+		    <li><a href="#item_info"><span>Info</span></a></li>
+			<li><a href="#item_event_info"><span>Event</span></a></li>
+			<li><a href="#item_images"><span>Media Upload</span></a></li>
+			<li><a href="#item_media_status"><span>Media Status</span></a></li>
 		</ul>
 		<div id="item_info">
+				<h3>Info</h3>
 				<input type="hidden" name="_id" value="<?=$item->_id?>" id="_id">
-				<br>
 				<div id="item_description">
 					<h2 id="">Product Description</h2>
 					<?=$this->form->field('description', array(
@@ -227,11 +228,22 @@ tinyMCE.init({
 				</div>
 				<br>
 				<br>
-			<?=$this->form->submit('Update Item'); ?>
+				<?=$this->form->submit('Update Item'); ?>
 		</div>
+
+		<div id="item_event_info">
+			<h1 id="event_information">Event Information</h1>
+			<?php if (!empty($event)): ?>
+				<p>This item is associated with the <strong><?=$event->name?> </strong>event</p>
+				<?=$this->html->link("Edit - $event->name", array('Events::edit', 'args' => array("$event->_id"))); ?><br>
+				<?=$this->html->link("View - $event->name", array('Events::preview', 'args' => array("$event->_id"))); ?><br>
+				<?=$this->html->link("View - $item->description", array('Items::preview', 'args' => array("$item->url"))); ?>
+			<?php endif ?>
+		</div>
+
 		<div id="item_images">
 			<br />
-			
+
 			<div class="tab_region_left_col">
 				<div class="box">
 					<h2>Upload Media for Item</h2>
@@ -259,56 +271,39 @@ tinyMCE.init({
 									force_preview_thumbnail: 'true',
 									firebug: 'false'
 								}
-							});	
+							});
 						</script>
 
 						<a href="#" class="upload_files_link" onClick="document.getElementById('agileUploaderSWF').submit();">Start Upload <?=$this->html->image('agile_uploader/upload-icon.png', array('height' => '24')); ?></a>
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="tab_region_right_col">
-				<div class="box">
-					<h2>Item Image File Naming Conventions</h2>
-					<div class="block">
-					<dl>
-						<dt>Primary Image</dt>
-						<dd>items_<?=$item->url; ?>_primary.jpg</dd>
-
-						<dt>Zoom Image</dt>
-						<dd>items_<?=$item->url; ?>_zoom.jpg</dd>
-
-						<!--
-						<dt>For Various Colors <em>(colors are a part of the url)</em></dt>
-						<dd>items_<?=$item->url; ?>_primary.jpg</dd>
-						<dd>items_<?=$item->url; ?>_zoom.jpg</dd>
-						-->
-
-						<dt>For Alternate Versions</dt>
-						<dd>items_<?=$item->url; ?>_alternate.jpg</dd>
-						<dd>items_<?=$item->url; ?>_alternateB.jpg</dd>
-						<dd>items_<?=$item->url; ?>_alternate0.jpg <em>etc.</em></dd>
-					</dl>
-					</div>
-				</div>
+				<?=$this->view()->render(array('element' => 'files_naming_item'), array('item' => $item)); ?>
 			</div>
 
 			<div class="clear"></div>
 			<br style="clear: left;" />
+			<?=$this->form->submit('Update Item'); ?>
+		</div>
+
+		<div id="item_media_status">
+			<div class="tab_region_right_col">
 			<?php if ($item->primary_image || $item->zoom_image || $item->alternate_images): ?>
 
 					<table border="1" cellspacing="30" cellpadding="30">
 						<th align="justify">
-							Image Preview
+							Preview
 						</th>
 						<th align="center">
-							Zoom Image
+							Zoom
 						</th>
 						<th align="center">
-							Primary Image
+							Primary
 						</th>
 						<th align="center">
-							Alternate Image
+							Alternate
 						</th>
 						<?php if ($item->zoom_image): ?>
 							<tr>
@@ -353,16 +348,11 @@ tinyMCE.init({
 							<?php endif; ?>
 					</table>
 			<?php endif; ?>
+
+			</div>
+
+			<div class="clear"></div>
 			<?=$this->form->submit('Update Item'); ?>
-		</div>
-		<div id="item_event_info">
-			<h1 id="event_information">Event Information</h1>
-			<?php if (!empty($event)): ?>
-				<p>This item is associated with the <strong><?=$event->name?> </strong>event</p>
-				<?=$this->html->link("Edit - $event->name", array('Events::edit', 'args' => array("$event->_id"))); ?><br>
-				<?=$this->html->link("View - $event->name", array('Events::preview', 'args' => array("$event->_id"))); ?><br>
-				<?=$this->html->link("View - $item->description", array('Items::preview', 'args' => array("$item->url"))); ?>
-			<?php endif ?>
 		</div>
 	</div>
 <?=$this->form->end(); ?>
