@@ -306,7 +306,6 @@ tinyMCE.init({
 					<?php foreach ($item->images() as $name => $image): ?>
 						<?php if ($name == 'alternate'): ?>
 							<?php foreach ($image as $k => $i): ?>
-
 							<tr>
 								<th><?=Inflector::humanize($name); ?> (<?=($k + 1) ?>)</th>
 								<th><?=$this->html->image($i ? $i->url() : '/img/no-image-small.jpeg'); ?>
