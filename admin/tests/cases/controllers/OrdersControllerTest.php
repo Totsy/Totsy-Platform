@@ -101,7 +101,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 			"_id" => $user_id,
 			"active" => 1,
 			"created_on" => "Wed, 22 Sep 2010 16: 50: 44 -0400",
-			"email" => "fdkflkdlskfd@gmail.com",
+			"email" => uniqid('test') . 'example.com',
 			"firstname" => "KLKL",
 			"invitation_codes" => array(
 			"0" => "fdfdfdddd"
