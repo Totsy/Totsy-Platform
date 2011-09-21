@@ -35,7 +35,6 @@ tinyMCE.init({
 	<h2>Editing Item <em><?=$item->description; ?></em> (<?=$item->vendor_style; ?>)</h2>
 </div>
 <?=$this->html->link('See Item List','/events/edit/'.$item->event[0].'#event_items')?>
-<?=$this->form->create(); ?>
 	<div id="tabs">
 		<ul>
 		    <li><a href="#item_info"><span>Info</span></a></li>
@@ -44,7 +43,8 @@ tinyMCE.init({
 			<li><a href="#item_media_status"><span>Media Status</span></a></li>
 		</ul>
 		<div id="item_info">
-				<h3>Info</h3>
+			<h3>Info</h3>
+			<?=$this->form->create(); ?>
 				<input type="hidden" name="_id" value="<?=$item->_id?>" id="_id">
 				<div id="item_description">
 					<h2 id="">Product Description</h2>
@@ -231,9 +231,10 @@ tinyMCE.init({
 
 					</table>
 				</div>
-				<br>
-				<br>
-				<?=$this->form->submit('Update Item'); ?>
+			<br>
+			<br>
+			<?=$this->form->submit('Update Item'); ?>
+			<?=$this->form->end(); ?>
 		</div>
 
 		<div id="item_event_info">
@@ -285,10 +286,6 @@ tinyMCE.init({
 			<div class="tab_region_right_col">
 				<?=$this->view()->render(array('element' => 'files_naming_item'), array('item' => $item)); ?>
 			</div>
-
-			<div class="clear"></div>
-			<br style="clear: left;" />
-			<?=$this->form->submit('Update Item'); ?>
 		</div>
 
 		<div id="item_media_status">
@@ -321,7 +318,6 @@ tinyMCE.init({
 			</div>
 		</div>
 	</div>
-<?=$this->form->end(); ?>
 
 <script type="text/javascript">
 $(document).ready(function() {
