@@ -600,43 +600,8 @@ $(function() {
 				</div>
 			</div>
 			<div class="tab_region_right_col">
-				<div class="box files naming">
-					<h2>Event Image Naming Conventions</h2>
-					<div class="block">
-						<?php $names = $event->uploadNames(); ?>
-						<dl>
-							<?php foreach ($names['form'] as $type => $name): ?>
-								<dt><?=$type; ?></dt>
-								<dd><?=$name; ?></dd>
-							<?php endforeach; ?>
-						</dl>
-					</div>
-				</div>
-				<div class="box files naming">
-					<h2>Item Image Naming Conventions</h2>
-					<div class="block">
-						<p>
-							<em>Note: VENDOR_STYLE values can contain a mixture of uppercase, lowercase letters, as well as underscores, spaces, and dashes. These values are found in the uploaded excel file for each event.</em>
-						</p>
-						<dl>
-							<dt>Primary Image</dt>
-							<dd>items_VENDOR_STYLE_p.jpg</dd>
-							<dd>items_VENDOR_STYLE_primary.jpg</dd>
-
-							<dt>Zoom Image</dt>
-							<dd>items_VENDOR_STYLE_z.jpg</dd>
-							<dd>items_VENDOR_STYLE_zoom.jpg</dd>
-
-							<dt>For Alternate Versions</dt>
-							<dd>items_VENDOR_STYLE_a.jpg</dd>
-							<dd>items_VENDOR_STYLE_aB.jpg</dd>
-							<dd>items_VENDOR_STYLE_a0.jpg <em>etc.</em></dd>
-							<dd>items_VENDOR_STYLE_alternate.jpg</dd>
-							<dd>items_VENDOR_STYLE_alternateB.jpg</dd>
-							<dd>items_VENDOR_STYLE_alternate0.jpg <em>etc.</em></dd>
-						</dl>
-					</div>
-				</div>
+				<?=$this->view()->render(array('element' => 'files_naming_event'), array('item' => $event)); ?>
+				<?=$this->view()->render(array('element' => 'files_naming_item')); ?>
 			</div>
 
 			<div class="clear"></div>
