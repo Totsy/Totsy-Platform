@@ -290,69 +290,32 @@ tinyMCE.init({
 
 		<div id="item_media_status">
 			<div class="tab_region_right_col">
-			<?php if ($item->primary_image || $item->zoom_image || $item->alternate_images): ?>
-
-					<table border="1" cellspacing="30" cellpadding="30">
-						<th align="justify">
-							Preview
-						</th>
-						<th align="center">
-							Zoom
-						</th>
-						<th align="center">
-							Primary
-						</th>
-						<th align="center">
-							Alternate
-						</th>
-						<?php if ($item->zoom_image): ?>
+				<table>
+					<thead>
+						<tr>
+							<th>Type</th>
+							<th>Preview</th>
+						</tr>
+					</thead>
+					<tbody>
+					<?php foreach ($item->images() as $name => $image): ?>
+						<?php if ($name == 'alternate'): ?>
+							<?php foreach ($image as $k => $i): ?>
 							<tr>
-								<td align="center">
-									<?=$this->html->image("/image/$item->zoom_image.jpg", array('alt' => 'altText')); ?>
-								</td>
-								<td align="center">
-									<input type="radio" name="zoom_image" value="<?=$item->zoom_image;?>" checked>
-								</td>
-								<td></td>
-								<td></td>
+								<th><?=$name; ?> (<?=($k + 1) ?>)</th>
+								<th><?php echo ($i ? $this->html->image($i->url()) : 'n/a'); ?>
 							</tr>
-						<?php endif ?>
-						<?php if ($item->primary_image): ?>
-							<tr>
-								<td align="center">
-									<?=$this->html->image("/image/$item->primary_image.jpg", array(
-										'alt' => 'altText'));
-									?>
-								</td>
-								<td></td>
-								<td align="center">
-									<input type="radio" name="primary_image" value="<?=$item->primary_image;?>" checked>
-								</td>
-								<td></td>
-							</tr>
-						<?php endif ?>
-						<?php
-							if (!empty($item->alternate_images)):
-								foreach ($item->alternate_images as $value): ?>
-								<tr>
-									<td align="center">
-										<?=$this->html->image("/image/$value.jpg", array('alt' => 'altText')); ?>
-									</td>
-									<td></td>
-									<td></td>
-									<td align="center">
-										<input type="checkbox" name="alternate-<?=$value;?>" value="<?=$value;?>" checked>
-									</td>
-								</tr>
-								<?php endforeach; ?>
-							<?php endif; ?>
-					</table>
-			<?php endif; ?>
-
+							<?php endforeach; ?>
+						<?php else: ?>
+						<tr>
+							<th><?=$name; ?></th>
+							<th><?php echo ($image ? $this->html->image($image->url()) : 'n/a'); ?>
+						</tr>
+						<?php endif; ?>
+					<?php endforeach; ?>
+					</tbody>
+				</table>
 			</div>
-
-			<div class="clear"></div>
-			<?=$this->form->submit('Update Item'); ?>
 		</div>
 	</div>
 <?=$this->form->end(); ?>
