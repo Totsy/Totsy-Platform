@@ -679,7 +679,6 @@ class Order extends Base {
 	 *        scalar/non-scalar value. This probably isn't intented as code calling this
 	 *        methods seems to always expect an array to be returned. See `saveCurrentOrder()`
 	 *        and `refreshTempOrder()` for an example.
-	 *
 	 * @param object $current_order
 	 * @param array $itms
 	 */
