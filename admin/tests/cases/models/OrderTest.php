@@ -229,12 +229,12 @@ class OrderTest extends \lithium\test\Unit {
 		);
 		$item = Item::create();
 		$item->save($item_datas);
-		//Request the tested method
-		$cost = $remote->shipping($items);
-		//Delete Temporary Documents
+
+		$expected = 0;
+		$result = $remote->shipping($items);
+		$this->assertEqual($expected, $result);
+
 		Item::remove(array("_id" => $item["_id"]));
-		//Test result
-		$this->assertEqual( 0 , $cost);
 	}
 
 	/*
@@ -304,12 +304,12 @@ class OrderTest extends \lithium\test\Unit {
 		);
 		$item = Item::create();
 		$item->save($item_datas);
-		//Request the tested method
-		$cost = $remote->overSizeShipping($items);
-		//Delete Temporary Documents
+
+		$expected = 6;
+		$result = $remote->overSizeShipping($items);
+		$this->assertEqual($expected, $result);
+
 		Item::remove(array("_id" => $item["_id"]));
-		//Test result
-		$this->assertEqual( 6 , $cost);
 	}
 
 	/*
@@ -461,12 +461,12 @@ class OrderTest extends \lithium\test\Unit {
 		);
 		$order = OrderMock::create();
 		$order->save($order_datas);
-		//Request the tested method
+
+		$expected = 3;
 		$result = $remote->tax($current_order, $items);
-		//Delete Temporary Documents
+		$this->assertEqual($expected, $result);
+
 		OrderMock::remove(array("_id" => $order_id));
-		//Test result
-		$this->assertEqual( 3 , $result);
 	}
 
 	/*
@@ -502,10 +502,10 @@ class OrderTest extends \lithium\test\Unit {
 				"tax" => 1,
 				"taxable" => true
 		));
-		//Request the tested method
+
+		$expected = 15;
 		$result = $remote->subTotal($items);
-		//Test result
-		$this->assertEqual( 15 , $result);
+		$this->assertEqual($expected, $result);
 	}
 
 	/*
@@ -745,16 +745,14 @@ class OrderTest extends \lithium\test\Unit {
 		);
 		$order = OrderMock::create();
 		$order->save($order_datas);
-		//Request the tested method
+
 		$remote->cancelItem((string) $order_id, (string) $item_id, true);
-		//Test result
 		$order = $orderCollection->findOne(array("_id" => $order_id));
-		if($order["items"][0]["cancel"] != true) {
-			$result = false;
-		}
+
+		$result = $order['items'][0]['cancel'];
+		$this->assertTrue($result);
+
 		OrderMock::remove(array("_id" => $order_id));
-		//Test result
-		$this->assertEqual( true , $result);
 	}
 
 	/*
@@ -828,12 +826,16 @@ class OrderTest extends \lithium\test\Unit {
 		$remote->changeQuantity((string) $order_id, (string) $item_id, 2, 5);
 		//Test result
 		$order = $orderCollection->findOne(array("_id" => $order_id));
-		if($order["items"][0]["quantity"] != 2 || $order["items"][0]["initial_quantity"] != 5) {
-			$result = false;
-		}
+
+		$expected = 2;
+		$result = $order['items'][0]['quantity'];
+		$this->assertEqual($expected, $result);
+
+		$expected = 5;
+		$result = $order['items'][0]['initial_quantity'];
+		$this->assertEqual($expected, $result);
+
 		OrderMock::remove(array("_id" => $order_id));
-		//Test result
-		$this->assertEqual( true , $result);
 	}
 
 	/*
@@ -1083,12 +1085,11 @@ class OrderTest extends \lithium\test\Unit {
 		$item2->save($item_datas_2);
 		$order = OrderMock::create();
 		$order->save($order_datas);
-		//Request the tested method
+
 		$result = $remote->refreshTempOrder($selected_order, $items);
-		//Test result
+		$this->assertTrue($result);
+
 		OrderMock::remove(array("_id" => $order_id));
-		//Test result
-		$this->assertEqual( true , $result);
 	}
 }
 

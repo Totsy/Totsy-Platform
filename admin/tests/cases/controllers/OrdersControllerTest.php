@@ -121,46 +121,38 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$user->save($user_datas);
 		$order = OrderMock::create();
 		$order->save($order_datas);
-		//Request the tested method
+
 		$remote->cancel();
-		//Check Datas Order
-		$check = true;
+
 		$result_order = OrderMock::find('first', array('conditions' => array(
 			'_id' => $order["_id"]
 		)));
 		$order = $result_order->data();
-		if($order["cancel"] != true) {
-			$check = false;
-		}
+
+		$result = $order["cancel"];
+		$this->assertTrue($result);
+
 		foreach($order["items"] as $item) {
-			if($item["cancel"] != true){
-				$check = false;
-			}
+			$result = $item["cancel"];
+			$this->assertTrue($result);
 		}
-		//Check Datas User
+
 		$result_user = User::find('first', array('conditions' => array(
 			'_id' => $user["_id"]
 		)));
-
 		$this->assertTrue($result_user);
+
 		$this->skipIf(!is_object($result_user), "Can't continue result is not an object.");
 
 		$user = $result_user->data();
-		$check_user = false;
-		foreach($order["modifications"] as $modif)
-		{
-			if($modif["comment"] == $comment) {
-				$check_user = true;
-			}
+		foreach ($order["modifications"] as $modif) {
+			$expected = $comment;
+			$result = $modif['comment'];
+			$this->assertEqual($expected, $result);
 		}
-		if($check_user == false) {
-			$check = false;
-		}
-		//Delete Temporary Documents
+
 		OrderMock::remove(array("_id" => $order_id));
 		User::remove(array("_id" => $user_id));
-		//Test result
-		$this->assertEqual( true , $check);
 	}
 
 	/*
@@ -524,8 +516,6 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$order = OrderMock::create();
 		$order->save($order_datas);
 
-		// Request the tested method.
-
 		$remote = $this->controller;
 
 		$datas = array(
@@ -549,19 +539,18 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$remote->request->params['type'] = 'html';
 		$result = $remote->manage_items();
 		$selected_order = $result->data();
-		if($selected_order["items"][0]["cancel"] != true){
-			$check = false;
-		}
-		if($selected_order["total"] != 29.7) {
-			$check = false;
-		}
-		//Delete Temporary Documents
+
+		$result = $selected_order["items"][0]["cancel"];
+		$this->assertTrue($result);
+
+		$expected = 29.7;
+		$result = $selected_order['total'];
+		$this->assertEqual($expected, $result);
+
 		OrderMock::remove(array("_id" => $order_id));
 		User::remove(array("_id" => $user_id));
 		Item::remove(array("_id" => $item_id));
 		Item::remove(array("_id" => $item_id_2));
-		//Test result
-		$this->assertEqual( true , $check);
 	}
 }
 
