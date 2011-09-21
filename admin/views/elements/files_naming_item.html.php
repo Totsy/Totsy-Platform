@@ -9,12 +9,18 @@ extract(array(
 	<h2>Item Image Naming Conventions</h2>
 	<div class="block">
 		<p>
-			Item images can only be uploaded from an events/edit page or through WebDAV
-			where there is a reference to the event.
+			Item images can only be uploaded from an item-, events-edit-page or through WebDAV.
 		</p>
 		<?php if ($item): ?>
 			<p>
 				The following names are <strong>actual names</strong> and can be copied and pasted.
+			</p>
+			<p>
+				Filenames with slashes cannot be uploaded. Please upload those
+				files without a slash in the name first, then rename the file
+				manually in the <em>pending files</em> section.
+				Alternatively you can upload files using WebDAV without the
+				need of renaming the files.
 			</p>
 			<dl>
 				<dt>Primary</dt>
@@ -37,7 +43,13 @@ extract(array(
 			<p>
 				<em>VENDOR_STYLE</em> values can contain a mixture of uppercase,
 				lowercase letters, as well as underscores, spaces, and dashes.
-				These values are found in the uploaded excel file for each event.
+			</p>
+			<p>
+				Filenames with slashes cannot be uploaded. Please upload those
+				files without a slash in the name first, then rename the file
+				manually in the <em>pending files</em> section.
+				Alternatively you can upload files using WebDAV without the
+				need of renaming the files.
 			</p>
 			<dl>
 				<dt>Primary</dt>
