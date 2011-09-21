@@ -210,11 +210,11 @@ var discountErrors = new Object();
     			    	</span>
     			</div>
    				<?php endif ?>
-   				<?php if (!empty($credits)):?>
+   				<?php if (!empty($credit)):?>
 				<div style="clear:both"></div>
 				<div class="subtotal">
     			    	<span style="float:left;">Credits:</span> 
-    			    	<span style="float:right">- $<?=number_format(abs($credits),2)?></span>
+    			    	<span style="float:right">- $<?=number_format(abs($credit),2)?></span>
     			</div>
    				<?php endif ?>
 				<div style="clear:both"></div>							
@@ -244,7 +244,7 @@ var discountErrors = new Object();
 				<div class="subtotal">
 				    <span id="tax_tooltip" class="cart-tooltip" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary"><img src="/img/tooltip_icon.png">
 </span>			
-					<span id="estimated_tax" style="float:left;">Estimated Tax:</span> 
+					<span id="estimated_tax" style="float:left;">Sales Tax:</span> 
 				    <span style="float:right">$0.00</span>
 				</div>
 				</div>
@@ -259,7 +259,7 @@ var discountErrors = new Object();
 				    </div>
 				    <div class="subtotal">
 				    <span class="cart-order-total">Order Total:</span> 
-				    	<span id="ordertotal">$ <?=number_format($total,2)?> </span>
+				    	<span id="ordertotal">$<?=number_format($total,2)?> </span>
 				    </div>						    	
 				</div>
 			</div>
