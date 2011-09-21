@@ -273,10 +273,23 @@ class Event extends \lithium\data\Model {
 	public function images($entity) {
 		$results = array();
 
-		foreach ($entity->images as $name => $id) {
-			$results[$name] = EventImage::first(array(
-				'conditions' => array('_id' => $id)
-			));
+		foreach (EventImage::$types as $name => $type) {
+			$results[$name] = $type['multiple'] ? array() : null;
+
+			if (!isset($entity->images[$type['field']]) {
+				continue;
+			}
+			if ($type['multiple']) {
+				foreach ($entity->images[$type['field']] as $key => $value) {
+					$results[$name][$key] = EventImage::first(array(
+						'conditions' => array('_id' => $value)
+					));
+				}
+			} else {
+				$results[$name] = EventImage::first(array(
+					'conditions' => array('_id' => $entity->images[$type['field']])
+				));
+			}
 		}
 		return $results;
 	}
