@@ -206,11 +206,15 @@ class BaseController extends \lithium\action\Controller {
 	* Displays what git branch you are currently developing in
 	**/
 	public function currentBranch() {
-        $out = shell_exec("git branch --no-color");
-        preg_match('#(\*)\s[a-zA-Z0-9_-]*(.)*#', $out, $parse);
-        $pos = stripos($parse[0], " ");
-        return trim(substr($parse[0], $pos));
+		if (!is_dir($git = dirname(LITHIUM_APP_PATH) . '/.git')) {
+			return;
+		}
+		$head = trim(file_get_contents("{$git}/HEAD"));
+		$head = explode('/', $head);
+
+		return array_pop($head);
 	}
+
 	/**
 	* Clean Credits Card Infos if out of Cart/Orders/Search ??? Controller
 	**/
