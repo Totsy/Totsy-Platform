@@ -278,6 +278,7 @@
 	
 		var criteoVars = "<?=$criteoVars?>";
 		
+		//now using global JS variables 
 		document.write("<img src=\"" + document.location.protocol + "//dis.us.criteo.com/dis/dis.aspx?p1=" + escape("v=2&wi=7714288&s=1&t=" + orderID + criteoVars ) + "&t1=transaction&p=3290&c=2&resptype=gif\" width=\"1\" height=\"1\" />");
 	
 	</script>
