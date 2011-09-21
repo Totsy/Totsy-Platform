@@ -81,20 +81,21 @@ class ItemsController extends BaseController {
 		}
 		#END T
 		if ($this->request->data) {
-			$alternate_images = array();
-			foreach ($this->request->data as $key => $value) {
-				if (substr($key, 0, 10) == 'alternate-' ) {
-					$alternate_images[] = substr($key, 10, 24);
-					unset($this->request->data[$key]);
-				}
-			}
 			if (!empty($item->event[0])) {
 				$this->request->data['event'] = array($item->event[0]);
 			}
 			$dirtyUrl = $this->request->data['description']." ".$this->request->data['color'];
 			$this->request->data['url'] = $this->cleanUrl($dirtyUrl);
 			$this->request->data['modified_date'] = new MongoDate();
-			$data = array_merge(Item::castData($this->request->data), compact('alternate_images'));
+
+			$data = Item::castData($this->request->data);
+
+			/* Persist images, they are not part of request data. */
+			/* @fixme Refactor update method to not overwrite missing data. */
+			$data['primary_image']    = $item->primary_image;
+			$data['zoom_image']       = $item->zoom_image;
+			$data['alternate_images'] = $item->alternate_images;
+
 			//Clean filters posts
 			if(!empty($data["departments"])) {
 				foreach($data["departments"] as $value) {
