@@ -1,3 +1,8 @@
+<?php
+
+use lithium\util\Inflector;
+
+?>
 <?=$this->html->script(array('tiny_mce/tiny_mce.js', 'jquery-1.4.2', 'jquery-dynamic-form.js', 'jquery-ui-1.8.2.custom.min.js', 'handlers.js', 'item_upload.js'));?>
 <?=$this->html->style(array('jquery_ui_blitzer.css', 'jquery.dataTables.js', 'table'))?>
 
@@ -302,14 +307,14 @@ tinyMCE.init({
 						<?php if ($name == 'alternate'): ?>
 							<?php foreach ($image as $k => $i): ?>
 							<tr>
-								<th><?=$name; ?> (<?=($k + 1) ?>)</th>
-								<th><?php echo ($i ? $this->html->image($i->url()) : 'n/a'); ?>
+								<th><?=Inflector::humanize($name); ?> (<?=($k + 1) ?>)</th>
+								<th><?=$this->html->image($i ? $i->url() : '/img/no-image-small.jpeg'); ?>
 							</tr>
 							<?php endforeach; ?>
 						<?php else: ?>
 						<tr>
-							<th><?=$name; ?></th>
-							<th><?php echo ($image ? $this->html->image($image->url()) : 'n/a'); ?>
+							<th><?=Inflector::humanize($name); ?></th>
+							<th><?=$this->html->image($image ? $image->url() : '/img/no-image-small.jpeg'); ?>
 						</tr>
 						<?php endif; ?>
 					<?php endforeach; ?>
