@@ -15,7 +15,7 @@
 			<tr>
 				<?php $images = $item->images(); ?>
 				<td><?=$this->html->link($item->vendor_style, array(
-					'controller' => 'items', 'action' => 'view', 'id' => $item->_id
+					'controller' => 'items', 'action' => 'edit', 'args' => array($item->_id)
 				)); ?></td>
 				<td class="<?= $images['primary'] ? 'positive' : 'negative'; ?>">
 					<?=$images['primary'] ? '✔' : '✘'; ?>
