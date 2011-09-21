@@ -32,7 +32,7 @@ tinyMCE.init({
 });
 </script>
 <div class="grid_16">
-	<h2 id="page-heading">Editing Item - <?=$item->description?></h2>
+	<h2>Editing Item <em><?=$item->description; ?></em> (<?=$item->vendor_style; ?>)</h2>
 </div>
 <?=$this->html->link('See Item List','/events/edit/'.$item->event[0].'#event_items')?>
 <?=$this->form->create(); ?>

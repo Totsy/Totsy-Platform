@@ -237,7 +237,7 @@ $(function() {
 </script>
 <?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
 <div class="grid_16">
-	<h2>Editing Event - <?=$event->name?></h2>
+	<h2>Editing Event <em><?=$event->name; ?></em></h2>
 </div>
 
 <div class="grid_16">
