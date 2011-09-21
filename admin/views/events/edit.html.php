@@ -1,7 +1,11 @@
-<?php ini_set("display_erros", 0); ?>
-<?php use admin\models\Event; ?>
+<?php ini_set("display_erros", 0);
 
-<?=$this->html->script('tiny_mce/tiny_mce.js');?>text within it.
+use admin\models\Event;
+use lithium\util\Inflector;
+
+?>
+
+<?=$this->html->script('tiny_mce/tiny_mce.js');?>
 <?=$this->html->script('jquery-dynamic-form.js');?>
 <?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
 <?=$this->html->script('handlers.js');?>
@@ -376,63 +380,21 @@ $(function() {
 				<!-- Start Event Images -->
 				<div id="event_images">
 					<h3>Media</h3>
-					<table border="1" cellspacing="30" cellpadding="30">
-						<tr>
-							<th align="justify">Type</th>
-							<th align="justify">Preview</th>
-						</tr>
-						<tr>
-							<td>Big Splash</td>
-							<td align="center">
-								<?php
-								if (!empty($event->images->splash_big_image)) {
-									$eventImage = "/image/{$event->images->splash_big_image}.jpg";
-								} else {
-									$eventImage = "/img/no-image-large.jpeg";
-								}
-								?>
-								<?=$this->html->image("$eventImage", array('alt' => 'splash image')); ?>
-							</td>
-						</tr>
-						<tr>
-							<td>Small Splash</td>
-							<td align="center">
-								<?php
-								if (!empty($event->images->splash_small_image)) {
-									$eventImage = "/image/{$event->images->splash_small_image}.jpg";
-								} else {
-									$eventImage = "/img/no-image-small.jpeg";
-								}
-								?>
-								<?=$this->html->image("$eventImage", array('alt' => 'splash small image')); ?>
-							</td>
-						</tr>
-						<tr>
-							<td>Event</td>
-							<td align="center">
-								<?php
-								if (!empty($event->images->event_image)) {
-									$eventImage = "/image/{$event->images->event_image}.jpg";
-								} else {
-									$eventImage = "/img/no-image-large.jpeg";
-								}
-								?>
-								<?=$this->html->image("$eventImage", array('alt' => 'event image')); ?>
-							</td>
-						</tr>
-						<tr>
-						<td>Logo</td>
-							<td align="center">
-								<?php
-								if (!empty($event->images->logo_image)) {
-									$eventImage = "/image/{$event->images->logo_image}.jpg";
-								} else {
-									$eventImage = "/img/no-image-small.jpeg";
-								}
-								?>
-								<?=$this->html->image("$eventImage", array('alt' => 'logo image')); ?>
-							</td>
-						</tr>
+					<table>
+						<thead>
+							<tr>
+								<th>Type</th>
+								<th>Preview</th>
+							</tr>
+						</thead>
+						<tbody>
+						<?php foreach ($event->images() as $name => $image): ?>
+							<tr>
+								<th><?=Inflector::humanize(str_replace('_image', '', $name)); ?></th>
+								<th><?=$this->html->image($image ? $image->url() : '/img/no-image-small.jpeg'); ?>
+							</tr>
+						<?php endforeach; ?>
+						</tbody>
 					</table>
 				</div>
 				<!-- End Event Images -->
