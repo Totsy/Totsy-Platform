@@ -711,7 +711,8 @@ class Order extends Base {
 		} else {
 			$admin = 1;
 			$tax::cancelTax($order['order_id']);
-			return $tax::commitTax(compact('order','items','admin')); /* Returns a scalar value. */
+			/* return */  $tax::commitTax(compact('order','items','admin')); /* Returns a scalar value. */
+			return array();
 		}
 	}
 
