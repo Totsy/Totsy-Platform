@@ -271,7 +271,6 @@ class Event extends \lithium\data\Model {
 		$results = array();
 		foreach (EventImage::$types as $name => $type) {
 			$results[$name] = $type['multiple'] ? array() : null;
-
 			if (!isset($entity->images[$type['field']])) {
 				continue;
 			}
@@ -286,25 +285,6 @@ class Event extends \lithium\data\Model {
 					'conditions' => array('_id' => $entity->images[$type['field']])
 				));
 			}
-		}
-		return $results;
-	}
-
-	public function uploadNames($entity) {
-		$results = array();
-
-		foreach (EventImage::$types as $name => $type) {
-			$results['form'][$name] = String::insert($type['uploadName']['form'], array(
-				'url' => $entity->url,
-				'name' => $name
-			));
-			$results['dav'][$name] = String::insert($type['uploadName']['dav'], array(
-				'event' => $entity->url,
-				'name' => $name,
-				'file' => 'example',
-				'month' => date('n', $entity->start_date->sec),
-				'year' => date('Y', $entity->start_date->sec)
-			));
 		}
 		return $results;
 	}
