@@ -512,134 +512,98 @@ class OrderTest extends \lithium\test\Unit {
 	* Testing the saveCurrentOrder Method of the Order
 	*/
 	public function testSaveCurrentOrder() {
-		$userCollection = User::collection();
-		$orderCollection = OrderMock::collection();
-		$result = true;
-		$item_id = new MongoId("4ddsqsdqszzz80f3ad53892614080076e0");
-		$item_id_2 = new MongoId("0920909Z200IAOIOIZOAIIiioioioio");
-		//Configuration Test
 		$author = "test";
 		$comment = "commment @test !";
-		$user_id = new MongoId("787878787zazazag78dsdsdsds78");
-		$order_id = new MongoId("8788727dsds3782738dsdsds728");
-		//Create temporary documents
-		$remote = new OrderMock();
-		$items = array(
-			"0" => array(
-				"_id" => (string) $item_id,
-				"category" => "Room D\u00e9cor",
-				"color" => "",
-				"description" => "test",
-				"discount_exempt" => true,
-				"expires" => array(
-					"sec" => 1292079402,
-					"usec" => 0
-				),
-				"item_id" => (string) $item_id,
-				"primary_image" => "4d015488ce64e5c072fc1e00",
-				"product_weight" => 0.64,
-				"quantity" => 5,
-				"initial_quantity" => 5,
-				"cancel" => false,
-				"sale_retail" => 3,
-				"size" => "no size",
-				"url" => "babyganics-alcohol-free-hand-sanitizer-250ml",
-				"event_name" => "Babyganics",
-				"event_id" => "4cfdfdfdfdfd1dd1ce64e5300aeb4100",
-				"line_number" => 0,
-				"status" => "Order Placed",
-				"tax" => 1,
-				"taxable" => true
+
+		$data = array(
+			"active" => 1,
+			"created_on" => "Wed, 22 Sep 2010 16: 50: 44 -0400",
+			"email" => uniqid('test') . '@example.com',
+			"firstname" => "KLKL",
+			"invitation_codes" => array(
+			"0" => "fdfdfdddd"
 			),
-			"1" => array(
-				"_id" => (string) $item_id_2,
-				"category" => "RoomDSDS D\u00e9cor",
-				"color" => "",
-				"description" => "test2",
-				"discount_exempt" => true,
-				"expires" => array(
-					"sec" => 1292079402,
-					"usec" => 0
-				),
-				"item_id" => (string) $item_id_2,
-				"primary_image" => "4d015488ce64e5c072fc1e00",
-				"product_weight" => 0.64,
-				"quantity" => 1,
-				"initial_quantity" => 2,
-				"cancel" => true,
-				"sale_retail" => 3,
-				"size" => "no size",
-				"url" => "babyganics-alcohol-free-hand-sanitizer-250ml",
-				"event_name" => "Babyganics",
-				"event_id" => "4cfdfdfdfdfd1dd1ce64e5300aeb4100",
-				"line_number" => 0,
-				"status" => "Order Placed",
-				"tax" => 1,
-				"taxable" => true
-			));
-		$selected_order = array(
-			"id" => (string) $order_id,
-			'total' => 7.95,
-			'subTotal' => 3.25,
-			'tax' => 0,
-			'handling' => 7.95,
-			'promocode_disable' => false,
-			'credit_used' => -3.25,
-			'comment' => $comment,
-			'user_id' => (string) $user_id,
-			'user_total_credits' => 1.75
+			"invited_by" => "fdfdfd",
+			"lastip" => "204.246.230.160",
+			"lastlogin" => "Thu, 10 Mar 2011 22: 42: 08 -0500",
+			"lastname" => "OPOo",
+			"legacy" => 0,
+			"logincounter" => 9,
+			"password" => "0b505f152dc80b527035e3500925936fe9703d2c",
+			"purchase_count" => 2,
+			"reset_token" => "0",
+			"total_credit" => 0
 		);
-		$order_datas = array(
-			"_id" => $order_id,
+		$user = User::create($data);
+		$result = $user->save();
+		$userId = $user->_id;
+
+		$data = array(
+			'category' => 'Room D\u00e9cor',
+			'color' => '',
+			'description' => 'test',
+			'discount_exempt' => true,
+			'expires' => array(
+				'sec' => 1292079402,
+				'usec' => 0
+			),
+			'product_weight' => 0.64,
+			'quantity' => 5,
+			'initial_quantity' => 5,
+			'cancel' => false,
+			'sale_retail' => 3,
+			'size' => 'no size',
+			'url' => 'babyganics-alcohol-free-hand-sanitizer-250ml',
+			'event_name' => 'Babyganics',
+			'event_id' => '4cfdfdfdfdfd1dd1ce64e5300aeb4100',
+			'line_number' => 0,
+			'status' => 'Order Placed',
+			'tax' => 1,
+			'taxable' => true
+		);
+		$item1 = Item::create($data);
+		$item1->save();
+		$item1Id = $item1->_id;
+
+		$data = array(
+			'category' => 'RoomDSDS D\u00e9cor',
+			'color' => '',
+			'description' => 'test2',
+			'discount_exempt' => true,
+			'expires' => array(
+				'sec' => 1292079402,
+				'usec' => 0
+			),
+			'primary_image' => '4d015488ce64e5c072fc1e00',
+			'product_weight' => 0.64,
+			'quantity' => 1,
+			'initial_quantity' => 2,
+			'cancel' => true,
+			'sale_retail' => 3,
+			'size' => 'no size',
+			'url' => 'babyganics-alcohol-free-hand-sanitizer-250ml',
+			'event_name' => 'Babyganics',
+			'event_id' => '4cfdfdfdfdfd1dd1ce64e5300aeb4100',
+			'line_number' => 0,
+			'status' => 'Order Placed',
+			'tax' => 1,
+			'taxable' => true
+		);
+		$item2 = Item::create($data);
+		$item2->save();
+		$item2Id = $item2->_id;
+
+		$items = array(
+			$item1->data(),
+			$item2->data()
+		);
+
+		$data = array(
 			"authKey" => "090909099909",
 			"credit_used" => -5,
 			"date_created" => "Sat, 11 Dec 2010 09: 51: 15 -0500",
 			"handling" => 7.95,
-			"items" => array(
-				"0" => array(
-					"_id" => (string) $item_id,
-					"category" => "Baby Gear",
-					"color" => "",
-					"description" => "BabyGanics Alcohol Free Hand Sanitizer 250ml",
-					"discount_exempt" => false,
-					"expires" => array(
-						"sec" => 1292079402,
-						"usec" => 0
-					),
-					"item_id" => (string) $item_id,
-					"primary_image" => "4d015488ce64e5c072fc1e00",
-					"product_weight" => 0.64,
-					"quantity" => 5,
-					"sale_retail" => 3,
-					"size" => "no size",
-					"url" => "babyganics-alcohol-free-hand-sanitizer-250ml",
-					"event_name" => "Babyganics",
-					"event_id" => "4cfd1dd1ce64e5300aeb4100",
-					"line_number" => 0,
-					"status" => "Order Placed"
-			),
-			"1" => array(
-				"_id" => (string)$item_id_2,
-				"category" => "Baby Gear",
-				"color" => "",
-				"description" => "TESTSTYTYSTYT",
-				"discount_exempt" => false,
-				"expires" => array(
-					"sec" => 1292079402,
-					"usec" => 0
-				),
-				"item_id" => (string)$item_id_2,
-				"primary_image" => "4d015488ce64e5c072fc1e00",
-				"product_weight" => 0.64,
-				"quantity" => 2,
-				"sale_retail" => 3,
-				"size" => "no size",
-				"url" => "babyganics-alcohol-free-hand-sanitizer-250ml",
-				"event_name" => "Babyganics",
-				"event_id" => "4cfd1dd1ce64e5300aeb4100",
-				"line_number" => 0,
-				"status" => "Order Placed"
-			)),
+			"items" => $items,
 			"order_id" => "4D03KLKLLKL8FE3",
 			"promo_code" => "weekend10",
 			"promo_discount" => -10,
@@ -659,57 +623,59 @@ class OrderTest extends \lithium\test\Unit {
 				"state" => "TE",
 				"zip" => "909904303",
 				"isAjax" => "1",
-				"user_id" => (string) $user_id
+				"user_id" => (string) $userId
 			),
 			"shippingMethod" => "ups",
 			"subTotal" => 56.7,
 			"tax" => 0,
 			"total" => 49.65,
-			"user_id" => (string) $user_id
+			"user_id" => (string) $userId
 		);
-		$user_datas = array(
-			"_id" => $user_id,
-			"active" => 1,
-			"created_on" => "Wed, 22 Sep 2010 16: 50: 44 -0400",
-			"email" => "fdkflkdlskfd@gmail.com",
-			"firstname" => "KLKL",
-			"invitation_codes" => array(
-			"0" => "fdfdfdddd"
-			),
-			"invited_by" => "fdfdfd",
-			"lastip" => "204.246.230.160",
-			"lastlogin" => "Thu, 10 Mar 2011 22: 42: 08 -0500",
-			"lastname" => "OPOo",
-			"legacy" => 0,
-			"logincounter" => 9,
-			"password" => "0b505f152dc80b527035e3500925936fe9703d2c",
-			"purchase_count" => 2,
-			"reset_token" => "0",
-			"total_credit" => 0
+		$order = OrderMock::create($data);
+		$order->save();
+		$orderId = $order->_id;
+
+		$data = array(
+			"id" => (string) $orderId,
+			'total' => 7.95,
+			'subTotal' => 3.25,
+			'tax' => 0,
+			'handling' => 7.95,
+			'promocode_disable' => false,
+			'credit_used' => -3.25,
+			'comment' => $comment,
+			'user_id' => (string) $userId,
+			'user_total_credits' => 1.75
 		);
-		$order = OrderMock::create();
-		$order->save($order_datas);
-		$user = User::create();
-		$user->save($user_datas);
-		//Request the tested method
-		$result = $remote->saveCurrentOrder($selected_order, $items, $author);
-		//Test result
-		$user = $userCollection->findOne(array("_id" => $user_id));
-		$order = $orderCollection->findOne(array("_id" => $order_id));
-		if($user["total_credit"] != $selected_order["user_total_credits"]) {
-			$result = false;
-		}
-		if(($order["total"] != $selected_order["total"]) || ($order["subTotal"] != $selected_order["subTotal"]) ) {
-			$result = false;
-		}
-		if(($order["items"][1]["quantity"] != 1) || ($order["items"][1]["cancel"] != true) ) {
-			$result = false;
-		}
-		//Delete Temporary Documents
-		User::remove(array("_id" => $user_id));
-		OrderMock::remove(array("_id" => $order_id));
-		//Test result
-		$this->assertEqual( true , $result);
+		$remote = new OrderMock();
+		$result = $remote->saveCurrentOrder($data, $items, $author);
+
+		$user = User::first(array('conditions' => array('_id' => $userId)));
+		$order = OrderMock::first(array('conditions' => array('_id' => $orderId)));
+
+		$expected = $data['user_total_credits'];
+		$result = $user['total_credit'];
+		$this->assertEqual($expected, $result);
+
+		$expected = $data['total'];
+		$result = $order['total'];
+		$this->assertEqual($expected, $result);
+
+		$expected = $data['subTotal'];
+		$result = $order['subTotal'];
+		$this->assertEqual($expected, $result);
+
+		$expected = 1;
+		$result = $order['items'][1]['quantity'];
+		$this->assertEqual($expected, $result);
+
+		$result = $order['items'][1]['cancel'];
+		$this->assertTrue($result);
+
+		User::remove(array("_id" => $userId));
+		OrderMock::remove(array("_id" => $orderId));
+		Item::remove(array("_id" => $item1Id));
+		Item::remove(array("_id" => $item2Id));
 	}
 
 	/*
