@@ -59,6 +59,8 @@ case $COMMAND in
 		echo
 		echo "      $PROJECT_DIR/libraries/lithium"
 		echo
+		echo "      The commit hash for it is b4d64753832ec0fa344cd5092571d691ede03176."
+		echo
 		echo "NOTE: Some errors are being surpressed in:"
 		echo
 		for FILE in $FILES; do
