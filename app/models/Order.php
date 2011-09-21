@@ -48,7 +48,7 @@ class Order extends Base {
 	 * @return object
 	 */
 	public static function process($data, $cart, $vars, $avatax) {
-		$order = Order::create(array('_id' => new MongoId()));
+		$order = static::create(array('_id' => new MongoId()));
 		#Create Payment
 		$card = Payments::create('default', 'creditCard', $vars['creditCard'] + array(
 			'billing' => Payments::create('default', 'address', array(
