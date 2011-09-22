@@ -220,11 +220,18 @@ var discountErrors = new Object();
 				<div style="clear:both"></div>							
 				<div>
 				<div class="subtotal">	
-				<span id="shipping_tooltip" class="cart-tooltip" original-title="Shipping charges may vary depending on item type."><img src="/img/tooltip_icon.png">
-				    	</span>
-				    <span style="float:left;" id="shipping">
-				    Shipping:</span> 
-				    <span style="float:right">$7.95</span>							</div>
+				 <?php if (!empty($shipping)):?>	
+					<span id="shipping_tooltip" class="cart-tooltip" original-title="Shipping charges may vary depending on item type."><img src="/img/tooltip_icon.png">
+					    	</span>
+					    <span style="float:left;" id="shipping">
+					    	Shipping:
+					    </span> 
+					    <span style="float:right">
+					    	<?=$shipping?>
+					    </span>
+					</span>	
+				<?php endif ?>						
+				</div>
 				</div>
 				<?php if (!empty($shipping_discount)):?>
 				<div style="clear:both"></div>
