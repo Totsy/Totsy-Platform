@@ -103,7 +103,14 @@ class Order extends Base {
 			#Save Credits Used
 			if ($vars['cartCredit']->credit_amount) {
 				User::applyCredit($user['_id'], $vars['cartCredit']->credit_amount);
-				Credit::add($vars['cartCredit'], $user['_id'], $vars['cartCredit']->credit_amount, "Used Credit");
+
+				Credit::add(
+					$vars['cartCredit'],
+					$user['_id'],
+					$vars['cartCredit']->credit_amount,
+					"Used Credit",
+					$order->order_id
+				);
 				Session::delete('credit');
 				$order->credit_used = abs($vars['cartCredit']->credit_amount);
 			}
