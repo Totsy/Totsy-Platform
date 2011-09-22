@@ -40,9 +40,6 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::remove(array('_id' => $orderId));
 	}
 
-	/*
-	* Testing the Cancel Method of the Order
-	*/
 	public function testCancel() {
 		$data = array(
 			'active' => 1,
@@ -160,12 +157,8 @@ class OrderTest extends \lithium\test\Unit {
 		User::remove(array('_id' => $userId));
 	}
 
-	/*
-	* Testing the shipping Method of the Order
-	*/
 	public function testShipping() {
 		$item_id = new MongoId('4ddsqsdqszzz80f3ad53892614080076e0');
-		//Create temporary documents
 		$remote = new OrderMock();
 		$items = array(
 			'0' => array(
@@ -235,12 +228,8 @@ class OrderTest extends \lithium\test\Unit {
 		Item::remove(array('_id' => $item['_id']));
 	}
 
-	/*
-	* Testing the OverSizeShipping Method of the Order
-	*/
 	public function testOverSizeShipping() {
 		$item_id = new MongoId('4ddsqsdqszzz80f3ad53892614080076e0');
-		//Create temporary documents
 		$remote = new OrderMock();
 		$items = array(
 			'0' => array(
@@ -310,14 +299,10 @@ class OrderTest extends \lithium\test\Unit {
 		Item::remove(array('_id' => $item['_id']));
 	}
 
-	/*
-	* Testing the Tax Method of the Order
-	*/
 	public function testTax() {
 		$item_id = new MongoId('4ddsqsdqszzz80f3ad53892614080076e0');
 		$order_id = '8788727dsds3782738dsdsds728';
 		$user_id = '787878787zazazag78dsdsdsds78';
-		//Create temporary documents
 		$remote = new OrderMock();
 		$items = array(
 			'0' => array(
@@ -467,13 +452,9 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::remove(array('_id' => $order_id));
 	}
 
-	/*
-	* Testing the SubTotal Method of the Order
-	*/
 	public function testSubTotal() {
 		$remote = new OrderMock();
 		$item_id = new MongoId('4ddsqsdqszzz80f3ad53892614080076e0');
-		//Create temporary documents
 		$items = array(
 			'0' => array(
 				'_id' => new MongoId('4ddsqsdqszzz80f3ad53892614080076e0'),
@@ -506,9 +487,6 @@ class OrderTest extends \lithium\test\Unit {
 		$this->assertEqual($expected, $result);
 	}
 
-	/*
-	* Testing the saveCurrentOrder Method of the Order
-	*/
 	public function testSaveCurrentOrder() {
 		$author = 'test';
 		$comment = 'commment @test !';
@@ -676,16 +654,11 @@ class OrderTest extends \lithium\test\Unit {
 		Item::remove(array('_id' => $item2Id));
 	}
 
-	/*
-	* Testing the cancelItem Method of the Order
-	*/
 	public function testCancelItem() {
-		//Configuration Test
 		$orderCollection = OrderMock::collection();
 		$result = true;
 		$item_id = new MongoId('4ddsqsdqszzz80f3ad53892614080076e0');
 		$order_id = new MongoId('8788727dsds3782738dsdsds728');
-		//Create temporary documents
 		$remote = new OrderMock();
 		$order_datas = array(
 			'_id' => $order_id,
@@ -753,16 +726,11 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::remove(array('_id' => $order_id));
 	}
 
-	/*
-	* Testing the changeQuantity Method of the Order
-	*/
 	public function testChangeQuantity() {
-		//Configuration Test
 		$orderCollection = OrderMock::collection();
 		$result = true;
 		$item_id = new MongoId('4ddsqsdqszzz80f3ad53892614080076e0');
 		$order_id = new MongoId('8788727dsds3782738dsdsds728');
-		//Create temporary documents
 		$remote = new OrderMock();
 		$order_datas = array(
 			'_id' => $order_id,
@@ -820,9 +788,7 @@ class OrderTest extends \lithium\test\Unit {
 		);
 		$order = OrderMock::create();
 		$order->save($order_datas);
-		//Request the tested method
 		$remote->changeQuantity((string) $order_id, (string) $item_id, 2, 5);
-		//Test result
 		$order = $orderCollection->findOne(array('_id' => $order_id));
 
 		$expected = 2;
@@ -836,18 +802,13 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::remove(array('_id' => $order_id));
 	}
 
-	/*
-	* Testing the refreshTempOrder Method of the Order
-	*/
 	public function testRefreshTempOrder() {
-		//Configuration Test
 		$orderCollection = OrderMock::collection();
 		$result = true;
 		$item_id = new MongoId('4ddsqsdqszzz80f3ad53892614080076e0');
 		$order_id = new MongoId('8788727dsds3782738dsdsds728');
 		$item_id_2 = new MongoId('0920909Z200IAOIOIZOAIIiioioioio');
 		$user_id = new MongoId('787878787zazazag78dsdsdsds78');
-		//Create temporary documents
 		$remote = new OrderMock();
 		$selected_order = array(
 			'id' => (string) $order_id,
