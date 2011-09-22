@@ -3,14 +3,145 @@
 namespace admin\tests\cases\models;
 
 use admin\tests\mocks\models\OrderMock;
+use admin\tests\mocks\extensions\PaymentsMock;
 use admin\models\User;
 use admin\models\Item;
 use MongoId;
-use li3_payments\extensions\Payments;
 
 class OrderTest extends \lithium\test\Unit {
 
-	public function testProcessWithTotalAndCaptureOnly() {
+	public $user;
+
+	protected $_backup = array();
+
+	protected $_delete = array();
+
+	public function setUp() {
+		$data = array(
+			'firstname' => 'George',
+			'lastname' => 'Lucas',
+			'email' => uniqid('george') . '@example.com'
+		);
+		$this->user = User::create();
+		$this->user->save($data, array('validate' => false));
+
+		$this->_delete[] = $this->user;
+	}
+
+	public function tearDown() {
+		foreach ($this->_delete as $document) {
+			$document->delete();
+		}
+		PaymentsMock::resetMock();
+	}
+
+	public function testDates() {
+		$result = OrderMock::dates('now');
+		$this->assertTrue(is_a($result, 'MongoDate'));
+	}
+
+	/* @fixme Fails as method isn't working with Object IDs. */
+	/*
+	public function testLookup() {
+		$order = OrderMock::create();
+		$result = $order->save(array('title' => 'test'), array('validate' => false));
+		$this->assertTrue($result);
+
+		$order->order_id = (string) $order->_id;
+		$result = $order->save(array('order_id' => $order->_id), array('validate' => false));
+		$this->assertTrue($result);
+
+		$result = OrderMock::lookup(substr((string) $order->_id, 0));
+		$this->assertTrue($result);
+
+		if ($result) {
+			$expected = (string) $order->_id;
+			$result = (string) $result->_id;
+			$this->assertEqual($expected, $result);
+		}
+
+		$result = OrderMock::lookup(strtoupper((string) $order->_id));
+		$this->assertTrue($result);
+
+		if ($result) {
+			$expected = (string) $order->_id;
+			$result = (string) $result->_id;
+			$this->assertEqual($expected, $result);
+		}
+
+		$order->delete();
+	}
+	*/
+
+	public function testVoidWithTotalPositive() {
+		$data = array(
+			'total' => 1.23,
+			'authKey' => '090909099909'
+		);
+		$order = OrderMock::create($data);
+		$order->save();
+
+		$result = OrderMock::void($order->data());
+		$this->assertTrue($result);
+
+		$order = OrderMock::first((string) $order->_id);
+
+		$expected = '090909099909';
+		$result = $order->authKey;
+		$this->assertEqual($expected, $result);
+
+		$result = $order->auth_error;
+		$this->assertFalse($result);
+
+		$expected = 'transaction id';
+		$result = $order->void_confirm;
+		$this->assertEqual($expected, $result);
+
+		$result = $order->void_date;
+		$this->assertTrue($result);
+
+		$expected = '090909099909';
+		$result = PaymentsMock::$void[1];
+		$this->assertEqual($expected, $result);
+
+		$order->delete();
+	}
+
+	public function testVoidFailingWithTotalZero() {
+		$data = array(
+			'total' => 0,
+			'authKey' => '090909099909'
+		);
+		$order = OrderMock::create($data);
+		$order->save();
+
+		$result = OrderMock::void($order->data());
+		$this->assertTrue($result);
+
+		$order = OrderMock::first((string) $order->_id);
+
+		$expected = '090909099909';
+		$result = $order->authKey;
+		$this->assertEqual($expected, $result);
+
+		$expected = "Can't capture because total is zero.";
+		$result = $order->auth_error;
+		$this->assertEqual($expected, $result);
+
+		$result = $order->void_confirm;
+		$expected = -1;
+		$this->assertEqual($expected, $result);
+
+		$result = $order->void_date;
+		$this->assertTrue($result);
+
+		$result = PaymentsMock::$void;
+		$this->assertFalse($result);
+
+		$order->delete();
+	}
+
+	public function testProcess() {
 		$data = array(
 			'total' => 1.23,
 			'authKey' => '090909099909'
@@ -18,7 +149,6 @@ class OrderTest extends \lithium\test\Unit {
 		$order = OrderMock::create($data);
 		$result = $order->save();
 		$this->assertTrue($result);
-		$orderId = $order->_id;
 
 		$result = OrderMock::process($order);
 		$this->assertTrue($result);
@@ -37,7 +167,70 @@ class OrderTest extends \lithium\test\Unit {
 		$result = $order->auth_confirmation;
 		$this->assertEqual($expected, $result);
 
-		OrderMock::remove(array('_id' => $orderId));
+		$expected = '090909099909';
+		$result = PaymentsMock::$capture[1];
+		$this->assertEqual($expected, $result);
+
+		$order->delete();
+	}
+
+	public function testProcessFailingWithTotalZero() {
+		$data = array(
+			'total' => 0,
+			'authKey' => '090909099909'
+		);
+		$order = OrderMock::create($data);
+		$order->save();
+
+		$result = OrderMock::process($order->data());
+		$this->assertTrue($result);
+
+		$order = OrderMock::first((string) $order->_id);
+
+		$expected = '090909099909';
+		$result = $order->authKey;
+		$this->assertEqual($expected, $result);
+
+		$expected = "Can't capture because total is zero.";
+		$result = $order->auth_error;
+		$this->assertEqual($expected, $result);
+
+		$result = $order->auth_confirmation;
+		$expected = -1;
+		$this->assertEqual($expected, $result);
+
+		$result = PaymentsMock::$capture;
+		$this->assertFalse($result);
+
+		$order->delete();
+	}
+
+	public function testSetTrackingNumber() {
+		$order = OrderMock::create(array('tracking_numbers' => array()));
+		$order->save(null, array('validate' => false));
+		$order->save(array('order_id' => $order->_id), array('validate' => false));
+
+		OrderMock::setTrackingNumber($order->_id, 'test');
+		$order = OrderMock::first((string) $order->_id);
+
+		$expected = array('test');
+		$result = $order->tracking_numbers->data();
+		$this->assertEqual($expected, $result);
+
+		$order->delete();
+
+		$order = OrderMock::create(array('tracking_numbers' => array('test a')));
+		$order->save(null, array('validate' => false));
+		$order->save(array('order_id' => $order->_id), array('validate' => false));
+
+		OrderMock::setTrackingNumber($order->_id, 'test b');
+		$order = OrderMock::first((string) $order->_id);
+
+		$expected = array('test a', 'test b');
+		$result = $order->tracking_numbers->data();
+		$this->assertEqual($expected, $result);
+
+		$order->delete();
 	}
 
 	public function testCancel() {
