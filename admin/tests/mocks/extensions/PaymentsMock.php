@@ -20,6 +20,16 @@ class PaymentsMock extends \li3_payments\extensions\Payments {
 
 	public static $profiles;
 
+	public static function resetMock() {
+		static::$profile   = null;
+		static::$process   = null;
+		static::$authorize = null;
+		static::$capture   = null;
+		static::$credit    = null;
+		static::$void      = null;
+		static::$profiles  = null;
+	}
+
 	public static function profile($name, $profile, array $options = array()) {
 		$name = __FUNCTION__;
 		static::${$name} = func_get_args();

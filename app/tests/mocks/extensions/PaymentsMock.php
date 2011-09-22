@@ -4,7 +4,6 @@ namespace app\tests\mocks\extensions;
 
 use li3_payments\extensions\PaymentObject;
 
-
 class PaymentsMock extends \li3_payments\extensions\Payments {
 
 	public static $profile;
@@ -20,6 +19,16 @@ class PaymentsMock extends \li3_payments\extensions\Payments {
 	public static $void;
 
 	public static $profiles;
+
+	public static function resetMock() {
+		static::$profile   = null;
+		static::$process   = null;
+		static::$authorize = null;
+		static::$capture   = null;
+		static::$credit    = null;
+		static::$void      = null;
+		static::$profiles  = null;
+	}
 
 	public static function profile($name, $profile, array $options = array()) {
 		$name = __FUNCTION__;
