@@ -111,24 +111,16 @@ class OrderTest extends \lithium\test\Unit {
 		$this->assertEqual($expected, $result);
 	}
 
-
 	public function testRecordOrderWithoutService() {
 		$authKey = '090909099909';
 		$address = $this->_address();
 
 		$data = array(
 			'authKey' => $authKey,
-			'credit_used' => -5,
-			'date_created' => 'Sat, 11 Dec 2010 09: 51: 15 -0500',
 			'handling' => 7.95,
-			'order_id' => '4D03KLKLLKL8FE3',
-			'promo_code' => 'weekend10',
-			'promo_discount' => -10,
-			'ship_date' => 1294272000,
 			'shipping' => array(
 				'description' => 'Home',
 			) + $address,
-			'shippingMethod' => 'ups',
 			'subTotal' => 56.7,
 			'tax' => 0,
 			'total' => 49.65,
@@ -170,21 +162,363 @@ class OrderTest extends \lithium\test\Unit {
 		$this->assertFalse($result);
 
 		$expected = 123.45;
-		$result = PaymentsMock::$authorize[1];
+		$result = $order->total;
 		$this->assertEqual($expected, $result);
 
-		$expected = $vars['creditCard']['number'];
-		$result = PaymentsMock::$authorize[2]->number;
+		$expected = 1;
+		$result = User::first((string) $this->user->_id)->purchase_count;
 		$this->assertEqual($expected, $result);
 
-		$expected = $vars['creditCard']['month'];
-		$result = PaymentsMock::$authorize[2]->month;
+		$order->delete();
+	}
+
+	public function testRecordOrderIncreasesUserPruchaseCount() {
+		$authKey = '090909099909';
+		$address = $this->_address();
+
+		$data = array(
+			'authKey' => $authKey,
+			'handling' => 7.95,
+			'shipping' => array(
+				'description' => 'Home',
+			) + $address,
+			'subTotal' => 56.7,
+			'tax' => 0,
+			'total' => 49.65,
+			'user_id' => $this->user->_id
+		);
+		$order = OrderMock::create($data);
+		$result = $order->save();
+		$this->assertTrue($result);
+
+		$vars = array(
+			'creditCard' => $this->_card(true),
+			'billingAddr' => $address,
+			'shippingAddr' => $address,
+			'total' => 123.45,
+			'subTotal' => 123.45,
+			'shippingCost' => 10,
+			'overShippingCost' => 0,
+			'cartCredit' => $this->_credit(),
+			'cartPromo' => $this->_promocode()
+		);
+		$items = array(
+			$this->_item()
+		);
+		$avatax = array(
+			'tax' => 0
+		);
+
+		OrderMock::recordOrder(
+			$vars,
+			$items,
+			$this->_card(),
+			$order,
+			$avatax,
+			$authKey,
+			$items
+		);
+
+		$expected = 1;
+		$result = User::first((string) $this->user->_id)->purchase_count;
 		$this->assertEqual($expected, $result);
 
-		$expected = $vars['creditCard']['year'];
-		$result = PaymentsMock::$authorize[2]->year;
+		OrderMock::recordOrder(
+			$vars,
+			$items,
+			$this->_card(),
+			$order,
+			$avatax,
+			$authKey,
+			$items
+		);
+
+		$expected = 2;
+		$result = User::first((string) $this->user->_id)->purchase_count;
 		$this->assertEqual($expected, $result);
 
+		$order->delete();
+	}
+
+	public function testRecordOrderWithFreeshipping() {
+		$services = array(
+			'freeshipping' => 'eligible'
+		);
+		Session::write('services', $services);
+
+		$authKey = '090909099909';
+		$address = $this->_address();
+
+		$data = array(
+			'authKey' => $authKey,
+			'handling' => 7.95,
+			'shipping' => array(
+				'description' => 'Home',
+			) + $address,
+			'subTotal' => 56.7,
+			'tax' => 0,
+			'total' => 49.65,
+			'discount' => 9,
+			'user_id' => $this->user->_id
+		);
+		$order = OrderMock::create($data);
+		$result = $order->save();
+		$this->assertTrue($result);
+
+		$vars = array(
+			'creditCard' => $this->_card(true),
+			'billingAddr' => $address,
+			'shippingAddr' => $address,
+			'total' => 123.45,
+			'subTotal' => 123.45,
+			'shippingCost' => 10,
+			'overShippingCost' => 1,
+			'cartCredit' => $this->_credit(),
+			'cartPromo' => $this->_promocode()
+		);
+		$items = array(
+			$this->_item()
+		);
+		$avatax = array(
+			'tax' => 0
+		);
+		$result = OrderMock::recordOrder(
+			$vars,
+			$items,
+			$this->_card(),
+			$order,
+			$avatax,
+			$authKey,
+			$items
+		);
+		$this->assertTrue($result);
+
+		$expected = 0;
+		$result = $order->discount;
+		$this->assertEqual($expected, $result);
+
+		$expected = 0;
+		$result = $order->handling;
+		$this->assertEqual($expected, $result);
+
+		$expected = 0;
+		$result = $order->overSizeHandling;
+		$this->assertEqual($expected, $result);
+
+		$order->delete();
+	}
+
+	public function testRecordOrderFreeshippingFromPromocode() {
+		$authKey = '090909099909';
+		$address = $this->_address();
+
+		$data = array(
+			'authKey' => $authKey,
+			'handling' => 7.95,
+			'shipping' => array(
+				'description' => 'Home',
+			) + $address,
+			'subTotal' => 56.7,
+			'tax' => 0,
+			'total' => 49.65,
+			'user_id' => $this->user->_id
+		);
+		$order = OrderMock::create($data);
+		$result = $order->save();
+		$this->assertTrue($result);
+
+		$promocode = $this->_promocode();
+		$promocode->type = 'free_shipping';
+
+		$vars = array(
+			'creditCard' => $this->_card(true),
+			'billingAddr' => $address,
+			'shippingAddr' => $address,
+			'total' => 123.45,
+			'subTotal' => 123.45,
+			'shippingCost' => 10,
+			'overShippingCost' => 0,
+			'cartCredit' => $this->_credit(),
+			'cartPromo' => $promocode
+		);
+		$items = array(
+			$this->_item()
+		);
+		$avatax = array(
+			'tax' => 0
+		);
+
+		OrderMock::recordOrder(
+			$vars,
+			$items,
+			$this->_card(),
+			$order,
+			$avatax,
+			$authKey,
+			$items
+		);
+
+		$expected = 0;
+		$result = $order->discount;
+		$this->assertEqual($expected, $result);
+
+		$expected = 0;
+		$result = $order->handling;
+		$this->assertEqual($expected, $result);
+
+		$expected = 0;
+		$result = $order->overSizeHandling;
+		$this->assertEqual($expected, $result);
+
+		$order->delete();
+	}
+
+	public function testRecordOrderWith10off50() {
+		$services = array(
+			'10off50' => 'eligible'
+		);
+		Session::write('services', $services);
+
+		$authKey = '090909099909';
+		$address = $this->_address();
+
+		$data = array(
+			'authKey' => $authKey,
+			'handling' => 7.95,
+			'ship_date' => 1294272000,
+			'shipping' => array(
+				'description' => 'Home',
+			) + $address,
+			'subTotal' => 56.7,
+			'tax' => 0,
+			'total' => 49.65,
+			'discount' => 9,
+			'user_id' => $this->user->_id
+		);
+		$order = OrderMock::create($data);
+		$result = $order->save();
+		$this->assertTrue($result);
+
+		$vars = array(
+			'creditCard' => $this->_card(true),
+			'billingAddr' => $address,
+			'shippingAddr' => $address,
+			'total' => 123.45,
+			'subTotal' => 123.45,
+			'shippingCost' => 10,
+			'overShippingCost' => 1,
+			'cartCredit' => $this->_credit(),
+			'cartPromo' => $this->_promocode()
+		);
+		$items = array(
+			$this->_item()
+		);
+		$avatax = array(
+			'tax' => 0
+		);
+		$result = OrderMock::recordOrder(
+			$vars,
+			$items,
+			$this->_card(),
+			$order,
+			$avatax,
+			$authKey,
+			$items
+		);
+		$this->assertTrue($result);
+
+		$expected = 10;
+		$result = $order->discount;
+		$this->assertEqual($expected, $result);
+
+		$order->delete();
+	}
+
+	public function testRecordOrderCartCreditAmountPositive() {
+		$authKey = '090909099909';
+		$address = $this->_address();
+
+		$this->user->save(
+			array('total_credit' => 2),
+			array('validate' => false)
+		);
+
+		$data = array(
+			'authKey' => $authKey,
+			'handling' => 7.95,
+			'shipping' => array(
+				'description' => 'Home',
+			) + $address,
+			'subTotal' => 56.7,
+			'tax' => 0,
+			'total' => 49.65,
+			'discount' => 9,
+			'user_id' => $this->user->_id
+		);
+		$order = OrderMock::create($data);
+		$result = $order->save();
+		$this->assertTrue($result);
+
+		$credit = $this->_credit();
+		$credit->credit_amount = 3.45;
+
+		$vars = array(
+			'creditCard' => $this->_card(true),
+			'billingAddr' => $address,
+			'shippingAddr' => $address,
+			'total' => 123.45,
+			'subTotal' => 123.45,
+			'shippingCost' => 10,
+			'overShippingCost' => 1,
+			'cartCredit' => $credit,
+			'cartPromo' => $this->_promocode()
+		);
+		$items = array(
+			$this->_item()
+		);
+		$avatax = array(
+			'tax' => 0
+		);
+
+		$expected = 0;
+		$result = $order->credit_used;
+		$this->assertEqual($expected, $result);
+
+		$expected = 2;
+		$result = User::first((string) $this->user->_id)->total_credit;
+		$this->assertEqual($expected, $result);
+
+		Session::write('credit', 500);
+
+		OrderMock::recordOrder(
+			$vars,
+			$items,
+			$this->_card(),
+			$order,
+			$avatax,
+			$authKey,
+			$items
+		);
+
+		$expected = 3.45;
+		$result = $order->credit_used;
+		$this->assertEqual($expected, $result);
+
+		$result = Session::check('credit');
+		$this->assertFalse($result);
+
+		$expected = 5.45;
+		$result = User::first((string) $this->user->_id)->total_credit;
+		$this->assertEqual($expected, $result);
+
+		$credit = Credit::first(array(
+			'conditions' => array('user_id' => (string) $this->user->_id)
+		));
+		$expected = 3.45;
+		$result = $credit->credit_amount;
+		$this->assertEqual($expected, $result);
+
+		$credit->delete();
 		$order->delete();
 	}
 
@@ -272,7 +606,8 @@ class OrderTest extends \lithium\test\Unit {
 
 	protected function _credit() {
 		$data = array(
-			'amount' => 3.25,
+			'credit' => 0,
+			'credit_amount' => 0,
 			'order_number' => '4D03KLKLLKL8FE3',
 			'reason' => 'Credit Adjustment',
 			'description' =>  'Credit Returned to user.',
@@ -282,7 +617,6 @@ class OrderTest extends \lithium\test\Unit {
 
 		return $this->_delete[] = $credit;
 	}
-
 }
 
 ?>
