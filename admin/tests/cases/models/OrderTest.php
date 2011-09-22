@@ -1416,6 +1416,58 @@ class OrderTest extends \lithium\test\Unit {
 
 		$order->delete();
 	}
+
+	public function testOrderPaymentRequests() {
+		$data = array(
+			'authKey' => '090909',
+			'total' => 1.23
+		);
+		$order1 = Order::create($data);
+		$order1->save(null, array('validate' => false));
+		$order1->order_id = $order1->_id;
+		$order1->save(null, array('validate' => false));
+
+		$data = array(
+			'authKey' => '090909',
+			'total' => 4.56
+		);
+		$order2 = Order::create($data);
+		$order2->save(null, array('validate' => false));
+		$order2->order_id = $order2->_id;
+		$order2->save(null, array('validate' => false));
+
+		$result = Order::orderPaymentRequests(array(
+			'capture' => array($order1->_id)
+		));
+
+		$this->assertTrue(is_a($result['payments'], 'MongoCursor'));
+
+		$expected = 'error';
+		$this->assertEqual($expected, $result['type']);
+
+		$expected = " Capture Process has completed.  Here are today's failed captures.";
+		$this->assertEqual($expected, $result['message']);
+
+		$order1->delete();
+		$order2->delete();
+	}
+
+	public function testFailedCaptureCheck() {
+		$order = Order::create(array('_test' => 'a'));
+		$order->save(null, array('validate' => false));
+		$order->order_id = $order->_id;
+		$order->save(null, array('validate' => false));
+
+		$result = Order::failedCaptureCheck($order->_id);
+		$this->assertTrue($result);
+
+		$order->save(array('payment_date' => new MongoDate()), array('validate' => false));
+
+		$result = Order::failedCaptureCheck($order->_id);
+		$this->assertFalse($result);
+
+		$order->delete();
+	}
 }
 
 ?>
