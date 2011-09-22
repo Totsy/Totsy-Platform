@@ -17,6 +17,8 @@ class OrderTest extends \lithium\test\Unit {
 
 	protected $_backup = array();
 
+	protected $_delete = array();
+
 	public function setUp() {
 		Session::config(array(
 			'default' => array('adapter' => 'Memory')
@@ -30,6 +32,8 @@ class OrderTest extends \lithium\test\Unit {
 		$this->user = User::create();
 		$this->user->save($data, array('validate' => false));
 
+		$this->_delete[] = $this->user;
+
 		$session = $this->user->data();
 		Session::write('userLogin', $session);
 	}
@@ -37,7 +41,9 @@ class OrderTest extends \lithium\test\Unit {
 	public function tearDown() {
 		Session::delete('userLogin');
 
-		$this->user->delete();
+		foreach ($this->_delete as $document) {
+			$document->delete();
+		}
 	}
 
 	public function testDates() {
@@ -60,84 +66,29 @@ class OrderTest extends \lithium\test\Unit {
 	}
 
 	public function testProcess() {
-		$data = array(
-			'amount' => 3.25,
-			'order_number' => '4D03KLKLLKL8FE3',
-			'reason' => 'Credit Adjustment',
-			'description' =>  'Credit Returned to user.',
-		);
-		$credit = Credit::create();
-		$credit->save($data, array('validate' => false));
+		$address = $this->_address();
+		$address['address2'] = 'c/o Skywalker';
 
-		$data = array(
-			'code' => 'whattoexpect',
-			'saved_amount' => -3.3
-		);
-		$promocode = Promocode::create();
-		$promocode->save($data, array('validate' => false));
-
-		$promocode->code_id = $promocode->_id;
-		$promocode->save();
-
-		$data =  array(
-			'category' => 'Baby Gear',
-			'color' => '',
-			'description' => 'BabyGanics Alcohol Free Hand Sanitizer 250ml',
-			'discount_exempt' => false,
-			'expires' => array(
-				'sec' => 1292079402,
-				'usec' => 0
-			),
-			'primary_image' => '4d015488ce64e5c072fc1e00',
-			'product_weight' => 0.64,
-			'quantity' => 5,
-			'sale_retail' => 3,
-			'size' => 'no size',
-			'url' => 'babyganics-alcohol-free-hand-sanitizer-250ml',
-			'event_name' => 'Babyganics',
-			'event_id' => '4cfd1dd1ce64e5300aeb4100',
-			'line_number' => 0,
-			'status' => 'Order Placed'
-		);
-		$item = Item::create();
-		$item->save($data, array('validate' => false));
-
-		$address = array(
-			'firstname' => 'George',
-			'lastname' => 'Lucas',
-			'address' => 'Hollywood Blvd ' . uniqid(),
-			'address2' => 'c/o Skywalker',
-			'city' => 'Lost Angeles',
-			'zip' => '90001',
-			'state' => 'California',
-			'country' => 'USA'
-		);
-		$creditCard = array(
-			 'number' => '4111111111111111',
-			 'month' => 11,
-			 'year' => 2023
-		);
-
-		$data = array();
-		$cart = array(
-			$item
-		);
 		$vars = array(
-			'creditCard' => $creditCard,
+			'creditCard' => $this->_card(true),
 			'billingAddr' => $address,
 			'shippingAddr' => $address,
 			'total' => 123.45,
 			'subTotal' => 123.45,
 			'shippingCost' => 10,
 			'overShippingCost' => 0,
-			'cartCredit' => $credit,
-			'cartPromo' => $promocode
+			'cartCredit' => $this->_credit(),
+			'cartPromo' => $this->_promocode()
+		);
+		$items = array(
+			$this->_item()
 		);
 		$avatax = array(
 			'tax' => 0
 		);
+		$data = array();
 
-		$result = OrderMock::process($data, $cart, $vars, $avatax);
+		$result = OrderMock::process($data, $items, $vars, $avatax);
 		$this->assertTrue($result);
 
 		$result = Session::read('cc_error');
@@ -147,21 +98,94 @@ class OrderTest extends \lithium\test\Unit {
 		$result = PaymentsMock::$authorize[1];
 		$this->assertEqual($expected, $result);
 
-		$expected = $creditCard['number'];
+		$expected = $vars['creditCard']['number'];
 		$result = PaymentsMock::$authorize[2]->number;
 		$this->assertEqual($expected, $result);
 
-		$expected = $creditCard['month'];
+		$expected = $vars['creditCard']['month'];
 		$result = PaymentsMock::$authorize[2]->month;
 		$this->assertEqual($expected, $result);
 
-		$expected = $creditCard['year'];
+		$expected = $vars['creditCard']['year'];
+		$result = PaymentsMock::$authorize[2]->year;
+		$this->assertEqual($expected, $result);
+	}
+
+
+	public function testRecordOrderWithoutService() {
+		$authKey = '090909099909';
+		$address = $this->_address();
+
+		$data = array(
+			'authKey' => $authKey,
+			'credit_used' => -5,
+			'date_created' => 'Sat, 11 Dec 2010 09: 51: 15 -0500',
+			'handling' => 7.95,
+			'order_id' => '4D03KLKLLKL8FE3',
+			'promo_code' => 'weekend10',
+			'promo_discount' => -10,
+			'ship_date' => 1294272000,
+			'shipping' => array(
+				'description' => 'Home',
+			) + $address,
+			'shippingMethod' => 'ups',
+			'subTotal' => 56.7,
+			'tax' => 0,
+			'total' => 49.65,
+			'user_id' => $this->user->_id
+		);
+		$order = OrderMock::create($data);
+		$result = $order->save();
+		$this->assertTrue($result);
+
+		$vars = array(
+			'creditCard' => $this->_card(true),
+			'billingAddr' => $address,
+			'shippingAddr' => $address,
+			'total' => 123.45,
+			'subTotal' => 123.45,
+			'shippingCost' => 10,
+			'overShippingCost' => 0,
+			'cartCredit' => $this->_credit(),
+			'cartPromo' => $this->_promocode()
+		);
+		$items = array(
+			$this->_item()
+		);
+		$avatax = array(
+			'tax' => 0
+		);
+		$result = OrderMock::recordOrder(
+			$vars,
+			$items,
+			$this->_card(),
+			$order,
+			$avatax,
+			$authKey,
+			$items
+		);
+		$this->assertTrue($result);
+
+		$result = Session::read('cc_error');
+		$this->assertFalse($result);
+
+		$expected = 123.45;
+		$result = PaymentsMock::$authorize[1];
+		$this->assertEqual($expected, $result);
+
+		$expected = $vars['creditCard']['number'];
+		$result = PaymentsMock::$authorize[2]->number;
+		$this->assertEqual($expected, $result);
+
+		$expected = $vars['creditCard']['month'];
+		$result = PaymentsMock::$authorize[2]->month;
+		$this->assertEqual($expected, $result);
+
+		$expected = $vars['creditCard']['year'];
 		$result = PaymentsMock::$authorize[2]->year;
 		$this->assertEqual($expected, $result);
 
-		$credit->delete();
-		$promocode->delete();
-		$item->delete();
+		$order->delete();
 	}
 
 	public function testCreditCardCryptSymmetry() {
@@ -181,6 +205,84 @@ class OrderTest extends \lithium\test\Unit {
 		$result = OrderMock::creditCardDecrypt($this->user->_id);
 		$this->assertEqual($expected, $result);
 	}
+
+	protected function _item() {
+		$data = array(
+			'category' => 'Alpha',
+			'color' => 'green',
+			'description' => 'Test 250ml',
+			'discount_exempt' => false,
+			'expires' => array(
+				'sec' => 1292079402,
+				'usec' => 0
+			),
+			'product_weight' => 0.64,
+			'quantity' => 5,
+			'sale_retail' => 3,
+			'size' => 'no size',
+			'line_number' => 0,
+			'status' => 'Order Placed'
+		);
+		$item = Item::create($data);
+		$item->save();
+		$item->item_id = $item->_id;
+		$item->save();
+
+		return $this->_delete[] = $item;
+	}
+
+	protected function _card($raw = false) {
+		$creditCard = array(
+			 'number' => '4111111111111111',
+			 'month' => 11,
+			 'year' => 2023
+		);
+		if ($raw) {
+			return $creditCard;
+		}
+		$billing = PaymentsMock::create('default', 'address', $this->_address());
+		return PaymentsMock::create('default', 'creditCard', $creditCard + compact('billing'));
+	}
+
+	protected function _address() {
+		return array(
+			'firstname' => 'George',
+			'lastname' => 'Lucas',
+			'address' => 'Hollywood Blvd ' . uniqid(),
+			'city' => 'Lost Angeles',
+			'zip' => '90001',
+			'state' => 'California',
+			'country' => 'USA'
+		);
+	}
+
+	protected function _promocode() {
+		$data = array(
+			'code' => 'whattoexpect',
+			'saved_amount' => -3.3
+		);
+		$promocode = Promocode::create();
+		$promocode->save($data, array('validate' => false));
+
+		$promocode->code_id = $promocode->_id;
+		$promocode->save();
+
+		return $this->_delete[] = $promocode;
+	}
+
+	protected function _credit() {
+		$data = array(
+			'amount' => 3.25,
+			'order_number' => '4D03KLKLLKL8FE3',
+			'reason' => 'Credit Adjustment',
+			'description' =>  'Credit Returned to user.',
+		);
+		$credit = Credit::create();
+		$credit->save($data, array('validate' => false));
+
+		return $this->_delete[] = $credit;
+	}
+
 }
 
 ?>
