@@ -17,12 +17,9 @@ class OrderTest extends \lithium\test\Unit {
 	protected $_backup = array();
 
 	public function setUp() {
-		$this->skipIf(PHP_SAPI == 'cli', 'Need SAPI with session support.');
-
-		$this->_backup['cookie'] = $_COOKIE;
-		$this->_backup['session'] = $_SESSION;
-
-		$_COOKIE = $_SESSION = null;
+		Session::config(array(
+			'default' => array('adapter' => 'Memory')
+		));
 
 		$data = array(
 			'firstname' => 'George',
@@ -38,9 +35,6 @@ class OrderTest extends \lithium\test\Unit {
 
 	public function tearDown() {
 		Session::delete('userLogin');
-
-		$_COOKIE = $this->_backup['cookie'];
-		$_SESSION = $this->_backup['session'];
 
 		$this->user->delete();
 	}
