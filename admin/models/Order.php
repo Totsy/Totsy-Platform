@@ -82,6 +82,14 @@ class Order extends Base {
 		return new MongoDate(time() + static::_object()->_dates[$name]);
 	}
 
+	/**
+	 * Case insensitive lookup of an order by its ID.
+	 *
+	 * @fixme In its current state the method will never succeed. As regex
+	 *        matching doesn't work against Object IDs. Also @see OrdersController::update().
+	 * @param string $orderId
+	 * @return object
+	 */
 	public static function lookup($orderId) {
 		$orderId = new MongoRegex("/$orderId/i");
 		$result = static::find('first', array('conditions' => array(
