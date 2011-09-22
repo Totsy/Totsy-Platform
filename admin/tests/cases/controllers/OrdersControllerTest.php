@@ -24,12 +24,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		));
 	}
 
-
-	/*
-	* Testing the Cancel method from the OrdersController
-	*/
 	public function testCancel() {
-		//Configuration Test
 		$order_id = new MongoId("8788727dsds3782738dsdsds728");
 		$user_id = new MongoId("787878787zazazag78dsdsdsds78");
 		$item_id = new MongoId("4ddsqsdqszzz80f3ad53892614080076e0");
@@ -40,7 +35,6 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$remote->request->data = array('id' => (string) $order_id, 'comment' => $comment);
 		$remote->request->params['type'] = 'html';
 		$user = Session::read('userLogin');
-		//Create temporary document
 		$order_datas = array(
 			"_id" => $order_id,
 			"authKey" => "090909099909",
@@ -159,9 +153,6 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$this->assertEqual( true , $check);
 	}
 
-	/*
-	* Testing the ManageItems method from the OrdersController
-	*/
 	public function testManageItemsUnsaved() {
 		$data = array(
 			"active" => 1,
@@ -393,11 +384,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		Item::remove(array("_id" => $item2Id));
 	}
 
-	/*
-	* Testing the ManageItems when the order is saved method from the OrdersController
-	*/
 	public function testManageItemsSaved() {
-		//Configuration Test
 		$check = true;
 		$order_id = new MongoId("8788727dsds3782738dsdsds728");
 		$user_id = new MongoId("787878787zazazag78dsdsdsds78");
@@ -405,7 +392,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$item_id_2 = new MongoId("0920909Z200IAOIOIZOAIIiioioioio");
 		$comment = "Comment @ Test";
 		$user = Session::read('userLogin');
-		//Create temporary document
+
 		$items = array(
 			'0' => array(
 				'cancel' => 'true',
