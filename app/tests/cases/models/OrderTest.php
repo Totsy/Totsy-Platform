@@ -44,6 +44,7 @@ class OrderTest extends \lithium\test\Unit {
 		foreach ($this->_delete as $document) {
 			$document->delete();
 		}
+		PaymentsMock::resetMock();
 	}
 
 	public function testDates() {
