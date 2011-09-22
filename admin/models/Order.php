@@ -5,7 +5,6 @@ namespace admin\models;
 use MongoId;
 use MongoDate;
 use MongoRegex;
-use li3_payments\extensions\Payments;
 use li3_payments\extensions\payments\exceptions\TransactionException;
 use lithium\analysis\Logger;
 use admin\models\User;
@@ -55,7 +54,8 @@ class Order extends Base {
 	const TAX_RATE_NYS = 0.04375;
 
 	protected static $_classes = array(
-		'tax' => 'admin\extensions\AvaTax'
+		'tax' => 'admin\extensions\AvaTax',
+		'payments' => 'li3_payments\extensions\Payments'
 	);
 
 	protected $_meta = array('source' => 'orders');
@@ -97,12 +97,14 @@ class Order extends Base {
 	 * @return boolean
 	 */
 	public static function void($order) {
+		$payments = static::$_classes['payments'];
+
 		$collection = static::collection();
 		$orderId = new MongoId($order['_id']);
 		try {
 		    $error = null;
 		    if ($order['total'] != 0 && is_numeric($order['authKey'])){
-                $auth = Payments::void('default', $order['authKey']);
+                $auth = $payments::void('default', $order['authKey']);
 			} else {
 			    $auth = -1;
 			    $error = "Can't capture because total is zero.";
@@ -139,13 +141,15 @@ class Order extends Base {
 	 * @return boolean
 	 */
 	public static function process($order) {
+		$payments = static::$_classes['payments'];
+
 		$collection = static::collection();
 		$orderId = new MongoId($order['_id']);
 
 		try {
 		    $error = null;
 		    if ($order['total'] != 0 && is_numeric($order['authKey'])) {
-                $auth = Payments::capture('default', $order['authKey'], floor($order['total']*100)/100);
+                $auth = $payments::capture('default', $order['authKey'], floor($order['total']*100)/100);
             } else {
                 $auth = -1;
                 $error = "Can't capture because total is zero.";
