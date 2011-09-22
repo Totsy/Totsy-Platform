@@ -406,9 +406,9 @@ class Order extends Base {
 	/**
 	* Save the data of the temporary order to the DB.
 	*
-	* @todo Clarify handling of return vlaue of `recalculateTax()`. Currently
+	* @todo Clarify handling of return vlaue of `_recalculateTax()`. Currently
 	*       it'll the `extract()` will error on as it doesn't get an array under
-	*       certain conditions. Please see the docblock for `recalculateTax()`.
+	*       certain conditions. Please see the docblock for `_recalculateTax()`.
 	* @param object $selected_order
 	* @param array $items
 	* @param string $author
@@ -450,7 +450,7 @@ class Order extends Base {
 			$datas_order_prices["credit_used"] = (float) $selected_order["credit_used"];
 		}
 		/**************UPDATE TAX****************************/
-		extract(static::recalculateTax($selected_order,$items,true));
+		extract(static::_recalculateTax($selected_order,$items,true));
 		/**************UPDATE DB****************************/
 		if (array_key_exists('original_credit_used', $selected_order)) {
 		    $new_credit = $selected_order['original_credit_used'] - (float) number_format($selected_order['credit_used'],2);
@@ -544,9 +544,9 @@ class Order extends Base {
 	* Refresh the prices details and credits of the temporary order
 	* and return it to the view.
 	*
-	* @todo Clarify handling of return vlaue of `recalculateTax()`. Currently
+	* @todo Clarify handling of return vlaue of `_recalculateTax()`. Currently
 	*       it'll the `extract()` will error on as it doesn't get an array under
-	*       certain conditions. Please see the docblock for `recalculateTax()`.
+	*       certain conditions. Please see the docblock for `_recalculateTax()`.
 	* @param object $selected_order
 	* @param array $items
 	*/
@@ -559,8 +559,15 @@ class Order extends Base {
 		if(!empty($items)){
 			$datas_order["items"] = $items;
 		}
-		//Get Actual Taxes
-		extract(static::recalculateTax($selected_order,$items));
+		//Get Actual Taxes and Handling
+		$handling = static::shipping($items);
+		$overSizeHandling = static::overSizeShipping($items);
+		extract(static::_recalculateTax($selected_order,$items));
+
+		if ($tax instanceof Exception) {
+			/* Rethrow exceptions received while recalculating tax. */
+			throw $tax;
+		}
 		if (is_object($tax)) {
             //Avatax::totsyCalculateTax($selected_order);
             //$tax = static::tax($selected_order,$items);
@@ -703,7 +710,7 @@ class Order extends Base {
 	 * @param object $current_order
 	 * @param array $itms
 	 */
-	protected static function recalculateTax ($current_order,$itms,$update=false){
+	protected static function _recalculateTax($current_order, $itms, $update=false) {
 		$tax = static::$_classes['tax'];
 
 		$orderCollection = static::collection();
