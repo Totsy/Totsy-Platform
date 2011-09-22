@@ -98,8 +98,14 @@ class BaseController extends \lithium\action\Controller {
 		/**
 		* If visitor lands on affliate url e.g www.totsy.com/a/afflilate123
 		**/
-		if (is_object($this->request) && isset($this->request->params) && $this->request->params['controller']  == "affiliates" &&
-			$this->request->params['action'] == "register" & empty($invited_by)) {
+		$affiliate = is_object($this->request);
+		$affiliate = $affiliate && isset($this->request->params['controller']);
+		$affiliate = $affiliate && isset($this->request->params['action']);
+		$affiliate = $affiliate && $this->request->params['controller']  == 'affiliates';
+		$affiliate = $affiliate && $this->request->params['action']  == 'register';
+		$affiliate = $affiliate && empty($invited_by);
+
+		if ($affiliate) {
 			$invited_by = $this->request->args[0];
 		}
 
@@ -234,13 +240,15 @@ class BaseController extends \lithium\action\Controller {
 	* Clean Credits Card Infos if out of Cart/Orders/Search ??? Controller
 	**/
 	public function cleanCC() {
-		if (is_object($this->request) && isset($this->request->params) && $this->request->params['controller']  != "orders"
-			&& $this->request->params['controller']  != "cart"
-			&& $this->request->params['controller']  != "search")
-		{
-			if(Session::check('cc_infos')) {
-				Session::delete('cc_infos');
-			}
+		$controllers = array('orders', 'cart', 'search');
+
+		$clean = Session::check('cc_infos');
+		$clean = $clean && is_object($this->request);
+		$clean = $clean && isset($this->request->params['controller']);
+		$clean = $clean && !in_array($this->request->params['controller'], $controllers);
+
+		if ($clean) {
+			Session::delete('cc_infos');
 		}
 	}
 }
