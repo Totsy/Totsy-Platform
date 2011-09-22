@@ -3,6 +3,7 @@
 namespace app\tests\cases\models;
 
 use app\tests\mocks\models\OrderMock;
+use app\tests\mocks\extensions\PaymentsMock;
 use MongoId;
 use lithium\storage\Session;
 use app\models\User;
@@ -141,6 +142,22 @@ class OrderTest extends \lithium\test\Unit {
 
 		$result = Session::read('cc_error');
 		$this->assertFalse($result);
+
+		$expected = 123.45;
+		$result = PaymentsMock::$authorize[1];
+		$this->assertEqual($expected, $result);
+
+		$expected = $creditCard['number'];
+		$result = PaymentsMock::$authorize[2]->number;
+		$this->assertEqual($expected, $result);
+
+		$expected = $creditCard['month'];
+		$result = PaymentsMock::$authorize[2]->month;
+		$this->assertEqual($expected, $result);
+
+		$expected = $creditCard['year'];
+		$result = PaymentsMock::$authorize[2]->year;
+		$this->assertEqual($expected, $result);
 
 		$credit->delete();
 		$promocode->delete();
