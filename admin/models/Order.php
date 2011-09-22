@@ -108,32 +108,38 @@ class Order extends Base {
 	public static function void($order) {
 		$payments = static::$_classes['payments'];
 
-		$collection = static::collection();
 		$orderId = new MongoId($order['_id']);
 		try {
 		    $error = null;
+
 		    if ($order['total'] != 0 && is_numeric($order['authKey'])){
                 $auth = $payments::void('default', $order['authKey']);
 			} else {
 			    $auth = -1;
 			    $error = "Can't capture because total is zero.";
 			}
-			return $collection->update(
+			return static::update(
+                    array(
+						'$set' => array(
+							'void_date' => new MongoDate(),
+	                        'void_confirm' => $auth,
+							'auth_error' => $error
+						),
+					),
                     array('_id' => $orderId),
-                    array('$set' => array(
-                        'void_date' => new MongoDate(),
-                        'void_confirm' => $auth),
-                        'auth_error' => $error),
                     array('upsert' => false)
                 );
 		} catch (TransactionException $e) {
 			$error = $e->getMessage();
 			Logger::error("order-void: Void Failed. Error $error thrown for $order[_id]");
-			$collection->update(
+			static::update(
+				array(
+					'$set' => array(
+						'error_date' => new MongoDate(),
+						'auth_error' => $error
+					)
+				),
 				array('_id' => $orderId),
-				array('$set' => array(
-					'error_date' => new MongoDate(),
-					'auth_error' => $error)),
 				array('upsert' => false)
 			);
 		}
@@ -152,7 +158,6 @@ class Order extends Base {
 	public static function process($order) {
 		$payments = static::$_classes['payments'];
 
-		$collection = static::collection();
 		$orderId = new MongoId($order['_id']);
 
 		try {
@@ -165,8 +170,7 @@ class Order extends Base {
 			}
 			Logger::info("process-payment: Processed payment for order_id {$order['_id']}");
 
-			return $collection->update(
-				array('_id' => $orderId),
+			return static::update(
 				array(
 					'$set' => array(
 						'payment_date' => new MongoDate(),
@@ -174,6 +178,7 @@ class Order extends Base {
 						'auth_error' => $error
 					)
 				),
+				array('_id' => $orderId),
 				array('upsert' => false)
 			);
 		} catch (TransactionException $e) {
@@ -181,8 +186,7 @@ class Order extends Base {
 			Logger::info("process-payment: Failed to process payment for order_id `{$order['_id']}`.");
 			Logger::error("process-payment: Error {$error} thrown for `{$order['_id']}`.");
 
-			$collection->update(
-				array('_id' => $orderId),
+			static::update(
 				array(
 					'$set' => array(
 						'error_date' => new MongoDate(),
@@ -190,15 +194,18 @@ class Order extends Base {
 						'auth_error' => $error
 					)
 				),
+				array('_id' => $orderId),
 				array('upsert' => false)
 			);
 			return false;
 		}
 	}
 
-	public static function setTrackingNumber($order_id, $number) {
-		$set = array('$addToSet' => array('tracking_numbers' => $number));
-		return static::collection()->update(array('order_id' => $order_id), $set);
+	public static function setTrackingNumber($id, $number) {
+		return static::update(
+			array('$addToSet' => array('tracking_numbers' => $number)),
+			array('order_id' => $id)
+		);
 	}
 
 	/**
