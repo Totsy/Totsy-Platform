@@ -222,10 +222,12 @@ class Order extends Base {
 				'shipping.firstname',
 				'shipping.lastname',
 				'billing.firstname',
-				'billing.lastname'),
+				'billing.lastname'
+			),
 			'address' => array(
 				'shipping.address',
-				'billing.address')
+				'billing.address'
+			)
 		);
 		foreach ($keys[$type] as $key) {
 			$conditions[] = array($key => new MongoRegex("/$data/i"));
