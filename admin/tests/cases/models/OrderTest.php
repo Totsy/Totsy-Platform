@@ -10,7 +10,6 @@ use li3_payments\extensions\Payments;
 
 class OrderTest extends \lithium\test\Unit {
 
-	/*
 	public function testProcessWithTotalAndCaptureOnly() {
 		$data = array(
 			'total' => 1.23,
@@ -34,13 +33,12 @@ class OrderTest extends \lithium\test\Unit {
 		$result = $order->auth_error;
 		$this->assertFalse($result);
 
-		$expected = $data['authKey'];
+		$expected = 'transaction id';
 		$result = $order->auth_confirmation;
 		$this->assertEqual($expected, $result);
 
 		OrderMock::remove(array('_id' => $orderId));
 	}
-	*/
 
 	/*
 	* Testing the Cancel Method of the Order
