@@ -2,11 +2,13 @@
 
 namespace admin\tests\cases\models;
 
+use admin\models\Order;
 use admin\tests\mocks\models\OrderMock;
 use admin\tests\mocks\extensions\PaymentsMock;
 use admin\models\User;
 use admin\models\Item;
 use MongoId;
+use MongoDate;
 
 class OrderTest extends \lithium\test\Unit {
 
@@ -231,6 +233,108 @@ class OrderTest extends \lithium\test\Unit {
 		$this->assertEqual($expected, $result);
 
 		$order->delete();
+	}
+
+	public function testOrderSearchByName() {
+		$data = array(
+			'_test' => 'a',
+			'date_created' => new MongoDate(strtotime('August 3, 2011')),
+			'shipping' => array(
+				'firstname' => 'George',
+				'lastname' => 'Opossum'
+			)
+		);
+		$order1 = Order::create($data);
+		$order1->save(null, array('validate' => false));
+
+		$data = array(
+			'_test' => 'b',
+			'date_created' => new MongoDate(strtotime('August 3, 2011')),
+			'billing' => array(
+				'firstname' => 'Leonardo',
+				'lastname' => 'di Caprio'
+			)
+		);
+		$order2 = Order::create($data);
+		$order2->save(null, array('validate' => false));
+
+		$expected = 'a';
+		$result = current(iterator_to_array(Order::orderSearch('George', 'name')));
+		$result = $result['_test'];
+		$this->assertEqual($expected, $result);
+
+		$expected = 'a';
+		$result = current(iterator_to_array(Order::orderSearch('Opossum', 'name')));
+		$result = $result['_test'];
+		$this->assertEqual($expected, $result);
+
+		$expected = 'b';
+		$result = current(iterator_to_array(Order::orderSearch('Leonardo', 'name')));
+		$result = $result['_test'];
+		$this->assertEqual($expected, $result);
+
+		$expected = 'b';
+		$result = current(iterator_to_array(Order::orderSearch('di Caprio', 'name')));
+		$result = $result['_test'];
+		$this->assertEqual($expected, $result);
+
+		$expected = 'b';
+		$result = current(iterator_to_array(Order::orderSearch('Leo', 'name')));
+		$result = $result['_test'];
+		$this->assertEqual($expected, $result);
+
+		$expected = 'b';
+		$result = current(iterator_to_array(Order::orderSearch('Caprio', 'name')));
+		$result = $result['_test'];
+		$this->assertEqual($expected, $result);
+
+		$expected = 'b';
+		$result = current(iterator_to_array(Order::orderSearch('CAPRIO', 'name')));
+		$result = $result['_test'];
+		$this->assertEqual($expected, $result);
+
+		$order1->delete();
+		$order2->delete();
+	}
+
+	public function testOrderSearchByAdress() {
+		$data = array(
+			'_test' => 'a',
+			'date_created' => new MongoDate(strtotime('August 3, 2011')),
+			'shipping' => array(
+				'address' => 'Venice Rd'
+			)
+		);
+		$order1 = Order::create($data);
+		$order1->save(null, array('validate' => false));
+
+		$data = array(
+			'_test' => 'b',
+			'date_created' => new MongoDate(strtotime('August 3, 2011')),
+			'billing' => array(
+				'address' => 'Cloud Blvd'
+			)
+		);
+		$order2 = Order::create($data);
+		$order2->save(null, array('validate' => false));
+
+		$expected = 'a';
+		$result = current(iterator_to_array(Order::orderSearch('Venice Rd', 'address')));
+		$result = $result['_test'];
+		$this->assertEqual($expected, $result);
+
+		$expected = 'b';
+		$result = current(iterator_to_array(Order::orderSearch('Cloud', 'address')));
+		$result = $result['_test'];
+		$this->assertEqual($expected, $result);
+
+		$expected = 'b';
+		$result = current(iterator_to_array(Order::orderSearch('cLouD', 'address')));
+		$result = $result['_test'];
+		$this->assertEqual($expected, $result);
+
+		$order1->delete();
+		$order2->delete();
 	}
 
 	public function testCancel() {
