@@ -5,7 +5,6 @@ namespace app\models;
 use MongoId;
 use MongoDate;
 use lithium\storage\Session;
-use li3_payments\extensions\Payments;
 use li3_payments\extensions\payments\exceptions\TransactionException;
 use app\extensions\Mailer;
 use app\models\User;
@@ -15,7 +14,8 @@ use app\models\FeatureToggles;
 class Order extends Base {
 
 	protected static $_classes = array(
-		'tax' => 'app\extensions\AvaTax'
+		'tax' => 'app\extensions\AvaTax',
+		'payments' => 'li3_payments\extensions\Payments'
 	);
 
 	protected $_dates = array(
@@ -48,10 +48,12 @@ class Order extends Base {
 	 * @return object
 	 */
 	public static function process($data, $cart, $vars, $avatax) {
+		$payments = static::$_classes['payments'];
+
 		$order = static::create(array('_id' => new MongoId()));
 		#Create Payment
-		$card = Payments::create('default', 'creditCard', $vars['creditCard'] + array(
-			'billing' => Payments::create('default', 'address', array(
+		$card = $payments::create('default', 'creditCard', $vars['creditCard'] + array(
+			'billing' => $payments::create('default', 'address', array(
 				'firstName' => $vars['billingAddr']['firstname'],
 				'lastName'  => $vars['billingAddr']['lastname'],
 				'address'   => trim($vars['billingAddr']['address'] . ' ' . $vars['billingAddr']['address2']),
@@ -59,9 +61,6 @@ class Order extends Base {
 				'state'     => $vars['billingAddr']['state'],
 				'zip'       => $vars['billingAddr']['zip'],
 				'country'   => $vars['billingAddr']['country']
-
-			))
-		));
 		if ($cart) {
 			$inc = 0;
 			foreach ($cart as $item) {
@@ -73,11 +72,11 @@ class Order extends Base {
 			try {
 				#Process Payment
 				if ($vars['total'] > 0) {
-					$authKey = Payments::authorize('default', $vars['total'], $card);
+					$authKey = $payments::authorize('default', $vars['total'], $card);
 				} else {
 					$authKey = Base::randomString(8,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz');
 				}
-				$order = Order::recordOrder($vars, $cart, $card, $order, $avatax, $authKey, $items);
+				$order = static::recordOrder($vars, $cart, $card, $order, $avatax, $authKey, $items);
 				return $order;
 			} catch (TransactionException $e) {
 				Session::write('cc_error',$e->getMessage());
