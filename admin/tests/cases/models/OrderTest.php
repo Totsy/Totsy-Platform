@@ -1363,6 +1363,59 @@ class OrderTest extends \lithium\test\Unit {
 		//Test result
 		$this->assertEqual( true , $result);
 	}
+
+	public function testCheckForCancellations() {
+		$data = array(
+			'cancel' => true,
+			'items' => array(
+				array('title' => 'a', 'cancel' => false),
+				array('title' => 'b', 'cancel' => false)
+			)
+		);
+		$order = Order::create($data);
+		$order->save(null, array('validate' => false));
+		$order->order_id = $order->_id;
+		$order->save(null, array('validate' => false));
+
+		$result = Order::checkForCancellations($order->_id);
+		$this->assertTrue($result);
+
+		$order->delete();
+
+		$data = array(
+			'cancel' => false,
+			'items' => array(
+				array('title' => 'a', 'cancel' => true),
+				array('title' => 'b', 'cancel' => false)
+			)
+		);
+		$order = Order::create($data);
+		$order->save(null, array('validate' => false));
+		$order->order_id = $order->_id;
+		$order->save(null, array('validate' => false));
+
+		$result = Order::checkForCancellations($order->_id);
+		$this->assertTrue($result);
+
+		$order->delete();
+
+		$data = array(
+			'cancel' => false,
+			'items' => array(
+				array('title' => 'a', 'cancel' => false),
+				array('title' => 'b', 'cancel' => false)
+			)
+		);
+		$order = Order::create($data);
+		$order->save(null, array('validate' => false));
+		$order->order_id = $order->_id;
+		$order->save(null, array('validate' => false));
+
+		$result = Order::checkForCancellations($order->_id);
+		$this->assertFalse($result);
+
+		$order->delete();
+	}
 }
 
 ?>
