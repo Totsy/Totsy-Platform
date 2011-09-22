@@ -771,14 +771,15 @@ class Order extends Base {
 
         if($requests) {
             if (array_key_exists('capture', $requests) && !empty($requests['capture'])) {
-
-				    $capture = static::collection()->find(array('order_id' => array(
-				        '$in' => $requests['capture'])),
+				    $capture = static::collection()->find(
+						array(
+							'order_id' => array('$in' => $requests['capture'])
+						),
 				        array(
-				        'authKey' => 1,
-				        'total' => 1,
-				        'order_id' => 1,
-				        '_id' => 1
+						'authKey' => 1,
+						'total' => 1,
+						'order_id' => 1,
+						'_id' => 1
 				    ));
 				    foreach($capture as $order) {
 				        static::process($order);
