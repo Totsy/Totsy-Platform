@@ -5,9 +5,12 @@ namespace admin\tests\cases\controllers;
 use lithium\action\Request;
 use admin\controllers\OrdersController;
 use admin\tests\mocks\models\OrderMock;
+use admin\models\Event;
+use admin\models\Order;
 use admin\models\User;
 use admin\models\Item;
 use MongoId;
+use MongoDate;
 use lithium\storage\Session;
 
 class OrdersControllerTest extends \lithium\test\Unit {
@@ -26,6 +29,74 @@ class OrdersControllerTest extends \lithium\test\Unit {
 				'order' => 'admin\tests\mocks\models\OrderMock'
 			)
 		));
+	}
+
+	public function testIndexWithoutData() {
+		$result = $this->controller->index();
+		$this->assertTrue(!empty($result['headings']));
+	}
+
+	public function testIndex() {
+		$data = array(
+			'title' => 'test',
+			'end_date' => $shipDate = new MongoDate(strtotime('+1 week'))
+		);
+		$event = Event::create($data);
+		$event->save();
+
+		$items[] = array(
+			'event_id' => $event->_id
+		);
+		$data = array(
+			'_id' => $id = new MongoId(),
+			'order_id' => $id,
+			'_test' => 'a',
+			'date_created' => new MongoDate(strtotime('August 3, 2011')),
+			'shipping' => array(
+				'firstname' => 'George',
+				'lastname' => 'Opossum',
+				'address' => 'Venice Rd'
+			),
+			'items' => $items
+		);
+		$order1 = Order::create($data);
+		$order1->save(null, array('validate' => false));
+
+		$data = array(
+			'_id' => $id = new MongoId(),
+			'order_id' => $id,
+			'_test' => 'b',
+			'date_created' => new MongoDate(strtotime('August 3, 2011')),
+			'billing' => array(
+				'firstname' => 'Leonardo',
+				'lastname' => 'di Caprio',
+				'address' => 'Dreams Blvd'
+			),
+			'items' => $items
+		);
+		$order2 = Order::create($data);
+		$order2->save(null, array('validate' => false));
+
+		/* @fixme This currently fails as you cannot apply a regex on an id. */
+		/*
+		$this->controller->request->data = array(
+			'search' => (string) $order1->_id,
+			'type' => 'order'
+		);
+		$result = $this->controller->index();
+		$this->assertTrue(!empty($result['orders']));
+		*/
+
+		$this->controller->request->data = array(
+			'search' => 'Dreams',
+			'type' => 'address'
+		);
+		$result = $this->controller->index();
+		$this->assertTrue(!empty($result['orders']));
+		$this->assertTrue(!empty($result['shipDate']));
+
+		$order1->delete();
+		$order2->delete();
 	}
 
 	public function testCancel() {
