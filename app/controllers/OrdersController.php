@@ -40,19 +40,24 @@ class OrdersController extends BaseController {
 	 */
 	public function index() {
 		$orderClass = $this->_classes['order'];
-
 		$user = Session::read('userLogin');
+
 		$orders = $orderClass::find('all', array(
 			'conditions' => array(
 				'user_id' => (string) $user['_id']),
 			'order' => array('date_created' => 'DESC')
 		));
+		$shipDate = null;
+		$trackingNumbers = array();
 		$lifeTimeSavings = 0;
+
 		foreach ($orders as $key => $order) {
 			$list = $trackingNum = array();
 			$shipDate["$order->_id"] = Cart::shipDate($order);
 			$conditions = array('OrderId' => $order->_id);
+
 			$shipRecords = OrderShipped::find('all', compact('conditions'));
+			$trackingNum = array();
 			foreach ($shipRecords as $record) {
 				if (!in_array($record->{'Tracking #'}, $list)) {
 					$list[] = $record->{'Tracking #'};
