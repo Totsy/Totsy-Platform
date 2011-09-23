@@ -11,7 +11,6 @@ use MongoDate;
 use lithium\storage\Session;
 use li3_fixtures\test\Fixture;
 
-
 class CartControllerTest extends \lithium\test\Unit {
 
 	public function setUp() {
