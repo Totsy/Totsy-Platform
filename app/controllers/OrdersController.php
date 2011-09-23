@@ -110,7 +110,7 @@ class OrdersController extends BaseController {
 		$shipped = (isset($order->tracking_numbers)) ? true : false;
 		$shipRecord = (isset($order->ship_records)) ? true : false;
 		$preShipment = ($shipped || $shipRecord) ? true : false;
-		$itemsByEvent = $this->itemGroupByEvent($order);
+		$itemsByEvent = $this->_itemGroupByEvent($order);
 		$orderEvents = $this->orderEvents($order);
 		//Check if all items from one event are closed
 		foreach($itemsByEvent as $items_e) {
@@ -293,7 +293,7 @@ class OrdersController extends BaseController {
 		#Get Current Cart
 		$cart = $taxCart = Cart::active(array('fields' => $fields, 'time' => 'now'));
 		$cartEmpty = ($cart->data()) ? false : true;
-		$cartByEvent = $this->itemGroupByEvent($cart);
+		$cartByEvent = $this->_itemGroupByEvent($cart);
 		#Calculate Shipped Date
 		$shipDate = Cart::shipDate($cart);
 		#Get Value Of Each and Sum It
@@ -385,7 +385,7 @@ class OrdersController extends BaseController {
 	 * @param object $order
 	 * @return array $eventItems
 	 */
-	protected function itemGroupByEvent($object) {
+	protected function _itemGroupByEvent($object) {
 		$eventItems = null;
 		if ($object) {
 			$model = $object->model();
