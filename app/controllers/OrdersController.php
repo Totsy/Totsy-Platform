@@ -390,7 +390,8 @@ class OrdersController extends BaseController {
 		$eventItems = null;
 		if ($object) {
 			$model = $object->model();
-			if (strpos($model, 'app\models\Order') === 0) {
+
+			if (strpos($model, 'models\Order') !== false) {
 				$orderItems = $object->items->data();
 				foreach ($orderItems as $item) {
 					$eventItems[$item['event_id']][] = $item;
