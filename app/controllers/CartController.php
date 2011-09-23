@@ -34,11 +34,12 @@ class CartController extends BaseController {
 	* @see app/models/Cart::active()
 	* @return compact
 	*/
+	
 	public function view() {
 		#Initialize Datas
 		$promocode_disable = false;
 		$cartExpirationDate = 0;
-		$shipping = 7.95;
+		$shipping = 0.00;
 		$shipping_discount = 0;
 		$vars = compact('cartPromo','cartCredit', 'services');
 		$message = '';
@@ -61,6 +62,9 @@ class CartController extends BaseController {
 		$subTotal = 0;
 		$itemCount = 0;
 		
+		#Count of how many items in the cart are exempt of shipping cost
+		$exemptCount = 0;
+		
 		$shipDate = Cart::shipDate($cart);
 		#Check Expires 
 		Cart::cleanExpiredEventItems();
@@ -71,7 +75,7 @@ class CartController extends BaseController {
 				$cartExpirationDate = $item['expires']->sec;
 			}
 			#Get Errors Message
-			if (array_key_exists('error', $item->data()) && !empty($item->error)){
+			if (array_key_exists('error', $item->data()) && !empty($item->error)) {
 				$message .= $item->error . '<br/>';
 				$item->error = "";
 				$item->save();
@@ -85,6 +89,12 @@ class CartController extends BaseController {
 			$subTotal += $item->quantity * $item->sale_retail;
 			$itemlist[$item->created->sec] = $item->event[0];
 			$itemCount += $item->quantity;
+
+			#Items that are shipping exempt
+			if ($item->shipping_exempt==true) {
+				$exemptCount ++; 
+			}
+			
 			$i++;
 		}
 		#Get Last Url
@@ -94,8 +104,9 @@ class CartController extends BaseController {
 			$event = Event::find('first', compact('conditions'));
 			if ($event) {
 				$returnUrl = $event->url;
-			}
+			}			
 		}
+				
 		#Get current Discount
 		$vars = Cart::getDiscount($subTotal, $shipping, 0, $this->request->data);
 		#Calculate savings
@@ -114,9 +125,17 @@ class CartController extends BaseController {
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
 			$shipping_discount = $shipping;
 		}
+		
+		#Do not apply shipping cost if cart only has non-tangible items
+		if($exemptCount == $itemCount) {
+			$shipping = "";
+		} else {
+			$shipping = 7.95;
+		}
+		
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
-		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl');
+		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl', 'shipping');
 	}
 
 	/**
@@ -142,6 +161,7 @@ class CartController extends BaseController {
 					'sale_retail',
 					"details.$size",
 					'color',
+					'shipping_exempt',
 					'description',
 					'primary_image',
 					'url',
