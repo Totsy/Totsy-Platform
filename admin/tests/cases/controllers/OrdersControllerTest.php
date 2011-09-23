@@ -234,9 +234,6 @@ class OrdersControllerTest extends \lithium\test\Unit {
 			"email" => uniqid('test') . '@example.com',
 			"firstname" => "Test",
 			"lastname" => "User",
-			"legacy" => 0,
-			"password" => "0b505f152dc80b527035e3500925936fe9703d2c",
-			"purchase_count" => 2,
 			"total_credit" => 0
 		);
 		$user = User::create($data);
@@ -246,27 +243,12 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$userId = $user->_id;
 
 		$data = array(
-		  "category" => "Room D\u00e9cor",
-		  "color" => "",
-		  "created_date" => "Wed, 16 Mar 2011 13:30:21 -0400",
-		  "description" => "test",
-		  "details" => array (
-		    "no size" => 3
-		  ),
 		  "discount_exempt" => true,
 		  "enabled" => true,
-		  "event" => array(
-		    "4cfdfdfdfdfd1dd1ce64e5300aeb4100"
-		  ),
 		  "modified_date" => "Wed, 16 Mar 2011 16:16:54 -0400",
 		  "percent_off" => 0.3,
 		  "product_dimensions" => "20x16 inches",
 		  "product_weight" => 0,
-		  "sale_details" => array(
-		    "no size" => array(
-		      "sale_count" => 1
-		    )
-		  ),
 		  "sale_retail" => 10,
 		  "shipping_exempt" => true,
 		  "shipping_oversize" => "1",
@@ -275,10 +257,6 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		  "taxable" => true,
 		  "tax" => 1,
 		  "total_quantity" => 5,
-		  "url" => "url_test",
-		  "vendor" => "fdeeee",
-		  "vendor_style" => "SDDSER.SO16",
-		  "views" => 3
 		);
 		$item = Item::create($data);
 		$result = $item->save();
@@ -287,27 +265,12 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$item1Id = $item->_id;
 
 		$data = array(
-		  "category" => "Room D\u00e9cor",
-		  "color" => "",
-		  "created_date" => "Wed, 16 Mar 2011 13:30:21 -0400",
 		  "description" => "test",
-		  "details" => array (
-		    "no size" => 3
-		  ),
 		  "discount_exempt" => true,
 		  "enabled" => true,
-		  "event" => array(
-		    "4cfdfdfdfdfd1dd1ce64e5300aeb4100"
-		  ),
-		  "modified_date" => "Wed, 16 Mar 2011 16:16:54 -0400",
 		  "percent_off" => 0.3,
 		  "product_dimensions" => "20x16 inches",
 		  "product_weight" => 0,
-		  "sale_details" => array(
-		    "no size" => array(
-		      "sale_count" => 1
-		    )
-		  ),
 		  "sale_retail" => 13,
 		  "shipping_exempt" => true,
 		  "shipping_oversize" => "1",
@@ -316,10 +279,6 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		  "taxable" => true,
 		  "tax" => 1,
 		  "total_quantity" => 2,
-		  "url" => "url_test",
-		  "vendor" => "fdeeee",
-		  "vendor_style" => "SDDSER.SO16",
-		  "views" => 3
 		);
 		$item = Item::create($data);
 		$result = $item->save();
@@ -330,14 +289,10 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$data = array(
 			"authKey" => "090909099909",
 			"credit_used" => -5,
-			"date_created" => "Sat, 11 Dec 2010 09: 51: 15 -0500",
 			"handling" => 7.95,
 			"items" => array(
 				"0" => array(
 					"_id" => (string) $item1Id,
-					"category" => "Baby Gear",
-					"color" => "",
-					"description" => "BabyGanics Alcohol Free Hand Sanitizer 250ml",
 					"discount_exempt" => false,
 					"expires" => array(
 						"sec" => 1292079402,
@@ -348,32 +303,21 @@ class OrdersControllerTest extends \lithium\test\Unit {
 					"product_weight" => 0.64,
 					"quantity" => 5,
 					"sale_retail" => 10,
-					"size" => "no size",
-					"url" => "babyganics-alcohol-free-hand-sanitizer-250ml",
-					"event_name" => "Babyganics",
-					"event_id" => "4cfd1dd1ce64e5300aeb4100",
 					"line_number" => 0,
 					"status" => "Order Placed"
 			),
 			"1" => array(
-				"_id" => (string)$item2Id,
-				"category" => "Baby Gear",
-				"color" => "",
-				"description" => "TESTSTYTYSTYT",
+				"_id" => (string) $item2Id,
 				"discount_exempt" => false,
 				"expires" => array(
 					"sec" => 1292079402,
 					"usec" => 0
 				),
-				"item_id" => (string)$item2Id,
-				"primary_image" => "4d015488ce64e5c072fc1e00",
+				"item_id" => (string) $item2Id,
 				"product_weight" => 0.64,
 				"quantity" => 2,
 				"sale_retail" => 13,
 				"size" => "no size",
-				"url" => "babyganics-alcohol-free-hand-sanitizer-250ml",
-				"event_name" => "Babyganics",
-				"event_id" => "4cfd1dd1ce64e5300aeb4100",
 				"line_number" => 0,
 				"status" => "Order Placed"
 			)),
@@ -441,10 +385,9 @@ class OrdersControllerTest extends \lithium\test\Unit {
 			'save' => 'false'
 		);
 
-		$remote = $this->controller;
-		$remote->request->data = $data;
-		$remote->request->params['type'] = 'html';
-		$result = $remote->manage_items();
+		$this->controller->request->data = $data;
+		$this->controller->request->params['type'] = 'html';
+		$result = $this->controller->manage_items();
 
 		$this->assertTrue($result->items[0]->cancel);
 		$this->assertFalse($result->items[1]->cancel);
