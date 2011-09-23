@@ -40,7 +40,6 @@ class FreeShippingPromoFix extends \lithium\console\Command {
 		
 		$startDate  = new MongoDate(strtotime($this->beginning));
 		$endDate  = new MongoDate(strtotime($this->end));
-		// Find all orders with free shipping service
 		$conditions = array(
 			'promo_discount' => array('$exists' => false),
 			'promo_code' => array('$exists' => true),
@@ -101,8 +100,8 @@ class FreeShippingPromoFix extends \lithium\console\Command {
 				$i++;
 				// Add handling_discount and overSizeHandling_discount fields to order record
 				$order = Order::find($order['_id']);
-				$order->handling_discount = $handling_discount;
-				$order->overSizeHandling_discount = $overSizeHandling_discount;
+				$order->promo_handling_discount = $handling_discount;
+				$order->promo_overSizeHandling_discount = $overSizeHandling_discount;
 				$order->save();
 				
 				/*$this->out('Order: ' . $order['_id']);
