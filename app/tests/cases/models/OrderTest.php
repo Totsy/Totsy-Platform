@@ -543,6 +543,8 @@ class OrderTest extends \lithium\test\Unit {
 
 	protected function _item() {
 		$data = array(
+			'_id' => $id = new MongoId(),
+			'item_id' => $id,
 			'category' => 'Alpha',
 			'color' => 'green',
 			'description' => 'Test 250ml',
@@ -559,8 +561,6 @@ class OrderTest extends \lithium\test\Unit {
 			'status' => 'Order Placed'
 		);
 		$item = Item::create($data);
-		$item->save();
-		$item->item_id = $item->_id;
 		$item->save();
 
 		return $this->_delete[] = $item;
