@@ -66,6 +66,8 @@ class OrdersController extends BaseController {
 	/**
 	 * Main view to query for orders in the admin screen.
 	 *
+	 * @fixme Searching for an order or event by applying a regex to its id doesn't work
+	 *        and possibly always fails. @see Order::lookup() for a similar case.
 	 * @return object of orders and array of headings for view.
 	 */
 	public function index() {
