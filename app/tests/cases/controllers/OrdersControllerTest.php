@@ -157,6 +157,76 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$orderShipped->delete();
 	}
 
+	public function testView() {
+		$address = $this->_address();
+
+		$data = array(
+			'title' => 'test',
+			'end_date' => $shipDate = new MongoDate(strtotime('+1 week'))
+		);
+		$event = Event::create($data);
+		$event->save();
+
+		$data = array(
+			'_id' => $id = new MongoId(),
+			'order_id' => (string) $id,
+			'handling' => 7.95,
+			'shipping' => array(
+				'description' => 'Home',
+			) + $address,
+			'subTotal' => 56.7,
+			'tax' => 0,
+			'total' => 49.65,
+			'user_id' => (string) $this->user->_id,
+			'date_created' => new MongoDate(),
+			'items' => array(
+				array('event_id' => $event->_id) + $this->_item()->data()
+			)
+		);
+		$order = OrderMock::create($data);
+		$order->save(null, array('validate' => false));
+
+		$return = $this->controller->view((string) $order->_id);
+
+		$result = isset($return['order']);
+		$this->assertTrue($result);
+
+		$result = isset($return['orderEvents']);
+		$this->assertTrue($result);
+
+		$result = isset($return['itemsByEvent']);
+		$this->assertTrue($result);
+
+		$result = isset($return['new']);
+		$this->assertTrue($result);
+
+		$result = isset($return['shipDate']);
+		$this->assertTrue($result);
+
+		$result = isset($return['allEventsClosed']);
+		$this->assertTrue($result);
+
+		$result = isset($return['shipped']);
+		$this->assertTrue($result);
+
+		$result = isset($return['preShipment']);
+		$this->assertTrue($result);
+
+		$result = isset($return['spinback_fb']);
+		$this->assertTrue($result);
+
+		$result = isset($return['shipRecord']);
+		$this->assertTrue($result);
+
+		$result = isset($return['openEvent']);
+		$this->assertTrue($result);
+
+		$result = isset($return['savings']);
+		$this->assertTrue($result);
+
+		$order->delete();
+	}
+
 	protected function _address() {
 		return array(
 			'firstname' => 'George',
