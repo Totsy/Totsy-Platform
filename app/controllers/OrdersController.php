@@ -252,7 +252,16 @@ class OrdersController extends BaseController {
 			}
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
-		return compact('address','addresses_ddwn','shipDate','cartEmpty','error','selected','cartExpirationDate');
+
+		return compact(
+			'address',
+			'addresses_ddwn',
+			'shipDate',
+			'cartEmpty',
+			'error',
+			'selected',
+			'cartExpirationDate'
+		);
 	}
 
 	/**
