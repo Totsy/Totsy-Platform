@@ -15,6 +15,10 @@ class OrdersControllerTest extends \lithium\test\Unit {
 	public $controller;
 
 	public function setUp() {
+		Session::config(array(
+			'default' => array('adapter' => 'Memory')
+		));
+
 		$this->controller = new OrdersController(array(
 			'request' => new Request(),
 			'classes' => array(
