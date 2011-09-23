@@ -95,6 +95,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$this->assertTrue(!empty($result['orders']));
 		$this->assertTrue(!empty($result['shipDate']));
 
+		$event->delete();
 		$order1->delete();
 		$order2->delete();
 	}
