@@ -110,7 +110,11 @@ class Cart extends Base {
 	 * @todo Need documentation
 	 */
 	public static function dates($name) {
-	     return new MongoDate(time() + static::_object()->_dates[$name]);
+		$dates = static::_object()->_dates;
+
+		if (isset($dates[$name])) {
+			return new MongoDate(time() + $dates[$name]);
+		}
 	}
 
 	/**
