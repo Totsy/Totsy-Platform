@@ -3,6 +3,7 @@
 namespace admin\tests\cases\controllers;
 
 use lithium\action\Request;
+use lithium\storage\Session;
 use admin\controllers\OrdersController;
 use admin\tests\mocks\models\OrderMock;
 use admin\models\Event;
@@ -11,7 +12,6 @@ use admin\models\User;
 use admin\models\Item;
 use MongoId;
 use MongoDate;
-use lithium\storage\Session;
 
 class OrdersControllerTest extends \lithium\test\Unit {
 
