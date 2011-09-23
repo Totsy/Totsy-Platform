@@ -210,11 +210,11 @@ var discountErrors = new Object();
     			    	</span>
     			</div>
    				<?php endif ?>
-   				<?php if (!empty($credit)):?>
+   				<?php if (!empty($credits)):?>
 				<div style="clear:both"></div>
 				<div class="subtotal">
     			    	<span style="float:left;">Credits:</span> 
-    			    	<span style="float:right">- $<?=number_format(abs($credit),2)?></span>
+    			    	<span style="float:right">- $<?=number_format(abs($credits),2)?></span>
     			</div>
    				<?php endif ?>
 				<div style="clear:both"></div>							
