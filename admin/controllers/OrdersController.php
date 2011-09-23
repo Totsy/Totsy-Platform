@@ -381,6 +381,7 @@ class OrdersController extends BaseController {
 		$datas = $this->request->data;
 		$update = true;
 		$count = 0;
+		$missing = false;
 
 		// Check if form is well completed.
 		foreach ($datas as $data) {
