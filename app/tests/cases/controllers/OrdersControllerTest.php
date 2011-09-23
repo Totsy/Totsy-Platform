@@ -32,7 +32,8 @@ class OrdersControllerTest extends \lithium\test\Unit {
 			'request' => new Request(),
 			'classes' => array(
 				'tax' => 'app\tests\mocks\extensions\AvaTaxMock',
-				'order' => 'app\tests\mocks\models\OrderMock'
+				'order' => 'app\tests\mocks\models\OrderMock',
+				'affiliate' => 'app\tests\mocks\models\AffiliateMock'
 			)
 		));
 
