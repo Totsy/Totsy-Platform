@@ -228,6 +228,51 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$order->delete();
 	}
 
+	public function testShippingWithoutData() {
+		$return = $this->controller->shipping();
+
+		$result = array_key_exists('address', $return);
+		$this->assertTrue($result);
+
+		$result = isset($return['addresses_ddwn']);
+		$this->assertTrue($result);
+
+		$result = array_key_exists('shipDate', $return);
+		$this->assertTrue($result);
+
+		$result = isset($return['cartEmpty']);
+		$this->assertTrue($result);
+
+		$result = array_key_exists('error', $return);
+		$this->assertTrue($result);
+
+		$result = array_key_exists('selected', $return);
+		$this->assertTrue($result);
+
+		$result = isset($return['cartExpirationDate']);
+		$this->assertTrue($result);
+	}
+
+	public function testShippingTriggeringSaveCreatingAddress() {
+		$address = $this->_address();
+		$this->controller->request->data = array(
+			'opt_save' => '1',
+			'address_id' => '',
+			'telephone' => '800-999-5555',
+			'state' => 'CA'
+		) + $address;
+
+		$return = $this->controller->shipping();
+
+		$expected = 'Orders::payment';
+		$result = $this->controller->redirect[0][0];
+		$this->assertEqual($expected, $result);
+
+		$expected = $address['address'];
+		$result = $return['address']->address;
+		$this->assertEqual($expected, $result);
+	}
+
 	protected function _address() {
 		return array(
 			'firstname' => 'George',
