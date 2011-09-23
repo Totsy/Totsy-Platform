@@ -69,7 +69,7 @@ class Invitation extends \lithium\data\Model {
                 * invite url by mouth @_@
                 **/
                     $invitation = Invitation::create();
-                    $invitation->user_id = $inviter->_id;
+                    $invitation->user_id = (string) $inviter->_id;
                     $invitation->email = $email;
                     $invitation->date_accepted = Invitation::dates('now');
                     $invitation->status = 'Accepted';

@@ -61,6 +61,8 @@ class AffiliatesController extends BaseController {
                                    }
                                    if ($inviter_id) {
                                      $user->invited_by = User::retrieveInvitationCode($inviter_id);
+                                     $invite_code = Invitation::retrieveInviteCode($inviter_id);
+                                     $email = $user['email'];
                                      Invitation::linkUpInvites($invite_code, $email);
                                    }
                                 }
