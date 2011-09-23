@@ -395,7 +395,9 @@ class OrdersController extends BaseController {
 
 		// If yes, we prepare the array of modification datas.
 		if ((!$missing) && ($count > 6)) {
-			$order = $orderClass::find('first', array('conditions' => array('_id' => new MongoId($id))));
+			$order = $orderClass::find('first', array(
+				'conditions' => array('_id' => new MongoId($id))
+			));
 			$modification_datas["author"] = $current_user["email"];
 			$modification_datas["date"] = new MongoDate(strtotime('now'));
 			$modification_datas["type"] = "shipping";
@@ -410,8 +412,15 @@ class OrdersController extends BaseController {
 			);
 
 			// We push the modifications datas with the old shipping.
-			$orderCollection->update(array("_id" => new MongoId($id)), array('$push' => array('modifications' => $modification_datas)), array('upsert' => true));
-			$orderCollection->update(array("_id" => new MongoId($id)), array('$set' => array('shipping' => $datas)));
+			$orderCollection->update(
+				array("_id" => new MongoId($id)),
+				array('$push' => array('modifications' => $modification_datas)),
+				array('upsert' => true)
+			);
+			$orderCollection->update(
+				array("_id" => new MongoId($id)),
+				array('$set' => array('shipping' => $datas))
+			);
 			FlashMessage::write("Shipping details has been updated.", array('class' => 'pass'));
 		} else {
 			FlashMessage::write(
