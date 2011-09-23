@@ -563,6 +563,107 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		//Test result
 		$this->assertEqual( true , $check);
 	}
+
+	public function testUpdateShippingWithoutData() {
+		$data = array(
+			'_id' => $id = new MongoId(),
+			'order_id' => $id,
+			'date_created' => new MongoDate(strtotime('August 3, 2011'))
+		);
+		$order = Order::create($data);
+		$order->save(null, array('validate' => false));
+
+		$result = $this->controller->updateShipping($order->_id);
+		$this->assertNull($result);
+	}
+
+	public function testUpdateShippingWithMissing() {
+		$data = array(
+			'_id' => $id = new MongoId(),
+			'order_id' => $id,
+			'date_created' => new MongoDate(strtotime('August 3, 2011'))
+		);
+		$order = Order::create($data);
+		$order->save(null, array('validate' => false));
+
+		$this->controller->request->data = array(
+			'firstname' => 'George',
+			'lastname' => 'Lucas',
+			'address' => 'Cloud St',
+			'city' => null,
+			'state' => 'California',
+			'zip' => '9100',
+			'phone' => '01234567890'
+		);
+
+		$result = $this->controller->updateShipping($order->_id);
+		$this->assertNull($result);
+
+		$this->controller->request->data = array(
+			'firstname' => 'George',
+			'lastname' => 'Lucas',
+			'address' => 'Cloud St'
+		);
+
+		$result = $this->controller->updateShipping($order->_id);
+		$this->assertNull($result);
+
+		$order->delete();
+	}
+
+	public function testUpdateShippingAddsModificationAndShipping() {
+		Session::write('userLogin', array(
+			'email' => uniqid('test') . '@example.com'
+		));
+		$data = array(
+			'_id' => $id = new MongoId(),
+			'order_id' => $id,
+			'date_created' => new MongoDate(strtotime('August 3, 2011')),
+			'shipping' => $shipping = array(
+				'firstname' => 'George',
+				'lastname' => 'Lucas',
+				'address' => 'Cloud St',
+				'city' => 'LA',
+				'state' => 'California',
+				'zip' => '9100',
+				'phone' => '01234567890'
+			)
+		);
+		$order = Order::create($data);
+		$order->save(null, array('validate' => false));
+
+		$this->controller->request->data = $shippingNew = array(
+			'firstname' => 'Luke',
+			'lastname' => 'Skywalker',
+			'address' => 'Cloud St',
+			'city' => 'LA',
+			'state' => 'California',
+			'zip' => '9100',
+			'phone' => '01234567890'
+		);
+
+		$result = $this->controller->updateShipping($order->_id);
+		$this->assertNull($result);
+
+		$order = Order::first((string) $order->_id);
+
+		$result = !empty($order->modifications);
+		$this->assertTrue($result);
+
+		$result = filter_var($order->modifications[0]['author'], FILTER_VALIDATE_EMAIL);
+		$this->assertTrue($result);
+
+		$expected = $shipping;
+		$result = $order->modifications[0]['old_datas']->data();
+		$this->assertEqual($expected, $result);
+
+		$expected = $shippingNew;
+		$result = $order->shipping->data();
+		$this->assertEqual($expected, $result);
+
+		Session::delete('currentUser');
+		$order->delete();
+	}
 }
 
 ?>
