@@ -27,11 +27,11 @@ class EventsController extends BaseController {
 			$pendingEvents = Event::pending(null,array(),$departments);
 		}
 
-		/*
+		
 		$itemCounts = $this->inventoryCheck(Event::open(array(
 			'fields' => array('items')
 		)));
-		*/
+		
 
 		//Sort events open/sold out
 		foreach ($openEvents as $key => $event) {

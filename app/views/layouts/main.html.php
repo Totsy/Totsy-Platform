@@ -4,22 +4,22 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
 	<?php echo $this->html->charset();?>
-	<title>
+ 	<title>
 		<?php echo $this->title() ?: 'Totsy, the private sale site for Moms'; ?>
 		<?php echo $this->title() ? '- Totsy' : ''; ?>
 	</title>
 	
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
 	
-	<?php echo $this->html->style(array('base.css?v=001', '960.css?v=001', 'jquery_ui_custom/jquery.ui.all.css?v=001'), array('media' => 'screen')); ?>
+	<?php echo $this->html->style(array('base.css?v=004', '960.css?v=004', 'jquery_ui_custom/jquery.ui.all.css?v=004'), array('media' => 'screen')); ?>
 
 	<script src="https://www.google.com/jsapi"></script>
 	<script> google.load("jquery", "1.6.1", {uncompressed:false});</script>
 	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
 	<!-- end jQuery / jQuery UI -->
 
-	<?php echo $this->html->script('jquery.uniform.min.js?v=001'); ?>
-	<?php echo $this->html->script('jquery.countdown.min.js?v=001'); ?>
+	<?php echo $this->html->script('jquery.uniform.min.js?v=004'); ?>
+	<?php echo $this->html->script('jquery.countdown.min.js?v=004'); ?>
 	<?php echo $this->scripts(); ?>
 	<meta property="og:site_name" content="Totsy"/>
 	<meta property="fb:app_id" content="181445585225391"/>
@@ -46,12 +46,14 @@
 			} 
 		}
 	?>
+	<?php if (isset($title) && isset($tags)){ ?>
 	<meta name="sailthru.title" content="<?php echo strip_tags($title); ?>" />
 	<meta name="sailthru.tags" content="<?php echo strip_tags($tags); ?>" />
+	<?php } ?>
 
 </head>
 <body class="app">
-	<?php echo $branch; ?>
+	<?php if(isset($branch)) { echo $branch; } ?>
 <div class="container_16 roundy glow">
 	<div class="grid_3 alpha" style="margin:5px 0px 0px 5px;">
 		<?php echo $this->html->link($this->html->image('logo.png', array('width'=>'120')), '/sales', array('escape'=> false)); ?>

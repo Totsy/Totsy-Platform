@@ -1,5 +1,10 @@
 <?php $this->title("My Invitations"); ?>
 
+<link rel="stylesheet" type="text/css" href="/css/validation-engine.jquery.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="/css/validation-template.css" media="screen" />
+<script type="text/javascript" src="/js/form_validator/jquery.validation-engine.js" charset="utf-8"></script>    
+<script type="text/javascript" src="/js/form_validator/languages/jquery.validation-engine-en.js" charset="utf-8"></script>
+
 <div class="grid_16">
 	<h2 class="page-title gray">My Invitations</h2>
 	<hr />
@@ -41,7 +46,7 @@
 							<p>For each friend you invite, Totsy will credit your account with <span style="color:#009900;">$15</span> after your friend's place their first order.</p>
 								<fieldset>
 									<br>
-									<?=$this->form->create(); ?>
+									<?=$this->form->create( "", array("id"=>"inviteForm") ); ?>
 										<?=$this->form->label('Enter Your Friends Email Addresses:'); ?>
 										<br>
 										<?=$this->form->textarea('to', array(
@@ -164,7 +169,58 @@
 <div class="clear"></div>
 
 <script type="text/javascript" charset="utf-8">
-	$('.form')
+
+	$(document).ready( function() {
+	
+		$("#inviteForm").validationEngine('attach');        
+    	$("#inviteForm").validationEngine('init', { promptPosition : "centerRight", scroll: false } );  
+	
+		$("input[type=Submit]").attr("disabled","disabled");
+		
+		var default_msg = "Separate email addresses by commas";
+	
+		function validateEmail(field) {
+    		var regex=/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i;
+    		return (regex.test(field)) ? true : false;
+    	}			
+		
+		$("#recipient_list").blur( function() {
+		
+			var email_addresses = $("#recipient_list").val().split(",");
+			
+			if($("#recipient_list").val()!= default_msg){			
+				if (typeof email_addresses == "object") {
+					for ( email in email_addresses ) {
+						var clean_email = email_addresses[email].replace(" ","");			
+						
+						if( validateEmail(clean_email)==false) {
+							
+							$('#recipient_list').validationEngine('showPrompt','*This email is not valid: ' +  clean_email, '', true);
+    			 			$('#recipient_list').validationEngine({ promptPosition : "centerRight", scroll: false });
+							
+							$("input[type=Submit]").attr("disabled","disabled");
+							return false;
+						} else {
+							$("#recipient_list").validationEngine('hide');
+							$("input[type=Submit]").removeAttr("disabled");	
+						}
+					}				
+				} else {
+					if( validateEmail(email_addresses)==false) {
+						
+						$('#recipient_list').validationEngine('showPrompt','*This email is not valid:' +  email_addresses, '', true);
+    			 		$('#recipient_list').validationEngine({ promptPosition : "centerRight", scroll: false });
+						$("input[type=Submit]").attr("disabled","disabled");
+						return false;
+					} else {
+						$("#recipient_list").validationEngine('hide');	
+						$("input[type=Submit]").removeAttr("disabled");
+					}
+				}		
+			}
+		});
+	});
+	
 </script>
 <script type="text/javascript" charset="utf-8">
 	$('#invite-gmail, #invite-yahoo, #invite-outlook, #invite-aol, #invite-msn, #invite-others').click(function(){

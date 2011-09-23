@@ -337,7 +337,7 @@ class Cart extends Base {
 	* Refresh the timer for each timer in the cart 
 	* @see app/models/Cart::check()
 	*/
-	public function refreshTimer() {
+	public static function refreshTimer() {
 		$actual_cart = Cart::active();
 		if (!empty($actual_cart)) {
 			$items = $actual_cart->data();
@@ -347,9 +347,12 @@ class Cart extends Base {
 			#Security Check - Max 25 items
 			if(count($items) < 25) {
 				foreach ($items as $item) {
+					if (is_array($item) && !array_key_exists('event', $item) && !array_key_exists('end_date', $item) ){
+						continue;
+					}
 					$event = Event::find('first',array('conditions' => array("_id" => $item['event'][0])));
 					$now = getdate();
-					if(($event->end_date->sec > ($now[0] + (15 * 60)))) {
+					if(($event['end_date']->sec > ($now[0] + (15 * 60)))) {
 						$cart_temp = Cart::find('first', array(
 							'conditions' => array('_id' =>  $item['_id'])));
 						$cart_temp->expires = new MongoDate($now[0] + (15 * 60));
