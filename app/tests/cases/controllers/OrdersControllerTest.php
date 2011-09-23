@@ -3,14 +3,15 @@
 namespace app\tests\cases\controllers;
 
 use lithium\action\Request;
+use lithium\storage\Session;
 use app\controllers\OrdersController;
 use app\tests\mocks\models\OrderMock;
 use app\models\User;
-use MongoId;
-use MongoDate;
-use lithium\storage\Session;
+use app\models\Event;
 use app\models\Item;
 use app\models\OrderShipped;
+use MongoId;
+use MongoDate;
 
 class OrdersControllerTest extends \lithium\test\Unit {
 
