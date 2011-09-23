@@ -114,6 +114,9 @@ var discountErrors = new Object();
 						<strong>Size:</strong> <?=$item->size;?>
 						<?php endif ?>
 					</td>
+					<?php 
+						$date = $cartItemEventEndDates[$x] * 1000;
+					?>
 					<td class="cart-item-timer-td">
 					<div id='<?php echo "itemCounter$x"; ?>_display' class="cart-item-timer" title='<?=$date?>'></div>
 					</td>
@@ -138,10 +141,7 @@ var discountErrors = new Object();
     					'id' => $item->_id, 'value' => $item->quantity, 'class'=>'quantity'
 					));
 					?>
-					<?php 
-						$date = $cartItemEventEndDates[$x] * 1000;
-					?>
-					</td>
+										</td>
 					<td class="cart-actions">
 						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" onclick="deletechecked('Are you sure you want to remove this item?','<?=$item->_id; ?>');" style="color: red!important;"><img src="/img/trash.png" width="20" align="absmiddle" style="margin-right:20px;" /></a>
 					</td>
@@ -210,21 +210,28 @@ var discountErrors = new Object();
     			    	</span>
     			</div>
    				<?php endif ?>
-   				<?php if (!empty($credits)):?>
+   				<?php if (!empty($credit)):?>
 				<div style="clear:both"></div>
 				<div class="subtotal">
     			    	<span style="float:left;">Credits:</span> 
-    			    	<span style="float:right">- $<?=number_format(abs($credits),2)?></span>
+    			    	<span style="float:right">- $<?=number_format(abs($credit),2)?></span>
     			</div>
    				<?php endif ?>
 				<div style="clear:both"></div>							
 				<div>
 				<div class="subtotal">	
-				<span id="shipping_tooltip" class="cart-tooltip" original-title="Shipping charges may vary depending on item type."><img src="/img/tooltip_icon.png">
-				    	</span>
-				    <span style="float:left;" id="shipping">
-				    Shipping:</span> 
-				    <span style="float:right">$7.95</span>							</div>
+				 <?php if (!empty($shipping)):?>	
+					<span id="shipping_tooltip" class="cart-tooltip" original-title="Shipping charges may vary depending on item type."><img src="/img/tooltip_icon.png">
+					    	</span>
+					    <span style="float:left;" id="shipping">
+					    	Shipping:
+					    </span> 
+					    <span style="float:right">
+					    	<?=$shipping?>
+					    </span>
+					</span>	
+				<?php endif ?>						
+				</div>
 				</div>
 				<?php if (!empty($shipping_discount)):?>
 				<div style="clear:both"></div>
@@ -244,7 +251,7 @@ var discountErrors = new Object();
 				<div class="subtotal">
 				    <span id="tax_tooltip" class="cart-tooltip" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary"><img src="/img/tooltip_icon.png">
 </span>			
-					<span id="estimated_tax" style="float:left;">Estimated Tax:</span> 
+					<span id="estimated_tax" style="float:left;">Sales Tax:</span> 
 				    <span style="float:right">$0.00</span>
 				</div>
 				</div>
@@ -259,7 +266,7 @@ var discountErrors = new Object();
 				    </div>
 				    <div class="subtotal">
 				    <span class="cart-order-total">Order Total:</span> 
-				    	<span id="ordertotal">$ <?=number_format($total,2)?> </span>
+				    	<span id="ordertotal">$<?=number_format($total,2)?> </span>
 				    </div>						    	
 				</div>
 			</div>

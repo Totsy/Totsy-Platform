@@ -186,26 +186,26 @@
 	
 	$(".counter").each( function () {
 			
-			var fecha  = parseInt(this.title);
-			var saleTime = new Date(fecha);
-			var now = new Date();
-			var diff = saleTime - (now.getTime());
-			
-			//check if its and end date or start date
-			if($("#" + this.id).hasClass("start"))
-			{
-				if((diff / 1000) < (24 * 60 * 60) ) {
-				    $("#" + this.id).countdown({until: saleTime, layout: 'Opens in {hnn}{sep}{mnn}{sep}{snn}'});
-				} else {
-				    $("#" + this.id).countdown({until: saleTime, layout: 'Opens in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
-				}
-			} else {
-				if((diff / 1000) < (24 * 60 * 60) ) {
-					$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {hnn}{sep}{mnn}{sep}{snn}'});
-				} else {
-					$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
-				}
-			} 
+		var fecha  = parseInt(this.title);
+		var saleTime = new Date(fecha);
+		var now = new Date();
+		var diff = saleTime - (now.getTime());
+		
+		//check if its and end date or start date
+		if($("#" + this.id).hasClass("start"))
+		{
+		    if((diff / 1000) < (24 * 60 * 60) ) {
+		        $("#" + this.id).countdown({until: saleTime, layout: 'Opens in {hnn}{sep}{mnn}{sep}{snn}'});
+		    } else {
+		        $("#" + this.id).countdown({until: saleTime, layout: 'Opens in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+		    }
+		} else {
+		    if((diff / 1000) < (24 * 60 * 60) ) {
+		    	$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {hnn}{sep}{mnn}{sep}{snn}'});
+		    } else {
+		    	$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+		    }
+		} 
 	 });
 			
 //-->

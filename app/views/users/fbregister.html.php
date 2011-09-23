@@ -15,7 +15,7 @@
 
 							<div id='logo'>
                             <h1>
-                              <a href='/' title="Totsy.com">
+                              <a href="/login/?fbcancel=true" title="Totsy.com">
                                 Totsy</a>
                               </h1>
                             </div>

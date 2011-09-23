@@ -30,9 +30,9 @@
 			<td><?=date('Y-m-d', $credit->_id->getTimestamp())?></td>
 			<td>
 			<?php if (!empty($credit->credit_amount)) { ?>
-					$<?=$credit->credit_amount?>
+					<?php echo "$".number_format(abs($credit->credit_amount),2); ?>
 				<?php  } else {  ?>
-					$<?=$credit->amount?>
+					<?php echo "$".number_format(abs($credit->amount),2); ?>
 			<?php } ?>
 			</td>
 			
