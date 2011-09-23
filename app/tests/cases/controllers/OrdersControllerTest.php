@@ -4,6 +4,7 @@ namespace app\tests\cases\controllers;
 
 use lithium\action\Request;
 use app\controllers\OrdersController;
+use app\tests\mocks\controllers\OrdersControllerMock;
 use app\tests\mocks\models\OrderMock;
 use app\models\User;
 use MongoId;
@@ -28,7 +29,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 			'cookie' => array('adapter' => 'Memory')
 		));
 
-		$this->controller = new OrdersController(array(
+		$this->controller = new OrdersControllerMock(array(
 			'request' => new Request(),
 			'classes' => array(
 				'tax' => 'app\tests\mocks\extensions\AvaTaxMock',
