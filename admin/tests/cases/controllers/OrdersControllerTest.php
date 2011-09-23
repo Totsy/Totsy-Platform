@@ -389,7 +389,6 @@ class OrdersControllerTest extends \lithium\test\Unit {
 	}
 
 	public function testManageItemsSaved() {
-		$check = true;
 		$order_id = new MongoId("8788727dsds3782738dsdsds728");
 		$user_id = new MongoId("787878787zazazag78dsdsdsds78");
 		$item_id = new MongoId("4ddsqsdqszzz80f3ad53892614080076e0");
