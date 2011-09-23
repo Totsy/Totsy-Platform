@@ -201,7 +201,6 @@ class OrdersController extends BaseController {
 			'preShipment',
 			'spinback_fb',
 			'shipRecord',
-			'preShipment',
 			'openEvent',
 			'missChristmasCount',
 			'notmissChristmasCount',
