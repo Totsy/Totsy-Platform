@@ -153,6 +153,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$result = $return['trackingNumbers'];
 		$this->assertEqual($expected, $result);
 
+		$event->delete();
 		$order->delete();
 		$orderShipped->delete();
 	}
