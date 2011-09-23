@@ -33,7 +33,7 @@ class CartController extends BaseController {
 	* @see app/models/Cart::increaseExpires()
 	* @see app/models/Cart::active()
 	* @return compact
-	*/
+	*/	
 	
 	public function view() {
 		#Initialize Datas
@@ -91,8 +91,11 @@ class CartController extends BaseController {
 			$itemCount += $item->quantity;
 
 			#Items that are shipping exempt
-			if ($item->shipping_exempt==true) {
-				$exemptCount ++; 
+		
+			if($item->shipping_exempt){
+				if ($item->shipping_exempt==true) {
+					$exemptCount ++; 
+				}
 			}
 			
 			$i++;
@@ -105,6 +108,13 @@ class CartController extends BaseController {
 			if ($event) {
 				$returnUrl = $event->url;
 			}			
+		}
+		
+		#Do not apply shipping cost if cart only has non-tangible items
+		if($exemptCount == $itemCount) {
+			$shipping = "";
+		} else {
+			$shipping = 7.95;
 		}
 				
 		#Get current Discount
@@ -125,14 +135,7 @@ class CartController extends BaseController {
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
 			$shipping_discount = $shipping;
 		}
-		
-		#Do not apply shipping cost if cart only has non-tangible items
-		if($exemptCount == $itemCount) {
-			$shipping = "";
-		} else {
-			$shipping = 7.95;
-		}
-		
+				
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
 		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl', 'shipping');
