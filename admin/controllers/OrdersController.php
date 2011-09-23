@@ -738,7 +738,7 @@ class OrdersController extends BaseController {
 				$data['order']['order_id'] = $data['order']['order_id'].'.1';
 				$data['order']['return'] = 'full';
 				$order['return'] = 'full';
-				$this->shipping($data);
+				$this->_shipping($data);
 				$orderClass::save($order);
 			}
 
@@ -788,7 +788,7 @@ class OrdersController extends BaseController {
 		exit(0);
 	}
 
-	protected function shipping (&$data){
+	protected function _shipping(&$data){
 		if (array_key_exists('shippingCost', $data) && $data['shippingCost']>0 ){
 			$data['items'][] = array(
 				'_id' => 'Shipping',
