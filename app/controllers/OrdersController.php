@@ -11,7 +11,6 @@ use app\models\Event;
 use app\models\Promotion;
 use app\models\CreditCard;
 use app\models\Promocode;
-use app\models\Affiliate;
 use app\models\OrderShipped;
 use app\models\Service;
 use app\controllers\BaseController;
@@ -29,8 +28,9 @@ use app\extensions\Mailer;
 class OrdersController extends BaseController {
 
 	protected $_classes = array(
-		'tax'   => 'app\extensions\AvaTax',
-		'order' => 'app\models\Order'
+		'tax'       => 'app\extensions\AvaTax',
+		'order'     => 'app\models\Order',
+		'affiliate' => 'app\models\Affiliate'
 	);
 
 	/**
@@ -92,14 +92,16 @@ class OrdersController extends BaseController {
 	 * @return mixed
 	 */
 	public function view($order_id) {
-		$orderClass = $this->_classes['order'];
+		$orderClass     = $this->_classes['order'];
+		$affiliateClass = $this->_classes['affiliate'];
 
 		$user = Session::read('userLogin');
-		$order = $orderClass::find('first', array(
+		$order = $orderClass::find('first', $a =array(
 			'conditions' => array(
 				'order_id' => $order_id,
 				'user_id' => (string) $user['_id']
 		)));
+
 		$new = ($order->date_created->sec > (time() - 120)) ? true : false;
 		if($order->date_created->sec<1322006400){
 			$shipDate = Cart::shipDate($order, true);
@@ -156,8 +158,8 @@ class OrdersController extends BaseController {
 		}
 		unset($itemsToSend);
 
-		$pixel = Affiliate::getPixels('order', 'spinback');
-		$spinback_fb = Affiliate::generatePixel('spinback', $pixel, array('order' => $_SERVER['REQUEST_URI']));
+		$pixel = $affiliateClass::getPixels('order', 'spinback');
+		$spinback_fb = $affiliateClass::generatePixel('spinback', $pixel, array('order' => $_SERVER['REQUEST_URI']));
 		//Get Items Skus - Analytics
 		foreach($itemsByEvent as $key => $event) {
 			foreach($event as $key_b => $item) {
