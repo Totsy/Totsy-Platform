@@ -369,8 +369,8 @@ class Cart extends Base {
 			}
 		}
 	}
-	
-	public function cleanExpiredEventItems() {
+
+	public static function cleanExpiredEventItems() {
 		$actual_cart = Cart::active();
 		if (!empty($actual_cart)) {
 			$items = $actual_cart->data();
