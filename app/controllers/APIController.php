@@ -19,6 +19,10 @@ use \lithium\util\Validator;
 use app\models\Api;
 use app\models\Item;
 use app\models\Event;
+use app\models\User;
+use MongoCode;
+use MongoDate;
+use MongoRegex;
 use MongoId;
 
 // TODO: needs better doccumentation
@@ -62,7 +66,7 @@ class APIController extends  \lithium\action\Controller {
 		} else {
 			$this->_format = $format;
 		}
-		
+
 		/* set protocol HTTP OR HTTPS 
 		 *
 		 * remember to set proper virtual host nginx config
@@ -74,8 +78,12 @@ class APIController extends  \lithium\action\Controller {
 			$this->display( ApiHelper::errorCodes(405) );
 		}
 		
+		// in case we have only method anf format specified in url
+		// so it means to remove form form the method name
+		if (is_array($params) && count($params)==1){
+			$params[0] = str_replace('.'.$this->_format,'',$params[0]);
+		}
 		$methods = get_class_methods(get_class($this));
-
 		if (in_array($params[0].'Api',$methods)){
 			$this->_method = $params[0];
 			$this->display( $this->{$params[0].'Api'}() );
@@ -83,6 +91,37 @@ class APIController extends  \lithium\action\Controller {
 			$this->display( ApiHelper::errorCodes(405) );
 		}		
 	}	
+	
+	public function help() {
+		$all_methods = get_class_methods(get_class($this));
+		$methods = array();
+		if (array_key_exists('args', $this->request->params) && is_array($this->request->params['args']) && count($this->request->params['args'])>1){
+			$current_method = strtolower($this->request->params['args'][1]);
+		} else {
+			$current_method = 'intro';
+		}
+		
+		foreach($all_methods as $method){
+			if(preg_match('/Api/',$method) ){
+				$clear = str_replace('Api','',$method);
+				$methods[] = array(
+					'name'=>strtoupper(substr($clear,0,1)).substr($clear,1),
+					'clear' => $clear
+				);
+			}
+		}
+		if (file_exists(LITHIUM_APP_PATH . '/views/api/help/'.$current_method.'.php')) {
+			ob_start();
+			require LITHIUM_APP_PATH . '/views/api/help/'.$current_method.'.php';
+			$content = ob_get_clean();
+		} else {
+			$current_method = 'intro';
+			ob_start();
+			require LITHIUM_APP_PATH . '/views/api/help/intro.php';
+			$content = ob_get_clean();
+		} 
+		return compact('methods', 'current_method', 'content');
+	}
 	
 	/**
 	 * Authorize function
@@ -115,7 +154,7 @@ class APIController extends  \lithium\action\Controller {
 	 * @method GET
 	 * @return sales_list
 	 */
-	protected function salesApi(){
+	protected function sales(){
 		
 		$token = Api::authorizeTokenize($this->request->query);
 		if (is_array($token) && array_key_exists('error', $token)) {
@@ -188,10 +227,22 @@ class APIController extends  \lithium\action\Controller {
 			));
 			unset($mItems);
 			foreach ($itms as $itm){
-				 $it = $itm->data();
-				 $it['base_url'] = $base_url;
-				 $it['event_url'] = $ev['url'];
-				 $items[] = $it;
+				$it = $itm->data();
+				$it['base_url'] = $base_url;
+				$it['event_url'] = $ev['url'];
+				 
+				if (preg_match('/[\%]+/',$it['percent_off'])){
+					$it['percent_off'] = substr($it['percent_off'],0,-1);
+					if (is_float($it['percent_off']) ) $it['percent_off'] = round($it['percent_off'],2);
+				} else if (is_float($it['percent_off'])) {
+					$it['percent_off'] = round($it['percent_off']*100,2);
+				} else {
+					$it['percent_off'] = preg_replace('/[/D]+/','',$it['percent_off']);
+					if ($it['percent_off']>74) $it['percent_off'] = 0;	
+				} 
+				$it['start_date'] = $ev['start_date'];
+				$it['end_date'] = $ev['end_date']; 
+				$items[] = $it;
 			}
 		}
 		$this->setView(1);
@@ -212,15 +263,32 @@ class APIController extends  \lithium\action\Controller {
 			return $token;
 		}
 		
+		if (is_array($this->request->query) && array_key_exists ('start_date', $this->request->query)){
+			if (preg_match('/[[\d]{4}[\-][\d]{2}[\-][\d]{2}]/',$this->request->query['start_date'])){
+				$start_date = strtotime($this->request->query['start_date']);
+			} else if ($this->request->query['start_date'] == 'today'){
+				$start_date = strtotime(date('Y-m-d'));
+			}
+		}
+		
 		$openEvents = Event::open();
 		
 		$base_url = 'http://'.$_SERVER['HTTP_HOST'].'/';
 		$events = array();
 		$closing = array();
+		$maxOff = 0;
 		
 		foreach ($openEvents as $event){
 			
 			$data =  $event->data();
+			
+			if ($data['end_date']['sec'] <= strtotime(date('d-m-Y 23:59:59',strtotime('+1 day'))) ){
+				$closing[] = $data;
+			}
+			
+			if (isset($start_date) && $start_date > $data['start_date']['sec'] ) { 
+				continue; 
+			}
 			$data['available_items'] = false;
 			$data['maxDiscount'] = 0;
 			$data['vendor'] = '';
@@ -254,7 +322,7 @@ class APIController extends  \lithium\action\Controller {
 						$it['percent_off'] = preg_replace('/[/D]+/','',$it['percent_off']);
 						if ($it['percent_off']>74) $it['percent_off'] = 0;	
 					}
-					
+					if ($it['percent_off'] > $maxOff) { $maxOff = $it['percent_off']; }
 					if ( isset($it['vendor']) && (is_null($data['vendor']) || strlen(trim($data['vendor']))==0)){ 
 						$data['vendor'] = $it['vendor']; 
 					}
@@ -264,19 +332,98 @@ class APIController extends  \lithium\action\Controller {
 				}
 				
 			}
-			if ($data['end_date']['sec'] < mktime(0, 0, 0, date("m"), date("d")+1, date("Y")) ){
-				$closing[] = $data;
-			}
 			$events[] = $data;
 		}
 		$pendingEvents = Event::pending();
 		$pending = array();
-		foreach ($pendingEvents as $pending){
-			$pending[] = $pending->data();
+		foreach ($pendingEvents as $pendingEvent){
+			$pending[] = $pendingEvent->data();
 		}
 		$this->setView(1);
-		return (compact('events','pending','closing','base_url'));
+		return (compact('events','pending','closing','base_url','maxOff'));
 	}	
+	
+	/**
+	 * Subscriber list, provided by date
+	 *
+	 */
+	
+	protected function signupsApi (){
+		
+		$token = Api::authorizeTokenize($this->request->query);
+		if (is_array($token) && array_key_exists('error', $token)) {
+			return $token;
+		}
+		$from = $to = null;
+		if (array_key_exists('from',$this->request->query)){
+			$from = $this->request->query['from'];
+			if (preg_match("/[\d]{4}-[\d]{2}-[\d]{2}/",$from)){
+				$from = strtotime($from.' 0:00:00');
+			} 
+		}
+		if (array_key_exists('to',$this->request->query)){
+			$to = $this->request->query['to'];
+			if (preg_match("/[\d]{4}-[\d]{2}-[\d]{2}/",$to)){
+				$to = strtotime($to. ' 23:59:59');
+			}
+		}
+		if ((!isset($from) || empty($from)) && (!isset($to) || empty($to))){
+			return ApiHelper::errorCodes(416);
+		}
+		
+		$options = array(
+			'invited_by' => 'keyade',
+			'keyade_user_id' => array( '$exists' => true ),
+			'created_date' =>  array(
+			 '$gte' => new MongoDate($from),
+             '$lte' => new MongoDate($to)
+			)
+		);
+		
+		// Run that sucker!
+		$cursor = User::collection()->find( $options );
+		$this->setView(1);
+		
+		return compact('token','cursor');
+	}
+	
+	/**
+	 * Signups by Referral list
+	 *
+	 */
+	protected function signupsByReferralApi (){
+		$data = $this->signupsApi();
+		if (is_array($data) && array_key_exists('error', data)) {
+			return $data;
+		}
+		$from = $to = null;
+		if (array_key_exists('from',$this->request->query)){
+			$from = $this->request->query['from'];
+			if (preg_match("/[\d]{4}-[\d]{2}-[\d]{2}/",$from)){
+				$from = strtotime($from.' 0:00:00');
+			} 
+		}
+		if (array_key_exists('to',$this->request->query)){
+			$to = $this->request->query['to'];
+			if (preg_match("/[\d]{4}-[\d]{2}-[\d]{2}/",$to)){
+				$to = strtotime($to. ' 23:59:00');
+			}
+		}
+		if ((!isset($from) || empty($from)) && (!isset($to) || empty($to))){
+			return ApiHelper::errorCodes(416);
+		}
+		// Run that sucker!
+		$cursor = User::collection()->find( array(
+			'keyade_referral_user_id' => array('$exists' => true),
+			'keyade_referral_user_id' => array('$ne' => null),
+			'created_date' =>  array(
+			 '$gte' => new MongoDate($from),
+             '$lte' => new MongoDate($to)
+			)
+		));
+		$data['cursor'] = $cursor;
+		return $data;
+	}
 	
 	/**
 	 * Method to handle templates aka views.
@@ -301,6 +448,11 @@ class APIController extends  \lithium\action\Controller {
 	 */
 	private function display ($data){
 
+		if (isset($data['error']['code']) && $data['error']['code'] >0){
+			if($this->_firmat == 'xml'){ echo ApiHelper::converter($data,$this->_format); }
+			else { echo json_encode($data); }
+			exit(0);
+		}
 		
 		switch ($this->_format){
 			
@@ -313,8 +465,11 @@ class APIController extends  \lithium\action\Controller {
 					}
 					extract($data);
 					require_once LITHIUM_APP_PATH . '/views/api/'.$path;
+				} else if ($this->_method == 'authorize'){
+					ApiHelper::converter($data,'xml');
 				} else {
-					echo ApiHelper::converter(ApiHelper::errorCodes(415),$this->_format);
+					$this->_view = 'default';
+					$this->display($data);
 				}
 			break;
 			
@@ -328,8 +483,11 @@ class APIController extends  \lithium\action\Controller {
 					}
 					extract($data);
 					require_once LITHIUM_APP_PATH . '/views/api/'.$path;
-				} else {
+				} else if ($this->_method == 'authorize'){
 					echo json_encode($data);
+				} else {
+					$this->_view = 'default';
+					$this->display($data);
 				}
 			break;
 

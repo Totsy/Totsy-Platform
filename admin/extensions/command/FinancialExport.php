@@ -157,6 +157,7 @@ class FinancialExport extends \lithium\console\Command  {
 		//	'payment_date' => array('$exists' => true),
 		//	'payment_date' => array('$gte' => new MongoDate(strtotime('May 28, 2011')), '$lte' => new MongoDate(strtotime('June 7, 2011')))
 		);
+
 		$fields = array(
 			'billing',
 			'authKey',

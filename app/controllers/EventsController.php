@@ -2,11 +2,11 @@
 
 namespace app\controllers;
 
-use \app\controllers\BaseController;
-use \app\models\Event;
-use \app\models\Item;
+use app\controllers\BaseController;
+use app\models\Event;
+use app\models\Item;
 use app\models\Banner;
-use \MongoDate;
+use MongoDate;
 use \lithium\storage\Session;
 use app\models\Affiliate;
 
@@ -26,13 +26,13 @@ class EventsController extends BaseController {
 			$openEvents = Event::open(null,array(),$departments);
 			$pendingEvents = Event::pending(null,array(),$departments);
 		}
+
 		
-		/*
 		$itemCounts = $this->inventoryCheck(Event::open(array(
 			'fields' => array('items')
 		)));
-		*/
 		
+
 		//Sort events open/sold out
 		foreach ($openEvents as $key => $event) {
 			foreach ($itemCounts as $event_id => $quantity) {
@@ -51,15 +51,14 @@ class EventsController extends BaseController {
 				$openEvents = $events_closed;
 			}
 		}
-		
-		return compact('openEvents', 'pendingEvents', 'banner', 'departments');
+		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner', 'departments');
 	}
 
 	public function view() {
 		$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 		$url = $this->request->event;
 		$departments = '';
-		if(!empty($this->request->query['filter'])) {	
+		if(!empty($this->request->query['filter'])) {
 			$departments = ucwords($this->request->query['filter']);
 		}
 		if($this->request->data){
@@ -86,7 +85,7 @@ class EventsController extends BaseController {
 			$this->redirect('/sales ');
 		}
 		$pending = ($event->start_date->sec > time() ? true : false);
-		
+
 		if ($pending == false) {
 			++$event->views;
 			$event->save();
@@ -96,26 +95,26 @@ class EventsController extends BaseController {
 				$filters = array('All' => 'All');
 			}
 			if (!empty($event->items)) {
-				$eventItems = Item::find('all', array( 'conditions' => array(
-												'event' => array((string)$event->_id),
-												'enabled' => true
-											),
-											'order' => array('created_date' => 'ASC')
-										));
-				foreach ($eventItems as $eventItem) {
-					$result = $eventItem->data();
-					if (array_key_exists('departments',$result) && !empty($result['departments'])) {
-						if(in_array($departments,$result['departments']) ) {
-							if ($eventItem->total_quantity <= 0) {
-								$items_closed[] = $eventItem;
-							} else {
-								$items[] = $eventItem;
+					$eventItems = Item::find('all', array( 'conditions' => array(
+													'event' => array((string)$event->_id),
+													'enabled' => true
+												),
+												'order' => array('created_date' => 'ASC')
+											));
+					foreach ($eventItems as $eventItem) {
+						$result = $eventItem->data();
+						if (array_key_exists('departments',$result) && !empty($result['departments'])) {
+							if(in_array($departments,$result['departments']) ) {
+								if ($eventItem->total_quantity <= 0) {
+									$items_closed[] = $eventItem;
+								} else {
+									$items[] = $eventItem;
+								}
+							}
+							foreach($eventItem->departments as $value) {
+								$filters[$value] = $value;
 							}
 						}
-						foreach($eventItem->departments as $value) {
-							$filters[$value] = $value;
-						}
-					}
 					if ($departments == 'All') {
 						if ($eventItem->total_quantity <= 0) {
 							$items_closed[] = $eventItem;
@@ -123,9 +122,9 @@ class EventsController extends BaseController {
 							$items[] = $eventItem;
 						}
 						if(!empty($eventItem->departments)) {
-							foreach($eventItem->departments as $value) {
-								$filters[$value] = $value;
-							}
+								foreach($eventItem->departments as $value) {
+									$filters[$value] = $value;
+								}
 						}
 					}
 				}
@@ -151,7 +150,7 @@ class EventsController extends BaseController {
 			$items = null;
 			$type = 'Coming Soon';
 		}
-		
+
 		$pixel = Affiliate::getPixels('event', 'spinback');
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
 			                                            array('event' => $_SERVER['REQUEST_URI'])
@@ -181,7 +180,6 @@ class EventsController extends BaseController {
 	public function disney(){
 		$this->_render['layout'] = false;
 	}
-
 }
 
 

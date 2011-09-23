@@ -56,7 +56,8 @@ class User extends Base {
 		'email' => array(
 			array('email', 'message' => 'Email is not valid'),
 			array('notEmpty', 'required' => true, 'message' => 'Please add an email address'),
-			array('isUniqueEmail', 'message' => 'This email address is already registered')
+			array('isUniqueEmail', 'message' => 'This email address is already registered'),
+			array('isEmailFacebookLegal', 'required' => true, 'message' => 'Your Facebook email is not set to be shared, please enter a real email address')
 		),
 		'password' => array(
 			'notEmpty', 'required' => true, 'message' => 'Please submit a password'
@@ -72,11 +73,17 @@ class User extends Base {
 		)
 	);
 
+
 	public static function __init(array $options = array()) {
 		parent::__init($options);
 
 		Validator::add('isEmailMatch', function ($value) {
 			return ($value ==  true) ? true : false;
+		});
+
+		Validator::add('isEmailFacebookLegal', function ($value) {
+			$facebooklegal = preg_match('/@proxymail\.facebook\.com/', $value);
+			return ($facebooklegal ==  true) ? false : true;
 		});
 
 		Validator::add('isUniqueEmail', function ($value) {
@@ -153,23 +160,31 @@ class User extends Base {
 	    if( (boolean)$rememberme && Session::check('cookieCrumb', array('name' => 'cookie'))) {
             $rememberHash = static::generateToken() . static::randomString();
             $cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
+
             $userInfo = Session::read('userLogin');
+            $user = static::collection();
+            $info = $user->findOne(array(
+                    'email' => $userInfo['email']
+                    ),array('autologinHash' => 1, '_id' => -1));
+            if ($info && array_key_exists('autologinHash', $info)) {
+            	$rememberHash = $info['autologinHash'];
+            } else {
+				$user->update(array(
+						'email' => $userInfo['email']
+						), array(
+							'$set' => array(
+								'autologinHash' => $rememberHash
+						)));
+            }
             $cookie['user_id'] = $userInfo['_id'];
             $cookie['autoLoginHash'] = $rememberHash;
             Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
-            $user = static::collection();
-            $user->update(array(
-                    'email' => $userInfo['email']
-                    ), array(
-                        '$set' => array(
-                            'autologinHash' => $rememberHash
-                    )));
         }
 	}
 	public static function setupCookie() {
 		$cookieInfo = null;
 		$urlredirect = ((array_key_exists('redirect',$_REQUEST))) ? $_REQUEST['redirect'] : null ;
-		if ( preg_match('(/|/a/|/login|/register|/join/|/invitation/)', $_SERVER['REQUEST_URI']) ) {
+		if ( preg_match('(#|/a/|/login|/register|/join/|/invitation/#)', $_SERVER['REQUEST_URI']) ) {
 			if(!Session::check('cookieCrumb', array('name' => 'cookie')) ) {
 				$cookieInfo = array(
 						'user_id' => Session::read('_id'),
@@ -181,10 +196,59 @@ class User extends Base {
 			}else{
 				$cookieInfo = Session::read('cookieCrumb', array('name' => 'cookie'));
 				$cookieInfo['redirect'] = $urlredirect;
-				$cookieInfo['entryTime'] = strtotime('now');
 				Session::write('cookieCrumb', $cookieInfo ,array('name' => 'cookie'));
 			}
 		}
+	}
+
+	/**
+	 * method to validate some contact us form fields
+	 * In case of no error return boolean true
+	 * Otherwise return errors array
+	 */
+	public static function validateContactUs(array $data){
+		$rules = array(
+		    'firstname' => array('notEmpty', 'message' => 'Please enter a First Name'),
+		    'lastname' => array('notEmpty', 'message' => 'Please enter a Last Name'),
+			'telephone' => array('notEmpty', 'message' => 'Please enter a Telephone number'),
+			'message' => array('notEmpty', 'message' => 'Please type your message')
+		);
+		$result = array();
+		$result = Validator::check($data, $rules);
+
+		if (is_array($result) && count($result)==0){
+			return true;
+		} else {
+			return $result;
+		}
+	}
+	
+	public static function cleanSession() {
+		if(Session::check('userSavings')) {
+			Session::delete('userSavings');
+		}
+		if(Session::check('promocode')) {
+			Session::delete('promocode');
+		}
+		if(Session::check('credit')) {
+			Session::delete('credit');
+		}
+		if(Session::check('services')) {
+			Session::delete('services');
+		}
+		if(Session::check('cc_infos')) {
+			Session::delete('cc_infos');
+		}
+		if(Session::check('cc_error')) {
+			Session::delete('cc_error');
+		}
+		if(Session::check('shipping')) {
+			Session::delete('shipping');
+		}
+		if(Session::check('billing')) {
+			Session::delete('billing');
+		}
+
 	}
 }
 

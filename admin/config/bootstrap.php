@@ -47,6 +47,14 @@ Environment::is(function($request) {
 		case 'www.totsy.com':
 		case 'totsy.com':
 		case 'admin.totsy.com':
+		case 'web1-dc1.totsy.com':
+		case 'web2-dc1.totsy.com':
+		case 'web3-dc1.totsy.com':
+		case 'web4-dc1.totsy.com':
+		case 'web5-dc1.totsy.com':
+		case 'web6-dc1.totsy.com':
+		case 'web7-dc1.totsy.com':
+		case 'web8-dc1.totsy.com':
 			return 'production';
 		case 'testadmin.totsy.com':
 			return 'test';
@@ -97,6 +105,8 @@ require __DIR__ . '/bootstrap/payments.php';
 
 require __DIR__ . '/bootstrap/mail.php';
 
+require __DIR__ . '/bootstrap/avatax.php';
+
 /**
  * This file configures the analysis behavior which includes Logging.
  */
@@ -125,7 +135,7 @@ Auth::config(array('userLogin' => array(
 )));
 
 
-ini_set('memory_limit', '512M');
+ini_set('memory_limit', '1024M');
 ini_set('max_execution_time', '20000');
 
 ?>
