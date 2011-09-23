@@ -478,7 +478,7 @@ span.filters a.active {
 div.code-coverage-results, h4.code-coverage-name {
 	clear: both;
 	color: #000000;
-	font-size: .8em;
+	font-size: .75em;
 	font-family: 'Andale Mono', Monaco, Courier, monospace !important;
 	background-color: #fafafa;
 	border: 1px solid #e6e6e6;
@@ -517,21 +517,18 @@ div.code-coverage-results span.content {
 	white-space: pre;
 	line-height: 1.5em;
 	min-height: 1.5em;
-	background: black;
+	color: #fff;
 }
 
 div.code-coverage-results div.uncovered span.content {
-	color: #FFD8D8;
-	background-color: #260000;
+	background-color: #8c8195;
 }
-
 div.code-coverage-results div.covered span.content {
-	color: #DDFDCB;
-	background-color: #0C2600;
+	background-color: #467F0D;
 }
-
 div.code-coverage-results div.ignored span.content {
-	color: rgba(255,255,255,.5);
+	color: #999;
+	background: #ececec;
 }
 
 div.code-coverage-results span.line-num {
