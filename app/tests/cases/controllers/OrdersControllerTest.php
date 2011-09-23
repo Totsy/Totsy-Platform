@@ -102,6 +102,13 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$address = $this->_address();
 
 		$data = array(
+			'title' => 'test',
+			'end_date' => $shipDate = new MongoDate(strtotime('+1 week'))
+		);
+		$event = Event::create($data);
+		$event->save();
+
+		$data = array(
 			'handling' => 7.95,
 			'shipping' => array(
 				'description' => 'Home',
@@ -112,7 +119,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 			'user_id' => (string) $this->user->_id,
 			'date_created' => new MongoDate(),
 			'items' => array(
-				$this->_item()
+				array('event_id' => $event->_id) + $this->_item()->data()
 			)
 		);
 		$order = OrderMock::create($data);
