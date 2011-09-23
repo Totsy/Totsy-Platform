@@ -46,7 +46,7 @@ class BaseController extends \lithium\action\Controller {
 				'conditions' => array('_id' => $userInfo['_id']),
 				'fields' => array('total_credit', 'deactivated','affiliate_share')
 			));
-			if ($user) {
+			if (isset($user) && $user) {
 			    /**
 			    * If the users account has been deactivated during login,
 			    * destroy the users session.
@@ -68,10 +68,10 @@ class BaseController extends \lithium\action\Controller {
 		**/
 		$invited_by = NULL;
 
-		 if ($user) {
+		 if (isset($user) && $user) {
 			$cookie = Session::read('cookieCrumb', array('name'=>'cookie'));
 			$userData = $user->data();
-			if(array_key_exists('affiliate',$cookie)){
+			if(is_array($cookie) && array_key_exists('affiliate',$cookie)){
                 Affiliate::linkshareCheck($user->_id, $cookie['affiliate'], $cookie);
             }
             if (array_key_exists('invited_by',$userInfo)){
@@ -83,7 +83,7 @@ class BaseController extends \lithium\action\Controller {
 		/**
 		* If visitor lands on affliate url e.g www.totsy.com/a/afflilate123
 		**/
-		if ($this->request->params['controller']  == "affiliates" &&
+		if (is_object($this->request) && isset($this->request->params) && $this->request->params['controller']  == "affiliates" &&
 			$this->request->params['action'] == "register" & empty($invited_by)) {
 			$invited_by = $this->request->args[0];
 		}
@@ -91,12 +91,19 @@ class BaseController extends \lithium\action\Controller {
 		/**
 		* Retrieve any pixels that need to be fired off
 		**/
-		$pixel = Affiliate::getPixels($this->request->url, $invited_by);
+		if (is_object($this->request) && isset($this->request->url)){
+			$url = $this->request->url;
+		} else {
+			$url = $_SERVER['REQUEST_URI'];
+		}
+		$pixel = Affiliate::getPixels($url, $invited_by);
 		$pixel .= Session::read('pixel');
 		/**
 		* Remove pixel to avoid firing it again
 		**/
 		Session::delete('pixel');
+		#Clean Credit Card Infos if out of Orders/CartController
+		$this->CleanCC();
 		/**
 		* Send pixel to layout
 		**/
@@ -203,6 +210,19 @@ class BaseController extends \lithium\action\Controller {
         preg_match('#(\*)\s[a-zA-Z0-9_-]*(.)*#', $out, $parse);
         $pos = stripos($parse[0], " ");
         return trim(substr($parse[0], $pos));
+	}
+	/**
+	* Clean Credits Card Infos if out of Cart/Orders/Search ??? Controller
+	**/
+	public function cleanCC() {
+		if (is_object($this->request) && isset($this->request->params) && $this->request->params['controller']  != "orders"
+			&& $this->request->params['controller']  != "cart"
+			&& $this->request->params['controller']  != "search")
+		{
+			if(Session::check('cc_infos')) {
+				Session::delete('cc_infos');
+			}
+		}
 	}
 }
 

@@ -2,6 +2,7 @@
 namespace app\models;
 
 use lithium\storage\Session;
+use app\models\Cart;
 
 class Service extends Base {
 
@@ -14,17 +15,19 @@ class Service extends Base {
     * @param float order sized handling
     * @return array of shipping and oversized handling
     **/
-    public static function freeShippingCheck($shippingCost, $overSizeHandling) {
-        $freeshipping = false;
+    public static function freeShippingCheck($shippingCost = 7.95, $overSizeHandling = 0.00) {
+        $enable = false;
         $service = Session::read('services', array('name' => 'default'));
 		if ( $service && array_key_exists('freeshipping', $service)) {
 		    if ($service['freeshipping'] === 'eligible') {
+		    	Cart::updateSavings(null, 'services', ($shippingCost + $overSizeHandling));
+				$enable = true;
+			} else {
 				$shippingCost = 0;
 				$overSizeHandling = 0;
-				$freeshipping = true;
 			}
 		}
-		return compact('shippingCost', 'overSizeHandling', 'freeshipping');
+		return compact('shippingCost', 'overSizeHandling', 'enable');
     }
 
     /**
@@ -38,7 +41,8 @@ class Service extends Base {
 		if ( $service && array_key_exists('10off50', $service)) {
 		    if ($service['10off50'] === 'eligible') {
 		        if ((float) $subTotal >= 50.00) {
-		            $savings = -10.00;
+		            $savings = 10.00;
+		            Cart::updateSavings(null, 'services', $savings);
 		        }
 			}
 		}
