@@ -238,6 +238,9 @@ class OrdersController extends BaseController {
 		$address = null;
 		$selected = null;
 		$cartExpirationDate = 0;
+		$addresses_ddwn = array();
+		$shipDate = null;
+		$error = null;
 		$missChristmasCount = 0;
 		$notmissChristmasCount = 0;
 
