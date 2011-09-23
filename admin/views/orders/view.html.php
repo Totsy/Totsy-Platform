@@ -257,7 +257,6 @@
 												  unset($itm);
 
 											?>
-
 							<?=$this->form->hidden($name, array('class' => 'inputbox', 'id' => $name, 'value' => (string) $item["cancel"])); ?>
 							<?=$this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
 												<tr class="item_line"
@@ -299,7 +298,7 @@
 												</td>
 												<td style="padding:5px;" title="quantity">
 												<?php if($edit_mode): ?>
-													<?php
+												<?php  
 													if(!empty($item['initial_quantity'])) {
 														$limit = $item['initial_quantity'];
 													} else {
@@ -382,7 +381,12 @@
 												Sales Tax:
 												<br>
 												Shipping:
-												<br><br><br>
+												<br>
+												<?php if ($order->overSizeHandling): ?>
+												Oversize Shipping:
+													<br>
+												<?php endif ?>
+												<br><br>
 												<strong style="font-weight:bold;color:#606060">Total:</strong>
 											</td>
 											<td style="padding-left:15px; text-align:right;" valign="top">
@@ -399,7 +403,12 @@
 											$<?=number_format($order->tax,2); ?>
 											<br>
 											$<?=number_format($order->handling,2); ?>
-											<br><br><br>
+											<?php if ($order->overSizeHandling): ?>
+												$<?=number_format($order->overSizeHandling,2); ?>
+												<br>
+											<?php endif ?>
+											<br>
+											<br><br>
 											<strong style="font-weight:bold;color:#009900;">$<?=number_format($order->total,2); ?></strong>
 											</td>
 										</tr>

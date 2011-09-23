@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+    <link rel="stylesheet" type="text/css" href="http://evan.totsy.com/css/base.css" media="screen" />
+    <script type="text/javascript" src="http://www.totsy.com/js/jquery-1.4.2.min.js">
+</script>
+    <script type="text/javascript" src="http://www.totsy.com/js/jquery-ui-1.8.2.custom.min.js">
+</script>
+    <script type="text/javascript" src="http://www.totsy.com/js/jquery.backstretch.min.js">
+</script>
+    <link rel="stylesheet" type="text/css" href="http://www.totsy.com/css/960.css" />
+    <link rel="stylesheet" type="text/css" href="./landing_pages.css" />
+    <script type="text/javascript">
+//<![CDATA[
+
+    $(function(){
+    $('#learn_more_link').click(function() {  
+        $('#about_membership').hide();
+      $('#learn_more').toggle('slow');
+    });
+
+    $('#about_membership_link').click(function() {  
+        $('#learn_more').hide();
+      $('#about_membership').toggle('slow');
+    });
+    });
+
+    //]]>
+    </script>
+    <style type="text/css">
+/*<![CDATA[*/
+    body { margin:0; padding: 0}
+
+    /*]]>*/
+    </style>
+
+    <title></title>
+</head>
+
+<body class="clear" style="background: url('http://evan.totsy.com/img/login/fieldGrass.jpg')">
+    <!-- set background image here -->
+
+    <div id="landing-center-bground">
+        <div class="container_12">
+            <div class="grid_4">
+                <div class="landing-sections bordered">
+                    <h1 id="logo" class="landing-logo"></h1>
+
+                    <div class="landing-text text-space">
+                        You have places to be, things to do, and little ones in tow. At Totsy, moms on the go and moms to be experience the shopping they desire they can't resist.
+                    </div>
+
+                    <div style="float:left" class="text-space">
+                        <a href="javascript:void(0);" id="learn_more_link">Learn More</a> <span style="padding-left:20px"><a href="javascript:void(0);" id="about_membership_link">About Membership</a></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid_4">
+                <div class="landing-sections bordered">
+                    <div><h1 class="landing-sign-up-header">SIGN IN WITH FACEBOOK</h1></div>
+
+                    <div class="landing-text text-space"><img border="none" src="images/fb_login.png" /></div><br />
+                    <div>
+                        Use your facebook identity to <strong>sign in or to register</strong> with Totsy.
+                        <div style="padding-top: 10px"><a href="">Click here</a> to Request Membership.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid_4">
+                <div class="landing-sections">
+                    <h1 class="landing-sign-up-header">MEMBER SIGN IN</h1><br />
+
+                    <div id="mb-frmdiv">
+                        <div class="form-row_">
+                            <div class="form-row_">
+                                <label for="email" class="required">Email <span>*</span></label> <input name="email" class="inputbox" value="" onclick="SelectAll('Email');" type="text" />
+                            </div>
+
+                            <div class="form-row_">
+                                <label for="password" class="required">Password <span>*</span></label> <input name="password" class="inputbox" value="" type="text" />
+                            </div>
+                        </div>
+
+                        <div>
+                            <input class="button landing-submit-button" value="Log In" type="submit" />
+                        </div>
+                        <br />
+                        <div style="text-align:left">
+                        
+                        <a title="Forgot your password?" class="sm reg-tos" href="/reset">Forgot your password?</a>
+                        </div>
+<br />
+                        <div>
+                            <span class="sm reg-tos">By clicking register you accept our <a href="/pages/terms">Terms and Conditions</a>.</span>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="learn_more" class="info_windows" style="display:none">
+        <div style="text-align:center" class="text-space">
+            MORE ABOUT TOTSY
+        </div>
+
+        <div class="container_12 clearfix">
+            
+            <!-- This is a hack to get ext in the middle of a border line using CSS. It can be done with images too :) -->
+            <div style="text-align: right; border-top: 1px solid #DDD; margin-top: 20px">
+                <div style="display: inline-block; position: relative; top: -20px; background-color: #FFF; padding: 0px 10px">
+                    <a href="javascript:void(0)" onclick="javascript:$('#learn_more').hide()">CLOSE</a>
+                </div>
+            </div>
+
+            <div class="grid_4">
+                <div class="landing-sign-up-header">
+                    INSPIRED BRANDS
+                </div>
+
+                <div>
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                </div>
+                
+            </div>
+			
+            <div class="grid_4">
+                <div class="landing-sign-up-header">
+                    NEW SALES EVERYDAY
+                </div>
+
+                <div>
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                </div>
+            </div>
+
+            <div class="grid_4">
+                <div class="landing-sign-up-header">
+                    EXCLUSIVE SELECTION
+                </div>
+
+                <div>
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="about_membership" style="display:none" class="info_windows">
+        <div style="text-align:center" class="text-space">
+            MEMBER BENEFITS
+        </div>
+
+        <div class="container_12 clearfix">
+            <div style="text-align: right; border-top: 1px solid #DDD; margin-top: 20px">
+                <div style="display: inline-block; position: relative; top: -20px; background-color: white; padding: 0px 10px">
+                    <a href="javascript:void(0)" onclick="javascript:$('#about_membership').hide()">CLOSE</a>
+                </div>
+            </div>
+
+            <div class="grid_4">
+                <div class="landing-sign-up-header">
+                    ACCESS TO EXCLUSIVE BRANDS
+                </div>
+
+                <div>
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                </div>
+            </div>
+
+            <div class="grid_4">
+                <div class="landing-sign-up-header">
+                    MEMBERS-ONLY DISCOUNTS
+                </div>
+
+                <div>
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                </div>
+            </div>
+
+            <div class="grid_4">
+                <div class="landing-sign-up-header">
+                    SECOND CHANCES
+                </div>
+
+                <div>
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                </div>
+            </div>
+        </div>
+    </div>
+<!--
+    <div id="footer">
+        <ul>
+            <li class="first"><a href="/pages/terms" title="Terms of Use">Terms of Use</a></li>
+
+            <li><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
+
+            <li><a href="/pages/aboutus" title="About Us">About Us</a></li>
+
+            <li><a href="/blog" title="Blog">Blog</a></li>
+
+            <li><a href="/pages/faq" title="FAQ">FAQ</a></li>
+
+            <li><a href="/pages/affiliates" title="Affiliates">Affiliates</a></li>
+
+            <li class="last"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
+        </ul><span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved.<br />
+        10 West 18th Street, Floor 4 - New York, NY 10011</span>
+    </div>
+    -->
+</body>
+</html>

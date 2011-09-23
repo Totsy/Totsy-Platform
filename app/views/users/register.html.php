@@ -39,8 +39,14 @@
                                 <h3 style="color:#999; font-size:18px;">Register</h3>
 								<hr />
 								 
-                               
-								<?=$this->form->create($user ,array('id'=>'registerForm')); ?>
+<?php
+	 if (preg_match('/join/',$_SERVER['REQUEST_URI'])) {
+print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/join\']);">';
+	 } else {
+print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/register\']);">';
+	 }
+?>
+	
 
                						<!-- Commnented Firstname, Lastname and Zip code --->
 
@@ -78,7 +84,7 @@
 									</div -->
 
 									<!-- ************************************************************** -->
-									<div class="form-row_">
+									<div>
 										<?=$this->form->label('email', 'Email <span>*</span>', array(
 											'escape' => false,
 											'class' => 'required'
@@ -87,7 +93,7 @@
 										<?=$this->form->text('email', array('class' => 'inputbox', 'style' => 'width:188px')); ?>
 										<?=$this->form->error('email'); ?>
 									</div>
-									<div class="form-row_">
+									<div>
 										<?=$this->form->label('confirmemail', 'Confirm Email <span>*</span>', array(
 											'escape' => false,
 											'class' => 'required'
@@ -98,7 +104,7 @@
 										<?=$this->form->error('emailcheck'); ?>
 									</div>
 
-									<div class="form-row_">
+									<div>
 									<?=$this->form->label('password','Password <span>*</span>', array(
 										'class'=>'required',
 										'escape' => false
@@ -111,7 +117,7 @@
 									?>
 									<?=$this->form->error('password'); ?>
 									</div>
-									<div class="form-row_">
+									<div>
 									<?=$this->form->checkbox('terms', array("checked" => "checked", 'style'=>"float:left;margin-right:4px; display: none;"));?>
 									</div>
 									<span class="sm reg-tos" style="overflow:visible!important;">
@@ -127,7 +133,7 @@
 								<div>
 								<h3 style="color:#999; font-size:18px;">Register With Facebook</h3>
 								<hr />
-								<fb:login-button perms="publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location" size="large" length="long" v="2" style="text-align:center;">Register With Facebook</fb:login-button>
+								<a href="#" onclick="fblogin();return false;"><img src="/img/fb_register_btn.png"></a>
 
 								</div>
 								</div>
@@ -168,30 +174,10 @@
 		</div>
 	</div>
 </div>
+
 <div id="footer">
-
-	<ul>
-			<li class="first"><a href="/pages/terms" title="Terms of Use">Terms of Use</a></li>
-			<li><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
-			<li><a href="/pages/aboutus" title="About Us">About Us</a></li>
-			<li><a href="http://blog.totsy.com" title="Blog" target="_blank">Blog</a></li>
-			<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
-			<li><a href="/pages/affiliates" title="Affiliates">Affiliates</a></li>
-			
-			<! -- switch where this link points depending on whether they're logged in or not --> 
-			<?php if (empty($userInfo)){ ?>
-			<li><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
-			<li class="last"><a href="http://nytm.org/made" title="Made in NYC" target="_blank">Made in NYC</a></li>
-			<?php } else { ?>
-			<li><a href="/tickets/add" title="Contact Us">Contact Us</a></li>
-			<li class="last"><a href="http://nytm.org/made" title="Made in NYC" target="_blank">Made in NYC</a></li>
-			<?php } ?>
-		</ul>
-
-	<span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved. <br />10 West 18th Street, Floor 4 - New York, NY 10011</span>
-
+	<?php echo $this->view()->render(array('element' => 'footerNavPublic')); ?>
 </div>
-
 <!-- Google Code for Homepage Remarketing List -->
 <script type="text/javascript">
 /* <![CDATA[ */
@@ -212,3 +198,10 @@
 	</div>
 </noscript>
 <!-- END OF Google Code for Homepage Remarketing List -->
+<script>
+	//your fb login function
+	function fblogin() {
+	FB.login(function(response) {
+		}, {perms:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
+	}
+</script>

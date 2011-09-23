@@ -414,7 +414,12 @@ class APIController extends  \lithium\action\Controller {
 		}
 		// Run that sucker!
 		$cursor = User::collection()->find( array(
-			'keyade_referral_user_id' => array('$exists' => true)
+			'keyade_referral_user_id' => array('$exists' => true),
+			'keyade_referral_user_id' => array('$ne' => null),
+			'created_date' =>  array(
+			 '$gte' => new MongoDate($from),
+             '$lte' => new MongoDate($to)
+			)
 		));
 		$data['cursor'] = $cursor;
 		return $data;

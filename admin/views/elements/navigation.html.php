@@ -8,6 +8,9 @@
 			<li>
 				<?php echo $this->html->link('Update Order Status', 'Orders::update'); ?>
 			</li>
+			<li>
+				<?php echo $this->html->link('Order Payment Status', 'Orders::payments'); ?>
+			</li>
 		</ul>
 	</li>
 	<li>
@@ -34,7 +37,7 @@
 				<?php echo $this->html->link('Search for Items', 'Items::search'); ?>
 			</li>
 			<li>
-				<?php echo $this->html->link('Bulk Cancelation of Items', 'Items::bulkCancel'); ?>			
+				<?php echo $this->html->link('Bulk Cancelation of Items', 'Items::bulkCancel'); ?>
 			</li>
 		</ul>
 	</li>

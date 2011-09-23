@@ -10,12 +10,16 @@
 	<meta property="og:site_name" content="Totsy"/>
     <meta name="description"
           content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
-	<?php echo $this->html->style(array('base'), array('media' => 'screen')); ?>
-	<?=$this->html->script(array(
-		'jquery-1.4.2.min.js',
-		'jquery-ui-1.8.2.custom.min.js',
-		'jquery.backstretch.min.js'
-	)); ?>
+	
+	<?=$this->html->style(array('base.css', '960.css', 'jquery_ui_custom/jquery.ui.all.css'), array('media' => 'screen')); ?>
+	
+	<script src="http://www.google.com/jsapi"></script>
+	<script> google.load("jquery", "1.6.1", {uncompressed:false});</script>
+	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
+    <!-- end jQuery / jQuery UI -->
+            
+    <?=$this->html->script(array('jquery.backstretch.min.js', 'jquery.uniform.min.js' )); ?>
+    
 	<?php echo $this->scripts(); ?>
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
 	<script type="text/javascript">
