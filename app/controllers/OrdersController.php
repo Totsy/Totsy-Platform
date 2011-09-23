@@ -240,6 +240,9 @@ class OrdersController extends BaseController {
 		$cartExpirationDate = 0;
 		$missChristmasCount = 0;
 		$notmissChristmasCount = 0;
+		$addresses_ddwn = array();
+		$shipDate = null;
+		$error = null;
 
 		#Check Datas Form
 		if (!empty($this->request->data)) {
