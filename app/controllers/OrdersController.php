@@ -269,7 +269,7 @@ class OrdersController extends BaseController {
 						$address->type = 'Shipping';
 						$address->save();
 					}
-					$this->redirect(array('Orders::payment'));
+					return $this->redirect(array('Orders::payment'));
 				} else {
 					$error = true;
 				}
@@ -344,10 +344,10 @@ class OrdersController extends BaseController {
 
 		#Check Users are in the correct step
 		if (!Session::check('shipping')) {
-			$this->redirect(array('Orders::shipping'));
+			return $this->redirect(array('Orders::shipping'));
 		}
 		if (!Session::check('billing') || !Session::check('cc_infos')) {
-			$this->redirect(array('Orders::payment'));
+			return $this->redirect(array('Orders::payment'));
 		}
 		#Check Expires 
 		Cart::cleanExpiredEventItems();
@@ -452,12 +452,12 @@ class OrdersController extends BaseController {
 			$order = $orderClass::process($this->request->data, $cart, $vars, $avatax);
 			if (empty($order->errors) && !(Session::check('cc_error'))) {
 				#Redirect To Confirmation Page
-				$this->redirect(array('Orders::view', 'args' => $order->order_id));
+				return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 			}
 		}
 		#In car of credit card error redirect to the payment page
 		if (Session::check('cc_error')) {
-			$this->redirect(array('Orders::payment'));
+			return $this->redirect(array('Orders::payment'));
 		}
 		return $vars + compact('cartEmpty','order','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable','missChristmasCount','notmissChristmasCount');
 	}
@@ -527,7 +527,7 @@ class OrdersController extends BaseController {
 
 		#Check Users are in the correct step
 		if (!Session::check('shipping')) {
-			$this->redirect(array('Orders::shipping'));
+			return $this->redirect(array('Orders::shipping'));
 		}
 		$user = Session::read('userLogin');
 		$fields = array(
@@ -617,7 +617,7 @@ class OrdersController extends BaseController {
 			}
 			#If both billing and credit card correct
 			if(!empty($billing_passed) && !empty($cc_passed)) {
-				$this->redirect(array('Orders::review'));
+				return $this->redirect(array('Orders::review'));
 			}
 			$data_add = array();
 			if (!empty($address)) {
