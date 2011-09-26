@@ -7,11 +7,13 @@ use app\controllers\OrdersController;
 use app\tests\mocks\controllers\OrdersControllerMock;
 use app\tests\mocks\models\OrderMock;
 use app\models\User;
+use app\models\Event;
+use app\models\Item;
+use app\models\Address;
+use app\models\OrderShipped;
 use MongoId;
 use MongoDate;
 use lithium\storage\Session;
-use app\models\Item;
-use app\models\OrderShipped;
 
 class OrdersControllerTest extends \lithium\test\Unit {
 
@@ -269,7 +271,11 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$this->assertEqual($expected, $result);
 
 		$expected = $address['address'];
-		$result = $return['address']->address;
+		$result = Address::first(array(
+			'conditions' => array(
+				'address' => $address['address']
+			)
+		))->address;
 		$this->assertEqual($expected, $result);
 	}
 
