@@ -168,30 +168,11 @@ class ReportsController extends BaseController {
 				$total = 0;
 				switch ($searchType) {
 					case 'Revenue':
-						switch ($name) {
-							case 'keyade':
-							$conditions = array(
-								'purchase_count' => array('$gte' => 1),
-								'$or' => array(
-										array(
-											'keyade_referral_user_id' => array('$ne' => NULL )
-										),
-										array(
-											'keyade_user_id' => array('$ne' => NULL )
-										)
-								)
-							);
-							break;
-							default:
-								$conditions = array(
-										'invited_by' => $affiliate,
-										'purchase_count' => array('$gte' => 1)
-								);
-							break;
-						}
 						$users = User::find('all', array(
-							'conditions' => $conditions
-						));
+							'conditions' => array(
+								'invited_by' => $affiliate,
+								'purchase_count' => array('$gte' => 1)
+						)));
 						if ($users) {
 							$reportId = substr(md5(uniqid(rand(),1)), 1, 15);
 							$collection = Report::collection();
@@ -240,7 +221,7 @@ class ReportsController extends BaseController {
 						$results['total'] = "$".$results['total'];
 						$collection->remove($conditions);
 					break;
-
+					
 					case 'Registrations':
 						switch ($name) {
 							case 'trendytogs':
@@ -251,14 +232,8 @@ class ReportsController extends BaseController {
 							break;
 							case 'keyade':
 								$conditions = array(
-									'$or' => array(
-											array(
-												'keyade_referral_user_id' => array('$ne' => NULL )
-											),
-											array(
-												'keyade_user_id' => array('$ne' => NULL )
-											)
-									)
+									'invited_by' => $affiliate,
+									'keyade_user_id' => array('$exists' => true )
 								);
 								$dateField = 'created_date';
 								if (!empty($date)) {
@@ -325,46 +300,46 @@ class ReportsController extends BaseController {
 			$time = date('ymdis', $event->_id->getTimestamp());
 			$poNumber = 'TOT'.'-'.$vendorName.$time;
 			$eventItems = $this->getOrderItems($eventId);
-			$inc = 0;
-			foreach ($eventItems as $eventItem) {
-				foreach ($eventItem['details'] as $key => $value) {
-					$orders = Order::find('all', array(
-						'conditions' => array(
-							'items.item_id' => (string) $eventItem['_id'],
-							'items.size' => (string) $key,
-							'cancel' => array('$ne' => true)
-					)));
-					if ($orders) {
-						$orderData = $orders->data();
-						if (!empty($orderData)) {
-							foreach ($orderData as $order) {
-								$items = $order['items'];
-								foreach ($items as $item) {
-									$active = (empty($item['cancel']) || $item['cancel'] != true) ? true : false;
-									$itemValid = ($item['item_id'] == $eventItem['_id']) ? true : false;
-									if ($itemValid && ((string) $key === $item['size']) && $active){
-										$purchaseOrder[$inc]['Product Name'] = $eventItem['description'];
-										$purchaseOrder[$inc]['Product Color'] = $eventItem['color'];
-										$purchaseOrder[$inc]['Vendor Style'] = $eventItem['vendor_style'];
-										$itemRecord = Item::collection()->findOne(array('_id' => new MongoId($item['item_id'])));
-										$purchaseOrder[$inc]['SKU'] = $itemRecord['sku_details'][$item['size']];
-										$purchaseOrder[$inc]['Unit'] = $eventItem['sale_whol'];
-										if (empty($purchaseOrder[$inc]['Quantity'])) {
-											$purchaseOrder[$inc]['Quantity'] = $item['quantity'];
-										} else {
-											$purchaseOrder[$inc]['Quantity'] += $item['quantity'];
-										}
-										$purchaseOrder[$inc]['Total'] = $purchaseOrder[$inc]['Quantity'] * $eventItem['sale_whol'];
-										$purchaseOrder[$inc]['Size'] = $item['size'];
-										$purchaseOrder[$inc] = $this->sortArrayByArray($purchaseOrder[$inc], $purchaseHeading);
-									}
+			
+			$itemIds = array();
+			foreach ($eventItems as $key => $eventItem) {
+				$eventItems[$eventItem['_id']] = $eventItem;
+				unset($eventItems[$key]);
+				
+				$itemIds[] = $eventItem['_id'];
+			}
+
+			$orders = Order::find('all', array(
+				'conditions' => array(
+					'items.item_id' => array('$in' => $itemIds),
+					'cancel' => array('$ne' => true))));
+
+			if ($orders) {
+				foreach ($orders as $order) {
+					$order = $order->data();
+					$items = $order['items'];
+					foreach ($items as $item) {
+						$active = (empty($item['cancel']) || $item['cancel'] != true) ? true : false;
+						if( array_key_exists($item['item_id'], $eventItems) ) {
+							$eventItem = $eventItems[$item['item_id']];
+							if (array_key_exists($item['size'], $eventItem['details']) && $active) {
+								$sku = $eventItem['sku_details'][$item['size']];
+								$purchaseOrder[$sku]['Product Name'] = $eventItem['description'];
+								$purchaseOrder[$sku]['Product Color'] = $eventItem['color'];
+								$purchaseOrder[$sku]['Vendor Style'] = $eventItem['vendor_style'];
+								$purchaseOrder[$sku]['SKU'] = $eventItem['sku_details'][$item['size']];
+								$purchaseOrder[$sku]['Unit'] = $eventItem['sale_whol'];
+								if (empty($purchaseOrder[$sku]['Quantity'])) {
+									$purchaseOrder[$sku]['Quantity'] = $item['quantity'];
+								} else {
+									$purchaseOrder[$sku]['Quantity'] += $item['quantity'];
 								}
+								$total['quantity'] += $item['quantity'];
+								$purchaseOrder[$sku]['Total'] = $purchaseOrder[$sku]['Quantity'] * $eventItem['sale_whol'];
+								$total['sum'] += $item['quantity'] * $eventItem['sale_whol'];
+								$purchaseOrder[$sku]['Size'] = $item['size'];
+								$purchaseOrder[$sku] = $this->sortArrayByArray($purchaseOrder[$sku], $purchaseHeading);
 							}
-							if (!empty($purchaseOrder[$inc]['Total'])) {
-								$total['sum'] += $purchaseOrder[$inc]['Total'];
-								$total['quantity'] += $purchaseOrder[$inc]['Quantity'];
-							}
-							++$inc;
 						}
 					}
 				}
@@ -381,7 +356,7 @@ class ReportsController extends BaseController {
 					'_id' => $eventId
 			)));
 			$eventItems = $this->getOrderItems($eventId);
-            $inc = 0;
+			$inc = 0;
 			foreach ($eventItems as $eventItem) {
 				$orders = Order::find('all', array(
 					'conditions' => array(
@@ -1279,7 +1254,7 @@ class ReportsController extends BaseController {
 			$strParam = "yAxisName=Users;numberSuffix=%";
 			$ServiceCharts->setChartParams($strParam);
 			# add chart values and  category names
-			$ServiceCharts->addChartDataFromArray($arrData,$arrCatNames);
+			$ServiceCharts->addChartDataFromArray($arrData,$arrCatNames);	
 			/**** 2ND Charts ****/
 			//Categories
 			$arrCatNames_2[0 + $i] =  $key.' '.$year;
