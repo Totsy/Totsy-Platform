@@ -296,13 +296,6 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$result = $this->controller->redirect[0];
 		$expected = array('Orders::payment');
 		$this->assertEqual($expected, $result);
-
-		Session::write('billing', $address);
-		Session::write('cc_infos', $this->_card(true));
-		$this->controller->review();
-
-		$result = $this->controller->redirect;
-		$this->assertFalse($result);
 	}
 
 	public function testReview() {
