@@ -270,8 +270,12 @@ class OrdersController extends BaseController {
 
 	/**
 	 * Processes an order by capturing payment.
-	 * @return compact
+	 *
+	 * @fixme `$cartExpirationDate` is undefined where should this be coming
+	 +        from? Currently the comparison will always fail and expiration date
+	 *        will be set to `$cartValue['expires']->sec`.
 	 * @todo Improve documentation
+	 * @return compact
 	 */
 	public function review() {
 		$taxClass   = $this->_classes['tax'];
