@@ -476,19 +476,18 @@ class OrdersController extends BaseController {
 	 * @return array $eventItems
 	 */
 	protected function _itemGroupByEvent($object) {
-		$eventItems = null;
+		$eventItems = array();
+
 		if ($object) {
 			$model = $object->model();
 
 			if (strpos($model, 'models\Order') !== false) {
-				$orderItems = $object->items->data();
-				foreach ($orderItems as $item) {
+				foreach ($object->items->data() as $item) {
 					$eventItems[$item['event_id']][] = $item;
 				}
 			}
 			if ($model == 'app\models\Cart') {
-				$orderItems = $object->data();
-				foreach ($orderItems as $item) {
+				foreach ($object->data() as $item) {
 					$event = $item['event'][0];
 					unset($item['event']);
 					$eventItems[$event][] = $item;
