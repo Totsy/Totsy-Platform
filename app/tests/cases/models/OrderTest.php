@@ -533,11 +533,11 @@ class OrderTest extends \lithium\test\Unit {
 		);
 		Session::write('cc_infos', $creditCard);
 
-		$result = OrderMock::creditCardEncrypt($this->user->_id);
+		$result = Order::creditCardEncrypt($this->user->_id);
 		$this->assertTrue($result);
 
 		$expected = $creditCard;
-		$result = OrderMock::creditCardDecrypt($this->user->_id);
+		$result = Order::creditCardDecrypt($this->user->_id);
 		$this->assertEqual($expected, $result);
 	}
 
