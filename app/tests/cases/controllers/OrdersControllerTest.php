@@ -6,10 +6,12 @@ use lithium\action\Request;
 use lithium\storage\Session;
 use app\tests\mocks\controllers\OrdersControllerMock;
 use app\tests\mocks\models\OrderMock;
+use app\tests\mocks\storage\session\adapter\MemoryMock;
 use app\models\User;
 use app\models\Event;
 use app\models\Item;
 use app\models\Address;
+use app\models\Cart;
 use app\models\OrderShipped;
 use MongoId;
 use MongoDate;
@@ -278,6 +280,108 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$this->assertEqual($expected, $result);
 	}
 
+	public function testReviewRedirectsWithoutSessionData() {
+		$address = $this->_address();
+
+		$this->controller->review();
+
+		$result = $this->controller->redirect[0];
+		$expected = array('Orders::shipping');
+		$this->assertEqual($expected, $result);
+
+		Session::write('shipping', $address);
+		$this->controller->review();
+
+		$result = $this->controller->redirect[0];
+		$expected = array('Orders::payment');
+		$this->assertEqual($expected, $result);
+
+		Session::write('billing', $address);
+		Session::write('cc_infos', $this->_card(true));
+		$this->controller->review();
+
+		$result = $this->controller->redirect;
+		$this->assertFalse($result);
+	}
+
+	public function testReview() {
+		$adapter = new MemoryMock();
+
+		Session::config(array(
+			'default' => compact('adapter'),
+			'cookie' => compact('adapter')
+		));
+		$session = $this->user->data();
+		Session::write('userLogin', $session);
+
+		$address = $this->_address();
+		$sessionKey = Session::key('default');
+
+		Session::write('shipping', $address);
+		Session::write('billing', $address);
+		Session::write('cc_infos', $this->_card(true));
+
+		$data = array(
+			'title' => 'test',
+			'end_date' => new MongoDate(strtotime('+1 week'))
+		);
+		$event = Event::create($data);
+		$event->save(null, array('validate' => false));
+
+		$item = $this->_item();
+
+		$data = array(
+			'user' => (string) $this->user->_id,
+			'session' => $sessionKey,
+			'expires' => new MongoDate(strtotime('+1 week')),
+			'url' => 'test',
+			'primary_image' => 'test',
+			'event' => array(
+				(string) $event->_id
+			)
+		) + $item->data();
+
+		$cart = Cart::create($data);
+		$cart->save(null, array('validate' => false));
+
+		$return = $this->controller->review();
+
+		$expected = array(
+			'cartPromo',
+			'cartCredit',
+			'services',
+			'postDiscountTotal',
+			'user',
+			'cart',
+			'total',
+			'subTotal',
+			'creditCard',
+			'tax',
+			'shippingCost',
+			'overShippingCost',
+			'billingAddr',
+			'shippingAddr',
+			'cartEmpty',
+			'shipDate',
+			'savings',
+			'credits',
+			'cartExpirationDate',
+			'promocode_disable'
+		);
+		$result = array_keys($return);
+		$this->assertFalse(array_diff($expected, $result));
+		$this->assertFalse(array_diff($result, $expected));
+
+		$result = $this->controller->redirect;
+		$this->assertFalse($result);
+
+		$result = Session::read('cc_error');
+		$this->assertFalse($result);
+
+		$cart->delete();
+		$event->delete();
+	}
+
 	protected function _address() {
 		return array(
 			'firstname' => 'George',
@@ -290,7 +394,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		);
 	}
 
-	protected function _item() {
+	protected function _item($raw = false) {
 		$data = array(
 			'_id' => $id = new MongoId(),
 			'item_id' => $id,
@@ -309,10 +413,26 @@ class OrdersControllerTest extends \lithium\test\Unit {
 			'line_number' => 0,
 			'status' => 'Order Placed'
 		);
+	if ($raw) {
+			return $data;
+		}
 		$item = Item::create($data);
 		$item->save();
 
 		return $this->_delete[] = $item;
+	}
+
+	protected function _card($raw = false) {
+		$creditCard = array(
+			 'number' => '4111111111111111',
+			 'month' => 11,
+			 'year' => 2023
+		);
+		if ($raw) {
+			return $creditCard;
+		}
+		$billing = PaymentsMock::create('default', 'address', $this->_address());
+		return PaymentsMock::create('default', 'creditCard', $creditCard + compact('billing'));
 	}
 }
 
