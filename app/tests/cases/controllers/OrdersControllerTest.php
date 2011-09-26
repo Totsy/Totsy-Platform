@@ -298,7 +298,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$this->assertEqual($expected, $result);
 	}
 
-	public function testReview() {
+	public function testReviewWithoutData() {
 		$adapter = new MemoryMock();
 
 		Session::config(array(
@@ -368,6 +368,64 @@ class OrdersControllerTest extends \lithium\test\Unit {
 
 		$result = $this->controller->redirect;
 		$this->assertFalse($result);
+
+		$result = Session::read('cc_error');
+		$this->assertFalse($result);
+
+		$cart->delete();
+		$event->delete();
+	}
+
+	public function testReviewWithData() {
+		$adapter = new MemoryMock();
+
+		Session::config(array(
+			'default' => compact('adapter'),
+			'cookie' => compact('adapter')
+		));
+		$session = $this->user->data();
+		Session::write('userLogin', $session);
+
+		$address = $this->_address() + array('address2' => 'c/o Skywalker');
+		$sessionKey = Session::key('default');
+
+		Session::write('shipping', $address);
+		Session::write('billing', $address);
+		Session::write('cc_infos', $this->_card(true));
+
+		$data = array(
+			'title' => 'test',
+			'end_date' => new MongoDate(strtotime('+1 week'))
+		);
+		$event = Event::create($data);
+		$event->save(null, array('validate' => false));
+
+		$item = $this->_item();
+
+		$data = array(
+			'user' => (string) $this->user->_id,
+			'session' => $sessionKey,
+			'expires' => new MongoDate(strtotime('+1 week')),
+			'url' => 'test',
+			'primary_image' => 'test',
+			'event' => array(
+				(string) $event->_id
+			)
+		) + $item->data();
+
+		$cart = Cart::create($data);
+		$cart->save(null, array('validate' => false));
+
+		$this->controller->request->data = array(
+			'process' => array(
+				'test'
+			)
+		);
+		$return = $this->controller->review();
+
+		$expected = 'Orders::view';
+		$result = $this->controller->redirect[0][0];
+		$this->assertEqual($expected, $result);
 
 		$result = Session::read('cc_error');
 		$this->assertFalse($result);
