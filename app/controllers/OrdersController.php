@@ -113,7 +113,7 @@ class OrdersController extends BaseController {
 		$shipRecord = (isset($order->ship_records)) ? true : false;
 		$preShipment = ($shipped || $shipRecord) ? true : false;
 		$itemsByEvent = $this->_itemGroupByEvent($order);
-		$orderEvents = $this->orderEvents($order);
+		$orderEvents = $this->_orderEvents($order);
 		//Check if all items from one event are closed
 		foreach($itemsByEvent as $items_e) {
 			foreach($items_e as $item) {
@@ -409,7 +409,7 @@ class OrdersController extends BaseController {
 	 * @param object $object
 	 * @return array $orderEvents
 	 */
-	public function orderEvents($object) {
+	protected function _orderEvents($object) {
 		$orderEvents = null;
 		$ids = Cart::getEventIds($object);
 		if (!empty($ids)) {
