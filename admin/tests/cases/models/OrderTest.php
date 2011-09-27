@@ -42,18 +42,21 @@ class OrderTest extends \lithium\test\Unit {
 		$this->assertTrue(is_a($result, 'MongoDate'));
 	}
 
-	/* @fixme Fails as method isn't working with Object IDs. */
-	/*
 	public function testLookup() {
 		$order = OrderMock::create();
 		$result = $order->save(array('title' => 'test'), array('validate' => false));
 		$this->assertTrue($result);
 
-		$order->order_id = (string) $order->_id;
-		$result = $order->save(array('order_id' => $order->_id), array('validate' => false));
+		$shortId  = strtoupper(
+			substr((string) $order->_id, 0, 8) . substr((string) $order->_id, 13, 4)
+		);
+		$result = $order->save(
+			array('order_id' => $shortId),
+			array('validate' => false)
+		);
 		$this->assertTrue($result);
 
-		$result = OrderMock::lookup(substr((string) $order->_id, 0));
+		$result = OrderMock::lookup(substr((string) $order->_id, 0, 8));
 		$this->assertTrue($result);
 
 		if ($result) {
@@ -62,7 +65,7 @@ class OrderTest extends \lithium\test\Unit {
 			$this->assertEqual($expected, $result);
 		}
 
-		$result = OrderMock::lookup(strtoupper((string) $order->_id));
+		$result = OrderMock::lookup(strtoupper(substr((string) $order->_id, 0, 8)));
 		$this->assertTrue($result);
 
 		if ($result) {
@@ -73,7 +76,6 @@ class OrderTest extends \lithium\test\Unit {
 
 		$order->delete();
 	}
-	*/
 
 	public function testVoidWithTotalPositive() {
 		$data = array(

@@ -86,8 +86,6 @@ class Order extends Base {
 	/**
 	 * Case insensitive lookup of an order by its ID.
 	 *
-	 * @fixme In its current state the method will never succeed. As regex
-	 *        matching doesn't work against Object IDs. Also @see OrdersController::update().
 	 * @param string $orderId
 	 * @return object
 	 */
