@@ -7,6 +7,7 @@ use lithium\storage\Session;
 use app\tests\mocks\controllers\OrdersControllerMock;
 use app\tests\mocks\models\OrderMock;
 use app\tests\mocks\storage\session\adapter\MemoryMock;
+use app\tests\mocks\extensions\PaymentsMock;
 use app\models\User;
 use app\models\Event;
 use app\models\Item;
@@ -27,9 +28,11 @@ class OrdersControllerTest extends \lithium\test\Unit {
 	protected $_delete = array();
 
 	public function setUp() {
+		$adapter = new MemoryMock();
+
 		Session::config(array(
-			'default' => array('adapter' => 'Memory'),
-			'cookie' => array('adapter' => 'Memory')
+			'default' => compact('adapter'),
+			'cookie' => compact('adapter')
 		));
 
 		$this->controller = new OrdersControllerMock(array(
@@ -376,15 +379,6 @@ class OrdersControllerTest extends \lithium\test\Unit {
 	}
 
 	public function testReviewWithData() {
-		$adapter = new MemoryMock();
-
-		Session::config(array(
-			'default' => compact('adapter'),
-			'cookie' => compact('adapter')
-		));
-		$session = $this->user->data();
-		Session::write('userLogin', $session);
-
 		$address = $this->_address() + array('address2' => 'c/o Skywalker');
 		$sessionKey = Session::key('default');
 
@@ -429,8 +423,110 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$result = Session::read('cc_error');
 		$this->assertFalse($result);
 
+		$result = PaymentsMock::$authorize[1];
+		$expected = 15;
+		$this->assertEqual($expected, $result);
+
 		$cart->delete();
 		$event->delete();
+	}
+
+	public function testPaymentRedirectsWithoutShipping() {
+		$address = $this->_address();
+
+		$this->controller->payment();
+
+		$result = $this->controller->redirect[0];
+		$expected = array('Orders::shipping');
+		$this->assertEqual($expected, $result);
+	}
+
+	public function testPaymentWithoutData() {
+		$address = $this->_address();
+
+		Session::write('shipping', $address);
+		Session::write('billing', $address);
+
+		$return = $this->controller->payment();
+
+		$expected = array(
+			'address', 'addresses_ddwn',
+			'selected',
+			'cartEmpty',
+			'payment',
+			'shipping', 'shipDate',
+			'cartExpirationDate'
+		);
+		$result = array_keys($return);
+		$this->assertFalse(array_diff($expected, $result));
+		$this->assertFalse(array_diff($result, $expected));
+
+		$result = Session::check('billing');
+		$this->assertTrue($result);
+
+		$result = Session::check('cc_infos');
+		$this->assertFalse($result);
+
+		$result = Session::check('cc_error');
+		$this->assertFalse($result);
+	}
+
+	public function testPaymentWithData() {
+		$data = array(
+			'telephone' => '800-999-5555',
+			'state' => 'CA'
+		) + $this->_address();
+
+		$address = Address::create($data);
+		$address->save(null, array('validate' => true));
+
+		Session::write('shipping', $address->data());
+		Session::write('billing', $address->data());
+
+		$this->controller->request->data = array(
+			'card_type' => 'visa',
+			'card_number' => '4111111111111111',
+			'card_month' => '11',
+			'card_year' => '2023',
+			'card_code' => '123',
+			'address_id' => (string) $address->_id
+		);
+
+		$return = $this->controller->payment();
+
+		$result = $this->controller->redirect;
+		$this->assertFalse($result);
+
+		$expected = array(
+			'address', 'addresses_ddwn',
+			'selected',
+			'cartEmpty',
+			'payment',
+			'shipping', 'shipDate',
+			'cartExpirationDate'
+		);
+		$result = array_keys($return);
+		$this->assertFalse(array_diff($expected, $result));
+		$this->assertFalse(array_diff($result, $expected));
+
+		$result = $return['payment']->number;
+		$expected = '4111111111111111';
+		$this->assertEqual($expected, $result);
+
+		$result = $return['payment']->code;
+		$expected = '123';
+		$this->assertEqual($expected, $result);
+
+		$result = Session::check('billing');
+		$this->assertTrue($result);
+
+		$result = Session::check('cc_infos');
+		$this->assertTrue($result);
+
+		$result = Session::check('cc_error');
+		$this->assertFalse($result);
+
+		$address->delete();
 	}
 
 	protected function _address() {
