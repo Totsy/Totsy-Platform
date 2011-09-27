@@ -1,6 +1,6 @@
 <?php
 
-use li3_payments\extensions\Payments;
+use li3_payments\payments\Processor;
 
 $dev = array(
 	'adapter' => 'AuthorizeNet',
@@ -11,7 +11,7 @@ $dev = array(
 	'connection' => array('classes' => array('socket' => 'lithium\net\socket\Curl'))
 );
 
-Payments::config(array(
+Processor::config(array(
 	'default' => array(
 		'production' => array(
 			'adapter' => 'AuthorizeNet',

@@ -3,7 +3,7 @@
 namespace app\tests\cases\models;
 
 use app\tests\mocks\models\OrderMock;
-use app\tests\mocks\extensions\PaymentsMock;
+use app\tests\mocks\payments\ProcessorMock;
 use app\tests\mocks\storage\session\adapter\MemoryMock;
 use MongoId;
 use lithium\storage\Session;
@@ -47,7 +47,7 @@ class OrderTest extends \lithium\test\Unit {
 		foreach ($this->_delete as $document) {
 			$document->delete();
 		}
-		PaymentsMock::resetMock();
+		ProcessorMock::resetMock();
 	}
 
 	public function testDates() {
@@ -99,19 +99,19 @@ class OrderTest extends \lithium\test\Unit {
 		$this->assertFalse($result);
 
 		$expected = 123.45;
-		$result = PaymentsMock::$authorize[1];
+		$result = ProcessorMock::$authorize[1];
 		$this->assertEqual($expected, $result);
 
 		$expected = $vars['creditCard']['number'];
-		$result = PaymentsMock::$authorize[2]->number;
+		$result = ProcessorMock::$authorize[2]->number;
 		$this->assertEqual($expected, $result);
 
 		$expected = $vars['creditCard']['month'];
-		$result = PaymentsMock::$authorize[2]->month;
+		$result = ProcessorMock::$authorize[2]->month;
 		$this->assertEqual($expected, $result);
 
 		$expected = $vars['creditCard']['year'];
-		$result = PaymentsMock::$authorize[2]->year;
+		$result = ProcessorMock::$authorize[2]->year;
 		$this->assertEqual($expected, $result);
 	}
 
@@ -578,8 +578,8 @@ class OrderTest extends \lithium\test\Unit {
 		if ($raw) {
 			return $creditCard;
 		}
-		$billing = PaymentsMock::create('default', 'address', $this->_address());
-		return PaymentsMock::create('default', 'creditCard', $creditCard + compact('billing'));
+		$billing = ProcessorMock::create('default', 'address', $this->_address());
+		return ProcessorMock::create('default', 'creditCard', $creditCard + compact('billing'));
 	}
 
 	protected function _address() {

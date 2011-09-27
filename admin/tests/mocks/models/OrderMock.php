@@ -6,7 +6,7 @@ class OrderMock extends \admin\models\Order {
 
 	protected static $_classes = array(
 		'tax' => 'admin\tests\mocks\extensions\AvaTaxMock',
-		'payments' => 'admin\tests\mocks\extensions\PaymentsMock'
+		'payments' => 'admin\tests\mocks\payments\ProcessorMock'
 	);
 }
 

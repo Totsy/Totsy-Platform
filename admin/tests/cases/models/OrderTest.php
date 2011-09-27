@@ -4,7 +4,7 @@ namespace admin\tests\cases\models;
 
 use admin\models\Order;
 use admin\tests\mocks\models\OrderMock;
-use admin\tests\mocks\extensions\PaymentsMock;
+use admin\tests\mocks\payments\ProcessorMock;
 use admin\models\User;
 use admin\models\Item;
 use MongoId;
@@ -34,7 +34,7 @@ class OrderTest extends \lithium\test\Unit {
 		foreach ($this->_delete as $document) {
 			$document->delete();
 		}
-		PaymentsMock::resetMock();
+		ProcessorMock::resetMock();
 	}
 
 	public function testDates() {
@@ -105,7 +105,7 @@ class OrderTest extends \lithium\test\Unit {
 		$this->assertTrue($result);
 
 		$expected = '090909099909';
-		$result = PaymentsMock::$void[1];
+		$result = ProcessorMock::$void[1];
 		$this->assertEqual($expected, $result);
 
 		$order->delete();
@@ -139,7 +139,7 @@ class OrderTest extends \lithium\test\Unit {
 		$result = $order->void_date;
 		$this->assertTrue($result);
 
-		$result = PaymentsMock::$void;
+		$result = ProcessorMock::$void;
 		$this->assertFalse($result);
 
 		$order->delete();
@@ -172,7 +172,7 @@ class OrderTest extends \lithium\test\Unit {
 		$this->assertEqual($expected, $result);
 
 		$expected = '090909099909';
-		$result = PaymentsMock::$capture[1];
+		$result = ProcessorMock::$capture[1];
 		$this->assertEqual($expected, $result);
 
 		$order->delete();
@@ -203,7 +203,7 @@ class OrderTest extends \lithium\test\Unit {
 		$expected = -1;
 		$this->assertEqual($expected, $result);
 
-		$result = PaymentsMock::$capture;
+		$result = ProcessorMock::$capture;
 		$this->assertFalse($result);
 
 		$order->delete();

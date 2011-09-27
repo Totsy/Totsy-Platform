@@ -5,7 +5,7 @@ namespace admin\models;
 use MongoId;
 use MongoDate;
 use MongoRegex;
-use li3_payments\extensions\payments\exceptions\TransactionException;
+use li3_payments\exceptions\TransactionException;
 use lithium\analysis\Logger;
 use admin\models\User;
 use admin\models\Item;
@@ -56,7 +56,7 @@ class Order extends Base {
 
 	protected static $_classes = array(
 		'tax' => 'admin\extensions\AvaTax',
-		'payments' => 'li3_payments\extensions\Payments'
+		'payments' => 'li3_payments\payments\Processor'
 	);
 
 	protected $_meta = array('source' => 'orders');

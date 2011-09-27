@@ -5,7 +5,7 @@ namespace app\models;
 use MongoId;
 use MongoDate;
 use lithium\storage\Session;
-use li3_payments\extensions\payments\exceptions\TransactionException;
+use li3_payments\exceptions\TransactionException;
 use app\extensions\Mailer;
 use app\models\User;
 use app\models\Base;
@@ -15,7 +15,7 @@ class Order extends Base {
 
 	protected static $_classes = array(
 		'tax' => 'app\extensions\AvaTax',
-		'payments' => 'li3_payments\extensions\Payments'
+		'payments' => 'li3_payments\payments\Processor'
 	);
 
 	protected $_dates = array(

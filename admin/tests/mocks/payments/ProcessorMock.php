@@ -1,10 +1,12 @@
 <?php
 
-namespace admin\tests\mocks\extensions;
+namespace admin\tests\mocks\payments;
 
-use li3_payments\extensions\PaymentObject;
+use li3_payments\payments\Account;
 
-class PaymentsMock extends \li3_payments\extensions\Payments {
+class ProcessorMock extends \li3_payments\payments\Processor {
+
+	public static $run;
 
 	public static $profile;
 
@@ -21,6 +23,7 @@ class PaymentsMock extends \li3_payments\extensions\Payments {
 	public static $profiles;
 
 	public static function resetMock() {
+		static::$run       = null;
 		static::$profile   = null;
 		static::$process   = null;
 		static::$authorize = null;
@@ -30,21 +33,24 @@ class PaymentsMock extends \li3_payments\extensions\Payments {
 		static::$profiles  = null;
 	}
 
+	public static function run($name, $type, $transaction, array $options = array()) {
+		$name = __FUNCTION__;
+		static::${$name} = func_get_args();
+	}
+
 	public static function profile($name, $profile, array $options = array()) {
 		$name = __FUNCTION__;
 		static::${$name} = func_get_args();
-
-		return true;
 	}
 
-	public static function process($name, $amount, PaymentObject $pmt, array $options = array()) {
+	public static function process($name, $amount, Account $pmt, array $options = array()) {
 		$name = __FUNCTION__;
 		static::${$name} = func_get_args();
 
 		return 'transaction id';
 	}
 
-	public static function authorize($name, $amount, PaymentObject $pmt, array $options = array()) {
+	public static function authorize($name, $amount, Account $pmt, array $options = array()) {
 		$name = __FUNCTION__;
 		static::${$name} = func_get_args();
 
@@ -61,8 +67,6 @@ class PaymentsMock extends \li3_payments\extensions\Payments {
 	public static function credit($name, $transaction, $amount = null, array $options = array()) {
 		$name = __FUNCTION__;
 		static::${$name} = func_get_args();
-
-		return null;
 	}
 
 	public static function void($name, $transaction, array $options = array()) {
@@ -75,10 +79,7 @@ class PaymentsMock extends \li3_payments\extensions\Payments {
 	public static function profiles($name, $query = null, array $options = array()) {
 		$name = __FUNCTION__;
 		static::${$name} = func_get_args();
-
-		return null;
 	}
-
 }
 
 ?>
