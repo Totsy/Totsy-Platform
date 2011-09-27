@@ -498,15 +498,29 @@ class Order extends Base {
 			$regexObj = new MongoRegex("/" . $selected_order["promo_code"] . "/i");
 			$conditions = array("code" => $regexObj);
 			$promocode = $promocodeCollection->findOne($conditions);
-			if( $subTotal <= $promocode['minimum_purchase']){
+			if($subTotal <= $promocode['minimum_purchase']) {
 				$preAfterDiscount = $subTotal;
 				$datas_order["promocode_disable"] = true;
-			}else {
+				#Reset Shipping
+				if ($promocode['type'] == 'free_shipping') {
+					if(!empty($datas_order["handlingOriginal"])) {
+						$datas_order["handling"] = $datas_order["handlingOriginal"];
+					}
+					if(!empty($datas_order["overSizeHandlingOriginal"])) {
+						$datas_order["overSizeHandling"] = $datas_order["overSizeHandlingOriginal"];
+					}
+				}
+			} else {
 				if ($promocode['type'] == 'percentage') {
 					$selected_order["promo_discount"] = - ($subTotal * $promocode['discount_amount']);
 					$datas_order["promo_discount"] = $selected_order["promo_discount"];
 				}
 				$preAfterDiscount = $subTotal + $selected_order["promo_discount"];
+				if ($promocode['type'] == 'free_shipping') {
+					$handling = 0;
+					$overSizeHandling = 0;
+					$preAfterDiscount = $subTotal;
+				}
 				$datas_order["promocode_disable"] = false;
 			}
 		} else {
@@ -574,6 +588,7 @@ class Order extends Base {
 			'subTotal' => $subTotal,
 			'tax' => $tax,
 			'handling' => $handling,
+			'overSizeHandling' => $overSizeHandling,
 			'promocode_disable' => $datas_order["promocode_disable"],
 			'credit_used' => (float) $selected_order["credit_used"]
 		);

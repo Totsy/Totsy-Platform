@@ -95,6 +95,9 @@ class Order extends Base {
 				Session::delete('credit');
 				$order->credit_used = abs($vars['cartCredit']->credit_amount);
 			}
+			#Save Original Shipping Value
+			$vars['shippingCostOriginal'] = $vars['shippingCost'];
+			$vars['overShippingCostOriginal'] = $vars['overShippingCost'];
 			#Save Promocode Used
 			if ($vars['cartPromo']->saved_amount) {
 				Promocode::add($vars['cartPromo']->code_id, $vars['cartPromo']->saved_amount, $order->total);
@@ -143,6 +146,8 @@ class Order extends Base {
 					'subTotal' => $vars['subTotal'],
 					'handling' => $vars['shippingCost'],
 					'overSizeHandling' => $vars['overShippingCost'],
+					'handlingOriginal' => $vars['shippingCostOriginal'],
+					'overSizeHandlingOriginal' => $vars['overShippingCostOriginal'],
 					'user_id' => (string) $user['_id'],
 					'tax' => (float) $avatax['tax'],
 					'card_type' => $card->type,
