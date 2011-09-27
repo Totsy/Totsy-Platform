@@ -404,28 +404,6 @@ class OrdersController extends BaseController {
 	}
 
 	/**
-	 * Return all the events of an order.
-	 *
-	 * @param object $object
-	 * @return array $orderEvents
-	 */
-	protected function _orderEvents($object) {
-		$orderEvents = null;
-		$ids = Cart::getEventIds($object);
-		if (!empty($ids)) {
-			$events = Event::find('all', array(
-				'conditions' => array('_id' => $ids),
-				'fields' => array('name', 'ship_message', 'ship_date', 'url')
-			));
-			$events = $events->data();
-			foreach ($events as $event) {
-				$orderEvents[$event['_id']] = $event;
-			}
-		}
-		return $orderEvents;
-	}
-
-	/**
 	 * The user choose his billing address and enter his credit card information.
 	 * - He can use a checkbox to apply shipping address as billing address
 	 * - There is a jquery check for the credit card number
@@ -604,6 +582,28 @@ class OrdersController extends BaseController {
 			}
 		}
 		return $eventItems;
+	}
+
+	/**
+	 * Return all the events of an order.
+	 *
+	 * @param object $object
+	 * @return array $orderEvents
+	 */
+	protected function _orderEvents($object) {
+		$orderEvents = null;
+		$ids = Cart::getEventIds($object);
+		if (!empty($ids)) {
+			$events = Event::find('all', array(
+				'conditions' => array('_id' => $ids),
+				'fields' => array('name', 'ship_message', 'ship_date', 'url')
+			));
+			$events = $events->data();
+			foreach ($events as $event) {
+				$orderEvents[$event['_id']] = $event;
+			}
+		}
+		return $orderEvents;
 	}
 }
 
