@@ -463,38 +463,18 @@ class OrdersController extends BaseController {
 		if (Session::check('cc_error')) {
 			return $this->redirect(array('Orders::payment'));
 		}
-		return $vars + compact('cartEmpty','order','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable','missChristmasCount','notmissChristmasCount');
-	}
-
-	/**
-	 * Group all the items in an order by their corresponding event.
-	 *
-	 * The $order object is assumed to have originated from one of model types; Order or Cart.
-	 * Irrespective of the type both will return an associative array of event items.
-	 *
-	 * @param object $order
-	 * @return array $eventItems
-	 */
-	protected function _itemGroupByEvent($object) {
-		$eventItems = array();
-
-		if ($object) {
-			$model = $object->model();
-
-			if (strpos($model, 'models\Order') !== false) {
-				foreach ($object->items->data() as $item) {
-					$eventItems[$item['event_id']][] = $item;
-				}
-			}
-			if ($model == 'app\models\Cart') {
-				foreach ($object->data() as $item) {
-					$event = $item['event'][0];
-					unset($item['event']);
-					$eventItems[$event][] = $item;
-				}
-			}
-		}
-		return $eventItems;
+		return $vars + compact(
+			'cartEmpty',
+			'order',
+			'shipDate',
+			'savings',
+			'credits',
+			'services',
+			'cartExpirationDate',
+			'promocode_disable',
+			'missChristmasCount',
+			'notmissChristmasCount'
+		);
 	}
 
 	/**
@@ -680,6 +660,36 @@ class OrdersController extends BaseController {
 		return compact('address','addresses_ddwn','selected','cartEmpty','payment','shipping','shipDate','cartExpirationDate','missChristmasCount','notmissChristmasCount');
 	}
 
+	/**
+	 * Group all the items in an order by their corresponding event.
+	 *
+	 * The $order object is assumed to have originated from one of model types; Order or Cart.
+	 * Irrespective of the type both will return an associative array of event items.
+	 *
+	 * @param object $order
+	 * @return array $eventItems
+	 */
+	protected function _itemGroupByEvent($object) {
+		$eventItems = array();
+
+		if ($object) {
+			$model = $object->model();
+
+			if (strpos($model, 'models\Order') !== false) {
+				foreach ($object->items->data() as $item) {
+					$eventItems[$item['event_id']][] = $item;
+				}
+			}
+			if ($model == 'app\models\Cart') {
+				foreach ($object->data() as $item) {
+					$event = $item['event'][0];
+					unset($item['event']);
+					$eventItems[$event][] = $item;
+				}
+			}
+		}
+		return $eventItems;
+	}
 }
 
 ?>
