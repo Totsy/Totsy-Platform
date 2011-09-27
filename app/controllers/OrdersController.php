@@ -518,6 +518,10 @@ class OrdersController extends BaseController {
 		$payment = null;
 		$checked = false;
 		$card = array();
+		$selected = array();
+		$addresses_ddwn = array();
+
+
 		#Get billing address from shipping one in session
 		$shipping = json_encode(Session::read('shipping'));
 		#Get Billing Address from Session
