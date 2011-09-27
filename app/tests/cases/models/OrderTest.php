@@ -4,6 +4,7 @@ namespace app\tests\cases\models;
 
 use app\tests\mocks\models\OrderMock;
 use app\tests\mocks\extensions\PaymentsMock;
+use app\tests\mocks\storage\session\adapter\MemoryMock;
 use MongoId;
 use lithium\storage\Session;
 use app\models\User;
@@ -20,8 +21,10 @@ class OrderTest extends \lithium\test\Unit {
 	protected $_delete = array();
 
 	public function setUp() {
+		$adapter = new MemoryMock();
+
 		Session::config(array(
-			'default' => array('adapter' => 'Memory')
+			'default' => compact('adapter')
 		));
 
 		$data = array(
