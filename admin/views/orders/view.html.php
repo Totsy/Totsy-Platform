@@ -411,7 +411,6 @@
 												$<?=number_format($order->overSizeHandling,2); ?>
 												<br>
 											<?php endif ?>
-											<br>
 											<br><br>
 											<strong style="font-weight:bold;color:#009900;">$<?=number_format($order->total,2); ?></strong>
 											</td>
