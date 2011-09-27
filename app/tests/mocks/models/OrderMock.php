@@ -12,19 +12,22 @@ class OrderMock extends \app\models\Order {
 	);
 
 	public static function creditCardDecrypt($user_id) {
-		$cc_infos = Session::read('cc_infos');
+		$data = Session::read('cc_infos');
+		$result = array();
 
-		foreach ($cc_infos as $key => &$value) {
-			$value = str_replace('encrypted:', '', $value);
+		foreach ($data as $key => $value) {
+			$result[$key] = str_replace('encrypted:', '', $value);
 		}
-		return $cc_infos;
+		return $result;
 	}
 
 	public static function creditCardEncrypt($cc_infos, $user_id, $save_iv_in_session = false) {
-		foreach ($cc_infos as $key => &$value) {
-			$value = 'encrypted:' . $value;
+		$result = array();
+
+		foreach ($cc_infos as $key => $value) {
+			$result[$key] = 'encrypted:' . $value;
 		}
-		return $cc_infos;
+		return $result;
 	}
 }
 
