@@ -43,7 +43,7 @@ if (is_array($closing) && count($closing)){
 		$out['closing'][] = $evnt;
 	}
 }
-
+$out['max_off'] = floor($maxOff);
 echo json_encode($out);
 
 function eventsReview_default_json_cut_string($str,$length=null){
