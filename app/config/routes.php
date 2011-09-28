@@ -87,6 +87,8 @@ Router::connect('/sales/{:args}', 'Events::index');
 Router::connect('/{:action:login|logout}', array('controller' => 'users'));
 Router::connect('/addresses', 'Addresses::view');
 Router::connect('/addresses/edit{:args}', 'Addresses::edit');
+Router::connect('/creditcards', 'Creditcards::view');
+Router::connect('/creditcards/edit{:args}', 'Creditcards::edit');
 Router::connect('/account/info', 'Users::info');
 Router::connect('/account/credits', 'Credits::view');
 Router::connect('/account/invites', 'Users::invite');

@@ -564,7 +564,31 @@ class OrdersController extends BaseController {
 				$cc_passed = true;
 				#Remove Credit Card Errors
 				Session::delete('cc_error');
-			}
+				
+				//Save the credit card information to the database if toggled in the database			
+				//1. search for the credit card in the database already and if there - than update
+/*	            $conditions = array('conditions'=>array('user_id' => $user['_id']));
+    	        $temp_credit_card_search = CreditCard::find( 'first', $conditions );
+
+				if ($temp_credit_card_search) {			
+					$temp_credit_card_search->type = $cc_infos->type;
+					$temp_credit_card_search->number = $cc_infos->number;
+					$temp_credit_card_search->valid = $cc_infos->valid;
+					$temp_credit_card_search->month = $cc_infos->month;
+					$temp_credit_card_search->year = $cc_infos->year;							$temp_credit_card_search->user_id = $user['_id'];		
+					$temp_credit_card_search->save();
+				} else {
+				//2. if the credit card is not in the database than create it
+					$cc_infos->user_id = $user['_id'];	
+					$cc_infos->save();
+			*/
+				}
+
+			$creditcard = CreditCard::create($this->request->data);
+			$creditcard->user_id = (string) $user['_id'];
+			$creditcard->save();								
+					
+	
 			#In case of normal submit (no ajax one with the checkbox)
 			if(empty($datas['opt_shipping_select']) && empty($datas['address_id'])) {
 				#Get Only address informations
