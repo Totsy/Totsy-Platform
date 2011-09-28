@@ -19,6 +19,7 @@ use li3_flash_message\extensions\storage\FlashMessage;
 use admin\models\PurchaseOrder;
 use lithium\data\Model;
 use FusionCharts;
+use admin\extensions\util\String;
 
 /**
  * The Reports Controller is the core for all reporting functionality.
@@ -294,12 +295,15 @@ class ReportsController extends BaseController {
 			$total = array('sum' => 0, 'quantity' => 0);
 			$event = Event::find('first', array(
 				'conditions' => array(
-					'_id' => $eventId
-			)));
-			$vendorName = preg_replace('/[^(\x20-\x7F)]*/','', substr($this->_asciiClean($event->name), 0, 3));
+					'_id' => $eventId),
+				'fields' => array(
+				    '_id' => 1,
+				    'name' => 1
+				)));
+			$vendorName = preg_replace('/[^(\x20-\x7F)]*/','', substr(String::asciiClean($event->name), 0, 3));
 			$time = date('ymdis', $event->_id->getTimestamp());
 			$poNumber = 'TOT'.'-'.$vendorName.$time;
-			$eventItems = $this->getOrderItems($eventId);
+			$eventItems = Event::getItems($eventId);
 			
 			$itemIds = array();
 			foreach ($eventItems as $key => $eventItem) {
@@ -355,7 +359,7 @@ class ReportsController extends BaseController {
 				'conditions' => array(
 					'_id' => $eventId
 			)));
-			$eventItems = $this->getOrderItems($eventId);
+			$eventItems = Event::getItems($eventId);
 			$inc = 0;
 			foreach ($eventItems as $eventItem) {
 				$orders = Order::find('all', array(
@@ -491,18 +495,6 @@ class ReportsController extends BaseController {
 		return $orders->data();
 	}
 
-	public function getOrderItems($eventId = null) {
-		$items = null;
-		if ($eventId) {
-			$items = Item::find('all', array(
-				'conditions' => array(
-					'event' => array('$in' => array($eventId)
-			))));
-			$items = $items->data();
-		}
-		return $items;
-	}
-
     public function googleAnalytics() {
 
 	}
@@ -514,7 +506,7 @@ class ReportsController extends BaseController {
 				'conditions' => array(
 					'_id' => $eventId
 			)));
-			$eventItems = $this->getOrderItems($eventId);
+			$eventItems = Event::getItems($eventId);
 			$inc = 0;
 			foreach ($eventItems as $eventItem) {
 				foreach ($eventItem['details'] as $key => $value) {

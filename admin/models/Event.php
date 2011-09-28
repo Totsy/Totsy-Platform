@@ -3,6 +3,7 @@
 namespace admin\models;
 use MongoId;
 use MongoDate;
+use admin\models\Item;
 use admin\extensions\util\String;
 
 class Event extends \lithium\data\Model {
@@ -78,6 +79,18 @@ class Event extends \lithium\data\Model {
 		$vendorName = preg_replace('/[^(\x20-\x7F)]*/','', substr(String::asciiClean($event->name), 0, 3));
 		$time = date('ymdis', $event->_id->getTimestamp());
 		return 'TOT'.'-'.$vendorName.$time;
+	}
+	
+	public static function getItems($eventId = null) {
+		$items = null;
+		if ($eventId) {
+			$items = Item::find('all', array(
+				'conditions' => array(
+					'event' => array('$in' => array($eventId)
+			))));
+			$items = $items->data();
+		}
+		return $items;
 	}
 }
 
