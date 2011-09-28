@@ -8,7 +8,10 @@ $dev = array(
 	'key' => '5z4X93s7cq4P2tEQ',
 	'debug' => false,
 	'endpoint' => 'test',
-	'connection' => array('classes' => array('socket' => 'lithium\net\socket\Curl'))
+	'connection' => array(
+		'classes' => array('socket' => 'lithium\net\socket\Curl'),
+		'socket' => 'lithium\net\socket\Curl'
+	)
 );
 
 Processor::config(array(
@@ -19,7 +22,10 @@ Processor::config(array(
 			'key' => '2J6978WzN6WV6jb7',
 			'debug' => false,
 			'endpoint' => 'live',
-			'connection' => array('classes' => array('socket' => 'lithium\net\socket\Curl'))
+			'connection' => array(
+				'classes' => array('socket' => 'lithium\net\socket\Curl'),
+				'socket' => 'lithium\net\socket\Curl'
+			)
 		),
 		'test' => $dev,
 		'development' => $dev,
