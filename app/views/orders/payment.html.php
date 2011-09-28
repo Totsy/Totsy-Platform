@@ -1,4 +1,46 @@
 <script type="text/javascript">	
+
+	function fadeIn_CCForm() {
+	        $('#credit_card_form').fadeIn('slow');
+	}
+	
+	function fadeIn_BillingAddressForm() {
+	        $('#billing_address_form').fadeIn('slow');
+	}
+
+	function fadeOut_CCForm() {
+	        $('#credit_card_form').fadeOut('slow');
+	}
+
+	function fadeOut_BillingAddressForm() {
+	        $('#billing_address_form').fadeOut('slow');
+	}
+
+	function fadeOut_saved_CCs() {
+			$('#saved_credit_cards').fadeOut('slow');
+	}
+	
+	function fadeIn_saved_CCs() {
+			$('#saved_credit_cards').fadeIn('slow');
+	}
+	
+	function clear_CCForm() {
+	    $("#paymentForm").find(':input').each(function() {
+	        switch(this.type) {
+	            case 'password':
+	            case 'select-multiple':
+	            case 'select-one':
+	            case 'text':
+	            case 'textarea':
+	                $(this).val('');
+	                break;
+	            case 'checkbox':
+	            /* case 'radio': */
+	                this.checked = false;
+	        }
+	    });
+	}
+	
 	$( function () {
 	    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	    
 		var now = new Date();
@@ -30,7 +72,6 @@ var paymentForm = new Object();
 <script type="text/javascript">
 
     $(document).ready( function() {
-        	
         //if its not true, set it to false. 
         //used to avoid overwriting the submitted 
         //value on refresh, persiting whether a 
@@ -48,14 +89,18 @@ var paymentForm = new Object();
     	
     	//highlight the invalid fields and show a prompt for the first of those highlighted
     	$("#paymentForm").submit(function() {
-    	
+    	    	
+/*
     		if(validCC()==false) {
 				return false;
 			}
+*/
     	    	
     		paymentForm.submitted = true;
     		paymentForm.form = $(this).serializeArray(); 
-    		
+    	
+			var savedCreditCard = $('input:radio[name=savedCreditCard]:checked').val();
+    	
     		var invalid_count = 0;
     		var set_bubble= false;
     		
@@ -63,7 +108,8 @@ var paymentForm = new Object();
     		$("#paymentForm").validationEngine('init', { promptPosition : "centerRight", scroll: false } );      		
     		    		    		    		
     		$.each(	paymentForm.form, function(i, field) {	
-    		    if(	field.value=="" && 
+    		    if(	savedCreditCard == 0 &&
+    		    	field.value=="" && 
     		    	field.name!=="address2" && 
     		    	field.name!=="opt_submitted" && 
     		    	field.name!=="opt_shipping" && 
@@ -130,11 +176,55 @@ var paymentForm = new Object();
 <div class="clear"></div>
 
 <div class="grid_16" style=" width:935px !important">
-				<hr /><br />
-				<h3>Pay with Credit Card :</h3>
-				<hr /> 
-				<span class="cart-select">
+				<hr />
+				
 				<?=$this->form->error('cc_error'); ?>
+
+				<br />				
+<?php
+	if ($creditCards) { 
+?>				<h3>
+					<input type="radio" name="savedCreditCard" value="1" checked onclick="fadeIn_saved_CCs(); fadeOut_CCForm(); fadeOut_BillingAddressForm(); "> Pay with a saved Credit Card : </h3> 
+					
+ <div id="saved_credit_cards" style="display: block;">
+ <br/>
+				<table width="500px" border="0" cellspacing="0" cellpadding="0">
+				  <tr>
+				    <td colspan="3"><strong>Your credit and debit cards</strong></td>
+				    <td><strong>Name on Card</strong></td>
+				    <td><strong>Expires on</strong></td>
+				  </tr>
+<?php foreach ($creditCards as $creditCard): ?>
+				  <tr>
+				    <td align="right"><input type="radio" name="creditCard" value="<?=$creditCard->_id;?>" checked></td>
+				    <td align="middle"><img src="
+				   		<?
+				   			switch ($creditCard->type) {
+				   				case 'visa': print "/img/cc_visa.gif"; break;
+				   				case 'mastercard': print "/img/cc_visa.gif"; break;				   			case 'americanexpress': print "/img/cc_americanexpress.gif"; break;
+				   			}
+				   		?>">
+				   	</td>
+				    <td align="left"><?=ucfirst($creditCard->type);?> ending in <?=substr($creditCard->number, -4); ?></td>
+				    <td><?=$creditCard->firstname." ".$creditCard->lastname;?></td>
+				    <td><?=$creditCard->month;?> / <?=$creditCard->year;?></td>
+				  </tr>
+<? endforeach; ?>
+				</table>
+				</div>
+
+
+				<h3><input type="radio" name="savedCreditCard" value="0" onclick="fadeOut_saved_CCs(); fadeIn_CCForm(); fadeIn_BillingAddressForm(); "> Pay with a new Credit Card :</h3>
+<?php
+	} else {
+?>
+				<h3>Pay with a Credit Card :</h3>
+<?
+	}
+?>	
+				<hr /> 
+				<div id="credit_card_form" style="display:none;">
+				<span class="cart-select">
 				<?=$this->form->hidden('opt_submitted', array('class'=>'inputbox', 'id' => 'opt_submitted')); ?>
 				<?=$this->form->label('card_type', 'Card Type', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->select('card_type', array('visa' => 'Visa', 'mc' => 'MasterCard','amex' => 'American Express'), array('id' => 'card_type', 'class'=>'inputbox')); ?>
@@ -180,15 +270,17 @@ var paymentForm = new Object();
 				}
 				?>
 				</span>
+				</div>
 				<br />
 				<br />
+				<div id="billing_address_form" style="display: none;">
 				<h3>Billing Address</h3>
 				<hr />
-				<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
+				<?php /* if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
 					Choose your address :<?=$this->form->select('addresses', $addresses_ddwn, array("id" => 'addresses', 'value' => $selected));?>
 					<div style="clear:both"></div>
 				<hr />
-				<?php endif ?>
+				<?php endif */ ?>
 				Use my shipping address as my billing address: <?=$this->form->checkbox("opt_shipping", array('id' => 'opt_shipping', 'onclick' => 'replace_address()' , "checked" => $checked)) ?>
 				<br />
 				<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
@@ -223,12 +315,13 @@ var paymentForm = new Object();
 				<?=$this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
 				<div style="clear:both"></div>
 				<div>
-					Save this address <?=$this->form->checkbox("opt_save", array('id' => 'opt_save')) ?>
+					Save this credit card and billing address <?=$this->form->checkbox("opt_save", array('id' => 'opt_save')) ?>
 				</div>
 				<?=$this->form->hidden('opt_description', array('id' => 'opt_description' , 'value' => 'billing')); ?>
 				<?=$this->form->hidden('opt_shipping_select', array('id' => 'opt_shipping_select')); ?>
 				</div>
-			
+				</div>
+					
 			<div class="grid_16">	
 				<?=$this->form->submit('CONTINUE', array('class' => 'button fr', 'style'=>'margin-right:10px;')); ?>
 			</div>
@@ -247,19 +340,10 @@ var paymentForm = new Object();
 	<?=$this->form->hidden('address_id', array('class' => 'inputbox', 'id' => 'address_id')); ?>
 	<?=$this->form->end();?>
 </div>
+
 <script>  
 	
-var shippingAddress = <?php echo $shipping; ?>
-
-//validate card number when a correct card is entered
-$("#card_number").keyup( function(){
-	validCC();
-});
-
-//validate card number when a correct card is entered
-$("#card_number").blur( function(){
-	validCC();
-});
+var shippingAddress = <?php echo $shipping; ?>;
 
 function replace_address() {
     if($("#opt_shipping").is(":checked")) {
