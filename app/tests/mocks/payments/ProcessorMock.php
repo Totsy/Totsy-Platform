@@ -3,6 +3,7 @@
 namespace app\tests\mocks\payments;
 
 use li3_payments\payments\Account;
+use li3_payments\payments\TransactionResponse;
 
 class ProcessorMock extends \li3_payments\payments\Processor {
 
@@ -47,21 +48,30 @@ class ProcessorMock extends \li3_payments\payments\Processor {
 		$name = __FUNCTION__;
 		static::${$name} = func_get_args();
 
-		return 'transaction id';
+		return new TransactionResponse(array(
+			'key' => 'transaction id',
+			'success' => true
+		));
 	}
 
 	public static function authorize($name, $amount, Account $pmt, array $options = array()) {
 		$name = __FUNCTION__;
 		static::${$name} = func_get_args();
 
-		return 'transaction id';
+		return new TransactionResponse(array(
+			'key' => 'transaction id',
+			'success' => true
+		));
 	}
 
 	public static function capture($name, $transaction, $amount, array $options = array()) {
 		$name = __FUNCTION__;
 		static::${$name} = func_get_args();
 
-		return 'transaction id';
+		return new TransactionResponse(array(
+			'key' => 'transaction id',
+			'success' => true
+		));
 	}
 
 	public static function credit($name, $transaction, $amount = null, array $options = array()) {
@@ -73,7 +83,10 @@ class ProcessorMock extends \li3_payments\payments\Processor {
 		$name = __FUNCTION__;
 		static::${$name} = func_get_args();
 
-		return 'transaction id';
+		return new TransactionResponse(array(
+			'key' => 'transaction id',
+			'success' => true
+		));
 	}
 
 	public static function profiles($name, $query = null, array $options = array()) {
