@@ -99,6 +99,7 @@ class Order extends Base {
 	/**
 	 * Voids an Order
 	 *
+	 * @see li3_payments\payments\Processor::void()
 	 * @param array $order - Array of order information
 	 * @return boolean
 	 */
@@ -151,6 +152,7 @@ class Order extends Base {
 	 * @fixme This could be refactored as a concrete record method. It
 	 *        currently is static for backwards compat. with documents
 	 *        retrieved via native methods.
+	 * @see li3_payments\payments\Processor::capture()
 	 * @see OrdersController::update()
 	 * @param array The order to process. Required fields are 'authKey', 'total' and '_id'.
 	 * @return boolean

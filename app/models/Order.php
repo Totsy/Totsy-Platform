@@ -44,6 +44,7 @@ class Order extends Base {
 	/**
 	 * Process all datas of the order and create an authorize.net transaction
 	 *
+	 * @see li3_payments\payments\Processor::authorize()
 	 * @return object
 	 */
 	public static function process($data, $cart, $vars, $avatax) {
