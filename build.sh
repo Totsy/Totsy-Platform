@@ -92,9 +92,17 @@ case $COMMAND in
 	# the entire codebase.
 	run-tests)
 		echo "Running payment related tests..."
+
 		cd $PROJECT_DIR/admin
 		libraries/lithium/console/li3 --env=test test tests/cases/controllers/OrdersControllerTest.php
 		libraries/lithium/console/li3 --env=test test tests/cases/models/OrderTest.php
+
+		cd $PROJECT_DIR
+		libraries/lithium/console/li3 test --case=app.tests.cases.controllers.OrdersController
+		libraries/lithium/console/li3 test --case=app.tests.cases.models.OrderTest
+
+		libraries/lithium/console/li3 test --case=li3_payments.tests.integration.TransactionsTest
+
 		echo
 		;;
 
