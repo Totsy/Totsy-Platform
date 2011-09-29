@@ -84,6 +84,7 @@ class Order extends Base {
 			} catch (TransactionException $e) {
 				Session::write('cc_error',$e->getMessage());
 			}
+			return static::recordOrder($vars, $cart, $card, $order, $avatax, $auth->key, $items);
 		} else {
 			 $order->errors(
 				$order->errors() + array($key => "All the items in your cart have expired. Please see our latest sales.")
