@@ -199,7 +199,9 @@ class Order extends Base {
 		}
 		$update = static::update(
 			array(
-				'$set' => $data
+				'$set' => $data + array(
+					'auth_error' => $error
+				)
 			),
 			array('_id' => $orderId),
 			array('upsert' => false)
