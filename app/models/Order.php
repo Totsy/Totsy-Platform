@@ -5,7 +5,6 @@ namespace app\models;
 use MongoId;
 use MongoDate;
 use lithium\storage\Session;
-use li3_payments\exceptions\TransactionException;
 use app\extensions\Mailer;
 use app\models\User;
 use app\models\Base;
@@ -69,18 +68,14 @@ class Order extends Base {
 				$items[] = $item;
 				++$inc;
 			}
-			try {
-				#Process Payment
-				if ($vars['total'] > 0) {
-					$authKey = $payments::authorize('default', $vars['total'], $card);
-				} else {
-					$authKey = Base::randomString(8,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz');
-				}
-				$order = static::recordOrder($vars, $cart, $card, $order, $avatax, $authKey, $items);
-				return $order;
-			} catch (TransactionException $e) {
-				Session::write('cc_error',$e->getMessage());
+
+			$auth = $payments::authorize('default', $vars['total'], $card);
+
+			if (!$auth->success()) {
+				Session::write('cc_error', $e->getMessage());
+				return false;
 			}
+			return static::recordOrder($vars, $cart, $card, $order, $avatax, $auth->key, $items);
 		} else {
 			 $order->errors(
 				$order->errors() + array($key => "All the items in your cart have expired. Please see our latest sales.")

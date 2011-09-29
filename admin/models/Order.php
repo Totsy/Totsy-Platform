@@ -5,7 +5,6 @@ namespace admin\models;
 use MongoId;
 use MongoDate;
 use MongoRegex;
-use li3_payments\exceptions\TransactionException;
 use lithium\analysis\Logger;
 use admin\models\User;
 use admin\models\Item;
@@ -107,40 +106,43 @@ class Order extends Base {
 		$payments = static::$_classes['payments'];
 
 		$orderId = new MongoId($order['_id']);
-		try {
-		    $error = null;
+		$error = null;
+		$data = array(
+			'void_date' => new MongoDate()
+		);
 
-		    if ($order['total'] != 0 && is_numeric($order['authKey'])){
-                $auth = $payments::void('default', $order['authKey']);
+		if ($order['total'] == 0 || !is_numeric($order['authKey'])) {
+			$data['void_confirm'] = -1;
+			$error = "Can't capture because total is zero.";
+		} else {
+            $auth = $payments::void('default', $order['authKey']);
+
+			if ($auth->success()) {
+				$data['void_confirm'] = $auth->key;
+			} elseif ($auth->errors) {
+				$data['void_confirm'] = -1;
+
+				$message  = "Void failed for order id `{$order['_id']}`:"
+				$message .= $error = implode('; ', $auth->errors);
+				Logger::error($message);
 			} else {
-			    $auth = -1;
-			    $error = "Can't capture because total is zero.";
+				$data['void_confirm'] = -1;
+
+				$message  = "Void failed for order id `{$order['_id']}`."
+				$error = 'Unknown error.';
+				Logger::error($message);
 			}
-			return static::update(
-                    array(
-						'$set' => array(
-							'void_date' => new MongoDate(),
-	                        'void_confirm' => $auth,
-							'auth_error' => $error
-						),
-					),
-                    array('_id' => $orderId),
-                    array('upsert' => false)
-                );
-		} catch (TransactionException $e) {
-			$error = $e->getMessage();
-			Logger::error("order-void: Void Failed. Error $error thrown for $order[_id]");
-			static::update(
-				array(
-					'$set' => array(
-						'error_date' => new MongoDate(),
-						'auth_error' => $error
-					)
-				),
-				array('_id' => $orderId),
-				array('upsert' => false)
-			);
 		}
+		$update = static::update(
+			array(
+				'$set' => $data + array(
+					'auth_error' => $error
+				)
+			),
+			array('_id' => $orderId),
+			array('upsert' => false)
+		);
+		return $update && !$error;
 	}
 
 	/**
@@ -157,46 +159,50 @@ class Order extends Base {
 		$payments = static::$_classes['payments'];
 
 		$orderId = new MongoId($order['_id']);
+		$error = null;
+		$data = array(
+			'payment_date' => new MongoDate()
+		);
 
-		try {
-		    $error = null;
-			if ($order['total'] != 0 && is_numeric($order['authKey'])) {
-				$auth = $payments::capture('default', $order['authKey'], floor($order['total']*100)/100);
+		Logger::info("Processing payment for order id `{$order['_id']}`.");
+
+		if ($order['total'] == 0 || !is_numeric($order['authKey'])) {
+			$data['auth_confirmation'] = -1;
+			$error = "Can't capture because total is zero.";
+		} else {
+			$auth = $payments::capture(
+				'default',
+				$order['authKey'],
+				floor($order['total'] * 100) / 100
+			);
+
+			if ($auth->success()) {
+				$data['auth_confirmation'] = $auth->key;
+				$data['payment_date'] = new MongoDate();
+			} elseif ($auth->errors) {
+				$data['auth_confirmation'] = -1;
+				$data['error_date'] = new MongoDate();
+
+				$message  = "Processing of payment for order id `{$order['_id']}` failed:"
+				$message .= $error = implode('; ', $auth->errors);
+				Logger::error($message);
 			} else {
-				$auth = -1;
-				$error = "Can't capture because total is zero.";
+				$data['auth_confirmation'] = -1;
+				$data['error_date'] = new MongoDate();
+				$error = 'Unknown error.';
+
+				$message = "Processing of payment for order id `{$order['_id']}` failed."
+				Logger::error($message);
 			}
-			Logger::info("process-payment: Processed payment for order_id {$order['_id']}");
-
-			return static::update(
-				array(
-					'$set' => array(
-						'payment_date' => new MongoDate(),
-						'auth_confirmation' => $auth,
-						'auth_error' => $error
-					)
-				),
-				array('_id' => $orderId),
-				array('upsert' => false)
-			);
-		} catch (TransactionException $e) {
-			$error = $e->getMessage();
-			Logger::info("process-payment: Failed to process payment for order_id `{$order['_id']}`.");
-			Logger::error("process-payment: Error {$error} thrown for `{$order['_id']}`.");
-
-			static::update(
-				array(
-					'$set' => array(
-						'error_date' => new MongoDate(),
-						'auth_confirmation' => -1,
-						'auth_error' => $error
-					)
-				),
-				array('_id' => $orderId),
-				array('upsert' => false)
-			);
-			return false;
 		}
+		$update = static::update(
+			array(
+				'$set' => $data
+			),
+			array('_id' => $orderId),
+			array('upsert' => false)
+		);
+		return $update && !$error;
 	}
 
 	public static function setTrackingNumber($id, $number) {
