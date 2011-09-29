@@ -73,7 +73,7 @@ class Order extends Base {
 			$auth = $payments::authorize('default', $vars['total'], $card);
 
 			if (!$auth->success()) {
-				Session::write('cc_error', $e->getMessage());
+				Session::write('cc_error', implode('; ', $auth->errors));
 				return false;
 			}
 			return static::recordOrder($vars, $cart, $card, $order, $avatax, $auth->key, $items);
