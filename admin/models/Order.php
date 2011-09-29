@@ -123,13 +123,13 @@ class Order extends Base {
 			} elseif ($auth->errors) {
 				$data['void_confirm'] = -1;
 
-				$message  = "Void failed for order id `{$order['_id']}`:"
+				$message  = "Void failed for order id `{$order['_id']}`:";
 				$message .= $error = implode('; ', $auth->errors);
 				Logger::error($message);
 			} else {
 				$data['void_confirm'] = -1;
 
-				$message  = "Void failed for order id `{$order['_id']}`."
+				$message  = "Void failed for order id `{$order['_id']}`.";
 				$error = 'Unknown error.';
 				Logger::error($message);
 			}
@@ -185,7 +185,7 @@ class Order extends Base {
 				$data['auth_confirmation'] = -1;
 				$data['error_date'] = new MongoDate();
 
-				$message  = "Processing of payment for order id `{$order['_id']}` failed:"
+				$message  = "Processing of payment for order id `{$order['_id']}` failed:";
 				$message .= $error = implode('; ', $auth->errors);
 				Logger::error($message);
 			} else {
@@ -193,7 +193,7 @@ class Order extends Base {
 				$data['error_date'] = new MongoDate();
 				$error = 'Unknown error.';
 
-				$message = "Processing of payment for order id `{$order['_id']}` failed."
+				$message = "Processing of payment for order id `{$order['_id']}` failed.";
 				Logger::error($message);
 			}
 		}
