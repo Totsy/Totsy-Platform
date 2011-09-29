@@ -121,7 +121,7 @@ class OrderTest extends \lithium\test\Unit {
 		$order->save();
 
 		$result = OrderMock::void($order->data());
-		$this->assertTrue($result);
+		$this->assertFalse($result);
 
 		$order = OrderMock::first((string) $order->_id);
 
@@ -188,7 +188,7 @@ class OrderTest extends \lithium\test\Unit {
 		$order->save();
 
 		$result = OrderMock::process($order->data());
-		$this->assertTrue($result);
+		$this->assertFalse($result);
 
 		$order = OrderMock::first((string) $order->_id);
 
