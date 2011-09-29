@@ -47,8 +47,14 @@ class UsersController extends \admin\controllers\BaseController {
 			'Date',
 			'Reason',
 			'Description',
-			'Amount'
-	));
+			'Amount'),
+		'promo' => array(
+			'Date',
+			'Order Id',
+			'Code',
+			'Type'
+		)
+	);
 
 	public function index() {
 		if ($this->request->data) {
@@ -65,6 +71,7 @@ class UsersController extends \admin\controllers\BaseController {
 				'first', array(
 					'conditions' => array('_id' => $id)
 			));
+			$promocodes_used = $user['promocodes_used'];
 			if ($user) {
 				$headings = $this->_headings;
 				$reasons = array(
@@ -109,7 +116,7 @@ class UsersController extends \admin\controllers\BaseController {
 			}
 		}
 
-		return compact('user', 'credits', 'orders', 'headings', 'info', 'reasons', 'admin', 'deactivated');//,'history');
+		return compact('user', 'credits', 'orders', 'headings', 'info', 'reasons', 'admin', 'deactivated', 'promocodes_used');
 	}
 	/**
 	 * Performs login authentication for a user going directly to the database.

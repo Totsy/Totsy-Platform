@@ -8,6 +8,7 @@ use lithium\storage\Session;
 use li3_payments\extensions\Payments;
 use li3_payments\extensions\payments\exceptions\TransactionException;
 use app\extensions\Mailer;
+use app\models\User;
 
 class Order extends Base {
 
@@ -86,6 +87,7 @@ class Order extends Base {
 	 */
 	public static function recordOrder($vars, $cart, $card, $order, $avatax, $authKey, $items) {
 			$user = Session::read('userLogin');
+			$userCollection = User::collection();
 			$service = Session::read('services', array('name' => 'default'));
 			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 			#Save Credits Used
@@ -107,6 +109,15 @@ class Order extends Base {
 					$vars['shippingCost'] = 0;
 					$vars['overShippingCost'] = 0;
 				}
+				#Update User Informations with promocodes used
+				$promocode_used = array();
+				$promocode_used['code_id'] = $vars['cartPromo']->code_id;
+				$promocode_used['order_id'] = (string) $order->_id;
+				$promocode_used['date'] = new MongoDate();
+				$promocode_used['code'] = $vars['cartPromo']->code;
+				$promocode_used['type'] = $vars['cartPromo']->type;
+				$userCollection->update(array("_id" => new MongoId($user['_id'])), array('$push' => array('promocodes_used' => $promocode_used)), array('upsert' => true));
+				#Update Order Information with PromoCode
 				$order->promo_code = $vars['cartPromo']->code;
 				$order->promo_type = $vars['cartPromo']->type;
 				$order->promo_discount = abs($vars['cartPromo']->saved_amount);
@@ -162,7 +173,7 @@ class Order extends Base {
 			foreach ($cart as $item) {
 				Item::sold($item->item_id, $item->size, $item->quantity);
 			}
-			#Update amount of user's orders 
+			#Update amount of user's orders
 			$user = User::getUser();
 			++$user->purchase_count;
 			$user->save(null, array('validate' => false));
