@@ -7,6 +7,7 @@ use admin\models\Order;
 use admin\models\Event;
 use admin\models\Item;
 use admin\models\Credit;
+use admin\models\Promocode;
 use admin\models\ProcessedOrder;
 use admin\models\OrderShipped;
 use lithium\core\Environment;
@@ -18,6 +19,7 @@ use MongoId;
 use MongoCursor;
 use lithium\data\Model;
 use lithium\util\String;
+use SimpleXMLElement;
 
 /**
  * Simple export script for financial data needed by CFO.
@@ -38,23 +40,36 @@ class FinancialExport extends \lithium\console\Command  {
 	 *
 	 * @var string
 	 */
-	public $tmp = '/resources/totsy/';
+	public $tmp = '/resources/totsy/finance/';
+
+	/**
+	 * Will generate xml of orders going back to Nov 1 - one day before the present
+	 *
+	 * @var string
+	 */
+	public $historical = 'false';
 
 	/**
 	 * The summary header to be used in the summary CSV export file.
 	 */
 	protected $summaryHeader = array(
 		'_id',
+		'name',
+		'address',
 		'credit_used',
 		'handling',
 		'order_id',
 		'overSizeHandling',
 		'promo_discount',
 		'promo_code',
+		'promo_type',
+		'promo-code_amt',
 		'service',
 		'subTotal',
 		'tax',
 		'total',
+		'gross_shipping_amt',
+		'net_shipping_amt',
 		'user_id',
 		'city',
 		'state',
@@ -77,15 +92,15 @@ class FinancialExport extends \lithium\console\Command  {
 		"_id",
 		"category",
 		"sub_category",
+		"vendor",
 		"color",
+		"size",
 		"description",
 		"item_id",
 		"quantity",
 		"sale_retail",
 		"sale_wholesale",
-		"size",
 		"event_id",
-		"vendor",
 		"event_start_date",
 		"event_end_date",
 		"order_id_short",
@@ -109,6 +124,7 @@ class FinancialExport extends \lithium\console\Command  {
 		'error',
 		'user_id'
 	);
+
 	/**
 	 * Some standard order data fields to be unset.
 	 */
@@ -141,12 +157,12 @@ class FinancialExport extends \lithium\console\Command  {
 	public function run() {
 		Environment::set($this->env);
 		$this->tmp = LITHIUM_APP_PATH . $this->tmp;
-		MongoCursor::$timeout = -1;
 		/**
 		 * The query was timing out without an index running locally on a MBP. Although this won't be an
 		 * issue running on production just note that a new index will be created.
 		 */
 		Order::collection()->ensureIndex(array('date_created' => -1));
+		Promocode::collection()->ensureIndex(array('code' => -1));
 		OrderShipped::collection()->ensureIndex(array('OrderNum' => 1));
 		/**
 		 * Going for all the orders that were created after Nov 1, 2010. This may need to be dynamically
@@ -157,6 +173,7 @@ class FinancialExport extends \lithium\console\Command  {
 		//	'payment_date' => array('$exists' => true),
 		//	'payment_date' => array('$gte' => new MongoDate(strtotime('May 28, 2011')), '$lte' => new MongoDate(strtotime('June 7, 2011')))
 		);
+
 		$fields = array(
 			'billing',
 			'authKey',
@@ -178,28 +195,30 @@ class FinancialExport extends \lithium\console\Command  {
 			'ship_records',
 			'tax',
 			'payment_date',
-			'service'
+			'service',
+			'shipping'
 		);
+
 		$orders = Order::collection()->find($orderConditions, $fields)->sort(array('date_created' => -1));
 
 		$ordersShipped = OrderShipped::collection();
-		$orderSummary = $orderDetails = array();
+		$orderSummary = $orderDetails = $creditDetails = array();
 		/**
 		 * Setup filenames for the order summary and epxort functionality.
 		 */
-		$this->time = date('ymdHis');
-		$orderSummaryFile = $this->tmp . 'OrdSummary'.$this->time . '.csv';
-		$orderDetailFile = $this->tmp . 'OrdDetail'.$this->time . '.csv';
-		$creditDetailFile = $this->tmp . 'CredDetail' . $this->time . '.csv';
-		$fpSummary = fopen($orderSummaryFile, 'w');
-		$fpDetail = fopen($orderDetailFile, 'w');
-		$cpDetail = fopen($creditDetailFile, 'w');
+		$this->time = date('m-d-Y');
+		$orderSummaryFile = $this->tmp . 'OrdSummary_' . $this->time . '.xml';
+		$orderDetailFile = $this->tmp . 'OrdDetail_' . $this->time . '.xml';
+		$creditDetailFile = $this->tmp . 'CredDetail_' . $this->time . '.xml';
+//		$fpSummary = fopen($orderSummaryFile, 'w');
+//		$fpDetail = fopen($orderDetailFile, 'w');
+//		$cpDetail = fopen($creditDetailFile, 'w');
 		/**
 		 * Setup the file headers
 		 */
-		fputcsv($fpSummary, $this->summaryHeader,',',chr(34));
-		fputcsv($fpDetail, $this->detailHeader,',',chr(34));
-		fputcsv($cpDetail, $this->creditHeader,',',chr(34));
+//		fputcsv($fpSummary, $this->summaryHeader,',',chr(34));
+//		fputcsv($fpDetail, $this->detailHeader,',',chr(34));
+//		fputcsv($cpDetail, $this->creditHeader,',',chr(34));
 		/**
 		 * Build the files
 		 */
@@ -243,16 +262,25 @@ class FinancialExport extends \lithium\console\Command  {
 			} else {
 				$order['estimated_ship_date'] = 0;
 			}
+			$order['net_shipping_amt'] = (float) $order['subTotal'] + (float) $order['handling'] + (float) $order['overSizeHandling'];
+			$order['gross_shipping_amt'] = $order['net_shipping_amt'];
 			if (array_key_exists('service', $order)) {
 				if (in_array('freeshipping', $order['service'])){
 				    $order['service'] = 'freeshipping';
+				    $order['gross_shipping_amt'] -= 7.95;
 				} else if(in_array('10off50', $order)) {
 				    $order['service'] = '10off50';
+				     $order['gross_shipping_amt'] -= 10;
 				}else {
 				    $order['service'] = "none";
 				}
 			} else {
 				$order['service'] = "none";
+			}
+            if (array_key_exists('promo_code', $order)) {
+                $promocode = Promocode::find('first', array('conditions' => array('code' => new MongoRegex("/" . $order['promo_code'] . "/i"))));
+                $order['promo_type'] = $promocode['type'];
+                $order['promo-code_amt'] = $promocode['discount_amount'];
 			}
 			/*
 			* Grab credit information
@@ -290,10 +318,17 @@ class FinancialExport extends \lithium\console\Command  {
 				        foreach($this->creditUnsetKey as $key) {
 				            unset($userCredit[$key]);
 				        }
+
+                        $creditDetails[] = $userCredit;
+                        //@todo don't this part any more - credit details
+                        /*
                         if (!empty($userCredit)){
 				            fputcsv($cpDetail, $userCredit,',',chr(34));
 				        }
+				        */
 				    }
+				    $order['gross_shipping_amt'] += (array_key_exists('credit_used', $order)) ? $order['credit_used']:0;
+				    $order['gross_shipping_amt'] += (array_key_exists('promo_discount', $order)) ? $order['promo_discount']:0;
 				}
 			/*
 			* Get credit, promocodes,  and oversize handling information
@@ -319,6 +354,13 @@ class FinancialExport extends \lithium\console\Command  {
 			    $order['ship_records'] = "No";
 			}
 
+			$order['name'] = $order['shipping']['lastname'] . ', ' . $order['shipping']['firstname'];
+
+			$order['address'] = $order['shipping']['address'] . ' ' . $order['shipping']['address_2'] .
+			    ', ' . $order['shipping']['city'] . ', ' . $order['shipping']['state'] . ' ' .
+			    $order['shipping']['zip'];
+			unset($order['shipping']);
+
 			if ($shipRecord) {
 				$order['actual_ship_date'] = date("m/d/Y", $shipRecord['ShipDate']->sec);
 			} else {
@@ -339,8 +381,9 @@ class FinancialExport extends \lithium\console\Command  {
 			    $order['auth_error'] = "none";
 			}
 			$order = $this->sortArrayByArray($order, $this->summaryHeader);
-
-			fputcsv($fpSummary, $order,',',chr(34));
+			//@todo don't need this anymore - order summary
+			$orderSummary[] = $order;
+		//	fputcsv($fpSummary, $order,',',chr(34));
 
 			//Get detailed information about the items sold
 			foreach ($orderItems as $item) {
@@ -377,11 +420,18 @@ class FinancialExport extends \lithium\console\Command  {
 				$item['order_id_short'] = $order['order_id'];
 				$item['sale_wholesale'] = $itemRecord['sale_whol'];
 				$item = $this->sortArrayByArray($item, $this->detailHeader);
-				fputcsv($fpDetail, $item,',',chr(34));
+
+				$orderDetails[] = $item;
+				// @todo don't need this any more - order details - unless csv is requested again
+				//fputcsv($fpDetail, $item,',',chr(34));
 			}
 		}
-		fclose($fpSummary);
-		fclose($fpDetail);
+		$this->createXMLDoc('order_summary', $orderSummary, $orderSummaryFile);
+		$this->createXMLDoc('order_detail', $orderDetails, $orderDetailFile);
+		$this->createXMLDoc('credit_detail', $creditDetails, $creditDetailFile);
+		//don't need this anymore
+		//fclose($fpSummary);
+		//fclose($fpDetail);
 	}
 
 	/**
@@ -396,5 +446,23 @@ class FinancialExport extends \lithium\console\Command  {
 			}
 		}
 		return $ordered + $array;
+	}
+	/**
+	* Creates XML from data passed in
+	* @param string $type type of information: used for the root tags of the xml file
+	* @param array $records multidimensional array holding the records to converted to xml
+	* @param string $filename name of the xm file
+	**/
+	public function createXMLDoc($type, $records, $filename) {
+	    $xml = new SimpleXMLElement("<$type></$type>");
+	    foreach($records as $record) {
+	        $recordTag = $xml->addChild('record');
+	        foreach($record as $key => $value) {
+	            //SimpleXMLElement doesn't like ampersand for some reason so I am replacing it with 'and'
+	           $record[$key] = preg_replace('/&/','and',$record[$key]);
+	            $recordTag->addChild($key, $record[$key]);
+	        }
+	    }
+	    $xml->asXML($filename);
 	}
 }
