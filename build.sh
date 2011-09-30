@@ -53,24 +53,23 @@ case $COMMAND in
 		FILES=$(find $PROJECT_DIR/{app,admin} -type f -print0 | xargs -0 grep -l -i -E 'ini_set.*display_error.*(off|false|0)')
 
 		echo
+		echo
 		echo "NOTE: There is currently *no lithium core for the app* shipped with"
 		echo "      the codebase. Please ensure to place one at:"
 		echo
 		echo "      $PROJECT_DIR/libraries/lithium"
 		echo
-		echo "      Its commit hash should be b4d64753832ec0fa344cd5092571d691ede03176."
-		echo
-		read -p "Do you want to add in now automatically? (y/n) " CONFIRM
-		if [[ $CONFIRM == "y" ]]; then
-			$0 source-lithium
-		fi
-		echo
-		echo "NOTE: Some errors are being surpressed in:"
+		echo "QA: Some errors are being surpressed in:"
 		echo
 		for FILE in $FILES; do
 			echo "      $FILE"
 		done
 		echo
+
+		read -p "Do you want to add a lithium core now? (y/n) " CONFIRM
+		if [[ $CONFIRM == "y" ]]; then
+			$0 source-lithium
+		fi
 
 		echo
 		echo "Done :-)"
@@ -115,7 +114,7 @@ case $COMMAND in
 		;;
 
 	source-lithium)
-		TARGET=$PROJECT_DIR/app/libraries/lithium
+		TARGET=$PROJECT_DIR/libraries/lithium
 		TMP=$(mktemp -d -t totsy)
 
 		echo "Removing old..."
