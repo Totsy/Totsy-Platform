@@ -16,6 +16,9 @@
 [submodule "app/libraries/li3_facebook"]
 	path = app/libraries/li3_facebook
 	url = git@github.com:Totsy/li3_facebook.git
+[submodule "libraries/li3_payments"]
+	path = libraries/li3_payments
+	url = code@dev.lithify.me:li3_payments.git
 [submodule "admin/libraries/li3_flash_message"]
 	path = admin/libraries/li3_flash_message
 	url = code@dev.lithify.me:li3_flash_message.git
