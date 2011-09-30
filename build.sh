@@ -123,7 +123,7 @@ case $COMMAND in
 
 		git clone git://github.com/UnionOfRAD/lithium.git $TMP
 		cd $TMP
-		git checkout b4d64753832ec0fa344cd5092571d691ede03176
+		git checkout -q b4d64753832ec0fa344cd5092571d691ede03176
 		mv $TMP/libraries/lithium $TARGET
 
 		echo "Removing history..."
