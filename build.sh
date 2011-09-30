@@ -55,14 +55,19 @@ case $COMMAND in
 			grep -l -i -E 'ini_set.*display_error.*(off|false|0)' \
 		)
 
+
 		echo
 		echo "NOTE: There is currently *no lithium core for the app* shipped with"
-		echo "      the codebase. Please ensure to place one manually in the root"
-		echo "      libraries directory at:"
+		echo "      the codebase. Please ensure to place one at:"
 		echo
 		echo "      $PROJECT_DIR/libraries/lithium"
 		echo
-		echo "      The commit hash for it is b4d64753832ec0fa344cd5092571d691ede03176."
+		echo "      It's commit hash should be b4d64753832ec0fa344cd5092571d691ede03176."
+		echo
+		read -p "Do you want to add in now automatically? (y/n) " CONFIRM
+		if [[ $CONFIRM == "y" ]]; then
+			$0 source-lithium
+		fi
 		echo
 		echo "NOTE: Some errors are being surpressed in:"
 		echo
@@ -114,14 +119,14 @@ case $COMMAND in
 		;;
 
 	source-lithium)
-		TARGET=$PROJECT_DIR/admin/libraries/lithium
+		TARGET=$PROJECT_DIR/app/libraries/lithium
 
 		echo "Removing old..."
 		test -d $TARGET && rm -r $TARGET
 
 		git clone git://github.com/UnionOfRAD/lithium.git $TARGET
 		cd $TARGET
-		git merge origin/data
+		git checkout b4d64753832ec0fa344cd5092571d691ede03176
 
 		echo "Removing history..."
 		rm -fr .git
