@@ -51,7 +51,7 @@ case $COMMAND in
 		$0 fix-perms
 
 		FILES=$( \
-			find $PROJECT_DIR/admin -type f -print0 | xargs -0 \
+			find $PROJECT_DIR/{app,admin} -type f -print0 | xargs -0 \
 			grep -l -i -E 'ini_set.*display_error.*(off|false|0)' \
 		)
 
