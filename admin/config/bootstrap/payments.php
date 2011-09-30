@@ -2,27 +2,28 @@
 
 use li3_payments\payments\Processor;
 
+/**
+ * Payment configuration.
+ *
+ * To generate a transaction key login to your account i.e. through
+ * `https://ebctest.cybersource.com` and go to `Account Managmenet` ->
+ * `Transaction Security Keys` -> `Security Keys for the SOAP Toolkit`.
+ */
+
+$key  = '<transaction key>';
 $test = array(
-	'adapter' => 'AuthorizeNet',
-	'login' => '7uXvS44q',
-	'key' => '5z4X93s7cq4P2tEQ',
-	'debug' => false,
-	'endpoint' => 'test',
-	'connection' => array(
-		'classes' => array('socket' => 'lithium\net\socket\Curl'),
-		'socket' => 'lithium\net\socket\Curl'
-	)
+	'adapter' => 'CyberSource',
+	'merchantID' => '<merchant id>',
+	'transactionKey' => $key,
+	'endpoint' => 'test'
 );
+
+$key  = '<transaction key>';
 $live = array(
-	'adapter' => 'AuthorizeNet',
-	'login' => '8M2rfU63AKzX',
-	'key' => '2J6978WzN6WV6jb7',
-	'debug' => false,
-	'endpoint' => 'live',
-	'connection' => array(
-		'classes' => array('socket' => 'lithium\net\socket\Curl'),
-		'socket' => 'lithium\net\socket\Curl'
-	)
+	'adapter' => 'CyberSource',
+	'merchantID' => '<merchant id>',
+	'transactionKey' => $key,
+	'endpoint' => 'live'
 );
 
 Processor::config(array(
