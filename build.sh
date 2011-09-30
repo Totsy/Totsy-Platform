@@ -50,11 +50,7 @@ case $COMMAND in
 		$0 source-subs
 		$0 fix-perms
 
-		FILES=$( \
-			find $PROJECT_DIR/{app,admin} -type f -print0 | xargs -0 \
-			grep -l -i -E 'ini_set.*display_error.*(off|false|0)' \
-		)
-
+		FILES=$(find $PROJECT_DIR/{app,admin} -type f -print0 | xargs -0 grep -l -i -E 'ini_set.*display_error.*(off|false|0)')
 
 		echo
 		echo "NOTE: There is currently *no lithium core for the app* shipped with"
