@@ -62,7 +62,7 @@ case $COMMAND in
 		echo
 		echo "      $PROJECT_DIR/libraries/lithium"
 		echo
-		echo "      It's commit hash should be b4d64753832ec0fa344cd5092571d691ede03176."
+		echo "      Its commit hash should be b4d64753832ec0fa344cd5092571d691ede03176."
 		echo
 		read -p "Do you want to add in now automatically? (y/n) " CONFIRM
 		if [[ $CONFIRM == "y" ]]; then
