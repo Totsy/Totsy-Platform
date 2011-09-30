@@ -120,16 +120,21 @@ case $COMMAND in
 
 	source-lithium)
 		TARGET=$PROJECT_DIR/app/libraries/lithium
+		TMP=$(mktemp -d -t totsy)
 
 		echo "Removing old..."
 		test -d $TARGET && rm -r $TARGET
 
-		git clone git://github.com/UnionOfRAD/lithium.git $TARGET
-		cd $TARGET
+		git clone git://github.com/UnionOfRAD/lithium.git $TMP
+		cd $TMP
 		git checkout b4d64753832ec0fa344cd5092571d691ede03176
+		mv $TMP/libraries/lithium $TARGET
 
 		echo "Removing history..."
 		rm -fr .git
+
+		echo "Removing temporary directory..."
+		rm -fr $TMP
 		;;
 
 	*)
