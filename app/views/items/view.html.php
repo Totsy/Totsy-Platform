@@ -43,7 +43,7 @@ var isCollapsed = false;
 //jQuery for adding items.
 $(document).ready( function() {
 
-	var popupCart = function(cart) {
+	var showCartPopup = function(cart) {
 				
 		//reset all items
 		if(invisibleItems.length>0){
@@ -90,8 +90,10 @@ $(document).ready( function() {
 	var addItem = function() {
 		var item_size = "";
 	
-		if($('#size-select')){
+		if(typeof $('#size-select').attr('value')!='undefined') {
 			item_size = $('#size-select').attr('value');
+		} else {
+			item_size = "no size";
 		}
 		
 		$.ajax({
@@ -99,10 +101,17 @@ $(document).ready( function() {
 	        data: "item_id=" + item_id + "&" + "item_size=" + item_size,
 	        context: document.body,
 		    success: function(data) {
-	        	popupCart(data);
+	        	showCartPopup(data);
 	        }
 	    });
 	};
+	
+	var closeCartPopup = function() {
+		$("#cart_popup").slideToggle("2000");
+		//set isCollapsed to false so that the link doesn't appear on re-open
+		isCollapsed = false;
+		$("#more_cart_items a").html("See more...");
+	}
 	
 	//click handler for adding items to cart
 	$("#add-to-cart").click(function(){
@@ -111,10 +120,8 @@ $(document).ready( function() {
 	
 	//toggle items for carts with more than 3 different types of items
 	$("#more_cart_items a").click(function(){	
-			
 		if (isCollapsed==false) {
 			isCollapsed = true;
-			
 			$("#more_cart_items a").html("...see less");
 			$("#template").tmpl(invisibleItems).appendTo("#cart_item");	
 		} else {
@@ -124,12 +131,11 @@ $(document).ready( function() {
 			$("#more_cart_items a").html("See more...");
 			$("#template").tmpl(visibleItems).appendTo("#cart_item");	
 		}
-		
 	});
-	
+
 	//close cart popup
 	$("#cart_popup_close_button").click(function(){
-		$("#cart_popup").slideToggle("2000");
+		closeCartPopup();
 	});
 
 });
@@ -154,7 +160,7 @@ $(document).ready( function() {
 	 
 	<div id="cart_item"></div>
 	<div id="more_cart_items" style="font-style:italic !important; visibility:hidden; text-align:center">
-		<a href="#">see more...</a>
+		<a href="#">See more...</a>
 	</div>
 	
 	<hr>	
