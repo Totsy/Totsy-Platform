@@ -116,8 +116,7 @@ class Order extends Base {
 			$data['void_confirm'] = -1;
 			$error = "Can't capture because total is zero.";
 		} else {
-			$auth = array('key' => $order['authKey'], 'token' => $order['authToken']);
-            $auth = $payments::void('default', $auth);
+            $auth = $payments::void('default', $order['authKey']);
 
 			if ($auth->success()) {
 				$data['void_confirm'] = $auth->key;
@@ -155,7 +154,7 @@ class Order extends Base {
 	 *        retrieved via native methods.
 	 * @see li3_payments\payments\Processor::capture()
 	 * @see OrdersController::update()
-	 * @param array The order to process. Required fields are 'authKey', 'authToken', 'total' and '_id'.
+	 * @param array The order to process. Required fields are 'authKey', 'total' and '_id'.
 	 * @return boolean
 	 */
 	public static function process($order) {
@@ -175,7 +174,7 @@ class Order extends Base {
 		} else {
 			$auth = $payments::capture(
 				'default',
-				array('key' => $order['authKey'], 'token' => $order['authToken']),
+				$order['authKey'],
 				floor($order['total'] * 100) / 100
 			);
 
