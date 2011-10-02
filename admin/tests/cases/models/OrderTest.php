@@ -105,7 +105,7 @@ class OrderTest extends \lithium\test\Unit {
 		$result = $order->void_date;
 		$this->assertTrue($result);
 
-		$expected = '090909099909';
+		$expected = array('key' => '090909099909');
 		$result = ProcessorMock::$void[1];
 		$this->assertEqual($expected, $result);
 
@@ -172,7 +172,7 @@ class OrderTest extends \lithium\test\Unit {
 		$result = $order->auth_confirmation;
 		$this->assertEqual($expected, $result);
 
-		$expected = '090909099909';
+		$expected = array('key' => '090909099909');
 		$result = ProcessorMock::$capture[1];
 		$this->assertEqual($expected, $result);
 
