@@ -81,7 +81,8 @@ class OrderTest extends \lithium\test\Unit {
 	public function testVoidWithTotalPositive() {
 		$data = array(
 			'total' => 1.23,
-			'authKey' => '090909099909'
+			'authKey' => '090909099909',
+			'authToken' => '12345'
 		);
 		$order = OrderMock::create($data);
 		$order->save();
@@ -93,6 +94,10 @@ class OrderTest extends \lithium\test\Unit {
 
 		$expected = '090909099909';
 		$result = $order->authKey;
+		$this->assertEqual($expected, $result);
+
+		$expected = '12345';
+		$result = $order->authToken;
 		$this->assertEqual($expected, $result);
 
 		$result = $order->auth_error;
@@ -115,7 +120,8 @@ class OrderTest extends \lithium\test\Unit {
 	public function testVoidFailingWithTotalZero() {
 		$data = array(
 			'total' => 0,
-			'authKey' => '090909099909'
+			'authKey' => '090909099909',
+			'authToken' => '12345'
 		);
 		$order = OrderMock::create($data);
 		$order->save();
@@ -127,6 +133,10 @@ class OrderTest extends \lithium\test\Unit {
 
 		$expected = '090909099909';
 		$result = $order->authKey;
+		$this->assertEqual($expected, $result);
+
+		$expected = '12345';
+		$result = $order->authToken;
 		$this->assertEqual($expected, $result);
 
 		$expected = "Can't capture because total is zero.";
@@ -149,7 +159,8 @@ class OrderTest extends \lithium\test\Unit {
 	public function testProcess() {
 		$data = array(
 			'total' => 1.23,
-			'authKey' => '090909099909'
+			'authKey' => '090909099909',
+			'authToken' => '12345'
 		);
 		$order = OrderMock::create($data);
 		$result = $order->save();
@@ -182,7 +193,8 @@ class OrderTest extends \lithium\test\Unit {
 	public function testProcessFailingWithTotalZero() {
 		$data = array(
 			'total' => 0,
-			'authKey' => '090909099909'
+			'authKey' => '090909099909',
+			'authToken' => '12345'
 		);
 		$order = OrderMock::create($data);
 		$order->save();
@@ -194,6 +206,10 @@ class OrderTest extends \lithium\test\Unit {
 
 		$expected = '090909099909';
 		$result = $order->authKey;
+		$this->assertEqual($expected, $result);
+
+		$expected = '12345';
+		$result = $order->authToken;
 		$this->assertEqual($expected, $result);
 
 		$expected = "Can't capture because total is zero.";
@@ -368,6 +384,7 @@ class OrderTest extends \lithium\test\Unit {
 
 		$data = array(
 			'authKey' => '090909099909',
+			'authToken' => '12345',
 			'credit_used' => -5,
 			'date_created' => 'Sat, 11 Dec 2010 09: 51: 15 -0500',
 			'handling' => 7.95,
@@ -633,6 +650,7 @@ class OrderTest extends \lithium\test\Unit {
 		$order_datas = array(
 			'_id' => new MongoId($order_id),
 			'authKey' => '090909099909',
+			'authToken' => '12345',
 			'credit_used' => -5,
 			'date_created' => 'Sat, 11 Dec 2010 09: 51: 15 -0500',
 			'handling' => 7.95,
@@ -689,6 +707,7 @@ class OrderTest extends \lithium\test\Unit {
 		$current_order = array(
 			'id' => $order_id,
 			'authKey' => '090909099909',
+			'authToken' => '12345',
 			'credit_used' => -5,
 			'date_created' => 'Sat, 11 Dec 2010 09: 51: 15 -0500',
 			'handling' => 7.95,
@@ -876,6 +895,7 @@ class OrderTest extends \lithium\test\Unit {
 
 		$data = array(
 			'authKey' => '090909099909',
+			'authToken' => '12345',
 			'credit_used' => -5,
 			'date_created' => 'Sat, 11 Dec 2010 09: 51: 15 -0500',
 			'handling' => 7.95,
@@ -963,6 +983,7 @@ class OrderTest extends \lithium\test\Unit {
 		$order_datas = array(
 			'_id' => $order_id,
 			'authKey' => '090909099909',
+			'authToken' => '12345',
 			'credit_used' => -5,
 			'date_created' => 'Sat, 11 Dec 2010 09: 51: 15 -0500',
 			'handling' => 7.95,
@@ -1035,6 +1056,7 @@ class OrderTest extends \lithium\test\Unit {
 		$order_datas = array(
 			'_id' => $order_id,
 			'authKey' => '090909099909',
+			'authToken' => '12345',
 			'credit_used' => -5,
 			'date_created' => 'Sat, 11 Dec 2010 09: 51: 15 -0500',
 			'handling' => 7.95,
@@ -1193,6 +1215,7 @@ class OrderTest extends \lithium\test\Unit {
 		$order_datas = array(
 			'_id' => $order_id,
 			'authKey' => '090909099909',
+			'authToken' => '12345',
 			'credit_used' => -5,
 			'date_created' => 'Sat, 11 Dec 2010 09: 51: 15 -0500',
 			'handling' => 7.95,
@@ -1407,6 +1430,7 @@ class OrderTest extends \lithium\test\Unit {
 	public function testOrderPaymentRequests() {
 		$data = array(
 			'authKey' => '090909',
+			'authToken' => '12345',
 			'total' => 1.23
 		);
 		$order1 = Order::create($data);
@@ -1416,6 +1440,7 @@ class OrderTest extends \lithium\test\Unit {
 
 		$data = array(
 			'authKey' => '090909',
+			'authToken' => '12345',
 			'total' => 4.56
 		);
 		$order2 = Order::create($data);
