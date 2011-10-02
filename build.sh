@@ -129,7 +129,7 @@ case $COMMAND in
 
 	source-lithium)
 		TARGET=$PROJECT_DIR/libraries/lithium
-		TMP=$(mktemp -d -t totsy)
+		TMP=$(mktemp -d /tmp/totsyXXXX)
 
 		echo "Removing old..."
 		test -d $TARGET && rm -r $TARGET
