@@ -1,8 +1,184 @@
-<?=$this->html->script(array('cloud-zoom.1.0.2'));?>
+<script src="/js/jquery.tmpl.js" type="text/javascript"></script>
+
+<!-- template used for items on cart. jquery.tmpl.js driven -->
+<script id="template" type="text/html">
+ <div class="cart_popup_item_wrapper">
+ 	<div class="cart_popup_item_thumbnail">
+ 		<img src="/image/4e36f764d6b0250411000257.jpg" style="width:60px; height:60px">
+ 	</div>
+ 	<div class="cart_popup_item_fields">
+ 		<span class="cart_popup_item_description">
+ 			<a target="_blank" href="sale/hot-pink-mary-janes-with-white-button-polka-dots-hot-pink">
+ 			 ${description} </a>
+ 		</span>
+ 		<span class="cart_popup_item_price"><strong> $${sale_retail} </strong></span>
+ 		<span class="cart_popup_line_qty">Qty: ${quantity} </span>		
+ 		</span>
+ 		<span class="cart_popup_line_total"> $${line_total} </span>
+ 		<span title="date goes here" class="counter cart-review-line-timer" id="itemCounter0" style="display: none;"></span>
+ 		<div style="clear:both"></div>
+ 		<hr>
+ 		<div>
+ 		    <span class="cart-review-color-size">Color:</span> ${color} 
+ 		</div>
+ 		<div>
+ 		    <span class="cart-review-color-size">Size:</span> ${size}
+ 		</div>
+ 	</div>
+ </div>	
+</script>
+
+<script type="text/javascript">
+
+var item_id = "<?=$item->_id?>";
+
+//cart items immediately visible 
+var visibleItems = new Array();
+
+//cart items not immediately visible
+var invisibleItems = new Array();
+
+var isCollapsed = false;
+
+//jQuery for adding items.
+$(document).ready( function() {
+
+	var popupCart = function(cart) {
+				
+		//reset all items
+		if(invisibleItems.length>0){
+			invisibleItems = [];
+		}
+		
+		if(visibleItems.length>0){
+			visibleItems = [];
+		}
+		
+		var visibleItemCount = 3;
+		var invisibleItemCount = 0;
+				
+		//convert JSON string to JS Object
+		var cartData = eval('(' + cart + ')');
+				
+		for(i in cartData) {
+			//formatting price and line totals
+			cartData[i]['sale_retail'] = cartData[i]['sale_retail'].toFixed(2);	
+			cartData[i]['line_total'] = (cartData[i]['quantity'] * cartData[i]['sale_retail']).toFixed(2);
+		
+			if(i < visibleItemCount){ 
+				visibleItems.push(cartData[i]);
+			} else {
+				invisibleItems.push(cartData[i]);
+				invisibleItemCount++;
+			}
+		}
+		
+		//unset cart_item DIV
+		$("#cart_item").html("");
+		
+		//attach template to cart_item DIV
+		$("#template").tmpl(visibleItems).appendTo("#cart_item");
+		
+		if (invisibleItemCount > 0 ) {
+			$("#more_cart_items").css("visibility", "visible");	
+		}  
+		
+		$("#cart_popup").slideToggle("2000");	
+	};
+	
+	//add items to cart
+	var addItem = function() {
+		var item_size = "";
+	
+		if($('#size-select')){
+			item_size = $('#size-select').attr('value');
+		}
+		
+		$.ajax({
+	        url: $.base + 'cart/add',
+	        data: "item_id=" + item_id + "&" + "item_size=" + item_size,
+	        context: document.body,
+		    success: function(data) {
+	        	popupCart(data);
+	        }
+	    });
+	};
+	
+	//click handler for adding items to cart
+	$("#add-to-cart").click(function(){
+		addItem();
+	});	
+	
+	//toggle items for carts with more than 3 different types of items
+	$("#more_cart_items a").click(function(){	
+			
+		if (isCollapsed==false) {
+			isCollapsed = true;
+			
+			$("#more_cart_items a").html("...see less");
+			$("#template").tmpl(invisibleItems).appendTo("#cart_item");	
+		} else {
+			isCollapsed = false;			
+			//unset cart_item DIV
+			$("#cart_item").html("");
+			$("#more_cart_items a").html("See more...");
+			$("#template").tmpl(visibleItems).appendTo("#cart_item");	
+		}
+		
+	});
+	
+	//close cart popup
+	$("#cart_popup_close_button").click(function(){
+		$("#cart_popup").slideToggle("2000");
+	});
+
+});
+</script>
+
+<div style="position:relative"> 
+<div id="cart_popup" class="grid_16 roundy glow" style="display:none">
+	<div id="cart_popup_header">
+	    <div id="cart_popup_timer">
+	    	<span style="float:right">Item Reserved For:<br>
+	    		<span style="color:#009900; font-weight:bold;font-size:14px" id="itemCounter" class="hasCountdown">14:05 minutes</span>
+	    	</span>
+	    	<span style="float:right">Estimated Shipping Date: <br>
+	    		 <span style="font-weight:bold; color:#009900; font-size:14px">01-25-2012</span>
+	    	</span>		
+	    </div>
+	    <div id="cart_popup_close_button">
+	    	<a href="#"><img src="/img/popup_cart_close.jpg" style="width:20px; height:20px"></a>
+	    </div>
+	</div>
+	<div style="clear:both"></div>
+	 
+	<div id="cart_item"></div>
+	<div id="more_cart_items" style="font-style:italic !important; visibility:hidden; text-align:center">
+		<a href="#">see more...</a>
+	</div>
+	
+	<hr>	
+	 <div style="clear:both"></div>
+	 <div id="cart_popup_breakdown">
+	 	<div class="cart-savings">Your Savings: $22.49</div>
+	 	<div id="cart_popup_order_total">
+	 		<span class="cart-order-total">Order Total:</span> 
+	 	    <span id="ordertotal">$22.45 </span>
+	 	</div>						    	
+	 </div>
+	 <div style="clear:both"></div>
+	 <div class="cart-button fr cart-nav-buttons">
+	 	<a id="cart_popup_cont_shop" class="button_border" href="/sale/mom-co-maternity">Continue Shopping</a>		      
+	 	<a id="cart_popup_checkout" class="button" href="/checkout/shipping">Checkout</a>		 
+	 </div>
+</div>
+</div>
+
 <div class="grid_16">
 	<h2 class="page-title gray"><span class="red"><a href="/sales" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a><div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
 	<hr />
 </div>
+
 <div class="grid_6">
 	<!-- Start product item -->
 		<?php if ($item->total_quantity <= 0): ?>
@@ -62,10 +238,10 @@
 	<!-- End additional image view thumbnails -->
 
 	</div>
-				<?php endif ?>
-				<?php if (!empty($item->alternate_images)): ?>
-					<?php $x = 2; ?>
-				<?php endif ?>
+		<?php endif ?>
+		<?php if (!empty($item->alternate_images)): ?>
+		    <?php $x = 2; ?>
+		<?php endif ?>
 	</div>
 	<!-- End product item -->
 </div>
@@ -81,9 +257,6 @@
 	<div id="detail-top-left"  style="width:405px;">
 		<h1><strong><?=$event->name?></strong> <?=$item->description." ".$item->color; ?></h1>
 	</div>
-
-
-
 		<div class="clear"></div>
 
 		<div id="tabs">
@@ -105,9 +278,6 @@
 			Complete shipping details are available at <?=$this->html->link('shipping terms', array('Pages::shipping')); ?>.
 
 			<p><strong>Returns:</strong> Totsy accept returns on selected items only. You will get a merchandise credit and free shipping (AK &amp; HI: air shipping rates apply). Simply be sure that we receive the merchandise you wish to return within 30 days from the date you originally received it in its original condition with all the packaging intact. Please note: Final Sale items cannot be returned. Want to learn more? Read more in our <?=$this->html->link('returns section', array('Pages::returns')); ?>.</p>
-
-
-
 			</div>
 			<!-- End Shipping Tab -->
 
@@ -133,9 +303,7 @@
 		<h2 style="color:#707070;font-size:14px;">You would also love</h2>
 		<hr />
 		<?php foreach ($related as $relatedItem): ?>
-			
 			<?php
-			
 				if (empty($relatedItem['primary_image'])) {
 					$relatedImage = '/img/no-image-small.jpeg';
 				} else {
@@ -151,20 +319,15 @@
 							'id' => $relatedItem['description'],
 							'escape'=> false
 				));
-				
 			?>
 		<?php endforeach ?>
 	<?php endif ?>
 	</div>
 	<!-- End Related Products -->
-
 	</div>
 
-
 	<div class="grid_3">
-
 	<div id="detail-top-right" class="r-container">
-
 
 		<div class="md-gray p-container roundy">
 			<h2 class="caps" style="font-size:14px; padding-top:5px">Totsy Price</h2>
@@ -172,10 +335,9 @@
 
 			<div class="original-price" style="font-size:11px; padding-bottom:10px;">Original: $<?=number_format($item->msrp,2); ?></div>
 
-			<?=$this->form->create(null, array('url' => 'Cart::add')); ?>
 <?php if (!empty($sizes)): ?>
 				<?php if ( !((string)strtolower($sizes[0]) ==='no size')): ?>
-						<select name="item_size" id="size-select">
+						<select name="size-select" id="size-select">
 									<option value="">Please Select Size</option>
 							<?php foreach ($sizes as $value): ?>
 									<option value="<?=$value?>"><?=$value?></option>
@@ -184,11 +346,10 @@
 						<hr />
 				<?php endif ?>
 			<?php endif ?>
-			<?=$this->form->hidden("item_id", array('value' => "$item->_id", 'id'=>'item_id')); ?>
 			<?php if ($item->total_quantity >= 1): ?>
 				<div id="hidden-div" style="display:none; color:#eb132c; font-weight:bold;">Please Select Size!</div>
 				<span style="display: inline-block;">
-				<?=$this->form->submit('Add To Cart', array('class' => 'button')); ?>
+				<input type="button" value="Add to Cart" id="add-to-cart" class="button">	
 				</span>
 				<div id="all-reserved"></div>
 			<?php endif ?>
@@ -199,11 +360,9 @@
 		<?=$this->html->image("/image/$logo.jpg", array(
 			'alt' => $event->name, 'width' => "148"
 		)); ?>
-<?=$this->form->end(); ?>
 
  		</div>
 	</div>
-
 
 		<div style="padding:10px 0px; text-align:center;">
 			<?php echo $spinback_fb; ?>
@@ -211,11 +370,8 @@
 
 		</div>
 	<div class="clear"></div>
-
-
-
 	</div>
-<div id="modal" style="background:#fff!important; z-index:9999999999!important;"></div>
+<div id="modal" style="background:#fff!important; z-index:999!important;"></div>
 <script type="text/javascript">
 $(function () {
 	var saleEnd = new Date();
@@ -223,8 +379,8 @@ $(function () {
 	$('#listingCountdown').countdown({until: saleEnd, layout: 'Ends in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
 });
 </script>
-<script type="text/javascript">
 
+<script type="text/javascript">
     $('#disney').click(function(){
 		$('#modal').load('/events/disney').dialog({
 			autoOpen: false,
@@ -243,7 +399,6 @@ $(function () {
 <script type="text/javascript">
 $(document).ready(function() {
 	var itemCheck = function(){
-		var item_id = $('#item_id').attr('value');
 		var item_size = $('#size-select').attr('value');
 		if(item_size != '') {
 		    $.ajax({
@@ -270,6 +425,7 @@ $(document).ready(function() {
 	});
 });
 </script>
+
 <script type="text/javascript" charset="utf-8">
     $(document).ready(function () {
       checkOptions();
@@ -285,10 +441,10 @@ $(document).ready(function() {
 
         if (getSize) {
           $("#hidden-div").show();
-          $("input[type=Submit]").attr("disabled","disabled");
+          $("#add-to-cart").attr("disabled","disabled");
         } else {
           $("#hidden-div").hide();
-          $("input[type=Submit]").removeAttr("disabled");
+          $("#add-to-cart").removeAttr("disabled");
         };
       }
     });

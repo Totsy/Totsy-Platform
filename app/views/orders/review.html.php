@@ -381,7 +381,7 @@ var discountErrors = new Object();
     $.post('/cart/modal',{modal: 'disney'},function(data){
       //  alert(data);
         if(data == 'false'){
-            $('#modal').load('/cart/upsell?subtotal=' + $total + '&redirect=' + itemUrl).dialog({
+            $('#modal').load('/cart/upsell?subtotal=' + total + '&redirect=' + itemUrl).dialog({
                 autoOpen: false,
                 modal:true,
                 width: 550,

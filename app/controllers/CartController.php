@@ -34,8 +34,9 @@ class CartController extends BaseController {
 	* @see app/models/Cart::active()
 	* @return compact
 	*/	
-	
+		
 	public function view() {
+		
 		#Initialize Datas
 		$promocode_disable = false;
 		$cartExpirationDate = 0;
@@ -68,6 +69,7 @@ class CartController extends BaseController {
 		$shipDate = Cart::shipDate($cart);
 		#Check Expires 
 		Cart::cleanExpiredEventItems();
+		
 		#Loop To Get Infos About Cart
 		foreach ($cart as $item) {
 			#Get Last Expiration Date 
@@ -80,6 +82,7 @@ class CartController extends BaseController {
 				$item->error = "";
 				$item->save();
 			}
+			
 			$events = Event::find('all', array('conditions' => array('_id' => $item->event[0])));
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
 			#Get Event End Date
@@ -91,15 +94,15 @@ class CartController extends BaseController {
 			$itemCount += $item->quantity;
 
 			#Items that are shipping exempt
-		
 			if($item->shipping_exempt){
-				if ($item->shipping_exempt==true) {
+				if ($item->shipping_exempt==true){
 					$exemptCount ++; 
 				}
 			}
 			
 			$i++;
 		}
+		
 		#Get Last Url
 		if ($cart) {
 			krsort($itemlist);
@@ -138,6 +141,7 @@ class CartController extends BaseController {
 				
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
+		
 		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl', 'shipping');
 	}
 
@@ -147,16 +151,23 @@ class CartController extends BaseController {
 	 * @see app/models/Cart::checkCartItem()
 	 * @return compact
 	 */
-	public function add() {
+	public function add() {	
 		#Check Cart
 		$cart = Cart::create();
+		//ini_set("display_errors", 1);
+		
+		$this->render(array('layout' => false));	
 				
-		if ($this->request->data) {
+		if ($this->request->query) {
+				
+			$data = $this->request->query;		
+					
 			#Getting Size Selected
-			$itemId = $this->request->data['item_id'];
+			$itemId = $data['item_id'];
 			#If unselected, put no size as choice
-			$size = (!array_key_exists('item_size', $this->request->data)) ?
-				"no size": $this->request->data['item_size'];
+			$size = (!array_key_exists('item_size', $data)) ?
+				"no size": $data['item_size'];
+				
 			$item = Item::find('first', array(
 				'conditions' => array(
 					'_id' => "$itemId"),
@@ -174,24 +185,24 @@ class CartController extends BaseController {
 					'vendor_style',
 					'discount_exempt'
 			)));
+									
 			#Get Item from Cart if already added
 			$cartItem = Cart::checkCartItem($itemId, $size);
 			$avail = $item->details->{$size} - Cart::reserved($itemId, $size);
 			#Condition if Item Already in your Cart
 			if (!empty($cartItem)) {
 				//Make sure user does not add more than 9 items to the cart
-				
 				if($cartItem->quantity < 9 ) {
 					//Make sure the items are available
 					if( $avail > 0 ) {
 						++$cartItem->quantity;
-						header("Location: /checkout/view");
+												
 						$cartItem->save();
 						//calculate savings
 						$item[$item['_id']] = $cartItem->quantity;
-						Cart::updateSavings($item,'add');
+						Cart::updateSavings($item,'add');						
 					} else {
-						$cartItem->error = 'You can’t add this quantity in your cart. <a href="#5">Why?</a>';
+						$cartItem->error = 'You can’t add this quantity in your cart. <a href="faq">Why?</a>';
 						$cartItem->save();
 						$this->addIncompletePurchase(Cart::active());
 					}
@@ -218,12 +229,10 @@ class CartController extends BaseController {
 					}
 				}
 			}
-			header("Location: " . \lithium\net\http\Router::match('Cart::view', $this->request), true, 302);
-			die();
-		}
-		return compact('cart');
+		}		
+		echo json_encode(Cart::active()->data());
 	}
-
+		
 	/**
 	* The remove method delete an item from the temporary cart.
 	*
@@ -326,7 +335,7 @@ class CartController extends BaseController {
             return compact('total_left', 'url');
         }
 	}
-	
+		
 	protected function addIncompletePurchase($items) {
 		if (is_object($items)) $items = $items->data();
 		$user = Session::read('userLogin');
