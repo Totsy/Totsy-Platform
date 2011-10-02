@@ -11,6 +11,7 @@ use app\models\User;
 use app\models\Credit;
 use app\models\Promocode;
 use app\models\Item;
+use li3_payments\payments\TransactionResponse;
 
 class OrderTest extends \lithium\test\Unit {
 
@@ -116,11 +117,11 @@ class OrderTest extends \lithium\test\Unit {
 	}
 
 	public function testRecordOrderWithoutService() {
-		$authKey = '090909099909';
+		$auth = new TransactionResponse(array('key' => '090909099909'));
 		$address = $this->_address();
 
 		$data = array(
-			'authKey' => $authKey,
+			'authKey' => $auth->key,
 			'handling' => 7.95,
 			'shipping' => array(
 				'description' => 'Home',
@@ -157,7 +158,7 @@ class OrderTest extends \lithium\test\Unit {
 			$this->_card(),
 			$order,
 			$avatax,
-			$authKey,
+			$auth,
 			$items
 		);
 		$this->assertTrue($result);
@@ -177,11 +178,11 @@ class OrderTest extends \lithium\test\Unit {
 	}
 
 	public function testRecordOrderIncreasesUserPruchaseCount() {
-		$authKey = '090909099909';
+		$auth = new TransactionResponse(array('key' => '090909099909'));
 		$address = $this->_address();
 
 		$data = array(
-			'authKey' => $authKey,
+			'authKey' => $auth->key,
 			'handling' => 7.95,
 			'shipping' => array(
 				'description' => 'Home',
@@ -219,7 +220,7 @@ class OrderTest extends \lithium\test\Unit {
 			$this->_card(),
 			$order,
 			$avatax,
-			$authKey,
+			$auth,
 			$items
 		);
 
@@ -233,7 +234,7 @@ class OrderTest extends \lithium\test\Unit {
 			$this->_card(),
 			$order,
 			$avatax,
-			$authKey,
+			$auth,
 			$items
 		);
 
@@ -250,11 +251,11 @@ class OrderTest extends \lithium\test\Unit {
 		);
 		Session::write('services', $services);
 
-		$authKey = '090909099909';
+		$auth = new TransactionResponse(array('key' => '090909099909'));
 		$address = $this->_address();
 
 		$data = array(
-			'authKey' => $authKey,
+			'authKey' => $auth->key,
 			'handling' => 7.95,
 			'shipping' => array(
 				'description' => 'Home',
@@ -292,7 +293,7 @@ class OrderTest extends \lithium\test\Unit {
 			$this->_card(),
 			$order,
 			$avatax,
-			$authKey,
+			$auth,
 			$items
 		);
 		$this->assertTrue($result);
@@ -313,11 +314,11 @@ class OrderTest extends \lithium\test\Unit {
 	}
 
 	public function testRecordOrderFreeshippingFromPromocode() {
-		$authKey = '090909099909';
+		$auth = new TransactionResponse(array('key' => '090909099909'));
 		$address = $this->_address();
 
 		$data = array(
-			'authKey' => $authKey,
+			'authKey' => $auth->key,
 			'handling' => 7.95,
 			'shipping' => array(
 				'description' => 'Home',
@@ -358,7 +359,7 @@ class OrderTest extends \lithium\test\Unit {
 			$this->_card(),
 			$order,
 			$avatax,
-			$authKey,
+			$auth,
 			$items
 		);
 
@@ -383,11 +384,11 @@ class OrderTest extends \lithium\test\Unit {
 		);
 		Session::write('services', $services);
 
-		$authKey = '090909099909';
+		$auth = new TransactionResponse(array('key' => '090909099909'));
 		$address = $this->_address();
 
 		$data = array(
-			'authKey' => $authKey,
+			'authKey' => $auth->key,
 			'handling' => 7.95,
 			'ship_date' => 1294272000,
 			'shipping' => array(
@@ -426,7 +427,7 @@ class OrderTest extends \lithium\test\Unit {
 			$this->_card(),
 			$order,
 			$avatax,
-			$authKey,
+			$auth,
 			$items
 		);
 		$this->assertTrue($result);
@@ -439,7 +440,7 @@ class OrderTest extends \lithium\test\Unit {
 	}
 
 	public function testRecordOrderCartCreditAmountPositive() {
-		$authKey = '090909099909';
+		$auth = new TransactionResponse(array('key' => '090909099909'));
 		$address = $this->_address();
 
 		$this->user->save(
@@ -448,7 +449,7 @@ class OrderTest extends \lithium\test\Unit {
 		);
 
 		$data = array(
-			'authKey' => $authKey,
+			'authKey' => $auth->key,
 			'handling' => 7.95,
 			'shipping' => array(
 				'description' => 'Home',
@@ -500,7 +501,7 @@ class OrderTest extends \lithium\test\Unit {
 			$this->_card(),
 			$order,
 			$avatax,
-			$authKey,
+			$auth,
 			$items
 		);
 

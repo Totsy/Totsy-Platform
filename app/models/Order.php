@@ -10,6 +10,7 @@ use app\models\User;
 use app\models\Base;
 use app\models\FeatureToggles;
 
+
 class Order extends Base {
 
 	protected static $_classes = array(
@@ -76,7 +77,7 @@ class Order extends Base {
 				Session::write('cc_error', implode('; ', $auth->errors));
 				return false;
 			}
-			return static::recordOrder($vars, $cart, $card, $order, $avatax, $auth->key, $items);
+			return static::recordOrder($vars, $cart, $card, $order, $avatax, $auth, $items);
 		} else {
 			 $order->errors(
 				$order->errors() + array($key => "All the items in your cart have expired. Please see our latest sales.")
@@ -90,7 +91,7 @@ class Order extends Base {
 	 * Record in DB all informations linked with the order
 	 * @return redirect
 	 */
-	public static function recordOrder($vars, $cart, $card, $order, $avatax, $authKey, $items) {
+	public static function recordOrder($vars, $cart, $card, $order, $avatax, TransactionResponse $auth, $items) {
 			$tax = static::$_classes['tax'];
 
 			$user = Session::read('userLogin');
@@ -181,7 +182,10 @@ class Order extends Base {
 					'card_type' => $card->type,
 					'card_number' => substr($card->number, -4),
 					'date_created' => static::dates('now'),
-					'authKey' => $authKey,
+					/* The key is stored as `authKey` for BC and slow migration.
+					   `auth` will contain key info, too. */
+					'authKey' => $auth->key,
+					'auth' => $auth->export(),
 					'billing' => $vars['billingAddr'],
 					'shipping' => $vars['shippingAddr'],
 					'shippingMethod' => $shippingMethod,
