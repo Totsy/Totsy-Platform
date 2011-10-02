@@ -116,7 +116,7 @@ class Order extends Base {
 			$data['void_confirm'] = -1;
 			$error = "Can't capture because total is zero.";
 		} else {
-            $auth = $payments::void('default', $order['authKey']);
+            $auth = $payments::void('default', array('key' => $order['authKey']));
 
 			if ($auth->success()) {
 				$data['void_confirm'] = $auth->key;
@@ -174,7 +174,7 @@ class Order extends Base {
 		} else {
 			$auth = $payments::capture(
 				'default',
-				$order['authKey'],
+				array('key' => $order['authKey']),
 				floor($order['total'] * 100) / 100
 			);
 
