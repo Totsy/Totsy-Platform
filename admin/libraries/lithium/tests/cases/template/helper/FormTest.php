@@ -703,6 +703,30 @@ class FormTest extends \lithium\test\Unit {
 		$this->assertEqual(join('', $expected), $result);
 	}
 
+	public function testFormFieldWithCustomConfig() {
+		$this->form->config(array('field' => array('class' => 'custom-field')));
+		$result = $this->form->field('username');
+
+		$this->assertTags($result, array(
+			'div' => array(),
+			'label' => array('for' => 'Username'),
+			'Username',
+			'/label',
+			'input' => array(
+				'type' => 'text',
+				'name' => 'username',
+				'class' => 'custom-field',
+				'id' => 'Username'
+			),
+			'/div'
+		));
+
+		$this->assertTags($this->form->end(), array('/form'));
+
+		$this->form->config(array('templates' => array('end' => "</table></form>")));
+		$this->assertTags($this->form->end(), array('/table', '/form'));
+	}
+
 	/**
 	 * Verifies that calls to `field()` with `'type' => 'hidden'` do not produce `<label />`s.
 	 */
@@ -930,6 +954,7 @@ class FormTest extends \lithium\test\Unit {
 	 * Tests that the string template form `Form::field()` can be overridden.
 	 */
 	public function testFieldTemplateOverride() {
+		$result = $this->form->field('name', array('type' => 'text'));
 		$this->form->config(array('templates' => array('field' => '{:label}{:input}{:error}')));
 		$result = $this->form->field('name', array('type' => 'text'));
 		$this->assertTags($result, array(

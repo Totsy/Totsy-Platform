@@ -64,7 +64,7 @@ class Form extends \lithium\template\Helper {
 		'submit-image'   => '<input type="image" src="{:url}"{:options} />',
 		'text'           => '<input type="text" name="{:name}"{:options} />',
 		'textarea'       => '<textarea name="{:name}"{:options}>{:value}</textarea>',
-		'fieldset'       => '<fieldset{:options}><legend>{:content}</legend>{:raw}</fieldset>',
+		'fieldset'       => '<fieldset{:options}><legend>{:content}</legend>{:raw}</fieldset>'
 	);
 
 	/**
@@ -308,10 +308,10 @@ class Form extends \lithium\template\Helper {
 		$_context =& $this->_context;
 		$_options =& $this->_bindingOptions;
 
-		$filter = function($self, $params) use (&$_binding, &$_context, &$_options) {
+		$filter = function($self, $params) use (&$_binding, &$_context, &$_options, $template) {
 			unset($_binding);
 			$_options = array();
-			return $_context->strings('form-end');
+			return $self->invokeMethod('_render', array('end', $params['template'], array()));
 		};
 		$result = $this->_filter(__METHOD__, $params, $filter);
 		unset($this->_binding);
@@ -398,16 +398,16 @@ class Form extends \lithium\template\Helper {
 			'list' => null
 		);
 		$type = isset($options['type']) ? $options['type'] : $defaults['type'];
-
 		if ($this->_context->strings('field-' . $type)) {
-			$defaults['template'] = 'field-' . $type;
+			$options['template'] = 'field-' . $type;
 		}
-		list($options, $fieldOptions) = $this->_options($defaults, $options);
 		list(, $options, $template) = $this->_defaults(__FUNCTION__, $name, $options);
+		list($options, $fieldOptions) = $this->_options($defaults, $options);
 
 		if ($options['template'] != $defaults['template']) {
 			$template = $options['template'];
 		}
+
 		$wrap = $options['wrap'];
 		$type = $options['type'];
 		$label = $input = null;
