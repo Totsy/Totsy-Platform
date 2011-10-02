@@ -114,6 +114,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$order_datas = array(
 			"_id" => $order_id,
 			"authKey" => "090909099909",
+			'authToken' => '12345',
 			"credit_used" => -5,
 			"date_created" => "Sat, 11 Dec 2010 09: 51: 15 -0500",
 			"handling" => 7.95,
@@ -285,6 +286,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 
 		$data = array(
 			"authKey" => "090909099909",
+			'authToken' => '12345',
 			"credit_used" => -5,
 			"handling" => 7.95,
 			"items" => array(
@@ -425,6 +427,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$order_datas = array(
 			"_id" => $order_id,
 			"authKey" => "090909099909",
+			'authToken' => '12345',
 			"credit_used" => -5,
 			"date_created" => "Sat, 11 Dec 2010 09: 51: 15 -0500",
 			"handling" => 7.95,
