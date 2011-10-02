@@ -116,12 +116,11 @@ class OrderTest extends \lithium\test\Unit {
 	}
 
 	public function testRecordOrderWithoutService() {
-		$auth = array('key' => '090909099909', 'token' => '123456');
+		$authKey = '090909099909';
 		$address = $this->_address();
 
 		$data = array(
-			'authKey' => $auth['key'],
-			'authToken' => $auth['token'],
+			'authKey' => $authKey,
 			'handling' => 7.95,
 			'shipping' => array(
 				'description' => 'Home',
@@ -158,7 +157,7 @@ class OrderTest extends \lithium\test\Unit {
 			$this->_card(),
 			$order,
 			$avatax,
-			$auth,
+			$authKey,
 			$items
 		);
 		$this->assertTrue($result);
@@ -178,12 +177,11 @@ class OrderTest extends \lithium\test\Unit {
 	}
 
 	public function testRecordOrderIncreasesUserPruchaseCount() {
-		$auth = array('key' => '090909099909', 'token' => '123456');
+		$authKey = '090909099909';
 		$address = $this->_address();
 
 		$data = array(
-			'authKey' => $auth['key'],
-			'authToken' => $auth['token'],
+			'authKey' => $authKey,
 			'handling' => 7.95,
 			'shipping' => array(
 				'description' => 'Home',
@@ -221,7 +219,7 @@ class OrderTest extends \lithium\test\Unit {
 			$this->_card(),
 			$order,
 			$avatax,
-			$auth,
+			$authKey,
 			$items
 		);
 
@@ -235,7 +233,7 @@ class OrderTest extends \lithium\test\Unit {
 			$this->_card(),
 			$order,
 			$avatax,
-			$auth,
+			$authKey,
 			$items
 		);
 
@@ -252,12 +250,11 @@ class OrderTest extends \lithium\test\Unit {
 		);
 		Session::write('services', $services);
 
-		$auth = array('key' => '090909099909', 'token' => '123456');
+		$authKey = '090909099909';
 		$address = $this->_address();
 
 		$data = array(
-			'authKey' => $auth['key'],
-			'authToken' => $auth['token'],
+			'authKey' => $authKey,
 			'handling' => 7.95,
 			'shipping' => array(
 				'description' => 'Home',
@@ -295,7 +292,7 @@ class OrderTest extends \lithium\test\Unit {
 			$this->_card(),
 			$order,
 			$avatax,
-			$auth,
+			$authKey,
 			$items
 		);
 		$this->assertTrue($result);
@@ -316,12 +313,11 @@ class OrderTest extends \lithium\test\Unit {
 	}
 
 	public function testRecordOrderFreeshippingFromPromocode() {
-		$auth = array('key' => '090909099909', 'token' => '123456');
+		$authKey = '090909099909';
 		$address = $this->_address();
 
 		$data = array(
-			'authKey' => $auth['key'],
-			'authToken' => $auth['token'],
+			'authKey' => $authKey,
 			'handling' => 7.95,
 			'shipping' => array(
 				'description' => 'Home',
@@ -362,7 +358,7 @@ class OrderTest extends \lithium\test\Unit {
 			$this->_card(),
 			$order,
 			$avatax,
-			$auth,
+			$authKey,
 			$items
 		);
 
@@ -387,12 +383,11 @@ class OrderTest extends \lithium\test\Unit {
 		);
 		Session::write('services', $services);
 
-		$auth = array('key' => '090909099909', 'token' => '123456');
+		$authKey = '090909099909';
 		$address = $this->_address();
 
 		$data = array(
-			'authKey' => $auth['key'],
-			'authToken' => $auth['token'],
+			'authKey' => $authKey,
 			'handling' => 7.95,
 			'ship_date' => 1294272000,
 			'shipping' => array(
@@ -431,7 +426,7 @@ class OrderTest extends \lithium\test\Unit {
 			$this->_card(),
 			$order,
 			$avatax,
-			$auth,
+			$authKey,
 			$items
 		);
 		$this->assertTrue($result);
@@ -444,7 +439,7 @@ class OrderTest extends \lithium\test\Unit {
 	}
 
 	public function testRecordOrderCartCreditAmountPositive() {
-		$auth = array('key' => '090909099909', 'token' => '123456');
+		$authKey = '090909099909';
 		$address = $this->_address();
 
 		$this->user->save(
@@ -453,8 +448,7 @@ class OrderTest extends \lithium\test\Unit {
 		);
 
 		$data = array(
-			'authKey' => $auth['key'],
-			'authToken' => $auth['token'],
+			'authKey' => $authKey,
 			'handling' => 7.95,
 			'shipping' => array(
 				'description' => 'Home',
@@ -506,7 +500,7 @@ class OrderTest extends \lithium\test\Unit {
 			$this->_card(),
 			$order,
 			$avatax,
-			$auth,
+			$authKey,
 			$items
 		);
 

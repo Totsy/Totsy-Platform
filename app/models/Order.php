@@ -85,11 +85,7 @@ class Order extends Base {
 			} catch (TransactionException $e) {
 				Session::write('cc_error',$e->getMessage());
 			}
-			$auth = array(
-				'key' => $auth->response->requestID,
-				'token' => $auth->response->reqestToken
-			);
-			return static::recordOrder($vars, $cart, $card, $order, $avatax, $auth, $items);
+			return static::recordOrder($vars, $cart, $card, $order, $avatax, $auth->key, $items);
 		} else {
 			 $order->errors(
 				$order->errors() + array($key => "All the items in your cart have expired. Please see our latest sales.")
@@ -103,7 +99,7 @@ class Order extends Base {
 	 * Record in DB all informations linked with the order
 	 * @return redirect
 	 */
-	public static function recordOrder($vars, $cart, $card, $order, $avatax, array $auth, $items) {
+	public static function recordOrder($vars, $cart, $card, $order, $avatax, $authKey, $items) {
 			$tax = static::$_classes['tax'];
 
 			$user = Session::read('userLogin');
@@ -209,8 +205,7 @@ class Order extends Base {
 					'card_type' => $card->type,
 					'card_number' => substr($card->number, -4),
 					'date_created' => static::dates('now'),
-					'authKey' => $auth['key'],
-					'authToken' => $auth['token'],
+					'authKey' => $authKey,
 					'billing' => $vars['billingAddr'],
 					'shipping' => $vars['shippingAddr'],
 					'shippingMethod' => $shippingMethod,

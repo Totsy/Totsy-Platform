@@ -53,8 +53,7 @@
 					'name' => 'Shipping/Billing Name',
 					'address' => 'Shipping/Billing Address',
 					'event' => 'Event Name',
-					'authKey' => 'Transaction Auth Key',
-					'authToken' => 'Transaction Auth Token',
+					'authKey' => 'Authorize.net Key',
 					'item' => 'Item Description'
 					), array('style' => 'float:left; width:250px; margin: 0px 20px 0px 0px;'));
 				?>
@@ -92,9 +91,6 @@
 					</td>
 					<td>
 						<?=$order['authKey']?>
-					</td>
-					<td>
-						<?php echo isset($order['authToken']) ? $order['authToken'] : 'n/a' ?>
 					</td>
 					<td>
 						<?php
