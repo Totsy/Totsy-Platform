@@ -235,6 +235,10 @@ class OrdersController extends BaseController {
 	/**
 	* The manage_items method update the temporary order.
 	* If the variable save is set to true, it apply the changes.
+	*
+	* @fixme The corresponding test for this action or the action itself needs
+	*        another review. The test expectations aren't met possibly because they're incorrect.
+	* @see admin\tests\cases\controllers\OrdersControllerTest::testManageItemsUnsaved()
 	* @see admin\models\Order::saveCurrentOrder()
 	* @see admin\models\Order::refreshTempOrder()
 	* @see admin\models\Order:::checkOrderCancel()
