@@ -160,6 +160,7 @@ class Order extends Base {
 	public static function process($order) {
 		$payments = static::$_classes['payments'];
 
+		$order = is_object($order) ? $order->data() : $order;
 		$orderId = new MongoId($order['_id']);
 		$error = null;
 		$data = array(
