@@ -1448,16 +1448,9 @@ class OrderTest extends \lithium\test\Unit {
 		$order2->order_id = $order2->_id;
 		$order2->save(null, array('validate' => false));
 
-		try {
-			$result = Order::orderPaymentRequests(array(
-				'capture' => array($order1->_id)
-			));
-		} catch (TransactionException $e) {
-			$message  = "`Order::orderPaymentRequests()` throwing ";
-			$message .= "`TransferException`, this may indicate underlying ";
-			$message .= "isn't using `TransferResponse`, yet.";
-			$this->skipIf(true, $message);
-		}
+		$result = Order::orderPaymentRequests(array(
+			'capture' => array($order1->_id)
+		));
 		$this->assertTrue(is_a($result['payments'], 'MongoCursor'));
 
 		$expected = 'error';
