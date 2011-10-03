@@ -142,6 +142,10 @@ class CartController extends BaseController {
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
 		
+		if(!Session::read('total')){
+			Session::write('total', $total);
+		}
+		
 		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl', 'shipping');
 	}
 
@@ -154,7 +158,9 @@ class CartController extends BaseController {
 	public function add() {	
 		#Check Cart
 		$cart = Cart::create();
-		//ini_set("display_errors", 1);
+		
+		//output for cart popup
+		$cartData = Array();
 		
 		$this->render(array('layout' => false));	
 				
@@ -229,8 +235,27 @@ class CartController extends BaseController {
 					}
 				}
 			}
-		}		
-		echo json_encode(Cart::active()->data());
+		}
+		
+		//send cart array 
+		$cartData['cart']= Cart::active()->data();
+		//get user savings. they were just put there by updateSavings()
+		$cartData['savings'] = Session::read('userSavings');
+		//get the ship date		
+		$cartData['shipDate'] = date('m-d-Y', Cart::shipDate(Cart::active()));
+		//get the amount of items in the cart
+		$cartData['itemCount'] = Cart::itemCount();
+		
+		//get the subtotal for the cart
+		if(!Session::read('total')){
+			foreach(Cart::active() as $cartItem){
+				$cartData['total'] += Cart::subTotal($cartItem);
+			}
+		} else {
+			$cartData['total'] = Session::read('total');
+		}
+				
+		echo json_encode($cartData);
 	}
 		
 	/**

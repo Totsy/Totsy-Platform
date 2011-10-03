@@ -3,9 +3,15 @@
 <!-- template used for items on cart. jquery.tmpl.js driven -->
 <script id="template" type="text/html">
  <div class="cart_popup_item_wrapper">
+ 	{{if primary_image}}
  	<div class="cart_popup_item_thumbnail">
- 		<img src="/image/4e36f764d6b0250411000257.jpg" style="width:60px; height:60px">
+ 		<img src="/image/${primary_image}.jpg" style="width:60px; height:60px">
  	</div>
+ 	{{else}}
+ 	<div class="cart_popup_item_thumbnail">
+ 		<img src="/img/no-image-small.jpeg" style="width:60px; height:60px">
+ 	</div>
+ 	{{/if}}
  	<div class="cart_popup_item_fields">
  		<span class="cart_popup_item_description">
  			<a target="_blank" href="sale/hot-pink-mary-janes-with-white-button-polka-dots-hot-pink">
@@ -18,19 +24,27 @@
  		<span title="date goes here" class="counter cart-review-line-timer" id="itemCounter0" style="display: none;"></span>
  		<div style="clear:both"></div>
  		<hr>
+ 		{{if color}}
  		<div>
  		    <span class="cart-review-color-size">Color:</span> ${color} 
  		</div>
+ 		{{/if}}
+ 		{{if size}}
  		<div>
  		    <span class="cart-review-color-size">Size:</span> ${size}
  		</div>
+ 		{{/if}}
  	</div>
  </div>	
+ <div style="clear:both"></div>
 </script>
 
 <script type="text/javascript">
 
 var item_id = "<?=$item->_id?>";
+
+//holds the timeout ID for the popup when the mouse leaves it
+var timeout = "";
 
 //cart items immediately visible 
 var visibleItems = new Array();
@@ -44,7 +58,7 @@ var isCollapsed = false;
 $(document).ready( function() {
 
 	var showCartPopup = function(cart) {
-				
+					
 		//reset all items
 		if(invisibleItems.length>0){
 			invisibleItems = [];
@@ -58,14 +72,22 @@ $(document).ready( function() {
 		var invisibleItemCount = 0;
 				
 		//convert JSON string to JS Object
-		var cartData = eval('(' + cart + ')');
+		var cartObj = eval('(' + cart + ')');
+		
+		$("#ship_date").html(cartObj.shipDate);
+		$("#savings").html(cartObj.savings);
 				
-		for(i in cartData) {
+		$("#order_total_num").html("$" + cartObj.total + "");
+		$("#cart-count").html(cartObj.itemCount);
+		
+		cartData = cartObj.cart;
+				
+		for (i in cartData) {
 			//formatting price and line totals
 			cartData[i]['sale_retail'] = cartData[i]['sale_retail'].toFixed(2);	
 			cartData[i]['line_total'] = (cartData[i]['quantity'] * cartData[i]['sale_retail']).toFixed(2);
 		
-			if(i < visibleItemCount){ 
+			if(i < visibleItemCount) { 
 				visibleItems.push(cartData[i]);
 			} else {
 				invisibleItems.push(cartData[i]);
@@ -83,7 +105,8 @@ $(document).ready( function() {
 			$("#more_cart_items").css("visibility", "visible");	
 		}  
 		
-		$("#cart_popup").slideToggle("2000");	
+		$("#cart_popup").fadeIn(1000);	
+			
 	};
 	
 	//add items to cart
@@ -105,13 +128,26 @@ $(document).ready( function() {
 	        }
 	    });
 	};
-	
+		
 	var closeCartPopup = function() {
-		$("#cart_popup").slideToggle("2000");
-		//set isCollapsed to false so that the link doesn't appear on re-open
-		isCollapsed = false;
+		//isCollapsed = false;
 		$("#more_cart_items a").html("See more...");
-	}
+		$("#cart_popup").fadeOut(1000);
+		//set isCollapsed to false so that the link doesn't appear on re-open
+	};
+	
+	//make popup disappear 8 seconds after their mouse leaves it  
+	$("#cart_popup").mouseleave(function(){
+		timeout = setTimeout(function() {
+			$("#more_cart_items a").html("See more...");
+			$("#cart_popup").fadeOut(1000);
+		}, 8000);
+	});
+	
+	//interrupt JS setTimeout using its timeout ID  
+	$("#cart_popup").mouseover(function(){
+		clearTimeout(timeout);
+	});
 	
 	//click handler for adding items to cart
 	$("#add-to-cart").click(function(){
@@ -145,11 +181,11 @@ $(document).ready( function() {
 <div id="cart_popup" class="grid_16 roundy glow" style="display:none">
 	<div id="cart_popup_header">
 	    <div id="cart_popup_timer">
-	    	<span style="float:right">Item Reserved For:<br>
-	    		<span style="color:#009900; font-weight:bold;font-size:14px" id="itemCounter" class="hasCountdown">14:05 minutes</span>
+	    	<span style="float:right; margin-left: 30px">Item Reserved For:<br>
+	    		<span style="color:#009900; font-weight:bold;font-size:14px" id="itemCounter" class="hasCountdown"></span>
 	    	</span>
 	    	<span style="float:right">Estimated Shipping Date: <br>
-	    		 <span style="font-weight:bold; color:#009900; font-size:14px">01-25-2012</span>
+	    		 <span id="ship_date" style="font-weight:bold; color:#009900; font-size:14px"></span>
 	    	</span>		
 	    </div>
 	    <div id="cart_popup_close_button">
@@ -159,17 +195,17 @@ $(document).ready( function() {
 	<div style="clear:both"></div>
 	 
 	<div id="cart_item"></div>
-	<div id="more_cart_items" style="font-style:italic !important; visibility:hidden; text-align:center">
+	<div style="clear:both"></div>
+	<div id="more_cart_items">
 		<a href="#">See more...</a>
-	</div>
-	
-	<hr>	
+	</div>	
 	 <div style="clear:both"></div>
+	 <div><hr></div>
 	 <div id="cart_popup_breakdown">
-	 	<div class="cart-savings">Your Savings: $22.49</div>
+	 	<div class="cart-savings">Your Savings: $<span id="savings"></span></div>
 	 	<div id="cart_popup_order_total">
-	 		<span class="cart-order-total">Order Total:</span> 
-	 	    <span id="ordertotal">$22.45 </span>
+	 		<span class="cart-order-total">Order Total: </span> 
+	 	    <span id="order_total_num"></span>
 	 	</div>						    	
 	 </div>
 	 <div style="clear:both"></div>
