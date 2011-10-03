@@ -370,7 +370,7 @@
 <?=$this->form->hidden("promocode_disable", array('class' => 'inputbox', 'id' => "promocode_disable", 'value' => $order->promocode_disable )); ?>
 									<!--- END HIDDEN DATAS - ITEMS -->
 									<?php if(empty($order->cancel)): ?>
-									<table style="width:200px; float: right;">
+									<table style="width:250px; float: right;">
 										<tr>
 											<td valign="top">
 												Order Subtotal:
@@ -379,8 +379,12 @@
 												Credit Applied:
 												<br>
 												<?php endif ?>
-												<?php if ((($order->promo_discount) && (empty($order->promocode_disable))) || ($order->discount)): ?>
-												Discount:
+												<?php if ((($order->promo_discount) && (empty($order->promocode_disable)))): ?>
+													Discount [<?=$order->promo_code;?>]:
+													<br>
+												<?php endif ?>
+												<?php if ($order->discount): ?>
+													Discount [<?=$order->service[0];?>]:
 													<br>
 												<?php endif ?>
 												Sales Tax:

@@ -85,8 +85,10 @@ class CartController extends BaseController {
 			$subTotal += $item->quantity * $item->sale_retail;
 			$itemlist[$item->created->sec] = $item->event[0];
 			$itemCount += $item->quantity;
+			
 			$i++;
 		}
+		$shipping = Cart::shipping($cart, null);
 		#Get Last Url
 		if ($cart) {
 			krsort($itemlist);
@@ -116,7 +118,7 @@ class CartController extends BaseController {
 		}
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
-		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl');
+		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping');
 	}
 
 	/**

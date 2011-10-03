@@ -224,7 +224,7 @@ var discountErrors = new Object();
 				    	</span>
 				    <span style="float:left;" id="shipping">
 				    Shipping:</span> 
-				    <span style="float:right">$7.95</span>							</div>
+				    <span style="float:right">$<?=number_format(abs($shipping),2)?></span></div>
 				</div>
 				<?php if (!empty($shipping_discount)):?>
 				<div style="clear:both"></div>
