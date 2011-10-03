@@ -246,13 +246,15 @@ class CartController extends BaseController {
 		//get the amount of items in the cart
 		$cartData['itemCount'] = Cart::itemCount();
 		
+		$total = Session::read('total');
+		
 		//get the subtotal for the cart
-		if(!Session::read('total')){
+		if(!isset($total)){
 			foreach(Cart::active() as $cartItem){
 				$cartData['total'] += Cart::subTotal($cartItem);
 			}
 		} else {
-			$cartData['total'] = Session::read('total');
+			$cartData['total'] = $total;
 		}
 				
 		echo json_encode($cartData);

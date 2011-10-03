@@ -55,9 +55,9 @@ var invisibleItems = new Array();
 var isCollapsed = false;
 
 //jQuery for adding items.
-$(document).ready( function() {
+$(document).ready( function(){
 
-	var showCartPopup = function(cart) {
+	var showCartPopup = function(cart){
 					
 		//reset all items
 		if(invisibleItems.length>0){
@@ -75,19 +75,19 @@ $(document).ready( function() {
 		var cartObj = eval('(' + cart + ')');
 		
 		$("#ship_date").html(cartObj.shipDate);
-		$("#savings").html(cartObj.savings);
+		$("#savings").html(cartObj.savings.items.toFixed(2));
 				
 		$("#order_total_num").html("$" + cartObj.total + "");
 		$("#cart-count").html(cartObj.itemCount);
 		
 		cartData = cartObj.cart;
 				
-		for (i in cartData) {
+		for (i in cartData){
 			//formatting price and line totals
 			cartData[i]['sale_retail'] = cartData[i]['sale_retail'].toFixed(2);	
 			cartData[i]['line_total'] = (cartData[i]['quantity'] * cartData[i]['sale_retail']).toFixed(2);
 		
-			if(i < visibleItemCount) { 
+			if(i < visibleItemCount){ 
 				visibleItems.push(cartData[i]);
 			} else {
 				invisibleItems.push(cartData[i]);
@@ -101,16 +101,16 @@ $(document).ready( function() {
 		//attach template to cart_item DIV
 		$("#template").tmpl(visibleItems).appendTo("#cart_item");
 		
-		if (invisibleItemCount > 0 ) {
+		if (invisibleItemCount > 0 ){
 			$("#more_cart_items").css("visibility", "visible");	
 		}  
 		
-		$("#cart_popup").fadeIn(1000);	
+		$("#cart_popup").fadeIn(500);	
 			
 	};
 	
 	//add items to cart
-	var addItem = function() {
+	var addItem = function(){
 		var item_size = "";
 	
 		if(typeof $('#size-select').attr('value')!='undefined') {
@@ -123,24 +123,24 @@ $(document).ready( function() {
 	        url: $.base + 'cart/add',
 	        data: "item_id=" + item_id + "&" + "item_size=" + item_size,
 	        context: document.body,
-		    success: function(data) {
+		    success: function(data){
 	        	showCartPopup(data);
 	        }
 	    });
 	};
 		
-	var closeCartPopup = function() {
+	var closeCartPopup = function(){
 		//isCollapsed = false;
 		$("#more_cart_items a").html("See more...");
-		$("#cart_popup").fadeOut(1000);
+		$("#cart_popup").fadeOut(500);
 		//set isCollapsed to false so that the link doesn't appear on re-open
 	};
 	
 	//make popup disappear 8 seconds after their mouse leaves it  
 	$("#cart_popup").mouseleave(function(){
-		timeout = setTimeout(function() {
+		timeout = setTimeout(function(){
 			$("#more_cart_items a").html("See more...");
-			$("#cart_popup").fadeOut(1000);
+			$("#cart_popup").fadeOut(500);
 		}, 8000);
 	});
 	
@@ -156,15 +156,27 @@ $(document).ready( function() {
 	
 	//toggle items for carts with more than 3 different types of items
 	$("#more_cart_items a").click(function(){	
-		if (isCollapsed==false) {
+		if (isCollapsed==false){
 			isCollapsed = true;
+			
+			//add a scrollbar
+			$("#cart_item").css({"overflow-y":"scroll", "overflow-x":"hidden", "height":"230px"});
+			//set label to toggle up
 			$("#more_cart_items a").html("...see less");
+			
+			//add all items to template
 			$("#template").tmpl(invisibleItems).appendTo("#cart_item");	
 		} else {
-			isCollapsed = false;			
+			isCollapsed = false;
+			
+			//remove scrollbar
+			$("#cart_item").css({"overflow-y":"hidden", "height":"auto"});
 			//unset cart_item DIV
 			$("#cart_item").html("");
+			//set label to toggle down
 			$("#more_cart_items a").html("See more...");
+			
+			//load template only with 3 items
 			$("#template").tmpl(visibleItems).appendTo("#cart_item");	
 		}
 	});
