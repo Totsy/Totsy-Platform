@@ -39,6 +39,7 @@ class PagesController extends BaseController {
 
 		}
 		$this->render(array('template' => $path[0]));
+		
 	}
 
 }
