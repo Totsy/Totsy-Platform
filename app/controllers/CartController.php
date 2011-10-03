@@ -238,6 +238,14 @@ class CartController extends BaseController {
 			}
 		}
 		
+		$cartExpirationDate = "";
+		
+		foreach(Cart::active() as $cartItem) {
+			if ($cartExpirationDate < $cartItem->expires->sec) {
+				$cartExpirationDate = $cartItem->expires->sec;
+			}
+		} 
+		
 		//send cart array 
 		$cartData['cart']= Cart::active()->data();
 		//get user savings. they were just put there by updateSavings()
@@ -246,12 +254,8 @@ class CartController extends BaseController {
 		$cartData['shipDate'] = date('m-d-Y', Cart::shipDate(Cart::active()));
 		//get the amount of items in the cart
 		$cartData['itemCount'] = Cart::itemCount();
-		
-		foreach(Cart::active() as $cartItem) {
-			//$cartItem->eventURL = Event::find('first', array('id'=>$cartItem->event[0]));
-			//$cartItem->eventURL = "test";
-			//$cartData['total'] += Cart::subTotal($cartItem);
-		}
+		//set the expiration date for this cart
+		$cartData['cartExpirationDate'] = date('m-d-Y', $cartExpirationDate);
 		
 		$cartData['total'] = 0.00;
 		

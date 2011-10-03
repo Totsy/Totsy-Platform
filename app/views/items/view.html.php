@@ -1,12 +1,15 @@
 <script src="/js/jquery.tmpl.js" type="text/javascript"></script>
 
-<!-- template used for items on cart. jquery.tmpl.js driven -->
-<?=$this->view()->render( array('element' => 'popupCartItems') ); ?>
-
 <script type="text/javascript">
 var item_id = "<?=$item->_id?>";
 </script>
 
+<!-- template used for items on cart. jquery.tmpl.js driven -->
+<?=$this->view()->render( array('element' => 'popupCartItems') ); ?>
+
+<script type="text/javascript" src="/js/cart-timer.js"></script>
+
+<!-- JS for cart popup. needs to reference the popupCartItems element above -->
 <script type="text/javascript" src="/js/cart-popup.js"></script>
 
 <div style="position:relative"> 
@@ -246,6 +249,9 @@ var item_id = "<?=$item->_id?>";
 	<div class="clear"></div>
 	</div>
 <div id="modal" style="background:#fff!important; z-index:999!important;"></div>
+
+<script type="text/javascript" src="/js/cart-items-timer.js"></script>
+
 <script type="text/javascript">
 $(function () {
 	var saleEnd = new Date();

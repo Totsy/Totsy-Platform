@@ -20,28 +20,11 @@ var discountErrors = new Object();
 	
 	$("#cart-count").text(<?=$itemCount?>);
 	
-	$( function () {
-	    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	    
-		var now = new Date();
+	var cartExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	
 		
-		$('#itemCounter').countdown( { until: itemExpires, onExpiry: refreshCart, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
-		
-		if (itemExpires < now) {
-			$('#itemCounter').html("<span class='over' style='color:#EB132C; padding:5px;'>No longer reserved</span>");
-		}
-		
-		function refreshCart() {
-			window.location.reload(true);
-		}
-		
-		//applying tooltip
-		$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
-		$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
-		
-	}); 
-	
 </script>
 
+<script type="text/javascript" src="/js/cart-timer.js"></script>
 <script type="text/javascript" src="/js/jquery.number_format.js"></script>
 <script type="text/javascript" src="/js/tipsy/src/javascripts/jquery.tipsy.js"></script>
 <link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
