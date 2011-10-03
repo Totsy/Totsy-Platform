@@ -45,7 +45,6 @@ class AffiliatesController extends \admin\controllers\BaseController {
             }
 
             if(!empty( $obj_data['created_by'] )) {
-
               if (strlen($obj_data['created_by']) > 10) {
                      $user = $userCollection->findOne( array('_id' => new MongoId($obj_data['created_by'])) );
                 } else {
@@ -74,6 +73,10 @@ class AffiliatesController extends \admin\controllers\BaseController {
 	public function add() {
 		$affiliate = Affiliate::create();
         $info = array();
+
+		$data = $this->request->data;
+		if ( ($data) ) {
+       // $backgrounds = Affiliate::retrieveBackgrounds();
 		$data = $this->request->data;
 		if ( ($data) ) {
             $info['active'] = (($data['active'] == '1' || $data['active'] == 'on')) ? true : false;

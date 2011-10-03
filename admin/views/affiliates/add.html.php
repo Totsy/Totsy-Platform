@@ -129,7 +129,6 @@ $(document).ready(function() {
 	$(document).ready(function(){
 		$('#templates').change(function(){
 			template = $(this).val();
-			$("#template").html(<?php $this->view()->render(array('element' => template)); ?>);
 		});
 		$('input[name=active_pixel]').change(function(){
 			if( $('#ActivePixel:checked').val() == 1){

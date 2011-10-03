@@ -120,12 +120,12 @@ class UploadsController extends \lithium\action\Controller {
 			$this->id = (string) $grid->storeUpload('Filedata', $this->fileName);
 			if ($this->id) {
 				$success = true;
-				if($meta){
+			    if($meta){
 			        $search = File::first(array('conditions' => array(
 			            'filename' => $this->fileName
 			        )));
-			        $search->tag = $meta['tag'];
 			        $this->tag = $meta['tag'];
+			        $search->tag = $this->tag;
 			        $search->save();
 
 			   }
