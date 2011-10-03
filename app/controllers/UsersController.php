@@ -181,7 +181,7 @@ class UsersController extends BaseController {
 						);
 
 						if (isset($user['clear_token'])) {
-							$mail_template = 'TEST_Welcome_auto_passgen';
+							$mail_template = 'Welcome_auto_passgen';
 							$params['token'] = $user['clear_token']; 
 						} 
 						Mailer::send($mail_template, $user->email,$params);
