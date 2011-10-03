@@ -300,7 +300,12 @@ class UsersController extends BaseController {
 		}
 
 		//new login layout to account for fullscreen image JL
-		$this->_render['layout'] = 'login';
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_login';
+		 	$this->_render['template'] = 'mobile_login';
+		} else {
+			$this->_render['layout'] = 'login';
+		}
 
 		return compact('message', 'fbsession', 'fbconfig');
 	}
