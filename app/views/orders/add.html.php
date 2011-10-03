@@ -231,7 +231,7 @@
 	<!--Disney -->
       <div class="disney fl">
           <p><strong>SPECIAL BONUS!</strong><hr/></p>
-       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value). <br/>
+       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/parents.jpg" align="absmiddle" width="95px" /> ( a $10 value ). <br/>
        <span id="disney">Offer & Refund Details</span></p>
       </div>
     <!-- begin thawte seal -->
