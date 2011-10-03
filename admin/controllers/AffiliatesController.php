@@ -47,7 +47,9 @@ class AffiliatesController extends \admin\controllers\BaseController {
                 $conditions = array('conditions'=>array('_id' => $obj_data['created_by']));
                 $user = User::find( 'all', $conditions );
                 $user = $user[0]->data();
-                $affiliate->created_by = $user['firstname'] . ' ' . $user['lastname'];
+                if (array_key_exists('firstname',$user)) {
+                    $affiliate->created_by = $user['firstname'] . ' ' . $user['lastname'];
+                }
             }
         }
         return compact('affiliates');
@@ -62,6 +64,8 @@ class AffiliatesController extends \admin\controllers\BaseController {
 	public function add() {
 		$affiliate = Affiliate::create();
         $info = array();
+        /*
+<<<<<<< Updated upstream
         if ($this->request->is('ajax')) {
 		    $template = $this->request->data['template'];
 		} else {
@@ -69,6 +73,11 @@ class AffiliatesController extends \admin\controllers\BaseController {
 		}
 		$data = $this->request->data;
 		if ( ($data) && !array_key_exists('template', $data) ) {
+=======*/
+       // $backgrounds = Affiliate::retrieveBackgrounds();
+		$data = $this->request->data;
+		if ( ($data) ) {
+//>>>>>>> Stashed changes
             $info['active'] = (($data['active'] == '1' || $data['active'] == 'on')) ? true : false;
             $info['name'] = $data['affiliate_name'];
             $info['level'] = $data['level'];

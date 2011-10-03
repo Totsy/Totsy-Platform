@@ -208,6 +208,7 @@ function isLogo(instance){
         instance.addPostParam('tag','logo');
     }
 }
+
 function isBackground(instance){
     $('#isfeature').removeAttr("checked");
     $('#islogo').removeAttr("checked");
@@ -222,5 +223,11 @@ function isFeature(instance){
 
     if( $('#isfeature:checked').val() == 1){
         instance.addPostParam('tag','featureOn');
+    }}
+function isLogo(instance){
+    $('#isbackground').removeAttr("checked");
+    $('#isfeature').removeAttr("checked");
+    if( $('#islogo:checked').val() == 1){
+        instance.addPostParam('tag','logo');
     }
 }

@@ -128,8 +128,8 @@
 								</tr>
 							</table>
 						</div>
-						<div id="template">
-							<?php echo $this->view()->render(array('element' => $template)); ?>
+						<div id="template" style="margin: 0 5 0 0">
+							<?php echo $this->view()->render(array('element' => 'template1')); ?>
 						</div>
 					</div>
 				</div><!--end landing panel-->
@@ -155,14 +155,13 @@
 	});
 </script>
 <script type='text/javascript'>
-	$('#pixel_panel').hide();
-	$('#landing_panel').hide();
-	$('#upload_panel').hide();
-	$('#background_selection').hide();
+		$('#pixel_panel').hide();
+		$('#landing_panel').hide();
+		$('#upload_panel').hide();
+		$('#background_selection').hide();
 	$(document).ready(function(){
 		$('#templates').change(function(){
 			template = $(this).val();
-			$("#template").html(<?php $this->view()->render(array('element' => template)); ?>);
 		});
 		$('input[name=active_pixel]').change(function(){
 			if( $('#ActivePixel:checked').val() == 1){
@@ -296,7 +295,6 @@ function backgroundChange(image){
 function featureChange(){
 	id = $(this).attr('id');
 }
-
 //Edit in place
 $(function(){
     $('.editable').editable({
