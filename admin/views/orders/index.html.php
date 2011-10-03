@@ -27,6 +27,7 @@
 </script>
 <div class="grid_16">
 	<h2 id="page-heading">Order Management</h2>
+	<h5>Note: Authorize .Net keys that are not numeric are not real Auth.Net keys. <br/> These are from orders that can't be captured because the order total was $0. </h5>
 </div>
 
 <div id="clear"></div>
@@ -70,7 +71,7 @@
 	<table id="orderTable" class="datatable" border="1">
 		<thead>
 			<tr>
-				<?php 
+				<?php
 				foreach ($headings as $heading) {
 					echo "<th>$heading</th>";
 				}

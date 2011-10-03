@@ -1,3 +1,4 @@
+<?php ini_set("display_erros", 0); ?>
 <?php use admin\models\Event; ?>
 <?=$this->html->script('tiny_mce/tiny_mce.js');?>
 <?=$this->html->script('jquery-1.4.2');?>
@@ -17,8 +18,29 @@
 <?=$this->html->script('jquery.countdown.min');?>
 <?=$this->html->style('jquery.countdown');?>
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
+<?=$this->html->style('selectlist.css');?>
+<?=$this->html->script('jquery.selectlist.min.js')?>
+<?=$this->html->script('jquery.selectlist.pack.js')?>
+
+<style type="text/css">
+
+.selectlist-list {
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+}
+
+selectlist.css (line 1)
+.selectlist-list {
+    width: 12em;
+}
+
+</style>
 
 <script type="text/javascript">
+
+$(document).ready(function(){
+
 tinyMCE.init({
 	// General options
 	mode : "textareas",
@@ -26,24 +48,77 @@ tinyMCE.init({
 	plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,preview,searchreplace,print,contextmenu,paste,directionality,noneditable,visualchars,nonbreaking,xhtmlxtras",
 
 	// Theme options
+<<<<<<< HEAD
 	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
 	theme_advanced_buttons2 : "cut,copy,paste,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,code,|,forecolor,backcolor",
 	theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,charmap,iespell,advhr",
 	theme_advanced_buttons4 : "spellchecker,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking,blockquote",
+=======
+	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull",
+
+	theme_advanced_buttons2: "styleselect,formatselect,fontselect,fontsizeselect",
+
+	theme_advanced_buttons3 : "cut,copy,paste,pastetext,pasteword,|,bullist,numlist,|,indent,blockquote,|,anchor,code,|,forecolor,backcolor",
+	/* theme_advanced_button3:
+	 theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,charmap,iespell,advhr",
+	 theme_advanced_buttons4 : "spellchecker,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking,blockquote,pagebreak", */
+>>>>>>> 2dbc16261bbe0e26aa193b179799fe435ec9453c
 	theme_advanced_toolbar_location : "top",
 	theme_advanced_toolbar_align : "left",
 	theme_advanced_statusbar_location : "bottom",
 	theme_advanced_resizing : false,
 
+});
+
+$('.table_link').click(function() {
+        $('tr').hide();
+      $('tr .').toggle('slow');
+    });
+
+$('.related_items').selectList({
+	addAnimate: function (item, callback) {
+	$(item).slideDown(500, callback);
+	},
+	removeAnimate: function (item, callback) {
+	$(item).slideUp(500, callback);
+	}
+});
+
+$('.related_items').change(function() {
+
+//parse out the current item's id
+var item_id = this.id.substring(9, this.id.length);
+var list_position = this.id.substring(7,8);
+
+//create strings of the dropdown id's
+for ( i=1; i<6; i++ ) {
+
+	var related_item_id = 'related'+ i + '_' + item_id;
+	//if its not the current dropdown
+	//and its value is the same as the current dropdown's value AND
+	//the item's value isn't an empty string
+	//than throw an alert message
+	if(i!=list_position && $("#" + related_item_id + " option:selected").val()!=="" ) {
+
+		if( $("#" + related_item_id + " option:selected").val() == $("#" + this.id + " option:selected").val() ) {
+			$("#" + this.id).val(0);
+			alert("please select a different item");
+			break;
+		}
+	}
+}
 
 });
+
+});
+
 </script>
 
 <script type="text/javascript">
 	$(document).ready(function(){
 		$("#duplicate").dynamicForm("#plus", "#minus", {limit:15, createColor: 'yellow', removeColor: 'red'});
-	});
-</script>
+		});
+		</script>
 
 <script type="text/javascript" charset="utf-8">
 	$(function() {
@@ -111,6 +186,7 @@ tinyMCE.init({
 		    <li><a href="#event_info"><span>Event Info</span></a></li>
 			<li><a href="#event_images"><span>Event Images</span></a></li>
 		    <li><a href="#event_items"><span>Event Items</span></a></li>
+		    <li><a href="#event_history"><span>Event History</span></a></li>
 		</ul>
 
 		<div id="event_info">
@@ -155,6 +231,10 @@ tinyMCE.init({
 								'value' => "$end_date"
 							));?>
 				</div>
+				<?=$this->form->label('Departments')?><br />
+				<table>
+					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?>
+				</table>
 				<div id="tags">
 					<?=$this->form->label('Tags'); ?>
 					<?php if ($event->tags): ?>
@@ -284,21 +364,35 @@ tinyMCE.init({
 			<p>Please select the default option for all items being uploaded:</p>
 				<input type="radio" name="enable_items" value="1" id="enable_items"> Enable All <br>
 				<input type="radio" name="enable_items" value="0" id="enable_items" checked> Disable All <br><br>
+			<p>Add "Final Sale" to the item description?:</p>
+				<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
+				<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
 				<?=$this->form->label('Upload Event (Excel Files): '); ?>
 				<?=$this->form->file('upload_file'); ?>
 				<?=$this->form->submit('Update Event')?>
 			<br><br>
 			<?=$this->form->end(); ?>
 			<h3 id="current_items">Current Items</h3>
+
             <hr />
 			<?=$this->form->create(null, array('url' => 'Items::itemUpdate', 'name' => 'item-update')); ?>
 				<?=$this->form->hidden('id', array('value' => $event->_id)); ?>
+				<div style="float:left; font: bold; font-size: 18px;">
+					Total Items:
+					<?php
+						echo count($eventItems);
+					?>
+
+				</div>
+
 				<div style="float:right; font: bold; font-size: 18px;">
 					<?=$this->form->submit('Update Items'); ?>
 				</div>
 				<br \>
 				<br \>
+
 				<?=$this->items->build($eventItems);?>
+
 				<div style="float:right; font: bold; font-size: 18px;">
 					<?=$this->form->submit('Update Items'); ?>
 				</div>
@@ -311,6 +405,43 @@ tinyMCE.init({
 					<?=$this->form->hidden('event', array('value' => $event->_id)); ?>
 					<?=$this->form->submit('Delete All Items'); ?>
 				<?=$this->form->end(); ?>
+		</div>
+		<div id="event_history">
+				<?php
+					if (sizeof($event->modifications) > 0) {
+				?>
+
+				<table>
+					<tr>
+						<td>User</td>
+						<td>Date</td>
+						<td>Changed</td>
+					</tr>
+				<?php
+						$i = 0;
+						while ($i < sizeof($event->modifications)) {
+
+				?>
+				<tr>
+					<td><?=$event->modifications[$i]->author;?></td>
+					<td>
+					<?php
+							$date_changed = $event->modifications[$i]->date;
+							print date('Y-M-d h:i:s', $date_changed->sec);
+					?>
+					</td>
+					<td><?=$event->modifications[$i]->changed;?></td>
+				</tr>
+				<?php
+							$i++;
+						}
+				?>
+				</table>
+				<?php
+					} else {
+						print 'No event modifications have been made.';
+					}
+				?>
 		</div>
 	</div>
 

@@ -9,12 +9,14 @@ use admin\models\Event;
 use admin\models\Item;
 use admin\models\Base;
 use admin\models\Report;
+use admin\models\Service;
 use Mongo;
 use MongoCode;
 use MongoDate;
 use MongoRegex;
 use MongoId;
 use li3_flash_message\extensions\storage\FlashMessage;
+use admin\models\PurchaseOrder;
 use lithium\data\Model;
 use FusionCharts;
 
@@ -302,16 +304,12 @@ class ReportsController extends BaseController {
 								foreach ($items as $item) {
 									$active = (empty($item['cancel']) || $item['cancel'] != true) ? true : false;
 									$itemValid = ($item['item_id'] == $eventItem['_id']) ? true : false;
-									if ($itemValid && ((string) $key == $item['size']) && $active){
+									if ($itemValid && ((string) $key === $item['size']) && $active){
 										$purchaseOrder[$inc]['Product Name'] = $eventItem['description'];
 										$purchaseOrder[$inc]['Product Color'] = $eventItem['color'];
 										$purchaseOrder[$inc]['Vendor Style'] = $eventItem['vendor_style'];
-										$purchaseOrder[$inc]['SKU'] = Item::sku(
-											$eventItem['vendor'],
-											$eventItem['vendor_style'],
-											$item['size'],
-											$eventItem['color']
-										);
+										$itemRecord = Item::collection()->findOne(array('_id' => new MongoId($item['item_id'])));
+										$purchaseOrder[$inc]['SKU'] = $itemRecord['sku_details'][$item['size']];
 										$purchaseOrder[$inc]['Unit'] = $eventItem['sale_whol'];
 										if (empty($purchaseOrder[$inc]['Quantity'])) {
 											$purchaseOrder[$inc]['Quantity'] = $item['quantity'];
@@ -374,12 +372,8 @@ class ReportsController extends BaseController {
 									$orderList[$inc]['Cart'] = $item['_id'];
 									$orderList[$inc]['OrderNum'] = $order['order_id'];
 									$orderList[$inc]['id'] = $order['_id'];
-									$orderList[$inc]['SKU'] = Item::sku(
-										$eventItem['vendor'],
-										$eventItem['vendor_style'],
-										$item['size'],
-										$eventItem['color']
-									);
+									$itemRecord = Item::collection()->findOne(array('_id' => new MongoId($item['item_id'])));
+									$orderList[$inc]['SKU'] = $itemRecord['sku_details'][$item['size']];
 									$orderList[$inc]['Qty'] = $item['quantity'];
 									$orderList[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
 									$orderList[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
@@ -450,12 +444,7 @@ class ReportsController extends BaseController {
 						$orderFile[$inc]['Country'] = '';
 						$orderFile[$inc]['OrderNum'] = $order['order_id'];
 						$orderFile[$inc]['OldSKU'] = $this->oldsku($orderItem->vendor_style, $item['size']);
-						$orderFile[$inc]['SKU'] = Item::sku(
-							$orderItem->vendor,
-							$orderItem->vendor_style,
-							$item['size'],
-							$item['color']
-						);
+						$orderFile[$inc]['SKU'] = $orderItem->sku_details[$item['size']];
 						$orderFile[$inc]['Qty'] = $item['quantity'];
 						$orderFile[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
 						$orderFile[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
@@ -1093,6 +1082,201 @@ class ReportsController extends BaseController {
 			'6' => 'Saturday'
 		);
 		return compact('DailyCharts','days','start_date','end_date');
+	}
+
+	/**
+	* Generates graphics that shows behaviour of user with :
+	* Free shipping discount for the first order
+	* $10 off for the 2nd purchase of $50+
+	*/
+	public function services() {
+		$usersCollection = User::connection()->connection->users;
+		$ordersCollection = Order::collection();
+		$usersCollection->ensureIndex(array('created_date' => 1));
+		$usersCollection->ensureIndex(array('purchase_count' => 1));
+		$ordersCollection->ensureIndex(array('date_created' => 1));
+		$ordersCollection->ensureIndex(array('total' => 1));
+		#RUNNING
+		#GET DATES
+		$month_plus = 0;
+		$start_month = 01;
+		$start_year = 2011;
+		$now = getdate();
+		$actual_month = mktime(0, 0, 0, ($start_month + $month_plus), 1, $start_year);
+		$next_month = mktime(0, 0, 0, ($start_month + 1 + $month_plus), 1, $start_year);
+		do {
+			$month = date("F", $actual_month);
+			$year = date("Y", $actual_month);
+			$statistics[$year][$month]["registered_user_purch_30"] = 0;
+			$statistics[$year][$month]["registered_user_purch_23_30"] = 0;
+			$statistics[$year][$month]["registered_user_purch_0_23"] = 0;
+			$statistics[$year][$month]["registered_user_no_2purch"] = 0;
+			$statistics[$year][$month]["registered_user_2purch_50_0_15"] = 0;
+			$statistics[$year][$month]["registered_user_2purch_0_15"] = 0;
+			$statistics[$year][$month]["registered_user_2purch_50_15_30"] = 0;
+			$statistics[$year][$month]["registered_user_2purch_15_30"] = 0;
+			$statistics[$year][$month]["registered_user_2purch_30"] = 0;
+			#REGISTERED USERS
+			$conditions_A = array('created_date' => array(
+									'$gt' => new MongoDate($actual_month),
+									'$lte' => new MongoDate($next_month)
+			));
+			$statistics[$year][$month]["registered_user"] = $usersCollection->count($conditions_A);
+			#REGISTERED USERS / No Purchases
+			$conditions_B = array('purchase_count' => array('$exists' => false),
+									'created_date' => array(
+										'$gt' => new MongoDate($actual_month),
+										'$lte' => new MongoDate($next_month)
+			));
+			$statistics[$year][$month]["registered_user_no_purch"] = $usersCollection->count($conditions_B);
+			$conditions_C = array('purchase_count' => array('$exists' => true),
+									'created_date' => array(
+										'$gt' => new MongoDate($actual_month),
+										'$lte' => new MongoDate($next_month)
+			));
+			$users_C = $usersCollection->find($conditions_C);
+			foreach ($users_C as $user) {
+				$key = 0;
+				$key_2nd = 0;
+				# 1st Purchase between 0 to 23 days
+				$day_target_23 = mktime(
+									date("G", $user['created_date']->sec),
+									date("i", $user['created_date']->sec),
+									date("s", $user['created_date']->sec),
+									date("m", $user['created_date']->sec),
+									date("d", $user['created_date']->sec) + 23,
+									date("Y", $user['created_date']->sec)
+							);
+				$day_target_30 = mktime(
+									date("G", $user['created_date']->sec),
+									date("i", $user['created_date']->sec),
+									date("s", $user['created_date']->sec),
+									date("m", $user['created_date']->sec),
+									date("d", $user['created_date']->sec) + 30,
+									date("Y", $user['created_date']->sec)
+							);
+				$conditions_order = array("user_id" => (string) $user["_id"]);
+				$orders = $ordersCollection->find($conditions_order,array('date_created' => 1, 'total' => 1));
+				foreach($orders as $order) {
+					if($key == 0) {
+						$day_2_target_15 = mktime(
+											date("G", $order['date_created']->sec),
+											date("i", $order['date_created']->sec),
+											date("s", $order['date_created']->sec),
+											date("m", $order['date_created']->sec),
+											date("d", $order['date_created']->sec) + 15,
+											date("Y", $order['date_created']->sec)
+									);
+						$day_2_target_30 = mktime(
+											date("G", $order['date_created']->sec),
+											date("i", $order['date_created']->sec),
+											date("s", $order['date_created']->sec),
+											date("m", $order['date_created']->sec),
+											date("d", $order['date_created']->sec) + 30,
+											date("Y", $order['date_created']->sec)
+									);
+						if($order['date_created']->sec > $day_target_30) {
+							$statistics[$year][$month]["registered_user_purch_30"]++;
+						} else if (($order['date_created']->sec < $day_target_30) && ($order['date_created']->sec > $day_target_23)) {
+							$statistics[$year][$month]["registered_user_purch_23_30"]++;
+							$key_2nd++;
+						} else if (($order['date_created']->sec < $day_target_23)) {
+							$statistics[$year][$month]["registered_user_purch_0_23"]++;
+							$key_2nd++;
+						}
+					}
+					//2nd purchase
+					if(($key == 1) && ($key_2nd == 1)) {
+						if($order['total'] < 50) {
+							if($order['date_created']->sec > $day_2_target_30) {
+								$statistics[$year][$month]["registered_user_2purch_30"]++;
+							} else if (($order['date_created']->sec <= $day_2_target_30) && ($order['date_created']->sec > $day_2_target_15)) {
+								$statistics[$year][$month]["registered_user_2purch_15_30"]++;
+							} else if (($order['date_created']->sec <= $day_2_target_15)) {
+								$statistics[$year][$month]["registered_user_2purch_0_15"]++;
+							}
+						} else {
+							if($order['date_created']->sec > $day_2_target_30) {
+								$statistics[$year][$month]["registered_user_2purch_30"]++;
+							} else if (($order['date_created']->sec <= $day_2_target_30) && ($order['date_created']->sec > $day_2_target_15)) {
+								$statistics[$year][$month]["registered_user_2purch_50_15_30"]++;
+							} else if (($order['date_created']->sec <= $day_2_target_15)) {
+								$statistics[$year][$month]["registered_user_2purch_50_0_15"]++;
+							}
+						}
+					}
+					$key++;
+				}
+				if(($key == 1) && ($key_2nd == 1)) {
+					$statistics[$year][$month]["registered_user_no_2purch"]++;
+				}
+			}
+			$month_plus++;
+			$actual_month = mktime(0, 0, 0, ($start_month + $month_plus), 1, $start_year);
+			$next_month = mktime(0, 0, 0, ($start_month + 1 + $month_plus), 1, $start_year);
+		} while ($actual_month < $now[0]);
+		/**** 1ST Charts ****/
+		$i = 0;
+		foreach($statistics as $year => $stats) {
+			foreach($stats as $key => $statistic) {
+			//Categories
+			$arrCatNames[0 + $i] = $key.' '.$year;
+			//Series
+			$arrData[0][0] = 'w/ no Purchases';
+			$arrData[0][1] = "color=69D2E7";
+			$arrData[1][0] = '1st purchase 0-23d';
+			$arrData[1][1] = "color=A7DBD8";
+			$arrData[2][0] = '1st purchase 23-30d';
+			$arrData[2][1] = "color=E0E4CC";
+			$arrData[3][0] = '1st purchase > 30d';
+			$arrData[3][1] = 'color=F38630';
+			//datas
+			$arrData[0][2 + $i] = 100 * ($statistic["registered_user_no_purch"] / $statistic["registered_user"]);
+			$arrData[1][2 + $i] = 100 * ($statistic["registered_user_purch_0_23"] / $statistic["registered_user"]);
+			$arrData[2][2 + $i] = 100 * ($statistic["registered_user_purch_23_30"] / $statistic["registered_user"]);
+			$arrData[3][2 + $i] = 100 * ($statistic["registered_user_purch_30"] / $statistic["registered_user"]);
+			# Create Column3D chart Object
+			$ServiceCharts = new FusionCharts("StackedColumn3D","700","350");
+			#  Set chart attributes
+			$strParam = "yAxisName=Users;numberSuffix=%";
+			$ServiceCharts->setChartParams($strParam);
+			# add chart values and  category names
+			$ServiceCharts->addChartDataFromArray($arrData,$arrCatNames);	
+			/**** 2ND Charts ****/
+			//Categories
+			$arrCatNames_2[0 + $i] =  $key.' '.$year;
+			//titles
+			$arrData_2[0][0] = 'No 2nd purchase';
+			$arrData_2[0][1] = "color=CFF09E";
+			$arrData_2[1][0] = 'Discount 0-15d';
+			$arrData_2[1][1] = "color=A8DBA8";
+			$arrData_2[2][0] = '0-15d';
+			$arrData_2[2][1] = "color=79BD9A";
+			$arrData_2[3][0] = 'Discount 15-30d';
+			$arrData_2[3][1] = "color=3B8686";
+			$arrData_2[4][0] = '15-30d';
+			$arrData_2[4][1] = "color=0B486B";
+			$arrData_2[5][0] = '> 30d';
+			$arrData_2[5][1] = "color=FF9900";
+			//datas
+			$free_shipping_user = $statistic["registered_user_purch_0_23"] + $statistic["registered_user_purch_23_30"];
+			$arrData_2[0][2 + $i] = 100 * ($statistic["registered_user_no_2purch"] / $free_shipping_user);
+			$arrData_2[1][2 + $i] = 100 * ($statistic["registered_user_2purch_50_0_15"] / $free_shipping_user);
+			$arrData_2[2][2 + $i] = 100 * ($statistic["registered_user_2purch_0_15"] / $free_shipping_user);
+			$arrData_2[3][2 + $i] = 100 * ($statistic["registered_user_2purch_50_15_30"] / $free_shipping_user);
+			$arrData_2[4][2 + $i] = 100 * ($statistic["registered_user_2purch_15_30"] / $free_shipping_user);
+			$arrData_2[5][2 + $i] = 100 * ($statistic["registered_user_2purch_30"] / $free_shipping_user);
+			# Create Column3D chart Object
+			$Service2ndCharts = new FusionCharts("StackedColumn3D","700","350");
+			#  Set chart attributes
+			$strParam2 = "yAxisName=Users;numberSuffix=%";
+			$Service2ndCharts->setChartParams($strParam2);
+			# add chart values and  category names
+			$Service2ndCharts->addChartDataFromArray($arrData_2,$arrCatNames_2);
+			$i++;
+			}
+		}
+		return compact('ServiceCharts','Service2ndCharts');
 	}
 }
 

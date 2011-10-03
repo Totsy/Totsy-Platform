@@ -5,6 +5,7 @@
 				<div class="tt">
 					<div><!-- --></div>
 				</div>
+				<div class="free_shipping_banner"><img src="/img/freeShip-badge.png" /></div>
 
 				<div class="tm">
 
@@ -154,7 +155,13 @@
 		<li><a href="/pages/aboutus" title="About Us">About Us</a></li>
 		<li><a href="/blog" title="Blog">Blog</a></li>
 		<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
-		<li class="last"><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
+		<?php if (empty($userInfo)){ ?>
+		<li><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
+		<li class="last"><a href="http://nytm.org/made" title="Made in NYC" target="_blank">Made in NYC</a></li>
+		<?php } else { ?>
+		<li><a href="/tickets/add" title="Contact Us">Contact Us</a></li>
+		<li class="last"><a href="http://nytm.org/made" title="Made in NYC" target="_blank">Made in NYC</a></li>
+		<?php } ?>
 	</ul>
 
 	<span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved. <br />10 West 18th Street, Floor 4 - New York, NY 10011</span>
@@ -163,3 +170,24 @@
 <script>
 	document.getElementById("password").focus();
 </script>
+
+<!-- Google Code for Homepage Remarketing List -->
+<script type="text/javascript">
+/* <![CDATA[ */
+	var google_conversion_id = 1019183989;
+	var google_conversion_language = "en";
+	var google_conversion_format = "3";
+	var google_conversion_color = "666666";
+	var google_conversion_label = "8xkfCIH8iwIQ9Yb-5QM";
+	var google_conversion_value = 0;
+/* ]]> */
+</script>
+
+<script type="text/javascript" src="http://www.googleadservices.com/pagead/conversion.js"></script>
+
+<noscript>
+	<div style="display:inline;">
+		<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=8xkfCIH8iwIQ9Yb-5QM&amp;guid=ON&amp;script=0"/>
+	</div>
+</noscript>
+<!-- END OF Google Code for Homepage Remarketing List -->

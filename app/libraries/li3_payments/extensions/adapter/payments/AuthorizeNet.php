@@ -2,9 +2,12 @@
 
 namespace li3_payments\extensions\adapter\payments;
 
+use MongoDate;
 use SimpleXMLElement;
+use app\models\AuthAttempt;
 use lithium\util\Inflector;
 use lithium\data\Collection;
+use lithium\storage\Session;
 use li3_payments\extensions\PaymentObject;
 use li3_payments\extensions\payments\ECheck;
 use li3_payments\extensions\payments\Profile;
@@ -107,10 +110,32 @@ class AuthorizeNet extends \lithium\core\Object {
 				$result = $this->_send('profile', $request);
 			break;
 			case ($payment instanceof CreditCard):
+				$user = Session::read('userLogin');
+				
 				$type = Transaction::TYPE_AUTH;
-				$data = $this->_serialize($type, compact('payment', 'amount') + $options);
+				$data = $this->_serialize($type, 
+					compact('payment', 'amount') + 
+					$options + 
+					array('cust_id'=>$user['_id'], 'customer_ip'=>$user['lastip']));
+				
+				$auth_attempt = AuthAttempt::create();
+				$auth_attempt->customer_ip = $user['lastip'];
+				$auth_attempt->cust_id = $user['_id'];
+				$auth_attempt->date_created = new MongoDate();
+				$auth_attempt->card_number = substr($payment->number, -4);
+				$auth_attempt->amount = $amount;
+				$auth_attempt->save();
+				
 				$response = $this->_sendAim('default', $data);
 
+				$auth_attempt->transaction_id = $response['Transaction ID'];
+				$auth_attempt->response_code = $response['Response Code'];
+				$auth_attempt->response_subcode = $response['Response Subcode'];
+				$auth_attempt->response_reason_code = $response['Response Reason Code'];
+				$auth_attempt->response_reason_text = $response['Response Reason Text'];
+				$auth_attempt->ccv_response_code = $response['Card Code (CVV2/CVC2/CID) Response Code'];
+				$auth_attempt->cavv_response_code = $response['Cardholder Authentication Verification Value (CAVV) Response Code'];
+				$auth_attempt->save();
 				if (intval($response['Response Code']) == 1) {
 					return $response['Transaction ID'];
 				}
@@ -233,6 +258,8 @@ class AuthorizeNet extends \lithium\core\Object {
 			}
 			unset($data['payment']);
 		}
+		$data['customer_ip'] = $params['customer_ip'];
+		$data['cust_id'] = $params['cust_id'];
 		foreach (array('amount' => 'amount', 'transaction' => 'trans_id') as $source => $dest) {
 			if (isset($params[$source])) {
 				$data[$dest] = $params[$source];

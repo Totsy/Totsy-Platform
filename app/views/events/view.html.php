@@ -3,12 +3,10 @@
 ?>
 <?=$this->html->script('jquery.countdown.min');?>
 <?=$this->html->style('jquery.countdown');?>
-
+	
 	<div id="middle" class="fullwidth">
-
 		<h1 class="page-title gray"><span class="red"><a href="/" title="Sales"><?=$type?> Sales</a> /</span> <?=$event->name; ?></h1>
 		<hr />
-
 
 		<div class="r-container clear">
 			<div class="tl"></div>
@@ -66,6 +64,15 @@
 			<div class="bl"></div>
 			<div class="br"></div>
 		</div>
+		<br />
+		<?php if(!empty($filters)): ?>
+		<div id='filterb' style='text-align:right'>
+			<?=$this->form->create(null, array('id' => 'filterform')); ?>
+			<?=$this->form->label("filterby", "Display by:", array('style' => 'font-weight:bold; font-size:13px;')); ?>
+			<?=$this->form->select('filterby',$filters, array('onchange' => "filter()", 'id' => 'filterby', 'style' => 'width:120px;', 'value' => array($departments => $departments))); ?>
+			<?=$this->form->end(); ?>
+		</div>
+		<?php endif ?>
 			<div>
 			<!-- div class="sort-by" -->
 			<!-- select id="by-category" name="by-category">
@@ -171,4 +178,11 @@ $(function () {
 			}
 	}
 });
+function filter() {
+	var filter = $('#filterby').val();
+	_gaq.push(['_setAccount', 'UA-675412-15']);
+	_gaq.push(['_trackPageview']);
+	_gaq.push(['_trackEvent', 'departments', 'dropdown', filter]);
+	$('#filterform').submit();
+};
 </script>

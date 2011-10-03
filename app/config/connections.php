@@ -13,25 +13,36 @@ use \lithium\data\Connections;
 
     Connections::add('default', array(
 		'production' => array(
-			'type' =>  'MongoDb', 
-			'database' => 'totsy', 
-			'host' => '172.20.15.38'),
+			'type' =>  'MongoDb',
+			'database' => 'totsy',
+			'setSlaveOkay' => true,
+			'replicaSet' => true,
+			'host' => array(
+    			'db1',
+    			'db2',
+    			'db3',
+    			'db4',
+    			'db5',
+    			'db6'
+    		),
+			'adapter' => 'app\extensions\adapter\mongo\Db'),
 		'test' => array(
-			'type' =>  'MongoDb', 
-			'database' => 'totsy_test', 
+			'type' =>  'MongoDb',
+			'database' => 'totsy_test',
 			'host' => array('test')),
 		'development' => array(
-			'type' =>  'MongoDb', 
-			'database' => 'totsy_dev', 
+			'type' =>  'MongoDb',
+			'database' => 'totsy',
 			'host' => 'localhost'),
 		'eric' => array(
-			'type' =>  'MongoDb', 
-			'database' => 'totsy_eric', 
+			'type' =>  'MongoDb',
+			'database' => 'totsy_eric',
 			'host' => 'localhost'),
 		'local' => array(
-			'type' =>  'MongoDb', 
-			'database' => 'totsy', 
-			'host' => 'localhost')
+			'type' =>  'MongoDb',
+			'database' => 'totsy',
+			'host' => 'localhost',
+			'adapter' => 'app\extensions\adapter\mongo\Db')
 	));
-	
+
 ?>
