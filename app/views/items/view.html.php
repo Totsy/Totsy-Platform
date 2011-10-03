@@ -1,193 +1,13 @@
 <script src="/js/jquery.tmpl.js" type="text/javascript"></script>
 
 <!-- template used for items on cart. jquery.tmpl.js driven -->
-<script id="template" type="text/html">
- <div class="cart_popup_item_wrapper">
- 	{{if primary_image}}
- 	<div class="cart_popup_item_thumbnail">
- 		<img src="/image/${primary_image}.jpg" style="width:60px; height:60px">
- 	</div>
- 	{{else}}
- 	<div class="cart_popup_item_thumbnail">
- 		<img src="/img/no-image-small.jpeg" style="width:60px; height:60px">
- 	</div>
- 	{{/if}}
- 	<div class="cart_popup_item_fields">
- 		<span class="cart_popup_item_description">
- 			<a target="_blank" href="sale/hot-pink-mary-janes-with-white-button-polka-dots-hot-pink">
- 			 ${description} </a>
- 		</span>
- 		<span class="cart_popup_item_price"><strong> $${sale_retail} </strong></span>
- 		<span class="cart_popup_line_qty">Qty: ${quantity} </span>		
- 		</span>
- 		<span class="cart_popup_line_total"> $${line_total} </span>
- 		<span title="date goes here" class="counter cart-review-line-timer" id="itemCounter0" style="display: none;"></span>
- 		<div style="clear:both"></div>
- 		<hr>
- 		{{if color}}
- 		<div>
- 		    <span class="cart-review-color-size">Color:</span> ${color} 
- 		</div>
- 		{{/if}}
- 		{{if size}}
- 		<div>
- 		    <span class="cart-review-color-size">Size:</span> ${size}
- 		</div>
- 		{{/if}}
- 	</div>
- </div>	
- <div style="clear:both"></div>
-</script>
+<?=$this->view()->render( array('element' => 'popupCartItems') ); ?>
 
 <script type="text/javascript">
-
 var item_id = "<?=$item->_id?>";
-
-//holds the timeout ID for the popup when the mouse leaves it
-var timeout = "";
-
-//cart items immediately visible 
-var visibleItems = new Array();
-
-//cart items not immediately visible
-var invisibleItems = new Array();
-
-var isCollapsed = false;
-
-//jQuery for adding items.
-$(document).ready( function(){
-
-	var showCartPopup = function(cart){
-					
-		//reset all items
-		if(invisibleItems.length>0){
-			invisibleItems = [];
-		}
-		
-		if(visibleItems.length>0){
-			visibleItems = [];
-		}
-		
-		var visibleItemCount = 3;
-		var invisibleItemCount = 0;
-				
-		//convert JSON string to JS Object
-		var cartObj = eval('(' + cart + ')');
-		
-		$("#ship_date").html(cartObj.shipDate);
-		$("#savings").html(cartObj.savings.items.toFixed(2));
-				
-		$("#order_total_num").html("$" + cartObj.total + "");
-		$("#cart-count").html(cartObj.itemCount);
-		
-		cartData = cartObj.cart;
-				
-		for (i in cartData){
-			//formatting price and line totals
-			cartData[i]['sale_retail'] = cartData[i]['sale_retail'].toFixed(2);	
-			cartData[i]['line_total'] = (cartData[i]['quantity'] * cartData[i]['sale_retail']).toFixed(2);
-		
-			if(i < visibleItemCount){ 
-				visibleItems.push(cartData[i]);
-			} else {
-				invisibleItems.push(cartData[i]);
-				invisibleItemCount++;
-			}
-		}
-		
-		//unset cart_item DIV
-		$("#cart_item").html("");
-		
-		//attach template to cart_item DIV
-		$("#template").tmpl(visibleItems).appendTo("#cart_item");
-		
-		if (invisibleItemCount > 0 ){
-			$("#more_cart_items").css("visibility", "visible");	
-		}  
-		
-		$("#cart_popup").fadeIn(500);	
-			
-	};
-	
-	//add items to cart
-	var addItem = function(){
-		var item_size = "";
-	
-		if(typeof $('#size-select').attr('value')!='undefined') {
-			item_size = $('#size-select').attr('value');
-		} else {
-			item_size = "no size";
-		}
-		
-		$.ajax({
-	        url: $.base + 'cart/add',
-	        data: "item_id=" + item_id + "&" + "item_size=" + item_size,
-	        context: document.body,
-		    success: function(data){
-	        	showCartPopup(data);
-	        }
-	    });
-	};
-		
-	var closeCartPopup = function(){
-		//isCollapsed = false;
-		$("#more_cart_items a").html("See more...");
-		$("#cart_popup").fadeOut(500);
-		//set isCollapsed to false so that the link doesn't appear on re-open
-	};
-	
-	//make popup disappear 8 seconds after their mouse leaves it  
-	$("#cart_popup").mouseleave(function(){
-		timeout = setTimeout(function(){
-			$("#more_cart_items a").html("See more...");
-			$("#cart_popup").fadeOut(500);
-		}, 8000);
-	});
-	
-	//interrupt JS setTimeout using its timeout ID  
-	$("#cart_popup").mouseover(function(){
-		clearTimeout(timeout);
-	});
-	
-	//click handler for adding items to cart
-	$("#add-to-cart").click(function(){
-		addItem();
-	});	
-	
-	//toggle items for carts with more than 3 different types of items
-	$("#more_cart_items a").click(function(){	
-		if (isCollapsed==false){
-			isCollapsed = true;
-			
-			//add a scrollbar
-			$("#cart_item").css({"overflow-y":"scroll", "overflow-x":"hidden", "height":"230px"});
-			//set label to toggle up
-			$("#more_cart_items a").html("...see less");
-			
-			//add all items to template
-			$("#template").tmpl(invisibleItems).appendTo("#cart_item");	
-		} else {
-			isCollapsed = false;
-			
-			//remove scrollbar
-			$("#cart_item").css({"overflow-y":"hidden", "height":"auto"});
-			//unset cart_item DIV
-			$("#cart_item").html("");
-			//set label to toggle down
-			$("#more_cart_items a").html("See more...");
-			
-			//load template only with 3 items
-			$("#template").tmpl(visibleItems).appendTo("#cart_item");	
-		}
-	});
-
-	//close cart popup
-	$("#cart_popup_close_button").click(function(){
-		closeCartPopup();
-	});
-
-});
 </script>
+
+<script type="text/javascript" src="/js/cart-popup.js"></script>
 
 <div style="position:relative"> 
 <div id="cart_popup" class="grid_16 roundy glow" style="display:none">
@@ -223,7 +43,7 @@ $(document).ready( function(){
 	 <div style="clear:both"></div>
 	 <div class="cart-button fr cart-nav-buttons">
 	 	<a id="cart_popup_cont_shop" class="button_border" href="/sale/mom-co-maternity">Continue Shopping</a>		      
-	 	<a id="cart_popup_checkout" class="button" href="/checkout/shipping">Checkout</a>		 
+	 	<a id="cart_popup_checkout" class="button" href="/checkout/view">Checkout</a>		 
 	 </div>
 </div>
 </div>

@@ -159,6 +159,7 @@ class CartController extends BaseController {
 		#Check Cart
 		$cart = Cart::create();
 		
+		//ini_set("display_errors", 1);
 		//output for cart popup
 		$cartData = Array();
 		
@@ -246,15 +247,22 @@ class CartController extends BaseController {
 		//get the amount of items in the cart
 		$cartData['itemCount'] = Cart::itemCount();
 		
-		$total = Session::read('total');
+		foreach(Cart::active() as $cartItem) {
+			//$cartItem->eventURL = Event::find('first', array('id'=>$cartItem->event[0]));
+			//$cartItem->eventURL = "test";
+			//$cartData['total'] += Cart::subTotal($cartItem);
+		}
 		
+		$cartData['total'] = 0.00;
+		
+		$total = Session::read('total');
 		//get the subtotal for the cart
 		if(!isset($total)){
-			foreach(Cart::active() as $cartItem){
+			foreach(Cart::active() as $cartItem) {
 				$cartData['total'] += Cart::subTotal($cartItem);
 			}
 		} else {
-			$cartData['total'] = $total;
+			$cartData['total'] = $total;	
 		}
 				
 		echo json_encode($cartData);
