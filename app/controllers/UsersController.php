@@ -172,11 +172,19 @@ class UsersController extends BaseController {
 						$data['invitation_codes'] = array(static::randomString());
 					}
 					if ($saved = $user->save($data)) {
+						$mail_template = 'Welcome_Free_Shipping';
+						$params = array();
+						
 						$data = array(
 							'user' => $user,
 							'email' => $user->email
 						);
-						Mailer::send('Welcome_Free_Shipping', $user->email);
+
+						if (isset($user['clear_token'])) {
+							$mail_template = 'Welcome_auto_passgen';
+							$params['token'] = $user['clear_token']; 
+						} 
+						Mailer::send($mail_template, $user->email,$params);
 						$name = null;
 						if (isset($data['firstname'])) $name = $data['firstname'];
 						if (isset($data['lastname'])) $name = is_null($name)?$data['lastname']:$name.$data['lastname'];
