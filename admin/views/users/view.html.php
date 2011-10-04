@@ -208,8 +208,8 @@
 					<?php foreach ($promocodes_used as $promocode): ?>
 						<tr>
 							<td>
-								<?php if (!empty($promocode['date']->sec)): ?>
-									<?=date('Y-m-d', $promocode['date']->sec);?>
+								<?php if (!empty($promocode['date_created']->sec)): ?>
+									<?=date('Y-m-d', $promocode['date_created']->sec);?>
 								<?php endif?>
 							</td>
 							<td>
