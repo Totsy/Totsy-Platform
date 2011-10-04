@@ -105,10 +105,10 @@
 
 	</div>
 	<!--Disney -->
-      <div class="disney">
-          <p><strong>SPECIAL BONUS!</strong><hr/></p>
-       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value). <br/>
-       <span  id="disney">Offer & Refund Details</span></p>
+<div class="disney">
+          <strong>SPECIAL BONUS!</strong><hr/></p>
+       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/parents.png" align="absmiddle" width="95px" /> ( a $10 value )
+       <span id="disney">Offer & Refund Details</span>
       </div>
 	<!-- Started Related Products -->
 	<div id="related-products">
