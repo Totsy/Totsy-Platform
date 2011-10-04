@@ -12,17 +12,15 @@ use \lithium\data\Connections;
 
 	Connections::add('default', array(
 		'production' => array(
-			'type' =>  'MongoDb',
-			'database' => 'totsy',
-			'setSlaveOkay' => true,
-			'replicaSet' => true,
-			'host' => array(
-    			'db1',
-    			'db2',
-    			'db3',
-    			'db4',
-    			'db5',
-    			'db6' )),
+                        'type' => 'MongoDb',
+                        'database' => 'totsy',
+                        'setSlaveOkay' => false,
+                        'replicaSet' =>'totsy',
+                        'host' => array(
+                        'db1',
+                        'db2',
+                        'db3'
+                )),
 		'test' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy_test',
