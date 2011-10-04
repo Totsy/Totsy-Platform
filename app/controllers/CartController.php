@@ -33,8 +33,8 @@ class CartController extends BaseController {
 	* @see app/models/Cart::increaseExpires()
 	* @see app/models/Cart::active()
 	* @return compact
-	*/	
-	
+	*/
+
 	public function view() {
 		#Initialize Datas
 		$promocode_disable = false;
@@ -61,16 +61,16 @@ class CartController extends BaseController {
 		$i = 0;
 		$subTotal = 0;
 		$itemCount = 0;
-		
+
 		#Count of how many items in the cart are exempt of shipping cost
 		$exemptCount = 0;
-		
+
 		$shipDate = Cart::shipDate($cart);
-		#Check Expires 
+		#Check Expires
 		Cart::cleanExpiredEventItems();
 		#Loop To Get Infos About Cart
 		foreach ($cart as $item) {
-			#Get Last Expiration Date 
+			#Get Last Expiration Date
 			if ($cartExpirationDate < $item['expires']->sec) {
 				$cartExpirationDate = $item['expires']->sec;
 			}
@@ -83,23 +83,23 @@ class CartController extends BaseController {
 			$events = Event::find('all', array('conditions' => array('_id' => $item->event[0])));
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
 			#Get Event End Date
-			$cartItemEventEndDates[$i] = $events[0]->end_date->sec;		
+			$cartItemEventEndDates[$i] = $events[0]->end_date->sec;
 			$item->event_url = $events[0]->url;
 			$item->available = $itemInfo->details->{$item->size} - (Cart::reserved($item->item_id, $item->size) - $item->quantity);
 			$subTotal += $item->quantity * $item->sale_retail;
 			$itemlist[$item->created->sec] = $item->event[0];
 			$itemCount += $item->quantity;
-
 			#Items that are shipping exempt
-		
+
 			if($item->shipping_exempt){
 				if ($item->shipping_exempt==true) {
-					$exemptCount ++; 
+					$exemptCount ++;
 				}
 			}
-			
+
 			$i++;
 		}
+		$shipping = Cart::shipping($cart, null);
 		#Get Last Url
 		if ($cart) {
 			krsort($itemlist);
@@ -107,16 +107,16 @@ class CartController extends BaseController {
 			$event = Event::find('first', compact('conditions'));
 			if ($event) {
 				$returnUrl = $event->url;
-			}			
+			}
 		}
-		
+
 		#Do not apply shipping cost if cart only has non-tangible items
 		if($exemptCount == $itemCount) {
 			$shipping = "";
 		} else {
 			$shipping = 7.95;
 		}
-				
+
 		#Get current Discount
 		$vars = Cart::getDiscount($subTotal, $shipping, 0, $this->request->data);
 		#Calculate savings
@@ -135,10 +135,10 @@ class CartController extends BaseController {
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
 			$shipping_discount = $shipping;
 		}
-				
+
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
-		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl', 'shipping');
+		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping');
 	}
 
 	/**
@@ -150,7 +150,7 @@ class CartController extends BaseController {
 	public function add() {
 		#Check Cart
 		$cart = Cart::create();
-				
+
 		if ($this->request->data) {
 			#Getting Size Selected
 			$itemId = $this->request->data['item_id'];
@@ -180,7 +180,7 @@ class CartController extends BaseController {
 			#Condition if Item Already in your Cart
 			if (!empty($cartItem)) {
 				//Make sure user does not add more than 9 items to the cart
-				
+
 				if($cartItem->quantity < 9 ) {
 					//Make sure the items are available
 					if( $avail > 0 ) {
@@ -290,14 +290,14 @@ class CartController extends BaseController {
 						$cart->error = $result['errors'];
 						$cart->save();
 						$this->addIncompletePurchase(Cart::active());
-					}		
+					}
 				}
 			}
 			#update savings
 			Cart::updateSavings($items, 'update');
-		}					
+		}
 	}
-	
+
 	/**
 	* Check If User Will Receive Disney Email
 	*/
@@ -315,7 +315,7 @@ class CartController extends BaseController {
 	    }
 	    echo json_encode($success);
 	}
-	
+
 	public function upsell() {
         $query = $this->request->query;
         $this->_render['layout'] = 'base';
@@ -326,7 +326,7 @@ class CartController extends BaseController {
             return compact('total_left', 'url');
         }
 	}
-	
+
 	protected function addIncompletePurchase($items) {
 		if (is_object($items)) $items = $items->data();
 		$user = Session::read('userLogin');
@@ -343,7 +343,7 @@ class CartController extends BaseController {
 			 	'url' => $base_url.'sale/'.$eventInfo['url'].'/'.$item['url']
 			);
 			unset($eventInfo);
-		}		
+		}
 		Mailer::purchase(
 			$user['email'],
 			$itemToSend,
@@ -354,7 +354,7 @@ class CartController extends BaseController {
 		);
 		unset($itemToSend,$user);
 	}
-	
+
 	/**
 	 * Checks the availability of an item.
 	 *

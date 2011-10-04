@@ -352,20 +352,25 @@
 							</tr>
 							<tr>
 								<td colspan="4">
-										<!--- HIDDEN DATAS - ITEMS -->
-<?=$this->form->hidden("subTotal", array('class' => 'inputbox', 'id' => "subTotal", 'value' => $order->subTotal )); ?>
-<?=$this->form->hidden("credit_used", array('class' => 'inputbox', 'id' => "credit_used", 'value' => $order->credit_used )); ?>
-<?=$this->form->hidden("promo_discount", array('class' => 'inputbox', 'id' => "promo_discount", 'value' => $order->promo_discount )); ?>
-<?=$this->form->hidden("promo_code", array('class' => 'inputbox', 'id' => "promo_code", 'value' => $order->promo_code )); ?>
+<!-- HIDDEN DATAS - ITEMS -->
+<?=$this->form->hidden("subTotal", array('class' => 'inputbox', 'id' => "subTotal", 'value' => $order->subTotal)); ?>
+<?=$this->form->hidden("credit_used", array('class' => 'inputbox', 'id' => "credit_used", 'value' => $order->credit_used)); ?>
+<?=$this->form->hidden("promo_discount", array('class' => 'inputbox', 'id' => "promo_discount", 'value' => $order->promo_discount)); ?>
+<?=$this->form->hidden("discount", array('class' => 'inputbox', 'id' => "discount", 'value' => $order->discount)); ?>
+<?=$this->form->hidden("service", array('class' => 'inputbox', 'id' => "service", 'value' => $service[0])); ?>
+<?=$this->form->hidden("promo_code", array('class' => 'inputbox', 'id' => "promo_code", 'value' => $order->promo_code)); ?>
 <?=$this->form->hidden("tax", array('class' => 'inputbox', 'id' => "tax", 'value' => $order->tax)); ?>
-<?=$this->form->hidden("handling", array('class' => 'inputbox', 'id' => "handling", 'value' => $order->handling )); ?>
+<?=$this->form->hidden("handling", array('class' => 'inputbox', 'id' => "handling", 'value' => $order->handling)); ?>
+<?=$this->form->hidden("handlingDiscount", array('class' => 'inputbox', 'id' => "handlingDiscount", 'value' => $order->handlingDiscount)); ?>
+<?=$this->form->hidden("overSizeHandling", array('class' => 'inputbox', 'id' => "overSizeHandling", 'value' => $order->overSizeHandling)); ?>
+<?=$this->form->hidden("overSizeHandlingDiscount", array('class' => 'inputbox', 'id' => "overSizeHandlingDiscount", 'value' => $order->overSizeHandlingDiscount)); ?>
 <?=$this->form->hidden("total", array('class' => 'inputbox', 'id' => "total", 'value' => $order->total)); ?>
-<?=$this->form->hidden("initial_credit_used", array('class' => 'inputbox', 'id' => "initial_credit_used", 'value' => $order->initial_credit_used)); ?>
+<?=$this->form->hidden("original_credit_used", array('class' => 'inputbox', 'id' => "original_credit_used", 'value' => $order->original_credit_used)); ?>
 <?=$this->form->hidden("user_total_credits", array('class' => 'inputbox', 'id' => "user_total_credits", 'value' => $order->user_total_credits )); ?>
 <?=$this->form->hidden("promocode_disable", array('class' => 'inputbox', 'id' => "promocode_disable", 'value' => $order->promocode_disable )); ?>
 									<!--- END HIDDEN DATAS - ITEMS -->
 									<?php if(empty($order->cancel)): ?>
-									<table style="width:200px; float: right;">
+									<table style="width:250px; float: right;">
 										<tr>
 											<td valign="top">
 												Order Subtotal:
@@ -374,8 +379,12 @@
 												Credit Applied:
 												<br>
 												<?php endif ?>
-												<?php if (($order->promo_discount) && (empty($order->promocode_disable))): ?>
-												Discount:
+												<?php if ((($order->promo_discount) && (empty($order->promocode_disable)))): ?>
+													Discount [<?=$order->promo_code;?>]:
+													<br>
+												<?php endif ?>
+												<?php if ($order->discount): ?>
+													Discount [<?=$order->service[0];?>]:
 													<br>
 												<?php endif ?>
 												Sales Tax:
@@ -384,7 +393,7 @@
 												<br>
 												<?php if ($order->overSizeHandling): ?>
 												Oversize Shipping:
-													<br>
+												<br>
 												<?php endif ?>
 												<br><br>
 												<strong style="font-weight:bold;color:#606060">Total:</strong>
@@ -400,14 +409,18 @@
 												-$<?=number_format(abs($order->promo_discount),2); ?>
 												<br>
 											<?php endif ?>
+											<?php if ($order->discount): ?>
+												-$<?=number_format(abs($order->discount),2); ?>
+											<br>
+											<?php endif ?>
 											$<?=number_format($order->tax,2); ?>
 											<br>
 											$<?=number_format($order->handling,2); ?>
+											<br>
 											<?php if ($order->overSizeHandling): ?>
 												$<?=number_format($order->overSizeHandling,2); ?>
 												<br>
 											<?php endif ?>
-											<br>
 											<br><br>
 											<strong style="font-weight:bold;color:#009900;">$<?=number_format($order->total,2); ?></strong>
 											</td>
