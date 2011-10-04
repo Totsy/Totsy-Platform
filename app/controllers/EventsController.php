@@ -26,7 +26,12 @@ class EventsController extends BaseController {
 			$openEvents = Event::open(null,array(),$departments);
 			$pendingEvents = Event::pending(null,array(),$departments);
 		}
-		
+
+		$itemCounts = array();
+		/*
+		// DON'T COUNT ITEMS !!!!
+		// IMPORTANT
+		// Slav
 		$itemCounts = $this->inventoryCheck(Event::open(array(
 			'fields' => array('items')
 		)));
@@ -40,8 +45,8 @@ class EventsController extends BaseController {
 				}
 			}
 		}
-		
-		if (!empty($events_closed)) {
+		*/
+		if (isset($events_closed) && !empty($events_closed)) {
 			if (!empty($openEvents)) {
 				foreach ($events_closed as $event) {
 					$openEvents[] = $event;
@@ -160,7 +165,7 @@ class EventsController extends BaseController {
 	public function inventoryCheck($events) {
 		$events = $events->data();
 		$itemCounts = array();
-		
+
 		foreach ($events as $eventItems) {
 			$count = 0;
 			$id = $eventItems['_id'] ;
