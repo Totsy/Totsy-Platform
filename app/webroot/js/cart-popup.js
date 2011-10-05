@@ -44,8 +44,13 @@ $(document).ready( function() {
 		
 		//set divs based on data returned in addItem call
 		$("#ship_date").text(cartObj.shipDate);
+		$("#cart_popup_cont_shop").attr('href', '/sale/' + cartObj.eventURL);
 		$("#savings").text(cartObj.savings.items.toFixed(2));
+		
+		//clear out this DIV....it seems to be caching old values...
+		$("#order_total_num").html("");
 		$("#order_total_num").text("$" + cartObj.total.toFixed(2) + "");
+		
 		$("#cart-count").text(cartObj.itemCount);
 		
 		//set var for cart timer

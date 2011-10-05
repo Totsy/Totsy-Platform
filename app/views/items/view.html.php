@@ -47,7 +47,7 @@
 	 </div>
 	 <div style="clear:both"></div>
 	 <div id="cart_popup_checkout_buttons" class="cart-button fr cart-nav-buttons">
-	 	<a id="cart_popup_cont_shop" class="button_border" href="/sale/mom-co-maternity">Continue Shopping</a>		      
+	 	<a id="cart_popup_cont_shop" class="button_border" href="#">Continue Shopping</a>		      
 	 	<a id="cart_popup_checkout" class="button" href="/checkout/view">Checkout</a>		 
 	 </div>
 </div>

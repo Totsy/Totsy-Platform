@@ -196,6 +196,9 @@ class CartController extends BaseController {
 			#Get Item from Cart if already added
 			$cartItem = Cart::checkCartItem($itemId, $size);
 			$avail = $item->details->{$size} - Cart::reserved($itemId, $size);
+			
+			$event = Event::find('first', array('conditions' => array('_id' => $item->event[0])));
+			
 			#Condition if Item Already in your Cart
 			if (!empty($cartItem)) {
 				//Make sure user does not add more than 9 items to the cart
@@ -246,6 +249,8 @@ class CartController extends BaseController {
 			}
 		} 
 		
+		//send the event URL for building the continue shopping button
+		$cartData['eventURL'] = $event->url;
 		//send cart array 
 		$cartData['cart']= Cart::active()->data();
 		//get user savings. they were just put there by updateSavings()
