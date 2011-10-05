@@ -119,7 +119,6 @@
 			<!-- End Video Tab -->
 
 		</div>
-	</div>
 	<!--Disney -->
 <div class="disney">
           <strong>SPECIAL BONUS!</strong><hr/></p>
