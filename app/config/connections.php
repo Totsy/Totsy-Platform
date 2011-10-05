@@ -24,9 +24,15 @@ use \lithium\data\Connections;
                 ),
 			'adapter' => 'app\extensions\adapter\data\source\MongoDb'),
 		'test' => array(
-			'type' =>  'MongoDb',
-			'database' => 'totsy',
-			'host' => array('devdb2.totsy.com')),
+                        'type' => 'MongoDb',
+                        'database' => 'totsy',
+                        'setSlaveOkay' => false,
+                        'replicaSet' =>'totsy',
+                        'host' => array(
+                        'db1',
+                        'db2',
+                        'db3'
+                )'adapter' => 'app\extensions\adapter\data\source\MongoDb'),
 		'development' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy',
