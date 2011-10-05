@@ -36,7 +36,6 @@ class CartController extends BaseController {
 	*/	
 		
 	public function view() {
-		
 		#Initialize Datas
 		$promocode_disable = false;
 		$cartExpirationDate = 0;
@@ -140,11 +139,8 @@ class CartController extends BaseController {
 		}
 				
 		#Get Total of The Cart after Discount
-		$total = $vars['postDiscountTotal'];
-		
-		if(!Session::read('total')){
-			Session::write('total', $total);
-		}
+		$total = $vars['postDiscountTotal'];	
+		Session::write('total', $total);
 		
 		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl', 'shipping');
 	}
@@ -158,17 +154,17 @@ class CartController extends BaseController {
 	public function add() {	
 		#Check Cart
 		$cart = Cart::create();
-		
-		//ini_set("display_errors", 1);
+		//ini_set('display_errors',1);
 		//output for cart popup
 		$cartData = Array();
 		
 		$this->render(array('layout' => false));	
-				
+		
+		#Init Price Of Item Added
+		$suppTotal = 0.00;
+			
 		if ($this->request->query) {
-				
-			$data = $this->request->query;		
-					
+			$data = $this->request->query;
 			#Getting Size Selected
 			$itemId = $data['item_id'];
 			#If unselected, put no size as choice
@@ -205,12 +201,13 @@ class CartController extends BaseController {
 				if($cartItem->quantity < 9 ) {
 					//Make sure the items are available
 					if( $avail > 0 ) {
-						++$cartItem->quantity;
-												
+						++$cartItem->quantity;					
 						$cartItem->save();
 						//calculate savings
 						$item[$item['_id']] = $cartItem->quantity;
-						Cart::updateSavings($item,'add');						
+						Cart::updateSavings($item,'add');
+						#Add Price to Total
+						$suppTotal = $item['sale_retail'];				
 					} else {
 						$cartItem->error = 'You can’t add this quantity in your cart. <a href="faq">Why?</a>';
 						$cartItem->save();
@@ -236,7 +233,16 @@ class CartController extends BaseController {
 						$item[$itemId] = 1;
 						Cart::updateSavings($item, 'add');
 						$this->addIncompletePurchase(Cart::active());
+						#Add Price to Total
+						$suppTotal = $item['sale_retail'];
 					}
+				}
+			}
+			#If Percentage Promo, Update Price Of Individual Item
+			$promo_session = Session::read('promocode');
+			if (!empty($promo_session) && !empty($suppTotal)) {
+				if ($promo_session['type'] == 'percentage') {
+					$suppTotal -= ($suppTotal * $promo_session['discount_amount']);
 				}
 			}
 		}
@@ -262,17 +268,18 @@ class CartController extends BaseController {
 		//set the expiration date for this cart
 		$cartData['cartExpirationDate'] = $cartExpirationDate;
 		
-		$cartData['total'] = 0.00;
-		
-		$total = Session::read('total');
-		//get the subtotal for the cart
-		if(!isset($total)){
-			foreach(Cart::active() as $cartItem) {
-				$cartData['total'] += Cart::subTotal($cartItem);
-			}
-		} else {
-			$cartData['total'] = $total;	
+		#Get Total Past Calculated from Session
+		if(Session::check('total')) {
+			$total = Session::read('total');
 		}
+		#If Total Set, Add The Price Of the New Item, If not Total = Price Of the Item
+		if (!isset($total)) {
+			$cartData['total'] = $suppTotal;
+		} else {
+			$cartData['total'] = $total + $suppTotal;	
+		}
+		#Record Total In Session
+		Session::write('total', $cartData['total']);
 				
 		echo json_encode($cartData);
 	}
