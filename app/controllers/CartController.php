@@ -5,6 +5,10 @@ namespace app\controllers;
 use app\models\Cart;
 use app\models\Item;
 use app\models\Event;
+use app\models\User;
+use app\models\Credit;
+use app\models\Service;
+use app\models\Promotion;
 use lithium\storage\Session;
 use MongoId;
 use MongoDate;
@@ -31,14 +35,43 @@ class CartController extends BaseController {
 	* @return compact
 	*/
 	public function view() {
-		if ($this->request->data) {
+			
+		#Initialize Datas
+		$promocode_disable = false;
+		$cartExpirationDate = 0;
+		$shipping = 7.95;
+		$shipping_discount = 0;
+		$vars = compact('cartPromo','cartCredit', 'services');
+		$message = '';
+		#Get Users Informations
+		$user = Session::read('userLogin');
+		#Update the Cart
+		if (!empty($this->request->data)) {
 			$this->update();
 		}
-		Cart::increaseExpires();
-		$message = '';
-		$itemlist = array();
-		$cart = Cart::active(array('time' => '-3min'));
-		foreach($cart as $item){
+		//Cart::increaseExpires();
+		$cart = Cart::active();
+		$cartEmpty = ($cart->data()) ? false : true;
+		if($cartEmpty) {
+			#Remove Temporary Session Datas
+			User::cleanSession();
+		}
+		#Init Datas Before Loop
+		$cartItemEventEndDates = Array();
+		$i = 0;
+		$subTotal = 0;
+		$itemCount = 0;
+		
+		$shipDate = Cart::shipDate($cart);
+		#Check Expires 
+		Cart::cleanExpiredEventItems();
+		#Loop To Get Infos About Cart
+		foreach ($cart as $item) {
+			#Get Last Expiration Date 
+			if ($cartExpirationDate < $item['expires']->sec) {
+				$cartExpirationDate = $item['expires']->sec;
+			}
+			#Get Errors Message
 			if (array_key_exists('error', $item->data()) && !empty($item->error)){
 				$message .= $item->error . '<br/>';
 				$item->error = "";
@@ -46,11 +79,16 @@ class CartController extends BaseController {
 			}
 			$events = Event::find('all', array('conditions' => array('_id' => $item->event[0])));
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
+			#Get Event End Date
+			$cartItemEventEndDates[$i] = $events[0]->end_date->sec;		
 			$item->event_url = $events[0]->url;
 			$item->available = $itemInfo->details->{$item->size} - (Cart::reserved($item->item_id, $item->size) - $item->quantity);
+			$subTotal += $item->quantity * $item->sale_retail;
 			$itemlist[$item->created->sec] = $item->event[0];
+			$itemCount += $item->quantity;
+			$i++;
 		}
-		$shipDate = Cart::shipDate($cart);
+		#Get Last Url
 		if ($cart) {
 			krsort($itemlist);
 			$conditions = array('_id' => current($itemlist));
@@ -59,8 +97,28 @@ class CartController extends BaseController {
 				$returnUrl = $event->url;
 			}
 		}
-
-		return compact('cart', 'message', 'shipDate', 'returnUrl');
+		#Get current Discount
+		$vars = Cart::getDiscount($subTotal, $shipping, 0, $this->request->data);
+		#Calculate savings
+		$userSavings = Session::read('userSavings');
+		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
+		$services = $vars['services'];
+		#Get Credits
+		if (!empty($vars['cartCredit'])) {
+			$credits = Session::read('credit');
+		}
+		#Disable Promocode Uses if Services
+		if (!empty($services['freeshipping']['enable']) || !empty($services['tenOffFitfy'])) {
+			$promocode_disable = true;
+		}
+		#Get Discount Freeshipping Service / Get Discount Promocodes Free Shipping
+		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
+			$shipping_discount = $shipping;
+		}
+		#Get Total of The Cart after Discount
+		$total = $vars['postDiscountTotal'];
+		
+		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl');
 	}
 
 	/**
@@ -70,31 +128,14 @@ class CartController extends BaseController {
 	 * @return compact
 	 */
 	public function add() {
-		$actual_cart = Cart::active();
-		if (!empty($actual_cart)) {
-			$items = $actual_cart->data();
-		}
-		#T - Refresh the counter of each timer to 15 min
-		if (!empty($items)) {
-			//Security Check - Max 25 items
-			if(count($items) < 25) {
-				foreach ($items as $item) {
-					$event = Event::find('first',array('conditions' => array("_id" => $item['event'][0])));
-					$now = getdate();
-					if(($event->end_date->sec > ($now[0] + (15*60)))) {
-						$cart_temp = Cart::find('first', array(
-							'conditions' => array('_id' =>  $item['_id'])));
-						$cart_temp->expires = new MongoDate($now[0] + (15*60));
-						$cart_temp->save();
-					}
-				}
-			}
-		}
-		#T
+			
+		#Check Cart
 		$cart = Cart::create();
-		$message = null;
+				
 		if ($this->request->data) {
+			#Getting Size Selected
 			$itemId = $this->request->data['item_id'];
+			#If unselected, put no size as choice
 			$size = (!array_key_exists('item_size', $this->request->data)) ?
 				"no size": $this->request->data['item_size'];
 			$item = Item::find('first', array(
@@ -113,45 +154,55 @@ class CartController extends BaseController {
 					'vendor_style',
 					'discount_exempt'
 			)));
+			#Get Item from Cart if already added
 			$cartItem = Cart::checkCartItem($itemId, $size);
-			$itemInfo = Item::find('first', array('conditions' => array('_id' => $itemId)));
+			$avail = $item->details->{$size} - Cart::reserved($itemId, $size);
+			#Condition if Item Already in your Cart
 			if (!empty($cartItem)) {
-				$avail = $itemInfo->details->{$itemInfo->size} - Cart::reserved($itemId, $itemInfo->size);
 				//Make sure user does not add more than 9 items to the cart
-				if($cartItem->quantity < 9 ){
+				
+				if($cartItem->quantity < 9 ) {
 					//Make sure the items are available
-					if( $avail > 0 ){
+					if( $avail > 0 ) {
 						++$cartItem->quantity;
-						
+						header("Location: /checkout/view");
+						$cartItem->save();
+						//calculate savings
+						$item[$item['_id']] = $cartItem->quantity;
+						Cart::updateSavings($item,'add');
+					} else {
+						$cartItem->error = 'You can’t add this quantity in your cart. <a href="#5">Why?</a>';
 						$cartItem->save();
 						$this->addIncompletePurchase(Cart::active());
-					}else{
-						$cartItem->error = 'You can’t add this quantity in your cart. <a href="#5">Why?</a>';
-					$cartItem->save();
-					$this->addIncompletePurchase(Cart::active());
 					}
-				}else{
+				} else {
 					$cartItem->error = 'You have reached the maximum of 9 per item.';
 					$cartItem->save();
 					$this->addIncompletePurchase(Cart::active());
 				}
 			} else {
-				$item = $item->data();
-				$item_id = (string) $item['_id'];
-				$item['size'] = $size;
-				$item['item_id'] = $itemId;
-				unset($item['details']);
-				unset($item['_id']);
-				$info = array_merge($item, array('quantity' => 1));
-				if ($cart->addFields() && $cart->save($info)) {
-					$this->addIncompletePurchase(Cart::active());
+				if( $avail > 0 ) {
+					$item = $item->data();
+					$item['size'] = $size;
+					$item['item_id'] = $itemId;
+					unset($item['details']);
+					unset($item['_id']);
+					$info = array_merge($item, array('quantity' => 1));
+					if ($cart->addFields() && $cart->save($info)) {
+						#Update Main Timer to 15min
+						Cart::refreshTimer();
+						#calculate savings
+						$item[$itemId] = 1;
+						Cart::updateSavings($item, 'add');
+						$this->addIncompletePurchase(Cart::active());
+					}
 				}
 			}
-			$this->redirect(array('Cart::view'));
+			header("Location: " . \lithium\net\http\Router::match('Cart::view', $this->request), true, 302);
+			die();
 		}
-		return compact('cart', 'message');
+		return compact('cart');
 	}
-
 
 	/**
 	* The remove method delete an item from the temporary cart.
@@ -159,34 +210,38 @@ class CartController extends BaseController {
 	* @see app/models/Cart::remove()
 	* @return compact
 	*/
-	public function remove() {
-		if ($this->request->data) {
-				$data = $this->request->data;
-				$cart = Cart::find('first', array(
-					'conditions' => array(
-						'_id' => $data["id"]
-				)));
-				if(!empty($cart)){
-					Cart::remove(array('_id' => $data["id"]));
-					$this->addIncompletePurchase(Cart::active());
-				}
-			}
-
-		$this->_render['layout'] = false;
-		$cartcount = Cart::itemCount();
-		return compact('cartcount');
+	public function remove($id = null) {
+		$data = $this->request->data;
+		#Get Id Item to remove
+		if (!empty($id)) {
+			$data["id"] = $id;
+		}
+		#Find The Item To Remove
+		$cart = Cart::find('first', array(
+			'conditions' => array(
+				'_id' => $data["id"]
+		)));
+		$now = getdate();
+		if(!empty($cart)){
+			Cart::remove(array('_id' => $data["id"]));
+			#calculate savings
+			$item[$cart->item_id] = $cart->quantity;
+			Cart::updateSavings($item, 'remove');
+			$this->addIncompletePurchase(Cart::active());
+		}
 	}
 
 	/**
 	* The update method allow to update the actual cart
-	*
+	* By refreshing also credits, promocodes, and services
 	* @see app/models/Cart::check()
 	*/
 	public function update() {
-		$success = false;
-		$message = null;
 		$data = $this->request->data;
-		if ($data) {
+		if(!empty($data['rmv_item_id'])) {
+			#Removing one item from cart
+			$this->remove($data['rmv_item_id']);
+		} else if(!empty($data['cart'])) {
 			$carts = $data['cart'];
 			foreach ($carts as $id => $quantity) {
 				$result = Cart::check((integer) $quantity, (string) $id);
@@ -194,32 +249,39 @@ class CartController extends BaseController {
 					'conditions' => array('_id' =>  (string) $id)
 				));
 				$status = $this->itemAvailable($cart->item_id, $cart->quantity, $cart->size, $quantity);
-				if(!$status['available']) {
+				if (!$status['available']) {
 					$cart->quantity = (integer) $status['quantity'];
 					$cart->save();
 					$this->addIncompletePurchase(Cart::active());
 				} else {
 					if ($result['status']) {
 						if($quantity == 0){
-				        	Cart::remove(array('_id' => $id));
-				        	$this->addIncompletePurchase(Cart::active());
-				    	} else {
+					        Cart::remove(array('_id' => $id));
+					        $this->addIncompletePurchase(Cart::active());
+					    } else {
 							$cart->quantity = (integer) $quantity;
 							$cart->save();
 							$this->addIncompletePurchase(Cart::active());
+							$items[$cart->item_id] = $quantity;
+							#Check Cart and Refresh Timer
+							Cart::refreshTimer();
 						}
 					} else {
 						$cart->error = $result['errors'];
 						$cart->save();
 						$this->addIncompletePurchase(Cart::active());
-					}
+					}		
 				}
 			}
-		}
-		$this->_render['layout'] = false;
-		$this->redirect('/cart/view');
+			#update savings
+			Cart::updateSavings($items, 'update');
+		}					
 	}
-	public function modal(){
+	
+	/**
+	* Check If User Will Receive Disney Email
+	*/
+	public function modal() {
 	    $userinfo = Session::read('userLogin');
 	    $success = true;
 	    $this->_render['layout'] = false;
@@ -233,9 +295,9 @@ class CartController extends BaseController {
 	    }
 	    echo json_encode($success);
 	}
-	public function upsell(){
+	
+	public function upsell() {
         $query = $this->request->query;
-
         $this->_render['layout'] = 'base';
         if($query){
             $last = strrpos($query['redirect'], '/');
@@ -245,13 +307,8 @@ class CartController extends BaseController {
         }
 	}
 	
-	protected function addIncompletePurchase($items){
-		
-
+	protected function addIncompletePurchase($items) {
 		if (is_object($items)) $items = $items->data();
-		
-
-		
 		$user = Session::read('userLogin');
 		$base_url = 'http://'.$_SERVER['HTTP_HOST'].'/';
 		$itemToSend = array();
@@ -265,7 +322,6 @@ class CartController extends BaseController {
 				'price' => $item['sale_retail']*100,
 			 	'url' => $base_url.'sale/'.$eventInfo['url'].'/'.$item['url']
 			);
-
 			unset($eventInfo);
 		}		
 		Mailer::purchase(
@@ -289,7 +345,7 @@ class CartController extends BaseController {
 	 * @see app/models/Cart::reserved()
 	 * @return boolean
 	 */
-	public function itemAvailable($item_id, $original_quantity, $size, $qty_req) {
+	public function itemAvailable($item_id, $original_quantity, $size, $qty_requested) {
 		$available = false;
 		$reserved = Cart::reserved($item_id, $size);
 		$item = Item::find('first', array(
@@ -297,7 +353,7 @@ class CartController extends BaseController {
 				'_id' => $item_id
 		)));
 		$status['quantity'] = $item->details->{$size} - ($reserved - $original_quantity);
-		$status['available'] = ($status['quantity'] > 0 && $status['quantity'] >= $qty_req) ? true : false;
+		$status['available'] = ($status['quantity'] > 0 && $status['quantity'] >= $qty_requested) ? true : false;
 		return $status;
 	}
 }
