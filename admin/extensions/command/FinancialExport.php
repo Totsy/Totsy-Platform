@@ -22,6 +22,7 @@ use lithium\data\Model;
 use lithium\util\String;
 use SimpleXMLElement;
 
+ini_set('display_errors', 1);
 /**
  * Simple export script for financial data needed by CFO.
  *
@@ -152,7 +153,10 @@ class FinancialExport extends Base  {
 		'line_number',
 		'discount_exempt'
 	);
-
+    protected $orders = null;
+    protected $orderSummaryFile = "";
+	protected $orderDetailFile = "";
+	protected $creditDetailFile = "";
 	/**
 	 * Find all the orders that haven't been shipped which have stock status.
 	 */
@@ -167,6 +171,7 @@ class FinancialExport extends Base  {
 		Order::collection()->ensureIndex(array('date_created' => -1));
 		Promocode::collection()->ensureIndex(array('code' => -1));
 		OrderShipped::collection()->ensureIndex(array('OrderNum' => 1));
+		Credit::collection()->ensureIndex(array('user_id' => 1, 'customer_id' => 1));
 		/**
 		 * Going for all the orders that were created after Nov 1, 2010. This may need to be dynamically
 		 * setup for future queries via cron.
@@ -176,12 +181,15 @@ class FinancialExport extends Base  {
             $orderConditions = array(
                 'date_created' => array(
                     '$gte' => new MongoDate(strtotime('Nov 1, 2010')),
-                   // '$lte' => new MongoDate(strtotime('Nov 30, 2010'))
+                  //  '$lte' => new MongoDate(strtotime('Nov 30, 2010'))
                     '$lte' => new MongoDate($yesterday_max)
                 ));
-		    $orderSummaryFile = $this->tmp . 'OrdSummary.xml';
-		    $orderDetailFile = $this->tmp . 'OrdDetail.xml';
-		    $creditDetailFile = $this->tmp . 'CredDetail.xml';
+            /**
+             * Setup filenames for the order summary and epxort functionality.
+            */
+		    $this->orderSummaryFile = $this->tmp . 'OrdSummary.xml';
+		    $this->orderDetailFile = $this->tmp . 'OrdDetail.xml';
+		    $this->creditDetailFile = $this->tmp . 'CredDetail.xml';
 		    $this->log("Retrieving Historical Data");
         } else {
             $yesterday_min = mktime(0,0,0,date('m'),date('d') - 1,date('Y'));
@@ -191,10 +199,13 @@ class FinancialExport extends Base  {
                     '$gte' => new MongoDate($yesterday_min),
                     '$lte' => new MongoDate($yesterday_max)
                 ));
+            /**
+             * Setup filenames for the order summary and epxort functionality.
+             */
             $this->time = date('m-d-Y');
-            $orderSummaryFile = $this->tmp . 'OrdSummary_' . $this->time . '.xml';
-            $orderDetailFile = $this->tmp . 'OrdDetail_' . $this->time . '.xml';
-            $creditDetailFile = $this->tmp . 'CredDetail_' . $this->time . '.xml';
+            $this->orderSummaryFile = $this->tmp . 'OrdSummary_' . $this->time . '.xml';
+            $this->orderDetailFile = $this->tmp . 'OrdDetail_' . $this->time . '.xml';
+            $this->creditDetailFile = $this->tmp . 'CredDetail_' . $this->time . '.xml';
             $this->log("Retrieving Daily Data");
         }
 
@@ -223,30 +234,17 @@ class FinancialExport extends Base  {
 			'shipping'
 		);
 
-		$orders = Order::collection()->find($orderConditions, $fields);//->sort(array('date_created' => -1));
+		$this->orders = Order::collection()->find($orderConditions, $fields);
+		$this->_orderSummaryReport();
+		$this->_orderDetailReport();
+		$this->_orderCreditReport();
+	}
 
-		$ordersShipped = OrderShipped::collection();
-		$orderSummary = $orderDetails = $creditDetails = array();
-		/**
-		 * Setup filenames for the order summary and epxort functionality.
-		 */
-		$this->time = date('m-d-Y');
-//		$fpSummary = fopen($orderSummaryFile, 'w');
-//		$fpDetail = fopen($orderDetailFile, 'w');
-//		$cpDetail = fopen($creditDetailFile, 'w');
-		/**
-		 * Setup the file headers
-		 */
-//		fputcsv($fpSummary, $this->summaryHeader,',',chr(34));
-//		fputcsv($fpDetail, $this->detailHeader,',',chr(34));
-//		fputcsv($cpDetail, $this->creditHeader,',',chr(34));
-		/**
-		 * Build the files
-		 */
-		while ($orders->hasNext()) {
-		    $orders->timeout(50000);
-		    try {
-		        $order = $orders->getNext();
+	public function _orderSummaryReport(){
+	   $ordersShipped = OrderShipped::collection();
+	   $orderSummary = array();
+	    while ($this->orders->hasNext()){
+	           $order = $this->orders->getNext();
                 $orderItems = $order['items'];
                 if (array_key_exists('authKey', $order)) {
                    $order['authKey'] = $order['authKey'];
@@ -313,52 +311,9 @@ class FinancialExport extends Base  {
                 * Grab credit information
                 */
                 if (array_key_exists('credit_used', $order)){
-                        $creditCollection = Credit::collection()->find(array(
-                        '$or' => array(
-                            array('customer_id' => $order['user_id']),
-                            array('user_id' => $order['user_id'])
-                        )));
-                        foreach ($creditCollection as $credit) {
-                            if (array_key_exists('date_created', $credit)) {
-                                $credit['issue_date'] = date('m/d/Y', $credit['date_created']->sec);
-                            } else {
-                                $credit['issue_date'] = date('m/d/Y', $credit['created']->sec);
-                            }
-                            if (array_key_exists('type', $credit)) {
-                                $credit['credit_type'] = $credit['type'];
-                            }
-
-                            if (array_key_exists('user_id', $credit)) {
-                                $credit['customer_id'] = $credit['user_id'];
-                            }
-
-                            if (array_key_exists('amount', $credit)) {
-                                $credit['credit_amount'] = $credit['amount'];
-                            }
-                            if (!array_key_exists('description', $credit)) {
-                                $credit['description'] = "none";
-                            }
-                            if (!array_key_exists('reason', $credit))  {
-                                $credit['reason'] = "none";
-                            }
-                            $userCredit = $this->sortArrayByArray($credit, $this->creditHeader);
-                            foreach($this->creditUnsetKey as $key) {
-                                unset($userCredit[$key]);
-                            }
-
-                          //  $creditDetails[] = $userCredit;
-                            $this->log("Adding credit details for $order[user_id]");
-                            $this->createXMLDoc('credit_detail', $userCredit, $creditDetailFile);
-                            //@todo don't this part any more - credit details
-                            /*
-                            if (!empty($userCredit)){
-                                fputcsv($cpDetail, $userCredit,',',chr(34));
-                            }
-                            */
-                        }
-                        $order['gross_shipping_amt'] += (array_key_exists('credit_used', $order)) ? $order['credit_used']:0;
-                        $order['gross_shipping_amt'] += (array_key_exists('promo_discount', $order)) ? $order['promo_discount']:0;
-                    }
+                    $order['gross_shipping_amt'] += (array_key_exists('credit_used', $order)) ? $order['credit_used']:0;
+                    $order['gross_shipping_amt'] += (array_key_exists('promo_discount', $order)) ? $order['promo_discount']:0;
+                }
                 /*
                 * Get credit, promocodes,  and oversize handling information
                 */
@@ -413,78 +368,124 @@ class FinancialExport extends Base  {
                 //@todo don't need this anymore - order summary
             //	$orderSummary[] = $order;
                 $this->log("Adding $order[order_id] to order summary");
-                $this->createXMLDoc('order_summary', $order, $orderSummaryFile);
-            //	fputcsv($fpSummary, $order,',',chr(34));
+                $this->createXMLDoc('order_summary', $order, $this->orderSummaryFile);
+              //  var_dump($this->orders->dead());
+	    }
+	    $this->orders->rewind();
+	}
 
-                //Get detailed information about the items sold
-                foreach ($orderItems as $item) {
-                    $itemRecord = Item::collection()->findOne(array('_id' => new MongoId($item['item_id'])));
-                    foreach ($this->itemUnsetKey as $key) {
-                        unset($item[$key]);
-                    }
-                    if (empty($item['color'])) {
-                        $item['color'] = "none";
-                    }
-                    if (empty($item['category'])) {
-                        $item['category'] = "none";
-                    }
-                    if (empty($item['size'])) {
-                        $item['size'] = "none";
-                    }
-                    if (array_key_exists('sku_details', $itemRecord)) {
-                        $item['sku'] = $itemRecord['sku_details'][$item['size']];
-                    } else {
-                         $item['sku'] = "none";
-                    }
-                    $item['description'] = preg_replace('/"/',"'", $item['description']);
-                    if (array_key_exists('event_id' , $item)) {
-                        $event = Event::collection()->findOne(array('_id' => new MongoId($item['event_id'])));
+	public function _orderDetailReport(){
+	    $orderDetails = array();
+	    while ($this->orders->hasNext()) {
+            $order = $this->orders->getNext();
+            $orderItems = $order['items'];
+            //Get detailed information about the items sold
+            foreach ($orderItems as $item) {
+                $itemRecord = Item::collection()->findOne(array('_id' => new MongoId($item['item_id'])));
+                foreach ($this->itemUnsetKey as $key) {
+                    unset($item[$key]);
+                }
+
+                if (empty($item['color'])) {
+                    $item['color'] = "none";
+                }
+                if (empty($item['category'])) {
+                    $item['category'] = "none";
+                }
+                if (empty($item['size'])) {
+                    $item['size'] = "none";
+                }
+                if (array_key_exists('sku_details', $itemRecord)) {
+                    $item['sku'] = $itemRecord['sku_details'][$item['size']];
+                } else {
+                     $item['sku'] = "none";
+                }
+                $item['description'] = preg_replace('/"/',"'", $item['description']);
+                if (array_key_exists('event_id' , $item)) {
+                    $event = Event::collection()->findOne(array('_id' => new MongoId($item['event_id'])));
+                    $start_date = (is_object($event['start_date'])) ? date('m/d/Y', $event['start_date']->sec) : $event['start_date'];
+                    $end_date = (is_object($event['end_date'])) ? date('m/d/Y', $event['end_date']->sec) : $event['end_date']['sec'];
+                } else {
+                    $event = Event::collection()->findOne(array('_id' => new MongoId($itemRecord['event'][0])));
+                    if ($event) {
+                        $item['event_id'] = (string) $event['_id'];
                         $start_date = (is_object($event['start_date'])) ? date('m/d/Y', $event['start_date']->sec) : $event['start_date'];
                         $end_date = (is_object($event['end_date'])) ? date('m/d/Y', $event['end_date']->sec) : $event['end_date']['sec'];
                     } else {
-                        $event = Event::collection()->findOne(array('_id' => new MongoId($itemRecord['event'][0])));
-                        if ($event) {
-                            $item['event_id'] = (string) $event['_id'];
-                            $start_date = (is_object($event['start_date'])) ? date('m/d/Y', $event['start_date']->sec) : $event['start_date'];
-                            $end_date = (is_object($event['end_date'])) ? date('m/d/Y', $event['end_date']->sec) : $event['end_date']['sec'];
-                        } else {
-                            $item['event_id'] = "none";
-                            $start_date = "none";
-                            $end_date = "none";
-                            $event["name"] = "none";
-                        }
+                        $item['event_id'] = "none";
+                        $start_date = "none";
+                        $end_date = "none";
+                        $event["name"] = "none";
                     }
-                    if (array_key_exists('vendor', $item)) {
-                        $item['vendor'] = $item['vendor'];
-                    } else {
-                        $item['vendor'] = $event['name'];
-                    }
-                    if (!empty($itemRecord) && array_key_exists('sub_category', $itemRecord)) {
-                        $item['sub_category'] = $itemRecord['sub_category'];
-                    } else {
-                        $item['sub_category'] = "none";
-                    }
-                    $item['event_start_date'] = $start_date;
-                    $item['event_end_date'] = $end_date;
-                    $item['order_id_fk'] = $order['_id'];
-                    $item['order_id_short'] = $order['order_id'];
-                    $item['sale_wholesale'] = $itemRecord['sale_whol'];
-                    $item = $this->sortArrayByArray($item, $this->detailHeader);
-                    //$orderDetails[] = $item;
-                    $this->log("Adding order details to $order[order_id]");
-                    $this->createXMLDoc('order_detail', $item, $orderDetailFile);
-                    // @todo don't need this any more - order details - unless csv is requested again
-                    //fputcsv($fpDetail, $item,',',chr(34));
                 }
-			} catch(MongoCursorTimeoutException $e) {
-			    $orders->timeout(0);
-			}
-		}
+                if (array_key_exists('vendor', $item)) {
+                    $item['vendor'] = $item['vendor'];
+                } else {
+                    $item['vendor'] = $event['name'];
+                }
+                if (!empty($itemRecord) && array_key_exists('sub_category', $itemRecord)) {
+                    $item['sub_category'] = $itemRecord['sub_category'];
+                } else {
+                    $item['sub_category'] = "none";
+                }
+                $item['event_start_date'] = $start_date;
+                $item['event_end_date'] = $end_date;
+                $item['order_id_fk'] = $order['_id'];
+                $item['order_id_short'] = $order['order_id'];
+                $item['sale_wholesale'] = $itemRecord['sale_whol'];
+                $item = $this->sortArrayByArray($item, $this->detailHeader);
 
-		//don't need this anymore
-		//fclose($fpSummary);
-		//fclose($fpDetail);
+                //$orderDetails[] = $item;
+                $this->log("Adding order details to $order[order_id]");
+                $this->createXMLDoc('order_detail', $item, $this->orderDetailFile);
+                // @todo don't need this any more - order details - unless csv is requested again
+                //fputcsv($fpDetail, $item,',',chr(34));
+            }
+		}
 	}
+
+	public function _orderCreditReport(){
+	    $creditDetails = array();
+	    $creditCollection = Credit::collection()->find();
+            foreach ($creditCollection as $credit) {
+                if (array_key_exists('date_created', $credit)) {
+                    $credit['issue_date'] = date('m/d/Y', $credit['date_created']->sec);
+                } else {
+                    $credit['issue_date'] = date('m/d/Y', $credit['created']->sec);
+                }
+                if (array_key_exists('type', $credit)) {
+                    $credit['credit_type'] = $credit['type'];
+                }
+
+                if (array_key_exists('user_id', $credit)) {
+                    $credit['customer_id'] = $credit['user_id'];
+                }
+
+                if (array_key_exists('amount', $credit)) {
+                    $credit['credit_amount'] = $credit['amount'];
+                }
+                if (!array_key_exists('description', $credit)) {
+                    $credit['description'] = "none";
+                }
+                if (!array_key_exists('reason', $credit))  {
+                    $credit['reason'] = "none";
+                }
+                $userCredit = $this->sortArrayByArray($credit, $this->creditHeader);
+                foreach($this->creditUnsetKey as $key) {
+                    unset($userCredit[$key]);
+                }
+
+              //  $creditDetails[] = $userCredit;
+                $this->log("Adding credit details for $order[user_id]");
+                $this->createXMLDoc('credit_detail', $userCredit, $this->creditDetailFile);
+                //@todo don't this part any more - credit details
+                /*
+                if (!empty($userCredit)){
+                    fputcsv($cpDetail, $userCredit,',',chr(34));
+                }
+                */
+        }
+    }
 
 	/**
 	 * Sort an array by a hearder
