@@ -119,29 +119,29 @@
 			<!-- End Video Tab -->
 
 		</div>
-
-<!--Disney -->
-      <div class="disney">
+	</div>
+	<!--Disney -->
+<div class="disney">
           <strong>SPECIAL BONUS!</strong><hr/></p>
-       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value )
+       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/parents.png" align="absmiddle" width="95px" /> ( a $10 value )
        <span id="disney">Offer & Refund Details</span>
       </div>
 	<br><!-- Started Related Products -->
 	<div id="related-products">
-		<?php $relatedData = $related; ?>		
+		<?php $relatedData = $related; ?>
 		<?php if (!empty($relatedData)): ?>
 		<h2 style="color:#707070;font-size:14px;">You would also love</h2>
 		<hr />
 		<?php foreach ($related as $relatedItem): ?>
-			
+
 			<?php
-			
+
 				if (empty($relatedItem['primary_image'])) {
 					$relatedImage = '/img/no-image-small.jpeg';
 				} else {
 					$relatedImage = "/image/".$relatedItem['primary_image'].".jpg";
 				}
-				
+
 				echo $this->html->link(
 					$this->html->image($relatedImage, array(
 						"class" => "img-th",
@@ -151,7 +151,7 @@
 							'id' => $relatedItem['description'],
 							'escape'=> false
 				));
-				
+
 			?>
 		<?php endforeach ?>
 	<?php endif ?>
