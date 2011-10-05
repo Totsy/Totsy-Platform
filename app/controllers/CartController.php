@@ -137,10 +137,8 @@ class CartController extends BaseController {
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
 			$shipping_discount = $shipping;
 		}
-				
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];	
-		Session::write('total', $total);
 		
 		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl', 'shipping');
 	}
@@ -154,15 +152,11 @@ class CartController extends BaseController {
 	public function add() {	
 		#Check Cart
 		$cart = Cart::create();
-		//ini_set('display_errors',1);
 		//output for cart popup
 		$cartData = Array();
 		
 		$this->render(array('layout' => false));	
 		
-		#Init Price Of Item Added
-		$suppTotal = 0.00;
-			
 		if ($this->request->query) {
 			$data = $this->request->query;
 			#Getting Size Selected
@@ -238,21 +232,15 @@ class CartController extends BaseController {
 					}
 				}
 			}
-			#If Percentage Promo, Update Price Of Individual Item
-			$promo_session = Session::read('promocode');
-			if (!empty($promo_session) && !empty($suppTotal)) {
-				if ($promo_session['type'] == 'percentage') {
-					$suppTotal -= ($suppTotal * $promo_session['discount_amount']);
-				}
-			}
 		}
 		
 		$cartExpirationDate = "";
-		
+		$subTotal = 0.00;
 		foreach(Cart::active() as $cartItem) {
 			if ($cartExpirationDate < $cartItem->expires->sec) {
 				$cartExpirationDate = $cartItem->expires->sec;
 			}
+			$subTotal += ($cartItem->sale_retail * $cartItem->quantity);
 		} 
 		
 		//send the event URL for building the continue shopping button
@@ -267,20 +255,9 @@ class CartController extends BaseController {
 		$cartData['itemCount'] = Cart::itemCount();
 		//set the expiration date for this cart
 		$cartData['cartExpirationDate'] = $cartExpirationDate;
+		//Set subTotal of Cart
+		$cartData['subTotal'] = $subTotal;
 		
-		#Get Total Past Calculated from Session
-		if(Session::check('total')) {
-			$total = Session::read('total');
-		}
-		#If Total Set, Add The Price Of the New Item, If not Total = Price Of the Item
-		if (!isset($total)) {
-			$cartData['total'] = $suppTotal;
-		} else {
-			$cartData['total'] = $total + $suppTotal;	
-		}
-		#Record Total In Session
-		Session::write('total', $cartData['total']);
-				
 		echo json_encode($cartData);
 	}
 		

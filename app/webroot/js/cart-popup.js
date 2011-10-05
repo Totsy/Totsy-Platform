@@ -49,7 +49,7 @@ $(document).ready( function() {
 		
 		//clear out this DIV....it seems to be caching old values...
 		$("#order_total_num").html("");
-		$("#order_total_num").text("$" + cartObj.total.toFixed(2) + "");
+		$("#order_total_num").text("$" + cartObj.subTotal.toFixed(2) + "");
 		
 		$("#cart-count").text(cartObj.itemCount);
 		

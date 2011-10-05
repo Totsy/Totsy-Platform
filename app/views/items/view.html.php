@@ -41,7 +41,7 @@
 	 <div id="cart_popup_breakdown">
 	 	<div class="cart-savings">Your Savings: $<span id="savings"></span></div>
 	 	<div id="cart_popup_order_total">
-	 		<span class="cart-order-total">Order Total: </span> 
+	 		<span class="cart-order-total">Order Subtotal: </span> 
 	 	    <span id="order_total_num"></span>
 	 	</div>						    	
 	 </div>

@@ -248,9 +248,6 @@ class User extends Base {
 		if(Session::check('billing')) {
 			Session::delete('billing');
 		}
-		if(Session::check('total')) {
-			Session::delete('total');
-		}
 	}
 }
 
