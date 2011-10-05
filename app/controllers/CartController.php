@@ -255,7 +255,7 @@ class CartController extends BaseController {
 		//get the amount of items in the cart
 		$cartData['itemCount'] = Cart::itemCount();
 		//set the expiration date for this cart
-		$cartData['cartExpirationDate'] = date('m-d-Y', $cartExpirationDate);
+		$cartData['cartExpirationDate'] = $cartExpirationDate;
 		
 		$cartData['total'] = 0.00;
 		

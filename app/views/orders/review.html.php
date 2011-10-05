@@ -1,3 +1,8 @@
+<!-- JS for cart timer. -->
+<script type="text/javascript" src="/js/cart-timer.js"></script>
+<!-- JS for cart timer for individual items. -->
+<script type="text/javascript" src="/js/cart-items-timer.js"></script>
+
 <script type="text/javascript">	
 
 var discountErrors = new Object();
@@ -16,13 +21,23 @@ var discountErrors = new Object();
 		    discountErrors.credits=false;  
 		}
 		
-}); 
 
-var cartExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	
+	var cartExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	
+
+	//set the timer on individual items in the cart
+	cartItemsTimer();
+	
+	//set the timer on the cart
+	cartTimer(cartExpires);
+	
+	//applying tooltip
+	$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
+	$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
+
+}); 
 	
 </script>
 
-<script type="text/javascript" src="/js/cart-timer.js">></script>
 <script type="text/javascript" src="/js/jquery.number_format.js"></script>
 <script type="text/javascript" src="/js/tipsy/src/javascripts/jquery.tipsy.js"></script>
 <link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />

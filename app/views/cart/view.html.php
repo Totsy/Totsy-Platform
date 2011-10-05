@@ -1,33 +1,46 @@
+<!-- JS for cart timer. -->
+<script type="text/javascript" src="/js/cart-timer.js"></script>
+<!-- JS for cart timer for individual items. -->
+<script type="text/javascript" src="/js/cart-items-timer.js"></script>
+<script type="text/javascript" src="/js/tipsy/src/javascripts/jquery.tipsy.js"></script>
+<link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
+
 <script type="text/javascript">	
 
 var discountErrors = new Object();
 
 	$(document).ready( function(){
 					
-			if(discountErrors.promo==true) {	
-				show_code_errors("promo");
-			} else if (discountErrors.credits==true)  {
-				show_code_errors("cred");
-			} else if(discountErrors.credits==true && discountErrors.promo==true) {
-				show_code_errors("cred");
-				show_code_errors("promo");
-			} else {
-				discountErrors.promo=false;
-				discountErrors.credits=false;  
-			}
+		if(discountErrors.promo==true) {	
+		    show_code_errors("promo");
+		} else if (discountErrors.credits==true)  {
+		    show_code_errors("cred");
+		} else if(discountErrors.credits==true && discountErrors.promo==true) {
+		    show_code_errors("cred");
+		    show_code_errors("promo");
+		} else {
+		    discountErrors.promo=false;
+		    discountErrors.credits=false;  
 		}
-	);
 	
 	$("#cart-count").text(<?=$itemCount?>);
 	
 	var cartExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	
-		
+	
+	//set the timer
+	cartTimer(cartExpires);
+	
+	//set the timer on individual cart items
+	cartItemsTimer();
+	
+	//applying tooltip
+	$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
+	$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
+	
+});
+			
 </script>
-
-<script type="text/javascript" src="/js/cart-timer.js"></script>
 <script type="text/javascript" src="/js/jquery.number_format.js"></script>
-<script type="text/javascript" src="/js/tipsy/src/javascripts/jquery.tipsy.js"></script>
-<link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
 
 <?php  if(!empty($subTotal)): ?>
 <div class="cart-content">

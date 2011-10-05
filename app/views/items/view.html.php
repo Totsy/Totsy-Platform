@@ -1,34 +1,36 @@
 <script src="/js/jquery.tmpl.js" type="text/javascript"></script>
 
 <script type="text/javascript">
-var item_id = "<?=$item->_id?>";
+	var item_id = "<?=$item->_id?>";	
 </script>
+
+<!-- JS for cart timer. -->
+<script type="text/javascript" src="/js/cart-timer.js"></script>
+<!-- JS for cart timer for individual items. -->
+<script type="text/javascript" src="/js/cart-items-timer.js"></script>
+<!-- JS for cart popup. needs to reference the popupCartItems element above -->
+<script type="text/javascript" src="/js/cart-popup.js"></script>
 
 <!-- template used for items on cart. jquery.tmpl.js driven -->
 <?=$this->view()->render( array('element' => 'popupCartItems') ); ?>
-
-<script type="text/javascript" src="/js/cart-timer.js"></script>
-
-<!-- JS for cart popup. needs to reference the popupCartItems element above -->
-<script type="text/javascript" src="/js/cart-popup.js"></script>
 
 <div style="position:relative"> 
 <div id="cart_popup" class="grid_16 roundy glow" style="display:none">
 	<div id="cart_popup_header">
 	    <div id="cart_popup_timer">
 	    	<span style="float:right; margin-left: 30px">Item Reserved For:<br>
-	    		<span style="color:#009900; font-weight:bold;font-size:14px" id="itemCounter" class="hasCountdown"></span>
+	    		<span style="color:#009900; font-weight:bold;font-size:14px" id="itemCounter"></span>
 	    	</span>
 	    	<span style="float:right">Estimated Shipping Date: <br>
 	    		 <span id="ship_date" style="font-weight:bold; color:#009900; font-size:14px"></span>
 	    	</span>		
 	    </div>
 	    <div id="cart_popup_close_button">
-	    	<a href="#"><img src="/img/popup_cart_close.jpg" style="width:20px; height:20px"></a>
+	    	<a href="#">
+	    	<img src="/img/popup_cart_close.jpg" style="width:20px; height:20px"></a>
 	    </div>
 	</div>
 	<div style="clear:both"></div>
-	 
 	<div id="cart_item"></div>
 	<div style="clear:both"></div>
 	<div id="more_cart_items">
@@ -44,7 +46,7 @@ var item_id = "<?=$item->_id?>";
 	 	</div>						    	
 	 </div>
 	 <div style="clear:both"></div>
-	 <div class="cart-button fr cart-nav-buttons">
+	 <div id="cart_popup_checkout_buttons" class="cart-button fr cart-nav-buttons">
 	 	<a id="cart_popup_cont_shop" class="button_border" href="/sale/mom-co-maternity">Continue Shopping</a>		      
 	 	<a id="cart_popup_checkout" class="button" href="/checkout/view">Checkout</a>		 
 	 </div>
@@ -249,8 +251,6 @@ var item_id = "<?=$item->_id?>";
 	<div class="clear"></div>
 	</div>
 <div id="modal" style="background:#fff!important; z-index:999!important;"></div>
-
-<script type="text/javascript" src="/js/cart-items-timer.js"></script>
 
 <script type="text/javascript">
 $(function () {
