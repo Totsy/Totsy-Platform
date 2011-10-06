@@ -22,9 +22,15 @@ use \lithium\data\Connections;
                 'db3'
                 )),
 		'test' => array(
-			'type' =>  'MongoDb',
-			'database' => 'totsy',
-			'host' => array('devdb2.totsy.com')),
+                'type' => 'MongoDb',
+                'database' => 'totsy',
+                'setSlaveOkay' => false,
+                'replicaSet' =>'totsy',
+                'host' => array(
+                'db1',
+                'db2',
+                'db3'
+                )),
 		'development' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy',
