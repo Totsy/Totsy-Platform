@@ -1,20 +1,136 @@
-.grid_1,
-.grid_2,
-.grid_3,
-.grid_4,
-.grid_5,
-.grid_6,
-.grid_7,
-.grid_8,
-.grid_9,
-.grid_10,
-.grid_11,
-.grid_12 {
-  margin-left: 10px;
-  margin-right: 10px;
-}
+/* General
+--------------------------------------- */
 
-.align_center,
-.align_right {
-  text-align: left;
-}
+img { max-width: 100% !important;}
+
+/* Modified Elements */
+
+#frame { width: auto !important; }
+
+#header, #header h1, #header h1 a, #header .nav,
+#container,
+#feature,
+#featurePoints,
+#portfolio, 
+#announcements,
+#mainCol,
+#subCol,
+#subCol h1,
+#footer
+
+{ width: 100% !important; float: left !important; margin: 0 !important; padding: 0 !important; }
+
+div, object { max-width: 100% !important; word-wrap: break-word; }
+
+body { width: 100% !important; -webkit-text-size-adjust: none; background: #fff url('mi/main_bg.jpg__') 0 0 repeat-x !important; -webkit-tap-highlight-color: rgba(0,0,0,0); }
+#body { width: 100% !important; background: url('mi/main_bg.jpg') 0 0 repeat-x !important; -webkit-tap-highlight-color: rgba(255,218,152,1);  }
+
+#header h1 a{ height: 74px !important; background: url('mi/header.jpg') 0 0 no-repeat !important; }
+#header .nav { background: url('mi/nav.jpg') 0 0 repeat-x !important; }
+#header .nav li { float: left; padding: 0; }
+#header .nav li a { height: 17px !important; float: left; letter-spacing: -0.05em; padding: 11px 7px; color: #fffaee; font-size: 10px; font-weight: normal; text-transform: Uppercase; font-family: helvetica, arial, sans-serif; }
+
+#feature { width: 100% !important; height: 194px !important; min-height: 194px !important; margin: -17px 0 0 0 !important; background: url('mi/feature.jpg') 0 0 no-repeat !important; }
+#feature h3, #feature p, #feature h2 { display: none !important; }
+
+.home .iphone { width: auto !important; float: left !important; margin: 0 !important; display: block !important; padding: 0px 0 0 20px !important; background: #ffecc5 !important; }
+.home .iphone h1, .home #mainCol .iphone p { display: block !important; }
+.home .iphone h1 { padding: 0 !important; font-size: 18px !important; }
+
+#portfolio { height: 200px; margin: -55px 0 0 0 !important; background: url('mi/portfolio.jpg') 0 bottom no-repeat; }
+
+.home .blogList { width: 248px !important; float: left !important; padding: 20px 20px 0 20px !important; margin: 20px 16px 0 16px !important; background: #fff url('mi/blog_home_top.jpg') 0 0 no-repeat !important; }
+#body { background-image: none !important; background-color: #ffecc5; }
+
+#subCol h1 { width: 288px !important; padding: 24px 0px 6px 0px !important; margin: 0 16px !important; background: url('mi/blog_home_bottom.jpg') 0 0 no-repeat !important; }
+#subCol p { width: 288px !important; margin: 0 16px !important; padding: 0 0 25px 0 !important; }
+
+#footer { padding: 10px 0 !important; background: #23211d !important; }
+#footer .iphone { font-size: .9em; background: #23211d !important; text-align: left; }
+#footer .iphone ul { width: 100%; float: left; padding: 5px 0 10px 0 !important; margin: 0 !important; }
+#footer .iphone li { list-style: none; float: left; padding: 0 10px 0 0 !important; margin: 0 !important; }
+#footer .iphone #iphone_call a { width: 88px; font-size: 1.1em; letter-spacing: -0.08em; padding: 5px 0 0 30px; text-decoration: none; color: #fff; float: left; height: 25px; background: url('mi/call.jpg') 0 bottom no-repeat; border: 0; }
+#footer .iphone #iphone_map a { width: 124px; font-size: 1.1em; letter-spacing: -0.08em; padding: 5px 0 0 30px; text-decoration: none; color: #fff; float: left; height: 25px; background: url('mi/map.jpg') 0 bottom no-repeat; border: 0; }
+
+/* Hidden Elements */
+
+#header #topNav,
+#signUpForm, 
+#featurePoints,
+#announcements,
+#flashcontent,
+.home #mainCol h1,
+.home #mainCol p,
+#footer .contents,
+#portfolioQuoteBlock, #portfolioQuote,
+.comments .commentsHead,
+.galleryItem,
+#ef10
+
+{ display: none !important; }
+
+#body
+{ min-width: 0px; position: static;  }
+
+/*
+/* Forms */
+    input.input-text {
+    position: relative;
+    z-index: 2;
+    }
+     
+    label {
+    position: relative;
+    z-index: 1;
+    }
+
+    label.inlined {
+    padding-left: 6px;
+    font-weight: normal;
+    font-size: 12px;
+    font-family: "Helvetica Neue";
+    opacity: 0.75;
+    -webkit-transition: opacity 0.15s linear;
+    }
+
+
+    label.inlined + input.input-text {
+    margin-top: -22px;
+    }
+
+
+Internal Pages 
+------------------------------------------------*/
+
+body.inside #extraCol, body.inside #subCol { display: none !important; }
+body.inside #mainCol { width: 95% !important; padding: 3% 2.5% !important; font-size: 12px; margin: -35px 0 0 0 !important; background: #fff; }
+body.inside #mainCol h1 { font-size: 1.5em !important; padding: 5px 5px 10px 0; }
+body.inside #mainCol h1 + p { font-size: 14px !important; }
+body.inside #mainCol img { max-width: 100% !important;}
+
+body.inside #footer {  width: 95% !important; padding: 3% 2.5% !important; background: #23211d !important; }
+body.inside #footer .iphone { font-size: .9em; background: #23211d !important; text-align: left; display: block !important; }
+body.inside #footer .iphone ul { width: 100%; float: left; padding: 5px 0 10px 0 !important; margin: 0 !important; }
+body.inside #footer .iphone li { list-style: none; float: left; padding: 0 10px 0 0 !important; margin: 0 !important; }
+body.inside #footer .iphone #iphone_call a { width: 88px; font-size: 1.1em; letter-spacing: -0.08em; padding: 5px 0 0 30px; text-decoration: none; color: #fff; float: left; height: 25px; background: url('mi/call.jpg') 0 bottom no-repeat; border: 0; }
+body.inside #footer .iphone #iphone_map a { width: 124px; font-size: 1.1em; letter-spacing: -0.08em; padding: 5px 0 0 30px; text-decoration: none; color: #fff; float: left; height: 25px; background: url('mi/map.jpg') 0 bottom no-repeat; border: 0; }
+
+textarea { width: 100% !important; max-width: 100% !important; }
+
+/* porfolio */
+
+table.signup, .galleryItem img { width: 100% !important; max-width: 100% !important; }
+.iphone_only { display: block !important; }
+.iphone_only .product_list {}
+.iphone_only ul.products li { width: 100%; float: left;padding: 0 0 7px 0;margin: 0;list-style: none; }
+.iphone_only ul.products li a { border: 0; }
+.not_for_iphone { display: none !important; }
+
+/* blog */
+
+.post h2 { font-size: 1.3em; line-height: 1.6em; }
+.iphone_only .product_list  h2 { background: url(mi/products.png) no-repeat left center; padding: 0.5em 40px; margin: 0.5em 0 10px -40px; }
+.iphone_only .product_list  h2 span {color: #FFF; font-size: 0.75em; background: #ab4c0f; padding: 0.25em 0.75em; }
+
+
+
