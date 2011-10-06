@@ -1,8 +1,7 @@
-
-    <img src="/img/disneyfamilyfunlogo.png" width="250"/>
+    <img src="/img/parents.png" width="250"/>
     <p>
-<div style="font-size: 16px"><strong>BONUS 1 YEAR SUBSCRIPTION TO DISNEY FAMILYFUN!</strong></div>
-    While supplies last, we'll <strong>include</strong> a year of Disney FamilyFun magazine ($10 value, 10 issues)
+<div style="font-size: 16px"><strong>BONUS 1 YEAR SUBSCRIPTION TO PARENTS MAGAZINE!</strong></div>
+    While supplies last, we'll <strong>include</strong> a year of Parents Magazine ($10 value, 12 issues)
     with any purchase of $45 or more (excluding taxes and shipping & handling charges)!
     <strong>You will never receive a bill for this subscription and we will not share your credit card number
     with the publisher.
@@ -19,9 +18,9 @@
     </p>
     <br/>
     <strong>
-    Disney FamilyFun<br/>
-    P.O. Box 37032<br/>
-    Boone, IA  50037-0032<br/>
+    Parents Magazine<br/>
+    P.O. Box 37373<br/>
+    Boone, IA  50037-0373<br/>
     </strong>
     <br/>
     <p>
