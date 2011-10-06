@@ -33,22 +33,24 @@
 	<div style="clear:both"></div>
 	<div id="cart_item"></div>
 	<div style="clear:both"></div>
+	<!--
 	<div id="more_cart_items">
 		<a href="#">See more...</a>
-	</div>	
+	</div>
+	-->	
 	 <div style="clear:both"></div>
 	 <div><hr></div>
 	 <div id="cart_popup_breakdown">
 	 	<div class="cart-savings">Your Savings: $<span id="savings"></span></div>
 	 	<div id="cart_popup_order_total">
-	 		<span class="cart-order-total">Order Subtotal: </span> 
-	 	    <span id="order_total_num"></span>
+	 		<span class="cart-order-total">Subtotal: </span> 
+	 	    <span id="order_total_num" style="font-weight:bold !important; color:#009900 !important; font-size:14px !important"></span>
 	 	</div>						    	
 	 </div>
 	 <div style="clear:both"></div>
-	 <div id="cart_popup_checkout_buttons" class="cart-button fr cart-nav-buttons">
+	 <div id="cart_popup_checkout_buttons" class="cart-button fr">
 	 	<a id="cart_popup_cont_shop" class="button_border" href="#">Continue Shopping</a>		      
-	 	<a id="cart_popup_checkout" class="button" href="/checkout/view">Checkout</a>		 
+	 	<a id="cart_popup_checkout" class="button" href="/checkout/view">Checkout</a>
 	 </div>
 </div>
 </div>

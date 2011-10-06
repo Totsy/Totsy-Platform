@@ -1058,7 +1058,7 @@ position: absolute;
 }
 
 #cart_popup_header {
-margin: 7px 7px 0px 7px !important; 
+margin: 0px 7px 0px 7px !important; 
 padding-bottom:60px !important;
 }
 
@@ -1123,6 +1123,9 @@ float:right !important;
 
 #order_total_num {
 font-weight:bold;
+font-weight:bold; 
+color:#009900 !important; 
+font-size:14px !important
 }
 
 #cart_popup_cont_shop {

@@ -240,6 +240,8 @@ class CartController extends BaseController {
 			if ($cartExpirationDate < $cartItem->expires->sec) {
 				$cartExpirationDate = $cartItem->expires->sec;
 			}
+			//exclude this, too sensitive : could be a security hole
+			$cartItem->session = "";
 			$subTotal += ($cartItem->sale_retail * $cartItem->quantity);
 		} 
 		

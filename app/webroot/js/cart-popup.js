@@ -78,7 +78,8 @@ $(document).ready( function() {
 		$("#template").tmpl(visibleItems).appendTo("#cart_item");
 		
 		if (invisibleItemCount > 0) {
-			$("#more_cart_items").css("visibility", "visible");
+			addScrollBar();
+			//$("#more_cart_items").css("visibility", "visible");
 		}
 		
 		//set the cart timer		
@@ -111,8 +112,8 @@ $(document).ready( function() {
 	};
 	
 	var closeCartPopup = function() { 
-		//isCollapsed = false;
-		$("#more_cart_items a").html("See more...");
+		isCollapsed = false;
+		//$("#more_cart_items a").html("See more...");
 		//set isCollapsed to false so that the link doesn't appear on re-open
 		$("#cart_popup").fadeOut(300); 
 	}; 
@@ -120,7 +121,7 @@ $(document).ready( function() {
 	//make popup disappear 8 seconds after their mouse leaves it  
 	$("#cart_popup").mouseleave(function() {
 		timeout = setTimeout(function() {
-			$("#more_cart_items a").html("See more...");
+			//$("#more_cart_items a").html("See more...");
 			$("#cart_popup").fadeOut(300);
 		}, 3000);
 	}); 
@@ -139,7 +140,7 @@ $(document).ready( function() {
 	}); 
 	
 	//toggle items for carts with more than 3 different types of items
-	$("#more_cart_items a").click(function() {
+	var addScrollBar = function() {
 		if (isCollapsed == false) {
 			isCollapsed = true; 
 			//add a scrollbar
@@ -150,7 +151,7 @@ $(document).ready( function() {
 			}); 
 			
 			//set label to toggle up
-			$("#more_cart_items a").html("...see less"); 
+			//$("#more_cart_items a").html("...see less"); 
 			//add all items to template
 			$("#template").tmpl(invisibleItems).appendTo("#cart_item");
 		} else {
@@ -163,11 +164,11 @@ $(document).ready( function() {
 			
 			//unset cart_item DIV
 			$("#cart_item").html(""); //set label to toggle down
-			$("#more_cart_items a").html("See more..."); 
+			//$("#more_cart_items a").html("See more..."); 
 			//load template only with 3 items
 			$("#template").tmpl(visibleItems).appendTo("#cart_item");
 		}
-	}); 
+	}; 
 	
 	//close cart popup
 	$("#cart_popup_close_button").click(function() {
