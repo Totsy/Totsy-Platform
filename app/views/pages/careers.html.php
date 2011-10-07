@@ -1,4 +1,4 @@
-<?php $this->title("Jobs"); ?>
+<?php $this->title("Careers"); ?>
 
 <div class="grid_16">
 	<h2 class="page-title gray">About Us</h2>
@@ -13,10 +13,9 @@
 
 <div class="grid_11 omega roundy grey_inside b_side">
 
-	<h2 class="page-title gray">Jobs</h2>
+	<h2 class="page-title gray">Careers</h2>
             <hr />
-
-            <p>Totsy is hiring! Stay tuned!</p>
+            <iframe src="https://jobs-totsy.icims.com/jobs/intro" frameborder="0" width="100%" height="725"></iframe>
 </div>
 <div class="clear"></div>
 
