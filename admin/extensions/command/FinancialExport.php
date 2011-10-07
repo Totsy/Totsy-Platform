@@ -157,11 +157,13 @@ class FinancialExport extends Base  {
     protected $orderSummaryFile = "";
 	protected $orderDetailFile = "";
 	protected $creditDetailFile = "";
+	protected $xml = null;
 	/**
 	 * Find all the orders that haven't been shipped which have stock status.
 	 */
 	public function run() {
 		Environment::set($this->env);
+		MongoCursor::$timeout = -1;
 		$this->tmp = LITHIUM_APP_PATH . $this->tmp;
 		/**
 		 * The query was timing out without an index running locally on a MBP. Although this won't be an
@@ -181,7 +183,7 @@ class FinancialExport extends Base  {
             $orderConditions = array(
                 'date_created' => array(
                     '$gte' => new MongoDate(strtotime('Nov 1, 2010')),
-                  //  '$lte' => new MongoDate(strtotime('Nov 30, 2010'))
+                    //'$lte' => new MongoDate(strtotime('Nov 30, 2010'))
                     '$lte' => new MongoDate($yesterday_max)
                 ));
             /**
@@ -364,13 +366,15 @@ class FinancialExport extends Base  {
                 } else {
                     $order['auth_error'] = "none";
                 }
-                $order = $this->sortArrayByArray($order, $this->summaryHeader);
+             //   $order = $this->sortArrayByArray($order, $this->summaryHeader);
                 //@todo don't need this anymore - order summary
             //	$orderSummary[] = $order;
                 $this->log("Adding $order[order_id] to order summary");
                 $this->createXMLDoc('order_summary', $order, $this->orderSummaryFile);
               //  var_dump($this->orders->dead());
 	    }
+	    $this->xml->asXML($this->orderSummaryFile);
+	    $this->xml = null;
 	    $this->orders->rewind();
 	}
 
@@ -442,6 +446,8 @@ class FinancialExport extends Base  {
                 //fputcsv($fpDetail, $item,',',chr(34));
             }
 		}
+		$this->xml->asXML($this->orderDetailFile);
+	    $this->xml = null;
 	}
 
 	public function _orderCreditReport(){
@@ -485,6 +491,9 @@ class FinancialExport extends Base  {
                 }
                 */
         }
+        $this->xml->asXML($this->creditDetailFile);
+	    $this->xml = null;
+
     }
 
 	/**
@@ -507,20 +516,24 @@ class FinancialExport extends Base  {
 	* @param string $filename name of the xm file
 	**/
 	public function createXMLDoc($type, $record, $filename) {
-	    if (file_exists($filename) && (filesize($filename))) {
-            $xml = simplexml_load_file($filename);
+	    if ($this->xml == null) {
+	        var_dump('i am here');
+	        $this->xml = new SimpleXMLElement("<$type></$type>");
+	    }
+
+	 /*   if (file_exists($filename) && (filesize($filename))) {
+            $this->xml = simplexml_load_file($filename);
         } else {
-            $xml = new SimpleXMLElement("<$type></$type>");
-        }
+            $this->xml = new SimpleXMLElement("<$type></$type>");
+        } */
 	   // foreach($records as $record) {
-	        $recordTag = $xml->addChild('record');
+	        $recordTag = $this->xml->addChild('record');
 	        foreach($record as $key => $value) {
 	            //SimpleXMLElement doesn't like ampersand for some reason so I am replacing it with 'and'
 	           $record[$key] = preg_replace('/&/','and',$record[$key]);
 	            $recordTag->addChild($key, $record[$key]);
 	        }
 	  //  }
-	    $xml->asXML($filename);
-	    clearstatcache();
+	  //  clearstatcache();
 	}
 }
