@@ -366,7 +366,11 @@ class Order extends Base {
 			'total' => (float) $selected_order["total"],
 			'subTotal' => (float) $selected_order["subTotal"],
 			'handling' => (float) $selected_order["handling"],
+			'overSizeHandling' => (float) $selected_order["overSizeHandling"],
+			'handlingDiscount' => (float) $selected_order["handlingDiscount"],
+			'overSizeHandlingDiscount' => (float) $selected_order["overSizeHandlingDiscount"],		
 			'promo_discount' => (float) $selected_order["promo_discount"],
+			'discount' => (float) $selected_order["discount"],
 			'promocode_disable' => $selected_order["promocode_disable"],
 			'comment' => $selected_order["comment"]
 		);
@@ -384,14 +388,14 @@ class Order extends Base {
 		/**************UPDATE DB****************************/
 		if (array_key_exists('original_credit_used', $selected_order)) {
 		    $new_credit = $selected_order['original_credit_used'] - (float) number_format($selected_order['credit_used'],2);
-		    $new_credit = abs((float)$selected_order['initial_credit_used']) - (float) $selected_order['credit_used'];
+		    $new_credit = abs((float)$selected_order['original_credit_used']) - (float) $selected_order['credit_used'];
 		}
 		if(isset($selected_order["user_total_credits"])){
 			if (array_key_exists('original_credit_used', $selected_order)) {
                 $new_credit = $selected_order['original_credit_used'] - (float) $selected_order['credit_used'];
                 $new_credit = abs($new_credit);
             } else {
-                $new_credit = (float) $selected_order['initial_credit_used'] - (float) $selected_order['credit_used'];
+                $new_credit = (float) $selected_order['original_credit_used'] - (float) $selected_order['credit_used'];
                  $new_credit = abs($new_credit);
             }
             $creditReturnData = array(
@@ -481,11 +485,8 @@ class Order extends Base {
 		if(!empty($items)){
 			$datas_order["items"] = $items;
 		}
-		//Get Actual Taxes and Handling
-		$handling = static::shipping($items);
-		$overSizeHandling = static::overSizeShipping($items);
+		//Get Actual Taxes
 		extract(static::recalculateTax($selected_order,$items));
-
 		if (is_object($tax)) {
             //Avatax::totsyCalculateTax($selected_order);
             //$tax = static::tax($selected_order,$items);
@@ -498,23 +499,48 @@ class Order extends Base {
 			$regexObj = new MongoRegex("/" . $selected_order["promo_code"] . "/i");
 			$conditions = array("code" => $regexObj);
 			$promocode = $promocodeCollection->findOne($conditions);
-			if( $subTotal <= $promocode['minimum_purchase']){
+			if($subTotal <= $promocode['minimum_purchase']) {
 				$preAfterDiscount = $subTotal;
 				$datas_order["promocode_disable"] = true;
-			}else {
+				#Reset Shipping
+				if ($promocode['type'] == 'free_shipping') {
+					$datas_order["handlingDiscount"] = 0;
+					$datas_order["overSizeHandlingDiscount"] = 0;
+					$preAfterDiscount = $subTotal;
+				}
+			} else {
 				if ($promocode['type'] == 'percentage') {
 					$selected_order["promo_discount"] = - ($subTotal * $promocode['discount_amount']);
 					$datas_order["promo_discount"] = $selected_order["promo_discount"];
 				}
 				$preAfterDiscount = $subTotal + $selected_order["promo_discount"];
+				if ($promocode['type'] == 'free_shipping') {
+					$datas_order["handlingDiscount"] = $selected_order["handling"];
+					$datas_order["overSizeHandlingDiscount"] = $selected_order["overSizeHandling"];
+					$preAfterDiscount = $subTotal - $datas_order["handlingDiscount"] - $datas_order["overSizeHandlingDiscount"];
+				}
 				$datas_order["promocode_disable"] = false;
 			}
 		} else {
 			$preAfterDiscount = $subTotal;
 			$datas_order["promocode_disable"] = true;
 		}
+		/************SERVICES TREATMENT**************/
+		if(!empty($selected_order["service"])) {
+			if ($selected_order["service"] == '10off50') {
+				if($subTotal >= 50.00) {
+					$datas_order["discount"] = 10.00;
+					$preAfterDiscount -= 10;
+				} else {
+					$datas_order["discount"] = 0.00;
+				}
+			} else {
+				$preAfterDiscount -= $selected_order["discount"];
+			}
+		}
 		/**************CREDITS TREATMENT**************/
-		if(isset($selected_order["credit_used"])){
+		if($selected_order["credit_used"] != ('' || null)) {
+			$selected_order["credit_used"] = (float) - abs($selected_order["credit_used"]);
 			if(empty($selected_order["user_total_credits"])){
 				if(strlen($selected_order["user_id"]) > 10){
 					$user_ord = $userCollection->findOne(array("_id" => new MongoId($selected_order["user_id"])));
@@ -531,49 +557,49 @@ class Order extends Base {
 				$user_ord["total_credit"] = 0;
 			}
 			//Set Initial Credits if not Set
-			if(empty($selected_order["initial_credit_used"])) {
-				$datas_order["initial_credit_used"] = $selected_order["credit_used"];
-				$selected_order["initial_credit_used"] = $selected_order["credit_used"];
+			if(empty($selected_order["original_credit_used"])) {
+				$datas_order["original_credit_used"] = $selected_order["credit_used"];
+				$selected_order["original_credit_used"] = $selected_order["credit_used"];
 			}
 			//CASE (CREDITS > TOTAL)
 			if(abs($selected_order["credit_used"]) > $preAfterDiscount) {
 				$refill = abs($selected_order["credit_used"] + $preAfterDiscount);
 				$new_credits = $selected_order["credit_used"] + $refill;
 				$datas_user["total_credit"] = ($datas_user["total_credit"] + $refill);
-				$afterDiscount = $preAfterDiscount  + $new_credits;
+				$afterDiscount = $preAfterDiscount + $new_credits;
 				$datas_order["credit_used"] = $new_credits;
 			} else if(abs($selected_order["credit_used"]) == $preAfterDiscount) {
 				$afterDiscount = $preAfterDiscount + $selected_order["credit_used"];
 			} else if(abs($selected_order["credit_used"]) < $preAfterDiscount) {
 				//Get back credits from user
-				$initial_credits = ($user_ord["total_credit"] - abs($selected_order["initial_credit_used"] - $selected_order["credit_used"]));
-				if($selected_order["credit_used"] != $selected_order["initial_credit_used"]){
+				$initial_credits = ($user_ord["total_credit"] - abs($selected_order["original_credit_used"] - $selected_order["credit_used"]));
+				if($selected_order["credit_used"] != $selected_order["original_credit_used"]) {
 					$datas_user["total_credit"] = $initial_credits;
-					}
-				if(abs($selected_order["initial_credit_used"]) > $preAfterDiscount) {
-					$refill = abs($selected_order["initial_credit_used"] + $preAfterDiscount);
-					$new_credits = $selected_order["initial_credit_used"] + $refill;
+				}
+				if(abs($selected_order["original_credit_used"]) > $preAfterDiscount) {
+					$refill = abs($selected_order["original_credit_used"] + $preAfterDiscount);
+					$new_credits = $selected_order["original_credit_used"] + $refill;
 					$datas_user["total_credit"] = ($refill + $user_ord["total_credit"]);
 					$afterDiscount = $preAfterDiscount  + $new_credits;
 					$datas_order["credit_used"] = $new_credits;
-				} else if(abs($selected_order["initial_credit_used"]) <= $preAfterDiscount) {
-					$afterDiscount = $preAfterDiscount + $selected_order["initial_credit_used"];
-					$datas_order["credit_used"] = $selected_order["initial_credit_used"];
+				} else if(abs($selected_order["original_credit_used"]) <= $preAfterDiscount) {
+					$afterDiscount = $preAfterDiscount + $selected_order["original_credit_used"];
+					$datas_order["credit_used"] = $selected_order["original_credit_used"];
 				}
 			}
+			if($afterDiscount < 0) {
+				$afterDiscount = 0;
+			}
+		} else {
+			$afterDiscount = $preAfterDiscount;
 		}
 		/***********END OF CREDITS TREATMENT*************/
 		/***********CHECK TAX, HANDLING, TOTAL***********/
-		//Check if afterdiscount is negative
-		if($afterDiscount < 0){
-			$afterDiscount = 0;
-		}
-		$total = $afterDiscount + $tax + $handling + $overSizeHandling;
+		$total = $afterDiscount + $tax + $selected_order["handling"] + $selected_order["overSizeHandling"];
 		$datas_order_prices = array(
 			'total' => $total,
 			'subTotal' => $subTotal,
 			'tax' => $tax,
-			'handling' => $handling,
 			'promocode_disable' => $datas_order["promocode_disable"],
 			'credit_used' => (float) $selected_order["credit_used"]
 		);
@@ -585,7 +611,7 @@ class Order extends Base {
 		$new_datas_order = array_merge($new_datas_order, $datas_order);
 		//keep user credits infos
 		$new_datas_order["user_total_credits"] = $datas_user["total_credit"];
-		$new_datas_order['initial_credit_used'] = $selected_order["initial_credit_used"];
+		$new_datas_order['original_credit_used'] = $selected_order["original_credit_used"];
 		/**************CREATE TEMP ORDER********************/
 		$temp_order = static::Create($new_datas_order);
 		return $temp_order;

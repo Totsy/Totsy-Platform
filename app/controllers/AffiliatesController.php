@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\extensions\Mailer;
 use app\models\Affiliate;
 use app\models\User;
 use MongoDate;
@@ -25,8 +26,23 @@ class AffiliatesController extends BaseController {
 			if ( $count == 0 ) {
 				return compact('success', 'errors');
 			}
+
 			if ($this->request->data){
 				$data = $this->request->data;
+				if (isset($this->request->query)){
+					$query = $this->request->query;
+				}
+				$genpasswd = false;
+				if (isset($query) && isset($query['genpswd']) && $query['genpswd'] == 'true'){
+					$genpasswd = true;
+				}
+				if (isset($data['email']) && $genpasswd==true) {
+					$token = User::generateToken();
+					$user['clear_token'] = $token;
+					$user['reset_token'] = sha1($token);
+					$user['legacy'] = 0;
+					$data['password'] = $token.'@'.$user['reset_token'];
+				}
 				if (isset($data['password'])) {
 					// New user, need to register here
 					if (array_key_exists('fname',$data)){
@@ -44,6 +60,7 @@ class AffiliatesController extends BaseController {
 					$user['terms'] = "1";
 					$user['invited_by'] = $code;
 					extract(UsersController::registration($user));
+					
 					$success = $saved;
 					$errors = $user->errors();
 				}
