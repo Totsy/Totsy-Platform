@@ -129,6 +129,7 @@ class Exchanger extends \lithium\console\Command {
 		$sucess = false;
 		$self->connect();
 		if ($self->connection) {
+			ftp_pasv($self->connection, true);
 			$self->changeDirectory('/tot90/in');
 			$sucess = ftp_put($self->connection, $file, $path, FTP_BINARY);
 			$self->disconnect();
