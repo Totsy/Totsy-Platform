@@ -135,11 +135,19 @@ class UsersController extends BaseController {
 						$data['invitation_codes'] = array(static::randomString());
 					}
 					if ($saved = $user->save($data)) {
+						$mail_template = 'Welcome_Free_Shipping';
+						$params = array();
+						
 						$data = array(
 							'user' => $user,
 							'email' => $user->email
 						);
-						Mailer::send('Welcome_Free_Shipping', $user->email);
+
+						if (isset($user['clear_token'])) {
+							$mail_template = 'Welcome_auto_passgen';
+							$params['token'] = $user['clear_token']; 
+						} 
+						Mailer::send($mail_template, $user->email,$params);
 						$name = null;
 						if (isset($data['firstname'])) $name = $data['firstname'];
 						if (isset($data['lastname'])) $name = is_null($name)?$data['lastname']:$name.$data['lastname'];
@@ -221,18 +229,29 @@ class UsersController extends BaseController {
 		return compact('message', 'fbsession', 'fbconfig');
 	}
 
-	protected function autoLogin(){
+	protected function autoLogin() {
+	
 		$redirect = '/sales';
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 		$result = static::facebookLogin(null, $cookie, $ipaddress);
 		extract($result);
+		
+		$fbCancelFlag = false;
+		
+		if (array_key_exists('fbcancel', $this->request->query)) {
+			$fbCancelFlag = $this->request->query['fbcancel'];
+		}
+		
 		if (!$success) {
 			if (!empty($userfb)) {
-				$self = static::_object();
-				$self->redirect('/register/facebook');
+				$self = static::_object();			
+				if(!$fbCancelFlag) {
+					$self->redirect('/register/facebook');
+				}
 			}
 		}
+		
 		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
 				'conditions' => array('autologinHash' => $cookie['autoLoginHash']),
