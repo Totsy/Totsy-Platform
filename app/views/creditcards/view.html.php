@@ -18,22 +18,44 @@
 			<?php $x = 0?>
 			<?php foreach ($creditcards as $creditcard): ?>
 				<?php $x++; ?>
-		<div class="col-2"  id="<?=$creditcard->_id?>">
-			<div class="r-container box-2 fl">
-				<div class="tl"></div>
-				<div class="tr"></div>
-				<div class="r-box lt-gradient-1">
-					<h3 class="gray fl">Visa ending in <?=substr($creditcard->number, -4);?>, expires <?=$creditcard->month;?>/<?=$creditcard->year;?> </h3>
-					
-					&nbsp;|&nbsp;<a href="#" id="remove_<?=$creditcard->_id?>" title="Remove Credit Card" class="creditcard_remove">Remove</a>
+				
+				<div style="border: 1px solid #000; " id=<?=$creditcard->_id;?>>
 
-
-					<div>
-						<table>
+<table width="650" border="0" cellspacing="0" cellpadding="0" style="margin: 10px;">
+  <tr>
+    <td width="10%" align="left">
+   	<?
+ 		switch ($creditcard->type) {
+ 			case 'amex': 
+ 				$type = "cc_amex.gif"; 
+ 				$cc_name = "American Express";
+ 			break;
+ 			case 'visa': 
+ 				$type = "cc_visa.gif"; 
+ 				$cc_name = "Visa";
+ 			break;
+ 			case 'mastercard': 
+ 				$type = "cc_mastercard.gif"; 
+				$cc_name = "Mastercard";
+ 			break;
+ 		}
+   	
+   	?>
+	<img src="/img/<?=$type;?>">   	
+   	</td>
+    <td width="67%">
+    <?=$cc_name?> ending in <strong><?=substr($creditcard->number, -4);?></strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expires <strong><?=$creditcard->month;?>/<?=$creditcard->year;?></strong></td>
+    <td width="13%" align="right"><a href="#" id="remove_<?=$creditcard->_id?>" title="Remove Credit Card" class="creditcard_remove">Delete</a></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td rowspan="2">
+    <br/>
+    						<table width="100%" cellpadding="0" cellspacing="0">
 							<tr>
-								<td width="120px" valign="top">Cardholder Name:</td>
+								<td width="141" valign="top">Cardholder Name:</td>
 								
-								<td><?=$creditcard->firstname;?> <?=$creditcard->lastname;?></td>
+								<td width="281"><?=$creditcard->firstname;?> <?=$creditcard->lastname;?></td>
 							</tr>
 							<tr>
 								<td valign="top">Billing Address:</td>
@@ -45,15 +67,16 @@
 </td>
 							</tr>							
 						</table>
-					</div>
-				
-				</div>
-				<div class="bl"></div>
-				<div class="br"></div>
-			</div>
-		
-		</div>
-
+    </td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+</div>
+			<br/>	
 			<?php endforeach ?>
 		<?php } else { ?>
 		<div style="text-align:center;">You don't have any saved credit cards yet.</div>
