@@ -33,25 +33,20 @@
 	<div style="clear:both"></div>
 	<div id="cart_item"></div>
 	<div style="clear:both"></div>
-	<!--
-	<div id="more_cart_items">
-		<a href="#">See more...</a>
+	<div style="clear:both"></div>
+	<div><hr></div>
+	<div id="cart_popup_breakdown">
+	   <div class="cart-savings">Your Savings: $<span id="savings"></span></div>
+	   <div id="cart_popup_order_total">
+	   	<span class="cart-order-total">Subtotal: </span> 
+	       <span id="order_total_num" style="font-weight:bold !important; color:#009900 !important; font-size:14px !important"></span>
+	   </div>						    	
 	</div>
-	-->	
-	 <div style="clear:both"></div>
-	 <div><hr></div>
-	 <div id="cart_popup_breakdown">
-	 	<div class="cart-savings">Your Savings: $<span id="savings"></span></div>
-	 	<div id="cart_popup_order_total">
-	 		<span class="cart-order-total">Subtotal: </span> 
-	 	    <span id="order_total_num" style="font-weight:bold !important; color:#009900 !important; font-size:14px !important"></span>
-	 	</div>						    	
-	 </div>
-	 <div style="clear:both"></div>
-	 <div id="cart_popup_checkout_buttons" class="cart-button fr">
-	 	<a id="cart_popup_cont_shop" class="button_border" href="#">Continue Shopping</a>		      
-	 	<a id="cart_popup_checkout" class="button" href="/checkout/view">Checkout</a>
-	 </div>
+	<div style="clear:both"></div>
+	<div id="cart_popup_checkout_buttons" class="cart-button fr">
+	   <a id="cart_popup_cont_shop" class="button_border" href="#">Continue Shopping</a>		      
+	   <a id="cart_popup_checkout" class="button" href="/checkout/view">Checkout</a>
+	</div>
 </div>
 </div>
 
@@ -128,13 +123,9 @@
 </div>
 
 <div class="grid_7">
-
 	<div id="product-detail-right-top"  style="width:405px;">
-
 		<div id="listingCountdown" class="listingCountdown"></div>
-
 	</div>
-
 	<div id="detail-top-left"  style="width:405px;">
 		<h1><strong><?=$event->name?></strong> <?=$item->description." ".$item->color; ?></h1>
 	</div>
@@ -160,15 +151,6 @@
 
 			<p><strong>Returns:</strong> Totsy accept returns on selected items only. You will get a merchandise credit and free shipping (AK &amp; HI: air shipping rates apply). Simply be sure that we receive the merchandise you wish to return within 30 days from the date you originally received it in its original condition with all the packaging intact. Please note: Final Sale items cannot be returned. Want to learn more? Read more in our <?=$this->html->link('returns section', array('Pages::returns')); ?>.</p>
 			</div>
-			<!-- End Shipping Tab -->
-
-			<!-- Start Video Tab -->
-			<!--
-			<div id="video" class="ui-tabs-hide">
-			</div>
-			-->
-			<!-- End Video Tab -->
-
 		</div>
 
 <!--Disney -->

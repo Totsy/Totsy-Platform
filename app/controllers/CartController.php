@@ -234,14 +234,14 @@ class CartController extends BaseController {
 			}
 		}
 		
+		$cart = Array();
 		$cartExpirationDate = "";
 		$subTotal = 0.00;
+		
 		foreach(Cart::active() as $cartItem) {
 			if ($cartExpirationDate < $cartItem->expires->sec) {
 				$cartExpirationDate = $cartItem->expires->sec;
 			}
-			//exclude this, too sensitive : could be a security hole
-			$cartItem->session = "";
 			$subTotal += ($cartItem->sale_retail * $cartItem->quantity);
 		} 
 		

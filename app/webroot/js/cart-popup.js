@@ -79,7 +79,6 @@ $(document).ready( function() {
 		
 		if (invisibleItemCount > 0) {
 			addScrollBar();
-			//$("#more_cart_items").css("visibility", "visible");
 		}
 		
 		//set the cart timer		
@@ -88,7 +87,11 @@ $(document).ready( function() {
 		cartItemsTimer();
 				
 		$("#cart_popup").fadeIn(300);
-	}; 
+		
+		//set the popup to timeout after 8 seconds
+		timeout = setTimeout(function() {
+			closeCartPopup(); }, 8000);
+		}; 
 
 	//add items to cart
 	var addItem = function() {
@@ -113,22 +116,13 @@ $(document).ready( function() {
 	
 	var closeCartPopup = function() { 
 		isCollapsed = false;
-		//$("#more_cart_items a").html("See more...");
 		//set isCollapsed to false so that the link doesn't appear on re-open
 		$("#cart_popup").fadeOut(300); 
 	}; 
 	
 	//make popup disappear 8 seconds after their mouse leaves it  
 	$("#cart_popup").mouseleave(function() {
-		timeout = setTimeout(function() {
-			//$("#more_cart_items a").html("See more...");
-			$("#cart_popup").fadeOut(300);
-		}, 3000);
-	}); 
-	
-	//interrupt JS setTimeout using its timeout ID  
-	$("#cart_popup").mouseover(function() {
-		clearTimeout(timeout);
+		closeCartPopup();
 	}); 
 	
 	//click handler for adding items to cart
@@ -151,7 +145,6 @@ $(document).ready( function() {
 			}); 
 			
 			//set label to toggle up
-			//$("#more_cart_items a").html("...see less"); 
 			//add all items to template
 			$("#template").tmpl(invisibleItems).appendTo("#cart_item");
 		} else {
@@ -164,7 +157,6 @@ $(document).ready( function() {
 			
 			//unset cart_item DIV
 			$("#cart_item").html(""); //set label to toggle down
-			//$("#more_cart_items a").html("See more..."); 
 			//load template only with 3 items
 			$("#template").tmpl(visibleItems).appendTo("#cart_item");
 		}
