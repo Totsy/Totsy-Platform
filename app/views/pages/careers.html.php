@@ -10,7 +10,6 @@
 	<?php echo $this->view()->render(array('element' => 'helpNav')); ?>
 </div>
 
-
 <div class="grid_11 omega roundy grey_inside b_side">
 
 	<h2 class="page-title gray">Careers</h2>
