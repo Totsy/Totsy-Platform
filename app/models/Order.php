@@ -8,6 +8,7 @@ use lithium\storage\Session;
 use li3_payments\extensions\Payments;
 use li3_payments\extensions\payments\exceptions\TransactionException;
 use app\extensions\Mailer;
+use app\models\Base;
 
 class Order extends Base {
 
@@ -52,8 +53,7 @@ class Order extends Base {
 				'state'     => $vars['billingAddr']['state'],
 				'zip'       => $vars['billingAddr']['zip'],
 				'country'   => $vars['billingAddr']['country']
-				
-			))
+				))
 		));
 		if ($cart) {
 			$inc = 0;
@@ -65,7 +65,11 @@ class Order extends Base {
 			}
 			try {
 				#Process Payment
-				$authKey = Payments::authorize('default', $vars['total'], $card);
+				if ($vars['total'] > 0) {
+					$authKey = Payments::authorize('default', $vars['total'], $card);
+				} else {
+					$authKey = Base::randomString(8,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz');
+				}
 				$order = Order::recordOrder($vars, $cart, $card, $order, $avatax, $authKey, $items);
 				return $order;
 			} catch (TransactionException $e) {
