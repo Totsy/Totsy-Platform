@@ -283,6 +283,7 @@ class OrdersController extends BaseController {
 		$shipDate = Cart::shipDate($cart);
 		#Get Value Of Each and Sum It
 		$subTotal = 0;
+		$cartExpirationDate = 0;
 		foreach ($cart as $cartValue) {
 			#Get Last Expiration Date 
 			if ($cartExpirationDate < $cartValue['expires']->sec) {
