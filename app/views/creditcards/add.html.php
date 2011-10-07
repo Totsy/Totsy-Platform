@@ -1,5 +1,93 @@
-<?php use app\models\Address; ?>
+<script type="text/javascript">
+var paymentForm = new Object();
+</script>
+
+<?php
+	use app\models\Address;
+	$this->html->script('application', array('inline' => false));
+	$this->form->config(array('text' => array('class' => 'inputbox')));
+?>
+
+<link rel="stylesheet" type="text/css" href="/css/validation-engine.jquery.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="/css/validation-template.css" media="screen" />
+<script type="text/javascript" src="/js/form_validator/jquery.validation-engine.js" charset="utf-8"></script>    
+<script type="text/javascript" src="/js/form_validator/languages/jquery.validation-engine-en.js" charset="utf-8"></script> 
+
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
+
+<script type="text/javascript">
+
+
+    $(document).ready( function() {
+        //if its not true, set it to false. 
+        //used to avoid overwriting the submitted 
+        //value on refresh, persiting whether a 
+        //form submit was made or not    
+    	if(!paymentForm.submitted) {
+    		paymentForm.submitted=false;  	
+    	} else {
+    		$("#opt_submitted").val(paymentForm.submitted);	
+    	}
+    	    	
+    	//detach the plugin from the form if it hasn't been submitted yet
+    	if(paymentForm.submitted==false){
+    		$("#paymentForm").validationEngine('detach');
+    	}
+    	
+
+    	//highlight the invalid fields and show a prompt for the first of those highlighted
+    	$("#paymentForm").submit(function() {
+    	    	
+    		if(validCC()==false) {
+				return false;
+			}
+    	    	
+    		paymentForm.submitted = true;
+    		paymentForm.form = $(this).serializeArray(); 
+    	
+    		var invalid_count = 0;
+    		var set_bubble= false;
+    		
+    		$("#paymentForm").validationEngine('attach');        
+    		$("#paymentForm").validationEngine('init', { promptPosition : "centerRight", scroll: false } );      		
+    		    		    		    		
+    		$.each(	paymentForm.form, function(i, field) {	
+    		    if(	field.value=="" && 
+    		    	field.name!=="address2" && 
+    		    	field.name!=="card_valid"
+    		    	) {
+    		    	
+    		 		if(set_bubble==false) {   
+    		 			$('#' + field.name + "").validationEngine('showPrompt','*This field is required', '', true);
+    		 			$('#' + field.name + "").validationEngine({ promptPosition : "centerRight", scroll: false });
+    		 			set_bubble=true;
+     		 		}
+    		 		$('#' + field.name + "").attr('style', 'background: #FFFFC5 !important');
+    		 		
+    		 		invalid_count++;
+    		 	} 
+			});
+			if(invalid_count > 0 ) {
+    		    return false;
+    		}
+    	});
+    	
+    	//if the form has been, hide propmts on a given element's blur event
+    	//controls only show a prompt when they have focus and aren't valid
+    	$(".inputbox").blur(function() { 
+    		if(paymentForm.submitted==true) {  		
+				$('#' + this.id + "").validationEngine('hide');	
+				//if they validate the field by filling it in, reset the background of the control to white
+				if($('#' + this.id + "").val()!==""){
+					$('#' + this.id + "").attr('style', 'background: #FFF !important');
+				} else {
+					$('#' + this.id + "").attr('style', 'background: #FFFFC5 !important');
+				}
+			}	    		
+    	});
+    });
+
+</script>
 
 <?php $this->title("Add a Credit Card"); ?>
 <?php if (!$isAjax): ?>
@@ -27,16 +115,15 @@
 	<img src="/img/creditcards.jpg" width="180px">
 	<br/>
 		<?=$this->form->create($creditcard, array(
-		'id' => 'addressForm',
-		'class' => "fl",
-		'action' => "{$action}/{$creditcard->_id}"
+		'id' => 'paymentForm',
+		'class' => "fl"
 	)); ?>
 
 				<div id="credit_card_form" >
 				<span class="cart-select">
-				<?=$this->form->hidden('opt_submitted', array('class'=>'inputbox', 'id' => 'opt_submitted')); ?>
+				<?=$this->form->hidden('opt_submitted', array('class'=>'inputbox', 'id' => 'opt_submitted')); ?>				
 				<?=$this->form->label('type', 'Card Type', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->select('type', array('visa' => 'Visa', 'mc' => 'MasterCard','amex' => 'American Express'), array('id' => 'type', 'class'=>'inputbox')); ?>
+				<?=$this->form->select('type', array('visa' => 'Visa', 'mastercard' => 'MasterCard','amex' => 'American Express'), array('id' => 'type', 'class'=>'inputbox')); ?>
 				</span>
 				<div style="clear:both; padding-top:5px !important"></div>
 				<?=$this->form->label('number', 'Card Number', array('escape' => false,'class' => 'required')); ?>
@@ -117,10 +204,12 @@
 				<?=$this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
 				<div style="clear:both"></div>
 
+				</div>
+				</div>
+				
 				<?=$this->form->hidden('opt_description', array('id' => 'opt_description' , 'value' => 'billing')); ?>
 				<?=$this->form->hidden('opt_shipping_select', array('id' => 'opt_shipping_select')); ?>
-				</div>
-				</div>
+				
 					
 			<div class="grid_16">	
 				<?=$this->form->submit('CONTINUE', array('class' => 'button fr', 'style'=>'margin-right:10px;')); ?>
@@ -142,5 +231,74 @@ jQuery(function($){
    $("#telephone").mask("(999) 999-9999");
    $("#tin").mask("99-9999999");
    $("#zip").mask("99999");
+});
+</script>
+
+<script>  
+	
+function isValidCard(cardNumber) {
+
+	var ccard = new Array(cardNumber.length);
+	var i = 0;
+    var sum   = 0;
+
+	// 6 digit is issuer identifier
+	// 1 last digit is check digit
+	// most card number > 11 digit
+	if(cardNumber.length < 11){
+		return false;
+	}
+	
+	// Init Array with Credit Card Number
+	for(i = 0; i < cardNumber.length; i++){
+		ccard[i] = parseInt(cardNumber.charAt(i));
+	}
+	
+	// Run step 1-5 above above
+	for(i = 0; i < cardNumber.length; i = i+2){
+		ccard[i] = ccard[i] * 2;
+		if(ccard[i] > 9){
+			ccard[i] = ccard[i] - 9;
+		}
+	}
+	
+	for(i = 0; i < cardNumber.length; i++){
+		sum = sum + ccard[i];
+	}
+	
+	if($('#card_type').val()=="amex") {
+		if(cardNumber.length >= 15){
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		return ((sum%10) == 0);
+	}
+  }
+
+
+function validCC() {
+	var test = isValidCard($("#number").val());
+	$("#valid").val(test);
+	
+	if(!test){
+		$("#number").validationEngine('showPrompt','*This is not a valid credit card number', '', true);
+		$("#number").attr('style', 'background: #FFFFC5 !important');
+		return false;	
+	} else {
+		$("#number").attr('style', 'background: #FFFFFF !important');
+		$("#number").validationEngine('hide');	
+		return true;
+	}
+}
+
+</script>
+<script>
+$(document).ready(function(){ 
+	$("#addresses").change(function () {
+		$("#address_id").val($("#addresses option:selected").val());
+		$("#selectForm").submit();
+	});
 });
 </script>
