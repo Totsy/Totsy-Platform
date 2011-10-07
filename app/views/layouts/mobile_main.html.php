@@ -1,1 +1,0 @@
-hello world, i am a mobile platform - sales pages

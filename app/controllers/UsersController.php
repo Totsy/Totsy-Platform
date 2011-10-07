@@ -142,11 +142,7 @@ class UsersController extends BaseController {
 				$this->redirect('/sales');
 			}
 		}
-		
-		
-		//if ($this->request->url == ) {
-		//$this->_render['layout'] = 'login';
-		//}
+		$this->_render['layout'] = 'login';
 		
 		return compact('message', 'user');
 	}
@@ -266,12 +262,7 @@ class UsersController extends BaseController {
 			}
 		}
 		//new login layout to account for fullscreen image JL
-		if($this->request->is('mobile')){
-		 	$this->_render['layout'] = 'mobile_login';
-		 	$this->_render['template'] = 'mobile_login';
-		} else {
-			$this->_render['layout'] = 'login';
-		}
+		$this->_render['layout'] = 'login';
 
 		return compact('message', 'fbsession', 'fbconfig');
 	}
