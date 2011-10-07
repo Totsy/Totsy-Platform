@@ -143,7 +143,6 @@ class UsersController extends BaseController {
 			}
 		}
 		$this->_render['layout'] = 'login';
-		
 		return compact('message', 'user');
 	}
 
