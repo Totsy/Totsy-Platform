@@ -331,7 +331,7 @@ class EventsController extends BaseController {
 
           			//check if final sale radio box was checked or not
           			if($enableFinalsale==1){
-          			  $blurb = "<p><strong>Final Sale</strong></p>";
+          			  $blurb = "<br /><br /><p><strong>Final Sale</strong></p>";
           			}
           			//if not make blurb var blank for good form
           			else{
