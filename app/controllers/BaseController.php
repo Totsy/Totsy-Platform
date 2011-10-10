@@ -109,8 +109,14 @@ class BaseController extends \lithium\action\Controller {
 		* Send pixel to layout
 		**/
 		$this->set(compact('pixel'));
-
-		$this->_render['layout'] = 'main';
+		//new login layout to account for fullscreen image JL
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_login';
+		 	$this->_render['template'] = 'mobile_login';
+		} else {
+			$this->_render['layout'] = 'main';
+		}
+		
 		
 	}
 
