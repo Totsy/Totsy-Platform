@@ -23,7 +23,7 @@
 							<div id="intro-copy">
 								<h2 style="margin-top:20px"><span>Become a</span> MEMBER
 								<br />
-								<?=$this->html->link('Already a Member?', '/', array('style' => 'font-size:12px;'));?></h2>
+								<?=$this->html->link('Already a Member?', '/login/?fbcancel=true', array('style' => 'font-size:12px;'));?></h2>
 							</div>
 
 							<div class="message">
