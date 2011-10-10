@@ -234,15 +234,14 @@ class CartController extends BaseController {
 			}
 		}
 		
-		$cart = Array();
-		$cartExpirationDate = "";
-		$subTotal = 0.00;
+		$cartData['cartExpirationDate'] = "";
+		$cartData['subTotal'] = 0.00;
 		
 		foreach(Cart::active() as $cartItem) {
-			if ($cartExpirationDate < $cartItem->expires->sec) {
-				$cartExpirationDate = $cartItem->expires->sec;
+			if ($cartData['cartExpirationDate'] < $cartItem->expires->sec) {
+				$cartData['cartExpirationDate'] = $cartItem->expires->sec;
 			}
-			$subTotal += ($cartItem->sale_retail * $cartItem->quantity);
+			$cartData['subTotal'] += ($cartItem->sale_retail * $cartItem->quantity);
 		} 
 		
 		//send the event URL for building the continue shopping button
@@ -256,7 +255,6 @@ class CartController extends BaseController {
 		//get the amount of items in the cart
 		$cartData['itemCount'] = Cart::itemCount();
 		//set the expiration date for this cart
-		$cartData['cartExpirationDate'] = $cartExpirationDate;
 		//Set subTotal of Cart
 		$cartData['subTotal'] = $subTotal;
 		

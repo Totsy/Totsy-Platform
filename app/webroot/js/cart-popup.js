@@ -1,12 +1,11 @@
 //holds the timeout ID for the popup when the mouse leaves it
 var timeout = ""; 
-//cart items immediately visible 
+//fields related to this cart
 var visibleItems = new Array(); 
 //cart items not immediately visible
 var invisibleItems = new Array();
 //track whether state of of popup is collpased or not
 var isCollapsed = false; 
-
 //check whether the cart popup is open or not
 var isOpen = false;
 
@@ -56,19 +55,19 @@ $(document).ready( function() {
 		//set var for cart timer
 		var cartExpirationDate = new Date(cartObj.cartExpirationDate * 1000);
 		
-		cartData = cartObj.cart;
+		cartItems = cartObj.cart;
 		
-		for (i in cartData) { 
-			//formatting price and line totals
-			cartData[i]['sale_retail'] = cartData[i]['sale_retail'].toFixed(2);
-			cartData[i]['line_total'] = (cartData[i]['quantity'] * cartData[i]['sale_retail']).toFixed(2);
-			
-			if (i < visibleItemCount) {
-				visibleItems.push(cartData[i]);
-			} else {
-				invisibleItems.push(cartData[i]);
-				invisibleItemCount++;
-			}
+		for (i in cartItems) { 
+		    //formatting price and line totals
+		    cartItems[i]['sale_retail'] = cartItems[i]['sale_retail'].toFixed(2);
+		    cartItems[i]['line_total'] = (cartItems[i]['quantity'] * cartItems[i]['sale_retail']).toFixed(2);
+		    
+		    if (i < visibleItemCount) {
+		    	visibleItems.push(cartItems[i]);
+		    } else {
+		    	invisibleItems.push(cartItems[i]);
+		    	invisibleItemCount++;
+		    }
 		} 
 		
 		//unset cart_item DIV
@@ -91,7 +90,7 @@ $(document).ready( function() {
 		//set the popup to timeout after 8 seconds
 		timeout = setTimeout(function() {
 			closeCartPopup(); }, 8000);
-		}; 
+	}; 
 
 	//add items to cart
 	var addItem = function() {
@@ -113,7 +112,7 @@ $(document).ready( function() {
 			}
 		});
 	};
-	
+		
 	var closeCartPopup = function() { 
 		isCollapsed = false;
 		//set isCollapsed to false so that the link doesn't appear on re-open
