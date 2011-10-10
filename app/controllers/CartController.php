@@ -153,9 +153,8 @@ class CartController extends BaseController {
 		#Check Cart
 		$cart = Cart::create();
 		//output for cart popup
-		$cartData = Array();
 		
-		$this->render(array('layout' => false));	
+		//$this->render(array('layout' => false));	
 		
 		if ($this->request->query) {
 			$data = $this->request->query;
@@ -234,6 +233,22 @@ class CartController extends BaseController {
 			}
 		}
 		
+		//call the cart popup
+		$this->getCartPopupData();
+	
+	}
+	
+	/**
+	* Method for sending all required cart data to Ajax driven cart popup.
+	*
+	* @return compact
+	*/
+	public function getCartPopupData () {
+	
+		$cartData = Array();
+		
+		$this->render(array('layout' => false));	
+	
 		$cartData['cartExpirationDate'] = "";
 		$cartData['subTotal'] = 0.00;
 		
@@ -243,9 +258,9 @@ class CartController extends BaseController {
 			}
 			$cartData['subTotal'] += ($cartItem->sale_retail * $cartItem->quantity);
 		} 
-		
-		//send the event URL for building the continue shopping button
-		$cartData['eventURL'] = $event->url;
+				
+		//get the current url	
+		$cartData['eventURL'] = substr($_SERVER['HTTP_REFERER'], 0, strrpos($_SERVER['HTTP_REFERER'],"/"));  
 		//send cart array 
 		$cartData['cart']= Cart::active()->data();
 		//get user savings. they were just put there by updateSavings()
@@ -254,18 +269,12 @@ class CartController extends BaseController {
 		$cartData['shipDate'] = date('m-d-Y', Cart::shipDate(Cart::active()));
 		//get the amount of items in the cart
 		$cartData['itemCount'] = Cart::itemCount();
-		//set the expiration date for this cart
-		//Set subTotal of Cart
-		$cartData['subTotal'] = $subTotal;
 		
 		echo json_encode($cartData);
 	}
 		
-	/**
+	/*
 	* The remove method delete an item from the temporary cart.
-	*
-	* @see app/models/Cart::remove()
-	* @return compact
 	*/
 	public function remove($id = null) {
 		$data = $this->request->data;

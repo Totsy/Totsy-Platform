@@ -43,7 +43,7 @@ $(document).ready( function() {
 		
 		//set divs based on data returned in addItem call
 		$("#ship_date").text(cartObj.shipDate);
-		$("#cart_popup_cont_shop").attr('href', '/sale/' + cartObj.eventURL);
+		$("#cart_popup_cont_shop").attr('href', cartObj.eventURL);
 		$("#savings").text(cartObj.savings.items.toFixed(2));
 		
 		//clear out this DIV....it seems to be caching old values...
@@ -85,16 +85,27 @@ $(document).ready( function() {
 		//set the timer per item
 		cartItemsTimer();
 				
-		$("#cart_popup").fadeIn(300);
+		$("#cart_popup").fadeIn(500);
 		
 		//set the popup to timeout after 8 seconds
 		timeout = setTimeout(function() {
 			closeCartPopup(); }, 8000);
 	}; 
-
+	
+	
+	//get cart data without having to add an item
+	var getCartPopup = function() {		
+		$.ajax ({
+			url: $.base + 'cart/getCartPopupData',
+			context: document.body,
+			success: function(data) {
+				showCartPopup(data);
+			}
+		});
+	};
+	
 	//add items to cart
 	var addItem = function() {
-	
 		var item_size = "";
 		
 		if (typeof $('#size-select').attr('value') != 'undefined' || $('#size-select').attr('value') == '') {
@@ -116,7 +127,7 @@ $(document).ready( function() {
 	var closeCartPopup = function() { 
 		isCollapsed = false;
 		//set isCollapsed to false so that the link doesn't appear on re-open
-		$("#cart_popup").fadeOut(300); 
+		$("#cart_popup").fadeOut(500); 
 	}; 
 	
 	//make popup disappear 8 seconds after their mouse leaves it  
@@ -131,6 +142,10 @@ $(document).ready( function() {
 		}
 		addItem();
 	}); 
+	
+	$(".cart_icon").mouseover( function(){
+		getCartPopup();
+	});
 	
 	//toggle items for carts with more than 3 different types of items
 	var addScrollBar = function() {
