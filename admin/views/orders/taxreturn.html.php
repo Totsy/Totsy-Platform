@@ -149,7 +149,7 @@
 					<?php endif ?>
 					$<?=number_format($order['tax'],2); ?>
 					<br>
-					$<?=number_format($order['handling'],2); ?>
+					$<?=number_format($order["handling"] + $order["overSizeHandling"] - $order["handlingDiscount"]- $order["overSizeHandlingDiscount"], 2); ?>
 					<br><br><br>
 					<strong style="font-weight:bold;color:#009900;">$<?=number_format($order['total'],2); ?></strong>
 					</td>

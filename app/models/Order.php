@@ -8,6 +8,7 @@ use lithium\storage\Session;
 use li3_payments\extensions\Payments;
 use li3_payments\extensions\payments\exceptions\TransactionException;
 use app\extensions\Mailer;
+use app\models\Base;
 
 class Order extends Base {
 
@@ -65,7 +66,11 @@ class Order extends Base {
 			}
 			try {
 				#Process Payment
-				$authKey = Payments::authorize('default', $vars['total'], $card);
+				if ($vars['total'] > 0) {
+					$authKey = Payments::authorize('default', $vars['total'], $card);
+				} else {
+					$authKey = Base::randomString(8,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz');
+				}
 				$order = Order::recordOrder($vars, $cart, $card, $order, $avatax, $authKey, $items);
 				return $order;
 			} catch (TransactionException $e) {
@@ -95,6 +100,9 @@ class Order extends Base {
 				Session::delete('credit');
 				$order->credit_used = abs($vars['cartCredit']->credit_amount);
 			}
+			#Initialize Discount 
+			$vars['shippingCostDiscount'] = 0;
+			$vars['overShippingCostDiscount'] = 0;
 			#Save Promocode Used
 			if ($vars['cartPromo']->saved_amount) {
 				Promocode::add($vars['cartPromo']->code_id, $vars['cartPromo']->saved_amount, $order->total);
@@ -104,8 +112,8 @@ class Order extends Base {
 				$vars['cartPromo']->save();
 				#If FreeShipping put Handling/OverSizeHandling to Zero
 				if($vars['cartPromo']->type == 'free_shipping') {
-					$vars['shippingCost'] = 0;
-					$vars['overShippingCost'] = 0;
+					$vars['shippingCostDiscount'] = $vars['shippingCost'];
+					$vars['overShippingCostDiscount'] = $vars['overShippingCost'];
 				}
 				$order->promo_code = $vars['cartPromo']->code;
 				$order->promo_type = $vars['cartPromo']->type;
@@ -116,8 +124,8 @@ class Order extends Base {
 				$services = array();
 				if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
 					$services = array_merge($services, array("freeshipping"));
-					$vars['shippingCost'] = 0;
-					$vars['overShippingCost'] = 0;
+					$vars['shippingCostDiscount'] = $vars['shippingCost'];
+					$vars['overShippingCostDiscount'] = $vars['overShippingCost'];
 					$order->discount = $vars['shippingCost'] + $vars['overShippingCost'];
 				}
 				if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible' && ($vars['subTotal'] >= 50.00)) {
@@ -143,6 +151,8 @@ class Order extends Base {
 					'subTotal' => $vars['subTotal'],
 					'handling' => $vars['shippingCost'],
 					'overSizeHandling' => $vars['overShippingCost'],
+					'handlingDiscount' => $vars['shippingCostDiscount'],
+					'overSizeHandlingDiscount' => $vars['overShippingCostDiscount'],
 					'user_id' => (string) $user['_id'],
 					'tax' => (float) $avatax['tax'],
 					'card_type' => $card->type,

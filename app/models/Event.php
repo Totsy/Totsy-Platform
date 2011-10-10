@@ -73,6 +73,7 @@ class Event extends \lithium\data\Model {
 			foreach($events as $key_event =>$event) {
 				$events_id[] = (string) $event["_id"];
 			}
+			
 			$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'departments' => array('$in' => array($departments))), array('event' => 1));
 			$events_id_filtered = array();
 			if(!empty($items)) {

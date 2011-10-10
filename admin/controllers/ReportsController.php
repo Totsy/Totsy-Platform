@@ -616,6 +616,21 @@ class ReportsController extends BaseController {
 							}
 							$orderSummary['state'] = $state;
 							$orderSummary['handling'] = (float) $order['handling'];
+							if (!empty($order['overSizeHandling'])) {
+								$orderSummary['overSizeHandling'] = (float) $order['overSizeHandling'];
+							} else {
+								$orderSummary['overSizeHandling'] = 0.00;
+							}
+							if (!empty($order['handlingDiscount'])) {
+								$orderSummary['handlingDiscount'] = (float) $order['handlingDiscount'];
+							} else {
+								$orderSummary['handlingDiscount'] = 0.00;
+							}
+							if (!empty($order['overSizeHandlingDiscount'])) {
+								$orderSummary['overSizeHandlingDiscount'] = (float) $order['overSizeHandlingDiscount'];
+							} else {
+								$orderSummary['overSizeHandlingDiscount'] = 0.00;
+							}
 							$orderSummary['quantity'] = (int) $itemQuantity;
 							$orderSummary['date'] = $order['date_created'];
 							$orderSummary['report_id'] = $reportId;
@@ -639,7 +654,7 @@ class ReportsController extends BaseController {
 				$reduce = new MongoCode('function(doc, prev){
 					prev.total += doc.total,
 					prev.tax += doc.tax,
-					prev.handling += doc.handling,
+					prev.handling += (doc.handling + doc.overSizeHandling - doc.handlingDiscount - doc.overSizeHandlingDiscount),
 					prev.quantity += doc.quantity
 					prev.count += 1
 					}'
@@ -776,12 +791,14 @@ class ReportsController extends BaseController {
 						foreach ($items as $item) {
 							$itemQuantity += $item['quantity'];
 						}
-						$orderSummary['gross'] = $order['tax'] + $order['subTotal'] + $order['handling'];
+						$orderSummary['gross'] = ($order['tax'] + $order['subTotal'] + $order['handling'] + $order['overSizeHandling'] 
+							- $order['handlingDiscount'] - $order['overSizeHandlingDiscount']);
 						$orderSummary['tax'] = $order['tax'];
 						$orderSummary['sub_total'] = $order['subTotal'];
 						$orderSummary['total'] = $order['total'];
 						$orderSummary['state'] = $order['shipping']['state'];
-						$orderSummary['handling'] = $order['handling'];
+						$orderSummary['handling'] = ($order['handling'] + $order['overSizeHandling'] 
+							- $order['handlingDiscount'] - $order['overSizeHandlingDiscount']);
 						$orderSummary['quantity'] = $itemQuantity;
 						$orderSummary['date'] = $order['date_created'];
 						$orderSummary['report_id'] = $reportId;
