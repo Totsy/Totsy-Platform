@@ -69,44 +69,7 @@ class UsersController extends BaseController {
 			/**
 			* this block handles the invitations.
 			**/
-			if ($invite_code) {
-				$inviter = User::find('first', array(
-					'conditions' => array(
-						'invitation_codes' => array($invite_code)
-				)));
-				if ($inviter) {
-					$invited = Invitation::find('first', array(
-						'conditions' => array(
-							'user_id' => (string) $inviter->_id,
-							'email' => $email
-					)));
-					
-					Mailer::send('Invited_Register', $inviter->email);
-					
-					if ($inviter->invited_by === 'keyade') {
-						$data['keyade_referral_user_id'] = $inviter->keyade_user_id;
-					}
-					if ($invited) {
-						$invited->status = 'Accepted';
-						$invited->date_updated = Invitation::dates('now');
-						$invited->save();
-						if ($invite_code != 'keyade') {
-							Invitation::reject($inviter->_id, $email);
-						}
-					} else {
-					/**
-					* This block was included because users can pass on their
-					* invite url by mouth @_@
-					**/
-						$invitation = Invitation::create();
-						$invitation->user_id = $inviter->_id;
-						$invitation->email = $email;
-						$invitation->date_accepted = Invitation::dates('now');
-						$invitation->status = 'Accepted';
-						$invitation->save();
-					}
-				}
-			}
+			Invitation::linkUpInvites($invite_code, $email);
 			switch ($invite_code) {
 				case 'our365':
 				case 'our365widget':
@@ -246,7 +209,7 @@ class UsersController extends BaseController {
 						User::rememberMeWrite($this->request->data['remember_me']);
 						/**Remove Temporary Session Datas**/
 						User::cleanSession();
-						/***/					
+						/***/
 						if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) {
 							$this->redirect($this->request->url);
 						} else {
@@ -608,6 +571,7 @@ class UsersController extends BaseController {
 		$userfb = array();
 		if ($self->fbsession) {
 			$userfb = FacebookProxy::api('/me');
+
 			$user = User::find('first', array(
 				'conditions' => array(
 					'$or' => array(
