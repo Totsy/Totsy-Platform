@@ -37,7 +37,7 @@
 								<div class="r-box lt-gradient-1">
                                 <h2> <img src="https://graph.facebook.com/<?=$fbuser['id']?>/picture"> Hi <?=$fbuser['name']?> - you're one step away from joining with Facebook</h2>
                                 <hr />
-								<?=$this->form->create($user ,array('id'=>'registerForm')); ?>
+<?    print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/fb_register\']);">'; ?>
 
                <!-- Commnented Firstname, Lastname and Zip code --->
 
