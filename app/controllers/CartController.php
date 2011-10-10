@@ -260,7 +260,7 @@ class CartController extends BaseController {
 		} 
 				
 		//get the current url	
-		$cartData['eventURL'] = substr($_SERVER['HTTP_REFERER'], 0, strrpos($_SERVER['HTTP_REFERER'],"/"));  
+		$cartData['eventURL'] = substr($this->request->env('HTTP_REFERER'), 0, strrpos($this->request->env('HTTP_REFERER'),"/"));  
 		//send cart array 
 		$cartData['cart']= Cart::active()->data();
 		//get user savings. they were just put there by updateSavings()
