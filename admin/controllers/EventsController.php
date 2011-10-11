@@ -32,6 +32,14 @@ class EventsController extends BaseController {
 		'enabled'
 	);
 
+	public function uploadcheck() {
+	    $this->_render['layout'] = false;
+		$val = $_POST['items_submit'];
+		$fullarray = Event::convert_spreadsheet($val);
+		echo Event::check_spreadsheet($fullarray);
+	}
+
+
 	public function view($id = null) {
 		$event = Event::find($id);
 		if (empty($event)) {
@@ -117,9 +125,16 @@ class EventsController extends BaseController {
 			}
 			unset($this->request->data['itemTable_length']);
 			$enableItems = $this->request->data['enable_items'];
-			if ($_FILES['upload_file']['error'] == 0 && $_FILES['upload_file']['size'] > 0) {
-				if (is_array($this->parseItems($_FILES, $event->_id, $enableItems))) {
-					unset($this->request->data['upload_file']);
+
+			if(!empty($this->request->data['items_submit'])) {
+
+				$fullarray = Event::convert_spreadsheet($this->request->data['items_submit']);
+				
+				$parseItems = $this->parseItems($fullarray, $event->_id, $enableItems);
+				
+				
+				if (is_array($parseItems)){
+	
 					$eventItems = Item::find('all', array('conditions' => array('event' => array($_id))));
 					if (!empty($eventItems)) {
 						foreach ($eventItems as $item) {
@@ -128,6 +143,24 @@ class EventsController extends BaseController {
 					}
 				}
 			}
+			
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//			if ($_FILES['upload_file']['error'] == 0 && $_FILES['upload_file']['size'] > 0) {
+//				if (is_array($this->parseItems($_FILES, $event->_id, $enableItems))) {
+//					unset($this->request->data['upload_file']);
+//					$eventItems = Item::find('all', array('conditions' => array('event' => array($_id))));
+//					if (!empty($eventItems)) {
+//						foreach ($eventItems as $item) {
+//							$items[] = (string) $item->_id;
+//						}
+//					}
+//				}
+//			}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
+			
+			
+			
 			$images = $this->parseImages($event->images);
 
 			//Saving the original start and end and ship dates for comparison
@@ -246,7 +279,7 @@ class EventsController extends BaseController {
 	 * @todo Add event to the header information for spreadsheet (event - this needs to replace vendor)
 	 * @todo Add vendor_description
 	 */
-	protected function parseItems($_FILES, $_id, $enabled = false) {
+	protected function parseItems($array, $_id, $enabled = false) {
 		$items = array();
 		$itemIds = array();
 		$relatedItems = array();
@@ -274,149 +307,144 @@ class EventsController extends BaseController {
 			'shipping_weight',
 			'shipping_dimensions',
 			'related_items'
-		);
+		);	
+	
+		for ($row = 0; $row <= $totalrows; ++ $row ) {
+			for ($col = 0; $col < $totalcols; ++ $col) {
+				$val = $array[$row][$col];
+				$val = trim($val);
+				
+				if ($row == 0) {
+					$heading[] = $val;
+				} else {
+					if (isset($heading[$col])) {
 
-		if ($this->request->data) {
-			if ($_FILES['upload_file']['error'] == 0) {
-				$file = $_FILES['upload_file']['tmp_name'];
-				$objReader = PHPExcel_IOFactory::createReaderForFile("$file");
-				$objPHPExcel = $objReader->load("$file");
-				foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
-					$highestRow = $worksheet->getHighestRow();
-					$highestColumn = $worksheet->getHighestColumn();
-					$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
-					for ($row = 1; $row <= $highestRow; ++ $row ) {
-						for ($col = 0; $col < $highestColumnIndex; ++ $col) {
-							$cell = $worksheet->getCellByColumnAndRow($col, $row);
-							$val = $cell->getCalculatedValue();
+						$val = Event::convert_smart_quotes($val);
+						
+						//check decimals here
+						if (in_array($heading[$col], $check_decimals)) {
+							if (!empty($val)) {
+								//if(is_numeric($val)){
+									$val = number_format($val, 2, '.', '');
+								//}
+							}
+						}
 
-							if ($row == 1) {
-								$heading[] = $val;
-							} else {
-								if (isset($heading[$col])) {
-									if(($heading[$col] === "department_1") ||
-										($heading[$col] === "department_2") ||
-										($heading[$col] === "department_3")) {
-										if (!empty($val)) {
-											$eventItems[$row - 1]['departments'][] = ucfirst(strtolower(trim($val)));
-											$eventItems[$row - 1]['departments'] = array_unique($eventItems[$row - 1]['departments']);
-										}
-									} else if (($heading[$col] === "related_1") ||
-											($heading[$col] === "related_2") ||
-											($heading[$col] === "related_3") ||
-											($heading[$col] === "related_4") ||
-											($heading[$col] === "related_5")) {
-											if (!empty($val)) {
-												$eventItems[$row - 1]['related_items'][] = trim($val);
-												$eventItems[$row - 1]['related_items'] = array_unique($eventItems[$row - 1]['related_items']);
-											}
-										} else {
-										if (!empty($val)) {
-											$eventItems[$row - 1][$heading[$col]] = $val;
-										}
-									}
-
-								}
+						if(($heading[$col] === "department_1") || ($heading[$col] === "department_2") || ($heading[$col] === "department_3")) {
+							if (!empty($val)) {
+								$eventItems[$row - 1]['departments'][] = ucfirst(strtolower(trim($val)));
+								$eventItems[$row - 1]['departments'] = array_unique($eventItems[$row - 1]['departments']);
+							}
+						} else if (($heading[$col] === "related_1") || ($heading[$col] === "related_2") || ($heading[$col] === "related_3") || ($heading[$col] === "related_4") || ($heading[$col] === "related_5")) {
+							if (!empty($val)) {
+								$eventItems[$row - 1]['related_items'][] = trim($val);
+								$eventItems[$row - 1]['related_items'] = array_unique($eventItems[$row - 1]['related_items']);
 							}
 
-						}
-					}
-				}
-				foreach ($eventItems as $itemDetail) {
-					$i=0;
-					$itemAttributes = array_diff_key($itemDetail, array_flip($standardHeader));
-					
-          			//check radio box for 'final sale' text append
-          			$enableFinalsale = $this->request->data['enable_finalsale'];
 
-          			//check if final sale radio box was checked or not
-          			if($enableFinalsale==1){
-          			  $blurb = "<br /><br /><p><strong>Final Sale</strong></p>";
-          			}
-          			//if not make blurb var blank for good form
-          			else{
-          			  $blurb = "";
-          			}
-					$itemCleanAttributes = null;
-					foreach ($itemAttributes as $key => $value) {
-						unset($itemDetail[$key]);
-
-						if($key!=="color_description_style") {
-							$itemCleanAttributes[trim($key)] = $value;
-						}
-					}
-					$item = Item::create();
-					$date = new MongoDate();
-					$url = $this->cleanUrl($itemDetail['description']." ".$itemDetail['color']);
-
-					$details = array(
-						'enabled' => (bool) $enabled,
-						'created_date' => $date,
-						'details' => $itemCleanAttributes,
-						'event' => array((string) $_id),
-						'url' => $url,
-						'blurb' => $blurb,
-						'taxable' => true
-					);
-
-					$newItem = array_merge(Item::castData($itemDetail), Item::castData($details));
-					$newItem['vendor_style'] = (string) $newItem['vendor_style'];
-					
-					if ((array_sum($newItem['details']) > 0) && $item->save($newItem)) {
-						$items[] = (string) $item->_id;
-
-						//related items will be added later, after ihe items in this event actually HAVE unique ID's
-						//each related item will momentarily be a string made of the color, description and style separated by pipes
-						if( !empty($itemDetail['related_items']) ) {
-
-							$k=0;
-
-							foreach( $itemDetail['related_items'] as $key=>$value ) {
-								//build array of related items using color, description and style
-								//the color and the description are for the buyer to see, but we use the style number
-								//here to persist the related items
-								//and later update each item using it and the event hash to query and get the id
-								$fields = explode("|", $value);
-
-								$related_items[(string) $item->_id][$k]['vendor_style'] = $fields[2];
-								$related_items[(string) $item->_id][$k]['event'] = (string) $_id;
-
-								$k++;
+						} else {
+							if (!empty($val)) {
+								$eventItems[$row - 1][$heading[$col]] = $val;
 							}
 						}
 					}
-					$i++;
 				}
-
-				$itemsCollection = Item::Collection();
-
-				foreach ( $related_items as $key => $value ) {
-
-					$rel_items = array();
-
-					//aggregate related item id's
-					for ($i=0; $i<count($related_items[$key]); $i++) {
-
-						$style = trim($related_items[$key][$i]['vendor_style']);
-						$event = trim($related_items[$key][$i]['event']);
-
-						//query for this item
-						$rel_item = Item::find('first', array('conditions' => array(
-									'event' => array($event),
-									'vendor_style' => $style
-								)));
-
-						$rel_items[] = (string) $rel_item['_id'];
-
-					}
-
-					$itemsCollection->update(array("_id" => new MongoId($key)), array('$set' => array('related_items' => $rel_items)));
-				}
-
 			}
 		}
+				
+		foreach ($eventItems as $itemDetail) {
+			$i=0;
+			
+  			//check radio box for 'final sale' text append
+  			$enableFinalsale = $this->request->data['enable_finalsale'];
+
+  			//check if final sale radio box was checked or not
+  			if($enableFinalsale==1){
+  			  $blurb = "<p><strong>Final Sale</strong></p>";
+  			}
+  			//if not make blurb var blank for good form
+  			else{
+  			  $blurb = "";
+  			}
+			$itemCleanAttributes = null;
+			foreach ($itemAttributes as $key => $value) {
+				unset($itemDetail[$key]);
+
+				if($key!=="color_description_style") {
+					$itemCleanAttributes[trim($key)] = $value;
+				}
+			}
+			$item = Item::create();
+			$date = new MongoDate();
+			$url = $this->cleanUrl($itemDetail['description']." ".$itemDetail['color']);
+
+			$details = array(
+				'enabled' => (bool) $enabled,
+				'created_date' => $date,
+				'details' => $itemCleanAttributes,
+				'event' => array((string) $_id),
+				'url' => $url,
+				'blurb' => $blurb,
+				'taxable' => true
+			);
+
+			$newItem = array_merge(Item::castData($itemDetail), Item::castData($details));
+			$newItem['vendor_style'] = (string) $newItem['vendor_style'];
+			
+			if ((array_sum($newItem['details']) > 0) && $item->save($newItem)) {
+				$items[] = (string) $item->_id;
+
+				//related items will be added later, after ihe items in this event actually HAVE unique ID's
+				//each related item will momentarily be a string made of the color, description and style separated by pipes
+				if( !empty($itemDetail['related_items']) ) {
+
+					$k=0;
+
+					foreach( $itemDetail['related_items'] as $key=>$value ) {
+						//build array of related items using color, description and style
+						//the color and the description are for the buyer to see, but we use the style number
+						//here to persist the related items
+						//and later update each item using it and the event hash to query and get the id
+						$fields = explode("|", $value);
+
+						$related_items[(string) $item->_id][$k]['vendor_style'] = $fields[2];
+						$related_items[(string) $item->_id][$k]['event'] = (string) $_id;
+
+						$k++;
+					}
+				}
+			}
+			$i++;
+		}
+
+		$itemsCollection = Item::Collection();
+
+		foreach ( $related_items as $key => $value ) {
+
+			$rel_items = array();
+
+			//aggregate related item id's
+			for ($i=0; $i<count($related_items[$key]); $i++) {
+
+				$style = trim($related_items[$key][$i]['vendor_style']);
+				$event = trim($related_items[$key][$i]['event']);
+
+				//query for this item
+				$rel_item = Item::find('first', array('conditions' => array(
+							'event' => array($event),
+							'vendor_style' => $style
+						)));
+
+				$rel_items[] = (string) $rel_item['_id'];
+
+			}
+
+			$itemsCollection->update(array("_id" => new MongoId($key)), array('$set' => array('related_items' => $rel_items)));
+		}
+
 		return $items;
 	}
+
 
 	/**
 	 * Parse the images from the request using the key
