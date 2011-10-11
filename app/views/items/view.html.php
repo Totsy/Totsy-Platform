@@ -152,43 +152,38 @@
 			<p><strong>Returns:</strong> Totsy accept returns on selected items only. You will get a merchandise credit and free shipping (AK &amp; HI: air shipping rates apply). Simply be sure that we receive the merchandise you wish to return within 30 days from the date you originally received it in its original condition with all the packaging intact. Please note: Final Sale items cannot be returned. Want to learn more? Read more in our <?=$this->html->link('returns section', array('Pages::returns')); ?>.</p>
 			</div>
 		</div>
-
-<!--Disney -->
-      <div class="disney">
+	<!--Disney -->
+<div class="disney">
           <strong>SPECIAL BONUS!</strong><hr/></p>
-       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value )
+       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/parents.png" align="absmiddle" width="95px" /> ( a $10 value )
        <span id="disney">Offer & Refund Details</span>
       </div>
 	<br><!-- Started Related Products -->
 	<div id="related-products">
-		<?php $relatedData = $related; ?>		
+		<?php $relatedData = $related; ?>
 		<?php if (!empty($relatedData)): ?>
 		<h2 style="color:#707070;font-size:14px;">You would also love</h2>
 		<hr />
-		<?php foreach ($related as $relatedItem): ?>
-			<?php
-				if (empty($relatedItem['primary_image'])) {
-					$relatedImage = '/img/no-image-small.jpeg';
-				} else {
-					$relatedImage = "/image/".$relatedItem['primary_image'].".jpg";
-				}
-				
-				echo $this->html->link(
-					$this->html->image($relatedImage, array(
-						"class" => "img-th",
-						"width" => "93",
-						"height" => "93")),
-						"/sale/$event->url/".$relatedItem['url'], array(
-							'id' => $relatedItem['description'],
-							'escape'=> false
-				));
-			?>
-		<?php endforeach ?>
+		<?php foreach ($related as $relatedItem) {
+			if (empty($relatedItem['primary_image'])) {
+				$relatedImage = '/img/no-image-small.jpeg';
+			} else {
+				$relatedImage = "/image/".$relatedItem['primary_image'].".jpg";
+			}
+			echo $this->html->link(
+				$this->html->image($relatedImage, array(
+					"class" => "img-th",
+					"width" => "93",
+					"height" => "93")),
+					"/sale/$event->url/".$relatedItem['url'], array(
+						'id' => $relatedItem['description'],
+						'escape'=> false
+			));
+		} ?>
 	<?php endif ?>
 	</div>
 	<!-- End Related Products -->
 	</div>
-
 	<div class="grid_3">
 	<div id="detail-top-right" class="r-container">
 
@@ -224,13 +219,10 @@
 			'alt' => $event->name, 'width' => "148"
 		)); ?>
 
- 		</div>
 	</div>
-
 		<div style="padding:10px 0px; text-align:center;">
 			<?php echo $spinback_fb; ?>
 		</div>
-
 		</div>
 	<div class="clear"></div>
 	</div>

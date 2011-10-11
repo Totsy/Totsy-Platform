@@ -69,44 +69,7 @@ class UsersController extends BaseController {
 			/**
 			* this block handles the invitations.
 			**/
-			if ($invite_code) {
-				$inviter = User::find('first', array(
-					'conditions' => array(
-						'invitation_codes' => array($invite_code)
-				)));
-				if ($inviter) {
-					$invited = Invitation::find('first', array(
-						'conditions' => array(
-							'user_id' => (string) $inviter->_id,
-							'email' => $email
-					)));
-					
-					Mailer::send('Invited_Register', $inviter->email);
-					
-					if ($inviter->invited_by === 'keyade') {
-						$data['keyade_referral_user_id'] = $inviter->keyade_user_id;
-					}
-					if ($invited) {
-						$invited->status = 'Accepted';
-						$invited->date_updated = Invitation::dates('now');
-						$invited->save();
-						if ($invite_code != 'keyade') {
-							Invitation::reject($inviter->_id, $email);
-						}
-					} else {
-					/**
-					* This block was included because users can pass on their
-					* invite url by mouth @_@
-					**/
-						$invitation = Invitation::create();
-						$invitation->user_id = $inviter->_id;
-						$invitation->email = $email;
-						$invitation->date_accepted = Invitation::dates('now');
-						$invitation->status = 'Accepted';
-						$invitation->save();
-					}
-				}
-			}
+			Invitation::linkUpInvites($invite_code, $email);
 			switch ($invite_code) {
 				case 'our365':
 				case 'our365widget':
@@ -172,11 +135,19 @@ class UsersController extends BaseController {
 						$data['invitation_codes'] = array(static::randomString());
 					}
 					if ($saved = $user->save($data)) {
+						$mail_template = 'Welcome_Free_Shipping';
+						$params = array();
+						
 						$data = array(
 							'user' => $user,
 							'email' => $user->email
 						);
-						Mailer::send('Welcome_Free_Shipping', $user->email);
+
+						if (isset($user['clear_token'])) {
+							$mail_template = 'Welcome_auto_passgen';
+							$params['token'] = $user['clear_token']; 
+						} 
+						Mailer::send($mail_template, $user->email,$params);
 						$name = null;
 						if (isset($data['firstname'])) $name = $data['firstname'];
 						if (isset($data['lastname'])) $name = is_null($name)?$data['lastname']:$name.$data['lastname'];
@@ -238,7 +209,7 @@ class UsersController extends BaseController {
 						User::rememberMeWrite($this->request->data['remember_me']);
 						/**Remove Temporary Session Datas**/
 						User::cleanSession();
-						/***/					
+						/***/
 						if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) {
 							$this->redirect($this->request->url);
 						} else {
@@ -600,6 +571,7 @@ class UsersController extends BaseController {
 		$userfb = array();
 		if ($self->fbsession) {
 			$userfb = FacebookProxy::api('/me');
+
 			$user = User::find('first', array(
 				'conditions' => array(
 					'$or' => array(

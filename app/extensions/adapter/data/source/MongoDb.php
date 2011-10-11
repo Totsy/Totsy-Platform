@@ -75,7 +75,7 @@ class MongoDb extends \lithium\data\source\MongoDb {
 
 			if ($this->connection = $this->server->{$cfg['database']}) {
 				$this->_isConnected = true;
-				$this->connection->setSlaveOkay(true);
+			//	$this->connection->setSlaveOkay(true);
 			}
 		} catch (Exception $e) {
 			throw new NetworkException("Could not connect to the database.", 503, $e);
