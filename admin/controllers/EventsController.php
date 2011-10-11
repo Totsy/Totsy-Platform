@@ -18,7 +18,11 @@ use PHPExcel_Cell_DataType;
  * Administrative functionality to create and edit events.
  */
 class EventsController extends BaseController {
-
+	/**
+	 * Limit characters for event\deal short description
+	 */
+	private $sortDescLimit = 45;
+	
 	/**
 	 * List of event keys that should be in the view
 	 * @var array List of accepted event keys
@@ -42,7 +46,9 @@ class EventsController extends BaseController {
 	}
 
 	public function add() {
-
+		
+		$shortDescLimit = $this->shortDescLimit;
+		
 		if (empty($event)) {
 			$event = Event::create();
 		}
@@ -52,6 +58,9 @@ class EventsController extends BaseController {
 			$seconds = ':'.rand(10,60);
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
+			if (isset($this->request->data['short_description']) && strlen($this->request->data['short_description'])>$shortDescLimit){
+				$this->request->data['short_description'] = substr($this->request->data['short_description'],0,$shortDescLimit);
+			}
 			$url = $this->cleanUrl($this->request->data['name']);
 			$eventData = array_merge(
 				Event::castData($this->request->data),
@@ -76,11 +85,12 @@ class EventsController extends BaseController {
 				$this->redirect(array('Events::edit', 'args' => array($event->_id)));
 			}
 		}
-
-		return compact('event');
+		
+		return compact('event','shortDescLimit');
 	}
 
 	public function edit($_id = null) {
+		$shortDescLimit = $this->shortDescLimit;
 		$current_user = Session::read('userLogin');
 
 		$itemsCollection = Item::Collection();
@@ -137,6 +147,9 @@ class EventsController extends BaseController {
 
 			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
+			if (isset($this->request->data['short_description']) && strlen($this->request->data['short_description'])>$shortDescLimit){
+				$this->request->data['short_description'] = substr($this->request->data['short_description'],0,$shortDescLimit);
+			}
 			$url = $this->cleanUrl($this->request->data['name']);
 			$eventData = array_merge(
 				Event::castData($this->request->data),
@@ -237,7 +250,7 @@ class EventsController extends BaseController {
 			}
 		}
 
-		return compact('event', 'eventItems', 'items', 'all_filters');
+		return compact('event', 'eventItems', 'items', 'all_filters', 'shortDescLimit');
 	}
 	/**
 	 * This method parses the item file that is uploaded in the Events Edit View.
