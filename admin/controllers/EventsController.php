@@ -60,7 +60,9 @@ class EventsController extends BaseController {
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
 			if (isset($this->request->data['short_description']) && strlen($this->request->data['short_description'])>$shortDescLimit){
 				$this->request->data['short_description'] = substr($this->request->data['short_description'],0,$shortDescLimit);
-			}
+			} else if (!isset($this->request->data['short_description']) || (isset($this->request->data['short_description']) && empty($this->request->data['short_description']))){
+				$this->request->data['short_description'] = $this->description_cutter($this->request->data['short_description'],$shortDescLimit);	
+			}	
 			$url = $this->cleanUrl($this->request->data['name']);
 			$eventData = array_merge(
 				Event::castData($this->request->data),
@@ -149,6 +151,8 @@ class EventsController extends BaseController {
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
 			if (isset($this->request->data['short_description']) && strlen($this->request->data['short_description'])>$shortDescLimit){
 				$this->request->data['short_description'] = substr($this->request->data['short_description'],0,$shortDescLimit);
+			} else if (!isset($this->request->data['short_description']) || (isset($this->request->data['short_description']) && empty($this->request->data['short_description']))){
+				$this->request->data['short_description'] = $this->description_cutter($this->request->data['short_description'],$shortDescLimit);	
 			}
 			$url = $this->cleanUrl($this->request->data['name']);
 			$eventData = array_merge(
@@ -501,6 +505,30 @@ class EventsController extends BaseController {
 			$itemCounts[$id] = $count;
 		}
 		return $itemCounts;
+	}
+	
+	private function description_cutter($str,$length=null){
+		$return = '';
+		$str = strip_tags($str);
+		$split = preg_split("/[\s]+/",$str);
+		$len = 0;
+		if (is_array($split) && count($split)>0){
+			foreach($split as $splited){
+				$tmp_len = $len + strlen($splited) +1;
+				if ($tmp_len < $length){
+					$len = $tmp_len;
+					$return.= $splited.' ';
+				} else {
+					break;
+				}
+			}
+		}
+		
+		if (strlen($return)>0){
+			return $return;
+		} else {
+			return $str;
+		}
 	}
 }
 
