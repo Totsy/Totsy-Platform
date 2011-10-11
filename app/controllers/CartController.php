@@ -186,8 +186,6 @@ class CartController extends BaseController {
 			$cartItem = Cart::checkCartItem($itemId, $size);
 			$avail = $item->details->{$size} - Cart::reserved($itemId, $size);
 			
-			$event = Event::find('first', array('conditions' => array('_id' => $item->event[0])));
-			
 			#Condition if Item Already in your Cart
 			if (!empty($cartItem)) {
 				//Make sure user does not add more than 9 items to the cart

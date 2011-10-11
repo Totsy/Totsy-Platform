@@ -11,9 +11,9 @@
  	{{/if}}
  	<div class="cart_popup_item_fields">
  		<span class="cart_popup_item_description">
- 			<a target="_blank" href="#" >
- 			 ${description} </a>
- 			 </span>
+ 			<a href="#" onclick="window.location='${url}'">
+ 			 	${description} 
+ 			 </a>
  		</span>
  		<span class="cart_popup_item_price"><strong> $${sale_retail} </strong></span>
  		<span class="cart_popup_line_qty">Qty: ${quantity} </span>		

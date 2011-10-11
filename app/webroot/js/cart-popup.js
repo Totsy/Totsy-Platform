@@ -51,41 +51,40 @@ $(document).ready( function() {
 		
 		$("#cart-count").text(cartObj.itemCount);
 		
+		if( cartObj.itemCount > 0 ){
+			$("#savings").text(cartObj.savings.items.toFixed(2));
+		} else {
+			$("#savings").text("");
+		}
+		
 		//set var for cart timer
 		var cartExpirationDate = new Date(cartObj.cartExpirationDate * 1000);
 		
 		var cartItems = cartObj.cart;
-				
-		//check for cart items and set vivsible and hidden items
-		//unset the savings if there are not items in the cart
-		if( typeof cartItems != "object" ) {
-			$("#savings").text("");
-		} else {
-					
-			$("#savings").text(cartObj.savings.items.toFixed(2));
 						
-			for (i in cartItems) { 
-			    //formatting price and line totals
-			    cartItems[i]['sale_retail'] = cartItems[i]['sale_retail'].toFixed(2);
-			    cartItems[i]['line_total'] = (cartItems[i]['quantity'] * cartItems[i]['sale_retail']).toFixed(2);
-			    
-			    if (i < visibleItemCount) {
-			    	visibleItems.push(cartItems[i]);
-			    } else {
-			    	invisibleItems.push(cartItems[i]);
-			    	invisibleItemCount++;
-			    }
-			} 
+		for (i in cartItems) { 
+		    //formatting price and line totals
+		    cartItems[i]['sale_retail'] = cartItems[i]['sale_retail'].toFixed(2);
+		    cartItems[i]['line_total'] = (cartItems[i]['quantity'] * cartItems[i]['sale_retail']).toFixed(2);
+		    
+		    cartItems[i]['url'] = cartObj.eventURL + "/" + cartItems[i]['url']; 
+		    
+		    if (i < visibleItemCount) {
+		    	visibleItems.push(cartItems[i]);
+		    } else {
+		    	invisibleItems.push(cartItems[i]);
+		    	invisibleItemCount++;
+		    }
+		}
 		
-			//unset cart_item DIV
-			$("#cart_item").html(""); 
-			
-			//attach template to cart_item DIV
-			$("#template").tmpl(visibleItems).appendTo("#cart_item");
-			
-			if (invisibleItemCount > 0) {
-				addScrollBar();
-			}
+		//unset cart_item DIV
+		$("#cart_item").html(""); 
+		
+		//attach template to cart_item DIV
+		$("#template").tmpl(visibleItems).appendTo("#cart_item");
+		
+		if (invisibleItemCount > 0) {
+		    addScrollBar();
 		}
 			
 		//set the cart timer		
