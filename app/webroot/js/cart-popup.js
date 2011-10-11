@@ -44,7 +44,6 @@ $(document).ready( function() {
 		//set divs based on data returned in addItem call
 		$("#ship_date").text(cartObj.shipDate);
 		$("#cart_popup_cont_shop").attr('href', cartObj.eventURL);
-		$("#savings").text(cartObj.savings.items.toFixed(2));
 		
 		//clear out this DIV....it seems to be caching old values...
 		$("#order_total_num").html("");
@@ -55,31 +54,40 @@ $(document).ready( function() {
 		//set var for cart timer
 		var cartExpirationDate = new Date(cartObj.cartExpirationDate * 1000);
 		
-		cartItems = cartObj.cart;
+		var cartItems = cartObj.cart;
+				
+		//check for cart items and set vivsible and hidden items
+		//unset the savings if there are not items in the cart
+		if( typeof cartItems != "object" ) {
+			$("#savings").text("");
+		} else {
+					
+			$("#savings").text(cartObj.savings.items.toFixed(2));
+						
+			for (i in cartItems) { 
+			    //formatting price and line totals
+			    cartItems[i]['sale_retail'] = cartItems[i]['sale_retail'].toFixed(2);
+			    cartItems[i]['line_total'] = (cartItems[i]['quantity'] * cartItems[i]['sale_retail']).toFixed(2);
+			    
+			    if (i < visibleItemCount) {
+			    	visibleItems.push(cartItems[i]);
+			    } else {
+			    	invisibleItems.push(cartItems[i]);
+			    	invisibleItemCount++;
+			    }
+			} 
 		
-		for (i in cartItems) { 
-		    //formatting price and line totals
-		    cartItems[i]['sale_retail'] = cartItems[i]['sale_retail'].toFixed(2);
-		    cartItems[i]['line_total'] = (cartItems[i]['quantity'] * cartItems[i]['sale_retail']).toFixed(2);
-		    
-		    if (i < visibleItemCount) {
-		    	visibleItems.push(cartItems[i]);
-		    } else {
-		    	invisibleItems.push(cartItems[i]);
-		    	invisibleItemCount++;
-		    }
-		} 
-		
-		//unset cart_item DIV
-		$("#cart_item").html(""); 
-		
-		//attach template to cart_item DIV
-		$("#template").tmpl(visibleItems).appendTo("#cart_item");
-		
-		if (invisibleItemCount > 0) {
-			addScrollBar();
+			//unset cart_item DIV
+			$("#cart_item").html(""); 
+			
+			//attach template to cart_item DIV
+			$("#template").tmpl(visibleItems).appendTo("#cart_item");
+			
+			if (invisibleItemCount > 0) {
+				addScrollBar();
+			}
 		}
-		
+			
 		//set the cart timer		
 		cartTimer(cartExpirationDate);				
 		//set the timer per item
@@ -91,7 +99,6 @@ $(document).ready( function() {
 		timeout = setTimeout(function() {
 			closeCartPopup(); }, 8000);
 	}; 
-	
 	
 	//get cart data without having to add an item
 	var getCartPopup = function() {		
@@ -137,6 +144,8 @@ $(document).ready( function() {
 	
 	//click handler for adding items to cart
 	$("#add-to-cart").click(function() {
+	
+		//if there is an active timeout, clear it
 		if (timeout) {
 			clearTimeout(timeout);
 		}
@@ -144,6 +153,11 @@ $(document).ready( function() {
 	}); 
 	
 	$(".cart_icon").mouseover( function(){
+	
+		//if there is an active timeout, clear it
+		if (timeout) {
+			clearTimeout(timeout);
+		}
 		getCartPopup();
 	});
 	
