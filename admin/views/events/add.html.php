@@ -100,6 +100,13 @@ tinyMCE.init({
 		<input type="radio" name="tangible" value="1" id="tangible" checked> Tangible <br>
 		<input type="radio" name="tangible" value="0" id="tangible"> Non Tangible
 	</div>
+	<div id="event_viewlive">
+		<h2 id="event_type">View Live Anyway</h2>
+		 (allows direct url access to event even if otherwise disabled)<br>
+		<input type="radio" name="viewlive" value="1" id="viewlive"> Direct URL <br>
+		<input type="radio" name="viewlive" value="0" id="viewlive" checked> Not Viewable
+	</div>
+
 	<div id="event_duration">
 		<h2 id="event_duration">Event Duration</h2>
 		<?=$this->form->field('start_date', array('class' => 'general', 'id' => 'start_date'));?>
