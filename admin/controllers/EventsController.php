@@ -21,7 +21,7 @@ class EventsController extends BaseController {
 	/**
 	 * Limit characters for event\deal short description
 	 */
-	private $sortDescLimit = 45;
+	private $shortDescLimit = 45;
 	
 	/**
 	 * List of event keys that should be in the view
