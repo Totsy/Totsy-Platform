@@ -8,6 +8,7 @@ use lithium\storage\Session;
 use li3_payments\extensions\Payments;
 use li3_payments\extensions\payments\exceptions\TransactionException;
 use app\extensions\Mailer;
+use app\models\User;
 use app\models\Base;
 
 class Order extends Base {
@@ -115,6 +116,7 @@ class Order extends Base {
 					$vars['shippingCostDiscount'] = $vars['shippingCost'];
 					$vars['overShippingCostDiscount'] = $vars['overShippingCost'];
 				}
+				#Update Order Information with PromoCode
 				$order->promo_code = $vars['cartPromo']->code;
 				$order->promo_type = $vars['cartPromo']->type;
 				$order->promo_discount = abs($vars['cartPromo']->saved_amount);
@@ -172,7 +174,7 @@ class Order extends Base {
 			foreach ($cart as $item) {
 				Item::sold($item->item_id, $item->size, $item->quantity);
 			}
-			#Update amount of user's orders 
+			#Update amount of user's orders
 			$user = User::getUser();
 			++$user->purchase_count;
 			$user->save(null, array('validate' => false));
