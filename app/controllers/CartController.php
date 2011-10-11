@@ -190,9 +190,7 @@ class CartController extends BaseController {
 						$cartItem->save();
 						//calculate savings
 						$item[$item['_id']] = $cartItem->quantity;
-						Cart::updateSavings($item,'add');
-						#Add Price to Total
-						$suppTotal = $item['sale_retail'];				
+						Cart::updateSavings($item,'add');			
 					} else {
 						$cartItem->error = 'You can’t add this quantity in your cart. <a href="faq">Why?</a>';
 						$cartItem->save();
@@ -218,8 +216,6 @@ class CartController extends BaseController {
 						$item[$itemId] = 1;
 						Cart::updateSavings($item, 'add');
 						$this->addIncompletePurchase(Cart::active());
-						#Add Price to Total
-						$suppTotal = $item['sale_retail'];
 					}
 				}
 			}
@@ -234,7 +230,6 @@ class CartController extends BaseController {
 	* @return compact
 	*/
 	public function getCartPopupData () {
-	
 		$cartData = Array();
 		
 		$this->render(array('layout' => false));	

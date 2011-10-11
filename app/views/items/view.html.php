@@ -1,3 +1,4 @@
+<?=$this->html->script(array('cloud-zoom.1.0.2'));?>
 <script src="/js/jquery.tmpl.js" type="text/javascript"></script>
 
 <script type="text/javascript">
