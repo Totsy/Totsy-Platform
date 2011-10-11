@@ -255,6 +255,14 @@ for ( i=1; i<6; i++ ) {
 					<input type="radio" name="tangible" value="1" id="tangible" <?php if ($event->tangible == 1) echo 'checked'; ?> > Tangible <br>
 					<input type="radio" name="tangible" value="0" id="tangible" <?php if ($event->tangible == 0) echo 'checked'; ?> > Non Tangible
 				</div>
+		<div id="event_viewlive">
+			<h2 id="event_type">View Live Anyway</h2>
+		 (allows direct url access to event even if otherwise disabled)<br>
+			<input type="radio" name="viewlive" value="1" id="viewlive" <?php if ($event->checked == 1) echo 'checked'; ?>> Direct URL <br>
+			<input type="radio" name="viewlive" value="0" id="viewlive" <?php if ($event->checked == 0) echo 'checked'; ?>> Not Viewable
+		</div>
+
+
 				<div id="event_duration">
 					<h4 id="event_duration">Event Duration</h4>
 					<?php

@@ -17,9 +17,10 @@
 	<h2 class="page-title gray"><span class="_red">Today's Sales</span></h2>
 	<hr />
 		<!--Disney -->
-	<div class="disney disney_splash">
+<!--	<div class="disney disney_splash">
 		<p><strong>SPECIAL BONUS!</strong> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/parents.png" align="absmiddle" width="95px" /> ( a $10 value ) <span id="disney">Offer &amp; Refund Details</span></p>
 	</div>
+-->
 <div class="fullwidth">
 	<?php $x = 0; ?>
 	<?php $y = 0; ?>
@@ -253,13 +254,33 @@
 </script>
 
 <script type="text/javascript" src="http://www.googleadservices.com/pagead/conversion.js"></script>
-
 <noscript>
 	<div style="display:inline;">
 		<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=E1ZLCMH8igIQ9Yb-5QM&amp;guid=ON&amp;script=0"/>
 	</div>
 </noscript>
 <!-- END OF Google Code for inscrits Remarketing List -->
+
+<!-- Google Code for Signups Conversion Page -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var google_conversion_id = 1019183989;
+var google_conversion_language = "en";
+var google_conversion_format = "1";
+var google_conversion_color = "ffffff";
+var google_conversion_label = "AVJ-CKmdmgIQ9Yb-5QM";
+var google_conversion_value = 0;
+/* ]]> */
+</script>
+<script type="text/javascript" src="http://www.googleadservices.com/pagead/conversion.js">
+</script>
+<noscript>
+<div style="display:inline;">
+<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=AVJ-CKmdmgIQ9Yb-5QM&guid=ON&script=0"/>
+</div>
+</noscript>
+<!-- END Google Code for Signups Conversion Page -->
+
 <script>
 (function($) {
 	$.fn.rotate = function() {
