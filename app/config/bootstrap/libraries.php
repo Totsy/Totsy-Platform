@@ -57,7 +57,7 @@ Libraries::add('li3_docs');
 Libraries::add('li3_payments');
 Libraries::add('li3_fixtures');
 Libraries::add('li3_facebook', array(
-	'appId' => '204572082929013',
+	'appId' => '130085027045086',
 	'secret' => 'c37130ac2ef4cd59b4e3e84f1560b8e4',
 	'cookie' => true,
 	'domain' => 'totsy.com'
