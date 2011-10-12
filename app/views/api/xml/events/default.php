@@ -9,7 +9,7 @@
 		<event>
 			<name><?php echo htmlspecialchars($event['name']) ?></name>
 			<description><?php echo htmlspecialchars( $event['blurb'] ) ?></description>
-			<short><?php echo (isset($event['short']) || empty($event['short']))?default_events_xml_cut_string($event['blurb'],45):$event['short']; ?></short>
+			<short><?php echo (empty($event['short'])) ? default_events_xml_cut_string($event['blurb'],45) : $event['short']; ?></short>
 			<availableItems><?php echo $event['available_items']==true?'YES':'NO';?></availableItems>
 			<brandName><?php echo htmlspecialchars($event['vendor'])?></brandName>
 			<image><?php echo $event['event_image']; ?></image>

@@ -60,7 +60,7 @@ class EventsController extends BaseController {
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
 			if (isset($this->request->data['short_description']) && strlen($this->request->data['short_description'])>$shortDescLimit){
 				$this->request->data['short_description'] = substr($this->request->data['short_description'],0,$shortDescLimit);
-			} else if (!isset($this->request->data['short_description']) || (isset($this->request->data['short_description']) && empty($this->request->data['short_description']))){
+			} else if (empty($this->request->data['short_description'])) {
 				$this->request->data['short_description'] = $this->description_cutter($this->request->data['short_description'],$shortDescLimit);	
 			}	
 			$url = $this->cleanUrl($this->request->data['name']);
@@ -151,7 +151,7 @@ class EventsController extends BaseController {
 			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
 			if (isset($this->request->data['short_description']) && strlen($this->request->data['short_description'])>$shortDescLimit){
 				$this->request->data['short_description'] = substr($this->request->data['short_description'],0,$shortDescLimit);
-			} else if (!isset($this->request->data['short_description']) || (isset($this->request->data['short_description']) && empty($this->request->data['short_description']))){
+			} else if (empty($this->request->data['short_description'])){
 				$this->request->data['short_description'] = $this->description_cutter($this->request->data['short_description'],$shortDescLimit);	
 			}
 			$url = $this->cleanUrl($this->request->data['name']);

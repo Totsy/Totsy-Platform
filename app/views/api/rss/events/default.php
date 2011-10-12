@@ -11,7 +11,7 @@ if (is_array($events) && count($events)>0){
 			<title><?php echo htmlspecialchars($event['name']) ?></title>         
 			<link><?php echo $base_url.'sale/'.$event['url']; ?></link> 
 			<description><?php echo htmlspecialchars( $event['blurb'] ) ?></description>
-			<short><?php echo (!isset($event['short']) || empty($event['short']))?default_events_rss_cut_string($event['blurb'],45):$event['short']; ?></short>
+			<short><?php echo (empty($event['short'])) ? default_events_rss_cut_string($event['blurb'],45) : $event['short']; ?></short>
 			<category>OPEN</category> 
 			<image><?php echo $event['event_image']; ?></image> 
 			<brandName><?php echo htmlspecialchars($event['vendor'])?></brandName>
