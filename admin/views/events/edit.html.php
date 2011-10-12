@@ -44,17 +44,17 @@ $(document).ready(function(){
 tinyMCE.init({
 	// General options
 	mode : "exact",
-	elements: "Blurb,ShipMessage,"+allitemids, 
+	elements: "Blurb,ShipMessage,"+allitemids,
 	theme : "advanced",
 	plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,preview,searchreplace,print,contextmenu,paste,directionality,noneditable,visualchars,nonbreaking,xhtmlxtras",
 
 	// Theme options
 	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull",
-	
+
 	theme_advanced_buttons2: "styleselect,formatselect,fontselect,fontsizeselect",
-	
+
 	theme_advanced_buttons3 : "cut,copy,paste,pastetext,pasteword,|,bullist,numlist,|,indent,blockquote,|,anchor,code,|,forecolor,backcolor",
-	/* theme_advanced_button3: 
+	/* theme_advanced_button3:
 	 theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,charmap,iespell,advhr",
 	 theme_advanced_buttons4 : "spellchecker,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking,blockquote,pagebreak", */
 	theme_advanced_toolbar_location : "top",
@@ -64,19 +64,19 @@ tinyMCE.init({
 
 });
 
-$('.table_link').click(function() {  
+$('.table_link').click(function() {
         $('tr').hide();
       $('tr .').toggle('slow');
     });
 
-$('.related_items').selectList({ 
-	addAnimate: function (item, callback) { 
-	$(item).slideDown(500, callback); 
-	}, 
-	removeAnimate: function (item, callback) { 
-	$(item).slideUp(500, callback); 
-	} 
-}); 
+$('.related_items').selectList({
+	addAnimate: function (item, callback) {
+	$(item).slideDown(500, callback);
+	},
+	removeAnimate: function (item, callback) {
+	$(item).slideUp(500, callback);
+	}
+});
 
 $('.related_items').change(function() {
 
@@ -87,13 +87,13 @@ var list_position = this.id.substring(7,8);
 //create strings of the dropdown id's
 for ( i=1; i<6; i++ ) {
 
-	var related_item_id = 'related'+ i + '_' + item_id;	
+	var related_item_id = 'related'+ i + '_' + item_id;
 	//if its not the current dropdown
 	//and its value is the same as the current dropdown's value AND
 	//the item's value isn't an empty string
 	//than throw an alert message
 	if(i!=list_position && $("#" + related_item_id + " option:selected").val()!=="" ) {
-				
+
 		if( $("#" + related_item_id + " option:selected").val() == $("#" + this.id + " option:selected").val() ) {
 			$("#" + this.id).val(0);
 			alert("please select a different item");
@@ -102,8 +102,8 @@ for ( i=1; i<6; i++ ) {
 	}
 }
 
-});    
-    
+});
+
 });
 
 </script>
@@ -169,7 +169,7 @@ for ( i=1; i<6; i++ ) {
 
 		var handler = "/events/uploadcheck<?php if ($event->clearance == 1) echo '_clearance'; ?>";
 		var items_submit = document.getElementById("ItemsSubmit").value;
-		
+
 		if(items_submit){
 			$.post(handler, {"items_submit" : items_submit}, function(result) {
 				if(result=="success"){
@@ -185,7 +185,7 @@ for ( i=1; i<6; i++ ) {
 			$("#events_edit").submit();
 		}
 
-	
+
 	}
 
 
@@ -196,9 +196,9 @@ for ( i=1; i<6; i++ ) {
 
 
 div.xls_cell{
-	width:100px; 
-	height: 20px; 
-	display:block; 
+	width:100px;
+	height: 20px;
+	display:block;
 	float:left;
 	overflow:hidden;
 	border:1px solid #000000;
@@ -206,9 +206,9 @@ div.xls_cell{
 
 
 div.xls_cell_error{
-	width:100px; 
-	height: 20px; 
-	display:block; 
+	width:100px;
+	height: 20px;
+	display:block;
 	float:left;
 	overflow:hidden;
 	border:1px solid #000000;
@@ -218,9 +218,9 @@ div.xls_cell_error{
 
 div.xls_cell:hover{
 	background:#eeeeee;
-	width:100px; 
-	height: 20px; 
-	display:block; 
+	width:100px;
+	height: 20px;
+	display:block;
 	float:left;
 }
 
@@ -285,8 +285,14 @@ div.xls_cell:hover{
 		<div id="event_viewlive">
 			<h2 id="event_type">View Live Anyway</h2>
 		 (allows direct url access to event even if otherwise disabled)<br>
-			<input type="radio" name="viewlive" value="1" id="viewlive" <?php if ($event->checked == 1) echo 'checked'; ?>> Direct URL <br>
-			<input type="radio" name="viewlive" value="0" id="viewlive" <?php if ($event->checked == 0) echo 'checked'; ?>> Not Viewable
+			<input type="radio" name="viewlive" value="1" id="viewlive" <?php if ($event->viewlive == 1) echo 'checked'; ?>> Direct URL <br>
+			<input type="radio" name="viewlive" value="0" id="viewlive" <?php if ($event->viewlive == 0) echo 'checked'; ?>> Not Viewable
+		</div>
+
+		<div id="event_clearance">
+			<h2 id="event_type">Clearance</h2>
+			<input type="radio" name="clearance" value="1" id="clearance" <?php if ($event->clearance == 1) echo 'checked'; ?>> Clearance <br>
+			<input type="radio" name="clearance" value="0" id="clearance" <?php if ($event->clearance == 0) echo 'checked'; ?>> Not Clearance
 		</div>
 
 
@@ -444,14 +450,14 @@ div.xls_cell:hover{
 				<p>Add "Final Sale" to the item description?:</p>
 					<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
 					<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
-	
+
 					<!--
 					<?=$this->form->label('Upload Event (Excel Files): '); ?>
 					<?=$this->form->file('upload_file'); ?>
 					-->
-					
+
 				<?=$this->form->field('items_submit', array('type' => 'textarea', 'rows' => '7', 'cols' => '50', 'name' => 'ItemsSubmit'));?><br>
-				
+
 
 			<?=$this->form->button('Update Event', array('value' => 'Update Event', 'onclick'=>'submitForm(); return false;'))?>
 				<?=$this->form->end(); ?>
@@ -470,10 +476,10 @@ div.xls_cell:hover{
 				<?=$this->form->hidden('id', array('value' => $event->_id)); ?>
 				<div style="float:left; font: bold; font-size: 18px;">
 					Total Items:
-					<?php 
+					<?php
 						echo count($eventItems);
 					?>
-					
+
 				</div>
 
 				<div style="float:right; font: bold; font-size: 18px;">

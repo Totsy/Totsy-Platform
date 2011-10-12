@@ -129,12 +129,10 @@ class EventsController extends BaseController {
 			if(!empty($this->request->data['items_submit'])) {
 
 				$fullarray = Event::convert_spreadsheet($this->request->data['items_submit']);
-				
 				$parseItems = $this->parseItems($fullarray, $event->_id, $enableItems);
-				
-				
+
 				if (is_array($parseItems)){
-	
+
 					$eventItems = Item::find('all', array('conditions' => array('event' => array($_id))));
 					if (!empty($eventItems)) {
 						foreach ($eventItems as $item) {
@@ -143,7 +141,7 @@ class EventsController extends BaseController {
 					}
 				}
 			}
-			
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //			if ($_FILES['upload_file']['error'] == 0 && $_FILES['upload_file']['size'] > 0) {
 //				if (is_array($this->parseItems($_FILES, $event->_id, $enableItems))) {
@@ -157,10 +155,10 @@ class EventsController extends BaseController {
 //				}
 //			}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			
-			
-			
-			
+
+
+
+
 			$images = $this->parseImages($event->images);
 
 			//Saving the original start and end and ship dates for comparison
@@ -190,11 +188,7 @@ class EventsController extends BaseController {
 			}
 
 			if ($eventData[enabled] != $event->enabled) {
-				$changed .= 'Enabled changed from <strong>'.(int)$event->enabled.'</strong> to <strong>'.(int)$eventData[enabled].'</strong><br/>';
-			}
-
-			if ($eventData[tangible] != $event->tangible) {
-				$changed .= 'Tangible changed from <strong>'.(int)$event->tangible.'</strong> to <strong>'.(int)$eventData[tangible].'</strong><br/>';
+				$changed .= "Enabled changed from <strong>{$event->enabled}</strong> to <strong>{$eventData[enabled]}</strong><br/>";
 			}
 
 			if (strtotime($start_date) != $event->start_date->sec) {
@@ -217,7 +211,7 @@ class EventsController extends BaseController {
 			}
 
 			if ($eventData[enable_items] != $event->enable_items) {
-				$changed .= 'Enabled Items from <strong>'.(int)$event->enable_items.'</strong> to <strong>'.(int)$eventData[enable_items].'</strong><br/>';
+				$changed .= "Enabled Items from <strong>{$event->enable_items}</strong> to <strong>{$eventData[enable_items]}</strong><br/>";
 			}
 
 			/**
@@ -272,6 +266,7 @@ class EventsController extends BaseController {
 
 		return compact('event', 'eventItems', 'items', 'all_filters');
 	}
+
 	/**
 	 * This method parses the item file that is uploaded in the Events Edit View.
 	 *
@@ -280,6 +275,7 @@ class EventsController extends BaseController {
 	 * @todo Add vendor_description
 	 */
 	protected function parseItems($array, $_id, $enabled = false) {
+		$eventItems = array();
 		$items = array();
 		$itemIds = array();
 		$relatedItems = array();
@@ -307,29 +303,22 @@ class EventsController extends BaseController {
 			'shipping_weight',
 			'shipping_dimensions',
 			'related_items'
-		);	
-	
+		);
+
+		$highestRow = $array[0];
+		$totalrows = count($array);
+		$totalcols = count($highestRow);
+
 		for ($row = 0; $row <= $totalrows; ++ $row ) {
 			for ($col = 0; $col < $totalcols; ++ $col) {
 				$val = $array[$row][$col];
-				$val = trim($val);
-				
+
 				if ($row == 0) {
-					$heading[] = $val;
+					if($val){
+						$heading[] = $val;
+					}
 				} else {
 					if (isset($heading[$col])) {
-
-						$val = Event::convert_smart_quotes($val);
-						
-						//check decimals here
-						if (in_array($heading[$col], $check_decimals)) {
-							if (!empty($val)) {
-								//if(is_numeric($val)){
-									$val = number_format($val, 2, '.', '');
-								//}
-							}
-						}
-
 						if(($heading[$col] === "department_1") || ($heading[$col] === "department_2") || ($heading[$col] === "department_3")) {
 							if (!empty($val)) {
 								$eventItems[$row - 1]['departments'][] = ucfirst(strtolower(trim($val)));
@@ -340,21 +329,20 @@ class EventsController extends BaseController {
 								$eventItems[$row - 1]['related_items'][] = trim($val);
 								$eventItems[$row - 1]['related_items'] = array_unique($eventItems[$row - 1]['related_items']);
 							}
-
-
 						} else {
 							if (!empty($val)) {
-								$eventItems[$row - 1][$heading[$col]] = $val;
+							$eventItems[$row - 1][$heading[$col]] = $val;
 							}
 						}
 					}
 				}
 			}
 		}
-				
+
 		foreach ($eventItems as $itemDetail) {
 			$i=0;
-			
+			$itemAttributes = array_diff_key($itemDetail, array_flip($standardHeader));
+
   			//check radio box for 'final sale' text append
   			$enableFinalsale = $this->request->data['enable_finalsale'];
 
@@ -390,7 +378,7 @@ class EventsController extends BaseController {
 
 			$newItem = array_merge(Item::castData($itemDetail), Item::castData($details));
 			$newItem['vendor_style'] = (string) $newItem['vendor_style'];
-			
+
 			if ((array_sum($newItem['details']) > 0) && $item->save($newItem)) {
 				$items[] = (string) $item->_id;
 
