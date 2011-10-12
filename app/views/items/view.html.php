@@ -221,12 +221,14 @@
 		)); ?>
 
 	</div>
-		<div style="padding:10px 0px; text-align:center;">
-			<?php echo $spinback_fb; ?>
-		</div>
-		</div>
-	<div class="clear"></div>
+	<div style="padding:10px 0px; text-align:center !important;">
+	    <?php echo $spinback_fb; ?>
 	</div>
+</div>
+
+<div class="clear"></div>
+</div>
+
 <div id="modal" style="background:#fff!important; z-index:999!important;"></div>
 
 <script type="text/javascript">
