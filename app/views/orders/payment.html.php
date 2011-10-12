@@ -1,29 +1,30 @@
 <script type="text/javascript">	
-
-	function fadeIn_CCForm() {
-	        $('#credit_card_form').fadeIn('slow');
-	}
 	
-	function fadeIn_BillingAddressForm() {
-	        $('#billing_address_form').fadeIn('slow');
-	}
 
 	function fadeOut_CCForm() {
-	        $('#credit_card_form').fadeOut('slow');
+	        $('#credit_card_form').hide();
 	}
 
 	function fadeOut_BillingAddressForm() {
-	        $('#billing_address_form').fadeOut('slow');
+	        $('#billing_address_form').hide();
 	}
 
 	function fadeOut_saved_CCs() {
-			$('#saved_credit_cards').fadeOut('slow');
+			$('#saved_credit_cards').hide();
 	}
 	
 	function fadeIn_saved_CCs() {
-			$('#saved_credit_cards').fadeIn('slow');
+			$('#saved_credit_cards').show();
+	}
+
+	function fadeIn_CCForm() {
+	        $('#credit_card_form').show();
 	}
 	
+	function fadeIn_BillingAddressForm() {
+	        $('#billing_address_form').show();
+	}
+
 	function clear_CCForm() {
 	    $("#paymentForm").find(':input').each(function() {
 	        switch(this.type) {
@@ -35,7 +36,7 @@
 	                $(this).val('');
 	                break;
 	            case 'checkbox':
-	            /* case 'radio': */
+	            case 'radio':
 	                this.checked = false;
 	        }
 	    });
@@ -183,42 +184,42 @@ var paymentForm = new Object();
 				<br />				
 <?php
 	if ($creditCards) { 
-?>				<h3>
-					<input type="radio" name="savedCreditCard" value="1" checked onclick="fadeIn_saved_CCs(); fadeOut_CCForm(); fadeOut_BillingAddressForm(); "> Pay with a saved Credit Card : </h3> 
+?>				<h3 style="margin-bottom: 11px;">Pay with a saved Credit Card : </h3> 
 					
  <div id="saved_credit_cards" style="display: block;">
- <br/>
 				<table width="500px" border="0" cellspacing="0" cellpadding="0">
+
+<?php 
+	$i = 0;
+	foreach ($creditCards as $creditCard):
+ ?>
 				  <tr>
-				    <td colspan="3"><strong>Your credit and debit cards</strong></td>
-				    <td><strong>Name on Card</strong></td>
-				    <td><strong>Expires on</strong></td>
-				  </tr>
-<?php foreach ($creditCards as $creditCard): ?>
-				  <tr>
-				    <td align="right"><input type="radio" name="creditCard" value="<?=$creditCard->_id;?>" checked></td>
+				    <td align="right"><input type="radio" name="creditCard" value="<?=$creditCard->_id;?>"  onclick="fadeOut_BillingAddressForm(); fadeOut_CCForm();" <? if ($i == 0) print 'checked'; ?>></td>
 				    <td align="middle"><img src="
 				   		<?
 				   			switch ($creditCard->type) {
 				   				case 'visa': print "/img/cc_visa.gif"; break;
-				   				case 'mastercard': print "/img/cc_visa.gif"; break;				   			case 'americanexpress': print "/img/cc_americanexpress.gif"; break;
+				   				case 'mastercard': print "/img/cc_mastercard.gif"; break;
+				   				case 'amex': print "/img/cc_amex.gif"; break;
 				   			}
 				   		?>">
 				   	</td>
 				    <td align="left"><?=ucfirst($creditCard->type);?> ending in <?=substr($creditCard->number, -4); ?></td>
-				    <td><?=$creditCard->firstname." ".$creditCard->lastname;?></td>
-				    <td><?=$creditCard->month;?> / <?=$creditCard->year;?></td>
+<!--				    <td><?=$creditCard->firstname." ".$creditCard->lastname;?></td> -->
+				    <td>Expires on <?=$creditCard->month;?> / <?=$creditCard->year;?></td>
 				  </tr>
-<? endforeach; ?>
+<?
+	$i++;
+ endforeach; 
+ ?>
 				</table>
 				</div>
-
-
-				<h3><input type="radio" name="savedCreditCard" value="0" onclick="fadeOut_saved_CCs(); fadeIn_CCForm(); fadeIn_BillingAddressForm(); "> Pay with a new Credit Card :</h3>
+				
+				<h3 style="margin-top: 11px"><a href="#" onclick="fadeIn_saved_CCs(); fadeIn_CCForm(); fadeIn_BillingAddressForm(); clear_CCForm(); " style="text-decoration:underline;">Add New Card</a></h3>
 <?php
 	} else {
 ?>
-				<h3>Pay with a Credit Card :</h3>
+				<h3>Pay with a Credit Card</h3>
 <?
 	}
 ?>	
