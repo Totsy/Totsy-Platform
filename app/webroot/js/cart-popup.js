@@ -51,12 +51,6 @@ $(document).ready( function() {
 		
 		$("#cart-count").text(cartObj.itemCount);
 		
-		if( cartObj.itemCount > 0 ){
-			$("#savings").text(cartObj.savings.items.toFixed(2));
-		} else {
-			$("#savings").text("");
-		}
-		
 		//set var for cart timer
 		var cartExpirationDate = new Date(cartObj.cartExpirationDate * 1000);
 		
@@ -91,13 +85,22 @@ $(document).ready( function() {
 		cartTimer(cartExpirationDate);				
 		//set the timer per item
 		cartItemsTimer();
-				
-		$("#cart_popup").fadeIn(500);
 		
-		//set the popup to timeout after 8 seconds
-		timeout = setTimeout(function() {
+		if( cartObj.itemCount > 0 ) {
+			
+			//set these
+			$("#savings").text(cartObj.savings.items.toFixed(2));
+			$("#cart_popup").fadeIn(500);
+		
+			//set the popup to timeout after 8 seconds
+			timeout = setTimeout(function() {
 			closeCartPopup(); }, 8000);
-	}; 
+		} else {
+			//clear these out
+			$("#savings").text("");
+			$("#itemCounter").text("");
+		}
+	}
 	
 	//get cart data without having to add an item
 	var getCartPopup = function() {		
