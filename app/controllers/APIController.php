@@ -351,7 +351,7 @@ class APIController extends  \lithium\action\Controller {
 	 * method GET
 	 */
 	protected function eventsReviewApi() {
-		
+
 		$token = Api::authorizeTokenize($this->request->query);
 		if (is_array($token) && array_key_exists('error', $token)) {
 			return $token;
@@ -359,6 +359,12 @@ class APIController extends  \lithium\action\Controller {
 		
 		$start_date = strtotime(date('Y-m-d'));
 		$start_time = '19:00:00';
+
+		if (is_array($this->request->query) && array_key_exists ('order', $this->request->query)){			
+			if (strtolower($this->request->query['order']) == 'desc'){
+				$order_desc = true; //DESC
+			} 
+		} 
 		
 		if (is_array($this->request->query) && array_key_exists ('start_date', $this->request->query)){			
 			if (preg_match('/[\d]{4}[\-][\d]{2}[\-][\d]{2}/i',$this->request->query['start_date'])){
@@ -373,7 +379,8 @@ class APIController extends  \lithium\action\Controller {
 		}
 				
 		$eventCollection = Event::connection()->connection->events;
-		$openEvents = Event::directQuery(array(
+		$openEvents = Event::directQuery(
+			array(
 				'enabled' => true,
 				'start_date' => array(
 					'$gte' => new MongoDate( strtotime(date('Y-m-d',$start_date).' '.$start_time) ),
@@ -432,7 +439,7 @@ class APIController extends  \lithium\action\Controller {
 			}
 			$events[] = $data;
 		}
-
+		
 		$closing = Event::directQuery(array(
 				'enabled' => true,
 				'end_date' => array(
@@ -448,6 +455,15 @@ class APIController extends  \lithium\action\Controller {
 					'$lt' => new MongoDate( strtotime('+2 days',$start_date) )
 				)
 		));
+		
+		if (isset($order_desc) && $order_desc){
+			if (is_array($events) && count($events)>0) {
+				$events = array_reverse($events);
+			}
+			if (is_array($closing) && count($closing)>0) {
+				$$closing = array_reverse($closing);
+			}			
+		} 
 		
 		$this->setView(1);
 		return (compact('events','pending','closing','base_url','maxOff'));

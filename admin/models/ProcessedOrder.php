@@ -117,7 +117,22 @@ class ProcessedOrder extends Base {
 		'Order Creation Date' => null,
 		'Promised Ship-by Date' => null,
 		'Event Name' => null,
-		'Event End Date' => null
+		'Event End Date' => null,
+		'WhsInsValue (Cost)' => null,
+		'ShipInsValue' => null,
+		'Description for Customs' => null,
+		'Ref1' => null,
+		'Ref2' => null,
+		'Ref3' => null,
+		'Country of Origin' => 'USA',
+		'Velocity' => 'B',
+		'UOM1' => 'EA',
+		'UOM1_Qty' => 1,
+		'UOM1_Weight' => '1.00',
+		'UOM1_Length' => '1.00',
+		'UOM1_Width' => '1.00',
+		'UOM1_Height' => '1.00',
+		'UOM1_Cube' => '1.00',
 	);
 }
 ?>
