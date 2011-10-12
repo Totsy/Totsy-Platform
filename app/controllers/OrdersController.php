@@ -536,6 +536,76 @@ class OrdersController extends BaseController {
 		#Check Datas Form
 		if (!empty($this->request->data)) {
 			$datas = $this->request->data;
+			
+			//if the user selected a saved credit card, than prepopulate the relevant fields to go to the order review page
+			if ($datas['savedCreditCard'] == 1) {
+				$creditCard_id = $datas['creditCard'];
+				$conditions = array('conditions'=>array('_id' => $creditCard_id));
+    	        $creditCard = CreditCard::find( 'first', $conditions );
+    	        $creditCard = $creditCard->data();
+
+				$datas['card_type'] = $creditCard['type'];
+				$datas['card_number'] = $creditCard['number'];
+				$datas['card_valid'] = $creditCard['valid'];
+				$datas['card_month'] = $creditCard['month'];
+				$datas['card_year'] = $creditCard['year'];
+				$datas['card_code'] = $creditCard['code'];
+				$datas['card_firstname'] = $creditCard['firstname'];
+				$datas['card_lastname'] = $creditCard['lastname'];
+				$datas['card_telephone'] = $creditCard['telephone'];
+				$datas['card_address'] = $creditCard['address'];
+				$datas['card_address2'] = $creditCard['address2'];
+				$datas['card_city'] = $creditCard['city'];
+				$datas['card_state'] = $creditCard['state'];
+				$datas['card_zip'] = $creditCard['zip'];
+
+				$datas['firstname'] = $creditCard['firstname'];
+				$datas['lastname'] = $creditCard['lastname'];
+				$datas['telephone'] = $creditCard['telephone'];
+				$datas['address'] = $creditCard['address'];
+				$datas['address2'] = $creditCard['address2'];
+				$datas['city'] = $creditCard['city'];
+				$datas['state'] = $creditCard['state'];
+				$datas['zip'] = $creditCard['zip'];
+
+				/*
+				$datas['opt_submitted'] = 
+				$datas['opt_shipping'] = 
+				$datas['opt_save'] = 
+				$datas['opt_description'] = billing
+				$datas['opt_shipping_select']				
+				*/
+
+			} else if ($datas['savedCreditCard'] == 0 && $datas['opt_save'] == 1) {
+				$datas['card_firstname'] = $datas['firstname'];
+				$datas['card_lastname'] = $datas['lastname'];
+				$datas['card_telephone'] = $datas['telephone'];
+				$datas['card_address'] = $datas['address'];
+				$datas['card_address2'] = $datas['address2'];
+				$datas['card_city'] = $datas['city'];
+				$datas['card_state'] = $datas['state'];
+				$datas['card_zip'] = $datas['zip'];
+				
+				$creditCard = CreditCard::create();
+								
+				$creditCard->user_id = (string) $user['_id'];
+				$creditCard->type = $datas['card_type'];
+				$creditCard->number = $datas['card_number'];
+				$creditCard->year = $datas['card_year'];
+				$creditCard->month = $datas['card_month'];
+				$creditCard->code = $datas['card_code'];
+				$creditCard->firstname = $datas['firstname'];
+				$creditCard->lastname = $datas['lastname'];
+				$creditCard->address = $datas['address'];
+				$creditCard->telephone = $datas['telephone'];
+				$creditCard->city = $datas['city'];
+				$creditCard->state = $datas['state'];
+				$creditCard->zip = $datas['zip'];
+
+				$creditCard->save();
+
+			}
+			
 			#Check If the User want to save the current address
 			if(!empty($datas['opt_save'])) {
 				$save = true;
@@ -556,9 +626,11 @@ class OrdersController extends BaseController {
 					}
 				}
 			}
+	
 			$cc_infos = CreditCard::create($card);
 			#Check credits cards informations
 			if($cc_infos->validates()) {
+			
 				#Encrypt CC Infos with mcrypt
 				Session::write('cc_infos', $orderClass::creditCardEncrypt($cc_infos, (string)$user['_id'], true));
 				$cc_passed = true;
@@ -584,9 +656,9 @@ class OrdersController extends BaseController {
 			*/
 				}
 
-			$creditcard = CreditCard::create($this->request->data);
-			$creditcard->user_id = (string) $user['_id'];
-			$creditcard->save();								
+//			$creditcard = CreditCard::create($this->request->data);
+//			$creditcard->user_id = (string) $user['_id'];
+//			$creditcard->save();								
 					
 	
 			#In case of normal submit (no ajax one with the checkbox)
@@ -597,6 +669,7 @@ class OrdersController extends BaseController {
 						$address_post[$key] = $data;
 					}
 				}
+
 				$address = Address::create($address_post);
 				#Check addresses informations
 				if ($address->validates()) {
@@ -609,6 +682,7 @@ class OrdersController extends BaseController {
 					}
 				}
 			}
+			
 			#If both billing and credit card correct
 			if(!empty($billing_passed) && !empty($cc_passed)) {
 				return $this->redirect(array('Orders::review'));
