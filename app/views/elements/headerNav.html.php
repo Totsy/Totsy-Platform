@@ -4,7 +4,7 @@
 		<?php if(array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])):?>
 		<?php echo "{$userInfo['firstname']} {$userInfo['lastname']}"; ?>
 		<?php else:?>
-		<?php echo "{$userInfo['email']}"; ?>
+		<?php if (is_array($userInfo) && array_key_exists('email', $userInfo)) { echo $userInfo['email']; } ?>
 		<?php endif; ?>
 		<?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
 		(<?php echo $this->html->link('Sign Out', $logout, array('title' => 'Sign Out')); ?>)
@@ -15,6 +15,7 @@
 		<?php if (!(empty($userInfo))) { ?>
 		<a href="/account" title="My Account">My Account</a>
 		<?php if (!(empty($credit))) { ?>
+		&nbsp;
 		<a href="/account/credits" title="My Credits $<?php echo $credit?>">My Credits $<?php echo $credit?></a>
 		<?php } ?>
 		<a href="/cart/view" class="cart_icon" title="My Cart (<?php echo $cartCount;?>)">My Cart (<span id="cart-count"><?php echo $cartCount;?></span>)</a>

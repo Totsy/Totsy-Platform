@@ -193,18 +193,13 @@ var discountErrors = new Object();
 				     <?php if(!empty($credit)): ?>
 				    	<strong>Add <a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a></strong> /
 				    <?php endif ?> 
-				    	<?php if(empty($promocode_disable)): ?>
-				    	<strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
-				    	<?php endif ?>
+					<strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
 				</div>
 				<div style="clear:both"></div>
 				<div id="promos_and_credit">
-				<?=$this->form->create(null); ?>
-					<?php if(empty($promocode_disable)): ?>
 				    <div id="promo" style="display:none">
-				    	<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo) ); ?>
+				    	<?=$this->view()->render(array('element' => 'promocode'), array( 'orderPromo' => $cartPromo, 'promocode_disable' => $promocode_disable)); ?>
 				    </div>
-				    <?php endif ?>
 				    <div id="cred" style="display:none; text-align:left !important">		
 				    	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
 				    </div>
@@ -372,26 +367,30 @@ var discountErrors = new Object();
 <?php endif ?>
 </div>
 <div id="modal" style="background:#fff!important; z-index:9999999999!important;">
-<?php
-    if(number_format((float) $total, 2) >= 35 && number_format((float) $total, 2) <= 44.99){
-        echo "<script type=\"text/javascript\">
-            $.post('/cart/modal',{modal: 'disney'},function(data){
-              //  alert(data);
-                if(data == 'false'){
-                    $('#modal').load('/cart/upsell?subtotal=" . (float)$total ."&redirect=".$itemUrl."').dialog({
-                        autoOpen: false,
-                        modal:true,
-                        width: 550,
-                        height: 320,
-                        position: 'top',
-                        close: function(ev, ui) {}
-                    });
-                    $('#modal').dialog('open');
-                }
+
+<?php if(number_format((float) $total, 2) >= 35 && number_format((float) $total, 2) <= 44.99){ ?>
+<script type=\"text/javascript\">
+	var total = "<?=(float)$total?>";
+	var itemUrl = "<?=$itemUrl?>";
+
+    $.post('/cart/modal',{modal: 'disney'},function(data){
+      //  alert(data);
+        if(data == 'false'){
+            $('#modal').load('/cart/upsell?subtotal=' + $total + '&redirect=' + itemUrl).dialog({
+                autoOpen: false,
+                modal:true,
+                width: 550,
+                height: 320,
+                position: 'top',
+                close: function(ev, ui) {}
             });
-            </script>";
-    }
-?>
+            
+            $('#modal').dialog('open');
+        }
+    });
+</script>;
+<?php } ?>
+
 </div>
 
 <script type="text/javascript" charset="utf-8">

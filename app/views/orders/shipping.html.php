@@ -145,6 +145,7 @@ var addressForm = new Object();
 		<span class="cart-select">
 		<?=$this->form->label('zip', 'Zip Code<span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
+		<?=$this->form->error('zip'); ?>
 		</span>
 		</div>
 		<div style="clear:both"></div>
