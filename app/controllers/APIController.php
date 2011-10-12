@@ -444,7 +444,7 @@ class APIController extends  \lithium\action\Controller {
 				'enabled' => true,
 				'end_date' => array(
 					'$gte' => new MongoDate( strtotime(date('Y-m-d',$start_date).' 00:00:00') ),
-					'$lte' => new MongoDate( strtotime(date('Y-m-d',$start_date).' 23:59:59') )
+					'$lte' => new MongoDate( strtotime(date('Y-m-d',strtotime('+1 day',$start_date)).' 23:59:59') )
 				)
 		));
 		
