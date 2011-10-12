@@ -69,6 +69,7 @@ class UsersController extends BaseController {
 			/**
 			* this block handles the invitations.
 			**/
+<<<<<<< HEAD
 			if ($invite_code) {
 				$inviter = User::find('first', array(
 					'conditions' => array(
@@ -114,6 +115,9 @@ class UsersController extends BaseController {
 				}
 			}
 			
+=======
+			Invitation::linkUpInvites($invite_code, $email);
+>>>>>>> b7e07b47e6282f44fc0b99705f56e3a3e73ec995
 			switch ($invite_code) {
 				case 'our365':
 				case 'our365widget':
@@ -179,11 +183,19 @@ class UsersController extends BaseController {
 						$data['invitation_codes'] = array(static::randomString());
 					}
 					if ($saved = $user->save($data)) {
+						$mail_template = 'Welcome_Free_Shipping';
+						$params = array();
+						
 						$data = array(
 							'user' => $user,
 							'email' => $user->email
 						);
-						Mailer::send('Welcome_Free_Shipping', $user->email);
+
+						if (isset($user['clear_token'])) {
+							$mail_template = 'Welcome_auto_passgen';
+							$params['token'] = $user['clear_token']; 
+						} 
+						Mailer::send($mail_template, $user->email,$params);
 						$name = null;
 						if (isset($data['firstname'])) $name = $data['firstname'];
 						if (isset($data['lastname'])) $name = is_null($name)?$data['lastname']:$name.$data['lastname'];
@@ -245,7 +257,7 @@ class UsersController extends BaseController {
 						User::rememberMeWrite($this->request->data['remember_me']);
 						/**Remove Temporary Session Datas**/
 						User::cleanSession();
-						/***/					
+						/***/
 						if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) {
 							$this->redirect($this->request->url);
 						} else {
@@ -265,18 +277,29 @@ class UsersController extends BaseController {
 		return compact('message', 'fbsession', 'fbconfig');
 	}
 
-	protected function autoLogin(){
+	protected function autoLogin() {
+	
 		$redirect = '/sales';
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 		$result = static::facebookLogin(null, $cookie, $ipaddress);
 		extract($result);
+		
+		$fbCancelFlag = false;
+		
+		if (array_key_exists('fbcancel', $this->request->query)) {
+			$fbCancelFlag = $this->request->query['fbcancel'];
+		}
+		
 		if (!$success) {
 			if (!empty($userfb)) {
-				$self = static::_object();
-				$self->redirect('/register/facebook');
+				$self = static::_object();			
+				if(!$fbCancelFlag) {
+					$self->redirect('/register/facebook');
+				}
 			}
 		}
+		
 		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
 				'conditions' => array('autologinHash' => $cookie['autoLoginHash']),
@@ -596,6 +619,7 @@ class UsersController extends BaseController {
 		$userfb = array();
 		if ($self->fbsession) {
 			$userfb = FacebookProxy::api('/me');
+
 			$user = User::find('first', array(
 				'conditions' => array(
 					'$or' => array(

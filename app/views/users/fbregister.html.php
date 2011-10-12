@@ -15,7 +15,7 @@
 
 							<div id='logo'>
                             <h1>
-                              <a href='/' title="Totsy.com">
+                              <a href="/login/?fbcancel=true" title="Totsy.com">
                                 Totsy</a>
                               </h1>
                             </div>
@@ -23,7 +23,7 @@
 							<div id="intro-copy">
 								<h2 style="margin-top:20px"><span>Become a</span> MEMBER
 								<br />
-								<?=$this->html->link('Already a Member?', '/', array('style' => 'font-size:12px;'));?></h2>
+								<?=$this->html->link('Already a Member?', '/login/?fbcancel=true', array('style' => 'font-size:12px;'));?></h2>
 							</div>
 
 							<div class="message">
@@ -37,7 +37,7 @@
 								<div class="r-box lt-gradient-1">
                                 <h2> <img src="https://graph.facebook.com/<?=$fbuser['id']?>/picture"> Hi <?=$fbuser['name']?> - you're one step away from joining with Facebook</h2>
                                 <hr />
-								<?=$this->form->create($user ,array('id'=>'registerForm')); ?>
+<?    print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/fb_register\']);">'; ?>
 
                <!-- Commnented Firstname, Lastname and Zip code --->
 
