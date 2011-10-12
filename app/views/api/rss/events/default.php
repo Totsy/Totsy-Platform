@@ -11,6 +11,7 @@ if (is_array($events) && count($events)>0){
 			<title><?php echo htmlspecialchars($event['name']) ?></title>         
 			<link><?php echo $base_url.'sale/'.$event['url']; ?></link> 
 			<description><?php echo htmlspecialchars( $event['blurb'] ) ?></description>
+			<short><?php echo (empty($event['short'])) ? default_events_rss_cut_string($event['blurb'],45) : $event['short']; ?></short>
 			<category>OPEN</category> 
 			<image><?php echo $event['event_image']; ?></image> 
 			<brandName><?php echo htmlspecialchars($event['vendor'])?></brandName>
@@ -44,3 +45,31 @@ if (is_array($closing) && count($closing)>0){
 }?>
 	</channel>
 </rss>
+
+<?php 
+
+function default_events_rss_cut_string($str,$length=null){
+	$return = '';
+	$str = strip_tags($str);
+	$split = preg_split("/[\s]+/",$str);
+	$len = 0;
+	if (is_array($split) && count($split)>0){
+		foreach($split as $splited){
+			$tmp_len = $len + strlen($splited) +1;
+			if ($tmp_len < $length){
+				$len = $tmp_len;
+				$return.= $splited.' ';
+			} else {
+				break;
+			}
+		}
+	}
+	
+	if (strlen($return)>0){
+		return $return;
+	} else {
+		return $str;
+	}
+}
+
+?>
