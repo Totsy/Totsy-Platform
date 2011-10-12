@@ -11,7 +11,9 @@ use MongoRegex;
 use MongoId;
 
 /**
- * Fix orders with that use promo codes greater than their subtotal
+ * The value in orders.promo_discount is incorrect when the promo code used is greater than the order subtotal.
+ * So if a $30 plum direct code were used for a $25 order promo_discount is stored as $30 but should be $25
+ * This script will check all orders and set promo_discount to the correct value as needed.
  */
 class PromoDiscountFix extends \lithium\console\Command {
 
@@ -30,12 +32,7 @@ class PromoDiscountFix extends \lithium\console\Command {
 		$this->out('Finished Promo Discount Fix');
 	}
 
-	/**
-	 * The _fix method melts your brain
-	 *
-	 */
 	protected function _fix() {
-		// orders { oversizehandling, handling, service, promo_discount, promo_code, subTotal, tax, total }
 		
 		$startDate  = new MongoDate(strtotime($this->beginning));
 		$endDate  = new MongoDate(strtotime($this->end));
@@ -43,7 +40,7 @@ class PromoDiscountFix extends \lithium\console\Command {
 		$conditions = array(
 			'promo_discount' => array('$exists' => true),
 			'promo_code' => array('$exists' => true),
-			'promo_actual' => array('$exists' => false),
+			'promo_discount_bak' => array('$exists' => false),
 			'date_created' => array(
 				'$gte' => $startDate,
 				'$lt' => $endDate)
@@ -57,40 +54,29 @@ class PromoDiscountFix extends \lithium\console\Command {
 			$promo_actual = 0;
 			
 			$order = $order->data();
+			// Prior to the March 4th promo disaster the calculation was different
 			if ($order['date_created']['sec'] > strtotime("March 04, 2011 12:34:00"))
 				continue;
-			// Fix orders that have 10off50 discount set but it wasn't actually applied
-/*			if (isset($order['discount'])) {
-				if ($order['subTotal'] < 50 && $order['discount'] == -10)
-					$order['discount'] = 0;
-			}*/
 			
+			// $x becomes the total after ALL possible discounts, this includes the 10off50 service and credits
 			$x = $order['subTotal'] + $order['promo_discount'];
 			if (isset($order['discount']))
 				$x += $order['discount'];
 			if (isset($order['credit_used']))
 				$x += $order['credit_used'];
 			
+			// if $x is < 0 that means the full value of promo_discount was not used
 			if (number_format($x,2, '.', '') < 0) {
 				$i++;
 				
+				// the amount that was actually used is stored in $promo_actual
 				$promo_actual = $order['promo_discount'] - $x;
 				
 				// Add promo_actual to order record
 				$order = Order::find($order['_id']);
-				$order->promo_actual = $promo_actual;
+				$order->promo_discount_bak = $order['promo_discount'];
+				$order->promo_discount = $promo_actual;
 				$order->save();
-				
-				/*$this->out('Order: ' . $order['_id']);
-				$this->out('promo_actual: ' . $order->promo_actual);
-				$this->out('subTotal: ' . $order->subTotal);
-				$this->out('promo_discount: ' . $order->promo_discount);
-				if (isset($order['discount']))
-					$this->out('discount: ' . $order['discount']);
-				if (isset($order['credit_used']))
-					$this->out('credit_used: ' . $order['credit_used']);
-				$this->out('');
-				exit;*/
 			}
 		}
 

@@ -236,20 +236,20 @@ class RevenueController extends \lithium\action\Controller {
 				if (!isset($promocodes_total[$code])) {
 					$promocodes_total[$code] = array();
 					$promocodes_total[$code]['code'] = $code;
-					$promocodes_total[$code]['value'] = $promocode['code_value'];
-					$promocodes_total[$code]['type'] = $promocode['code_type'];
+					$promocodes_total[$code]['value'] = $promocode['value'];
+					$promocodes_total[$code]['type'] = $promocode['type'];
 				}
 				
 				// Total for this code
 				$promocodes_total[$code]['amount_saved'] += $promocode['amount_saved'];
-				$promocodes_total[$code]['net'] += $promocode['net_total'];
-				$promocodes_total[$code]['gross'] += $promocode['gross_total'];
+				$promocodes_total[$code]['net'] += $promocode['net'];
+				$promocodes_total[$code]['gross'] += $promocode['gross'];
 				$promocodes_total[$code]['number_used'] += $promocode['number_used'];
 				
 				// Total for the month
 				$promocodes_total['Total']['amount_saved'] += $promocode['amount_saved'];
-				$promocodes_total['Total']['net'] += $promocode['net_total'];
-				$promocodes_total['Total']['gross'] += $promocode['gross_total'];
+				$promocodes_total['Total']['net'] += $promocode['net'];
+				$promocodes_total['Total']['gross'] += $promocode['gross'];
 				$promocodes_total['Total']['number_used'] += $promocode['number_used'];
 			}
 		}

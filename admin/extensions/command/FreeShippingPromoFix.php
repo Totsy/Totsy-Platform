@@ -43,39 +43,15 @@ class FreeShippingPromoFix extends \lithium\console\Command {
 		$conditions = array(
 			'promo_discount' => array('$exists' => false),
 			'promo_code' => array('$exists' => true),
-			'handling_discount' => array('$exists' => false),
-			'overSizeHandling_discount' => array('$exists' => false),
+			'handlingDiscount' => array('$exists' => false),
+			'overSizeHandlingDiscount' => array('$exists' => false),
 			'date_created' => array(
 				'$gte' => $startDate,
 				'$lt' => $endDate)
 		);
 		$orders = Order::find('all', array('conditions' => $conditions));//, 'limit' => 10
 		
-		/*
-		// Verify that the promo_code used was 'free_shipping' in promocodes.type
-		$i = 0;
-		foreach ($orders as $order) {
-			$i++;
-
-			$promocode = Promocode::find('first', array('conditions' => array('code' => array('like' => '/'.$order['promo_code'].'/i'))));
-			
-			if ($promocode['type'] != 'free_shipping') {
-				$this->out('Order: ' . $order['_id']);
-				$this->out('Order Promo code: ' . $order['promo_code']);
-				$this->out('Promo code: ' . $promocode['code']);
-				$this->out('Promo code type: ' . $promocode['type']);
-				$this->out('Not a free shipping promo code!');
-				exit;
-				continue;
-			}
-		}
-		$this->out('Checked '.$i.' records, all free_shipping');
-		*/
-		
-		// For each item in an order
-		// If shipping_exempt on ALL items, handling_discount = 0
-		// If shipping_oversize add to overSizeHandling total
-		// If neither of the above set handling_discount to 7.95
+		// Go through each item in an order to calculate the original shipping cost
 		$i = 0;
 		foreach ($orders as $order) {
 			$handling_discount = 0;
@@ -87,6 +63,9 @@ class FreeShippingPromoFix extends \lithium\console\Command {
 				$item = Item::find('first', array('conditions' => array('_id' => new MongoId($orderItem['item_id']))));
 				$item = $item->data();
 				
+				// If shipping_exempt on ALL items, handling_discount = 0
+				// If shipping_oversize add to overSizeHandling total
+				// If neither of the above set handling_discount to 7.95
 				if (isset($item['shipping_exempt']) && $item['shipping_exempt'] == true) {
 					continue;
 				} else if (isset($item['shipping_oversize']) && $item['shipping_oversize'] == "1") {
@@ -98,17 +77,11 @@ class FreeShippingPromoFix extends \lithium\console\Command {
 			
 			if ($handling_discount > 0 || $overSizeHandling_discount > 0) {
 				$i++;
-				// Add handling_discount and overSizeHandling_discount fields to order record
+				// Add handlingDiscount and overSizeHandlingDiscount fields to order record
 				$order = Order::find($order['_id']);
-				$order->promo_handling_discount = $handling_discount;
-				$order->promo_overSizeHandling_discount = $overSizeHandling_discount;
+				$order->handlingDiscount = $handling_discount;
+				$order->overSizeHandlingDiscount = $overSizeHandling_discount;
 				$order->save();
-				
-				/*$this->out('Order: ' . $order['_id']);
-				$this->out('handling_discount: ' . $handling_discount);
-				$this->out('overSizeHandling_discount: ' . $overSizeHandling_discount);
-				$this->out('');
-				exit;*/
 			}
 		}
 

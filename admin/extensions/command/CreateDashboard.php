@@ -126,13 +126,14 @@ class CreateDashboard extends \lithium\console\Command  {
 				if (doc.overSizeHandling != null) {
 					current_total += Number(doc.overSizeHandling);
 				}
-/*				
-				if (current_total.toFixed(2) != Number(doc.total.toFixed(2))) {
+				
+				if (doc.date_created < new Date("August 01, 2011 00:00:00") && 
+					current_total.toFixed(2) != Number(doc.total.toFixed(2))) {
 					prev.skippedOrderCount++;
 					prev.skippedOrderTotal += Number(doc.total);
 					return;
 				}
-*/				
+				
 				prev.count++;
 				prev.subTotal += Number(doc.subTotal);
 				prev.product += Number(doc.subTotal);
@@ -164,17 +165,17 @@ class CreateDashboard extends \lithium\console\Command  {
 					prev.product += Number(doc.credit_used);
 				}
 				
-				if (doc.handling_discount != null) {
+				if (doc.handlingDiscount != null) {
 					if (doc.service == "freeshipping")
-						prev.fs_service += Number(doc.handling_discount);
+						prev.fs_service += Number(doc.handlingDiscount);
 					else
-						prev.fs_promo += Number(doc.handling_discount);
+						prev.fs_promo += Number(doc.handlingDiscount);
 				}
-				if (doc.overSizeHandling_discount != null) {
+				if (doc.overSizeHandlingDiscount != null) {
 					if (doc.service == "freeshipping")
-						prev.fs_service += Number(doc.overSizeHandling_discount);
+						prev.fs_service += Number(doc.overSizeHandlingDiscount);
 					else
-						prev.fs_promo += Number(doc.overSizeHandling_discount);
+						prev.fs_promo += Number(doc.overSizeHandlingDiscount);
 				}
 					
 				prev.calc_total += current_total;
@@ -222,13 +223,14 @@ class CreateDashboard extends \lithium\console\Command  {
 				if (doc.overSizeHandling != null) {
 					current_total += Number(doc.overSizeHandling);
 				}
-/*				
-				if (current_total.toFixed(2) != Number(doc.total.toFixed(2))) {
+				
+				if (doc.date_created < new Date("August 01, 2011 00:00:00") && 
+					current_total.toFixed(2) != Number(doc.total.toFixed(2))) {
 					prev.skippedOrderCount++;
 					prev.skippedOrderTotal += Number(doc.total);
 					return;
 				}
-*/				
+				
 				prev.count++;
 				prev.total += 
 					(Number(doc.subTotal) + 
@@ -245,21 +247,21 @@ class CreateDashboard extends \lithium\console\Command  {
 					prev.handling_total += Number(doc.overSizeHandling);
 					prev.total += Number(doc.overSizeHandling);
 				}
-				if (doc.handling_discount != null) {
+				if (doc.handlingDiscount != null) {
 					if (doc.service == "freeshipping")
-						prev.service_handling_discount += Number(doc.handling_discount);
+						prev.service_handling_discount += Number(doc.handlingDiscount);
 					else
-						prev.promo_handling_discount += Number(doc.handling_discount);
-					prev.handling_total += Number(doc.handling_discount);
-					prev.total += Number(doc.handling_discount);
+						prev.promo_handling_discount += Number(doc.handlingDiscount);
+					prev.handling_total += Number(doc.handlingDiscount);
+					prev.total += Number(doc.handlingDiscount);
 				}
-				if (doc.overSizeHandling_discount != null) {
+				if (doc.overSizeHandlingDiscount != null) {
 					if (doc.service == "freeshipping")
-						prev.service_overSizeHandling_discount += Number(doc.overSizeHandling_discount);
+						prev.service_overSizeHandling_discount += Number(doc.overSizeHandlingDiscount);
 					else
-						prev.promo_overSizeHandling_discount += Number(doc.overSizeHandling_discount);
-					prev.handling_total += Number(doc.overSizeHandling_discount);
-					prev.total += Number(doc.overSizeHandling_discount);
+						prev.promo_overSizeHandling_discount += Number(doc.overSizeHandlingDiscount);
+					prev.handling_total += Number(doc.overSizeHandlingDiscount);
+					prev.total += Number(doc.overSizeHandlingDiscount);
 				}
 				
 			}'
