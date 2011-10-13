@@ -61,15 +61,13 @@ class ItemsController extends BaseController {
 				$all_filters['Momsdads'] = 'Moms & Dads';
 			}
 		}
-		#T Get selected values of filters
-
+		#Get selected values of filters
 		if(!empty($item->departments)) {
 			$values = $item->departments->data();
 			foreach ($values as $value) {
 				$sel_filters[$value] = $value;
 			}
 		}
-		#END T
 		if ($this->request->data) {
 			$alternate_images = array();
 			foreach ($this->request->data as $key => $value) {
@@ -93,6 +91,13 @@ class ItemsController extends BaseController {
 					}
 				}
 				$data["departments"] = $departments;
+			}
+			#Get Vouchers Uploaded
+			var_dump($this->request);
+			die();
+			if ($_FILES['upload_file']['error'] == 0 && $_FILES['upload_file']['size'] > 0) {
+				$this->parseVouchers($_FILES, $item->_id);
+					unset($this->request->data['upload_file']);
 			}
 			if ($item->save($data)) {
 				$this->redirect(array(
@@ -266,8 +271,29 @@ class ItemsController extends BaseController {
 			}
 
 	}
-
-
+	
+	/**
+	 * This method parses the vouchers file that is uploaded in the Item Edit View.
+	 *
+	 */
+	protected function parseVouchers($_FILES, $_id) {
+		if ($this->request->data) {
+			if ($_FILES['upload_file']['error'] == 0) {
+				$file = $_FILES['upload_file']['tmp_name'];
+				$objReader = PHPExcel_IOFactory::createReaderForFile("$file");
+				$objPHPExcel = $objReader->load("$file");
+				foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
+					$highestRow = $worksheet->getHighestRow();
+					$highestColumn = $worksheet->getHighestColumn();
+					$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
+					for ($row = 1; $row <= $highestRow; ++ $row ) {
+						var_dump($row);
+					}
+				}
+			}
+		}
+		die();
+	}
 }
 
 ?>

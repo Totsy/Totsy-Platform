@@ -85,6 +85,16 @@ tinyMCE.init({
 							<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Item
 						<?php endif ?>
 					</div>
+					<div id="item_voucher">
+						<h2 id="item_voucher">Voucher</h2>
+						<input type="radio" name="voucher" value="1" id="voucher" <?php if ($item->voucher == 1) echo 'checked'; ?>> Yes <br>
+						<input type="radio" name="voucher" value="0" id="voucher" <?php if ($item->voucher == 0) echo 'checked'; ?>> No
+					</div>
+					<div id="item_upl_voucher" <?php if(empty($item->voucher)) echo 'style="display:none"'; ?>>
+							<?=$this->form->label('Upload Vouchers:'); ?><br />
+							<?=$this->form->file('upload_file'); ?>
+							<?=$this->form->submit('Ok')?>
+					</div>
 					<div id="item_tax">
 						<h2 id="item_tax">Item Tax</h2>
 						<?php if ($item->taxable == 1): ?>
@@ -324,6 +334,12 @@ $(document).ready(function(){
 			$('#shipping_rate').hide();
 	});
 });
-
-
+$("input[name$='voucher']").click(function () {
+ 	var radio_value = $(this).val();
+	if(radio_value=='1') {
+			$("#item_upl_voucher").show("slow");
+		} else if(radio_value=='0') {
+			$("#item_upl_voucher").hide();
+	}
+});
 </script>

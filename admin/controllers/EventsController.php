@@ -163,6 +163,10 @@ class EventsController extends BaseController {
 			if ($eventData[tangible] != $event->tangible) {
 				$changed .= 'Tangible changed from <strong>'.(int)$event->tangible.'</strong> to <strong>'.(int)$eventData[tangible].'</strong><br/>';
 			}
+			
+			if ($eventData[voucher] != $event->voucher) {
+				$changed .= 'Voucher changed from <strong>'.(int)$event->voucher.'</strong> to <strong>'.(int)$eventData[voucher].'</strong><br/>';
+			}
 
 			if (strtotime($start_date) != $event->start_date->sec) {
 				$temp =  date('m/d/Y H:i:S', $event->start_date->sec);
@@ -203,7 +207,13 @@ class EventsController extends BaseController {
 			// End of Comparison of OLD Event Attributes and NEW event attributes
 
 			if ($event->save($eventData)) {
-
+				#If Event is Voucher, Set Items as Vouchers too
+				if(!empty($event->items)) {
+					$itemsCollection = Item::Collection();
+					foreach($event->items as $item) {
+						$itemsCollection->update(array("_id" => new MongoId($item)), array('$set' => array('voucher' =>  $eventData['voucher'])));
+					}
+				}
 				$this->redirect(array(
 						'controller' => 'events', 'action' => 'edit',
 						'args' => array($event->_id)
@@ -322,6 +332,8 @@ class EventsController extends BaseController {
 						}
 					}
 				}
+				#Get Actual Event
+				$event = Event::find('first', array('conditions'=>array('_id' => $_id)));
 				foreach ($eventItems as $itemDetail) {
 					$i=0;
 					$itemAttributes = array_diff_key($itemDetail, array_flip($standardHeader));
@@ -361,7 +373,11 @@ class EventsController extends BaseController {
 
 					$newItem = array_merge(Item::castData($itemDetail), Item::castData($details));
 					$newItem['vendor_style'] = (string) $newItem['vendor_style'];
-					
+					#If Event is Voucher, Apply it to Item
+					if(!empty($event['voucher'])) {
+						$newItem['voucher'] = '1';
+					}
+					#Save Datas
 					if ((array_sum($newItem['details']) > 0) && $item->save($newItem)) {
 						$items[] = (string) $item->_id;
 

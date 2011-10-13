@@ -21,7 +21,6 @@ tinyMCE.init({
 });
 </script>
 
-
 <script type="text/javascript" charset="utf-8">
 	$(function() {
 		var dates = $('#start_date, #end_date').datetimepicker({
@@ -40,7 +39,6 @@ tinyMCE.init({
 </script>
 
 <script type="text/javascript" charset="utf-8">
-
 	var oTable;
 
 	$(document).ready(function() {
@@ -73,11 +71,7 @@ tinyMCE.init({
 		eventItems.innerHTML = eventItems.innerHTML + aReturn;
 		return aReturn;
 	}
-
-
 </script>
-
-
 <div class="grid_16">
 	<h2 id="page-heading">Add an Event</h2>
 </div>
@@ -100,13 +94,17 @@ tinyMCE.init({
 		<input type="radio" name="tangible" value="1" id="tangible" checked> Tangible <br>
 		<input type="radio" name="tangible" value="0" id="tangible"> Non Tangible
 	</div>
+	<div id="event_voucher">
+		<h2 id="event_voucher">Voucher</h2>
+		<input type="radio" name="voucher" value="1" id="voucher"> Yes <br>
+		<input type="radio" name="voucher" value="0" id="voucher" checked> No
+	</div>
 	<div id="event_viewlive">
 		<h2 id="event_type">View Live Anyway</h2>
 		 (allows direct url access to event even if otherwise disabled)<br>
 		<input type="radio" name="viewlive" value="1" id="viewlive"> Direct URL <br>
 		<input type="radio" name="viewlive" value="0" id="viewlive" checked> Not Viewable
 	</div>
-
 	<div id="event_duration">
 		<h2 id="event_duration">Event Duration</h2>
 		<?=$this->form->field('start_date', array('class' => 'general', 'id' => 'start_date'));?>
@@ -115,9 +113,7 @@ tinyMCE.init({
 	<br>
 	<h1 id="uploaded_media">Uploaded Media</h1>
 	<div id="fileInfo"></div>
-	<br>
-
-	<br>
+	<br><br>
 	<table>
 		<tr valign="top">
 			<td>
