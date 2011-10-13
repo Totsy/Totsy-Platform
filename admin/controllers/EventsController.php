@@ -32,13 +32,6 @@ class EventsController extends BaseController {
 		'enabled'
 	);
 
-	public function uploadcheck() {
-	    $this->_render['layout'] = false;
-		$val = $_POST['items_submit'];
-		$fullarray = Event::convert_spreadsheet($val);
-		echo Event::check_spreadsheet($fullarray);
-	}
-
 
 	public function view($id = null) {
 		$event = Event::find($id);
@@ -129,7 +122,12 @@ class EventsController extends BaseController {
 			if(!empty($this->request->data['items_submit'])) {
 
 				$fullarray = Event::convert_spreadsheet($this->request->data['items_submit']);
-				$parseItems = $this->parseItems($fullarray, $event->_id, $enableItems);
+				if($this->request->data->clearance){
+					$parseItems = $this->parseItems_clearance($fullarray, $event->_id, $enableItems);
+				}
+				else{
+					$parseItems = $this->parseItems($fullarray, $event->_id, $enableItems);
+				}
 
 				if (is_array($parseItems)){
 
@@ -266,6 +264,7 @@ class EventsController extends BaseController {
 
 		return compact('event', 'eventItems', 'items', 'all_filters');
 	}
+
 
 	/**
 	 * This method parses the item file that is uploaded in the Events Edit View.
