@@ -43,17 +43,18 @@ $(document).ready(function(){
 
 tinyMCE.init({
 	// General options
-	mode : "textareas",
+	mode : "exact",
+	elements: "Blurb,ShipMessage,"+allitemids,
 	theme : "advanced",
 	plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,preview,searchreplace,print,contextmenu,paste,directionality,noneditable,visualchars,nonbreaking,xhtmlxtras",
 	editor_deselector : "mceNoEditor",
 	// Theme options
 	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull",
-	
+
 	theme_advanced_buttons2: "styleselect,formatselect,fontselect,fontsizeselect",
-	
+
 	theme_advanced_buttons3 : "cut,copy,paste,pastetext,pasteword,|,bullist,numlist,|,indent,blockquote,|,anchor,code,|,forecolor,backcolor",
-	/* theme_advanced_button3: 
+	/* theme_advanced_button3:
 	 theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,charmap,iespell,advhr",
 	 theme_advanced_buttons4 : "spellchecker,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking,blockquote,pagebreak", */
 	theme_advanced_toolbar_location : "top",
@@ -63,19 +64,19 @@ tinyMCE.init({
 
 });
 
-$('.table_link').click(function() {  
+$('.table_link').click(function() {
         $('tr').hide();
       $('tr .').toggle('slow');
     });
 
-$('.related_items').selectList({ 
-	addAnimate: function (item, callback) { 
-	$(item).slideDown(500, callback); 
-	}, 
-	removeAnimate: function (item, callback) { 
-	$(item).slideUp(500, callback); 
-	} 
-}); 
+$('.related_items').selectList({
+	addAnimate: function (item, callback) {
+	$(item).slideDown(500, callback);
+	},
+	removeAnimate: function (item, callback) {
+	$(item).slideUp(500, callback);
+	}
+});
 
 $('.related_items').change(function() {
 
@@ -86,13 +87,13 @@ var list_position = this.id.substring(7,8);
 //create strings of the dropdown id's
 for ( i=1; i<6; i++ ) {
 
-	var related_item_id = 'related'+ i + '_' + item_id;	
+	var related_item_id = 'related'+ i + '_' + item_id;
 	//if its not the current dropdown
 	//and its value is the same as the current dropdown's value AND
 	//the item's value isn't an empty string
 	//than throw an alert message
 	if(i!=list_position && $("#" + related_item_id + " option:selected").val()!=="" ) {
-				
+
 		if( $("#" + related_item_id + " option:selected").val() == $("#" + this.id + " option:selected").val() ) {
 			$("#" + this.id).val(0);
 			alert("please select a different item");
@@ -101,8 +102,8 @@ for ( i=1; i<6; i++ ) {
 	}
 }
 
-});    
-    
+});
+
 });
 
 </script>
@@ -193,7 +194,8 @@ for ( i=1; i<6; i++ ) {
 	}
 </script>
 
-<?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
+
+<?=$this->form->create(null, array('id' => "events_edit", 'enctype' => "multipart/form-data")); ?>
 <div class="grid_16">
 	<h2>Editing Event - <?=$event->name?></h2>
 </div>
@@ -258,8 +260,14 @@ for ( i=1; i<6; i++ ) {
 		<div id="event_viewlive">
 			<h2 id="event_type">View Live Anyway</h2>
 		 (allows direct url access to event even if otherwise disabled)<br>
-			<input type="radio" name="viewlive" value="1" id="viewlive" <?php if ($event->checked == 1) echo 'checked'; ?>> Direct URL <br>
-			<input type="radio" name="viewlive" value="0" id="viewlive" <?php if ($event->checked == 0) echo 'checked'; ?>> Not Viewable
+			<input type="radio" name="viewlive" value="1" id="viewlive" <?php if ($event->viewlive == 1) echo 'checked'; ?>> Direct URL <br>
+			<input type="radio" name="viewlive" value="0" id="viewlive" <?php if ($event->viewlive == 0) echo 'checked'; ?>> Not Viewable
+		</div>
+
+		<div id="event_clearance">
+			<h2 id="event_type">Clearance</h2>
+			<input type="radio" name="clearance" value="1" id="clearance" <?php if ($event->clearance == 1) echo 'checked'; ?>> Clearance <br>
+			<input type="radio" name="clearance" value="0" id="clearance" <?php if ($event->clearance == 0) echo 'checked'; ?>> Not Clearance
 		</div>
 
 
@@ -407,24 +415,35 @@ for ( i=1; i<6; i++ ) {
 		<div id="event_items">
 			<h3 id="">Item Management</h3>
 			<hr />
-			<h3 id="">Upload Items</h3>
-            <hr />
-			<p>Please select the default option for all items being uploaded:</p>
-				<input type="radio" name="enable_items" value="1" id="enable_items"> Enable All <br>
-				<input type="radio" name="enable_items" value="0" id="enable_items" checked> Disable All <br><br>
-			<p>Add "Final Sale" to the item description?:</p>
-				<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
-				<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
-				<?=$this->form->file('upload_file'); ?>
-				<?=$this->form->submit('Update Event')?>
-				<?=$this->form->label('Upload Event (Excel Files): '); ?>
-<!--
-		<iframe id="upload_frame" name="upload_frame" src="/events/upload/<?=$event->_id?>" frameborder=0 scrolling=no width=400 height=250></iframe>		
-		<div id="upload_error" name="upload_error" style="color:#ff0000; width:400px; float:right; height:250px; overflow:scroll;">(spreadsheet upload errors will appear here)</div>
 
--->				
-			<br><br>
+			<div style="width:300px; height:400px; float:left">
+				<h3 id="">Upload Items</h3>
+	            <hr />
+				<p>Please select the default option for all items being uploaded:</p>
+					<input type="radio" name="enable_items" value="1" id="enable_items"> Enable All <br>
+					<input type="radio" name="enable_items" value="0" id="enable_items" checked> Disable All <br><br>
+				<p>Add "Final Sale" to the item description?:</p>
+					<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
+					<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
+
+					<!--
+					<?=$this->form->label('Upload Event (Excel Files): '); ?>
+					<?=$this->form->file('upload_file'); ?>
+					-->
+
+				<?=$this->form->field('items_submit', array('type' => 'textarea', 'rows' => '7', 'cols' => '50', 'name' => 'ItemsSubmit'));?><br>
+
+
+			<?=$this->form->submit('Update Event')?>
 			<?=$this->form->end(); ?>
+			</div>
+
+			<div id="items_errors" name="items_errors" style="float:right; width:500px; height:400px;overflow:scroll;"></div>
+
+			<div style="clear:both; height:30px;"></div>
+
+
+
 			<h3 id="current_items">Current Items</h3>
 
             <hr />
@@ -432,22 +451,22 @@ for ( i=1; i<6; i++ ) {
 				<?=$this->form->hidden('id', array('value' => $event->_id)); ?>
 				<div style="float:left; font: bold; font-size: 18px;">
 					Total Items:
-					<?php 
+					<?php
 						echo count($eventItems);
 					?>
-					
+
 				</div>
 
 				<div style="float:right; font: bold; font-size: 18px;">
-					<?=$this->form->submit('Update Items'); ?>
-				</div>
+			<?=$this->form->submit('Update Event')?>
+							</div>
 				<br \>
 				<br \>
 
 				<?=$this->items->build($eventItems);?>
 
 				<div style="float:right; font: bold; font-size: 18px;">
-					<?=$this->form->submit('Update Items'); ?>
+					<?=$this->form->submit('Update Event')?>
 				</div>
 			<?=$this->form->end(); ?>
 
