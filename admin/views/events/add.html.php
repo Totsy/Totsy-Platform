@@ -134,6 +134,11 @@ tinyMCE.init({
 		<input type="radio" name="viewlive" value="1" id="viewlive"> Direct URL <br>
 		<input type="radio" name="viewlive" value="0" id="viewlive" checked> Not Viewable
 	</div>
+	<div id="event_clearance">
+		<h2 id="event_type">Clearance</h2>
+		<input type="radio" name="clearance" value="1" id="clearance"> Clearance <br>
+		<input type="radio" name="clearance" value="0" id="clearance" checked> Not Clearance
+	</div>
 
 	<div id="event_duration">
 		<h2 id="event_duration">Event Duration</h2>

@@ -99,6 +99,7 @@ class Items extends \lithium\template\Helper {
 
 			//Set ending tags for html table headings
 			$html .= '</tr></thead><tbody>';
+			$itemslist = "nothing,";
 
 			//Lets start building the data fields
 			foreach ($itemRecords as $item) {
@@ -106,6 +107,7 @@ class Items extends \lithium\template\Helper {
 				$html .= "<td width='400px'>";
 				
 				$this->current_item_id = "".$item->_id."";
+				$itemslist .= $this->current_item_id . ",";
 
 				$related_items = array();
 				$itemDropDown = "";
@@ -142,8 +144,14 @@ class Items extends \lithium\template\Helper {
 
 			}
 
+			$itemslist = substr($itemslist, 0, -1);
 			$html .= "</tbody>";
 			$html .= "</table>";
+			$html .= "
+			<script>
+			var allitemids = '$itemslist';
+			</script>
+			";
 			return $html;
 		} else {
 			return $html = "There are no items";
