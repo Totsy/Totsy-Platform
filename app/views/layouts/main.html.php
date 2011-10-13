@@ -27,7 +27,7 @@
 	<meta name="sailthru.date" content="<?=date('r')?>" /><?php
 	 
 		if(substr($request->url,0,5) == 'sales' || $_SERVER['REQUEST_URI'] == '/') {
-			$title = "Totsy index. Evenets.";
+			$title = "Totsy index. Events.";
 			$tags = 'Sales'; 
 			if (array_key_exists ('args',$request->params) && isset($request->params['args'][0])){
 				$tags =  $request->params['args'][0]; 
@@ -59,8 +59,8 @@
 <body class="app">
 	<?php if(isset($branch)) { echo $branch; } ?>
 <div class="container_16 roundy glow">
-	<div class="grid_3 alpha" style="margin:5px 0px 0px 5px;">
-		<?php echo $this->html->link($this->html->image('logo.png', array('width'=>'120')), '/sales', array('escape'=> false)); ?>
+	<div class="grid_4 alpha" style="margin:5px 0px 0px 5px;">
+		<?php echo $this->html->link($this->html->image('mamapedia_logo.png', array('width'=>'215')), '/sales', array('escape'=> false)); ?>
 	</div>
 	<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
 	
