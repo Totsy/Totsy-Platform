@@ -213,13 +213,6 @@
 				<div id="all-reserved"></div>
 			<?php endif ?>
 		</div>
-
-		<?php $logo = $event->images->logo_image;?>
-		<div style="padding:0px 0px 0px 7px;">
-		<?=$this->html->image("/image/$logo.jpg", array(
-			'alt' => $event->name, 'width' => "148"
-		)); ?>
-
 	</div>
 	<div style="padding:10px 0px; text-align:center !important;">
 	    <?php echo $spinback_fb; ?>
