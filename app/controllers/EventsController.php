@@ -81,6 +81,13 @@ class EventsController extends BaseController {
 				'url' => $url
 		)));
 		if (!$event) {
+			$event = Event::first(array(
+				'conditions' => array(
+				'viewlive' => true,
+				'url' => $url
+			)));
+		}
+		if (!$event) {
 			$this->_render['template'] = 'noevent';
 			return array('event' => null, 'items' => array(), 'shareurl');
 		}
