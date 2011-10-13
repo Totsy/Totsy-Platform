@@ -1028,7 +1028,7 @@ ul.content-list {
 }
 
 .ui-state-active a,.ui-widget-content .ui-state-active a,.ui-widget-header .ui-state-active a {
-	background:url(../img/tab-bg-red.gif) right top no-repeat;
+	background:url(../img/tab-bg-green.gif) right top no-repeat;
 	color:#FFF;
 }
 

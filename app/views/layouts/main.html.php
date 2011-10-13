@@ -11,7 +11,7 @@
 	
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
 	
-	<?php echo $this->html->style(array('base_mamapedia.css?v=004', '960.css?v=004', 'jquery_ui_custom/jquery.ui.all.css?v=004'), array('media' => 'screen')); ?>
+	<?php echo $this->html->style(array('base_mamapedia.css?v=004', '960.css?v=004', 'jquery_ui_custom/jquery.ui.all.mamapedia.css?v=004'), array('media' => 'screen')); ?>
 
 	<script src="https://www.google.com/jsapi"></script>
 	<script> google.load("jquery", "1.6.1", {uncompressed:false});</script>
