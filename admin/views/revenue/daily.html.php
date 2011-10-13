@@ -23,6 +23,8 @@
 
 <div class="grid_16">
 	<h2 id="page-heading">Revenue by Day</h2>
+	<?php echo $this->html->link('Monthly Revenue', 'Revenue::monthly')."&nbsp;&nbsp;"; ?>
+	<?php echo $this->html->link('Promocode Revenue', 'Revenue::promocodes')."<br/>"; ?>
 </div>
 <!--Gross Revenue Summary Begins Here-->
 <div class="clear"></div>

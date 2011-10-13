@@ -93,6 +93,9 @@
 			<li>
 				<?php echo $this->html->link('Services', 'Reports::services'); ?>
 			</li>
+			<li>
+				<?php echo $this->html->link('Revenue', 'Revenue::daily'); ?>
+			</li>
 		</ul>
 	</li>
 	<li>
