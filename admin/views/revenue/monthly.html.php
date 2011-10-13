@@ -22,7 +22,7 @@
 </style>
 
 <div class="grid_16">
-	<h2 id="page-heading">Revenue by Month</h2>
+	<h2 id="page-heading">Monthly Revenue</h2>
 	<?php echo $this->html->link('Daily Revenue', 'Revenue::daily')."&nbsp;&nbsp;"; ?>
 	<?php echo $this->html->link('Promocode Revenue', 'Revenue::promocodes')."<br/>"; ?>
 </div>
