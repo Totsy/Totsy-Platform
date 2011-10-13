@@ -165,76 +165,9 @@ for ( i=1; i<6; i++ ) {
 		eventItems.innerHTML = eventItems.innerHTML + aReturn;
 		return aReturn;
 	}
-	function submitForm(){
-
-		var handler = "/events/uploadcheck<?php if ($event->clearance == 1) echo '_clearance'; ?>";
-		var items_submit = document.getElementById("ItemsSubmit").value;
-
-		if(items_submit){
-			$.post(handler, {"items_submit" : items_submit}, function(result) {
-				if(result=="success"){
-					$("#events_edit").submit();
-				}
-				else{
-					document.getElementById("ItemsSubmit").value = "";
-					$("#items_errors").html(result);
-				}
-			});
-		}
-		else{
-			$("#events_edit").submit();
-		}
-
-
-	}
 
 
 </script>
-
-
-<style>
-
-
-div.xls_cell{
-	width:100px;
-	height: 20px;
-	display:block;
-	float:left;
-	overflow:hidden;
-	border:1px solid #000000;
-}
-
-
-div.xls_cell_error{
-	width:100px;
-	height: 20px;
-	display:block;
-	float:left;
-	overflow:hidden;
-	border:1px solid #000000;
-	background:#ff0000;
-	color:#ffffff;
-}
-
-div.xls_cell:hover{
-	background:#eeeeee;
-	width:100px;
-	height: 20px;
-	display:block;
-	float:left;
-}
-
-.xls_holder{
-	width:800px;
-	height:400px;
-	overflow:scroll;
-}
-
-.xls_holder_inner{
-	width:5000px;
-}
-
-</style>
 
 
 <?=$this->form->create(null, array('id' => "events_edit", 'enctype' => "multipart/form-data")); ?>
@@ -459,8 +392,8 @@ div.xls_cell:hover{
 				<?=$this->form->field('items_submit', array('type' => 'textarea', 'rows' => '7', 'cols' => '50', 'name' => 'ItemsSubmit'));?><br>
 
 
-			<?=$this->form->button('Update Event', array('value' => 'Update Event', 'onclick'=>'submitForm(); return false;'))?>
-				<?=$this->form->end(); ?>
+			<?=$this->form->submit('Update Event')?>
+			<?=$this->form->end(); ?>
 			</div>
 
 			<div id="items_errors" name="items_errors" style="float:right; width:500px; height:400px;overflow:scroll;"></div>
@@ -483,15 +416,15 @@ div.xls_cell:hover{
 				</div>
 
 				<div style="float:right; font: bold; font-size: 18px;">
-					<?=$this->form->button('Update Event', array('value' => 'Update Event', 'onclick'=>'submitForm(); return false;'))?>
-				</div>
+			<?=$this->form->submit('Update Event')?>
+							</div>
 				<br \>
 				<br \>
 
 				<?=$this->items->build($eventItems);?>
 
 				<div style="float:right; font: bold; font-size: 18px;">
-					<?=$this->form->button('Update Event', array('value' => 'Update Event', 'onclick'=>'submitForm(); return false;'))?>
+					<?=$this->form->submit('Update Event')?>
 				</div>
 			<?=$this->form->end(); ?>
 
