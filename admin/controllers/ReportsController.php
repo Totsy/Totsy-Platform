@@ -371,6 +371,23 @@ class ReportsController extends BaseController {
 						}
 					}
 				}
+				
+				// Sloppy code to make sure that the results are sorted by Vendor Style then Size
+				foreach ($purchaseOrder as $key => $row) {
+				    $vendor_style[$key]  = $row['Vendor Style'];
+				    $size[$key] = $row['Size'];
+				}
+
+				reset($purchaseOrder);
+				$po = current($purchaseOrder);
+
+				// Size can be numeric (1,2,3), non-numeric (S,M,L,XL) or mixed (7 kids, 9 kids, 11 kids)
+				// so we check the first character of the size to decide how to sort
+				if (is_numeric(substr($po['Size'],0,1)))
+					array_multisort($vendor_style, SORT_DESC, SORT_STRING, $size, SORT_ASC, SORT_NUMERIC, $purchaseOrder);
+				else
+					array_multisort($vendor_style, SORT_DESC, SORT_STRING, $size, SORT_ASC, SORT_STRING, $purchaseOrder);
+
 			}
 		}
 		return compact('poNumber', 'purchaseOrder', 'event', 'total', 'purchaseHeading');
