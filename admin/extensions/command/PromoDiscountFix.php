@@ -55,7 +55,7 @@ class PromoDiscountFix extends \lithium\console\Command {
 			
 			$order = $order->data();
 			// Prior to the March 4th promo disaster the calculation was different
-			if ($order['date_created']['sec'] > strtotime("March 04, 2011 12:34:00"))
+			if ($order['date_created']['sec'] < strtotime("March 04, 2011 12:34:00"))
 				continue;
 			
 			// $x becomes the total after ALL possible discounts, this includes the 10off50 service and credits
