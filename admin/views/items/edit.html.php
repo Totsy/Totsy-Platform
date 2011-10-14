@@ -1,6 +1,7 @@
 <?=$this->html->script(array('tiny_mce/tiny_mce.js', 'jquery-1.4.2', 'jquery-dynamic-form.js', 'jquery-ui-1.8.2.custom.min.js', 'swfupload.js', 'swfupload.queue.js', 'fileprogress.js', 'handlers.js', 'item_upload.js'));?>
 <?=$this->html->style(array('swfupload', 'jquery_ui_blitzer.css', 'jquery.dataTables.js', 'table'))?>
-
+<?=$this->html->script('jquery-ui-timepicker.min.js');?>
+<?=$this->html->style('timepicker'); ?>
 <script type="text/javascript">
 tinyMCE.init({
 	// General options
@@ -26,7 +27,7 @@ tinyMCE.init({
 	<h2 id="page-heading">Editing Item - <?=$item->description?></h2>
 </div>
 <?=$this->html->link('See Item List','/events/edit/'.$item->event[0].'#event_items')?>
-<?=$this->form->create(); ?>
+<?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
 	<div id="tabs">
 		<ul>
 		    <li><a href="#item_info"><span>Item Info</span></a></li>
@@ -59,16 +60,18 @@ tinyMCE.init({
 						'class' => 'general',
 						'value' => $item->vendor_style
 					));?>
-					<?=$this->form->field('color', array(
-						'type' => 'text',
-						'class' => 'general',
-						'value' => $item->color
-					));?>
-					<?=$this->form->field('age', array(
-						'type' => 'text',
-						'class' => 'general',
-						'value' => $item->age
-					));?>
+					<div id='details_1' <?php if(!empty($item->voucher)) echo 'style="display:none"'; ?>>
+						<?=$this->form->field('color', array(
+							'type' => 'text',
+							'class' => 'general',
+							'value' => $item->color
+						));?>
+						<?=$this->form->field('age', array(
+							'type' => 'text',
+							'class' => 'general',
+							'value' => $item->age
+						));?>
+					</div>
 					<?=$this->form->label('Departments')?><br />
 					<table>
 						<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple','value' => $sel_filters)); ?> 
@@ -89,53 +92,60 @@ tinyMCE.init({
 						<h2 id="item_voucher">Voucher</h2>
 						<input type="radio" name="voucher" value="1" id="voucher" <?php if ($item->voucher == 1) echo 'checked'; ?>> Yes <br>
 						<input type="radio" name="voucher" value="0" id="voucher" <?php if ($item->voucher == 0) echo 'checked'; ?>> No
+					</div><br>
+					<div id="voucher_details" <?php if(empty($item->voucher)) echo 'style="display:none"'; ?>>
+						<?php
+							if(!empty($event->voucher_end_date->sec)) {
+								$end_date =  date('m/d/Y H:i', $event->voucher_end_date->sec);
+							} else {
+								$end_date =  date('m/d/Y H:i');
+							}
+							
+							echo $this->form->field('voucher_end_date', array(
+								'class' => 'general',
+								'id' => 'voucher_end_date',
+								'value' => "$end_date"
+							));
+						?>
+						<?=$this->form->field('voucher_fine_print', array(
+							'type' => 'textarea',
+							'name' => 'voucher_fine_print',
+							'value' => $item->voucher_fine_print
+						));?><br>
+						<?=$this->form->field('voucher_website', array(
+							'type' => 'text',
+							'class' => 'general',
+							'value' => $item->voucher_website
+						));?><br>
+						<?=$this->form->label('Upload Vouchers:'); ?><br />
+						<?=$this->form->file('upload_file'); ?>
+						<?=$this->form->submit('Ok')?>
+						<br>Overwrite Old Vouchers<br>
+						<input type="radio" name="voucher_overwrite" value="1" id="voucher_overwrite"> Yes <br>
+						<input type="radio" name="voucher_overwrite" value="0" id="voucher_overwrite" checked> No
 					</div>
-					<div id="item_upl_voucher" <?php if(empty($item->voucher)) echo 'style="display:none"'; ?>>
-							<?=$this->form->label('Upload Vouchers:'); ?><br />
-							<?=$this->form->file('upload_file'); ?>
-							<?=$this->form->submit('Ok')?>
+					<div id='details_2' <?php if(!empty($item->voucher)) echo 'style="display:none"'; ?>>
+						<div id="item_tax">
+							<h2 id="item_tax">Item Tax</h2>
+								<input type="radio" name="taxable" value="1" id="taxable" <?php if ($item->taxable == 1) echo 'checked'; ?>> Taxable Item <br>
+								<input type="radio" name="taxable" value="0" id="taxable" <?php if ($item->taxable == 0) echo 'checked'; ?>> Not Taxable Item
+						</div>
+						<div id="item_shipping">
+							<h2 id="item_shipping">Shipping Exemption</h2>
+						<input type="radio" name="shipping_exempt" value="1" id="shipping_exempt" <?php if ($item->shipping_exempt == 1) echo 'checked'; ?>> Shipping Exempt Item <br>
+						<input type="radio" name="shipping_exempt" value="0" id="shipping_exempt" <?php if ($item->shipping_exempt == 0) echo 'checked'; ?>> Shipping Applied Item
+						</div>
+						<div id="item_oversize" style="margin-left:20px">
+				<input type="radio" name="shipping_oversize" value="0" id="shipping_oversize" <?php if ($item->shipping_oversize == 1) echo 'checked'; ?>> Shipping Normal size Item <br>
+				<input type="radio" name="shipping_oversize" value="1" id="shipping_oversize" <?php if ($item->shipping_oversize == 0) echo 'checked'; ?>> Shipping OverSize Item
+							<?=$this->form->text("shipping_rate", array('value'=>$item->shipping_rate, 'id'=>"shipping_rate")) ?>
+						</div>
 					</div>
-					<div id="item_tax">
-						<h2 id="item_tax">Item Tax</h2>
-						<?php if ($item->taxable == 1): ?>
-							<input type="radio" name="taxable" value="1" id="taxable" checked> Taxable Item <br>
-							<input type="radio" name="taxable" value="0" id="taxable"> Not Taxable Item
-						<?php else: ?>
-							<input type="radio" name="taxable" value="1" id="taxable"> Taxable Item <br>
-							<input type="radio" name="taxable" value="0" id="taxable" checked> Not Taxable Item
-						<?php endif ?>
-					</div>
-					<div id="item_shipping">
-						<h2 id="item_shipping">Shipping Exemption</h2>
-						<?php if ($item->shipping_exempt == 1): ?>
-							<input type="radio" name="shipping_exempt" value="1" id="shipping_exempt" checked> Shipping Exempt Item <br>
-							<input type="radio" name="shipping_exempt" value="0" id="shipping_exempt"> Shipping Applied Item
-						<?php else: ?>
-							<input type="radio" name="shipping_exempt" value="1" id="shipping_exempt"> Shipping Exempt Item <br>
-							<input type="radio" name="shipping_exempt" value="0" id="shipping_exempt" checked> Shipping Applied Item<br>
-						<?php endif ?>
-					</div>
-					<div id="item_oversize" style="margin-left:20px">
-						<?php if ($item->shipping_oversize == 1): ?>
-							<input type="radio" name="shipping_oversize" value="0" id="shipping_oversize" > Shipping Normal size Item <br>
-							<input type="radio" name="shipping_oversize" value="1" id="shipping_oversize" checked> Shipping OverSize Item
-						<?php else: ?>
-							<input type="radio" name="shipping_oversize" value="0" id="shipping_oversize" checked> Shipping Normal size Item <br>
-							<input type="radio" name="shipping_oversize" value="1" id="shipping_oversize" > Shipping Oversize Item<br>
-						<?php endif ?>
-						<?=$this->form->text("shipping_rate", array('value'=>$item->shipping_rate, 'id'=>"shipping_rate")) ?>
-					</div>
-
 					<div id="discount">
 						<h2 id="discount">Allow/Disallow Discounts on Order</h2>
 						<p>Note: By setting this property the <b>entire</b> discounts (credits or promotions) can be disallowed.</p>
-						<?php if ($item->discount_exempt == 1): ?>
-							<input type="radio" name="discount_exempt" value="1" id="discount_exempt" checked> Disallow Credits/Promos on Order<br>
-							<input type="radio" name="discount_exempt" value="0" id="discount_exempt"> Allow Credits/Promos on Order
-						<?php else: ?>
-							<input type="radio" name="discount_exempt" value="1" id="discount_exempt"> Disallow Credits/Promos on Order <br>
-							<input type="radio" name="discount_exempt" value="0" id="discount_exempt" checked> Allow Credits/Promos on Order
-						<?php endif ?>
+				<input type="radio" name="discount_exempt" value="1" id="discount_exempt" <?php if ($item->discount_exempt == 1) echo 'checked'; ?>> Disallow Credits/Promos on Order<br>
+				<input type="radio" name="discount_exempt" value="0" id="discount_exempt" <?php if ($item->discount_exempt == 0) echo 'checked'; ?>> Allow Credits/Promos on Order
 					</div>
 				</div>
 				<div id="item_pricing">
@@ -167,27 +177,29 @@ tinyMCE.init({
 						'value' => $item->sale_whol
 					));?>
 				</div>
-				<div id="item_properties">
-					<h2 id="">Weight and Dimensions</h2>
-					<?=$this->form->field('product_weight', array(
-						'type' => 'text',
-						'class' => 'general',
-						'value' => $item->product_weight
-					));?>
-					<?=$this->form->field('product_dimensions', array(
-						'type' => 'text',
-						'class' => 'general',
-						'value' => $item->product_dimensions
-					));?>
-					<?=$this->form->field('shipping_weight', array(
-						'type' => 'text',
-						'class' => 'general',
-						'value' => $item->shipping_weight
-					));?>
-					<?=$this->form->field('shipping_dimensions', array(
-						'type' => 'text',
-						'class' => 'general',
-						'value' => $item->shipping_dimensions));?>
+				<div id='details_3' <?php if(!empty($item->voucher)) echo 'style="display:none"'; ?>>
+					<div id="item_properties">
+						<h2 id="">Weight and Dimensions</h2>
+						<?=$this->form->field('product_weight', array(
+							'type' => 'text',
+							'class' => 'general',
+							'value' => $item->product_weight
+						));?>
+						<?=$this->form->field('product_dimensions', array(
+							'type' => 'text',
+							'class' => 'general',
+							'value' => $item->product_dimensions
+						));?>
+						<?=$this->form->field('shipping_weight', array(
+							'type' => 'text',
+							'class' => 'general',
+							'value' => $item->shipping_weight
+						));?>
+						<?=$this->form->field('shipping_dimensions', array(
+							'type' => 'text',
+							'class' => 'general',
+							'value' => $item->shipping_dimensions));?>
+					</div>
 				</div>
 				<div id="item_details">
 					<h2 id="">Item Details</h2>
@@ -337,9 +349,33 @@ $(document).ready(function(){
 $("input[name$='voucher']").click(function () {
  	var radio_value = $(this).val();
 	if(radio_value=='1') {
-			$("#item_upl_voucher").show("slow");
-		} else if(radio_value=='0') {
-			$("#item_upl_voucher").hide();
+			$("#voucher_details").show("slow");
+			$("#details_1").hide();
+			$("#details_2").hide();
+			$("#details_3").hide();			
+			$('input:radio[id=shipping_exempt]:nth(0)').attr('checked',true);
+			$('input:radio[id=taxable]:nth(1)').attr('checked',true);
+	} else if(radio_value=='0') {
+			$("#voucher_details").hide();
+			$("#details_1").show();
+			$("#details_2").show();
+			$("#details_3").show();
 	}
 });
+</script>
+<script type="text/javascript" charset="utf-8">
+	$(function() {
+		var dates = $('#voucher_end_date').datetimepicker({
+			defaultDate: "+1w",
+			changeMonth: true,
+			changeYear: true,
+			numberOfMonths: 1,
+			onSelect: function(selectedDate) {
+				var option = "maxDate";
+				var instance = $(this).data("datetimepicker");
+				var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+				dates.not(this).datepicker("option", option, date);
+			}
+		});
+	});
 </script>

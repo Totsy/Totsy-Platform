@@ -92,8 +92,15 @@ class Promotion extends Base {
                             Cart::updateSavings(null, 'discount', $subTotal * $code->discount_amount);
                         }
                         if ($code->type == 'dollar') {
-                            $entity->saved_amount = -$code->discount_amount;
-                            Cart::updateSavings(null, 'discount', $code->discount_amount);
+                        	#If Negative total after discount, record correct used discount amount
+                        	$test = $subTotal - $code->discount_amount;
+                        	if($test < 0) {
+                        		$entity->saved_amount = -$subTotal;
+                        	} else {
+                        		$entity->saved_amount = -$code->discount_amount;
+                        	}
+                        	$entity->type = "dollar";
+                            Cart::updateSavings(null, 'discount', -$entity->saved_amount);
                         }
                         if ($code->type == 'free_shipping' && !($entity->errors()) && empty($services['freeshipping']['enable'])) {
                             $entity->type = "free_shipping";

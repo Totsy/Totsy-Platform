@@ -10,6 +10,10 @@ use MongoDate;
 use MongoId;
 use Mongo;
 use li3_flash_message\extensions\storage\FlashMessage;
+use PHPExcel_IOFactory;
+use PHPExcel;
+use PHPExcel_Cell;
+use PHPExcel_Cell_DataType;
 
 /**
  * Handles the users main account information.
@@ -93,17 +97,28 @@ class ItemsController extends BaseController {
 				$data["departments"] = $departments;
 			}
 			#Get Vouchers Uploaded
-			var_dump($this->request);
-			die();
 			if ($_FILES['upload_file']['error'] == 0 && $_FILES['upload_file']['size'] > 0) {
-				$this->parseVouchers($_FILES, $item->_id);
-					unset($this->request->data['upload_file']);
+				$vouchers = $this->parseVouchers($_FILES, $item->_id);
+				if(!empty($vouchers)) {
+					if(empty($this->request->data['voucher_overwrite'])) {
+						if(!empty($item->vouchers)) {
+							$data['vouchers'] = array_merge($item->vouchers->data(), $vouchers);
+						} else { 
+							$data['vouchers'] = $vouchers;
+						}
+					} else {
+						$data['vouchers'] = $vouchers;
+					}
+				}
+				$data['total_quantity'] = count($vouchers);
+				unset($data['voucher_overwrite']);
+				unset($data['upload_file']);
 			}
 			if ($item->save($data)) {
 				$this->redirect(array(
 						'controller' => 'items', 'action' => 'edit',
 						'args' => array($item->_id)
-					));
+				));
 			}
 		}
 		return compact('item', 'details', 'event', 'all_filters', 'sel_filters');
@@ -277,6 +292,7 @@ class ItemsController extends BaseController {
 	 *
 	 */
 	protected function parseVouchers($_FILES, $_id) {
+		$vouchers = array();
 		if ($this->request->data) {
 			if ($_FILES['upload_file']['error'] == 0) {
 				$file = $_FILES['upload_file']['tmp_name'];
@@ -286,13 +302,15 @@ class ItemsController extends BaseController {
 					$highestRow = $worksheet->getHighestRow();
 					$highestColumn = $worksheet->getHighestColumn();
 					$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
-					for ($row = 1; $row <= $highestRow; ++ $row ) {
-						var_dump($row);
+					for ($row = 2; $row <= $highestRow; ++ $row ) {
+						$cell = $worksheet->getCellByColumnAndRow($col, $row);
+						$val = $cell->getCalculatedValue();
+						$vouchers[] = $val;
 					}
 				}
 			}
 		}
-		die();
+		return $vouchers;
 	}
 }
 

@@ -6,7 +6,7 @@ tinyMCE.init({
 	mode : "textareas",
 	theme : "advanced",
 	plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,preview,searchreplace,print,contextmenu,paste,directionality,noneditable,visualchars,nonbreaking,xhtmlxtras",
-
+	editor_deselector : "mceNoEditor",
 	// Theme options
 	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
 	theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,code,|,forecolor,backcolor",
@@ -72,6 +72,32 @@ tinyMCE.init({
 		return aReturn;
 	}
 </script>
+
+<script type="text/javascript" charset="utf-8">
+	var limit = <?=$shortDescLimit;?>;
+	$(document).ready(function() {
+		
+		$('#Short').keyup(function(){
+			return limitTextArea($(this),$('#short_description_characters_counter'),limit);
+		});
+
+		$('#Short').focusout(function(){
+			return limitTextArea($(this),$('#short_description_characters_counter'),limit);
+		});
+	});
+
+	function limitTextArea(text,info,limiter){
+		var len = text.val().length;
+		if (len>limiter){
+			text.val(text.val().substr(0,limiter));
+			$('#short_description_characters_counter').text(limiter);
+			return false;
+		} else {
+			$('#short_description_characters_counter').text(len);
+			return true;
+		}
+	}
+</script>
 <div class="grid_16">
 	<h2 id="page-heading">Add an Event</h2>
 </div>
@@ -84,6 +110,10 @@ tinyMCE.init({
 <?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
     <?=$this->form->field('name', array('class' => 'general'));?>
     <?=$this->form->field('blurb', array('type' => 'textarea', 'name' => 'content'));?>
+    <div style="width:450px;">
+    	<?=$this->form->field('short', array('type' => 'textarea', 'name' => 'short_description', 'class' => 'mceNoEditor shortDescription'));?>
+    	<div id="short_description_characters_wrapper">Total: <span id="short_description_characters_counter">0</span>/<?=$shortDescLimit;?></div>
+    </div>
 	<div id="event_status">
 		<h2 id="event_status">Event Status</h2>
 		<input type="radio" name="enabled" value="1" id="enabled"> Enable Event <br>
@@ -104,6 +134,11 @@ tinyMCE.init({
 		 (allows direct url access to event even if otherwise disabled)<br>
 		<input type="radio" name="viewlive" value="1" id="viewlive"> Direct URL <br>
 		<input type="radio" name="viewlive" value="0" id="viewlive" checked> Not Viewable
+	</div>
+	<div id="event_clearance">
+		<h2 id="event_type">Clearance</h2>
+		<input type="radio" name="clearance" value="1" id="clearance"> Clearance <br>
+		<input type="radio" name="clearance" value="0" id="clearance" checked> Not Clearance
 	</div>
 	<div id="event_duration">
 		<h2 id="event_duration">Event Duration</h2>

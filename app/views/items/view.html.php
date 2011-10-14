@@ -1,8 +1,61 @@
 <?=$this->html->script(array('cloud-zoom.1.0.2'));?>
+<script src="/js/jquery.tmpl.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+	var item_id = "<?=$item->_id?>";
+</script>
+
+<!-- JS for cart timer. -->
+<script type="text/javascript" src="/js/cart-timer.js"></script>
+<!-- JS for cart timer for individual items. -->
+<script type="text/javascript" src="/js/cart-items-timer.js"></script>
+<!-- JS for cart popup. needs to reference the popupCartItems element above -->
+<script type="text/javascript" src="/js/cart-popup.js"></script>
+
+<!-- template used for items on cart. jquery.tmpl.js driven -->
+<?=$this->view()->render( array('element' => 'popupCartItems') ); ?>
+
+<div style="position:relative">
+<div id="cart_popup" class="grid_16 roundy glow" style="display:none">
+	<div id="cart_popup_header">
+	    <div id="cart_popup_timer">
+	    	<span style="float:right; margin-left: 30px">Item Reserved For:<br>
+	    		<span style="color:#009900; font-weight:bold;font-size:14px" id="itemCounter"></span>
+	    	</span>
+	    	<span style="float:right">Estimated Shipping Date: <br>
+	    		 <span id="ship_date" style="font-weight:bold; color:#009900; font-size:14px"></span>
+	    	</span>
+	    </div>
+	    <div id="cart_popup_close_button">
+	    	<a href="#">
+	    	<img src="/img/popup_cart_close.jpg" style="width:20px; height:20px"></a>
+	    </div>
+	</div>
+	<div style="clear:both"></div>
+	<div id="cart_item"></div>
+	<div style="clear:both"></div>
+	<div style="clear:both"></div>
+	<div><hr></div>
+	<div id="cart_popup_breakdown">
+	   <div class="cart-savings">Your Savings: $<span id="savings"></span></div>
+	   <div id="cart_popup_order_total">
+	   	<span class="cart-order-total">Subtotal: </span>
+	       <span id="order_total_num" style="font-weight:bold !important; color:#009900 !important; font-size:14px !important"></span>
+	   </div>
+	</div>
+	<div style="clear:both"></div>
+	<div id="cart_popup_checkout_buttons" class="cart-button fr">
+	   <a id="cart_popup_cont_shop" class="button_border" href="#">Continue Shopping</a>
+	   <a id="cart_popup_checkout" class="button" href="/checkout/view">Checkout</a>
+	</div>
+</div>
+</div>
+
 <div class="grid_16">
 	<h2 class="page-title gray"><span class="red"><a href="/sales" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a><div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
 	<hr />
 </div>
+
 <div class="grid_6">
 	<!-- Start product item -->
 		<?php if ($item->total_quantity <= 0): ?>
@@ -62,28 +115,21 @@
 	<!-- End additional image view thumbnails -->
 
 	</div>
-				<?php endif ?>
-				<?php if (!empty($item->alternate_images)): ?>
-					<?php $x = 2; ?>
-				<?php endif ?>
+		<?php endif ?>
+		<?php if (!empty($item->alternate_images)): ?>
+		    <?php $x = 2; ?>
+		<?php endif ?>
 	</div>
 	<!-- End product item -->
 </div>
 
 <div class="grid_7">
-
 	<div id="product-detail-right-top"  style="width:405px;">
-
 		<div id="listingCountdown" class="listingCountdown"></div>
-
 	</div>
-
 	<div id="detail-top-left"  style="width:405px;">
 		<h1><strong><?=$event->name?></strong> <?=$item->description." ".$item->color; ?></h1>
 	</div>
-
-
-
 		<div class="clear"></div>
 
 		<div id="tabs">
@@ -105,19 +151,7 @@
 			Complete shipping details are available at <?=$this->html->link('shipping terms', array('Pages::shipping')); ?>.
 
 			<p><strong>Returns:</strong> Totsy accept returns on selected items only. You will get a merchandise credit and free shipping (AK &amp; HI: air shipping rates apply). Simply be sure that we receive the merchandise you wish to return within 30 days from the date you originally received it in its original condition with all the packaging intact. Please note: Final Sale items cannot be returned. Want to learn more? Read more in our <?=$this->html->link('returns section', array('Pages::returns')); ?>.</p>
-
-
-
 			</div>
-			<!-- End Shipping Tab -->
-
-			<!-- Start Video Tab -->
-			<!--
-			<div id="video" class="ui-tabs-hide">
-			</div>
-			-->
-			<!-- End Video Tab -->
-
 		</div>
 	<!--Disney -->
 <div class="disney">
@@ -131,39 +165,28 @@
 		<?php if (!empty($relatedData)): ?>
 		<h2 style="color:#707070;font-size:14px;">You would also love</h2>
 		<hr />
-		<?php foreach ($related as $relatedItem): ?>
-
-			<?php
-
-				if (empty($relatedItem['primary_image'])) {
-					$relatedImage = '/img/no-image-small.jpeg';
-				} else {
-					$relatedImage = "/image/".$relatedItem['primary_image'].".jpg";
-				}
-
-				echo $this->html->link(
-					$this->html->image($relatedImage, array(
-						"class" => "img-th",
-						"width" => "93",
-						"height" => "93")),
-						"/sale/$event->url/".$relatedItem['url'], array(
-							'id' => $relatedItem['description'],
-							'escape'=> false
-				));
-
-			?>
-		<?php endforeach ?>
+		<?php foreach ($related as $relatedItem) {
+			if (empty($relatedItem['primary_image'])) {
+				$relatedImage = '/img/no-image-small.jpeg';
+			} else {
+				$relatedImage = "/image/".$relatedItem['primary_image'].".jpg";
+			}
+			echo $this->html->link(
+				$this->html->image($relatedImage, array(
+					"class" => "img-th",
+					"width" => "93",
+					"height" => "93")),
+					"/sale/$event->url/".$relatedItem['url'], array(
+						'id' => $relatedItem['description'],
+						'escape'=> false
+			));
+		} ?>
 	<?php endif ?>
 	</div>
 	<!-- End Related Products -->
-
 	</div>
-
-
 	<div class="grid_3">
-
 	<div id="detail-top-right" class="r-container">
-
 
 		<div class="md-gray p-container roundy">
 			<h2 class="caps" style="font-size:14px; padding-top:5px">Totsy Price</h2>
@@ -171,10 +194,9 @@
 
 			<div class="original-price" style="font-size:11px; padding-bottom:10px;">Original: $<?=number_format($item->msrp,2); ?></div>
 
-			<?=$this->form->create(null, array('url' => 'Cart::add')); ?>
 <?php if (!empty($sizes)): ?>
 				<?php if ( !((string)strtolower($sizes[0]) ==='no size')): ?>
-						<select name="item_size" id="size-select">
+						<select name="size-select" id="size-select">
 									<option value="">Please Select Size</option>
 							<?php foreach ($sizes as $value): ?>
 									<option value="<?=$value?>"><?=$value?></option>
@@ -183,32 +205,25 @@
 						<hr />
 				<?php endif ?>
 			<?php endif ?>
-			<?=$this->form->hidden("item_id", array('value' => "$item->_id", 'id'=>'item_id')); ?>
 			<?php if ($item->total_quantity >= 1): ?>
 				<div id="hidden-div" style="display:none; color:#eb132c; font-weight:bold;">Please Select Size!</div>
 				<span style="display: inline-block;">
-				<?=$this->form->submit('Add To Cart', array('class' => 'button')); ?>
+				<input type="button" value="Add to Cart" id="add-to-cart" class="button">
 				</span>
 				<div id="all-reserved"></div>
 			<?php endif ?>
 		</div>
-
-<?=$this->form->end(); ?>
-
 	</div>
-
-
-		<div style="padding:10px 0px; text-align:center;">
-			<?php echo $spinback_fb; ?>
-		</div>
-
-		</div>
-	<div class="clear"></div>
-
-
-
+	<div style="padding:10px 0px; text-align:center !important;">
+	    <?php echo $spinback_fb; ?>
 	</div>
-<div id="modal" style="background:#fff!important; z-index:9999999999!important;"></div>
+</div>
+
+<div class="clear"></div>
+</div>
+
+<div id="modal" style="background:#fff!important; z-index:999!important;"></div>
+
 <script type="text/javascript">
 $(function () {
 	var saleEnd = new Date();
@@ -216,8 +231,8 @@ $(function () {
 	$('#listingCountdown').countdown({until: saleEnd, layout: 'Ends in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
 });
 </script>
-<script type="text/javascript">
 
+<script type="text/javascript">
     $('#disney').click(function(){
 		$('#modal').load('/events/disney').dialog({
 			autoOpen: false,
@@ -236,7 +251,6 @@ $(function () {
 <script type="text/javascript">
 $(document).ready(function() {
 	var itemCheck = function(){
-		var item_id = $('#item_id').attr('value');
 		var item_size = $('#size-select').attr('value');
 		if(item_size != '') {
 		    $.ajax({
@@ -263,6 +277,7 @@ $(document).ready(function() {
 	});
 });
 </script>
+
 <script type="text/javascript" charset="utf-8">
     $(document).ready(function () {
       checkOptions();
@@ -278,10 +293,10 @@ $(document).ready(function() {
 
         if (getSize) {
           $("#hidden-div").show();
-          $("input[type=Submit]").attr("disabled","disabled");
+          $("#add-to-cart").attr("disabled","disabled");
         } else {
           $("#hidden-div").hide();
-          $("input[type=Submit]").removeAttr("disabled");
+          $("#add-to-cart").removeAttr("disabled");
         };
       }
     });
@@ -289,7 +304,7 @@ $(document).ready(function() {
 <script type="text/javascript">
 //cto product tag
 var cto_params = [];
-cto_params["i"] = $('#item_id').attr('value');
+cto_params["i"] = item_id;
 var cto_conf = 't1=sendEvent&c=2&p=3290';
 var cto_conf_event = 'v=2&wi=7714287&pt1=2';
 var CRITEO=function(){var b={Load:function(d){var c=window.onload;window.onload=function(){if(c){c()}d()}}};function a(e){if(document.createElement){
@@ -302,3 +317,4 @@ c+='&cb='+Math.floor(Math.random()*99999999999);try{c+='&ref='+encodeURIComponen
 c+='&sc_r='+encodeURIComponent(screen.width+'x'+screen.height);}catch(e){}try{c+='&sc_d='+encodeURIComponent(screen.colorDepth);}catch(e){}b.Load(function(){
 a(c.substring(0,2000))})}}}();CRITEO.Load(document.location.protocol+'//dis.us.criteo.com/dis/dis.aspx?');
 </script>
+

@@ -62,6 +62,7 @@ class Exchanger extends \lithium\console\Command {
 	public static function getAll() {
 		$self = static::_object();
 		if ($self->connect()) {
+		    ftp_pasv($self->connection, true);
 			$self->changeDirectory('/tot90/out');
 			$files = ftp_nlist($self->connection, ".");
 			if ($files) {
