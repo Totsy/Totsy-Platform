@@ -272,7 +272,8 @@ class OrdersController extends BaseController {
 			'primary_image',
 			'expires',
 			'event',
-			'discount_exempt'
+			'discount_exempt',
+			'voucher'
 		);
 		$promocode_disable = false;
 		#Get Current Cart

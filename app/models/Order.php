@@ -121,6 +121,15 @@ class Order extends Base {
 				$order->promo_type = $vars['cartPromo']->type;
 				$order->promo_discount = abs($vars['cartPromo']->saved_amount);
 			}
+			#Save Voucher
+			foreach($items as $item) {
+				if(!empty($item->voucher)) {
+					$item_voucher = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
+					$coupon = $item_voucher['vouchers'][0];
+					Item::udpate(array('conditions' => array('_id' => $item->item_id)), array('$pull' => array('vouchers' => $coupon)));
+					$item->voucher_code = $coupon;
+				}
+			}
 			#Save Services Used (10$Off / Free Shipping)
 			if ($service) {
 				$services = array();

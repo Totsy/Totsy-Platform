@@ -172,6 +172,7 @@ class CartController extends BaseController {
 					'category',
 					'product_weight',
 					'event',
+					'voucher',
 					'vendor_style',
 					'discount_exempt'
 			)));
