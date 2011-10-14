@@ -304,7 +304,7 @@ $(document).ready(function() {
 <script type="text/javascript">
 //cto product tag
 var cto_params = [];
-cto_params["i"] = $('#item_id').attr('value');
+cto_params["i"] = item_id;
 var cto_conf = 't1=sendEvent&c=2&p=3290';
 var cto_conf_event = 'v=2&wi=7714287&pt1=2';
 var CRITEO=function(){var b={Load:function(d){var c=window.onload;window.onload=function(){if(c){c()}d()}}};function a(e){if(document.createElement){
