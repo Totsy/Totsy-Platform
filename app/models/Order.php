@@ -10,6 +10,7 @@ use li3_payments\extensions\payments\exceptions\TransactionException;
 use app\extensions\Mailer;
 use app\models\User;
 use app\models\Base;
+use app\models\Item;
 
 class Order extends Base {
 
@@ -91,6 +92,7 @@ class Order extends Base {
 	 * @return redirect
 	 */
 	public static function recordOrder($vars, $cart, $card, $order, $avatax, $authKey, $items) {
+			$itemsCollection = Item::Collection();
 			$user = Session::read('userLogin');
 			$service = Session::read('services', array('name' => 'default'));
 			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
@@ -124,10 +126,12 @@ class Order extends Base {
 			#Save Voucher
 			foreach($items as $item) {
 				if(!empty($item->voucher)) {
-					$item_voucher = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
-					$coupon = $item_voucher['vouchers'][0];
-					Item::udpate(array('conditions' => array('_id' => $item->item_id)), array('$pull' => array('vouchers' => $coupon)));
-					$item->voucher_code = $coupon;
+					$item_voucher = $itemsCollection->findOne(array('_id' => new MongoId($item->item_id)));
+					if(!empty($item_voucher)) {
+						$coupon = $item_voucher['vouchers'][0];
+						$itemsCollection->update(array('_id' => new MongoId($item->item_id)), array('$pop' => array('vouchers' => -1)));
+						$item->voucher_code = $coupon;
+					}
 				}
 			}
 			#Save Services Used (10$Off / Free Shipping)
