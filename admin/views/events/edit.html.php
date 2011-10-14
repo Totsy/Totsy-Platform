@@ -49,11 +49,11 @@ tinyMCE.init({
 
 	// Theme options
 	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull",
-	
+
 	theme_advanced_buttons2: "styleselect,formatselect,fontselect,fontsizeselect",
-	
+
 	theme_advanced_buttons3 : "cut,copy,paste,pastetext,pasteword,|,bullist,numlist,|,indent,blockquote,|,anchor,code,|,forecolor,backcolor",
-	/* theme_advanced_button3: 
+	/* theme_advanced_button3:
 	 theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,charmap,iespell,advhr",
 	 theme_advanced_buttons4 : "spellchecker,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking,blockquote,pagebreak", */
 	theme_advanced_toolbar_location : "top",
@@ -63,19 +63,19 @@ tinyMCE.init({
 
 });
 
-$('.table_link').click(function() {  
+$('.table_link').click(function() {
         $('tr').hide();
       $('tr .').toggle('slow');
     });
 
-$('.related_items').selectList({ 
-	addAnimate: function (item, callback) { 
-	$(item).slideDown(500, callback); 
-	}, 
-	removeAnimate: function (item, callback) { 
-	$(item).slideUp(500, callback); 
-	} 
-}); 
+$('.related_items').selectList({
+	addAnimate: function (item, callback) {
+	$(item).slideDown(500, callback);
+	},
+	removeAnimate: function (item, callback) {
+	$(item).slideUp(500, callback);
+	}
+});
 
 $('.related_items').change(function() {
 
@@ -86,13 +86,13 @@ var list_position = this.id.substring(7,8);
 //create strings of the dropdown id's
 for ( i=1; i<6; i++ ) {
 
-	var related_item_id = 'related'+ i + '_' + item_id;	
+	var related_item_id = 'related'+ i + '_' + item_id;
 	//if its not the current dropdown
 	//and its value is the same as the current dropdown's value AND
 	//the item's value isn't an empty string
 	//than throw an alert message
 	if(i!=list_position && $("#" + related_item_id + " option:selected").val()!=="" ) {
-				
+
 		if( $("#" + related_item_id + " option:selected").val() == $("#" + this.id + " option:selected").val() ) {
 			$("#" + this.id).val(0);
 			alert("please select a different item");
@@ -101,8 +101,8 @@ for ( i=1; i<6; i++ ) {
 	}
 }
 
-});    
-    
+});
+
 });
 
 </script>
@@ -369,10 +369,10 @@ for ( i=1; i<6; i++ ) {
 				<?=$this->form->submit('Update Event')?>
 				<?=$this->form->label('Upload Event (Excel Files): '); ?>
 <!--
-		<iframe id="upload_frame" name="upload_frame" src="/events/upload/<?=$event->_id?>" frameborder=0 scrolling=no width=400 height=250></iframe>		
+		<iframe id="upload_frame" name="upload_frame" src="/events/upload/<?=$event->_id?>" frameborder=0 scrolling=no width=400 height=250></iframe>
 		<div id="upload_error" name="upload_error" style="color:#ff0000; width:400px; float:right; height:250px; overflow:scroll;">(spreadsheet upload errors will appear here)</div>
 
--->				
+-->
 			<br><br>
 			<?=$this->form->end(); ?>
 			<h3 id="current_items">Current Items</h3>
@@ -382,10 +382,10 @@ for ( i=1; i<6; i++ ) {
 				<?=$this->form->hidden('id', array('value' => $event->_id)); ?>
 				<div style="float:left; font: bold; font-size: 18px;">
 					Total Items:
-					<?php 
+					<?php
 						echo count($eventItems);
 					?>
-					
+
 				</div>
 
 				<div style="float:right; font: bold; font-size: 18px;">

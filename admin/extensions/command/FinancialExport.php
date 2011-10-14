@@ -57,8 +57,17 @@ class FinancialExport extends Base  {
 	 */
 	protected $summaryHeader = array(
 		'_id',
-		'name',
-		'address',
+		'billing_name',
+		'billing_address1',
+		'billing_address2',
+		'billing_city',
+		'billing_state',
+		'billing_zip',
+		'shipping_name',
+		'shipping_address1',
+		'shipping_address2',
+		'shipping_city',
+		'shipping_zip',
 		'credit_used',
 		'handling',
 		'order_id',
@@ -74,9 +83,6 @@ class FinancialExport extends Base  {
 		'gross_shipping_amt',
 		'net_shipping_amt',
 		'user_id',
-		'city',
-		'state',
-		'zip',
 		'order_date',
 		'authKey',
 		'auth_confirmation',
@@ -136,7 +142,8 @@ class FinancialExport extends Base  {
 		'date_created',
 		'items',
 		'card_type',
-		'ship_date'
+		'ship_date',
+		'modifications'
 	);
 
 	/**
@@ -170,7 +177,7 @@ class FinancialExport extends Base  {
 		 * issue running on production just note that a new index will be created.
 		 */
 		$this->log("Starting Financial Export");
-		Order::collection()->ensureIndex(array('date_created' => -1));
+		Order::collection()->ensureIndex(array('date_created' => 1));
 		Promocode::collection()->ensureIndex(array('code' => -1));
 		OrderShipped::collection()->ensureIndex(array('OrderNum' => 1));
 		Credit::collection()->ensureIndex(array('user_id' => 1, 'customer_id' => 1));
@@ -182,16 +189,16 @@ class FinancialExport extends Base  {
 		    $yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
             $orderConditions = array(
                 'date_created' => array(
-                    '$gte' => new MongoDate(strtotime('Nov 1, 2010')),
-                    //'$lte' => new MongoDate(strtotime('Nov 30, 2010'))
-                    '$lte' => new MongoDate($yesterday_max)
+                    '$gte' => new MongoDate(strtotime('Mar 1, 2011')),
+                    '$lte' => new MongoDate(strtotime('Mar 30, 2011'))
+                   // '$lte' => new MongoDate($yesterday_max)
                 ));
             /**
              * Setup filenames for the order summary and epxort functionality.
             */
-		    $this->orderSummaryFile = $this->tmp . 'OrdSummary.xml';
-		    $this->orderDetailFile = $this->tmp . 'OrdDetail.xml';
-		    $this->creditDetailFile = $this->tmp . 'CredDetail.xml';
+		    $this->orderSummaryFile = $this->tmp . 'OrdSummary-Apr_Jun_2011.xml';
+		    $this->orderDetailFile = $this->tmp . 'OrdDetail-Apr_Jun_2011.xml';
+		    $this->creditDetailFile = $this->tmp . 'CredDetail-2010.xml';
 		    $this->log("Retrieving Historical Data");
         } else {
             $yesterday_min = mktime(0,0,0,date('m'),date('d') - 1,date('Y'));
@@ -207,7 +214,7 @@ class FinancialExport extends Base  {
             $this->time = date('m-d-Y');
             $this->orderSummaryFile = $this->tmp . 'OrdSummary_' . $this->time . '.xml';
             $this->orderDetailFile = $this->tmp . 'OrdDetail_' . $this->time . '.xml';
-            $this->creditDetailFile = $this->tmp . 'CredDetail_' . $this->time . '.xml';
+          //  $this->creditDetailFile = $this->tmp . 'CredDetail_' . $this->time . '.xml';
             $this->log("Retrieving Daily Data");
         }
 
@@ -237,9 +244,14 @@ class FinancialExport extends Base  {
 		);
 
 		$this->orders = Order::collection()->find($orderConditions, $fields);
-		$this->_orderSummaryReport();
-		$this->_orderDetailReport();
-		$this->_orderCreditReport();
+		try {
+		    $this->_orderSummaryReport();
+		    $this->_orderDetailReport();
+		} catch(Exception $e) {
+		    echo "Caught Exception:" , $e->getMessage() , "\n";
+		    exit(0);
+		}
+		//$this->_orderCreditReport();
 	}
 
 	public function _orderSummaryReport(){
@@ -259,20 +271,33 @@ class FinancialExport extends Base  {
                 } else {
                     $order['payment_type'] = "none";
                 }
-                if (array_key_exists('city', $order['billing'])) {
-                    $order['city'] = $order['billing']['city'];
+                if (array_key_exists('firstname', $order['billing'])) {
+                    $order['billing_name'] = $order['billing']['firstname'] . " " . $order['billing']['lastname'];
                 } else {
-                    $order['city'] = 'N/A';
+                    $order['billing_address'] = 'N/A';
+                }
+                if (array_key_exists('address', $order['billing'])) {
+                    $order['billing_address'] = $order['billing']['address'];
+                } else {
+                    $order['billing_address'] = 'N/A';
+                }
+                if (array_key_exists('address_2', $order['billing'])) {
+                    $order['billing_address2'] = $order['billing']['address_2'];
+                }
+                if (array_key_exists('city', $order['billing'])) {
+                    $order['billing_city'] = $order['billing']['city'];
+                } else {
+                    $order['billing_city'] = 'N/A';
                 }
                 if (array_key_exists('state', $order['billing'])) {
-                    $order['state'] = $order['billing']['state'];
+                    $order['billing_state'] = $order['billing']['state'];
                 } else {
-                    $order['state'] = 'N/A';
+                    $order['billing_state'] = 'N/A';
                 }
                 if (array_key_exists('zip', $order['billing'])) {
-                    $order['zip'] = $order['billing']['zip'];
+                    $order['billing_zip'] = $order['billing']['zip'];
                 } else {
-                    $order['zip'] = 'N/A';
+                    $order['billing_zip'] = 'N/A';
                 }
                 $order['order_date'] = date('m/d/Y', $order['date_created']->sec);
                 if (!empty($order['payment_date'])) {
@@ -308,6 +333,9 @@ class FinancialExport extends Base  {
                     $promocode = Promocode::find('first', array('conditions' => array('code' => new MongoRegex("/" . $order['promo_code'] . "/i"))));
                     $order['promo_type'] = $promocode['type'];
                     $order['promo-code_amt'] = $promocode['discount_amount'];
+                }else {
+                    $order['promo_type'] = "";
+                    $order['promo-code_amt'] = "";
                 }
                 /*
                 * Grab credit information
@@ -340,11 +368,17 @@ class FinancialExport extends Base  {
                     $order['ship_records'] = "No";
                 }
 
-                $order['name'] = $order['shipping']['lastname'] . ', ' . $order['shipping']['firstname'];
+                $order['shipping_name'] = $order['shipping']['firstname'] . ' ' . $order['shipping']['lastname'];
                 $address2 = (array_key_exists('address_2',$order['shipping']))?$order['shipping']['address_2'] :'';
-                $order['address'] = $order['shipping']['address'] . ' ' . $address2 .
-                    ', ' . $order['shipping']['city'] . ', ' . $order['shipping']['state'] . ' ' .
-                    $order['shipping']['zip'];
+                $order['shipping_address'] = $order['shipping']['address'];
+                if (!empty($address2)) {
+                    $order['shipping_address2'] = $address2;
+                } else {
+                     $order['shipping_address2'] = "";
+                }
+                $order['shipping_city'] = $order['shipping']['city'];
+                $order['shipping_state'] = $order['shipping']['state'];
+                $order['shipping_zip'] = $order['shipping']['zip'];
                 unset($order['shipping']);
 
                 if ($shipRecord) {
@@ -400,6 +434,8 @@ class FinancialExport extends Base  {
                     $item['size'] = "none";
                 }
                 if (array_key_exists('sku_details', $itemRecord)) {
+                    var_dump($itemRecord['sku_details']);
+                    var_dump($item['size']);
                     $item['sku'] = $itemRecord['sku_details'][$item['size']];
                 } else {
                      $item['sku'] = "none";
@@ -482,7 +518,7 @@ class FinancialExport extends Base  {
                 }
 
               //  $creditDetails[] = $userCredit;
-                $this->log("Adding credit details for $order[user_id]");
+                $this->log("Adding credit details for");
                 $this->createXMLDoc('credit_detail', $userCredit, $this->creditDetailFile);
                 //@todo don't this part any more - credit details
                 /*
