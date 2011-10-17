@@ -90,7 +90,7 @@ for ( i=1; i<6; i++ ) {
 	var related_item_id = 'related'+ i + '_' + item_id;
 	//if its not the current dropdown
 	//and its value is the same as the current dropdown's value AND
-	//the item's value isn't an empty string
+	//the item's value isnt an empty string
 	//than throw an alert message
 	if(i!=list_position && $("#" + related_item_id + " option:selected").val()!=="" ) {
 
