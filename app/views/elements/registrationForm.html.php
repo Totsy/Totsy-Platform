@@ -1,38 +1,15 @@
-	<h3 style="color:#999; font-size:18px;">Register</h3>
+	<h2>Join with Facebook</h2>
 	<hr />
-	<?php if (preg_match('/join/',$_SERVER['REQUEST_URI'])) {
+	<a href="javascript:;" onclick="fblogin();return false;"><img src="/img/sign_in_fb.png"></a>
+
+<h2 style="margin-top:45px;">Or Join with Email</h2>	
+<hr />
+<?php if (preg_match('/join/',$_SERVER['REQUEST_URI'])) {
 	print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/join\']);">';
 		} else {
 	print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/register\']);">';
 		 }
 	?>
-
-	<?=$this->form->label('firstname', 'First Name <span>*</span>', array(
-		'escape' => false,
-		'class' => 'required'
-		));
-	?>
-
-	<?=$this->form->text('firstname', array('class' => 'inputbox')); ?>
-	<?=$this->form->error('firstname'); ?>
-
-	<?=$this->form->label('lastname', 'Last Name <span>*</span>', array(
-		'escape' => false,
-		'class' => 'required'
-		));
-	?>
-
-	<?=$this->form->text('lastname', array('class' => 'inputbox')); ?>
-	<?=$this->form->error('lastname'); ?>
-
-	<?=$this->form->label('zip', 'Zip Code <span>*</span>', array(
-		'escape' => false,
-		'class' => 'required'
-		));
-	?>
-
-	<?=$this->form->text('zip', array('class' => 'inputbox', 'id' => 'zip')); ?>
-	<?=$this->form->error('zip'); ?>
 
 	<?=$this->form->label('email', 'Email <span>*</span>', array(
 		'escape' => false,
@@ -72,23 +49,19 @@
 		'style'=>"float:left;margin-right:4px; display: none;"
 		));
 	?>
-
-	<span class="sm reg-tos" style="overflow:visible!important;">
-		By clicking register you accept our 
-		<?=$this->html->link('Terms and Conditions','pages/terms')?>.
-	</span>
-	<br>
-	<?=$this->form->submit('Register', array(
-		'class' => 'button fr'
+	
+	<?=$this->form->submit('Join Now', array(
+		'class' => 'button fl'
 		));
 	?>
+	
+	<span class="fl" style="margin:5px 0px 0px 10px;">The savvy mom shops at Totsy!</span>
+	
+	<span style="font-size:11px; padding:5px;">
+		By joining you accept our 
+		<?=$this->html->link('terms and conditions','pages/terms')?>.
+	</span>
 	
 	<?=$this->form->error('terms'); ?>
 	
 <?=$this->form->end(); ?>
-
-	<div>
-		<h3 style="color:#999; font-size:18px;">Register With Facebook</h3>
-		<hr />
-		<a href="javascript:;" onclick="fblogin();return false;"><img src="/img/fb_register_btn.png"></a>
-	</div>
