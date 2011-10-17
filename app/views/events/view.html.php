@@ -1,7 +1,6 @@
 <?php $this->title($event->name); ?>
 <?=$this->html->script('jquery.countdown.min');?>
 <?=$this->html->style('jquery.countdown');?>
-
 <div class="grid_16">
 		<h2 class="page-title gray"><span class="red"><a href="/" title="Sales"><?=$type?> Sales</a> /</span> <?=$event->name; ?> <div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
 		<hr />

@@ -47,7 +47,7 @@ tinyMCE.init({
 	elements: "Blurb,ShipMessage,"+allitemids,
 	theme : "advanced",
 	plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,preview,searchreplace,print,contextmenu,paste,directionality,noneditable,visualchars,nonbreaking,xhtmlxtras",
-
+	editor_deselector : "mceNoEditor",
 	// Theme options
 	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull",
 
@@ -168,6 +168,31 @@ for ( i=1; i<6; i++ ) {
 
 
 </script>
+<script type="text/javascript" charset="utf-8">
+	var limit = <?=$shortDescLimit;?>;
+	$(document).ready(function() {
+		
+		$('#Short').keyup(function(){
+			return limitTextArea($(this),$('#short_description_characters_counter'),limit);
+		});
+
+		$('#Short').focusout(function(){
+			return limitTextArea($(this),$('#short_description_characters_counter'),limit);
+		});
+	});
+
+	function limitTextArea(text,info,limiter){
+		var len = text.val().length;
+		if (len>limiter){
+			text.val(text.val().substr(0,limiter));
+			$('#short_description_characters_counter').text(limiter);
+			return false;
+		} else {
+			$('#short_description_characters_counter').text(len);
+			return true;
+		}
+	}
+</script>
 
 
 <?=$this->form->create(null, array('id' => "events_edit", 'enctype' => "multipart/form-data")); ?>
@@ -196,8 +221,25 @@ for ( i=1; i<6; i++ ) {
 			<h4 id="article-heading">Event Description</h4>
 			    <?=$this->form->field('name', array('value' => $event->name, 'class' => 'general'));?>
 				<div id="blurb_div">
-					<?=$this->form->field('blurb', array('type' => 'textarea', 'name' => 'content', 'value' => $event->blurb));?><br>
+					<?=$this->form->field('blurb', array('type' => 'textarea', 
+														 'name' => 'content', 
+														 'value' => $event->blurb ));?><br>
 				</div>
+			    <div style="width:450px;">
+			    	<?=$this->form->field('short', array('type' => 'textarea', 
+			    										 'name' => 'short_description', 
+			    										 'class' => 'mceNoEditor shortDescription', 
+			    										 'value' => isset($event->short)?$event->short:'' ));?>
+			    	<div id="short_description_characters_wrapper">
+			    		Total: 
+			    		<span id="short_description_characters_counter">
+			    			<? if(isset($event->short)) { 
+			    			   		echo strlen($event->short);
+			    			   } else { 
+			    			   		echo '0'; 
+			    			   }?>
+			    		</span>/<?=$shortDescLimit;?></div>
+			    </div>
 				<div id="event_status">
 					<h4 id="event_status">Event Status</h4>
 					<?php if ($event->enabled == 1): ?>
