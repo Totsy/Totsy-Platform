@@ -282,7 +282,7 @@ class APIController extends  \lithium\action\Controller {
 			
 			$data =  $event->data();
 			
-			if ($data['end_date']['sec'] <= strtotime(date('d-m-Y 23:59:59',strtotime('+1 day'))) ){
+			if ($data['end_date']['sec'] <= strtotime(date('d-m-Y 23:59:59',strtotime('+1 day',$start_date)) && $data['end_date']['sec'] > strtotime(date('d-m-Y 23:59:59',$start_date)) ){
 				$closing[] = $data;
 			}
 			
@@ -443,7 +443,7 @@ class APIController extends  \lithium\action\Controller {
 		$closing = Event::directQuery(array(
 				'enabled' => true,
 				'end_date' => array(
-					'$gte' => new MongoDate( strtotime(date('Y-m-d',$start_date).' 00:00:00') ),
+					'$gt' => new MongoDate( strtotime(date('Y-m-d',$start_date).' 00:00:00') ),
 					'$lte' => new MongoDate( strtotime(date('Y-m-d',strtotime('+1 day',$start_date)).' 23:59:59') )
 				)
 		));
