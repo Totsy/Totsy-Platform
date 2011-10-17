@@ -1,50 +1,42 @@
+<!-- JS for cart timer. -->
+<script type="text/javascript" src="/js/cart-timer.js"></script>
+<!-- JS for cart timer for individual items. -->
+<script type="text/javascript" src="/js/cart-items-timer.js"></script>
+<script type="text/javascript" src="/js/tipsy/src/javascripts/jquery.tipsy.js"></script>
+<link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
+
 <script type="text/javascript">	
 
 var discountErrors = new Object();
 
 	$(document).ready( function(){
 					
-			if(discountErrors.promo==true) {	
-				show_code_errors("promo");
-			} else if (discountErrors.credits==true)  {
-				show_code_errors("cred");
-			} else if(discountErrors.credits==true && discountErrors.promo==true) {
-				show_code_errors("cred");
-				show_code_errors("promo");
-			} else {
-				discountErrors.promo=false;
-				discountErrors.credits=false;  
-			}
+		if(discountErrors.promo==true) {	
+		    show_code_errors("promo");
+		} else if (discountErrors.credits==true)  {
+		    show_code_errors("cred");
+		} else if(discountErrors.credits==true && discountErrors.promo==true) {
+		    show_code_errors("cred");
+		    show_code_errors("promo");
+		} else {
+		    discountErrors.promo=false;
+		    discountErrors.credits=false;  
 		}
-	);
 	
 	$("#cart-count").text(<?=$itemCount?>);
+	var cartExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	
+	//set the timer
+	cartTimer(cartExpires);
+	//set the timer on individual cart items
+	cartItemsTimer();
+	//applying tooltip
+	$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
+	$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
 	
-	$( function () {
-	    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	    
-		var now = new Date();
-		
-		$('#itemCounter').countdown( { until: itemExpires, onExpiry: refreshCart, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
-		
-		if (itemExpires < now) {
-			$('#itemCounter').html("<span class='over' style='color:#EB132C; padding:5px;'>No longer reserved</span>");
-		}
-		
-		function refreshCart() {
-			window.location.reload(true);
-		}
-		
-		//applying tooltip
-		$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
-		$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
-		
-	}); 
-	
+});
+			
 </script>
-
 <script type="text/javascript" src="/js/jquery.number_format.js"></script>
-<script type="text/javascript" src="/js/tipsy/src/javascripts/jquery.tipsy.js"></script>
-<link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
 
 <?php  if(!empty($subTotal)): ?>
 <div class="cart-content">
@@ -59,10 +51,10 @@ var discountErrors = new Object();
 			</h2>
 		</div>
 	</div>
-	
+
 	<div class="grid_5 cart-header-right">
 		<?=$this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
-	</div>	
+	</div>
 	<div class="clear"></div>
 	<hr/>
 	     <div class="cart-button fr" style="margin:10px 0px 20px 0px;">
@@ -114,6 +106,9 @@ var discountErrors = new Object();
 						<strong>Size:</strong> <?=$item->size;?>
 						<?php endif ?>
 					</td>
+					<?php
+						$date = $cartItemEventEndDates[$x] * 1000;
+					?>
 					<td class="cart-item-timer-td">
 					<div id='<?php echo "itemCounter$x"; ?>_display' class="cart-item-timer" title='<?=$date?>'></div>
 					</td>
@@ -138,10 +133,7 @@ var discountErrors = new Object();
     					'id' => $item->_id, 'value' => $item->quantity, 'class'=>'quantity'
 					));
 					?>
-					<?php 
-						$date = $cartItemEventEndDates[$x] * 1000;
-					?>
-					</td>
+										</td>
 					<td class="cart-actions">
 						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" onclick="deletechecked('Are you sure you want to remove this item?','<?=$item->_id; ?>');" style="color: red!important;"><img src="/img/trash.png" width="20" align="absmiddle" style="margin-right:20px;" /></a>
 					</td>
@@ -161,26 +153,21 @@ var discountErrors = new Object();
 		<?=$this->form->end(); ?>
 
 		<div class="clear"></div>
-		
+
 		<div class="grid_16" style="width:935px; padding-top:30px;">
 		<div class="cart-codes">
 				<div class="cart-code-buttons">
 				     <?php if(!empty($credit)): ?>
 				    	<strong>Add <a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a></strong> /
-				    <?php endif ?> 
-				    	<?php if(empty($promocode_disable)): ?>
-				    	<strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
-				    	<?php endif ?>
+				    <?php endif ?>
+				    <strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
 				</div>
 				<div style="clear:both"></div>
 				<div id="promos_and_credit">
-				<?=$this->form->create(null); ?>
-					<?php if(empty($promocode_disable)): ?>
 				    <div id="promo" style="display:none">
-				    	<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo) ); ?>
+				    	<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo, 'promocode_disable' => $promocode_disable)); ?>
 				    </div>
-				    <?php endif ?>
-				    <div id="cred" style="display:none; text-align:left !important">		
+				    <div id="cred" style="display:none; text-align:left !important">
 				    	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
 				    </div>
 				</div>
@@ -193,18 +180,18 @@ var discountErrors = new Object();
 				<?php if (!empty($cartPromo['saved_amount']) && ($cartPromo['type'] != 'free_shipping') ):?>
 				<div style="clear:both"></div>
 				<div class="subtotal">
-    			    	<span style="float: left;">Discount 
+    			    	<span style="float: left;">Discount
     			    	<?php echo '[' . $cartPromo['code'] . ']'; ?>:
-    			    	</span> 
-    			    	<span style="float:right">- 
+    			    	</span>
+    			    	<span style="float:right">-
     			    	$<?=number_format(abs($cartPromo['saved_amount']),2)?>
-    			    	</span>	
+    			    	</span>
     			</div>
    				<?php endif ?>
    				<?php if (!empty($services['tenOffFitfy'])):?>
 				<div style="clear:both"></div>
 				<div class="subtotal">
-    			    	<span style="float: left;">Discount [10$ Off] :</span> 
+    			    	<span style="float: left;">Discount [10$ Off] :</span>
     			    		<span style="float:right">- $<?=number_format($services['tenOffFitfy'],2)?>
     			    		</span>
     			    	</span>
@@ -213,63 +200,68 @@ var discountErrors = new Object();
    				<?php if (!empty($credits)):?>
 				<div style="clear:both"></div>
 				<div class="subtotal">
-    			    	<span style="float:left;">Credits:</span> 
+    			    	<span style="float:left;">Credits:</span>
     			    	<span style="float:right">- $<?=number_format(abs($credits),2)?></span>
     			</div>
    				<?php endif ?>
-				<div style="clear:both"></div>							
+				<div style="clear:both"></div>
 				<div>
-				<div class="subtotal">	
-				<span id="shipping_tooltip" class="cart-tooltip" original-title="Shipping charges may vary depending on item type."><img src="/img/tooltip_icon.png">
+				<div class="subtotal">
+					<?php if (!empty($shipping)):?>
+						<span id="shipping_tooltip" class="cart-tooltip" original-title="Shipping charges may vary depending on item type.">
+							<img src="/img/tooltip_icon.png">
+						</span>
+						<span style="float:left;" id="shipping">
+				    		Shipping:
 				    	</span>
-				    <span style="float:left;" id="shipping">
-				    Shipping:</span> 
-				    <span style="float:right">$7.95</span>							</div>
+				    	<span style="float:right">$<?=number_format(abs($shipping),2)?></span>
+					<?php endif ?>
+				</div>
 				</div>
 				<?php if (!empty($shipping_discount)):?>
 				<div style="clear:both"></div>
 				<div class="subtotal">
-    			    <span style="float:left;">Free Shipping 
-    			    	<?php 
+    			    <span style="float:left;">Free Shipping
+    			    	<?php
     			    	if(!empty($promocode)) {
     			    		if($promocode['type'] === 'free_shipping')
-    			    			echo '[' . $promocode['code'] . ']';	
-    			    	}?>		
-    			    	:</span> 
+    			    			echo '[' . $promocode['code'] . ']';
+    			    	}?>
+    			    	:</span>
     			    	<span style="color:#707070; float:right">- $<?=number_format($shipping_discount,2)?></span>
     			</div>
    				<?php endif ?>
-				<div style="clear:both"></div>	
+				<div style="clear:both"></div>
 				<div>
 				<div class="subtotal">
 				    <span id="tax_tooltip" class="cart-tooltip" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary"><img src="/img/tooltip_icon.png">
-</span>			
-					<span id="estimated_tax" style="float:left;">Estimated Tax:</span> 
+</span>
+					<span id="estimated_tax" style="float:left;">Sales Tax:</span>
 				    <span style="float:right">$0.00</span>
 				</div>
 				</div>
-				
-				<div style="clear:both" class="subtotal"><hr /></div>			
+
+				<div style="clear:both" class="subtotal"><hr /></div>
 				<div>
 				    <div class="cart-savings">
 				    <?php if (!empty($savings)) : ?>
-				    Your Savings: 
+				    Your Savings:
 				    $<?=number_format($savings,2)?>
 				    	<?php endif ?>
 				    </div>
 				    <div class="subtotal">
-				    <span class="cart-order-total">Order Total:</span> 
-				    	<span id="ordertotal">$ <?=number_format($total,2)?> </span>
-				    </div>						    	
+				    <span class="cart-order-total">Order Total:</span>
+				    	<span id="ordertotal">$<?=number_format($total,2)?> </span>
+				    </div>
 				</div>
 			</div>
-		</div>	
-			
+		</div>
+
 <div class="cart-button fr cart-nav-buttons">
 		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
 		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
 		      <div class="clear"></div>
-		      
+
 <?=$this->form->end(); ?>
 
 </div>
@@ -281,66 +273,12 @@ var discountErrors = new Object();
 	<?=$this->form->hidden('rmv_item_id', array('class' => 'inputbox', 'id' => 'rmv_item_id')); ?>
 	<?=$this->form->end();?>
 </div>
-		
-<script type="text/javascript" charset="utf-8">
-		
-	$(".counter").each( function() {
-	    				
-	    var fecha  = parseInt(this.title);
-	    var itemExpires = new Date();
-	    var now = new Date();
-	    
-	    itemExpires = new Date(fecha);	
-	    
-	    var expireNotice = (itemExpires.valueOf() - 120000);
-	    expireNotice = new Date( expireNotice );
-	    
-	    //show 2 minutes notice
-	    if(expireNotice < now && itemExpires > now) {
-	    	$("#" + this.id + "_display").html('<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item will expire in 2 minutes</div>');
-	    } 
-	    
-	   	//show item expired notice
-	    if(now > itemExpires) {
-	    	$("#" + this.id + "_display").html('<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>');
-	    }
-	    
-	    $("#" + this.id).countdown({until: expireNotice, 
-	    							expiryText: '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item will expire in 2 minutes</div>', 
-	    							layout: '{mnn}{sep}{snn} seconds',
-	    							onExpiry: resetTimer
-	    							});
-	    
-	    //call when item expires
-		function notifyEnding() {
-			$("#" + this.id).countdown('change', { expiryText: '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>', 
-			onExpiry: refreshCart
-			});
-		
-			$("#" + this.id + "_display").html( '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>' );
-		}
-		
-		function refreshCart() {
-			window.location.reload(true);
-		}
-	    
-	    //call 2 minutes before the item expires							
-	    function resetTimer() {	
-	    	$("#" + this.id + "_display").html( $("#" + this.id).countdown('settings', 'expiryText') );
-			$("#" + this.id).countdown('change', { until: itemExpires, 
-												   expiryText: '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>',
-												    onExpiry: notifyEnding
-												   });
-		}							
-	});		
-				
-</script>	
 
-<div class="clear"></div>	
+<div class="clear"></div>
 <?php else: ?>
 	<div class="grid_16 cart-empty">
 		<h1>
-			<span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> 	
+			<span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span>
 			<a href="/sales" title="Continue Shopping">Continue Shopping</a/></h1>
 	</div>
 <?php endif ?>
@@ -363,7 +301,7 @@ var discountErrors = new Object();
 	}
 	//SUBMIT QUANTITY IN CASE OF DDWN CHANGE
 	$(document).ready( function(){
-	
+
 		$(function () {
 			$(".quantity").live("change keyup", function () {
 				if($("select").val() == 0) {
@@ -375,7 +313,7 @@ var discountErrors = new Object();
 			});
 		});
 	});
-	
+
 	//HIDE / SHOW CREDITS INPUT
 	function open_credit() {
 		if ($("#cred").is(":hidden")) {
@@ -387,16 +325,16 @@ var discountErrors = new Object();
 			$("#cred").slideToggle("fast");
 		}
 	};
-	
+
 	//for showing promo and discount errors after the promocode form has been submitted
 	function show_code_errors(id) {
 		$("#" + id).slideToggle("fast");
 	}
-	
+
 	//HIDE / SHOW PROMOS INPUT
 	function open_promo() {
 		if ($("#promo").is(":hidden")) {
-			$("#promo").slideToggle("fast");	
+			$("#promo").slideToggle("fast");
 			if (!$("#cred").is(":hidden")) {
 				$("#cred").slideToggle("fast");
 			}

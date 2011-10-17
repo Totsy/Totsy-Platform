@@ -5,7 +5,7 @@
 	<li><a href="http://blog.totsy.com" title="Blog" target="_blank">Blog</a></li>
 	<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
 	<li><a href="/pages/affiliates" title="Affiliates">Affiliates</a></li>
-	<!-- <li><a href="/pages/jobs" title="Jobs">Jobs</a></li> -->
+	<li><a href="/pages/careers" title="Careers">Careers</a></li>
 	<?php if (empty($userInfo)){ ?>
 	<li><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
 	<li class="last"><a href="http://nytm.org/made" title="Made in NYC" target="_blank">Made in NYC</a></li>
