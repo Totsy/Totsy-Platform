@@ -5,6 +5,7 @@ use admin\controllers\BaseController;
 use admin\models\Order;
 use admin\models\Item;
 use admin\models\Event;
+use admin\models\User;
 use MongoRegex;
 use MongoDate;
 use MongoId;
@@ -263,28 +264,25 @@ class ItemsController extends BaseController {
 	}
 
 	public function bulkCancel($search = null) {
-
-			if ($this->request->data || $search) {
-				if ($this->request->data['search']) {
-					$search = $this->request->data['search'];
-				}
-				$itemCollection = Item::connection()->connection->items;
-				$items = $itemCollection->find(
-					array('$or' => array(
-						array('_id') => new MongoRegex("/$search/i"),
-						array('skus' => array('$in' => array(new MongoRegex("/$search/i"))))
-				)));
-				$items = iterator_to_array($items);
-
-				if (strpos($search, "-")) { //detect if there is a '-' in the string, which means it is a SKU and not just an item_id
-					$item_id = key($items);
-					$search_sku = $search;
-					$search_item_id = $item_id;
-				}
-
-				return compact("items","search_item_id","search_sku");
+		if ($this->request->data || $search) {
+			if ($this->request->data['search']) {
+				$search = $this->request->data['search'];
 			}
+			$itemCollection = Item::connection()->connection->items;
+			$items = $itemCollection->find(
+				array('$or' => array(
+					array('_id') => new MongoRegex("/$search/i"),
+					array('skus' => array('$in' => array(new MongoRegex("/$search/i"))))
+			)));
+			$items = iterator_to_array($items);
 
+			if (strpos($search, "-")) { //detect if there is a '-' in the string, which means it is a SKU and not just an item_id
+				$item_id = key($items);
+				$search_sku = $search;
+				$search_item_id = $item_id;
+			}
+			return compact("items","search_item_id","search_sku");
+		}
 	}
 	
 	/**
@@ -312,6 +310,24 @@ class ItemsController extends BaseController {
 		}
 		return $vouchers;
 	}
-}
+	
+	public function exportVouchers($item_id) {
+		$orderCollection = Order::Collection();
+		$orders = $orderCollection->find(array('items.item_id' => $item_id));
+		$idx = 0;
+		foreach($orders as $order) {
+			$user = User::find('first', array('conditions' => array('_id' => new MongoId($order['user_id']))));
+			$datas[$idx]['order_id'] = (string)$order['_id'];
+			$datas[$idx]['email'] = $user->email;
+			foreach($order['items'] as $item) {
+				if($item['item_id'] == $item_id) {
+					$datas[$idx]['voucher'] = $item['voucher_code'];
+				}
+			}
+			$idx++;
+		}
+		return compact("datas");
 
+	}
+}
 ?>

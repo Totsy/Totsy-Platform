@@ -36,7 +36,14 @@ class Item extends \lithium\data\Model {
 	}
 	
 	public static function getDepartments() {
-		return static::_connection()->connection->command(array('distinct'=>'items', 'key'=>'departments'));
+		$results = static::_connection()->connection->command(array('distinct'=>'items', 'key'=>'departments'));
+		#Clean Empty Values
+		foreach ($results['values'] as $key => $value) {
+			if(empty($value)) {
+				unset($results['values'][$key]);
+			}
+		}
+		return $results;
 	}
 	public static function castData($items, array $options = array()) {
 

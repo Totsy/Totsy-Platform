@@ -130,6 +130,7 @@ class Order extends Base {
 					if(!empty($item_voucher)) {
 						$coupon = $item_voucher['vouchers'][0];
 						$itemsCollection->update(array('_id' => new MongoId($item->item_id)), array('$pop' => array('vouchers' => -1)));
+						$itemsCollection->update(array('_id' => new MongoId($item->item_id)), array('$push' => array('vouchers_sold' => $coupon)));
 						$item->voucher_code = $coupon;
 					}
 				}

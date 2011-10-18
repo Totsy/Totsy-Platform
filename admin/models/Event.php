@@ -133,6 +133,23 @@ class Event extends \lithium\data\Model {
 	    return str_replace($search, $replace, $string); 
 	} 
 	
+	/**
+	 * Check if event has items with voucher
+	 *
+	 * @return boolean
+	 */
+	public static function checkVouchers($event_id) {
+		$voucher = false;
+		$event = Event::find('first',array('conditions' => array('_id' => new MongoId($event_id))));
+		foreach($event->items as $item_id) { 
+			$item = Item::find('first',array('conditions' => array('_id' => new MongoId($item_id))));
+			if(!empty($item->voucher)) {
+				$voucher = true;
+				break;
+			}
+		}
+		return $voucher;
+	}
 	
 	public static function check_spreadsheet($array){
 	

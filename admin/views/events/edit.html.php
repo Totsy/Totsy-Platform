@@ -207,6 +207,7 @@ for ( i=1; i<6; i++ ) {
 			<li><a href="#event_images"><span>Event Images</span></a></li>
 		    <li><a href="#event_items"><span>Event Items</span></a></li>
 		    <li><a href="#event_history"><span>Event History</span></a></li>
+		   	<?php if(!empty($vouchers)) echo '<li><a href="#event_voucher"><span>Event Vouchers</span></a></li>'; ?>
 		</ul>
 
 		<div id="event_info">
@@ -515,6 +516,29 @@ for ( i=1; i<6; i++ ) {
 					}
 				?>
 		</div>
+		<?php if(!empty($vouchers)): ?>
+			<div id="event_voucher">
+			<table>
+				<tr>
+					<td>Voucher</td>
+					<td>Quantity Uploaded</td>
+					<td>Quantity Sold</td>
+				</tr>
+			<?php foreach($vouchers as $item_id => $voucher): ?>
+			<tr>
+				<td>
+				<?=$this->html->link($voucher['description'], array(
+								'Items::exportVouchers',
+								'args'=>$item_id),
+								array('target' => '_blank'));?>
+				
+				</td>
+				<td><?=$voucher['qty_uploaded']?></td>
+				<td><?=$voucher['qty_sold']?></td>
+			</tr>
+			<?php endforeach ?>
+		</div>
+		<?php endif ?>
 	</div>
 </div>
 <script type="text/javascript">

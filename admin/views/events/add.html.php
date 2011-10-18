@@ -124,11 +124,6 @@ tinyMCE.init({
 		<input type="radio" name="tangible" value="1" id="tangible" checked> Tangible <br>
 		<input type="radio" name="tangible" value="0" id="tangible"> Non Tangible
 	</div>
-	<div id="event_voucher">
-		<h2 id="event_voucher">Voucher</h2>
-		<input type="radio" name="voucher" value="1" id="voucher"> Yes <br>
-		<input type="radio" name="voucher" value="0" id="voucher" checked> No
-	</div>
 	<div id="event_viewlive">
 		<h2 id="event_type">View Live Anyway</h2>
 		 (allows direct url access to event even if otherwise disabled)<br>

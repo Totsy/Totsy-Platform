@@ -95,15 +95,13 @@ class EventsController extends BaseController {
 	public function edit($_id = null) {
 		$shortDescLimit = $this->shortDescLimit;
 		$current_user = Session::read('userLogin');
-
 		$itemsCollection = Item::Collection();
 		$event = Event::find($_id);
 		$seconds = ':'.rand(10,60);
 		$eventItems = Item::find('all', array('conditions' => array('event' => array($_id)),
 				'order' => array('created_date' => 'ASC')
-			));
-
-		#T Get all possibles value for the multiple departments select
+		));
+		#Get all possibles value for the multiple departments select
 		$result = Item::getDepartments();
 		$all_filters = array();
 		foreach ($result['values'] as $value) {
@@ -112,7 +110,6 @@ class EventsController extends BaseController {
 				$all_filters['Momsdads'] = 'Moms & Dads';
 			}
 		}
-		#END T
 		if (empty($event)) {
 			$this->redirect(array('controller' => 'events', 'action' => 'add'));
 		}
@@ -166,9 +163,6 @@ class EventsController extends BaseController {
 //			}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
 			$images = $this->parseImages($event->images);
 
 			//Saving the original start and end and ship dates for comparison
@@ -190,49 +184,10 @@ class EventsController extends BaseController {
 				compact('images'),
 				array('url' => $url)
 			);
-
-			// Comparison of OLD Event attributes and the NEW Event attributes
-			$changed = "";
-
-			if ($eventData[name] != $event->name) {
-				$changed .= "Name changed from <strong>{$event->name}</strong> to <strong>{$eventData[name]}</strong><br/>";
-			}
-
-			if ($eventData[blurb] != $event->blurb) {
-				$changed .= "Blurb changed from <strong>{$event->blurb}</strong> to <strong>{$eventData[blurb]}</strong><br/>";
-			}
-
-			if ($eventData[enabled] != $event->enabled) {
-				$changed .= "Enabled changed from <strong>{$event->enabled}</strong> to <strong>{$eventData[enabled]}</strong><br/>";
-			}
 			
-			if ($eventData[voucher] != $event->voucher) {
-				$changed .= 'Voucher changed from <strong>'.(int)$event->voucher.'</strong> to <strong>'.(int)$eventData[voucher].'</strong><br/>';
-			}
-
-			if (strtotime($start_date) != $event->start_date->sec) {
-				$temp =  date('m/d/Y H:i:S', $event->start_date->sec);
-				$changed .= "Start Date changed from <strong>{$temp}</strong> to <strong>{$start_date}</strong><br/>";
-			}
-
-			if (strtotime($end_date) != $event->end_date->sec) {
-				$temp =  date('m/d/Y H:i:s', $event->end_date->sec);
-				$changed .= "End Date changed from  <strong>{$temp}</strong> to <strong>{$end_date}</strong><br/>";
-			}
-
-			if ($eventData[ship_message] != $event->ship_message) {
-				$changed .= "Ship Message changed from <strong>{$event->ship_message}</strong> to <strong>{$eventData[ship_message]}</strong><br/>";
-			}
-
-			if (strtotime($ship_date) != $event->ship_date->sec) {
-				$temp =  date('m/d/Y H:i:s', $event->ship_date->sec);
-				$changed .= "Ship Date changed from  <strong>{$temp}</strong> to <strong>{$ship_date}</strong><br/>";
-			}
-
-			if ($eventData[enable_items] != $event->enable_items) {
-				$changed .= "Enabled Items from <strong>{$event->enable_items}</strong> to <strong>{$eventData[enable_items]}</strong><br/>";
-			}
-
+			#Comparison of OLD Event attributes and the NEW Event attributes
+			$changed = $this->getHistoryLog($eventData, $event);
+			
 			/**
 			* Changed author save from email to user id because email can change even if it is a Totsy Email
 			**/
@@ -288,10 +243,71 @@ class EventsController extends BaseController {
 				}
 			}
 		}
-
-		return compact('event', 'eventItems', 'items', 'all_filters', 'shortDescLimit');
+		#Check if Items with vouchers
+		//$voucher = Event::checkVouchers($event->_id);
+		$vouchers = $this->getVouchersLog($eventItems);
+		return compact('event', 'eventItems', 'items', 'all_filters', 'shortDescLimit', 'vouchers');
 	}
+	
+	#
+	public function getVouchersLog($eventItems) {
+		$vouchers = null;
+		if(!empty($eventItems)) {
+			foreach($eventItems as $item) {
+				if(!empty($item->voucher)) {
+					$vouchers[(string)$item->_id]['description'] = $item->description;
+					$vouchers[(string)$item->_id]['qty_uploaded'] = count($item->vouchers_sold) + count($item->vouchers);
+					$vouchers[(string)$item->_id]['qty_sold'] = count($item->vouchers_sold);
+				}
+			}
+		}
+		return $vouchers;
+	}
+	#Comparison of OLD Event attributes and the NEW Event attributes
+	public function getHistoryLog($eventData, $event) {
+		
+		$changed = "";
 
+		if ($eventData[name] != $event->name) {
+			$changed .= "Name changed from <strong>{$event->name}</strong> to <strong>{$eventData[name]}</strong><br/>";
+		}
+
+		if ($eventData[blurb] != $event->blurb) {
+			$changed .= "Blurb changed from <strong>{$event->blurb}</strong> to <strong>{$eventData[blurb]}</strong><br/>";
+		}
+
+		if ($eventData[enabled] != $event->enabled) {
+			$changed .= "Enabled changed from <strong>{$event->enabled}</strong> to <strong>{$eventData[enabled]}</strong><br/>";
+		}
+		
+		if ($eventData[voucher] != $event->voucher) {
+			$changed .= 'Voucher changed from <strong>'.(int)$event->voucher.'</strong> to <strong>'.(int)$eventData[voucher].'</strong><br/>';
+		}
+
+		if (strtotime($start_date) != $event->start_date->sec) {
+			$temp =  date('m/d/Y H:i:S', $event->start_date->sec);
+			$changed .= "Start Date changed from <strong>{$temp}</strong> to <strong>{$start_date}</strong><br/>";
+		}
+
+		if (strtotime($end_date) != $event->end_date->sec) {
+			$temp =  date('m/d/Y H:i:s', $event->end_date->sec);
+			$changed .= "End Date changed from  <strong>{$temp}</strong> to <strong>{$end_date}</strong><br/>";
+		}
+
+		if ($eventData[ship_message] != $event->ship_message) {
+			$changed .= "Ship Message changed from <strong>{$event->ship_message}</strong> to <strong>{$eventData[ship_message]}</strong><br/>";
+		}
+
+		if (strtotime($ship_date) != $event->ship_date->sec) {
+			$temp =  date('m/d/Y H:i:s', $event->ship_date->sec);
+			$changed .= "Ship Date changed from  <strong>{$temp}</strong> to <strong>{$ship_date}</strong><br/>";
+		}
+
+		if ($eventData[enable_items] != $event->enable_items) {
+			$changed .= "Enabled Items from <strong>{$event->enable_items}</strong> to <strong>{$eventData[enable_items]}</strong><br/>";
+		}
+		return $changed;
+	}
 
 	/**
 	 * This method parses the item file that is uploaded in the Events Edit View.
@@ -554,7 +570,6 @@ class EventsController extends BaseController {
 		} else {
 			return $str;
 		}
-	}
+	}	
 }
-
 ?>
