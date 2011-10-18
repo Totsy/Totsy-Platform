@@ -77,10 +77,6 @@ class BaseController extends \lithium\action\Controller {
 		return compact('events', 'type', 'environment');
 	}
 
-	protected function _asciiClean($description) {
-		return preg_replace('/[^(\x20-\x7F)]*/','', $description);
-	}
-
 	public static function randomString($length = 8, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890')
 	{
 		$chars_length = (strlen($chars) - 1);
