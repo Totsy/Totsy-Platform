@@ -54,6 +54,7 @@ class EventsController extends BaseController {
 	
 		$items_quantities[] = array();
 		$items_skus[] = array();
+		$items_skus_used[] = array();
 		$items[] = array();
 
 		$itemsCollection = Item::Collection();
@@ -73,28 +74,15 @@ class EventsController extends BaseController {
 
 		//loop through returned item results
 		foreach($items_with_skus as $olditem){
+		
+			//boolean to skip insert
+			$addnewitem = true;
 
 			//set new total quantity at 0
 			$total_quantity_new=0;
 
 			//item data
 			$oitem = $olditem->data();
-
-			//remove _id
-			unset($oitem['_id']);
-			unset($oitem['event']);
-			unset($oitem['created_date']);
-			unset($oitem['total_quantity']);
-			
-			//update event _id
-			$oitem['event'] = array((string)$_id);
-			
-			//update date
-			$oitem['created_date'] = new MongoDate();
-
-
-			//create a new item instance
-			$newItem = Item::create();
 
 			//existing sku and sku_details
 			$sku_details_arr = $oitem['sku_details'];
@@ -111,34 +99,62 @@ class EventsController extends BaseController {
 					
 				//checks if current sku_details sku is in form-submitted SKU array
 				if(in_array($sku_details, $items_skus)){
-					//this is a match, get the index of the sku_details
-					//echo "<br> * this is the index " . $sku_details_key;
-
-					//current quantity (should be 0)
-					$quantitynow = $details_arr[$sku_details_key];
+					if(in_array($sku_details, $items_skus_used)){
+						$addnewitem = false;
+					}
+					else{
+						$items_skus_used[] = $sku_details;
 					
-					//echo "<br> * update quantity to " . $items_quantities[$sku_details];
+						//this is a match, get the index of the sku_details
+						//echo "<br> * this is the index " . $sku_details_key;
 					
-					//use index to update quantity
-					$oitem['details'][$sku_details_key] = $items_quantities[$sku_details];
-					
-					$total_quantity_new += $items_quantities[$sku_details];
-					
+	
+						//current quantity (should be 0)
+						$quantitynow = $details_arr[$sku_details_key];
+						
+						//echo "<br> * update quantity to " . $items_quantities[$sku_details];
+						
+						//use index to update quantity
+						$oitem['details'][$sku_details_key] = $items_quantities[$sku_details];
+						
+						$total_quantity_new += $items_quantities[$sku_details];
+						
+						//remove this sku from items_skus
+						//$key = array_search($sku_details, $items_skus); 
+						//unset($items_skus[$key]);
+					}
 				}
 			}
 			
-			//set total quant
-			$oitem['total_quantity'] = $total_quantity_new;
-			
-			//save item with revised info
-			$newItem->save($oitem);
-			
-			//get _id of new item
-			$new_id = $newItem->_id;
-
-			//add new _id to returned items array
-			$items[] = $new_id;
-			
+			if($addnewitem){
+				//remove _id
+				unset($oitem['_id']);
+				unset($oitem['event']);
+				unset($oitem['created_date']);
+				unset($oitem['total_quantity']);
+				
+				//update event _id
+				$oitem['event'] = array((string)$_id);
+				
+				//update date
+				$oitem['created_date'] = new MongoDate();
+	
+	
+				//create a new item instance
+				$newItem = Item::create();
+	
+				//set total quant
+				$oitem['total_quantity'] = $total_quantity_new;
+				
+				//save item with revised info
+				$newItem->save($oitem);
+				
+				//get _id of new item
+				$new_id = $newItem->_id;
+	
+				//add new _id to returned items array
+				$items[] = $new_id;
+			}
 		}
 		return $items;
 	}
