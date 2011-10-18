@@ -1,4 +1,5 @@
-<div class="menu_top_left">
+<div class="menu_top_right">
+<!-- <div class="menu_top_left"> -->
 		<?php if (!empty($userInfo)): ?>
 		Hello,
 		<?php if(array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])):?>
@@ -9,9 +10,7 @@
 		<?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
 		(<?php echo $this->html->link('Sign Out', $logout, array('title' => 'Sign Out')); ?>)
 		<?php endif ?>
-	</div>
-	
-	<div class="menu_top_right">
+
 		<?php if (!(empty($userInfo))) { ?>
 		<a href="/account" title="My Account">My Account</a>
 		<?php if (!(empty($credit))) { ?>
@@ -27,4 +26,4 @@
 			<a href="/users/invite" title="+ Invite Friends Get $15">+ Invite Friends Get $15</a>
 		</span>
 		<?php } ?>
-	</div>
+</div>
