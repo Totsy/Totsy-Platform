@@ -46,6 +46,104 @@ class EventsController extends BaseController {
 		return compact('event');
 	}
 
+	public function uploadcheck_clearance() {
+	    $this->_render['layout'] = false;
+
+	}
+	protected function parseItems_clearance($fullarray, $_id, $enabled = false) {
+	
+		$items_quantities[] = array();
+		$items_skus[] = array();
+		$items[] = array();
+
+		$itemsCollection = Item::Collection();
+
+		//convert textarea content into an array
+		//$fullarray = Event::convert_spreadsheet($_POST['items_submit']);
+
+		//loop thru form-created array to create an skus array, and a quantity array with the skus as keys
+		foreach($fullarray as $item_sku_quantity){
+			$current_sku = $item_sku_quantity[0];
+			$items_skus[] = $current_sku;
+			$items_quantities[$current_sku] = $item_sku_quantity[1];
+		}
+
+		//mongo query, find all items with skus
+		$items_with_skus = Item::find('all', array('conditions' => array( 'skus' => array( "\$in" => $items_skus))));
+
+		//loop through returned item results
+		foreach($items_with_skus as $olditem){
+
+			//set new total quantity at 0
+			$total_quantity_new=0;
+
+			//item data
+			$oitem = $olditem->data();
+
+			//remove _id
+			unset($oitem['_id']);
+			unset($oitem['event']);
+			unset($oitem['created_date']);
+			unset($oitem['total_quantity']);
+			
+			//update event _id
+			$oitem['event'] = array((string)$_id);
+			
+			//update date
+			$oitem['created_date'] = new MongoDate();
+
+
+			//create a new item instance
+			$newItem = Item::create();
+
+			//existing sku and sku_details
+			$sku_details_arr = $oitem['sku_details'];
+			$skus_arr = $oitem['skus'];
+			$details_arr = $oitem['details'];
+
+			//set quantities to 0
+			foreach($details_arr as $details_key => $details){
+				$oitem['details'][$details_key] = 0;
+			}
+
+			//loop thru sku_details, find the one we want, get the position in index
+			foreach($sku_details_arr as $sku_details_key => $sku_details){
+					
+				//checks if current sku_details sku is in form-submitted SKU array
+				if(in_array($sku_details, $items_skus)){
+					//this is a match, get the index of the sku_details
+					//echo "<br> * this is the index " . $sku_details_key;
+
+					//current quantity (should be 0)
+					$quantitynow = $details_arr[$sku_details_key];
+					
+					//echo "<br> * update quantity to " . $items_quantities[$sku_details];
+					
+					//use index to update quantity
+					$oitem['details'][$sku_details_key] = $items_quantities[$sku_details];
+					
+					$total_quantity_new += $items_quantities[$sku_details];
+					
+				}
+			}
+			
+			//set total quant
+			$oitem['total_quantity'] = $total_quantity_new;
+			
+			//save item with revised info
+			$newItem->save($oitem);
+			
+			//get _id of new item
+			$new_id = $newItem->_id;
+
+			//add new _id to returned items array
+			$items[] = $new_id;
+			
+		}
+		return $items;
+	}
+
+
 	public function add() {
 		
 		$shortDescLimit = $this->shortDescLimit;
@@ -134,7 +232,7 @@ class EventsController extends BaseController {
 			if(!empty($this->request->data['items_submit'])) {
 
 				$fullarray = Event::convert_spreadsheet($this->request->data['items_submit']);
-				if($this->request->data->clearance){
+				if($event->clearance){
 					$parseItems = $this->parseItems_clearance($fullarray, $event->_id, $enableItems);
 				}
 				else{
@@ -448,7 +546,6 @@ class EventsController extends BaseController {
 
 		return $items;
 	}
-
 
 	/**
 	 * Parse the images from the request using the key
