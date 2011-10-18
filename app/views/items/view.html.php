@@ -2,7 +2,7 @@
 <script src="/js/jquery.tmpl.js" type="text/javascript"></script>
 
 <script type="text/javascript">
-	var item_id = "<?=$item->_id?>";	
+	var item_id = "<?=$item->_id?>";
 </script>
 
 <!-- JS for cart timer. -->
@@ -15,7 +15,7 @@
 <!-- template used for items on cart. jquery.tmpl.js driven -->
 <?=$this->view()->render( array('element' => 'popupCartItems') ); ?>
 
-<div style="position:relative"> 
+<div style="position:relative">
 <div id="cart_popup" class="grid_16 roundy glow" style="display:none">
 	<div id="cart_popup_header">
 	    <div id="cart_popup_timer">
@@ -24,7 +24,7 @@
 	    	</span>
 	    	<span style="float:right">Estimated Shipping Date: <br>
 	    		 <span id="ship_date" style="font-weight:bold; color:#009900; font-size:14px"></span>
-	    	</span>		
+	    	</span>
 	    </div>
 	    <div id="cart_popup_close_button">
 	    	<a href="#">
@@ -39,13 +39,13 @@
 	<div id="cart_popup_breakdown">
 	   <div class="cart-savings">Your Savings: $<span id="savings"></span></div>
 	   <div id="cart_popup_order_total">
-	   	<span class="cart-order-total">Subtotal: </span> 
+	   	<span class="cart-order-total">Subtotal: </span>
 	       <span id="order_total_num" style="font-weight:bold !important; color:#009900 !important; font-size:14px !important"></span>
-	   </div>						    	
+	   </div>
 	</div>
 	<div style="clear:both"></div>
 	<div id="cart_popup_checkout_buttons" class="cart-button fr">
-	   <a id="cart_popup_cont_shop" class="button_border" href="#">Continue Shopping</a>		      
+	   <a id="cart_popup_cont_shop" class="button_border" href="#">Continue Shopping</a>
 	   <a id="cart_popup_checkout" class="button" href="/checkout/view">Checkout</a>
 	</div>
 </div>
@@ -208,7 +208,7 @@
 			<?php if ($item->total_quantity >= 1): ?>
 				<div id="hidden-div" style="display:none; color:#eb132c; font-weight:bold;">Please Select Size!</div>
 				<span style="display: inline-block;">
-				<input type="button" value="Add to Cart" id="add-to-cart" class="button">	
+				<input type="button" value="Add to Cart" id="add-to-cart" class="button">
 				</span>
 				<div id="all-reserved"></div>
 			<?php endif ?>
@@ -304,7 +304,7 @@ $(document).ready(function() {
 <script type="text/javascript">
 //cto product tag
 var cto_params = [];
-cto_params["i"] = $('#item_id').attr('value');
+cto_params["i"] = item_id;
 var cto_conf = 't1=sendEvent&c=2&p=3290';
 var cto_conf_event = 'v=2&wi=7714287&pt1=2';
 var CRITEO=function(){var b={Load:function(d){var c=window.onload;window.onload=function(){if(c){c()}d()}}};function a(e){if(document.createElement){
@@ -317,4 +317,4 @@ c+='&cb='+Math.floor(Math.random()*99999999999);try{c+='&ref='+encodeURIComponen
 c+='&sc_r='+encodeURIComponent(screen.width+'x'+screen.height);}catch(e){}try{c+='&sc_d='+encodeURIComponent(screen.colorDepth);}catch(e){}b.Load(function(){
 a(c.substring(0,2000))})}}}();CRITEO.Load(document.location.protocol+'//dis.us.criteo.com/dis/dis.aspx?');
 </script>
- 
+

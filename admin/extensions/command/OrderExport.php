@@ -209,7 +209,8 @@ class OrderExport extends Base {
 						$queue->processed_date = new MongoDate();
 						$queue->save();
 						$this->summary['from_email'] = 'no-reply@totsy.com';
-						$this->summary['to_email'] = 'logistics@totsy.com';
+						//$this->summary['to_email'] = 'logistics@totsy.com';
+						$this->summary['to_email'] = 'jwidro@totsy.com,mmiller@totsy.com';
 						if ($this->test != 'true') {
                            Mailer::send('Order_Export', $this->summary['to_email'], $this->summary);
                         }
