@@ -51,6 +51,14 @@ class ItemsController extends BaseController {
 					'enabled' => true,
 					'url' => $eventUrl
 			)));
+			if (!$event) {
+				$event = Event::first(array(
+					'conditions' => array(
+					'viewlive' => true,
+					'url' => $eventUrl
+				)));
+			}
+
 			$items = Item::find('all', array(
 				'conditions' => array(
 					'enabled' => true,
