@@ -3,6 +3,7 @@
 namespace admin\models;
 use MongoId;
 use MongoDate;
+use admin\models\Item;
 use admin\extensions\util\String;
 
 class Event extends \lithium\data\Model {
@@ -90,56 +91,54 @@ class Event extends \lithium\data\Model {
 			return "<div class=xls_cell>$content</div>";
 		}
 	}
-	
-	
-	
+
 	/**
 	 * Takes copy/pasted XLS content and converts to multi-dimensional array
 	 * @var returns array
 	 */
 	public static function convert_spreadsheet($val){
 		$fullarray = array();
-	
-		$rows = explode("\n", $val); 
-		
+
+		$rows = explode("\n", $val);
+
 		foreach($rows as $thisrows){
-			$fields = explode("\t", $thisrows); 
-			
+			$fields = explode("\t", $thisrows);
+
 			if(($fields[0]=="")&&($fields[1]=="")&&($fields[2]=="")&&($fields[3]=="")&&($fields[4]=="")){
 			}
 			else{
 				$fullarray[] = $fields;
 			}
 		}
-		
+
 		return $fullarray;
 	}
-	
-	public static function convert_smart_quotes($string){ 
-	    $search = array(chr(145), 
-	                    chr(146), 
-	                    chr(147), 
-	                    chr(148), 
-	                    chr(151)); 
-	 
-	    $replace = array('"', 
-	    				 '"', 
-	    				 "'", 
-	                     "'", 
-	                     '"', 
-	                     '"', 
-	                     '-'); 
-	 
-	    return str_replace($search, $replace, $string); 
-	} 
-	
-	
+
+	public static function convert_smart_quotes($string){
+	    $search = array(chr(145),
+	                    chr(146),
+	                    chr(147),
+	                    chr(148),
+	                    chr(151));
+
+	    $replace = array('"',
+	    				 '"',
+	    				 "'",
+	                     "'",
+	                     '"',
+	                     '"',
+	                     '-');
+
+	    return str_replace($search, $replace, $string);
+	}
+
+
 	public static function check_spreadsheet($array){
-	
+
 		//arrays for datatypes to check uniqueness
 		$output = "";
 		$check_vendor_style = array();
-		
+
 		//arrays of header names to check stuff
 		$check_required = array("vendor", "vendor_style", "description", "quantity", "department_1");
 		$check_badchars = array("vendor", "vendor_style", "age", "category", "sub-category", "color", "no size");
@@ -147,7 +146,7 @@ class Event extends \lithium\data\Model {
 		$check_departments = array("Girls", "Boys", "Momsdads");
 		$check_dept = array("department_1", "department_2", "department_3");
 		$check_related = array("related_1", "related_2", "related_3", "related_4", "related_5");
-	
+
 		$highestRow = $array[0];
 		$totalrows = count($array);
 		$totalcols = count($highestRow);
@@ -158,13 +157,13 @@ class Event extends \lithium\data\Model {
 				$val = $array[$row][$col];
 				$val = trim($val);
 				$thiserror = "";
-				
+
 				if ($row == 0) {
 					$heading[] = $val;
 					if(strpos($val, "1/2")){
 						$thiserror = "header error - $heading[$col] is illegal - has a half";
 					}
-				} 
+				}
 				else {
 					if (isset($heading[$col])) {
 						if ((in_array($heading[$col], $check_required))&&(empty($val))) {
@@ -209,7 +208,7 @@ class Event extends \lithium\data\Model {
 			}
 			$output .= "<div style=\"clear:both;\"></div>";
 		}
-	
+
 		//$errors[] = "you dont even know what youre doing!!!";
 		if(count($errors)>0){
 			$error_output="<h3>Spreadsheet Errors:</h3>";
@@ -217,7 +216,7 @@ class Event extends \lithium\data\Model {
 				$error_output .= $thiserror . "<br>";
 			}
 		}
-			
+
 		if($error_output){
 			$output .= "<div>$error_output</div>";
 
@@ -230,9 +229,20 @@ class Event extends \lithium\data\Model {
 		else{
 			return "success";
 		}
-	
+
 	}
 
+	public static function getItems($eventId = null) {
+		$items = null;
+		if ($eventId) {
+			$items = Item::find('all', array(
+				'conditions' => array(
+					'event' => array('$in' => array($eventId)
+			))));
+			$items = $items->data();
+		}
+		return $items;
+	}
 }
 
 
