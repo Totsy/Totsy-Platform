@@ -25,7 +25,8 @@
 	<meta property="og:site_name" content="Totsy"/>
 	<meta property="fb:app_id" content="181445585225391"/>
 	<meta name="description" content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
-	<meta name="sailthru.date" content="<?=date('r')?>" /><?php
+	<meta name="sailthru.date" content="<?=date('r')?>" />
+	<?php
 	 
 		if(substr($request->url,0,5) == 'sales' || $_SERVER['REQUEST_URI'] == '/') {
 			$title = "Totsy index. Events.";
@@ -60,37 +61,37 @@
 <body class="app">
 	<?php if(isset($branch)) { echo $branch; } ?>
 <div class="container_16 roundy glow">
-	<div class="grid_3 alpha" style="margin:5px 0px 0px 5px;">
+	<div class="grid_6 alpha" style="margin:5px 0px 0px 5px;">
 		<?php echo $this->html->link($this->html->image('mamapedia-logo.png', array('width'=>'351')), '/sales', array('escape'=> false)); ?>
 	</div>
-	<div class="grid_13">
+	<div class="grid_10">
 	<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
-	</div>
 		<div class="menu_main_global">
 		<?php if (!(empty($userInfo))): ?>
 		<ul class="nav main" id="navlist">
-			<li><a href="/sales" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0 || $_SERVER['REQUEST_URI'] == '/') {
-			echo "class='active'";
-			} ?>>All Sales</a></li>
-			<li><a href="/sales/girls" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/girls') == 0) {
-			echo 'class="active"';
-			} ?>>Girls</a></li>
-			<li><a href="/sales/boys" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/boys') == 0)  {
-			echo 'class="active"';
-			} ?>>Boys</a></li>
-			<li><a href="/sales/momsdads" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/momsdads') == 0) {
-			echo 'class="active"';
-			} ?>>Moms &amp; Dads</a></li>
+		    <li><a href="/sales" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0 || $_SERVER['REQUEST_URI'] == '/') {
+		    echo "class='active'";
+		    } ?>>All Sales</a></li>
+		    <li><a href="/sales/girls" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/girls') == 0) {
+		    echo 'class="active"';
+		    } ?>>Girls</a></li>
+		    <li><a href="/sales/boys" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/boys') == 0)  {
+		    echo 'class="active"';
+		    } ?>>Boys</a></li>
+		    <li><a href="/sales/momsdads" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/momsdads') == 0) {
+		    echo 'class="active"';
+		    } ?>>Moms &amp; Dads</a></li>
 		</ul>
 		<?php endif ?>
 		</div>
 	<!-- end header nav -->
-	
-	<div class="container_16">
-		<?php echo $this->content(); ?>
-	</div>
-	<!-- main content -->
+	<div style="clear:both"></div>
 </div>
+<div style="clear:both"></div>	
+<div class="container_16">
+    <?php echo $this->content(); ?>
+</div>
+	<!-- main content -->
 
 <!-- end container_16 -->
 	
@@ -148,11 +149,8 @@
 				});
 			});
 		// end back to top	
-	
 	// end tabs
 </script>
-
-
 <!-- Sailthru Horizon --> 
 <script type="text/javascript">
     (function() {
