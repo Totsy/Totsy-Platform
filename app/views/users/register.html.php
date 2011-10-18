@@ -1,14 +1,14 @@
 <style>
 	h2 { margin:0px; padding:0px; color:#999; font-size:18px; }
 	h2.tagline { margin:0px; padding:10px 0px 10px 0px; color:#ed1c25; font-size:18px; }
-	.round { border-radius:12px; background: #fff; }
-	.pushy { margin-top:35px; padding:10px; }
+	.round { border-radius:12px; background: #fff; padding:14px; }
+	.pushy { margin-top:35px; padding:0px; }
 	.free_shipping_banner_reg_new img { position: absolute; right:-41px; top:390px; z-index:9999; }
-	.round_clear { padding:10px; border-radius:12px; background: #000; }
+	.round_clear { border-radius:22px; border: 10px solid rgba(255, 255, 255, 0.8); }
 </style>
 <div class="container_16 round_clear pushy">
 <div class="round">
-	<div class="grid_10">
+	<div class="grid_10" style="width:560px;">
 			<h2 class="tagline">Save up to 90% off the best brands for your family!</h2>
 			<iframe width="560" height="315" src="http://www.youtube.com/embed/HJBQnkxPJko" frameborder="0" allowfullscreen></iframe>
 			<?php echo $this->html->image('featured_on.png', array()); ?>

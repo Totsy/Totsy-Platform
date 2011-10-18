@@ -56,11 +56,15 @@
 	?>
 	
 	<span class="fl" style="margin:5px 0px 0px 10px;">The savvy mom shops at Totsy!</span>
-	
-	<span style="font-size:11px; padding:5px;">
+	<div class="clear"></div>
+	<div style="font-size:11px; padding:5px; margin-top:10px;">
 		By joining you accept our 
 		<?=$this->html->link('terms and conditions','pages/terms')?>.
-	</span>
+	</div>
+	
+	<div class="fr" style="font-size:11px; padding:5px; margin:10px 66px 0px 0px;">
+		*Offer expires 30 days after registration.
+	</div>
 	
 	<?=$this->form->error('terms'); ?>
 	
