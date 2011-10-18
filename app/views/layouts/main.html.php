@@ -60,16 +60,17 @@
 <body class="app">
 	<?php if(isset($branch)) { echo $branch; } ?>
 <div class="container_16 roundy glow">
-	<div class="grid_4 alpha" style="margin:5px 0px 0px 5px;">
-		<?php echo $this->html->link($this->html->image('mamapedia_logo.png', array('width'=>'215')), '/sales', array('escape'=> false)); ?>
+	<div class="grid_3 alpha" style="margin:5px 0px 0px 5px;">
+		<?php echo $this->html->link($this->html->image('mamapedia-logo.png', array('width'=>'351')), '/sales', array('escape'=> false)); ?>
 	</div>
+	<div class="grid_13">
 	<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
-	
+	</div>
 		<div class="menu_main_global">
 		<?php if (!(empty($userInfo))): ?>
 		<ul class="nav main" id="navlist">
 			<li><a href="/sales" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0 || $_SERVER['REQUEST_URI'] == '/') {
-			echo 'class="active"';
+			echo "class='active'";
 			} ?>>All Sales</a></li>
 			<li><a href="/sales/girls" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/girls') == 0) {
 			echo 'class="active"';
@@ -82,7 +83,7 @@
 			} ?>>Moms &amp; Dads</a></li>
 		</ul>
 		<?php endif ?>
-	</div>
+		</div>
 	<!-- end header nav -->
 	
 	<div class="container_16">
@@ -103,7 +104,7 @@
 	</div>
 	<!-- end footer icons -->
 
-	<div id='toTop'>^ Top</div>
+	<div id="toTop">^ Top</div>
 
 	<!--affiliate pixels-->
 	<?php echo $pixel; ?>
