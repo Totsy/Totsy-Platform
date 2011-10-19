@@ -317,7 +317,7 @@ class ItemsController extends BaseController {
 		$idx = 0;
 		foreach($orders as $order) {
 			$user = User::find('first', array('conditions' => array('_id' => new MongoId($order['user_id']))));
-			$datas[$idx]['order_id'] = (string)$order['_id'];
+			$datas[$idx]['order_id'] = (string) $order['_id'];
 			$datas[$idx]['email'] = $user->email;
 			foreach($order['items'] as $item) {
 				if($item['item_id'] == $item_id) {
