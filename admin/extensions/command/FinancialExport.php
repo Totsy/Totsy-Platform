@@ -143,7 +143,8 @@ class FinancialExport extends Base  {
 		'items',
 		'card_type',
 		'ship_date',
-		'modifications'
+		'modifications',
+		'avatax'
 	);
 
 	/**
@@ -189,15 +190,15 @@ class FinancialExport extends Base  {
 		    $yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
             $orderConditions = array(
                 'date_created' => array(
-                    '$gte' => new MongoDate(strtotime('Mar 1, 2011')),
-                    '$lte' => new MongoDate(strtotime('Mar 30, 2011'))
+                    '$gte' => new MongoDate(strtotime('May 1, 2011')),
+                    '$lte' => new MongoDate(strtotime('May 31, 2011'))
                    // '$lte' => new MongoDate($yesterday_max)
                 ));
             /**
              * Setup filenames for the order summary and epxort functionality.
             */
-		    $this->orderSummaryFile = $this->tmp . 'OrdSummary-Apr_Jun_2011.xml';
-		    $this->orderDetailFile = $this->tmp . 'OrdDetail-Apr_Jun_2011.xml';
+		    $this->orderSummaryFile = $this->tmp . 'OrdSummary-May_2011.xml';
+		    $this->orderDetailFile = $this->tmp . 'OrdDetail-May_2011.xml';
 		    $this->creditDetailFile = $this->tmp . 'CredDetail-2010.xml';
 		    $this->log("Retrieving Historical Data");
         } else {
@@ -245,7 +246,7 @@ class FinancialExport extends Base  {
 
 		$this->orders = Order::collection()->find($orderConditions, $fields);
 		try {
-		    $this->_orderSummaryReport();
+		//    $this->_orderSummaryReport();
 		    $this->_orderDetailReport();
 		} catch(Exception $e) {
 		    echo "Caught Exception:" , $e->getMessage() , "\n";
@@ -405,6 +406,7 @@ class FinancialExport extends Base  {
             //	$orderSummary[] = $order;
                 $this->log("Adding $order[order_id] to order summary");
                 $this->createXMLDoc('order_summary', $order, $this->orderSummaryFile);
+                $this->log("Finish adding $order[order_id] to order summary");
               //  var_dump($this->orders->dead());
 	    }
 	    $this->xml->asXML($this->orderSummaryFile);
@@ -414,8 +416,12 @@ class FinancialExport extends Base  {
 
 	public function _orderDetailReport(){
 	    $orderDetails = array();
+	    $count = 0;
+	    $page = 1;
+	 //   $this->orders = $this->orders->limit(20)->batchSize(10);
 	    while ($this->orders->hasNext()) {
             $order = $this->orders->getNext();
+            ++$count;
             $orderItems = $order['items'];
             //Get detailed information about the items sold
             foreach ($orderItems as $item) {
@@ -434,9 +440,24 @@ class FinancialExport extends Base  {
                     $item['size'] = "none";
                 }
                 if (array_key_exists('sku_details', $itemRecord)) {
-                    var_dump($itemRecord['sku_details']);
-                    var_dump($item['size']);
-                    $item['sku'] = $itemRecord['sku_details'][$item['size']];
+                    if (strpos($item['size'], "\n")) {
+                        echo "************ first 'if' branch ************";
+                        var_dump($item['size']);
+                        var_dump($itemRecord['sku_details']);
+                        var_dump(array_key_exists($size,$itemRecord['sku_details']));
+                        $item['sku'] = $itemRecord['sku_details'][$item['size']];
+                    } else {
+                         echo "************ second 'if' branch *****************";
+                        $size = preg_replace("/\s(or)\s/"," or\n", $item['size']);
+                        var_dump($size);
+                        var_dump($itemRecord['sku_details']);
+                        var_dump(array_key_exists($size,$itemRecord['sku_details']));
+                        if(!array_key_exists($size,$itemRecord['sku_details'])) {
+                           $size = preg_replace("/\s(or)\s/"," or\r\n", $item['size']);
+                        }
+                        $item['sku'] = $itemRecord['sku_details'][$size];
+                    }
+
                 } else {
                      $item['sku'] = "none";
                 }
@@ -481,7 +502,13 @@ class FinancialExport extends Base  {
                 // @todo don't need this any more - order details - unless csv is requested again
                 //fputcsv($fpDetail, $item,',',chr(34));
             }
+         /*  if ($count == 20) {
+                $skip = $count * $page;
+                $this->orders->skip($skip);
+                ++$page;
+            }*/
 		}
+		var_dump($count);
 		$this->xml->asXML($this->orderDetailFile);
 	    $this->xml = null;
 	}
