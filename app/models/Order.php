@@ -131,7 +131,7 @@ class Order extends Base {
 						$coupon = $item_voucher['vouchers'][0];
 						$itemsCollection->update(array('_id' => new MongoId($item->item_id)), array('$pop' => array('vouchers' => -1)));
 						$itemsCollection->update(array('_id' => new MongoId($item->item_id)), array('$push' => array('vouchers_sold' => $coupon)));
-						$item->voucher_code = $coupon;
+						$item->voucher_code[] = $coupon;
 					}
 				}
 			}
@@ -201,7 +201,7 @@ class Order extends Base {
 			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
 				Mailer::send('Welcome_10_Off', $user->email, $data);
 			}
-			Mailer::send('Order_Confirmation', $user->email, $data);
+			Mailer::send('Order_Confirmation_test', $user->email, $data);
 			#Clear Savings Information
 			User::cleanSession();
 			return $order;

@@ -96,8 +96,10 @@
 													<td style="padding:5px" title="description">
 														<?=$item['description']?>
 														<br>
+														<?php if(!empty($item['color'])): ?>
 														Color: <?=$item['color']?>
 														<br>
+														<?php endif; ?>
 														Size: <?=$item['size']?>
 													</td>
 													<td style="padding:5px; color:#009900;" title="price">
