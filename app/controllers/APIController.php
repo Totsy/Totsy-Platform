@@ -282,7 +282,8 @@ class APIController extends  \lithium\action\Controller {
 			
 			$data =  $event->data();
 			
-			if ($data['end_date']['sec'] <= strtotime(date('d-m-Y 23:59:59',strtotime('+1 day',$start_date)) && $data['end_date']['sec'] > strtotime(date('d-m-Y 23:59:59',$start_date)) ){
+			if ($data['end_date']['sec'] <= strtotime(date('d-m-Y 23:59:59',strtotime('+1 day',$start_date))) && 
+				$data['end_date']['sec'] > strtotime(date('d-m-Y 23:59:59',$start_date)) ){
 				$closing[] = $data;
 			}
 			
