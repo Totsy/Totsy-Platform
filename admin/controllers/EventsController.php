@@ -254,7 +254,9 @@ class EventsController extends BaseController {
 		}
 		
 		foreach ($eventItems as $this_item){
-			$values = $this_item->departments->data();
+			if($this_item->departments){
+				$values = $this_item->departments->data();
+			}
 			foreach ($values as $value) {
 				$sel_filters[$value] = $value;
 			}
