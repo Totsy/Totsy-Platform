@@ -452,9 +452,8 @@ class EventsController extends BaseController {
 				} else {
 					if (isset($heading[$col])) {
 						if ((in_array($heading[$col], $check_decimals))&&(!empty($val))) {
-							$val = (int)$val;
+							$val = floatval($val);
 						}
-
 						if(($heading[$col] === "department_1") || ($heading[$col] === "department_2") || ($heading[$col] === "department_3")) {
 							if (!empty($val)) {
 								$eventItems[$row - 1]['departments'][] = ucfirst(strtolower(trim($val)));
