@@ -316,15 +316,7 @@ class EventsController extends BaseController {
 			$eventData[modifications] = $modifications;
 
 			// End of Comparison of OLD Event Attributes and NEW event attributes
-
 			if ($event->save($eventData)) {
-				#If Event is Voucher, Set Items as Vouchers too
-				if(!empty($event->items)) {
-					$itemsCollection = Item::Collection();
-					foreach($event->items as $item) {
-						$itemsCollection->update(array("_id" => new MongoId($item)), array('$set' => array('voucher' =>  $eventData['voucher'])));
-					}
-				}
 				$this->redirect(array(
 						'controller' => 'events', 'action' => 'edit',
 						'args' => array($event->_id)
@@ -358,12 +350,15 @@ class EventsController extends BaseController {
 			}
 		}
 		#Check if Items with vouchers
-		//$voucher = Event::checkVouchers($event->_id);
 		$vouchers = $this->getVouchersLog($eventItems);
 		return compact('event', 'eventItems', 'items', 'all_filters', 'shortDescLimit', 'vouchers');
 	}
 	
-	#
+	/**
+	 * Get The Vouchers Sold Items and Print in a Log
+	 * @param object
+	 * @return array
+	 */
 	public function getVouchersLog($eventItems) {
 		$vouchers = null;
 		if(!empty($eventItems)) {
@@ -377,6 +372,7 @@ class EventsController extends BaseController {
 		}
 		return $vouchers;
 	}
+	
 	#Comparison of OLD Event attributes and the NEW Event attributes
 	public function getHistoryLog($eventData, $event) {
 		
@@ -392,10 +388,6 @@ class EventsController extends BaseController {
 
 		if ($eventData[enabled] != $event->enabled) {
 			$changed .= "Enabled changed from <strong>{$event->enabled}</strong> to <strong>{$eventData[enabled]}</strong><br/>";
-		}
-		
-		if ($eventData[voucher] != $event->voucher) {
-			$changed .= 'Voucher changed from <strong>'.(int)$event->voucher.'</strong> to <strong>'.(int)$eventData[voucher].'</strong><br/>';
 		}
 
 		if (strtotime($start_date) != $event->start_date->sec) {
