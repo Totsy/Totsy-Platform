@@ -1,6 +1,6 @@
 <style>
 	h2 { margin:0px; padding:0px; color:#999; font-size:18px; }
-	h2.tagline { margin:0px; padding:10px 0px 10px 0px; color:#ed1c25; font-size:18px; }
+	h2.tagline { margin:0px; padding:10px 0px 10px 0px; color:#ed1c25; font-size:21px; letter-spacing: 0.049em; }
 	.round { border-radius:12px; background: #fff; padding:14px; }
 	.pushy { margin-top:35px; padding:0px; }
 	.free_shipping_banner_reg_new img { position: absolute; right:-41px; top:390px; z-index:9999; }
@@ -14,10 +14,12 @@
 			<?php echo $this->html->image('featured_on.png', array()); ?>
 	</div>
 
-	<div class="grid_6">
+	<div class="grid_6" style="padding:0px 0px 0px 2px;">
 			<div class="fr">Already a member? <a href="/login" title="Sign In">Sign In</a></div>
 			<div class="clear"></div>
-			<?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'333')), '', array('escape'=> false)); ?>
+			<div style="padding-top:19px;">
+				<?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'333')), '', array('escape'=> false)); ?>
+			</div>
 			<?php echo $this->view()->render(array('element' => 'registrationForm')); ?>
 			<div class="free_shipping_banner_reg_new"><img src="/img/freeShip-badge.png" /></div>
 	</div>
