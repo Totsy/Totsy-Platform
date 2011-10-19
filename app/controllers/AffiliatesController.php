@@ -41,7 +41,7 @@ class AffiliatesController extends BaseController {
 					$user['clear_token'] = $token;
 					$user['reset_token'] = sha1($token);
 					$user['legacy'] = 0;
-					$data['password'] = $token.'@'.$user['reset_token'];
+					$data['password'] = $token . '@' . $user['reset_token'];
 				}
 				if (isset($data['password'])) {
 					// New user, need to register here
@@ -60,7 +60,7 @@ class AffiliatesController extends BaseController {
 					$user['terms'] = "1";
 					$user['invited_by'] = $code;
 					extract(UsersController::registration($user));
-					
+
 					$success = $saved;
 					$errors = $user->errors();
 				}
