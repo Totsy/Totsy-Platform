@@ -613,7 +613,7 @@ class UsersController extends BaseController {
 			$user->confirmemail = $fbuser['email'];
 		}
 		
-		$this->_render['layout'] = 'login';
+		$this->_render['layout'] = 'mamapedia/login';
 	}
 
 	/**

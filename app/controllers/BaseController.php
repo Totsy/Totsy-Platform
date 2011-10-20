@@ -108,9 +108,14 @@ class BaseController extends \lithium\action\Controller {
 		* Send pixel to layout
 		**/
 		$this->set(compact('pixel'));
-
-		$this->_render['layout'] = 'main';
-
+		
+		/* 
+		if($_SERVER['HTTP_HOST']=='mamapedia.totsy.com' || $_SERVER['HTTP_HOST']=='mamapediadev.totsy.com') {
+			$this->_render['layout'] = '/mamapedia/main';
+		} else {
+			$this->_render['layout'] = 'main';
+		}*/
+		$this->_render['layout'] = '/mamapedia/main';
 	}
 
 	/**

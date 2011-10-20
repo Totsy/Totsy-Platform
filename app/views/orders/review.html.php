@@ -42,16 +42,30 @@ var discountErrors = new Object();
 <script type="text/javascript" src="/js/tipsy/src/javascripts/jquery.tipsy.js"></script>
 <link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
 
+<?php
+
+//check DNS here :)
+$is_mamapedia = true;
+$img_path_prefix = "";
+
+if($is_mamapedia) {
+	$img_path_prefix = "/img/mamapedia";
+} else {
+	$img_path_prefix = "/img";
+}
+
+?>
+
 <?php  if(!empty($subTotal)): ?>
 <div class="cart-content">
 	<div class="grid_11 cart-header-left">
 		<div style="float:left;">
 			<h2 class="page-title gray">
 				<span class="cart-step-status gray" style="font-weight:bold">Review your Shipping and Payment Information</span>
-				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps4.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_completed.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_completed.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_completed.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps4.png"></span>
 			</h2>
 		</div>
 	</div>

@@ -12,6 +12,18 @@
 <!-- JS for cart popup. needs to reference the popupCartItems element above -->
 <script type="text/javascript" src="/js/cart-popup.js"></script>
 
+<?php
+
+	$close_button_path = "";
+/*	
+	if($_SERVER['HTTP_HOST']=='mamapedia.totsy.com' || $_SERVER['HTTP_HOST']=='mamapediadev.totsy.com') {
+		$close_button_path = "/img/mamapedia/";
+	} else {
+		$close_button_path = "/img/";
+	}*/
+	 
+?>
+
 <!-- template used for items on cart. jquery.tmpl.js driven -->
 <?=$this->view()->render( array('element' => 'popupCartItems') ); ?>
 
@@ -28,7 +40,7 @@
 	    </div>
 	    <div id="cart_popup_close_button">
 	    	<a href="#">
-	    	<img src="/img/popup_cart_close.jpg" style="width:20px; height:20px"></a>
+	    	<img src="<?=$close_button_path?>popup_cart_close.jpg" style="width:20px; height:20px"></a>
 	    </div>
 	</div>
 	<div style="clear:both"></div>
@@ -257,7 +269,7 @@ $(document).ready(function() {
 	            url: $.base + 'items/available',
 	            data: "item_id=" + item_id + "&" + "item_size=" + item_size,
 	            context: document.body,
-	            success: function(data){
+	            success: function(data) {
 	                if (data == 'false') {
 	                    $('#all-reserved').show();
 	                    $('.button').hide();

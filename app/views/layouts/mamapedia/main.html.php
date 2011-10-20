@@ -11,7 +11,7 @@
 	
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
 	
-	<?php echo $this->html->style(array('base_mamapedia.css?v=004', '960.css?v=004', 'jquery_ui_custom/jquery.ui.all.mamapedia.css?v=004'), array('media' => 'screen')); ?>
+	<?php echo $this->html->style(array('mamapedia/base.css?v=001', '960.css?v=004', 'jquery_ui_custom/jquery.ui.all.mamapedia.css?v=004'), array('media' => 'screen')); ?>
 
 	<script src="https://www.google.com/jsapi"></script>
 	<script> google.load("jquery", "1.6.1", {uncompressed:false});</script>
@@ -57,7 +57,7 @@
 	<?php if(isset($branch)) { echo $branch; } ?>
 <div class="container_16 roundy glow">
 	<div class="grid_6 alpha" style="margin:5px 0px 0px 5px;">
-		<?php echo $this->html->link($this->html->image('mamapedia-logo.png', array('width'=>'280')), '/sales', array('escape'=> false)); ?>
+		<?php echo $this->html->link($this->html->image('mamapedia/logo.png', array('width'=>'280')), '/sales', array('escape'=> false)); ?>
 	</div>
 	<div class="grid_10">
 	<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
