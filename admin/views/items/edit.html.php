@@ -94,6 +94,8 @@ tinyMCE.init({
 						<input type="radio" name="voucher" value="0" id="voucher" <?php if ($item->voucher == 0) echo 'checked'; ?>> No
 					</div><br>
 					<div id="voucher_details" <?php if(empty($item->voucher)) echo 'style="display:none"'; ?>>
+						<?=$this->form->label('Maximum Use by User'); ?>
+						<?=$this->form->select('voucher_max_use',array(0,1,2,3,4,5,6,7,8,9),array('value'=> $item->voucher_max_use));?><br>
 						<?php
 							if(!empty($event->voucher_end_date->sec)) {
 								$end_date =  date('m/d/Y H:i', $event->voucher_end_date->sec);
