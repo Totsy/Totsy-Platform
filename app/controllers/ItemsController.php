@@ -7,6 +7,9 @@ use app\models\Affiliate;
 use app\models\Item;
 use app\models\Event;
 use app\models\Cart;
+use app\models\User;
+use app\models\Order;
+use lithium\storage\Session;
 
 /**
  * Controls the user experience with an item.
@@ -40,6 +43,8 @@ class ItemsController extends BaseController {
 	 *  * $spinback_fb: `String` containing pixel that will fire in the view.
 	*/
 	public function view() {
+		#Get Users Informations
+		$user = Session::read('userLogin');
 		$itemUrl = $this->request->item;
 		$eventUrl = $this->request->event;
 		$item = null;
@@ -81,6 +86,17 @@ class ItemsController extends BaseController {
 					$related = Item::related($item);
 					$sizes = Item::sizes($item);
 					$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+					if(!empty($item->voucher)) {
+						$orders = Order::find(array('user_id' => $user['_id'], 'item.item_id' => (string)$item->_id));
+						/**foreach($orders as $order) {
+							foreach($order['items'] as $item_purch) {
+								if((string)$item_purch['_id'] == (string)$item->_id) {
+									echo $item_purch->quantity;
+								}
+							}
+						
+						}**/
+					}
 				}
 			}
             $pixel = Affiliate::getPixels('product', 'spinback');
