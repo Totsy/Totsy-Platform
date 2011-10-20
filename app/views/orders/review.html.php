@@ -43,6 +43,27 @@ var discountErrors = new Object();
 <script type="text/javascript" src="/js/tipsy/src/javascripts/jquery.tipsy.js"></script>
 <link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
 
+<?php
+
+//check DNS here :)
+
+if($_SERVER['HTTP_HOST']=='mamasourcedev.totsy.com' || $_SERVER['HTTP_HOST']=='mamasource.totsy.com') {
+	$is_mamapedia = true;
+} else {
+	$is_mamapedia = false;
+}
+
+$is_mamapedia = true;
+$img_path_prefix = "";
+
+if($is_mamapedia) {
+	$img_path_prefix = "/img/mamapedia";
+} else {
+	$img_path_prefix = "/img";
+}
+
+?>
+
 <?php  if(!empty($subTotal)): ?>
 <div class="cart-content">
 	<div class="grid_11 cart-header-left">
