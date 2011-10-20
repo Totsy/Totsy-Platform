@@ -12,8 +12,7 @@
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
 	
 	<?php echo $this->html->style(array('base.css?v=007', '960.css?v=007', 'jquery_ui_custom/jquery.ui.all.css?v=007'), array('media' => 'screen')); ?>
-
-
+	
 	<script src="https://www.google.com/jsapi"></script>
 	<script> google.load("jquery", "1.6.1", {uncompressed:false});</script>
 	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
@@ -22,12 +21,13 @@
 	<?php echo $this->html->script('jquery.uniform.min.js?v=007'); ?>
 	<?php echo $this->html->script('jquery.countdown.min.js?v=007'); ?>
 	<?php echo $this->scripts(); ?>
+	
 	<meta property="og:site_name" content="Totsy"/>
 	<meta property="fb:app_id" content="181445585225391"/>
 	<meta name="description" content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
 	<meta name="sailthru.date" content="<?=date('r')?>" />
 	<?php
-	 
+		 
 		if(substr($request->url,0,5) == 'sales' || $_SERVER['REQUEST_URI'] == '/') {
 			$title = "Totsy index. Events.";
 			$tags = 'Sales'; 
@@ -41,6 +41,7 @@
 				
 				if(isset($idata['departments'])) {
 					$title = $edata['name'] .' - '. $idata['description'];
+				
 					$tags = $edata['name'].', '.implode(', ',$idata['departments']).', '.$idata['category'];
 				}
 				
@@ -87,7 +88,7 @@
 	<!-- end header nav -->
 	<div style="clear:both"></div>
 </div>
-<div style="clear:both"></div>	
+<!-- <div style="clear:both"></div>	 -->
 <div class="container_16">
     <?php echo $this->content(); ?>
 </div>

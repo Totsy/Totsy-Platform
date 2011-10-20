@@ -105,6 +105,27 @@ var paymentForm = new Object();
     });
 
 </script>
+<?php
+
+//check DNS here :)
+if($_SERVER['HTTP_HOST']=='mamasourcedev.totsy.com' || $_SERVER['HTTP_HOST']=='mamasource.totsy.com') {
+	$is_mamapedia = true;
+} else {
+	$is_mamapedia = false;
+}
+
+//until DNS is created ;)
+$is_mamapedia = true;
+$img_path_prefix = "";
+
+if($is_mamapedia) {
+	$img_path_prefix = "/img/mamapedia";
+} else {
+	$img_path_prefix = "/img";
+}
+
+?>
+
 <?php  if(empty($cartEmpty)): ?>
 
 <div style="margin:10px;">

@@ -18,7 +18,6 @@
 					<div class="ti">
 
 						<div class="tc login-inner register-inner">
-
 							<div id='logo'>
                             <h1>
                               <a href="/login/?fbcancel=true" title="Totsy.com">
@@ -33,7 +32,7 @@
 							</div>
 
 							<div class="message">
-								<?php if($message){echo "$message"; } ?>
+								<?php if($message){ echo "$message"; } ?>
 							</div>
 
 

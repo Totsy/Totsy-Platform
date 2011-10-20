@@ -29,13 +29,14 @@ class BaseController extends \lithium\action\Controller {
 	/**
 	 * Get the userinfo for the rest of the site from the session.
 	 */
+	 
 	protected function _init() {
-		
 		parent::_init();
 	     if(!Environment::is('production')){
             $branch = "<h4 id='global_site_msg'>Current branch: " . $this->currentBranch() ."</h4>";
             $this->set(compact('branch'));
         }
+                
 		$userInfo = Session::read('userLogin');
 		$this->set(compact('userInfo'));
 		$cartCount = Cart::itemCount();
