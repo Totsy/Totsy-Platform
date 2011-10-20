@@ -113,6 +113,7 @@ if($_SERVER['HTTP_HOST']=='mamasourcedev.totsy.com' || $_SERVER['HTTP_HOST']=='m
 	$is_mamapedia = false;
 }
 
+//until DNS is created ;)
 $is_mamapedia = true;
 $img_path_prefix = "";
 

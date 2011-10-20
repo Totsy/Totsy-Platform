@@ -13,15 +13,13 @@
 <script type="text/javascript" src="/js/cart-popup.js"></script>
 
 <?php
-
 	$close_button_path = "";
-/*	
-	if($_SERVER['HTTP_HOST']=='mamapedia.totsy.com' || $_SERVER['HTTP_HOST']=='mamapediadev.totsy.com') {
-		$close_button_path = "/img/mamapedia/";
-	} else {
+	
+	if ($_SERVER['HTTP_HOST']=='mamapedia.totsy.com' || $_SERVER['HTTP_HOST']=='mamapediadev.totsy.com') {
 		$close_button_path = "/img/";
-	}*/
-	 
+	} else {
+		$close_button_path = "/img/mamapedia/";
+	}
 ?>
 
 <!-- template used for items on cart. jquery.tmpl.js driven -->

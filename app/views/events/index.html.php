@@ -14,7 +14,9 @@
 	};
 })(jQuery);
 </script>
-	<h2 class="page-title gray"><span class="_red">Today's Sales</span></h2>
+	<div style="clear:both"></div>
+	<h2 class="page-title gray">
+	<span class="_red">Today's Sales</span></h2>
 	<hr />
 		<!--Disney -->
 <!--	<div class="disney disney_splash">
@@ -91,10 +93,22 @@
 					</div>
 				</div>
 			</div>
-
+			<?php
+			
+			$invite_girl_img_path = "";	 
+			
+			//please reverse these when DNS is set ... thank you!
+			if($_SERVER['HTTP_HOST']=='mamasourcedev.totsy.com' || $_SERVER['HTTP_HOST']=='mamasource.totsy.com') {
+				$invite_girl_img_path = "/img/";
+			} else {
+				$invite_girl_img_path = "/img/mamapedia/";
+			}
+			
+			?>
+			
 			<?php if ($x == 1): ?>
 				<div id="banner_container" class="grid_5">
-					<div><a href="/users/invite"><img src="/img/invite_girl.png" alt="" height="404"/></a></div>
+					<div><a href="/users/invite"><img src="<?=$invite_girl_img_path?>invite_girl.png" alt="" height="404"/></a></div>
 					<?php if(!empty($banner["img"])): ?>
 						<?php foreach($banner["img"] as $image): ?>
 							<div><?php if(!empty($image["url"])):?>

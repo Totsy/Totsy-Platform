@@ -11,7 +11,9 @@
 						<div class="tc login-inner register-inner">
 							<div id="mamapedia-logo-outer">
                             	<div id="mamapedia-logo-inner">
-                              		<h1><a href="/" title="Totsy.com"></a></h1>
+                              		<h1>
+                              		<?php echo $this->html->link($this->html->image('mamapedia/logo.png', array('width'=>'280')), '/sales',array('style'=>''), array('escape'=> false)); ?>
+                              		</h1>
                               	</div>
                             </div>
                             <!--

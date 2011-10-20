@@ -11,7 +11,7 @@
 	
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
 	
-	<?php echo $this->html->style(array('mamapedia/base.css?v=001', '960.css?v=004', 'jquery_ui_custom/jquery.ui.all.mamapedia.css?v=004'), array('media' => 'screen')); ?>
+	<?php echo $this->html->style(array('mamapedia/base.css?v=002', '960.css?v=004', 'jquery_ui_custom/jquery.ui.all.mamapedia.css?v=004'), array('media' => 'screen')); ?>
 
 	<script src="https://www.google.com/jsapi"></script>
 	<script> google.load("jquery", "1.6.1", {uncompressed:false});</script>
@@ -21,12 +21,13 @@
 	<?php echo $this->html->script('jquery.uniform.min.js?v=004'); ?>
 	<?php echo $this->html->script('jquery.countdown.min.js?v=004'); ?>
 	<?php echo $this->scripts(); ?>
+	
 	<meta property="og:site_name" content="Totsy"/>
 	<meta property="fb:app_id" content="181445585225391"/>
 	<meta name="description" content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
 	<meta name="sailthru.date" content="<?=date('r')?>" />
 	<?php
-	 
+		 
 		if(substr($request->url,0,5) == 'sales' || $_SERVER['REQUEST_URI'] == '/') {
 			$title = "Totsy index. Events.";
 			$tags = 'Sales'; 
@@ -36,9 +37,13 @@
 		} else  {
 			if (isset($event) && isset($item)){
 				$edata = $event->data();
-				$idata = $item->data();
-				$title = $edata['name'] .' - '. $idata['description'];
-				$tags = $edata['name'].', '.implode(', ',$idata['departments']).', '.$idata['category'];
+				$idata = $item->data();				
+				$title = $edata['name'] .' - '. $idata['description'];					
+				
+				if($idata['departments']) {							
+					$tags = $edata['name'].', '.implode(', ',$idata['departments']).', '.$idata['category'];
+				}
+				
 				unset($edata, $idata);
 			} else if (isset($event)){ 
 				$edata = $event->data();
@@ -82,7 +87,7 @@
 	<!-- end header nav -->
 	<div style="clear:both"></div>
 </div>
-<div style="clear:both"></div>	
+<!-- <div style="clear:both"></div>	 -->
 <div class="container_16">
     <?php echo $this->content(); ?>
 </div>
