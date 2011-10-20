@@ -49,7 +49,7 @@ class Cart extends Base {
 	 *
 	 * @var int
 	 **/
-	protected $_shipBuffer = 18;
+	protected $_shipBuffer = 15;
 
 	/**
 	 * Any holidays that need to be factored into the estimated ship date calculation.
