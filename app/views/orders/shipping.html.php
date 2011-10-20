@@ -88,6 +88,13 @@ var addressForm = new Object();
 <?php
 
 //check DNS here :)
+
+if($_SERVER['HTTP_HOST']=='mamasourcedev.totsy.com' || $_SERVER['HTTP_HOST']=='mamasource.totsy.com') {
+	$is_mamapedia = true;
+} else {
+	$is_mamapedia = false;
+}
+
 $is_mamapedia = true;
 $img_path_prefix = "";
 
