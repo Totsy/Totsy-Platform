@@ -45,6 +45,7 @@ var discountErrors = new Object();
 <?php
 
 //check DNS here :)
+
 if($_SERVER['HTTP_HOST']=='mamasourcedev.totsy.com' || $_SERVER['HTTP_HOST']=='mamasource.totsy.com') {
 	$is_mamapedia = true;
 } else {
