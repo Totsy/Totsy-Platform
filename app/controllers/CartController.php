@@ -94,7 +94,7 @@ class CartController extends BaseController {
 			#Items that are shipping exempt
 			if($item->shipping_exempt){
 				if ($item->shipping_exempt==true) {
-					$exemptCount ++;
+					$exemptCount += $item->quantity;;
 				}
 			}
 			$i++;
@@ -110,7 +110,6 @@ class CartController extends BaseController {
 				$returnUrl = $event->url;
 			}
 		}
-
 		#Do not apply shipping cost if cart only has non-tangible items
 		if($exemptCount == $itemCount) {
 			$shipping = "";

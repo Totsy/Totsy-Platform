@@ -111,7 +111,8 @@ class ItemsController extends BaseController {
 						$data['vouchers'] = $vouchers;
 					}
 				}
-				$data['total_quantity'] = count($vouchers);
+				$data['total_quantity'] = count($data['vouchers']) ;
+				$data['details']['no size'] = count($data['vouchers']) ;
 				unset($data['voucher_overwrite']);
 				unset($data['upload_file']);
 			}
@@ -317,14 +318,16 @@ class ItemsController extends BaseController {
 		$idx = 0;
 		foreach($orders as $order) {
 			$user = User::find('first', array('conditions' => array('_id' => new MongoId($order['user_id']))));
-			$datas[$idx]['order_id'] = (string) $order['_id'];
-			$datas[$idx]['email'] = $user->email;
 			foreach($order['items'] as $item) {
 				if($item['item_id'] == $item_id) {
-					$datas[$idx]['voucher'] = $item['voucher_code'];
+					foreach($item['voucher_code'] as $code) {
+						$datas[$idx]['voucher'] = $code;
+						$datas[$idx]['order_id'] = (string) $order['_id'];
+						$datas[$idx]['email'] = $user->email;
+						$idx++;
+					}
 				}
 			}
-			$idx++;
 		}
 		return compact("datas");
 

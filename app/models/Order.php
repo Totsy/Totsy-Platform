@@ -126,13 +126,15 @@ class Order extends Base {
 			#Save Voucher
 			foreach($items as $item) {
 				if(!empty($item->voucher)) {
-					$item_voucher = $itemsCollection->findOne(array('_id' => new MongoId($item->item_id)));
-					if(!empty($item_voucher)) {
-						$coupon = $item_voucher['vouchers'][0];
+					for($i = 0; $i < $item->quantity; $i++) {
+						$item_voucher = $itemsCollection->findOne(array('_id' => new MongoId($item->item_id)));
+						$coupon[] = $item_voucher['vouchers'][0];
 						$itemsCollection->update(array('_id' => new MongoId($item->item_id)), array('$pop' => array('vouchers' => -1)));
-						$itemsCollection->update(array('_id' => new MongoId($item->item_id)), array('$push' => array('vouchers_sold' => $coupon)));
+						$itemsCollection->update(array('_id' => new MongoId($item->item_id)), array('$push' => array('vouchers_sold' => $item_voucher['vouchers'][0])));
 						$item->voucher_code[] = $coupon;
 					}
+					$item->voucher_website = $item_voucher['voucher_website'];
+					$item->voucher_code = $coupon;
 				}
 			}
 			#Save Services Used (10$Off / Free Shipping)
@@ -225,7 +227,7 @@ class Order extends Base {
 	/**
 	 * Encrypt all credits card informations with MCRYPT and store it in the Session
 	 */
-	public static function creditCardEncrypt ($cc_infos, $user_id,$save_iv_in_session = false) {
+	public static function creditCardEncrypt ($cc_infos, $user_id, $save_iv_in_session = false) {
 		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
 		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
 		if ($save_iv_in_session == true) {
