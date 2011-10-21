@@ -11,7 +11,7 @@
  	{{/if}}
  	<div class="cart_popup_item_fields">
  		<span class="cart_popup_item_description">
- 			<a href="#" onclick="window.location='${url}'">
+ 			<a href="#" onclick="window.location.replace('${url}')">
  			 	${description} 
  			 </a>
  		</span>

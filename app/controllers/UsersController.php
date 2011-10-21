@@ -69,7 +69,6 @@ class UsersController extends BaseController {
 			/**
 			* this block handles the invitations.
 			**/
-<<<<<<< HEAD
 			if ($invite_code) {
 				$inviter = User::find('first', array(
 					'conditions' => array(
@@ -115,9 +114,7 @@ class UsersController extends BaseController {
 				}
 			}
 			
-=======
 			Invitation::linkUpInvites($invite_code, $email);
->>>>>>> b7e07b47e6282f44fc0b99705f56e3a3e73ec995
 			switch ($invite_code) {
 				case 'our365':
 				case 'our365widget':

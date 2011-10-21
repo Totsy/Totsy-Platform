@@ -19,7 +19,7 @@
 				<div class="tl"></div>
 				<div class="tr"></div>
 				<div class="r-box lt-gradient-1">
-					<h3 class="gray fl">Contact Information</h3>&nbsp;|&nbsp;<?=$this->html->link('Edit', '/account/info');?>
+					<h3 class="gray fl">Contact Information</h3>&nbsp;|&nbsp;&nbsp;<?=$this->html->link('Edit', '/account/info');?>
 
 					<div><?php if(array_key_exists('firstname', $userInfo) &&     !empty($userInfo['firstname'])):
 					?>

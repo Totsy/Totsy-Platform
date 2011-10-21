@@ -28,7 +28,8 @@
 	    </div>
 	    <div id="cart_popup_close_button">
 	    	<a href="#">
-	    	<img src="/img/popup_cart_close.jpg" style="width:20px; height:20px"></a>
+	    		<img src="/img/popup_cart_close.jpg" style="width:20px; height:20px">
+	    	</a>
 	    </div>
 	</div>
 	<div style="clear:both"></div>
