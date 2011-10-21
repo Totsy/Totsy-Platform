@@ -1,3 +1,9 @@
+<script type="text/javascript"> 
+  function setIframe() {
+    var gcframe = document.getElementById('psm').innerHTML = '<iframe src="/signup-tracking.html" style="border:none;width:1px;height:1px;" marginheight="0" marginwidth="0" frameborder="0"></iframe>';
+  }
+</script>
+
 <div id="fullscreen">
 	<div id="login-box">
 		<div id="login-box-border" class="register-modal">
@@ -39,13 +45,11 @@
                                 <h3 style="color:#999; font-size:18px;">Register</h3>
 								<hr />
 								 
-<?php
-	 if (preg_match('/join/',$_SERVER['REQUEST_URI'])) {
-print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/join\']);">';
-	 } else {
-print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/register\']);">';
-	 }
-?>
+<?php    if (preg_match('/join/',$_SERVER['REQUEST_URI'])) { ?>
+<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/join']); return setIframe();">
+<?php	 } else {    ?>
+<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/register']); return setIframe();">
+<?php	 } ?>
 	
 
                						<!-- Commnented Firstname, Lastname and Zip code --->
@@ -129,6 +133,7 @@ print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPagevi
 									<?=$this->form->error('terms'); ?>
 									</div>
 								<?=$this->form->end(); ?>
+								<div id="psm" style="display:none;"></div>
 								
 								<div>
 								<h3 style="color:#999; font-size:18px;">Register With Facebook</h3>
