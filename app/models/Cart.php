@@ -49,7 +49,7 @@ class Cart extends Base {
 	 *
 	 * @var int
 	 **/
-	protected $_shipBuffer = 18;
+	protected $_shipBuffer = 15;
 
 	/**
 	 * Any holidays that need to be factored into the estimated ship date calculation.
@@ -526,7 +526,7 @@ class Cart extends Base {
 	* Return Credit, Promo, Services Objects and the PostDiscount Total 
 	* @see app/models/Cart::check()
 	*/
-	public static function getDiscount($subTotal, $shippingCost = 7.95, $overShippingCost = 0, $data) {
+	public static function getDiscount($subTotal, $shippingCost = 7.95, $overShippingCost = 0, $data, $tax = 0.00) {
 		#Get User Infos
 		$fields = array(
 		'item_id',
@@ -551,7 +551,8 @@ class Cart extends Base {
 		$services['freeshipping'] = Service::freeShippingCheck($shippingCost, $overShippingCost);
 		$services['tenOffFitfy'] = Service::tenOffFiftyCheck($subTotal);
 		#Calculation of the subtotal with shipping and services discount
-		$postSubtotal = ($subTotal + $shippingCost + $overShippingCost - $services['tenOffFitfy'] - $services['freeshipping']['shippingCost']  - $services['freeshipping']['overSizeHandling']);
+		$postSubtotal = ($subTotal + $tax + $shippingCost + $overShippingCost - $services['tenOffFitfy'] - $services['freeshipping']['shippingCost'] - $services['freeshipping']['overSizeHandling']);
+		$subTotal += $tax;
 		#Apply Promocodes
 		$cartPromo = Promotion::create();
 		$promo_code = null;
@@ -576,6 +577,10 @@ class Cart extends Base {
 			$credit_amount = $data['credit_amount'];
 		}
 		$postDiscountTotal = ($postSubtotal + $cartPromo['saved_amount']);
+		#Avoid Negative Total
+		if($postDiscountTotal < 0.00) {
+			$postDiscountTotal = 0.00;
+		}
 		$cartCredit->checkCredit($credit_amount, $subTotal, $userDoc);
 		#Apply credit to the Total
 		if(!empty($cartCredit->credit_amount)) {

@@ -9,6 +9,6 @@
 		<li><a href="/pages/being_green" title="Being Green">Being Green</a></li>
 		<li><a href="http://blog.totsy.com" target="_blank" title="Blog">Totsy Blog</a></li>
 		<li><a href="/pages/affiliates" title="Affiliates">Affiliate Program</a></li>
-		<!-- <li><a href="/pages/jobs" title="Jobs">Jobs</a></li> -->
+		<li><a href="/pages/careers" title="Careers">Careers</a></li>
 	</ul>
 </div>
