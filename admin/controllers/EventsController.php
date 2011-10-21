@@ -439,6 +439,8 @@ class EventsController extends BaseController {
 		$totalrows = count($array);
 		$totalcols = count($highestRow);
 
+		$check_decimals = array("msrp", "sale_retail", "percentage_off", "percent_off", "orig_wholesale", "orig_whol", "sale_whol", "sale_wholesale", "imu");
+
 		for ($row = 0; $row <= $totalrows; ++ $row ) {
 			for ($col = 0; $col < $totalcols; ++ $col) {
 				$val = $array[$row][$col];
@@ -449,6 +451,9 @@ class EventsController extends BaseController {
 					}
 				} else {
 					if (isset($heading[$col])) {
+						if ((in_array($heading[$col], $check_decimals))&&(!empty($val))) {
+							$val = floatval($val);
+						}
 						if(($heading[$col] === "department_1") || ($heading[$col] === "department_2") || ($heading[$col] === "department_3")) {
 							if (!empty($val)) {
 								$eventItems[$row - 1]['departments'][] = ucfirst(strtolower(trim($val)));
