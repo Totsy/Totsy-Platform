@@ -246,7 +246,7 @@ class CartController extends BaseController {
 			}
 			$cartData['subTotal'] += ($cartItem->sale_retail * $cartItem->quantity);
 		} 
-				
+						
 		//get the current event url	
 		$cartData['eventURL'] = substr($this->request->env('HTTP_REFERER'), 0, strrpos($this->request->env('HTTP_REFERER'),"/"));  
 		//send cart array 
