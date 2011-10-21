@@ -3,6 +3,7 @@
 namespace app\models;
 use MongoDate;
 use MongoId;
+use app\models\Base;
 use app\models\Item;
 
 /**
@@ -48,8 +49,9 @@ use app\models\Item;
 *    * splash_small_image - ObjectId of the gridfs image.
 *    * url - The url of the event that is used as a lookup field.
 */
-class Event extends \lithium\data\Model {
+class Event extends Base {
 
+	protected $_meta = array('source' => 'events');
 	public $validates = array();
 
 	/**
