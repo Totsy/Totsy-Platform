@@ -54,7 +54,7 @@ class Order extends Base {
 				'state'     => $vars['billingAddr']['state'],
 				'zip'       => $vars['billingAddr']['zip'],
 				'country'   => $vars['billingAddr']['country']
-				
+
 			))
 		));
 		if ($cart) {
@@ -85,7 +85,7 @@ class Order extends Base {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Record in DB all informations linked with the order
 	 * @return redirect
@@ -101,12 +101,12 @@ class Order extends Base {
 				Session::delete('credit');
 				$order->credit_used = abs($vars['cartCredit']->credit_amount);
 			}
-			#Initialize Discount 
+			#Initialize Discount
 			$vars['shippingCostDiscount'] = 0;
 			$vars['overShippingCostDiscount'] = 0;
 			#Save Promocode Used
 			if ($vars['cartPromo']->saved_amount) {
-				Promocode::add($vars['cartPromo']->code_id, $vars['cartPromo']->saved_amount, $order->total);
+				Promocode::add($vars['cartPromo']->code_id, $vars['cartPromo']->saved_amount, $vars['total']);
 				$vars['cartPromo']->order_id = (string) $order->_id;
 				$vars['cartPromo']->code_id = $vars['cartPromo']->code_id;
 				$vars['cartPromo']->date_created = new MongoDate();
@@ -131,7 +131,7 @@ class Order extends Base {
 					$order->discount = $vars['shippingCost'] + $vars['overShippingCost'];
 				}
 				if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible' && ($vars['subTotal'] >= 50.00)) {
-					$order->discount = 10.00; 
+					$order->discount = 10.00;
 					$services = array_merge($services, array("10off50"));
 				}
 				if(!empty($services)) {
@@ -167,7 +167,7 @@ class Order extends Base {
 					'items' => $items,
 					'avatax' => $avatax,
 					'ship_date' => new MongoDate(Cart::shipDate($order)),
-					'savings' => $savings		
+					'savings' => $savings
 			));
 			Cart::remove(array('session' => Session::key('default')));
 			#Update quantity of items
@@ -192,7 +192,7 @@ class Order extends Base {
 			User::cleanSession();
 			return $order;
 	}
-	
+
 	/**
 	 * Decrypt credit card informations stored in the Session
 	 */
@@ -207,7 +207,7 @@ class Order extends Base {
 		}
 		return $card;
 	}
-	
+
 	/**
 	 * Encrypt all credits card informations with MCRYPT and store it in the Session
 	 */
