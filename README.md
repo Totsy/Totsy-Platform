@@ -35,4 +35,4 @@ You can also shorten the last two commands to one: (NOTE: this isn't implemented
 
 ##Dev Environments
 
-* NOTE: We use remote development environments that are pre-enabled with pre-configured NGINX, MONGODB, LITHIUM, and Totsy Repos already setup. If you're new contact Pierre Davidoff pdavidoff@totsy.com for instructions on how to get started. You'll most likely need SSH keys to begin coding. 
+* NOTE: We use remote development environments that are pre-enabled with pre-configured NGINX, MONGODB, LITHIUM, and Totsy Repos already setup. If you're new contact Pierre Davidoff pdavidoff@totsy.com for instructions on how to get started. You'll most likely need [SSH keys](http://help.github.com/mac-set-up-git/) to begin coding. 
