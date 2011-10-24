@@ -279,7 +279,7 @@ class DisneyExport extends \lithium\console\Command {
 		} else {
 			$day = $this->startDay;
 		}
-		$myFile =  "TOM" . $month . $day . "#.txt";
+		$myFile =  "TOM" . $month . $day . "1.txt";
 		$myFilePath = LITHIUM_APP_PATH . $this->source . $myFile;
 		$fh = fopen($myFilePath, 'wb');
 		if(!empty($infos)) {
