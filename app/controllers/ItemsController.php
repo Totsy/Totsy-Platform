@@ -43,11 +43,13 @@ class ItemsController extends BaseController {
 	 *  * $spinback_fb: `String` containing pixel that will fire in the view.
 	*/
 	public function view() {
+		$ordersCollection = Order::Collection();
 		#Get Users Informations
 		$user = Session::read('userLogin');
 		$itemUrl = $this->request->item;
 		$eventUrl = $this->request->event;
 		$item = null;
+		$voucher_disable = false;
 		if ($itemUrl == null || $eventUrl == null) {
 			$this->redirect('/sales');
 		} else {
@@ -86,16 +88,20 @@ class ItemsController extends BaseController {
 					$related = Item::related($item);
 					$sizes = Item::sizes($item);
 					$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+					#Check If the user has reached the maximum number of vouchers ordered
 					if(!empty($item->voucher)) {
-						$orders = Order::find(array('user_id' => $user['_id'], 'item.item_id' => (string)$item->_id));
-						/**foreach($orders as $order) {
+						$quantity = 0;
+						$orders = $ordersCollection->find(array('user_id' => $user['_id'], 'items.item_id' => (string) $item->_id));
+						foreach($orders as $order) {
 							foreach($order['items'] as $item_purch) {
-								if((string)$item_purch['_id'] == (string)$item->_id) {
-									echo $item_purch->quantity;
+								if($item_purch['item_id'] == (string) $item->_id) {
+									$quantity += $item_purch['quantity'];
 								}
 							}
-						
-						}**/
+						}
+						if($quantity >= (int) $item->voucher_max_use) {
+							$voucher_disable = true;
+						}
 					}
 				}
 			}
@@ -111,7 +117,8 @@ class ItemsController extends BaseController {
 			'sizes',
 			'shareurl',
 			'reserved',
-			'spinback_fb'
+			'spinback_fb',
+			'voucher_disable'
 		);
 	}
 

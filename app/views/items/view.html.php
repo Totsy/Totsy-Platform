@@ -208,7 +208,13 @@
 			<?php if ($item->total_quantity >= 1): ?>
 				<div id="hidden-div" style="display:none; color:#eb132c; font-weight:bold;">Please Select Size!</div>
 				<span style="display: inline-block;">
-				<input type="button" value="Add to Cart" id="add-to-cart" class="button">
+				<?php if(empty($voucher_disable)): ?>
+					<input type="button" value="Add to Cart" id="add-to-cart" class="button">
+				<?php else: ?>
+					<div id="voucher">
+					<p style='background:#EB132C;padding:5px;text-align:center;color:#fff;border-radius:6px;'>You can't order more of this voucher</p>
+					</div>
+				<?php endif; ?>
 				</span>
 				<div id="all-reserved"></div>
 			<?php endif ?>

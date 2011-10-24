@@ -11,12 +11,15 @@ use app\extensions\Mailer;
 use app\models\User;
 use app\models\Base;
 use app\models\Item;
+use app\models\Order;
 
 class Order extends Base {
 
 	protected $_dates = array(
 		'now' => 0
 	);
+	
+	protected $_meta = array('source' => 'orders');
 
 	public $validates = array(
 		'authKey' => 'Could not secure payment.'

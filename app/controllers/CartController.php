@@ -7,6 +7,7 @@ use app\models\Item;
 use app\models\Event;
 use app\models\User;
 use app\models\Credit;
+use app\models\Order;
 use app\models\Service;
 use app\models\Promotion;
 use lithium\storage\Session;
@@ -37,6 +38,7 @@ class CartController extends BaseController {
 
 	public function view() {
 		#Initialize Datas
+		$ordersCollection = Order::Collection();
 		$promocode_disable = false;
 		$cartExpirationDate = 0;
 		$shipping = 0.00;
@@ -88,6 +90,23 @@ class CartController extends BaseController {
 			$cartItemEventEndDates[$i] = $events[0]->end_date->sec;
 			$item->event_url = $events[0]->url;
 			$item->available = $itemInfo->details->{$item->size} - (Cart::reserved($item->item_id, $item->size) - $item->quantity);
+			#Check If the user has reached the maximum number of vouchers ordered
+			if(!empty($item->voucher)) {
+				$diff_qty_voucher = 9;
+				$quantity = 0;
+				$orders = $ordersCollection->find(array('user_id' => $user['_id'], 'items.item_id' => $item->item_id));
+				foreach($orders as $order) {
+					foreach($order['items'] as $item_purch) {
+						if($item_purch['item_id'] == (string) $item->item_id) {
+							$quantity += $item_purch['quantity'];
+						}
+					}
+				}
+				$diff_qty_voucher = ($item->voucher_max_use - $quantity);
+				if($diff_qty_voucher < $item->available) {
+					$item->available = $diff_qty_voucher;
+				}
+			}
 			$subTotal += $item->quantity * $item->sale_retail;
 			$itemlist[$item->created->sec] = $item->event[0];
 			$itemCount += $item->quantity;
@@ -172,6 +191,7 @@ class CartController extends BaseController {
 					'product_weight',
 					'event',
 					'voucher',
+					'voucher_max_use',
 					'vendor_style',
 					'discount_exempt'
 			)));
