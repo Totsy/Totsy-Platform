@@ -10,7 +10,6 @@ use admin\extensions\Mailer;
 use MongoDate;
 use MongoId;
 use li3_flash_message\extensions\storage\FlashMessage;
-use li3_silverpop\extensions\Silverpop;
 use lithium\storage\Session;
 
 /**
@@ -100,7 +99,7 @@ class EmailsController extends \lithium\action\Controller {
 			) + $data;
 		$email->save($log);
 		$data['SPOP'] = $email->_id;
-		$email->success = (Silverpop::send($post['template'], $data)) ? true : false;
+		$email->success = (Mailer::send($post['template'], $data['email'], $data)) ? true : false;
 		return $email->save();
 	}
 }

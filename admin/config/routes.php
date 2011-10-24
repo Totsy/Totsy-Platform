@@ -15,7 +15,7 @@ use lithium\action\Response;
 /**
  * The following allows up to serve images right out of mongodb.
  * This needs to be first so that we don't get a controller error.
- * 
+ *
  */
 Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request) {
 	return new Response(array(
@@ -27,7 +27,7 @@ Router::connect('/uploads', 'Uploads::index');
 Router::connect('/uploads/upload{:args}', 'Uploads::upload');
 
 /**
- * Redirect all non-authenticated users to 
+ * Redirect all non-authenticated users to
  */
 if (!Session::check('userLogin')) {
 	Router::connect('/{:args}', 'Users::login');
@@ -70,6 +70,7 @@ if ($session['admin'] && !isset($session['acls'])) {
 	Router::connect('/events', 'Events::index');
 	Router::connect('/users/view/{:args}', 'Users::view');
 	Router::connect('/users/update/{:args}', 'Users::update');
+	Router::connect('/users/accountStatus/{:args}', 'Users::accountStatus');
 	Router::connect('/select/event/{:args}', 'Base::selectEvent');
 	Router::connect('/items/preview/{:event:[a-z0-9\-]+}/{:item:[a-z0-9\-]+}', 'Items::preview');
 

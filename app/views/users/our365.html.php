@@ -116,26 +116,8 @@
 	</div>
 </div>
 
-
 <div id="footer">
-
-	<ul>
-		<li class="first"><a href="/pages/terms" title="Terms of Use">Terms of Use</a></li>
-		<li><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
-		<li><a href="/pages/aboutus" title="About Us">About Us</a></li>
-		<li><a href="/blog" title="Blog">Blog</a></li>
-		<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
-		<?php if (empty($userInfo)){ ?>
-		<li><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
-		<li class="last"><a href="http://nytm.org/made" title="Made in NYC" target="_blank">Made in NYC</a></li>
-		<?php } else { ?>
-		<li><a href="/tickets/add" title="Contact Us">Contact Us</a></li>
-		<li class="last"><a href="http://nytm.org/made" title="Made in NYC" target="_blank">Made in NYC</a></li>
-		<?php } ?>
-	</ul>
-	
-	<span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved.</span>
-
+	<?php echo $this->view()->render(array('element' => 'footerNavPublic')); ?>
 </div>
 
 <!-- Google Code for Homepage Remarketing List -->
@@ -150,7 +132,7 @@
 /* ]]> */
 </script>
 
-<script type="text/javascript" src="http://www.googleadservices.com/pagead/conversion.js"></script>
+<script type="text/javascript" src="https://www.googleadservices.com/pagead/conversion.js"></script>
 
 <noscript>
 	<div style="display:inline;">

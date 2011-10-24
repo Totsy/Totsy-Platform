@@ -9,7 +9,7 @@ use admin\models\User;
 use admin\models\Disney;
 use MongoId;
 use MongoDate;
-use li3_silverpop\extensions\Silverpop;
+use admin\extensions\Mailer;
 
 /**
  * The `Disney Export' Command upload a file that contains user who
@@ -299,24 +299,21 @@ class DisneyExport extends \lithium\console\Command {
 		$data = array(
 			'file' => $file,
 			'records' => $records,
-			'from_email' => 'no-reply@totsy.com',
 			'to_email' => 'vendorfiles@cds-global.com'
 		);
 		$data_2 = array(
 			'file' => $file,
 			'records' => $records,
-			'from_email' => 'no-reply@totsy.com',
 			'to_email' => $this->_user
 		);
 		$data_3 = array(
 			'file' => $file,
 			'records' => $records,
-			'from_email' => 'no-reply@totsy.com',
 			'to_email' => 'marti@strategicmediallc.com'
 		);
-		Silverpop::send('disney', $data);
-		Silverpop::send('disney', $data_2);
-		Silverpop::send('disney', $data_3);
+		Mailer::send('Disney', $data['to_email'], $data);
+		Mailer::send('Disney', $data_2['to_email'], $data_2);
+		Mailer::send('Disney', $data_3['to_email'], $data_3);
 	}
 
 	/**

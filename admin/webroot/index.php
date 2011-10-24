@@ -1,4 +1,24 @@
 <?php
+ini_set('display_errors', 0);
+set_error_handler("myErrorHandler");
+register_shutdown_function('myErrorHandler');
+
+function myErrorHandler() {
+	
+	$lastError = error_get_last();
+	
+	if ( !is_null($lastError) ){
+		//echo 'error';
+		header("HTTP/1.1 500 Internal Server Error");
+		//header("Content-type: text/html");
+		//header("connection: close");
+		
+		flush();
+		exit(0);
+	}
+	flush();
+}
+
 /**
  * Lithium: the most rad php framework
  *
@@ -34,5 +54,7 @@ require dirname(__DIR__) . '/config/bootstrap.php';
  * @see lithium\net\http\Router
  */
 echo lithium\action\Dispatcher::run(new lithium\action\Request());
+
+
 
 ?>

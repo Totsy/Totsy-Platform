@@ -1,0 +1,13 @@
+h1. Totsy Offline
+
+Welcome to the Totsy Offline project. Here we stupefy with a whirling, twirling, swirling display of fail-whaleness in a way only a true Totsilian could.
+
+h2. Instructions
+
+This is a static site to be setup on servers as an alternative whenever the platform needs to be brought down for maintenance. This is not for specific servers, as shutting down httpd will immediately pull that machine out of the loop.
+
+h2. Credits
+
+Written by a mommy blogger, and lovingly crafted by a robot&trade;.
+
+This message brought to you by the numbers 0 and 1. No CPU cycles were harmed in the rendering of this markup.

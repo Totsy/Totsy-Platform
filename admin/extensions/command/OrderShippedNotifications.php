@@ -15,8 +15,9 @@ use MongoCode;
 use MongoDate;
 use MongoRegex;
 use MongoId;
-use li3_silverpop\extensions\Silverpop;
 use admin\extensions\command\Pid;
+use admin\extensions\Mailer;
+use admin\extensions\helper\Shipment;
 
 /**
  * Process email notifications for orders shipped.
@@ -56,6 +57,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 	 * li3 order-shipped-notifications --debugemail=skosh@totsy.com
 	 */
 	protected $debugemail = null;
+	
 	public function run() {
 		Logger::info('Order Shipped Processor');
 		Environment::set($this->env);
@@ -71,7 +73,8 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 	}
 
 	protected function emailNotificationSender() {
-	// collections;
+
+	// collections;		
 	    $ordersCollection = Order::collection();
 		$usersCollection = User::collection();
 		$ordersShippedCollection = OrderShipped::collection();
@@ -92,7 +95,8 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		$conditions = array(
 			'ShipDate' => array(
 				'$gte' => new MongoDate(mktime(0, 0, 0, date("m"), date("d")-2, date("Y"))),
-				'$lt' => new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y")))
+
+				'$lt' => new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y"))) 
 			),
 			'OrderId' => array('$ne' => null),
 
@@ -101,7 +105,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 			// do not send notification if it already send
 			'emailNotification' => array('$exists' => false)
 		);
-
+		
 		$results = $ordersShippedCollection->group($keys, $inital, $reduce, $conditions);
 
 		if (is_object($results) && get_class_name($results)=='MongoCursor'){
@@ -111,14 +115,17 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 				Logger::info('ERROR: "'.$results['errmsg'].'"');
 				// to make shure that process closes correctly
 				if (!isset($results['retval']) || count($results['retval'])==0){
+
 					return false;
 				}
 			}
 			$results = $results['retval'];
 			Logger::info('Found "'.count($results).'" orders');
 		}
+		
 		$skipped = array();
 		$c = 0;
+		$shipment = new Shipment();
 		foreach ($results as $result){
 			if (count($result['TrackNums'])>0){
 				$do_break = false;
@@ -136,6 +143,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 				foreach($result['TrackNums'] as $trackNum => $items){
 					if ( $trackNum==0 || (strlen($trackNum)<15 && $data['order']['auth_confirmation'] < 0) ){
 						$problem = 'No tracking number and payment auth confirmation error';
+
 						$do_break = true;
 						break;
 					}
@@ -149,6 +157,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 								break;
 							}
 							$data['items'][$trackNum][ (string) $item['id'] ] = $itemSkus[ $item['sku'] ];
+							$data['urls'][$trackNum] = $shipment->linkNoHTML($trackNum,array('type'=>'UPS'));
 							$itemCount++;
 						}
 					}
@@ -159,10 +168,20 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 					$skipped[] = array('OrderId'=>$data['order']['order_id'], 'MongoId'=>$result['OrderId'], 'problem' => $problem);
 					continue;
 				}
+				
 				unset($itemSkus);
 				unset($do_break);
 				Logger::info('Trying to send email for order #'.$data['order']['order_id'].'('.$result['OrderId'].' to '.$data['email'].' (tottal items: '.$itemCount.')');
-				Silverpop::send('orderShipped', $data);
+				Mailer::send('Order_Shipped', $data['email'], $data);
+				#Send An Email To The Person Who Invited during First Purchase Case				
+				if ($data['user']['purchase_count'] == 1 && !empty($data['user']['invited_by'])) {
+					$inviter = $usersCollection->findOne(array('invitation_codes' => $data['user']['invited_by']));
+					if (is_null($this->debugemail)) {
+						Mailer::send('Invited_First_Purchase', $inviter['email']);
+					} else {
+						Mailer::send('Invited_First_Purchase', $this->debugemail);
+					}
+				}
 				unset($data);
 				if(is_null($this->debugemail)) {
 					//SET send email flag
@@ -197,16 +216,8 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 			else {
 				$data['email'] = $this->debugemail;
 			}
-			Silverpop::send('ordersSkipped', $data);
+			Mailer::send('Order_Skipped', $data['email'], $data);
 			unset($data);
-		}
-	}
-
-	private function getUserId($id) {
-		if (strlen($id)<10){
-			return $id;
-		} else {
-			return new MongoId($id);
 		}
 	}
 
@@ -249,6 +260,14 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 			if (array_key_exists($var,$params)){
 				$this->{$var} = $params[$var];
 			}
+		}
+	}
+	
+	private function getUserId($id) {
+		if (strlen($id)<10){ 
+			return $id; 
+		} else {
+			return new MongoId($id);
 		}
 	}
 }

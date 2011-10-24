@@ -39,7 +39,7 @@
             </tr>
         </thead>
          <tbody>
-            <?php foreach($affiliates->data() as $affiliate): ?>
+            <?php foreach($affiliates as $affiliate): ?>
 				<tr>
 					<td> <?php if(!empty($affiliate['name'])) echo $affiliate['name']; ?> </td>
 					<td> <?php if(!empty($affiliate['level'])) echo $affiliate['level']; ?> </td>

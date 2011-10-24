@@ -2,37 +2,22 @@
 
 use lithium\core\Environment;
 
-Environment::set('test', array(
-	'mail' => array(
-		'host'  => 'relay.jangosmtp.net',
-		'port'  => 25,
-		'username'  => 'mitchy',
-		'password'  => '413118BI',
-		'domain' => 'test.totsy.com'
-	)
-));
-Environment::set('staging', array(
-	'mail' => array(
-	
-	)
-));
 Environment::set('development', array(
 	'mail' => array(
-		'host'  => 'relay.jangosmtp.net',
-		'port'  => 25,
-		'username'  => 'mitchy',
-		'password'  => '413118BI',
-		'domain' => 'dev.totsy.com'
+		'api_key' => '568106ff64d98574392dba282bc3267f',
+		'secret' => '288e514c962cf8adcd82ff01938b861f',
+		'api_url' => 'http://api.sailthru.com'
 	)
 ));
 Environment::set('production', array(
 	'mail' => array(
-		'host'  => 'relay.jangosmtp.net',
-		'port'  => 25,
-		'username'  => 'mitchy',
-		'password'  => '413118BI',
-		'domain' => 'www.totsy.com'
+		'api_key' => '568106ff64d98574392dba282bc3267f',
+		'secret' => '288e514c962cf8adcd82ff01938b861f',
+		'api_url' => 'http://api.sailthru.com'
 	)
 ));
+
+require_once LITHIUM_APP_PATH.'/libraries/sailthru/Sailthru.php';
+Sailthru::__init(Environment::get('development'));
 
 ?>

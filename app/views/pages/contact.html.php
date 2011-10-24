@@ -1,47 +1,29 @@
-<h1 class="p-header"><?=$this->title("Contact Us"); ?></h1>
+<?php $this->title("Contact Us"); ?>
 
-<div id="left">
-		<ul class="menu main-nav">
-  <h3 style="color:#999;">About Us</h3>
+<div class="grid_16">
+	<h2 class="page-title gray">About Us</h2>
 	<hr />
-    <li class="first item15"><a href="/pages/aboutus" title="About Totsy"><span>How Totsy Works</span></a></li>
-    <li class="first item17"><a href="/pages/moms" title="Meet The Moms"><span>Meet The Moms</span></a></li>
-    <li class="first item16"><a href="/pages/press" title="Press"><span>Totsy in the Press</span></a></li>
-    <li class="first"><a href="/pages/testimonials" title="Video Testimonials"><span>Video Testimonials</span></a></li>
-    <li class="first item17"><a href="/pages/being_green" title="Being Green"><span>Being Green</span></a></li>
-    <li class="first item19"><a href="http://blog.totsy.com" target="_blank" title="Blog"><span>Totsy Blog</span></a></li>
-    <li class="first item15"><a href="/pages/affiliates" title="Affiliates"><span>Affiliates</span></a></li>
+</div>
 
-    <br />
-    <h3 style="color:#999;">Need Help?</h3>
-    <hr />
-    <li class="first item18"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
-    <li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
-    <li class="first item19"><a href="/pages/privacy" title="Privacy Policy"><span>Privacy Policy</span></a></li>
-    <li class="first item19"><a href="/pages/terms" title="Terms Of Use"><span>Terms Of Use</span></a></li>
-  </ul>
+<div class="grid_4">
+	<?php echo $this->view()->render(array('element' => 'aboutUsNav')); ?>
+	<?php echo $this->view()->render(array('element' => 'helpNav')); ?>
+</div>
 
-	</div>
-	<div id="middle" class="noright">
+<div class="grid_11 omega roundy grey_inside b_side">
 
-
-
-	<div class="tl"><!-- --></div>
-	<div class="tr"><!-- --></div>
-
-	<div id="page">
-		<div id="message">
-				<strong>Corporate Address:</strong><br/>
+	<h2 class="page-title gray">Contact Us</h2>
+	<hr />
+	<p>
+	<strong>Corporate Address:</strong><br/>
 				10 West 18th Street<br/>
 				4th Floor<br/>
 				New York, NY 10011<br/>
 				<br />
+
 				<h3 class="gray">Contact Support</h3>
 				<a href="mailto:support@totsy.com">support@totsy.com</a><br />
 				888-247-9444<br />
 				Office Hours:<br/> M-F 10am - 5pm EST</p>
-	</div>
-	</div>
-	<div class="bl"><!-- --></div>
-	<div class="br"><!-- --></div>
 </div>
+<div class="clear"></div>

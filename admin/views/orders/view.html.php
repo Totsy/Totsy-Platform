@@ -42,10 +42,26 @@
 										</p>
 									<?php if($edit_mode): ?>
 									<p style="text-align:center;">
+<button id="full_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Full Order TAX Return</button>
+									<button id="part_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Part Order TAX Return</button>
 									<button id="cancel_button" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
 									<button id="update_shipping" style="font-weight:bold;font-size:14px;">Update Shipping</button>
 									</p></div>
 								<?php endif ?>
+									<?php /**/ ?>
+								  	<div id="full_order_tax_return_form" style="display:none">
+										<?=$this->form->create(null ,array( 'action'=>'taxreturn', 'id'=>'fullOrderTaxReturnForm','enctype' => "multipart/form-data")); ?>
+										<?=$this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"]));?>
+										<?=$this->form->hidden('fullordertaxreturn_action', array('class' => 'inputbox', 'id' => 'fullordertaxreturn_action', 'value' => 1)); ?>
+										<?=$this->form->end();?>
+									</div>
+								  	<div id="part_order_tax_return_form" style="display:none">
+										<?=$this->form->create(null ,array( 'action'=>'taxreturn', 'id'=>'partOrderTaxReturnForm','enctype' => "multipart/form-data")); ?>
+										<?=$this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"]));?>
+										<?=$this->form->hidden('partordertaxreturn_action', array('class' => 'inputbox', 'id' => 'partordertaxreturn_action', 'value' => 1)); ?>
+										<?=$this->form->end();?>
+									</div>
+									<?php /**/ ?>
 									<div id="cancel_form" style="display:none">
 										<?=$this->form->create(null ,array('id'=>'cancelForm','enctype' => "multipart/form-data")); ?>
 										<?=$this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
@@ -232,6 +248,15 @@
 											<?php $items = $order->items; ?>
 											<?php foreach ($items as $key => $item): ?>
 											<?php $name = "items[".strval($key)."][cancel]"; ?>
+											<?php $itm = $item->data();
+												  if (array_key_exists('return',$itm)){ 
+														$return_q = array_sum($itm['return']); 
+												  } else { 
+												  		$return_q = 0; 
+												  }
+												  unset($itm);
+
+											?>
 							<?=$this->form->hidden($name, array('class' => 'inputbox', 'id' => $name, 'value' => (string) $item["cancel"])); ?>
 							<?=$this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
 												<tr class="item_line"
@@ -273,7 +298,7 @@
 												</td>
 												<td style="padding:5px;" title="quantity">
 												<?php if($edit_mode): ?>
-													<?php
+												<?php  
 													if(!empty($item['initial_quantity'])) {
 														$limit = $item['initial_quantity'];
 													} else {
@@ -292,6 +317,9 @@
 													<?php else :?>
 														<?=$item['quantity'] ?>
 													<?php endif ?>
+													<?php if ($return_q>0){?>
+													<?php echo $return_q; ?> return(s)
+													<?php }?>
 												</td>
 												<td title="subtotal" style="padding:5px; color:#009900;">
 													$<?php echo number_format(($item['quantity'] * $item['sale_retail']),2)?>
@@ -324,20 +352,25 @@
 							</tr>
 							<tr>
 								<td colspan="4">
-										<!--- HIDDEN DATAS - ITEMS -->
-<?=$this->form->hidden("subTotal", array('class' => 'inputbox', 'id' => "subTotal", 'value' => $order->subTotal )); ?>
-<?=$this->form->hidden("credit_used", array('class' => 'inputbox', 'id' => "credit_used", 'value' => $order->credit_used )); ?>
-<?=$this->form->hidden("promo_discount", array('class' => 'inputbox', 'id' => "promo_discount", 'value' => $order->promo_discount )); ?>
-<?=$this->form->hidden("promo_code", array('class' => 'inputbox', 'id' => "promo_code", 'value' => $order->promo_code )); ?>
+<!-- HIDDEN DATAS - ITEMS -->
+<?=$this->form->hidden("subTotal", array('class' => 'inputbox', 'id' => "subTotal", 'value' => $order->subTotal)); ?>
+<?=$this->form->hidden("credit_used", array('class' => 'inputbox', 'id' => "credit_used", 'value' => $order->credit_used)); ?>
+<?=$this->form->hidden("promo_discount", array('class' => 'inputbox', 'id' => "promo_discount", 'value' => $order->promo_discount)); ?>
+<?=$this->form->hidden("discount", array('class' => 'inputbox', 'id' => "discount", 'value' => $order->discount)); ?>
+<?=$this->form->hidden("service", array('class' => 'inputbox', 'id' => "service", 'value' => $service[0])); ?>
+<?=$this->form->hidden("promo_code", array('class' => 'inputbox', 'id' => "promo_code", 'value' => $order->promo_code)); ?>
 <?=$this->form->hidden("tax", array('class' => 'inputbox', 'id' => "tax", 'value' => $order->tax)); ?>
-<?=$this->form->hidden("handling", array('class' => 'inputbox', 'id' => "handling", 'value' => $order->handling )); ?>
+<?=$this->form->hidden("handling", array('class' => 'inputbox', 'id' => "handling", 'value' => $order->handling)); ?>
+<?=$this->form->hidden("handlingDiscount", array('class' => 'inputbox', 'id' => "handlingDiscount", 'value' => $order->handlingDiscount)); ?>
+<?=$this->form->hidden("overSizeHandling", array('class' => 'inputbox', 'id' => "overSizeHandling", 'value' => $order->overSizeHandling)); ?>
+<?=$this->form->hidden("overSizeHandlingDiscount", array('class' => 'inputbox', 'id' => "overSizeHandlingDiscount", 'value' => $order->overSizeHandlingDiscount)); ?>
 <?=$this->form->hidden("total", array('class' => 'inputbox', 'id' => "total", 'value' => $order->total)); ?>
-<?=$this->form->hidden("initial_credit_used", array('class' => 'inputbox', 'id' => "initial_credit_used", 'value' => $order->initial_credit_used)); ?>
+<?=$this->form->hidden("original_credit_used", array('class' => 'inputbox', 'id' => "original_credit_used", 'value' => $order->original_credit_used)); ?>
 <?=$this->form->hidden("user_total_credits", array('class' => 'inputbox', 'id' => "user_total_credits", 'value' => $order->user_total_credits )); ?>
 <?=$this->form->hidden("promocode_disable", array('class' => 'inputbox', 'id' => "promocode_disable", 'value' => $order->promocode_disable )); ?>
 									<!--- END HIDDEN DATAS - ITEMS -->
 									<?php if(empty($order->cancel)): ?>
-									<table style="width:200px; float: right;">
+									<table style="width:250px; float: right;">
 										<tr>
 											<td valign="top">
 												Order Subtotal:
@@ -346,14 +379,23 @@
 												Credit Applied:
 												<br>
 												<?php endif ?>
-												<?php if (($order->promo_discount) && (empty($order->promocode_disable))): ?>
-												Discount:
+												<?php if ((($order->promo_discount) && (empty($order->promocode_disable)))): ?>
+													Discount [<?=$order->promo_code;?>]:
+													<br>
+												<?php endif ?>
+												<?php if ($order->discount): ?>
+													Discount [<?=$order->service[0];?>]:
 													<br>
 												<?php endif ?>
 												Sales Tax:
 												<br>
 												Shipping:
-												<br><br><br>
+												<br>
+												<?php if ($order->overSizeHandling): ?>
+												Oversize Shipping:
+												<br>
+												<?php endif ?>
+												<br><br>
 												<strong style="font-weight:bold;color:#606060">Total:</strong>
 											</td>
 											<td style="padding-left:15px; text-align:right;" valign="top">
@@ -367,10 +409,19 @@
 												-$<?=number_format(abs($order->promo_discount),2); ?>
 												<br>
 											<?php endif ?>
+											<?php if ($order->discount): ?>
+												-$<?=number_format(abs($order->discount),2); ?>
+											<br>
+											<?php endif ?>
 											$<?=number_format($order->tax,2); ?>
 											<br>
 											$<?=number_format($order->handling,2); ?>
-											<br><br><br>
+											<br>
+											<?php if ($order->overSizeHandling): ?>
+												$<?=number_format($order->overSizeHandling,2); ?>
+												<br>
+											<?php endif ?>
+											<br><br>
 											<strong style="font-weight:bold;color:#009900;">$<?=number_format($order->total,2); ?></strong>
 											</td>
 										</tr>
@@ -465,6 +516,14 @@ $(document).ready(function(){
 			$("#confirm_cancel_div").show("slow");
 			$("#normal").slideUp();
 		}
+	});
+	$('#full_order_tax_return_button').click(function(){
+		if (confirm('Are you sure to make full order TAX return? You won\'t be able to go back.')) {
+	  		$('#fullOrderTaxReturnForm').submit();
+		}
+	});
+	$('#part_order_tax_return_button').click(function(){
+	  	$('#partOrderTaxReturnForm').submit();
 	});
 });
 function change_quantity() {

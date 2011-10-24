@@ -231,7 +231,7 @@
 	<!--Disney -->
       <div class="disney fl">
           <p><strong>SPECIAL BONUS!</strong><hr/></p>
-       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value). <br/>
+       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/parents.jpg" align="absmiddle" width="95px" /> ( a $10 value ). <br/>
        <span id="disney">Offer & Refund Details</span></p>
       </div>
     <!-- begin thawte seal -->
@@ -321,8 +321,4 @@ $(".add-address").click(function() {
 		});
 		$("#cart-modal").dialog('open');
 	}); **/
-</script>
-
-<script language="javascript">
-document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s://www':'://www')+ '.upsellit.com/upsellitJS4.jsp?qs=263250249222297345328277324311272279294304313337314308344289&siteID=6525"><\/sc'+'ript>')
 </script>

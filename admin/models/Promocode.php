@@ -29,6 +29,7 @@ class Promocode extends Base {
 	**/
 	public function createCode($entity, $code_data = null, array $extra_data = array(), array $options = array()){
 		$self = static::_object();
+		$entity->description = $code_data['description'];
 		$entity->code = $code_data['code'];
 		$entity->type = $code_data['type'];
 		if ($code_data['type'] != 'free_shipping') {

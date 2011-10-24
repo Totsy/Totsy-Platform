@@ -5,7 +5,7 @@
 				<div class="tt">
 					<div><!-- --></div>
 				</div>
-				<div class="free_shipping_banner"><img src="/img/freeShip-badge.png" /></div>
+				<div class="free_shipping_banner_reg"><img src="/img/freeShip-badge.png" /></div>
 
 				<div class="tm">
 
@@ -15,7 +15,7 @@
 
 							<div id='logo'>
                             <h1>
-                              <a href='/' title="Totsy.com">
+                              <a href="/login/?fbcancel=true" title="Totsy.com">
                                 Totsy</a>
                               </h1>
                             </div>
@@ -23,7 +23,7 @@
 							<div id="intro-copy">
 								<h2 style="margin-top:20px"><span>Become a</span> MEMBER
 								<br />
-								<?=$this->html->link('Already a Member?', '/', array('style' => 'font-size:12px;'));?></h2>
+								<?=$this->html->link('Already a Member?', '/login/?fbcancel=true', array('style' => 'font-size:12px;'));?></h2>
 							</div>
 
 							<div class="message">
@@ -37,7 +37,7 @@
 								<div class="r-box lt-gradient-1">
                                 <h2> <img src="https://graph.facebook.com/<?=$fbuser['id']?>/picture"> Hi <?=$fbuser['name']?> - you're one step away from joining with Facebook</h2>
                                 <hr />
-								<?=$this->form->create($user ,array('id'=>'registerForm')); ?>
+<?    print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/fb_register\']);">'; ?>
 
                <!-- Commnented Firstname, Lastname and Zip code --->
 
@@ -147,26 +147,11 @@
 		</div>
 	</div>
 </div>
+
 <div id="footer">
-
-	<ul>
-		<li class="first"><a href="/pages/terms" title="Terms of Use">Terms of Use</a></li>
-		<li><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
-		<li><a href="/pages/aboutus" title="About Us">About Us</a></li>
-		<li><a href="/blog" title="Blog">Blog</a></li>
-		<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
-		<?php if (empty($userInfo)){ ?>
-		<li><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
-		<li class="last"><a href="http://nytm.org/made" title="Made in NYC" target="_blank">Made in NYC</a></li>
-		<?php } else { ?>
-		<li><a href="/tickets/add" title="Contact Us">Contact Us</a></li>
-		<li class="last"><a href="http://nytm.org/made" title="Made in NYC" target="_blank">Made in NYC</a></li>
-		<?php } ?>
-	</ul>
-
-	<span id="copyright">&copy; 2011 Totsy.com. All Rights Reserved. <br />10 West 18th Street, Floor 4 - New York, NY 10011</span>
-
+	<?php echo $this->view()->render(array('element' => 'footerNavPublic')); ?>
 </div>
+
 <script>
 	document.getElementById("password").focus();
 </script>
@@ -183,7 +168,7 @@
 /* ]]> */
 </script>
 
-<script type="text/javascript" src="http://www.googleadservices.com/pagead/conversion.js"></script>
+<script type="text/javascript" src="https://www.googleadservices.com/pagead/conversion.js"></script>
 
 <noscript>
 	<div style="display:inline;">

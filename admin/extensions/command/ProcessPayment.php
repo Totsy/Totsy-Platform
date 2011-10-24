@@ -10,6 +10,7 @@ use admin\models\Item;
 use admin\models\Credit;
 use admin\models\OrderShipped;
 use admin\models\Invitation;
+use admin\extensions\Mailer;
 use MongoCode;
 use MongoDate;
 use MongoRegex;
@@ -29,6 +30,21 @@ class ProcessPayment extends \lithium\console\Command  {
 	 * @var string
 	 */
 	public $env = 'development';
+	/**
+	 * To change into test mode set the test variable to 'true'. 'false' by default.
+	 *
+	 * @var string
+	 */
+	public $test = 'false';
+	/**
+	 * This variable is only available in test mode
+	 * In test mode you need to pass in an order id, e.g. '4d2e93f00'
+	 * li3 process-payment --test='true' --orderid='4d2e93f00'
+	 * @var string
+	 */
+	public $orderid = null;
+
+	protected $failedCaptures = array();
 
 	/**
 	 * Find all the orders that haven't been shipped which have stock status.
@@ -37,6 +53,7 @@ class ProcessPayment extends \lithium\console\Command  {
 		Logger::info('Starting Payment Processor');
 		Environment::set($this->env);
 		$this->capture();
+		$this->reportFailedCaptures();
 		Logger::info('Payment Processor Finished');
 	}
 
@@ -53,15 +70,29 @@ class ProcessPayment extends \lithium\console\Command  {
 	    **/
 	    MongoCursor::$timeout = -1;
 		$ordersCollection = Order::connection()->connection->orders;
-		$orders = $ordersCollection->find(array(
-			'ship_records' => array('$exists' => true),
-			'auth_confirmation' => array('$exists' => false)
-		));
+		if ($this->test != 'true') {
+            $orders = $ordersCollection->find(array(
+                'ship_records' => array('$exists' => true),
+                'auth_confirmation' => array('$exists' => false)
+            ));
+		} else {
+		    if (is_null($this->orderid)) {
+		        $this->out('You need to provide an order id.  Please refer to "li3 help process-payment".');
+		        exit(0);
+		    }
+		    $orders = $ordersCollection->find(array(
+                'order_id' => $this->orderid
+            ));
+		}
 		if ($orders) {
 			foreach ($orders as $order) {
 				$conditions = array('_id' => $order['user_id']);
 				$user = User::find('first', compact('conditions'));
-				if (Order::process($order) && $user->purchase_count == 1) {
+				$processedOrder = Order::process($order);
+				if (Order::failedCaptureCheck($order['order_id'])){
+				    $this->failedCaptures[] = $order['order_id'];
+				}
+				if ($processedOrder && $user->purchase_count == 1) {
 					if ($user->invited_by) {
 						$inviter = User::find('first', array(
 							'conditions' => array(
@@ -90,6 +121,28 @@ class ProcessPayment extends \lithium\console\Command  {
 				}
 			}
 		}
+	}
+
+	public function reportFailedCaptures() {
+
+	    $failedOrders = Order::collection()->find(array('order_id' => array('$in' => $this->failedCaptures)), array('order_id' => 1, 'authKey' => 1, 'date_created' => 1, 'auth_error', 'total' => 1));
+	    $tableInfo = array();
+	    foreach($failedOrders as $order) {
+	        $order['date_created'] = date('m/d/Y', $order['date_created']->sec);
+	        $tableInfo[] = $order;
+	    }
+	    $content['tableInfo'] = $tableInfo;
+	    if ($failedOrders) {
+            if ($this->test != "true") {
+                Mailer::send('Failed_Capture_Report',"searnest@totsy.com",$content);
+                Mailer::send('Failed_Capture_Report',"gsuper@totsy.com",$content);
+                Mailer::send('Failed_Capture_Report',"kogrady@totsy.com",$content);
+                Mailer::send('Failed_Capture_Report',"mruiz@totsy.com",$content);
+            } else {
+                 Mailer::send('Failed_Capture_Report',"lhanson@totsy.com",$content);
+                 Mailer::send('Failed_Capture_Report',"kkim@totsy.com",$content);
+            }
+        }
 	}
 
 }

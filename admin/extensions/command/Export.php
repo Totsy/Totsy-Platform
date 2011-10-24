@@ -9,7 +9,6 @@ use MongoId;
 use admin\extensions\command\Base;
 use admin\extensions\command\Exchanger;
 use lithium\analysis\Logger;
-use li3_silverpop\extensions\Silverpop;
 use admin\extensions\util\String;
 
 /**
