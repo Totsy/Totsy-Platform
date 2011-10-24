@@ -6,7 +6,7 @@ Where the savvy mom shops - Totsy offers moms on-the-go and moms-to-be access to
 
 * [Totsy.com](http://www.totsy.com/)
 * [Jira](https://totsy1.jira.com/login.jsp)
-* [Webmail](https://webmail.totsy.com) - company email
+* [Gmail](https://webmail.totsy.com) 
 * [Lithium](http://lithify.me/) 
 * [RockMongo](http://rockmongo.totsy.com/) - dev access
 * [NGINX](http://www.nginx.org) 
@@ -14,9 +14,9 @@ Where the savvy mom shops - Totsy offers moms on-the-go and moms-to-be access to
 
 ##Development Team
 
-* coming soon!
+coming soon!
 
-##Cloning Lithium (our PHP framework) and the Totsy Platform:
+##Cloning Lithium / Totsy Platform:
 
     git clone git@github.com:Totsy/Totsy-Platform.git local.totsy.com
 
