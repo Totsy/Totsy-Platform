@@ -5,13 +5,12 @@ Where the savvy mom shops - Totsy offers moms on-the-go and moms-to-be access to
 ##Development Resources
 
 * [Totsy.com](http://www.totsy.com/)
-* [Jira & feature requests](https://totsy1.jira.com/login.jsp)
+* [Jira](https://totsy1.jira.com/login.jsp)
 * [Webmail](https://webmail.totsy.com) - company email
 * [Lithium](http://lithify.me/) 
-* [RockMongo - Development DB Manager](http://rockmongo.totsy.com/) 
+* [RockMongo](http://rockmongo.totsy.com/) - dev access
 * [NGINX](http://www.nginx.org) 
-* [MONGODB](http://www.mongodb.org) 
-* V3
+* [MONGODB](http://www.mongodb.org)
 
 ##Development Team
 
