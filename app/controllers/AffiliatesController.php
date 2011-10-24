@@ -38,9 +38,7 @@ class AffiliatesController extends BaseController {
 			if ($this->request->data){
 				$data = $this->request->data;
 				$query = $this->request->query;
-				var_dump($query);
 				$genpasswd = false;
-				var_dump('Form has data');
 				if (isset($query) && isset($query['genpswd']) && $query['genpswd'] == 'true'){
 					$genpasswd = true;
 				}
