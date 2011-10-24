@@ -240,17 +240,41 @@ class CartController extends BaseController {
 		$cartData['cartExpirationDate'] = "";
 		$cartData['subTotal'] = 0.00;
 		
+		$i = 0;
+		
+		//set cart array 
+		$cartData['cart']= Cart::active()->data();
+		
 		foreach(Cart::active() as $cartItem) {
 			if ($cartData['cartExpirationDate'] < $cartItem->expires->sec) {
 				$cartData['cartExpirationDate'] = $cartItem->expires->sec;
 			}
+
+			//get the current event url
+			$event = Event::find('first',
+									array ('fields' => array('url'), 
+									'conditions' => 
+										array ('_id' => "".$cartItem->event[0]."")
+									)
+								); 
+							
+			$temp = $event->data();
+			$eventURL = $temp['url'];				
+					
+			//create the items url from the event url and the item url
+			$cartData['cart'][$i]['url'] = "http://".$_SERVER['HTTP_HOST']."/sale/".$eventURL."/".$cartItem->url;
 			$cartData['subTotal'] += ($cartItem->sale_retail * $cartItem->quantity);
-		} 
-						
-		//get the current event url	
-		$cartData['eventURL'] = substr($this->request->env('HTTP_REFERER'), 0, strrpos($this->request->env('HTTP_REFERER'),"/"));  
-		//send cart array 
-		$cartData['cart']= Cart::active()->data();
+			$i++;
+		}  
+		
+		$current_path = substr($this->request->env('HTTP_REFERER'), 0, strrpos($this->request->env('HTTP_REFERER'),"/"));
+		
+		if(strlen($current_path) > 0 && $current_path!=="sale") {
+	    	$cartData['eventURL'] = $current_path; 
+	    } else {
+	    	$cartData['eventURL'] = "sale";
+	    }
+
 		//get user savings. they were just put there by updateSavings()
 		$cartData['savings'] = Session::read('userSavings');
 		//get the ship date		
