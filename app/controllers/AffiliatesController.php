@@ -26,6 +26,7 @@ class AffiliatesController extends BaseController {
 		$success = false;
 		$message = '';
 		$errors = '';
+		$_id = null;
         $this->_render['layout'] = false;
 		if ($code) {
 			$count = Affiliate::count(array('conditions' => array('invitation_codes' => $code)));
@@ -36,7 +37,10 @@ class AffiliatesController extends BaseController {
 
 			if ($this->request->data){
 				$data = $this->request->data;
+				$query = $this->request->query;
+				var_dump($query);
 				$genpasswd = false;
+				var_dump('Form has data');
 				if (isset($query) && isset($query['genpswd']) && $query['genpswd'] == 'true'){
 					$genpasswd = true;
 				}
@@ -79,13 +83,14 @@ class AffiliatesController extends BaseController {
                                      Invitation::linkUpInvites($invite_code, $email);
                                    }
                                 }
-                            }
+
                             if(empty($user->invited_by)) {
                                 $user->invited_by = $code;
                             }
                             $user->save(null,array('validate' => false));
                             $_id = (string) $user->_id;
                             $this->set(compact('_id'));
+                            }
                     	}
                         $success = $saved;
                         $errors = $user->errors();
@@ -101,7 +106,7 @@ class AffiliatesController extends BaseController {
                 } //end of password if
 			}
 		}
-		$this->set(compact('success','errors'));
+		$this->set(compact('success','errors', '_id'));
 	}
 
 	/**
