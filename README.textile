@@ -1,9 +1,0 @@
-Welcome to the Totsy Platform project.
-
-h2. Documentation
-
-You can find all documentation on the "project page":http://projects.totsy.com hosted at Totsy. Please do *not* use Github for anything other than revision control, all documentation, tickets and such are tracked on the "redmine instance":http://projects.totsy.com.
-
-Thanks and have fun!
-
--- Totsy Nerd Herd
