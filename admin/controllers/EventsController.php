@@ -472,7 +472,7 @@ class EventsController extends BaseController {
 						if ((in_array($heading[$col], $check_decimals))&&(!empty($val))) {
 							$val = floatval($val);
 						}
-						if(($heading[$col] === "department_1") || ($heading[$col] === "department_2") || ($heading[$col] === "department_3")) {
+						if(($heading[$col] === "department_1") || ($heading[$col] === "department_2") || ($heading[$col] === "department_3") || (strstr($heading[$col], "department_3"))) {
 							if (!empty($val)) {
 								$eventItems[$row - 1]['departments'][] = ucfirst(strtolower(trim($val)));
 								$eventItems[$row - 1]['departments'] = array_unique($eventItems[$row - 1]['departments']);
@@ -484,7 +484,7 @@ class EventsController extends BaseController {
 							}
 						} else {
 							if (!empty($val)) {
-							$eventItems[$row - 1][$heading[$col]] = $val;
+								$eventItems[$row - 1][$heading[$col]] = $val;
 							}
 						}
 					}
