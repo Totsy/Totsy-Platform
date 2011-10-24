@@ -1,6 +1,3 @@
-[submodule "Totsy/Totsy-Platform"]
-	path = Totsy/Totsy-Platform
-	url = git@github.com:Totsy/Totsy-Platform.git
 [submodule "libraries/li3_docs"]
 	path = libraries/li3_docs
 	url = git://github.com/UnionOfRAD/li3_docs.git
