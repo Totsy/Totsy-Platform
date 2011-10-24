@@ -30,7 +30,7 @@
 						<?php endif ?>
 					</div>
 					
-					<div class="grid_11 alpha omega">
+					<div class="grid_11 alpha omega blurb">
 					<?php if (!empty($event->blurb)): ?>
 						<?php echo $event->blurb ?>
 					<?php endif ?>
