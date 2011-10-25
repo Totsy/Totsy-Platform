@@ -66,10 +66,11 @@ class UsersController extends BaseController {
 			if ($inviteCheck > 0) {
 				$data['invitation_codes'] = array(static::randomString());
 			}
-			/**
-			* this block handles the invitations.
-			**/
+			
+			/* links up inviter with the invitee and sends an email notification */
+						
 			Invitation::linkUpInvites($invite_code, $email);
+			
 			switch ($invite_code) {
 				case 'our365':
 				case 'our365widget':

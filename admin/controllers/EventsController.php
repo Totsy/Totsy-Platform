@@ -217,15 +217,56 @@ class EventsController extends BaseController {
 				'order' => array('created_date' => 'ASC')
 			));
 
+		//process new items
+		if(!empty($this->request->data['items_submit'])) {
+
+			$fullarray = Event::convert_spreadsheet($this->request->data['items_submit']);
+			if($event->clearance){
+				$parseItems = $this->parseItems_clearance($fullarray, $event->_id, $enableItems);
+			}
+			else{
+				$parseItems = $this->parseItems($fullarray, $event->_id, $enableItems);
+			}
+
+			if (is_array($parseItems)){
+
+				$eventItems = Item::find('all', array('conditions' => array('event' => array($_id))));
+				if (!empty($eventItems)) {
+					foreach ($eventItems as $item) {
+						$items[] = (string) $item->_id;
+					}
+				}
+			}
+		}
+
+
 		#T Get all possibles value for the multiple departments select
 		$result = Item::getDepartments();
+		$sel_filters = array();
 		$all_filters = array();
 		foreach ($result['values'] as $value) {
-			$all_filters[$value] = $value;
+			if($value&&$value!=" "){
+				$all_filters[$value] = $value;
+			}
 			if (array_key_exists('Momsdads',$all_filters) && !empty($all_filters['Momsdads'])) {
 				$all_filters['Momsdads'] = 'Moms & Dads';
 			}
 		}
+		
+		foreach ($eventItems as $this_item){
+			if($this_item->departments){
+				$values = $this_item->departments->data();
+			}
+			foreach ($values as $value) {
+				if($value&&$value!=" "){
+					$sel_filters[$value] = $value;
+				}
+			}
+		
+		}		
+
+		$sel_filters = array_unique($sel_filters);
+		
 		#END T
 		if (empty($event)) {
 			$this->redirect(array('controller' => 'events', 'action' => 'add'));
@@ -244,27 +285,6 @@ class EventsController extends BaseController {
 			}
 			unset($this->request->data['itemTable_length']);
 			$enableItems = $this->request->data['enable_items'];
-
-			if(!empty($this->request->data['items_submit'])) {
-
-				$fullarray = Event::convert_spreadsheet($this->request->data['items_submit']);
-				if($event->clearance){
-					$parseItems = $this->parseItems_clearance($fullarray, $event->_id, $enableItems);
-				}
-				else{
-					$parseItems = $this->parseItems($fullarray, $event->_id, $enableItems);
-				}
-
-				if (is_array($parseItems)){
-
-					$eventItems = Item::find('all', array('conditions' => array('event' => array($_id))));
-					if (!empty($eventItems)) {
-						foreach ($eventItems as $item) {
-							$items[] = (string) $item->_id;
-						}
-					}
-				}
-			}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //			if ($_FILES['upload_file']['error'] == 0 && $_FILES['upload_file']['size'] > 0) {
@@ -393,7 +413,7 @@ class EventsController extends BaseController {
 			}
 		}
 
-		return compact('event', 'eventItems', 'items', 'all_filters', 'shortDescLimit');
+		return compact('event', 'eventItems', 'items', 'all_filters', 'sel_filters', 'shortDescLimit');
 	}
 
 
@@ -446,7 +466,7 @@ class EventsController extends BaseController {
 				$val = $array[$row][$col];
 
 				if ($row == 0) {
-					if($val){
+					if(($val)||($val==0)){
 						$heading[] = $val;
 					}
 				} else {
@@ -454,8 +474,8 @@ class EventsController extends BaseController {
 						if ((in_array($heading[$col], $check_decimals))&&(!empty($val))) {
 							$val = floatval($val);
 						}
-						if(($heading[$col] === "department_1") || ($heading[$col] === "department_2") || ($heading[$col] === "department_3")) {
-							if (!empty($val)) {
+						if(($heading[$col] === "department_1") || ($heading[$col] === "department_2") || ($heading[$col] === "department_3") || (strstr($heading[$col], "department_1")) || (strstr($heading[$col], "department_2")) || (strstr($heading[$col], "department_3"))) {
+							if (!empty($val)&&strlen($val)>1) {
 								$eventItems[$row - 1]['departments'][] = ucfirst(strtolower(trim($val)));
 								$eventItems[$row - 1]['departments'] = array_unique($eventItems[$row - 1]['departments']);
 							}
@@ -466,7 +486,7 @@ class EventsController extends BaseController {
 							}
 						} else {
 							if (!empty($val)) {
-							$eventItems[$row - 1][$heading[$col]] = $val;
+								$eventItems[$row - 1][$heading[$col]] = $val;
 							}
 						}
 					}
