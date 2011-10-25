@@ -12,7 +12,7 @@ var isOpen = false;
 $(document).ready( function() {
 	
 	$(document).click( function(event) {
-		if(event.target.id!='cart_popup_checkout' && event.target.id!='cart_popup_cont_shop'){
+		if(event.target.id!='cart_popup_checkout' && event.target.id!='cart_popup_cont_shop') {
     		closeCartPopup();
 	    }
 	});
@@ -60,9 +60,7 @@ $(document).ready( function() {
 		    //formatting price and line totals
 		    cartItems[i]['sale_retail'] = cartItems[i]['sale_retail'].toFixed(2);
 		    cartItems[i]['line_total'] = (cartItems[i]['quantity'] * cartItems[i]['sale_retail']).toFixed(2);
-		    
-		    cartItems[i]['url'] = cartObj.eventURL + "/" + cartItems[i]['url']; 
-		    
+		    		    
 		    if (i < visibleItemCount) {
 		    	visibleItems.push(cartItems[i]);
 		    } else {

@@ -11,15 +11,15 @@
 	
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
 	
-	<?php echo $this->html->style(array('base.css?v=004', '960.css?v=004', 'jquery_ui_custom/jquery.ui.all.css?v=004'), array('media' => 'screen')); ?>
+	<?php echo $this->html->style(array('base.css?v=005', '960.css?v=005', 'jquery_ui_custom/jquery.ui.all.css?v=005'), array('media' => 'screen')); ?>
 
 	<script src="https://www.google.com/jsapi"></script>
 	<script> google.load("jquery", "1.6.1", {uncompressed:false});</script>
 	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
 	<!-- end jQuery / jQuery UI -->
 
-	<?php echo $this->html->script('jquery.uniform.min.js?v=004'); ?>
-	<?php echo $this->html->script('jquery.countdown.min.js?v=004'); ?>
+	<?php echo $this->html->script('jquery.uniform.min.js?v=005'); ?>
+	<?php echo $this->html->script('jquery.countdown.min.js?v=005'); ?>
 	<?php echo $this->scripts(); ?>
 	<meta property="og:site_name" content="Totsy"/>
 	<meta property="fb:app_id" content="181445585225391"/>
@@ -33,11 +33,15 @@
 				$tags =  $request->params['args'][0]; 
 			}  
 		} else  {
-			if (isset($event) && isset($item)){
+			if (isset($event) && isset($item)) {
 				$edata = $event->data();
 				$idata = $item->data();
-				$title = $edata['name'] .' - '. $idata['description'];
-				$tags = $edata['name'].', '.implode(', ',$idata['departments']).', '.$idata['category'];
+				
+				if(isset($idata['departments'])) {
+					$title = $edata['name'] .' - '. $idata['description'];
+					$tags = $edata['name'].', '.implode(', ',$idata['departments']).', '.$idata['category'];
+				}
+				
 				unset($edata, $idata);
 			} else if (isset($event)){ 
 				$edata = $event->data();
@@ -148,7 +152,7 @@
 
 
 <!-- Sailthru Horizon --> 
-<!-- <script type="text/javascript">
+<script type="text/javascript">
     (function() {
         function loadHorizon() { 
             var s = document.createElement('script'); 
@@ -172,6 +176,5 @@
         };
     })();
 </script>
--->
 </body>
 </html>

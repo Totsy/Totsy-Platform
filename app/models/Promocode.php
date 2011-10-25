@@ -6,25 +6,16 @@ use MongoDate;
 use MongoId;
 use MongoRegex;
 
-class Promocode extends \lithium\data\Model {
+class Promocode extends Base {
 
-	protected $_dates = array(
-		'now' => 0
-	);
-
-	public static function collection() {
-		return static::_connection()->connection->promocodes;
-	}
-
-	public static function dates($name) {
-	     return new MongoDate(time() + static::_object()->_dates[$name]);
-	}
+	protected $_meta = array('source' => 'promocodes');
 
 	/**
 	 * The confirm method checks for an incoming promotion code and confirms that
 	 * it is valid to use. The validation for a promotion code will include date range,
 	 * quantity, order item type and future rules.
 	 *
+	 * @param string $code promocode
 	 */
 	public static function confirmCode($code) {
 		$code = new MongoRegex("/^($code)$/i");
@@ -37,6 +28,13 @@ class Promocode extends \lithium\data\Model {
 				'enabled' => true
 			)));
 	}
+	/**
+	* Updates the stats of a given promocode
+	* @param string $_id id of the promocode
+	* @param double $discount discount user received
+	* @param double $revenue total of a user's order
+	* @return boolean success for update
+	**/
 	public static function add($_id, $discount, $revenue) {
 		$_id = new MongoId($_id);
 		$update = array(
