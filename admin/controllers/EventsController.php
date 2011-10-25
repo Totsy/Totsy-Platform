@@ -245,7 +245,7 @@ class EventsController extends BaseController {
 		$sel_filters = array();
 		$all_filters = array();
 		foreach ($result['values'] as $value) {
-			if($value){
+			if($value&&$value!=" "){
 				$all_filters[$value] = $value;
 			}
 			if (array_key_exists('Momsdads',$all_filters) && !empty($all_filters['Momsdads'])) {
@@ -258,7 +258,9 @@ class EventsController extends BaseController {
 				$values = $this_item->departments->data();
 			}
 			foreach ($values as $value) {
-				$sel_filters[$value] = $value;
+				if($value&&$value!=" "){
+					$sel_filters[$value] = $value;
+				}
 			}
 		
 		}		
@@ -464,7 +466,7 @@ class EventsController extends BaseController {
 				$val = $array[$row][$col];
 
 				if ($row == 0) {
-					if($val){
+					if(($val)||($val==0)){
 						$heading[] = $val;
 					}
 				} else {
@@ -472,8 +474,8 @@ class EventsController extends BaseController {
 						if ((in_array($heading[$col], $check_decimals))&&(!empty($val))) {
 							$val = floatval($val);
 						}
-						if(($heading[$col] === "department_1") || ($heading[$col] === "department_2") || ($heading[$col] === "department_3") || (strstr($heading[$col], "department_3"))) {
-							if (!empty($val)) {
+						if(($heading[$col] === "department_1") || ($heading[$col] === "department_2") || ($heading[$col] === "department_3") || (strstr($heading[$col], "department_1")) || (strstr($heading[$col], "department_2")) || (strstr($heading[$col], "department_3"))) {
+							if (!empty($val)&&strlen($val)>1) {
 								$eventItems[$row - 1]['departments'][] = ucfirst(strtolower(trim($val)));
 								$eventItems[$row - 1]['departments'] = array_unique($eventItems[$row - 1]['departments']);
 							}
