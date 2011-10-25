@@ -245,7 +245,7 @@ class EventsController extends BaseController {
 		$sel_filters = array();
 		$all_filters = array();
 		foreach ($result['values'] as $value) {
-			if($value){
+			if($value&&$value!=" "){
 				$all_filters[$value] = $value;
 			}
 			if (array_key_exists('Momsdads',$all_filters) && !empty($all_filters['Momsdads'])) {
@@ -258,7 +258,7 @@ class EventsController extends BaseController {
 				$values = $this_item->departments->data();
 			}
 			foreach ($values as $value) {
-				if($value){
+				if($value&&$value!=" "){
 					$sel_filters[$value] = $value;
 				}
 			}
