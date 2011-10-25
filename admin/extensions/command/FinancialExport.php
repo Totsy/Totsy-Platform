@@ -202,8 +202,8 @@ class FinancialExport extends Base  {
 		    $this->creditDetailFile = $this->tmp . 'CredDetail-History.xml';
 		    $this->log("Retrieving Historical Data");
         } else {
-            $yesterday_min = mktime(0,0,0,date('m'),date('d') - 1,date('Y'));
-            $yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
+           $yesterday_min = mktime(0,0,0,date('m'),date('d') - 1,date('Y'));
+           $yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
             $orderConditions = array(
                 'date_created' => array(
                     '$gte' => new MongoDate($yesterday_min),
@@ -245,8 +245,8 @@ class FinancialExport extends Base  {
 		);
 
 		$this->orders = Order::collection()->find($orderConditions, $fields);
-		//$this->_orderSummaryReport();
-		//$this->_orderDetailReport();
+		$this->_orderSummaryReport();
+		$this->_orderDetailReport();
 		$this->_orderCreditReport();
 	}
 
@@ -270,7 +270,7 @@ class FinancialExport extends Base  {
                 if (array_key_exists('firstname', $order['billing'])) {
                     $order['billing_name'] = $order['billing']['firstname'] . " " . $order['billing']['lastname'];
                 } else {
-                    $order['billing_address'] = '';
+                    $order['billing_name'] = '';
                 }
                 if (array_key_exists('address', $order['billing'])) {
                     $order['billing_address'] = $order['billing']['address'];
@@ -279,6 +279,8 @@ class FinancialExport extends Base  {
                 }
                 if (array_key_exists('address_2', $order['billing'])) {
                     $order['billing_address2'] = $order['billing']['address_2'];
+                } else {
+                    $order['billing_address2'] = '';
                 }
                 if (array_key_exists('city', $order['billing'])) {
                     $order['billing_city'] = $order['billing']['city'];
