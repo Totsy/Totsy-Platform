@@ -258,7 +258,9 @@ class EventsController extends BaseController {
 				$values = $this_item->departments->data();
 			}
 			foreach ($values as $value) {
-				$sel_filters[$value] = $value;
+				if($value){
+					$sel_filters[$value] = $value;
+				}
 			}
 		
 		}		
@@ -472,7 +474,7 @@ class EventsController extends BaseController {
 						if ((in_array($heading[$col], $check_decimals))&&(!empty($val))) {
 							$val = floatval($val);
 						}
-						if(($heading[$col] === "department_1") || ($heading[$col] === "department_2") || ($heading[$col] === "department_3") || (strstr($heading[$col], "department_3"))) {
+						if(($heading[$col] === "department_1") || ($heading[$col] === "department_2") || ($heading[$col] === "department_3") || (strstr($heading[$col], "department_1") || (strstr($heading[$col], "department_2") || (strstr($heading[$col], "department_3"))) {
 							if (!empty($val)&&strlen($val)>1) {
 								$eventItems[$row - 1]['departments'][] = ucfirst(strtolower(trim($val)));
 								$eventItems[$row - 1]['departments'] = array_unique($eventItems[$row - 1]['departments']);
