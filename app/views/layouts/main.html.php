@@ -33,11 +33,15 @@
 				$tags =  $request->params['args'][0]; 
 			}  
 		} else  {
-			if (isset($event) && isset($item)){
+			if (isset($event) && isset($item)) {
 				$edata = $event->data();
 				$idata = $item->data();
-				$title = $edata['name'] .' - '. $idata['description'];
-				$tags = $edata['name'].', '.implode(', ',$idata['departments']).', '.$idata['category'];
+				
+				if(isset($idata['departments'])) {
+					$title = $edata['name'] .' - '. $idata['description'];
+					$tags = $edata['name'].', '.implode(', ',$idata['departments']).', '.$idata['category'];
+				}
+				
 				unset($edata, $idata);
 			} else if (isset($event)){ 
 				$edata = $event->data();
