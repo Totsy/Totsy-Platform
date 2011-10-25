@@ -31,9 +31,9 @@ tinyMCE.init({
 			numberOfMonths: 1,
 			onSelect: function(selectedDate) {
 				var option = this.id == "start_date" ? "minDate" : "maxDate";
-				var instance = $(this).data("datetimepicker");
-				var date = $.datepicker.parseDate(instadnce.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
-				dates.not(this).datepicker("option", option, date);
+				//var instance = $(this).data("datetimepicker");
+				//var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+				//dates.not(this).datepicker("option", option, date);
 			}
 		});
 	});
