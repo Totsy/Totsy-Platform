@@ -237,7 +237,7 @@ class APIController extends  \lithium\action\Controller {
 				} else if (is_float($it['percent_off'])) {
 					$it['percent_off'] = round($it['percent_off']*100,2);
 				} else {
-					$it['percent_off'] = preg_replace('/[/D]+/','',$it['percent_off']);
+					$it['percent_off'] = preg_replace('/[\D]+/','',$it['percent_off']);
 					if ($it['percent_off']>74) $it['percent_off'] = 0;	
 				} 
 				$it['start_date'] = $ev['start_date'];
@@ -320,7 +320,7 @@ class APIController extends  \lithium\action\Controller {
 					} else if (is_float($it['percent_off'])) {
 						$it['percent_off'] = round($it['percent_off']*100,2);
 					} else {
-						$it['percent_off'] = preg_replace('/[/D]+/','',$it['percent_off']);
+						$it['percent_off'] = preg_replace('/[\D]+/','',$it['percent_off']);
 						if ($it['percent_off']>74) $it['percent_off'] = 0;	
 					}
 					if ($it['percent_off'] > $maxOff) { $maxOff = $it['percent_off']; }
@@ -425,7 +425,7 @@ class APIController extends  \lithium\action\Controller {
 					} else if (is_float($it['percent_off'])) {
 						$it['percent_off'] = round($it['percent_off']*100,2);
 					} else {
-						$it['percent_off'] = preg_replace('/[/D]+/','',$it['percent_off']);
+						$it['percent_off'] = preg_replace('/[\D]+/','',$it['percent_off']);
 						if ($it['percent_off']>74) $it['percent_off'] = 0;	
 					}
 					if ($it['percent_off'] > $maxOff) { $maxOff = $it['percent_off']; }
