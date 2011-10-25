@@ -1,8 +1,8 @@
-	<h2>Join with Facebook</h2>
 	<hr />
+	<h2>Join with Facebook</h2>
 	<a href="javascript:;" onclick="fblogin();return false;"><img src="/img/sign_in_fb.png"></a>
 
-<h2 style="margin-top:9px;">Or Join with Email</h2>	
+<h2 style="margin-top:30px;">Or Join with Email</h2>	
 <hr />
 <?php if (preg_match('/join/',$_SERVER['REQUEST_URI'])) {
 	print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/join\']);">'; }
@@ -57,14 +57,14 @@
 		));
 	?>
 	
-	<span class="fl" style="margin:5px 0px 0px 10px;">The savvy mom shops at Totsy!</span>
+	<span class="fl" style="margin:5px 0px 0px 20px; font-size:16px;">The savvy mom shops at Totsy!</span>
 	<div class="clear"></div>
 	<div style="font-size:11px; padding:5px; margin-top:10px;">
 		By joining you accept our 
 		<?=$this->html->link('terms and conditions','pages/terms')?>.
 	</div>
 	
-	<div class="fr" style="font-size:11px; padding:5px; margin:10px 66px 0px 0px;">
+	<div style="font-size:11px; padding:5px; margin:0px;">
 		*Offer expires 30 days after registration.
 	</div>
 	
