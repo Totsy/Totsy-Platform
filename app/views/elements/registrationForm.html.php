@@ -1,15 +1,20 @@
+<script type="text/javascript"> 
+  function setIframe() {
+    var gcframe = document.getElementById('psm').innerHTML = '<iframe src="/signup-tracking.html" style="border:none;width:1px;height:1px;" marginheight="0" marginwidth="0" frameborder="0"></iframe>';
+  }
+</script>
+
 	<h2>Join with Facebook</h2>
 	<hr />
 	<a href="javascript:;" onclick="fblogin();return false;"><img src="/img/sign_in_fb.png"></a>
 
 <h2 style="margin-top:9px;">Or Join with Email</h2>	
 <hr />
-<?php if (preg_match('/join/',$_SERVER['REQUEST_URI'])) {
-	print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/join\']);">';
-		} else {
-	print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/register\']);">';
-		 }
-	?>
+<?php if (preg_match('/join/',$_SERVER['REQUEST_URI'])) { ?>
+<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/join']); return setIframe();">
+<?	} else { ?>
+<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/register']);  return setIframe();">
+<?  } ?>
 
 	<?=$this->form->label('email', 'Email <span>*</span>', array(
 		'escape' => false,
@@ -69,3 +74,4 @@
 	<?=$this->form->error('terms'); ?>
 	
 <?=$this->form->end(); ?>
+<div id="psm" style="display:none;"></div>
