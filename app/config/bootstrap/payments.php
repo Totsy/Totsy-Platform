@@ -1,6 +1,30 @@
 <?php
 
 use li3_payments\payments\Processor;
+use lithium\core\Environment;
+
+$adapterFilters = array(
+	'cybersource' => function($function, $params, $name) {
+		$options = $params['options'];
+
+		switch ($function) {
+			case 'authorize':
+				return true;
+				break;
+		}
+		if (isset($options['processor']) && $options['processor'] == 'CyberSource') {
+			return true;
+		}
+	},
+	'authorizenet' => function($function, $params, $name) {
+		$options = $params['options'];
+
+		$processor = isset($options['processor']) ? $options['processor'] : false;
+		if (!$processor || $processor == 'AuthorizeNet') {
+			return true;
+		}
+	}
+);
 
 /**
  * Payment configuration.
@@ -14,7 +38,11 @@ $test = array(
 	'adapter' => 'CyberSource',
 	'merchantID' => 'hlince',
 	'transactionKey' => $key,
-	'endpoint' => 'test'
+	'endpoint' => 'test',
+	'filters' => array(
+		'alwaysProcessAdapter' => true,
+		'adapter' => $adapterFilters['cybersource']
+	)
 );
 
 $key  = '<transaction key>';
@@ -22,7 +50,11 @@ $live = array(
 	'adapter' => 'CyberSource',
 	'merchantID' => '<merchant id>',
 	'transactionKey' => $key,
-	'endpoint' => 'live'
+	'endpoint' => 'live',
+	'filters' => array(
+		'alwaysProcessAdapter' => true,
+		'adapter' => $adapterFilters['cybersource']
+	)
 );
 
 Processor::config(array(
