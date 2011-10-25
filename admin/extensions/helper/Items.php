@@ -120,9 +120,11 @@ class Items extends \lithium\template\Helper {
 
 				$html .= "<select multiple='multiple' id='related_".$item->_id."' class='related_items' name='related_".$item->_id."[]' title='Select an item'>";
 				
-				$itemDropDown = $this->buildDropDown($all_items, $related_items);
+				//$itemDropDown = $this->buildDropDown($all_items, $related_items);
 
-				$html .= $itemDropDown;
+
+
+				//$html .= $itemDropDown;
 				$html .= "</select>";
 
 				$html .= "</td>";
