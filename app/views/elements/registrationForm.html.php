@@ -5,12 +5,14 @@
 <h2 style="margin-top:9px;">Or Join with Email</h2>	
 <hr />
 <?php if (preg_match('/join/',$_SERVER['REQUEST_URI'])) {
-	print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/join\']);">';
-		} else {
-	print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/register\']);">';
-		 }
-	?>
-
+	print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/join\']);">'; }
+?>
+<?php if (preg_match('/register/',$_SERVER['REQUEST_URI'])) {
+	print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/register\']);">'; }
+?>
+<?php if (preg_match('/a/',$_SERVER['REQUEST_URI'])) {
+	print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/affiliate\']);">'; }
+?>
 	<?=$this->form->label('email', 'Email <span>*</span>', array(
 		'escape' => false,
 		'class' => 'required'
