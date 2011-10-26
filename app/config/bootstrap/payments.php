@@ -8,7 +8,7 @@ $adapterFilters = array(
 		$options = $params['options'];
 
 		switch ($function) {
-			case 'authorize':
+			case 'authorize' && $params['pmt']->type == 'amex':
 				return true;
 				break;
 		}
