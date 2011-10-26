@@ -153,7 +153,7 @@ class Items extends \lithium\template\Helper {
 				Vendor Style: $item->vendor_style
 				</td>";
 				$html .= "<td height='100' width='100'><textarea rows='5' cols='20' name='$item->_id' id='$item->_id'>$item->blurb</textarea></td>";
-				$html .= "<td width='30'>$item->enabled $item->url";
+				$html .= "<td width='30'>$item->enabled";
 
 				//check to show flag for duplicate color/description url
 				if($isurlduplicate){
