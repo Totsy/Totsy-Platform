@@ -9,9 +9,11 @@ use lithium\data\Connections;
 use admin\models\Cart;
 use admin\models\Credit;
 use admin\models\Order;
+use admin\models\Promotion;
 use MongoId;
 use MongoDate;
 use admin\extensions\Mailer;
+use MongoRegex;
 
 
 /**
@@ -46,8 +48,14 @@ class UsersController extends \admin\controllers\BaseController {
 			'Date',
 			'Reason',
 			'Description',
-			'Amount'
-	));
+			'Amount'),
+		'promo' => array(
+			'Date',
+			'Order Id',
+			'Code',
+			'Type'
+		)
+	);
 
 	public function index() {
 		if ($this->request->data) {
@@ -64,6 +72,7 @@ class UsersController extends \admin\controllers\BaseController {
 				'first', array(
 					'conditions' => array('_id' => $id)
 			));
+			$promocodes_used = Promotion::find('all', array('conditions' => array('user_id' => $user['_id'])));
 			if ($user) {
 				$headings = $this->_headings;
 				$reasons = array(
@@ -102,29 +111,13 @@ class UsersController extends \admin\controllers\BaseController {
 				} else {
 				    $deactivated = false;
 				}
-				//Retrieve Deactivation History
-			/*	$collection = User::collections("deactivation.log");
-				$results = $collection->find(array('user_id' => $id));
-				foreach($results as $entry) {
-				    User::meta('source','users');
-				    $conditions = array('conditions'=>array('_id' => new MongoId($entry['created_by'])));
-                    $admin = User::find( 'first', $conditions );
-                    $admin = $admin->data();
-                    if (array_key_exists('firstname', $admin)) {
-                        $entry['created_by'] = $admin['firstname'] . ' ' . $admin['lastname'];
-                    } else {
-                        $entry['created_by'] = $admin['email'];
-                    }
-				    $entry['date_created'] = date("M d, Y", $entry['date_created']->sec);
-				    $history[] = $entry;
-				} */
 
 				$data = array_intersect_key($userData, array_flip($headings['user']));
 				$info = $this->sortArrayByArray($data, $headings['user']);
 			}
 		}
 
-		return compact('user', 'credits', 'orders', 'headings', 'info', 'reasons', 'admin', 'deactivated');//,'history');
+		return compact('user', 'credits', 'orders', 'headings', 'info', 'reasons', 'admin', 'deactivated', 'promocodes_used');
 	}
 	/**
 	 * Performs login authentication for a user going directly to the database.
@@ -161,6 +154,44 @@ class UsersController extends \admin\controllers\BaseController {
 		return (Session::write('userLogin', $sessionInfo));
 	}
 
+	public function adminManager() {
+	    $UserCollection = User::collection();
+	    $admin = Session::read('userLogin');
+
+	    $admins = $UserCollection->find(
+	    array('$or'=> array(
+	            array('admin' => array('$exists' => true)),
+	            array('email' => new MongoRegex('/@totsy.com/i'))
+	        ),
+	        'firstname' => array('$ne' => 'Affiliate')),
+	        array(
+	            'email' => true,
+	            'firstname' => true,
+	            'lastname' => true,
+	            'admin'=> true,
+	            'superadmin' => true,
+	            'created_date' => true,
+	            'created_orig' => true)
+	    );
+	    if ($this->request->data) {
+	        $email = $this->request->data['email'];
+	        $access = $this->request->data['access'];
+	        $level = $this->request->data['type'];
+
+	        if ($access == "deny") {
+	            $access = false;
+	        } else {
+	            $access = true;
+	        }
+
+	        $conditions = array("email" => $email);
+	        $set = array('$set' => array($level => $access));
+
+	        $UserCollection->update($conditions, $set);
+
+	    }
+	    return compact('admins', 'admin');
+	}
 	/**
 	* Deactivate/Activate Users
 	*
@@ -177,8 +208,11 @@ class UsersController extends \admin\controllers\BaseController {
 	    if ($user) {
 	        if ($type == "deactivate") {
 	            $date = new MongoDate(strtotime("now"));
+	            if ($id > 10) {
+	                $id = new MongoId($id);
+	            }
                 $collection->update(
-                    array('_id' => new MongoId($id)),
+                    array('_id' => $id),
                     array(
                         '$unset'=>array('reactivate_date' => 1),
                         '$set'=>array(

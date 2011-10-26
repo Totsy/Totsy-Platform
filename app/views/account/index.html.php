@@ -1,60 +1,38 @@
-<?php $this->title("Account Dashboard for ". $userInfo['email']); ?>
-<?=$this->html->script('jquery.equalheights'); ?>
+<?php $this->title("Account Dashboard"); ?>
 
-	<h1 class="p-header">My Account</h1>
-	<div id="left">
-		<ul class="menu main-nav">
-			<li class="firstitem17 active"><a href="/account" title="Account Dashboard"><span>Account Dashboard</span></a></li>
-			<li class="item18"><a href="/account/info" title="Account Information"><span>Account Information</span></a></li>
-			<li class="item18"><a href="/account/password" title="Change Password"><span>Change Password</span></a></li>
-			<li class="item19"><a href="/addresses" title="Address Book"><span>Address Book</span></a></li>
-			<li class="item20"><a href="/orders" title="My Orders"><span>My Orders</span></a></li>
-			<li class="item20"><a href="/Credits/view" title="My Credits"><span>My Credits</span></a></li>
-			<li class="lastitem23"><a href="/Users/invite" title="My Invitations"><span>My Invitations</span></a></li>
-			<br />
-			<h3 style="color:#999;">Need Help?</h3>
-			<hr />
-			<li class="first item18"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
-			<li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
-		</ul>
-	</div>
+<div class="grid_16">
+	<h2 class="page-title gray">Account Dashboard</h2>
+	<hr />
+</div>
 
-<div id="middle" class="noright">
-	<div class="tl"></div>
-	<div class="tr"></div>
-	<div id="page">
-		<!-- Replace with user's name -->
-		<h2 class="gray mar-b">Hello <?=$userInfo['email'];?>!</h2>
-		<hr />
+<div class="grid_4">
+	<?php echo $this->view()->render(array('element' => 'myAccountNav')); ?>
+	<?php echo $this->view()->render(array('element' => 'helpNav')); ?>
+</div>
 
-		<!-- Replace with account welcome message -->
+<div class="grid_11 omega roundy grey_inside b_side">
+	<h2 class="page-title gray">Account Dashboard</h2>
+	<hr />
 		<p>From your My Account Dashboard you have the ability to view a snapshot of your recent account activity and update your account information. Select a link below to view or edit information.</p>
-		</br><br>
-		<h2 class="gray mar-b">Account Information</h2>
-		<hr />
-
 		<div class="col-2">
-
 			<div class="r-container box-2 fl">
 				<div class="tl"></div>
 				<div class="tr"></div>
 				<div class="r-box lt-gradient-1">
-					<h3 class="gray fl">Contact Information</h3>&nbsp;|&nbsp;<?=$this->html->link('Edit', '/account/info');?>
-					<br />
-					<br />
-					<?php if(array_key_exists('firstname', $userInfo) &&     !empty($userInfo['firstname'])):
+					<h3 class="gray fl">Contact Information</h3>&nbsp;|&nbsp;&nbsp;<?=$this->html->link('Edit', '/account/info');?>
+
+					<div><?php if(array_key_exists('firstname', $userInfo) &&     !empty($userInfo['firstname'])):
 					?>
 					    <?=$userInfo['firstname'].' '.$userInfo['lastname'] ?><br />
 					<?php else: ?>
-					    Totsy Member<br />
-					<?php endif;?>
-					<?=$userInfo['email'];?><br />
-					<?=$this->html->link('Change Password', '/account/password');?>
+					    Totsy Member
+					<?php endif;?></div>
+					<div><?=$userInfo['email'];?></div>
+					<div><?=$this->html->link('Change Password', '/account/password');?></div>
 				</div>
 				<div class="bl"></div>
 				<div class="br"></div>
 			</div>
-
 			<div class="r-container box-2 fr">
 				<div class="tl"></div>
 				<div class="tr"></div>
@@ -70,29 +48,25 @@
 							</ul>
 						</dd>
 					</dl>-->
-
 				</div>
 				<div class="bl"></div>
 				<div class="br"></div>
 			</div>
-
 		</div>
-
-		<h2 class="gray fl">Address Book</h2>&nbsp;|&nbsp;<?=$this->html->link('Manage Addresses', '/addresses/view');?>
+		<strong>Address Book</strong> | <?=$this->html->link('Manage Addresses', '/addresses/view');?>
 		<hr />
 		<div class="col-2">
-
 			<div class="r-container box-2 fl">
 				<div class="tl"></div>
 				<div class="tr"></div>
 				<div class="r-box lt-gradient-1">
 					<h3 class="gray fl"><?php echo ('Primary Billing Address');?></h3>&nbsp;|&nbsp;
 					<?php if (!empty($billing)): ?>
-						<?=$this->html->link('Edit', "/addresses/edit/$billing->_id"); ?><br><br>
+						<?=$this->html->link('Edit', "/addresses/edit/$billing->_id"); ?>
 						<address>
-							<?=$billing->address?><br>
-							<?=$billing->address_2?><br>
-							<?=$billing->city?>, <?=$billing->state?>, <?=$billing->zip?>
+							<div><?=$billing->address?></div>
+							<div><?=$billing->address_2?></div>
+							<div><?=$billing->city?>, <?=$billing->state?>, <?=$billing->zip?></div>
 						<address>
 					<?php else: ?>
 						<?=$this->html->link('Add', "/addresses/add"); ?>
@@ -101,19 +75,18 @@
 				<div class="bl"></div>
 				<div class="br"></div>
 			</div>
-
 			<div class="r-container box-2 fr">
 				<div class="tl"></div>
 				<div class="tr"></div>
 				<div class="r-box lt-gradient-1">
 					<h3 class="gray fl"><?php echo ('Primary Shipping Address');?></h3>&nbsp;|&nbsp;
 					<?php if (!empty($shipping)): ?>
-						<?=$this->html->link('Edit', "/addresses/edit/$shipping->_id"); ?><br><br>
-						<address>
-							<?=$shipping->address?><br>
-							<?=$shipping->address_2?><br>
-							<?=$shipping->city?>, <?=$shipping->state?>, <?=$shipping->zip?>
-						<address>
+						<?=$this->html->link('Edit', "/addresses/edit/$shipping->_id"); ?>
+					<address>	
+						<div><?=$shipping->address?></div>
+						<div><?=$shipping->address_2?></div>
+						<div><?=$shipping->city?>, <?=$shipping->state?>, <?=$shipping->zip?></div>
+					</address>	
 					<?php else: ?>
 						<?=$this->html->link('Add', "/addresses/add"); ?>
 					<?php endif ?>
@@ -121,16 +94,8 @@
 				<div class="bl"></div>
 				<div class="br"></div>
 			</div>
-
 		</div>
-
-	</div>
-	<div class="bl"></div>
-	<div class="br"></div>
+	<br />
 </div>
-<!-- This equals the hight of all the boxes to the same height -->
-<script type="text/javascript">
-	$(document).ready(function() {
-		$(".r-box").equalHeights(100,300);
-	});
-</script>
+</div>
+<div class="clear"></div>

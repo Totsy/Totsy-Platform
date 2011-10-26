@@ -15,7 +15,7 @@ use Exception;
 
 
 class Db extends \lithium\data\source\MongoDb {
-	
+
 	/**
 	 * The Mongo class instance manager.
 	 *
@@ -25,7 +25,7 @@ class Db extends \lithium\data\source\MongoDb {
 		'master' => null,
 		'slave' => null
 	);
-	
+
 	/**
 	 * Stores connection string for master nad slave
 	 * 
@@ -35,14 +35,14 @@ class Db extends \lithium\data\source\MongoDb {
 		'master' => null,
 		'slave' => null
 	);
-	
+
 	/**
 	 * Indicates wheather to use on $slave->setSlaveOkay(true) or not
 	 * 
 	 * @var boolean
 	 */
 	public $isSlaveOk = false;
-		
+
 	/**
 	 * Connects to the Mongo server.
 	 *
@@ -70,7 +70,8 @@ class Db extends \lithium\data\source\MongoDb {
 			if ($isMaster === true){
 				static::$server_manager['master'] = $server;
 				if(!is_null($this->server_manager_config['slave'])){
-					static::$server_manager['slave'] = new Mongo('mongodb://'.$this->server_manager_config['slave'], $options);
+					$connect = is_array($this->server_manager_config['slave']) ? join(',', $this->server_manager_config['slave']) : $this->server_manager_config['slave'];
+					static::$server_manager['slave'] = new Mongo('mongodb://'.$connect, $options);
 				}
 			} 
 			unset($server);
@@ -80,7 +81,7 @@ class Db extends \lithium\data\source\MongoDb {
 					static::$server_manager['slave']->setSlaveOkay(true);
 				}	
 			}
-			
+
 			if ($this->connection = $this->server->{$cfg['database']}) {
 				$this->_isConnected = true;
 			}
@@ -89,14 +90,14 @@ class Db extends \lithium\data\source\MongoDb {
 		}
 		return $this->_isConnected;
 	}
-	
-	
+
+
 	public function __destruct() {
 		if ($this->_isConnected) {
 			$this->disconnect();
 		}
 	}
-	
+
 	public function disconnect() {
 		unset($this->connection, $this->server);
 		foreach (static::$server_manager as $server){
@@ -110,7 +111,7 @@ class Db extends \lithium\data\source\MongoDb {
 		$this->_isConnected = false;
 		return true;
 	}
-	
+
 	public function read($query, array $options = array()) {
 		$this->getConnection();
 		return parent::read($query,$options);
@@ -120,7 +121,7 @@ class Db extends \lithium\data\source\MongoDb {
 		$this->getConnection();
 		return parent::group($group,$context);
 	}
-	
+
 	public function update($query, array $options = array()) {
 		$this->getConnection(true);
 		return parent::update($query,$options);
@@ -130,12 +131,12 @@ class Db extends \lithium\data\source\MongoDb {
 		$this->getConnection(true);		
 		return parent::delete($query,$options);
 	}
-	
+
 	public function create($query, array $options = array()) {
 		$this->getConnection(true);
 		return parent::create($query,$options);		
 	}
-	
+
 	/**
 	 * By calling this method you looking for all available hosts
 	 * in a replica set... did not test on single db )))
@@ -148,24 +149,29 @@ class Db extends \lithium\data\source\MongoDb {
 		$availableHosts = $server->getHosts();
 		$slaves = array();
 		if (is_array($availableHosts) && count($availableHosts)>0){
-			foreach ($availableHosts as $aH){
+			foreach ($availableHosts as $name=>$aH){
+				$aH['name'] = $name;
 				if ($aH['state'] == 2 && preg_match("/".$aH['name']."/",$host)){
 					$isMaster = false;
 				}
 				if ($aH['state'] == 1) {
 					$this->server_manager_config['master'] = $aH['name'];
 				} else if ($aH['state'] == 2){
-					$slaves[] = $aH;
+					$slaves[] = $aH['name'];
 				}
 			}
 		} 
 		unset($availableHosts);
 		$cs = count($slaves);
+		$serverId = 0;
 		if ($cs>0){
-			$slaveId = 0;
-			if ($cs>1) { $slaveId = mt_rand(0,$cs-1); }
+			if ($cs>1) { 
+				//$slave = join(',', $slaves);
+				$slaveId = mt_rand(0,count($slaves)-1); 
+			} else { $slave = $slaves[0]; }
+			
 			//static::logChooser($slaves[$slaveId]['name']);
-			$this->server_manager_config['slave'] = $slaves[$slaveId]['name']; 
+			$this->server_manager_config['slave'] = $slaves; 
 		}
 		return $isMaster;
 	}
@@ -185,10 +191,10 @@ class Db extends \lithium\data\source\MongoDb {
 		} else {
 			$this->server = static::$server_manager['master'];
 		} 
-		
+
 		// Make shure that we are connected
 		// if not then do connect and getConnection again
-		
+
 		if ($this->server->connected == 1){
 			if ($this->connection = $this->server->{$this->_config['database']}) {
 			$this->_isConnected = true;
@@ -203,8 +209,8 @@ class Db extends \lithium\data\source\MongoDb {
 			}
 		}
 	}
-	
-	
+
+
 	private static function logChooser ($name){
 		//$fh = fopen(LITHIUM_APP_PATH . '/resources/tmp/logs/MongoDbSlaveSelector.log','a');
 		$fh = fopen('/tmp/slaveSelector.log','a');

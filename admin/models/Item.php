@@ -38,7 +38,6 @@ class Item extends \lithium\data\Model {
 	public static function getDepartments() {
 		return static::_connection()->connection->command(array('distinct'=>'items', 'key'=>'departments'));
 	}
-	
 	public static function castData($items, array $options = array()) {
 
 		foreach ($items as $key => $value) {

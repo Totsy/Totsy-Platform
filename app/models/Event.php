@@ -3,6 +3,7 @@
 namespace app\models;
 use MongoDate;
 use MongoId;
+use app\models\Base;
 use app\models\Item;
 
 /**
@@ -48,8 +49,9 @@ use app\models\Item;
 *    * splash_small_image - ObjectId of the gridfs image.
 *    * url - The url of the event that is used as a lookup field.
 */
-class Event extends \lithium\data\Model {
+class Event extends Base {
 
+	protected $_meta = array('source' => 'events');
 	public $validates = array();
 
 	/**
@@ -73,6 +75,7 @@ class Event extends \lithium\data\Model {
 			foreach($events as $key_event =>$event) {
 				$events_id[] = (string) $event["_id"];
 			}
+			
 			$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'departments' => array('$in' => array($departments))), array('event' => 1));
 			$events_id_filtered = array();
 			if(!empty($items)) {
@@ -139,7 +142,34 @@ class Event extends \lithium\data\Model {
 		}
 		return $events;
 	}
-
+	
+	public static function directQuery(array $args = array()){
+		$connection = self::connection()->connection->events;
+		 
+		$cursor = $connection->find($args);
+		$return = array();
+		foreach ($cursor as $data){ 
+			if (array_key_exists('_id',$data)){
+				$data['_id'] = (string) $data['_id'];
+			}
+			if (array_key_exists('start_date',$data) ){
+				$data['start_date'] = array(
+					'sec' => $data['start_date']->sec,
+					'usec' => $data['start_date']->usec
+				);
+			}
+			if (array_key_exists('end_date',$data)){
+				$data['end_date'] = array(
+					'sec' => $data['end_date']->sec,
+					'usec' => $data['end_date']->usec
+				);
+			}
+			$return[] = $data; 
+		}
+		unset($cursor,$data,$connection);
+		
+		return $return;
+	} 
 }
 
 ?>

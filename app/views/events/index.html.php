@@ -1,4 +1,11 @@
 <?=$this->html->script(array('jquery.nivo.slider.pack'));?>
+<script src="/js/jquery.tmpl.js" type="text/javascript"></script>
+
+<?=$this->html->script(array('cart-timer.js', 'cart-items-timer.js', 'cart-popup.js?v=001'));?>
+
+<!-- template used for items on cart. jquery.tmpl.js driven -->
+<?=$this->view()->render( array('element' => 'popupCartItems') ); ?>
+
 <script>
 (function($) {
 	$.fn.rotate = function() {
@@ -14,53 +21,36 @@
 	};
 })(jQuery);
 </script>
-	<h2 class="page-title gray"><span class="_red">Today's Sales</span>
-    <div class="sm-actions fr" style="font-size:12px; margin:7px 0px 0px 0px;">
-			<dl>
-				<dt><strong>Socialize With Us</strong></dt>
-				<dd>
-					<ul>
-						<li><a href="http://www.facebook.com/pages/Totsy/141535723466" target="_blank" title="Friend us on Facebook" class="sm-facebook sm-btn">Friend us on Facebook</a></li>
-						<li><a href="http://twitter.com/MyTotsy" target="_blank" title="Follow us on Twitter" class="sm-twitter sm-btn">Follow us on Twitter</a></li>
-					</ul>
-				</dd>
-			</dl>
-		</div>
-	</h2>
+	<h2 class="page-title gray"><span class="_red">Today's Sales</span></h2>
 	<hr />
 		<!--Disney -->
-			<div class="disney disney_splash">
-				<p><strong>SPECIAL BONUS!</strong> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value) <span id="disney">Offer &amp; Refund Details</span></p>
-			</div>
+<!--	<div class="disney disney_splash">
+		<p><strong>SPECIAL BONUS!</strong> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/parents.png" align="absmiddle" width="95px" /> ( a $10 value ) <span id="disney">Offer &amp; Refund Details</span></p>
+	</div>
+-->
 <div class="fullwidth">
-
 	<?php $x = 0; ?>
 	<?php $y = 0; ?>
 	<?php foreach ($openEvents as $event): ?>
 		<!-- Start product item -->
 		<?php if ($y == 0): ?>
-			<div class="product-list-item featured r-container">
+			<div class="grid_6">
 		<?php endif ?>
 		<?php if ($y == 1): ?>
-			<div class="product-list-item featured middle r-container">
+			<div class="grid_6">
 		<?php endif ?>
-		<?php if (($y == 2) || ($y == 4)): ?>
-			<div class="product-list-item r-container">
-		<?php endif ?>
-		<?php if ($y == 3): ?>
-			<div class="product-list-item middle r-container">
+
+		<?php if (($y == 2) || ($y == 3)): ?>
+			<div class="grid_4">
 		<?php endif ?>
 		<?php if ($y == 4): ?>
+			<div class="grid_4">
+		<?php endif ?>
+		<?php if ($y == 3): ?>
 			<?php $y = 1; ?>
 		<?php endif ?>
-				<div class="tl"></div>
-				<div class="tr"></div>
-
-
-                <div class="md-gray p-container">
-                  
-						<!-- this is where the items count was -->
-						
+		<div class="p-container roundy_product_home">
+					<!-- this is where the items count was -->
 					<?php
 						if (!empty($event->images->splash_big_image)) {
 							$productImage = "/image/{$event->images->splash_big_image}.jpg";
@@ -68,7 +58,7 @@
 							$productImage = ($x <= 1) ? "/img/no-image-large.jpeg" : "/img/no-image-small.jpeg";
 						}
 					?>
-					<?php 
+					<?php
 						if(empty($departments)) {
 							$url = $event->url;
 						} else {
@@ -80,8 +70,8 @@
 							$this->html->image("$productImage", array(
 							'title' => $event->name,
 							'alt' => $event->name,
-							'width' => '355',
-							'height' => '410',
+							'width' => '349',
+							'height' => '403',
 					'style' => 'margin:0px 0px -6px 0px;'
 							)), "sale/$url", array('escape'=> false));
 						?>
@@ -90,48 +80,28 @@
 							$this->html->image("$productImage", array(
 							'title' => $event->name,
 							'alt' => $event->name,
-							'width' => '298',
-							'height' => '344'
+							'width' => '228',
+							'height' => '266'
 						)), "sale/$url", array('escape'=> false));
 						 ?>
 					<?php endif ?>
 
-                <div class="splash-details">
-
+			<div class="splash-details">
 						<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
-						 <p style="padding:0px; margin:0px; font-size:16px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
-						 <p style="padding:0px; margin:-3px 0px 0px 0px; font-size:13px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;"><span id="<?php echo "todaysplash$x"; ?>"></span>
+						 <p style="padding:0px; margin:0px; font-size:15px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
+						 <p style="padding:0px; margin:-3px 0px 0px 0px; font-size:12px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;"><span id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $event->end_date->sec * 1000; ?>" class="counter end"></span>
 						</div>
 
-						<div class="table-cell right" style="width:55px; display:block; padding:5px; margin:7px 0px 0px 0px; ">
-							<span><?=$this->html->link('Shop', 'sale/'.$event->url, array('class' => 'go-btn'));?></span>
+						<div class="table-cell right">
+							<?=$this->html->link('Shop', 'sale/'.$event->url, array('class' => 'button small', 'style'=>'display:table-cell !important'));?>
 						</div>
 					</div>
 				</div>
-				<div class="bl"></div>
-				<div class="br"></div>
 			</div>
 
-		<!-- End product item -->
-		<?php
-			$date = $event->end_date->sec * 1000;
-			$splashid = "#todaysplash$x";
-			$todayJs[] = "<script type=\"text/javascript\">
-				$(function () {
-					var saleEnd = new Date();
-					saleEnd = new Date($date);
-					var now = new Date();
-					var diff = $date - (now.getTime());
-					if((diff / 1000) < (24 * 60 * 60) ) {
-						$(\"$splashid\").countdown({until: saleEnd, layout: 'Closes in {hnn}{sep}{mnn}{sep}{snn}'});
-					} else {
-						$(\"$splashid\").countdown({until: saleEnd, layout: 'Closes in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
-					}
-				});</script>";
-		?>
 			<?php if ($x == 1): ?>
-				<div id="banner_container">
-					<div><a href="/users/invite"><img src="/img/invite_girl.png" alt="" /></a></div>
+				<div id="banner_container" class="grid_5">
+					<div><a href="/users/invite"><img src="/img/invite_girl.png" alt="" height="404"/></a></div>
 					<?php if(!empty($banner["img"])): ?>
 						<?php foreach($banner["img"] as $image): ?>
 							<div><?php if(!empty($image["url"])):?>
@@ -151,35 +121,32 @@
 						<?php endforeach ?>
 					<?php endif ?>
 				</div>
+				<div class="clear"></div>
 			<?php endif ?>
 		<?php $x++; ?>
 		<?php $y++; ?>
 	<?php endforeach ?>
 
-
 	<div style="margin-bottom:35px;" class="clear"></div>
 
-	<div class="coming-soon-sales">
-
-		<h2 class="page-title gray clear"><span class="_red">Upcoming Sales</span></h2>
+	<div class="container_16">
+	<div class="grid_16">
+		<h2 class="page-title gray">Upcoming Sales</h2>
 		<hr />
-
-         <div class="clear"></div>
+	</div>
 		<?php $x = 0; ?>
 		<?php $y = 0; ?>
 		<?php foreach ($pendingEvents as $event): ?>
 			<?php if (($y == 0) || ($y == 2)): ?>
-				<div class="product-list-item r-container">
+				<div class="grid_4">
 			<?php endif ?>
 			<?php if ($y == 1): ?>
-				<div class="product-list-item middle r-container">
+				<div class="grid_4">
 			<?php endif ?>
 			<?php if ($y == 2): ?>
 				<?php $y = -1; ?>
 			<?php endif ?>
-					<div class="tl"></div>
-					<div class="tr"></div>
-					<div class="md-gray p-container">
+					<div class="p-container roundy_product_home">
 						<?php
 							if (!empty($event->images->splash_small_image)) {
 								$productImage = "/image/{$event->images->splash_small_image}.jpg";
@@ -191,65 +158,43 @@
 						$this->html->image("$productImage", array(
 							'title' => $event->name,
 							'alt' => $event->name,
-							'width' => '298',
-							'height' => '344'
+							'width' => '228',
+							'height' => '266'
 						)), 'sale/'.$event->url, array('escape'=> false));
 						 ?>
+				<div class="splash-details">
+						<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
+						 <p style="padding:0px; margin:0px; font-size:15px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
+						 <p style="padding:0px; margin:-3px 0px 0px 0px; font-size:12px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;">
+						 <span id="<?php echo "futuresplash$x"; ?>" title="<?php echo $date = $event->start_date->sec * 1000; ?>" class="counter start"></span>
+						</div>
 
-						<div class="splash-details">
-
-
-<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
-							<p style="padding:0px; margin:0px; font-size:16px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
-							<p style="padding:0px; margin:-3px 0px 0px 0px; font-size:13px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;">
-<span id="<?php echo "futuresplash$x"; ?>"></span>
-							</div>
-
-							<div class="table-cell right" style="width:55px; display:block; padding:5px; margin:7px 0px 0px 0px;">
-								<?=$this->html->link('View', 'sale/'.$event->url, array('class' => 'preview-btn')
-									);
-								?>
-							</div>
+						<div class="table-cell right">
+							<?=$this->html->link('View', 'sale/'.$event->url, array('class' => 'button small', 'style'=>'display:table-cell !important'));?>
 						</div>
 					</div>
-					<div class="bl"></div>
-					<div class="br"></div>
 				</div>
-			<!-- End product item -->
-			<?php
-				$date = $event->start_date->sec * 1000;
-				$splashid = "#futuresplash$x";
-				$futureJs[] = "<script type=\"text/javascript\">
-					$(function () {var saleStart = new Date();
-						saleStart = new Date($date);
-						var now = new Date();
-						var diff = $date - (now.getTime());
-						if((diff / 1000) < (24 * 60 * 60) ) {
-							$(\"$splashid\").countdown({until: saleStart, layout: 'Opens in {hnn}{sep}{mnn}{sep}{snn}'});
-						} else {
-							$(\"$splashid\").countdown({until: saleStart, layout: 'Opens in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
-						}
-					});
-				</script>";
-			?>
+			</div>
+
 			<?php $x++; ?>
 			<?php $y++; ?>
 	<?php endforeach ?>
 	</div>
 </div>
-<div id="modal">
 </div>
+</div>
+<div id="modal" style="background:#fff!important;"></div>
 <!--Javascript Output for Today's Events -->
 <?php if (!empty($todayJs)): ?>
 	<?php foreach ($todayJs as $value): ?>
-		<?php echo $value ?>
+		<?php //echo $value ?>
 	<?php endforeach ?>
 <?php endif ?>
 
 <!--Javascript Output for Future Events-->
 <?php if (!empty($futureJs)): ?>
 	<?php foreach ($futureJs as $value): ?>
-		<?php echo $value ?>
+		<?php //echo $value ?>
 	<?php endforeach ?>
 <?php endif ?>
 
@@ -258,17 +203,44 @@
 	$(document).ready(function() {
 		$("#banner_container").rotate();
 	});
+
+	$(".counter").each( function () {
+
+		var fecha  = parseInt(this.title);
+		var saleTime = new Date(fecha);
+		var now = new Date();
+		var diff = saleTime - (now.getTime());
+
+		//check if its and end date or start date
+		if($("#" + this.id).hasClass("start"))
+		{
+		    if((diff / 1000) < (24 * 60 * 60) ) {
+		        $("#" + this.id).countdown({until: saleTime, layout: 'Opens in {hnn}{sep}{mnn}{sep}{snn}'});
+		    } else {
+		        $("#" + this.id).countdown({until: saleTime, layout: 'Opens in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+		    }
+		} else {
+		    if((diff / 1000) < (24 * 60 * 60) ) {
+		    	$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {hnn}{sep}{mnn}{sep}{snn}'});
+		    } else {
+		    	$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+		    }
+		}
+	 });
+
 //-->
 </script>
 <script type="text/javascript">
+
 	$('#disney').click(function(){
 		$('#modal').load('/events/disney').dialog({
 			autoOpen: false,
 			modal:true,
 			width: 739,
-			height: 700,
+			height: 750,
 			position: 'top',
-			close: function(ev, ui) {}
+			close: function(ev, ui) { $(this).close(); }
+
 		});
 		$('#modal').dialog('open');
 	});
@@ -289,10 +261,59 @@
 </script>
 
 <script type="text/javascript" src="http://www.googleadservices.com/pagead/conversion.js"></script>
-
 <noscript>
 	<div style="display:inline;">
 		<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=E1ZLCMH8igIQ9Yb-5QM&amp;guid=ON&amp;script=0"/>
 	</div>
 </noscript>
-<!-- END OF Google Code for inscrits Remarketing List --> 
+<!-- END OF Google Code for inscrits Remarketing List -->
+
+<!-- Google Code for Signups Conversion Page -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var google_conversion_id = 1019183989;
+var google_conversion_language = "en";
+var google_conversion_format = "1";
+var google_conversion_color = "ffffff";
+var google_conversion_label = "AVJ-CKmdmgIQ9Yb-5QM";
+var google_conversion_value = 0;
+/* ]]> */
+</script>
+<script type="text/javascript" src="http://www.googleadservices.com/pagead/conversion.js">
+</script>
+<noscript>
+<div style="display:inline;">
+<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=AVJ-CKmdmgIQ9Yb-5QM&guid=ON&script=0"/>
+</div>
+</noscript>
+<!-- END Google Code for Signups Conversion Page -->
+
+<script>
+(function($) {
+	$.fn.rotate = function() {
+		var container = $(this);
+		var totale = container.find("div").size();
+		var current = 0;
+		var i = setInterval(function() {
+			if (current >= totale) current = 0;
+			container.find("div").filter(":eq("+current+")").fadeIn("slow").end().not(":eq("+current+")").fadeOut("slow");
+			current++;
+		}, 5000);
+		return container;
+	};
+})(jQuery);
+</script>
+<script type="text/javascript">
+//cto home tag
+var cto_conf = 't1=sendEvent&c=2&p=3290';
+var cto_conf_event = 'v=2&wi=7714287&pt1=0&pt2=1';
+var CRITEO=function(){var b={Load:function(d){var c=window.onload;window.onload=function(){if(c){c()}d()}}};function a(e){if(document.createElement){
+var c=document.createElement((typeof(cto_container)!='undefined'&&cto_container=='img')?'img':'iframe');if(c){c.width='1px';c.height='1px';c.style.display='none';
+c.src=e;var d=document.getElementById('cto_mg_div');if(d!=null&&d.appendChild){d.appendChild(c)}}}}return{Load:function(c){
+document.write("<div id='cto_mg_div' style='display:none;'></div>");c+='&'+cto_conf;var f='';if(typeof(cto_conf_event)!='undefined')f=cto_conf_event;
+if(typeof(cto_container)!='undefined'){if(cto_container=='img')c+='&resptype=gif';}if(typeof(cto_params)!='undefined'){for(var key in cto_params){if(key!='kw')
+f+='&'+key+'='+encodeURIComponent(cto_params[key]);}if(cto_params['kw']!=undefined)c+='&kw='+encodeURIComponent(cto_params['kw']);}c+='&p1='+encodeURIComponent(f);
+c+='&cb='+Math.floor(Math.random()*99999999999);try{c+='&ref='+encodeURIComponent(document.referrer);}catch(e){}try{
+c+='&sc_r='+encodeURIComponent(screen.width+'x'+screen.height);}catch(e){}try{c+='&sc_d='+encodeURIComponent(screen.colorDepth);}catch(e){}b.Load(function(){
+a(c.substring(0,2000))})}}}();CRITEO.Load(document.location.protocol+'//dis.us.criteo.com/dis/dis.aspx?');
+</script>

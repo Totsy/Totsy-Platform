@@ -1,51 +1,34 @@
-<?php
+<?php $this->title("Return Policy"); ?>
 
-	$this->title("Return Policy");
-	
-?>
+<div class="grid_16">
+	<h2 class="page-title gray">About Us</h2>
+	<hr />
+</div>
 
-<h1 class="p-header">Return Policy</h1>
-	<div id="left">
-		<ul class="menu main-nav">
-		  <h3 style="color:#999;">About Us</h3>
-		  <hr />
-		  <li class="first item15 active"><a href="/pages/aboutus" title="About Totsy"><span>How Totsy Works</span></a></li>
-		  <li class="first item17"><a href="/pages/moms" title="Meet The Moms"><span>Meet The Moms</span></a></li>
-		  <li class="first item16"><a href="/pages/press" title="Press"><span>Totsy in the Press</span></a></li>
-		  <li class="first item17"><a href="/pages/being_green" title="Being Green"><span>Being Green</span></a></li>
-		  <br />
-		  <h3 style="color:#999;">Need Help?</h3>
-		  <hr />
-		  <li class="first item18"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
-		  <li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
-		</ul>
-	</div>
-	<div id="middle" class="noright">			
-			
-<div class="tl"><!-- --></div> 
-<div class="tr"><!-- --></div> 
+<div class="grid_4">
+	<?php echo $this->view()->render(array('element' => 'aboutUsNav')); ?>
+	<?php echo $this->view()->render(array('element' => 'helpNav')); ?>
+</div>
 
-<div id="page">
-
-<p>(as of 09/01/2009)</p>
-
-<h2 class="gray mar-b">1. Final Sales</h2>
+<div class="grid_11 omega roundy grey_inside b_side">
+<h2 class="page-title gray">1. Final Sales</h2>
 <hr />
 <p>All sales made by TOTSY on its website to its Members are final.</p>
-
-<h2 class="gray mar-b">2. No Exchanges</h2>
+<br />
+<h2 class="page-title gray">2. No Exchanges</h2>
 <hr />
 <p>TOTSY does not accept exchanges, unless otherwise provided below. Our sales open and close within three days, and TOTSY does not have any inventory to process exchanges.</p>
-
-<h2 class="gray mar-b">3. Return Policy for Goods Not Sold as Final Sale</h2>
+<br />
+<h2 class="page-title gray">3. Return Policy for Goods Not Sold as Final Sale</h2>
 <hr />
 <p>TOTSY will accept returns only on items that are not specifically designated as Final Sale on its website, subject, however, to the following exceptions and conditions:</p>
 <ul>
 	<li>NO RETURNS, REFUNDS OR EXCHANGES WILL BE ACCEPTED ON THE FOLLOWING CATEGORIES OF PRODUCTS (IN ANY EVENT, EVEN IF LISTED AS NOT A "FINAL SALE"): SKINCARE, FOOTWEAR, BAGS & DIAPER BAGS, ACCESSORIES, SWIMWEAR, UNDERWEAR, SLEEPWEAR, HOSIERY, FURNITURE, WHEELGOOD, ELECTRONIC, TOYS & GAMES, BREAST PUMP, CARE & FEEDING ACCESSORIES, BOOKS, CD&DVD, TRAVEL.</li>
 	<li>Items purchased as part of a set or multi-item pack may not be returned individually.</li>
 </ul>
+<br />
 
-<h3 class="gray mar-b">3.2 Procedure For Returns: you may return a product bought on TOTSY's website which was not listed as a Final Sale, only upon compliance with TOTSY's Return Procedure:</h3>
+<h2 class="page-title gray">3.2 Procedure For Returns: you may return a product bought on TOTSY's website which was not listed as a Final Sale, only upon compliance with TOTSY's Return Procedure:</h2>
 <hr />
 <ul>
 	<li><strong>48h Notice:</strong> Within forty eight (48) hours of your confirmed sale, as indicated on your PO, you must contact TOTSY's customer service via email at <a href="mailto:support@totsy.com">support@totsy.com</a></li>
@@ -58,24 +41,17 @@
 </ul>
 
 <p>Returns that do not meet these requirements will be sent back to you and a merchandise credit will not be issued.</p>
-
-<h2 class="gray mar-b">4. Refunds — Account Credits</h2>
+<br />
+<h2 class="page-title gray">4. Refunds — Account Credits</h2>
 <hr />
 <p>If merchandise is accepted for return, a credit for the amount of your original purchase less the cost of the original shipment will be credited to your TOTSY account. Visit the MY CREDIT menu on the navigational bar of our Site to check your credit.</p>
-
-<h2 class="gray mar-b">5. Return Policy for Items Shipped In Error, Damaged or Defective Merchandise</h2>
+<br />
+<h2 class="page-title gray">5. Return Policy for Items Shipped In Error, Damaged or Defective Merchandise</h2>
 <hr />
-<p>If an item was shipped in error, turns out to be defective, was lost or damaged in transit, or was received with an unreasonable delay as defined under the Terms of Service, please contact our TOTSY customer service representative so we can resolve the problem. TOTSY's return procedure set forth in Section 3.2 applies to this Section, except that TOTSY will credit your TOTSY account with the shipping costs you incurred to return such items, and except that a customer service representative will make a determination as to whether your items were either shipped in error, lost or damaged in transit, defective, or received with an unreasonable delay.</p>
+<p>If an item was shipped in error, turns out to be defective, was lost or damaged in transit, or was received with an unreasonable delay as defined under the Terms of Service, please contact our TOTSY customer service representative so we can resolve the problem. TOTSY's return procedure set forth in Section 3.2 applies to this Section, except that TOTSY will credit your TOTSY account with the shipping costs you incurred to return such items, and except that a customer service representative will make a determination as to whether your items were either shipped in error, lost or damaged in transit, defective, or received with an unreasonable delay.</p>	<br />
 
-
-
-
-</div> 
-<div class="bl"><!-- --></div> 
-<div class="br"><!-- --></div> 
-
-		</div> 
-
-	</div> 
-
+<p>Last Updated 09/01/2009</p>
+<br />
 </div>
+</div>
+<div class="clear"></div>

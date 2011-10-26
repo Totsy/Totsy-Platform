@@ -1,34 +1,26 @@
 <?php use app\models\Address; ?>
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
+
+<?php $this->title("Add / Edit Address Book "); ?>
 <?php if (!$isAjax): ?>
-
-	<h1 class="p-header">My Account</h1>
-	<div id="left">
-		<ul class="menu main-nav">
-		<li class="firstitem17 "><a href="/account" title="Account Dashboard"><span>Account Dashboard</span></a></li>
-	    <li class="item18"><a href="/account/info" title="Account Information"><span>Account Information</span></a></li>
-	    <li class="item19 active"><a href="/addresses" title="Address Book"><span>Address Book</span></a></li>
-	    <li class="item20"><a href="/orders" title="My Orders"><span>My Orders</span></a></li>
-	    <li class="item20"><a href="/Credits/view" title="My Credits"><span>My Credits</span></a></li>
-	    <li class="lastitem23"><a href="/Users/invite" title="My Invitations"><span>My Invitations</span></a></li>
-		  <br />
-		  <h3 style="color:#999;">Need Help?</h3>
-		  <hr />
-		  <li class="first item18"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
-		  <li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
-		</ul>
-	</div>
-
+<div class="grid_16">
+	<h2 class="page-title gray">Add / Edit Address Book </h2>
+	<hr />
+</div>
+<div class="grid_4">
+	<?php echo $this->view()->render(array('element' => 'myAccountNav')); ?>
+	<?php echo $this->view()->render(array('element' => 'helpNav')); ?>
+</div>
 <?php endif ?>
 
-<div class="tl"></div>
-<div class="tr"></div>
-<div id="page">
+
+<div class="grid_11 omega roundy grey_inside<?php if (!$isAjax): ?> b_side <?php endif ?>">
+
 	<?php if ($message): ?>
 		<div class="standard-message"><?=$message; ?></div>
 	<?php endif ?>
 
-	<h2 class="gray mar-b">Add / Edit Address Book <span style="float:right; font-weight:normal; font-size:12px;"><?php if (!$isAjax): ?>
+	<h2 class="page-title gray">Add / Edit Address Book <span style="float:right; font-weight:normal; font-size:12px;"><?php if (!$isAjax): ?>
                 <?=$this->html->link('Manage Address Book','addresses');?><?php endif ?></span>
 	</h2>
 	<hr />
@@ -47,6 +39,7 @@
 				</div>
 			<?php endif ?>
 			<div class="form-row">
+
 				<?=$this->form->label('description', 'Description <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('description', array('class' => 'inputbox')); ?>
 				<?=$this->form->error('description'); ?>
@@ -66,8 +59,9 @@
 			</div>
 
 			<div class="form-row">
-				<?=$this->form->label('telephone', 'Telephone', array('escape' => false,'class' => 'addresses')); ?>
+				<?=$this->form->label('telephone', 'Telephone <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('telephone', array('class' => 'inputbox', 'id' => 'phone')); ?>
+				<?=$this->form->error('telephone'); ?>
 			</div>
 
 			<div class="form-row">
@@ -106,14 +100,12 @@
 	<?=$this->form->end();?>
 
 </div>
+
 <script type="text/javascript">
 jQuery(function($){
    $("#date").mask("99/99/9999");
    $("#phone").mask("(999) 999-9999");
    $("#tin").mask("99-9999999");
-   $("#ssn").mask("999-99-9999");
    $("#zip").mask("99999");
 });
 </script>
-<div class="bl"></div>
-<div class="br"></div>

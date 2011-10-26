@@ -8,6 +8,7 @@ if (is_array($events)){
 	foreach($events as $event){ 
 		$evnt['name'] = $event['name'];
 		$evnt['description'] = sailthru_json_cut_string($event['blurb'],90);
+		$evnt['short'] = isset($event['short'])?$event['short']:sailthru_json_cut_string($event['blurb'],45);
 		$evnt['availableItems'] = $event['available_items']==true?'YES':'NO';
 		$evnt['brandName'] = $event['vendor'];
 		$evnt['image'] = $event['event_image'];

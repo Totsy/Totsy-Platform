@@ -2,6 +2,7 @@
 
 namespace admin\controllers;
 use admin\controllers\BaseController;
+use admin\models\Order;
 use admin\models\Item;
 use admin\models\Event;
 use MongoRegex;
@@ -119,22 +120,24 @@ class ItemsController extends BaseController {
 						'enabled' => true,
 						'url' => $itemUrl
 					)));
-			$matches = $items->data();
-			foreach ($matches as $match) {
-				if (in_array($match['_id'], $event->items->data())) {
-					$item = Item::find($match['_id']);
+			if ($event) {
+				$matches = $items->data();
+				foreach ($matches as $match) {
+					if (in_array($match['_id'], $event->items->data())) {
+						$item = Item::find($match['_id']);
+					}
 				}
-			}
-			if ($item == null || $event == null) {
-				$this->redirect('/');
-			} else {
-				$event = Event::find('first', array(
-						'conditions' => array(
-							'items' => array((string) $item->_id)
-						)));
-				$related = Item::related($item);
-				$sizes = Item::sizes($item);
-				$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+				if ($item == null || $event == null) {
+					$this->redirect('/');
+				} else {
+					$event = Event::find('first', array(
+							'conditions' => array(
+								'items' => array((string) $item->_id)
+							)));
+					$related = Item::related($item);
+					$sizes = Item::sizes($item);
+					$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+				}
 			}
 		}
 		$this->_render['layout'] = 'preview';
@@ -191,23 +194,23 @@ class ItemsController extends BaseController {
 		$itemId = array();
 		$related_items = array();
 		$event_items = array();
-		
+
 		if ($this->request->data) {
 			$data = $this->request->data;
-																					
-			$id = $data['id'];			
-			$event_items = Item::find('all', array('fields'=>array('_id'),'conditions'=>array('event'=>$id))); 
-			
+
+			$id = $data['id'];
+			$event_items = Item::find('all', array('fields'=>array('_id'),'conditions'=>array('event'=>$id)));
+
 			$event_items = array_values($event_items->data());
-			
+
 			unset($data['id']);
 			array_reverse($data);
-												
+
 			//build selected items array
 			foreach ($data as $key => $value) {
 				//check if this is the related items (dropdown selection) or the description (text area)
 				if(substr_count($key, 'related') > 0) {
-					$item_id = substr($key, (strrpos($key, "_") + 1));					
+					$item_id = substr($key, (strrpos($key, "_") + 1));
 					$related_items[$item_id] = $value;
 
 				} else {
@@ -217,10 +220,10 @@ class ItemsController extends BaseController {
 					}
 				}
 			}
-			
+
 			//run through related_items array and update the items
 			foreach($event_items as $key=>$value){
-				
+
 				if(isset($related_items[$value['_id']])) {
 					foreach($related_items[$value['_id']] as $k) {
 						$temp[] = $k;
@@ -231,13 +234,40 @@ class ItemsController extends BaseController {
 				} else {
 					//print "remove related items for item of ID:".$value['_id']. "<br />";
 					$itemsCollection->update(array("_id" => new MongoId($value['_id'])), array('$unset' => array('related_items'=> 1)));
-				}	
+				}
 			}
-															
-		$this->redirect('/events/edit/'.$id.'#event_items');			
-		
+
+		$this->redirect('/events/edit/'.$id.'#event_items');
+
 		}
 	}
+
+	public function bulkCancel($search = null) {
+
+			if ($this->request->data || $search) {
+				if ($this->request->data['search']) {
+					$search = $this->request->data['search'];
+				}
+				$itemCollection = Item::connection()->connection->items;
+				$items = $itemCollection->find(
+					array('$or' => array(
+						array('_id') => new MongoRegex("/$search/i"),
+						array('skus' => array('$in' => array(new MongoRegex("/$search/i"))))
+				)));
+				$items = iterator_to_array($items);
+
+				if (strpos($search, "-")) { //detect if there is a '-' in the string, which means it is a SKU and not just an item_id
+					$item_id = key($items);
+					$search_sku = $search;
+					$search_item_id = $item_id;
+				}
+
+				return compact("items","search_item_id","search_sku");
+			}
+
+	}
+
+
 }
 
 ?>

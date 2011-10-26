@@ -27,11 +27,14 @@ class EventsController extends BaseController {
 			$pendingEvents = Event::pending(null,array(),$departments);
 		}
 
+		$itemCounts = array();
 		/*
+		// DON'T COUNT ITEMS !!!!
+		// IMPORTANT
+		// Slav
 		$itemCounts = $this->inventoryCheck(Event::open(array(
 			'fields' => array('items')
 		)));
-		*/
 
 		//Sort events open/sold out
 		foreach ($openEvents as $key => $event) {
@@ -42,7 +45,8 @@ class EventsController extends BaseController {
 				}
 			}
 		}
-		if (!empty($events_closed)) {
+		*/
+		if (isset($events_closed) && !empty($events_closed)) {
 			if (!empty($openEvents)) {
 				foreach ($events_closed as $event) {
 					$openEvents[] = $event;
@@ -51,7 +55,7 @@ class EventsController extends BaseController {
 				$openEvents = $events_closed;
 			}
 		}
-		return compact('openEvents', 'pendingEvents', 'banner', 'departments');
+		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner', 'departments');
 	}
 
 	public function view() {
@@ -77,6 +81,13 @@ class EventsController extends BaseController {
 				'url' => $url
 		)));
 		if (!$event) {
+			$event = Event::first(array(
+				'conditions' => array(
+				'viewlive' => true,
+				'url' => $url
+			)));
+		}
+		if (!$event) {
 			$this->_render['template'] = 'noevent';
 			return array('event' => null, 'items' => array(), 'shareurl');
 		}
@@ -95,26 +106,26 @@ class EventsController extends BaseController {
 				$filters = array('All' => 'All');
 			}
 			if (!empty($event->items)) {
-				$eventItems = Item::find('all', array( 'conditions' => array(
-												'event' => array((string)$event->_id),
-												'enabled' => true
-											),
-											'order' => array('created_date' => 'ASC')
-										));
-				foreach ($eventItems as $eventItem) {
-					$result = $eventItem->data();
-					if (array_key_exists('departments',$result) && !empty($result['departments'])) {
-						if(in_array($departments,$result['departments']) ) {
-							if ($eventItem->total_quantity <= 0) {
-								$items_closed[] = $eventItem;
-							} else {
-								$items[] = $eventItem;
+					$eventItems = Item::find('all', array( 'conditions' => array(
+													'event' => array((string)$event->_id),
+													'enabled' => true
+												),
+												'order' => array('created_date' => 'ASC')
+											));
+					foreach ($eventItems as $eventItem) {
+						$result = $eventItem->data();
+						if (array_key_exists('departments',$result) && !empty($result['departments'])) {
+							if(in_array($departments,$result['departments']) ) {
+								if ($eventItem->total_quantity <= 0) {
+									$items_closed[] = $eventItem;
+								} else {
+									$items[] = $eventItem;
+								}
+							}
+							foreach($eventItem->departments as $value) {
+								$filters[$value] = $value;
 							}
 						}
-						foreach($eventItem->departments as $value) {
-							$filters[$value] = $value;
-						}
-					}
 					if ($departments == 'All') {
 						if ($eventItem->total_quantity <= 0) {
 							$items_closed[] = $eventItem;
@@ -122,9 +133,9 @@ class EventsController extends BaseController {
 							$items[] = $eventItem;
 						}
 						if(!empty($eventItem->departments)) {
-							foreach($eventItem->departments as $value) {
-								$filters[$value] = $value;
-							}
+								foreach($eventItem->departments as $value) {
+									$filters[$value] = $value;
+								}
 						}
 					}
 				}
@@ -160,6 +171,8 @@ class EventsController extends BaseController {
 
 	public function inventoryCheck($events) {
 		$events = $events->data();
+		$itemCounts = array();
+
 		foreach ($events as $eventItems) {
 			$count = 0;
 			$id = $eventItems['_id'] ;
@@ -180,7 +193,6 @@ class EventsController extends BaseController {
 	public function disney(){
 		$this->_render['layout'] = false;
 	}
-
 }
 
 

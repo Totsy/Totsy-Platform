@@ -13,6 +13,10 @@ class User extends Base {
 
 	protected $_meta = array('source' => 'users');
 
+	public static function collection() {
+		return static::_connection()->connection->{"users"};
+	}
+	
 	public static function applyCredit($data, $options = array()) {
 		$options['type'] = empty($options['type']) ? null : $options['type'];
 		$user = User::find('first', array(

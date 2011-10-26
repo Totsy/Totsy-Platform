@@ -19,6 +19,9 @@ class Address extends \lithium\data\Model {
 		'address' => array(
 			'notEmpty', 'required' => true, 'message' => 'Please add an address'
 		),
+		'telephone' => array(
+			'notEmpty', 'required' => true, 'message' => 'Please add a telephone number'
+		),
 		'city' => array(
 			'notEmpty', 'required' => true, 'message' => 'Please add a city'
 		),
@@ -143,7 +146,7 @@ class Address extends \lithium\data\Model {
 	 * $conditions = array('user_id' => Session::read('_id'))
 	 */
 	public static function count($conditions = array()) {
-		$collection = Address::_connection()->connection->totsy->addresses;
+		$collection = Address::_connection()->connection->addresses;
 		return $collection->count($conditions);
 	}
 
