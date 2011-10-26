@@ -45,10 +45,10 @@ $test = array(
 	)
 );
 
-$key  = '<transaction key>';
+$key = 'BexYoSnNAjU/1+osPIPukh0uYy4qf8tc7+f2Xb107q4Y1tI6tCHSdzdtDxgyAKzpb9IrD6vwxca6OMadqpcC2WuFUN2gWIsXnyEpAkEAjpNShVS1Ex0GkEi5/+7C0pMKKVgL5celaTLwYLH/Bnb8dXwNp+/aOogskyIApmZ2j0JbXJuLr5+r/ZEuTWKrChIDHS5jLip/y1zv5/ZdvXTurhjW0jq0IdJ3N20PGDIArOlv0isPq/DFxro4xp2qlwLZa4VQ3aBYixefISkCQQCOk1KFVLUTHQaQSLn/7sLSkwopWAvlx6VpMvBgsf8Gdvx1fA2n79o6iCyTIgCmZnaPQg==';
 $live = array(
 	'adapter' => 'CyberSource',
-	'merchantID' => '<merchant id>',
+	'merchantID' => 'totsy',
 	'transactionKey' => $key,
 	'endpoint' => 'live',
 	'filters' => array(
