@@ -29,14 +29,15 @@ class BaseController extends \lithium\action\Controller {
 	/**
 	 * Get the userinfo for the rest of the site from the session.
 	 */
-	 
+
 	protected function _init() {
+
 		parent::_init();
 	     if(!Environment::is('production')){
             $branch = "<h4 id='global_site_msg'>Current branch: " . $this->currentBranch() ."</h4>";
             $this->set(compact('branch'));
         }
-                
+
 		$userInfo = Session::read('userLogin');
 		$this->set(compact('userInfo'));
 		$cartCount = Cart::itemCount();
@@ -131,7 +132,16 @@ class BaseController extends \lithium\action\Controller {
 		**/
 		$this->set(compact('pixel'));
 
-		$this->_render['layout'] = 'main';
+		//var_dump($this->request->env('HTTP_HOST'));
+		switch($_SERVER['HTTP_HOST']) {
+		   // case "lawren.totsy.com":
+		    case "mamapedia.totsy.com":
+		        $this->_render['layout'] = '/mamapedia/main';
+		    break;
+		    default:
+		        $this->_render['layout'] = 'main';
+		    break;
+		}
 
 	}
 

@@ -104,7 +104,7 @@ class UsersController extends BaseController {
 			}
 			
 			/* links up inviter with the invitee and sends an email notification */
-						
+
 			Invitation::linkUpInvites($invite_code, $email);
 			
 			switch ($invite_code) {
@@ -192,7 +192,7 @@ class UsersController extends BaseController {
 					if ($saved = $user->save($data)) {
 						$mail_template = 'Welcome_Free_Shipping';
 						$params = array();
-						
+
 						$data = array(
 							'user' => $user,
 							'email' => $user->email
@@ -201,6 +201,7 @@ class UsersController extends BaseController {
 						if (isset($user['clear_token'])) {
 							$mail_template = 'Welcome_auto_passgen';
 							$params['token'] = $user['clear_token']; 
+
 						}
 						Mailer::send($mail_template, $user->email,$params);
 						$name = null;
@@ -273,7 +274,7 @@ class UsersController extends BaseController {
             			
             			$cookie['user_id'] = $user['_id'];
             			if(array_key_exists('redirect', $cookie) && $cookie['redirect'] ) {
-							$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$_SERVER['HTTP_HOST']));
+							$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$this->request->env('HTTP_HOST')));
 							unset($cookie['redirect']);
 						}
             			Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
@@ -306,28 +307,28 @@ class UsersController extends BaseController {
 	}
 
 	protected function autoLogin() {
-	
+
 		$redirect = '/sales';
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 		$result = static::facebookLogin(null, $cookie, $ipaddress);
 		extract($result);
-		
+
 		$fbCancelFlag = false;
-		
+
 		if (array_key_exists('fbcancel', $this->request->query)) {
 			$fbCancelFlag = $this->request->query['fbcancel'];
 		}
-		
+
 		if (!$success) {
 			if (!empty($userfb)) {
-				$self = static::_object();			
+				$self = static::_object();
 				if(!$fbCancelFlag) {
 					$self->redirect('/register/facebook');
 				}
 			}
 		}
-		
+
 		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
 				'conditions' => array('autologinHash' => $cookie['autoLoginHash']),
@@ -611,6 +612,7 @@ class UsersController extends BaseController {
 	 * @return compact
 	 */
 	public function fbregister() {
+
 		$message = null;
 		$user = null;
 		$fbuser = FacebookProxy::api('/me');

@@ -32,6 +32,27 @@
 require __DIR__ . '/bootstrap/libraries.php';
 
 /**
+ * This should go into its own file.
+ */
+
+use lithium\core\Environment;
+
+Environment::is(function($request) {
+	switch ($request->env('HTTP_HOST')) {
+		case 'totsy.com':
+		case 'www.totsy.com':
+		case 'mamapedia.totsy.com':
+			return 'production';
+		case 'test.totsy.com':
+			return 'test';
+		case 'dev.totsy.com':
+			return 'development';
+		default:
+			return 'local';
+	}
+});
+
+/**
  * Include this file if your application uses a database connection.
  */
 require __DIR__ . '/bootstrap/connections.php';
@@ -58,3 +79,4 @@ require __DIR__ . '/bootstrap/session.php';
 require __DIR__ . '/bootstrap/local_testing_cli.php';
 
 ?>
+
