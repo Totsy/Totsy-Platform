@@ -17,6 +17,7 @@ use MongoId;
 use MongoCursor;
 use admin\extensions\command\Base;
 use admin\extensions\command\Exchanger;
+use admin\extensions\command\MakeSku;
 use lithium\analysis\Logger;
 use admin\extensions\util\String;
 use admin\extensions\command\Pid;
@@ -33,6 +34,27 @@ use admin\extensions\Mailer;
  * @see admin/extensions/command/Exchanger
  * @see admin/controllers/QueueController
  */
+
+
+
+//sets maxlifetime to 5 hours
+ini_set("session.gc_maxlifetime", "18000");
+
+//check the maxlifetime
+//echo ini_get("session.gc_maxlifetime");
+
+//specifies session path to avoid default maxlifetime value of 24 mins to override
+session_save_path('/www/admin/resources/totsy/tmp');
+
+//to check the session path
+//echo session_save_path();
+
+ini_set('session.gc_probability', 1);
+
+//check the gc_probability
+//echo ini_get("session.gc_probability");
+
+
 class OrderExport extends Base {
 
 	/**
@@ -129,9 +151,15 @@ class OrderExport extends Base {
 	protected $poEvents = array();
 
 	/**
+	 * Current Queue in process
+	 * @var array
+	 */
+	protected $queue = array();
+
+	/**
 	 * Main method for exporting Order and PO files.
 	 *
-	 * The `run` method will query the pending event transactions
+	 * The run method will query the pending event transactions
 	 * that have not yet been processed. This queuing system will be managed
 	 * from the admin dashboard.
 	 *
@@ -146,6 +174,7 @@ class OrderExport extends Base {
 		$this->pending = LITHIUM_APP_PATH . $this->pending;
 		$this->log("...Waking up...");
 		$pid = new Pid($this->tmp,  'OrderExport');
+		$start = time();
 		if ($pid->already_running == false) {
 			$conditions = array('processed' => array('$ne' => true));
 			$records = Queue::find('all', compact('conditions'));
@@ -157,15 +186,23 @@ class OrderExport extends Base {
 					$this->log("Starting to process $queue->_id");
 					$this->time = date('ymdHis');
 					$queueData = $queue->data();
+					$this->queue = $queue;
 					if ($queueData['orders']) {
+					    $this->queue->status = "Processing Order File";
+					    $this->queue->save();
 						$this->orderEvents = $queueData['orders'];
 						$this->_orderGenerator();
 					}
 					if ($queueData['purchase_orders']) {
+					    $this->queue->status = "Processing PO File";
+					    $this->queue->save();
 						$this->poEvents = $queueData['purchase_orders'];
 						$this->_purchases();
 					}
+					$this->queue->status = "Processing Item File";
+					$this->queue->save();
 					$this->_itemGenerator();
+					$this->log("Finised processing: $queue->_id");
 					if ($queueData['orders'] || $queueData['purchase_orders']) {
 						$queue->summary = $this->summary;
 						$queue->processed = true;
@@ -173,13 +210,18 @@ class OrderExport extends Base {
 						$queue->save();
 						$this->summary['from_email'] = 'no-reply@totsy.com';
 						$this->summary['to_email'] = 'logistics@totsy.com';
-						Mailer::send('Order_Export', $this->summary['to_email'], $this->summary);
+						if ($this->test != 'true') {
+                           Mailer::send('Order_Export', $this->summary['to_email'], $this->summary);
+                        }
 					}
 				}
 			}
 		} else {
 			$this->log("Already Running! Stoping Execution");
 		}
+		$end = time();
+		$finish = $end - $start;
+		$this->log("It took $finish secs");
 	}
 
 	/**
@@ -197,25 +239,140 @@ class OrderExport extends Base {
 		$itemCollection = Item::connection()->connection->items;
 		$orderFile = array();
 		$heading = ProcessedOrder::$_fileHeading;
+		/**
+		* Check if this orders have been processed by this queue
+		* If orders have been processed already, skip those orders
+		**/
+		$conditions = $this->batchId;
+		$processCheck = ProcessedOrder::count(compact('conditions'));
+		if ($processCheck > 0 ) {
+		    $fields = array('');
+		    $results = ProcessedOrder::find(compact('conditions'));
+		}
 		$orders = $orderCollection->find(array(
 			'items.event_id' => array('$in' => $this->orderEvents),
 			'cancel' => array('$ne' => true)
+		),array(
+		    '_id' => true,
+		    'billing' => true,
+		    'shipping' => true,
+		    'date_created' => true,
+		    'ship_date' => true,
+		    'items' => true,
+		    'order_id' => true,
+		    'shippingMethod' => true,
+		    'user_id' => true
 		));
+		$order_total = $orders->count();
+		//total same until here 345pm
 		if ($orders) {
 			$inc = 1;
-			$filename = 'TOTOrd'.$this->time.'.txt';
-			$handle = $this->tmp.$filename;
-			$fp = fopen($handle, 'w');
+			/**
+			* Checks if this queue already started this process once before
+			* If so, just continue with the same file, if not created a new file.
+			**/
+			$split_number = 0;
+			$lines = 0;
+			if ($this->queue->summary) {
+               if (!empty($this->queue->summary['order']['filename'])) {
+                   $filename = $this->queue->summary['order']['filename'];
+                   $handle = $this->tmp.$filename;
+			       $fp = fopen($handle, 'a+');
+			       $this->log("Queue ran before. Appending to file $filename");
+                    /**
+                    * Retrieve the number of orders already processed
+                    * @returns $last_order - last order entered in the file
+                    * @returns $last_order_size - Number of line items
+                    * already processed for that order
+                    * @returns $split_number - number of orders to skip
+                    **/
+			       extract($this->lastOrder($fp));
+			       if ($lines != 0) {
+                       $this->log("The last order entered into the file was $last_order");
+                       $conditions = array('order_id' => $last_order);
+                       $lastOrder = $orderCollection->findOne(compact('conditions'));
+                       $orderItem = count($lastOrder['items']);
+                       if (($processCheck > 0) && ($processCheck == $orderItem)) {
+                            $this->log("All the items was processed for the last entered order.");
+                            $split_number += 1;
+                       }
+                       $this->log("Number of orders found " . $orders->count());
+                       $this->log("Skipping the first " . $split_number ." already processed orders.");
+                       $orders = $orders->skip($split_number);
+                       $this->log("Remaining number of orders found " . $orders->count(true));
+			       } else {
+			        $this->log("Empty file");
+			       }
+                }
+			} else {
+			    $filename = 'TOTOrd'.$this->time.'.txt';
+                $this->summary['order']['filename'] = $filename;
+                $this->queue->summary = $this->summary;
+                $this->queue->save();
+                $handle = $this->tmp.$filename;
+			    $fp = fopen($handle, 'w');
+			}
+
 			$orderArray = array();
+			$ecounter = 0;
+
+			//new counts for email breakdown
+			$allitems = 0;
+			$unprocessed_orders = 0;
+			$unprocessed_orders_items = 0;
+			$processed_orders = 0;
+			$processed_orders_items = 0;
+
 			foreach ($orders as $order) {
 				$conditions = array('Customer PO #' => array('$in' => array((string) $order['_id'], $order['_id'])));
 				$processCheck = ProcessedOrder::count(compact('conditions'));
+				++$ecounter;
+
+				//get items in order before check here
+				$items = $order['items'];
+
+				//total of items count to add to each subtotal
+				$raw_item_count = count($items);
+
+				//add to raw item count
+				$allitems += $raw_item_count;
+
 				if ($processCheck == 0) {
-					$user = User::find('first', array('conditions' => array('_id' => $order['user_id'])));
-					$items = $order['items'];
+
+					//this is unprocessed total for orders, items
+					$unprocessed_orders++;
+					$unprocessed_orders_items += $raw_item_count;
+
+					$user = User::find('first', array(
+					    'conditions' => array('_id' => $order['user_id']),
+					    'fields' => array('email' => true)
+					    ));
 					foreach ($items as $item) {
 						if (empty($item['cancel']) || $item['cancel'] != true) {
-							$orderItem = $itemCollection->findOne(array('_id' => new MongoId($item['item_id'])));
+                                $orderItem = $itemCollection->findOne(
+                                    array('_id' => new MongoId($item['item_id']))
+							);
+							 /**
+                            * Checking if sku exists, if not find it in the item master
+                            * If not in item master create one
+                            **/
+                             $description = implode(' ', array(
+								$item['color'],
+								$item['size'],
+								$item['description']
+							));
+                            if (!array_key_exists('sku_details', $orderItem)){
+                                $sku = $this->findSku(String::asciiClean($description), $item["size"]);
+                                if (!($sku)) {
+                                    $makeSku = new MakeSku();
+                                    $makeSku->generateSku(array($orderItem));
+                                    $orderItem = Item::find('first', array(
+                                        'conditions' => array('_id' => $orderItem['_id']),
+                                        'fields' => array('sku_details' => true)
+                                        ));
+                                }
+                            }
+                            $sku = $orderItem['sku_details'][$item['size']];
 							$orderFile[$inc]['ContactName'] = '';
 							$orderFile[$inc]['Date'] = date('m/d/Y');
 							if ($order['shippingMethod'] == 'ups') {
@@ -224,10 +381,14 @@ class OrderExport extends Base {
 							     $orderFile[$inc]['ShipMethod'] = $order['shippingMethod'];
 							}
 							$orderFile[$inc]['RushOrder (Y/N)'] = '';
-							$orderFile[$inc]['Tel'] = $order['shipping']['telephone'];
+							if (array_key_exists('telephone',$order['shipping'] )) {
+							    $orderFile[$inc]['Tel'] = $order['shipping']['telephone'];
+							} else {
+							    $orderFile[$inc]['Tel'] = '';
+							}
 							$orderFile[$inc]['Country'] = '';
 							$orderFile[$inc]['OrderNum'] = $order['order_id'];
-							$orderFile[$inc]['SKU'] = $orderItem['sku_details'][$item['size']];
+							$orderFile[$inc]['SKU'] = $sku;
 							$orderFile[$inc]['Qty'] = $item['quantity'];
 							$orderFile[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
 							$orderFile[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
@@ -248,6 +409,10 @@ class OrderExport extends Base {
 							$orderFile[$inc]['Ref3'] = $item['color'];
 							$orderFile[$inc]['Ref4'] = String::asciiClean($item['description']);
 							$orderFile[$inc]['Customer PO #'] = $order['_id'];
+
+							$orderFile[$inc]['Order Creation Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $order['date_created']));
+							$orderFile[$inc]['Promised Ship-by Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $order['ship_date']));
+
 							$orderFile[$inc] = array_merge($heading, $orderFile[$inc]);
 							$orderFile[$inc] = $this->sortArrayByArray($orderFile[$inc], $heading);
 							if (!in_array($item['event_id'], $this->addEvents)) {
@@ -256,24 +421,48 @@ class OrderExport extends Base {
 							if (!in_array($orderFile[$inc]['OrderNum'], $orderArray)) {
 								$orderArray[] = $orderFile[$inc]['OrderNum'];
 							}
-							if ($this->test != 'true') {
+
 								$processedOrder = ProcessedOrder::connection()->connection->{'orders.processed'};
 								$processedOrder->save($orderFile[$inc] + $this->batchId);
-							}
 							$this->log("Adding order $order[_id] to $handle");
 							fputcsv($fp, $orderFile[$inc], chr(9));
 							++$inc;
 						}
 					}
+					if ($order_total != 0) {
+                        $this->queue->percent = ($ecounter/$order_total) * 100;
+                        $this->queue->save();
+                    }
 				} else {
+					//if already processed, make totals of orders, items for that
+					$processed_orders++;
+					$processed_orders_items += $raw_item_count;
 					$this->log("Already processed $order[_id]");
 				}
 			}
 			fclose($fp);
-			rename($handle, $this->pending.$filename);
+			if (!rename($handle, $this->pending.$filename)) {
+			    $this->log("Failed to move file " . $handle . " Filesize was " . filesize($handle));
+			    $new_location = $this->pending.$filename;
+			    $this->log("Using shell command to move file");
+			    shell_exec("mv ". $handle . " " . $new_location);
+			}
 			$totalOrders = count($orderArray);
-			$this->summary['order']['count'] = count($orderArray);
-			$this->summary['order']['lines'] = $inc;
+
+			//new totals for breakdown in email
+			$this->summary['order']['unprocessed_orders'] = $unprocessed_orders;
+			$this->summary['order']['processed_orders'] = $processed_orders;
+
+			$this->summary['order']['unprocessed_orders_items'] = $unprocessed_orders_items;
+			$this->summary['order']['processed_orders_items'] = $processed_orders_items;
+
+			$this->summary['order']['queue_total_orders'] = $ecounter;
+			$this->summary['order']['queue_total_items'] = $allitems;
+
+
+
+			$this->summary['order']['count'] = count($orderArray) + $split_number;
+			$this->summary['order']['lines'] = ($inc + $lines) - 1;
 			$this->summary['order']['filename'] = $filename;
 			$this->log("$handle was created total of $totalOrders orders generated with $inc lines");
 		} else {
@@ -294,11 +483,13 @@ class OrderExport extends Base {
 	 * @param array $eventId Array of events.
 	 */
 	protected function _itemGenerator() {
-	     MongoCursor::$timeout = -1;
+	    MongoCursor::$timeout = -1;
 		$this->log('Generating Items');
 		$filename = 'TOTIT'.$this->time.'.csv';
 		$handle = $this->tmp.$filename;
 		$eventIds = array_unique(array_merge($this->orderEvents, $this->poEvents, $this->addEvents));
+		$event_count =  count($eventIds);
+		$this->log("Total Number of Events encountered: " . $event_count);
 		$this->log("Opening item file $handle");
 		$fp = fopen($handle, 'w');
 		$count = 0;
@@ -311,9 +502,42 @@ class OrderExport extends Base {
 				)));
 				$inc = 1;
 				$eventItems = $this->_getOrderItems($eventId);
+				$this->log("Event $eventId has " . count($eventItems) . " items");
 				foreach ($eventItems as $eventItem) {
 					foreach ($eventItem['details'] as $key => $value) {
-						$sku = $eventItem['sku_details'][$key];
+					    $description = implode(' ', array(
+								$eventItem['color'],
+								$key,
+								$eventItem['description']
+							));
+						/**
+						* Checking if sku exists, if not find it in the item master
+						* If not in item master create one
+						**/
+					    if (array_key_exists('sku_details', $eventItem)){
+					        $sku = $eventItem['sku_details'][$key];
+					    } else {
+					        $sku = $this->findSku(String::asciiClean($description), $key);
+					        if (!($sku)) {
+					            $makeSku = new MakeSku();
+					            $makeSku->generateSku(array($eventItem));
+                              $eventItem = Item::find('first', array(
+                                    'conditions' => array('_id' => $eventItem['_id']),
+                                    'fields' => array(
+                                        'sale_whol' => true,
+                                        'category' => true,
+                                        'orig_whol' => true,
+                                        '_id' => true,
+                                        'color' => true,
+                                        'product_weight' => true,
+                                        'vendor_style' => true,
+                                        'sku_details' => true,
+                                        'description' => true,
+                                        'details' => true
+                                    )
+                                ));
+					        }
+					    }
 						$conditions = array('SKU' => $sku);
 						$itemMasterCheck = ItemMaster::count(compact('conditions'));
 						if ($itemMasterCheck == 0){
@@ -321,11 +545,6 @@ class OrderExport extends Base {
 							if ($this->verbose == 'true') {
 								$this->log("Adding SKU: $sku to $handle");
 							}
-							$description = implode(' ', array(
-								$eventItem['color'],
-								$key,
-								$eventItem['description']
-							));
 							$fields[$inc]['Description'] = String::asciiClean($description);
 							$fields[$inc]['WhsInsValue (Cost)'] = number_format($eventItem['sale_whol'], 2);
 							$fields[$inc]['Description for Customs'] = (!empty($eventItem['category']) ? $eventItem['category'] : "");
@@ -351,10 +570,17 @@ class OrderExport extends Base {
 						++$inc;
 					}
 				}
+			    if ($event_count != 0) {
+                    $this->queue->percent = (float)number_format((($inc/$event_count) * 100), 2);
+                    $this->queue->save();
+                }
 			}
 		}
 		fclose($fp);
-		rename($handle, $this->pending.$filename);
+		if ( !rename($handle, $this->pending.$filename) ){
+		    $this->log("Failed to move file " . $handle . " File size was " . filesize($handle));
+		    shell_exec("mv " . $handle . " " . $this->pending.$filename);
+		}
 		$this->summary['item']['count'] = $count;
 		$this->summary['item']['filename'] = $filename;
 		$this->log("There were $count items generated and saved to the item master and $handle");
@@ -377,6 +603,8 @@ class OrderExport extends Base {
 	     MongoCursor::$timeout = -1;
 		$this->log('Generating Purchase Orders');
 		$orderCollection = Order::collection();
+		$event_count = count($this->poEvents);
+		$ecount = 0;
 		foreach ($this->poEvents as $eventId) {
 			$purchaseHeading = ProcessedOrder::$_purchaseHeading;
 			$total = array('sum' => 0, 'quantity' => 0);
@@ -393,6 +621,7 @@ class OrderExport extends Base {
 			$this->log("Opening PO file $handle");
 			$fp = fopen($handle, 'w');
 			$this->summary['purchase_orders'][] = $filename;
+
 			$purchaseOrder = array();
 			$inc = 0;
 			foreach ($eventItems as $eventItem) {
@@ -406,6 +635,7 @@ class OrderExport extends Base {
 					if ($orders) {
 						foreach ($orders as $order) {
 							$items = $order['items'];
+							$date_created = $order['date_created'];
 							foreach ($items as $item) {
 								$active = (empty($item['cancel']) || $item['cancel'] != true) ? true : false;
 								$itemValid = ($item['item_id'] == $eventItem['_id']) ? true : false;
@@ -418,6 +648,30 @@ class OrderExport extends Base {
 									} else {
 										$purchaseOrder[$inc]['Qty'] += $item['quantity'];
 									}
+									//new additions
+									$purchaseOrder[$inc]['Vendor Style'] = $eventItem['vendor_style'];
+									$purchaseOrder[$inc]['Vendor Name'] = $vendorName;
+									$purchaseOrder[$inc]['Item Color'] = $item['color'];
+									$purchaseOrder[$inc]['Item Size'] = $item['size'];
+									$purchaseOrder[$inc]['Item Description'] = $eventItem['description'];
+									$purchaseOrder[$inc]['Order Creation Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $order['date_created']));
+									$purchaseOrder[$inc]['Promised Ship-by Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $order['ship_date']));
+									$purchaseOrder[$inc]['Event Name'] = $event->name;
+									$purchaseOrder[$inc]['Event End Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $event->end_date));
+
+
+							$purchaseOrder[$inc]['WhsInsValue (Cost)'] = number_format($eventItem['sale_whol'], 2);
+							$purchaseOrder[$inc]['Description for Customs'] = (!empty($eventItem['category']) ? $eventItem['category'] : "");
+							$purchaseOrder[$inc]['ShipInsValue'] = number_format($eventItem['orig_whol'], 2);
+							$purchaseOrder[$inc]['Ref1'] = $eventItem['_id'];
+							$purchaseOrder[$inc]['Ref2'] = $key;
+							$purchaseOrder[$inc]['Ref3'] = $eventItem['color'];
+
+
+							if ((int) $eventItem['product_weight'] > 0) {
+								$purchaseOrder[$inc]['UOM1_Weight'] = number_format($eventItem['product_weight'],2);
+							}
+
 									$purchaseOrder[$inc] = $this->sortArrayByArray($purchaseOrder[$inc], $purchaseHeading);
 								}
 							}
@@ -433,9 +687,63 @@ class OrderExport extends Base {
 					}
 				}
 			}
+			++$ecount;
+			if ($event_count != 0) {
+                $this->queue->percent = (float)number_format((($ecount/$event_count) * 100), 2);
+                $this->queue->save();
+            }
 			fclose($fp);
 			rename($handle, $this->pending.$filename);
 		}
+	}
+
+	/**
+	* Find the sku of an item
+	* returns the sku if it is found or false if otherwise
+	**/
+	protected function findSku($description, $size) {
+	    $conditions = array('Description' => $description, 'Ref2' => $size );
+	    $item_master = ItemMaster::collection()->findOne($conditions, array('SKU' => true));
+
+	    if ( $item_master) {
+	        return $item_master['SKU'];
+	    } else {
+	        return false;
+	    }
+	}
+
+	/**
+	* Retrieve last order entered in order file
+	* @returns $last_order - last order entered in the file
+    * @returns $last_order_size - Number of line items
+    * already processed for that order
+    * @returns $split_number - number of orders to skip
+	**/
+	protected function lastOrder($openFile) {
+	    $orders = array();
+	    $lines = 0;
+	    while( ($data = fgetcsv($openFile,0,"\t")) != FALSE) {
+	            ++$lines;
+	            $orders[$data[5]][] = $data[6];
+	    }
+	    if (count($orders) != 0 ) {
+            $orders = array_reverse($orders);
+            $last_order = key($orders);
+            $last_order_size = count($orders[$last_order]);
+            /**
+            * This count will not include the last order
+            **/
+            $split_number = count($orders) - 1;
+	    } else {
+	        $last_order = null;
+            $last_order_size = 0;
+             /**
+            * This count will not include the last order
+            **/
+            $split_number = 0;
+	    }
+
+	    return compact('last_order','last_order_size','split_number', 'lines');
 	}
 
 	/**
@@ -447,7 +755,8 @@ class OrderExport extends Base {
 			$items = Item::find('all', array(
 				'conditions' => array(
 					'event' => array('$in' => array($eventId)
-			))));
+			    )
+			)));
 			$items = $items->data();
 		}
 		return $items;

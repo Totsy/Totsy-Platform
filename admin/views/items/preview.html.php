@@ -1,6 +1,6 @@
 <?=$this->html->script(array('jqzoom.pack.1.0.1','jquery.equalheights'));?>
 
-
+<?php if ($event): ?>
 <div id="product-detail-right">
 	<div id="product-detail-right-top">
 	<?php $logo = $event->images->logo_image;?>
@@ -29,7 +29,7 @@
 	<?=$this->form->hidden("item_id", array('value' => "$item->_id", 'id'=>'item_id')); ?>
 
 	<div id="detail-top-right" class="r-container">
-   
+
 		<div class="tl"></div>
 		<div class="tr"></div>
 		<div class="md-gray p-container">
@@ -61,7 +61,7 @@
 			</dd>
 		</dl>
 	</div>
-		
+
 	<div id="tabs">
 		<ul>
 		    <li><a href="#description"><span>Description</span></a></li>
@@ -78,14 +78,14 @@
 
 		<!-- Start Shipping Tab -->
 		<div id="shipping" class="ui-tabs-hide">
-		
+
 		<strong>Shipping:</strong>Totsy will ship this item via Standard UPS or Standard US Mail shipping based on your selection at the end of your <?=$this->html->link('checkout process', array('Orders::add')); ?>.
 		Complete shipping details are available at <?=$this->html->link('shipping terms', array('Pages::shipping')); ?>.
 
 		<p><strong>Returns:</strong> Totsy accept returns on selected items only. You will get a merchandise credit and free shipping (AK &amp; HI: air shipping rates apply). Simply be sure that we receive the merchandise you wish to return within 30 days from the date you originally received it in its original condition with all the packaging intact. Please note: Final Sale items cannot be returned. Want to learn more? Read more in our <?=$this->html->link('returns section', array('Pages::returns')); ?>.</p>
 
-		
-		    
+
+
 				</div>
 		<!-- End Shipping Tab -->
 
@@ -141,12 +141,12 @@
 				<?php if (!empty($item->primary_image)): ?>
 					<div class="zoom-container show" id="full_img_1">
 				<?php echo $this->html->link($this->html->image("/image/{$item->primary_image}.jpg", array(
-						"width" => "298", 
-						"height" => "300", 
-						"title" => $item->description, 
+						"width" => "298",
+						"height" => "300",
+						"title" => $item->description,
 						"alt" => $item->description)),
 						"/image/{$item->zoom_image}.jpg",
-						array('escape' => false, 'class' => 'zoom')); 
+						array('escape' => false, 'class' => 'zoom'));
 				?>
 					</div>
 				<?php endif ?>
@@ -155,14 +155,14 @@
 					<?php foreach ($item->alternate_images as $value): ?>
 						<div class="zoom-container" id="full_img_<?=$x?>">
 							<?php echo $this->html->link($this->html->image("/image/{$value}.jpg", array(
-									"width" => "298", 
-									"height" => "300", 
-									"title" => $item->description, 
+									"width" => "298",
+									"height" => "300",
+									"title" => $item->description,
 									"alt" => $item->description)),
 									"image/$value.jpg",
 									array('escape' => false));
 							?>
-							<?php $x++; ?>	
+							<?php $x++; ?>
 						</div>
 					<?php endforeach ?>
 				<?php endif ?>
@@ -177,8 +177,8 @@
 		<?php
 			if (!empty($item->primary_image)) {
 				echo $this->html->image("/image/{$item->primary_image}.jpg", array(
-					'class' => "img-th active", 
-					'width' => "93", 
+					'class' => "img-th active",
+					'width' => "93",
 					'height' => "93",
 					'alt' => "product-thumb-fpo",
 					'rel' => "full_img_1"));
@@ -188,23 +188,25 @@
 			<?php $x = 2; ?>
 			<?php foreach ($item->alternate_images as $value): ?>
 					<?=$this->html->image("/image/{$value}.jpg", array(
-						'class' => "img-th", 
-						'width' => "93", 
+						'class' => "img-th",
+						'width' => "93",
 						'height' => "93",
 						'rel' => "full_img_$x",
 						'alt' => "product-thumb-fpo"
-						)); 
+						));
 					?>
-					<?php $x++; ?>	
+					<?php $x++; ?>
 			<?php endforeach ?>
 		<?php endif ?>
 	</div>
 	<!-- End additional image view thumbnails -->
 
 </div>
+<?php else: ?>
+<span >Check if the event is enabled</span>
+<?php endif; ?>
 
-
-<script type="text/javascript"> 
+<script type="text/javascript">
 $(function () {
 	var saleEnd = new Date();
 	saleEnd = new Date(<?php echo $event->end_date->sec * 1000?>);
@@ -230,13 +232,13 @@ $(document).ready(function() {
 
 	//make product thumbnails do something
 	$('.img-th').click(function(){
-	
+
 		$('.img-th').removeClass('active');
-	
+
 		$(this).addClass('active');
-	
+
 		var lg = $(this).attr('rel');
-	
+
 		$('.zoom-container').removeClass('show');
 		$('#'+lg).addClass('show');
 

@@ -5,7 +5,8 @@ namespace admin\models;
 class OrderShipped extends \lithium\data\Model {
 
 	public static function collection() {
-		return static::_connection()->connection->{"orders.shipped"};
+		$return = static::_connection();
+		return $return->connection->{"orders.shipped"};
 	}
 
 	protected $_meta = array('source' => 'orders.shipped');

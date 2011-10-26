@@ -12,9 +12,11 @@ use MongoRegex;
 use li3_facebook\extension\FacebookProxy;
 use lithium\core\Environment;
 
+
+
 /**
 * The base controller will setup functionality used throughout the app.
-* @see app/models/Affiliate
+* @see app/models/Affiliate::getPixels()
 */
 class BaseController extends \lithium\action\Controller {
 
@@ -22,6 +24,11 @@ class BaseController extends \lithium\action\Controller {
 	 * Get the userinfo for the rest of the site from the session.
 	 */
 	protected function _init() {
+		parent::_init();
+	     if(!Environment::is('production')){
+            $branch = "<h4 id='global_site_msg'>Current branch: " . $this->currentBranch() ."</h4>";
+            $this->set(compact('branch'));
+        }
 		$userInfo = Session::read('userLogin');
 		$this->set(compact('userInfo'));
 		$cartCount = Cart::itemCount();
@@ -37,9 +44,18 @@ class BaseController extends \lithium\action\Controller {
 		if ($userInfo) {
 			$user = User::find('first', array(
 				'conditions' => array('_id' => $userInfo['_id']),
-				'fields' => array('total_credit')
+				'fields' => array('total_credit', 'deactivated','affiliate_share')
 			));
-			if ($user) {
+			if (isset($user) && $user) {
+			    /**
+			    * If the users account has been deactivated during login,
+			    * destroy the users session.
+			    **/
+			    if ($user->deactivated == true) {
+			        Session::clear(array('name' => 'default'));
+			        Session::delete('appcookie', array('name' => 'cookie'));
+		            FacebookProxy::setSession(null);
+			    }
 				$decimal = ($user->total_credit < 1) ? 2 : 0;
 				$credit = ($user->total_credit > 0) ? number_format($user->total_credit, $decimal) : 0;
 			}
@@ -51,50 +67,50 @@ class BaseController extends \lithium\action\Controller {
 		* Get the pixels for a particular url.
 		**/
 		$invited_by = NULL;
-		 if ($userInfo) {
-			$user = User::find('first', array(
-				'conditions' => array('_id' => $userInfo['_id'])
-			));
+
+		 if (isset($user) && $user) {
 			$cookie = Session::read('cookieCrumb', array('name'=>'cookie'));
-			if(array_key_exists('affiliate',$cookie)){
+			$userData = $user->data();
+			if(is_array($cookie) && array_key_exists('affiliate',$cookie)){
                 Affiliate::linkshareCheck($user->_id, $cookie['affiliate'], $cookie);
             }
-			if ($user){
-				if ($user->invited_by){
-					$invited_by = $user->invited_by;
-			    }else if($user->affiliate_share){
-                    $invited_by = $user->affiliate_share['affiliate'];
-                }
-			}
+            if (array_key_exists('invited_by',$userInfo)){
+                $invited_by = $userInfo['invited_by'];
+            }else if(array_key_exists('affiliate_share',$userData)){
+                $invited_by = $userData['affiliate_share']['affiliate'];
+            }
 		}
 		/**
 		* If visitor lands on affliate url e.g www.totsy.com/a/afflilate123
 		**/
-		if (preg_match('/a/',$_SERVER['REQUEST_URI'])) {
-			$invited_by = substr($_SERVER['REQUEST_URI'], 3);
-			if (strpos($invited_by, '?')) {
-				$invited_by = substr($invited_by, 0, strpos($invited_by, '?'));
-			}
-			if (strpos($invited_by, '&')) {
-				$invited_by = substr($invited_by,0,strpos($invited_by, '&'));
-			}
+		if (is_object($this->request) && isset($this->request->params) && $this->request->params['controller']  == "affiliates" &&
+			$this->request->params['action'] == "register" & empty($invited_by)) {
+			$invited_by = $this->request->args[0];
 		}
+
 		/**
-		* Retrieve any pixels that need to be fired
+		* Retrieve any pixels that need to be fired off
 		**/
-		$pixel = Affiliate::getPixels($_SERVER['REQUEST_URI'], $invited_by);
+		if (is_object($this->request) && isset($this->request->url)){
+			$url = $this->request->url;
+		} else {
+			$url = $_SERVER['REQUEST_URI'];
+		}
+		$pixel = Affiliate::getPixels($url, $invited_by);
 		$pixel .= Session::read('pixel');
 		/**
 		* Remove pixel to avoid firing it again
 		**/
 		Session::delete('pixel');
+		#Clean Credit Card Infos if out of Orders/CartController
+		$this->CleanCC();
 		/**
 		* Send pixel to layout
 		**/
 		$this->set(compact('pixel'));
 
 		$this->_render['layout'] = 'main';
-		parent::_init();
+
 	}
 
 	/**
@@ -186,7 +202,28 @@ class BaseController extends \lithium\action\Controller {
 	public function writeSession($sessionInfo) {
 		return (Session::write('userLogin', $sessionInfo, array('name'=>'default')));
 	}
-
+	/**
+	* Displays what git branch you are currently developing in
+	**/
+	public function currentBranch() {
+        $out = shell_exec("git branch --no-color");
+        preg_match('#(\*)\s[a-zA-Z0-9_-]*(.)*#', $out, $parse);
+        $pos = stripos($parse[0], " ");
+        return trim(substr($parse[0], $pos));
+	}
+	/**
+	* Clean Credits Card Infos if out of Cart/Orders/Search ??? Controller
+	**/
+	public function cleanCC() {
+		if (is_object($this->request) && isset($this->request->params) && $this->request->params['controller']  != "orders"
+			&& $this->request->params['controller']  != "cart"
+			&& $this->request->params['controller']  != "search")
+		{
+			if(Session::check('cc_infos')) {
+				Session::delete('cc_infos');
+			}
+		}
+	}
 }
 
 ?>

@@ -1,4 +1,7 @@
 <?php
+
+ini_set('display_errors', 0); 
+
 /**
  * Lithium: the most rad php framework
  *
@@ -50,6 +53,7 @@
 	<div class="container_16">
 		<!-- HEADER -->
 		<div id="header">
+		    <?php echo $branch?>
 			<div class="grid_3">
 				<?=$this->html->link($this->html->image('logo.png', array(
 						'width'=>'155',

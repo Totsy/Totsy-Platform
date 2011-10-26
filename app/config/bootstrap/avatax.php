@@ -10,7 +10,7 @@ Environment::set('test', array(
 		'companyCode' => 'totsy',
 	    'trace' => true,
 		'retriesNumber' => 2,
-		'logEmail' => 'skosh@totsy.com',
+		'logEmail' => 'tax-notifications@totsy.com',
 		'useAvatax' => true
 	)
 ));
@@ -26,7 +26,7 @@ Environment::set('development', array(
 		'companyCode' => 'totsy',
 	    'trace' => true,
 		'retriesNumber' => 2,
-		'logEmail' => 'skosh@totsy.com',
+		'logEmail' => 'tax-notifications@totsy.com',
 		'useAvatax' => true
 	)
 ));
@@ -39,7 +39,7 @@ Environment::set('local', array(
 		'companyCode' => 'totsy',
 	    'trace' => true,
 		'retriesNumber' => 2,
-		'logEmail' => 'skosh@totsy.com',
+		'logEmail' => 'tax-notifications@totsy.com',
  		'useAvatax' => true
 	)
 ));
@@ -51,8 +51,8 @@ Environment::set('production', array(
 	    'license' => 'E96C0C6042CDD179',
 		'companyCode' => 'totsy',
 	    'trace' => false,
-		'retriesNumber' => 1,
-		'logEmail' => 'skosh@totsy.com',
+		'retriesNumber' => 2,
+		'logEmail' => 'tax-notifications@totsy.com',
 		'useAvatax' => true
 	)
 ));

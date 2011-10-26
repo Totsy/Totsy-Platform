@@ -186,7 +186,7 @@ width: 200px;
 }
 input.general {
 position: absolute;
-left: 160px;	
+left: 160px;
 }
 input.inputbox,textarea.inputbox {
 background: #FFF;
@@ -845,6 +845,10 @@ float: left
 div.dividing-line {
 height: 1px;
 background: #CCC
+}
+
+.button {
+font: 14px;
 }
 
 a.invite-btn {

@@ -5,12 +5,12 @@ use lithium\core\Environment;
 Environment::set('production', array(
 	'avatax' => array(
 	    'url' => 'https://avatax.avalara.net',
-	    'account' => '< prod account number >',
-	    'license' => '< prod license key >',
-		'companyCode' => '< prod company code >',
+	    'account' => '1100064978',
+	    'license' => 'E96C0C6042CDD179',
+		'companyCode' => 'totsy',
 	    'trace' => false,
-		'retriesNumber' => 1,
-		'logEmail' => 'skosh@totsy.com'
+		'retriesNumber' => 2,
+		'logEmail' => 'tax-notifications@totsy.com'
 	)
 ));
 
@@ -22,19 +22,19 @@ Environment::set('development', array(
 		'companyCode' => 'totsy',
 	    'trace' => true,
 		'retriesNumber' => 2,
-		'logEmail' => 'skosh@totsy.com'
+		'logEmail' => 'tax-notifications@totsy.com'
 	)
 ));
 
 Environment::set('local', array(
 	'avatax' => array(
-	    'url' => 'https://development.avalara.net',
+	    'url' => 'https://avatax.avalara.net',
 	    'account' => '1100058465',
-	    'license' => 'C4930DB03091446E',
+	    'license' => 'E96C0C6042CDD179',
 		'companyCode' => 'totsy',
 	    'trace' => true,
 		'retriesNumber' => 2,
-		'logEmail' => 'skosh@totsy.com'
+		'logEmail' => 'tax-notifications@totsy.com'
 	)
 ));
 

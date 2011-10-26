@@ -8,7 +8,7 @@ use \MongoId;
 
 
 class Keyade extends \lithium\data\Model {
-	
+
 	/**
 	 * Subscriber list, provided by date
 	 *
@@ -37,7 +37,7 @@ class Keyade extends \lithium\data\Model {
 		$output .= "</report>\n";
 		echo $output;
 	}
-	
+
 	/**
 	 * Signups by Referral list
 	 *
@@ -60,7 +60,7 @@ class Keyade extends \lithium\data\Model {
 			$inviter = $connection->findOne( array( 'invitation_codes' => $user['invited_by'], 'keyade_user_id' => array('$exists' => true)));
 			if($inviter != null){
 				// We got a user invited from a keyade referral
-				$user['keyade_user_id'] = $inviter['keyade_user_id'];
+				$user['keyade_referral_user_id'] = $inviter['keyade_user_id'];
 				$referrals[] = $user;
 			}
 		}
@@ -72,16 +72,16 @@ class Keyade extends \lithium\data\Model {
 			';
 			foreach($referrals AS $row){
 							$output .= '	<entry clickId="' . $row['keyade_user_id'] . '" eventMerchantId="' . $row['_id'] . '" count1="1" time="' .  $row['created_date']->sec . '" eventStatus="confirmed" />
-				';				
+				';
 			}
 			$output .= "</report>\n";
 			echo $output;
 		}
 	}
-	
+
 	/**
 	 * Sales list
-	 * 
+	 *
 	 * @return xml object
 	 */
 	public static function sales($data){
@@ -113,14 +113,14 @@ class Keyade extends \lithium\data\Model {
 			if($user != null){
 				// KEYADE ORDER!
 				$output .= '	<entry clickId="' . $user['keyade_user_id'] . '" lifetimeId="' . $order['user_id'] . '" eventMerchantId="' . $order['order_id'] . '" value1="' . $order['total'] . '" time="' .  $order['date_created']->sec . '" />
-				';				
-				
+				';
+
 			}
 		}
 		$output .= "</report>\n";
-		echo $output;		
+		echo $output;
 	}
-	
+
 	/**
 	 * Referring Sales list
 	 *
@@ -159,13 +159,13 @@ class Keyade extends \lithium\data\Model {
 				if($inviter != null){
 					// KEYADE ORDER!
 					$output .= '	<entry clickId="' . $inviter['keyade_user_id'] . '" lifetimeId="' . $order['user_id'] . '" eventMerchantId="' . $order['order_id'] . '" value1="' . $order['total'] . '" time="' .  $order['date_created']->sec . '" />
-					';				
-					
+					';
+
 				}
 			}
 		}
 		$output .= "</report>\n";
-		echo $output;		
+		echo $output;
 	}
-	
+
 }

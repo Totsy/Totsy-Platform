@@ -1,9 +1,9 @@
-<?php 
-/** 
+<?php
+/**
  * DO NOT REMOVE THIS VAR_DUMP
- * - it is for our affiliates 
+ * - it is for our affiliates
 **/
 
-var_dump($success, $errors); 
+var_dump($success, $errors, $_id);
 
 ?>
