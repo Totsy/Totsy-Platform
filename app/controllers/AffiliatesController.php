@@ -81,14 +81,13 @@ class AffiliatesController extends BaseController {
                                      Invitation::linkUpInvites($invite_code, $email);
                                    }
                                 }
-
+                                $_id = (string) $user->_id;
+                                $this->set(compact('_id'));
+                            }
                             if(empty($user->invited_by)) {
                                 $user->invited_by = $code;
                             }
                             $user->save(null,array('validate' => false));
-                            $_id = (string) $user->_id;
-                            $this->set(compact('_id'));
-                            }
                     	}
                         $success = $saved;
                         $errors = $user->errors();
