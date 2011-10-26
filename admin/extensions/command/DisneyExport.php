@@ -152,7 +152,9 @@ class DisneyExport extends \lithium\console\Command {
 		
 		if (!empty($this->initial)) {
 			//4th April 2011, 10am
-			$start_date = mktime(10, 0, 0, 4, 1, 2011);
+			//$start_date = mktime(10, 0, 0, 4, 1, 2011);
+			//4th October 2011, 10am
+			$start_date = mktime(10, 0, 0, 10, 4, 2011);
 		} else {
 			$start_date = mktime(0,0,0,$MonthSel,$DaySel - 1,$YearSel);
 		}
@@ -277,7 +279,7 @@ class DisneyExport extends \lithium\console\Command {
 		} else {
 			$day = $this->startDay;
 		}
-		$myFile =  "TOT" . $month . $day . "1.txt";
+		$myFile =  "TOM" . $month . $day . "1.txt";
 		$myFilePath = LITHIUM_APP_PATH . $this->source . $myFile;
 		$fh = fopen($myFilePath, 'wb');
 		if(!empty($infos)) {
@@ -322,25 +324,24 @@ class DisneyExport extends \lithium\console\Command {
 	* @param string $path
 	*/
 	public function transferFile($file, $path) {
-		$host = $this->_server;
 		$connection = ssh2_connect($this->_server, 22);
 		if (! $connection)
-			throw new Exception("Could not connect to $host on port 22.");
+			echo "Could not connect to" . $this->_server . "on port 22.";
 		
 		if(! ssh2_auth_password($connection, $this->_user, $this->_password))
-			throw new Exception("Could not authenticate with username and password.");
+			echo "Could not authenticate with username and password.";
 			
 		$sftp = ssh2_sftp($connection);	
 		$stream = fopen("ssh2.sftp://$sftp" . $this->remote_directory . $file, 'w');
 		if (!$stream)
-			throw new Exception("Could not open file: $file");
+			echo "Could not open file:" . $file;
 
 		$data_to_send = file_get_contents($path . $file);
 		if ($data_to_send === false)
-			throw new Exception("Could not open local file: $file.");
+			echo "Could not open local file:" . $file;
 		
 		if (fwrite($stream, $data_to_send) === false)
-			throw new Exception("Could not send data from file: $file.");
+			echo "Could not send data from file:" . $file;
 	
 		fclose($stream);
 		unlink($path . $file);

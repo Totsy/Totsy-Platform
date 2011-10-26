@@ -8,43 +8,47 @@
 		<?php echo $this->title() ?: 'Totsy, the private sale site for Moms'; ?>
 		<?php echo $this->title() ? '- Totsy' : ''; ?>
 	</title>
-	
+
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
-	
-	<?php echo $this->html->style(array('base_mamapedia.css?v=004', '960.css?v=004', 'jquery_ui_custom/jquery.ui.all.mamapedia.css?v=004'), array('media' => 'screen')); ?>
+
+	<?php echo $this->html->style(array('base.css?v=005', '960.css?v=005', 'jquery_ui_custom/jquery.ui.all.css?v=005'), array('media' => 'screen')); ?>
 
 	<script src="https://www.google.com/jsapi"></script>
 	<script> google.load("jquery", "1.6.1", {uncompressed:false});</script>
 	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
 	<!-- end jQuery / jQuery UI -->
 
-	<?php echo $this->html->script('jquery.uniform.min.js?v=004'); ?>
-	<?php echo $this->html->script('jquery.countdown.min.js?v=004'); ?>
+	<?php echo $this->html->script('jquery.uniform.min.js?v=005'); ?>
+	<?php echo $this->html->script('jquery.countdown.min.js?v=005'); ?>
 	<?php echo $this->scripts(); ?>
 	<meta property="og:site_name" content="Totsy"/>
 	<meta property="fb:app_id" content="181445585225391"/>
 	<meta name="description" content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
 	<meta name="sailthru.date" content="<?=date('r')?>" />
 	<?php
-	 
+
 		if(substr($request->url,0,5) == 'sales' || $_SERVER['REQUEST_URI'] == '/') {
 			$title = "Totsy index. Events.";
-			$tags = 'Sales'; 
+			$tags = 'Sales';
 			if (array_key_exists ('args',$request->params) && isset($request->params['args'][0])){
-				$tags =  $request->params['args'][0]; 
-			}  
+				$tags =  $request->params['args'][0];
+			}
 		} else  {
-			if (isset($event) && isset($item)){
+			if (isset($event) && isset($item)) {
 				$edata = $event->data();
 				$idata = $item->data();
-				$title = $edata['name'] .' - '. $idata['description'];
-				$tags = $edata['name'].', '.implode(', ',$idata['departments']).', '.$idata['category'];
+
+				if(isset($idata['departments'])) {
+					$title = $edata['name'] .' - '. $idata['description'];
+					$tags = $edata['name'].', '.implode(', ',$idata['departments']).', '.$idata['category'];
+				}
+
 				unset($edata, $idata);
-			} else if (isset($event)){ 
+			} else if (isset($event)){
 				$edata = $event->data();
 				$title = $tags = $edata['name'];
 				unset($edata, $idata);
-			} 
+			}
 		}
 	?>
 	<?php if (isset($title) && isset($tags)){ ?>
@@ -82,7 +86,7 @@
 	<!-- end header nav -->
 	<div style="clear:both"></div>
 </div>
-<div style="clear:both"></div>	
+<div style="clear:both"></div>
 <div class="container_16">
     <?php echo $this->content(); ?>
 </div>
@@ -90,7 +94,7 @@
 
 <!-- end container_16 -->
 </div>
-	
+
 	<div id="footer" class="container_16">
 		<?php echo $this->view()->render(array('element' => 'footerNav'), array('userInfo' => $userInfo)); ?>
 	</div>
@@ -118,7 +122,7 @@
 	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 	  })();
 </script>
-	
+
 	<script language="javascript">
 	document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s://www':'://www')+ '.upsellit.com/upsellitJS4.jsp?qs=237268202226312324343293280329277309292309329331334326345325&siteID=6605"><\/sc'+'ript>')
 	</script>
@@ -128,7 +132,7 @@
 			$("input:file, select").uniform();
 			$("#tabs").tabs();
 		});
-	
+
 			$(function () {
 				$(window).scroll(function () {
 					if ($(this).scrollTop() != 0) {
@@ -144,18 +148,18 @@
 					800);
 				});
 			});
-		// end back to top	
+		// end back to top
 	// end tabs
 </script>
-<!-- Sailthru Horizon --> 
-<!-- <script type="text/javascript">
+<!-- Sailthru Horizon -->
+<script type="text/javascript">
     (function() {
-        function loadHorizon() { 
-            var s = document.createElement('script'); 
-            s.type = 'text/javascript'; 
+        function loadHorizon() {
+            var s = document.createElement('script');
+            s.type = 'text/javascript';
             s.async = true;
             s.src = ('https:' == location.protocol ? 'https://dyrkrau635c04.cloudfront.net' : 'http://cdn.sailthru.com') + '/horizon/v1.js';
-            var x = document.getElementsByTagName('script')[0]; 
+            var x = document.getElementsByTagName('script')[0];
             x.parentNode.insertBefore(s, x);
         }
         loadHorizon();
@@ -172,6 +176,5 @@
         };
     })();
 </script>
--->
 </body>
 </html>

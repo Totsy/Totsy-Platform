@@ -5,16 +5,11 @@
 	var item_id = "<?=$item->_id?>";
 </script>
 
-<!-- JS for cart timer. -->
-<script type="text/javascript" src="/js/cart-timer.js"></script>
-<!-- JS for cart timer for individual items. -->
-<script type="text/javascript" src="/js/cart-items-timer.js"></script>
-<!-- JS for cart popup. needs to reference the popupCartItems element above -->
-<script type="text/javascript" src="/js/cart-popup.js"></script>
+<?=$this->html->script(array('cart-timer.js', 'cart-items-timer.js', 'cart-popup.js?v=001'));?>
 
 <?php
 	$close_button_path = "";
-	
+
 	if ($_SERVER['HTTP_HOST']=='mamapedia.totsy.com' || $_SERVER['HTTP_HOST']=='mamapediadev.totsy.com') {
 		$close_button_path = "/img/";
 	} else {
@@ -60,7 +55,6 @@
 	</div>
 </div>
 </div>
-
 <div class="grid_16">
 	<h2 class="page-title gray"><span class="red"><a href="/sales" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a><div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
 	<hr />

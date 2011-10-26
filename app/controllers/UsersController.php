@@ -66,53 +66,8 @@ class UsersController extends BaseController {
 			if ($inviteCheck > 0) {
 				$data['invitation_codes'] = array(static::randomString());
 			}
-			/**
-			* this block handles the invitations.
-			**/
-			if ($invite_code) {
-				$inviter = User::find('first', array(
-					'conditions' => array(
-						'invitation_codes' => array($invite_code)
-				)));
-				if ($inviter) {
-					$invited = Invitation::find('first', array(
-						'conditions' => array(
-							'user_id' => (string) $inviter->_id,
-							'email' => $email
-					)));
 
-					//send notification to inviter that user just registered
-					//this will notify the inviter
-
-					Mailer::send('Invited_Register', $inviter->email);
-
-					if ($inviter->invited_by === 'keyade') {
-						$data['keyade_referral_user_id'] = $inviter->keyade_user_id;
-					}
-					if ($invited) {
-
-						$invited->status = 'Accepted';
-						$invited->date_updated = Invitation::dates('now');
-						$invited->save();
-
-						if ($invite_code != 'keyade') {
-							Invitation::reject($inviter->_id, $email);
-						}
-
-					} else {
-					/**
-					* This block was included because users can pass on their
-					* invite url by mouth @_@
-					**/
-						$invitation = Invitation::create();
-						$invitation->user_id = $inviter->_id;
-						$invitation->email = $email;
-						$invitation->date_accepted = Invitation::dates('now');
-						$invitation->status = 'Accepted';
-						$invitation->save();
-					}
-				}
-			}
+			/* links up inviter with the invitee and sends an email notification */
 
 			Invitation::linkUpInvites($invite_code, $email);
 			switch ($invite_code) {

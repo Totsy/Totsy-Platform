@@ -1,4 +1,11 @@
 <?=$this->html->script(array('jquery.nivo.slider.pack'));?>
+<script src="/js/jquery.tmpl.js" type="text/javascript"></script>
+
+<?=$this->html->script(array('cart-timer.js', 'cart-items-timer.js', 'cart-popup.js?v=001'));?>
+
+<!-- template used for items on cart. jquery.tmpl.js driven -->
+<?=$this->view()->render( array('element' => 'popupCartItems') ); ?>
+
 <script>
 (function($) {
 	$.fn.rotate = function() {
