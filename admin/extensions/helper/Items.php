@@ -111,7 +111,7 @@ class Items extends \lithium\template\Helper {
 				
 				//make mini array of color/description
 				$isurlduplicate = false;
-				$urlcheckminiarray = array($item->color, $item->description);
+				$urlcheckminiarray = array($item->url);
 				
 				if(in_array($urlcheckminiarray, $itemUrlCheck)){
 					$isurlduplicate = true;
@@ -153,7 +153,7 @@ class Items extends \lithium\template\Helper {
 				Vendor Style: $item->vendor_style
 				</td>";
 				$html .= "<td height='100' width='100'><textarea rows='5' cols='20' name='$item->_id' id='$item->_id'>$item->blurb</textarea></td>";
-				$html .= "<td width='30'>$item->enabled";
+				$html .= "<td width='30'>$item->enabled $item->url";
 
 				//check to show flag for duplicate color/description url
 				if($isurlduplicate){
