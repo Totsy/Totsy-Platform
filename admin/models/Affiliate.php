@@ -14,35 +14,32 @@ class Affiliate extends Base {
 			);
 
 	public static function pixelFormating($pixels, $codes){
-			if ( empty($pixels) ){ return array(); }
-			$formatted = array();
-			foreach($pixels as $key=>$pixel){
-				if ($pixel['enable'] == '1' || $pixel['enable'] == 'on'){
-					$temp['enable'] = true;
-				} else {
-					$temp['enable'] = false;
-				}
-				if ($pixel['enable']
-					&& array_key_exists('page', $pixel)
-					&& in_array('/a/', $pixel['page'])) {
-					foreach($codes as $value){
-						$pixel['page'][] = '/a/' . $value;
-					}
-				}
-				$temp['page'] = array_values($pixel['page']);
-				$temp['pixel'] = $pixel['pixel'];
+		if ( empty($pixels) ){ return array(); }
+		$formatted = array();
+		foreach($pixels as $key=>$pixel){
+		    if ($pixel['enable'] == '1' || $pixel['enable'] == 'on'){
+		    	$temp['enable'] = true;
+		    } else {
+		    	$temp['enable'] = false;
+		    }
+		    if ($pixel['enable']
+		    	&& array_key_exists('page', $pixel)
+		    	&& in_array('/a/', $pixel['page'])) {
+		    	foreach($codes as $value){
+		    		$pixel['page'][] = '/a/' . $value;
+		    	}
+		    }
+		    $temp['page'] = array_values($pixel['page']);
+		    $temp['pixel'] = $pixel['pixel'];
 
-				$formatted[] = $temp;
+		    $formatted[] = $temp;
 
-			}
+		}
 		return $formatted;
 	}
 
 	public static function landingPages(){
 		$landing = array();
-
-
-
 	}
 }
 

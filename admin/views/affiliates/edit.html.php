@@ -16,8 +16,8 @@
 <div class="grid_16">
 	<h2 id="page-heading">Affiliate Edit Panel</h2>
 </div>
-
-<div class='grid_3 menu'>
+<div class="clear"></div>
+<div class="grid_3 menu">
 	<table>
 		<thead>
 			<tr>
@@ -35,7 +35,7 @@
 	</table>
 </div>
 <div class="clear"></div>
-<div class="grid_2 box">
+<div class="grid_8 box">
 	<div class='block forms'>
 		<?=$this->form->create(null, array('id' => 'mainForm')); ?>
 			<?php $checked= (($affiliate['active']))? 'checked':'' ?>
@@ -68,7 +68,7 @@
 			<input type='button' name='edit_code' id='edit_code' value='edit code'/><br><br>
 	</div>
 </div><!--end of box-->
-<div class ="grid_13 box">
+<div class ="grid_8 box">
 	<div class='block forms'>
 			<div id ='tabs'>
 				<ul>
@@ -164,11 +164,11 @@
 					$checked = '';
 				}
 			?>
-			<div id='landing_page'><!--start landing_page-->
-					<div id='landing_activate'> Affiliate uses landing pages:
+			<div id="landing_page"><!--start landing_page-->
+					<div id="landing_activate"> Affiliate uses landing pages:
 						<?=$this->form->checkbox('active_landing', array('value'=>'1', 'checked' => $checked)); ?>
 					</div>
-					<div id='landing_panel'><!--start landing_panel-->
+					<div id="landing_panel"><!--start landing_panel-->
 						<br/>
 						<div id='template_panel'><!--start template_panel-->
 								<?=$this->form->hidden('index'); ?>
@@ -255,12 +255,13 @@ $(document).ready(function() {
 		}
 
 		if($('#ActiveLanding').is(':checked')){
-			$('#landing_panel').show();
+			//$('#landing_panel').show();
 		}else{
-			$('#landing_panel').hide();
+			//$('#landing_panel').hide();
 		}
 	});
 
+	/*
 	$(document).ready(function(){
 		$('input[name=active_pixel]').change(function(){
 			if( $('#ActivePixel:checked').val() == 1){
@@ -277,7 +278,7 @@ $(document).ready(function() {
 				$('#landing_panel').hide();
 			}
 		});
-	});
+	});*/
 	//this jquery is for adding/removing pixel entry fields
 	$(document).ready(function(){
 		var counter = Number($('#pixel_count').val()) + 1;
@@ -425,7 +426,7 @@ $(document).ready(function() {
 	});
 </script>
 <script type="text/javascript">
-$('#savePage').click(function(){
+$('#savePage').click (function(){
 	dataString = $('#mainForm').serialize() + '&aid=' + "<?php echo $affiliate['_id']?>";
 	//alert(dataString);
 	$.post('/affiliates/saveLanding', dataString, function(data) {

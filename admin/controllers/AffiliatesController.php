@@ -46,6 +46,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
        
 	   $userCollection = User::collection();
 	   $afs = array();
+	   
        foreach($affiliates as $affiliate){
             $obj_data = $affiliate;
             if(!empty( $obj_data['date_created'] )) {
@@ -81,11 +82,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
 	public function add() {
 		$affiliate = Affiliate::create();
         $info = array();
-
-		$data = $this->request->data;
-		if ( ($data) ) {
-       // $backgrounds = Affiliate::retrieveBackgrounds();
-		$data = $this->request->data;
+       	$data = $this->request->data;
 		if ( ($data) ) {
             $info['active'] = (($data['active'] == '1' || $data['active'] == 'on')) ? true : false;
             $info['name'] = $data['affiliate_name'];
@@ -122,7 +119,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
 
 			$info['created_by'] = $affiliate->createdBy();
 			$info['date_created'] = new MongoDate( strtotime( date('D M d Y') ) );
-
+			//saves the formatted pixel to the collection
 			if( ($affiliate->save($info)) ) {
 			    if ($data['active_landing']) {
 				    $this->redirect( array( 'Affiliates::edit', 'args' => array($affiliate->_id)) );
@@ -134,6 +131,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
 		$sitePages = $this->sitePages;
 		$packages = $this->packages;
 		$templates = $this->templates;
+		
         return compact('sitePages', 'packages', 'templates', 'template');
 	}
 	/**

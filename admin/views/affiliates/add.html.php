@@ -15,7 +15,7 @@
 	<h2 id="page-heading">Affiliate Add Panel</h2>
 </div>
 
-<div class='grid_3 menu'>
+<div class="grid_3 menu">
 	<table>
 		<thead>
 			<tr>
@@ -24,7 +24,7 @@
 		</thead>
 		<tbody>
 			<tr>
-				<td> <?php echo $this->html->link('Create Affiliate', 'affiliates/add'); ?> </td>
+				<td><?php echo $this->html->link('Create Affiliate', 'affiliates/add'); ?> </td>
 			</tr>
 			<tr>
 				<td><?php echo $this->html->link('View/Edit Affiliate', 'affiliates/index' ); ?></td>
@@ -33,10 +33,9 @@
 	</table>
 </div>
 <div class="clear"></div>
-<div class="grid_2 box">
+<div class="grid_5 box">
 	<div class='block forms'>
 		<?=$this->form->create(); ?>
-
 		Activate: <?=$this->form->checkbox('active', array('checked'=>'checked')); ?> <br>
 		Affiliate Level: <?=$this->form->select('level',$packages); ?> <br><br>
 		Affiliate Name:
@@ -49,43 +48,65 @@
 		<input type='button' name='edit_code' id='edit_code' value='edit code'/><br><br>
 	</div>
 </div> <!--end of box-->
-<div class ="grid_13 box">
-	<div class='block forms'>
+<div class ="grid_10 box">
+	<div class="block forms">
 		<div id='tabs'>
 			<ul>
-				<li><a href="#pixel"><span>Pixels</span></a></li>
-				<li><a href="#landing_page"><span>Landing Pages</span></a></li>
+				<li><a href="#pixel">
+					<span>Pixels</span></a>
+				</li>
+				<!--<li><a href="#landing_page"><span>Landing Pages</span></a></li> -->
 			</ul>
-			<div id='pixel'>
-				<div id='pixel_activate'> Affiliate uses pixels: <?=$this->form->checkbox('active_pixel', array('value'=>'1')); ?> </div>
-				<br>
-				<br>
-				<div id='pixel_panel'>
+			<div id="pixel">
+				<div id="pixel_activate"> Affiliate uses pixels: <?=$this->form->checkbox('active_pixel', array('value'=>'1')); ?> </div>
+				<div id="pixel_panel">
+					<br>
 					<h5>Add Pixels</h5>
-					<input type='button' name='add_pixel' value='add pixel'id='add_pixel'/>
-					<input type='button' name='remove_pixel' value='remove pixel' id='remove_pixel'/>
-					<br>
-					<br>
-
-					<div id='pixel_1'>
-						<label> Pixel #1 </label><br>
-						Enable:
-						<?=$this->form->checkbox('pixel[0][enable]', array('value'=>'1', 'checked'=>'checked')); ?> <br>
-						Select Page(s):<br>
-						<?=$this->form->select('pixel[0][page]', $sitePages, array('multiple'=>'multiple', 'size'=>5)); ?><br>
+					<div id="pixel">
 						Pixel:<br>
-						<?=$this->form->textarea('pixel[0][pixel]' , array('rows'=>'10', 'cols' =>'30')); ?>
-					</div>
-					<br>
+						<?=$this->form->textarea('pixel', array('rows'=>10,'cols'=>80)); ?>
+						<br>
+						<input type="button" name="add_pixel" value="add pixel" id="add_pixel"/>
+						<input type="button" name="remove_pixel" value="remove pixel" id="remove_pixel"/>
+						<br>
+						<br>
+						Enable:
+						<?=$this->form->checkbox('pixel[0][enable]', array('value'=>'1', 'checked'=>'checked')); ?> 
+						<br>
+						Select Page(s):
+						<br>
+						<?=$this->form->select('pixel[0][page]', $sitePages, array('multiple'=>'multiple', 'size'=>5)); ?>
+						<br>
+						<br>
+						<div id="upload_panel">
+							<h5 id="uploaded_media">Uploaded Media</h5>
+							<table>
+								<tr valign="top">
+									<td>
+										<div>
+											<div class="fieldset flash" id="fsUploadProgress1">
+												<span class="legend">Upload Status</span>
+											</div>
+											<div style="padding-left: 5px;">
+												<span id="spanButtonPlaceholder1" onclick="isBackground(upload1);"></span>
+												<input id="btnCancel1" type="button" value="Cancel Uploads" onclick="cancelQueue(upload1);" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />												
+											<br />
+											</div>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</div>
+				</div>
 				</div><!--end of pixel panel-->
 			</div><!--end of pixel-->
-			<div id='landing_page'>
-				<div id='landing_activate'> Affiliate uses landing pages:
+			<div id="landing_page" style="display:none">
+				<!-- <div id='landing_activate'> Affiliate uses landing pages:
 					<?=$this->form->checkbox('active_landing', array('value'=>'1')); ?>
-				</div>
-				<div id='landing_panel'>
+				</div> -->
+				<div id="landing_panel">
 					<br/>
-					<div id='template_panel'>
+					<div id="template_panel">
 						<label>Enable </label>
 						<?=$this->form->checkbox('landing_enable', array('value'=>'1', 'checked' => 'checked')); ?><br/>
 
@@ -109,7 +130,7 @@
 		<br>
 		<br>
 	<div class="clear"></div>
-	<div id='submit button' class="grid_2">
+	<div id="submit button" class="grid_2">
 		<div class="grid_2" >
 			<?=$this->form->submit('Create', array('id'=>'create')); ?>
 		</div>
@@ -123,25 +144,18 @@ $(document).ready(function() {
 	$("#tabs").tabs();
 });
 </script>
+
 <script type='text/javascript'>
-		$('#pixel_panel').hide();
-		$('#landing_panel').hide();
-	$(document).ready(function(){
+		$(document).ready(function(){
 		$('#templates').change(function(){
 			template = $(this).val();
 		});
+		
 		$('input[name=active_pixel]').change(function(){
 			if( $('#ActivePixel:checked').val() == 1){
 				$('#pixel_panel').show();
 			}else{
 				$('#pixel_panel').hide();
-			}
-		});
-		$('input[name=active_landing]').change(function(){
-			if( $('#ActiveLanding:checked').val() == 1){
-				$('#landing_panel').show();
-			}else{
-				$('#landing_panel').hide();
 			}
 		});
 
@@ -182,7 +196,7 @@ $(document).ready(function() {
 				return false;
 			}
 
-			$('#pixel_'+counter).remove();
+			$('#pixel_' + counter).remove();
 		});
 	});
 
