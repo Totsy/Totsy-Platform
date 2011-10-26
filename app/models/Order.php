@@ -192,7 +192,8 @@ class Order extends Base {
 					'items' => $items,
 					'avatax' => $avatax,
 					'ship_date' => new MongoDate(Cart::shipDate($order)),
-					'savings' => $savings
+					'savings' => $savings,
+					'processor' => $auth->adapter
 			));
 			Cart::remove(array('session' => Session::key('default')));
 			#Update quantity of items
