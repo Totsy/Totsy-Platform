@@ -147,6 +147,9 @@ class Order extends Base {
 			#Calculate savings
 			$userSavings = Session::read('userSavings');
 			$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
+			#Get CC Infos
+			$cc_encrypt = Session::read('cc_infos');
+			$cc_encrypt['vi'] = Session::read('vi');
 			#Save Order Infos
 			$order->save(array(
 					'total' => $vars['total'],
@@ -167,7 +170,8 @@ class Order extends Base {
 					'items' => $items,
 					'avatax' => $avatax,
 					'ship_date' => new MongoDate(Cart::shipDate($order)),
-					'savings' => $savings
+					'savings' => $savings,
+					'cc_payment' => $cc_encrypt,
 			));
 			Cart::remove(array('session' => Session::key('default')));
 			#Update quantity of items
@@ -211,7 +215,7 @@ class Order extends Base {
 	/**
 	 * Encrypt all credits card informations with MCRYPT and store it in the Session
 	 */
-	public static function creditCardEncrypt ($cc_infos, $user_id,$save_iv_in_session = false) {
+	public static function creditCardEncrypt($cc_infos, $user_id,$save_iv_in_session = false) {
 		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
 		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
 		if ($save_iv_in_session == true) {
