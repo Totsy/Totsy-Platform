@@ -80,25 +80,25 @@ class UsersController extends BaseController {
 							'user_id' => (string) $inviter->_id,
 							'email' => $email
 					)));
-					
+
 					//send notification to inviter that user just registered
-					//this will notify the inviter 
-										
+					//this will notify the inviter
+
 					Mailer::send('Invited_Register', $inviter->email);
-					
+
 					if ($inviter->invited_by === 'keyade') {
 						$data['keyade_referral_user_id'] = $inviter->keyade_user_id;
 					}
 					if ($invited) {
-										
+
 						$invited->status = 'Accepted';
 						$invited->date_updated = Invitation::dates('now');
 						$invited->save();
-						
+
 						if ($invite_code != 'keyade') {
 							Invitation::reject($inviter->_id, $email);
 						}
-						
+
 					} else {
 					/**
 					* This block was included because users can pass on their
@@ -113,7 +113,7 @@ class UsersController extends BaseController {
 					}
 				}
 			}
-			
+
 			Invitation::linkUpInvites($invite_code, $email);
 			switch ($invite_code) {
 				case 'our365':
@@ -182,7 +182,7 @@ class UsersController extends BaseController {
 					if ($saved = $user->save($data)) {
 						$mail_template = 'Welcome_Free_Shipping';
 						$params = array();
-						
+
 						$data = array(
 							'user' => $user,
 							'email' => $user->email
@@ -190,8 +190,8 @@ class UsersController extends BaseController {
 
 						if (isset($user['clear_token'])) {
 							$mail_template = 'Welcome_auto_passgen';
-							$params['token'] = $user['clear_token']; 
-						} 
+							$params['token'] = $user['clear_token'];
+						}
 						Mailer::send($mail_template, $user->email,$params);
 						$name = null;
 						if (isset($data['firstname'])) $name = $data['firstname'];
@@ -247,7 +247,7 @@ class UsersController extends BaseController {
             			$userInfo = Session::read('userLogin');
             			$cookie['user_id'] = $user['_id'];
             			if(array_key_exists('redirect', $cookie) && $cookie['redirect'] ) {
-							$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$_SERVER['HTTP_HOST']));
+							$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$this->request->env('HTTP_HOST')));
 							unset($cookie['redirect']);
 						}
             			Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
@@ -273,34 +273,30 @@ class UsersController extends BaseController {
 
 		return compact('message', 'fbsession', 'fbconfig');
 	}
-	
-	public function mplogin() {
-		$this->_render['layout'] = 'login';
-	}
 
 	protected function autoLogin() {
-	
+
 		$redirect = '/sales';
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 		$result = static::facebookLogin(null, $cookie, $ipaddress);
 		extract($result);
-		
+
 		$fbCancelFlag = false;
-		
+
 		if (array_key_exists('fbcancel', $this->request->query)) {
 			$fbCancelFlag = $this->request->query['fbcancel'];
 		}
-		
+
 		if (!$success) {
 			if (!empty($userfb)) {
-				$self = static::_object();			
+				$self = static::_object();
 				if(!$fbCancelFlag) {
 					$self->redirect('/register/facebook');
 				}
 			}
 		}
-		
+
 		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
 				'conditions' => array('autologinHash' => $cookie['autoLoginHash']),
@@ -580,7 +576,7 @@ class UsersController extends BaseController {
 	 * @return compact
 	 */
 	public function fbregister() {
-	
+
 		$message = null;
 		$user = null;
 		$fbuser = FacebookProxy::api('/me');
@@ -601,18 +597,18 @@ class UsersController extends BaseController {
 
 		return compact('message', 'user', 'fbuser');
 	}
-	
+
 	public function mpregister() {
 		//$message = null;
 		//$user = null;
 		//$fbuser = FacebookProxy::api('/me');
-		
+
 		$user = User::create();
 		if ( !preg_match( '/@proxymail\.facebook\.com/', $fbuser['email'] )) {
 			$user->email = $fbuser['email'];
 			$user->confirmemail = $fbuser['email'];
 		}
-		
+
 		$this->_render['layout'] = 'mamapedia/login';
 	}
 
