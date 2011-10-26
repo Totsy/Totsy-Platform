@@ -64,6 +64,30 @@ Processor::config(array(
 		'development' => $test,
 		'local' => $test
 	),
+	'authorizenet' => array(
+		'adapter' => 'AuthorizeNet',
+		'login' => '8M2rfU63AKzX',
+		'key' => '2J6978WzN6WV6jb7',
+		'debug' => false,
+		'gateway' => 'live',
+		'connection' => array('classes' => array('socket' => 'lithium\net\socket\Curl')),
+		'filters' => array(
+			'alwaysProcessAdapter' => true,
+			'adapter' => $adapterFilters['authorizenet']
+		)
+	),
+	'authorizenet-test' => array(
+		'adapter' => 'AuthorizeNet',
+		'login' => '7uXvS44q',
+		'key' => '5z4X93s7cq4P2tEQ',
+		'debug' => false,
+		'gateway' => 'test',
+		'connection' => array('classes' => array('socket' => 'lithium\net\socket\Curl')),
+		'filters' => array(
+			'alwaysProcessAdapter' => true,
+			'adapter' => $adapterFilters['authorizenet']
+		)
+	),
 	'local' => $test,
 	'test' => $test
 ));
