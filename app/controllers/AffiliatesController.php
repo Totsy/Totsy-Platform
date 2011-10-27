@@ -117,6 +117,13 @@ class AffiliatesController extends BaseController {
 		$urlredirect = '/sales';
 		$cookie = Session::read('cookieCrumb',array('name'=>'cookie'));
 		$ipaddress = $this->request->env('REMOTE_ADDR');
+		switch($this->request->env("HTTP_HOST")) {
+		    case "mamapedia.totsy.com":
+		        $affiliate = "mamasource";
+		        break;
+		    default:
+		        break;
+		}
 		if (($affiliate)) {
 			$pixel = Affiliate::getPixels('after_reg', $affiliate);
 			$gdata = $this->request->query;

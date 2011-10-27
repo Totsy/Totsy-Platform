@@ -51,6 +51,7 @@ class UsersController extends BaseController {
 		if($cookie && preg_match('(/a/)', $cookie['landing_url'])){
 			$this->redirect($cookie['landing_url']);
 		}
+
 		if (isset($data) && $this->request->data) {
 			$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
 			$data['email'] = strtolower($this->request->data['email']);
