@@ -85,7 +85,8 @@ class UsersController extends BaseController {
 		if ($referer['host']==$this->request->env('HTTP_HOST') && preg_match('(/sale/)',$referer['path'])){
 			Session::write('landing',$referer['path'],array('name'=>'default'));
 		}
-		unset($referer);
+
+
 		if (isset($data) && $this->request->data) {
 			$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
 			$data['email'] = strtolower($this->request->data['email']);
