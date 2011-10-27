@@ -8,6 +8,11 @@ class OrdersControllerMock extends \app\controllers\OrdersController {
 
 	public $redirect;
 
+	public function _init() {
+		parent::_init();
+		$this->_classes['order'] = 'app\tests\mocks\models\OrderMock';
+	}
+
 	public function redirect($url, array $options = array()) {
 		$this->redirect = func_get_args();
 	}

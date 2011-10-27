@@ -45,8 +45,9 @@ class ProcessorMock extends \li3_payments\payments\Processor {
 	}
 
 	public static function process($name, $amount, Account $pmt, array $options = array()) {
+		$adapter = static::_adapterFilter(true, __FUNCTION__, get_defined_vars());
 		$name = __FUNCTION__;
-		static::${$name} = func_get_args();
+		static::${$name} = func_get_args() + compact('adapter');
 
 		return new TransactionResponse(array(
 			'key' => 'transaction id',
@@ -55,8 +56,9 @@ class ProcessorMock extends \li3_payments\payments\Processor {
 	}
 
 	public static function authorize($name, $amount, Account $pmt, array $options = array()) {
+		$adapter = static::_adapterFilter(true, __FUNCTION__, get_defined_vars());
 		$name = __FUNCTION__;
-		static::${$name} = func_get_args();
+		static::${$name} = func_get_args() + compact('adapter');
 
 		return new TransactionResponse(array(
 			'key' => 'transaction id',
