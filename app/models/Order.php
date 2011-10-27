@@ -62,7 +62,6 @@ class Order extends Base {
 				'state'     => $vars['billingAddr']['state'],
 				'zip'       => $vars['billingAddr']['zip'],
 				'country'   => $vars['billingAddr']['country']
-
 			))
 		));
 

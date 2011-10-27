@@ -19,6 +19,7 @@ use lithium\util\Validator;
 use MongoDate;
 use MongoId;
 use app\extensions\Mailer;
+use app\extensions\AvaTax;
 
 /**
  * The Orders Controller
@@ -301,7 +302,7 @@ class OrdersController extends BaseController {
 		#Check Cart Validty
 		$cart = Cart::active(array(
 				'fields' => $fields,
-				'time' => '-0min'
+				'time' => 'now'
 		));
 		$shipDate = Cart::shipDate($cart);
 		foreach($cart as $item){

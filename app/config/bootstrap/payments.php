@@ -17,6 +17,9 @@ $adapterFilters = array(
 		}
 	},
 	'authorizenet' => function($function, $params, $name) {
+		if (!Environment::is('production') && $name == 'authorizenet') {
+			return false;
+		}
 		$options = $params['options'];
 
 		$processor = isset($options['processor']) ? $options['processor'] : false;
@@ -69,7 +72,7 @@ Processor::config(array(
 		'login' => '8M2rfU63AKzX',
 		'key' => '2J6978WzN6WV6jb7',
 		'debug' => false,
-		'gateway' => 'live',
+		'endpoint' => 'live',
 		'connection' => array('classes' => array('socket' => 'lithium\net\socket\Curl')),
 		'filters' => array(
 			'alwaysProcessAdapter' => true,
@@ -81,7 +84,7 @@ Processor::config(array(
 		'login' => '7uXvS44q',
 		'key' => '5z4X93s7cq4P2tEQ',
 		'debug' => false,
-		'gateway' => 'test',
+		'endpoint' => 'test',
 		'connection' => array('classes' => array('socket' => 'lithium\net\socket\Curl')),
 		'filters' => array(
 			'alwaysProcessAdapter' => true,
