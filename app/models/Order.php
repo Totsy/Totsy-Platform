@@ -150,6 +150,7 @@ class Order extends Base {
 			#Get CC Infos
 			$cc_encrypt = Session::read('cc_infos');
 			$cc_encrypt['vi'] = Session::read('vi');
+			unset($cc_encrypt['valid']);
 			#Save Order Infos
 			$order->save(array(
 					'total' => $vars['total'],
