@@ -153,37 +153,6 @@ class Order extends Base {
 			if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible' && ($vars['subTotal'] >= 50.00)) {
 				$order->discount = 10.00; 
 				$services = array_merge($services, array("10off50"));
-			#Shipping Method - By Default UPS
-			$shippingMethod = 'ups';
-			#Calculate savings
-			$userSavings = Session::read('userSavings');
-			$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
-			#Save Order Infos
-			$order->save(array(
-					'total' => $vars['total'],
-					'subTotal' => $vars['subTotal'],
-					'handling' => $vars['shippingCost'],
-					'overSizeHandling' => $vars['overShippingCost'],
-					'handlingDiscount' => $vars['shippingCostDiscount'],
-					'overSizeHandlingDiscount' => $vars['overShippingCostDiscount'],
-					'user_id' => (string) $user['_id'],
-					'tax' => (float) $avatax['tax'],
-					'card_type' => $card->type,
-					'card_number' => substr($card->number, -4),
-					'date_created' => static::dates('now'),
-					'authKey' => $authKey,
-					'billing' => $vars['billingAddr'],
-					'shipping' => $vars['shippingAddr'],
-					'shippingMethod' => $shippingMethod,
-					'items' => $items,
-					'avatax' => $avatax,
-					'ship_date' => new MongoDate(Cart::shipDate($order)),
-					'savings' => $savings
-			));
-			Cart::remove(array('session' => Session::key('default')));
-			#Update quantity of items
-			foreach ($cart as $item) {
-				Item::sold($item->item_id, $item->size, $item->quantity);
 			}
 			if(!empty($services)) {
 				$order->service = $services;
