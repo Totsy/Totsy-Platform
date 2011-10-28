@@ -95,7 +95,7 @@ tinyMCE.init({
 					</div><br>
 					<div id="voucher_details" <?php if(empty($item->voucher)) echo 'style="display:none"'; ?>>
 						<?=$this->form->label('Maximum Use by User'); ?>
-						<?=$this->form->select('voucher_max_use',array(1,2,3),array('value'=> $item->voucher_max_use));?><br>
+						<?=$this->form->select('voucher_max_use',array('1' => '1','2' => '2','3' => '3'),array('value'=> $item->voucher_max_use));?><br>
 						<?php
 							if(!empty($event->voucher_end_date->sec)) {
 								$end_date =  date('m/d/Y H:i', $event->voucher_end_date->sec);

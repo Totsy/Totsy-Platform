@@ -48,6 +48,7 @@ class ItemsController extends BaseController {
 	 * @return array
 	 */
 	public function edit($id = null) {
+		$itemsCollection = Item::Collection();
 		$item = Item::find('first', array('conditions' => array('_id' => $id)));
 		$event = Event::find('first', array('conditions' => array('_id' => $item->event[0])));
 
@@ -74,6 +75,7 @@ class ItemsController extends BaseController {
 			}
 		}
 		if ($this->request->data) {
+			echo 'test';
 			$alternate_images = array();
 			foreach ($this->request->data as $key => $value) {
 				if (substr($key, 0, 10) == 'alternate-' ) {
@@ -115,6 +117,15 @@ class ItemsController extends BaseController {
 				$data['details']['no size'] = count($data['vouchers']) ;
 				unset($data['voucher_overwrite']);
 				unset($data['upload_file']);
+			}
+			unset($data['voucher_overwrite']);
+			if(empty($this->request->data['voucher']) && !empty($item->voucher)) {
+				$itemsCollection->update(array('_id' => $item->_id), array('$unset' => array("voucher" => 1)));
+				$itemsCollection->update(array('_id' => $item->_id), array('$unset' => array("voucher_website" => 1)));
+				$itemsCollection->update(array('_id' => $item->_id), array('$unset' => array("voucher_max_use" => 1)));
+				$itemsCollection->update(array('_id' => $item->_id), array('$unset' => array("voucher_fine_print" => 1)));
+				$itemsCollection->update(array('_id' => $item->_id), array('$unset' => array("voucher_end_date" => 1)));
+				$itemsCollection->update(array('_id' => $item->_id), array('$unset' => array("vouchers" => 1)));
 			}
 			if ($item->save($data)) {
 				$this->redirect(array(

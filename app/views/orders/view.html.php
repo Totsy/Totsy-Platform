@@ -93,14 +93,29 @@
 													<td style="padding:5px;" title="item">
 														<?=$this->html->image("$image", array('width' => "60", 'height' => "60", 'style' => "margin:2px; padding:2px; background:#fff; border:1px solid #ddd;")); ?>
 													</td>
-													<td style="padding:5px" title="description">
-														<?=$item['description']?>
+													<td style="padding:5px; line-height:15px !important" title="description">
+														<b><?=$item['description']?></b>
 														<br>
-														<?php if(!empty($item['color'])): ?>
-														Color: <?=$item['color']?>
-														<br>
-														<?php endif; ?>
-														Size: <?=$item['size']?>
+														<?php if(!empty($item['voucher'])): ?>
+                                                        	<a href="<?=$item['voucher_website']?>"><?=$item['voucher_website']?></a><br />
+                                                        	<div>
+                                                        			<span style="float:left;">Vouchers Code:<br />(Exp: <?=substr($item['voucher_end_date'], 0, 10);?>)</span>
+                                                        			<span style="text-align:'top';">
+                                                        			<ul style="list-style-type:none; float:left">
+                                                        			 	<?php foreach($item['voucher_code'] as $code): ?>
+                                                        			 		<li><span style="color: red;"><?=$code?></span></li>
+                                                        			 	<?php endforeach; ?>
+                                                        			 </ul>
+                                                        			</span>
+                                                        	</div>
+                                                      		<br>
+                                                   		<?php else: ?><br>
+															<?php if(!empty($item['color'])): ?>
+																Color: <?=$item['color']?>
+																<br>
+															<?php endif; ?>
+															Size: <?=$item['size']?>
+														<?php endif ?>
 													</td>
 													<td style="padding:5px; color:#009900;" title="price">
 														$<?=number_format($item['sale_retail'],2); ?>
