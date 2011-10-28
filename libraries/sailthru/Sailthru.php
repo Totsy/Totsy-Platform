@@ -30,7 +30,7 @@ abstract class Sailthru {
   	}
   	
   	public static function __callStatic($name,$args){
-  		call_user_func_array(array(static::$_client,$name),$args);
+  		return call_user_func_array(array(static::$_client,$name),$args);
   	}
 }
 
