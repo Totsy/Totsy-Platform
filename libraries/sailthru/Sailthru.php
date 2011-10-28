@@ -34,10 +34,9 @@ abstract class Sailthru {
   	}
   	
   	public static function getJobStatus($job_id){
-  		$return = self::apiGet('job',array(
+  		return self::apiGet('job',array(
   						'format' => 'json',
   						'job_id' => $job_id));
-		return json_decode($return,true);
   	}
 }
 
