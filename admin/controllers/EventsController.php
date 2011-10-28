@@ -517,6 +517,11 @@ class EventsController extends BaseController {
 								$eventItems[$row - 1]['related_items'][] = trim($val);
 								$eventItems[$row - 1]['related_items'] = array_unique($eventItems[$row - 1]['related_items']);
 							}
+						} else if (($heading[$col] === "no size") || ($heading[$col] === "total_quantity")) {
+							#Vouchers Case
+							if (!empty($val) || $val == '0') {
+								$eventItems[$row - 1][$heading[$col]] = $val;
+							}
 						} else {
 							if (!empty($val)) {
 								$eventItems[$row - 1][$heading[$col]] = $val;
@@ -526,7 +531,6 @@ class EventsController extends BaseController {
 				}
 			}
 		}
-
 		foreach ($eventItems as $itemDetail) {
 			$i=0;
 			$itemAttributes = array_diff_key($itemDetail, array_flip($standardHeader));
@@ -566,8 +570,13 @@ class EventsController extends BaseController {
 
 			$newItem = array_merge(Item::castData($itemDetail), Item::castData($details));
 			$newItem['vendor_style'] = (string) $newItem['vendor_style'];
-
-			if ((array_sum($newItem['details']) > 0) && $item->save($newItem)) {
+			
+			#Valid Item with no size as size and 0 as value
+			$valid = false;
+			if((array_sum($newItem['details']) > 0) || ((count($newItem['details']) == 1) && ($newItem['details']['no size'] == '0'))) {
+				$valid = true;
+			}
+			if (($valid) && $item->save($newItem)) {
 				$items[] = (string) $item->_id;
 
 				//related items will be added later, after ihe items in this event actually HAVE unique ID's
@@ -592,7 +601,6 @@ class EventsController extends BaseController {
 			}
 			$i++;
 		}
-
 		$itemsCollection = Item::Collection();
 
 		foreach ( $related_items as $key => $value ) {
