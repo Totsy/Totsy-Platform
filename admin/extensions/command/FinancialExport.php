@@ -47,10 +47,22 @@ class FinancialExport extends Base  {
 
 	/**
 	 * Will generate xml of orders going back to Nov 1 - one day before the present
+	 * defaults to `false`
 	 *
 	 * @var string
 	 */
 	public $historical = 'false';
+	/**
+	 * Select what to process.  Possible choices:
+	 * - 'summary' : processes order summary
+	 * - 'detail' : processes order details
+	 * - 'credit' : process credit details
+	 * - 'update' : process order summary updates
+	 * - 'all' : processess all the above (default)
+	 *
+	 * @var string
+	 */
+	public $process = "all";
 
 	/**
 	 * The summary header to be used in the summary CSV export file.
@@ -119,7 +131,6 @@ class FinancialExport extends Base  {
 	protected $creditHeader = array(
 	    '_id',
 	    'customer_id',
-	    'credit_type',
 	    'description',
 	    'credit_amount',
 	    'issued_date'
@@ -168,10 +179,38 @@ class FinancialExport extends Base  {
 	protected $creditDetailFile = "";
 	protected $xml = null;
 	/**
+	* Order fields to return in a query
+	**/
+	protected $fields = array(
+			'billing',
+			'authKey',
+			'card_type',
+			'auth_confirmation',
+			'auth_error',
+			'handling',
+			'items',
+			'order_id',
+			'overSizeHandling',
+			'subTotal',
+			'total',
+			'date_created',
+			'promo_code',
+			'promo_discount',
+			'credit_used',
+			'user_id',
+			'ship_date',
+			'ship_records',
+			'tax',
+			'payment_date',
+			'service',
+			'shipping'
+		);
+	/**
 	 * Find all the orders that haven't been shipped which have stock status.
 	 */
 	public function run() {
 		Environment::set($this->env);
+		MongoCursor::$timeout = 100000;
 		$this->tmp = LITHIUM_APP_PATH . $this->tmp;
 		/**
 		 * The query was timing out without an index running locally on a MBP. Although this won't be an
@@ -197,13 +236,14 @@ class FinancialExport extends Base  {
             /**
              * Setup filenames for the order summary and epxort functionality.
             */
-		    $this->orderSummaryFile = $this->tmp . 'OrdSummary-May_2011.xml';
-		    $this->orderDetailFile = $this->tmp . 'OrdDetail-May_2011.xml';
-		    $this->creditDetailFile = $this->tmp . 'CredDetail-History.xml';
+		    $this->orderSummaryFile = $this->tmp . 'OrdSummary_May_2011.xml';
+		    $this->orderDetailFile = $this->tmp . 'OrdDetail_May_2011.xml';
+		    $this->creditDetailFile = $this->tmp . 'CredDetail_History.xml';
+		    $this->orderUpdateFile = $this->tmp . 'OrdUpdate_Aug-Oct_24_2011.xml';
 		    $this->log("Retrieving Historical Data");
         } else {
-           $yesterday_min = mktime(0,0,0,date('m'),date('d') - 1,date('Y'));
-           $yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
+           $yesterday_min = mktime(0,0,0,date('m'),26,date('Y'));
+           $yesterday_max = mktime(23,59,59,date('m'),26,date('Y'));
             $orderConditions = array(
                 'date_created' => array(
                     '$gte' => new MongoDate($yesterday_min),
@@ -216,38 +256,34 @@ class FinancialExport extends Base  {
             $this->orderSummaryFile = $this->tmp . 'OrdSummary_' . $this->time . '.xml';
             $this->orderDetailFile = $this->tmp . 'OrdDetail_' . $this->time . '.xml';
             $this->creditDetailFile = $this->tmp . 'CredDetail_' . $this->time . '.xml';
+            $this->orderUpdateFile = $this->tmp . 'OrdUpdate_' . $this->time . '.xml';
             $this->log("Retrieving Daily Data");
         }
 
-		$fields = array(
-			'billing',
-			'authKey',
-			'card_type',
-			'auth_confirmation',
-			'auth_error',
-			'handling',
-			'items',
-			'order_id',
-			'overSizeHandling',
-			'subTotal',
-			'total',
-			'date_created',
-			'promo_code',
-			'promo_discount',
-			'credit_used',
-			'user_id',
-			'ship_date',
-			'ship_records',
-			'tax',
-			'payment_date',
-			'service',
-			'shipping'
-		);
-
-		$this->orders = Order::collection()->find($orderConditions, $fields);
-		$this->_orderSummaryReport();
-		$this->_orderDetailReport();
-		$this->_orderCreditReport();
+		$this->orders = Order::collection()->find($orderConditions, $this->fields);
+		switch(strtolower(trim($this->process))) {
+            case "summary":
+                $this->_orderSummaryReport();
+                 break;
+            case "detail":
+		        $this->_orderDetailReport();
+                 break;
+            case "credit":
+		        $this->_orderCreditReport();
+                 break;
+            case "update":
+                $this->_updateOrderSummaryReport();
+                 break;
+            case "all" :
+                $this->_orderSummaryReport();
+                $this->_orderDetailReport();
+                $this->_orderCreditReport();
+                $this->_updateOrderSummaryReport();
+                 break;
+            default:
+                echo "Invalid input. For help type : li3 help finanical-export\n";
+                break;
+		}
 	}
 
 	public function _orderSummaryReport(){
@@ -412,6 +448,9 @@ class FinancialExport extends Base  {
 	public function _orderDetailReport(){
 	    $orderDetails = array();
 	    $count = 0;
+
+	    //Holds the which line items are already in the file
+	    $alreadyIn = array();
 	    while ($this->orders->hasNext()) {
             $order = $this->orders->getNext();
             ++$count;
@@ -420,6 +459,11 @@ class FinancialExport extends Base  {
                 $itemRecord = Item::collection()->findOne(array('_id' => new MongoId($item['item_id'])));
                 foreach ($this->itemUnsetKey as $key) {
                     unset($item[$key]);
+                }
+                if (!in_array($item['_id'], $alreadyIn)) {
+                    $alreadyId[] = $item['_id'];
+                } else {
+                    continue;
                 }
 
                 if (empty($item['color'])) {
@@ -433,7 +477,6 @@ class FinancialExport extends Base  {
                 }
                 if (array_key_exists('sku_details', $itemRecord)) {
                     if (strpos($item['size'], "\n")) {
-
                         $item['sku'] = $itemRecord['sku_details'][$item['size']];
                     } else {
                         $size = preg_replace("/\s(or)\s/"," or\n", $item['size']);
@@ -486,7 +529,7 @@ class FinancialExport extends Base  {
                 $this->createXMLDoc('order_detail', $item, $this->orderDetailFile);
             }
 		}
-		var_dump($count);
+		$this->log("Processed $count records");
 		$this->xml->asXML($this->orderDetailFile);
 	    $this->xml = null;
 	}
@@ -494,15 +537,15 @@ class FinancialExport extends Base  {
 	public function _orderCreditReport(){
 	    $creditDetails = array();
 	    if ($this->historical == 'true') {
-	        $yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
+	        $yesterday_max = mktime(23,59,59,date('m'),19,date('Y'));
 	         $conditions = array( '$or' => array(
                array( 'date_created' => array(
-                    '$gte' => new MongoDate(strtotime('Aug 1, 2010')),
+                    '$gte' => new MongoDate(strtotime('Nov 1, 2010')),
                     '$lte' => new MongoDate($yesterday_max))
                     ),
                 array(
                 'created' => array(
-                    '$gte' => new MongoDate(strtotime('Aug 1, 2010')),
+                    '$gte' => new MongoDate(strtotime('Nov 1, 2010')),
                     '$lte' => new MongoDate($yesterday_max))
                 )
             ));
@@ -547,7 +590,9 @@ class FinancialExport extends Base  {
                 if (!array_key_exists('reason', $credit))  {
                     $credit['description'] = "none";
                 } else {
-                     $credit['description'] = trim($credit['description']);
+                    $stringtoArray =  str_word_count($credit['description'],2, "0123456789()!.?@+");
+                    $description = implode(' ', $stringtoArray);
+                     $credit['description'] = utf8_encode($description);
                 }
                 $userCredit = $this->sortArrayByArray($credit, $this->creditHeader);
                 $userCredit = $this->removeStrayKeys($userCredit, $this->creditHeader);
@@ -562,6 +607,193 @@ class FinancialExport extends Base  {
 	    $this->xml = null;
 
     }
+
+    public function _updateOrderSummaryReport(){
+        if ($this->historical == 'true') {
+	        $yesterday_max = mktime(23,59,59,date('m'),24,date('Y'));
+	         $conditions = array( 'created_date' => array(
+                    '$gte' => new MongoDate(strtotime('Aug 1, 2010')),
+                    '$lte' => new MongoDate($yesterday_max)
+                    ));
+	    } else {
+	        $yesterday_min = mktime(0,0,0,date('m'),26,date('Y'));
+            $yesterday_max = mktime(23,59,59,date('m'),26,date('Y'));
+            $conditions = array('created_date' => array(
+                    '$gte' => new MongoDate($yesterday_min),
+                    '$lte' => new MongoDate($yesterday_max)
+                    ));
+	    }
+	   $ordersShipped = OrderShipped::collection();
+	   $updates = $ordersShipped->find($conditions,array('OrderNum' => true, '_id' => false));
+	   $orderids = array();
+	   foreach($updates as $id) {
+	        $id = $id['OrderNum'];
+	        $index = strpos($id, '-');
+            if ($index) {
+                $orderids[] = substr($id, 0 , $index);
+            } else {
+                $orderids[] = $id;
+            }
+
+	   }
+	   $this->orders = Order::collection()->find(array('order_id' => array('$in' => array_unique($orderids))), $this->fields);
+
+	   $updateSummary = array();
+	    while ($this->orders->hasNext()){
+	           $order = $this->orders->getNext();
+                $orderItems = $order['items'];
+                if (array_key_exists('authKey', $order)) {
+                   $order['authKey'] = $order['authKey'];
+                } else {
+                   $order['authKey'] = "none";
+                }
+
+                if (array_key_exists('card_type', $order)) {
+                   $order['payment_type'] = $order['card_type'];
+                } else {
+                    $order['payment_type'] = "none";
+                }
+                if (array_key_exists('firstname', $order['billing'])) {
+                    $order['billing_name'] = $order['billing']['firstname'] . " " . $order['billing']['lastname'];
+                } else {
+                    $order['billing_name'] = '';
+                }
+                if (array_key_exists('address', $order['billing'])) {
+                    $order['billing_address'] = $order['billing']['address'];
+                } else {
+                    $order['billing_address'] = '';
+                }
+                if (array_key_exists('address_2', $order['billing'])) {
+                    $order['billing_address2'] = $order['billing']['address_2'];
+                } else {
+                    $order['billing_address2'] = '';
+                }
+                if (array_key_exists('city', $order['billing'])) {
+                    $order['billing_city'] = $order['billing']['city'];
+                } else {
+                    $order['billing_city'] = '';
+                }
+                if (array_key_exists('state', $order['billing'])) {
+                    $order['billing_state'] = $order['billing']['state'];
+                } else {
+                    $order['billing_state'] = '';
+                }
+                if (array_key_exists('zip', $order['billing'])) {
+                    $order['billing_zip'] = $order['billing']['zip'];
+                } else {
+                    $order['billing_zip'] = '';
+                }
+                $order['order_date'] = date('m/d/Y', $order['date_created']->sec);
+                if (!empty($order['payment_date'])) {
+                    $order['payment_date'] = date('m/d/Y',$order['payment_date']->sec);
+                } else {
+                    $order['payment_date'] = 0;
+                }
+                if (array_key_exists('ship_date', $order)) {
+                    $order['estimated_ship_date'] =
+                        (is_int($order['ship_date'])) ? date('m/d/Y', $order['ship_date']) : date('m/d/Y', $order['ship_date']->sec);
+                } else {
+                    $order['estimated_ship_date'] = 0;
+                }
+                $order['net_shipping_amt'] = (float) $order['subTotal'] + (float) $order['handling'];
+                if (array_key_exists('overSizeHandling', $order)) {
+                    $order['net_shipping_amt'] += (float) $order['overSizeHandling'];
+                }
+                $order['gross_shipping_amt'] = $order['net_shipping_amt'];
+                if (array_key_exists('service', $order)) {
+                    if (in_array('freeshipping', $order['service'])){
+                        $order['service'] = 'freeshipping';
+                        $order['gross_shipping_amt'] -= 7.95;
+                    } else if(in_array('10off50', $order)) {
+                        $order['service'] = '10off50';
+                         $order['gross_shipping_amt'] -= 10;
+                    }else {
+                        $order['service'] = "none";
+                    }
+                } else {
+                    $order['service'] = "none";
+                }
+                if (array_key_exists('promo_code', $order)) {
+                    $promocode = Promocode::find('first', array('conditions' => array('code' => new MongoRegex("/" . $order['promo_code'] . "/i"))));
+                    $order['promo_type'] = $promocode['type'];
+                    $order['promo-code_amt'] = $promocode['discount_amount'];
+                }else {
+                    $order['promo_type'] = "";
+                    $order['promo-code_amt'] = "";
+                }
+                /*
+                * Grab credit information
+                */
+                if (array_key_exists('credit_used', $order)){
+                    $order['gross_shipping_amt'] += (array_key_exists('credit_used', $order)) ? $order['credit_used']:0;
+                    $order['gross_shipping_amt'] += (array_key_exists('promo_discount', $order)) ? $order['promo_discount']:0;
+                }
+                /*
+                * Get credit, promocodes,  and oversize handling information
+                */
+                foreach ($order as $key => $value) {
+                    $checkList = array('credit_used', 'promo_code', 'promo_discount', 'overSizeHandling');
+                    foreach ($checkList as $value) {
+                        if (empty($order["$value"])) {
+                            $order["$value"] = 0;
+                        }
+                    }
+                    if (is_array($value) || in_array($key, $this->orderUnsetKey)) {
+                        unset($order[$key]);
+                    }
+                }
+                // Check if this order has a 'shipped' record
+                $shipRecord = $ordersShipped->findOne(array('$or' => array(
+                    array('OrderNum' => $order['order_id'])
+                )));
+                if (array_key_exists('ship_records', $order)) {
+                    $order['ship_records'] = "Yes";
+                } else {
+                    $order['ship_records'] = "No";
+                }
+
+                $order['shipping_name'] = $order['shipping']['firstname'] . ' ' . $order['shipping']['lastname'];
+                $address2 = (array_key_exists('address_2',$order['shipping']))?$order['shipping']['address_2'] :'';
+                $order['shipping_address'] = $order['shipping']['address'];
+                if (!empty($address2)) {
+                    $order['shipping_address2'] = $address2;
+                } else {
+                     $order['shipping_address2'] = "";
+                }
+                $order['shipping_city'] = $order['shipping']['city'];
+                $order['shipping_state'] = $order['shipping']['state'];
+                $order['shipping_zip'] = $order['shipping']['zip'];
+                unset($order['shipping']);
+
+                if ($shipRecord) {
+                    $order['actual_ship_date'] = date("m/d/Y", $shipRecord['ShipDate']->sec);
+                } else {
+                    $order['actual_ship_date'] = 0;
+                }
+                if (array_key_exists('auth_confirmation', $order)) {
+                    $order['auth_confirmation'] = $order['auth_confirmation'];
+                } else {
+                    $order['auth_confirmation'] = "none";
+                }
+                if (array_key_exists('auth_error', $order) ) {
+                    if (is_array($order['auth_error'])){
+                        $order['auth_error'] = implode("/", $order['auth_error']);
+                    } else {
+                        $order['auth_error'] = $order['auth_error'];
+                    }
+                } else {
+                    $order['auth_error'] = "none";
+                }
+                $order = $this->sortArrayByArray($order, $this->summaryHeader);
+                $order = $this->removeStraykeys($order, $this->summaryHeader);
+                $this->log("Adding $order[order_id] to order update summary");
+                $this->createXMLDoc('order_summary', $order, $this->orderUpdateFile);
+                $this->log("Finish adding $order[order_id] to order update summary");
+	    }
+	    $this->xml->asXML($this->orderUpdateFile);
+	    $this->xml = null;
+	    $this->orders->rewind();
+	}
 
 	/**
 	 * Sort an array by a hearder
@@ -581,7 +813,7 @@ class FinancialExport extends Base  {
 	 * removes any key not in the hearder
 	 * @param
 	 */
-	public function removeStrayKeys($array, $orderArray){
+	private function removeStrayKeys($array, $orderArray){
 	    $keys = array_keys($array);
 	    $unwantedKeys = array_diff($keys, $orderArray);
 	    foreach($unwantedKeys as $key) {
@@ -589,30 +821,23 @@ class FinancialExport extends Base  {
 	    }
 	    return $array;
 	}
+
 	/**
 	* Creates XML from data passed in
 	* @param string $type type of information: used for the root tags of the xml file
 	* @param array $records multidimensional array holding the records to converted to xml
 	* @param string $filename name of the xm file
 	**/
-	public function createXMLDoc($type, $record, $filename) {
+	private function createXMLDoc($type, $record, $filename) {
 	    if ($this->xml == null) {
 	        $this->xml = new SimpleXMLElement("<?xml version='1.0' encoding='utf-8'?><$type></$type>");
 	    }
 
-	 /*   if (file_exists($filename) && (filesize($filename))) {
-            $this->xml = simplexml_load_file($filename);
-        } else {
-            $this->xml = new SimpleXMLElement("<$type></$type>");
-        } */
-	   // foreach($records as $record) {
 	        $recordTag = $this->xml->addChild('record');
 	        foreach($record as $key => $value) {
 	            //SimpleXMLElement doesn't like ampersand for some reason so I am replacing it with 'and'
 	           $record[$key] = preg_replace('/&/','and',$record[$key]);
 	            $recordTag->addChild($key, $record[$key]);
 	        }
-	  //  }
-	  //  clearstatcache();
 	}
 }
