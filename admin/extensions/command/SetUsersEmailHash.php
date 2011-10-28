@@ -8,7 +8,7 @@ use admin\models\User;
 /**
  * Make a check for a normal transaction email.
  */
-class SailThruTest extends \lithium\console\Command {
+class SetUsersEmailHash extends \lithium\console\Command {
 	
 	/**
 	 * The environment to use when running the command. 'production' is the default.
@@ -34,9 +34,18 @@ class SailThruTest extends \lithium\console\Command {
 	public $sleep_after = 1000;
 	
 	/**
+	 * Directory of tmp files.
+	 *
+	 * @var string
+	 */
+	public $tmp = '/resources/totsy/tmp/';
+	
+	/**
 	 * Instances
 	 */
 	public function run() {
+		Logger::info("User's email hash setter ");
+		
 		Environment::set($this->env);
 		
 		$arguments = array(
