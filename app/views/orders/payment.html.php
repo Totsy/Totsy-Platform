@@ -63,7 +63,7 @@ var paymentForm = new Object();
     		$("#paymentForm").validationEngine('init', { promptPosition : "centerRight", scroll: false } );      		
     		    		    		    		
     		$.each(	paymentForm.form, function(i, field) {	
-    		    if(	field.value=="" && 
+    		    if(	field.value=="" &&
     		    	field.name!=="address2" && 
     		    	field.name!=="opt_submitted" && 
     		    	field.name!=="opt_shipping" && 
@@ -71,17 +71,19 @@ var paymentForm = new Object();
     		    	field.name!=="card_valid" &&
     		    	field.name!=="opt_save"
     		    	) {
-    		    	
+    		    	    		    	
     		 		if(set_bubble==false) {   
     		 			$('#' + field.name + "").validationEngine('showPrompt','*This field is required', '', true);
     		 			$('#' + field.name + "").validationEngine({ promptPosition : "centerRight", scroll: false });
     		 			set_bubble=true;
-     		 		}
+     		 		}     		 		
+     		 		
     		 		$('#' + field.name + "").attr('style', 'background: #FFFFC5 !important');
     		 		
     		 		invalid_count++;
     		 	} 
 			});
+			
 			if(invalid_count > 0 ) {
     		    return false;
     		}
@@ -265,7 +267,6 @@ function replace_address() {
     if($("#opt_shipping").is(":checked")) {
     	//run through shippinAddress object and set values for corresponding fields	
     	$.each ( shippingAddress, function(k, v) {
-    		
     		$("#" + k + "").val(v);
     		if(k == 'state') {
     			$("#" + k + 'option:selected').next('option').attr('selected', 'selected');
@@ -326,7 +327,7 @@ function isValidCard(cardNumber) {
 	} else {
 		return ((sum%10) == 0);
 	}
-  }
+}
 
 
 function validCC() {

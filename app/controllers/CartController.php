@@ -37,6 +37,7 @@ class CartController extends BaseController {
 	*/	
 
 	public function view() {
+			
 		#Initialize Datas
 		$ordersCollection = Order::Collection();
 		$promocode_disable = false;
@@ -156,6 +157,7 @@ class CartController extends BaseController {
 		}
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
+
 		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping');
 	}
 
@@ -165,7 +167,8 @@ class CartController extends BaseController {
 	 * @see app/models/Cart::checkCartItem()
 	 * @return compact
 	 */
-	public function add() {	
+
+	public function add() {
 		#Check Cart
 		$cart = Cart::create();
 		//output for cart popup
@@ -257,17 +260,41 @@ class CartController extends BaseController {
 		$cartData['cartExpirationDate'] = "";
 		$cartData['subTotal'] = 0.00;
 		
+		$i = 0;
+		
+		//set cart array 
+		$cartData['cart']= Cart::active()->data();
+		
 		foreach(Cart::active() as $cartItem) {
 			if ($cartData['cartExpirationDate'] < $cartItem->expires->sec) {
 				$cartData['cartExpirationDate'] = $cartItem->expires->sec;
 			}
+
+			//get the current event url
+			$event = Event::find('first',
+									array ('fields' => array('url'), 
+									'conditions' => 
+										array ('_id' => "".$cartItem->event[0]."")
+									)
+								); 
+							
+			$temp = $event->data();
+			$eventURL = $temp['url'];				
+					
+			//create the items url from the event url and the item url
+			$cartData['cart'][$i]['url'] = "http://".$_SERVER['HTTP_HOST']."/sale/".$eventURL."/".$cartItem->url;
 			$cartData['subTotal'] += ($cartItem->sale_retail * $cartItem->quantity);
-		} 
-				
-		//get the current event url	
-		$cartData['eventURL'] = substr($this->request->env('HTTP_REFERER'), 0, strrpos($this->request->env('HTTP_REFERER'),"/"));  
-		//send cart array 
-		$cartData['cart']= Cart::active()->data();
+			$i++;
+		}  
+		
+		$current_path = substr($this->request->env('HTTP_REFERER'), 0, strrpos($this->request->env('HTTP_REFERER'),"/"));
+		
+		if(strlen($current_path) > 0 && $current_path!=="sale") {
+	    	$cartData['eventURL'] = $current_path; 
+	    } else {
+	    	$cartData['eventURL'] = "sale";
+	    }
+
 		//get user savings. they were just put there by updateSavings()
 		$cartData['savings'] = Session::read('userSavings');
 		//get the ship date		

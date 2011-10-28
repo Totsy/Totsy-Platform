@@ -4347,3 +4347,30 @@ Text Align > left / right
 	background:#ED1C25 none !important;
 	color: #FFF !important;
 }
+
+.blurb p {
+	padding: 10px;
+	text-align: left !important;
+}
+
+.blurb ul {
+	line-height: 20px;
+	margin-left: 35px;
+}
+
+.blurb li { 
+	list-style: disc!important; 
+	margin-left: 15px!important; 
+}
+
+.blurb strong { 
+	font-weight: bold!important; 
+}
+
+.blurb h3 { 
+	font-size: 20px!important;
+	color:#707070!important;
+	font-weight: normal!important;
+	border-bottom: 2px solid #DDDDDD!important;
+	margin: 9px 9px 3px!important;
+}

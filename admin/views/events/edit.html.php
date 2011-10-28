@@ -287,8 +287,13 @@ for ( i=1; i<6; i++ ) {
 							));?>
 				</div>
 				<?=$this->form->label('Departments')?><br />
+				
+				<?=$event->departments?>
+				
+				<br><br>
+				
 				<table>
-					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?>
+					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple','value' => $sel_filters)); ?> 
 				</table>
 				<div id="tags">
 					<?=$this->form->label('Tags'); ?>

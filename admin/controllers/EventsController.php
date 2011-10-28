@@ -21,8 +21,8 @@ class EventsController extends BaseController {
 	/**
 	 * Limit characters for event\deal short description
 	 */
-	private $shortDescLimit = 45;
-	
+	private $shortDescLimit = 90;
+
 	/**
 	 * List of event keys that should be in the view
 	 * @var array List of accepted event keys
@@ -51,8 +51,9 @@ class EventsController extends BaseController {
 
 	}
 	protected function parseItems_clearance($fullarray, $_id, $enabled = false) {
-	
+
 		$items_quantities[] = array();
+		$items_prices[] = array();
 		$items_skus[] = array();
 		$items_skus_used[] = array();
 		$items[] = array();
@@ -67,6 +68,7 @@ class EventsController extends BaseController {
 			$current_sku = $item_sku_quantity[0];
 			$items_skus[] = $current_sku;
 			$items_quantities[$current_sku] = $item_sku_quantity[1];
+			$items_prices[$current_sku] = $item_sku_quantity[2];
 		}
 
 		//mongo query, find all items with skus
@@ -74,7 +76,7 @@ class EventsController extends BaseController {
 
 		//loop through returned item results
 		foreach($items_with_skus as $olditem){
-		
+
 			//boolean to skip insert
 			$addnewitem = true;
 
@@ -96,7 +98,7 @@ class EventsController extends BaseController {
 
 			//loop thru sku_details, find the one we want, get the position in index
 			foreach($sku_details_arr as $sku_details_key => $sku_details){
-					
+
 				//checks if current sku_details sku is in form-submitted SKU array
 				if(in_array($sku_details, $items_skus)){
 					if(in_array($sku_details, $items_skus_used)){
@@ -104,54 +106,64 @@ class EventsController extends BaseController {
 					}
 					else{
 						$items_skus_used[] = $sku_details;
-					
+
 						//this is a match, get the index of the sku_details
 						//echo "<br> * this is the index " . $sku_details_key;
-					
-	
+
+
 						//current quantity (should be 0)
 						$quantitynow = $details_arr[$sku_details_key];
-						
+
 						//echo "<br> * update quantity to " . $items_quantities[$sku_details];
-						
+
 						//use index to update quantity
 						$oitem['details'][$sku_details_key] = $items_quantities[$sku_details];
-						
+
+						//use index to get new price
+						$item_price_new = $items_prices[$sku_details];
+
 						$total_quantity_new += $items_quantities[$sku_details];
-						
+
 						//remove this sku from items_skus
-						//$key = array_search($sku_details, $items_skus); 
+						//$key = array_search($sku_details, $items_skus);
 						//unset($items_skus[$key]);
 					}
 				}
 			}
-			
+
 			if($addnewitem){
 				//remove _id
 				unset($oitem['_id']);
 				unset($oitem['event']);
 				unset($oitem['created_date']);
 				unset($oitem['total_quantity']);
-				
+				unset($oitem['sale_retail']);
+				unset($oitem['enabled']);
+
 				//update event _id
 				$oitem['event'] = array((string)$_id);
-				
+
 				//update date
 				$oitem['created_date'] = new MongoDate();
-	
-	
+
+				//update enabled
+				$oitem['enabled'] = $enabled;
+				
 				//create a new item instance
 				$newItem = Item::create();
-	
+
 				//set total quant
 				$oitem['total_quantity'] = $total_quantity_new;
 				
+				//set new price
+				$oitem['sale_retail'] = floatval($item_price_new);
+
 				//save item with revised info
 				$newItem->save($oitem);
-				
+
 				//get _id of new item
 				$new_id = $newItem->_id;
-	
+
 				//add new _id to returned items array
 				$items[] = $new_id;
 			}
@@ -161,9 +173,9 @@ class EventsController extends BaseController {
 
 
 	public function add() {
-		
+
 		$shortDescLimit = $this->shortDescLimit;
-		
+
 		if (empty($event)) {
 			$event = Event::create();
 		}
@@ -176,8 +188,8 @@ class EventsController extends BaseController {
 			if (isset($this->request->data['short_description']) && strlen($this->request->data['short_description'])>$shortDescLimit){
 				$this->request->data['short_description'] = substr($this->request->data['short_description'],0,$shortDescLimit);
 			} else if (empty($this->request->data['short_description'])) {
-				$this->request->data['short_description'] = $this->description_cutter($this->request->data['short_description'],$shortDescLimit);	
-			}	
+				$this->request->data['short_description'] = $this->description_cutter($this->request->data['short_description'],$shortDescLimit);
+			}
 			$url = $this->cleanUrl($this->request->data['name']);
 			$eventData = array_merge(
 				Event::castData($this->request->data),
@@ -202,7 +214,7 @@ class EventsController extends BaseController {
 				$this->redirect(array('Events::edit', 'args' => array($event->_id)));
 			}
 		}
-		
+
 		return compact('event','shortDescLimit');
 	}
 
@@ -216,14 +228,58 @@ class EventsController extends BaseController {
 				'order' => array('created_date' => 'ASC')
 		));
 		#Get all possibles value for the multiple departments select
+		//process new items
+		if(!empty($this->request->data['items_submit'])) {
+			$enableItems = $this->request->data['enable_items'];
+
+			$fullarray = Event::convert_spreadsheet($this->request->data['items_submit']);
+			if($event->clearance){
+				$parseItems = $this->parseItems_clearance($fullarray, $event->_id, $enableItems);
+			}
+			else{
+				$parseItems = $this->parseItems($fullarray, $event->_id, $enableItems);
+			}
+
+			if (is_array($parseItems)){
+
+				$eventItems = Item::find('all', array('conditions' => array('event' => array($_id))));
+				if (!empty($eventItems)) {
+					foreach ($eventItems as $item) {
+						$items[] = (string) $item->_id;
+					}
+				}
+			}
+		}
+
+
+		#T Get all possibles value for the multiple departments select
 		$result = Item::getDepartments();
+		$sel_filters = array();
 		$all_filters = array();
 		foreach ($result['values'] as $value) {
-			$all_filters[$value] = $value;
+			if($value&&$value!=" "){
+				$all_filters[$value] = $value;
+			}
 			if (array_key_exists('Momsdads',$all_filters) && !empty($all_filters['Momsdads'])) {
 				$all_filters['Momsdads'] = 'Moms & Dads';
 			}
 		}
+
+		foreach ($eventItems as $this_item){
+			if($this_item->departments){
+				$values = $this_item->departments->data();
+			}
+			foreach ($values as $value) {
+				if($value&&$value!=" "){
+					$sel_filters[$value] = $value;
+				}
+			}
+
+		}
+
+		$sel_filters = array_unique($sel_filters);
+
+		#END T
 		if (empty($event)) {
 			$this->redirect(array('controller' => 'events', 'action' => 'add'));
 		}
@@ -240,28 +296,6 @@ class EventsController extends BaseController {
 				unset($this->request->data['departments']);
 			}
 			unset($this->request->data['itemTable_length']);
-			$enableItems = $this->request->data['enable_items'];
-
-			if(!empty($this->request->data['items_submit'])) {
-
-				$fullarray = Event::convert_spreadsheet($this->request->data['items_submit']);
-				if($event->clearance){
-					$parseItems = $this->parseItems_clearance($fullarray, $event->_id, $enableItems);
-				}
-				else{
-					$parseItems = $this->parseItems($fullarray, $event->_id, $enableItems);
-				}
-
-				if (is_array($parseItems)){
-
-					$eventItems = Item::find('all', array('conditions' => array('event' => array($_id))));
-					if (!empty($eventItems)) {
-						foreach ($eventItems as $item) {
-							$items[] = (string) $item->_id;
-						}
-					}
-				}
-			}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //			if ($_FILES['upload_file']['error'] == 0 && $_FILES['upload_file']['size'] > 0) {
@@ -289,7 +323,7 @@ class EventsController extends BaseController {
 			if (isset($this->request->data['short_description']) && strlen($this->request->data['short_description'])>$shortDescLimit){
 				$this->request->data['short_description'] = substr($this->request->data['short_description'],0,$shortDescLimit);
 			} else if (empty($this->request->data['short_description'])){
-				$this->request->data['short_description'] = $this->description_cutter($this->request->data['short_description'],$shortDescLimit);	
+				$this->request->data['short_description'] = $this->description_cutter($this->request->data['short_description'],$shortDescLimit);
 			}
 			$url = $this->cleanUrl($this->request->data['name']);
 			$eventData = array_merge(
@@ -349,9 +383,10 @@ class EventsController extends BaseController {
 				}
 			}
 		}
+
 		#Check if Items with vouchers
 		$vouchers = $this->getVouchersLog($eventItems);
-		return compact('event', 'eventItems', 'items', 'all_filters', 'shortDescLimit', 'vouchers');
+		return compact('event', 'eventItems', 'items', 'all_filters', 'sel_filters', 'shortDescLimit', 'vouchers');
 	}
 	
 	/**
@@ -464,7 +499,7 @@ class EventsController extends BaseController {
 				$val = $array[$row][$col];
 
 				if ($row == 0) {
-					if($val){
+					if(($val)||($val==0)){
 						$heading[] = $val;
 					}
 				} else {
@@ -472,8 +507,8 @@ class EventsController extends BaseController {
 						if ((in_array($heading[$col], $check_decimals))&&(!empty($val))) {
 							$val = floatval($val);
 						}
-						if(($heading[$col] === "department_1") || ($heading[$col] === "department_2") || ($heading[$col] === "department_3")) {
-							if (!empty($val)) {
+						if(($heading[$col] === "department_1") || ($heading[$col] === "department_2") || ($heading[$col] === "department_3") || (strstr($heading[$col], "department_1")) || (strstr($heading[$col], "department_2")) || (strstr($heading[$col], "department_3"))) {
+							if (!empty($val)&&strlen($val)>1) {
 								$eventItems[$row - 1]['departments'][] = ucfirst(strtolower(trim($val)));
 								$eventItems[$row - 1]['departments'] = array_unique($eventItems[$row - 1]['departments']);
 							}
@@ -484,7 +519,7 @@ class EventsController extends BaseController {
 							}
 						} else {
 							if (!empty($val)) {
-							$eventItems[$row - 1][$heading[$col]] = $val;
+								$eventItems[$row - 1][$heading[$col]] = $val;
 							}
 						}
 					}
@@ -657,7 +692,7 @@ class EventsController extends BaseController {
 		}
 		return $itemCounts;
 	}
-	
+
 	private function description_cutter($str,$length=null){
 		$return = '';
 		$str = strip_tags($str);
@@ -674,7 +709,7 @@ class EventsController extends BaseController {
 				}
 			}
 		}
-		
+
 		if (strlen($return)>0){
 			return $return;
 		} else {
