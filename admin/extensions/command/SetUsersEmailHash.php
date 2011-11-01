@@ -2,8 +2,12 @@
 
 namespace admin\extensions\command;
 
+use MongoId;
+
+use lithium\analysis\Logger;
 use lithium\core\Environment;
 use admin\models\User;
+use admin\extensions\command\Pid;
 
 /**
  * Make a check for a normal transaction email.
@@ -44,10 +48,23 @@ class SetUsersEmailHash extends \lithium\console\Command {
 	 * Instances
 	 */
 	public function run() {
-		Logger::info("User's email hash setter ");
+		Logger::info("\n");
+		Logger::info('Emails Hash Processor');
 		
 		Environment::set($this->env);
 		
+		$this->tmp = LITHIUM_APP_PATH . $this->tmp;
+		$pid = new Pid($this->tmp,  'EmailHashProcessor');
+		
+		if ($pid->already_running == false) {
+			$this->doConversion();
+		} else {
+			Logger::info('Already Running! Stoping Execution'."\n");
+		}
+		Logger::info('Emails Hash Processor Finished'."\n");
+	}
+	
+	private function doConversion(){
 		$arguments = array(
 			'email_hash' => array(
 				'$exists'=>false
@@ -57,13 +74,22 @@ class SetUsersEmailHash extends \lithium\console\Command {
 			'_id' => true,
 			'email' => true
 		);
+		$time_start = microtime(true);
 		$cursor = User::collection()
 							->find($arguments)
 							->fields($fields);
+		$time_end = microtime(true) - $time_start;
+		Logger::info('Found '.$cursor->count().' documents. Total time: '.$time_end);
+		
+		$time_start = microtime(true);
 		$result = $this->processCursor($cursor);
+		$time_end = microtime(true) - $time_start;
+		Logger::info('Update data. Total time: '.$time_end);
 		
 		if ($result){
-			echo 'Process ended successfylly'."\n";
+			Logger::info('Success');	
+		} else {
+			Logger::info('FAILED');
 		}
 	}
 	
@@ -71,30 +97,33 @@ class SetUsersEmailHash extends \lithium\console\Command {
 		$percent = 0;
 		$current = 1;
 		$sleep = $this->sleep_after;
-		$total = $cursor->count();
-		if ($total>0){ return false; }
+		$total = (integer) $cursor->count();
+		if (0>=$total){ return false; }
 		
 		$collection = User::collection();
 		
 		foreach ($cursor as $doc){
 			$collection->update(
-				array(
-					'_id' => new MongoId($doc['_id'])), 
+				array( '_id' => $doc['_id'] ), 
 				array(
                 	'$set'=>array(
-                    	'email_hash' => md5($d['email'])
+                    	'email_hash' => md5($doc['email'])
                 ))
 			);	
 			$current++;
 			
 			if ($current == $sleep){
-				$percent = round(($current/$total) * 10, 3);
-				echo 'Done: '.$percent.' %'."\n";			
+				$per = round(($current/$total) * 100, 2);
+				
+				if ($per > $percent){
+					Logger::info('Done: '.$per.' % ('.$current.')');
+					$percent = ceil($per);
+				}
+							
 				$sleep = $current + $this->sleep_after;
 				sleep($this->sleep_time);
 			}
 		}
-		echo 'Total documents processed: '.$current."\n";
 		
 		return true;
 	}
