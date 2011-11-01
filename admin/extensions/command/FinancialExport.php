@@ -44,6 +44,17 @@ class FinancialExport extends Base  {
 	 * @var string
 	 */
 	public $tmp = '/resources/totsy/finance/';
+	/**
+	*
+	*
+	**/
+	protected $processed_dir = '/resources/totsy/finance/processed/';
+
+    /**
+	* This is the directory where the files will be sent to on the remote server
+	*
+	**/
+	protected $directory = 'TotsyData';
 
 	/**
 	 * Will generate xml of orders going back to Nov 1 - one day before the present
@@ -169,7 +180,6 @@ class FinancialExport extends Base  {
 		'event_name',
 		'status',
 		'url',
-		'cancel',
 		'line_number',
 		'discount_exempt'
 	);
@@ -178,6 +188,7 @@ class FinancialExport extends Base  {
 	protected $orderDetailFile = "";
 	protected $creditDetailFile = "";
 	protected $xml = null;
+	protected $test = "false";
 	/**
 	* Order fields to return in a query
 	**/
@@ -240,10 +251,11 @@ class FinancialExport extends Base  {
 		    $this->orderDetailFile = $this->tmp . 'OrdDetail_May_2011.xml';
 		    $this->creditDetailFile = $this->tmp . 'CredDetail_History.xml';
 		    $this->orderUpdateFile = $this->tmp . 'OrdUpdate_Aug-Oct_24_2011.xml';
+		    $this->directory = 'TotsyHistory';
 		    $this->log("Retrieving Historical Data");
         } else {
-           $yesterday_min = mktime(0,0,0,date('m'),26,date('Y'));
-           $yesterday_max = mktime(23,59,59,date('m'),26,date('Y'));
+           $yesterday_min = mktime(0,0,0,date('m'),date('d') - 1,date('Y'));
+           $yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
             $orderConditions = array(
                 'date_created' => array(
                     '$gte' => new MongoDate($yesterday_min),
@@ -280,6 +292,9 @@ class FinancialExport extends Base  {
                 $this->_orderCreditReport();
                 $this->_updateOrderSummaryReport();
                  break;
+            case "export":
+                $this->exportFiles();
+                break;
             default:
                 echo "Invalid input. For help type : li3 help finanical-export\n";
                 break;
@@ -616,8 +631,8 @@ class FinancialExport extends Base  {
                     '$lte' => new MongoDate($yesterday_max)
                     ));
 	    } else {
-	        $yesterday_min = mktime(0,0,0,date('m'),26,date('Y'));
-            $yesterday_max = mktime(23,59,59,date('m'),26,date('Y'));
+	        $yesterday_min = mktime(0,0,0,date('m'),date('d') - 1,date('Y'));
+            $yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
             $conditions = array('created_date' => array(
                     '$gte' => new MongoDate($yesterday_min),
                     '$lte' => new MongoDate($yesterday_max)
@@ -637,7 +652,8 @@ class FinancialExport extends Base  {
 
 	   }
 	   $this->orders = Order::collection()->find(array('order_id' => array('$in' => array_unique($orderids))), $this->fields);
-
+	   var_dump($this->orders);
+	   die();
 	   $updateSummary = array();
 	    while ($this->orders->hasNext()){
 	           $order = $this->orders->getNext();
@@ -839,5 +855,48 @@ class FinancialExport extends Base  {
 	           $record[$key] = preg_replace('/&/','and',$record[$key]);
 	            $recordTag->addChild($key, $record[$key]);
 	        }
+	}
+
+	private function exportFiles() {
+	    $processed = LITHIUM_APP_PATH . $this->processed_dir;
+	    $source =$this->tmp;
+	    $finished = false;
+
+	    $To = "lhanson@totsy.com,scott.fisher@yourtechso.com,sadler@totsy.com";
+	    $headers = "Cc: bugs@totsy.com \r\n From:reports@totsy.com";
+
+	    $this->log("Exporting to Accounting Server...");
+	    $connection = ssh2_connect('192.168.0.222',22);
+	    if (!$connection) {
+	        $this->log("Fail: Unable to establish a connection.");
+	        mail($To, "Failed Accounting Job", "Fail: Unable to establish a connection.");
+	    } else{
+            if (!ssh2_auth_password($connection, 'root', 'totsy1')) {
+                $this->log("Fail: Unable to authenticate.");
+                mail($To, "Failed Accounting Job", "Fail: Unable to authenticate.");
+            } else {
+                $this->log("You are logged in.");
+                $directory = $this->directory;
+
+                $localDirectory = opendir($source);
+                if (is_dir($source)) {
+                    if($localDirectory) {
+                        while(($file = readdir($localDirectory)) !== false) {
+                            $length = strlen($file);
+                           if (substr($file,$length - 4, $length) == ".xml") {
+                             $this->log("Uploading " . $source.$file . " to accounting server");
+                             ssh2_scp_send($connection, $source.$file, "/C/$directory/$file", 0644);
+                             $this->log("Moving ". $source.$file ." to processed folder.");
+                             rename($source.$file,$processed.$file);
+                             $finished = true;
+                           }
+                        }
+                    }
+                }
+                if ($finished) {
+                     mail($To, "Failed Accounting Job - Test", "This is a test email for the automated data file transfer.");
+                }
+            }
+	    }
 	}
 }
