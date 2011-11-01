@@ -108,7 +108,7 @@ class BaseController extends \lithium\action\Controller {
 		* Send pixel to layout
 		**/
 		$this->set(compact('pixel'));
-		var_dump($this->request->env('HTTP_HOST'));
+		//var_dump($this->request->env('HTTP_HOST'));
 		switch($_SERVER['HTTP_HOST']) {
 		    case "lawren.totsy.com":
 		    case "mamapedia.totsy.com":

@@ -48,8 +48,13 @@ class UsersController extends BaseController {
 		*/
 
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-		if($cookie && preg_match('(/a/)', $cookie['landing_url'])){
+		if($cookie && array_key_exists("landing_url", $cookie) && preg_match('(/a/)', $cookie['landing_url'])){
 			$this->redirect($cookie['landing_url']);
+		}
+
+		if ($this->request->env("HTTP_HOST") == "lawren.totsy.com") {
+		    $affiliate = new AffiliatesController();
+		    $affiliate->register("mamasource");
 		}
 
 		if (isset($data) && $this->request->data) {
