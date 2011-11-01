@@ -8,6 +8,7 @@ use MongoDate;
 use MongoCode;
 //use admin\controllers\BaseController;
 use admin\models\EmailsBounced;
+use \lithium\storage\Session;
 
 class BouncedemailsController extends \lithium\action\Controller {
 	
@@ -41,14 +42,32 @@ class BouncedemailsController extends \lithium\action\Controller {
 			
 			$cursor = EmailsBounced::collection()->group($keys, $inital, $reduce, $conditions);;
 
-			$return = $this->request->data;
-			$return['key'] = sha1(microtime().'-'.mt_rand());
+			$return['key'] = hash('sha256',Session::read('_id'));
+			$return['request'] = $this->request->data; 
 			if ($cursor['count']>0){
 				$return['retval'] = $cursor['retval'];
 			}
 			return $return;
 		}
 
+	}
+	
+	/**
+	 * @TODO NOTE: move this to api app 
+	 */
+	public function details(){
+		
+
+		$return = array('status'=>array('code'=>0, 'message'=>''));
+		
+		echo '<pre>';
+		print_r($this->request);
+		echo '</pre>';
+		exit(0);
+		
+		if (empty($this->request->data)){ 
+			$return['status'] = array('code'=>0,'message'=>'request query is empty');
+		}
 	}
 	
 }

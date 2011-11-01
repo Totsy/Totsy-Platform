@@ -1,4 +1,5 @@
-<?=$this->html->script('jquery-1.4.2.min.js');?>
+<?=use lithium\storage\cache\strategy\Base64;
+$this->html->script('jquery-1.4.2.min.js');?>
 <?=$this->html->script('jquery.dataTables.js');?>
 <?=$this->html->style('table');?>
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
@@ -53,14 +54,20 @@
 			</thead>
 			<tbody>
 			<?php foreach ($retval as $val){ ?>
+				<?php 
+					$query = $request+array('invited_by'=>$val['invited_by']);
+					ksort($query);
+					$query['signature'] = md5(implode('',$query).$key); 
+					$query = base64_encode(http_build_query($query));
+				?>
 				<?php $hash = md5($key.$val['invited_by'].$val['total']); ?>
 				<tr>
-					<td><a id="a_<?=$hash?>" href="#" class="affiliates_mail"><?=$val['invited_by']?><a></td>
+					<td><a id="<?=$query ?>|<?=$hash?>" href="#" class="affiliates_mail"><?=$val['invited_by']?><a></td>
 					<td><?=$val['total']?></td>
 					<td><?=$this->form->checkbox($val['invited_by'],array('value' => '1'))?>
 				</tr>
 				<tr>
-					<td id="td_<?=$hash?>" colspan="3" style="display:none;">fasfbad</td>
+					<td id="td_<?=$hash?>" colspan="3" style="display:none;"></td>
 				</tr>		
 			<?php }?>
 			</tbody>
@@ -73,8 +80,13 @@
 jQuery(function($){
  	$(".date").mask("99/99/9999");
  	$(".affiliates_mail").click(function(){
-		var id = $(this).attr('id').split('_');
-		id = id[1];
+		var codes = $(this).attr('id').split('|'); 
+		var id = codes[1];
+		$.post('/bouncedemails/details', {'data': codes[0]}, function(data){
+			if (data.status.code == 0){
+				$('#td_'+id).html(data.response);		
+			}
+		}, true);
  	 	$('.affiliates_raw').hide().removeClass('affiliates_raw');
  	 	$('#td_'+id).show().addClass('affiliates_raw');
 		return false;
