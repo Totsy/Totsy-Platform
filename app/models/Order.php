@@ -33,9 +33,9 @@ class Order extends Base {
 	 * @return string
 	 */
 	public function summary($order) {
-		return array(
-			(string) $order->order_id => $order->order_id.'- Order Total: $'.number_format($order->total, 2)
-		);
+		$id = (string) $order->order_id;
+		$total = number_format($order->total, 2);
+		return array($id => "{$id}- Order Total: ${$total}");
 	}
 
 	/**

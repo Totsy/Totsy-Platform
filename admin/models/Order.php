@@ -765,11 +765,31 @@ class Order extends Base {
 		return compact('payments','type', 'message');
 	}
 
+	public static function findUncanceledByEvent($events) {
+		return static::collection()->find(
+			array(
+				'items.event_id' => array('$in' => $events),
+				'cancel' => array('$ne' => true)
+			),
+			array(
+				'_id' => true,
+				'billing' => true,
+				'shipping' => true,
+				'date_created' => true,
+				'ship_date' => true,
+				'items' => true,
+				'order_id' => true,
+				'shippingMethod' => true,
+				'user_id' => true
+			)
+		);
+	}
+
 	/**
-	* Returns true, if order passed in payment capture failed, otherwise return false
-	* @params (string) $orderId : short id of the order
-	* @return boolean
-	**/
+	 * Returns true, if order passed in payment capture failed, otherwise return false
+	 * @params (string) $orderId : short id of the order
+	 * @return boolean
+	 */
 
 	public static function failedCaptureCheck($orderId = null) {
 	    $failed = false;
