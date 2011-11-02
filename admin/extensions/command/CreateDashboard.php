@@ -152,17 +152,38 @@ class CreateDashboard extends \lithium\console\Command  {
 						prev.promo_discount += Number(doc.promo_actual);
 						prev.product += Number(doc.promo_actual);
 					} else {
-						prev.promo_discount += Number(doc.promo_discount);
-						prev.product += Number(doc.promo_discount);
+						if(doc.date_created > new Date("October 06, 2011 05:57:00")) {
+							prev.promo_discount -= Number(doc.promo_discount);
+							prev.product -= Number(doc.promo_discount);
+						}
+						else
+						{
+							prev.promo_discount += Number(doc.promo_discount);
+							prev.product += Number(doc.promo_discount);
+						}
 					}
 				}
-				if (doc.discount != null) {
-					prev.discount += Number(doc.discount);
-					prev.product += Number(doc.discount);
+				if (doc.discount != null && Math.abs(doc.discount) == 10) {
+					if(doc.date_created > new Date("October 06, 2011 05:57:00")) {
+						prev.discount -= Number(doc.discount);
+						prev.product -= Number(doc.discount);
+					}
+					else
+					{
+						prev.discount += Number(doc.discount);
+						prev.product += Number(doc.discount);
+					}
 				}
 				if (doc.credit_used != null) {
-					prev.credit_used += Number(doc.credit_used);
-					prev.product += Number(doc.credit_used);
+					if(doc.date_created > new Date("October 06, 2011 05:57:00")) {
+						prev.credit_used -= Number(doc.credit_used);
+						prev.product -= Number(doc.credit_used);
+					}
+					else
+					{
+						prev.credit_used += Number(doc.credit_used);
+						prev.product += Number(doc.credit_used);
+					}
 				}
 				
 				if (doc.handlingDiscount != null) {

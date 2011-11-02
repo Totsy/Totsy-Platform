@@ -65,13 +65,24 @@ class CreatePromocodeDetail extends \lithium\console\Command {
 					if (isset($order['promo_actual']) && $order['date_created']['sec'] > strtotime("March 04, 2011 12:34:00")) {
 						$calc_total += $order['promo_actual'];
 					} else {
-						$calc_total += $order['promo_discount'];
+						if ($order['date_created']['sec'] > strtotime("October 06, 2011 05:57:00"))
+							$calc_total -= $order['promo_discount'];
+						else
+							$calc_total += $order['promo_discount'];
 					}
 				}
-				if (isset($order['discount']))
-					$calc_total += $order['discount'];
-				if (isset($order['credit_used']))
-					$calc_total += $order['credit_used'];
+				if (isset($order['discount'])) {
+					if ($order['date_created']['sec'] > strtotime("October 06, 2011 05:57:00"))
+						$calc_total -= $order['discount'];
+					else
+						$calc_total += $order['discount'];
+				}
+				if (isset($order['credit_used'])) {
+					if ($order['date_created']['sec'] > strtotime("October 06, 2011 05:57:00"))
+						$calc_total -= $order['credit_used'];
+					else
+						$calc_total += $order['credit_used'];
+				}
 				
 				$calc_total += $order['handling'] + $order['tax'];
 				
@@ -97,14 +108,21 @@ class CreatePromocodeDetail extends \lithium\console\Command {
 					$promocode_detail[$order_date][$order["promo_code"]]['date_string'] = $order_date;
 					$promocode_detail[$order_date][$order["promo_code"]]['code'] = $order["promo_code"];
 					$promocode_detail[$order_date][$order["promo_code"]]['code_id'] = "unknown";
-					$promocode_detail[$order_date][$order["promo_code"]]['value'] = $order['promo_discount'];
+					if ($order['date_created']['sec'] > strtotime("October 06, 2011 05:57:00"))
+						$promocode_detail[$order_date][$order["promo_code"]]['value'] = -$order['promo_discount'];
+					else
+						$promocode_detail[$order_date][$order["promo_code"]]['value'] = $order['promo_discount'];
 					$promocode_detail[$order_date][$order["promo_code"]]['type'] = "unknown";
 				}
 				
 				if (isset($order['promo_actual']) && $order['date_created']['sec'] > strtotime("March 04, 2011 12:34:00"))
 					$promocode_detail[$order_date][$order["promo_code"]]['amount_saved'] += $order['promo_actual'];
-				else
-					$promocode_detail[$order_date][$order["promo_code"]]['amount_saved'] += $order['promo_discount'];
+				else {
+					if ($order['date_created']['sec'] > strtotime("October 06, 2011 05:57:00"))
+						$promocode_detail[$order_date][$order["promo_code"]]['amount_saved'] -= $order['promo_discount'];
+					else
+						$promocode_detail[$order_date][$order["promo_code"]]['amount_saved'] += $order['promo_discount'];
+				}
 				
 				$promocode_detail[$order_date][$order["promo_code"]]['number_used']++;
 				
@@ -131,8 +149,12 @@ class CreatePromocodeDetail extends \lithium\console\Command {
 					
 					if (isset($order['promo_actual']) && $order['date_created']['sec'] > strtotime("March 04, 2011 12:34:00"))
 						$promocode_detail[$order_date][$parent_promocode['code']]['amount_saved'] += $order['promo_actual'];
-					else
-						$promocode_detail[$order_date][$parent_promocode['code']]['amount_saved'] += $order['promo_discount'];
+					else {
+						if ($order['date_created']['sec'] > strtotime("October 06, 2011 05:57:00"))
+							$promocode_detail[$order_date][$parent_promocode['code']]['amount_saved'] -= $order['promo_discount'];
+						else
+							$promocode_detail[$order_date][$parent_promocode['code']]['amount_saved'] += $order['promo_discount'];
+					}
 					
 					$promocode_detail[$order_date][$parent_promocode['code']]['number_used']++;
 				} else {
@@ -151,8 +173,12 @@ class CreatePromocodeDetail extends \lithium\console\Command {
 					
 					if (isset($order['promo_actual']) && $order['date_created']['sec'] > strtotime("March 04, 2011 12:34:00"))
 						$promocode_detail[$order_date][$promocode['code']]['amount_saved'] += $order['promo_actual'];
-					else
-						$promocode_detail[$order_date][$promocode['code']]['amount_saved'] += $order['promo_discount'];
+					else {
+						if ($order['date_created']['sec'] > strtotime("October 06, 2011 05:57:00"))
+							$promocode_detail[$order_date][$promocode['code']]['amount_saved'] -= $order['promo_discount'];
+						else
+							$promocode_detail[$order_date][$promocode['code']]['amount_saved'] += $order['promo_discount'];
+					}
 					
 					$promocode_detail[$order_date][$promocode['code']]['number_used']++;
 				}
@@ -182,13 +208,24 @@ class CreatePromocodeDetail extends \lithium\console\Command {
 				if (isset($order['promo_actual']) && $order['date_created']['sec'] > strtotime("March 04, 2011 12:34:00")) {
 					$net_total += $order['promo_actual'];
 				} else {
-					$net_total += $order['promo_discount'];
+					if ($order['date_created']['sec'] > strtotime("October 06, 2011 05:57:00"))
+						$net_total -= $order['promo_discount'];
+					else
+						$net_total += $order['promo_discount'];
 				}
 			}
-			if (isset($order['discount']))
-				$net_total += $order['discount'];
-			if (isset($order['credit_used']))
-				$net_total += $order['credit_used'];
+			if (isset($order['discount']) && abs($order['discount'])==10) {
+				if ($order['date_created']['sec'] > strtotime("October 06, 2011 05:57:00"))
+					$net_total -= $order['discount'];
+				else
+					$net_total += $order['discount'];
+			}
+			if (isset($order['credit_used'])) {
+				if ($order['date_created']['sec'] > strtotime("October 06, 2011 05:57:00"))
+					$net_total -= $order['credit_used'];
+				else
+					$net_total += $order['credit_used'];
+			}
 			
 			$net_total += $order['handling'] + $order['tax'];
 			
