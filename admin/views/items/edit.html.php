@@ -21,7 +21,6 @@ tinyMCE.init({
 
 });
 </script>
-
 <div class="grid_16">
 	<h2 id="page-heading">Editing Item - <?=$item->description?></h2>
 </div>
