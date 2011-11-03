@@ -15,7 +15,7 @@ use MongoDate;
  * This Script Reauthorize all orders that has not been shipped and that got 7 days old AuthKey
  * 
  */
-class ReAuth7days extends \lithium\console\Command {
+class ReAuthorize extends \lithium\console\Command {
 		
 	/**
 	 * The environment to use when running the command. 'production' is the default.
@@ -24,6 +24,13 @@ class ReAuth7days extends \lithium\console\Command {
 	 * @var string
 	 */
 	public $env = 'development';
+	
+	/**
+	 * Set How Old Can Be the Auth.Key to be replaced
+	 *
+	 * @var string
+	 */
+	public $expiration = 7;
 	
 	/**
 	 * Instances
@@ -35,7 +42,7 @@ class ReAuth7days extends \lithium\console\Command {
 		$errors = 0;
 		$updated = 0;	
 		#Limit to +7 days Old Authkey
-		$limitDate = mktime(0, 0, 0, date("m"), date("d") - 7, date("Y"));
+		$limitDate = mktime(0, 0, 0, date("m"), date("d") - $expiration, date("Y"));
 		#Get All Orders with Auth Date >= 7days, Not Void Manually or Shipped
 		$conditions = array('void_confirm' => array('$exists' => false),
 							'auth_confirmation' => array('$exists' => false),
