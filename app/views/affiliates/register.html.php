@@ -10,7 +10,19 @@
 <div class="round">
 	<div class="grid_10" style="width:560px;">
 			<h2 class="tagline">Save up to 90% off the best brands for your family!</h2>
-			<iframe width="540" height="315" src="http://www.youtube.com/embed/HJBQnkxPJko" frameborder="0" allowfullscreen></iframe>
+			<!--<iframe width="540" height="315" src="http://www.youtube.com/embed/HJBQnkxPJko&rel=0" frameborder="0" allowfullscreen></iframe> -->
+			<!--[if !IE]> <-->
+			<object type="application/x-shockwave-flash" width="540" height="315"
+			data="http://www.youtube.com/v/HJBQnkxPJko&rel=0&hd=1&theme=light&color=red&fs=1&autohide=1">
+			<!--> <![endif]-->
+			<!--[if IE]>
+			<object type="application/x-shockwave-flash" width="425" height="350"
+			classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+			codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0">
+			<![endif]-->
+			<param name="movie" value="http://www.youtube.com/v/Yc_J_kXaFSw&rel=0" />
+			<p>Your browser is not able to display this multimedia content.</p>
+			</object>
 			<?php echo $this->html->image('featured_on.png', array()); ?>
 	</div>
 
