@@ -105,18 +105,45 @@ class CreateDashboard extends \lithium\console\Command  {
 				
 				current_total = Number(doc.subTotal);
 				
-				if (doc.promo_discount != null) {
+				if (doc.promo_discount != null && doc.promo_type != "free_shipping") {
 					if(doc.promo_actual != null && doc.date_created > new Date("March 04, 2011 12:34:00")) {
 						current_total += Number(doc.promo_actual);
 					} else {
-						current_total += Number(doc.promo_discount);
+						if(doc.date_created > new Date("October 06, 2011 05:57:00")) {
+							current_total -= Number(doc.promo_discount);
+						}
+						else
+						{
+							current_total += Number(doc.promo_discount);
+						}
 					}
 				}
 				if (doc.discount != null) {
-					current_total += Number(doc.discount);
+					if(doc.date_created > new Date("October 06, 2011 05:57:00")) {
+						current_total -= Number(doc.discount);
+					}
+					else
+					{
+						current_total += Number(doc.discount);
+					}
 				}
 				if (doc.credit_used != null) {
-					current_total += Number(doc.credit_used);
+					if(doc.date_created > new Date("October 06, 2011 05:57:00")) {
+						current_total -= Number(doc.credit_used);
+					}
+					else
+					{
+						current_total += Number(doc.credit_used);
+					}
+				}
+				
+				if(doc.date_created > new Date("October 06, 2011 05:57:00")) {
+					if (doc.handlingDiscount != null) {
+						current_total -= Number(doc.handlingDiscount);
+					}
+					if (doc.overSizeHandlingDiscount != null) {
+						current_total -= Number(doc.overSizeHandlingDiscount);
+					}
 				}
 				
 				current_total += 
@@ -137,17 +164,32 @@ class CreateDashboard extends \lithium\console\Command  {
 				prev.count++;
 				prev.subTotal += Number(doc.subTotal);
 				prev.product += Number(doc.subTotal);
-				prev.handling += Number(doc.handling);
-				prev.handling_total += Number(doc.handling);
+				if(doc.date_created > new Date("October 06, 2011 05:57:00") && doc.handlingDiscount != null) {
+					prev.handling += Number(doc.handling) - Number(doc.handlingDiscount);
+					prev.handling_total += Number(doc.handling) - Number(doc.handlingDiscount);
+				}
+				else
+				{
+					prev.handling += Number(doc.handling);
+					prev.handling_total += Number(doc.handling);
+				}
+				
 				if (doc.overSizeHandling != null) {
-					prev.overSizeHandling += Number(doc.overSizeHandling);
-					prev.handling_total += Number(doc.overSizeHandling);
+					if(doc.date_created > new Date("October 06, 2011 05:57:00") && doc.overSizeHandlingDiscount != null) {
+						prev.overSizeHandling += Number(doc.overSizeHandling) - Number(doc.overSizeHandlingDiscount);
+						prev.handling_total += Number(doc.overSizeHandling) - Number(doc.overSizeHandlingDiscount);
+					}
+					else
+					{
+						prev.overSizeHandling += Number(doc.overSizeHandling);
+						prev.handling_total += Number(doc.overSizeHandling);
+					}
 				}
 				prev.tax += Number(doc.tax);
 				
 				prev.total += Number(doc.total);
 				
-				if (doc.promo_discount != null) {
+				if (doc.promo_discount != null && doc.promo_type != "free_shipping") {
 					if(doc.promo_actual != null && doc.date_created > new Date("March 04, 2011 12:34:00")) {
 						prev.promo_discount += Number(doc.promo_actual);
 						prev.product += Number(doc.promo_actual);
@@ -227,14 +269,32 @@ class CreateDashboard extends \lithium\console\Command  {
 					if(doc.promo_actual != null && doc.date_created > new Date("March 04, 2011 12:34:00")) {
 						current_total += Number(doc.promo_actual);
 					} else {
-						current_total += Number(doc.promo_discount);
+						if(doc.date_created > new Date("October 06, 2011 05:57:00")) {
+							current_total -= Number(doc.promo_discount);
+						}
+						else
+						{
+							current_total += Number(doc.promo_discount);
+						}
 					}
 				}
 				if (doc.discount != null) {
-					current_total += Number(doc.discount);
+					if(doc.date_created > new Date("October 06, 2011 05:57:00")) {
+						current_total -= Number(doc.discount);
+					}
+					else
+					{
+						current_total += Number(doc.discount);
+					}
 				}
 				if (doc.credit_used != null) {
-					current_total += Number(doc.credit_used);
+					if(doc.date_created > new Date("October 06, 2011 05:57:00")) {
+						current_total -= Number(doc.credit_used);
+					}
+					else
+					{
+						current_total += Number(doc.credit_used);
+					}
 				}
 				
 				current_total += 
@@ -273,16 +333,28 @@ class CreateDashboard extends \lithium\console\Command  {
 						prev.service_handling_discount += Number(doc.handlingDiscount);
 					else
 						prev.promo_handling_discount += Number(doc.handlingDiscount);
-					prev.handling_total += Number(doc.handlingDiscount);
-					prev.total += Number(doc.handlingDiscount);
+					if(doc.date_created > new Date("October 06, 2011 05:57:00")) {
+						prev.handling -= Number(doc.handlingDiscount);
+					}
+					else
+					{
+						prev.handling_total += Number(doc.handlingDiscount);
+						prev.total += Number(doc.handlingDiscount);
+					}
 				}
 				if (doc.overSizeHandlingDiscount != null) {
 					if (doc.service == "freeshipping")
 						prev.service_overSizeHandling_discount += Number(doc.overSizeHandlingDiscount);
 					else
 						prev.promo_overSizeHandling_discount += Number(doc.overSizeHandlingDiscount);
-					prev.handling_total += Number(doc.overSizeHandlingDiscount);
-					prev.total += Number(doc.overSizeHandlingDiscount);
+					if(doc.date_created > new Date("October 06, 2011 05:57:00")) {
+						prev.overSizeHandling -= Number(doc.overSizeHandlingDiscount);
+					}
+					else
+					{
+						prev.handling_total += Number(doc.overSizeHandlingDiscount);
+						prev.total += Number(doc.overSizeHandlingDiscount);
+					}
 				}
 				
 			}'
