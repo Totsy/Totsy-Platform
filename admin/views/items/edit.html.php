@@ -195,6 +195,18 @@ tinyMCE.init({
 								</td>
 							</tr>
 						<?php endforeach ?>
+
+
+							<tr>
+								<td>
+									add a new size:
+								</td>
+								<td>
+									<?=$this->form->text("item_new_size");
+									?>
+								</td>
+							</tr>
+
 					</table>
 				</div>
 				<br>
