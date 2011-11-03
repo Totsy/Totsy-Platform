@@ -1,0 +1,1 @@
+<p>Spit out data like this: <?=$foo ?></p>
