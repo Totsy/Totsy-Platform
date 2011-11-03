@@ -1,18 +1,27 @@
+<script type="text/javascript"> 
+  function setIframe() {
+    var tiframe = document.getElementById('psm').innerHTML = '<iframe src="/static/signup-tracking.html" style="border:none;width:1px;height:1px;" marginheight="0" marginwidth="0" frameborder="0"></iframe>';
+  } 
+</script>
+
 	<hr />
 	<h2>Join with Facebook</h2>
 	<a href="javascript:;" onclick="fblogin();return false;"><img src="/img/sign_in_fb.png"></a>
 
 <h2 style="margin-top:30px;">Or Join with Email</h2>	
 <hr />
-<?php if (preg_match('/join/',$_SERVER['REQUEST_URI'])) {
-	print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/join\']);">'; }
-?>
-<?php if (preg_match('/register/',$_SERVER['REQUEST_URI'])) {
-	print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/register\']);">'; }
-?>
-<?php if (preg_match('/a/',$_SERVER['REQUEST_URI'])) {
-	print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/affiliate\']);">'; }
-?>
+<?php if (preg_match('/join/',$_SERVER['REQUEST_URI'])) { ?>
+	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/join']); return setIframe();">
+<? } ?>
+
+<?php if (preg_match('/register/',$_SERVER['REQUEST_URI'])) { ?>
+	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/register']); return setIframe();"> 
+<? } ?>
+
+<?php if (preg_match('/a/',$_SERVER['REQUEST_URI'])) { ?>
+	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/affiliate']); return setIframe();">
+<? } ?>
+
 	<?=$this->form->label('email', 'Email <span>*</span>', array(
 		'escape' => false,
 		'class' => 'required'
@@ -71,3 +80,5 @@
 	<?=$this->form->error('terms'); ?>
 	
 <?=$this->form->end(); ?>
+
+<div id="psm" style="display:none;"></div>
