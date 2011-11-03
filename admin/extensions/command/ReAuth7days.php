@@ -43,82 +43,85 @@ class ReAuth7days extends \lithium\console\Command {
 							'date_created' => array('$lte' => new MongoDate($limitDate))
 		);
 		$orders = $ordersCollection->find($conditions);
-		foreach ($orders as $order) {
-			#Check If There were already ReAuthorization Records
-			if(!empty($order['auth_records'])) {
-				$lastDate = $order['date_created'];
-				foreach($order['auth_records'] as $record) {
-					if($lastDate->sec < $record['date_saved']->sec) {
-						$lastDate = $record['date_saved'];
+		if(!empty($orders)) {
+			foreach ($orders as $order) {
+				$reAuth = false;
+				#Check If There were already ReAuthorization Records
+				if(!empty($order['auth_records'])) {
+					$lastDate = $order['date_created'];
+					foreach($order['auth_records'] as $record) {
+						if($lastDate->sec < $record['date_saved']->sec) {
+							$lastDate = $record['date_saved'];
+						}
 					}
-				}
-				if($lastDate->sec <= $limitDate) {
+					if($lastDate->sec <= $limitDate) {
+						$reAuth = true;
+					}
+				} else {
 					$reAuth = true;
 				}
-			} else {
-				$reAuth = true;
-			}
-			if($reAuth) {
-				#Decrypt Credit Card Infos
-				if(!empty($order['cc_payment'])) {
-					$cc_encrypt = $order['cc_payment'];
-					$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
-					$iv =  base64_decode($order['cc_payment']['vi']);
-					$key = md5($order['user_id']);
-					unset($cc_encrypt['vi']);
-					foreach	($cc_encrypt as $k => $cc_info) {
-						$crypt_info = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key.sha1($k), base64_decode($cc_info), MCRYPT_MODE_CFB, $iv);
-						$creditCard[$k] = $crypt_info;
-					}
-					#If Credit Card Has Been well Decrypted
-					if(!empty($creditCard)) {
-						try {
-							#Save Old AuthKey with Date
-							$newRecord = array('authKey' => $order['authKey'], 'date_saved' => new MongoDate());
-							#Cancel Previous Transaction
-							$authVoid = Payments::void('default', $order['authKey']);
+				if($reAuth) {
+					#Decrypt Credit Card Infos
+					if(!empty($order['cc_payment'])) {
+						$cc_encrypt = $order['cc_payment'];
+						$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
+						$iv =  base64_decode($order['cc_payment']['vi']);
+						$key = md5($order['user_id']);
+						unset($cc_encrypt['vi']);
+						foreach	($cc_encrypt as $k => $cc_info) {
+							$crypt_info = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key.sha1($k), base64_decode($cc_info), MCRYPT_MODE_CFB, $iv);
+							$creditCard[$k] = $crypt_info;
+						}
+						#If Credit Card Has Been well Decrypted
+						if(!empty($creditCard)) {
 							try {
-								$card = Payments::create('default', 'creditCard', $creditCard + array(
-									'billing' => Payments::create('default', 'address', array(
-										'firstName' => $order['billing']['firstname'],
-										'lastName'  => $order['billing']['lastname'],
-										'address'   => trim($order['billing']['address'] . ' ' . $order['billing']['address2']),
-										'city'      => $order['billing']['city'],
-										'state'     => $order['billing']['state'],
-										'zip'       => $order['billing']['zip'],
-										'country'   => $order['billing']['country']
-								))
-								));
-								#Create a new Transaction and Get a new Authorization Key
-								$auth = Payments::authorize('default', $order['total'], $card);
-								#Setup new AuthKey
-								$update = $ordersCollection->update(
-										array('_id' => $order['_id']),
-										array('$set' => array('authKey' => $auth)), array( 'upsert' => true)
-								);
-								#Add to Auth Records Array
-								$update = $ordersCollection->update(
-										array('_id' => $order['_id']),
-										array('$push' => array('auth_records' => $newRecord)), array( 'upsert' => true)
-								);
-								$updated++;
+								#Save Old AuthKey with Date
+								$newRecord = array('authKey' => $order['authKey'], 'date_saved' => new MongoDate());
+								#Cancel Previous Transaction
+								$authVoid = Payments::void('default', $order['authKey']);
+								try {
+									$card = Payments::create('default', 'creditCard', $creditCard + array(
+										'billing' => Payments::create('default', 'address', array(
+											'firstName' => $order['billing']['firstname'],
+											'lastName'  => $order['billing']['lastname'],
+											'address'   => trim($order['billing']['address'] . ' ' . $order['billing']['address2']),
+											'city'      => $order['billing']['city'],
+											'state'     => $order['billing']['state'],
+											'zip'       => $order['billing']['zip'],
+											'country'   => $order['billing']['country']
+									))
+									));
+									#Create a new Transaction and Get a new Authorization Key
+									$auth = Payments::authorize('default', $order['total'], $card);
+									#Setup new AuthKey
+									$update = $ordersCollection->update(
+											array('_id' => $order['_id']),
+											array('$set' => array('authKey' => $auth)), array( 'upsert' => true)
+									);
+									#Add to Auth Records Array
+									$update = $ordersCollection->update(
+											array('_id' => $order['_id']),
+											array('$push' => array('auth_records' => $newRecord)), array( 'upsert' => true)
+									);
+									$updated++;
+								} catch (TransactionException $e) {
+									$errors++;
+									$report['authorize_errors'][] = array(
+										'error_message' => $e->getMessage(), 
+										'order_id' => $order['order_id'], 
+										'authKey' => $order['authKey'], 
+										'total' => $order['total']
+									);
+								}
 							} catch (TransactionException $e) {
 								$errors++;
-								$report['authorize_errors'][] = array(
-									'error_message' => $e->getMessage(), 
-									'order_id' => $order['order_id'], 
-									'authKey' => $order['authKey'], 
-									'total' => $order['total']
+								$report['void_errors'][] = array(
+										'error_message' => $e->getMessage(), 
+										'order_id' => $order['order_id'], 
+										'authKey' => $order['authKey'], 
+										'total' => $order['total']
 								);
 							}
-						} catch (TransactionException $e) {
-							$errors++;
-							$report['void_errors'][] = array(
-									'error_message' => $e->getMessage(), 
-									'order_id' => $order['order_id'], 
-									'authKey' => $order['authKey'], 
-									'total' => $order['total']
-							);
 						}
 					}
 				}
