@@ -96,29 +96,26 @@ class ItemsController extends BaseController {
 			}
 			
 			//check for new size
-			
-			if ($this->request->ItemNewSize) {
-				
+			if ($this->request->data['item_new_size']) {
+
 				//new size
-				$newsize = $this->request->ItemNewSize;
+				$newsize = $this->request->data['item_new_size'];
 				
 				//make a sku
 				$newsku = Item::sku($item->vendor, $item->_vendor_style, $newsize, $item->color, $hash = 'md5');
 			
 				//update skus
-				
-				$item->skus[] = $newsku;
+				$data['skus'][] = $newsku;
 				
 				//update sale details array
-				$item->sale_details[$newsize] = array('sale_count'=>0);
+				$data['sale_details'][$newsize] = array('sale_count'=>0);
 				
 				//update details array
-				$item->details[$newsize] = 0;
+				$data['details'][$newsize] = 0;
 
 				//update skus details
-				$item->sku_details[$newsize] = $newsku;
-				
-			
+				$data['sku_details'][$newsize] = $newsku;
+
 			}			
 			
 			if ($item->save($data)) {
