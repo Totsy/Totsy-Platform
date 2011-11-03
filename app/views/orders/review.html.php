@@ -1,3 +1,8 @@
+<!-- JS for cart timer. -->
+<script type="text/javascript" src="/js/cart-timer.js"></script>
+<!-- JS for cart timer for individual items. -->
+<script type="text/javascript" src="/js/cart-items-timer.js"></script>
+
 <script type="text/javascript">	
 
 var discountErrors = new Object();
@@ -16,24 +21,19 @@ var discountErrors = new Object();
 		    discountErrors.credits=false;  
 		}
 		
-		$( function () {
-		    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	    
-			var now = new Date();
-			
-			$('#itemCounter').countdown( { until: itemExpires, onExpiry: refreshCart, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
-			
-			if (itemExpires < now) {
-				$('#itemCounter').html("<span class='over' style='color:#EB132C; padding:5px;'>No longer reserved</span>");
-			}
-			
-			function refreshCart() {
-				window.location.reload(true);
-			}
-			
-			//applying tooltip
-			$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
-			$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
-		});
+
+	var cartExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	
+
+	//set the timer on individual items in the cart
+	cartItemsTimer();
+	
+	//set the timer on the cart
+	cartTimer(cartExpires);
+	
+	//applying tooltip
+	$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
+	$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
+
 }); 
 	
 </script>
@@ -193,18 +193,13 @@ var discountErrors = new Object();
 				     <?php if(!empty($credit)): ?>
 				    	<strong>Add <a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a></strong> /
 				    <?php endif ?> 
-				    	<?php if(empty($promocode_disable)): ?>
-				    	<strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
-				    	<?php endif ?>
+					<strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
 				</div>
 				<div style="clear:both"></div>
 				<div id="promos_and_credit">
-				<?=$this->form->create(null); ?>
-					<?php if(empty($promocode_disable)): ?>
 				    <div id="promo" style="display:none">
-				    	<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo) ); ?>
+				    	<?=$this->view()->render(array('element' => 'promocode'), array( 'orderPromo' => $cartPromo, 'promocode_disable' => $promocode_disable)); ?>
 				    </div>
-				    <?php endif ?>
 				    <div id="cred" style="display:none; text-align:left !important">		
 				    	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
 				    </div>
@@ -309,58 +304,7 @@ var discountErrors = new Object();
 	<?=$this->form->end();?>
 </div>
 		
-<script type="text/javascript" charset="utf-8">
-		
-	$(".counter").each( function() {
-	    				
-	    var fecha  = parseInt(this.title);
-	    var itemExpires = new Date();
-	    var now = new Date();
-	    
-	    itemExpires = new Date(fecha);	
-	    
-	    var expireNotice = (itemExpires.valueOf() - 120000);
-	    expireNotice = new Date( expireNotice );
-	    
-	    //show 2 minutes notice
-	    if(expireNotice < now && itemExpires > now){
-	    	$("#" + this.id + "_display").html('<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item will expire in 2 minutes</div>');
-	    } 
-	    
-	   	//show item expired notice
-	    if(now > itemExpires) {
-	    	$("#" + this.id + "_display").html('<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>');
-	    }
-	    
-	    $("#" + this.id).countdown({until: expireNotice, 
-	    							expiryText: '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item will expire in 2 minutes</div>', 
-	    							layout: '{mnn}{sep}{snn} seconds',
-	    							onExpiry: resetTimer
-	    							});
-	    
-	    function refreshCart() {
-			window.location.reload(true);
-		}
-	    
-	    //call when item expires
-		function notifyEnding() {
-			$("#" + this.id).countdown('change', { expiryText: '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>', 
-													onExpiry: refreshCart});
-		
-			$("#" + this.id + "_display").html( '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>' );
-		}
-	    
-	    //call 2 minutes before the item expires							
-	    function resetTimer() {	
-	    	$("#" + this.id + "_display").html( $("#" + this.id).countdown('settings', 'expiryText') );
-			$("#" + this.id).countdown('change', { until: itemExpires, 
-												   expiryText: '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>',
-												    onExpiry: notifyEnding
-												   });
-		}							
-	});		
-				
-</script>	
+<script type="text/javascript" src="/js/cart-items-timer.js" charset="utf-8"></script>	
 	
 <div class="clear"></div>
 <?php else: ?>
@@ -372,26 +316,30 @@ var discountErrors = new Object();
 <?php endif ?>
 </div>
 <div id="modal" style="background:#fff!important; z-index:9999999999!important;">
-<?php
-    if(number_format((float) $total, 2) >= 35 && number_format((float) $total, 2) <= 44.99){
-        echo "<script type=\"text/javascript\">
-            $.post('/cart/modal',{modal: 'disney'},function(data){
-              //  alert(data);
-                if(data == 'false'){
-                    $('#modal').load('/cart/upsell?subtotal=" . (float)$total ."&redirect=".$itemUrl."').dialog({
-                        autoOpen: false,
-                        modal:true,
-                        width: 550,
-                        height: 320,
-                        position: 'top',
-                        close: function(ev, ui) {}
-                    });
-                    $('#modal').dialog('open');
-                }
+
+<?php if(number_format((float) $total, 2) >= 35 && number_format((float) $total, 2) <= 44.99){ ?>
+<script type=\"text/javascript\">
+	var total = "<?=(float)$total?>";
+	var itemUrl = "<?=$itemUrl?>";
+
+    $.post('/cart/modal',{modal: 'disney'},function(data){
+      //  alert(data);
+        if(data == 'false'){
+            $('#modal').load('/cart/upsell?subtotal=' + total + '&redirect=' + itemUrl).dialog({
+                autoOpen: false,
+                modal:true,
+                width: 550,
+                height: 320,
+                position: 'top',
+                close: function(ev, ui) {}
             });
-            </script>";
-    }
-?>
+            
+            $('#modal').dialog('open');
+        }
+    });
+</script>;
+<?php } ?>
+
 </div>
 
 <script type="text/javascript" charset="utf-8">

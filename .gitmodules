@@ -28,4 +28,3 @@
 [submodule "libraries/_source/Imagine"]
 	path = libraries/_source/Imagine
 	url = git://github.com/avalanche123/Imagine.git
-

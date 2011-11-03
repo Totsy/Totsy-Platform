@@ -1,14 +1,34 @@
 <?=$this->html->script(array('jquery.nivo.slider.pack'));?>
-<div class="container_16">
-	<div class="grid_16">
-		<h2 class="page-title gray">Today's Sales</h2>
-		<hr />
-	</div>
-	<!--Disney -->
-	<div class="disney disney_splash">
-		<p><strong>SPECIAL BONUS!</strong> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value ) <span id="disney">Offer &amp; Refund Details</span></p>
-	</div>
+<script src="/js/jquery.tmpl.js" type="text/javascript"></script>
 
+<?=$this->html->script(array('cart-timer.js', 'cart-items-timer.js', 'cart-popup.js?v=001'));?>
+
+<!-- template used for items on cart. jquery.tmpl.js driven -->
+<?=$this->view()->render( array('element' => 'popupCartItems') ); ?>
+
+<script>
+(function($) {
+	$.fn.rotate = function() {
+		var container = $(this);
+		var totale = container.find("div").size();
+		var current = 0;
+		var i = setInterval(function() {
+			if (current >= totale) current = 0;
+			container.find("div").filter(":eq("+current+")").fadeIn("slow").end().not(":eq("+current+")").fadeOut("slow");
+			current++;
+		}, 5000);
+		return container;
+	};
+})(jQuery);
+</script>
+	<h2 class="page-title gray"><span class="_red">Today's Sales</span></h2>
+	<hr />
+		<!--Disney -->
+<!--	<div class="disney disney_splash">
+		<p><strong>SPECIAL BONUS!</strong> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/parents.png" align="absmiddle" width="95px" /> ( a $10 value ) <span id="disney">Offer &amp; Refund Details</span></p>
+	</div>
+-->
+<div class="fullwidth">
 	<?php $x = 0; ?>
 	<?php $y = 0; ?>
 	<?php foreach ($openEvents as $event): ?>
@@ -19,7 +39,7 @@
 		<?php if ($y == 1): ?>
 			<div class="grid_6">
 		<?php endif ?>
-		
+
 		<?php if (($y == 2) || ($y == 3)): ?>
 			<div class="grid_4">
 		<?php endif ?>
@@ -38,7 +58,7 @@
 							$productImage = ($x <= 1) ? "/img/no-image-large.jpeg" : "/img/no-image-small.jpeg";
 						}
 					?>
-					<?php 
+					<?php
 						if(empty($departments)) {
 							$url = $event->url;
 						} else {
@@ -141,7 +161,7 @@
 							'width' => '228',
 							'height' => '266'
 						)), 'sale/'.$event->url, array('escape'=> false));
-						 ?>				
+						 ?>
 				<div class="splash-details">
 						<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
 						 <p style="padding:0px; margin:0px; font-size:15px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
@@ -155,7 +175,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<?php $x++; ?>
 			<?php $y++; ?>
 	<?php endforeach ?>
@@ -183,31 +203,31 @@
 	$(document).ready(function() {
 		$("#banner_container").rotate();
 	});
-	
+
 	$(".counter").each( function () {
-			
-			var fecha  = parseInt(this.title);
-			var saleTime = new Date(fecha);
-			var now = new Date();
-			var diff = saleTime - (now.getTime());
-			
-			//check if its and end date or start date
-			if($("#" + this.id).hasClass("start"))
-			{
-				if((diff / 1000) < (24 * 60 * 60) ) {
-				    $("#" + this.id).countdown({until: saleTime, layout: 'Opens in {hnn}{sep}{mnn}{sep}{snn}'});
-				} else {
-				    $("#" + this.id).countdown({until: saleTime, layout: 'Opens in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
-				}
-			} else {
-				if((diff / 1000) < (24 * 60 * 60) ) {
-					$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {hnn}{sep}{mnn}{sep}{snn}'});
-				} else {
-					$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
-				}
-			} 
+
+		var fecha  = parseInt(this.title);
+		var saleTime = new Date(fecha);
+		var now = new Date();
+		var diff = saleTime - (now.getTime());
+
+		//check if its and end date or start date
+		if($("#" + this.id).hasClass("start"))
+		{
+		    if((diff / 1000) < (24 * 60 * 60) ) {
+		        $("#" + this.id).countdown({until: saleTime, layout: 'Opens in {hnn}{sep}{mnn}{sep}{snn}'});
+		    } else {
+		        $("#" + this.id).countdown({until: saleTime, layout: 'Opens in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+		    }
+		} else {
+		    if((diff / 1000) < (24 * 60 * 60) ) {
+		    	$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {hnn}{sep}{mnn}{sep}{snn}'});
+		    } else {
+		    	$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+		    }
+		}
 	 });
-			
+
 //-->
 </script>
 <script type="text/javascript">
@@ -241,13 +261,33 @@
 </script>
 
 <script type="text/javascript" src="http://www.googleadservices.com/pagead/conversion.js"></script>
-
 <noscript>
 	<div style="display:inline;">
 		<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=E1ZLCMH8igIQ9Yb-5QM&amp;guid=ON&amp;script=0"/>
 	</div>
 </noscript>
-<!-- END OF Google Code for inscrits Remarketing List --> 
+<!-- END OF Google Code for inscrits Remarketing List -->
+
+<!-- Google Code for Signups Conversion Page -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var google_conversion_id = 1019183989;
+var google_conversion_language = "en";
+var google_conversion_format = "1";
+var google_conversion_color = "ffffff";
+var google_conversion_label = "AVJ-CKmdmgIQ9Yb-5QM";
+var google_conversion_value = 0;
+/* ]]> */
+</script>
+<script type="text/javascript" src="http://www.googleadservices.com/pagead/conversion.js">
+</script>
+<noscript>
+<div style="display:inline;">
+<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=AVJ-CKmdmgIQ9Yb-5QM&guid=ON&script=0"/>
+</div>
+</noscript>
+<!-- END Google Code for Signups Conversion Page -->
+
 <script>
 (function($) {
 	$.fn.rotate = function() {
@@ -276,4 +316,4 @@ f+='&'+key+'='+encodeURIComponent(cto_params[key]);}if(cto_params['kw']!=undefin
 c+='&cb='+Math.floor(Math.random()*99999999999);try{c+='&ref='+encodeURIComponent(document.referrer);}catch(e){}try{
 c+='&sc_r='+encodeURIComponent(screen.width+'x'+screen.height);}catch(e){}try{c+='&sc_d='+encodeURIComponent(screen.colorDepth);}catch(e){}b.Load(function(){
 a(c.substring(0,2000))})}}}();CRITEO.Load(document.location.protocol+'//dis.us.criteo.com/dis/dis.aspx?');
-</script> 
+</script>

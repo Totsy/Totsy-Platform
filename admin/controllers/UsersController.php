@@ -10,6 +10,7 @@ use lithium\util\String;
 use admin\models\Cart;
 use admin\models\Credit;
 use admin\models\Order;
+use admin\models\Promotion;
 use MongoId;
 use MongoDate;
 use admin\extensions\Mailer;
@@ -48,8 +49,14 @@ class UsersController extends \admin\controllers\BaseController {
 			'Date',
 			'Reason',
 			'Description',
-			'Amount'
-	));
+			'Amount'),
+		'promo' => array(
+			'Date',
+			'Order Id',
+			'Code',
+			'Type'
+		)
+	);
 
 	public function index() {
 		if ($this->request->data) {
@@ -66,6 +73,7 @@ class UsersController extends \admin\controllers\BaseController {
 				'first', array(
 					'conditions' => array('_id' => $id)
 			));
+			$promocodes_used = Promotion::find('all', array('conditions' => array('user_id' => $user['_id'])));
 			if ($user) {
 				$headings = $this->_headings;
 				$reasons = array(
@@ -110,7 +118,7 @@ class UsersController extends \admin\controllers\BaseController {
 			}
 		}
 
-		return compact('user', 'credits', 'orders', 'headings', 'info', 'reasons', 'admin', 'deactivated');//,'history');
+		return compact('user', 'credits', 'orders', 'headings', 'info', 'reasons', 'admin', 'deactivated', 'promocodes_used');
 	}
 	/**
 	 * Performs login authentication for a user going directly to the database.

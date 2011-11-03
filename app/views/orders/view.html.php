@@ -127,7 +127,7 @@
 		}?>
 	</div>
 	<div class="clear"></div>
-	<div class="grid_4">
+	<div class="grid_3">
 		<strong>Shipping Address</strong>
 		<hr />
 		<?=$order->shipping->firstname;?> <?=$order->shipping->lastname;?>							
@@ -138,12 +138,12 @@
 		<br />
 		<br />	
 	</div>
-	<div class="grid_4">
+	<div class="grid_3">
 		<strong>Payment Method</strong>
 		<hr />
 		<?=strtoupper($order->card_type)?> XXXX-XXXX-XXXX-<?=$order->card_number?>
 	</div>
-	<div class="grid_3">
+	<div class="grid_5">
 		<strong>Order Information</strong>
 		<hr />
 		Order Subtotal: <span class="fr">$<?=number_format($order->subTotal,2); ?></span>
@@ -152,11 +152,11 @@
 		Credit Applied: <span class="fr">-$<?=number_format(abs($order->credit_used),2); ?></span>
 			<br>
 		<?php endif ?>
-		<?php if (($order->promo_discount) && ($order->promo_type != 'free_shipping') && empty($order->promocode_disable)): ?>
-		Promotion Discount: <span class="fr">-$<?=number_format(abs($order->promo_discount),2); ?></span>
+		<?php if (($order->promo_discount) && empty($order->promocode_disable)): ?>
+		Promotion Discount [<?=$order->promo_code?>]: <span class="fr">-$<?=number_format(abs($order->promo_discount),2); ?></span>
 			<br>
 		<?php endif ?>
-		<?php if (($order->discount) && ($order->service[0] != 'freeshipping')): ?>
+		<?php if ($order->discount): ?>
 		Discount: <span class="fr">-$<?=number_format(abs($order->discount),2); ?></span>
 			<br>
 		<?php endif ?>
@@ -232,7 +232,6 @@
 	var productID = "77";
 	var position = "1";
 	var orderID ="<?=$order->order_id?>"; //To be filled in by site
-
 	var orderAmt ="<?=$order->total?>"; //To be filled in by site
 	var command = "REPORT"
 	var upsellit_tag = "<scr" + "ipt " + "SRC='http" + (document.location.protocol=='https:'?'s://www':'://www') + ".upsellit.com/upsellitReporting.jsp?command="+command+"&siteID=" + siteID + "&productID=" + productID + "&position=" + position + "&orderID=" + orderID + "&orderAmt=" + orderAmt +"'><\/scr" + "ipt>";
@@ -260,21 +259,31 @@
 			<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=SeX0CLn9igIQ9Yb-5QM&amp;guid=ON&amp;script=0"/>
 		</div>
 	</noscript>
+	
+	<?php
+		//srting of GET variables passed into criteo link
+		$criteoVars = "";
+		$iCounter = 1;
+		
+		foreach($itemsByEvent as $event){
+		     foreach($event as $item) {
+		     	$criteoVars .=
+		     	"&i". $iCounter ."=". (string) $item['item_id'] ."&p". $iCounter ."=". $item['sale_retail'] ."&q". $iCounter ."=". $item['quantity'];
+		    	$iCounter++;
+		    }
+		}
+	?>
+	
+	<script type="text/javascript">
+	
+		var criteoVars = "<?=$criteoVars?>";
+		
+		//now using global JS variables 
+		document.write("<img src=\"" + document.location.protocol + "//dis.us.criteo.com/dis/dis.aspx?p1=" + escape("v=2&wi=7714288&s=1&t=" + orderID + criteoVars ) + "&t1=transaction&p=3290&c=2&resptype=gif\" width=\"1\" height=\"1\" />");
+	
+	</script>
+			
 	<!-- END OF Google Code for acheteurs Remarketing List --> 
 	<!--  E-COMMERCE -->
-	<script type="text/javascript">
-	document.write("<img src=\""+document.location.protocol+"//dis.us.criteo.com/dis/dis.aspx?p1="+escape("v=2&wi=7714288&s=1&t=<?=$order->order_id?>"<?php
-		    $iCounter = 1;
-			foreach($itemsByEvent as $event){
-				 foreach($event as $item){
-				 	?>&i<?=$iCounter;?>=<?php echo (string) $item['_id'];?>&<?php
-				 	?>p<?=$iCounter;?>=<?=$item['sale_retail']?>&<?php
-				 	?>q<?=$iCounter;?>=<?=$item['quantity']?><?php
-	
-					$iCounter++;
-				}
-			}
-	?>")+"&t1=transaction&p=3290&c=2&resptype=gif\" width=\"1\" height=\"1\" />");
-	</script>
-	<!--  END OF E-COMMERCE -->
+		<!--  END OF E-COMMERCE -->
 <?php endif ?>

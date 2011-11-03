@@ -1,4 +1,3 @@
-<?php ini_set("display_erros", 0); ?>
 <?php
 
 use admin\models\Event;
@@ -51,10 +50,11 @@ $(document).ready(function(){
 
 tinyMCE.init({
 	// General options
-	mode : "textareas",
+	mode : "exact",
+	elements: "Blurb,ShipMessage,"+allitemids,
 	theme : "advanced",
 	plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,preview,searchreplace,print,contextmenu,paste,directionality,noneditable,visualchars,nonbreaking,xhtmlxtras",
-
+	editor_deselector : "mceNoEditor",
 	// Theme options
 	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull",
 
@@ -97,7 +97,7 @@ for ( i=1; i<6; i++ ) {
 	var related_item_id = 'related'+ i + '_' + item_id;
 	//if its not the current dropdown
 	//and its value is the same as the current dropdown's value AND
-	//the item's value isn't an empty string
+	//the item's value isnt an empty string
 	//than throw an alert message
 	if(i!=list_position && $("#" + related_item_id + " option:selected").val()!=="" ) {
 
@@ -175,6 +175,33 @@ for ( i=1; i<6; i++ ) {
 
 
 </script>
+<script type="text/javascript" charset="utf-8">
+	var limit = <?=$shortDescLimit;?>;
+	$(document).ready(function() {
+
+		$('#Short').keyup(function(){
+			return limitTextArea($(this),$('#short_description_characters_counter'),limit);
+		});
+
+		$('#Short').focusout(function(){
+			return limitTextArea($(this),$('#short_description_characters_counter'),limit);
+		});
+	});
+
+	function limitTextArea(text,info,limiter){
+		var len = text.val().length;
+		if (len>limiter){
+			text.val(text.val().substr(0,limiter));
+			$('#short_description_characters_counter').text(limiter);
+			return false;
+		} else {
+			$('#short_description_characters_counter').text(len);
+			return true;
+		}
+	}
+</script>
+
+
 
 <!-- Sorting of primary/secondary event item images -->
 <script>
@@ -199,7 +226,7 @@ $(function() {
 	});
 });
 </script>
-<?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
+<?=$this->form->create(null, array('id' => "events_edit", 'enctype' => "multipart/form-data")); ?>
 <div class="grid_16">
 	<h2>Editing Event <em><?=$event->name; ?></em></h2>
 </div>
@@ -230,11 +257,25 @@ $(function() {
 				<?=$this->form->field('name', array('value' => $event->name, 'class' => 'general'));?>
 
 				<div id="blurb_div">
-					<?=$this->form->field('blurb', array(
-						'type' => 'textarea', 'name' => 'content', 'value' => $event->blurb
-					));?>
-					<br>
+					<?=$this->form->field('blurb', array('type' => 'textarea',
+														 'name' => 'content',
+														 'value' => $event->blurb ));?><br>
 				</div>
+			    <div style="width:450px;">
+			    	<?=$this->form->field('short', array('type' => 'textarea',
+			    										 'name' => 'short_description',
+			    										 'class' => 'mceNoEditor shortDescription',
+			    										 'value' => isset($event->short)?$event->short:'' ));?>
+			    	<div id="short_description_characters_wrapper">
+			    		Total:
+			    		<span id="short_description_characters_counter">
+			    			<? if(isset($event->short)) {
+			    			   		echo strlen($event->short);
+			    			   } else {
+			    			   		echo '0';
+			    			   }?>
+			    		</span>/<?=$shortDescLimit;?></div>
+			    </div>
 				<div id="event_status">
 					<h4 id="event_status">Event Status</h4>
 					<?php if ($event->enabled == 1): ?>
@@ -252,6 +293,18 @@ $(function() {
 					<input type="radio" name="tangible" value="1" id="tangible" <?php if ($event->tangible == 1) echo 'checked'; ?> > Tangible <br>
 					<input type="radio" name="tangible" value="0" id="tangible" <?php if ($event->tangible == 0) echo 'checked'; ?> > Non Tangible
 				</div>
+		<div id="event_viewlive">
+			<h2 id="event_type">View Live Anyway</h2>
+		 (allows direct url access to event even if otherwise disabled)<br>
+			<input type="radio" name="viewlive" value="1" id="viewlive" <?php if ($event->viewlive == 1) echo 'checked'; ?>> Direct URL <br>
+			<input type="radio" name="viewlive" value="0" id="viewlive" <?php if ($event->viewlive == 0) echo 'checked'; ?>> Not Viewable
+		</div>
+
+		<div id="event_clearance">
+			<h2 id="event_type">Clearance</h2>
+			<input type="radio" name="clearance" value="1" id="clearance" <?php if ($event->clearance == 1) echo 'checked'; ?>> Clearance <br>
+			<input type="radio" name="clearance" value="0" id="clearance" <?php if ($event->clearance == 0) echo 'checked'; ?>> Not Clearance
+		</div>
 
 				<div id="event_duration">
 					<h4 id="event_duration">Event Duration</h4>
@@ -270,10 +323,13 @@ $(function() {
 						));
 					?>
 				</div>
-				<?=$this->form->label('Departments')?><br />
+				<?=$this->form->label('Departments'); ?><br />
 
+
+
+				<br><br>
 				<table>
-					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?>
+					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple','value' => $sel_filters)); ?>
 				</table>
 
 				<div id="tags">
@@ -339,28 +395,35 @@ $(function() {
 		<div id="event_items">
 			<h3 id="">Item Management</h3>
 			<hr />
-			<h3 id="">Upload Items</h3>
-            <hr />
-			<p>Please select the default option for all items being uploaded:</p>
-				<input type="radio" name="enable_items" value="1" id="enable_items"> Enable All <br>
-				<input type="radio" name="enable_items" value="0" id="enable_items" checked> Disable All <br><br>
-			<p>Add "Final Sale" to the item description?:</p>
-				<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
-				<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
-				<?=$this->form->file('upload_file'); ?>
-				<?=$this->form->submit('Update Event')?>
-				<?=$this->form->label('Upload Event (Excel Files): '); ?>
-<!--
-		<iframe id="upload_frame" name="upload_frame" src="/events/upload/<?=$event->_id?>" frameborder=0 scrolling=no width=400 height=250></iframe>
-		<div id="upload_error" name="upload_error" style="color:#ff0000; width:400px; float:right; height:250px; overflow:scroll;">(spreadsheet upload errors will appear here)</div>
 
--->
-			<br><br>
+			<div style="width:300px; height:400px; float:left">
+				<h3 id="">Upload Items</h3>
+	            <hr />
+				<p>Please select the default option for all items being uploaded:</p>
+					<input type="radio" name="enable_items" value="1" id="enable_items"> Enable All <br>
+					<input type="radio" name="enable_items" value="0" id="enable_items" checked> Disable All <br><br>
+				<p>Add "Final Sale" to the item description?:</p>
+					<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
+					<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
+
+					<!--
+					<?=$this->form->label('Upload Event (Excel Files): '); ?>
+					<?=$this->form->file('upload_file'); ?>
+					-->
+
+				<?=$this->form->field('items_submit', array('type' => 'textarea', 'rows' => '7', 'cols' => '50', 'name' => 'ItemsSubmit'));?><br>
 
 
-            <hr />
-			<br><br>
+			<?=$this->form->submit('Update Event')?>
 			<?=$this->form->end(); ?>
+			</div>
+
+			<div id="items_errors" name="items_errors" style="float:right; width:500px; height:400px;overflow:scroll;"></div>
+
+			<div style="clear:both; height:30px;"></div>
+
+
+
 			<h3 id="current_items">Current Items</h3>
 
             <hr />
@@ -375,15 +438,14 @@ $(function() {
 				</div>
 
 				<div style="float:right; font: bold; font-size: 18px;">
-					<?=$this->form->submit('Update Items'); ?>
-				</div>
-				<br />
-				<br />
-
+			<?=$this->form->submit('Update Event')?>
+							</div>
+				<br \>
+				<br \>
 				<?=$this->items->build($eventItems);?>
 
 				<div style="float:right; font: bold; font-size: 18px;">
-					<?=$this->form->submit('Update Items'); ?>
+					<?=$this->form->submit('Update Event')?>
 				</div>
 			<?=$this->form->end(); ?>
 

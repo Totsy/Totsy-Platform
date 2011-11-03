@@ -283,6 +283,7 @@ class OrdersController extends BaseController {
 		$shipDate = Cart::shipDate($cart);
 		#Get Value Of Each and Sum It
 		$subTotal = 0;
+		$cartExpirationDate = 0;
 		foreach ($cart as $cartValue) {
 			#Get Last Expiration Date 
 			if ($cartExpirationDate < $cartValue['expires']->sec) {
@@ -306,8 +307,14 @@ class OrdersController extends BaseController {
 			$shippingCost = Cart::shipping($cart, $shippingAddr);
 			$overShippingCost = Cart::overSizeShipping($cart);
 		}
+		#Getting Tax by Avatax
+		$avatax = AvaTax::getTax(compact(
+			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
+			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'));
+		
+		$tax = (float) $avatax['tax'];
 		#Get current Discount
-		$vars = Cart::getDiscount($subTotal, $shippingCost, $overShippingCost,$this->request->data);
+		$vars = Cart::getDiscount($subTotal, $shippingCost, $overShippingCost, $this->request->data, $tax);
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
 		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
@@ -321,13 +328,8 @@ class OrdersController extends BaseController {
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
 			$shipping_discount = $shippingCost + $overShippingCost;
 		}
-		#Getting Tax by Avatax
-		$avatax = AvaTax::getTax(compact(
-			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
-			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'));
-		$tax = $avatax['tax'];
 		#Calculate Order Total
-		$total = $vars['postDiscountTotal'] + $tax;
+		$total = $vars['postDiscountTotal'];
 		#Read Credit Card Informations
 		$creditCard = Order::creditCardDecrypt((string)$user['_id']);
 		#Disable Promocode Uses if Services
