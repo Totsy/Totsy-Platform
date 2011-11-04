@@ -102,6 +102,7 @@ class ItemsController extends BaseController {
 						if($quantity >= (int) $item->voucher_max_use) {
 							$voucher_disable = true;
 						}
+						$this->_render['template'] = 'dailydeals';
 					}
 				}
 			}
