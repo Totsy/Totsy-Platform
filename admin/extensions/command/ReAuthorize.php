@@ -141,6 +141,7 @@ class ReAuthorize extends \lithium\console\Command {
 			Mailer::send('ReAuth_Errors','searnest@totsy.com', $report);
 			Mailer::send('ReAuth_Errors','mruiz@totsy.com', $report);
 			Mailer::send('ReAuth_Errors','gene@totsy.com', $report);
+			Mailer::send('ReAuth_Errors','troyer@totsy.com', $report);
 		}
 		echo 'ReAuth Script Runned, ' . $updated . ' Orders Updated ' . $errors . ' Errors Found. ';
 	}
