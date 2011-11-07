@@ -70,7 +70,6 @@ class Order extends Base {
 				$items[] = $item;
 				++$inc;
 			}
-
 			$auth = $payments::authorize('default', $vars['total'], $card);
 
 			if (!$auth->success()) {
