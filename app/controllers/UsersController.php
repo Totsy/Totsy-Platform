@@ -54,7 +54,7 @@ class UsersController extends BaseController {
 		}
 		$referer = parse_url($this->request->env('HTTP_REFERER'));
 		if ($referer['host']==$this->request->env('HTTP_HOST') && preg_match('(/sale/)',$referer['path'])){
-			Session::write('landing',$referer['path']);
+			Session::write('landing',$referer['path'],array('name'=>'default'));
 		}
 		unset($referer);
 		if (isset($data) && $this->request->data) {
@@ -116,7 +116,7 @@ class UsersController extends BaseController {
 					$landing = Session::read('landing'); 
 				} 
 				if (!empty($landing)){
-					Session::write('landing',null);
+					Session::delete('landing',array('name'=>'default'));
 					$this->redirect($landing);
 					unset($landing);
 				} else {
@@ -577,7 +577,7 @@ class UsersController extends BaseController {
 				$landing = Session::read('landing'); 
 			} 
 			if (!empty($landing)){
-				Session::write('landing',null);
+				Session::delete('landing',array('name'=>'default'));
 				$this->redirect($landing);
 				unset($landing);
 			} else {
@@ -626,7 +626,7 @@ class UsersController extends BaseController {
 					$landing = Session::read('landing'); 
 				} 
 				if (!empty($landing)){
-					Session::write('landing',null);
+					Session::delete('landing',array('name'=>'default'));
 					$self->redirect($landing);
 					unset($landing);
 				} else {
@@ -644,30 +644,6 @@ class UsersController extends BaseController {
 		}
 		return static::$_instances[$class];
 	}
-	
-	protected function rememberLandingPage($self=null){
-		if(is_null($self)){
-			$self = $this;
-		}
-
-	}
-
-	protected function goToRememberedLandingPage($self=null,$redirect='/sales'){
-		$landing = null;
-		if (is_null($self)){
-			$self = $this;
-		}
-		if (Session::check('landing')){
-			$landing = Session::read('landing'); 
-		} 
-		if (!empty($landing)){
-			Session::write('landing',null);
-			$redirect = $landing;
-			unset($landing);
-		}
-		 
-		$self->redirect($redirect);
-	} 
 	
 }
 
