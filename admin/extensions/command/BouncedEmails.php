@@ -53,6 +53,9 @@ class BouncedEmails extends \lithium\console\Command {
 		
 		if ($pid->already_running == false) {
 			$this->getCommandLineParams();
+			
+			//print_r($this);
+			
 			$this->runBouncer();
 		} else {
 			Logger::info('Already Running! Stoping Execution'."\n");
@@ -66,7 +69,11 @@ class BouncedEmails extends \lithium\console\Command {
 		Logger::info('STEP 1: request a report list data job');
 		$st = microtime(true);
 		//
-		$this->makeJob();
+		if (is_null($this->job_file)){
+			$this->makeJob();
+		} else {
+			$this->job_status = 'completed';
+		}
 		$et = microtime(true) - $st;
 		Logger::info('STEP 1: DONE. Execution time: '.$et);
 		
@@ -99,10 +106,9 @@ class BouncedEmails extends \lithium\console\Command {
 		Logger::info('STEP 3: download data file ('. $this->job_file .')');
 		$st = microtime(true);
 		//
-		//$this->downloader();
+		$this->downloader();
 		$et = microtime(true) - $st;
-		Logger::info('STEP 3: DONE. Execution time: '.$et);
-		$this->downloaded = 'c8ac6c0f1fbaead0376a538652d2e9fb';		
+		Logger::info('STEP 3: DONE. Execution time: '.$et);		
 
 		Logger::info('STEP 4: data parcer');
 		$st = microtime(true);
@@ -125,9 +131,9 @@ class BouncedEmails extends \lithium\console\Command {
 		Logger::info('STEP 5: DONE. Execution time: '.$et);
 		
 		Logger::info('STEP 6: Cleaning ... ');
-		if (file_exists($this->tmp_folder.$this->downloaded)){
-			unlink($this->tmp_folder.$this->downloaded);
-		}
+		//if (file_exists($this->tmp_folder.$this->downloaded)){
+		//	unlink($this->tmp_folder.$this->downloaded);
+		//}
 	}
 	
 	protected function makeJob(){
@@ -156,6 +162,10 @@ class BouncedEmails extends \lithium\console\Command {
 		$this->downloaded = md5(time());
 		//file handler for the remote file
 		$desctination = fopen($this->tmp_folder.$this->downloaded.'.dat','w');
+		if ($desctination == false){
+			Logger::info('Cannot open destination file: "'.$this->tmp_folder.$this->downloaded.'.dat"');
+			return;
+		}
 		//file handler for tmp file
 		$source = fopen($this->job_file,'r');
 		if (!$source){
@@ -166,9 +176,12 @@ class BouncedEmails extends \lithium\console\Command {
 		$down = 0;
 		//download 1024 bytes and write them into tmp file
 		while( $data=fread($source,1024)){
+			
 			fwrite($desctination, $data);
 			$down = $down + 1024;
 		}
+		Logger::info('Downloaded: '.$down.' bytes');
+		
 		//close remote file handler
 		fclose($source);
 		// close tmp file handler
@@ -179,6 +192,10 @@ class BouncedEmails extends \lithium\console\Command {
 		
 		$file = array();
 		$header = null;
+		if (!file_exists($this->tmp_folder.$this->downloaded.'.dat')){
+			Logger::info('File "'.$this->tmp_folder.$this->downloaded.'.dat" does not exist');
+			return $file;
+		}
 		if (($handle = fopen($this->tmp_folder.$this->downloaded.'.dat', 'r')) !== FALSE) {
 		    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 		    	if (empty($header)){ 
@@ -197,35 +214,33 @@ class BouncedEmails extends \lithium\console\Command {
 	
 	protected function addRecords($data){
 		$users = User::collection();
-		$bounced = EmailsBounced::collection();
-		
-		$base = array('date'=> new MongoDate(),'postman'=>$this->postman);
-		
+
 		foreach ($data as $key=>$value){
-			
-			$user = $users->find(array(
-								'email_hash'=>$value['email_hash']
-							))
-						  ->fields(array(
-						  	'email'=>true,
-						  	'invited_by'=>true
-						 ));
-						 
-			if ($user->hasNext()){
-				
-				$email_affiliate = $user->getNext();
-				unset($email_affiliate['_id']);
-				
-				$email_affiliate += $base + $value;
-				$bounced->insert($email_affiliate);
-				unset($email_affiliate);
-			}
+
+			$users->update(
+				array( 'email_hash' => $value['email_hash'] ),
+				array( '$set' => array( 
+									'email_engagement' => array(
+										'type' => $value['engagement'],
+										'date' => new MongoDate()
+									)
+								))
+			);
 		}
-		
 	}
 	
 	private function getCommandLineParams(){
-		$params = $this->request->params;
+		$args = $this->request->argv;
+		$params = array();
+		
+		foreach($args as $arg){
+			if ($arg{0} == '-'){
+				parse_str($arg,$a);
+				$key = preg_replace("/[\-]+/", '', key($a));
+				$params[ $key ] = $a[key($a)];
+			}
+		}
+		
 		$vars = get_class_vars(get_class($this));
 		foreach ($vars as $var=>$value){
 			if (array_key_exists($var,$params)){
