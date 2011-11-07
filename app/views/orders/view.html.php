@@ -122,9 +122,7 @@
 		</tr> <!-- end body of email -->
 	</table>
 	<div style="float:right;margin-right:135px;">
-		<?php if($new) {
-			echo $spinback_fb;
-		}?>
+		<?php // if($new) { echo $spinback_fb; } ?>
 	</div>
 	<div class="clear"></div>
 	<div class="grid_3">
@@ -181,6 +179,7 @@
 <?php else: ?>
 	<strong>Sorry, we cannot locate the order that you are looking for.</strong>
 <?php endif ?>
+<div class="clear"></div>
 </div>
 <!--- ECOMMERCE TRACKING -->
 <?php if ($brandNew): ?>

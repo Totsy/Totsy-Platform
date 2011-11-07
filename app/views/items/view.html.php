@@ -1,3 +1,16 @@
+<style>
+	.comment_content {z-index:999999!important;}
+</style>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=130085027045086";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
 <?=$this->html->script(array('cloud-zoom.1.0.2'));?>
 <script src="/js/jquery.tmpl.js" type="text/javascript"></script>
 
@@ -27,8 +40,8 @@
 				<?php if (!empty($item->primary_image)): ?>
 <div class="zoom-section">
 	<div class="zoom-small-image">
-    	<a href="/image/<?php echo $item->zoom_image; ?>.jpg" id="zoom1" class="cloud-zoom" rel="position: 'inside'" style="overflow:hidden;">
-    	<img src="/image/<?php echo $item->primary_image; ?>.jpg" alt="" border="0" title="" width="348"/></a>
+    	<a href="/image/<?php echo $item->zoom_image; ?>.{type}" id="zoom1" class="cloud-zoom" rel="position: 'inside'" style="overflow:hidden;">
+    	<img src="/image/<?php echo $item->primary_image; ?>.{type}" alt="" border="0" title="" width="348"/></a>
   	</div>
 
   	<!-- Start additional image view thumbnails -->
@@ -42,9 +55,9 @@
 					'height' => "75",
 					'alt' => "product-thumb-fpo",
 					'rel' => "full_img_1")),
-					"/image/{$item->primary_image}.jpg", array(
+					"/image/{$item->primary_image}.{type}", array(
 							'class' => "cloud-zoom-gallery",
-							'rel' => "useZoom: 'zoom1', smallImage: '/image/{$item->primary_image}.jpg'",
+							'rel' => "useZoom: 'zoom1', smallImage: '/image/{$item->primary_image}.{type}'",
 							'escape'=> false
 				));
 			}
@@ -53,15 +66,15 @@
 			<?php $x = 2; ?>
 			<?php foreach ($item->alternate_images as $value): ?>
 					<?=$this->html->link(
-					$this->html->image("/image/{$value}.jpg", array(
+					$this->html->image("/image/{$value}.{type}", array(
 						'class' => "zoom-tiny-image",
 						'width' => "75",
 						'height' => "75",
 						'alt' => "full_img_$x"
 						)),
-						"/image/$item->zoom_image.jpg", array(
+						"/image/$item->zoom_image.{type}", array(
 							'class' => "cloud-zoom-gallery",
-							'rel' => "useZoom: 'zoom1', smallImage: '/image/{$value}.jpg'",
+							'rel' => "useZoom: 'zoom1', smallImage: '/image/{$value}.{type}'",
 							'escape'=> false
 				));
 
@@ -88,16 +101,16 @@
 	</div>
 	<div id="detail-top-left"  style="width:405px;">
 		<h1><strong><?=$event->name?></strong> <?=$item->description." ".$item->color; ?></h1>
-	</div>
-		<div class="clear"></div>
-
+	</div>	
+		<iframe src="http://www.facebook.com/plugins/like.php?href=http://www.totsy.com/sale/<?= $event->url; ?>/<?= $item->url; ?>&amp;layout=standard&amp;show_faces=false&amp;action=recommend&amp;colorscheme=light" scrolling="no" frameborder="0" allowTransparency="true" style="margin:5px 0px 5px 0px; height:40px;"></iframe>
+<div class="clear"></div>
 		<div id="tabs">
 			<ul>
 			    <li><a href="#description">Description</a></li>
 			    <li><a href="#shipping">Shipping &amp; Returns</a></li>
 			    <!--<li><a href="#video"><span>Video</span></a></li>-->
 			</ul>
-
+			
 			<!-- Start Description Tab -->
 			<div id="description" class="ui-tabs-hide">
 				<?php echo $item->blurb; ?>
@@ -127,9 +140,9 @@
 		<?php foreach ($related as $relatedItem) {
 			if ($relatedItem['total_quantity'] >= 1){
 				if (empty($relatedItem['primary_image'])) {
-					$relatedImage = '/img/no-image-small.jpeg';
+					$relatedImage = '/img/no-image-small.{type}';
 				} else {
-					$relatedImage = "/image/".$relatedItem['primary_image'].".jpg";
+					$relatedImage = "/image/".$relatedItem['primary_image'].".{type}";
 				}
 				echo $this->html->link(
 					$this->html->image($relatedImage, array(
@@ -174,9 +187,6 @@
 				<div id="all-reserved"></div>
 			<?php endif ?>
 		</div>
-	</div>
-	<div style="padding:10px 0px; text-align:center !important;">
-	    <?php echo $spinback_fb; ?>
 	</div>
 </div>
 
@@ -278,4 +288,3 @@ c+='&cb='+Math.floor(Math.random()*99999999999);try{c+='&ref='+encodeURIComponen
 c+='&sc_r='+encodeURIComponent(screen.width+'x'+screen.height);}catch(e){}try{c+='&sc_d='+encodeURIComponent(screen.colorDepth);}catch(e){}b.Load(function(){
 a(c.substring(0,2000))})}}}();CRITEO.Load(document.location.protocol+'//dis.us.criteo.com/dis/dis.aspx?');
 </script>
-

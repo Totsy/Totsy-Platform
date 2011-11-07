@@ -3745,7 +3745,7 @@ div.splash-details {
 	background:#fff;
 	margin:20px auto 10px;
 	padding:10px 5px;
-	overflow:hidden;
+	overflow:visible;
 	-moz-box-shadow:0 0 12px rgba(0,0,0,0.2);
 	-webkit-box-shadow:0 0 12px rgba(0,0,0,0.2);
 	border:0 solid #FFFFFF;
@@ -4373,4 +4373,263 @@ Text Align > left / right
 	font-weight: normal!important;
 	border-bottom: 2px solid #DDDDDD!important;
 	margin: 9px 9px 3px!important;
+}
+
+
+.hovercard {
+    border: 1px solid transparent;
+    position: relative;
+    z-index: 20;
+}
+.hovercard .more, .hovercard .desc {
+    color: #333333;
+    font-family: "Helvetica Neue",Arial,sans-serif;
+    font-size: 12px;
+    margin-top: 0;
+    z-index: 29;
+}
+.hovercard .desc {
+    max-height: 2.6em;
+    overflow: hidden;
+}
+.hovercard .install-shell .eula, .hovercard .install-shell .contrib {
+    font-size: 12px;
+}
+.hovercard .install-shell .extra + .extra {
+    margin: 0;
+}
+.hovercard .install-shell .extra .notavail {
+    margin: 0 0 2px;
+}
+.hovercard h3 {
+    color: #447BC4;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 16px;
+    margin: 0 0 2px;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.hovercard .more {
+    display: none;
+    padding: 0 14px 8px 12px;
+    position: relative;
+}
+.hovercard .more p:first-child {
+    margin-top: 0;
+}
+.hovercard a {
+    text-decoration: none;
+}
+.hovercard .adu {
+    color: #339900;
+    font-size: 11px;
+}
+.hovercard .byline {
+    font-size: 11px;
+    font-style: italic;
+    margin: 8px 0;
+}
+.hovercard .byline a {
+    color: inherit;
+    display: inline;
+}
+.hovercard:hover {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border-color: #CCCCCC;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+    z-index: 25;
+}
+.hovercard:hover .more {
+    background: none repeat scroll 0 0 #FFFFFF;
+    display: block;
+    z-index: 28;
+}
+.hovercard:hover h3 {
+    text-decoration: underline;
+    white-space: normal;
+}
+.hovercard.persona {
+    height: 78px;
+    overflow: hidden;
+    padding: 9px;
+}
+.hovercard.persona a {
+    display: block;
+    overflow: hidden;
+}
+.hovercard.persona .persona-preview {
+    float: right;
+    height: 48px;
+    overflow: hidden;
+    position: relative;
+    width: 200px;
+}
+.hovercard.persona .persona-preview img {
+    height: 67px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 200px;
+}
+.hovercard.persona .more {
+    margin-top: 10px;
+    padding: 0;
+}
+.hovercard.persona h3 {
+    clear: right;
+}
+.hovercard.persona:hover {
+    border-radius: 5px 5px 5px 5px;
+    height: auto;
+}
+.hovercard.addon .more .vital, .hovercard.theme:hover .more + .vital {
+    border-top: 1px dotted #CCCCCC;
+    margin: 8px 0 4px;
+    padding: 8px 0 0;
+}
+.hovercard.addon {
+    margin: 5px 5px 5px 61px;
+}
+.hovercard.addon .summary, .hovercard.addon .icon {
+    padding: 8px;
+    position: relative;
+}
+.hovercard.addon .summary {
+    height: 48px;
+    overflow: hidden;
+    z-index: 21;
+}
+.hovercard.addon .summary div {
+    white-space: nowrap;
+}
+.hovercard.addon .icon {
+    border-color: transparent;
+    border-style: solid;
+    border-width: 1px 0 1px 1px;
+    height: 48px;
+    left: -57px;
+    padding-right: 0;
+    position: absolute;
+    top: -1px;
+    width: 48px;
+    z-index: 22;
+}
+.hovercard.addon .icon img {
+    border: 0 none;
+    height: 32px;
+    margin: 8px;
+    padding: 0;
+    width: 32px;
+}
+.hovercard.addon:before {
+    content: "";
+    display: block;
+    height: 66px;
+    left: -57px;
+    position: absolute;
+    top: -1px;
+    width: 56px;
+    z-index: 1;
+}
+.hovercard.addon:hover {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border-color: #CCCCCC;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+    float: left;
+    z-index: 25;
+}
+.hovercard.addon:hover .summary {
+    background: none repeat scroll 0 0 #FFFFFF;
+    height: auto;
+    min-height: 48px;
+    z-index: 26;
+}
+.hovercard.addon:hover .icon {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border-color: #CCCCCC;
+    z-index: 27;
+}
+.hovercard.addon:hover:before {
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+}
+.hovercard.collection:hover .summary {
+    height: auto;
+    overflow: visible;
+}
+.hovercard.collection:hover .desc {
+    max-height: none;
+    overflow: visible;
+}
+.hovercard.collection:hover .more {
+    border-top: 1px dotted #CCCCCC;
+    color: #339900;
+    font-size: 11px;
+    margin: 0 8px;
+    padding: 8px 0;
+}
+.hovercard .category, .hovercard .vital {
+    color: #666666;
+    font-size: 11px;
+    line-height: 10px;
+    white-space: nowrap;
+}
+.hovercard .summary .vital {
+    font-size: 10px;
+    line-height: 12px;
+    margin-top: 4px;
+}
+.hovercard .vital .price {
+    color: #009933;
+}
+.hovercard .vital .price.premium {
+    color: #D16B00;
+}
+.hovercard .vital .price:before {
+    color: #999999;
+    content: "·";
+}
+.featured h3, .theme-grid h3 {
+    font-size: 16px;
+    line-height: 18px;
+}
+.featured li, .theme-grid li {
+    height: 212px;
+    width: 240px;
+}
+.featured .hovercard, .theme-grid .hovercard {
+    margin: 0;
+    padding: 9px;
+}
+.featured .hovercard.addon:before, .theme-grid .hovercard.addon:before {
+    content: none;
+    display: none;
+}
+.featured .hovercard.addon .summary, .theme-grid .hovercard.addon .summary {
+    height: 192px;
+    padding: 0;
+}
+.featured .hovercard.addon .summary div, .theme-grid .hovercard.addon .summary div {
+    height: 170px;
+    position: relative;
+    width: 220px;
+}
+.featured .hovercard.addon .summary div img, .theme-grid .hovercard.addon .summary div img {
+    border: 1px solid #CCCCCC;
+    bottom: 0;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+    left: 0;
+    margin: auto;
+    padding: 8px;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.featured .hovercard.addon:hover .summary, .theme-grid .hovercard.addon:hover .summary {
+    height: auto;
+}
+.featured .hovercard:hover .more, .theme-grid .hovercard:hover .more {
+    padding: 14px 0 0;
 }
