@@ -78,7 +78,7 @@
 				<div class="grid_5">
 						<h2 class="gray mar-b">Share with your friends</h2>
 						<hr />
-						<div style="position:absolute; right:137px; top:-13px;"><?php echo $spinback_fb; ?></div>
+						<div style="position:absolute; right:137px; top:-13px;"><?php // echo $spinback_fb; ?></div>
 						<h2 class="gray clear mar-b">Invite friends from your address book</h2>
 						<hr />
 						<a href="#" title="Invite friends from your Gmail contacts" id="invite-gmail" class="invite-btn fl cs_import">Gmail</a>

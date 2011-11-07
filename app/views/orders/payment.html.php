@@ -248,7 +248,9 @@ var paymentForm = new Object();
 	<?=$this->form->create(null ,array('id'=>'selectForm')); ?>
 	<?=$this->form->hidden('address_id', array('class' => 'inputbox', 'id' => 'address_id')); ?>
 	<?=$this->form->end();?>
+
 </div>
+<div class="clear"></div>
 <script>  
 	
 var shippingAddress = <?php echo $shipping; ?>
