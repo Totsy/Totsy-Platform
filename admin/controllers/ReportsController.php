@@ -242,39 +242,7 @@ class ReportsController extends BaseController {
 						$collection->remove($conditions);
 					break;
 					case 'Registrations':
-						switch ($name) {
-							case 'trendytogs':
-								$conditions = array(
-									'trendytogs_signup' => array('$exists' => true)
-								);
-								$dateField = 'date_created';
-							break;
-							case 'keyade':
-								$conditions = array(
-									'$or' => array(
-											array(
-												'keyade_referral_user_id' => array('$ne' => NULL )
-											),
-											array(
-												'keyade_user_id' => array('$ne' => NULL )
-											)
-									)
-								);
-								$dateField = 'created_date';
-								if (!empty($date)) {
-									$conditions = $conditions + $date;
-								}
-							break;
-							default:
-								$conditions = array(
-									'invited_by' => $affiliate,
-								);
-								$dateField = 'created_date';
-								if (!empty($date)) {
-									$conditions = $conditions + $date;
-								}
-							break;
-						}
+						extract( $this->generateConditions(compact('name','date','affiliate')),EXTR_OVERWRITE);
 						if($subaff){
 							$keys = new MongoCode("function(doc){
 								return {
@@ -284,16 +252,36 @@ class ReportsController extends BaseController {
 						}else{
 							$keys = new MongoCode("function(doc){return {'Date': doc.$dateField.getMonth()}}");
 						}
-						$inital = array('total' => 0);
-						$reduce = new MongoCode('function(doc, prev){prev.total += 1}');
+						$inital = array('total' => 0, 'bounced'=>0);
+						$reduce = new MongoCode('function(doc, prev){ 
+							prev.total += 1;
+							if (typeof(doc.email_engagement)!="undefined"){ prev.bounced++; }
+						}');
+		
 						$collection = User::collection();
 						$results = $collection->group($keys, $inital, $reduce, $conditions);
-						$results['total'] = 0;
-						foreach ($results['retval'] as $result)
-						{
+						$results['total'] = $results['bounced'] = 0;
+						
+						foreach ($results['retval'] as $result) {
+							$results['bounced'] += $result['bounced'];
 							$results['total'] += $result['total'];
 						}
+						
+						$results['bounced'] = number_format($results['bounced']);
 						$results['total'] = number_format($results['total']);
+					break;
+					case 'Bounces':
+						extract( $this->generateConditions(compact('name','date','affiliate')),EXTR_OVERWRITE);
+						$conditions = $conditions + array('email_engagement'=>array('$exists'=>true));
+						$cursor = User::collection()->
+											find($conditions)->
+											fields(array(
+												'email'=>true,
+												'email_engagement'=>true,
+												'created_date' => true
+											));
+						$total = $cursor->count();
+						return compact('search', 'searchType', 'criteria', 'cursor', 'total');
 					break;
 				}
 			}
@@ -1340,6 +1328,46 @@ class ReportsController extends BaseController {
 			}
 		}
 		return compact('ServiceCharts','Service2ndCharts');
+	}
+	
+	private function generateConditions(array $data = array()){
+		extract($data);
+		$conditions = array();
+		$dateField = 'date_created';
+		switch ($name) {
+			case 'trendytogs':
+				$conditions = array(
+					'trendytogs_signup' => array('$exists' => true)
+				);
+				$dateField = 'date_created';
+			break;
+			case 'keyade':
+				$conditions = array(
+					'$or' => array(
+							array(
+								'keyade_referral_user_id' => array('$ne' => NULL )
+							),
+							array(
+								'keyade_user_id' => array('$ne' => NULL )
+							)
+					)
+				);
+				$dateField = 'created_date';
+				if (!empty($date)) {
+					$conditions = $conditions + $date;
+				}
+			break;
+			default:
+				$conditions = array(
+					'invited_by' => $affiliate,
+				);
+				$dateField = 'created_date';
+				if (!empty($date)) {
+					$conditions = $conditions + $date;
+				}
+			break;
+		}
+		return compact('conditions','dateField');
 	}
 }
 
