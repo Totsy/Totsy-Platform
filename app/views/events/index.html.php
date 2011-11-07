@@ -96,7 +96,9 @@
 							<?=$this->html->link('Shop', 'sale/'.$event->url, array('class' => 'button small', 'style'=>'display:table-cell !important'));?>
 						</div>
 					</div>
-				</div>
+			
+</div>
+				
 			</div>
 
 			<?php if ($x == 1): ?>
@@ -180,10 +182,12 @@
 			<?php $y++; ?>
 	<?php endforeach ?>
 	</div>
+	<div class="clear"></div>
 </div>
 </div>
 </div>
 <div id="modal" style="background:#fff!important;"></div>
+<div class="clear"></div>
 <!--Javascript Output for Today's Events -->
 <?php if (!empty($todayJs)): ?>
 	<?php foreach ($todayJs as $value): ?>

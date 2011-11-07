@@ -51,7 +51,9 @@
 			</div>
 		</div>
 		<br />
-			<div class="grid_13 omega" style="text-align:left; height:34px"><?php echo $spinback_fb; ?></div>
+			<div class="grid_13 omega" style="text-align:left; height:34px">
+				<iframe src="http://www.facebook.com/plugins/like.php?href=http://www.totsy.com/sale/<?= $event->url; ?>&amp;layout=standard&amp;show_faces=false&amp;action=recommend&amp;font&amp;colorscheme=light" style="display:visible" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
+			</div>
 			<div class="grid_3" style="text-align:right; margin:0px 5px 10px 0px;">
 			<!-- div class="sort-by" -->
 			<!-- select id="by-category" name="by-category">
@@ -134,6 +136,7 @@
 			<?php endforeach ?>
 		<?php endif ?>
 
+<div class="clear"></div>
 	</div>
 </div>
 </div>
