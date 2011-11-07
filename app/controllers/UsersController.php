@@ -558,11 +558,7 @@ class UsersController extends BaseController {
 		$user = null;
 		$fbuser = FacebookProxy::api('/me');
 		$user = User::create();
-		$referer = parse_url($this->request->env('HTTP_REFERER'));
-		if ($referer['host']==$this->request->env('HTTP_HOST') && preg_match('(/sale/)',$referer['path'])){
-			Session::write('landing',$referer['path']);
-		}
-		unset($referer);
+
 		if ( !preg_match( '/@proxymail\.facebook\.com/', $fbuser['email'] )) {
 			$user->email = $fbuser['email'];
 			$user->email_hash = md5($user->email);
