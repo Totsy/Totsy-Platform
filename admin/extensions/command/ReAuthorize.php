@@ -39,6 +39,10 @@ class ReAuthorize extends \lithium\console\Command {
 		error_reporting(E_ERROR | E_PARSE);
 		Environment::set($this->env);
 		$ordersCollection = Order::Collection();
+		$ordersCollection->ensureIndex(array(
+			'date_created' => 1,
+			'cc_payment' => 1
+		));
 		$errors = 0;
 		$updated = 0;	
 		#Limit to +7 days Old Authkey
