@@ -1,3 +1,4 @@
+<?php use app\models\File; ?>
 <?php echo '<?xml version="1.0"?>'; ?>
 <rss version="2.0">
 	<channel> 
