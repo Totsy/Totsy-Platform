@@ -5,7 +5,7 @@
     	<title>Items</title>     
     	<link>http://totsy.com/</link> 
     	<description></description> 
-<?php if (is_array($data['items'])){ ?>>
+<?php if (is_array($data['items'])){ ?>
 	<?php foreach($data['items'] as $item){ ?>
 		<item>
 			<id><?php echo $item['_id']?></id>
