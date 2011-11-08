@@ -1,3 +1,4 @@
+<?php use app\models\File; ?>
 <?php echo '<?xml version="1.0"?>'; ?>
 <rss version="2.0">
 	<channel> 
@@ -10,6 +11,10 @@
 			<id><?php echo $item['_id']?></id>
 			<title><?php echo htmlspecialchars($item['description']) ?></title>
 			<link><?php echo $item['base_url'].'sale/'.$item['event_url'].'/'.$item['url'];?></link>
+			<enclosure url="<?php 
+				echo $item['base_url'].'image/'.$item['primary_image'].'.jpg';?>" lenght="<?php
+				echo File::first($item['primary_image'])->file->getSize();
+			?>" type="image/jpeg" />
 			<image><?php echo $item['base_url'].'image/'.$item['primary_image'].'.jpg';?></image>
 			<instock><?php echo $item['total_quantity']>0?true:false;?></instock>
 			<discount><?php echo floor($item['precent_off']); ?></discount>
