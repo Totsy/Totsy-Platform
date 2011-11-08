@@ -4,12 +4,12 @@
   } 
 </script>
 
-	<hr />
 	<h2>Join with Facebook</h2>
-	<a href="javascript:;" onclick="fblogin();return false;"><img src="/img/sign_in_fb.png"></a>
-
+	<a href="javascript:;" onclick="fblogin();return false;"><img src="/img/sign_in_fb.png" class="fr"></a>
+	<br />
+	
 <h2 style="margin-top:30px;">Or Join with Email</h2>	
-<hr />
+
 <?php if (preg_match('/join/',$_SERVER['REQUEST_URI'])) { ?>
 	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/join']); return setIframe();">
 <? } ?>
@@ -61,23 +61,22 @@
 		));
 	?>
 	
-	<?=$this->form->submit('Join Now', array(
-		'class' => 'button fl'
-		));
-	?>
-	
-	<span class="fl" style="margin:5px 0px 0px 20px; font-size:16px;">The savvy mom shops at Totsy!</span>
 	<div class="clear"></div>
-	<div style="font-size:11px; padding:5px; margin-top:10px;">
+	<div style="font-size:11px;">
 		By joining you accept our 
 		<?=$this->html->link('terms and conditions','pages/terms')?>.
-	</div>
+	</div>	
 	
-	<div style="font-size:11px; padding:5px; margin:0px;">
+	<?=$this->form->submit('Join Now', array(
+		'class' => 'button fr'
+		));
+	?>
+	<?=$this->form->error('terms'); ?>
+		
+	<div style="font-size:11px; margin:0px;">
 		*Offer expires 30 days after registration.
 	</div>
 	
-	<?=$this->form->error('terms'); ?>
 	
 <?=$this->form->end(); ?>
 
