@@ -131,9 +131,9 @@ class BouncedEmails extends \lithium\console\Command {
 		Logger::info('STEP 5: DONE. Execution time: '.$et);
 		
 		Logger::info('STEP 6: Cleaning ... ');
-		//if (file_exists($this->tmp_folder.$this->downloaded)){
-		//	unlink($this->tmp_folder.$this->downloaded);
-		//}
+		if (file_exists($this->tmp_folder.$this->downloaded)){
+			unlink($this->tmp_folder.$this->downloaded);
+		}
 	}
 	
 	protected function makeJob(){
