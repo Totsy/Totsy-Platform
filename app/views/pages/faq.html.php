@@ -40,7 +40,7 @@
       <li><a href="#18">What is Totsy's policy on returns and exchanges?</a></li>
       <li><a href="#19">Can I cancel an order?</a></li>
       <li><a href="#20">Does Totsy charge sales tax?</a></li>
-      <li><a href="#21">HHow and when is my credit card charged for my order?</a></li>
+      <li><a href="#21">How and when is my credit card charged for my order?</a></li>
       <li><a href="#22">Why have I only received certain items from my order and not others?</a></li>
       <li><a href="#23">Why does my order say pending?</a></li>
     </ul>
