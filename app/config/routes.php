@@ -90,6 +90,7 @@ Router::connect('/account/password', 'Users::password');
 Router::connect('/upgrade', 'Users::upgrade');
 Router::connect('/events/view/{:item:[a-z0-9\-]+}', 'Events::view');
 Router::connect('/welcome', 'Users::affiliate');
+Router::connect('/dailydeals', 'DailyDeals::view');
 Router::connect('/sale/{:event:[a-z0-9\-]+}', 'Events::view');
 Router::connect('/sale/{:event:[a-z0-9\-]+}/{:item:[a-z0-9\-]+}', 'Items::view');
 /**
