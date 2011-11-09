@@ -1,11 +1,17 @@
 <style>
-h2 { margin:0px; padding:0px; color:#999; font-size:15px; }
+h2 {
+    color: #999999;
+    font-size: 18px;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+}
 h2.tagline { margin:97px 0px 0px 0px; padding:10px 0px 10px 0px; color:#ed1c25; font-size:18px; font-weight: normal; }
 .round { border-radius:12px; background: #fff; padding:14px; }
 .pushy { margin-top:35px; padding:0px; }
-.free_shipping_banner_reg_new img { position: absolute; right:-73px; top:387px; z-index:9999; }
+.free_shipping_banner_reg_new img { position: absolute; right:-73px; top:454px; z-index:9999; }
 .round_clear { border-radius:22px; border: 10px solid rgba(255, 255, 255, 0.8); }
-label { width:149px !important; }
+label { width:179px !important; }
 #bug_bullets {
 margin-left: 0;
 padding-left: 0;
@@ -13,18 +19,18 @@ list-style: none;
 }
 #bug_bullets li {
 background-image: url("/img/bug_bullets.png");
-background-position: 0 6px;
+background-position: 0 13px;
 background-repeat: no-repeat;
-line-height: 28px;
-padding: 0 0 0 18px;
-font-size:14px; color:#808080; font-weight:normal;
+line-height: 32px;
+padding: 4px 0 0 22px;
+font-size:16px; color:#999999; font-weight:normal;
 }
 
 .rollover_img {
 width: 108px;
 height: 108px;
 background-image: url(/img/freeShip-badge.png);
-position: absolute; right:-82px; top:400px;
+position: absolute; right:-73px; top:454px;
 }
 
 .rollover_img a {
@@ -63,8 +69,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 <div class="round gradient">
 <!-- left side -->
 <div class="grid_6">
-<?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'333')), '', array('escape'=> false)); ?>
-<div style="width:350px; margin-top:20px;">
+<?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
+<div style="width:350px; margin-top:28px;">
 <?php echo $this->view()->render(array('element' => 'registrationForm')); ?>
 </div>
 <div class="clear"></div>
@@ -84,7 +90,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 <div class="free_shipping_banner_reg_new rollover_img"><a href="javascript:;" title="Free Shipping"><span></span></a></div>
 </div>
 <div class="clear"></div>
-<?php echo $this->html->image('featured_on_long.png', array('style' => 'margin-top:20px; margin-left:10px; border-top:1px solid #f1f1f1;')); ?>
+<?php echo $this->html->image('featured_on_long.png', array('style' => 'margin-top:20px; margin-left:10px; border-top:1px solid #f1f1f1; margin-bottom: -14px;')); ?>
 <div class="clear"></div>
 </div>
 </div>
