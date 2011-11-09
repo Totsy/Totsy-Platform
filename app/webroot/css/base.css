@@ -1042,7 +1042,106 @@ ul.content-list {
 	outline:none;
 }
 
+/* Cart Pop Up 
+----------------------------------*/
 
+#cart_popup {
+width: 500px; 
+height: auto; 
+z-index: 1000000000 !important; 
+border-width: 2px; 
+border-style: solid; 
+background-color: rgb(255, 255, 255); 
+left:445px; 
+top: 15px; 
+position: absolute;
+}
+
+#cart_popup_header {
+margin: 0px 7px 0px 7px !important; 
+padding-bottom:60px !important;
+}
+
+#cart_popup_timer {
+float:left; 
+font-size: 12px !important;
+line-height: 18px !important; 
+width: 420px !important;
+text-align:right !important
+}
+
+#cart_popup_close_button {
+float:right; 
+text-align:right !important; 
+width:60px !important;
+}
+
+.cart_popup_item_wrapper {
+margin:7px !important;
+}
+
+.cart_popup_item_thumbnail {
+width:73px!important; 
+float:left;
+}
+
+.cart_popup_item_fields {
+float:left; 
+}
+
+.cart_popup_item_description {
+float:left!important; 
+width:250px;
+}
+
+.cart_popup_item_price {
+width:46px!important;
+float:left; 
+text-align:right !important;
+}
+
+.cart_popup_line_qty {
+width:40px!important;
+float:left; 
+text-align:right !important;
+}	
+
+.cart_popup_line_total {
+width:55px!important;
+float:left; 
+text-align:right!important;
+font-weight: bold;
+}
+
+#cart_popup_breakdown {
+float:right !important;
+}
+
+#cart_popup_order_total {
+float:right !important;
+}
+
+#order_total_num {
+font-weight:bold;
+font-weight:bold; 
+color:#009900 !important; 
+font-size:14px !important
+}
+
+#cart_popup_cont_shop {
+float:left; 
+margin-right:10px;
+}
+
+#cart_popup_checkout {
+float:left;
+}
+
+#more_cart_items{
+font-style:italic !important; 
+visibility:hidden; 
+text-align:center !important;
+}
 	
 /* Dialog Box
 ----------------------------------*/
@@ -4247,4 +4346,31 @@ Text Align > left / right
 #promos_and_credit input[type='submit']:focus {
 	background:#ED1C25 none !important;
 	color: #FFF !important;
+}
+
+.blurb p {
+	padding: 10px;
+	text-align: left !important;
+}
+
+.blurb ul {
+	line-height: 20px;
+	margin-left: 35px;
+}
+
+.blurb li { 
+	list-style: disc!important; 
+	margin-left: 15px!important; 
+}
+
+.blurb strong { 
+	font-weight: bold!important; 
+}
+
+.blurb h3 { 
+	font-size: 20px!important;
+	color:#707070!important;
+	font-weight: normal!important;
+	border-bottom: 2px solid #DDDDDD!important;
+	margin: 9px 9px 3px!important;
 }

@@ -8,30 +8,36 @@ use app\models\User;
 use MongoDate;
 use lithium\storage\Session;
 use li3_facebook\extension\FacebookProxy;
+use app\models\Invitation;
 
 class AffiliatesController extends BaseController {
 
 	/**
-	* Affiliate registration from remote POST.
-	* @params string $code
-	* @return boolean $success
+	* Affiliate registration from remote POST.  Some affiliates might be behind https such as
+	* bamboo due since we return sensitive information to them.
+	*
+	* @param (string) $code : affiliate code
+	* @return (boolean) $success
+	* @see app/models/User::lookUp()
+	* @see app/models/User::retrieveInvitationCode()
+	* @see app/models/Invitation::linkUpInvites()
 	**/
 	public function registration($code = NULL) {
 		$success = false;
 		$message = '';
-		$errors = 'Affiliate does not exists';
-
+		$errors = '';
+		$_id = null;
+        $this->_render['layout'] = false;
 		if ($code) {
 			$count = Affiliate::count(array('conditions' => array('invitation_codes' => $code)));
 			if ( $count == 0 ) {
+			    $errors = 'Affiliate does not exists';
 				return compact('success', 'errors');
 			}
 
 			if ($this->request->data){
 				$data = $this->request->data;
-				if (isset($this->request->query)){
-					$query = $this->request->query;
-				}
+				$query = $this->request->query;
 				$genpasswd = false;
 				if (isset($query) && isset($query['genpswd']) && $query['genpswd'] == 'true'){
 					$genpasswd = true;
@@ -43,30 +49,61 @@ class AffiliatesController extends BaseController {
 					$user['legacy'] = 0;
 					$data['password'] = $token . '@' . $user['reset_token'];
 				}
-				if (isset($data['password'])) {
-					// New user, need to register here
-					if (array_key_exists('fname',$data)){
-					    $user['firstname'] = $data['fname'];
-					}
-					if (array_key_exists('lname',$data)) {
-					    $user['lastname'] = $data['lname'];
-					}
-					$user['email'] = strtolower($data['email']);
-					if (array_key_exists('zip', $data) ){
-					    $user['zip'] = $data['zip'];
-					}
-					$user['confirmemail'] = strtolower($data['email']);
-					$user['password'] = $data['password'];
-					$user['terms'] = "1";
-					$user['invited_by'] = $code;
-					extract(UsersController::registration($user));
+                    if (isset($data['password'])) {
+                        // New user, need to register here
+                        if (array_key_exists('fname',$data)){
+                            $user['firstname'] = trim($data['fname']);
+                        }
+                        if (array_key_exists('lname',$data)) {
+                            $user['lastname'] = trim($data['lname']);
+                        }
+                        $user['email'] = trim(strtolower($data['email']));
+                        if (array_key_exists('zip', $data) ){
+                            $user['zip'] = $data['zip'];
+                        }
+                        $user['confirmemail'] = trim(strtolower($data['email']));
+                        $user['password'] = $data['password'];
+                        $user['terms'] = "1";
+                        extract(UsersController::registration($user));
+                        if ($saved) {
+                            if ($code == 'bamboo') {
+                                 if ($this->request->query) {
+                                   $inviter_id = $this->request->query['referredById'];
+                                   $facebk_id = $this->request->query['fbid'];
+                                   $fbinfo = User::fbAccessCheck($facebk_id);
+                                   if (!empty($fbinfo) && User::fbTotsyLinkCheck($facebk_id)) {
+                                     User::fbTotsyLinkUp((string) $user->_id, $fbinfo);
+                                   }
+                                   if ($inviter_id) {
+                                     $user->invited_by = User::retrieveInvitationCode($inviter_id);
+                                     $invite_code = Invitation::retrieveInviteCode($inviter_id);
+                                     $email = $user['email'];
+                                     Invitation::linkUpInvites($invite_code, $email);
+                                   }
+                                }
+                                $_id = (string) $user->_id;
+                                $this->set(compact('_id'));
+                            }
+                            if(empty($user->invited_by)) {
+                                $user->invited_by = $code;
+                            }
+                            $user->save(null,array('validate' => false));
+                    	}
+                        $success = $saved;
+                        $errors = $user->errors();
 
-					$success = $saved;
-					$errors = $user->errors();
-				}
+                    if ($code == 'bamboo' && !empty($errors) &&
+						array_key_exists('email', $errors) &&
+						($errors['email'][0] == "This email address is already registered"
+					)) {
+						$user = User::lookup(trim(strtolower($data['email'])));
+						$_id = (string) $user->_id;
+                        $this->set(compact('_id'));
+					}
+                } //end of password if
 			}
-			$this->render(array('data'=>compact('success','errors'), 'layout' =>false));
 		}
+		$this->set(compact('success','errors', '_id'));
 	}
 
 	/**

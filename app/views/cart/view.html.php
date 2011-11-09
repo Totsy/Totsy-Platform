@@ -1,50 +1,42 @@
-<script type="text/javascript">
+<!-- JS for cart timer. -->
+<script type="text/javascript" src="/js/cart-timer.js"></script>
+<!-- JS for cart timer for individual items. -->
+<script type="text/javascript" src="/js/cart-items-timer.js"></script>
+<script type="text/javascript" src="/js/tipsy/src/javascripts/jquery.tipsy.js"></script>
+<link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
+
+<script type="text/javascript">	
 
 var discountErrors = new Object();
 
 	$(document).ready( function(){
-
-			if(discountErrors.promo==true) {
-				show_code_errors("promo");
-			} else if (discountErrors.credits==true)  {
-				show_code_errors("cred");
-			} else if(discountErrors.credits==true && discountErrors.promo==true) {
-				show_code_errors("cred");
-				show_code_errors("promo");
-			} else {
-				discountErrors.promo=false;
-				discountErrors.credits=false;
-			}
+					
+		if(discountErrors.promo==true) {	
+		    show_code_errors("promo");
+		} else if (discountErrors.credits==true)  {
+		    show_code_errors("cred");
+		} else if(discountErrors.credits==true && discountErrors.promo==true) {
+		    show_code_errors("cred");
+		    show_code_errors("promo");
+		} else {
+		    discountErrors.promo=false;
+		    discountErrors.credits=false;  
 		}
-	);
-
+	
 	$("#cart-count").text(<?=$itemCount?>);
-
-	$( function () {
-	    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);
-		var now = new Date();
-
-		$('#itemCounter').countdown( { until: itemExpires, onExpiry: refreshCart, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
-
-		if (itemExpires < now) {
-			$('#itemCounter').html("<span class='over' style='color:#EB132C; padding:5px;'>No longer reserved</span>");
-		}
-
-		function refreshCart() {
-			window.location.reload(true);
-		}
-
-		//applying tooltip
-		$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
-		$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
-
-	});
-
+	var cartExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	
+	//set the timer
+	cartTimer(cartExpires);
+	//set the timer on individual cart items
+	cartItemsTimer();
+	//applying tooltip
+	$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
+	$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
+	
+});
+			
 </script>
-
 <script type="text/javascript" src="/js/jquery.number_format.js"></script>
-<script type="text/javascript" src="/js/tipsy/src/javascripts/jquery.tipsy.js"></script>
-<link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
 
 <?php  if(!empty($subTotal)): ?>
 <div class="cart-content">
@@ -168,18 +160,13 @@ var discountErrors = new Object();
 				     <?php if(!empty($credit)): ?>
 				    	<strong>Add <a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a></strong> /
 				    <?php endif ?>
-				    	<?php if(empty($promocode_disable)): ?>
-				    	<strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
-				    	<?php endif ?>
+				    <strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
 				</div>
 				<div style="clear:both"></div>
 				<div id="promos_and_credit">
-				<?=$this->form->create(null); ?>
-					<?php if(empty($promocode_disable)): ?>
 				    <div id="promo" style="display:none">
-				    	<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo) ); ?>
+				    	<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo, 'promocode_disable' => $promocode_disable)); ?>
 				    </div>
-				    <?php endif ?>
 				    <div id="cred" style="display:none; text-align:left !important">
 				    	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
 				    </div>
@@ -286,60 +273,6 @@ var discountErrors = new Object();
 	<?=$this->form->hidden('rmv_item_id', array('class' => 'inputbox', 'id' => 'rmv_item_id')); ?>
 	<?=$this->form->end();?>
 </div>
-
-<script type="text/javascript" charset="utf-8">
-
-	$(".counter").each( function() {
-
-	    var fecha  = parseInt(this.title);
-	    var itemExpires = new Date();
-	    var now = new Date();
-
-	    itemExpires = new Date(fecha);
-
-	    var expireNotice = (itemExpires.valueOf() - 120000);
-	    expireNotice = new Date( expireNotice );
-
-	    //show 2 minutes notice
-	    if(expireNotice < now && itemExpires > now) {
-	    	$("#" + this.id + "_display").html('<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item will expire in 2 minutes</div>');
-	    }
-
-	   	//show item expired notice
-	    if(now > itemExpires) {
-	    	$("#" + this.id + "_display").html('<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>');
-	    }
-
-	    $("#" + this.id).countdown({until: expireNotice,
-	    							expiryText: '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item will expire in 2 minutes</div>',
-	    							layout: '{mnn}{sep}{snn} seconds',
-	    							onExpiry: resetTimer
-	    							});
-
-	    //call when item expires
-		function notifyEnding() {
-			$("#" + this.id).countdown('change', { expiryText: '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>',
-			onExpiry: refreshCart
-			});
-
-			$("#" + this.id + "_display").html( '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>' );
-		}
-
-		function refreshCart() {
-			window.location.reload(true);
-		}
-
-	    //call 2 minutes before the item expires
-	    function resetTimer() {
-	    	$("#" + this.id + "_display").html( $("#" + this.id).countdown('settings', 'expiryText') );
-			$("#" + this.id).countdown('change', { until: itemExpires,
-												   expiryText: '<div class=\'over\' style=\'color:#EB132C; padding:5px\'>This item is no longer reserved</div>',
-												    onExpiry: notifyEnding
-												   });
-		}
-	});
-
-</script>
 
 <div class="clear"></div>
 <?php else: ?>

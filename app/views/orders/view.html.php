@@ -268,7 +268,7 @@
 		foreach($itemsByEvent as $event){
 		     foreach($event as $item) {
 		     	$criteoVars .=
-		     	"&i". $iCounter ."=". (string) $item['_id'] ."&p". $iCounter ."=". $item['sale_retail'] ."&q". $iCounter ."=". $item['quantity'];
+		     	"&i". $iCounter ."=". (string) $item['item_id'] ."&p". $iCounter ."=". $item['sale_retail'] ."&q". $iCounter ."=". $item['quantity'];
 		    	$iCounter++;
 		    }
 		}

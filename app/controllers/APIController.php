@@ -237,7 +237,7 @@ class APIController extends  \lithium\action\Controller {
 				} else if (is_float($it['percent_off'])) {
 					$it['percent_off'] = round($it['percent_off']*100,2);
 				} else {
-					$it['percent_off'] = preg_replace('/[/D]+/','',$it['percent_off']);
+					$it['percent_off'] = preg_replace('/[\D]+/','',$it['percent_off']);
 					if ($it['percent_off']>74) $it['percent_off'] = 0;	
 				} 
 				$it['start_date'] = $ev['start_date'];
@@ -282,7 +282,8 @@ class APIController extends  \lithium\action\Controller {
 			
 			$data =  $event->data();
 			
-			if ($data['end_date']['sec'] <= strtotime(date('d-m-Y 23:59:59',strtotime('+1 day'))) ){
+			if ($data['end_date']['sec'] <= strtotime(date('d-m-Y 23:59:59',strtotime('+1 day',$start_date))) && 
+				$data['end_date']['sec'] > strtotime(date('d-m-Y 23:59:59',$start_date)) ){
 				$closing[] = $data;
 			}
 			
@@ -319,7 +320,7 @@ class APIController extends  \lithium\action\Controller {
 					} else if (is_float($it['percent_off'])) {
 						$it['percent_off'] = round($it['percent_off']*100,2);
 					} else {
-						$it['percent_off'] = preg_replace('/[/D]+/','',$it['percent_off']);
+						$it['percent_off'] = preg_replace('/[\D]+/','',$it['percent_off']);
 						if ($it['percent_off']>74) $it['percent_off'] = 0;	
 					}
 					if ($it['percent_off'] > $maxOff) { $maxOff = $it['percent_off']; }
@@ -351,7 +352,7 @@ class APIController extends  \lithium\action\Controller {
 	 * method GET
 	 */
 	protected function eventsReviewApi() {
-		
+
 		$token = Api::authorizeTokenize($this->request->query);
 		if (is_array($token) && array_key_exists('error', $token)) {
 			return $token;
@@ -359,6 +360,12 @@ class APIController extends  \lithium\action\Controller {
 		
 		$start_date = strtotime(date('Y-m-d'));
 		$start_time = '19:00:00';
+
+		if (is_array($this->request->query) && array_key_exists ('order', $this->request->query)){			
+			if (strtolower($this->request->query['order']) == 'desc'){
+				$order_desc = true; //DESC
+			} 
+		} 
 		
 		if (is_array($this->request->query) && array_key_exists ('start_date', $this->request->query)){			
 			if (preg_match('/[\d]{4}[\-][\d]{2}[\-][\d]{2}/i',$this->request->query['start_date'])){
@@ -373,7 +380,8 @@ class APIController extends  \lithium\action\Controller {
 		}
 				
 		$eventCollection = Event::connection()->connection->events;
-		$openEvents = Event::directQuery(array(
+		$openEvents = Event::directQuery(
+			array(
 				'enabled' => true,
 				'start_date' => array(
 					'$gte' => new MongoDate( strtotime(date('Y-m-d',$start_date).' '.$start_time) ),
@@ -417,7 +425,7 @@ class APIController extends  \lithium\action\Controller {
 					} else if (is_float($it['percent_off'])) {
 						$it['percent_off'] = round($it['percent_off']*100,2);
 					} else {
-						$it['percent_off'] = preg_replace('/[/D]+/','',$it['percent_off']);
+						$it['percent_off'] = preg_replace('/[\D]+/','',$it['percent_off']);
 						if ($it['percent_off']>74) $it['percent_off'] = 0;	
 					}
 					if ($it['percent_off'] > $maxOff) { $maxOff = $it['percent_off']; }
@@ -432,12 +440,12 @@ class APIController extends  \lithium\action\Controller {
 			}
 			$events[] = $data;
 		}
-
+		
 		$closing = Event::directQuery(array(
 				'enabled' => true,
 				'end_date' => array(
-					'$gte' => new MongoDate( strtotime(date('Y-m-d',$start_date).' 00:00:00') ),
-					'$lte' => new MongoDate( strtotime(date('Y-m-d',$start_date).' 23:59:59') )
+					'$gt' => new MongoDate( strtotime(date('Y-m-d',$start_date).' 00:00:00') ),
+					'$lte' => new MongoDate( strtotime(date('Y-m-d',strtotime('+1 day',$start_date)).' 23:59:59') )
 				)
 		));
 		
@@ -448,6 +456,15 @@ class APIController extends  \lithium\action\Controller {
 					'$lt' => new MongoDate( strtotime('+2 days',$start_date) )
 				)
 		));
+		
+		if (isset($order_desc) && $order_desc){
+			if (is_array($events) && count($events)>0) {
+				$events = array_reverse($events);
+			}
+			if (is_array($closing) && count($closing)>0) {
+				$$closing = array_reverse($closing);
+			}			
+		} 
 		
 		$this->setView(1);
 		return (compact('events','pending','closing','base_url','maxOff'));

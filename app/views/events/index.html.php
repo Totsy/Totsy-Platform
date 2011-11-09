@@ -1,4 +1,11 @@
 <?=$this->html->script(array('jquery.nivo.slider.pack'));?>
+<script src="/js/jquery.tmpl.js" type="text/javascript"></script>
+
+<?=$this->html->script(array('cart-timer.js', 'cart-items-timer.js', 'cart-popup.js?v=001'));?>
+
+<!-- template used for items on cart. jquery.tmpl.js driven -->
+<?=$this->view()->render( array('element' => 'popupCartItems') ); ?>
+
 <script>
 (function($) {
 	$.fn.rotate = function() {
@@ -17,9 +24,10 @@
 	<h2 class="page-title gray"><span class="_red">Today's Sales</span></h2>
 	<hr />
 		<!--Disney -->
-	<div class="disney disney_splash">
+<!--	<div class="disney disney_splash">
 		<p><strong>SPECIAL BONUS!</strong> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/parents.png" align="absmiddle" width="95px" /> ( a $10 value ) <span id="disney">Offer &amp; Refund Details</span></p>
 	</div>
+-->
 <div class="fullwidth">
 	<?php $x = 0; ?>
 	<?php $y = 0; ?>
@@ -92,8 +100,8 @@
 			</div>
 
 			<?php if ($x == 1): ?>
-				<div id="banner_container" class="grid_5">
-					<div><a href="/users/invite"><img src="/img/invite_girl.png" alt="" height="404"/></a></div>
+				<div id="banner_container" class="grid_5" style="height:405px; overflow:hidden;">
+					<div><a href="/users/invite"><img src="/img/invite_girl.png"></a></div>
 					<?php if(!empty($banner["img"])): ?>
 						<?php foreach($banner["img"] as $image): ?>
 							<div><?php if(!empty($image["url"])):?>
@@ -253,13 +261,13 @@
 </script>
 
 <script type="text/javascript" src="http://www.googleadservices.com/pagead/conversion.js"></script>
-
 <noscript>
 	<div style="display:inline;">
 		<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=E1ZLCMH8igIQ9Yb-5QM&amp;guid=ON&amp;script=0"/>
 	</div>
 </noscript>
 <!-- END OF Google Code for inscrits Remarketing List -->
+
 <script>
 (function($) {
 	$.fn.rotate = function() {
