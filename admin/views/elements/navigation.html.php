@@ -114,7 +114,17 @@
 		</ul>
 	</li>
 	<li>
-		<?php echo $this->html->link('Email Management', array('Base::selectEvent', 'args'=>'email')); ?>
+		<?php echo $this->html->link('Email Management', '#'); ?>
+		<ul>
+			<li>
+				<?php echo $this->html->link('Email by Event', array('Base::selectEvent', 'args'=>'email')); ?>
+			</li>
+			<li>
+				<?php echo $this->html->link('Bounced Emails', array('Bouncedemails::index')); ?>
+			</li>
+
+		</ul>
+		
 	</li>
 	<li>
 		<?php echo $this->html->link('File Management', array('Files::index')); ?>
