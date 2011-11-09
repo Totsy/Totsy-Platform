@@ -21,7 +21,7 @@
 	};
 })(jQuery);
 </script>
-	<h2 class="page-title gray"><span class="_red">Today's Sales</span></h2>
+	<h2 class="page-title gray"><span class="_red">Today's Sales</span> </h2>
 	<hr />
 		<!--Disney -->
 <!--	<div class="disney disney_splash">
@@ -296,4 +296,76 @@ f+='&'+key+'='+encodeURIComponent(cto_params[key]);}if(cto_params['kw']!=undefin
 c+='&cb='+Math.floor(Math.random()*99999999999);try{c+='&ref='+encodeURIComponent(document.referrer);}catch(e){}try{
 c+='&sc_r='+encodeURIComponent(screen.width+'x'+screen.height);}catch(e){}try{c+='&sc_d='+encodeURIComponent(screen.colorDepth);}catch(e){}b.Load(function(){
 a(c.substring(0,2000))})}}}();CRITEO.Load(document.location.protocol+'//dis.us.criteo.com/dis/dis.aspx?');
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	$(document).ready( function() {
+		$("#inviteForm").validationEngine('attach');        
+    	$("#inviteForm").validationEngine('init', { promptPosition : "centerRight", scroll: false } );  
+		
+		var default_msg = "Separate email addresses by commas";
+	
+		function validateEmail(field) {
+			
+			var begin = field.indexOf("<");
+			var end = field.indexOf(">");
+			if((begin != -1) && (end != -1)) {
+				field = field.slice(begin+1,end);
+			}
+    		var regex=/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i;
+    		return (regex.test(field)) ? true : false;
+    	}
+		
+		var checkFields = function() {
+		
+			var email_addresses = $("#contact_list").val().split(",");
+			
+			if($("#contact_list").val()!= default_msg){			
+				if (typeof email_addresses == "object") {
+					for ( email in email_addresses ) {
+						var clean_email = email_addresses[email].replace(" ","");			
+						
+						if( validateEmail(clean_email)==false) {
+							
+							var error_msg = "";
+							
+								if(clean_email==""){
+									error_msg = "*One of your emails is blank, or remove that extra comma.";
+								} else {
+									error_msg = '*This email is not valid: ' +  clean_email;
+								}
+							
+							$('#contact_list').validationEngine('showPrompt',error_msg, '', true);
+    			 			$('#contact_list').validationEngine({ promptPosition : "centerRight", scroll: false });
+							return false;
+						} else {
+							$("#contact_list").validationEngine('hide');
+						}
+					}				
+				} else {
+					if( validateEmail(email_addresses)==false) {
+						
+						$('#contact_list').validationEngine('showPrompt','*This email is not valid:' +  email_addresses, '', true);
+    			 		$('#contact_list').validationEngine({ promptPosition : "centerRight", scroll: false });
+						return false;
+					} else {
+						$("#contact_list").validationEngine('hide');	
+					}
+				}		
+			} else {
+				$('#contact_list').validationEngine('showPrompt','*Please enter an email', '', true);
+    			$('#contact_list').validationEngine({ promptPosition : "centerRight", scroll: false });
+				return false;	
+			}
+		}
+		$("#inviteForm").submit(function() {
+			if(checkFields() == false){
+				return false;	
+			} 
+		});	
+	});
+</script>
+<script type="text/javascript" src="https://api.cloudsponge.com/address_books.js"></script>
+<script type="text/javascript" charset="utf-8">
+csInit({domain_key:"YUTAT8N8A3FUTU26CV7T", textarea_id:'contact_list'});
 </script>
