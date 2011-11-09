@@ -68,7 +68,6 @@ Router::connect('/checkout/view', 'Cart::view');
 Router::connect('/checkout/shipping', 'Orders::shipping');
 Router::connect('/checkout/payment', 'Orders::payment');
 Router::connect('/checkout/review', 'Orders::review');
-
 Router::connect('/', 'Events::index');
 Router::connect('/sales/{:args}', 'Events::index');
 Router::connect('/{:action:login|logout}', array('controller' => 'users'));

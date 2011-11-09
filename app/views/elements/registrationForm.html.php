@@ -72,10 +72,6 @@
 		));
 	?>
 	<?=$this->form->error('terms'); ?>
-		
-	<div style="font-size:11px; margin:0px;">
-		*Offer expires 30 days after registration.
-	</div>
 	
 	
 <?=$this->form->end(); ?>
