@@ -233,5 +233,5 @@
 </script>
 <script type="text/javascript" src="https://api.cloudsponge.com/address_books.js"></script>
 <script type="text/javascript" charset="utf-8">
-csInit({domain_key:"YUTAT8N8A3FUTU26CV7T", textarea_id:'contact_list'});
+csInit({domain_key:"ZSSSM5GHM6C8S7Q5TEEG", textarea_id:'contact_list'});
 </script>
