@@ -16,11 +16,11 @@
 			data="http://www.youtube.com/v/HJBQnkxPJko&rel=0&hd=1&theme=light&color=red&fs=1&autohide=1">
 			<!--> <![endif]-->
 			<!--[if IE]>
-			<object type="application/x-shockwave-flash" width="425" height="350"
+			<object type="application/x-shockwave-flash" width="540" height="315"
 			classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
 			codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0">
 			<![endif]-->
-			<param name="movie" value="http://www.youtube.com/v/Yc_J_kXaFSw&rel=0" />
+			<param name="movie" value="http://www.youtube.com/v/HJBQnkxPJko&rel=0&hd=1&theme=light&color=red&fs=1&autohide=1" />
 			<p>Your browser is not able to display this multimedia content.</p>
 			</object>
 			<?php echo $this->html->image('featured_on.png', array()); ?>
