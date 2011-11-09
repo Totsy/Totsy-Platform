@@ -39,6 +39,7 @@ class UsersController extends BaseController {
 	 * @return string User will be promoted that email is already registered.
 	 */
 	public function register($invite_code = null, $affiliate_user_id = null) {
+		
 		$message = false;
 		$data = $this->request->data;
 		$this->autoLogin();
@@ -51,6 +52,11 @@ class UsersController extends BaseController {
 		if($cookie && preg_match('(/a/)', $cookie['landing_url'])){
 			$this->redirect($cookie['landing_url']);
 		}
+		$referer = parse_url($this->request->env('HTTP_REFERER'));
+		if ($referer['host']==$this->request->env('HTTP_HOST') && preg_match('(/sale/)',$referer['path'])){
+			Session::write('landing',$referer['path'],array('name'=>'default'));
+		}
+		unset($referer);
 		if (isset($data) && $this->request->data) {
 			$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
 			$data['email'] = strtolower($this->request->data['email']);
@@ -104,7 +110,19 @@ class UsersController extends BaseController {
 				Mailer::addToMailingList($data['email']);
 				$ipaddress = $this->request->env('REMOTE_ADDR');
 				User::log($ipaddress);
-				$this->redirect('/sales');
+				
+				$landing = null;
+				if (Session::check('landing')){
+					$landing = Session::read('landing'); 
+				} 
+				if (!empty($landing)){
+					Session::delete('landing',array('name'=>'default'));
+					$this->redirect($landing);
+					unset($landing);
+				} else {
+					$this->redirect('/sales');
+				}
+				
 			}
 		}
 		$this->_render['layout'] = 'login';
@@ -540,6 +558,7 @@ class UsersController extends BaseController {
 		$user = null;
 		$fbuser = FacebookProxy::api('/me');
 		$user = User::create();
+
 		if ( !preg_match( '/@proxymail\.facebook\.com/', $fbuser['email'] )) {
 			$user->email = $fbuser['email'];
 			$user->email_hash = md5($user->email);
@@ -552,7 +571,18 @@ class UsersController extends BaseController {
 			$data['firstname'] = $fbuser['first_name'];
 			$data['lastname'] = $fbuser['last_name'];
 			static::registration($data);
-			$this->redirect('/sales');
+			
+			$landing = null;
+			if (Session::check('landing')){
+				$landing = Session::read('landing'); 
+			} 
+			if (!empty($landing)){
+				Session::delete('landing',array('name'=>'default'));
+				$this->redirect($landing);
+				unset($landing);
+			} else {
+				$this->redirect('/sales');
+			}
 		}
 
 		return compact('message', 'user', 'fbuser');
@@ -572,6 +602,7 @@ class UsersController extends BaseController {
 	 */
 	public static function facebookLogin($affiliate = null, $cookie = null, $ipaddress = null) {
 		$self = static::_object();
+
 		//If the users already exists in the database
 		$success = false;
 		$userfb = array();
@@ -590,7 +621,17 @@ class UsersController extends BaseController {
 				$sessionWrite = $self->writeSession($user->data());
 				Affiliate::linkshareCheck($user->_id, $affiliate, $cookie);
 				User::log($ipaddress);
-				$self->redirect('/sales');
+				$landing = null;
+				if (Session::check('landing')){
+					$landing = Session::read('landing'); 
+				} 
+				if (!empty($landing)){
+					Session::delete('landing',array('name'=>'default'));
+					$self->redirect($landing);
+					unset($landing);
+				} else {
+					$self->redirect('/sales');
+				}
 			}
 		}
 		return compact('success', 'userfb');
@@ -603,6 +644,7 @@ class UsersController extends BaseController {
 		}
 		return static::$_instances[$class];
 	}
+	
 }
 
 ?>
