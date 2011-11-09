@@ -68,8 +68,9 @@ class FinancialExport extends Base  {
 	 * - 'summary' : processes order summary
 	 * - 'detail' : processes order details
 	 * - 'credit' : process credit details
-	 * - 'update' : process order summary updates
+	 * - 'update' : process order summary & detail updates
 	 * - 'all' : processess all the above (default)
+	 * - 'export' : export the files in the finance folder to the accounting folder
 	 *
 	 * @var string
 	 */
@@ -117,6 +118,8 @@ class FinancialExport extends Base  {
 		'actual_ship_date',
 		'ship_records',
 		'cancel'
+	//	'gross_revenue',
+	//	'net_revenue'
 	);
 
 	/**
@@ -260,8 +263,8 @@ class FinancialExport extends Base  {
 		    $this->directory = 'TotsyHistory';
 		    $this->log("Retrieving Historical Data");
         } else {
-           $yesterday_min = mktime(0,0,0,date('m'),date('d') - 1,date('Y'));
-           $yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
+           $yesterday_min = mktime(0,0,0,date('m'),5,date('Y'));
+           $yesterday_max = mktime(23,59,59,date('m'),5,date('Y'));
             $orderConditions = array(
                 'date_created' => array(
                     '$gte' => new MongoDate($yesterday_min),
@@ -300,7 +303,7 @@ class FinancialExport extends Base  {
                 $this->_orderCreditReport();
                 $this->_updateOrderSummaryReport();
                 $this->_updateOrderDetailFile();
-                $this->exportFiles();
+              //$this->exportFiles();
                  break;
             case "export":
                 $this->exportFiles();
@@ -313,14 +316,14 @@ class FinancialExport extends Base  {
 
 	public function _orderSummaryReport(){
 	   $this->summaryInfo();
-	    $this->xml->asXML($this->orderSummaryFile);
+	   $this->saveXmlFile($this->orderSummaryFile);
 	    $this->xml = null;
 	    $this->orders->rewind();
 	}
 
 	public function _orderDetailReport(){
 	    $this->detailInfo();
-		$this->xml->asXML($this->orderDetailFile);
+	    $this->saveXmlFile($this->orderDetailFile);
 	    $this->xml = null;
 	}
 
@@ -392,7 +395,7 @@ class FinancialExport extends Base  {
                 $this->log("Adding credit details for");
                 $this->createXMLDoc('credit_detail', $userCredit, $this->creditDetailFile);
         }
-        $this->xml->asXML($this->creditDetailFile);
+        $this->saveXmlFile($this->creditDetailFile);
 	    $this->xml = null;
 
     }
@@ -403,7 +406,7 @@ class FinancialExport extends Base  {
         if ($this->historical == 'true') {
 	        $yesterday_max = mktime(23,59,59,date('m') - 1,24,date('Y'));
 	         $conditions = array( 'created_date' => array(
-                    '$gte' => new MongoDate(strtotime('Aug 1, 2010')),
+                    '$gte' => new MongoDate(strtotime('Aug 1, 2011')),
                     '$lte' => new MongoDate($yesterday_max)
                     ));
 	    } else {
@@ -427,7 +430,11 @@ class FinancialExport extends Base  {
             }
 
 	   }
-	    $this->orders = Order::collection()->find(array('order_id' => array('$in' => array_unique($orderids))), $this->fields);
+	    $this->orders = Order::collection()->find(array(
+	        'order_id' => array('$exists' => true),
+	        'order_id' => array('$in' => array_unique($orderids))
+	        ),$this->fields
+	    );
 	    $this->summaryInfo();
 
 	    #this section handles any modified or canceled orders
@@ -437,7 +444,7 @@ class FinancialExport extends Base  {
 	         $conditions = array('modifications' => array('$elemMatch' => array(
                 'date' => array(
                     '$gte' => new MongoDate(strtotime('Oct 1, 2011')),
-                    '$lte' => new MongoDate($yesterday_min)
+                    '$lte' => new MongoDate($yesterday_max)
                 )
             )));
 	    } else {
@@ -453,14 +460,14 @@ class FinancialExport extends Base  {
 	    }
 	    $this->orders = Order::collection()->find($conditions, $this->fields);
 	    $this->summaryInfo();
-	    $this->xml->asXML($this->orderUpdateFile);
+	    $this->saveXmlFile($this->orderUpdateFile);
 	    $this->xml = null;
 	    $this->orders->rewind();
 	}
 
 	public function _updateOrderDetailFile() {
 	    $this->detailInfo();
-	    $this->xml->asXML($this->orderUpdateDetailFile);
+	    $this->saveXmlFile($this->orderUpdateDetailFile);
 	    $this->xml = null;
 	}
 
@@ -561,7 +568,7 @@ class FinancialExport extends Base  {
 	* The function prepares the order summary file data
 	**/
 	private function summaryInfo() {
-	     $ordersShipped = OrderShipped::collection();
+	    $ordersShipped = OrderShipped::collection();
 	    while ($this->orders->hasNext()){
 	           $order = $this->orders->getNext();
                 $orderItems = $order['items'];
@@ -651,6 +658,9 @@ class FinancialExport extends Base  {
                     $order['gross_shipping_amt'] += (array_key_exists('credit_used', $order)) ? $order['credit_used']:0;
                     $order['gross_shipping_amt'] += (array_key_exists('promo_discount', $order)) ? $order['promo_discount']:0;
                 }
+
+            //    $order['gross_revenue'] = Item::calculateProductGross($order['items']);
+            //    $order['net_revenue'] = $order['gross_revenue'] + $order['gross_shipping_amt'];
                 /*
                 * Get credit, promocodes,  and oversize handling information
                 */
@@ -710,7 +720,7 @@ class FinancialExport extends Base  {
                 if (!array_key_exists("cancel", $order)) {
                     $order["cancel"] = "false";
                 } else {
-                    $order["cancel"] = (string)$order["cancel"];
+                    $order["cancel"] = ($order["cancel"])? "true":"false";
                 }
                 $order = $this->sortArrayByArray($order, $this->summaryHeader);
                 $order = $this->removeStraykeys($order, $this->summaryHeader);
@@ -735,7 +745,7 @@ class FinancialExport extends Base  {
 	}
 
     /**
-	 * removes any key not in the hearder
+	 * removes any key not in the header
 	 * @param
 	 */
 	private function removeStrayKeys($array, $orderArray){
@@ -747,6 +757,80 @@ class FinancialExport extends Base  {
 	    return $array;
 	}
 
+
+	private function exportFiles() {
+	    $processed = LITHIUM_APP_PATH . $this->processed_dir;
+	    $source =$this->tmp;
+	    $finished = false;
+	    $reporting = array(
+	        'success' => true,
+	        'error' => array(),
+	        'files_sent' => array()
+	    );
+
+	   // $To = "lhanson@totsy.com,scott.fisher@yourtechso.com,sadler@totsy.com";
+	   $To = "lhanson@totsy.com";
+	   $headers = "From: reports@totsy.com";
+
+	    $this->log("Exporting to Accounting Server...");
+	       $directory = $this->directory;
+
+            $localDirectory = opendir($source);
+            if (is_dir($source)) {
+                if($localDirectory) {
+                    while(($file = readdir($localDirectory)) !== false) {
+                        $length = strlen($file);
+                       if (substr($file,$length - 4, $length) == ".xml") {
+                         $this->log("Uploading " . $source.$file . " to accounting server");
+                         $success = true;
+                          $connection = ssh2_connect('192.168.0.222',22);
+                      // $connection = ssh2_connect('dev3.totsy.com',22);
+                            if (!$connection) {
+                                $this->log("Fail: Unable to establish a connection.");
+                                $reporting['success'] = false;
+                                $reporting['error'][] = "Fail: Unable to establish a connection.";
+                            } else{
+                               if (!ssh2_auth_password($connection, 'root', 'totsy1')) {
+                            //   if (!ssh2_auth_password($connection, 'lawren', 'serenerav3n')) {
+                                    $this->log("Fail: Unable to authenticate.");
+                                    $reporting['success'] = false;
+                                    $reporting['error'][] = "Fail: Unable to authenticate.";
+                                }else{
+                                    $this->log("You are logged in.");
+                                    $success = ssh2_scp_send($connection, $source.$file, "/C/$directory/$file", 0644);
+                                  //   $success = ssh2_scp_send($connection, $source.$file, "/home/lawren/$file", 0644);
+                                     if (!$success) {
+                                        $reporting['success'] = false;
+                                        $reporting['error'][] = "Fail: Unable to authenticate.";
+                                        echo "transfer failed.\r\n";
+                                     } else {
+                                        $reporting['success'] = true;
+                                        $this->log("Moving ". $source.$file ." to processed folder.");
+                                        $reporting['files_sent'][] = $file . " " . filesize($source.$file) . " Bytes" ;
+                                     //   rename($source.$file,$processed.$file);
+                                     }
+                                     ssh2_exec($connection, 'exit');
+                                    sleep(15);
+                                }
+                            }
+                       }
+                    }
+                }
+            }
+            if (!$reporting['success']) {
+                $subject = "Accounting Auto Reporting Job - Failed - test";
+                $message = "Automating reporting results: \r\n";
+                $message .= implode("\r\n", $reporting['error']);
+                mail($To , $subject , $message , $headers);
+            }
+            if ($reporting['success']) {
+                $subject = "Accounting Auto Reporting Job - Successful - test";
+                $message = "Automating reporting results: \r\n The following files were transferred: \r\n";
+                $message .= implode("\r\n", $reporting['files_sent']);
+                mail($To , $subject , $message , $headers);
+            }
+	}
+
 	/**
 	* Creates XML from data passed in
 	* @param string $type type of information: used for the root tags of the xml file
@@ -755,66 +839,21 @@ class FinancialExport extends Base  {
 	**/
 	private function createXMLDoc($type, $record) {
 	    if ($this->xml == null) {
-	        $this->xml = new SimpleXMLElement("<?xml version='1.0' encoding='utf-8'?><$type></$type>");
+	       $this->xml = new SimpleXMLElement("<?xml version='1.0' encoding='utf-8'?><$type></$type>");
 	    }
 
-	        $recordTag = $this->xml->addChild('record');
-	        foreach($record as $key => $value) {
-	            //SimpleXMLElement doesn't like ampersand for some reason so I am replacing it with 'and'
-	           $record[$key] = preg_replace('/&/','and',$record[$key]);
-	            $recordTag->addChild($key, $record[$key]);
-	        }
+        $recordTag = $this->xml->addChild('record');
+        foreach($record as $key => $value) {
+            //SimpleXMLElement doesn't like ampersand for some reason so I am replacing it with 'and'
+           $record[$key] = preg_replace('/&/','and',$record[$key]);
+            $recordTag->addChild($key, $record[$key]);
+        }
 	}
 
-	private function exportFiles() {
-	    $processed = LITHIUM_APP_PATH . $this->processed_dir;
-	    $source =$this->tmp;
-	    $finished = false;
-
-	    $To = "lhanson@totsy.com,scott.fisher@yourtechso.com,sadler@totsy.com";
-	    $headers = "Cc: bugs@totsy.com \r\n From:reports@totsy.com";
-
-	    $this->log("Exporting to Accounting Server...");
-	    $connection = ssh2_connect('192.168.0.222',22);
-	  // $connection = ssh2_connect('dev3.totsy.com',22);
-	    if (!$connection) {
-	        $this->log("Fail: Unable to establish a connection.");
-	      //  mail($To, "Failed Accounting Job", "Fail: Unable to establish a connection.");
-	    } else{
-           if (!ssh2_auth_password($connection, 'root', 'totsy1')) {
-        //   if (!ssh2_auth_password($connection, 'lawren', 'serenerav3n')) {
-                $this->log("Fail: Unable to authenticate.");
-          //      mail($To, "Failed Accounting Job", "Fail: Unable to authenticate.");
-            } else {
-                $this->log("You are logged in.");
-                $directory = $this->directory;
-
-                $localDirectory = opendir($source);
-                if (is_dir($source)) {
-                    if($localDirectory) {
-                        while(($file = readdir($localDirectory)) !== false) {
-                            $length = strlen($file);
-                           if (substr($file,$length - 4, $length) == ".xml") {
-                             $this->log("Uploading " . $source.$file . " to accounting server");
-                             $success = ssh2_scp_send($connection, $source.$file, "/C/$directory/$file", 0644);
-                          //   $success = ssh2_scp_send($connection, $source.$file, "/home/lawren/$file", 0644);
-                             if (!$success) {
-                                //mail($To, "Failed Accounting Job", "Fail: Copy to server failed for $file");
-                                echo "transfer failed.";
-                             }
-                             sleep(15);
-                             ssh2_exec($connection, 'exit');
-                             $this->log("Moving ". $source.$file ." to processed folder.");
-                            // rename($source.$file,$processed.$file);
-                             $finished = true;
-                           }
-                        }
-                    }
-                }
-                if ($finished) {
-                   //  mail($To, "Accounting Job - Test", "This is a test email for the automated data file transfer.");
-                }
-            }
+	private function saveXmlFile($file) {
+	    if (!is_null($this->xml) && $this->xml->count() > 0 ) {
+	        $this->xml->asXml($file);
 	    }
 	}
 }
+?>
