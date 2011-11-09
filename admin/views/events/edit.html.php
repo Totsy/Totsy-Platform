@@ -294,7 +294,7 @@ for ( i=1; i<6; i++ ) {
 				<br><br>
 				
 				<table>
-					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple','value' => $sel_filters)); ?> 
+					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?> 
 				</table>
 				<div id="tags">
 					<?=$this->form->label('Tags'); ?>
