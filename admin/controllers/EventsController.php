@@ -409,7 +409,7 @@ class EventsController extends BaseController {
 			}
 		}
 
-		return compact('event', 'eventItems', 'items', 'all_filters', 'sel_filters', 'shortDescLimit');
+		return compact('event', 'eventItems', 'items', 'all_filters', 'shortDescLimit');
 	}
 
 
