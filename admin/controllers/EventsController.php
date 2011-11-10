@@ -255,7 +255,6 @@ class EventsController extends BaseController {
 
 		#T Get all possibles value for the multiple departments select
 		$result = Item::getDepartments();
-		$sel_filters = array();
 		$all_filters = array();
 		foreach ($result['values'] as $value) {
 			if($value&&$value!=" "){
@@ -266,21 +265,6 @@ class EventsController extends BaseController {
 			}
 		}
 
-		foreach ($eventItems as $this_item){
-			if($this_item->departments){
-				$values = $this_item->departments->data();
-			}
-			foreach ($values as $value) {
-				if($value&&$value!=" "){
-					$sel_filters[$value] = $value;
-				}
-			}
-
-		}
-
-		$sel_filters = array_unique($sel_filters);
-
-		#END T
 		if (empty($event)) {
 			$this->redirect(array('controller' => 'events', 'action' => 'add'));
 		}
@@ -424,7 +408,7 @@ class EventsController extends BaseController {
 			}
 		}
 
-		return compact('event', 'eventItems', 'items', 'all_filters', 'sel_filters', 'shortDescLimit');
+		return compact('event', 'eventItems', 'items', 'all_filters', 'shortDescLimit');
 	}
 
 
