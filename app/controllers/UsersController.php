@@ -101,6 +101,7 @@ class UsersController extends BaseController {
 				);
 				Mailer::send('Welcome_Free_Shipping', $user->email);
 				Mailer::addToMailingList($data['email']);
+				Mailer::addToSuppressionList($data['email']);		
 				$ipaddress = $this->request->env('REMOTE_ADDR');
 				User::log($ipaddress);
 				$this->redirect('/sales');
@@ -153,6 +154,7 @@ class UsersController extends BaseController {
 						if (isset($data['firstname'])) $name = $data['firstname'];
 						if (isset($data['lastname'])) $name = is_null($name)?$data['lastname']:$name.$data['lastname'];
 						Mailer::addToMailingList($data['email'],is_null($name)?array():$name);
+						Mailer::addToSuppressionList($data['email']);		
 
 					}
 				}
