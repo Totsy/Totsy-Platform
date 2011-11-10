@@ -55,7 +55,21 @@ class FinancialExport extends Base  {
 	*
 	**/
 	protected $directory = 'TotsyData';
-
+    /**
+    * Starting date to retrieve historical records. Default 11/01/2010
+    * @var string
+    **/
+    public $startdate = "11/01/2010";
+    /**
+    * Ending Date to retrieve historical records. Default 'yesterday'
+    * @var string
+    **/
+	public $enddate = "yesterday";
+	/**
+    * Date to retrieve a daily file
+    * @var string
+    **/
+	public $dailydate = "yesterday";
 	/**
 	 * Will generate xml of orders going back to Nov 1 - one day before the present
 	 * defaults to `false`
@@ -117,9 +131,9 @@ class FinancialExport extends Base  {
 		'estimated_ship_date',
 		'actual_ship_date',
 		'ship_records',
-		'cancel'
-	//	'gross_revenue',
-	//	'net_revenue'
+		'cancel',
+		'gross_revenue',
+		'net_revenue'
 	);
 
 	/**
@@ -244,6 +258,11 @@ class FinancialExport extends Base  {
 		 * Going for all the orders that were created after Nov 1, 2010. This may need to be dynamically
 		 * setup for future queries via cron.
 		 */
+		 if ($this->dailydate) {
+		    var_dump($this->dailydate);
+		    var_dump(date_parse($this->dailydate));
+		    die();
+		 }
 		 if ($this->historical == 'true') {
 		    $yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
             $orderConditions = array(
@@ -263,8 +282,8 @@ class FinancialExport extends Base  {
 		    $this->directory = 'TotsyHistory';
 		    $this->log("Retrieving Historical Data");
         } else {
-           $yesterday_min = mktime(0,0,0,date('m'),5,date('Y'));
-           $yesterday_max = mktime(23,59,59,date('m'),5,date('Y'));
+           $yesterday_min = mktime(0,0,0,date('m'),date('d') - 1,date('Y'));
+           $yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
             $orderConditions = array(
                 'date_created' => array(
                     '$gte' => new MongoDate($yesterday_min),
@@ -625,18 +644,18 @@ class FinancialExport extends Base  {
                 } else {
                     $order['estimated_ship_date'] = 0;
                 }
-                $order['net_shipping_amt'] = (float) $order['subTotal'] + (float) $order['handling'];
+                $order['gross_shipping_amt'] = (float) $order['subTotal'] + (float) $order['handling'];
                 if (array_key_exists('overSizeHandling', $order)) {
-                    $order['net_shipping_amt'] += (float) $order['overSizeHandling'];
+                    $order['gross_shipping_amt'] += (float) $order['overSizeHandling'];
                 }
-                $order['gross_shipping_amt'] = $order['net_shipping_amt'];
+                $order['net_shipping_amt'] = $order['gross_shipping_amt'];
                 if (array_key_exists('service', $order)) {
                     if (in_array('freeshipping', $order['service'])){
                         $order['service'] = 'freeshipping';
-                        $order['gross_shipping_amt'] -= 7.95;
+                        $order['net_shipping_amt'] -= 7.95;
                     } else if(in_array('10off50', $order)) {
                         $order['service'] = '10off50';
-                         $order['gross_shipping_amt'] -= 10;
+                        $order['net_shipping_amt'] -= 10;
                     }else {
                         $order['service'] = "none";
                     }
@@ -655,12 +674,12 @@ class FinancialExport extends Base  {
                 * Grab credit information
                 */
                 if (array_key_exists('credit_used', $order)){
-                    $order['gross_shipping_amt'] += (array_key_exists('credit_used', $order)) ? $order['credit_used']:0;
-                    $order['gross_shipping_amt'] += (array_key_exists('promo_discount', $order)) ? $order['promo_discount']:0;
+                    $order['net_shipping_amt'] += (array_key_exists('credit_used', $order)) ? $order['credit_used']:0;
+                    $order['net_shipping_amt'] += (array_key_exists('promo_discount', $order)) ? $order['promo_discount']:0;
                 }
 
-            //    $order['gross_revenue'] = Item::calculateProductGross($order['items']);
-            //    $order['net_revenue'] = $order['gross_revenue'] + $order['gross_shipping_amt'];
+                $order['gross_revenue'] = Item::calculateProductGross($order['items']);
+                $order['net_revenue'] = $order['gross_revenue'] + $order['handling'] + $order['overSizeHandling'];
                 /*
                 * Get credit, promocodes,  and oversize handling information
                 */
@@ -745,8 +764,9 @@ class FinancialExport extends Base  {
 	}
 
     /**
-	 * removes any key not in the header
-	 * @param
+	 * removes any keys not in the header
+	 * @param array $array - the array of values in question
+	 * @param array $orderArray - the header to compare $array by
 	 */
 	private function removeStrayKeys($array, $orderArray){
 	    $keys = array_keys($array);
@@ -757,23 +777,34 @@ class FinancialExport extends Base  {
 	    return $array;
 	}
 
-
+    /**
+	 * Exports the processed files to the accounting server
+	 * @param
+	 */
 	private function exportFiles() {
 	    $processed = LITHIUM_APP_PATH . $this->processed_dir;
-	    $source =$this->tmp;
+	    $source = $this->tmp;
 	    $finished = false;
 	    $reporting = array(
 	        'success' => true,
 	        'error' => array(),
-	        'files_sent' => array()
+	        'files_sent' => array(),
+	        'files_failed' => array()
 	    );
+	    $obj = $this;
+	    $error_handling = function ($errno, $errstr,$errfile) use ($obj, &$reporting) {
+	       $obj->log($errstr);
+	       $reporting['success'] = false;
+           $reporting['error'][] = $errstr;
+	    };
+	    set_error_handler($error_handling, E_WARNING);
 
 	   // $To = "lhanson@totsy.com,scott.fisher@yourtechso.com,sadler@totsy.com";
 	   $To = "lhanson@totsy.com";
 	   $headers = "From: reports@totsy.com";
 
 	    $this->log("Exporting to Accounting Server...");
-	       $directory = $this->directory;
+	    $directory = $this->directory;
 
             $localDirectory = opendir($source);
             if (is_dir($source)) {
@@ -781,9 +812,8 @@ class FinancialExport extends Base  {
                     while(($file = readdir($localDirectory)) !== false) {
                         $length = strlen($file);
                        if (substr($file,$length - 4, $length) == ".xml") {
-                         $this->log("Uploading " . $source.$file . " to accounting server");
                          $success = true;
-                          $connection = ssh2_connect('192.168.0.222',22);
+                         $connection = ssh2_connect('192.168.0.222',22);
                       // $connection = ssh2_connect('dev3.totsy.com',22);
                             if (!$connection) {
                                 $this->log("Fail: Unable to establish a connection.");
@@ -797,38 +827,46 @@ class FinancialExport extends Base  {
                                     $reporting['error'][] = "Fail: Unable to authenticate.";
                                 }else{
                                     $this->log("You are logged in.");
+                                    $this->log("Uploading " . $source.$file . " to accounting server");
                                     $success = ssh2_scp_send($connection, $source.$file, "/C/$directory/$file", 0644);
                                   //   $success = ssh2_scp_send($connection, $source.$file, "/home/lawren/$file", 0644);
                                      if (!$success) {
                                         $reporting['success'] = false;
-                                        $reporting['error'][] = "Fail: Unable to authenticate.";
+                                        $reporting['error'][] = "Fail: transfer failed.";
+                                        $reporting['files_failed'][] = $file . " " . filesize($source.$file) . " Bytes" ;
                                         echo "transfer failed.\r\n";
+                                        $this->log("Fail: Unable to transfer " . $source.$file . " to Accounting Server.");
                                      } else {
                                         $reporting['success'] = true;
-                                        $this->log("Moving ". $source.$file ." to processed folder.");
+                                        $this->log("Moving " . $source.$file . " to processed folder.");
                                         $reporting['files_sent'][] = $file . " " . filesize($source.$file) . " Bytes" ;
-                                     //   rename($source.$file,$processed.$file);
+                                        rename($source.$file,$processed.$file);
                                      }
+                                     sleep(15);
                                      ssh2_exec($connection, 'exit');
-                                    sleep(15);
+                                     sleep(5);
                                 }
                             }
                        }
                     }
                 }
             }
+            $subject = "Accounting Auto Reporting Job - Report - test";
+            $message = "Automating reporting results: \r\n";
             if (!$reporting['success']) {
-                $subject = "Accounting Auto Reporting Job - Failed - test";
-                $message = "Automating reporting results: \r\n";
                 $message .= implode("\r\n", $reporting['error']);
-                mail($To , $subject , $message , $headers);
             }
-            if ($reporting['success']) {
-                $subject = "Accounting Auto Reporting Job - Successful - test";
-                $message = "Automating reporting results: \r\n The following files were transferred: \r\n";
+            if (!empty($reporting['files_failed'])) {
+                $message .= "The following files failed to transfer: \r\n";
+                $message .= implode("\r\n", $reporting['error']);
+            }
+            if (!empty($reporting['files_sent'])) {
+                $message .= "The following files were transferred: \r\n";
                 $message .= implode("\r\n", $reporting['files_sent']);
-                mail($To , $subject , $message , $headers);
             }
+            $this->log("Sending out email");
+            mail($To , $subject , $message , $headers);
+            restore_error_handler();
 	}
 
 	/**
