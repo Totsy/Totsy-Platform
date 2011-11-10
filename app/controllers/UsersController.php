@@ -54,6 +54,7 @@ class UsersController extends BaseController {
 		if (isset($data) && $this->request->data) {
 			$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
 			$data['email'] = strtolower($this->request->data['email']);
+			$data['email_hash'] = md5($data['email']);
 		}
 		$user = User::create($data);
 		if ($this->request->data && $user->validates() ) {
@@ -124,6 +125,7 @@ class UsersController extends BaseController {
 			if ($data) {
 				$data['email'] = strtolower($data['email']);
 				$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
+				$data['email_hash'] = md5($data['email']);
 				$user = User::create($data);
 				if ($user->validates()) {
 					$email = $data['email'];
@@ -365,6 +367,7 @@ class UsersController extends BaseController {
 				} else {
 					$user->legacy = 0;
 					$user->reset_token = '0';
+					$user->email_hash = md5($user->email);
 					if ($user->save($this->request->data, array('validate' => false))) {
 							$info = Session::read('userLogin');
 							$info['firstname'] = $this->request->data['firstname'];
@@ -409,6 +412,7 @@ class UsersController extends BaseController {
 				$user->clear_token = $token;
 				$user->reset_token = sha1($token);
 				$user->legacy = 0;
+				$user->email_hash = md5($user->email);
 				if ($user->save(null, array('validate' => false))) {
 					Mailer::send('Reset_Password', $user->email, array('token' => $token));
 					$message = "Your password has been reset. Please check your email.";
@@ -540,6 +544,7 @@ class UsersController extends BaseController {
 		$user = User::create();
 		if ( !preg_match( '/@proxymail\.facebook\.com/', $fbuser['email'] )) {
 			$user->email = $fbuser['email'];
+			$user->email_hash = md5($user->email);
 			$user->confirmemail = $fbuser['email'];
 		}
 		$this->_render['layout'] = 'login';

@@ -10,6 +10,7 @@ use li3_payments\extensions\payments\exceptions\TransactionException;
 use app\extensions\Mailer;
 use app\models\User;
 use app\models\Base;
+use app\models\FeatureToggles;
 
 class Order extends Base {
 
@@ -91,6 +92,7 @@ class Order extends Base {
 	 * @return redirect
 	 */
 	public static function recordOrder($vars, $cart, $card, $order, $avatax, $authKey, $items) {
+			#Get User Informations
 			$user = Session::read('userLogin');
 			$service = Session::read('services', array('name' => 'default'));
 			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
@@ -147,6 +149,14 @@ class Order extends Base {
 			#Calculate savings
 			$userSavings = Session::read('userSavings');
 			$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
+			#Get Credits Card Informations Encrypted and Store It
+			$storing_cc_encrypted = FeatureToggles::getValue('storing_credit_card_encrypted');
+			if(!empty($storing_cc_encrypted)) {
+				$cc_encrypt = Session::read('cc_infos');
+				$cc_encrypt['vi'] = Session::read('vi');
+				unset($cc_encrypt['valid']);
+				$order->cc_payment = $cc_encrypt;
+			}
 			#Save Order Infos
 			$order->save(array(
 					'total' => $vars['total'],
@@ -211,7 +221,7 @@ class Order extends Base {
 	/**
 	 * Encrypt all credits card informations with MCRYPT and store it in the Session
 	 */
-	public static function creditCardEncrypt ($cc_infos, $user_id,$save_iv_in_session = false) {
+	public static function creditCardEncrypt($cc_infos, $user_id,$save_iv_in_session = false) {
 		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
 		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
 		if ($save_iv_in_session == true) {
