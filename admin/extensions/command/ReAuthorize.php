@@ -46,7 +46,7 @@ class ReAuthorize extends \lithium\console\Command {
 		$errors = 0;
 		$updated = 0;	
 		#Limit to +7 days Old Authkey
-		$limitDate = mktime(0, 0, 0, date("m"), date("d") - $expiration, date("Y"));
+		$limitDate = mktime(0, 0, 0, date("m"), date("d") - $this->expiration, date("Y"));
 		#Get All Orders with Auth Date >= 7days, Not Void Manually or Shipped
 		$conditions = array('void_confirm' => array('$exists' => false),
 							'auth_confirmation' => array('$exists' => false),
