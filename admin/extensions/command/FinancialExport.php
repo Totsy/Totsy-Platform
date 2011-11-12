@@ -59,17 +59,17 @@ class FinancialExport extends Base  {
     * Starting date to retrieve historical records. Default 11/01/2010
     * @var string
     **/
-    public $startdate = "11/01/2010";
+    public $startdate = "";
     /**
     * Ending Date to retrieve historical records. Default 'yesterday'
     * @var string
     **/
-	public $enddate = "yesterday";
+	public $enddate = "";
 	/**
     * Date to retrieve a daily file
     * @var string
     **/
-	public $dailydate = "yesterday";
+	public $dailydate = "";
 	/**
 	 * Will generate xml of orders going back to Nov 1 - one day before the present
 	 * defaults to `false`
@@ -89,6 +89,14 @@ class FinancialExport extends Base  {
 	 * @var string
 	 */
 	public $process = "all";
+	/**
+	 * The minimum date for the query
+	 */
+	protected $yesterday_min = "";
+	/**
+	 * The maximum date for the query
+	 */
+	protected $yesterday_max = "";
 
 	/**
 	 * The summary header to be used in the summary CSV export file.
@@ -243,7 +251,7 @@ class FinancialExport extends Base  {
 	 */
 	public function run() {
 		Environment::set($this->env);
-		MongoCursor::$timeout = 100000;
+		MongoCursor::$timeout = -1;
 		$this->tmp = LITHIUM_APP_PATH . $this->tmp;
 		/**
 		 * The query was timing out without an index running locally on a MBP. Although this won't be an
@@ -258,50 +266,7 @@ class FinancialExport extends Base  {
 		 * Going for all the orders that were created after Nov 1, 2010. This may need to be dynamically
 		 * setup for future queries via cron.
 		 */
-		 if ($this->dailydate) {
-		    var_dump($this->dailydate);
-		    var_dump(date_parse($this->dailydate));
-		    die();
-		 }
-		 if ($this->historical == 'true') {
-		    $yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
-            $orderConditions = array(
-                'date_created' => array(
-                    '$gte' => new MongoDate(strtotime('Aug 1, 2011')),
-                    '$lte' => new MongoDate(strtotime('Oct 24, 2011'))
-                   // '$lte' => new MongoDate($yesterday_max)
-                ));
-            /**
-             * Setup filenames for the order summary and epxort functionality.
-            */
-		    $this->orderSummaryFile = $this->tmp . 'OrdSummary_May_2011.xml';
-		    $this->orderDetailFile = $this->tmp . 'OrdDetail_May_2011.xml';
-		    $this->creditDetailFile = $this->tmp . 'CredDetail_History.xml';
-		    $this->orderUpdateFile = $this->tmp . 'OrdUpdate_Aug-Oct_24_2011.xml';
-		    $this->orderUpdateDetailFile = $this->tmp . 'UpdateDetail_Aug-Oct_24_2011.xml';
-		    $this->directory = 'TotsyHistory';
-		    $this->log("Retrieving Historical Data");
-        } else {
-           $yesterday_min = mktime(0,0,0,date('m'),date('d') - 1,date('Y'));
-           $yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
-            $orderConditions = array(
-                'date_created' => array(
-                    '$gte' => new MongoDate($yesterday_min),
-                    '$lte' => new MongoDate($yesterday_max)
-                ));
-            /**
-             * Setup filenames for the order summary and epxort functionality.
-             */
-            $this->time = date('m-d-Y', $yesterday_min);
-            $this->orderSummaryFile = $this->tmp . 'OrdSummary_' . $this->time . '.xml';
-            $this->orderDetailFile = $this->tmp . 'OrdDetail_' . $this->time . '.xml';
-            $this->creditDetailFile = $this->tmp . 'CredDetail_' . $this->time . '.xml';
-            $this->orderUpdateFile = $this->tmp . 'OrdUpdate_' . $this->time . '.xml';
-            $this->orderUpdateDetailFile = $this->tmp . 'UpdateDetail_' . $this->time . '.xml';
-            $this->log("Retrieving Daily Data");
-        }
-
-		$this->orders = Order::collection()->find($orderConditions, $this->fields);
+		$this->prepareData();
 		switch(strtolower(trim($this->process))) {
             case "summary":
                 $this->_orderSummaryReport();
@@ -322,7 +287,7 @@ class FinancialExport extends Base  {
                 $this->_orderCreditReport();
                 $this->_updateOrderSummaryReport();
                 $this->_updateOrderDetailFile();
-              //$this->exportFiles();
+                $this->exportFiles();
                  break;
             case "export":
                 $this->exportFiles();
@@ -331,6 +296,76 @@ class FinancialExport extends Base  {
                 echo "Invalid input. For help type : li3 help finanical-export\n";
                 break;
 		}
+	}
+	protected function parseDate($date,$timeOfDay = 'end') {
+	    $query_date = date_parse($date);
+	    if ($query_date['error_count'] > 0) {
+            foreach($query_date['errors'] as $error) {
+                echo $error . "\r\n";
+            }
+            exit(1);
+        }
+	    switch ($timeOfDay) {
+	        case 'end' :
+	            return mktime(23, 59, 59, $query_date['month'], $query_date['day'],
+	             $query_date['year']);
+	        case 'start' :
+	            return mktime(0, 0, 0, $query_date['month'], $query_date['day'],
+	             $query_date['year']);
+	    }
+	}
+	protected function prepareData() {
+	    /**
+	    * prepare dates for query
+	    **/
+
+	     $this->yesterday_min = mktime(0,0,0,date('m'),date('d') - 1,date('Y'));
+		 $this->yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
+		 if ($this->historical == "true") {
+           $this->yesterday_min = mktime(0,0,0,1,1,2009);
+		    if (!empty($this->startdate)) {
+		        $this->yesterday_min = $this->parseDate($this->startdate,'start');
+		    }
+		    if (!empty($this->enddate)) {
+                $this->yesterday_max = $this->parseDate($this->enddate,'end');
+		    }
+		    echo "Generating history files for " . date('m/d/Y H:i:s', $this->yesterday_min) . " to " .
+            date('m/d/Y H:i:s', $this->yesterday_max) . "\r\n";
+		 } else if (!empty($this->dailydate)) {
+            $this->yesterday_min = $this->parseDate($this->dailydate,'start');
+            $this->yesterday_max = $this->parseDate($this->dailydate,'end');
+            echo "Generating daily files for " . date('m/d/Y H:i:s', $this->yesterday_min) . " to " .
+            date('m/d/Y H:i:s', $this->yesterday_max) . "\r\n";
+		}
+         /**
+         * Setup filenames for the order summary and epxort functionality.
+        */
+	     if ($this->historical == 'true') {
+            $this->time = date('M_y',$this->yesterday_min) . "_" . date('M_d_Y', $this->yesterday_max);
+		    $this->orderSummaryFile = $this->tmp . 'OrdSummary_' . $this->time. '.xml';
+		    $this->orderDetailFile = $this->tmp . 'OrdDetail_' . $this->time. '.xml';
+		    $this->creditDetailFile = $this->tmp . 'CredDetail_' . $this->time. '.xml';
+		    $this->orderUpdateFile = $this->tmp . 'OrdUpdate_' . $this->time. '.xml';
+		    $this->orderUpdateDetailFile = $this->tmp . 'UpdateDetail_' . $this->time. '.xml';
+		    $this->directory = 'TotsyHistory';
+		    $this->log("Retrieving Historical Data");
+        } else {
+            $this->time = date('m-d-Y', $this->yesterday_min);
+            $this->orderSummaryFile = $this->tmp . 'OrdSummary_' . $this->time . '.xml';
+            $this->orderDetailFile = $this->tmp . 'OrdDetail_' . $this->time . '.xml';
+            $this->creditDetailFile = $this->tmp . 'CredDetail_' . $this->time . '.xml';
+            $this->orderUpdateFile = $this->tmp . 'OrdUpdate_' . $this->time . '.xml';
+            $this->orderUpdateDetailFile = $this->tmp . 'UpdateDetail_' . $this->time . '.xml';
+            $this->log("Retrieving Daily Data");
+        }
+        $orderConditions = array(
+            'date_created' => array(
+                '$gte' => new MongoDate($this->yesterday_min),
+                '$lte' => new MongoDate($this->yesterday_max)
+            ),
+            'items' => array('$exists' => true)
+            );
+		$this->orders = Order::collection()->find($orderConditions, $this->fields);
 	}
 
 	public function _orderSummaryReport(){
@@ -347,34 +382,17 @@ class FinancialExport extends Base  {
 	}
 
 	public function _orderCreditReport(){
-	    if ($this->historical == 'true') {
-	        $yesterday_max = mktime(23,59,59,date('m'),19,date('Y'));
-	         $conditions = array( '$or' => array(
-               array( 'date_created' => array(
-                    '$gte' => new MongoDate(strtotime('Nov 1, 2010')),
-                    '$lte' => new MongoDate($yesterday_max))
-                    ),
-                array(
-                'created' => array(
-                    '$gte' => new MongoDate(strtotime('Nov 1, 2010')),
-                    '$lte' => new MongoDate($yesterday_max))
-                )
-            ));
-	    } else {
-	        $yesterday_min = mktime(0,0,0,date('m'),date('d') - 1,date('Y'));
-            $yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
-            $conditions = array( '$or' => array(
-               array( 'date_created' => array(
-                    '$gte' => new MongoDate($yesterday_min),
-                    '$lte' => new MongoDate($yesterday_max))
-                    ),
-                array(
-                'created' => array(
-                    '$gte' => new MongoDate($yesterday_min),
-                    '$lte' => new MongoDate($yesterday_max))
-                )
-            ));
-	    }
+         $conditions = array( '$or' => array(
+           array( 'date_created' => array(
+                '$gte' => new MongoDate($this->yesterday_min),
+                '$lte' => new MongoDate($this->yesterday_max))
+                ),
+            array(
+            'created' => array(
+                '$gte' => new MongoDate($this->yesterday_min),
+                '$lte' => new MongoDate($this->yesterday_max))
+            )
+        ));
 	    $creditCollection = Credit::collection()->find($conditions);
             foreach ($creditCollection as $credit) {
                 if (array_key_exists('date_created', $credit)) {
@@ -421,21 +439,10 @@ class FinancialExport extends Base  {
 
     public function _updateOrderSummaryReport(){
         #this section handles any new shipped files
-
-        if ($this->historical == 'true') {
-	        $yesterday_max = mktime(23,59,59,date('m') - 1,24,date('Y'));
-	         $conditions = array( 'created_date' => array(
-                    '$gte' => new MongoDate(strtotime('Aug 1, 2011')),
-                    '$lte' => new MongoDate($yesterday_max)
-                    ));
-	    } else {
-	        $yesterday_min = mktime(0,0,0,date('m'),date('d') - 1,date('Y'));
-            $yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
-            $conditions = array('created_date' => array(
-                    '$gte' => new MongoDate($yesterday_min),
-                    '$lte' => new MongoDate($yesterday_max)
-                    ));
-	    }
+        $conditions = array('created_date' => array(
+                '$gte' => new MongoDate($this->yesterday_min),
+                '$lte' => new MongoDate($this->yesterday_max)
+                ));
 	   $ordersShipped = OrderShipped::collection();
 	   $updates = $ordersShipped->find($conditions,array('OrderNum' => true, '_id' => false));
 	   $orderids = array();
@@ -459,20 +466,20 @@ class FinancialExport extends Base  {
 	    #this section handles any modified or canceled orders
 
 	    if ($this->historical == 'true') {
-	        $yesterday_max = mktime(23,59,59,date('m') - 1,24,date('Y'));
+	        $this->yesterday_max = mktime(23,59,59,date('m') - 1,24,date('Y'));
 	         $conditions = array('modifications' => array('$elemMatch' => array(
                 'date' => array(
                     '$gte' => new MongoDate(strtotime('Oct 1, 2011')),
-                    '$lte' => new MongoDate($yesterday_max)
+                    '$lte' => new MongoDate($this->yesterday_max)
                 )
             )));
 	    } else {
-	        $yesterday_min = mktime(0,0,0,date('m'),date('d') - 1,date('Y'));
-            $yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
+	        $this->yesterday_min = mktime(0,0,0,date('m'),date('d') - 1,date('Y'));
+            $this->yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
             $conditions = array('modifications' => array('$elemMatch' => array(
                 'date' => array(
-                    '$gte' => new MongoDate($yesterday_min),
-                    '$lte' => new MongoDate($yesterday_max)
+                    '$gte' => new MongoDate($this->yesterday_min),
+                    '$lte' => new MongoDate($this->yesterday_max)
                 ))),
                 'order_id' => array('$nin' => array_unique($orderids))
             );
@@ -529,7 +536,6 @@ class FinancialExport extends Base  {
                         }
                         $item['sku'] = $itemRecord['sku_details'][$size];
                     }
-
                 } else {
                      $item['sku'] = "none";
                 }
@@ -632,6 +638,9 @@ class FinancialExport extends Base  {
                 } else {
                     $order['billing_zip'] = '';
                 }
+                if (!array_key_exists('overSizeHandling', $order)) {
+                    $order['overSizeHandling'] = 0;
+                }
                 $order['order_date'] = date('m/d/Y', $order['date_created']->sec);
                 if (!empty($order['payment_date'])) {
                     $order['payment_date'] = date('m/d/Y',$order['payment_date']->sec);
@@ -644,10 +653,12 @@ class FinancialExport extends Base  {
                 } else {
                     $order['estimated_ship_date'] = 0;
                 }
+
                 $order['gross_shipping_amt'] = (float) $order['subTotal'] + (float) $order['handling'];
                 if (array_key_exists('overSizeHandling', $order)) {
                     $order['gross_shipping_amt'] += (float) $order['overSizeHandling'];
                 }
+                $order['gross_shipping_amt'] = number_format($order['gross_shipping_amt'], 2);
                 $order['net_shipping_amt'] = $order['gross_shipping_amt'];
                 if (array_key_exists('service', $order)) {
                     if (in_array('freeshipping', $order['service'])){
@@ -662,6 +673,8 @@ class FinancialExport extends Base  {
                 } else {
                     $order['service'] = "none";
                 }
+                $order['subTotal'] = number_format($order['subTotal'], 2);
+                $order['total'] = number_format($order['total'], 2);
                 if (array_key_exists('promo_code', $order)) {
                     $promocode = Promocode::find('first', array('conditions' => array('code' => new MongoRegex("/" . $order['promo_code'] . "/i"))));
                     $order['promo_type'] = $promocode['type'];
@@ -677,9 +690,10 @@ class FinancialExport extends Base  {
                     $order['net_shipping_amt'] += (array_key_exists('credit_used', $order)) ? $order['credit_used']:0;
                     $order['net_shipping_amt'] += (array_key_exists('promo_discount', $order)) ? $order['promo_discount']:0;
                 }
-
-                $order['gross_revenue'] = Item::calculateProductGross($order['items']);
+                $order['net_shipping_amt'] = number_format((float)$order['net_shipping_amt'], 2);
+                $order['gross_revenue'] = number_format((float)Item::calculateProductGross($order['items']), 2);
                 $order['net_revenue'] = $order['gross_revenue'] + $order['handling'] + $order['overSizeHandling'];
+                $order['net_revenue'] = number_format($order['net_revenue'] , 2);
                 /*
                 * Get credit, promocodes,  and oversize handling information
                 */
@@ -704,18 +718,26 @@ class FinancialExport extends Base  {
                     $order['ship_records'] = "No";
                 }
 
-                $order['shipping_name'] = $order['shipping']['firstname'] . ' ' . $order['shipping']['lastname'];
-                $address2 = (array_key_exists('address_2',$order['shipping']))?$order['shipping']['address_2'] :'';
-                $order['shipping_address'] = $order['shipping']['address'];
-                if (!empty($address2)) {
-                    $order['shipping_address2'] = $address2;
+                if (array_key_exists('shipping', $order)) {
+                    $order['shipping_name'] = $order['shipping']['firstname'] . ' ' . $order['shipping']['lastname'];
+                    $address2 = (array_key_exists('address_2',$order['shipping']))?$order['shipping']['address_2'] :'';
+                    $order['shipping_address'] = $order['shipping']['address'];
+                    if (!empty($address2)) {
+                        $order['shipping_address2'] = $address2;
+                    } else {
+                         $order['shipping_address2'] = "";
+                    }
+                    $order['shipping_city'] = $order['shipping']['city'];
+                    $order['shipping_state'] = $order['shipping']['state'];
+                    $order['shipping_zip'] = $order['shipping']['zip'];
+                    unset($order['shipping']);
                 } else {
-                     $order['shipping_address2'] = "";
+                    $order['shipping_name'] = "";
+                    $order['shipping_address2'] = "";
+                    $order['shipping_city'] = "";
+                    $order['shipping_state'] = "";
+                    $order['shipping_zip'] = "";
                 }
-                $order['shipping_city'] = $order['shipping']['city'];
-                $order['shipping_state'] = $order['shipping']['state'];
-                $order['shipping_zip'] = $order['shipping']['zip'];
-                unset($order['shipping']);
 
                 if ($shipRecord) {
                     $order['actual_ship_date'] = date("m/d/Y", $shipRecord['ShipDate']->sec);
