@@ -30,7 +30,7 @@ class ReAuthorize extends \lithium\console\Command {
 	 *
 	 * @var string
 	 */
-	public $expiration = 7;
+	public $expiration = 8;
 	
 	/**
 	 * Instances
@@ -46,7 +46,7 @@ class ReAuthorize extends \lithium\console\Command {
 		$errors = 0;
 		$updated = 0;	
 		#Limit to +7 days Old Authkey
-		$limitDate = mktime(0, 0, 0, date("m"), date("d") - $expiration, date("Y"));
+		$limitDate = mktime(0, 0, 0, date("m"), date("d") - $this->expiration, date("Y"));
 		#Get All Orders with Auth Date >= 7days, Not Void Manually or Shipped
 		$conditions = array('void_confirm' => array('$exists' => false),
 							'auth_confirmation' => array('$exists' => false),
@@ -141,12 +141,15 @@ class ReAuthorize extends \lithium\console\Command {
 			}
 		}
 		#If Errors Send Email to Customer Service
-		if(!empty($report)) {
-			Mailer::send('ReAuth_Errors','searnest@totsy.com', $report);
-			Mailer::send('ReAuth_Errors','mruiz@totsy.com', $report);
-			Mailer::send('ReAuth_Errors','gene@totsy.com', $report);
-			Mailer::send('ReAuth_Errors','troyer@totsy.com', $report);
-		}
+		$report['total_updated'] = $updated;
+		$this->sendReport($report);
 		echo 'ReAuth Script Runned, ' . $updated . ' Orders Updated ' . $errors . ' Errors Found. ';
+	}
+	
+	public function sendReport($report) {
+		Mailer::send('ReAuth_Errors','searnest@totsy.com', $report);
+		Mailer::send('ReAuth_Errors','mruiz@totsy.com', $report);
+		Mailer::send('ReAuth_Errors','gene@totsy.com', $report);
+		Mailer::send('ReAuth_Errors','troyer@totsy.com', $report);
 	}
 }
