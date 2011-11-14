@@ -105,7 +105,8 @@ class AvaTax {
 						'trace' => '<br><div style="padding-left:15px;">'.
 										'DATE: '.date('Y-m-d H:i:s').'<br>',
 										'INFO: '.$data.'<br>',
-										'TRACE: '.$e->getTraceAsString()
+										'TRACE: '.$e->getTraceAsString().
+									'</div>'
 					));
 					
 					$return = array( 
