@@ -62,6 +62,8 @@ class Order extends Base {
 				'state'     => $vars['billingAddr']['state'],
 				'zip'       => $vars['billingAddr']['zip'],
 				'country'   => $vars['billingAddr']['country']
+			))
+		));
 		if ($cart) {
 			$inc = 0;
 			foreach ($cart as $item) {
@@ -168,6 +170,8 @@ class Order extends Base {
 				unset($cc_encrypt['valid']);
 				$order->cc_payment = $cc_encrypt;
 			}
+
+			$cart = Cart::active();
 			#Save Order Infos
 			$order->save(array(
 					'total' => $vars['total'],
@@ -190,7 +194,7 @@ class Order extends Base {
 					'shippingMethod' => $shippingMethod,
 					'items' => $items,
 					'avatax' => $avatax,
-					'ship_date' => new MongoDate(Cart::shipDate($order)),
+					'ship_date' => new MongoDate(Cart::shipDate($cart)),
 					'savings' => $savings,
 					'processor' => $auth->adapter
 			));

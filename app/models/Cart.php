@@ -63,7 +63,7 @@ class Cart extends Base {
 	const TAX_RATE_NYS = 0.04375;
 
 	const TAX_RATE_NJS = 0.07;
-	
+
 	const ORIGIN_ZIP = "08837";
 
 	public $validates = array();
@@ -336,9 +336,9 @@ class Cart extends Base {
 		}
 		return true;
 	}
-	
+
 	/**
-	* Refresh the timer for each timer in the cart 
+	* Refresh the timer for each timer in the cart
 	* @see app/models/Cart::check()
 	*/
 	public static function refreshTimer() {
@@ -457,7 +457,7 @@ class Cart extends Base {
 		if (!empty($ids)) {
 			$event = Event::find('first', array(
 				'conditions' => array('_id' => $ids),
-				'order' => array('date_created' => 'DESC')
+				'order' => array('created_date' => 'DESC')
 			));
 		}
 		return $event;
@@ -476,12 +476,13 @@ class Cart extends Base {
 			$itemEvent = (empty($item['event'][0])) ? null : $item['event'][0];
 			$eventId = (!empty($item['event_id'])) ? $item['event_id'] : $itemEvent;
 			if (!empty($eventId)) {
-				$ids[] = new MongoId("$eventId");
+				//$ids[] = new MongoId("$eventId");
+				$ids[] = $eventId;
 			}
 		}
 		return $ids;
 	}
-	
+
 	/**
 	* This method allows to manage (update/delete/add) the savings of the current order
 	*
@@ -523,11 +524,11 @@ class Cart extends Base {
 		}
 		Session::write('userSavings', $savings);
 	}
-	
+
 	/**
-	* The getDiscount method check credits, promocodes and services available 
+	* The getDiscount method check credits, promocodes and services available
 	* And Apply it to the subtotal
-	* Return Credit, Promo, Services Objects and the PostDiscount Total 
+	* Return Credit, Promo, Services Objects and the PostDiscount Total
 	* @see app/models/Cart::check()
 	*/
 	public static function getDiscount($subTotal, $shippingCost = 7.95, $overShippingCost = 0, $data, $tax = 0.00) {
@@ -572,7 +573,7 @@ class Cart extends Base {
 			$promo_code = null;
 		}
 		if (!empty($promo_code)) {
-			$cartPromo->promoCheck($promo_code, $userDoc, compact('subTotal', 'shippingCost', 'overShippingCost', 'services'));  
+			$cartPromo->promoCheck($promo_code, $userDoc, compact('subTotal', 'shippingCost', 'overShippingCost', 'services'));
 		}
 		#Apply Credits
 		$credit_amount = null;
