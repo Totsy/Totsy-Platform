@@ -526,7 +526,7 @@ class FinancialExport extends Base  {
                 if (empty($item['size'])) {
                     $item['size'] = "none";
                 }
-                if (array_key_exists('sku_details', $itemRecord)) {
+                if (!empty($itemRecord) && array_key_exists('sku_details', $itemRecord)) {
                     if (strpos($item['size'], "\n")) {
                         $item['sku'] = $itemRecord['sku_details'][$item['size']];
                     } else {
