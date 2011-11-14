@@ -18,8 +18,6 @@ class BaseController extends \lithium\action\Controller {
             $this->set(compact('branch'));
         }
 		parent::_init();
-
-        var_dump(Session::read("userLogin"));
     }
 
 	/**

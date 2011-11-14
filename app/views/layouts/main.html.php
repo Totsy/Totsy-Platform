@@ -61,7 +61,7 @@
 	<?php if(isset($branch)) { echo $branch; } ?>
 <div class="container_16 roundy glow">
 	<div class="grid_6 alpha" style="margin:5px 0px 0px 5px;">
-		<?php echo $this->html->link($this->html->image('mamapedia-logo.png', array('width'=>'280')), '/sales', array('escape'=> false)); ?>
+		<?php echo $this->html->link($this->html->image('logo.png', array('width'=>'120')), '/sales', array('escape'=> false)); ?>
 	</div>
 	<div class="grid_10">
 	<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>

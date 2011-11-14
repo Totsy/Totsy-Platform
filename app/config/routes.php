@@ -74,13 +74,14 @@ Router::connect('/checkout/review', 'Orders::review');
 /**
  * Redirect all non-authenticated users to
 */
+
 if(!Session::check('userLogin')) {
 	Router::connect('/', 'Users::login');
 	Router::connect('/{:args}', 'Users::login');
 	return;
 }
 
-Router::connect('/', 'Events::index');
+//Router::connect('/', 'Events::index');
 Router::connect('/sales/{:args}', 'Events::index');
 Router::connect('/{:action:login|logout}', array('controller' => 'users'));
 Router::connect('/addresses', 'Addresses::view');

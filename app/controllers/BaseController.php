@@ -40,7 +40,12 @@ class BaseController extends \lithium\action\Controller {
 		 */
 		$this->fbsession = $fbsession = FacebookProxy::getSession();
 		$fbconfig = FacebookProxy::config();
-		$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
+		if ($this->fbsession) {
+		    $fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
+		} else {
+		    $fblogout = "/logout";
+		}
+
 		if ($userInfo) {
 			$user = User::find('first', array(
 				'conditions' => array('_id' => $userInfo['_id']),
@@ -108,16 +113,21 @@ class BaseController extends \lithium\action\Controller {
 		* Send pixel to layout
 		**/
 		$this->set(compact('pixel'));
-		//var_dump($this->request->env('HTTP_HOST'));
 		switch($_SERVER['HTTP_HOST']) {
 		    case "lawren.totsy.com":
 		    case "mamapedia.totsy.com":
+		        Session::write('layout', 'mamapedia', array('name' => 'default'));
+		        $img_path_prefix = "/img/mamapedia/";
+		        $this->set(compact('img_path_prefix'));
 		        $this->_render['layout'] = '/mamapedia/main';
 		    break;
 		    default:
+		        Session::write('layout', 'main', array('name' => 'default'));
+		        $img_path_prefix = "/img/";
 		        $this->_render['layout'] = 'main';
 		    break;
 		}
+		$this->set(compact('img_path_prefix'));
 
 	}
 

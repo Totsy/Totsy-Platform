@@ -7,16 +7,6 @@
 
 <?=$this->html->script(array('cart-timer.js', 'cart-items-timer.js', 'cart-popup.js?v=001'));?>
 
-<?php
-	$close_button_path = "";
-
-	if ($_SERVER['HTTP_HOST']=='mamapedia.totsy.com' || $_SERVER['HTTP_HOST']=='mamapediadev.totsy.com') {
-		$close_button_path = "/img/";
-	} else {
-		$close_button_path = "/img/mamapedia/";
-	}
-?>
-
 <!-- template used for items on cart. jquery.tmpl.js driven -->
 <?=$this->view()->render( array('element' => 'popupCartItems') ); ?>
 
@@ -33,7 +23,7 @@
 	    </div>
 	    <div id="cart_popup_close_button">
 	    	<a href="#">
-	    	<img src="<?=$close_button_path?>popup_cart_close.jpg" style="width:20px; height:20px"></a>
+	    	<img src="<?=$img_path_prefix?>popup_cart_close.jpg" style="width:20px; height:20px"></a>
 	    </div>
 	</div>
 	<div style="clear:both"></div>
@@ -56,7 +46,7 @@
 </div>
 </div>
 <div class="grid_16">
-	<h2 class="page-title gray"><span class="red"><a href="/sales" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a><div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
+	<h2 class="page-title gray"><span class="red"><a href="sales" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a><div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
 	<hr />
 </div>
 

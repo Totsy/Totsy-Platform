@@ -116,8 +116,6 @@ class AffiliatesController extends BaseController {
 		$user = User::create();
 		$urlredirect = '/sales';
 		$cookie = Session::read('cookieCrumb',array('name'=>'cookie'));
-		var_dump($this->request);
-		var_dump($affiliate);
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 
 		if (($affiliate)) {

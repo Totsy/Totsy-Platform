@@ -53,7 +53,7 @@ class UsersController extends BaseController {
 		}
 
 		if ($this->request->env("HTTP_HOST") == "lawren.totsy.com") {
-		    $affiliate = new AffiliatesController();
+		    $affiliate = new AffiliatesController(array('request' => $this->request));
 		    $affiliate->register("mamasource");
 		}
 
