@@ -221,7 +221,7 @@ class DisneyExport extends \lithium\console\Command {
 						. $address2
 						. $city
 						. $state
-						. $zip
+						. substr($zip, 0, 5) . ' '
 						. str_pad('99999'.crc32($order['_id']),17,'0') //Audit Trail Number
 						. 'PMM'
 						. 'N' //New/renewal Code
