@@ -82,10 +82,15 @@ class AvaTax {
 				
 				if (isset($data['taxCart'])){
 					BlackBox::tax('Trying old way.');
+					
 					Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
-						'message' => 'Avatax system was unreachable.<br>Tax calculation was performed internally using default state tax.',
-						'trace' => date('Y-m-d H:i:s'),
-						'info' => $data
+						'message' => 'Avatax system was unreachable',
+						'reason' => $e->getMessage(),
+						'result' => 'Tax calculation was performed internally using default state tax.',
+						'trace' => '<br><div style="padding-left:15px;">'.
+										'DATE: '.date('Y-m-d H:i:s').'<br>',
+										'INFO: '.$data.'<br>',
+										'TRACE: '.$e->getTraceAsString()
 					));
 					$return = array( 
 						'tax'=>static::totsyCalculateTax($data),
@@ -94,10 +99,15 @@ class AvaTax {
 				} else {
 					BlackBox::tax('ERROR tax returns 0');
 					Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
-						'message' => 'Was unable to calculate tax. Charged $0 tax for this order.',
-						'trace' => date('Y-m-d H:i:s'),
-						'info' => $data
+						'message' => 'Was unable to calculate tax',
+						'reason' => $e->getMessage(),
+						'result' => 'Charged $0 tax for this order.',
+						'trace' => '<br><div style="padding-left:15px;">'.
+										'DATE: '.date('Y-m-d H:i:s').'<br>',
+										'INFO: '.$data.'<br>',
+										'TRACE: '.$e->getTraceAsString()
 					));
+					
 					$return = array( 
 						'tax'=>0,
 						'avatax' => false
@@ -124,9 +134,13 @@ class AvaTax {
 				$return = self::postTax($data,++$tryNumber);
 			} else {
 				Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
-						'message' => 'Was unable to post avalara tax.<br>Returned $0 tax for this order.',
-						'trace' => date('Y-m-d H:i:s'),
-						'info' => $data
+					'message' => 'Was unable to calculate tax',
+					'reason' => $e->getMessage(),
+					'result' => 'Charged $0 tax for this order.',
+					'trace' => '<br><div style="padding-left:15px;">'.
+									'DATE: '.date('Y-m-d H:i:s').'<br>',
+									'INFO: '.$data.'<br>',
+									'TRACE: '.$e->getTraceAsString()
 				));
 				$return = 0;
 			}
