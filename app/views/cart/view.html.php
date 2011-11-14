@@ -5,13 +5,13 @@
 <script type="text/javascript" src="/js/tipsy/src/javascripts/jquery.tipsy.js"></script>
 <link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
 
-<script type="text/javascript">	
+<script type="text/javascript">
 
 var discountErrors = new Object();
 
 	$(document).ready( function(){
-					
-		if(discountErrors.promo==true) {	
+
+		if(discountErrors.promo==true) {
 		    show_code_errors("promo");
 		} else if (discountErrors.credits==true)  {
 		    show_code_errors("cred");
@@ -20,11 +20,11 @@ var discountErrors = new Object();
 		    show_code_errors("promo");
 		} else {
 		    discountErrors.promo=false;
-		    discountErrors.credits=false;  
+		    discountErrors.credits=false;
 		}
-	
+
 	$("#cart-count").text(<?=$itemCount?>);
-	var cartExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	
+	var cartExpires = new Date(<?=($cartExpirationDate  * 1000)?>);
 	//set the timer
 	cartTimer(cartExpires);
 	//set the timer on individual cart items
@@ -35,7 +35,7 @@ var discountErrors = new Object();
 	$('#promocode_tooltip').tipsy({gravity: 'nw'}); // nw | n | ne | w | e | sw | s | se
 	
 });
-			
+
 </script>
 <script type="text/javascript" src="/js/jquery.number_format.js"></script>
 

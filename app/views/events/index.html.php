@@ -21,7 +21,10 @@
 	};
 })(jQuery);
 </script>
-	<h2 class="page-title gray"><span class="_red">Today's Sales</span> </h2>
+
+	<h2 class="page-title gray">
+		<span class="_red">Today's Sales</span>
+	</h2>
 	<hr />
 		<!--Disney -->
 <!--	<div class="disney disney_splash">
@@ -113,8 +116,7 @@
 			<?php if ($x == 1): ?>
 
 				<div id="banner_container" class="grid_5">
-					<div><a href="/users/invite"><img src="<?=$invite_girl_img_path?>invite_girl.png" alt="" height="404"/></a></div>
-
+					<div><a href="/users/invite"><img src="<?=$img_path_prefix?>invite_girl.png" alt="" height="404"/></a></div>
 					<?php if(!empty($banner["img"])): ?>
 						<?php foreach($banner["img"] as $image): ?>
 							<div><?php if(!empty($image["url"])):?>

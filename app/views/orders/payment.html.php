@@ -266,7 +266,6 @@ if($is_mamapedia) {
 <?php endif ?>
 <?=$this->form->end();?>
 
-
 <div class="clear"></div>
 <div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
 				<?php
@@ -293,14 +292,13 @@ if($is_mamapedia) {
 				
 </div>
 
-
-
 <div id="address_form" style="display:none">
 	<?=$this->form->create(null ,array('id'=>'selectForm')); ?>
 	<?=$this->form->hidden('address_id', array('class' => 'inputbox', 'id' => 'address_id')); ?>
 	<?=$this->form->end();?>
 </div>
 <script>
+
 
 var shippingAddress = <?php echo $shipping; ?>
 

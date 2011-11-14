@@ -36,7 +36,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
 
 	public function index() {
 
-	   $affiliates = Affiliate::collection()->find(array('affiliate'=>true), array(
+	  $affiliates = Affiliate::collection()->find(array('affiliate'=>true), array(
 	    'date_created' => true,
 	    'created_by' => true,
 	    'active' => true,
