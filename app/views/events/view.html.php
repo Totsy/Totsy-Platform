@@ -2,7 +2,7 @@
 <?=$this->html->script('jquery.countdown.min');?>
 <?=$this->html->style('jquery.countdown');?>
 <div class="grid_16">
-		<h2 class="page-title gray"><span class="red"><a href="/" title="Sales"><?=$type?> Sales</a> /</span> <?=$event->name; ?> <div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
+		<h2 class="page-title gray"><span class="red"><a href="/sales" title="Sales"><?=$type?> Sales</a> /</span> <?=$event->name; ?> <div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
 		<hr />
 <div class="md-gray" style="overflow:hidden; border: 1px solid #D7D7D7;  margin-bottom:10px">
 				<div class="grid_5 alpha omega" style="line-height:0px!important;">
@@ -20,32 +20,32 @@
 									));
 						}
 					?>
-					
+
 				</div>
-				
+
 				<?php if (!empty($event->images->logo_image)) { ?>
 				<div class="grid_8 omega" style="padding:10px 0px;">
 					<div class="grid_8 alpha omega blurb">
-					
+
 					<?php } else { ?>
 					<div class="grid_11 omega">
 					<div class="grid_11 alpha omega blurb">
-					
+
 					<?php } ?>
-					
+
 					<?php if (!empty($event->blurb)): ?>
 						<?php echo $event->blurb ?>
 					<?php endif ?>
 					</div>
-				
-					
+
+
 </div>
 <?php if (!empty($event->images->logo_image)): ?>
 <div class="grid_3 alpha omega" style="margin-top:10px;">
 						<!-- Display Logo Image -->
-						
+
 							<img src="/image/<?=$event->images->logo_image?>.gif" alt="<?= $event->name; ?>" title="<?= $event->name; ?>" width="148" height="52" />
-						
+
 					</div>
 <?php endif ?>
 			</div>
@@ -113,8 +113,8 @@
 							"sale/$event->url/{$item->url}",
 							array('title' => $item->name, 'escape' => false)
 						); ?>
-						
-						
+
+
 								<table style="margin:5px;">
 									<tr>
 										<td width="227" valign="top">
@@ -126,7 +126,7 @@
 										</td>
 									</tr>
 								</table>
-								
+
 					</div>
 				</div>
 				<?php $y++ ?>
@@ -192,4 +192,4 @@ f+='&'+key+'='+encodeURIComponent(cto_params[key]);}if(cto_params['kw']!=undefin
 c+='&cb='+Math.floor(Math.random()*99999999999);try{c+='&ref='+encodeURIComponent(document.referrer);}catch(e){}try{
 c+='&sc_r='+encodeURIComponent(screen.width+'x'+screen.height);}catch(e){}try{c+='&sc_d='+encodeURIComponent(screen.colorDepth);}catch(e){}b.Load(function(){
 a(c.substring(0,2000))})}}}();CRITEO.Load(document.location.protocol+'//dis.us.criteo.com/dis/dis.aspx?');
-</script> 
+</script>
