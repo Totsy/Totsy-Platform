@@ -27,9 +27,12 @@ class Mailer {
             'items' => $items
         );
 
-		//if (!isset($args['incomplete'])) $data['incomplete'] = null;
-		if (!isset($args['message_id']) && isset($_COOKIE['sailthru_hid'])) $data['message_id'] = $_COOKIE['sailthru_hid'];
-		
+		if (!isset($args['incomplete'])) $data['incomplete'] = null;
+        
+		if (isset($_COOKIE['sailthru_bid'])) $data['message_id'] = $_COOKIE['sailthru_bid'];
+        else if (isset($_COOKIE['sailthru_hid'])) $data['message_id'] = $_COOKIE['sailthru_hid'];
+        else if (isset($args['incomplete'])) $data['message_id'] = $args['incomplete'];
+        
 		return Sailthru::apiPost('purchase',$data);
 	}
 
