@@ -21,7 +21,7 @@ class EventsController extends BaseController {
 	/**
 	 * Limit characters for event\deal short description
 	 */
-	private $shortDescLimit = 45;
+	private $shortDescLimit = 90;
 
 	/**
 	 * List of event keys that should be in the view
@@ -53,6 +53,7 @@ class EventsController extends BaseController {
 	protected function parseItems_clearance($fullarray, $_id, $enabled = false) {
 
 		$items_quantities[] = array();
+		$items_prices[] = array();
 		$items_skus[] = array();
 		$items_skus_used[] = array();
 		$items[] = array();
@@ -67,6 +68,7 @@ class EventsController extends BaseController {
 			$current_sku = $item_sku_quantity[0];
 			$items_skus[] = $current_sku;
 			$items_quantities[$current_sku] = $item_sku_quantity[1];
+			$items_prices[$current_sku] = $item_sku_quantity[2];
 		}
 
 		//mongo query, find all items with skus
@@ -117,6 +119,9 @@ class EventsController extends BaseController {
 						//use index to update quantity
 						$oitem['details'][$sku_details_key] = $items_quantities[$sku_details];
 
+						//use index to get new price
+						$item_price_new = $items_prices[$sku_details];
+
 						$total_quantity_new += $items_quantities[$sku_details];
 
 						//remove this sku from items_skus
@@ -132,6 +137,8 @@ class EventsController extends BaseController {
 				unset($oitem['event']);
 				unset($oitem['created_date']);
 				unset($oitem['total_quantity']);
+				unset($oitem['sale_retail']);
+				unset($oitem['enabled']);
 
 				//update event _id
 				$oitem['event'] = array((string)$_id);
@@ -139,12 +146,17 @@ class EventsController extends BaseController {
 				//update date
 				$oitem['created_date'] = new MongoDate();
 
-
+				//update enabled
+				$oitem['enabled'] = $enabled;
+				
 				//create a new item instance
 				$newItem = Item::create();
 
 				//set total quant
 				$oitem['total_quantity'] = $total_quantity_new;
+				
+				//set new price
+				$oitem['sale_retail'] = floatval($item_price_new);
 
 				//save item with revised info
 				$newItem->save($oitem);
@@ -243,7 +255,6 @@ class EventsController extends BaseController {
 
 		#T Get all possibles value for the multiple departments select
 		$result = Item::getDepartments();
-		$sel_filters = array();
 		$all_filters = array();
 		foreach ($result['values'] as $value) {
 			if($value&&$value!=" "){
@@ -254,21 +265,6 @@ class EventsController extends BaseController {
 			}
 		}
 
-		foreach ($eventItems as $this_item){
-			if($this_item->departments){
-				$values = $this_item->departments->data();
-			}
-			foreach ($values as $value) {
-				if($value&&$value!=" "){
-					$sel_filters[$value] = $value;
-				}
-			}
-
-		}
-
-		$sel_filters = array_unique($sel_filters);
-
-		#END T
 		if (empty($event)) {
 			$this->redirect(array('controller' => 'events', 'action' => 'add'));
 		}
@@ -413,7 +409,7 @@ class EventsController extends BaseController {
 			}
 		}
 
-		return compact('event', 'eventItems', 'items', 'all_filters', 'sel_filters', 'shortDescLimit');
+		return compact('event', 'eventItems', 'items', 'all_filters', 'shortDescLimit');
 	}
 
 

@@ -160,20 +160,22 @@
 		<h2 style="color:#707070;font-size:14px;">You would also love</h2>
 		<hr />
 		<?php foreach ($related as $relatedItem) {
-			if (empty($relatedItem['primary_image'])) {
-				$relatedImage = '/img/no-image-small.jpeg';
-			} else {
-				$relatedImage = "/image/".$relatedItem['primary_image'].".jpg";
+			if ($relatedItem['total_quantity'] >= 1){
+				if (empty($relatedItem['primary_image'])) {
+					$relatedImage = '/img/no-image-small.jpeg';
+				} else {
+					$relatedImage = "/image/".$relatedItem['primary_image'].".jpg";
+				}
+				echo $this->html->link(
+					$this->html->image($relatedImage, array(
+						"class" => "img-th",
+						"width" => "93",
+						"height" => "93")),
+						"/sale/$event->url/".$relatedItem['url'], array(
+							'id' => $relatedItem['description'],
+							'escape'=> false
+				));
 			}
-			echo $this->html->link(
-				$this->html->image($relatedImage, array(
-					"class" => "img-th",
-					"width" => "93",
-					"height" => "93")),
-					"/sale/$event->url/".$relatedItem['url'], array(
-						'id' => $relatedItem['description'],
-						'escape'=> false
-			));
 		} ?>
 	<?php endif ?>
 	</div>
