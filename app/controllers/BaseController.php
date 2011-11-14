@@ -131,7 +131,7 @@ class BaseController extends \lithium\action\Controller {
 		$this->set(compact('pixel'));
 
 		switch($_SERVER['HTTP_HOST']) {
-		    case "lawren.totsy.com":
+		    case "kkim.totsy.com":
 		    case "mamapedia.totsy.com":
 		        Session::write('layout', 'mamapedia', array('name' => 'default'));
 		        $img_path_prefix = "/img/mamapedia/";
