@@ -94,6 +94,34 @@ class ItemsController extends BaseController {
 				}
 				$data["departments"] = $departments;
 			}
+			
+			//check for new size
+			if ($this->request->data['item_new_size']) {
+
+				//new size
+				$newsize = $this->request->data['item_new_size'];
+				
+				//make a sku
+				$newsku = Item::sku($item->vendor, $item->vendor_style, $newsize, $item->color, $hash = 'md5');
+			
+				//update skus
+				$data['skus'] = $item->skus;
+				$data['skus'][] = $newsku;
+				
+				//update sale details array
+				$data['sale_details'] = $item->sale_details;
+				$data['sale_details'][$newsize] = array('sale_count'=>0);
+				
+				//update details array
+				$data['details'] = $item->details;
+				$data['details'][$newsize] = 0;
+
+				//update skus details
+				$data['sku_details'] = $item->sku_details;
+				$data['sku_details'][$newsize] = $newsku;
+
+			}			
+			
 			if ($item->save($data)) {
 				$this->redirect(array(
 						'controller' => 'items', 'action' => 'edit',
@@ -266,6 +294,7 @@ class ItemsController extends BaseController {
 			}
 
 	}
+
 
 
 }
