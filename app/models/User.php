@@ -321,6 +321,10 @@ class User extends Base {
 
 		return $success;
 	}
+	
+	/**
+	* Clean Session Variables created during Checkout Process
+	**/
 	public static function cleanSession() {
 		if(Session::check('userSavings')) {
 			Session::delete('userSavings');
@@ -347,7 +351,23 @@ class User extends Base {
 			Session::delete('billing');
 		}
 	}
+	
+	/**
+	* Check if User has Already a CyberSource Profile link with his credit card
+	* If yes, return the cyberSourceProfileId
+	* If no, return null
+	**/
+	public static function hasCyberSourceProfile($userInfos, $creditCardNumber) {
+		$cyberSourceProfileId = null;
+		if(!empty($userInfos['cyberSourceProfiles'])) {
+			foreach($userInfos['cyberSourceProfiles'] as $profile) {
+				if(substr($profile, -4) == substr($creditCardNumber, -4)) {
+					$cyberSourceProfileId = $profile;
+				}
+			}
+		}
+		return $cyberSourceProfileId;
+	}
 }
-
 
 ?>

@@ -21,7 +21,8 @@ $adapterFilters = array(
 
 		$processor = isset($options['processor']) ? $options['processor'] : false;
 		if (!$processor || $processor == 'AuthorizeNet') {
-			return true;
+			#False = Disable Authorize.Net Transaction
+			return false;
 		}
 	}
 );

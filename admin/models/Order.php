@@ -9,6 +9,7 @@ use lithium\analysis\Logger;
 use admin\models\User;
 use admin\models\Item;
 use admin\models\Credit;
+use li3_payments\extensions\adapter\payment\CyberSource;
 use Exception;
 
 /**
@@ -175,15 +176,23 @@ class Order extends Base {
 			$data['auth_confirmation'] = -1;
 			$error = "Can't capture because total is zero.";
 		} else {
-			$auth = $payments::capture(
-				'default',
-				$order['auth'],
-				floor($order['total'] * 100) / 100,
-				array(
-					'processor' => isset($order['processor']) ? $order['processor'] : null
-				)
-			);
-
+			if(empty($order['auth'])) {
+				$transactionId = $order['authKey'];
+				$auth = $payments::capture(
+					'default',
+					$transactionId,
+					floor($order['total'] * 100) / 100,
+					array(
+						'processor' => isset($order['processor']) ? $order['processor'] : null
+					)
+				);
+			} else {
+				$cybersource = new CyberSource($payments::config('default'));
+				$profile = $cybersource->profile($order['cyberSourceProfileId']);
+				$result = $cybersource->capture($order['auth'],(floor($order['total'] * 100) / 100), $profile);
+				print_r($result);
+				die();
+			}
 			if ($auth->success()) {
 				$data['auth_confirmation'] = $auth->key;
 				$data['payment_date'] = new MongoDate();
@@ -871,6 +880,22 @@ class Order extends Base {
 	     }
 
 	     return $failed;
+	}
+	
+	public static function getCCinfos($order = null) {
+		$creditCard = null;
+		if(!empty($order['cc_payment'])) {
+			$cc_encrypt = $order['cc_payment'];
+			$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
+			$iv =  base64_decode($order['cc_payment']['vi']);
+			$key = md5($order['user_id']);
+			unset($cc_encrypt['vi']);
+			foreach	($cc_encrypt as $k => $cc_info) {
+				$crypt_info = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key.sha1($k), base64_decode($cc_info), MCRYPT_MODE_CFB, $iv);
+				$creditCard[$k] = $crypt_info;
+			}
+		}
+		return $creditCard; 
 	}
 }
 
