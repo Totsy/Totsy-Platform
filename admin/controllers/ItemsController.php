@@ -165,19 +165,24 @@ class ItemsController extends BaseController {
 	 * @return array
 	 */
 	public function removeItems() {
+	    $this->_render['layout'] = false;
 		if ($this->request->data) {
 			$id = $this->request->data['event'];
 			$event = Event::find('first', array('conditions' => array('_id' => $id)));
 			if ($event->views <= 0){
-				if ((!empty($event->items)) && Item::remove(array('event' => $id)) && Event::removeItems($id)) {
+				//if ((!empty($event->items)) && Item::remove(array('event' => $id)) && Event::removeItems($id)) {
+				if (Item::remove(array('event' => $id)) && Event::removeItems($id)) {
 					FlashMessage::set('Items Removed', array('class' => 'pass'));
+					return "success";
 				} else {
 					FlashMessage::set('Remove Failed', array('class' => 'warning'));
+					return "failure";
 				}
 			} else {
 				FlashMessage::set('Items Cannot Be Removed the Event is Live', array('class' => 'fail'));
+				return "failure";
 			}
-			$this->redirect(array('Events::edit','args' => array($id)));
+			//$this->redirect(array('Events::edit','args' => array($id)));
 		}
 	}
 
