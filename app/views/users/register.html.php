@@ -1,3 +1,4 @@
+<?php if ($message){ echo $message; } ?>
 <style>
 h2 {
     color: #999999;
@@ -10,7 +11,7 @@ h2.tagline { margin:97px 0px 0px 0px; padding:10px 0px 10px 0px; color:#ed1c25; 
 .round { border-radius:12px; background: #fff; padding:14px; }
 .pushy { margin-top:35px; padding:0px; }
 .free_shipping_banner_reg_new img { position: absolute; right:-73px; top:454px; z-index:9999; }
-.round_clear { border-radius:22px; border: 10px solid rgba(255, 255, 255, 0.8); }
+.round_clear { border-radius:22px; -moz-border-radius:22px; -webkit-border-radius:22px; border: 10px solid rgba(255, 255, 255, 0.8); }
 label { width:179px !important; }
 #bug_bullets {
 margin-left: 0;
@@ -65,7 +66,7 @@ background: linear-gradient(top,  #ffffff 0%,#f5f5f5 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f5f5f5',GradientType=0 ); /* IE6-9 */
 }
 </style>
-<div class="container_16 round_clear pushy" style="width:771px;">
+<div class="container_16 round_clear pushy" style="width:771px; float:left; margin:135px 0px 0px 85px;">
 <div class="round gradient">
 <!-- left side -->
 <div class="grid_6">

@@ -65,7 +65,7 @@
 
 	    jQuery(document).ready(function($){
 
-	    	$.backstretch("<?=$imgDirectory . $image;?>");
+	    	$.backstretch("/img/login/fieldStreamers.jpg");
 
 	    });
 
