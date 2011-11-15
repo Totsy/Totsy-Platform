@@ -171,7 +171,7 @@ for ( i=1; i<6; i++ ) {
 <script type="text/javascript" charset="utf-8">
 	var limit = <?=$shortDescLimit;?>;
 	$(document).ready(function() {
-		
+
 		$('#Short').keyup(function(){
 			return limitTextArea($(this),$('#short_description_characters_counter'),limit);
 		});
@@ -221,22 +221,22 @@ for ( i=1; i<6; i++ ) {
 			<h4 id="article-heading">Event Description</h4>
 			    <?=$this->form->field('name', array('value' => $event->name, 'class' => 'general'));?>
 				<div id="blurb_div">
-					<?=$this->form->field('blurb', array('type' => 'textarea', 
-														 'name' => 'content', 
+					<?=$this->form->field('blurb', array('type' => 'textarea',
+														 'name' => 'content',
 														 'value' => $event->blurb ));?><br>
 				</div>
 			    <div style="width:450px;">
-			    	<?=$this->form->field('short', array('type' => 'textarea', 
-			    										 'name' => 'short_description', 
-			    										 'class' => 'mceNoEditor shortDescription', 
+			    	<?=$this->form->field('short', array('type' => 'textarea',
+			    										 'name' => 'short_description',
+			    										 'class' => 'mceNoEditor shortDescription',
 			    										 'value' => isset($event->short)?$event->short:'' ));?>
 			    	<div id="short_description_characters_wrapper">
-			    		Total: 
+			    		Total:
 			    		<span id="short_description_characters_counter">
-			    			<? if(isset($event->short)) { 
+			    			<? if(isset($event->short)) {
 			    			   		echo strlen($event->short);
-			    			   } else { 
-			    			   		echo '0'; 
+			    			   } else {
+			    			   		echo '0';
 			    			   }?>
 			    		</span>/<?=$shortDescLimit;?></div>
 			    </div>
@@ -288,13 +288,12 @@ for ( i=1; i<6; i++ ) {
 							));?>
 				</div>
 				<?=$this->form->label('Departments')?><br />
-				
+
 				<?=$event->departments?>
-				
+
 				<br><br>
-				
-				<table>
-					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?> 
+
+				<table>					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?>
 				</table>
 				<div id="tags">
 					<?=$this->form->label('Tags'); ?>
@@ -420,7 +419,6 @@ for ( i=1; i<6; i++ ) {
 		<div id="event_items">
 			<h3 id="">Item Management</h3>
 			<hr />
-
 			<div style="width:300px; height:400px; float:left">
 				<h3 id="">Upload Items</h3>
 	            <hr />
