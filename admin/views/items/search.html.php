@@ -85,9 +85,10 @@
 						}
 					?>
 					<td>
-					<?php echo $item[_id];?> in the event 
-					<a href="/events/edit/<?php echo $item['event'][0];?>"><?php echo $item['event'][0];?></a>
-					
+					<?=$item[_id];?> in the event
+					<a href="/events/edit/<?=$item['event'][0];?>"><?=$item['event'][0];?></a><br>
+					date: <?=date("Y-m-d", $item['created_date']->sec);?>
+
 					</td>
 					<td width="5%">
 						<?php echo $this->html->image("$image", array(
@@ -126,7 +127,7 @@
 			<?php endforeach ?>
 		</tbody>
 	</table>
-<?php endif ?>
+<?php endif; ?>
 </div>
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
