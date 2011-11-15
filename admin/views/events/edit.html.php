@@ -46,6 +46,40 @@ use lithium\util\Inflector;
 </style>
 
 <script type="text/javascript">
+function submiteventedit(){
+	document.forms["EventEdit"].submit();	
+
+}
+
+function deleteallitems(){
+	var handler = "/items/removeItems";
+	var event = document.getElementById("event_id").value;
+
+	if(event){
+		$.post(handler, {"event" : event}, function(result) {
+			//alert(result);
+			//if(result=="success"){
+			if(result.indexOf("success")>0){
+				$("#events_edit").submit();
+			}
+			else{
+				//document.getElementById("ItemsSubmit").value = "";
+				//$("#items_errors").html(result);
+			}
+		});
+	}
+	//else{
+	//	$("#events_edit").submit();
+	//}
+}
+
+
+function submitagile(){
+	alert("dinkers");
+	document.getElementById('agileUploaderSWF').submit();
+}
+
+
 
 $(document).ready(function(){
 
@@ -86,6 +120,7 @@ $('.related_items').selectList({
 	$(item).slideUp(500, callback);
 	}
 });
+
 
 $('.related_items').change(function() {
 
@@ -235,7 +270,9 @@ $(function() {
 	});
 });
 </script>
-<?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
+<?=$this->form->create(null, array('id' => "eventsEdit", 'enctype' => "multipart/form-data")); ?>
+<?=$this->form->hidden('event', array('id' => "event_id", 'value' => $event->_id)); ?>
+
 <div class="grid_16">
 	<h2>Editing Event <em><?=$event->name; ?></em></h2>
 </div>
@@ -372,7 +409,10 @@ $(function() {
 				</div>
 
 				<br />
+				<!--
 				<?=$this->form->submit('Update Event')?>
+				-->
+				<input type="button" onclick="submiteventedit();" value="Update Event">
 			</div>
 
 			<div class="tab_region_right_col">
@@ -423,10 +463,10 @@ $(function() {
 -->
 			<br><br>
 
-
             <hr />
 			<br><br>
 			<?=$this->form->end(); ?>
+			<input type="button" onclick="submiteventedit();" value="Update Event">
 			</div>
 
 			<div id="items_errors" name="items_errors" style="float:right; width:500px; height:400px;overflow:scroll;"></div>
@@ -449,7 +489,10 @@ $(function() {
 				</div>
 
 				<div style="float:right; font: bold; font-size: 18px;">
+			<!--
 			<?=$this->form->submit('Update Event')?>
+			-->
+			<input type="button" onclick="submiteventedit();" value="Update Event">
 							</div>
 				<br \>
 				<br \>
@@ -457,17 +500,17 @@ $(function() {
 				<?=$this->items->build($eventItems);?>
 
 				<div style="float:right; font: bold; font-size: 18px;">
+					<!--
 					<?=$this->form->submit('Update Event')?>
+					-->
+					<input type="button" onclick="submiteventedit();" value="Update Event">
 				</div>
 			<?=$this->form->end(); ?>
 
 			<br><br>
 			<h2 id="">Delete Items</h2>
 				<p>Click the button below to delete all items from this event. <strong>WARNING - This action cannot be undone. All items associated with this event will be deleted!!!!!!</strong></p>
-				<?=$this->form->create(null, array('url' => 'Items::removeItems', 'name' => 'item-delete')); ?>
-					<?=$this->form->hidden('event', array('value' => $event->_id)); ?>
-					<?=$this->form->submit('Delete All Items'); ?>
-				<?=$this->form->end(); ?>
+					<input type="button" onclick="deleteallitems();" value="Delete All Items">
 		</div>
 		<div id="event_history">
 				<?php
@@ -558,7 +601,7 @@ $(function() {
 					<a
 						href="#"
 						class="upload_files_link"
-						onClick="document.getElementById('agileUploaderSWF').submit();"
+						onClick="submitagile();"
 					>
 						Start Upload <?=$this->html->image('agile_uploader/upload-icon.png', array('height' => '24')); ?>
 					</a>
