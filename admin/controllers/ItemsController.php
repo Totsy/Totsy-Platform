@@ -105,24 +105,24 @@ class ItemsController extends BaseController {
 				}
 				$data["departments"] = $departments;
 			}
-			
+
 			//check for new size
 			if ($this->request->data['item_new_size']) {
 
 				//new size
 				$newsize = $this->request->data['item_new_size'];
-				
+
 				//make a sku
 				$newsku = Item::sku($item->vendor, $item->vendor_style, $newsize, $item->color, $hash = 'md5');
-			
+
 				//update skus
 				$data['skus'] = $item->skus;
 				$data['skus'][] = $newsku;
-				
+
 				//update sale details array
 				$data['sale_details'] = $item->sale_details;
 				$data['sale_details'][$newsize] = array('sale_count'=>0);
-				
+
 				//update details array
 				$data['details'] = $item->details;
 				$data['details'][$newsize] = 0;
@@ -131,15 +131,15 @@ class ItemsController extends BaseController {
 				$data['sku_details'] = $item->sku_details;
 				$data['sku_details'][$newsize] = $newsku;
 
-			}			
-			
+			}
+
 			//update total quantity
-			$total_quantity = 0;			
+			$total_quantity = 0;
 			foreach($data['details'] as $thisquant){
 				$total_quantity += (int)$thisquant;
 			}
 			$data['total_quantity'] = $total_quantity;
-			
+
 			if ($item->save($data)) {
 				$this->redirect(array(
 						'controller' => 'items', 'action' => 'edit',
@@ -200,19 +200,23 @@ class ItemsController extends BaseController {
 	 * @return array
 	 */
 	public function removeItems() {
+	    $this->_render['layout'] = false;
 		if ($this->request->data) {
 			$id = $this->request->data['event'];
 			$event = Event::find('first', array('conditions' => array('_id' => $id)));
 			if ($event->views <= 0){
-				if ((!empty($event->items)) && Item::remove(array('event' => $id)) && Event::removeItems($id)) {
-					FlashMessage::write('Items Removed', array('class' => 'pass'));
+				if (Item::remove(array('event' => $id)) && Event::removeItems($id)) {
+					FlashMessage::set('Items Removed', array('class' => 'pass'));
+					return "success";
 				} else {
-					FlashMessage::write('Remove Failed', array('class' => 'warning'));
+					FlashMessage::set('Remove Failed', array('class' => 'warning'));
+					return "failure";
 				}
 			} else {
-				FlashMessage::write('Items Cannot Be Removed the Event is Live', array('class' => 'fail'));
+				FlashMessage::set('Items Cannot Be Removed the Event is Live', array('class' => 'fail'));
+				return "failure";
 			}
-			$this->redirect(array('Events::edit','args' => array($id)));
+			//$this->redirect(array('Events::edit','args' => array($id)));
 		}
 	}
 
