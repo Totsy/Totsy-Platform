@@ -1,123 +1,151 @@
-<?php if ($message){ echo $message; } ?>
-<div id="fullscreen">
+<style>
+h2 {
+    color: #999999;
+    font-size: 18px;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+}
+h2.tagline { margin:97px 0px 0px 0px; padding:10px 0px 10px 0px; color:#ed1c25; font-size:18px; font-weight: normal; }
+.round { border-radius:12px; background: #fff; padding:14px; }
+.pushy { margin-top:35px; padding:0px; }
+.free_shipping_banner_reg_new img { position: absolute; right:-73px; top:454px; z-index:9999; }
+.round_clear { border-radius:22px; -moz-border-radius:22px; -webkit-border-radius:22px; border: 10px solid rgba(255, 255, 255, 0.8); }
+label { width:179px !important; }
+#bug_bullets {
+margin-left: 0;
+padding-left: 0;
+list-style: none;
+}
+#bug_bullets li {
+background-image: url("/img/bug_bullets.png");
+background-position: 0 13px;
+background-repeat: no-repeat;
+line-height: 32px;
+padding: 4px 0 0 22px;
+font-size:16px; color:#999999; font-weight:normal;
+}
 
-	<div id="login-box">
+.rollover_img {
+width: 108px;
+height: 108px;
+background-image: url(/img/freeShip-badge.png);
+position: absolute; right:-73px; top:406px;
+}
 
-		<div id="login-box-border" class="login-modal">
-			<div id="login-box-container">
+.rollover_img a {
+width: 108px;
+height: 108px;
+display: block;
+text-decoration: none;
 
-				<div class="tt">
-					<div></div>
-				</div>
-				<div class="free_shipping_banner_login"><img src="/img/freeShip-badge.png" /></div>
+}
 
-				<div class="tm">
-					<div class="ti">
+.rollover_img a:hover {
+width: 108px;
+height: 108px;
+background-image: url(/img/freeShip-badge_hover.png);
+}
 
-						<div class="tc login-inner">
+.rollover_img a span {
+display: none;
+width: 108px;
+}
 
-							<h1 id="logo">Totsy</h1>
+.rollover_img a:hover span {
+display: block;
+}
 
-							<div id="intro-copy">
+.video { margin-top: 97px;] }
 
-								<p class="red">You have places to be, things to do, and little ones in tow.</p>
-
-								<p>At Totsy, moms on the go and moms to be experience the <br />shopping they desire at prices they can't resist.</p>
-
-							</div>
-
-							<div class="sign-in-container">
-								<div id="sign-in-box" class="r-container">
-									<div class="tl"></div>
-									<div class="tr"></div>
-									
-									<div class="r-box lt-gradient-1">
-										<h2>Member Sign In</h2>
-
-										<?=$this->form->create(null,array('id'=>'loginForm'));?>
-										<?=$this->form->field('email', array('class'=>"validate['required']  inputbox", 'id'=>"email"));?>
-										<?=$this->form->field('password', array(
-												'class'=>"validate['required'] inputbox",
-												//'name' => 'password',
-												'id' => 'password',
-												'type' => 'password'));?>
-										<?=$this->form->checkbox('remember_me', array('class' => 'fl checkbox')); ?> Remember Me <br/>
-										<?=$this->form->submit('Sign In', array('class'=>"button fr"));?> 
-										<?=$this->form->end();?>
-										<div style="clear:both;"></div>
-										<p style='margin-top: 10px'> <?=$this->html->link('Forgot your password?','/reset', array('class'=>"md", 'title'=>"Forgot your password?"))?> </p>
-										<hr />
-										<a href="#" onclick="fblogin();return false;"><img src="/img/fb_login_btn.png"></a>
-									</div>
-									<div class="bl"></div>
-									<div class="br"></div>
-								</div>
-							</div>
-
-							<div class="register-container">
-								<div id="register-box" class="r-container">
-									<div class="tl"></div>
-									<div class="tr"></div>
-									<div class="r-box lt-gradient-1">
-										<h2>Become a Member</h2>
-
-										<p>Become a member today for access to brand-specific sales, up to 90% off retail, just for you and the kids, ages 0-8. Prenatal care products, baby gear, travel accessories, bedding and bath, children's clothing, toys, and educational materials &mdash; and that's just the start.</p>
-										<?=$this->html->link('Request Membership','/register', array('class' => 'button')); ?>
-										
-									</div>
-									<div class="bl"><!-- --></div>
-									<div class="br"><!-- --></div>
-
-								</div>
-							</div>
-
-							<p class="login-sig clear">Exclusive access, Top brands. Great deals. <span class="red">The savvy mom shops at Totsy.com</span></p>
-							<p style="text-align:center; font-size:11px; color:#333;">* Offer expires 30 days after registration</p>
-
-						</div>
-
-					</div>
-				</div>
-
-				<div class="tb">
-					<div></div>
-				</div>
-
-			</div>
-
-		</div>
-
-	</div>
-
+.gradient {background: #ffffff; /* Old browsers */
+background: -moz-linear-gradient(top, #ffffff 0%, #f5f5f5 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#f5f5f5)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top, #ffffff 0%,#f5f5f5 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top, #ffffff 0%,#f5f5f5 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top, #ffffff 0%,#f5f5f5 100%); /* IE10+ */
+background: linear-gradient(top, #ffffff 0%,#f5f5f5 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f5f5f5',GradientType=0 ); /* IE6-9 */
+}
+</style>
+<div class="container_16 round_clear pushy" style="width:771px; float:left; margin:135px 0px 0px 85px;">
+<div class="round gradient">
+<!-- left side -->
+<div class="grid_6">
+<?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
+<div style="width:350px; margin-top:28px;">
+<?php echo $this->view()->render(array('element' => 'loginForm')); ?>
 </div>
-
+<div class="clear"></div>
+</div>
+<!-- right side -->
+<div class="grid_6" style="margin-left:28px;">
+<div class="fr">Not a member yet? <a href="/register" title="Sign In">Join now!</a></div>
+<div class="clear" style="margin-top:97px;"></div>
+<script src="http://widgets.twimg.com/j/2/widget.js"></script>
+<script>
+new TWTR.Widget({
+  version: 2,
+  type: 'search',
+  search: 'Totsy.com',
+  interval: 30000,
+  title: 'What Mom\'s Are Saying About Totsy',
+  subject: '',
+  width: 350,
+  height: 175,
+  theme: {
+    shell: {
+      background: '#ffffff',
+      color: '#000000'
+    },
+    tweets: {
+      background: '#ffffff',
+      color: '#999999',
+      links: '#999999'
+    }
+  },
+  features: {
+    scrollbar: true,
+    loop: false,
+    live: true,
+    behavior: 'all'
+  }
+}).render().start();
+</script>
+<div class="free_shipping_banner_reg_new rollover_img"><a href="javascript:;" title="Free Shipping"><span></span></a></div>
+</div>
+<div class="clear"></div>
+<?php echo $this->html->image('featured_brands_long.png', array('style' => 'margin-top:20px; margin-left:10px; border-top:1px solid #f1f1f1; margin-bottom: -14px;')); ?>
+<div class="clear"></div>
+</div>
+</div>
 <div id="footer">
-	<?php echo $this->view()->render(array('element' => 'footerNavPublic')); ?>
+<?php echo $this->view()->render(array('element' => 'footerNavPublic')); ?>
 </div>
+
 <!-- Google Code for Homepage Remarketing List -->
 <script type="text/javascript">
 /* <![CDATA[ */
-	var google_conversion_id = 1019183989;
-	var google_conversion_language = "en";
-	var google_conversion_format = "3";
-	var google_conversion_color = "666666";
-	var google_conversion_label = "8xkfCIH8iwIQ9Yb-5QM";
-	var google_conversion_value = 0;
+var google_conversion_id = 1019183989;
+var google_conversion_language = "en";
+var google_conversion_format = "3";
+var google_conversion_color = "666666";
+var google_conversion_label = "8xkfCIH8iwIQ9Yb-5QM";
+var google_conversion_value = 0;
 /* ]]> */
 </script>
 
 <script type="text/javascript" src="https://www.googleadservices.com/pagead/conversion.js"></script>
-
 <noscript>
-	<div style="display:inline;">
-		<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=8xkfCIH8iwIQ9Yb-5QM&amp;guid=ON&amp;script=0"/>
-	</div>
+<div style="display:inline;">
+<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=8xkfCIH8iwIQ9Yb-5QM&amp;guid=ON&amp;script=0"/>
+</div>
 </noscript>
 <!-- END OF Google Code for Homepage Remarketing List -->
 <script>
-	//your fb login function
-	function fblogin() {
-	FB.login(function(response) {
-		}, {perms:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
-	}
+//your fb login function
+function fblogin() {
+FB.login(function(response) {
+}, {perms:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
+}
 </script>
