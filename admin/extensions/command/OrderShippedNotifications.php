@@ -23,7 +23,6 @@ use admin\extensions\helper\Shipment;
  * Process email notifications for orders shipped.
  *
  * Since 06-29-2011 supports command line params.
->>>>>>> dev-upsellit-nongrid
  * (only for public or protected variables)
  */
 class OrderShippedNotifications extends \lithium\console\Command  {
