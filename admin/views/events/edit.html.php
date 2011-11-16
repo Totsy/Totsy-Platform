@@ -422,6 +422,28 @@ $(function() {
 
 -->
 			<br><br>
+			<div style="width:300px; height:400px; float:left">
+				<h3 id="">Upload Items</h3>
+	            <hr />
+				<p>Please select default option for all items uploaded:</p>
+					<input type="radio" name="enable_items" value="1" id="enable_items"> Enable All <br>
+					<input type="radio" name="enable_items" value="0" id="enable_items" checked> Disable All <br><br>
+				<p>Add "Final Sale" to the item description?:</p>
+					<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
+					<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
+
+				<p>Will item/product ship for Christmas?:</p>
+					<input type="radio" name="miss_christmas" value="0" id="miss_christmas" checked>Yes, ships before 12.23<br>
+					<input type="radio" name="miss_christmas" value="1" id="miss_christmas">NO AFTER XMAS<br><br>
+
+
+					<!--
+					<?=$this->form->label('Upload Event (Excel Files): '); ?>
+					<?=$this->form->file('upload_file'); ?>
+					-->
+
+				<?=$this->form->field('items_submit', array('type' => 'textarea', 'rows' => '7', 'cols' => '50', 'name' => 'ItemsSubmit'));?><br>
+
 			<?=$this->form->submit('Update Event')?>
 			<?=$this->form->end(); ?>
 			</div>
@@ -432,6 +454,7 @@ $(function() {
 
 
 
+			<div class="clear"></div>
 			<h3 id="current_items">Current Items</h3>
 
             <hr />
