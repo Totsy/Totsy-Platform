@@ -558,6 +558,9 @@ class EventsController extends BaseController {
   			//check radio box for 'final sale' text append
   			$enableFinalsale = $this->request->data['enable_finalsale'];
 
+  			//check radio box for 'final sale' text append
+  			$miss_christmas = $this->request->data['miss_christmas'];
+
   			//check if final sale radio box was checked or not
   			if($enableFinalsale==1){
   			  $blurb = "<p><strong>Final Sale</strong></p>";
@@ -580,6 +583,7 @@ class EventsController extends BaseController {
 
 			$details = array(
 				'enabled' => (bool) $enabled,
+				'miss_christmas' => (bool) $miss_christmas,
 				'created_date' => $date,
 				'details' => $itemCleanAttributes,
 				'event' => array((string) $_id),
