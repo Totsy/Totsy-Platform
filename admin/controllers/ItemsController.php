@@ -121,10 +121,11 @@ class ItemsController extends BaseController {
 				$data['sku_details'][$newsize] = $newsku;
 
 			}			
-
+			
+			//update total quantity
 			$total_quantity = 0;			
 			foreach($data['details'] as $thisquant){
-				$total_quantity .= $thisquant;
+				$total_quantity += (int)$thisquant;
 			}
 			$data['total_quantity'] = $total_quantity;
 			
