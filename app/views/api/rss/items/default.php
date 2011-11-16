@@ -46,6 +46,7 @@
 <?php 	
 		}
 	} 
+	
 ?>
 	</channel>
 </rss>
