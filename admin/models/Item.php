@@ -29,6 +29,7 @@ class Item extends \lithium\data\Model {
 
 	protected $_booleans = array(
 		'enabled',
+		'miss_christmas',
 		'taxable',
 		'shipping_exempt',
 		'discount_exempt',
