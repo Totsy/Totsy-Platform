@@ -30,6 +30,7 @@ class BaseController extends \lithium\action\Controller {
 	 * Get the userinfo for the rest of the site from the session.
 	 */
 	protected function _init() {
+		
 		parent::_init();
 	     if(!Environment::is('production')){
             $branch = "<h4 id='global_site_msg'>Current branch: " . $this->currentBranch() ."</h4>";
@@ -115,7 +116,7 @@ class BaseController extends \lithium\action\Controller {
 		**/
 		Session::delete('pixel');
 		#Clean Credit Card Infos if out of Orders/CartController
-		$this->CleanCC();
+		$this->cleanCC();
 		/**
 		* Send pixel to layout
 		**/

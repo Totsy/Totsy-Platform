@@ -127,6 +127,13 @@ function uploadSuccess(file, serverData) {
 	}
 }
 
+function loadBackgrounds() { 
+	    $.post('/affiliates/background', function(data) {
+	    		//$("#background_image").show();
+        	    $("#background_image").attr('value', $("#backgroundThumbnail").attr('src'));
+     	});
+}
+
 function uploadComplete(file) {
 	try {
 		/*  I want the next upload to continue automatically so I'll call startUpload here */
@@ -139,7 +146,7 @@ function uploadComplete(file) {
 	} catch (ex) {
 		this.debug(ex);
 	}
-
+	console.log(this.parent());
 }
 
 function uploadError(file, errorCode, message) {
@@ -198,10 +205,5 @@ function uploadError(file, errorCode, message) {
 		}
 	} catch (ex) {
         this.debug(ex);
-    }
-}
-function isLogo(instance){
-    if( $('#islogo:checked').val() == 1){
-        instance.addPostParam('tag','logo');
     }
 }

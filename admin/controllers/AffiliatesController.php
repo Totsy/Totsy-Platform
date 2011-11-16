@@ -24,7 +24,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
 	    'order' =>'order confirmation(spinback)',
         'invite' => 'invite page(spinback)'
 	    );
-
+	
 	public $packages = array(
 	    'regular' => 'regular',
 	    'super' => 'super',
@@ -35,13 +35,14 @@ class AffiliatesController extends \admin\controllers\BaseController {
     );
 
 	public function index() {
+		
 	   $affiliates = Affiliate::collection()->find(array('affiliate'=>true), array(
        'date_created' => true,
        'created_by' => true,
        'active' => true,
        'name' => true,
        'active_pixel' => true,
-       'level' =>true
+       'level' => true
        ));
        
 	   $userCollection = User::collection();
@@ -72,6 +73,51 @@ class AffiliatesController extends \admin\controllers\BaseController {
         $affiliates = $afs;
         return compact('affiliates');
 	}
+	
+	/* Gets all unique categories from the affiliates collection */
+	public function getCategories() {
+		
+		$affiliateCategories = array();	
+	
+		$temp = Affiliate::collection()->find( array('affiliate'=>true), array(
+    	'date_created' => true,
+    	'created_by' => true,
+    	'active' => true,
+    	'name' => true,
+    	'category' => true,
+    	'level' => true
+    	));
+		
+    	foreach($temp as $affCat) {       	    	
+    		if(array_key_exists('category', $affCat)) {
+    			if(is_array($affCat['category'])) {    			
+    				foreach($affCat['category'] as $cat) {
+    				    if(!in_array($cat['name'], $affiliateCategories)) {
+    				    	$affiliateCategories[] = $cat['name'];    	
+    				    }
+    				}
+    			}        	
+    		}
+    	}
+    	
+    	return $affiliateCategories;
+	}
+	
+	public function addCategory() {
+	
+	    $this->render(array('layout' => false));
+       	$affiliate = Affiliate::create();
+       	$data = $this->request->data;	
+       	
+       	//exit();
+       	
+       	$info = array();
+       	$id = $data['_id'];
+       	$info['category'] = $data['category'];
+       	       		
+       $affiliate->update(array("_id"=> $id), $info);		
+	}
+	
 	/**
 	* Adds a new affiliate in the collection.  Admin user can only create one landing page when
 	* creating affiliate.
@@ -79,60 +125,69 @@ class AffiliatesController extends \admin\controllers\BaseController {
 	* to the edit page of that affiliate.  Otherwise, the user is redirected to the index page.
 	* @see admin\models\Affiliate::pixelFormating()
 	*/
-	public function add() {
-		$affiliate = Affiliate::create();
+	public function add() {   
+				       
+       	$affiliate = Affiliate::create();	
+       	$affiliateCategories = $this->getCategories();
+              	       			
         $info = array();
+        $landing = array();
        	$data = $this->request->data;
-		if ( ($data) ) {
+		if ($data) {
             $info['active'] = (($data['active'] == '1' || $data['active'] == 'on')) ? true : false;
             $info['name'] = $data['affiliate_name'];
+            
+            if(isset($data['affiliate_category']) && isset($data['background_image'])) {
+            	$info['category'][] = array('name' => $data['affiliate_category'], 'background_image' => $data['background_image']
+);
+            } else {
+            	$info['category'] = "";
+            }  
+            
             $info['level'] = $data['level'];
-            $info['invitation_codes'] = array_values( $data['invitation_codes'] );
-            if ($info['level'] != 'regular'){
+            $info['invitation_codes'] = array_values($data['invitation_codes']);
+            
+            if ($info['level'] != 'regular') {
                 $info['active_pixel'] = (boolean) $data['active_pixel'];
-                if ($info['active_pixel']){
+                
+                if ($info['active_pixel']) {
 			        $info['pixel'] = Affiliate::pixelFormating($data['pixel'],
-			                                                $info['invitation_codes']
+			                                                $info['invitation_codes'],
+			                                                $info['category']
 			                                                );
 			    }
-			    $info['active_landing'] = (boolean) $data['active_landing'];
-			    if ($data['active_landing']) {
-                    $info['landing'] = array();
-                    $landing['name'] = $data['name'];
-                    $landing['template'] = $data['template_type'];
-                    $landing['enabled'] = (bool) $data['landing_enable'];
-                    $landing['background_img'] = $data['background_img'];
-                    $landing['url'] = $data['url'];
-                    $landing['headline'] = array(
-                        $data['headline_1'],
-                        $data['headline_2']
-                        );
-                    $landing['bullet'] = array(
-                        $data['bullet_1'],
-                        $data['bullet_2'],
-                        $data['bullet_3'],
-                        $data['bullet_4']
-                        );
-                    $info['landing'][] = $landing;
-			    }
+			    
+			    //$info['active_landing'] = (boolean) $data['active_landing'];
+			    //if ($data['active_landing']) {
+                $info['landing'] = array();
+                $landing['name'] = $data['name'];
+                                
+                $landing['enabled'] = (bool) $data['landing_enable'];
+                //$landing['url'] = $data['url'];
+                $info['landing'][] = $landing;
 			}
-
 			$info['created_by'] = $affiliate->createdBy();
-			$info['date_created'] = new MongoDate( strtotime( date('D M d Y') ) );
-			//saves the formatted pixel to the collection
-			if( ($affiliate->save($info)) ) {
-			    if ($data['active_landing']) {
-				    $this->redirect( array( 'Affiliates::edit', 'args' => array($affiliate->_id)) );
+			$info['date_created'] = new MongoDate( strtotime( date('D M d Y') ) ); 	
+       			
+       		if (isset($info['name']) && isset($info['category'])) {	
+       			$getAff = Affiliate::find('first',
+					array('conditions' => array(
+						'name'=> $info['name'], $info['category'])
+				));				
+								
+				if ($getAff) {
+					print "This category already exists for this affiliate code, please choose a different category";
 				} else {
-				    $this->redirect( array( 'Affiliates::index') );
-				}
+					$affiliate->save($info);
+				} 
 			}
 		}
+		
 		$sitePages = $this->sitePages;
 		$packages = $this->packages;
 		$templates = $this->templates;
 		
-        return compact('sitePages', 'packages', 'templates', 'template');
+        return compact('sitePages', 'affiliateCategories' ,'packages', 'templates', 'template');
 	}
 	/**
 	* Edits Affiliate information
@@ -140,16 +195,31 @@ class AffiliatesController extends \admin\controllers\BaseController {
 	*/
 	public function edit($id = NULL) {
         $affiliate = Affiliate::find($id);
-
-        if( !$affiliate ) {
+       	$affiliateCategories = $this->getCategories();
+       	$info = array();
+              				   
+        if(!$affiliate) {
             $this->redirect( array('Affiliates::index') );
         }
 
         $data = $this->request->data;
-
-        if( ($data) ) {
-
+        if($data) {        	
+        	$i = 0;
+        	
+			foreach($data as $record=>$val) {	
+			
+				if(strrpos($record, "_category_name") > 0 ) {
+					$i++;
+					$info['category'][$i]['name'] = $val;					
+				}
+				
+				if(strrpos($record, "_category_background") > 0 ) {
+					$info['category'][$i]['background_image'] = $val;
+				}	
+			}
+						        
             $info['active'] = (($data['active'] == '1' || $data['active'] == 'on')) ? true : false;
+                        
             $info['name'] = $data['affiliate_name'];
             $info['level'] = $data['level'];
             $info['invitation_codes'] = array_values( $data['invitation_codes'] );
@@ -158,17 +228,19 @@ class AffiliatesController extends \admin\controllers\BaseController {
                 $info['active_landing'] = (boolean) $data['active_landing'];
                 if($info['active_pixel']){
 			        $info['pixel'] = Affiliate::pixelFormating($data['pixel'],
-			                            $info['invitation_codes']
+			                            $info['invitation_codes'],
+			                            $info['category']
 			                            );
 			    }
 			}
 			$info['created_by'] = $affiliate->createdBy();
-			$info['date_created'] = new MongoDate( strtotime( date('D M d Y') ) );
+			$info['date_created'] = new MongoDate(strtotime(date('D M d Y')));
 
 			if( ($affiliate->save($info)) ) {
 				$this->redirect( array( 'Affiliates::index' ) );
 			}
         }
+        
         $sitePages = $this->sitePages;
 		$packages = $this->packages;
 		//checks if certain keys exists
@@ -188,17 +260,40 @@ class AffiliatesController extends \admin\controllers\BaseController {
                 $temp = array();
                 $temp['name'] = $values['name'];
                 $temp['url'] = $values['url'];
+                $temp['background_image'] = $values['background_image'];
                 $landing[] = $temp;
             }
 		}
 		$affiliate['landing'] = $landing;
-        return compact('sitePages', 'packages','affiliate');
+        return compact('sitePages', 'packages','affiliate', 'affiliateCategories');
 	}
+
+	/**
+	* Ajax call to dynamically retrieve all images taged as background
+	* @see \admin\models\Affiliate::retrieveBackgrounds()
+	*/
+	
+	/*
+	public function background() {
+        $data = Affiliate::retrieveBackgrounds();
+        $this->render(array('layout' => false));
+                
+        foreach($data as $value){
+            $backgrounds[] = $value['_id'];
+        }
+        if(empty($data)){
+            $backgrounds = array("success"=>"false");
+        }
+        echo json_encode($backgrounds);
+	}
+	*/
 
     /**
 	* Ajax call to dynamicall retrieve landing page information
 	* Expected post data: affiliate id and the name of the landing page
 	**/
+	
+	/*
 	public function retrieveLanding(){
 	    $this->render(array('layout' => false));
 	    if($this->request->data){
@@ -217,10 +312,13 @@ class AffiliatesController extends \admin\controllers\BaseController {
             }
             echo json_encode($page);
 	    }
-	}
+	}*/
+	
 	/**
 	* Ajax call to dynamically save a new or edited landing page
 	*/
+	
+	/*
 	public function saveLanding(){
 	    $this->render(array('layout' => false));
 	    if ($this->request->data) {
@@ -259,7 +357,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
                 }
             }
 	    }
-	}
+	}*/
 }
 
 ?>

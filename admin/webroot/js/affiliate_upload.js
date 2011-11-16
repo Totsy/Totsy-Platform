@@ -21,7 +21,7 @@ window.onload = function() {
 		upload_progress_handler : uploadProgress,
 		upload_error_handler : uploadError,
 		upload_success_handler : uploadSuccess,
-		upload_complete_handler : uploadComplete,
+		upload_complete_handler : loadBackgrounds,
 
 		// Button Settings
 		button_image_url : "/img/XPButtonUploadText_61x22.png",
@@ -31,7 +31,6 @@ window.onload = function() {
 
 		// Flash Settings
 		flash_url : "/img/flash/swfupload.swf",
-
 
 		custom_settings : {
 			progressTarget : "fsUploadProgress1",

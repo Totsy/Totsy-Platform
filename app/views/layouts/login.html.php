@@ -64,9 +64,11 @@
 	<script type="text/javascript">
 
 	    jQuery(document).ready(function($){
-
-	    	$.backstretch("/img/login/fieldStreamers.jpg");
-
+	    	if(affBgroundImage){
+				$.backstretch(affBgroundImage);
+			} else {
+	    		$.backstretch("<?=$imgDirectory . $image;?>");
+			}
 	    });
 
 	</script>

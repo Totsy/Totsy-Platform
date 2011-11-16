@@ -29,9 +29,19 @@ class Affiliate extends Base {
             $orderid = substr($url,12);
             $url = '/orders/view';
         }
-        if(preg_match('(^a/)',$url)){
+        
+        if(preg_match('(^a/)',$url)) {
             $url = '/a/' . $invited_by;
         }
+        
+        /*for affilliates that have a category
+        build the URL here in order to find a match and get the right pixel info for this affiliate */
+        
+        /*
+        if (isset($request->query['a']) || preg_match('/^[a-z_]+$/', $request->query['a'])) {
+            $url = $_SERVER['PATH_INFO'] . "?a=" . $_GET['a'];
+		} */
+        
 		/**
 		* This detaches the invited by from the unique identifier
 		* for affiliate invited by retrieved from
@@ -40,6 +50,7 @@ class Affiliate extends Base {
         if($index = strpos($invited_by, '_')) {
             $invited_by = substr($invited_by, 0 , $index);
         }
+        
         $conditions['active'] = true;
         $conditions['level'] = 'super';
         $conditions['pixel'] = array('$elemMatch' => array(
@@ -61,9 +72,9 @@ class Affiliate extends Base {
      			$cookie['affiliate'] = $user['affiliate_share']['affiliate'];
                 $cookie['entryTime'] = $user['affiliate_share']['landing_time'];
                 Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
-
             }
         }
+        
 		foreach($pixels as $data) {
 			foreach($data['pixel'] as $index) {
                 if(is_array($index['page']) && in_array($url, $index['page'])) {
