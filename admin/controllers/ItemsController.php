@@ -122,6 +122,13 @@ class ItemsController extends BaseController {
 
 			}			
 			
+			//update total quantity
+			$total_quantity = 0;			
+			foreach($data['details'] as $thisquant){
+				$total_quantity += (int)$thisquant;
+			}
+			$data['total_quantity'] = $total_quantity;
+			
 			if ($item->save($data)) {
 				$this->redirect(array(
 						'controller' => 'items', 'action' => 'edit',
