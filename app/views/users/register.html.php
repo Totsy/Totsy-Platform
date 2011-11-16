@@ -66,7 +66,7 @@ background: linear-gradient(top,  #ffffff 0%,#f5f5f5 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f5f5f5',GradientType=0 ); /* IE6-9 */
 }
 </style>
-<div class="container_16 round_clear pushy" style="width:771px; float:left; margin:135px 0px 0px 85px;">
+<div class="container_16 round_clear pushy" style="width:771px; float:left; margin:85px 0px 0px 85px;">
 <div class="round gradient">
 <!-- left side -->
 <div class="grid_6">
