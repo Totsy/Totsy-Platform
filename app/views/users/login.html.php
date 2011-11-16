@@ -66,6 +66,10 @@ display: block;
 	float:left;
 }
 
+.button{
+	width:120px;
+}
+
 .gradient {background: #ffffff; /* Old browsers */
 background: -moz-linear-gradient(top, #ffffff 0%, #f5f5f5 100%); /* FF3.6+ */
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#f5f5f5)); /* Chrome,Safari4+ */
@@ -76,7 +80,8 @@ background: linear-gradient(top, #ffffff 0%,#f5f5f5 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f5f5f5',GradientType=0 ); /* IE6-9 */
 }
 </style>
-<div class="container_16 round_clear pushy" style="background:#ffffff; width:710px; float:left; margin:85px 0px 0px 85px;">
+<div class="container_16 round_clear pushy" style="width:720px; height:450px; float:left; margin:85px 0px 0px 85px;">
+<div class="round gradient"  style="background:#ffffff; height:430px;">
 
 
 
@@ -114,6 +119,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 </div>
 <div id="footer">
 <?php echo $this->view()->render(array('element' => 'footerNavPublic')); ?>
+</div>
 </div>
 
 <!-- Google Code for Homepage Remarketing List -->
