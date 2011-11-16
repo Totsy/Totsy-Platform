@@ -121,6 +121,12 @@ class ItemsController extends BaseController {
 				$data['sku_details'][$newsize] = $newsku;
 
 			}			
+
+			$total_quantity = 0;			
+			foreach($data['details'] as $thisquant){
+				$total_quantity .= $thisquant;
+			}
+			$data['total_quantity'] = $total_quantity;
 			
 			if ($item->save($data)) {
 				$this->redirect(array(
