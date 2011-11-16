@@ -116,24 +116,36 @@ class OrdersController extends BaseController {
 		$itemsByEvent = $this->_itemGroupByEvent($order);
 		$orderEvents = $this->_orderEvents($order);
 		//Check if all items from one event are closed
-		foreach($itemsByEvent as $items_e) {
-			foreach($items_e as $item) {
+		//AND Get Items Skus - Analytic
+		$itemsToSend = array();
+				
+		foreach($itemsByEvent as $key => $items_e) {
+			$url = Event::find('first', array(
+				'conditions' => array('_id'=> new MongoId($key)),
+				'fields' => array('url' => true)
+			));
+			foreach($items_e as $key_b => $item) {
 				if(empty($item['cancel'])) {
 					$openEvent[$item['event_id']] = true;
 				}
-			}
-		}
-		$pixel = $affiliateClass::getPixels('order', 'spinback');
-		$spinback_fb = $affiliateClass::generatePixel('spinback', $pixel, array('order' => $_SERVER['REQUEST_URI']));
-		//Get Items Skus - Analytics
-		foreach($itemsByEvent as $key => $event) {
-			foreach($event as $key_b => $item) {
 				$itemRecord = Item::find($item['item_id']);
 				if (!empty($itemRecord)) {
+
 					$itemsByEvent[$key][$key_b]['sku'] = $itemRecord->sku_details[$item['size']];
-				}
+					$itemsToSend[] =  array(
+						'id' => (string) $itemRecord['_id'],
+						'qty' => $item['quantity'],
+						'title' => $itemRecord['description'],
+						'price' => $itemRecord['sale_retail']*100,
+					 	'url' => 'http://'.$_SERVER['HTTP_HOST'].'/sale/'.$url->url.'/'.$itemRecord['url']
+					);
+					unset($itemRecord);
+				}				
 			}
-		}
+		}		
+		unset($url);
+		$pixel = Affiliate::getPixels('order', 'spinback');
+		$spinback_fb = Affiliate::generatePixel('spinback', $pixel, array('order' => $_SERVER['REQUEST_URI']));
 		//Calculatings Savings
 		$savings = 0;
 		foreach ($order->items as $item) {
@@ -142,6 +154,18 @@ class OrdersController extends BaseController {
 				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
 			}
 		}
+		
+		// IMPORTANT!
+		// Sailthru purchase api complete
+		if ($new===true){
+			Mailer::purchase(
+				$user['email'],
+				$itemsToSend,
+				array('message_id' => hash('sha256',Session::key('default').substr(strrev( (string) $user['_id']),0,8)))			
+			);
+		}
+		unset($itemsToSend);
+		
 		return compact(
 			'order',
 			'orderEvents',
@@ -554,59 +578,6 @@ class OrdersController extends BaseController {
 			Session::delete('billing');
 		}
 		return compact('address','addresses_ddwn','selected','cartEmpty','payment','shipping','shipDate','cartExpirationDate');
-	}
-
-	/**
-	 * Group all the items in an order by their corresponding event.
-	 *
-	 * The $order object is assumed to have originated from one of model types; Order or Cart.
-	 * Irrespective of the type both will return an associative array of event items.
-	 *
-	 * @param object $order
-	 * @return array $eventItems
-	 */
-	protected function _itemGroupByEvent($object) {
-		$eventItems = array();
-
-		if ($object) {
-			$model = $object->model();
-
-			if (strpos($model, 'models\Order') !== false) {
-				foreach ($object->items->data() as $item) {
-					$eventItems[$item['event_id']][] = $item;
-				}
-			}
-			if ($model == 'app\models\Cart') {
-				foreach ($object->data() as $item) {
-					$event = $item['event'][0];
-					unset($item['event']);
-					$eventItems[$event][] = $item;
-				}
-			}
-		}
-		return $eventItems;
-	}
-
-	/**
-	 * Return all the events of an order.
-	 *
-	 * @param object $object
-	 * @return array $orderEvents
-	 */
-	protected function _orderEvents($object) {
-		$orderEvents = null;
-		$ids = Cart::getEventIds($object);
-		if (!empty($ids)) {
-			$events = Event::find('all', array(
-				'conditions' => array('_id' => $ids),
-				'fields' => array('name', 'ship_message', 'ship_date', 'url')
-			));
-			$events = $events->data();
-			foreach ($events as $event) {
-				$orderEvents[$event['_id']] = $event;
-			}
-		}
-		return $orderEvents;
 	}
 }
 
