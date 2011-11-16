@@ -416,10 +416,6 @@ $(function() {
 				<p>Will item/product ship for Christmas?:</p>
 					<input type="radio" name="miss_christmas" value="0" id="miss_christmas">Yes, ships before 12.23<br>
 					<input type="radio" name="miss_christmas" value="1" id="miss_christmas" checked>NO AFTER XMAS<br><br>
-
-				<p>Will item/product ship for Christmas?:</p>
-					<input type="radio" name="miss_christmas" value="0" id="miss_christmas" checked>Yes, ships before 12.23<br>
-					<input type="radio" name="miss_christmas" value="1" id="miss_christmas">NO AFTER XMAS<br><br>
 					<!--
 					<?php echo $this->form->label('Upload Event (Excel Files): '); ?>
 					<?php echo $this->form->file('upload_file'); ?>
