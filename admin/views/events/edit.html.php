@@ -420,8 +420,7 @@ for ( i=1; i<6; i++ ) {
 		<div id="event_items">
 			<h3 id="">Item Management</h3>
 			<hr />
-
-			<div style="width:300px; height:400px; float:left">
+			<div style="width:300px; height:500px; float:left">
 				<h3 id="">Upload Items</h3>
 	            <hr />
 				<p>Please select the default option for all items being uploaded:</p>
@@ -430,6 +429,9 @@ for ( i=1; i<6; i++ ) {
 				<p>Add "Final Sale" to the item description?:</p>
 					<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
 					<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
+				<p>Will item/product ship for Christmas?:</p>
+					<input type="radio" name="miss_christmas" value="0" id="miss_christmas" checked>Yes, ships before 12.23<br>
+					<input type="radio" name="miss_christmas" value="1" id="miss_christmas">NO AFTER XMAS<br><br>
 
 					<!--
 					<?=$this->form->label('Upload Event (Excel Files): '); ?>
