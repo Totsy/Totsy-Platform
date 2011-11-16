@@ -72,10 +72,6 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 	}
 
 	protected function emailNotificationSender() {
-<<<<<<< HEAD
-=======
-
->>>>>>> feature/shipNofication
 	// collections;
 	    $ordersCollection = Order::collection();
 		$usersCollection = User::collection();
