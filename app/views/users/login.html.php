@@ -58,6 +58,14 @@ display: block;
 
 .video { margin-top: 97px;] }
 
+.loginformlabel{
+	width:50px;
+}
+
+.inputbox{
+	float:left;
+}
+
 .gradient {background: #ffffff; /* Old browsers */
 background: -moz-linear-gradient(top, #ffffff 0%, #f5f5f5 100%); /* FF3.6+ */
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#f5f5f5)); /* Chrome,Safari4+ */
@@ -68,57 +76,41 @@ background: linear-gradient(top, #ffffff 0%,#f5f5f5 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f5f5f5',GradientType=0 ); /* IE6-9 */
 }
 </style>
-<div class="container_16 round_clear pushy" style="width:771px; float:left; margin:85px 0px 0px 85px;">
-<div class="round gradient">
+<div class="container_16 round_clear pushy" style="background:#ffffff; width:710px; float:left; margin:85px 0px 0px 85px;">
+
+
+
 <!-- left side -->
-<div class="grid_6">
+<div class="grid_6" style="float:left;width:315px;">
 <?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
 <?php echo $message; ?>
-<div style="width:350px; margin-top:28px;">
+<div class="round gradient" style="border:1px #eeeeee solid; height:310px; width:310px; margin-top:8px;">
+
+<h2 style="width:300px; text-align:center; font-weight:bold; padding-top:10px; padding-bottom:20px; margin-bottom:10px;  border-bottom:1px #cccccc solid;">Member Sign in</h2>
+
+
 <?php echo $this->view()->render(array('element' => 'loginForm')); ?>
 </div>
 <div class="clear"></div>
 </div>
+
+
+
 <!-- right side -->
-<div class="grid_6" style="margin-left:28px;">
-<div class="fr">Not a member yet? <a href="/register" title="Sign In">Join now!</a></div>
-<div class="clear" style="margin-top:7px;"></div>
-<script src="http://widgets.twimg.com/j/2/widget.js"></script>
-<script>
-new TWTR.Widget({
-  version: 2,
-  type: 'search',
-  search: 'Totsy.com',
-  interval: 30000,
-  title: 'What Mom\'s Are Saying About Totsy',
-  subject: '',
-  width: 350,
-  height: 175,
-  theme: {
-    shell: {
-      background: '#ffffff',
-      color: '#000000'
-    },
-    tweets: {
-      background: '#ffffff',
-      color: '#999999',
-      links: '#999999'
-    }
-  },
-  features: {
-    scrollbar: true,
-    loop: false,
-    live: true,
-    behavior: 'all'
-  }
-}).render().start();
-</script>
-<div class="free_shipping_banner_reg_new rollover_img" style="margin-top:-50px;"><a href="javascript:;" title="Free Shipping"><span></span></a></div>
+<div class="grid_6" style="float:right; ">
+<div class="fr" style="padding-right:20px;padding-top:10px;">Not a member yet? <a href="/register" title="Sign In">Join now!</a></div>
+
+<img src="/img/logos_home_right.jpg" style="margin-top:50px;margin-left:20px;">
+<div class="free_shipping_banner_reg_new rollover_img" style="margin-top:0px;"><a href="javascript:;" title="Free Shipping"><span></span></a></div>
+</div>
+
+
+
+
 </div>
 <div class="clear"></div>
-<?php echo $this->html->image('featured_brands_long.png', array('style' => 'margin-top:20px; margin-left:10px; border-top:1px solid #f1f1f1; margin-bottom: -14px;')); ?>
+<?php //echo $this->html->image('featured_brands_long.png', array('style' => 'margin-top:20px; margin-left:10px; border-top:1px solid #f1f1f1; margin-bottom: -14px;')); ?>
 <div class="clear"></div>
-</div>
 </div>
 <div id="footer">
 <?php echo $this->view()->render(array('element' => 'footerNavPublic')); ?>
