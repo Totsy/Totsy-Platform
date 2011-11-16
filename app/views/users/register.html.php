@@ -75,6 +75,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 <!-- right side -->
 <div class="grid_6" style="margin-left:28px;">	
 <div class="fr">Already a member? <a href="/login" title="Sign In">Sign In</a></div>
+	<div class="free_shipping_banner_reg_new rollover_img"><a href="javascript:;" title="Free Shipping"><span></span></a></div>
 </div>
 <div class="clear"></div>
 
@@ -99,7 +100,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 		<li>A tree is planted for your first purchase</li>
 		<li>Refer friends and earn Totsy credits</li>
 		</ul>
-	<div class="free_shipping_banner_reg_new rollover_img"><a href="javascript:;" title="Free Shipping"><span></span></a></div>
 	</div>
 
 
