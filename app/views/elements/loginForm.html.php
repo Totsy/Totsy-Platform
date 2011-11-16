@@ -34,8 +34,10 @@
 
 	<?=$this->form->error('password'); ?>
 <div class="clear"></div>
-
+<div style="text-align:center; width:300px;padding:5px;">
 	<?=$this->form->checkbox('remember_me', array('class' => 'checkbox')); ?> Remember Me &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <?=$this->html->link('Forgot your password?','/reset', array('class'=> 'md', 'title'=> 'Forgot your password?'))?><br/>
+</div>
+
 <div class="clear"></div>
 	<?=$this->form->submit('Sign In', array('class'=>"button fr"));?> 
 <?=$this->form->end();?>
