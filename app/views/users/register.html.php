@@ -67,29 +67,45 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 }
 </style>
 <div class="container_16 round_clear pushy" style="width:771px; float:left; margin:85px 0px 0px 85px;">
-<div class="round gradient">
+<div class="round">
 <!-- left side -->
 <div class="grid_6">
 <?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
-<div style="width:350px; margin-top:28px;">
-<?php echo $this->view()->render(array('element' => 'registrationForm')); ?>
-</div>
-<div class="clear"></div>
 </div>
 <!-- right side -->
-<div class="grid_6" style="margin-left:28px;">
+<div class="grid_6" style="margin-left:28px;">	
 <div class="fr">Already a member? <a href="/login" title="Sign In">Sign In</a></div>
-<h2 class="tagline">Why savvy moms shop at Totsy?</h2>
-<ul id="bug_bullets">
-<li>Membership is free</li>
-<li>Exclusive sales for kids, moms and families</li>
-<li>Savings of up to 90% off retail</li>
-<li>Sales last up to 3 days</li>
-<li>A tree is planted for your first purchase</li>
-<li>Refer friends and earn Totsy credits</li>
-</ul>
-<div class="free_shipping_banner_reg_new rollover_img"><a href="javascript:;" title="Free Shipping"><span></span></a></div>
 </div>
+<div class="clear"></div>
+
+
+<div class="round gradient" style="border:1px #ff0000 solid;height:300px;">
+
+	<div class="grid_6" style="float:left;">	
+		<div style="width:310px; margin-top:5px;">
+		<?php echo $this->view()->render(array('element' => 'registrationForm')); ?>
+		</div>
+		
+		
+	</div>
+	<div class="grid_6" style="width:310px; margin-left:2px;float:left;margin-top:5px;">	
+		<h2 class="tagline" style="margin-top:2px;">Why savvy moms shop at Totsy?</h2>
+
+		<ul id="bug_bullets">
+		<li>Membership is free</li>
+		<li>Exclusive sales for kids, moms and families</li>
+		<li>Savings of up to 90% off retail</li>
+		<li>Sales last up to 3 days</li>
+		<li>A tree is planted for your first purchase</li>
+		<li>Refer friends and earn Totsy credits</li>
+		</ul>
+	<div class="free_shipping_banner_reg_new rollover_img"><a href="javascript:;" title="Free Shipping"><span></span></a></div>
+	</div>
+
+
+</div>
+
+
 <div class="clear"></div>
 <?php echo $this->html->image('featured_on_long.png', array('style' => 'margin-top:20px; margin-left:10px; border-top:1px solid #f1f1f1; margin-bottom: -14px;')); ?>
 <div class="clear"></div>
