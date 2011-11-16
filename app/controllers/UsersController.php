@@ -38,7 +38,8 @@ class UsersController extends BaseController {
 	 * @params string $invite_code, string $affiliate_user_id
 	 * @return string User will be promoted that email is already registered.
 	 */
-	public function register($invite_code = null, $affiliate_user_id = null) {
+	public function register($invite_code = null, $affiliate_user_id = null) {	
+			
 		$message = false;
 		$data = $this->request->data;
 		$this->autoLogin();

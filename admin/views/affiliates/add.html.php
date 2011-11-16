@@ -1,4 +1,4 @@
-<?=$this->html->script('jquery-1.4.2');?>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 <?=$this->html->script('jquery-dynamic-form.js');?>
 <?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
 <?=$this->html->script('swfupload.js');?>
@@ -10,10 +10,13 @@
 <?=$this->html->style('swfupload')?>
 <?=$this->html->style('jquery_ui_blitzer.css')?>
 
+<script type="text/javascript">
+var affiliateCategories = <?=json_encode($affiliateCategories)?>;
+</script>
+
 <div class="grid_16">
 	<h2 id="page-heading">Affiliate Add Panel</h2>
 </div>
-
 <div class="grid_3 menu">
 	<table>
 		<thead>
@@ -32,27 +35,53 @@
 	</table>
 </div>
 <div class="clear"></div>
-<div class="grid_5 box">
-	<div class='block forms'>
-		<?=$this->form->create(); ?>
+<div class="grid_8 box">
+	<div class="block forms">
+		<?=$this->form->create(null,array("id"=>"affForm")); ?>
 		Activate: <?=$this->form->checkbox('active', array('checked'=>'checked')); ?> <br>
 		Affiliate Level: <?=$this->form->select('level',$packages); ?> <br><br>
+		<!--
+		Affiliate Category: 
+		<input type="text" id="affiliate_category" name="affiliate_category" autocomplete="off" class="textbox"><br><br> -->
 		Affiliate Name:
 		<?=$this->form->text('affiliate_name'); ?> <br><br>
 		Enter Code:
-		<?=$this->form->text('code'); ?>  <input type='button' name='add_code' id='add_code' value='add'/>
+		<?=$this->form->text('code'); ?>  <input type="button" name="add_code" id="add_code" value="add"/>
 		<br>
 		Affiliate codes:<br>
 		<?=$this->form->select('invitation_codes',array(),array('multiple'=>'multiple', 'size'=>5)); ?> <br>
-		<input type='button' name='edit_code' id='edit_code' value='edit code'/><br><br>
+		<input type="button" name="edit_code" id="edit_code" value="Edit code"/>
+		<br><br>
+		<div id="upload_panel">
+			<h5 id="uploaded_media">Uploaded Media</h5>
+			    	<div id="fileInfo"></div>
+			<table>
+			    <tr valign="top">
+			    	<td>
+			    		<div>
+			    			<div class="fieldset flash" id="fsUploadProgress1">
+			    				<span class="legend">Upload Status</span>
+			    			</div>
+			    			<div style="padding-left: 5px;">
+			    				<span id="spanButtonPlaceholder1" onclick="isBackground(upload1);"></span>
+			    				<input id="btnCancel1" type="button" value="Cancel Uploads" onclick="cancelQueue(upload1);" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />												
+			    			<br />
+			    			</div>
+			    		</div>
+			    	</td>
+			    </tr>
+			</table>
+		</div>
 	</div>
 </div> <!--end of box-->
-<div class ="grid_10 box">
+<div class ="grid_7 box">
 	<div class="block forms">
-		<div id='tabs'>
+		<div id="tabs">
 			<ul>
-				<li><a href="#pixel">
-					<span>Pixels</span></a>
+				<li>
+					<a href="#pixel">
+					<span>Pixels</span>
+					</a>
 				</li>
 				<!--<li><a href="#landing_page"><span>Landing Pages</span></a></li> -->
 			</ul>
@@ -63,7 +92,7 @@
 					<h5>Add Pixels</h5>
 					<div id="pixel">
 						Pixel:<br>
-						<?=$this->form->textarea('pixel', array('rows'=>10,'cols'=>80)); ?>
+						<?=$this->form->textarea('pixel[0][pixel]', array('rows'=>6,'cols'=>50)); ?>
 						<br>
 						<input type="button" name="add_pixel" value="add pixel" id="add_pixel"/>
 						<input type="button" name="remove_pixel" value="remove pixel" id="remove_pixel"/>
@@ -77,80 +106,19 @@
 						<?=$this->form->select('pixel[0][page]', $sitePages, array('multiple'=>'multiple', 'size'=>5)); ?>
 						<br>
 						<br>
-						<div id="upload_panel">
-							<h5 id="uploaded_media">Uploaded Media</h5>
-							<table>
-								<tr valign="top">
-									<td>
-										<div>
-											<div class="fieldset flash" id="fsUploadProgress1">
-												<span class="legend">Upload Status</span>
-											</div>
-											<div style="padding-left: 5px;">
-												<span id="spanButtonPlaceholder1" onclick="isBackground(upload1);"></span>
-												<input id="btnCancel1" type="button" value="Cancel Uploads" onclick="cancelQueue(upload1);" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />												
-											<br />
-											</div>
-										</div>
-									</td>
-								</tr>
-							</table>
-						</div>
+						<input type="hidden" name="background_image" value="" id="background_image"/>
 				</div>
 				</div><!--end of pixel panel-->
 			</div><!--end of pixel-->
-			<div id="landing_page" style="display:none">
-				<!-- <div id='landing_activate'> Affiliate uses landing pages:
-					<?=$this->form->checkbox('active_landing', array('value'=>'1')); ?>
-				</div> -->
-				<div id="landing_panel">
-					<br/>
-					<div id="template_panel">
-						<label>Enable </label>
-						<?=$this->form->checkbox('landing_enable', array('value'=>'1', 'checked' => 'checked')); ?><br/>
-
-						<label>Choose Template Type </label>
-						<?=$this->form->select('template_type', $templates, array('id' => 'templates') );
-						?>
-						<label>Name:</label>
-						<?=$this->form->text('name'); ?>
-						<label>Specified Url:</label>
-						<?=$this->form->text('url'); ?>
-						<br/>
-						<!-- Upload Section -->
-						<a id="upload">Click here to add backgrounds, feature images or logos </a>
-						<br>
-						<div id="upload_panel">
-							<h5 id="uploaded_media">Uploaded Media</h5>
-							<table>
-								<tr valign="top">
-									<td>
-										<div>
-											<div class="fieldset flash" id="fsUploadProgress1">
-												<span class="legend">Upload Status</span>
-											</div>
-											<div style="padding-left: 5px;">
-												<span id="spanButtonPlaceholder1" onclick="isBackground(upload1);"></span>
-												<input id="btnCancel1" type="button" value="Cancel Uploads" onclick="cancelQueue(upload1);" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />
-												<input id="isbackground" name="isbackground" type="checkbox" value='1' onclick="isBackground(upload1);" /> Is Background
-												<input id="isfeature" value='1' name="isfeature" type="checkbox" onclick="isFeature(upload1);" /> Is Feature On
-												<input id="islogo" value='1' name="islogo" type="checkbox" onclick="isLogo(upload1);" /> Is Logo
-												<br />
-											</div>
-										</div>
-									</td>
-								</tr>
-							</table>
-						</div>
-						<div id="template" style="margin: 0 5 0 0">
-							<?php echo $this->view()->render(array('element' => 'template1')); ?>
-						</div>
-					</div>
-				</div><!--end landing panel-->
-			</div><!--end landing page-->
 		</div><!--end tabs-->
 	</div>
 </div>
+
+<!--
+<div id="page_preview" style="display:none; width:800px; width: 500px; height: auto; z-index: 1000000000 !important; border-width: 2px; border-style: solid; background-color: rgb(255, 255, 255); left:445px; top: 15px; position: absolute;">
+	<img id="background_image">
+</div>
+-->
 		<br>
 		<br>
 	<div class="clear"></div>
@@ -171,6 +139,13 @@
 <script type="text/javascript">
 		
 	$(document).ready(function(){
+		
+		$("#affiliate_category").autocomplete({source: affiliateCategories, minChars:0, minLength:0, mustMatch:false});		
+		
+		$("#affForm").submit(function(){
+			validateCategory();
+		});
+			
 		$('#templates').change(function(){
 			template = $(this).val();
 		});
@@ -197,8 +172,7 @@
 				$('#tabs').hide();
 			}
 		});
-	//this jquery is for adding/removing pixel entry fields
-
+		//this jquery is for adding/removing pixel entry fields
 		var counter =2;
 
 		$('#add_pixel').click(function(){
@@ -209,7 +183,6 @@
 				'<?=$this->form->textarea("pixel['+(counter-1)+'][pixel]", array("rows"=>"5")); ?>'
 				);
 			newPixelDiv.appendTo('#pixel_panel');
-
 			counter++;
 		});
 
@@ -219,13 +192,13 @@
 				alert('No more textbox to remove');
 				return false;
 			}
-
 			$('#pixel_' + counter).remove();
 		});
 	});
 
 	//multi select transfer transfer
-	$().ready(function(){
+	$(document).ready(function(){
+	
 		$('#add_code').click(function(){
 			var value= $('#Code').val();
 			if(value){
@@ -240,7 +213,7 @@
 		});
 	});
 	//select all codes upon submit
-	$().ready(function(){
+	$(document).ready(function(){
 		$('#create').click(function(){
 			$('#InvitationCodes').each(function(){
 				$('#InvitationCodes option').attr('selected','selected');
@@ -254,6 +227,7 @@
 			$('#upload_panel').hide();
 		}
 	});
+	
 	$("#background_select").click(function(){
 		if($('#background_selection').css('display') == 'none'){
 			loadBackgrounds();
@@ -262,41 +236,23 @@
 			$('#background_selection').hide();
 		}
 	});
+	
 </script>
 <script type="text/javascript">
+
+function validateCategory(){
+    if($("#affiliate_category").val().length > 1 && $("#affiliate_category").val().indexOf(" ") > -1){
+    	alert("The category field cannot contain spaces");
+    	return false;
+    }
+} 
+
 	//background
-function loadBackgrounds(){
-	var background = $('#background');
-    $.post('/affiliates/background', function(data) {
-	 	var col_limit = 3;
-            var col = 0;
-            var json = $.parseJSON(data);
-            var table = "";
-            var html = "<table>";
-           // alert(json);
-            for(i=0;i < json.length; ++i){
-                if(col == 0){
-                    table += "<tr>";
-                }
-                table += '<td onclick="backgroundChange(\''+ json[i] + '\')"><a><img src="/image/' + json[i] + '.png" width="150"/></a></td>';
-                if(col == col_limit){
-                    table += "</tr>";
-                }
-                if(col < col_limit ){
-                    ++col;
-                }else{
-                    col = 0;
-                }
-            }
-            html += table + "</table>";
-        $("#background_selection").html(html);
-    });
-  //  timer();
-}
 function backgroundChange(image){
-		$("input:hidden[name='background_img']").val(image);
-		$('#mb-bg').css('background-image', 'url(/image/' + image + '.png)');
+	$("input:hidden[name='background_img']").val(image);
+	$('#mb-bg').css('background-image', 'url(/image/' + image + '.png)');
 }
+
 function featureChange(){
 	id = $(this).attr('id');
 }
@@ -319,6 +275,7 @@ $(function(){
         $("input:hidden[name='" + id +"']").val(html);
     }
 });
+
 function timer(){
  window.setTimeout("loadBackgrounds();", 10000);
 }

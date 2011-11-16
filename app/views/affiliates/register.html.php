@@ -1,3 +1,14 @@
+<?php 	if (isset($_REQUEST['a']) || preg_match('/^[a-z_]+$/', $_REQUEST['a'])) { ?>
+
+<script type="text/javascript">
+	var affiliateName="<?=$affiliateName?>";	
+	var categoryName="<?=$categoryName?>";
+	var affBgroundImage = "<?=$affBgroundImage?>"; 	
+	
+</script>
+
+<?php } ?>
+
 <style>
 	h2 { margin:0px; padding:0px; color:#999; font-size:15px; }
 	h2.tagline { margin:0px; padding:10px 0px 10px 0px; color:#ed1c25; font-size:24px; font-weight: normal; }
@@ -6,6 +17,7 @@
 	.free_shipping_banner_reg_new img { position: absolute; right:-50px; top:430px; z-index:9999; }
 	.round_clear { border-radius:22px; border: 10px solid rgba(255, 255, 255, 0.8); }
 </style>
+
 <div class="container_16 round_clear pushy">
 <div class="round">
 	<div class="grid_10" style="width:560px;">
@@ -55,4 +67,5 @@
 	FB.login(function(response) {
 		}, {perms:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
 	}
+		
 </script>
