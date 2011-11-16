@@ -149,9 +149,8 @@ class Items extends \lithium\template\Helper {
 				$html .= "<td height='100' width='100'><textarea rows='5' cols='20' name='$item->_id' id='$item->_id'>$item->blurb</textarea></td>";
 				$html .= "<td width='30'>$item->enabled<br>";
 
-
 				if($item->miss_christmas){
-					$html .= "wont ship for xmas";
+					$html .= "won't ship for xmas";
 				}
 
 				//check to show flag for duplicate color/description url
