@@ -51,6 +51,7 @@ class ReAuthorize extends \lithium\console\Command {
 		$conditions = array('void_confirm' => array('$exists' => false),
 							'auth_confirmation' => array('$exists' => false),
 							'authKey' => array('$exists' => true),
+							'card_type' => 'amex',
 							'cc_payment' => array('$exists' => true),
 							'date_created' => array('$lte' => new MongoDate($limitDate))
 		);
