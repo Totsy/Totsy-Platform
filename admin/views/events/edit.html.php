@@ -409,7 +409,7 @@ $(function() {
 			<div style="width:300px; height:500px; float:left">
 				<h3 id="">Upload Items</h3>
 	            <hr />
-				<p>Please select the default option for all items being uploaded:</p>
+				<p>Please select default option for all items uploaded:</p>
 					<input type="radio" name="enable_items" value="1" id="enable_items"> Enable All <br>
 					<input type="radio" name="enable_items" value="0" id="enable_items" checked> Disable All <br><br>
 				<p>Add "Final Sale" to the item description?:</p>
@@ -418,6 +418,11 @@ $(function() {
 				<p>Will item/product ship for Christmas?:</p>
 					<input type="radio" name="miss_christmas" value="0" id="miss_christmas">Yes, ships before 12.23<br>
 					<input type="radio" name="miss_christmas" value="1" id="miss_christmas" checked>NO AFTER XMAS<br><br>
+
+				<p>Will item/product ship for Christmas?:</p>
+					<input type="radio" name="miss_christmas" value="0" id="miss_christmas" checked>Yes, ships before 12.23<br>
+					<input type="radio" name="miss_christmas" value="1" id="miss_christmas">NO AFTER XMAS<br><br>
+
 
 					<!--
 					<?php echo $this->form->label('Upload Event (Excel Files): '); ?>
@@ -433,7 +438,6 @@ $(function() {
 			<div id="items_errors" name="items_errors" style="float:right; width:500px; height:400px;overflow:scroll;"></div>
 
 			<div style="clear:both; height:30px;"></div>
-
 			<h3 id="current_items">Current Items</h3>
 
             <hr />
