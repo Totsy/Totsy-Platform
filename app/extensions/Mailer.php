@@ -32,11 +32,6 @@ class Mailer {
 		if (isset($_COOKIE['sailthru_bid'])) $data['message_id'] = $_COOKIE['sailthru_bid'];
         else if (isset($_COOKIE['sailthru_hid'])) $data['message_id'] = $_COOKIE['sailthru_hid'];
         else if (isset($args['incomplete'])) $data['message_id'] = $args['incomplete'];
-		
-        $fh = fopen('/tmp/sktest.dat', 'a');
-        fwrite($fh,print_r($data,true)."\n\n");
-        fclose($fh);
-        unset($ob);
         
 		return Sailthru::apiPost('purchase',$data);
 	}
