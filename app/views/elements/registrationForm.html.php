@@ -1,8 +1,24 @@
 <script type="text/javascript"> 
   function setIframe() {
     var tiframe = document.getElementById('psm').innerHTML = '<iframe src="/static/signup-tracking.html" style="border:none;width:1px;height:1px;" marginheight="0" marginwidth="0" frameborder="0"></iframe>';
+	setTimeout ( "pauseFunction()", 2000 );
+<?php
+	if (preg_match('/facebookshoes/',$_SERVER['REQUEST_URI'])) {
+?>
+  	var fbshoesiframe = document.getElementById('fbshoes').innerHTML = '<iframe src="/static/facebookshoes-tracking.html" style="border:none;width:1px;height:1px;" marginheight="0" marginwidth="0" frameborder="0"></iframe>';
+<?php
+	}
+?>
+	return true;
   } 
+
+function pauseFunction ( )
+{
+  return true;
+}
+  
 </script>
+
 
 	<hr />
 	<h2>Join with Facebook</h2>
@@ -82,3 +98,4 @@
 <?=$this->form->end(); ?>
 
 <div id="psm" style="display:none;"></div>
+<div id="fbshoes" style="display:none;"></div>
