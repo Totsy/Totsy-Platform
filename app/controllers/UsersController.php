@@ -39,6 +39,7 @@ class UsersController extends BaseController {
 	 * @return string User will be promoted that email is already registered.
 	 */
 	public function register($invite_code = null, $affiliate_user_id = null) {
+		$this->_render['layout'] = 'login';
 		$message = false;
 		$data = $this->request->data;
 		$this->autoLogin();
@@ -104,10 +105,13 @@ class UsersController extends BaseController {
 				Mailer::addToMailingList($data['email']);
 				$ipaddress = $this->request->env('REMOTE_ADDR');
 				User::log($ipaddress);
-				$this->redirect('/sales');
+				$this->redirect('/dinkers');
 			}
 		}
-		$this->_render['layout'] = 'login';
+		elseif ($this->request->data && !$user->validates() ) {
+			$message = '<div class="error_flash">Error in registering your account</div>';
+		
+		}
 		return compact('message', 'user');
 	}
 
@@ -221,6 +225,8 @@ class UsersController extends BaseController {
 					} else {
 						$message = '<div class="error_flash">Login Failed - Please Try Again</div>';
 					}
+				} else {
+					$message = '<div class="error_flash">Login Failed - No Record Found</div>';
 				}
 			} else {
 				$message = '<div class="error_flash">Login Failed - Your Password Is Blank</div>';
