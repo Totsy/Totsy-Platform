@@ -62,6 +62,10 @@ Router::connect('/{:category:[a-z_]+}', array(), function($request) {
 Router::connect('/api/help/{:args}', array('controller' => 'API', 'action' => 'help'));
 Router::connect('/api/{:args}', array('controller' => 'API', 'action' => 'index'));
 
+//Unsubcentral Functions
+Router::connect('/unsubcentral/unsubscribed/{:args}', array('controller' => 'unsubcentral', 'action' => 'unsubscribed'));
+Router::connect('/unsubcentral/del', array('controller' => 'unsubcentral', 'action' => 'del'));
+
 Router::connect('/register', 'Users::register');
 Router::connect('/register/facebook', 'Users::fbregister');
 Router::connect('/momoftheweek', 'MomOfTheWeeks::index');

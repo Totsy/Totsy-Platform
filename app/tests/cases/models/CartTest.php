@@ -3,10 +3,39 @@
 namespace app\tests\cases\models;
 
 use app\models\Cart;
-use app\models\Item;
 use MongoId;
+use app\models\Item;
+use app\models\Event;
+use li3_fixtures\test\Fixture;
 
 class CartTest extends \lithium\test\Unit {
+
+    public function setUp() {
+ 		$efixture = Fixture::load('Event');
+		$ifixture = Fixture::load('Item');
+		$cfixture = Fixture::load('Cart');
+		$next = $efixture->first();
+		do {
+			Event::remove(array('_id' => $next['_id'] ));
+			$event = Event::create();
+			$event->save($next);
+		} while ($next = $efixture->next());
+
+		$next = $ifixture->first();
+
+		do {
+			Item::remove(array('_id' => $next['_id'] ));
+			$item = Item::create();
+			$item->save($next);
+		} while ($next = $ifixture->next());
+
+		$next = $cfixture->first();
+		do {
+			Cart::remove(array('_id' => $next['_id'] ));
+			$cart = Cart::create();
+			$cart->save($next);
+		} while ($next = $cfixture->next());
+	}
 
 	/*
 	* Testing the Check Method of the Cart
@@ -67,6 +96,29 @@ class CartTest extends \lithium\test\Unit {
 		//Test result
 		$this->assertEqual( true , $result["status"]);
 	}
+
+	public function tearDown() {
+		$efixture = Fixture::load('Event');
+		$ifixture = Fixture::load('Item');
+		$cfixture = Fixture::load('Cart');
+
+		$event = $efixture->first();
+		do {
+			Event::remove( array('_id' => $event['_id'] ) );
+		} while ($event = $efixture->next());
+
+		$item = $ifixture->first();
+		do {
+			Item::remove( array( '_id' => $item['_id'] ) );
+		} while ($item = $ifixture->next());
+
+		$cart = $cfixture->first();
+		do {
+			Cart::remove( array('_id' => $cart['_id'] ) );
+		} while ($cart = $cfixture->next());
+	}
+
+
 }
 
 ?>

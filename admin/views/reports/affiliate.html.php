@@ -58,7 +58,8 @@
 					<?=$this->form->label('Search Type'); ?>
 					<?=$this->form->select('search_type', array(
 						'Revenue' => 'Total Revenue',
-						'Registrations' => 'Total Registrations'
+						'Registrations' => 'Total Registrations',
+						'Bounces' => 'Total Bounces'
 						));
 					?>
 				</p>
@@ -76,6 +77,9 @@
 					<tr>
 						<th>Month/Year</th>
 						<th>Total - <?=$searchType?></th>
+						<?php if ($searchType == 'Registrations'): ?>
+						<th>Total - Bounced</th>
+						<?php endif; ?>
 					</tr>
 				</thead>
 				<tbody>
@@ -103,6 +107,10 @@
                                 <?php else: ?>
                                     <td><?=$value['total']?></td>
                                 <?php endif ?>
+                                <?php if ($searchType == 'Registrations'): ?>
+                                	<td><?=$value['bounced']?></td>
+                                <?php endif; ?>
+                                
                         </tr>
 					<?php
 					            endforeach;
@@ -120,6 +128,10 @@
 							<?php else: ?>
 								<td><?=$result['total']?></td>
 							<?php endif ?>
+                            <?php if ($searchType == 'Registrations'): ?>
+                               	<td><?=$result['bounced']?></td>
+                            <?php endif; ?>
+
 						</tr>
 					<?php
 					        endforeach;
@@ -133,6 +145,9 @@
 					<tr>
 						<th>Grand Total<?php echo " - ".$searchType; ?> : </th>
 						<th> <?php echo $results['total'] ?></th>
+                    <?php if ($searchType == 'Registrations'): ?>
+                        <th><?=$results['bounced']?></th>
+                    <?php endif; ?>
 					</tr>
 				</tfooter>
 				<?php endif ?>
@@ -140,6 +155,30 @@
 	</div>
 <?php endif ?>
 
+<?php if (!empty($cursor) && !empty($total)):?>
+	<div class="grid_16">
+		<table id="report" class="datatable" border="1">
+			<thead>
+				<tr>
+					<th>Email</th>
+					<th>Created Date</th>
+					<th>Bounce Type</th>
+					<th>Last Bounced</th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php foreach ($cursor as $row): ?>
+				<tr>
+					<td><?=$row['email'];?></td>
+					<td><?=date('m/d/Y',$row['created_date']->sec);?></td>
+					<td><?=$row['email_engagement']['type'];?></td>
+					<td><?=date('m/d/Y',$row['email_engagement']['date']->sec);?></td>
+				</tr>
+			<?php endforeach;?>
+			</tbody>
+		</table>
+	</div>
+<?php endif ?>
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
 		TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";

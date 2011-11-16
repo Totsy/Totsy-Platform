@@ -48,7 +48,7 @@ class AffiliatesController extends BaseController {
 					$user['clear_token'] = $token;
 					$user['reset_token'] = sha1($token);
 					$user['legacy'] = 0;
-					$data['password'] = $token.'@'.$user['reset_token'];
+					$data['password'] = $token . '@' . $user['reset_token'];
 				}
                     if (isset($data['password'])) {
                         // New user, need to register here
@@ -82,14 +82,13 @@ class AffiliatesController extends BaseController {
                                      Invitation::linkUpInvites($invite_code, $email);
                                    }
                                 }
-
+                                $_id = (string) $user->_id;
+                                $this->set(compact('_id'));
+                            }
                             if(empty($user->invited_by)) {
                                 $user->invited_by = $code;
                             }
                             $user->save(null,array('validate' => false));
-                            $_id = (string) $user->_id;
-                            $this->set(compact('_id'));
-                            }
                     	}
                         $success = $saved;
                         $errors = $user->errors();
