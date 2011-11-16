@@ -68,11 +68,12 @@ background: linear-gradient(top, #ffffff 0%,#f5f5f5 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f5f5f5',GradientType=0 ); /* IE6-9 */
 }
 </style>
-<div class="container_16 round_clear pushy" style="width:771px; float:left; margin:135px 0px 0px 85px;">
+<div class="container_16 round_clear pushy" style="width:771px; float:left; margin:85px 0px 0px 85px;">
 <div class="round gradient">
 <!-- left side -->
 <div class="grid_6">
 <?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
+<?php echo $message; ?>
 <div style="width:350px; margin-top:28px;">
 <?php echo $this->view()->render(array('element' => 'loginForm')); ?>
 </div>
@@ -81,7 +82,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 <!-- right side -->
 <div class="grid_6" style="margin-left:28px;">
 <div class="fr">Not a member yet? <a href="/register" title="Sign In">Join now!</a></div>
-<div class="clear" style="margin-top:97px;"></div>
+<div class="clear" style="margin-top:7px;"></div>
 <script src="http://widgets.twimg.com/j/2/widget.js"></script>
 <script>
 new TWTR.Widget({
@@ -112,7 +113,7 @@ new TWTR.Widget({
   }
 }).render().start();
 </script>
-<div class="free_shipping_banner_reg_new rollover_img"><a href="javascript:;" title="Free Shipping"><span></span></a></div>
+<div class="free_shipping_banner_reg_new rollover_img" style="margin-top:-50px;"><a href="javascript:;" title="Free Shipping"><span></span></a></div>
 </div>
 <div class="clear"></div>
 <?php echo $this->html->image('featured_brands_long.png', array('style' => 'margin-top:20px; margin-left:10px; border-top:1px solid #f1f1f1; margin-bottom: -14px;')); ?>
