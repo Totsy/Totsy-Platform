@@ -22,38 +22,57 @@
 	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/affiliate']); return setIframe();">
 <? } ?>
 
+	<div style="width:70px; float:left">
+
 	<?=$this->form->label('email', 'Email <span>*</span>', array(
 		'escape' => false,
 		'class' => 'required'
 		));
 	?>
 
-	<?=$this->form->text('email', array('class' => 'inputbox', 'style' => 'width:158px')); ?>
+	</div>
+
+	<div style="float:right">
+	<?=$this->form->text('email', array('class' => 'inputbox', 'style' => 'width:190px')); ?>
+	</div>
 	<?=$this->form->error('email'); ?>
+	
+	<div style="width:70px; float:left">
 	
 	<?=$this->form->label('confirmemail', 'Confirm Email <span>*</span>', array(
 		'escape' => false,
 		'class' => 'required'
 		));
 	?>
+	</div>
 
-	<?=$this->form->text('confirmemail', array('class' => 'inputbox', 'style' => 'width:158px')); ?>
+	<div style="float:right">
+
+	<?=$this->form->text('confirmemail', array('class' => 'inputbox', 'style' => 'width:190px')); ?>
+	</div>
+	
 	<?=$this->form->error('confirmemail'); ?>
+	
 	<?=$this->form->error('emailcheck'); ?>
 
+	<div style="width:70px; float:left">
 	<?=$this->form->label('password','Password <span>*</span>', array(
 		'class'=>'required',
 		'escape' => false
 		));
 	?>
+	</div>
+
+	<div style="float:right">
+
 
 	<?=$this->form->password('password', array(
 		'class'=>"inputbox",
 		'name' => 'password',
-		'id' => 'password', 'style' => 'width:158px'
+		'id' => 'password', 'style' => 'width:190px'
 		));
 	?>
-
+	</div>
 	<?=$this->form->error('password'); ?>
 	<?=$this->form->checkbox('terms', array(
 		"checked" => "checked", 
