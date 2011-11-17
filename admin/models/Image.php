@@ -152,14 +152,7 @@ class Image extends \admin\models\File {
 					$vendor_style = static::extractVendorStyle($meta['name']);
 					$item = $model::first(array('conditions' => array('vendor_style' => $vendor_style, 'event' => $meta['event_id'])));
 					Logger::debug("Found item `{$item->_id}` by vendor style for `{$meta['name']}`.");
-				}
-
-				//elseif ($model == 'admin\models\Banner' && isset($meta['banner_id'])) {
-				//	$banner = Banner::find($meta['banner_id']);
-				//	Logger::error("Found banner");
-				//}
-
-				else {
+				} else {
 					$item = $model::first(array('conditions' => compact('url')));
 					Logger::debug("Found item `{$item->_id}` by URL for `{$meta['name']}`.");
 				}

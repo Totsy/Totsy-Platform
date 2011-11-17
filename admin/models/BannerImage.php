@@ -5,7 +5,6 @@ namespace admin\models;
 use lithium\analysis\Logger;
 use MongoId;
 use BadMethodCallException;
-
 class BannerImage extends \admin\models\Image {
 
 	public static $types = array(
@@ -21,7 +20,6 @@ class BannerImage extends \admin\models\Image {
 				'dav' => '/banners/{:year}/{:month}/{:event}/{:name}/{:file}.jpg'
 			)
 		)
-
 	);
 
 	/**
