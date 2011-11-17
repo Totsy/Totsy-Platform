@@ -120,10 +120,8 @@ class EventsController extends BaseController {
 
 						//use index to update quantity
 						$oitem['details'][$sku_details_key] = (int)$items_quantities[$sku_details];
-
 						//set sales to 0 for all sizes
 						//$oitem['sale_details'][$sku_details_key]['sale_count'] = 0;
-
 						//use index to get new price
 						$item_price_new = $items_prices[$sku_details];
 
