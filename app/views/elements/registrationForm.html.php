@@ -20,12 +20,12 @@ function pauseFunction ( )
 </script>
 
 
-	<hr />
-	<h2>Join with Facebook</h2>
-	<a href="javascript:;" onclick="fblogin();return false;"><img src="/img/sign_in_fb.png"></a>
 
-<h2 style="margin-top:30px;">Or Join with Email</h2>	
-<hr />
+<h2 style="margin-bottom:20px;">Join with Facebook</h2>
+<a href="javascript:;" onclick="fblogin();return false;"><img src="/img/sign_in_fb.png" class="fr"></a>
+<br />
+<h2 style="margin-top:30px;margin-bottom:20px;">Or join with email</h2> 
+
 
 <?php 
 if (preg_match('/join/',$_SERVER['REQUEST_URI'])) { 
@@ -112,7 +112,7 @@ else {
 		<?=$this->html->link('terms and conditions','pages/terms')?>.
 	</div>	
 	
-	<input class="button fl" type="button" value="Join Now" onclick="return setIframe();">
+	<input class="button fr" type="button" value="Join Now" onclick="return setIframe();" style="width:100px; height 28px; font-weight:important;">
 	
 	<?//=$this->form->submit('Join Now', array('class' => 'button fr','style' => 'width:100px; height 28px; font-weight:important;'));?>
 	
