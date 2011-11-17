@@ -152,7 +152,6 @@ tinyMCE.init({
 				</div>
 
 				<br>
-
 		</div>
 		<div id="banner_images">
 			<h3 id="current_images">Current Images</h3>
@@ -200,6 +199,7 @@ tinyMCE.init({
                     </tr>
 				<?php endforeach;?>
 				</table>
+<?=$this->form->end(); ?>
 
 			<h3 id="uploaded_media">Uploaded Media</h3>
             <hr />
@@ -207,6 +207,7 @@ tinyMCE.init({
 					<form id="BannerMedia">
 						<?php
 							// Without this banner_id being passxed along with the files,
+
 							// Item images could not be saved.
 						?>
 						<input type="hidden" name="banner_id" value="<?=$banner->_id?>" />
@@ -253,6 +254,7 @@ tinyMCE.init({
 		<!-- End Tab -->
 
 			<br>
+
 		</div>
 	</div>
 

@@ -96,7 +96,7 @@ tinyMCE.init({
 						<?php endif ?>
 					</div>
 					<div id="item_miss_christmas">
-						<h2 id="item_status">Xmas Shipping Status</h2>
+						<h2 id="item_status">Xmas Shipping Status</h2>s
 						<?php if ($item->miss_christmas == 1): ?>
 							<p>Will item/product ship for Christmas?</p><br>
 							<input type="radio" name="miss_christmas" value="0" id="enabled"> Yes, ships before 12.23 <br>
