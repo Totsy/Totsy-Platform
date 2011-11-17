@@ -89,7 +89,7 @@ else {
 		<?=$this->html->link('terms and conditions','pages/terms')?>.
 	</div>	
 	
-	<input class="button fl" type="button" value="Join Now" onclick="return setIframe();">
+	<input class="button fr" type="button" value="Join Now" onclick="return setIframe();" style="width:100px; height 28px; font-weight:important;">
 	
 	<?//=$this->form->submit('Join Now', array('class' => 'button fr','style' => 'width:100px; height 28px; font-weight:important;'));?>
 	
