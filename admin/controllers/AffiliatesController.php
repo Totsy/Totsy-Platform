@@ -102,22 +102,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
     	
     	return $affiliateCategories;
 	}
-	
-	public function addCategory() {
-	
-	    $this->render(array('layout' => false));
-       	$affiliate = Affiliate::create();
-       	$data = $this->request->data;	
-       	
-       	//exit();
-       	
-       	$info = array();
-       	$id = $data['_id'];
-       	$info['category'] = $data['category'];
-       	       		
-       $affiliate->update(array("_id"=> $id), $info);		
-	}
-	
+		
 	/**
 	* Adds a new affiliate in the collection.  Admin user can only create one landing page when
 	* creating affiliate.

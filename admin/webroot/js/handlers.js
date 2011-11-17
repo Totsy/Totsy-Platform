@@ -146,7 +146,27 @@ function uploadComplete(file) {
 	} catch (ex) {
 		this.debug(ex);
 	}
-	console.log(this.parent());
+		
+	//index of category that will get this image	
+	var catIndex = $('#categories input[name=selected_image]:checked', '#mainForm').val();
+	
+	var uploadedImgPath = $("#backgroundThumbnail").attr('src');
+		
+	if($("#" + catIndex + "_" + affiliateId + "_category_background").length>0) {
+		//if an image is already present for this category, overwite it by setting the value of that hidden field with the returned image
+		
+		console.log("test");
+		
+		$("#" + catIndex + "_" + affiliateId + "_category_background").val(uploadedImgPath);
+	} else {
+		//write hidden field with returned image as value
+		
+		var imgField = "<input type='hidden' name='" + catIndex + "_" + affiliateId + "_category_background' id='" + catIndex + "_" + affiliateId + "_category_background' value='" +  uploadedImgPath + "'>";
+		
+		//console.log(imgField);
+		
+		$("#" + catIndex + "_" + affiliateId).append(imgField);	
+	}	
 }
 
 function uploadError(file, errorCode, message) {
