@@ -143,11 +143,15 @@ class OrdersController extends BaseController {
 		// IMPORTANT!
 		// Sailthru purchase api complete
 		if ($new===true){
-			Mailer::purchase(
-				$user['email'],
-				$itemsToSend,
-				array('message_id' => hash('sha256',Session::key('default').substr(strrev( (string) $user['_id']),0,8)))			
-			);
+			if ( !Session::check('order_'.$order_id,array('name'=>'default')) ){
+				Mailer::purchase(
+					$user['email'],
+					$itemsToSend,
+					array('message_id' => hash('sha256',Session::key('default').substr(strrev( (string) $user['_id']),0,8)))			
+				);
+				Session::write('order_'.$order_id,time(),array('name'=>'default'));
+			}
+			
 		}
 		unset($itemsToSend);
 		
