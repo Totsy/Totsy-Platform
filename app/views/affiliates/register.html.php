@@ -1,14 +1,23 @@
-<?php 	if (isset($_REQUEST['a']) || preg_match('/^[a-z_]+$/', $_REQUEST['a'])) { ?>
+<?php if (isset($_REQUEST['a']) || preg_match('/^[a-z_]+$/', $_REQUEST['a'])) { ?>
 <script type="text/javascript">
 
-	var affiliateName="<?=$affiliateName?>";	
-	var categoryName="<?=$categoryName?>";
-	var affBgroundImage = "<?=$affBgroundImage?>"; 	
+	var affiliateName = "";
+	var categoryName = "";
+	
+	<?php if($affiliateName) {  ?>
+		affiliateName= "<?=$affiliateName?>";	
+	<?php } ?>
+	
+	<?php if($affiliateName) { ?>
+		categoryName= "<?=$categoryName?>";
+	<?php } ?>
+	
+	<?php if($affBgroundImage) { ?>
+		affBgroundImage = "<?=$affBgroundImage?>"; 	
+	<?php } ?>
 	
 </script>
-
 <?php } ?>
-
 <style>
 	h2 { margin:0px; padding:0px; color:#999; font-size:15px; }
 	h2.tagline { margin:0px; padding:10px 0px 10px 0px; color:#ed1c25; font-size:24px; font-weight: normal; }
