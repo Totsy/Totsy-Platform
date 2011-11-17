@@ -40,23 +40,23 @@ else {
 	</div>
 	<?=$this->form->error('email'); ?>
 	
+	<div class="clear"></div>
 	<div style="width:70px; float:left">
-	
-	<?=$this->form->label('confirmemail', 'Confirm Email <span>*</span>', array(
-		'escape' => false,
-		'class' => 'required'
-		));
-	?>
+		<?=$this->form->label('confirmemail', 'Confirm Email <span>*</span>', array(
+			'escape' => false,
+			'class' => 'required'
+			));
+		?>
 	</div>
 
 	<div style="float:right">
-
-	<?=$this->form->text('confirmemail', array('class' => 'inputbox', 'style' => 'width:190px')); ?>
+		<?=$this->form->text('confirmemail', array('class' => 'inputbox', 'style' => 'width:190px')); ?>
 	</div>
 	
 	<?=$this->form->error('confirmemail'); ?>
-	
 	<?=$this->form->error('emailcheck'); ?>
+	
+	<div class="clear"></div>
 
 	<div style="width:70px; float:left">
 	<?=$this->form->label('password','Password <span>*</span>', array(
