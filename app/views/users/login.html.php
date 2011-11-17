@@ -44,7 +44,6 @@ text-decoration: none;
 .rollover_img a:hover {
 width: 108px;
 height: 108px;
-background-image: url(/img/freeShip-badge_hover.png);
 }
 
 .rollover_img a span {
