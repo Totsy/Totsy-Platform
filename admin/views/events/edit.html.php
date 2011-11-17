@@ -570,7 +570,7 @@ $(function() {
 								file_filter: '*.jpg;*.jpeg;*.gif;*.png;*.JPG;*.JPEG;*.GIF;*.PNG',
 								resize: 'jpg,jpeg,gif',
 								force_preview_thumbnail: 'true',
-								firebug: 'false'
+								firebug: 'true'
 							}
 						});
 					</script>
