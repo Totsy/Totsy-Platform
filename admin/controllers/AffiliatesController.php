@@ -31,7 +31,14 @@ class AffiliatesController extends \admin\controllers\BaseController {
 	);
 
 	public function index() {
-	   $affiliates = Affiliate::collection()->find(array('affiliate'=>true));
+	   $affiliates = Affiliate::collection()->find(array('affiliate'=>true),array(
+	        'name' => true,
+	        'created_by' => true,
+	        'date_created' => true,
+	        'active_pixel' => true,
+	        'level' => true,
+	        'active' => true
+	    ));
 	   $userCollection = User::collection();
 	   $afs = array();
        foreach($affiliates as $affiliate){

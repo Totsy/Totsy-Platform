@@ -2,21 +2,18 @@
 
 namespace admin\models;
 
-use \lithium\data\Connections;
-use \lithium\storage\Session;
+use lithium\data\Connections;
+use lithium\storage\Session;
 use admin\models\Credit;
 use MongoRegex;
 use admin\models\Base;
-
+use lithium\util\Validator;
+use MongoId;
 
 class User extends Base {
 
 	protected $_meta = array('source' => 'users');
 
-	public static function collection() {
-		return static::_connection()->connection->{"users"};
-	}
-	
 	public static function applyCredit($data, $options = array()) {
 		$options['type'] = empty($options['type']) ? null : $options['type'];
 		$user = User::find('first', array(
@@ -48,6 +45,29 @@ class User extends Base {
 		}
 		return static::find('all', array('conditions' => $conditions));
 	}
+
+
+	public static function lookupUserInvitedBy($user_id) {
+	    if (empty($user_id)) return "";
+
+	    Validator::add('mongoId', function($value) {
+			return (strlen($value) >=10) ? true : false;
+		});
+
+		if (Validator::isMongoId($user_id)) {
+		    $user_id = new MongoId($user_id);
+		}
+
+	    $result = static::collection()->findOne(array("_id" => $user_id), array(
+	        '_id' => false,
+	        'invited_by' => true
+	    ));
+
+	    return $result['invited_by'];
+	}
+
+
+
 }
 
 
