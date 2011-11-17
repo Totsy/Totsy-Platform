@@ -111,19 +111,23 @@ class AffiliatesController extends BaseController {
 	*	Affiliate-user invite register
 	*   @params $affiliate
 	**/
-	public function register($affiliate = NULL) {	
-	
+	public function register($affiliate = NULL) {
+		ini_set("display_errors", 1);
+		
 		//affiliate category name
 		$categoryName = "";
 		//affiliate name
 		$affiliateName = "";
 		//for affiliate background images
 		$affBgroundImage = "";
-				
+		
 		if (isset($this->request->query['a']) || preg_match('/^[a-z_]+$/', $this->request->query['a'])) {
+		
        		$categoryName = trim($this->request->params['args'][1]);
 			$affiliateName = trim($this->request->params['args'][0]); 
 			$backgroundImage = "";
+			
+			$affiliate = $affiliateName;
 							
 			$getAff = Affiliate::find('first',
 				array('conditions' => array(

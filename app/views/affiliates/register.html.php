@@ -1,6 +1,6 @@
 <?php 	if (isset($_REQUEST['a']) || preg_match('/^[a-z_]+$/', $_REQUEST['a'])) { ?>
-
 <script type="text/javascript">
+
 	var affiliateName="<?=$affiliateName?>";	
 	var categoryName="<?=$categoryName?>";
 	var affBgroundImage = "<?=$affBgroundImage?>"; 	

@@ -19,6 +19,7 @@ class Affiliate extends Base {
     * @return the pixels associated to the affiliate and url
     */
 	public static function getPixels($url, $invited_by) {
+	
 	    $cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 	    $userInfo = Session::read('userLogin', array('name' => 'default'));
 		$userCollection = User::collection();
@@ -35,12 +36,7 @@ class Affiliate extends Base {
         }
         
         /*for affilliates that have a category
-        build the URL here in order to find a match and get the right pixel info for this affiliate */
-        
-        /*
-        if (isset($request->query['a']) || preg_match('/^[a-z_]+$/', $request->query['a'])) {
-            $url = $_SERVER['PATH_INFO'] . "?a=" . $_GET['a'];
-		} */
+        build the URL here in order to find a match and get the right pixel info for this affiliate */        
         
 		/**
 		* This detaches the invited by from the unique identifier
@@ -57,12 +53,14 @@ class Affiliate extends Base {
                                     'page' => $url,
                                     'enable' => true
                                 ));
+                                
         $conditions['invitation_codes'] = $invited_by;
         $options = array('conditions' => $conditions,
 		                'fields'=>array(
 		                    'pixel.pixel' => 1, 'pixel.page' => 1,
 							'_id' => 0
 		                    ));
+		                    
 		$pixels = Affiliate::find('all', $options );
 		$pixels = $pixels->data();
 		$pixel = NULL;
