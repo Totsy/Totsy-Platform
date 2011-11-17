@@ -31,7 +31,7 @@ font-size:16px; color:#999999; font-weight:normal;
 width: 108px;
 height: 108px;
 background-image: url(/img/freeShip-badge.png);
-position: absolute; right:-73px; top:454px;
+position: absolute; right:-93px; top:454px;
 }
 
 .rollover_img a {
@@ -45,7 +45,6 @@ text-decoration: none;
 .rollover_img a:hover {
 width: 108px;
 height: 108px;
-background-image: url(/img/freeShip-badge_hover.png);
 }
 
 .rollover_img a span {
@@ -75,7 +74,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 <!-- right side -->
 <div class="grid_6" style="margin-left:28px;">	
 <div class="fr">Already a member? <a href="/login" title="Sign In">Sign In</a></div>
-	<div class="free_shipping_banner_reg_new rollover_img"><a href="javascript:;" title="Free Shipping"><span></span></a></div>
+		<div class="free_shipping_banner_reg_new rollover_img" ><a href="javascript:;" title="Free Shipping"><span></span></a></div>
 </div>
 <div class="clear"></div>
 
@@ -89,7 +88,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 		
 		
 	</div>
-	<div class="grid_6" style="width:310px; margin-left:2px;float:left;margin-top:5px;">	
+	<div class="grid_6" style="width:330px; margin-left:2px;float:left;margin-top:5px;">	
 		<h2 class="tagline" style="margin-top:2px;">Why savvy moms shop at Totsy?</h2>
 
 		<ul id="bug_bullets">
