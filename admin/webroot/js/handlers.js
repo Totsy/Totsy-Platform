@@ -146,26 +146,25 @@ function uploadComplete(file) {
 	} catch (ex) {
 		this.debug(ex);
 	}
-		
-	//index of category that will get this image	
-	var catIndex = $('#categories input[name=selected_image]:checked', '#mainForm').val();
 	
-	var uploadedImgPath = $("#backgroundThumbnail").attr('src');
+	if($("#categories").length > 0 ){	
+		//index of category that will get this image	
+		var catIndex = $('#categories input[name=selected_image]:checked', '#mainForm').val();
 		
-	if($("#" + catIndex + "_" + affiliateId + "_category_background").length>0) {
-		//if an image is already present for this category, overwite it by setting the value of that hidden field with the returned image
+		var uploadedImgPath = $("#backgroundThumbnail").attr('src');
+			
+		if($("#" + catIndex + "_" + affiliateId + "_category_background").length>0) {
+			//if an image is already present for this category, overwite it by setting the value of that hidden field with the returned image
+						
+			$("#" + catIndex + "_" + affiliateId + "_category_background").val(uploadedImgPath);
+		} else {
+			//write hidden field with returned image as value
+			
+			var imgField = "<input type='hidden' name='" + catIndex + "_" + affiliateId + "_category_background' id='" + catIndex + "_" + affiliateId + "_category_background' value='" +  uploadedImgPath + "'>";
+			
+			$("#" + catIndex + "_" + affiliateId).append(imgField);	
+		}
 		
-		console.log("test");
-		
-		$("#" + catIndex + "_" + affiliateId + "_category_background").val(uploadedImgPath);
-	} else {
-		//write hidden field with returned image as value
-		
-		var imgField = "<input type='hidden' name='" + catIndex + "_" + affiliateId + "_category_background' id='" + catIndex + "_" + affiliateId + "_category_background' value='" +  uploadedImgPath + "'>";
-		
-		//console.log(imgField);
-		
-		$("#" + catIndex + "_" + affiliateId).append(imgField);	
 	}	
 }
 

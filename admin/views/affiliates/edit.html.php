@@ -296,9 +296,8 @@ $(document).ready(function() {
  		
  		function validateNames(t) {
  			var regexp = /^[a-zA-Z0-9-_]+$/;
-			var fields = $("#AffiliateName").val(); 
-			//console.log($("#AffiliateName").val());
-			if (fields.search(regexp) == -1){ 
+
+			if (t.search(regexp) == -1 || t==""){ 
 				return false;
 			} else { 
 				return true; 
@@ -306,7 +305,7 @@ $(document).ready(function() {
  		}
  		
  		$("#mainForm").submit( function() {
- 			if(validateNames($("#affiliate_name").val())==false) {
+ 			if(validateNames($("#AffiliateName").val())==false) {
  				alert("The affiliate name can only contain letters and/or underscores.");
  				return false;
  			}
@@ -367,7 +366,7 @@ $(document).ready(function() {
 		});
 		
 		/*
-		$(".upload_img").live('click',  function() {		
+		$(".upload_img").live('click', function() {		
 			var affCat = this.id;
 			
 			var catIndex = 0;
@@ -378,19 +377,15 @@ $(document).ready(function() {
 			// 1 - get the first number in the id field of the anchor tag 
 			//waiting for image upload to work, then we can deal with how the returned image path will be dealt with
 						
-			if($("#" + catIndex + "_" + affiliateId + " .upload").length==0) {	
 				var imgHTML = "";
 			
 				imgHTML += "<input type='hidden' name='" + affCat + "_category_background' id='" + affCat + "_category_background' class='upload'>";				
-				imgHTML += $("#upload_block").html();
-				$("#upload_block").show();				
+				//imgHTML += $("#upload_block").html();
+				//$("#upload_block").show();				
 				
-				$("#" + catIndex + "_" + affiliateId).append(imgHTML);
-			} else {
-				$("#" + catIndex + "_" + affiliateId + " .upload").remove();
-			}
-		});	
-		*/
+				//$("#" + catIndex + "_" + affiliateId).append(imgHTML);
+				//$("#" + catIndex + "_" + affiliateId + " .upload").remove();
+		});*/
 		
 		$('#add_pixel').click(function() {
 			var newPixelDiv = $(document.createElement("div")).attr("id", "pixel_"+counter);
