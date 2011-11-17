@@ -237,7 +237,7 @@
 			<br/>
 		<div id="submit button" class="grid_16">
 			<div class="grid_7" >
-			<?=$this->form->submit('Edit', array('id'=>'edit')); ?>
+			<?=$this->form->submit('Update', array('id'=>'edit')); ?>
 		</div>
 	</div>
 	<?=$this->form->end(); ?>
