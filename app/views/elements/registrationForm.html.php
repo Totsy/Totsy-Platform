@@ -1,9 +1,3 @@
-<script type="text/javascript"> 
-  function setIframe() {
-    var tiframe = document.getElementById('psm').innerHTML = '<iframe src="/static/signup-tracking.html" style="border:none;width:1px;height:1px;" marginheight="0" marginwidth="0" frameborder="0"></iframe>';
-  } 
-</script>
-
 	<h2 style="margin-bottom:20px;">Join with Facebook</h2>
 	<a href="javascript:;" onclick="fblogin();return false;"><img src="/img/sign_in_fb.png" class="fr"></a>
 	<br />
@@ -13,23 +7,22 @@
 <?php 
 if (preg_match('/join/',$_SERVER['REQUEST_URI'])) { 
 ?>
-	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/join']); return setIframe();">
+	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/join']);">
 <?php
 }
 elseif (preg_match('/register/',$_SERVER['REQUEST_URI'])) { 
 ?>
-	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/register']); return setIframe();"> 
+	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/register']);"> 
 <?php
 }
 elseif (preg_match('/a/',$_SERVER['REQUEST_URI'])) { 
 ?>
-	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/affiliate']); return setIframe();">
+	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/affiliate']);">
 <?php
 }
 else { 
 ?>
-	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/register']); return setIframe();"> 
-
+	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/register']);"> 
 <? } ?>
 
 	<div style="width:70px; float:left">
@@ -96,14 +89,36 @@ else {
 		<?=$this->html->link('terms and conditions','pages/terms')?>.
 	</div>	
 	
-	<?=$this->form->submit('Join Now', array(
-		'class' => 'button fr',
-		'style' => 'width:100px; height:28px; font-weight:important;'
-		));
-	?>
+	<input class="button fl" type="button" value="Join Now" onclick="return setIframe();">
+	
+	<?//=$this->form->submit('Join Now', array('class' => 'button fr','style' => 'width:100px; height 28px; font-weight:important;'));?>
+	
 	<?=$this->form->error('terms'); ?>
 	
 	
 <?=$this->form->end(); ?>
 
 <div id="psm" style="display:none;"></div>
+<div id="fbshoes" style="display:none;"></div>
+
+
+<script type="text/javascript"> 
+	
+  function setIframe() {
+	var tiframe = document.getElementById('psm').innerHTML = '<iframe src="/static/signup-tracking.html" style="border:none;width:1px;height:1px;" marginheight="0" marginwidth="0" frameborder="0"></iframe>';
+<?php
+	if (preg_match('/facebookshoes/',$_SERVER['REQUEST_URI'])) {
+?>
+  	var fbshoesiframe = document.getElementById('fbshoes').innerHTML = '<iframe src="/static/facebookshoes-tracking.html" style="border:none;width:1px;height:1px;" marginheight="0" marginwidth="0" frameborder="0"></iframe>';
+<?php
+	}
+?>
+	setTimeout ( "pauseFunction()", 1500 );
+  } 
+
+function pauseFunction ( )
+{
+  document.forms["registerForm"].submit();
+}
+  
+</script>
