@@ -77,6 +77,19 @@ class BannersController extends \lithium\action\Controller {
 				FlashMessage::set("You must fill all the requested informations", array('class' => 'warning'));
 			}
 		}
+		else{
+		//	$banner = array();
+		//	$banner['_id'] = new MongoId('');
+		}
+		return compact('banner');
+	}
+
+	public function media_status() {
+		$id = $this->request->id;
+		$this->_render['layout'] = false;
+
+		$banner = Banner::find($id);
+
 		return compact('banner');
 	}
 

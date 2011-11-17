@@ -118,7 +118,7 @@ class EventsController extends BaseController {
 						//echo "<br> * update quantity to " . $items_quantities[$sku_details];
 
 						//use index to update quantity
-						$oitem['details'][$sku_details_key] = $items_quantities[$sku_details];
+						$oitem['details'][$sku_details_key] = (int)$items_quantities[$sku_details];
 
 						//use index to get new price
 						$item_price_new = $items_prices[$sku_details];
@@ -154,7 +154,7 @@ class EventsController extends BaseController {
 				$newItem = Item::create();
 
 				//set total quant
-				$oitem['total_quantity'] = $total_quantity_new;
+				$oitem['total_quantity'] = (int)$total_quantity_new;
 
 				//set new price
 				$oitem['sale_retail'] = floatval($item_price_new);
