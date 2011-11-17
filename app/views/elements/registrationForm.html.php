@@ -23,16 +23,26 @@ function pauseFunction ( )
 	<h2>Join with Facebook</h2>
 	<a href="javascript:;" onclick="fblogin();return false;"><img src="/img/sign_in_fb.png"></a>
 
-<?php if (preg_match('/join/',$_SERVER['REQUEST_URI'])) { ?>
+<?php 
+if (preg_match('/join/',$_SERVER['REQUEST_URI'])) { 
+?>
 	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/join']); return setIframe();">
-<? } ?>
-
-<?php if (preg_match('/register/',$_SERVER['REQUEST_URI'])) { ?>
+<?php
+}
+elseif (preg_match('/register/',$_SERVER['REQUEST_URI'])) { 
+?>
 	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/register']); return setIframe();"> 
-<? } ?>
-
-<?php if (preg_match('/a/',$_SERVER['REQUEST_URI'])) { ?>
+<?php
+}
+elseif (preg_match('/a/',$_SERVER['REQUEST_URI'])) { 
+?>
 	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/affiliate']); return setIframe();">
+<?php
+}
+else { 
+?>
+	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/register']); return setIframe();"> 
+
 <? } ?>
 
 	<div style="width:70px; float:left">
