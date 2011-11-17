@@ -80,15 +80,15 @@ background: linear-gradient(top, #ffffff 0%,#f5f5f5 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f5f5f5',GradientType=0 ); /* IE6-9 */
 }
 </style>
-<div class="container_16 round_clear pushy" style="width:720px; height:450px; float:left; margin:85px 0px 0px 85px;">
-<div class="round gradient"  style="background:#ffffff; height:422px;">
+<div class="container_16 round_clear pushy" style="width:720px; height:457px; float:left; margin:85px 0px 0px 85px;">
+<div class="round gradient"  style="background:#ffffff; height:429px;">
 
 
 
 <!-- left side -->
 <div class="grid_6" style="float:left;width:315px;">
 <?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
-<?php echo $message; ?>
+<?php if ($message){ echo $message; } ?>
 <div class="round gradient" style="border:1px #eeeeee solid; height:310px; width:310px; margin-top:8px;">
 
 <h2 style="width:300px; text-align:center; font-weight:bold; padding-top:10px; padding-bottom:20px; margin-bottom:10px;  border-bottom:1px #cccccc solid;">Member Sign in</h2>
