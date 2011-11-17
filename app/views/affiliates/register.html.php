@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php if ($message){ echo $message; } ?>
 <style>
 h2 {
@@ -32,7 +31,7 @@ font-size:16px; color:#999999; font-weight:normal;
 width: 108px;
 height: 108px;
 background-image: url(/img/freeShip-badge.png);
-position: absolute; right:-73px; top:454px;
+position: absolute; right:-93px; top:454px;
 }
 
 .rollover_img a {
@@ -42,56 +41,7 @@ display: block;
 text-decoration: none;
 
 }
-=======
-<?php if (isset($_REQUEST['a']) || preg_match('/^[a-z_]+$/', $_REQUEST['a'])) { ?>
-<script type="text/javascript">
 
-	var affiliateName = "";
-	var categoryName = "";
-	
-	<?php if($affiliateName) {  ?>
-		affiliateName= "<?=$affiliateName?>";	
-	<?php } ?>
-	
-	<?php if($affiliateName) { ?>
-		categoryName= "<?=$categoryName?>";
-	<?php } ?>
-	
-	<?php if($affBgroundImage) { ?>
-		affBgroundImage = "<?=$affBgroundImage?>"; 	
-	<?php } ?>
-	
-</script>
-<?php } ?>
-<style>
-	h2 { margin:0px; padding:0px; color:#999; font-size:15px; }
-	h2.tagline { margin:0px; padding:10px 0px 10px 0px; color:#ed1c25; font-size:24px; font-weight: normal; }
-	.round { border-radius:12px; background: #fff; padding:14px; }
-	.pushy { margin-top:35px; padding:0px; }
-	.free_shipping_banner_reg_new img { position: absolute; right:-50px; top:430px; z-index:9999; }
-	.round_clear { border-radius:22px; border: 10px solid rgba(255, 255, 255, 0.8); }
-</style>
-
-<div class="container_16 round_clear pushy">
-<div class="round">
-	<div class="grid_10" style="width:560px;">
-			<h2 class="tagline">Save up to 90% off the best brands for your family!</h2>
-			<!--<iframe width="540" height="315" src="http://www.youtube.com/embed/HJBQnkxPJko&rel=0" frameborder="0" allowfullscreen></iframe> -->
-			<!--[if !IE]> <-->
-			<object type="application/x-shockwave-flash" width="540" height="315"
-			data="http://www.youtube.com/v/HJBQnkxPJko&rel=0&hd=1&theme=light&color=red&fs=1&autohide=1">
-			<!--> <![endif]-->
-			<!--[if IE]>
-			<object type="application/x-shockwave-flash" width="540" height="315"
-			classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
-			codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0">
-			<![endif]-->
-			<param name="movie" value="http://www.youtube.com/v/HJBQnkxPJko&rel=0&hd=1&theme=light&color=red&fs=1&autohide=1" />
-			<p>Your browser is not able to display this multimedia content.</p>
-			</object>
-			<?php echo $this->html->image('featured_on.png', array()); ?>
-	</div>
->>>>>>> c6bd7a2ba96243f8169d6e092df2347353815d6c
 
 .rollover_img a:hover {
 width: 108px;
@@ -117,30 +67,46 @@ background: linear-gradient(top, #ffffff 0%,#f5f5f5 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f5f5f5',GradientType=0 ); /* IE6-9 */
 }
 </style>
-<div class="container_16 round_clear pushy" style="width:771px; float:left; margin:135px 0px 0px 85px;">
-<div class="round gradient">
+<div class="container_16 round_clear pushy" style="width:771px; float:left; margin:85px 0px 0px 85px;">
+<div class="round">
 <!-- left side -->
 <div class="grid_6">
 <?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
-<div style="width:350px; margin-top:28px;">
-<?php echo $this->view()->render(array('element' => 'registrationForm')); ?>
-</div>
-<div class="clear"></div>
 </div>
 <!-- right side -->
-<div class="grid_6" style="margin-left:28px;">
+<div class="grid_6" style="margin-left:28px;">	
 <div class="fr">Already a member? <a href="/login" title="Sign In">Sign In</a></div>
-<h2 class="tagline">Why savvy moms shop at Totsy?</h2>
-<ul id="bug_bullets">
-<li>Membership is free</li>
-<li>Exclusive sales for kids, moms and families</li>
-<li>Savings of up to 90% off retail</li>
-<li>Sales last up to 3 days</li>
-<li>A tree is planted for your first purchase</li>
-<li>Refer friends and earn Totsy credits</li>
-</ul>
-<div class="free_shipping_banner_reg_new rollover_img"><a href="javascript:;" title="Free Shipping"><span></span></a></div>
+		<div class="free_shipping_banner_reg_new rollover_img" ><a href="javascript:;" title="Free Shipping"><span></span></a></div>
 </div>
+<div class="clear"></div>
+
+
+<div class="round gradient" style="border:1px #eeeeee solid;height:300px;">
+
+	<div class="grid_6" style="float:left;">	
+		<div style="width:310px; margin-top:5px;">
+		<?php echo $this->view()->render(array('element' => 'registrationForm')); ?>
+		</div>
+		
+		
+	</div>
+	<div class="grid_6" style="width:330px; margin-left:2px;float:left;margin-top:5px;">	
+		<h2 class="tagline" style="margin-top:2px;">Why savvy moms shop at Totsy?</h2>
+
+		<ul id="bug_bullets">
+		<li>Membership is free</li>
+		<li>Exclusive sales for kids, moms and families</li>
+		<li>Savings of up to 90% off retail</li>
+		<li>Sales last up to 3 days</li>
+		<li>A tree is planted for your first purchase</li>
+		<li>Refer friends and earn Totsy credits</li>
+		</ul>
+	</div>
+
+
+</div>
+
+
 <div class="clear"></div>
 <?php echo $this->html->image('featured_on_long.png', array('style' => 'margin-top:20px; margin-left:10px; border-top:1px solid #f1f1f1; margin-bottom: -14px;')); ?>
 <div class="clear"></div>
@@ -170,19 +136,14 @@ var google_conversion_value = 0;
 </noscript>
 <!-- END OF Google Code for Homepage Remarketing List -->
 <script>
-<<<<<<< HEAD
 //your fb login function
 function fblogin() {
 FB.login(function(response) {
 }, {perms:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
 }
 </script>
-=======
-	//your fb login function
-	function fblogin() {
-	FB.login(function(response) {
-		}, {perms:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
-	}
-		
-</script>
->>>>>>> c6bd7a2ba96243f8169d6e092df2347353815d6c
+
+
+
+
+
