@@ -74,6 +74,15 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 <div class="grid_6">
 <?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
 <div style="width:350px; margin-top:28px;">
+
+<?php 
+if ($message){
+	echo $message;
+} 
+else{
+?>
+
+
 <h2>Reset Your Password</h2>
 <p>Please enter your email and further instructions will be provided.</p>
 											<?=$this->form->create(null, array('id'=>'loginForm')); ?>
@@ -89,6 +98,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 
 													<?=$this->form->submit('Reset Password', array('class' => 'button fr')); ?>
 											<?=$this->form->end(); ?>
+<?php
+}
+?>
+
+
 </div>
 <div class="clear"></div>
 </div>
@@ -99,7 +113,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 
 </div>
 <div class="clear"></div>
-<?php echo $this->html->image('featured_brands_long.png', array('style' => 'margin-top:20px; margin-left:10px; border-top:1px solid #f1f1f1; margin-bottom: -14px;')); ?>
+<?php echo $this->html->image('featured_on_long.png', array('style' => 'margin-top:20px; margin-left:10px; border-top:1px solid #f1f1f1; margin-bottom: -14px;')); ?>
 <div class="clear"></div>
 </div>
 </div>
