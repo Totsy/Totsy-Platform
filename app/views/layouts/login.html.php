@@ -22,7 +22,13 @@
     
 	<?php echo $this->scripts(); ?>
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
+	
 	<script type="text/javascript">
+		//this is used for swapping backgrounds on registration pages that pass in affiliate codes	
+		var affBgroundImage = "";
+	</script>
+	
+	<script type="text/javascript">	
 
 	  var _gaq = _gaq || [];
 	  _gaq.push(['_setAccount', 'UA-675412-15']);
@@ -64,9 +70,11 @@
 	<script type="text/javascript">
 
 	    jQuery(document).ready(function($){
-
-	    	$.backstretch("/img/login/fieldStreamers.jpg");
-
+	    	if(affBgroundImage!==""){
+				$.backstretch(affBgroundImage);
+			} else {
+	    		$.backstretch("<?=$imgDirectory . $image;?>");
+			}
 	    });
 
 	</script>

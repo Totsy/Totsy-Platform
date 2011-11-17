@@ -21,7 +21,6 @@ tinyMCE.init({
 
 });
 </script>
-
 <div class="grid_16">
 	<h2 id="page-heading">Editing Item - <?=$item->description?></h2>
 </div>
@@ -195,6 +194,18 @@ tinyMCE.init({
 								</td>
 							</tr>
 						<?php endforeach ?>
+
+
+							<tr>
+								<td>
+									add a new size:
+								</td>
+								<td>
+									<?=$this->form->text("item_new_size");
+									?>
+								</td>
+							</tr>
+
 					</table>
 				</div>
 				<br>
