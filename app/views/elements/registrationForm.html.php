@@ -10,16 +10,26 @@
 	
 <h2 style="margin-top:30px;margin-bottom:20px;">Or join with email</h2>	
 
-<?php if (preg_match('/join/',$_SERVER['REQUEST_URI'])) { ?>
+<?php 
+if (preg_match('/join/',$_SERVER['REQUEST_URI'])) { 
+?>
 	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/join']); return setIframe();">
-<? } ?>
-
-<?php if (preg_match('/register/',$_SERVER['REQUEST_URI'])) { ?>
+<?php
+}
+elseif (preg_match('/register/',$_SERVER['REQUEST_URI'])) { 
+?>
 	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/register']); return setIframe();"> 
-<? } ?>
-
-<?php if (preg_match('/a/',$_SERVER['REQUEST_URI'])) { ?>
+<?php
+}
+elseif (preg_match('/a/',$_SERVER['REQUEST_URI'])) { 
+?>
 	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/affiliate']); return setIframe();">
+<?php
+}
+else { 
+?>
+	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/register']); return setIframe();"> 
+
 <? } ?>
 
 	<div style="width:70px; float:left">
