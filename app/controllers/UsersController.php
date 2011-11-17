@@ -105,7 +105,7 @@ class UsersController extends BaseController {
 				Mailer::addToMailingList($data['email']);
 				$ipaddress = $this->request->env('REMOTE_ADDR');
 				User::log($ipaddress);
-				$this->redirect('/dinkers');
+				$this->redirect('/sales');
 			}
 		}
 		elseif ($this->request->data && !$user->validates() ) {
