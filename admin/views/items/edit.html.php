@@ -107,7 +107,7 @@ tinyMCE.init({
 							<input type="radio" name="miss_christmas" value="1" id="enabled"> NO AFTER XMAS
 						<?php endif ?>
 					</div>
-						<div id="item_tax">
+					<div id="item_tax">
 						<h2 id="item_tax">Item Tax</h2>
 						<?php if ($item->taxable == 1): ?>
 							<input type="radio" name="taxable" value="1" id="taxable" checked> Taxable Item <br>

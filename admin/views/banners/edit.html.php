@@ -1,22 +1,31 @@
 
-<?php echo $this->html->script('tiny_mce/tiny_mce.js');?>
-<?php echo $this->html->script('jquery-1.4.2');?>
-<?php echo $this->html->script('jquery-dynamic-form.js');?>
-<?php echo $this->html->script('jquery-ui-1.8.2.custom.min.js');?>
-<?php echo $this->html->script('swfupload.js');?>
-<?php echo $this->html->script('swfupload.queue.js');?>
-<?php echo $this->html->script('fileprogress.js');?>
-<?php echo $this->html->script('handlers.js');?>
-<?php echo $this->html->script('banner_upload.js');?>
-<?php echo $this->html->style('swfupload')?>
-<?php echo $this->html->style('jquery_ui_blitzer.css')?>
-<?php echo $this->html->script('jquery.dataTables.js');?>
-<?php echo $this->html->style('table');?>
-<?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
-<?php echo $this->html->style('timepicker'); ?>
-<?php echo $this->html->script('jquery.countdown.min');?>
-<?php echo $this->html->style('jquery.countdown');?>
-<?php echo $this->html->script('jquery.maskedinput-1.2.2')?>
+<?=$this->html->script('tiny_mce/tiny_mce.js');?>
+<?=$this->html->script('jquery-1.4.2');?>
+<?=$this->html->script('jquery-dynamic-form.js');?>
+<?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
+<?=$this->html->script('swfupload.js');?>
+<?=$this->html->script('swfupload.queue.js');?>
+<?=$this->html->script('fileprogress.js');?>
+<?=$this->html->script('handlers.js');?>
+<?=$this->html->script('banner_upload.js');?>
+<?=$this->html->style('swfupload')?>
+<?=$this->html->style('jquery_ui_blitzer.css')?>
+<?=$this->html->script('jquery.dataTables.js');?>
+<?=$this->html->style('table');?>
+<?=$this->html->script('jquery-ui-timepicker.min.js');?>
+<?=$this->html->style('timepicker'); ?>
+<?=$this->html->script('jquery.countdown.min');?>
+<?=$this->html->style('jquery.countdown');?>
+<?=$this->html->script('jquery.maskedinput-1.2.2')?>
+
+<?=$this->html->script('jquery.flash.min.js')?>
+<?=$this->html->script('agile-uploader-3.0.js')?>
+<?=$this->html->style('agile_uploader.css');?>
+<?=$this->html->style('admin_common.css');?>
+
+<?=$this->html->script('files.js');?>
+<?=$this->html->style('files.css');?>
+
 
 <script type="text/javascript">
 tinyMCE.init({
@@ -100,7 +109,7 @@ tinyMCE.init({
 
 </script>
 
-<?php echo $this->form->create($banner, array('enctype' => "multipart/form-data")); ?>
+<?=$this->form->create($banner, array('enctype' => "multipart/form-data")); ?>
 <div class="grid_16">
 	<h2>Editing Banner - <?php echo $banner->name?></h2>
 </div>
@@ -149,7 +158,7 @@ tinyMCE.init({
 				</div>
 
 				<br>
-			<?php echo $this->form->submit('Update Event')?>
+			<?=$this->form->submit('Update banner')?>
 		</div>
 		<div id="banner_images">
 			<h3 id="current_images">Current Images</h3>
@@ -197,32 +206,80 @@ tinyMCE.init({
                     </tr>
 				<?php endforeach;?>
 				</table>
+<?=$this->form->end(); ?>
 
 			<h3 id="uploaded_media">Uploaded Media</h3>
             <hr />
-			<div id="fileInfo"></div>
-			<br>
+					<h2>Upload via Form</h2>
+					<form id="BannerMedia">
+						<?php
+							// Without this banner_id being passed along with the files,
+							// Item images could not be saved.
+						?>
+						<input type="hidden" name="banner_id" value="<?=$banner->_id?>" />
+					</form>
+					<div id="agile_file_upload"></div>
+					<script type="text/javascript">
+						$('#agile_file_upload').agileUploader({
+							flashSrc: '<?=$this->url('/swf/agile-uploader.swf'); ?>',
+							submitRedirect: '<?=$this->url('/banners/edit/' . (string)$banner->_id); ?>',
+							formId: 'BannerMedia',
+							flashWidth: 70,
+							removeIcon: '<?=$this->url('/img/agile_uploader/trash-icon.png'); ?>',
+							flashVars: {
+								button_up: '<?=$this->url('/img/agile_uploader/add-file.png?v=1'); ?>',
+								button_down: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
+								button_over: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
+								//form_action: $('#bannerEdit').attr('action'),
+								form_action: '<?=$this->url('/files/upload/all'); ?>',
+								file_limit: 30,
+								max_height: '1000',
+								max_width: '1000',
+								file_filter: '*.jpg;*.jpeg;*.gif;*.png;*.JPG;*.JPEG;*.GIF;*.PNG',
+								resize: 'jpg,jpeg,gif',
+								force_preview_thumbnail: 'true',
+								firebug: 'true'
+							}
+						});
+					</script>
+
+					<a
+						href="#"
+						class="upload_files_link"
+						onClick="document.getElementById('agileUploaderSWF').submit();"
+					>
+						Start Upload <?=$this->html->image('agile_uploader/upload-icon.png', array('height' => '24')); ?>
+					</a>
+				</div>
+			</div>
+
+			<div class="clear"></div>
+			<?=$this->view()->render(array('element' => 'files_pending'), array('item' => $banner)); ?>
+		</div>
+		<!-- End Tab -->
+
+		<!-- Start Tab -->
+		<div id="banner_media_status">
+			<div class="actions">
+				<?=$this->html->link('refresh', array(
+					'action' => 'media_status', 'id' => $banner->_id
+				), array(
+					'class' => 'refresh', 'target' => '#banner_media_status_data'
+				)); ?>
+			</div>
+			<p>
+				This tab show the status of media associated with the items of this banner.
+			</p>
+			<div id="banner_media_status_data"><!-- Populated through AJAX request. --></div>
+		</div>
+		<!-- End Tab -->
+
+
+
+
 
 			<br>
-			<table>
-				<tr valign="top">
-					<td>
-						<div>
-							<div class="fieldset flash" id="fsUploadProgress1">
-								<span class="legend">Upload Status</span>
-							</div>
-							<div style="padding-left: 5px;">
-								<span id="spanButtonPlaceholder1"></span>
-								<input id="btnCancel1" type="button" value="Cancel Uploads" onclick="cancelQueue(upload1);" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />
-								<br />
-							</div>
-						</div>
-					</td>
-				</tr>
-			</table>
-
-			<br>
-			<?php echo $this->form->submit('Update Event')?>
+			<?=$this->form->submit('Update banner')?>
 		</div>
 	</div>
 
