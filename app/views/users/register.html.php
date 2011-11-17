@@ -114,7 +114,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 </div>
 <div id="footer">
 <?php echo $this->view()->render(array('element' => 'footerNavPublic')); ?>
-<?php echo $message; ?>
 </div>
 
 <!-- Google Code for Homepage Remarketing List -->
