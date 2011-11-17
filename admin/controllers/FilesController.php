@@ -162,20 +162,17 @@ class FilesController extends \lithium\action\Controller {
 					if(isset($this->request->data['event_id'])) {
 						$meta['event_id'] = $this->request->data['event_id'];
 					}
-
 					if(isset($this->request->data['banner_id'])) {
 						$meta['banner_id'] = $this->request->data['banner_id'];
 					}
 					if(isset($this->request->data['affiliate_id'])) {
 						$meta['affiliate_id'] = $this->request->data['affiliate_id'];
 					}
-
 					if (EventImage::process($handle, $meta)) {
 						Logger::debug("File `{$file['name']}` matched & processed as event image.");
 
 					} else if (ItemImage::process($handle, $meta)) {
 						Logger::debug("File `{$file['name']}` matched & processed as item image.");
-
 					} else if (array_key_exists('banner_id', $meta) && BannerImage::process($handle, $meta)) {
 						Logger::debug("File `{$file['name']}` matched & processed as banner image.");
 					} else if (array_key_exists('affiliate_id', $meta) && AffiliateImage::process($handle, $meta)) {
