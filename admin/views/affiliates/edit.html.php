@@ -293,15 +293,24 @@ $(document).ready(function() {
 			categoryCount++;
 			affiliateCategories.push({name: temp[i].name, background_image: temp[i].background_image});	
 		}
-		
-		function hasNumbers(t) {
-			var regex = /\d/g;
-			return regex.test(t);
-		}
-		
-		function hasWhiteSpace(t) {
- 			return t.indexOf(' ') >= 0;		
+ 		
+ 		function validateNames(t) {
+ 			var regexp = /^[a-zA-Z0-9-_]+$/;
+			var fields = $("#AffiliateName").val(); 
+			//console.log($("#AffiliateName").val());
+			if (fields.search(regexp) == -1){ 
+				return false;
+			} else { 
+				return true; 
+			}
  		}
+ 		
+ 		$("#mainForm").submit( function() {
+ 			if(validateNames($("#affiliate_name").val())==false) {
+ 				alert("The affiliate name can only contain letters and/or underscores.");
+ 				return false;
+ 			}
+ 		});
 		
 		$("#add_category").click( function() {
 			//check if the category name has already been added	
@@ -317,11 +326,8 @@ $(document).ready(function() {
 			if(catExists==true) {
 				alert("This category name is already added - try a different category name");
 				return false;
-			} else if(hasNumbers($("#affiliate_category").val())){
-				alert("The category/tag name can not contain numbers");
-				return false;
-			} else if(hasWhiteSpace($("#affiliate_category").val())){
-				alert("The category/tag name can not contain spaces");
+			} else if(validateNames($("#affiliate_category").val())==false) {
+				alert("The category name can only contain letters and/or underscores. no spaces, ampersands or other URL incompatible characters");				
 				return false; 
 			} else {
 				//add it to the affiliate categories array			

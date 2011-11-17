@@ -24,7 +24,6 @@
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
 	
 	<script type="text/javascript">
-	
 		//this is used for swapping backgrounds on registration pages that pass in affiliate codes	
 		var affBgroundImage = "";
 	</script>
