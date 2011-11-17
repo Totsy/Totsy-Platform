@@ -40,11 +40,12 @@ class Affiliate extends Base {
 		return $formatted;
 	}
 
-	public static function effectiveCoReg($affiliate) {
+	public static function effectiveCoReg($name, $date, $affiliate) {
 	    $key = array('logincounter' => 1,"invited_by" => 1);
-        $condition = array(
-            "invited_by" => $affiliate
-            );
+	    $name = "";
+         extract( static::generateConditions(compact('name','date','affiliate')),EXTR_OVERWRITE);
+        $condition = $conditions;
+        var_dump($condition);
         $initial = array("count" => 0, "purchase_count" => 0);
         $reduce = "function (rec, prev){
             if (rec.logincounter == prev.logincounter) {

@@ -189,7 +189,7 @@ class ReportsController extends BaseController {
                     $results = Affiliate::bounceReport($name, $date, $affiliate);
                     break;
                 case 'Effective':
-                    $results = Affiliate::effectiveCoReg($affiliate);
+                    $results = Affiliate::effectiveCoReg($name, $date, $affiliate);
                     break;
 
 			}
