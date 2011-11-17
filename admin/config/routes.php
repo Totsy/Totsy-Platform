@@ -75,6 +75,22 @@ if ($session['admin'] && !isset($session['acls'])) {
 	Router::connect('/items/preview/{:event:[a-z0-9\-]+}/{:item:[a-z0-9\-]+}', 'Items::preview');
 	Router::connect('/items/removeItems/', 'Items::removeItems');
 
+Router::connect('/events/media-status/{:id:[a-z0-9\-]+}', 'Events::media_status');
+Router::connect('/banners/media-status/{:id:[a-z0-9\-]+}', 'Banners::media_status');
+Router::connect('/events/media_status/{:id:[a-z0-9\-]+}', 'Events::media_status');
+Router::connect('/banners/media_status/{:id:[a-z0-9\-]+}', 'Banners::media_status');
+
+Router::connect('/files', 'Files::index');
+Router::connect('/files/pending', 'Files::pending');
+Router::connect('/files/pending/{:on:[a-z0-9\-]+}', 'Files::pending');
+Router::connect('/files/orphaned', 'Files::orphaned');
+Router::connect('/files/delete/{:id:[0-9a-f]{24}}', 'Files::delete');
+Router::connect('/files/rename/{:id:[0-9a-f]{24}}', 'Files::rename');
+Router::connect('/files/associate/{:scope:(all|pending|orphaned)}', 'Files::associate');
+Router::connect('/files/associate/{:scope:(all|pending|orphaned)}/{:on:[a-z0-9\-]+}', 'Files::associate');
+Router::connect('/files/associate/{:id:[0-9a-f]{24}}', 'Files::associate');
+Router::connect('/files/upload/{:args}', 'Files::upload');
+
 	/**
 	 * ...and connect the rest of 'Pages' controller's urls.
 	 */
@@ -147,7 +163,6 @@ Router::connect('/users/accountStatus/{:args}', 'Users::accountStatus');
 /* Events */
 Router::connect('/events', 'Events::index');
 Router::connect('/select/event/{:args}', 'Base::selectEvent');
-Router::connect('/events/media-status/{:id:[a-z0-9\-]+}', 'Events::media_status');
 
 /* Items */
 Router::connect('/items/view/{:id:[a-z0-9\-]+}', 'Items::view');
