@@ -23,6 +23,7 @@ class AffiliatesController extends BaseController {
 	* @see app/models/Invitation::linkUpInvites()
 	**/
 	public function registration($code = NULL) {
+			
 		$success = false;
 		$message = '';
 		$errors = '';
@@ -111,7 +112,40 @@ class AffiliatesController extends BaseController {
 	*   @params $affiliate
 	**/
 	public function register($affiliate = NULL) {
+		ini_set("display_errors", 1);
+		
+		//affiliate category name
+		$categoryName = "";
+		//affiliate name
+		$affiliateName = "";
+		//for affiliate background images
+		$affBgroundImage = "";
+		
+		if (isset($this->request->query['a']) || preg_match('/^[a-z_]+$/', $this->request->query['a'])) {
+		
+       		$categoryName = trim($this->request->params['args'][1]);
+			$affiliateName = trim($this->request->params['args'][0]); 
+			$backgroundImage = "";
+			
+			$affiliate = $affiliateName;
+							
+			$getAff = Affiliate::find('first',
+				array('conditions' => array(
+					'name'=> $affiliateName)
+			));
+			
+			foreach($getAff['category'] as $record=>$value) {
+				$catRecord = $value->data();
+				
+				if($catRecord['name']==$categoryName){
+					$affBgroundImage = $catRecord['background_image'];
+					break;
+				}	
+			}			
+		}
+				
 		$pdata = $this->request->data;
+		
 		$message = false;
 		$user = User::create();
 		$urlredirect = '/sales';
@@ -189,8 +223,9 @@ class AffiliatesController extends BaseController {
 				}
 			}
 		}
+				
 		$this->_render['layout'] = 'login';
-		return compact('message', 'user', 'userfb');
+		return compact('message', 'user', 'userfb','categoryName','affiliateName','affBgroundImage','affiliateName');
 	}
 }
 ?>

@@ -1,6 +1,9 @@
 <?=$this->html->script('jquery-1.4.2.min.js');?>
 <?=$this->html->script('jquery.dataTables.js');?>
+<?=$this->html->script('TableTools.min.js');?>
+<?=$this->html->script('ZeroClipboard.js');?>
 <?=$this->html->style('table');?>
+<?=$this->html->style('TableTools');?>
 
 <div class="grid_16">
 	<h2 id="page-heading"> Affiliates</h2>
@@ -53,3 +56,14 @@
         </tbody>
     </table>
 </div>
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function() {
+		TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
+		$('#codeSummary').dataTable({
+			"sDom": 'T<"clear">lfrtip',
+			'bLengthChange' : false,
+			"bPaginate": false
+		}
+		);
+	} );
+</script>
