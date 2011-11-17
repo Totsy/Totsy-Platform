@@ -26,7 +26,7 @@ padding: 4px 0 0 22px;
 font-size:16px; color:#999999; font-weight:normal;
 }
 
-.rollover_img {
+div.rollover_img {
 width: 108px;
 height: 108px;
 background-image: url(/img/freeShip-badge.png);
@@ -44,6 +44,7 @@ text-decoration: none;
 .rollover_img a:hover {
 width: 108px;
 height: 108px;
+background-image: url(/img/freeShip-badge_hover.png);
 }
 
 .rollover_img a span {
@@ -80,7 +81,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 }
 </style>
 <div class="container_16 round_clear pushy" style="width:720px; height:450px; float:left; margin:85px 0px 0px 85px;">
-<div class="round gradient"  style="background:#ffffff; height:430px;">
+<div class="round gradient"  style="background:#ffffff; height:422px;">
 
 
 
