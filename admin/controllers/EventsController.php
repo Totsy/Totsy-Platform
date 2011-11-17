@@ -160,7 +160,6 @@ class EventsController extends BaseController {
 
 				//set total quant
 				$oitem['total_quantity'] = (int)$total_quantity_new;
-				
 				//set new price
 				if($item_price_new){
 					unset($oitem['sale_retail']);

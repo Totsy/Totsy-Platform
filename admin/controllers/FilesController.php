@@ -8,6 +8,8 @@ use admin\models\EventImage;
 use admin\models\Event;
 use admin\models\Item;
 use admin\models\ItemImage;
+use admin\models\Banner;
+use admin\models\BannerImage;
 
 /**
  * This controller works with SWFUpload to provide flash/javascript
@@ -87,9 +89,12 @@ class FilesController extends \lithium\action\Controller {
 			if ($file->event_id) {
 				$meta += array('event_id' => $file->event_id);
 			}
+			if ($file->banner_id) {
+				$meta += array('banner_id' => $file->banner_id);
+			}
 			$bytes = $file->file->getBytes();
 
-			if (EventImage::process($bytes, $meta) || ItemImage::process($bytes, $meta)) {
+			if (EventImage::process($bytes, $meta) || ItemImage::process($bytes, $meta) || BannerImage::process($bytes, $meta)) {
 				/* This implicitly moves it into the "orphaned" state. */
 				if (!$file->save(array('pending' => false))) {
 					$result = false;
@@ -142,11 +147,18 @@ class FilesController extends \lithium\action\Controller {
 						$meta['event_id'] = $this->request->data['event_id'];
 					}
 					
+					if(isset($this->request->data['banner_id'])) {
+						$meta['banner_id'] = $this->request->data['banner_id'];
+					}
+					
 					if (EventImage::process($handle, $meta)) {
 						Logger::debug("File `{$file['name']}` matched & processed as event image.");
 
 					} elseif (ItemImage::process($handle, $meta)) {
 						Logger::debug("File `{$file['name']}` matched & processed as item image.");
+
+					//} elseif (BannerImage::process($handle, $meta)) {
+					//	Logger::debug("File `{$file['name']}` matched & processed as banner image.");
 
 					} else { /* All unmatched files are not resized and saved as pending. */
 						File::write($handle, $meta + array('pending' => true));
