@@ -29,7 +29,7 @@
 	</div>
 
 	<div style="float:right">
-	<?=$this->form->text('password', array('class' => "validate['required'] inputbox", 'style' => 'width:228px', 'id' => 'password', 'type' => 'password')); ?>
+	<?=$this->form->password('password', array('class' => "validate['required'] inputbox", 'style' => 'width:228px', 'id' => 'password', 'type' => 'password')); ?>
 	</div>
 
 	<?=$this->form->error('password'); ?>
