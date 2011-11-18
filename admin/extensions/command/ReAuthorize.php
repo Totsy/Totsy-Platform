@@ -63,8 +63,10 @@ class ReAuthorize extends \lithium\console\Command {
 				if(!empty($order['auth_records'])) {
 					$lastDate = $order['date_created'];
 					foreach($order['auth_records'] as $record) {
-						if($lastDate->sec < $record['date_saved']->sec) {
-							$lastDate = $record['date_saved'];
+						if(empty($record['error'])) {
+							if($lastDate->sec < $record['date_saved']->sec) {
+								$lastDate = $record['date_saved'];
+							}
 						}
 					}
 					if($lastDate->sec <= $limitDate) {
@@ -122,6 +124,11 @@ class ReAuthorize extends \lithium\console\Command {
 										'order_id' => $order['order_id'], 
 										'authKey' => $order['authKey'], 
 										'total' => $order['total']
+								);
+								$errorRecord = array('error' => $e->getMessage(), 'type' => 'authorize', 'date_saved' => new MongoDate());
+								$update = $ordersCollection->update(
+										array('_id' => $order['_id']),
+										array('$push' => array('auth_records' => $errorRecord)), array( 'upsert' => true)
 								);
 							}
 						}
