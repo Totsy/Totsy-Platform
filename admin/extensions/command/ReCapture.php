@@ -40,13 +40,6 @@ class ReCapture extends \lithium\console\Command {
 	public $ordersIdFile = "capture_errors.csv";
 	
 	/**
-	 * Set How Old Can Be the Auth.Key to be replaced
-	 *
-	 * @var string
-	 */
-	public $expiration = 8;
-	
-	/**
 	 * Instances
 	 */
 	public function run() {
