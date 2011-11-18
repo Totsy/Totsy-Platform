@@ -30,7 +30,7 @@ class Banner extends Base {
 	}
 
 	public function attachImage($entity, $name, $id) {
-	    Logger::debug("Getting ready to attach image to image");
+	    Logger::debug("Getting ready to attach images");
 		$id = (string)$id;
 		$type = BannerImage::$types[$name];
 		$key = array_keys($type);

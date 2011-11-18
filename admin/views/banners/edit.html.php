@@ -3,19 +3,13 @@
 <?=$this->html->script('jquery-1.4.2');?>
 <?=$this->html->script('jquery-dynamic-form.js');?>
 <?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
-<?=$this->html->script('swfupload.js');?>
-<?=$this->html->script('swfupload.queue.js');?>
 <?=$this->html->script('fileprogress.js');?>
 <?=$this->html->script('handlers.js');?>
-<?=$this->html->script('banner_upload.js');?>
-<?=$this->html->style('swfupload')?>
 <?=$this->html->style('jquery_ui_blitzer.css')?>
 <?=$this->html->script('jquery.dataTables.js');?>
 <?=$this->html->style('table');?>
 <?=$this->html->script('jquery-ui-timepicker.min.js');?>
 <?=$this->html->style('timepicker'); ?>
-<?=$this->html->script('jquery.countdown.min');?>
-<?=$this->html->style('jquery.countdown');?>
 <?=$this->html->script('jquery.maskedinput-1.2.2')?>
 
 <?=$this->html->script('jquery.flash.min.js')?>
@@ -158,7 +152,7 @@ tinyMCE.init({
 				</div>
 
 				<br>
-			<?=$this->form->submit('Update banner')?>
+
 		</div>
 		<div id="banner_images">
 			<h3 id="current_images">Current Images</h3>
@@ -206,14 +200,13 @@ tinyMCE.init({
                     </tr>
 				<?php endforeach;?>
 				</table>
-<?=$this->form->end(); ?>
 
 			<h3 id="uploaded_media">Uploaded Media</h3>
             <hr />
 					<h2>Upload via Form</h2>
 					<form id="BannerMedia">
 						<?php
-							// Without this banner_id being passed along with the files,
+							// Without this banner_id being passxed along with the files,
 							// Item images could not be saved.
 						?>
 						<input type="hidden" name="banner_id" value="<?=$banner->_id?>" />
@@ -251,35 +244,15 @@ tinyMCE.init({
 						Start Upload <?=$this->html->image('agile_uploader/upload-icon.png', array('height' => '24')); ?>
 					</a>
 				</div>
+				<?=$this->form->submit('Update banner')?>
+					 <?=$this->form->end(); ?>
 			</div>
 
 			<div class="clear"></div>
-			<?=$this->view()->render(array('element' => 'files_pending'), array('item' => $banner)); ?>
 		</div>
 		<!-- End Tab -->
-
-		<!-- Start Tab -->
-		<div id="banner_media_status">
-			<div class="actions">
-				<?=$this->html->link('refresh', array(
-					'action' => 'media_status', 'id' => $banner->_id
-				), array(
-					'class' => 'refresh', 'target' => '#banner_media_status_data'
-				)); ?>
-			</div>
-			<p>
-				This tab show the status of media associated with the items of this banner.
-			</p>
-			<div id="banner_media_status_data"><!-- Populated through AJAX request. --></div>
-		</div>
-		<!-- End Tab -->
-		
-		
-		
-		
 
 			<br>
-			<?=$this->form->submit('Update banner')?>
 		</div>
 	</div>
 
