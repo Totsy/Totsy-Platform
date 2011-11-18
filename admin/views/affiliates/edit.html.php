@@ -273,7 +273,8 @@ $(document).ready(function() {
 				$('#pixel_panel').hide();
 			}
 		});
-
+		
+		/*
 		$('input[name=active_landing]').change(function(){
 			if( $('#ActiveLanding:checked').val() == 1){
 				$('#landing_panel').show();
@@ -281,6 +282,7 @@ $(document).ready(function() {
 				$('#landing_panel').hide();
 			}
 		});
+		*/
 	});
 	
 	$(document).ready( function() {
@@ -391,9 +393,7 @@ $(document).ready(function() {
 			var newPixelDiv = $(document.createElement("div")).attr("id", "pixel_"+counter);
 
 			newPixelDiv.html(unescape("<label> Pixel #" +counter + "</label> <br> Enable:"+
-				'<?=$this->form->checkbox("pixel['+(counter-1)+'][enable]", array("value"=>"1", "checked"=>"checked")); ?> <br> Select:'+
-				'<?=$this->form->select("pixel['+(counter-1)+'][page]", $sitePages, array("multiple"=>"multiple", "size"=>5)); ?><br> Pixel<br>'+
-				'<?=$this->form->textarea("pixel['+(counter-1)+'][pixel]", array("rows"=>"5")); ?>'
+				'<?=$this->form->checkbox("pixel['+(counter-1)+'][enable]", array("value"=>"1", "checked"=>"checked")); ?>' + '<?=$this->form->textarea("pixel['+(counter-1)+'][pixel]", array("rows"=>"5")); ?>'
 				));
 			newPixelDiv.appendTo('#pixel_panel');
 			counter++;

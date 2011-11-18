@@ -21,7 +21,10 @@
 	};
 })(jQuery);
 </script>
-	<h2 class="page-title gray"><span class="_red">Today's Sales</span></h2>
+	<h2 class="page-title gray">
+		<span class="_red">Today's Sales</span>
+	</h2>
+	
 	<hr />
 		<!--Disney -->
 <!--	<div class="disney disney_splash">
