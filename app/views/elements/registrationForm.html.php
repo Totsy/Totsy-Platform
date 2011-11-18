@@ -1,26 +1,3 @@
-<script type="text/javascript"> 
-  function setIframe() {
-    var tiframe = document.getElementById('psm').innerHTML = '<iframe src="/static/signup-tracking.html" style="border:none;width:1px;height:1px;" marginheight="0" marginwidth="0" frameborder="0"></iframe>';
-	setTimeout ( "pauseFunction()", 2000 );
-<?php
-	if (preg_match('/facebookshoes/',$_SERVER['REQUEST_URI'])) {
-?>
-  	var fbshoesiframe = document.getElementById('fbshoes').innerHTML = '<iframe src="/static/facebookshoes-tracking.html" style="border:none;width:1px;height:1px;" marginheight="0" marginwidth="0" frameborder="0"></iframe>';
-<?php
-	}
-?>
-	return true;
-  } 
-
-function pauseFunction ( )
-{
-  return true;
-}
-  
-</script>
-
-
-
 <h2 style="margin-bottom:20px;">Join with Facebook</h2>
 <a href="javascript:;" onclick="fblogin();return false;"><img src="/img/sign_in_fb.png" class="fr"></a>
 <br />
@@ -145,3 +122,25 @@ function pauseFunction ( )
 }
   
 </script>
+
+<?php
+	if (preg_match('/facebookshoes/',$_SERVER['REQUEST_URI'])) {
+?>
+<!-- begin Marin Software Tracking Script -->
+<script type='text/javascript'>
+    var _mTrack = _mTrack || [];
+    _mTrack.push(['trackPage']);
+
+    (function() {
+        var mClientId = '1146r8p12266';
+        var mProto = ('https:' == document.location.protocol ? 'https://' : 'http://');
+        var mHost = 'pro.marinsm.com';
+        var mt = document.createElement('script'); mt.type = 'text/javascript'; mt.async = true;
+        mt.src = mProto + mHost + '/tracker/async/' + mClientId + '.js';
+        var fscr = document.getElementsByTagName('script')[0]; fscr.parentNode.insertBefore(mt, fscr);
+    })();
+</script>
+<!-- end Copyright Marin Software -->
+<?php
+	}
+?>
