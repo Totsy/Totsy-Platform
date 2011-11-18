@@ -65,10 +65,10 @@ class EventsController extends BaseController {
 
 		//loop thru form-created array to create an skus array, and a quantity array with the skus as keys
 		foreach($fullarray as $item_sku_quantity){
-			$current_sku = $item_sku_quantity[0];
+			$current_sku = trim($item_sku_quantity[0]);
 			$items_skus[] = $current_sku;
-			$items_quantities[$current_sku] = $item_sku_quantity[1];
-			$items_prices[$current_sku] = $item_sku_quantity[2];
+			$items_quantities[$current_sku] = trim($item_sku_quantity[1]);
+			$items_prices[$current_sku] = trim($item_sku_quantity[2]);
 		}
 
 		//mongo query, find all items with skus
@@ -117,7 +117,7 @@ class EventsController extends BaseController {
 						//echo "<br> * update quantity to " . $items_quantities[$sku_details];
 
 						//use index to update quantity
-						$oitem['details'][$sku_details_key] = $items_quantities[$sku_details];
+						$oitem['details'][$sku_details_key] = (int)$items_quantities[$sku_details];
 
 						//use index to get new price
 						$item_price_new = $items_prices[$sku_details];
@@ -153,7 +153,7 @@ class EventsController extends BaseController {
 				$newItem = Item::create();
 
 				//set total quant
-				$oitem['total_quantity'] = $total_quantity_new;
+				$oitem['total_quantity'] = (int)$total_quantity_new;
 				
 				//set new price
 				$oitem['sale_retail'] = floatval($item_price_new);
