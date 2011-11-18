@@ -70,7 +70,7 @@ class Events extends \lithium\template\Helper {
 			$eventList = $eventRecords->data();
 			$html = '';
 			$html .= '<table id="itemTable" class="datatable" border="1">';
-			$html .=  '<thead>'; 
+			$html .=  '<thead>';
 			$html .= '<tr>';
 			foreach ($heading as $value){
 				$html .=  "<th>$value</th>";
@@ -83,7 +83,7 @@ class Events extends \lithium\template\Helper {
 				$html .= "<tr id=$event[_id]>";
 				foreach ($orderedDetails as $key => $value) {
 					if ($key == 'start_date' || $key == 'end_date') {
-						$value = date('M-d-Y', $value['sec']);
+						$value = date('M-d-Y', $value);
 					}
 					if ($options['type'] == 'logistics') {
 						$html .= "<td>$value</td>";
