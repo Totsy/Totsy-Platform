@@ -1,4 +1,4 @@
-<?=$this->html->script(array('tiny_mce/tiny_mce.js', 'swfupload.js', 'swfupload.queue.js', 'fileprogress.js', 'handlers.js', 'banner_upload.js', 'jquery.dataTables.js', 'jquery-ui-timepicker.min.js'));?>
+<?=$this->html->script(array('tiny_mce/tiny_mce.js', 'fileprogress.js', 'handlers.js', 'jquery.dataTables.js', 'jquery-ui-timepicker.min.js'));?>
 <?=$this->html->style(array('swfupload', 'jquery_ui_blitzer', 'table', 'timepicker'));?>
 
 <?=$this->html->script('jquery.flash.min.js')?>
@@ -92,7 +92,8 @@ tinyMCE.init({
 </div>
 <div id="banner_note">
 	<p>
-		This panel is for creating new banners that will go up that day.
+		This panel is for creating new banners that will go up the day.
+		1) Upload the images first and then
 	</p>
 </div>
 <h2 id="banner_description">Banner Description</h2>
@@ -101,10 +102,10 @@ tinyMCE.init({
 							// Without this banner_id being passed along with the files,
 							// Item images could not be saved.
 						?>
-						<input type="hidden" name="banner_id" value="<?=$banner->_id?>" />
+						<input type="hidden" name="banner_id" value="<?=$prospective_id?>" />
 					</form>
 
-<?=$this->form->create('', array('enctype' => "multipart/form-data")); ?>
+<?=$this->form->create('', array('id' => 'banner_form' ,'enctype' => "multipart/form-data")); ?>
     <?=$this->form->field('name', array('class' => 'general'));?>
 	<div id="banner_status">
 		<h2 id="banner_status">Banner Status</h2>
@@ -120,17 +121,17 @@ tinyMCE.init({
 					<div id="agile_file_upload"></div>
 					<script type="text/javascript">
 						$('#agile_file_upload').agileUploader({
-							flashSrc: '<?=$this->url('/swf/agile-uploader.swf'); ?>',
-							submitRedirect: '<?=$this->url('/banners/edit/4eb992a0c24efcbd7e000610'); ?>',
+							flashSrc: "<?=$this->url('/swf/agile-uploader.swf'); ?>",
+							submitRedirect: '<?=$this->url("/banners/edit/$prospective_id"); ?>',
 							formId: 'BannerMedia',
 							flashWidth: 70,
-							removeIcon: '<?=$this->url('/img/agile_uploader/trash-icon.png'); ?>',
+							removeIcon: "<?=$this->url('/img/agile_uploader/trash-icon.png'); ?>",
 							flashVars: {
-								button_up: '<?=$this->url('/img/agile_uploader/add-file.png?v=1'); ?>',
-								button_down: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
-								button_over: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
+								button_up: "<?=$this->url('/img/agile_uploader/add-file.png?v=1'); ?>",
+								button_down: "<?=$this->url('/img/agile_uploader/add-file.png'); ?>",
+								button_over: "<?=$this->url('/img/agile_uploader/add-file.png'); ?>",
 								//form_action: $('#bannerEdit').attr('action'),
-								form_action: '<?=$this->url('/files/upload/all'); ?>',
+								form_action: "<?=$this->url('/files/upload/all'); ?>",
 								file_limit: 30,
 								max_height: '1000',
 								max_width: '1000',
@@ -145,7 +146,7 @@ tinyMCE.init({
 					<a
 						href="#"
 						class="upload_files_link"
-						onClick="document.getElementById('agileUploaderSWF').submit();"
+						onClick="BeforeSubmit()"
 					>
 						Start Upload <?=$this->html->image('agile_uploader/upload-icon.png', array('height' => '24')); ?>
 					</a>
@@ -156,33 +157,20 @@ tinyMCE.init({
 			<?=$this->view()->render(array('element' => 'files_pending'), array('item' => $banner)); ?>
 		</div>
 		<!-- End Tab -->
+	<?=$this->form->submit('Add Banner')?>
+<?=$this->form->end(); ?>
 
-		<!-- Start Tab -->
-		<div id="banner_media_status">
-			<div class="actions">
-				<?=$this->html->link('refresh', array(
-					'action' => 'media_status', 'id' => '4eb992a0c24efcbd7e000610'
-				), array(
-					'class' => 'refresh', 'target' => '#banner_media_status_data'
-				)); ?>
-			</div>
-			<p>
-				This tab show the status of media associated with the items of this banner.
-			</p>
-			<div id="banner_media_status_data"><!-- Populated through AJAX request. --></div>
-		</div>
-		<!-- End Tab -->
+<script>
+	function BeforeSubmit(){
+		var bannerName = $("input:text[name='name']").val();
+		var enddate = $("input:text[name='end_date']").val();
+		var publish = $("input:text[name='enabled']").val();
+		var banner_id = '<?=$prospective_id?>';
+		var url = "<?=$this->url('/banners/add'); ?>";
+		$.post(url,{name:bannerName,end_date:enddate,enabled:publish,banner_id:banner_id},function(data){
+		    alert("yay!");
+		    document.getElementById('agileUploaderSWF').submit();
+		});
 
-
-
-
-
-	<br>
-
-	<br>
-
-				<?=$this->form->hidden('id', array('value' => '4eb992a0c24efcbd7e000610')); ?>
-
-	<br>
-	<?php echo $this->form->submit('Add Banner')?>
-<?php echo $this->form->end(); ?>
+	}
+</script>

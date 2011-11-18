@@ -223,7 +223,6 @@ class UsersController extends \admin\controllers\BaseController {
                 $collection->update(
                     array('_id' => $id),
                     array(
-                        '$unset'=>array('reactivate_date' => 1),
                         '$set'=>array(
                             'deactivated' => true,
                             'deactivated_date' => $date
