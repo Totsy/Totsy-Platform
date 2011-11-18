@@ -138,6 +138,7 @@ class FilesController extends \lithium\action\Controller {
 	 * @return array
 	 */
 	public function upload($type = null) {
+
 		switch (strtolower($type)) {
 			case 'all':
 			case 'event':
@@ -153,6 +154,7 @@ class FilesController extends \lithium\action\Controller {
 				} else {
 					$files = array(0 => $this->request->data['Filedata']);
 				}
+
 				foreach ($files as $file) {
 					$handle = fopen($file['tmp_name'], 'rb');
 					$meta = array('name' => $file['name']);
