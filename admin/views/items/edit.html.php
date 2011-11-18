@@ -84,7 +84,19 @@ tinyMCE.init({
 							<input type="radio" name="enabled" value="0" id="enabled" checked> Disable Item
 						<?php endif ?>
 					</div>
-					<div id="item_tax">
+					<div id="item_miss_christmas">
+						<h2 id="item_status">Xmas Shipping Status</h2>
+						<?php if ($item->miss_christmas == 1): ?>
+							<p>Will item/product ship for Christmas?</p><br>
+							<input type="radio" name="miss_christmas" value="0" id="enabled"> Yes, ships before 12.23 <br>
+							<input type="radio" name="miss_christmas" value="1" id="enabled" checked> NO AFTER XMAS
+						<?php else: ?>
+							<p>Will item/product ship for Christmas?</p><br>
+							<input type="radio" name="miss_christmas" value="0" id="enabled" checked> Yes, ships before 12.23 <br>
+							<input type="radio" name="miss_christmas" value="1" id="enabled"> NO AFTER XMAS
+						<?php endif ?>
+					</div>
+						<div id="item_tax">
 						<h2 id="item_tax">Item Tax</h2>
 						<?php if ($item->taxable == 1): ?>
 							<input type="radio" name="taxable" value="1" id="taxable" checked> Taxable Item <br>
