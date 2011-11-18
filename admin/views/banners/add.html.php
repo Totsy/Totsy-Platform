@@ -93,7 +93,6 @@ tinyMCE.init({
 <div id="banner_note">
 	<p>
 		This panel is for creating new banners that will go up the day.
-		1) Upload the images first and then
 	</p>
 </div>
 <h2 id="banner_description">Banner Description</h2>
@@ -154,7 +153,7 @@ tinyMCE.init({
 			</div>
 
 			<div class="clear"></div>
-			<?=$this->view()->render(array('element' => 'files_pending'), array('item' => $banner)); ?>
+
 		</div>
 		<!-- End Tab -->
 	<?=$this->form->submit('Add Banner')?>
@@ -166,8 +165,7 @@ tinyMCE.init({
 		var enddate = $("input:text[name='end_date']").val();
 		var publish = $("input:text[name='enabled']").val();
 		var banner_id = '<?=$prospective_id?>';
-		var url = "<?=$this->url('/banners/add'); ?>";
-		$.post(url,{name:bannerName,end_date:enddate,enabled:publish,banner_id:banner_id},function(data){
+		var url = "<?=$this->url('/banners/add'); ?>";$.post(url,{name:bannerName,end_date:enddate,enabled:publish,banner_id:banner_id},function(data){
 		    alert("yay!");
 		    document.getElementById('agileUploaderSWF').submit();
 		});
