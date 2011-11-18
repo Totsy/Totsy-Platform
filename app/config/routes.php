@@ -91,9 +91,11 @@ Router::connect('/checkout/review', 'Orders::review');
 /**
  * Redirect all non-authenticated users to
 */
+Router::connect('/login', 'Users::login');
+
 if(!Session::check('userLogin')) {
-	Router::connect('/', 'Users::login');
-	Router::connect('/{:args}', 'Users::login');
+	Router::connect('/', 'Users::register');
+	Router::connect('/{:args}', 'Users::register');
 	return;
 }
 
