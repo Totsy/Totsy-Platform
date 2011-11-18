@@ -2425,11 +2425,30 @@ ol#order-details h4 {
 /* end of cart */
 
 /* start of rewards */
-
 #rewards-enrollment-banner {
-	background-image:url(../img/rewards_enrollment_banner.png) no-repeat center center;
-	height: 200px;
-	width: 800px;
+	background-image:url(../img/rewards_enrollment_banner.png);
+	height: 220px;
+	width: 950px;
+	z-index: 999999999999;
+}
+
+#rewards-enroll-now-button-inner {
+	font-size:15px; 
+	width: 175px; 
+	display: table-cell;
+	margin-left: 30px !important;
+	vertical-align: middle; 
+	width: auto; 
+	text-align: center;
+}
+
+
+#rewards-enroll-now-button-outer {
+	height: 220px; 
+	width: 270px; 
+	float:right; 
+	margin: 0px 0px 0px 0px;
+	display: table;
 }
 
 /* end of rewards*/
