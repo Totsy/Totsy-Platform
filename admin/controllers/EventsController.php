@@ -66,10 +66,10 @@ class EventsController extends BaseController {
 
 		//loop thru form-created array to create an skus array, and a quantity array with the skus as keys
 		foreach($fullarray as $item_sku_quantity){
-			$current_sku = $item_sku_quantity[0];
+			$current_sku = trim($item_sku_quantity[0]);
 			$items_skus[] = $current_sku;
-			$items_quantities[$current_sku] = $item_sku_quantity[1];
-			$items_prices[$current_sku] = $item_sku_quantity[2];
+			$items_quantities[$current_sku] = trim($item_sku_quantity[1]);
+			$items_prices[$current_sku] = trim($item_sku_quantity[2]);
 		}
 
 		//mongo query, find all items with skus
@@ -155,7 +155,6 @@ class EventsController extends BaseController {
 
 				//set total quant
 				$oitem['total_quantity'] = (int)$total_quantity_new;
-
 				//set new price
 				$oitem['sale_retail'] = floatval($item_price_new);
 
@@ -256,7 +255,6 @@ class EventsController extends BaseController {
 
 		#T Get all possibles value for the multiple departments select
 		$result = Item::getDepartments();
-		$sel_filters = array();
 		$all_filters = array();
 		foreach ($result['values'] as $value) {
 			if($value&&$value!=" "){
@@ -267,21 +265,6 @@ class EventsController extends BaseController {
 			}
 		}
 
-		foreach ($eventItems as $this_item){
-			if($this_item->departments){
-				$values = $this_item->departments->data();
-			}
-			foreach ($values as $value) {
-				if($value&&$value!=" "){
-					$sel_filters[$value] = $value;
-				}
-			}
-
-		}
-
-		$sel_filters = array_unique($sel_filters);
-
-		#END T
 		if (empty($event)) {
 			$this->redirect(array('controller' => 'events', 'action' => 'add'));
 		}
@@ -390,7 +373,6 @@ class EventsController extends BaseController {
 			// End of Comparison of OLD Event Attributes and NEW event attributes
 
 			if ($event->save($eventData)) {
-
 				$this->redirect(array(
 						'controller' => 'events', 'action' => 'edit',
 						'args' => array($event->_id)
@@ -424,7 +406,7 @@ class EventsController extends BaseController {
 			}
 		}
 
-		return compact('event', 'eventItems', 'items', 'all_filters', 'sel_filters', 'shortDescLimit');
+		return compact('event', 'eventItems', 'items', 'all_filters', 'shortDescLimit');
 	}
 
 	public function preview($_id = null) {

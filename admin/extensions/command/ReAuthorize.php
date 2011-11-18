@@ -30,7 +30,7 @@ class ReAuthorize extends \lithium\console\Command {
 	 *
 	 * @var string
 	 */
-	public $expiration = 7;
+	public $expiration = 8;
 	
 	/**
 	 * Instances
@@ -46,11 +46,12 @@ class ReAuthorize extends \lithium\console\Command {
 		$errors = 0;
 		$updated = 0;	
 		#Limit to +7 days Old Authkey
-		$limitDate = mktime(0, 0, 0, date("m"), date("d") - $expiration, date("Y"));
+		$limitDate = mktime(0, 0, 0, date("m"), date("d") - $this->expiration, date("Y"));
 		#Get All Orders with Auth Date >= 7days, Not Void Manually or Shipped
 		$conditions = array('void_confirm' => array('$exists' => false),
 							'auth_confirmation' => array('$exists' => false),
 							'authKey' => array('$exists' => true),
+							'card_type' => 'amex',
 							'cc_payment' => array('$exists' => true),
 							'date_created' => array('$lte' => new MongoDate($limitDate))
 		);
@@ -62,8 +63,10 @@ class ReAuthorize extends \lithium\console\Command {
 				if(!empty($order['auth_records'])) {
 					$lastDate = $order['date_created'];
 					foreach($order['auth_records'] as $record) {
-						if($lastDate->sec < $record['date_saved']->sec) {
-							$lastDate = $record['date_saved'];
+						if(empty($record['error'])) {
+							if($lastDate->sec < $record['date_saved']->sec) {
+								$lastDate = $record['date_saved'];
+							}
 						}
 					}
 					if($lastDate->sec <= $limitDate) {
@@ -89,50 +92,43 @@ class ReAuthorize extends \lithium\console\Command {
 							try {
 								#Save Old AuthKey with Date
 								$newRecord = array('authKey' => $order['authKey'], 'date_saved' => new MongoDate());
-								#Cancel Previous Transaction
-								$authVoid = Payments::void('default', $order['authKey']);
-								try {
-									#Create Card and Check Billing Infos
-									$card = Payments::create('default', 'creditCard', $creditCard + array(
-										'billing' => Payments::create('default', 'address', array(
-											'firstName' => $order['billing']['firstname'],
-											'lastName'  => $order['billing']['lastname'],
-											'address'   => trim($order['billing']['address'] . ' ' . $order['billing']['address2']),
-											'city'      => $order['billing']['city'],
-											'state'     => $order['billing']['state'],
-											'zip'       => $order['billing']['zip'],
-											'country'   => $order['billing']['country']
-									))
-									));
-									#Create a new Transaction and Get a new Authorization Key
-									$auth = Payments::authorize('default', $order['total'], $card);
-									#Setup new AuthKey
-									$update = $ordersCollection->update(
-											array('_id' => $order['_id']),
-											array('$set' => array('authKey' => $auth)), array( 'upsert' => true)
-									);
-									#Add to Auth Records Array
-									$update = $ordersCollection->update(
-											array('_id' => $order['_id']),
-											array('$push' => array('auth_records' => $newRecord)), array( 'upsert' => true)
-									);
-									$updated++;
-								} catch (TransactionException $e) {
-									$errors++;
-									$report['authorize_errors'][] = array(
-										'error_message' => $e->getMessage(), 
-										'order_id' => $order['order_id'], 
-										'authKey' => $order['authKey'], 
-										'total' => $order['total']
-									);
-								}
+								#Create Card and Check Billing Infos
+								$card = Payments::create('default', 'creditCard', $creditCard + array(
+									'billing' => Payments::create('default', 'address', array(
+										'firstName' => $order['billing']['firstname'],
+										'lastName'  => $order['billing']['lastname'],
+										'address'   => trim($order['billing']['address'] . ' ' . $order['billing']['address2']),
+										'city'      => $order['billing']['city'],
+										'state'     => $order['billing']['state'],
+										'zip'       => $order['billing']['zip'],
+										'country'   => $order['billing']['country']
+								))
+								));
+								#Create a new Transaction and Get a new Authorization Key
+								$auth = Payments::authorize('default', $order['total'], $card);
+								#Setup new AuthKey
+								$update = $ordersCollection->update(
+										array('_id' => $order['_id']),
+										array('$set' => array('authKey' => $auth)), array( 'upsert' => true)
+								);
+								#Add to Auth Records Array
+								$update = $ordersCollection->update(
+										array('_id' => $order['_id']),
+										array('$push' => array('auth_records' => $newRecord)), array( 'upsert' => true)
+								);
+								$updated++;
 							} catch (TransactionException $e) {
 								$errors++;
-								$report['void_errors'][] = array(
+								$report['authorize_errors'][] = array(
 										'error_message' => $e->getMessage(), 
 										'order_id' => $order['order_id'], 
 										'authKey' => $order['authKey'], 
 										'total' => $order['total']
+								);
+								$errorRecord = array('error' => $e->getMessage(), 'type' => 'authorize', 'date_saved' => new MongoDate());
+								$update = $ordersCollection->update(
+										array('_id' => $order['_id']),
+										array('$push' => array('auth_records' => $errorRecord)), array( 'upsert' => true)
 								);
 							}
 						}
@@ -141,12 +137,15 @@ class ReAuthorize extends \lithium\console\Command {
 			}
 		}
 		#If Errors Send Email to Customer Service
-		if(!empty($report)) {
-			Mailer::send('ReAuth_Errors','searnest@totsy.com', $report);
-			Mailer::send('ReAuth_Errors','mruiz@totsy.com', $report);
-			Mailer::send('ReAuth_Errors','gene@totsy.com', $report);
-			Mailer::send('ReAuth_Errors','troyer@totsy.com', $report);
-		}
+		$report['total_updated'] = $updated;
+		$this->sendReport($report);
 		echo 'ReAuth Script Runned, ' . $updated . ' Orders Updated ' . $errors . ' Errors Found. ';
+	}
+	
+	public function sendReport($report) {
+		Mailer::send('ReAuth_Errors','searnest@totsy.com', $report);
+		Mailer::send('ReAuth_Errors','mruiz@totsy.com', $report);
+		Mailer::send('ReAuth_Errors','gene@totsy.com', $report);
+		Mailer::send('ReAuth_Errors','troyer@totsy.com', $report);
 	}
 }

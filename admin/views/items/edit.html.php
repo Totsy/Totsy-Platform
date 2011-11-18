@@ -32,7 +32,6 @@ tinyMCE.init({
 
 });
 </script>
-
 <div class="grid_16">
 	<h2>Editing Item <em><?=$item->description; ?></em> (<?=$item->vendor_style; ?>)</h2>
 </div>
@@ -83,7 +82,7 @@ tinyMCE.init({
 					));?>
 					<?=$this->form->label('Departments')?><br />
 					<table>
-						<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple','value' => $sel_filters)); ?> 
+						<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple','value' => $sel_filters)); ?>
 					</table>
 					<div id="item_status">
 						<h2 id="item_status">Item Status</h2>
@@ -98,7 +97,7 @@ tinyMCE.init({
 						<?php endif ?>
 					</div>
 					<div id="item_miss_christmas">
-						<h2 id="item_status">Item Status</h2>
+						<h2 id="item_status">Xmas Shipping Status</h2>
 						<?php if ($item->miss_christmas == 1): ?>
 							<p>Will item/product ship for Christmas?</p><br>
 							<input type="radio" name="miss_christmas" value="0" id="enabled"> Yes, ships before 12.23 <br>
@@ -219,6 +218,18 @@ tinyMCE.init({
 								</td>
 							</tr>
 						<?php endforeach ?>
+
+
+							<tr>
+								<td>
+									add a new size:
+								</td>
+								<td>
+									<?=$this->form->text("item_new_size");
+									?>
+								</td>
+							</tr>
+
 					</table>
 				</div>
 			<br>

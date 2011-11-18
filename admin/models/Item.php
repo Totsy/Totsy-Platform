@@ -39,7 +39,7 @@ class Item extends \lithium\data\Model {
 	public static function collection() {
 		return static::_connection()->connection->items;
 	}
-	
+
 	public static function getDepartments() {
 		return static::_connection()->connection->command(array('distinct'=>'items', 'key'=>'departments'));
 	}
@@ -219,6 +219,20 @@ class Item extends \lithium\data\Model {
 			));
 		}
 		return $results;
+	}
+	public static function calculateProductGross($items) {
+		if (empty($items)) return 0;
+
+		$gross = 0;
+		foreach($items as $item) {
+			$cancel = array_key_exists('cancel' , $item) && !$item['cancel'];
+			$cancel = $cancel || !array_key_exists('cancel' , $item);
+			if ($cancel) {
+				$gross += $item['quantity'] * $item['sale_retail'];
+			}
+		}
+
+		return $gross;
 	}
 }
 

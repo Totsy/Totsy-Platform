@@ -64,6 +64,7 @@ tinyMCE.init({
 	/* theme_advanced_button3:
 	 theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,charmap,iespell,advhr",
 	 theme_advanced_buttons4 : "spellchecker,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking,blockquote,pagebreak", */
+
 	theme_advanced_toolbar_location : "top",
 	theme_advanced_toolbar_align : "left",
 	theme_advanced_statusbar_location : "bottom",
@@ -323,13 +324,13 @@ $(function() {
 						));
 					?>
 				</div>
-				<?=$this->form->label('Departments'); ?><br />
+				<?=$this->form->label('Departments')?><br />
 
-
+				<?=$event->departments?>
 
 				<br><br>
-				<table>
-					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple','value' => $sel_filters)); ?>
+
+				<table>					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?>
 				</table>
 
 				<div id="tags">
@@ -395,8 +396,7 @@ $(function() {
 		<div id="event_items">
 			<h3 id="">Item Management</h3>
 			<hr />
-
-			<div style="width:300px; height:400px; float:left">
+			<div style="width:300px; height:500px; float:left">
 				<h3 id="">Upload Items</h3>
 	            <hr />
 				<p>Please select default option for all items uploaded:</p>
@@ -405,6 +405,9 @@ $(function() {
 				<p>Add "Final Sale" to the item description?:</p>
 					<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
 					<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
+				<p>Will item/product ship for Christmas?:</p>
+					<input type="radio" name="miss_christmas" value="0" id="miss_christmas" checked>Yes, ships before 12.23<br>
+					<input type="radio" name="miss_christmas" value="1" id="miss_christmas">NO AFTER XMAS<br><br>
 
 				<p>Will item/product ship for Christmas?:</p>
 					<input type="radio" name="miss_christmas" value="0" id="miss_christmas" checked>Yes, ships before 12.23<br>
@@ -456,8 +459,6 @@ $(function() {
 			<?=$this->form->end(); ?>
 
 			<br><br>
-
-
 			<h2 id="">Delete Items</h2>
 				<p>Click the button below to delete all items from this event. <strong>WARNING - This action cannot be undone. All items associated with this event will be deleted!!!!!!</strong></p>
 				<?=$this->form->create(null, array('url' => 'Items::removeItems', 'name' => 'item-delete')); ?>
