@@ -120,6 +120,7 @@ class FilesController extends \lithium\action\Controller {
 	 * @return array
 	 */
 	public function upload($type = null) {
+
 		switch (strtolower($type)) {
 			case 'all':
 			case 'event':
@@ -136,32 +137,35 @@ class FilesController extends \lithium\action\Controller {
 				} else {
 					$files = array(0 => $this->request->data['Filedata']);
 				}
+
 				foreach ($files as $file) {
 					$handle = fopen($file['tmp_name'], 'rb');
 					$meta = array('name' => $file['name']);
-					
+
 					// An event id may be passed along if the files are Item images.
 					// Item images can only be uploaded with a reference to the event id.
 					// Any item image uploaded without an event_id reference will not be saved.
 					if(isset($this->request->data['event_id'])) {
 						$meta['event_id'] = $this->request->data['event_id'];
 					}
-					
+
 					if(isset($this->request->data['banner_id'])) {
 						$meta['banner_id'] = $this->request->data['banner_id'];
 					}
-					
+
 					if (EventImage::process($handle, $meta)) {
 						Logger::debug("File `{$file['name']}` matched & processed as event image.");
 
-					} elseif (ItemImage::process($handle, $meta)) {
+					} else if (ItemImage::process($handle, $meta)) {
 						Logger::debug("File `{$file['name']}` matched & processed as item image.");
 
-					//} elseif (BannerImage::process($handle, $meta)) {
-					//	Logger::debug("File `{$file['name']}` matched & processed as banner image.");
-
+					} else if (BannerImage::process($handle, $meta)) {
+						Logger::debug("File `{$file['name']}` matched & processed as banner image.");
 					} else { /* All unmatched files are not resized and saved as pending. */
-						File::write($handle, $meta + array('pending' => true));
+						$file = File::write($handle, $meta + array('pending' => true));
+						$id = $file->_id;
+						$this->set(compact('id'));
+						Logger::debug("the file has id $id");
 						Logger::debug("Saving unmatched file `{$file['name']}` as pending.");
 
 					}

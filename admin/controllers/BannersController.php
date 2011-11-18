@@ -2,6 +2,7 @@
 
 namespace admin\controllers;
 
+use lithium\analysis\Logger;
 use admin\models\Banner;
 use admin\controllers\EventsController;
 use admin\models\Event;
@@ -25,63 +26,67 @@ class BannersController extends \lithium\action\Controller {
 
 	public function add() {
 		$banner = null;
-		if(!empty($this->request->data)){
-			$check = $this->check();
-			$banner = Banner::Create($this->request->data);
-			$banner->validates();
-			if ($check) {
-			    if(array_key_exists('enabled', $this->request->data)){
-                    $enable = (bool)$this->request->data['enabled'];
-                    $col = Banner::collection();
-                    $conditions = array('enabled' => $enable);
-                    if ($col->count($conditions) > 0) {
-                        $col->update($conditions, array(
-                            '$set' => array('enabled' => false)),
-                            array('multiple' => true)
-                        );
-                    }
-                }
-				$datas = $this->request->data;
-				//Treat Current Images
-				$images = $this->parseImages();
-				//Get Author Informations
-				$current_user = Session::read('userLogin');
-				$author = Banner::createdBy();
-				//Get end date
-				$seconds = ':'.rand(10,60);
-				$datas['end_date'] = new MongoDate(strtotime($datas['end_date'].$seconds));
-				//Check Enabled
-				if(!empty($datas['enabled'])) {
-					$enabled = true;
-				} else {
-					$enabled = false;
-				}
+		if (!$this->request->is('ajax')) {
+			$prospective_id = new MongoId();
+		}
 
-				//Create Datas Array
-				$bannerDatas = array(
-					"img" => $images,
-					"end_date" => $datas['end_date'],
-					"name" => $datas['name'],
-					'author' => $author,
-					'created_date' =>  new MongoDate(strtotime('now')),
-					'enabled' => $enabled
-				);
-				//Create and save the new banner
-				$banner = Banner::Create();
-				if ($banner->save($bannerDatas)) {
-					//$this->redirect(array('Banner::edit', 'args' => array($event->_id)));
-					FlashMessage::set("Your banner has been saved.", array('class' => 'pass'));
-					$this->redirect('Banners::view');
+		Logger::debug("In banners add functions");
+		if (!empty($this->request->data)) {
+			Logger::debug("data is not empty");
+			$key = array_keys($this->request->data);
+			$implode = implode(" ", $key);
+			Logger::debug($implode);
+		} else {
+			Logger::debug("data is empty");
+		}
+		if($this->request->is('ajax') && !empty($this->request->data)){
+
+			$banner = Banner::Create(array('_id' => new MongoId( $this->request->data['banner_id'])));
+			if(array_key_exists('enabled', $this->request->data)){
+				$enable = (bool)$this->request->data['enabled'];
+				$col = Banner::collection();
+				$conditions = array('enabled' => $enable);
+				if ($col->count($conditions) > 0) {
+					$col->update($conditions, array(
+						'$set' => array('enabled' => false)),
+						array('multiple' => true)
+					);
 				}
+			}
+			$datas = $this->request->data;
+			//Get Author Informations
+			$current_user = Session::read('userLogin');
+			$author = Banner::createdBy();
+			//Get end date
+			$seconds = ':'.rand(10,60);
+			$datas['end_date'] = new MongoDate(strtotime($datas['end_date'].$seconds));
+			//Check Enabled
+			if(!empty($datas['enabled'])) {
+				$enabled = true;
 			} else {
+				$enabled = false;
+			}
+
+			//Create Datas Array
+			$bannerDatas = array(
+				"end_date" => $datas['end_date'],
+				"name" => $datas['name'],
+				'author' => $author,
+				'created_date' =>  new MongoDate(strtotime('now')),
+				'enabled' => $enabled
+			);
+			Logger::debug("Saving banner data");
+			if ($banner->save($bannerDatas)) {
+				return $this->render(array(
+					'status' => true ? 200 : 500,
+					'head' => true,
+					'data' => array($success => true)
+				));
+			}else {
 				FlashMessage::set("You must fill all the requested informations", array('class' => 'warning'));
 			}
 		}
-		else{
-		//	$banner = array();
-		//	$banner['_id'] = new MongoId('');
-		}
-		return compact('banner');
+		return compact('banner','prospective_id');
 	}
 
 	public function media_status() {
