@@ -122,3 +122,25 @@ function pauseFunction ( )
 }
   
 </script>
+
+<?php
+	if (preg_match('/facebookshoes/',$_SERVER['REQUEST_URI'])) {
+?>
+<!-- begin Marin Software Tracking Script -->
+<script type='text/javascript'>
+    var _mTrack = _mTrack || [];
+    _mTrack.push(['trackPage']);
+
+    (function() {
+        var mClientId = '1146r8p12266';
+        var mProto = ('https:' == document.location.protocol ? 'https://' : 'http://');
+        var mHost = 'pro.marinsm.com';
+        var mt = document.createElement('script'); mt.type = 'text/javascript'; mt.async = true;
+        mt.src = mProto + mHost + '/tracker/async/' + mClientId + '.js';
+        var fscr = document.getElementsByTagName('script')[0]; fscr.parentNode.insertBefore(mt, fscr);
+    })();
+</script>
+<!-- end Copyright Marin Software -->
+<?php
+	}
+?>
