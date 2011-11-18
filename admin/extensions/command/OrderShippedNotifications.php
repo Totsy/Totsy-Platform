@@ -96,12 +96,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 				'$lt' => new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y"))) 
 			),
 			'OrderId' => array('$ne' => null),
-
-			// validate tracking number
-			//'Tracking #' => new MongoRegex("/^[1Z]{2}[A-Za-z0-9]+/i"),
-			// do not send notification if it already send
-			'emailNotificationSent' => array('$exists' => false)
-		);
+			'emailNotificationSent' => array('$exists' => false));
 		$results = $ordersShippedCollection->group($keys, $inital, $reduce, $conditions);
 		if (is_object($results) && get_class_name($results)=='MongoCursor'){
 			Logger::info('Found "'.$results::count().'" orders');
@@ -261,13 +256,6 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		}
 	}
 
-	private function getUserId($id) {
-		if (strlen($id)<10){
-			return $id;
-		} else {
-			return new MongoId($id);
-		}
-	}
 }
 
 ?>

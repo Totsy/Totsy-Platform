@@ -301,7 +301,6 @@ class ReAuthorize extends \lithium\console\Command {
 			}
 		}
 		return $report;
->>>>>>> Change Reauthorize Logic, Creation CyberSource Profile
 	}
 	
 	public function sendReport($report) {
