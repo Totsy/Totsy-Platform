@@ -35,6 +35,7 @@ function print_usage {
 	echo " - source-selenium   Install dependencies."
 	echo " - clear-cache       Clears file caches on admin and app."
 	echo " - selenium-server   Start the selenium server."
+	echp " - clear-cache       Clears file caches on admin and app."
 }
 
 if [ $# != 1 ]; then
