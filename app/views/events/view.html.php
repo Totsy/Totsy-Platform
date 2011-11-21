@@ -53,7 +53,7 @@
 	?>
 				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#990000; font-size:11px;text-align:left;">
 				<img src="/img/truck_red.png">
-				One on more of the items in your cart are not guaranteed to arrive before 12/26.*
+				Items in this sale are not guaranteed to arrive before 12/26.*
 				</div>
 	
 	
@@ -63,7 +63,7 @@
 	?>
 				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#999999; font-size:11px;text-align:left;">
 				<img src="/img/truck_grey.png">
-				Item will be delivered on or before 12/23.*
+				Items will be delivered on or before 12/23.*
 				</div>
 	
 	
