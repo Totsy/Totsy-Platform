@@ -31,6 +31,7 @@ function print_usage {
 	echo " - optimize-repo     Perform GC on local git repository."
 	echo " - source-lithium    Install lithium."
 	echo " - source-subs       Initialize and update all submodules."
+	echp " - clear-cache       Clears file caches on admin and app."
 }
 
 if [ $# != 1 ]; then
@@ -144,6 +145,11 @@ case $COMMAND in
 
 		echo "Removing temporary directory..."
 		rm -fr $TMP
+		;;
+
+	clear-cache)
+		find $PROJECT_DIR/app/resources/tmp/cache -name 'empty' -prune -o -type f | xargs rm -v
+		find $PROJECT_DIR/admin/resources/tmp/cache -name 'empty' -prune -o -type f | xargs rm -v
 		;;
 
 	*)
