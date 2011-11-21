@@ -38,7 +38,7 @@ class CreateDashboard extends \lithium\console\Command  {
 	 * @see docs/admin/controllers/DashboardController
 	 */
 	public function run() {
-	    MongoCursor::$timeout = -1;
+	    MongoCursor::$timeout = 100000;
 		Environment::set($this->env);
 		$startDate  = new MongoDate(strtotime($this->beginning));
 		$endDate = new MongoDate();

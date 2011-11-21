@@ -1,4 +1,11 @@
 <?=$this->html->script(array('jquery.nivo.slider.pack'));?>
+<script src="/js/jquery.tmpl.js" type="text/javascript"></script>
+
+<?=$this->html->script(array('cart-timer.js', 'cart-items-timer.js', 'cart-popup.js?v=001'));?>
+
+<!-- template used for items on cart. jquery.tmpl.js driven -->
+<?=$this->view()->render( array('element' => 'popupCartItems') ); ?>
+
 <script>
 (function($) {
 	$.fn.rotate = function() {
@@ -14,7 +21,7 @@
 	};
 })(jQuery);
 </script>
-	<h2 class="page-title gray"><span class="_red">Today's Sales</span></h2>
+	<h2 class="page-title gray"><span class="_red">Today's Sales</span> </h2>
 	<hr />
 		<!--Disney -->
 <!--	<div class="disney disney_splash">
@@ -93,8 +100,8 @@
 			</div>
 
 			<?php if ($x == 1): ?>
-				<div id="banner_container" class="grid_5">
-					<div><a href="/users/invite"><img src="/img/invite_girl.png" alt="" height="404"/></a></div>
+				<div id="banner_container" class="grid_5" style="height:405px; overflow:hidden;">
+					<div><a href="/users/invite"><img src="/img/invite_girl.png"></a></div>
 					<?php if(!empty($banner["img"])): ?>
 						<?php foreach($banner["img"] as $image): ?>
 							<div><?php if(!empty($image["url"])):?>
@@ -260,26 +267,6 @@
 	</div>
 </noscript>
 <!-- END OF Google Code for inscrits Remarketing List -->
-
-<!-- Google Code for Signups Conversion Page -->
-<script type="text/javascript">
-/* <![CDATA[ */
-var google_conversion_id = 1019183989;
-var google_conversion_language = "en";
-var google_conversion_format = "1";
-var google_conversion_color = "ffffff";
-var google_conversion_label = "AVJ-CKmdmgIQ9Yb-5QM";
-var google_conversion_value = 0;
-/* ]]> */
-</script>
-<script type="text/javascript" src="http://www.googleadservices.com/pagead/conversion.js">
-</script>
-<noscript>
-<div style="display:inline;">
-<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=AVJ-CKmdmgIQ9Yb-5QM&guid=ON&script=0"/>
-</div>
-</noscript>
-<!-- END Google Code for Signups Conversion Page -->
 
 <script>
 (function($) {

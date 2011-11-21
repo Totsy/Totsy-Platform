@@ -5,51 +5,10 @@
 	var item_id = "<?=$item->_id?>";
 </script>
 
-<!-- JS for cart timer. -->
-<script type="text/javascript" src="/js/cart-timer.js"></script>
-<!-- JS for cart timer for individual items. -->
-<script type="text/javascript" src="/js/cart-items-timer.js"></script>
-<!-- JS for cart popup. needs to reference the popupCartItems element above -->
-<script type="text/javascript" src="/js/cart-popup.js"></script>
+<?=$this->html->script(array('cart-timer.js', 'cart-items-timer.js', 'cart-popup.js?v=001'));?>
 
 <!-- template used for items on cart. jquery.tmpl.js driven -->
 <?=$this->view()->render( array('element' => 'popupCartItems') ); ?>
-
-<div style="position:relative">
-<div id="cart_popup" class="grid_16 roundy glow" style="display:none">
-	<div id="cart_popup_header">
-	    <div id="cart_popup_timer">
-	    	<span style="float:right; margin-left: 30px">Item Reserved For:<br>
-	    		<span style="color:#009900; font-weight:bold;font-size:14px" id="itemCounter"></span>
-	    	</span>
-	    	<span style="float:right">Estimated Shipping Date: <br>
-	    		 <span id="ship_date" style="font-weight:bold; color:#009900; font-size:14px"></span>
-	    	</span>
-	    </div>
-	    <div id="cart_popup_close_button">
-	    	<a href="#">
-	    	<img src="/img/popup_cart_close.jpg" style="width:20px; height:20px"></a>
-	    </div>
-	</div>
-	<div style="clear:both"></div>
-	<div id="cart_item"></div>
-	<div style="clear:both"></div>
-	<div style="clear:both"></div>
-	<div><hr></div>
-	<div id="cart_popup_breakdown">
-	   <div class="cart-savings">Your Savings: $<span id="savings"></span></div>
-	   <div id="cart_popup_order_total">
-	   	<span class="cart-order-total">Subtotal: </span>
-	       <span id="order_total_num" style="font-weight:bold !important; color:#009900 !important; font-size:14px !important"></span>
-	   </div>
-	</div>
-	<div style="clear:both"></div>
-	<div id="cart_popup_checkout_buttons" class="cart-button fr">
-	   <a id="cart_popup_cont_shop" class="button_border" href="#">Continue Shopping</a>
-	   <a id="cart_popup_checkout" class="button" href="/checkout/view">Checkout</a>
-	</div>
-</div>
-</div>
 
 <div class="grid_16">
 	<h2 class="page-title gray"><span class="red"><a href="/sales" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a><div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
@@ -166,20 +125,22 @@
 		<h2 style="color:#707070;font-size:14px;">You would also love</h2>
 		<hr />
 		<?php foreach ($related as $relatedItem) {
-			if (empty($relatedItem['primary_image'])) {
-				$relatedImage = '/img/no-image-small.jpeg';
-			} else {
-				$relatedImage = "/image/".$relatedItem['primary_image'].".jpg";
+			if ($relatedItem['total_quantity'] >= 1){
+				if (empty($relatedItem['primary_image'])) {
+					$relatedImage = '/img/no-image-small.jpeg';
+				} else {
+					$relatedImage = "/image/".$relatedItem['primary_image'].".jpg";
+				}
+				echo $this->html->link(
+					$this->html->image($relatedImage, array(
+						"class" => "img-th",
+						"width" => "93",
+						"height" => "93")),
+						"/sale/$event->url/".$relatedItem['url'], array(
+							'id' => $relatedItem['description'],
+							'escape'=> false
+				));
 			}
-			echo $this->html->link(
-				$this->html->image($relatedImage, array(
-					"class" => "img-th",
-					"width" => "93",
-					"height" => "93")),
-					"/sale/$event->url/".$relatedItem['url'], array(
-						'id' => $relatedItem['description'],
-						'escape'=> false
-			));
 		} ?>
 	<?php endif ?>
 	</div>

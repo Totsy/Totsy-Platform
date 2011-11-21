@@ -1,6 +1,6 @@
-<script type="text/javascript">	
+<script type="text/javascript">
 	$( function () {
-	    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	    
+	    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);
 		var now = new Date();
 		$('#itemCounter').countdown( {until: itemExpires, onExpiry: refreshCart, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
 		if (itemExpires < now) {
@@ -24,81 +24,83 @@ var paymentForm = new Object();
 
 <link rel="stylesheet" type="text/css" href="/css/validation-engine.jquery.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="/css/validation-template.css" media="screen" />
-<script type="text/javascript" src="/js/form_validator/jquery.validation-engine.js" charset="utf-8"></script>    
-<script type="text/javascript" src="/js/form_validator/languages/jquery.validation-engine-en.js" charset="utf-8"></script> 
+<script type="text/javascript" src="/js/form_validator/jquery.validation-engine.js" charset="utf-8"></script>
+<script type="text/javascript" src="/js/form_validator/languages/jquery.validation-engine-en.js" charset="utf-8"></script>
 
 <script type="text/javascript">
 
     $(document).ready( function() {
-        	
-        //if its not true, set it to false. 
-        //used to avoid overwriting the submitted 
-        //value on refresh, persiting whether a 
-        //form submit was made or not    
+
+        //if its not true, set it to false.
+        //used to avoid overwriting the submitted
+        //value on refresh, persiting whether a
+        //form submit was made or not
     	if(!paymentForm.submitted) {
-    		paymentForm.submitted=false;  	
+    		paymentForm.submitted=false;
     	} else {
-    		$("#opt_submitted").val(paymentForm.submitted);	
+    		$("#opt_submitted").val(paymentForm.submitted);
     	}
-    	    	
+
     	//detach the plugin from the form if it hasn't been submitted yet
     	if(paymentForm.submitted==false){
     		$("#paymentForm").validationEngine('detach');
     	}
-    	
+
     	//highlight the invalid fields and show a prompt for the first of those highlighted
     	$("#paymentForm").submit(function() {
-    	
+
     		if(validCC()==false) {
 				return false;
 			}
-    	    	
+
     		paymentForm.submitted = true;
-    		paymentForm.form = $(this).serializeArray(); 
-    		
+    		paymentForm.form = $(this).serializeArray();
+
     		var invalid_count = 0;
     		var set_bubble= false;
-    		
-    		$("#paymentForm").validationEngine('attach');        
-    		$("#paymentForm").validationEngine('init', { promptPosition : "centerRight", scroll: false } );      		
-    		    		    		    		
-    		$.each(	paymentForm.form, function(i, field) {	
-    		    if(	field.value=="" && 
-    		    	field.name!=="address2" && 
-    		    	field.name!=="opt_submitted" && 
-    		    	field.name!=="opt_shipping" && 
-    		    	field.name!=="opt_shipping_select" && 
+
+    		$("#paymentForm").validationEngine('attach');
+    		$("#paymentForm").validationEngine('init', { promptPosition : "centerRight", scroll: false } );
+
+    		$.each(	paymentForm.form, function(i, field) {
+    		    if(	field.value=="" &&
+    		    	field.name!=="address2" &&
+    		    	field.name!=="opt_submitted" &&
+    		    	field.name!=="opt_shipping" &&
+    		    	field.name!=="opt_shipping_select" &&
     		    	field.name!=="card_valid" &&
     		    	field.name!=="opt_save"
     		    	) {
-    		    	
-    		 		if(set_bubble==false) {   
+
+    		 		if(set_bubble==false) {
     		 			$('#' + field.name + "").validationEngine('showPrompt','*This field is required', '', true);
     		 			$('#' + field.name + "").validationEngine({ promptPosition : "centerRight", scroll: false });
     		 			set_bubble=true;
      		 		}
+
     		 		$('#' + field.name + "").attr('style', 'background: #FFFFC5 !important');
-    		 		
+
     		 		invalid_count++;
-    		 	} 
+    		 	}
 			});
+
 			if(invalid_count > 0 ) {
     		    return false;
     		}
     	});
-    	
+
     	//if the form has been, hide propmts on a given element's blur event
     	//controls only show a prompt when they have focus and aren't valid
-    	$(".inputbox").blur(function() { 
-    		if(paymentForm.submitted==true) {  		
-				$('#' + this.id + "").validationEngine('hide');	
+    	$(".inputbox").blur(function() {
+    		if(paymentForm.submitted==true) {
+				$('#' + this.id + "").validationEngine('hide');
 				//if they validate the field by filling it in, reset the background of the control to white
 				if($('#' + this.id + "").val()!==""){
 					$('#' + this.id + "").attr('style', 'background: #FFF !important');
 				} else {
 					$('#' + this.id + "").attr('style', 'background: #FFFFC5 !important');
 				}
-			}	    		
+			}
     	});
     });
 
@@ -125,14 +127,14 @@ var paymentForm = new Object();
 </div>
 
 <?=$this->form->create($payment, array (
-		'id' => 'paymentForm')); ?>	
+		'id' => 'paymentForm')); ?>
 
 <div class="clear"></div>
 
 <div class="grid_16" style=" width:935px !important">
 				<hr /><br />
 				<h3>Pay with Credit Card :</h3>
-				<hr /> 
+				<hr />
 				<span class="cart-select">
 				<?=$this->form->error('cc_error'); ?>
 				<?=$this->form->hidden('opt_submitted', array('class'=>'inputbox', 'id' => 'opt_submitted')); ?>
@@ -169,14 +171,14 @@ var paymentForm = new Object();
 				<span style="padding-left:2px">
 				<?php
 					$now = intval(date('Y'));
-					$years = array_combine(range($now, $now + 15), range($now, $now + 15)); ?>					
+					$years = array_combine(range($now, $now + 15), range($now, $now + 15)); ?>
 				<?=$this->form->select('card_year', array('' => 'Year') + $years, array('id' => "card_year", 'class'=>'validate[required inputbox')); ?>
 				<div style="clear:both; padding-top:5px !important"></div>
 				<?=$this->form->label('card_code', 'Security Code', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('card_code', array('id' => 'card_code','class'=>'validate[required] inputbox', 'maxlength' => '4', 'size' => '4')); ?>
-				<?php 
+				<?php
 				if(empty($checked)) {
-					$checked = false; 
+					$checked = false;
 				}
 				?>
 				</span>
@@ -228,33 +230,28 @@ var paymentForm = new Object();
 				<?=$this->form->hidden('opt_description', array('id' => 'opt_description' , 'value' => 'billing')); ?>
 				<?=$this->form->hidden('opt_shipping_select', array('id' => 'opt_shipping_select')); ?>
 				</div>
-			
-			<div class="grid_16">	
+
+			<div class="grid_16">
 				<?=$this->form->submit('CONTINUE', array('class' => 'button fr', 'style'=>'margin-right:10px;')); ?>
 			</div>
-				
+
 </div>
 <?php else: ?>
 	<div class="grid_16 cart-empty">
 		<h1>
-			<span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> 	
+			<span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span>
 			<a href="/sales" title="Continue Shopping">Continue Shopping</a/></h1>
 	</div>
 <?php endif ?>
-<?=$this->form->end();?> 
+<?=$this->form->end();?>
 <div id="address_form" style="display:none">
 	<?=$this->form->create(null ,array('id'=>'selectForm')); ?>
 	<?=$this->form->hidden('address_id', array('class' => 'inputbox', 'id' => 'address_id')); ?>
 	<?=$this->form->end();?>
 </div>
-<script>  
-	
-var shippingAddress = <?php echo $shipping; ?>
+<script>
 
-//validate card number when a correct card is entered
-$("#card_number").keyup( function(){
-	validCC();
-});
+var shippingAddress = <?php echo $shipping; ?>
 
 //validate card number when a correct card is entered
 $("#card_number").blur( function(){
@@ -263,29 +260,28 @@ $("#card_number").blur( function(){
 
 function replace_address() {
     if($("#opt_shipping").is(":checked")) {
-    	//run through shippinAddress object and set values for corresponding fields	
+    	//run through shippinAddress object and set values for corresponding fields
     	$.each ( shippingAddress, function(k, v) {
-    		
     		$("#" + k + "").val(v);
     		if(k == 'state') {
     			$("#" + k + 'option:selected').next('option').attr('selected', 'selected');
   				$("#" + k + "").change();
     		}
 
-    		if(paymentForm.opt_submitted==true && v!=="") {  		
+    		if(paymentForm.opt_submitted==true && v!=="") {
     			$('#' + k + "").attr("style", "background: #FFF !important");
-    		}	
-    	});		
+    		}
+    	});
     } else {
     	$.each ( shippingAddress, function(k, v) {
     		$("#" + k + "").val("");
-        		
-    			if(paymentForm.opt_submitted==true) {  		
+
+    			if(paymentForm.opt_submitted==true) {
     				$('#' + k + "").attr("style", "background: #FFFFC5 !important");
-    			}	
+    			}
     		}
     	);
-    }	
+    }
 };
 
 function isValidCard(cardNumber) {
@@ -299,12 +295,12 @@ function isValidCard(cardNumber) {
 	if(cardNumber.length < 11){
 		return false;
 	}
-	
+
 	// Init Array with Credit Card Number
 	for(i = 0; i < cardNumber.length; i++){
 		ccard[i] = parseInt(cardNumber.charAt(i));
 	}
-	
+
 	// Run step 1-5 above above
 	for(i = 0; i < cardNumber.length; i = i+2){
 		ccard[i] = ccard[i] * 2;
@@ -312,11 +308,11 @@ function isValidCard(cardNumber) {
 			ccard[i] = ccard[i] - 9;
 		}
 	}
-	
+
 	for(i = 0; i < cardNumber.length; i++){
 		sum = sum + ccard[i];
 	}
-	
+
 	if($('#card_type').val()=="amex") {
 		if(cardNumber.length >= 15){
 			return true;
@@ -326,27 +322,27 @@ function isValidCard(cardNumber) {
 	} else {
 		return ((sum%10) == 0);
 	}
-  }
+}
 
 
 function validCC() {
 	var test = isValidCard($("#card_number").val());
 	$("#card_valid").val(test);
-	
+
 	if(!test){
 		$("#card_number").validationEngine('showPrompt','*This is not a valid credit card number', '', true);
 		$("#card_number").attr('style', 'background: #FFFFC5 !important');
-		return false;	
+		return false;
 	} else {
 		$("#card_number").attr('style', 'background: #FFFFFF !important');
-		$("#card_number").validationEngine('hide');	
+		$("#card_number").validationEngine('hide');
 		return true;
 	}
 }
 
 </script>
 <script>
-$(document).ready(function(){ 
+$(document).ready(function(){
 	$("#addresses").change(function () {
 		$("#address_id").val($("#addresses option:selected").val());
 		$("#selectForm").submit();
