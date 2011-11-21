@@ -108,7 +108,7 @@ class AffiliatesController extends BaseController {
 	*	Affiliate-user invite register
 	*   @params $affiliate
 	**/
-	public function register($affiliate = NULL) {
+	public function register($affiliate = NULL) {	
 		$pdata = $this->request->data;
 		$message = false;
 		$user = User::create();
