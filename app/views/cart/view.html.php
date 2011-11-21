@@ -55,7 +55,35 @@ var discountErrors = new Object();
 	<div class="grid_5 cart-header-right">
 		<?=$this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
 	</div>
+
 	<div class="clear"></div>
+
+	<?php
+	if($missChristmasCount>0){
+	?>
+				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#990000; font-size:11px;text-align:left;">
+				<img src="/img/truck_red.png">
+				One on more of the items in your cart are not guaranteed to arrive before 12/26.*
+				</div>
+	
+	
+	<?php
+	}
+	else{
+	?>
+				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#999999; font-size:11px;text-align:left;">
+				<img src="/img/truck_grey.png">
+				Item will be delivered on or before 12/23.*
+				</div>
+	
+	
+	<?php
+	}
+	?>
+
+
+
+
 	<hr/>
 	     <div class="cart-button fr" style="margin:10px 0px 20px 0px;">
 		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
@@ -74,8 +102,22 @@ var discountErrors = new Object();
 			<tbody>
 			<?php $x = 0; ?>
 			<?php foreach ($cart as $item): ?>
+			
+			<!--temporary miss christmas check -->
+			<?php
+			if($item->miss_christmas){
+				$tableclass = "alt0a";
+			}
+			else{
+				$tableclass = "alt0";
+			}			
+			?>
+			
+			
+			
+			
 				<!-- Build Product Row -->
-				<tr id="<?=$item->_id?>" class="alt0">
+				<tr id="<?=$item->_id?>" class="<?=$tableclass?>">
 					<td class="cart-th">
 						<?php
 							if (!empty($item->primary_image)) {
@@ -92,7 +134,7 @@ var discountErrors = new Object();
 						'style' => 'margin:2px; display:block; padding:4px;')),
 							array('Items::view', 'args' => $item->url),
 								array(
-								'id' => 'main-logo_', 'escape'=> false
+								'id' => 'main-logo_', 'style' => 'color:#0000ff', 'escape'=> false
 							)
 						); ?>
 					</td>
@@ -267,6 +309,23 @@ var discountErrors = new Object();
 </div>
 
 <div class="clear"></div>
+<div style="color:#999999; font-size:10px;padding:10px;">
+				<?php
+				if($missChristmasCount>0){
+				?>
+				* Totsy ships all items complete and does not split items in orders. If you would like other items in your cart that will be delivered on or before 12/23, we suggest you order this item separately. Please contact our Customer Service department at 800-999-9999 or email support@totsy.com with any questions.
+				<?php
+				}
+				else{
+				?>
+				
+				* Our delivery guarantee does not apply when transportation networks are affected by weather.
+				
+				<?php
+				}
+				?>
+				
+</div>
 
 <div id="remove_form" style="display:none">
 	<?=$this->form->create(null ,array('id'=>'removeForm')); ?>
