@@ -174,6 +174,9 @@ class CartController extends BaseController {
 			#If unselected, put no size as choice
 			$size = (!array_key_exists('item_size', $data)) ?
 				"no size": $data['item_size'];
+				
+				
+			//added miss_christmas, to be removed	
 			$item = Item::find('first', array(
 				'conditions' => array(
 					'_id' => "$itemId"),
@@ -189,6 +192,7 @@ class CartController extends BaseController {
 					'product_weight',
 					'event',
 					'vendor_style',
+					'miss_christmas',
 					'discount_exempt'
 			)));
 									
