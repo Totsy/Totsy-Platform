@@ -3,6 +3,7 @@
 namespace app\tests\mocks\controllers;
 
 class MockUsersController extends \app\controllers\UsersController {
+
 	public $redirect = array();
 
 	protected function _init() {
