@@ -143,7 +143,7 @@ class AffiliatesController extends BaseController {
 				}	
 			}			
 		}
-				
+
 		$pdata = $this->request->data;
 		
 		$message = false;
