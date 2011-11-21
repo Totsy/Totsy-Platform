@@ -48,7 +48,10 @@ class CartControllerTest extends \lithium\test\Unit {
 			'200001' => '4',
 			'200002' => '5'
 		));
-		$response = new Request(array('data'=>$post));
+		$response = new Request(array(
+			'data' => $post,
+			'params' => array('controller' => null, 'action' => null)
+		));
 		$cartPuppet = new CartController(array('request' => $response));
 		$cartPuppet->update();
 		$result1 = Cart::find('first', array('conditions' => array('_id' => '200001')));
@@ -65,9 +68,11 @@ class CartControllerTest extends \lithium\test\Unit {
 	public function testRemove() {
 		//Configuration Test
 		$cart_id = "787878787zazazag7878";
-		$remote = new CartController(array('request' => new Request()));
-		$remote->request->data = array('id' => $cart_id);
-		$remote->request->params['type'] = 'html';
+		$request = new Request(array(
+			'data' => array('id' => $cart_id),
+			'params' => array('controller' => null, 'action' => null, 'type' => 'html')
+		));
+		$remote = new CartController(compact('request'));
 		$user = Session::read('userLogin');
 		$active_time = new MongoDate();
 		$expire_time = new MongoDate();
