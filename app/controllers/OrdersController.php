@@ -339,6 +339,14 @@ class OrdersController extends BaseController {
 			'discount_exempt'
 		);
 		$promocode_disable = false;
+		
+		
+		//temporary miss xmas vars
+		$missChristmasCount = 0;
+		$notmissChristmasCount = 0;
+		//end
+
+		
 		#Get Current Cart
 		$cart = $taxCart = Cart::active(array('fields' => $fields, 'time' => 'now'));
 		$cartEmpty = ($cart->data()) ? false : true;
@@ -349,6 +357,16 @@ class OrdersController extends BaseController {
 		$subTotal = 0;
 		$cartExpirationDate = 0;
 		foreach ($cart as $cartValue) {
+
+			//temporary xmas
+			if($cart->miss_christmas){
+				$missChristmasCount++;
+			}
+			else{
+				$notmissChristmasCount++;
+			}			
+			//end xmas
+
 			#Get Last Expiration Date 
 			if ($cartExpirationDate < $cartValue['expires']->sec) {
 				$cartExpirationDate = $cartValue['expires']->sec;
@@ -428,8 +446,65 @@ class OrdersController extends BaseController {
 			'credits',
 			'services',
 			'cartExpirationDate',
-			'promocode_disable'
+			'promocode_disable',
+			'missChristmasCount',
+			'notmissChristmasCount',
+			'serviceAvailable'
 		);
+	}
+
+	/**
+	 * Group all the items in an order by their corresponding event.
+	 *
+	 * The $order object is assumed to have originated from one of model types; Order or Cart.
+	 * Irrespective of the type both will return an associative array of event items.
+	 *
+	 * @param object $order
+	 * @return array $eventItems
+	 */
+	protected function itemGroupByEvent($object) {
+		$eventItems = null;
+		if ($object) {
+			$model = $object->model();
+			if ($model == 'app\models\Order') {
+				$orderItems = $object->items->data();
+				foreach ($orderItems as $item) {
+					$eventItems[$item['event_id']][] = $item;
+				}
+			}
+			if ($model == 'app\models\Cart') {
+				$orderItems = $object->data();
+				foreach ($orderItems as $item) {
+					$event = $item['event'][0];
+					unset($item['event']);
+					$eventItems[$event][] = $item;
+				}
+			}
+		}
+		return $eventItems;
+	}
+
+	/**
+	 * Return all the events of an order.
+	 *
+	 * @param object $object
+	 * @return array $orderEvents
+	 */
+	public function orderEvents($object) {
+		$orderEvents = null;
+		$ids = Cart::getEventIds($object);
+		if (!empty($ids)) {
+			$events = Event::find('all', array(
+				'conditions' => array('_id' => $ids),
+				'fields' => array('name', 'ship_message', 'ship_date', 'url')
+			));
+			$events = $events->data();
+			foreach ($events as $event) {
+				$orderEvents[$event['_id']] = $event;
+			}
+		}
+		return $orderEvents;
+>>>>>>> xmas shipping
 	}
 
 	/**
