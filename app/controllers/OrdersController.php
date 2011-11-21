@@ -120,6 +120,7 @@ class OrdersController extends BaseController {
 					$itemsToSend[] =  array(
 						'id' => (string) $itemRecord['_id'],
 						'qty' => $item['quantity'],
+						'miss_christmas' => $item['miss_christmas'],
 						'title' => $itemRecord['description'],
 						'price' => $itemRecord['sale_retail']*100,
 					 	'url' => 'http://'.$_SERVER['HTTP_HOST'].'/sale/'.$url->url.'/'.$itemRecord['url']
@@ -294,6 +295,7 @@ class OrdersController extends BaseController {
 			'size',
 			'url',
 			'primary_image',
+			'miss_christmas',
 			'expires',
 			'event',
 			'discount_exempt'
