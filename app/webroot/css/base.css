@@ -2201,6 +2201,12 @@ tr.alt0 td {
 	vertical-align:middle;
 }
 
+tr.alt0a td {
+	background:#ff0000;
+	height:50px;
+	vertical-align:middle;
+}
+
 tr.alt1 td {
 	background:#EFEFEF;
 	height:50px;
