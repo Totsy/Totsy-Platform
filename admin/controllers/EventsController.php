@@ -65,10 +65,10 @@ class EventsController extends BaseController {
 
 		//loop thru form-created array to create an skus array, and a quantity array with the skus as keys
 		foreach($fullarray as $item_sku_quantity){
-			$current_sku = $item_sku_quantity[0];
+			$current_sku = trim($item_sku_quantity[0]);
 			$items_skus[] = $current_sku;
-			$items_quantities[$current_sku] = $item_sku_quantity[1];
-			$items_prices[$current_sku] = $item_sku_quantity[2];
+			$items_quantities[$current_sku] = trim($item_sku_quantity[1]);
+			$items_prices[$current_sku] = trim($item_sku_quantity[2]);
 		}
 
 		//mongo query, find all items with skus
@@ -117,7 +117,7 @@ class EventsController extends BaseController {
 						//echo "<br> * update quantity to " . $items_quantities[$sku_details];
 
 						//use index to update quantity
-						$oitem['details'][$sku_details_key] = $items_quantities[$sku_details];
+						$oitem['details'][$sku_details_key] = (int)$items_quantities[$sku_details];
 
 						//use index to get new price
 						$item_price_new = $items_prices[$sku_details];
@@ -153,7 +153,7 @@ class EventsController extends BaseController {
 				$newItem = Item::create();
 
 				//set total quant
-				$oitem['total_quantity'] = $total_quantity_new;
+				$oitem['total_quantity'] = (int)$total_quantity_new;
 				
 				//set new price
 				$oitem['sale_retail'] = floatval($item_price_new);
@@ -181,38 +181,38 @@ class EventsController extends BaseController {
 		}
 
 		if (!empty($this->request->data)) {
-			$images = $this->parseImages();
-			$seconds = ':'.rand(10,60);
-			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
-			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
-			if (isset($this->request->data['short_description']) && strlen($this->request->data['short_description'])>$shortDescLimit){
-				$this->request->data['short_description'] = substr($this->request->data['short_description'],0,$shortDescLimit);
-			} else if (empty($this->request->data['short_description'])) {
-				$this->request->data['short_description'] = $this->description_cutter($this->request->data['short_description'],$shortDescLimit);
-			}
-			$url = $this->cleanUrl($this->request->data['name']);
-			$eventData = array_merge(
-				Event::castData($this->request->data),
-				compact('items'),
-				compact('images'),
-				array('created_date' => new MongoDate()),
-				array('url' => $url)
-			);
-			$changed = "<strong>Created " . $this->request->data['name'] . " Event</strong><br/>";
-			$modification_datas["author"] = User::createdby();
-			$modification_datas["date"] = new MongoDate(strtotime('now'));
-			$modification_datas["type"] = "modification";
-			$modification_datas["changed"] = $changed;
-
-			//Pushing modification datas to db
-			$modifications = $event->modifications;
-			$modifications[] = $modification_datas;
-			$eventData[modifications] = $modifications;
-			//Remove this when $_schema is setup
-			unset($eventData['itemTable_length']);
-			if ($event->save($eventData)) {
-				$this->redirect(array('Events::edit', 'args' => array($event->_id)));
-			}
+		    $images = $this->parseImages();
+		    $seconds = ':'.rand(10,60);
+		    $this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
+		    $this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
+		    if (isset($this->request->data['short_description']) && strlen($this->request->data['short_description'])>$shortDescLimit){
+		    	$this->request->data['short_description'] = substr($this->request->data['short_description'],0,$shortDescLimit);
+		    } else if (empty($this->request->data['short_description'])) {
+		    	$this->request->data['short_description'] = $this->description_cutter($this->request->data['short_description'],$shortDescLimit);
+		    }
+		    $url = $this->cleanUrl($this->request->data['name']);
+		    $eventData = array_merge(
+		    	Event::castData($this->request->data),
+		    	compact('items'),
+		    	compact('images'),
+		    	array('created_date' => new MongoDate()),
+		    	array('url' => $url)
+		    );
+		    $changed = "<strong>Created " . $this->request->data['name'] . " Event</strong><br/>";
+		    $modification_datas["author"] = User::createdby();
+		    $modification_datas["date"] = new MongoDate(strtotime('now'));
+		    $modification_datas["type"] = "modification";
+		    $modification_datas["changed"] = $changed;
+		
+		    //Pushing modification datas to db
+		    $modifications = $event->modifications;
+		    $modifications[] = $modification_datas;
+		    $eventData[modifications] = $modifications;
+		    //Remove this when $_schema is setup
+		    unset($eventData['itemTable_length']);
+		    if ($event->save($eventData)) {
+		    	$this->redirect(array('Events::edit', 'args' => array($event->_id)));
+		    }
 		}
 
 		return compact('event','shortDescLimit');

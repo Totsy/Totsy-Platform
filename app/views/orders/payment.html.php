@@ -254,11 +254,6 @@ var paymentForm = new Object();
 var shippingAddress = <?php echo $shipping; ?>
 
 //validate card number when a correct card is entered
-/*$("#card_number").keyup( function(){
-	validCC();
-});*/
-
-//validate card number when a correct card is entered
 $("#card_number").blur( function(){
 	validCC();
 });
