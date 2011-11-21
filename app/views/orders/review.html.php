@@ -118,6 +118,29 @@ var discountErrors = new Object();
 <?php endif ?>
 
 <div class="message"></div>
+	<?php
+	if($missChristmasCount>0){
+	?>
+				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#990000; font-size:11px;text-align:center;">
+				<img src="/img/truck_red.png">
+				Items in this sale are not guaranteed to arrive before 12/26.*
+				</div>
+	
+	
+	<?php
+	}
+	else{
+	?>
+				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#999999; font-size:11px;text-align:center;">
+				<img src="/img/truck_grey.png">
+				Items will be delivered on or before 12/23.*
+				</div>
+	
+	
+	<?php
+	}
+	?>
+
 <?php if (!empty($subTotal)): ?>
 
 <div class="grid_16" style="width:935px">
@@ -128,8 +151,25 @@ var discountErrors = new Object();
 			<?=$this->form->hidden("process", array('id'=>'process')); ?>
 			<?php $x = 0; ?>
 			<?php foreach ($cart as $item): ?>
+
+
+			<?php
+			if($item['miss_christmas']){
+				$shipmsg = "<span class=\"shippingalert\">This item is not guaranteed to arrive before 12/26.<br>Order this item separately to receive your other items by 12/23*</span>";
+
+				$classadd = "background:#fde5e5;";
+			}
+			else{
+				$shipmsg = "Item will be delivered on or before December 23.*";
+				$classadd = "";
+			}
+			?>
+
+
+
+
 				<!-- Build Product Row -->
-				<tr id="<?=$item->_id?>" style="">
+				<tr id="<?=$item->_id?>" style="<?=$classadd?>">
 					<td colspan="1" class="cart-th">
 						<span class="cart-review-thumbnail">
 						<?php
@@ -176,6 +216,8 @@ var discountErrors = new Object();
 							<?php if($item->size!=="no size") : ?>						
 							<div><span class="cart-review-color-size">Size:</span> <?=$item->size;?></div>
 							<?php endif ?>
+							<?=$shipmsg?>
+
 						</div>	
 					</td>
 				</tr>
@@ -296,6 +338,24 @@ var discountErrors = new Object();
 	<div class="clear"></div>
 
 <?=$this->form->end(); ?>
+</div>
+<div class="clear"></div>
+<div style="color:#999999; font-size:10px;padding:10px;">
+				<?php
+				if($missChristmasCount>0){
+				?>
+				* Totsy ships all items complete and does not split items in orders. If you would like other items in your cart that will be delivered on or before 12/23, we suggest you order this item separately. Please contact our Customer Service department at 800-999-9999 or email support@totsy.com with any questions.
+				<?php
+				}
+				else{
+				?>
+				
+				* Our delivery guarantee does not apply when transportation networks are affected by weather.
+				
+				<?php
+				}
+				?>
+				
 </div>
 
 <div id="remove_form" style="display:none">
