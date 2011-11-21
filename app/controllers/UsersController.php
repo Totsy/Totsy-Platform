@@ -139,10 +139,10 @@ class UsersController extends BaseController {
 				} 
 				if (!empty($landing)){
 					Session::delete('landing',array('name'=>'default'));
-					$this->redirect($landing);
+					return $this->redirect($landing);
 					unset($landing);
 				} else {
-					$this->redirect('/sales');
+					return $this->redirect('/sales');
 				}
 				
 			}
