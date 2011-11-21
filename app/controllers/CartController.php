@@ -62,7 +62,9 @@ class CartController extends BaseController {
 		$i = 0;
 		$subTotal = 0;
 		$itemCount = 0;
-
+		$missChristmasCount = 0;
+		$notmissChristmasCount = 0;
+		
 		#Count of how many items in the cart are exempt of shipping cost
 		$exemptCount = 0;
 
@@ -85,6 +87,17 @@ class CartController extends BaseController {
 			
 			$events = Event::find('all', array('conditions' => array('_id' => $item->event[0])));
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
+			
+			
+			//miss chrismtas stuff to be removed later
+			$item->miss_christmas = $itemInfo->miss_christmas;
+			if($item->miss_christmas){
+				$missChristmasCount++;
+			}
+			else{
+				$notmissChristmasCount++;
+			}			
+			
 			#Get Event End Date
 			$cartItemEventEndDates[$i] = $events[0]->end_date->sec;
 			$item->event_url = $events[0]->url;
@@ -140,7 +153,7 @@ class CartController extends BaseController {
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
 
-		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping');
+		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping','missChristmasCount','notmissChristmasCount');
 	}
 
 	/**
