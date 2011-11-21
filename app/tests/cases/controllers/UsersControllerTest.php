@@ -3,7 +3,7 @@
 namespace app\tests\cases\controllers;
 
 use lithium\action\Request;
-use app\controllers\UsersController;
+use app\tests\mocks\controllers\MockUsersController;
 use lithium\storage\Session;
 use app\models\User;
 
@@ -21,10 +21,13 @@ class UsersControllerTest extends \lithium\test\Unit {
 				'terms'=>'on',
 				'emailcheck'=>true
 			);
-		$response = new Request(array('data'=>$post));
+		$response = new Request(array(
+			'data'=> $post,
+			'params' => array('controller' => 'users', 'action' => 'register')
+		));
 		$testcode = 'testaffiliate';
-		$userRemote = new UsersController(array('request'=>$response));
-		$result = $userRemote->registration($testcode);
+		$userRemote = new MockUsersController(array('request'=>$response));
+		$result = $userRemote->register($testcode);
 		$this->assertEqual(true, $result, $result);
 	}
 
@@ -56,7 +59,11 @@ class UsersControllerTest extends \lithium\test\Unit {
 				'password_confirm'=>'AAA222',
 				'new_password'=>'AAA222'
 			);
-		$remote = new UsersController(array('request' => new Request()));
+		$request = new Request(array(
+			'data' => $post,
+			'params' => array('controller' => 'users', 'action' => 'password')
+		));
+		$remote = new MockUsersController(compact('request'));
 		$remote->sessionKey = "userTemp";
 		$remote->request->data = $post;
 		$remote->request->params['type'] = 'html';
