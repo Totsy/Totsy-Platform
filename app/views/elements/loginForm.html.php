@@ -6,7 +6,7 @@
 		
 
 	<div style="width:70px; float:left">
-	<?=$this->form->label('email', 'Email <span>*</span>', array(
+	<?=$this->form->label('email', 'Email<span>*</span>', array(
 		'escape' => false,
 		'class' => 'required loginformlabel'
 		));
@@ -21,7 +21,7 @@
 <div class="clear"></div>
 	
 	<div style="width:70px; float:left">
-	<?=$this->form->label('password', 'Password <span>*</span>', array(
+	<?=$this->form->label('password', 'Password<span>*</span>', array(
 		'escape' => false,
 		'class' => 'required loginformlabel'
 		));

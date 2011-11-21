@@ -81,15 +81,15 @@ background: linear-gradient(top, #ffffff 0%,#f5f5f5 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f5f5f5',GradientType=0 ); /* IE6-9 */
 }
 </style>
-<div class="container_16 round_clear pushy" style="width:720px; height:457px; float:left; margin:85px 0px 0px 85px;">
-<div class="round gradient"  style="background:#ffffff; height:429px;">
+<div class="container_16 round_clear pushy" style="width:720px; height:473px; float:left; margin:85px 0px 0px 85px;">
+<div class="round gradient"  style="background:#ffffff; height:445px;">
 
 
 
 <!-- left side -->
 <div class="grid_6" style="float:left;width:315px;">
 <?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
-<div class="round gradient" style="border:1px #eeeeee solid; height:310px; width:310px; margin-top:8px;">
+<div class="round gradient" style="border:1px #eeeeee solid; height:330px; width:310px; margin-top:8px;">
 
 <h2 style="width:300px; text-align:center; font-weight:bold; padding-top:10px; padding-bottom:20px; margin-bottom:10px;  border-bottom:1px #cccccc solid;">Member Sign in</h2>
 
@@ -102,10 +102,13 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 
 
 <!-- right side -->
+
 <div class="grid_6" style="float:right; ">
 <div class="fr" style="padding-right:20px;padding-top:10px;">Not a member yet? <a href="/register" title="Sign In">Join now!</a></div>
+<div class="round gradient" style="border:1px #eeeeee solid; height:330px; width:300px; margin-top:83px;margin-left:20px;">
+<img src="/img/logos_home_right.jpg">
+</div>
 
-<img src="/img/logos_home_right.jpg" style="margin-top:50px;margin-left:20px;">
 <div class="free_shipping_banner_reg_new rollover_img" style="margin-top:0px;"><a href="javascript:;" title="Free Shipping"><span></span></a></div>
 </div>
 
