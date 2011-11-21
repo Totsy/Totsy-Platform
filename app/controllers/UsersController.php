@@ -73,7 +73,7 @@ class UsersController extends BaseController {
 		if($cookie && preg_match('(/a/)', $cookie['landing_url'])){
 			$this->redirect($cookie['landing_url']);
 		}
-		$referer = parse_url($this->request->env('HTTP_REFERER'));
+		$referer = parse_url($this->request->env('HTTP_REFERER')) + array('host' => null);
 		if ($referer['host']==$this->request->env('HTTP_HOST') && preg_match('(/sale/)',$referer['path'])){
 			Session::write('landing',$referer['path'],array('name'=>'default'));
 		}
