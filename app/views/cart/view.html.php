@@ -61,7 +61,7 @@ var discountErrors = new Object();
 	<?php
 	if($missChristmasCount>0){
 	?>
-				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#990000; font-size:11px;text-align:left;">
+				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#990000; font-size:11px;text-align:center;">
 				<img src="/img/truck_red.png">
 				One on more of the items in your cart are not guaranteed to arrive before 12/26.*
 				</div>
@@ -71,9 +71,12 @@ var discountErrors = new Object();
 	}
 	else{
 	?>
-				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#999999; font-size:11px;text-align:left;">
+				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#999999; font-size:11px;text-align:center;">
+				<!-- 
 				<img src="/img/truck_grey.png">
 				Item will be delivered on or before 12/23.*
+				
+				-->
 				</div>
 	
 	
@@ -107,15 +110,14 @@ var discountErrors = new Object();
 			<?php
 			if($item->miss_christmas){
 				$tableclass = "alt0a";
+				$shipmsg = "<span class=\"shippingalert\">This item is not guaranteed to arrive before 12/26.<br>Order this item separately to receive your other items by 12/23*</span>";
 			}
 			else{
 				$tableclass = "alt0";
+				$shipmsg = "Item will be delivered on or before 12/23.*";
 			}			
 			?>
-			
-			
-			
-			
+			<!-- end xmas -->
 				<!-- Build Product Row -->
 				<tr id="<?=$item->_id?>" class="<?=$tableclass?>">
 					<td class="cart-th">
@@ -147,6 +149,7 @@ var discountErrors = new Object();
 						<?php if($item->size!=="no size") : ?>
 						<strong>Size:</strong> <?=$item->size;?>
 						<?php endif ?>
+						<br><?=$shipmsg?>
 					</td>
 					<?php
 						$date = $cartItemEventEndDates[$x] * 1000;
