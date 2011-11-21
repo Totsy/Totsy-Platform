@@ -34,7 +34,7 @@
  		{{/if}}
  		{{if miss_christmas}}
  		<div>
- 		    <span style="color:#990000; font-weight:bold;">This item is not guaranteed to arrive before 12/26.<br>
+ 		    <span class="shippingalert">This item is not guaranteed to arrive before 12/26.<br>
  		    Order this item separately to receive your other items by 12/23*</span>
  		</div>
  		{{/if}}
