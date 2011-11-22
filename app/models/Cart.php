@@ -7,6 +7,7 @@ use lithium\storage\Session;
 use app\models\Item;
 use MongoDate;
 use MongoId;
+use InvalidArgumentException;
 
 /**
 * The Cart Class.
@@ -493,9 +494,13 @@ class Cart extends Base {
 	 * @return array
 	 */
 	public static function getEventIds($object) {
-		$items = (!empty($object->items)) ? $object->items->data() : $object->data();
+		if (!is_object($object)) {
+			throw new InvalidArgumentException('First argument to method must be an object.');
+		}
+		$items = empty($object->items) ? $object->data() : $object->items->data();
 		$event = null;
 		$ids = array();
+
 		foreach ($items as $item) {
 			$itemEvent = (empty($item['event'][0])) ? null : $item['event'][0];
 			$eventId = (!empty($item['event_id'])) ? $item['event_id'] : $itemEvent;
