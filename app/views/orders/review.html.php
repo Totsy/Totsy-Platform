@@ -33,6 +33,7 @@ var discountErrors = new Object();
 	//applying tooltip
 	$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
 	$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
+	$('#promocode_tooltip').tipsy({gravity: 'sw'}); // nw | n | ne | w | e | sw | s | se
 
 }); 
 	
@@ -128,7 +129,7 @@ var discountErrors = new Object();
 	
 	<?php
 	}
-	else{
+	elseif($notmissChristmasCount>0){
 	?>
 				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#999999; font-size:11px;text-align:center;">
 				<img src="/img/truck_grey.png">
@@ -234,6 +235,10 @@ var discountErrors = new Object();
 				     <?php if(!empty($credit)): ?>
 				    	<strong>Add <a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a></strong> /
 				    <?php endif ?> 
+
+			        <span id="promocode_tooltip" original-title="Promo codes cannot be combined and can be applied once to an order per member." class="cart-tooltip">
+			        	<img src="/img/tooltip_icon.png">
+			        </span>
 					<strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
 				</div>
 				<div style="clear:both"></div>
@@ -310,8 +315,7 @@ var discountErrors = new Object();
 			    <div style="clear:both"></div>	
 			    <div>
 			    <div class="subtotal">
-			        <span id="tax_tooltip" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary." class="cart-tooltip"><img src="/img/tooltip_icon.png">
-</span>		
+			        <span id="tax_tooltip" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary." class="cart-tooltip"><img src="/img/tooltip_icon.png"></span>		
 			    <span id="estimated_tax" style="float: left;">Estimated Tax:</span> 
 			        	<span style="float:right">$<?=number_format($tax,2)?></span>
 			    </div>
