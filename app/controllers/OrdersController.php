@@ -101,37 +101,24 @@ class OrdersController extends BaseController {
 		$itemsByEvent = $this->itemGroupByEvent($order);
 		$orderEvents = $this->orderEvents($order);
 		//Check if all items from one event are closed
-		//AND Get Items Skus - Analytic
-		$itemsToSend = array();
-				
-		foreach($itemsByEvent as $key => $items_e) {
-			$url = Event::find('first', array(
-				'conditions' => array('_id'=> new MongoId($key)),
-				'fields' => array('url' => true)
-			));
-			foreach($items_e as $key_b => $item) {
+		foreach($itemsByEvent as $items_e) {
+			foreach($items_e as $item) {
 				if(empty($item['cancel'])) {
 					$openEvent[$item['event_id']] = true;
 				}
-				$itemRecord = Item::find($item['item_id']);
-				if (!empty($itemRecord)) {
-
-					$itemsByEvent[$key][$key_b]['sku'] = $itemRecord->sku_details[$item['size']];
-					$itemsToSend[] =  array(
-						'id' => (string) $itemRecord['_id'],
-						'qty' => $item['quantity'],
-						'miss_christmas' => $item['miss_christmas'],
-						'title' => $itemRecord['description'],
-						'price' => $itemRecord['sale_retail']*100,
-					 	'url' => 'http://'.$_SERVER['HTTP_HOST'].'/sale/'.$url->url.'/'.$itemRecord['url']
-					);
-					unset($itemRecord);
-				}				
 			}
-		}		
-		unset($url);
+		}
 		$pixel = Affiliate::getPixels('order', 'spinback');
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel, array('order' => $_SERVER['REQUEST_URI']));
+		//Get Items Skus - Analytics
+		foreach($itemsByEvent as $key => $event) {
+			foreach($event as $key_b => $item) {
+				$itemRecord = Item::find($item['item_id']);
+				if (!empty($itemRecord)) {
+					$itemsByEvent[$key][$key_b]['sku'] = $itemRecord->sku_details[$item['size']];
+				}
+			}
+		}
 		//Calculatings Savings
 		$savings = 0;
 		foreach ($order->items as $item) {
@@ -140,22 +127,6 @@ class OrdersController extends BaseController {
 				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
 			}
 		}
-		
-		// IMPORTANT!
-		// Sailthru purchase api complete
-		if ($new===true){
-			if ( !Session::check('order_'.$order_id,array('name'=>'default')) ){
-				Mailer::purchase(
-					$user['email'],
-					$itemsToSend,
-					array('message_id' => hash('sha256',Session::key('default').substr(strrev( (string) $user['_id']),0,8)))			
-				);
-				Session::write('order_'.$order_id,time(),array('name'=>'default'));
-			}
-			
-		}
-		unset($itemsToSend);
-		
 		return compact(
 			'order',
 			'orderEvents',
@@ -194,6 +165,7 @@ class OrdersController extends BaseController {
 			'primary_image',
 			'expires',
 			'event_name',
+			'miss_christmas',
 			'event'
 		);
 		#Check Expires 
@@ -299,20 +271,11 @@ class OrdersController extends BaseController {
 			'size',
 			'url',
 			'primary_image',
-			'miss_christmas',
 			'expires',
 			'event',
 			'discount_exempt'
 		);
 		$promocode_disable = false;
-		
-		
-		//temporary miss xmas vars
-		$missChristmasCount = 0;
-		$notmissChristmasCount = 0;
-		//end
-
-		
 		#Get Current Cart
 		$cart = $taxCart = Cart::active(array('fields' => $fields, 'time' => 'now'));
 		$cartEmpty = ($cart->data()) ? false : true;
@@ -323,16 +286,6 @@ class OrdersController extends BaseController {
 		$subTotal = 0;
 		$cartExpirationDate = 0;
 		foreach ($cart as $cartValue) {
-
-			//temporary xmas
-			if($cart->miss_christmas){
-				$missChristmasCount++;
-			}
-			else{
-				$notmissChristmasCount++;
-			}			
-			//end xmas
-
 			#Get Last Expiration Date 
 			if ($cartExpirationDate < $cartValue['expires']->sec) {
 				$cartExpirationDate = $cartValue['expires']->sec;
@@ -400,7 +353,7 @@ class OrdersController extends BaseController {
 		if (Session::check('cc_error')) {
 			$this->redirect(array('Orders::payment'));
 		}
-		return $vars + compact('cartEmpty','order','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable','missChristmasCount','notmissChristmasCount');
+		return $vars + compact('cartEmpty','order','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable');
 	}
 
 	/**
@@ -481,6 +434,7 @@ class OrdersController extends BaseController {
 			'primary_image',
 			'expires',
 			'event_name',
+			'miss_christmas',
 			'event'
 		);
 		#Check Expires
@@ -603,7 +557,7 @@ class OrdersController extends BaseController {
 		}
 		return compact('address','addresses_ddwn','selected','cartEmpty','payment','shipping','shipDate','cartExpirationDate');
 	}
-	
+
 }
 
 ?>
