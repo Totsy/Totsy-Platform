@@ -174,6 +174,9 @@ class OrdersController extends BaseController {
 		$address = null;
 		$selected = null;
 		$cartExpirationDate = 0;
+		$missChristmasCount = 0;
+		$notmissChristmasCount = 0;
+
 		#Check Datas Form
 		if (!empty($this->request->data)) {
 			$datas = $this->request->data;
@@ -235,12 +238,21 @@ class OrdersController extends BaseController {
 		));
 		$shipDate = Cart::shipDate($cart);
 		foreach($cart as $item){
+		
+			if($item['miss_christmas']){
+				$missChristmasCount++;
+			}
+			else{
+				$notmissChristmasCount++;
+			}			
+		
+		
 			if($cartExpirationDate < $item['expires']->sec) {
 				$cartExpirationDate = $item['expires']->sec;
 			}
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
-		return compact('address','addresses_ddwn','shipDate','cartEmpty','error','selected','cartExpirationDate');
+		return compact('address','addresses_ddwn','shipDate','cartEmpty','error','selected','cartExpirationDate','missChristmasCount','notmissChristmasCount');
 	}
 	
 	/**
@@ -441,6 +453,9 @@ class OrdersController extends BaseController {
 		Cart::cleanExpiredEventItems();
 		#Prepare datas
 		$cartExpirationDate = 0;
+		$missChristmasCount = 0;
+		$notmissChristmasCount = 0;
+
 		$address = null;
 		$payment = null;
 		$checked = false;
@@ -540,6 +555,13 @@ class OrdersController extends BaseController {
 		));
 		$shipDate = Cart::shipDate($cart);
 		foreach($cart as $item){
+			if($item['miss_christmas']){
+				$missChristmasCount++;
+			}
+			else{
+				$notmissChristmasCount++;
+			}			
+
 			if($cartExpirationDate < $item['expires']->sec) {
 				$cartExpirationDate = $item['expires']->sec;
 			}
@@ -555,7 +577,7 @@ class OrdersController extends BaseController {
 			Session::delete('cc_error');
 			Session::delete('billing');
 		}
-		return compact('address','addresses_ddwn','selected','cartEmpty','payment','shipping','shipDate','cartExpirationDate');
+		return compact('address','addresses_ddwn','selected','cartEmpty','payment','shipping','shipDate','cartExpirationDate','missChristmasCount','notmissChristmasCount');
 	}
 
 }
