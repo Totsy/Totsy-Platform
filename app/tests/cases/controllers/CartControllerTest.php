@@ -134,8 +134,6 @@ class CartControllerTest extends \lithium\test\Unit {
 			Cart::remove( array('_id' => $cart['_id'] ) );
 		} while ($cart = $cfixture->next());
 	}
-
-
 }
 
 ?>
