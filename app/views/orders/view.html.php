@@ -99,6 +99,22 @@
 														Color: <?=$item['color']?>
 														<br>
 														Size: <?=$item['size']?>
+														
+														<?php if($item['miss_christmas']){
+														?>
+														<br>
+														Item will not be delivered until after 12/26
+														
+														<?php
+														}else{)
+														?>
+														Item will ship on or before 12/23.
+														
+														<?php
+														}
+														?>
+
+
 													</td>
 													<td style="padding:5px; color:#009900;" title="price">
 														$<?=number_format($item['sale_retail'],2); ?>
@@ -109,25 +125,6 @@
 													<td title="subtotal" style="padding:5px; color:#009900;">
 														$<?php echo number_format(($item['quantity'] * $item['sale_retail']),2)?>
 													</td>
-												</tr>
-												<tr>
-								
-											<?php
-											if($item['miss_christmas']){
-											?>
-											mixx
-											
-											<?php
-											}
-											else
-											{
-											?>
-											not
-											
-											<?php
-											}
-											?>
-												
 												</tr>
 											<?php endif ?>
 										<?php endforeach ?>
