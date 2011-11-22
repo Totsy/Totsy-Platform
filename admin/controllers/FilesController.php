@@ -10,6 +10,8 @@ use admin\models\Item;
 use admin\models\ItemImage;
 use admin\models\Banner;
 use admin\models\BannerImage;
+use admin\models\Affiliate;
+use admin\models\AffiliateImage;
 
 /**
  * This controller works with SWFUpload to provide flash/javascript
@@ -24,10 +26,18 @@ class FilesController extends \lithium\action\Controller {
 
 	public function pending() {
 		$this->_render['layout'] = !$this->request->is('ajax');
-
 		$conditions = array();
 		if ($on = $this->request->on) {
-			$conditions += array('event_id' => $on);
+			switch($this->request->search_type){
+				case 'affiliate':
+					Logger::debug('Searching for all pending affiliate backgrounds');
+					$conditions += array('affiliate_id' => $on);
+				break;
+				default:
+				Logger::debug('Searching for all pending event images');
+					$conditions += array('event_id' => $on);
+				break;
+			}
 		}
 
 		$files = File::pending($conditions);
@@ -92,9 +102,14 @@ class FilesController extends \lithium\action\Controller {
 			if ($file->banner_id) {
 				$meta += array('banner_id' => $file->banner_id);
 			}
+			if ($file->affiliate_id) {
+				$meta += array('affiliate_id' => $file->affiliate_id);
+			}
 			$bytes = $file->file->getBytes();
-
-			if (EventImage::process($bytes, $meta) || ItemImage::process($bytes, $meta) || BannerImage::process($bytes, $meta)) {
+			$eventitems = $file->event_id && ( EventImage::process($bytes, $meta) || ItemImage::process($bytes, $meta) );
+			$banners = $file->banner_id && BannerImage::process($bytes, $meta);
+			$affiliates = $file->affiliate_id && AffiliateImage::process($bytes, $meta);
+			if ($eventitems || $banners ||	$affiliates	) {
 				/* This implicitly moves it into the "orphaned" state. */
 				if (!$file->save(array('pending' => false))) {
 					$result = false;
@@ -152,6 +167,9 @@ class FilesController extends \lithium\action\Controller {
 					if(isset($this->request->data['banner_id'])) {
 						$meta['banner_id'] = $this->request->data['banner_id'];
 					}
+					if(isset($this->request->data['affiliate_id'])) {
+						$meta['affiliate_id'] = $this->request->data['affiliate_id'];
+					}
 
 					if (EventImage::process($handle, $meta)) {
 						Logger::debug("File `{$file['name']}` matched & processed as event image.");
@@ -159,7 +177,7 @@ class FilesController extends \lithium\action\Controller {
 					} else if (ItemImage::process($handle, $meta)) {
 						Logger::debug("File `{$file['name']}` matched & processed as item image.");
 
-					} else if (BannerImage::process($handle, $meta)) {
+					} else if (array_key_exists('banner_id', $meta) && BannerImage::process($handle, $meta)) {
 						Logger::debug("File `{$file['name']}` matched & processed as banner image.");
 					} else { /* All unmatched files are not resized and saved as pending. */
 						$file = File::write($handle, $meta + array('pending' => true));

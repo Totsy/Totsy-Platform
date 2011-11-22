@@ -40,9 +40,11 @@ class Banner extends Base {
 			if (is_array($id)){
 				Logger::debug('Attaching files `' . implode(', ', $id) .
 					 "to `{$entity->_id }`");
-				$dataset = array('$pushAll' => array($type['field'] =>
-					array('_id' => $id , 'newPage' => false)
-				));
+				$data = array();
+				foreach($id as $value){
+					$data[] = array('_id' => $value , 'newPage' => false);
+				}
+				$dataset = array('$pushAll' => array($type['field'] => $data));
 			}else {
 				Logger::debug("Attaching file `{$id}` to `{$entity->_id }`");
 				$dataset = array('$push' => array($type['field'] =>

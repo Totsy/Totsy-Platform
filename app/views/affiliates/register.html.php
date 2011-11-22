@@ -3,16 +3,18 @@
 	var affiliateName = "";
 	var categoryName = "";
 	
-	<?php if($affiliateName) {  ?>
+	<?php 
+		if($affiliateName) { 
+	 ?>
 		affiliateName= "<?=$affiliateName?>";	
 	<?php } ?>
 	
-	<?php if($affiliateName) { ?>
+	<?php if($categoryName) { ?>
 		categoryName= "<?=$categoryName?>";
 	<?php } ?>
 	
 	<?php if($affBgroundImage) { ?>
-		affBgroundImage = "<?=$affBgroundImage?>"; 	
+		affBgroundImage = "<?="/image/".$affBgroundImage.".jpg"?>"; 	
 	<?php } ?>
 	
 </script>

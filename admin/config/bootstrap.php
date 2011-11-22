@@ -142,6 +142,7 @@ Environment::set('test', array(
 	'browserUrl' => 'http://admin.totsy'
 ));
 
+//ini_set('display_errors', 1);
 /**
  * Constants used throughout the application.
  */
