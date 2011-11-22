@@ -32,6 +32,7 @@ var discountErrors = new Object();
 	//applying tooltip
 	$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
 	$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
+	$('#promocode_tooltip').tipsy({gravity: 'sw'}); // nw | n | ne | w | e | sw | s | se
 	
 });
 			
@@ -55,7 +56,38 @@ var discountErrors = new Object();
 	<div class="grid_5 cart-header-right">
 		<?=$this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
 	</div>
+
 	<div class="clear"></div>
+
+	<?php
+	if($missChristmasCount>0){
+	?>
+				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#990000; font-size:11px;text-align:center;">
+				<img src="/img/truck_red.png">
+				One on more of the items in your cart are not guaranteed to arrive before 12/26.*
+				</div>
+	
+	
+	<?php
+	}
+	else{
+	?>
+				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#999999; font-size:11px;text-align:center;">
+				<!-- 
+				<img src="/img/truck_grey.png">
+				Item will be delivered on or before 12/23.*
+				
+				-->
+				</div>
+	
+	
+	<?php
+	}
+	?>
+
+
+
+
 	<hr/>
 	     <div class="cart-button fr" style="margin:10px 0px 20px 0px;">
 		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
@@ -74,8 +106,21 @@ var discountErrors = new Object();
 			<tbody>
 			<?php $x = 0; ?>
 			<?php foreach ($cart as $item): ?>
+			
+			<!--temporary miss christmas check -->
+			<?php
+			if($item->miss_christmas){
+				$tableclass = "alt0a";
+				$shipmsg = "<span class=\"shippingalert\">This item is not guaranteed to arrive before 12/26.<br>Order this item separately to receive your other items by 12/23*</span>";
+			}
+			else{
+				$tableclass = "alt0";
+				$shipmsg = "Item will be delivered on or before 12/23.*";
+			}			
+			?>
+			<!-- end xmas -->
 				<!-- Build Product Row -->
-				<tr id="<?=$item->_id?>" class="alt0">
+				<tr id="<?=$item->_id?>" class="<?=$tableclass?>">
 					<td class="cart-th">
 						<?php
 							if (!empty($item->primary_image)) {
@@ -92,7 +137,7 @@ var discountErrors = new Object();
 						'style' => 'margin:2px; display:block; padding:4px;')),
 							array('Items::view', 'args' => $item->url),
 								array(
-								'id' => 'main-logo_', 'escape'=> false
+								'id' => 'main-logo_', 'style' => 'color:#0000ff', 'escape'=> false
 							)
 						); ?>
 					</td>
@@ -105,6 +150,7 @@ var discountErrors = new Object();
 						<?php if($item->size!=="no size") : ?>
 						<strong>Size:</strong> <?=$item->size;?>
 						<?php endif ?>
+						<br><?=$shipmsg?>
 					</td>
 					<?php
 						$date = $cartItemEventEndDates[$x] * 1000;
@@ -160,6 +206,10 @@ var discountErrors = new Object();
 				     <?php if(!empty($credit)): ?>
 				    	<strong>Add <a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a></strong> /
 				    <?php endif ?>
+			        <span id="promocode_tooltip" original-title="Promo codes cannot be combined and can be applied once to an order per member." class="cart-tooltip">
+			        	<img src="/img/tooltip_icon.png">
+			        </span>
+			        
 				    <strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
 				</div>
 				<div style="clear:both"></div>
@@ -267,6 +317,24 @@ var discountErrors = new Object();
 </div>
 
 <div class="clear"></div>
+<div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
+				<?php
+				if($missChristmasCount>0){
+				?>
+				* Totsy ships all items complete and does not split items into separate orders. If you would like the designated items in your cart delivered on or before 12/23, we suggest you order them separately from the items not guaranteed to arrive before 12/26. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions.
+				
+				<?php
+				}
+				else{
+				?>
+				
+				* Our delivery guarantee does not apply when transportation networks are affected by weather.
+				
+				<?php
+				}
+				?>
+				
+</div>
 
 <div id="remove_form" style="display:none">
 	<?=$this->form->create(null ,array('id'=>'removeForm')); ?>

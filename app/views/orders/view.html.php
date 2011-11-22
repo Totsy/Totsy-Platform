@@ -99,6 +99,22 @@
 														Color: <?=$item['color']?>
 														<br>
 														Size: <?=$item['size']?>
+														
+														<?php if($item['miss_christmas']){
+														?>
+														<br>
+														Item will not be delivered until after 12/26
+														
+														<?php
+														}else{
+														?>
+														Item will ship on or before 12/23.
+														
+														<?php
+														}
+														?>
+
+
 													</td>
 													<td style="padding:5px; color:#009900;" title="price">
 														$<?=number_format($item['sale_retail'],2); ?>

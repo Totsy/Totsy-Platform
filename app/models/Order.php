@@ -192,9 +192,11 @@ class Order extends Base {
 			++$user->purchase_count;
 			$user->save(null, array('validate' => false));
 			#Send Order Confirmation Email
+//				'shipDate' => date('M d, Y', Cart::shipDate($order))
+
 			$data = array(
 				'order' => $order->data(),
-				'shipDate' => date('M d, Y', Cart::shipDate($order))
+				'shipDate' => Cart::shipDate($order)
 			);
 			#In Case Of First Order, Send an Email About 10$ Off Discount
 			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
