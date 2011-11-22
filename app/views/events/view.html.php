@@ -51,7 +51,7 @@
 	<?php
 	if($missChristmasCount>0){
 	?>
-				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#990000; font-size:11px;text-align:center;">
+				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#990000; font-size:11px;text-align:left;">
 				<img src="/img/truck_red.png">
 				Items in this sale are not guaranteed to arrive before 12/26.*
 				</div>
@@ -61,7 +61,7 @@
 	}
 	else{
 	?>
-				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#999999; font-size:11px;text-align:center;">
+				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#999999; font-size:11px;text-align:left;">
 				<img src="/img/truck_grey.png">
 				Items will be delivered on or before 12/23.*
 				</div>
@@ -157,11 +157,12 @@
 			<?php endforeach ?>
 		<?php endif ?>
 <div class="clear"></div>
-<div style="color:#999999; font-size:10px;padding:10px;">
+<div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
 				<?php
 				if($missChristmasCount>0){
 				?>
-				* Totsy ships all items complete and does not split items in orders. If you would like other items in your cart that will be delivered on or before 12/23, we suggest you order this item separately. Please contact our Customer Service department at 800-999-9999 or email support@totsy.com with any questions.
+				* Totsy ships all items complete and does not split items into separate orders. If you would like the designated items in your cart delivered on or before 12/23, we suggest you order them separately from the items not guaranteed to arrive before 12/26. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions.
+				
 				<?php
 				}
 				else{
