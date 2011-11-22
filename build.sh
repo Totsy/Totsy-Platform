@@ -31,7 +31,7 @@ function print_usage {
 	echo " - optimize-repo     Perform GC on local git repository."
 	echo " - source-lithium    Install lithium."
 	echo " - source-subs       Initialize and update all submodules."
-	echp " - clear-cache       Clears file caches on admin and app."
+	echo " - clear-cache       Clears file caches on admin and app."
 }
 
 if [ $# != 1 ]; then
