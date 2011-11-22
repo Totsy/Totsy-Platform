@@ -44,7 +44,6 @@ Router::connect('/token', 'Users::token');
 Router::connect('/', 'Dashboard::index');
 
 Router::connect('/register', 'Users::register');
-Router::connect('/token', 'Users::token');
 Router::connect('/account/add/{:args}', 'Account::add');
 
 #users
@@ -81,9 +80,6 @@ Router::connect('/files/upload/{:args}', 'Files::upload');
  * ...and connect the rest of 'Pages' controller's urls.
  */
 Router::connect('/pages/{:args}', 'Pages::view');
-Router::connect('/{:controller}/{:action}/{:id:[0-9]+}.{:type}', array('id' => null));
-Router::connect('/{:controller}/{:action}/{:id:[0-9]+}');
-Router::connect('/{:controller}/{:action}/{:args}');
 
 /**
  * Connect the testing routes.
@@ -100,5 +96,3 @@ Router::connect('/{:controller}/{:action}/{:id:[0-9]+}');
 Router::connect('/{:controller}/{:action}/{:args}');
 }
 
-
-?>

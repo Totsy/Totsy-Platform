@@ -264,7 +264,6 @@
 $(document).ready(function() {
 
 	$(".affiliate_category").autocomplete({source: allAffiliateCategories, minChars:0, minLength:0, mustMatch:false});
-
 	$('#background_selection').hide();
 	//create tabs
 	$("#tabs").tabs();
@@ -336,7 +335,6 @@ $(document).ready(function() {
  				return false;
  			}
  		});
-
 		$(".affiliate_category").blur( function() {
 			//check if the category name has already been added
 			var catExists = false;

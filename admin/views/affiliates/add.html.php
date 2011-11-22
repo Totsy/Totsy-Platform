@@ -88,12 +88,6 @@ var affiliateCodes = "";
 					<h5>Add Pixels</h5>
 					<div id="pixel_1">
 						Pixel:<br>
-						<?=$this->form->textarea('pixel[0][pixel]', array('rows'=>6,'cols'=>50)); ?>
-						<br>
-						<input type="button" name="add_pixel" value="add pixel" id="add_pixel"/>
-						<input type="button" name="remove_pixel" value="remove pixel" id="remove_pixel"/>
-						<br>
-						<br>
 						Enable:
 						<?=$this->form->checkbox('pixel[0][enable]', array('value'=>'1', 'checked'=>'checked')); ?>
 						<br>
@@ -190,7 +184,6 @@ var affiliateCodes = "";
 		$('#pixel_panel').hide();
 		$('#landing_panel').hide();
 		$('#tabs').hide();
-
 		//Activating pixel panel
 		$('input[name=active_pixel]').change(function(){
 			if( $('#ActivePixel:checked').val() == 1){

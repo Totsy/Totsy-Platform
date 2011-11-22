@@ -12,7 +12,6 @@
 <?php if($affBgroundImage) : ?>
     affBgroundImage = "<?='/image/'.$affBgroundImage.'.jpg'?>";
 <?php endif; ?>
-
 </script>
 <?php if ($message){ echo $message; } ?>
 <style>

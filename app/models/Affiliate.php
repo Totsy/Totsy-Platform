@@ -403,29 +403,27 @@ class Affiliate extends Base {
 		}
 		return $success;
 	}
-
+	
 	public static function retrieveLanding($code, $category){
-		 $affBgroundImage = "";
-		 $getAff = Affiliate::find('first',
-				array('conditions' => array(
-					'active_landing' => true,
-					'category' => array('$elemMatch' => array(
-						'code' => $code,
-						'name' => $category
-					))),
-					'fields' => array('category' => true)
-			));
-			foreach($getAff['category'] as $record=>$value) {
-				$catRecord = $value->data();
-
-				if(($catRecord['name'] == $category) &&
-					($catRecord['code'] == $code)){
-					$affBgroundImage = $catRecord['background_image'];
-					break;
-				}
+		$affBgroundImage = "";
+		$getAff = Affiliate::find('first',
+			array('conditions' => array(
+				'active_landing' => true,
+				'category' => array('$elemMatch' => array(
+					'code' => $code,
+					'name' => $category
+				))),
+				'fields' => array('category' => true)
+		));
+		foreach($getAff['category'] as $record=>$value) {
+			$catRecord = $value->data();
+			if(($catRecord['name'] == $category) &&
+				($catRecord['code'] == $code)){
+				$affBgroundImage = $catRecord['background_image'];
+				break;
 			}
-
-			return $affBgroundImage;
+		}
+		return $affBgroundImage;
 	}
 }
 ?>

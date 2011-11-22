@@ -196,5 +196,4 @@ class AffiliatesController extends \admin\controllers\BaseController {
 
 	}
 }
-
 ?>

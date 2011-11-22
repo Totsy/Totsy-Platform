@@ -85,7 +85,6 @@ class Affiliate extends Base {
 	}
 
 	public function attachImage($entity, $name, $id) {
-
 	    Logger::debug("Getting ready to attach images");
 		$id = (string)$id;
 		$type = AffiliateImage::$types[$name];
@@ -103,7 +102,7 @@ class Affiliate extends Base {
 				$dataset = array('$pushAll' => array($type['field'] =>
 					array('background_image' => $id , 'category' => null)
 				));
-			} else {
+			}else {
 				Logger::debug("Multiple but not array. Attaching file `{$id}` to `{$entity->_id }`");
 				Logger::debug("Pushing to {$type['field']}");
 				$dataset = array('$push' => array($type['field'] =>

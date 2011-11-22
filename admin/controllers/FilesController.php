@@ -14,7 +14,6 @@ use admin\models\Affiliate;
 use admin\models\AffiliateImage;
 use lithium\core\Libraries;
 use lithium\core\Environment;
-use lithium\analysis\Logger;
 use lithium\net\http\Router;
 
 /**
@@ -37,7 +36,7 @@ class FilesController extends \lithium\action\Controller {
 					Logger::debug('Searching for all pending affiliate backgrounds');
 					$conditions += array('affiliate_id' => $on);
 				break;
-				default:
+				default:50.56.85.120
 				Logger::debug('Searching for all pending event images');
 					$conditions += array('event_id' => $on);
 				break;
