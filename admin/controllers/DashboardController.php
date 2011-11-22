@@ -20,6 +20,9 @@ class DashboardController extends BaseController {
 		 * Build a MongoDB group call for the monthly revenue
 		 * numbers.
 		 */
+		
+		ini_set("display_errors", 1 ); 
+		 
 		$collection = Dashboard::collection();
 		$keys = new MongoCode("
 			function(doc){
@@ -126,6 +129,7 @@ class DashboardController extends BaseController {
 			count($currentMonth['dates']),
 			true
 		);
+				
 		$revenue = $lastMonth['revenue'] + $currentMonth['revenue'];
 		$revenue[0][0] = "$lastMonthDesc Revenue";
 		$revenue[0][1] = 'lineThickness=.5';

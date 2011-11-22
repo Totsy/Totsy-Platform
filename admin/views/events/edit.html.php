@@ -57,6 +57,7 @@ tinyMCE.init({
 	/* theme_advanced_button3:
 	 theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,charmap,iespell,advhr",
 	 theme_advanced_buttons4 : "spellchecker,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking,blockquote,pagebreak", */
+
 	theme_advanced_toolbar_location : "top",
 	theme_advanced_toolbar_align : "left",
 	theme_advanced_statusbar_location : "bottom",
@@ -171,7 +172,7 @@ for ( i=1; i<6; i++ ) {
 <script type="text/javascript" charset="utf-8">
 	var limit = <?=$shortDescLimit;?>;
 	$(document).ready(function() {
-		
+
 		$('#Short').keyup(function(){
 			return limitTextArea($(this),$('#short_description_characters_counter'),limit);
 		});
@@ -221,22 +222,22 @@ for ( i=1; i<6; i++ ) {
 			<h4 id="article-heading">Event Description</h4>
 			    <?=$this->form->field('name', array('value' => $event->name, 'class' => 'general'));?>
 				<div id="blurb_div">
-					<?=$this->form->field('blurb', array('type' => 'textarea', 
-														 'name' => 'content', 
+					<?=$this->form->field('blurb', array('type' => 'textarea',
+														 'name' => 'content',
 														 'value' => $event->blurb ));?><br>
 				</div>
 			    <div style="width:450px;">
-			    	<?=$this->form->field('short', array('type' => 'textarea', 
-			    										 'name' => 'short_description', 
-			    										 'class' => 'mceNoEditor shortDescription', 
+			    	<?=$this->form->field('short', array('type' => 'textarea',
+			    										 'name' => 'short_description',
+			    										 'class' => 'mceNoEditor shortDescription',
 			    										 'value' => isset($event->short)?$event->short:'' ));?>
 			    	<div id="short_description_characters_wrapper">
-			    		Total: 
+			    		Total:
 			    		<span id="short_description_characters_counter">
-			    			<? if(isset($event->short)) { 
+			    			<? if(isset($event->short)) {
 			    			   		echo strlen($event->short);
-			    			   } else { 
-			    			   		echo '0'; 
+			    			   } else {
+			    			   		echo '0';
 			    			   }?>
 			    		</span>/<?=$shortDescLimit;?></div>
 			    </div>
@@ -288,13 +289,12 @@ for ( i=1; i<6; i++ ) {
 							));?>
 				</div>
 				<?=$this->form->label('Departments')?><br />
-				
+
 				<?=$event->departments?>
-				
+
 				<br><br>
-				
-				<table>
-					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?> 
+
+				<table>					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?>
 				</table>
 				<div id="tags">
 					<?=$this->form->label('Tags'); ?>
@@ -420,8 +420,7 @@ for ( i=1; i<6; i++ ) {
 		<div id="event_items">
 			<h3 id="">Item Management</h3>
 			<hr />
-
-			<div style="width:300px; height:400px; float:left">
+			<div style="width:300px; height:500px; float:left">
 				<h3 id="">Upload Items</h3>
 	            <hr />
 				<p>Please select the default option for all items being uploaded:</p>
@@ -430,6 +429,9 @@ for ( i=1; i<6; i++ ) {
 				<p>Add "Final Sale" to the item description?:</p>
 					<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
 					<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
+				<p>Will item/product ship for Christmas?:</p>
+					<input type="radio" name="miss_christmas" value="0" id="miss_christmas" checked>Yes, ships before 12.23<br>
+					<input type="radio" name="miss_christmas" value="1" id="miss_christmas">NO AFTER XMAS<br><br>
 
 					<!--
 					<?=$this->form->label('Upload Event (Excel Files): '); ?>
@@ -476,8 +478,6 @@ for ( i=1; i<6; i++ ) {
 			<?=$this->form->end(); ?>
 
 			<br><br>
-
-
 			<h2 id="">Delete Items</h2>
 				<p>Click the button below to delete all items from this event. <strong>WARNING - This action cannot be undone. All items associated with this event will be deleted!!!!!!<strong></p>
 				<?=$this->form->create(null, array('url' => 'Items::removeItems', 'name' => 'item-delete')); ?>

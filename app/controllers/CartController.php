@@ -35,7 +35,6 @@ class CartController extends BaseController {
 	* @return compact
 	*/
 	public function view() {
-
 		#Initialize Datas
 		$promocode_disable = false;
 		$cartExpirationDate = 0;

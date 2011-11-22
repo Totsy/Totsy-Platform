@@ -51,6 +51,7 @@ class ReAuthorize extends \lithium\console\Command {
 		$conditions = array('void_confirm' => array('$exists' => false),
 							'auth_confirmation' => array('$exists' => false),
 							'authKey' => array('$exists' => true),
+							'card_type' => 'amex',
 							'cc_payment' => array('$exists' => true),
 							'date_created' => array('$lte' => new MongoDate($limitDate))
 		);
@@ -62,8 +63,10 @@ class ReAuthorize extends \lithium\console\Command {
 				if(!empty($order['auth_records'])) {
 					$lastDate = $order['date_created'];
 					foreach($order['auth_records'] as $record) {
-						if($lastDate->sec < $record['date_saved']->sec) {
-							$lastDate = $record['date_saved'];
+						if(empty($record['error'])) {
+							if($lastDate->sec < $record['date_saved']->sec) {
+								$lastDate = $record['date_saved'];
+							}
 						}
 					}
 					if($lastDate->sec <= $limitDate) {
@@ -89,50 +92,43 @@ class ReAuthorize extends \lithium\console\Command {
 							try {
 								#Save Old AuthKey with Date
 								$newRecord = array('authKey' => $order['authKey'], 'date_saved' => new MongoDate());
-								#Cancel Previous Transaction
-								$authVoid = Payments::void('default', $order['authKey']);
-								try {
-									#Create Card and Check Billing Infos
-									$card = Payments::create('default', 'creditCard', $creditCard + array(
-										'billing' => Payments::create('default', 'address', array(
-											'firstName' => $order['billing']['firstname'],
-											'lastName'  => $order['billing']['lastname'],
-											'address'   => trim($order['billing']['address'] . ' ' . $order['billing']['address2']),
-											'city'      => $order['billing']['city'],
-											'state'     => $order['billing']['state'],
-											'zip'       => $order['billing']['zip'],
-											'country'   => $order['billing']['country']
-									))
-									));
-									#Create a new Transaction and Get a new Authorization Key
-									$auth = Payments::authorize('default', $order['total'], $card);
-									#Setup new AuthKey
-									$update = $ordersCollection->update(
-											array('_id' => $order['_id']),
-											array('$set' => array('authKey' => $auth)), array( 'upsert' => true)
-									);
-									#Add to Auth Records Array
-									$update = $ordersCollection->update(
-											array('_id' => $order['_id']),
-											array('$push' => array('auth_records' => $newRecord)), array( 'upsert' => true)
-									);
-									$updated++;
-								} catch (TransactionException $e) {
-									$errors++;
-									$report['authorize_errors'][] = array(
-										'error_message' => $e->getMessage(), 
-										'order_id' => $order['order_id'], 
-										'authKey' => $order['authKey'], 
-										'total' => $order['total']
-									);
-								}
+								#Create Card and Check Billing Infos
+								$card = Payments::create('default', 'creditCard', $creditCard + array(
+									'billing' => Payments::create('default', 'address', array(
+										'firstName' => $order['billing']['firstname'],
+										'lastName'  => $order['billing']['lastname'],
+										'address'   => trim($order['billing']['address'] . ' ' . $order['billing']['address2']),
+										'city'      => $order['billing']['city'],
+										'state'     => $order['billing']['state'],
+										'zip'       => $order['billing']['zip'],
+										'country'   => $order['billing']['country']
+								))
+								));
+								#Create a new Transaction and Get a new Authorization Key
+								$auth = Payments::authorize('default', $order['total'], $card);
+								#Setup new AuthKey
+								$update = $ordersCollection->update(
+										array('_id' => $order['_id']),
+										array('$set' => array('authKey' => $auth)), array( 'upsert' => true)
+								);
+								#Add to Auth Records Array
+								$update = $ordersCollection->update(
+										array('_id' => $order['_id']),
+										array('$push' => array('auth_records' => $newRecord)), array( 'upsert' => true)
+								);
+								$updated++;
 							} catch (TransactionException $e) {
 								$errors++;
-								$report['void_errors'][] = array(
+								$report['authorize_errors'][] = array(
 										'error_message' => $e->getMessage(), 
 										'order_id' => $order['order_id'], 
 										'authKey' => $order['authKey'], 
 										'total' => $order['total']
+								);
+								$errorRecord = array('error' => $e->getMessage(), 'type' => 'authorize', 'date_saved' => new MongoDate());
+								$update = $ordersCollection->update(
+										array('_id' => $order['_id']),
+										array('$push' => array('auth_records' => $errorRecord)), array( 'upsert' => true)
 								);
 							}
 						}
