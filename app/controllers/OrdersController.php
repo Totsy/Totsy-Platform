@@ -285,6 +285,7 @@ class OrdersController extends BaseController {
 			'primary_image',
 			'expires',
 			'event',
+			'miss_christmas',
 			'discount_exempt'
 		);
 		$promocode_disable = false;
@@ -297,7 +298,18 @@ class OrdersController extends BaseController {
 		#Get Value Of Each and Sum It
 		$subTotal = 0;
 		$cartExpirationDate = 0;
+		$missChristmasCount = 0;
+		$notmissChristmasCount = 0;
+
 		foreach ($cart as $cartValue) {
+			if($cartValue->miss_christmas){
+				$missChristmasCount++;
+			}
+			else{
+				$notmissChristmasCount++;
+			}			
+		
+
 			#Get Last Expiration Date 
 			if ($cartExpirationDate < $cartValue['expires']->sec) {
 				$cartExpirationDate = $cartValue['expires']->sec;
@@ -365,7 +377,7 @@ class OrdersController extends BaseController {
 		if (Session::check('cc_error')) {
 			$this->redirect(array('Orders::payment'));
 		}
-		return $vars + compact('cartEmpty','order','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable');
+		return $vars + compact('cartEmpty','order','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable','missChristmasCount','notmissChristmasCount');
 	}
 
 	/**
