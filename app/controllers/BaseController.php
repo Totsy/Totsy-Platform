@@ -41,7 +41,15 @@ class BaseController extends \lithium\action\Controller {
 		 */
 		$this->fbsession = $fbsession = FacebookProxy::getSession();
 		$fbconfig = FacebookProxy::config();
-		$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
+
+		if($this->fbsession){
+			$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
+		}
+		else{
+			$fblogout = "/logout";		
+		}
+		
+		
 		if ($userInfo) {
 			$user = User::find('first', array(
 				'conditions' => array('_id' => $userInfo['_id']),
