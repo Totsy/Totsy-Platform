@@ -428,10 +428,9 @@ class Cart extends Base {
 		
 		
 		
-		$items = (!empty($cart->items)) ? $cart->items->data() : $cart->data();
-		$items = $cart->data();
+		$items = (!empty($cart->items)) ? $cart->items : $cart;
 
-		foreach($cart as $thisitem){
+		foreach($items as $thisitem){
 			if($thisitem->miss_christmas){
 				$shipDate = "See delivery alert below";	
 			}
