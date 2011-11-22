@@ -6,6 +6,7 @@
 use lithium\security\Auth;
 use lithium\action\Dispatcher;
 use lithium\action\Response;
+use admin\models\Affiliate;
 
 Auth::config(array(
 	'userLogin' => array(
@@ -16,9 +17,19 @@ Auth::config(array(
 ));
 
 Dispatcher::applyFilter('_call', function($self, $params, $chain) {
-	$skip = array('login', 'logout');
-
+	$skip = array('login', 'logout', 'register');
+	$allowed = false;
+	
+	#dynamic affiliate pages
+	 if(preg_match('#(^a/)[a-zA-Z_]+#', $params['request']->url)) {
+		 $allowed = true;
+	 }
+	 if (array_key_exists('a',$params['request']->query )) {
+		 $allowed = true;
+	 }
+	 
 	$granted = in_array($params['request']->url, $skip);
+	$granted = $allowed || $granted;
 	$granted = $granted || Auth::check('userLogin', $params['request']);
 
 	if (!$granted) {

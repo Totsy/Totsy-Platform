@@ -112,8 +112,6 @@ class AffiliatesController extends BaseController {
 	*   @params $affiliate
 	**/
 	public function register($affiliate = NULL) {
-		//ini_set("display_errors", 1);
-		
 		//affiliate category name
 		$categoryName = "";
 		//affiliate name
@@ -123,25 +121,11 @@ class AffiliatesController extends BaseController {
 		
 		if (isset($this->request->query['a']) || preg_match('/^[a-z_]+$/', $this->request->query['a'])) {
 		
-       		$categoryName = trim($this->request->params['args'][1]);
-			$affiliateName = trim($this->request->params['args'][0]); 
-			$backgroundImage = "";
+       		$categoryName = trim($this->request->url);
+			$affiliateName = trim($this->request->query['a']);
+			$affBgroundImage = Affiliate::retrieveLanding($affiliateName,$categoryName);
 			
 			$affiliate = $affiliateName;
-							
-			$getAff = Affiliate::find('first',
-				array('conditions' => array(
-					'name'=> $affiliateName)
-			));
-			
-			foreach($getAff['category'] as $record=>$value) {
-				$catRecord = $value->data();
-				
-				if($catRecord['name']==$categoryName){
-					$affBgroundImage = $catRecord['background_image'];
-					break;
-				}	
-			}			
 		}
 				
 		$pdata = $this->request->data;
