@@ -70,12 +70,8 @@ class CartControllerTest extends \lithium\test\Unit {
 		$cart_id = "787878787zazazag7878";
 		$request = new Request(array(
 			'data' => array('id' => $cart_id),
-<<<<<<< HEAD
-			'params' => array('controller' => null, 'action' => null, 'type' => 'html')
-=======
-			'type' => 'html',
-			'params' => array('controller' => 'carts', 'action' => 'update')
->>>>>>> 5c3d636... Provide all params for test request object.
+			'params' => array('controller' => 'carts', 'action' => 'update', 'type' => 'html'),
+			'type' => 'html'
 		));
 		$remote = new CartController(compact('request'));
 		$user = Session::read('userLogin');
