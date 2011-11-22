@@ -5,6 +5,4 @@ Item Reserved For:<br />
 <span style="float:left">
  Estimated Delivery Date: <br />
  	<span style="font-weight:bold; color:#009900;"><?=$shipDate?></span>
-
-<!-- 	<span style="font-weight:bold; color:#009900;"><?=date('m-d-Y', $shipDate)?></span> -->
 </span>	
