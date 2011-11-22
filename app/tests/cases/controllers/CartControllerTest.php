@@ -50,7 +50,7 @@ class CartControllerTest extends \lithium\test\Unit {
 		));
 		$response = new Request(array(
 			'data' => $post,
-			'params' => array('controller' => null, 'action' => null)
+			'params' => array('controller' => 'carts', 'action' => 'update')
 		));
 		$cartPuppet = new CartController(array('request' => $response));
 		$cartPuppet->update();
@@ -70,7 +70,12 @@ class CartControllerTest extends \lithium\test\Unit {
 		$cart_id = "787878787zazazag7878";
 		$request = new Request(array(
 			'data' => array('id' => $cart_id),
+<<<<<<< HEAD
 			'params' => array('controller' => null, 'action' => null, 'type' => 'html')
+=======
+			'type' => 'html',
+			'params' => array('controller' => 'carts', 'action' => 'update')
+>>>>>>> 5c3d636... Provide all params for test request object.
 		));
 		$remote = new CartController(compact('request'));
 		$user = Session::read('userLogin');
