@@ -111,6 +111,7 @@ class AffiliatesController extends BaseController {
 	*	Affiliate-user invite register
 	*   @params $affiliate
 	**/
+
 	public function register($affiliate = NULL) {
 		//ini_set("display_errors", 1);
 		
