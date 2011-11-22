@@ -2197,13 +2197,17 @@ display: table;
 
 tr.alt0 td {
 	background:#f7f7f7;
-	height:60px;
+	height:50px;
+	padding-top:10px;
+	padding-bottom:10px;
 	vertical-align:middle;
 }
 
 tr.alt0a td {
 	background:#fde5e5;
-	height:60px;
+	height:70px;
+	padding-top:10px;
+	padding-bottom:10px;
 	vertical-align:middle;
 }
 
