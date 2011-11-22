@@ -33,9 +33,8 @@ function print_usage {
 	echo " - source-subs       Initialize and update all submodules."
 	echo " - source-pear       Install symlink to PEAR."
 	echo " - source-selenium   Install dependencies."
-	echo " - clear-cache       Clears file caches on admin and app."
 	echo " - selenium-server   Start the selenium server."
-	echp " - clear-cache       Clears file caches on admin and app."
+	echo " - clear-cache       Clears file caches on admin and app."
 }
 
 if [ $# != 1 ]; then
