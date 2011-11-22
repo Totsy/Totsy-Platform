@@ -423,7 +423,10 @@ class Cart extends Base {
 	public static function shipDate($cart) {
 
 		$shipDate = null;
-		$shipDate = "on or before 12/23";	
+		$shipDate = "On or before 12/23";
+		
+		
+		
 		
 		$items = (!empty($cart->items)) ? $cart->items->data() : $cart->data();
 		$items = $cart->data();
