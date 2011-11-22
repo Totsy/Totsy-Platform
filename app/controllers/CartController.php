@@ -296,6 +296,7 @@ class CartController extends BaseController {
 		$cartData['savings'] = Session::read('userSavings');
 		//get the ship date		
 		$cartData['shipDate'] = date('m-d-Y', Cart::shipDate(Cart::active()));
+		$cartData['shipDate'] = Cart::shipDate(Cart::active());
 		//get the amount of items in the cart
 		$cartData['itemCount'] = Cart::itemCount();
 		
