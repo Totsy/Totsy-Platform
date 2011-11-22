@@ -33,7 +33,7 @@ var discountErrors = new Object();
 	//applying tooltip
 	$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
 	$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
-	$('#promocode_tooltip').tipsy({gravity: 'sw'}); // nw | n | ne | w | e | sw | s | se
+	$('#promocode_tooltip').tipsy({gravity: 'nw'}); // nw | n | ne | w | e | sw | s | se
 
 }); 
 	
@@ -216,7 +216,7 @@ var discountErrors = new Object();
 							<?php if($item->size!=="no size") : ?>						
 							<div><span class="cart-review-color-size">Size:</span> <?=$item->size;?></div>
 							<?php endif ?>
-							<?=$shipmsg?>
+							<br><?=$shipmsg?>
 
 						</div>	
 					</td>
