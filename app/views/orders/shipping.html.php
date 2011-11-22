@@ -155,11 +155,43 @@ var addressForm = new Object();
 		<div>
 				<?=$this->form->submit('Continue', array('class' => 'button fr', 'style'=>'margin-right:10px;')); ?>
 		</div>	
+
+
+
+
+
+
+
+
+
+
+
 	</div>
 
 <?=$this->form->end();?> 
 
 </div>
+
+<div class="clear"></div>
+<div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
+				<?php
+				if($missChristmasCount>0){
+				?>
+				* Totsy ships all items complete and does not split items into separate orders. If you would like the designated items in your cart delivered on or before 12/23, we suggest you order them separately from the items not guaranteed to arrive before 12/26. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions.
+				
+				<?php
+				}
+				else{
+				?>
+				
+				* Our delivery guarantee does not apply when transportation networks are affected by weather.
+				
+				<?php
+				}
+				?>
+				
+</div>
+
 
 <div id="address_form" style="display:none">
 	<?=$this->form->create(null ,array('id'=>'selectForm')); ?>

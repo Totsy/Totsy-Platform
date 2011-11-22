@@ -423,12 +423,14 @@ class Cart extends Base {
 	public static function shipDate($cart) {
 
 		$shipDate = null;
-		$shipDate = "on or before 12/23";	
+		$shipDate = "On or before 12/23";
 		
-		$items = (!empty($cart->items)) ? $cart->items->data() : $cart->data();
-		$items = $cart->data();
+		
+		
+		
+		$items = (!empty($cart->items)) ? $cart->items : $cart;
 
-		foreach($cart as $thisitem){
+		foreach($items as $thisitem){
 			if($thisitem->miss_christmas){
 				$shipDate = "See delivery alert below";	
 			}
