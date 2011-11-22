@@ -224,7 +224,6 @@ class CartController extends BaseController {
 			} else {
 				if( $avail > 0 ) {
 					$item = $item->data();
-					$item['miss_christmas'] = $item['details']['miss_christmas'];
 					$item['size'] = $size;
 					$item['item_id'] = $itemId;
 					unset($item['details']);
