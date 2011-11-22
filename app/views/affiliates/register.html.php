@@ -2,19 +2,20 @@
 
 	var affiliateName = "";
 	var categoryName = "";
-	
-	<?php if($affiliateName) {  ?>
-		affiliateName= "<?php echo $affiliateName?>";	
+	<?php
+		if($affiliateName) {
+	 ?>
+		affiliateName= "<?=$affiliateName?>";
 	<?php } ?>
-	
-	<?php if($affiliateName) { ?>
-		categoryName= "<?php echo $categoryName?>";
+
+	<?php if($categoryName) { ?>
+		categoryName= "<?=$categoryName?>";
 	<?php } ?>
-	
+
 	<?php if($affBgroundImage) { ?>
-		affBgroundImage = "<?php echo $affBgroundImage?>"; 	
+		affBgroundImage = "<?="/image/".$affBgroundImage.".jpg"?>";
 	<?php } ?>
-	
+
 </script>
 <?php if ($message){ echo $message; } ?>
 <style>
@@ -89,10 +90,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 <div class="round">
 <!-- left side -->
 <div class="grid_6">
-<?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
+<?=$this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
 </div>
 <!-- right side -->
-<div class="grid_6" style="margin-left:28px;">	
+<div class="grid_6" style="margin-left:28px;">
 <div class="fr">Already a member? <a href="/login" title="Sign In">Sign In</a></div>
 		<div class="free_shipping_banner_reg_new rollover_img" ><a href="javascript:;" title="Free Shipping"><span></span></a></div>
 </div>
@@ -101,14 +102,14 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 
 <div class="round gradient" style="border:1px #eeeeee solid;height:300px;">
 
-	<div class="grid_6" style="float:left;">	
+	<div class="grid_6" style="float:left;">
 		<div style="width:310px; margin-top:5px;">
-		<?php echo $this->view()->render(array('element' => 'registrationForm')); ?>
+		<?=$this->view()->render(array('element' => 'registrationForm')); ?>
 		</div>
-		
-		
+
+
 	</div>
-	<div class="grid_6" style="width:330px; margin-left:2px;float:left;margin-top:5px;">	
+	<div class="grid_6" style="width:330px; margin-left:2px;float:left;margin-top:5px;">
 		<h2 class="tagline" style="margin-top:2px;">Why savvy moms shop at Totsy?</h2>
 
 		<ul id="bug_bullets">
@@ -126,12 +127,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 
 
 <div class="clear"></div>
-<?php echo $this->html->image('featured_on_long.png', array('style' => 'margin-top:20px; margin-left:10px; border-top:1px solid #f1f1f1; margin-bottom: -14px;')); ?>
+<?=$this->html->image('featured_on_long.png', array('style' => 'margin-top:20px; margin-left:10px; border-top:1px solid #f1f1f1; margin-bottom: -14px;')); ?>
 <div class="clear"></div>
 </div>
 </div>
 <div id="footer">
-<?php echo $this->view()->render(array('element' => 'footerNavPublic')); ?>
+<?=$this->view()->render(array('element' => 'footerNavPublic')); ?>
 </div>
 
 <!-- Google Code for Homepage Remarketing List -->

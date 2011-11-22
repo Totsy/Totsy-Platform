@@ -1,30 +1,33 @@
-<?php echo $this->html->script('tiny_mce/tiny_mce.js');?>
-<?php echo $this->html->script('jquery-1.4.2');?>
-<?php echo $this->html->script('jquery-dynamic-form.js');?>
-<?php echo $this->html->script('jquery-ui-1.8.2.custom.min.js');?>
-<?php echo $this->html->script('swfupload.js');?>
-<?php echo $this->html->script('swfupload.queue.js');?>
-<?php echo $this->html->script('fileprogress.js');?>
-<?php echo $this->html->script('handlers.js');?>
-<?php echo $this->html->script('jquery.editable-1.3.3.js');?>
-<?php echo $this->html->script('affiliate_upload.js');?>
-<?php echo $this->html->style('swfupload')?>
-<?php echo $this->html->style('jquery_ui_blitzer.css')?>
+<?=$this->html->script('tiny_mce/tiny_mce.js');?>
+<?=$this->html->script('jquery-1.4.2');?>
+<?=$this->html->script('jquery-dynamic-form.js');?>
+<?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
+<?=$this->html->script('fileprogress.js');?>
+<?=$this->html->script('handlers.js');?>
+<?=$this->html->script('jquery.editable-1.3.3.js');?>
+<?=$this->html->style('jquery_ui_blitzer.css')?>
+<!--This is the image upload tool js and css-->
+<?=$this->html->script('jquery.flash.min.js')?>
+<?=$this->html->script('agile-uploader-3.0.js')?>
+<?=$this->html->style('agile_uploader.css');?>
+<?=$this->html->style('admin_common.css');?>
+<?=$this->html->script('files.js');?>
+<?=$this->html->style('files.css');?>
 
 <script type="text/javascript">
 	//this is for keeping ALL affiliate categories
-	var allAffiliateCategories = <?php echo json_encode($affiliateCategories)?>;
-	
+	var allAffiliateCategories = <?=json_encode($affiliateCategories)?>;
+
 	//the mongo id for this affiliate -  a string
-	var affiliateId = "<?php echo $affiliate['_id']?>";
-	
+	var affiliateId = "<?=$affiliate['_id']?>";
+
 	//keep these for use in adding affiliate categories
 	//useful for indexing category tag names and images
-	var temp = <?php echo json_encode($affiliate['category'])?>;
+	var temp = <?=json_encode($affiliate['category'])?>;
 	var affiliateCategories = new Array();
 </script>
 
-<?php 
+<?php
 	$i = 0;
 ?>
 
@@ -41,81 +44,39 @@
 		</thead>
 		<tbody>
 			<tr>
-				<td> <?php echo $this->html->link('Create Affiliate', 'affiliates/add');?> </td>
+				<td> <?=$this->html->link('Create Affiliate', 'affiliates/add');?> </td>
 			</tr>
 			<tr>
-				<td><?php echo $this->html->link('View/Edit Affiliate', 'affiliates/index');?></td>
+				<td><?=$this->html->link('View/Edit Affiliate', 'affiliates/index');?></td>
 			</tr>
 		</tbody>
 	</table>
 </div>
 <div class="clear"></div>
-<div class="grid_8 box">
+<div class="grid_6 box">
+	<form id = "AffiliateId">
+		<input type="hidden" name="affiliate_id" value="<?=(string)$affiliate->_id?>">
+	</form>
 	<div class="block forms">
-		<?php echo $this->form->create(null, array('id' => 'mainForm', 'enctype'=>'multipart/form-data'));?>
-			<?php $checked= (($affiliate['active']))? 'checked':'' ?>
-			Activate: <?php echo $this->form->checkbox('active', array('checked'=>$checked)); ?> <br>
+		<?=$this->form->create(null, array('id' => 'mainForm', 'enctype'=>'multipart/form-data'));?>
+			<?php $checked= (($affiliate->active))? 'checked':'' ?>
+			Activate: <?=$this->form->checkbox('active', array('checked'=>$checked)); ?> <br>
 			<?php
 				$option ='';
 				foreach( $packages as $key){
-					if( array_key_exists('level', $affiliate) && $key == $affiliate['level'] ) {
+					if( $key == $affiliate->level ) {
 						$option .= "<option value= $key selected='selected'> $key</option>";
 					} else {
 						$option .= "<option value= $key> $key</option>";
 					}
 				}
 			?>
-			Affiliate Level: <select name="level" id="Level"> <?php echo $option; ?> </select> <br><br>
+			Affiliate Level: <select name="level" id="Level"> <?=$option; ?> </select> <br><br>
 		Affiliate Name:
-			<?php echo $this->form->text('affiliate_name', array('value' => $affiliate['name'])); ?> <br><br>		
-			Affiliate Category: 
-		<?php echo $this->form->text('affiliate_category', array('value' => '', 'autocomplete'=>'off', 'id'=>'affiliate_category')); ?>
-		<input type="button" name="add_category" id="add_category" value="Add Category"/>
-			<br><br>
-			<div id="categories">
-				<?php foreach($affiliate['category'] as $affCat) { ?>
-				<div id="<?php echo $i."_".$affiliate['_id']?>">
-					<a href="#" id="<?php echo $i."_".$affCat['name']?>" class="upload_img" style="width:200px">+ <?php echo $affCat['name'];?></a>
-					<a href="#" class="remove_category" style="float:right; width:10px">X</a>
-					<span style="float:right; width:150px">Select for upload <input type="radio" name="selected_image" value="<?php echo $i?>"></span>
-<!-- form field for categyr name goes here -->
-<input type="hidden" id="<?php echo $i."_".$affiliate['_id']?>_category_name" name="<?php echo $i."_".$affiliate['_id']?>_category_name" value="<?php echo $affCat['name']?>">
-					
-<!-- upload file for this category here -->
-				<input type="hidden" id="<?php echo $i."_".$affiliate['_id']?>_category_background" name="<?php echo $i."_".$affiliate['_id']?>_category_background" value="<?php echo $affCat['background_image']?>">
-				</div>
-				<?php 
-					$i++;
-				} ?>
-			</div>
-			<div id="upload_block">
-				<div id="upload_panel" class="upload">
-					<br>
-					Category background image:<br>
-					<h5 id="uploaded_media">Uploaded Media</h5>
-					<div id="fileInfo"></div>
-				    	<table>
-				        	<tr valign="top">
-				        		<td>
-				        			<div>
-				        				<div class="fieldset flash" id="fsUploadProgress1">
-				        					<span class="legend">Upload Status</span>
-				        				</div>
-				        			<div style="padding-left: 5px;">
-				        						    				<span id="spanButtonPlaceholder1"></span>
-				        				<input id="btnCancel1" type="button" value="Cancel Uploads" onclick="cancelQueue(upload1);" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />												
-				        			<br />
-				        			</div>
-				        			</div>
-				        		</td>
-				       		 </tr>
-				    	</table>
-					</div>
-				</div>
-			</div>
+			<?=$this->form->text('affiliate_name', array('value' => $affiliate->name)); ?>
 			<br><br>
 			Enter Code:
-			<?php echo $this->form->text('code'); ?>  <input type="button" name="add_code" id="add_code" value="add"/>
+			<?=$this->form->text('code'); ?>  <input type="button" name="add_code" id="add_code" value="add"/>
 			<br>
 			Affiliate codes:<br>
 			<?php
@@ -124,25 +85,27 @@
 					$codes[$code]= $code;
 				}
 			?>
-			<?php echo $this->form->select('invitation_codes',$codes,array('multiple'=>'multiple', 'size'=>5)); ?> <br>
+			<?=$this->form->select('invitation_codes',$codes,array('multiple'=>'multiple', 'size'=>5)); ?> <br>
 			<input type="button" name="edit_code" id="edit_code" value="edit code"/>
 			<br><br>
-		</div>	
+		</div>
+</div>
 <!--end of box-->
 
-<div class ="grid_7 box">
+<div class ="grid_9 box">
 	<div class="block forms">
 			<div id ="tabs">
 				<ul>
 					<li id="pixel_tab"><a href="#pixel"><span>Pixels</span></a></li>
 					<li id="current_tab"><a href="#current_pages"><span>Current Pages</span></a></li>
-					<li id="landing_tab"><a href="#landing_page"><span>Landing Pages</span></a></li>
+					<li id="landing_tab"><a href="#landing_page"><span>Dynamic Landing Pages</span></a></li>
+					<li id="pending_tab"><a href="#pending_page"><span>Pending Backgrounds</span></a></li>
 				</ul>
 				<div id="pixel">
 					<?php $checked = (($affiliate['active_pixel']))? 'checked':'' ?>
 					<div id='pixel_activate'>
 						Affiliate uses pixels:
-						<?php echo $this->form->checkbox('active_pixel', array('value' => '1', 'checked' => $checked)); ?>
+						<?=$this->form->checkbox('active_pixel', array('value' => '1', 'checked' => $checked)); ?>
 					</div>
 					<br>
 					<br>
@@ -169,17 +132,17 @@
 								}
 							}
 						?>
-						<div id='<?php echo 'pixel_'.($count+1)?>'>
-							<label> Pixel # <?php echo $count+1; ?> </label><br>
+						<div id='<?='pixel_'.($count+1)?>'>
+							<label> Pixel # <?=$count+1; ?> </label><br>
 							Enable:
-							<?php echo $this->form->checkbox('pixel['.$count.'][enable]', array('value'=>'1', 'checked'=> $checked)); ?> <br>
+							<?=$this->form->checkbox('pixel['.$count.'][enable]', array('value'=>'1', 'checked'=> $checked)); ?> <br>
 							Select Page(s):<br>
-							<select name="<?php echo 'pixel['.$count.'][page][]'; ?>" multiple='multiple' size='5'>
-								<?php echo $option; ?>
+							<select name="<?='pixel['.$count.'][page][]'; ?>" multiple='multiple' size='5'>
+								<?=$option; ?>
 							</select>
 							<br>
 							Pixel:<br>
-							<?php echo $this->form->textarea('pixel['.$count.'][pixel]', array('value' => $pix, 'rows'=>'10', 'cols'=>'50')); ?>
+							<?=$this->form->textarea('pixel['.$count.'][pixel]', array('value' => $pix, 'rows'=>'10', 'cols'=>'50')); ?>
 							<br>
 						</div>
 						<?php
@@ -187,12 +150,12 @@
 							endforeach;
 							endif;
 						?>
-						<input type="hidden" id="pixel_count" name="pixel_count" value="<?php echo $count; ?>" />
+						<input type="hidden" id="pixel_count" name="pixel_count" value="<?=$count; ?>" />
 						<br>
 					</div> <!--end pixel panel-->
 				</div><!--end pixel-->
-				<div id="current_pages"> <!--end current page-->
-					<div id="current_panel"><!--end current panel-->
+				<div id="current_pages"> <!--start current page-->
+					<div id="current_panel"><!--start current panel-->
 						<br/>
 						<div id="template_form">
 							<?php
@@ -203,13 +166,13 @@
 										<?php foreach ($affiliate['category'] as $value):?>
 											<tr>
 												<td>
-													<?php echo $value['name'];?>
+													<?=$value['name'];?>
 												</td>
 												<td>
-													<div id="<?php echo $affiliate['_id'];?>" class="selector" style="text-decoration:underline; cursor:pointer">
-													<a href="/<?php echo $value['name'];?>?a=<?php echo $affiliate['name'];?>">/<?php echo $value['name'];?>?a=<?php echo $affiliate['name'];?>
-													</a>	
-													</div>	
+													<div id="<?=$affiliate['_id'];?>" class="selector" style="text-decoration:underline; cursor:pointer">
+													<a href="/<?=$value['name'];?>?a=<?=$affiliate['name'];?>">/<?=$value['name'];?>?a=<?=$affiliate['name'];?>
+													</a>
+													</div>
 												</td>
 											</tr>
 										<?php endforeach; ?>
@@ -220,15 +183,103 @@
 							?>
 						</div>
 					</div><!--end current page panel-->
-			</div><!--end current page-->
-			<?php
-				if ($affiliate['active_landing']){
-					$checked = 'checked';
-				} else {
-					$checked = '';
-				}
-			?>
-			
+				</div><!--end current page-->
+				<div id="landing_page"><!--start landng page-->
+					<div id="landing_activate">
+						<?php $checked = (($affiliate->active_landing))? 'checked':''; ?>
+			        Affiliate uses dynamic landing Pages:
+			         <?=$this->form->checkbox('active_landing', array('value'=>'1', 'checked'=>$checked)); ?>
+			    </div>
+			    <p>
+					<strong> Upload backgroud images for landing pages.</strong>
+			    </p>
+			    <div id="landing_panel">
+					<!--Current Background Images-->
+					<h3 id="current_images">Current Images</h3>
+					<strong>If you have add a url make sure the http:// is in the url.</strong>
+					<hr />
+						<table border="1" cellspacing="30" cellpadding="30">
+						<tr>
+							<th align="justify">
+								Image
+							</th>
+							<th align="justify">
+								Category
+							</th>
+							<th align="justify">
+								Code
+							</th>
+							<th align="justify">
+								Remove
+							</th>
+						</tr>
+							<?php foreach($affiliate->category as $image):?>
+								<tr>
+									<td align="center">
+										<?php
+												$catImage = "/image/{$image['background_image']}.jpg";
+										?>
+										<?=$this->html->image("$catImage", array('width' => 100, 'alt' => 'altText')); ?>
+									</td>
+
+									<td align="center">
+										<?php
+												$category = $image['name'];
+												$id = $image['background_image'];
+										?>
+										<?=$this->form->text("affiliate_category[$id]", array('value' => $category, 'autocomplete'=>'on', 'class' => 'affiliate_category', 'id'=>"category_" . $id)); ?>
+									</td>
+									<td align="center">
+										<?php
+											$code = $image['code'];
+											$options = array_combine($affiliate->invitation_codes->data(),$affiliate->invitation_codes->data());
+											$selection = array_merge($options,array('all' => 'all'));
+										?>
+										<?=$this->form->select("apply_code[$id]", $selection,array('class' => "relevantCodes", "value" => $code));?>
+									</td>
+									 <td align="center">
+										<input type="hidden" name="img[]" value="<?=$id; ?>"/>
+									</td>
+								</tr>
+							<?php endforeach;?>
+						</table>
+				<!--End of Current Background Image-->
+					<div id="agile_file_upload"></div>
+					<script type="text/javascript">
+						$('#agile_file_upload').agileUploader({
+							flashSrc: "<?=$this->url('/swf/agile-uploader.swf'); ?>",
+							formId: 'AffiliateId',
+							flashWidth: 70,
+							removeIcon: "<?=$this->url('/img/agile_uploader/trash-icon.png'); ?>",
+							flashVars: {
+								submitRedirect: '<?=$this->url("/affiliates/edit/{$affiliate->_id}"); ?>',
+								button_up: "<?=$this->url('/img/agile_uploader/add-file.png?v=1'); ?>",
+								button_down: "<?=$this->url('/img/agile_uploader/add-file.png'); ?>",
+								button_over: "<?=$this->url('/img/agile_uploader/add-file.png'); ?>",
+								form_action: "<?=$this->url('/files/upload/all'); ?>",
+								file_limit: 30,
+								max_height: '1000',
+								max_width: '1000',
+								file_filter: '*.jpg;*.jpeg;*.gif;*.png;*.JPhttp://www.webdav.org/specs/rfc2518.htmlG;*.JPEG;*.GIF;*.PNG',
+								resize: 'jpg,jpeg,gif',
+								force_preview_thumbnail: 'true',
+								firebug: 'true'
+							}
+						});
+					</script>
+
+					<a
+						href="#"
+						class="upload_files_link"
+						onClick="document.getElementById('agileUploaderSWF').submit();"
+					>
+						Start Upload <?=$this->html->image('agile_uploader/upload-icon.png', array('height' => '24')); ?>
+					</a>
+					</div><!--end of landing panel-->
+				</div><!--end landing page-->
+				<div id="pending_page"><!--start Pending backgrounds-->
+					<?=$this->view()->render(array('element' => 'files_pending'), array('item' => $affiliate,'search_type' => 'affiliate')); ?>
+				</div><!--end Pending backgrounds-->
 		</div><!--end tabs-->
 	</div>
 </div>
@@ -237,20 +288,18 @@
 			<br/>
 		<div id="submit button" class="grid_16">
 			<div class="grid_7" >
-			<?php echo $this->form->submit('Update', array('id'=>'edit')); ?>
+			<?=$this->form->submit('Update', array('id'=>'edit')); ?>
 		</div>
 	</div>
-	<?php echo $this->form->end(); ?>
+	<?=$this->form->end(); ?>
 </div>
 <script type="text/javascript">
 
 $(document).ready(function() {
 
-	$("#affiliate_category").autocomplete({source: allAffiliateCategories, minChars:0, minLength:0, mustMatch:false});	
+	$(".affiliate_category").autocomplete({source: allAffiliateCategories, minChars:0, minLength:0, mustMatch:false});
 
 	$('#background_selection').hide();
-	//$('#upload_panel').hide();
-	$('#landing_tab').hide();
 	//create tabs
 	$("#tabs").tabs();
 });
@@ -264,7 +313,7 @@ $(document).ready(function() {
 			$('#pixel_panel').hide();
 		}
 	});
-	
+
 	$(document).ready(function(){
 		$('input[name=active_pixel]').change(function(){
 			if( $('#ActivePixel:checked').val() == 1){
@@ -282,118 +331,69 @@ $(document).ready(function() {
 			}
 		});
 	});
-	
+
 	$(document).ready( function() {
 		var counter = Number($('#pixel_count').val()) + 1;
-		
+
 		//get count of all categories in the object
 		var categoryCount = 0;
-		
+
 		for(i in temp) {
 			categoryCount++;
-			affiliateCategories.push({name: temp[i].name, background_image: temp[i].background_image});	
+			affiliateCategories.push({name: temp[i].name});
 		}
- 		
+
  		function validateNames(t) {
  			var regexp = /^[a-zA-Z0-9-_]+$/;
 
-			if (t.search(regexp) == -1 || t==""){ 
+			if (t.search(regexp) == -1 || t==""){
 				return false;
-			} else { 
-				return true; 
+			} else {
+				return true;
 			}
  		}
- 		
+
  		$("#mainForm").submit( function() {
  			if(validateNames($("#AffiliateName").val())==false) {
  				alert("The affiliate name can only contain letters and/or underscores.");
  				return false;
  			}
  		});
-		
-		$("#add_category").click( function() {
-			//check if the category name has already been added	
+
+		$(".affiliate_category").blur( function() {
+			//check if the category name has already been added
 			var catExists = false;
-			
-			for(i in affiliateCategories) {
-				if (affiliateCategories[i].name==$("#affiliate_category").val()){
+			var active_id = $(this).attr('id');
+			var new_category = $("#"+active_id).val();
+			var current_index = $('.affiliate_category').index($("#"+active_id));
+			if (current_index == -1) {
+				size = $('.affiliate_category').length;
+				current_index = size - 1;
+			}
+			var used_categories = $('.affiliate_category');
+			for(index in used_categories) {
+				if (current_index != index && used_categories[index].value == new_category){
 					catExists = true;
 					break;
 				}
 			}
-						
+
 			if(catExists==true) {
 				alert("This category name is already added - try a different category name");
 				return false;
-			} else if(validateNames($("#affiliate_category").val())==false) {
-				alert("The category name can only contain letters and/or underscores. no spaces, ampersands or other URL incompatible characters");				
-				return false; 
-			} else {
-				//add it to the affiliate categories array			
-				//affiliateCategories({name: $("#affiliate_category").val(), backgroundImage:""});
-				
-				affiliateCategories.push({name: $("#affiliate_category").val(), backgroundImage:""});							
-				//get the new length of this array
-				var len = affiliateCategories.length - 1;
-				var formHTML = "";
-							
-				formHTML = "<div id='" + len + "_" + affiliateId + "'>";		
-				formHTML += "<a id='" + len + "_" + $("#affiliate_category").val() + "' href='#' class='upload_img'>+ " + $("#affiliate_category").val() + "</a>";
-				
-				formHTML += "<a href='#' class='remove_category' style='float:right;width:10px'>X</a>";
-				
-				formHTML += "<span style='float:right; width:150px'>Select for upload <input type='radio' name='selected_image' value='" + len +"'></span>";				
-				// append a hidden field with this naming convention for id's
-				//1 - last index of aff cat
-				//2 - the affiliate id
-				//3 - the name of the field: category name
-				formHTML += "<input type='hidden' name='" + len + "_" + affiliateId + "_category_name' id='" + len + "_" + affiliateId + "_category_name' value='" +  $("#affiliate_category").val() + "'>";
-				formHTML += "</div>";
-				$("#categories").append(formHTML);
+			} else if(validateNames(new_category)==false) {
+				alert("The category name can only contain letters and/or underscores. no spaces, ampersands or other URL incompatible characters");
+				return false;
 			}
 		});
-		
-		$(".remove_category").live('click', function(){
-			var categoryId = $(this).parent()[0].id;
-			var catIndex = 0;
-			
-			catIndex = categoryId.substring(0, 1);	
-					
-			//remove it from the affiliate categories object
-			delete affiliateCategories[catIndex];
-			//remove HTML portion
-			$("#" + categoryId).remove();
-		});
-		
-		/*
-		$(".upload_img").live('click', function() {		
-			var affCat = this.id;
-			
-			var catIndex = 0;
-			var catImgId = "";
-			
-			//catImgId = catIndex + "_" + affiliateId + "_category_background";
-			catIndex = affCat.substring(0, 1);
-			// 1 - get the first number in the id field of the anchor tag 
-			//waiting for image upload to work, then we can deal with how the returned image path will be dealt with
-						
-				var imgHTML = "";
-			
-				imgHTML += "<input type='hidden' name='" + affCat + "_category_background' id='" + affCat + "_category_background' class='upload'>";				
-				//imgHTML += $("#upload_block").html();
-				//$("#upload_block").show();				
-				
-				//$("#" + catIndex + "_" + affiliateId).append(imgHTML);
-				//$("#" + catIndex + "_" + affiliateId + " .upload").remove();
-		});*/
-		
+
 		$('#add_pixel').click(function() {
 			var newPixelDiv = $(document.createElement("div")).attr("id", "pixel_"+counter);
 
 			newPixelDiv.html(unescape("<label> Pixel #" +counter + "</label> <br> Enable:"+
-				'<?php echo $this->form->checkbox("pixel['+(counter-1)+'][enable]", array("value"=>"1", "checked"=>"checked")); ?> <br> Select:'+
-				'<?php echo $this->form->select("pixel['+(counter-1)+'][page]", $sitePages, array("multiple"=>"multiple", "size"=>5)); ?><br> Pixel<br>'+
-				'<?php echo $this->form->textarea("pixel['+(counter-1)+'][pixel]", array("rows"=>"5")); ?>'
+				'<?=$this->form->checkbox("pixel['+(counter-1)+'][enable]", array("value"=>"1", "checked"=>"checked")); ?> <br> Select:'+
+				'<?=$this->form->select("pixel['+(counter-1)+'][page]", $sitePages, array("multiple"=>"multiple", "size"=>5)); ?><br> Pixel<br>'+
+				'<?=$this->form->textarea("pixel['+(counter-1)+'][pixel]", array("rows"=>"5")); ?>'
 				));
 			newPixelDiv.appendTo('#pixel_panel');
 			counter++;
@@ -416,12 +416,14 @@ $(document).ready(function() {
 			var value= $('#Code').val();
 			if(value){
 				$('#InvitationCodes').append("<option value=" + value + ">"+value+"</option>");
+				$('.relevantCodes').append("<option value="+value+">"+value+"</option>");
 				$('#Code').attr('value', "");
 			}
 		});
 		$('#edit_code').click(function(){
 			var value=$('#InvitationCodes option:selected').val();
 			$('#InvitationCodes option:selected').remove();
+			$('.relevantCodes option:selected').remove();
 			$('#Code').attr('value',value);
 		});
 	});

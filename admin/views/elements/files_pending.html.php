@@ -1,7 +1,8 @@
 <?php
 
 extract(array(
-	'item' => null
+	'item' => null,
+	'search_type' => null
 ), EXTR_SKIP);
 
 $refreshUrl = array('controller' => 'files', 'action' => 'pending');
@@ -9,6 +10,10 @@ $associateUrl = array('controller' => 'files', 'action' => 'associate', 'scope' 
 
 if ($item) {
 	$refreshUrl['on'] = $associateUrl['on'] = (string) $item->_id;
+}
+
+if ($search_type) {
+	$refreshUrl['search_type'] = $associateUrl['search_type'] = $search_type;
 }
 
 ?>

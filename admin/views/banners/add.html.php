@@ -1,5 +1,5 @@
 <?=$this->html->script(array('tiny_mce/tiny_mce.js', 'fileprogress.js', 'handlers.js', 'jquery.dataTables.js', 'jquery-ui-timepicker.min.js'));?>
-<?=$this->html->style(array('swfupload', 'jquery_ui_blitzer', 'table', 'timepicker'));?>
+<?=$this->html->style(array('jquery_ui_blitzer', 'table', 'timepicker'));?>
 
 <?=$this->html->script('jquery.flash.min.js')?>
 <?=$this->html->script('agile-uploader-3.0.js')?>

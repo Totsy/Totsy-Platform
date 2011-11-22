@@ -1,17 +1,21 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-<?php echo $this->html->script('jquery-dynamic-form.js');?>
-<?php echo $this->html->script('jquery-ui-1.8.2.custom.min.js');?>
-<?php echo $this->html->script('swfupload.js');?>
-<?php echo $this->html->script('swfupload.queue.js');?>
-<?php echo $this->html->script('fileprogress.js');?>
-<?php echo $this->html->script('handlers.js');?>
-<?php echo $this->html->script('jquery.editable-1.3.3.js');?>
-<?php echo $this->html->script('affiliate_upload.js');?>
-<?php echo $this->html->style('swfupload')?>
-<?php echo $this->html->style('jquery_ui_blitzer.css')?>
+<?=$this->html->script('jquery-dynamic-form.js');?>
+<?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
+<?=$this->html->script('fileprogress.js');?>
+<?=$this->html->script('handlers.js');?>
+<?=$this->html->script('jquery.editable-1.3.3.js');?>
+<?=$this->html->style('jquery_ui_blitzer.css')?>
+<!--This is the image upload tool js and css-->
+<?=$this->html->script('jquery.flash.min.js')?>
+<?=$this->html->script('agile-uploader-3.0.js')?>
+<?=$this->html->style('agile_uploader.css');?>
+<?=$this->html->style('admin_common.css');?>
+<?=$this->html->script('files.js');?>
+<?=$this->html->style('files.css');?>
 
 <script type="text/javascript">
-var affiliateCategories = <?php echo json_encode($affiliateCategories)?>;
+var affiliateCategories = <?=json_encode($affiliateCategories)?>;
+var affiliateCodes = "";
 </script>
 
 <div class="grid_16">
@@ -26,55 +30,42 @@ var affiliateCategories = <?php echo json_encode($affiliateCategories)?>;
 		</thead>
 		<tbody>
 			<tr>
-				<td><?php echo $this->html->link('Create Affiliate', 'affiliates/add'); ?> </td>
+				<td><?=$this->html->link('Create Affiliate', 'affiliates/add'); ?> </td>
 			</tr>
 			<tr>
-				<td><?php echo $this->html->link('View/Edit Affiliate', 'affiliates/index' ); ?></td>
+				<td><?=$this->html->link('View/Edit Affiliate', 'affiliates/index' ); ?></td>
 			</tr>
 		</tbody>
 	</table>
 </div>
 <div class="clear"></div>
-<div class="grid_8 box">
+<div>
+	<form id = "AffiliateId">
+		<input type="hidden" name="affiliate_id" value="<?=(string)$prospective_id?>">
+	</form>
+</div>
+<div class="grid_7 box">
 	<div class="block forms">
-		<?php echo $this->form->create(null,array("id"=>"affForm")); ?>
-		Activate: <?php echo $this->form->checkbox('active', array('checked'=>'checked')); ?> <br>
-		Affiliate Level: <?php echo $this->form->select('level',$packages); ?> <br><br>
+		<?=$this->form->create(null,array("id"=>"affForm")); ?>
+		<input type="hidden" name="affiliate_id" value="<?=(string)$prospective_id?>">
+		Activate: <?=$this->form->checkbox('active', array('checked'=>'checked')); ?> <br>
+		Affiliate Level: <?=$this->form->select('level',$packages); ?> <br><br>
 		<!--
-		Affiliate Category: 
+		Affiliate Category:
 		<input type="text" id="affiliate_category" name="affiliate_category" autocomplete="off" class="textbox"><br><br> -->
 		Affiliate Name:
-		<?php echo $this->form->text('affiliate_name'); ?> <br><br>
+		<?=$this->form->text('affiliate_name'); ?> <br><br>
 		Enter Code:
-		<?php echo $this->form->text('code'); ?>  <input type="button" name="add_code" id="add_code" value="add"/>
+		<?=$this->form->text('code'); ?>  <input type="button" name="add_code" id="add_code" value="add"/>
 		<br>
 		Affiliate codes:<br>
-		<?php echo $this->form->select('invitation_codes',array(),array('multiple'=>'multiple', 'size'=>5)); ?> <br>
+		<?=$this->form->select('invitation_codes',array(),array('multiple'=>'multiple', 'size'=>5)); ?> <br>
 		<input type="button" name="edit_code" id="edit_code" value="Edit code"/>
 		<br><br>
-		<div id="upload_panel">
-			<h5 id="uploaded_media">Uploaded Media</h5>
-			    	<div id="fileInfo"></div>
-			<table>
-			    <tr valign="top">
-			    	<td>
-			    		<div>
-			    			<div class="fieldset flash" id="fsUploadProgress1">
-			    				<span class="legend">Upload Status</span>
-			    			</div>
-			    			<div style="padding-left: 5px;">
-			    				<span id="spanButtonPlaceholder1" onclick="isBackground(upload1);"></span>
-			    				<input id="btnCancel1" type="button" value="Cancel Uploads" onclick="cancelQueue(upload1);" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />												
-			    			<br />
-			    			</div>
-			    		</div>
-			    	</td>
-			    </tr>
-			</table>
-		</div>
+
 	</div>
 </div> <!--end of box-->
-<div class ="grid_7 box">
+<div class ="grid_8 box">
 	<div class="block forms">
 		<div id="tabs">
 			<ul>
@@ -83,33 +74,89 @@ var affiliateCategories = <?php echo json_encode($affiliateCategories)?>;
 					<span>Pixels</span>
 					</a>
 				</li>
-				<!--<li><a href="#landing_page"><span>Landing Pages</span></a></li> -->
+				<li>
+				    <a href="#landing_page"><span>Landing Pages</span></a>
+				</li>
+				<li>
+				    <a href="#pending_page"><span>Pending Backgrounds</span></a>
+				</li>
 			</ul>
 			<div id="pixel">
-				<div id="pixel_activate"> Affiliate uses pixels: <?php echo $this->form->checkbox('active_pixel', array('value'=>'1')); ?> </div>
+				<div id="pixel_activate"> Affiliate uses pixels: <?=$this->form->checkbox('active_pixel', array('value'=>'1')); ?> </div>
 				<div id="pixel_panel">
 					<br>
 					<h5>Add Pixels</h5>
-					<div id="pixel">
+					<div id="pixel_1">
 						Pixel:<br>
-						<?php echo $this->form->textarea('pixel[0][pixel]', array('rows'=>6,'cols'=>50)); ?>
+						<?=$this->form->textarea('pixel[0][pixel]', array('rows'=>6,'cols'=>50)); ?>
 						<br>
 						<input type="button" name="add_pixel" value="add pixel" id="add_pixel"/>
 						<input type="button" name="remove_pixel" value="remove pixel" id="remove_pixel"/>
 						<br>
 						<br>
 						Enable:
-						<?php echo $this->form->checkbox('pixel[0][enable]', array('value'=>'1', 'checked'=>'checked')); ?> 
+						<?=$this->form->checkbox('pixel[0][enable]', array('value'=>'1', 'checked'=>'checked')); ?>
 						<br>
 						Select Page(s):
 						<br>
-						<?php echo $this->form->select('pixel[0][page]', $sitePages, array('multiple'=>'multiple', 'size'=>5)); ?>
+						<?=$this->form->select('pixel[0][page]', $sitePages, array('multiple'=>'multiple', 'size'=>5)); ?>
+						<br>
+						<br>
+						Select code(s) pixel applies to:
+						<br>
+						<?=$this->form->select('pixel[0][codes]',array(), array('multiple'=>'multiple', 'size'=>5, 'class' => 'relevantCodes')); ?>
+						<br>
+						<br>
+						<?=$this->form->textarea('pixel[0][pixel]', array('rows'=>6,'cols'=>50)); ?>
 						<br>
 						<br>
 						<input type="hidden" name="background_image" value="" id="background_image"/>
-				</div>
+				    </div>
 				</div><!--end of pixel panel-->
 			</div><!--end of pixel-->
+			<div id="landing_page">
+			    <div id="landing_activate">
+			        Affiliate uses dynamic landing Pages:                            <?=$this->form->checkbox('active_landing', array('value'=>'1')); ?>
+			    </div>
+			    <p>
+					<strong> Upload backgroud images for landing pages.  You can associate the images in the edit view.</strong>
+			    </p>
+			    <div id="landing_panel">
+					<div id="agile_file_upload"></div>
+					<script type="text/javascript">
+						$('#agile_file_upload').agileUploader({
+							flashSrc: "<?=$this->url('/swf/agile-uploader.swf'); ?>",
+							formId: 'AffiliateId',
+							flashWidth: 70,
+							removeIcon: "<?=$this->url('/img/agile_uploader/trash-icon.png'); ?>",
+							flashVars: {
+								button_up: "<?=$this->url('/img/agile_uploader/add-file.png?v=1'); ?>",
+								button_down: "<?=$this->url('/img/agile_uploader/add-file.png'); ?>",
+								button_over: "<?=$this->url('/img/agile_uploader/add-file.png'); ?>",
+								form_action: "<?=$this->url('/files/upload/all'); ?>",
+								file_limit: 30,
+								max_height: '1000',
+								max_width: '1000',
+								file_filter: '*.jpg;*.jpeg;*.gif;*.png;*.JPG;*.JPEG;*.GIF;*.PNG',
+								resize: 'jpg,jpeg,gif',
+								force_preview_thumbnail: 'true',
+								firebug: 'true'
+							}
+						});
+					</script>
+
+					<a
+						href="#"
+						class="upload_files_link"
+						onClick="document.getElementById('agileUploaderSWF').submit();"
+					>
+						Start Upload <?=$this->html->image('agile_uploader/upload-icon.png', array('height' => '24')); ?>
+					</a>
+			    </div><!--end of landing_panel-->
+			</div><!--end of landing_page-->
+			<div id="pending_page">
+				<?=$this->view()->render(array('element' => 'files_pending'), array('item' => $affiliate,'search_type' => 'affiliate')); ?>
+			</div>
 		</div><!--end tabs-->
 	</div>
 </div>
@@ -124,10 +171,10 @@ var affiliateCategories = <?php echo json_encode($affiliateCategories)?>;
 	<div class="clear"></div>
 	<div id="submit button" class="grid_2">
 		<div class="grid_2" >
-			<?php echo $this->form->submit('Create', array('id'=>'create')); ?>
+			<?=$this->form->submit('Create', array('id'=>'create')); ?>
 		</div>
 	</div>
-	<?php echo $this->form->end(); ?>
+	<?=$this->form->end(); ?>
 </div>
 
 <script type="text/javascript">
@@ -137,24 +184,27 @@ var affiliateCategories = <?php echo json_encode($affiliateCategories)?>;
 	});
 </script>
 <script type="text/javascript">
-		
+
 	$(document).ready(function(){
-		
-		$("#affiliate_category").autocomplete({source: affiliateCategories, minChars:0, minLength:0, mustMatch:false});		
-		
-		$("#affForm").submit(function(){
-			validateCategory();
-		});
-			
-		$('#templates').change(function(){
-			template = $(this).val();
-		});
-		
+		//Initial setup
+		$('#pixel_panel').hide();
+		$('#landing_panel').hide();
+		$('#tabs').hide();
+
+		//Activating pixel panel
 		$('input[name=active_pixel]').change(function(){
 			if( $('#ActivePixel:checked').val() == 1){
 				$('#pixel_panel').show();
 			}else{
 				$('#pixel_panel').hide();
+			}
+		});
+		//Activating landing page panel
+		$('input[name=active_landing]').change(function(){
+			if( $('#ActiveLanding:checked').val() == 1){
+				$('#landing_panel').show();
+			}else{
+				$('#landing_panel').hide();
 			}
 		});
 
@@ -169,18 +219,19 @@ var affiliateCategories = <?php echo json_encode($affiliateCategories)?>;
 				$('#tabs').show();
 			}else{
 				$('#pixel_panel').hide();
+				$('#landing_panel').hide();
 				$('#tabs').hide();
 			}
 		});
 		//this jquery is for adding/removing pixel entry fields
-		var counter =2;
-
+		var counter = 2;
 		$('#add_pixel').click(function(){
 			var newPixelDiv = $(document.createElement('div')).attr("id", "pixel_"+counter);
 			newPixelDiv.html("<label> Pixel #" +counter + "</label> <br> Enable:"+
-				'<?php echo $this->form->checkbox("pixel['+(counter-1)+'][enable]", array("value"=>"1", "checked"=>"checked")); ?> <br> Select:'+
-				'<?php echo $this->form->select("pixel['+(counter-1)+'][page]", $sitePages, array("multiple"=>"multiple", "size"=>5)); ?><br> Pixel<br>'+
-				'<?php echo $this->form->textarea("pixel['+(counter-1)+'][pixel]", array("rows"=>"5")); ?>'
+				'<?=$this->form->checkbox("pixel['+(counter-1)+'][enable]", array("value"=>"1", "checked"=>"checked")); ?> <br> Select Page:'+
+				'<?=$this->form->select("pixel['+(counter-1)+'][page]", $sitePages, array("multiple"=>"multiple", "size"=>5)); ?><br> Select code:'+
+				'<?=$this->form->select("pixel['+(counter-1)+'][page]",array(), array("multiple"=>"multiple", "size"=>5,"class" => "relevantCodes")); ?><br>Pixel<br>'+
+				'<?=$this->form->textarea("pixel['+(counter-1)+'][pixel]", array("rows"=>"5")); ?>'
 				);
 			newPixelDiv.appendTo('#pixel_panel');
 			counter++;
@@ -196,19 +247,23 @@ var affiliateCategories = <?php echo json_encode($affiliateCategories)?>;
 		});
 	});
 
-	//multi select transfer transfer
+	//multi select transfer
 	$(document).ready(function(){
-	
+        //add affiliate code to select box
 		$('#add_code').click(function(){
 			var value= $('#Code').val();
 			if(value){
 				$('#InvitationCodes').append("<option value="+value+">"+value+"</option>");
+				$('.relevantCodes').append("<option value="+value+">"+value+"</option>");
 				$('#Code').attr('value', "");
 			}
 		});
+		//removes affiliate code to select box to text box
 		$('#edit_code').click(function(){
-			var value=$('#InvitationCodes option:selected').val();
+			var value = $('#InvitationCodes option:selected').val();
+			$('.relevantCodes').val(value);
 			$('#InvitationCodes option:selected').remove();
+			$('.relevantCodes option:selected').remove();
 			$('#Code').attr('value',value);
 		});
 	});
@@ -220,63 +275,16 @@ var affiliateCategories = <?php echo json_encode($affiliateCategories)?>;
 			});
 		});
 	});
-	$("#upload").click(function(){
-		if($('#upload_panel').css('display') == 'none'){
-			$('#upload_panel').show();
-		}else{
-			$('#upload_panel').hide();
-		}
-	});
-	
-	$("#background_select").click(function(){
-		if($('#background_selection').css('display') == 'none'){
-			loadBackgrounds();
-			$('#background_selection').show();
-		}else{
-			$('#background_selection').hide();
-		}
-	});
-	
+
 </script>
 <script type="text/javascript">
+function getCodes() {
 
-function validateCategory(){
-    if($("#affiliate_category").val().length > 1 && $("#affiliate_category").val().indexOf(" ") > -1){
-    	alert("The category field cannot contain spaces");
-    	return false;
-    }
-} 
+	var tmp =[];
 
-	//background
-function backgroundChange(image){
-	$("input:hidden[name='background_img']").val(image);
-	$('#mb-bg').css('background-image', 'url(/image/' + image + '.png)');
-}
-
-function featureChange(){
-	id = $(this).attr('id');
-}
-//Edit in place
-$(function(){
-    $('.editable').editable({
-        onEdit:begin,
-        onSubmit:submit,
-        type:'textarea'
-    });
-    function begin(){
-        this.append('Click anywhere to submit');
-    }
-    function submit(){
-    	var id = $(this).attr('id');
-    	var html = $('#' + id).html();
-    	if (html == "") {
-    		html = "empty";
-    	}
-        $("input:hidden[name='" + id +"']").val(html);
-    }
-});
-
-function timer(){
- window.setTimeout("loadBackgrounds();", 10000);
+	$('#InvitationCodes option').each(function(index,val){
+		tmp.push( $(val).text());
+	});
+	return tmp;
 }
 </script>
