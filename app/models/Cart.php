@@ -425,27 +425,28 @@ class Cart extends Base {
 	 * @return string
 	 */
 	public static function shipDate($cart) {
-		$i = 1;
-		//$event = static::getLastEvent($cart);
+
 		$shipDate = null;
-		$shipDatebool = true;
+		$shipDate = "on or before 12/23";	
 		
-		foreach($cart as $thiscart){
-			if($thiscart->miss_christmas){
-				$shipDatebool = false;
+		$items = (!empty($cart->items)) ? $cart->items->data() : $cart->data();
+		$items = $cart->data();
+
+		foreach($cart as $thisitem){
+			if($thisitem->miss_christmas){
+				$shipDate = "See delivery alert below";	
+			}
+			elseif($thisitem['miss_christmas']){
+				$shipDate = "See delivery alert below";	
+			
 			}
 		}
 		
-
-		if($shipDatebool){
-			$shipDate = "on or before 12/23";	
-		}
-		else{
-			$shipDate = "<span class=\"shippingalert\">See delivery alert below</span>";	
-			$shipDate = "See delivery alert below";	
-		}
+		return $shipDate;
 		
 		
+		$i = 1;
+		//$event = static::getLastEvent($cart);
 		if (!empty($event)) {
 			$shipDate = $event->end_date->sec;
 			while($i < static::_object()->_shipBuffer) {
