@@ -106,7 +106,7 @@
 														Item will not be delivered until after 12/26
 														
 														<?php
-														}else{)
+														}else{
 														?>
 														Item will ship on or before 12/23.
 														
