@@ -441,7 +441,10 @@ class OrdersController extends BaseController {
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'shipping_discount'
 		);
 		if ((!$cartEmpty) && (!empty($this->request->data['process']))) {
+
+			/* Process this order and run it through the payment processor. */
 			$order = $orderClass::process($this->request->data, $cart, $vars, $avatax);
+
 			if (empty($order->errors) && !(Session::check('cc_error'))) {
 				#Redirect To Confirmation Page
 				return $this->redirect(array('Orders::view', 'args' => $order->order_id));
