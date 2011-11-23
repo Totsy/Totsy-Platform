@@ -193,6 +193,54 @@ class CartTest extends \lithium\test\Unit {
 		Session::delete('userLogin');
 	}
 
+	public function testTotalWithShipping() {
+		$data = array(
+			'taxable' => true
+		);
+		$item = Item::create($data);
+		$item->save();
+		$this->_delete[] = $item;
+
+		$data = array(
+			'sale_retail' => 3,
+			'quantity' => 2,
+			'item_id' => (string) $item->_id
+		);
+		$cart = Cart::create($data);
+
+		$shipping = array(
+			'state' => 'CA',
+			'zip' => 9999
+		);
+		$expected = 6;
+		$result = $cart->total($shipping);
+		$this->assertEqual($expected, $result);
+	}
+
+	public function testTotalWithNYShipping() {
+		$data = array(
+			'taxable' => true
+		);
+		$item = Item::create($data);
+		$item->save();
+		$this->_delete[] = $item;
+
+		$data = array(
+			'sale_retail' => 3,
+			'quantity' => 2,
+			'item_id' => (string) $item->_id
+		);
+		$cart = Cart::create($data);
+
+		$shipping = array(
+			'state' => 'NY',
+			'zip' => 100
+		);
+		$expected = (string) 7.065;
+		$result = (string) $cart->total($shipping);
+		$this->assertEqual($expected, $result);
+	}
+
 	/*
 	* Testing the Check Method of the Cart
 	*/
