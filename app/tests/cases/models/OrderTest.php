@@ -307,15 +307,15 @@ class OrderTest extends \lithium\test\Unit {
 		);
 		$this->assertTrue($result);
 
-		$expected = 0;
+		$expected = 11;
 		$result = $order->discount;
 		$this->assertEqual($expected, $result);
 
-		$expected = 0;
+		$expected = 10;
 		$result = $order->handling;
 		$this->assertEqual($expected, $result);
 
-		$expected = 0;
+		$expected = 1;
 		$result = $order->overSizeHandling;
 		$this->assertEqual($expected, $result);
 
