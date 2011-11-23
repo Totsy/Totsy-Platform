@@ -66,7 +66,7 @@ Router::connect('/api/{:args}', array('controller' => 'API', 'action' => 'index'
 Router::connect('/unsubcentral/unsubscribed/{:args}', array('controller' => 'unsubcentral', 'action' => 'unsubscribed'));
 Router::connect('/unsubcentral/del', array('controller' => 'unsubcentral', 'action' => 'del'));
 
-Router::connect('/register', 'Users::register');
+Router::connect('/register', 'Users::mpregister');
 Router::connect('/register/facebook', 'Users::fbregister');
 Router::connect('/mpregister', 'Users::mpregister');
 Router::connect('/mplogin', 'Users::mplogin');
@@ -96,8 +96,8 @@ Router::connect('/checkout/review', 'Orders::review');
 Router::connect('/login', 'Users::login');
 
 if(!Session::check('userLogin')) {
-	Router::connect('/', 'Users::register');
-	Router::connect('/{:args}', 'Users::register');
+	Router::connect('/', 'Users::mpregister');
+	Router::connect('/{:args}', 'Users::mpregister');
 	return;
 }
 

@@ -258,7 +258,7 @@ class UsersController extends BaseController {
 	}
 	
 	public function mplogin() {
-		$this->_render['layout'] = 'login';
+		$this->_render['layout'] = 'mamapedia/login';
 	}
 
 	protected function autoLogin() {
@@ -610,6 +610,7 @@ class UsersController extends BaseController {
 			$user->email = $fbuser['email'];
 			$user->confirmemail = $fbuser['email'];
 		}
+		//echo "test";
 		
 		$this->_render['layout'] = 'mamapedia/login';
 	}

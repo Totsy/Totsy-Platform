@@ -88,7 +88,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 
 <!-- left side -->
 <div class="grid_6" style="float:left;width:315px;">
-<?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
+<?php echo $this->html->link($this->html->image('mamapedia/logo.png', array('width'=>'280')), '', array('escape'=> false)); ?>
 <div class="round gradient" style="border:1px #eeeeee solid; height:330px; width:310px; margin-top:8px;">
 
 <h2 style="width:300px; text-align:center; font-weight:bold; padding-top:10px; padding-bottom:20px; margin-bottom:10px;  border-bottom:1px #cccccc solid;">Member Sign in</h2>
