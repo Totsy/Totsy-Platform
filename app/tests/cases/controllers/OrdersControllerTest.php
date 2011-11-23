@@ -430,7 +430,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$this->assertFalse($result);
 
 		$result = ProcessorMock::$authorize[1];
-		$expected = 15;
+		$expected = 0;
 		$this->assertEqual($expected, $result);
 
 		$this->assertEqual('default', ProcessorMock::$authorize[0]);
