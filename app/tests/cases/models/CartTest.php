@@ -717,6 +717,36 @@ class CartTest extends \lithium\test\Unit {
 		Session::delete('userLogin');
 	}
 
+	public function testItemCount() {
+		Session::write('userLogin', $this->user->data());
+
+		$data = array(
+			'session' => Session::key('default'),
+			'expires' => new MongoDate(strtotime('+10min')),
+			'user' => (string) $this->user->_id,
+			'quantity' => 3
+		);
+		$cart = Cart::create($data);
+		$cart->save();
+		$this->_delete[] = $cart;
+
+		$data = array(
+			'session' => Session::key('default'),
+			'expires' => new MongoDate(strtotime('+10min')),
+			'user' => (string) $this->user->_id,
+			'quantity' => 2
+		);
+		$cart = Cart::create($data);
+		$cart->save();
+		$this->_delete[] = $cart;
+
+		$expected = 5;
+		$result = Cart::itemCount();
+		$this->assertIdentical($expected, $result);
+
+		Session::delete('userLogin');
+	}
+
 	/*
 	* Testing the Check Method of the Cart
 	*/
