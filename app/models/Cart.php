@@ -434,16 +434,17 @@ class Cart extends Base {
 		
 		$items = (!empty($cart->items)) ? $cart->items : $cart;
 
-		foreach($items as $thisitem){
-			if($thisitem->miss_christmas){
-				$shipDate = "See delivery alert below";	
-			}
-			elseif($thisitem['miss_christmas']){
-				$shipDate = "See delivery alert below";	
-			
+		if($items){
+			foreach($items as $thisitem){
+				if($thisitem->miss_christmas){
+					$shipDate = "See delivery alert below";	
+				}
+				elseif($thisitem['miss_christmas']){
+					$shipDate = "See delivery alert below";	
+				
+				}
 			}
 		}
-		
 		return $shipDate;
 		
 		
