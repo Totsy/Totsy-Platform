@@ -49,8 +49,13 @@ class UsersController extends BaseController {
 		*/
 
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-		if($cookie && preg_match('(/a/)', $cookie['landing_url'])){
+		if($cookie && array_key_exists("landing_url", $cookie) && preg_match('(/a/)', $cookie['landing_url'])){
 			$this->redirect($cookie['landing_url']);
+		}
+
+		if ($this->request->env("HTTP_HOST") == "lawren.totsy.com") {
+		    $affiliate = new AffiliatesController(array('request' => $this->request));
+		    $affiliate->register("mamasource");
 		}
 		$referer = parse_url($this->request->env('HTTP_REFERER'));
 		if ($referer['host']==$this->request->env('HTTP_HOST') && preg_match('(/sale/)',$referer['path'])){
@@ -73,11 +78,10 @@ class UsersController extends BaseController {
 			if ($inviteCheck > 0) {
 				$data['invitation_codes'] = array(static::randomString());
 			}
-			
-			Invitation::linkUpInvites($invite_code, $email);
-			
 			/* links up inviter with the invitee and sends an email notification */
 
+			Invitation::linkUpInvites($invite_code, $email);
+			
 			switch ($invite_code) {
 				case 'our365':
 				case 'our365widget':
@@ -108,14 +112,14 @@ class UsersController extends BaseController {
 				);
 				Mailer::send('Welcome_Free_Shipping', $user->email);
 				Mailer::addToMailingList($data['email']);
-				Mailer::addToSuppressionList($data['email']);		
+				Mailer::addToSuppressionList($data['email']);
 				$ipaddress = $this->request->env('REMOTE_ADDR');
 				User::log($ipaddress);
-				
+
 				$landing = null;
 				if (Session::check('landing')){
-					$landing = Session::read('landing'); 
-				} 
+					$landing = Session::read('landing');
+				}
 				if (!empty($landing)){
 					Session::delete('landing',array('name'=>'default'));
 					$this->redirect($landing);
@@ -123,12 +127,12 @@ class UsersController extends BaseController {
 				} else {
 					$this->redirect('/sales');
 				}
-				
+
 			}
 		}
 		elseif ($this->request->data && !$user->validates() ) {
 			$message = '<div class="error_flash">Error in registering your account</div>';
-		
+
 		}
 		return compact('message', 'user');
 	}
@@ -162,7 +166,7 @@ class UsersController extends BaseController {
 					if ($saved = $user->save($data)) {
 						$mail_template = 'Welcome_Free_Shipping';
 						$params = array();
-						
+
 						$data = array(
 							'user' => $user,
 							'email' => $user->email
@@ -170,14 +174,14 @@ class UsersController extends BaseController {
 
 						if (isset($user['clear_token'])) {
 							$mail_template = 'Welcome_auto_passgen';
-							$params['token'] = $user['clear_token']; 
-						} 
+							$params['token'] = $user['clear_token'];
+						}
 						Mailer::send($mail_template, $user->email,$params);
 						$name = null;
 						if (isset($data['firstname'])) $name = $data['firstname'];
 						if (isset($data['lastname'])) $name = is_null($name)?$data['lastname']:$name.$data['lastname'];
 						Mailer::addToMailingList($data['email'],is_null($name)?array():$name);
-						Mailer::addToSuppressionList($data['email']);		
+						Mailer::addToSuppressionList($data['email']);
 
 					}
 				}
@@ -228,7 +232,7 @@ class UsersController extends BaseController {
             			$userInfo = Session::read('userLogin');
             			$cookie['user_id'] = $user['_id'];
             			if(array_key_exists('redirect', $cookie) && $cookie['redirect'] ) {
-							$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$_SERVER['HTTP_HOST']));
+							$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$this->request->env('HTTP_HOST')));
 							unset($cookie['redirect']);
 						}
             			Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
@@ -262,28 +266,28 @@ class UsersController extends BaseController {
 	}
 
 	protected function autoLogin() {
-	
+
 		$redirect = '/sales';
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 		$result = static::facebookLogin(null, $cookie, $ipaddress);
 		extract($result);
-		
+
 		$fbCancelFlag = false;
-		
+
 		if (array_key_exists('fbcancel', $this->request->query)) {
 			$fbCancelFlag = $this->request->query['fbcancel'];
 		}
-		
+
 		if (!$success) {
 			if (!empty($userfb)) {
-				$self = static::_object();			
+				$self = static::_object();
 				if(!$fbCancelFlag) {
 					$self->redirect('/register/facebook');
 				}
 			}
 		}
-		
+
 		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
 				'conditions' => array('autologinHash' => $cookie['autoLoginHash']),
@@ -565,7 +569,7 @@ class UsersController extends BaseController {
 	 * @return compact
 	 */
 	public function fbregister() {
-	
+
 		$message = null;
 		$user = null;
 		$fbuser = FacebookProxy::api('/me');
@@ -583,11 +587,11 @@ class UsersController extends BaseController {
 			$data['firstname'] = $fbuser['first_name'];
 			$data['lastname'] = $fbuser['last_name'];
 			static::registration($data);
-			
+
 			$landing = null;
 			if (Session::check('landing')){
-				$landing = Session::read('landing'); 
-			} 
+				$landing = Session::read('landing');
+			}
 			if (!empty($landing)){
 				Session::delete('landing',array('name'=>'default'));
 				$this->redirect($landing);
@@ -599,19 +603,18 @@ class UsersController extends BaseController {
 
 		return compact('message', 'user', 'fbuser');
 	}
-	
+
 	public function mpregister() {
 		//$message = null;
 		//$user = null;
 		//$fbuser = FacebookProxy::api('/me');
-		
+
 		$user = User::create();
 		if ( !preg_match( '/@proxymail\.facebook\.com/', $fbuser['email'] )) {
 			$user->email = $fbuser['email'];
 			$user->confirmemail = $fbuser['email'];
 		}
-		//echo "test";
-		
+
 		$this->_render['layout'] = 'mamapedia/login';
 	}
 
@@ -650,8 +653,8 @@ class UsersController extends BaseController {
 				User::log($ipaddress);
 				$landing = null;
 				if (Session::check('landing')){
-					$landing = Session::read('landing'); 
-				} 
+					$landing = Session::read('landing');
+				}
 				if (!empty($landing)){
 					Session::delete('landing',array('name'=>'default'));
 					$self->redirect($landing);
@@ -671,7 +674,7 @@ class UsersController extends BaseController {
 		}
 		return static::$_instances[$class];
 	}
-	
+
 }
 
 ?>

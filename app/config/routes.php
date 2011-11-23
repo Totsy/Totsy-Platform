@@ -55,7 +55,7 @@ Router::connect('/{:category:[a-z_]+}', array(), function($request) {
        'action' => 'register',
        'args' => array($request->query['a'], $request->category)
    );
-   
+
    return $request;
 });
 
@@ -66,7 +66,7 @@ Router::connect('/api/{:args}', array('controller' => 'API', 'action' => 'index'
 Router::connect('/unsubcentral/unsubscribed/{:args}', array('controller' => 'unsubcentral', 'action' => 'unsubscribed'));
 Router::connect('/unsubcentral/del', array('controller' => 'unsubcentral', 'action' => 'del'));
 
-Router::connect('/register', 'Users::mpregister');
+Router::connect('/register', 'Users::register');
 Router::connect('/register/facebook', 'Users::fbregister');
 Router::connect('/mpregister', 'Users::mpregister');
 Router::connect('/mplogin', 'Users::mplogin');
@@ -93,15 +93,16 @@ Router::connect('/checkout/review', 'Orders::review');
 /**
  * Redirect all non-authenticated users to
 */
+
 Router::connect('/login', 'Users::login');
 
 if(!Session::check('userLogin')) {
-	Router::connect('/', 'Users::mpregister');
-	Router::connect('/{:args}', 'Users::mpregister');
+	Router::connect('/', 'Users::register');
+	Router::connect('/{:args}', 'Users::register');
 	return;
 }
 
-Router::connect('/', 'Events::index');
+//Router::connect('/', 'Events::index');
 Router::connect('/sales/{:args}', 'Events::index');
 Router::connect('/{:action:login|logout}', array('controller' => 'users'));
 Router::connect('/addresses', 'Addresses::view');

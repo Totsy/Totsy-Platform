@@ -7,16 +7,6 @@
 
 <?=$this->html->script(array('cart-timer.js?v=007', 'cart-items-timer.js?v=007', 'cart-popup.js?v=007'));?>
 
-<?php
-	$close_button_path = "";
-	
-	if ($_SERVER['HTTP_HOST']=='mamapedia.totsy.com' || $_SERVER['HTTP_HOST']=='mamapediadev.totsy.com') {
-		$close_button_path = "/img/";
-	} else {
-		$close_button_path = "/img/mamapedia/";
-	}
-?>
-
 <!-- template used for items on cart. jquery.tmpl.js driven -->
 <?=$this->view()->render( array('element' => 'popupCartItems') ); ?>
 
@@ -33,7 +23,7 @@
 	    </div>
 	    <div id="cart_popup_close_button">
 	    	<a href="#">
-	    	<img src="<?=$close_button_path?>popup_cart_close.jpg" style="width:20px; height:20px"></a>
+	    	<img src="<?=$img_path_prefix?>popup_cart_close.jpg" style="width:20px; height:20px"></a>
 	    </div>
 	</div>
 	<div style="clear:both"></div>

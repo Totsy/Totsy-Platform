@@ -33,7 +33,7 @@ class CartController extends BaseController {
 	* @see app/models/Cart::increaseExpires()
 	* @see app/models/Cart::active()
 	* @return compact
-	*/	
+	*/
 	public function view() {
 		#Initialize Datas
 		$promocode_disable = false;
@@ -69,7 +69,7 @@ class CartController extends BaseController {
 		$shipDate = Cart::shipDate($cart);
 		#Check Expires
 		Cart::cleanExpiredEventItems();
-		
+
 		#Loop To Get Infos About Cart
 		foreach ($cart as $item) {
 			#Get Last Expiration Date
@@ -82,7 +82,7 @@ class CartController extends BaseController {
 				$item->error = "";
 				$item->save();
 			}
-			
+
 			$events = Event::find('all', array('conditions' => array('_id' => $item->event[0])));
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
 			
@@ -161,8 +161,7 @@ class CartController extends BaseController {
 	 * @return compact
 	 */
 
-	public function add() {	
-
+	public function add() {
 		#Check Cart
 		$cart = Cart::create();
 		//output for cart popup
@@ -194,22 +193,22 @@ class CartController extends BaseController {
 					'miss_christmas',
 					'discount_exempt'
 			)));
-									
+
 			#Get Item from Cart if already added
 			$cartItem = Cart::checkCartItem($itemId, $size);
 			$avail = $item->details->{$size} - Cart::reserved($itemId, $size);
-			
+
 			#Condition if Item Already in your Cart
 			if (!empty($cartItem)) {
 				//Make sure user does not add more than 9 items to the cart
 				if($cartItem->quantity < 9 ) {
 					//Make sure the items are available
 					if( $avail > 0 ) {
-						++$cartItem->quantity;					
+						++$cartItem->quantity;
 						$cartItem->save();
 						//calculate savings
 						$item[$item['_id']] = $cartItem->quantity;
-						Cart::updateSavings($item,'add');			
+						Cart::updateSavings($item,'add');
 					} else {
 						$cartItem->error = 'You can’t add this quantity in your cart. <a href="faq">Why?</a>';
 						$cartItem->save();
@@ -242,7 +241,7 @@ class CartController extends BaseController {
 		//call the cart popup
 		$this->getCartPopupData();
 	}
-	
+
 	/**
 	* Method for sending all required cart data to Ajax driven cart popup.
 	*
@@ -250,17 +249,17 @@ class CartController extends BaseController {
 	*/
 	public function getCartPopupData () {
 		$cartData = Array();
-		
-		$this->render(array('layout' => false));	
-	
+
+		$this->render(array('layout' => false));
+
 		$cartData['cartExpirationDate'] = "";
 		$cartData['subTotal'] = 0.00;
-		
+
 		$i = 0;
-		
-		//set cart array 
+
+		//set cart array
 		$cartData['cart']= Cart::active()->data();
-		
+
 		foreach(Cart::active() as $cartItem) {
 			if ($cartData['cartExpirationDate'] < $cartItem->expires->sec) {
 				$cartData['cartExpirationDate'] = $cartItem->expires->sec;
@@ -268,40 +267,40 @@ class CartController extends BaseController {
 
 			//get the current event url
 			$event = Event::find('first',
-									array ('fields' => array('url'), 
-									'conditions' => 
+									array ('fields' => array('url'),
+									'conditions' =>
 										array ('_id' => "".$cartItem->event[0]."")
 									)
-								); 
-							
+								);
+
 			$temp = $event->data();
-			$eventURL = $temp['url'];				
-					
+			$eventURL = $temp['url'];
+
 			//create the items url from the event url and the item url
 			$cartData['cart'][$i]['url'] = "http://".$_SERVER['HTTP_HOST']."/sale/".$eventURL."/".$cartItem->url;
 			$cartData['subTotal'] += ($cartItem->sale_retail * $cartItem->quantity);
 			$i++;
-		}  
-		
+		}
+
 		$current_path = substr($this->request->env('HTTP_REFERER'), 0, strrpos($this->request->env('HTTP_REFERER'),"/"));
-		
+
 		if(strlen($current_path) > 0 && $current_path!=="sale") {
-	    	$cartData['eventURL'] = $current_path; 
+	    	$cartData['eventURL'] = $current_path;
 	    } else {
 	    	$cartData['eventURL'] = "sale";
 	    }
 
 		//get user savings. they were just put there by updateSavings()
 		$cartData['savings'] = Session::read('userSavings');
-		//get the ship date		
+		//get the ship date
 		$cartData['shipDate'] = date('m-d-Y', Cart::shipDate(Cart::active()));
 		$cartData['shipDate'] = Cart::shipDate(Cart::active());
 		//get the amount of items in the cart
 		$cartData['itemCount'] = Cart::itemCount();
-		
+
 		echo json_encode($cartData);
 	}
-		
+
 	/*
 	* The remove method delete an item from the temporary cart.
 	*/

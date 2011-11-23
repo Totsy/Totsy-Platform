@@ -5,6 +5,7 @@ use admin\models\Event;
 use lithium\util\Inflector;
 use \lithium\core\Environment;
 use li3_flash_message\extensions\storage\FlashMessage;
+use lithium\storage\Session as Session;
 use MongoDate;
 use MongoRegex;
 

@@ -71,7 +71,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 <div class="round">
 <!-- left side -->
 <div class="grid_6">
-<?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
+<?php echo $this->html->link($this->html->image('mamapedia/logo.png', array('width'=>'280')), '', array('escape'=> false)); ?>
 </div>
 <!-- right side -->
 <div class="grid_6" style="margin-left:28px;">	
