@@ -847,6 +847,78 @@ class CartTest extends \lithium\test\Unit {
 		$this->assertEqual($expected, $result);
 	}
 
+	public function testWeight() {
+		$data = array(
+			'shipping_weight' => '3 kg'
+		);
+		$item = Item::create($data);
+		$item->save();
+		$this->_delete[] = $item;
+
+		$data = array(
+			'quantity' => 2,
+			'item_id' => (string) $item->_id
+		);
+		$cart = Cart::create($data);
+
+		$expected = 6;
+		$result = $cart->weight();
+		$this->assertEqual($expected, $result);
+
+		$data = array(
+			'shipping_weight' => '3.2 kg'
+		);
+		$item = Item::create($data);
+		$item->save();
+		$this->_delete[] = $item;
+
+		$data = array(
+			'quantity' => 2,
+			'item_id' => (string) $item->_id
+		);
+		$cart = Cart::create($data);
+
+		$expected = 6;
+		$result = $cart->weight();
+		$this->assertEqual($expected, $result);
+
+		$data = array(
+			'shipping_weight' => '0.2 kg'
+		);
+		$item = Item::create($data);
+		$item->save();
+		$this->_delete[] = $item;
+
+		$data = array(
+			'quantity' => 2,
+			'item_id' => (string) $item->_id
+		);
+		$cart = Cart::create($data);
+
+		$expected = 2;
+		$result = $cart->weight();
+		$this->assertEqual($expected, $result);
+	}
+
+	public function testWeightWithProductWeight() {
+		$data = array(
+			'product_weight' => '3 kg'
+		);
+		$item = Item::create($data);
+		$item->save();
+		$this->_delete[] = $item;
+
+		$data = array(
+			'quantity' => 2,
+			'item_id' => (string) $item->_id
+		);
+		$cart = Cart::create($data);
+
+		$expected = 6;
+		$result = $cart->weight();
+		$this->assertEqual($expected, $result);
+	}
+
 	/*
 	* Testing the Check Method of the Cart
 	*/
