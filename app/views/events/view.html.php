@@ -56,7 +56,7 @@
 					?>
 								<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#999999; font-size:11px;text-align:left;">
 								<img src="/img/truck_grey.png">
-								Items will be delivered on or before 12/23.*
+								Items in this sale will be delivered on or before 12/23.*
 								</div>
 					
 					
@@ -174,8 +174,7 @@
 				}
 				elseif($missChristmasCount>0){
 				?>
-				* Nothing until after xmas
-				
+				* Your items will arrive safely, but after 12/25.				
 				<?php
 				}
 				else{

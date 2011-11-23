@@ -257,7 +257,7 @@ var paymentForm = new Object();
 				}
 				elseif($missChristmasCount>0){
 				?>
-				* Your items will arrives safely, but after 12/25.
+				* Your items will arrive safely, but after 12/25.
 				
 				<?php
 				}
