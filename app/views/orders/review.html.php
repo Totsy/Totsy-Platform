@@ -205,7 +205,7 @@ var discountErrors = new Object();
 								<strong>$<?=number_format($item->sale_retail,2)?></strong>
 							</span>
 							<span class="<?="qty-$x";?> cart-review-line-qty">Qty: <?=$item->quantity;?></span>						
-							<span class="<?="total-item-$x";?> cart-review-line-total">$<?=number_format($item->sale_retail * $item->quantity ,2)?>
+							<span class="<?="total-item-$x";?> cart-review-line-total" style="padding-right:10px;">$<?=number_format($item->sale_retail * $item->quantity ,2)?>
 							</span>
 						</div>
 							<hr />
