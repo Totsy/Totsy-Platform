@@ -241,6 +241,18 @@ class CartTest extends \lithium\test\Unit {
 		$this->assertEqual($expected, $result);
 	}
 
+	public function testSubTotal() {
+		$data = array(
+			'sale_retail' => 3,
+			'quantity' => 2
+		);
+		$cart = Cart::create($data);
+
+		$expected = 6;
+		$result = $cart->subTotal();
+		$this->assertEqual($expected, $result);
+	}
+
 	/*
 	* Testing the Check Method of the Cart
 	*/
