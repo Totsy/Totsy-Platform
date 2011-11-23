@@ -351,7 +351,6 @@ class OrdersControllerTest extends \lithium\test\Unit {
 			'cart',
 			'total',
 			'subTotal',
-			'creditCard',
 			'tax',
 			'shippingCost',
 			'overShippingCost',
