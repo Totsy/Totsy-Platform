@@ -89,7 +89,7 @@ class OrdersController extends BaseController {
 				'user_id' => (string) $user['_id']
 		)));
 		$new = ($order->date_created->sec > (time() - 120)) ? true : false;
-		if($order->date_created->sec<1322071200){
+		if($order->date_created->sec<1322006400){
 			$shipDate = Cart::shipDate($order, true);	
 			$shipDate = date('M d, Y', $shipDate);
 		}
