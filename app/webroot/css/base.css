@@ -1173,7 +1173,7 @@ text-align:center !important;
 
 #rewards-check-balance {
 	font-family:"Times New Roman" !important;
-	font-size: 19px;
+	font-size: 10px !important;
 	height:35px !important; 
 	line-height:30px !important;
 }
