@@ -1,6 +1,5 @@
 <?=$this->html->script(array('jquery.nivo.slider.pack'));?>
 <script src="/js/jquery.tmpl.js" type="text/javascript"></script>
-
 <?=$this->html->script(array('cart-timer.js?v=007', 'cart-items-timer.js?v=007', 'cart-popup.js?v=007'));?>
 
 <!-- template used for items on cart. jquery.tmpl.js driven -->
@@ -22,12 +21,9 @@
 })(jQuery);
 </script>
 	<div style="clear:both"></div>
-<<<<<<< HEAD
 	<h2 class="page-title gray">
-	<span class="_red">Today's Sales</span></h2>
-=======
-	<h2 class="page-title gray"><span class="_red">Today's Sales</span> </h2>
->>>>>>> 0083cdd91615ba5308bfdd872ba907f7bbba332b
+		<span class="_red">Today's Sales</span>
+	</h2>
 	<hr />
 		<!--Disney -->
 <!--	<div class="disney disney_splash">
@@ -106,12 +102,8 @@
 			</div>
 			<?php if ($x == 1): ?>
 				<div id="banner_container" class="grid_5">
-<<<<<<< HEAD
-					<div><a href="/users/invite"><img src="<?=$invite_girl_img_path?>invite_girl.png" alt="" height="404"/></a></div>
 
-=======
 					<div><a href="/users/invite"><img src="<?=$img_path_prefix?>invite_girl.png" alt="" height="404"/></a></div>
->>>>>>> 0083cdd91615ba5308bfdd872ba907f7bbba332b
 					<?php if(!empty($banner["img"])): ?>
 						<?php foreach($banner["img"] as $image): ?>
 							<div><?php if(!empty($image["url"])):?>
