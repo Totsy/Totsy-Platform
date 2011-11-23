@@ -64,7 +64,7 @@ var discountErrors = new Object();
 	?>
 				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#990000; font-size:11px;text-align:center;">
 				<img src="/img/truck_red.png">
-				One on more of the items in your cart are not guaranteed to arrive before 12/26.*
+				One on more of the items in your cart are not guaranteed to arrive before 12/25.*
 				</div>
 	
 	
@@ -111,7 +111,7 @@ var discountErrors = new Object();
 			<?php
 			if($item->miss_christmas){
 				$tableclass = "alt0a";
-				$shipmsg = "<span class=\"shippingalert\">This item is not guaranteed to arrive before 12/26.<br>Order this item separately to receive your other items by 12/23*</span>";
+				$shipmsg = "<span class=\"shippingalert\">This item is not guaranteed to arrive before 12/25.<br>Order this item separately to receive your other items by 12/23*</span>";
 			}
 			else{
 				$tableclass = "alt0";
@@ -321,7 +321,7 @@ var discountErrors = new Object();
 				<?php
 				if($missChristmasCount>0){
 				?>
-				* Totsy ships all items complete and does not split items into separate orders. If you would like the designated items in your cart delivered on or before 12/23, we suggest you order them separately from the items not guaranteed to arrive before 12/26. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions.
+				* Totsy ships all items complete and does not split items into separate orders. If you would like the designated items in your cart delivered on or before 12/23, we suggest you order them separately from the items not guaranteed to arrive before 12/25. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions.
 				
 				<?php
 				}
