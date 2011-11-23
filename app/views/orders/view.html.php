@@ -108,10 +108,10 @@
 														<br>
 														Size: <?=$item['size']?>
 														
-														<?php if($item['miss_christmas']){
+														<?php if($missChristmasCount>0){
 														?>
 														<br>
-														Item will not be delivered until after 12/26
+														Item will not be delivered until after 12/25
 														
 														<?php
 														}else{
@@ -201,6 +201,25 @@
 	<div class="grid_11">
 		<p style="text-align: center; font-size:18px; margin-top:10px;">Thank you for shopping on Totsy.com!</p>
 	</div>	
+<div class="clear"></div>
+<div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
+				<?php
+				if($missChristmasCount>0){
+				?>
+				* Totsy ships all items complete and does not split items into separate orders. If you would like the designated items in your cart delivered on or before 12/23, we suggest you order them separately from the items not guaranteed to arrive before 12/25. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions.
+				
+				<?php
+				}
+				else{
+				?>
+				
+				* Our delivery guarantee does not apply when transportation networks are affected by weather.
+				
+				<?php
+				}
+				?>
+				
+</div>
 </div>
 <?php else: ?>
 	<strong>Sorry, we cannot locate the order that you are looking for.</strong>
