@@ -108,7 +108,7 @@ class OrderTest extends \lithium\test\Unit {
 		$result = Session::read('cc_error');
 		$this->assertFalse($result);
 
-		$expected = 123.45;
+		$expected = 0;
 		$result = ProcessorMock::$authorize[1];
 		$this->assertEqual($expected, $result);
 
@@ -376,7 +376,11 @@ class OrderTest extends \lithium\test\Unit {
 		$result = $order->discount;
 		$this->assertEqual($expected, $result);
 
-		$expected = 0;
+		$expected = 10;
+		$result = $order->handlingDiscount;
+		$this->assertEqual($expected, $result);
+
+		$expected = 10;
 		$result = $order->handling;
 		$this->assertEqual($expected, $result);
 
