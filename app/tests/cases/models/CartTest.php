@@ -11,6 +11,7 @@ use app\models\Event;
 use li3_fixtures\test\Fixture;
 use lithium\storage\Session;
 use app\tests\mocks\storage\session\adapter\MemoryMock;
+use lithium\data\collection\DocumentArray;
 
 class CartTest extends \lithium\test\Unit {
 
@@ -362,6 +363,95 @@ class CartTest extends \lithium\test\Unit {
 
 		$expected = 6;
 		$result = $cart->weight();
+		$this->assertEqual($expected, $result);
+	}
+
+	public function testShippingWithSingleCart() {
+		$data = array(
+			'shipping_exempt' => false
+		);
+		$item0 = Item::create($data);
+		$item0->save();
+		$this->_delete[] = $item0;
+
+		$data = array(
+			array(
+				'item_id' => (string) $item0->_id
+			)
+		);
+		$data = new DocumentArray(compact('data'));
+
+		$expected = 7.95;
+		$result = Cart::shipping($data);
+		$this->assertEqual($expected, $result);
+
+		$data = array(
+			'shipping_exempt' => true
+		);
+		$item0 = Item::create($data);
+		$item0->save();
+		$this->_delete[] = $item0;
+
+		$data = array(
+			array(
+				'item_id' => (string) $item0->_id
+			)
+		);
+		$data = new DocumentArray(compact('data'));
+
+		$expected = 0;
+		$result = Cart::shipping($data);
+		$this->assertEqual($expected, $result);
+	}
+
+	public function testShippingWithSingleCartAndOversize() {
+		$data = array(
+			'shipping_exempt' => false,
+			'shipping_oversize' => 2
+		);
+		$item0 = Item::create($data);
+		$item0->save();
+		$this->_delete[] = $item0;
+
+		$data = array(
+			array(
+				'item_id' => (string) $item0->_id
+			)
+		);
+		$data = new DocumentArray(compact('data'));
+
+		$expected = 0;
+		$result = Cart::shipping($data);
+		$this->assertEqual($expected, $result);
+	}
+
+	public function testShippingWithMultipleCarts() {
+		$data = array(
+			'shipping_exempt' => false
+		);
+		$item0 = Item::create($data);
+		$item0->save();
+		$this->_delete[] = $item0;
+
+		$data = array(
+			'shipping_exempt' => true
+		);
+		$item1 = Item::create($data);
+		$item1->save();
+		$this->_delete[] = $item1;
+
+		$data = array(
+			array(
+				'item_id' => (string) $item0->_id
+			),
+			array(
+				'item_id' => (string) $item1->_id
+			)
+		);
+		$data = new DocumentArray(compact('data'));
+
+		$expected = 7.95;
+		$result = Cart::shipping($data);
 		$this->assertEqual($expected, $result);
 	}
 
