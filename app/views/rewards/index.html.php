@@ -2,7 +2,7 @@
 	<br />
 	<h1 class="page-title gray">
 		<span class="_red">
-		Totsy Rewards Program
+		Totsy Rewards Program&trade;
 		</span>
 	</h1>
 	<hr />
@@ -80,8 +80,13 @@ Once you enroll, you're ready to start earning points! The more things you do on
 <div class="grid_5">
 	<div style="padding-top:10px;">
 		<table id="rewards-top-members">
+			<tr>
+				<td id="rewards-check-balance" class="header">
+					Totsy Rewards&trade; Top Members
+				</td>
+			</tr>
 		
-		<!-- dynamic stuff -->
+		<!-- dynamic stuff start -->
 			<tr>
 				<td>
 					<div class="count">1</div>
@@ -97,8 +102,7 @@ Once you enroll, you're ready to start earning points! The more things you do on
 					</div>
 				</td>
 			</tr>
-		<!-- -->	
-			
+		<!-- dynamic stuff end -->	
 			<tr>
 				<td>
 					<div class="count">2</div>
