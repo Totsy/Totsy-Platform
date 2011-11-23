@@ -1142,6 +1142,137 @@ font-style:italic !important;
 visibility:hidden; 
 text-align:center !important;
 }
+
+/* Begin Rewards ----------------------------------*/
+
+#rewards-enrollment-banner {
+	background-image:url(../img/rewards_enrollment_banner.png);
+	height: 220px;
+	width: 950px;
+	z-index: 999999999999;
+}
+
+#rewards-enroll-now-button-inner {
+	font-size:15px; 
+	width: 175px; 
+	display: table-cell;
+	margin-left: 30px !important;
+	vertical-align: middle; 
+	width: auto; 
+	text-align: center;
+}
+
+
+#rewards-enroll-now-button-outer {
+	height: 220px; 
+	width: 270px; 
+	float:right; 
+	margin: 0px 0px 0px 0px;
+	display: table;
+}
+
+#rewards-check-balance {
+	font-family:"Times New Roman" !important;
+	font-size: 19px;
+	height:35px !important; 
+	line-height:30px !important;
+}
+
+#rewards-top-members {
+	border: 1px solid #D7D7D7 !important; 
+	height: 350px; 
+	width: 270px;
+}
+
+#rewards-top-members td {
+	font-weight: bold; 
+	width: 270px; 
+	height: 70px !important; 
+	border-bottom: 1px solid #D7D7D7; 
+	color: #000000;
+}
+
+#rewards-top-members .header {
+	font-weight:bold; 
+	line-height: 40px;
+	vertical-align:middle;
+	float:left !important;
+	width: 270px; 
+	height: 40px !important; 
+	border-bottom: 1px solid #D7D7D7; 
+	color:#000000
+}
+
+#rewards-top-members .count {
+	color: #000000;
+	background-color: #f2f2f2;
+	display: inline-block; 
+	width: 30px;
+	height:70px;
+	line-height: 70px;
+	text-align: center;
+	vertical-align: middle;	
+	font-weight: bold;
+	font-size: 16px;
+	float: left;
+}
+
+#rewards-top-members .thumb {
+	color: #ff9900;
+	float: left !important;
+	display: inline-block;
+	vertical-align: middle !important;
+	width: 50px;
+	height: 50px;
+	margin: 10px 10px 10px 10px !important; 
+}
+
+#rewards-top-members .content { 
+	float:left !important; 
+	margin: 10px 10px 10px 0px;
+	width: 130px;
+	height: 50px;
+}
+
+#rewards-top-members .name {
+	color: #336699;
+	font-weight: bold;
+	font-size: 10px;
+	float:left !important;
+}
+
+#rewards-top-members .address {
+	color: #000000;
+	font-size: 10px;
+	line-height:10px;
+	float:left !important;
+}
+
+#rewards-top-members .graph-data {
+	height: 25px;
+	vertical-align:bottom;
+	float:left !important;
+}
+
+#get-rewards li {
+	width: 455px;
+	font-weight:bold;
+	height: 30px;
+	border-bottom: gray; 
+}
+
+#get-rewards li a {
+	font-weight:normal;
+}
+
+#get-rewards li span {
+	color: #ff9900;
+	display: inline-block; 
+	width: 95px;
+}
+
+/* End Rewards ----------------------------------*/
+
 	
 /* Dialog Box
 ----------------------------------*/
