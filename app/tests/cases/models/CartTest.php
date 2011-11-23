@@ -455,6 +455,37 @@ class CartTest extends \lithium\test\Unit {
 		$this->assertEqual($expected, $result);
 	}
 
+	public function testOverSizeShipping() {
+		$data = array(
+			'shipping_oversize' => 2,
+			'shipping_rate' => 3
+		);
+		$item0 = Item::create($data);
+		$item0->save();
+		$this->_delete[] = $item0;
+
+		$data = array(
+			'shipping_rate' => 4
+		);
+		$item1 = Item::create($data);
+		$item1->save();
+		$this->_delete[] = $item1;
+
+		$data = array(
+			array(
+				'item_id' => (string) $item0->_id
+			),
+			array(
+				'item_id' => (string) $item1->_id
+			)
+		);
+		$cart = Cart::create($data);
+
+		$expected = 3;
+		$result = Cart::overSizeShipping($cart);
+		$this->assertEqual($expected, $result);
+	}
+
 	/*
 	* Testing the Check Method of the Cart
 	*/
