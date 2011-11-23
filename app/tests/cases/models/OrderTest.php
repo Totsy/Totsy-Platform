@@ -152,14 +152,17 @@ class OrderTest extends \lithium\test\Unit {
 		$avatax = array(
 			'tax' => 0
 		);
+
 		$result = OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(),
 			$order,
 			$avatax,
 			$authKey,
-			$items
+			$items,
+			1,
+			$this->_card(true),
+			$address
 		);
 		$this->assertTrue($result);
 
@@ -213,15 +216,16 @@ class OrderTest extends \lithium\test\Unit {
 		$avatax = array(
 			'tax' => 0
 		);
-
 		OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(),
 			$order,
 			$avatax,
 			$authKey,
-			$items
+			$items,
+			1,
+			$this->_card(true),
+			$address
 		);
 
 		$expected = 1;
@@ -231,11 +235,13 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(),
 			$order,
 			$avatax,
 			$authKey,
-			$items
+			$items,
+			1,
+			$this->_card(true),
+			$address
 		);
 
 		$expected = 2;
@@ -287,14 +293,17 @@ class OrderTest extends \lithium\test\Unit {
 		$avatax = array(
 			'tax' => 0
 		);
+
 		$result = OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(),
 			$order,
 			$avatax,
 			$authKey,
-			$items
+			$items,
+			1,
+			$this->_card(true),
+			$address
 		);
 		$this->assertTrue($result);
 
@@ -356,11 +365,13 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(),
 			$order,
 			$avatax,
 			$authKey,
-			$items
+			$items,
+			1,
+			$this->_card(true),
+			$address
 		);
 
 		$expected = 0;
@@ -424,11 +435,13 @@ class OrderTest extends \lithium\test\Unit {
 		$result = OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(),
 			$order,
 			$avatax,
 			$authKey,
-			$items
+			$items,
+			1,
+			$this->_card(true),
+			$address
 		);
 		$this->assertTrue($result);
 
@@ -498,11 +511,14 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(),
 			$order,
 			$avatax,
 			$authKey,
-			$items
+			$auth,
+			$items,
+			1,
+			$this->_card(true),
+			$address
 		);
 
 		$expected = 3.45;
