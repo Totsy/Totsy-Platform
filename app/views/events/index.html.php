@@ -1,6 +1,5 @@
 <?=$this->html->script(array('jquery.nivo.slider.pack'));?>
 <script src="/js/jquery.tmpl.js" type="text/javascript"></script>
-
 <?=$this->html->script(array('cart-timer.js?v=007', 'cart-items-timer.js?v=007', 'cart-popup.js?v=007'));?>
 
 <!-- template used for items on cart. jquery.tmpl.js driven -->
@@ -21,7 +20,6 @@
 	};
 })(jQuery);
 </script>
-
 	<h2 class="page-title gray">
 		<span class="_red">Today's Sales</span>
 	</h2>
@@ -114,7 +112,6 @@
 			
 			?>
 			<?php if ($x == 1): ?>
-
 				<div id="banner_container" class="grid_5">
 					<div><a href="/users/invite"><img src="<?=$img_path_prefix?>invite_girl.png" alt="" height="404"/></a></div>
 					<?php if(!empty($banner["img"])): ?>
