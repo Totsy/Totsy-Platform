@@ -488,6 +488,8 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$expected = 15;
 		$this->assertEqual($expected, $result);
 
+		$this->assertEqual('default', ProcessorMock::$authorize['adapter']);
+
 		$cart->delete();
 		$event->delete();
 	}
