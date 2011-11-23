@@ -23,7 +23,7 @@ class BaseController extends \lithium\action\Controller {
 	 */
 	 
 	protected function _init() {
-	
+
 		parent::_init();
 	     if(!Environment::is('production')){
             $branch = "<h4 id='global_site_msg'>Current branch: " . $this->currentBranch() ."</h4>";
@@ -41,7 +41,15 @@ class BaseController extends \lithium\action\Controller {
 		 */
 		$this->fbsession = $fbsession = FacebookProxy::getSession();
 		$fbconfig = FacebookProxy::config();
-		$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
+
+		if($this->fbsession){
+			$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
+		}
+		else{
+			$fblogout = "/logout";		
+		}
+		
+		
 		if ($userInfo) {
 			$user = User::find('first', array(
 				'conditions' => array('_id' => $userInfo['_id']),
@@ -104,7 +112,7 @@ class BaseController extends \lithium\action\Controller {
 		**/
 		Session::delete('pixel');
 		#Clean Credit Card Infos if out of Orders/CartController
-		$this->CleanCC();
+		$this->cleanCC();
 		/**
 		* Send pixel to layout
 		**/

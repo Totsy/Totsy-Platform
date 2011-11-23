@@ -2215,8 +2215,26 @@ display: table;
 tr.alt0 td {
 	background:#f7f7f7;
 	height:50px;
+	padding-top:10px;
+	padding-bottom:10px;
 	vertical-align:middle;
 }
+
+tr.alt0a td {
+	background:#fde5e5;
+	height:70px;
+	padding-top:10px;
+	padding-bottom:10px;
+	vertical-align:middle;
+}
+
+.shippingalert{
+	color:#990000; 
+	font-weight:bold;
+}
+
+
+
 
 tr.alt1 td {
 	background:#EFEFEF;
@@ -2309,7 +2327,7 @@ height: 110px !important;
 }
 
 .cart-review-line-qty{
-width:100px; 
+width:90px; 
 float:left; 
 text-align:left
 }
@@ -4363,4 +4381,31 @@ Text Align > left / right
 #promos_and_credit input[type='submit']:focus {
 	background:#ED1C25 none !important;
 	color: #FFF !important;
+}
+
+.blurb p {
+	padding: 10px;
+	text-align: left !important;
+}
+
+.blurb ul {
+	line-height: 20px;
+	margin-left: 35px;
+}
+
+.blurb li { 
+	list-style: disc!important; 
+	margin-left: 15px!important; 
+}
+
+.blurb strong { 
+	font-weight: bold!important; 
+}
+
+.blurb h3 { 
+	font-size: 20px!important;
+	color:#707070!important;
+	font-weight: normal!important;
+	border-bottom: 2px solid #DDDDDD!important;
+	margin: 9px 9px 3px!important;
 }

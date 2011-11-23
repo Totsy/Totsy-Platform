@@ -4,6 +4,7 @@ namespace app\models;
 
 use lithium\storage\Session;
 use lithium\util\Validator;
+use app\extensions\Mailer;
 use MongoDate;
 use MongoId;
 
@@ -53,10 +54,13 @@ class Invitation extends \lithium\data\Model {
                         'user_id' => (string) $inviter->_id,
                         'email' => $email
                 )));
+                
                 if ($inviter->invited_by === 'keyade') {
                     $data['keyade_referral_user_id'] = $inviter->keyade_user_id;
                 }
                 if ($invited) {
+                	Mailer::send('Invited_Register', $inviter->email);
+                
                     $invited->status = 'Accepted';
                     $invited->date_updated = Invitation::dates('now');
                     $invited->save();

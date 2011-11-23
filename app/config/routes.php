@@ -33,10 +33,9 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 	));
 });
 
-/**
+/*
  * The following allows up to serve images right out of mongodb.
  * This needs to be first so that we don't get a controller error.
- *
  */
 Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
      return new Response(array(
@@ -45,8 +44,27 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
      ));
 });
 
+/* affiliate routing for categories and affiliates in an URL */
+Router::connect('/{:category:[a-z_]+}', array(), function($request) {
+
+   if (!isset($request->query['a']) || !preg_match('/^[a-z_]+$/', $request->query['a'])) {
+       return false;
+   }
+   $request->params = array(
+       'controller' => 'affiliates',
+       'action' => 'register',
+       'args' => array($request->query['a'], $request->category)
+   );
+   
+   return $request;
+});
+
 Router::connect('/api/help/{:args}', array('controller' => 'API', 'action' => 'help'));
 Router::connect('/api/{:args}', array('controller' => 'API', 'action' => 'index'));
+
+//Unsubcentral Functions
+Router::connect('/unsubcentral/unsubscribed/{:args}', array('controller' => 'unsubcentral', 'action' => 'unsubscribed'));
+Router::connect('/unsubcentral/del', array('controller' => 'unsubcentral', 'action' => 'del'));
 
 Router::connect('/register', 'Users::register');
 Router::connect('/register/facebook', 'Users::fbregister');
@@ -59,6 +77,7 @@ Router::connect('/invitation/{:args}', 'Users::register');
 Router::connect('/join/{:args}', 'Users::register');
 Router::connect('/affiliate/{:args}', 'Affiliates::registration');
 Router::connect('/a/{:args:[a-zA-Z0-9&\?\.=:/]+}', 'Affiliates::register');
+
 Router::connect('/reset', 'Users::reset');
 Router::connect('/pages/{:args}', 'Pages::view');
 Router::connect('/livingsocial', array('Pages::view', 'args' => array('living_social')));
@@ -74,9 +93,11 @@ Router::connect('/checkout/review', 'Orders::review');
 /**
  * Redirect all non-authenticated users to
 */
+Router::connect('/login', 'Users::login');
+
 if(!Session::check('userLogin')) {
-	Router::connect('/', 'Users::login');
-	Router::connect('/{:args}', 'Users::login');
+	Router::connect('/', 'Users::register');
+	Router::connect('/{:args}', 'Users::register');
 	return;
 }
 
@@ -98,7 +119,6 @@ Router::connect('/sale/{:event:[a-z0-9\-]+}/{:item:[a-z0-9\-]+}', 'Items::view')
 * Taking this route out, as the menu helper is not ready
 * for custom routes.
 */
-//Router::connect('/help', 'Tickets::add');
 
 /**
  * Wire up the "search" for the 404 page, that attempts to figure out what you wanted.
@@ -119,4 +139,5 @@ if (!Environment::is('production')) {
 Router::connect('/{:controller}/{:action}/{:id:[0-9a-f]{24}}.{:type}', array('id' => null));
 Router::connect('/{:controller}/{:action}/{:id:[0-9a-f]{24}}');
 Router::connect('/{:controller}/{:action}/{:args}');
+
 ?>

@@ -121,7 +121,19 @@ class OrdersController extends BaseController {
 		}
 		//Calculatings Savings
 		$savings = 0;
+		$missChristmasCount = 0;
+		$notmissChristmasCount = 0;
 		foreach ($order->items as $item) {
+		
+			if($item['miss_christmas']){
+				$missChristmasCount++;
+			}
+			else{
+				$notmissChristmasCount++;
+			}			
+		
+		
+		
 			$itemInfo = Item::find('first', array('conditions' => array("_id" => new MongoId($item["item_id"]))));
 			if (empty($item->cancel)) {
 				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
@@ -140,6 +152,8 @@ class OrdersController extends BaseController {
 			'shipRecord',
 			'preShipment',
 			'openEvent',
+			'missChristmasCount',
+			'notmissChristmasCount',
 			'savings'
 		);
 	}
@@ -165,6 +179,7 @@ class OrdersController extends BaseController {
 			'primary_image',
 			'expires',
 			'event_name',
+			'miss_christmas',
 			'event'
 		);
 		#Check Expires 
@@ -173,6 +188,9 @@ class OrdersController extends BaseController {
 		$address = null;
 		$selected = null;
 		$cartExpirationDate = 0;
+		$missChristmasCount = 0;
+		$notmissChristmasCount = 0;
+
 		#Check Datas Form
 		if (!empty($this->request->data)) {
 			$datas = $this->request->data;
@@ -234,12 +252,21 @@ class OrdersController extends BaseController {
 		));
 		$shipDate = Cart::shipDate($cart);
 		foreach($cart as $item){
+		
+			if($item['miss_christmas']){
+				$missChristmasCount++;
+			}
+			else{
+				$notmissChristmasCount++;
+			}			
+		
+		
 			if($cartExpirationDate < $item['expires']->sec) {
 				$cartExpirationDate = $item['expires']->sec;
 			}
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
-		return compact('address','addresses_ddwn','shipDate','cartEmpty','error','selected','cartExpirationDate');
+		return compact('address','addresses_ddwn','shipDate','cartEmpty','error','selected','cartExpirationDate','missChristmasCount','notmissChristmasCount');
 	}
 	
 	/**
@@ -272,6 +299,7 @@ class OrdersController extends BaseController {
 			'primary_image',
 			'expires',
 			'event',
+			'miss_christmas',
 			'discount_exempt'
 		);
 		$promocode_disable = false;
@@ -284,7 +312,18 @@ class OrdersController extends BaseController {
 		#Get Value Of Each and Sum It
 		$subTotal = 0;
 		$cartExpirationDate = 0;
+		$missChristmasCount = 0;
+		$notmissChristmasCount = 0;
+
 		foreach ($cart as $cartValue) {
+			if($cartValue->miss_christmas){
+				$missChristmasCount++;
+			}
+			else{
+				$notmissChristmasCount++;
+			}			
+		
+
 			#Get Last Expiration Date 
 			if ($cartExpirationDate < $cartValue['expires']->sec) {
 				$cartExpirationDate = $cartValue['expires']->sec;
@@ -311,7 +350,8 @@ class OrdersController extends BaseController {
 		$avatax = AvaTax::getTax(compact(
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'));
-		$tax = $avatax['tax'];
+		
+		$tax = (float) $avatax['tax'];
 		#Get current Discount
 		$vars = Cart::getDiscount($subTotal, $shippingCost, $overShippingCost, $this->request->data, $tax);
 		#Calculate savings
@@ -351,7 +391,7 @@ class OrdersController extends BaseController {
 		if (Session::check('cc_error')) {
 			$this->redirect(array('Orders::payment'));
 		}
-		return $vars + compact('cartEmpty','order','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable');
+		return $vars + compact('cartEmpty','order','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable','missChristmasCount','notmissChristmasCount');
 	}
 
 	/**
@@ -432,12 +472,16 @@ class OrdersController extends BaseController {
 			'primary_image',
 			'expires',
 			'event_name',
+			'miss_christmas',
 			'event'
 		);
 		#Check Expires
 		Cart::cleanExpiredEventItems();
 		#Prepare datas
 		$cartExpirationDate = 0;
+		$missChristmasCount = 0;
+		$notmissChristmasCount = 0;
+
 		$address = null;
 		$payment = null;
 		$checked = false;
@@ -537,6 +581,13 @@ class OrdersController extends BaseController {
 		));
 		$shipDate = Cart::shipDate($cart);
 		foreach($cart as $item){
+			if($item['miss_christmas']){
+				$missChristmasCount++;
+			}
+			else{
+				$notmissChristmasCount++;
+			}			
+
 			if($cartExpirationDate < $item['expires']->sec) {
 				$cartExpirationDate = $item['expires']->sec;
 			}
@@ -552,7 +603,7 @@ class OrdersController extends BaseController {
 			Session::delete('cc_error');
 			Session::delete('billing');
 		}
-		return compact('address','addresses_ddwn','selected','cartEmpty','payment','shipping','shipDate','cartExpirationDate');
+		return compact('address','addresses_ddwn','selected','cartEmpty','payment','shipping','shipDate','cartExpirationDate','missChristmasCount','notmissChristmasCount');
 	}
 
 }

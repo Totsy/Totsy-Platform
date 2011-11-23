@@ -23,9 +23,11 @@ class AffiliatesController extends BaseController {
 	* @see app/models/Invitation::linkUpInvites()
 	**/
 	public function registration($code = NULL) {
+			
 		$success = false;
 		$message = '';
 		$errors = '';
+		$_id = null;
         $this->_render['layout'] = false;
 		if ($code) {
 			$count = Affiliate::count(array('conditions' => array('invitation_codes' => $code)));
@@ -36,6 +38,7 @@ class AffiliatesController extends BaseController {
 
 			if ($this->request->data){
 				$data = $this->request->data;
+				$query = $this->request->query;
 				$genpasswd = false;
 				if (isset($query) && isset($query['genpswd']) && $query['genpswd'] == 'true'){
 					$genpasswd = true;
@@ -45,7 +48,7 @@ class AffiliatesController extends BaseController {
 					$user['clear_token'] = $token;
 					$user['reset_token'] = sha1($token);
 					$user['legacy'] = 0;
-					$data['password'] = $token.'@'.$user['reset_token'];
+					$data['password'] = $token . '@' . $user['reset_token'];
 				}
                     if (isset($data['password'])) {
                         // New user, need to register here
@@ -79,13 +82,13 @@ class AffiliatesController extends BaseController {
                                      Invitation::linkUpInvites($invite_code, $email);
                                    }
                                 }
+                                $_id = (string) $user->_id;
+                                $this->set(compact('_id'));
                             }
                             if(empty($user->invited_by)) {
                                 $user->invited_by = $code;
                             }
                             $user->save(null,array('validate' => false));
-                            $_id = (string) $user->_id;
-                            $this->set(compact('_id'));
                     	}
                         $success = $saved;
                         $errors = $user->errors();
@@ -101,15 +104,49 @@ class AffiliatesController extends BaseController {
                 } //end of password if
 			}
 		}
-		$this->set(compact('success','errors'));
+		$this->set(compact('success','errors', '_id'));
 	}
 
 	/**
 	*	Affiliate-user invite register
 	*   @params $affiliate
 	**/
+
 	public function register($affiliate = NULL) {
+		//ini_set("display_errors", 1);
+		
+		//affiliate category name
+		$categoryName = "";
+		//affiliate name
+		$affiliateName = "";
+		//for affiliate background images
+		$affBgroundImage = "";
+		
+		if (isset($this->request->query['a']) || preg_match('/^[a-z_]+$/', $this->request->query['a'])) {
+		
+       		$categoryName = trim($this->request->params['args'][1]);
+			$affiliateName = trim($this->request->params['args'][0]); 
+			$backgroundImage = "";
+			
+			$affiliate = $affiliateName;
+							
+			$getAff = Affiliate::find('first',
+				array('conditions' => array(
+					'name'=> $affiliateName)
+			));
+			
+			foreach($getAff['category'] as $record=>$value) {
+				$catRecord = $value->data();
+				
+				if($catRecord['name']==$categoryName){
+					$affBgroundImage = $catRecord['background_image'];
+					break;
+				}	
+			}			
+		}
+				
 		$pdata = $this->request->data;
+		
 		$message = false;
 		$user = User::create();
 		$urlredirect = '/sales';
@@ -187,8 +224,9 @@ class AffiliatesController extends BaseController {
 				}
 			}
 		}
+				
 		$this->_render['layout'] = 'login';
-		return compact('message', 'user', 'userfb');
+		return compact('message', 'user', 'userfb','categoryName','affiliateName','affBgroundImage','affiliateName');
 	}
 }
 ?>

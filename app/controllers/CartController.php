@@ -35,7 +35,6 @@ class CartController extends BaseController {
 	* @return compact
 	*/	
 	public function view() {
-			
 		#Initialize Datas
 		$promocode_disable = false;
 		$cartExpirationDate = 0;
@@ -61,7 +60,9 @@ class CartController extends BaseController {
 		$i = 0;
 		$subTotal = 0;
 		$itemCount = 0;
-
+		$missChristmasCount = 0;
+		$notmissChristmasCount = 0;
+		
 		#Count of how many items in the cart are exempt of shipping cost
 		$exemptCount = 0;
 
@@ -84,6 +85,17 @@ class CartController extends BaseController {
 			
 			$events = Event::find('all', array('conditions' => array('_id' => $item->event[0])));
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
+			
+			
+			//miss chrismtas stuff to be removed later
+			$item->miss_christmas = $itemInfo->miss_christmas;
+			if($item->miss_christmas){
+				$missChristmasCount++;
+			}
+			else{
+				$notmissChristmasCount++;
+			}			
+			
 			#Get Event End Date
 			$cartItemEventEndDates[$i] = $events[0]->end_date->sec;
 			$item->event_url = $events[0]->url;
@@ -139,7 +151,7 @@ class CartController extends BaseController {
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
 
-		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping');
+		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping','missChristmasCount','notmissChristmasCount');
 	}
 
 	/**
@@ -150,6 +162,7 @@ class CartController extends BaseController {
 	 */
 
 	public function add() {	
+
 		#Check Cart
 		$cart = Cart::create();
 		//output for cart popup
@@ -160,6 +173,9 @@ class CartController extends BaseController {
 			#If unselected, put no size as choice
 			$size = (!array_key_exists('item_size', $data)) ?
 				"no size": $data['item_size'];
+				
+				
+			//added miss_christmas, to be removed	
 			$item = Item::find('first', array(
 				'conditions' => array(
 					'_id' => "$itemId"),
@@ -175,6 +191,7 @@ class CartController extends BaseController {
 					'product_weight',
 					'event',
 					'vendor_style',
+					'miss_christmas',
 					'discount_exempt'
 			)));
 									
@@ -239,21 +256,46 @@ class CartController extends BaseController {
 		$cartData['cartExpirationDate'] = "";
 		$cartData['subTotal'] = 0.00;
 		
+		$i = 0;
+		
+		//set cart array 
+		$cartData['cart']= Cart::active()->data();
+		
 		foreach(Cart::active() as $cartItem) {
 			if ($cartData['cartExpirationDate'] < $cartItem->expires->sec) {
 				$cartData['cartExpirationDate'] = $cartItem->expires->sec;
 			}
+
+			//get the current event url
+			$event = Event::find('first',
+									array ('fields' => array('url'), 
+									'conditions' => 
+										array ('_id' => "".$cartItem->event[0]."")
+									)
+								); 
+							
+			$temp = $event->data();
+			$eventURL = $temp['url'];				
+					
+			//create the items url from the event url and the item url
+			$cartData['cart'][$i]['url'] = "http://".$_SERVER['HTTP_HOST']."/sale/".$eventURL."/".$cartItem->url;
 			$cartData['subTotal'] += ($cartItem->sale_retail * $cartItem->quantity);
-		} 
-				
-		//get the current event url	
-		$cartData['eventURL'] = substr($this->request->env('HTTP_REFERER'), 0, strrpos($this->request->env('HTTP_REFERER'),"/"));  
-		//send cart array 
-		$cartData['cart']= Cart::active()->data();
+			$i++;
+		}  
+		
+		$current_path = substr($this->request->env('HTTP_REFERER'), 0, strrpos($this->request->env('HTTP_REFERER'),"/"));
+		
+		if(strlen($current_path) > 0 && $current_path!=="sale") {
+	    	$cartData['eventURL'] = $current_path; 
+	    } else {
+	    	$cartData['eventURL'] = "sale";
+	    }
+
 		//get user savings. they were just put there by updateSavings()
 		$cartData['savings'] = Session::read('userSavings');
 		//get the ship date		
 		$cartData['shipDate'] = date('m-d-Y', Cart::shipDate(Cart::active()));
+		$cartData['shipDate'] = Cart::shipDate(Cart::active());
 		//get the amount of items in the cart
 		$cartData['itemCount'] = Cart::itemCount();
 		

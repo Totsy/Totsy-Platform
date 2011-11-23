@@ -1,207 +1,145 @@
-<div id="fullscreen">
-	<div id="login-box">
-		<div id="login-box-border" class="register-modal">
-			<div id="login-box-container">
-				<div class="tt">
-					<div><!-- --></div>
-				</div>
-				<div class="free_shipping_banner_reg"><img src="/img/freeShip-badge.png" /></div>
+<?php if ($message){ echo $message; } ?>
+<style>
+h2 {
+    color: #999999;
+    font-size: 18px;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+}
+h2.tagline { margin:97px 0px 0px 0px; padding:10px 0px 10px 0px; color:#ed1c25; font-size:18px; font-weight: normal; }
+.round { border-radius:12px; background: #fff; padding:14px; }
+.pushy { margin-top:35px; padding:0px; }
+.free_shipping_banner_reg_new img { position: absolute; right:-73px; top:454px; z-index:9999; }
+.round_clear { border-radius:22px; -moz-border-radius:22px; -webkit-border-radius:22px; border: 10px solid rgba(255, 255, 255, 0.8); }
+label { width:179px !important; }
+#bug_bullets {
+margin-left: 0;
+padding-left: 0;
+list-style: none;
+}
+#bug_bullets li {
+background-image: url("/img/bug_bullets.png");
+background-position: 0 13px;
+background-repeat: no-repeat;
+line-height: 32px;
+padding: 4px 0 0 22px;
+font-size:16px; color:#999999; font-weight:normal;
+}
 
-				<div class="tm">
+.rollover_img {
+width: 108px;
+height: 108px;
+background-image: url(/img/freeShip-badge.png);
+position: absolute; right:-93px; top:454px;
+}
 
-					<div class="ti">
+.rollover_img a {
+width: 108px;
+height: 108px;
+display: block;
+text-decoration: none;
 
-						<div class="tc login-inner register-inner">
-
-							<div id='logo'>
-                            <h1>
-                              <a href='/' title="Totsy.com">
-                                Totsy</a>
-                              </h1>
-                            </div>
-
-
-							<div id="intro-copy">
-								<h2 style="margin-top:20px"><span>Become a</span> MEMBER
-								<br />
-								<?=$this->html->link('Already a Member?', '/', array('style' => 'font-size:12px;'));?></h2>
-							</div>
-
-							<div class="message">
-								<?php if($message){echo "$message"; } ?>
-							</div>
-
-							<div class="r-container clear">
-								<div class="tl"></div>
-								<div class="tr"></div>
-								<div class="r-box lt-gradient-1">
-                                 <div style="width:56%; display:block; float:left; margin-right:10px; ">
-                                <h3 style="color:#999; font-size:18px;">Register</h3>
-								<hr />
-								 
-<?php
-	 if (preg_match('/join/',$_SERVER['REQUEST_URI'])) {
-print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/join\']);">';
-	 } else {
-print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/register\']);">';
-	 }
-?>
-	
-
-               						<!-- Commnented Firstname, Lastname and Zip code --->
-
-									<!-- div class="form-row">
-										<?=$this->form->label('firstname', 'First Name <span>*</span>', array(
-											'escape' => false,
-											'class' => 'required'
-											));
-										?>
+}
 
 
-										<?=$this->form->text('firstname', array('class' => 'inputbox')); ?>
-										<?=$this->form->error('firstname'); ?>
-									</div>
+.rollover_img a:hover {
+width: 108px;
+height: 108px;
+background-image: url(/img/freeShip-badge_hover.png);
+}
+
+.rollover_img a span {
+display: none;
+width: 108px;
+}
+
+.rollover_img a:hover span {
+display: block;
+}
+.gradient {background: #ffffff; /* Old browsers */
+background: -moz-linear-gradient(top, #ffffff 0%, #f5f5f5 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#f5f5f5)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top, #ffffff 0%,#f5f5f5 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top, #ffffff 0%,#f5f5f5 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top, #ffffff 0%,#f5f5f5 100%); /* IE10+ */
+background: linear-gradient(top, #ffffff 0%,#f5f5f5 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f5f5f5',GradientType=0 ); /* IE6-9 */
+}
+</style>
+<div class="container_16 round_clear pushy" style="width:771px; float:left; margin:85px 0px 0px 85px;">
+<div class="round">
+<!-- left side -->
+<div class="grid_6">
+<?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
+</div>
+<!-- right side -->
+<div class="grid_6" style="margin-left:28px;">	
+<div class="fr">Already a member? <a href="/login" title="Sign In">Sign In</a></div>
+		<div class="free_shipping_banner_reg_new rollover_img" ><a href="javascript:;" title="Free Shipping"><span></span></a></div>
+</div>
+<div class="clear"></div>
 
 
-									<div class="form-row">
-										<?=$this->form->label('lastname', 'Last Name <span>*</span>', array(
-											'escape' => false,
-											'class' => 'required'
-											));
-										?>
-										<?=$this->form->text('lastname', array('class' => 'inputbox')); ?>
-										<?=$this->form->error('lastname'); ?>
-									</div>
-									<div class="form-row">
-										<?=$this->form->label('zip', 'Zip Code <span>*</span>', array(
-											'escape' => false,
-											'class' => 'required'
-											));
-										?>
+<div class="round gradient" style="border:1px #eeeeee solid;height:300px;">
 
-										<?=$this->form->text('zip', array('class' => 'inputbox', 'id' => 'zip')); ?>
-										<?=$this->form->error('zip'); ?>
-									</div -->
-
-									<!-- ************************************************************** -->
-									<div>
-										<?=$this->form->label('email', 'Email <span>*</span>', array(
-											'escape' => false,
-											'class' => 'required'
-											));
-										?>
-										<?=$this->form->text('email', array('class' => 'inputbox', 'style' => 'width:188px')); ?>
-										<?=$this->form->error('email'); ?>
-									</div>
-									<div>
-										<?=$this->form->label('confirmemail', 'Confirm Email <span>*</span>', array(
-											'escape' => false,
-											'class' => 'required'
-											));
-										?>
-										<?=$this->form->text('confirmemail', array('class' => 'inputbox', 'style' => 'width:188px')); ?>
-										<?=$this->form->error('confirmemail'); ?>
-										<?=$this->form->error('emailcheck'); ?>
-									</div>
-
-									<div>
-									<?=$this->form->label('password','Password <span>*</span>', array(
-										'class'=>'required',
-										'escape' => false
-										));
-									?>
-									<?=$this->form->password('password', array(
-											'class'=>"inputbox",
-											'name' => 'password',
-											'id' => 'password', 'style' => 'width:188px'));
-									?>
-									<?=$this->form->error('password'); ?>
-									</div>
-									<div>
-									<?=$this->form->checkbox('terms', array("checked" => "checked", 'style'=>"float:left;margin-right:4px; display: none;"));?>
-									</div>
-									<span class="sm reg-tos" style="overflow:visible!important;">
-											By clicking register you accept our 
-											<?=$this->html->link('Terms and Conditions','pages/terms')?>.
-									</span>
-									<br>
-									<?=$this->form->submit('Register', array('class' => 'button fr')); ?>
-									<?=$this->form->error('terms'); ?>
-									</div>
-								<?=$this->form->end(); ?>
-								
-								<div>
-								<h3 style="color:#999; font-size:18px;">Register With Facebook</h3>
-								<hr />
-								<a href="#" onclick="fblogin();return false;"><img src="/img/fb_register_btn.png"></a>
-
-								</div>
-								</div>
-								<div class="bl"></div>
-								<div class="br"></div>
-								
-							</div>
-							<div class="r-container clear reg-list">
-								<div class="tl"></div>
-								<div class="tr"></div>
-								<div class="r-box lt-gradient-1">
-									<strong class="red">Why you will love Totsy</strong>
-									<ul class="bugs columns-2">
-										<li>Exclusive sales for kids, moms and families</li>
-										<li>Sales last up to 3 days, plenty of time to shop.</li>
-										<li>Savings of up to 90% off retail.</li>
-										<li>A tree is planted for your first purchase.</li>
-										<li>Membership is free</li>
-										<li>We are 100% green.</li>
-									</ul>
-								</div>
-								<div class="bl"></div>
-								<div class="br"></div>
-							</div>
-							<p class="login-sig clear">Exclusive access, Top brands. Great deals. <span class="red">The savvy mom shops at Totsy.com</span></p>
-							<p style="text-align:center; font-size:11px; color:#333;">* Offer expires 30 days after registration</p>
-
-						</div>
-						
-					</div>
-				</div>
-
-				<div class="tb">
-					<div><!-- --></div>
-				</div>
-
-			</div>
+	<div class="grid_6" style="float:left;">	
+		<div style="width:310px; margin-top:5px;">
+		<?php echo $this->view()->render(array('element' => 'registrationForm')); ?>
 		</div>
+		
+		
 	</div>
+	<div class="grid_6" style="width:330px; margin-left:2px;float:left;margin-top:5px;">	
+		<h2 class="tagline" style="margin-top:2px;">Why savvy moms shop at Totsy?</h2>
+
+		<ul id="bug_bullets">
+		<li>Membership is free</li>
+		<li>Exclusive sales for kids, moms and families</li>
+		<li>Savings of up to 90% off retail</li>
+		<li>Sales last up to 3 days</li>
+		<li>A tree is planted for your first purchase</li>
+		<li>Refer friends and earn Totsy credits</li>
+		</ul>
+	</div>
+
+
 </div>
 
-<div id="footer">
-	<?php echo $this->view()->render(array('element' => 'footerNavPublic')); ?>
+
+<div class="clear"></div>
+<?php echo $this->html->image('featured_on_long.png', array('style' => 'margin-top:20px; margin-left:10px; border-top:1px solid #f1f1f1; margin-bottom: -14px;')); ?>
+<div class="clear"></div>
 </div>
+</div>
+<div id="footer">
+<?php echo $this->view()->render(array('element' => 'footerNavPublic')); ?>
+</div>
+
 <!-- Google Code for Homepage Remarketing List -->
 <script type="text/javascript">
 /* <![CDATA[ */
-	var google_conversion_id = 1019183989;
-	var google_conversion_language = "en";
-	var google_conversion_format = "3";
-	var google_conversion_color = "666666";
-	var google_conversion_label = "8xkfCIH8iwIQ9Yb-5QM";
-	var google_conversion_value = 0;
+var google_conversion_id = 1019183989;
+var google_conversion_language = "en";
+var google_conversion_format = "3";
+var google_conversion_color = "666666";
+var google_conversion_label = "8xkfCIH8iwIQ9Yb-5QM";
+var google_conversion_value = 0;
 /* ]]> */
 </script>
 
 <script type="text/javascript" src="https://www.googleadservices.com/pagead/conversion.js"></script>
-
 <noscript>
-	<div style="display:inline;">
-		<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=8xkfCIH8iwIQ9Yb-5QM&amp;guid=ON&amp;script=0"/>
-	</div>
+<div style="display:inline;">
+<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=8xkfCIH8iwIQ9Yb-5QM&amp;guid=ON&amp;script=0"/>
+</div>
 </noscript>
 <!-- END OF Google Code for Homepage Remarketing List -->
+
 <script>
-	//your fb login function
-	function fblogin() {
-	FB.login(function(response) {
-		}, {perms:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
-	}
+//your fb login function
+function fblogin() {
+FB.login(function(response) {
+}, {perms:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
+}
 </script>
