@@ -111,7 +111,7 @@
 														<?php if($missChristmasCount>0){
 														?>
 														<br>
-														Item will not be delivered until after 12/26
+														Item will not be delivered until after 12/25
 														
 														<?php
 														}else{
