@@ -75,6 +75,7 @@ class OrderTest extends \lithium\test\Unit {
 		$address['address2'] = 'c/o Skywalker';
 
 		$vars = array(
+			'user' => $this->user,
 			'creditCard' => $this->_card(true),
 			'billingAddr' => $address,
 			'shippingAddr' => $address,
@@ -92,6 +93,14 @@ class OrderTest extends \lithium\test\Unit {
 			'tax' => 0
 		);
 		$data = array();
+
+		$creditCard = array(
+			 'number' => 'encrypted:4111111111111111',
+			 'month' => 'encrypted:11',
+			 'year' => 'encrypted:2023',
+			 'type' => 'encrypted:visa'
+		);
+		Session::write('cc_infos', $creditCard);
 
 		$result = OrderMock::process($data, $items, $vars, $avatax);
 		$this->assertTrue($result);
@@ -535,10 +544,11 @@ class OrderTest extends \lithium\test\Unit {
 			 'month' => 11,
 			 'year' => 2023
 		);
-		Session::write('cc_infos', $creditCard);
 
-		$result = Order::creditCardEncrypt($this->user->_id);
+		$result = Order::creditCardEncrypt($creditCard, $this->user->_id, true);
 		$this->assertTrue($result);
+
+		Session::write('cc_infos', $result);
 
 		$expected = $creditCard;
 		$result = Order::creditCardDecrypt($this->user->_id);
@@ -574,7 +584,8 @@ class OrderTest extends \lithium\test\Unit {
 		$creditCard = array(
 			 'number' => '4111111111111111',
 			 'month' => 11,
-			 'year' => 2023
+			 'year' => 2023,
+			 'type' => 'visa'
 		);
 		if ($raw) {
 			return $creditCard;
