@@ -136,7 +136,19 @@ class OrdersController extends BaseController {
 		}
 		//Calculatings Savings
 		$savings = 0;
+		$missChristmasCount = 0;
+		$notmissChristmasCount = 0;
 		foreach ($order->items as $item) {
+		
+			if($item['miss_christmas']){
+				$missChristmasCount++;
+			}
+			else{
+				$notmissChristmasCount++;
+			}			
+		
+		
+		
 			$itemInfo = Item::find('first', array('conditions' => array("_id" => new MongoId($item["item_id"]))));
 			if (empty($item->cancel)) {
 				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
@@ -154,6 +166,8 @@ class OrdersController extends BaseController {
 			'spinback_fb',
 			'shipRecord',
 			'openEvent',
+			'missChristmasCount',
+			'notmissChristmasCount',
 			'savings'
 		);
 	}
