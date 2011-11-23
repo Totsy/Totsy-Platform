@@ -228,7 +228,7 @@ class Cart extends Base {
 	/**
 	 * @todo Need documentation
 	 */
-	public static function shipping($carts, $address) {
+	public static function shipping($carts) {
 
 		// THIS WORKED, BUT WE'RE GOING TO A FLAT RATE
 		// $result = floatval(Ups::estimate(array(
