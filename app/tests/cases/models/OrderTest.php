@@ -8,6 +8,7 @@ use app\tests\mocks\storage\session\adapter\MemoryMock;
 use MongoId;
 use lithium\storage\Session;
 use app\models\User;
+use app\models\Order;
 use app\models\Credit;
 use app\models\Promocode;
 use app\models\Item;
