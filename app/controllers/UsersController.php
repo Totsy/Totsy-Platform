@@ -486,6 +486,10 @@ class UsersController extends BaseController {
 			}
 			$flashMessage = "Your invitations have been sent";
 		}
+		
+		if(substr_count($this->request->env('HTTP_REFERER'), "/sales?req=invite")>0) {
+			$this->redirect('/sales');
+		}
 		$open = Invitation::find('all', array(
 			'conditions' => array(
 				'user_id' => (string) $user->_id,
@@ -496,11 +500,11 @@ class UsersController extends BaseController {
 				'user_id' => (string) $user->_id,
 				'status' => 'Accepted')
 		));
-
+		
 		$pixel = Affiliate::getPixels('invite', 'spinback');
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
-			                                            array('invite' => $_SERVER['REQUEST_URI'])
-			                                            );
+		array('invite' => $_SERVER['REQUEST_URI'])
+		);
 
 		return compact('user','open', 'accepted', 'flashMessage', 'spinback_fb');
 	}
