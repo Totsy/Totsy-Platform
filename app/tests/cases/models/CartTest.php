@@ -2,13 +2,21 @@
 
 namespace app\tests\cases\models;
 
+use app\models\User;
 use app\models\Cart;
 use MongoId;
 use app\models\Item;
 use app\models\Event;
 use li3_fixtures\test\Fixture;
+use lithium\storage\Session;
 
 class CartTest extends \lithium\test\Unit {
+
+	public $user;
+
+	protected $_backup = array();
+
+	protected $_delete = array();
 
     public function setUp() {
  		$efixture = Fixture::load('Event');
@@ -35,6 +43,20 @@ class CartTest extends \lithium\test\Unit {
 			$cart = Cart::create();
 			$cart->save($next);
 		} while ($next = $cfixture->next());
+
+		$data = array(
+			'firstname' => 'George',
+			'lastname' => 'Lucas',
+			'email' => uniqid('george') . '@example.com'
+		);
+		$this->user = User::create();
+		$this->user->save($data, array('validate' => false));
+
+		$this->_delete[] = $this->user;
+
+		Session::config(array(
+			'default' => array('adapter' => 'Memory')
+		));
 	}
 
 	public function tearDown() {
@@ -56,6 +78,51 @@ class CartTest extends \lithium\test\Unit {
 		do {
 			Cart::remove( array('_id' => $cart['_id'] ) );
 		} while ($cart = $cfixture->next());
+
+		foreach ($this->_delete as $document) {
+			$document->delete();
+		}
+	}
+
+	public function testDates() {
+		$result = Cart::dates('-1min');
+		$this->assertTrue(is_a($result, 'MongoDate'));
+
+		$expected = strtotime('-1min');
+		$result = $result->sec;
+		$this->assertTrue($result == $expected || ($result > $expected && $result < $expected + 5));
+	}
+
+	public function testAddFields() {
+		Session::write('userLogin', $this->user->data());
+
+		$data = array(
+			'description' => 'Fireman Towel',
+		);
+		$cart = Cart::create($data);
+		$cart->save();
+
+		Cart::addFields($cart);
+
+		$cart = Cart::first((string) $cart->_id);
+
+		$expected = strtotime('15min');
+		$result = $cart->expires->sec;
+		$this->assertTrue($result == $expected || ($result > $expected && $result < $expected + 5));
+
+		$expected = strtotime('now');
+		$result = $cart->created->sec;
+		$this->assertTrue($result == $expected || ($result > $expected && $result < $expected + 5));
+
+		$result = isset($cart->session);
+		$this->assertTrue($result);
+
+		$expected = (string) $this->user->_id;
+		$result = $cart->user;
+		$this->assertEqual($expected, $result);
+
+		Session::delete('userLogin');
+		$this->_delete[] = $cart;
 	}
 
 	/*
