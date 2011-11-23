@@ -109,7 +109,7 @@ class OrderTest extends \lithium\test\Unit {
 		$this->assertFalse($result);
 
 		$expected = 123.45;
-		$result = PaymentsMock::$authorize[1];
+		$result = ProcessorMock::$authorize[1];
 		$this->assertEqual($expected, $result);
 
 		$expected = $vars['creditCard']['number'];
@@ -387,7 +387,11 @@ class OrderTest extends \lithium\test\Unit {
 		$result = $order->discount;
 		$this->assertEqual($expected, $result);
 
-		$expected = 0;
+		$expected = 10;
+		$result = $order->handlingDiscount;
+		$this->assertEqual($expected, $result);
+
+		$expected = 10;
 		$result = $order->handling;
 		$this->assertEqual($expected, $result);
 
