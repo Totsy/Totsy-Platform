@@ -208,13 +208,8 @@ var discountErrors = new Object();
 							<span class="<?="price-item-$x";?> cart-review-line-price">
 								<strong>$<?=number_format($item->sale_retail,2)?></strong>
 							</span>
-<<<<<<< HEAD
-							<span class="<?="qty-$x";?> cart-review-line-qty">Qty: <?=$item->quantity;?></span>						
-							<span class="<?="total-item-$x";?> cart-review-line-total" style="padding-right:10px;">$<?=number_format($item->sale_retail * $item->quantity ,2)?>
-=======
 							<span class="<?="qty-$x";?> cart-review-line-qty">Qty: <?=$item->quantity;?></span>
 							<span class="<?="total-item-$x";?> cart-review-line-total">$<?=number_format($item->sale_retail * $item->quantity ,2)?>
->>>>>>> 0083cdd91615ba5308bfdd872ba907f7bbba332b
 							</span>
 						</div>
 							<hr />
@@ -225,13 +220,10 @@ var discountErrors = new Object();
 							<?php if($item->size!=="no size") : ?>
 							<div><span class="cart-review-color-size">Size:</span> <?=$item->size;?></div>
 							<?php endif ?>
-<<<<<<< HEAD
 							<br><?=$shipmsg?>
 
 						</div>	
-=======
-						</div>
->>>>>>> 0083cdd91615ba5308bfdd872ba907f7bbba332b
+
 					</td>
 				</tr>
 				<?php $x++; ?>
@@ -247,15 +239,11 @@ var discountErrors = new Object();
 				<div class="cart-code-buttons">
 				     <?php if(!empty($credit)): ?>
 				    	<strong>Add <a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a></strong> /
-<<<<<<< HEAD
-				    <?php endif ?> 
 
 			        <span id="promocode_tooltip" original-title="Promo codes cannot be combined and can be applied once to an order per member." class="cart-tooltip">
 			        	<img src="/img/tooltip_icon.png">
 			        </span>
-=======
 				    <?php endif ?>
->>>>>>> 0083cdd91615ba5308bfdd872ba907f7bbba332b
 					<strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
 				</div>
 				<div style="clear:both"></div>
@@ -332,14 +320,10 @@ var discountErrors = new Object();
 			    <div style="clear:both"></div>
 			    <div>
 			    <div class="subtotal">
-<<<<<<< HEAD
-			        <span id="tax_tooltip" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary." class="cart-tooltip"><img src="/img/tooltip_icon.png"></span>		
-			    <span id="estimated_tax" style="float: left;">Estimated Tax:</span> 
-=======
+
 			        <span id="tax_tooltip" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary." class="cart-tooltip"><img src="/img/tooltip_icon.png">
 </span>
 			    <span id="estimated_tax" style="float: left;">Estimated Tax:</span>
->>>>>>> 0083cdd91615ba5308bfdd872ba907f7bbba332b
 			        	<span style="float:right">$<?=number_format($tax,2)?></span>
 			    </div>
 			    </div>
