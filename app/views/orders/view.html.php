@@ -108,7 +108,7 @@
 														$convertdate = date("Y-m-d h:i:s", 1322071200);
 														//echo $orderdate;
 														
-														if($order->date_created->sec>1322071200){
+														if($order->date_created->sec>1322006400){
 															if($missChristmasCount>0){
 															?>
 															<br>
