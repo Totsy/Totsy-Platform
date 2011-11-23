@@ -25,3 +25,4 @@
 [submodule "libraries/sailthru/sailthru-php5-client"]
 	path = libraries/sailthru/sailthru-php5-client
 	url = git://github.com/sailthru/sailthru-php5-client.git
+
