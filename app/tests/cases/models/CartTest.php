@@ -71,7 +71,7 @@ class CartTest extends \lithium\test\Unit {
 		$this->_delete[] = $this->user;
 
 		Session::config(array(
-			'default' => array('adapter' => 'Memory')
+			'default' => array('adapter' => new MemoryMock())
 		));
 	}
 
