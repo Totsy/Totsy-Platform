@@ -65,6 +65,14 @@ class CartTest extends \lithium\test\Unit {
 		Session::config(array(
 			'default' => array('adapter' => new MemoryMock())
 		));
+		$this->user = User::create();
+		$this->user->save($data, array('validate' => false));
+
+		$this->_delete[] = $this->user;
+
+		Session::config(array(
+			'default' => array('adapter' => 'Memory')
+		));
 	}
 
 	public function tearDown() {
