@@ -253,6 +253,46 @@ class CartTest extends \lithium\test\Unit {
 		$this->assertEqual($expected, $result);
 	}
 
+	public function testTax() {
+		$data = array(
+			'taxable' => true
+		);
+		$item = Item::create($data);
+		$item->save();
+		$this->_delete[] = $item;
+
+		$data = array(
+			'sale_retail' => 3,
+			'quantity' => 2,
+			'item_id' => (string) $item->_id
+		);
+		$cart = Cart::create($data);
+
+		$shipping = array(
+			'state' => 'CA',
+			'zip' => 9999
+		);
+		$expected = 0;
+		$result = $cart->tax($shipping);
+		$this->assertEqual($expected, $result);
+
+		$shipping = array(
+			'state' => 'NY',
+			'zip' => 100
+		);
+		$expected = (string) 0.5325;
+		$result = (string) $cart->tax($shipping);
+		$this->assertEqual($expected, $result);
+
+		$shipping = array(
+			'state' => 'NJ',
+			'zip' => 9999
+		);
+		$expected = (string) 0.42;
+		$result = (string) $cart->tax($shipping);
+		$this->assertEqual($expected, $result);
+	}
+
 	/*
 	* Testing the Check Method of the Cart
 	*/
