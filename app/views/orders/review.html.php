@@ -211,7 +211,6 @@ var discountErrors = new Object();
 
 							<span class="<?="qty-$x";?> cart-review-line-qty">Qty: <?=$item->quantity;?></span>
 							<span class="<?="total-item-$x";?> cart-review-line-total">$<?=number_format($item->sale_retail * $item->quantity ,2)?>
-
 							</span>
 						</div>
 							<hr />
@@ -245,7 +244,6 @@ var discountErrors = new Object();
 			        	<img src="/img/tooltip_icon.png">
 			        </span>
 				    <?php endif ?>
-
 					<strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
 				</div>
 				<div style="clear:both"></div>
@@ -325,7 +323,6 @@ var discountErrors = new Object();
 			        <span id="tax_tooltip" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary." class="cart-tooltip"><img src="/img/tooltip_icon.png">
 </span>
 			    <span id="estimated_tax" style="float: left;">Estimated Tax:</span>
-
 			        	<span style="float:right">$<?=number_format($tax,2)?></span>
 			    </div>
 			    </div>
