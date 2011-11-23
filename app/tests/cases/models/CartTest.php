@@ -37,15 +37,35 @@ class CartTest extends \lithium\test\Unit {
 		} while ($next = $cfixture->next());
 	}
 
+	public function tearDown() {
+		$efixture = Fixture::load('Event');
+		$ifixture = Fixture::load('Item');
+		$cfixture = Fixture::load('Cart');
+
+		$event = $efixture->first();
+		do {
+			Event::remove( array('_id' => $event['_id'] ) );
+		} while ($event = $efixture->next());
+
+		$item = $ifixture->first();
+		do {
+			Item::remove( array( '_id' => $item['_id'] ) );
+		} while ($item = $ifixture->next());
+
+		$cart = $cfixture->first();
+		do {
+			Cart::remove( array('_id' => $cart['_id'] ) );
+		} while ($cart = $cfixture->next());
+	}
+
 	/*
 	* Testing the Check Method of the Cart
 	*/
 	public function testCheck() {
-		//Configuration Test
 		$quantity = 20;
 		$cart_id = "787878787zazazag7878";
 		$item_id = "87887273782738728";
-		//Create temporary documents
+
 		$remote = new Cart();
 		$datas_cart = array(
 			"_id" => $cart_id,
@@ -88,37 +108,14 @@ class CartTest extends \lithium\test\Unit {
 		);
 		$item = Item::create();
 		$item->save($datas_item);
-		//Request the tested method
+
 		$result = $remote->check($quantity, $cart_id);
-		//Delete Temporary Documents
+
 		Cart::remove(array("_id" => $cart_id));
 		Item::remove(array("_id" => $item_id));
-		//Test result
-		$this->assertEqual( true , $result["status"]);
+
+		$this->assertTrue($result["status"]);
 	}
-
-	public function tearDown() {
-		$efixture = Fixture::load('Event');
-		$ifixture = Fixture::load('Item');
-		$cfixture = Fixture::load('Cart');
-
-		$event = $efixture->first();
-		do {
-			Event::remove( array('_id' => $event['_id'] ) );
-		} while ($event = $efixture->next());
-
-		$item = $ifixture->first();
-		do {
-			Item::remove( array( '_id' => $item['_id'] ) );
-		} while ($item = $ifixture->next());
-
-		$cart = $cfixture->first();
-		do {
-			Cart::remove( array('_id' => $cart['_id'] ) );
-		} while ($cart = $cfixture->next());
-	}
-
-
 }
 
 ?>
