@@ -123,7 +123,6 @@
 														}
 														?>
 
-
 													</td>
 													<td style="padding:5px; color:#009900;" title="price">
 														$<?=number_format($item['sale_retail'],2); ?>
