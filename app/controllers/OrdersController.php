@@ -19,7 +19,6 @@ use lithium\util\Validator;
 use MongoDate;
 use MongoId;
 use app\extensions\Mailer;
-use app\extensions\AvaTax;
 
 /**
  * The Orders Controller
