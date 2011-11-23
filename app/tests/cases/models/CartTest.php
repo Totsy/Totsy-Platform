@@ -5,10 +5,12 @@ namespace app\tests\cases\models;
 use app\models\User;
 use app\models\Cart;
 use MongoId;
+use MongoDate;
 use app\models\Item;
 use app\models\Event;
 use li3_fixtures\test\Fixture;
 use lithium\storage\Session;
+use app\tests\mocks\storage\session\adapter\MemoryMock;
 
 class CartTest extends \lithium\test\Unit {
 
@@ -55,7 +57,7 @@ class CartTest extends \lithium\test\Unit {
 		$this->_delete[] = $this->user;
 
 		Session::config(array(
-			'default' => array('adapter' => 'Memory')
+			'default' => array('adapter' => new MemoryMock())
 		));
 	}
 
@@ -123,6 +125,42 @@ class CartTest extends \lithium\test\Unit {
 
 		Session::delete('userLogin');
 		$this->_delete[] = $cart;
+	}
+
+	public function testActive() {
+		Session::write('userLogin', $this->user->data());
+
+		$data = array(
+			'session' => Session::key('default'),
+			'expires' => new MongoDate(strtotime('-10min')),
+			'user' => (string) $this->user->_id
+		);
+		$cart = Cart::create($data);
+		$cart->save();
+		$this->_delete[] = $cart;
+
+		$data = array(
+			'session' => Session::key('default'),
+			'expires' => new MongoDate(strtotime('+10min')),
+			'user' => (string) $this->user->_id
+		);
+		$cart = Cart::create($data);
+		$cart->save();
+		$this->_delete[] = $cart;
+
+		$result = Cart::active();
+
+		$expected = $cart->_id;
+		$this->assertEqual($expected, $result[0]['_id']);
+
+		$expected = $this->user->_id;
+		$this->assertEqual($expected, $result[0]['user']);
+
+		$expected = 1;
+		$result = count($result);
+		$this->assertIdentical($expected, $result);
+
+		Session::delete('userLogin');
 	}
 
 	/*
