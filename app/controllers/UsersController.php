@@ -151,7 +151,7 @@ class UsersController extends BaseController {
 					return $this->redirect($landing);
 					unset($landing);
 				} else {
-					return $this->redirect('/sales');
+					$this->redirect('/sales?req=invite');
 				}
 				
 			}
@@ -638,7 +638,7 @@ class UsersController extends BaseController {
 				$this->redirect($landing);
 				unset($landing);
 			} else {
-				$this->redirect('/sales');
+				$this->redirect('/sales?req=invite');
 			}
 		}
 
