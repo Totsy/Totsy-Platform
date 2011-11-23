@@ -52,7 +52,8 @@
 	use lithium\net\http\Media;
 	$images = array();
 	$imgDirectory = $this->_request->env('base') . '/img/login/';
-
+	
+	$_SERVER['REQUEST_URI'];
 	/**
 	 * Get a random login image (of type jpg or png).
 	 */

@@ -39,9 +39,131 @@ Once you enroll, you're ready to start earning points! The more things you do on
 	</span>
 </h1>
 <hr />
-
 </div>
 
 <div class="grid_5">
 <span style="border: medium none !important; height:397; width:270"></span>
+<hr />
+<div style="padding-top:20px">
+<div style="float:left">
+	<img src="/img/rewards_little_girl.png">
+</div>
+
+<div style="float:right">
+	<div class="page-title gray" style="width:455px !important">
+	Redeem your points for discounts, donations, and credits toward future Totsy purchases! <a href="#">Enroll now to start earning!</a>
+	</div>
+	<br />
+		<ul id="get-rewards">
+			<li>
+				<span>500 points</span>$10 Off an order over $50
+				<hr />
+			</li>
+			<li>
+				<span>1,000 points</span><a href="">Plant a Tree</a> or Free Shipping on an order over $40
+				<hr />
+			</li>
+			<li>
+				<span>1,500 points</span>$15 Off an order over $60
+				<hr />
+			</li>
+			<li>
+				<span>2,000 points</span>$20 Off an order over $100
+				<hr />
+			</li>
+			<li>
+				<span>5,000 points</span>$50 Off an order over $100
+			</li>
+		</ul>
+	<div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="grid_5">
+	<div style="padding-top:10px;">
+		<table id="rewards-top-members">
+		
+		<!-- dynamic stuff -->
+			<tr>
+				<td>
+					<div class="count">1</div>
+					<div class="thumb">
+					    <img src="/img/test_thumb.jpg" width="50" height="50">
+					</div>
+					<div class="content">
+					    <div class="name">First Name Last Name</div>
+					    <div style="clear:both"></div>
+					    <div class="address">Jersey City, NJ</div>
+					    <div style="clear:both"></div>
+					    <div class="graph-data"></div>
+					</div>
+				</td>
+			</tr>
+		<!-- -->	
+			
+			<tr>
+				<td>
+					<div class="count">2</div>
+					<div class="thumb">
+					    <img src="/img/test_thumb.jpg" width="50" height="50">
+					</div>
+					<div class="content">
+					    <div class="name">First name Last Name</div>
+					    <div style="clear:both"></div>
+					    <div class="address">Jersey City, NJ</div>
+					    <div style="clear:both"></div>
+					    <div class="graph-data"></div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="count">3</div>
+					<div class="thumb">
+					    <img src="/img/test_thumb.jpg" width="50" height="50">
+					</div>
+					<div class="content">
+					    <div class="name">First name Last Name</div>
+					    <div style="clear:both"></div>
+					    <div class="address">Jersey City, NJ</div>
+					    <div style="clear:both"></div>
+					    <div class="graph-data"></div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="count">4</div>
+					<div class="thumb">
+					    <img src="/img/test_thumb.jpg" width="50" height="50">
+					</div>
+					<div class="content">
+					    <div class="name">First name Last Name</div>
+					    <div style="clear:both"></div>
+					    <div class="address">Jersey City, NJ</div>
+					    <div style="clear:both"></div>
+					    <div class="graph-data"></div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="count">5</div>
+					<div class="thumb">
+					    <img src="/img/test_thumb.jpg" width="50" height="50">
+					</div>
+					<div class="content">
+					    <div class="name">First name Last Name</div>
+					    <div style="clear:both"></div>
+					    <div class="address">Jersey City, NJ</div>
+					    <div style="clear:both"></div>
+					    <div class="graph-data"></div>
+					</div>
+				</td>
+			</tr>
+			<!-- dynamic section ends here -->		
+		</table>
+	</div>
 </div>
