@@ -111,12 +111,13 @@
 														<?php if($missChristmasCount>0){
 														?>
 														<br>
-														Item will not be delivered until after 12/25
+														This item is not guaranteed to be delivered on or before 12/25.* 
 														
 														<?php
 														}else{
 														?>
-														Item will ship on or before 12/23.
+														<br>
+														This item will be delivered on or before 12/23*
 														
 														<?php
 														}
@@ -206,15 +207,16 @@
 				<?php
 				if($missChristmasCount>0&&$notmissChristmasCount>0){
 				?>
-				* Totsy ships all items complete and does not split items into separate orders. If you would like the designated items in your cart delivered on or before 12/23, we suggest you order them separately from the items not guaranteed to arrive before 12/25. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions.
+				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. 
 				
 				<?php
 				}
 				elseif($missChristmasCount>0){
 				?>
-				
+				* Your items will arrives safely, but after 12/25.
 				
 				<?php
+				}
 				else{
 				?>
 				
