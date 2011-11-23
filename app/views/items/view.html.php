@@ -5,7 +5,7 @@
 	var item_id = "<?=$item->_id?>";
 </script>
 
-<?=$this->html->script(array('cart-timer.js', 'cart-items-timer.js', 'cart-popup.js?v=001'));?>
+<?=$this->html->script(array('cart-timer.js?v=007', 'cart-items-timer.js?v=007', 'cart-popup.js?v=007'));?>
 
 <!-- template used for items on cart. jquery.tmpl.js driven -->
 <?=$this->view()->render( array('element' => 'popupCartItems') ); ?>
