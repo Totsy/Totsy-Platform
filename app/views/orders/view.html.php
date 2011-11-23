@@ -73,10 +73,7 @@
 												?>
 													
 												<?php else: ?>
-													 <?php
-															 echo $shipDate;
-													 
-													 ?>
+													 <?php echo $shipDate; ?>
 												<?php endif ?>
 											</td>
 										</tr>
