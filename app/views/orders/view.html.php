@@ -73,11 +73,7 @@
 												?>
 													
 												<?php else: ?>
-													 <?php
-													 //echo date('M d, Y', $shipDate);
-													 echo $shipDate;
-													 
-													 ?>
+													 <?php echo $shipDate; ?>
 												<?php endif ?>
 											</td>
 										</tr>
@@ -108,18 +104,24 @@
 														<br>
 														Size: <?=$item['size']?>
 														
-														<?php if($missChristmasCount>0){
-														?>
-														<br>
-														This item is not guaranteed to be delivered on or before 12/25.* 
+														<?php 
+														$convertdate = date("Y-m-d h:i:s", 1322071200);
+														//echo $orderdate;
 														
-														<?php
-														}else{
-														?>
-														<br>
-														This item will be delivered on or before 12/23*
-														
-														<?php
+														if($order->date_created->sec>1322006400){
+															if($missChristmasCount>0){
+															?>
+															<br>
+															This item is not guaranteed to be delivered on or before 12/25.* 
+															
+															<?php
+															}else{
+															?>
+															<br>
+															This item will be delivered on or before 12/23*
+															
+															<?php
+															}
 														}
 														?>
 
