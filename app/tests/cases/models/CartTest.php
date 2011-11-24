@@ -537,6 +537,40 @@ class CartTest extends \lithium\test\Unit {
 		$this->assertEqual($expected, $result);
 	}
 
+	public function testIncreaseExpires() {
+		Session::write('userLogin', $this->user->data());
+
+		$data = array(
+			'session' => Session::key('default'),
+			'expires' => new MongoDate(time() + (4 * 60)),
+			'user' => (string) $this->user->_id
+		);
+		$cart = Cart::create($data);
+		$cart->save();
+		$this->_delete[] = $cart;
+
+		$data = array(
+			'session' => Session::key('default'),
+			'expires' => new MongoDate(time() + 10),
+			'user' => (string) $this->user->_id
+		);
+		$cart = Cart::create($data);
+		$cart->save();
+		$this->_delete[] = $cart;
+
+		Cart::increaseExpires();
+
+		$left  = $cart;
+		$right = Cart::first((string) $left->_id);
+		$this->assertNotEqual($left->expires, $right->expires);
+
+		$expected = $left->expires->sec + (60 * 5) - 10;
+		$result = $right->expires->sec;
+		$this->assertEqual($expected, $result);
+
+		Session::delete('userLogin');
+	}
+
 	/*
 	* Testing the Check Method of the Cart
 	*/
