@@ -572,6 +572,83 @@ class CartTest extends \lithium\test\Unit {
 		Session::delete('userLogin');
 	}
 
+	public function testRefreshTimer() {
+		Session::write('userLogin', $this->user->data());
+		Session::write('userSavings', 999);
+
+		$data = array(
+			'end_date' => new MongoDate(strtotime('20min'))
+		);
+		$event = Event::create($data);
+		$event->save();
+		$this->_delete[] = $event;
+
+		$data = array(
+			'end_date' => true,
+			'event' => array(
+				(string) $event->_id
+			),
+			'session' => Session::key('default'),
+			'expires' => new MongoDate(strtotime('10min')),
+			'user' => (string) $this->user->_id
+		);
+		$cart = Cart::create($data);
+		$cart->save();
+		$this->_delete[] = $cart;
+
+		$result = Cart::refreshTimer();
+		$this->assertNull($result);
+
+		$cart = Cart::first((string) $cart->_id);
+
+		$expected = time() + (15 * 60);
+		$result = $cart->expires->sec;
+		$this->assertEqual($expected, $result);
+
+		$expected = 999;
+		$result = Session::read('userSavings');
+		$this->assertEqual($expected, $result);
+
+		Session::delete('userLogin');
+		Session::delete('userSavings');
+	}
+
+	public function testRefreshTimerExcess() {
+		Session::write('userLogin', $this->user->data());
+		Session::write('userSavings', 999);
+
+		$data = array(
+			'end_date' => new MongoDate(strtotime('20min'))
+		);
+		$event = Event::create($data);
+		$event->save();
+		$this->_delete[] = $event;
+
+		for ($i = 0; $i <= 30; $i++) {
+			$data = array(
+				'end_date' => true,
+				'event' => array(
+					(string) $event->_id
+				),
+				'session' => Session::key('default'),
+				'expires' => new MongoDate(strtotime('10min')),
+				'user' => (string) $this->user->_id
+			);
+			$cart = Cart::create($data);
+			$cart->save();
+			$this->_delete[] = $cart;
+		}
+
+		Cart::refreshTimer();
+
+		$expected = 0;
+		$result = Session::read('userSavings');
+		$this->assertEqual($expected, $result);
+
+		Session::delete('userLogin');
+		Session::delete('userSavings');
+	}
+
 	/*
 	* Testing the Check Method of the Cart
 	*/
