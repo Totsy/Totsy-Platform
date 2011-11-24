@@ -950,6 +950,35 @@ class CartTest extends \lithium\test\Unit {
 		Session::delete('userLogin');
 		Session::delete('userSavings');
 	}
+
+	public function testGetDiscount() {
+		Session::write('userLogin', $this->user->data());
+		Session::write('userSavings', array(
+			'items' => 32,
+			'discount' => 0,
+			'services' => 0
+		));
+		Session::write('services', array());
+
+		$expected = 0;
+		$data = array(
+			'code' => false,
+			'credit_amount' => 2
+		);
+		$result = Cart::getDiscount(100, 7.95, 0, $data, 0);
+
+		$this->assertTrue(is_object($result['cartPromo']));
+		$this->assertTrue(is_object($result['cartCredit']));
+		$this->assertTrue(is_array($result['services']));
+		$this->assertTrue(isset($result['postDiscountTotal']));
+
+		$expected = 98;
+		$this->assertEqual($expected, $result['postDiscountTotal']);
+
+		Session::delete('userLogin');
+		Session::delete('userSavings');
+		Session::delete('services');
+	}
 }
 
 ?>
