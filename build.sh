@@ -29,7 +29,6 @@ function print_usage {
 	echo " - fix-perms         Set default permissions on app, admin and resources (excl. libraries)."
 	echo " - run-tests         Runs lithium, app, admin and library tests."
 	echo " - optimize-repo     Perform GC on local git repository."
-	echo " - source-lithium    Install lithium."
 	echo " - source-subs       Initialize and update all submodules."
 	echo " - clear-cache       Clears file caches on admin and app."
 }
@@ -56,11 +55,6 @@ case $COMMAND in
 
 		echo
 		echo
-		echo "NOTE: There is currently *no lithium core for the app* shipped with"
-		echo "      the codebase. Please ensure to place one at:"
-		echo
-		echo "      $PROJECT_DIR/libraries/lithium"
-		echo
 		echo "QA: Some errors are being surpressed in:"
 		echo
 		for FILE in $FILES; do
@@ -68,12 +62,6 @@ case $COMMAND in
 		done
 		echo
 
-		read -p "Do you want to add a lithium core now? (y/n) " CONFIRM
-		if [[ $CONFIRM == "y" ]]; then
-			$0 source-lithium
-		fi
-
-		echo
 		echo "Done :-)"
 		echo
 		;;
@@ -126,25 +114,6 @@ case $COMMAND in
 	source-subs)
 		echo "Updating and initialising all registered submodules recursively..."
 		git submodule update --init --recursive
-		;;
-
-	source-lithium)
-		TARGET=$PROJECT_DIR/libraries/lithium
-		TMP=$(mktemp -d /tmp/totsyXXXX)
-
-		echo "Removing old..."
-		test -d $TARGET && rm -r $TARGET
-
-		git clone git://github.com/UnionOfRAD/lithium.git $TMP
-		cd $TMP
-		git checkout -q b4d64753832ec0fa344cd5092571d691ede03176
-		mv $TMP/libraries/lithium $TARGET
-
-		echo "Removing history..."
-		rm -fr .git
-
-		echo "Removing temporary directory..."
-		rm -fr $TMP
 		;;
 
 	clear-cache)
