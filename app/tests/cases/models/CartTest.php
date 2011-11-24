@@ -762,6 +762,28 @@ class CartTest extends \lithium\test\Unit {
 
 		$this->assertTrue($result["status"]);
 	}
+
+	/* @todo Need more understanding of needed input for getEventIds().
+	public function testShipDate() {
+		$data = array(
+			'end_date' => new MongoDate(strtotime('1min'))
+		);
+		$event = Event::create($data);
+		$event->save();
+		$this->_delete[] = $event;
+
+		$data = array(
+			'event' => array(
+				1 => (string) $event->_id
+			)
+		);
+		$cart = Cart::create($data);
+		$cart->save();
+		$this->_delete[] = $cart;
+
+		$result = Cart::shipDate($cart);
+	}
+	*/
 }
 
 ?>
