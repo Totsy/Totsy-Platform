@@ -50,7 +50,8 @@ class CartTest extends \lithium\test\Unit {
 		$data = array(
 			'firstname' => 'George',
 			'lastname' => 'Lucas',
-			'email' => uniqid('george') . '@example.com'
+			'email' => uniqid('george') . '@example.com',
+			'total_credit' => 30
 		);
 		$this->user = User::create();
 		$this->user->save($data, array('validate' => false));
