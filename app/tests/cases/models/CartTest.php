@@ -558,7 +558,8 @@ class CartTest extends \lithium\test\Unit {
 		$cart->save();
 		$this->_delete[] = $cart;
 
-		Cart::increaseExpires();
+		$result = Cart::increaseExpires();
+		$this->assertTrue($result);
 
 		$left  = $cart;
 		$right = Cart::first((string) $left->_id);
