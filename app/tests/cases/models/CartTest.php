@@ -794,6 +794,61 @@ class CartTest extends \lithium\test\Unit {
 		Session::delete('userSavings');
 	}
 
+	public function testCleanExpiredEventItems() {
+		Session::write('userLogin', $this->user->data());
+
+		$data = array(
+			'end_date' => new MongoDate(strtotime('-1min'))
+		);
+		$event = Event::create($data);
+		$event->save();
+		$this->_delete[] = $event;
+
+		$data = array(
+			'event' => array(
+				(string) $event->_id
+			),
+			'session' => Session::key('default'),
+			'expires' => new MongoDate(strtotime('10min')),
+			'user' => (string) $this->user->_id
+		);
+		$cart = Cart::create($data);
+		$cart->save();
+		$this->_delete[] = $cart;
+
+		$result = Cart::cleanExpiredEventItems();
+		$this->assertNull($result);
+
+		$result = Cart::first((string) $cart->_id);
+		$this->assertFalse($result);
+
+		$data = array(
+			'end_date' => new MongoDate(strtotime('+1min'))
+		);
+		$event = Event::create($data);
+		$event->save();
+		$this->_delete[] = $event;
+
+		$data = array(
+			'event' => array(
+				(string) $event->_id
+			),
+			'session' => Session::key('default'),
+			'expires' => new MongoDate(strtotime('10min')),
+			'user' => (string) $this->user->_id
+		);
+		$cart = Cart::create($data);
+		$cart->save();
+		$this->_delete[] = $cart;
+
+		Cart::cleanExpiredEventItems();
+
+		$result = Cart::first((string) $cart->_id);
+		$this->assertTrue($result);
+
+		Session::delete('userLogin');
+	}
+
 	/*
 	* Testing the Check Method of the Cart
 	*/
