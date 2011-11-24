@@ -784,6 +784,171 @@ class CartTest extends \lithium\test\Unit {
 		$result = Cart::shipDate($cart);
 	}
 	*/
+
+	public function testUpdateSavingsAdd() {
+		Session::write('userLogin', $this->user->data());
+
+		$data = array(
+			'msrp' => 9,
+			'sale_retail' => 2
+		);
+		$item0 = Item::create($data);
+		$item0->save();
+		$this->_delete[] = $item0;
+
+		$data = array(
+			'msrp' => 9,
+			'sale_retail' => 3
+		);
+		$item1 = Item::create($data);
+		$item1->save();
+		$this->_delete[] = $item1;
+
+		$items = array(
+			(string) $item0->_id => 2,
+			(string) $item1->_id => 3
+		);
+		$result = Cart::updateSavings($items, 'add');
+
+		$expected = array(
+			'items' => 32,
+			'discount' => 0,
+			'services' => 0
+		);
+		$result = Session::read('userSavings');
+		$this->assertEqual($expected, $result);
+
+		Session::delete('userLogin');
+		Session::delete('userSavings');
+	}
+
+	public function testUpdateSavingsUpdate() {
+		Session::write('userLogin', $this->user->data());
+		Session::write('userSavings', array(
+			'items' => 32,
+			'discount' => 0,
+			'services' => 0
+		));
+
+		$data = array(
+			'msrp' => 5,
+			'sale_retail' => 2
+		);
+		$item0 = Item::create($data);
+		$item0->save();
+		$this->_delete[] = $item0;
+
+		$data = array(
+			'msrp' => 8,
+			'sale_retail' => 1
+		);
+		$item1 = Item::create($data);
+		$item1->save();
+		$this->_delete[] = $item1;
+
+		$items = array(
+			(string) $item0->_id => 2,
+			(string) $item1->_id => 3
+		);
+		$result = Cart::updateSavings($items, 'update');
+
+		$expected = array(
+			'items' => 27,
+			'discount' => 0,
+			'services' => 0
+		);
+		$result = Session::read('userSavings');
+		$this->assertEqual($expected, $result);
+
+		Session::delete('userLogin');
+		Session::delete('userSavings');
+	}
+
+	public function testUpdateSavingsRemove() {
+		Session::write('userLogin', $this->user->data());
+		Session::write('userSavings', array(
+			'items' => 32,
+			'discount' => 0,
+			'services' => 0
+		));
+
+		$data = array(
+			'msrp' => 5,
+			'sale_retail' => 2
+		);
+		$item0 = Item::create($data);
+		$item0->save();
+		$this->_delete[] = $item0;
+
+		$data = array(
+			'msrp' => 8,
+			'sale_retail' => 1
+		);
+		$item1 = Item::create($data);
+		$item1->save();
+		$this->_delete[] = $item1;
+
+		$items = array(
+			(string) $item0->_id => 2,
+			(string) $item1->_id => 3
+		);
+		$result = Cart::updateSavings($items, 'remove');
+
+		$expected = array(
+			'items' => 5,
+			'discount' => 0,
+			'services' => 0
+		);
+		$result = Session::read('userSavings');
+		$this->assertEqual($expected, $result);
+
+		Session::delete('userLogin');
+		Session::delete('userSavings');
+	}
+
+	public function testUpdateSavingsDiscount() {
+		Session::write('userLogin', $this->user->data());
+		Session::write('userSavings', array(
+			'items' => 32,
+			'discount' => 0,
+			'services' => 0
+		));
+
+		$result = Cart::updateSavings(null, 'discount', 2);
+
+		$expected = array(
+			'items' => 32,
+			'discount' => 2,
+			'services' => 0
+		);
+		$result = Session::read('userSavings');
+		$this->assertEqual($expected, $result);
+
+		Session::delete('userLogin');
+		Session::delete('userSavings');
+	}
+
+	public function testUpdateSavingsServices() {
+		Session::write('userLogin', $this->user->data());
+		Session::write('userSavings', array(
+			'items' => 32,
+			'discount' => 0,
+			'services' => 0
+		));
+
+		$result = Cart::updateSavings(null, 'services', 2);
+
+		$expected = array(
+			'items' => 32,
+			'discount' => 0,
+			'services' => 2
+		);
+		$result = Session::read('userSavings');
+		$this->assertEqual($expected, $result);
+
+		Session::delete('userLogin');
+		Session::delete('userSavings');
+	}
 }
 
 ?>
