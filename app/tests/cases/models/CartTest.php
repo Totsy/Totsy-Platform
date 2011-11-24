@@ -486,6 +486,57 @@ class CartTest extends \lithium\test\Unit {
 		$this->assertEqual($expected, $result);
 	}
 
+	public function testCheckCartItems() {
+		$data = array(
+			'session' => Session::key('default'),
+			'item_id' => 'item0',
+			'size' => '18-24M',
+			'expires' => new MongoDate(time() + 60)
+		);
+		$cart = Cart::create($data);
+		$cart->save();
+		$this->_delete[] = $cart;
+
+		$result = Cart::checkCartItem('item0', '18-24M');
+
+		$expected = 0;
+		$this->assertEqual(1, count($result));
+	}
+
+	public function testReserved() {
+		$data = array(
+			'item_id' => 'item0',
+			'size' => '18-24M',
+			'quantity' => 2
+		);
+		$cart = Cart::create($data);
+		$cart->save();
+		$this->_delete[] = $cart;
+
+		$data = array(
+			'item_id' => 'item0',
+			'size' => '18-24M',
+			'quantity' => 3
+		);
+		$cart = Cart::create($data);
+		$cart->save();
+		$this->_delete[] = $cart;
+
+		$data = array(
+			'item_id' => 'item1',
+			'size' => '18-24M',
+			'quantity' => 5
+		);
+		$cart = Cart::create($data);
+		$cart->save();
+		$this->_delete[] = $cart;
+
+		$result = Cart::reserved('item0', '18-24M');
+
+		$expected = 5;
+		$this->assertEqual($expected, $result);
+	}
+
 	/*
 	* Testing the Check Method of the Cart
 	*/
