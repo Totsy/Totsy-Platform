@@ -1,5 +1,6 @@
 {
 	"user1": {
+		"_id": "400001",
 		"firstname": "Daneel",
 		"lastname": "Olivaw",
 		"email": "daneel@olivaw.com",
@@ -10,6 +11,7 @@
 		"logincounter": 0
 	},
 	"user2": {
+		"_id": "400002",
 		"firstname": "Giskard",
 		"lastname": "Reventlov",
 		"email": "giskard@reventlov.com",

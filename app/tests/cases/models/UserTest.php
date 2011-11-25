@@ -88,6 +88,24 @@ class UserTest extends \lithium\test\Unit {
 		$expected = $old->total_credit + 100;
 		$result = $updated->total_credit;
 		$this->assertEqual($expected, $result);
+
+		$this->assertLoaded('user1');
+		$old = $this->user('user1');
+		$this->fakeSession('user1');
+		$this->assertTrue(User::log('1.2.3.4'));
+		$this->unfakeSession();
+		$new = $this->user('user1');
+		$this->assertEqual($old->logincounter + 1, $new->logincounter);
+		$this->assertEqual('1.2.3.4', $new->lastip);
+		$this->assertNotEqual($old->lastlogin, $new->lastlogin);
+	}
+
+	public function testApplyCredit() {
+		$this->assertLoaded('user1');
+		$old = $this->user('user1');
+		$this->assertTrue(User::applyCredit($old->_id, 100));
+		$new = $this->user('user1');
+		$this->assertEqual($old->total_credit + 100, $new->total_credit);
 	}
 }
 
