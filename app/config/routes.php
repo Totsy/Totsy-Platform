@@ -44,20 +44,6 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
      ));
 });
 
-/* affiliate routing for categories and affiliates in an URL */
-Router::connect('/{:category:[a-z_]+}', array(), function($request) {
-
-   if (!isset($request->query['a']) || !preg_match('/^[a-z_]+$/', $request->query['a'])) {
-       return false;
-   }
-   $request->params = array(
-       'controller' => 'affiliates',
-       'action' => 'register',
-       'args' => array($request->query['a'], $request->category)
-   );
-
-   return $request;
-});
 
 Router::connect('/api/help/{:args}', array('controller' => 'API', 'action' => 'help'));
 Router::connect('/api/{:args}', array('controller' => 'API', 'action' => 'index'));
@@ -120,6 +106,20 @@ if (!Environment::is('production')) {
 	Router::connect('/test/{:args}', array('controller' => '\lithium\test\Controller'));
 	Router::connect('/test', array('controller' => '\lithium\test\Controller'));
 }
+
+/* affiliate routing for categories and affiliates in an URL */
+Router::connect('/{:category:[a-z_]+}', array(), function($request) {
+   if (!isset($request->query['a']) || !preg_match('/^[a-z_]+$/', $request->query['a'])) {
+       return false;
+   }
+   $request->params = array(
+       'controller' => 'affiliates',
+       'action' => 'register',
+       'args' => array($request->query['a'], $request->category)
+   );
+
+   return $request;
+});
 
 /**
  * Finally, connect the default routes.
