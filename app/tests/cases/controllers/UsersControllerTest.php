@@ -16,7 +16,6 @@ class UsersControllerTest extends \lithium\test\Unit {
 			'cookie' => array('adapter' => 'app\tests\mocks\storage\session\adapter\MemoryMock')
 		));
 
-<<<<<<< HEAD
 		$this->users = Fixture::load('User')->map(function ($fixture) {
 			/* Ensure we're always able to insert this record. */
 			$fixture['confirmemail'] = $fixture['email'] = uniqid('user') . '@example.com';
@@ -41,7 +40,6 @@ class UsersControllerTest extends \lithium\test\Unit {
 			'params' => array('controller' => 'users', 'action' => 'register')
 		));
 		$testcode = 'testaffiliate';
-
 		$controller = new MockUsersController(compact('request'));
 		$return = $controller->register($testcode);
 		$mailer = $controller->mailer();
@@ -78,7 +76,7 @@ class UsersControllerTest extends \lithium\test\Unit {
 		$user->save(null, array('validate' => false));
 		$request = new Request(array(
 			'data' => array('email' => $user->email, 'password' => 'testpw', 'remember_me' => false),
-			'params' => array('controller' => 'users', 'action' => 'login')
+			'params' => array('controller' => 'users', 'action' => 'login'), 'url' => 'test_url'
 		));
 		$controller = new MockUsersController(compact('request'));
 		$return = $controller->login();
@@ -87,7 +85,7 @@ class UsersControllerTest extends \lithium\test\Unit {
 		$result = $return;
 		$this->assertEqual($expected, $result);
 
-		$expected = array('/sales');
+		$expected = array('test_url');
 		$result = $controller->redirect;
 		$this->assertEqual($expected, $result);
 
