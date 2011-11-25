@@ -24,6 +24,14 @@ class UsersController extends BaseController {
 	protected static $_instances = array();
 
 	/**
+	 * Class dependencies.
+	 * @var array
+	 */
+	protected $_classes = array(
+		'mailer' => 'app\extensions\Mailer'
+	);
+
+	/**
 	 * Performs registration functionality.
 	 *
 	 * The registration process takes into account the invitation code that a customer came
@@ -127,16 +135,17 @@ class UsersController extends BaseController {
 					'user' => $user,
 					'email' => $user->email
 				);
-				Mailer::send('Welcome_Free_Shipping', $user->email);
-				Mailer::addToMailingList($data['email']);
-				Mailer::addToSuppressionList($data['email']);		
+				$mailer = $this->_classes['mailer'];
+				$mailer::send('Welcome_Free_Shipping', $user->email);
+				$mailer::addToMailingList($data['email']);
+				$mailer::addToSuppressionList($data['email']);
 				$ipaddress = $this->request->env('REMOTE_ADDR');
 				User::log($ipaddress);
 				
 				$landing = null;
 				if (Session::check('landing')){
 					$landing = Session::read('landing'); 
-				} 
+				}
 				if (!empty($landing)){
 					Session::delete('landing',array('name'=>'default'));
 					return $this->redirect($landing);
@@ -192,7 +201,7 @@ class UsersController extends BaseController {
 						if (isset($user['clear_token'])) {
 							$mail_template = 'Welcome_auto_passgen';
 							$params['token'] = $user['clear_token']; 
-						} 
+						}
 						Mailer::send($mail_template, $user->email,$params);
 						$name = null;
 						if (isset($data['firstname'])) $name = $data['firstname'];
@@ -272,10 +281,10 @@ class UsersController extends BaseController {
 						/**Remove Temporary Session Datas**/
 						User::cleanSession();
 						/***/
-						if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) 						{
-							$this->redirect($this->request->url);
+						if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) {
+							return $this->redirect($this->request->url);
 						} else {
-							$this->redirect($redirect);
+							return $this->redirect($redirect);
 						}
 					} else {
 						$message = '<div class="error_flash">Login Failed - Please Try Again</div>';
@@ -364,7 +373,7 @@ class UsersController extends BaseController {
 		Session::delete('cookieCrumb', array('name' => 'cookie'));
 		$cookieSuccess = Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 		FacebookProxy::setSession(null);
-		$this->redirect(array('action' => 'login'));
+		return $this->redirect(array('action' => 'login'));
 	}
 	/**
 	 * This is only for legacy users that are coming with AuthLogic passwords and salt
@@ -476,7 +485,8 @@ class UsersController extends BaseController {
 				$user->legacy = 0;
 				$user->email_hash = md5($user->email);
 				if ($user->save(null, array('validate' => false))) {
-					Mailer::send('Reset_Password', $user->email, array('token' => $token));
+					$mailer = $this->_classes['mailer'];
+					$mailer::send('Reset_Password', $user->email, array('token' => $token));
 					$message = "Your password has been reset. Please check your email.";
 					$success = true;
 				} else {
@@ -521,7 +531,8 @@ class UsersController extends BaseController {
 					'domain' => 'http://www.totsy.com',
 					'invitation_codes' => $code
 				);
-				Mailer::send('Friend_Invite', $email, $args);
+				$mailer = $this->_classes['mailer'];
+				$mailer::send('Friend_Invite', $email, $args);
 			}
 			$flashMessage = "Your invitations have been sent";
 		}
@@ -690,7 +701,6 @@ class UsersController extends BaseController {
 		}
 		return static::$_instances[$class];
 	}
-	
 }
 
 ?>
