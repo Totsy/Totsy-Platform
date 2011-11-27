@@ -1,3 +1,21 @@
+<script type="text/javascript">
+
+	var affiliateName = "";
+	var categoryName = "";
+	
+	<?php if($affiliateName) {  ?>
+		affiliateName= "<?=$affiliateName?>";	
+	<?php } ?>
+	
+	<?php if($affiliateName) { ?>
+		categoryName= "<?=$categoryName?>";
+	<?php } ?>
+	
+	<?php if($affBgroundImage) { ?>
+		affBgroundImage = "<?=$affBgroundImage?>"; 	
+	<?php } ?>
+	
+</script>
 <?php if ($message){ echo $message; } ?>
 <style>
 h2 {
