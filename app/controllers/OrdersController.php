@@ -112,8 +112,38 @@ class OrdersController extends BaseController {
 				if(empty($item['cancel'])) {
 					$openEvent[$item['event_id']] = true;
 				}
+				
+				$itemRecord = Item::find($item['item_id']);
+				if (!empty($itemRecord)) {
+				
+					$itemsByEvent[$key][$key_b]['sku'] = $itemRecord->sku_details[$item['size']];
+					$itemsToSend[] =  array(
+										'id' => (string) $itemRecord['_id'],
+										'qty' => $item['quantity'],
+										'title' => $itemRecord['description'],
+										'price' => $itemRecord['sale_retail']*100,
+									 	'url' => 'http://'.$_SERVER['HTTP_HOST'].'/sale/'.$url->url.'/'.$itemRecord['url']
+					);
+					unset($itemRecord);
+				}
 			}
 		}
+		
+		// IMPORTANT!
+		// Sailthru purchase api complete
+		if ($new===true){
+			if ( !Session::check('order_'.$order_id,array('name'=>'default')) ){
+				Mailer::purchase(
+				$user['email'],
+				$itemsToSend,
+				array('message_id' => hash('sha256',Session::key('default').substr(strrev( (string) $user['_id']),0,8)))
+				);
+				Session::write('order_'.$order_id,time(),array('name'=>'default'));
+			}
+		
+		}
+		unset($itemsToSend);
+		
 		$pixel = Affiliate::getPixels('order', 'spinback');
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel, array('order' => $_SERVER['REQUEST_URI']));
 		//Get Items Skus - Analytics
@@ -145,6 +175,7 @@ class OrdersController extends BaseController {
 				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
 			}
 		}
+			
 		return compact(
 			'order',
 			'orderEvents',
