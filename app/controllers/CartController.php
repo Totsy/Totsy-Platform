@@ -358,6 +358,13 @@ class CartController extends BaseController {
 				$cart = Cart::find('first', array(
 					'conditions' => array('_id' =>  (string) $id)
 				));
+
+				if (!$cart) {
+					$message = "Cannot retrieve cart `{$id}.";
+					Logger::notice($message);
+					return;
+				}
+
 				$status = $this->itemAvailable($cart->item_id, $cart->quantity, $cart->size, $quantity);
 				if (!$status['available']) {
 					$cart->quantity = (integer) $status['quantity'];
