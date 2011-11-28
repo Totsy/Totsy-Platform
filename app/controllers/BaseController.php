@@ -146,7 +146,6 @@ class BaseController extends \lithium\action\Controller {
 		    break;
 		}
 		$this->set(compact('img_path_prefix'));
-
 	}
 
 	/**
