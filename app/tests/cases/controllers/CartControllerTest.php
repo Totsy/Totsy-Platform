@@ -96,9 +96,46 @@ class CartControllerTest extends \lithium\test\Unit {
 	}
 
 	public function testAdd() {
+		$data = array(
+			'name' => 'Test Event'
+		);
+		$event = Event::create($data);
+		$event->save();
+		$this->_delete[] = $event;
+
+		$data = array(
+			'description' => 'Test Item',
+			'sale_whol' => 15,
+			'size' => 'no size',
+			'events' => array(
+				(string) $event->_id
+			)
+		);
+		$item = Item::create($data);
+		$item->save();
+		$this->_delete[] = $item;
+
+		$event->items = array(
+			(string) $item->_id
+		);
+		$event->save();
+
+		$data = array(
+			'item_id' => (string) $item->_id,
+			'session' => Session::key('default'),
+			'expires' => new MongoDate(strtotime('+10min')),
+			'user' => (string) $this->user->_id,
+			'events' => array(
+				(string) $event->_id
+			)
+		);
+		$cart = Cart::create($data);
+		$cart->save();
+		$this->_delete[] = $cart;
+
 		$request = new Request(array(
-			'data' => array(
-				'item_id' => '10004',
+			'query' => array(
+				'item_id' => (string) $item->_id,
 				'item_size' => 'no size'
 			),
 			'params' => array(
