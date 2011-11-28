@@ -115,7 +115,7 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
 		$( "#dialog:ui-dialog" ).dialog( "destroy" );
 		$( "#invites" ).dialog({
 			modal: true,
-			width: 440,
+			width: 760,
 		});
 	});
 </script>
