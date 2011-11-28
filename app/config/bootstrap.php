@@ -113,6 +113,11 @@ require __DIR__ . '/bootstrap/mail.php';
 require __DIR__ . '/bootstrap/avatax.php';
 
 /**
+ * This file configures the analysis behavior which includes Logging.
+ */
+require __DIR__ . '/bootstrap/analysis.php';
+
+/**
  * Auth and action protection filters.
  */
 require __DIR__ . '/bootstrap/auth.php';
