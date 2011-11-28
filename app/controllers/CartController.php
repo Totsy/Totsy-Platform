@@ -276,12 +276,6 @@ class CartController extends BaseController {
 				$cartData['cartExpirationDate'] = $cartItem->expires->sec;
 			}
 
-			if (!$cartItem->event) { /* Some (testing) items/carts don't have any events. */
-				$message = "Cannot retrieve event for cart item `{$cartItem->_id}.";
-				Logger::notice($message);
-				return;
-			}
-
 			//get the current event url
 			$event = Event::find('first',
 									array ('fields' => array('url'),
