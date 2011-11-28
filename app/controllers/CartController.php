@@ -259,9 +259,9 @@ class CartController extends BaseController {
 	*/
 	public function getCartPopupData () {
 		$cartData = Array();
-		
-		$this->render(array('layout' => false));	
-	
+
+		$this->_render['layout'] = false;
+
 		$cartData['cartExpirationDate'] = "";
 		$cartData['subTotal'] = 0.00;
 		
