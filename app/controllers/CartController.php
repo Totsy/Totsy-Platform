@@ -10,6 +10,7 @@ use app\models\Credit;
 use app\models\Service;
 use app\models\Promotion;
 use lithium\storage\Session;
+use lithium\analysis\Logger;
 use MongoId;
 use MongoDate;
 use app\extensions\Mailer;
@@ -264,6 +265,12 @@ class CartController extends BaseController {
 		foreach(Cart::active() as $cartItem) {
 			if ($cartData['cartExpirationDate'] < $cartItem->expires->sec) {
 				$cartData['cartExpirationDate'] = $cartItem->expires->sec;
+			}
+
+			if (!$cartItem->event) { /* Some (testing) items/carts don't have any events. */
+				$message = "Cannot retrieve event for cart item `{$cartItem->_id}.";
+				Logger::notice($message);
+				return;
 			}
 
 			//get the current event url
