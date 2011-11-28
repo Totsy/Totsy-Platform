@@ -163,7 +163,6 @@ class CartController extends BaseController {
 	 * @see app/models/Cart::checkCartItem()
 	 * @return compact
 	 */
-
 	public function add() {
 		#Check Cart
 		$cart = Cart::create();
