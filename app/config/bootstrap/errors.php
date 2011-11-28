@@ -7,6 +7,7 @@ use lithium\analysis\Logger;
 use lithium\core\Environment;
 use lithium\core\ErrorHandler;
 use lithium\net\http\Router;
+use lithium\util\String;
 
 /**
  * Add an extra `Dispatcher` filter to ensure that errors are hidden in production, but shown in all
@@ -64,8 +65,14 @@ ErrorHandler::apply(
  */
 ErrorHandler::config(array(
 	'logger' => array('handler' => function($info) {
+		/*
 		$keys = array('message', 'file', 'line', 'context', 'stack');
-		Logger::notice(json_encode(array_intersect_key($info, array_combine($keys, $keys))));
+		$message = json_encode(array_intersect_key($info, array_combine($keys, $keys)));
+		Logger::notice($message);
+		*/
+
+		$message = String::insert('{:message} on line {:line} of file {:file}.', $info);
+		Logger::notice($message);
 		return true;
 	})
 ));
