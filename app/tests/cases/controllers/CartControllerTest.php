@@ -4,15 +4,23 @@ namespace app\tests\cases\controllers;
 
 use lithium\action\Request;
 use app\controllers\CartController;
+use app\models\User;
 use app\models\Cart;
 use app\models\Event;
 use app\models\Item;
 use MongoDate;
 use lithium\storage\Session;
+use app\tests\mocks\storage\session\adapter\MemoryMock;
 use li3_fixtures\test\Fixture;
 
 
 class CartControllerTest extends \lithium\test\Unit {
+
+	public $user;
+
+	protected $_backup = array();
+
+	protected $_delete = array();
 
 	public function setUp() {
  		$efixture = Fixture::load('Event');
@@ -39,6 +47,25 @@ class CartControllerTest extends \lithium\test\Unit {
 			$cart = Cart::create();
 			$cart->save($next);
 		} while ($next = $cfixture->next());
+
+		$adapter = new MemoryMock();
+
+		Session::config(array(
+			'default' => compact('adapter'),
+			'cookie' => compact('adapter')
+		));
+
+		$data = array(
+			'firstname' => 'George',
+			'lastname' => 'Lucas',
+			'email' => uniqid('george') . '@example.com'
+		);
+		$this->user = User::create();
+		$this->user->save($data, array('validate' => false));
+
+		$this->_delete[] = $this->user;
+		$session = $this->user->data();
+		Session::write('userLogin', $session);
 	}
 
 	public function tearDown() {
@@ -60,6 +87,38 @@ class CartControllerTest extends \lithium\test\Unit {
 		do {
 			Cart::remove( array('_id' => $cart['_id'] ) );
 		} while ($cart = $cfixture->next());
+
+		Session::delete('userLogin');
+
+		foreach ($this->_delete as $document) {
+			$document->delete();
+		}
+	}
+
+	public function testAdd() {
+		$request = new Request(array(
+			'data' => array(
+				'item_id' => '10004',
+				'item_size' => 'no size'
+			),
+			'params' => array(
+				'controller' => 'carts', 'action' => 'add',
+				'type' => 'html'
+			),
+		));
+		$controller = new CartController(compact('request'));
+
+		ob_start();
+		$return = $controller->add();
+		$echoed = ob_get_clean();
+
+		$result = $return;
+		$this->assertNull($result);
+
+		$data = json_decode($echoed, true);
+
+		$result = $data;
+		$this->assertTrue($result);
 	}
 
 	/*
