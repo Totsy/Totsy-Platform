@@ -420,22 +420,46 @@ class Cart extends Base {
 	 * @param object $order
 	 * @return string
 	 */
-	public static function shipDate($cart) {
-		$i = 1;
-		$event = static::getLastEvent($cart);
-		$shipDate = null;
-		if (!empty($event)) {
-			$shipDate = $event->end_date->sec;
-			while($i < static::_object()->_shipBuffer) {
-				$day = date('N', $shipDate);
-				$date = date('Y-m-d', $shipDate);
-				if ($day < 6 && !in_array($date, static::_object()->_holidays)) {
-					$i++;
+	public static function shipDate($cart, $normal=false) {
+
+		//shows calculated shipdate
+		if($normal){
+			$i = 1;
+			$event = static::getLastEvent($cart);
+			if (!empty($event)) {
+				$shipDate = $event->end_date->sec;
+				while($i < static::_object()->_shipBuffer) {
+					$day = date('N', $shipDate);
+					$date = date('Y-m-d', $shipDate);
+					if ($day < 6 && !in_array($date, static::_object()->_holidays)) {
+						$i++;
+					}
+					$shipDate = strtotime($date.' +1 day');
 				}
-				$shipDate = strtotime($date.' +1 day');
+			}
+			return $shipDate;
+		}
+		
+		//shows one of two static messages
+		$shipDate = null;
+		$shipDate = "On or before 12/23";
+		
+		$items = (!empty($cart->items)) ? $cart->items : $cart;
+
+		if($items){
+			foreach($items as $thisitem){
+				if($thisitem->miss_christmas){
+					$shipDate = "See delivery alert below";	
+				}
+				elseif($thisitem['miss_christmas']){
+					$shipDate = "See delivery alert below";	
+				
+				}
 			}
 		}
 		return $shipDate;
+		
+		
 	}
 
 	/**

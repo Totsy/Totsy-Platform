@@ -2329,8 +2329,26 @@ display: table;
 tr.alt0 td {
 	background:#f7f7f7;
 	height:50px;
+	padding-top:10px;
+	padding-bottom:10px;
 	vertical-align:middle;
 }
+
+tr.alt0a td {
+	background:#fde5e5;
+	height:70px;
+	padding-top:10px;
+	padding-bottom:10px;
+	vertical-align:middle;
+}
+
+.shippingalert{
+	color:#990000; 
+	font-weight:bold;
+}
+
+
+
 
 tr.alt1 td {
 	background:#EFEFEF;
@@ -2423,7 +2441,7 @@ height: 110px !important;
 }
 
 .cart-review-line-qty{
-width:100px; 
+width:90px; 
 float:left; 
 text-align:left
 }
