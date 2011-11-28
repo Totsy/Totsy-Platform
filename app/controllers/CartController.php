@@ -202,6 +202,14 @@ class CartController extends BaseController {
 			
 			#Condition if Item Already in your Cart
 			if (!empty($cartItem)) {
+				if (!$cartItem->event) { /* Some (testing) items/carts don't have any events. */
+					$message = "Cart item `{$cartItem->_id}` is not associated with any events.";
+					$message .= " Cannot continue adding this item. Item dump:\n";
+					$message .= var_export($cartItem->data(), true);
+					Logger::notice($message);
+					return;
+				}
+
 				//Make sure user does not add more than 9 items to the cart
 				if($cartItem->quantity < 9 ) {
 					//Make sure the items are available
@@ -265,12 +273,6 @@ class CartController extends BaseController {
 		foreach(Cart::active() as $cartItem) {
 			if ($cartData['cartExpirationDate'] < $cartItem->expires->sec) {
 				$cartData['cartExpirationDate'] = $cartItem->expires->sec;
-			}
-
-			if (!$cartItem->event) { /* Some (testing) items/carts don't have any events. */
-				$message = "Cannot retrieve event for cart item `{$cartItem->_id}.";
-				Logger::notice($message);
-				return;
 			}
 
 			//get the current event url
