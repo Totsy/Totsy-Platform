@@ -102,6 +102,10 @@
 			</div>
 			<?php if ($x == 1): ?>
 				<div id="banner_container" class="grid_5">
+				
+				<?php				 
+					echo $img_path_prefix; 
+				?>
 
 					<div><a href="/users/invite"><img src="<?=$img_path_prefix?>invite_girl.png" alt="" height="404"/></a></div>
 					<?php if(!empty($banner["img"])): ?>

@@ -14,6 +14,7 @@ use app\models\Affiliate;
 class EventsController extends BaseController {
 
 	public function index() {
+		
 		$datas = $this->request->data;
 		$departments = array();
 		$bannersCollection = Banner::collection();
