@@ -84,20 +84,26 @@ class BaseController extends \lithium\action\Controller {
 		/**
 		* If visitor lands on affliate url e.g www.totsy.com/a/afflilate123
 		**/
-		if (is_object($this->request) && isset($this->request->params) && $this->request->params['controller']  == "affiliates" &&
-			$this->request->params['action'] == "register" & empty($invited_by)) {
+		if (is_object($this->request) && isset($this->request->params) && 
+			$this->request->params['controller']  == "affiliates" &&
+			$this->request->params['action'] == "register" && empty($invited_by)) {
 			$invited_by = $this->request->args[0];
 		}
 
 		/**
 		* Retrieve any pixels that need to be fired off
 		**/
-		if (is_object($this->request) && isset($this->request->url)){
-			$url = $this->request->url;
-		} else {
-			$url = $_SERVER['REQUEST_URI'];
+		$option = array();
+		if ($this->request->params){
+			$controller = ucwords($this->request->params['controller']);
+			$action = $this->request->params['action'];
+			$url = "{$controller}::{$action}";
+			if ($url == "Orders::view" && 
+				array_key_exists('args', $this->request->params)){
+				$option['order_id'] = $this->request->params['args'][0];
+			}
 		}
-		$pixel = Affiliate::getPixels($url, $invited_by);
+		$pixel = Affiliate::getPixels($url, $invited_by, $option);
 		$pixel .= Session::read('pixel');
 		/**
 		* Remove pixel to avoid firing it again

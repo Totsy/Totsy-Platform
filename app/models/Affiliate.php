@@ -18,7 +18,7 @@ class Affiliate extends Base {
     * @param $invited_by the affiliate associated with the user
     * @return the pixels associated to the affiliate and url
     */
-	public static function getPixels($url, $invited_by) {
+	public static function getPixels($url, $invited_by,$option = array()) {
 	
 	    $cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 	    $userInfo = Session::read('userLogin', array('name' => 'default'));
@@ -26,15 +26,9 @@ class Affiliate extends Base {
 		$user = $userCollection->findOne(array('email' => $userInfo['email']));
         $orderid = NULL;
 
-        if(preg_match('(orders/view/)',$url)) {
-            $orderid = substr($url,12);
-            $url = '/orders/view';
+        if(array_key_exists('order_id', $option)) {
+            $orderid = $option['order_id'];
         }
-        
-        if(preg_match('(^a/)',$url)) {
-            $url = '/a/' . $invited_by;
-        }
-        
         /*for affilliates that have a category
         build the URL here in order to find a match and get the right pixel info for this affiliate */        
         
@@ -50,22 +44,21 @@ class Affiliate extends Base {
         $conditions['active'] = true;
         $conditions['level'] = 'super';
         $conditions['pixel'] = array('$elemMatch' => array(
-                                    'page' => $url,
-                                    'enable' => true
+                                    'page' => "$url",
+                                    'enable' => true,
+                                    'codes' => $invited_by
                                 ));
-                                
         $conditions['invitation_codes'] = $invited_by;
-        $options = array('conditions' => $conditions,
+        $extra = array('conditions' => $conditions,
 		                'fields'=>array(
-		                    'pixel.pixel' => 1, 'pixel.page' => 1,
+		                    'pixel'=>1,
 							'_id' => 0
 		                    ));
 		                    
-		$pixels = Affiliate::find('all', $options );
+		$pixels = Affiliate::find('all', $extra );
 		$pixels = $pixels->data();
 		$pixel = NULL;
-
-        if($url == '/orders/view'){
+        if($url == 'Orders::view'){
             if($user && array_key_exists('affiliate_share', $user) && $user['affiliate_share']){
      			$cookie['affiliate'] = $user['affiliate_share']['affiliate'];
                 $cookie['entryTime'] = $user['affiliate_share']['landing_time'];
@@ -75,8 +68,8 @@ class Affiliate extends Base {
         
 		foreach($pixels as $data) {
 			foreach($data['pixel'] as $index) {
-                if(is_array($index['page']) && in_array($url, $index['page'])) {
-                    if($url == '/orders/view'){
+                if(is_array($index['page']) && in_array($url, $index['page']) && in_array($invited_by, $index['codes'])) {
+                    if($url == 'Orders::view'){
                         $pixel .= static::generatePixel($invited_by, $index['pixel'], array( 'orderid' => $orderid));
                     }else{
                         $pixel .= static::generatePixel($invited_by, $index['pixel']);
@@ -121,9 +114,10 @@ class Affiliate extends Base {
     *
     * @param $invited_by the affilate code associated with the pixel
     * @param $pixel the pixel the affiliate provided
-    * @param $options Available options: product -> item view page, orderid ->
-    *                    for affiliates who need orderids for share revenue, trans_type -> for
-    *                    transmitting 'new'/'cancel' order to revenue share affiliates.
+    * @param $options Available options: 
+    * 	product -> item view page, 
+    * 	orderid -> for affiliates who need orderids for share revenue,
+    * 	trans_type -> for transmitting 'new'/'cancel' order to revenue share affiliates.
     * @return string modified pixels.
     * @TODO  Move the appending to the Helper
     */
