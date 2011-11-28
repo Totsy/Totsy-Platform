@@ -47,16 +47,20 @@ ErrorHandler::apply(
 	)),
 	function($info, $params) {
 		$url = $params['request']->url;
-		Logger::debug("Redirecting to search; showing 404 for URL `/{$url}`");
+		Logger::debug("Showing 404 for URL `/{$url}`");
 
 		$term = str_replace('/', '', $url);
-		return new Response(array(
+		$response = new Response(array(
 			'request' => $params['request'],
-			'status' => 404,
-			'location' => Router::match(array(
-				'controller' => 'search', 'action' => 'view', 'search' => $term
-			))
+			'status' => 404
 		));
+		if (strpos($url, 'image/') === false) {
+			$response->location = Router::match(array(
+				'controller' => 'search', 'action' => 'view', 'search' => $term
+			));
+			Logger::debug("Redirecting to 404 search for term `{$term}`.");
+		}
+		return $response;
 	}
 );
 
