@@ -153,7 +153,11 @@ class CartController extends BaseController {
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
 
-		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping','missChristmasCount','notmissChristmasCount');
+		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services',
+			'total', 'shipDate', 'promocode', 'savings', 'shipping_discount',
+			'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable',
+			'itemCount', 'returnUrl', 'shipping', 'missChristmasCount','notmissChristmasCount'
+		);
 	}
 
 	/**
@@ -162,7 +166,6 @@ class CartController extends BaseController {
 	 * @see app/models/Cart::checkCartItem()
 	 * @return compact
 	 */
-
 	public function add() {
 		#Check Cart
 		$cart = Cart::create();
