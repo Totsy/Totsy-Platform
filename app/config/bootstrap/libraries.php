@@ -56,7 +56,6 @@ Libraries::add('app', array('default' => true));
 Libraries::add('li3_docs');
 Libraries::add('li3_payments');
 Libraries::add('li3_fixtures');
-
 Libraries::add('li3_facebook', array(
 	'appId' => '130085027045086',
 	'secret' => '33a18cebb0ac415c6bddf28cebb48e96',

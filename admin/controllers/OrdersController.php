@@ -214,14 +214,12 @@ class OrdersController extends BaseController {
 	* @see admin\models\Order:::checkOrderCancel()
 	*/
 	public function manage_items() {
-
 		$current_user = Session::read('userLogin');
 		$orderCollection = Order::collection();
 		$userCollection = User::collection();
-		if($this->request->data){
+		if($this->request->data) {
 			$datas = $this->request->data;
 			$selected_order = $orderCollection->findOne(array("_id" => new MongoId($datas["id"])));
-
 			/**
 			* This sets the field original credit used, in order to keep a record in the order
 			* before any changes are made to the credit
@@ -259,10 +257,8 @@ class OrdersController extends BaseController {
 				if($result == true) {
 					FlashMessage::set("Order items has been updated.", array('class' => 'pass'));
 				}
-				//Recreate Temporary Order
-				$datas['items'] = $items;
-				$selected_order = array_merge($selected_order, $datas);
-				$order_temp = Order::Create($selected_order);
+				#Get Last Saved Order
+				$order_temp = Order::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
 			} else {
 				$order_temp = Order::refreshTempOrder($datas, $items);
 			}
@@ -385,6 +381,7 @@ class OrdersController extends BaseController {
 	*/
 	public function view($id = null) {
 		$userCollection = User::collection();
+		$orderCollection = Order::collection();
 		//Only view
 		$edit_mode = false;
 		//update the shipping address by adding the new one and pushing the old one.
@@ -424,7 +421,7 @@ class OrdersController extends BaseController {
 		$this->_render['layout'] = 'base';
 		if ($id) {
 			$itemscanceled = true;
-			$order_current = Order::find('first', array('conditions' => array('_id' => $id)));
+			$order_current = Order::find('first', array('conditions' => array('_id' => new MongoId($id))));
 			if(empty($order)){
 				$order = $order_current;
 			}
@@ -459,9 +456,12 @@ class OrdersController extends BaseController {
 			$edit_mode = false;
 			$itemscanceled = false;
 		}
+		#Get Services
+		if (!empty($order->service)) {
+			$service = $order->service->data();
+		}
 		$shipDate = $this->shipDate($order);
-
-		return compact('order', 'shipDate', 'sku', 'itemscanceled','edit_mode');
+		return compact('order', 'shipDate', 'sku', 'itemscanceled','edit_mode', 'service');
 	}
 
 	/**
@@ -656,8 +656,8 @@ class OrdersController extends BaseController {
 			if(array_key_exists('fullordertaxreturn_action',$this->request->data)){
 				$data['order'] = $order;
 				$data['items'] = $order['items'];
-				$data['shippingCost'] = $data['order']['handling'];
-				$data['overShippingCost'] = $data['order']['overSizeHandling'];
+				$data['shippingCost'] = ($data['order']['handling'] - $data['order']['handlingDiscount']);
+				$data['overShippingCost'] = ($data['order']['overSizeHandling'] - $data['order']['overSizeHandlingDiscount']);
 				$data['order']['date'] = date('Y-m-d',$data['order']['date_created']->sec);
 				$data['order']['order_id'] = $data['order']['order_id'].'.1';
 				$data['order']['return'] = 'full';
@@ -735,6 +735,24 @@ class OrdersController extends BaseController {
 				'taxIncluded' => true
 			);
 		}
+	}
+
+	public function payments(){
+		$data = $this->request->data;
+		extract(Order::orderPaymentRequests($data));
+        if ($payments && $payments->hasNext()) {
+            if (!empty($message)) {
+                $class = 'notice';
+                $style = 'font-color:#fff';
+            } else {
+                $class = 'pass';
+                 $style = 'font-color:#000';
+            }
+            FlashMessage::set("Results found." . $message ,	array('class' => $class));
+        } else {
+            FlashMessage::set("No results found." . $message ,	array('class' => 'fail'));
+        }
+		return compact('payments','type');
 	}
 }
 

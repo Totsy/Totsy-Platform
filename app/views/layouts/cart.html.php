@@ -8,6 +8,7 @@
 	<script type="text/javascript">
 		$.base = '<?=rtrim(Router::match("/", $this->_request)); ?>';
 	</script>
+
 </head>
 <body class="app">		
 	<div>

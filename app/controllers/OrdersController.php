@@ -10,6 +10,7 @@ use app\models\Address;
 use app\models\Order;
 use app\models\Event;
 use app\models\Promotion;
+use app\models\CreditCard;
 use app\models\Promocode;
 use app\models\Affiliate;
 use app\models\OrderShipped;
@@ -41,8 +42,8 @@ class OrdersController extends BaseController {
 				'user_id' => (string) $user['_id']),
 			'order' => array('date_created' => 'DESC')
 		));
-		$trackingNumbers = array();
-		foreach ($orders as $order) {
+		$lifeTimeSavings = 0;
+		foreach ($orders as $key => $order) {
 			$list = $trackingNum = array();
 			$shipDate["$order->_id"] = Cart::shipDate($order);
 			$conditions = array('OrderId' => $order->_id);
@@ -54,12 +55,21 @@ class OrdersController extends BaseController {
 					$trackingNum[] = array('code' => $record->{'Tracking #'}, 'method' => $shipMethod);
 				}
 			}
+			#Get All Tracking Numbers for One Order
 			if ($trackingNum) {
 				$trackingNumbers["$order->_id"] = $trackingNum;
 			}
+			#Calculatings LifeTime Savings
+			if (empty($order["cancel"])) {
+				foreach ($order["items"] as $item) {
+					$itemInfo = Item::find('first', array('conditions' => array("_id" => new MongoId($item["item_id"]))));
+					if (empty($item->cancel)) {
+						$lifeTimeSavings += ($item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']));
+					}
+				}
+			}
 		}
-
-		return (compact('orders', 'shipDate', 'trackingNumbers'));
+		return (compact('orders', 'shipDate', 'trackingNumbers', 'lifeTimeSavings'));
 	}
 
 	/**
@@ -79,7 +89,13 @@ class OrdersController extends BaseController {
 				'user_id' => (string) $user['_id']
 		)));
 		$new = ($order->date_created->sec > (time() - 120)) ? true : false;
-		$shipDate = Cart::shipDate($order);
+		if($order->date_created->sec<1322006400){
+			$shipDate = Cart::shipDate($order, true);	
+			$shipDate = date('M d, Y', $shipDate);
+		}
+		else{
+			$shipDate = Cart::shipDate($order);	
+		}
 		if (!empty($shipDate)) {
 			$allEventsClosed = (Cart::getLastEvent($order)->end_date->sec > time()) ? false : true;
 		} else {
@@ -96,8 +112,38 @@ class OrdersController extends BaseController {
 				if(empty($item['cancel'])) {
 					$openEvent[$item['event_id']] = true;
 				}
+				
+				$itemRecord = Item::find($item['item_id']);
+				if (!empty($itemRecord)) {
+				
+					$itemsByEvent[$key][$key_b]['sku'] = $itemRecord->sku_details[$item['size']];
+					$itemsToSend[] =  array(
+										'id' => (string) $itemRecord['_id'],
+										'qty' => $item['quantity'],
+										'title' => $itemRecord['description'],
+										'price' => $itemRecord['sale_retail']*100,
+									 	'url' => 'http://'.$_SERVER['HTTP_HOST'].'/sale/'.$url->url.'/'.$itemRecord['url']
+					);
+					unset($itemRecord);
+				}
 			}
 		}
+		
+		// IMPORTANT!
+		// Sailthru purchase api complete
+		if ($new===true){
+			if ( !Session::check('order_'.$order_id,array('name'=>'default')) ){
+				Mailer::purchase(
+				$user['email'],
+				$itemsToSend,
+				array('message_id' => hash('sha256',Session::key('default').substr(strrev( (string) $user['_id']),0,8)))
+				);
+				Session::write('order_'.$order_id,time(),array('name'=>'default'));
+			}
+		
+		}
+		unset($itemsToSend);
+		
 		$pixel = Affiliate::getPixels('order', 'spinback');
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel, array('order' => $_SERVER['REQUEST_URI']));
 		//Get Items Skus - Analytics
@@ -109,7 +155,27 @@ class OrdersController extends BaseController {
 				}
 			}
 		}
-
+		//Calculatings Savings
+		$savings = 0;
+		$missChristmasCount = 0;
+		$notmissChristmasCount = 0;
+		foreach ($order->items as $item) {
+		
+			if($item['miss_christmas']){
+				$missChristmasCount++;
+			}
+			else{
+				$notmissChristmasCount++;
+			}			
+		
+		
+		
+			$itemInfo = Item::find('first', array('conditions' => array("_id" => new MongoId($item["item_id"]))));
+			if (empty($item->cancel)) {
+				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
+			}
+		}
+			
 		return compact(
 			'order',
 			'orderEvents',
@@ -122,24 +188,21 @@ class OrdersController extends BaseController {
 			'spinback_fb',
 			'shipRecord',
 			'preShipment',
-			'openEvent'
+			'openEvent',
+			'missChristmasCount',
+			'notmissChristmasCount',
+			'savings'
 		);
 	}
 
 	/**
-	 * Creates inital order based on the cart.
-	 * This view is needed to set the address information for the order.
-	 * When the add method is processed then the applicable tax can be calculated.
+	 * The user choose his shipping address for his order by :
+	 * - Adding a new one
+	 * - Selecting one already saved
 	 * @return compact
-	 * @todo improve documentation
 	 */
-	public function add() {
-		$data = $this->request->data;
-		Session::delete('credit');
-		Session::delete('promocode');
+	public function shipping() {
 		$user = Session::read('userLogin');
-		$billing = Address::menu($user);
-		$shipping = Address::menu($user);
 		$fields = array(
 			'item_id',
 			'color',
@@ -153,54 +216,113 @@ class OrdersController extends BaseController {
 			'primary_image',
 			'expires',
 			'event_name',
+			'miss_christmas',
 			'event'
 		);
+		#Check Expires 
+		Cart::cleanExpiredEventItems();
+		#Prepare datas
+		$address = null;
+		$selected = null;
+		$cartExpirationDate = 0;
+		$missChristmasCount = 0;
+		$notmissChristmasCount = 0;
 
-		$order = Order::create();
-
-		if (Cart::increaseExpires()){
-			$cart = Cart::active(array(
-				'fields' => $fields,
-				'time' => '-5min'
-			));
-			$cartByEvent = $this->itemGroupByEvent($cart);
-			$orderEvents = $this->orderEvents($cart);
-			$cart = Cart::active(array('fields' => $fields, 'time' => '-3min'));
-		}
-
-		$map = function($item) { return $item->sale_retail * $item->quantity; };
-		$subTotal = array_sum($cart->map($map)->data());
-		$vars = compact(
-			'user', 'billing', 'shipping', 'cart', 'subTotal','order',
-			'tax', 'shippingCost', 'billingAddr', 'shippingAddr'
-		);
-
-		$cartEmpty = ($cart->data()) ? false : true;
-
-		if ($this->request->data) {
-			if (count($this->request->data) > 1) {
-				$user = Session::read('userLogin');
-				$user['checkout'] = $this->request->data;
-				Session::write('userLogin', $user, array('name' => 'default'));
-				$this->redirect('Orders::process');
+		#Check Datas Form
+		if (!empty($this->request->data)) {
+			$datas = $this->request->data;
+			#Check If the User want to save the current address
+			if(!empty($datas['opt_save'])) {
+				$save = true;
+				unset($datas['opt_save']);
+			}
+			# If address selected ddwn, get infos from DB
+			if (!empty($datas['address_id'])) {
+				$address = Address::first(array(
+					'conditions' => array('_id' => new MongoId($datas['address_id'])
+				)));
 			} else {
-				$error = "Shipping and Delivery Information Missing";
+				$address = Address::create($datas);
+				#Check Infos and save it on Session
+				if ($address->validates()) {
+					Session::write('shipping', $datas);
+					#If no address is link with the user, save the current one
+					$count = Address::count(array('user_id' => $user['_id']));
+					if ($count == 0 || !empty($save)) {
+						$address->user_id = $user['_id'];
+						$address->type = 'Shipping';
+						$address->save();
+					}
+					$this->redirect(array('Orders::payment'));
+				} else {
+					$error = true;
+				}
+			}
+		} 
+		#Get all addresses of the current user
+		$addresses = Address::all(array(
+			'conditions' => array('user_id' => (string) $user['_id'], 'type' => 'Shipping')
+		));		
+		#Prepare addresses datas for the dropdown
+		if (!empty($addresses)) {
+			$idx = 0;
+			foreach ($addresses as $value) {
+				if ((($idx == 0 || $value['default'] == '1') && empty($datas['address_id']))) {
+					$address = $value;
+				}
+				#Get selected ddwn address
+				if((string)$value['_id'] == $address['_id']) {
+					$selected = (string) $value['_id'];
+				}
+				$addresses_ddwn[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address']; 
+				$idx++;
 			}
 		}
+		#Get Shipping Address from Session
+		if (Session::read('shipping') && empty($datas['address_id'])) {
+			$address = Address::create(Session::read('shipping'));
+		}
+		#Check Cart Validty
+		$cart = Cart::active(array(
+				'fields' => $fields,
+				'time' => '-0min'
+		));
 		$shipDate = Cart::shipDate($cart);
-		return $vars + compact('cartEmpty', 'cartByEvent', 'error', 'orderEvents', 'shipDate');
+		foreach($cart as $item){
+		
+			if($item['miss_christmas']){
+				$missChristmasCount++;
+			}
+			else{
+				$notmissChristmasCount++;
+			}			
+		
+		
+			if($cartExpirationDate < $item['expires']->sec) {
+				$cartExpirationDate = $item['expires']->sec;
+			}
+		}
+		$cartEmpty = ($cart->data()) ? false : true;
+		return compact('address','addresses_ddwn','shipDate','cartEmpty','error','selected','cartExpirationDate','missChristmasCount','notmissChristmasCount');
 	}
-
+	
 	/**
 	 * Processes an order by capturing payment.
 	 * @return compact
 	 * @todo Improve documentation
-	 * @todo Make this method lighter by taking out promocode/credit validation
 	 */
-	public function process() {
-		$order = Order::create();
+	public function review() {
+		#Check Users are in the correct step
+		if (!Session::check('shipping')) {
+			$this->redirect(array('Orders::shipping'));
+		}
+		if (!Session::check('billing') || !Session::check('cc_infos')) {
+			$this->redirect(array('Orders::payment'));
+		}
+		#Check Expires 
+		Cart::cleanExpiredEventItems();
+		#Get Users Informations
 		$user = Session::read('userLogin');
-		$data = $user['checkout'] + $this->request->data;
 		$fields = array(
 			'item_id',
 			'color',
@@ -214,266 +336,99 @@ class OrdersController extends BaseController {
 			'primary_image',
 			'expires',
 			'event',
+			'miss_christmas',
 			'discount_exempt'
 		);
+		$promocode_disable = false;
+		#Get Current Cart
 		$cart = $taxCart = Cart::active(array('fields' => $fields, 'time' => 'now'));
-		$shipDate = Cart::shipDate($cart);
+		$cartEmpty = ($cart->data()) ? false : true;
 		$cartByEvent = $this->itemGroupByEvent($cart);
-		$orderEvents = $this->orderEvents($cart);
-		$discountExempt = $this->_discountExempt($cart);
+		#Calculate Shipped Date
+		$shipDate = Cart::shipDate($cart);
+		#Get Value Of Each and Sum It
+		$subTotal = 0;
+		$cartExpirationDate = 0;
+		$missChristmasCount = 0;
+		$notmissChristmasCount = 0;
+
 		foreach ($cart as $cartValue) {
+			if($cartValue->miss_christmas){
+				$missChristmasCount++;
+			}
+			else{
+				$notmissChristmasCount++;
+			}			
+		
+
+			#Get Last Expiration Date 
+			if ($cartExpirationDate < $cartValue['expires']->sec) {
+				$cartExpirationDate = $cartValue['expires']->sec;
+			}
 			$event = Event::find('first', array(
 				'conditions' => array('_id' => $cartValue->event[0])
 			));
 			$cartValue->event_name = $event->name;
+			$cartValue->event_url = $event->url;
 			$cartValue->event_id = $cartValue->event[0];
+			$subTotal += $cartValue->quantity * $cartValue->sale_retail;
 			unset($cartValue->event);
 		}
-		$tax = 0;
+		#Get Shipping / Billing Infos + Costs
 		$shippingCost = 0;
 		$overShippingCost = 0;
-		$billingAddr = $shippingAddr = null;
-		if (isset($data['billing_shipping']) && $data['billing_shipping'] == '1') {
-			$data['shipping'] = $data['billing'];
-		}
-
-		foreach (array('billing', 'shipping') as $key) {
-			$var = $key . 'Addr';
-
-			if (isset($data[$key])) {
-				$addr = $data[$key];
-				${$var} = Address::find('first', array(
-					'conditions' => array(
-						'_id' => $addr,
-						'user_id' => (string) $user['_id']
-				)));
-			}
-		}
-
-		// Calculate tax
+		$shippingAddr = Session::read('shipping');
+		$billingAddr = Session::read('billing');
 		if ($shippingAddr) {
-			//$tax = array_sum($cart->tax($shippingAddr));
 			$shippingCost = Cart::shipping($cart, $shippingAddr);
 			$overShippingCost = Cart::overSizeShipping($cart);
-			//$tax = $tax ? $tax + (($overShippingCost + $shippingCost) * Cart::TAX_RATE) : 0;
-
-			//$tax=  AvaTax::getTax( compact('cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
 		}
-		/**
-		*	Handling services the user may be eligible for
-		*   Returns $shippingCost, $overShippingCost, (boolean)$freeshipping
-		*	@see app\models\Service::freeShippingCheck()
-		**/
-		$service = Session::read('services', array('name' => 'default'));
-		extract(Service::freeShippingCheck($shippingCost, $overShippingCost));
-
-		$map = function($item) { return $item->sale_retail * $item->quantity; };
-		$subTotal = array_sum($cart->map($map)->data());
-
-		$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
-
-		$orderCredit = Credit::create();
-		if (Session::read('credit')) {
-			$orderCredit->credit_amount = Session::read('credit');
-		}
-
-		if (isset($this->request->data['credit_amount'])) {
-			$credit = $this->request->data['credit_amount'];
-			$isMoney = Validator::isMoney("$" . $credit);
-			$credit = (float)number_format((float)$this->request->data['credit_amount'],2,'.','');
-			$lower = -0.999;
-			$upper = (!empty($userDoc->total_credit)) ? $userDoc->total_credit + 0.01 : 0;
-			$inRange = Validator::isInRange($credit, null, compact('lower', 'upper'));
-			if (!$isMoney) {
-				$orderCredit->error = "Please apply credits that are in the form of $0.00";
-				$orderCredit->errors(
-					$orderCredit->errors() + array('amount' => "Please apply credits that are in the form of $0.00")
-				);
-			}
-			if (!$inRange) {
-				$orderCredit->errors(
-					$orderCredit->errors() + array(
-						'amount' => "Please apply credits that are greater than $0 and less than $$userDoc->total_credit"
-					));
-			}
-			$isValid = (round($subTotal,2) >= $credit) ? true : false;
-			if (!$isValid) {
-				$orderCredit->errors(
-					$orderCredit->errors() + array(
-						'amount' => "Please apply credits that is $$subTotal or less"
-					));
-			}
-			if ($isMoney && $inRange && $isValid) {
-				$orderCredit->credit_amount = -$credit;
-				Session::write('credit', -$credit, array('name' => 'default'));
-			}
-		}
-
-		$orderPromo = Promotion::create();
-		$orderServiceCredit = Service::tenOffFiftyCheck($subTotal);
-		$postServiceCredit = $subTotal + $orderServiceCredit;
-		$postCreditTotal = $postServiceCredit + $orderCredit->credit_amount;
-		if (Session::read('promocode')) {
-			$orderPromo->code = Session::read('promocode');
-		}
-		if (isset($this->request->data['code'])) {
-			$orderPromo->code = $this->request->data['code'];
-		}
-		if ($orderPromo->code) {
-			$code = Promocode::confirmCode($orderPromo->code);
-			if ($code) {
-				$count = Promotion::confirmCount($code->_id, $user['_id']);
-				$uses = Promotion::confirmNoUses($code->_id, $user['_id']);
-				if ($code->max_use > 0) {
-					if ($count >= $code->max_use) {
-						$orderPromo->errors(
-							$orderPromo->errors() + array(
-								'promo' => "This promotion code has already been used"
-						));
-					}
-				}
-				if ($code->max_total !== "UNLIMITED") {
-					if ($uses >= $code->max_total) {
-						$orderPromo->errors(
-							$orderPromo->errors() + array(
-								'promo' => "This promotion code has already been used"
-						));
-					}
-				}
-				if ($code->limited_use == true) {
-					$userPromotions = ($userDoc->promotions) ? $userDoc->promotions->data() : null;
-					if (!is_array($userPromotions) || !in_array((string) $code->_id, $userPromotions)) {
-						$orderPromo->errors(
-							$orderPromo->errors() + array(
-								'promo' => "Your promotion code is invalid"
-						));
-					}
-				}
-				if ($postCreditTotal >= $code->minimum_purchase) {
-					$orderPromo->user_id = $user['_id'];
-					if ($code->type == 'percentage') {
-						$orderPromo->saved_amount = $postCreditTotal * -$code->discount_amount;
-					}
-					if ($code->type == 'dollar') {
-						$orderPromo->saved_amount = -$code->discount_amount;
-					}
-					if ($code->type == 'free_shipping' && !($orderPromo->errors())) {
-						$shippingCost = 0;
-						$overShippingCost = 0;
-						$orderPromo->type = "free_shipping";
-					}
-					Session::write('promocode', $orderPromo->code, array('name' => 'default'));
-				} else {
-					$orderPromo->errors(
-						$orderPromo->errors() + array(
-							'promo' => "You need a minimum order total of $$code->minimum_purchase to use this promotion code. Shipping and sales tax is not included."
-					));
-				}
-			} else {
-				$orderPromo->errors(
-					$orderPromo->errors() + array(
-						'promo' => 'Your promotion code is invalid'
-				));
-			}
-			$errors = $orderPromo->errors();
-			if ($errors) {
-				$orderPromo->saved_amount = 0;
-			}
-		}
-
-		extract( AvaTax::getTax( compact(
+		#Getting Tax by Avatax
+		$avatax = AvaTax::getTax(compact(
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
-			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart') )
-		,EXTR_OVERWRITE);
-		unset($taxArray,$taxCart);
-		$vars = compact(
-			'user', 'billing', 'shipping', 'cart', 'subTotal', 'order',
-			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'orderCredit', 'orderPromo', 'orderServiceCredit','freeshipping','userDoc', 'discountExempt'
+			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'));
+		
+		$tax = (float) $avatax['tax'];
+		#Get current Discount
+		$vars = Cart::getDiscount($subTotal, $shippingCost, $overShippingCost, $this->request->data, $tax);
+		#Calculate savings
+		$userSavings = Session::read('userSavings');
+		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
+		#Get Credits
+		if (!empty($vars['cartCredit'])) {
+			$credits = Session::read('credit');
+		}
+		#Get Services
+		$services = $vars['services'];
+		#Get Discount Freeshipping Service / Get Discount Promocodes Free Shipping
+		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
+			$shipping_discount = $shippingCost + $overShippingCost;
+		}
+		#Calculate Order Total
+		$total = $vars['postDiscountTotal'];
+		#Read Credit Card Informations
+		$creditCard = Order::creditCardDecrypt((string)$user['_id']);
+		#Disable Promocode Uses if Services
+		if (!empty($services['freeshipping']['enable']) || !empty($services['tenOffFitfy'])) {
+			$promocode_disable = true;
+		}
+		#Organize Datas
+		$vars = $vars + compact(
+			'user', 'cart', 'total', 'subTotal', 'creditCard',
+			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'shipping_discount'
 		);
-
-		if (($cart->data()) && (count($this->request->data) > 1) && $order->process( $user, $data, $cart, $orderCredit, $orderPromo, $tax)) {
-			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
-			if ($orderCredit->credit_amount) {
-				User::applyCredit($user['_id'], $orderCredit->credit_amount);
-				Credit::add($orderCredit, $user['_id'], $orderCredit->credit_amount, "Used Credit",$order->order_id);
-				Session::delete('credit');
-				$order->credit_used = $orderCredit->credit_amount;
-			}
-			if ($orderPromo->saved_amount) {
-				Promocode::add((string) $code->_id, $orderPromo->saved_amount, $order->total);
-				$orderPromo->order_id = (string) $order->_id;
-				$orderPromo->code_id = (string) $code->_id;
-				$orderPromo->date_created = new MongoDate();
-				$orderPromo->save();
-				$order->promo_code = $orderPromo->code;
-				$order->promo_discount = $orderPromo->saved_amount;
-			}
-			if ($service) {
-				$services = array();
-				if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
-					$services = array_merge($services, array("freeshipping"));
-				}
-				if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible' && $subTotal >= 50) {
-					$order->discount = -10.00;
-					$services = array_merge($services, array("10off50"));
-				}
-				if(!empty($services)) {
-					$order->service = $services;
-				}
-			}
-			if (!empty($orderPromo->type)) {
-				if ($orderPromo->type == 'free_shipping') {
-					Promocode::add((string) $code->_id, 0, $order->total);
-					$orderPromo->order_id = (string) $order->_id;
-					$orderPromo->code_id = (string) $code->_id;
-					$orderPromo->date_created = new MongoDate();
-					$orderPromo->save();
-					$order->promo_code = $orderPromo->code;
-				}
-			}
-			if($avatax === true){
-				AvaTax::postTax( compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
-			}
-			$order->avatax = $avatax;
-			$order->ship_date = new MongoDate(Cart::shipDate($order));
-			$order->save();
-			Cart::remove(array('session' => Session::key('default')));
-			foreach ($cart as $item) {
-				Item::sold($item->item_id, $item->size, $item->quantity);
-			}
-			$user = User::getUser();
-			++$user->purchase_count;
-			$user->save(null, array('validate' => false));
-			$data = array(
-				'order' => $order->data(),
-				'shipDate' => date('M d, Y', $shipDate)
-			);
-			Mailer::send('Order_Confirmation', $user->email, $data);
-			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
-				Mailer::send('Welcome_10_Off', $user->email, $data);
-			}
-			return $this->redirect(array('Orders::view', 'args' => $order->order_id));
-		}
-		$cartEmpty = ($cart->data()) ? false : true;
-
-		return $vars + compact('cartEmpty', 'order', 'cartByEvent', 'orderEvents', 'shipDate');
-	}
-
-	/**
-	 * Checks if the discountExempt flag is set in any of the cart items.
-	 * The method will return true if there is a discounted item and false if there isn't.
-	 *
-	 * @param array
-	 * @return boolean
-	 */
-	protected function _discountExempt($cart) {
-		$discountExempt = false;
-		foreach ($cart as $cartItem) {
-			if ($cartItem->discount_exempt) {
-				$discountExempt = true;
+		if ((!$cartEmpty) && (!empty($this->request->data['process']))) {
+			$order = Order::process($this->request->data, $cart, $vars, $avatax);
+			if (empty($order->errors) && !(Session::check('cc_error'))) {
+				#Redirect To Confirmation Page
+				$this->redirect(array('Orders::view', 'args' => $order->order_id));
 			}
 		}
-		return $discountExempt;
+		#In car of credit card error redirect to the payment page
+		if (Session::check('cc_error')) {
+			$this->redirect(array('Orders::payment'));
+		}
+		return $vars + compact('cartEmpty','order','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable','missChristmasCount','notmissChristmasCount');
 	}
 
 	/**
@@ -526,8 +481,166 @@ class OrdersController extends BaseController {
 				$orderEvents[$event['_id']] = $event;
 			}
 		}
-
 		return $orderEvents;
+	}
+
+	/**
+	 * The user choose his billing address and enter his credit card information.
+	 * - He can use a checkbox to apply shipping address as billing address
+	 * - There is a jquery check for the credit card number
+	 * @return compact
+	 */
+	public function payment() {
+		#Check Users are in the correct step
+		if (!Session::check('shipping')) {
+			$this->redirect(array('Orders::shipping'));
+		}
+		$user = Session::read('userLogin');
+		$fields = array(
+			'item_id',
+			'color',
+			'category',
+			'opt_description',
+			'product_weight',
+			'quantity',
+			'sale_retail',
+			'size',
+			'url',
+			'primary_image',
+			'expires',
+			'event_name',
+			'miss_christmas',
+			'event'
+		);
+		#Check Expires
+		Cart::cleanExpiredEventItems();
+		#Prepare datas
+		$cartExpirationDate = 0;
+		$missChristmasCount = 0;
+		$notmissChristmasCount = 0;
+
+		$address = null;
+		$payment = null;
+		$checked = false;
+		$card = array();
+		#Get billing address from shipping one in session
+		$shipping = json_encode(Session::read('shipping'));
+		#Get Billing Address from Session
+		if (Session::read('billing')) {
+			$payment = Address::create(Session::read('billing'));
+		}
+		#Check Datas Form
+		if (!empty($this->request->data)) {
+			$datas = $this->request->data;
+			#Check If the User want to save the current address
+			if(!empty($datas['opt_save'])) {
+				$save = true;
+				unset($datas['opt_save']);
+			}
+			if (!empty($datas['address_id'])) {
+				$address = Address::first(array(
+					'conditions' => array('_id' => new MongoId($datas['address_id'])
+				)));
+			}
+			#Get Credit Card Infos
+			if(!empty($datas['card_number'])) {
+				#Get Only the card informations
+				foreach($datas as $key => $value) {
+					$card_array = explode("_", $key);
+					if ($card_array[0] == 'card') {
+						$card[$card_array[1]] = $value;
+					}
+				}
+			}
+			$cc_infos = CreditCard::create($card);
+			#Check credits cards informations
+			if($cc_infos->validates()) {
+				#Encrypt CC Infos with mcrypt
+				Session::write('cc_infos', Order::creditCardEncrypt($cc_infos, (string)$user['_id'], true));
+				$cc_passed = true;
+				#Remove Credit Card Errors
+				Session::delete('cc_error');
+			}
+			#In case of normal submit (no ajax one with the checkbox)
+			if(empty($datas['opt_shipping_select']) && empty($datas['address_id'])) {
+				#Get Only address informations
+				foreach($datas as $key => $data) {
+					if (strlen(strstr($key,'card')) == 0 && strlen(strstr($key,'opt')) == 0) {
+						$address_post[$key] = $data;
+					}
+				}
+				$address = Address::create($address_post);
+				#Check addresses informations
+				if ($address->validates()) {
+					Session::write('billing', $address->data());
+					$billing_passed = true;
+					if (!empty($save)) {
+						$address->user_id = $user['_id'];
+						$address->type = 'Billing';
+						$address->save();
+					}
+				}
+			}
+			#If both billing and credit card correct
+			if(!empty($billing_passed) && !empty($cc_passed)) {
+				$this->redirect(array('Orders::review'));
+			}
+			$data_add = array();
+			if (!empty($address)) {
+				$data_add = $address->data();
+			}
+			$payment = Address::create(array_merge($data_add,$card));
+			#Init datas
+			$payment->shipping_select = '0';
+		}
+		#Get all addresses of the current user
+		$addresses = Address::all(array(
+			'conditions' => array('user_id' => (string) $user['_id'], 'type' => 'Billing')
+		));		
+		#Prepare addresses datas for the dropdown
+		if (!empty($addresses)) {
+			$idx = 0;
+			foreach ($addresses as $value) {
+				if ((($idx == 0 || $value['default'] == '1') && empty($datas['address_id']))) {
+					$address = $value;
+				}
+				#Get selected ddwn address
+				if((string)$value['_id'] == $address['_id']) {
+					$selected = (string) $value['_id'];
+				}
+				$addresses_ddwn[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address']; 
+				$idx++;
+			}
+		}
+		$cart = Cart::active(array(
+				'fields' => $fields,
+				'time' => '-5min'
+		));
+		$shipDate = Cart::shipDate($cart);
+		foreach($cart as $item){
+			if($item['miss_christmas']){
+				$missChristmasCount++;
+			}
+			else{
+				$notmissChristmasCount++;
+			}			
+
+			if($cartExpirationDate < $item['expires']->sec) {
+				$cartExpirationDate = $item['expires']->sec;
+			}
+		}
+		$cartEmpty = ($cart->data()) ? false : true;
+		if (Session::check('cc_error')){
+			if (!isset($payment) || (isset($payment) && !is_object($payment))){
+				$card = Order::creditCardDecrypt((string)$user['_id']);
+				$data_add = Session::read('billing');
+				$payment = Address::create(array_merge($data_add,$card));
+			}
+			$payment->errors( $payment->errors() + array( 'cc_error' => Session::read('cc_error')));
+			Session::delete('cc_error');
+			Session::delete('billing');
+		}
+		return compact('address','addresses_ddwn','selected','cartEmpty','payment','shipping','shipDate','cartExpirationDate','missChristmasCount','notmissChristmasCount');
 	}
 
 }

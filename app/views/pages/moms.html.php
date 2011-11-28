@@ -1,38 +1,26 @@
 <style type="text/css">
-ul.bullets { list-style-type:circle; font-size:11px; margin:0px 0px 2px 15px; }
-.photo_avatar { float:left; display:block; width:150px; margin:0px; }
-.mtm_right_content { margin:0px 0px 0px 10px; display:block; float:left; width:486px; }
-.mtm_page_break { margin:45px 0px!important; clear:both; }
-em {display: block; padding:5px; font-weight: bold; font-style: italic;}
-.bigger {font-size:20px; margin-bottom:10px;}
+	ul.bullets { list-style-type:circle; font-size:11px; margin:0px 0px 2px 15px; }
+	.photo_avatar { float:left; display:block; width:150px; margin:0px; }
+	.mtm_right_content { margin:0px 0px 0px 10px; display:block; float:left; width:515px; }
+	.mtm_page_break { margin:45px 0px!important; clear:both; }
+	em {display: block; padding:5px; font-weight: bold; font-style: italic;}
+	.bigger {font-size:20px; margin-bottom:10px;}
 </style>
+
 <?php $this->title("Meet the Moms"); ?>
-<h1 class="p-header">About Us</h1>
-<div id="left">
-  <ul class="menu main-nav">
-  <h3 style="color:#999;">About Us</h3>
+
+<div class="grid_16">
+	<h2 class="page-title gray">About Us</h2>
 	<hr />
-    <li class="first item15"><a href="/pages/aboutus" title="About Totsy"><span>How Totsy Works</span></a></li>
-    <li class="first item17 active"><a href="/pages/moms" title="Meet The Moms"><span>Meet The Moms</span></a></li>
-    <li class="first item16"><a href="/pages/press" title="Press"><span>Totsy in the Press</span></a></li>
-    <li class="first"><a href="/pages/testimonials" title="Video Testimonials"><span>Video Testimonials</span></a></li>
-    <li class="first item17"><a href="/pages/being_green" title="Being Green"><span>Being Green</span></a></li>
-    <li class="first item19"><a href="http://blog.totsy.com" target="_blank" title="Blog"><span>Totsy Blog</span></a></li>
-    <li class="first item15"><a href="/pages/affiliates" target="_blank" title="Affiliates"><span>Affiliates</span></a></li>
-    <br />
-    <h3 style="color:#999;">Need Help?</h3>
-    <hr />
-    <li class="first item18"><a href="/tickets/add" title="Contact Us"><span>Help Desk</span></a></li>
-    <li class="first item19"><a href="/pages/faq" title="Frequently Asked Questions"><span>FAQ's</span></a></li>
-    <li class="first item19"><a href="/pages/privacy" title="Privacy Policy"><span>Privacy Policy</span></a></li>
-    <li class="first item19"><a href="/pages/terms" title="Terms Of Use"><span>Terms Of Use</span></a></li>
-  </ul>
 </div>
-<div id="middle" class="noright">
-  <div class="tl"><!-- --></div>
-  <div class="tr"><!-- --></div>
-  <div id="page">
-    <h2 class="gray mar-b">Meet The Moms</h2>
+
+<div class="grid_4">
+	<?php echo $this->view()->render(array('element' => 'aboutUsNav')); ?>
+	<?php echo $this->view()->render(array('element' => 'helpNav')); ?>
+</div>
+
+<div class="grid_11 omega roundy grey_inside b_side">
+	<h2 class="page-title gray">Meet The Moms</h2>
     <hr />
     <p>Meet Totsy's Mom Committee, our hand-picked group of mompreneurs, bloggers and website divas from across the country. Led by Totsy's Chief Mom, the Mom Committee is working for you, at your service to provide expertise, advice, trends, and more. You'll see the committee members in lots of places including our blog and social media platforms. And check them out on all their own fun sites!</p>
     <!-- start mom block -->
@@ -410,8 +398,8 @@ em {display: block; padding:5px; font-weight: bold; font-style: italic;}
       <div class="mtm_page_break"></div>
     </div>
     <!-- end mom block --> 
-    
-  </div>
-  <div class="bl"><!-- --></div>
-  <div class="br"><!-- --></div>
+	<br />
 </div>
+</div>
+<div class="clear"></div>
+

@@ -1,17 +1,17 @@
 <?php
 
 namespace app\models;
+
 use MongoId;
+use app\models\Base;
 
 /**
  * The `Item` class extends the generic `lithium\data\Model` class to provide
  * access to the Item MongoDB collection. This collection contains all product items.
  */
-class Item extends \lithium\data\Model {
+class Item extends Base {
 
-	public static function collection() {
-		return static::_connection()->connection->items;
-	}
+	protected $_meta = array('source' => 'items');
 
 	public static function related($item) {
 				
@@ -63,14 +63,14 @@ class Item extends \lithium\data\Model {
 	 */	
 	public static function sold($_id, $size, $quantity) {
 		if (!empty($_id) && ( +$quantity > 0)) {
-			$_id = new MongoId($_id);
+			$condition = array('_id' => new MongoId($_id));
 			$update = array(
 				'$inc' => array(
 					"sale_details.$size.sale_count" => +$quantity,
 					"details.$size" => -$quantity,
 					"total_quantity" => -$quantity
 			));
-			return static::collection()->update(array('_id' => $_id), $update);
+			return static::collection()->update($condition, $update);
 		}
 		return false;
 	}

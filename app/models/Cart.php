@@ -49,7 +49,7 @@ class Cart extends Base {
 	 *
 	 * @var int
 	 **/
-	protected $_shipBuffer = 18;
+	protected $_shipBuffer = 15;
 
 	/**
 	 * Any holidays that need to be factored into the estimated ship date calculation.
@@ -63,7 +63,7 @@ class Cart extends Base {
 	const TAX_RATE_NYS = 0.04375;
 
 	const TAX_RATE_NJS = 0.07;
-	
+
 	const ORIGIN_ZIP = "08837";
 
 	public $validates = array();
@@ -117,7 +117,6 @@ class Cart extends Base {
 	 * @todo Need documentation
 	 */
 	public static function addFields($data, array $options = array()) {
-
 		$data->expires = static::dates('15min');
 		$data->created = static::dates('now');
 		$data->session = Session::key('default');
@@ -190,13 +189,13 @@ class Cart extends Base {
 	public function tax($cart, $shipping) {
 		$item = Item::first($cart->item_id);
 		$tax = 0;
-		$zipCheckPartial = in_array(substr(is_object($shipping)?$shipping->zip:$shipping['zip'], 0, 3), $this->_nyczips);
-		$zipCheckFull = in_array(is_object($shipping)?$shipping->zip:$shipping['zip'], $this->_nyczips);
+		$zipCheckPartial = in_array(substr($shipping['zip'], 0, 3), $this->_nyczips);
+		$zipCheckFull = in_array($shipping['zip'], $this->_nyczips);
 		$nysZip = ($zipCheckPartial || $zipCheckFull) ? true : false;
 		$nycExempt = ($nysZip && $cart->sale_retail < 110) ? true : false;
 
 		if ($item->taxable != false || $nycExempt) {
-			switch (is_object($shipping)?$shipping->state:$shipping['state']) {
+			switch ($shipping['state']) {
 				case 'NY':
 					$tax = ($nysZip) ? static::TAX_RATE : static::TAX_RATE_NYS;
 					break;
@@ -335,6 +334,55 @@ class Cart extends Base {
 	}
 
 	/**
+	* Refresh the timer for each timer in the cart
+	* @see app/models/Cart::check()
+	*/
+	public static function refreshTimer() {
+		$actual_cart = Cart::active();
+		if (!empty($actual_cart)) {
+			$items = $actual_cart->data();
+		}
+		#Refresh the counter of each timer to 15 min
+		if (!empty($items)) {
+			#Security Check - Max 25 items
+			if(count($items) < 25) {
+				foreach ($items as $item) {
+					if (is_array($item) && !array_key_exists('event', $item) && !array_key_exists('end_date', $item) ){
+						continue;
+					}
+					$event = Event::find('first',array('conditions' => array("_id" => $item['event'][0])));
+					$now = getdate();
+					if(($event['end_date']->sec > ($now[0] + (15 * 60)))) {
+						$cart_temp = Cart::find('first', array(
+							'conditions' => array('_id' =>  $item['_id'])));
+						$cart_temp->expires = new MongoDate($now[0] + (15 * 60));
+						$cart_temp->save();
+					}
+				}
+			} else {
+				#Reset Savings on Session
+				Session::write('userSavings', 0);
+			}
+		}
+	}
+
+	public function cleanExpiredEventItems() {
+		$actual_cart = Cart::active();
+		if (!empty($actual_cart)) {
+			$items = $actual_cart->data();
+		}
+		if (!empty($items)) {
+			foreach ($items as $item) {
+				$event = Event::find('first',array('conditions' => array("_id" => $item['event'][0])));
+				$now = getdate();
+				if (($event->end_date->sec < $now[0])) {
+					static::remove(array('_id' => new MongoId( $item["_id"])));
+				}
+			}
+		}
+	}
+
+	/**
 	 * Check the quanity of an item and compare it to the request value.
 	 *
 	 * @param float $quantity
@@ -372,22 +420,46 @@ class Cart extends Base {
 	 * @param object $order
 	 * @return string
 	 */
-	public static function shipDate($cart) {
-		$i = 1;
-		$event = static::getLastEvent($cart);
-		$shipDate = null;
-		if (!empty($event)) {
-			$shipDate = $event->end_date->sec;
-			while($i < static::_object()->_shipBuffer) {
-				$day = date('N', $shipDate);
-				$date = date('Y-m-d', $shipDate);
-				if ($day < 6 && !in_array($date, static::_object()->_holidays)) {
-					$i++;
+	public static function shipDate($cart, $normal=false) {
+
+		//shows calculated shipdate
+		if($normal){
+			$i = 1;
+			$event = static::getLastEvent($cart);
+			if (!empty($event)) {
+				$shipDate = $event->end_date->sec;
+				while($i < static::_object()->_shipBuffer) {
+					$day = date('N', $shipDate);
+					$date = date('Y-m-d', $shipDate);
+					if ($day < 6 && !in_array($date, static::_object()->_holidays)) {
+						$i++;
+					}
+					$shipDate = strtotime($date.' +1 day');
 				}
-				$shipDate = strtotime($date.' +1 day');
+			}
+			return $shipDate;
+		}
+		
+		//shows one of two static messages
+		$shipDate = null;
+		$shipDate = "On or before 12/23";
+		
+		$items = (!empty($cart->items)) ? $cart->items : $cart;
+
+		if($items){
+			foreach($items as $thisitem){
+				if($thisitem->miss_christmas){
+					$shipDate = "See delivery alert below";	
+				}
+				elseif($thisitem['miss_christmas']){
+					$shipDate = "See delivery alert below";	
+				
+				}
 			}
 		}
 		return $shipDate;
+		
+		
 	}
 
 	/**
@@ -405,7 +477,7 @@ class Cart extends Base {
 		if (!empty($ids)) {
 			$event = Event::find('first', array(
 				'conditions' => array('_id' => $ids),
-				'order' => array('date_created' => 'DESC')
+				'order' => array('created_date' => 'DESC')
 			));
 		}
 		return $event;
@@ -424,10 +496,122 @@ class Cart extends Base {
 			$itemEvent = (empty($item['event'][0])) ? null : $item['event'][0];
 			$eventId = (!empty($item['event_id'])) ? $item['event_id'] : $itemEvent;
 			if (!empty($eventId)) {
-				$ids[] = new MongoId("$eventId");
+				//$ids[] = new MongoId("$eventId");
+				$ids[] = $eventId;
 			}
 		}
 		return $ids;
+	}
+
+	/**
+	* This method allows to manage (update/delete/add) the savings of the current order
+	*
+	*/
+	public static function updateSavings($items = null, $action, $amount = null) {
+		$savings = array('items' => 0, 'discount' => 0, 'services' => 0);
+		if(Session::read('userSavings'))
+			$savings = Session::read('userSavings');
+		if ($action == "update") {
+			$savings['items'] = 0;
+			if(!empty($items)) {
+				foreach($items as $key => $quantity) {
+					$itemInfo = Item::find('first', array('conditions' => array('_id' => new MongoId($key))));
+					if(!empty($itemInfo->msrp)){
+						$savings['items'] += $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
+					}
+				}
+			}
+		} else if($action == "add") {
+			if(!empty($items)) {
+				foreach($items as $key => $quantity) {
+					$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
+					if(!empty($itemInfo->msrp)){
+						$savings['items'] += $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
+					}
+				}
+			}
+		} else if($action == "remove") {
+			foreach($items as $key => $quantity) {
+				$itemInfo = Item::find('first', array('conditions' => array('_id' => $key)));
+				if(!empty($itemInfo->msrp)){
+					$savings['items'] -= $quantity * ($itemInfo->msrp - $itemInfo->sale_retail);
+				}
+			}
+		} else if ($action == 'discount') {
+			$savings['discount'] = $amount;
+		} else if ($action == 'services') {
+			$savings['services'] = $amount;
+		}
+		Session::write('userSavings', $savings);
+	}
+
+	/**
+	* The getDiscount method check credits, promocodes and services available
+	* And Apply it to the subtotal
+	* Return Credit, Promo, Services Objects and the PostDiscount Total
+	* @see app/models/Cart::check()
+	*/
+	public static function getDiscount($subTotal, $shippingCost = 7.95, $overShippingCost = 0, $data, $tax = 0.00) {
+		#Get User Infos
+		$fields = array(
+		'item_id',
+		'color',
+		'category',
+		'description',
+		'product_weight',
+		'quantity',
+		'sale_retail',
+		'size',
+		'url',
+		'primary_image',
+		'expires',
+		'event',
+		'discount_exempt'
+		);
+		$user = Session::read('userLogin');
+		$userDoc = User::find('first', array('conditions' => array('_id' => $user['_id'])));
+		/** Services, Promocodes,Credits Management **/
+		#Apply Services
+		$services = array();
+		$services['freeshipping'] = Service::freeShippingCheck($shippingCost, $overShippingCost);
+		$services['tenOffFitfy'] = Service::tenOffFiftyCheck($subTotal);
+		#Calculation of the subtotal with shipping and services discount
+		$postSubtotal = ($subTotal + $tax + $shippingCost + $overShippingCost - $services['tenOffFitfy'] - $services['freeshipping']['shippingCost'] - $services['freeshipping']['overSizeHandling']);
+		$subTotal += $tax;
+		#Apply Promocodes
+		$cartPromo = Promotion::create();
+		$promo_code = null;
+		if (Session::read('promocode')) {
+			$promo_session = Session::read('promocode');
+			$promo_code = $promo_session['code'];
+		}
+		if (!empty($data['code'])) {
+			$promo_code = $data['code'];
+		}
+		#Disable Promocode Uses if Services
+		if (!empty($services['freeshipping']['enable']) || !empty($services['tenOffFitfy'])) {
+			$promo_code = null;
+		}
+		if (!empty($promo_code)) {
+			$cartPromo->promoCheck($promo_code, $userDoc, compact('subTotal', 'shippingCost', 'overShippingCost', 'services'));
+		}
+		#Apply Credits
+		$credit_amount = null;
+		$cartCredit = Credit::create();
+		if (array_key_exists('credit_amount', $data)) {
+			$credit_amount = $data['credit_amount'];
+		}
+		$postDiscountTotal = ($postSubtotal + $cartPromo['saved_amount']);
+		#Avoid Negative Total
+		if($postDiscountTotal < 0.00) {
+			$postDiscountTotal = 0.00;
+		}
+		$cartCredit->checkCredit($credit_amount, $subTotal, $userDoc);
+		#Apply credit to the Total
+		if(!empty($cartCredit->credit_amount)) {
+			$postDiscountTotal += $cartCredit->credit_amount;
+		}
+		return compact('cartPromo', 'cartCredit', 'services', 'postDiscountTotal');
 	}
 }
 

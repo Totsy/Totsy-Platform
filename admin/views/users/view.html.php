@@ -186,6 +186,62 @@
 		</div>
 	</div>
 </div>
+<div id="clear"></div>
+<div class="grid_16">
+	<div class="box">
+		<h2>
+			<a href="#" id="toggle-tables">Promocodes Used</a>
+		</h2>
+		<div class="block" id="tables">
+		<?php if (!empty($promocodes_used)): ?>
+			<table id="promoTable" class="datatable" border="1">
+				<thead>
+					<tr>
+						<?php
+						foreach ($headings['promo'] as $heading) {
+							echo "<th>$heading</th>";
+						}
+						?>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ($promocodes_used as $promocode): ?>
+						<tr>
+							<td>
+								<?php if (!empty($promocode['date_created']->sec)): ?>
+									<?=date('Y-m-d', $promocode['date_created']->sec);?>
+								<?php endif?>
+							</td>
+							<td>
+								<?php if ($promocode['order_id']): ?>
+									<?=$this->html->link($promocode['order_id'], array(
+								'Orders::view',
+								'args'=>$promocode['order_id']),
+								array('target' => '_blank'));
+								?>
+								<?php endif ?>
+							</td>
+							<td>
+								<?php if ($promocode['code']): ?>
+									<?=$this->html->link($promocode['code'], array(
+										'Promocodes::edit',
+										'args'=>$promocode['code_id']),
+										array('target' => '_blank'));?>
+								<?php endif ?>
+							</td>
+							<td>
+								<?php if ($promocode['type']): ?>
+									<?=$promocode['type'];?>
+								<?php endif ?>
+							</td>
+						</tr>
+					<?php endforeach ?>
+				</tbody>
+			</table>
+		<?php endif ?>
+		</div>
+	</div>
+</div>
 <script type="text/javascript" charset="utf-8">
     $("#comment").hide();
      $("#other_reason").hide();

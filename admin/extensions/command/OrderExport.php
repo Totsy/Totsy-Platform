@@ -256,6 +256,8 @@ class OrderExport extends Base {
 		    '_id' => true,
 		    'billing' => true,
 		    'shipping' => true,
+		    'date_created' => true,
+		    'ship_date' => true,
 		    'items' => true,
 		    'order_id' => true,
 		    'shippingMethod' => true,
@@ -407,6 +409,10 @@ class OrderExport extends Base {
 							$orderFile[$inc]['Ref3'] = $item['color'];
 							$orderFile[$inc]['Ref4'] = String::asciiClean($item['description']);
 							$orderFile[$inc]['Customer PO #'] = $order['_id'];
+
+							$orderFile[$inc]['Order Creation Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $order['date_created']));
+							$orderFile[$inc]['Promised Ship-by Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $order['ship_date']));
+
 							$orderFile[$inc] = array_merge($heading, $orderFile[$inc]);
 							$orderFile[$inc] = $this->sortArrayByArray($orderFile[$inc], $heading);
 							if (!in_array($item['event_id'], $this->addEvents)) {
@@ -654,7 +660,17 @@ class OrderExport extends Base {
 									$purchaseOrder[$inc]['Event End Date'] = date("m/d/Y", str_replace("0.00000000 ", "", $event->end_date));
 
 
+							$purchaseOrder[$inc]['WhsInsValue (Cost)'] = number_format($eventItem['sale_whol'], 2);
+							$purchaseOrder[$inc]['Description for Customs'] = (!empty($eventItem['category']) ? $eventItem['category'] : "");
+							$purchaseOrder[$inc]['ShipInsValue'] = number_format($eventItem['orig_whol'], 2);
+							$purchaseOrder[$inc]['Ref1'] = $eventItem['_id'];
+							$purchaseOrder[$inc]['Ref2'] = $key;
+							$purchaseOrder[$inc]['Ref3'] = $eventItem['color'];
 
+
+							if ((int) $eventItem['product_weight'] > 0) {
+								$purchaseOrder[$inc]['UOM1_Weight'] = number_format($eventItem['product_weight'],2);
+							}
 
 									$purchaseOrder[$inc] = $this->sortArrayByArray($purchaseOrder[$inc], $purchaseHeading);
 								}

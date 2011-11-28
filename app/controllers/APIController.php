@@ -30,7 +30,7 @@ class APIController extends  \lithium\action\Controller {
 	
 	
 	protected static $_formats = array(
-		'json', 'xml'
+		'json', 'xml', 'rss'
 	);
 	protected $_method = null;
 	protected $_format = null;
@@ -237,7 +237,7 @@ class APIController extends  \lithium\action\Controller {
 				} else if (is_float($it['percent_off'])) {
 					$it['percent_off'] = round($it['percent_off']*100,2);
 				} else {
-					$it['percent_off'] = preg_replace('/[/D]+/','',$it['percent_off']);
+					$it['percent_off'] = preg_replace('/[\D]+/','',$it['percent_off']);
 					if ($it['percent_off']>74) $it['percent_off'] = 0;	
 				} 
 				$it['start_date'] = $ev['start_date'];
@@ -282,7 +282,8 @@ class APIController extends  \lithium\action\Controller {
 			
 			$data =  $event->data();
 			
-			if ($data['end_date']['sec'] <= strtotime(date('d-m-Y 23:59:59',strtotime('+1 day'))) ){
+			if ($data['end_date']['sec'] <= strtotime(date('d-m-Y 23:59:59',strtotime('+1 day',$start_date))) && 
+				$data['end_date']['sec'] > strtotime(date('d-m-Y 23:59:59',$start_date)) ){
 				$closing[] = $data;
 			}
 			
@@ -319,7 +320,7 @@ class APIController extends  \lithium\action\Controller {
 					} else if (is_float($it['percent_off'])) {
 						$it['percent_off'] = round($it['percent_off']*100,2);
 					} else {
-						$it['percent_off'] = preg_replace('/[/D]+/','',$it['percent_off']);
+						$it['percent_off'] = preg_replace('/[\D]+/','',$it['percent_off']);
 						if ($it['percent_off']>74) $it['percent_off'] = 0;	
 					}
 					if ($it['percent_off'] > $maxOff) { $maxOff = $it['percent_off']; }
@@ -342,6 +343,133 @@ class APIController extends  \lithium\action\Controller {
 		$this->setView(1);
 		return (compact('events','pending','closing','base_url','maxOff'));
 	}	
+	
+/**
+	 * Method to review future available(active) events 
+	 * for given date. 
+	 * 
+	 * min protocol HTTPS
+	 * method GET
+	 */
+	protected function eventsReviewApi() {
+
+		$token = Api::authorizeTokenize($this->request->query);
+		if (is_array($token) && array_key_exists('error', $token)) {
+			return $token;
+		}
+		
+		$start_date = strtotime(date('Y-m-d'));
+		$start_time = '19:00:00';
+
+		if (is_array($this->request->query) && array_key_exists ('order', $this->request->query)){			
+			if (strtolower($this->request->query['order']) == 'desc'){
+				$order_desc = true; //DESC
+			} 
+		} 
+		
+		if (is_array($this->request->query) && array_key_exists ('start_date', $this->request->query)){			
+			if (preg_match('/[\d]{4}[\-][\d]{2}[\-][\d]{2}/i',$this->request->query['start_date'])){
+				$start_date = strtotime($this->request->query['start_date']);
+			} 
+		} 
+		
+		if (is_array($this->request->query) && array_key_exists ('start_time', $this->request->query)){
+			if (strtolower($this->request->query['start_time']) == 'am'){
+				$start_time = '08:00:00';
+			} 
+		}
+				
+		$eventCollection = Event::connection()->connection->events;
+		$openEvents = Event::directQuery(
+			array(
+				'enabled' => true,
+				'start_date' => array(
+					'$gte' => new MongoDate( strtotime(date('Y-m-d',$start_date).' '.$start_time) ),
+					'$lte' => new MongoDate( strtotime(date('Y-m-d',$start_date).' 23:59:59') )
+				)
+		));
+
+		$base_url = 'http://'.$_SERVER['HTTP_HOST'].'/';
+		$events = array();
+		$closing = array();
+		$maxOff = 0;
+		foreach ($openEvents as $data){
+
+			$data['available_items'] = false;
+			$data['maxDiscount'] = 0;
+			$data['vendor'] = '';
+			
+			if (!array_key_exists('event_image',$data)) { $data['event_image'] = $base_url.'img/no-image-small.jpeg'; }
+			else { $data['event_image'] = $base_url.'image/'.$data['event_image'].'.jpg'; }
+			 
+			if ( isset($data['items']) && count($data['items'])>0){
+
+				$mItems  = array();
+				foreach ($data['items'] as $item){
+					$mItems[] = new MongoId($item);
+				}
+				
+				$itms = Item::all(array(
+					'conditions' => array(
+					'_id' => array( '$in' => $mItems  )
+					)
+				));
+				unset($mItems);
+				
+				foreach ($itms as $itm){
+					$it = $itm->data();
+					
+					if (preg_match('/[\%]+/',$it['percent_off'])){
+						$it['percent_off'] = substr($it['percent_off'],0,-1);
+						if (is_float($it['percent_off']) ) $it['percent_off'] = round($it['percent_off'],2);
+					} else if (is_float($it['percent_off'])) {
+						$it['percent_off'] = round($it['percent_off']*100,2);
+					} else {
+						$it['percent_off'] = preg_replace('/[\D]+/','',$it['percent_off']);
+						if ($it['percent_off']>74) $it['percent_off'] = 0;	
+					}
+					if ($it['percent_off'] > $maxOff) { $maxOff = $it['percent_off']; }
+					if ( isset($it['vendor']) && (is_null($data['vendor']) || strlen(trim($data['vendor']))==0)){ 
+						$data['vendor'] = $it['vendor']; 
+					}
+					
+					if ($it['percent_off'] > $data['maxDiscount']) { $data['maxDiscount'] = $it['percent_off']; }
+					if ($it['total_quantity']>0 && $data['available_items'] === false) { $data['available_items'] = true; }
+				}
+				
+			}
+			$events[] = $data;
+		}
+		
+		$closing = Event::directQuery(array(
+				'enabled' => true,
+				'end_date' => array(
+					'$gt' => new MongoDate( strtotime(date('Y-m-d',$start_date).' 00:00:00') ),
+					'$lte' => new MongoDate( strtotime(date('Y-m-d',strtotime('+1 day',$start_date)).' 23:59:59') )
+				)
+		));
+		
+		$pending = Event::directQuery(array(
+				'enabled' => true,
+				'start_date' => array(
+					'$gt' => new MongoDate( strtotime(date('Y-m-d',$start_date).' 23:59:59') ),
+					'$lt' => new MongoDate( strtotime('+2 days',$start_date) )
+				)
+		));
+		
+		if (isset($order_desc) && $order_desc){
+			if (is_array($events) && count($events)>0) {
+				$events = array_reverse($events);
+			}
+			if (is_array($closing) && count($closing)>0) {
+				$$closing = array_reverse($closing);
+			}			
+		} 
+		
+		$this->setView(1);
+		return (compact('events','pending','closing','base_url','maxOff'));
+	}	
+	
 	
 	/**
 	 * Subscriber list, provided by date
@@ -414,7 +542,12 @@ class APIController extends  \lithium\action\Controller {
 		}
 		// Run that sucker!
 		$cursor = User::collection()->find( array(
-			'keyade_referral_user_id' => array('$exists' => true)
+			'keyade_referral_user_id' => array('$exists' => true),
+			'keyade_referral_user_id' => array('$ne' => null),
+			'created_date' =>  array(
+			 '$gte' => new MongoDate($from),
+             '$lte' => new MongoDate($to)
+			)
 		));
 		$data['cursor'] = $cursor;
 		return $data;
@@ -452,6 +585,7 @@ class APIController extends  \lithium\action\Controller {
 		switch ($this->_format){
 			
 			case 'xml':
+			case 'rss':
 				header("Content-type: text/xml");
 				if (!is_null($this->_view)){
 					$path = $this->_format.'/'.$this->_method.'/'.$this->_view.'.php';
@@ -498,6 +632,31 @@ class APIController extends  \lithium\action\Controller {
 				$this->_view = str_replace('.'.$this->_format, '', $params[$param]);
 			} 
 		}
+	}
+	
+	private function purefiedArray(&$array){
+		if (is_array($array) && count($array)>0){
+			foreach ($array  as $k=>$a){
+				if (is_object($a)){
+					$array[$k] = self::obj2array($a);
+				}
+			}
+		} else if (is_object($array)){
+			$array = self::obj2array($array);
+		}
+	}
+	
+	private static function obj2array(&$obj){
+		$return = array();
+		if (is_object($obj)){
+			$properties = get_object_vars($obj);
+			if (is_array($properties) && count($properties)>0){
+				foreach ($properties as $property){
+					$return[$property] = $obj->{$property};
+				}
+			}
+		}
+		return $return;
 	}
 }
 

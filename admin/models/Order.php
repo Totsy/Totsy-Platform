@@ -49,12 +49,12 @@ use admin\models\Credit;
 *   }
 * }}}
 **/
-class Order extends \lithium\data\Model {
+class Order extends Base {
 
 	const TAX_RATE = 0.08875;
 
 	const TAX_RATE_NYS = 0.04375;
-
+	protected $_meta = array('source' => 'orders');
 	protected $_nyczips = array(
 		'100',
 		'104',
@@ -68,10 +68,6 @@ class Order extends \lithium\data\Model {
 	protected $_dates = array(
 		'now' => 0
 	);
-
-	public static function collection() {
-		return static::_connection()->connection->orders;
-	}
 
 	public $validates = array(
 		'authKey' => 'Could not secure payment.',
@@ -129,10 +125,11 @@ class Order extends \lithium\data\Model {
 	public static function process($order) {
 		$collection = static::collection();
 		$orderId = new MongoId($order['_id']);
+
 		try {
 		    $error = null;
 		    if ($order['total'] != 0 && is_numeric($order['authKey'])) {
-                $auth = Payments::capture('default', $order['authKey'], round($order['total'], 2));
+                $auth = Payments::capture('default', $order['authKey'], floor($order['total']*100)/100);
             } else {
                 $auth = -1;
                 $error = "Can't capture because total is zero.";
@@ -369,7 +366,11 @@ class Order extends \lithium\data\Model {
 			'total' => (float) $selected_order["total"],
 			'subTotal' => (float) $selected_order["subTotal"],
 			'handling' => (float) $selected_order["handling"],
+			'overSizeHandling' => (float) $selected_order["overSizeHandling"],
+			'handlingDiscount' => (float) $selected_order["handlingDiscount"],
+			'overSizeHandlingDiscount' => (float) $selected_order["overSizeHandlingDiscount"],		
 			'promo_discount' => (float) $selected_order["promo_discount"],
+			'discount' => (float) $selected_order["discount"],
 			'promocode_disable' => $selected_order["promocode_disable"],
 			'comment' => $selected_order["comment"]
 		);
@@ -387,14 +388,14 @@ class Order extends \lithium\data\Model {
 		/**************UPDATE DB****************************/
 		if (array_key_exists('original_credit_used', $selected_order)) {
 		    $new_credit = $selected_order['original_credit_used'] - (float) number_format($selected_order['credit_used'],2);
-		    $new_credit = abs((float)$selected_order['initial_credit_used']) - (float) $selected_order['credit_used'];
+		    $new_credit = abs((float)$selected_order['original_credit_used']) - (float) $selected_order['credit_used'];
 		}
 		if(isset($selected_order["user_total_credits"])){
 			if (array_key_exists('original_credit_used', $selected_order)) {
                 $new_credit = $selected_order['original_credit_used'] - (float) $selected_order['credit_used'];
                 $new_credit = abs($new_credit);
             } else {
-                $new_credit = (float) $selected_order['initial_credit_used'] - (float) $selected_order['credit_used'];
+                $new_credit = (float) $selected_order['original_credit_used'] - (float) $selected_order['credit_used'];
                  $new_credit = abs($new_credit);
             }
             $creditReturnData = array(
@@ -484,11 +485,8 @@ class Order extends \lithium\data\Model {
 		if(!empty($items)){
 			$datas_order["items"] = $items;
 		}
-		//Get Actual Taxes and Handling
-		$handling = static::shipping($items);
-		$overSizeHandling = static::overSizeShipping($items);
+		//Get Actual Taxes
 		extract(static::recalculateTax($selected_order,$items));
-
 		if (is_object($tax)) {
             //Avatax::totsyCalculateTax($selected_order);
             //$tax = static::tax($selected_order,$items);
@@ -501,23 +499,48 @@ class Order extends \lithium\data\Model {
 			$regexObj = new MongoRegex("/" . $selected_order["promo_code"] . "/i");
 			$conditions = array("code" => $regexObj);
 			$promocode = $promocodeCollection->findOne($conditions);
-			if( $subTotal <= $promocode['minimum_purchase']){
+			if($subTotal <= $promocode['minimum_purchase']) {
 				$preAfterDiscount = $subTotal;
 				$datas_order["promocode_disable"] = true;
-			}else {
+				#Reset Shipping
+				if ($promocode['type'] == 'free_shipping') {
+					$datas_order["handlingDiscount"] = 0;
+					$datas_order["overSizeHandlingDiscount"] = 0;
+					$preAfterDiscount = $subTotal;
+				}
+			} else {
 				if ($promocode['type'] == 'percentage') {
 					$selected_order["promo_discount"] = - ($subTotal * $promocode['discount_amount']);
 					$datas_order["promo_discount"] = $selected_order["promo_discount"];
 				}
 				$preAfterDiscount = $subTotal + $selected_order["promo_discount"];
+				if ($promocode['type'] == 'free_shipping') {
+					$datas_order["handlingDiscount"] = $selected_order["handling"];
+					$datas_order["overSizeHandlingDiscount"] = $selected_order["overSizeHandling"];
+					$preAfterDiscount = $subTotal - $datas_order["handlingDiscount"] - $datas_order["overSizeHandlingDiscount"];
+				}
 				$datas_order["promocode_disable"] = false;
 			}
 		} else {
 			$preAfterDiscount = $subTotal;
 			$datas_order["promocode_disable"] = true;
 		}
+		/************SERVICES TREATMENT**************/
+		if(!empty($selected_order["service"])) {
+			if ($selected_order["service"] == '10off50') {
+				if($subTotal >= 50.00) {
+					$datas_order["discount"] = 10.00;
+					$preAfterDiscount -= 10;
+				} else {
+					$datas_order["discount"] = 0.00;
+				}
+			} else {
+				$preAfterDiscount -= $selected_order["discount"];
+			}
+		}
 		/**************CREDITS TREATMENT**************/
-		if(isset($selected_order["credit_used"])){
+		if($selected_order["credit_used"] != ('' || null)) {
+			$selected_order["credit_used"] = (float) - abs($selected_order["credit_used"]);
 			if(empty($selected_order["user_total_credits"])){
 				if(strlen($selected_order["user_id"]) > 10){
 					$user_ord = $userCollection->findOne(array("_id" => new MongoId($selected_order["user_id"])));
@@ -534,49 +557,49 @@ class Order extends \lithium\data\Model {
 				$user_ord["total_credit"] = 0;
 			}
 			//Set Initial Credits if not Set
-			if(empty($selected_order["initial_credit_used"])) {
-				$datas_order["initial_credit_used"] = $selected_order["credit_used"];
-				$selected_order["initial_credit_used"] = $selected_order["credit_used"];
+			if(empty($selected_order["original_credit_used"])) {
+				$datas_order["original_credit_used"] = $selected_order["credit_used"];
+				$selected_order["original_credit_used"] = $selected_order["credit_used"];
 			}
 			//CASE (CREDITS > TOTAL)
 			if(abs($selected_order["credit_used"]) > $preAfterDiscount) {
 				$refill = abs($selected_order["credit_used"] + $preAfterDiscount);
 				$new_credits = $selected_order["credit_used"] + $refill;
 				$datas_user["total_credit"] = ($datas_user["total_credit"] + $refill);
-				$afterDiscount = $preAfterDiscount  + $new_credits;
+				$afterDiscount = $preAfterDiscount + $new_credits;
 				$datas_order["credit_used"] = $new_credits;
 			} else if(abs($selected_order["credit_used"]) == $preAfterDiscount) {
 				$afterDiscount = $preAfterDiscount + $selected_order["credit_used"];
 			} else if(abs($selected_order["credit_used"]) < $preAfterDiscount) {
 				//Get back credits from user
-				$initial_credits = ($user_ord["total_credit"] - abs($selected_order["initial_credit_used"] - $selected_order["credit_used"]));
-				if($selected_order["credit_used"] != $selected_order["initial_credit_used"]){
+				$initial_credits = ($user_ord["total_credit"] - abs($selected_order["original_credit_used"] - $selected_order["credit_used"]));
+				if($selected_order["credit_used"] != $selected_order["original_credit_used"]) {
 					$datas_user["total_credit"] = $initial_credits;
-					}
-				if(abs($selected_order["initial_credit_used"]) > $preAfterDiscount) {
-					$refill = abs($selected_order["initial_credit_used"] + $preAfterDiscount);
-					$new_credits = $selected_order["initial_credit_used"] + $refill;
+				}
+				if(abs($selected_order["original_credit_used"]) > $preAfterDiscount) {
+					$refill = abs($selected_order["original_credit_used"] + $preAfterDiscount);
+					$new_credits = $selected_order["original_credit_used"] + $refill;
 					$datas_user["total_credit"] = ($refill + $user_ord["total_credit"]);
 					$afterDiscount = $preAfterDiscount  + $new_credits;
 					$datas_order["credit_used"] = $new_credits;
-				} else if(abs($selected_order["initial_credit_used"]) <= $preAfterDiscount) {
-					$afterDiscount = $preAfterDiscount + $selected_order["initial_credit_used"];
-					$datas_order["credit_used"] = $selected_order["initial_credit_used"];
+				} else if(abs($selected_order["original_credit_used"]) <= $preAfterDiscount) {
+					$afterDiscount = $preAfterDiscount + $selected_order["original_credit_used"];
+					$datas_order["credit_used"] = $selected_order["original_credit_used"];
 				}
 			}
+			if($afterDiscount < 0) {
+				$afterDiscount = 0;
+			}
+		} else {
+			$afterDiscount = $preAfterDiscount;
 		}
 		/***********END OF CREDITS TREATMENT*************/
 		/***********CHECK TAX, HANDLING, TOTAL***********/
-		//Check if afterdiscount is negative
-		if($afterDiscount < 0){
-			$afterDiscount = 0;
-		}
-		$total = $afterDiscount + $tax + $handling + $overSizeHandling;
+		$total = $afterDiscount + $tax + $selected_order["handling"] + $selected_order["overSizeHandling"];
 		$datas_order_prices = array(
 			'total' => $total,
 			'subTotal' => $subTotal,
 			'tax' => $tax,
-			'handling' => $handling,
 			'promocode_disable' => $datas_order["promocode_disable"],
 			'credit_used' => (float) $selected_order["credit_used"]
 		);
@@ -588,7 +611,7 @@ class Order extends \lithium\data\Model {
 		$new_datas_order = array_merge($new_datas_order, $datas_order);
 		//keep user credits infos
 		$new_datas_order["user_total_credits"] = $datas_user["total_credit"];
-		$new_datas_order['initial_credit_used'] = $selected_order["initial_credit_used"];
+		$new_datas_order['original_credit_used'] = $selected_order["original_credit_used"];
 		/**************CREATE TEMP ORDER********************/
 		$temp_order = static::Create($new_datas_order);
 		return $temp_order;
@@ -647,6 +670,116 @@ class Order extends \lithium\data\Model {
 	    } else {
 	        return true;
 	    }
+	}
+
+	/**
+	* This function returns the any orders that have been errored
+	**/
+	public static function orderPaymentRequests($requests) {
+	    $orderColl = static::collection();
+	    $conditions = array();
+		$payments = array();
+		$message = "";
+		$type = null;
+
+        if($requests) {
+            if (array_key_exists('capture', $requests) && !empty($requests['capture'])) {
+
+				    $capture = static::collection()->find(array('order_id' => array(
+				        '$in' => $requests['capture'])),
+				        array(
+				        'authKey' => 1,
+				        'total' => 1,
+				        'order_id' => 1,
+				        '_id' => 1
+				    ));
+				    foreach($capture as $order) {
+				        static::process($order);
+				    }
+				    $requests['type'] = 'error';
+				    $requests['start_date'] = date('m/d/Y');
+				    $message = " Capture Process has completed.  Here are today's failed captures.";
+			}
+			if (array_key_exists('todays',$requests) && !empty($requests['todays'])) {
+				$conditions = array('error_date' => array('$gte' => new MongoDate(strtotime(date("m/d/Y") . "00:00:00"))));
+			} else {
+				if (array_key_exists('search',$requests) && !empty($requests['search'])) {
+					$conditions = array('order_id' => $requests['search']);
+				} else {
+					switch($requests['type']){
+						case 'processed':
+							$type = 'processed';
+							if (array_key_exists('end_date',$requests) && !empty($requests['end_date'])) {
+								$conditions['payment_date'] = array_merge($conditions['payment_date'],array('$lte' => new MongoDate(strtotime($requests['end_date']))));
+							}else {
+								$conditions['payment_date'] = array_merge($conditions['payment_date'],array('$lte' => new MongoDate()));
+							}
+
+							if (array_key_exists('start_date',$requests) && !empty($requests['start_date'])) {
+								$conditions['payment_date'] = array('$gte' => new MongoDate(strtotime($requests['start_date'])));
+							} else {
+							    $conditions = array();
+							}
+							break;
+						case 'expired':
+							$type = 'expired';
+							$expirtion_date = mktime(0,0,0,date('m'),date('d') + 3, date('Y') );
+							$order_date_created_min = mktime(0,0,0,date('m',$expirtion_date),date('d',$expirtion_date) - 30, date('Y',$expirtion_date) );
+							$order_date_created_max = mktime(23,59,59,date('m',$expirtion_date),date('d',$expirtion_date) - 30, date('Y',$expirtion_date) );
+							$conditions['date_created'] = array('$gte' => new MongoDate($order_date_created_min), '$lte' => new MongoDate($order_date_created_max));
+							$conditions['auth_confirmation'] = array('$exists' => false);
+							$conditions['ship_records'] = array('$exists' => false);
+							break;
+						case 'error':
+							$type = 'error';
+							if (array_key_exists('end_date',$requests) && !empty($requests['end_date'])) {
+								$conditions['error_date'] = array('$lt' => new MongoDate(strtotime($requests['end_date'] . " 23:59:59")));
+							}else {
+								$conditions['error_date'] = array('$lt' => new MongoDate());
+							}
+							if (array_key_exists('start_date',$requests) && !empty($requests['start_date'])) {
+								$conditions['error_date'] = array_merge($conditions['error_date'],array('$gte' => new MongoDate(strtotime($requests['start_date'] . " 00:00:00"))));
+							} else {
+							    $conditions = array();
+							}
+							break;
+						default:
+							break;
+					}
+				}
+			}
+			if (!empty($conditions)) {
+                $payments = $orderColl->find($conditions, array(
+                    '_id' => 1,
+                    'auth_error' => 1,
+                    'order_id' => 1,
+                    'error_date' => 1,
+                    'date_created' => 1,
+                    'payment_date' => 1,
+                    'authKey' => 1,
+                    'auth_confirmation' => 1,
+                    'total' => 1
+                ));
+			}
+		}
+		return compact('payments','type', 'message');
+	}
+
+	/**
+	* Returns true, if order passed in payment capture failed, otherwise return false
+	* @params (string) $orderId : short id of the order
+	* @return boolean
+	**/
+
+	public static function failedCaptureCheck($orderId = null) {
+	    $failed = false;
+	    $coll = static::collection();
+	    $count = $coll->count(array('order_id' => $orderId, 'payment_date' => array('$exists' => true)));
+	     if ($count == 0) {
+	        $failed = true;
+	     }
+
+	     return $failed;
 	}
 }
 

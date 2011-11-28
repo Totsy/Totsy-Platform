@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\extensions\helper\Pixel;
+use app\models\User;
 use lithium\storage\Session;
 use MongoDate;
 
@@ -18,48 +19,63 @@ class Affiliate extends Base {
     * @return the pixels associated to the affiliate and url
     */
 	public static function getPixels($url, $invited_by) {
+	
 	    $cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 	    $userInfo = Session::read('userLogin', array('name' => 'default'));
+		$userCollection = User::collection();
+		$user = $userCollection->findOne(array('email' => $userInfo['email']));
         $orderid = NULL;
 
-        if(strpos($url, '&')) {
-            $url = substr($url,0,strpos($url, '&'));
-        }
-        if(preg_match('(/orders/view/)',$url)) {
-            $orderid = substr($url,13);
+        if(preg_match('(orders/view/)',$url)) {
+            $orderid = substr($url,12);
             $url = '/orders/view';
         }
-        if(preg_match('(/a/)',$url)){
-            $url = '/a/'.$invited_by;
+        
+        if(preg_match('(^a/)',$url)) {
+            $url = '/a/' . $invited_by;
         }
+        
+        /*for affilliates that have a category
+        build the URL here in order to find a match and get the right pixel info for this affiliate */        
+        
+		/**
+		* This detaches the invited by from the unique identifier
+		* for affiliate invited by retrieved from
+		* the user's record.  e.g. linkshare_1x3uebdu395769
+		**/
         if($index = strpos($invited_by, '_')) {
             $invited_by = substr($invited_by, 0 , $index);
         }
+        
         $conditions['active'] = true;
         $conditions['level'] = 'super';
         $conditions['pixel'] = array('$elemMatch' => array(
                                     'page' => $url,
                                     'enable' => true
                                 ));
+                                
         $conditions['invitation_codes'] = $invited_by;
         $options = array('conditions' => $conditions,
 		                'fields'=>array(
-		                    'pixel.pixel' => 1, 'pixel.page' => 1
+		                    'pixel.pixel' => 1, 'pixel.page' => 1,
+							'_id' => 0
 		                    ));
+		                    
 		$pixels = Affiliate::find('all', $options );
 		$pixels = $pixels->data();
 		$pixel = NULL;
+
         if($url == '/orders/view'){
-            if($userInfo && array_key_exists('affiliate_share', $userInfo) && $userInfo['affiliate_share']){
-                $cookie['affiliate'] = $userInfo['affiliate_share']['affiliate'];
-                $cookie['entryTime'] = $userInfo['affiliate_share']['landing_time'];
+            if($user && array_key_exists('affiliate_share', $user) && $user['affiliate_share']){
+     			$cookie['affiliate'] = $user['affiliate_share']['affiliate'];
+                $cookie['entryTime'] = $user['affiliate_share']['landing_time'];
                 Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
-                static::generatePixel($cookie['affiliate'], '', array( 'orderid' => $orderid));
             }
         }
+        
 		foreach($pixels as $data) {
 			foreach($data['pixel'] as $index) {
-                if(in_array($url, $index['page'])) {
+                if(is_array($index['page']) && in_array($url, $index['page'])) {
                     if($url == '/orders/view'){
                         $pixel .= static::generatePixel($invited_by, $index['pixel'], array( 'orderid' => $orderid));
                     }else{
@@ -193,13 +209,24 @@ class Affiliate extends Base {
                 $event = Event::find('first', array('conditions' => array(
                             'url' => $vendorurl
                         )));
-                $insert = static::spinback_share('/image/' .$event->logo_image . '.gif',$event->_id, $options['event'],  htmlspecialchars($event->name), htmlspecialchars($event->name), "Check out this SALE on Totsy!", ' st="Share this Sale!"'  );
+		if (is_object($event)){
+                	$insert = static::spinback_share(
+				'/image/' .$event->logo_image . '.gif',
+				$event->_id, 
+				$options['event'],  
+				htmlspecialchars($event->name), 
+				htmlspecialchars($event->name),
+				"Check out this SALE on Totsy!", 
+				' st="Share this Sale!"'  
+			);
+		} else {
+			$insert = '';
+		}
                return str_replace('$',$insert,$pixel);
             }
         }
         if($invited_by == 'linkshare') {
             if( array_key_exists('orderid', $options) && $options['orderid']) {
-
                 $raw = '';
                 if (array_key_exists('trans_type', $options) && $options['trans_type']) {
                     $trans_type = $options['trans_type'];
@@ -211,20 +238,31 @@ class Affiliate extends Base {
                 $order = Order::find('first', array('conditions' => array(
                         'order_id' => $orderid
                     )));
+
+				/**
+				* This line prevents the linkshare rev pixel from firing if the
+				* user goes to the /order/view page just to see an old order
+				**/
+				$order_age = ($order->date_created->sec > (time() - 30)) ? true : false;
+				//reset the pixel if the order is 30 secs or more old
+				if (!$order_age) {
+					$pixel = "";
+				}
+
                 $user = User::find('first', array(
                     'conditions' => array('_id' => $order->user_id),
                     'fields' => array('affiliate_share' => true)
                     ));
                 if($user->affiliate_share){
                     $track = $user->affiliate_share['affiliate'];
-                    $entryTime = $user->affiliate_share['entryTime'];
-                }else if(array_key_exists('affiliate', $cookie) && $cookie['affiliate']){
+                    $entryTime = $user->affiliate_share['landing_time'];
+                }else if(array_key_exists('affiliate', $cookie) && preg_match('@^(linkshare)@i', $cookie['affiliate'])){
                     $track = $cookie['affiliate'];
                     $entryTime = $cookie['entryTime'];
                 }
                 $raw = static::linkshareRaw($order, $track, $entryTime, $trans_type);
 
-                if(($pixel)){
+                if(($pixel) && $order_age){
                     $insert = static::linkshareRaw($order, $track, $entryTime, null);
                     $pixel  = str_replace('$',$insert,$pixel);
                 }
@@ -276,8 +314,10 @@ class Affiliate extends Base {
         $raw .= 'ord=' . $order->order_id . '&';
         if(($trans_type)){
             $raw .= 'tr=' . substr($tr, strlen('linkshare')+1) . '&';
-            $raw .= 'land=' . date('Ymd_Hi', $entryTime) . '&';
+            $raw .= 'land=' . date('Ymd_Hi', (int) $entryTime) . '&';
             $raw .= 'date=' . date('Ymd_Hi', $order->date_created->sec) . '&';
+        } else {
+            $raw .= 'mid=36138&';
         }
         $skulist = array();
         $namelist = array();
@@ -298,7 +338,7 @@ class Affiliate extends Base {
             $skulist[] = $itemInfo->sku_details->{$item->size};
             $namelist[] = urlencode($itemInfo->description);
             $qlist[] =  $item->quantity;
-            $amtlist[] = ($trans_type == 'cancel') ? (-$item->sale_retail * $item->quantity)*100 : ($item->sale_retail * $item->quantity)*100 ;
+            $amtlist[] = ($trans_type == 'cancel') ? (-round($item->sale_retail,2) * $item->quantity)*100 : (round($item->sale_retail,2) * $item->quantity)*100 ;
         }
          if($order->promo_code){
             $raw .= 'skulist=' . implode('|', $skulist) . '|Discount&';
@@ -318,8 +358,8 @@ class Affiliate extends Base {
 
     /**
     * This function sends order transactions to linkshare.
-    * @PARAM $data is the information that needs to be passes
-    * @RETURN True or False
+    * @params $data is the information that needs to be passes
+    * @return True or False
     **/
 	public static function transaction($data, $affiliate, $orderid, $trans_type = 'new') {
         static::meta('source','affiliate.log');
@@ -356,9 +396,11 @@ class Affiliate extends Base {
 		$success = false;
 		if (preg_match('@^(linkshare)@i', $affiliate)){
 			$user = User::collection();
-			$user->find(array( '_id' => $userId));
-			$affiliate_share = array('affiliate' => $affiliate , 'landing_time' => $cookie['entryTime']);
-			$success = ($user->update(array( '_id' => $userId), array('$set' => array('affiliate_share' => $affiliate_share)))) ? true : false;
+			$user->find(array( '_id' => $userId),
+                    array('fields' => array('affiliate_share' => true))
+                    );
+                $affiliate_share = array('affiliate' => $affiliate , 'landing_time' => $cookie['entryTime']);
+                $success = ($user->update(array( '_id' => $userId), array('$set' => array('affiliate_share' => $affiliate_share)))) ? true : false;
 		}
 		return $success;
 	}

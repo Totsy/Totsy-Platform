@@ -8,6 +8,7 @@ use \lithium\storage\session\adapter\Cookie;
 use \MongoDate;
 use \MongoId;
 use \lithium\util\Validator;
+use li3_facebook\extension\FacebookProxy;
 
 /**
  * The User Model is a direct link to the MongoDb users collection.
@@ -124,15 +125,26 @@ class User extends Base {
 	}
 
 	/**
-	 * The lookup method takes the email address to search and finds
-	 * the user by that address.
+	 * The lookup method takes the email address or id to search and finds
+	 * the matching user.
 	 *
-	 * @param string $email
+	 * @param string $searchby - email or id
 	 */
-	public static function lookup($email) {
+	public static function lookup($searchBy) {
 		$user = null;
-		$email = strtolower($email);
-		$result = static::collection()->findOne(array('email' => $email));
+
+		 Validator::add('mongoId', function($value) {
+			return (strlen($value) >=10) ? true : false;
+		});
+		if (Validator::isEmail($searchBy)) {
+		    $searchBy = strtolower($searchBy);
+			 $condition = array('email' => $searchBy);
+		} else if (Validator::isMongoId($searchBy)) {
+			$condition = array('_id' => new MongoId($searchBy));
+		} else {
+			$condition = array('_id' => $searchBy);
+		}
+		$result = static::collection()->findOne($condition);
 		if ($result) {
 			$user = User::create($result);
 		}
@@ -156,6 +168,12 @@ class User extends Base {
 		return $user->save(null,array('validate' => false));
 	}
 
+	/**
+	 * The method is in charge of setting up the site cookie if it does not
+	 * already exists
+	 * @param (boolean) $rememberme
+	 * @see app/controllers/UserController::login()
+	 */
 	public static function rememberMeWrite($rememberme) {
 	    if( (boolean)$rememberme && Session::check('cookieCrumb', array('name' => 'cookie'))) {
             $rememberHash = static::generateToken() . static::randomString();
@@ -181,10 +199,15 @@ class User extends Base {
             Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
         }
 	}
+	/**
+	 * The method is in charge of setting up the site cookie if it does not
+	 * already exists
+	 * @see app/controllers/BaseController::_init()
+	 */
 	public static function setupCookie() {
 		$cookieInfo = null;
 		$urlredirect = ((array_key_exists('redirect',$_REQUEST))) ? $_REQUEST['redirect'] : null ;
-		if ( preg_match('(/|/a/|/login|/register|/join/|/invitation/)', $_SERVER['REQUEST_URI']) ) {
+		if ( preg_match('(#|/a/|/login|/register|/join/|/invitation/#)', $_SERVER['REQUEST_URI']) ) {
 			if(!Session::check('cookieCrumb', array('name' => 'cookie')) ) {
 				$cookieInfo = array(
 						'user_id' => Session::read('_id'),
@@ -196,16 +219,15 @@ class User extends Base {
 			}else{
 				$cookieInfo = Session::read('cookieCrumb', array('name' => 'cookie'));
 				$cookieInfo['redirect'] = $urlredirect;
-				$cookieInfo['entryTime'] = strtotime('now');
 				Session::write('cookieCrumb', $cookieInfo ,array('name' => 'cookie'));
 			}
 		}
 	}
-	
+
 	/**
 	 * method to validate some contact us form fields
 	 * In case of no error return boolean true
-	 * Otherwise return errors array 
+	 * Otherwise return errors array
 	 */
 	public static function validateContactUs(array $data){
 		$rules = array(
@@ -216,11 +238,113 @@ class User extends Base {
 		);
 		$result = array();
 		$result = Validator::check($data, $rules);
-		
+
 		if (is_array($result) && count($result)==0){
 			return true;
-		} else { 
+		} else {
 			return $result;
+		}
+	}
+
+	/**
+	* The method retrieves a user's invitation_code by _id
+	* @param $_id : the user's id
+	* @return $invite_code user's invitation code or null
+	* @see app/controllers/AffiliatesController::registration()
+	**/
+	public static function retrieveInvitationCode($_id = null) {
+	    if (is_null($_id)) return null;
+	    Validator::add('mongoId', function($value) {
+			return (strlen($value) >=10) ? true : false;
+		});
+		if (Validator::isMongoId($_id)) {
+			$condition = array('_id' => new MongoId($_id));
+		} else {
+			$condition = array('_id' => $_id);
+		}
+	    $invite_code = User::find('first', array('conditions' => $condition,
+	        'fields' => array('invitation_codes' => 1)
+	    ));
+	   $invite_code = $invite_code['invitation_codes'][0];
+	    return $invite_code;
+	}
+	/**
+	* Check if we have access to user's facebook info
+	* @param (string) $fbid
+	* @return array of fb information otherwise null
+	**/
+	public static function fbAccessCheck($fbid) {
+        try {
+            $accessToken = FacebookProxy::getAccessToken();
+            $facebk_id = $fbid;
+            $authCheck = FacebookProxy::api("/$facebk_id?access_token=$accessToken");
+            $connected = (!empty($authCheck['email'])) ? true : false;
+        } catch (\Exception $e) {
+            $authCheck = array();
+            $connected = false;
+        }
+        return $authCheck;
+	}
+
+	/**
+	* Check if fb account is already linked to user's Totsy account
+	* @param $fbid user facebook id
+	* @return boolean
+	**/
+	public static function fbTotsyLinkCheck($fbid) {
+	    $connected = true;
+	    try {
+            $check = User::find('first', array(
+                'conditions' => array(
+                        'facebook_info.id' => $fbid
+            )));
+        } catch (\Exception $e) {
+            $connected = false;
+        }
+        return $connected;
+	}
+
+	/**
+	* Links up a user's totsy account with their fb account
+	* @param $searchby user Totsy id or email
+	* @param $fbinfo user fb info
+	* @return boolean
+	* @see app/models/User::lookup()
+	**/
+	public static function fbTotsyLinkUp($searchby = null, $fbinfo) {
+	    $user = static::lookup($searchby);
+	    $success = false;
+	    if ($user && $fbinfo) {
+	        $user->facebook_info = $fbinfo;
+	        $success = $user->save(null, array('validate' => false));
+		}
+
+		return $success;
+	}
+	public static function cleanSession() {
+		if(Session::check('userSavings')) {
+			Session::delete('userSavings');
+		}
+		if(Session::check('promocode')) {
+			Session::delete('promocode');
+		}
+		if(Session::check('credit')) {
+			Session::delete('credit');
+		}
+		if(Session::check('services')) {
+			Session::delete('services');
+		}
+		if(Session::check('cc_infos')) {
+			Session::delete('cc_infos');
+		}
+		if(Session::check('cc_error')) {
+			Session::delete('cc_error');
+		}
+		if(Session::check('shipping')) {
+			Session::delete('shipping');
+		}
+		if(Session::check('billing')) {
+			Session::delete('billing');
 		}
 	}
 }
