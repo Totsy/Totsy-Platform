@@ -37,6 +37,10 @@ class UsersControllerTest extends \lithium\test\Unit {
 
 	public function testRegistration() {
 		$post = array_intersect_key($this->load('user1')->data(), array_fill_keys(array('firstname', 'lastname', 'email', 'confirmemail', 'password', 'terms', 'emailcheck'), null));
+
+		/* Ensure we're always able to insert this record. */
+		$post['confirmemail'] = $post['email'] = uniqid('user1') . '@example.com';
+
 		$request = new Request(array(
 			'data'=> $post,
 			'params' => array('controller' => 'users', 'action' => 'register')
