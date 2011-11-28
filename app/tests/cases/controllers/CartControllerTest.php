@@ -41,6 +41,27 @@ class CartControllerTest extends \lithium\test\Unit {
 		} while ($next = $cfixture->next());
 	}
 
+	public function tearDown() {
+		$efixture = Fixture::load('Event');
+		$ifixture = Fixture::load('Item');
+		$cfixture = Fixture::load('Cart');
+
+		$event = $efixture->first();
+		do {
+			Event::remove( array('_id' => $event['_id'] ) );
+		} while ($event = $efixture->next());
+
+		$item = $ifixture->first();
+		do {
+			Item::remove( array( '_id' => $item['_id'] ) );
+		} while ($item = $ifixture->next());
+
+		$cart = $cfixture->first();
+		do {
+			Cart::remove( array('_id' => $cart['_id'] ) );
+		} while ($cart = $cfixture->next());
+	}
+
 	/*
 	* Testing the Update method from the CartController
 	*/
@@ -108,28 +129,6 @@ class CartControllerTest extends \lithium\test\Unit {
 		//Test result
 		$this->assertEqual(0, $result["cartcount"] );
 		Cart::remove(array('_id' => $cart_id ));
-	}
-
-	public function tearDown() {
-
-		$efixture = Fixture::load('Event');
-		$ifixture = Fixture::load('Item');
-		$cfixture = Fixture::load('Cart');
-
-		$event = $efixture->first();
-		do {
-			Event::remove( array('_id' => $event['_id'] ) );
-		} while ($event = $efixture->next());
-
-		$item = $ifixture->first();
-		do {
-			Item::remove( array( '_id' => $item['_id'] ) );
-		} while ($item = $ifixture->next());
-
-		$cart = $cfixture->first();
-		do {
-			Cart::remove( array('_id' => $cart['_id'] ) );
-		} while ($cart = $cfixture->next());
 	}
 }
 
