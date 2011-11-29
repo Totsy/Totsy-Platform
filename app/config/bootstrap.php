@@ -75,8 +75,6 @@ require __DIR__ . '/bootstrap/g11n.php';
  */
 // require __DIR__ . '/bootstrap/console.php';
 
-require __DIR__ . '/bootstrap/payments.php';
-
 require __DIR__ . '/bootstrap/avatax.php';
 
 /**
