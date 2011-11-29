@@ -73,7 +73,7 @@ class UsersControllerTest extends \lithium\test\Unit {
 		$user->save(null, array('validate' => false));
 		$request = new Request(array(
 			'data' => array('email' => $user->email, 'password' => 'testpw', 'remember_me' => false),
-			'params' => array('controller' => 'users', 'action' => 'login')
+			'params' => array('controller' => 'users', 'action' => 'login'), 'url' => 'test_url'
 		));
 		$controller = new MockUsersController(compact('request'));
 		$return = $controller->login();
@@ -82,7 +82,7 @@ class UsersControllerTest extends \lithium\test\Unit {
 		$result = $return;
 		$this->assertEqual($expected, $result);
 
-		$expected = array('/sales');
+		$expected = array('test_url');
 		$result = $controller->redirect;
 		$this->assertEqual($expected, $result);
 
