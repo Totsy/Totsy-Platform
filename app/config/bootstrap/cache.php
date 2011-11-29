@@ -15,6 +15,10 @@ use lithium\core\Libraries;
 use lithium\action\Dispatcher;
 use lithium\storage\cache\adapter\XCache;
 
+if (PHP_SAPI === 'cli') {
+	return;
+}
+
 /**
  * If xcache is not available, bail out.
  */
@@ -28,17 +32,23 @@ Cache::config(array(
 	)
 ));
 
+/**
+ * Caches paths for auto-loaded and service-located classes.
+ */
 Dispatcher::applyFilter('run', function($self, $params, $chain) {
-	$key = md5(LITHIUM_APP_PATH);
+	if (!Environment::get('production')) {
+		return $chain->next($self, $params, $chain);
+	}
+	$key = md5(LITHIUM_APP_PATH) . '.core.libraries';
 
-	if ($cache = Cache::read('default', "{$key}.core.libraries")) {
-		$cache = (array) array_merge($cache + Libraries::cache());
+	if ($cache = Cache::read('default', $key)) {
+		$cache = (array) $cache + Libraries::cache();
 		Libraries::cache($cache);
 	}
 	$result = $chain->next($self, $params, $chain);
 
 	if ($cache != Libraries::cache()) {
-		Cache::write('default', "{$key}.core.libraries", Libraries::cache(), '+1 day');
+		Cache::write('default', $key, Libraries::cache(), '+1 day');
 	}
 	return $result;
 });
