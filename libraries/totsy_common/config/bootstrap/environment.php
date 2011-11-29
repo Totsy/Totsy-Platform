@@ -8,6 +8,8 @@ use lithium\core\Environment;
 Environment::is(function($request) {
 	switch ($request->env('HTTP_HOST')) {
 		case 'totsy.com':
+		case 'admin.totsy.com':
+		case 'totsy.com':
 		case 'www.totsy.com':
 		case 'totsystaging.com':
 		case 'www.totsystaging.com':
@@ -31,5 +33,16 @@ Environment::is(function($request) {
 			return 'local';
 	}
 });
+
+/**
+ * Setup testing environment variables. `browser*` settings are used within *
+ * selenium tests. Please note that `*chrome` will select Firefox as a browser
+ * not as one would expect Google Chrome.
+ */
+Environment::set('test', array(
+	'browser' => '*chrome',
+	'browserUrl' => 'http://totsy'
+));
+
 
 ?>

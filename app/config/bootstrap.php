@@ -32,22 +32,6 @@
 require __DIR__ . '/bootstrap/libraries.php';
 
 /**
- * Sets up environment detection.
- */
-require __DIR__ . '/bootstrap/environment.php';
-
-/**
- * Setup testing environment variables. `browser*` settings are used within *
- * selenium tests. Please note that `*chrome` will select Firefox as a browser
- * not as one would expect Google Chrome.
- */
-Environment::set('test', array(
-	'browser' => '*chrome',
-	'browserUrl' => 'http://totsy'
-));
-
-
-/**
  * Include this file if your application uses a database connection.
  */
 require __DIR__ . '/bootstrap/connections.php';

@@ -40,24 +40,6 @@ if (!include LITHIUM_APP_PATH . '/libraries/lithium/core/Libraries.php') {
  */
 require __DIR__ . '/bootstrap/libraries.php';
 
-use lithium\core\Environment;
-
-Environment::is(function($request) {
-	switch ($request->env('HTTP_HOST')) {
-		case 'www.totsy.com':
-		case 'totsy.com':
-		case 'admin.totsy.com':
-		case '50.56.49.10':
-			return 'production';
-		case 'testadmin.totsy.com':
-			return 'test';
-		case 'devadmin.totsy.com':
-			return 'development';
-		default:
-			return 'local';
-	}
-});
-
 /**
  * Include this file if your application uses a database connection.
  */
