@@ -70,14 +70,11 @@ require __DIR__ . '/bootstrap/g11n.php';
 // require __DIR__ . '/bootstrap/console.php';
 
 /**
-<<<<<<< feature/upgrade-pre
  * This file configures the analysis behavior which includes Logging.
  */
 require __DIR__ . '/bootstrap/analysis.php';
 
 /**
-=======
->>>>>>> HEAD~162
  * Auth and action protection filters.
  */
 require __DIR__ . '/bootstrap/auth.php';

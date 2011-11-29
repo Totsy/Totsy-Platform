@@ -19,6 +19,11 @@ require __DIR__ . '/bootstrap/cache.php';
 require __DIR__ . '/bootstrap/action.php';
 
 /**
+ * This file configures the analysis behavior which includes Logging.
+ */
+require __DIR__ . '/bootstrap/analysis.php';
+
+/**
  * This file contains configurations for handling different content types within the framework,
  * including converting data to and from different formats, and handling static media assets.
  */
