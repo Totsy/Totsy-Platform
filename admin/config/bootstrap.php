@@ -69,12 +69,6 @@ require __DIR__ . '/connections.php';
 require __DIR__ . '/bootstrap/error.php';
 
 /**
- * This file contains configurations for connecting to external caching resources, as well as
- * default caching rules for various systems within your application
- */
-require __DIR__ . '/bootstrap/cache.php';
-
-/**
  * This file contains your application's globalization rules, including inflections,
  * transliterations, localized validation, and how localized text should be loaded. Uncomment this
  * line if you plan to globalize your site.
