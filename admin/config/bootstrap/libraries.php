@@ -52,10 +52,10 @@ Libraries::add('li3_flash_message');
  */
 Libraries::add('admin', array('default' => true));
 
+Libraries::add('li3_payments');
 Libraries::add('totsy_common');
 Libraries::add('li3_fixtures');
 Libraries::add('li3_docs');
-Libraries::add('li3_payments');
 Libraries::add('PEAR', array(
 	'prefix' => false,
 	'includePath' => true,
