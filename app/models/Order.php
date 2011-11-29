@@ -161,6 +161,19 @@ class Order extends Base {
 
 			$cart = Cart::active();
 			#Save Order Infos
+			
+			$shipDate = Cart::shipDate($cart);
+			if($shipDate=="On or before 12/23"){
+				$shipDateInsert = strtotime("2011-12-23".' +1 day');
+			}
+			elseif($shipDate=="See delivery alert below"){
+				$shipDateInsert = Cart::shipDate($cart, true);
+			}
+			else{
+				$shipDateInsert = $shipDate;
+			}
+			
+			
 			$order->save(array(
 					'total' => $vars['total'],
 					'subTotal' => $vars['subTotal'],
@@ -179,7 +192,7 @@ class Order extends Base {
 					'shippingMethod' => $shippingMethod,
 					'items' => $items,
 					'avatax' => $avatax,
-					'ship_date' => new MongoDate(Cart::shipDate($cart)),
+					'ship_date' => new MongoDate($shipDateInsert),
 					'savings' => $savings
 			));
 			Cart::remove(array('session' => Session::key('default')));
