@@ -58,13 +58,6 @@ require __DIR__ . '/bootstrap/connections.php';
 require __DIR__ . '/bootstrap/errors.php';
 
 /**
- * This file contains your application's globalization rules, including inflections,
- * transliterations, localized validation, and how localized text should be loaded. Uncomment this
- * line if you plan to globalize your site.
- */
-require __DIR__ . '/bootstrap/g11n.php';
-
-/**
  * This file configures console filters and settings, specifically output behavior and coloring.
  */
 // require __DIR__ . '/bootstrap/console.php';
