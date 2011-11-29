@@ -52,9 +52,7 @@ Libraries::add('li3_flash_message');
  */
 Libraries::add('admin', array('default' => true));
 
-/**
- * Add some plugins
- */
+Libraries::add('totsy_common');
 Libraries::add('li3_fixtures');
 Libraries::add('li3_docs');
 Libraries::add('li3_payments');

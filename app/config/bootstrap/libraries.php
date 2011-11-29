@@ -86,9 +86,7 @@ Libraries::add('lithium');
  */
 Libraries::add('app', array('default' => true));
 
-/**
- * Add some plugins
- */
+Libraries::add('totsy_common');
 Libraries::add('li3_docs');
 Libraries::add('li3_payments');
 Libraries::add('PEAR', array(
