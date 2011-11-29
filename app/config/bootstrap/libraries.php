@@ -86,9 +86,9 @@ Libraries::add('lithium');
  */
 Libraries::add('app', array('default' => true));
 
+Libraries::add('li3_payments');
 Libraries::add('totsy_common');
 Libraries::add('li3_docs');
-Libraries::add('li3_payments');
 Libraries::add('li3_fixtures');
 Libraries::add('li3_facebook', array(
 	'appId' => '130085027045086',
