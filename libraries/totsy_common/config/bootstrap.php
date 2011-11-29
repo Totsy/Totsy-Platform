@@ -18,6 +18,8 @@ require __DIR__ . '/bootstrap/action.php';
  */
 // require __DIR__ . '/bootstrap/media.php';
 
+require __DIR__ . '/bootstrap/payments.php';
+
 require __DIR__ . '/bootstrap/mail.php';
 
 ?>
