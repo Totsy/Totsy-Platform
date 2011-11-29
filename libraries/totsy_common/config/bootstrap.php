@@ -6,6 +6,11 @@
 require __DIR__ . '/bootstrap/error.php';
 
 /**
+ * This file configures console filters and settings, specifically output behavior and coloring.
+ */
+// require __DIR__ . '/bootstrap/console.php';
+
+/**
  * This file contains your application's globalization rules, including inflections,
  * transliterations, localized validation, and how localized text should be loaded. Uncomment this
  * line if you plan to globalize your site.
