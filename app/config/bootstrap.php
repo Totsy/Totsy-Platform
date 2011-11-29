@@ -67,7 +67,7 @@ Environment::is(function($request) {
 /**
  * Include this file if your application uses a database connection.
  */
-require __DIR__ . '/connections.php';
+require __DIR__ . '/bootstrap/connections.php';
 
 
 /**
