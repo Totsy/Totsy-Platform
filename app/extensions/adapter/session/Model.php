@@ -230,7 +230,7 @@ class Model extends \lithium\core\Object {
      * @return mixed Value corresponding to key if set, null otherwise.
      */
     public function _read($key = null) {
-        if (!$this->_data || !is_object($this->_data)) {
+        if (!isset($this->_data) || !$this->_data || !is_object($this->_data)) {
             return null;
         }
         if ($key === null) {
