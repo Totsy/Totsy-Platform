@@ -94,20 +94,9 @@ require __DIR__ . '/bootstrap/analysis.php';
 require __DIR__ . '/bootstrap/auth.php';
 
 /**
- * This configures your session storage. The Cookie storage adapter must be connected first, since
- * it intercepts any writes where the `'expires'` key is set in the options array.
+ * This file contains configuration for session (and/or cookie) storage, and user or web service
+ * authentication.
  */
-use lithium\storage\Session;
-
-Session::config(array(
-	'default' => array(
-		'adapter' => 'app\extensions\adapter\session\Model',
-		'model' => 'MongoSession'
-	),
-	'cookie' => array(
-		'adapter' => 'Cookie',
-		'expire' => '+30 days'
-	)
-));
+require __DIR__ . '/bootstrap/session.php';
 
 ?>
