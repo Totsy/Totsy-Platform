@@ -13,30 +13,30 @@ class UsersControllerTest extends \lithium\test\Unit {
 		$this->users = Fixture::load('User')->map(function ($fixture) {
 			return User::create($fixture);
 		});
-		$this->saveSession();
+		$this->_saveSession();
 	}
 
 	public function tearDown() {
-		$this->restoreSession();
+		$this->_restoreSession();
 	}
 
-	protected function saveSession() {
+	protected function _saveSession() {
 		$this->sessionSave = Session::read('userLogin');
 	}
 
-	protected function restoreSession() {
+	protected function _restoreSession() {
 		Session::write('userLogin', $this->sessionSave);
 	}
 
-	protected function load($short) {
+	protected function _load($short) {
 		if (is_array($short)) {
-			return array_map(array($this, 'load'), $short);
+			return array_map(array($this, '_load'), $short);
 		}
 		return $this->users[$short];
 	}
 
 	public function testRegistration() {
-		$post = array_intersect_key($this->load('user1')->data(), array_fill_keys(array('firstname', 'lastname', 'email', 'confirmemail', 'password', 'terms', 'emailcheck'), null));
+		$post = array_intersect_key($this->_load('user1')->data(), array_fill_keys(array('firstname', 'lastname', 'email', 'confirmemail', 'password', 'terms', 'emailcheck'), null));
 
 		/* Ensure we're always able to insert this record. */
 		$post['confirmemail'] = $post['email'] = uniqid('user1') . '@example.com';
@@ -47,13 +47,29 @@ class UsersControllerTest extends \lithium\test\Unit {
 		));
 		$testcode = 'testaffiliate';
 		$controller = new MockUsersController(compact('request'));
-		$result = $controller->register($testcode);
-		$this->assertEqual('redirect', $result, $result);
-		$this->assertEqual(array('/sales'), $controller->redirect);
+		$return = $controller->register($testcode);
 		$mailer = $controller->mailer();
-		$this->assertEqual(array(array('Welcome_Free_Shipping', $post['email'])), $mailer::$sent);
-		$this->assertEqual(array(array($post['email'])), $mailer::$mailing_list);
-		$this->assertEqual(array(array($post['email'])), $mailer::$suppression_list);
+
+		$expected = 'redirect';
+		$result = $return;
+		$this->assertEqual($expected, $result);
+
+		$expected = array('/sales');
+		$result = $controller->redirect;
+		$this->assertEqual($expected, $result);
+
+		$expected = array(array('Welcome_Free_Shipping', $post['email']));
+		$result = $mailer::$sent;
+		$this->assertEqual($expected, $result);
+
+		$expected = array(array($post['email']));
+		$result = $mailer::$mailing_list;
+		$this->assertEqual($expected, $result);
+
+		$expected = array(array($post['email']));
+		$result = $mailer::$suppression_list;
+		$this->assertEqual($expected, $result);
+
 		$user = Session::read('userLogin');
 		if ($result == 'redirect') {
 			User::remove(array("_id" => $user['_id']));
@@ -61,7 +77,7 @@ class UsersControllerTest extends \lithium\test\Unit {
 	}
 
 	public function testLogin() {
-		$user = $this->load('user1');
+		$user = $this->_load('user1');
 		$user->password = sha1('testpw');
 		$user->save();
 		$request = new Request(array(
@@ -69,80 +85,165 @@ class UsersControllerTest extends \lithium\test\Unit {
 			'params' => array('controller' => 'users', 'action' => 'login')
 		));
 		$controller = new MockUsersController(compact('request'));
-		$result = $controller->login();
-		$this->assertEqual('redirect', $result, $result);
-		$this->assertEqual(array('/sales'), $controller->redirect);
+		$return = $controller->login();
+
+		$expected = 'redirect';
+		$result = $return;
+		$this->assertEqual($expected, $result);
+
+		$expected = array('/sales');
+		$result = $controller->redirect;
+		$this->assertEqual($expected, $result);
+
 		$user->delete();
 	}
 
 	public function testLogout() {
 		$request = new Request(array('params' => array('controller' => 'users', 'action' => 'logout')));
 		$controller = new MockUsersController(compact('request'));
-		$result = $controller->logout();
-		$this->assertEqual('redirect', $result, $result);
-		$this->assertEqual(array(array('action' => 'login')), $controller->redirect);
+		$return = $controller->logout();
+
+		$expected = 'redirect';
+		$result = $return;
+		$this->assertEqual($expected, $result);
+
+		$expected = array(array('action' => 'login'));
+		$result = $controller->redirect;
+		$this->assertEqual($expected, $result);
 	}
 
 	public function testInfo() {
 		$request = new Request(array('params' => array('controller' => 'users', 'action' => 'info')));
 		$controller = new MockUsersController(compact('request'));
-		$result = $controller->info();
-		$this->assertTrue(is_array($result), $result);
-		$this->assertTrue(isset($result['user']) && isset($result['status']) && isset($result['status']), $result);
-		$this->assertTrue($result['user'] !== null);
-		$this->assertEqual('default', $result['status']);
-		$this->assertEqual(false, $result['connected']);
+		$return = $controller->info();
+
+		$result = is_array($return);
+		$message = $return;
+		$this->assertTrue($result, $message);
+
+		$result = isset($return['user']) && isset($return['status']) && isset($return['status']);
+		$message = $return;
+		$this->assertTrue($result, $message);
+
+		$result = is_null($return['user']);
+		$this->assertFalse($result);
+
+		$expected = 'default';
+		$result = $return['status'];
+		$this->assertEqual($expected, $result);
+
+		$result = $return['connected'];
+		$this->assertFalse($result);
 	}
 
 	public function testReset() {
-		$user = $this->load('user1');
+		$user = $this->_load('user1');
 		$user->save();
 		$request = new Request(array('data' => array('email' => $user->email), 'params' => array('controller' => 'users', 'action' => 'info')));
 		$controller = new MockUsersController(compact('request'));
-		$result = $controller->reset();
-		$this->assertTrue(is_array($result), $result);
-		$this->assertTrue(isset($result['message']) && isset($result['success']), $result);
-		$this->assertEqual('Your password has been reset. Please check your email.', $result['message']);
-		$this->assertEqual(true, $result['success']);
+		$return = $controller->reset();
 		$mailer = $controller->mailer();
-		$this->assertEqual(1, count($mailer::$sent));
-		list($subject, $address, $token) = $mailer::$sent[0];
+		list($subject, $address, $token) = isset($mailer::$sent[0]) ? $mailer::$sent[0] : array(null, null, null);
 		$updated = User::find($user->_id);
-		$this->assertEqual('Reset_Password', $subject);
-		$this->assertEqual($user->email, $address);
-		$this->assertEqual($updated->clear_token, $token['token']);
+
+		$result = is_array($return);
+		$message = $return;
+		$this->assertTrue($result, $message);
+
+		$result = isset($return['message']) && isset($return['success']);
+		$message = $return;
+		$this->assertTrue($result, $message);
+
+		$expected = 'Your password has been reset. Please check your email.';
+		$result = $return['message'];
+		$this->assertEqual($expected, $result);
+
+		$result = $return['success'];
+		$this->assertTrue($result);
+
+		$expected = 1;
+		$result = count($mailer::$sent);
+		$this->assertEqual($expected, $result);
+
+		$expected = 'Reset_Password';
+		$result = $subject;
+		$this->assertEqual($expected, $result);
+
+		$expected = $user->email;
+		$result = $address;
+		$this->assertEqual($expected, $result);
+
+		$expected = $updated->clear_token;
+		$result = $token['token'];
+		$this->assertEqual($expected, $result);
+
 		$user->delete();
 	}
 
 	public function testResetInvalidEmail() {
 		$request = new Request(array('data' => array('email' => 'invalid'), 'params' => array('controller' => 'users', 'action' => 'info')));
 		$controller = new MockUsersController(compact('request'));
-		$result = $controller->reset();
-		$this->assertTrue(is_array($result), $result);
-		$this->assertTrue(isset($result['message']) && isset($result['success']), $result);
-		$this->assertEqual("This email doesn't exist.", $result['message']);
-		$this->assertEqual(false, $result['success']);
+		$return = $controller->reset();
+
+		$result = is_array($return);
+		$message = $return;
+		$this->assertTrue($result, $message);
+
+		$result = isset($return['message']) && isset($return['success']);
+		$message = $return;
+		$this->assertTrue($result, $message);
+
+		$expected = "This email doesn't exist.";
+		$result = $return['message'];
+		$this->assertEqual($expected, $result);
+
+		$result = $return['success'];
+		$this->assertFalse($result);
 	}
 
 	public function testInvite() {
 		$request = new Request(array('data' => array('to' => 'test_address', 'message' => 'test message'), 'params' => array('controller' => 'users', 'action' => 'invite')));
 		$controller = new MockUsersController(compact('request'));
-		$result = $controller->invite();
-		$this->assertTrue(is_array($result), $result);
-		$this->assertTrue(isset($result['flashMessage']) && isset($result['open']), $result);
-		$this->assertEqual('Your invitations have been sent', $result['flashMessage']);
+		$return = $controller->invite();
 		$mailer = $controller->mailer();
-		$this->assertEqual(1, count($mailer::$sent));
 		list($subject, $address,) = $mailer::$sent[0];
-		$this->assertEqual('Friend_Invite', $subject);
-		$this->assertEqual('test_address', $address);
-		$this->assertEqual(1, $result['open']->count());
-		$result['open'][0]->delete();
+
+		$result = is_array($return);
+		$message = $return;
+		$this->assertTrue($result, $message);
+
+		$result = isset($return['flashMessage']) && isset($return['open']);
+		$message = $return;
+		$this->assertTrue($result, $message);
+
+		$expected = 'Your invitations have been sent';
+		$result = $return['flashMessage'];
+		$this->assertEqual($expected, $result);
+
+		$expected = 1;
+		$result = count($mailer::$sent);
+		$this->assertEqual($expected, $result);
+
+		$expected = 'Friend_Invite';
+		$result = $subject;
+		$this->assertEqual($expected, $result);
+
+		$expected = 'test_address';
+		$result = $address;
+		$this->assertEqual($expected, $result);
+
+		$expected = 1;
+		$result = $return['open']->count();
+		$this->assertEqual($expected, $result);
+
+		if (isset($return['open'][0])) {
+			$return['open'][0]->delete();
+		}
 	}
 
-	protected function checkPassword($block, array $options = array()) {
+	protected function _checkPassword($block, array $options = array()) {
 		$options += array('user' => 'user1', 'password' => null, 'new_password' => 'new_test_pass', 'new_password_confirm' => null);
-		$user = $this->load($options['user']);
+		$user = $this->_load($options['user']);
 		$plain_password = $user->password;
 		$user->password = sha1($plain_password);
 		$user->save();
@@ -155,47 +256,86 @@ class UsersControllerTest extends \lithium\test\Unit {
 			'params' => array('controller' => 'users', 'action' => 'invite'))
 		);
 		$controller = new MockUsersController(compact('request'));
-		$result = $controller->password();
+		$return = $controller->password();
 		$self = $this;
-		$block(compact('user', 'request', 'controller', 'result', 'self'));
+		$block(compact('user', 'request', 'controller', 'return', 'self'));
 		$user->delete();
 	}
 
 	public function testPassword() {
-		$this->checkPassword(function ($params) {
+		$this->_checkPassword(function ($params) {
 			extract($params);
-			$self->assertTrue(is_array($result), $result);
-			$self->assertTrue(isset($result['status']), $result);
-			$self->assertEqual('true', $result['status']);
 			$updated = User::find($user->_id);
-			$self->assertEqual(sha1('new_test_pass'), $updated->password);
+
+			$result = is_array($return);
+			$message = $return;
+			$self->assertTrue($result, $message);
+
+			$result = isset($return['status']);
+			$message = $return;
+			$self->assertTrue($result, $message);
+
+			$expected = 'true';
+			$result = $return['status'];
+			$self->assertEqual($expected, $result);
+
+			$expected = sha1('new_test_pass');
+			$result = $updated->password;
+			$self->assertEqual($expected, $result);
 		});
 	}
 
 	public function testPasswordWrong() {
-		$this->checkPassword(function ($params) {
+		$this->_checkPassword(function ($params) {
 			extract($params);
-			$self->assertTrue(is_array($result), $result);
-			$self->assertTrue(isset($result['status']), $result);
-			$self->assertEqual('false', $result['status']);
+
+			$result = is_array($return);
+			$message = $return;
+			$self->assertTrue($result, $message);
+
+			$result = isset($return['status']);
+			$message = $return;
+			$self->assertTrue($result, $message);
+
+			$expected = 'false';
+			$result = $return['status'];
+			$self->assertEqual($expected, $result);
 		}, array('password' => 'invalid'));
 	}
 
 	public function testPasswordMismatch() {
-		$this->checkPassword(function ($params) {
+		$this->_checkPassword(function ($params) {
 			extract($params);
-			$self->assertTrue(is_array($result), $result);
-			$self->assertTrue(isset($result['status']), $result);
-			$self->assertEqual('errornewpass', $result['status']);
+
+			$result = is_array($return);
+			$message = $return;
+			$self->assertTrue($result, $message);
+
+			$result = isset($return['status']);
+			$message = $return;
+			$self->assertTrue($result, $message);
+
+			$expected = 'errornewpass';
+			$result = $return['status'];
+			$self->assertEqual($expected, $result);
 		}, array('new_password_confirm' => 'invalid'));
 	}
 
 	public function testPasswordTooShort() {
-		$this->checkPassword(function ($params) {
+		$this->_checkPassword(function ($params) {
 			extract($params);
-			$self->assertTrue(is_array($result), $result);
-			$self->assertTrue(isset($result['status']), $result);
-			$self->assertEqual('shortpass', $result['status']);
+
+			$result = is_array($return);
+			$message = $return;
+			$self->assertTrue($result, $message);
+
+			$result = isset($return['status']);
+			$message = $return;
+			$self->assertTrue($result, $message);
+
+			$expected = 'shortpass';
+			$result = $return['status'];
+			$self->assertEqual($expected, $result);
 		}, array('new_password' => 'short'));
 	}
 }

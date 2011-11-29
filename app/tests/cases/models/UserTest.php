@@ -26,61 +26,88 @@ class UserTest extends \lithium\test\Unit {
 		}
 	}
 
-	protected function assertLoaded($fixtures = null) {
+	protected function _assertLoaded($fixtures = null) {
 		$failed = $fixtures ? array_intersect($this->failed_fixtures, (array) $fixtures) : $this->failed_fixtures;
 		$users = $this->users;
 		$errors = function ($short) use ($users) { return $short . " (" . join(", ", array_keys($users[$short]->errors())) . ")"; };
 		$this->assertTrue(empty($failed), "Some fixtures failed to load: " . join(", ", array_map($errors, $failed)));
 	}
 
-	protected function user($short) {
+	protected function _user($short) {
 		$_id = $this->users[$short] ? $this->users[$short]->_id : null;
 		return $_id ? User::find($this->users[$short]->_id) : null;
 	}
 
-	protected function fakeSession($short) {
+	protected function _fakeSession($short) {
 		$this->sessionSave = Session::read('userLogin');
 		Session::write('userLogin', array('_id' => $this->users[$short]->_id));
 	}
 
-	protected function unfakeSession() {
+	protected function _unfakeSession() {
 		Session::write('userLogin', $this->sessionSave);
 	}
 
 	public function testLookup() {
 		$users = array('user1', 'user2');
-		$this->assertLoaded($users);
-		$this->assertNull(User::lookup('invalid'));
+		$this->_assertLoaded($users);
+
+		$result = User::lookup('invalid');
+		$this->assertNull($result);
+
 		foreach ($users as $short) {
 			$user = $this->users[$short];
 			foreach (array('email', '_id') as $attr) {
-				$result = User::lookup($user->$attr);
-				$this->assertFalse($result === null, "Lookup failed for {$short} - {$attr}");
-				if ($result) {
-					$this->assertEqual($user->_id, $result->_id);
+				$lookup = User::lookup($user->$attr);
+
+				$result = is_null($lookup);
+				$message = "Lookup failed for {$short} - {$attr}";
+				$this->assertFalse($result, $message);
+
+				if ($lookup) {
+					$expected = $user->_id;
+					$result = $lookup->_id;
+					$this->assertEqual($expected, $result);
 				}
 			}
 		}
 	}
 
 	public function testLog() {
-		$this->assertLoaded('user1');
-		$old = $this->user('user1');
-		$this->fakeSession('user1');
-		$this->assertTrue(User::log('1.2.3.4'));
-		$this->unfakeSession();
-		$new = $this->user('user1');
-		$this->assertEqual($old->logincounter + 1, $new->logincounter);
-		$this->assertEqual('1.2.3.4', $new->lastip);
-		$this->assertNotEqual($old->lastlogin, $new->lastlogin);
+		$this->_assertLoaded('user1');
+		$old = $this->_user('user1');
+		$this->_fakeSession('user1');
+
+		$result = User::log('1.2.3.4');
+		$this->assertTrue($result);
+
+		$this->_unfakeSession();
+		$new = $this->_user('user1');
+
+		$expected = $old->logincounter + 1;
+		$result = $new->logincounter;
+		$this->assertEqual($expected, $result);
+
+		$expected = '1.2.3.4';
+		$result = $new->lastip;
+		$this->assertEqual($expected, $result);
+
+		$expected = $old->lastlogin;
+		$result = $new->lastlogin;
+		$this->assertNotEqual($expected, $result);
 	}
 
 	public function testApplyCredit() {
-		$this->assertLoaded('user1');
-		$old = $this->user('user1');
-		$this->assertTrue(User::applyCredit($old->_id, 100));
-		$new = $this->user('user1');
-		$this->assertEqual($old->total_credit + 100, $new->total_credit);
+		$this->_assertLoaded('user1');
+		$old = $this->_user('user1');
+
+		$result = User::applyCredit($old->_id, 100);
+		$this->assertTrue($result);
+
+		$new = $this->_user('user1');
+
+		$expected = $old->total_credit + 100;
+		$result = $new->total_credit;
+		$this->assertEqual($expected, $result);
 	}
 }
 
