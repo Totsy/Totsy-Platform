@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use app\controllers\BaseController;
-use \MongoDate;
+use MongoDate;
 use app\models\Keyade;
 
 /**

@@ -21,7 +21,7 @@ use RuntimeException;
  * For example:
  *
  * {{{
- * use \lithium\storage\Session;
+ * use lithium\storage\Session;
  *
  * Session::config(array(
  *     'default' => array('adapter' => 'Model', 'model' => 'Session')

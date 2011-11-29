@@ -2,12 +2,12 @@
 
 namespace app\models;
 
-use \lithium\data\Connections;
-use \lithium\storage\Session;
-use \lithium\storage\session\adapter\Cookie;
-use \MongoDate;
-use \MongoId;
-use \lithium\util\Validator;
+use lithium\data\Connections;
+use lithium\storage\Session;
+use lithium\storage\session\adapter\Cookie;
+use MongoDate;
+use MongoId;
+use lithium\util\Validator;
 use li3_facebook\extension\FacebookProxy;
 
 /**

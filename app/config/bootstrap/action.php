@@ -17,10 +17,10 @@
  * @see lithium\util\collection\Filters
  */
 
-use \lithium\core\Libraries;
-use \lithium\net\http\Router;
-use \lithium\core\Environment;
-use \lithium\action\Dispatcher;
+use lithium\core\Libraries;
+use lithium\net\http\Router;
+use lithium\core\Environment;
+use lithium\action\Dispatcher;
 
 /**
  * This filter intercepts the `run()` of the `Dispatcher`, and first passes the `'request'`

@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use \lithium\data\Connections;
+use lithium\data\Connections;
 
 
 class File extends \lithium\data\Model {
