@@ -67,12 +67,6 @@ require __DIR__ . '/bootstrap/cache.php';
 require __DIR__ . '/bootstrap/g11n.php';
 
 /**
- * This file contains configurations for handling different content types within the framework,
- * including converting data to and from different formats, and handling static media assets.
- */
-// require __DIR__ . '/bootstrap/media.php';
-
-/**
  * This file configures console filters and settings, specifically output behavior and coloring.
  */
 // require __DIR__ . '/bootstrap/console.php';
