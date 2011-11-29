@@ -244,16 +244,14 @@ class ModelTest extends \lithium\test\Unit {
 		$this->model->_open(null, null);
 		MockSessionModel::unfakeFind();
 
-		$this->model->_write('foo', 'bar');
+		$this->model->_write('id', null);
 
 		$entity = $this->model->data();
 
 		$result = $entity->saved;
 		$this->assertTrue($result);
 
-		$expected = 'foo';
-		// not sure if this is intentional, but Model::_write('foo', 'bar')
-		// actually does an $entity->save(array('_id' => 'foo'))
+		$expected = 'id';
 		$result = $entity->_id;
 		$this->assertEqual($expected, $result);
 	}
