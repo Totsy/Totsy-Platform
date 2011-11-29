@@ -36,8 +36,8 @@ class FormTest extends \lithium\test\Unit {
 			)
 		);
 		$expected = array(
-			'select' => array('name' => 'state'),
-			array('option' => array('value' => '')),
+			'select' => array('name' => 'state', 'id' => 'State'),
+			array('option' => array('value' => '', 'selected' => 'selected')),
 			'Select a state',
 			'/option',
 			array('optgroup' => array('label' => 'United States')),
