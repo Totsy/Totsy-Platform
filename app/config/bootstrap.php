@@ -32,28 +32,9 @@
 require __DIR__ . '/bootstrap/libraries.php';
 
 /**
- * This should go into its own file.
+ * Sets up environment detection.
  */
-
-use lithium\core\Environment;
-
-Environment::is(function($request) {
-	switch ($request->env('HTTP_HOST')) {
-		case 'totsy.com':
-		case 'www.totsy.com':
-		case 'totsystaging.com':
-		case 'www.totsystaging.com':
-		case 'newprod.totsy.com':
-		case '50.56.49.10':
-			return 'production';
-		case 'test.totsy.com':
-			return 'test';
-		case 'dev.totsy.com':
-			return 'development';
-		default:
-			return 'local';
-	}
-});
+require __DIR__ . '/bootstrap/environment.php';
 
 /**
  * Setup testing environment variables. `browser*` settings are used within *
@@ -70,7 +51,6 @@ Environment::set('test', array(
  * Include this file if your application uses a database connection.
  */
 require __DIR__ . '/bootstrap/connections.php';
-
 
 /**
  * Error handling.
