@@ -3,7 +3,7 @@
 /**
  * Error handling.
  */
-require __DIR__ . 'bootstrap/error.php';
+require __DIR__ . '/bootstrap/error.php';
 
 /**
  * This file contains configurations for connecting to external caching resources, as well as
