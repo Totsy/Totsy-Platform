@@ -6,7 +6,7 @@ use app\controllers\BaseController;
 use app\models\Address;
 use app\models\Menu;
 use app\models\User;
-use \lithium\storage\Session;
+use lithium\storage\Session;
 
 class AddressesController extends BaseController {
 

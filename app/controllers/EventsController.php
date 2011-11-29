@@ -7,7 +7,7 @@ use app\models\Event;
 use app\models\Item;
 use app\models\Banner;
 use MongoDate;
-use \lithium\storage\Session;
+use lithium\storage\Session;
 use app\models\Affiliate;
 
 

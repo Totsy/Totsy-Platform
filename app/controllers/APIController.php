@@ -14,8 +14,8 @@ namespace app\controllers;
 use app\extensions\helper\ApiHelper;
 
 use lithium\action\Request;
-use \lithium\data\Connections;
-use \lithium\util\Validator;
+use lithium\data\Connections;
+use lithium\util\Validator;
 use app\models\Api;
 use app\models\Item;
 use app\models\Event;

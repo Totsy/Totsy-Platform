@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use \app\models\Survey;
+use app\models\Survey;
 
 class SurveysController extends \lithium\action\Controller {
 

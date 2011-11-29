@@ -2,9 +2,9 @@
 
 namespace app\models;
 
-use \lithium\data\Connections;
-use \MongoDate;
-use \MongoId;
+use lithium\data\Connections;
+use MongoDate;
+use MongoId;
 
 
 class Keyade extends \lithium\data\Model {
