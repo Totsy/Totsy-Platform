@@ -10,36 +10,27 @@ use li3_fixtures\test\Fixture;
 
 class UsersControllerTest extends \lithium\test\Unit {
 	public function setUp() {
+		$this->sessionConfig = Session::Config();
+		Session::config(array(
+			'default' => array('adapter' => 'app\tests\mocks\storage\session\adapter\MemoryMock'),
+			'cookie' => array('adapter' => 'app\tests\mocks\storage\session\adapter\MemoryMock')
+		));
+
 		$this->users = Fixture::load('User')->map(function ($fixture) {
+			/* Ensure we're always able to insert this record. */
+			$fixture['confirmemail'] = $fixture['email'] = uniqid('user') . '@example.com';
 			return User::create($fixture);
 		});
-		$this->_saveSession();
 	}
 
 	public function tearDown() {
-		$this->_restoreSession();
-	}
-
-	protected function _saveSession() {
-		$this->sessionSave = Session::read('userLogin');
-	}
-
-	protected function _restoreSession() {
-		Session::write('userLogin', $this->sessionSave);
-	}
-
-	protected function _load($short) {
-		if (is_array($short)) {
-			return array_map(array($this, '_load'), $short);
-		}
-		return $this->users[$short];
+		Session::Config($this->sessionConfig);
 	}
 
 	public function testRegistration() {
-		$post = array_intersect_key($this->_load('user1')->data(), array_fill_keys(array('firstname', 'lastname', 'email', 'confirmemail', 'password', 'terms', 'emailcheck'), null));
-
-		/* Ensure we're always able to insert this record. */
-		$post['confirmemail'] = $post['email'] = uniqid('user1') . '@example.com';
+		$original_data = $this->users['user1']->data();
+		$keep_keys = array('firstname', 'lastname', 'email', 'confirmemail', 'password', 'terms', 'emailcheck');
+		$post = array_intersect_key($original_data, array_fill_keys($keep_keys, null));
 
 		$request = new Request(array(
 			'data'=> $post,
@@ -71,15 +62,15 @@ class UsersControllerTest extends \lithium\test\Unit {
 		$this->assertEqual($expected, $result);
 
 		$user = Session::read('userLogin');
-		if ($result == 'redirect') {
+		if (isset($user['_id'])) {
 			User::remove(array("_id" => $user['_id']));
 		}
 	}
 
 	public function testLogin() {
-		$user = $this->_load('user1');
+		$user = $this->users['user1'];
 		$user->password = sha1('testpw');
-		$user->save();
+		$user->save(null, array('validate' => false));
 		$request = new Request(array(
 			'data' => array('email' => $user->email, 'password' => 'testpw', 'remember_me' => false),
 			'params' => array('controller' => 'users', 'action' => 'login')
@@ -113,6 +104,10 @@ class UsersControllerTest extends \lithium\test\Unit {
 	}
 
 	public function testInfo() {
+		$user = $this->users['user1'];
+		$user->save(null, array('validate' => false));
+		Session::write('userLogin', $user->data());
+
 		$request = new Request(array('params' => array('controller' => 'users', 'action' => 'info')));
 		$controller = new MockUsersController(compact('request'));
 		$return = $controller->info();
@@ -134,17 +129,19 @@ class UsersControllerTest extends \lithium\test\Unit {
 
 		$result = $return['connected'];
 		$this->assertFalse($result);
+
+		$user->delete();
 	}
 
 	public function testReset() {
-		$user = $this->_load('user1');
-		$user->save();
+		$user = $this->users['user1'];
+		$user->save(null, array('validate' => false));
 		$request = new Request(array('data' => array('email' => $user->email), 'params' => array('controller' => 'users', 'action' => 'info')));
 		$controller = new MockUsersController(compact('request'));
 		$return = $controller->reset();
 		$mailer = $controller->mailer();
 		list($subject, $address, $token) = isset($mailer::$sent[0]) ? $mailer::$sent[0] : array(null, null, null);
-		$updated = User::find($user->_id);
+		$updated = User::find($user->_id->{'$id'});
 
 		$result = is_array($return);
 		$message = $return;
@@ -202,6 +199,10 @@ class UsersControllerTest extends \lithium\test\Unit {
 	}
 
 	public function testInvite() {
+		$user = $this->users['user1'];
+		$user->save(null, array('validate' => false));
+		Session::write('userLogin', $user->data());
+
 		$request = new Request(array('data' => array('to' => 'test_address', 'message' => 'test message'), 'params' => array('controller' => 'users', 'action' => 'invite')));
 		$controller = new MockUsersController(compact('request'));
 		$return = $controller->invite();
@@ -243,10 +244,10 @@ class UsersControllerTest extends \lithium\test\Unit {
 
 	protected function _checkPassword($block, array $options = array()) {
 		$options += array('user' => 'user1', 'password' => null, 'new_password' => 'new_test_pass', 'new_password_confirm' => null);
-		$user = $this->_load($options['user']);
+		$user = $this->users[$options['user']];
 		$plain_password = $user->password;
 		$user->password = sha1($plain_password);
-		$user->save();
+		$user->save(null, array('validate' => false));
 		Session::write('userLogin', $user);
 		$request = new Request(array(
 			'data' => array(
@@ -265,7 +266,7 @@ class UsersControllerTest extends \lithium\test\Unit {
 	public function testPassword() {
 		$this->_checkPassword(function ($params) {
 			extract($params);
-			$updated = User::find($user->_id);
+			$updated = User::find($user->_id->{'$id'});
 
 			$result = is_array($return);
 			$message = $return;

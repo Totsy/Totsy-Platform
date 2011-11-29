@@ -36,7 +36,7 @@ class BaseControllerTest extends \lithium\test\Unit {
 		}
 		$klass = Libraries::locate('models', $class);
 		$doc = $klass::create($this->fixtures[$class][$short]);
-		$doc->save();
+		$doc->save(null, array('validate' => false));
 		$this->delete[] = $doc;
 		return $doc;
 	}
