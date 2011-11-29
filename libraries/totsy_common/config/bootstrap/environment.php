@@ -8,6 +8,8 @@ use lithium\core\Environment;
 Environment::is(function($request) {
 	switch ($request->env('HTTP_HOST')) {
 		case 'totsy.com':
+		case 'admin.totsy.com':
+		case 'totsy.com':
 		case 'www.totsy.com':
 		case 'totsystaging.com':
 		case 'www.totsystaging.com':

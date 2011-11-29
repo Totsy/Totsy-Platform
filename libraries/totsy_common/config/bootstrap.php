@@ -1,6 +1,12 @@
 <?php
 
 /**
+ * Sets up environment detection.
+ */
+require __DIR__ . '/bootstrap/environment.php';
+
+
+/**
  * Error handling.
  */
 require __DIR__ . '/bootstrap/error.php';

@@ -32,11 +32,6 @@
 require __DIR__ . '/bootstrap/libraries.php';
 
 /**
- * Sets up environment detection.
- */
-require __DIR__ . '/bootstrap/environment.php';
-
-/**
  * Include this file if your application uses a database connection.
  */
 require __DIR__ . '/bootstrap/connections.php';
