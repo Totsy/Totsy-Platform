@@ -69,11 +69,6 @@ require __DIR__ . '/connections.php';
 require __DIR__ . '/bootstrap/error.php';
 
 /**
- * This file configures console filters and settings, specifically output behavior and coloring.
- */
-// require __DIR__ . '/bootstrap/console.php';
-
-/**
  * Auth and action protection filters.
  */
 require __DIR__ . '/bootstrap/auth.php';
