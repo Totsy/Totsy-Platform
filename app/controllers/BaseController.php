@@ -118,7 +118,9 @@ class BaseController extends \lithium\action\Controller {
 		**/
 		$this->set(compact('pixel'));
 
-		$this->_render['layout'] = 'main';
+
+			$this->_render['layout'] = 'main';
+			
 	}
 
 	/**
