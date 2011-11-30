@@ -15,7 +15,7 @@ use lithium\storage\Session;
 Session::config(array(
 	'default' => array(
 		'adapter' => 'app\extensions\adapter\session\Model',
-		'model' => 'MongoSession'
+		'model' => 'totsy_common\models\MongoSession'
 	),
 	'cookie' => array(
 		'adapter' => 'Cookie',

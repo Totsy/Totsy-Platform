@@ -64,11 +64,11 @@ use lithium\storage\Session;
 Session::config(array(
 	'default' => array(
 		'adapter' => 'admin\extensions\adapter\session\Model',
-		'model' => 'MongoSession'
+		'model' => 'totsy_common\models\MongoSession'
 	),
 	'flash_message' => array(
 		'adapter' => 'admin\extensions\adapter\session\Model',
-		'model' => 'MongoSession'
+		'model' => 'totsy_common\models\MongoSession'
 	)
 ));
 
