@@ -93,7 +93,7 @@ Router::connect('/checkout/review', 'Orders::review');
 */
 Router::connect('/login', 'Users::login');
 
-if(!Session::check('userLogin')) {
+if(!Session::check('userLogin')) {		
 	Router::connect('/', 'Users::register');
 	Router::connect('/{:args}', 'Users::register');
 	return;
