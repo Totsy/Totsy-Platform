@@ -17,7 +17,7 @@
 </head>
 
 <?php
-	use admin\models\Menu;
+	use totsy_common\models\Menu;
 
 	$options = array('div' => array('id' => 'main-nav'), 'ul' => array('class' => 'menu main-nav'));
 	$topDoc = Menu::find('all', array('conditions' => array('location' => 'top', 'active' => 'true')));
