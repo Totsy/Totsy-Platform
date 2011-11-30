@@ -5,6 +5,7 @@
         "blurb":"<p>Aliquam cursus scelerisque dui a consectetur. Fusce a sapien quis metus ullamcorper pulvinar eget vel tellus. Vivamus vestibulum condimentum nulla, et vehicula dolor tempus sed. Proin tempus sem justo, vel vulputate erat. Morbi sit amet magna ac leo consequat dignissim.&nbsp;</p>",
         "items":["10004","10005"],
         "created_date": "2011-11-14 17:24:21",
-        "end_date": "2011-11-15 17:24:21"
+        "end_date": "2011-11-15 17:24:21",
+        "url": "event1"
     }
 }

@@ -15,20 +15,22 @@ use li3_fixtures\test\Fixture;
 
 
 class CartControllerTest extends \lithium\test\Unit {
-
 	public $user;
-
 	protected $_backup = array();
-
 	protected $_delete = array();
 
 	public function setUp() {
- 		$efixture = Fixture::load('Event');
+		$efixture = Fixture::load('Event');
 		$ifixture = Fixture::load('Item');
 		$cfixture = Fixture::load('Cart');
 		$next = $efixture->first();
 		do {
 			Event::remove(array('_id' => $next['_id'] ));
+			foreach($next as $key => $value) {
+				if (is_string($value) && preg_match('/_date$/', $key)) {
+					$next[$key] = new MongoDate(strtotime($value));
+				}
+			}
 			$event = Event::create();
 			$event->save($next);
 		} while ($next = $efixture->next());
@@ -96,21 +98,25 @@ class CartControllerTest extends \lithium\test\Unit {
 	}
 
 	public function testAdd() {
-		$data = array(
-			'name' => 'Test Event'
-		);
+		$cart = Cart::find('first', array('conditions' => array('_id' => '200001')));
+		$event = Event::find('first', array('conditions' => array('_id' => '300001')));
+		$item = Item::find('first', array('conditions' => array('_id' => $event->items[0])));
+
+		$this->assertTrue(isset($cart));
+		$this->assertTrue(isset($event));
+		$this->assertTrue(isset($item));
+
+		$data = array_merge(array_diff_key($event->data(), array('_id'=>null)), array(
+			'name' => 'Test Event',
+			'url' => 'test_event'
+		));
 		$event = Event::create($data);
 		$event->save();
 		$this->_delete[] = $event;
 
-		$data = array(
-			'description' => 'Test Item',
-			'sale_whol' => 15,
-			'size' => 'no size',
-			'events' => array(
-				(string) $event->_id
-			)
-		);
+		$data = array_merge(array_diff_key($item->data(), array('_id'=>null)), array(
+			'description' => 'Test Item'
+		));
 		$item = Item::create($data);
 		$item->save();
 		$this->_delete[] = $item;
@@ -120,15 +126,16 @@ class CartControllerTest extends \lithium\test\Unit {
 		);
 		$event->save();
 
-		$data = array(
+		$data = array_merge(array_diff_key($cart->data(), array('_id'=>null, 'quantity'=>null)), array(
 			'item_id' => (string) $item->_id,
 			'session' => Session::key('default'),
 			'expires' => new MongoDate(strtotime('+10min')),
 			'user' => (string) $this->user->_id,
-			'events' => array(
+			'event' => array(
 				(string) $event->_id
 			)
-		);
+		));
+
 		$cart = Cart::create($data);
 		$cart->save();
 		$this->_delete[] = $cart;
