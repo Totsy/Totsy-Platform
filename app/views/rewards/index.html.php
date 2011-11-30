@@ -11,7 +11,7 @@
 			<div id="rewards-enroll-now-button-inner">
 				<a class="button" href="#" style="width: 213px; font-size:16px !important; font-weight:normal">Enroll Now!</a>
 				<div id="rewards-check-balance">
-				Check my balance
+						Check my balance
 				</div>
 			</div>
 		</div>
@@ -38,7 +38,6 @@ Once you enroll, you're ready to start earning points! The more things you do on
 		Get Rewards
 	</span>
 </h1>
-
 <hr />
 <div style="padding-top:20px">
 <div style="float:left">
@@ -166,4 +165,10 @@ Once you enroll, you're ready to start earning points! The more things you do on
 			<!-- dynamic section ends here -->		
 		</table>
 	</div>
+<hr />
+
+</div>
+
+<div class="grid_5">
+<span style="border: medium none !important; height:397; width:270"></span>
 </div>

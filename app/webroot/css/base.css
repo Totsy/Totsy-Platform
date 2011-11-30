@@ -2226,6 +2226,8 @@ span.citem.active-th {
 	margin:20px 0;
 }
 
+/* cart */
+
 .cart-header-left {
 	padding-bottom:0px; 
 	margin:20px auto auto auto; 
@@ -2386,6 +2388,8 @@ display: table;
 	padding:0;
 	border-bottom:1px solid #D7D7D7;
 }
+
+
 
 tr.alt0 td {
 	background:#f7f7f7;
@@ -2628,7 +2632,36 @@ ol#order-details h4 {
 	height:70px;
 }
 
+/* end of cart */
 
+/* start of rewards */
+#rewards-enrollment-banner {
+	background-image:url(../img/rewards_enrollment_banner.png);
+	height: 220px;
+	width: 950px;
+	z-index: 999999999999;
+}
+
+#rewards-enroll-now-button-inner {
+	font-size:15px; 
+	width: 175px; 
+	display: table-cell;
+	margin-left: 30px !important;
+	vertical-align: middle; 
+	width: auto; 
+	text-align: center;
+}
+
+
+#rewards-enroll-now-button-outer {
+	height: 220px; 
+	width: 270px; 
+	float:right; 
+	margin: 0px 0px 0px 0px;
+	display: table;
+}
+
+/* end of rewards*/
 	
 /* Product Detail - Image Zoom Styles */
 div.jqZoomTitle {
