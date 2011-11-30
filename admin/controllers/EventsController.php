@@ -90,6 +90,7 @@ class EventsController extends BaseController {
 			$sku_details_arr = $oitem['sku_details'];
 			$skus_arr = $oitem['skus'];
 			$details_arr = $oitem['details'];
+			$sale_details_arr = $oitem['sale_details'];
 
 			//set quantities to 0
 			foreach($details_arr as $details_key => $details){
@@ -119,6 +120,9 @@ class EventsController extends BaseController {
 						//use index to update quantity
 						$oitem['details'][$sku_details_key] = (int)$items_quantities[$sku_details];
 
+						//set sales to 0 for all sizes
+						//$oitem['sale_details'][$sku_details_key]['sale_count'] = 0;
+
 						//use index to get new price
 						$item_price_new = $items_prices[$sku_details];
 
@@ -140,6 +144,7 @@ class EventsController extends BaseController {
 				unset($oitem['sale_retail']);
 				unset($oitem['enabled']);
 				unset($oitem['details_original']);
+				unset($oitem['sale_details']);
 
 				//update event _id
 				$oitem['event'] = array((string)$_id);
@@ -162,6 +167,15 @@ class EventsController extends BaseController {
 				//save original quants
 				$oitem['details_original'] = $oitem['details'];
 
+				//hack for xmas items
+				if($this->request->data['miss_christmas']){
+					$oitem['miss_christmas'] = true;
+				}
+
+
+				//save original quants
+				//$oitem['sale_details'] = $oitem['sale_details'];
+
 				//save item with revised info
 				$newItem->save($oitem);
 
@@ -179,18 +193,9 @@ class EventsController extends BaseController {
 	public function inventory($_id = null) {
 	    $this->_render['layout'] = false;
 
-
-		$shortDescLimit = $this->shortDescLimit;
-		$current_user = Session::read('userLogin');
-
-		$itemsCollection = Item::Collection();
 		$event = Event::find($_id);
-		$seconds = ':'.rand(10,60);
+
 		$eventItems = array();
-		
-		//$alleventids = array('4ec52d2a12d4c97a7f000161','4ec52fcd12d4c95d04000003','4ec59636943e836b7d00000c','4ec74642538926d607000004','4ec3dfea12d4c94664000011','4ec696e712d4c9892800003f','4ec72a4b943e83a125000081','4eca83de12d4c92a290000ae','4eca878e538926063d000199','4ec7212a12d4c94735000049','4eca808512d4c93029000078','4ecbb8b3538926c07e000006','4ecab607943e83d339000066','4ecab8d75389262e470001d7','4ecbe597943e839259000010','4ecac69412d4c90f2d000227','4ecc202512d4c94e5400001d','4ecbfa5b5389263c0f000003','4ecbddfd5389267309000000','4ecad2ce538926e74e000260','4ecc2f00943e832761000024','4ecc0c48943e834a5e000000','4ecadeb612d4c9a93000025d');
-		//$alleventids = array('4ec45c4412d4c90c6c000150','4ec45991538926fd7400003a');
-		//$alleventids = array('4ecaea12943e83663d0000ee','4ed3ba7b538926d15c00000a');
 		
 		$alleventids = array($_id);
 
@@ -198,12 +203,8 @@ class EventsController extends BaseController {
 			$eventItems = Item::find('all', array('conditions' => array('event' => $alleventids),
 					'order' => array('created_date' => 'ASC')
 				));	
-			
-			//$eventItems = array_merge($eventItems, $eventItems2);	
 		}
 		return compact('eventItems','event');
-		
-
 	}
 
 
