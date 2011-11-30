@@ -112,6 +112,11 @@ class BaseController extends \lithium\action\Controller {
 
 		$this->_render['layout'] = 'main';
 		
+		//if ($this->request->is('mobile')) {
+		// 	$this->_render['layout'] = 'mobile_main';
+		//} else {
+		//	$this->_render['layout'] = 'main';
+		//}
 	}
 
 	/**

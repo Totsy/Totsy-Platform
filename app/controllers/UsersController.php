@@ -144,9 +144,12 @@ class UsersController extends BaseController {
 		}
 		
 		
-		//if ($this->request->url == ) {
-		//$this->_render['layout'] = 'login';
-		//}
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_login';
+		 	$this->_render['template'] = 'mobile_register';
+		} else {
+			$this->_render['layout'] = 'login';
+		}
 		
 		return compact('message', 'user');
 	}
@@ -257,7 +260,7 @@ class UsersController extends BaseController {
 				$message = '<div class="error_flash">Login Failed - Your Password Is Blank</div>';
 			}
 		}
-		//new login layout to account for fullscreen image JL
+		//detect mobile and make the view switch
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_login';
 		 	$this->_render['template'] = 'mobile_login';
@@ -421,7 +424,12 @@ class UsersController extends BaseController {
     }
 
 	public function reset() {
-		$this->_render['layout'] = 'login';
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_login';
+		 	$this->_render['template'] = 'mobile_reset';
+		} else {
+			$this->_render['layout'] = 'login';
+		}
 		$success = false;
 		if ($this->request->data) {
 			$email = strtolower($this->request->data['email']);
