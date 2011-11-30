@@ -89,6 +89,7 @@ Router::connect('/addresses', 'Addresses::view');
 Router::connect('/addresses/edit{:args}', 'Addresses::edit');
 Router::connect('/account/info', 'Users::info');
 Router::connect('/account/credits', 'Credits::view');
+Router::connect('/account/rewards', 'Accounts::rewards');
 Router::connect('/account/invites', 'Users::invite');
 Router::connect('/account/password', 'Users::password');
 Router::connect('/upgrade', 'Users::upgrade');

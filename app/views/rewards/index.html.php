@@ -11,6 +11,7 @@
 			<div id="rewards-enroll-now-button-inner">
 				<a class="button" href="" style="width: 213px;">Enroll Now</a>
 				<div style="height:35px !important">
+				<div id="rewards-check-balance">
 				Check my balance
 				</div>
 			</div>
