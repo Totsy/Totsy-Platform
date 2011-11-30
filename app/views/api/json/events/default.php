@@ -8,6 +8,7 @@ if (is_array($events)){
 	foreach($events as $event){ 
 		$evnt['name'] = $event['name'];
 		$evnt['description'] = $event['blurb'];
+		$evnt['short'] = (empty($event['short'])) ? events_default_json_cut_string($event['blurb'],45) : $event['short'];
 		$evnt['availableItems'] = $event['available_items']==true?'YES':'NO';
 		$evnt['brandName'] = $event['vendor'];
 		$evnt['image'] = $event['event_image'];
@@ -36,5 +37,30 @@ if (is_array($closing) && count($closing)){
 	}
 }
 echo json_encode($out);
+
+
+function events_default_json_cut_string($str,$length=null){
+	$return = '';
+	$str = strip_tags($str);
+	$split = preg_split("/[\s]+/",$str);
+	$len = 0;
+	if (is_array($split) && count($split)>0){
+		foreach($split as $splited){
+			$tmp_len = $len + strlen($splited) +1;
+			if ($tmp_len < $length){
+				$len = $tmp_len;
+				$return.= $splited.' ';
+			} else {
+				break;
+			}
+		}
+	}
+	
+	if (strlen($return)>0){
+		return $return;
+	} else {
+		return $str;
+	}
+}
 
 ?>

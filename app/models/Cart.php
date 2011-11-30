@@ -49,7 +49,7 @@ class Cart extends Base {
 	 *
 	 * @var int
 	 **/
-	protected $_shipBuffer = 18;
+	protected $_shipBuffer = 15;
 
 	/**
 	 * Any holidays that need to be factored into the estimated ship date calculation.
@@ -63,7 +63,7 @@ class Cart extends Base {
 	const TAX_RATE_NYS = 0.04375;
 
 	const TAX_RATE_NJS = 0.07;
-	
+
 	const ORIGIN_ZIP = "08837";
 
 	public $validates = array();
@@ -332,9 +332,9 @@ class Cart extends Base {
 		}
 		return true;
 	}
-	
+
 	/**
-	* Refresh the timer for each timer in the cart 
+	* Refresh the timer for each timer in the cart
 	* @see app/models/Cart::check()
 	*/
 	public static function refreshTimer() {
@@ -365,7 +365,7 @@ class Cart extends Base {
 			}
 		}
 	}
-	
+
 	public function cleanExpiredEventItems() {
 		$actual_cart = Cart::active();
 		if (!empty($actual_cart)) {
@@ -420,22 +420,46 @@ class Cart extends Base {
 	 * @param object $order
 	 * @return string
 	 */
-	public static function shipDate($cart) {
-		$i = 1;
-		$event = static::getLastEvent($cart);
-		$shipDate = null;
-		if (!empty($event)) {
-			$shipDate = $event->end_date->sec;
-			while($i < static::_object()->_shipBuffer) {
-				$day = date('N', $shipDate);
-				$date = date('Y-m-d', $shipDate);
-				if ($day < 6 && !in_array($date, static::_object()->_holidays)) {
-					$i++;
+	public static function shipDate($cart, $normal=false) {
+
+		//shows calculated shipdate
+		if($normal){
+			$i = 1;
+			$event = static::getLastEvent($cart);
+			if (!empty($event)) {
+				$shipDate = $event->end_date->sec;
+				while($i < static::_object()->_shipBuffer) {
+					$day = date('N', $shipDate);
+					$date = date('Y-m-d', $shipDate);
+					if ($day < 6 && !in_array($date, static::_object()->_holidays)) {
+						$i++;
+					}
+					$shipDate = strtotime($date.' +1 day');
 				}
-				$shipDate = strtotime($date.' +1 day');
+			}
+			return $shipDate;
+		}
+		
+		//shows one of two static messages
+		$shipDate = null;
+		$shipDate = "On or before 12/23";
+		
+		$items = (!empty($cart->items)) ? $cart->items : $cart;
+
+		if($items){
+			foreach($items as $thisitem){
+				if($thisitem->miss_christmas){
+					$shipDate = "See delivery alert below";	
+				}
+				elseif($thisitem['miss_christmas']){
+					$shipDate = "See delivery alert below";	
+				
+				}
 			}
 		}
 		return $shipDate;
+		
+		
 	}
 
 	/**
@@ -453,7 +477,7 @@ class Cart extends Base {
 		if (!empty($ids)) {
 			$event = Event::find('first', array(
 				'conditions' => array('_id' => $ids),
-				'order' => array('date_created' => 'DESC')
+				'order' => array('created_date' => 'DESC')
 			));
 		}
 		return $event;
@@ -472,12 +496,13 @@ class Cart extends Base {
 			$itemEvent = (empty($item['event'][0])) ? null : $item['event'][0];
 			$eventId = (!empty($item['event_id'])) ? $item['event_id'] : $itemEvent;
 			if (!empty($eventId)) {
-				$ids[] = new MongoId("$eventId");
+				//$ids[] = new MongoId("$eventId");
+				$ids[] = $eventId;
 			}
 		}
 		return $ids;
 	}
-	
+
 	/**
 	* This method allows to manage (update/delete/add) the savings of the current order
 	*
@@ -519,14 +544,14 @@ class Cart extends Base {
 		}
 		Session::write('userSavings', $savings);
 	}
-	
+
 	/**
-	* The getDiscount method check credits, promocodes and services available 
+	* The getDiscount method check credits, promocodes and services available
 	* And Apply it to the subtotal
-	* Return Credit, Promo, Services Objects and the PostDiscount Total 
+	* Return Credit, Promo, Services Objects and the PostDiscount Total
 	* @see app/models/Cart::check()
 	*/
-	public static function getDiscount($subTotal, $shippingCost = 7.95, $overShippingCost = 0, $data) {
+	public static function getDiscount($subTotal, $shippingCost = 7.95, $overShippingCost = 0, $data, $tax = 0.00) {
 		#Get User Infos
 		$fields = array(
 		'item_id',
@@ -551,7 +576,8 @@ class Cart extends Base {
 		$services['freeshipping'] = Service::freeShippingCheck($shippingCost, $overShippingCost);
 		$services['tenOffFitfy'] = Service::tenOffFiftyCheck($subTotal);
 		#Calculation of the subtotal with shipping and services discount
-		$postSubtotal = ($subTotal + $shippingCost + $overShippingCost - $services['tenOffFitfy'] - $services['freeshipping']['shippingCost']  - $services['freeshipping']['overSizeHandling']);
+		$postSubtotal = ($subTotal + $tax + $shippingCost + $overShippingCost - $services['tenOffFitfy'] - $services['freeshipping']['shippingCost'] - $services['freeshipping']['overSizeHandling']);
+		$subTotal += $tax;
 		#Apply Promocodes
 		$cartPromo = Promotion::create();
 		$promo_code = null;
@@ -567,7 +593,7 @@ class Cart extends Base {
 			$promo_code = null;
 		}
 		if (!empty($promo_code)) {
-			$cartPromo->promoCheck($promo_code, $userDoc, compact('subTotal', 'shippingCost', 'overShippingCost', 'services'));  
+			$cartPromo->promoCheck($promo_code, $userDoc, compact('subTotal', 'shippingCost', 'overShippingCost', 'services'));
 		}
 		#Apply Credits
 		$credit_amount = null;
@@ -576,6 +602,10 @@ class Cart extends Base {
 			$credit_amount = $data['credit_amount'];
 		}
 		$postDiscountTotal = ($postSubtotal + $cartPromo['saved_amount']);
+		#Avoid Negative Total
+		if($postDiscountTotal < 0.00) {
+			$postDiscountTotal = 0.00;
+		}
 		$cartCredit->checkCredit($credit_amount, $subTotal, $userDoc);
 		#Apply credit to the Total
 		if(!empty($cartCredit->credit_amount)) {

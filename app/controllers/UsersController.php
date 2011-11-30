@@ -39,6 +39,7 @@ class UsersController extends BaseController {
 	 * @return string User will be promoted that email is already registered.
 	 */
 	public function register($invite_code = null, $affiliate_user_id = null) {
+		$this->_render['layout'] = 'login';
 		$message = false;
 		$data = $this->request->data;
 		$this->autoLogin();
@@ -51,9 +52,15 @@ class UsersController extends BaseController {
 		if($cookie && preg_match('(/a/)', $cookie['landing_url'])){
 			$this->redirect($cookie['landing_url']);
 		}
+		$referer = parse_url($this->request->env('HTTP_REFERER'));
+		if ($referer['host']==$this->request->env('HTTP_HOST') && preg_match('(/sale/)',$referer['path'])){
+			Session::write('landing',$referer['path'],array('name'=>'default'));
+		}
+		unset($referer);
 		if (isset($data) && $this->request->data) {
 			$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
 			$data['email'] = strtolower($this->request->data['email']);
+			$data['email_hash'] = md5($data['email']);
 		}
 		$user = User::create($data);
 		if ($this->request->data && $user->validates() ) {
@@ -66,47 +73,11 @@ class UsersController extends BaseController {
 			if ($inviteCheck > 0) {
 				$data['invitation_codes'] = array(static::randomString());
 			}
-			/**
-			* this block handles the invitations.
-			**/
-			if ($invite_code) {
-				$inviter = User::find('first', array(
-					'conditions' => array(
-						'invitation_codes' => array($invite_code)
-				)));
-				if ($inviter) {
-					$invited = Invitation::find('first', array(
-						'conditions' => array(
-							'user_id' => (string) $inviter->_id,
-							'email' => $email
-					)));
-					
-					Mailer::send('Invited_Register', $inviter->email);
-					
-					if ($inviter->invited_by === 'keyade') {
-						$data['keyade_referral_user_id'] = $inviter->keyade_user_id;
-					}
-					if ($invited) {
-						$invited->status = 'Accepted';
-						$invited->date_updated = Invitation::dates('now');
-						$invited->save();
-						if ($invite_code != 'keyade') {
-							Invitation::reject($inviter->_id, $email);
-						}
-					} else {
-					/**
-					* This block was included because users can pass on their
-					* invite url by mouth @_@
-					**/
-						$invitation = Invitation::create();
-						$invitation->user_id = $inviter->_id;
-						$invitation->email = $email;
-						$invitation->date_accepted = Invitation::dates('now');
-						$invitation->status = 'Accepted';
-						$invitation->save();
-					}
-				}
-			}
+			
+			/* links up inviter with the invitee and sends an email notification */
+						
+			Invitation::linkUpInvites($invite_code, $email);
+			
 			switch ($invite_code) {
 				case 'our365':
 				case 'our365widget':
@@ -137,12 +108,24 @@ class UsersController extends BaseController {
 				);
 				Mailer::send('Welcome_Free_Shipping', $user->email);
 				Mailer::addToMailingList($data['email']);
+				Mailer::addToSuppressionList($data['email']);		
 				$ipaddress = $this->request->env('REMOTE_ADDR');
 				User::log($ipaddress);
-				$this->redirect('/sales');
+				
+				$landing = null;
+				if (Session::check('landing')){
+					$landing = Session::read('landing'); 
+				} 
+				if (!empty($landing)){
+					Session::delete('landing',array('name'=>'default'));
+					$this->redirect($landing);
+					unset($landing);
+				} else {
+					$this->redirect('/sales');
+				}
+				
 			}
 		}
-		
 		
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_login';
@@ -151,6 +134,10 @@ class UsersController extends BaseController {
 			$this->_render['layout'] = 'login';
 		}
 		
+		if ($this->request->data && !$user->validates() ) {
+			$message = '<div class="error_flash">Error in registering your account</div>';
+		
+		}
 		return compact('message', 'user');
 	}
 
@@ -167,6 +154,7 @@ class UsersController extends BaseController {
 			if ($data) {
 				$data['email'] = strtolower($data['email']);
 				$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
+				$data['email_hash'] = md5($data['email']);
 				$user = User::create($data);
 				if ($user->validates()) {
 					$email = $data['email'];
@@ -180,15 +168,24 @@ class UsersController extends BaseController {
 						$data['invitation_codes'] = array(static::randomString());
 					}
 					if ($saved = $user->save($data)) {
+						$mail_template = 'Welcome_Free_Shipping';
+						$params = array();
+						
 						$data = array(
 							'user' => $user,
 							'email' => $user->email
 						);
-						Mailer::send('Welcome_Free_Shipping', $user->email);
+
+						if (isset($user['clear_token'])) {
+							$mail_template = 'Welcome_auto_passgen';
+							$params['token'] = $user['clear_token']; 
+						} 
+						Mailer::send($mail_template, $user->email,$params);
 						$name = null;
 						if (isset($data['firstname'])) $name = $data['firstname'];
 						if (isset($data['lastname'])) $name = is_null($name)?$data['lastname']:$name.$data['lastname'];
 						Mailer::addToMailingList($data['email'],is_null($name)?array():$name);
+						Mailer::addToSuppressionList($data['email']);		
 
 					}
 				}
@@ -246,7 +243,7 @@ class UsersController extends BaseController {
 						User::rememberMeWrite($this->request->data['remember_me']);
 						/**Remove Temporary Session Datas**/
 						User::cleanSession();
-						/***/					
+						/***/
 						if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) {
 							$this->redirect($this->request->url);
 						} else {
@@ -255,6 +252,8 @@ class UsersController extends BaseController {
 					} else {
 						$message = '<div class="error_flash">Login Failed - Please Try Again</div>';
 					}
+				} else {
+					$message = '<div class="error_flash">Login Failed - No Record Found</div>';
 				}
 			} else {
 				$message = '<div class="error_flash">Login Failed - Your Password Is Blank</div>';
@@ -271,18 +270,29 @@ class UsersController extends BaseController {
 		return compact('message', 'fbsession', 'fbconfig');
 	}
 
-	protected function autoLogin(){
+	protected function autoLogin() {
+	
 		$redirect = '/sales';
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 		$result = static::facebookLogin(null, $cookie, $ipaddress);
 		extract($result);
+		
+		$fbCancelFlag = false;
+		
+		if (array_key_exists('fbcancel', $this->request->query)) {
+			$fbCancelFlag = $this->request->query['fbcancel'];
+		}
+		
 		if (!$success) {
 			if (!empty($userfb)) {
-				$self = static::_object();
-				$self->redirect('/register/facebook');
+				$self = static::_object();			
+				if(!$fbCancelFlag) {
+					$self->redirect('/register/facebook');
+				}
 			}
 		}
+		
 		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
 				'conditions' => array('autologinHash' => $cookie['autoLoginHash']),
@@ -393,6 +403,7 @@ class UsersController extends BaseController {
 				} else {
 					$user->legacy = 0;
 					$user->reset_token = '0';
+					$user->email_hash = md5($user->email);
 					if ($user->save($this->request->data, array('validate' => false))) {
 							$info = Session::read('userLogin');
 							$info['firstname'] = $this->request->data['firstname'];
@@ -442,6 +453,7 @@ class UsersController extends BaseController {
 				$user->clear_token = $token;
 				$user->reset_token = sha1($token);
 				$user->legacy = 0;
+				$user->email_hash = md5($user->email);
 				if ($user->save(null, array('validate' => false))) {
 					Mailer::send('Reset_Password', $user->email, array('token' => $token));
 					$message = "Your password has been reset. Please check your email.";
@@ -571,8 +583,10 @@ class UsersController extends BaseController {
 		$user = null;
 		$fbuser = FacebookProxy::api('/me');
 		$user = User::create();
+
 		if ( !preg_match( '/@proxymail\.facebook\.com/', $fbuser['email'] )) {
 			$user->email = $fbuser['email'];
+			$user->email_hash = md5($user->email);
 			$user->confirmemail = $fbuser['email'];
 		}
 		$this->_render['layout'] = 'login';
@@ -582,7 +596,18 @@ class UsersController extends BaseController {
 			$data['firstname'] = $fbuser['first_name'];
 			$data['lastname'] = $fbuser['last_name'];
 			static::registration($data);
-			$this->redirect('/sales');
+			
+			$landing = null;
+			if (Session::check('landing')){
+				$landing = Session::read('landing'); 
+			} 
+			if (!empty($landing)){
+				Session::delete('landing',array('name'=>'default'));
+				$this->redirect($landing);
+				unset($landing);
+			} else {
+				$this->redirect('/sales');
+			}
 		}
 
 		return compact('message', 'user', 'fbuser');
@@ -602,11 +627,13 @@ class UsersController extends BaseController {
 	 */
 	public static function facebookLogin($affiliate = null, $cookie = null, $ipaddress = null) {
 		$self = static::_object();
+
 		//If the users already exists in the database
 		$success = false;
 		$userfb = array();
 		if ($self->fbsession) {
 			$userfb = FacebookProxy::api('/me');
+
 			$user = User::find('first', array(
 				'conditions' => array(
 					'$or' => array(
@@ -619,7 +646,17 @@ class UsersController extends BaseController {
 				$sessionWrite = $self->writeSession($user->data());
 				Affiliate::linkshareCheck($user->_id, $affiliate, $cookie);
 				User::log($ipaddress);
-				$self->redirect('/sales');
+				$landing = null;
+				if (Session::check('landing')){
+					$landing = Session::read('landing'); 
+				} 
+				if (!empty($landing)){
+					Session::delete('landing',array('name'=>'default'));
+					$self->redirect($landing);
+					unset($landing);
+				} else {
+					$self->redirect('/sales');
+				}
 			}
 		}
 		return compact('success', 'userfb');
@@ -632,6 +669,7 @@ class UsersController extends BaseController {
 		}
 		return static::$_instances[$class];
 	}
+	
 }
 
 ?>

@@ -24,10 +24,10 @@ class BaseController extends \lithium\action\Controller {
 	 * Get the userinfo for the rest of the site from the session.
 	 */
 	protected function _init() {
+		
 		parent::_init();
 	     if(!Environment::is('production')){
             $branch = "<h4 id='global_site_msg'>Current branch: " . $this->currentBranch() ."</h4>";
-           // var_dump($branch);
             $this->set(compact('branch'));
         }
 		$userInfo = Session::read('userLogin');
@@ -41,7 +41,15 @@ class BaseController extends \lithium\action\Controller {
 		 */
 		$this->fbsession = $fbsession = FacebookProxy::getSession();
 		$fbconfig = FacebookProxy::config();
-		$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
+
+		if($this->fbsession){
+			$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
+		}
+		else{
+			$fblogout = "/logout";		
+		}
+		
+		
 		if ($userInfo) {
 			$user = User::find('first', array(
 				'conditions' => array('_id' => $userInfo['_id']),
@@ -68,7 +76,7 @@ class BaseController extends \lithium\action\Controller {
 		* Get the pixels for a particular url.
 		**/
 		$invited_by = NULL;
-		
+
 		 if (isset($user) && $user) {
 			$cookie = Session::read('cookieCrumb', array('name'=>'cookie'));
 			$userData = $user->data();
@@ -84,11 +92,11 @@ class BaseController extends \lithium\action\Controller {
 		/**
 		* If visitor lands on affliate url e.g www.totsy.com/a/afflilate123
 		**/
-		if (is_object($this->request) && isset($this->request->params) && $this->request->params['controller']  == "affiliates" &&  
+		if (is_object($this->request) && isset($this->request->params) && $this->request->params['controller']  == "affiliates" &&
 			$this->request->params['action'] == "register" & empty($invited_by)) {
 			$invited_by = $this->request->args[0];
 		}
-		
+
 		/**
 		* Retrieve any pixels that need to be fired off
 		**/
@@ -104,19 +112,13 @@ class BaseController extends \lithium\action\Controller {
 		**/
 		Session::delete('pixel');
 		#Clean Credit Card Infos if out of Orders/CartController
-		$this->CleanCC();
+		$this->cleanCC();
 		/**
 		* Send pixel to layout
 		**/
 		$this->set(compact('pixel'));
 
 		$this->_render['layout'] = 'main';
-		
-		//if ($this->request->is('mobile')) {
-		// 	$this->_render['layout'] = 'mobile_main';
-		//} else {
-		//	$this->_render['layout'] = 'main';
-		//}
 	}
 
 	/**
@@ -223,7 +225,7 @@ class BaseController extends \lithium\action\Controller {
 	public function cleanCC() {
 		if (is_object($this->request) && isset($this->request->params) && $this->request->params['controller']  != "orders"
 			&& $this->request->params['controller']  != "cart"
-			&& $this->request->params['controller']  != "search") 
+			&& $this->request->params['controller']  != "search")
 		{
 			if(Session::check('cc_infos')) {
 				Session::delete('cc_infos');
