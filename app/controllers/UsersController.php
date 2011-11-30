@@ -39,6 +39,25 @@ class UsersController extends BaseController {
 	 * @return string User will be promoted that email is already registered.
 	 */
 	public function register($invite_code = null, $affiliate_user_id = null) {
+			        
+		$parsedURI = parse_url($this->request->env("REQUEST_URI"));
+		$currentURI = $parsedURI['path'];
+		
+		$eventName = "";
+		
+		if (preg_match("(/sale)", $currentURI)) {
+		    $URIArray = explode("/", $currentURI);			
+		    $eventName = $URIArray[2];
+		}
+
+		//write event name to the session
+		Session::write( "eventFromEmailClick", $eventName, array("name"=>"default"));
+		
+		//redirect to login ONLY if the user is coming from an email
+		if ( Session::read("eventFromEmailClick", array("name"=>"default")) && $this->request->query["email"]=="true") {
+			$this->redirect("http://evan.totsy.com/login");		
+		}		
+	
 		$this->_render['layout'] = 'login';
 		$message = false;
 		$data = $this->request->data;
@@ -194,15 +213,29 @@ class UsersController extends BaseController {
 	public function login() {
 		$message = $resetAuth = $legacyAuth = $nativeAuth = false;
 		$rememberHash = '';
+		
+		//redirect to the right email if the user is coming from an email
+		//the session writes this variable on the register() method
+		//it writes it THERE because that is the method currently serving our homepage
+							
 		$this->autoLogin();
 		if ($this->request->data) {
+		
 			$email = trim(strtolower($this->request->data['email']));
 			$password = trim($this->request->data['password']);
 			$this->request->data['password'] = trim($this->request->data['password']);
 			$this->request->data['email'] = trim($this->request->data['email']);
 			//Grab User Record
 			$user = User::lookup($email);
-			$redirect = '/sales';
+			
+			//redirect for people coming from emails
+			if ( Session::read("eventFromEmailClick", array("name"=>"default"))) {
+				//$redirect = "/sale/schoolbags-for-kids";
+				$redirect = "/sale/".Session::read("eventFromEmailClick", array("name"=>"default"));
+			} else {
+				$redirect = '/sales';
+			}
+						
 			if ($user->deactivated) {
 				$message = '<div class="error_flash">Your account has been deactivated.  Please contact Customer Service at 888-247-9444 to reactivate your account</div>';
 			} else if (strlen($password) > 0) {
@@ -223,7 +256,8 @@ class UsersController extends BaseController {
 						$ipaddress = $this->request->env('REMOTE_ADDR');
 						User::log($ipaddress);
 						$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-            			$userInfo = Session::read('userLogin');
+            			//$userInfo = Session::read('userLogin');
+            			
             			$cookie['user_id'] = $user['_id'];
             			if(array_key_exists('redirect', $cookie) && $cookie['redirect'] ) {
 							$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$_SERVER['HTTP_HOST']));
@@ -234,7 +268,7 @@ class UsersController extends BaseController {
 						/**Remove Temporary Session Datas**/
 						User::cleanSession();
 						/***/
-						if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) {
+						if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) 						{
 							$this->redirect($this->request->url);
 						} else {
 							$this->redirect($redirect);
@@ -248,10 +282,13 @@ class UsersController extends BaseController {
 			} else {
 				$message = '<div class="error_flash">Login Failed - Your Password Is Blank</div>';
 			}
+			
+			
 		}
+			
 		//new login layout to account for fullscreen image JL
 		$this->_render['layout'] = 'login';
-
+		
 		return compact('message', 'fbsession', 'fbconfig');
 	}
 
