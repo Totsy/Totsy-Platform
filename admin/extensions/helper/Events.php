@@ -34,7 +34,6 @@ class Events extends \lithium\template\Helper {
 
 	protected $_links = array(
 		'PO' => 'Reports::purchases',
-		'ASN' => '#',
 		'Product File' => 'Reports::productfile',
 		'Order File' => 'Reports::orders'
 	);
@@ -94,7 +93,7 @@ class Events extends \lithium\template\Helper {
 				if ($options['type'] == 'logistics') {
 					$html .= "<td>";
 					foreach ($this->_links as $name => $route) {
-						$link = array($route, 'args' => $event['_id']);
+						$link = array($route,'args' => $event['_id']);
 						$option = array('escape' => false);
 						$html .= $this->_context->html->link("View - $name", $link, $option);
 						$html .= "<br>";
