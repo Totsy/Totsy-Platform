@@ -27,6 +27,13 @@ class ReAuthorize extends \lithium\console\Command {
 	public $env = 'development';
 	
 	/**
+	 * Directory of files holding the files
+	 *
+	 * @var string
+	 */
+	public $source = '/resources/totsy/tmp/';
+	
+	/**
 	 * Set How Old Can Be the Auth.Key to be replaced
 	 *
 	 * @var string
@@ -44,6 +51,7 @@ class ReAuthorize extends \lithium\console\Command {
 		#SetUp Environment
 		error_reporting(E_ERROR | E_PARSE);
 		Environment::set($this->env);
+		Logger::debug('Starting Reauthorization Script');
 		#Get Orders that has to be Reauthorize depending of their last auth date
 		if(empty($this->orders)) {
 			$orders = $this->getOrders();
@@ -55,10 +63,41 @@ class ReAuthorize extends \lithium\console\Command {
 			$report = $this->manageReauth($orders);
 		}
 		#Send Email containing informations about the Reauth Process
-		$this->sendReports($report);		
+		$this->sendReports($report);
+		$this->logReport($report);
+		#In Case Of Request by OrderExport, return orders to be processed
+		if(!empty($this->fullAmount)) {
+			$ordersToBeProcessed = $this->getOrdersToShipped($report);
+			return $ordersToBeProcessed;
+		}	
+	}
+	
+	public function getOrdersToShipped($report) {
+		$ordersCollection = Order::Collection();
+		foreach($report['updated'] as $value) {
+			$order_ids[] = $value['order_id'];
+		}
+		foreach($report['skipped'] as $value) {
+			$order_ids[] = $value['order_id'];
+		}
+		$conditions = array('order_id' => array('$in' => $order_ids)
+		,array(
+		    '_id' => true,
+		    'billing' => true,
+		    'shipping' => true,
+		    'date_created' => true,
+		    'ship_date' => true,
+		    'items' => true,
+		    'order_id' => true,
+		    'shippingMethod' => true,
+		    'user_id' => true
+		));
+		$ordersUpdated = $ordersCollection->find($conditions);
+		return $ordersUpdated;
 	}
 	
 	public function getOrders() {
+		Logger::debug('Getting Orders to be Reauth');
 		$ordersCollection = Order::Collection();
 		$ordersCollection->ensureIndex(array(
 			'date_created' => 1,
@@ -75,24 +114,29 @@ class ReAuthorize extends \lithium\console\Command {
 							'date_created' => array('$lte' => new MongoDate($limitDate))
 		);
 		$orders = $ordersCollection->find($conditions);
+		Logger::debug('End of Getting Orders to be Reauth');
 		return $orders;
 	}
 	
 	public function sendReports($report = null) {
+		Logger::debug('Sending Report');
 		#If Errors Send Email to Customer Service
-		if(!empty($report)) {
-			//Mailer::send('ReAuth_Errors','searnest@totsy.com', $report);
-			//Mailer::send('ReAuth_Errors','mruiz@totsy.com', $report);
-			//Mailer::send('ReAuth_Errors','gene@totsy.com', $report);
+		if(!empty($report['updated']) || !empty($report['errors']) ) {
+			if (Environment::is('production')) {
+				Mailer::send('ReAuth_Errors','searnest@totsy.com', $report);
+				Mailer::send('ReAuth_Errors','mruiz@totsy.com', $report);
+				Mailer::send('ReAuth_Errors','gene@totsy.com', $report);
+			}
 			Mailer::send('ReAuth_Errors_Test','troyer@totsy.com', $report);
-			var_dump($report);
 		}
 		echo 'ReAuth Script Runned, ' . count($report['updated']) . ' Orders Updated ' . count($report['errors']) . ' Errors Found.';
 	}
 	
 	public function manageReauth($orders = null, $limitDate = null) {
-		$report = array('updated', 'errors');
+		Logger::debug('Managing Reauth Type');
+		$report = array('updated', 'errors', 'skipped');
 		foreach ($orders as $order) {
+			Logger::debug('Processing Order : ' . $order['order_id']);
 			#Check If Reauth Needed
 			$reAuth = $this->isReauth($order);
 			if($reAuth) {
@@ -108,6 +152,13 @@ class ReAuthorize extends \lithium\console\Command {
 					echo 'Auth';
 					$report = $this->reAuthAuthorizeNet($order, $report, $total);
 				}
+			} else {
+				$report['skipped'][] = array(
+					'error_message' => 'skipped',
+					'order_id' => $order['order_id'],
+					'authKey' => $order['authKey'],
+					'total' => $order['total']
+				);
 			}
 		}
 		return $report;
@@ -142,11 +193,13 @@ class ReAuthorize extends \lithium\console\Command {
 				$reAuth = false;
 			}
 		}
+		Logger::debug('Eligible for Reauth: ' . $reAuth);
 		return $reAuth;
 	}
 
 	/*** REAUTHORIZE WITH VISA/MASTERCARD THROUGH AUTHORIZE.NET ***/
 	public function reAuthAuthorizeNet($order = null, $report = null, $total) {
+		Logger::debug('Reauthorizing Through Auth.net');
 		$ordersCollection = Order::Collection();
 		$usersCollection = User::Collection();
 		#Decrypt Credit Card Infos
@@ -178,6 +231,7 @@ class ReAuthorize extends \lithium\console\Command {
 					#Create a new Transaction and Get a new Authorization Key
 					$auth = Processor::authorize('default', $total, $card);
 					if ($auth->success()) {
+						Logger::debug("Authorization Succeeded");
 						if($order['card_type'] == 'amex') {
 							$customer = Processor::create('default', 'customer', array(
 								'firstName' => $userInfos['firstname'],
@@ -223,9 +277,10 @@ class ReAuthorize extends \lithium\console\Command {
 						$message  = "Authorize failed for order id `{$order['order_id']}`:";
 						$message .= $error = implode('; ', $auth->errors);
 						$report['errors'][] = array(
-							'error_message' => $message, 
-							'order_id' => $order['order_id'], 
-							'authKey' => $order['authKey'], 
+							'error_message' => $message,
+							'order_id' => $order['order_id'],
+							'authKey' => $order['authKey'],
+							'authKey_declined' => $auth->key, 
 							'total' => $total
 						);
 					}
@@ -235,7 +290,7 @@ class ReAuthorize extends \lithium\console\Command {
 					$report['errors'][] = array(
 							'error_message' => $message, 
 							'order_id' => $order['order_id'], 
-							'authKey' => $order['authKey'], 
+							'authKeyDeclined' => $order['authKey'], 
 							'total' => $total
 					);
 				}
@@ -246,67 +301,114 @@ class ReAuthorize extends \lithium\console\Command {
 				
 	/*** REAUTHORIZE WITH VISA/MASTERCARD / AMEX THROUGH CYBERSOURCE ***/
 	public function reAuthCyberSource($order, $report = null, $total) {
+		Logger::debug('Reauthorizing Through CyberSource');
 		$ordersCollection = Order::Collection();
 		$usersCollection = User::Collection();
 		#Save Old AuthKey with Date
 		$newRecord = array('authKey' => $order['authKey'], 'date_saved' => new MongoDate());
-		#Cancel Previous Transaction
-		if (!empty($order['cyberSourceProfileId'])) {
-			if($order['card_type'] != 'amex') {
-				$auth = Processor::void('default', $order['auth'], array(
-					'processor' => isset($order['processor']) ? $order['processor'] : null
-				));
-				if(!$auth->success()) {
-					$message  = "Void failed for order id `{$order['order_id']}`:";
-					$message .= $error = implode('; ', $auth->errors);
-					$report['errors'][] = array(
-							'error_message' => $message, 
-							'order_id' => $order['order_id'], 
-							'authKey' => $order['authKey'], 
-							'total' => $order['authTotal']
-					);
-				}
-			}
-			$cybersource = new CyberSource(Processor::config('default'));
-			$profile = $cybersource->profile($order['cyberSourceProfileId']);
-			$result = $cybersource->authorize($total, $profile);
-			if($result->responseCode == 100) {
-				#Setup new AuthKey
-				$update = $ordersCollection->update(
-						array('_id' => $order['_id']),
-						array('$set' => array(
-							'authKey' => $result->key,
-							'auth' => $result->export(),
-							'processor' => $result->adapter,
-							'authTotal' => $total
-						)), array( 'upsert' => true)
-				);
-				#Add to Auth Records Array
-				$update = $ordersCollection->update(
-						array('_id' => $order['_id']),
-						array('$push' => array('auth_records' => $newRecord)), array( 'upsert' => true)
-				);
-				$report['updated'][] = array(
-					'order_id' => $order['order_id'], 
-					'authKey' => $order['authKey'], 
-					'total' => $total
-				);
-			} else {
+		#Cancel Previous Transaction	
+		if($order['card_type'] != 'amex') {
+			$auth = Processor::void('default', $order['auth'], array(
+				'processor' => isset($order['processor']) ? $order['processor'] : null
+			));
+			if(!$auth->success()) {
+				Logger::debug("Void failed for order id " . $order['order_id']);
+				$message  = "Void failed for order id `{$order['order_id']}`:";
+				$message .= $error = implode('; ', $auth->errors);
 				$report['errors'][] = array(
-				'error_message' => "Authorize failed for order id ". $order['order_id'] . " " . $result->responseCode, 
-				'order_id' => $order['order_id'], 
-				'authKey' => $order['authKey'], 
-				'total' => $order['authTotal']
+						'error_message' => $message, 
+						'order_id' => $order['order_id'], 
+						'authKey' => $order['authKey'], 
+						'total' => $order['authTotal']
 				);
 			}
 		}
+		if (!empty($order['cyberSourceProfileId'])) {
+			Logger::debug("Getting CyberSource Profile");
+			$cybersource = new CyberSource(Processor::config('default'));
+			$profile = $cybersource->profile($order['cyberSourceProfileId']);
+			$auth = Processor::authorize('default', $total, $profile);
+		} else {
+			$userInfos = $usersCollection->findOne(array('_id' => new MongoId($order['user_id'])));
+			$creditCard = Order::getCCinfos($order);
+			#Create Card and Check Billing Infos
+			$card = Processor::create('default', 'creditCard', $creditCard + array(
+				'billing' => Processor::create('default', 'address', array(
+					'firstName' => $order['billing']['firstname'],
+					'lastName'  => $order['billing']['lastname'],
+					'address'   => trim($order['billing']['address'] . ' ' . $order['billing']['address2']),
+					'city'      => $order['billing']['city'],
+					'state'     => $order['billing']['state'],
+					'zip'       => $order['billing']['zip'],
+					'country'   => $order['billing']['country'] ?: 'US',
+					'email'     => $userInfos['email']
+	
+			))));
+			#Create a new Transaction and Get a new Authorization Key
+			$auth = Processor::authorize('default', $total, $card);
+		}
+		if($auth->success()) {
+			Logger::debug("Authorization Succeeded");
+			#Setup new AuthKey
+			$update = $ordersCollection->update(
+					array('_id' => $order['_id']),
+					array('$set' => array(
+						'authKey' => $auth->key,
+						'auth' => $auth->export(),
+						'processor' => $auth->adapter,
+						'authTotal' => $total
+					)), array( 'upsert' => true)
+			);
+			#Add to Auth Records Array
+			$update = $ordersCollection->update(
+					array('_id' => $order['_id']),
+					array('$push' => array('auth_records' => $newRecord)), array( 'upsert' => true)
+			);
+			$report['updated'][] = array(
+				'order_id' => $order['order_id'], 
+				'authKey' => $order['authKey'], 
+				'total' => $total
+			);
+		} else {
+			Logger::debug("Authorization Failed");
+			$message  = "Authorize failed for order id `{$order['order_id']}`:";
+			$message .= $error = implode('; ', $auth->errors);
+			$report['errors'][] = array(
+			'error_message' => $message, 
+			'order_id' => $order['order_id'], 
+			'authKey' => $order['authKey'],
+			'authKeyDeclined' => $auth->key, 
+			'total' => $order['authTotal']
+			);
+		}
 		return $report;
 	}
-	
-	public function sendReport($report) {
-		Mailer::send('ReAuth_Errors','searnest@totsy.com', $report);
-		Mailer::send('ReAuth_Errors','mruiz@totsy.com', $report);
-		Mailer::send('ReAuth_Errors','gene@totsy.com', $report);
-		Mailer::send('ReAuth_Errors','troyer@totsy.com', $report);
+
+	public function logReport($report = null) {
+		Logger::debug('Writing Report : ');
+		/**** RECORD DATAS IN FILE ****/
+		$idx = 0;
+		$now = getdate();
+		$month = date("m",$now["0"]);
+		$day = date("d",$now["0"]);
+		$year = date("Y",$now["0"]);
+		$myFile =  "Log_Reauthorize_" . $month .'_'. $day . "_" . $year . "_" . $now["0"] . ".csv";
+		$myFilePath = LITHIUM_APP_PATH . $this->source . $myFile;
+		$fh = fopen($myFilePath, 'wb');
+		if(!empty($report)) {
+			foreach ($report as $reporType) {
+				foreach($reporType as $reportCase) {
+					$line = null;
+					foreach($reportCase as $value){
+						$line[] = $value;
+					}
+					fputcsv($fh, $line);
+					$idx++;
+				}
+			}
+		}
+		fclose($fh);
+		Logger::debug('Finish Writing Report, ' . $idx . ' lines has been written');
+>>>>>>> add reauthorize process to OrderExport
 	}
 }
