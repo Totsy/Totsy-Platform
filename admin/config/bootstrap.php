@@ -56,21 +56,10 @@ require __DIR__ . '/bootstrap/error.php';
 require __DIR__ . '/bootstrap/auth.php';
 
 /**
- * This configures your session storage. The Cookie storage adapter must be connected first, since
- * it intercepts any writes where the `'expires'` key is set in the options array.
+ * This file contains configuration for session (and/or cookie) storage, and
+ * user or web service * authentication.
  */
-use lithium\storage\Session;
-
-Session::config(array(
-	'default' => array(
-		'adapter' => 'admin\extensions\adapter\session\Model',
-		'model' => 'totsy_common\models\MongoSession'
-	),
-	'flash_message' => array(
-		'adapter' => 'admin\extensions\adapter\session\Model',
-		'model' => 'totsy_common\models\MongoSession'
-	)
-));
+require __DIR__ . '/bootstrap/session.php';
 
 ini_set('memory_limit', '1024M');
 ini_set('max_execution_time', '20000');

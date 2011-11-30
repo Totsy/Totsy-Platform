@@ -57,8 +57,8 @@ require __DIR__ . '/bootstrap/analysis.php';
 require __DIR__ . '/bootstrap/auth.php';
 
 /**
- * This file contains configuration for session (and/or cookie) storage, and user or web service
- * authentication.
+ * This file contains configuration for session (and/or cookie) storage, and
+ * user or web service authentication.
  */
 require __DIR__ . '/bootstrap/session.php';
 
