@@ -40,7 +40,6 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	 if(preg_match('#(pages/)#', $params['request']->url)) {
 		 $allowed = true;
 	 }
-
 	 #API
 	 if(preg_match('#(api/)#', $params['request']->url)) {
 	 	$allowed = true;

@@ -81,7 +81,7 @@ class BaseController extends \lithium\action\Controller {
 				'_id' => 1
 				) ));
 		}
-		return compact('events', 'type', 'environment');
+		return compact('events', 'type');
 	}
 
 	public static function randomString($length = 8, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890')

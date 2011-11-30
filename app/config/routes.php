@@ -31,7 +31,11 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 		'headers' => array(
 			'Content-length' => $file->file->getSize(),
 			'Content-type' => $file->mimeType(),
-			'Etag' => '"' . $file->md5  . '"'
+			'Etag' => '"' . $file->md5  . '"',
+			'Pragma' => 'cache',
+            'Expires' => date("r", strtotime("+10 years")),
+            'Cache-control' => 'max-age=999999',
+            'Last-modified' => 'Mon, 29 Jun 1998 02:28:12 GMT'
 		),
 		'body' => $file->file->getBytes()
 	));
