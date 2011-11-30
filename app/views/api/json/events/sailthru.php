@@ -14,7 +14,7 @@ if (is_array($events)){
 		$evnt['brandName'] = $event['vendor'];
 		$evnt['image'] = $event['event_image'];
 		$evnt['discount'] = floor($event['maxDiscount']);
-		$evnt['url'] = $base_url.'sale/'.$event['url']."?email=true";
+		$evnt['url'] = $base_url.'sale/'.$event['url']."?gotologin=true";
 		$out['events'][] = $evnt;
 	}
 }
@@ -22,7 +22,7 @@ if (is_array($events)){
 if (is_array($pending) && count($pending)){ 
 	foreach($pending as $event){ 
 		$evnt['name'] = $event['name'];
-		$evnt['url'] = $base_url.'sale/'.$event['url']."?email=true";
+		$evnt['url'] = $base_url.'sale/'.$event['url']."?gotologin=true";
 		$out['pending'][] = $evnt;
 	}
 }
@@ -30,7 +30,7 @@ if (is_array($pending) && count($pending)){
 if (is_array($closing) && count($closing)){ 
 	foreach($closing as $event){ 
 		$evnt['name'] = $event['name'];
-		$evnt['url'] = $base_url.'sale/'.$event['url']."?email=true";
+		$evnt['url'] = $base_url.'sale/'.$event['url']."?gotologin=true";
 		$evnt['end_date'] = date('F j',$event['end_date']['sec']);
 		$out['closing'][] = $evnt;
 	}

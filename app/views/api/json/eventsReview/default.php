@@ -13,7 +13,7 @@ if (is_array($events)){
 		$evnt['brandName'] = $event['vendor'];
 		$evnt['image'] = $event['event_image'];
 		$evnt['discount'] = floor($event['maxDiscount']);
-		$evnt['url'] = $base_url.'sale/'.$event['url']."?email=true";
+		$evnt['url'] = $base_url.'sale/'.$event['url']."?gotologin=true";
 		$evnt['start_date'] = date('m-d-y g:i:s A',$event['start_date']['sec']);
 		$evnt['end_date'] = date('m-d-y g:i:s A',$event['end_date']['sec']);
 		$out['events'][] = $evnt;
@@ -24,7 +24,7 @@ if (is_array($pending) && count($pending)){
 	unset($event,$evnt); 
 	foreach($pending as $event){ 
 		$evnt['name'] = $event['name'];
-		$evnt['url'] = $base_url.'sale/'.$event['url']."?email=true";
+		$evnt['url'] = $base_url.'sale/'.$event['url']."?gotologin=true";
 		$out['pending'][] = $evnt;
 	}
 }
@@ -33,7 +33,7 @@ if (is_array($closing) && count($closing)){
 	unset($event,$evnt);
 	foreach($closing as $event){ 
 		$evnt['name'] = $event['name'];
-		$evnt['url'] = $base_url.'sale/'.$event['url']."?email=true";
+		$evnt['url'] = $base_url.'sale/'.$event['url']."?gotologin=true";
 		if (is_object($event['end_date'])) { 
 			$event['end_date'] = array(
 				'sec' => $event['end_date']->sec,
