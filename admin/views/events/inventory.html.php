@@ -69,5 +69,5 @@ for($i=0;$i<$itemscount;$i++){
 </tr>
 <!-- 
 -->
-<?=$output?>
+<?php echo $output; ?>
 </table>
