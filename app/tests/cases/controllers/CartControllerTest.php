@@ -4,11 +4,13 @@ namespace app\tests\cases\controllers;
 
 use lithium\action\Request;
 use app\controllers\CartController;
+use app\models\User;
 use app\models\Cart;
 use app\models\Event;
 use app\models\Item;
 use MongoDate;
 use lithium\storage\Session;
+use app\tests\mocks\storage\session\adapter\MemoryMock;
 use li3_fixtures\test\Fixture;
 
 class CartControllerTest extends \lithium\test\Unit {
