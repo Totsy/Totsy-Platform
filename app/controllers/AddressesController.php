@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use app\controllers\BaseController;
 use app\models\Address;
-use app\models\Menu;
+use totsy_common\models\Menu;
 use app\models\User;
 use lithium\storage\Session;
 

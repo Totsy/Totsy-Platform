@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use app\models\User;
-use app\models\Menu;
+use totsy_common\models\Menu;
 use app\models\Affiliate;
 use app\models\Invitation;
 use lithium\security\Auth;
