@@ -413,16 +413,35 @@ class CartController extends BaseController {
 	}
 
 	protected function addIncompletePurchase($items) {
+<<<<<<< feature/upgrade-pre
+=======
+		if (is_object($items)) {
+			$items = $items->data();
+		}
+>>>>>>> HEAD~94
 		$user = Session::read('userLogin');
 		$base_url = 'http://'.$_SERVER['HTTP_HOST'].'/';
 		$itemToSend = array();
 		foreach ($items as $item){
+<<<<<<< feature/upgrade-pre
 			$itemToSend[] = array(
 				'id' => (string) $item->_id,
 				'qty' => $item->quantity,
 				'title' => $item->description,
 				'price' => $item->sale_retail * 100,
 				'url' => $base_url.'sale/'.Event::find($item->event[0])->url.'/'.$item->url
+=======
+			$eventInfo = Event::find($item['event'][0]);
+			if (is_object($eventInfo)) {
+				$eventInfo = $eventInfo->data();
+			}
+			$itemToSend[] = array(
+				'id' => $item['_id'],
+				'qty' => $item['quantity'],
+				'title' => $item['description'],
+				'price' => $item['sale_retail']*100,
+				'url' => $base_url.'sale/'.$eventInfo['url'].'/'.$item['url']
+>>>>>>> HEAD~94
 			);
 		}
 		Mailer::purchase(
