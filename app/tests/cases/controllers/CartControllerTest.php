@@ -172,8 +172,9 @@ class CartControllerTest extends \lithium\test\Unit {
 
 		$data = json_decode($echoed, true);
 
-		$result = $data;
-		$this->assertTrue($result);
+		$this->assertTrue(!empty($data));
+		$this->assertEqual(15, $data['subTotal']);
+		$this->assertEqual(1, $data['itemCount']);
 	}
 
 	/*
