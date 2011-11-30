@@ -54,8 +54,8 @@ class UsersController extends BaseController {
 		Session::write( "eventFromEmailClick", $eventName, array("name"=>"default"));
 		
 		//redirect to login ONLY if the user is coming from an email
-		if ( Session::read("eventFromEmailClick", array("name"=>"default")) && $this->request->query["email"]=="true") {
-			$this->redirect("http://evan.totsy.com/login");		
+		if ( Session::read("eventFromEmailClick", array("name"=>"default")) && $this->request->query["gotologin"]=="true") {
+			$this->redirect("/login");		
 		}		
 	
 		$this->_render['layout'] = 'login';
