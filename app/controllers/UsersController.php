@@ -49,14 +49,16 @@ class UsersController extends BaseController {
 		    $URIArray = explode("/", $currentURI);			
 		    $eventName = $URIArray[2];
 		}
-
-		//write event name to the session
-		Session::write( "eventFromEmailClick", $eventName, array("name"=>"default"));
 		
-		//redirect to login ONLY if the user is coming from an email
-		if ( Session::read("eventFromEmailClick", array("name"=>"default")) && $this->request->query["gotologin"]=="true") {
-			$this->redirect("/login");		
-		}		
+		if ($eventName) {	
+			//write event name to the session
+			Session::write( "eventFromEmailClick", $eventName, array("name"=>"default"));
+			
+			//redirect to login ONLY if the user is coming from an email
+			if ( Session::read("eventFromEmailClick", array("name"=>"default")) && $this->request->query["gotologin"]=="true") {
+				$this->redirect("/login");		
+			}	
+		}	
 	
 		$this->_render['layout'] = 'login';
 		$message = false;
