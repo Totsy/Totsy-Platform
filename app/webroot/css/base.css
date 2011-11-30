@@ -1153,13 +1153,13 @@ text-align:center !important;
 }
 
 #rewards-enroll-now-button-inner {
-	font-size:15px; 
-	width: 175px; 
 	display: table-cell;
 	margin-left: 30px !important;
 	vertical-align: middle; 
-	width: auto; 
+	width: auto;
 	text-align: center;
+	font-size:16px !important; 
+	font-weight:normal
 }
 
 
@@ -1173,8 +1173,8 @@ text-align:center !important;
 
 #rewards-check-balance {
 	font-family:"Times New Roman" !important;
-	font-size: 10px !important;
-	height:35px !important; 
+	font-size: 19px !important;
+	height: 35px !important; 
 	line-height:30px !important;
 }
 
@@ -1241,6 +1241,12 @@ text-align:center !important;
 	float:left !important;
 }
 
+#rewards-members-app .roundy{
+    border: 1px solid #D7D7D7;
+    border-radius: 4px 4px 4px 4px;
+    margin: 0 auto 0px;
+}
+
 #rewards-top-members .address {
 	color: #000000;
 	font-size: 10px;
@@ -1252,6 +1258,61 @@ text-align:center !important;
 	height: 25px;
 	vertical-align:bottom;
 	float:left !important;
+}
+
+#rewards-members-app{
+	width:710px !important;
+}
+
+#rewards-members-welcome{
+	height:65px; 
+	vertical-align:middle; 
+	line-height:65px; 
+	font-size:14px; 
+	font-weight:bold; 
+	color:#000000;
+}
+
+#reward-members-menu{
+	height:72px;
+}
+
+#reward-members-menu-title {
+	height:35px; 
+	line-height:35px; 
+	vertical-align:middle !important; 
+	float:lseft; 
+	background-color:#666 !important; 
+	color:#FFFFFF; 
+	font-weight:bold; 
+	width:707px !important
+}
+
+#reward-members-menu-title span {
+	margin-left:20px;
+}
+
+#reward-members-menu-items {
+	height:35px; 
+	line-height:35px; 
+	vertical-align:middle !important; 
+	float:left; width:707px !important; 
+	font-weight:bold; 
+	background:none repeat scroll 0 0 #F7F7F7;
+}
+
+#reward-members-menu-items span {
+	margin-left:20px;
+}
+
+#rewards-members-menu-items span a {
+	color: #707070 !important;
+}
+
+.nav-roundy {
+	padding:4px,	
+	background-color:#FFF,
+	color: #000000
 }
 
 #get-rewards li {

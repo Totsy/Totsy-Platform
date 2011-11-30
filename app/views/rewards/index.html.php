@@ -9,7 +9,7 @@
 	<div id="rewards-enrollment-banner">
 		<div id="rewards-enroll-now-button-outer">
 			<div id="rewards-enroll-now-button-inner">
-				<a class="button" href="" style="width: 213px; font-size:16px !important; font-weight:normal">Enroll Now!</a>
+				<a class="button" href="#" style="width: 213px; font-size:16px !important; font-weight:normal">Enroll Now!</a>
 				<div id="rewards-check-balance">
 				Check my balance
 				</div>

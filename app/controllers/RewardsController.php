@@ -14,6 +14,10 @@ class RewardsController extends BaseController {
 		//to serve either register or view page for 500 point reward program
   	}
 
+	public function members(){
+		//to serve app via API calls
+	}
+
 }
 
 ?>

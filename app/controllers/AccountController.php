@@ -34,7 +34,7 @@ class AccountController extends BaseController {
 		    			  'type' => "Shipping"))))); 
 									  						
 		return compact('billing', 'shipping');
-	}
+	}	
 }
 
 ?>
