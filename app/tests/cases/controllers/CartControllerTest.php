@@ -13,7 +13,6 @@ use lithium\storage\Session;
 use app\tests\mocks\storage\session\adapter\MemoryMock;
 use li3_fixtures\test\Fixture;
 
-
 class CartControllerTest extends \lithium\test\Unit {
 	public $user;
 	protected $_backup = array();
