@@ -47,6 +47,7 @@ class CartController extends BaseController {
 		#Get Users Informations
 		$user = Session::read('userLogin');
 		#Update the Cart
+
 		if (!empty($this->request->data)) {
 			$this->update();
 		}
