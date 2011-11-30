@@ -357,7 +357,8 @@ class Cart extends Base {
 					}
 					$event = Event::find('first',array('conditions' => array("_id" => $item['event'][0])));
 					$now = getdate();
-					if(($event['end_date']->sec > ($now[0] + (15 * 60)))) {
+					$currentSec = is_object($event['end_date']) ? $event['end_date']->sec : $event['end_date'];
+					if(($currentSec > ($now[0] + (15 * 60)))) {
 						$cart_temp = Cart::find('first', array(
 							'conditions' => array('_id' =>  $item['_id'])));
 						$cart_temp->expires = new MongoDate($now[0] + (15 * 60));
@@ -380,7 +381,8 @@ class Cart extends Base {
 			foreach ($items as $item) {
 				$event = Event::find('first',array('conditions' => array("_id" => $item['event'][0])));
 				$now = getdate();
-				if (($event->end_date->sec < $now[0])) {
+				$currentSec = is_object($event->end_date) ? $event->end_date->sec : $event->end_date;
+				if (($currentSec < $now[0])) {
 					static::remove(array('_id' => new MongoId( $item["_id"])));
 				}
 			}
@@ -432,7 +434,7 @@ class Cart extends Base {
 			$i = 1;
 			$event = static::getLastEvent($cart);
 			if (!empty($event)) {
-				$shipDate = $event->end_date->sec;
+				$shipDate = is_object($event->end_date) ? $event->end_date->sec : $event->end_date;
 				while($i < static::_object()->_shipBuffer) {
 					$day = date('N', $shipDate);
 					$date = date('Y-m-d', $shipDate);
@@ -446,7 +448,6 @@ class Cart extends Base {
 		}
 		
 		//shows one of two static messages
-		$shipDate = null;
 		$shipDate = "On or before 12/23";
 		
 		$items = (!empty($cart->items)) ? $cart->items : $cart;
@@ -458,7 +459,6 @@ class Cart extends Base {
 				}
 				elseif($thisitem['miss_christmas']){
 					$shipDate = "See delivery alert below";	
-				
 				}
 			}
 		}
