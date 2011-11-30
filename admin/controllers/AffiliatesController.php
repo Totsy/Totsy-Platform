@@ -183,17 +183,14 @@ class AffiliatesController extends \admin\controllers\BaseController {
 		$packages = $this->packages;
         return compact('sitePages', 'packages','affiliate', 'affiliateCategories');
 	}
-
+	
 	public function categories($id = NULL) {
-
 		$this->_render['layout'] = !$this->request->is('ajax');
 		$categories = Affiliate::find('first', array('conditions' => array(
 		    '_id' => new MongoId($id)),
 		    'fields' => array('category' => true, 'invitation_codes' => true)
 		    ));
-
 		return compact('categories');
-
 	}
 }
 ?>

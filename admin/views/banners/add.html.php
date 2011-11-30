@@ -163,7 +163,6 @@ tinyMCE.init({
 		var publish = $("input:text[name='enabled']").val();
 		var banner_id = '<?=$prospective_id?>';
 		var url = "<?=$this->url('/banners/add'); ?>";$.post(url,{name:bannerName,end_date:enddate,enabled:publish,banner_id:banner_id},function(data){
-
 		    document.getElementById('agileUploaderSWF').submit();
 		});
 

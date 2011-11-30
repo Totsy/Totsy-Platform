@@ -403,7 +403,7 @@ class Affiliate extends Base {
 		}
 		return $success;
 	}
-	
+
 	public static function retrieveLanding($code, $category){
 		$affBgroundImage = "";
 		$getAff = Affiliate::find('first',
