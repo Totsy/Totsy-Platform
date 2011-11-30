@@ -105,7 +105,6 @@
                             <li id="pixel_tab"><a href="#pixel"><span>Pixels</span></a></li>
                             <li id="current_tab"><a href="#current_pages"><span>Current Pages</span></a></li>
                             <li id="landing_tab"><a href="#landing_page"><span>Dynamic Pages</span></a></li>
-                            <li id="pending_tab"><a href="#pending_page"><span>Pending Backgnd</span></a></li>
                         </ul>
                         <div id="pixel">
                             <?php $checked = (($affiliate['active_pixel']))? 'checked':'' ?>
@@ -211,59 +210,16 @@
                              <?=$this->form->checkbox('active_landing', array('value'=>'1', 'checked'=>$checked)); ?>
                         </div>
                         <p>
-                            <strong> Upload backgroud images for landing pages.</strong>
+                            <strong>
+                            1. Upload the background image first <br/>
+                            2. Add a category <br/>
+                            3. Select the associated affiliate code<br/>
+                            </strong><br/>
+                            <?=$this->html->link('refresh' ,'#categories' ,array('id' => 'cat_refresh' ,'onClick' => 'refreshCategories()'));?>
                         </p>
                         <div id="landing_panel">
-                            <!--Current Background Images-->
-                            <h3 id="current_images">Current Images</h3>
-                            <strong>If you have add a url make sure the http:// is in the url.</strong>
-                            <hr />
-                                <table border="1" cellspacing="30" cellpadding="30">
-                                <tr>
-                                    <th align="justify">
-                                        Image
-                                    </th>
-                                    <th align="justify">
-                                        Category
-                                    </th>
-                                    <th align="justify">
-                                        Code
-                                    </th>
-                                    <th align="justify">
-                                        Remove
-                                    </th>
-                                </tr>
-                                    <?php foreach($affiliate->category as $image):?>
-                                        <tr id="<?=$image['background_image'];?>">
-                                            <td align="center">
-                                                <?php
-                                                        $catImage = "/image/{$image['background_image']}.png";
-                                                ?>
-                                                <?=$this->html->image("$catImage", array('width' => 100, 'alt' => 'altText')); ?>
-                                            </td>
-
-                                            <td align="center">
-                                                <?php
-                                                        $category = $image['name'];
-                                                        $id = $image['background_image'];
-                                                ?>
-                                                <?=$this->form->text("affiliate_category[$id]", array('value' => $category, 'autocomplete'=>'on', 'class' => 'affiliate_category', 'id'=>"category_" . $id)); ?>
-                                            </td>
-                                            <td align="center">
-                                                <?php
-                                                    $code = $image['code'];
-                                                    $options = array_combine($affiliate->invitation_codes->data(),$affiliate->invitation_codes->data());
-                                                    $selection = array_merge($options,array('all' => 'all'));
-                                                ?>
-                                                <?=$this->form->select("apply_code[$id]", $selection,array('class' => "relevantCodes", "value" => $code));?>
-                                            </td>
-                                             <td align="center">
-												 <?=$this->html->image('/img/agile_uploader/trash-icon.png', array("class" => "dynamic_page", 'width' => 'auto', 'height' => 'auto', 'alt' => 'altText')); ?>
-                                                <input type="hidden" name="img[]" value="<?php echo $id; ?>"/>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach;?>
-                                </table>
+                        <!--Current Background Images-->
+                            <div id="categories"></div>
                         <!--End of Current Background Image-->
 							<h3>Upload Images:</h3>
                             <div id="agile_file_upload"></div>
@@ -291,17 +247,14 @@
                             </script>
 
                             <a
-                                href="#"
+                                href="#categories"
                                 class="upload_files_link"
-                                onClick="document.getElementById('agileUploaderSWF').submit();"
+                                onClick="document.getElementById('agileUploaderSWF').submit(); refreshCategories();"
                             >
                                 Start Upload <?=$this->html->image('agile_uploader/upload-icon.png', array('height' => '24')); ?>
                             </a>
                             </div><!--end of landing panel-->
                         </div><!--end landing page-->
-                        <div id="pending_page"><!--start Pending backgrounds-->
-                            <?=$this->view()->render(array('element' => 'files_pending'), array('item' => $affiliate,'search_type' => 'affiliate')); ?>
-                        </div><!--end Pending backgrounds-->
                 </div><!--end tabs-->
             </div><!--end block-->
         </div><!--end grid 8-->
@@ -316,6 +269,7 @@ $(document).ready(function() {
 	//create tabs
 	$("#tabs").tabs();
 	$('#pending_page').hide();
+	refreshCategories();
 });
 </script>
 <script type="text/javascript">
@@ -326,7 +280,7 @@ $(document).ready(function() {
 		} else {
 			$('#pixel_panel').hide();
 		}
-		
+
 		if($('#ActiveLanding').is(':checked')){
 			$('#landing_panel').show();
 			$('#pending_tab').show();
@@ -479,20 +433,6 @@ $(document).ready(function() {
 			});
 		});
 	});
-	//remove dynamic page
-	$('.dynamic_page').click(function(){
-		var id = $(this).parents('tr:first').attr('id');
-		var page = $('#' . id);
-		
-		$.ajax({
-			async: false,
-			type: "DELETE",
-			url: "/files/delete/"+id,
-			success: function() {
-				page.remove();
-			}
-		}); 
-	});
 
 	//Level Selector
 	$(document).ready(function(){
@@ -512,11 +452,23 @@ $(document).ready(function() {
 		});
 	});
 	function getCodes() {
-	var tmp = "";
+        var tmp = "";
 
-	$('#InvitationCodes option').each(function(index,val){
-		tmp = tmp + "<option value=" + $(val).text() + ">" + $(val).text() + "</option>";
-	});
-	return tmp;
-}
+        $('#InvitationCodes option').each(function(index,val){
+            tmp = tmp + "<option value=" + $(val).text() + ">" + $(val).text() + "</option>";
+        });
+        return tmp;
+    }
+    function refreshCategories() {
+        var target = $("#categories");
+
+        $.ajax({
+            async: false,
+            url: "/affiliates/categories/<?=$affiliate->_id;?>",
+            type: "POST",
+            success: function(data) {
+                target.html(data);
+            }
+        });
+    }
 </script>

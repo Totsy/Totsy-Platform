@@ -23,7 +23,7 @@ class AffiliatesController extends BaseController {
 	* @see app/models/Invitation::linkUpInvites()
 	**/
 	public function registration($code = NULL) {
-			
+
 		$success = false;
 		$message = '';
 		$errors = '';
@@ -119,18 +119,16 @@ class AffiliatesController extends BaseController {
 		$affiliateName = "";
 		//for affiliate background images
 		$affBgroundImage = "";
-		
+
 		if (isset($this->request->query['a']) || preg_match('/^[a-z_]+$/', $this->request->query['a'])) {
-		
        		$categoryName = trim($this->request->url);
 			$affiliateName = trim($this->request->query['a']);
 			$affBgroundImage = Affiliate::retrieveLanding($affiliateName,$categoryName);
-			
 			$affiliate = $affiliateName;
 		}
-				
+
 		$pdata = $this->request->data;
-		
+
 		$message = false;
 		$user = User::create();
 		$urlredirect = '/sales';
@@ -207,7 +205,7 @@ class AffiliatesController extends BaseController {
 				}
 			}
 		}
-				
+
 		$this->_render['layout'] = 'login';
 		return compact('message', 'user', 'userfb','categoryName','affiliateName','affBgroundImage','affiliateName');
 	}

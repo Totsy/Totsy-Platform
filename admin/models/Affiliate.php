@@ -28,13 +28,12 @@ class Affiliate extends Base {
 		    }
 
 		    if ($pixel['enable'] && array_key_exists('page', $pixel)) {
-				if (empty($category)) {
-					if (in_array('all', $pixel['codes'])) {
-						$temp['codes'] = $codes;
-					}
-				} else {
-					$temp['codes'] = $pixel['codes'];
-				}
+		        if (empty($pixel['codes'])) { $pixel['codes'] = array('all');}
+                if (in_array('all', $pixel['codes'])) {
+                    $temp['codes'] = $codes;
+                } else {
+                    $temp['codes'] = $pixel['codes'];
+                }
 		    }
 		    $temp['page'] = array_values($pixel['page']);
 		    $temp['pixel'] = $pixel['pixel'];
@@ -103,7 +102,7 @@ class Affiliate extends Base {
 				$dataset = array('$pushAll' => array($type['field'] =>
 					array('background_image' => $id , 'category' => null)
 				));
-			}else {
+			} else {
 				Logger::debug("Multiple but not array. Attaching file `{$id}` to `{$entity->_id }`");
 				Logger::debug("Pushing to {$type['field']}");
 				$dataset = array('$push' => array($type['field'] =>

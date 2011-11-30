@@ -179,6 +179,8 @@ class FilesController extends \lithium\action\Controller {
 
 					} else if (array_key_exists('banner_id', $meta) && BannerImage::process($handle, $meta)) {
 						Logger::debug("File `{$file['name']}` matched & processed as banner image.");
+					} else if (array_key_exists('affiliate_id', $meta) && AffiliateImage::process($handle, $meta)) {
+						Logger::debug("File `{$file['name']}` matched & processed as affiliate image.");
 					} else { /* All unmatched files are not resized and saved as pending. */
 						$file = File::write($handle, $meta + array('pending' => true));
 						$id = $file->_id;

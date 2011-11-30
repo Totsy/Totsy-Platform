@@ -2,20 +2,16 @@
 
 	var affiliateName = "";
 	var categoryName = "";
-
-<?php
-    if($affiliateName) {
- ?>
+<?php if($affiliateName) :?>
     affiliateName= "<?=$affiliateName?>";
-<?php } ?>
+<?php endif; ?>
 
-<?php if($categoryName) { ?>
+<?php if($categoryName) : ?>
     categoryName= "<?=$categoryName?>";
-<?php } ?>
-
-<?php if($affBgroundImage) { ?>
-    affBgroundImage = "<?="/image/".$affBgroundImage.".jpg"?>";
-<?php } ?>
+<?php endif; ?>
+<?php if($affBgroundImage) : ?>
+    affBgroundImage = "<?='/image/'.$affBgroundImage.'.jpg'?>";
+<?php endif; ?>
 
 </script>
 <?php if ($message){ echo $message; } ?>

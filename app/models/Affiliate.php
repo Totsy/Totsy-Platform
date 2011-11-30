@@ -19,7 +19,7 @@ class Affiliate extends Base {
     * @return the pixels associated to the affiliate and url
     */
 	public static function getPixels($url, $invited_by,$option = array()) {
-	
+
 	    $cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 	    $userInfo = Session::read('userLogin', array('name' => 'default'));
 		$userCollection = User::collection();
@@ -30,8 +30,8 @@ class Affiliate extends Base {
             $orderid = $option['order_id'];
         }
         /*for affilliates that have a category
-        build the URL here in order to find a match and get the right pixel info for this affiliate */        
-        
+        build the URL here in order to find a match and get the right pixel info for this affiliate */
+
 		/**
 		* This detaches the invited by from the unique identifier
 		* for affiliate invited by retrieved from
@@ -40,7 +40,7 @@ class Affiliate extends Base {
         if($index = strpos($invited_by, '_')) {
             $invited_by = substr($invited_by, 0 , $index);
         }
-        
+
         $conditions['active'] = true;
         $conditions['level'] = 'super';
         $conditions['pixel'] = array('$elemMatch' => array(
@@ -54,7 +54,7 @@ class Affiliate extends Base {
 		                    'pixel'=>1,
 							'_id' => 0
 		                    ));
-		                    
+
 		$pixels = Affiliate::find('all', $extra );
 		$pixels = $pixels->data();
 		$pixel = NULL;
@@ -65,7 +65,7 @@ class Affiliate extends Base {
                 Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
             }
         }
-        
+
 		foreach($pixels as $data) {
 			foreach($data['pixel'] as $index) {
                 if(is_array($index['page']) && in_array($url, $index['page']) && in_array($invited_by, $index['codes'])) {
@@ -114,8 +114,8 @@ class Affiliate extends Base {
     *
     * @param $invited_by the affilate code associated with the pixel
     * @param $pixel the pixel the affiliate provided
-    * @param $options Available options: 
-    * 	product -> item view page, 
+    * @param $options Available options:
+    * 	product -> item view page,
     * 	orderid -> for affiliates who need orderids for share revenue,
     * 	trans_type -> for transmitting 'new'/'cancel' order to revenue share affiliates.
     * @return string modified pixels.
@@ -206,12 +206,12 @@ class Affiliate extends Base {
 		if (is_object($event)){
                 	$insert = static::spinback_share(
 				'/image/' .$event->logo_image . '.gif',
-				$event->_id, 
-				$options['event'],  
-				htmlspecialchars($event->name), 
+				$event->_id,
+				$options['event'],
 				htmlspecialchars($event->name),
-				"Check out this SALE on Totsy!", 
-				' st="Share this Sale!"'  
+				htmlspecialchars($event->name),
+				"Check out this SALE on Totsy!",
+				' st="Share this Sale!"'
 			);
 		} else {
 			$insert = '';
@@ -398,9 +398,9 @@ class Affiliate extends Base {
 		}
 		return $success;
 	}
-	
+
 	public static function retrieveLanding($code, $category){
-		 $affBgroundImage = array();
+		 $affBgroundImage = "";
 		 $getAff = Affiliate::find('first',
 				array('conditions' => array(
 					'active_landing' => true,
@@ -412,15 +412,15 @@ class Affiliate extends Base {
 			));
 			foreach($getAff['category'] as $record=>$value) {
 				$catRecord = $value->data();
-				
+
 				if(($catRecord['name'] == $category) &&
 					($catRecord['code'] == $code)){
 					$affBgroundImage = $catRecord['background_image'];
 					break;
-				}	
+				}
 			}
-			
-			return $affBgroundImage;	
+
+			return $affBgroundImage;
 	}
 }
 ?>
