@@ -55,6 +55,14 @@ class EventsController extends BaseController {
 				$openEvents = $events_closed;
 			}
 		}
+		
+	if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_index';
+		} else {
+		
+		}
+	
 		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner', 'departments');
 	}
 

@@ -130,13 +130,12 @@ class BaseController extends \lithium\action\Controller {
 		**/
 		$this->set(compact('pixel'));
 
-		//new login layout to account for fullscreen image JL
-		if($this->request->is('mobile')){
-		 	$this->_render['layout'] = 'mobile_login';
-		 	$this->_render['template'] = 'mobile_login';
-		} else {
-			$this->_render['layout'] = 'main';
-		}
+
+			if ($user && $this->request->is('mobile')) {
+		 		$this->_render['layout'] = 'mobile_main';
+			} else {
+				$this->_render['layout'] = 'main';
+			}
 	}
 
 	/**

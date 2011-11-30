@@ -1,6 +1,3 @@
-<style>
-	body { background:#f5f5f5;}
-</style>
 <?php use lithium\net\http\Router; ?>
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml"
@@ -9,62 +6,29 @@
 <head>
 	<?php echo $this->html->charset();?>
 	<title>Totsy, the private sale site for Moms</title>
-	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-	<meta name = "format-detection" content = "telephone=no">
-	<link media="only screen and (max-device-width: 480px) and (min-device-width: 320px)" href="css/mobile.css" type="text/css" rel="stylesheet" />
-	<link media="handheld, only screen and (max-device-width: 319px)" href="css/mobile_simple.css" type="text/css" rel="stylesheet" />
-	<?=$this->html->style(array('base', 'mobile.css', 'mobile_reset.css'), array('media' => 'screen')); ?>
-	<meta property="fb:app_id" content="181445585225391"/>
-	<meta property="og:site_name" content="Totsy"/>
-	<meta name="description" content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
+	
+	<meta name="description"
+	content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
+	<meta name="viewport" content="width=device-width,user-scalable=no" />
 
 	<?php echo $this->scripts(); ?>
-	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
-	
-	<script type="application/x-javascript">
-		if (navigator.userAgent.indexOf('iPhone') != -1) {
-		addEventListener("load", function() {
-		setTimeout(hideURLbar, 0);
-		}, false);
-		}
-		
-		function hideURLbar() {
-		window.scrollTo(0, 1);
-		}
-	</script>
+
+	<link rel="stylesheet" href="/totsyMobile/themes/totsy.css">
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile.structure-1.0rc2.min.css" /> 
+	<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
+
 </head>
 <body>
-	<?php echo $this->html->link($this->html->image('logo.png', array('width'=>'100', 'style' => 'text-align:center; margin:20px 0px 3px 110px;')), '/sales', array('escape'=> false)); ?>
+<div class="nav_head"></div>
+	<div class="mobile_ui">
+	<div class="logo">
+		<a href="#" onclick="window.location.href='/sales';return false;"><img src="/img/logo.png" width="80" /></a>
+	</div>	
+	<div data-role="content">
 	<?php echo $this->content(); ?>
-	<!-- Affiliate Pixel -->
-	<?php echo $pixel; ?>
-	<script>
-	    $(document).ready(function(){
-    $("label.inlined + input.input-text").each(function (type) {
-     
-    Event.observe(window, 'load', function () {
-    setTimeout(function(){
-    if (!input.value.empty()) {
-    input.previous().addClassName('has-text');
-    }
-    }, 200);
-    });
-     
-    $(this).focus(function () {
-    $(this).prev("label.inlined").addClass("focus");
-    });
-     
-    $(this).keypress(function () {
-    $(this).prev("label.inlined").addClass("has-text").removeClass("focus");
-    });
-     
-    $(this).blur(function () {
-    if($(this).val() == "") {
-    $(this).prev("label.inlined").removeClass("has-text").removeClass("focus");
-    }
-    });
-    });
-    });
-</script>
+	</div>
+	<p class="legal">&copy;2011 Totsy, Inc. All rights reserved.</p>
+</div>
 </body>
 </html>
