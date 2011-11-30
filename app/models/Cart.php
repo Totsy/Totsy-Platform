@@ -310,7 +310,7 @@ class Cart extends Base {
 		if ($reserved) {
 			$carts = $reserved->data();
 			foreach ($carts as $cart) {
-				$total = $total + $cart['quantity'];
+				$total = $total + isset($cart['quantity']) ? $cart['quantity'] : 0;
 			}
 		}
 		return $total;
