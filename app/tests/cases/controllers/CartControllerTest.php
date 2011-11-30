@@ -141,7 +141,7 @@ class CartControllerTest extends \lithium\test\Unit {
 	}
 
 	public function testAdd() {
-		$item = $this->_createCart(
+		list($item) = $this->_createCart(
 			array(
 				'name' => 'Test Event',
 				'url' => 'test_event'
@@ -152,9 +152,6 @@ class CartControllerTest extends \lithium\test\Unit {
 			)
 		);
 		$this->assertTrue(!empty($item));
-
-		$result = Cart::checkCartItem($item->_id, 'no size');
-		$this->assertTrue(empty($result));
 
 		$request = new Request(array(
 			'query' => array(
