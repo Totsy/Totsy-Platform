@@ -141,7 +141,6 @@ class EventsController extends BaseController {
 				unset($oitem['event']);
 				unset($oitem['created_date']);
 				unset($oitem['total_quantity']);
-				unset($oitem['sale_retail']);
 				unset($oitem['enabled']);
 				unset($oitem['details_original']);
 				unset($oitem['sale_details']);
@@ -162,7 +161,10 @@ class EventsController extends BaseController {
 				$oitem['total_quantity'] = (int)$total_quantity_new;
 				
 				//set new price
-				$oitem['sale_retail'] = floatval($item_price_new);
+				if($item_price_new){
+					unset($oitem['sale_retail']);
+					$oitem['sale_retail'] = floatval($item_price_new);
+				}
 
 				//save original quants
 				$oitem['details_original'] = $oitem['details'];
