@@ -61,6 +61,7 @@ Environment::is(function($request) {
 		case 'totsystaging.com':
 		case 'www.totsystaging.com':
 		case 'newprod.totsy.com':
+		case '50.56.49.10':
 			return 'production';
 		case 'test.totsy.com':
 			return 'test';
