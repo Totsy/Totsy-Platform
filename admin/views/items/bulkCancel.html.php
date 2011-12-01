@@ -173,6 +173,7 @@ else
 
 						foreach($orders as $order) {
 								$order_temp = $order->data();
+																
 								$o=0;
 								while ($o < sizeof($order_temp["items"])) {
 									if ($order_temp["items"][$o]["item_id"] == $item['_id']) {
@@ -203,10 +204,14 @@ else
 
 		</div>
 
+<?php if ($order->auth_confirmation <= -1) { ?>
+
 <?php if (!$line_item["cancel"] || $line_item["cancel"] == 0): ?>
 		<input type="checkbox" id="<?=$order[_id];?>" name="order[<?=$i;?>]" value="<?=$order[_id];?>" class="cb-element" >
 		<input type="hidden" id="line_number[<?=$i;?>]" name="line_number[<?=$i;?>]" value="<?=$line_item[line_number];?>">
 <?php endif; ?>
+
+<? } ?>
 											</td>
 											<td><?=$order["order_id"];?></td>
 											<td><?php
@@ -228,9 +233,9 @@ else
 											</td>
 											<td><?=date('Y-M-d h:i:s',$order_temp[date_created]['sec']);?></td>
 											<td>
-
+	
 											<a href="/orders/view/<?=$order[_id];?>">View Order</a>
-											<?php if ($line_item[cancel] != 1) {?> | <a href="/orders/cancelOneItem?line_number=<?=$line_item[line_number];?>&order_id=<?=$order[_id];?>&item_id=<?=$item_id;?>&sku=<?=$sku;?>" onclick="return cancelLineItem();">Cancel</a><?php } ?></td>
+											<?php if ($line_item[cancel] != 1 && $order->auth_confirmation <= -1 ) {?> | <a href="/orders/cancelOneItem?line_number=<?=$line_item[line_number];?>&order_id=<?=$order[_id];?>&item_id=<?=$item_id;?>&sku=<?=$sku;?>" onclick="return cancelLineItem();">Cancel</a><?php } ?></td>
 										</tr>
 									<?php
 						 		$i++;
