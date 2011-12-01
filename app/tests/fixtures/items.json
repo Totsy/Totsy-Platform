@@ -25,5 +25,20 @@
                 "300001"
             ],
             "sale_whol" : 20
+        },
+    "item3":{
+            "_id":"10006",
+            "url":"item3",
+            "details" : {
+                "no size" : "4"
+            },
+            "description" : "Kitty Octopus Blanket",
+            "category" : "accessories",
+            "event" : [
+                "300002"
+            ],
+            "sale_whol" : 20,
+            "sale_retail": 15,
+            "total_quantity": 3
         }
 }
