@@ -65,7 +65,7 @@ class CartController extends BaseController {
 		$itemCount = 0;
 		$missChristmasCount = 0;
 		$notmissChristmasCount = 0;
-		
+
 		#Count of how many items in the cart are exempt of shipping cost
 		$exemptCount = 0;
 
@@ -89,8 +89,8 @@ class CartController extends BaseController {
 
 			$events = Event::find('all', array('conditions' => array('_id' => $item->event[0])));
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
-			
-			
+
+
 			//miss chrismtas stuff to be removed later
 			$item->miss_christmas = $itemInfo->miss_christmas;
 			if($item->miss_christmas){
@@ -98,8 +98,8 @@ class CartController extends BaseController {
 			}
 			else{
 				$notmissChristmasCount++;
-			}			
-			
+			}
+
 			#Get Event End Date
 			$cartItemEventEndDates[$i] = is_object($events[0]->end_date) ? $events[0]->end_date->sec : $events[0]->end_date;
 			$item->event_url = $events[0]->url;
@@ -179,9 +179,9 @@ class CartController extends BaseController {
 			#If unselected, put no size as choice
 			$size = (!array_key_exists('item_size', $data)) ?
 				"no size": $data['item_size'];
-				
-				
-			//added miss_christmas, to be removed	
+
+
+			//added miss_christmas, to be removed
 			$item = Item::find('first', array(
 				'conditions' => array(
 					'_id' => "$itemId"),
@@ -309,7 +309,6 @@ class CartController extends BaseController {
 		//get user savings. they were just put there by updateSavings()
 		$cartData['savings'] = Session::read('userSavings');
 		//get the ship date
-		$cartData['shipDate'] = date('m-d-Y', Cart::shipDate(Cart::active()));
 		$cartData['shipDate'] = Cart::shipDate(Cart::active());
 		//get the amount of items in the cart
 		$cartData['itemCount'] = Cart::itemCount();
