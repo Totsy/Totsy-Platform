@@ -119,8 +119,8 @@ class OrdersController extends BaseController {
 		$shipped = (isset($order->tracking_numbers)) ? true : false;
 		$shipRecord = (isset($order->ship_records)) ? true : false;
 		$preShipment = ($shipped || $shipRecord) ? true : false;
-		$itemsByEvent = $this->_itemGroupByEvent($order);
-		$orderEvents = $this->_orderEvents($order);
+		$itemsByEvent = $this->itemGroupByEvent($order);
+		$orderEvents = $this->orderEvents($order);
 		//Check if all items from one event are closed
 		foreach($itemsByEvent as $items_e) {
 			foreach($items_e as $item) {
@@ -368,7 +368,7 @@ class OrdersController extends BaseController {
 		#Get Current Cart
 		$cart = $taxCart = Cart::active(array('fields' => $fields, 'time' => 'now'));
 		$cartEmpty = ($cart->data()) ? false : true;
-		$cartByEvent = $this->_itemGroupByEvent($cart);
+		$cartByEvent = $this->itemGroupByEvent($cart);
 		#Calculate Shipped Date
 		$shipDate = Cart::shipDate($cart);
 		#Get Value Of Each and Sum It
@@ -457,6 +457,11 @@ class OrdersController extends BaseController {
 		if (Session::check('cc_error')) {
 			return $this->redirect(array('Orders::payment'));
 		}
+		#Check if Services
+		$servicesAvailable = false;
+		if(Session::check('service_available')) {
+			$serviceAvailable = Session::read('service_available');
+		}
 		return $vars + compact(
 			'cartEmpty',
 			'order',
@@ -523,7 +528,6 @@ class OrdersController extends BaseController {
 			}
 		}
 		return $orderEvents;
->>>>>>> xmas shipping
 	}
 
 	/**
