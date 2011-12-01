@@ -11,6 +11,7 @@ use app\extensions\Mailer;
 use app\models\User;
 use app\models\Base;
 use app\models\FeatureToggles;
+use app\extensions\AvaTax;
 
 class Order extends Base {
 
@@ -141,10 +142,12 @@ class Order extends Base {
 					$order->service = $services;
 				}
 			}
+			
 			#Save Tax Infos
-			if($avatax === true){
-				AvaTax::postTax(compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
+			if( $avatax===true || (!empty($avatax['avatax']) && $avatax['avatax']=== true)){	
+				AvaTax::postTax(compact('order','cart', 'vars') );
 			}
+			
 			#Shipping Method - By Default UPS
 			$shippingMethod = 'ups';
 			#Calculate savings

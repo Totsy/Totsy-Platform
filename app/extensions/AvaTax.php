@@ -89,8 +89,9 @@ class AvaTax {
 						'result' => 'Tax calculation was performed internally using default state tax.',
 						'trace' => '<br><div style="padding-left:15px;">'.
 										'DATE: '.date('Y-m-d H:i:s').'<br>',
-										'INFO: '.$data.'<br>',
-										'TRACE: '.$e->getTraceAsString()
+										'INFO: '.print_r($data,true).'<br>',
+										'TRACE: '.$e->getTraceAsString().
+									'</div>'
 					));
 					$return = array( 
 						'tax'=>static::totsyCalculateTax($data),
@@ -104,7 +105,7 @@ class AvaTax {
 						'result' => 'Charged $0 tax for this order.',
 						'trace' => '<br><div style="padding-left:15px;">'.
 										'DATE: '.date('Y-m-d H:i:s').'<br>',
-										'INFO: '.$data.'<br>',
+										'INFO: '.print_r($data,true).'<br>',
 										'TRACE: '.$e->getTraceAsString().
 									'</div>'
 					));
@@ -124,7 +125,30 @@ class AvaTax {
   		if (is_array($data) && array_key_exists('cartByEvent',$data) ){
 			$data['items'] = static::getCartItems($data['cartByEvent']);
 			static::shipping($data);
-		}  		
+		}  	
+
+		if (is_array($data) && array_key_exists('cart',$data)){
+			$data['items'] = $data['cart']->data();
+			unset($data['cart']);
+			static::shipping($data);
+		}
+		
+		if (!empty($data['vars']) && !empty($data['vars']['billingAddr'])){
+			$data['billingAddr'] = $data['vars']['billingAddr'];
+		}
+		if (!empty($data['vars']) && !empty($data['vars']['shippingAddr'])){
+			$data['shippingAddr'] = $data['vars']['shippingAddr'];
+		}
+		if (!empty($data['vars']) && !empty($data['vars']['shippingCost'])){
+			$data['shippingCost'] = $data['vars']['shippingCost'];
+		}
+		if (!empty($data['vars']) && !empty($data['vars']['overShippingCost'])){
+			$data['overShippingCost'] = $data['vars']['overShippingCost'];
+		}
+		if (!empty($data['vars'])){
+			unset($data['vars']);
+		}
+		
   		$data['admin'] = 1;
   		try {
   			$return = AvaTaxWrap::getAndCommitTax($data);
@@ -140,8 +164,9 @@ class AvaTax {
 					'result' => 'Charged $0 tax for this order.',
 					'trace' => '<br><div style="padding-left:15px;">'.
 									'DATE: '.date('Y-m-d H:i:s').'<br>',
-									'INFO: '.$data.'<br>',
-									'TRACE: '.$e->getTraceAsString()
+									'INFO: '.print_r($data,true).'<br>',
+									'TRACE: '.$e->getTraceAsString().
+								'</div>'
 				));
 				$return = 0;
 			}
@@ -152,8 +177,8 @@ class AvaTax {
   	private static function totsyCalculateTax ($data) {
   		if (!array_key_exists('overShippingCost',$data)) { $data['overShippingCost'] = 0; }
   		if (!array_key_exists('shippingCost',$data)) { $data['shippingCost'] = 0; }
-  		$tax = array_sum($data['taxCart']->tax($data['shippingAddr']));
-  		return $tax ? $tax + (($data['overShippingCost'] + $data['shippingCost']) * Cart::TAX_RATE) : 0;
+		// old way replaced by slav 12/1/11
+  		return Cart::taxCart($data['taxCart'],$data['shippingAddr'],$data['totalDiscount']);
   	}
   	
 	protected static function getCartItems($cartByEvent){
