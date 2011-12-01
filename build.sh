@@ -28,6 +28,7 @@ function print_usage {
 	echo " - init              Initially prepare codebase."
 	echo " - fix-perms         Set default permissions on app, admin and resources (excl. libraries)."
 	echo " - run-tests         Runs lithium, app, admin and library tests."
+	echo " - run-app-tests     Runs app tests."
 	echo " - optimize-repo     Perform GC on local git repository."
 	echo " - source-subs       Initialize and update all submodules."
 	echo " - source-pear       Install symlink to PEAR."
@@ -101,6 +102,14 @@ case $COMMAND in
 		libraries/lithium/console/li3 test --case=app.tests.cases.models.OrderTest
 
 		libraries/lithium/console/li3 test --case=li3_payments.tests.integration.TransactionsTest
+
+		echo
+		;;
+
+	run-app-tests)
+		cd $PROJECT_DIR/app
+		libraries/lithium/console/li3 test tests/cases
+		libraries/lithium/console/li3 test ../libraries/li3_payments/tests
 
 		echo
 		;;
