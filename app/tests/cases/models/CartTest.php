@@ -28,6 +28,11 @@ class CartTest extends \lithium\test\Unit {
 		$next = $efixture->first();
 		do {
 			Event::remove(array('_id' => $next['_id'] ));
+			foreach($next as $key => $value) {
+				if (is_string($value) && preg_match('/_date$/', $key)) {
+					$next[$key] = new MongoDate(strtotime($value));
+				}
+			}
 			$event = Event::create();
 			$event->save($next);
 		} while ($next = $efixture->next());
@@ -55,7 +60,6 @@ class CartTest extends \lithium\test\Unit {
 		);
 		$this->user = User::create();
 		$this->user->save($data, array('validate' => false));
-
 		$this->_delete[] = $this->user;
 
 		Session::config(array(

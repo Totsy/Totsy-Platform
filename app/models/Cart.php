@@ -304,13 +304,14 @@ class Cart extends Base {
 		$reserved =  static::find('all', array(
 			'conditions' => array(
 				'item_id' => $item_id,
-				'size' => $size),
+				'size' => $size
+			),
 			'fields' => array('quantity')
 		));
 		if ($reserved) {
 			$carts = $reserved->data();
 			foreach ($carts as $cart) {
-				$total = $total + isset($cart['quantity']) ? $cart['quantity'] : 0;
+				$total += (isset($cart['quantity']) ? $cart['quantity'] : 0);
 			}
 		}
 		return $total;
