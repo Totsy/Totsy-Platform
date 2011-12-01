@@ -227,6 +227,17 @@ class OrdersController extends BaseController {
 
 		$this->request->data = $order_data;
 
+		$order_temp = $this->manage_items();
+		
+		echo 'PASSED';
+		#SAVING DATAS
+		$order_data_to_be_saved = $order_temp->data();
+		$order_data_to_be_saved[id] = $order_data[_id];
+		$order_data_to_be_saved[items][$line_number][initial_quantity] = $order_data[items][$line_number][quantity];
+		$order_data_to_be_saved[items][$line_number][cancel] = "true";
+		$order_data_to_be_saved[save] = true;
+		$order_data_to_be_saved[comment] = 'Bulk Cancel of Item';
+		$this->request->data = $order_data_to_be_saved;
 		$order = $this->manage_items();
 
 		$this->redirect('/items/bulkCancel/' . $sku);
