@@ -244,6 +244,9 @@ var discountErrors = new Object();
 			        	<img src="/img/tooltip_icon.png">
 			        </span>
 					<strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
+					 <?php if($serviceAvailable) : ?>
+				    	/ <strong><a href="#" id="reservices_lnk" onclick="reaplyService();">Re-Apply <?=$serviceAvailable; ?></a></strong>
+				    <?php endif ?>
 				</div>
 				<div style="clear:both"></div>
 				<div id="promos_and_credit">
@@ -377,7 +380,13 @@ var discountErrors = new Object();
 	<?=$this->form->hidden('rmv_item_id', array('class' => 'inputbox', 'id' => 'rmv_item_id')); ?>
 	<?=$this->form->end();?>
 </div>
-		
+
+<div id="reappServiceF" style="display:none">
+	<?=$this->form->create(null ,array('id'=>'reappServiceForm')); ?>
+	<?=$this->form->hidden('reapplyService', array('class' => 'inputbox', 'id' => 'reapplyService')); ?>
+	<?=$this->form->end();?>
+</div>
+
 <script type="text/javascript" src="/js/cart-items-timer.js" charset="utf-8"></script>	
 	
 <div class="clear"></div>
@@ -471,4 +480,9 @@ function open_promo() {
 		$("#promo").slideToggle("fast");
 	}
 };
+	//Submit Reapply Old Service
+	function reaplyService() {
+		$('input[name="reapplyService"]').val('true');
+		$('#reappServiceForm').submit();
+	}
 </script>
