@@ -16,20 +16,124 @@
 
 /* A
 -----------------------------------------------------------------------------------------------------------*/
+.mobile_ui {
+	margin:-1px 0px 0px 0px;
+}
+.required span {color:#ed1c24!important;}
+input.ui-input-text {
+	margin: 2px 0 5px;
+}
+hr {display: block;
+position: relative;
+padding: 0;
+margin: 8px auto;
+width: 100%;
+clear: both;
+border: none;
+border-top: 1px solid #AAA;
+border-bottom: 1px solid #FFF;
+font-size: 1px;
+line-height: 0;
+overflow: visible;}
+.nav_head { 
+	font-weight:normal; background:#ed1c24; padding:5px; text-shadow:none; color:#fff;}
+.error_flash {
+    background: none repeat scroll 0 0 #ed1c24 !important;
+    border-radius: 5px 5px 5px 5px;
+    color: #fff;
+    font-size: 14px;
+    line-height: 16px;
+    padding: 10px;
+    text-align: center;
+    text-shadow: none!important;
+    margin-bottom:10px;
+}
+.success_flash {
+    background: none repeat scroll 0 0 #26ca18 !important;
+    border-radius: 5px 5px 5px 5px;
+    color: #fff;
+    font-size: 14px;
+    line-height: 16px;
+    padding: 10px;
+    text-align: center;
+    text-shadow: none!important;
+    margin-bottom:10px;
+}
+div.list-row a {
+    clear: both;
+    color: #F4CF53;
+    display: block;
+    float: left;
+    font-weight: bold;
+    overflow: visible;
+    border-top: 1px solid #ddd; padding:5px 5px 5px 0px;
+    text-align: left;
+    text-decoration: none;
+    width: 100%;
+    
+}
+.item_title_bar {
+    position: absolute;
+    top: 250px;
+}
+.item_title {
+padding: 5px 7px;
+background: none repeat scroll 0 0 #FFFFFF;
+color:#ed1c24;
+
+}
+.item_shop_btn {
+padding: 5px 7px;
+    background: none repeat scroll 0 0 #FFFFFF;
+}
+.item_intro_box {background:#fff; border:1px solid #ddd; padding:5px; }
+.holiday_message { background:#fff; border:1px solid #ddd; padding:5px; text-align: center; font-size: 11px;}
+.blurb p {
+    font-size: 13px;
+    line-height: 19px;
+    margin: 6px 0;
+    padding: 0 6px;
+    text-align: left !important;
+}
+.list-row a:hover {
+    background:#f7f7f7;
+}
+.ui-collapsible {
+    margin: 0.5em 10px!important;
+}
+
+a:link, a:visited, ui-link {
+	color:#ed1c24!important;
+	text-decoration:none;
+}
+
+a:hover {
+	text-decoration:underline;
+}
+
+.splitter { color:#aaa!important;}
+.legal {font-size: 9px; text-align: center;}
+
+h2 { margin:0px; font-size:18px; }
+
+.logo {width:100%; display: block; margin:10px 10px 1px 6px;}
+
+.footer {text-align:center; margin:10px 0px 0px 0px; font-size: 10px!important;}
+
 .ui-btn {
 	color:#ed1c24!important;}
 .ui-bar-a {
-	border: 1px solid #ed1c24 /*{a-bar-border}*/;
-	background: #ed1c24 /*{a-bar-background-color}*/;
-	color: #ffffff /*{a-bar-color}*/;
+	border-bottom: 0px solid #ed1c24 /*{a-bar-border}*/;
+	background: #fff /*{a-bar-background-color}*/;
+	color: #ed1c24!important /*{a-bar-color}*/;
 	font-weight: bold;
 	text-shadow:  0  /*{a-bar-shadow-x}*/  0px  /*{a-bar-shadow-y}*/  0px  /*{a-bar-shadow-radius}*/ #444444 /*{a-bar-shadow-color}*/;
-	background-image: -webkit-gradient(linear, left top, left bottom, from( #FF1E27 /*{a-bar-background-start}*/), to( #D51920 /*{a-bar-background-end}*/)); /* Saf4+, Chrome */
-	background-image: -webkit-linear-gradient(top, #FF1E27 /*{a-bar-background-start}*/, #D51920 /*{a-bar-background-end}*/); /* Chrome 10+, Saf5.1+ */
-	background-image:    -moz-linear-gradient(top, #FF1E27 /*{a-bar-background-start}*/, #D51920 /*{a-bar-background-end}*/); /* FF3.6 */
-	background-image:     -ms-linear-gradient(top, #FF1E27 /*{a-bar-background-start}*/, #D51920 /*{a-bar-background-end}*/); /* IE10 */
-	background-image:      -o-linear-gradient(top, #FF1E27 /*{a-bar-background-start}*/, #D51920 /*{a-bar-background-end}*/); /* Opera 11.10+ */
-	background-image:         linear-gradient(top, #FF1E27 /*{a-bar-background-start}*/, #D51920 /*{a-bar-background-end}*/);
+	background-image: -webkit-gradient(linear, left top, left bottom, from( #fff /*{a-bar-background-start}*/), to( #fff /*{a-bar-background-end}*/)); /* Saf4+, Chrome */
+	background-image: -webkit-linear-gradient(top, #fff /*{a-bar-background-start}*/, #fff /*{a-bar-background-end}*/); /* Chrome 10+, Saf5.1+ */
+	background-image:    -moz-linear-gradient(top, #fff /*{a-bar-background-start}*/, #fff /*{a-bar-background-end}*/); /* FF3.6 */
+	background-image:     -ms-linear-gradient(top, #fff /*{a-bar-background-start}*/, #fff /*{a-bar-background-end}*/); /* IE10 */
+	background-image:      -o-linear-gradient(top, #fff /*{a-bar-background-start}*/, #fff /*{a-bar-background-end}*/); /* Opera 11.10+ */
+	background-image:         linear-gradient(top, #fff /*{a-bar-background-start}*/, #fff /*{a-bar-background-end}*/);
 }
 
 .ui-bar-a .ui-link-inherit {
@@ -455,7 +559,7 @@ a.ui-link-inherit {
 
 .ui-btn-active {
 	border: 1px solid #dddddd /*{global-active-border}*/;
-	background: # /*{global-active-background-color}*/;
+	background: #fff /*{global-active-background-color}*/;
 	font-weight: bold;
 	color: #ed1c24 /*{global-active-color}*/;
 	cursor: pointer;

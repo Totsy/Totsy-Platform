@@ -1,14 +1,17 @@
 <?php if ($success == false): ?>
-<h2 style="margin:0px; font-size:18px;">Forgot your password?</h2>
+<h2>Reset Password <span style="color:#999; font-size:12px; float:right; margin:5px 0px 0px 0px;"><a href="#" onclick="window.location.href='/login';return false;">Sign In</a></span></h2>
 <hr />
-<?php if (!empty($message)): ?>
-<div id='message' class="cart-message"><?=$message;?> <a href="/" class="md" title="Return to Totsy">Return to Totsy</a></div>
-<?php endif ?>
+
+<?php if ($message){ ?>
+<?php echo $message; ?>
+<?php } ?>
+
+
 
 											<?=$this->form->create(null, array('id'=>'loginForm')); ?>
 										
 													
-<?=$this->form->label('email', 'Email Address <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+<?=$this->form->label('email', 'Email Address<span>*</span>', array('escape' => false,'class' => 'required')); ?>
 <?=$this->form->text('email', array('class' => 'inputbox')); ?>
 <?=$this->form->error('email'); ?>
 												

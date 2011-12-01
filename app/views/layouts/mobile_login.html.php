@@ -1,6 +1,3 @@
-<style>
-	body { background:#f5f5f5;}
-</style>
 <?php use lithium\net\http\Router; ?>
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml"
@@ -9,9 +6,10 @@
 <head>
 	<?php echo $this->html->charset();?>
 	<title>Totsy, the private sale site for Moms</title>
-    <meta name="description"
-          content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
-          <meta name="viewport" content="width=device-width,user-scalable=no" />
+	
+	<meta name="description"
+	content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
+	<meta name="viewport" content="width=device-width,user-scalable=no" />
 
 	<?php echo $this->scripts(); ?>
 
@@ -22,16 +20,25 @@
 
 </head>
 <body>
-<div style="font-weight:normal; background:#ed1c24; padding:5px; text-shadow:none; color:#fff;"></div>
-	<div style="margin:15px 6px 6px 6px;">
-		<?php echo $this->html->link($this->html->image('logo.png', array('width'=>'80')), '/sales', array('escape'=> false)); ?>
+<div class="nav_head"></div>
+	<div class="mobile_ui">
+	<div class="logo">
+		<a href="#" onclick="window.location.href='/sales';return false;"><img src="/img/logo.png" width="80" /></a>
+	</div>	
+	<?php echo $this->content(); ?>
 		
-		<?php echo $this->content(); ?>
-    
-    <div style="text-align:center; margin:10px 0px 0px 0px;">
-    	<a href="#" onclick="window.location.href='/pages/privacy';return false;"style="font-size:12px; color:#ed1c24;">Privacy</a> / <a href="#" onclick="window.location.href='/pages/terms';return false;" style="font-size:12px; color:#ed1c24;">Terms of Service</a> / <a href="#" onclick="window.location.href='/pages/contact';return false;" style="font-size:12px; color:#ed1c24;">Support</a>
-    </div>
-    </div><!-- Affiliate Pixel -->
-    <?php echo $pixel; ?>	
+	<div class="footer">
+		<a href="#" onclick="window.location.href='/pages/aboutus';return false;">About</a>
+		<span class="splitter">/</span>
+		<a href="#" onclick="window.location.href='/pages/privacy';return false;">Privacy</a>
+		<span class="splitter">/</span>
+		<a href="#" onclick="window.location.href='/pages/terms';return false;">Terms</a>
+		<span class="splitter">/</span>
+		<a href="#" onclick="window.location.href='/pages/contact';return false;">Support</a>
+	</div>
+	<p class="legal">&copy;2011 Totsy, Inc. All rights reserved.</p>
+</div>
+	<!-- Affiliate Pixel -->
+	<?php echo $pixel; ?>	
 </body>
 </html>
