@@ -442,11 +442,7 @@ class OrdersController extends BaseController {
 		#Calculate Order Total
 		$total = $vars['postDiscountTotal'];
 		#Read Credit Card Informations
-		$creditCard = $orderClass::creditCardDecrypt((string)$user['_id']);
-		#Disable Promocode Uses if Services
-		if (!empty($services['freeshipping']['enable']) || !empty($services['tenOffFitfy'])) {
-			$promocode_disable = true;
-		}
+		$creditCard = Order::creditCardDecrypt((string)$user['_id']);
 		#Organize Datas
 		$vars = $vars + compact(
 			'user', 'cart', 'total', 'subTotal', 'creditCard',
@@ -464,7 +460,65 @@ class OrdersController extends BaseController {
 		}
 		#In car of credit card error redirect to the payment page
 		if (Session::check('cc_error')) {
-			return $this->redirect(array('Orders::payment'));
+			$this->redirect(array('Orders::payment'));
+		}
+		#Check if Services
+		$servicesAvailable = false;
+		if(Session::check('service_available')) {
+			$serviceAvailable = Session::read('service_available');
+		}
+		return $vars + compact('cartEmpty','order','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable','missChristmasCount','notmissChristmasCount', 'serviceAvailable');
+	}
+
+	/**
+	 * Group all the items in an order by their corresponding event.
+	 *
+	 * The $order object is assumed to have originated from one of model types; Order or Cart.
+	 * Irrespective of the type both will return an associative array of event items.
+	 *
+	 * @param object $order
+	 * @return array $eventItems
+	 */
+	protected function itemGroupByEvent($object) {
+		$eventItems = null;
+		if ($object) {
+			$model = $object->model();
+			if ($model == 'app\models\Order') {
+				$orderItems = $object->items->data();
+				foreach ($orderItems as $item) {
+					$eventItems[$item['event_id']][] = $item;
+				}
+			}
+			if ($model == 'app\models\Cart') {
+				$orderItems = $object->data();
+				foreach ($orderItems as $item) {
+					$event = $item['event'][0];
+					unset($item['event']);
+					$eventItems[$event][] = $item;
+				}
+			}
+		}
+		return $eventItems;
+	}
+
+	/**
+	 * Return all the events of an order.
+	 *
+	 * @param object $object
+	 * @return array $orderEvents
+	 */
+	public function orderEvents($object) {
+		$orderEvents = null;
+		$ids = Cart::getEventIds($object);
+		if (!empty($ids)) {
+			$events = Event::find('all', array(
+				'conditions' => array('_id' => $ids),
+				'fields' => array('name', 'ship_message', 'ship_date', 'url')
+			));
+			$events = $events->data();
+			foreach ($events as $event) {
+				$orderEvents[$event['_id']] = $event;
+			}
 		}
 		return $vars + compact(
 			'cartEmpty',

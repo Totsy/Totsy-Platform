@@ -369,7 +369,7 @@ class UsersController extends BaseController {
 		$success = Session::delete('userLogin');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 		unset($cookie['autoLoginHash']);
-		Session::delete('services');
+		User::cleanSession();
 		Session::delete('cookieCrumb', array('name' => 'cookie'));
 		$cookieSuccess = Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 		FacebookProxy::setSession(null);
