@@ -575,9 +575,6 @@ class Cart extends Base {
 		$services = array();
 		$services['freeshipping'] = Service::freeShippingCheck($shippingCost, $overShippingCost);
 		$services['tenOffFitfy'] = Service::tenOffFiftyCheck($subTotal);
-		#Calculation of the subtotal with shipping and services discount
-		$postSubtotal = ($subTotal + $tax + $shippingCost + $overShippingCost - $services['tenOffFitfy'] - $services['freeshipping']['shippingCost'] - $services['freeshipping']['overSizeHandling']);
-		$subTotal += $tax;
 		#Apply Promocodes
 		$cartPromo = Promotion::create();
 		$promo_code = null;
@@ -588,12 +585,29 @@ class Cart extends Base {
 		if (!empty($data['code'])) {
 			$promo_code = $data['code'];
 		}
-		#Disable Promocode Uses if Services
-		if (!empty($services['freeshipping']['enable']) || !empty($services['tenOffFitfy'])) {
+		#Disable Promocode If Reapply Service
+		if(!empty($data['reapplyService'])) {
 			$promo_code = null;
+			Session::delete('promocode');
+			Session::delete('service_available');
 		}
 		if (!empty($promo_code)) {
 			$cartPromo->promoCheck($promo_code, $userDoc, compact('subTotal', 'shippingCost', 'overShippingCost', 'services'));
+		}
+		#Disable Service if Promocode Used
+		if(!empty($cartPromo['saved_amount'])) {
+			if($services['freeshipping']['enable']) {
+				$services['freeshipping'] = array('shippingCost' => 0, 'overSizeHandling' => 0, 'enable' => false);
+				$serviceName = 'Free Shipping';
+			}
+			if(!empty($services['tenOffFitfy'])) {
+				$services['tenOffFitfy'] = 0.00;
+				$serviceName = '$10 Off $50';
+			}
+			if(Session::check('services')) {
+				Session::delete('services');
+			}
+			Session::write('service_available', $serviceName, array('name' => 'default'));
 		}
 		#Apply Credits
 		$credit_amount = null;
@@ -601,6 +615,9 @@ class Cart extends Base {
 		if (array_key_exists('credit_amount', $data)) {
 			$credit_amount = $data['credit_amount'];
 		}
+		#Calculation of the subtotal with shipping and services discount
+		$postSubtotal = ($subTotal + $tax + $shippingCost + $overShippingCost - $services['tenOffFitfy'] - $services['freeshipping']['shippingCost'] - $services['freeshipping']['overSizeHandling']);
+		#Calculation After Promo
 		$postDiscountTotal = ($postSubtotal + $cartPromo['saved_amount']);
 		#Avoid Negative Total
 		if($postDiscountTotal < 0.00) {
