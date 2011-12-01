@@ -442,11 +442,9 @@ class OrdersController extends BaseController {
 		#Calculate Order Total
 		$total = $vars['postDiscountTotal'];
 		#Read Credit Card Informations
+
 		$creditCard = $orderClass::creditCardDecrypt((string)$user['_id']);
-		#Disable Promocode Uses if Services
-		if (!empty($services['freeshipping']['enable']) || !empty($services['tenOffFitfy'])) {
-			$promocode_disable = true;
-		}
+
 		#Organize Datas
 		$vars = $vars + compact(
 			'user', 'cart', 'total', 'subTotal', 'creditCard',
@@ -466,6 +464,12 @@ class OrdersController extends BaseController {
 		if (Session::check('cc_error')) {
 			return $this->redirect(array('Orders::payment'));
 		}
+		#Check if Services
+		$servicesAvailable = false;
+		if(Session::check('service_available')) {
+			$serviceAvailable = Session::read('service_available');
+		}
+		
 		return $vars + compact(
 			'cartEmpty',
 			'order',
@@ -476,7 +480,8 @@ class OrdersController extends BaseController {
 			'cartExpirationDate',
 			'promocode_disable',
 			'missChristmasCount',
-			'notmissChristmasCount'
+			'notmissChristmasCount',
+			'serviceAvailable'
 		);
 	}
 
