@@ -25,5 +25,37 @@
                 "300001"
             ],
             "sale_whol" : 20
+        },
+    "item3":{
+	            "_id":"10006",
+	            "url":"item3",
+	            "details" : {
+				                "no size" : "4"
+				            },
+	            "description" : "Kitty Octopus Blanket",
+	            "category" : "accessories",
+	            "event" : [
+					                "300002"
+									            ],
+	            "sale_whol" : 20,
+	            "sale_retail": 15,
+	            "total_quantity": 3
+	        },
+    "item4":{
+            "_id":"10007",
+			"url":"item4",
+            "details" : {
+                "no size" : 0,
+				"4": "8",
+				"5": "16",
+				"6": "16",
+				"7": "8"
+            },
+            "description" : "Kitty Octopus Hoodie",
+            "category" : "accessories",
+            "event" : [
+                "300001"
+            ],
+            "sale_whol" : 20
         }
 }
