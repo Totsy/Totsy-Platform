@@ -1,17 +1,7 @@
-<?php
+<!-- loyalty enroll pixel start -->
+<img src="http://loyalty.500friends.com/api/enroll.gif?uuid=<?=$userInfo['_id']?>&email=<?=$userInfo['email']?>" style="position: absolute; left: -10px; visibility: hidden;"/>
+<!-- loyalty enroll pixel end -->
 
-print_r($_SESSION);
-
-?>
-
-<script>
-
-
-
-</script>
-
-
-<img src="http://loyalty.500friends.com/api/enroll.gif?uuid=<YOUR ACCOUNT ID>&email=<CUSTOMER EMAIL>" style="position: absolute; left: -10px; visibility: hidden;"/>
 <div class="grid_16">
 	<br />
 	<h1 class="page-title gray">
