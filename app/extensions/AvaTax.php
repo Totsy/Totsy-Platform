@@ -25,6 +25,7 @@ class AvaTax {
 	protected static $useAvatax = true;
 	
 	public static function getTax($data,$tryNumber=0){
+			
 		$settings = Environment::get(Environment::get());
 		if (isset($settings['avatax']['useAvatax'])) { static::$useAvatax = $settings['avatax']['useAvatax']; }
 		
@@ -55,7 +56,7 @@ class AvaTax {
 				'avatax' => static::$useAvatax
 			);			
 		}
-		
+
 		try{
 			$tax = 	AvaTaxWrap::getTax($data);
 			if (is_object($tax) && (get_class($tax) =='Exception' || get_class($tax) =='SoapFault')){
@@ -124,7 +125,30 @@ class AvaTax {
   		if (is_array($data) && array_key_exists('cartByEvent',$data) ){
 			$data['items'] = static::getCartItems($data['cartByEvent']);
 			static::shipping($data);
-		}  		
+		}  	
+
+		if (!empty($data['vars']) && !empty($data['vars']['billingAddr'])){
+			$data['billingAddr'] = $data['vars']['billingAddr'];
+		}
+		if (!empty($data['vars']) && !empty($data['vars']['shippingAddr'])){
+			$data['shippingAddr'] = $data['vars']['shippingAddr'];
+		}
+		if (!empty($data['vars']) && !empty($data['vars']['shippingCost'])){
+			$data['shippingCost'] = $data['vars']['shippingCost'];
+		}
+		if (!empty($data['vars']) && !empty($data['vars']['overShippingCost'])){
+			$data['overShippingCost'] = $data['vars']['overShippingCost'];
+		}
+		if (!empty($data['vars'])){
+			unset($data['vars']);
+		}
+		
+		if (is_array($data) && array_key_exists('cart',$data)){
+			$data['items'] = $data['cart']->data();
+			unset($data['cart']);
+			static::shipping($data);
+		}		
+		
   		$data['admin'] = 1;
   		try {
   			$return = AvaTaxWrap::getAndCommitTax($data);
