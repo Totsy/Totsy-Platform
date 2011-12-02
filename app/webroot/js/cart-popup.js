@@ -35,7 +35,7 @@ $(document).ready( function() {
 		}
 		
 		//maximum amount of items visible before "see more" button is added
-		var visibleItemCount = 3;
+		var visibleItemCount = 2;
 		var invisibleItemCount = 0; 
 		
 		//convert JSON string to JS Object

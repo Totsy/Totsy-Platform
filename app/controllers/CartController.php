@@ -37,7 +37,6 @@ class CartController extends BaseController {
 	*/	
 
 	public function view() {
-			
 		#Initialize Datas
 		$ordersCollection = Order::Collection();
 		$promocode_disable = false;
@@ -64,7 +63,9 @@ class CartController extends BaseController {
 		$i = 0;
 		$subTotal = 0;
 		$itemCount = 0;
-
+		$missChristmasCount = 0;
+		$notmissChristmasCount = 0;
+		
 		#Count of how many items in the cart are exempt of shipping cost
 		$exemptCount = 0;
 
@@ -87,6 +88,17 @@ class CartController extends BaseController {
 			
 			$events = Event::find('all', array('conditions' => array('_id' => $item->event[0])));
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
+			
+			
+			//miss chrismtas stuff to be removed later
+			$item->miss_christmas = $itemInfo->miss_christmas;
+			if($item->miss_christmas){
+				$missChristmasCount++;
+			}
+			else{
+				$notmissChristmasCount++;
+			}			
+			
 			#Get Event End Date
 			$cartItemEventEndDates[$i] = $events[0]->end_date->sec;
 			$item->event_url = $events[0]->url;
@@ -147,18 +159,18 @@ class CartController extends BaseController {
 		if (!empty($vars['cartCredit'])) {
 			$credits = Session::read('credit');
 		}
-		#Disable Promocode Uses if Services
-		if (!empty($services['freeshipping']['enable']) || !empty($services['tenOffFitfy'])) {
-			$promocode_disable = true;
-		}
 		#Get Discount Freeshipping Service / Get Discount Promocodes Free Shipping
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
 			$shipping_discount = $shipping;
 		}
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
-
-		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping');
+		#Check if Services
+		$serviceAvailable = false;
+		if(Session::check('service_available')) {
+			$serviceAvailable = Session::read('service_available');
+		}
+		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping','missChristmasCount','notmissChristmasCount', 'serviceAvailable');
 	}
 
 	/**
@@ -179,6 +191,9 @@ class CartController extends BaseController {
 			#If unselected, put no size as choice
 			$size = (!array_key_exists('item_size', $data)) ?
 				"no size": $data['item_size'];
+				
+				
+			//added miss_christmas, to be removed	
 			$item = Item::find('first', array(
 				'conditions' => array(
 					'_id' => "$itemId"),
@@ -196,6 +211,7 @@ class CartController extends BaseController {
 					'voucher',
 					'voucher_max_use',
 					'vendor_style',
+					'miss_christmas',
 					'discount_exempt'
 			)));
 									
@@ -299,6 +315,7 @@ class CartController extends BaseController {
 		$cartData['savings'] = Session::read('userSavings');
 		//get the ship date		
 		$cartData['shipDate'] = date('m-d-Y', Cart::shipDate(Cart::active()));
+		$cartData['shipDate'] = Cart::shipDate(Cart::active());
 		//get the amount of items in the cart
 		$cartData['itemCount'] = Cart::itemCount();
 		

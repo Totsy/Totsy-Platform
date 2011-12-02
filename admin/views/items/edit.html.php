@@ -19,10 +19,8 @@ tinyMCE.init({
 	theme_advanced_statusbar_location : "bottom",
 	theme_advanced_resizing : false,
 
-
 });
 </script>
-
 <div class="grid_16">
 	<h2 id="page-heading">Editing Item - <?=$item->description?></h2>
 </div>
@@ -125,6 +123,37 @@ tinyMCE.init({
 						<br>Overwrite Old Vouchers<br>
 						<input type="radio" name="voucher_overwrite" value="1" id="voucher_overwrite"> Yes <br>
 						<input type="radio" name="voucher_overwrite" value="0" id="voucher_overwrite" checked> No
+					<div id="item_miss_christmas">
+						<h2 id="item_status">Xmas Shipping Status</h2>
+						<?php if ($item->miss_christmas == 1): ?>
+							<p>Will item/product ship for Christmas?</p><br>
+							<input type="radio" name="miss_christmas" value="0" id="enabled"> Yes, ships before 12.23 <br>
+							<input type="radio" name="miss_christmas" value="1" id="enabled" checked> NO AFTER XMAS
+						<?php else: ?>
+							<p>Will item/product ship for Christmas?</p><br>
+							<input type="radio" name="miss_christmas" value="0" id="enabled" checked> Yes, ships before 12.23 <br>
+							<input type="radio" name="miss_christmas" value="1" id="enabled"> NO AFTER XMAS
+						<?php endif ?>
+					</div>
+						<div id="item_tax">
+						<h2 id="item_tax">Item Tax</h2>
+						<?php if ($item->taxable == 1): ?>
+							<input type="radio" name="taxable" value="1" id="taxable" checked> Taxable Item <br>
+							<input type="radio" name="taxable" value="0" id="taxable"> Not Taxable Item
+						<?php else: ?>
+							<input type="radio" name="taxable" value="1" id="taxable"> Taxable Item <br>
+							<input type="radio" name="taxable" value="0" id="taxable" checked> Not Taxable Item
+						<?php endif ?>
+					</div>
+					<div id="item_shipping">
+						<h2 id="item_shipping">Shipping Exemption</h2>
+						<?php if ($item->shipping_exempt == 1): ?>
+							<input type="radio" name="shipping_exempt" value="1" id="shipping_exempt" checked> Shipping Exempt Item <br>
+							<input type="radio" name="shipping_exempt" value="0" id="shipping_exempt"> Shipping Applied Item
+						<?php else: ?>
+							<input type="radio" name="shipping_exempt" value="1" id="shipping_exempt"> Shipping Exempt Item <br>
+							<input type="radio" name="shipping_exempt" value="0" id="shipping_exempt" checked> Shipping Applied Item<br>
+						<?php endif ?>
 					</div>
 					<div id='details_2' <?php if(!empty($item->voucher)) echo 'style="display:none"'; ?>>
 						<div id="item_tax">
@@ -219,6 +248,18 @@ tinyMCE.init({
 								</td>
 							</tr>
 						<?php endforeach ?>
+
+
+							<tr>
+								<td>
+									add a new size:
+								</td>
+								<td>
+									<?=$this->form->text("item_new_size");
+									?>
+								</td>
+							</tr>
+
 					</table>
 				</div>
 				<br>

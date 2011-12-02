@@ -221,19 +221,19 @@ class DisneyExport extends \lithium\console\Command {
 						. $address2
 						. $city
 						. $state
-						. $zip
+						. substr($zip, 0, 5) . ' '
 						. str_pad('99999'.crc32($order['_id']),17,'0') //Audit Trail Number
 						. 'PMM'
 						. 'N' //New/renewal Code
-						. '1' //Order Entry Type
-						. '010' //Term Of Order
-						. '01000' // Order Value
+						. '1' //135 – 135 Order Entry Type
+						. '012' //Term Of Order
+						. '01000' //139 – 143 Order Value
 						. str_pad('',4) //Credit Card Type
 						. str_pad('',17,'0') //Credit Card
 						. '0000' //Credit Card Expire
 						. '0000' //Not Used
 						. '001' //Number Of Copies
-						. 'PFTOT11  ' //Document Key
+						. 'N1110TSY1' //Document Key
 						. 'D' //Medium Code
 						. '  ' //Source Code
 						. '000'

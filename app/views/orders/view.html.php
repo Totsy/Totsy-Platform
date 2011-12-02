@@ -67,9 +67,13 @@
 											<td colspan="3" style="padding:5px; text-align:right;">
 												Estimated Ship Date:
 												<?php if (!empty($orderEvents[$key]['ship_date'])): ?>
-													<?=date('M d, Y', strtotime($orderEvents[$key]['ship_date']))?>
+													<?
+													//echo date('M d, Y', strtotime($orderEvents[$key]['ship_date']));
+													echo $orderEvents[$key]['ship_date']
+												?>
+													
 												<?php else: ?>
-													 <?=date('M d, Y', $shipDate)?>
+													 <?php echo $shipDate; ?>
 												<?php endif ?>
 											</td>
 										</tr>
@@ -116,6 +120,27 @@
 															<?php endif; ?>
 															Size: <?=$item['size']?>
 														<?php endif ?>
+														
+														<?php 
+														$convertdate = date("Y-m-d h:i:s", 1322071200);
+														//echo $orderdate;
+														
+														if($order->date_created->sec>1322006400){
+															if($missChristmasCount>0){
+															?>
+															<br>
+															This item is not guaranteed to be delivered on or before 12/25.* 
+															
+															<?php
+															}else{
+															?>
+															<br>
+															This item will be delivered on or before 12/23*
+															
+															<?php
+															}
+														}
+														?>
 													</td>
 													<td style="padding:5px; color:#009900;" title="price">
 														$<?=number_format($item['sale_retail'],2); ?>
@@ -194,6 +219,31 @@
 	<div class="grid_11">
 		<p style="text-align: center; font-size:18px; margin-top:10px;">Thank you for shopping on Totsy.com!</p>
 	</div>	
+<div class="clear"></div>
+<div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
+				<?php
+				if($missChristmasCount>0&&$notmissChristmasCount>0){
+				?>
+				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. 
+				
+				<?php
+				}
+				elseif($missChristmasCount>0){
+				?>
+				* Your items will arrives safely, but after 12/25.
+				
+				<?php
+				}
+				else{
+				?>
+				
+				* Our delivery guarantee does not apply when transportation networks are affected by weather.
+				
+				<?php
+				}
+				?>
+				
+</div>
 </div>
 <?php else: ?>
 	<strong>Sorry, we cannot locate the order that you are looking for.</strong>

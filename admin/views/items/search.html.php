@@ -83,7 +83,11 @@
 							$image = "/img/no-image-small.jpeg";
 						}
 					?>
-					<td><?=$item[_id];?></td>
+					<td>
+					<?=$item[_id];?> in the event 
+					<a href="/events/edit/<?=$item['event'][0];?>"><?=$item['event'][0];?></a>
+					
+					</td>
 					<td width="5%">
 						<?=$this->html->image("$image", array(
 							'width' => "100",

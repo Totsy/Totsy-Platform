@@ -8,31 +8,57 @@ use lithium\core\Environment;
 use lithium\action\Request;
 
 class Mailer {
-	
+
 	public static function send($template, $email, $vars = array(), $options = array(), $schedule_time = null) {
 		Sailthru::send($template, $email, $vars, $options, $schedule_time);
 	}
-	
+
 	public static function addToMailingList ($email,array $args = array()){
 		Sailthru::setEmail(
-             $email,  
+             $email,
              $args,
              array('registered' => 1)
         );
 	}
-	
-	public static function purchase($email,array $items = array(), array $args = array()){	
+
+	public static function purchase($email,array $items = array(), array $args = array()){
 		$data = array(
             'email' => $email,
             'items' => $items
         );
 
-		//if (!isset($args['incomplete'])) $data['incomplete'] = null;
-		if (!isset($args['message_id']) && isset($_COOKIE['sailthru_hid'])) $data['message_id'] = $_COOKIE['sailthru_hid'];
-		
+		if (!empty($args['incomplete'])) $data['incomplete'] = $args['incomplete'];
+
+		if (isset($_COOKIE['sailthru_bid'])) $data['message_id'] = $_COOKIE['sailthru_bid'];
+
 		return Sailthru::apiPost('purchase',$data);
 	}
-	
+
+	//This function takes an email (subscribed user) from our system and posts it to Unsubcentral's API under the list subscribed
+	public static function addToSuppressionList ($email) {
+		$fields_string = "";
+
+		//116 - Registered Users List
+
+		$url = 'https://login8.unsubcentral.com/uc/address_upload.pl?';
+		$fields = array(
+								'login'=>'TotsyAPI',
+								'password'=>'D:hXeM;i',
+								'listID'=>'116',
+								'md5'=>'false',
+								'suppressed_text'=>urlencode($email)
+						);
+
+		foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
+		rtrim($fields_string,'&amp;');
+
+		$ch = curl_init();
+		curl_setopt($ch,CURLOPT_URL,$url);
+		curl_setopt($ch,CURLOPT_POST,count($fields));
+		curl_setopt($ch,CURLOPT_POSTFIELDS,$fields_string);
+		$result = curl_exec($ch);
+		curl_close($ch);
+	}
 }
 
 ?>

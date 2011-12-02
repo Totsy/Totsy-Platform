@@ -12,6 +12,7 @@ use app\models\User;
 use app\models\Base;
 use app\models\Item;
 use app\models\Order;
+use app\models\FeatureToggles;
 
 class Order extends Base {
 
@@ -61,6 +62,7 @@ class Order extends Base {
 
 			))
 		));
+
 		if ($cart) {
 			$inc = 0;
 			foreach ($cart as $item) {
@@ -95,122 +97,140 @@ class Order extends Base {
 	 * @return redirect
 	 */
 	public static function recordOrder($vars, $cart, $card, $order, $avatax, $authKey, $items) {
-		$itemsCollection = Item::Collection();
-		$user = Session::read('userLogin');
-		$service = Session::read('services', array('name' => 'default'));
-		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
-		#Save Credits Used
-		if ($vars['cartCredit']->credit_amount) {
-			User::applyCredit($user['_id'], $vars['cartCredit']->credit_amount);
-			Credit::add($vars['cartCredit'], $user['_id'], $vars['cartCredit']->credit_amount, "Used Credit");
-			Session::delete('credit');
-			$order->credit_used = abs($vars['cartCredit']->credit_amount);
-		}
-		#Initialize Discount 
-		$vars['shippingCostDiscount'] = 0;
-		$vars['overShippingCostDiscount'] = 0;
-		#Save Promocode Used
-		if ($vars['cartPromo']->saved_amount) {
-			Promocode::add($vars['cartPromo']->code_id, $vars['cartPromo']->saved_amount, $vars['total']);
-			$vars['cartPromo']->order_id = (string) $order->_id;
-			$vars['cartPromo']->code_id = $vars['cartPromo']->code_id;
-			$vars['cartPromo']->date_created = new MongoDate();
-			$vars['cartPromo']->save();
-			#If FreeShipping put Handling/OverSizeHandling to Zero
-			if($vars['cartPromo']->type == 'free_shipping') {
-				$vars['shippingCostDiscount'] = $vars['shippingCost'];
-				$vars['overShippingCostDiscount'] = $vars['overShippingCost'];
+			$itemsCollection = Item::Collection();
+			$user = Session::read('userLogin');
+			$service = Session::read('services', array('name' => 'default'));
+			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
+			#Save Credits Used
+			if ($vars['cartCredit']->credit_amount) {
+				User::applyCredit($user['_id'], $vars['cartCredit']->credit_amount);
+				Credit::add($vars['cartCredit'], $user['_id'], $vars['cartCredit']->credit_amount, "Used Credit");
+				Session::delete('credit');
+				$order->credit_used = abs($vars['cartCredit']->credit_amount);
 			}
-			#Update Order Information with PromoCode
-			$order->promo_code = $vars['cartPromo']->code;
-			$order->promo_type = $vars['cartPromo']->type;
-			$order->promo_discount = abs($vars['cartPromo']->saved_amount);
-		}
-		#Save Voucher
-		foreach($items as $item) {
-			if(!empty($item->voucher)) {
-				for($i = 0; $i < $item->quantity; $i++) {
-					$item_voucher = $itemsCollection->findOne(array('_id' => new MongoId($item->item_id)));
-					$coupon[] = $item_voucher['vouchers'][0];
-					$itemsCollection->update(array('_id' => new MongoId($item->item_id)), array('$pop' => array('vouchers' => -1)));
-					$itemsCollection->update(array('_id' => new MongoId($item->item_id)), array('$push' => array('vouchers_sold' => $item_voucher['vouchers'][0])));
-					$item->voucher_code[] = $coupon;
+			#Initialize Discount 
+			$vars['shippingCostDiscount'] = 0;
+			$vars['overShippingCostDiscount'] = 0;
+			#Save Promocode Used
+			if ($vars['cartPromo']->saved_amount) {
+				Promocode::add($vars['cartPromo']->code_id, $vars['cartPromo']->saved_amount, $vars['total']);
+				$vars['cartPromo']->order_id = (string) $order->_id;
+				$vars['cartPromo']->code_id = $vars['cartPromo']->code_id;
+				$vars['cartPromo']->date_created = new MongoDate();
+				$vars['cartPromo']->save();
+				#If FreeShipping put Handling/OverSizeHandling to Zero
+				if($vars['cartPromo']->type == 'free_shipping') {
+					$vars['shippingCostDiscount'] = $vars['shippingCost'];
+					$vars['overShippingCostDiscount'] = $vars['overShippingCost'];
 				}
-				$item->voucher_website = $item_voucher['voucher_website'];
-				$item->voucher_code = $coupon;
-				$item->voucher_end_date = $item_voucher['voucher_end_date'];
+				#Update Order Information with PromoCode
+				$order->promo_code = $vars['cartPromo']->code;
+				$order->promo_type = $vars['cartPromo']->type;
+				$order->promo_discount = abs($vars['cartPromo']->saved_amount);
 			}
-		}
-		#Save Services Used (10$Off / Free Shipping)
-		if ($service) {
-			$services = array();
+			#Save Voucher
+			foreach($items as $item) {
+				if(!empty($item->voucher)) {
+					for($i = 0; $i < $item->quantity; $i++) {
+						$item_voucher = $itemsCollection->findOne(array('_id' => new MongoId($item->item_id)));
+						$coupon[] = $item_voucher['vouchers'][0];
+						$itemsCollection->update(array('_id' => new MongoId($item->item_id)), array('$pop' => array('vouchers' => -1)));
+						$itemsCollection->update(array('_id' => new MongoId($item->item_id)), array('$push' => array('vouchers_sold' => $item_voucher['vouchers'][0])));
+						$item->voucher_code[] = $coupon;
+					}
+					$item->voucher_website = $item_voucher['voucher_website'];
+					$item->voucher_code = $coupon;
+					$item->voucher_end_date = $item_voucher['voucher_end_date'];
+				}
+			}
+			#Save Services Used (10$Off / Free Shipping)
+			if ($service) {
+				$services = array();
+				if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
+					$services = array_merge($services, array("freeshipping"));
+					$vars['shippingCostDiscount'] = $vars['shippingCost'];
+					$vars['overShippingCostDiscount'] = $vars['overShippingCost'];
+					$order->discount = $vars['shippingCost'] + $vars['overShippingCost'];
+				}
+				if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible' && ($vars['subTotal'] >= 50.00)) {
+					$order->discount = 10.00; 
+					$services = array_merge($services, array("10off50"));
+				}
+			}
+			#Shipping Method - By Default UPS
+			$shippingMethod = 'ups';
+			#Calculate savings
+			$userSavings = Session::read('userSavings');
+			$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
+			#Get Credits Card Informations Encrypted and Store It
+			$storing_cc_encrypted = FeatureToggles::getValue('storing_credit_card_encrypted');
+			if(!empty($storing_cc_encrypted)) {
+				$cc_encrypt = Session::read('cc_infos');
+				$cc_encrypt['vi'] = Session::read('vi');
+				unset($cc_encrypt['valid']);
+				$order->cc_payment = $cc_encrypt;
+			}
+
+			$cart = Cart::active();
+			#Save Order Infos
+			
+			$shipDate = Cart::shipDate($cart);
+			if($shipDate=="On or before 12/23"){
+				$shipDateInsert = strtotime("2011-12-23".' +1 day');
+			}
+			elseif($shipDate=="See delivery alert below"){
+				$shipDateInsert = Cart::shipDate($cart, true);
+			}
+			else{
+				$shipDateInsert = $shipDate;
+			}
+			
+			
+			$order->save(array(
+					'total' => $vars['total'],
+					'subTotal' => $vars['subTotal'],
+					'handling' => $vars['shippingCost'],
+					'overSizeHandling' => $vars['overShippingCost'],
+					'handlingDiscount' => $vars['shippingCostDiscount'],
+					'overSizeHandlingDiscount' => $vars['overShippingCostDiscount'],
+					'user_id' => (string) $user['_id'],
+					'tax' => (float) $avatax['tax'],
+					'card_type' => $card->type,
+					'card_number' => substr($card->number, -4),
+					'date_created' => static::dates('now'),
+					'authKey' => $authKey,
+					'billing' => $vars['billingAddr'],
+					'shipping' => $vars['shippingAddr'],
+					'shippingMethod' => $shippingMethod,
+					'items' => $items,
+					'avatax' => $avatax,
+					'ship_date' => new MongoDate($shipDateInsert),
+					'savings' => $savings
+			));
+			Cart::remove(array('session' => Session::key('default')));
+			#Update quantity of items
+			foreach ($cart as $item) {
+				Item::sold($item->item_id, $item->size, $item->quantity);
+			}
+			#Update amount of user's orders
+			$user = User::getUser();
+			++$user->purchase_count;
+			$user->save(null, array('validate' => false));
+			#Send Order Confirmation Email
+//				'shipDate' => date('M d, Y', Cart::shipDate($order))
+
+			$data = array(
+				'order' => $order->data(),
+				'shipDate' => Cart::shipDate($order)
+			);
+			#In Case Of First Order, Send an Email About 10$ Off Discount
 			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
-				$services = array_merge($services, array("freeshipping"));
-				$vars['shippingCostDiscount'] = $vars['shippingCost'];
-				$vars['overShippingCostDiscount'] = $vars['overShippingCost'];
-				$order->discount = $vars['shippingCost'] + $vars['overShippingCost'];
+				Mailer::send('Welcome_10_Off', $user->email, $data);
 			}
-			if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible' && ($vars['subTotal'] >= 50.00)) {
-				$order->discount = 10.00; 
-				$services = array_merge($services, array("10off50"));
-			}
-			if(!empty($services)) {
-				$order->service = $services;
-			}
-		}
-		#Save Tax Infos
-		if($avatax === true){
-			AvaTax::postTax(compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
-		}
-		#Shipping Method - By Default UPS
-		$shippingMethod = 'ups';
-		#Calculate savings
-		$userSavings = Session::read('userSavings');
-		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
-		#Save Order Infos
-		$order->save(array(
-				'total' => $vars['total'],
-				'subTotal' => $vars['subTotal'],
-				'handling' => $vars['shippingCost'],
-				'overSizeHandling' => $vars['overShippingCost'],
-				'handlingDiscount' => $vars['shippingCostDiscount'],
-				'overSizeHandlingDiscount' => $vars['overShippingCostDiscount'],
-				'user_id' => (string) $user['_id'],
-				'tax' => (float) $avatax['tax'],
-				'card_type' => $card->type,
-				'card_number' => substr($card->number, -4),
-				'date_created' => static::dates('now'),
-				'authKey' => $authKey,
-				'billing' => $vars['billingAddr'],
-				'shipping' => $vars['shippingAddr'],
-				'shippingMethod' => $shippingMethod,
-				'items' => $items,
-				'avatax' => $avatax,
-				'ship_date' => new MongoDate(Cart::shipDate($order)),
-				'savings' => $savings		
-		));
-		Cart::remove(array('session' => Session::key('default')));
-		#Update quantity of items
-		foreach ($cart as $item) {
-			Item::sold($item->item_id, $item->size, $item->quantity);
-		}
-		#Update amount of user's orders
-		$user = User::getUser();
-		++$user->purchase_count;
-		$user->save(null, array('validate' => false));
-		#Send Order Confirmation Email
-		$data = array(
-			'order' => $order->data(),
-			'shipDate' => date('M d, Y', Cart::shipDate($order))
-		);
-		#In Case Of First Order, Send an Email About 10$ Off Discount
-		if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
-			Mailer::send('Welcome_10_Off', $user->email, $data);
-		}
-		Mailer::send('Order_Confirmation_test', $user->email, $data);
-		#Clear Savings Information
-		User::cleanSession();
-		return $order;
+			Mailer::send('Order_Confirmation', $user->email, $data);
+			#Clear Savings Information
+			User::cleanSession();
+			return $order;
 	}
 
 	/**
@@ -231,7 +251,7 @@ class Order extends Base {
 	/**
 	 * Encrypt all credits card informations with MCRYPT and store it in the Session
 	 */
-	public static function creditCardEncrypt ($cc_infos, $user_id, $save_iv_in_session = false) {
+	public static function creditCardEncrypt($cc_infos, $user_id,$save_iv_in_session = false) {
 		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
 		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
 		if ($save_iv_in_session == true) {

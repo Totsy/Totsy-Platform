@@ -17,9 +17,12 @@ use \lithium\data\Connections;
                 'setSlaveOkay' => false,
                 'replicaSet' =>'totsy',
                 'host' => array(
-                'db1',
-                'db2',
-                'db3'
+                'db1.totsy.com',
+                'db2.totsy.com',
+                'db3.totsy.com',
+                'db1-dc1.totsy.com',
+                'db2-dc1.totsy.com',
+                'db3-dc1.totsy.com'
                 )),
 		'test' => array(
                 'type' => 'MongoDb',
@@ -27,9 +30,12 @@ use \lithium\data\Connections;
                 'setSlaveOkay' => false,
                 'replicaSet' =>'totsy',
                 'host' => array(
-                'db1',
-                'db2',
-                'db3'
+                'db1.totsy.com',
+                'db2.totsy.com',
+                'db3.totsy.com',
+                'db1-dc1.totsy.com',
+                'db2-dc1.totsy.com',
+                'db3-dc1.totsy.com'
                 )),
 		'development' => array(
 			'type' =>  'MongoDb',

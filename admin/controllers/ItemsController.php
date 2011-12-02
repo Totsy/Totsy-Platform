@@ -127,6 +127,40 @@ class ItemsController extends BaseController {
 				$itemsCollection->update(array('_id' => $item->_id), array('$unset' => array("voucher_end_date" => 1)));
 				$itemsCollection->update(array('_id' => $item->_id), array('$unset' => array("vouchers" => 1)));
 			}
+			
+			//check for new size
+			if ($this->request->data['item_new_size']) {
+
+				//new size
+				$newsize = $this->request->data['item_new_size'];
+				
+				//make a sku
+				$newsku = Item::sku($item->vendor, $item->vendor_style, $newsize, $item->color, $hash = 'md5');
+			
+				//update skus
+				$data['skus'] = $item->skus;
+				$data['skus'][] = $newsku;
+				
+				//update sale details array
+				$data['sale_details'] = $item->sale_details;
+				$data['sale_details'][$newsize] = array('sale_count'=>0);
+				
+				//update details array
+				$data['details'] = $item->details;
+				$data['details'][$newsize] = 0;
+
+				//update skus details
+				$data['sku_details'] = $item->sku_details;
+				$data['sku_details'][$newsize] = $newsku;
+
+			}			
+			
+			//update total quantity
+			$total_quantity = 0;			
+			foreach($data['details'] as $thisquant){
+				$total_quantity += (int)$thisquant;
+			}
+			$data['total_quantity'] = $total_quantity;
 			if ($item->save($data)) {
 				$this->redirect(array(
 						'controller' => 'items', 'action' => 'edit',
