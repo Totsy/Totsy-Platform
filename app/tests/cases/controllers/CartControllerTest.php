@@ -167,14 +167,22 @@ class CartControllerTest extends \lithium\test\Unit {
 		ob_start();
 		$return = $controller->add();
 		$echoed = ob_get_clean();
-
-		$result = $return;
-		$this->assertNull($result);
-
 		$data = json_decode($echoed, true);
 
-		$result = $data;
-		$this->assertTrue($result);
+		$this->assertNull($return);
+		$this->assertTrue(!empty($data));
+		$this->assertEqual(15, $data['subTotal']);
+		$this->assertEqual(1, $data['itemCount']);
+
+		ob_start();
+		$return = $controller->getCartPopupData();
+		$echoed = ob_get_clean();
+		$data = json_decode($echoed, true);
+
+		$this->assertNull($return);
+		$this->assertTrue(!empty($data));
+		$this->assertEqual(15, $data['subTotal']);
+		$this->assertEqual(1, $data['itemCount']);
 	}
 
 	/*
