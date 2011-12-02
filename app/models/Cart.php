@@ -122,11 +122,15 @@ class Cart extends Base {
 	 * @todo Need documentation
 	 */
 	public static function addFields($data, array $options = array()) {
+		$options = $options + array('save' => true);
 		$data->expires = static::dates('15min');
 		$data->created = static::dates('now');
 		$data->session = Session::key('default');
 		$user = Session::read('userLogin');
 		$data->user = $user['_id'];
+		if (!$options['save']) {
+			return true;
+		}
 		return static::_object()->save($data);
 	}
 

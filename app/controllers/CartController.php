@@ -238,7 +238,7 @@ class CartController extends BaseController {
 					unset($item['details']);
 					unset($item['_id']);
 					$info = array_merge($item, array('quantity' => 1));
-					if ($cart->addFields() && $cart->save($info)) {
+					if ($cart->addFields(array('save' => false)) && $cart->save($info)) {
 						#Update Main Timer to 15min
 						Cart::refreshTimer();
 						#calculate savings
@@ -413,25 +413,17 @@ class CartController extends BaseController {
 	}
 
 	protected function addIncompletePurchase($items) {
-		if (is_object($items)) {
-			$items = $items->data();
-		}
 		$user = Session::read('userLogin');
 		$base_url = 'http://'.$_SERVER['HTTP_HOST'].'/';
 		$itemToSend = array();
 		foreach ($items as $item){
-			$eventInfo = Event::find($item['event'][0]);
-			if (is_object($eventInfo)) {
-				$eventInfo = $eventInfo->data();
-			}
 			$itemToSend[] = array(
-				'id' => $item['_id'],
-				'qty' => $item['quantity'],
-				'title' => $item['description'],
-				'price' => $item['sale_retail']*100,
-				'url' => $base_url.'sale/'.$eventInfo['url'].'/'.$item['url']
+				'id' => (string) $item->_id,
+				'qty' => $item->quantity,
+				'title' => $item->description,
+				'price' => $item->sale_retail * 100,
+				'url' => $base_url.'sale/'.Event::find($item->event[0])->url.'/'.$item->url
 			);
-			unset($eventInfo);
 		}
 		Mailer::purchase(
 			$user['email'],

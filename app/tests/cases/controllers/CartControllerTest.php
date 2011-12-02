@@ -176,6 +176,7 @@ class CartControllerTest extends \lithium\test\Unit {
 		$this->assertNull($return);
 		$this->assertTrue(!empty($data));
 		$this->assertEqual(1, $data['itemCount']);
+		$this->assertEqual(15, $data['subTotal']);
 		$this->assertTrue(!empty($data['cart']));
 		$this->assertTrue(!empty($data['cart'][0]));
 		$this->assertEqual(1, $data['cart'][0]['quantity']);
@@ -203,6 +204,7 @@ class CartControllerTest extends \lithium\test\Unit {
 		$this->assertNull($return);
 		$this->assertTrue(!empty($data));
 		$this->assertEqual(2, $data['itemCount']);
+		$this->assertEqual(30, $data['subTotal']);
 		$this->assertTrue(!empty($data['cart']));
 		$this->assertTrue(!empty($data['cart'][0]));
 		$this->assertEqual(2, $data['cart'][0]['quantity']);
