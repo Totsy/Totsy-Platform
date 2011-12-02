@@ -627,14 +627,15 @@ class Cart extends Base {
 		}
 		#Calculation of the subtotal with shipping and services discount
 		$postSubtotal = ($subTotal + $tax + $shippingCost + $overShippingCost - $services['tenOffFitfy'] - $services['freeshipping']['shippingCost'] - $services['freeshipping']['overSizeHandling']);
-		$subTotal += $tax;
 		#Calculation After Promo
 		$postDiscountTotal = ($postSubtotal + $cartPromo['saved_amount']);
+		#Post Discount Credit
+		$preCreditSubTotal = ($subTotal + $cartPromo['saved_amount'] - $services['tenOffFitfy']);
 		#Avoid Negative Total
 		if($postDiscountTotal < 0.00) {
 			$postDiscountTotal = 0.00;
 		}
-		$cartCredit->checkCredit($credit_amount, $subTotal, $userDoc);
+		$cartCredit->checkCredit($credit_amount, $preCreditSubTotal, $userDoc);
 		#Apply credit to the Total
 		if(!empty($cartCredit->credit_amount)) {
 			$postDiscountTotal += $cartCredit->credit_amount;
