@@ -74,7 +74,7 @@ class UsersController extends BaseController {
 			$this->redirect($cookie['landing_url']);
 		}
 
-		if ($this->request->env("HTTP_HOST") == "lawren.totsy.com") {
+		if (Session::read('layout', array('name' => 'default'))=='mamapedia') {
 		    $affiliate = new AffiliatesController(array('request' => $this->request));
 		    $affiliate->register("mamasource");
 		}
