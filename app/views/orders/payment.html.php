@@ -16,6 +16,7 @@
 var paymentForm = new Object();
 </script>
 <?php
+	use lithium\storage\Session;
 	use app\models\Address;
 	$this->html->script('application', array('inline' => false));
 	$this->form->config(array('text' => array('class' => 'inputbox')));
@@ -105,10 +106,11 @@ var paymentForm = new Object();
     });
 
 </script>
+
 <?php
 
 //check DNS here :)
-if($_SERVER['HTTP_HOST']=='mamasourcedev.totsy.com' || $_SERVER['HTTP_HOST']=='mamasource.totsy.com') {
+if(Session::read("layout", array("name"=>"default"))=="mamapedia") {
 	$is_mamapedia = true;
 } else {
 	$is_mamapedia = false;
@@ -133,10 +135,10 @@ if($is_mamapedia) {
 	<div style="float:left">
 		<h2 class="page-title gray">
 			<span class="cart-step-status gray" style="font-weight:bold">Payment</span>
-			<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-			<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-			<span class="cart-step-status"><img src="/img/cart_steps3.png"></span>
-			<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
+			<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_completed.png"></span>
+			<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_completed.png"></span>
+			<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps3.png"></span>
+			<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_remaining.png"></span>
 		</h2>
 		<?php if (!empty($error)) { ?>
 			<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /></div>

@@ -83,6 +83,26 @@ var addressForm = new Object();
     });
 
 </script>
+<?php
+
+//check DNS here :)
+if(Session::read("layout", array("name"=>"default"))=="mamapedia") {
+	$is_mamapedia = true;
+} else {
+	$is_mamapedia = false;
+}
+
+//until DNS is created ;)
+$is_mamapedia = true;
+$img_path_prefix = "";
+
+if($is_mamapedia) {
+	$img_path_prefix = "/img/mamapedia";
+} else {
+	$img_path_prefix = "/img";
+}
+
+?>
 
 <?php  if(empty($cartEmpty)): ?>
 <div class="cart-content" style="height:700px">
@@ -90,10 +110,10 @@ var addressForm = new Object();
 		<div style="float:left">
 			<h2 class="page-title gray">
 				<span class="cart-step-status gray" style="font-weight:bold">Shipping Information</span>
-				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps2.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_completed.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps2.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_remaining.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_remaining.png"></span>
 			</h2>
 			<?php if (!empty($error)) { ?>
 			<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2></div>
@@ -154,9 +174,7 @@ var addressForm = new Object();
 		</div>
 		<div>
 				<?=$this->form->submit('Continue', array('class' => 'button fr', 'style'=>'margin-right:10px;')); ?>
-
 		</div>
-
 	</div>
 
 <?=$this->form->end();?>

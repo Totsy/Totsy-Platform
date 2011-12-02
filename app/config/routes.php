@@ -52,6 +52,22 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
 });
 
 
+/* affiliate routing for categories and affiliates in an URL */
+Router::connect('/{:category:[a-z_]+}', array(), function($request) {
+
+   if (!isset($request->query['a']) || !preg_match('/^[a-z_]+$/', $request->query['a'])) {
+       return false;
+   }
+   $request->params = array(
+       'controller' => 'affiliates',
+       'action' => 'register',
+       'args' => array($request->query['a'], $request->category)
+   );
+
+   return $request;
+});
+
+
 Router::connect('/api/help/{:args}', array('controller' => 'API', 'action' => 'help'));
 Router::connect('/api/{:args}', array('controller' => 'API', 'action' => 'index'));
 
@@ -62,6 +78,8 @@ Router::connect('/unsubcentral/del', array('controller' => 'unsubcentral', 'acti
 Router::connect('/login', 'Users::login');
 Router::connect('/register', 'Users::register');
 Router::connect('/register/facebook', 'Users::fbregister');
+Router::connect('/mpregister', 'Users::mpregister');
+Router::connect('/mplogin', 'Users::mplogin');
 Router::connect('/momoftheweek', 'MomOfTheWeeks::index');
 Router::connect('/momoftheweek/fbml', 'MomOfTheWeeks::fbml');
 Router::connect('/surveys', 'Surveys::index');

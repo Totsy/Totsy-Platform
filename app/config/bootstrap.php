@@ -42,6 +42,10 @@ Environment::is(function($request) {
 		case 'totsy.com':
 		case 'www.totsy.com':
 		case 'mamapedia.totsy.com':
+		case 'totsystaging.com':
+		case 'www.totsystaging.com':
+		case 'newprod.totsy.com':
+		case '50.56.49.10':
 			return 'production';
 		case 'test.totsy.com':
 			return 'test';
@@ -77,6 +81,8 @@ require __DIR__ . '/bootstrap/session.php';
  * Enable running tests from command line in local environment
  */
 require __DIR__ . '/bootstrap/local_testing_cli.php';
+
+
 
 ?>
 

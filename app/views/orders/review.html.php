@@ -43,16 +43,38 @@ var discountErrors = new Object();
 <script type="text/javascript" src="/js/tipsy/src/javascripts/jquery.tipsy.js"></script>
 <link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
 
+<?php
+
+//check DNS here :)
+if(Session::read("layout", array("name"=>"default"))=="mamapedia") {
+	$is_mamapedia = true;
+} else {
+	$is_mamapedia = false;
+}
+
+//until DNS is created ;)
+$is_mamapedia = true;
+$img_path_prefix = "";
+
+if($is_mamapedia) {
+	$img_path_prefix = "/img/mamapedia";
+} else {
+	$img_path_prefix = "/img";
+}
+
+?>
+
+
 <?php  if(!empty($subTotal)): ?>
 <div class="cart-content">
 	<div class="grid_11 cart-header-left">
 		<div style="float:left;">
 			<h2 class="page-title gray">
 				<span class="cart-step-status gray" style="font-weight:bold">Review your Shipping and Payment Information</span>
-				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps4.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_completed.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_completed.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_completed.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps4.png"></span>
 			</h2>
 		</div>
 	</div>
@@ -208,7 +230,10 @@ var discountErrors = new Object();
 							<span class="<?="price-item-$x";?> cart-review-line-price">
 								<strong>$<?=number_format($item->sale_retail,2)?></strong>
 							</span>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5f1788e478d06df6575975d87052bb169bd712e7
 							<span class="<?="qty-$x";?> cart-review-line-qty">Qty: <?=$item->quantity;?></span>
 							<span class="<?="total-item-$x";?> cart-review-line-total">$<?=number_format($item->sale_retail * $item->quantity ,2)?>
 							</span>
@@ -240,6 +265,10 @@ var discountErrors = new Object();
 				<div class="cart-code-buttons">
 				     <?php if(!empty($credit)): ?>
 				    	<strong>Add <a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a></strong> /
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5f1788e478d06df6575975d87052bb169bd712e7
 			        <span id="promocode_tooltip" original-title="Promo codes cannot be combined and can be applied once to an order per member." class="cart-tooltip">
 			        	<img src="/img/tooltip_icon.png">
 			        </span>
@@ -323,6 +352,10 @@ var discountErrors = new Object();
 			    <div style="clear:both"></div>
 			    <div>
 			    <div class="subtotal">
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5f1788e478d06df6575975d87052bb169bd712e7
 			        <span id="tax_tooltip" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary." class="cart-tooltip"><img src="/img/tooltip_icon.png">
 </span>
 			    <span id="estimated_tax" style="float: left;">Estimated Tax:</span>
@@ -382,6 +415,7 @@ var discountErrors = new Object();
 	<?=$this->form->hidden('rmv_item_id', array('class' => 'inputbox', 'id' => 'rmv_item_id')); ?>
 	<?=$this->form->end();?>
 </div>
+
 
 <div id="reappServiceF" style="display:none">
 	<?=$this->form->create(null ,array('id'=>'reappServiceForm')); ?>

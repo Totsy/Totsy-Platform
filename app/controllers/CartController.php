@@ -90,7 +90,6 @@ class CartController extends BaseController {
 			$events = Event::find('all', array('conditions' => array('_id' => $item->event[0])));
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
 
-
 			//miss chrismtas stuff to be removed later
 			$item->miss_christmas = $itemInfo->miss_christmas;
 			if($item->miss_christmas){
@@ -219,6 +218,7 @@ class CartController extends BaseController {
 						$cartItem->save();
 						//calculate savings
 						$item[(string) $item['_id']] = $cartItem->quantity;
+
 						Cart::updateSavings($item,'add');
 					} else {
 						$cartItem->error = 'You can’t add this quantity in your cart. <a href="faq">Why?</a>';
@@ -302,9 +302,11 @@ class CartController extends BaseController {
 			$cartData['eventURL'] = "sale";
 		}
 
+
 		//get user savings. they were just put there by updateSavings()
 		$cartData['savings'] = Session::read('userSavings');
 		//get the ship date
+
 		$cartData['shipDate'] = Cart::shipDate(Cart::active());
 		//get the amount of items in the cart
 		$cartData['itemCount'] = Cart::itemCount();

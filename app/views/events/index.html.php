@@ -1,3 +1,4 @@
+<?php use lithium\storage\Session; ?>
 <?=$this->html->script(array('jquery.nivo.slider.pack'));?>
 <script src="/js/jquery.tmpl.js" type="text/javascript"></script>
 <?=$this->html->script(array('cart-timer.js?v=007', 'cart-items-timer.js?v=007', 'cart-popup.js?v=007'));?>
@@ -20,6 +21,7 @@
 	};
 })(jQuery);
 </script>
+
 	<h2 class="page-title gray">
 		<span class="_red">Today's Sales</span>
 	</h2>
@@ -101,13 +103,13 @@
 			</div>
 			<?php
 			
-			$invite_girl_img_path = "";	 
+			$img_path_prefix = "";	 
 			
 			//please reverse these when DNS is set ... thank you!
-			if($_SERVER['HTTP_HOST']=='mamasourcedev.totsy.com' || $_SERVER['HTTP_HOST']=='mamasource.totsy.com') {
-				$invite_girl_img_path = "/img/";
+			if(Session::read("layout", array("name"=>"default"))!=="mamapedia") {
+				$img_path_prefix = "/img/";
 			} else {
-				$invite_girl_img_path = "/img/mamapedia/";
+				$img_path_prefix = "/img/mamapedia/";
 			}
 			
 			?>
