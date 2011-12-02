@@ -31,6 +31,7 @@ class BaseController extends \lithium\action\Controller {
 	 */
 
 	protected function _init() {
+
 		parent::_init();
 	     if(!Environment::is('production')){
             $branch = "<h4 id='global_site_msg'>Current branch: " . $this->currentBranch() ."</h4>";
