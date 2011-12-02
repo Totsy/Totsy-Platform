@@ -47,6 +47,13 @@ class ReCapture extends \lithium\console\Command {
 	public $adjustment = 0.00;
 	
 	/**
+	 * Adjustment of the total that is authorized
+	 *
+	 * @var string
+	 */
+	public $createNewAuth = true;
+	
+	/**
 	 * Instances
 	 */
 	public function run() {
@@ -71,7 +78,7 @@ class ReCapture extends \lithium\console\Command {
 									);
 				$order = $ordersCollection->findOne($conditions);
 				if(!empty($order)) {			
-					if(!empty($order['cc_payment'])) {
+					if(!empty($order['cc_payment']) && !empty($this->createNewAuth)) {
 						$creditCard = $this->decryptCC($order);
 					}
 					if(!empty($creditCard)) {
@@ -81,14 +88,18 @@ class ReCapture extends \lithium\console\Command {
 							$reportCounter++;
 						}
 						Logger::debug('New Authorize Key : ' . $authKeyAndReport['authKey']);
-						if(!empty($authKeyAndReport['authKey'])) {
-							$reportCapture = $this->capture($authKeyAndReport['authKey'], $order);
-							if(!empty($reportCapture)) {
-								$report[$reportCounter] = $reportCapture;
-								$reportCounter++;
-							}
+					} else {
+						if($order['authKey']) {
+							$authKeyAndReport['authKey'] = $order['authKey'];
 						}
 					}
+					if(!empty($authKeyAndReport['authKey'])) {
+						$reportCapture = $this->capture($authKeyAndReport['authKey'], $order);
+						if(!empty($reportCapture)) {
+							$report[$reportCounter] = $reportCapture;
+							$reportCounter++;
+						}
+					}			
 					$idx++;
 				} else {
 					Logger::debug('Order Not Found or Already Captured : ' . $orderId);
