@@ -109,6 +109,7 @@ class CartControllerTest extends \lithium\test\Unit {
 				'sale_retail' => 30
 			),
 			array(
+				'addCart' => true,
 				'addItemsToCart' => 2
 			)
 		);
@@ -140,7 +141,7 @@ class CartControllerTest extends \lithium\test\Unit {
 	}
 
 	public function testAdd() {
-		list($item) = $this->_createCart(
+		$item = $this->_createCart(
 			array(
 				'name' => 'Test Event',
 				'url' => 'test_event'
@@ -151,6 +152,9 @@ class CartControllerTest extends \lithium\test\Unit {
 			)
 		);
 		$this->assertTrue(!empty($item));
+
+		$result = Cart::checkCartItem($item->_id, 'no size');
+		$this->assertTrue(empty($result));
 
 		$request = new Request(array(
 			'query' => array(
@@ -171,18 +175,38 @@ class CartControllerTest extends \lithium\test\Unit {
 
 		$this->assertNull($return);
 		$this->assertTrue(!empty($data));
-		$this->assertEqual(15, $data['subTotal']);
 		$this->assertEqual(1, $data['itemCount']);
+		$this->assertTrue(!empty($data['cart']));
+		$this->assertTrue(!empty($data['cart'][0]));
+		$this->assertEqual(1, $data['cart'][0]['quantity']);
+		$this->assertEqual($item->event->data(), $data['cart'][0]['event']);
+
+		// Re add item
+
+		$request = new Request(array(
+			'query' => array(
+				'item_id' => (string) $item->_id,
+				'item_size' => 'no size'
+			),
+			'params' => array(
+				'controller' => 'carts', 'action' => 'add',
+				'type' => 'html'
+			),
+		));
+		$controller = new CartController(compact('request'));
 
 		ob_start();
-		$return = $controller->getCartPopupData();
+		$return = $controller->add();
 		$echoed = ob_get_clean();
 		$data = json_decode($echoed, true);
 
 		$this->assertNull($return);
 		$this->assertTrue(!empty($data));
-		$this->assertEqual(15, $data['subTotal']);
-		$this->assertEqual(1, $data['itemCount']);
+		$this->assertEqual(2, $data['itemCount']);
+		$this->assertTrue(!empty($data['cart']));
+		$this->assertTrue(!empty($data['cart'][0]));
+		$this->assertEqual(2, $data['cart'][0]['quantity']);
+		$this->assertEqual($item->event->data(), $data['cart'][0]['event']);
 	}
 
 	/*
@@ -259,6 +283,7 @@ class CartControllerTest extends \lithium\test\Unit {
 			'cartId' => '200001',
 			'eventId' => '300001',
 			'itemId' => null,
+			'addCart' => false,
 			'addItemsToCart' => false
 		);
 		$baseCart = Cart::find('first', array('conditions' => array('_id' => $options['cartId'])));
@@ -291,22 +316,24 @@ class CartControllerTest extends \lithium\test\Unit {
 		$event->items = array((string) $item->_id);
 		$event->save();
 
-		$data = array_merge(array_diff_key($baseCart->data(), array('_id'=>null, 'quantity'=>null)), array(
-			'description' => 'Test Cart',
-			'item_id' => (string) $item->_id,
-			'url' => $item->url,
-			'session' => Session::key('default'),
-			'created' => new MongoDate(strtotime('now')),
-			'expires' => new MongoDate(strtotime('+10min')),
-			'user' => (string) $this->user->_id,
-			'event' => array(
-				(string) $event->_id
-			)
-		));
+		if ($options['addCart']) {
+			$data = array_merge(array_diff_key($baseCart->data(), array('_id'=>null, 'quantity'=>null)), array(
+				'description' => 'Test Cart',
+				'item_id' => (string) $item->_id,
+				'url' => $item->url,
+				'session' => Session::key('default'),
+				'created' => new MongoDate(strtotime('now')),
+				'expires' => new MongoDate(strtotime('+10min')),
+				'user' => (string) $this->user->_id,
+				'event' => array(
+					(string) $event->_id
+				)
+			));
 
-		$cart = Cart::create(array_merge($data, array_intersect_key($itemData, array('sale_retail'=>null, 'sale_whole'=>null))));
-		$cart->save();
-		$this->_delete[] = $cart;
+			$cart = Cart::create(array_merge($data, array_intersect_key($itemData, array('sale_retail'=>null, 'sale_whole'=>null))));
+			$cart->save();
+			$this->_delete[] = $cart;
+		}
 
 		if ($options['addItemsToCart']) {
 			$request = new Request(array(
@@ -319,6 +346,9 @@ class CartControllerTest extends \lithium\test\Unit {
 			$controller->update();
 		}
 
+		if (!$options['addCart']) {
+			return $item;
+		}
 		return array($item, $cart);
 	}
 }
