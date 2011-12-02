@@ -25,7 +25,8 @@
             "event" : [
                 "300001"
             ],
-            "sale_whol" : 20
+            "sale_whol" : 20,
+			"sale_retail": 20
         },
     "item3":{
 	            "_id":"10006",
@@ -57,6 +58,7 @@
             "event" : [
                 "300001"
             ],
-            "sale_whol" : 20
+            "sale_whol" : 20,
+			"sale_retail": 20
         }
 }
