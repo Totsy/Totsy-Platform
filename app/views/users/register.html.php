@@ -1,3 +1,5 @@
+<?php use lithium\storage\Session; ?>
+
 <?php if ($message){ echo $message; } ?>
 <style>
 h2 {
@@ -71,7 +73,19 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 <div class="round">
 <!-- left side -->
 <div class="grid_6">
-<?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
+
+<?php
+
+$brandLogo = "logo_reg_new.png";
+
+if(Session::read('layout', array('name' => 'default'))=='mamapedia') {
+	$brandLogo = "mamapedia/logo.png";
+}
+
+?>
+
+<?php echo $this->html->link($this->html->image( $brandLogo, array('width'=>'280')), '', array('escape'=> false)); ?>
+
 </div>
 <!-- right side -->
 <div class="grid_6" style="margin-left:28px;">	
@@ -79,7 +93,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 		<div class="free_shipping_banner_reg_new rollover_img" ><a href="javascript:;" title="Free Shipping"><span></span></a></div>
 </div>
 <div class="clear"></div>
-
 
 <div class="round gradient" style="border:1px #eeeeee solid;height:300px;">
 
