@@ -1,7 +1,6 @@
 <?php $this->title($event->name); ?>
 <?=$this->html->script('jquery.countdown.min');?>
 <?=$this->html->style('jquery.countdown');?>
-
 <div class="grid_16">
 		<h2 class="page-title gray"><span class="red"><a href="/" title="Sales"><?=$type?> Sales</a> /</span> <?=$event->name; ?> <div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
 		<hr />
@@ -21,23 +20,34 @@
 									));
 						}
 					?>
+					
 				</div>
 				
-				<div class="grid_11 omega" style="padding:10px 0px;">
-					<div class="grid_3 alpha omega">
-						<!-- Display Logo Image -->
-						<?php if (!empty($event->images->logo_image)): ?>
-							<img src="/image/<?=$event->images->logo_image?>.gif" alt="<?= $event->name; ?>" title="<?= $event->name; ?>" width="148" height="52" />
-						<?php endif ?>
-					</div>
+				<?php if (!empty($event->images->logo_image)) { ?>
+				<div class="grid_8 omega" style="padding:10px 0px;">
+					<div class="grid_8 alpha omega blurb">
 					
-					<div class="grid_11 alpha omega">
+					<?php } else { ?>
+					<div class="grid_11 omega">
+					<div class="grid_11 alpha omega blurb">
+					
+					<?php } ?>
+					
 					<?php if (!empty($event->blurb)): ?>
 						<?php echo $event->blurb ?>
 					<?php endif ?>
 					</div>
+				
+					
 </div>
-
+<?php if (!empty($event->images->logo_image)): ?>
+<div class="grid_3 alpha omega" style="margin-top:10px;">
+						<!-- Display Logo Image -->
+						
+							<img src="/image/<?=$event->images->logo_image?>.gif" alt="<?= $event->name; ?>" title="<?= $event->name; ?>" width="148" height="52" />
+						
+					</div>
+<?php endif ?>
 			</div>
 		</div>
 		<br />

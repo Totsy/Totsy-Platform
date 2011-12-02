@@ -1,3 +1,9 @@
+<script type="text/javascript"> 
+  function setIframe() {
+    var tiframe = document.getElementById('psm').innerHTML = '<iframe src="/static/signup-tracking.html" style="border:none;width:1px;height:1px;" marginheight="0" marginwidth="0" frameborder="0"></iframe>';
+  } 
+</script>
+
 <div id="fullscreen">
 	<div id="login-box">
 		<div id="login-box-border" class="register-modal">
@@ -37,7 +43,7 @@
 								<div class="r-box lt-gradient-1">
                                 <h2> <img src="https://graph.facebook.com/<?=$fbuser['id']?>/picture"> Hi <?=$fbuser['name']?> - you're one step away from joining with Facebook</h2>
                                 <hr />
-<?    print '<form id="registerForm" method="post" onsubmit="_gaq.push([\'_trackPageview\', \'/vpv/fb_register\']);">'; ?>
+<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/fb_register']); return setIframe();">
 
                <!-- Commnented Firstname, Lastname and Zip code --->
 
@@ -118,6 +124,9 @@
 									</div>
 								<?=$this->form->end(); ?>
 								</div>
+								
+								<div id="psm" style="display:none;"></div>
+								
 								<div class="r-container clear reg-list">
 								<div class="tl"></div>
 								<div class="tr"></div>

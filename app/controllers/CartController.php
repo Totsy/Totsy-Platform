@@ -33,9 +33,10 @@ class CartController extends BaseController {
 	* @see app/models/Cart::increaseExpires()
 	* @see app/models/Cart::active()
 	* @return compact
-	*/
+	*/	
 
 	public function view() {
+			
 		#Initialize Datas
 		$promocode_disable = false;
 		$cartExpirationDate = 0;
@@ -68,6 +69,7 @@ class CartController extends BaseController {
 		$shipDate = Cart::shipDate($cart);
 		#Check Expires
 		Cart::cleanExpiredEventItems();
+		
 		#Loop To Get Infos About Cart
 		foreach ($cart as $item) {
 			#Get Last Expiration Date
@@ -80,6 +82,7 @@ class CartController extends BaseController {
 				$item->error = "";
 				$item->save();
 			}
+			
 			$events = Event::find('all', array('conditions' => array('_id' => $item->event[0])));
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
 			#Get Event End Date
@@ -90,15 +93,14 @@ class CartController extends BaseController {
 			$itemlist[$item->created->sec] = $item->event[0];
 			$itemCount += $item->quantity;
 			#Items that are shipping exempt
-
 			if($item->shipping_exempt){
 				if ($item->shipping_exempt==true) {
 					$exemptCount ++;
 				}
 			}
-
 			$i++;
 		}
+
 		$shipping = Cart::shipping($cart, null);
 		#Get Last Url
 		if ($cart) {
@@ -135,9 +137,9 @@ class CartController extends BaseController {
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
 			$shipping_discount = $shipping;
 		}
-
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
+
 		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping');
 	}
 
@@ -147,16 +149,18 @@ class CartController extends BaseController {
 	 * @see app/models/Cart::checkCartItem()
 	 * @return compact
 	 */
+
 	public function add() {
 		#Check Cart
 		$cart = Cart::create();
-
-		if ($this->request->data) {
+		//output for cart popup
+		if ($this->request->query) {
+			$data = $this->request->query;
 			#Getting Size Selected
-			$itemId = $this->request->data['item_id'];
+			$itemId = $data['item_id'];
 			#If unselected, put no size as choice
-			$size = (!array_key_exists('item_size', $this->request->data)) ?
-				"no size": $this->request->data['item_size'];
+			$size = (!array_key_exists('item_size', $data)) ?
+				"no size": $data['item_size'];
 			$item = Item::find('first', array(
 				'conditions' => array(
 					'_id' => "$itemId"),
@@ -174,24 +178,24 @@ class CartController extends BaseController {
 					'vendor_style',
 					'discount_exempt'
 			)));
+									
 			#Get Item from Cart if already added
 			$cartItem = Cart::checkCartItem($itemId, $size);
 			$avail = $item->details->{$size} - Cart::reserved($itemId, $size);
+			
 			#Condition if Item Already in your Cart
 			if (!empty($cartItem)) {
 				//Make sure user does not add more than 9 items to the cart
-
 				if($cartItem->quantity < 9 ) {
 					//Make sure the items are available
 					if( $avail > 0 ) {
-						++$cartItem->quantity;
-						header("Location: /checkout/view");
+						++$cartItem->quantity;					
 						$cartItem->save();
 						//calculate savings
 						$item[$item['_id']] = $cartItem->quantity;
-						Cart::updateSavings($item,'add');
+						Cart::updateSavings($item,'add');			
 					} else {
-						$cartItem->error = 'You can’t add this quantity in your cart. <a href="#5">Why?</a>';
+						$cartItem->error = 'You can’t add this quantity in your cart. <a href="faq">Why?</a>';
 						$cartItem->save();
 						$this->addIncompletePurchase(Cart::active());
 					}
@@ -218,17 +222,71 @@ class CartController extends BaseController {
 					}
 				}
 			}
-			header("Location: " . \lithium\net\http\Router::match('Cart::view', $this->request), true, 302);
-			die();
 		}
-		return compact('cart');
+		//call the cart popup
+		$this->getCartPopupData();
 	}
-
+	
 	/**
-	* The remove method delete an item from the temporary cart.
+	* Method for sending all required cart data to Ajax driven cart popup.
 	*
-	* @see app/models/Cart::remove()
 	* @return compact
+	*/
+	public function getCartPopupData () {
+		$cartData = Array();
+		
+		$this->render(array('layout' => false));	
+	
+		$cartData['cartExpirationDate'] = "";
+		$cartData['subTotal'] = 0.00;
+		
+		$i = 0;
+		
+		//set cart array 
+		$cartData['cart']= Cart::active()->data();
+		
+		foreach(Cart::active() as $cartItem) {
+			if ($cartData['cartExpirationDate'] < $cartItem->expires->sec) {
+				$cartData['cartExpirationDate'] = $cartItem->expires->sec;
+			}
+
+			//get the current event url
+			$event = Event::find('first',
+									array ('fields' => array('url'), 
+									'conditions' => 
+										array ('_id' => "".$cartItem->event[0]."")
+									)
+								); 
+							
+			$temp = $event->data();
+			$eventURL = $temp['url'];				
+					
+			//create the items url from the event url and the item url
+			$cartData['cart'][$i]['url'] = "http://".$_SERVER['HTTP_HOST']."/sale/".$eventURL."/".$cartItem->url;
+			$cartData['subTotal'] += ($cartItem->sale_retail * $cartItem->quantity);
+			$i++;
+		}  
+		
+		$current_path = substr($this->request->env('HTTP_REFERER'), 0, strrpos($this->request->env('HTTP_REFERER'),"/"));
+		
+		if(strlen($current_path) > 0 && $current_path!=="sale") {
+	    	$cartData['eventURL'] = $current_path; 
+	    } else {
+	    	$cartData['eventURL'] = "sale";
+	    }
+
+		//get user savings. they were just put there by updateSavings()
+		$cartData['savings'] = Session::read('userSavings');
+		//get the ship date		
+		$cartData['shipDate'] = date('m-d-Y', Cart::shipDate(Cart::active()));
+		//get the amount of items in the cart
+		$cartData['itemCount'] = Cart::itemCount();
+		
+		echo json_encode($cartData);
+	}
+		
+	/*
+	* The remove method delete an item from the temporary cart.
 	*/
 	public function remove($id = null) {
 		$data = $this->request->data;

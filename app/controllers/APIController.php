@@ -237,7 +237,7 @@ class APIController extends  \lithium\action\Controller {
 				} else if (is_float($it['percent_off'])) {
 					$it['percent_off'] = round($it['percent_off']*100,2);
 				} else {
-					$it['percent_off'] = preg_replace('/[/D]+/','',$it['percent_off']);
+					$it['percent_off'] = preg_replace('/[\D]+/','',$it['percent_off']);
 					if ($it['percent_off']>74) $it['percent_off'] = 0;	
 				} 
 				$it['start_date'] = $ev['start_date'];
@@ -282,7 +282,8 @@ class APIController extends  \lithium\action\Controller {
 			
 			$data =  $event->data();
 			
-			if ($data['end_date']['sec'] <= strtotime(date('d-m-Y 23:59:59',strtotime('+1 day'))) ){
+			if ($data['end_date']['sec'] <= strtotime(date('d-m-Y 23:59:59',strtotime('+1 day',$start_date))) && 
+				$data['end_date']['sec'] > strtotime(date('d-m-Y 23:59:59',$start_date)) ){
 				$closing[] = $data;
 			}
 			
@@ -319,7 +320,7 @@ class APIController extends  \lithium\action\Controller {
 					} else if (is_float($it['percent_off'])) {
 						$it['percent_off'] = round($it['percent_off']*100,2);
 					} else {
-						$it['percent_off'] = preg_replace('/[/D]+/','',$it['percent_off']);
+						$it['percent_off'] = preg_replace('/[\D]+/','',$it['percent_off']);
 						if ($it['percent_off']>74) $it['percent_off'] = 0;	
 					}
 					if ($it['percent_off'] > $maxOff) { $maxOff = $it['percent_off']; }
@@ -424,7 +425,7 @@ class APIController extends  \lithium\action\Controller {
 					} else if (is_float($it['percent_off'])) {
 						$it['percent_off'] = round($it['percent_off']*100,2);
 					} else {
-						$it['percent_off'] = preg_replace('/[/D]+/','',$it['percent_off']);
+						$it['percent_off'] = preg_replace('/[\D]+/','',$it['percent_off']);
 						if ($it['percent_off']>74) $it['percent_off'] = 0;	
 					}
 					if ($it['percent_off'] > $maxOff) { $maxOff = $it['percent_off']; }
@@ -443,8 +444,8 @@ class APIController extends  \lithium\action\Controller {
 		$closing = Event::directQuery(array(
 				'enabled' => true,
 				'end_date' => array(
-					'$gte' => new MongoDate( strtotime(date('Y-m-d',$start_date).' 00:00:00') ),
-					'$lte' => new MongoDate( strtotime(date('Y-m-d',$start_date).' 23:59:59') )
+					'$gt' => new MongoDate( strtotime(date('Y-m-d',$start_date).' 00:00:00') ),
+					'$lte' => new MongoDate( strtotime(date('Y-m-d',strtotime('+1 day',$start_date)).' 23:59:59') )
 				)
 		));
 		

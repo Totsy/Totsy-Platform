@@ -22,7 +22,7 @@
 
 								<p class="red">You have places to be, things to do, and little ones in tow.</p>
 
-								<p>At Totsy, moms on the go and moms to be experience the shopping they desire at prices they can't resist.</p>
+								<p>At Totsy, moms on the go and moms to be experience the <br />shopping they desire at prices they can't resist.</p>
 
 							</div>
 
