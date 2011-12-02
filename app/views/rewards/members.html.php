@@ -1,4 +1,5 @@
 <?php $this->title("Rewards Members"); ?>
+
 <script>
 
 $(document).ready( function() {
@@ -21,6 +22,7 @@ $(document).ready( function() {
 	<?php echo $this->view()->render( array('element' => 'myAccountNav')); ?>
 	<?php echo $this->view()->render( array('element' => 'helpNav')); ?>
 </div>
+
 <div id="rewards-members-app" class="grid_12">
 	<div id="rewards-members-welcome">
 		<span style="float:left">Welcome Back Evan!</span>
@@ -42,3 +44,21 @@ $(document).ready( function() {
 	</div>
 </div>
 <div class="clear"></div>
+
+<script src="https://d3aa0ztdn3oibi.cloudfront.net/javascripts/ff.loyalty.widget.js" type="text/ javascript">
+</script> 
+
+<iframe id="ff_member_iframe" style="width:760px;height:1045px;border:0">
+</iframe> 
+
+<script type="text/javascript">
+
+var customerEmail = "";
+var authToken = "";
+
+if(authToken && customerEmail){
+	_ffLoyalty.initialize("<YOUR ACCOUNT ID>");
+	_ffLoyalty.loadIframe({email: customerEmail, auth_token: authToken}); 
+}
+
+</script>
