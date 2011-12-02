@@ -47,7 +47,7 @@ class ReCapture extends \lithium\console\Command {
 	public $adjustment = 0.00;
 	
 	/**
-	 * Adjustment of the total that is authorized
+	 * Creating new auth during recapture process
 	 *
 	 * @var string
 	 */
