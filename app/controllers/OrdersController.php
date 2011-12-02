@@ -89,7 +89,13 @@ class OrdersController extends BaseController {
 				'user_id' => (string) $user['_id']
 		)));
 		$new = ($order->date_created->sec > (time() - 120)) ? true : false;
-		$shipDate = Cart::shipDate($order);
+		if($order->date_created->sec<1322006400){
+			$shipDate = Cart::shipDate($order, true);	
+			$shipDate = date('M d, Y', $shipDate);
+		}
+		else{
+			$shipDate = Cart::shipDate($order);	
+		}
 		if (!empty($shipDate)) {
 			$allEventsClosed = (Cart::getLastEvent($order)->end_date->sec > time()) ? false : true;
 		} else {
@@ -106,8 +112,38 @@ class OrdersController extends BaseController {
 				if(empty($item['cancel'])) {
 					$openEvent[$item['event_id']] = true;
 				}
+				
+				$itemRecord = Item::find($item['item_id']);
+				if (!empty($itemRecord)) {
+				
+					$itemsByEvent[$key][$key_b]['sku'] = $itemRecord->sku_details[$item['size']];
+					$itemsToSend[] =  array(
+										'id' => (string) $itemRecord['_id'],
+										'qty' => $item['quantity'],
+										'title' => $itemRecord['description'],
+										'price' => $itemRecord['sale_retail']*100,
+									 	'url' => 'http://'.$_SERVER['HTTP_HOST'].'/sale/'.$url->url.'/'.$itemRecord['url']
+					);
+					unset($itemRecord);
+				}
 			}
 		}
+		
+		// IMPORTANT!
+		// Sailthru purchase api complete
+		if ($new===true){
+			if ( !Session::check('order_'.$order_id,array('name'=>'default')) ){
+				Mailer::purchase(
+				$user['email'],
+				$itemsToSend,
+				array('message_id' => hash('sha256',Session::key('default').substr(strrev( (string) $user['_id']),0,8)))
+				);
+				Session::write('order_'.$order_id,time(),array('name'=>'default'));
+			}
+		
+		}
+		unset($itemsToSend);
+		
 		$pixel = Affiliate::getPixels('order', 'spinback');
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel, array('order' => $_SERVER['REQUEST_URI']));
 		//Get Items Skus - Analytics
@@ -139,6 +175,7 @@ class OrdersController extends BaseController {
 				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
 			}
 		}
+			
 		return compact(
 			'order',
 			'orderEvents',
@@ -371,10 +408,6 @@ class OrdersController extends BaseController {
 		$total = $vars['postDiscountTotal'];
 		#Read Credit Card Informations
 		$creditCard = Order::creditCardDecrypt((string)$user['_id']);
-		#Disable Promocode Uses if Services
-		if (!empty($services['freeshipping']['enable']) || !empty($services['tenOffFitfy'])) {
-			$promocode_disable = true;
-		}
 		#Organize Datas
 		$vars = $vars + compact(
 			'user', 'cart', 'total', 'subTotal', 'creditCard',
@@ -391,7 +424,12 @@ class OrdersController extends BaseController {
 		if (Session::check('cc_error')) {
 			$this->redirect(array('Orders::payment'));
 		}
-		return $vars + compact('cartEmpty','order','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable','missChristmasCount','notmissChristmasCount');
+		#Check if Services
+		$serviceAvailable = false;
+		if(Session::check('service_available')) {
+			$serviceAvailable = Session::read('service_available');
+		}
+		return $vars + compact('cartEmpty','order','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable','missChristmasCount','notmissChristmasCount', 'serviceAvailable');
 	}
 
 	/**

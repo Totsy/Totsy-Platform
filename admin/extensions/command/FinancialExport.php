@@ -341,7 +341,7 @@ class FinancialExport extends Base  {
          * Setup filenames for the order summary and epxort functionality.
         */
 	     if ($this->historical == 'true') {
-            $this->time = date('M_y',$this->yesterday_min) . "_" . date('M_d_Y', $this->yesterday_max);
+            $this->time = date('M_d',$this->yesterday_min) . "_" . date('M_d_Y', $this->yesterday_max);
 		    $this->orderSummaryFile = $this->tmp . 'OrdSummary_' . $this->time. '.xml';
 		    $this->orderDetailFile = $this->tmp . 'OrdDetail_' . $this->time. '.xml';
 		    $this->creditDetailFile = $this->tmp . 'CredDetail_' . $this->time. '.xml';
@@ -821,10 +821,9 @@ class FinancialExport extends Base  {
 	    };
 	    set_error_handler($error_handling, E_WARNING);
 
-	   // $To = "lhanson@totsy.com,scott.fisher@yourtechso.com,sadler@totsy.com";
-	   $To = "lhanson@totsy.com";
+	    $To = "lhanson@totsy.com,scott.fisher@yourtechso.com,sadler@totsy.com,rminns@totsy.com";
 	   $headers = "From: reports@totsy.com";
-
+	   echo "Exporting Files";
 	    $this->log("Exporting to Accounting Server...");
 	    $directory = $this->directory;
 
@@ -835,15 +834,13 @@ class FinancialExport extends Base  {
                         $length = strlen($file);
                        if (substr($file,$length - 4, $length) == ".xml") {
                          $success = true;
-                         $connection = ssh2_connect('192.168.0.222',22);
-                      // $connection = ssh2_connect('dev3.totsy.com',22);
+                         $connection = ssh2_connect('accounting.totsy.com',50220);
                             if (!$connection) {
                                 $this->log("Fail: Unable to establish a connection.");
                                 $reporting['success'] = false;
                                 $reporting['error'][] = "Fail: Unable to establish a connection.";
                             } else{
-                               if (!ssh2_auth_password($connection, 'root', 'totsy1')) {
-                            //   if (!ssh2_auth_password($connection, 'lawren', 'serenerav3n')) {
+                               if (!ssh2_auth_password($connection, 'administrator', 'accounting6N1Wlm5Ig')) {
                                     $this->log("Fail: Unable to authenticate.");
                                     $reporting['success'] = false;
                                     $reporting['error'][] = "Fail: Unable to authenticate.";
@@ -851,7 +848,6 @@ class FinancialExport extends Base  {
                                     $this->log("You are logged in.");
                                     $this->log("Uploading " . $source.$file . " to accounting server");
                                     $success = ssh2_scp_send($connection, $source.$file, "/C/$directory/$file", 0644);
-                                  //   $success = ssh2_scp_send($connection, $source.$file, "/home/lawren/$file", 0644);
                                      if (!$success) {
                                         $reporting['success'] = false;
                                         $reporting['error'][] = "Fail: transfer failed.";
@@ -864,26 +860,25 @@ class FinancialExport extends Base  {
                                         $reporting['files_sent'][] = $file . " " . filesize($source.$file) . " Bytes" ;
                                         rename($source.$file,$processed.$file);
                                      }
-                                     sleep(15);
+                                     sleep(10);
                                      ssh2_exec($connection, 'exit');
-                                     sleep(5);
                                 }
                             }
                        }
                     }
                 }
             }
-            $subject = "Accounting Auto Reporting Job - Report - test";
+            $subject = "Accounting Auto Reporting Job - Report";
             $message = "Automating reporting results: \r\n";
             if (!$reporting['success']) {
                 $message .= implode("\r\n", $reporting['error']);
             }
             if (!empty($reporting['files_failed'])) {
                 $message .= "The following files failed to transfer: \r\n";
-                $message .= implode("\r\n", $reporting['error']);
+                $message .= implode("\r\n", $reporting['files_failed']);
             }
             if (!empty($reporting['files_sent'])) {
-                $message .= "The following files were transferred: \r\n";
+                $message .= "The following files were transferred to $directory: \r\n";
                 $message .= implode("\r\n", $reporting['files_sent']);
             }
             $this->log("Sending out email");

@@ -140,18 +140,18 @@ class CartController extends BaseController {
 		if (!empty($vars['cartCredit'])) {
 			$credits = Session::read('credit');
 		}
-		#Disable Promocode Uses if Services
-		if (!empty($services['freeshipping']['enable']) || !empty($services['tenOffFitfy'])) {
-			$promocode_disable = true;
-		}
 		#Get Discount Freeshipping Service / Get Discount Promocodes Free Shipping
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
 			$shipping_discount = $shipping;
 		}
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
-
-		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping','missChristmasCount','notmissChristmasCount');
+		#Check if Services
+		$serviceAvailable = false;
+		if(Session::check('service_available')) {
+			$serviceAvailable = Session::read('service_available');
+		}
+		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping','missChristmasCount','notmissChristmasCount', 'serviceAvailable');
 	}
 
 	/**
