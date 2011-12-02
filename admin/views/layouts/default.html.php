@@ -1,6 +1,6 @@
 <?php
 
-ini_set('display_errors', 0); 
+ini_set('display_errors', 0);
 
 /**
  * Lithium: the most rad php framework
@@ -72,10 +72,14 @@ ini_set('display_errors', 0);
 		<!-- END HEADER -->
 
 		<div class="clearfix"></div>
-
-		<div id="navigation">
-			<?php echo $this->view()->render(array('element' => 'navigation')); ?>
-		</div>
+		<?php
+		    use lithium\storage\Session;
+		    if (Session::check('userLogin')) :
+		?>
+            <div id="navigation">
+                <?php echo $this->view()->render(array('element' => 'navigation')); ?>
+            </div>
+		<?php endif;?>
 
 		<div class="clearfix"></div>
 

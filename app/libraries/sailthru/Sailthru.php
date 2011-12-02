@@ -30,7 +30,13 @@ abstract class Sailthru {
   	}
   	
   	public static function __callStatic($name,$args){
-  		call_user_func_array(array(static::$_client,$name),$args);
+  		return call_user_func_array(array(static::$_client,$name),$args);
+  	}
+  	
+  	public static function getJobStatus($job_id){
+  		return self::apiGet('job',array(
+  						'format' => 'json',
+  						'job_id' => $job_id));
   	}
 }
 
