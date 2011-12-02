@@ -148,7 +148,7 @@ class CartController extends BaseController {
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
 		#Check if Services
-		$servicesAvailable = false;
+		$serviceAvailable = false;
 		if(Session::check('service_available')) {
 			$serviceAvailable = Session::read('service_available');
 		}
