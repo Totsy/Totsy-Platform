@@ -352,11 +352,13 @@ class APIController extends  \lithium\action\Controller {
 	 * method GET
 	 */
 	protected function eventsReviewApi() {
-
+		
 		$token = Api::authorizeTokenize($this->request->query);
 		if (is_array($token) && array_key_exists('error', $token)) {
 			return $token;
 		}
+		
+		$token = "testing";
 		
 		$start_date = strtotime(date('Y-m-d'));
 		$start_time = '19:00:00';

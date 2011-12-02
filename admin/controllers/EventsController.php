@@ -91,6 +91,7 @@ class EventsController extends BaseController {
 			$sku_details_arr = $oitem['sku_details'];
 			$skus_arr = $oitem['skus'];
 			$details_arr = $oitem['details'];
+			$sale_details_arr = $oitem['sale_details'];
 
 			//set quantities to 0
 			foreach($details_arr as $details_key => $details){
@@ -120,6 +121,9 @@ class EventsController extends BaseController {
 						//use index to update quantity
 						$oitem['details'][$sku_details_key] = (int)$items_quantities[$sku_details];
 
+						//set sales to 0 for all sizes
+						//$oitem['sale_details'][$sku_details_key]['sale_count'] = 0;
+
 						//use index to get new price
 						$item_price_new = $items_prices[$sku_details];
 
@@ -138,8 +142,9 @@ class EventsController extends BaseController {
 				unset($oitem['event']);
 				unset($oitem['created_date']);
 				unset($oitem['total_quantity']);
-				unset($oitem['sale_retail']);
 				unset($oitem['enabled']);
+				unset($oitem['details_original']);
+				unset($oitem['sale_details']);
 
 				//update event _id
 				$oitem['event'] = array((string)$_id);
@@ -148,15 +153,29 @@ class EventsController extends BaseController {
 				$oitem['created_date'] = new MongoDate();
 
 				//update enabled
-				$oitem['enabled'] = $enabled;
-
+				$oitem['enabled'] = (bool)$enabled;
 				//create a new item instance
 				$newItem = Item::create();
 
 				//set total quant
 				$oitem['total_quantity'] = (int)$total_quantity_new;
 				//set new price
-				$oitem['sale_retail'] = floatval($item_price_new);
+				if($item_price_new){
+					unset($oitem['sale_retail']);
+					$oitem['sale_retail'] = floatval($item_price_new);
+				}
+
+				//save original quants
+				$oitem['details_original'] = $oitem['details'];
+
+				//hack for xmas items
+				if($this->request->data['miss_christmas']){
+					$oitem['miss_christmas'] = true;
+				}
+
+
+				//save original quants
+				//$oitem['sale_details'] = $oitem['sale_details'];
 
 				//save item with revised info
 				$newItem->save($oitem);
@@ -170,6 +189,26 @@ class EventsController extends BaseController {
 		}
 		return $items;
 	}
+
+
+	public function inventory($_id = null) {
+	    $this->_render['layout'] = false;
+
+		$event = Event::find($_id);
+
+		$eventItems = array();
+
+		$alleventids = array($_id);
+
+		foreach($alleventids as $thiseventid){
+			$eventItems = Item::find('all', array('conditions' => array('event' => $alleventids),
+					'order' => array('created_date' => 'ASC')
+				));
+		}
+		return compact('eventItems','event');
+	}
+
+
 
 
 	public function add() {
@@ -568,6 +607,7 @@ class EventsController extends BaseController {
 				'miss_christmas' => (bool) $miss_christmas,
 				'created_date' => $date,
 				'details' => $itemCleanAttributes,
+				'details_original' => $itemCleanAttributes,
 				'event' => array((string) $_id),
 				'url' => $url,
 				'blurb' => $blurb,

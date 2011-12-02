@@ -187,6 +187,15 @@ for ( i=1; i<6; i++ ) {
 		$('#Short').focusout(function(){
 			return limitTextArea($(this),$('#short_description_characters_counter'),limit);
 		});
+
+		//this loads the event/inventory iframe src when the tab is clicked
+		$("#inventoryLink").click(function(){
+			$("#inventoryIframe").attr('src', "/events/inventory/<?=$event->_id; ?>");
+		});
+
+
+
+
 	});
 
 	function limitTextArea(text,info,limiter){
@@ -241,6 +250,7 @@ $(function() {
 		    <li><a href="#event_history"><span>History</span></a></li>
 			<li><a href="#event_media_upload"><span>Media Upload</span></a></li>
 			<li><a href="#event_media_status"><span>Media Status</span></a></li>
+		    <li><a href="#event_inventory" id="inventoryLink"><span>Event Inventory</span></a></li>
 		</ul>
 
 		<!-- Start Tab -->
@@ -585,6 +595,9 @@ $(function() {
 			<div id="event_media_status_data"><!-- Populated through AJAX request. --></div>
 		</div>
 		<!-- End Tab -->
+		<div id="event_inventory">
+			<iframe id="inventoryIframe" src="" style="width:900px; height:400px;"></iframe>
+		</div>
 	</div>
 	<!-- End Tabs -->
 </div>
