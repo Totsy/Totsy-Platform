@@ -179,8 +179,7 @@ var paymentForm = new Object();
 <div class="clear"></div>
 
 <div class="grid_16" style=" width:935px !important">
-				<hr /><br />
-				<h3>Pay with Credit Card :</h3>
+
 				<hr />
 				
 				<?=$this->form->error('cc_error'); ?>
@@ -229,7 +228,7 @@ var paymentForm = new Object();
 ?>	
 				<hr /> 
 				<div id="credit_card_form" style="display:none;">
->>>>>>> updates to orders and payment page
+
 				<span class="cart-select">
 				<?=$this->form->hidden('opt_submitted', array('class'=>'inputbox', 'id' => 'opt_submitted')); ?>
 				<?=$this->form->label('card_type', 'Card Type', array('escape' => false,'class' => 'required')); ?>
@@ -327,8 +326,10 @@ var paymentForm = new Object();
 				<?=$this->form->hidden('opt_shipping_select', array('id' => 'opt_shipping_select')); ?>
 				</div>
 
-			<div class="grid_16">
-
+				</div>
+					
+			<div class="grid_16">	
+>>>>>>> 0dbf4e4fd8f5545de167cb83b49de0a18f8c34de
 				<?=$this->form->submit('CONTINUE', array('class' => 'button fr', 'style'=>'margin-right:10px;')); ?>
 			</div>
 
@@ -376,14 +377,10 @@ var paymentForm = new Object();
 	<?=$this->form->hidden('address_id', array('class' => 'inputbox', 'id' => 'address_id')); ?>
 	<?=$this->form->end();?>
 </div>
-<script>
 
-var shippingAddress = <?php echo $shipping; ?>
-
-//validate card number when a correct card is entered
-$("#card_number").blur( function(){
-	validCC();
-});
+<script>  
+	
+var shippingAddress = <?php echo $shipping; ?>;
 
 
 function replace_address() {
