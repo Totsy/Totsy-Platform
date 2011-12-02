@@ -40,6 +40,13 @@ class ReCapture extends \lithium\console\Command {
 	public $ordersIdFile = "capture_errors.csv";
 	
 	/**
+	 * Adjustment of the total that is authorized
+	 *
+	 * @var string
+	 */
+	public $adjustment = 0.00;
+	
+	/**
 	 * Instances
 	 */
 	public function run() {
@@ -139,7 +146,7 @@ class ReCapture extends \lithium\console\Command {
 		))));
 		#Create a new Transaction and Get a new Authorization Key
 		try {
-			$authKey = Payments::authorize('default', $order['total'], $card);
+			$authKey = Payments::authorize('default', ($order['total'] + $this->adjustment), $card);
 			Logger::debug('Authorize Complete: ' . $authKey);
 		} catch (TransactionException $e) {
 			Logger::debug('Authorize Error: ' . $e->getMessage());

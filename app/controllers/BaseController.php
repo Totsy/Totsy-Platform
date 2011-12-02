@@ -24,7 +24,7 @@ class BaseController extends \lithium\action\Controller {
 	 * Get the userinfo for the rest of the site from the session.
 	 */
 	protected function _init() {
-		
+
 		parent::_init();
 	     if(!Environment::is('production')){
             $branch = "<h4 id='global_site_msg'>Current branch: " . $this->currentBranch() ."</h4>";
@@ -41,7 +41,15 @@ class BaseController extends \lithium\action\Controller {
 		 */
 		$this->fbsession = $fbsession = FacebookProxy::getSession();
 		$fbconfig = FacebookProxy::config();
-		$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
+
+		if($this->fbsession){
+			$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
+		}
+		else{
+			$fblogout = "/logout";
+		}
+
+
 		if ($userInfo) {
 			$user = User::find('first', array(
 				'conditions' => array('_id' => $userInfo['_id']),
@@ -127,10 +135,10 @@ class BaseController extends \lithium\action\Controller {
 	        $user = User::find('first', array('conditions' => array('_id' => $userInfo['_id'])));
 	        if ($user) {
                $created_date = (is_object($user->created_date)) ? $user->created_date->sec : strtotime($user->created_date);
-             $dayThirty = date('m/d/Y',mktime(0,0,0,date('m',$created_date),
+             $dayThirty = mktime(0,0,0,date('m',$created_date),
                     date('d',$created_date)+30,
                     date('Y',$created_date)
-                ));
+                );
 	            /**
 	            *   check if the user is still eligible for free shipping
 	            *   criteria: User must have registered between the time the service
@@ -139,7 +147,7 @@ class BaseController extends \lithium\action\Controller {
 	            */
                 if ( ($service->start_date->sec <= $created_date &&
                         $service->end_date->sec > $created_date) &&
-                    (date('m/d/Y H:i:s') < $dayThirty)) {
+                    (strtotime("now") < $dayThirty)) {
 
                     //checks if the user ever made a purchase
                     if ($user->purchase_count < 1) {
