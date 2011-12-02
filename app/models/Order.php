@@ -58,6 +58,7 @@ class Order extends Base {
 
 			))
 		));
+
 		if ($cart) {
 			$inc = 0;
 			foreach ($cart as $item) {
@@ -157,7 +158,22 @@ class Order extends Base {
 				unset($cc_encrypt['valid']);
 				$order->cc_payment = $cc_encrypt;
 			}
+
+			$cart = Cart::active();
 			#Save Order Infos
+			
+			$shipDate = Cart::shipDate($cart);
+			if($shipDate=="On or before 12/23"){
+				$shipDateInsert = strtotime("2011-12-23".' +1 day');
+			}
+			elseif($shipDate=="See delivery alert below"){
+				$shipDateInsert = Cart::shipDate($cart, true);
+			}
+			else{
+				$shipDateInsert = $shipDate;
+			}
+			
+			
 			$order->save(array(
 					'total' => $vars['total'],
 					'subTotal' => $vars['subTotal'],
@@ -176,7 +192,7 @@ class Order extends Base {
 					'shippingMethod' => $shippingMethod,
 					'items' => $items,
 					'avatax' => $avatax,
-					'ship_date' => new MongoDate(Cart::shipDate($order)),
+					'ship_date' => new MongoDate($shipDateInsert),
 					'savings' => $savings
 			));
 			Cart::remove(array('session' => Session::key('default')));
@@ -189,9 +205,11 @@ class Order extends Base {
 			++$user->purchase_count;
 			$user->save(null, array('validate' => false));
 			#Send Order Confirmation Email
+//				'shipDate' => date('M d, Y', Cart::shipDate($order))
+
 			$data = array(
 				'order' => $order->data(),
-				'shipDate' => date('M d, Y', Cart::shipDate($order))
+				'shipDate' => Cart::shipDate($order)
 			);
 			#In Case Of First Order, Send an Email About 10$ Off Discount
 			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
