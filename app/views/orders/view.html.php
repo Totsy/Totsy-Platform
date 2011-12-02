@@ -1,7 +1,7 @@
 <?php $this->title("Order Confirmation"); ?>
 <?php
-	$brandNew = ($order->date_created->sec > (time() - 10)) ? true : false;
-	$new = ($order->date_created->sec > (time() - 120)) ? true : false;
+	$brandNew = ($this->DataFormat->timeValue($order->date_created) > (time() - 10)) ? true : false;
+	$new = ($this->DataFormat->timeValue($order->date_created) > (time() - 120)) ? true : false;
 
 ?>
 <div class="grid_16">
@@ -71,7 +71,7 @@
 													//echo date('M d, Y', strtotime($orderEvents[$key]['ship_date']));
 													echo $orderEvents[$key]['ship_date']
 												?>
-													
+
 												<?php else: ?>
 													 <?php echo $shipDate; ?>
 												<?php endif ?>
@@ -103,23 +103,23 @@
 														Color: <?=$item['color']?>
 														<br>
 														Size: <?=$item['size']?>
-														
-														<?php 
+
+														<?php
 														$convertdate = date("Y-m-d h:i:s", 1322071200);
 														//echo $orderdate;
-														
+
 														if($order->date_created->sec>1322006400){
 															if($missChristmasCount>0){
 															?>
 															<br>
-															This item is not guaranteed to be delivered on or before 12/25.* 
-															
+															This item is not guaranteed to be delivered on or before 12/25.*
+
 															<?php
 															}else{
 															?>
 															<br>
 															This item will be delivered on or before 12/23*
-															
+
 															<?php
 															}
 														}
@@ -156,13 +156,13 @@
 	<div class="grid_3">
 		<strong>Shipping Address</strong>
 		<hr />
-		<?=$order->shipping->firstname;?> <?=$order->shipping->lastname;?>							
+		<?=$order->shipping->firstname;?> <?=$order->shipping->lastname;?>
 		<br />
 		<?=$order->shipping->address; ?><?=$order->shipping->address_2; ?>
 		<br />
 		<?=$order->shipping->city; ?>, <?=$order->shipping->state; ?><?=$order->shipping->zip; ?>
 		<br />
-		<br />	
+		<br />
 	</div>
 	<div class="grid_3">
 		<strong>Payment Method</strong>
@@ -196,37 +196,37 @@
 		<br>
 		<hr/>
 			<strong style="font-weight:bold;color:#606060; font-size:16px;">Total:</strong> <strong style="font-weight:bold;color:#009900; font-size:16px; float:right;">$<?=number_format($order->total,2); ?></strong>
-		</div>											
+		</div>
 	<div class="clear"></div>
 	<br>
 	<hr/>
 	<div class="grid_11">
 		<p style="text-align: center; font-size:18px; margin-top:10px;">Thank you for shopping on Totsy.com!</p>
-	</div>	
+	</div>
 <div class="clear"></div>
 <div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
 				<?php
 				if($missChristmasCount>0&&$notmissChristmasCount>0){
 				?>
-				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. 
-				
+				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions.
+
 				<?php
 				}
 				elseif($missChristmasCount>0){
 				?>
 				* Your items will arrives safely, but after 12/25.
-				
+
 				<?php
 				}
 				else{
 				?>
-				
+
 				* Our delivery guarantee does not apply when transportation networks are affected by weather.
-				
+
 				<?php
 				}
 				?>
-				
+
 </div>
 </div>
 <?php else: ?>
@@ -302,20 +302,20 @@
 		var google_conversion_value = 0;
 		/* ]]> */
 	</script>
-	
+
 	<script type="text/javascript" src="http://www.googleadservices.com/pagead/conversion.js"></script>
-	
+
 	<noscript>
 		<div style="display:inline;">
 			<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=SeX0CLn9igIQ9Yb-5QM&amp;guid=ON&amp;script=0"/>
 		</div>
 	</noscript>
-	
+
 	<?php
 		//srting of GET variables passed into criteo link
 		$criteoVars = "";
 		$iCounter = 1;
-		
+
 		foreach($itemsByEvent as $event){
 		     foreach($event as $item) {
 		     	$criteoVars .=
@@ -324,17 +324,17 @@
 		    }
 		}
 	?>
-	
+
 	<script type="text/javascript">
-	
+
 		var criteoVars = "<?=$criteoVars?>";
-		
-		//now using global JS variables 
+
+		//now using global JS variables
 		document.write("<img src=\"" + document.location.protocol + "//dis.us.criteo.com/dis/dis.aspx?p1=" + escape("v=2&wi=7714288&s=1&t=" + orderID + criteoVars ) + "&t1=transaction&p=3290&c=2&resptype=gif\" width=\"1\" height=\"1\" />");
-	
+
 	</script>
-			
-	<!-- END OF Google Code for acheteurs Remarketing List --> 
+
+	<!-- END OF Google Code for acheteurs Remarketing List -->
 	<!--  E-COMMERCE -->
 		<!--  END OF E-COMMERCE -->
 <?php endif ?>

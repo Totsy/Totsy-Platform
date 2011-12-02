@@ -2,7 +2,7 @@
 
 <link rel="stylesheet" type="text/css" href="/css/validation-engine.jquery.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="/css/validation-template.css" media="screen" />
-<script type="text/javascript" src="/js/form_validator/jquery.validation-engine.js" charset="utf-8"></script>    
+<script type="text/javascript" src="/js/form_validator/jquery.validation-engine.js" charset="utf-8"></script>
 <script type="text/javascript" src="/js/form_validator/languages/jquery.validation-engine-en.js" charset="utf-8"></script>
 
 <div class="grid_16">
@@ -36,7 +36,7 @@
 				<li><a href="#sendinvites"><span>Send</span></a></li>
 			    <li><a href="#openinvites"><span>Open Invitations</span></a></li>
 			    <li><a href="#acceptedinvites"><span>Accepted</span></a></li>
-			    
+
 			</ul>
 			<!-- Start Open Invitations Tab -->
 			<div id="sendinvites" class="ui-tabs-hide">
@@ -71,8 +71,8 @@
 								<?=$this->form->submit('Send Invitations', array('class' => 'button fr')); ?>
 							<?=$this->form->end(); ?>
 							<br><br><br>
-							
-							
+
+
 						</fieldset>
 				</div>
 				<div class="grid_5">
@@ -114,7 +114,7 @@
 							<tr class="alt<?php echo ( ($y++ % 2) == 1 ? 0 : 1); ?>">
 								<td><?=$x?></td>
 								<td><?=$invite->email; ?></td>
-								<td><?=date('M-d-Y', $invite->date_sent->sec); ?></td>
+								<td><?=date('M-d-Y', $this->DataFormat->timeValue($invite->date_sent)); ?></td>
 							</tr>
 						<?php $x++ ?>
 					<?php endforeach ?>
@@ -166,13 +166,13 @@
 
 <script type="text/javascript" charset="utf-8">
 	$(document).ready( function() {
-		$("#inviteForm").validationEngine('attach');        
-    	$("#inviteForm").validationEngine('init', { promptPosition : "centerRight", scroll: false } );  
-		
+		$("#inviteForm").validationEngine('attach');
+    	$("#inviteForm").validationEngine('init', { promptPosition : "centerRight", scroll: false } );
+
 		var default_msg = "Separate email addresses by commas";
-	
+
 		function validateEmail(field) {
-			
+
 			var begin = field.indexOf("<");
 			var end = field.indexOf(">");
 			if((begin != -1) && (end != -1)) {
@@ -181,54 +181,54 @@
     		var regex=/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i;
     		return (regex.test(field)) ? true : false;
     	}
-		
+
 		var checkFields = function() {
-		
+
 			var email_addresses = $("#contact_list").val().split(",");
-			
-			if($("#contact_list").val()!= default_msg){			
+
+			if($("#contact_list").val()!= default_msg){
 				if (typeof email_addresses == "object") {
 					for ( email in email_addresses ) {
-						var clean_email = email_addresses[email].replace(" ","");			
-						
+						var clean_email = email_addresses[email].replace(" ","");
+
 						if( validateEmail(clean_email)==false) {
-							
+
 							var error_msg = "";
-							
+
 								if(clean_email==""){
 									error_msg = "*One of your emails is blank, or remove that extra comma.";
 								} else {
 									error_msg = '*This email is not valid: ' +  clean_email;
 								}
-							
+
 							$('#contact_list').validationEngine('showPrompt',error_msg, '', true);
     			 			$('#contact_list').validationEngine({ promptPosition : "centerRight", scroll: false });
 							return false;
 						} else {
 							$("#contact_list").validationEngine('hide');
 						}
-					}				
+					}
 				} else {
 					if( validateEmail(email_addresses)==false) {
-						
+
 						$('#contact_list').validationEngine('showPrompt','*This email is not valid:' +  email_addresses, '', true);
     			 		$('#contact_list').validationEngine({ promptPosition : "centerRight", scroll: false });
 						return false;
 					} else {
-						$("#contact_list").validationEngine('hide');	
+						$("#contact_list").validationEngine('hide');
 					}
-				}		
+				}
 			} else {
 				$('#contact_list').validationEngine('showPrompt','*Please enter an email', '', true);
     			$('#contact_list').validationEngine({ promptPosition : "centerRight", scroll: false });
-				return false;	
+				return false;
 			}
 		}
 		$("#inviteForm").submit(function() {
 			if(checkFields() == false){
-				return false;	
-			} 
-		});	
+				return false;
+			}
+		});
 	});
 </script>
 <script type="text/javascript" src="https://api.cloudsponge.com/address_books.js"></script>

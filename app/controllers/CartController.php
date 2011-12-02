@@ -76,7 +76,7 @@ class CartController extends BaseController {
 		#Loop To Get Infos About Cart
 		foreach ($cart as $item) {
 			#Get Last Expiration Date
-			$currentSec = is_object($item['expires']) ? $item['expires']->sec : $item['expires'];
+			$currentSec = Cart::timeValue($item['expires']);
 			if ($cartExpirationDate < $currentSec) {
 				$cartExpirationDate = $currentSec;
 			}
@@ -101,11 +101,11 @@ class CartController extends BaseController {
 			}
 
 			#Get Event End Date
-			$cartItemEventEndDates[$i] = is_object($events[0]->end_date) ? $events[0]->end_date->sec : $events[0]->end_date;
+			$cartItemEventEndDates[$i] = Event::timeValue($events[0]->end_date);
 			$item->event_url = $events[0]->url;
 			$item->available = $itemInfo->details->{$item->size} - (Cart::reserved($item->item_id, $item->size) - $item->quantity);
 			$subTotal += $item->quantity * $item->sale_retail;
-			$itemlist[is_object($item->created) ? $item->created->sec : $item->created] = $item->event[0];
+			$itemlist[Item::timeValue($item->created)] = $item->event[0];
 			$itemCount += $item->quantity;
 			#Items that are shipping exempt
 			if($item->shipping_exempt){
@@ -272,7 +272,7 @@ class CartController extends BaseController {
 		$cartData['cart']= Cart::active()->data();
 
 		foreach(Cart::active() as $cartItem) {
-			$currentSec = is_object($cartItem->expires) ? $cartItem->expires->sec : $cartItem->expires;
+			$currentSec = Cart::timeValue($cartItem->expires);
 			if ($cartData['cartExpirationDate'] < $currentSec) {
 				$cartData['cartExpirationDate'] = $currentSec;
 			}

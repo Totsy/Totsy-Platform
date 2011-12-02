@@ -19,7 +19,7 @@ class Affiliate extends Base {
     * @return the pixels associated to the affiliate and url
     */
 	public static function getPixels($url, $invited_by) {
-	
+
 	    $cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 	    $userInfo = Session::read('userLogin', array('name' => 'default'));
 		$userCollection = User::collection();
@@ -30,14 +30,14 @@ class Affiliate extends Base {
             $orderid = substr($url,12);
             $url = '/orders/view';
         }
-        
+
         if(preg_match('(^a/)',$url)) {
             $url = '/a/' . $invited_by;
         }
-        
+
         /*for affilliates that have a category
-        build the URL here in order to find a match and get the right pixel info for this affiliate */        
-        
+        build the URL here in order to find a match and get the right pixel info for this affiliate */
+
 		/**
 		* This detaches the invited by from the unique identifier
 		* for affiliate invited by retrieved from
@@ -46,21 +46,21 @@ class Affiliate extends Base {
         if($index = strpos($invited_by, '_')) {
             $invited_by = substr($invited_by, 0 , $index);
         }
-        
+
         $conditions['active'] = true;
         $conditions['level'] = 'super';
         $conditions['pixel'] = array('$elemMatch' => array(
                                     'page' => $url,
                                     'enable' => true
                                 ));
-                                
+
         $conditions['invitation_codes'] = $invited_by;
         $options = array('conditions' => $conditions,
 		                'fields'=>array(
 		                    'pixel.pixel' => 1, 'pixel.page' => 1,
 							'_id' => 0
 		                    ));
-		                    
+
 		$pixels = Affiliate::find('all', $options );
 		$pixels = $pixels->data();
 		$pixel = NULL;
@@ -72,7 +72,7 @@ class Affiliate extends Base {
                 Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
             }
         }
-        
+
 		foreach($pixels as $data) {
 			foreach($data['pixel'] as $index) {
                 if(is_array($index['page']) && in_array($url, $index['page'])) {
@@ -212,12 +212,12 @@ class Affiliate extends Base {
 		if (is_object($event)){
                 	$insert = static::spinback_share(
 				'/image/' .$event->logo_image . '.gif',
-				$event->_id, 
-				$options['event'],  
-				htmlspecialchars($event->name), 
+				$event->_id,
+				$options['event'],
 				htmlspecialchars($event->name),
-				"Check out this SALE on Totsy!", 
-				' st="Share this Sale!"'  
+				htmlspecialchars($event->name),
+				"Check out this SALE on Totsy!",
+				' st="Share this Sale!"'
 			);
 		} else {
 			$insert = '';
@@ -243,7 +243,7 @@ class Affiliate extends Base {
 				* This line prevents the linkshare rev pixel from firing if the
 				* user goes to the /order/view page just to see an old order
 				**/
-				$order_age = ($order->date_created->sec > (time() - 30)) ? true : false;
+				$order_age = (Order::timeValue($order->date_created) > (time() - 30)) ? true : false;
 				//reset the pixel if the order is 30 secs or more old
 				if (!$order_age) {
 					$pixel = "";
@@ -315,7 +315,7 @@ class Affiliate extends Base {
         if(($trans_type)){
             $raw .= 'tr=' . substr($tr, strlen('linkshare')+1) . '&';
             $raw .= 'land=' . date('Ymd_Hi', (int) $entryTime) . '&';
-            $raw .= 'date=' . date('Ymd_Hi', $order->date_created->sec) . '&';
+            $raw .= 'date=' . date('Ymd_Hi', Order::timeValue($order->date_created)) . '&';
         } else {
             $raw .= 'mid=36138&';
         }

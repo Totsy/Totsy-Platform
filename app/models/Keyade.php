@@ -31,7 +31,7 @@ class Keyade extends \lithium\data\Model {
 <report>
 ';
 		foreach( $cursor AS $row ){
-			$output .= '	<entry clickId="' . $row['keyade_user_id'] . '" eventMerchantId="' . $row['_id'] . '" count1="1" time="' .  $row['created_date']->sec . '" eventStatus="confirmed" />
+			$output .= '	<entry clickId="' . $row['keyade_user_id'] . '" eventMerchantId="' . $row['_id'] . '" count1="1" time="' .  static::timeValue($row['created_date']) . '" eventStatus="confirmed" />
 ';
 		}
 		$output .= "</report>\n";
@@ -71,7 +71,7 @@ class Keyade extends \lithium\data\Model {
 			<report>
 			';
 			foreach($referrals AS $row){
-							$output .= '	<entry clickId="' . $row['keyade_user_id'] . '" eventMerchantId="' . $row['_id'] . '" count1="1" time="' .  $row['created_date']->sec . '" eventStatus="confirmed" />
+							$output .= '	<entry clickId="' . $row['keyade_user_id'] . '" eventMerchantId="' . $row['_id'] . '" count1="1" time="' .  static::timeValue($row['created_date']) . '" eventStatus="confirmed" />
 				';
 			}
 			$output .= "</report>\n";
@@ -112,7 +112,7 @@ class Keyade extends \lithium\data\Model {
 			$user = $c_users->findOne( array( '_id' => $user_id, 'keyade_user_id' => array( '$exists' => true) ));
 			if($user != null){
 				// KEYADE ORDER!
-				$output .= '	<entry clickId="' . $user['keyade_user_id'] . '" lifetimeId="' . $order['user_id'] . '" eventMerchantId="' . $order['order_id'] . '" value1="' . $order['total'] . '" time="' .  $order['date_created']->sec . '" />
+				$output .= '	<entry clickId="' . $user['keyade_user_id'] . '" lifetimeId="' . $order['user_id'] . '" eventMerchantId="' . $order['order_id'] . '" value1="' . $order['total'] . '" time="' .  static::timeValue($order['date_created']) . '" />
 				';
 
 			}
@@ -158,7 +158,7 @@ class Keyade extends \lithium\data\Model {
 				$inviter = $c_users->findOne( array( 'invitation_codes' => $user['invited_by'], 'keyade_user_id' => array( '$exists' => true)));
 				if($inviter != null){
 					// KEYADE ORDER!
-					$output .= '	<entry clickId="' . $inviter['keyade_user_id'] . '" lifetimeId="' . $order['user_id'] . '" eventMerchantId="' . $order['order_id'] . '" value1="' . $order['total'] . '" time="' .  $order['date_created']->sec . '" />
+					$output .= '	<entry clickId="' . $inviter['keyade_user_id'] . '" lifetimeId="' . $order['user_id'] . '" eventMerchantId="' . $order['order_id'] . '" value1="' . $order['total'] . '" time="' .  static::timeValue($order['date_created']) . '" />
 					';
 
 				}

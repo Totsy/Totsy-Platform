@@ -4,7 +4,6 @@ namespace app\models;
 use MongoDate;
 
 class Base extends \lithium\data\Model {
-
 	protected $_dates = array(
 		'now' => 0,
 		'-1min' => -60,
@@ -17,6 +16,15 @@ class Base extends \lithium\data\Model {
 
 	public static function dates($name) {
 	     return new MongoDate(time() + static::_object()->_dates[$name]);
+	}
+
+	public static function timeValue($value) {
+		if (is_object($value)) {
+			return $value->sec;
+		} elseif (is_numeric($value)) {
+			return $value;
+		}
+		return strtotime($value);
 	}
 
 	/**
@@ -32,8 +40,7 @@ class Base extends \lithium\data\Model {
         return substr(md5(uniqid(rand(),1)), 1, 10);
     }
 
-    public static function randomString($length = 8, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890')
-    {
+    public static function randomString($length = 8, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890') {
         $chars_length = (strlen($chars) - 1);
         $string = $chars{rand(0, $chars_length)};
         for ($i = 1; $i < $length; $i = strlen($string)) {

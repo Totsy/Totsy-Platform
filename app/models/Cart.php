@@ -362,7 +362,7 @@ class Cart extends Base {
 					}
 					$event = Event::find('first',array('conditions' => array("_id" => $item['event'][0])));
 					$now = getdate();
-					$currentSec = is_object($event['end_date']) ? $event['end_date']->sec : $event['end_date'];
+					$currentSec = Event::timeValue($event['end_date']);
 					if(($currentSec > ($now[0] + (15 * 60)))) {
 						$cart_temp = Cart::find('first', array(
 							'conditions' => array('_id' =>  $item['_id'])));
@@ -386,7 +386,7 @@ class Cart extends Base {
 			foreach ($items as $item) {
 				$event = Event::find('first',array('conditions' => array("_id" => $item['event'][0])));
 				$now = getdate();
-				$currentSec = is_object($event->end_date) ? $event->end_date->sec : $event->end_date;
+				$currentSec = Event::timeValue($event->end_date);
 				if (($currentSec < $now[0])) {
 					static::remove(array('_id' => new MongoId( $item["_id"])));
 				}
@@ -439,7 +439,7 @@ class Cart extends Base {
 			$i = 1;
 			$event = static::getLastEvent($cart);
 			if (!empty($event)) {
-				$shipDate = is_object($event->end_date) ? $event->end_date->sec : $event->end_date;
+				$shipDate = Event::timeValue($event->end_date);
 				while($i < static::_object()->_shipBuffer) {
 					$day = date('N', $shipDate);
 					$date = date('Y-m-d', $shipDate);

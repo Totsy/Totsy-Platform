@@ -89,7 +89,7 @@
 			<div class="splash-details">
 						<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
 						 <p style="padding:0px; margin:0px; font-size:15px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
-						 <p style="padding:0px; margin:-3px 0px 0px 0px; font-size:12px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;"><span id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $event->end_date->sec * 1000; ?>" class="counter end"></span>
+						 <p style="padding:0px; margin:-3px 0px 0px 0px; font-size:12px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;"><span id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $this->DataFormat->timeValue($event->end_date) * 1000; ?>" class="counter end"></span>
 						</div>
 
 						<div class="table-cell right">
@@ -166,7 +166,7 @@
 						<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
 						 <p style="padding:0px; margin:0px; font-size:15px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
 						 <p style="padding:0px; margin:-3px 0px 0px 0px; font-size:12px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;">
-						 <span id="<?php echo "futuresplash$x"; ?>" title="<?php echo $date = $event->start_date->sec * 1000; ?>" class="counter start"></span>
+						 <span id="<?php echo "futuresplash$x"; ?>" title="<?php echo $date = $this->DataFormat->timeValue($event->start_date) * 1000; ?>" class="counter start"></span>
 						</div>
 
 						<div class="table-cell right">

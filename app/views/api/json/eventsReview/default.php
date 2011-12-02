@@ -1,11 +1,11 @@
-<?php 
+<?php
 $out = array('events'=>array(),'pending'=>array(),'closing'=>array());
 if (isset($token)){
 	$out['token'] = $token;
-} 
+}
 
-if (is_array($events)){ 
-	foreach($events as $event){ 
+if (is_array($events)){
+	foreach($events as $event){
 		$evnt['name'] = $event['name'];
 		$evnt['description'] = eventsReview_default_json_cut_string($event['blurb'],90);
 		$evnt['short'] = (empty($event['short'])) ? eventsReview_default_json_cut_string($event['blurb'],45) : $event['short'];
@@ -21,26 +21,25 @@ if (is_array($events)){
 }
 
 if (is_array($pending) && count($pending)){
-	unset($event,$evnt); 
-	foreach($pending as $event){ 
+	unset($event,$evnt);
+	foreach($pending as $event){
 		$evnt['name'] = $event['name'];
 		$evnt['url'] = $base_url.'sale/'.$event['url']."?gotologin=true";
 		$out['pending'][] = $evnt;
 	}
 }
 
-if (is_array($closing) && count($closing)){ 
+if (is_array($closing) && count($closing)){
 	unset($event,$evnt);
-	foreach($closing as $event){ 
+	foreach($closing as $event){
 		$evnt['name'] = $event['name'];
 		$evnt['url'] = $base_url.'sale/'.$event['url']."?gotologin=true";
-		if (is_object($event['end_date'])) { 
-			$event['end_date'] = array(
-				'sec' => $event['end_date']->sec,
-				'usec' => $event['end_date']->usec
-			); 
+		if (is_object($event['end_date'])) {
+			$event['end_date'] = $this->DataFormat->timeValue($event['end_date']);
+		} elseif (!is_numeric($event['end_date'])) {
+			$event['end_date'] = strtotime($event['end_date']);
 		}
-		$evnt['end_date'] = date('m-d-y g:i:s A',$event['end_date']['sec']);
+		$evnt['end_date'] = date('m-d-y g:i:s A',$event['end_date']);
 		$out['closing'][] = $evnt;
 	}
 }
@@ -63,7 +62,7 @@ function eventsReview_default_json_cut_string($str,$length=null){
 			}
 		}
 	}
-	
+
 	if (strlen($return)>0){
 		return $return;
 	} else {

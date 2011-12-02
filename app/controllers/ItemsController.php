@@ -73,7 +73,7 @@ class ItemsController extends BaseController {
 			if ($item == null || $event == null) {
 				$this->redirect('/sales');
 			} else {
-				if ($event->end_date->sec < time()) {
+				if (Event::timeValue($event->end_date) < time()) {
 					$this->redirect('/sales');
 				} else {
 					++$item->views;

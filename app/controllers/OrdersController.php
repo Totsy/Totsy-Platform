@@ -102,8 +102,9 @@ class OrdersController extends BaseController {
 				'user_id' => (string) $user['_id']
 		)));
 
-		$new = ($order->date_created->sec > (time() - 120)) ? true : false;
-		if($order->date_created->sec < 1322006400){
+		$orderCreatedSec = $orderClass::timeValue($order->date_created);
+		$new = ($orderCreatedSec > (time() - 120)) ? true : false;
+		if($orderCreatedSec < 1322006400) {
 			$shipDate = Cart::shipDate($order, true);
 			$shipDate = date('M d, Y', $shipDate);
 		}
@@ -111,7 +112,7 @@ class OrdersController extends BaseController {
 			$shipDate = Cart::shipDate($order);
 		}
 		if (!empty($shipDate)) {
-			$allEventsClosed = (Cart::getLastEvent($order)->end_date->sec > time()) ? false : true;
+			$allEventsClosed = (Event::timeValue(Cart::getLastEvent($order)->end_date) > time()) ? false : true;
 		} else {
 			$allEventsClosed = true;
 		}
@@ -328,7 +329,7 @@ class OrdersController extends BaseController {
 	 *
 	 * @fixme `$cartExpirationDate` is undefined where should this be coming
 	 +        from? Currently the comparison will always fail and expiration date
-	 *        will be set to `$cartValue['expires']->sec`.
+	 *        will be set to `$cartValue['expires']`.
 	 * @todo Improve documentation
 	 * @return compact
 	 */
@@ -664,8 +665,9 @@ class OrdersController extends BaseController {
 				$notmissChristmasCount++;
 			}
 
-			if($cartExpirationDate < $item['expires']->sec) {
-				$cartExpirationDate = $item['expires']->sec;
+			$itemExpiresSec = Cart::timeValue($item['expires']);
+			if($cartExpirationDate < $itemExpiresSec) {
+				$cartExpirationDate = $itemExpiresSec;
 			}
 		}
 		$cartEmpty = ($cart->data()) ? false : true;

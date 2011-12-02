@@ -140,7 +140,7 @@ class BaseController extends \lithium\action\Controller {
 	    if ($userInfo && $service) {
 	        $user = User::find('first', array('conditions' => array('_id' => $userInfo['_id'])));
 	        if ($user) {
-               $created_date = (is_object($user->created_date)) ? $user->created_date->sec : strtotime($user->created_date);
+				$created_date = User::timeValue($user->created_date);
              $dayThirty = mktime(0,0,0,date('m',$created_date),
                     date('d',$created_date)+30,
                     date('Y',$created_date)
@@ -151,8 +151,8 @@ class BaseController extends \lithium\action\Controller {
 	            *   starts and end; and the user uses the service with in thirty days
 	            *   of their registration
 	            */
-                if ( ($service->start_date->sec <= $created_date &&
-                        $service->end_date->sec > $created_date) &&
+                if ( (Service::timeValue($service->start_date) <= $created_date &&
+                        Service::timeValue($service->end_date) > $created_date) &&
                     (strtotime("now") < $dayThirty)) {
 
                     //checks if the user ever made a purchase
@@ -178,19 +178,19 @@ class BaseController extends \lithium\action\Controller {
 	    if ($userInfo && $service) {
 	        $user = User::find('first', array('conditions' => array('_id' => $userInfo['_id'])));
             if ($user) {
-                $created_date = (is_object($user->created_date)) ? $user->created_date->sec : strtotime($user->created_date);
-                $dayThirty = mktime(0,0,0,date('m',$created_date),
+				$created_date = User::timeValue($user->created_date);
+                $dayThirty = date('m/d/Y',mktime(0,0,0,date('m',$created_date),
                     date('d',$created_date)+30,
                     date('Y',$created_date)
-                );
-                if ( ($service->start_date->sec <= $created_date && $service->end_date->sec > $created_date) ) {
+                ));
+                if ( (Service::timeValue($service->start_date) <= $created_date && Service::timeValue($service->end_date) > $created_date) ) {
                     if ($user->purchase_count == 1) {
                         $firstOrder = Order::find('first' , array('conditions' => array('user_id' => $userInfo['_id'])));
-                        $order_date = $firstOrder->date_created->sec;
-                        $expire_date = mktime(0,0,0, date('m',$created_date),
+                        $order_date = Order::timeValue($firstOrder->date_created);
+                        $expire_date = date('m/d/Y H:i:s',mktime(0,0,0, date('m',$created_date),
                             date('d',$created_date) + 30,
                             date('Y',$created_date)
-                        );
+                        ));
                         /**
                         * Check if the offer is expired for this user
                         **/

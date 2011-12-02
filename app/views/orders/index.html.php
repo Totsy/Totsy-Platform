@@ -19,7 +19,7 @@
 		<?php endif ?></span></h2>
 		<div class="clear"></div>
 	<hr />
-	
+
 		<!--		<h2 class="gray mar-b">Tracking System <span style="float:right; font-weight:normal; font-size:11px;"><span style="font-weight:bold;">NOTE: </span>Orders may be split into multiple shipments with different tracking numbers.</span></h2>
 		<hr />
 		<ol class="shipping-process">
@@ -30,11 +30,11 @@
 			<li class="recieved link" id="recieved-btn">Order Arrives At Your Home</li>
 		</ol>
         	<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">Our order tracking system is currently under construction. <br />
-		All orders  are being processed and will be shipped within 15 to 20 business days. <br /> 
+		All orders  are being processed and will be shipped within 15 to 20 business days. <br />
 		If you have any questions do not hesitate to contact us!</p>
 -->		<?php if ($orders->data()): ?>
 		<table cellpadding="0" cellspacing="0" border="0" width="100%" class="order-table">
-		
+
 			<thead>
 				<tr>
 					<th width="18%">Order Date</th>
@@ -44,12 +44,12 @@
 					<!-- <th width="30%">Tracking</th> -->
 				</tr>
 			</thead>
-			
+
 			<tbody>
 				<?php foreach ($orders as $order): ?>
 					<?php if(empty($order->cancel)): ?>
 					<tr class="alt$x" style="border-bottom:1px solid #ddd;">
-						<td><?=date('M d, Y', $order->date_created->sec); ?></td>
+						<td><?=date('M d, Y', $this->DataFormat->timeValue($order->date_created)); ?></td>
 						<td>
 							<?php if (!empty($order->order_id)): ?>
 								<?=$this->html->link("$order->order_id", array(
@@ -99,7 +99,7 @@
 					<?php endif ?>
 				<?php endforeach ?>
 			</tbody>
-		
+
 		</table>
 		<?php else: ?>
 			<center><strong>You do not have any orders. <a href="/" title="Go Shopping">Go Shopping</a></strong></center>

@@ -115,7 +115,7 @@
 			if($item->miss_christmas){
 				echo "<span style='color:#ff0000; font-weight:bold; font-size:30px;'>item will ship AFTER xmas</span>";
 			}
-			
+
 			?>
 
 			</div>
@@ -180,13 +180,13 @@
 				<input type="button" value="Add to Cart" id="add-to-cart" class="button">
 				</span>
 				<div id="all-reserved"></div>
-				
+
 				<?php
 				if($item->miss_christmas){
 				?>
 				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#990000; font-size:11px;text-align:left;">
 				<img src="/img/truck_red.png">
-				This item is not guaranteed to be delivered on or before 12/25.* 
+				This item is not guaranteed to be delivered on or before 12/25.*
 				</div>
 				<?php
 				}
@@ -196,12 +196,12 @@
 				<img src="/img/truck_grey.png">
 				This item will be delivered on or before 12/23*
 				</div>
-				
-				
+
+
 				<?php
 				}
 				?>
-				
+
 			<?php endif ?>
 		</div>
 	</div>
@@ -215,18 +215,18 @@
 				<?php
 				if($item->miss_christmas){
 				?>
-				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. 
+				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions.
 				<?php
 				}
 				else{
 				?>
-				
+
 				* Our delivery guarantee does not apply when transportation networks are affected by weather.
-				
+
 				<?php
 				}
 				?>
-				
+
 </div>
 </div>
 

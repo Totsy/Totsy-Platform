@@ -98,10 +98,10 @@ class EventsController extends BaseController {
 			return array('event' => null, 'items' => array(), 'shareurl');
 		}
 
-		if ($event->end_date->sec < time()) {
+		if (Event::timeValue($event->end_date) < time()) {
 			$this->redirect('/sales ');
 		}
-		$pending = ($event->start_date->sec > time() ? true : false);
+		$pending = (Event::timeValue($event->start_date) > time() ? true : false);
 
 		if ($pending == false) {
 			++$event->views;
@@ -127,11 +127,11 @@ class EventsController extends BaseController {
 						}
 						else{
 							$notmissChristmasCount++;
-						}			
+						}
 						//end xmas
-						
-						
-						
+
+
+
 						if (array_key_exists('departments',$result) && !empty($result['departments'])) {
 							if(in_array($departments,$result['departments']) ) {
 								if ($eventItem->total_quantity <= 0) {
