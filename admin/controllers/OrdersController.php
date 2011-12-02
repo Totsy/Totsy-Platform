@@ -241,6 +241,7 @@ class OrdersController extends BaseController {
 		$order = $this->manage_items();
 
 		$this->redirect('/items/bulkCancel/' . $sku);
+
 	}
 
 	/**
