@@ -104,11 +104,11 @@ class OrdersController extends BaseController {
 
 		$new = ($order->date_created->sec > (time() - 120)) ? true : false;
 		if($order->date_created->sec<1322006400){
-			$shipDate = Cart::shipDate($order, true);	
+			$shipDate = Cart::shipDate($order, true);
 			$shipDate = date('M d, Y', $shipDate);
 		}
 		else{
-			$shipDate = Cart::shipDate($order);	
+			$shipDate = Cart::shipDate($order);
 		}
 		if (!empty($shipDate)) {
 			$allEventsClosed = (Cart::getLastEvent($order)->end_date->sec > time()) ? false : true;
@@ -126,10 +126,10 @@ class OrdersController extends BaseController {
 				if(empty($item['cancel'])) {
 					$openEvent[$item['event_id']] = true;
 				}
-				
+
 				$itemRecord = Item::find($item['item_id']);
 				if (!empty($itemRecord)) {
-				
+
 					$itemsByEvent[$key][$key_b]['sku'] = $itemRecord->sku_details[$item['size']];
 					$itemsToSend[] =  array(
 										'id' => (string) $itemRecord['_id'],
@@ -142,7 +142,7 @@ class OrdersController extends BaseController {
 				}
 			}
 		}
-		
+
 		// IMPORTANT!
 		// Sailthru purchase api complete
 		if ($new===true){
@@ -154,10 +154,10 @@ class OrdersController extends BaseController {
 				);
 				Session::write('order_'.$order_id,time(),array('name'=>'default'));
 			}
-		
+
 		}
 		unset($itemsToSend);
-		
+
 		$pixel = $affiliateClass::getPixels('order', 'spinback');
 		$spinback_fb = $affiliateClass::generatePixel('spinback', $pixel, array('order' => $_SERVER['REQUEST_URI']));
 		//Get Items Skus - Analytics
@@ -174,22 +174,22 @@ class OrdersController extends BaseController {
 		$missChristmasCount = 0;
 		$notmissChristmasCount = 0;
 		foreach ($order->items as $item) {
-		
+
 			if($item['miss_christmas']){
 				$missChristmasCount++;
 			}
 			else{
 				$notmissChristmasCount++;
-			}			
-		
-		
-		
+			}
+
+
+
 			$itemInfo = Item::find('first', array('conditions' => array("_id" => new MongoId($item["item_id"]))));
 			if (empty($item->cancel)) {
 				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
 			}
 		}
-			
+
 		return compact(
 			'order',
 			'orderEvents',
@@ -232,7 +232,7 @@ class OrdersController extends BaseController {
 			'miss_christmas',
 			'event'
 		);
-		#Check Expires 
+		#Check Expires
 		Cart::cleanExpiredEventItems();
 		#Prepare datas
 		$address = null;
@@ -274,11 +274,11 @@ class OrdersController extends BaseController {
 					$error = true;
 				}
 			}
-		} 
+		}
 		#Get all addresses of the current user
 		$addresses = Address::all(array(
 			'conditions' => array('user_id' => (string) $user['_id'], 'type' => 'Shipping')
-		));		
+		));
 		#Prepare addresses datas for the dropdown
 		if (!empty($addresses)) {
 			$idx = 0;
@@ -290,7 +290,7 @@ class OrdersController extends BaseController {
 				if((string)$value['_id'] == $address['_id']) {
 					$selected = (string) $value['_id'];
 				}
-				$addresses_ddwn[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address']; 
+				$addresses_ddwn[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address'];
 				$idx++;
 			}
 		}
@@ -305,15 +305,15 @@ class OrdersController extends BaseController {
 		));
 		$shipDate = Cart::shipDate($cart);
 		foreach($cart as $item){
-		
+
 			if($item['miss_christmas']){
 				$missChristmasCount++;
 			}
 			else{
 				$notmissChristmasCount++;
-			}			
-		
-		
+			}
+
+
 			if($cartExpirationDate < $item['expires']->sec) {
 				$cartExpirationDate = $item['expires']->sec;
 			}
@@ -353,7 +353,7 @@ class OrdersController extends BaseController {
 		if (!Session::check('billing') || !Session::check('cc_infos')) {
 			return $this->redirect(array('Orders::payment'));
 		}
-		#Check Expires 
+		#Check Expires
 		Cart::cleanExpiredEventItems();
 		#Get Users Informations
 		$user = Session::read('userLogin');
@@ -392,10 +392,10 @@ class OrdersController extends BaseController {
 			}
 			else{
 				$notmissChristmasCount++;
-			}			
-		
+			}
 
-			#Get Last Expiration Date 
+
+			#Get Last Expiration Date
 			if ($cartExpirationDate < $cartValue['expires']->sec) {
 				$cartExpirationDate = $cartValue['expires']->sec;
 			}
@@ -421,7 +421,7 @@ class OrdersController extends BaseController {
 		$avatax = $taxClass::getTax(compact(
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'));
-		
+
 		$tax = (float) $avatax['tax'];
 		#Get current Discount
 		$vars = Cart::getDiscount($subTotal, $shippingCost, $overShippingCost, $this->request->data, $tax);
@@ -443,10 +443,6 @@ class OrdersController extends BaseController {
 		$total = $vars['postDiscountTotal'];
 		#Read Credit Card Informations
 		$creditCard = $orderClass::creditCardDecrypt((string)$user['_id']);
-		#Disable Promocode Uses if Services
-		if (!empty($services['freeshipping']['enable']) || !empty($services['tenOffFitfy'])) {
-			$promocode_disable = true;
-		}
 		#Organize Datas
 		$vars = $vars + compact(
 			'user', 'cart', 'total', 'subTotal', 'creditCard',
@@ -466,6 +462,11 @@ class OrdersController extends BaseController {
 		if (Session::check('cc_error')) {
 			return $this->redirect(array('Orders::payment'));
 		}
+		#Check if Services
+		$serviceAvailable = false;
+		if(Session::check('service_available')) {
+			$serviceAvailable = Session::read('service_available');
+		}
 		return $vars + compact(
 			'cartEmpty',
 			'order',
@@ -476,7 +477,8 @@ class OrdersController extends BaseController {
 			'cartExpirationDate',
 			'promocode_disable',
 			'missChristmasCount',
-			'notmissChristmasCount'
+			'notmissChristmasCount',
+			'serviceAvailable'
 		);
 	}
 
@@ -598,7 +600,7 @@ class OrdersController extends BaseController {
 		#Get all addresses of the current user
 		$addresses = Address::all(array(
 			'conditions' => array('user_id' => (string) $user['_id'], 'type' => 'Billing')
-		));		
+		));
 		#Prepare addresses datas for the dropdown
 		if (!empty($addresses)) {
 			$idx = 0;
@@ -610,7 +612,7 @@ class OrdersController extends BaseController {
 				if((string)$value['_id'] == $address['_id']) {
 					$selected = (string) $value['_id'];
 				}
-				$addresses_ddwn[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address']; 
+				$addresses_ddwn[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address'];
 				$idx++;
 			}
 		}
@@ -625,7 +627,7 @@ class OrdersController extends BaseController {
 			}
 			else{
 				$notmissChristmasCount++;
-			}			
+			}
 
 			if($cartExpirationDate < $item['expires']->sec) {
 				$cartExpirationDate = $item['expires']->sec;

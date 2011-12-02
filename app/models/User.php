@@ -321,6 +321,7 @@ class User extends Base {
 
 		return $success;
 	}
+
 	public static function cleanSession() {
 		if(Session::check('userSavings')) {
 			Session::delete('userSavings');
@@ -345,6 +346,9 @@ class User extends Base {
 		}
 		if(Session::check('billing')) {
 			Session::delete('billing');
+		}
+		if(Session::check('service_available')) {
+			Session::delete('service_available');
 		}
 	}
 }
