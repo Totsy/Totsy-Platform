@@ -127,6 +127,13 @@ function uploadSuccess(file, serverData) {
 	}
 }
 
+function loadBackgrounds() { 
+	    $.post('/affiliates/background', function(data) {
+	    		//$("#background_image").show();
+        	    $("#background_image").attr('value', $("#backgroundThumbnail").attr('src'));
+     	});
+}
+
 function uploadComplete(file) {
 	try {
 		/*  I want the next upload to continue automatically so I'll call startUpload here */
@@ -139,7 +146,26 @@ function uploadComplete(file) {
 	} catch (ex) {
 		this.debug(ex);
 	}
-
+	
+	if($("#categories").length > 0 ){	
+		//index of category that will get this image	
+		var catIndex = $('#categories input[name=selected_image]:checked', '#mainForm').val();
+		
+		var uploadedImgPath = $("#backgroundThumbnail").attr('src');
+			
+		if($("#" + catIndex + "_" + affiliateId + "_category_background").length>0) {
+			//if an image is already present for this category, overwite it by setting the value of that hidden field with the returned image
+						
+			$("#" + catIndex + "_" + affiliateId + "_category_background").val(uploadedImgPath);
+		} else {
+			//write hidden field with returned image as value
+			
+			var imgField = "<input type='hidden' name='" + catIndex + "_" + affiliateId + "_category_background' id='" + catIndex + "_" + affiliateId + "_category_background' value='" +  uploadedImgPath + "'>";
+			
+			$("#" + catIndex + "_" + affiliateId).append(imgField);	
+		}
+		
+	}	
 }
 
 function uploadError(file, errorCode, message) {
@@ -200,7 +226,33 @@ function uploadError(file, errorCode, message) {
         this.debug(ex);
     }
 }
+
 function isLogo(instance){
+    $('#isbackground').removeAttr("checked");
+    $('#isfeature').removeAttr("checked");
+    if( $('#islogo:checked').val() == 1){
+        instance.addPostParam('tag','logo');
+    }
+}
+
+function isBackground(instance){
+    $('#isfeature').removeAttr("checked");
+    $('#islogo').removeAttr("checked");
+
+    if( $('#isbackground:checked').val() == 1){
+        instance.addPostParam('tag','background');
+    }
+}
+function isFeature(instance){
+    $('#isbackground').removeAttr("checked");
+    $('#islogo').removeAttr("checked");
+
+    if( $('#isfeature:checked').val() == 1){
+        instance.addPostParam('tag','featureOn');
+    }}
+function isLogo(instance){
+    $('#isbackground').removeAttr("checked");
+    $('#isfeature').removeAttr("checked");
     if( $('#islogo:checked').val() == 1){
         instance.addPostParam('tag','logo');
     }

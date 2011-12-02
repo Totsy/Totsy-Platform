@@ -72,7 +72,6 @@ ini_set('display_errors', 0);
 		<!-- END HEADER -->
 
 		<div class="clearfix"></div>
-
 		<div id="navigation">
 			<?php
 			if (Auth::check('userLogin')) {

@@ -27,11 +27,14 @@ class EventsController extends BaseController {
 			$pendingEvents = Event::pending(null,array(),$departments);
 		}
 
-		
+		$itemCounts = array();
+		/*
+		// DON'T COUNT ITEMS !!!!
+		// IMPORTANT
+		// Slav
 		$itemCounts = $this->inventoryCheck(Event::open(array(
 			'fields' => array('items')
 		)));
-		
 
 		//Sort events open/sold out
 		foreach ($openEvents as $key => $event) {
@@ -42,7 +45,8 @@ class EventsController extends BaseController {
 				}
 			}
 		}
-		if (!empty($events_closed)) {
+		*/
+		if (isset($events_closed) && !empty($events_closed)) {
 			if (!empty($openEvents)) {
 				foreach ($events_closed as $event) {
 					$openEvents[] = $event;
@@ -57,6 +61,12 @@ class EventsController extends BaseController {
 	public function view() {
 		$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 		$url = $this->request->event;
+
+		//temporary miss xmas vars
+		$missChristmasCount = 0;
+		$notmissChristmasCount = 0;
+		//end
+
 		$departments = '';
 		if(!empty($this->request->query['filter'])) {
 			$departments = ucwords($this->request->query['filter']);
@@ -76,6 +86,13 @@ class EventsController extends BaseController {
 				'enabled' => true,
 				'url' => $url
 		)));
+		if (!$event) {
+			$event = Event::first(array(
+				'conditions' => array(
+				'viewlive' => true,
+				'url' => $url
+			)));
+		}
 		if (!$event) {
 			$this->_render['template'] = 'noevent';
 			return array('event' => null, 'items' => array(), 'shareurl');
@@ -103,6 +120,18 @@ class EventsController extends BaseController {
 											));
 					foreach ($eventItems as $eventItem) {
 						$result = $eventItem->data();
+
+						//temporary xmas
+						if($result['miss_christmas']){
+							$missChristmasCount++;
+						}
+						else{
+							$notmissChristmasCount++;
+						}			
+						//end xmas
+						
+						
+						
 						if (array_key_exists('departments',$result) && !empty($result['departments'])) {
 							if(in_array($departments,$result['departments']) ) {
 								if ($eventItem->total_quantity <= 0) {
@@ -155,11 +184,15 @@ class EventsController extends BaseController {
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
 			                                            array('event' => $_SERVER['REQUEST_URI'])
 			                                            );
-		return compact('event', 'items', 'shareurl', 'type', 'spinback_fb', 'departments', 'filters');
+		//without miss xmas
+		//return compact('event', 'items', 'shareurl', 'type', 'spinback_fb', 'departments', 'filters');
+		return compact('event', 'items', 'shareurl', 'type', 'spinback_fb', 'departments', 'filters','missChristmasCount','notmissChristmasCount');
 	}
 
 	public function inventoryCheck($events) {
 		$events = $events->data();
+		$itemCounts = array();
+
 		foreach ($events as $eventItems) {
 			$count = 0;
 			$id = $eventItems['_id'] ;

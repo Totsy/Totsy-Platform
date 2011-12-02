@@ -1,8 +1,20 @@
 <?=$this->html->script(array('cloud-zoom.1.0.2'));?>
+<script src="/js/jquery.tmpl.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+	var item_id = "<?=$item->_id?>";
+</script>
+
+<?=$this->html->script(array('cart-timer.js?v=007', 'cart-items-timer.js?v=007', 'cart-popup.js?v=007'));?>
+
+<!-- template used for items on cart. jquery.tmpl.js driven -->
+<?=$this->view()->render( array('element' => 'popupCartItems') ); ?>
+
 <div class="grid_16">
-	<h2 class="page-title gray"><span class="red"><a href="/" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a><div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
+	<h2 class="page-title gray"><span class="red"><a href="/sales" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a><div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
 	<hr />
 </div>
+
 <div class="grid_6">
 	<!-- Start product item -->
 		<?php if ($item->total_quantity <= 0): ?>
@@ -62,28 +74,21 @@
 	<!-- End additional image view thumbnails -->
 
 	</div>
-				<?php endif ?>
-				<?php if (!empty($item->alternate_images)): ?>
-					<?php $x = 2; ?>
-				<?php endif ?>
+		<?php endif ?>
+		<?php if (!empty($item->alternate_images)): ?>
+		    <?php $x = 2; ?>
+		<?php endif ?>
 	</div>
 	<!-- End product item -->
 </div>
 
 <div class="grid_7">
-
 	<div id="product-detail-right-top"  style="width:405px;">
-
 		<div id="listingCountdown" class="listingCountdown"></div>
-
 	</div>
-
 	<div id="detail-top-left"  style="width:405px;">
 		<h1><strong><?=$event->name?></strong> <?=$item->description." ".$item->color; ?></h1>
 	</div>
-
-
-
 		<div class="clear"></div>
 
 		<div id="tabs">
@@ -106,42 +111,34 @@
 
 			<p><strong>Returns:</strong> Totsy accept returns on selected items only. You will get a merchandise credit and free shipping (AK &amp; HI: air shipping rates apply). Simply be sure that we receive the merchandise you wish to return within 30 days from the date you originally received it in its original condition with all the packaging intact. Please note: Final Sale items cannot be returned. Want to learn more? Read more in our <?=$this->html->link('returns section', array('Pages::returns')); ?>.</p>
 
-
+			<?php
+			if($item->miss_christmas){
+				echo "<span style='color:#ff0000; font-weight:bold; font-size:30px;'>item will ship AFTER xmas</span>";
+			}
+			
+			?>
 
 			</div>
-			<!-- End Shipping Tab -->
-
-			<!-- Start Video Tab -->
-			<!--
-			<div id="video" class="ui-tabs-hide">
-			</div>
-			-->
-			<!-- End Video Tab -->
-
 		</div>
-
-<!--Disney -->
-      <div class="disney">
+	<!--Disney -->
+<div class="disney">
           <strong>SPECIAL BONUS!</strong><hr/></p>
-       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/Disney-FamilyFun-Logo.jpg" align="absmiddle" width="95px" /> ( a $10 value )
+       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/parents.png" align="absmiddle" width="95px" /> ( a $10 value )
        <span id="disney">Offer & Refund Details</span>
       </div>
 	<br><!-- Started Related Products -->
 	<div id="related-products">
-		<?php $relatedData = $related; ?>		
+		<?php $relatedData = $related; ?>
 		<?php if (!empty($relatedData)): ?>
 		<h2 style="color:#707070;font-size:14px;">You would also love</h2>
 		<hr />
-		<?php foreach ($related as $relatedItem): ?>
-			
-			<?php
-			
+		<?php foreach ($related as $relatedItem) {
+			if ($relatedItem['total_quantity'] >= 1){
 				if (empty($relatedItem['primary_image'])) {
 					$relatedImage = '/img/no-image-small.jpeg';
 				} else {
 					$relatedImage = "/image/".$relatedItem['primary_image'].".jpg";
 				}
-				
 				echo $this->html->link(
 					$this->html->image($relatedImage, array(
 						"class" => "img-th",
@@ -151,20 +148,14 @@
 							'id' => $relatedItem['description'],
 							'escape'=> false
 				));
-				
-			?>
-		<?php endforeach ?>
+			}
+		} ?>
 	<?php endif ?>
 	</div>
 	<!-- End Related Products -->
-
 	</div>
-
-
 	<div class="grid_3">
-
 	<div id="detail-top-right" class="r-container">
-
 
 		<div class="md-gray p-container roundy">
 			<h2 class="caps" style="font-size:14px; padding-top:5px">Totsy Price</h2>
@@ -172,10 +163,9 @@
 
 			<div class="original-price" style="font-size:11px; padding-bottom:10px;">Original: $<?=number_format($item->msrp,2); ?></div>
 
-			<?=$this->form->create(null, array('url' => 'Cart::add')); ?>
 <?php if (!empty($sizes)): ?>
 				<?php if ( !((string)strtolower($sizes[0]) ==='no size')): ?>
-						<select name="item_size" id="size-select">
+						<select name="size-select" id="size-select">
 									<option value="">Please Select Size</option>
 							<?php foreach ($sizes as $value): ?>
 									<option value="<?=$value?>"><?=$value?></option>
@@ -184,38 +174,64 @@
 						<hr />
 				<?php endif ?>
 			<?php endif ?>
-			<?=$this->form->hidden("item_id", array('value' => "$item->_id", 'id'=>'item_id')); ?>
 			<?php if ($item->total_quantity >= 1): ?>
 				<div id="hidden-div" style="display:none; color:#eb132c; font-weight:bold;">Please Select Size!</div>
 				<span style="display: inline-block;">
-				<?=$this->form->submit('Add To Cart', array('class' => 'button')); ?>
+				<input type="button" value="Add to Cart" id="add-to-cart" class="button">
 				</span>
 				<div id="all-reserved"></div>
+				
+				<?php
+				if($item->miss_christmas){
+				?>
+				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#990000; font-size:11px;text-align:left;">
+				<img src="/img/truck_red.png">
+				This item is not guaranteed to be delivered on or before 12/25.* 
+				</div>
+				<?php
+				}
+				else{
+				?>
+				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#999999; font-size:11px;text-align:left;">
+				<img src="/img/truck_grey.png">
+				This item will be delivered on or before 12/23*
+				</div>
+				
+				
+				<?php
+				}
+				?>
+				
 			<?php endif ?>
 		</div>
-
-		<?php $logo = $event->images->logo_image;?>
-		<div style="padding:0px 0px 0px 7px;">
-		<?=$this->html->image("/image/$logo.jpg", array(
-			'alt' => $event->name, 'width' => "148"
-		)); ?>
-<?=$this->form->end(); ?>
-
- 		</div>
 	</div>
-
-
-		<div style="padding:10px 0px; text-align:center;">
-			<?php echo $spinback_fb; ?>
-		</div>
-
-		</div>
-	<div class="clear"></div>
-
-
-
+	<div style="padding:10px 0px; text-align:center !important;">
+	    <?php echo $spinback_fb; ?>
 	</div>
-<div id="modal" style="background:#fff!important; z-index:9999999999!important;"></div>
+</div>
+<div class="clear"></div>
+
+<div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
+				<?php
+				if($item->miss_christmas){
+				?>
+				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. 
+				<?php
+				}
+				else{
+				?>
+				
+				* Our delivery guarantee does not apply when transportation networks are affected by weather.
+				
+				<?php
+				}
+				?>
+				
+</div>
+</div>
+
+<div id="modal" style="background:#fff!important; z-index:999!important;"></div>
+
 <script type="text/javascript">
 $(function () {
 	var saleEnd = new Date();
@@ -223,8 +239,8 @@ $(function () {
 	$('#listingCountdown').countdown({until: saleEnd, layout: 'Ends in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
 });
 </script>
-<script type="text/javascript">
 
+<script type="text/javascript">
     $('#disney').click(function(){
 		$('#modal').load('/events/disney').dialog({
 			autoOpen: false,
@@ -243,7 +259,6 @@ $(function () {
 <script type="text/javascript">
 $(document).ready(function() {
 	var itemCheck = function(){
-		var item_id = $('#item_id').attr('value');
 		var item_size = $('#size-select').attr('value');
 		if(item_size != '') {
 		    $.ajax({
@@ -270,6 +285,7 @@ $(document).ready(function() {
 	});
 });
 </script>
+
 <script type="text/javascript" charset="utf-8">
     $(document).ready(function () {
       checkOptions();
@@ -285,10 +301,10 @@ $(document).ready(function() {
 
         if (getSize) {
           $("#hidden-div").show();
-          $("input[type=Submit]").attr("disabled","disabled");
+          $("#add-to-cart").attr("disabled","disabled");
         } else {
           $("#hidden-div").hide();
-          $("input[type=Submit]").removeAttr("disabled");
+          $("#add-to-cart").removeAttr("disabled");
         };
       }
     });
@@ -296,7 +312,7 @@ $(document).ready(function() {
 <script type="text/javascript">
 //cto product tag
 var cto_params = [];
-cto_params["i"] = $('#item_id').attr('value');
+cto_params["i"] = item_id;
 var cto_conf = 't1=sendEvent&c=2&p=3290';
 var cto_conf_event = 'v=2&wi=7714287&pt1=2';
 var CRITEO=function(){var b={Load:function(d){var c=window.onload;window.onload=function(){if(c){c()}d()}}};function a(e){if(document.createElement){
@@ -309,3 +325,4 @@ c+='&cb='+Math.floor(Math.random()*99999999999);try{c+='&ref='+encodeURIComponen
 c+='&sc_r='+encodeURIComponent(screen.width+'x'+screen.height);}catch(e){}try{c+='&sc_d='+encodeURIComponent(screen.colorDepth);}catch(e){}b.Load(function(){
 a(c.substring(0,2000))})}}}();CRITEO.Load(document.location.protocol+'//dis.us.criteo.com/dis/dis.aspx?');
 </script>
+

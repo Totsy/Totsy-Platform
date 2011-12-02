@@ -18,9 +18,7 @@ class Credit extends Base {
 	 * @todo This should be stored as a configuration setting in the database.
 	 */
 	const INVITE_CREDIT = 15.00;
-
 	protected $_meta = array('locked' => false, 'source' => 'credits');
-
 	protected $_dates = array(
 		'now' => 0,
 		'tenMinutes' => 600

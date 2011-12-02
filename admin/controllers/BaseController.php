@@ -13,7 +13,7 @@ class BaseController extends \lithium\action\Controller {
     public function _init() {
 
         if(!Environment::is('production')){
-            $branch = "<h4 id='#global_site_msg'>Current branch " . $this->currentBranch() ."</h4>";
+            $branch = "<h4 class='global_site_msg'>Current branch " . $this->currentBranch() ."</h4>";
             $this->set(compact('branch'));
         }
 		parent::_init();
@@ -75,10 +75,6 @@ class BaseController extends \lithium\action\Controller {
 				) ));
 		}
 		return compact('events', 'type', 'environment');
-	}
-
-	protected function _asciiClean($description) {
-		return preg_replace('/[^(\x20-\x7F)]*/','', $description);
 	}
 
 	public static function randomString($length = 8, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890')

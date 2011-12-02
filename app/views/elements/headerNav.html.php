@@ -15,6 +15,7 @@
 		<?php if (!(empty($userInfo))) { ?>
 		<a href="/account" title="My Account">My Account</a>
 		<?php if (!(empty($credit))) { ?>
+		&nbsp;
 		<a href="/account/credits" title="My Credits $<?php echo $credit?>">My Credits $<?php echo $credit?></a>
 		<?php } ?>
 		<a href="/cart/view" class="cart_icon" title="My Cart (<?php echo $cartCount;?>)">My Cart (<span id="cart-count"><?php echo $cartCount;?></span>)</a>
