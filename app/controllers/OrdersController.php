@@ -443,7 +443,7 @@ class OrdersController extends BaseController {
 		$total = $vars['postDiscountTotal'];
 		#Read Credit Card Informations
 
-		$creditCard = $orderClass::creditCardDecrypt((string)$user['_id']);
+		$creditCard = Order::creditCardDecrypt((string)$user['_id']);
 
 		#Organize Datas
 		$vars = $vars + compact(
@@ -468,6 +468,7 @@ class OrdersController extends BaseController {
 		$serviceAvailable = false;
 		if(Session::check('service_available')) {
 			$serviceAvailable = Session::read('service_available');
+
 		}
 		
 		return $vars + compact(
