@@ -17,7 +17,6 @@ class RewardsController extends BaseController {
 	public function members(){
 		//to serve app via API calls
 	}
-
 }
 
 ?>
