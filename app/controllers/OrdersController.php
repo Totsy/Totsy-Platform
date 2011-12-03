@@ -463,7 +463,7 @@ class OrdersController extends BaseController {
 			$this->redirect(array('Orders::payment'));
 		}
 		#Check if Services
-		$serviceAvailable = false;
+		$servicesAvailable = false;
 		if(Session::check('service_available')) {
 			$serviceAvailable = Session::read('service_available');
 		}

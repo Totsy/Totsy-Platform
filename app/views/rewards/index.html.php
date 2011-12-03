@@ -1,7 +1,6 @@
 <!-- loyalty enroll pixel start -->
 <img src="http://loyalty.500friends.com/api/enroll.gif?uuid=<?=$userInfo['_id']?>&email=<?=$userInfo['email']?>" style="position: absolute; left: -10px; visibility: hidden;"/>
 <!-- loyalty enroll pixel end -->
-
 <div class="grid_16">
 	<br />
 	<h1 class="page-title gray">
@@ -34,7 +33,6 @@
 <div>
 Once you enroll, you're ready to start earning points! The more things you do on Totsy, like shopping and sharing our deals -  the more points you'll earn. And, when you refer friends to sign up and shop, you can earn bonus points based on your friends' activity!
 </div>
-
 <div>
 <img src="/img/rewards_points_chart.png">
 </div>
