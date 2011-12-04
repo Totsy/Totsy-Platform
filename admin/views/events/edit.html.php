@@ -1,4 +1,3 @@
-<?php ini_set("display_erros", 0); ?>
 <?php
 
 use admin\models\Event;
@@ -211,7 +210,6 @@ for ( i=1; i<6; i++ ) {
 		}
 	}
 </script>
-
 <!-- Sorting of primary/secondary event item images -->
 <script>
 $(function() {
@@ -262,9 +260,9 @@ $(function() {
 					<?=$this->html->link('click here.',"/events/preview/$event->_id")?>
 				</p>
 			</div>
-	<div class="tab_region_left_col">
-			<h4 id="article-heading">Event Description</h4>
-			    <?=$this->form->field('name', array('value' => $event->name, 'class' => 'general'));?>
+			<div class="tab_region_left_col">
+				<h4 id="article-heading">Event Description</h4>
+				<?=$this->form->field('name', array('value' => $event->name, 'class' => 'general'));?>
 				<div id="blurb_div">
 					<?=$this->form->field('blurb', array('type' => 'textarea',
 														 'name' => 'content',
@@ -315,7 +313,6 @@ $(function() {
 			<input type="radio" name="clearance" value="0" id="clearance" <?php if ($event->clearance == 0) echo 'checked'; ?>> Not Clearance
 		</div>
 
-
 				<div id="event_duration">
 					<h4 id="event_duration">Event Duration</h4>
 					<?php
@@ -325,12 +322,13 @@ $(function() {
 								'class' => 'general',
 								'id' => 'start_date',
 								'value' => "$start_date"
-							));
-					 	echo $this->form->field('end_date', array(
+						));
+						echo $this->form->field('end_date', array(
 								'class' => 'general',
 								'id' => 'end_date',
 								'value' => "$end_date"
-							));?>
+						));
+					?>
 				</div>
 				<?=$this->form->label('Departments')?><br />
 
@@ -341,6 +339,7 @@ $(function() {
 				<table>					
 					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?>
 				</table>
+
 				<div id="tags">
 					<?=$this->form->label('Tags'); ?>
 					<?php if ($event->tags): ?>
@@ -358,8 +357,6 @@ $(function() {
 					<?php endif ?>
 				</div>
 				<br>
-			</div>
-			<br>
 				<div id="shipMessage">
 					<?=$this->form->label('Shipping Message'); ?>
 					<?=$this->form->textarea('ship_message', array('value' => $event->ship_message)); ?>
@@ -436,7 +433,6 @@ $(function() {
 					<input type="radio" name="miss_christmas" value="0" id="miss_christmas" checked>Yes, ships before 12.23<br>
 					<input type="radio" name="miss_christmas" value="1" id="miss_christmas">NO AFTER XMAS<br><br>
 
-
 					<!--
 					<?=$this->form->label('Upload Event (Excel Files): '); ?>
 					<?=$this->form->file('upload_file'); ?>
@@ -473,7 +469,6 @@ $(function() {
 							</div>
 				<br \>
 				<br \>
-
 				<?=$this->items->build($eventItems);?>
 
 				<div style="float:right; font: bold; font-size: 18px;">
@@ -526,6 +521,88 @@ $(function() {
 					}
 				?>
 		</div>
+		<!-- End Tab -->
+
+		<!-- Start Tab -->
+		<div id="event_media_upload">
+			<p>
+				Upload all event media here.
+				This includes event images <em>as well as item images</em>.
+				Please ensure all event images follow the naming conventions below.
+
+				This page also allows to manage any pending files binded to this event.
+
+				For more information and other methods to upload files please see <?=$this->html->link('File Management', 'Files::index'); ?>.
+			</p>
+			<div class="tab_region_left_col">
+				<div class="box">
+					<h2>Upload via Form</h2>
+					<form id="EventMedia">
+						<?php
+							// Without this event_id being passed along with the files,
+							// Item images could not be saved.
+						?>
+						<input type="hidden" name="event_id" value="<?php echo (string)$event->_id; ?>" />
+					</form>
+					<div id="agile_file_upload"></div>
+					<script type="text/javascript">
+						$('#agile_file_upload').agileUploader({
+							flashSrc: '<?=$this->url('/swf/agile-uploader.swf'); ?>',
+							submitRedirect: '<?=$this->url('/events/edit/' . (string)$event->_id); ?>',
+							formId: 'EventMedia',
+							flashWidth: 70,
+							removeIcon: '<?=$this->url('/img/agile_uploader/trash-icon.png'); ?>',
+							flashVars: {
+								button_up: '<?=$this->url('/img/agile_uploader/add-file.png?v=1'); ?>',
+								button_down: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
+								button_over: '<?=$this->url('/img/agile_uploader/add-file.png'); ?>',
+								//form_action: $('#EventEdit').attr('action'),
+								form_action: '<?=$this->url('/files/upload/all'); ?>',
+								file_limit: 30,
+								max_height: '1000',
+								max_width: '1000',
+								file_filter: '*.jpg;*.jpeg;*.gif;*.png;*.JPG;*.JPEG;*.GIF;*.PNG',
+								resize: 'jpg,jpeg,gif',
+								force_preview_thumbnail: 'true',
+								firebug: 'true'
+							}
+						});
+					</script>
+
+					<a
+						href="#"
+						class="upload_files_link"
+						onClick="document.getElementById('agileUploaderSWF').submit();"
+					>
+						Start Upload <?=$this->html->image('agile_uploader/upload-icon.png', array('height' => '24')); ?>
+					</a>
+				</div>
+			</div>
+			<div class="tab_region_right_col">
+				<?=$this->view()->render(array('element' => 'files_naming_event'), array('item' => $event)); ?>
+				<?=$this->view()->render(array('element' => 'files_naming_item')); ?>
+			</div>
+
+			<div class="clear"></div>
+			<?=$this->view()->render(array('element' => 'files_pending'), array('item' => $event)); ?>
+		</div>
+		<!-- End Tab -->
+
+		<!-- Start Tab -->
+		<div id="event_media_status">
+			<div class="actions">
+				<?=$this->html->link('refresh', array(
+					'action' => 'media_status', 'id' => $event->_id
+				), array(
+					'class' => 'refresh', 'target' => '#event_media_status_data'
+				)); ?>
+			</div>
+			<p>
+				This tab show the status of media associated with the items of this event.
+			</p>
+			<div id="event_media_status_data"><!-- Populated through AJAX request. --></div>
+		</div>
+		<!-- End Tab -->
 		<div id="event_inventory">
 			<iframe id="inventoryIframe" src="" style="width:900px; height:400px;"></iframe>
 		</div>

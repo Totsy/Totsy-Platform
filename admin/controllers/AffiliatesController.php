@@ -12,15 +12,13 @@ use MongoCollection;
 class AffiliatesController extends \admin\controllers\BaseController {
 
 	public $sitePages = array(
-	    '/a/' => 'landing page',
+	    'Affiliates::register' => 'landing page',
 	    'after_reg' => 'after registering',
-	    '/' => 'login',
-	    '/sales' => 'sales',
+	    'Users::login' => 'login',
+	    'Events::index' => 'sales',
 	    'product' => 'product page',
 	    'event' => 'event page',
-	    '/shopping/checkout' => 'checkout',
-	    '/shopping/process' => 'checkout process',
-	    '/orders/view' => 'orders confirmation',
+	    'Orders::view' => 'orders confirmation',
 	    'order' =>'order confirmation(spinback)',
         'invite' => 'invite page(spinback)'
 	    );
@@ -29,10 +27,6 @@ class AffiliatesController extends \admin\controllers\BaseController {
 	    'regular' => 'regular',
 	    'super' => 'super',
 	);
-	public $templates = array(
-        'temp_1' => 'Template One',
-        'temp_2' => 'Template Two'
-    );
 
 	public function index() {
 
@@ -113,30 +107,19 @@ class AffiliatesController extends \admin\controllers\BaseController {
 			    }
 
 			    $info['active_landing'] = (($data['active_landing'] == '1' || $data['active_landing'] == 'on')) ? true : false;
+
 			}
 
 			$info['created_by'] = Affiliate::createdBy();
-			$info['date_created'] = new MongoDate( strtotime( date('D M d Y') ) );
+			$info['date_created'] = new MongoDate();
 
-       		if (isset($info['name']) && isset($info['category'])) {
-       			$getAff = Affiliate::find('first',
-					array('conditions' => array(
-						'name'=> $info['name'], $info['category'])
-				));
-
-				if ($getAff) {
-					print "This category already exists for this affiliate code, please choose a different category";
-				} else {
-					if($affiliate->save($info)) {
-						$this->redirect(array('Affiliates::edit', 'args' => array($affiliate->_id)));
-					}
-				}
-			}
+       		if($affiliate->save($info)) {
+                $this->redirect(array('Affiliates::edit', 'args' => array($affiliate->_id)));
+            }
 		}
 
 		$sitePages = $this->sitePages;
 		$packages = $this->packages;
-		$templates = $this->templates;
 
         return compact('affiliate','sitePages','packages', 'prospective_id');
 	}

@@ -129,20 +129,7 @@ class Item extends \lithium\data\Model {
 		}
 		return preg_replace('/\s*/m', '', implode('-', $sku));
 	}
-	public static function calculateProductGross($items) {
-		if (empty($items)) return 0;
 
-		$gross = 0;
-		foreach($items as $item) {
-			$cancel = array_key_exists('cancel' , $item) && !$item['cancel'];
-			$cancel = $cancel || !array_key_exists('cancel' , $item);
-			if ($cancel) {
-				$gross += $item['quantity'] * $item['sale_retail'];
-			}
-		}
-
-		return $gross;
-	}
 	/* Handling of attached images. */
 
 	public function attachImage($entity, $name, $id) {
@@ -197,6 +184,7 @@ class Item extends \lithium\data\Model {
 			'conditions' => array('_id' => $entity->_id)
 		));
 	}
+
 	public function images($entity) {
 		$results = array();
 
@@ -231,6 +219,20 @@ class Item extends \lithium\data\Model {
 			));
 		}
 		return $results;
+	}
+	public static function calculateProductGross($items) {
+		if (empty($items)) return 0;
+
+		$gross = 0;
+		foreach($items as $item) {
+			$cancel = array_key_exists('cancel' , $item) && !$item['cancel'];
+			$cancel = $cancel || !array_key_exists('cancel' , $item);
+			if ($cancel) {
+				$gross += $item['quantity'] * $item['sale_retail'];
+			}
+		}
+
+		return $gross;
 	}
 }
 

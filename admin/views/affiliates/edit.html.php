@@ -18,17 +18,17 @@
 <script type="text/javascript">
 	//this is for keeping ALL affiliate categories
 	var allAffiliateCategories = <?=json_encode($affiliateCategories)?>;
-	
+
 	//the mongo id for this affiliate -  a string
 	var affiliateId = "<?=$affiliate['_id']?>";
-	
+
 	//keep these for use in adding affiliate categories
 	//useful for indexing category tag names and images
 	var temp = <?=json_encode($affiliate['category'])?>;
 	var affiliateCategories = new Array();
 </script>
 
-<?php 
+<?php
 	$i = 0;
 ?>
 
@@ -54,14 +54,6 @@
 	</table>
 </div>
 <div class="clear"></div>
-			<br/>
-			<br/>
-			<br/>
-		<div id="submit button" class="grid_16">
-			<div class="grid_7" >
-			<?=$this->form->submit('Update', array('id'=>'edit')); ?>
-		</div>
-	</div>
  <form id = "AffiliateId">
     <input type="hidden" name="affiliate_id" value="<?=(string)$affiliate->_id?>"/>
 </form>
@@ -271,12 +263,11 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
-
-	$(".affiliate_category").autocomplete({source: allAffiliateCategories, minChars:0, minLength:0, mustMatch:false});	
-
-	$('#background_selection').hide();
+	$(".affiliate_category").autocomplete({source: allAffiliateCategories, minChars:0, minLength:0, mustMatch:false});
 	//create tabs
 	$("#tabs").tabs();
+	$('#pending_page').hide();
+	refreshCategories();
 });
 </script>
 <script type="text/javascript">
@@ -298,7 +289,7 @@ $(document).ready(function() {
 			$('#pending_page').hide();
 		}
 	});
-	
+
 	$(document).ready(function(){
 		$('input[name=active_pixel]').change(function(){
 			if( $('#ActivePixel:checked').val() == 1){
@@ -311,42 +302,46 @@ $(document).ready(function() {
 		$('input[name=active_landing]').change(function(){
 			if( $('#ActiveLanding:checked').val() == 1){
 				$('#landing_panel').show();
+				$('#pending_tab').show();
+				$('#pending_page').show();
 			}else{
 				$('#landing_panel').hide();
+				$('#pending_tab').hide();
+				$('#pending_page').hide();
 			}
 		});
 	});
-	
+
 	$(document).ready( function() {
 		var counter = Number($('#pixel_count').val()) + 1;
-		
+
 		//get count of all categories in the object
 		var categoryCount = 0;
-		
+
 		for(i in temp) {
 			categoryCount++;
-			affiliateCategories.push({name: temp[i].name});	
+			affiliateCategories.push({name: temp[i].name});
 		}
- 		
+
  		function validateNames(t) {
  			var regexp = /^[a-zA-Z0-9-_]+$/;
 
-			if (t.search(regexp) == -1 || t==""){ 
+			if (t.search(regexp) == -1 || t==""){
 				return false;
-			} else { 
-				return true; 
+			} else {
+				return true;
 			}
  		}
- 		
+
  		$("#mainForm").submit( function() {
  			if(validateNames($("#AffiliateName").val())==false) {
  				alert("The affiliate name can only contain letters and/or underscores.");
  				return false;
  			}
  		});
-		
+
 		$(".affiliate_category").blur( function() {
-			//check if the category name has already been added	
+			//check if the category name has already been added
 			var catExists = false;
 			var active_id = $(this).attr('id');
 			var new_category = $("#"+active_id).val();
@@ -362,22 +357,22 @@ $(document).ready(function() {
 					break;
 				}
 			}
-						
+
 			if(catExists==true) {
 				alert("This category name is already added - try a different category name");
 				return false;
 			} else if(validateNames(new_category)==false) {
-				alert("The category name can only contain letters and/or underscores. no spaces, ampersands or other URL incompatible characters");				
-				return false; 
-			} 
+				alert("The category name can only contain letters and/or underscores. no spaces, ampersands or other URL incompatible characters");
+				return false;
+			}
 		});
-		
 		$('#add_pixel').click(function() {
 			var newPixelDiv = $(document.createElement("div")).attr("id", "pixel_"+counter);
-
-			newPixelDiv.html(unescape("<label> Pixel #" +counter + "</label> <br> Enable:"+
-				'<?=$this->form->checkbox("pixel['+(counter-1)+'][enable]", array("value"=>"1", "checked"=>"checked")); ?> <br> Select:'+
-				'<?=$this->form->select("pixel['+(counter-1)+'][page]", $sitePages, array("multiple"=>"multiple", "size"=>5)); ?><br> Pixel<br>'+
+            codes = getCodes();
+			newPixelDiv.html(unescape("<label> Pixel #" +counter + "</label> <br/> Enable:"+
+				'<?=$this->form->checkbox("pixel['+(counter-1)+'][enable]", array("value"=>"1", "checked"=>"checked")); ?> <br/> Select:'+
+				'<?=$this->form->select("pixel['+(counter-1)+'][page]", $sitePages, array("multiple"=>"multiple", "size"=>5)); ?><br/> Pixel<br/>'+
+				'<select name="pixel['+(counter-1)+'][codes][]" multiple="multiple"  size=5 class = "relevantCodes">' + codes+'</select><br/>Pixel<br/>'+
 				'<?=$this->form->textarea("pixel['+(counter-1)+'][pixel]", array("rows"=>"5")); ?>'
 				));
 			newPixelDiv.appendTo('#pixel_panel');
@@ -408,7 +403,7 @@ $(document).ready(function() {
 		$('#edit_code').click(function(){
 			var value=$('#InvitationCodes option:selected').val();
 			$('#InvitationCodes option:selected').remove();
-			$('.relevantCodes option:selected').remove();
+			$('.relevantCodes option[value=' + value + ']').remove();
 			$('#Code').attr('value',value);
 		});
 	});

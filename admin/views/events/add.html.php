@@ -80,7 +80,7 @@ tinyMCE.init({
 <script type="text/javascript" charset="utf-8">
 	var limit = <?=$shortDescLimit;?>;
 	$(document).ready(function() {
-		
+
 		$('#Short').keyup(function(){
 			return limitTextArea($(this),$('#short_description_characters_counter'),limit);
 		});

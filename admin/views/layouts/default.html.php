@@ -1,4 +1,5 @@
 <?php
+use \lithium\security\Auth;
 
 use \lithium\security\Auth;
 
@@ -86,7 +87,6 @@ ini_set('display_errors', 0);
 		</div>
 
 		<div class="clearfix"></div>
-
 		<div id="content">
 			<?php echo $this->flashMessage->output(); ?>
 			<?php echo $this->content(); ?>

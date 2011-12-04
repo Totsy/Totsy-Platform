@@ -20,13 +20,13 @@ class Affiliate extends Base {
 		if ( empty($pixels) ){ return array(); }
 		$formatted = array();
 		foreach($pixels as $key=>$pixel){
-		
+
 		    if ($pixel['enable'] == '1' || $pixel['enable'] == 'on') {
 		    	$temp['enable'] = true;
 		    } else {
 		    	$temp['enable'] = false;
 		    }
-		    
+
 		    if ($pixel['enable'] && array_key_exists('page', $pixel)) {
 		        if (empty($pixel['codes'])) { $pixel['codes'] = array('all');}
                 if (in_array('all', $pixel['codes'])) {
@@ -35,7 +35,6 @@ class Affiliate extends Base {
                     $temp['codes'] = $pixel['codes'];
                 }
 		    }
-		    
 		    $temp['page'] = array_values($pixel['page']);
 		    $temp['pixel'] = $pixel['pixel'];
 		    $formatted[] = $temp;
@@ -68,8 +67,8 @@ class Affiliate extends Base {
 	}
 
 	public static function landingPageFormating($data) {
-		if ( !array_key_exists('img', $data) && empty($data['img'])){ 
-			return array(); 
+		if ( !array_key_exists('img', $data) && empty($data['img'])){
+			return array();
 		}
 		$tmp = array();
 		foreach($data['img'] as $img) {
@@ -83,9 +82,8 @@ class Affiliate extends Base {
 		}
 		return $tmp;
 	}
-	
+
 	public function attachImage($entity, $name, $id) {
-		
 	    Logger::debug("Getting ready to attach images");
 		$id = (string)$id;
 		$type = AffiliateImage::$types[$name];

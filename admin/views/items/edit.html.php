@@ -81,7 +81,7 @@ tinyMCE.init({
 					));?>
 					<?=$this->form->label('Departments')?><br />
 					<table>
-						<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple','value' => $sel_filters)); ?> 
+						<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple','value' => $sel_filters)); ?>
 					</table>
 					<div id="item_status">
 						<h2 id="item_status">Item Status</h2>
@@ -107,7 +107,6 @@ tinyMCE.init({
 							<input type="radio" name="miss_christmas" value="1" id="enabled"> NO AFTER XMAS
 						<?php endif ?>
 					</div>
-
 					<div id="item_tax">
 						<h2 id="item_tax">Item Tax</h2>
 						<?php if ($item->taxable == 1): ?>

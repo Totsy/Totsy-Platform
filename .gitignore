@@ -21,6 +21,12 @@ nbproject
 
 # lithium schtuff
 app/resources/tmp
+library
+app/resources/tmp
+admin/libraries/li3_payments
+admin/libraries/swiftmailer
+admin/libraries/li3_flash_message
+libraries
 
 # admin resource stuff
 admin/resources

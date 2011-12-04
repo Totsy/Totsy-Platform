@@ -73,7 +73,7 @@ Libraries::add('PEAR', array(
     }
 ));
 Libraries::add('Imagine');
-
+require_once LITHIUM_LIBRARY_PATH . '/sailthru/Sailthru.php';
 require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel.php';
 require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel/IOFactory.php';
 //require LITHIUM_APP_PATH . '/libraries/swiftmailer/lib/swift_required.php';

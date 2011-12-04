@@ -108,7 +108,7 @@ class FilesController extends \lithium\action\Controller {
 			$bytes = $file->file->getBytes();
 			$eventitems = $file->event_id && ( EventImage::process($bytes, $meta) || ItemImage::process($bytes, $meta) );
 			$banners = $file->banner_id && BannerImage::process($bytes, $meta);
-			$affiliates = $file->affiliate_id && AffiliateImage::process($bytes, $meta);
+			$affiliates = $file->affiliate_id && AffiliateImage::process($file, $meta);
 			if ($eventitems || $banners ||	$affiliates	) {
 				/* This implicitly moves it into the "orphaned" state. */
 				if (!$file->save(array('pending' => false))) {
@@ -219,7 +219,6 @@ class FilesController extends \lithium\action\Controller {
 						return array('id' => $file->_id, 'fileName' => $meta['name']);
 					}
 				}
-
 			break;
 		}
 	}

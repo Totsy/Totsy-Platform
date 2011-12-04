@@ -78,7 +78,7 @@ class Items extends \lithium\template\Helper {
 
 		$html = "";
 		$itemDropDown = "";
-		
+
 		//create blank array to check for duplicate color/description
 		$itemUrlCheck = array();
 
@@ -108,16 +108,16 @@ class Items extends \lithium\template\Helper {
 			foreach ($itemRecords as $item) {
 				$html .= "<tr class=''>";
 				$html .= "<td width='400px'>";
-				
+
 				//make mini array of color/description
 				$isurlduplicate = false;
 				$urlcheckminiarray = array($item->url);
-				
+
 				if(in_array($urlcheckminiarray, $itemUrlCheck)){
 					$isurlduplicate = true;
 				}
 				else{
-					$itemUrlCheck[] = $urlcheckminiarray; 
+					$itemUrlCheck[] = $urlcheckminiarray;
 				}
 
 				$this->current_item_id = "".$item->_id."";

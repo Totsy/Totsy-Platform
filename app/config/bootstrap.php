@@ -145,5 +145,4 @@ Environment::set('test', array(
 	'browser' => '*chrome',
 	'browserUrl' => 'http://totsy'
 ));
-
 ?>

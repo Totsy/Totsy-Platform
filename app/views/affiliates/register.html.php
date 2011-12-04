@@ -89,7 +89,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 <?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
 </div>
 <!-- right side -->
-<div class="grid_6" style="margin-left:28px;">	
+<div class="grid_6" style="margin-left:28px;">
 <div class="fr">Already a member? <a href="/login" title="Sign In">Sign In</a></div>
 		<div class="free_shipping_banner_reg_new rollover_img" ><a href="javascript:;" title="Free Shipping"><span></span></a></div>
 </div>
@@ -98,14 +98,14 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 
 <div class="round gradient" style="border:1px #eeeeee solid;height:300px;">
 
-	<div class="grid_6" style="float:left;">	
+	<div class="grid_6" style="float:left;">
 		<div style="width:310px; margin-top:5px;">
 		<?php echo $this->view()->render(array('element' => 'registrationForm')); ?>
 		</div>
-		
-		
+
+
 	</div>
-	<div class="grid_6" style="width:330px; margin-left:2px;float:left;margin-top:5px;">	
+	<div class="grid_6" style="width:330px; margin-left:2px;float:left;margin-top:5px;">
 		<h2 class="tagline" style="margin-top:2px;">Why savvy moms shop at Totsy?</h2>
 
 		<ul id="bug_bullets">

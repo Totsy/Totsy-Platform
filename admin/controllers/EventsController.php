@@ -154,7 +154,6 @@ class EventsController extends BaseController {
 
 				//update enabled
 				$oitem['enabled'] = (bool)$enabled;
-				
 				//create a new item instance
 				$newItem = Item::create();
 
@@ -198,13 +197,13 @@ class EventsController extends BaseController {
 		$event = Event::find($_id);
 
 		$eventItems = array();
-		
+
 		$alleventids = array($_id);
 
 		foreach($alleventids as $thiseventid){
 			$eventItems = Item::find('all', array('conditions' => array('event' => $alleventids),
 					'order' => array('created_date' => 'ASC')
-				));	
+				));
 		}
 		return compact('eventItems','event');
 	}
@@ -221,38 +220,38 @@ class EventsController extends BaseController {
 		}
 
 		if (!empty($this->request->data)) {
-		    $images = $this->_parseImages();
-		    $seconds = ':'.rand(10,60);
-		    $this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
-		    $this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
-		    if (isset($this->request->data['short_description']) && strlen($this->request->data['short_description'])>$shortDescLimit){
-		    	$this->request->data['short_description'] = substr($this->request->data['short_description'],0,$shortDescLimit);
-		    } else if (empty($this->request->data['short_description'])) {
-		    	$this->request->data['short_description'] = $this->description_cutter($this->request->data['short_description'],$shortDescLimit);
-		    }
-		    $url = $this->cleanUrl($this->request->data['name']);
-		    $eventData = array_merge(
-		    	Event::castData($this->request->data),
-		    	compact('items'),
-		    	compact('images'),
-		    	array('created_date' => new MongoDate()),
-		    	array('url' => $url)
-		    );
-		    $changed = "<strong>Created " . $this->request->data['name'] . " Event</strong><br/>";
-		    $modification_datas["author"] = User::createdby();
-		    $modification_datas["date"] = new MongoDate(strtotime('now'));
-		    $modification_datas["type"] = "modification";
-		    $modification_datas["changed"] = $changed;
-		
-		    //Pushing modification datas to db
-		    $modifications = $event->modifications;
-		    $modifications[] = $modification_datas;
-		    $eventData['modifications'] = $modifications;
-		    //Remove this when $_schema is setup
-		    unset($eventData['itemTable_length']);
-		    if ($event->save($eventData)) {
+			$images = $this->_parseImages();
+			$seconds = ':'.rand(10,60);
+			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
+			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
+			if (isset($this->request->data['short_description']) && strlen($this->request->data['short_description'])>$shortDescLimit){
+				$this->request->data['short_description'] = substr($this->request->data['short_description'],0,$shortDescLimit);
+			} else if (empty($this->request->data['short_description'])) {
+				$this->request->data['short_description'] = $this->description_cutter($this->request->data['short_description'],$shortDescLimit);
+			}
+			$url = $this->cleanUrl($this->request->data['name']);
+			$eventData = array_merge(
+				Event::castData($this->request->data),
+				compact('items'),
+				compact('images'),
+				array('created_date' => new MongoDate()),
+				array('url' => $url)
+			);
+			$changed = "<strong>Created " . $this->request->data['name'] . " Event</strong><br/>";
+			$modification_datas["author"] = User::createdby();
+			$modification_datas["date"] = new MongoDate(strtotime('now'));
+			$modification_datas["type"] = "modification";
+			$modification_datas["changed"] = $changed;
+
+			//Pushing modification datas to db
+			$modifications = $event->modifications;
+			$modifications[] = $modification_datas;
+			$eventData['modifications'] = $modifications;
+			//Remove this when $_schema is setup
+			unset($eventData['itemTable_length']);
+			if ($event->save($eventData)) {
 				$this->redirect(array('Events::edit', 'args' => array($event->_id . '#event_media_upload')));
-		    }
+			}
 		}
 
 		return compact('event','shortDescLimit');
@@ -393,7 +392,6 @@ class EventsController extends BaseController {
 				$temp =  date('m/d/Y H:i:s', $event->ship_date->sec);
 				$changed .= "Ship Date changed from  <strong>{$temp}</strong> to <strong>{$ship_date}</strong><br/>";
 			}
-
 			if ($eventData['enable_items'] != $event->enable_items) {
 				$changed .= 'Enabled Items from <strong>'.(int)$event->enable_items.'</strong> to <strong>'.(int)$eventData['enable_items'].'</strong><br/>';
 			}
@@ -484,6 +482,19 @@ class EventsController extends BaseController {
 
 	}
 
+	public function media_status() {
+		$id = $this->request->id;
+		$this->_render['layout'] = false;
+
+		$event = Event::first($id);
+		$event->items = Item::all(array(
+			'conditions' => array('event' => array($id)),
+			'order' => array('created_date' => 'ASC')
+		));
+
+		return compact('event');
+	}
+
 	public function inventoryCheck($events) {
 		$events = $events->data();
 		foreach ($events as $eventItems) {
@@ -502,19 +513,6 @@ class EventsController extends BaseController {
 			$itemCounts[$id] = $count;
 		}
 		return $itemCounts;
-	}
-
-	public function media_status() {
-		$id = $this->request->id;
-		$this->_render['layout'] = false;
-
-		$event = Event::first($id);
-		$event->items = Item::all(array(
-			'conditions' => array('event' => array($id)),
-			'order' => array('created_date' => 'ASC')
-		));
-
-		return compact('event');
 	}
 	/**
 	 * This method parses the item file that is uploaded in the Events Edit View.
@@ -690,6 +688,7 @@ class EventsController extends BaseController {
 
 		return $items;
 	}
+
 	private function description_cutter($str,$length=null){
 		$return = '';
 		$str = strip_tags($str);

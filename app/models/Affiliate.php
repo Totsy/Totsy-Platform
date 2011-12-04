@@ -25,15 +25,9 @@ class Affiliate extends Base {
 		$user = $userCollection->findOne(array('email' => $userInfo['email']));
         $orderid = NULL;
 
-        if(preg_match('(orders/view/)',$url)) {
-            $orderid = substr($url,12);
-            $url = '/orders/view';
+        if(array_key_exists('order_id', $option)) {
+            $orderid = $option['order_id'];
         }
-        
-        if(preg_match('(^a/)',$url)) {
-            $url = '/a/' . $invited_by;
-        }
-        
         /*for affilliates that have a category
         build the URL here in order to find a match and get the right pixel info for this affiliate */
 
@@ -49,21 +43,20 @@ class Affiliate extends Base {
         $conditions['active'] = true;
         $conditions['level'] = 'super';
         $conditions['pixel'] = array('$elemMatch' => array(
-                                    'page' => $url,
-                                    'enable' => true
+                                    'page' => "$url",
+                                    'enable' => true,
+                                    'codes' => $invited_by
                                 ));
-                                
         $conditions['invitation_codes'] = $invited_by;
-        $options = array('conditions' => $conditions,
+        $extra = array('conditions' => $conditions,
 		                'fields'=>array(
-		                    'pixel.pixel' => 1, 'pixel.page' => 1,
+		                    'pixel'=>1,
 							'_id' => 0
-		                    ));		                    
-		$pixels = Affiliate::find('all', $options );
+		                    ));
+		$pixels = Affiliate::find('all', $extra );
 		$pixels = $pixels->data();
 		$pixel = NULL;
-
-        if($url == '/orders/view'){
+        if($url == 'Orders::view'){
             if($user && array_key_exists('affiliate_share', $user) && $user['affiliate_share']){
      			$cookie['affiliate'] = $user['affiliate_share']['affiliate'];
                 $cookie['entryTime'] = $user['affiliate_share']['landing_time'];
@@ -73,8 +66,8 @@ class Affiliate extends Base {
 
 		foreach($pixels as $data) {
 			foreach($data['pixel'] as $index) {
-                if(is_array($index['page']) && in_array($url, $index['page'])) {
-                    if($url == '/orders/view'){
+                if(is_array($index['page']) && in_array($url, $index['page']) && in_array($invited_by, $index['codes'])) {
+                    if($url == 'Orders::view'){
                         $pixel .= static::generatePixel($invited_by, $index['pixel'], array( 'orderid' => $orderid));
                     }else{
                         $pixel .= static::generatePixel($invited_by, $index['pixel']);
