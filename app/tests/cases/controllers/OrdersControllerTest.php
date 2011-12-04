@@ -149,8 +149,13 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$result = $return['lifeTimeSavings'];
 		$this->assertEqual($expected, $result);
 
-		$result = is_int($return['shipDate'][(string) $order->_id]);
-		$this->assertTrue($result);
+		$shipDate = $return['shipDate'][(string) $order->_id];
+		if (is_string($shipDate)) {
+			$result = in_array($shipDate, array("On or before 12/23", "See delivery alert below"));
+		} else {
+			$result = is_int($shipDate);
+			$this->assertTrue($result);
+		}
 
 		$expected = array(
 			(string) $order->_id => array(
