@@ -130,9 +130,13 @@
     <div class="faq_question"><strong>A: </strong> Yes, you can add multiple shipping addresses to your Address Book found under the "My Account" link on the top of any page when you are signed-in to Tosy.</div>
 <p></p>
 
+<p></p>
 <?php echo $this->view()->render(array('element' => 'mobile_aboutUsNav')); ?>
 <?php echo $this->view()->render(array('element' => 'mobile_helpNav')); ?>
+<?php if (!empty($userInfo)){ ?>
 <?php echo $this->view()->render(array('element' => 'mobile_headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
+<?php } ?>
+
 
 <script type="text/javascript">
 $(document).ready(function() {

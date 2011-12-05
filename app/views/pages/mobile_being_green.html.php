@@ -29,9 +29,11 @@
 		<h3 class="page-title gray"> WHERE TREES ARE PLANTED </h3>
 		<p>Your trees will be planted in Alto Huayabamba, located in the Amazonian highlands in Tarapoto, Peru. This is the most established reforestation project developed by Pure Planet.</p>
 
-
 <p></p>
 <?php echo $this->view()->render(array('element' => 'mobile_aboutUsNav')); ?>
 <?php echo $this->view()->render(array('element' => 'mobile_helpNav')); ?>
+<?php if (!empty($userInfo)){ ?>
 <?php echo $this->view()->render(array('element' => 'mobile_headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
+<?php } ?>
+
 

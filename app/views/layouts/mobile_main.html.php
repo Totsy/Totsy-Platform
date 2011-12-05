@@ -23,6 +23,7 @@
 	<script src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
 </head>
 <body>
+<?php if (!empty($userInfo)){ ?>
 <div data-role="header" data-position="fixed" style="-moz-box-shadow: 0px 0px 4px 0px #666;
 -webkit-box-shadow: 0px 0px 4px 0px #666;
 box-shadow:0px 0px 4px 0px #666;"> 
@@ -50,10 +51,20 @@ box-shadow:0px 0px 4px 0px #666;">
 </div><!-- /navbar -->		
 
 </div>
+
+<?php } else { ?>
+<div class="nav_head"></div>
+	<div class="mobile_ui">
+	<div class="logo">
+		<a href="#" onclick="window.location.href='/sales';return false;"><img src="/img/logo.png" width="80" /></a>
+	</div>	
+
+<?php } ?>
 	<div data-role="content">
 	<?php echo $this->content(); ?>
 	</div>
 	<div class="clear"></div>
+	<?php if (!empty($userInfo)){ ?>
 	<div class="footer">
 		<a href="#" onclick="window.location.href='/pages/aboutus';return false;">About</a>
 		<span class="splitter">/</span>
@@ -63,8 +74,9 @@ box-shadow:0px 0px 4px 0px #666;">
 		<span class="splitter">/</span>
 		<a href="#" onclick="window.location.href='/pages/contact';return false;">Support</a>
 	</div>
-	<p class="legal">&copy;2011 Totsy, Inc. All rights reserved.</p>
-</div>
+	<?php } ?>
+
+	<p class="legal">&copy;2011 Totsy, Inc. All rights reserved.</p></div>
 <script>
 $.mobile.fixedToolbars
    .show(true);
