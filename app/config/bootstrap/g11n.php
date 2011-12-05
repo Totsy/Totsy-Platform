@@ -63,19 +63,19 @@ Environment::set('test', array(
  *     need to specify a scope for each configuration, except for those using the _memory_,
  *     _php_ or _gettext_ adapter which handle this internally.
  */
-Catalog::config(array(
-	'runtime' => array(
-		'adapter' => 'Memory'
-	),
+// Catalog::config(array(
+// 	'runtime' => array(
+// 		'adapter' => 'Memory'
+// 	),
 // 	'app' => array(
 // 		'adapter' => 'Gettext',
 // 		'path' => LITHIUM_APP_PATH . '/resources/g11n'
 // 	),
-	'lithium' => array(
-		'adapter' => 'Php',
-		'path' => LITHIUM_LIBRARY_PATH . '/lithium/g11n/resources/php'
-	)
-) + Catalog::config());
+// 	'lithium' => array(
+// 		'adapter' => 'Php',
+// 		'path' => LITHIUM_LIBRARY_PATH . '/lithium/g11n/resources/php'
+// 	)
+// ) + Catalog::config());
 
 /**
  * Integration with `Inflector`.
@@ -104,44 +104,44 @@ Catalog::config(array(
  * class (or other content handler, if specified) when content is rendered. This
  * enables translation functions, i.e. `<?=$t("Translated content"); ?>`.
  */
-Media::applyFilter('_handle', function($self, $params, $chain) {
-	$params['handler'] += array('outputFilters' => array());
-	$params['handler']['outputFilters'] += Message::aliases();
-	return $chain->next($self, $params, $chain);
-});
+// Media::applyFilter('_handle', function($self, $params, $chain) {
+// 	$params['handler'] += array('outputFilters' => array());
+// 	$params['handler']['outputFilters'] += Message::aliases();
+// 	return $chain->next($self, $params, $chain);
+// });
 
 /**
  * Integration with `Validator`. You can load locale dependent rules into the `Validator`
  * by specifying them manually or retrieving them with the `Catalog` class.
  */
-Validator::add('phone', Catalog::read(true, 'validation.phone', 'en_US'));
-Validator::add('postalCode', Catalog::read(true, 'validation.postalCode', 'en_US'));
-Validator::add('ssn', Catalog::read(true, 'validation.ssn', 'en_US'));
+// Validator::add('phone', Catalog::read(true, 'validation.phone', 'en_US'));
+// Validator::add('postalCode', Catalog::read(true, 'validation.postalCode', 'en_US'));
+// Validator::add('ssn', Catalog::read(true, 'validation.ssn', 'en_US'));
 
 /**
  * Intercepts dispatching processes in order to set the effective locale by using
  * the locale of the request or if that is not available retrieving a locale preferred
  * by the client.
  */
-ActionDispatcher::applyFilter('_callable', function($self, $params, $chain) {
-	$request = $params['request'];
-	$controller = $chain->next($self, $params, $chain);
-
-	if (!$request->locale) {
-		$request->params['locale'] = Locale::preferred($request);
-	}
-	Environment::set(Environment::get(), array('locale' => $request->locale));
-	return $controller;
-});
-ConsoleDispatcher::applyFilter('_callable', function($self, $params, $chain) {
-	$request = $params['request'];
-	$command = $chain->next($self, $params, $chain);
-
-	if (!$request->locale) {
-		$request->params['locale'] = Locale::preferred($request);
-	}
-	Environment::set(Environment::get(), array('locale' => $request->locale));
-	return $command;
-});
+// ActionDispatcher::applyFilter('_callable', function($self, $params, $chain) {
+// 	$request = $params['request'];
+// 	$controller = $chain->next($self, $params, $chain);
+//
+// 	if (!$request->locale) {
+// 		$request->params['locale'] = Locale::preferred($request);
+// 	}
+// 	Environment::set(Environment::get(), array('locale' => $request->locale));
+// 	return $controller;
+// });
+// ConsoleDispatcher::applyFilter('_callable', function($self, $params, $chain) {
+// 	$request = $params['request'];
+// 	$command = $chain->next($self, $params, $chain);
+//
+// 	if (!$request->locale) {
+// 		$request->params['locale'] = Locale::preferred($request);
+// 	}
+// 	Environment::set(Environment::get(), array('locale' => $request->locale));
+// 	return $command;
+// });
 
 ?>

@@ -25,7 +25,7 @@ define('LITHIUM_APP_PATH', dirname(__DIR__));
  * Locate and load Lithium core library files.  Throws a fatal error if the core can't be found.
  * If your Lithium core directory is named something other than 'lithium', change the string below.
  */
-if (!include LITHIUM_LIBRARY_PATH . '/lithium/core/Libraries.php') {
+if (!include LITHIUM_APP_PATH . '/libraries/lithium/core/Libraries.php') {
 	$message  = "Lithium core could not be found.  Check the value of LITHIUM_LIBRARY_PATH in ";
 	$message .= "config/bootstrap.php.  It should point to the directory containing your ";
 	$message .= "/libraries directory.";
@@ -71,6 +71,11 @@ require __DIR__ . '/connections.php';
 require __DIR__ . '/bootstrap/action.php';
 
 /**
+ * Error-handling.
+ */
+require __DIR__ . '/bootstrap/error.php';
+
+/**
  * This file contains configurations for connecting to external caching resources, as well as
  * default caching rules for various systems within your application
  */
@@ -106,27 +111,26 @@ require __DIR__ . '/bootstrap/avatax.php';
 require __DIR__ . '/bootstrap/analysis.php';
 
 /**
+ * Auth and action protection filters.
+ */
+require __DIR__ . '/bootstrap/auth.php';
+
+/**
  * This configures your session storage. The Cookie storage adapter must be connected first, since
  * it intercepts any writes where the `'expires'` key is set in the options array.
  */
 use lithium\storage\Session;
 
 Session::config(array(
- 	'default' => array('adapter' => 'admin\extensions\adapter\session\Model', 'model' => 'MongoSession')
+	'default' => array(
+		'adapter' => 'admin\extensions\adapter\session\Model',
+		'model' => 'MongoSession'
+	),
+	'flash_message' => array(
+		'adapter' => 'admin\extensions\adapter\session\Model',
+		'model' => 'MongoSession'
+	)
 ));
-
-Session::config(array(
-    'flash_message' => array('adapter' => 'admin\extensions\adapter\session\Model', 'model' => 'MongoSession')
-));
-
-use lithium\security\Auth;
-Auth::config(array('userLogin' => array(
-	'model' => 'User',
-	'adapter' => 'Form',
-	'fields' => array('email', 'password'),
-	'scope' => array('admin' => true)
-)));
-
 
 ini_set('memory_limit', '1024M');
 ini_set('max_execution_time', '20000');

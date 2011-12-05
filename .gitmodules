@@ -6,7 +6,7 @@
 	url = code@dev.lithify.me:li3_flash_message.git
 [submodule "libraries/li3_payments"]
 	path = libraries/li3_payments
-	url = git@github.com:Totsy/li3_payments.git
+	url = code@dev.lithify.me:li3_payments.git
 [submodule "admin/libraries/swiftmailer"]
 	path = admin/libraries/swiftmailer
 	url = git://github.com/swiftmailer/swiftmailer.git

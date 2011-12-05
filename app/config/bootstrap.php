@@ -113,21 +113,25 @@ require __DIR__ . '/bootstrap/mail.php';
 require __DIR__ . '/bootstrap/avatax.php';
 
 /**
+ * Auth and action protection filters.
+ */
+require __DIR__ . '/bootstrap/auth.php';
+
+/**
  * This configures your session storage. The Cookie storage adapter must be connected first, since
  * it intercepts any writes where the `'expires'` key is set in the options array.
  */
 use lithium\storage\Session;
 
 Session::config(array(
- 	'default' => array('adapter' => 'app\extensions\adapter\session\Model', 'model' => 'MongoSession'),
- 	'cookie' => array('adapter' => 'Cookie', 'expire' => '+30 days')
+	'default' => array(
+		'adapter' => 'app\extensions\adapter\session\Model',
+		'model' => 'MongoSession'
+	),
+	'cookie' => array(
+		'adapter' => 'Cookie',
+		'expire' => '+30 days'
+	)
 ));
-
-use lithium\security\Auth;
-Auth::config(array('userLogin' => array(
-	'model' => 'User',
-	'adapter' => 'Form',
-	'fields' => array('email', 'password')
-)));
 
 ?>
