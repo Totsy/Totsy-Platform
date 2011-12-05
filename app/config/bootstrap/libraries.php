@@ -55,6 +55,14 @@ Libraries::add('app', array('default' => true));
  */
 Libraries::add('li3_docs');
 Libraries::add('li3_payments');
+Libraries::add('PEAR', array(
+	'prefix' => false,
+	'includePath' => true,
+	'transform' => function($class, $config) {
+		$file = $config['path'] . '/' . str_replace('_', '/', $class) . $config['suffix'];
+		return file_exists($file) ? $file : null;
+	}
+));
 Libraries::add('li3_fixtures');
 Libraries::add('li3_facebook', array(
 	'appId' => '130085027045086',

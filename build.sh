@@ -31,6 +31,10 @@ function print_usage {
 	echo " - optimize-repo     Perform GC on local git repository."
 	echo " - source-lithium    Install lithium."
 	echo " - source-subs       Initialize and update all submodules."
+	echo " - source-pear       Install symlink to PEAR."
+	echo " - source-selenium   Install dependencies."
+	echo " - clear-cache       Clears file caches on admin and app."
+	echo " - selenium-server   Start the selenium server."
 }
 
 if [ $# != 1 ]; then
@@ -48,6 +52,13 @@ case $COMMAND in
 	init)
 		echo "Initializing codebase..."
 		$0 source-subs
+		$0 source-pear
+
+		read -p "Do you want selenium support? (y/n) " CONFIRM
+		if [[ $CONFIRM == "y" ]]; then
+			$0 source-selenium
+		fi
+
 		$0 fix-perms
 
 		FILES=$(find $PROJECT_DIR/{app,admin} -type f -print0 | xargs -0 grep -l -i -E 'ini_set.*display_error.*(off|false|0)')
@@ -130,6 +141,45 @@ case $COMMAND in
 
 		echo "Removing temporary directory..."
 		rm -fr $TMP
+		;;
+
+	source-pear)
+		PEAR=$(pear config-show  | grep php_dir | awk '{ print $4 }')
+
+		echo "Symlinking in PEAR from $PEAR..."
+		test -L $PROJECT_DIR/libraries/PEAR && rm $PROJECT_DIR/libraries/PEAR
+		ln -s $PEAR $PROJECT_DIR/libraries/PEAR
+		;;
+
+	source-selenium)
+		echo "Installing pear package..."
+		pear install Testing_Selenium-alpha
+
+		echo "Downloading server packages..."
+		curl http://selenium.googlecode.com/files/selenium-server-standalone-2.2.0.jar \
+			--O $PROJECT_DIR/selenium/server.jar
+		;;
+
+	clear-cache)
+		find $PROJECT_DIR/app/resources/tmp/cache -name 'empty' -prune -o -type f | xargs rm -v
+		find $PROJECT_DIR/admin/resources/tmp/cache -name 'empty' -prune -o -type f | xargs rm -v
+		;;
+
+	selenium-server)
+		echo "NOTE: If firefox doesn't start correctly on OSX execute the following steps."
+		echo
+		echo "----------------------------------------------------------------------------"
+		echo 'cd /Applications/Firefox.app/Contents/MacOS'
+		echo 'mv firefox-bin firefox-bin.original'
+		echo 'ditto --arch i386 firefox-bin.original firefox-bin'
+		echo "----------------------------------------------------------------------------"
+		echo
+
+		java \
+			-jar $PROJECT_DIR/selenium/server.jar \
+			-firefoxProfileTemplate $PROJECT_DIR/selenium/tzp8knyf.selenium \
+			-log $PROJECT_DIR/selenium/selenium.log \
+			-browserSideLog
 		;;
 
 	*)
