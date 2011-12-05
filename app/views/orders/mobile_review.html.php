@@ -44,30 +44,28 @@ var discountErrors = new Object();
 <link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
 
 <?php  if(!empty($subTotal)): ?>
-<div class="cart-content">
-	<div class="grid_11 cart-header-left">
-		<div style="float:left;">
-			<h2 class="page-title gray">
-				<span class="cart-step-status gray" style="font-weight:bold">Review your Shipping and Payment Information</span>
-				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps4.png"></span>
-			</h2>
-		</div>
+<h2 class="page-title gray">
+		<span class="cart-step-status gray" style="font-weight:bold">Order Review</span>
+	<div style="float:right;">
+		<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
+		<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
+		<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
+		<span class="cart-step-status"><img src="/img/cart_steps4.png"></span>
 	</div>
-	<div class="grid_5 cart-header-right">
-		<?=$this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
-	</div>	
-	<div class="clear"></div>
+</h2>
+<?php if (!empty($error)) { ?>
+			<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2></div>
+			<?php } ?>
+<hr />
+
+
+<?=$this->view()->render( array('element' => 'mobile_shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
 	<hr/>
-	<div class="grid_16" style="width:940px; padding-bottom:35px">
 		<div class="cart-review-edit shipping">
-			<div class="page-title" style="font-weight:bold; margin: 15px; font-size:15px"><span class="cart-review-edit-header">Shipping Address</span>
-			<span class="cart-review-edit-change-button">
-				<a href="/checkout/shipping">(Change)</a>
-			</span>
-			<hr>
+			<div class="page-title">
+			<strong style="font-size:12px;">Shipping Address <a href="#" onclick="window.location.href='/checkout/shipping';return false;">(Change)</a></strong>
+	
+			<hr />
 				<div class="cart-review-edit-copy">
 					<?=$shippingAddr['firstname']." ".$shippingAddr['lastname'];?>
 				</div>
@@ -84,33 +82,32 @@ var discountErrors = new Object();
 					<?=$shippingAddr['city'].", ".$shippingAddr['state']." ".$shippingAddr['zip'];?>
 				</div>
 			</div>
-		</div>
+			<br />
 		<div class="cart-review-edit billing">
-			<div class="page-title" style="font-weight:bold; margin: 15px; font-size:15px"><span class="cart-review-edit-header">Billing Address &amp; Payment Method</span>
-				<span class="cart-review-edit-change-button">
-					<a href="/checkout/payment">(Change)</a>
-				</span>
-			<hr>
+			<div class="page-title">
+			<strong style="font-size:12px;">Billing Address &amp; Payment Method <a href="#" onclick="window.location.href='/checkout/payment';return false;">(Change)</a></strong>
+	
+			<hr/>
 			<div class="cart-review-edit-copy">
 					<?php echo strtoupper($creditCard['type']);?>
-				</div>
-				<div class="cart-review-edit-copy">
-					<?php echo "Ends in: ". substr($creditCard['number'], -4, strlen($creditCard['number']));?>
+	
+					<?php echo "XXXX-XXXX-XXXX-". substr($creditCard['number'], -4, strlen($creditCard['number']));?>
 				</div>
 				<div class="cart-review-edit-copy">
 					<?php echo "Expires in: ". $creditCard['month'] ."/". $creditCard['year'];?>
 				</div>
 			</div>
 		</div>
+		<hr />
 		<div class="cart-order-place-outer">
-			<div class="page-title cart-order-place-inner">
+			<div class="page-title cart-order-place-inner" style="float:right;">
 				<span style="margin-bottom: 12px">
 				Order Total:
 				    <span style="color:#009900; text-align:center">
 				    $<?=number_format($total,2)?> </span>
 				</span>    
 				<div style="text-align:center; diplay:inline-block !important">
-			      <a href="#" class="button" style="float:none !important; diplay:block !important" onclick="updateOrder()">Place Your Order</a>
+			      <a href="#" data-role="button" onclick="updateOrder();return false;">Place Your Order</a>
 			 	</div>
 			</div>
 		</div>
@@ -121,20 +118,19 @@ var discountErrors = new Object();
 	<?php
 	if($missChristmasCount>0){
 	?>
-				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#990000; font-size:11px;text-align:center;">
-				<img src="/img/truck_red.png">
-				One or more of the items in your cart is not guaranteed to be delivered on or before 12/25*.
-				</div>
+				<div class="holiday_message" style="text-align:center;">
+				<p>One or more of the items in your cart is not guaranteed to be delivered on or before 12/25*.
+				</p></div>
 	
 	
 	<?php
 	}
 	elseif($notmissChristmasCount>0){
 	?>
-				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#999999; font-size:11px;text-align:center;">
-				<img src="/img/truck_grey.png">
+				<div class="holiday_message" style="text-align:center;">
+				<p>
 				Items will be delivered on or before 12/23.*
-				</div>
+				</p></div>
 	
 	
 	<?php
@@ -143,7 +139,6 @@ var discountErrors = new Object();
 
 <?php if (!empty($subTotal)): ?>
 
-<div class="grid_16" style="width:935px">
 <?=$this->form->create(null ,array('id'=>'cartForm')); ?>
 	<div id='message'><?php echo $message; ?></div>
 		<table class="cart-table">
@@ -230,10 +225,7 @@ var discountErrors = new Object();
 			</tbody>
 		</table>
 		<?=$this->form->end(); ?>
-		</div>
 
-		<div class="clear"></div>
-		<div class="grid_16" style="width:935px; padding-top:30px">
 		<div class="cart-codes">
 				<div class="cart-code-buttons">
 				     <?php if(!empty($credit)): ?>
@@ -314,7 +306,7 @@ var discountErrors = new Object();
     		        	}?>		
     		        	:</span> 
     		        	<span style="color:#707070; float:right" class="fees_and_discounts">- $<?=number_format($shipping_discount,2)?></span>
-    		    </div>
+    		
    			    <?php endif ?>
 			    <div style="clear:both"></div>	
 			    <div>
@@ -326,12 +318,15 @@ var discountErrors = new Object();
 			    </div>
 			    <div style="clear:both" class="subtotal"><hr /></div>			
 			    <div>
-			        <div class="cart-savings"> 
-			        	<?php if (!empty($savings)) : ?>
-			        	Your Savings:
-			        	$<?=number_format($savings,2)?>
-			        	<?php endif ?>
+			        
+			        <?php if (!empty($savings)) : ?>
+			        <div class="subtotal">
+			        <span style="font-size:15px; font-weight:bold">Your Savings:</span> 
+			        	<span style="font-size:15px;float:right" id="ordertotal">$<?=number_format($savings,2)?></span>
 			        </div>
+			        <?php endif ?>
+			        
+			        
 			        <div class="subtotal">
 			        <span style="font-size:15px; font-weight:bold">Order Total:</span> 
 			        	<span style="font-size:15px; color:#009900; float:right" id="ordertotal">$<?=number_format($total,2)?> </span>
@@ -341,7 +336,8 @@ var discountErrors = new Object();
 </div>
 
 <div class="cart-button fr cart-nav-buttons">
-		      <a href="#" class="button" style="float:none !important; margin-right:50px; diplay:block !important" onclick="updateOrder()">Place Your Order</a>
+		      <a href="#" data-role="button" onclick="updateOrder();return false;">Place Your Order</a>
+
 	<div class="clear"></div>
 
 <?=$this->form->end(); ?>
@@ -351,20 +347,23 @@ var discountErrors = new Object();
 				<?php
 				if($missChristmasCount>0&&$notmissChristmasCount>0){
 				?>
-				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. 
+				<div class="holiday_message" style="text-align:center;">
+				<p>* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. </p></div>
 				
 				<?php
 				}
 				elseif($missChristmasCount>0){
 				?>
-				* Your items will arrive safely, but after 12/25.
+				<div class="holiday_message" style="text-align:center;">
+				<p>* Your items will arrive safely, but after 12/25.</p></div>
 				
 				<?php
 				}
 				else{
 				?>
 				
-				* Our delivery guarantee does not apply when transportation networks are affected by weather.
+				<div class="holiday_message" style="text-align:center;">
+				<p>* Our delivery guarantee does not apply when transportation networks are affected by weather.</p></div>
 				
 				<?php
 				}
@@ -382,11 +381,9 @@ var discountErrors = new Object();
 	
 <div class="clear"></div>
 <?php else: ?>
-	<div class="grid_16 cart-empty">
-		<h1>
-			<span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> 	
-			<a href="/sales" title="Continue Shopping">Continue Shopping</a/></h1>
-	</div>
+<div class="holiday_message">
+		<p>Your shopping cart is empty <a href="/sales">Continue Shopping</a/></p>
+</div>
 <?php endif ?>
 </div>
 <div id="modal" style="background:#fff!important; z-index:9999999999!important;">

@@ -36,10 +36,10 @@ box-shadow:0px 0px 4px 0px #666;">
 		<a href="#" onclick="window.location.href='/sales';return false;"><img src="/img/logo.png" width="60" /></a>
 		<div style="float:right; margin-right:10px; font-size:12px; font-weight:normal!important; color:#999;">
 		<?php if(array_key_exists('firstname', $userInfo) &&     !empty($userInfo['firstname'])):
-					?>
+					?><br />
 					    <?=$userInfo['firstname'].' '.$userInfo['lastname'] ?><br />
 					<?php else: ?>
-					    Totsy Member
+					    Totsy Member<br />
 					<?php endif;?>
 					Cart: <a href="#" onclick="window.location.href='/cart/view';return false;"><span class="ui-li-count"><?php echo $cartCount;?></span></a>
 		</div>
