@@ -88,6 +88,7 @@ var discountErrors = new Object();
 			<strong style="font-size:12px;">Billing Address &amp; Payment Method <a href="#" onclick="window.location.href='/checkout/payment';return false;">(Change)</a></strong>
 	
 			<hr/>
+			<strong>Payment Method</strong>
 			<div class="cart-review-edit-copy">
 					<?php echo strtoupper($creditCard['type']);?>
 	
@@ -99,22 +100,9 @@ var discountErrors = new Object();
 			</div>
 		</div>
 		<hr />
-		<div class="cart-order-place-outer">
-			<div class="page-title cart-order-place-inner" style="float:right;">
-				<span style="margin-bottom: 12px">
-				Order Total:
-				    <span style="color:#009900; text-align:center">
-				    $<?=number_format($total,2)?> </span>
-				</span>    
-				<div style="text-align:center; diplay:inline-block !important">
-			      <a href="#" data-role="button" onclick="updateOrder();return false;">Place Your Order</a>
-			 	</div>
-			</div>
-		</div>
-	</div>
+		
 	    
 <?php endif ?>
-<div class="message"></div>
 	<?php
 	if($missChristmasCount>0){
 	?>
@@ -136,6 +124,8 @@ var discountErrors = new Object();
 	<?php
 	}
 	?>
+	<div class="clear"></div>
+<div class="message"></div>
 
 <?php if (!empty($subTotal)): ?>
 
@@ -165,77 +155,56 @@ var discountErrors = new Object();
 			?>
 
 
-
-
+	<div class="clear"></div>
+<br />
+<strong>Your Items</strong>
+<hr />
 				<!-- Build Product Row -->
 				<tr id="<?=$item->_id?>" style="<?=$classadd?>">
-					<td colspan="1" class="cart-th">
-						<span class="cart-review-thumbnail">
-						<?php
-								if (!empty($item->primary_image)) {
-									$image = $item->primary_image;
-									$productImage = "/image/$image.jpg";
-								} else {
-									$productImage = "/img/no-image-small.jpeg";
-								}
-							?>
-							<?=$this->html->link(
-								$this->html->image("$productImage", array(
-									'width'=>'107',
-									'height'=>'107',
-							'style' => 'margin:2px; padding:4px;')),
-								'sale/'.$item->event_url.'/'.$item->url,
-									array(
-									'id' => 'main-logo_', 'escape'=> false
-								), $item->description,'sale/'.$item->event_url.'/'.$item->url); ?>
-						</span>
-					</td>
+
 					<td colspan="8">	
-						<div class="cart-review-line-content">
-							<span>
-								<span class="cart-review-desc">
+					
 									<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
 									<?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url, array("target"=>"_blank")); ?>
+									<span style="font-size:9px;"><?=$shipmsg?></span>
 				
 								<span style="display:none" id='<?php echo "itemCounter$x"; ?>' class="counter cart-review-line-timer" title='<?=$date?>'></span>
-							</span>
 							
+							<br />
 							<span class="<?="price-item-$x";?> cart-review-line-price">													
 								<strong>$<?=number_format($item->sale_retail,2)?></strong>
 							</span>
+							<br />
 							<span class="<?="qty-$x";?> cart-review-line-qty">Qty: <?=$item->quantity;?></span>						
 							<span class="<?="total-item-$x";?> cart-review-line-total" style="padding-right:10px;">$<?=number_format($item->sale_retail * $item->quantity ,2)?>
 							</span>
-						</div>
-							<hr />
-						<div>
+							<br />
 						<?php if($item->color) : ?>
-							<div><span class="cart-review-color-size">Color:</span> <?=$item->color;?></div>
+							<span class="cart-review-color-size">Color:</span> <?=$item->color;?>
 							<?php endif ?>
+							<br />
 							<?php if($item->size!=="no size") : ?>						
-							<div><span class="cart-review-color-size">Size:</span> <?=$item->size;?></div>
+							<span class="cart-review-color-size">Size:</span> <?=$item->size;?>
 							<?php endif ?>
-							<br><?=$shipmsg?>
-
-						</div>	
+						
+						
+							
 					</td>
+					
 				</tr>
 				<?php $x++; ?>
 			<?php endforeach ?>
 			</tbody>
 		</table>
 		<?=$this->form->end(); ?>
-
+<hr />
 		<div class="cart-codes">
 				<div class="cart-code-buttons">
 				     <?php if(!empty($credit)): ?>
-				    	<strong>Add <a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a></strong> /
+				    	<strong style="font-size:11px;"><a href="#" id="credits_lnk" onclick="open_credit();" >Use Credits</a></strong> /
 				    <?php endif ?> 
 
-			        <span id="promocode_tooltip" original-title="Promo codes cannot be combined and can be applied once to an order per member." class="cart-tooltip">
-			        	<img src="/img/tooltip_icon.png">
-			        </span>
-					<strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
+					<strong style="font-size:11px;"><a href="#" id="promos_lnk" onclick="open_promo();">Add Promo Code</a></strong>
 				</div>
 				<div style="clear:both"></div>
 				<div id="promos_and_credit">
@@ -308,6 +277,7 @@ var discountErrors = new Object();
     		        	<span style="color:#707070; float:right" class="fees_and_discounts">- $<?=number_format($shipping_discount,2)?></span>
     		
    			    <?php endif ?>
+   			    
 			    <div style="clear:both"></div>	
 			    <div>
 			    <div class="subtotal">
@@ -333,10 +303,8 @@ var discountErrors = new Object();
 			        </div>
 			    </div>	
 		</div>				
-</div>
-
-<div class="cart-button fr cart-nav-buttons">
-		      <a href="#" data-role="button" onclick="updateOrder();return false;">Place Your Order</a>
+<hr />
+		      <a href="#" data-role="button" data-ajax="true" onclick="updateOrder();return false;">Place Your Order</a>
 
 	<div class="clear"></div>
 

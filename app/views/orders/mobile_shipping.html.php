@@ -106,10 +106,13 @@ var addressForm = new Object();
 	
 <?=$this->form->create($address, array('id' => 'addressForm')); ?>	
 			
-	<div class="grid_16">
-	
 		<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
-			<hr />Choose your address :<?=$this->form->select('addresses', $addresses_ddwn, array("id" => 'addresses', 'value' => $selected));?>
+		<div data-role="fieldcontain">
+		<label for="select-choice-15" class="select">Choose your address</label>
+		<?=$this->form->select('addresses', $addresses_ddwn, array('data-overlay-them' => 'd','data-native-menu' => 'false', 'id' => 'addresses', 'value' => $selected));?>
+		</div>	
+
+			
 		<?php endif ?>
 		<div style="clear:both"></div>
 		<hr />
