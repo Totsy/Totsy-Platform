@@ -40,24 +40,17 @@ var discountErrors = new Object();
 <script type="text/javascript" src="/js/jquery.number_format.js"></script>
 
 <?php  if(!empty($subTotal)): ?>
-<div class="cart-content">
-	<div class="grid_11 cart-header-left">
-		<div style="float:left;">
-			<h2 class="page-title gray">
-				<span class="cart-step-status gray" style="font-weight:bold">Shopping Cart</span>
-				<span class="cart-step-status"><img src="/img/cart_steps1.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
-			</h2>
-		</div>
-	</div>
+<h2 class="page-title gray">
+	<span class="cart-step-status gray" style="font-weight:bold">Shopping Cart</span>
+	<span class="cart-step-status"><img src="/img/cart_steps1.png"></span>
+	<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
+	<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
+	<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
+</h2>
 
-	<div class="grid_5 cart-header-right">
-		<?=$this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
-	</div>
 
-	<div class="clear"></div>
+<?=$this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
+
 
 	<?php
 	if($missChristmasCount>0){
@@ -79,22 +72,19 @@ var discountErrors = new Object();
 	<?php
 	}
 	?>
+<hr/>
 
-
-
-
-	<hr/>
-	     <div class="cart-button fr" style="margin:10px 0px 20px 0px;">
-		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
-		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
-		     <div class="clear"></div>
-		 </div>
+<div class="cart-button fr" style="margin:10px 0px 20px 0px;">
+	<?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;','class' => 'button_border')); ?>
+	<?=$this->html->link('Checkout', 'Orders::shipping', array('data-role' => 'button', 'class' => 'button', 'style'=>'float:left')); ?>
+	<div class="clear"></div>
+</div>
 <?php endif ?>
 
 <div class="message"></div>
 <?php if (!empty($subTotal)): ?>
 
-<div class="roundy_cart" style="width:935px !important">
+<div>
 <?=$this->form->create(null ,array('id'=>'cartForm')); ?>
 	<div id='message'><?php echo $message; ?></div>
 		<table class="cart-table">
@@ -194,40 +184,41 @@ var discountErrors = new Object();
 			<?php endforeach ?>
 			</tbody>
 			</table>
+</div>
+<?=$this->form->end(); ?>
 
-		</div>
-		<?=$this->form->end(); ?>
+<div class="clear"></div>
 
-		<div class="clear"></div>
+<div class="cart-code-buttons">
+	<?php if(!empty($credit)): ?>
+	<strong>Add <a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a></strong> /
+	<?php endif ?>
+	<span id="promocode_tooltip" original-title="Promo codes cannot be combined and can be applied once to an order per member." class="cart-tooltip">
+	<img src="/img/tooltip_icon.png">
+	</span>
+	
+	<strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
+</div>
 
-		<div class="grid_16" style="width:935px; padding-top:30px;">
-		<div class="cart-codes">
-				<div class="cart-code-buttons">
-				     <?php if(!empty($credit)): ?>
-				    	<strong>Add <a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a></strong> /
-				    <?php endif ?>
-			        <span id="promocode_tooltip" original-title="Promo codes cannot be combined and can be applied once to an order per member." class="cart-tooltip">
-			        	<img src="/img/tooltip_icon.png">
-			        </span>
-			        
-				    <strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
-				</div>
-				<div style="clear:both"></div>
-				<div id="promos_and_credit">
-				    <div id="promo" style="display:none">
-				    	<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo, 'promocode_disable' => $promocode_disable)); ?>
-				    </div>
-				    <div id="cred" style="display:none; text-align:left !important">
-				    	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
-				    </div>
-				</div>
-			</div>
-			<div class="cart-subtotal-content">
-				<div class="subtotal" >
-				   <span style="float:left;">Subtotal:</span>
-				   <span style="float:right" id="subtotal">$<?=number_format($subTotal,2)?></span>
-				</div>
-				<?php if (!empty($cartPromo['saved_amount']) && ($cartPromo['type'] != 'free_shipping') ):?>
+<div style="clear:both"></div>
+
+<div id="promos_and_credit">
+	<div id="promo" style="display:none">
+	<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo, 'promocode_disable' => $promocode_disable)); ?>
+	</div>
+	
+	<div id="cred" style="display:none; text-align:left !important">
+	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
+	</div>
+</div>
+			
+<div class="cart-subtotal-content">
+	<div class="subtotal" >
+	<span style="float:left;">Subtotal:</span>
+	<span style="float:right" id="subtotal">$<?=number_format($subTotal,2)?></span>
+</div>
+
+<?php if (!empty($cartPromo['saved_amount']) && ($cartPromo['type'] != 'free_shipping') ):?>
 				<div style="clear:both"></div>
 				<div class="subtotal">
     			    	<span style="float: left;">Discount
@@ -255,7 +246,7 @@ var discountErrors = new Object();
     			</div>
    				<?php endif ?>
 				<div style="clear:both"></div>
-				<div>
+			
 				<div class="subtotal">
 					<?php if (!empty($shipping)):?>
 						<span id="shipping_tooltip" class="cart-tooltip" original-title="Shipping charges may vary depending on item type.">
@@ -267,7 +258,7 @@ var discountErrors = new Object();
 				    	<span style="float:right">$<?=number_format(abs($shipping),2)?></span>
 					<?php endif ?>
 				</div>
-				</div>
+				
 				<?php if (!empty($shipping_discount)):?>
 				<div style="clear:both"></div>
 				<div class="subtotal">
@@ -282,14 +273,14 @@ var discountErrors = new Object();
     			</div>
    				<?php endif ?>
 				<div style="clear:both"></div>
-				<div>
+		
 				<div class="subtotal">
 				    <span id="tax_tooltip" class="cart-tooltip" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary"><img src="/img/tooltip_icon.png">
 </span>
 					<span id="estimated_tax" style="float:left;">Sales Tax:</span>
 				    <span style="float:right">$0.00</span>
 				</div>
-				</div>
+		
 
 				<div style="clear:both" class="subtotal"><hr /></div>
 				<div>
@@ -303,13 +294,10 @@ var discountErrors = new Object();
 				    <span class="cart-order-total">Order Total:</span>
 				    	<span id="ordertotal">$<?=number_format($total,2)?> </span>
 				    </div>
-				</div>
-			</div>
-		</div>
 
 <div class="cart-button fr cart-nav-buttons">
 		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
-		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
+		      <?=$this->html->link('Checkout', 'Orders::shipping', array('data-role' => 'button', 'class' => 'button', 'style'=>'float:left')); ?>
 		      <div class="clear"></div>
 
 <?=$this->form->end(); ?>
@@ -317,7 +305,6 @@ var discountErrors = new Object();
 </div>
 
 <div class="clear"></div>
-<div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
 				<?php
 				if($missChristmasCount>0&&$notmissChristmasCount>0){
 				?>
@@ -340,7 +327,6 @@ var discountErrors = new Object();
 				}
 				?>
 				
-</div>
 
 <div id="remove_form" style="display:none">
 	<?=$this->form->create(null ,array('id'=>'removeForm')); ?>
@@ -350,17 +336,19 @@ var discountErrors = new Object();
 
 <div class="clear"></div>
 <?php else: ?>
-	<div class="grid_16 cart-empty">
-		<h1>
-			<span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span>
-			<a href="/sales" title="Continue Shopping">Continue Shopping</a/></h1>
-	</div>
+<div class="holiday_message">
+		<h3 style="text-align:center; font-size:16px;">Your shopping cart is empty 
+			<a href="/sales">Continue Shopping</a/>
+		</h3>
+</div>
 <?php endif ?>
-</div>
-</div>
 
-<div id="modal" style="background:#fff!important; z-index:9999999999!important;">
-</div>
+
+<p></p>
+<?php echo $this->view()->render(array('element' => 'mobile_aboutUsNav')); ?>
+<?php echo $this->view()->render(array('element' => 'mobile_helpNav')); ?>
+<?php echo $this->view()->render(array('element' => 'mobile_headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
+
 
 <script type="text/javascript" charset="utf-8">
 

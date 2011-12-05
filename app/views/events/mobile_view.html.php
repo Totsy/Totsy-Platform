@@ -117,11 +117,6 @@
 				?>
 				
 </div>
-
-
-	</div>
-</div>
-</div>
 <script type="text/javascript">
 $(function () {
 	var saleStart = new Date();
@@ -166,3 +161,7 @@ cto_params["i<?=$iCounter;?>"] = "<?php echo (string) $item->_id; ?>";
 <?php endforeach ?>
 <?php endif ?>
 </script>
+
+<?php echo $this->view()->render(array('element' => 'mobile_aboutUsNav')); ?>
+<?php echo $this->view()->render(array('element' => 'mobile_helpNav')); ?>
+<?php echo $this->view()->render(array('element' => 'mobile_headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>

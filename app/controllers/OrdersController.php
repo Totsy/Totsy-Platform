@@ -303,6 +303,10 @@ class OrdersController extends BaseController {
 			}
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_shipping';
+		}
 		return compact('address','addresses_ddwn','shipDate','cartEmpty','error','selected','cartExpirationDate','missChristmasCount','notmissChristmasCount');
 	}
 	
@@ -427,6 +431,10 @@ class OrdersController extends BaseController {
 		#In car of credit card error redirect to the payment page
 		if (Session::check('cc_error')) {
 			$this->redirect(array('Orders::payment'));
+		}
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_review';
 		}
 		return $vars + compact('cartEmpty','order','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable','missChristmasCount','notmissChristmasCount');
 	}
@@ -639,6 +647,10 @@ class OrdersController extends BaseController {
 			$payment->errors( $payment->errors() + array( 'cc_error' => Session::read('cc_error')));
 			Session::delete('cc_error');
 			Session::delete('billing');
+		}
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_payment';
 		}
 		return compact('address','addresses_ddwn','selected','cartEmpty','payment','shipping','shipDate','cartExpirationDate','missChristmasCount','notmissChristmasCount');
 	}

@@ -15,12 +15,17 @@
     <meta name="description"
           content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
 	<meta name="viewport" content="width=device-width,user-scalable=no" />
-	<?php echo $this->scripts(); ?>
 	
 	<link rel="stylesheet" href="/totsyMobile/themes/totsy.css">
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile.structure-1.0rc2.min.css" /> 
-	<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+
+	<script src="https://www.google.com/jsapi"></script>
+	<script> google.load("jquery", "1.6.1", {uncompressed:false});</script>
+	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
+	<!-- end jQuery / jQuery UI -->
 	<script src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
+	<?php echo $this->html->script('jquery.countdown.min.js?v=007'); ?>
+	<?php echo $this->scripts(); ?>
 </head>
 <body>
 <?php if (!empty($userInfo)){ ?>
@@ -64,17 +69,6 @@ box-shadow:0px 0px 4px 0px #666;">
 	<?php echo $this->content(); ?>
 	</div>
 	<div class="clear"></div>
-	<?php if (!empty($userInfo)){ ?>
-	<div class="footer">
-		<a href="#" onclick="window.location.href='/pages/aboutus';return false;">About</a>
-		<span class="splitter">/</span>
-		<a href="#" onclick="window.location.href='/pages/privacy';return false;">Privacy</a>
-		<span class="splitter">/</span>
-		<a href="#" onclick="window.location.href='/pages/terms';return false;">Terms</a>
-		<span class="splitter">/</span>
-		<a href="#" onclick="window.location.href='/pages/contact';return false;">Support</a>
-	</div>
-	<?php } ?>
 
 	<p class="legal">&copy;2011 Totsy, Inc. All rights reserved.</p></div>
 <script>
