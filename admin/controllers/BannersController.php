@@ -12,7 +12,7 @@ use lithium\storage\Session;
 use MongoDate;
 use MongoId;
 
-class BannersController extends \lithium\action\Controller {
+class BannersController extends BaseController {
 
 	public function index() {
 		$banners = Banner::all();
