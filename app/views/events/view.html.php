@@ -41,6 +41,7 @@
 						<?php echo $event->blurb ?>
 					<?php endif ?>
 				
+			<?php if (!empty($items)){ ?>
 					<?php
 					if($missChristmasCount>0){
 					?>
@@ -63,6 +64,7 @@
 					<?php
 					}
 					?>
+				<?php }	?>
 
 
 					</div>
