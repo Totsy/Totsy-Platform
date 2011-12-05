@@ -19,6 +19,9 @@
 	<hr />
 	<p>Standard delivery orders are shipped via USPS Priority Mail. Express delivery orders are shipped via UPS.</p>
 
+<p></p>
 <?php echo $this->view()->render(array('element' => 'mobile_aboutUsNav')); ?>
 <?php echo $this->view()->render(array('element' => 'mobile_helpNav')); ?>
+<?php if (!empty($userInfo)){ ?>
 <?php echo $this->view()->render(array('element' => 'mobile_headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
+<?php } ?>

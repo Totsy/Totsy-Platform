@@ -28,6 +28,7 @@
 	<div data-role="content">
 	<?php echo $this->content(); ?>
 	</div>
+	<?php if (!empty($userInfo)){ ?>
 	<div class="footer">
 		<a href="#" onclick="window.location.href='/pages/aboutus';return false;">About</a>
 		<span class="splitter">/</span>
@@ -37,9 +38,9 @@
 		<span class="splitter">/</span>
 		<a href="#" onclick="window.location.href='/pages/contact';return false;">Support</a>
 	</div>
+	<?php } ?>
+
 	<p class="legal">&copy;2011 Totsy, Inc. All rights reserved.</p>
 </div>
-	<!-- Affiliate Pixel -->
-	<?php echo $pixel; ?>	
 </body>
 </html>

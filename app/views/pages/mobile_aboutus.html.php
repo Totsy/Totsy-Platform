@@ -37,8 +37,9 @@
 	<p>
 		Totsy plants one tree in honor of your child when you make your first purchase. And, every time you shop with us - we’ll keep it watered for you!  Who says shopping can't save the world?
 	</p>
-
+<p></p>
 <?php echo $this->view()->render(array('element' => 'mobile_aboutUsNav')); ?>
 <?php echo $this->view()->render(array('element' => 'mobile_helpNav')); ?>
+<?php if (!empty($userInfo)){ ?>
 <?php echo $this->view()->render(array('element' => 'mobile_headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
-
+<?php } ?>
