@@ -9,7 +9,7 @@
 					?>
 					<strong>Name:</strong> <?=$userInfo['firstname'].' '.$userInfo['lastname'] ?><br />
 					<?php else: ?>
-					    Totsy Member
+					    Totsy Member<br />
 					<?php endif;?>
 					<strong>Email:</strong> <?=$userInfo['email'];?></p>
 				<p><a href="#" onclick="window.location.href='/account/info';return false;">Edit Information</a></p>
