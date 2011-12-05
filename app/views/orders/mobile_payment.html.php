@@ -106,24 +106,21 @@ var paymentForm = new Object();
 
 </script>
 <?php  if(empty($cartEmpty)): ?>
-
-<div style="margin:10px;">
-<div class="grid_11 cart-header-left">
-	<div style="float:left">
-		<h2 class="page-title gray">
-			<span class="cart-step-status gray" style="font-weight:bold">Payment</span>
-			<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-			<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-			<span class="cart-step-status"><img src="/img/cart_steps3.png"></span>
-			<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
-		</h2>
-		<?php if (!empty($error)) { ?>
+<h2 class="page-title gray">
+		<span class="cart-step-status gray" style="font-weight:bold">Payment</span>
+	<div style="float:right;">
+		<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
+		<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
+		<span class="cart-step-status"><img src="/img/cart_steps3.png"></span>
+		<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
+	</div>
+</h2>
+<?php if (!empty($error)) { ?>
 			<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /></div>
 		<?php } ?>
-	</div>
-</div>
+<hr />
 <div class="grid_5 cart-header-right">
-		<?=$this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
+		<?=$this->view()->render( array('element' => 'mobile_shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
 </div>
 
 <?=$this->form->create($payment, array (
@@ -131,17 +128,14 @@ var paymentForm = new Object();
 
 <div class="clear"></div>
 
-<div class="grid_16" style=" width:935px !important">
-				<hr /><br />
-				<h3>Pay with Credit Card :</h3>
-				<hr />
+<hr />
 				<span class="cart-select">
 				<?=$this->form->error('cc_error'); ?>
 				<?=$this->form->hidden('opt_submitted', array('class'=>'inputbox', 'id' => 'opt_submitted')); ?>
 				<?=$this->form->label('card_type', 'Card Type', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->select('card_type', array('visa' => 'Visa', 'mc' => 'MasterCard','amex' => 'American Express'), array('id' => 'card_type', 'class'=>'inputbox')); ?>
 				</span>
-				<div style="clear:both; padding-top:5px !important"></div>
+				
 				<?=$this->form->label('card_number', 'Card Number', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('card_number', array('class'=>'validate[required] inputbox','id' => 'card_number')); ?>
 				<?=$this->form->hidden('card_valid', array('class'=>'inputbox', 'id' => 'card_valid')); ?>
@@ -150,7 +144,7 @@ var paymentForm = new Object();
 					Wrong Credit Card Number
 				</div>
 				<div style="clear:both"></div>
-				<span style="padding-left:2px">
+				
 				<?=$this->form->label('card_month', 'Expiration Date', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->select('card_month', array(
 										'' => 'Month',
@@ -167,13 +161,13 @@ var paymentForm = new Object();
 										11 => 'November',
 										12 => 'December'
 				), array('id'=>"card_month", 'class'=>'validate[required] inputbox')); ?>
-				</span>
-				<span style="padding-left:2px">
+				
+			
 				<?php
 					$now = intval(date('Y'));
 					$years = array_combine(range($now, $now + 15), range($now, $now + 15)); ?>
 				<?=$this->form->select('card_year', array('' => 'Year') + $years, array('id' => "card_year", 'class'=>'validate[required inputbox')); ?>
-				<div style="clear:both; padding-top:5px !important"></div>
+			
 				<?=$this->form->label('card_code', 'Security Code', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('card_code', array('id' => 'card_code','class'=>'validate[required] inputbox', 'maxlength' => '4', 'size' => '4')); ?>
 				<?php
@@ -181,18 +175,16 @@ var paymentForm = new Object();
 					$checked = false;
 				}
 				?>
-				</span>
-				<br />
-				<br />
-				<h3>Billing Address</h3>
+				<h3>Billing Address <br /><span style="font-size:12px;"><?=$this->form->checkbox("opt_shipping", array('id' => 'opt_shipping', 'onclick' => 'replace_address();', 'class' => 'custom' , 'data-role' => 'none', "checked" => $checked)) ?>
+				<label for="opt_shipping"> My Shipping is the same as Billing</label></span></h3>
 				<hr />
 				<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
 					Choose your address :<?=$this->form->select('addresses', $addresses_ddwn, array("id" => 'addresses', 'value' => $selected));?>
 					<div style="clear:both"></div>
-				<hr />
+	
 				<?php endif ?>
-				Use my shipping address as my billing address: <?=$this->form->checkbox("opt_shipping", array('id' => 'opt_shipping', 'onclick' => 'replace_address()' , "checked" => $checked)) ?>
-				<br />
+				
+		
 				<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?=$this->form->text('firstname', array('class' => 'validate[required] inputbox', 'id'=>'firstname')); ?>
 				<?=$this->form->error('firstname'); ?>
@@ -225,23 +217,24 @@ var paymentForm = new Object();
 				<?=$this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
 				<div style="clear:both"></div>
 				<div>
-					Save this address <?=$this->form->checkbox("opt_save", array('id' => 'opt_save')) ?>
+					<?=$this->form->checkbox("opt_save", array('id' => 'opt_save', 'data-role' => 'none')) ?> <label for="opt_save"><span style="font-size:12px;">Save this address</span></label>
 				</div>
 				<?=$this->form->hidden('opt_description', array('id' => 'opt_description' , 'value' => 'billing')); ?>
 				<?=$this->form->hidden('opt_shipping_select', array('id' => 'opt_shipping_select')); ?>
 				</div>
 
 			<div class="grid_16">
-				<?=$this->form->submit('CONTINUE', array('class' => 'button fr', 'style'=>'margin-right:10px;')); ?>
+				<a href="javascript:document.getElementById('paymentForm').submit();" data-role="button">Continue</a>
 			</div>
+<?=$this->form->end();?>
 
-</div>
 <?php else: ?>
 	<div class="grid_16 cart-empty">
 		<h1>
 			<span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span>
 			<a href="/sales" title="Continue Shopping">Continue Shopping</a/></h1>
 	</div>
+	
 <?php endif ?>
 <?=$this->form->end();?>
 
@@ -251,20 +244,23 @@ var paymentForm = new Object();
 				<?php
 				if($missChristmasCount>0&&$notmissChristmasCount>0){
 				?>
-				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. 
+				<div class="holiday_message" style="text-align:center;">
+				<p>* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. <p/></div>
 				
 				<?php
 				}
 				elseif($missChristmasCount>0){
 				?>
-				* Your items will arrive safely, but after 12/25.
+				<div class="holiday_message" style="text-align:center;">
+				<p>* Your items will arrive safely, but after 12/25.<p/></div>
 				
 				<?php
 				}
 				else{
 				?>
 				
-				* Our delivery guarantee does not apply when transportation networks are affected by weather.
+				<div class="holiday_message" style="text-align:center;">
+				<p>* Our delivery guarantee does not apply when transportation networks are affected by weather.<p/></div>
 				
 				<?php
 				}
@@ -378,4 +374,6 @@ $(document).ready(function(){
 		$("#selectForm").submit();
 	});
 });
+
+$("[type='submit']").button();
 </script>

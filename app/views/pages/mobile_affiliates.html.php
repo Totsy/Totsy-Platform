@@ -1,4 +1,4 @@
-<?php $this->title("About Us"); ?>
+<?php $this->title("Affiliate Program"); ?>
 
 	<h2>Affiliate Program</h2>
             <hr />

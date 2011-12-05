@@ -85,25 +85,24 @@ var addressForm = new Object();
    
 </script>
 <?php  if(empty($cartEmpty)): ?>
-<div class="cart-content" style="height:700px">
-	<div class="grid_8 cart-header-left">
-		<div style="float:left">
-			<h2 class="page-title gray">
-				<span class="cart-step-status gray" style="font-weight:bold">Shipping Information</span>
-				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps2.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
-			</h2>
-			<?php if (!empty($error)) { ?>
+
+	
+<h2 class="page-title gray">
+		<span class="cart-step-status gray" style="font-weight:bold">Shipping Information</span>
+	<div style="float:right;">
+		<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
+		<span class="cart-step-status"><img src="/img/cart_steps2.png"></span>
+		<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
+		<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
+	</div>
+</h2>
+<?php if (!empty($error)) { ?>
 			<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2></div>
 			<?php } ?>
-		</div>
-	</div>
-	
-	<div class="grid_8 cart-header-right">
-	<?=$this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
-	</div>	
+<hr />
+
+
+<?=$this->view()->render( array('element' => 'mobile_shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
 	
 <?=$this->form->create($address, array('id' => 'addressForm')); ?>	
 			
@@ -136,12 +135,9 @@ var addressForm = new Object();
 		<?=$this->form->text('city', array('class' => 'validate[required] inputbox', 'id'=>'city')); ?>
 		<?=$this->form->error('city'); ?>
 		<div style="clear:both"></div>
-		<span style="padding-left:2px">
 		<?=$this->form->label('state', 'State <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'class' => 'validate[required] inputbox','id'=>'state', 'style'=>'width:auto !important')); ?>
 		<?=$this->form->error('state'); ?>
-		</span>
-		<div style="clear:both; padding-top:5px;"></div>
 		<span class="cart-select">
 		<?=$this->form->label('zip', 'Zip Code<span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?=$this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
@@ -149,11 +145,12 @@ var addressForm = new Object();
 		</span>
 		</div>
 		<div style="clear:both"></div>
+		<strong style="font-size:12px;">
+		<?=$this->form->checkbox("opt_save", array('id' => 'opt_save', 'data-role' => 'none')) ?>
+	Save this address
+		</strong>
 		<div>
-			Save this address <?=$this->form->checkbox("opt_save", array('id' => 'opt_save')) ?>
-		</div>
-		<div>
-				<?=$this->form->submit('Continue', array('class' => 'button fr', 'style'=>'margin-right:10px;')); ?>
+				<a href="javascript:document.getElementById('addressForm').submit();" data-role="button">Continue</a>
 		</div>	
 
 
@@ -177,20 +174,23 @@ var addressForm = new Object();
 				<?php
 				if($missChristmasCount>0&&$notmissChristmasCount>0){
 				?>
-				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. 
+				<div class="holiday_message" style="text-align:center;">
+				<p>* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. <p/></div>
 				
 				<?php
 				}
 				elseif($missChristmasCount>0){
 				?>
-				* Your items will arrives safely, but after 12/25.
+				<div class="holiday_message" style="text-align:center;">
+				<p>* Your items will arrives safely, but after 12/25.<p/></div>
 				
 				<?php
 				}
 				else{
 				?>
 				
-				* Our delivery guarantee does not apply when transportation networks are affected by weather.
+				<div class="holiday_message" style="text-align:center;">
+				<p>* Our delivery guarantee does not apply when transportation networks are affected by weather.<p/></div>
 				
 				<?php
 				}
@@ -220,6 +220,7 @@ $(document).ready(function(){
 		$("#selectForm").submit();
 	});
 });
+$("[type='submit']").button();
 </script>
 <?php if ($cartEmpty == true): ?>
 <script>

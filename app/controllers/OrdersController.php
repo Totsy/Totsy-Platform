@@ -69,6 +69,10 @@ class OrdersController extends BaseController {
 				}
 			}
 		}
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_index';
+		}	
 		return (compact('orders', 'shipDate', 'trackingNumbers', 'lifeTimeSavings'));
 	}
 
@@ -82,6 +86,10 @@ class OrdersController extends BaseController {
 	 * @return mixed
 	 */
 	public function view($order_id) {
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_view';
+		}	
 		$user = Session::read('userLogin');
 		$order = Order::find('first', array(
 			'conditions' => array(
@@ -175,7 +183,6 @@ class OrdersController extends BaseController {
 				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
 			}
 		}
-			
 		return compact(
 			'order',
 			'orderEvents',
