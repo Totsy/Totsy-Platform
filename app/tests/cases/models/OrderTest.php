@@ -165,13 +165,11 @@ class OrderTest extends \lithium\test\Unit {
 		$result = OrderMock::recordOrder(
 			$vars,
 			$items,
+			$this->_card(true),
 			$order,
 			$avatax,
 			$authKey,
-			$items,
-			1,
-			$this->_card(true),
-			$address
+			$items
 		);
 		$this->assertTrue($result);
 
@@ -228,13 +226,11 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::recordOrder(
 			$vars,
 			$items,
+			$this->_card(true),
 			$order,
 			$avatax,
 			$authKey,
-			$items,
-			1,
-			$this->_card(true),
-			$address
+			$items
 		);
 
 		$expected = 1;
@@ -244,13 +240,11 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::recordOrder(
 			$vars,
 			$items,
+			$this->_card(true),
 			$order,
 			$avatax,
 			$authKey,
-			$items,
-			1,
-			$this->_card(true),
-			$address
+			$items
 		);
 
 		$expected = 2;
@@ -306,13 +300,11 @@ class OrderTest extends \lithium\test\Unit {
 		$result = OrderMock::recordOrder(
 			$vars,
 			$items,
+			$this->_card(true),
 			$order,
 			$avatax,
 			$authKey,
-			$items,
-			1,
-			$this->_card(true),
-			$address
+			$items
 		);
 		$this->assertTrue($result);
 
@@ -374,13 +366,11 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::recordOrder(
 			$vars,
 			$items,
+			$this->_card(true),
 			$order,
 			$avatax,
 			$authKey,
-			$items,
-			1,
-			$this->_card(true),
-			$address
+			$items
 		);
 
 		$expected = 0;
@@ -448,13 +438,11 @@ class OrderTest extends \lithium\test\Unit {
 		$result = OrderMock::recordOrder(
 			$vars,
 			$items,
+			$this->_card(true),
 			$order,
 			$avatax,
 			$authKey,
-			$items,
-			1,
-			$this->_card(true),
-			$address
+			$items
 		);
 		$this->assertTrue($result);
 
@@ -524,14 +512,11 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::recordOrder(
 			$vars,
 			$items,
+			$this->_card(true),
 			$order,
 			$avatax,
 			$authKey,
-			$auth,
-			$items,
-			1,
-			$this->_card(true),
-			$address
+			$items
 		);
 
 		$expected = 3.45;
