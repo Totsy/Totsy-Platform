@@ -6,6 +6,7 @@ use lithium\data\Connections;
 use lithium\net\http\Media;
 use admin\models\Event;
 use admin\models\Item;
+use lithium\analysis\Logger;
 use MongoDate;
 use MongoCode;
 use Imagine\Gd\Imagine;
@@ -40,7 +41,6 @@ class File extends \lithium\data\Model {
 	public static function write($data, $meta = array()) {
 		/* Normalize $data */
 		$close = false;
-
 
 		if (is_string($data)) {
 			/* Only handles we open inside here are also closed here. */

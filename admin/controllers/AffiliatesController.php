@@ -9,7 +9,7 @@ use MongoId;
 use MongoRegex;
 use MongoCollection;
 
-class AffiliatesController extends \admin\controllers\BaseController {
+class AffiliatesController extends BaseController {
 
 	public $sitePages = array(
 	    '/a/' => 'landing page',
@@ -95,7 +95,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
 		}
 
 		if ($data) {
-			
+
             $info['active'] = (($data['active'] == '1' || $data['active'] == 'on')) ? true : false;
             $info['name'] = $data['affiliate_name'];
 
