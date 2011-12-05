@@ -7,12 +7,12 @@
 						if (!empty($event->images->event_image)) {
 							echo $this->html->image("/image/{$event->images->event_image}.jpg", array(
 								'title' => $event->name,
-								'width' => "308",
+								'width' => "278",
 							));
 						} else {
 							echo $this->html->image('/img/no-image-small.jpeg', array(
 									'title' => "No Image Available",
-									'width' => "308",
+									'width' => "278",
 									));
 						}
 					?>

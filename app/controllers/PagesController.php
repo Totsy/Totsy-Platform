@@ -17,12 +17,6 @@ class PagesController extends BaseController {
 	}
 
 	public function view() {
-		if($this->request->is('mobile')){
-		 	$this->_render['layout'] = 'mobile_login';
-		 	$this->_render['template'] = 'mobile_login';
-		} else {
-			//$this->_render['layout'] = 'login';
-		}
 		$path = func_get_args();
 		if (empty($path)) {
 			$path = array('home');
@@ -44,8 +38,12 @@ class PagesController extends BaseController {
 		    }
 
 		}
-		
-		$this->render(array('template' => $path[0]));
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->render(array('template' => 'mobile_'.$path[0]));
+		} else {
+			$this->render(array('template' => $path[0]));
+		}
 		
 	}
 

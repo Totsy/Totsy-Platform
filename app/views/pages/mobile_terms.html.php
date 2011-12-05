@@ -1,18 +1,6 @@
 <?php $this->title("Terms Of Use"); ?>
 
-<div class="grid_16">
-	<h2 class="page-title gray">About Us</h2>
-	<hr />
-</div>
-
-<div class="grid_4">
-	<?php echo $this->view()->render(array('element' => 'aboutUsNav')); ?>
-	<?php echo $this->view()->render(array('element' => 'helpNav')); ?>
-</div>
-
-<div class="grid_11 omega roundy grey_inside b_side">
-
-	<h2 class="page-title gray">Terms Of Use</h2>
+	<h2>Terms Of Use</h2>
 	<hr />
 	<p>By clicking on the "I AGREE" button below, you (referred in this document as the "Member" or "you", or "You") agree to be irrevocably bound with TOTSY by the following terms and conditions of sale and service (the "Terms of Service"), which are incorporated in each and every sale transaction made on the website Totsy.com, a proprietary domain name of My Baby VIP LLC (hereinafter referred to as "TOTSY"), and govern all aspects of the relationship between TOTSY and its Members.</p>
 
@@ -95,8 +83,8 @@
 	<p>The Member acknowledges and agrees that damages will not be an adequate remedy in the event of a breach of any of the Member's obligations under these Terms of Service. The Member therefore agrees that TOTSY shall be entitled (without limitation of any other rights or remedies otherwise available to TOTSY and without the necessity of posting a bond) to obtain an injunction from any court of competent jurisdiction prohibiting the continuance or recurrence of any breach of these Terms of Service. The Member further agrees that service upon the Member in any such action or proceeding may be made by first class mail, certified or registered, to the Member's address as last appearing on the records of TOTSY.</p>
  
  <p style="text-align:center;"><em>(valid as of September 1, 2009)</em></p>
-	<br />
 
-</div>
-</div>
-<div class="clear"></div>
+
+<?php echo $this->view()->render(array('element' => 'mobile_aboutUsNav')); ?>
+<?php echo $this->view()->render(array('element' => 'mobile_helpNav')); ?>
+<?php echo $this->view()->render(array('element' => 'mobile_headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>

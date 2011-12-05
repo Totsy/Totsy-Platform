@@ -1,6 +1,6 @@
-
-		
-			<?php if (!(empty($userInfo))) { ?>
+<h2>My Account</h2>
+<hr />
+		<?php if (!(empty($userInfo))) { ?>
 			<ul data-role="listview" data-inset="true">
 			<li><a href="#" onclick="window.location.href='/account';return false;">Manage Account</a></li>
 		
