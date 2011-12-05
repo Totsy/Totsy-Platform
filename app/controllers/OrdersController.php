@@ -123,6 +123,10 @@ class OrdersController extends BaseController {
 		$orderEvents = $this->orderEvents($order);
 		//Check if all items from one event are closed
 		foreach($itemsByEvent as $key => $items_e) {
+			$url = Event::find('first', array(
+				'conditions' => array('_id'=> new MongoId($key)),
+				'fields' => array('url' => true)
+			));
 			foreach($items_e as $key_b => $item) {
 				if(empty($item['cancel'])) {
 					$openEvent[$item['event_id']] = true;
@@ -137,7 +141,6 @@ class OrdersController extends BaseController {
 										'qty' => $item['quantity'],
 										'title' => $itemRecord['description'],
 										'price' => $itemRecord['sale_retail']*100,
-										/* @todo QA, $url is undefined, accessing it will fatal. */
 									 	'url' => 'http://'.$_SERVER['HTTP_HOST'].'/sale/'.$url->url.'/'.$itemRecord['url']
 					);
 					unset($itemRecord);
@@ -433,6 +436,7 @@ class OrdersController extends BaseController {
 		$total = $vars['postDiscountTotal'];
 		#Read Credit Card Informations
 		$creditCard = $orderClass::creditCardDecrypt((string)$user['_id']);
+
 		#Disable Promocode Uses if Services
 		if (!empty($services['freeshipping']['enable']) || !empty($services['tenOffFitfy'])) {
 			$promocode_disable = true;

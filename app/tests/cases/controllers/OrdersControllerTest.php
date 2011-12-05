@@ -14,6 +14,7 @@ use app\models\Item;
 use app\models\Address;
 use app\models\Cart;
 use app\models\OrderShipped;
+use app\models\Order;
 use MongoId;
 use MongoDate;
 use lithium\storage\Session;
