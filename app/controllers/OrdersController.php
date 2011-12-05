@@ -332,6 +332,10 @@ class OrdersController extends BaseController {
 			'missChristmasCount',
 			'notmissChristmasCount'
 		);
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_shipping';
+		}
 	}
 
 	/**
@@ -463,10 +467,46 @@ class OrdersController extends BaseController {
 		if (Session::check('cc_error')) {
 			return $this->redirect(array('Orders::payment'));
 		}
+
 		#Check if Services
 		$serviceAvailable = false;
 		if(Session::check('service_available')) {
 			$serviceAvailable = Session::read('service_available');
+
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_review';
+		}
+		return $vars + compact('cartEmpty','order','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable','missChristmasCount','notmissChristmasCount');
+	}
+
+	/**
+	 * Group all the items in an order by their corresponding event.
+	 *
+	 * The $order object is assumed to have originated from one of model types; Order or Cart.
+	 * Irrespective of the type both will return an associative array of event items.
+	 *
+	 * @param object $order
+	 * @return array $eventItems
+	 */
+	protected function itemGroupByEvent($object) {
+		$eventItems = null;
+		if ($object) {
+			$model = $object->model();
+			if ($model == 'app\models\Order') {
+				$orderItems = $object->items->data();
+				foreach ($orderItems as $item) {
+					$eventItems[$item['event_id']][] = $item;
+				}
+			}
+			if ($model == 'app\models\Cart') {
+				$orderItems = $object->data();
+				foreach ($orderItems as $item) {
+					$event = $item['event'][0];
+					unset($item['event']);
+					$eventItems[$event][] = $item;
+				}
+			}
 		}
 		return $vars + compact(
 			'cartEmpty',
@@ -644,6 +684,10 @@ class OrdersController extends BaseController {
 			$payment->errors( $payment->errors() + array( 'cc_error' => Session::read('cc_error')));
 			Session::delete('cc_error');
 			Session::delete('billing');
+		}
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_payment';
 		}
 		return compact('address','addresses_ddwn','selected','cartEmpty','payment','shipping','shipDate','cartExpirationDate','missChristmasCount','notmissChristmasCount');
 	}
