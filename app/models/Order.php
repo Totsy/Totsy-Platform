@@ -5,7 +5,6 @@ namespace app\models;
 use MongoId;
 use MongoDate;
 use lithium\storage\Session;
-use li3_payments\extensions\Payments;
 use li3_payments\extensions\payments\exceptions\TransactionException;
 use app\extensions\Mailer;
 use app\models\User;
@@ -13,6 +12,11 @@ use app\models\Base;
 use app\models\FeatureToggles;
 
 class Order extends Base {
+
+	protected static $_classes = array(
+		'tax' => 'app\extensions\AvaTax',
+		'payments' => 'li3_payments\extensions\Payments'
+	);
 
 	protected $_dates = array(
 		'now' => 0
@@ -44,10 +48,11 @@ class Order extends Base {
 	 * @return object
 	 */
 	public static function process($data, $cart, $vars, $avatax) {
-		$order = Order::create(array('_id' => new MongoId()));
+		$payments = static::$_classes['payments'];
+		$order = static::create(array('_id' => new MongoId()));
 		#Create Payment
-		$card = Payments::create('default', 'creditCard', $vars['creditCard'] + array(
-			'billing' => Payments::create('default', 'address', array(
+		$card = $payments::create('default', 'creditCard', $vars['creditCard'] + array(
+			'billing' => $payments::create('default', 'address', array(
 				'firstName' => $vars['billingAddr']['firstname'],
 				'lastName'  => $vars['billingAddr']['lastname'],
 				'address'   => trim($vars['billingAddr']['address'] . ' ' . $vars['billingAddr']['address2']),
@@ -70,12 +75,11 @@ class Order extends Base {
 			try {
 				#Process Payment
 				if ($vars['total'] > 0) {
-					$authKey = Payments::authorize('default', $vars['total'], $card);
+					$authKey = $payments::authorize('default', $vars['total'], $card);
 				} else {
 					$authKey = Base::randomString(8,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz');
 				}
-				$order = Order::recordOrder($vars, $cart, $card, $order, $avatax, $authKey, $items);
-				return $order;
+				return static::recordOrder($vars, $cart, $card, $order, $avatax, $authKey, $items);
 			} catch (TransactionException $e) {
 				Session::write('cc_error',$e->getMessage());
 			}
@@ -94,13 +98,22 @@ class Order extends Base {
 	 */
 	public static function recordOrder($vars, $cart, $card, $order, $avatax, $authKey, $items) {
 			#Get User Informations
+			$tax = static::$_classes['tax'];
+
 			$user = Session::read('userLogin');
 			$service = Session::read('services', array('name' => 'default'));
 			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 			#Save Credits Used
 			if ($vars['cartCredit']->credit_amount) {
 				User::applyCredit($user['_id'], $vars['cartCredit']->credit_amount);
-				Credit::add($vars['cartCredit'], $user['_id'], $vars['cartCredit']->credit_amount, "Used Credit");
+
+				Credit::add(
+					$vars['cartCredit'],
+					$user['_id'],
+					$vars['cartCredit']->credit_amount,
+					"Used Credit",
+					$order->order_id
+				);
 				Session::delete('credit');
 				$order->credit_used = abs($vars['cartCredit']->credit_amount);
 			}
@@ -143,7 +156,11 @@ class Order extends Base {
 			}
 			#Save Tax Infos
 			if($avatax === true){
-				AvaTax::postTax(compact('order','cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost') );
+				$tax::postTax(compact(
+					'order', 'cartByEvent',
+					'billingAddr',
+					'shippingAddr', 'shippingCost', 'overShippingCost'
+				));
 			}
 			#Shipping Method - By Default UPS
 			$shippingMethod = 'ups';
@@ -161,7 +178,7 @@ class Order extends Base {
 
 			$cart = Cart::active();
 			#Save Order Infos
-			
+
 			$shipDate = Cart::shipDate($cart);
 			if($shipDate=="On or before 12/23"){
 				$shipDateInsert = strtotime("2011-12-23".' +1 day');
@@ -172,8 +189,8 @@ class Order extends Base {
 			else{
 				$shipDateInsert = $shipDate;
 			}
-			
-			
+
+
 			$order->save(array(
 					'total' => $vars['total'],
 					'subTotal' => $vars['subTotal'],
@@ -212,7 +229,7 @@ class Order extends Base {
 				'shipDate' => Cart::shipDate($order)
 			);
 			#In Case Of First Order, Send an Email About 10$ Off Discount
-			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
+			if ($service && array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
 				Mailer::send('Welcome_10_Off', $user->email, $data);
 			}
 			Mailer::send('Order_Confirmation', $user->email, $data);

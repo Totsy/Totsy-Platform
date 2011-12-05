@@ -5,12 +5,10 @@ namespace admin\models;
 use MongoId;
 use MongoDate;
 use MongoRegex;
-use li3_payments\extensions\Payments;
 use li3_payments\extensions\payments\exceptions\TransactionException;
 use lithium\analysis\Logger;
 use admin\models\User;
 use admin\models\Item;
-use admin\extensions\AvaTax;
 use admin\models\Credit;
 
 /**
@@ -54,7 +52,14 @@ class Order extends Base {
 	const TAX_RATE = 0.08875;
 
 	const TAX_RATE_NYS = 0.04375;
+
+	protected static $_classes = array(
+		'tax' => 'admin\extensions\AvaTax',
+		'payments' => 'li3_payments\extensions\Payments'
+	);
+
 	protected $_meta = array('source' => 'orders');
+
 	protected $_nyczips = array(
 		'100',
 		'104',
@@ -77,6 +82,12 @@ class Order extends Base {
 		return new MongoDate(time() + static::_object()->_dates[$name]);
 	}
 
+	/**
+	 * Case insensitive lookup of an order by its ID.
+	 *
+	 * @param string $orderId
+	 * @return object
+	 */
 	public static function lookup($orderId) {
 		$orderId = new MongoRegex("/$orderId/i");
 		$result = static::find('first', array('conditions' => array(
@@ -92,12 +103,14 @@ class Order extends Base {
 	 * @return boolean
 	 */
 	public static function void($order) {
+		$payments = static::$_classes['payments'];
+
 		$collection = static::collection();
 		$orderId = new MongoId($order['_id']);
 		try {
 		    $error = null;
 		    if ($order['total'] != 0 && is_numeric($order['authKey'])){
-                $auth = Payments::void('default', $order['authKey']);
+                $auth = $payments::void('default', $order['authKey']);
 			} else {
 			    $auth = -1;
 			    $error = "Can't capture because total is zero.";
@@ -122,14 +135,27 @@ class Order extends Base {
 			);
 		}
 	}
+
+	/**
+	 * Processes an order.
+	 *
+	 * @fixme This could be refactored as a concrete record method. It
+	 *        currently is static for backwards compat. with documents
+	 *        retrieved via native methods.
+	 * @see OrdersController::update()
+	 * @param array The order to process. Required fields are 'authKey', 'total' and '_id'.
+	 * @return boolean
+	 */
 	public static function process($order) {
+		$payments = static::$_classes['payments'];
+
 		$collection = static::collection();
 		$orderId = new MongoId($order['_id']);
 
 		try {
 		    $error = null;
 		    if ($order['total'] != 0 && is_numeric($order['authKey'])) {
-                $auth = Payments::capture('default', $order['authKey'], floor($order['total']*100)/100);
+                $auth = $payments::capture('default', $order['authKey'], floor($order['total']*100)/100);
             } else {
                 $auth = -1;
                 $error = "Can't capture because total is zero.";
@@ -204,10 +230,12 @@ class Order extends Base {
 	 * clicking cancel order
 	 */
 	public static function cancel($order_id, $author, $comment, $credits_recorded = false, $test = false) {
+		$tax = static::$_classes['tax'];
+
 		$userCollection = User::collection();
 		//Get the actual datas of the order
 		$result = static::find('first', array('conditions' => array(
-			'_id' => new MongoId($order_id)
+			'_id' => $order_id instanceof MongoId ? $order_id : new MongoId($order_id)
 		)));
 		$order = $result->data();
 		if(strlen($order["user_id"]) > 10){
@@ -229,7 +257,8 @@ class Order extends Base {
 			    static::void($order);
 			}
 			//Push cancel status to Avalara
-			AvaTax::cancelTax($order['order_id']);
+			$tax::cancelTax($order['order_id']);
+
 			//Cancel all the items
 			$items = $order["items"];
 			$item_names = array();
@@ -352,7 +381,8 @@ class Order extends Base {
 	}
 
 	/**
-	* Save the data of the temporary order to the DB
+	* Save the data of the temporary order to the DB.
+	*
 	* @param object $selected_order
 	* @param array $items
 	* @param string $author
@@ -362,13 +392,23 @@ class Order extends Base {
 		$userCollection = User::collection();
 		$credits_recorded = false;
 		/************* PREPARING DATAS **************/
+		$selected_order += array(
+			'order_id' => null,
+			'total' => null,
+			'subTotal' => null,
+			'handling' => null,
+			'promo_discount' => null,
+			'promocode_disable' => null,
+			'comment' => null,
+			'initial_credit_used' => null
+		);
 		$datas_order_prices = array(
 			'total' => (float) $selected_order["total"],
 			'subTotal' => (float) $selected_order["subTotal"],
 			'handling' => (float) $selected_order["handling"],
 			'overSizeHandling' => (float) $selected_order["overSizeHandling"],
 			'handlingDiscount' => (float) $selected_order["handlingDiscount"],
-			'overSizeHandlingDiscount' => (float) $selected_order["overSizeHandlingDiscount"],		
+			'overSizeHandlingDiscount' => (float) $selected_order["overSizeHandlingDiscount"],
 			'promo_discount' => (float) $selected_order["promo_discount"],
 			'discount' => (float) $selected_order["discount"],
 			'promocode_disable' => $selected_order["promocode_disable"],
@@ -472,7 +512,8 @@ class Order extends Base {
 
 	/**
 	* Refresh the prices details and credits of the temporary order
-	* and return it to the view
+	* and return it to the view.
+	*
 	* @param object $selected_order
 	* @param array $items
 	*/
@@ -487,6 +528,7 @@ class Order extends Base {
 		}
 		//Get Actual Taxes
 		extract(static::recalculateTax($selected_order,$items));
+
 		if (is_object($tax)) {
             //Avatax::totsyCalculateTax($selected_order);
             //$tax = static::tax($selected_order,$items);
@@ -623,9 +665,10 @@ class Order extends Base {
 	 *
 	 * @param object $current_order
 	 * @param array $itms
-	 *
 	 */
 	protected static function recalculateTax ($current_order,$itms,$update=false){
+		$tax = static::$_classes['tax'];
+
 		$orderCollection = static::collection();
 		$order = $orderCollection->findOne(
 			array("_id" => new MongoId($current_order["id"])),
@@ -641,14 +684,13 @@ class Order extends Base {
 				$items[] = $itm;
 			}
 		}
-
 		if ($update === false){
-			$ordermodel = self;
-			return AvaTax::getTax(compact('order','items','ordermodel','current_order','itms'));
+			$ordermodel = __CLASS__;
+			return $tax::getTax(compact('order','items','ordermodel','current_order','itms'));
 		} else {
-			AvaTax::cancelTax($order['order_id']);
 			$admin = 1;
-			return AvaTax::commitTax(compact('order','items','admin'));
+			$tax::cancelTax($order['order_id']);
+			return (array) $tax::commitTax(compact('order','items','admin'));
 		}
 	}
 

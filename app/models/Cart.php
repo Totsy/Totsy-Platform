@@ -110,7 +110,11 @@ class Cart extends Base {
 	 * @todo Need documentation
 	 */
 	public static function dates($name) {
-	     return new MongoDate(time() + static::_object()->_dates[$name]);
+		$dates = static::_object()->_dates;
+
+		if (isset($dates[$name])) {
+			return new MongoDate(time() + $dates[$name]);
+		}
 	}
 
 	/**
@@ -366,7 +370,7 @@ class Cart extends Base {
 		}
 	}
 
-	public function cleanExpiredEventItems() {
+	public static function cleanExpiredEventItems() {
 		$actual_cart = Cart::active();
 		if (!empty($actual_cart)) {
 			$items = $actual_cart->data();
@@ -439,27 +443,27 @@ class Cart extends Base {
 			}
 			return $shipDate;
 		}
-		
+
 		//shows one of two static messages
 		$shipDate = null;
 		$shipDate = "On or before 12/23";
-		
+
 		$items = (!empty($cart->items)) ? $cart->items : $cart;
 
 		if($items){
 			foreach($items as $thisitem){
 				if($thisitem->miss_christmas){
-					$shipDate = "See delivery alert below";	
+					$shipDate = "See delivery alert below";
 				}
 				elseif($thisitem['miss_christmas']){
-					$shipDate = "See delivery alert below";	
-				
+					$shipDate = "See delivery alert below";
+
 				}
 			}
 		}
 		return $shipDate;
-		
-		
+
+
 	}
 
 	/**
