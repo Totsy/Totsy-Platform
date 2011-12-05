@@ -161,11 +161,10 @@ class OrderTest extends \lithium\test\Unit {
 		$avatax = array(
 			'tax' => 0
 		);
-
 		$result = OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(false),
+			$this->_card(),
 			$order,
 			$avatax,
 			$authKey,
@@ -226,7 +225,7 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(false),
+			$this->_card(),
 			$order,
 			$avatax,
 			$authKey,
@@ -240,7 +239,7 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(false),
+			$this->_card(),
 			$order,
 			$avatax,
 			$authKey,
@@ -300,7 +299,7 @@ class OrderTest extends \lithium\test\Unit {
 		$result = OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(false),
+			$this->_card(),
 			$order,
 			$avatax,
 			$authKey,
@@ -366,7 +365,7 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(false),
+			$this->_card(),
 			$order,
 			$avatax,
 			$authKey,
@@ -438,7 +437,7 @@ class OrderTest extends \lithium\test\Unit {
 		$result = OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(false),
+			$this->_card(),
 			$order,
 			$avatax,
 			$authKey,
@@ -512,7 +511,7 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(false),
+			$this->_card(),
 			$order,
 			$avatax,
 			$authKey,
@@ -554,7 +553,6 @@ class OrderTest extends \lithium\test\Unit {
 		$this->assertTrue($result);
 
 		Session::write('cc_infos', $result);
-
 		$expected = $creditCard;
 		$result = Order::creditCardDecrypt($this->user->_id);
 		$this->assertEqual($expected, $result);
