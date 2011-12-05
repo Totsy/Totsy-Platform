@@ -124,11 +124,14 @@ require __DIR__ . '/bootstrap/mail.php';
 require __DIR__ . '/bootstrap/avatax.php';
 
 /**
+<<<<<<< feature/upgrade-pre
  * This file configures the analysis behavior which includes Logging.
  */
 require __DIR__ . '/bootstrap/analysis.php';
 
 /**
+=======
+>>>>>>> HEAD~162
  * Auth and action protection filters.
  */
 require __DIR__ . '/bootstrap/auth.php';
