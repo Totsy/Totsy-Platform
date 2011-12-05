@@ -229,11 +229,9 @@ var paymentForm = new Object();
 <?=$this->form->end();?>
 
 <?php else: ?>
-	<div class="grid_16 cart-empty">
-		<h1>
-			<span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span>
-			<a href="/sales" title="Continue Shopping">Continue Shopping</a/></h1>
-	</div>
+<div class="holiday_message">
+		<p>Your shopping cart is empty <a href="/sales">Continue Shopping</a/></p>
+</div>
 	
 <?php endif ?>
 <?=$this->form->end();?>
