@@ -16,6 +16,14 @@
 
 /* A
 -----------------------------------------------------------------------------------------------------------*/
+.ui-tabs-content {
+  display: none;
+  margin-top: -15px;
+}
+.ui-tabs-content-active {
+  display: block;
+}
+
 .mobile_ui {
 	margin:-1px 0px 0px 0px;
 }

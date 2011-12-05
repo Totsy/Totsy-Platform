@@ -50,15 +50,10 @@ box-shadow:0px 0px 4px 0px #666;">
 </div><!-- /navbar -->		
 
 </div>
-	<div class="mobile_ui">
-		<?php echo $this->content(); ?>
+	<div data-role="content">
+	<?php echo $this->content(); ?>
 	</div>
 	<div class="clear"></div>
-	<div style="margin-bottom:35px; clear:both;"></div>
-		<h2 style="margin-left:5px;">My Account</h2>
-		<hr />
-<?php echo $this->view()->render(array('element' => 'mobile_headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
-
 	<div class="footer">
 		<a href="#" onclick="window.location.href='/pages/aboutus';return false;">About</a>
 		<span class="splitter">/</span>

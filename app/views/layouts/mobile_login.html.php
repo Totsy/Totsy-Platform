@@ -25,8 +25,9 @@
 	<div class="logo">
 		<a href="#" onclick="window.location.href='/sales';return false;"><img src="/img/logo.png" width="80" /></a>
 	</div>	
+	<div data-role="content">
 	<?php echo $this->content(); ?>
-		
+	</div>
 	<div class="footer">
 		<a href="#" onclick="window.location.href='/pages/aboutus';return false;">About</a>
 		<span class="splitter">/</span>
