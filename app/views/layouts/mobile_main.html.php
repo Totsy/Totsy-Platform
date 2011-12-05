@@ -34,18 +34,17 @@
 box-shadow:0px 0px 4px 0px #666;"> 
 	<div class="logo">
 		<a href="#" onclick="window.location.href='/sales';return false;"><img src="/img/logo.png" width="60" /></a>
-		<div style="float:right; clear:both; margin-right:5px; font-size:12px; font-weight:normal!important; color:#999;"><?php if (!empty($userInfo)): ?>
-		<?php if(array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])):?>
-		<?php echo "{$userInfo['firstname']} {$userInfo['lastname']}"; ?>
-		<?php else:?>
-		<?php if (is_array($userInfo) && array_key_exists('email', $userInfo)) { echo $userInfo['email']; } ?>
-		<?php endif; ?>
-		<?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
-		<a href="#" onclick="window.location.href='/logout';return false;">Sign Out</a>
-		<?php endif ?><br style="margin:2px;"/>
-		Cart: <a href="#" onclick="window.location.href='/cart/view';return false;"><span class="ui-li-count"><?php echo $cartCount;?></span></a>
+		<div style="float:right; margin-right:10px; font-size:12px; font-weight:normal!important; color:#999;">
+		<?php if(array_key_exists('firstname', $userInfo) &&     !empty($userInfo['firstname'])):
+					?>
+					    <?=$userInfo['firstname'].' '.$userInfo['lastname'] ?><br />
+					<?php else: ?>
+					    Totsy Member
+					<?php endif;?>
+					Cart: <a href="#" onclick="window.location.href='/cart/view';return false;"><span class="ui-li-count"><?php echo $cartCount;?></span></a>
 		</div>
 	</div>
+<div class="clear"></div>
 <div data-role="navbar">
 	<ul>
 		<li><a href="#" onclick="window.location.href='/sales';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0) { echo 'class="ui-btn-active"'; } ?>>All</a></li>
