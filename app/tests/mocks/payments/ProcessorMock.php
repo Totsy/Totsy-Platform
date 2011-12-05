@@ -38,7 +38,6 @@ class ProcessorMock extends \li3_payments\extensions\Payments {
 	}
 
 	public static function process($name, $amount, PaymentObject $pmt, array $options = array()) {
-		$adapter = static::_adapterFilter($name, __FUNCTION__, get_defined_vars());
 		$name = __FUNCTION__;
 		static::${$name} = func_get_args();
 
@@ -46,7 +45,6 @@ class ProcessorMock extends \li3_payments\extensions\Payments {
 	}
 
 	public static function authorize($name, $amount, PaymentObject $pmt, array $options = array()) {
-		$adapter = static::_adapterFilter($name, __FUNCTION__, get_defined_vars());
 		$name = __FUNCTION__;
 		static::${$name} = func_get_args();
 
