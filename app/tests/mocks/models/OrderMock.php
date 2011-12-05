@@ -8,7 +8,7 @@ class OrderMock extends \app\models\Order {
 
 	protected static $_classes = array(
 		'tax' => 'app\tests\mocks\extensions\AvaTaxMock',
-		'payments' => 'app\tests\mocks\extensions\PaymentsMock'
+		'payments' => 'app\tests\mocks\payments\ProcessorMock'
 	);
 
 	public static function creditCardDecrypt($user_id) {

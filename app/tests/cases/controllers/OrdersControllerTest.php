@@ -7,7 +7,7 @@ use app\controllers\OrdersController;
 use app\tests\mocks\controllers\OrdersControllerMock;
 use app\tests\mocks\models\OrderMock;
 use app\tests\mocks\storage\session\adapter\MemoryMock;
-use app\tests\mocks\extensions\PaymentsMock;
+use app\tests\mocks\payments\ProcessorMock;
 use app\models\User;
 use app\models\Event;
 use app\models\Item;
@@ -64,7 +64,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		foreach ($this->_delete as $document) {
 			$document->delete();
 		}
-		// PaymentsMock::resetMock();
+		// ProcessorMock::resetMock();
 	}
 
 	public function testIndex() {
@@ -633,8 +633,8 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		if ($raw) {
 			return $creditCard;
 		}
-		$billing = PaymentsMock::create('default', 'address', $this->_address());
-		return PaymentsMock::create('default', 'creditCard', $creditCard + compact('billing'));
+		$billing = ProcessorMock::create('default', 'address', $this->_address());
+		return ProcessorMock::create('default', 'creditCard', $creditCard + compact('billing'));
 	}
 }
 

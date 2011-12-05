@@ -1,10 +1,10 @@
 <?php
 
-namespace app\tests\mocks\extensions;
+namespace app\tests\mocks\payments;
 
 use li3_payments\extensions\PaymentObject;
 
-class PaymentsMock extends \li3_payments\extensions\Payments {
+class ProcessorMock extends \li3_payments\extensions\Payments {
 
 	public static $profile;
 
@@ -38,7 +38,6 @@ class PaymentsMock extends \li3_payments\extensions\Payments {
 	}
 
 	public static function process($name, $amount, PaymentObject $pmt, array $options = array()) {
-		$adapter = static::_adapterFilter($name, __FUNCTION__, get_defined_vars());
 		$name = __FUNCTION__;
 		static::${$name} = func_get_args();
 
@@ -46,7 +45,6 @@ class PaymentsMock extends \li3_payments\extensions\Payments {
 	}
 
 	public static function authorize($name, $amount, PaymentObject $pmt, array $options = array()) {
-		$adapter = static::_adapterFilter($name, __FUNCTION__, get_defined_vars());
 		$name = __FUNCTION__;
 		static::${$name} = func_get_args();
 
@@ -80,7 +78,6 @@ class PaymentsMock extends \li3_payments\extensions\Payments {
 
 		return null;
 	}
-
 }
 
 ?>
