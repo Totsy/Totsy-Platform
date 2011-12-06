@@ -22,9 +22,6 @@
 [submodule "libraries/sailthru/sailthru-php5-client"]
 	path = libraries/sailthru/sailthru-php5-client
 	url = git@github.com:sailthru/sailthru-php5-client.git
-[submodule "libraries/li3_payments"]
-	path = libraries/li3_payments
-	url = git@github.com:Totsy/li3_payments.git
 [submodule "app/libraries/lithium"]
 	path = app/libraries/lithium
 	url = git@github.com:UnionOfRAD/lithium.git
