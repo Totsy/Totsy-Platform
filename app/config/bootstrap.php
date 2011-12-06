@@ -60,6 +60,6 @@ require __DIR__ . '/bootstrap/session.php';
 /**
  * Enable running tests from command line in local environment
  */
-require __DIR__ . '/bootstrap/local_testing_cli.php';
+// require __DIR__ . '/bootstrap/local_testing_cli.php';
 
 ?>
