@@ -42,9 +42,12 @@ Environment::is(function($request) {
  * selenium tests. Please note that `*chrome` will select Firefox as a browser
  * not as one would expect Google Chrome.
  */
-Environment::set('test', array(
+
+$dev = array(
 	'browser' => '*chrome',
 	'browserUrl' => 'http://totsy'
-));
+);
+Environment::set('test', $dev);
+Environment::set('local', $dev);
 
 ?>
