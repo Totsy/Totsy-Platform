@@ -56,7 +56,7 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 			return new Response(array('status' => 401, 'body' => 'Access denied; invalid token.'));
 		}
 	} else {
-		$skip = array('login', 'logout'));
+		$skip = array('login', 'logout');
 
 		$granted = in_array($url, $skip);
 		$granted = Auth::check('userLogin', $params['request']);
