@@ -1,5 +1,5 @@
-<?=$this->html->script(array('cloud-zoom.1.0.2'));?>
-<script src="/js/jquery.tmpl.js" type="text/javascript"></script>
+<?=$this->html->script(array('cloud-zoom.1.0.2', 'jquery.tmpl'));?>
+<!--<script src="/js/.js" type="text/javascript"></script>-->
 
 <script type="text/javascript">
 	var item_id = "<?=$item->_id?>";
@@ -309,6 +309,46 @@ $(document).ready(function() {
       }
     });
 </script>
+
+<!-- loyalty plus rewards widget pixels start
+	NOTE: displayWidget() cannot be called within a document.ready() blocks
+ -->
+
+<script src="https://d3aa0ztdn3oibi.cloudfront.net/javascripts/ff.loyalty.widget.js" type="text/javascript">
+</script>
+
+<!-- facebook widget start -->
+<script type="text/javascript">
+_ffLoyalty.displayWidget("<WIDGET ID>", {});
+</script>
+<!-- facebook widget end -->
+
+<!-- twitter share widget start -->
+<script type="text/javascript">
+_ffLoyalty.displayWidget("<WIDGET ID>", {});
+</script>
+<!-- twitter share widget end -->
+
+<!-- twitter follow widget start -->
+<script type="text/javascript">
+_ffLoyalty.displayWidget("<WIDGET ID>",{});
+</script>
+<!-- twitter follow widget end -->
+
+<!-- social share widget start -->
+<script type="text/javascript">
+_ffLoyalty.displayWidget("<WIDGET ID>",{});
+</script>
+<!-- social share widget end -->
+
+<!-- email signup widget start -->
+<script type="text/javascript">
+_ffLoyalty.displayWidget("<WIDGET ID>",{});
+</script>
+<!-- email signup widget end -->
+
+<!-- loyalty plus rewards widget pixels end -->
+
 <script type="text/javascript">
 //cto product tag
 var cto_params = [];

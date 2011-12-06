@@ -47,7 +47,7 @@ class UsersController extends BaseController {
 	 * @return string User will be promoted that email is already registered.
 	 */
 	public function register($invite_code = null, $affiliate_user_id = null) {
-			        
+        
 		$parsedURI = parse_url($this->request->env("REQUEST_URI"));
 		$currentURI = $parsedURI['path'];
 		

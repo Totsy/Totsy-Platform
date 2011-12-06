@@ -311,6 +311,10 @@
 		</div>
 	</noscript>
 	
+	<!-- loyalty plus program purchase tracking -->
+	<img src="http://loyalty.500friends.com/api/record.gif?uuid=<?=$userInfo['_id']?>&email=<?=$userInfo['email']?>&type=purchase&event_id=<?=$order->order_id?>&value=<?=$order->total?>&detail=''" style="position: absolute; left: -10px; visibility: hidden;"/>
+	<!-- loyalty plus program purchase tracking -->
+	
 	<?php
 		//srting of GET variables passed into criteo link
 		$criteoVars = "";

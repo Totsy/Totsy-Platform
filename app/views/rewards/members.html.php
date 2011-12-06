@@ -1,6 +1,8 @@
-<?php $this->title("Rewards Members"); ?>
+<?php 
+$this->title("Rewards Members"); 
+?>
 
-<script>
+<script type="text/javascript">
 
 $(document).ready( function() {
 	$("#reward-members-menu-items span a").click( function() {
@@ -23,42 +25,18 @@ $(document).ready( function() {
 	<?php echo $this->view()->render( array('element' => 'helpNav')); ?>
 </div>
 
+<script src="https://d3aa0ztdn3oibi.cloudfront.net/javascripts/ff.loyalty.widget.js" type="text/javascript"></script> 
+
 <div id="rewards-members-app" class="grid_12">
 	<div id="rewards-members-welcome">
 		<span style="float:left">Welcome Back Evan!</span>
 		<span style="float:right">Points balance:230</span>
 	</div>
-	<div id="reward-members-menu" class="roundy">
-		<div id="reward-members-menu-title" class="roundy">
-			<span>Totsy Rewards&trade;</span>
-		</div>
-		<div class="clear"></div>
-		<div id="reward-members-menu-items">
-			<span><a href="#">Rewards</a></span>
-			<span><a href="#">Deals</a></span>
-			<span><a href="#">Badges</a></span>
-			<span><a href="#">Activity</a></span>
-			<span><a href="#">Overview</a></span>
-			<span><a href="#">Account</a></span>
-		</div>
-	</div>
+<iframe id="ff_member_iframe" style="width:100%;height:1045px;border:0"></iframe> 
 </div>
 <div class="clear"></div>
 
-<script src="https://d3aa0ztdn3oibi.cloudfront.net/javascripts/ff.loyalty.widget.js" type="text/ javascript">
-</script> 
-
-<iframe id="ff_member_iframe" style="width:760px;height:1045px;border:0">
-</iframe> 
-
 <script type="text/javascript">
-
-var customerEmail = "";
-var authToken = "";
-
-if(authToken && customerEmail){
-	_ffLoyalty.initialize("<YOUR ACCOUNT ID>");
-	_ffLoyalty.loadIframe({email: customerEmail, auth_token: authToken}); 
-}
-
+	_ffLoyalty.initialize("<?=$params['uuid']?>");
+	_ffLoyalty.loadIframe({email:"<?=$userInfo['email']?>", auth_token: "<?=$authToken?>"}); 
 </script>

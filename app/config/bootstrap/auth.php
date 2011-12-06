@@ -13,11 +13,11 @@ Auth::config(array(
 		'adapter' => 'Form',
 		'fields' => array('email', 'password')
 	)
-));
+));		
 
 Dispatcher::applyFilter('_call', function($self, $params, $chain) {
-	$skip = array('login', 'logout');
-
+	$skip = array('login', 'logout', 'register');
+			
 	$granted = in_array($params['request']->url, $skip);
 	$granted = $granted || Auth::check('userLogin', $params['request']);
 

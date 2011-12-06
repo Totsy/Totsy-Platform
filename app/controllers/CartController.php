@@ -284,7 +284,7 @@ class CartController extends BaseController {
 										array ('_id' => "".$cartItem->event[0]."")
 									)
 								);
-
+								
 			$temp = $event->data();
 			$eventURL = $temp['url'];
 
