@@ -364,7 +364,11 @@ class OrdersControllerTest extends \lithium\test\Unit {
 			'savings',
 			'credits',
 			'cartExpirationDate',
-			'promocode_disable'
+			'promocode_disable',
+			'creditCard',
+			'missChristmasCount',
+			'notmissChristmasCount',
+			'serviceAvailable'
 		);
 		$result = array_keys($return);
 		$this->assertFalse(array_diff($expected, $result));
@@ -429,7 +433,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$expected = 15;
 		$this->assertEqual($expected, $result);
 
-		$this->assertEqual('default', ProcessorMock::$authorize['adapter']);
+		$this->assertEqual('default', ProcessorMock::$authorize[0]);
 
 		$cart->delete();
 		$event->delete();
@@ -481,7 +485,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$this->assertFalse($result);
 
 		$result = ProcessorMock::$authorize[1];
-		$expected = 1;
+		$expected = 15;
 		$this->assertEqual($expected, $result);
 
 		$cart->delete();
@@ -512,7 +516,9 @@ class OrdersControllerTest extends \lithium\test\Unit {
 			'cartEmpty',
 			'payment',
 			'shipping', 'shipDate',
-			'cartExpirationDate'
+			'cartExpirationDate',
+			'missChristmasCount',
+			'notmissChristmasCount'
 		);
 		$result = array_keys($return);
 		$this->assertFalse(array_diff($expected, $result));
@@ -560,7 +566,9 @@ class OrdersControllerTest extends \lithium\test\Unit {
 			'cartEmpty',
 			'payment',
 			'shipping', 'shipDate',
-			'cartExpirationDate'
+			'cartExpirationDate',
+			'missChristmasCount',
+			'notmissChristmasCount'
 		);
 		$result = array_keys($return);
 		$this->assertFalse(array_diff($expected, $result));
