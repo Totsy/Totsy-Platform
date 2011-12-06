@@ -102,10 +102,18 @@ class UsersController extends \admin\controllers\BaseController {
 				    $userData['register date'] = date("M d, Y", $userData['created_on']['sec']);
 				}
 				if (array_key_exists('deactivated_date', $userData)) {
-				    $userData['deactivated_date'] = date("M d, Y", $userData['deactivated_date']['sec']);
+				    if(is_array($userData['deactivated_date'])){
+				        $userData['register date'] = date("M d, Y",$userData['deactivated_date']['sec']);
+				    } else {
+				        $userData['register date'] = date("M d, Y",$userData['deactivated_date']);
+				    }
 				}
 				if (array_key_exists('reactivate_date', $userData)) {
-				    $userData['reactivate_date'] = date("M d, Y", $userData['reactivate_date']['sec']);
+				    if(is_array($userData['reactivate_date'])){
+				        $userData['reactivate_date'] = date("M d, Y",$userData['reactivate_date']['sec']);
+				    } else {
+				        $userData['reactivate_date'] = date("M d, Y",$userData['reactivate_date']);
+				    }
 				}
 				if (array_key_exists('deactivated', $userData)) {
 				    $deactivated = $userData['deactivated'];

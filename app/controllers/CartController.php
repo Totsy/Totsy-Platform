@@ -151,7 +151,7 @@ class CartController extends BaseController {
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
 		#Check if Services
-		$servicesAvailable = false;
+		$serviceAvailable = false;
 		if(Session::check('service_available')) {
 			$serviceAvailable = Session::read('service_available');
 		}
@@ -238,7 +238,9 @@ class CartController extends BaseController {
 					unset($item['details']);
 					unset($item['_id']);
 					$info = array_merge($item, array('quantity' => 1));
-					if ($cart->addFields() && $cart->save($info)) {
+					$addSuccess = $cart->addFields();
+					$success = Cart::update(array('$set' => $info), array('_id' => $cart->_id));
+					if ($addSuccess && $success) {
 						#Update Main Timer to 15min
 						Cart::refreshTimer();
 						#calculate savings
@@ -305,6 +307,7 @@ class CartController extends BaseController {
 		//get user savings. they were just put there by updateSavings()
 		$cartData['savings'] = Session::read('userSavings');
 		//get the ship date
+		//$cartData['shipDate'] = date('m-d-Y', Cart::shipDate(Cart::active()));
 		$cartData['shipDate'] = Cart::shipDate(Cart::active());
 		//get the amount of items in the cart
 		$cartData['itemCount'] = Cart::itemCount();

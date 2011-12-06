@@ -23,13 +23,13 @@ class PromocodesController extends \admin\controllers\BaseController {
 		foreach ($promocodes as $promocode){
 			$obj_data = $promocode->data();
 			if (!empty($obj_data['start_date'])) {
-				$promocode->start_date = date('m/d/Y', $obj_data['start_date']['sec']);
+				$promocode->start_date = date('m/d/Y', $obj_data['start_date']);
 			}
 			if (!empty( $obj_data['end_date'] )) {
-				$promocode->end_date = date('m/d/Y', $obj_data['end_date']['sec']);
+				$promocode->end_date = date('m/d/Y', $obj_data['end_date']);
 			}
 			if (!empty( $obj_data['date_created'] )) {
-				$promocode->date_created = date( 'm/d/Y', $obj_data['date_created']['sec']);
+				$promocode->date_created = date( 'm/d/Y', $obj_data['date_created']);
 			}
 			if (!empty( $obj_data['created_by'] )) {
 				$conditions = array('conditions'=>array('_id'=>$obj_data['created_by']));

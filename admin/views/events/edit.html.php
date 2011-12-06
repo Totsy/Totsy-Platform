@@ -440,8 +440,8 @@ for ( i=1; i<6; i++ ) {
 					<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
 					<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
 				<p>Will item/product ship for Christmas?:</p>
-					<input type="radio" name="miss_christmas" value="0" id="miss_christmas" checked>Yes, ships before 12.23<br>
-					<input type="radio" name="miss_christmas" value="1" id="miss_christmas">NO AFTER XMAS<br><br>
+					<input type="radio" name="miss_christmas" value="0" id="miss_christmas">Yes, ships before 12.23<br>
+					<input type="radio" name="miss_christmas" value="1" id="miss_christmas" checked>NO AFTER XMAS<br><br>
 
 					<!--
 					<?=$this->form->label('Upload Event (Excel Files): '); ?>
