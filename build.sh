@@ -180,7 +180,14 @@ case $COMMAND in
 		echo "----------------------------------------------------------------------------"
 		echo
 
-		java \
+		if [[ -f /System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Commands/java ]]; then
+			# When on OSX use 1.6.0 if installed.
+			JAVA=/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Commands/java
+		else
+			JAVA=java
+		fi
+
+		$JAVA \
 			-jar $PROJECT_DIR/selenium/server.jar \
 			-firefoxProfileTemplate $PROJECT_DIR/selenium/tzp8knyf.selenium \
 			-log $PROJECT_DIR/selenium/selenium.log \
