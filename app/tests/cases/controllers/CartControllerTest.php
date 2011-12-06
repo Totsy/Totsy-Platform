@@ -140,7 +140,7 @@ class CartControllerTest extends \lithium\test\Unit {
 	}
 
 	public function testAdd() {
-		list($item) = $this->_createCart(
+		$item = $this->_createCart(
 			array(
 				'name' => 'Test Event',
 				'url' => 'test_event'

@@ -436,7 +436,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$this->assertFalse($result);
 
 		$result = ProcessorMock::$authorize[1];
-		$expected = 0;
+		$expected = 15;
 		$this->assertEqual($expected, $result);
 
 		$this->assertEqual('default', ProcessorMock::$authorize[0]);
@@ -494,7 +494,7 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$expected = 15;
 		$this->assertEqual($expected, $result);
 
-		$this->assertEqual('default', ProcessorMock::$authorize['adapter']);
+		$this->assertEqual('default', ProcessorMock::$authorize[0]);
 
 		$cart->delete();
 		$event->delete();

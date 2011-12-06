@@ -144,7 +144,8 @@ class UsersControllerTest extends \lithium\test\Unit {
 		$return = $controller->reset();
 		$mailer = $controller->mailer();
 		list($subject, $address, $token) = isset($mailer::$sent[0]) ? $mailer::$sent[0] : array(null, null, null);
-		$updated = User::find($user->_id->{'$id'});
+
+		$updated = User::find((string) $user->_id);
 
 		$result = is_array($return);
 		$message = $return;
@@ -269,23 +270,25 @@ class UsersControllerTest extends \lithium\test\Unit {
 	public function testPassword() {
 		$this->_checkPassword(function ($params) {
 			extract($params);
-			$updated = User::find($user->_id->{'$id'});
+			$updated = User::find((string) $user->_id);
 
 			$result = is_array($return);
-			$message = $return;
+			$message = "testPassword() on line " . __LINE__;
 			$self->assertTrue($result, $message);
 
 			$result = isset($return['status']);
-			$message = $return;
+			$message = "testPassword() on line " . __LINE__;
 			$self->assertTrue($result, $message);
 
 			$expected = 'true';
 			$result = $return['status'];
-			$self->assertEqual($expected, $result);
+			$message = "testPassword() on line " . __LINE__;
+			$self->assertEqual($expected, $result, $message);
 
 			$expected = sha1('new_test_pass');
 			$result = $updated->password;
-			$self->assertEqual($expected, $result);
+			$message = "testPassword() on line " . __LINE__;
+			$self->assertEqual($expected, $result, $message);
 		});
 	}
 

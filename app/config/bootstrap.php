@@ -47,11 +47,6 @@ require __DIR__ . '/bootstrap/errors.php';
 // require __DIR__ . '/bootstrap/console.php';
 
 /**
- * This file configures the analysis behavior which includes Logging.
- */
-require __DIR__ . '/bootstrap/analysis.php';
-
-/**
  * Auth and action protection filters.
  */
 require __DIR__ . '/bootstrap/auth.php';
