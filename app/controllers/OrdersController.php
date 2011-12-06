@@ -318,9 +318,9 @@ class OrdersController extends BaseController {
 				$notmissChristmasCount++;
 			}
 
-
-			if($cartExpirationDate < $item['expires']->sec) {
-				$cartExpirationDate = $item['expires']->sec;
+			$itemExpiresSec = Cart::timeValue($item['expires']);
+			if($cartExpirationDate < $itemExpiresSec) {
+				$cartExpirationDate = $itemExpiresSec;
 			}
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
@@ -390,8 +390,9 @@ class OrdersController extends BaseController {
 
 
 			#Get Last Expiration Date
-			if ($cartExpirationDate < $cartValue['expires']->sec) {
-				$cartExpirationDate = $cartValue['expires']->sec;
+			$cartExpiresSec = Cart::timeValue($cartValue['expires']);
+			if ($cartExpirationDate < $cartExpiresSec) {
+				$cartExpirationDate = $cartExpiresSec;
 			}
 			$event = Event::find('first', array(
 				'conditions' => array('_id' => $cartValue->event[0])
