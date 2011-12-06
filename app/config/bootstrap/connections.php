@@ -26,6 +26,7 @@ use lithium\data\Connections;
                 'db3-dc1.totsy.com'
                 ),
 			'adapter' => 'app\extensions\adapter\data\source\MongoDb'),
+		/*
 		'test' => array(
                     'type' => 'MongoDb',
                     'database' => 'totsy',
@@ -39,6 +40,14 @@ use lithium\data\Connections;
                     'db2-dc1.totsy.com',
                     'db3-dc1.totsy.com'
                 ), 'adapter' => 'app\extensions\adapter\data\source\MongoDb'),
+		*/
+		'test' =>array(
+			'type' =>  'MongoDb',
+			'database' => 'totsy',
+			'host' => array(
+    			'localhost'
+    		),
+			'adapter' => 'app\extensions\adapter\data\source\MongoDb'),
 		'development' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy',
