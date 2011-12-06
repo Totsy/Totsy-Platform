@@ -37,7 +37,9 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		));
 
 		$this->controller = new OrdersControllerMock(array(
-			'request' => new Request(),
+			'request' => new Request(array(
+				'params' => array('controller' => null, 'action' => null)
+			)),
 			'classes' => array(
 				'tax' => 'app\tests\mocks\extensions\AvaTaxMock',
 				'order' => 'app\tests\mocks\models\OrderMock',
