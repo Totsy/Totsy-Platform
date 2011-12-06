@@ -50,12 +50,13 @@ Environment::is(function($request) {
 	switch ($request->env('HTTP_HOST')) {
 		case 'totsy.com':
 		case 'www.totsy.com':
-		case 'totsystaging.com':
-		case 'www.totsystaging.com':
 		case 'newprod.totsy.com':
-		case '50.56.49.10':
+		case '50.56.49.10': // This is the production rackspace load balancer IP
 			return 'production';
 		case 'test.totsy.com':
+		case 'totsystaging.com':
+		case 'www.totsystaging.com':
+		case '50.57.205.144': // This is the totsystaging load balancer IP
 			return 'test';
 		case 'dev.totsy.com':
 			return 'development';
