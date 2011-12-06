@@ -356,8 +356,11 @@ class OrdersController extends BaseController {
 	 */
 	public function review() {
 		$taxClass   = $this->_classes['tax'];
-		$orderClass = $this->_classes['order'];
-
+		$orderClass = $this->_classes['order'];\
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_review';
+		}
 		#Check Users are in the correct step
 		if (!Session::check('shipping')) {
 			return $this->redirect(array('Orders::shipping'));
@@ -474,7 +477,6 @@ class OrdersController extends BaseController {
 		if (Session::check('cc_error')) {
 			return $this->redirect(array('Orders::payment'));
 		}
-
 		#Check if Services
 		$serviceAvailable = false;
 		if(Session::check('service_available')) {
