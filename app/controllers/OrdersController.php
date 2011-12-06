@@ -136,6 +136,7 @@ class OrdersController extends BaseController {
 										'qty' => $item['quantity'],
 										'title' => $itemRecord['description'],
 										'price' => $itemRecord['sale_retail']*100,
+										/* @todo QA, $url is undefined, accessing it will fatal. */
 									 	'url' => 'http://'.$_SERVER['HTTP_HOST'].'/sale/'.$url->url.'/'.$itemRecord['url']
 					);
 					unset($itemRecord);
