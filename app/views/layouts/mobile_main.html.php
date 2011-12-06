@@ -62,7 +62,6 @@ box-shadow:0px 0px 4px 0px #666;">
 	<div class="logo">
 		<a href="#" onclick="window.location.href='/sales';return false;"><img src="/img/logo.png" width="80" /></a>
 	</div>	
-
 <?php } ?>
 	<div data-role="content">
 	<?php echo $this->content(); ?>
@@ -73,6 +72,9 @@ box-shadow:0px 0px 4px 0px #666;">
 <script>
 $.mobile.fixedToolbars
    .show(true);
+
+$.base = '<?php echo rtrim(Router::match("/", $this->_request)); ?>';
 </script>
+
 </body>
 </html>

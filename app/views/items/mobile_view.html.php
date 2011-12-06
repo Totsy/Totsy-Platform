@@ -1,5 +1,4 @@
 <?=$this->html->script(array('cloud-zoom.1.0.2'));?>
-<script src="/js/jquery.tmpl.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 	var item_id = "<?=$item->_id?>";
@@ -7,8 +6,6 @@
 
 <?=$this->html->script(array('cart-timer.js?v=007', 'cart-items-timer.js?v=007', 'cart-popup.js?v=007'));?>
 
-<!-- template used for items on cart. jquery.tmpl.js driven -->
-<?=$this->view()->render( array('element' => 'popupCartItems') ); ?>
 
 <div class="grid_16">
 	<h2 class="page-title gray"><span class="red"><a href="/sales" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a><div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
@@ -28,7 +25,7 @@
 <div class="zoom-section">
 	<div class="zoom-small-image">
     	<a href="/image/<?php echo $item->zoom_image; ?>.jpg" id="zoom1" class="cloud-zoom" rel="position: 'inside'" style="overflow:hidden;">
-    	<img src="/image/<?php echo $item->primary_image; ?>.jpg" alt="" border="0" title="" width="348"/></a>
+    	<img src="/image/<?php echo $item->primary_image; ?>.jpg" alt="" border="0" title="" width="309"/></a>
   	</div>
 
   	<!-- Start additional image view thumbnails -->
@@ -87,7 +84,7 @@
 		<div id="listingCountdown" class="listingCountdown"></div>
 	</div>
 	<div id="detail-top-left"  style="width:405px;">
-		<h1><strong><?=$event->name?></strong> <?=$item->description." ".$item->color; ?></h1>
+		<h2><strong><?=$event->name?></strong> <?=$item->description." ".$item->color; ?></h2>
 	</div>
 		<div class="clear"></div>
 
@@ -120,12 +117,7 @@
 
 			</div>
 		</div>
-	<!--Disney -->
-<div class="disney">
-          <strong>SPECIAL BONUS!</strong><hr/></p>
-       <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/parents.png" align="absmiddle" width="95px" /> ( a $10 value )
-       <span id="disney">Offer & Refund Details</span>
-      </div>
+
 	<br><!-- Started Related Products -->
 	<div id="related-products">
 		<?php $relatedData = $related; ?>
@@ -177,25 +169,21 @@
 			<?php if ($item->total_quantity >= 1): ?>
 				<div id="hidden-div" style="display:none; color:#eb132c; font-weight:bold;">Please Select Size!</div>
 				<span style="display: inline-block;">
-				<input type="button" value="Add to Cart" id="add-to-cart" class="button">
+				<input type="button" value="Add to Cart" id="add-to-cart" data-role="" class="button">
 				</span>
 				<div id="all-reserved"></div>
 				
 				<?php
 				if($item->miss_christmas){
 				?>
-				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#990000; font-size:11px;text-align:left;">
-				<img src="/img/truck_red.png">
-				This item is not guaranteed to be delivered on or before 12/25.* 
-				</div>
+				<div class="holiday_message" style="text-align:center;">
+				<p>This item is not guaranteed to be delivered on or before 12/25.*</p></div>
 				<?php
 				}
 				else{
 				?>
-				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#999999; font-size:11px;text-align:left;">
-				<img src="/img/truck_grey.png">
-				This item will be delivered on or before 12/23*
-				</div>
+				<div class="holiday_message" style="text-align:center;">
+				<p>This item will be delivered on or before 12/23*</p></div>
 				
 				
 				<?php
@@ -205,9 +193,6 @@
 			<?php endif ?>
 		</div>
 	</div>
-	<div style="padding:10px 0px; text-align:center !important;">
-	    <?php echo $spinback_fb; ?>
-	</div>
 </div>
 <div class="clear"></div>
 
@@ -215,13 +200,15 @@
 				<?php
 				if($item->miss_christmas){
 				?>
-				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. 
+				<div class="holiday_message" style="text-align:center;">
+				<p>* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. 
 				<?php
 				}
 				else{
 				?>
 				
-				* Our delivery guarantee does not apply when transportation networks are affected by weather.
+				<div class="holiday_message" style="text-align:center;">
+				<p>* Our delivery guarantee does not apply when transportation networks are affected by weather.
 				
 				<?php
 				}
@@ -230,7 +217,6 @@
 </div>
 </div>
 
-<div id="modal" style="background:#fff!important; z-index:999!important;"></div>
 
 <script type="text/javascript">
 $(function () {
@@ -240,21 +226,6 @@ $(function () {
 });
 </script>
 
-<script type="text/javascript">
-    $('#disney').click(function(){
-		$('#modal').load('/events/disney').dialog({
-			autoOpen: false,
-			modal:true,
-			width: 739,
-			height: 750,
-			position: 'top',
-			close: function(ev, ui) { $(this).close(); }
-
-		});
-		$("#sold_out_img").css("z-index", 999);
-		$('#modal').dialog('open');
-	});
-</script>
 
 <script type="text/javascript">
 $(document).ready(function() {

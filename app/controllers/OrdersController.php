@@ -323,6 +323,10 @@ class OrdersController extends BaseController {
 	 * @todo Improve documentation
 	 */
 	public function review() {
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_review';
+		}
 		#Check Users are in the correct step
 		if (!Session::check('shipping')) {
 			$this->redirect(array('Orders::shipping'));
@@ -438,10 +442,6 @@ class OrdersController extends BaseController {
 		#In car of credit card error redirect to the payment page
 		if (Session::check('cc_error')) {
 			$this->redirect(array('Orders::payment'));
-		}
-		if($this->request->is('mobile')){
-		 	$this->_render['layout'] = 'mobile_main';
-		 	$this->_render['template'] = 'mobile_review';
 		}
 		return $vars + compact('cartEmpty','order','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable','missChristmasCount','notmissChristmasCount');
 	}
