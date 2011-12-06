@@ -17,7 +17,7 @@ Auth::config(array(
 ));
 
 Dispatcher::applyFilter('_call', function($self, $params, $chain) {
-	$skip = array('login', 'logout', 'register');
+	$skip = array('login', 'logout', 'register','register/facebook');
 	$allowed = false;
 
 	#dynamic affiliate pages
