@@ -165,7 +165,7 @@ class OrderTest extends \lithium\test\Unit {
 		$result = OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(true),
+			$this->_card(false),
 			$order,
 			$avatax,
 			$authKey,
@@ -226,7 +226,7 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(true),
+			$this->_card(false),
 			$order,
 			$avatax,
 			$authKey,
@@ -240,7 +240,7 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(true),
+			$this->_card(false),
 			$order,
 			$avatax,
 			$authKey,
@@ -300,7 +300,7 @@ class OrderTest extends \lithium\test\Unit {
 		$result = OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(true),
+			$this->_card(false),
 			$order,
 			$avatax,
 			$authKey,
@@ -366,7 +366,7 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(true),
+			$this->_card(false),
 			$order,
 			$avatax,
 			$authKey,
@@ -438,7 +438,7 @@ class OrderTest extends \lithium\test\Unit {
 		$result = OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(true),
+			$this->_card(false),
 			$order,
 			$avatax,
 			$authKey,
@@ -512,7 +512,7 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(true),
+			$this->_card(false),
 			$order,
 			$avatax,
 			$authKey,
