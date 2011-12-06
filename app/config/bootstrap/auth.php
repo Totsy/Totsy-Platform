@@ -6,6 +6,7 @@
 use lithium\security\Auth;
 use lithium\action\Dispatcher;
 use lithium\action\Response;
+use lithium\core\Environment;
 
 Auth::config(array(
 	'userLogin' => array(
@@ -16,9 +17,11 @@ Auth::config(array(
 ));
 
 Dispatcher::applyFilter('_call', function($self, $params, $chain) {
+	$url = $params['request']->url;
 	$skip = array('login', 'logout', 'register');
 
-	$granted = in_array($params['request']->url, $skip);
+	$granted = in_array($url, $skip);
+	$granted = $granted || (strpos($url, 'test') === 0 && !Environment::is('production'));
 	$granted = $granted || Auth::check('userLogin', $params['request']);
 
 	if (!$granted) {

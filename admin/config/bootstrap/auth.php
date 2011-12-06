@@ -12,6 +12,7 @@
 use lithium\security\Auth;
 use lithium\action\Dispatcher;
 use lithium\action\Response;
+use lithium\core\Environment;
 use admin\models\User;
 
 Auth::config(array(
@@ -55,12 +56,14 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 			return new Response(array('status' => 401, 'body' => 'Access denied; invalid token.'));
 		}
 	} else {
-		if (in_array($url, array('login', 'logout'))) {
-			return $chain->next($self, $params, $chain);
-		}
-		$granted = Auth::check('userLogin', $params['request']);
+		$skip = array('login', 'logout'));
 
-		if (!$granted) { /* Redirect visitors to root to login first. */
+		$granted = in_array($url, $skip);
+		$granted = Auth::check('userLogin', $params['request']);
+		$granted = $granted || (strpos($url, 'test') === 0 && !Environment::is('production'));
+
+		if (!$granted) {
+			/* Redirect visitors to root to login first. */
 			return new Response(array('location' => 'Users::login'));
 		}
 	}
