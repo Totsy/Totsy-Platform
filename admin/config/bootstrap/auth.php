@@ -59,7 +59,7 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 		$skip = array('login', 'logout');
 
 		$granted = in_array($url, $skip);
-		$granted = Auth::check('userLogin', $params['request']);
+		$granted = $granted || Auth::check('userLogin', $params['request']);
 		$granted = $granted || (strpos($url, 'test') === 0 && !Environment::is('production'));
 
 		if (!$granted) {
