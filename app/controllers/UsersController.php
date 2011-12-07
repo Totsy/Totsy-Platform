@@ -131,7 +131,7 @@ class UsersController extends BaseController {
 		 	$this->_render['layout'] = 'mobile_login';
 		 	$this->_render['template'] = 'mobile_register';
 		} else {
-			$this->_render['layout'] = 'login';
+			//$this->_render['layout'] = 'login';
 		}
 		
 		if ($this->request->data && !$user->validates() ) {
@@ -530,7 +530,10 @@ class UsersController extends BaseController {
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
 			                                            array('invite' => $_SERVER['REQUEST_URI'])
 			                                            );
-
+		if($this->request->is('mobile')){
+			$this->_render['layout'] = 'mobile_main';
+			$this->_render['template'] = 'mobile_invite';
+		}
 		return compact('user','open', 'accepted', 'flashMessage', 'spinback_fb');
 	}
 

@@ -3,20 +3,21 @@
 <?=$this->html->style('jquery.countdown');?>
 
 <div class="item_intro_box">
-<?php
-						if (!empty($event->images->event_image)) {
-							echo $this->html->image("/image/{$event->images->event_image}.jpg", array(
-								'title' => $event->name,
-								'width' => "278",
-							));
-						} else {
-							echo $this->html->image('/img/no-image-small.jpeg', array(
-									'title' => "No Image Available",
-									'width' => "278",
-									));
-						}
-					?>
-					<div class="item_title_bar">
+<?php if (!empty($event->images->event_image)) {
+	echo $this->html->image("/image/{$event->images->event_image}.jpg", array(
+		'title' => $event->name,
+		'width' => "278",
+	));
+
+	} else {
+	
+	echo $this->html->image('/img/no-image-small.jpeg', array(
+		'title' => "No Image Available",
+		'width' => "278",
+	));
+} ?>
+
+<div class="item_title_bar">
 <div class="item_title" style="float:left;"><?=$event->name; ?></div>
 <!-- <a href="#items" class="item_shop_btn" style="float:left; margin-left:5px;">Shop</a> -->
 </div>

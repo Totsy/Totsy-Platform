@@ -24,5 +24,7 @@
 <?=$this->form->error('password'); ?>
 </p>
 
+<p><?=$this->form->checkbox('remember_me', array('class' => 'checkbox', 'data-role' => 'none')); ?> Remember Me </p>
+
 <?=$this->form->submit('Sign In', array('data-theme' => 'b', 'data-ajax' => 'false'));?> 
 <?=$this->form->end();?>

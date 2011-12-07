@@ -6,11 +6,36 @@
 
 <?=$this->html->script(array('cart-timer.js?v=007', 'cart-items-timer.js?v=007', 'cart-popup.js?v=007'));?>
 
-
-<div class="grid_16">
-	<h2 class="page-title gray"><span class="red"><a href="/sales" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a><div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
+<h2 style="font-size:12px;">
+	<a href="/sales">Today's Sales</a> <span class="splitter">/</span> <a href="/sale/<?=$event->url?>"><?=$event->name?></a>
+	<br />
+	<div id="listingCountdown" class="listingCountdown" style="font-size:9px; color:#999;"></div> 
 	<hr />
-</div>
+	
+	<div style="color:#009900; font-size:14px;">$<?=number_format($item->sale_retail,2); ?></div>
+
+<div class="original-price" style="font-size:9px; color:#999; ">$<?=number_format($item->msrp,2); ?></div>
+<?php if (!empty($sizes)): ?>
+				<?php if ( !((string)strtolower($sizes[0]) ==='no size')): ?>
+						<select name="size-select" id="size-select">
+									<option value="">Please Select Size</option>
+							<?php foreach ($sizes as $value): ?>
+									<option value="<?=$value?>"><?=$value?></option>
+							<?php endforeach ?>
+						</select>
+						<hr />
+				<?php endif ?>
+			<?php endif ?>
+			<?php if ($item->total_quantity >= 1): ?>
+				<div id="hidden-div" style="display:none; color:#eb132c; font-weight:bold;" class="holiday_message">Please Select Size!</div>
+				<span style="display: inline-block;">
+				<input type="button" value="Add to Cart" id="add-to-cart" data-role="" class="button">
+				</span>
+				<div id="all-reserved"></div>
+				
+			<?php endif ?>
+</h2>
+<hr />
 
 <div class="grid_6">
 	<!-- Start product item -->
@@ -69,7 +94,6 @@
 		<?php endif ?>
 
 	<!-- End additional image view thumbnails -->
-
 	</div>
 		<?php endif ?>
 		<?php if (!empty($item->alternate_images)): ?>
@@ -79,52 +103,30 @@
 	<!-- End product item -->
 </div>
 
-<div class="grid_7">
-	<div id="product-detail-right-top"  style="width:405px;">
+
 		<div id="listingCountdown" class="listingCountdown"></div>
-	</div>
-	<div id="detail-top-left"  style="width:405px;">
-		<h2><strong><?=$event->name?></strong> <?=$item->description." ".$item->color; ?></h2>
-	</div>
-		<div class="clear"></div>
 
-		<div id="tabs">
-			<ul>
-			    <li><a href="#description">Description</a></li>
-			    <li><a href="#shipping">Shipping &amp; Returns</a></li>
-			    <!--<li><a href="#video"><span>Video</span></a></li>-->
-			</ul>
 
-			<!-- Start Description Tab -->
-			<div id="description" class="ui-tabs-hide">
+	<h2><?=$event->name?></strong> <?=$item->description." ".$item->color; ?></h2>
+
+<div data-role="collapsible-set" data-theme="c" data-content-theme="d" data-collapsed="false">
+			<div data-role="collapsible">
+				<h3>Description</h3>
 				<?php echo $item->blurb; ?>
 			</div>
-			<!-- End Description Tab -->
-
-			<!-- Start Shipping Tab -->
-			<div id="shipping" class="ui-tabs-hide">
-			<strong>Shipping:</strong> Totsy will ship this item via Standard UPS or Standard US Mail shipping based on your selection at the end of your <?=$this->html->link('checkout process', array('Cart::view')); ?>.
+			<div data-role="collapsible">
+				<h3>Shipping &amp; Returns</h3>
+				<strong>Shipping:</strong> Totsy will ship this item via Standard UPS or Standard US Mail shipping based on your selection at the end of your <?=$this->html->link('checkout process', array('Cart::view')); ?>.
 			Complete shipping details are available at <?=$this->html->link('shipping terms', array('Pages::shipping')); ?>.
 
 			<p><strong>Returns:</strong> Totsy accept returns on selected items only. You will get a merchandise credit and free shipping (AK &amp; HI: air shipping rates apply). Simply be sure that we receive the merchandise you wish to return within 30 days from the date you originally received it in its original condition with all the packaging intact. Please note: Final Sale items cannot be returned. Want to learn more? Read more in our <?=$this->html->link('returns section', array('Pages::returns')); ?>.</p>
 
-			<?php
-			if($item->miss_christmas){
-				echo "<span style='color:#ff0000; font-weight:bold; font-size:30px;'>item will ship AFTER xmas</span>";
-			}
-			
-			?>
-
 			</div>
-		</div>
-
-	<br><!-- Started Related Products -->
-	<div id="related-products">
-		<?php $relatedData = $related; ?>
-		<?php if (!empty($relatedData)): ?>
-		<h2 style="color:#707070;font-size:14px;">You would also love</h2>
-		<hr />
-		<?php foreach ($related as $relatedItem) {
+			<div data-role="collapsible">
+				<h3>You would also love</h3>
+				<?php $relatedData = $related; ?>
+				<?php if (!empty($relatedData)): ?>
+				<?php foreach ($related as $relatedItem) {
 			if ($relatedItem['total_quantity'] >= 1){
 				if (empty($relatedItem['primary_image'])) {
 					$relatedImage = '/img/no-image-small.jpeg';
@@ -143,13 +145,16 @@
 			}
 		} ?>
 	<?php endif ?>
+			</div>
+		</div>
+		
+<?php
+			if($item->miss_christmas){
+				echo "<span style='color:#ff0000; font-weight:bold; font-size:30px;'>item will ship AFTER xmas</span>";
+			}
+			
+			?>
 	</div>
-	<!-- End Related Products -->
-	</div>
-	<div class="grid_3">
-	<div id="detail-top-right" class="r-container">
-
-		<div class="md-gray p-container roundy">
 			<h2 class="caps" style="font-size:14px; padding-top:5px">Totsy Price</h2>
 			<div style="padding: 10px 0px 0px 0px; color:#009900; font-size:24px;">$<?=number_format($item->sale_retail,2); ?></div>
 
@@ -167,7 +172,7 @@
 				<?php endif ?>
 			<?php endif ?>
 			<?php if ($item->total_quantity >= 1): ?>
-				<div id="hidden-div" style="display:none; color:#eb132c; font-weight:bold;">Please Select Size!</div>
+				<div id="hidden-div" style="display:none; color:#eb132c; font-weight:bold;" class="holiday_message">Please Select Size!</div>
 				<span style="display: inline-block;">
 				<input type="button" value="Add to Cart" id="add-to-cart" data-role="" class="button">
 				</span>
@@ -191,12 +196,9 @@
 				?>
 				
 			<?php endif ?>
-		</div>
-	</div>
-</div>
+
 <div class="clear"></div>
 
-<div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
 				<?php
 				if($item->miss_christmas){
 				?>
@@ -215,14 +217,13 @@
 				?>
 				
 </div>
-</div>
 
 
 <script type="text/javascript">
 $(function () {
 	var saleEnd = new Date();
 	saleEnd = new Date(<?php echo $event->end_date->sec * 1000?>);
-	$('#listingCountdown').countdown({until: saleEnd, layout: 'Ends in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+	$('#listingCountdown').countdown({until: saleEnd, layout: 'Hurry Sale Ends in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
 });
 </script>
 

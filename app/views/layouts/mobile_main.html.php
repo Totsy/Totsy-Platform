@@ -29,14 +29,13 @@
 </head>
 <body>
 <?php if (!empty($userInfo)){ ?>
-<div data-role="header" data-position="fixed" style="-moz-box-shadow: 0px 0px 4px 0px #666;
--webkit-box-shadow: 0px 0px 4px 0px #666;
-box-shadow:0px 0px 4px 0px #666;"> 
+<div data-role="header" style="-moz-box-shadow: 0px 0px 4px 0px #666;
+-webkit-box-shadow: 0px 0px 4px 0px #666; box-shadow:0px 0px 4px 0px #666;"> 
 	<div class="logo">
 		<a href="#" onclick="window.location.href='/sales';return false;"><img src="/img/logo.png" width="60" /></a>
 		<div style="float:right; margin-right:10px; font-size:12px; font-weight:normal!important; color:#999;">
 		<?php if(array_key_exists('firstname', $userInfo) &&     !empty($userInfo['firstname'])):
-					?><br />
+					?>
 					    <?=$userInfo['firstname'].' '.$userInfo['lastname'] ?><br />
 					<?php else: ?>
 					    Totsy Member<br />
@@ -53,7 +52,7 @@ box-shadow:0px 0px 4px 0px #666;">
 		<li><a href="#" onclick="window.location.href='/sales/momsdads';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/momsdads') == 0) { echo 'class="ui-btn-active"'; } ?>>Parents</a></li>
 	</ul>
 </div><!-- /navbar -->		
-
+<div class="clear"></div>
 </div>
 
 <?php } else { ?>
@@ -62,6 +61,7 @@ box-shadow:0px 0px 4px 0px #666;">
 	<div class="logo">
 		<a href="#" onclick="window.location.href='/sales';return false;"><img src="/img/logo.png" width="80" /></a>
 	</div>	
+	</div>
 <?php } ?>
 	<div data-role="content">
 	<?php echo $this->content(); ?>

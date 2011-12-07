@@ -81,9 +81,6 @@
 
 <script type="text/javascript">
 //<!--
-	$(document).ready(function() {
-		$("#banner_container").rotate();
-	});
 
 	$(".counter").each( function () {
 
