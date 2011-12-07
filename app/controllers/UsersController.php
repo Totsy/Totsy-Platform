@@ -323,7 +323,7 @@ class UsersController extends BaseController {
 			if (!empty($userfb)) {
 				$self = static::_object();
 				if(!$fbCancelFlag) {
-					$self->redirect('/register/facebook');
+					return $this->redirect('/register/facebook');
 				}
 			}
 		}
@@ -344,9 +344,9 @@ class UsersController extends BaseController {
 					}
 					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 					if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) {
-						$this->redirect($this->request->url);
+						return $this->redirect($this->request->url);
 					} else {
-						$this->redirect($redirect);
+						return $this->redirect($redirect);
 					}
 				} else {
 					$cookie['autoLoginHash'] = null;
@@ -684,10 +684,10 @@ class UsersController extends BaseController {
 				}
 				if (!empty($landing)){
 					Session::delete('landing',array('name'=>'default'));
-					$self->redirect($landing);
+					return $self->redirect($landing);
 					unset($landing);
 				} else {
-					$self->redirect('/sales');
+					return $self->redirect('/sales');
 				}
 			}
 		}
