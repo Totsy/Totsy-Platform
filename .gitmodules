@@ -15,7 +15,7 @@
 	url = git@github.com:Totsy/li3_facebook.git
 [submodule "admin/libraries/li3_flash_message"]
 	path = admin/libraries/li3_flash_message
-	url = code@dev.lithify.me:li3_flash_message.git
+	url = git://github.com/michaelhue/li3_flash_message.git
 [submodule "libraries/sailthru/sailthru-php5-client"]
 	path = libraries/sailthru/sailthru-php5-client
 	url = git@github.com:sailthru/sailthru-php5-client.git
