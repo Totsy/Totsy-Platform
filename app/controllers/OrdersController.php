@@ -8,6 +8,7 @@ use app\models\Item;
 use app\models\Credit;
 use app\models\Address;
 use app\models\Event;
+use app\models\Affiliate;
 use app\models\Promotion;
 use app\models\CreditCard;
 use app\models\Promocode;
