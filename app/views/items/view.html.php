@@ -184,8 +184,8 @@
 				<?php
 				if($item->miss_christmas){
 				?>
-				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#990000; font-size:11px;text-align:left;">
-				<img src="/img/truck_red.png">
+				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#ff0000; font-size:11px;text-align:left;">
+				<img src="/img/truck_grey.png">
 				This item is not guaranteed to be delivered on or before 12/25.*
 				</div>
 				<?php
