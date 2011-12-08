@@ -121,6 +121,9 @@ $(document).ready( function() {
 			item_size = "no size";
 		}
 		
+		window.location = "/cart/add?item_id=" + item_id  + "&item_size=" + item_size;
+		
+		/*
 		$.ajax({
 			url: $.base + 'cart/add',
 			data: "item_id=" + item_id + "&" + "item_size=" + item_size,
@@ -129,6 +132,7 @@ $(document).ready( function() {
 				showCartPopup(data);
 			}
 		});
+		*/
 	};
 		
 	var closeCartPopup = function() { 

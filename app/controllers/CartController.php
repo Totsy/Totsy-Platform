@@ -251,8 +251,10 @@ class CartController extends BaseController {
 				}
 			}
 		}
-		//call the cart popup
-		$this->getCartPopupData();
+		$this->redirect("/cart/view");
+		
+		//temporarily commented due to issues on prod
+		//$this->getCartPopupData();
 	}
 
 	/**
