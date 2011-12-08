@@ -17,7 +17,7 @@ Auth::config(array(
 
 Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 
-	$skip = array('login', 'logout', 'register', 'register/facebook');	
+	$skip = array('login', 'logout', 'register',"register/facebook","reset");
 	$allowed = false;
 
 	#dynamic affiliate pages
@@ -25,6 +25,13 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 		 $allowed = true;
 	 }
 	 if (array_key_exists('a',$params['request']->query )) {
+		 $allowed = true;
+	 }
+	 #join and invites
+	 if(preg_match('#(^invitation/)[a-zA-Z0-9\+_]+#', $params['request']->url)) {
+		 $allowed = true;
+	 }
+	 if(preg_match('#(^join/)[a-zA-Z0-9\+_]+#', $params['request']->url)) {
 		 $allowed = true;
 	 }
 	 #static pages

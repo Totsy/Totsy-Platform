@@ -59,10 +59,6 @@ var discountErrors = new Object();
 	<?php
 	if($missChristmasCount>0){
 	?>
-				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#990000; font-size:11px;text-align:center;">
-				<img src="/img/truck_red.png">
-				One or more of the items in your cart is not guaranteed to be delivered on or before 12/25*.
-				</div>
 	<?php
 	}
 	else{
@@ -104,7 +100,7 @@ var discountErrors = new Object();
 			if($item->miss_christmas){
 				$tableclass = "alt0a";
 				if($notmissChristmasCount>0){
-					$shipmsg = "<span class=\"shippingalert\">This item is not guaranteed to be delivered on or before 12/25.<br>Please remove this item from your cart and order separately to receive your other items on or before 12/23.*</span>";
+					$shipmsg = "<span class=\"shippingalert rounded\" style=\"display:block; padding:4px; color:#ff0000; background:#ffffff; border:1px solid #ff0000;\"><img src=\"/img/truck_grey.png\" style=\"padding-right:10px;\">This item is not guaranteed to be delivered on or before 12/25.<br>To receive your other items on or before 12/23, please remove this item from your cart and order it separately.*</span>";
 				}
 				else{
 					$shipmsg = "<span class=\"shippingalert\">This item is not guaranteed to be delivered on or before 12/25.*</span>";
@@ -147,7 +143,7 @@ var discountErrors = new Object();
 						<?php if($item->size!=="no size") : ?>
 						<strong>Size:</strong> <?=$item->size;?>
 						<?php endif ?>
-						<br><?=$shipmsg?>
+						<br><? echo $shipmsg?>
 					</td>
 					<?php
 						$date = $cartItemEventEndDates[$x] * 1000;
@@ -321,8 +317,7 @@ var discountErrors = new Object();
 				<?php
 				if($missChristmasCount>0&&$notmissChristmasCount>0){
 				?>
-				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. 
-								
+				* Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a style="color:#000000;" href="mailto:support@totsy.com">support@totsy.com</a> with any questions.								
 				<?php
 				}
 				elseif($missChristmasCount>0){

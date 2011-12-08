@@ -179,7 +179,7 @@ class Order extends Base {
 
 			$cart = Cart::active();
 			#Save Order Infos
-			
+
 			$shipDate = Cart::shipDate($cart);
 			if($shipDate=="On or before 12/23"){
 				$shipDateInsert = strtotime("2011-12-23".' +1 day');
@@ -190,8 +190,8 @@ class Order extends Base {
 			else{
 				$shipDateInsert = $shipDate;
 			}
-			
-			
+
+
 			$order->save(array(
 					'total' => $vars['total'],
 					'subTotal' => $vars['subTotal'],
@@ -204,7 +204,7 @@ class Order extends Base {
 					'card_type' => $card->type,
 					'card_number' => substr($card->number, -4),
 					'date_created' => static::dates('now'),
-					'authKey' => $authKey,
+					'authKey' => $authKey->key(),
 					'billing' => $vars['billingAddr'],
 					'shipping' => $vars['shippingAddr'],
 					'shippingMethod' => $shippingMethod,
