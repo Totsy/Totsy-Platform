@@ -44,6 +44,9 @@ class ReAuthorize extends \lithium\console\Command {
 	
 	public $fullAmount = false;
 	
+	public $reauthVisaMC = false;
+	
+	public $unitTest = false;
 	/**
 	 * Instances
 	 */
@@ -63,8 +66,10 @@ class ReAuthorize extends \lithium\console\Command {
 			$report = $this->manageReauth($orders);
 		}
 		#Send Email containing informations about the Reauth Process
-		$this->sendReports($report);
-		$this->logReport($report);
+		if(!$this->unitTest) {
+			$this->sendReports($report);
+			$this->logReport($report);
+		}
 		#In Case Of Request by OrderExport, return orders to be processed
 		if(!empty($this->fullAmount)) {
 			$ordersToBeProcessed = $this->getOrdersToShipped($report);
@@ -109,10 +114,12 @@ class ReAuthorize extends \lithium\console\Command {
 		$conditions = array('void_confirm' => array('$exists' => false),
 							'auth_confirmation' => array('$exists' => false),
 							'authKey' => array('$exists' => true),
-							'card_type' => 'amex',
 							'cc_payment' => array('$exists' => true),
 							'date_created' => array('$lte' => new MongoDate($limitDate))
 		);
+		if(!$this->reauthVisaMC) {
+			$conditions['card_type'] = 'amex';
+		}
 		$orders = $ordersCollection->find($conditions);
 		Logger::debug('End of Getting Orders to be Reauth');
 		return $orders;
@@ -129,12 +136,11 @@ class ReAuthorize extends \lithium\console\Command {
 			}
 			Mailer::send('ReAuth_Errors_Test','troyer@totsy.com', $report);
 		}
-		echo 'ReAuth Script Runned, ' . count($report['updated']) . ' Orders Updated ' . count($report['errors']) . ' Errors Found.';
 	}
-	
+
 	public function manageReauth($orders = null, $limitDate = null) {
 		Logger::debug('Managing Reauth Type');
-		$report = array('updated', 'errors', 'skipped');
+		$report = array('updated' => null, 'errors' => null, 'skipped' => null);
 		foreach ($orders as $order) {
 			Logger::debug('Processing Order : ' . $order['order_id']);
 			#Check If Reauth Needed
@@ -189,7 +195,10 @@ class ReAuthorize extends \lithium\console\Command {
 			}
 		} else {
 			#SPECIAL CONDITION - DONT REAUTHORIZE VISA/MC Transaction
-			if($order['card_type'] != 'amex') {
+			if($order['card_type'] != 'amex' && !$this->reauthVisaMC) {
+				$reAuth = false;
+			}
+			if($order['authTotal'] != $order['total']) {
 				$reAuth = false;
 			}
 		}
@@ -232,27 +241,25 @@ class ReAuthorize extends \lithium\console\Command {
 					$auth = Processor::authorize('default', $total, $card);
 					if ($auth->success()) {
 						Logger::debug("Authorization Succeeded");
-						if($order['card_type'] == 'amex') {
-							$customer = Processor::create('default', 'customer', array(
-								'firstName' => $userInfos['firstname'],
-								'lastName' => $userInfos['lastname'],
-								'email' => $userInfos['email'],
-								'payment' => $card 
-							));
-							$result = $customer->save();
-							$profileID = $result->response->paySubscriptionCreateReply->subscriptionID;
-							$update = $usersCollection->update(
-								array('_id' => new MongoId($user['_id'])),
-								array('$push' => array('cyberSourceProfiles' => $profileID)), array( 'upsert' => true)
-							);
-							#Setup new AuthKey
-							$update = $ordersCollection->update(
-								array('_id' => $order['_id']),
-								array('$set' => array(
-									'cyberSourceProfileId' => $profileID
-								)), array( 'upsert' => true)
-							);
-						}
+						$customer = Processor::create('default', 'customer', array(
+							'firstName' => $userInfos['firstname'],
+							'lastName' => $userInfos['lastname'],
+							'email' => $userInfos['email'],
+							'payment' => $card
+						));
+						$result = $customer->save();
+						$profileID = $result->response->paySubscriptionCreateReply->subscriptionID;
+						$update = $usersCollection->update(
+							array('_id' => new MongoId($user['_id'])),
+							array('$push' => array('cyberSourceProfiles' => $profileID)), array( 'upsert' => true)
+						);
+						#Setup new AuthKey
+						$update = $ordersCollection->update(
+							array('_id' => $order['_id']),
+							array('$set' => array(
+								'cyberSourceProfileId' => $profileID
+							)), array( 'upsert' => true)
+						);
 						#Setup new AuthKey
 						$update = $ordersCollection->update(
 								array('_id' => $order['_id']),
@@ -329,6 +336,7 @@ class ReAuthorize extends \lithium\console\Command {
 			$profile = $cybersource->profile($order['cyberSourceProfileId']);
 			$auth = Processor::authorize('default', $total, $profile);
 		} else {
+			Logger::debug("Getting Credit Card Informations");
 			$userInfos = $usersCollection->findOne(array('_id' => new MongoId($order['user_id'])));
 			$creditCard = Order::getCCinfos($order);
 			#Create Card and Check Billing Infos
@@ -397,18 +405,19 @@ class ReAuthorize extends \lithium\console\Command {
 		$fh = fopen($myFilePath, 'wb');
 		if(!empty($report)) {
 			foreach ($report as $reporType) {
-				foreach($reporType as $reportCase) {
-					$line = null;
-					foreach($reportCase as $value){
-						$line[] = $value;
+				if(!empty($reporType)) {
+					foreach($reporType as $reportCase) {
+						$line = null;
+						foreach($reportCase as $value){
+							$line[] = $value;
+						}
+						fputcsv($fh, $line);
+						$idx++;
 					}
-					fputcsv($fh, $line);
-					$idx++;
-				}
+				}				
 			}
 		}
 		fclose($fh);
 		Logger::debug('Finish Writing Report, ' . $idx . ' lines has been written');
->>>>>>> add reauthorize process to OrderExport
 	}
 }

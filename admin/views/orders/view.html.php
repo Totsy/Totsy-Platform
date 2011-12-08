@@ -46,6 +46,8 @@
 									<button id="part_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Part Order TAX Return</button>
 									<button id="cancel_button" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
 									<button id="update_shipping" style="font-weight:bold;font-size:14px;">Update Shipping</button>
+									<button id="update_payment" style="font-weight:bold;font-size:14px;">Update Payment Information</button>
+									<button id="generate_order_file" style="font-weight:bold;font-size:14px;">Generate Order File</button>
 									</p></div>
 								<?php endif ?>
 									<?php /**/ ?>
@@ -67,6 +69,12 @@
 										<?=$this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
 										<?=$this->form->hidden('cancel_action', array('class' => 'inputbox', 'id' => 'cancel_action', 'value' => 1)); ?>
 										<?=$this->form->hidden('comment', array('class' => 'textarea', 'id' => 'comment')); ?>
+										<?=$this->form->end();?>
+									</div>
+									<div id="order_file" style="display:none">
+										<?=$this->form->create(null ,array('id'=>'newOrderFileForm','enctype' => "multipart/form-data")); ?>
+										<?=$this->form->hidden("process-as-an-exception", array('class' => 'inputbox', 'id' => "process-as-an-exception")); ?>
+										<?=$this->form->submit('OK')?>
 										<?=$this->form->end();?>
 									</div>
 									<div id="new_shipping" style="display:none">
@@ -136,6 +144,123 @@
 													<?=$this->form->error('phone'); ?>
 												</div>
 											<?=$this->form->submit('Confirm new shipping details')?>
+											<?=$this->form->end();?>
+										</div>
+										<div id="new_payment" style="display:none">
+											<?=$this->form->create(null ,array('id'=>'newPaymentForm','enctype' => "multipart/form-data")); ?>
+												<h2 id="new_credit_card_infos">Credit Card Informations</h2>
+												<div class="form-row">
+													<?=$this->form->label('type', 'Type', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->select('creditcard[type]', array('visa' => 'Visa', 'mc' => 'MasterCard','amex' => 'American Express'), array('id' => 'card_type', 'class'=>'inputbox')); ?>
+													<?=$this->form->error('creditcard[type]'); ?>
+												</div>												
+												<div class="form-row">
+													<?=$this->form->label('number', 'Number', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('creditcard[number]', 
+														array('class' => 'inputbox', 'id' => 'creditcard[number]')); ?>
+													<?=$this->form->error('number'); ?>
+												</div>
+												<div class="form-row">
+													<?=$this->form->label('month', 'Month', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+												<?=$this->form->text('creditcard[month]', 
+													array('class' => 'inputbox', 'id' => 'creditcard[month]')); ?>
+													<?=$this->form->error('month'); ?>
+												</div>
+												<div class="form-row">
+													<?=$this->form->label('year', 'Year', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('creditcard[year]', array('class' => 'inputbox', 'id' => 'creditcard[year]')); ?>
+													<?=$this->form->error('year'); ?>
+												</div>
+												<div class="form-row">
+													<?=$this->form->label('code', 'Code', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('creditcard[code]', array('class' => 'inputbox', 'id' => 'creditcard[code]')); ?>
+													<?=$this->form->error('code'); ?>
+												</div>
+												<h2 id="new_billing_infos">Billing Informations</h2>
+												<div class="form-row">
+													<?=$this->form->label('firstname', 'First Name', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('billing[firstname]', array('class' => 'inputbox')); ?>
+													<?=$this->form->error('firstname'); ?>
+												</div>
+												<div class="form-row">
+													<?=$this->form->label('lastname', 'Last Name', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('billing[lastname]', array('class' => 'inputbox')); ?>
+													<?=$this->form->error('lastname'); ?>
+												</div>
+												<div class="form-row">
+													<?=$this->form->label('address', 'Address', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('billing[address]', array('class' => 'inputbox')); ?>
+													<?=$this->form->error('address'); ?>
+												</div>
+											 	<div class="form-row">
+													<?=$this->form->label('city', 'City', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('billing[city]', array('class' => 'inputbox')); ?>
+													<?=$this->form->error('city'); ?>
+												</div>
+												<div class="form-row">
+													<?=$this->form->label('state', 'State', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('billing[state]', array('class' => 'inputbox')); ?>
+													<?=$this->form->error('state'); ?>
+												</div>
+												<div class="form-row">
+													<?=$this->form->label('zip', 'Zip', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('billing[zip]', array('class' => 'inputbox', 'id' => 'zip')); ?>
+													<?=$this->form->error('zip'); ?>
+												</div>
+												<div class="form-row">
+													<?=$this->form->label('phone', 'Phone', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+												<?=$this->form->text('billing[phone]', array('class' => 'inputbox', 'id' => 'phone')); ?>
+													<?=$this->form->error('phone'); ?>
+												</div>
+											<?=$this->form->submit('Create new Authorization')?>
 											<?=$this->form->end();?>
 										</div>
 										<?php endif ?>
@@ -495,6 +620,19 @@ $(document).ready(function(){
 			$("#new_shipping").slideUp();
 		}
 	});
+	$("#generate_order_file").click(function () {
+		if (confirm('Are you sure to send this order as exception to Dotcom ?')) {
+			$('input[name="process-as-an-exception"]').val("true");
+			$('#newOrderFileForm').submit();
+		}
+	});
+	$("#update_payment").click(function () {
+		if ($("#new_payment").is(":hidden")) {
+			$("#new_payment").show("slow");
+		} else {
+			$("#new_payment").slideUp();
+		}
+	});
 	$("#confirm_cancel").click(function () {
 		var test = $('textarea#comment_text').val();
 		if(test == "") {
@@ -546,6 +684,7 @@ function open_item(val) {
 		$('#itemsForm').submit();
 	}
 };
+
 function update_order() {
 	var test = $('textarea#comment').val();
 	if(test == "") {

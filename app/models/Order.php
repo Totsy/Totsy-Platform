@@ -11,6 +11,7 @@ use app\models\Base;
 use app\models\FeatureToggles;
 use li3_payments\payments\TransactionResponse;
 use li3_payments\extensions\adapter\payment\CyberSource;
+use li3_payments\extensions\adapter\account\Customer;
 
 class Order extends Base {
 

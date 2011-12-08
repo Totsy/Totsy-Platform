@@ -897,6 +897,21 @@ class Order extends Base {
 		}
 		return $creditCard; 
 	}
+	
+	/**
+	 * Encrypt all credits card informations with MCRYPT and store it in the Session
+	 */
+	public static function creditCardEncrypt($cc_infos, $user_id) {
+		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
+		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+		$cc_encrypt['vi'] = base64_encode($iv);
+		$key = md5($user_id);
+		foreach	($cc_infos as $k => $cc_info) {
+			$crypt_info = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key.sha1($k), $cc_info, MCRYPT_MODE_CFB, $iv);
+			$cc_encrypt[$k] = base64_encode($crypt_info);
+		}
+		return $cc_encrypt;
+	}
 }
 
 ?>
