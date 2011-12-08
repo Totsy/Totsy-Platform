@@ -4,7 +4,7 @@
 <div class="grid_16">
 		<h2 class="page-title gray"><span class="red">
 		<div id="listingCountdown" class="listingCountdown" style="float:right;"></div>
-		<a href="/" title="Sales"><?=$type?> Sales</a> /</span> <?=$event->name; ?>
+		<a href="/" title="Sales"><?=$type?> Sales</a> /</span> <?=$event->name; ?> 
 		</h2>
 		<div style="clear:both;"></div>
 		<hr />
@@ -24,33 +24,33 @@
 									));
 						}
 					?>
-
+					
 				</div>
-
+				
 				<?php if (!empty($event->images->logo_image)) { ?>
 				<div class="grid_8 omega" style="padding:10px 0px;">
 					<div class="grid_8 alpha omega blurb">
-
+					
 					<?php } else { ?>
 					<div class="grid_11 omega">
 					<div class="grid_11 alpha omega blurb">
-
+					
 					<?php } ?>
-
+					
 					<?php if (!empty($event->blurb)): ?>
 						<?php echo $event->blurb ?>
 					<?php endif ?>
-
+				
 			<?php if (!empty($items)){ ?>
 					<?php
 					if($missChristmasCount>0){
 					?>
-								<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#ff0000; font-size:11px;text-align:left;">
-								<img src="/img/truck_grey.png">
-								Items in this sale are not guaranteed to be delivered on or before 12/25.*
+								<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#990000; font-size:11px;text-align:left;">
+								<img src="/img/truck_red.png">
+								Items in this sale are not guaranteed to be delivered on or before 12/25.* 
 								</div>
-
-
+					
+					
 					<?php
 					}
 					else{
@@ -59,8 +59,8 @@
 								<img src="/img/truck_grey.png">
 								Items in this sale will be delivered on or before 12/23.*
 								</div>
-
-
+					
+					
 					<?php
 					}
 					?>
@@ -68,15 +68,15 @@
 
 
 					</div>
-
-
+				
+					
 </div>
 <?php if (!empty($event->images->logo_image)): ?>
 <div class="grid_3 alpha omega" style="margin-top:10px;">
 						<!-- Display Logo Image -->
-
+						
 							<img src="/image/<?=$event->images->logo_image?>.gif" alt="<?= $event->name; ?>" title="<?= $event->name; ?>" width="148" height="52" />
-
+						
 					</div>
 <?php endif ?>
 
@@ -145,8 +145,8 @@
 							"sale/$event->url/{$item->url}",
 							array('title' => $item->name, 'escape' => false)
 						); ?>
-
-
+						
+						
 								<table style="margin:5px;">
 									<tr>
 										<td width="227" valign="top">
@@ -158,7 +158,7 @@
 										</td>
 									</tr>
 								</table>
-
+								
 					</div>
 				</div>
 				<?php $y++ ?>
@@ -170,24 +170,24 @@
 				<?php
 				if($missChristmasCount>0&&$notmissChristmasCount>0){
 				?>
-				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions.
-
+				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. 
+				
 				<?php
 				}
 				elseif($missChristmasCount>0){
 				?>
-				* Your items will arrive safely, but after 12/25.
+				* Your items will arrive safely, but after 12/25.				
 				<?php
 				}
 				else{
 				?>
-
+				
 				* Our delivery guarantee does not apply when transportation networks are affected by weather.
-
+				
 				<?php
 				}
 				?>
-
+				
 </div>
 
 
@@ -199,17 +199,17 @@ $(function () {
 	var saleStart = new Date();
 	var saleEnd = new Date();
 	var now = new Date();
-	saleStart = new Date(<?php echo $this->DataFormat->timeValue($event->start_date) * 1000?>);
-	saleEnd = new Date(<?php echo $this->DataFormat->timeValue($event->end_date) * 1000?>);
-	if((now.getTime()) < <?php echo $this->DataFormat->timeValue($event->start_date) * 1000 ?>) {
-		var diff = <?php echo $this->DataFormat->timeValue($event->start_date) * 1000 ?> - (now.getTime());
+	saleStart = new Date(<?php echo $event->start_date->sec * 1000?>);
+	saleEnd = new Date(<?php echo $event->end_date->sec * 1000?>);
+	if((now.getTime()) < <?php echo $event->start_date->sec * 1000 ?>) {
+		var diff = <?php echo $event->start_date->sec * 1000 ?> - (now.getTime());
 		if((diff / 1000) < (24 * 60 * 60) ) {
 			$('#listingCountdown').countdown({until: saleStart, layout: 'Opens in {hnn}{sep}{mnn}{sep}{snn}'});
 		} else {
 			$('#listingCountdown').countdown({until: saleStart, layout: 'Opens in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
 		}
 	} else {
-			var diff = <?php echo $this->DataFormat->timeValue($event->end_date) * 1000 ?> - (now.getTime());
+			var diff = <?php echo $event->end_date->sec * 1000 ?> - (now.getTime());
 			if((diff / 1000) < (24 * 60 * 60) ) {
 				$('#listingCountdown').countdown({until: saleEnd, layout: 'Ends in {hnn}{sep}{mnn}{sep}{snn}'});
 			} else {
@@ -249,4 +249,4 @@ f+='&'+key+'='+encodeURIComponent(cto_params[key]);}if(cto_params['kw']!=undefin
 c+='&cb='+Math.floor(Math.random()*99999999999);try{c+='&ref='+encodeURIComponent(document.referrer);}catch(e){}try{
 c+='&sc_r='+encodeURIComponent(screen.width+'x'+screen.height);}catch(e){}try{c+='&sc_d='+encodeURIComponent(screen.colorDepth);}catch(e){}b.Load(function(){
 a(c.substring(0,2000))})}}}();CRITEO.Load(document.location.protocol+'//dis.us.criteo.com/dis/dis.aspx?');
-</script>
+</script> 
