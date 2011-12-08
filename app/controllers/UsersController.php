@@ -684,10 +684,11 @@ class UsersController extends BaseController {
 				}
 				if (!empty($landing)){
 					Session::delete('landing',array('name'=>'default'));
-					return $self->redirect($landing);
+					header("location: " . $landing);
+				//	return $self->redirect($landing);
 					unset($landing);
 				} else {
-					return $self->redirect('/sales');
+				    header("location: /sales");
 				}
 			}
 		}
