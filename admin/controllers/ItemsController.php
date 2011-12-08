@@ -194,12 +194,12 @@ class ItemsController extends BaseController {
 			$event = Event::find('first', array('conditions' => array('_id' => $id)));
 			if ($event->views <= 0){
 				if ((!empty($event->items)) && Item::remove(array('event' => $id)) && Event::removeItems($id)) {
-					FlashMessage::set('Items Removed', array('class' => 'pass'));
+					FlashMessage::write('Items Removed', array('class' => 'pass'));
 				} else {
-					FlashMessage::set('Remove Failed', array('class' => 'warning'));
+					FlashMessage::write('Remove Failed', array('class' => 'warning'));
 				}
 			} else {
-				FlashMessage::set('Items Cannot Be Removed the Event is Live', array('class' => 'fail'));
+				FlashMessage::write('Items Cannot Be Removed the Event is Live', array('class' => 'fail'));
 			}
 			$this->redirect(array('Events::edit','args' => array($id)));
 		}

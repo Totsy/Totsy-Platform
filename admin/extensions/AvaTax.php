@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 namespace admin\extensions;
 
 use lithium\analysis\Logger;
@@ -9,34 +10,43 @@ use admin\extensions\BlackBox;
 use AvaTaxWrap;
 use Exception;
 
-
 /**
- * 
- * AvaTax implementation for the aadmin app (there is another one for front-end app)
- *
+ * AvaTax implementation for the aadmin app (there is another one for front-end app).
  */
+class AvaTax extends \lithium\core\StaticObject {
 
-class AvaTax {
-	
+	protected static $_settings = array();
+
 	/**
 	 * Switcher for avalara/totsy tax calculation system
-	 * 
+	 *
 	 */
 	protected static $useAvatax = true;
-	
-	public static function  cancelTax($order,$tryNumber=0){
+
+	public static function __init() {
+		$settings = Environment::get(true);
+		static::$_settings = $settings['avatax'];
+	}
+
+	public static function cancelTax($order,$tryNumber=0){
 		try{
 			AvaTaxWrap::commitTax($order);
 			AvaTaxWrap::cancelTax($order);
 		} catch (Exception $e) {
+			/* @fixme The line below has been added in order to prevent
+			   undefined variable errors. Obviously this can't be a real
+			   fix and possible results untintended behavior. However it's
+		       not clear what has been the intended behavior intially. */
+			$data = array();
 
 			// Try again or return 0;
 			BlackBox::tax('can not process tax cancelation via avalara.');
 			BlackBox::taxError($e->getMessage()."\n".$e->getTraceAsString() );
-			if ($tryNumber <= $settings['avatax']['retriesNumber']){
-				return self::getTax($data,++$tryNumber);
+
+			if ($tryNumber <= static::$_settings['retriesNumber']){
+				return self::getTax($data, ++$tryNumber);
 			} else {
-				Mailer::send('TaxProcessError', $setting['avatax']['logEmail'], array(
+				Mailer::send('TaxProcessError', static::$_settings['logEmail'], array(
 					'message' => 'Avatax system is unreachable. Can NOT process tax canselation' ,
 					'trace' => 'ADMIN @ '.date('Y-m-d H:i:s'),
 					'info' => $order
@@ -45,17 +55,20 @@ class AvaTax {
 			}
 		}
 	}
-	
-	public static function getTax($data,$tryNumber=0){
-		$settings = Environment::get(Environment::get());
-		if (isset($settings['avatax']['useAvatax'])) { static::$useAvatax = $settings['avatax']['useAvatax']; }
-		
-		
-		$data['totalDiscount'] = 0;
+
+	public static function getTax($data, $tryNumber = 0){
+		if (isset(static::$_settings['useAvatax'])) {
+			static::$useAvatax = static::$_settings['useAvatax'];
+		}
+		$data = (array) $data + array(
+			'totalDiscount' => 0,
+			'shippingAddr' => null,
+			'billingAddr' => null
+		);
 		if ( is_array($data) && array_key_exists('cartByEvent',$data)){
 			$data['items'] = static::getCartItems($data['cartByEvent']);
 			static::shipping($data);
-		} 
+		}
 		if (is_object($data['shippingAddr'])){ $data['shippingAddr'] = $data['shippingAddr']->data(); }
 		if (is_object($data['billingAddr'])){ $data['billingAddr'] = $data['billingAddr']->data(); }
 		if (array_key_exists('orderPromo',$data)){
@@ -70,57 +83,62 @@ class AvaTax {
 			$data['totalDiscount'] = $data['totalDiscount'] + abs($data['orderServiceCredit']);
 			unset($data['orderServiceCredit']);
 		}
-
+        if (empty($data['shippingAddr']) && !empty($data['order']['shipping'])){
+           $data['shippingAddr'] = $data['order']['shipping'];
+        }
+        if (empty($data['billingAddr']) && !empty($data['order']['billing'])){
+           $data['billingAddr'] = $data['order']['billing'];
+        }
 		if (static::$useAvatax === false){
-			return array( 
+			return array(
 				'tax'=>static::totsyCalculateTax($data),
 				'avatax' => static::$useAvatax
-			);			
+			);
 		}
-		
-		try{	
-			return array( 
+
+		try{
+			return array(
 				'tax'=> AvaTaxWrap::getTax($data),
 				'avatax' => static::$useAvatax
-			);	
+			);
 		} catch (Exception $e){
 			// Try again or return 0;
 			BlackBox::tax('can not calculate tax via avalara.');
 			BlackBox::taxError($e->getMessage()."\n".$e->getTraceAsString() );
-			if ($tryNumber <= $settings['avatax']['retriesNumber']){
-				BlackBox::tax(($tryNumber+1).' attempt of '.$settings['avatax']['retriesNumber']);
+			if ($tryNumber <= static::$_settings['retriesNumber']){
+				BlackBox::tax(($tryNumber+1).' attempt of '.static::$_settings['retriesNumber']);
 				return self::getTax($data,++$tryNumber);
 			} else {
 				try {
 					BlackBox::tax('Trying old way.');
-					Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
+					Mailer::send('TaxProcessError', static::$_settings['logEmail'], array(
 						'message' => 'Avatax system was unreachable.<br>Tax calculation was performed internally using default state tax.',
 						'trace' => 'ADMIN @ '.date('Y-m-d H:i:s'),
 						'info' => $data
-					));	
-					return array( 
+					));
+					return array(
 						'tax'=>static::totsyCalculateTax($data),
 						'avatax' => static::$useAvatax
 					);
 				} catch (Exception $m){
 					BlackBox::tax('ERROR tax returns 0');
-					Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
+					Mailer::send('TaxProcessError', static::$_settings['logEmail'], array(
 						'message' => 'Was unable to calculate tax. Charged $0 tax for this order.',
 						'trace' => 'ADMIN @ '.date('Y-m-d H:i:s'),
 						'info' => $data
 					));
-					return 0;		
+					return 0;
 				}
 			}
 		}
-	} 
-	
+	}
+
   	public static function postTax($data,$tryNumber=0){
-  		
+
   		if (is_array($data) && array_key_exists('cartByEvent',$data) ){
 			$data['items'] = static::getCartItems($data['cartByEvent']);
 			static::shipping($data);
-		}  		
+		}
   		$data['admin'] = 1;
   		try {
   			return AvaTaxWrap::getAndCommitTax($data);
@@ -128,12 +146,12 @@ class AvaTax {
   			BlackBox::tax('can not post tax to avalara.');
 			BlackBox::taxError($e->getMessage()."\n".$e->getTraceAsString() );
 			// Try again or return 0;
-			if ($tryNumber <= $settings['avatax']['retriesNumber']){
-				BlackBox::tax(($tryNumber+1).' attempt of '.$settings['avatax']['retriesNumber']);
+			if ($tryNumber <= static::$_settings['retriesNumber']){
+				BlackBox::tax(($tryNumber+1).' attempt of '.static::$_settings['retriesNumber']);
 				return self::postTax($data,++$tryNumber);
 			} else {
 				BlackBox::tax('ERROR tax returns 0');
-				Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
+				Mailer::send('TaxProcessError', static::$_settings['logEmail'], array(
 					'message' => 'Was unable to post tax.',
 					'trace' => 'ADMIN @ '.date('Y-m-d H:i:s'),
 					'info' => $data
@@ -142,22 +160,22 @@ class AvaTax {
 			}
 		}
   	}
-	
+
   	public static function returnTax($data,$tryNumber=0){
   		$data['doctype'] = 'return';
 
-  		try{		
+  		try{
 	  		static::getTax($data);
 			static::commitTax($data['order']['order_id']);
 		} catch (Exception $e){
 			BlackBox::tax('can not return tax via avalara.');
 			BlackBox::taxError($e->getMessage()."\n".$e->getTraceAsString() );
-			if ($tryNumber <= $settings['avatax']['retriesNumber']){
-				BlackBox::tax(($tryNumber+1).' attempt of '.$settings['avatax']['retriesNumber']);
+			if ($tryNumber <= static::$_settings['retriesNumber']){
+				BlackBox::tax(($tryNumber+1).' attempt of '.static::$_settings['retriesNumber']);
 				return self::returnTax($data,++$tryNumber);
 			} else {
 				BlackBox::tax('ERROR tax returns 0');
-				Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
+				Mailer::send('TaxProcessError', static::$_settings['logEmail'], array(
 					'message' => 'Was unable to process return tax.',
 					'trace' => 'ADMIN @ '.date('Y-m-d H:i:s'),
 					'info' => $data
@@ -165,21 +183,21 @@ class AvaTax {
 				return 0;
 			}
 		}
-		
+
 	}
-	
-	public static function  commitTax($data,$tryNumber=0){
+
+	public static function commitTax($data, $tryNumber=0){
 		try{
-			AvaTaxWrap::commitTax($order);
+			AvaTaxWrap::commitTax($data['order']);
 		} catch (Exception $e) {
 			BlackBox::tax('can not commit tax via avalara.');
 			BlackBox::taxError($e->getMessage()."\n".$e->getTraceAsString() );
-			if ($tryNumber <= $settings['avatax']['retriesNumber']){
-				BlackBox::tax(($tryNumber+1).' attempt of '.$settings['avatax']['retriesNumber']);
+			if ($tryNumber <= static::$_settings['retriesNumber']){
+				BlackBox::tax(($tryNumber+1).' attempt of '.static::$_settings['retriesNumber']);
 				return self::commitTax($data,++$tryNumber);
 			} else {
 				BlackBox::tax('ERROR tax returns 0');
-				Mailer::send('TaxProcessError', $settings['avatax']['logEmail'], array(
+				Mailer::send('TaxProcessError', static::$_settings['logEmail'], array(
 					'message' => 'Was unable to commit tax.',
 					'trace' => 'ADMIN @ '.date('Y-m-d H:i:s'),
 					'info' => $data
@@ -188,15 +206,15 @@ class AvaTax {
 			}
 		}
 	}
-	
+
   	private static function totsyCalculateTax ($data) {
   		if (!array_key_exists('overShippingCost',$data)) { $data['overShippingCost'] = 0; }
   		if (!array_key_exists('shippingCost',$data)) { $data['shippingCost'] = 0; }
-  		
+
   		$tax = array_sum($data['ordermodel']::tax($data['current_order'],$data['itms']));
   		return $tax ? $tax + (($data['overShippingCost'] + $data['shippingCost']) * $data['ordermodel']::TAX_RATE) : 0;
   	}
-	
+
 	protected static function getCartItems($cartByEvent){
 		$items = array();
 		foreach ($cartByEvent as $key => $event){
@@ -206,7 +224,7 @@ class AvaTax {
 		}
 		return $items;
 	}
-	
+
 	protected static function shipping (&$data){
 		if (array_key_exists('shippingCost', $data) && $data['shippingCost']>0 ){
 			$data['items'][] = array(
@@ -217,7 +235,7 @@ class AvaTax {
 				'quantity' => 1,
 				'sale_retail' => $data['shippingCost'],
 				'taxIncluded' => true
-			);	
+			);
 		}
 
 		if (array_key_exists('overShippingCost', $data) && $data['overShippingCost']>0 ){
@@ -229,9 +247,9 @@ class AvaTax {
 				'quantity' => 1,
 				'sale_retail' => $data['overShippingCost'],
 				'taxIncluded' => true
-			);	
+			);
 		}
-	} 
+	}
 }
 
 ?>

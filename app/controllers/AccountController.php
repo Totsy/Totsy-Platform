@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use app\controllers\BaseController;
 use app\models\Address;
-use \lithium\storage\Session;
+use lithium\storage\Session;
 
 /**
  * Handles the users main account information.

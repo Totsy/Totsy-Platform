@@ -1,5 +1,6 @@
 <?php
 
+use lithium\security\Auth;
 ini_set('display_errors', 0);
 
 /**
@@ -72,14 +73,14 @@ ini_set('display_errors', 0);
 		<!-- END HEADER -->
 
 		<div class="clearfix"></div>
-		<?php
-		    use lithium\storage\Session;
-		    if (Session::check('userLogin')) :
-		?>
-            <div id="navigation">
-                <?php echo $this->view()->render(array('element' => 'navigation')); ?>
-            </div>
-		<?php endif;?>
+
+		<div id="navigation">
+			<?php
+			if (Auth::check('userLogin')) {
+				echo $this->view()->render(array('element' => 'navigation'));
+			}
+			?>
+		</div>
 
 		<div class="clearfix"></div>
 

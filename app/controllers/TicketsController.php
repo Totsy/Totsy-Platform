@@ -5,7 +5,7 @@ namespace app\controllers;
 use app\models\Ticket;
 use app\models\Order;
 use app\controllers\BaseController;
-use \lithium\storage\Session;
+use lithium\storage\Session;
 use app\extensions\Mailer;
 use app\models\User;
 

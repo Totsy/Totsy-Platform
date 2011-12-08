@@ -1,0 +1,22 @@
+{
+	"user1": {
+		"firstname": "Daneel",
+		"lastname": "Olivaw",
+		"email": "daneel@olivaw.com",
+		"password": "daneel",
+		"confirmemail": "daneel@olivaw.com",
+		"emailcheck": true,
+		"terms": "on",
+		"logincounter": 0
+	},
+	"user2": {
+		"firstname": "Giskard",
+		"lastname": "Reventlov",
+		"email": "giskard@reventlov.com",
+		"password": "giskard",
+		"confirmemail": "giskard@reventlov.com",
+		"emailcheck": true,
+		"terms": "on",
+		"logincounter": 0
+	}
+}

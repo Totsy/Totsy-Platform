@@ -3,7 +3,6 @@
 namespace admin\models;
 
 use \lithium\data\Connections;
-use \lithium\storage\Session;
 use admin\models\Credit;
 use MongoRegex;
 use admin\models\Base;
