@@ -14,22 +14,22 @@ class Item extends Base {
 	protected $_meta = array('source' => 'items');
 
 	public static function related($item) {
-				
+
 		$color_and_copy_matches = "";
 		$related_items = "";
-				
+
 		$color_and_copy_matches = static::all(Array('conditions' => Array(
 			'enabled' => true,
 			'description' => $item->description,
 			'color' => array('$ne' => $item->color),
 			'event' => $item->event[0]
 		)));
-		
+
 		if($item->related_items){
 			$related_items = static::all(Array('conditions' => Array(
 			'_id' => Array('$in' => $item->related_items->data())
 		)));
-			
+
 			return array_merge($related_items->data());;
 		} else {
 			return $color_and_copy_matches->data();
@@ -42,7 +42,7 @@ class Item extends Base {
 		}
 		$sizes = array();
 
-		foreach ($item->details->data() as $key => $val) {
+		foreach ($item->details as $key => $val) {
 			if ($val && ($val > 0)) {
 				$sizes[] = $key;
 			}
@@ -60,7 +60,7 @@ class Item extends Base {
 	 * When a customer purchases an item the sale count of the item.size
 	 * will be incremented. The available quantity for the item will at the same time be
 	 * decremented.
-	 */	
+	 */
 	public static function sold($_id, $size, $quantity) {
 		if (!empty($_id) && ( +$quantity > 0)) {
 			$condition = array('_id' => new MongoId($_id));

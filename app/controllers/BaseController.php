@@ -12,13 +12,19 @@ use MongoRegex;
 use li3_facebook\extension\FacebookProxy;
 use lithium\core\Environment;
 
-
-
 /**
 * The base controller will setup functionality used throughout the app.
 * @see app/models/Affiliate::getPixels()
 */
 class BaseController extends \lithium\action\Controller {
+
+	public function __construct(array $config = array()) {
+		/* Merge $_classes of parent. */
+		$vars = get_class_vars('\lithium\action\Controller');
+		$this->_classes += $vars['_classes'];
+
+		parent::__construct($config);
+	}
 
 	/**
 	 * Get the userinfo for the rest of the site from the session.
@@ -92,8 +98,14 @@ class BaseController extends \lithium\action\Controller {
 		/**
 		* If visitor lands on affliate url e.g www.totsy.com/a/afflilate123
 		**/
-		if (is_object($this->request) && isset($this->request->params) && $this->request->params['controller']  == "affiliates" &&
-			$this->request->params['action'] == "register" & empty($invited_by)) {
+		$affiliate = is_object($this->request);
+		$affiliate = $affiliate && isset($this->request->params['controller']);
+		$affiliate = $affiliate && isset($this->request->params['action']);
+		$affiliate = $affiliate && $this->request->params['controller']  == 'affiliates';
+		$affiliate = $affiliate && $this->request->params['action']  == 'register';
+		$affiliate = $affiliate && empty($invited_by);
+
+		if ($affiliate) {
 			$invited_by = $this->request->args[0];
 		}
 
@@ -215,22 +227,28 @@ class BaseController extends \lithium\action\Controller {
 	* Displays what git branch you are currently developing in
 	**/
 	public function currentBranch() {
-        $out = shell_exec("git branch --no-color");
-        preg_match('#(\*)\s[a-zA-Z0-9_-]*(.)*#', $out, $parse);
-        $pos = stripos($parse[0], " ");
-        return trim(substr($parse[0], $pos));
+		if (!is_dir($git = dirname(LITHIUM_APP_PATH) . '/.git')) {
+			return;
+		}
+		$head = trim(file_get_contents("{$git}/HEAD"));
+		$head = explode('/', $head);
+
+		return array_pop($head);
 	}
+
 	/**
 	* Clean Credits Card Infos if out of Cart/Orders/Search ??? Controller
 	**/
 	public function cleanCC() {
-		if (is_object($this->request) && isset($this->request->params) && $this->request->params['controller']  != "orders"
-			&& $this->request->params['controller']  != "cart"
-			&& $this->request->params['controller']  != "search")
-		{
-			if(Session::check('cc_infos')) {
-				Session::delete('cc_infos');
-			}
+		$controllers = array('orders', 'cart', 'search');
+
+		$clean = Session::check('cc_infos');
+		$clean = $clean && is_object($this->request);
+		$clean = $clean && isset($this->request->params['controller']);
+		$clean = $clean && !in_array($this->request->params['controller'], $controllers);
+
+		if ($clean) {
+			Session::delete('cc_infos');
 		}
 	}
 }

@@ -20,7 +20,7 @@
 
 	<?php
 
-	use \DirectoryIterator;
+	use DirectoryIterator;
 	use lithium\net\http\Media;
 	$images = array();
 	$imgDirectory = $this->_request->env('base') . '/img/login/';

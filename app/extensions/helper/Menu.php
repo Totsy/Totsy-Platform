@@ -18,7 +18,7 @@ namespace app\extensions\helper;
 class Menu extends \lithium\template\Helper {
 
 	protected $_classes = array(
-		'menu' => 'app\models\Menu',
+		'menu' => 'totsy_common\models\Menu',
 		'event' => 'app\models\Event'
 	);
 

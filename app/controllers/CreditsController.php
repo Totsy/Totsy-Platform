@@ -2,10 +2,10 @@
 
 namespace app\controllers;
 
-use \app\models\Credit;
-use \app\models\User;
-use \lithium\storage\Session;
-use \app\controllers\BaseController;
+use app\models\Credit;
+use app\models\User;
+use lithium\storage\Session;
+use app\controllers\BaseController;
 
 /**
  * All the users to see their credits.

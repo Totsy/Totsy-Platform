@@ -10,8 +10,15 @@ use MongoRegex;
 
 class BaseController extends \lithium\action\Controller {
 
-    public function _init() {
+	public function __construct(array $config = array()) {
+		/* Merge $_classes of parent. */
+		$vars = get_class_vars('\lithium\action\Controller');
+		$this->_classes += $vars['_classes'];
 
+		parent::__construct($config);
+	}
+
+    public function _init() {
         if(!Environment::is('production')){
             $branch = "<h4 class='global_site_msg'>Current branch " . $this->currentBranch() ."</h4>";
             $this->set(compact('branch'));
@@ -89,9 +96,12 @@ class BaseController extends \lithium\action\Controller {
 	}
 
 	public function currentBranch() {
-        $out = shell_exec("git branch --no-color");
-        preg_match('#(\*)\s[a-zA-Z0-9_-]*(.)*#', $out, $parse);
-        $pos = stripos($parse[0], " ");
-        return trim(substr($parse[0], $pos));
+		if (!is_dir($git = dirname(LITHIUM_APP_PATH) . '/.git')) {
+			return;
+		}
+		$head = trim(file_get_contents("{$git}/HEAD"));
+		$head = explode('/', $head);
+
+		return array_pop($head);
 	}
 }
