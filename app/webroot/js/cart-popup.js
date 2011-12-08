@@ -87,10 +87,7 @@ $(document).ready( function() {
 		if( cartObj.itemCount > 0 ) {
 			
 			//set these
-			$("#savings").text(cartObj.savings.items.toFixed(2));
-			
-			alert("test");
-			
+			$("#savings").text(cartObj.savings.items.toFixed(2));			
 			$("#cart_popup").fadeIn(500);
 		
 			//set the popup to timeout after 8 seconds
