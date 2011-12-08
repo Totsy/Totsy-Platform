@@ -150,13 +150,13 @@ class CartController extends BaseController {
 		}
 		#Get Total of The Cart after Discount
 		$total = $vars['postDiscountTotal'];
-
+		
 		#Check if Services
 		$serviceAvailable = false;
 		if(Session::check('service_available')) {
 			$serviceAvailable = Session::read('service_available');
 		}
-
+		
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_view';

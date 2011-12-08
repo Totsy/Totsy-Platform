@@ -197,7 +197,6 @@ class OrdersController extends BaseController {
 				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
 			}
 		}
-		
 		return compact(
 			'order',
 			'orderEvents',
@@ -327,7 +326,6 @@ class OrdersController extends BaseController {
 			}
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
-
 		return compact(
 			'address',
 			'addresses_ddwn',
@@ -356,7 +354,7 @@ class OrdersController extends BaseController {
 	 */
 	public function review() {
 		$taxClass   = $this->_classes['tax'];
-		$orderClass = $this->_classes['order'];\
+		$orderClass = $this->_classes['order'];
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_review';

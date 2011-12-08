@@ -136,6 +136,7 @@ class BaseController extends \lithium\action\Controller {
 			} else {
 				$this->_render['layout'] = 'main';
 			}
+			$this->_render['layout'] = 'main';
 	}
 
 	/**
