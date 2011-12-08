@@ -121,8 +121,8 @@ var discountErrors = new Object();
 	<?php
 	if($missChristmasCount>0){
 	?>
-				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#990000; font-size:11px;text-align:center;">
-				<img src="/img/truck_red.png">
+				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#ff0000; font-size:11px;text-align:center;">
+				<img src="/img/truck_grey.png">
 				One or more of the items in your cart is not guaranteed to be delivered on or before 12/25*.
 				</div>
 	
@@ -157,7 +157,7 @@ var discountErrors = new Object();
 			if($item['miss_christmas']){
 				$classadd = "background:#fde5e5;";
 				if($notmissChristmasCount>0){
-					$shipmsg = "<span class=\"shippingalert\">This item is not guaranteed to be delivered on or before 12/25.<br>Please remove this item from your cart and order separately to receive your other items on or before 12/23*.</span>";
+					$shipmsg = "<span class=\"shippingalert rounded\" style=\"display:block; padding:4px; color:#ff0000; background:#ffffff; border:1px solid #ff0000;\"><img src=\"/img/truck_grey.png\" style=\"padding-right:10px;\">This item is not guaranteed to be delivered on or before 12/25.<br>To receive your other items on or before 12/23, please remove this item from your cart and order it separately.*</span>";
 				}
 				else{
 					$shipmsg = "<span class=\"shippingalert\">This item is not guaranteed to be delivered on or before 12/25.*</span>";
