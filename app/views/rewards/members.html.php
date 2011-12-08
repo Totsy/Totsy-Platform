@@ -28,10 +28,6 @@ $(document).ready( function() {
 <script src="https://d3aa0ztdn3oibi.cloudfront.net/javascripts/ff.loyalty.widget.js" type="text/javascript"></script> 
 
 <div id="rewards-members-app" class="grid_12">
-	<div id="rewards-members-welcome">
-		<span style="float:left">Welcome Back Evan!</span>
-		<span style="float:right">Points balance:230</span>
-	</div>
 <iframe id="ff_member_iframe" style="width:100%;height:1045px;border:0"></iframe> 
 </div>
 <div class="clear"></div>

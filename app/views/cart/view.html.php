@@ -1,7 +1,4 @@
-<!-- JS for cart timer. -->
-<script type="text/javascript" src="/js/cart-timer.js"></script>
-<!-- JS for cart timer for individual items. -->
-<script type="text/javascript" src="/js/cart-items-timer.js"></script>
+<?=$this->html->script(array('cart-timer.js?v=009', 'cart-items-timer.js?v=009', 'cart-popup.js?v=009'));?>
 <script type="text/javascript" src="/js/tipsy/src/javascripts/jquery.tipsy.js"></script>
 <link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
 

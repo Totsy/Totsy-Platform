@@ -61,11 +61,11 @@ class UsersController extends BaseController {
 		if ($eventName) {	
 			//write event name to the session
 			Session::write( "eventFromEmailClick", $eventName, array("name"=>"default"));
+		}
 			
-			//redirect to login ONLY if the user is coming from an email
-			if ( Session::read("eventFromEmailClick", array("name"=>"default")) && $this->request->query["gotologin"]=="true") {
-				$this->redirect("/login");		
-			}	
+		//redirect to login ONLY if the user is coming from an email
+		if ( Session::read("eventFromEmailClick", array("name"=>"default")) && $this->request->query["gotologin"]=="true") {
+		    $this->redirect("/login");		
 		}	
 	
 		$this->_render['layout'] = 'login';
@@ -310,6 +310,7 @@ class UsersController extends BaseController {
 		$redirect = '/sales';
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
+		
 		$result = static::facebookLogin(null, $cookie, $ipaddress);
 		extract($result);
 		
@@ -328,11 +329,11 @@ class UsersController extends BaseController {
 			}
 		}
 		
-		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
+		if ( preg_match( '@[(/|login)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
 				'conditions' => array('autologinHash' => $cookie['autoLoginHash']),
 				'fields' => array('_id' => 1)));
-			if($user) {
+			if($user) {							
 				if ($user->deactivate) {
 					return;
 				} else if($cookie['user_id'] == $user->_id){
@@ -373,7 +374,7 @@ class UsersController extends BaseController {
 		Session::delete('cookieCrumb', array('name' => 'cookie'));
 		$cookieSuccess = Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 		FacebookProxy::setSession(null);
-		return $this->redirect(array('action' => 'login'));
+		return $this->redirect(array('action' => '/register'));
 	}
 	/**
 	 * This is only for legacy users that are coming with AuthLogic passwords and salt
@@ -687,7 +688,8 @@ class UsersController extends BaseController {
 					$self->redirect($landing);
 					unset($landing);
 				} else {
-					$self->redirect('/sales');
+					header("location: /sales");
+					//$self->redirect('/sales');
 				}
 			}
 		}

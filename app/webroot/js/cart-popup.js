@@ -83,11 +83,14 @@ $(document).ready( function() {
 		cartTimer(cartExpirationDate);				
 		//set the timer per item
 		cartItemsTimer();
-		
+				
 		if( cartObj.itemCount > 0 ) {
 			
 			//set these
 			$("#savings").text(cartObj.savings.items.toFixed(2));
+			
+			alert("test");
+			
 			$("#cart_popup").fadeIn(500);
 		
 			//set the popup to timeout after 8 seconds
@@ -95,6 +98,8 @@ $(document).ready( function() {
 			closeCartPopup(); }, 8000);
 		} else {
 			//clear these out
+			alert("test");
+			
 			$("#savings").text("");
 			$("#itemCounter").text("");
 		}

@@ -41,9 +41,9 @@ class RewardsController extends BaseController {
         
         $c = curl_init($apiURL);
         
-        //this can be commented out for production
-		
 		curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+		
+        //this can be commented out for production
 		curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);   
         
         $result = curl_exec($c);                        

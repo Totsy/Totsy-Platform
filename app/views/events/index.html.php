@@ -1,7 +1,7 @@
 <?=$this->html->script(array('jquery.nivo.slider.pack'));?>
 <script src="/js/jquery.tmpl.js" type="text/javascript"></script>
 
-<?=$this->html->script(array('cart-timer.js?v=007', 'cart-items-timer.js?v=007', 'cart-popup.js?v=007'));?>
+<?=$this->html->script(array('cart-timer.js?v=009', 'cart-items-timer.js?v=009', 'cart-popup.js?v=009'));?>
 
 <!-- template used for items on cart. jquery.tmpl.js driven -->
 <?=$this->view()->render( array('element' => 'popupCartItems') ); ?>
