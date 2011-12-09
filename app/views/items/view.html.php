@@ -121,11 +121,16 @@
 			</div>
 		</div>
 	<!--Disney -->
+		<!-- @DG-2011.12.09
+			- removed per Micah's request
+			- consider replacing content-specific class name "disney" with semantic/functional i.e. "promo"
+		
 <div class="disney">
           <strong>SPECIAL BONUS!</strong><hr/></p>
        <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/parents.png" align="absmiddle" width="95px" /> ( a $10 value )
        <span id="disney">Offer & Refund Details</span>
       </div>
+		-->
 	<br><!-- Started Related Products -->
 	<div id="related-products">
 		<?php $relatedData = $related; ?>

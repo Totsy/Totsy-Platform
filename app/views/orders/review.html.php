@@ -399,30 +399,31 @@ var discountErrors = new Object();
 <?php endif ?>
 </div>
 <div id="modal" style="background:#fff!important; z-index:9999999999!important;">
-
-<?php if(number_format((float) $total, 2) >= 35 && number_format((float) $total, 2) <= 44.99){ ?>
-<script type=\"text/javascript\">
-	var total = "<?=(float)$total?>";
-	var itemUrl = "<?=$itemUrl?>";
-
-    $.post('/cart/modal',{modal: 'disney'},function(data){
-      //  alert(data);
-        if(data == 'false'){
-            $('#modal').load('/cart/upsell?subtotal=' + total + '&redirect=' + itemUrl).dialog({
-                autoOpen: false,
-                modal:true,
-                width: 550,
-                height: 320,
-                position: 'top',
-                close: function(ev, ui) {}
-            });
-            
-            $('#modal').dialog('open');
-        }
-    });
-</script>;
-<?php } ?>
-
+	<?php
+		/* @DG-2011.12.09
+			- commented out per Micah's request
+		if(number_format((float) $total, 2) >= 35 && number_format((float) $total, 2) <= 44.99){ ?>
+	<script type="text/javascript">
+		var total = "<?=(float)$total?>";
+		var itemUrl = "<?=$itemUrl?>";
+		
+	    $.post('/cart/modal',{modal: 'disney'},function(data){
+	      //  alert(data);
+	        if(data == 'false'){
+	            $('#modal').load('/cart/upsell?subtotal=' + total + '&redirect=' + itemUrl).dialog({
+	                autoOpen: false,
+	                modal:true,
+	                width: 550,
+	                height: 320,
+	                position: 'top',
+	                close: function(ev, ui) {}
+	            });
+	            
+	            $('#modal').dialog('open');
+	        }
+	    });
+	</script>
+	<?php }*/ ?>
 </div>
 
 <script type="text/javascript" charset="utf-8">
