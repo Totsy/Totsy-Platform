@@ -140,11 +140,11 @@ class ReAuthorize extends \lithium\console\Command {
 		#If Errors Send Email to Customer Service
 		if(!empty($report['updated']) || !empty($report['errors']) ) {
 			if (Environment::is('production')) {
-				Mailer::send('ReAuth_Errors','searnest@totsy.com', $report);
-				Mailer::send('ReAuth_Errors','mruiz@totsy.com', $report);
-				Mailer::send('ReAuth_Errors','gene@totsy.com', $report);
+				Mailer::send('ReAuth_Errors_CyberSource','searnest@totsy.com', $report);
+				Mailer::send('ReAuth_Errors_CyberSource','mruiz@totsy.com', $report);
+				Mailer::send('ReAuth_Errors_CyberSource','gene@totsy.com', $report);
 			}
-			Mailer::send('ReAuth_Errors_Test','troyer@totsy.com', $report);
+			Mailer::send('ReAuth_Errors_CyberSource','troyer@totsy.com', $report);
 		}
 	}
 
@@ -208,7 +208,7 @@ class ReAuthorize extends \lithium\console\Command {
 			if($order['card_type'] != 'amex' && !$this->reauthVisaMC) {
 				$reAuth = false;
 			}
-			if($order['authTotal'] != $order['total']) {
+			if(isset($order['authTotal']) && $order['authTotal'] != $order['total']) {
 				$reAuth = false;
 			}
 		}
@@ -286,8 +286,10 @@ class ReAuthorize extends \lithium\console\Command {
 								array('$push' => array('auth_records' => $newRecord)), array( 'upsert' => true)
 						);
 						$report['updated'][] = array(
+							'error_message' => 'updated',
 							'order_id' => $order['order_id'], 
-							'authKey' => $order['authKey'], 
+							'authKey' => $order['authKey'],
+							'new_authKey' => $auth->key,
 							'total' => $total
 						);
 					} else {
@@ -383,8 +385,10 @@ class ReAuthorize extends \lithium\console\Command {
 					array('$push' => array('auth_records' => $newRecord)), array( 'upsert' => true)
 			);
 			$report['updated'][] = array(
+				'error_message' => 'updated',
 				'order_id' => $order['order_id'], 
 				'authKey' => $order['authKey'], 
+				'new_authKey' => $auth->key,
 				'total' => $total
 			);
 		} else {
