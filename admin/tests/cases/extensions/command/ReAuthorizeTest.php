@@ -37,9 +37,9 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 		$this->_VisaCard = array( 
 			'type' => 'visa',
 			'number' => '4111111111111111',
-			'month' => 4,
-			'year' => 2014,
-			'code' => 123 
+			'month' => 5,
+			'year' => 2015,
+			'code' => 122 
 		);
 		$this->_billingAddress = array(
 				'firstname' => 'Tomfsfdsd',
@@ -129,16 +129,13 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 		#Get Order Modified
 		$order_test = $ordersCollection->findOne(array("_id" => $order->_id));
 		#Testing Modifications
-		$result = 1;
-		if($order_test['authKey'] == $order->authKey || $order_test['authTotal'] != 100.00) {
-			$result = 0 ;
-		}
-		$this->assertEqual( 1 , $result);
+		$this->assertEqual(false , $order_test['authKey'] == $order->authKey);
+		$this->assertEqual(false , $order_test['authTotal'] != 100.00);
 		#Delete Temporary Documents
 		User::remove(array("_id" => $user->_id));
 		Order::remove(array("_id" => $order->_id));
 	}
-	
+
 	public function testfullReAuthorizeVisa() {
 		$ordersCollection = Order::Collection();
 		#Create Transaction initial Transaction in CyberSource
@@ -179,16 +176,13 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 		#Get Order Modified
 		$order_test = $ordersCollection->findOne(array("_id" => $order->_id));
 		#Testing Modifications
-		$result = 1;
-		if($order_test['authKey'] == $order->authKey || $order_test['authTotal'] != 100.00) {
-			$result = 0 ;
-		}
-		$this->assertEqual( 1 , $result);
+		$this->assertEqual(false , $order_test['authKey'] == $order->authKey);
+		$this->assertEqual(false , $order_test['authTotal'] != 100.00);
 		#Delete Temporary Documents
 		User::remove(array("_id" => $user->_id));
 		Order::remove(array("_id" => $order->_id));
 	}
-	
+
 	public function testReAuthorizeAmex1dollar() {
 		$ordersCollection = Order::Collection();
 		#Create Transaction initial Transaction in CyberSource
@@ -213,7 +207,8 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 				'authTotal' => 1.00,
 				'cc_payment' => $cc_encrypt,
 				'user_id' => (string) $user->_id,
-				'billing' => $this->_billingAddress
+				'billing' => $this->_billingAddress,
+				'test' => true
 		));
 		#Running Li3 command Reauthorize
 		$ReAuthorize = new ReAuthorize();
@@ -222,16 +217,13 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 		#Get Order Modified
 		$order_test = $ordersCollection->findOne(array("_id" => $order->_id));
 		#Testing Modifications
-		$result = 1;
-		if($order_test['authKey'] != $order->authKey || $order_test['authTotal'] != 1.00) {
-			$result = 0 ;
-		}
-		$this->assertEqual( 1 , $result);
+		$this->assertEqual(false , $order_test['authKey'] != $order->authKey);
+		$this->assertEqual(false , $order_test['authTotal'] != 1.00);
 		#Delete Temporary Documents
 		User::remove(array("_id" => $user->_id));
 		Order::remove(array("_id" => $order->_id));
 	}
-	
+
 	public function testReAuthorizeAmexfullAmount() {
 		$ordersCollection = Order::Collection();
 		#Create Transaction initial Transaction in CyberSource
@@ -256,7 +248,8 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 				'authTotal' => 100.00,
 				'cc_payment' => $cc_encrypt,
 				'user_id' => (string) $user->_id,
-				'billing' => $this->_billingAddress
+				'billing' => $this->_billingAddress,
+				'test' => true
 		));
 		#Running Li3 command Reauthorize
 		$ReAuthorize = new ReAuthorize();
@@ -265,11 +258,8 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 		#Get Order Modified
 		$order_test = $ordersCollection->findOne(array("_id" => $order->_id));
 		#Testing Modifications
-		$result = 1;
-		if($order_test['authKey'] == $order->authKey || $order_test['authTotal'] != 100.00) {
-			$result = 0 ;
-		}
-		$this->assertEqual( 1 , $result);
+		$this->assertEqual(false , $order_test['authKey'] == $order->authKey);
+		$this->assertEqual(false , $order_test['authTotal'] != 100.00);
 		#Delete Temporary Documents
 		User::remove(array("_id" => $user->_id));
 		Order::remove(array("_id" => $order->_id));
@@ -312,7 +302,8 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 			'cc_payment' => $cc_encrypt,
 			'user_id' => (string) $user->_id,
 			'billing' => $this->_billingAddress,
-			'cyberSourceProfileId' => $profileID
+			'cyberSourceProfileId' => $profileID,
+			'test' => true
 		));
 		#Running Li3 command Reauthorize
 		$ReAuthorize = new ReAuthorize();
@@ -321,11 +312,8 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 		#Get Order Modified
 		$order_test = $ordersCollection->findOne(array("_id" => $order->_id));
 		#Testing Modifications
-		$result = 1;
-		if($order_test['authKey'] == $order->authKey || $order_test['authTotal'] != 100.00) {
-			$result = 0 ;
-		}
-		$this->assertEqual( 1 , $result);
+		$this->assertEqual(false , $order_test['authKey'] == $order->authKey);
+		$this->assertEqual(false , $order_test['authTotal'] != 100.00);
 		#Delete Temporary Documents
 		User::remove(array("_id" => $user->_id));
 		Order::remove(array("_id" => $order->_id));
@@ -355,7 +343,8 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 				'authTotal' => 0.00,
 				'cc_payment' => $cc_encrypt,
 				'user_id' => (string) $user->_id,
-				'billing' => $this->_billingAddress
+				'billing' => $this->_billingAddress,
+				'test' => true
 		));
 		#Running Li3 command Reauthorize
 		$ReAuthorize = new ReAuthorize();
@@ -364,11 +353,8 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 		#Get Order Modified
 		$order_test = $ordersCollection->findOne(array("_id" => $order->_id));
 		#Testing Modifications
-		$result = 1;
-		if($order_test['authKey'] != $order->authKey || $order_test['authTotal'] != 0.00) {
-			$result = 0 ;
-		}
-		$this->assertEqual( 1 , $result);
+		$this->assertEqual(false , $order_test['authKey'] != $order->authKey);
+		$this->assertEqual(false , $order_test['authTotal'] != 0.00);
 		#Delete Temporary Documents
 		User::remove(array("_id" => $user->_id));
 		Order::remove(array("_id" => $order->_id));

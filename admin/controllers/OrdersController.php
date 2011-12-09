@@ -682,8 +682,10 @@ class OrdersController extends BaseController {
 			$itemscanceled = false;
 		}
 		#Get Services
-		if (!empty($order->service)) {
+		if(is_object($order->service)) {
 			$service = $order->service->data();
+		} else {
+			$service = $order->service;
 		}
 		$shipDate = $this->shipDate($order);
 		return compact('order', 'shipDate', 'sku', 'itemscanceled','edit_mode', 'service');

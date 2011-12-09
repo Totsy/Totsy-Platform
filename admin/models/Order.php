@@ -117,7 +117,13 @@ class Order extends Base {
 			$data['void_confirm'] = -1;
 			$error = "Can't capture because total is zero.";
 		} else {
-			$auth = $payments::void('default', $order['auth'], array(
+		
+			if($order['auth']) {
+				$transaction = $order['auth'];
+			} else {
+				$transaction = $order['authKey'];
+			}
+			$auth = $payments::void('default', $transaction, array(
 				'processor' => isset($order['processor']) ? $order['processor'] : null
 			));
 

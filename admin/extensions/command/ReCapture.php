@@ -66,11 +66,8 @@ class ReCapture extends \lithium\console\Command {
 		#Setup Output File Headers
 		$report = array();
 		$report[0] = array('error_type', 'error_message', 'order_id','authKey','total');
-		$idx = 0;
 		$reportCounter = 1;
-		
 		$orderIds = $this->parseOrderIdsFromCSV();
-		
 		if(!empty($orderIds)) {
 			foreach($orderIds as $orderId) {
 				Logger::debug('Processing Order Id : ' . $orderId);
@@ -101,14 +98,12 @@ class ReCapture extends \lithium\console\Command {
 							$reportCounter++;
 						}
 					}			
-					$idx++;
 				} else {
 					Logger::debug('Order Not Found or Already Captured : ' . $orderId);
 				}
 			}
 		}
 		$this->logReport($report);
-		echo $idx . ' Orders has been processed';
 	}
 	
 	public function parseOrderIdsFromCSV() {

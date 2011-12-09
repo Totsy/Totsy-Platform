@@ -8,7 +8,7 @@ $adapterFilters = array(
 		$options = $params['options'];
 
 		switch ($function) {
-			case 'authorize' && $params['pmt']->type == 'amex':
+			case 'authorize':
 				return true;
 				break;
 		}
@@ -20,9 +20,8 @@ $adapterFilters = array(
 		$options = $params['options'];
 
 		$processor = isset($options['processor']) ? $options['processor'] : false;
-		if (!$processor || $processor == 'AuthorizeNet') {
-			#False = Disable Authorize.Net Transaction
-			return false;
+		if (!$processor) {
+			return true;
 		}
 	}
 );

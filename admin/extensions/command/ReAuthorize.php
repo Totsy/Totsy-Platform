@@ -79,25 +79,32 @@ class ReAuthorize extends \lithium\console\Command {
 	
 	public function getOrdersToShipped($report) {
 		$ordersCollection = Order::Collection();
-		foreach($report['updated'] as $value) {
-			$order_ids[] = $value['order_id'];
+		$ordersUpdated = null;
+		if($report['updated']) {
+			foreach($report['updated'] as $value) {
+				$order_ids[] = $value['order_id'];
+			}
 		}
-		foreach($report['skipped'] as $value) {
-			$order_ids[] = $value['order_id'];
+		if($report['skipped']) {
+			foreach($report['skipped'] as $value) {
+				$order_ids[] = $value['order_id'];
+			}
 		}
-		$conditions = array('order_id' => array('$in' => $order_ids)
-		,array(
-		    '_id' => true,
-		    'billing' => true,
-		    'shipping' => true,
-		    'date_created' => true,
-		    'ship_date' => true,
-		    'items' => true,
-		    'order_id' => true,
-		    'shippingMethod' => true,
-		    'user_id' => true
-		));
-		$ordersUpdated = $ordersCollection->find($conditions);
+		if($order_ids) {
+			$conditions = array('order_id' => array('$in' => $order_ids)
+			,array(
+			    '_id' => true,
+			    'billing' => true,
+			    'shipping' => true,
+			    'date_created' => true,
+			    'ship_date' => true,
+			    'items' => true,
+			    'order_id' => true,
+			    'shippingMethod' => true,
+			    'user_id' => true
+			));
+			$ordersUpdated = $ordersCollection->find($conditions);
+		}
 		return $ordersUpdated;
 	}
 	
@@ -117,6 +124,9 @@ class ReAuthorize extends \lithium\console\Command {
 							'cc_payment' => array('$exists' => true),
 							'date_created' => array('$lte' => new MongoDate($limitDate))
 		);
+		if($this->unitTest) {
+			$conditions['test'] = true;
+		}
 		if(!$this->reauthVisaMC) {
 			$conditions['card_type'] = 'amex';
 		}
@@ -229,7 +239,7 @@ class ReAuthorize extends \lithium\console\Command {
 						'billing' => Processor::create('default', 'address', array(
 							'firstName' => $order['billing']['firstname'],
 							'lastName'  => $order['billing']['lastname'],
-							'address'   => trim($order['billing']['address'] . ' ' . $order['billing']['address2']),
+							'address'   => trim($order['billing']['address']),
 							'city'      => $order['billing']['city'],
 							'state'     => $order['billing']['state'],
 							'zip'       => $order['billing']['zip'],
@@ -344,7 +354,7 @@ class ReAuthorize extends \lithium\console\Command {
 				'billing' => Processor::create('default', 'address', array(
 					'firstName' => $order['billing']['firstname'],
 					'lastName'  => $order['billing']['lastname'],
-					'address'   => trim($order['billing']['address'] . ' ' . $order['billing']['address2']),
+					'address'   => trim($order['billing']['address']),
 					'city'      => $order['billing']['city'],
 					'state'     => $order['billing']['state'],
 					'zip'       => $order['billing']['zip'],
@@ -378,9 +388,9 @@ class ReAuthorize extends \lithium\console\Command {
 				'total' => $total
 			);
 		} else {
-			Logger::debug("Authorization Failed");
 			$message  = "Authorize failed for order id `{$order['order_id']}`:";
 			$message .= $error = implode('; ', $auth->errors);
+			Logger::debug($message);
 			$report['errors'][] = array(
 			'error_message' => $message, 
 			'order_id' => $order['order_id'], 
