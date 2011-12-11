@@ -306,7 +306,7 @@ class OrdersController extends BaseController {
 		#Check Cart Validty
 		$cart = Cart::active(array(
 				'fields' => $fields,
-				'time' => '-0min'
+				'time' => 'now'
 		));
 		$shipDate = Cart::shipDate($cart);
 		foreach($cart as $item){
