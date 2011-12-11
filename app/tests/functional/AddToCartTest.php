@@ -34,6 +34,8 @@ class AddToCartTest extends \lithium\test\Integration {
 		$item['enabled'] = true;
 		$item = Item::create($item);
 		$item->save(null, array('validate' => false));
+		// remove all orders for this item
+		Cart::remove(array('item_id' => $item->_id));
 		$this->fixtures += compact('item');
 
 		$password_plain = 'test_password';
