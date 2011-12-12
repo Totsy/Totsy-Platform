@@ -1,13 +1,13 @@
-<?=$this->html->script('jquery-ui-timepicker.min.js');?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->script('TableTools.min.js');?>
-<?=$this->html->script('ZeroClipboard.js');?>
-<?=$this->html->style('jquery_ui_blitzer.css')?>
-<?=$this->html->style('TableTools');?>
-<?=$this->html->style('timepicker'); ?>
-<?=$this->html->style('table');?>
-<?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
-<?=$this->html->script('jquery-ui-timepicker.min.js');?>
+<?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->script('TableTools.min.js');?>
+<?php echo $this->html->script('ZeroClipboard.js');?>
+<?php echo $this->html->style('jquery_ui_blitzer.css')?>
+<?php echo $this->html->style('TableTools');?>
+<?php echo $this->html->style('timepicker'); ?>
+<?php echo $this->html->style('table');?>
+<?php echo $this->html->script('jquery-ui-1.8.2.custom.min.js');?>
+<?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
 
 <script type="text/javascript" charset="utf-8">
 	$(function() {
@@ -40,15 +40,15 @@
 	</h2>
 	<div class="block" id="order-search">
 		<fieldset>
-			<?=$this->form->create(); ?>
-				<?=$this->form->text('search', array(
+			<?php echo $this->form->create(); ?>
+				<?php echo $this->form->text('search', array(
 					'id' => 'search',
 					'style' => 'float:left; width:440px; margin: 0px 10px 0px 0px;'
 					));
 				?>
-				<?=$this->form->submit('Submit'); ?>
+				<?php echo $this->form->submit('Submit'); ?>
 				(Search By: Description, Vendor, Vendor Style or SKU)
-			<?=$this->form->end(); ?>
+			<?php echo $this->form->end(); ?>
 		</fieldset>
 	</div>
 	</div>
@@ -84,38 +84,38 @@
 						}
 					?>
 					<td>
-					<?=$item[_id];?> in the event 
-					<a href="/events/edit/<?=$item['event'][0];?>"><?=$item['event'][0];?></a>
+					<?php echo $item[_id];?> in the event 
+					<a href="/events/edit/<?php echo $item['event'][0];?>"><?php echo $item['event'][0];?></a>
 					
 					</td>
 					<td width="5%">
-						<?=$this->html->image("$image", array(
+						<?php echo $this->html->image("$image", array(
 							'width' => "100",
 							'height' => "100",
 							'style' => "margin:2px; padding:2px; background:#fff; border:1px solid #ddd;"
 							));
 						?>
 					</td>
-					<td>$<?=$item['sale_retail']?></td>
-					<td>$<?=$item['msrp']?></td>
-					<td width="5%"><?=$item['description']?></td>
-					<td><?=$item['vendor']?></td>
-					<td width="5%"><?=$item['vendor_style']?></td>
+					<td>$<?php echo $item['sale_retail']?></td>
+					<td>$<?php echo $item['msrp']?></td>
+					<td width="5%"><?php echo $item['description']?></td>
+					<td><?php echo $item['vendor']?></td>
+					<td width="5%"><?php echo $item['vendor_style']?></td>
 					<td>
 					<?php if (empty($item['color'])): ?>
 						None
 					<?php else: ?>
-						<?=$item['color']?>
+						<?php echo $item['color']?>
 					<?php endif ?>
 					</td>
 					<td>
 						<?php foreach ($item['sku_details'] as $key => $value): ?>
-							<span style="white-space:nowrap"><?=$key?></span><br />
+							<span style="white-space:nowrap"><?php echo $key?></span><br />
 						<?php endforeach ?>
 					</td>
 					<td>
 						<?php foreach ($item['sku_details'] as $key => $value): ?>
-							<span style="white-space:nowrap"><a href="/items/bulkCancel/<?=$value;?>"><?=$value?></a></span><br />
+							<span style="white-space:nowrap"><a href="/items/bulkCancel/<?php echo $value;?>"><?php echo $value?></a></span><br />
 						<?php endforeach ?>
 					</td>
 				</tr>

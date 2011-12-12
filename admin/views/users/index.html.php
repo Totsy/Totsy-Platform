@@ -1,11 +1,11 @@
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->script('TableTools.min.js');?>
-<?=$this->html->script('jquery-ui-timepicker.min.js');?>
-<?=$this->html->script('ZeroClipboard.js');?>
-<?=$this->html->style('jquery_ui_blitzer.css')?>
-<?=$this->html->style('TableTools');?>
-<?=$this->html->style('timepicker'); ?>
-<?=$this->html->style('table');?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->script('TableTools.min.js');?>
+<?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
+<?php echo $this->html->script('ZeroClipboard.js');?>
+<?php echo $this->html->style('jquery_ui_blitzer.css')?>
+<?php echo $this->html->style('TableTools');?>
+<?php echo $this->html->style('timepicker'); ?>
+<?php echo $this->html->style('table');?>
 
 <script type="text/javascript" charset="utf-8">
 	$(function() {
@@ -45,25 +45,25 @@
 	</h2>
 	<div class="block" id="order-search">
 		<fieldset>
-			<?=$this->form->create(); ?>
+			<?php echo $this->form->create(); ?>
 					<p>
-						<?=$this->form->label('First Name'); ?>
-						<?=$this->form->text('firstname', array('id' => 'firstname'));?>
+						<?php echo $this->form->label('First Name'); ?>
+						<?php echo $this->form->text('firstname', array('id' => 'firstname'));?>
 					</p>
 					<p>
-						<?=$this->form->label('Last Name'); ?>
-						<?=$this->form->text('lastname', array('id' => 'lastname'));?>
+						<?php echo $this->form->label('Last Name'); ?>
+						<?php echo $this->form->text('lastname', array('id' => 'lastname'));?>
 					</p>
 					<p>
-						<?=$this->form->label('Email'); ?>
-						<?=$this->form->text('email', array('id' => 'email'));?>
+						<?php echo $this->form->label('Email'); ?>
+						<?php echo $this->form->text('email', array('id' => 'email'));?>
 					</p>
 					<p>
-						<?=$this->form->label('Zip/Postal Code'); ?>
-						<?=$this->form->text('zip', array('id' => 'zip'));?>
+						<?php echo $this->form->label('Zip/Postal Code'); ?>
+						<?php echo $this->form->text('zip', array('id' => 'zip'));?>
 					</p>
-				<?=$this->form->submit('Search'); ?>
-			<?=$this->form->end(); ?>
+				<?php echo $this->form->submit('Search'); ?>
+			<?php echo $this->form->end(); ?>
 		</fieldset>
 	</div>
 	</div>
@@ -90,30 +90,30 @@
 				<?php foreach ($users as $user): ?>
 					<?php ++$inc; ?>
 					<tr>
-						<td><?=$inc;?></td>
+						<td><?php echo $inc;?></td>
 						<td>
-							<?=$this->html->link($user->firstname, array(
+							<?php echo $this->html->link($user->firstname, array(
 							'Users::view',
 							'args'=>$user->_id),
 							array('target' => '_blank'));
 							?>
 						</td>
 						<td>
-							<?=$this->html->link($user->lastname, array(
+							<?php echo $this->html->link($user->lastname, array(
 							'Users::view',
 							'args'=>$user->_id),
 							array('target' => '_blank'));
 							?>
 						</td>
 						<td>
-							<?=$this->html->link($user->email, array(
+							<?php echo $this->html->link($user->email, array(
 							'Users::view',
 							'args'=>$user->_id),
 							array('target' => '_blank'));
 							?>
 						</td>
 						<td>
-							<?=$this->html->link($user->zip, array(
+							<?php echo $this->html->link($user->zip, array(
 							'Users::view',
 							'args'=>$user->_id),
 							array('target' => '_blank'));

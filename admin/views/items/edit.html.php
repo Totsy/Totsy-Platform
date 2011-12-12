@@ -1,5 +1,5 @@
-<?=$this->html->script(array('tiny_mce/tiny_mce.js', 'jquery-1.4.2', 'jquery-dynamic-form.js', 'jquery-ui-1.8.2.custom.min.js', 'swfupload.js', 'swfupload.queue.js', 'fileprogress.js', 'handlers.js', 'item_upload.js'));?>
-<?=$this->html->style(array('swfupload', 'jquery_ui_blitzer.css', 'jquery.dataTables.js', 'table'))?>
+<?php echo $this->html->script(array('tiny_mce/tiny_mce.js', 'jquery-1.4.2', 'jquery-dynamic-form.js', 'jquery-ui-1.8.2.custom.min.js', 'swfupload.js', 'swfupload.queue.js', 'fileprogress.js', 'handlers.js', 'item_upload.js'));?>
+<?php echo $this->html->style(array('swfupload', 'jquery_ui_blitzer.css', 'jquery.dataTables.js', 'table'))?>
 
 <script type="text/javascript">
 tinyMCE.init({
@@ -21,10 +21,10 @@ tinyMCE.init({
 });
 </script>
 <div class="grid_16">
-	<h2 id="page-heading">Editing Item - <?=$item->description?></h2>
+	<h2 id="page-heading">Editing Item - <?php echo $item->description?></h2>
 </div>
-<?=$this->html->link('See Item List','/events/edit/'.$item->event[0].'#event_items')?>
-<?=$this->form->create(); ?>
+<?php echo $this->html->link('See Item List','/events/edit/'.$item->event[0].'#event_items')?>
+<?php echo $this->form->create(); ?>
 	<div id="tabs">
 		<ul>
 		    <li><a href="#item_info"><span>Item Info</span></a></li>
@@ -32,44 +32,44 @@ tinyMCE.init({
 			<li><a href="#item_event_info"><span>Item Event Info</span></a></li>
 		</ul>
 		<div id="item_info">
-				<input type="hidden" name="_id" value="<?=$item->_id?>" id="_id">
+				<input type="hidden" name="_id" value="<?php echo $item->_id?>" id="_id">
 				<br>
 				<div id="item_description">
 					<h2 id="">Product Description</h2>
-					<?=$this->form->field('description', array(
+					<?php echo $this->form->field('description', array(
 						'type' => 'text',
 						'class' => 'desc',
 						'value' => $item->description
 					));?>
-					<?=$this->form->label('Copy'); ?>
-					<?=$this->form->textarea('blurb', array(
+					<?php echo $this->form->label('Copy'); ?>
+					<?php echo $this->form->textarea('blurb', array(
 						'class' => 'general',
 						'name' => 'blurb',
 						'value' => $item->blurb
 					));?>
-					<?=$this->form->field('vendor', array(
+					<?php echo $this->form->field('vendor', array(
 						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->vendor
 					));?>
-					<?=$this->form->field('vendor_style', array(
+					<?php echo $this->form->field('vendor_style', array(
 						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->vendor_style
 					));?>
-					<?=$this->form->field('color', array(
+					<?php echo $this->form->field('color', array(
 						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->color
 					));?>
-					<?=$this->form->field('age', array(
+					<?php echo $this->form->field('age', array(
 						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->age
 					));?>
-					<?=$this->form->label('Departments')?><br />
+					<?php echo $this->form->label('Departments')?><br />
 					<table>
-						<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple','value' => $sel_filters)); ?> 
+						<?php echo $this->form->select('departments',$all_filters,array('multiple'=>'multiple','value' => $sel_filters)); ?> 
 					</table>
 					<div id="item_status">
 						<h2 id="item_status">Item Status</h2>
@@ -123,7 +123,7 @@ tinyMCE.init({
 							<input type="radio" name="shipping_oversize" value="0" id="shipping_oversize" checked> Shipping Normal size Item <br>
 							<input type="radio" name="shipping_oversize" value="1" id="shipping_oversize" > Shipping Oversize Item<br>
 						<?php endif ?>
-						<?=$this->form->text("shipping_rate", array('value'=>$item->shipping_rate, 'id'=>"shipping_rate")) ?>
+						<?php echo $this->form->text("shipping_rate", array('value'=>$item->shipping_rate, 'id'=>"shipping_rate")) ?>
 					</div>
 
 					<div id="discount">
@@ -140,28 +140,28 @@ tinyMCE.init({
 				</div>
 				<div id="item_pricing">
 					<h2 id="">Pricing</h2>
-					<?=$this->form->field('sale_retail', array(
+					<?php echo $this->form->field('sale_retail', array(
 						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->sale_retail
 					));?>
-					<?=$this->form->field('msrp', array(
+					<?php echo $this->form->field('msrp', array(
 						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->msrp
 					));?>
-					<?=$this->form->field('total_quantity', array(
+					<?php echo $this->form->field('total_quantity', array(
 						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->total_quantity
 					));?>
 
-					<?=$this->form->field('orig_whol', array(
+					<?php echo $this->form->field('orig_whol', array(
 						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->orig_whol
 					));?>
-					<?=$this->form->field('sale_whol', array(
+					<?php echo $this->form->field('sale_whol', array(
 						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->sale_whol
@@ -169,22 +169,22 @@ tinyMCE.init({
 				</div>
 				<div id="item_properties">
 					<h2 id="">Weight and Dimensions</h2>
-					<?=$this->form->field('product_weight', array(
+					<?php echo $this->form->field('product_weight', array(
 						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->product_weight
 					));?>
-					<?=$this->form->field('product_dimensions', array(
+					<?php echo $this->form->field('product_dimensions', array(
 						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->product_dimensions
 					));?>
-					<?=$this->form->field('shipping_weight', array(
+					<?php echo $this->form->field('shipping_weight', array(
 						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->shipping_weight
 					));?>
-					<?=$this->form->field('shipping_dimensions', array(
+					<?php echo $this->form->field('shipping_dimensions', array(
 						'type' => 'text',
 						'class' => 'general',
 						'value' => $item->shipping_dimensions));?>
@@ -195,10 +195,10 @@ tinyMCE.init({
 						<?php foreach ($item->details->data() as $key => $value): ?>
 							<tr>
 								<td>
-									<?=$key?>
+									<?php echo $key?>
 								</td>
 								<td>
-									<?=$this->form->text("details[$key]", array(
+									<?php echo $this->form->text("details[$key]", array(
 										'value' => $value
 										));
 									?>
@@ -212,7 +212,7 @@ tinyMCE.init({
 									add a new size:
 								</td>
 								<td>
-									<?=$this->form->text("item_new_size");
+									<?php echo $this->form->text("item_new_size");
 									?>
 								</td>
 							</tr>
@@ -221,7 +221,7 @@ tinyMCE.init({
 				</div>
 				<br>
 				<br>
-			<?=$this->form->submit('Update Item'); ?>
+			<?php echo $this->form->submit('Update Item'); ?>
 		</div>
 		<div id="item_images">
 				<br>
@@ -265,10 +265,10 @@ tinyMCE.init({
 						<?php if ($item->zoom_image): ?>
 							<tr>
 								<td align="center">
-									<?=$this->html->image("/image/$item->zoom_image.jpg", array('alt' => 'altText')); ?>
+									<?php echo $this->html->image("/image/$item->zoom_image.jpg", array('alt' => 'altText')); ?>
 								</td>
 								<td align="center">
-									<input type="radio" name="zoom_image" value="<?=$item->zoom_image;?>" checked>
+									<input type="radio" name="zoom_image" value="<?php echo $item->zoom_image;?>" checked>
 								</td>
 								<td></td>
 								<td></td>
@@ -277,13 +277,13 @@ tinyMCE.init({
 						<?php if ($item->primary_image): ?>
 							<tr>
 								<td align="center">
-									<?=$this->html->image("/image/$item->primary_image.jpg", array(
+									<?php echo $this->html->image("/image/$item->primary_image.jpg", array(
 										'alt' => 'altText'));
 									?>
 								</td>
 								<td></td>
 								<td align="center">
-									<input type="radio" name="primary_image" value="<?=$item->primary_image;?>" checked>
+									<input type="radio" name="primary_image" value="<?php echo $item->primary_image;?>" checked>
 								</td>
 								<td></td>
 							</tr>
@@ -293,31 +293,31 @@ tinyMCE.init({
 								foreach ($item->alternate_images as $value): ?>
 								<tr>
 									<td align="center">
-										<?=$this->html->image("/image/$value.jpg", array('alt' => 'altText')); ?>
+										<?php echo $this->html->image("/image/$value.jpg", array('alt' => 'altText')); ?>
 									</td>
 									<td></td>
 									<td></td>
 									<td align="center">
-										<input type="checkbox" name="alternate-<?=$value;?>" value="<?=$value;?>" checked>
+										<input type="checkbox" name="alternate-<?php echo $value;?>" value="<?php echo $value;?>" checked>
 									</td>
 								</tr>
 								<?php endforeach; ?>
 							<?php endif; ?>
 					</table>
 			<?php endif; ?>
-			<?=$this->form->submit('Update Item'); ?>
+			<?php echo $this->form->submit('Update Item'); ?>
 		</div>
 		<div id="item_event_info">
 			<h1 id="event_information">Event Information</h1>
 			<?php if (!empty($event)): ?>
-				<p>This item is associated with the <strong><?=$event->name?> </strong>event</p>
-				<?=$this->html->link("Edit - $event->name", array('Events::edit', 'args' => array("$event->_id"))); ?><br>
-				<?=$this->html->link("View - $event->name", array('Events::preview', 'args' => array("$event->_id"))); ?><br>
-				<?=$this->html->link("View - $item->description", array('Items::preview', 'args' => array("$item->url"))); ?>
+				<p>This item is associated with the <strong><?php echo $event->name?> </strong>event</p>
+				<?php echo $this->html->link("Edit - $event->name", array('Events::edit', 'args' => array("$event->_id"))); ?><br>
+				<?php echo $this->html->link("View - $event->name", array('Events::preview', 'args' => array("$event->_id"))); ?><br>
+				<?php echo $this->html->link("View - $item->description", array('Items::preview', 'args' => array("$item->url"))); ?>
 			<?php endif ?>
 		</div>
 	</div>
-<?=$this->form->end(); ?>
+<?php echo $this->form->end(); ?>
 
 <script type="text/javascript">
 $(document).ready(function() {

@@ -35,10 +35,10 @@
 					}
 				?>
 
-			<?=$this->form->create(null, array('class' => "fl") );?>
+			<?php echo $this->form->create(null, array('class' => "fl") );?>
 				<div class="form-row">
-					<?=$this->form->label('firstname', 'First Name', array('class' => 'account' )); ?>
-					<?=$this->form->text('firstname', array(
+					<?php echo $this->form->label('firstname', 'First Name', array('class' => 'account' )); ?>
+					<?php echo $this->form->text('firstname', array(
 							'type' => 'text',
 							'class' => 'inputbox',
 							'value' => $user->firstname
@@ -46,32 +46,32 @@
 					?>
 				</div>
 				<div class="form-row">
-					<?=$this->form->label('lastname', 'Last Name',array('class' => 'account' )); ?>
-					<?=$this->form->text('lastname', array(
+					<?php echo $this->form->label('lastname', 'Last Name',array('class' => 'account' )); ?>
+					<?php echo $this->form->text('lastname', array(
 							'class' => 'inputbox',
 							'value' => $user->lastname
 						));
 					?>
 				</div>
 				<div class="form-row">
-					<?=$this->form->label('eamil', 'E-Mail',array('class' => 'account' )); ?>
-					<?=$this->form->text('email', array(
+					<?php echo $this->form->label('eamil', 'E-Mail',array('class' => 'account' )); ?>
+					<?php echo $this->form->text('email', array(
 							'class' => 'inputbox',
 							'value' => $user->email
 						))
 					;?>
 				</div>
 
-			<?=$this->form->submit('Update', array('class' => 'button fr')); ?>
-			<?=$this->form->end();?>
+			<?php echo $this->form->submit('Update', array('class' => 'button fr')); ?>
+			<?php echo $this->form->end();?>
 		</fieldset>
 	</div>
 <div style="width:48%; margin-left:10px; float:left;">
 	<?php if ($connected): ?>
 		<h2 class="gray mar-b">You're Connected With Totsy</h2>
 		<hr />
-		<img src="https://graph.facebook.com/<?=$user->facebook_info['id']?>/picture">
-		<br /><b><?=$user->facebook_info['name']?></b>
+		<img src="https://graph.facebook.com/<?php echo $user->facebook_info['id']?>/picture">
+		<br /><b><?php echo $user->facebook_info['name']?></b>
 	<?php else: ?>
 		<h2 class="gray mar-b">Connect your Facebook Account with Totsy</h2>
 		<hr />

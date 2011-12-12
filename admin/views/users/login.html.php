@@ -9,20 +9,20 @@
 		<div class="block" id="forms">
 			<fieldset class="login">
 				<legend>Login</legend>
-				<?=$this->form->create(null,array('id'=>'loginForm'));?>
+				<?php echo $this->form->create(null,array('id'=>'loginForm'));?>
 				<p>
-					<?=$this->form->label('Email:'); ?>
-					<?=$this->form->text('email', array('id'=>"email"));?>
+					<?php echo $this->form->label('Email:'); ?>
+					<?php echo $this->form->text('email', array('id'=>"email"));?>
 				</p>
 				<p>
-					<?=$this->form->label('Password:'); ?>
-					<?=$this->form->password('password', array(
+					<?php echo $this->form->label('Password:'); ?>
+					<?php echo $this->form->password('password', array(
 							'name' => 'password', 
 							'id' => 'password',
 							'type' => 'password'));?>
-					<?=$this->form->submit('Login');?>
+					<?php echo $this->form->submit('Login');?>
 				</p>
-				<?=$this->form->end();?>
+				<?php echo $this->form->end();?>
 			</fieldset>
 		</div>
 	</div>

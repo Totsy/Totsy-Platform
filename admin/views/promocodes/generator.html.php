@@ -1,8 +1,8 @@
 <?php $data = $this->_data;?>
 <?php if(!array_key_exists('codes', $data)): ?>
-    <?=$this->html->script('jquery-ui-timepicker.min.js');?>
-    <?=$this->html->style('jquery_ui_blitzer.css')?>
-    <?=$this->html->style('timepicker'); ?>
+    <?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
+    <?php echo $this->html->style('jquery_ui_blitzer.css')?>
+    <?php echo $this->html->style('timepicker'); ?>
 
     <script type="text/javascript" charset="utf-8">
         $(function() {
@@ -52,38 +52,38 @@
     <div class="grid_7 box">
 
         <h2>Generate Promocodes</h2>
-        <?=$this->form->create($promoCode);?>
-                    <?=$this->form->label('Generate Amount:'); ?>
-                    <?=$this->form->text('generate_amount');?> (must be more than 2)<br/>
-                    <?=$this->form->error('generate_amount');?>
-                    <?=$this->form->label('Enable:'); ?> <?=$this->form->checkbox('enabled', array('checked'=>'checked', 'value' => '1')); ?> <br>
+        <?php echo $this->form->create($promoCode);?>
+                    <?php echo $this->form->label('Generate Amount:'); ?>
+                    <?php echo $this->form->text('generate_amount');?> (must be more than 2)<br/>
+                    <?php echo $this->form->error('generate_amount');?>
+                    <?php echo $this->form->label('Enable:'); ?> <?php echo $this->form->checkbox('enabled', array('checked'=>'checked', 'value' => '1')); ?> <br>
                     <br>
-                    <?=$this->form->label('Code:'); ?>
-                    <?=$this->form->text('code'); ?><br>
+                    <?php echo $this->form->label('Code:'); ?>
+                    <?php echo $this->form->text('code'); ?><br>
                     <br>
-                    <?=$this->form->label('Description:'); ?> <br>
-                    <?=$this->form->textarea('description', array("width" =>50, "height" => 50 )); ?><br><br>
-                   <?=$this->form->label('Code Type:'); ?>
-                   <?=$this->form->select( 'type', array('percentage' => 'percent',  'dollar'=> 'dollar amount', 'shipping'=> 'shipping', 'free_shipping' => 'free shipping') ); ?><br><br>
-                  <?=$this->form->label('Enter discount amount here:'); ?>
-                   <?=$this->form->text( 'discount_amount'); ?><br>
+                    <?php echo $this->form->label('Description:'); ?> <br>
+                    <?php echo $this->form->textarea('description', array("width" =>50, "height" => 50 )); ?><br><br>
+                   <?php echo $this->form->label('Code Type:'); ?>
+                   <?php echo $this->form->select( 'type', array('percentage' => 'percent',  'dollar'=> 'dollar amount', 'shipping'=> 'shipping', 'free_shipping' => 'free shipping') ); ?><br><br>
+                  <?php echo $this->form->label('Enter discount amount here:'); ?>
+                   <?php echo $this->form->text( 'discount_amount'); ?><br>
                    <br>
-                  <?=$this->form->label('Enter minimum purchase amount:'); ?>
-                   <?=$this->form->text( 'minimum_purchase'); ?><br>
+                  <?php echo $this->form->label('Enter minimum purchase amount:'); ?>
+                   <?php echo $this->form->text( 'minimum_purchase'); ?><br>
                     <br>
-                  <?=$this->form->label('Enter maximum use:'); ?>
-                   <?=$this->form->text( 'max_use'); ?><br>
+                  <?php echo $this->form->label('Enter maximum use:'); ?>
+                   <?php echo $this->form->text( 'max_use'); ?><br>
                    <br>
-                    <?=$this->form->hidden('max_total', array( 'value' => '1')); ?>
+                    <?php echo $this->form->hidden('max_total', array( 'value' => '1')); ?>
 
-                  <?=$this->form->label('Enter start date:'); ?>
-                  <?=$this->form->text( 'start_date', array('id' => 'start_date') ); ?><br>
+                  <?php echo $this->form->label('Enter start date:'); ?>
+                  <?php echo $this->form->text( 'start_date', array('id' => 'start_date') ); ?><br>
                   <br>
-                  <?=$this->form->label('Enter end date:'); ?>
-                  <?=$this->form->text( 'end_date', array('id' => 'end_date') ); ?><br>
+                  <?php echo $this->form->label('Enter end date:'); ?>
+                  <?php echo $this->form->text( 'end_date', array('id' => 'end_date') ); ?><br>
                   <br>
-                  <?=$this->form->submit('Generate'); ?><br><br>
-        <?=$this->form->end();?>
+                  <?php echo $this->form->submit('Generate'); ?><br><br>
+        <?php echo $this->form->end();?>
     </div>
     <script type="text/javascript" >
 $('#Type').change(function() {

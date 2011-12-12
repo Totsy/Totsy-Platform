@@ -1,22 +1,22 @@
 
-<?=$this->html->script('tiny_mce/tiny_mce.js');?>
-<?=$this->html->script('jquery-1.4.2');?>
-<?=$this->html->script('jquery-dynamic-form.js');?>
-<?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
-<?=$this->html->script('swfupload.js');?>
-<?=$this->html->script('swfupload.queue.js');?>
-<?=$this->html->script('fileprogress.js');?>
-<?=$this->html->script('handlers.js');?>
-<?=$this->html->script('banner_upload.js');?>
-<?=$this->html->style('swfupload')?>
-<?=$this->html->style('jquery_ui_blitzer.css')?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->style('table');?>
-<?=$this->html->script('jquery-ui-timepicker.min.js');?>
-<?=$this->html->style('timepicker'); ?>
-<?=$this->html->script('jquery.countdown.min');?>
-<?=$this->html->style('jquery.countdown');?>
-<?=$this->html->script('jquery.maskedinput-1.2.2')?>
+<?php echo $this->html->script('tiny_mce/tiny_mce.js');?>
+<?php echo $this->html->script('jquery-1.4.2');?>
+<?php echo $this->html->script('jquery-dynamic-form.js');?>
+<?php echo $this->html->script('jquery-ui-1.8.2.custom.min.js');?>
+<?php echo $this->html->script('swfupload.js');?>
+<?php echo $this->html->script('swfupload.queue.js');?>
+<?php echo $this->html->script('fileprogress.js');?>
+<?php echo $this->html->script('handlers.js');?>
+<?php echo $this->html->script('banner_upload.js');?>
+<?php echo $this->html->style('swfupload')?>
+<?php echo $this->html->style('jquery_ui_blitzer.css')?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->style('table');?>
+<?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
+<?php echo $this->html->style('timepicker'); ?>
+<?php echo $this->html->script('jquery.countdown.min');?>
+<?php echo $this->html->style('jquery.countdown');?>
+<?php echo $this->html->script('jquery.maskedinput-1.2.2')?>
 
 <script type="text/javascript">
 tinyMCE.init({
@@ -100,9 +100,9 @@ tinyMCE.init({
 
 </script>
 
-<?=$this->form->create($banner, array('enctype' => "multipart/form-data")); ?>
+<?php echo $this->form->create($banner, array('enctype' => "multipart/form-data")); ?>
 <div class="grid_16">
-	<h2>Editing Banner - <?=$banner->name?></h2>
+	<h2>Editing Banner - <?php echo $banner->name?></h2>
 </div>
 
 <div class="grid_16">
@@ -119,10 +119,10 @@ tinyMCE.init({
 				</p>
 			</div>
 			<div id="banner_preview">
-				<p> To see a preview of the banner please <?=$this->html->link('click here.',"/banners/preview/$banner->_id")?></p>
+				<p> To see a preview of the banner please <?php echo $this->html->link('click here.',"/banners/preview/$banner->_id")?></p>
 			</div>
 			<h4 id="article-heading">Banner Description</h4>
-			    <?=$this->form->field('name', array('value' => $banner->name, 'class' => 'general'));?>
+			    <?php echo $this->form->field('name', array('value' => $banner->name, 'class' => 'general'));?>
 
 				<div id="banner_status">
 					<h4 id="banner_status">Banner Status</h4>
@@ -133,7 +133,7 @@ tinyMCE.init({
 						<p>The banner is NOT published for viewing</p>
 						<?php $checked = '';?>
 					<?php endif ?>
-					<?=$this->form->checkbox("enabled", array('value' => 1, 'checked'=>$checked)) ?>
+					<?php echo $this->form->checkbox("enabled", array('value' => 1, 'checked'=>$checked)) ?>
 					Publish <br/><br/>
 				</div>
 				<div id="banner_duration">
@@ -141,7 +141,7 @@ tinyMCE.init({
 					<?php
 						$end_date =  date('m/d/Y H:i', $banner->end_date->sec);
 					?>
-					<?=$this->form->field('end_date', array(
+					<?php echo $this->form->field('end_date', array(
 								'class' => 'general',
 								'id' => 'end_date',
 								'value' => "$end_date"
@@ -149,7 +149,7 @@ tinyMCE.init({
 				</div>
 
 				<br>
-			<?=$this->form->submit('Update Event')?>
+			<?php echo $this->form->submit('Update Event')?>
 		</div>
 		<div id="banner_images">
 			<h3 id="current_images">Current Images</h3>
@@ -173,7 +173,7 @@ tinyMCE.init({
                             <?php
                                     $bannerImage = "/image/{$image['_id']}.jpg";
                             ?>
-                            <?=$this->html->image("$bannerImage", array('alt' => 'altText')); ?>
+                            <?php echo $this->html->image("$bannerImage", array('alt' => 'altText')); ?>
                         </td>
 
                         <td align="center">
@@ -189,7 +189,7 @@ tinyMCE.init({
                             <input type="text" name="url[<?php echo $id; ?>]" value= "<?php echo  $bannerurl; ?>"/>
                         </td>
                         <td align="center">
-                            <?=$this->form->checkbox("newPage", array("value" => "1", "checked" => $checkbox)) ?>
+                            <?php echo $this->form->checkbox("newPage", array("value" => "1", "checked" => $checkbox)) ?>
                         </td>
                          <td align="center">
                             <input type="hidden" name="img[]" value="<?php echo $id; ?>"/>
@@ -222,7 +222,7 @@ tinyMCE.init({
 			</table>
 
 			<br>
-			<?=$this->form->submit('Update Event')?>
+			<?php echo $this->form->submit('Update Event')?>
 		</div>
 	</div>
 

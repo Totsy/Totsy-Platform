@@ -17,7 +17,7 @@
         <td align="center">
         	<!-- get background image from here -->
             <a href="/image/<?php echo $id; ?>.jpg" target="_blank" >
-            <?=$this->html->image("/image/$id.jpg", array('alt' => 'altText', 'width' => 100, 'id'=>'backgroundThumbnail')); ?></a>
+            <?php echo $this->html->image("/image/$id.jpg", array('alt' => 'altText', 'width' => 100, 'id'=>'backgroundThumbnail')); ?></a>
         </td>
         <td align="center">
             <?php echo $tag; ?>

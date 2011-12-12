@@ -43,7 +43,7 @@
     City/State/Zip: ___________________________________________<br/>
     <br/>
 
-    <?=$this->html->link('Print', "#", array('class' => 'button fr', 'id' => 'print', "onclick"=> "printPage()", 'style' => 'margin-right:10px;')); ?>
+    <?php echo $this->html->link('Print', "#", array('class' => 'button fr', 'id' => 'print', "onclick"=> "printPage()", 'style' => 'margin-right:10px;')); ?>
 
 <script type="text/javascript">
     function printPage(){
