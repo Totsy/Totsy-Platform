@@ -16,7 +16,7 @@
 	<hr />
 	<p>Totsy is the leading website in private sales for moms. We are also the first company of its
       kind to be
-      <?=$this->html->link('100% green', array('Pages::being_green')); ?>
+      <?php echo $this->html->link('100% green', array('Pages::being_green')); ?>
       . More than
       just exclusive savings, we are a hub of information, expert advice, and quality products
       perfect for mom, baby, and child.</p>

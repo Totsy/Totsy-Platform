@@ -1,11 +1,11 @@
-<?=$this->html->script('jquery-ui-timepicker.min.js');?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->script('TableTools.min.js');?>
-<?=$this->html->script('ZeroClipboard.js');?>
-<?=$this->html->style('jquery_ui_blitzer.css')?>
-<?=$this->html->style('TableTools');?>
-<?=$this->html->style('timepicker'); ?>
-<?=$this->html->style('table');?>
+<?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->script('TableTools.min.js');?>
+<?php echo $this->html->script('ZeroClipboard.js');?>
+<?php echo $this->html->style('jquery_ui_blitzer.css')?>
+<?php echo $this->html->style('TableTools');?>
+<?php echo $this->html->style('timepicker'); ?>
+<?php echo $this->html->style('table');?>
 
 <script type="text/javascript" charset="utf-8">
 	$(function() {
@@ -54,41 +54,41 @@
 	</h2>
     <div class= 'block forms' >
         <fieldset>
-            <?=$this->form->create(); ?>
-                <?=$this->form->label('Enable:'); ?> <?=$this->form->checkbox('enabled', array('checked'=>'checked', 'value' => '1')); ?> <br>
+            <?php echo $this->form->create(); ?>
+                <?php echo $this->form->label('Enable:'); ?> <?php echo $this->form->checkbox('enabled', array('checked'=>'checked', 'value' => '1')); ?> <br>
                 <br>
-                <?=$this->form->label('Code:'); ?>
-                <?=$this->form->text('code', array('value' => 'Enter code')); ?><br>
+                <?php echo $this->form->label('Code:'); ?>
+                <?php echo $this->form->text('code', array('value' => 'Enter code')); ?><br>
                 <br>
-                <?=$this->form->label('Description:'); ?> <br>
-                <?=$this->form->textarea('description', array('value' => 'Enter description here')); ?><br><br>
+                <?php echo $this->form->label('Description:'); ?> <br>
+                <?php echo $this->form->textarea('description', array('value' => 'Enter description here')); ?><br><br>
 
-               <?=$this->form->label('Code Type:'); ?>
-               <?=$this->form->select( 'type', array('percentage' => 'percent',  'dollar'=> 'dollar amount', 'shipping'=> 'shipping', 'free_shipping' => 'free shipping') ); ?><br><br>
+               <?php echo $this->form->label('Code Type:'); ?>
+               <?php echo $this->form->select( 'type', array('percentage' => 'percent',  'dollar'=> 'dollar amount', 'shipping'=> 'shipping', 'free_shipping' => 'free shipping') ); ?><br><br>
 				<div id="discount">
-					<?=$this->form->label('Enter discount amount here:'); ?>
-					<?=$this->form->text( 'discount_amount', array( 'value' => 'Enter discount amount here') ); ?><br><br>
+					<?php echo $this->form->label('Enter discount amount here:'); ?>
+					<?php echo $this->form->text( 'discount_amount', array( 'value' => 'Enter discount amount here') ); ?><br><br>
 				</div>
-              <?=$this->form->label('Enter minimum purchase amount:'); ?>
-               <?=$this->form->text( 'minimum_purchase', array( 'value' => 'Enter minimum purchase') ); ?><br><br>
+              <?php echo $this->form->label('Enter minimum purchase amount:'); ?>
+               <?php echo $this->form->text( 'minimum_purchase', array( 'value' => 'Enter minimum purchase') ); ?><br><br>
 
-               <?=$this->form->label('Assign by email:'); ?> <?=$this->form->checkbox('limited_use', array('value' => '1')); ?> <br>
+               <?php echo $this->form->label('Assign by email:'); ?> <?php echo $this->form->checkbox('limited_use', array('value' => '1')); ?> <br>
                 <br>
-              <?=$this->form->label('Enter maximum individual use:'); ?>
-              <?=$this->form->text( 'max_use', array( 'value' => 'Enter max use') ); ?><br><br>
+              <?php echo $this->form->label('Enter maximum individual use:'); ?>
+              <?php echo $this->form->text( 'max_use', array( 'value' => 'Enter max use') ); ?><br><br>
 
-              <?=$this->form->label('Enter maximum number people who can use it (if unlimited type in UNLIMITED)');?>
-              <?=$this->form->text('max_total', array( 'value' => 'UNLIMITED')); ?>
+              <?php echo $this->form->label('Enter maximum number people who can use it (if unlimited type in UNLIMITED)');?>
+              <?php echo $this->form->text('max_total', array( 'value' => 'UNLIMITED')); ?>
 
-              <?=$this->form->label('Enter start date:'); ?>
-              <?=$this->form->text( 'start_date', array('value' => 'Enter start date here', 'id' => 'start_date') ); ?><br><br>
+              <?php echo $this->form->label('Enter start date:'); ?>
+              <?php echo $this->form->text( 'start_date', array('value' => 'Enter start date here', 'id' => 'start_date') ); ?><br><br>
 
-              <?=$this->form->label('Enter end date:'); ?>
-              <?=$this->form->text( 'end_date', array('value' => 'Enter end date here', 'id' => 'end_date') ); ?><br><br>
+              <?php echo $this->form->label('Enter end date:'); ?>
+              <?php echo $this->form->text( 'end_date', array('value' => 'Enter end date here', 'id' => 'end_date') ); ?><br><br>
 
-              <?=$this->form->submit('create'); ?><br><br>
+              <?php echo $this->form->submit('create'); ?><br><br>
 
-            <?=$this->form->end(); ?>
+            <?php echo $this->form->end(); ?>
         </fieldset>
     </div>
 </div>

@@ -1,4 +1,4 @@
-<?=$this->html->script(array('highcharts.js')); ?>
+<?php echo $this->html->script(array('highcharts.js')); ?>
 <div class="grid_16">
 	<h2 id="page-heading">Reports</h2>
 </div>
