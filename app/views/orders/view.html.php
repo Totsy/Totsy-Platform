@@ -12,10 +12,10 @@
 	<?php echo $this->view()->render(array('element' => 'myAccountNav')); ?>
 	<?php echo $this->view()->render(array('element' => 'helpNav')); ?>
 	<div class="roundy grey_inside">
-		<?=$this->html->image('being_green/carbonzero.gif', array('style' => 'margin-right: 10px; margin-bottom:20px; float:left;')); ?>
+		<?php echo $this->html->image('being_green/carbonzero.gif', array('style' => 'margin-right: 10px; margin-bottom:20px; float:left;')); ?>
 		<p>A tree was planted with your first order. It is watered with every additional order so it can grow big and strong to help our earth!<br>
 			<strong style="color:#E00000;font-weight:normal"></strong><br />
-			<?=$this->html->link('Learn how every purchase helps', array('Pages::being_green')); ?>
+			<?php echo $this->html->link('Learn how every purchase helps', array('Pages::being_green')); ?>
 		</p>
 	</div>
 </div>
@@ -43,7 +43,7 @@
 							<div class="rounded" style="color:#009900; margin:0px 0px 0px 0px; float:left; display:block; background:#ebffeb; border:1px solid #ddd; width:188px; padding:20px; text-align:center;">Confirmation</div>
 						</div>
 						<div style="background:#f7f7f7; padding:10px; border:1px solid #ddd;">
-							<h2>Thank you! Your order has been successfully placed! <span style="float:right;">Order #<?=$order->order_id;?></span>
+							<h2>Thank you! Your order has been successfully placed! <span style="float:right;">Order #<?php echo $order->order_id;?></span>
 							</h2>
 						</div>
 						<div style="clear:both;"></div>
@@ -58,7 +58,7 @@
 								<?php foreach ($itemsByEvent as $key => $event): ?>
 									<?php if(!empty($openEvent[$orderEvents[$key]['_id']])): ?>
 										<tr>
-											<td colspan="2" style="padding:5px; text-align::left;"><?=$orderEvents[$key]['name']?></td>
+											<td colspan="2" style="padding:5px; text-align::left;"><?php echo $orderEvents[$key]['name']?></td>
 											<?php if (!empty($orderEvents[$key]['ship_message'])): ?>
 												<td>
 													<?php echo $orderEvents[$key]['ship_message']?>
@@ -95,14 +95,14 @@
 													}
 												?>
 													<td style="padding:5px;" title="item">
-														<?=$this->html->image("$image", array('width' => "60", 'height' => "60", 'style' => "margin:2px; padding:2px; background:#fff; border:1px solid #ddd;")); ?>
+														<?php echo $this->html->image("$image", array('width' => "60", 'height' => "60", 'style' => "margin:2px; padding:2px; background:#fff; border:1px solid #ddd;")); ?>
 													</td>
 													<td style="padding:5px" title="description">
-														<?=$item['description']?>
+														<?php echo $item['description']?>
 														<br>
-														Color: <?=$item['color']?>
+														Color: <?php echo $item['color']?>
 														<br>
-														Size: <?=$item['size']?>
+														Size: <?php echo $item['size']?>
 														
 														<?php 
 														$convertdate = date("Y-m-d h:i:s", 1322071200);
@@ -127,10 +127,10 @@
 
 													</td>
 													<td style="padding:5px; color:#009900;" title="price">
-														$<?=number_format($item['sale_retail'],2); ?>
+														$<?php echo number_format($item['sale_retail'],2); ?>
 													</td>
 													<td style="padding:5px;" title="quantity">
-														<?=$item['quantity']?>
+														<?php echo $item['quantity']?>
 													</td>
 													<td title="subtotal" style="padding:5px; color:#009900;">
 														$<?php echo number_format(($item['quantity'] * $item['sale_retail']),2)?>
@@ -156,46 +156,46 @@
 	<div class="grid_3">
 		<strong>Shipping Address</strong>
 		<hr />
-		<?=$order->shipping->firstname;?> <?=$order->shipping->lastname;?>							
+		<?php echo $order->shipping->firstname;?> <?php echo $order->shipping->lastname;?>							
 		<br />
-		<?=$order->shipping->address; ?><?=$order->shipping->address_2; ?>
+		<?php echo $order->shipping->address; ?><?php echo $order->shipping->address_2; ?>
 		<br />
-		<?=$order->shipping->city; ?>, <?=$order->shipping->state; ?><?=$order->shipping->zip; ?>
+		<?php echo $order->shipping->city; ?>, <?php echo $order->shipping->state; ?><?php echo $order->shipping->zip; ?>
 		<br />
 		<br />	
 	</div>
 	<div class="grid_3">
 		<strong>Payment Method</strong>
 		<hr />
-		<?=strtoupper($order->card_type)?> XXXX-XXXX-XXXX-<?=$order->card_number?>
+		<?php echo strtoupper($order->card_type)?> XXXX-XXXX-XXXX-<?php echo $order->card_number?>
 	</div>
 	<div class="grid_5">
 		<strong>Order Information</strong>
 		<hr />
-		Order Subtotal: <span class="fr">$<?=number_format($order->subTotal,2); ?></span>
+		Order Subtotal: <span class="fr">$<?php echo number_format($order->subTotal,2); ?></span>
 		<br>
 		<?php if ($order->credit_used): ?>
-		Credit Applied: <span class="fr">-$<?=number_format(abs($order->credit_used),2); ?></span>
+		Credit Applied: <span class="fr">-$<?php echo number_format(abs($order->credit_used),2); ?></span>
 			<br>
 		<?php endif ?>
 		<?php if (($order->promo_discount) && empty($order->promocode_disable)): ?>
-		Promotion Discount [<?=$order->promo_code?>]: <span class="fr">-$<?=number_format(abs($order->promo_discount),2); ?></span>
+		Promotion Discount [<?php echo $order->promo_code?>]: <span class="fr">-$<?php echo number_format(abs($order->promo_discount),2); ?></span>
 			<br>
 		<?php endif ?>
 		<?php if ($order->discount): ?>
-		Discount: <span class="fr">-$<?=number_format(abs($order->discount),2); ?></span>
+		Discount: <span class="fr">-$<?php echo number_format(abs($order->discount),2); ?></span>
 			<br>
 		<?php endif ?>
-		Sales Tax: <span class="fr">$<?=number_format($order->tax,2); ?></span>
+		Sales Tax: <span class="fr">$<?php echo number_format($order->tax,2); ?></span>
 		<br>
-		Shipping: <span class="fr">$<?=number_format($order->handling,2); ?></span>
+		Shipping: <span class="fr">$<?php echo number_format($order->handling,2); ?></span>
 		<?php if ( array_key_exists('overSizeHandling', $order->data()) && $order->overSizeHandling !=0): ?>
 	        <br>
-	        Oversize Shipping: <span class="fr">$<?=number_format($order->overSizeHandling,2); ?></span>
+	        Oversize Shipping: <span class="fr">$<?php echo number_format($order->overSizeHandling,2); ?></span>
 	    <?php endif; ?>
 		<br>
 		<hr/>
-			<strong style="font-weight:bold;color:#606060; font-size:16px;">Total:</strong> <strong style="font-weight:bold;color:#009900; font-size:16px; float:right;">$<?=number_format($order->total,2); ?></strong>
+			<strong style="font-weight:bold;color:#606060; font-size:16px;">Total:</strong> <strong style="font-weight:bold;color:#009900; font-size:16px; float:right;">$<?php echo number_format($order->total,2); ?></strong>
 		</div>											
 	<div class="clear"></div>
 	<br>
@@ -240,13 +240,13 @@
 	  _gaq.push(['_setAccount', 'UA-675412-15']);
 	  _gaq.push(['_trackPageview']);
 	  _gaq.push(['_addTrans',
-	    '<?=$order->order_id?>',           // order ID - required
+	    '<?php echo $order->order_id?>',           // order ID - required
 	    '',  // affiliation or store name
-	    '<?=$order->total?>',          // total - required
-	    '<?=$order->tax?>',           // tax
-	    '<?=$order->handling?>',              // shipping
-	    '<?=$order->shipping->city?>',       // city
-	    '<?=$order->shipping->state?>',     // state or province
+	    '<?php echo $order->total?>',          // total - required
+	    '<?php echo $order->tax?>',           // tax
+	    '<?php echo $order->handling?>',              // shipping
+	    '<?php echo $order->shipping->city?>',       // city
+	    '<?php echo $order->shipping->state?>',     // state or province
 	    'US'             // country
 	  ]);
 
@@ -257,12 +257,12 @@
 	  <?php foreach($itemsByEvent as $event): ?>
 			<?php foreach($event as $item): ?>
 				 _gaq.push(['_addItem',
-				'<?=$order->order_id?>',			// order ID - required
-				'<?=$item['sku']?>',			// SKU/code - required
-				'<?=$item['description']?>',		// product name
-				'<?=$item['color']?>',		// category or variation
-				'<?=$item['sale_retail']?>',        // unit price - required
-				'<?=$item['quantity']?>'         // quantity - required
+				'<?php echo $order->order_id?>',			// order ID - required
+				'<?php echo $item['sku']?>',			// SKU/code - required
+				'<?php echo $item['description']?>',		// product name
+				'<?php echo $item['color']?>',		// category or variation
+				'<?php echo $item['sale_retail']?>',        // unit price - required
+				'<?php echo $item['quantity']?>'         // quantity - required
 				 ]);
 			<?php endforeach ?>
 		<?php endforeach ?>
@@ -282,8 +282,8 @@
 	var siteID = "6525";
 	var productID = "77";
 	var position = "1";
-	var orderID ="<?=$order->order_id?>"; //To be filled in by site
-	var orderAmt ="<?=$order->total?>"; //To be filled in by site
+	var orderID ="<?php echo $order->order_id?>"; //To be filled in by site
+	var orderAmt ="<?php echo $order->total?>"; //To be filled in by site
 	var command = "REPORT"
 	var upsellit_tag = "<scr" + "ipt " + "SRC='http" + (document.location.protocol=='https:'?'s://www':'://www') + ".upsellit.com/upsellitReporting.jsp?command="+command+"&siteID=" + siteID + "&productID=" + productID + "&position=" + position + "&orderID=" + orderID + "&orderAmt=" + orderAmt +"'><\/scr" + "ipt>";
 	document.write(upsellit_tag);
@@ -327,7 +327,7 @@
 	
 	<script type="text/javascript">
 	
-		var criteoVars = "<?=$criteoVars?>";
+		var criteoVars = "<?php echo $criteoVars?>";
 		
 		//now using global JS variables 
 		document.write("<img src=\"" + document.location.protocol + "//dis.us.criteo.com/dis/dis.aspx?p1=" + escape("v=2&wi=7714288&s=1&t=" + orderID + criteoVars ) + "&t1=transaction&p=3290&c=2&resptype=gif\" width=\"1\" height=\"1\" />");

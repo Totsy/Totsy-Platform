@@ -23,8 +23,8 @@ var discountErrors = new Object();
 		    discountErrors.credits=false;  
 		}
 	
-	$("#cart-count").text(<?=$itemCount?>);
-	var cartExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	
+	$("#cart-count").text(<?php echo $itemCount?>);
+	var cartExpires = new Date(<?php echo ($cartExpirationDate  * 1000)?>);	
 	//set the timer
 	cartTimer(cartExpires);
 	//set the timer on individual cart items
@@ -54,7 +54,7 @@ var discountErrors = new Object();
 	</div>
 
 	<div class="grid_5 cart-header-right">
-		<?=$this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
+		<?php echo $this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
 	</div>
 
 	<div class="clear"></div>
@@ -81,8 +81,8 @@ var discountErrors = new Object();
 
 	<hr/>
 	     <div class="cart-button fr" style="margin:10px 0px 20px 0px;">
-		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
-		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
+		      <?php echo $this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
+		      <?php echo $this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
 		     <div class="clear"></div>
 		 </div>
 <?php endif ?>
@@ -91,7 +91,7 @@ var discountErrors = new Object();
 <?php if (!empty($subTotal)): ?>
 
 <div class="roundy_cart" style="width:935px !important">
-<?=$this->form->create(null ,array('id'=>'cartForm')); ?>
+<?php echo $this->form->create(null ,array('id'=>'cartForm')); ?>
 	<div id='message'><?php echo $message; ?></div>
 		<table class="cart-table">
 			<tbody>
@@ -116,7 +116,7 @@ var discountErrors = new Object();
 			?>
 			<!-- end xmas -->
 				<!-- Build Product Row -->
-				<tr id="<?=$item->_id?>" class="<?=$tableclass?>">
+				<tr id="<?php echo $item->_id?>" class="<?php echo $tableclass?>">
 					<td class="cart-th">
 						<?php
 							if (!empty($item->primary_image)) {
@@ -126,7 +126,7 @@ var discountErrors = new Object();
 								$productImage = "/img/no-image-small.jpeg";
 							}
 						?>
-						<?=$this->html->link(
+						<?php echo $this->html->link(
 							$this->html->image("$productImage", array(
 								'width'=>'60',
 								'height'=>'60',
@@ -138,13 +138,13 @@ var discountErrors = new Object();
 						); ?>
 					</td>
 					<td class="cart-desc">
-						<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
-						<strong><?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?></strong><br />
+						<?php echo $this->form->hidden("item$x", array('value' => $item->_id)); ?>
+						<strong><?php echo $this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?></strong><br />
 						<?php if($item->color) : ?>
-						<strong>Color:</strong> <?=$item->color;?><br />
+						<strong>Color:</strong> <?php echo $item->color;?><br />
 						<?php endif ?>
 						<?php if($item->size!=="no size") : ?>
-						<strong>Size:</strong> <?=$item->size;?>
+						<strong>Size:</strong> <?php echo $item->size;?>
 						<?php endif ?>
 						<br><? echo $shipmsg?>
 					</td>
@@ -152,12 +152,12 @@ var discountErrors = new Object();
 						$date = $cartItemEventEndDates[$x] * 1000;
 					?>
 					<td class="cart-item-timer-td">
-					<div id='<?php echo "itemCounter$x"; ?>_display' class="cart-item-timer" title='<?=$date?>'></div>
+					<div id='<?php echo "itemCounter$x"; ?>_display' class="cart-item-timer" title='<?php echo $date?>'></div>
 					</td>
-					<td class="<?="price-item-$x";?>" class="cart-item-price">
-						<strong>$<?=number_format($item->sale_retail,2)?></strong>
+					<td class="<?php echo "price-item-$x";?>" class="cart-item-price">
+						<strong>$<?php echo number_format($item->sale_retail,2)?></strong>
 					</td>
-					<td class="<?="qty-$x";?> cart-item-qty">
+					<td class="<?php echo "qty-$x";?> cart-item-qty">
 					<!-- Quantity Select -->
 					<?php
 						if($item->available < 9) {
@@ -171,19 +171,19 @@ var discountErrors = new Object();
 							$select = array_unique(array_merge(array('0'), range('1','9')));
 						}
 					?>
-					<?=$this->form->select("cart[{$item->_id}]", $select, array(
+					<?php echo $this->form->select("cart[{$item->_id}]", $select, array(
     					'id' => $item->_id, 'value' => $item->quantity, 'class'=>'quantity'
 					));
 					?>
 										</td>
 					<td class="cart-actions">
-						<a href="#" id="remove<?=$item->_id; ?>" title="Remove from your cart" onclick="deletechecked('Are you sure you want to remove this item?','<?=$item->_id; ?>');" style="color: red!important;"><img src="/img/trash.png" width="20" align="absmiddle" style="margin-right:20px;" /></a>
+						<a href="#" id="remove<?php echo $item->_id; ?>" title="Remove from your cart" onclick="deletechecked('Are you sure you want to remove this item?','<?php echo $item->_id; ?>');" style="color: red!important;"><img src="/img/trash.png" width="20" align="absmiddle" style="margin-right:20px;" /></a>
 					</td>
 					<td class="cart-time">
-						<div id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?=$date?>'></div>
+						<div id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?php echo $date?>'></div>
 					</td>
-					<td class="<?="total-item-$x";?> cart-line-total">
-						<strong>$<?=number_format($item->sale_retail * $item->quantity ,2)?></strong>
+					<td class="<?php echo "total-item-$x";?> cart-line-total">
+						<strong>$<?php echo number_format($item->sale_retail * $item->quantity ,2)?></strong>
 					</td>
 				</tr>
 				<?php $x++; ?>
@@ -192,7 +192,7 @@ var discountErrors = new Object();
 			</table>
 
 		</div>
-		<?=$this->form->end(); ?>
+		<?php echo $this->form->end(); ?>
 
 		<div class="clear"></div>
 
@@ -208,23 +208,23 @@ var discountErrors = new Object();
 			        
 				    <strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
 				    <?php if($serviceAvailable) : ?>
-				    	/ <strong><a href="#" id="reservices_lnk" onclick="reaplyService();">Re-Apply <?=$serviceAvailable; ?></a></strong>
+				    	/ <strong><a href="#" id="reservices_lnk" onclick="reaplyService();">Re-Apply <?php echo $serviceAvailable; ?></a></strong>
 				    <?php endif ?>
 				</div>
 				<div style="clear:both"></div>
 				<div id="promos_and_credit">
 				    <div id="promo" style="display:none">
-				    	<?=$this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo, 'promocode_disable' => $promocode_disable)); ?>
+				    	<?php echo $this->view()->render( array('element' => 'promocode'), array( 'orderPromo' => $cartPromo, 'promocode_disable' => $promocode_disable)); ?>
 				    </div>
 				    <div id="cred" style="display:none; text-align:left !important">
-				    	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
+				    	<?php echo $this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
 				    </div>
 				</div>
 			</div>
 			<div class="cart-subtotal-content">
 				<div class="subtotal" >
 				   <span style="float:left;">Subtotal:</span>
-				   <span style="float:right" id="subtotal">$<?=number_format($subTotal,2)?></span>
+				   <span style="float:right" id="subtotal">$<?php echo number_format($subTotal,2)?></span>
 				</div>
 				<?php if (!empty($cartPromo['saved_amount']) && ($cartPromo['type'] != 'free_shipping') ):?>
 				<div style="clear:both"></div>
@@ -233,7 +233,7 @@ var discountErrors = new Object();
     			    	<?php echo '[' . $cartPromo['code'] . ']'; ?>:
     			    	</span>
     			    	<span style="float:right">-
-    			    	$<?=number_format(abs($cartPromo['saved_amount']),2)?>
+    			    	$<?php echo number_format(abs($cartPromo['saved_amount']),2)?>
     			    	</span>
     			</div>
    				<?php endif ?>
@@ -241,7 +241,7 @@ var discountErrors = new Object();
 				<div style="clear:both"></div>
 				<div class="subtotal">
     			    	<span style="float: left;">Discount [10$ Off] :</span>
-    			    		<span style="float:right">- $<?=number_format($services['tenOffFitfy'],2)?>
+    			    		<span style="float:right">- $<?php echo number_format($services['tenOffFitfy'],2)?>
     			    		</span>
     			    	</span>
     			</div>
@@ -250,7 +250,7 @@ var discountErrors = new Object();
 				<div style="clear:both"></div>
 				<div class="subtotal">
     			    	<span style="float:left;">Credits:</span>
-    			    	<span style="float:right">- $<?=number_format(abs($credits),2)?></span>
+    			    	<span style="float:right">- $<?php echo number_format(abs($credits),2)?></span>
     			</div>
    				<?php endif ?>
 				<div style="clear:both"></div>
@@ -263,7 +263,7 @@ var discountErrors = new Object();
 						<span style="float:left;" id="shipping">
 				    		Shipping:
 				    	</span>
-				    	<span style="float:right">$<?=number_format(abs($shipping),2)?></span>
+				    	<span style="float:right">$<?php echo number_format(abs($shipping),2)?></span>
 					<?php endif ?>
 				</div>
 				</div>
@@ -277,7 +277,7 @@ var discountErrors = new Object();
     			    			echo '[' . $promocode['code'] . ']';
     			    	}?>
     			    	:</span>
-    			    	<span style="color:#707070; float:right">- $<?=number_format($shipping_discount,2)?></span>
+    			    	<span style="color:#707070; float:right">- $<?php echo number_format($shipping_discount,2)?></span>
     			</div>
    				<?php endif ?>
 				<div style="clear:both"></div>
@@ -295,23 +295,23 @@ var discountErrors = new Object();
 				    <div class="cart-savings">
 				    <?php if (!empty($savings)) : ?>
 				    Your Savings:
-				    $<?=number_format($savings,2)?>
+				    $<?php echo number_format($savings,2)?>
 				    	<?php endif ?>
 				    </div>
 				    <div class="subtotal">
 				    <span class="cart-order-total">Order Total:</span>
-				    	<span id="ordertotal">$<?=number_format($total,2)?> </span>
+				    	<span id="ordertotal">$<?php echo number_format($total,2)?> </span>
 				    </div>
 				</div>
 			</div>
 		</div>
 
 <div class="cart-button fr cart-nav-buttons">
-		      <?=$this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
-		      <?=$this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
+		      <?php echo $this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
+		      <?php echo $this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
 		      <div class="clear"></div>
 
-<?=$this->form->end(); ?>
+<?php echo $this->form->end(); ?>
 
 </div>
 
@@ -341,15 +341,15 @@ var discountErrors = new Object();
 </div>
 
 <div id="remove_form" style="display:none">
-	<?=$this->form->create(null ,array('id'=>'removeForm')); ?>
-	<?=$this->form->hidden('rmv_item_id', array('class' => 'inputbox', 'id' => 'rmv_item_id')); ?>
-	<?=$this->form->end();?>
+	<?php echo $this->form->create(null ,array('id'=>'removeForm')); ?>
+	<?php echo $this->form->hidden('rmv_item_id', array('class' => 'inputbox', 'id' => 'rmv_item_id')); ?>
+	<?php echo $this->form->end();?>
 </div>
 
 <div id="reappServiceF" style="display:none">
-	<?=$this->form->create(null ,array('id'=>'reappServiceForm')); ?>
-	<?=$this->form->hidden('reapplyService', array('class' => 'inputbox', 'id' => 'reapplyService')); ?>
-	<?=$this->form->end();?>
+	<?php echo $this->form->create(null ,array('id'=>'reappServiceForm')); ?>
+	<?php echo $this->form->hidden('reapplyService', array('class' => 'inputbox', 'id' => 'reapplyService')); ?>
+	<?php echo $this->form->end();?>
 </div>
 
 <div class="clear"></div>
