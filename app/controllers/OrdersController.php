@@ -326,6 +326,10 @@ class OrdersController extends BaseController {
 			}
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_shipping';
+		}
 		return compact(
 			'address',
 			'addresses_ddwn',
@@ -337,10 +341,6 @@ class OrdersController extends BaseController {
 			'missChristmasCount',
 			'notmissChristmasCount'
 		);
-		if($this->request->is('mobile')){
-		 	$this->_render['layout'] = 'mobile_main';
-		 	$this->_render['template'] = 'mobile_shipping';
-		}
 	}
 
 	/**
@@ -486,7 +486,7 @@ class OrdersController extends BaseController {
 		}
 		return $vars + compact('cartEmpty','order','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable','missChristmasCount','notmissChristmasCount');
 	}
-
+}
 	/**
 	 * Group all the items in an order by their corresponding event.
 	 *
@@ -515,6 +515,7 @@ class OrdersController extends BaseController {
 				}
 			}
 		}
+		
 		return $vars + compact(
 			'cartEmpty',
 			'order',

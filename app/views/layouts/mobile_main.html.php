@@ -36,11 +36,11 @@
 		<div style="float:right; margin-right:10px; font-size:12px; font-weight:normal!important; color:#999;">
 		<?php if(array_key_exists('firstname', $userInfo) &&     !empty($userInfo['firstname'])):
 					?>
-					    <?=$userInfo['firstname'].' '.$userInfo['lastname'] ?><br />
+					    <a href="#" onclick="window.location.href='/account';return false;"><?=$userInfo['firstname'].' '.$userInfo['lastname'] ?></a><br />
 					<?php else: ?>
-					    Totsy Member<br />
+					    <a href="#" onclick="window.location.href='/account';return false;">Totsy Member</a><br />
 					<?php endif;?>
-					Cart: <a href="#" onclick="window.location.href='/cart/view';return false;"><span class="ui-li-count"><?php echo $cartCount;?></span></a>
+					Cart: <a href="#" onclick="window.location.href='/cart/view';return false;"><?php echo $cartCount;?></a>
 		</div>
 	</div>
 <div class="clear"></div>

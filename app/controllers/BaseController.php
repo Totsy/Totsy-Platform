@@ -24,6 +24,11 @@ class BaseController extends \lithium\action\Controller {
 		$this->_classes += $vars['_classes'];
 
 		parent::__construct($config);
+		if ($user && $this->request->is('mobile')) {
+		 		$this->_render['layout'] = 'mobile_main';
+			} else {
+				$this->_render['layout'] = 'main';
+			}
 	}
 
 	/**
@@ -131,12 +136,7 @@ class BaseController extends \lithium\action\Controller {
 		$this->set(compact('pixel'));
 
 
-			if ($user && $this->request->is('mobile')) {
-		 		$this->_render['layout'] = 'mobile_main';
-			} else {
-				$this->_render['layout'] = 'main';
-			}
-			$this->_render['layout'] = 'main';
+			
 	}
 
 	/**

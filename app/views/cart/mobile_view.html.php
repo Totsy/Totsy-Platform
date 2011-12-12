@@ -53,7 +53,7 @@ var discountErrors = new Object();
 
 
 <?=$this->view()->render( array('element' => 'mobile_shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
-
+<div class="clear"></div>
 
 	<?php
 	if($missChristmasCount>0){
@@ -92,15 +92,15 @@ var discountErrors = new Object();
 			if($item->miss_christmas){
 				$tableclass = "alt0a";
 				if($notmissChristmasCount>0){
-					$shipmsg = "<span class=\"shippingalert\">This item is not guaranteed to be delivered on or before 12/25.<br>Please remove this item from your cart and order separately to receive your other items on or before 12/23.*</span>";
+					$shipmsg = "This item is not guaranteed to be delivered on or before 12/25.<br>Please remove this item from your cart and order separately to receive your other items on or before 12/23.*";
 				}
 				else{
-					$shipmsg = "<span class=\"shippingalert\">This item is not guaranteed to be delivered on or before 12/25.*</span>";
+					$shipmsg = "This item is not guaranteed to be delivered on or before 12/25.*";
 				}
 			}
 			else{
 				$tableclass = "alt0";
-				$shipmsg = "<span class=\"shippingalert\" style=\"font-size:9px;\">Item will be delivered <br />on or before 12/23.*</span>";
+				$shipmsg = "Item will be delivered <br />on or before 12/23.*";
 			}			
 			?>
 			<!-- end xmas -->
@@ -312,10 +312,8 @@ var discountErrors = new Object();
 
 
 <p></p>
-<?php echo $this->view()->render(array('element' => 'mobile_aboutUsNav')); ?>
-<?php echo $this->view()->render(array('element' => 'mobile_helpNav')); ?>
 <?php echo $this->view()->render(array('element' => 'mobile_headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
-
+<?php echo $this->view()->render(array('element' => 'mobile_helpNav')); ?>
 
 <script type="text/javascript" charset="utf-8">
 

@@ -163,6 +163,4 @@ cto_params["i<?=$iCounter;?>"] = "<?php echo (string) $item->_id; ?>";
 <?php endif ?>
 </script>
 
-<?php echo $this->view()->render(array('element' => 'mobile_aboutUsNav')); ?>
-<?php echo $this->view()->render(array('element' => 'mobile_helpNav')); ?>
 <?php echo $this->view()->render(array('element' => 'mobile_headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
