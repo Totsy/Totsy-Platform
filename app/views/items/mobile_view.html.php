@@ -12,7 +12,7 @@
 	<hr />
 </h2>
 	<h2 style="font-size:10px;margin-bottom:8px; color:#444;"><?=$item->description." ".$item->color; ?></h2>
-<form action="" method="get" class="" style="border:0;"
+<form action="" method="get" class="" style="border:0;">
 <div class="item_intro_box">
 	<!-- Start product item -->
 		<?php if ($item->total_quantity <= 0): ?>

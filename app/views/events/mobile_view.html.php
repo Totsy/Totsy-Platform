@@ -41,10 +41,12 @@
 <div>
 <?php if(!empty($filters)): ?>
 <hr />
+				
+				
 		<div id='filterb'>
 			<?=$this->form->create(null, array('id' => 'filterform')); ?>
-			<label>View by: &nbsp;</label>
-			<?=$this->form->select('filterby',$filters, array('onchange' => "filter()", 'id' => 'filterby', 'value' => array($departments => $departments))); ?>
+			<option value="">Sort By:</option>
+			<?=$this->form->select('filterby',$filters, array('onchange' => "filter()", 'id' => 'filterby', 'data-overlay-theme' => 'a', 'data-native-menu' => 'false', 'value' => array($departments => $departments))); ?>
 			<?=$this->form->end(); ?>
 		</div>
 <hr />
