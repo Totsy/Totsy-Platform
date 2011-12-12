@@ -4,22 +4,32 @@ namespace app\tests\cases\controllers;
 
 use lithium\action\Request;
 use app\controllers\CartController;
+use app\models\User;
 use app\models\Cart;
 use app\models\Event;
 use app\models\Item;
 use MongoDate;
 use lithium\storage\Session;
+use app\tests\mocks\storage\session\adapter\MemoryMock;
 use li3_fixtures\test\Fixture;
 
 class CartControllerTest extends \lithium\test\Unit {
+	public $user;
+	protected $_backup = array();
+	protected $_delete = array();
 
 	public function setUp() {
- 		$efixture = Fixture::load('Event');
+		$efixture = Fixture::load('Event');
 		$ifixture = Fixture::load('Item');
 		$cfixture = Fixture::load('Cart');
 		$next = $efixture->first();
 		do {
 			Event::remove(array('_id' => $next['_id'] ));
+			foreach($next as $key => $value) {
+				if (is_string($value) && preg_match('/_date$/', $key)) {
+					$next[$key] = new MongoDate(strtotime($value));
+				}
+			}
 			$event = Event::create();
 			$event->save($next);
 		} while ($next = $efixture->next());
@@ -38,6 +48,133 @@ class CartControllerTest extends \lithium\test\Unit {
 			$cart = Cart::create();
 			$cart->save($next);
 		} while ($next = $cfixture->next());
+
+		$adapter = new MemoryMock();
+
+		Session::config(array(
+			'default' => compact('adapter'),
+			'cookie' => compact('adapter')
+		));
+
+		$data = array(
+			'firstname' => 'George',
+			'lastname' => 'Lucas',
+			'email' => uniqid('george') . '@example.com'
+		);
+		$this->user = User::create();
+		$this->user->save($data, array('validate' => false));
+
+		$this->_delete[] = $this->user;
+		$session = $this->user->data();
+		Session::write('userLogin', $session);
+	}
+
+	public function tearDown() {
+		$efixture = Fixture::load('Event');
+		$ifixture = Fixture::load('Item');
+		$cfixture = Fixture::load('Cart');
+
+		$event = $efixture->first();
+		do {
+			Event::remove( array('_id' => $event['_id'] ) );
+		} while ($event = $efixture->next());
+
+		$item = $ifixture->first();
+		do {
+			Item::remove( array( '_id' => $item['_id'] ) );
+		} while ($item = $ifixture->next());
+
+		$cart = $cfixture->first();
+		do {
+			Cart::remove( array('_id' => $cart['_id'] ) );
+		} while ($cart = $cfixture->next());
+
+		Session::delete('userLogin');
+
+		foreach ($this->_delete as $document) {
+			$document->delete();
+		}
+	}
+
+	public function testView() {
+		list($item, $cart) = $this->_createCart(
+			array(
+				'name' => 'Test Event',
+				'url' => 'test_event'
+			),
+			array(
+				'description' => 'Test Item',
+				'url' => 'test_item',
+				'sale_retail' => 30
+			),
+			array(
+				'addItemsToCart' => 2
+			)
+		);
+		$this->assertTrue(!empty($item));
+
+		$request = new Request(array(
+			'params' => array(
+				'controller' => 'carts', 'action' => 'view',
+				'type' => 'html'
+			),
+		));
+		$controller = new CartController(compact('request'));
+
+		ob_start();
+		$return = $controller->view();
+		$echoed = ob_get_clean();
+
+		$this->assertTrue(empty($echoed));
+		$this->assertEqual(0, count($return['cartPromo']->data()));
+		$this->assertEqual(0, $return['cartCredit']->credit_amount);
+		$this->assertEqual(1, count($return['cart']->data()));
+		$this->assertEqual(2, $return['cart'][0]->quantity);
+		$this->assertEqual(7.95, $return['shipping']);
+		$this->assertEqual(0, $return['shipping_discount']);
+		$this->assertEqual(0, $return['savings']);
+		$this->assertEqual(60, $return['subTotal']);
+		$this->assertEqual(67.95, $return['total']);
+		$this->assertEqual(67.95, $return['postDiscountTotal']);
+	}
+
+	public function testAdd() {
+		list($item) = $this->_createCart(
+			array(
+				'name' => 'Test Event',
+				'url' => 'test_event'
+			),
+			array(
+				'description' => 'Test Item',
+				'url' => 'test_item'
+			)
+		);
+		$this->assertTrue(!empty($item));
+
+		$request = new Request(array(
+			'query' => array(
+				'item_id' => (string) $item->_id,
+				'item_size' => 'no size'
+			),
+			'params' => array(
+				'controller' => 'carts', 'action' => 'add',
+				'type' => 'html'
+			),
+		));
+		$controller = new CartController(compact('request'));
+
+		ob_start();
+		$return = $controller->add();
+		$echoed = ob_get_clean();
+
+		$result = $return;
+		$this->assertNull($result);
+
+		$data = json_decode($echoed, true);
+
+		$this->assertTrue(!empty($data));
+		$this->assertEqual(15, $data['subTotal']);
+		$this->assertEqual(1, $data['itemCount']);
 	}
 
 	/*
@@ -48,7 +185,10 @@ class CartControllerTest extends \lithium\test\Unit {
 			'200001' => '4',
 			'200002' => '5'
 		));
-		$response = new Request(array('data'=>$post));
+		$response = new Request(array(
+			'data' => $post,
+			'params' => array('controller' => 'carts', 'action' => 'update')
+		));
 		$cartPuppet = new CartController(array('request' => $response));
 		$cartPuppet->update();
 		$result1 = Cart::find('first', array('conditions' => array('_id' => '200001')));
@@ -65,9 +205,12 @@ class CartControllerTest extends \lithium\test\Unit {
 	public function testRemove() {
 		//Configuration Test
 		$cart_id = "787878787zazazag7878";
-		$remote = new CartController(array('request' => new Request()));
-		$remote->request->data = array('id' => $cart_id);
-		$remote->request->params['type'] = 'html';
+		$request = new Request(array(
+			'data' => array('id' => $cart_id),
+			'params' => array('controller' => 'carts', 'action' => 'update', 'type' => 'html'),
+			'type' => 'html'
+		));
+		$remote = new CartController(compact('request'));
 		$user = Session::read('userLogin');
 		$active_time = new MongoDate();
 		$expire_time = new MongoDate();
@@ -103,29 +246,73 @@ class CartControllerTest extends \lithium\test\Unit {
 		Cart::remove(array('_id' => $cart_id ));
 	}
 
-	public function tearDown() {
+	protected function _createCart(array $eventData, array $itemData, array $options = array()) {
+		$options = $options + array(
+			'cartId' => '200001',
+			'eventId' => '300001',
+			'itemId' => null,
+			'addItemsToCart' => false
+		);
+		$baseCart = Cart::find('first', array('conditions' => array('_id' => $options['cartId'])));
+		$baseEvent = Event::find('first', array('conditions' => array('_id' => $options['eventId'])));
+		$baseItem = Item::find('first', array('conditions' => array('_id' => $options['itemId'] ?: $baseEvent->items[0])));
 
-		$efixture = Fixture::load('Event');
-		$ifixture = Fixture::load('Item');
-		$cfixture = Fixture::load('Cart');
+		$this->assertTrue(isset($baseCart));
+		$this->assertTrue(isset($baseEvent));
+		$this->assertTrue(isset($baseItem));
 
-		$event = $efixture->first();
-		do {
-			Event::remove( array('_id' => $event['_id'] ) );
-		} while ($event = $efixture->next());
+		if (!isset($baseCart) || !isset($baseEvent) || !isset($baseItem)) {
+			return false;
+		}
 
-		$item = $ifixture->first();
-		do {
-			Item::remove( array( '_id' => $item['_id'] ) );
-		} while ($item = $ifixture->next());
+		$event = Event::create(array_merge(array_diff_key($baseEvent->data(), array('_id'=>null)), $eventData));
+		$event->save();
+		$this->_delete[] = $event;
 
-		$cart = $cfixture->first();
-		do {
-			Cart::remove( array('_id' => $cart['_id'] ) );
-		} while ($cart = $cfixture->next());
+		$itemData = array_merge(array_diff_key($baseItem->data(), array('_id'=>null)), $itemData);
+		if (!isset($itemData['created'])) {
+			$itemData['created'] = date('Y-m-d H:i:s');
+		}
+		if (is_string($itemData['created'])) {
+			$itemData['created'] = new MongoDate(strtotime($itemData['created']));
+		}
+		$item = Item::create($itemData);
+		$item->save();
+		$this->_delete[] = $item;
+
+		$event->items = array((string) $item->_id);
+		$event->save();
+
+		$data = array_merge(array_diff_key($baseCart->data(), array('_id'=>null, 'quantity'=>null)), array(
+			'description' => 'Test Cart',
+			'item_id' => (string) $item->_id,
+			'url' => $item->url,
+			'session' => Session::key('default'),
+			'created' => new MongoDate(strtotime('now')),
+			'expires' => new MongoDate(strtotime('+10min')),
+			'user' => (string) $this->user->_id,
+			'event' => array(
+				(string) $event->_id
+			)
+		));
+
+		$cart = Cart::create(array_merge($data, array_intersect_key($itemData, array('sale_retail'=>null, 'sale_whole'=>null))));
+		$cart->save();
+		$this->_delete[] = $cart;
+
+		if ($options['addItemsToCart']) {
+			$request = new Request(array(
+				'data' => array('cart' => array(
+					(string) $cart->_id => is_numeric($options['addItemsToCart']) ? $options['addItemsToCart'] : 1
+				)),
+				'params' => array('controller' => 'carts', 'action' => 'update')
+			));
+			$controller = new CartController(compact('request'));
+			$controller->update();
+		}
+
+		return array($item, $cart);
 	}
-
-
 }
 
 ?>

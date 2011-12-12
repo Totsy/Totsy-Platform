@@ -60,7 +60,6 @@ text-decoration: none;
 
 }
 
->>>>>>> merge conflicts
 
 .rollover_img a:hover {
 width: 108px;
@@ -77,12 +76,12 @@ width: 108px;
 display: block;
 }
 .gradient {background: #ffffff; /* Old browsers */
-background: -moz-linear-gradient(top,  #ffffff 0%, #f5f5f5 100%); /* FF3.6+ */
+background: -moz-linear-gradient(top, #ffffff 0%, #f5f5f5 100%); /* FF3.6+ */
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#f5f5f5)); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(top,  #ffffff 0%,#f5f5f5 100%); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(top,  #ffffff 0%,#f5f5f5 100%); /* Opera 11.10+ */
-background: -ms-linear-gradient(top,  #ffffff 0%,#f5f5f5 100%); /* IE10+ */
-background: linear-gradient(top,  #ffffff 0%,#f5f5f5 100%); /* W3C */
+background: -webkit-linear-gradient(top, #ffffff 0%,#f5f5f5 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top, #ffffff 0%,#f5f5f5 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top, #ffffff 0%,#f5f5f5 100%); /* IE10+ */
+background: linear-gradient(top, #ffffff 0%,#f5f5f5 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f5f5f5',GradientType=0 ); /* IE6-9 */
 }
 </style>
@@ -131,29 +130,27 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 <div class="clear"></div>
 </div>
 </div>
-	
-	
 <div id="footer">
-	<?php echo $this->view()->render(array('element' => 'footerNavPublic')); ?>
+<?php echo $this->view()->render(array('element' => 'footerNavPublic')); ?>
 </div>
 
 <!-- Google Code for Homepage Remarketing List -->
 <script type="text/javascript">
 /* <![CDATA[ */
-	var google_conversion_id = 1019183989;
-	var google_conversion_language = "en";
-	var google_conversion_format = "3";
-	var google_conversion_color = "666666";
-	var google_conversion_label = "8xkfCIH8iwIQ9Yb-5QM";
-	var google_conversion_value = 0;
+var google_conversion_id = 1019183989;
+var google_conversion_language = "en";
+var google_conversion_format = "3";
+var google_conversion_color = "666666";
+var google_conversion_label = "8xkfCIH8iwIQ9Yb-5QM";
+var google_conversion_value = 0;
 /* ]]> */
 </script>
 
 <script type="text/javascript" src="https://www.googleadservices.com/pagead/conversion.js"></script>
 <noscript>
-	<div style="display:inline;">
-		<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=8xkfCIH8iwIQ9Yb-5QM&amp;guid=ON&amp;script=0"/>
-	</div>
+<div style="display:inline;">
+<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1019183989/?label=8xkfCIH8iwIQ9Yb-5QM&amp;guid=ON&amp;script=0"/>
+</div>
 </noscript>
 <!-- END OF Google Code for Homepage Remarketing List -->
 <script>

@@ -2,12 +2,12 @@
 
 namespace app\models;
 
-use \lithium\data\Connections;
-use \lithium\storage\Session;
-use \lithium\storage\session\adapter\Cookie;
-use \MongoDate;
-use \MongoId;
-use \lithium\util\Validator;
+use lithium\data\Connections;
+use lithium\storage\Session;
+use lithium\storage\session\adapter\Cookie;
+use MongoDate;
+use MongoId;
+use lithium\util\Validator;
 use li3_facebook\extension\FacebookProxy;
 
 /**
@@ -321,10 +321,7 @@ class User extends Base {
 
 		return $success;
 	}
-	
-	/**
-	* Clean Session Variables created during Checkout Process
-	**/
+
 	public static function cleanSession() {
 		if(Session::check('userSavings')) {
 			Session::delete('userSavings');

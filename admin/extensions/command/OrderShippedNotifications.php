@@ -97,6 +97,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 			),
 			'OrderId' => array('$ne' => null),
 			'emailNotificationSent' => array('$exists' => false));
+
 		$results = $ordersShippedCollection->group($keys, $inital, $reduce, $conditions);
 		if (is_object($results) && get_class_name($results)=='MongoCursor'){
 			Logger::info('Found "'.$results::count().'" orders');
@@ -211,6 +212,14 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 			}
 			Mailer::send('Order_Skipped', $data['email'], $data);
 			unset($data);
+		}
+	}
+
+	private function getUserId($id) {
+		if (strlen($id)<10){
+			return $id;
+		} else {
+			return new MongoId($id);
 		}
 	}
 

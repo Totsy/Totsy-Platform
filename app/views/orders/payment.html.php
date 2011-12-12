@@ -217,7 +217,7 @@ var paymentForm = new Object();
 				<div style="clear:both"></div>
 				<span style="padding-left:2px">
 				<label for="state" class='required'>State <span>*</span></label>
-				<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'id'=>'state','class' => 'validate[required] inputbox')); ?>
+				<?=$this->form->select('state', Address::$states['United States'], array('empty' => 'Select a state', 'id'=>'state','class' => 'validate[required] inputbox')); ?>
 				<?=$this->form->error('state'); ?>
 				</span>
 				<div style="clear:both; padding-top:5px"></div>
@@ -282,12 +282,6 @@ var paymentForm = new Object();
 <script>
 
 var shippingAddress = <?php echo $shipping; ?>
-
-//validate card number when a correct card is entered
-/*
-$("#card_number").keyup( function(){
-	validCC();
-}); */
 
 //validate card number when a correct card is entered
 $("#card_number").blur( function(){

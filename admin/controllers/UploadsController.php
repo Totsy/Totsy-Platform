@@ -26,7 +26,6 @@ class UploadsController extends \lithium\action\Controller {
 		$success = false;
 						
 		$this->_render['template'] = in_array($type, array('item', 'event','banner','service', 'affiliate')) ? $type : 'upload';
-
         //Check if there are any tags associated with the image
         if(array_key_exists('tag',$this->request->data)){
             $meta = array('tag' => $this->request->data['tag'] );
@@ -37,8 +36,9 @@ class UploadsController extends \lithium\action\Controller {
 		if (($this->request->data) && $this->validate() && $this->write($meta)) {
 			$id = $this->id;
 			$fileName = $this->fileName;
+			$tag = $this->tag;
 		}
-		return compact('id', 'fileName');
+		return compact('id', 'fileName', 'tag');
 	}
 
 	/**

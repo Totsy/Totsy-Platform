@@ -226,3 +226,34 @@ function uploadError(file, errorCode, message) {
         this.debug(ex);
     }
 }
+
+function isLogo(instance){
+    $('#isbackground').removeAttr("checked");
+    $('#isfeature').removeAttr("checked");
+    if( $('#islogo:checked').val() == 1){
+        instance.addPostParam('tag','logo');
+    }
+}
+
+function isBackground(instance){
+    $('#isfeature').removeAttr("checked");
+    $('#islogo').removeAttr("checked");
+
+    if( $('#isbackground:checked').val() == 1){
+        instance.addPostParam('tag','background');
+    }
+}
+function isFeature(instance){
+    $('#isbackground').removeAttr("checked");
+    $('#islogo').removeAttr("checked");
+
+    if( $('#isfeature:checked').val() == 1){
+        instance.addPostParam('tag','featureOn');
+    }}
+function isLogo(instance){
+    $('#isbackground').removeAttr("checked");
+    $('#isfeature').removeAttr("checked");
+    if( $('#islogo:checked').val() == 1){
+        instance.addPostParam('tag','logo');
+    }
+}

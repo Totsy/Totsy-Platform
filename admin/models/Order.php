@@ -117,7 +117,6 @@ class Order extends Base {
 			$data['void_confirm'] = -1;
 			$error = "Can't capture because total is zero.";
 		} else {
-		
 			if($order['auth']) {
 				$transaction = $order['auth'];
 			} else {
@@ -195,9 +194,7 @@ class Order extends Base {
 			} else {
 				$cybersource = new CyberSource($payments::config('default'));
 				$profile = $cybersource->profile($order['cyberSourceProfileId']);
-				$result = $cybersource->capture($order['auth'],(floor($order['total'] * 100) / 100), $profile);
-				print_r($result);
-				die();
+				$auth = $cybersource->capture($order['auth'], (floor($order['total'] * 100) / 100), $profile);
 			}
 			if ($auth->success()) {
 				$data['auth_confirmation'] = $auth->key;
@@ -794,7 +791,6 @@ class Order extends Base {
 						),
 				        array(
 						'authKey' => 1,
-						'auth' => 1,
 						'total' => 1,
 						'order_id' => 1,
 						'_id' => 1

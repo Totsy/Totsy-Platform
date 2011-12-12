@@ -28,9 +28,13 @@ function print_usage {
 	echo " - init              Initially prepare codebase."
 	echo " - fix-perms         Set default permissions on app, admin and resources (excl. libraries)."
 	echo " - run-tests         Runs lithium, app, admin and library tests."
+	echo " - run-app-tests     Runs app tests."
 	echo " - optimize-repo     Perform GC on local git repository."
-	echo " - source-lithium    Install lithium."
 	echo " - source-subs       Initialize and update all submodules."
+	echo " - source-pear       Install symlink to PEAR."
+	echo " - source-selenium   Install dependencies."
+	echo " - clear-cache       Clears file caches on admin and app."
+	echo " - selenium-server   Start the selenium server."
 }
 
 if [ $# != 1 ]; then
@@ -49,16 +53,18 @@ case $COMMAND in
 		echo "Initializing codebase..."
 
 		$0 source-subs
+		$0 source-pear
+
+		read -p "Do you want selenium support? (y/n) " CONFIRM
+		if [[ $CONFIRM == "y" ]]; then
+			$0 source-selenium
+		fi
+
 		$0 fix-perms
 
 		FILES=$(find $PROJECT_DIR/{app,admin} -type f -print0 | xargs -0 grep -l -i -E 'ini_set.*display_error.*(off|false|0)')
 
 		echo
-		echo
-		echo "NOTE: There is currently *no lithium core for the app* shipped with"
-		echo "      the codebase. Please ensure to place one at:"
-		echo
-		echo "      $PROJECT_DIR/libraries/lithium"
 		echo
 		echo "QA: Some errors are being surpressed in:"
 		echo
@@ -67,12 +73,6 @@ case $COMMAND in
 		done
 		echo
 
-		read -p "Do you want to add a lithium core now? (y/n) " CONFIRM
-		if [[ $CONFIRM == "y" ]]; then
-			$0 source-lithium
-		fi
-
-		echo
 		echo "Done :-)"
 		echo
 		;;
@@ -106,6 +106,15 @@ case $COMMAND in
 		echo
 		;;
 
+
+	run-app-tests)
+		cd $PROJECT_DIR/app
+		libraries/lithium/console/li3 test tests/cases
+		libraries/lithium/console/li3 test ../libraries/li3_payments/tests
+
+		echo
+		;;
+
 	optimize-repo)
 		echo "Optimizing local GIT repository..."
 		cd $PROJECT_DIR
@@ -127,23 +136,43 @@ case $COMMAND in
 		git submodule update --init --recursive
 		;;
 
-	source-lithium)
-		TARGET=$PROJECT_DIR/libraries/lithium
-		TMP=$(mktemp -d /tmp/totsyXXXX)
+	source-pear)
+		PEAR=$(pear config-show  | grep php_dir | awk '{ print $4 }')
 
-		echo "Removing old..."
-		test -d $TARGET && rm -r $TARGET
+		echo "Symlinking in PEAR from $PEAR..."
+		test -L $PROJECT_DIR/libraries/PEAR && rm $PROJECT_DIR/libraries/PEAR
+		ln -s $PEAR $PROJECT_DIR/libraries/PEAR
+		;;
 
-		git clone git://github.com/UnionOfRAD/lithium.git $TMP
-		cd $TMP
-		git checkout -q b4d64753832ec0fa344cd5092571d691ede03176
-		mv $TMP/libraries/lithium $TARGET
+	source-selenium)
+		echo "Installing pear package..."
+		pear install Testing_Selenium-alpha
 
-		echo "Removing history..."
-		rm -fr .git
+		echo "Downloading server packages..."
+		curl http://selenium.googlecode.com/files/selenium-server-standalone-2.2.0.jar \
+			--O $PROJECT_DIR/selenium/server.jar
+		;;
 
-		echo "Removing temporary directory..."
-		rm -fr $TMP
+	clear-cache)
+		find $PROJECT_DIR/app/resources/tmp/cache -name 'empty' -prune -o -type f | xargs rm -v
+		find $PROJECT_DIR/admin/resources/tmp/cache -name 'empty' -prune -o -type f | xargs rm -v
+		;;
+
+	selenium-server)
+		echo "NOTE: If firefox doesn't start correctly on OSX execute the following steps."
+		echo
+		echo "----------------------------------------------------------------------------"
+		echo 'cd /Applications/Firefox.app/Contents/MacOS'
+		echo 'mv firefox-bin firefox-bin.original'
+		echo 'ditto --arch i386 firefox-bin.original firefox-bin'
+		echo "----------------------------------------------------------------------------"
+		echo
+
+		java \
+			-jar $PROJECT_DIR/selenium/server.jar \
+			-firefoxProfileTemplate $PROJECT_DIR/selenium/tzp8knyf.selenium \
+			-log $PROJECT_DIR/selenium/selenium.log \
+			-browserSideLog
 		;;
 
 	*)

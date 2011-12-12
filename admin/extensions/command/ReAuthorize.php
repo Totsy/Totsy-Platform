@@ -162,10 +162,8 @@ class ReAuthorize extends \lithium\console\Command {
 					$total = $order['authTotal'];
 				}
 				if($order['processor'] == 'CyberSource') {
-					echo 'CS';
 					$report = $this->reAuthCyberSource($order, $report, $total);
 				} else {
-					echo 'Auth';
 					$report = $this->reAuthAuthorizeNet($order, $report, $total);
 				}
 			} else {

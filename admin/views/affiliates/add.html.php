@@ -131,10 +131,10 @@ var affiliateCategories = <?=json_encode($affiliateCategories)?>;
 </div>
 
 <script type="text/javascript">
-$(document).ready(function() {
-	//create tabs
-	$("#tabs").tabs();
-});
+	$(document).ready(function() {
+		//create tabs
+		$("#tabs").tabs();
+	});
 </script>
 <script type="text/javascript">
 		
@@ -258,66 +258,21 @@ function featureChange(){
 }
 //Edit in place
 $(function(){
-    $('#headline_1').editable({
+    $('.editable').editable({
         onEdit:begin,
         onSubmit:submit,
         type:'textarea'
     });
     function begin(){
-        this.append('Click any to submit');
+        this.append('Click anywhere to submit');
     }
     function submit(){
-        $('input:hidden[name=headline_1]').val(function(){
-            return $('#headline_1').html();
-        });
-    }
-});
-$(function(){
-    $('#headline_2').editable({
-        onEdit:begin,
-        onSubmit:submit,
-        type:'textarea'
-    });
-    function begin(){
-        this.append('Click any to submit');
-    }
-     function submit(){
-         $('input:hidden[name=headline_2]').val(function(){
-            return $('#headline_2').html();
-        });
-    }
-});
-$(function(){
-    $('#headline_3').editable({
-        onEdit:begin,
-        onSubmit:submit,
-        type:'textarea'
-    });
-    function begin(){
-        this.append('Click any to submit');
-    }
-     function submit(){
-         $('input:hidden[name=headline_3]').val(function(){
-            return $('#headline_3').html();
-        });
-    }
-});
-$(function(){
-    $('#test').editable({
-        onEdit:begin,
-        type:'textarea'
-    });
-    function begin(){
-        this.append('Click any to submit');
-    }
-});
-$(function(){
-    $('#sub').editable({
-        onEdit:begin,
-        type:'textarea'
-    });
-    function begin(){
-        this.append('Click any to submit');
+    	var id = $(this).attr('id');
+    	var html = $('#' + id).html();
+    	if (html == "") {
+    		html = "empty";
+    	}
+        $("input:hidden[name='" + id +"']").val(html);
     }
 });
 

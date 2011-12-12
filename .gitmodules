@@ -3,7 +3,7 @@
 	url = git://github.com/UnionOfRAD/li3_docs.git
 [submodule "libraries/li3_flash_message"]
 	path = libraries/li3_flash_message
-	url = code@dev.lithify.me:li3_flash_message.git
+	url = git://github.com/michaelhue/li3_flash_message.git
 [submodule "admin/libraries/swiftmailer"]
 	path = admin/libraries/swiftmailer
 	url = git://github.com/swiftmailer/swiftmailer.git
@@ -15,10 +15,13 @@
 	url = git@github.com:Totsy/li3_facebook.git
 [submodule "admin/libraries/li3_flash_message"]
 	path = admin/libraries/li3_flash_message
-	url = code@dev.lithify.me:li3_flash_message.git
+	url = git://github.com/michaelhue/li3_flash_message.git
 [submodule "libraries/sailthru/sailthru-php5-client"]
 	path = libraries/sailthru/sailthru-php5-client
-	url = git://github.com/sailthru/sailthru-php5-client.git
+	url = git@github.com:sailthru/sailthru-php5-client.git
 [submodule "libraries/li3_payments"]
 	path = libraries/li3_payments
 	url = git@github.com:Totsy/li3_payments.git
+[submodule "app/libraries/lithium"]
+	path = app/libraries/lithium
+	url = git@github.com:UnionOfRAD/lithium.git

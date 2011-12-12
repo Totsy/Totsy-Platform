@@ -8,6 +8,7 @@ use app\models\Item;
 use app\models\Credit;
 use app\models\Address;
 use app\models\Event;
+use app\models\Affiliate;
 use app\models\Promotion;
 use app\models\CreditCard;
 use app\models\Promocode;
@@ -104,12 +105,12 @@ class OrdersController extends BaseController {
 		)));
 
 		$new = ($order->date_created->sec > (time() - 120)) ? true : false;
-		if($order->date_created->sec<1322006400){
-			$shipDate = Cart::shipDate($order, true);	
+		if($order->date_created->sec < 1322006400){
+			$shipDate = Cart::shipDate($order, true);
 			$shipDate = date('M d, Y', $shipDate);
 		}
 		else{
-			$shipDate = Cart::shipDate($order);	
+			$shipDate = Cart::shipDate($order);
 		}
 		if (!empty($shipDate)) {
 			$allEventsClosed = (Cart::getLastEvent($order)->end_date->sec > time()) ? false : true;
@@ -119,18 +120,19 @@ class OrdersController extends BaseController {
 		$shipped = (isset($order->tracking_numbers)) ? true : false;
 		$shipRecord = (isset($order->ship_records)) ? true : false;
 		$preShipment = ($shipped || $shipRecord) ? true : false;
-		$itemsByEvent = $this->itemGroupByEvent($order);
-		$orderEvents = $this->orderEvents($order);
+		$itemsByEvent = $this->_itemGroupByEvent($order);
+		$orderEvents = $this->_orderEvents($order);
 		//Check if all items from one event are closed
-		foreach($itemsByEvent as $items_e) {
-			foreach($items_e as $item) {
+		foreach($itemsByEvent as $key => $items_e) {
+			$url = Event::find('first', array('conditions' => array('_id'=> $key)));
+			foreach($items_e as $key_b => $item) {
 				if(empty($item['cancel'])) {
 					$openEvent[$item['event_id']] = true;
 				}
-				
+
 				$itemRecord = Item::find($item['item_id']);
 				if (!empty($itemRecord)) {
-				
+
 					$itemsByEvent[$key][$key_b]['sku'] = $itemRecord->sku_details[$item['size']];
 					$itemsToSend[] =  array(
 										'id' => (string) $itemRecord['_id'],
@@ -143,7 +145,7 @@ class OrdersController extends BaseController {
 				}
 			}
 		}
-		
+
 		// IMPORTANT!
 		// Sailthru purchase api complete
 		if ($new===true){
@@ -155,10 +157,10 @@ class OrdersController extends BaseController {
 				);
 				Session::write('order_'.$order_id,time(),array('name'=>'default'));
 			}
-		
+
 		}
 		unset($itemsToSend);
-		
+
 		$pixel = Affiliate::getPixels('order', 'spinback');
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel, array('order' => $_SERVER['REQUEST_URI']));
 		//Get Items Skus - Analytics
@@ -175,22 +177,21 @@ class OrdersController extends BaseController {
 		$missChristmasCount = 0;
 		$notmissChristmasCount = 0;
 		foreach ($order->items as $item) {
-		
 			if($item['miss_christmas']){
 				$missChristmasCount++;
 			}
 			else{
 				$notmissChristmasCount++;
-			}			
-		
-		
-		
+
+			}
+
+
+
 			$itemInfo = Item::find('first', array('conditions' => array("_id" => new MongoId($item["item_id"]))));
 			if (empty($item->cancel)) {
 				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
 			}
 		}
-			
 		return compact(
 			'order',
 			'orderEvents',
@@ -233,17 +234,17 @@ class OrdersController extends BaseController {
 			'miss_christmas',
 			'event'
 		);
-		#Check Expires 
+		#Check Expires
 		Cart::cleanExpiredEventItems();
 		#Prepare datas
 		$address = null;
 		$selected = null;
 		$cartExpirationDate = 0;
+		$missChristmasCount = 0;
+		$notmissChristmasCount = 0;
 		$addresses_ddwn = array();
 		$shipDate = null;
 		$error = null;
-		$missChristmasCount = 0;
-		$notmissChristmasCount = 0;
 
 		#Check Datas Form
 		if (!empty($this->request->data)) {
@@ -275,11 +276,11 @@ class OrdersController extends BaseController {
 					$error = true;
 				}
 			}
-		} 
+		}
 		#Get all addresses of the current user
 		$addresses = Address::all(array(
 			'conditions' => array('user_id' => (string) $user['_id'], 'type' => 'Shipping')
-		));		
+		));
 		#Prepare addresses datas for the dropdown
 		if (!empty($addresses)) {
 			$idx = 0;
@@ -291,7 +292,7 @@ class OrdersController extends BaseController {
 				if((string)$value['_id'] == $address['_id']) {
 					$selected = (string) $value['_id'];
 				}
-				$addresses_ddwn[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address']; 
+				$addresses_ddwn[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address'];
 				$idx++;
 			}
 		}
@@ -306,22 +307,31 @@ class OrdersController extends BaseController {
 		));
 		$shipDate = Cart::shipDate($cart);
 		foreach($cart as $item){
-		
 			if($item['miss_christmas']){
 				$missChristmasCount++;
 			}
 			else{
 				$notmissChristmasCount++;
-			}			
-		
-		
+			}
+
+
 			if($cartExpirationDate < $item['expires']->sec) {
 				$cartExpirationDate = $item['expires']->sec;
 			}
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
 
-		return compact('address','addresses_ddwn','shipDate','cartEmpty','error','selected','cartExpirationDate','missChristmasCount','notmissChristmasCount');
+		return compact(
+			'address',
+			'addresses_ddwn',
+			'shipDate',
+			'cartEmpty',
+			'error',
+			'selected',
+			'cartExpirationDate',
+			'missChristmasCount',
+			'notmissChristmasCount'
+		);
 	}
 
 	/**
@@ -344,7 +354,7 @@ class OrdersController extends BaseController {
 		if (!Session::check('billing') || !Session::check('cc_infos')) {
 			return $this->redirect(array('Orders::payment'));
 		}
-		#Check Expires 
+		#Check Expires
 		Cart::cleanExpiredEventItems();
 		#Get Users Informations
 		$user = Session::read('userLogin');
@@ -368,7 +378,7 @@ class OrdersController extends BaseController {
 		#Get Current Cart
 		$cart = $taxCart = Cart::active(array('fields' => $fields, 'time' => 'now'));
 		$cartEmpty = ($cart->data()) ? false : true;
-		$cartByEvent = $this->itemGroupByEvent($cart);
+		$cartByEvent = $this->_itemGroupByEvent($cart);
 		#Calculate Shipped Date
 		$shipDate = Cart::shipDate($cart);
 		#Get Value Of Each and Sum It
@@ -376,27 +386,29 @@ class OrdersController extends BaseController {
 		$cartExpirationDate = 0;
 		$missChristmasCount = 0;
 		$notmissChristmasCount = 0;
-
+		$i = 0;
 		foreach ($cart as $cartValue) {
 			if($cartValue->miss_christmas){
 				$missChristmasCount++;
 			}
 			else{
 				$notmissChristmasCount++;
-			}			
-		
+			}
 
-			#Get Last Expiration Date 
+
+			#Get Last Expiration Date
 			if ($cartExpirationDate < $cartValue['expires']->sec) {
 				$cartExpirationDate = $cartValue['expires']->sec;
 			}
 			$event = Event::find('first', array(
 				'conditions' => array('_id' => $cartValue->event[0])
 			));
+			$cartItemEventEndDates[$i] = is_object($event->end_date) ? $event->end_date->sec : $event->end_date;
 			$cartValue->event_name = $event->name;
 			$cartValue->event_url = $event->url;
 			$cartValue->event_id = $cartValue->event[0];
 			$subTotal += $cartValue->quantity * $cartValue->sale_retail;
+			$i++;
 			unset($cartValue->event);
 		}
 		#Get Shipping / Billing Infos + Costs
@@ -409,10 +421,9 @@ class OrdersController extends BaseController {
 			$overShippingCost = Cart::overSizeShipping($cart);
 		}
 		#Getting Tax by Avatax
-		$avatax = AvaTax::getTax(compact(
+		$avatax = $taxClass::getTax(compact(
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'));
-		
 		$tax = (float) $avatax['tax'];
 		#Get current Discount
 		$vars = Cart::getDiscount($subTotal, $shippingCost, $overShippingCost, $this->request->data, $tax);
@@ -429,25 +440,20 @@ class OrdersController extends BaseController {
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
 			$shipping_discount = $shippingCost + $overShippingCost;
 		}
-		#Getting Tax by Avatax
-		$avatax = $taxClass::getTax(compact(
-			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
-			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'
-		));
-		$tax = (float) $avatax['tax'];
 		#Calculate Order Total
 		$total = $vars['postDiscountTotal'];
-		#Disable Promocode Uses if Services
-		if (!empty($services['freeshipping']['enable']) || !empty($services['tenOffFitfy'])) {
-			$promocode_disable = true;
-		}
+		#Read Credit Card Informations
+		$creditCard = $orderClass::creditCardDecrypt((string)$user['_id']);
 		#Organize Datas
 		$vars = $vars + compact(
 			'user', 'cart', 'total', 'subTotal',
-			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'shipping_discount'
+			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'shipping_discount','creditCard'
 		);
 		if ((!$cartEmpty) && (!empty($this->request->data['process']))) {
+
+			/* Process this order and run it through the payment processor. */
 			$order = $orderClass::process($this->request->data, $cart, $vars, $avatax);
+
 			if (empty($order->errors) && !(Session::check('cc_error'))) {
 				#Redirect To Confirmation Page
 				return $this->redirect(array('Orders::view', 'args' => $order->order_id));
@@ -473,61 +479,9 @@ class OrdersController extends BaseController {
 			'promocode_disable',
 			'missChristmasCount',
 			'notmissChristmasCount',
-			'serviceAvailable'
+			'serviceAvailable',
+			'cartItemEventEndDates'
 		);
-	}
-
-	/**
-	 * Group all the items in an order by their corresponding event.
-	 *
-	 * The $order object is assumed to have originated from one of model types; Order or Cart.
-	 * Irrespective of the type both will return an associative array of event items.
-	 *
-	 * @param object $order
-	 * @return array $eventItems
-	 */
-	protected function itemGroupByEvent($object) {
-		$eventItems = null;
-		if ($object) {
-			$model = $object->model();
-			if ($model == 'app\models\Order') {
-				$orderItems = $object->items->data();
-				foreach ($orderItems as $item) {
-					$eventItems[$item['event_id']][] = $item;
-				}
-			}
-			if ($model == 'app\models\Cart') {
-				$orderItems = $object->data();
-				foreach ($orderItems as $item) {
-					$event = $item['event'][0];
-					unset($item['event']);
-					$eventItems[$event][] = $item;
-				}
-			}
-		}
-		return $eventItems;
-	}
-
-	/**
-	 * Return all the events of an order.
-	 *
-	 * @param object $object
-	 * @return array $orderEvents
-	 */
-	public function orderEvents($object) {
-		$orderEvents = null;
-		$ids = Cart::getEventIds($object);
-		if (!empty($ids)) {
-			$events = Event::find('all', array(
-				'conditions' => array('_id' => $ids),
-				'fields' => array('name', 'ship_message', 'ship_date', 'url')
-			));
-			$events = $events->data();
-			foreach ($events as $event) {
-				$orderEvents[$event['_id']] = $event;
-			}
-		}
-		return $orderEvents;
 	}
 
 	/**
@@ -648,7 +602,7 @@ class OrdersController extends BaseController {
 		#Get all addresses of the current user
 		$addresses = Address::all(array(
 			'conditions' => array('user_id' => (string) $user['_id'], 'type' => 'Billing')
-		));		
+		));
 		#Prepare addresses datas for the dropdown
 		if (!empty($addresses)) {
 			$idx = 0;
@@ -660,7 +614,7 @@ class OrdersController extends BaseController {
 				if((string)$value['_id'] == $address['_id']) {
 					$selected = (string) $value['_id'];
 				}
-				$addresses_ddwn[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address']; 
+				$addresses_ddwn[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address'];
 				$idx++;
 			}
 		}
@@ -675,7 +629,7 @@ class OrdersController extends BaseController {
 			}
 			else{
 				$notmissChristmasCount++;
-			}			
+			}
 
 			if($cartExpirationDate < $item['expires']->sec) {
 				$cartExpirationDate = $item['expires']->sec;
@@ -692,7 +646,70 @@ class OrdersController extends BaseController {
 			Session::delete('cc_error');
 			Session::delete('billing');
 		}
-		return compact('address','addresses_ddwn','selected','cartEmpty','payment','shipping','shipDate','cartExpirationDate','missChristmasCount','notmissChristmasCount');
+		return compact('address',
+			'addresses_ddwn',
+			'selected',
+			'cartEmpty',
+			'payment',
+			'shipping',
+			'shipDate',
+			'cartExpirationDate',
+			'missChristmasCount',
+			'notmissChristmasCount'
+		);
+	}
+
+	/**
+	 * Group all the items in an order by their corresponding event.
+	 *
+	 * The $order object is assumed to have originated from one of model types; Order or Cart.
+	 * Irrespective of the type both will return an associative array of event items.
+	 *
+	 * @param object $order
+	 * @return array $eventItems
+	 */
+	protected function _itemGroupByEvent($object) {
+		$eventItems = array();
+
+		if ($object) {
+			$model = $object->model();
+
+			if (strpos($model, 'models\Order') !== false) {
+				foreach ($object->items->data() as $item) {
+					$eventItems[$item['event_id']][] = $item;
+				}
+			}
+			if ($model == 'app\models\Cart') {
+				foreach ($object->data() as $item) {
+					$event = $item['event'][0];
+					unset($item['event']);
+					$eventItems[$event][] = $item;
+				}
+			}
+		}
+		return $eventItems;
+	}
+
+	/**
+	 * Return all the events of an order.
+	 *
+	 * @param object $object
+	 * @return array $orderEvents
+	 */
+	protected function _orderEvents($object) {
+		$orderEvents = null;
+		$ids = Cart::getEventIds($object);
+		if (!empty($ids)) {
+			$events = Event::find('all', array(
+				'conditions' => array('_id' => $ids),
+				'fields' => array('name', 'ship_message', 'ship_date', 'url')
+			));
+			$events = $events->data();
+			foreach ($events as $event) {
+				$orderEvents[$event['_id']] = $event;
+			}
+		}
+		return $orderEvents;
 	}
 }
 

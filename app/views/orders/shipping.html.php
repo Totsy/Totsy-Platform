@@ -138,7 +138,7 @@ var addressForm = new Object();
 		<div style="clear:both"></div>
 		<span style="padding-left:2px">
 		<?=$this->form->label('state', 'State <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-		<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'class' => 'validate[required] inputbox','id'=>'state', 'style'=>'width:auto !important')); ?>
+		<?=$this->form->select('state', Address::$states['United States'], array('empty' => 'Select a state', 'class' => 'validate[required] inputbox','id'=>'state', 'style'=>'width:auto !important')); ?>
 		<?=$this->form->error('state'); ?>
 		</span>
 		<div style="clear:both; padding-top:5px;"></div>

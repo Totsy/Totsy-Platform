@@ -252,6 +252,7 @@ class OrdersController extends BaseController {
 		$userCollection = User::collection();
 
 		if($this->request->data) {
+
 			$datas = $this->request->data;
 			$selected_order = $orderCollection->findOne(array("_id" => new MongoId($datas["id"])));
 			/**
@@ -296,8 +297,11 @@ class OrdersController extends BaseController {
 				if ($result == true) {
 					FlashMessage::write("Order items has been updated.", array('class' => 'pass'));
 				}
+
 				#Get Last Saved Order
-				$order_temp = $orderClass::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
+				$order_temp = $orderClass::find('first', array('conditions' => array(
+					'_id' => new MongoId($datas["id"]
+				))));
 			} else {
 				$order_temp = $orderClass::refreshTempOrder($datas, $items);
 			}
@@ -589,7 +593,6 @@ class OrdersController extends BaseController {
 		$orderClass = $this->_classes['order'];
 
 		$userCollection = User::collection();
-
 		$ordersCollection = $orderClass::Collection();
 		// Only view
 		$edit_mode = false;
@@ -641,10 +644,9 @@ class OrdersController extends BaseController {
 
 		if ($id) {
 			$itemscanceled = true;
-
 			$order_current = $orderClass::find('first', array('conditions' => array('_id' => $id)));
 
-			if (empty($order)){
+			if (empty($order)) {
 				$order = $order_current;
 			}
 			$orderData = $order_current->data();
@@ -681,12 +683,14 @@ class OrdersController extends BaseController {
 			$edit_mode = false;
 			$itemscanceled = false;
 		}
+
 		#Get Services
 		if(is_object($order->service)) {
 			$service = $order->service->data();
 		} else {
 			$service = $order->service;
 		}
+
 		$shipDate = $this->shipDate($order);
 		return compact('order', 'shipDate', 'sku', 'itemscanceled','edit_mode', 'service');
 	}

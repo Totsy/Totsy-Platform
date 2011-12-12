@@ -151,6 +151,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
                 //$landing['url'] = $data['url'];
                 $info['landing'][] = $landing;
 			}
+			
 			$info['created_by'] = $affiliate->createdBy();
 			$info['date_created'] = new MongoDate( strtotime( date('D M d Y') ) ); 	
        			
@@ -186,8 +187,8 @@ class AffiliatesController extends \admin\controllers\BaseController {
         if(!$affiliate) {
             $this->redirect( array('Affiliates::index') );
         }
-
         $data = $this->request->data;
+
         if($data) {        	
         	$i = 0;
         	
@@ -252,7 +253,6 @@ class AffiliatesController extends \admin\controllers\BaseController {
 		$affiliate['landing'] = $landing;
         return compact('sitePages', 'packages','affiliate', 'affiliateCategories');
 	}
-
 	/**
 	* Ajax call to dynamically retrieve all images taged as background
 	* @see \admin\models\Affiliate::retrieveBackgrounds()

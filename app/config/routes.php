@@ -7,9 +7,9 @@
  */
 
 use lithium\net\http\Media;
-use \lithium\net\http\Router;
-use \lithium\core\Environment;
-use \lithium\storage\Session;
+use lithium\net\http\Router;
+use lithium\core\Environment;
+use lithium\storage\Session;
 use app\models\File;
 use lithium\action\Response;
 
@@ -21,6 +21,13 @@ use lithium\action\Response;
 Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request) {
 	$request->type = ($request->type == 'jpg') ? 'jpeg' : $request->type;
 
+
+	if ($file = File::first($request->id)) {
+		$bytes = $file->file->getBytes();
+	} else {
+		return new Response(array('status' => 404));
+	}
+
 	return new Response(array(
 		'headers' => array(
 			'Content-type' => "image/{$request->type}",
@@ -29,7 +36,7 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 			'Cache-control' => 'max-age=999999',
 			'Last-modified' => 'Mon, 29 Jun 1998 02:28:12 GMT'
 		),
-		'body' => File::first($request->id)->file->getBytes()
+		'body' => $bytes
 	));
 });
 
@@ -44,21 +51,6 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
      ));
 });
 
-/* affiliate routing for categories and affiliates in an URL */
-Router::connect('/{:category:[a-z_]+}', array(), function($request) {
-
-   if (!isset($request->query['a']) || !preg_match('/^[a-z_]+$/', $request->query['a'])) {
-       return false;
-   }
-   $request->params = array(
-       'controller' => 'affiliates',
-       'action' => 'register',
-       'args' => array($request->query['a'], $request->category)
-   );
-   
-   return $request;
-});
-
 Router::connect('/api/help/{:args}', array('controller' => 'API', 'action' => 'help'));
 Router::connect('/api/{:args}', array('controller' => 'API', 'action' => 'index'));
 
@@ -66,6 +58,7 @@ Router::connect('/api/{:args}', array('controller' => 'API', 'action' => 'index'
 Router::connect('/unsubcentral/unsubscribed/{:args}', array('controller' => 'unsubcentral', 'action' => 'unsubscribed'));
 Router::connect('/unsubcentral/del', array('controller' => 'unsubcentral', 'action' => 'del'));
 
+Router::connect('/login', 'Users::login');
 Router::connect('/register', 'Users::register');
 Router::connect('/register/facebook', 'Users::fbregister');
 Router::connect('/momoftheweek', 'MomOfTheWeeks::index');
@@ -87,6 +80,7 @@ Router::connect('/checkout/view', 'Cart::view');
 Router::connect('/checkout/shipping', 'Orders::shipping');
 Router::connect('/checkout/payment', 'Orders::payment');
 Router::connect('/checkout/review', 'Orders::review');
+
 Router::connect('/', 'Events::index');
 Router::connect('/sales/{:args}', 'Events::index');
 Router::connect('/{:action:login|logout}', array('controller' => 'users'));
@@ -118,6 +112,20 @@ if (!Environment::is('production')) {
 	Router::connect('/test/{:args}', array('controller' => '\lithium\test\Controller'));
 	Router::connect('/test', array('controller' => '\lithium\test\Controller'));
 }
+
+/* affiliate routing for categories and affiliates in an URL */
+Router::connect('/{:category:[a-z_]+}', array(), function($request) {
+   if (!isset($request->query['a']) || !preg_match('/^[a-z_]+$/', $request->query['a'])) {
+       return false;
+   }
+   $request->params = array(
+       'controller' => 'affiliates',
+       'action' => 'register',
+       'args' => array($request->query['a'], $request->category)
+   );
+
+   return $request;
+});
 
 /**
  * Finally, connect the default routes.

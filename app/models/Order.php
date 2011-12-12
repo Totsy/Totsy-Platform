@@ -56,7 +56,7 @@ class Order extends Base {
 		$userInfos = $usersCollection->findOne(array('_id' => new MongoId($vars['user']['_id'])));
 		$order = static::create(array('_id' => new MongoId()));
 		#Read Credit Card Informations
-		$creditCard = static::creditCardDecrypt((string)$vars['user']['_id']);
+		$creditCard = $vars['creditCard'];
 		#Create Address Array
 		$address = array(
 				'firstName' =>  $vars['billingAddr']['firstname'],
@@ -151,8 +151,7 @@ class Order extends Base {
 			#If FreeShipping put Handling/OverSizeHandling to Zero
 			if($vars['cartPromo']->type == 'free_shipping') {
 				$vars['shippingCostDiscount'] = $vars['shippingCost'];
-				$vars['overShippingCostDiscount'] = $vars['overShippingCost'];
-			}
+				$vars['overShippingCostDiscount'] = $vars['overShippingCost'];			}
 			#Update Order Information with PromoCode
 			$order->promo_code = $vars['cartPromo']->code;
 			$order->promo_type = $vars['cartPromo']->type;
@@ -220,6 +219,7 @@ class Order extends Base {
 		if(!empty($profileID)) {
 			$order->cyberSourceProfileId = $profileID;
 		}
+		$cart = Cart::active();
 		#Save Order Infos
 		$shipDate = Cart::shipDate($cart);
 		if($shipDate=="On or before 12/23"){
@@ -286,11 +286,11 @@ class Order extends Base {
 	 */
 	public static function creditCardDecrypt($user_id) {
 		$cc_encrypt = Session::read('cc_infos');
+
 		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
  		$iv =  base64_decode(Session::read('vi'));
- 		$key = md5($user_id);
 		foreach	($cc_encrypt as $k => $cc_info) {
-			$crypt_info = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key.sha1($k), base64_decode($cc_info), MCRYPT_MODE_CFB, $iv);
+			$crypt_info = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($user_id . $k), base64_decode($cc_info), MCRYPT_MODE_CFB, $iv);
 			$card[$k] = $crypt_info;
 		}
 		return $card;
@@ -305,9 +305,8 @@ class Order extends Base {
 		if ($save_iv_in_session == true) {
 			Session::write('vi',base64_encode($iv));
 		}
-		$key = md5($user_id);
 		foreach	($cc_infos as $k => $cc_info) {
-			$crypt_info = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key.sha1($k), $cc_info, MCRYPT_MODE_CFB, $iv);
+			$crypt_info = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($user_id . $k), $cc_info, MCRYPT_MODE_CFB, $iv);
 			$cc_encrypt[$k] = base64_encode($crypt_info);
 		}
 		return $cc_encrypt;

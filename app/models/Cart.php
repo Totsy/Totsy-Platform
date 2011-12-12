@@ -7,6 +7,7 @@ use lithium\storage\Session;
 use app\models\Item;
 use MongoDate;
 use MongoId;
+use InvalidArgumentException;
 
 /**
 * The Cart Class.
@@ -227,7 +228,7 @@ class Cart extends Base {
 	/**
 	 * @todo Need documentation
 	 */
-	public static function shipping($carts, $address) {
+	public static function shipping($carts) {
 
 		// THIS WORKED, BUT WE'RE GOING TO A FLAT RATE
 		// $result = floatval(Ups::estimate(array(
@@ -303,13 +304,14 @@ class Cart extends Base {
 		$reserved =  static::find('all', array(
 			'conditions' => array(
 				'item_id' => $item_id,
-				'size' => $size),
+				'size' => $size
+			),
 			'fields' => array('quantity')
 		));
 		if ($reserved) {
 			$carts = $reserved->data();
 			foreach ($carts as $cart) {
-				$total = $total + $cart['quantity'];
+				$total += (isset($cart['quantity']) ? $cart['quantity'] : 0);
 			}
 		}
 		return $total;
@@ -356,7 +358,8 @@ class Cart extends Base {
 					}
 					$event = Event::find('first',array('conditions' => array("_id" => $item['event'][0])));
 					$now = getdate();
-					if(($event['end_date']->sec > ($now[0] + (15 * 60)))) {
+					$currentSec = is_object($event['end_date']) ? $event['end_date']->sec : $event['end_date'];
+					if(($currentSec > ($now[0] + (15 * 60)))) {
 						$cart_temp = Cart::find('first', array(
 							'conditions' => array('_id' =>  $item['_id'])));
 						$cart_temp->expires = new MongoDate($now[0] + (15 * 60));
@@ -379,7 +382,8 @@ class Cart extends Base {
 			foreach ($items as $item) {
 				$event = Event::find('first',array('conditions' => array("_id" => $item['event'][0])));
 				$now = getdate();
-				if (($event->end_date->sec < $now[0])) {
+				$currentSec = is_object($event->end_date) ? $event->end_date->sec : $event->end_date;
+				if (($currentSec < $now[0])) {
 					static::remove(array('_id' => new MongoId( $item["_id"])));
 				}
 			}
@@ -431,7 +435,7 @@ class Cart extends Base {
 			$i = 1;
 			$event = static::getLastEvent($cart);
 			if (!empty($event)) {
-				$shipDate = $event->end_date->sec;
+				$shipDate = is_object($event->end_date) ? $event->end_date->sec : $event->end_date;
 				while($i < static::_object()->_shipBuffer) {
 					$day = date('N', $shipDate);
 					$date = date('Y-m-d', $shipDate);
@@ -445,7 +449,6 @@ class Cart extends Base {
 		}
 		
 		//shows one of two static messages
-		$shipDate = null;
 		$shipDate = "On or before 12/23";
 		
 		$items = (!empty($cart->items)) ? $cart->items : $cart;
@@ -457,7 +460,6 @@ class Cart extends Base {
 				}
 				elseif($thisitem['miss_christmas']){
 					$shipDate = "See delivery alert below";	
-				
 				}
 			}
 		}
@@ -493,9 +495,13 @@ class Cart extends Base {
 	 * @return array
 	 */
 	public static function getEventIds($object) {
-		$items = (!empty($object->items)) ? $object->items->data() : $object->data();
+		if (!is_object($object)) {
+			throw new InvalidArgumentException('First argument to method must be an object.');
+		}
+		$items = empty($object->items) ? $object->data() : $object->items->data();
 		$event = null;
 		$ids = array();
+
 		foreach ($items as $item) {
 			$itemEvent = (empty($item['event'][0])) ? null : $item['event'][0];
 			$eventId = (!empty($item['event_id'])) ? $item['event_id'] : $itemEvent;
