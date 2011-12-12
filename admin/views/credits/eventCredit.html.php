@@ -1,16 +1,16 @@
 <?php use admin\models\Credit; ?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->script('TableTools.min.js');?>
-<?=$this->html->script('jquery-ui-timepicker.min.js');?>
-<?=$this->html->script('jquery.maskedinput-1.2.2')?>
-<?=$this->html->script('ZeroClipboard.js');?>
-<?=$this->html->style('jquery_ui_blitzer.css')?>
-<?=$this->html->style('TableTools');?>
-<?=$this->html->style('timepicker'); ?>
-<?=$this->html->style('table');?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->script('TableTools.min.js');?>
+<?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
+<?php echo $this->html->script('jquery.maskedinput-1.2.2')?>
+<?php echo $this->html->script('ZeroClipboard.js');?>
+<?php echo $this->html->style('jquery_ui_blitzer.css')?>
+<?php echo $this->html->style('TableTools');?>
+<?php echo $this->html->style('timepicker'); ?>
+<?php echo $this->html->style('table');?>
 
 <div class="grid_16">
-	<h2 id="page-heading">Credit Management by Event - <?=$event->name?></h2>
+	<h2 id="page-heading">Credit Management by Event - <?php echo $event->name?></h2>
 </div>
 <div class="grid_6">
 	<div class="box">
@@ -19,22 +19,22 @@
 		</h2>
 
 			<div class="block" id="forms">
-				<?=$this->form->create(null); ?>
+				<?php echo $this->form->create(null); ?>
 				<p>
-					<?=$this->form->label('Reason For Credit: '); ?>
-					<?=$this->form->select('reason', Credit::$reasons); ?>
+					<?php echo $this->form->label('Reason For Credit: '); ?>
+					<?php echo $this->form->select('reason', Credit::$reasons); ?>
 				</p>
 				<p>
-					<?=$this->form->label('Credit Amount: '); ?>
-					<?=$this->form->select('sign', array('+' => '+', '-' => '-')); ?>
-					$<?=$this->form->text('amount', array('size' => 6)); ?>
+					<?php echo $this->form->label('Credit Amount: '); ?>
+					<?php echo $this->form->select('sign', array('+' => '+', '-' => '-')); ?>
+					$<?php echo $this->form->text('amount', array('size' => 6)); ?>
 				</p>
 				<p>
-					<?=$this->form->label('Description:'); ?>
-					<?=$this->form->textarea('description'); ?>
+					<?php echo $this->form->label('Description:'); ?>
+					<?php echo $this->form->textarea('description'); ?>
 				</p>
-					<?=$this->form->submit('Apply'); ?>
-				<?=$this->form->end(); ?>
+					<?php echo $this->form->submit('Apply'); ?>
+				<?php echo $this->form->end(); ?>
 				</div>
 			</div>
 		</div>
@@ -62,13 +62,13 @@
 						<tr>
 							<td>
 								<?php if (!empty($credit->date_created->sec)): ?>
-									<?=date('m-d-Y', $credit->date_created->sec);?>
+									<?php echo date('m-d-Y', $credit->date_created->sec);?>
 								<?php else: ?>
-									<?=date('m-d-Y', $credit->created->sec);?>
+									<?php echo date('m-d-Y', $credit->created->sec);?>
 								<?php endif ?>
 							</td>
 							<td>
-								<?=$this->html->link($credit->order_number, array(
+								<?php echo $this->html->link($credit->order_number, array(
 								'Orders::view',
 								'args' => $credit->order_id),
 								array('target' => '_blank')); 
@@ -76,23 +76,23 @@
 							</td>
 							<td>
 								<?php if ($credit->reason): ?>
-									<?=$credit->reason;?>
+									<?php echo $credit->reason;?>
 								<?php endif ?>
 							</td>
 							<td>
 								<?php if ($credit->description): ?>
-									<?=$credit->description;?>
+									<?php echo $credit->description;?>
 								<?php endif ?>
 							</td>
 							<td>
 								<?php if ($credit->amount): ?>
-									$<?=number_format($credit->amount, 2);?>
+									$<?php echo number_format($credit->amount, 2);?>
 								<?php else: ?>
-								$<?=number_format($credit->credit_amount, 2);?>
+								$<?php echo number_format($credit->credit_amount, 2);?>
 								<?php endif ?>
 							</td>
 							<td>
-								<?=$this->html->link('View', array(
+								<?php echo $this->html->link('View', array(
 								'Users::view',
 								'args'=> $credit->user_id),
 								array('target' => '_blank'));

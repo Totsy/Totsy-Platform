@@ -1,10 +1,10 @@
-<?=$this->html->script('jquery-1.4.2.min.js');?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->script('ZeroClipboard.js');?>
-<?=$this->html->style('table');?>
-<?=$this->html->script('jquery.maskedinput-1.2.2')?>
-<?=$this->html->script('TableTools.min.js');?>
-<?=$this->html->style('TableTools');?>
+<?php echo $this->html->script('jquery-1.4.2.min.js');?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->script('ZeroClipboard.js');?>
+<?php echo $this->html->style('table');?>
+<?php echo $this->html->script('jquery.maskedinput-1.2.2')?>
+<?php echo $this->html->script('TableTools.min.js');?>
+<?php echo $this->html->style('TableTools');?>
 
 <div>
 <h2>Order Payment Status</h2>
@@ -20,30 +20,30 @@
 
 <div class='block' id="forms">
 	<fieldset>
-	<?=$this->form->create(null); ?>
+	<?php echo $this->form->create(null); ?>
 		Order Id:
-			<?=$this->form->text('search' , array('id'=>'search')); ?>
+			<?php echo $this->form->text('search' , array('id'=>'search')); ?>
 			 &nbsp;&nbsp;&nbsp;
 		Start Range:
-			<?=$this->form->text('start_date', array('id'=>'start_date','class'=>'date')); ?>
+			<?php echo $this->form->text('start_date', array('id'=>'start_date','class'=>'date')); ?>
 			&nbsp;
 		End Range:
-			<?=$this->form->text('end_date', array('id'=>'end_date','class'=>'date', 'value' => date('m/d/Y'))); ?>
+			<?php echo $this->form->text('end_date', array('id'=>'end_date','class'=>'date', 'value' => date('m/d/Y'))); ?>
 			&nbsp;&nbsp;
 		Show Today's:
-			<?=$this->form->checkbox('todays',array('value' => '1', 'id' => 'todays_checkbox'))?>
+			<?php echo $this->form->checkbox('todays',array('value' => '1', 'id' => 'todays_checkbox'))?>
 		<br><br>
 		<hr/>
 		<strong>I want to see : </strong>
 
-		<?=$this->form->radio('type',array('value' => 'error', 'id' => 'error'))?> Payment Errors (<strong>Requires Date Range</strong>)
+		<?php echo $this->form->radio('type',array('value' => 'error', 'id' => 'error'))?> Payment Errors (<strong>Requires Date Range</strong>)
 
-		<?=$this->form->radio('type',array('value' => 'processed','id' => 'processed'))?> Payments Successes (<strong>Requires Date Range</strong>)
+		<?php echo $this->form->radio('type',array('value' => 'processed','id' => 'processed'))?> Payments Successes (<strong>Requires Date Range</strong>)
 
-		<?=$this->form->radio('type',array('value' => 'expired', 'id' => 'expired'))?> Expiring (<strong>in 3 days</strong>)
+		<?php echo $this->form->radio('type',array('value' => 'expired', 'id' => 'expired'))?> Expiring (<strong>in 3 days</strong>)
 
-	   <?=$this->form->submit('Find', array('class' => 'float-right')); ?>
-	<?=$this->form->end(); ?>
+	   <?php echo $this->form->submit('Find', array('class' => 'float-right')); ?>
+	<?php echo $this->form->end(); ?>
 	</fieldset>
 </div>
 <br/>
