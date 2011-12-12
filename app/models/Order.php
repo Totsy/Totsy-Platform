@@ -80,6 +80,10 @@ class Order extends Base {
 				} else {
 					$authKey = Base::randomString(8,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz');
 				}
+				if($authKey->errors) {
+					Session::write('cc_error',implode('; ', $authKey->errors));
+					return false;
+				}
 				return static::recordOrder($vars, $cart, $card, $order, $avatax, $authKey, $items);
 			} catch (TransactionException $e) {
 				Session::write('cc_error',$e->getMessage());
