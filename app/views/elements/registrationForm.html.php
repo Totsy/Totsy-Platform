@@ -12,7 +12,7 @@
 	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/affiliate']);">
 <?php else: ?>
 	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/register']);">
-<? endif; ?>
+<?php endif; ?>
 
 	<div style="width:70px; float:left">
 

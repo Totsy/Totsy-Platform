@@ -1,6 +1,3 @@
-<!-- loyalty enroll pixel start -->
-    <img src="http://loyalty.500friends.com/api/enroll.gif?uuid=<?=$params['uuid']?>&email=<?=$userInfo['email']?>&sig=<?=$params['sig']?>" style="position: absolute; left: -10px; visibility: hidden;"> <!-- loyalty enroll pixel end -->
-    
     <!-- display loyalty points for users start -->
     <script src="https://d3aa0ztdn3oibi.cloudfront.net/javascripts/ff.loyalty.widget.js" type="text/javascript">
     </script>
@@ -213,5 +210,4 @@
             </div>
         </div>
     </div>
-    
     <div style="clear:both"></div>

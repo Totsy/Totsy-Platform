@@ -1,20 +1,7 @@
-<?php 
-$this->title("Rewards Members"); 
-?>
+<?php $this->title("Rewards Members"); ?>
 
-<script type="text/javascript">
-
-$(document).ready( function() {
-	$("#reward-members-menu-items span a").click( function() {
-		if($(this).attr("class")!="roundy nav-roundy") {
-			$(this).attr("class", "roundy nav-roundy");
-		} else {
-			$(this).attr("class", "");	
-		} 
-	});
-});
-
-</script>
+<!-- loyalty enroll pixel start -->
+    <img src="http://loyalty.500friends.com/api/enroll.gif?uuid=<?=$params['uuid']?>&email=<?=$userInfo['email']?>&sig=<?=$params['sig']?>" style="position: absolute; left: -10px; visibility: hidden;"> <!-- loyalty enroll pixel end -->
 
 <div class="grid_16">
 	<h2 class="page-title gray">Account Dashboard</h2>

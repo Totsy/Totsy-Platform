@@ -94,9 +94,6 @@ $(document).ready( function() {
 			timeout = setTimeout(function() {
 			closeCartPopup(); }, 8000);
 		} else {
-			//clear these out
-			alert("test");
-			
 			$("#savings").text("");
 			$("#itemCounter").text("");
 		}

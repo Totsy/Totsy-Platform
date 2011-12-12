@@ -303,6 +303,8 @@
 		/* ]]> */
 	</script>
 	
+	<script type="text/javascript">_ffLoyalty.initialize("k7iyyJWiWIg0DMy")</script> 
+	
 	<script type="text/javascript" src="http://www.googleadservices.com/pagead/conversion.js"></script>
 	
 	<noscript>
@@ -312,11 +314,17 @@
 	</noscript>
 	
 	<!-- loyalty plus program purchase tracking -->
-	<img src="http://loyalty.500friends.com/api/record.gif?uuid=<?=$userInfo['_id']?>&email=<?=$userInfo['email']?>&type=purchase&event_id=<?=$order->order_id?>&value=<?=$order->total?>&detail=''" style="position: absolute; left: -10px; visibility: hidden;"/>
+	<img src="http://loyalty.500friends.com/api/record.gif?uuid=k7iyyJWiWIg0DMy&email=evanubiera@gmail.com&type=purchase&event_id=<?=$order->order_id?>&value=<?=$order->total?>&detail=''" style="position: absolute; left: -10px; visibility: hidden;"/>
 	<!-- loyalty plus program purchase tracking -->
 	
+<!-- post-purchase share start -->
+<script type="text/javascript">
+_ffLoyalty.displayWidget("2wx2lWSDtG",{});
+</script>
+<!-- post-purchase share end end -->
+
 	<?php
-		//srting of GET variables passed into criteo link
+		//string of GET variables passed into criteo link
 		$criteoVars = "";
 		$iCounter = 1;
 		
