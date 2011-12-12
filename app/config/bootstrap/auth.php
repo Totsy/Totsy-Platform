@@ -44,7 +44,7 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 
 	if (!$granted) {
 		/* Redirect all non-authenticated users to login page. */
-		return new Response(array('location' => 'Users::login'));
+		return new Response(array('location' => 'Users::register'));
 	}
 	return $chain->next($self, $params, $chain);
 });
