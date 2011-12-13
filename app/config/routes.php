@@ -40,18 +40,6 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 	));
 });
 
-/*
- * The following allows up to serve images right out of mongodb.
- * This needs to be first so that we don't get a controller error.
- */
-Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
-     return new Response(array(
-          'type' => 'image/gif',
-          'body' => File::first($request->id)->file->getBytes()
-     ));
-});
-
-
 Router::connect('/api/help/{:args}', array('controller' => 'API', 'action' => 'help'));
 Router::connect('/api/{:args}', array('controller' => 'API', 'action' => 'index'));
 
