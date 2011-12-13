@@ -1,3 +1,4 @@
+
 <script type="text/javascript">
 	$( function () {
 
@@ -14,10 +15,11 @@
 </script>
 
 <script type="text/javascript">
-var addressForm = new Object();
+	var addressForm = new Object();
 </script>
 <?php
 	use app\models\Address;
+	use lithium\storage\Session;
 	$this->html->script('application', array('inline' => false));
 	$this->form->config(array('text' => array('class' => 'inputbox')));
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";

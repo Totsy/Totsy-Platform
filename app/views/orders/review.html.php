@@ -44,6 +44,8 @@ var discountErrors = new Object();
 
 <?php
 
+use lithium\storage\Session;
+
 //check DNS here :)
 if(Session::read("layout", array("name"=>"default"))=="mamapedia") {
 	$is_mamapedia = true;
