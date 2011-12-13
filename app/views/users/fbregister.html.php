@@ -28,7 +28,7 @@
 							<div id="intro-copy">
 								<h2 style="margin-top:20px"><span>Become a</span> MEMBER
 								<br />
-								<?=$this->html->link('Already a Member?', '/login/?fbcancel=true', array('style' => 'font-size:12px;'));?></h2>
+								<?php echo $this->html->link('Already a Member?', '/login/?fbcancel=true', array('style' => 'font-size:12px;'));?></h2>
 							</div>
 
 							<div class="message">
@@ -40,88 +40,88 @@
 								<div class="tl"></div>
 								<div class="tr"></div>
 								<div class="r-box lt-gradient-1">
-                                <h2> <img src="https://graph.facebook.com/<?=$fbuser['id']?>/picture"> Hi <?=$fbuser['name']?> - you're one step away from joining with Facebook</h2>
+                                <h2> <img src="https://graph.facebook.com/<?php echo $fbuser['id']?>/picture"> Hi <?php echo $fbuser['name']?> - you're one step away from joining with Facebook</h2>
                                 <hr />
 <form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/fb_register']); return setIframe();">
 
                <!-- Commnented Firstname, Lastname and Zip code --->
 
 									<!-- div class="form-row">
-										<?=$this->form->label('firstname', 'First Name <span>*</span>', array(
+										<?php echo $this->form->label('firstname', 'First Name <span>*</span>', array(
 											'escape' => false,
 											'class' => 'required'
 											));
 										?>
 
 
-										<?=$this->form->text('firstname', array('class' => 'inputbox')); ?>
-										<?=$this->form->error('firstname'); ?>
+										<?php echo $this->form->text('firstname', array('class' => 'inputbox')); ?>
+										<?php echo $this->form->error('firstname'); ?>
 									</div>
 
 
 									<div class="form-row">
-										<?=$this->form->label('lastname', 'Last Name <span>*</span>', array(
+										<?php echo $this->form->label('lastname', 'Last Name <span>*</span>', array(
 											'escape' => false,
 											'class' => 'required'
 											));
 										?>
-										<?=$this->form->text('lastname', array('class' => 'inputbox')); ?>
-										<?=$this->form->error('lastname'); ?>
+										<?php echo $this->form->text('lastname', array('class' => 'inputbox')); ?>
+										<?php echo $this->form->error('lastname'); ?>
 									</div>
 							<div class="form-row">
-										<?=$this->form->label('zip', 'Zip Code <span>*</span>', array(
+										<?php echo $this->form->label('zip', 'Zip Code <span>*</span>', array(
 											'escape' => false,
 											'class' => 'required'
 											));
 										?>
-										<?=$this->form->text('zip', array('class' => 'inputbox', 'id' => 'zip')); ?>
-										<?=$this->form->error('zip'); ?>
+										<?php echo $this->form->text('zip', array('class' => 'inputbox', 'id' => 'zip')); ?>
+										<?php echo $this->form->error('zip'); ?>
 									</div -->
 									<!-- ************************************************************** -->
 									<div class="form-row">
-										<?=$this->form->label('email', 'Email <span>*</span>', array(
+										<?php echo $this->form->label('email', 'Email <span>*</span>', array(
 											'escape' => false,
 											'class' => 'required'
 											));
 										?>
-										<?=$this->form->text('email', array('class' => 'inputbox')); ?>
-										<?=$this->form->error('email'); ?>
+										<?php echo $this->form->text('email', array('class' => 'inputbox')); ?>
+										<?php echo $this->form->error('email'); ?>
 									</div>
 									<div class="form-row">
-										<?=$this->form->label('confirmemail', 'Confirm Email <span>*</span>', array(
+										<?php echo $this->form->label('confirmemail', 'Confirm Email <span>*</span>', array(
 											'escape' => false,
 											'class' => 'required'
 											));
 										?>
-										<?=$this->form->text('confirmemail', array('class' => 'inputbox')); ?>
-										<?=$this->form->error('confirmemail'); ?>
-										<?=$this->form->error('emailcheck'); ?>
+										<?php echo $this->form->text('confirmemail', array('class' => 'inputbox')); ?>
+										<?php echo $this->form->error('confirmemail'); ?>
+										<?php echo $this->form->error('emailcheck'); ?>
 									</div>
 									<div class="form-row">
-									<?=$this->form->label('password','Password <span>*</span>', array(
+									<?php echo $this->form->label('password','Password <span>*</span>', array(
 										'class'=>'required',
 										'escape' => false
 										));
 									?>
-									<?=$this->form->password('password', array(
+									<?php echo $this->form->password('password', array(
 											'class'=>"inputbox",
 											'name' => 'password',
 											'id' => 'password'
 										));
 									?>
-									<?=$this->form->error('password'); ?>
+									<?php echo $this->form->error('password'); ?>
 									</div>
 									<div class="form-row_">
-									<?=$this->form->checkbox('terms', array("checked" => "checked", 'style'=>"float:left;margin-right:4px; display: none;"));?>
+									<?php echo $this->form->checkbox('terms', array("checked" => "checked", 'style'=>"float:left;margin-right:4px; display: none;"));?>
 									</div>
 									<span class="sm reg-tos" style="overflow:visible!important;">
 											By clicking register you accept our 
-											<?=$this->html->link('Terms and Conditions','pages/terms')?>.
+											<?php echo $this->html->link('Terms and Conditions','pages/terms')?>.
 									</span>
-										<?=$this->form->submit('Register', array('class' => 'button')); ?>
-										<?=$this->form->error('terms'); ?>
+										<?php echo $this->form->submit('Register', array('class' => 'button')); ?>
+										<?php echo $this->form->error('terms'); ?>
 									</div>
-								<?=$this->form->end(); ?>
+								<?php echo $this->form->end(); ?>
 								</div>
 								
 								<div id="psm" style="display:none;"></div>

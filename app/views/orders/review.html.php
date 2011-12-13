@@ -21,8 +21,7 @@ var discountErrors = new Object();
 		    discountErrors.credits=false;
 		}
 
-
-	var cartExpires = new Date(<?=($cartExpirationDate  * 1000)?>);
+	var cartExpires = new Date(<?php echo ($cartExpirationDate  * 1000)?>);	
 
 	//set the timer on individual items in the cart
 	cartItemsTimer();
@@ -79,8 +78,8 @@ if($is_mamapedia) {
 		</div>
 	</div>
 	<div class="grid_5 cart-header-right">
-		<?=$this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
-	</div>
+		<?php echo $this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
+	</div>	
 	<div class="clear"></div>
 	<hr/>
 	<div class="grid_16" style="width:940px; padding-bottom:35px">
@@ -91,7 +90,7 @@ if($is_mamapedia) {
 			</span>
 			<hr>
 				<div class="cart-review-edit-copy">
-					<?=$shippingAddr['firstname']." ".$shippingAddr['lastname'];?>
+					<?php echo $shippingAddr['firstname']." ".$shippingAddr['lastname'];?>
 				</div>
 				<div class="cart-review-edit-copy">
 					<?php
@@ -103,7 +102,7 @@ if($is_mamapedia) {
 					?>
 				</div>
 				<div class="cart-review-edit-copy">
-					<?=$shippingAddr['city'].", ".$shippingAddr['state']." ".$shippingAddr['zip'];?>
+					<?php echo $shippingAddr['city'].", ".$shippingAddr['state']." ".$shippingAddr['zip'];?>
 				</div>
 			</div>
 		</div>
@@ -129,8 +128,8 @@ if($is_mamapedia) {
 				<span style="margin-bottom: 12px">
 				Order Total:
 				    <span style="color:#009900; text-align:center">
-				    $<?=number_format($total,2)?> </span>
-				</span>
+				    $<?php echo number_format($total,2)?> </span>
+				</span>    
 				<div style="text-align:center; diplay:inline-block !important">
 			      <a href="#" class="button" style="float:none !important; diplay:block !important" onclick="updateOrder()">Place Your Order</a>
 			 	</div>
@@ -143,8 +142,8 @@ if($is_mamapedia) {
 	<?php
 	if($missChristmasCount>0){
 	?>
-				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#990000; font-size:11px;text-align:center;">
-				<img src="/img/truck_red.png">
+				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#ff0000; font-size:11px;text-align:center;">
+				<img src="/img/truck_grey.png">
 				One or more of the items in your cart is not guaranteed to be delivered on or before 12/25*.
 				</div>
 	
@@ -166,11 +165,11 @@ if($is_mamapedia) {
 <?php if (!empty($subTotal)): ?>
 
 <div class="grid_16" style="width:935px">
-<?=$this->form->create(null ,array('id'=>'cartForm')); ?>
+<?php echo $this->form->create(null ,array('id'=>'cartForm')); ?>
 	<div id='message'><?php echo $message; ?></div>
 		<table class="cart-table">
 			<tbody>
-			<?=$this->form->hidden("process", array('id'=>'process')); ?>
+			<?php echo $this->form->hidden("process", array('id'=>'process')); ?>
 			<?php $x = 0; ?>
 			<?php foreach ($cart as $item): ?>
 
@@ -179,7 +178,7 @@ if($is_mamapedia) {
 			if($item['miss_christmas']){
 				$classadd = "background:#fde5e5;";
 				if($notmissChristmasCount>0){
-					$shipmsg = "<span class=\"shippingalert\">This item is not guaranteed to be delivered on or before 12/25.<br>Please remove this item from your cart and order separately to receive your other items on or before 12/23*.</span>";
+					$shipmsg = "<span class=\"shippingalert rounded\" style=\"display:block; padding:4px; color:#ff0000; background:#ffffff; border:1px solid #ff0000;\"><img src=\"/img/truck_grey.png\" style=\"padding-right:10px;\">This item is not guaranteed to be delivered on or before 12/25.<br>To receive your other items on or before 12/23, please remove this item from your cart and order it separately.*</span>";
 				}
 				else{
 					$shipmsg = "<span class=\"shippingalert\">This item is not guaranteed to be delivered on or before 12/25.*</span>";
@@ -195,7 +194,7 @@ if($is_mamapedia) {
 
 
 				<!-- Build Product Row -->
-				<tr id="<?=$item->_id?>" style="<?=$classadd?>">
+				<tr id="<?php echo $item->_id?>" style="<?php echo $classadd?>">
 					<td colspan="1" class="cart-th">
 						<span class="cart-review-thumbnail">
 						<?php
@@ -206,7 +205,7 @@ if($is_mamapedia) {
 									$productImage = "/img/no-image-small.jpeg";
 								}
 							?>
-							<?=$this->html->link(
+							<?php echo $this->html->link(
 								$this->html->image("$productImage", array(
 									'width'=>'107',
 									'height'=>'107',
@@ -221,32 +220,29 @@ if($is_mamapedia) {
 						<div class="cart-review-line-content">
 							<span>
 								<span class="cart-review-desc">
-									<?=$this->form->hidden("item$x", array('value' => $item->_id)); ?>
-									<?=$this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url, array("target"=>"_blank")); ?>
 
-								<span style="display:none" id='<?php echo "itemCounter$x"; ?>' class="counter cart-review-line-timer" title='<?=$date?>'></span>
+									<?php echo $this->form->hidden("item$x", array('value' => $item->_id)); ?>
+									<?php echo $this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url, array("target"=>"_blank")); ?>
+				
+								<span style="display:none" id='<?php echo "itemCounter$x"; ?>' class="counter cart-review-line-timer" title='<?php echo $date?>'></span>
 							</span>
-
-							<span class="<?="price-item-$x";?> cart-review-line-price">
-								<strong>$<?=number_format($item->sale_retail,2)?></strong>
+							
+							<span class="<?php echo "price-item-$x";?> cart-review-line-price">													
+								<strong>$<?php echo number_format($item->sale_retail,2)?></strong>
 							</span>
-<<<<<<< HEAD
-
-=======
->>>>>>> 5f1788e478d06df6575975d87052bb169bd712e7
-							<span class="<?="qty-$x";?> cart-review-line-qty">Qty: <?=$item->quantity;?></span>
-							<span class="<?="total-item-$x";?> cart-review-line-total">$<?=number_format($item->sale_retail * $item->quantity ,2)?>
+							<span class="<?php echo "qty-$x";?> cart-review-line-qty">Qty: <?php echo $item->quantity;?></span>						
+							<span class="<?php echo "total-item-$x";?> cart-review-line-total" style="padding-right:10px;">$<?php echo number_format($item->sale_retail * $item->quantity ,2)?>
 							</span>
 						</div>
 							<hr />
 						<div>
 						<?php if($item->color) : ?>
-							<div><span class="cart-review-color-size">Color:</span> <?=$item->color;?></div>
+							<div><span class="cart-review-color-size">Color:</span> <?php echo $item->color;?></div>
 							<?php endif ?>
-							<?php if($item->size!=="no size") : ?>
-							<div><span class="cart-review-color-size">Size:</span> <?=$item->size;?></div>
+							<?php if($item->size!=="no size") : ?>						
+							<div><span class="cart-review-color-size">Size:</span> <?php echo $item->size;?></div>
 							<?php endif ?>
-							<br><?=$shipmsg?>
+							<br><?php echo $shipmsg?>
 
 						</div>	
 
@@ -256,7 +252,7 @@ if($is_mamapedia) {
 			<?php endforeach ?>
 			</tbody>
 		</table>
-		<?=$this->form->end(); ?>
+		<?php echo $this->form->end(); ?>
 		</div>
 
 		<div class="clear"></div>
@@ -265,49 +261,45 @@ if($is_mamapedia) {
 				<div class="cart-code-buttons">
 				     <?php if(!empty($credit)): ?>
 				    	<strong>Add <a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a></strong> /
-<<<<<<< HEAD
-=======
-
->>>>>>> 5f1788e478d06df6575975d87052bb169bd712e7
 			        <span id="promocode_tooltip" original-title="Promo codes cannot be combined and can be applied once to an order per member." class="cart-tooltip">
 			        	<img src="/img/tooltip_icon.png">
 			        </span>
 				    <?php endif ?>
 					<strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
 					 <?php if($serviceAvailable) : ?>
-				    	/ <strong><a href="#" id="reservices_lnk" onclick="reaplyService();">Re-Apply <?=$serviceAvailable; ?></a></strong>
+				    	/ <strong><a href="#" id="reservices_lnk" onclick="reaplyService();">Re-Apply <?php echo $serviceAvailable; ?></a></strong>
 				    <?php endif ?>
 				</div>
 				<div style="clear:both"></div>
 				<div id="promos_and_credit">
 				    <div id="promo" style="display:none">
-				    	<?=$this->view()->render(array('element' => 'promocode'), array( 'orderPromo' => $cartPromo, 'promocode_disable' => $promocode_disable)); ?>
+				    	<?php echo $this->view()->render(array('element' => 'promocode'), array( 'orderPromo' => $cartPromo, 'promocode_disable' => $promocode_disable)); ?>
 				    </div>
-				    <div id="cred" style="display:none; text-align:left !important">
-				    	<?=$this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
+				    <div id="cred" style="display:none; text-align:left !important">		
+				    	<?php echo $this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
 				    </div>
 				</div>
 			</div>
 			<div class="cart-subtotal-content">
 			    <div class="subtotal" >
 			        	<span style="float:left;">Subtotal:</span>
-			        	<span style="float:right" id="subtotal">$<?=number_format($subTotal,2)?></span>
+			        	<span style="float:right" id="subtotal">$<?php echo number_format($subTotal,2)?></span>
 			    </div>
 			    <?php if (!empty($cartPromo['saved_amount']) && ($cartPromo['type'] != 'free_shipping') ):?>
 			    <div style="clear:both"></div>
 			    <div class="subtotal">
-    		        	<span style="float: left;">Discount
-    		        	<?php echo '[' . $cartPromo['code'] . ']'; ?>
-    		        	:</span>
-    		        	<span style="float:right">-$<?=number_format(abs($cartPromo['saved_amount']),2)?>
-    		        	</span>
+    		        	<span style="float: left;">Discount 
+    		        	<?php echo '[' . $cartPromo['code'] . ']'; ?>	
+    		        	:</span> 
+    		        	<span style="float:right">-$<?php echo number_format(abs($cartPromo['saved_amount']),2)?>
+    		        	</span>	
     		    </div>
    			    <?php endif ?>
    			    <?php if (!empty($services['tenOffFitfy'])):?>
 			    <div style="clear:both"></div>
 			    <div class="subtotal">
-    		        	<span style="float: left;">Discount [10$ Off] :</span>
-    		        		<span style="float:right">-$<?=number_format($services['tenOffFitfy'],2)?>
+    		        	<span style="float: left;">Discount [10$ Off] :</span> 
+    		        		<span style="float:right">-$<?php echo number_format($services['tenOffFitfy'],2)?>
     		        		</span>
     		        	</span>
     		    </div>
@@ -315,8 +307,8 @@ if($is_mamapedia) {
    			    <?php if (!empty($credits)):?>
 			    <div style="clear:both"></div>
 			    <div class="subtotal">
-    		        	<span style="float:left;">Credits:</span>
-    		        	<span style="float:right">- $<?=number_format(abs($credits),2)?></span>
+    		        	<span style="float:left;">Credits:</span> 
+    		        	<span style="float:right">- $<?php echo number_format(abs($credits),2)?></span>
     		    </div>
    			    <?php endif ?>
 			    <div style="clear:both"></div>
@@ -325,15 +317,15 @@ if($is_mamapedia) {
 			    <span id="shipping_tooltip" class="cart-tooltip" original-title="Shipping charges may vary depending on item type."><img src="/img/tooltip_icon.png">
 			        	</span>
 			        <span style="float: left;" id="shipping">
-			        Shipping:</span>
-			        <span style="float:right">$<?=number_format($shippingCost,2)?></span>
+			        Shipping:</span> 
+			        <span style="float:right">$<?php echo number_format($shippingCost,2)?></span>
 			    </div>
 			    </div>
 			    <?php if (!empty($overShippingCost)):?>
 			    <div style="clear:both"></div>
 			    <div class="subtotal">
-    		        <span style="float: left;">Oversize Shipping:</span>
-    		        <span style="float:right">$<?=number_format($overShippingCost,2)?></span>
+    		        <span style="float: left;">Oversize Shipping:</span> 
+    		        <span style="float:right">$<?php echo number_format($overShippingCost,2)?></span>
     		    </div>
    			    <?php endif ?>
 			    <?php if (!empty($shipping_discount)):?>
@@ -343,23 +335,20 @@ if($is_mamapedia) {
     		        	<?php
     		        	if(!empty($cartPromo)) {
     		        		if($cartPromo['type'] === 'free_shipping')
-    		        			echo '[' . $cartPromo['code'] . ']';
-    		        	}?>
-    		        	:</span>
-    		        	<span style="color:#707070; float:right" class="fees_and_discounts">- $<?=number_format($shipping_discount,2)?></span>
+
+    		        			echo '[' . $cartPromo['code'] . ']';	
+    		        	}?>		
+    		        	:</span> 
+    		        	<span style="color:#707070; float:right" class="fees_and_discounts">- $<?php echo number_format($shipping_discount,2)?></span>
     		    </div>
    			    <?php endif ?>
 			    <div style="clear:both"></div>
 			    <div>
 			    <div class="subtotal">
-<<<<<<< HEAD
-=======
 
->>>>>>> 5f1788e478d06df6575975d87052bb169bd712e7
-			        <span id="tax_tooltip" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary." class="cart-tooltip"><img src="/img/tooltip_icon.png">
-</span>
-			    <span id="estimated_tax" style="float: left;">Estimated Tax:</span>
-			        	<span style="float:right">$<?=number_format($tax,2)?></span>
+			        <span id="tax_tooltip" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary." class="cart-tooltip"><img src="/img/tooltip_icon.png"></span>		
+			    <span id="estimated_tax" style="float: left;">Estimated Tax:</span> 
+			        	<span style="float:right">$<?php echo number_format($tax,2)?></span>
 			    </div>
 			    </div>
 			    <div style="clear:both" class="subtotal"><hr /></div>
@@ -367,12 +356,12 @@ if($is_mamapedia) {
 			        <div class="cart-savings">
 			        	<?php if (!empty($savings)) : ?>
 			        	Your Savings:
-			        	$<?=number_format($savings,2)?>
+			        	$<?php echo number_format($savings,2)?>
 			        	<?php endif ?>
 			        </div>
 			        <div class="subtotal">
-			        <span style="font-size:15px; font-weight:bold">Order Total:</span>
-			        	<span style="font-size:15px; color:#009900; float:right" id="ordertotal">$<?=number_format($total,2)?> </span>
+			        <span style="font-size:15px; font-weight:bold">Order Total:</span> 
+			        	<span style="font-size:15px; color:#009900; float:right" id="ordertotal">$<?php echo number_format($total,2)?> </span>
 			        </div>
 			    </div>
 		</div>
@@ -382,7 +371,7 @@ if($is_mamapedia) {
 		      <a href="#" class="button" style="float:none !important; margin-right:50px; diplay:block !important" onclick="updateOrder()">Place Your Order</a>
 	<div class="clear"></div>
 
-<?=$this->form->end(); ?>
+<?php echo $this->form->end(); ?>
 </div>
 <div class="clear"></div>
 <div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
@@ -411,16 +400,16 @@ if($is_mamapedia) {
 </div>
 
 <div id="remove_form" style="display:none">
-	<?=$this->form->create(null ,array('id'=>'removeForm')); ?>
-	<?=$this->form->hidden('rmv_item_id', array('class' => 'inputbox', 'id' => 'rmv_item_id')); ?>
-	<?=$this->form->end();?>
+	<?php echo $this->form->create(null ,array('id'=>'removeForm')); ?>
+	<?php echo $this->form->hidden('rmv_item_id', array('class' => 'inputbox', 'id' => 'rmv_item_id')); ?>
+	<?php echo $this->form->end();?>
 </div>
 
 
 <div id="reappServiceF" style="display:none">
-	<?=$this->form->create(null ,array('id'=>'reappServiceForm')); ?>
-	<?=$this->form->hidden('reapplyService', array('class' => 'inputbox', 'id' => 'reapplyService')); ?>
-	<?=$this->form->end();?>
+	<?php echo $this->form->create(null ,array('id'=>'reappServiceForm')); ?>
+	<?php echo $this->form->hidden('reapplyService', array('class' => 'inputbox', 'id' => 'reapplyService')); ?>
+	<?php echo $this->form->end();?>
 </div>
 
 <script type="text/javascript" src="/js/cart-items-timer.js" charset="utf-8"></script>	
@@ -434,29 +423,31 @@ if($is_mamapedia) {
 <?php endif ?>
 </div>
 <div id="modal" style="background:#fff!important; z-index:9999999999!important;">
-
-<?php if(number_format((float) $total, 2) >= 35 && number_format((float) $total, 2) <= 44.99){ ?>
-<script type=\"text/javascript\">
-	var total = "<?=(float)$total?>";
-	var itemUrl = "<?=$itemUrl?>";
-
-    $.post('/cart/modal',{modal: 'disney'},function(data){
-      //  alert(data);
-        if(data == 'false'){
-            $('#modal').load('/cart/upsell?subtotal=' + total + '&redirect=' + itemUrl).dialog({
-                autoOpen: false,
-                modal:true,
-                width: 550,
-                height: 320,
-                position: 'top',
-                close: function(ev, ui) {}
-            });
-
-            $('#modal').dialog('open');
-        }
-    });
-</script>;
-<?php } ?>
+	<?php
+		/* @DG-2011.12.09
+			- commented out per Micah's request
+		if(number_format((float) $total, 2) >= 35 && number_format((float) $total, 2) <= 44.99){ ?>
+	<script type="text/javascript">
+		var total = "<?=(float)$total?>";
+		var itemUrl = "<?=$itemUrl?>";
+		
+	    $.post('/cart/modal',{modal: 'disney'},function(data){
+	      //  alert(data);
+	        if(data == 'false'){
+	            $('#modal').load('/cart/upsell?subtotal=' + total + '&redirect=' + itemUrl).dialog({
+	                autoOpen: false,
+	                modal:true,
+	                width: 550,
+	                height: 320,
+	                position: 'top',
+	                close: function(ev, ui) {}
+	            });
+	            
+	            $('#modal').dialog('open');
+	        }
+	    });
+	</script>
+	<?php }*/ ?>
 
 </div>
 

@@ -1,5 +1,5 @@
 <div class="fl">
-<?=$this->form->create($orderPromo,array('id' => 'promo-form')); ?>
+<?php echo $this->form->create($orderPromo,array('id' => 'promo-form')); ?>
 <?php if(empty($promocode_disable)): ?>
 	
 	    <div style='float:right !important; width:200px !important; margin-left: 10px; text-align:center'>
@@ -8,7 +8,7 @@
 	            <span style="margin-left:-105px"><?php echo $msg ?></span>
 	        <?php endforeach; ?>
 	    <?php else: ?>
-	        <?=$this->form->error('promo');?>
+	        <?php echo $this->form->error('promo');?>
 	    <?php endif; ?>
 	    </div>
 	    <?php if($this->form->error('promo')) { ?>
@@ -16,12 +16,12 @@
 	    <?php } ?>
 	    <input type="text" name="code" id="promo_code" style='width:70px;' />
 	    <span id='promobtn'>
-	    	<?=$this->form->submit('Apply Promo Code'); ?>
+	    	<?php echo $this->form->submit('Apply Promo Code'); ?>
 	    </span>
 <?php else: ?>
 	<div style='float:right !important; margin: 10px !important; width:280px !important; text-align:center' class="error">
 		You are already qualified for a discount. Only one promotional discount can be used per order.
 	</div>
 <?php endif; ?>
-<?=$this->form->end(); ?>
+<?php echo $this->form->end(); ?>
 </div>

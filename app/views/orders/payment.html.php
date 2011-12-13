@@ -1,6 +1,6 @@
 <script type="text/javascript">
 	$( function () {
-	    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);
+	    var itemExpires = new Date(<?php echo ($cartExpirationDate  * 1000)?>);
 		var now = new Date();
 		$('#itemCounter').countdown( {until: itemExpires, onExpiry: refreshCart, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
 		if (itemExpires < now) {
@@ -146,10 +146,10 @@ if($is_mamapedia) {
 	</div>
 </div>
 <div class="grid_5 cart-header-right">
-		<?=$this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
+		<?php echo $this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
 </div>
 
-<?=$this->form->create($payment, array (
+<?php echo $this->form->create($payment, array (
 		'id' => 'paymentForm')); ?>
 
 <div class="clear"></div>
@@ -159,23 +159,23 @@ if($is_mamapedia) {
 				<h3>Pay with Credit Card :</h3>
 				<hr />
 				<span class="cart-select">
-				<?=$this->form->error('cc_error'); ?>
-				<?=$this->form->hidden('opt_submitted', array('class'=>'inputbox', 'id' => 'opt_submitted')); ?>
-				<?=$this->form->label('card_type', 'Card Type', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->select('card_type', array('visa' => 'Visa', 'mc' => 'MasterCard','amex' => 'American Express'), array('id' => 'card_type', 'class'=>'inputbox')); ?>
+				<?php echo $this->form->error('cc_error'); ?>
+				<?php echo $this->form->hidden('opt_submitted', array('class'=>'inputbox', 'id' => 'opt_submitted')); ?>
+				<?php echo $this->form->label('card_type', 'Card Type', array('escape' => false,'class' => 'required')); ?>
+				<?php echo $this->form->select('card_type', array('visa' => 'Visa', 'mc' => 'MasterCard','amex' => 'American Express'), array('id' => 'card_type', 'class'=>'inputbox')); ?>
 				</span>
 				<div style="clear:both; padding-top:5px !important"></div>
-				<?=$this->form->label('card_number', 'Card Number', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('card_number', array('class'=>'validate[required] inputbox','id' => 'card_number')); ?>
-				<?=$this->form->hidden('card_valid', array('class'=>'inputbox', 'id' => 'card_valid')); ?>
-				<?=$this->form->error('card_number'); ?>
+				<?php echo $this->form->label('card_number', 'Card Number', array('escape' => false,'class' => 'required')); ?>
+				<?php echo $this->form->text('card_number', array('class'=>'validate[required] inputbox','id' => 'card_number')); ?>
+				<?php echo $this->form->hidden('card_valid', array('class'=>'inputbox', 'id' => 'card_valid')); ?>
+				<?php echo $this->form->error('card_number'); ?>
 				<div id="error_valid" style="display:none;">
 					Wrong Credit Card Number
 				</div>
 				<div style="clear:both"></div>
 				<span style="padding-left:2px">
-				<?=$this->form->label('card_month', 'Expiration Date', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->select('card_month', array(
+				<?php echo $this->form->label('card_month', 'Expiration Date', array('escape' => false,'class' => 'required')); ?>
+				<?php echo $this->form->select('card_month', array(
 										'' => 'Month',
 										1 => 'January',
 										2 => 'February',
@@ -195,10 +195,10 @@ if($is_mamapedia) {
 				<?php
 					$now = intval(date('Y'));
 					$years = array_combine(range($now, $now + 15), range($now, $now + 15)); ?>
-				<?=$this->form->select('card_year', array('' => 'Year') + $years, array('id' => "card_year", 'class'=>'validate[required inputbox')); ?>
+				<?php echo $this->form->select('card_year', array('' => 'Year') + $years, array('id' => "card_year", 'class'=>'validate[required inputbox')); ?>
 				<div style="clear:both; padding-top:5px !important"></div>
-				<?=$this->form->label('card_code', 'Security Code', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('card_code', array('id' => 'card_code','class'=>'validate[required] inputbox', 'maxlength' => '4', 'size' => '4')); ?>
+				<?php echo $this->form->label('card_code', 'Security Code', array('escape' => false,'class' => 'required')); ?>
+				<?php echo $this->form->text('card_code', array('id' => 'card_code','class'=>'validate[required] inputbox', 'maxlength' => '4', 'size' => '4')); ?>
 				<?php
 				if(empty($checked)) {
 					$checked = false;
@@ -210,52 +210,52 @@ if($is_mamapedia) {
 				<h3>Billing Address</h3>
 				<hr />
 				<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
-					Choose your address :<?=$this->form->select('addresses', $addresses_ddwn, array("id" => 'addresses', 'value' => $selected));?>
+					Choose your address :<?php echo $this->form->select('addresses', $addresses_ddwn, array("id" => 'addresses', 'value' => $selected));?>
 					<div style="clear:both"></div>
 				<hr />
 				<?php endif ?>
-				Use my shipping address as my billing address: <?=$this->form->checkbox("opt_shipping", array('id' => 'opt_shipping', 'onclick' => 'replace_address()' , "checked" => $checked)) ?>
+				Use my shipping address as my billing address: <?php echo $this->form->checkbox("opt_shipping", array('id' => 'opt_shipping', 'onclick' => 'replace_address()' , "checked" => $checked)) ?>
 				<br />
-				<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('firstname', array('class' => 'validate[required] inputbox', 'id'=>'firstname')); ?>
-				<?=$this->form->error('firstname'); ?>
+				<?php echo $this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+				<?php echo $this->form->text('firstname', array('class' => 'validate[required] inputbox', 'id'=>'firstname')); ?>
+				<?php echo $this->form->error('firstname'); ?>
 				<div style="clear:both"></div>
-				<?=$this->form->label('lastname', 'Last Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('lastname', array('class' => 'validate[required] inputbox', 'id'=>'lastname')); ?>
-				<?=$this->form->error('lastname'); ?>
+				<?php echo $this->form->label('lastname', 'Last Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+				<?php echo $this->form->text('lastname', array('class' => 'validate[required] inputbox', 'id'=>'lastname')); ?>
+				<?php echo $this->form->error('lastname'); ?>
 				<div style="clear:both"></div>
-				<?=$this->form->label('telephone', 'Telephone <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('telephone', array('class' => 'validate[custom[phone]] inputbox', 'id' => 'telephone')); ?>
+				<?php echo $this->form->label('telephone', 'Telephone <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+				<?php echo $this->form->text('telephone', array('class' => 'validate[custom[phone]] inputbox', 'id' => 'telephone')); ?>
 				<div style="clear:both"></div>
-				<?=$this->form->label('address', 'Street Address <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('address', array('class' => 'validate[required] inputbox', 'id'=>'address')); ?>
-				<?=$this->form->error('address'); ?>
+				<?php echo $this->form->label('address', 'Street Address <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+				<?php echo $this->form->text('address', array('class' => 'validate[required] inputbox', 'id'=>'address')); ?>
+				<?php echo $this->form->error('address'); ?>
 				<div style="clear:both"></div>
-				<?=$this->form->label('address2', 'Street Address 2', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('address2', array('class' => 'inputbox', 'id'=>'address2')); ?>
+				<?php echo $this->form->label('address2', 'Street Address 2', array('escape' => false,'class' => 'required')); ?>
+				<?php echo $this->form->text('address2', array('class' => 'inputbox', 'id'=>'address2')); ?>
 				<div style="clear:both"></div>
-				<?=$this->form->label('city', 'City <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('city', array('class' => 'validate[required] inputbox', 'id'=>'city')); ?>
-				<?=$this->form->error('city'); ?>
+				<?php echo $this->form->label('city', 'City <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+				<?php echo $this->form->text('city', array('class' => 'validate[required] inputbox', 'id'=>'city')); ?>
+				<?php echo $this->form->error('city'); ?>
 				<div style="clear:both"></div>
 				<span style="padding-left:2px">
 				<label for="state" class='required'>State <span>*</span></label>
-				<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'id'=>'state','class' => 'validate[required] inputbox')); ?>
-				<?=$this->form->error('state'); ?>
+				<?php echo $this->form->select('state', Address::$states, array('empty' => 'Select a state', 'id'=>'state','class' => 'validate[required] inputbox')); ?>
+				<?php echo $this->form->error('state'); ?>
 				</span>
 				<div style="clear:both; padding-top:5px"></div>
-				<?=$this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-				<?=$this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
+				<?php echo $this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+				<?php echo $this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
 				<div style="clear:both"></div>
 				<div>
-					Save this address <?=$this->form->checkbox("opt_save", array('id' => 'opt_save')) ?>
+					Save this address <?php echo $this->form->checkbox("opt_save", array('id' => 'opt_save')) ?>
 				</div>
-				<?=$this->form->hidden('opt_description', array('id' => 'opt_description' , 'value' => 'billing')); ?>
-				<?=$this->form->hidden('opt_shipping_select', array('id' => 'opt_shipping_select')); ?>
+				<?php echo $this->form->hidden('opt_description', array('id' => 'opt_description' , 'value' => 'billing')); ?>
+				<?php echo $this->form->hidden('opt_shipping_select', array('id' => 'opt_shipping_select')); ?>
 				</div>
 
 			<div class="grid_16">
-				<?=$this->form->submit('CONTINUE', array('class' => 'button fr', 'style'=>'margin-right:10px;')); ?>
+				<?php echo $this->form->submit('CONTINUE', array('class' => 'button fr', 'style'=>'margin-right:10px;')); ?>
 			</div>
 
 </div>
@@ -266,7 +266,7 @@ if($is_mamapedia) {
 			<a href="/sales" title="Continue Shopping">Continue Shopping</a/></h1>
 	</div>
 <?php endif ?>
-<?=$this->form->end();?>
+<?php echo $this->form->end();?>
 
 <div class="clear"></div>
 <div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
@@ -295,9 +295,9 @@ if($is_mamapedia) {
 </div>
 
 <div id="address_form" style="display:none">
-	<?=$this->form->create(null ,array('id'=>'selectForm')); ?>
-	<?=$this->form->hidden('address_id', array('class' => 'inputbox', 'id' => 'address_id')); ?>
-	<?=$this->form->end();?>
+	<?php echo $this->form->create(null ,array('id'=>'selectForm')); ?>
+	<?php echo $this->form->hidden('address_id', array('class' => 'inputbox', 'id' => 'address_id')); ?>
+	<?php echo $this->form->end();?>
 </div>
 <script>
 

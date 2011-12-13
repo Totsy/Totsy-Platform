@@ -30,7 +30,7 @@
 						<tr>
 							<!-- Remember to add absolute file paths to all images for production -->
 							<td width="180">
-								<?=$this->html->link(
+								<?php echo $this->html->link(
 									$this->html->image(
 										"$data[domain]/img/email/email-logo.jpg",
 										array(
@@ -46,7 +46,7 @@
 								?>
 							</td>
 							<td width="65">
-								<?=$this->html->link(
+								<?php echo $this->html->link(
 									$this->html->image(
 										"$data[domain]/img/email/sales-btn.jpg",
 										array(
@@ -63,7 +63,7 @@
 								?>
 							</td>
 							<td width="111">
-								<?=$this->html->link(
+								<?php echo $this->html->link(
 									$this->html->image(
 										"$data[domain]/img/email/account-btn.jpg",
 										array(
@@ -116,14 +116,14 @@
 									</tr>
 						<tr>
 							<td style="padding:20px" valign="top">
-								<p style="font-weight:bold">Order: <?=$order->order_id;?></p>
-								<p>Dear <?=$order->billing->firstname?> <?=$order->billing->lastname?>,<br> 
+								<p style="font-weight:bold">Order: <?php echo $order->order_id;?></p>
+								<p>Dear <?php echo $order->billing->firstname?> <?php echo $order->billing->lastname?>,<br> 
 									Your order (or a portion of it) has been shipped to you.<br>
 									A summary of your order is available from your account page.
-									<?=$this->html->link('Click Here', "$data[domain]/orders/view/$order->order_id"); ?> 
+									<?php echo $this->html->link('Click Here', "$data[domain]/orders/view/$order->order_id"); ?> 
 									to view your order.<br> 
-									Track your order: <?=$order->ship_method?>
-									<?=$this->shipment->link($details['Tracking Number'], array('type' => 'UPS'))?>
+									Track your order: <?php echo $order->ship_method?>
+									<?php echo $this->shipment->link($details['Tracking Number'], array('type' => 'UPS'))?>
 								</p>
 							</td>
 						</tr>
@@ -155,22 +155,22 @@
 												}
 											?>
 											<td height="100" style="border-right:1px solid #666666;padding-top:5px;padding-bottom:5px" title="item">
-												<?=$this->html->image("$image", array('width' => "95", 'height' => "88")); ?>
+												<?php echo $this->html->image("$image", array('width' => "95", 'height' => "88")); ?>
 											</td>
 											<td height="100" style="border-right:1px solid #666666;padding-top:5px;padding-bottom:5px;text-align:left;padding-left:5px" title="description">
-												<strong style="font-weight:bold;color:#666666"><?=$item['description']?></strong>
+												<strong style="font-weight:bold;color:#666666"><?php echo $item['description']?></strong>
 												<br>
-												<strong style="font-weight:bold">Color:</strong><strong style="font-size:10pt;font-weight:normal"><?=$item['color']?></strong>
+												<strong style="font-weight:bold">Color:</strong><strong style="font-size:10pt;font-weight:normal"><?php echo $item['color']?></strong>
 												<br>
-												<strong style="font-weight:bold">Size:</strong><strong style="font-size:10pt;font-weight:normal"><?=$item['size']?></strong>
+												<strong style="font-weight:bold">Size:</strong><strong style="font-size:10pt;font-weight:normal"><?php echo $item['size']?></strong>
 											</td>
 											<td height="100" style="border-right:1px solid #666666;padding-top:5px;padding-bottom:5px" title="price">
 												<strong syle="text-weight:bold">
-													$<?=number_format($item['sale_retail'],2); ?>
+													$<?php echo number_format($item['sale_retail'],2); ?>
 												</strong>
 											</td>
 												<td height="100" style="border-right:1px solid #666666;padding-top:5px;padding-bottom:5px;text-align:center" title="quantity">
-													<?=$item['quantity']?>
+													<?php echo $item['quantity']?>
 												</td>
 												<td height="100" title="subtotal">
 													<strong syle="text-weight:bold">$<?php echo number_format(($item['quantity'] * $item['sale_retail']),2)?></strong>
@@ -209,17 +209,17 @@
 											<strong style="font-weight:bold;color:#606060">Total:</strong> 
 										</td>
 										<td style="padding:20px;text-align:right" valign="top">
-											$<?=number_format($order->subTotal,2); ?>
+											$<?php echo number_format($order->subTotal,2); ?>
 											<br>
 											<?php if ($order->credit_used): ?>
-												-$<?=number_format(abs($order->credit_used),2); ?>
+												-$<?php echo number_format(abs($order->credit_used),2); ?>
 												<br>
 											<?php endif ?>
-											$<?=number_format($order->tax,2); ?>
+											$<?php echo number_format($order->tax,2); ?>
 											<br>
-											$<?=number_format($order->handling + $order->overSizeHandling - $order->handlingDiscount - $order->overSizeHandlingDiscount, 2); ?>
+											$<?php echo number_format($order->handling + $order->overSizeHandling - $order->handlingDiscount - $order->overSizeHandlingDiscount, 2); ?>
 											<br><br><br>
-											<strong style="font-weight:bold;color:#606060">$<?=number_format($order->total,2); ?></strong>
+											<strong style="font-weight:bold;color:#606060">$<?php echo number_format($order->total,2); ?></strong>
 										</td>
 									</tr>
 								</table>
@@ -229,7 +229,7 @@
 											Payment Info:
 										</td>
 										<td width="200">
-											 <?=strtoupper($order->card_type)?> ending with <?=$order->card_number?>
+											 <?php echo strtoupper($order->card_type)?> ending with <?php echo $order->card_number?>
 										</td>
 									</tr>
 									<tr>
@@ -238,10 +238,10 @@
 										</td>
 										<td>
 											<address class="shipping-address">
-												<?=$order->shipping->firstname;?> <?=$order->shipping->lastname;?><br>
-												<?=$order->shipping->address; ?> <?=$order->shipping->address_2; ?><br />
-												<?=$order->shipping->city; ?>, <?=$order->shipping->state; ?>
-												<?=$order->shipping->zip; ?>
+												<?php echo $order->shipping->firstname;?> <?php echo $order->shipping->lastname;?><br>
+												<?php echo $order->shipping->address; ?> <?php echo $order->shipping->address_2; ?><br />
+												<?php echo $order->shipping->city; ?>, <?php echo $order->shipping->state; ?>
+												<?php echo $order->shipping->zip; ?>
 											</address>
 										</td>
 									</tr>
@@ -260,7 +260,7 @@
 											<p>A TREE HAS BEEN PLANTED WITH THIS ORDER.
 												<br>
 												<strong style="color:#E00000;font-weight:normal"></strong>
-												<?=$this->html->link('Find out how every purchase makes a difference.', array('Pages::being_green')); ?>
+												<?php echo $this->html->link('Find out how every purchase makes a difference.', array('Pages::being_green')); ?>
 											</p>
 										</td>
 										<td>

@@ -4,15 +4,15 @@
 	var categoryName = "";
 	
 	<?php if($affiliateName) {  ?>
-		affiliateName= "<?=$affiliateName?>";	
+		affiliateName= "<?php echo $affiliateName?>";	
 	<?php } ?>
 	
 	<?php if($affiliateName) { ?>
-		categoryName= "<?=$categoryName?>";
+		categoryName= "<?php echo $categoryName?>";
 	<?php } ?>
 	
 	<?php if($affBgroundImage) { ?>
-		affBgroundImage = "<?=$affBgroundImage?>"; 	
+		affBgroundImage = "<?php echo $affBgroundImage?>"; 	
 	<?php } ?>
 	
 </script>

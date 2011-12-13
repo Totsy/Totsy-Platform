@@ -238,7 +238,9 @@ class CartController extends BaseController {
 					unset($item['details']);
 					unset($item['_id']);
 					$info = array_merge($item, array('quantity' => 1));
-					if ($cart->addFields() && $cart->save($info)) {
+					$addSuccess = $cart->addFields();
+					$success = Cart::update(array('$set' => $info), array('_id' => $cart->_id));
+					if ($addSuccess && $success) {
 						#Update Main Timer to 15min
 						Cart::refreshTimer();
 						#calculate savings

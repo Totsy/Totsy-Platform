@@ -9,6 +9,12 @@
 		<?php echo $this->title() ? '- Totsy' : ''; ?>
 	</title>
 
+	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
+
+	<?php echo '<link rel="stylesheet" type="text/css" href="/css/base.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/base.css') . '" />'; ?>
+   <?php echo '<link rel="stylesheet" type="text/css" href="/css/960.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/960.css') . '" />'; ?>
+   <?php echo '<link rel="stylesheet" type="text/css" href="/css/jquery_ui_custom/jquery.ui.all.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/jquery_ui_custom/jquery.ui.all.css') . '" />'; ?>
+
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>	
 	<?php echo $this->html->style(array('base.css?v=007', '960.css?v=007', 'jquery_ui_custom/jquery.ui.all.css?v=007'), array('media' => 'screen')); ?>
 	
@@ -17,19 +23,18 @@
 	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
 	<!-- end jQuery / jQuery UI -->
 
-	<?php echo $this->html->script('jquery.uniform.min.js?v=007'); ?>
-	<?php echo $this->html->script('jquery.countdown.min.js?v=007'); ?>
+	<?php echo '<script src="/js/jquery.uniform.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.uniform.min.js') . '" /></script>'; ?>
+   <?php echo '<script src="/js/jquery.countdown.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.countdown.min.js') . '" /></script>'; ?>
 	<?php echo $this->scripts(); ?>
 	
 	<meta property="og:site_name" content="Totsy"/>
 	<meta property="fb:app_id" content="181445585225391"/>
 	<meta name="description" content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
-	<meta name="sailthru.date" content="<?=date('r')?>" />
-	<?php
 
+	<meta name="sailthru.date" content="<?php echo date('r')?>" /><?php
 
 		if(substr($request->url,0,5) == 'sales' || $_SERVER['REQUEST_URI'] == '/') {
-			$title = "Totsy index. Events.";
+			$title = "Totsy index. Evenets.";
 			$tags = 'Sales';
 			if (array_key_exists ('args',$request->params) && isset($request->params['args'][0])){
 				$tags =  $request->params['args'][0];
@@ -87,17 +92,15 @@
 		<?php endif ?>
 		</div>
 	<!-- end header nav -->
-	<div style="clear:both"></div>
-</div>
 
-<div style="clear:both"></div>
-<div class="container_16">
-    <?php echo $this->content(); ?>
+	<div class="container_16">
+		<?php echo $this->content(); ?>
+	</div>
+	<!-- main content -->
 </div>
 	<!-- main content -->
 
 <!-- end container_16 -->
-</div>
 
 	<div id="footer" class="container_16">
 		<?php echo $this->view()->render(array('element' => 'footerNav'), array('userInfo' => $userInfo)); ?>
@@ -130,32 +133,35 @@
 	<script language="javascript">
 	document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s://www':'://www')+ '.upsellit.com/upsellitJS4.jsp?qs=237268202226312324343293280329277309292309329331334326345325&siteID=6605"><\/sc'+'ript>')
 	</script>
-<script type="text/javascript">
-    // end uniform inputs
-    $(document).ready(function() {
-    	$("input:file, select").uniform();
-    	$("#tabs").tabs();
-    });
 
-    	$(function () {
-    		$(window).scroll(function () {
-    			if ($(this).scrollTop() != 0) {
-    				$('#toTop').fadeIn();
-    			} else {
-    				$('#toTop').fadeOut();
-    			}
-    		});
-    		$('#toTop').click(function () {
-    			$('body,html').animate({
-    				scrollTop: 0
-    			},
-    			800);
-    		});
-    	});
-    // end back to top	
-// end tabs
+	<script type="text/javascript">
+		// end uniform inputs
+		$(document).ready(function() {
+			$("input:file, select").uniform();
+			$("#tabs").tabs();
+		});
+
+			$(function () {
+				$(window).scroll(function () {
+					if ($(this).scrollTop() != 0) {
+						$('#toTop').fadeIn();
+					} else {
+						$('#toTop').fadeOut();
+					}
+				});
+				$('#toTop').click(function () {
+					$('body,html').animate({
+						scrollTop: 0
+					},
+					800);
+				});
+			});
+		// end back to top
+
+	// end tabs
 </script>
-<!-- Sailthru Horizon --> 
+
+<!-- Sailthru Horizon -->
 <script type="text/javascript">
     (function() {
         function loadHorizon() {

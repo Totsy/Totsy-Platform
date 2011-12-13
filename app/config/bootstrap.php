@@ -82,7 +82,4 @@ require __DIR__ . '/bootstrap/session.php';
  */
 require __DIR__ . '/bootstrap/local_testing_cli.php';
 
-
-
 ?>
-
