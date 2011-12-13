@@ -1,13 +1,13 @@
-<?=$this->html->script('jquery-ui-timepicker.min.js');?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->script('TableTools.min.js');?>
-<?=$this->html->script('ZeroClipboard.js');?>
-<?=$this->html->style('jquery_ui_blitzer.css')?>
-<?=$this->html->style('TableTools');?>
-<?=$this->html->style('timepicker'); ?>
-<?=$this->html->style('table');?>
-<?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
-<?=$this->html->script('jquery-ui-timepicker.min.js');?>
+<?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->script('TableTools.min.js');?>
+<?php echo $this->html->script('ZeroClipboard.js');?>
+<?php echo $this->html->style('jquery_ui_blitzer.css')?>
+<?php echo $this->html->style('TableTools');?>
+<?php echo $this->html->style('timepicker'); ?>
+<?php echo $this->html->style('table');?>
+<?php echo $this->html->script('jquery-ui-1.8.2.custom.min.js');?>
+<?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
 
 <script type="text/javascript" charset="utf-8">
 	$(function() {
@@ -36,16 +36,16 @@
 		</h2>
 		<div class="block" id="forms">
 			<fieldset>
-				<?=$this->form->create(); ?>
+				<?php echo $this->form->create(); ?>
 						<p>
-							<?=$this->form->label('Minimum Order Date'); ?>
-							<?=$this->form->text('min_date', array('id' => 'min_date'));?>
+							<?php echo $this->form->label('Minimum Order Date'); ?>
+							<?php echo $this->form->text('min_date', array('id' => 'min_date'));?>
 						</p>
 						<p>
-						<?=$this->form->label('Maxium Order Date'); ?>
-						<?=$this->form->text('max_date', array('id' => 'max_date'));?>
-					<?=$this->form->submit('Search'); ?>
-				<?=$this->form->end(); ?>
+						<?php echo $this->form->label('Maxium Order Date'); ?>
+						<?php echo $this->form->text('max_date', array('id' => 'max_date'));?>
+					<?php echo $this->form->submit('Search'); ?>
+				<?php echo $this->form->end(); ?>
 			</fieldset>
 		</div>
 	</div>
@@ -65,12 +65,12 @@
 				</tr>
 			</thead>
 			<tr>
-				<td>Total (<?=$dates['min_date'];?> through <?=$dates['max_date']?>)</td>
-				<td><?=$total['count'];?></td>
-				<td><?=$total['quantity'];?></td>
-				<td>$<?=number_format($total['tax'], 2);?></td>
-				<td>$<?=number_format($total['handling'], 2);?></td>
-				<td>$<?=number_format($total['total'], 2);?></td>
+				<td>Total (<?php echo $dates['min_date'];?> through <?php echo $dates['max_date']?>)</td>
+				<td><?php echo $total['count'];?></td>
+				<td><?php echo $total['quantity'];?></td>
+				<td>$<?php echo number_format($total['tax'], 2);?></td>
+				<td>$<?php echo number_format($total['handling'], 2);?></td>
+				<td>$<?php echo number_format($total['total'], 2);?></td>
 			</tr>
 	<?php endif ?>
 	<?php if (!empty($summary)): ?>
@@ -87,12 +87,12 @@
 			</thead>
 		<?php foreach ($summary as $result): ?>
 			<tr>
-				<td><?=$result['date'];?></td>
-				<td><?=$result['count'];?></td>
-				<td><?=$result['quantity'];?></td>
-				<td>$<?=number_format($result['tax'], 2);?></td>
-				<td>$<?=number_format($result['handling'], 2);?></td>
-				<td>$<?=number_format($result['total'], 2);?></td>
+				<td><?php echo $result['date'];?></td>
+				<td><?php echo $result['count'];?></td>
+				<td><?php echo $result['quantity'];?></td>
+				<td>$<?php echo number_format($result['tax'], 2);?></td>
+				<td>$<?php echo number_format($result['handling'], 2);?></td>
+				<td>$<?php echo number_format($result['total'], 2);?></td>
 			</tr>
 		<?php endforeach ?>
 		</table>
@@ -112,13 +112,13 @@
 			</thead>
 		<?php foreach ($details as $result): ?>
 			<tr>
-				<td><?=$result['date'];?></td>
-				<td><?=$result['state'];?></td>
-				<td><?=$result['count'];?></td>
-				<td><?=$result['quantity'];?></td>
-				<td>$<?=number_format($result['tax'], 2);?></td>
-				<td>$<?=number_format($result['handling'], 2);?></td>
-				<td>$<?=number_format($result['total'], 2);?></td>
+				<td><?php echo $result['date'];?></td>
+				<td><?php echo $result['state'];?></td>
+				<td><?php echo $result['count'];?></td>
+				<td><?php echo $result['quantity'];?></td>
+				<td>$<?php echo number_format($result['tax'], 2);?></td>
+				<td>$<?php echo number_format($result['handling'], 2);?></td>
+				<td>$<?php echo number_format($result['total'], 2);?></td>
 			</tr>
 		<?php endforeach ?>
 	<?php endif ?>

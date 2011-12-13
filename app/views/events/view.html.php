@@ -1,10 +1,10 @@
 <?php $this->title($event->name); ?>
-<?=$this->html->script('jquery.countdown.min');?>
-<?=$this->html->style('jquery.countdown');?>
+<?php echo $this->html->script('jquery.countdown.min');?>
+<?php echo $this->html->style('jquery.countdown');?>
 <div class="grid_16">
 		<h2 class="page-title gray"><span class="red">
 		<div id="listingCountdown" class="listingCountdown" style="float:right;"></div>
-		<a href="/" title="Sales"><?=$type?> Sales</a> /</span> <?=$event->name; ?> 
+		<a href="/" title="Sales"><?php echo $type?> Sales</a> /</span> <?php echo $event->name; ?> 
 		</h2>
 		<div style="clear:both;"></div>
 		<hr />
@@ -75,7 +75,7 @@
 <div class="grid_3 alpha omega" style="margin-top:10px;">
 						<!-- Display Logo Image -->
 						
-							<img src="/image/<?=$event->images->logo_image?>.gif" alt="<?= $event->name; ?>" title="<?= $event->name; ?>" width="148" height="52" />
+							<img src="/image/<?php echo $event->images->logo_image?>.gif" alt="<?php echo  $event->name; ?>" title="<?php echo  $event->name; ?>" width="148" height="52" />
 						
 					</div>
 <?php endif ?>
@@ -100,10 +100,10 @@
 			</select -->
 			<?php if(!empty($filters)): ?>
 		<div id='filterb' style='text-align:right'>
-			<?=$this->form->create(null, array('id' => 'filterform')); ?>
+			<?php echo $this->form->create(null, array('id' => 'filterform')); ?>
 			<label style="font-weight:bold; font-size:13px;">View by: &nbsp;</label>
-			<?=$this->form->select('filterby',$filters, array('onchange' => "filter()", 'id' => 'filterby', 'value' => array($departments => $departments))); ?>
-			<?=$this->form->end(); ?>
+			<?php echo $this->form->select('filterby',$filters, array('onchange' => "filter()", 'id' => 'filterby', 'value' => array($departments => $departments))); ?>
+			<?php echo $this->form->end(); ?>
 		</div>
 		<?php endif ?>
 		</div>
@@ -132,12 +132,12 @@
 					<?php endif ?>
 					<div class="md-gray p-container roundy_product">
 						<?php if ($item->total_quantity <= 0): ?>
-								<?=$this->html->image('/img/soldout.png', array(
+								<?php echo $this->html->image('/img/soldout.png', array(
 									'title' => "Sold Out",
 									'style' => 'z-index : 99999; position : absolute; right:0;'
 								)); ?>
 						<?php endif ?>
-						<?=$this->html->link(
+						<?php echo $this->html->link(
 							$this->html->image($productImage, array(
 								'alt' => $item->name,
 								'title' => $item->name,
@@ -150,11 +150,11 @@
 								<table style="margin:5px;">
 									<tr>
 										<td width="227" valign="top">
-											<a href="<?="/sale/$event->url/$item->url"?>"><h2><?=$item->description ?></h2></a>
+											<a href="<?php echo "/sale/$event->url/$item->url"?>"><h2><?php echo $item->description ?></h2></a>
 										</td>
 										<td align="right">
-											<span class="price" style="text-transform:uppercase; font-weight:normal; font-size:20px; color: #009900; float:right;">$<?=number_format($item->sale_retail,2);?></span><br>
-											<span class="original-price" style="font-size:10px; white-space:nowrap;">Original $<?=number_format($item->msrp,2);?></span>
+											<span class="price" style="text-transform:uppercase; font-weight:normal; font-size:20px; color: #009900; float:right;">$<?php echo number_format($item->sale_retail,2);?></span><br>
+											<span class="original-price" style="font-size:10px; white-space:nowrap;">Original $<?php echo number_format($item->msrp,2);?></span>
 										</td>
 									</tr>
 								</table>
@@ -228,11 +228,11 @@ function filter() {
 
 <script type="text/javascript">
 var cto_params = [];
-cto_params["kw"] = "<?=$event->name?>"; //REMOVE LINE IF NOT APPLICABLE
+cto_params["kw"] = "<?php echo $event->name?>"; //REMOVE LINE IF NOT APPLICABLE
 <?php if (!empty($items)): ?>
 <?php $iCounter = 1; ?>
 <?php foreach ($items as $item): ?>
-cto_params["i<?=$iCounter;?>"] = "<?php echo (string) $item->_id; ?>";
+cto_params["i<?php echo $iCounter;?>"] = "<?php echo (string) $item->_id; ?>";
 <?php if($iCounter==5) break; ?>
 <?php $iCounter++; ?>
 <?php endforeach ?>

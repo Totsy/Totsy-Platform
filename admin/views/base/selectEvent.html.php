@@ -1,10 +1,10 @@
-<?=$this->html->script('jquery-1.4.2.min.js');?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->style('table');?>
-<?=$this->html->script('jquery.maskedinput-1.2.2')?>
+<?php echo $this->html->script('jquery-1.4.2.min.js');?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->style('table');?>
+<?php echo $this->html->script('jquery.maskedinput-1.2.2')?>
 
 <div class="grid_16">
-	<h2 id="page-heading">Select Event for <?=$type?> Administration
+	<h2 id="page-heading">Select Event for <?php echo $type?> Administration
 	<?php if ($environment == 'local'): ?>
 		 - Dev Environment - Only Last 3 Months Events
 	<?php endif ?>
@@ -16,26 +16,26 @@
 		Also click "Show todays" to show events starting today and future events.
 	</h5>
 	<fieldset>
-	<?=$this->form->create(); ?>
+	<?php echo $this->form->create(); ?>
 		Event Name:
-			<?=$this->form->text('search' , array('id'=>'search')); ?>
+			<?php echo $this->form->text('search' , array('id'=>'search')); ?>
 			 &nbsp;&nbsp;&nbsp;
 		Start date:
-			<?=$this->form->text('start_date', array('id'=>'start_date','class'=>'date')); ?>
+			<?php echo $this->form->text('start_date', array('id'=>'start_date','class'=>'date')); ?>
 			&nbsp;
 		End date:
-			<?=$this->form->text('end_date', array('id'=>'end_date','class'=>'date') ); ?>
+			<?php echo $this->form->text('end_date', array('id'=>'end_date','class'=>'date') ); ?>
 			&nbsp;&nbsp;
 		Show Todays:
-			<?=$this->form->checkbox('todays',array('value' => '1', 'id' => 'todays_checkbox'))?>
-	   <?=$this->form->submit('Find', array('class' => 'float-right')); ?>
-	<?=$this->form->end(); ?>
+			<?php echo $this->form->checkbox('todays',array('value' => '1', 'id' => 'todays_checkbox'))?>
+	   <?php echo $this->form->submit('Find', array('class' => 'float-right')); ?>
+	<?php echo $this->form->end(); ?>
 	</fieldset>
 </div>
 <br/>
 <?php if(!empty($events)) :?>
 	<div class="grid_16">
-		<?=$this->events->build($events, array('type' => $type))?>
+		<?php echo $this->events->build($events, array('type' => $type))?>
 	</div>
 <?php endif ?>
 <div class='clear'></div>
