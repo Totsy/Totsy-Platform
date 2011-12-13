@@ -24,19 +24,19 @@
 		<?php echo $fileName ?>
 	</td>
 	<td align="center">
-		<?=$this->html->image("/image/$id.jpg", array('alt' => 'altText')); ?>
+		<?php echo $this->html->image("/image/$id.jpg", array('alt' => 'altText')); ?>
 	</td>
 	<td align="center">
-		<input type="radio" name="splash_big_image" value="<?=$id;?>">
+		<input type="radio" name="splash_big_image" value="<?php echo $id;?>">
 	</td>
 	<td align="center">
-		<input type="radio" name="splash_small_image" value="<?=$id;?>">
+		<input type="radio" name="splash_small_image" value="<?php echo $id;?>">
 	</td>
 	<td align="center">
-		<input type="radio" name="event_image" value="<?=$id;?>">
+		<input type="radio" name="event_image" value="<?php echo $id;?>">
 	</td>
 	<td align="center">
-		<input type="radio" name="logo_image" value="<?=$id;?>">
+		<input type="radio" name="logo_image" value="<?php echo $id;?>">
 	</td>
 </tr>
 </table>

@@ -18,7 +18,7 @@
 		<?php echo $fileName ?>
 	</td>
 	<td align="center">
-		<?=$this->html->image("/image/$id.jpg", array('alt' => 'altText')); ?>
+		<?php echo $this->html->image("/image/$id.jpg", array('alt' => 'altText')); ?>
 	</td>
 	<td align="center">
 		<input type="text" name="url[<?php echo $id; ?>]" value="">

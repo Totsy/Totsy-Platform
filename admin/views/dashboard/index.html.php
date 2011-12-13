@@ -1,13 +1,13 @@
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->script('TableTools.min.js');?>
-<?=$this->html->script('ZeroClipboard.js');?>
-<?=$this->html->style('jquery_ui_blitzer.css')?>
-<?=$this->html->style('TableTools');?>
-<?=$this->html->style('timepicker'); ?>
-<?=$this->html->style('table');?>
-<?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
-<?=$this->html->script('jquery.maskedinput-1.2.2')?>
-<?=$this->html->script('FusionCharts.js')?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->script('TableTools.min.js');?>
+<?php echo $this->html->script('ZeroClipboard.js');?>
+<?php echo $this->html->style('jquery_ui_blitzer.css')?>
+<?php echo $this->html->style('TableTools');?>
+<?php echo $this->html->style('timepicker'); ?>
+<?php echo $this->html->style('table');?>
+<?php echo $this->html->script('jquery-ui-1.8.2.custom.min.js');?>
+<?php echo $this->html->script('jquery.maskedinput-1.2.2')?>
+<?php echo $this->html->script('FusionCharts.js')?>
 
 <style type="text/css">
 	td {
@@ -31,7 +31,7 @@
 </style>
 
 <div class="grid_16">
-	<h2 id="page-heading">Totsy Dashboard - As of <?=date('m/d/Y', $updateTime)?>*</h2>
+	<h2 id="page-heading">Totsy Dashboard - As of <?php echo date('m/d/Y', $updateTime)?>*</h2>
 </div>
 <!--Gross Revenue Summary Begins Here-->
 <div class="clear"></div>
@@ -41,7 +41,7 @@
 	</h2>
 	<p>(Promocodes and Credits included)</p>
 	<center>
-		<?=$GrossRevChart->renderChart()?>
+		<?php echo $GrossRevChart->renderChart()?>
 	</center>
 </div>
 <div class="clear"></div>
@@ -76,8 +76,8 @@
 		<thead>
 			<tr>
 				<th></th>
-				<th><?=$lastMonthDesc?></th>
-				<th><?=$currentMonthDesc?></th>
+				<th><?php echo $lastMonthDesc?></th>
+				<th><?php echo $currentMonthDesc?></th>
 				<th>Diff ($)</th>
 				<th>Diff (%)</th>
 			</tr>
@@ -85,24 +85,24 @@
 		<tbody>
 			<tr>
 				<td><b>Daily Total:</b></td>
-				<td>$<?=number_format($lastRevenue, 2)?></td>
-				<td>$<?=number_format($currentRevenue, 2)?></td>
-				<td><?=number_format($dayDiff, 2)?></td>
-				<td><?=number_format($dayDiffPerct, 2)?>%</td>
+				<td>$<?php echo number_format($lastRevenue, 2)?></td>
+				<td>$<?php echo number_format($currentRevenue, 2)?></td>
+				<td><?php echo number_format($dayDiff, 2)?></td>
+				<td><?php echo number_format($dayDiffPerct, 2)?>%</td>
 			</tr>
 			<tr>
 				<td><b>Last 7 Day Total:</b></td>
-				<td>$<?=number_format($lastWeekTotal, 2)?></td>
-				<td>$<?=number_format($currentWeekTotal, 2)?></td>
-				<td><font class='<?=$weekClass?>'><?=number_format($weekDiff, 2)?></font></td>
-				<td><font class='<?=$weekClass?>'><?=number_format($weekDiffPerct, 2)?>%</font></td>
+				<td>$<?php echo number_format($lastWeekTotal, 2)?></td>
+				<td>$<?php echo number_format($currentWeekTotal, 2)?></td>
+				<td><font class='<?php echo $weekClass?>'><?php echo number_format($weekDiff, 2)?></font></td>
+				<td><font class='<?php echo $weekClass?>'><?php echo number_format($weekDiffPerct, 2)?>%</font></td>
 			</tr>
 			<tr>
 				<td><b>Monthly Total:</b></td>
-				<td>$<?=number_format($lastMonthRevenue, 2)?></td>
-				<td>$<?=number_format($currentMonthRevenue, 2)?></td>
-				<td><font class='<?=$monthClass?>'><?=number_format($monthDiff, 2)?></font></td>
-				<td><font class='<?=$monthClass?>'><?=number_format($monthDiffPerct, 2)?>%</font></td>
+				<td>$<?php echo number_format($lastMonthRevenue, 2)?></td>
+				<td>$<?php echo number_format($currentMonthRevenue, 2)?></td>
+				<td><font class='<?php echo $monthClass?>'><?php echo number_format($monthDiff, 2)?></font></td>
+				<td><font class='<?php echo $monthClass?>'><?php echo number_format($monthDiffPerct, 2)?>%</font></td>
 			</tr>
 		</tbody>
 	</table>
@@ -118,7 +118,7 @@
 	</h2>
 	<p>(After promocodes and credits are deducted)</p>
 	<center>
-		<?=$RevenueChart->renderChart()?>
+		<?php echo $RevenueChart->renderChart()?>
 	</center>
 </div>
 <div class="clear"></div>
@@ -152,8 +152,8 @@
 		<thead>
 			<tr>
 				<th></th>
-				<th><?=$lastMonthDesc?></th>
-				<th><?=$currentMonthDesc?></th>
+				<th><?php echo $lastMonthDesc?></th>
+				<th><?php echo $currentMonthDesc?></th>
 				<th>Diff ($)</th>
 				<th>Diff (%)</th>
 			</tr>
@@ -161,24 +161,24 @@
 		<tbody>
 			<tr>
 				<td><b>Daily Total:</b></td>
-				<td>$<?=number_format($lastRevenue, 2)?></td>
-				<td>$<?=number_format($currentRevenue, 2)?></td>
-				<td><?=number_format($dayDiff, 2)?></td>
-				<td><?=number_format($dayDiffPerct, 2)?>%</td>
+				<td>$<?php echo number_format($lastRevenue, 2)?></td>
+				<td>$<?php echo number_format($currentRevenue, 2)?></td>
+				<td><?php echo number_format($dayDiff, 2)?></td>
+				<td><?php echo number_format($dayDiffPerct, 2)?>%</td>
 			</tr>
 			<tr>
 				<td><b>Last 7 Day Total:</b></td>
-				<td>$<?=number_format($lastWeekTotal, 2)?></td>
-				<td>$<?=number_format($currentWeekTotal, 2)?></td>
-				<td><font class='<?=$weekClass?>'><?=number_format($weekDiff, 2)?></font></td>
-				<td><font class='<?=$weekClass?>'><?=number_format($weekDiffPerct, 2)?>%</font></td>
+				<td>$<?php echo number_format($lastWeekTotal, 2)?></td>
+				<td>$<?php echo number_format($currentWeekTotal, 2)?></td>
+				<td><font class='<?php echo $weekClass?>'><?php echo number_format($weekDiff, 2)?></font></td>
+				<td><font class='<?php echo $weekClass?>'><?php echo number_format($weekDiffPerct, 2)?>%</font></td>
 			</tr>
 			<tr>
 				<td><b>Monthly Total:</b></td>
-				<td>$<?=number_format($lastMonthRevenue, 2)?></td>
-				<td>$<?=number_format($currentMonthRevenue, 2)?></td>
-				<td><font class='<?=$monthClass?>'><?=number_format($monthDiff, 2)?></font></td>
-				<td><font class='<?=$monthClass?>'><?=number_format($monthDiffPerct, 2)?>%</font></td>
+				<td>$<?php echo number_format($lastMonthRevenue, 2)?></td>
+				<td>$<?php echo number_format($currentMonthRevenue, 2)?></td>
+				<td><font class='<?php echo $monthClass?>'><?php echo number_format($monthDiff, 2)?></font></td>
+				<td><font class='<?php echo $monthClass?>'><?php echo number_format($monthDiffPerct, 2)?>%</font></td>
 			</tr>
 		</tbody>
 	</table>
@@ -191,7 +191,7 @@
 		Registration Summary
 	</h2>
 	<center>
-		<?=$RegChart->renderChart()?>
+		<?php echo $RegChart->renderChart()?>
 	</center>
 </div>
 <div class="clear"></div>
@@ -225,8 +225,8 @@
 		<thead>
 			<tr>
 				<th></th>
-				<th><?=$lastMonthDesc?></th>
-				<th><?=$currentMonthDesc?></th>
+				<th><?php echo $lastMonthDesc?></th>
+				<th><?php echo $currentMonthDesc?></th>
 				<th>Diff (#)</th>
 				<th>Diff (%)</th>
 			</tr>
@@ -234,24 +234,24 @@
 		<tbody>
 			<tr>
 				<td><b>Daily Total:</b></td>
-				<td><?=number_format($lastRegistration, 0)?></td>
-				<td><?=number_format($currentRegistration, 0)?></td>
-				<td><?=number_format($dayDiff, 0)?></td>
-				<td><?=number_format($dayDiffPerct, 2)?>%</td>
+				<td><?php echo number_format($lastRegistration, 0)?></td>
+				<td><?php echo number_format($currentRegistration, 0)?></td>
+				<td><?php echo number_format($dayDiff, 0)?></td>
+				<td><?php echo number_format($dayDiffPerct, 2)?>%</td>
 			</tr>
 			<tr>
 				<td><b>Last 7 Day Total:</b></td>
-				<td><?=number_format($lastWeekTotal, 0)?></td>
-				<td><?=number_format($currentWeekTotal, 0)?></td>
-				<td><font class='<?=$weekClass?>'><?=number_format($weekDiff, 0)?></font></td>
-				<td><font class='<?=$weekClass?>'><?=number_format($weekDiffPerct, 2)?>%</font></td>
+				<td><?php echo number_format($lastWeekTotal, 0)?></td>
+				<td><?php echo number_format($currentWeekTotal, 0)?></td>
+				<td><font class='<?php echo $weekClass?>'><?php echo number_format($weekDiff, 0)?></font></td>
+				<td><font class='<?php echo $weekClass?>'><?php echo number_format($weekDiffPerct, 2)?>%</font></td>
 			</tr>
 			<tr>
 				<td><b>Monthly Total:</b></td>
-				<td><?=number_format($lastMonthRegistration, 0)?></td>
-				<td><?=number_format($currentMonthRegistration, 0)?></td>
-				<td><font class='<?=$monthClass?>'><?=number_format($monthDiff, 0)?></font></td>
-				<td><font class='<?=$monthClass?>'><?=number_format($monthDiffPerct, 2)?>%</font></td>
+				<td><?php echo number_format($lastMonthRegistration, 0)?></td>
+				<td><?php echo number_format($currentMonthRegistration, 0)?></td>
+				<td><font class='<?php echo $monthClass?>'><?php echo number_format($monthDiff, 0)?></font></td>
+				<td><font class='<?php echo $monthClass?>'><?php echo number_format($monthDiffPerct, 2)?>%</font></td>
 			</tr>
 		</tbody>
 	</table>
@@ -278,18 +278,18 @@
 				<td><b>Year to Date:</b></td>
 				<?php foreach ($yearToDate as $data): ?>
 					<?php if ($data['type'] == 'gross'): ?>
-						<td>$<?=number_format($data['total'], 2)?></td>
+						<td>$<?php echo number_format($data['total'], 2)?></td>
 					<?php endif ?>
 				<?php endforeach ?>
 				<?php foreach ($yearToDate as $data): ?>
 					<?php if ($data['type'] == 'registration'): ?>
-						<td><?=number_format($data['total'], 0)?></td>
+						<td><?php echo number_format($data['total'], 0)?></td>
 					<?php endif ?>
 				<?php endforeach ?>
 			</tr>
 		</tbody>
 	</table>
-	<?=$MonthComboChart->renderChart()?>
+	<?php echo $MonthComboChart->renderChart()?>
 	</center>
 </div>
 <div class="clear"></div>
@@ -315,20 +315,20 @@
 				?>
 				<?php while ($i < count($registrationDetails)):?>
 					<tr>
-						<td><?=date('m-d-Y', $registrationDetails[$i]->date->sec)?></td>
-						<td><?=$registrationDetails[$i]->total?></td>
+						<td><?php echo date('m-d-Y', $registrationDetails[$i]->date->sec)?></td>
+						<td><?php echo $registrationDetails[$i]->total?></td>
 						<td>
 						<?php if ($i <> 0): ?>
 							<?php $percent = 100*($registrationDetails[$i]->total - $registrationDetails[$i-1]->total)/$registrationDetails[$i]->total;?>
-							<?=number_format($percent, 2);?>%</td>
+							<?php echo number_format($percent, 2);?>%</td>
 						<?php else: ?>
 							-
 						<?php endif?>
 						</td>
-						<td>$<?=number_format($revenuDetails[$i]->total, 2);?></td>
+						<td>$<?php echo number_format($revenuDetails[$i]->total, 2);?></td>
 						<td>
 						<?php if ($i <> 0): ?>
-							<?=number_format(100*($revenuDetails[$i]->total - $revenuDetails[$i-1]->total)/$revenuDetails[$i]->total, 2);?>%</td>
+							<?php echo number_format(100*($revenuDetails[$i]->total - $revenuDetails[$i-1]->total)/$revenuDetails[$i]->total, 2);?>%</td>
 						<?php else: ?>
 							-
 						<?php endif?>
