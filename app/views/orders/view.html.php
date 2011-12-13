@@ -2,7 +2,6 @@
 <?php
 	$brandNew = ($order->date_created->sec > (time() - 10)) ? true : false;
 	$new = ($order->date_created->sec > (time() - 120)) ? true : false;
-
 ?>
 <div class="grid_16">
 	<h2 class="page-title gray">My Orders</h2>
@@ -303,7 +302,13 @@
 		/* ]]> */
 	</script>
 	
+	<!-- Loyalty Plus 500 Points Rewards JS include start -->
+	<script src="https://d3aa0ztdn3oibi.cloudfront.net/javascripts/ff.loyalty.widget.js" type="text/javascript"></script>
+	<!-- Loyalty Plus 500 Points Rewards JS include end -->
+
+	<!-- Loyalty Plus 500 Points Rewards JS initialize start -->
 	<script type="text/javascript">_ffLoyalty.initialize("k7iyyJWiWIg0DMy")</script> 
+	<!-- Loyalty Plus 500 Points Rewards JS initialize end -->
 	
 	<script type="text/javascript" src="http://www.googleadservices.com/pagead/conversion.js"></script>
 	
@@ -314,14 +319,14 @@
 	</noscript>
 	
 	<!-- loyalty plus program purchase tracking -->
-	<img src="http://loyalty.500friends.com/api/record.gif?uuid=k7iyyJWiWIg0DMy&email=evanubiera@gmail.com&type=purchase&event_id=<?=$order->order_id?>&value=<?=$order->total?>&detail=''" style="position: absolute; left: -10px; visibility: hidden;"/>
+	<img src="http://loyalty.500friends.com/api/record.gif?uuid=k7iyyJWiWIg0DMy&email=<?=$userInfo['email']?>&type=purchase&event_id=<?=$order->order_id?>&value=<?=$order->total?>&detail=''" style="position: absolute; left: -10px; visibility: hidden;"/>
 	<!-- loyalty plus program purchase tracking -->
-	
-<!-- post-purchase share start -->
-<script type="text/javascript">
-_ffLoyalty.displayWidget("2wx2lWSDtG",{});
-</script>
-<!-- post-purchase share end end -->
+	<div>	
+		<!-- post-purchase share start -->
+		<script type="text/javascript">_ffLoyalty.displayWidget("2wx2lWSDtG",{});
+		</script>
+		<!-- post-purchase share end end -->
+	</div>
 
 	<?php
 		//string of GET variables passed into criteo link

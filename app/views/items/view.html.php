@@ -5,6 +5,31 @@
 	var item_id = "<?=$item->_id?>";
 </script>
 
+<!-- loyalty 500 points share product START -->
+<script src="https://d3aa0ztdn3oibi.cloudfront.net/javascripts/ff.loyalty.widget.js" type="text/javascript">
+</script>
+
+<script type="text/javascript">_ffLoyalty.initialize("k7iyyJWiWIg0DMy")</script>
+
+<?php
+	if ($item->blurb) {
+		$blurb = $item->blurb;
+	} else {
+		$blurb = "";
+	}
+?>
+
+<script type="text/javascript" charset="utf-8">
+	try{
+	  var ffImageUrl = "<?=$item->primary_image?>";
+	  var ffProductName = "<?=$item->description?>";
+	  var ffProductDescription = "<?=$blurb?>";
+	  var ffMessage = "This is my style: " + "<?=$item->description?>" + " on YOUR WEBSITE GOES HERE";
+	 } catch(ex) {
+	 }
+</script>
+<!-- loyalty 500 points share product START -->
+
 <?=$this->html->script(array('cart-timer.js?v=007', 'cart-items-timer.js?v=007', 'cart-popup.js?v=007'));?>
 
 <!-- template used for items on cart. jquery.tmpl.js driven -->
@@ -204,7 +229,16 @@
 
 			<?php endif ?>
 		</div>
+		<div>
+			<!-- share a product start -->			
+			<script type="text/javascript">
+				_ffLoyalty.displayWidget("XQafFtEkat", {message: ffMessage, url: document.location.href, image_url: ffImageUrl, title : ffProductName, description : ffProductDescription)});
+			</script>
+			<!-- share a product end -->
+			
+		</div>	
 	</div>
+		
 	<div style="padding:10px 0px; text-align:center !important;">
 	    <?php echo $spinback_fb; ?>
 	</div>
@@ -313,40 +347,6 @@ $(document).ready(function() {
 <!-- loyalty plus rewards widget pixels start
 	NOTE: displayWidget() cannot be called within a document.ready() blocks
  -->
-
-<script src="https://d3aa0ztdn3oibi.cloudfront.net/javascripts/ff.loyalty.widget.js" type="text/javascript">
-</script>
-
-<!-- facebook widget start -->
-<script type="text/javascript">
-_ffLoyalty.displayWidget("<WIDGET ID>", {});
-</script>
-<!-- facebook widget end -->
-
-<!-- twitter share widget start -->
-<script type="text/javascript">
-_ffLoyalty.displayWidget("<WIDGET ID>", {});
-</script>
-<!-- twitter share widget end -->
-
-<!-- twitter follow widget start -->
-<script type="text/javascript">
-_ffLoyalty.displayWidget("<WIDGET ID>",{});
-</script>
-<!-- twitter follow widget end -->
-
-<!-- social share widget start -->
-<script type="text/javascript">
-_ffLoyalty.displayWidget("<WIDGET ID>",{});
-</script>
-<!-- social share widget end -->
-
-<!-- email signup widget start -->
-<script type="text/javascript">
-_ffLoyalty.displayWidget("<WIDGET ID>",{});
-</script>
-<!-- email signup widget end -->
-
 <!-- loyalty plus rewards widget pixels end -->
 
 <script type="text/javascript">
