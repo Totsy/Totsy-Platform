@@ -1,5 +1,5 @@
-<?=$this->html->script(array('tiny_mce/tiny_mce.js', 'swfupload.js', 'swfupload.queue.js', 'fileprogress.js', 'handlers.js', 'banner_upload.js', 'jquery.dataTables.js', 'jquery-ui-timepicker.min.js'));?>
-<?=$this->html->style(array('swfupload', 'jquery_ui_blitzer', 'table', 'timepicker'));?>
+<?php echo $this->html->script(array('tiny_mce/tiny_mce.js', 'swfupload.js', 'swfupload.queue.js', 'fileprogress.js', 'handlers.js', 'banner_upload.js', 'jquery.dataTables.js', 'jquery-ui-timepicker.min.js'));?>
+<?php echo $this->html->style(array('swfupload', 'jquery_ui_blitzer', 'table', 'timepicker'));?>
 <script type="text/javascript">
 tinyMCE.init({
 	// General options
@@ -87,8 +87,8 @@ tinyMCE.init({
 	</p>
 </div>
 <h2 id="banner_description">Banner Description</h2>
-<?=$this->form->create($banner, array('enctype' => "multipart/form-data")); ?>
-    <?=$this->form->field('name', array('class' => 'general'));?>
+<?php echo $this->form->create($banner, array('enctype' => "multipart/form-data")); ?>
+    <?php echo $this->form->field('name', array('class' => 'general'));?>
 	<div id="banner_status">
 		<h2 id="banner_status">Banner Status</h2>
 		<input type="checkbox" name="enabled" value="1" id="enabled"> Publish Banner <br>
@@ -96,7 +96,7 @@ tinyMCE.init({
 	</div>
 	<div id="banner_duration">
 		<h2 id="banner_duration">Banner End Date</h2>
-		<?=$this->form->field('end_date', array('class' => 'general', 'id' => 'end_date'));?>
+		<?php echo $this->form->field('end_date', array('class' => 'general', 'id' => 'end_date'));?>
 	</div>
 	<br>
 	<h1 id="uploaded_media">Uploaded Media</h1>
@@ -121,5 +121,5 @@ tinyMCE.init({
 		</tr>
 	</table>
 	<br>
-	<?=$this->form->submit('Add Banner')?>
-<?=$this->form->end(); ?>
+	<?php echo $this->form->submit('Add Banner')?>
+<?php echo $this->form->end(); ?>

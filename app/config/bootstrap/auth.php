@@ -38,7 +38,12 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	 if(preg_match('#(pages/)#', $params['request']->url)) {
 		 $allowed = true;
 	 }
-
+	 
+	 #API
+	 if(preg_match('#(api/)#', $params['request']->url)) {
+	 	$allowed = true;
+	 }
+	 
 	$granted = in_array($params['request']->url, $skip);
 	$granted = $allowed || $granted;
 	$granted = $granted || Auth::check('userLogin', $params['request']);

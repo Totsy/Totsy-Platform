@@ -1,8 +1,8 @@
-<?=$this->html->script(array('cloud-zoom.1.0.2', 'jquery.tmpl'));?>
-<!--<script src="/js/.js" type="text/javascript"></script>-->
+<?php echo $this->html->script(array('cloud-zoom.1.0.2'));?>
+<script src="/js/jquery.tmpl.js" type="text/javascript"></script>
 
 <script type="text/javascript">
-	var item_id = "<?=$item->_id?>";
+	var item_id = "<?php echo $item->_id?>";
 </script>
 
 <!-- loyalty 500 points share product START -->
@@ -30,20 +30,20 @@
 </script>
 <!-- loyalty 500 points share product START -->
 
-<?=$this->html->script(array('cart-timer.js?v=007', 'cart-items-timer.js?v=007', 'cart-popup.js?v=007'));?>
+<?php echo $this->html->script(array('cart-timer.js?v=007', 'cart-items-timer.js?v=007', 'cart-popup.js?v=007'));?>
 
 <!-- template used for items on cart. jquery.tmpl.js driven -->
-<?=$this->view()->render( array('element' => 'popupCartItems') ); ?>
+<?php echo $this->view()->render( array('element' => 'popupCartItems') ); ?>
 
 <div class="grid_16">
-	<h2 class="page-title gray"><span class="red"><a href="/sales" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?=$event->url?>" title="<?=$event->name?>"><?=$event->name?></a><div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
+	<h2 class="page-title gray"><span class="red"><a href="/sales" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?php echo $event->url?>" title="<?php echo $event->name?>"><?php echo $event->name?></a><div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
 	<hr />
 </div>
 
 <div class="grid_6">
 	<!-- Start product item -->
 		<?php if ($item->total_quantity <= 0): ?>
-					<?=$this->html->image('/img/soldout.png', array(
+					<?php echo $this->html->image('/img/soldout.png', array(
 						'title' => "Sold Out",
 						'style' => 'z-index : 99999; position : absolute; right:0;',
 						'id'=>'sold_out_img'
@@ -77,7 +77,7 @@
 		<?php if (!empty($item->alternate_images)): ?>
 			<?php $x = 2; ?>
 			<?php foreach ($item->alternate_images as $value): ?>
-					<?=$this->html->link(
+					<?php echo $this->html->link(
 					$this->html->image("/image/{$value}.jpg", array(
 						'class' => "zoom-tiny-image",
 						'width' => "75",
@@ -112,7 +112,7 @@
 		<div id="listingCountdown" class="listingCountdown"></div>
 	</div>
 	<div id="detail-top-left"  style="width:405px;">
-		<h1><strong><?=$event->name?></strong> <?=$item->description." ".$item->color; ?></h1>
+		<h1><strong><?php echo $event->name?></strong> <?php echo $item->description." ".$item->color; ?></h1>
 	</div>
 		<div class="clear"></div>
 
@@ -131,10 +131,10 @@
 
 			<!-- Start Shipping Tab -->
 			<div id="shipping" class="ui-tabs-hide">
-			<strong>Shipping:</strong> Totsy will ship this item via Standard UPS or Standard US Mail shipping based on your selection at the end of your <?=$this->html->link('checkout process', array('Cart::view')); ?>.
-			Complete shipping details are available at <?=$this->html->link('shipping terms', array('Pages::shipping')); ?>.
+			<strong>Shipping:</strong> Totsy will ship this item via Standard UPS or Standard US Mail shipping based on your selection at the end of your <?php echo $this->html->link('checkout process', array('Cart::view')); ?>.
+			Complete shipping details are available at <?php echo $this->html->link('shipping terms', array('Pages::shipping')); ?>.
 
-			<p><strong>Returns:</strong> Totsy accept returns on selected items only. You will get a merchandise credit and free shipping (AK &amp; HI: air shipping rates apply). Simply be sure that we receive the merchandise you wish to return within 30 days from the date you originally received it in its original condition with all the packaging intact. Please note: Final Sale items cannot be returned. Want to learn more? Read more in our <?=$this->html->link('returns section', array('Pages::returns')); ?>.</p>
+			<p><strong>Returns:</strong> Totsy accept returns on selected items only. You will get a merchandise credit and free shipping (AK &amp; HI: air shipping rates apply). Simply be sure that we receive the merchandise you wish to return within 30 days from the date you originally received it in its original condition with all the packaging intact. Please note: Final Sale items cannot be returned. Want to learn more? Read more in our <?php echo $this->html->link('returns section', array('Pages::returns')); ?>.</p>
 
 			<?php
 			if($item->miss_christmas){
@@ -146,11 +146,16 @@
 			</div>
 		</div>
 	<!--Disney -->
+		<!-- @DG-2011.12.09
+			- removed per Micah's request
+			- consider replacing content-specific class name "disney" with semantic/functional i.e. "promo"
+		
 <div class="disney">
           <strong>SPECIAL BONUS!</strong><hr/></p>
        <p> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/parents.png" align="absmiddle" width="95px" /> ( a $10 value )
        <span id="disney">Offer & Refund Details</span>
       </div>
+		-->
 	<br><!-- Started Related Products -->
 	<div id="related-products">
 		<?php $relatedData = $related; ?>
@@ -184,16 +189,16 @@
 
 		<div class="md-gray p-container roundy">
 			<h2 class="caps" style="font-size:14px; padding-top:5px">Totsy Price</h2>
-			<div style="padding: 10px 0px 0px 0px; color:#009900; font-size:24px;">$<?=number_format($item->sale_retail,2); ?></div>
+			<div style="padding: 10px 0px 0px 0px; color:#009900; font-size:24px;">$<?php echo number_format($item->sale_retail,2); ?></div>
 
-			<div class="original-price" style="font-size:11px; padding-bottom:10px;">Original: $<?=number_format($item->msrp,2); ?></div>
+			<div class="original-price" style="font-size:11px; padding-bottom:10px;">Original: $<?php echo number_format($item->msrp,2); ?></div>
 
 <?php if (!empty($sizes)): ?>
 				<?php if ( !((string)strtolower($sizes[0]) ==='no size')): ?>
 						<select name="size-select" id="size-select">
 									<option value="">Please Select Size</option>
 							<?php foreach ($sizes as $value): ?>
-									<option value="<?=$value?>"><?=$value?></option>
+									<option value="<?php echo $value?>"><?php echo $value?></option>
 							<?php endforeach ?>
 						</select>
 						<hr />
