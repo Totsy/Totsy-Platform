@@ -9,7 +9,7 @@ $adapterFilters = array(
 
 		switch ($function) {
 			case 'authorize' && isset($params['pmt']) && $params['pmt']->type == 'amex':
-				return true;
+				return false;
 				break;
 		}
 		if (isset($options['processor']) && $options['processor'] == 'CyberSource') {
