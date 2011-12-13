@@ -38,33 +38,33 @@
 	<hr />
 	<?php echo $this->form->create(); ?>
 	<h3 style="margin:10px auto;" class="gray">Your contact information</h3>
-				<? if (is_array($error) && array_key_exists('firstname',$error)){?>
+				<?php if (is_array($error) && array_key_exists('firstname',$error)){?>
 				<div class="standard-message" style="border:0px!important; background:none!important;">
 					<?php echo $error['firstname'][0];?>
 				</div>
 				<div style="clear:both;"></div>
-				<? } ?>
+				<?php } ?>
 				<div class="form-row">
 				<?php echo $this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?php echo $this->form->text('firstname', array('class' => 'inputbox', 'value'=>is_null($data)?$user['firstname']:$data['firstname']));?>  
 			</div>
-				<? if (is_array($error) && array_key_exists('lastname',$error)){?>
+				<?php if (is_array($error) && array_key_exists('lastname',$error)){?>
 				<div class="standard-message" style="border:0px!important; background:none!important;">
 					<?php echo $error['lastname'][0];?>
 				</div>
 				<div style="clear:both;"></div>
-				<? } ?>
+				<?php } ?>
 			<div class="form-row">
 				<?php echo $this->form->label('lastname', 'Last Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?php echo $this->form->text('lastname', array('class' => 'inputbox', 'value'=>is_null($data)?$user['lastname']:$data['lastname']));?>  
 				
 			</div>
-			<? if (is_array($error) && array_key_exists('telephone',$error)){?>
+			<?php if (is_array($error) && array_key_exists('telephone',$error)){?>
 			<div class="standard-message" style="border:0px!important; background:none!important;">
 				<?php echo $error['telephone'][0];?>
 			</div>
 			<div style="clear:both;"></div>
-			<? } ?>
+			<?php } ?>
 			<div class="form-row">
 				<?php echo $this->form->label('telephone', 'Telephone <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?php echo $this->form->text('telephone', array('class' => 'inputbox', 'id' => 'phone', 'value'=>is_null($data)?'':$data['telephone']));?> 
@@ -127,11 +127,11 @@
 
 		<br />
 		<h3 style="margin:10px auto;" class="gray">Your Message</h3>
-		<? if (is_array($error) && array_key_exists('message',$error)){?>
+		<?php if (is_array($error) && array_key_exists('message',$error)){?>
 			<div class="standard-message" style="border:0px!important; background:none!important;">
 					<?php echo $error['message'][0];?>
 				</div>
-		<? } ?>	
+		<?php } ?>	
 		<?php echo $this->form->textarea('message', array(
 			'class' => 'inputbox',
 			'style' => 'width:300px;height:120px'

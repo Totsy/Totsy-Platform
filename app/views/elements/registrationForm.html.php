@@ -12,7 +12,7 @@
 	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/affiliate']);">
 <?php else: ?>
 	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/register']);">
-<? endif; ?>
+<?php endif; ?>
 
 	<div style="width:70px; float:left">
 
@@ -80,7 +80,7 @@
 
 	<input class="button fr" type="button" value="Join Now" onclick="return setIframe();" style="width:100px; height 28px; font-weight:important;">
 
-	<? //=$this->form->submit('Join Now', array('class' => 'button fr','style' => 'width:100px; height 28px; font-weight:important;'));?>
+	<?php //=$this->form->submit('Join Now', array('class' => 'button fr','style' => 'width:100px; height 28px; font-weight:important;'));?>
 
 	<?php echo $this->form->error('terms'); ?>
 
