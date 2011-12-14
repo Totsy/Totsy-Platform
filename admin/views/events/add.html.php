@@ -1,5 +1,5 @@
-<?=$this->html->script(array('tiny_mce/tiny_mce.js', 'swfupload.js', 'swfupload.queue.js', 'fileprogress.js', 'handlers.js', 'event_upload.js', 'jquery.dataTables.js', 'jquery-ui-timepicker.min.js'));?>
-<?=$this->html->style(array('swfupload', 'jquery_ui_blitzer', 'table', 'timepicker'));?>
+<?php echo $this->html->script(array('tiny_mce/tiny_mce.js', 'swfupload.js', 'swfupload.queue.js', 'fileprogress.js', 'handlers.js', 'event_upload.js', 'jquery.dataTables.js', 'jquery-ui-timepicker.min.js'));?>
+<?php echo $this->html->style(array('swfupload', 'jquery_ui_blitzer', 'table', 'timepicker'));?>
 <script type="text/javascript">
 tinyMCE.init({
 	// General options
@@ -78,7 +78,7 @@ tinyMCE.init({
 </script>
 
 <script type="text/javascript" charset="utf-8">
-	var limit = <?=$shortDescLimit;?>;
+	var limit = <?php echo $shortDescLimit;?>;
 	$(document).ready(function() {
 		
 		$('#Short').keyup(function(){
@@ -111,12 +111,12 @@ tinyMCE.init({
 	</p>
 </div>
 <h2 id="event_description">Event Description</h2>
-<?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
-    <?=$this->form->field('name', array('class' => 'general'));?>
-    <?=$this->form->field('blurb', array('type' => 'textarea', 'name' => 'content'));?>
+<?php echo $this->form->create(null, array('enctype' => "multipart/form-data")); ?>
+    <?php echo $this->form->field('name', array('class' => 'general'));?>
+    <?php echo $this->form->field('blurb', array('type' => 'textarea', 'name' => 'content'));?>
     <div style="width:450px;">
-    	<?=$this->form->field('short', array('type' => 'textarea', 'name' => 'short_description', 'class' => 'mceNoEditor shortDescription'));?>
-    	<div id="short_description_characters_wrapper">Total: <span id="short_description_characters_counter">0</span>/<?=$shortDescLimit;?></div>
+    	<?php echo $this->form->field('short', array('type' => 'textarea', 'name' => 'short_description', 'class' => 'mceNoEditor shortDescription'));?>
+    	<div id="short_description_characters_wrapper">Total: <span id="short_description_characters_counter">0</span>/<?php echo $shortDescLimit;?></div>
     </div>
 	<div id="event_status">
 		<h2 id="event_status">Event Status</h2>
@@ -142,8 +142,8 @@ tinyMCE.init({
 
 	<div id="event_duration">
 		<h2 id="event_duration">Event Duration</h2>
-		<?=$this->form->field('start_date', array('class' => 'general', 'id' => 'start_date'));?>
-		<?=$this->form->field('end_date', array('class' => 'general', 'id' => 'end_date'));?>
+		<?php echo $this->form->field('start_date', array('class' => 'general', 'id' => 'start_date'));?>
+		<?php echo $this->form->field('end_date', array('class' => 'general', 'id' => 'end_date'));?>
 	</div>
 	<br>
 	<h1 id="uploaded_media">Uploaded Media</h1>
@@ -168,5 +168,5 @@ tinyMCE.init({
 		</tr>
 	</table>
 	<br>
-	<?=$this->form->submit('Add Event')?>
-<?=$this->form->end(); ?>
+	<?php echo $this->form->submit('Add Event')?>
+<?php echo $this->form->end(); ?>

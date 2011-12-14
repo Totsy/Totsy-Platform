@@ -5,6 +5,7 @@ use lithium\core\Environment;
 $base = array(
 	'companyCode' => 'totsy',
 	'trace' => true,
+	'useAvatax' => true,
 	'retriesNumber' => 2,
 	'logEmail' => 'tax-notifications@totsy.com',
 	'emailOnError' => false,
@@ -38,6 +39,6 @@ Environment::set('local', array(
 
 // must have Environment
 require_once LITHIUM_APP_PATH . '/libraries/AvaTax4PHP/AvaTaxWrap.php';
-AvaTaxWrap::__init('development', Environment::get('development'));
+AvaTaxWrap::__init('development', Environment::get(Environment::get()));
 
 ?>

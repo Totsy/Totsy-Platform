@@ -7,7 +7,7 @@
         <center>
         <table width="593" border="0" cellpadding="0" cellspacing="0">
   <tr>
-    <td colspan="3" style="font-size:11px; text-align:center; padding:20px;">If you are unable to see this message, <a href="<?=$data['domain'].'/invitation/'.$data['user']->invitation_codes[0]; ?>" title="Click to Accept Invitation" style="color:#E00000;text-decoration:none">click here to view</a><br>To ensure delivery to your inbox, please add <a href="mailto:support@totsy.com" style="color:#E00000;text-decoration:none">support@totsy.com</a> to your address book</td>
+    <td colspan="3" style="font-size:11px; text-align:center; padding:20px;">If you are unable to see this message, <a href="<?php echo $data['domain'].'/invitation/'.$data['user']->invitation_codes[0]; ?>" title="Click to Accept Invitation" style="color:#E00000;text-decoration:none">click here to view</a><br>To ensure delivery to your inbox, please add <a href="mailto:support@totsy.com" style="color:#E00000;text-decoration:none">support@totsy.com</a> to your address book</td>
   </tr>
   </table>
         <table cellspacing="0" cellpadding="0" border="0" width="593">
@@ -37,8 +37,8 @@
                             <tr>
 
                                 <td valign="top" style="padding: 20px;" background="http://www.totsy.com/markup/v2_emails/assets/img/mid_back.png">
-                                <p>Dear <?=$data['user']->firstname." ".$data['user']->lastname;?>,</p>
-								<p>We understand that you are having some difficulty logging into your Totsy account. We've created a temporary password for you which is <?=$data['token']?>.</p>
+                                <p>Dear <?php echo $data['user']->firstname." ".$data['user']->lastname;?>,</p>
+								<p>We understand that you are having some difficulty logging into your Totsy account. We've created a temporary password for you which is <?php echo $data['token']?>.</p>
 								<p>To login with your temporary password and assign a new one that is easy for you to remember, please <a href="http://www.totsy.com/login" title="Totsy Login" style="color:#E00000">visit our login page</a>.
 								<p>Our customer service team is also available to answer any questions. If you are still experiencing problems accessing Totsy.com after you have reset your password, please contact us at <a href="mailto:support@totsy.com" title="Totsy Support Address" style="color:#E00000">support@totsy.com</a> with the following information:</p>
 								

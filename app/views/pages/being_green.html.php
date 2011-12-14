@@ -20,7 +20,7 @@
 	</p>
 	<br />
 	<p><a href="http://www.terrapass.com/partners/totsy/?utm_source=totsy&utm_campaign=smb-partner" target="_blank">
-			<?=$this->html->image('being_green/terrapass.gif', array(
+			<?php echo $this->html->image('being_green/terrapass.gif', array(
 				'align' => 'left',
 				'alt' => 'Totsy - carbon balanced with TerraPass',
 				'style' => "border: none; margin-right: 15px; margin-bottom:10px;"
@@ -33,7 +33,7 @@
 	<br />
 	<h3 class="page-title gray">One Baby, One Tree&trade;</h3>
 	<hr />
-		<?=$this->html->image('being_green/carbonzero.gif', array(
+		<?php echo $this->html->image('being_green/carbonzero.gif', array(
 			'align' => 'left', 'style' => 'margin-right: 15px; margin-bottom:10px;'
 		)); ?>
 		<h3 class="page-title gray"> YOUR PURCHASE MAKES A DIFFERENCE </h3>
