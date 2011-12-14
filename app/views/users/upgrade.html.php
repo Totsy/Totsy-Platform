@@ -18,8 +18,8 @@
 				
 				<div class="sign-in-container">
 					<div id="sign-in-box" class="r-container">
-							<h2>Hi <?=$user->firstname?></h2>
-							<p>We just noticed that you are browsing Totsy with an older version of Internet Explorer. <br><br>We want you to fully enjoy your shopping here at Totsy and are asking that you upgrade to the latest version of Internet Explorer. We apologize for the inconvenience. <br><strong><?=$this->html->link('Please click here to get the latest version.', 'http://www.microsoft.com/windows/internet-explorer/default.aspx'); ?></strong></p>
+							<h2>Hi <?php echo $user->firstname?></h2>
+							<p>We just noticed that you are browsing Totsy with an older version of Internet Explorer. <br><br>We want you to fully enjoy your shopping here at Totsy and are asking that you upgrade to the latest version of Internet Explorer. We apologize for the inconvenience. <br><strong><?php echo $this->html->link('Please click here to get the latest version.', 'http://www.microsoft.com/windows/internet-explorer/default.aspx'); ?></strong></p>
 							
 					</div>
 				</div>

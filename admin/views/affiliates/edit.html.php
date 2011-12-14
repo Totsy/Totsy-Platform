@@ -1,26 +1,26 @@
-<?=$this->html->script('tiny_mce/tiny_mce.js');?>
-<?=$this->html->script('jquery-1.4.2');?>
-<?=$this->html->script('jquery-dynamic-form.js');?>
-<?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
-<?=$this->html->script('swfupload.js');?>
-<?=$this->html->script('swfupload.queue.js');?>
-<?=$this->html->script('fileprogress.js');?>
-<?=$this->html->script('handlers.js');?>
-<?=$this->html->script('jquery.editable-1.3.3.js');?>
-<?=$this->html->script('affiliate_upload.js');?>
-<?=$this->html->style('swfupload')?>
-<?=$this->html->style('jquery_ui_blitzer.css')?>
+<?php echo $this->html->script('tiny_mce/tiny_mce.js');?>
+<?php echo $this->html->script('jquery-1.4.2');?>
+<?php echo $this->html->script('jquery-dynamic-form.js');?>
+<?php echo $this->html->script('jquery-ui-1.8.2.custom.min.js');?>
+<?php echo $this->html->script('swfupload.js');?>
+<?php echo $this->html->script('swfupload.queue.js');?>
+<?php echo $this->html->script('fileprogress.js');?>
+<?php echo $this->html->script('handlers.js');?>
+<?php echo $this->html->script('jquery.editable-1.3.3.js');?>
+<?php echo $this->html->script('affiliate_upload.js');?>
+<?php echo $this->html->style('swfupload')?>
+<?php echo $this->html->style('jquery_ui_blitzer.css')?>
 
 <script type="text/javascript">
 	//this is for keeping ALL affiliate categories
-	var allAffiliateCategories = <?=json_encode($affiliateCategories)?>;
+	var allAffiliateCategories = <?php echo json_encode($affiliateCategories)?>;
 	
 	//the mongo id for this affiliate -  a string
-	var affiliateId = "<?=$affiliate['_id']?>";
+	var affiliateId = "<?php echo $affiliate['_id']?>";
 	
 	//keep these for use in adding affiliate categories
 	//useful for indexing category tag names and images
-	var temp = <?=json_encode($affiliate['category'])?>;
+	var temp = <?php echo json_encode($affiliate['category'])?>;
 	var affiliateCategories = new Array();
 </script>
 
@@ -52,9 +52,9 @@
 <div class="clear"></div>
 <div class="grid_8 box">
 	<div class="block forms">
-		<?=$this->form->create(null, array('id' => 'mainForm', 'enctype'=>'multipart/form-data'));?>
+		<?php echo $this->form->create(null, array('id' => 'mainForm', 'enctype'=>'multipart/form-data'));?>
 			<?php $checked= (($affiliate['active']))? 'checked':'' ?>
-			Activate: <?=$this->form->checkbox('active', array('checked'=>$checked)); ?> <br>
+			Activate: <?php echo $this->form->checkbox('active', array('checked'=>$checked)); ?> <br>
 			<?php
 				$option ='';
 				foreach( $packages as $key){
@@ -67,22 +67,22 @@
 			?>
 			Affiliate Level: <select name="level" id="Level"> <?php echo $option; ?> </select> <br><br>
 		Affiliate Name:
-			<?=$this->form->text('affiliate_name', array('value' => $affiliate['name'])); ?> <br><br>		
+			<?php echo $this->form->text('affiliate_name', array('value' => $affiliate['name'])); ?> <br><br>		
 			Affiliate Category: 
-		<?=$this->form->text('affiliate_category', array('value' => '', 'autocomplete'=>'off', 'id'=>'affiliate_category')); ?>
+		<?php echo $this->form->text('affiliate_category', array('value' => '', 'autocomplete'=>'off', 'id'=>'affiliate_category')); ?>
 		<input type="button" name="add_category" id="add_category" value="Add Category"/>
 			<br><br>
 			<div id="categories">
 				<?php foreach($affiliate['category'] as $affCat) { ?>
-				<div id="<?=$i."_".$affiliate['_id']?>">
-					<a href="#" id="<?=$i."_".$affCat['name']?>" class="upload_img" style="width:200px">+ <?=$affCat['name'];?></a>
+				<div id="<?php echo $i."_".$affiliate['_id']?>">
+					<a href="#" id="<?php echo $i."_".$affCat['name']?>" class="upload_img" style="width:200px">+ <?php echo $affCat['name'];?></a>
 					<a href="#" class="remove_category" style="float:right; width:10px">X</a>
-					<span style="float:right; width:150px">Select for upload <input type="radio" name="selected_image" value="<?=$i?>"></span>
+					<span style="float:right; width:150px">Select for upload <input type="radio" name="selected_image" value="<?php echo $i?>"></span>
 <!-- form field for categyr name goes here -->
-<input type="hidden" id="<?=$i."_".$affiliate['_id']?>_category_name" name="<?=$i."_".$affiliate['_id']?>_category_name" value="<?=$affCat['name']?>">
+<input type="hidden" id="<?php echo $i."_".$affiliate['_id']?>_category_name" name="<?php echo $i."_".$affiliate['_id']?>_category_name" value="<?php echo $affCat['name']?>">
 					
 <!-- upload file for this category here -->
-				<input type="hidden" id="<?=$i."_".$affiliate['_id']?>_category_background" name="<?=$i."_".$affiliate['_id']?>_category_background" value="<?=$affCat['background_image']?>">
+				<input type="hidden" id="<?php echo $i."_".$affiliate['_id']?>_category_background" name="<?php echo $i."_".$affiliate['_id']?>_category_background" value="<?php echo $affCat['background_image']?>">
 				</div>
 				<?php 
 					$i++;
@@ -115,7 +115,7 @@
 			</div>
 			<br><br>
 			Enter Code:
-			<?=$this->form->text('code'); ?>  <input type="button" name="add_code" id="add_code" value="add"/>
+			<?php echo $this->form->text('code'); ?>  <input type="button" name="add_code" id="add_code" value="add"/>
 			<br>
 			Affiliate codes:<br>
 			<?php
@@ -124,7 +124,7 @@
 					$codes[$code]= $code;
 				}
 			?>
-			<?=$this->form->select('invitation_codes',$codes,array('multiple'=>'multiple', 'size'=>5)); ?> <br>
+			<?php echo $this->form->select('invitation_codes',$codes,array('multiple'=>'multiple', 'size'=>5)); ?> <br>
 			<input type="button" name="edit_code" id="edit_code" value="edit code"/>
 			<br><br>
 		</div>	
@@ -142,7 +142,7 @@
 					<?php $checked = (($affiliate['active_pixel']))? 'checked':'' ?>
 					<div id='pixel_activate'>
 						Affiliate uses pixels:
-						<?=$this->form->checkbox('active_pixel', array('value' => '1', 'checked' => $checked)); ?>
+						<?php echo $this->form->checkbox('active_pixel', array('value' => '1', 'checked' => $checked)); ?>
 					</div>
 					<br>
 					<br>
@@ -170,16 +170,16 @@
 							}
 						?>
 						<div id='<?php echo 'pixel_'.($count+1)?>'>
-							<label> Pixel # <?=$count+1; ?> </label><br>
+							<label> Pixel # <?php echo $count+1; ?> </label><br>
 							Enable:
-							<?=$this->form->checkbox('pixel['.$count.'][enable]', array('value'=>'1', 'checked'=> $checked)); ?> <br>
+							<?php echo $this->form->checkbox('pixel['.$count.'][enable]', array('value'=>'1', 'checked'=> $checked)); ?> <br>
 							Select Page(s):<br>
 							<select name="<?php echo 'pixel['.$count.'][page][]'; ?>" multiple='multiple' size='5'>
 								<?php echo $option; ?>
 							</select>
 							<br>
 							Pixel:<br>
-							<?=$this->form->textarea('pixel['.$count.'][pixel]', array('value' => $pix, 'rows'=>'10', 'cols'=>'50')); ?>
+							<?php echo $this->form->textarea('pixel['.$count.'][pixel]', array('value' => $pix, 'rows'=>'10', 'cols'=>'50')); ?>
 							<br>
 						</div>
 						<?php
@@ -203,11 +203,11 @@
 										<?php foreach ($affiliate['category'] as $value):?>
 											<tr>
 												<td>
-													<?=$value['name'];?>
+													<?php echo $value['name'];?>
 												</td>
 												<td>
-													<div id="<?=$affiliate['_id'];?>" class="selector" style="text-decoration:underline; cursor:pointer">
-													<a href="/<?=$value['name'];?>?a=<?=$affiliate['name'];?>">/<?=$value['name'];?>?a=<?=$affiliate['name'];?>
+													<div id="<?php echo $affiliate['_id'];?>" class="selector" style="text-decoration:underline; cursor:pointer">
+													<a href="/<?php echo $value['name'];?>?a=<?php echo $affiliate['name'];?>">/<?php echo $value['name'];?>?a=<?php echo $affiliate['name'];?>
 													</a>	
 													</div>	
 												</td>
@@ -237,10 +237,10 @@
 			<br/>
 		<div id="submit button" class="grid_16">
 			<div class="grid_7" >
-			<?=$this->form->submit('Update', array('id'=>'edit')); ?>
+			<?php echo $this->form->submit('Update', array('id'=>'edit')); ?>
 		</div>
 	</div>
-	<?=$this->form->end(); ?>
+	<?php echo $this->form->end(); ?>
 </div>
 <script type="text/javascript">
 
@@ -391,9 +391,9 @@ $(document).ready(function() {
 			var newPixelDiv = $(document.createElement("div")).attr("id", "pixel_"+counter);
 
 			newPixelDiv.html(unescape("<label> Pixel #" +counter + "</label> <br> Enable:"+
-				'<?=$this->form->checkbox("pixel['+(counter-1)+'][enable]", array("value"=>"1", "checked"=>"checked")); ?> <br> Select:'+
-				'<?=$this->form->select("pixel['+(counter-1)+'][page]", $sitePages, array("multiple"=>"multiple", "size"=>5)); ?><br> Pixel<br>'+
-				'<?=$this->form->textarea("pixel['+(counter-1)+'][pixel]", array("rows"=>"5")); ?>'
+				'<?php echo $this->form->checkbox("pixel['+(counter-1)+'][enable]", array("value"=>"1", "checked"=>"checked")); ?> <br> Select:'+
+				'<?php echo $this->form->select("pixel['+(counter-1)+'][page]", $sitePages, array("multiple"=>"multiple", "size"=>5)); ?><br> Pixel<br>'+
+				'<?php echo $this->form->textarea("pixel['+(counter-1)+'][pixel]", array("rows"=>"5")); ?>'
 				));
 			newPixelDiv.appendTo('#pixel_panel');
 			counter++;

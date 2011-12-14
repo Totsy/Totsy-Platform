@@ -8,6 +8,7 @@ use app\models\Item;
 use app\models\Credit;
 use app\models\Address;
 use app\models\Event;
+use app\models\Affiliate;
 use app\models\Promotion;
 use app\models\CreditCard;
 use app\models\Promocode;
@@ -103,7 +104,7 @@ class OrdersController extends BaseController {
 		)));
 
 		$new = ($order->date_created->sec > (time() - 120)) ? true : false;
-		if($order->date_created->sec<1322006400){
+		if($order->date_created->sec < 1322006400){
 			$shipDate = Cart::shipDate($order, true);
 			$shipDate = date('M d, Y', $shipDate);
 		}
@@ -121,8 +122,8 @@ class OrdersController extends BaseController {
 		$itemsByEvent = $this->_itemGroupByEvent($order);
 		$orderEvents = $this->_orderEvents($order);
 		//Check if all items from one event are closed
-		foreach($itemsByEvent as $items_e) {
-			foreach($items_e as $item) {
+		foreach($itemsByEvent as $key => $items_e) {
+			foreach($items_e as $key_b => $item) {
 				if(empty($item['cancel'])) {
 					$openEvent[$item['event_id']] = true;
 				}
@@ -158,8 +159,8 @@ class OrdersController extends BaseController {
 		}
 		unset($itemsToSend);
 
-		$pixel = $affiliateClass::getPixels('order', 'spinback');
-		$spinback_fb = $affiliateClass::generatePixel('spinback', $pixel, array('order' => $_SERVER['REQUEST_URI']));
+		$pixel = Affiliate::getPixels('order', 'spinback');
+		$spinback_fb = Affiliate::generatePixel('spinback', $pixel, array('order' => $_SERVER['REQUEST_URI']));
 		//Get Items Skus - Analytics
 		foreach($itemsByEvent as $key => $event) {
 			foreach($event as $key_b => $item) {

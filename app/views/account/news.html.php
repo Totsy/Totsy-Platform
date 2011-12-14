@@ -21,7 +21,7 @@
 <div class="tl"></div> 
 <div class="tr"></div> 
 <div id="page"> 
-<?=$this->form->create(null,array('id'=>'addressForm', 'class' => "fl"));?> 
+<?php echo $this->form->create(null,array('id'=>'addressForm', 'class' => "fl"));?> 
 	<h2 class="gray mar-b">Email Preferences</h2> 
 	<hr />
 	<form action="#" class="fl"> 
@@ -73,4 +73,4 @@
 			You will receive an average of <strong>3</strong> emails from Totsy per week
 		</p> 
 
-<?=$this->form->end();?> 
+<?php echo $this->form->end();?> 

@@ -1,13 +1,13 @@
-<?=$this->html->script('jquery-ui-timepicker.min.js');?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->script('TableTools.min.js');?>
-<?=$this->html->script('ZeroClipboard.js');?>
-<?=$this->html->style('jquery_ui_blitzer.css')?>
-<?=$this->html->style('TableTools');?>
-<?=$this->html->style('timepicker'); ?>
-<?=$this->html->style('table');?>
-<?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
-<?=$this->html->script('jquery-ui-timepicker.min.js');?>
+<?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->script('TableTools.min.js');?>
+<?php echo $this->html->script('ZeroClipboard.js');?>
+<?php echo $this->html->style('jquery_ui_blitzer.css')?>
+<?php echo $this->html->style('TableTools');?>
+<?php echo $this->html->style('timepicker'); ?>
+<?php echo $this->html->style('table');?>
+<?php echo $this->html->script('jquery-ui-1.8.2.custom.min.js');?>
+<?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
 
 <script type="text/javascript" charset="utf-8">
 	$(function() {
@@ -41,13 +41,13 @@
 	</h2>
 	<div class="block" id="order-search">
 		<fieldset>
-			<?=$this->form->create(); ?>
-				<?=$this->form->text('search', array(
+			<?php echo $this->form->create(); ?>
+				<?php echo $this->form->text('search', array(
 					'id' => 'search',
 					'style' => 'float:left; width:400px; margin: 0px 10px 0px 0px;'
 					));
 				?>
-				<?=$this->form->select('type', array(
+				<?php echo $this->form->select('type', array(
 					'order' => 'Order #',
 					'email' => 'Customer Email',
 					'name' => 'Shipping/Billing Name',
@@ -57,8 +57,8 @@
 					'item' => 'Item Description'
 					), array('style' => 'float:left; width:250px; margin: 0px 20px 0px 0px;'));
 				?>
-				<?=$this->form->submit('Submit'); ?>
-			<?=$this->form->end(); ?>
+				<?php echo $this->form->submit('Submit'); ?>
+			<?php echo $this->form->end(); ?>
 		</fieldset>
 	</div>
 	</div>
@@ -81,16 +81,16 @@
 		<tbody>
 			<?php foreach ($orders as $order): ?>
 				<tr>
-					<td><?=date('m-d-Y', $order['date_created']->sec);?></td>
+					<td><?php echo date('m-d-Y', $order['date_created']->sec);?></td>
 					<td>
-						<?=$this->html->link($order['order_id'], array(
+						<?php echo $this->html->link($order['order_id'], array(
 						'Orders::view',
 						'args'=>$order['_id']),
 						array('target' => '_blank'));
 						?>
 					</td>
 					<td>
-						<?=$order['authKey']?>
+						<?php echo $order['authKey']?>
 					</td>
 					<td>
 						<?php
@@ -108,43 +108,43 @@
 					<td>
 						<div>
 						<?php if (!empty($order['billing'])): ?>
-							<?=$order['billing']['firstname']?>
-							<?=$order['billing']['lastname']?><br>
-							<?=$order['billing']['address']?>
+							<?php echo $order['billing']['firstname']?>
+							<?php echo $order['billing']['lastname']?><br>
+							<?php echo $order['billing']['address']?>
 							<?php if (!empty($order['billing']['city'])): ?>
-								<?=$order['billing']['city']?>
+								<?php echo $order['billing']['city']?>
 							<?php endif ?>
-							<?=$order['billing']['state']?> <?=$order['billing']['zip']?>
+							<?php echo $order['billing']['state']?> <?php echo $order['billing']['zip']?>
 						<?php endif ?>
 						</div>
 					</td>
 					<td>
 						<?php if (!empty($order['shipping'])): ?>
-							<?=$order['shipping']['firstname']?>
-							<?=$order['shipping']['lastname']?><br>
-							<?=$order['shipping']['address']?><br>
+							<?php echo $order['shipping']['firstname']?>
+							<?php echo $order['shipping']['lastname']?><br>
+							<?php echo $order['shipping']['address']?><br>
 							<?php if (!empty($order['shipping']['address_2'])): ?>
-								<?=$order['shipping']['address_2']?>
+								<?php echo $order['shipping']['address_2']?>
 							<?php endif ?>
 							<?php if (!empty($order['shipping']['city'])): ?>
-								<?=$order['shipping']['city']?>
+								<?php echo $order['shipping']['city']?>
 							<?php endif ?>
-							<?=$order['shipping']['state']?> <?=$order['shipping']['zip']?>
+							<?php echo $order['shipping']['state']?> <?php echo $order['shipping']['zip']?>
 						<?php endif ?>
 					</td>
-					<td>$<?=number_format($order['total'],2);?></td>
+					<td>$<?php echo number_format($order['total'],2);?></td>
 					<?php if (!empty($order['tracking_numbers'])): ?>
 						<td>
 						<?php foreach ($order['tracking_numbers'] as $number): ?>
-							<?=$this->shipment->link($number, array('type' => $order['shippingMethod']))?>
+							<?php echo $this->shipment->link($number, array('type' => $order['shippingMethod']))?>
 						<?php endforeach ?>
 						</td>
 					<?php else: ?>
 							<td>Not Shipped/No Tracking #</td>
 					<?php endif ?>
-					<td><?=date('M d, Y', $shipDate["$order[_id]"])?></td>
+					<td><?php echo date('M d, Y', $shipDate["$order[_id]"])?></td>
 					<td>
-						<?=$this->html->link('View', array(
+						<?php echo $this->html->link('View', array(
 						'Users::view',
 						'args'=>$order['user_id']),
 						array('target' => '_blank'));

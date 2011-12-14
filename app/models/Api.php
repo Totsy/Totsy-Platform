@@ -66,7 +66,7 @@ class Api extends \lithium\data\Model {
 	
 	protected static $_tmp_token_expires = 30; // in seconds
 	protected static $_token_expires = 15; // in minutes
-	protected static $_securePort = 443;
+	protected static $_securePorts = array(443,81);
 	protected static $_isSecure = false;
 	protected static $_requestMethod = null;
 	
@@ -100,7 +100,7 @@ class Api extends \lithium\data\Model {
 	 */
 	public static function setProtocol (&$request){
 
-		if ($request->env('SERVER_PORT') == static::$_securePort && ($request->env('HTTPS') == true || $request->env('HTTPS') == 'on')){
+		if (in_array($request->env('SERVER_PORT'), static::$_securePorts) && ($request->env('HTTPS') == true || $request->env('HTTPS') == 'on')){
 			static::$_isSecure = true;
 		} else {
 			static::$_isSecure = false;
