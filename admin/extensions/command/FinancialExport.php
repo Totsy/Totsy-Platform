@@ -932,7 +932,6 @@ class FinancialExport extends Base  {
                                 $reporting['files_sent'][] = $file . " " . filesize($source.$file) . " Bytes" ;
                                 rename($source.$file,$processed.$file);
                         } else {
-                               ;
                                 $this->log("Fail: " .  print_r(curl_error($ch), true));
                                 $reporting['success'] = false;
                                 $reporting['error'][] = "Fail: " .  print_r(curl_error($ch), true);
