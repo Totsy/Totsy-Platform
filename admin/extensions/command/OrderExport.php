@@ -264,9 +264,9 @@ class OrderExport extends Base {
 		$ReAuthorize->orders = $orders;
 		$this->log('Starting Full Reauthorize');
 		$orders = $ReAuthorize->run();
-		$order_total = $orders->count();
 		//total same until here 345pm
 		if ($orders) {
+			$order_total = $orders->count();
 			$inc = 1;
 			/**
 			* Checks if this queue already started this process once before

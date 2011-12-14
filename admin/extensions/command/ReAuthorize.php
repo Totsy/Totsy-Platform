@@ -91,8 +91,8 @@ class ReAuthorize extends \lithium\console\Command {
 			}
 		}
 		if($order_ids) {
-			$conditions = array('order_id' => array('$in' => $order_ids)
-			,array(
+			$conditions = array('order_id' => array('$in' => $order_ids));
+			$fields = array(
 			    '_id' => true,
 			    'billing' => true,
 			    'shipping' => true,
@@ -102,8 +102,8 @@ class ReAuthorize extends \lithium\console\Command {
 			    'order_id' => true,
 			    'shippingMethod' => true,
 			    'user_id' => true
-			));
-			$ordersUpdated = $ordersCollection->find($conditions);
+			);
+			$ordersUpdated = $ordersCollection->find($conditions,$fields);
 		}
 		return $ordersUpdated;
 	}
@@ -324,7 +324,7 @@ class ReAuthorize extends \lithium\console\Command {
 		#Save Old AuthKey with Date
 		$newRecord = array('authKey' => $order['authKey'], 'date_saved' => new MongoDate());
 		#Cancel Previous Transaction	
-		if($order['card_type'] != 'amex') {
+		if($order['card_type'] != 'amex' && (!empty($order['authTotal']))) {
 			$auth = Processor::void('default', $order['auth'], array(
 				'processor' => isset($order['processor']) ? $order['processor'] : null
 			));

@@ -117,7 +117,7 @@ class Order extends Base {
 			$data['void_confirm'] = -1;
 			$error = "Can't capture because total is zero.";
 		} else {
-			if($order['auth']) {
+			if(!empty($order['auth'])) {
 				$transaction = $order['auth'];
 			} else {
 				$transaction = $order['authKey'];
@@ -182,19 +182,29 @@ class Order extends Base {
 			$error = "Can't capture because total is zero.";
 		} else {
 			if(empty($order['auth'])) {
-				$transactionId = $order['authKey'];
 				$auth = $payments::capture(
 					'default',
-					$transactionId,
+					$order['authKey'],
 					floor($order['total'] * 100) / 100,
 					array(
 						'processor' => isset($order['processor']) ? $order['processor'] : null
 					)
 				);
 			} else {
-				$cybersource = new CyberSource($payments::config('default'));
-				$profile = $cybersource->profile($order['cyberSourceProfileId']);
-				$auth = $cybersource->capture($order['auth'], (floor($order['total'] * 100) / 100), $profile);
+				if(empty($order['cyberSourceProfileId'])) {
+					$auth = $payments::capture(
+						'default',
+						$order['auth'],
+						floor($order['total'] * 100) / 100,
+						array(
+							'processor' => isset($order['processor']) ? $order['processor'] : null
+						)
+					);
+				} else {
+					$cybersource = new CyberSource($payments::config('default'));
+					$profile = $cybersource->profile($order['cyberSourceProfileId']);
+					$auth = $cybersource->capture($order['auth'], (floor($order['total'] * 100) / 100), $profile);
+				}
 			}
 			if ($auth->success()) {
 				$data['auth_confirmation'] = $auth->key;
@@ -451,18 +461,27 @@ class Order extends Base {
 			'comment' => null,
 			'initial_credit_used' => null
 		);
+				
 		$datas_order_prices = array(
 			'total' => (float) $selected_order["total"],
 			'subTotal' => (float) $selected_order["subTotal"],
 			'handling' => (float) $selected_order["handling"],
-			'overSizeHandling' => (float) $selected_order["overSizeHandling"],
-			'handlingDiscount' => (float) $selected_order["handlingDiscount"],
-			'overSizeHandlingDiscount' => (float) $selected_order["overSizeHandlingDiscount"],		
 			'promo_discount' => (float) $selected_order["promo_discount"],
-			'discount' => (float) $selected_order["discount"],
 			'promocode_disable' => $selected_order["promocode_disable"],
 			'comment' => $selected_order["comment"]
 		);
+		if(!empty($selected_order["overSizeHandling"])) {
+			$datas_order_prices['overSizeHandling'] = (float) $selected_order["overSizeHandling"];
+		}
+		if(!empty($selected_order["discount"])) {
+			$datas_order_prices['discount'] = (float) $selected_order["discount"];
+		}
+		if(!empty($selected_order["handlingDiscount"])) {
+			$datas_order_prices['handlingDiscount'] = (float) $selected_order["handlingDiscount"];
+		}
+		if(!empty($selected_order["overSizeHandlingDiscount"])) {
+			$datas_order_prices['overSizeHandlingDiscount'] = (float) $selected_order["overSizeHandlingDiscount"];
+		}
 		if (array_key_exists('original_credit_used', $selected_order)) {
 		   $datas_order_prices['original_credit_used'] = $selected_order["original_credit_used"];
 		}
@@ -696,7 +715,13 @@ class Order extends Base {
 		}
 		/***********END OF CREDITS TREATMENT*************/
 		/***********CHECK TAX, HANDLING, TOTAL***********/
-		$total = $afterDiscount + $tax + $selected_order["handling"] + $selected_order["overSizeHandling"];
+		$total = $afterDiscount + $tax;
+		if(!empty($selected_order["handling"])) {
+			$total += $selected_order["handling"];
+		}
+		if(!empty($selected_order["overSizeHandling"])) {
+			$total += $selected_order["overSizeHandling"];
+		}
 		$datas_order_prices = array(
 			'total' => $total,
 			'subTotal' => $subTotal,
