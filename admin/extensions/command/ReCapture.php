@@ -150,6 +150,7 @@ class ReCapture extends \lithium\console\Command {
 	
 	public function authorize($creditCard = null, $order = null) {
 		Logger::debug('Authorize');
+		$ordersCollection = Order::Collection();
 		$report = null;
 		$authKey = null;
 		$card = Payments::create('default', 'creditCard', $creditCard + array(
@@ -165,6 +166,13 @@ class ReCapture extends \lithium\console\Command {
 		#Create a new Transaction and Get a new Authorization Key
 		try {
 			$authKey = Payments::authorize('default', ($order['total'] + $this->adjustment), $card);
+			if(!empty($this->onlyReauth)) {
+				$update = $ordersCollection->update(
+						array('_id' => $order['_id']),
+						array('$set' => array('authKey' => $authKey,
+						)), array( 'upsert' => true)
+				);
+			}
 			Logger::debug('Authorize Complete: ' . $authKey);
 		} catch (TransactionException $e) {
 			Logger::debug('Authorize Error: ' . $e->getMessage());
