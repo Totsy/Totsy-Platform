@@ -1,5 +1,5 @@
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->style('table');?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->style('table');?>
 <h3>Service/Offers </h3>
 
 <table id="services"class="dataTable">
@@ -18,7 +18,7 @@
         <td><?php echo date("m/d/Y", $service->start_date->sec);?></td>
         <td><?php echo date("m/d/Y", $service->end_date->sec);?></td>
         <td><?php echo $service->enabled;?></td>
-        <td><?=$this->html->link('Edit', '/services/edit/'.$service->_id);?></td>
+        <td><?php echo $this->html->link('Edit', '/services/edit/'.$service->_id);?></td>
     </tr>
 <?php endforeach; ?>
 </table>

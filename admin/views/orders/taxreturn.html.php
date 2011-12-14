@@ -1,8 +1,8 @@
 <div id="entire">
-<?=$this->html->script('jquery-1.4.2');?>
-<?=$this->html->script('jquery.maskedinput-1.2.2')?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->style(array('jquery_ui_blitzer.css', 'table'));?> 
+<?php echo $this->html->script('jquery-1.4.2');?>
+<?php echo $this->html->script('jquery.maskedinput-1.2.2')?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->style(array('jquery_ui_blitzer.css', 'table'));?> 
 <?php
 	$this->title(" - Order Confirmation");
 ?>
@@ -24,18 +24,18 @@
 						<td style="padding:5px; width:80px;"><strong>Subtotal</strong></td>
 						<td style="padding:5px; width:30px;"><strong>Tax Return</strong></td>
 					</tr>
-			<?=$this->form->create(null ,array('id'=>'partOrderTaxReturnForm','enctype' => "multipart/form-data")); ?>
+			<?php echo $this->form->create(null ,array('id'=>'partOrderTaxReturnForm','enctype' => "multipart/form-data")); ?>
 			<?php $items = $order['items']; ?>
 			<?php foreach ($items as $key => $item): ?>
 				<?php if (!isset($item['cancel'])){ $item['cancel']=null; }?>
 				<?php $name = 'items['.strval($key).'][cancel]'; ?>
-				<?=$this->form->hidden($name, array('class' => 'inputbox', 'id' => $name, 'value' => (string) $item['cancel'])); ?>
-				<?=$this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
+				<?php echo $this->form->hidden($name, array('class' => 'inputbox', 'id' => $name, 'value' => (string) $item['cancel'])); ?>
+				<?php echo $this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
 					<tr class="item_line"
 						<?php if($item["cancel"] == true) {
 							echo "style='background-color:red;opacity:.5'"; 
 							} ?>
-							 id="<?=$key?>">
+							 id="<?php echo $key?>">
 						<?php
 							if (!empty($item['primary_image'])) {
 								$image = '/image/'. $item['primary_image'] . '.jpg';
@@ -44,7 +44,7 @@
 							}
 						?>
 						<td style="padding:5px;" title="item">
-							<?=$this->html->image("$image", array(
+							<?php echo $this->html->image("$image", array(
 								'width' => "60",
 								'height' => "60",
 								'style' => "margin:2px; padding:2px; background:#fff; border:1px solid #ddd;"
@@ -52,21 +52,21 @@
 							?>
 						</td>
 						<td style="padding:5px" title="description">
-							Event: <?=$this->html->link($item['event_name'], array(
+							Event: <?php echo $this->html->link($item['event_name'], array(
 								'Events::preview', 'args' => $item['event_id']),
 								array('target' =>'_blank')
 							); ?><br />
-							Item: <?=$this->html->link($item['description'],
+							Item: <?php echo $this->html->link($item['description'],
 								array('Items::preview', 'args' => $item['url']),
 								array('target' =>'_blank')
 							); ?><br />
-							Color: <?=$item['color']?><br/>
-							Size: <?=$item['size']?><br/>
-							Vendor Style: <?=$sku["$item[item_id]"];?><br/>
-							Category: <?=$item['category'];?><br/>
+							Color: <?php echo $item['color']?><br/>
+							Size: <?php echo $item['size']?><br/>
+							Vendor Style: <?php echo $sku["$item[item_id]"];?><br/>
+							Category: <?php echo $item['category'];?><br/>
 						</td>
 						<td style="padding:5px; color:#009900;" title="price">
-							$<?=number_format($item['sale_retail'],2); ?>
+							$<?php echo number_format($item['sale_retail'],2); ?>
 						</td>
 						<td style="padding:5px;" title="quantity">
 						<?php if($edit_mode): ?>
@@ -83,11 +83,11 @@
 								$i++;
 							} while ($i <= $limit)
 							?>
-							<?=$this->form->hidden("items[".$key."][initial_quantity]", array('class' => 'inputbox', 'id' => "initial_quantity", 'value' => $limit )); ?>
-							<?=$this->form->select('items['.$key.'][quantity]', $quantities, array('style' => 'float:left; width:50px; margin: 0px 20px 0px 0px;', 'id' => 'dd_qty', 'value' => $item['quantity'], 'onchange' => "change_quantity()"));
+							<?php echo $this->form->hidden("items[".$key."][initial_quantity]", array('class' => 'inputbox', 'id' => "initial_quantity", 'value' => $limit )); ?>
+							<?php echo $this->form->select('items['.$key.'][quantity]', $quantities, array('style' => 'float:left; width:50px; margin: 0px 20px 0px 0px;', 'id' => 'dd_qty', 'value' => $item['quantity'], 'onchange' => "change_quantity()"));
 							?>
 						<?php else :?>
-								<?=$item['quantity'] ?>
+								<?php echo $item['quantity'] ?>
 						<?php endif ?>
 						</td>
 						<td title="subtotal" style="padding:5px; color:#009900;">
@@ -137,21 +137,21 @@
 						<strong style="font-weight:bold;color:#606060">Total:</strong> 
 					</td>
 					<td style="padding-left:15px; text-align:right;" valign="top">
-					$<?=number_format($order['subTotal'],2); ?>
+					$<?php echo number_format($order['subTotal'],2); ?>
 					<br>
 					<?php if (isset($order['credit_used']) && $order['credit_used']): ?>
-						-$<?=number_format(abs($order['credit_used']),2); ?>
+						-$<?php echo number_format(abs($order['credit_used']),2); ?>
 						<br>
 					<?php endif ?>
 					<?php if (isset($order['promo_discount']) && ($order['promo_discount']) && (empty($order['promocode_disable']))): ?>
-						-$<?=number_format(abs($order['promo_discount']),2); ?>
+						-$<?php echo number_format(abs($order['promo_discount']),2); ?>
 						<br>
 					<?php endif ?>
-					$<?=number_format($order['tax'],2); ?>
+					$<?php echo number_format($order['tax'],2); ?>
 					<br>
-					$<?=number_format($order["handling"] + $order["overSizeHandling"] - $order["handlingDiscount"]- $order["overSizeHandlingDiscount"], 2); ?>
+					$<?php echo number_format($order["handling"] + $order["overSizeHandling"] - $order["handlingDiscount"]- $order["overSizeHandlingDiscount"], 2); ?>
 					<br><br><br>
-					<strong style="font-weight:bold;color:#009900;">$<?=number_format($order['total'],2); ?></strong>
+					<strong style="font-weight:bold;color:#009900;">$<?php echo number_format($order['total'],2); ?></strong>
 					</td>
 				</tr>
 			</table>
@@ -162,7 +162,7 @@
 	<p style="text-align:center;">
 		<input type="submit" id="update_button"  onclick="update_order(); return false;" value="Update Order"/>
 	</p>
-	<?=$this->form->end();?>
+	<?php echo $this->form->end();?>
 </div>
 <script type="text/javascript" >
 $(document).ready(function(){

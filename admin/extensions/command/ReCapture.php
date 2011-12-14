@@ -55,6 +55,13 @@ class ReCapture extends \lithium\console\Command {
 	public $createNewAuth = true;
 	
 	/**
+	 * Creating only a reauth during recapture process
+	 *
+	 * @var string
+	 */
+	public $onlyReauth = false;
+	
+	/**
 	 * Instances
 	 */
 	public function run() {
@@ -91,7 +98,7 @@ class ReCapture extends \lithium\console\Command {
 							$authKeyAndReport['authKey'] = $order['authKey'];
 						}
 					}
-					if(!empty($authKeyAndReport['authKey'])) {
+					if(!empty($authKeyAndReport['authKey']) && empty($this->onlyReauth)) {
 						$reportCapture = $this->capture($authKeyAndReport['authKey'], $order);
 						if(!empty($reportCapture)) {
 							$report[$reportCounter] = $reportCapture;

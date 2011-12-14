@@ -1,35 +1,35 @@
-<?=$this->html->script(array('tiny_mce/tiny_mce.js', 'swfupload.js', 'swfupload.queue.js', 'fileprogress.js', 'handlers.js', 'service_upload.js'));?>
-<?=$this->html->style(array('swfupload', 'jquery_ui_blitzer'));?>
-<?=$this->html->script('jquery.maskedinput-1.2.2')?>
+<?php echo $this->html->script(array('tiny_mce/tiny_mce.js', 'swfupload.js', 'swfupload.queue.js', 'fileprogress.js', 'handlers.js', 'service_upload.js'));?>
+<?php echo $this->html->style(array('swfupload', 'jquery_ui_blitzer'));?>
+<?php echo $this->html->script('jquery.maskedinput-1.2.2')?>
 <style type="text/css">
     label {font-size:15px;}
 </style>
 <div class="grid_13">
     <h3>Add Services/Offers</h3>
-    <?=$this->form->create($service);?>
+    <?php echo $this->form->create($service);?>
         <div class="box block">
             <h2 class="box">General Info</h2>
             <br>
             <label>Name</label>
-            <?=$this->form->text('name'); ?>
-            <?=$this->form->error('name');?>
+            <?php echo $this->form->text('name'); ?>
+            <?php echo $this->form->error('name');?>
             <br/>
             <br/>
             <label>Enable</label>
-            <?=$this->form->checkbox("enabled", array('value' => "1", 'checked' => 'checked')); ?>
+            <?php echo $this->form->checkbox("enabled", array('value' => "1", 'checked' => 'checked')); ?>
             <br/>
             <br/>
             <label>Quantity - If Offer/service has a limited quantity</label>
-            <?=$this->form->text('in_stock'); ?>
+            <?php echo $this->form->text('in_stock'); ?>
             <br/>
             <br/>
             <label>Start Date:</label>
-            <?=$this->form->text('start_date', array('class' => 'date')); ?>
-            <?=$this->form->error('start_date');?>
+            <?php echo $this->form->text('start_date', array('class' => 'date')); ?>
+            <?php echo $this->form->error('start_date');?>
             <br/>
             <label>End Date:</label>
-            <?=$this->form->text('end_date', array('class' => 'date')); ?>
-            <?=$this->form->error('end_date');?>
+            <?php echo $this->form->text('end_date', array('class' => 'date')); ?>
+            <?php echo $this->form->error('end_date');?>
             <br/>
             <br/>
         </div>
@@ -38,47 +38,47 @@
             <h2 class="box"> Eligible Triggers </h2>
             <br>
             <label>Trigger Type</label>
-            <?=$this->form->select('trigger_type', $triggers, array("id" => "trigger_type")); ?>
+            <?php echo $this->form->select('trigger_type', $triggers, array("id" => "trigger_type")); ?>
             <br/>
             <br/>
             <label>Trigger Amount</label>
-            <?=$this->form->text('trigger_value'); ?>
-            <?=$this->form->error('trigger_value'); ?>
+            <?php echo $this->form->text('trigger_value'); ?>
+            <?php echo $this->form->error('trigger_value'); ?>
             <br/>
             <br/>
             <label>Pop Up Action</label>
-            <?=$this->form->select("trigger_action", $trigger_actions, array("id" => "trigger_action")); ?>
+            <?php echo $this->form->select("trigger_action", $trigger_actions, array("id" => "trigger_action")); ?>
             <br/>
             <br/>
             <label>Pop Up Wording</label> <br/>
-            <?=$this->form->textarea("popup_text", array("cols" => 75, "rows" => 15, "id" => "popup_text")); ?>
+            <?php echo $this->form->textarea("popup_text", array("cols" => 75, "rows" => 15, "id" => "popup_text")); ?>
             <br/>
             <br/>
         </div>
         <br/>
          <div class="box">
-            <h2 class="box"> <?=$this->form->checkbox('upsell_active', array("value" => "1", "id" => "upsell_active")); ?> &nbsp; Upsell Triggers </h2>
+            <h2 class="box"> <?php echo $this->form->checkbox('upsell_active', array("value" => "1", "id" => "upsell_active")); ?> &nbsp; Upsell Triggers </h2>
             <br>
             <label>Trigger Type</label>
-            <?=$this->form->select('upsell_trigger_type', $triggers, array('id' => 'upsell_trigger_type')); ?>
+            <?php echo $this->form->select('upsell_trigger_type', $triggers, array('id' => 'upsell_trigger_type')); ?>
             <br/>
             <br/>
             <label>Trigger Range</label><br/>
             Min:
-            <?=$this->form->text('upsell_trigger_min', array("class" => "range","style" => "width:20%")); ?>
-            <?=$this->form->error('upsell_trigger_min');?>
+            <?php echo $this->form->text('upsell_trigger_min', array("class" => "range","style" => "width:20%")); ?>
+            <?php echo $this->form->error('upsell_trigger_min');?>
             &nbsp;
             Max:
-             <?=$this->form->text('upsell_trigger_max', array("class" => "range", "style" => "width:20%")); ?>
-            <?=$this->form->error('upsell_trigger_max');?>
+             <?php echo $this->form->text('upsell_trigger_max', array("class" => "range", "style" => "width:20%")); ?>
+            <?php echo $this->form->error('upsell_trigger_max');?>
             <br/>
             <br/>
             <label>Pop Up Action</label>
-            <?=$this->form->select("upsell_trigger_action", $trigger_actions, array('id' => "upsell_trigger_action")); ?>
+            <?php echo $this->form->select("upsell_trigger_action", $trigger_actions, array('id' => "upsell_trigger_action")); ?>
             <br/>
             <br/>
             <label>Pop Up Wording</label> <br/>
-            <?=$this->form->textarea("upsell_popup_text", array("cols" => 75, "rows" => 15, 'id' => "upsell_popup_text")); ?>
+            <?php echo $this->form->textarea("upsell_popup_text", array("cols" => 75, "rows" => 15, 'id' => "upsell_popup_text")); ?>
             <br/>
             <br/>
         </div>
@@ -104,8 +104,8 @@
                 </td>
             </tr>
         </table>
-        <?=$this->form->submit('Create'); ?>
-    <?=$this->form->end();?>
+        <?php echo $this->form->submit('Create'); ?>
+    <?php echo $this->form->end();?>
 </div>
 <script type="text/javascript">
 jQuery(function($){
