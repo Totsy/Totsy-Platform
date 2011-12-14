@@ -87,7 +87,7 @@
 		<div id="listingCountdown" class="listingCountdown"></div>
 	</div>
 	<div id="detail-top-left"  style="width:405px;">
-		<h1><strong><?php echo $event->name?></strong> <?php echo $item->description." ".$item->color; ?></h1>
+		<h1><?php echo $item->description." ".$item->color; ?></h1>
 	</div>
 		<div class="clear"></div>
 
@@ -210,7 +210,7 @@
 			<?php endif ?>
 		</div>
 	</div>
-	<div style="padding:10px 0px; text-align:center !important;">
+	<div style="padding: 10px 0px; text-align: center ! important; position: absolute; top: 253px; right: 153px;">
 	    <?php echo $spinback_fb; ?>
 	</div>
 </div>
