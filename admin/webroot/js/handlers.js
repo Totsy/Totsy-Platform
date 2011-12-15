@@ -138,7 +138,6 @@ function uploadComplete(file) {
 	try {
 		/*  I want the next upload to continue automatically so I'll call startUpload here */
 		if (this.getStats().files_queued === 0) {
-			document.getElementById(this.customSettings.cancelButtonId).disabled = true;
 			onSWFSuccess();
 		} else {
 			this.startUpload();
@@ -147,6 +146,7 @@ function uploadComplete(file) {
 		this.debug(ex);
 	}
 	
+	/*
 	if($("#categories").length > 0 ){	
 		//index of category that will get this image	
 		var catIndex = $('#categories input[name=selected_image]:checked', '#mainForm').val();
@@ -165,11 +165,11 @@ function uploadComplete(file) {
 			$("#" + catIndex + "_" + affiliateId).append(imgField);	
 		}
 		
-	}	
+	}*/	
 }
 
 function uploadError(file, errorCode, message) {
-	try {
+	try {		
 		var progress = new FileProgress(file, this.customSettings.progressTarget);
 		progress.setError();
 		progress.toggleCancel(false);
@@ -227,6 +227,7 @@ function uploadError(file, errorCode, message) {
     }
 }
 
+/*
 function isLogo(instance){
     $('#isbackground').removeAttr("checked");
     $('#isfeature').removeAttr("checked");
@@ -256,4 +257,4 @@ function isLogo(instance){
     if( $('#islogo:checked').val() == 1){
         instance.addPostParam('tag','logo');
     }
-}
+} */

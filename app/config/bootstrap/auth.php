@@ -39,6 +39,10 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 		 $allowed = true;
 	 }
 	 
+	 if(preg_match('#(^affiliate/)a-zA-Z_+#', $params'request'->url)) { 
+	 	$allowed = true; 
+	 }
+	 
 	 #API
 	 if(preg_match('#(api/)#', $params['request']->url)) {
 	 	$allowed = true;

@@ -12,6 +12,7 @@
 <script type="text/javascript">_ffLoyalty.initialize("k7iyyJWiWIg0DMy")</script>
 
 <?php
+	//check if blurb is set or not
 	if ($item->blurb) {
 		$blurb = $item->blurb;
 	} else {
@@ -21,11 +22,12 @@
 
 <script type="text/javascript" charset="utf-8">
 	try{
-	  var ffImageUrl = "<?=$item->primary_image?>";
-	  var ffProductName = "<?=$item->description?>";
-	  var ffProductDescription = "<?=$blurb?>";
-	  var ffMessage = "This is my style: " + "<?=$item->description?>" + " on YOUR WEBSITE GOES HERE";
+	  var ffImageUrl = "<?php echo urlencode($item->primary_image); ?>";
+	  var ffProductName = "<?php echo $item->description; ?>";
+	  var ffProductDescription = "<?php echo $blurb; ?>";
+	  var ffMessage = "This is my style: " + "<?php echo $item->description; ?>" + " on YOUR WEBSITE GOES HERE";
 	 } catch(ex) {
+	 	console.log(ex);
 	 }
 </script>
 <!-- loyalty 500 points share product START -->

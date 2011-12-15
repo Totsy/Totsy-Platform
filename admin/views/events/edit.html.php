@@ -244,7 +244,7 @@ for ( i=1; i<6; i++ ) {
 			    	<div id="short_description_characters_wrapper">
 			    		Total:
 			    		<span id="short_description_characters_counter">
-			    			<? if(isset($event->short)) {
+			    			<?php if(isset($event->short)) {
 			    			   		echo strlen($event->short);
 			    			   } else {
 			    			   		echo '0';

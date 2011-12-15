@@ -160,7 +160,7 @@ SWFUpload.prototype.initSettings = function () {
 	this.ensureDefault("button_window_mode", SWFUpload.WINDOW_MODE.WINDOW);
 	
 	// Debug Settings
-	this.ensureDefault("debug", false);
+	this.ensureDefault("debug", true);
 	this.settings.debug_enabled = this.settings.debug;	// Here to maintain v2 API
 	
 	// Event Handlers

@@ -43,28 +43,38 @@ Auth::config(array(
 	)
 ));
 
+
 Dispatcher::applyFilter('_call', function($self, $params, $chain) {
+
 	$url = $params['request']->url;
-
-	if (strpos($url, 'files/dav') === 0) { /* Do form auth only for non-dav requests. */
-		$granted = Auth::check('token', $params['request'], array(
-			'writeSession' => false, 'checkSession' => false
-		));
-
-		if (!$granted) {
-			return new Response(array('status' => 401, 'body' => 'Access denied; invalid token.'));
-		}
+	
+	if (strpos($url, 'files/dav') === 0 ) { 
+		// Do form auth only for non-dav requests. 
+		
+	    $granted = Auth::check('token', $params['request'], array(
+	    	'writeSession' => false, 'checkSession' => false
+	    ));
+	
+	    if (!$granted) {
+	    	return new Response(array('status' => 401, 'body' => 'Access denied; invalid token.'));
+	    }
+	    
 	} else {
-		if (in_array($url, array('login', 'logout'))) {
-			return $chain->next($self, $params, $chain);
-		}
-		$granted = Auth::check('userLogin', $params['request']);
-
-		if (!$granted) { /* Redirect visitors to root to login first. */
-			return new Response(array('location' => 'Users::login'));
-		}
+			
+	    if (in_array($url, array('login', 'logout'))) {
+	    	return $chain->next($self, $params, $chain);
+	    }
+	    		
+	    $granted = Auth::check('userLogin', $params['request']);
+	    
+	    if (!$granted ) { 
+	    	// Redirect visitors to root to login first. 
+	    	return new Response(array('location' => 'Users::login'));
+	    }
 	}
+	
 	return $chain->next($self, $params, $chain);
+	
 });
 
 ?>
