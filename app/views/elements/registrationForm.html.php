@@ -1,7 +1,9 @@
+<!--
 <h2 style="margin-bottom:20px;">Join with Facebook</h2>
 <a href="javascript:;" onclick="fblogin();return false;"><img src="/img/sign_in_fb.png" class="fr"></a>
 <br />
-<h2 style="margin-top:30px;margin-bottom:20px;">Or join with email</h2>
+-->
+<h2 style="margin-top:30px;margin-bottom:20px;">Join with email</h2>
 
 
 <?php if (preg_match('/join/',$_SERVER['REQUEST_URI'])): ?>
