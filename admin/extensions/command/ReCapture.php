@@ -127,6 +127,7 @@ class ReCapture extends \lithium\console\Command {
 
 	public function authorize($creditCard = null, $order = null) {
 		Logger::debug('Authorize');
+		$ordersCollection = Order::Collection();
 		$report = null;
 		$authKey = null;
 		$usersCollection = User::Collection();
