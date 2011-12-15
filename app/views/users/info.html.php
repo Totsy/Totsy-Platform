@@ -91,7 +91,8 @@
     FB.init({
       appId   : <?php echo $fbconfig['appId']; ?>,
       session : <?php echo json_encode($fbsession); ?>, // don't refetch the session when PHP already has it
-      status  : true, // check login status
+	  oauth: true,      
+	  status  : true, // check login status
       cookie  : true, // enable cookies to allow the server to access the session
       xfbml   : true // parse XFBML
     });

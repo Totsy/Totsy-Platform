@@ -657,7 +657,7 @@ class UsersController extends BaseController {
 	 * @see Affiliates::register()
 	 * @see FacebookProxy::api()
 	 */
-	public static function facebookLogin($affiliate = null, $cookie = null, $ipaddress = null) {
+	public static function facebookLogin($affiliate = null, $cookie = null, $ipaddress = null) {		
 		$self = static::_object();
 
 		//If the users already exists in the database
