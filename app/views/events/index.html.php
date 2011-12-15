@@ -29,6 +29,17 @@
 	</div>
 -->
 <div class="fullwidth">
+	<?php
+		/* 
+			@TODO
+			@DG
+				- rebuild template to split into sections:
+				- Today's Sales
+					featured
+					grid of items
+				- Upcoming Sales
+		*/
+	?>
 	<?php $x = 0; ?>
 	<?php $y = 0; ?>
 	<?php foreach ($openEvents as $event): ?>
@@ -127,13 +138,13 @@
 		<?php $y++; ?>
 	<?php endforeach ?>
 
-	<div style="margin-bottom:35px;" class="clear"></div>
+	<div style="margin-bottom:35px;" class="clear"></div><!-- @TODO: rebuild template, remove clear divs, utilize #upcoming styles -->
 
-	<div class="container_16">
-	<div class="grid_16">
-		<h2 class="page-title gray">Upcoming Sales</h2>
-		<hr />
-	</div>
+	<div id="upcoming" class="container_16 group">
+		<div class="grid_16">
+			<h2 class="page-title gray">Upcoming Sales</h2>
+			<hr />
+		</div>
 		<?php $x = 0; ?>
 		<?php $y = 0; ?>
 		<?php foreach ($pendingEvents as $event): ?>
@@ -184,49 +195,46 @@
 </div>
 </div>
 <div id="modal" style="background:#fff!important;"></div>
-<!--Javascript Output for Today's Events -->
-<?php if (!empty($todayJs)): ?>
-	<?php foreach ($todayJs as $value): ?>
-		<?php //echo $value ?>
-	<?php endforeach ?>
-<?php endif ?>
-
-<!--Javascript Output for Future Events-->
-<?php if (!empty($futureJs)): ?>
-	<?php foreach ($futureJs as $value): ?>
-		<?php //echo $value ?>
-	<?php endforeach ?>
-<?php endif ?>
+<!-- @DG 2011.15.2011 - removed, not using:
+	- Javascript Output for Today's Events
+	- Javascript Output for Future Events
+-->
 
 <script type="text/javascript">
 //<!--
 	$(document).ready(function() {
 		$("#banner_container").rotate();
 	});
+	
+	// countdown ticker
+	/*
+	$(document).ready(function() {
+		$(".counter").each( function () {
+		
+			var fecha  = parseInt(this.title);
+			var saleTime = new Date(fecha);
+			var now = new Date();
+			var diff = saleTime - (now.getTime());
+		
+			//check if its and end date or start date
+			if($("#" + this.id).hasClass("start"))
+			{
+			    if((diff / 1000) < (24 * 60 * 60) ) {
+			        $("#" + this.id).countdown({until: saleTime, layout: 'Opens in {hnn}{sep}{mnn}{sep}{snn}'});
+			    } else {
+			        $("#" + this.id).countdown({until: saleTime, layout: 'Opens in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+			    }
+			} else {
+			    if((diff / 1000) < (24 * 60 * 60) ) {
+			    	$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {hnn}{sep}{mnn}{sep}{snn}'});
+			    } else {
+			    	$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+			    }
+			}
+		 });
+	});
+	*/
 
-	$(".counter").each( function () {
-
-		var fecha  = parseInt(this.title);
-		var saleTime = new Date(fecha);
-		var now = new Date();
-		var diff = saleTime - (now.getTime());
-
-		//check if its and end date or start date
-		if($("#" + this.id).hasClass("start"))
-		{
-		    if((diff / 1000) < (24 * 60 * 60) ) {
-		        $("#" + this.id).countdown({until: saleTime, layout: 'Opens in {hnn}{sep}{mnn}{sep}{snn}'});
-		    } else {
-		        $("#" + this.id).countdown({until: saleTime, layout: 'Opens in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
-		    }
-		} else {
-		    if((diff / 1000) < (24 * 60 * 60) ) {
-		    	$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {hnn}{sep}{mnn}{sep}{snn}'});
-		    } else {
-		    	$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
-		    }
-		}
-	 });
 
 //-->
 </script>

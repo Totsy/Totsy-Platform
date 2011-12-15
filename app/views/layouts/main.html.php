@@ -65,9 +65,10 @@
 
 	<?php if(isset($branch)) { echo $branch; } ?>
 	<div id="totsy" class="container_16 roundy glow">
-		<div class="grid_3 alpha" style="margin:5px 0px 0px 5px;">
-		<?php echo $this->html->link($this->html->image('logo.png', array('width'=>'120')), '/sales', array('escape'=> false)); ?>
-		</div>
+		<h1 id="logo" class="grid_3">
+			<?php //echo $this->html->link($this->html->image('logo.png', array('width'=>'120')), '/sales', array('escape'=> false)); ?>
+			<a href="/sales">totsy</a>
+		</h1>
 		<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
 		
 		<div class="menu_main_global">
@@ -90,11 +91,11 @@
 		</div>
 		<!-- /header nav -->
 		
-		<div class="container_16">
+		<div id="contentMain" class="container_16">
 			<?php echo $this->content(); ?>
 		</div>
-		<!-- /main content -->
-	</div><!-- /container_16 -->
+		<!-- /#contentMain -->
+	</div><!-- /#totsy -->
 
 	<div id="footer" class="container_16">
 		<?php echo $this->view()->render(array('element' => 'footerNav'), array('userInfo' => $userInfo)); ?>
