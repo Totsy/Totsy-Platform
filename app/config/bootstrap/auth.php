@@ -19,7 +19,8 @@ Auth::config(array(
 Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	$skip = array('login', 'logout', 'register',"register/facebook","reset");
 	$allowed = false;
-
+	$logged_in = false;
+	
 	#dynamic affiliate pages
 	 if(preg_match('#(^a/)[a-zA-Z_]+#', $params['request']->url)) {
 		 $allowed = true;
@@ -48,13 +49,18 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	$granted = $allowed || $granted;
 	$granted = $granted || Auth::check('userLogin', $params['request']);
 
+	// check if user already logged-in
+	if(Session::check('userLogin')) {
+		$logged_in = true;
+	}
+	
 	// in case whe have an evnt's landing page , will nedd to reditec user to proper page
-	if ( preg_match('(/sale/)','/'.$params['request']->url)){
+	if ( !$logged_in && preg_match('(/sale/)','/'.$params['request']->url)){
 		Session::write('landing',$params['request']->url);
 	}
 
 	//checks for sailhtur get var gotologin=true, saves event name and redirs to login
-	if (!empty($params['request']->query['gotologin']) && $params['request']->query['gotologin']=="true") {
+	if ( !$logged_in && !empty($params['request']->query['gotologin']) && $params['request']->query['gotologin']=="true") {
 
 		$eventName = "";
 	
