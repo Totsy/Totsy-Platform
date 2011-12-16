@@ -42,6 +42,11 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	 if(preg_match('#(api/)#', $params['request']->url)) {
 	 	$allowed = true;
 	 }
+
+	 #FEEDS!
+	 if(preg_match('#(feeds/keyade)#', $params['request']->url)) {
+	 	$allowed = true;
+	 }
 	 
 	$granted = in_array($params['request']->url, $skip);
 	$granted = $allowed || $granted;
