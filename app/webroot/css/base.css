@@ -955,6 +955,9 @@ ul.content-list {
 }
 
 .ui-tabs .ui-tabs-nav li.ui-tabs-selected {
+	border-radius:6px 6px 6px 6px;
+	-moz-border-radius:6px 6px 6px 6px;
+	-webkit-border-radius:6px 6px 6px 6px;
 }
 
 .ui-tabs .ui-tabs-nav li.ui-tabs-selected a,.ui-tabs .ui-tabs-nav li.ui-state-disabled a,.ui-tabs .ui-tabs-nav li.ui-state-processing a {

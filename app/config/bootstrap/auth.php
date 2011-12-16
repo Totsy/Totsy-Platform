@@ -47,6 +47,29 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	$granted = $allowed || $granted;
 	$granted = $granted || Auth::check('userLogin', $params['request']);
 
+
+
+//checks for sailhtur get var gotologin=true, saves event name and redirs to login
+if ($params['request']->query['gotologin']=="true") {
+
+	$eventName = "";
+	
+	if (preg_match("(/sale)", $currentURI)) {
+	$URIArray = explode("/", $currentURI);
+	$eventName = $URIArray[2];
+	}
+	
+	if ($eventName) {
+	//write event name to the session
+	Session::write( "eventFromEmailClick", $eventName, array("name"=>"default"));
+	}
+	
+	
+	
+	return new Response(array('location' => 'Users::login'));
+}
+
+
 	if (!$granted) {
 		/* Redirect all non-authenticated users to login page. */
 		return new Response(array('location' => 'Users::register'));
