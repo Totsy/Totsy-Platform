@@ -94,7 +94,7 @@ var discountErrors = new Object();
 <?php if (!empty($subTotal)): ?>
 
 <div class="roundy_cart" style="width:935px !important">
-<?php echo $this->form->create(null ,array('id'=>'cartForm')); ?>
+<?php echo $this->form->create(null ,array('id'=>'cartForm', 'name'=>'cartForm')); ?>
 	<div id='message'><?php echo $message; ?></div>
 		<table class="cart-table">
 			<tbody>
@@ -176,7 +176,7 @@ var discountErrors = new Object();
 					?>
 					<?php echo $this->form->select("cart[{$item->_id}]", $select, array(
     					'id' => $item->_id, 'value' => $item->quantity, 'class'=>'quantity'
-					));
+					, 'onChange' => 'document.cartForm.submit()'));
 					?>
 										</td>
 					<td class="cart-actions">
