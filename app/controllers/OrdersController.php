@@ -563,6 +563,8 @@ class OrdersController extends BaseController {
 			if($cc_infos->validates()) {
 				#Encrypt CC Infos with mcrypt
 				Session::write('cc_infos', $orderClass::creditCardEncrypt($cc_infos, (string)$user['_id'], true));
+				
+				
 				$cc_passed = true;
 				#Remove Credit Card Errors
 				Session::delete('cc_error');
@@ -642,7 +644,17 @@ class OrdersController extends BaseController {
 				$data_add = Session::read('billing');
 				$payment = Address::create(array_merge($data_add,$card));
 			}
-			$payment->errors( $payment->errors() + array( 'cc_error' => Session::read('cc_error')));
+			
+			
+			//error handling is not properly done
+			//errors from cybersource are not description or consumer-friendly
+			//errors need to be captured and then re-worded for users
+			//for now we have hardcoded a generic error message for all cc_errors stored in Session
+			
+			
+			//$payment->errors( $payment->errors() + array( 'cc_error' => Session::read('cc_error')));
+			$ccErrorTextGeneric = "We are not able to charge this credit card.  Please verify that your credit card number, expiration date, and security code are valid, or try another card.";
+			$payment->errors(array( 'cc_error' => $ccErrorTextGeneric));
 			Session::delete('cc_error');
 			Session::delete('billing');
 		}
