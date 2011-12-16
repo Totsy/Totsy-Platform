@@ -441,7 +441,7 @@ class OrdersController extends BaseController {
 			$shipping_discount = $shippingCost + $overShippingCost;
 		}
 		#Calculate Order Total
-		$total = $vars['postDiscountTotal'];
+		$total = round(floatval($vars['postDiscountTotal']), 2);
 		#Read Credit Card Informations
 		$creditCard = $orderClass::creditCardDecrypt((string)$user['_id']);
 		#Organize Datas
