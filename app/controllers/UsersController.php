@@ -276,16 +276,24 @@ class UsersController extends BaseController {
 							$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$_SERVER['HTTP_HOST']));
 							unset($cookie['redirect']);
 						}
+						
+						$landing = null;
+						if (Session::check('landing')){
+							$landing = Session::read('landing');
+							Session::delete('landing',array('name'=>'default'));
+						} else if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) {
+							$landing = $this->request->url;
+						} else {
+							$landing  = $redirect;
+						}
+						
             			Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 						User::rememberMeWrite($this->request->data['remember_me']);
 						/**Remove Temporary Session Datas**/
 						User::cleanSession();
 						/***/
-						if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) {
-							return $this->redirect($this->request->url);
-						} else {
-							return $this->redirect($redirect);
-						}
+						
+						return $this->redirect($landing);
 					} else {
 						$message = '<div class="error_flash">Login Failed - Please Try Again</div>';
 					}

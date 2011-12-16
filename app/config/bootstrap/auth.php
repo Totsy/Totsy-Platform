@@ -6,6 +6,7 @@
 use lithium\security\Auth;
 use lithium\action\Dispatcher;
 use lithium\action\Response;
+use lithium\storage\Session;
 
 Auth::config(array(
 	'userLogin' => array(
@@ -47,27 +48,28 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	$granted = $allowed || $granted;
 	$granted = $granted || Auth::check('userLogin', $params['request']);
 
-
-
-//checks for sailhtur get var gotologin=true, saves event name and redirs to login
-if ($params['request']->query['gotologin']=="true") {
-
-	$eventName = "";
-	
-	if (preg_match("(/sale)", $currentURI)) {
-	$URIArray = explode("/", $currentURI);
-	$eventName = $URIArray[2];
+	// in case whe have an evnt's landing page , will nedd to reditec user to proper page
+	if ( preg_match('(/sale/)','/'.$params['request']->url)){
+		Session::write('landing',$params['request']->url);
 	}
+
+	//checks for sailhtur get var gotologin=true, saves event name and redirs to login
+	if (!empty($params['request']->query['gotologin']) && $params['request']->query['gotologin']=="true") {
+
+		$eventName = "";
 	
-	if ($eventName) {
-	//write event name to the session
-	Session::write( "eventFromEmailClick", $eventName, array("name"=>"default"));
+		if (preg_match("(/sale)", $params['request']->url)) {
+			$URIArray = explode("/", $params['request']->url);
+			$eventName = $URIArray[2];
+		}
+	
+		if ($eventName) {
+			//write event name to the session
+			Session::write( "eventFromEmailClick", $eventName, array("name"=>"default"));
+		}
+	
+		return new Response(array('location' => 'Users::login'));
 	}
-	
-	
-	
-	return new Response(array('location' => 'Users::login'));
-}
 
 
 	if (!$granted) {
