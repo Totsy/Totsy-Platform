@@ -923,7 +923,6 @@ class FinancialExport extends Base  {
                         curl_setopt($ch, CURLOPT_PROTOCOLS, CURLPROTO_SCP);
                         curl_setopt($ch, CURLOPT_INFILE, $fp);
                         curl_setopt($ch, CURLOPT_INFILESIZE, filesize($source.$file));
-                        curl_setopt()
                         curl_exec ($ch);
                         $error_no = curl_errno($ch);
                         if ($error_no == 0) {
