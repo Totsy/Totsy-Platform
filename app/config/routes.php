@@ -51,7 +51,6 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
      ));
 });
 
-
 Router::connect('/api/help/{:args}', array('controller' => 'API', 'action' => 'help'));
 Router::connect('/api/{:args}', array('controller' => 'API', 'action' => 'index'));
 

@@ -83,7 +83,7 @@ class AvaTax extends \lithium\core\StaticObject {
 			$data['totalDiscount'] = $data['totalDiscount'] + abs($data['orderServiceCredit']);
 			unset($data['orderServiceCredit']);
 		}
-        if (empty($data['shippingAddr']) && !empty($data['order']['shipping'])){
+		if (empty($data['shippingAddr']) && !empty($data['order']['shipping'])){
            $data['shippingAddr'] = $data['order']['shipping'];
         }
         if (empty($data['billingAddr']) && !empty($data['order']['billing'])){

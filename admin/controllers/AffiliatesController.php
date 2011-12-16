@@ -118,7 +118,6 @@ class AffiliatesController extends \admin\controllers\BaseController {
         $info = array();
         $landing = array();
        	$data = $this->request->data;
-       			
 		if ($data) {
             $info['active'] = (($data['active'] == '1' || $data['active'] == 'on')) ? true : false;
             $info['name'] = $data['affiliate_name'];
@@ -189,8 +188,8 @@ class AffiliatesController extends \admin\controllers\BaseController {
             $this->redirect( array('Affiliates::index') );
         }
         $data = $this->request->data;
-        
-        if( ($data) ) {        	
+
+        if($data) {        	
         	$i = 0;
         	
 			foreach($data as $record=>$val) {	
@@ -273,7 +272,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
         echo json_encode($backgrounds);
 	}
 	*/
-	
+
     /**
 	* Ajax call to dynamicall retrieve landing page information
 	* Expected post data: affiliate id and the name of the landing page
