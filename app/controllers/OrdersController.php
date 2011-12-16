@@ -653,7 +653,7 @@ class OrdersController extends BaseController {
 			
 			
 			//$payment->errors( $payment->errors() + array( 'cc_error' => Session::read('cc_error')));
-			$ccErrorTextGeneric = "The credit card information you entered is not accurate. Please re-enter your payment information.";
+			$ccErrorTextGeneric = "We are not able to charge this credit card.  Please verify that your credit card number, expiration date, and security code are valid, or try another card.";
 			$payment->errors(array( 'cc_error' => $ccErrorTextGeneric));
 			Session::delete('cc_error');
 			Session::delete('billing');
