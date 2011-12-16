@@ -227,14 +227,17 @@ class ReAuthorize extends \lithium\console\Command {
 				#Save Old AuthKey with Date
 				$newRecord = array('authKey' => $order['authKey'], 'date_saved' => new MongoDate());
 				#Cancel Previous Transaction
-				$auth = Processor::void('default', $order['authKey'], array(
+				// change 'authorizenet' to 'default' below when ready to reauth older Amex Authorize.net orders through CyberSource
+/*
+				$auth = Processor::void('authorizenet', $order['authKey'], array(
 					'processor' => isset($order['processor']) ? $order['processor'] : null
 				));
 				if ($auth->success()) {
+*/
 					$userInfos = $usersCollection->findOne(array('_id' => new MongoId($order['user_id'])));
 					#Create Card and Check Billing Infos
-					$card = Processor::create('default', 'creditCard', $creditCard + array(
-						'billing' => Processor::create('default', 'address', array(
+					$card = Processor::create('authorizenet', 'creditCard', $creditCard + array(
+						'billing' => Processor::create('authorizenet', 'address', array(
 							'firstName' => $order['billing']['firstname'],
 							'lastName'  => $order['billing']['lastname'],
 							'address'   => trim($order['billing']['address']),
@@ -246,9 +249,12 @@ class ReAuthorize extends \lithium\console\Command {
 			
 					))));
 					#Create a new Transaction and Get a new Authorization Key
-					$auth = Processor::authorize('default', $total, $card);
+					// change 'authorizenet' to 'default' below when ready to reauth older Amex Authorize.net orders through CyberSource
+					$auth = Processor::authorize('authorizenet', $total, $card);
 					if ($auth->success()) {
 						Logger::debug("Authorization Succeeded");
+						/* comment back in this section below when ready to reauth older Amex Authorize.net orders through CyberSource
+
 						$customer = Processor::create('default', 'customer', array(
 							'firstName' => $userInfos['firstname'],
 							'lastName' => $userInfos['lastname'],
@@ -268,6 +274,8 @@ class ReAuthorize extends \lithium\console\Command {
 								'cyberSourceProfileId' => $profileID
 							)), array( 'upsert' => true)
 						);
+						*/
+
 						#Setup new AuthKey
 						$update = $ordersCollection->update(
 								array('_id' => $order['_id']),
@@ -301,6 +309,7 @@ class ReAuthorize extends \lithium\console\Command {
 							'total' => $total
 						);
 					}
+/*
 				} else {
 					$message  = "Void failed for order id `{$order['order_id']}`:";
 					$message .= $error = implode('; ', $auth->errors);
@@ -311,6 +320,7 @@ class ReAuthorize extends \lithium\console\Command {
 							'total' => $total
 					);
 				}
+*/
 			}
 		}
 		return $report;
