@@ -136,7 +136,6 @@ class UsersController extends \admin\controllers\BaseController {
 	 */
 	public function login() {
 		$message = false;
-
 		if ($this->request->data) {
 		    $this->request->data['email'] = strtolower($this->request->data['email']);
 			if (Auth::check("userLogin", $this->request)) {

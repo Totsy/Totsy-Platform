@@ -20,6 +20,7 @@ use lithium\util\Validator;
 use MongoDate;
 use MongoId;
 use app\extensions\Mailer;
+use app\extensions\AvaTax;
 
 /**
  * The Orders Controller
@@ -123,6 +124,7 @@ class OrdersController extends BaseController {
 		$orderEvents = $this->_orderEvents($order);
 		//Check if all items from one event are closed
 		foreach($itemsByEvent as $key => $items_e) {
+			$url = Event::find('first', array('conditions' => array('_id'=> $key)));
 			foreach($items_e as $key_b => $item) {
 				if(empty($item['cancel'])) {
 					$openEvent[$item['event_id']] = true;
@@ -175,12 +177,12 @@ class OrdersController extends BaseController {
 		$missChristmasCount = 0;
 		$notmissChristmasCount = 0;
 		foreach ($order->items as $item) {
-
 			if($item['miss_christmas']){
 				$missChristmasCount++;
 			}
 			else{
 				$notmissChristmasCount++;
+
 			}
 
 
@@ -190,7 +192,6 @@ class OrdersController extends BaseController {
 				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
 			}
 		}
-
 		return compact(
 			'order',
 			'orderEvents',
@@ -306,7 +307,6 @@ class OrdersController extends BaseController {
 		));
 		$shipDate = Cart::shipDate($cart);
 		foreach($cart as $item){
-
 			if($item['miss_christmas']){
 				$missChristmasCount++;
 			}
@@ -386,7 +386,7 @@ class OrdersController extends BaseController {
 		$cartExpirationDate = 0;
 		$missChristmasCount = 0;
 		$notmissChristmasCount = 0;
-
+		$i = 0;
 		foreach ($cart as $cartValue) {
 			if($cartValue->miss_christmas){
 				$missChristmasCount++;
@@ -403,10 +403,12 @@ class OrdersController extends BaseController {
 			$event = Event::find('first', array(
 				'conditions' => array('_id' => $cartValue->event[0])
 			));
+			$cartItemEventEndDates[$i] = is_object($event->end_date) ? $event->end_date->sec : $event->end_date;
 			$cartValue->event_name = $event->name;
 			$cartValue->event_url = $event->url;
 			$cartValue->event_id = $cartValue->event[0];
 			$subTotal += $cartValue->quantity * $cartValue->sale_retail;
+			$i++;
 			unset($cartValue->event);
 		}
 		#Get Shipping / Billing Infos + Costs
@@ -422,7 +424,6 @@ class OrdersController extends BaseController {
 		$avatax = $taxClass::getTax(compact(
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'));
-
 		$tax = (float) $avatax['tax'];
 		#Get current Discount
 		$vars = Cart::getDiscount($subTotal, $shippingCost, $overShippingCost, $this->request->data, $tax);
@@ -439,15 +440,14 @@ class OrdersController extends BaseController {
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
 			$shipping_discount = $shippingCost + $overShippingCost;
 		}
-
 		#Calculate Order Total
-		$total = $vars['postDiscountTotal'];
+		$total = round(floatval($vars['postDiscountTotal']), 2);
 		#Read Credit Card Informations
 		$creditCard = $orderClass::creditCardDecrypt((string)$user['_id']);
 		#Organize Datas
 		$vars = $vars + compact(
-			'user', 'cart', 'total', 'subTotal', 'creditCard',
-			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'shipping_discount'
+			'user', 'cart', 'total', 'subTotal',
+			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'shipping_discount','creditCard'
 		);
 		if ((!$cartEmpty) && (!empty($this->request->data['process']))) {
 
@@ -479,7 +479,8 @@ class OrdersController extends BaseController {
 			'promocode_disable',
 			'missChristmasCount',
 			'notmissChristmasCount',
-			'serviceAvailable'
+			'serviceAvailable',
+			'cartItemEventEndDates'
 		);
 	}
 
@@ -645,7 +646,17 @@ class OrdersController extends BaseController {
 			Session::delete('cc_error');
 			Session::delete('billing');
 		}
-		return compact('address','addresses_ddwn','selected','cartEmpty','payment','shipping','shipDate','cartExpirationDate','missChristmasCount','notmissChristmasCount');
+		return compact('address',
+			'addresses_ddwn',
+			'selected',
+			'cartEmpty',
+			'payment',
+			'shipping',
+			'shipDate',
+			'cartExpirationDate',
+			'missChristmasCount',
+			'notmissChristmasCount'
+		);
 	}
 
 	/**

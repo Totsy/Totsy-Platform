@@ -110,7 +110,6 @@
 			Complete shipping details are available at <?php echo $this->html->link('shipping terms', array('Pages::shipping')); ?>.
 
 			<p><strong>Returns:</strong> Totsy accept returns on selected items only. You will get a merchandise credit and free shipping (AK &amp; HI: air shipping rates apply). Simply be sure that we receive the merchandise you wish to return within 30 days from the date you originally received it in its original condition with all the packaging intact. Please note: Final Sale items cannot be returned. Want to learn more? Read more in our <?php echo $this->html->link('returns section', array('Pages::returns')); ?>.</p>
-
 			</div>
 		</div>
 	<!--Disney -->
