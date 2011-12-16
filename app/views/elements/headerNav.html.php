@@ -1,8 +1,8 @@
 <div class="menu_top_left">
 		<?php if (!empty($userInfo)): ?>
-		Hello,
+		Hi
 		<?php if(array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])):?>
-		<?php echo "{$userInfo['firstname']} {$userInfo['lastname']}"; ?>
+		<?php echo "{$userInfo['firstname']}"; ?>
 		<?php else:?>
 		<?php if (is_array($userInfo) && array_key_exists('email', $userInfo)) { echo $userInfo['email']; } ?>
 		<?php endif; ?>

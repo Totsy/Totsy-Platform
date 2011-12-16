@@ -95,23 +95,26 @@
 			<?php echo $this->content(); ?>
 		</div>
 		<!-- /#contentMain -->
+
+
+		<div id="footer" class="container_16">
+			<?php echo $this->view()->render(array('element' => 'footerNav'), array('userInfo' => $userInfo)); ?>
+		</div>
+		<!-- end footer nav -->
+	
+		<div class="container_16 clear" style="margin-top:50px;">
+			<?php echo $this->view()->render(array('element' => 'footerIcons')); ?>
+		</div>
+		<!-- end footer icons -->
+	
+		<div id='toTop'>^ Top</div>
+		
 	</div><!-- /#totsy -->
-
-	<div id="footer" class="container_16">
-		<?php echo $this->view()->render(array('element' => 'footerNav'), array('userInfo' => $userInfo)); ?>
-	</div>
-	<!-- end footer nav -->
-
-	<div class="container_16 clear" style="margin-top:50px;">
-		<?php echo $this->view()->render(array('element' => 'footerIcons')); ?>
-	</div>
-	<!-- end footer icons -->
-
-	<div id='toTop'>^ Top</div>
 
 	<!--affiliate pixels-->
 	<?php echo $pixel; ?>
 
+<!-- @TODO - @DG: all these scripts should be externalized -->
 <script type="text/javascript">
 	$.base = '<?php echo rtrim(Router::match("/", $this->_request)); ?>';
 	  var _gaq = _gaq || [];
@@ -125,36 +128,34 @@
 	  })();
 </script>
 
-	<script language="javascript">
+<script language="javascript">
 	document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s://www':'://www')+ '.upsellit.com/upsellitJS4.jsp?qs=237268202226312324343293280329277309292309329331334326345325&siteID=6605"><\/sc'+'ript>')
-	</script>
-	<script type="text/javascript">
-		// end uniform inputs
-		$(document).ready(function() {
-			$("input:file, select").uniform();
-			$("#tabs").tabs();
-		});
-
-			$(function () {
-				$(window).scroll(function () {
-					if ($(this).scrollTop() != 0) {
-						$('#toTop').fadeIn();
-					} else {
-						$('#toTop').fadeOut();
-					}
-				});
-				$('#toTop').click(function () {
-					$('body,html').animate({
-						scrollTop: 0
-					},
-					800);
-				});
-			});
-		// end back to top
-
-	// end tabs
 </script>
 
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("input:file, select").uniform();
+		$("#tabs").tabs();
+		
+		// back to top
+		$(function () {
+			$(window).scroll(function () {
+				if ($(this).scrollTop() != 0) {
+					$('#toTop').fadeIn();
+				} else {
+					$('#toTop').fadeOut();
+				}
+			});
+			$('#toTop').click(function () {
+				$('body,html').animate({
+					scrollTop: 0
+				},
+				800);
+			});
+		});
+		
+	});
+</script>
 
 <!-- Sailthru Horizon -->
 <script type="text/javascript">
