@@ -5,11 +5,13 @@ namespace app\models;
 use MongoId;
 use MongoDate;
 use lithium\storage\Session;
-use li3_payments\exceptions\TransactionException;
 use app\extensions\Mailer;
 use app\models\User;
 use app\models\Base;
 use app\models\FeatureToggles;
+use li3_payments\payments\TransactionResponse;
+use li3_payments\extensions\adapter\payment\CyberSource;
+use li3_payments\extensions\adapter\account\Customer;
 
 class Order extends Base {
 
@@ -50,21 +52,27 @@ class Order extends Base {
 	 */
 	public static function process($data, $cart, $vars, $avatax) {
 		$payments = static::$_classes['payments'];
-		$order = Order::create(array('_id' => new MongoId()));
-
-		#Create Payment
-		$card = $payments::create('default', 'creditCard', $vars['creditCard'] + array(
-			'billing' => $payments::create('default', 'address', array(
-				'firstName' => $vars['billingAddr']['firstname'],
-				'lastName'  => $vars['billingAddr']['lastname'],
-				'address'   => trim($vars['billingAddr']['address'] . ' ' . $vars['billingAddr']['address2']),
-				'city'      => $vars['billingAddr']['city'],
-				'state'     => $vars['billingAddr']['state'],
-				'zip'       => $vars['billingAddr']['zip'],
-				'country'   => $vars['billingAddr']['country']
-			))
-		));
-
+		$usersCollection = User::Collection();
+		$userInfos = $usersCollection->findOne(array('_id' => new MongoId($vars['user']['_id'])));
+		$order = static::create(array('_id' => new MongoId()));
+		#Read Credit Card Informations
+		$creditCard = $vars['creditCard'];
+		#Create Address Array
+		$address = array(
+				'firstName' =>  $vars['billingAddr']['firstname'],
+				'lastName' => $vars['billingAddr']['lastname'],
+				'address' => trim($vars['billingAddr']['address'] . ' ' . $vars['billingAddr']['address2']),
+				'city' => $vars['billingAddr']['city'],
+				'state' => $vars['billingAddr']['state'],
+				'zip' => $vars['billingAddr']['zip'],
+				'country' => $vars['billingAddr']['country'] ?: 'US',
+				'email' =>  $vars['user']['email'] 
+		);
+		#Create Payment Object that contains Payment Informations
+		$paymentInfos = $payments::create('default', 'creditCard', $creditCard + array(
+			'billing' => $payments::create('default', 'address', $address)
+			)
+		);
 		if ($cart) {
 			$inc = 0;
 			foreach ($cart as $item) {
@@ -73,24 +81,32 @@ class Order extends Base {
 				$items[] = $item;
 				++$inc;
 			}
-			try {
-				#Process Payment
-				if ($vars['total'] > 0) {
-					$authKey = $payments::authorize('default', $vars['total'], $card);
-				} else {
-					$authKey = Base::randomString(8,'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz');
-				}
-				if($authKey->errors) {
-					Session::write('cc_error',implode('; ', $authKey->errors));
-					return false;
-				}
-				return static::recordOrder($vars, $cart, $card, $order, $avatax, $authKey, $items);
-			} catch (TransactionException $e) {
-				Session::write('cc_error',$e->getMessage());
+			#Switch Authorized Amount Transaction depending of CC Type
+			if($creditCard['type'] == 'visa') {
+				$authTotalAmount = 0;
+			} else {
+				$authTotalAmount = 1;
 			}
-			return static::recordOrder($vars, $cart, $card, $order, $avatax, $auth->key, $items);
+			$profileID = User::hasCyberSourceProfile($userInfos, $creditCard['number']);
+			#If User has a CyberSource Profile, Use Token
+			if(empty($profileID)) {
+				$auth = $payments::authorize('default', $authTotalAmount, $paymentInfos);
+			} else {
+				$cybersource = new CyberSource($payments::config('default'));
+				$profile = $cybersource->profile($profileID);
+				if($profile instanceof Customer) {
+					$auth = $payments::authorize('default', $authTotalAmount, $profile);
+				} else {
+					$auth = $payments::authorize('default', $authTotalAmount, $paymentInfos);
+				}
+			}
+			if (!$auth->success()) {
+				Session::write('cc_error', implode('; ', $auth->errors));
+				return false;
+			}
+			return static::recordOrder($vars, $cart, $order, $avatax, $auth, $items, $authTotalAmount, $creditCard, $address);
 		} else {
-			 $order->errors(
+			$order->errors(
 				$order->errors() + array($key => "All the items in your cart have expired. Please see our latest sales.")
 			);
 			$order->set($data);
@@ -102,145 +118,167 @@ class Order extends Base {
 	 * Record in DB all informations linked with the order
 	 * @return redirect
 	 */
-	public static function recordOrder($vars, $cart, $card, $order, $avatax, $authKey, $items) {
-			$tax = static::$_classes['tax'];
-
-			$user = Session::read('userLogin');
-			$service = Session::read('services', array('name' => 'default'));
-			$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
-			#Save Credits Used
-			if ($vars['cartCredit']->credit_amount) {
-				User::applyCredit($user['_id'], $vars['cartCredit']->credit_amount);
-
-				Credit::add(
-					$vars['cartCredit'],
-					$user['_id'],
-					$vars['cartCredit']->credit_amount,
-					"Used Credit",
-					$order->order_id
-				);
-				Session::delete('credit');
-				$order->credit_used = abs($vars['cartCredit']->credit_amount);
-			}
-			#Initialize Discount
-			$vars['shippingCostDiscount'] = 0;
-			$vars['overShippingCostDiscount'] = 0;
-			#Save Promocode Used
-			if ($vars['cartPromo']->saved_amount) {
-				Promocode::add($vars['cartPromo']->code_id, $vars['cartPromo']->saved_amount, $vars['total']);
-				$vars['cartPromo']->order_id = (string) $order->_id;
-				$vars['cartPromo']->code_id = $vars['cartPromo']->code_id;
-				$vars['cartPromo']->date_created = new MongoDate();
-				$vars['cartPromo']->save();
-				#If FreeShipping put Handling/OverSizeHandling to Zero
-				if($vars['cartPromo']->type == 'free_shipping') {
-					$vars['shippingCostDiscount'] = $vars['shippingCost'];
-					$vars['overShippingCostDiscount'] = $vars['overShippingCost'];
-				}
-				#Update Order Information with PromoCode
-				$order->promo_code = $vars['cartPromo']->code;
-				$order->promo_type = $vars['cartPromo']->type;
-				$order->promo_discount = abs($vars['cartPromo']->saved_amount);
-			}
-			#Save Services Used (10$Off / Free Shipping)
-			if ($service) {
-				$services = array();
-				if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
-					$services = array_merge($services, array("freeshipping"));
-					$vars['shippingCostDiscount'] = $vars['shippingCost'];
-					$vars['overShippingCostDiscount'] = $vars['overShippingCost'];
-					$order->discount = $vars['shippingCost'] + $vars['overShippingCost'];
-				}
-				if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible' && ($vars['subTotal'] >= 50.00)) {
-					$order->discount = 10.00;
-					$services = array_merge($services, array("10off50"));
-				}
-				if(!empty($services)) {
-					$order->service = $services;
-				}
-			}
-			#Save Tax Infos
-			if($avatax === true){
-				$tax::postTax(compact(
-					'order', 'cartByEvent',
-					'billingAddr',
-					'shippingAddr', 'shippingCost', 'overShippingCost'
-				));
-			}
-			#Shipping Method - By Default UPS
-			$shippingMethod = 'ups';
-			#Calculate savings
-			$userSavings = Session::read('userSavings');
-			$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
-			#Get Credits Card Informations Encrypted and Store It
-			$storing_cc_encrypted = FeatureToggles::getValue('storing_credit_card_encrypted');
-			if(!empty($storing_cc_encrypted)) {
-				$cc_encrypt = Session::read('cc_infos');
-				$cc_encrypt['vi'] = Session::read('vi');
-				unset($cc_encrypt['valid']);
-				$order->cc_payment = $cc_encrypt;
-			}
-
-			$cart = Cart::active();
-			#Save Order Infos
-
-			$shipDate = Cart::shipDate($cart);
-			if($shipDate=="On or before 12/23"){
-				$shipDateInsert = strtotime("2011-12-23".' +1 day');
-			}
-			elseif($shipDate=="See delivery alert below"){
-				$shipDateInsert = Cart::shipDate($cart, true);
-			}
-			else{
-				$shipDateInsert = $shipDate;
-			}
-
-
-			$order->save(array(
-					'total' => $vars['total'],
-					'subTotal' => $vars['subTotal'],
-					'handling' => $vars['shippingCost'],
-					'overSizeHandling' => $vars['overShippingCost'],
-					'handlingDiscount' => $vars['shippingCostDiscount'],
-					'overSizeHandlingDiscount' => $vars['overShippingCostDiscount'],
-					'user_id' => (string) $user['_id'],
-					'tax' => (float) $avatax['tax'],
-					'card_type' => $card->type,
-					'card_number' => substr($card->number, -4),
-					'date_created' => static::dates('now'),
-					'authKey' => $authKey->key(),
-					'billing' => $vars['billingAddr'],
-					'shipping' => $vars['shippingAddr'],
-					'shippingMethod' => $shippingMethod,
-					'items' => $items,
-					'avatax' => $avatax,
-					'ship_date' => new MongoDate($shipDateInsert),
-					'savings' => $savings
-			));
-			Cart::remove(array('session' => Session::key('default')));
-			#Update quantity of items
-			foreach ($cart as $item) {
-				Item::sold($item->item_id, $item->size, $item->quantity);
-			}
-			#Update amount of user's orders
-			$user = User::getUser();
-			++$user->purchase_count;
-			$user->save(null, array('validate' => false));
-			#Send Order Confirmation Email
-//				'shipDate' => date('M d, Y', Cart::shipDate($order))
-
-			$data = array(
-				'order' => $order->data(),
-				'shipDate' => Cart::shipDate($order)
+	public static function recordOrder($vars, $cart, $order, $avatax, TransactionResponse $auth, $items, $authTotalAmount, $creditCard, $address) {
+		$tax = static::$_classes['tax'];
+		$payments = static::$_classes['payments'];
+		$usersCollection = User::Collection();
+		$user = Session::read('userLogin');
+		$service = Session::read('services', array('name' => 'default'));
+		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
+		#Save Credits Used
+		if ($vars['cartCredit']->credit_amount) {
+			User::applyCredit($user['_id'], $vars['cartCredit']->credit_amount);
+			Credit::add(
+				$vars['cartCredit'],
+				$user['_id'],
+				$vars['cartCredit']->credit_amount,
+				"Used Credit",
+				$order->order_id
 			);
-			#In Case Of First Order, Send an Email About 10$ Off Discount
-			if ($service && array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
-				Mailer::send('Welcome_10_Off', $user->email, $data);
+			Session::delete('credit');
+			$order->credit_used = abs($vars['cartCredit']->credit_amount);
+		}
+		#Initialize Discount
+		$vars['shippingCostDiscount'] = 0;
+		$vars['overShippingCostDiscount'] = 0;
+		#Save Promocode Used
+		if ($vars['cartPromo']->saved_amount) {
+			Promocode::add($vars['cartPromo']->code_id, $vars['cartPromo']->saved_amount, $vars['total']);
+			$vars['cartPromo']->order_id = (string) $order->_id;
+			$vars['cartPromo']->code_id = $vars['cartPromo']->code_id;
+			$vars['cartPromo']->date_created = new MongoDate();
+			$vars['cartPromo']->save();
+			#If FreeShipping put Handling/OverSizeHandling to Zero
+			if($vars['cartPromo']->type == 'free_shipping') {
+				$vars['shippingCostDiscount'] = $vars['shippingCost'];
+				$vars['overShippingCostDiscount'] = $vars['overShippingCost'];			}
+			#Update Order Information with PromoCode
+			$order->promo_code = $vars['cartPromo']->code;
+			$order->promo_type = $vars['cartPromo']->type;
+			$order->promo_discount = abs($vars['cartPromo']->saved_amount);
+		}
+		#Save Services Used (10$Off / Free Shipping)
+		if ($service) {
+			$services = array();
+			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
+				$services = array_merge($services, array("freeshipping"));
+				$vars['shippingCostDiscount'] = $vars['shippingCost'];
+				$vars['overShippingCostDiscount'] = $vars['overShippingCost'];
+				$order->discount = $vars['shippingCost'] + $vars['overShippingCost'];
 			}
-			Mailer::send('Order_Confirmation', $user->email, $data);
-			#Clear Savings Information
-			User::cleanSession();
-			return $order;
+			if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible' && ($vars['subTotal'] >= 50.00)) {
+				$order->discount = 10.00;
+				$services = array_merge($services, array("10off50"));
+			}
+			if(!empty($services)) {
+				$order->service = $services;
+			}
+		}
+		#Save Tax Infos
+		if($avatax === true){
+			$tax::postTax(compact(
+				'order', 'cartByEvent',
+				'billingAddr',
+				'shippingAddr', 'shippingCost', 'overShippingCost'
+			));
+		}
+		#Shipping Method - By Default UPS
+		$shippingMethod = 'ups';
+		#Calculate savings
+		$userSavings = Session::read('userSavings');
+		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
+		#Get Credits Card Informations Encrypted and Store It
+		$storing_cc_encrypted = FeatureToggles::getValue('storing_credit_card_encrypted');
+		if(!empty($storing_cc_encrypted)) {
+			$cc_encrypt = Session::read('cc_infos');
+			$cc_encrypt['vi'] = Session::read('vi');
+			unset($cc_encrypt['valid']);
+			$order->cc_payment = $cc_encrypt;
+		}
+		#Check in which case to store profile with token in Cybersource 
+		$userInfos = $usersCollection->findOne(array('_id' => new MongoId($user['_id'])));
+		$profileID = User::hasCyberSourceProfile($userInfos, $creditCard['number']);
+		if(empty($profileID)) {
+			#Create A User Profile with CC Infos Through Auth.Net
+			$customer = $payments::create('default', 'customer', array(
+				'firstName' => $userInfos['firstname'],
+				'lastName' => $userInfos['lastname'],
+				'email' => $userInfos['email'],
+				'billing' => $payments::create('default', 'address', $address),
+				'payment' => $payments::create('default', 'creditCard', $creditCard)
+			));
+			$result = $customer->save();
+			if($result->success) {
+				$profileID = $result->response->paySubscriptionCreateReply->subscriptionID;
+				$update = $usersCollection->update(
+					array('_id' => new MongoId($user['_id'])),
+					array('$push' => array('cyberSourceProfiles' => $profileID)), array( 'upsert' => true)
+				);
+			}
+		}
+		if(!empty($profileID)) {
+			$order->cyberSourceProfileId = $profileID;
+		}
+		$cart = Cart::active();
+		#Save Order Infos
+		$shipDate = Cart::shipDate($cart);
+		if($shipDate=="On or before 12/23"){
+			$shipDateInsert = strtotime("2011-12-23".' +1 day');
+		}
+		elseif($shipDate=="See delivery alert below"){
+			$shipDateInsert = Cart::shipDate($cart, true);
+		}
+		else{
+			$shipDateInsert = $shipDate;
+		}
+		$order->save(array(
+				'total' => $vars['total'],
+				'subTotal' => $vars['subTotal'],
+				'handling' => $vars['shippingCost'],
+				'overSizeHandling' => $vars['overShippingCost'],
+				'handlingDiscount' => $vars['shippingCostDiscount'],
+				'overSizeHandlingDiscount' => $vars['overShippingCostDiscount'],
+				'user_id' => (string) $user['_id'],
+				'tax' => (float) $avatax['tax'],
+				'card_type' => $creditCard['type'],
+				'card_number' => substr($creditCard['number'], -4),
+				'date_created' => static::dates('now'),
+				/* The key is stored as `authKey` for BC and slow migration.
+				   `auth` will contain key info, too. */
+				'authKey' => $auth->key,
+				'auth' => $auth->export(),
+				'billing' => $vars['billingAddr'],
+				'shipping' => $vars['shippingAddr'],
+				'shippingMethod' => $shippingMethod,
+				'items' => $items,
+				'avatax' => $avatax,
+				'ship_date' => new MongoDate($shipDateInsert),
+				'savings' => $savings,
+				'processor' => $auth->adapter,
+				'authTotal' => $authTotalAmount
+		));
+		Cart::remove(array('session' => Session::key('default')));
+		#Update quantity of items
+		foreach ($cart as $item) {
+			Item::sold($item->item_id, $item->size, $item->quantity);
+		}
+		#Update amount of user's orders
+		$user = User::getUser();
+		++$user->purchase_count;
+		$user->save(null, array('validate' => false));
+		#Send Order Confirmation Email
+		$data = array(
+			'order' => $order->data(),
+			'shipDate' => Cart::shipDate($order)
+		);
+		#In Case Of First Order, Send an Email About 10$ Off Discount
+		if ($service && array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
+			Mailer::send('Welcome_10_Off', $user->email, $data);
+		}
+		Mailer::send('Order_Confirmation', $user->email, $data);
+		#Clear Savings Information
+		User::cleanSession();
+		return $order;
 	}
 
 	/**
