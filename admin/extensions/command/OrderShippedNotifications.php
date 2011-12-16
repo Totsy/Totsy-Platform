@@ -93,7 +93,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		$conditions = array(
 			'ShipDate' => array(
 				'$gte' => new MongoDate(mktime(0, 0, 0, date("m"), date("d")-2, date("Y"))),
-				'$lt' => new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y")))
+				'$lt' => new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y"))) 
 			),
 			'OrderId' => array('$ne' => null),
 			'emailNotificationSent' => array('$exists' => false));

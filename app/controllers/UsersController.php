@@ -158,7 +158,6 @@ class UsersController extends BaseController {
 		}
 		elseif ($this->request->data && !$user->validates() ) {
 			$message = '<div class="error_flash">Error in registering your account</div>';
-
 		}
 		return compact('message', 'user');
 	}
@@ -240,7 +239,6 @@ class UsersController extends BaseController {
 			$this->request->data['email'] = trim($this->request->data['email']);
 			//Grab User Record
 			$user = User::lookup($email);
-
 			//redirect for people coming from emails
 			if ( Session::read("eventFromEmailClick", array("name"=>"default"))) {
 				//$redirect = "/sale/schoolbags-for-kids";
@@ -248,7 +246,6 @@ class UsersController extends BaseController {
 			} else {
 				$redirect = '/sales';
 			}
-
 			if ($user->deactivated) {
 				$message = '<div class="error_flash">Your account has been deactivated.  Please contact Customer Service at 888-247-9444 to reactivate your account</div>';
 			} else if (strlen($password) > 0) {
@@ -270,7 +267,6 @@ class UsersController extends BaseController {
 						User::log($ipaddress);
 						$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
             			//$userInfo = Session::read('userLogin');
-
             			$cookie['user_id'] = $user['_id'];
             			if(array_key_exists('redirect', $cookie) && $cookie['redirect'] ) {
 							$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$_SERVER['HTTP_HOST']));
@@ -309,7 +305,7 @@ class UsersController extends BaseController {
 
 		//new login layout to account for fullscreen image JL
 		$this->_render['layout'] = 'login';
-
+		
 		return compact('message', 'fbsession', 'fbconfig');
 	}
 
@@ -709,6 +705,7 @@ class UsersController extends BaseController {
 		}
 		return static::$_instances[$class];
 	}
+	
 }
 
 ?>
