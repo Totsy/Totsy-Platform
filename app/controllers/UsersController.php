@@ -229,7 +229,6 @@ class UsersController extends BaseController {
 		//redirect to the right email if the user is coming from an email
 		//the session writes this variable on the register() method
 		//it writes it THERE because that is the method currently serving our homepage
-
 		$this->autoLogin();
 		if ($this->request->data) {
 
@@ -272,7 +271,7 @@ class UsersController extends BaseController {
 							$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$_SERVER['HTTP_HOST']));
 							unset($cookie['redirect']);
 						}
-						
+
 						$landing = null;
 						if (Session::check('landing')){
 							$landing = Session::read('landing');
@@ -282,13 +281,13 @@ class UsersController extends BaseController {
 						} else {
 							$landing  = $redirect;
 						}
-						
+
             			Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 						User::rememberMeWrite($this->request->data['remember_me']);
 						/**Remove Temporary Session Datas**/
 						User::cleanSession();
 						/***/
-						
+
 						return $this->redirect($landing);
 					} else {
 						$message = '<div class="error_flash">Login Failed - Please Try Again</div>';
@@ -305,7 +304,7 @@ class UsersController extends BaseController {
 
 		//new login layout to account for fullscreen image JL
 		$this->_render['layout'] = 'login';
-		
+
 		return compact('message', 'fbsession', 'fbconfig');
 	}
 
@@ -334,13 +333,12 @@ class UsersController extends BaseController {
 
 		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
-				'conditions' => array('autologinHash' => $cookie['autoLoginHash']),
-				'fields' => array('_id' => 1)));
+				'conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
 			if($user) {
 				if ($user->deactivate) {
 					return;
 				} else if($cookie['user_id'] == $user->_id){
-					$sessionWrite = $this->writeSession($user->data());
+					Session::write('userLogin', $user->data(), array('name'=>'default'));
 					User::log($ipaddress);
 					if(array_key_exists('redirect', $cookie) && $cookie['redirect'] ) {
 						$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$_SERVER['HTTP_HOST']));
@@ -661,7 +659,7 @@ class UsersController extends BaseController {
 	 * @see Affiliates::register()
 	 * @see FacebookProxy::api()
 	 */
-	public static function facebookLogin($affiliate = null, $cookie = null, $ipaddress = null) {		
+	public static function facebookLogin($affiliate = null, $cookie = null, $ipaddress = null) {
 		$self = static::_object();
 
 		//If the users already exists in the database
@@ -705,7 +703,7 @@ class UsersController extends BaseController {
 		}
 		return static::$_instances[$class];
 	}
-	
+
 }
 
 ?>
