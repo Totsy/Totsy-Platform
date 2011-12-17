@@ -331,7 +331,7 @@ class UsersController extends BaseController {
 			}
 		}
 
-		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
+		if(preg_match( '@[(/|login|register)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
 				'conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
 			if($user) {
@@ -345,7 +345,7 @@ class UsersController extends BaseController {
 						unset($cookie['redirect']);
 					}
 					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
-					if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) {
+					if (preg_match( '@[^(/|login|register)]@', $this->request->url ) && $this->request->url) {
 						return $this->redirect($this->request->url);
 					} else {
 						return $this->redirect($redirect);
