@@ -28,17 +28,17 @@ Environment::set('production', array(
 	'avatax' => $base + $prod
 ));
 Environment::set('development', array(
-	'avatax' => $base + $prod
+	'avatax' => $base + $dev
 ));
 Environment::set('test', array(
-	'avatax' => $base + $prod
+	'avatax' => $base + $dev
 ));
 Environment::set('local', array(
-	'avatax' => $base + $prod
+	'avatax' => $base + $dev
 ));
 
 // must have Environment
 require_once LITHIUM_APP_PATH . '/libraries/AvaTax4PHP/AvaTaxWrap.php';
-AvaTaxWrap::__init('development', Environment::get(Environment::get()));
+AvaTaxWrap::__init('development', Environment::get('development'));
 
 ?>

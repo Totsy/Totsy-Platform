@@ -10,11 +10,6 @@ use lithium\core\Environment;
 
 class AvaTaxTest extends \lithium\test\Unit {
 	
-	public function testF(){
-		var_dump(Environment::get());
-		exit(0);
-	} 
-	
 	public function testGetTaxQuote4TaxableOrder(){
 		$order = $this->getOrderDetails();
 		$tax = AvaTax::getTax($order);
