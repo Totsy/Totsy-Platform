@@ -138,15 +138,8 @@ var google_conversion_value = 0;
 //your fb login function
 function fblogin() {
 FB.login(function(response) {
-<<<<<<< Updated upstream
-	if(response.authResponse){
-		window.location.reload();
-	}
-}, {scope:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
-=======
 	if (response.authResponse) {
 		window.location.reload();    
   }}, {scope:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
->>>>>>> Stashed changes
 }
 </script>
