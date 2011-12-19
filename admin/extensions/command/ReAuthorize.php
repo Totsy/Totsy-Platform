@@ -206,6 +206,22 @@ class ReAuthorize extends \lithium\console\Command {
 			if($order['card_type'] != 'amex' && !$this->reauthVisaMC) {
 				$reAuth = false;
 			}
+			if($order['card_type'] != 'amex' && $this->reauthVisaMC) {
+				if(!empty($order['void_records'])) {
+					$limitDate = mktime(0, 0, 0, date("m"), date("d") - 1, date("Y"));
+					$lastDateVoid = $order['date_created'];
+					foreach($order['void_records'] as $record) {
+						if($lastDateVoid->sec < $record['date_saved']->sec) {
+							$lastDateVoid = $record['date_saved'];
+						}
+					}
+					if($lastDateVoid->sec <= $limitDate) {
+						$reAuth = false;
+					}
+				} else {
+					$reAuth = false;
+				}
+			}
 			if(isset($order['authTotal']) && $order['authTotal'] != $order['total']) {
 				$reAuth = false;
 			}
