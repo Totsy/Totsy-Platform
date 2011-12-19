@@ -51,6 +51,8 @@ require __DIR__ . '/connections.php';
 require __DIR__ . '/bootstrap/error.php';
 
 /**
+ * This file contains configurations for connecting to external caching resources, as well as
+ * default caching rules for various systems within your application
  * Auth and action protection filters.
  */
 require __DIR__ . '/bootstrap/auth.php';
