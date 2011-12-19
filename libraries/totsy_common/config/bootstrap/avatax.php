@@ -13,9 +13,16 @@ $base = array(
 );
 
 $dev = array(
-	'url' => 'https://development.avalara.net',
-	'account' => '1100058465',
-	'license' => 'C4930DB03091446E'
+	//'url' => 'https://development.avalara.net',
+	//'account' => '1100058465',
+	//'license' => 'C4930DB03091446E'
+	
+	/** trying to use prod account instead **/
+
+	'url' => 'https://avatax.avalara.net',
+	'account' => '1100064978',
+	'license' => 'E96C0C6042CDD179',
+	'companyCode' => 'totsy2'
 );
 
 $prod = array(
@@ -28,13 +35,13 @@ Environment::set('production', array(
 	'avatax' => $base + $prod
 ));
 Environment::set('development', array(
-	'avatax' => $base + $dev
+	'avatax' => $dev + $base
 ));
 Environment::set('test', array(
-	'avatax' => $base + $dev
+	'avatax' => $dev + $base
 ));
 Environment::set('local', array(
-	'avatax' => $base + $dev
+	'avatax' => $dev + $base
 ));
 
 // must have Environment
