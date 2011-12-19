@@ -167,7 +167,7 @@ class OrderExport extends Base {
 	 * @todo Make sure a queue cannot contain two empty arrays.
 	 */
 	public function run() {
-	     MongoCursor::$timeout = -1;
+		MongoCursor::$timeout = -1;
 		Environment::set($this->env);
 		$this->tmp = LITHIUM_APP_PATH . $this->tmp;
 		$this->processed = LITHIUM_APP_PATH . $this->processed;
@@ -210,7 +210,7 @@ class OrderExport extends Base {
 						$queue->save();
 						$this->summary['from_email'] = 'no-reply@totsy.com';
 						$this->summary['to_email'] = 'logistics@totsy.com';
-						if ($this->test != 'true') {
+						if ($this->test != 'true' && Environment::is('production')) {
                            Mailer::send('Order_Export', $this->summary['to_email'], $this->summary);
                         }
 					}
@@ -252,20 +252,21 @@ class OrderExport extends Base {
 		$orders = $orderCollection->find(array(
 			'items.event_id' => array('$in' => $this->orderEvents),
 			'cancel' => array('$ne' => true)
-		),array(
-		    '_id' => true,
-		    'billing' => true,
-		    'shipping' => true,
-		    'date_created' => true,
-		    'ship_date' => true,
-		    'items' => true,
-		    'order_id' => true,
-		    'shippingMethod' => true,
-		    'user_id' => true
 		));
-		$order_total = $orders->count();
+		$this->log('Calling Reauthorize Command');
+		#Reauthorize Orders with Total Full Amount
+		$ReAuthorize = new ReAuthorize();
+		#Setting Production Environment
+		if (Environment::is('production')) {
+			$ReAuthorize->env = 'production';
+		}
+		$ReAuthorize->fullAmount = true;
+		$ReAuthorize->orders = $orders;
+		$this->log('Starting Full Reauthorize');
+		$orders = $ReAuthorize->run();
 		//total same until here 345pm
 		if ($orders) {
+			$order_total = $orders->count();
 			$inc = 1;
 			/**
 			* Checks if this queue already started this process once before
@@ -312,7 +313,6 @@ class OrderExport extends Base {
                 $handle = $this->tmp.$filename;
 			    $fp = fopen($handle, 'w');
 			}
-
 			$orderArray = array();
 			$ecounter = 0;
 
@@ -322,7 +322,6 @@ class OrderExport extends Base {
 			$unprocessed_orders_items = 0;
 			$processed_orders = 0;
 			$processed_orders_items = 0;
-
 			foreach ($orders as $order) {
 				$conditions = array('Customer PO #' => array('$in' => array((string) $order['_id'], $order['_id'])));
 				$processCheck = ProcessedOrder::count(compact('conditions'));
@@ -448,7 +447,6 @@ class OrderExport extends Base {
 			    shell_exec("mv ". $handle . " " . $new_location);
 			}
 			$totalOrders = count($orderArray);
-
 			//new totals for breakdown in email
 			$this->summary['order']['unprocessed_orders'] = $unprocessed_orders;
 			$this->summary['order']['processed_orders'] = $processed_orders;

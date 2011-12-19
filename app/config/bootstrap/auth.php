@@ -6,6 +6,7 @@
 use lithium\security\Auth;
 use lithium\action\Dispatcher;
 use lithium\action\Response;
+use lithium\storage\Session;
 
 Auth::config(array(
 	'userLogin' => array(
@@ -18,7 +19,8 @@ Auth::config(array(
 Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	$skip = array('login', 'logout', 'register',"register/facebook","reset");
 	$allowed = false;
-
+	$logged_in = false;
+	
 	#dynamic affiliate pages
 	 if(preg_match('#(^a/)[a-zA-Z_]+#', $params['request']->url)) {
 		 $allowed = true;
@@ -42,10 +44,44 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	 if(preg_match('#(api/)#', $params['request']->url)) {
 	 	$allowed = true;
 	 }
+
+	 #FEEDS!
+	 if(preg_match('#(feeds/keyade)#', $params['request']->url)) {
+	 	$allowed = true;
+	 }
 	 
 	$granted = in_array($params['request']->url, $skip);
 	$granted = $allowed || $granted;
 	$granted = $granted || Auth::check('userLogin', $params['request']);
+
+	// check if user already logged-in
+	if(Session::check('userLogin')) {
+		$logged_in = true;
+	}
+	
+	// in case whe have an evnt's landing page , will nedd to reditec user to proper page
+	if ( !$logged_in && preg_match('(/sale/)','/'.$params['request']->url)){
+		Session::write('landing',$params['request']->url);
+	}
+
+	//checks for sailhtur get var gotologin=true, saves event name and redirs to login
+	if ( !$logged_in && !empty($params['request']->query['gotologin']) && $params['request']->query['gotologin']=="true") {
+
+		$eventName = "";
+	
+		if (preg_match("(/sale)", $params['request']->url)) {
+			$URIArray = explode("/", $params['request']->url);
+			$eventName = $URIArray[2];
+		}
+	
+		if ($eventName) {
+			//write event name to the session
+			Session::write( "eventFromEmailClick", $eventName, array("name"=>"default"));
+		}
+	
+		return new Response(array('location' => 'Users::login'));
+	}
+
 
 	if (!$granted) {
 		/* Redirect all non-authenticated users to login page. */

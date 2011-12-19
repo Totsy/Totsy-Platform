@@ -351,7 +351,23 @@ class User extends Base {
 			Session::delete('service_available');
 		}
 	}
+	
+	/**
+	* Check if User has Already a CyberSource Profile link with his credit card
+	* If yes, return the cyberSourceProfileId
+	* If no, return null
+	**/
+	public static function hasCyberSourceProfile($userInfos, $creditCardNumber) {
+		$cyberSourceProfileId = null;
+		if(!empty($userInfos['cyberSourceProfiles'])) {
+			foreach($userInfos['cyberSourceProfiles'] as $profile) {
+				if(substr($profile, -4) == substr($creditCardNumber, -4)) {
+					$cyberSourceProfileId = $profile;
+				}
+			}
+		}
+		return $cyberSourceProfileId;
+	}
 }
-
 
 ?>

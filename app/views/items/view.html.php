@@ -87,7 +87,7 @@
 		<div id="listingCountdown" class="listingCountdown"></div>
 	</div>
 	<div id="detail-top-left"  style="width:405px;">
-		<h1><strong><?php echo $event->name?></strong> <?php echo $item->description." ".$item->color; ?></h1>
+		<h1><?php echo $item->description." ".$item->color; ?></h1>
 	</div>
 		<div class="clear"></div>
 
@@ -110,14 +110,6 @@
 			Complete shipping details are available at <?php echo $this->html->link('shipping terms', array('Pages::shipping')); ?>.
 
 			<p><strong>Returns:</strong> Totsy accept returns on selected items only. You will get a merchandise credit and free shipping (AK &amp; HI: air shipping rates apply). Simply be sure that we receive the merchandise you wish to return within 30 days from the date you originally received it in its original condition with all the packaging intact. Please note: Final Sale items cannot be returned. Want to learn more? Read more in our <?php echo $this->html->link('returns section', array('Pages::returns')); ?>.</p>
-
-			<?php
-			if($item->miss_christmas){
-				echo "<span style='color:#ff0000; font-weight:bold; font-size:30px;'>item will ship AFTER xmas</span>";
-			}
-
-			?>
-
 			</div>
 		</div>
 	<!--Disney -->
@@ -210,7 +202,7 @@
 			<?php endif ?>
 		</div>
 	</div>
-	<div style="padding:10px 0px; text-align:center !important;">
+	<div style="padding: 10px 0px; text-align: center ! important; position: absolute; top: 253px; right: 153px;">
 	    <?php echo $spinback_fb; ?>
 	</div>
 </div>
