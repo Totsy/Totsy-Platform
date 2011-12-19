@@ -158,7 +158,6 @@ class UsersController extends BaseController {
 		}
 		elseif ($this->request->data && !$user->validates() ) {
 			$message = '<div class="error_flash">Error in registering your account</div>';
-
 		}
 		return compact('message', 'user');
 	}
@@ -230,7 +229,6 @@ class UsersController extends BaseController {
 		//redirect to the right email if the user is coming from an email
 		//the session writes this variable on the register() method
 		//it writes it THERE because that is the method currently serving our homepage
-
 		$this->autoLogin();
 		if ($this->request->data) {
 
@@ -240,7 +238,6 @@ class UsersController extends BaseController {
 			$this->request->data['email'] = trim($this->request->data['email']);
 			//Grab User Record
 			$user = User::lookup($email);
-
 			//redirect for people coming from emails
 			if ( Session::read("eventFromEmailClick", array("name"=>"default"))) {
 				//$redirect = "/sale/schoolbags-for-kids";
@@ -248,7 +245,6 @@ class UsersController extends BaseController {
 			} else {
 				$redirect = '/sales';
 			}
-
 			if ($user->deactivated) {
 				$message = '<div class="error_flash">Your account has been deactivated.  Please contact Customer Service at 888-247-9444 to reactivate your account</div>';
 			} else if (strlen($password) > 0) {
@@ -270,22 +266,29 @@ class UsersController extends BaseController {
 						User::log($ipaddress);
 						$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
             			//$userInfo = Session::read('userLogin');
-
             			$cookie['user_id'] = $user['_id'];
             			if(array_key_exists('redirect', $cookie) && $cookie['redirect'] ) {
 							$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$_SERVER['HTTP_HOST']));
 							unset($cookie['redirect']);
 						}
+
+						$landing = null;
+						if (Session::check('landing')){
+							$landing = Session::read('landing');
+							Session::delete('landing',array('name'=>'default'));
+						} else if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) {
+							$landing = $this->request->url;
+						} else {
+							$landing  = $redirect;
+						}
+
             			Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 						User::rememberMeWrite($this->request->data['remember_me']);
 						/**Remove Temporary Session Datas**/
 						User::cleanSession();
 						/***/
-						if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) {
-							return $this->redirect($this->request->url);
-						} else {
-							return $this->redirect($redirect);
-						}
+
+						return $this->redirect($landing);
 					} else {
 						$message = '<div class="error_flash">Login Failed - Please Try Again</div>';
 					}
@@ -328,22 +331,21 @@ class UsersController extends BaseController {
 			}
 		}
 
-		if(preg_match( '@[(/|login)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
+		if(preg_match( '@[(/|login|register)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
-				'conditions' => array('autologinHash' => $cookie['autoLoginHash']),
-				'fields' => array('_id' => 1)));
+				'conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
 			if($user) {
 				if ($user->deactivate) {
 					return;
 				} else if($cookie['user_id'] == $user->_id){
-					$sessionWrite = $this->writeSession($user->data());
+					Session::write('userLogin', $user->data(), array('name'=>'default'));
 					User::log($ipaddress);
 					if(array_key_exists('redirect', $cookie) && $cookie['redirect'] ) {
 						$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$_SERVER['HTTP_HOST']));
 						unset($cookie['redirect']);
 					}
 					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
-					if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) {
+					if (preg_match( '@[^(/|login|register)]@', $this->request->url ) && $this->request->url) {
 						return $this->redirect($this->request->url);
 					} else {
 						return $this->redirect($redirect);
@@ -657,7 +659,7 @@ class UsersController extends BaseController {
 	 * @see Affiliates::register()
 	 * @see FacebookProxy::api()
 	 */
-	public static function facebookLogin($affiliate = null, $cookie = null, $ipaddress = null) {		
+	public static function facebookLogin($affiliate = null, $cookie = null, $ipaddress = null) {
 		$self = static::_object();
 
 		//If the users already exists in the database
@@ -701,6 +703,7 @@ class UsersController extends BaseController {
 		}
 		return static::$_instances[$class];
 	}
+
 }
 
 ?>
