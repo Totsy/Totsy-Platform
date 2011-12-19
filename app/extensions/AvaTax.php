@@ -89,6 +89,7 @@ class AvaTax {
 						'reason' => $e->getMessage(),
 						'result' => 'Tax calculation was performed internally using default state tax.',
 						'trace' => '<br><div style="padding-left:15px;">'.
+										'SERVER: '.php_uname('n').'<br>'.
 										'DATE: '.date('Y-m-d H:i:s').'<br>'.
 										'INFO: '.print_r($data,true).'<br>'.
 										'TRACE: '.$e->getTraceAsString().
@@ -105,6 +106,7 @@ class AvaTax {
 						'reason' => $e->getMessage(),
 						'result' => 'Charged $0 tax for this order.',
 						'trace' => '<br><div style="padding-left:15px;">'.
+										'SERVER: '.php_uname('n').'<br>'.
 										'DATE: '.date('Y-m-d H:i:s').'<br>'.
 										'INFO: '.print_r($data,true).'<br>'.
 										'TRACE: '.$e->getTraceAsString().
@@ -164,6 +166,7 @@ class AvaTax {
 					'reason' => $e->getMessage(),
 					'result' => 'Charged $0 tax for this order.',
 					'trace' => '<br><div style="padding-left:15px;">'.
+									'SERVER: '.php_uname('n').'<br>'.
 									'DATE: '.date('Y-m-d H:i:s').'<br>'.
 									'INFO: '.print_r($data,true).'<br>'.
 									'TRACE: '.$e->getTraceAsString().
