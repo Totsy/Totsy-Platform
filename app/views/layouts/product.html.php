@@ -36,7 +36,7 @@
 				
 				<div id="header-lt"> 
 				
-					<?=$this->html->link(
+					<?php echo $this->html->link(
 						$this->html->image('logo.png', array('width'=>'155', 'height'=>'90')), '', array(
 							'id' => 'main-logo', 'escape'=> false
 						)
@@ -115,7 +115,7 @@
 			<!-- End Header --> 
 			
 			<div id="content"> 
-				<?=$this->content(); ?>
+				<?php echo $this->content(); ?>
 			</div> 
 			
 		</div> 

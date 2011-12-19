@@ -1,12 +1,12 @@
-<?=$this->html->script('jquery-ui-timepicker.min.js');?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->script('TableTools.min.js');?>
-<?=$this->html->script('ZeroClipboard.js');?>
-<?=$this->html->style('jquery_ui_blitzer.css')?>
-<?=$this->html->style('TableTools');?>
-<?=$this->html->style('timepicker'); ?>
-<?=$this->html->style('table');?>
-<?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
+<?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->script('TableTools.min.js');?>
+<?php echo $this->html->script('ZeroClipboard.js');?>
+<?php echo $this->html->style('jquery_ui_blitzer.css')?>
+<?php echo $this->html->style('TableTools');?>
+<?php echo $this->html->style('timepicker'); ?>
+<?php echo $this->html->style('table');?>
+<?php echo $this->html->script('jquery-ui-1.8.2.custom.min.js');?>
 
 
 <script type="text/javascript" charset="utf-8">
@@ -62,18 +62,18 @@
     <div class='block forms'>
 	<p>For a detailed breakdown of the promocodes on the right please enter the promocode below. Use a date range to narrow down results.</p>
         <fieldset>
-        <?=$this->form->create(); ?>
+        <?php echo $this->form->create(); ?>
              code:
-                <?=$this->form->text('search' , array('id'=>'start_end' , 'style' => 'width:280')); ?>
+                <?php echo $this->form->text('search' , array('id'=>'start_end' , 'style' => 'width:280')); ?>
             <nbsp>  OR
                  <nbsp> <nbsp>
                 start date range:
-                <?=$this->form->text('start_date', array('id'=>'start_date')); ?>
+                <?php echo $this->form->text('start_date', array('id'=>'start_date')); ?>
                 end date range:
-                <?=$this->form->text('end_date', array('id'=>'end_date' ) ); ?>
+                <?php echo $this->form->text('end_date', array('id'=>'end_date' ) ); ?>
 
-           <?=$this->form->submit('find'); ?><br><br>
-        <?=$this->form->end(); ?>
+           <?php echo $this->form->submit('find'); ?><br><br>
+        <?php echo $this->form->end(); ?>
 
         </fieldset>
     </div>
@@ -99,10 +99,10 @@
 	               <?php foreach($promocodes as $promocode): ?>
 						<?php if (!empty($promocode->code)): ?>
 							<tr>
-								<td> <?=$promocode->code; ?></td>
-								<td> <?=$promocode->times_used; ?></td>
-								<td> <?=$promocode->total_discounts; ?></td>
-								<td> $<?=number_format($promocode->total_revenue,2); ?></td>
+								<td> <?php echo $promocode->code; ?></td>
+								<td> <?php echo $promocode->times_used; ?></td>
+								<td> <?php echo $promocode->total_discounts; ?></td>
+								<td> $<?php echo number_format($promocode->total_revenue,2); ?></td>
 							</tr>
 						<?php endif ?>
 
@@ -134,10 +134,10 @@
 		               <?php foreach($promocodeDetail as $promocode): ?>
 							<?php if (!empty($promocode->code)): ?>
 								<tr>
-									<td> <?=$promocode->code; ?></td>
-									<td> <?=$promocode->times_used; ?></td>
-									<td> <?=$promocode->total_discounts; ?></td>
-									<td> $<?=number_format($promocode->total_revenue,2); ?></td>
+									<td> <?php echo $promocode->code; ?></td>
+									<td> <?php echo $promocode->times_used; ?></td>
+									<td> <?php echo $promocode->total_discounts; ?></td>
+									<td> $<?php echo number_format($promocode->total_revenue,2); ?></td>
 								</tr>
 							<?php endif ?>
 
@@ -165,19 +165,19 @@
 	            <?php foreach( $promotions as $promotion ): ?>
 	                <tr>
 	                    <td>
-	                        <?=$this->html->link($promotion->code, 'promocodes/view/'.$promotion->code ); ?>
+	                        <?php echo $this->html->link($promotion->code, 'promocodes/view/'.$promotion->code ); ?>
 	                     </td>
 	                     <td>
-	                        <?=$this->html->link($promotion->user_id, 'users/view/'.$promotion->user_id, array('target' => '_blank')); ?>
+	                        <?php echo $this->html->link($promotion->user_id, 'users/view/'.$promotion->user_id, array('target' => '_blank')); ?>
 	                     </td>
 	                     <td>
-	                        <?=$this->html->link($promotion->order_id, 'orders/view/'.$promotion->order_id, array('target' => '_blank') );?>
+	                        <?php echo $this->html->link($promotion->order_id, 'orders/view/'.$promotion->order_id, array('target' => '_blank') );?>
 	                     </td>
 	                     <td>
 	                        $<?php echo number_format($promotion->saved_amount, 2 ); ?>
 	                    </td>
 	                    <td>
-	                    <?=$promotion->date_created; ?>
+	                    <?php echo $promotion->date_created; ?>
 	                    </td>
 	                </tr>
 	            <?php endforeach; ?>

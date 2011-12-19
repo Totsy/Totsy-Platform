@@ -8,10 +8,10 @@ use app\tests\mocks\storage\session\adapter\MemoryMock;
 use MongoId;
 use lithium\storage\Session;
 use app\models\User;
-use app\models\Order;
 use app\models\Credit;
 use app\models\Promocode;
 use app\models\Item;
+use li3_payments\payments\TransactionResponse;
 
 class OrderTest extends \lithium\test\Unit {
 
@@ -20,6 +20,13 @@ class OrderTest extends \lithium\test\Unit {
 	protected $_backup = array();
 
 	protected $_delete = array();
+	
+	protected $creditCard = array(
+			 'number' => '4111111111111111',
+			 'month' => 11,
+			 'year' => 2023,
+			 'type' => 'visa'
+	);
 
 	public function setUp() {
 		$adapter = new MemoryMock();
@@ -76,7 +83,7 @@ class OrderTest extends \lithium\test\Unit {
 
 		$vars = array(
 			'user' => $this->user,
-			'creditCard' => $this->_card(true),
+			'creditCard' => $this->creditCard,
 			'billingAddr' => $address,
 			'shippingAddr' => $address,
 			'total' => 123.45,
@@ -126,11 +133,11 @@ class OrderTest extends \lithium\test\Unit {
 	}
 
 	public function testRecordOrderWithoutService() {
-		$authKey = '090909099909';
+		$auth = new TransactionResponse(array('key' => '090909099909'));
 		$address = $this->_address();
-
+		
 		$data = array(
-			'authKey' => $authKey,
+			'authKey' => $auth->key,
 			'handling' => 7.95,
 			'shipping' => array(
 				'description' => 'Home',
@@ -145,7 +152,7 @@ class OrderTest extends \lithium\test\Unit {
 		$this->assertTrue($result);
 
 		$vars = array(
-			'creditCard' => $this->_card(true),
+			'creditCard' => $this->creditCard,
 			'billingAddr' => $address,
 			'shippingAddr' => $address,
 			'total' => 123.45,
@@ -164,14 +171,15 @@ class OrderTest extends \lithium\test\Unit {
 		$result = OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(),
 			$order,
 			$avatax,
-			$authKey,
-			$items
+			$auth,
+			$items,
+			1,
+			$this->creditCard,
+			$address
 		);
 		$this->assertTrue($result);
-
 		$result = Session::read('cc_error');
 		$this->assertFalse($result);
 
@@ -187,11 +195,11 @@ class OrderTest extends \lithium\test\Unit {
 	}
 
 	public function testRecordOrderIncreasesUserPruchaseCount() {
-		$authKey = '090909099909';
+		$auth = new TransactionResponse(array('key' => '090909099909'));
 		$address = $this->_address();
 
 		$data = array(
-			'authKey' => $authKey,
+			'authKey' => $auth->key,
 			'handling' => 7.95,
 			'shipping' => array(
 				'description' => 'Home',
@@ -206,7 +214,7 @@ class OrderTest extends \lithium\test\Unit {
 		$this->assertTrue($result);
 
 		$vars = array(
-			'creditCard' => $this->_card(true),
+			'creditCard' => $this->creditCard,
 			'billingAddr' => $address,
 			'shippingAddr' => $address,
 			'total' => 123.45,
@@ -226,11 +234,13 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(),
 			$order,
 			$avatax,
-			$authKey,
-			$items
+			$auth,
+			$items,
+			1,
+			$this->creditCard,
+			$address
 		);
 
 		$expected = 1;
@@ -240,11 +250,13 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(),
 			$order,
 			$avatax,
-			$authKey,
-			$items
+			$auth,
+			$items,
+			1,
+			$this->creditCard,
+			$address
 		);
 
 		$expected = 2;
@@ -260,11 +272,11 @@ class OrderTest extends \lithium\test\Unit {
 		);
 		Session::write('services', $services);
 
-		$authKey = '090909099909';
+		$auth = new TransactionResponse(array('key' => '090909099909'));
 		$address = $this->_address();
 
 		$data = array(
-			'authKey' => $authKey,
+			'authKey' => $auth->key,
 			'handling' => 7.95,
 			'shipping' => array(
 				'description' => 'Home',
@@ -280,7 +292,7 @@ class OrderTest extends \lithium\test\Unit {
 		$this->assertTrue($result);
 
 		$vars = array(
-			'creditCard' => $this->_card(true),
+			'creditCard' => $this->creditCard,
 			'billingAddr' => $address,
 			'shippingAddr' => $address,
 			'total' => 123.45,
@@ -299,11 +311,13 @@ class OrderTest extends \lithium\test\Unit {
 		$result = OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(),
 			$order,
 			$avatax,
-			$authKey,
-			$items
+			$auth,
+			$items,
+			1,
+			$this->creditCard,
+			$address
 		);
 		$this->assertTrue($result);
 
@@ -323,11 +337,11 @@ class OrderTest extends \lithium\test\Unit {
 	}
 
 	public function testRecordOrderFreeshippingFromPromocode() {
-		$authKey = '090909099909';
+		$auth = new TransactionResponse(array('key' => '090909099909'));
 		$address = $this->_address();
 
 		$data = array(
-			'authKey' => $authKey,
+			'authKey' => $auth->key,
 			'handling' => 7.95,
 			'shipping' => array(
 				'description' => 'Home',
@@ -345,7 +359,7 @@ class OrderTest extends \lithium\test\Unit {
 		$promocode->type = 'free_shipping';
 
 		$vars = array(
-			'creditCard' => $this->_card(true),
+			'creditCard' => $this->creditCard,
 			'billingAddr' => $address,
 			'shippingAddr' => $address,
 			'total' => 123.45,
@@ -365,11 +379,13 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(),
 			$order,
 			$avatax,
-			$authKey,
-			$items
+			$auth,
+			$items,
+			1,
+			$this->creditCard,
+			$address
 		);
 
 		$expected = 0;
@@ -397,11 +413,11 @@ class OrderTest extends \lithium\test\Unit {
 		);
 		Session::write('services', $services);
 
-		$authKey = '090909099909';
+		$auth = new TransactionResponse(array('key' => '090909099909'));
 		$address = $this->_address();
 
 		$data = array(
-			'authKey' => $authKey,
+			'authKey' => $auth->key,
 			'handling' => 7.95,
 			'ship_date' => 1294272000,
 			'shipping' => array(
@@ -418,7 +434,7 @@ class OrderTest extends \lithium\test\Unit {
 		$this->assertTrue($result);
 
 		$vars = array(
-			'creditCard' => $this->_card(true),
+			'creditCard' => $this->creditCard,
 			'billingAddr' => $address,
 			'shippingAddr' => $address,
 			'total' => 123.45,
@@ -437,11 +453,13 @@ class OrderTest extends \lithium\test\Unit {
 		$result = OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(),
 			$order,
 			$avatax,
-			$authKey,
-			$items
+			$auth,
+			$items,
+			1,
+			$this->creditCard,
+			$address
 		);
 		$this->assertTrue($result);
 
@@ -453,7 +471,7 @@ class OrderTest extends \lithium\test\Unit {
 	}
 
 	public function testRecordOrderCartCreditAmountPositive() {
-		$authKey = '090909099909';
+		$auth = new TransactionResponse(array('key' => '090909099909'));
 		$address = $this->_address();
 
 		$this->user->save(
@@ -462,7 +480,7 @@ class OrderTest extends \lithium\test\Unit {
 		);
 
 		$data = array(
-			'authKey' => $authKey,
+			'authKey' => $auth->key,
 			'handling' => 7.95,
 			'shipping' => array(
 				'description' => 'Home',
@@ -481,7 +499,7 @@ class OrderTest extends \lithium\test\Unit {
 		$credit->credit_amount = 3.45;
 
 		$vars = array(
-			'creditCard' => $this->_card(true),
+			'creditCard' => $this->creditCard,
 			'billingAddr' => $address,
 			'shippingAddr' => $address,
 			'total' => 123.45,
@@ -511,11 +529,13 @@ class OrderTest extends \lithium\test\Unit {
 		OrderMock::recordOrder(
 			$vars,
 			$items,
-			$this->_card(),
 			$order,
 			$avatax,
-			$authKey,
-			$items
+			$auth,
+			$items,
+			1,
+			$this->creditCard,
+			$address
 		);
 
 		$expected = 3.45;
@@ -549,13 +569,13 @@ class OrderTest extends \lithium\test\Unit {
 			 'year' => 2023
 		);
 
-		$result = Order::creditCardEncrypt($creditCard, $this->user->_id, true);
+		$result = OrderMock::creditCardEncrypt($creditCard, $this->user->_id, true);
 		$this->assertTrue($result);
 
 		Session::write('cc_infos', $result);
 
 		$expected = $creditCard;
-		$result = Order::creditCardDecrypt($this->user->_id);
+		$result = OrderMock::creditCardDecrypt($this->user->_id);
 		$this->assertEqual($expected, $result);
 	}
 

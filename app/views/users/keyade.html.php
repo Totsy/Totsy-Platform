@@ -65,7 +65,7 @@
 <div id="imagepix"></div>
 <script type="text/javascript">
 $(document).ready(function () {
-	var customer_id = '<?=$user->_id;?>';
+	var customer_id = '<?php echo $user->_id;?>';
 	var cookieName = "K_18733";
 	var img = '<img src="https://k.keyade.com/kaev/1/?kaPcId=18733&kaEvId=17105&kaEvMcId=';
 	var params = '&kaEvCt1=1" width="2" height="2">';

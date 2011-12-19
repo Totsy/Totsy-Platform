@@ -1,9 +1,9 @@
-<?=$this->html->script('jquery-1.4.2.min.js');?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->script('TableTools.min.js');?>
-<?=$this->html->script('ZeroClipboard.js');?>
-<?=$this->html->style('table');?>
-<?=$this->html->style('TableTools');?>
+<?php echo $this->html->script('jquery-1.4.2.min.js');?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->script('TableTools.min.js');?>
+<?php echo $this->html->script('ZeroClipboard.js');?>
+<?php echo $this->html->style('table');?>
+<?php echo $this->html->style('TableTools');?>
 
 <div class="grid_16">
 	<h2 id="page-heading"> Affiliates</h2>
@@ -50,7 +50,7 @@
 					<td> <?php if(!empty($affiliate['active_pixel'])) echo $affiliate['active_pixel']; ?> </td>
 					<td> <?php if(!empty($affiliate['created_by'])) echo $affiliate['created_by']; ?> </td>
 					<td> <?php if(!empty($affiliate['date_created'])) echo $affiliate['date_created']; ?> </td>
-					<td> <?=$this->html->link('edit', 'affiliates/edit/'.$affiliate['_id']); ?> </td>
+					<td> <?php echo $this->html->link('edit', 'affiliates/edit/'.$affiliate['_id']); ?> </td>
 				</tr>
             <?php endforeach; ?>
         </tbody>

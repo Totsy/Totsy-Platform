@@ -17,7 +17,7 @@ class Banners extends \lithium\template\Helper {
 			$bannerList = $bannerRecords->data();
 			$html = '';
 			$html .= '<table id="itemTable" class="datatable" border="1">';
-			$html .=  '<thead>'; 
+			$html .=  '<thead>';
 			$html .= '<tr>';
 			foreach ($heading as $value){
 				$html .=  "<th>$value</th>";
@@ -30,7 +30,7 @@ class Banners extends \lithium\template\Helper {
 				$html .= "<tr id=$banner[_id]>";
 				foreach ($orderedDetails as $key => $value) {
 					if ($key == 'end_date') {
-						$value = date('M-d-Y', $value['sec']);
+						$value = date('M-d-Y', $value);
 					}
 					$html .= "<td>". $this->_context->html->link($value, $link, array('escape' => false))."</td>";
 				}

@@ -1,13 +1,13 @@
-<?=$this->html->script('jquery-ui-timepicker.min.js');?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->script('TableTools.min.js');?>
-<?=$this->html->script('ZeroClipboard.js');?>
-<?=$this->html->style('jquery_ui_blitzer.css')?>
-<?=$this->html->style('TableTools');?>
-<?=$this->html->style('timepicker'); ?>
-<?=$this->html->style('table');?>
-<?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
-<?=$this->html->script('jquery-ui-timepicker.min.js');?>
+<?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->script('TableTools.min.js');?>
+<?php echo $this->html->script('ZeroClipboard.js');?>
+<?php echo $this->html->style('jquery_ui_blitzer.css')?>
+<?php echo $this->html->style('TableTools');?>
+<?php echo $this->html->style('timepicker'); ?>
+<?php echo $this->html->style('table');?>
+<?php echo $this->html->script('jquery-ui-1.8.2.custom.min.js');?>
+<?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
 
 
 <script type="text/javascript" charset="utf-8">
@@ -33,10 +33,10 @@
 	</h2>
 	<div class="block" id="forms">
 		<fieldset>
-			<?=$this->form->create($search); ?>
+			<?php echo $this->form->create($search); ?>
 				<p>
-					<?=$this->form->label('Affiliate'); ?>
-					<?=$this->form->text('affiliate'); ?>
+					<?php echo $this->form->label('Affiliate'); ?>
+					<?php echo $this->form->text('affiliate'); ?>
 				</p>
 				    <?php
 				        if(($criteria) && (bool)$criteria['subaffiliate']){
@@ -45,26 +45,26 @@
 				            $checked = '';
 				        }
 				    ?>
-				    <?=$this->form->label('Subaffiliates included'); ?>  <?=$this->form->checkbox('subaffiliate', array('checked' => $checked, 'value' => '1'));?> <br/>
+				    <?php echo $this->form->label('Subaffiliates included'); ?>  <?php echo $this->form->checkbox('subaffiliate', array('checked' => $checked, 'value' => '1'));?> <br/>
 				<p>
-					<?=$this->form->label('Minimum Seach Date'); ?>
-					<?=$this->form->text('min_date', array('id' => 'min_date'));?>
+					<?php echo $this->form->label('Minimum Seach Date'); ?>
+					<?php echo $this->form->text('min_date', array('id' => 'min_date'));?>
 				</p>
 				<p>
-				<?=$this->form->label('Maximum Seach Date'); ?>
-				<?=$this->form->text('max_date', array('id' => 'max_date'));?>
+				<?php echo $this->form->label('Maximum Seach Date'); ?>
+				<?php echo $this->form->text('max_date', array('id' => 'max_date'));?>
 				</p>
 				<p>
-					<?=$this->form->label('Search Type'); ?>
-					<?=$this->form->select('search_type', array(
+					<?php echo $this->form->label('Search Type'); ?>
+					<?php echo $this->form->select('search_type', array(
 						'Revenue' => 'Total Revenue',
 						'Registrations' => 'Total Registrations',
 						'Bounces' => 'Total Bounces'
 						));
 					?>
 				</p>
-				<?=$this->form->submit('Search'); ?>
-			<?=$this->form->end(); ?>
+				<?php echo $this->form->submit('Search'); ?>
+			<?php echo $this->form->end(); ?>
 		</fieldset>
 	</div>
 	</div>
@@ -76,7 +76,7 @@
 				<thead>
 					<tr>
 						<th>Month/Year</th>
-						<th>Total - <?=$searchType?></th>
+						<th>Total - <?php echo $searchType?></th>
 						<?php if ($searchType == 'Registrations'): ?>
 						<th>Total - Bounced</th>
 						<?php endif; ?>
@@ -94,21 +94,21 @@
 
 				    ?>
 				        <tr>
-				            <td colspan = "2"><?=date('F',  mktime(0, 0, 0, ($month + 1)))?></td>
+				            <td colspan = "2"><?php echo date('F',  mktime(0, 0, 0, ($month + 1)))?></td>
 				        <tr>
 
 				    <?php
 				                foreach($values as $value):
 				    ?>
 				        <tr>
-				                <td><?=$value['subaff']?></td>
+				                <td><?php echo $value['subaff']?></td>
                                 <?php if ($searchType == 'Revenue'): ?>
-                                    <td>$<?=number_format($value['total'], 2)?></td>
+                                    <td>$<?php echo number_format($value['total'], 2)?></td>
                                 <?php else: ?>
-                                    <td><?=$value['total']?></td>
+                                    <td><?php echo $value['total']?></td>
                                 <?php endif ?>
                                 <?php if ($searchType == 'Registrations'): ?>
-                                	<td><?=$value['bounced']?></td>
+                                	<td><?php echo $value['bounced']?></td>
                                 <?php endif; ?>
                                 
                         </tr>
@@ -122,14 +122,14 @@
 					    foreach ($results['retval'] as $result):
 					?>
 						<tr>
-							<td><?=date('F/Y',  mktime(0, 0, 0, ($result['Date'] + 1),30,($result['Year'])))?></td>
+							<td><?php echo date('F/Y',  mktime(0, 0, 0, ($result['Date'] + 1),30,($result['Year'])))?></td>
 							<?php if ($searchType == 'Revenue'): ?>
-								<td>$<?=number_format($result['total'], 2)?></td>
+								<td>$<?php echo number_format($result['total'], 2)?></td>
 							<?php else: ?>
-								<td><?=$result['total']?></td>
+								<td><?php echo $result['total']?></td>
 							<?php endif ?>
                             <?php if ($searchType == 'Registrations'): ?>
-                               	<td><?=$result['bounced']?></td>
+                               	<td><?php echo $result['bounced']?></td>
                             <?php endif; ?>
 
 						</tr>
@@ -146,7 +146,7 @@
 						<th>Grand Total<?php echo " - ".$searchType; ?> : </th>
 						<th> <?php echo $results['total'] ?></th>
                     <?php if ($searchType == 'Registrations'): ?>
-                        <th><?=$results['bounced']?></th>
+                        <th><?php echo $results['bounced']?></th>
                     <?php endif; ?>
 					</tr>
 				</tfooter>
@@ -169,10 +169,10 @@
 			<tbody>
 			<?php foreach ($cursor as $row): ?>
 				<tr>
-					<td><?=$row['email'];?></td>
-					<td><?=date('m/d/Y',$row['created_date']->sec);?></td>
-					<td><?=$row['email_engagement']['type'];?></td>
-					<td><?=date('m/d/Y',$row['email_engagement']['date']->sec);?></td>
+					<td><?php echo $row['email'];?></td>
+					<td><?php echo date('m/d/Y',$row['created_date']->sec);?></td>
+					<td><?php echo $row['email_engagement']['type'];?></td>
+					<td><?php echo date('m/d/Y',$row['email_engagement']['date']->sec);?></td>
 				</tr>
 			<?php endforeach;?>
 			</tbody>

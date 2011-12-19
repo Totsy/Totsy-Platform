@@ -51,7 +51,6 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
      ));
 });
 
-
 Router::connect('/api/help/{:args}', array('controller' => 'API', 'action' => 'help'));
 Router::connect('/api/{:args}', array('controller' => 'API', 'action' => 'index'));
 
@@ -82,7 +81,7 @@ Router::connect('/checkout/shipping', 'Orders::shipping');
 Router::connect('/checkout/payment', 'Orders::payment');
 Router::connect('/checkout/review', 'Orders::review');
 
-Router::connect('/', 'Events::index');
+Router::connect('/', 'Users::register');
 Router::connect('/sales/{:args}', 'Events::index');
 Router::connect('/{:action:login|logout}', array('controller' => 'users'));
 Router::connect('/addresses', 'Addresses::view');
