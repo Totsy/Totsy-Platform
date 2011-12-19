@@ -224,6 +224,8 @@ class UsersController extends BaseController {
 	 * @return string The user is prompted with a message if authentication failed.
 	 */
 	public function login() {
+		ini_set("display_errors", 1);
+	
 		$message = $resetAuth = $legacyAuth = $nativeAuth = false;
 		$rememberHash = '';
 
@@ -359,7 +361,7 @@ class UsersController extends BaseController {
 	/**
 	 * Performs the logout action of the user removing '_id' from session details.
 	 */
-	public function logout() {
+	public function logout() {		
 		$loginInfo = Session::read('userLogin');
 		$user = User::collection();
 		$user->update(
@@ -371,8 +373,8 @@ class UsersController extends BaseController {
 		unset($cookie['autoLoginHash']);
 		User::cleanSession();
 		Session::delete('cookieCrumb', array('name' => 'cookie'));
-		$cookieSuccess = Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
-		FacebookProxy::setSession(null);
+		$cookieSuccess = Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));		
+				
 		return $this->redirect(array('action' => 'login'));
 	}
 	/**

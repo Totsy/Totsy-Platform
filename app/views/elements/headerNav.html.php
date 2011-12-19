@@ -1,3 +1,22 @@
+<script type="text/javascript">
+		function deleteFBCookies(){
+			//all posible FB cookies
+			
+			var fbCookie = 'fbsr_130085027045086';	
+			
+			document.cookie = fbCookie + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+			document.cookie = 'datr=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+			document.cookie = 'locale=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+			document.cookie = 'lu=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+			document.cookie = 'reg_fb_gate=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+			document.cookie = 'reg_fb_ref=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+			document.cookie = 'lsd=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+			document.cookie = 'L=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+			document.cookie = 'act=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+			document.cookie = 'openid_p=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+		}
+		
+</script>
 <div class="menu_top_left">
 		<?php if (!empty($userInfo)): ?>
 		Hello,
@@ -7,7 +26,7 @@
 		<?php if (is_array($userInfo) && array_key_exists('email', $userInfo)) { echo $userInfo['email']; } ?>
 		<?php endif; ?>
 		<?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
-		(<?php echo $this->html->link('Sign Out', $logout, array('title' => 'Sign Out')); ?>)
+		(<?php echo $this->html->link('Sign Out', $logout, array('title' => 'Sign Out', 'onClick'=>'deleteFBCookies()')); ?>)
 		<?php endif ?>
 	</div>
 

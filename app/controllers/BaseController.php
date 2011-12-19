@@ -30,7 +30,6 @@ class BaseController extends \lithium\action\Controller {
 	 * Get the userinfo for the rest of the site from the session.
 	 */
 	protected function _init() {
-
 		parent::_init();
 	     if(!Environment::is('production')){
             $branch = "<h4 id='global_site_msg'>Current branch: " . $this->currentBranch() ."</h4>";
@@ -48,7 +47,7 @@ class BaseController extends \lithium\action\Controller {
 		$this->fbsession = $fbsession = FacebookProxy::getUser();
 		$fbconfig = FacebookProxy::config();
 
-		if($this->fbsession){
+		if($this->fbsession){			
 			$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
 		}
 		else{
@@ -65,11 +64,11 @@ class BaseController extends \lithium\action\Controller {
 			    /**
 			    * If the users account has been deactivated during login,
 			    * destroy the users session.
-			    **/
-			    if ($user->deactivated == true) {
+			    **/			    
+			    if ($user->deactivated == true) {			    
 			        Session::clear(array('name' => 'default'));
 			        Session::delete('appcookie', array('name' => 'cookie'));
-		            FacebookProxy::setSession(null);
+					//FacebookProxy::setSession(null);
 			    }
 				$decimal = ($user->total_credit < 1) ? 2 : 0;
 				$credit = ($user->total_credit > 0) ? number_format($user->total_credit, $decimal) : 0;

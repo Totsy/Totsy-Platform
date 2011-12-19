@@ -28,7 +28,7 @@
 		var affBgroundImage = "";
 	</script>
 	
-	<script type="text/javascript">	
+		<script type="text/javascript">	
 
 	  var _gaq = _gaq || [];
 	  _gaq.push(['_setAccount', 'UA-675412-15']);
@@ -93,6 +93,13 @@
         FB.Event.subscribe('auth.login', function() {
           window.location.reload();
         });
+        
+        /*
+        FB.Event.subscribe('auth.logout', function(response) {
+		    window.location.href='/logout';
+ 		});
+ 		*/
+        
       };
 
       (function() {
