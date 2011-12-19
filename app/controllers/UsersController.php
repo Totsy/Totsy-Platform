@@ -291,6 +291,9 @@ class UsersController extends BaseController {
 						if (Session::check('landing')){
 							$landing = Session::read('landing');
 							Session::delete('landing',array('name'=>'default'));
+							if (empty($landing)){
+								$landing = $redirect;
+							}
 						} else if (preg_match( '@[^(/|login)]@', $this->request->url ) && $this->request->url) {
 							$landing = $this->request->url;
 						} else {
