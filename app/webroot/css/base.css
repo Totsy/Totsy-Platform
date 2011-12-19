@@ -4427,7 +4427,7 @@ Text Align > left / right
 	background: url(../img/logo-125x77.png) 0 0 no-repeat;
 	text-indent: -999em;
 }
-#totsy > header > div,
+#totsy > header #userUtils,
 #totsy > header > nav {
 	float:right;
 }
@@ -4436,8 +4436,7 @@ Text Align > left / right
 	font-size:12px;
 	padding:10px 0 0;
 }
-#totsy > header > #invite {
-	float: none;
+#totsy > header #invite {
 	position:absolute;
 	top:0;
 	width:100%;
@@ -4449,7 +4448,7 @@ Text Align > left / right
 	padding:0 12px;
 	background: #ececec;
 	border:#ccc;
-	border-radius:0 0 5px 5px;
+	border-radius:0 0 10px 10px;
 	color:#636466;
 	font-size:13px;
 	text-align: center;
@@ -4464,6 +4463,30 @@ Text Align > left / right
 	color:#d84643;
 	}
 /* main nav */
-header > nav li {
+nav .group > li {
+	position: relative;
 	float:left;
+	margin-right:15px; padding:0 0 8px;
+	background: #fff;
+	border:1px solid #ccc;
+	border-radius:0 0 10px 10px;
+}
+nav .group > li:after {
+	content: "";
+	position: absolute; top:-2px; right:-10px;
+	display: block;
+	width:9px; height: 9px;
+	background: url(../img/nav-tri.png) 0 0 no-repeat;
+}
+
+nav .group > li > a {
+	display: block;
+	padding:20px 10px 0;
+}
+/* user utils - cart, account, login */
+#totsy > header #userUtils {
+	margin:10px 0 0;
+	background: #fff;
+	border:1px solid #ccc;
+	border-radius:0 0 10px 10px;
 }
