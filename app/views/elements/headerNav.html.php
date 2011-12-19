@@ -40,11 +40,7 @@
 
 	<?php
 		if (!(empty($userInfo))) { ?>
-			<div id="invite">
-				<a href="/users/invite" title="+ Invite Friends Get $15">+ Invite Friends Get $15</a>
-			</div>
-			
-			<nav class="menu_main_global">
+			<nav>
 				<ul class="nav main" id="navlist">
 					<li><a href="/sales" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0 || $_SERVER['REQUEST_URI'] == '/') {
 					echo 'class="active"';
@@ -60,6 +56,9 @@
 					} ?>>Moms &amp; Dads</a></li>
 				</ul>
 			</nav>
+			<div id="invite">
+				<a href="/users/invite" title="Invite Friends, Get $15">Invite Your Friends, <strong>Get $15</strong></a>
+			</div>
 	<?php } ?>
 	
 </header>

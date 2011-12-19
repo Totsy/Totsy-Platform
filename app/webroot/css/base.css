@@ -374,8 +374,6 @@ span.breadcrumbs span {
 	background-position:left bottom;
 }
 
-
-#totsy {margin:43px auto 10px;}
 #upcoming {clear:both; margin-top:35px;}
 
 /* clearfix for grouped floats */
@@ -4409,10 +4407,17 @@ Text Align > left / right
 }
 
 /* new header, nav with cats - @DG-2011.12 */
+#totsy {margin:43px auto 10px; overflow: visible;}
+
+#totsy > header {
+	position:relative; 
+	margin-top:-35px;
+	width:100%;
+}
 #logo {
 	float:left;
 	width:125px;
-	height:72px;
+	height:77px;
 }
 #logo a {
 	display: block;
@@ -4423,12 +4428,38 @@ Text Align > left / right
 
 #totsy > header > div,
 #totsy > header > nav {
-	float:left;
+	float:right;
 }
 
-.menu_main_global {
-	width:785px;
-	float:left;
+#totsy > header > nav {
+	width:480px;
 	font-size:12px;
 	padding:10px 0 0;
 }
+#totsy > header > #invite {
+	float: none;
+	position:absolute;
+	top:0;
+	width:100%;
+}
+#totsy > header > #invite a {
+	display: block;
+	margin:0 auto;
+	width:22.5%;
+	padding:0 12px;
+	background: #ececec;
+	border:#ccc;
+	border-radius:0 0 5px 5px;
+	color:#636466;
+	font-size:13px;
+	text-align: center;
+	text-transform: uppercase;
+}
+#totsy > header > #invite a:hover {
+	text-decoration: none;
+}
+#totsy > header > #invite a strong {
+	padding-right:8px;
+	background: url(../img/btn-arrow.png) 100% 50% no-repeat;
+	color:#d84643;
+	}
