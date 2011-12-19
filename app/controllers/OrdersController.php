@@ -707,13 +707,11 @@ class OrdersController extends BaseController {
 			Session::delete('cc_error');
 			Session::delete('billing');
 		}
-<<<<<<< HEAD
+		
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_payment';
 		}
-		return compact('address','addresses_ddwn','selected','cartEmpty','payment','shipping','shipDate','cartExpirationDate','missChristmasCount','notmissChristmasCount');
-=======
 		return compact('address',
 			'addresses_ddwn',
 			'selected',
@@ -725,7 +723,6 @@ class OrdersController extends BaseController {
 			'missChristmasCount',
 			'notmissChristmasCount'
 		);
->>>>>>> af5abd9a3440b84df2d66e6ede7224062469d77a
 	}
 
 	/**

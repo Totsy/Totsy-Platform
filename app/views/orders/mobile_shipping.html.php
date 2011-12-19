@@ -1,6 +1,6 @@
 <script type="text/javascript">	
 	$( function () {
-	    var itemExpires = new Date(<?=($cartExpirationDate  * 1000)?>);	    
+	    var itemExpires = new Date(<?php echo ($cartExpirationDate  * 1000)?>);	    
 		var now = new Date();
 		$('#itemCounter').countdown( {until: itemExpires, onExpiry: refreshCart, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
 		if (itemExpires < now) {
@@ -102,54 +102,54 @@ var addressForm = new Object();
 <hr />
 
 
-<?=$this->view()->render( array('element' => 'mobile_shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
+<?php echo $this->view()->render( array('element' => 'mobile_shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
 	
-<?=$this->form->create($address, array('id' => 'addressForm')); ?>	
+<?php echo $this->form->create($address, array('id' => 'addressForm')); ?>	
 			
 		<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
 		<div data-role="fieldcontain">
 		<label for="select-choice-15" class="select">Choose your address</label>
-		<?=$this->form->select('addresses', $addresses_ddwn, array('data-overlay-them' => 'd','data-native-menu' => 'false', 'id' => 'addresses', 'value' => $selected));?>
+		<?php echo $this->form->select('addresses', $addresses_ddwn, array('data-overlay-them' => 'd','data-native-menu' => 'false', 'id' => 'addresses', 'value' => $selected));?>
 		</div>	
 
 			
 		<?php endif ?>
 		<div style="clear:both"></div>
 		<hr />
-		<?=$this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-		<?=$this->form->text('firstname', array('class' => 'validate[required] inputbox', 'id'=>'firstname')); ?>
-		<?=$this->form->error('firstname'); ?>
+		<?php echo $this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+		<?php echo $this->form->text('firstname', array('class' => 'validate[required] inputbox', 'id'=>'firstname')); ?>
+		<?php echo $this->form->error('firstname'); ?>
 		<div style="clear:both"></div>
-		<?=$this->form->label('lastname', 'Last Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-		<?=$this->form->text('lastname', array('class' => 'validate[required] inputbox', 'id'=>'lastname')); ?>
-		<?=$this->form->error('lastname'); ?>
+		<?php echo $this->form->label('lastname', 'Last Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+		<?php echo $this->form->text('lastname', array('class' => 'validate[required] inputbox', 'id'=>'lastname')); ?>
+		<?php echo $this->form->error('lastname'); ?>
 		<div style="clear:both"></div>
-		<?=$this->form->label('telephone', 'Telephone <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-		<?=$this->form->text('telephone', array('class' => 'validate[required] inputbox', 'id' => 'telephone')); ?>
+		<?php echo $this->form->label('telephone', 'Telephone <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+		<?php echo $this->form->text('telephone', array('class' => 'validate[required] inputbox', 'id' => 'telephone')); ?>
 		<div style="clear:both"></div>
-		<?=$this->form->label('address', 'Street Address <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-		<?=$this->form->text('address', array('class' => 'validate[required] inputbox', 'id'=>'address' )); ?>
-		<?=$this->form->error('address'); ?>
+		<?php echo $this->form->label('address', 'Street Address <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+		<?php echo $this->form->text('address', array('class' => 'validate[required] inputbox', 'id'=>'address' )); ?>
+		<?php echo $this->form->error('address'); ?>
 		<div style="clear:both"></div>
-		<?=$this->form->label('address_2', 'Street Address 2', array('escape' => false,'class' => 'required')); ?>
-		<?=$this->form->text('address_2', array('class' => 'inputbox', 'id'=>'address_2')); ?>
+		<?php echo $this->form->label('address_2', 'Street Address 2', array('escape' => false,'class' => 'required')); ?>
+		<?php echo $this->form->text('address_2', array('class' => 'inputbox', 'id'=>'address_2')); ?>
 		<div style="clear:both"></div>
-		<?=$this->form->label('city', 'City <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-		<?=$this->form->text('city', array('class' => 'validate[required] inputbox', 'id'=>'city')); ?>
-		<?=$this->form->error('city'); ?>
+		<?php echo $this->form->label('city', 'City <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+		<?php echo $this->form->text('city', array('class' => 'validate[required] inputbox', 'id'=>'city')); ?>
+		<?php echo $this->form->error('city'); ?>
 		<div style="clear:both"></div>
-		<?=$this->form->label('state', 'State <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-		<?=$this->form->select('state', Address::$states, array('empty' => 'Select a state', 'class' => 'validate[required] inputbox','id'=>'state', 'style'=>'width:auto !important')); ?>
-		<?=$this->form->error('state'); ?>
+		<?php echo $this->form->label('state', 'State <span>*</span>', array('escape' => false,'class' => 'required')); ?>
+		<?php echo $this->form->select('state', Address::$states, array('empty' => 'Select a state', 'class' => 'validate[required] inputbox','id'=>'state', 'style'=>'width:auto !important')); ?>
+		<?php echo $this->form->error('state'); ?>
 		<span class="cart-select">
-		<?=$this->form->label('zip', 'Zip Code<span>*</span>', array('escape' => false,'class' => 'required')); ?>
-		<?=$this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
-		<?=$this->form->error('zip'); ?>
+		<?php echo $this->form->label('zip', 'Zip Code<span>*</span>', array('escape' => false,'class' => 'required')); ?>
+		<?php echo $this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
+		<?php echo $this->form->error('zip'); ?>
 		</span>
 		</div>
 		<div style="clear:both"></div>
 		<strong style="font-size:12px;">
-		<?=$this->form->checkbox("opt_save", array('id' => 'opt_save', 'data-role' => 'none')) ?>
+		<?php echo $this->form->checkbox("opt_save", array('id' => 'opt_save', 'data-role' => 'none')) ?>
 	Save this address
 		</strong>
 		<div>
@@ -168,7 +168,7 @@ var addressForm = new Object();
 
 	</div>
 
-<?=$this->form->end();?> 
+<?php echo $this->form->end();?> 
 
 </div>
 
@@ -203,9 +203,9 @@ var addressForm = new Object();
 
 
 <div id="address_form" style="display:none">
-	<?=$this->form->create(null ,array('id'=>'selectForm')); ?>
-	<?=$this->form->hidden('address_id', array('class' => 'inputbox', 'id' => 'address_id')); ?>
-	<?=$this->form->end();?>
+	<?php echo $this->form->create(null ,array('id'=>'selectForm')); ?>
+	<?php echo $this->form->hidden('address_id', array('class' => 'inputbox', 'id' => 'address_id')); ?>
+	<?php echo $this->form->end();?>
 </div>
 <div class="clear"></div>
 </div>

@@ -1,22 +1,22 @@
-<?=$this->html->script(array('cloud-zoom.1.0.2'));?>
+<?php echo $this->html->script(array('cloud-zoom.1.0.2'));?>
 <script type="text/javascript">
-	var item_id = "<?=$item->_id?>";
+	var item_id = "<?php echo $item->_id?>";
 </script>
 
-<?=$this->html->script(array('cart-timer.js?v=007', 'cart-items-timer.js?v=007'));?>
+<?php echo $this->html->script(array('cart-timer.js?v=007', 'cart-items-timer.js?v=007'));?>
 
 <h2 style="font-size:12px;">
-	<a href="/sales">Today's Sales</a> <span class="splitter">/</span> <a href="/sale/<?=$event->url?>"><?=$event->name?></a>	<div style="color:#009900; margin:-3px 0px 0px 0px; font-size:14px; float:right; text-align:right;">$<?=number_format($item->sale_retail,2); ?><br /><div class="original-price" style="font-size:9px; white-space:nowrap; color:#999; margin:0px 0 0 7px;">Original $<?=number_format($item->msrp,2); ?></div></div>
+	<a href="/sales">Today's Sales</a> <span class="splitter">/</span> <a href="/sale/<?php echo $event->url?>"><?php echo $event->name?></a>	<div style="color:#009900; margin:-3px 0px 0px 0px; font-size:14px; float:right; text-align:right;">$<?php echo number_format($item->sale_retail,2); ?><br /><div class="original-price" style="font-size:9px; white-space:nowrap; color:#999; margin:0px 0 0 7px;">Original $<?php echo number_format($item->msrp,2); ?></div></div>
 	<br />
 	<div id="listingCountdown" class="listingCountdown" style="font-size:9px; color:#999;"></div> 
 	<hr />
 </h2>
-	<h2 style="font-size:10px;margin-bottom:8px; color:#444;"><?=$item->description." ".$item->color; ?></h2>
+	<h2 style="font-size:10px;margin-bottom:8px; color:#444;"><?php echo $item->description." ".$item->color; ?></h2>
 <form action="" method="get" class="" style="border:0;">
 <div class="item_intro_box">
 	<!-- Start product item -->
 		<?php if ($item->total_quantity <= 0): ?>
-					<?=$this->html->image('/img/soldout.png', array(
+					<?php echo $this->html->image('/img/soldout.png', array(
 						'title' => "Sold Out",
 						'style' => 'z-index : 99999; position : absolute; right:0;',
 						'id'=>'sold_out_img'
@@ -52,7 +52,7 @@
 		<?php if (!empty($item->alternate_images)): ?>
 			<?php $x = 2; ?>
 			<?php foreach ($item->alternate_images as $value): ?>
-					<?=$this->html->link(
+					<?php echo $this->html->link(
 					$this->html->image("/image/{$value}.jpg", array(
 						'class' => "zoom-tiny-image item_intro_box",
 						'width' => "50",
@@ -85,11 +85,11 @@
 			<div data-role="collapsible">
 				<h3>Shipping &amp; Returns</h3>
 				<span class="blurb">
-				<p><strong>Shipping:</strong> Totsy will ship this item via Standard UPS or Standard US Mail shipping based on your selection at the end of your <?=$this->html->link('checkout process', array('Cart::view')); ?>.
-			Complete shipping details are available at <?=$this->html->link('shipping terms', array('Pages::shipping')); ?>.</p>
+				<p><strong>Shipping:</strong> Totsy will ship this item via Standard UPS or Standard US Mail shipping based on your selection at the end of your <?php echo $this->html->link('checkout process', array('Cart::view')); ?>.
+			Complete shipping details are available at <?php echo $this->html->link('shipping terms', array('Pages::shipping')); ?>.</p>
 			</span>
 			<span class="blurb">
-			<p><strong>Returns:</strong> Totsy accept returns on selected items only. You will get a merchandise credit and free shipping (AK &amp; HI: air shipping rates apply). Simply be sure that we receive the merchandise you wish to return within 30 days from the date you originally received it in its original condition with all the packaging intact. Please note: Final Sale items cannot be returned. Want to learn more? Read more in our <?=$this->html->link('returns section', array('Pages::returns')); ?>.</p>
+			<p><strong>Returns:</strong> Totsy accept returns on selected items only. You will get a merchandise credit and free shipping (AK &amp; HI: air shipping rates apply). Simply be sure that we receive the merchandise you wish to return within 30 days from the date you originally received it in its original condition with all the packaging intact. Please note: Final Sale items cannot be returned. Want to learn more? Read more in our <?php echo $this->html->link('returns section', array('Pages::returns')); ?>.</p>
 			</span>
 			</div>
 		<?php $relatedData = $related; ?>
@@ -135,7 +135,7 @@
 						<select name="size-select" id="size-select" data-theme="b" data-overlay-theme="d" data-native-menu="false">
 									<option value="">Please Select Size</option>
 							<?php foreach ($sizes as $value): ?>
-									<option value="<?=$value?>"><?=$value?></option>
+									<option value="<?php echo $value?>"><?php echo $value?></option>
 							<?php endforeach ?>
 						</select>
 						
@@ -268,7 +268,7 @@ $(document).ready(function() {
 				var size = $('#size-select option:selected').val();
 				 };
                 $.ajax({
-  url: "/cart/add?item_id=<?=$item->_id; ?>&item_size=" + size,
+  url: "/cart/add?item_id=<?php echo $item->_id; ?>&item_size=" + size,
   	}).done(function() {
   $(location).attr('href','/cart/view')
 });

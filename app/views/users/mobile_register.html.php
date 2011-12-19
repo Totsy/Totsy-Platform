@@ -6,48 +6,48 @@
 <form id="registerForm" method="post">
 
 									<div>
-										<?=$this->form->label('email', 'Email<span>*</span>', array(
+										<?php echo $this->form->label('email', 'Email<span>*</span>', array(
 											'escape' => false,
 											'class' => 'required'
 											));
 										?>
-										<?=$this->form->text('email', array('class' => 'inputbox')); ?>
-										<?=$this->form->error('email'); ?>
+										<?php echo $this->form->text('email', array('class' => 'inputbox')); ?>
+										<?php echo $this->form->error('email'); ?>
 									</div>
 									<div>
-										<?=$this->form->label('confirmemail', 'Confirm Email<span>*</span>', array(
+										<?php echo $this->form->label('confirmemail', 'Confirm Email<span>*</span>', array(
 											'escape' => false,
 											'class' => 'required'
 											));
 										?>
-										<?=$this->form->text('confirmemail', array('class' => 'inputbox')); ?>
-										<?=$this->form->error('confirmemail'); ?>
-										<?=$this->form->error('emailcheck'); ?>
+										<?php echo $this->form->text('confirmemail', array('class' => 'inputbox')); ?>
+										<?php echo $this->form->error('confirmemail'); ?>
+										<?php echo $this->form->error('emailcheck'); ?>
 									</div>
 
 									<div>
-									<?=$this->form->label('password','Password<span>*</span>', array(
+									<?php echo $this->form->label('password','Password<span>*</span>', array(
 										'class'=>'required',
 										'escape' => false
 										));
 									?>
-									<?=$this->form->password('password', array(
+									<?php echo $this->form->password('password', array(
 											'class'=>"inputbox",
 											'name' => 'password',
 											'id' => 'password'));
 									?>
-									<?=$this->form->error('password'); ?>
+									<?php echo $this->form->error('password'); ?>
 									</div>
 									<div>
-									<?=$this->form->checkbox('terms', array("checked" => "checked", 'style'=>"float:left;margin-right:4px; display: none;"));?>
+									<?php echo $this->form->checkbox('terms', array("checked" => "checked", 'style'=>"float:left;margin-right:4px; display: none;"));?>
 									</div>
 									<div style="font-size:10px; margin:0px; text-align:center">
 											By clicking register you accept our 
-											<?=$this->html->link('Terms and Conditions','pages/terms')?>
+											<?php echo $this->html->link('Terms and Conditions','pages/terms')?>
 									</div>
 									<br>
-									<?=$this->form->submit('Sign Up'); ?>
-									<?=$this->form->error('terms'); ?>
+									<?php echo $this->form->submit('Sign Up'); ?>
+									<?php echo $this->form->error('terms'); ?>
 									</div>
-								<?=$this->form->end(); ?>
+								<?php echo $this->form->end(); ?>
 				

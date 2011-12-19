@@ -23,7 +23,7 @@
 							<div class="rounded" style="color:#009900; margin:0px 0px 0px 0px; float:left; display:block; background:#ebffeb; border:1px solid #ddd; width:188px; padding:20px; text-align:center;">Confirmation</div>
 						</div>
 						<div style="background:#f7f7f7; padding:10px; border:1px solid #ddd;">
-							<h2>Thank you! Your order has been successfully placed! <span style="float:right;">Order #<?=$order->order_id;?></span>
+							<h2>Thank you! Your order has been successfully placed! <span style="float:right;">Order #<?php echo $order->order_id;?></span>
 							</h2>
 						</div>
 						<div style="clear:both;"></div>
@@ -38,7 +38,7 @@
 								<?php foreach ($itemsByEvent as $key => $event): ?>
 									<?php if(!empty($openEvent[$orderEvents[$key]['_id']])): ?>
 										<tr>
-											<td colspan="2" style="padding:5px; text-align::left;"><?=$orderEvents[$key]['name']?></td>
+											<td colspan="2" style="padding:5px; text-align::left;"><?php echo $orderEvents[$key]['name']?></td>
 											<?php if (!empty($orderEvents[$key]['ship_message'])): ?>
 												<td>
 													<?php echo $orderEvents[$key]['ship_message']?>
@@ -75,14 +75,14 @@
 													}
 												?>
 													<td style="padding:5px;" title="item">
-														<?=$this->html->image("$image", array('width' => "60", 'height' => "60", 'style' => "margin:2px; padding:2px; background:#fff; border:1px solid #ddd;")); ?>
+														<?php echo $this->html->image("$image", array('width' => "60", 'height' => "60", 'style' => "margin:2px; padding:2px; background:#fff; border:1px solid #ddd;")); ?>
 													</td>
 													<td style="padding:5px" title="description">
-														<?=$item['description']?>
+														<?php echo $item['description']?>
 														<br>
-														Color: <?=$item['color']?>
+														Color: <?php echo $item['color']?>
 														<br>
-														Size: <?=$item['size']?>
+														Size: <?php echo $item['size']?>
 														
 														<?php 
 														$convertdate = date("Y-m-d h:i:s", 1322071200);
@@ -107,10 +107,10 @@
 
 													</td>
 													<td style="padding:5px; color:#009900;" title="price">
-														$<?=number_format($item['sale_retail'],2); ?>
+														$<?php echo number_format($item['sale_retail'],2); ?>
 													</td>
 													<td style="padding:5px;" title="quantity">
-														<?=$item['quantity']?>
+														<?php echo $item['quantity']?>
 													</td>
 													<td title="subtotal" style="padding:5px; color:#009900;">
 														$<?php echo number_format(($item['quantity'] * $item['sale_retail']),2)?>
@@ -132,46 +132,46 @@
 	<div class="grid_3">
 		<strong>Shipping Address</strong>
 		<hr />
-		<?=$order->shipping->firstname;?> <?=$order->shipping->lastname;?>							
+		<?php echo $order->shipping->firstname;?> <?php echo $order->shipping->lastname;?>							
 		<br />
-		<?=$order->shipping->address; ?><?=$order->shipping->address_2; ?>
+		<?php echo $order->shipping->address; ?><?php echo $order->shipping->address_2; ?>
 		<br />
-		<?=$order->shipping->city; ?>, <?=$order->shipping->state; ?><?=$order->shipping->zip; ?>
+		<?php echo $order->shipping->city; ?>, <?php echo $order->shipping->state; ?><?php echo $order->shipping->zip; ?>
 		<br />
 		<br />	
 	</div>
 	<div class="grid_3">
 		<strong>Payment Method</strong>
 		<hr />
-		<?=strtoupper($order->card_type)?> XXXX-XXXX-XXXX-<?=$order->card_number?>
+		<?php echo strtoupper($order->card_type)?> XXXX-XXXX-XXXX-<?php echo $order->card_number?>
 	</div>
 	<div class="grid_5">
 		<strong>Order Information</strong>
 		<hr />
-		Order Subtotal: <span class="fr">$<?=number_format($order->subTotal,2); ?></span>
+		Order Subtotal: <span class="fr">$<?php echo number_format($order->subTotal,2); ?></span>
 		<br>
 		<?php if ($order->credit_used): ?>
-		Credit Applied: <span class="fr">-$<?=number_format(abs($order->credit_used),2); ?></span>
+		Credit Applied: <span class="fr">-$<?php echo number_format(abs($order->credit_used),2); ?></span>
 			<br>
 		<?php endif ?>
 		<?php if (($order->promo_discount) && empty($order->promocode_disable)): ?>
-		Promotion Discount [<?=$order->promo_code?>]: <span class="fr">-$<?=number_format(abs($order->promo_discount),2); ?></span>
+		Promotion Discount [<?php echo $order->promo_code?>]: <span class="fr">-$<?php echo number_format(abs($order->promo_discount),2); ?></span>
 			<br>
 		<?php endif ?>
 		<?php if ($order->discount): ?>
-		Discount: <span class="fr">-$<?=number_format(abs($order->discount),2); ?></span>
+		Discount: <span class="fr">-$<?php echo number_format(abs($order->discount),2); ?></span>
 			<br>
 		<?php endif ?>
-		Sales Tax: <span class="fr">$<?=number_format($order->tax,2); ?></span>
+		Sales Tax: <span class="fr">$<?php echo number_format($order->tax,2); ?></span>
 		<br>
-		Shipping: <span class="fr">$<?=number_format($order->handling,2); ?></span>
+		Shipping: <span class="fr">$<?php echo number_format($order->handling,2); ?></span>
 		<?php if ( array_key_exists('overSizeHandling', $order->data()) && $order->overSizeHandling !=0): ?>
 	        <br>
-	        Oversize Shipping: <span class="fr">$<?=number_format($order->overSizeHandling,2); ?></span>
+	        Oversize Shipping: <span class="fr">$<?php echo number_format($order->overSizeHandling,2); ?></span>
 	    <?php endif; ?>
 		<br>
 		<hr/>
-			<strong style="font-weight:bold;color:#606060; font-size:16px;">Total:</strong> <strong style="font-weight:bold;color:#009900; font-size:16px; float:right;">$<?=number_format($order->total,2); ?></strong>
+			<strong style="font-weight:bold;color:#606060; font-size:16px;">Total:</strong> <strong style="font-weight:bold;color:#009900; font-size:16px; float:right;">$<?php echo number_format($order->total,2); ?></strong>
 		</div>											
 	<div class="clear"></div>
 	<br>
@@ -206,10 +206,10 @@
 </div>
 </div>
 
-		<?=$this->html->image('being_green/carbonzero.gif', array('style' => 'margin-right: 10px; margin-bottom:20px; float:left;')); ?>
+		<?php echo $this->html->image('being_green/carbonzero.gif', array('style' => 'margin-right: 10px; margin-bottom:20px; float:left;')); ?>
 		<p>A tree was planted with your first order. It is watered with every additional order so it can grow big and strong to help our earth!<br>
 			<strong style="color:#E00000;font-weight:normal"></strong><br />
-			<?=$this->html->link('Learn how every purchase helps', array('Pages::being_green')); ?>
+			<?php echo $this->html->link('Learn how every purchase helps', array('Pages::being_green')); ?>
 		</p>
 <?php else: ?>
 	<strong>Sorry, we cannot locate the order that you are looking for.</strong>

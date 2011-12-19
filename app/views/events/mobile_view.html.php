@@ -1,6 +1,6 @@
 <?php $this->title($event->name); ?>
-<?=$this->html->script('jquery.countdown.min');?>
-<?=$this->html->style('jquery.countdown');?>
+<?php echo $this->html->script('jquery.countdown.min');?>
+<?php echo $this->html->style('jquery.countdown');?>
 
 <div class="item_intro_box">
 <?php if (!empty($event->images->event_image)) {
@@ -18,7 +18,7 @@
 } ?>
 
 <div class="item_title_bar">
-<div class="item_title" style="float:left;"><?=$event->name; ?></div>
+<div class="item_title" style="float:left;"><?php echo $event->name; ?></div>
 <!-- <a href="#items" class="item_shop_btn" style="float:left; margin-left:5px;">Shop</a> -->
 </div>
 <div class="blurb">
@@ -44,10 +44,10 @@
 				
 				
 		<div id='filterb'>
-			<?=$this->form->create(null, array('id' => 'filterform')); ?>
+			<?php echo $this->form->create(null, array('id' => 'filterform')); ?>
 			<option value="">Sort By:</option>
-			<?=$this->form->select('filterby',$filters, array('onchange' => "filter()", 'id' => 'filterby', 'data-overlay-theme' => 'a', 'data-native-menu' => 'false', 'value' => array($departments => $departments))); ?>
-			<?=$this->form->end(); ?>
+			<?php echo $this->form->select('filterby',$filters, array('onchange' => "filter()", 'id' => 'filterby', 'data-overlay-theme' => 'a', 'data-native-menu' => 'false', 'value' => array($departments => $departments))); ?>
+			<?php echo $this->form->end(); ?>
 		</div>
 <hr />
 		<?php endif ?>
@@ -79,15 +79,15 @@
 					<?php endif ?>
 				<a href="#" onclick="window.location.href='/sale/<?php echo $event->url; ?>/<?php echo $item->url; ?>';return false;">
 				<?php if ($item->total_quantity <= 0): ?>
-								<?=$this->html->image('/img/soldout.png', array(
+								<?php echo $this->html->image('/img/soldout.png', array(
 									'title' => "Sold Out",
 									'style' => 'z-index : 99999; position : absolute; right:0;'
 								)); ?>
 						<?php endif ?>
-						<img src="<?php echo $productImage; ?>" alt="<?=$item->description ?>" title="<?=$item->description ?>" width="80" />
-				<h3 style="font-size:14px;"><?=$item->description ?></h3>
-				<span class="price" style="text-transform:uppercase; font-weight:normal;font-size:12px; color: #009900; float:left;">$<?=number_format($item->sale_retail,2);?></span>
-				<span class="original-price" style="font-size:12px; white-space:nowrap; color:#999; float:left; margin:0px 0 0 7px; text-decoration: line-through;">$<?=number_format($item->msrp,2);?></span>
+						<img src="<?php echo $productImage; ?>" alt="<?php echo $item->description ?>" title="<?php echo $item->description ?>" width="80" />
+				<h3 style="font-size:14px;"><?php echo $item->description ?></h3>
+				<span class="price" style="text-transform:uppercase; font-weight:normal;font-size:12px; color: #009900; float:left;">$<?php echo number_format($item->sale_retail,2);?></span>
+				<span class="original-price" style="font-size:12px; white-space:nowrap; color:#999; float:left; margin:0px 0 0 7px; text-decoration: line-through;">$<?php echo number_format($item->msrp,2);?></span>
 				</a><?php $y++ ?>
 			</li>
 				<!-- End product item -->
@@ -154,11 +154,11 @@ function filter() {
 
 <script type="text/javascript">
 var cto_params = [];
-cto_params["kw"] = "<?=$event->name?>"; //REMOVE LINE IF NOT APPLICABLE
+cto_params["kw"] = "<?php echo $event->name?>"; //REMOVE LINE IF NOT APPLICABLE
 <?php if (!empty($items)): ?>
 <?php $iCounter = 1; ?>
 <?php foreach ($items as $item): ?>
-cto_params["i<?=$iCounter;?>"] = "<?php echo (string) $item->_id; ?>";
+cto_params["i<?php echo $iCounter;?>"] = "<?php echo (string) $item->_id; ?>";
 <?php if($iCounter==5) break; ?>
 <?php $iCounter++; ?>
 <?php endforeach ?>
