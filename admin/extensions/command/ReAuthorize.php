@@ -250,11 +250,9 @@ class ReAuthorize extends \lithium\console\Command {
 					))));
 					#Create a new Transaction and Get a new Authorization Key
 					// change 'authorizenet' to 'default' below when ready to reauth older Amex Authorize.net orders through CyberSource
-					$auth = Processor::authorize('authorizenet', $total, $card);
+					$auth = Processor::authorize('default', $total, $card);
 					if ($auth->success()) {
 						Logger::debug("Authorization Succeeded");
-						/* comment back in this section below when ready to reauth older Amex Authorize.net orders through CyberSource
-
 						$customer = Processor::create('default', 'customer', array(
 							'firstName' => $userInfos['firstname'],
 							'lastName' => $userInfos['lastname'],
@@ -274,8 +272,6 @@ class ReAuthorize extends \lithium\console\Command {
 								'cyberSourceProfileId' => $profileID
 							)), array( 'upsert' => true)
 						);
-						*/
-
 						#Setup new AuthKey
 						$update = $ordersCollection->update(
 								array('_id' => $order['_id']),
