@@ -409,7 +409,7 @@ class UsersController extends BaseController {
 				$connected = false;
 			}
 		}
-		$fbsession = FacebookProxy::getSession();
+		$fbsession = FacebookProxy::getUser();
 		if ($fbsession && $linked == false) {
 			try {
 				$userfb = FacebookProxy::api('/me');

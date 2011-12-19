@@ -45,7 +45,7 @@ class BaseController extends \lithium\action\Controller {
 		/**
 		 * Setup all the necessary facebook stuff
 		 */
-		$this->fbsession = $fbsession = FacebookProxy::getSession();
+		$this->fbsession = $fbsession = FacebookProxy::getUser();
 		$fbconfig = FacebookProxy::config();
 
 		if($this->fbsession){
