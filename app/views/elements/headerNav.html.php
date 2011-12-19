@@ -1,6 +1,6 @@
 <header class="group">
 
-	<h1 id="logo" class="grid_3">
+	<h1 id="logo">
 		<?php //echo $this->html->link($this->html->image('logo.png', array('width'=>'120')), '/sales', array('escape'=> false)); ?>
 		<a href="/sales" title="Totsy">totsy</a>
 	</h1>
