@@ -92,7 +92,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 	</div>
 	<div class="grid_6" style="width:330px; margin-left:2px;float:left;margin-top:5px;">	
 		<h2 class="tagline" style="margin-top:2px;">Why savvy moms shop at Totsy?</h2>
-
 		<ul id="bug_bullets">
 		<li>Membership is free</li>
 		<li>Exclusive sales for kids, moms and families</li>
@@ -102,7 +101,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 		<li>Refer friends and earn Totsy credits</li>
 		</ul>
 	</div>
-
 
 </div>
 
@@ -140,9 +138,15 @@ var google_conversion_value = 0;
 //your fb login function
 function fblogin() {
 FB.login(function(response) {
+<<<<<<< Updated upstream
 	if(response.authResponse){
 		window.location.reload();
 	}
 }, {scope:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
+=======
+	if (response.authResponse) {
+		window.location.reload();    
+  }}, {scope:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
+>>>>>>> Stashed changes
 }
 </script>

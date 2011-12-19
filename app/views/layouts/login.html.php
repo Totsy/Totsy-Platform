@@ -1,4 +1,5 @@
-<?php use lithium\net\http\Router; ?>
+<?php use lithium\net\http\Router; 
+?>
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:og="http://ogp.me/ns#"
@@ -24,6 +25,13 @@
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
 	
 	<script type="text/javascript">
+		function deleteFBCookie(name) {
+			document.cookie = name +'=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+			//window.location = "http://evan.totsy.com/login";
+		} 
+	</script>
+	
+	<script type="text/javascript">
 		//this is used for swapping backgrounds on registration pages that pass in affiliate codes	
 		var affBgroundImage = "";
 	</script>
@@ -44,7 +52,6 @@
 </head>
 <body class="app login">
 	<div id="fb-root"></div>
-		</body>
 	<?php echo $this->content(); ?>
 	<?php
 
@@ -70,7 +77,7 @@
 	<script type="text/javascript">
 
 	    jQuery(document).ready(function($){
-	    	if(affBgroundImage!==""){
+	    	if(affBgroundImage!=="") {
 				$.backstretch(affBgroundImage);
 			} else {
 	    		$.backstretch("<?php echo $imgDirectory . $image;?>");
@@ -109,4 +116,5 @@
         document.getElementById('fb-root').appendChild(e);
       }());
     </script>
+    </body>
 </html>

@@ -19,6 +19,10 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	$skip = array('login', 'logout', 'register',"register/facebook","reset");
 	$allowed = false;
 
+	$fh = fopen('/tmp/sktest.log','a');
+	fwrite($fh,'CALL URL:'. $params['request']->url );
+	fclose($fh);
+
 	#dynamic affiliate pages
 	 if(preg_match('#(^a/)[a-zA-Z_]+#', $params['request']->url)) {
 		 $allowed = true;

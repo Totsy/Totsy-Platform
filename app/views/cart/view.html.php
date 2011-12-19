@@ -384,6 +384,7 @@ var discountErrors = new Object();
 	$(document).ready( function(){
       		$(function () {
 			$(".quantity").live("change keyup", function () {
+							
 				if($("select").val() == 0) {
 					$('input[name="rmv_item_id"]').val($(this).attr('id'));
 					$('#removeForm').submit();

@@ -30,6 +30,7 @@ class BaseController extends \lithium\action\Controller {
 	 * Get the userinfo for the rest of the site from the session.
 	 */
 	protected function _init() {
+
 		parent::_init();
 	     if(!Environment::is('production')){
             $branch = "<h4 id='global_site_msg'>Current branch: " . $this->currentBranch() ."</h4>";
@@ -41,19 +42,20 @@ class BaseController extends \lithium\action\Controller {
         User::setupCookie();
 		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
 	    $logoutUrl = $logoutUrl . "$_SERVER[SERVER_NAME]/logout";
+	    
 		/**
 		 * Setup all the necessary facebook stuff
 		 */
-		$this->fbsession = $fbsession = FacebookProxy::getUser();
+
+		
+		$this->fbsession = $fbsession = FacebookProxy::getUser();		
 		$fbconfig = FacebookProxy::config();
 
-		if($this->fbsession){			
+		if ($this->fbsession) {
 			$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
-		}
-		else{
+		} else {
 			$fblogout = "/logout";
 		}
-
 
 		if ($userInfo) {
 			$user = User::find('first', array(
