@@ -2,10 +2,10 @@
 function temp(){
 	<?php if($output){ ?>
 		<?php if($output=="success"){ ?>
-		parent.window.location = "/events/edit/<?=$_id?>/#event_items";
+		parent.window.location = "/events/edit/<?php echo $_id?>/#event_items";
 		parent.location.reload(true);
 		<?php }else{ ?>
-		parent.document.getElementById("upload_error").innerHTML = "<?=$output?>";
+		parent.document.getElementById("upload_error").innerHTML = "<?php echo $output?>";
 		<?php } ?>
 	<?php } ?>
 }
@@ -15,7 +15,7 @@ function temp(){
 	
 
 <body onload="temp()">
-<?=$this->form->create(null, array('enctype' => "multipart/form-data")); ?>
+<?php echo $this->form->create(null, array('enctype' => "multipart/form-data")); ?>
 	<h3 id="">Upload Items</h3>
     <hr />
 	<p>Please select the default option for all items being uploaded:</p>
@@ -25,10 +25,10 @@ function temp(){
 		<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
 		<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
 
-	<?=$this->form->file('upload_file'); ?>
-	<?=$this->form->submit('Update Event')?>
+	<?php echo $this->form->file('upload_file'); ?>
+	<?php echo $this->form->submit('Update Event')?>
 
 <br><br>
-<?=$this->form->end(); ?>
+<?php echo $this->form->end(); ?>
 
 </body>

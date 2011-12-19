@@ -1,9 +1,9 @@
-<?=$this->html->script('jquery-1.4.2.min.js');?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->script('TableTools.min.js');?>
-<?=$this->html->script('ZeroClipboard.js');?>
-<?=$this->html->style('table');?>
-<?=$this->html->style('TableTools');?>
+<?php echo $this->html->script('jquery-1.4.2.min.js');?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->script('TableTools.min.js');?>
+<?php echo $this->html->script('ZeroClipboard.js');?>
+<?php echo $this->html->style('table');?>
+<?php echo $this->html->style('TableTools');?>
 
 <div class="grid_16">
 	<h2 id="page-heading"> Promocode List</h2>
@@ -54,44 +54,44 @@
             <?php foreach($promocodes as $promocode): ?>
                 <tr>
                 <td>
-                   <?=$promocode->code; ?> <br>
+                   <?php echo $promocode->code; ?> <br>
                 </td>
                 <td>
-                    <?=$promocode->type; ?><br>
+                    <?php echo $promocode->type; ?><br>
                  </td>
                 <td>
                     <?php if($promocode->type == 'percentage'): ?>
                         <?php echo ($promocode->discount_amount * 100); ?>%
                     <?php endif; ?>
                     <?php if($promocode->type == 'dollar'): ?>
-                       $<?=$promocode->discount_amount; ?>
+                       $<?php echo $promocode->discount_amount; ?>
                     <?php endif; ?>
                      <?php if($promocode->type == 'shipping'): ?>
-                       <?=$promocode->discount_amount; ?>
+                       <?php echo $promocode->discount_amount; ?>
                     <?php endif; ?>
                 </td>
                 <td>
-                    $<?=$promocode->minimum_purchase; ?>
+                    $<?php echo $promocode->minimum_purchase; ?>
                 </td>
                 <td>
-                    <?=$promocode->start_date; ?>
+                    <?php echo $promocode->start_date; ?>
                 </td>
                 <td>
-                    <?=$promocode->end_date; ?>
+                    <?php echo $promocode->end_date; ?>
                 </td>
                 <td>
-                    <?=$promocode->date_created; ?>
-                </td>
-
-                <td>
-                    <?=$promocode->created_by; ?>
-                </td>
-                <td>
-                    <?=$promocode->enabled; ?>
+                    <?php echo $promocode->date_created; ?>
                 </td>
 
                 <td>
-                    <?=$this->html->link('edit', 'promocodes/edit/'.$promocode->_id); ?>
+                    <?php echo $promocode->created_by; ?>
+                </td>
+                <td>
+                    <?php echo $promocode->enabled; ?>
+                </td>
+
+                <td>
+                    <?php echo $this->html->link('edit', 'promocodes/edit/'.$promocode->_id); ?>
                 </td>
                 <tr>
             <?php endforeach; ?>

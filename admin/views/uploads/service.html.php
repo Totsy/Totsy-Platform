@@ -12,10 +12,10 @@
 		<?php echo $fileName ?>
 	</td>
 	<td align="center">
-		<a href="/image/<?php echo $id; ?>.jpg" target="_blank" ><?=$this->html->image("/image/$id.jpg", array('alt' => 'altText', 'width' => 100)); ?></a>
+		<a href="/image/<?php echo $id; ?>.jpg" target="_blank" ><?php echo $this->html->image("/image/$id.jpg", array('alt' => 'altText', 'width' => 100)); ?></a>
 	</td>
 	<td align="center">
-		<?=$this->form->hidden("img",  array('value' => $id)); ?>
+		<?php echo $this->form->hidden("img",  array('value' => $id)); ?>
 	</td>
 </tr>
 </table>

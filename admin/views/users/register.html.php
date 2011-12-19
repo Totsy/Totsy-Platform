@@ -1,7 +1,7 @@
-<?=$this->html->script('mootools-1.2.4-core-nc.js');?>
-<?=$this->html->script('mootools-1.2.4.4-more.js');?>
-<?=$this->html->script('formcheck.js');?>
-<?=$this->html->script('en.js');?>
+<?php echo $this->html->script('mootools-1.2.4-core-nc.js');?>
+<?php echo $this->html->script('mootools-1.2.4.4-more.js');?>
+<?php echo $this->html->script('formcheck.js');?>
+<?php echo $this->html->script('en.js');?>
 
 
 <script type="text/javascript">
@@ -45,36 +45,36 @@
 
 </div>
 
-<?=$this->form->create(null,array('id'=>'registerForm')); ?>
+<?php echo $this->form->create(null,array('id'=>'registerForm')); ?>
 <div class="form-row">
-<?=$this->form->label('fname','First Name',array('class'=>'label'));?>&nbsp;
-<?=$this->form->text('firstname', array('class'=>"validate['required'] inputbox",'id'=>"fname"));?>
-<?=$this->form->label('lname','Last Name',array('class'=>'label'));?>&nbsp;
-<?=$this->form->text('lastname', array('class'=>"validate['required'] inputbox",'id'=>"lname"));?>
+<?php echo $this->form->label('fname','First Name',array('class'=>'label'));?>&nbsp;
+<?php echo $this->form->text('firstname', array('class'=>"validate['required'] inputbox",'id'=>"fname"));?>
+<?php echo $this->form->label('lname','Last Name',array('class'=>'label'));?>&nbsp;
+<?php echo $this->form->text('lastname', array('class'=>"validate['required'] inputbox",'id'=>"lname"));?>
 </div>
 
 <div class="form-row">
-<?=$this->form->label('email','Email',array('class'=>'label'));?>&nbsp;
-<?=$this->form->text('email', array('class'=>"validate['required','email'] inputbox",'id'=>"email"));?>
-<?=$this->form->label('confirmemail','Confirm email',array('class'=>'label'));?>&nbsp;
-<?=$this->form->text('confirmemail', array('class'=>"validate['required','email'] inputbox",'id'=>"confirmemail"));?>
+<?php echo $this->form->label('email','Email',array('class'=>'label'));?>&nbsp;
+<?php echo $this->form->text('email', array('class'=>"validate['required','email'] inputbox",'id'=>"email"));?>
+<?php echo $this->form->label('confirmemail','Confirm email',array('class'=>'label'));?>&nbsp;
+<?php echo $this->form->text('confirmemail', array('class'=>"validate['required','email'] inputbox",'id'=>"confirmemail"));?>
 </div>
 
 <div class="form-row">
-<?=$this->form->label('username','Username',array('class'=>'label'));?>&nbsp;
-<?=$this->form->text('username', array('class'=>"validate['required'] inputbox",'id'=>"username"));?>
-<?=$this->form->label('password','Password',array('class'=>'label'));?>
-<?=$this->form->password('password', array(
+<?php echo $this->form->label('username','Username',array('class'=>'label'));?>&nbsp;
+<?php echo $this->form->text('username', array('class'=>"validate['required'] inputbox",'id'=>"username"));?>
+<?php echo $this->form->label('password','Password',array('class'=>'label'));?>
+<?php echo $this->form->password('password', array(
 		'class'=>"validate['required'] inputbox", 
 		'name' => 'password', 
 		'id' => 'password'));?>
 </div>
 
 <div class="submit-row">
-<?=$this->form->checkbox('terms', array('class'=>"validate['required']", 'style'=>"float:left;margin-right:4px"));?>
-<span class="sm reg-tos">By requesting membership, I accept the <?=$this->html->link('Terms and Conditions','#')?> of Totsy, and accept to receive sale email newsletters. Totsy will never sell or give my email to any outside party.</span>
+<?php echo $this->form->checkbox('terms', array('class'=>"validate['required']", 'style'=>"float:left;margin-right:4px"));?>
+<span class="sm reg-tos">By requesting membership, I accept the <?php echo $this->html->link('Terms and Conditions','#')?> of Totsy, and accept to receive sale email newsletters. Totsy will never sell or give my email to any outside party.</span>
 
 <button type="submit" name="submit" id="submit-btn" class="flex-btn-2"><?php echo 'Register';?></button>				
 </div>
 
-<?=$this->form->end(); ?>
+<?php echo $this->form->end(); ?>

@@ -149,8 +149,12 @@ class CartController extends BaseController {
 			$shipping_discount = $shipping;
 		}
 		#Get Total of The Cart after Discount
+<<<<<<< HEAD
 		$total = $vars['postDiscountTotal'];
 		
+=======
+		$total = round(floatval($vars['postDiscountTotal']),2);
+>>>>>>> af5abd9a3440b84df2d66e6ede7224062469d77a
 		#Check if Services
 		$serviceAvailable = false;
 		if(Session::check('service_available')) {

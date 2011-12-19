@@ -20,6 +20,7 @@ use lithium\util\Validator;
 use MongoDate;
 use MongoId;
 use app\extensions\Mailer;
+use app\extensions\AvaTax;
 
 /**
  * The Orders Controller
@@ -130,6 +131,7 @@ class OrdersController extends BaseController {
 		$orderEvents = $this->_orderEvents($order);
 		//Check if all items from one event are closed
 		foreach($itemsByEvent as $key => $items_e) {
+			$url = Event::find('first', array('conditions' => array('_id'=> $key)));
 			foreach($items_e as $key_b => $item) {
 				if(empty($item['cancel'])) {
 					$openEvent[$item['event_id']] = true;
@@ -182,12 +184,12 @@ class OrdersController extends BaseController {
 		$missChristmasCount = 0;
 		$notmissChristmasCount = 0;
 		foreach ($order->items as $item) {
-
 			if($item['miss_christmas']){
 				$missChristmasCount++;
 			}
 			else{
 				$notmissChristmasCount++;
+
 			}
 
 
@@ -312,7 +314,6 @@ class OrdersController extends BaseController {
 		));
 		$shipDate = Cart::shipDate($cart);
 		foreach($cart as $item){
-
 			if($item['miss_christmas']){
 				$missChristmasCount++;
 			}
@@ -398,7 +399,7 @@ class OrdersController extends BaseController {
 		$cartExpirationDate = 0;
 		$missChristmasCount = 0;
 		$notmissChristmasCount = 0;
-
+		$i = 0;
 		foreach ($cart as $cartValue) {
 			if($cartValue->miss_christmas){
 				$missChristmasCount++;
@@ -415,10 +416,12 @@ class OrdersController extends BaseController {
 			$event = Event::find('first', array(
 				'conditions' => array('_id' => $cartValue->event[0])
 			));
+			$cartItemEventEndDates[$i] = is_object($event->end_date) ? $event->end_date->sec : $event->end_date;
 			$cartValue->event_name = $event->name;
 			$cartValue->event_url = $event->url;
 			$cartValue->event_id = $cartValue->event[0];
 			$subTotal += $cartValue->quantity * $cartValue->sale_retail;
+			$i++;
 			unset($cartValue->event);
 		}
 		#Get Shipping / Billing Infos + Costs
@@ -434,7 +437,6 @@ class OrdersController extends BaseController {
 		$avatax = $taxClass::getTax(compact(
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'));
-
 		$tax = (float) $avatax['tax'];
 		#Get current Discount
 		$vars = Cart::getDiscount($subTotal, $shippingCost, $overShippingCost, $this->request->data, $tax);
@@ -451,15 +453,14 @@ class OrdersController extends BaseController {
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
 			$shipping_discount = $shippingCost + $overShippingCost;
 		}
-
 		#Calculate Order Total
-		$total = $vars['postDiscountTotal'];
+		$total = round(floatval($vars['postDiscountTotal']), 2);
 		#Read Credit Card Informations
 		$creditCard = $orderClass::creditCardDecrypt((string)$user['_id']);
 		#Organize Datas
 		$vars = $vars + compact(
-			'user', 'cart', 'total', 'subTotal', 'creditCard',
-			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'shipping_discount'
+			'user', 'cart', 'total', 'subTotal',
+			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'shipping_discount','creditCard'
 		);
 		if ((!$cartEmpty) && (!empty($this->request->data['process']))) {
 
@@ -527,7 +528,8 @@ class OrdersController extends BaseController {
 			'promocode_disable',
 			'missChristmasCount',
 			'notmissChristmasCount',
-			'serviceAvailable'
+			'serviceAvailable',
+			'cartItemEventEndDates'
 		);
 	}
 
@@ -610,6 +612,8 @@ class OrdersController extends BaseController {
 			if($cc_infos->validates()) {
 				#Encrypt CC Infos with mcrypt
 				Session::write('cc_infos', $orderClass::creditCardEncrypt($cc_infos, (string)$user['_id'], true));
+				
+				
 				$cc_passed = true;
 				#Remove Credit Card Errors
 				Session::delete('cc_error');
@@ -689,15 +693,39 @@ class OrdersController extends BaseController {
 				$data_add = Session::read('billing');
 				$payment = Address::create(array_merge($data_add,$card));
 			}
-			$payment->errors( $payment->errors() + array( 'cc_error' => Session::read('cc_error')));
+			
+			
+			//error handling is not properly done
+			//errors from cybersource are not description or consumer-friendly
+			//errors need to be captured and then re-worded for users
+			//for now we have hardcoded a generic error message for all cc_errors stored in Session
+			
+			
+			//$payment->errors( $payment->errors() + array( 'cc_error' => Session::read('cc_error')));
+			$ccErrorTextGeneric = "We are not able to charge this credit card.  Please verify that your credit card number, expiration date, and security code are valid, or try another card.";
+			$payment->errors(array( 'cc_error' => $ccErrorTextGeneric));
 			Session::delete('cc_error');
 			Session::delete('billing');
 		}
+<<<<<<< HEAD
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_payment';
 		}
 		return compact('address','addresses_ddwn','selected','cartEmpty','payment','shipping','shipDate','cartExpirationDate','missChristmasCount','notmissChristmasCount');
+=======
+		return compact('address',
+			'addresses_ddwn',
+			'selected',
+			'cartEmpty',
+			'payment',
+			'shipping',
+			'shipDate',
+			'cartExpirationDate',
+			'missChristmasCount',
+			'notmissChristmasCount'
+		);
+>>>>>>> af5abd9a3440b84df2d66e6ede7224062469d77a
 	}
 
 	/**

@@ -1,12 +1,12 @@
-<?=$this->html->script('jquery-1.4.2.min.js');?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->script('TableTools.min.js');?>
-<?=$this->html->script('ZeroClipboard.js');?>
-<?=$this->html->style('table');?>
-<?=$this->html->style('TableTools');?>
+<?php echo $this->html->script('jquery-1.4.2.min.js');?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->script('TableTools.min.js');?>
+<?php echo $this->html->script('ZeroClipboard.js');?>
+<?php echo $this->html->style('table');?>
+<?php echo $this->html->style('TableTools');?>
 
 <div class="grid_16">
-	<h2 id="page-heading">Product File - <?=$event->name?></h2>
+	<h2 id="page-heading">Product File - <?php echo $event->name?></h2>
 </div>
 <div id="clear"></div>
 
@@ -27,9 +27,9 @@
 						<tr>
 							<?php foreach ($items as $key => $value): ?>
 								<?php if (in_array($key, array('Total', 'Unit'))): ?>
-									<td>$<?=number_format($value, 2)?></td>
+									<td>$<?php echo number_format($value, 2)?></td>
 								<?php else: ?>
-									<td><?=$value?></td>
+									<td><?php echo $value?></td>
 								<?php endif ?>
 							<?php endforeach ?>
 						</tr>
