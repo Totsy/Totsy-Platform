@@ -4406,16 +4406,18 @@ Text Align > left / right
 	margin: 9px 9px 3px!important;
 }
 
-/* new header, nav with cats - @DG-2011.12 */
+/* 
+	new header, nav with cats - @DG-2011.12
+*/
 #totsy {margin:43px auto 10px; overflow: visible;}
-
 #totsy > header {
 	position:relative; 
-	margin-top:-35px;
+	margin-top:-54px; padding-top:26px;
 	width:100%;
 }
 #logo {
 	float:left;
+	margin-left:14px;
 	width:125px;
 	height:77px;
 }
@@ -4425,12 +4427,10 @@ Text Align > left / right
 	background: url(../img/logo-125x77.png) 0 0 no-repeat;
 	text-indent: -999em;
 }
-
 #totsy > header > div,
 #totsy > header > nav {
 	float:right;
 }
-
 #totsy > header > nav {
 	width:480px;
 	font-size:12px;
@@ -4463,3 +4463,7 @@ Text Align > left / right
 	background: url(../img/btn-arrow.png) 100% 50% no-repeat;
 	color:#d84643;
 	}
+/* main nav */
+header > nav li {
+	float:left;
+}

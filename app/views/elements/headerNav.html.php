@@ -41,7 +41,7 @@
 	<?php
 		if (!(empty($userInfo))) { ?>
 			<nav>
-				<ul class="nav main" id="navlist">
+				<ul class="group">
 					<li><a href="/sales" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0 || $_SERVER['REQUEST_URI'] == '/') {
 					echo 'class="active"';
 					} ?>>All Sales</a></li>
