@@ -25,6 +25,9 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	 if(preg_match('#(^a/)[a-zA-Z_]+#', $params['request']->url)) {
 		 $allowed = true;
 	 }
+	 if(preg_match('#(^affiliate/)[a-zA-Z_]+#', $params['request']->url)) {
+		 $allowed = true;
+	 }
 	 if (array_key_exists('a',$params['request']->query )) {
 		 $allowed = true;
 	 }
