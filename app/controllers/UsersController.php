@@ -318,7 +318,7 @@ class UsersController extends BaseController {
 	}
 
 	protected function autoLogin() {
-	
+
 		$redirect = '/sales';
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
@@ -340,9 +340,9 @@ class UsersController extends BaseController {
 					return $this->redirect('/register/facebook');
 				}
 			}
-		}
+		}		
 
-		if(preg_match( '@[(/|login|register)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
+		if(preg_match( '@^[(/|login|register)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
 				'conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
 			if($user) {
@@ -684,6 +684,7 @@ class UsersController extends BaseController {
 	 * @see Affiliates::register()
 	 * @see FacebookProxy::api()
 	 */
+
 	public static function facebookLogin($affiliate = null, $cookie = null, $ipaddress = null) {
 		$self = static::_object();
 
@@ -691,12 +692,7 @@ class UsersController extends BaseController {
 		$success = false;
 		$userfb = array();
 	
-		$fh = fopen('/tmp/sktest.log','a');
 		if ($self->fbsession) {
-			ob_start();
-			var_export($self->fbsession);
-			$out = ob_get_clean();
-			fwrite($fh,'fbsession: '.$out."\n");
 			$userfb = FacebookProxy::api('/me');
 			
 			$user = User::find('first', array(
@@ -707,14 +703,6 @@ class UsersController extends BaseController {
 			))));
 							
 			if ($user) {
-			
-			/*
-			ob_start();
-			var_export($user);
-			$out = ob_get_clean();
-			
-			fwrite($fh,'user: '.$out."\n");
-			*/
 			
 			$userfb = FacebookProxy::api('/me');		
 			$user->facebook_info = $userfb;
@@ -731,35 +719,17 @@ class UsersController extends BaseController {
 			if (Session::check('landing')){
 				$landing = Session::read('landing');
 			}
-			
-			/*	
-			ob_start();
-			var_export($landing);
-			$out = ob_get_clean();
-			
-			fwrite($fh,'landing: '.$out."\n");					
-			print "test<br />";
-			print $landing;
-			//exit(0);	
-			*/	
 								
-				if (!empty($landing)) {
-
-			fwrite($fh,'got to landing:'."\n");
-					Session::delete('landing',array('name'=>'default'));
-					$self->redirect($landing, array('exit' => true));
-					unset($landing);
-				} else {
-				fwrite($fh,'got to sales:'."\n");
-				    $self->redirect("/sales", array('exit' => true));
-				}
+			if (!empty($landing)) {
+			    Session::delete('landing',array('name'=>'default'));
+			    $self->redirect($landing, array('exit' => true));
+			    unset($landing);
+			} else {
+			    $self->redirect("/sales", array('exit' => true));
+			}
 				
 			}
-			//print "test 2";
-			//exit(0);
 		}
-		//print "test 3";
-		//exit(0);
 		
 		return compact('success', 'userfb');
 	}
