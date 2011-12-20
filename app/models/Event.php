@@ -38,7 +38,7 @@ use app\models\Item;
 *    "splash_small_image" : "4c409564ce64e5e475630000",
 *    "start_date" : ISODate("2010-07-19T21:00:00Z"),
 *    "url" : "cachcach"
-* }}}
+* }}}"
 *
 *    * blurb - Any copy that will be displayed on the event index page
 *    * event_image - ObjectId of the gridfs image.
@@ -59,7 +59,8 @@ class Event extends Base {
 	 *
 	 * @return Object
 	 */
-	public static function open($params = null, array $options = array(), $departments = null) {
+
+	public static function open($params = null, array $options = array(), $departments = null, $categories = null, $ages = null) {
 		$fields = $params['fields'];
 		$events = Event::all(compact('fields') + array(
 			'conditions' => array(
@@ -70,13 +71,13 @@ class Event extends Base {
 			'order' => array('start_date' => 'DESC')
 		));
 		//Filter events results if settled
-		if(!empty($departments)){
+		if(!empty($departments)||!empty($categories)){
 			$itemsCollection = Item::collection();
 			foreach($events as $key_event =>$event) {
 				$events_id[] = (string) $event["_id"];
 			}
-			
-			$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'departments' => array('$in' => array($departments))), array('event' => 1));
+
+			$items = Item::filter($events_id, $departments, $categories, $ages);
 			$events_id_filtered = array();
 			if(!empty($items)) {
 				foreach($items as $item) {
@@ -86,7 +87,7 @@ class Event extends Base {
 				}
 			}
 			$events_id_filtered = array_unique($events_id_filtered);
-			if(!empty($events_id_filtered)) {
+			//if(!empty($events_id_filtered)) {
 				$events = Event::all(compact('fields') + array(
 					'conditions' => array(
 						'_id' => array('$in' => $events_id_filtered),
@@ -96,7 +97,7 @@ class Event extends Base {
 					),
 					'order' => array('start_date' => 'DESC')
 				));
-			}
+			//}
 		}
 		return $events;
 	}
@@ -123,7 +124,7 @@ class Event extends Base {
 			}
 			$events_id_filtered = array();
 			if(!empty($events_id)) {
-				$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'departments' => array('$in' => array($departments))), array('event' => 1));	
+				$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'departments' => array('$in' => array($departments))), array('event' => 1));
 				foreach($items as $item) {
 					foreach($item["event"] as $event_id) {
 						$events_id_filtered[] = $event_id;
@@ -142,13 +143,13 @@ class Event extends Base {
 		}
 		return $events;
 	}
-	
+
 	public static function directQuery(array $args = array()){
 		$connection = self::connection()->connection->events;
-		 
+
 		$cursor = $connection->find($args);
 		$return = array();
-		foreach ($cursor as $data){ 
+		foreach ($cursor as $data){
 			if (array_key_exists('_id',$data)){
 				$data['_id'] = (string) $data['_id'];
 			}
@@ -164,12 +165,12 @@ class Event extends Base {
 					'usec' => $data['end_date']->usec
 				);
 			}
-			$return[] = $data; 
+			$return[] = $data;
 		}
 		unset($cursor,$data,$connection);
-		
+
 		return $return;
-	} 
+	}
 }
 
 ?>
