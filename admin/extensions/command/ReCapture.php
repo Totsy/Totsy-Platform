@@ -172,7 +172,7 @@ class ReCapture extends \lithium\console\Command {
 				)
 		);
 		if ($auth_capture->success()) {
-			Logger::debug('Capture Succeeded: ' . $auth_capture);
+			Logger::debug('Capture Succeeded: ' . $auth_capture->key);
 			$update = $ordersCollection->update(
 						array('_id' => $order['_id']),
 						array('$set' => array('authKey' => $auth_capture->key,
