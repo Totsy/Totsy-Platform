@@ -312,7 +312,6 @@ class UsersController extends BaseController {
 	}
 
 	protected function autoLogin() {
-
 		$redirect = '/sales';
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
@@ -332,9 +331,9 @@ class UsersController extends BaseController {
 					return $this->redirect('/register/facebook');
 				}
 			}
-		}
+		}		
 
-		if(preg_match( '@[(/|login|register)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
+		if(preg_match( '@^[(/|login|register)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
 				'conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
 			if($user) {

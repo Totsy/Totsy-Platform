@@ -27,7 +27,7 @@
 			</tr>
 			<?php foreach ($credits as $credit): ?>
 			<tr>
-			<td><?=date('Y-m-d', $credit->_id->getTimestamp())?></td>
+			<td><?= date('Y-m-d', $credit->_id->getTimestamp());?></td>
 			<td>
 			<?php if (!empty($credit->credit_amount)) { ?>
 					<?php echo "$".number_format(abs($credit->credit_amount),2); ?>
