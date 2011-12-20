@@ -4483,15 +4483,23 @@ nav .group > li:after,
 }
 nav .group > li > a {
 	display: block;
-	padding:20px 10px 0;
+	padding-top:20px;
+	background-image: url(../img/icons-nav.png);
+	background-repeat: no-repeat;
 	color:#636466;
 	font-weight: bold;
 }
 nav .group > li a:hover {text-decoration: none;}
+nav .group > li > a em {display:block; width:42.57%; font-weight: bold;}
+nav #newsales {width: 93px;}
+nav #newsales > a {padding-left:43px; padding-right:10px; background-position: 0 0;}
+nav #ending {width:101px;}
+nav #ending > a {padding-left:43px; padding-right:10px; background-position: 0 0;}
+nav #bycat {width:121px;}
+nav #byage {width:104px;}
+nav .haschild > a {padding-left:10px; padding-right:43px; background-position: 100% 0;}
 
 /* subcats in main nav */
-nav .haschild li {
-}
 nav .haschild li a {
 	display: block;
 	padding: 0 10px;

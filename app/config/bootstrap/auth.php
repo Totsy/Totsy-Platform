@@ -17,7 +17,7 @@ Auth::config(array(
 ));
 
 Dispatcher::applyFilter('_call', function($self, $params, $chain) {
-	$skip = array('login', 'logout', 'register',"register/facebook","reset");
+	$skip = array('/','login', 'logout', 'register',"register/facebook","reset");
 	$allowed = false;
 	$logged_in = false;
 	
