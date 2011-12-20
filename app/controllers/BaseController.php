@@ -47,7 +47,7 @@ class BaseController extends \lithium\action\Controller {
 		/**
 		 * Setup all the necessary facebook stuff
 		 */
-		$this->fbsession = $fbsession = FacebookProxy::getSession();
+		$this->fbsession = $fbsession = FacebookProxy::getUser();
 		$fbconfig = FacebookProxy::config();
 
 		if($this->fbsession){
@@ -70,7 +70,7 @@ class BaseController extends \lithium\action\Controller {
 			    if ($user->deactivated == true) {
 			        Session::clear(array('name' => 'default'));
 			        Session::delete('appcookie', array('name' => 'cookie'));
-		            FacebookProxy::setSession(null);
+		            //FacebookProxy::setSession(null);
 			    }
 				$decimal = ($user->total_credit < 1) ? 2 : 0;
 				$credit = ($user->total_credit > 0) ? number_format($user->total_credit, $decimal) : 0;
