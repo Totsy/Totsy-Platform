@@ -44,13 +44,13 @@
 				<ul class="group">
 					<li id="newsales"><a href="/sales" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0 || $_SERVER['REQUEST_URI'] == '/') {
 					echo 'class="active"';
-					} ?>>New<br/> Sales</a></li>
+					} ?>><em>New<br/> Sales</em></a></li>
 					<li id="ending"><a href="/sales/girls" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/girls') == 0) {
 					echo 'class="active"';
-					} ?>>Ending<br/> Soon</a></li>
+					} ?>><em>Ending<br/> Soon</em></a></li>
 					<li id="bycat" class="haschild"><a href="/sales/boys" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/boys') == 0)  {
 					echo 'class="active"';
-					} ?>>Shop By<br/> Category</a>
+					} ?>><em>Shop By<br/> Category</em></a>
 						<ul>
 							<li><a href="#" title="click here">link</a></li>
 							<li><a href="#" title="click here">link</a></li>
@@ -60,7 +60,7 @@
 					</li>
 					<li id="byage" class="haschild"><a href="/sales/momsdads" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/momsdads') == 0) {
 					echo 'class="active"';
-					} ?>>Shop<br/> By Age</a>
+					} ?>><em>Shop<br/> By Age</em></a>
 											<ul>
 							<li><a href="#" title="click here">link</a></li>
 							<li><a href="#" title="click here">link</a></li>

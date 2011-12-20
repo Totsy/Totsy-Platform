@@ -4412,7 +4412,7 @@ Text Align > left / right
 #totsy {margin:43px auto 10px; overflow: visible;}
 #totsy > header {
 	position:relative; 
-	margin-top:-54px; padding-top:26px;
+	margin:-54px 0 30px; padding-top:26px;
 	width:100%;
 }
 #logo {
@@ -4432,9 +4432,9 @@ Text Align > left / right
 	float:right;
 }
 #totsy > header > nav {
-	width:480px;
+	margin-right:25px;
+	padding:9px 0 0;
 	font-size:12px;
-	padding:10px 0 0;
 }
 #totsy > header #invite {
 	position:absolute;
@@ -4463,8 +4463,9 @@ Text Align > left / right
 	color:#d84643;
 	}
 /* main nav */
-nav .group > li {
-	position: relative;
+nav .group > li,
+nav .haschild ul {
+	position: relative; z-index: 100;
 	float:left;
 	margin-right:15px; padding:0 0 8px;
 	background: #fff;
@@ -4478,41 +4479,61 @@ nav .group > li:after,
 	content: "";
 	position: absolute; top:-1px; right:-10px;
 	display: block;
-	width:9px; height:8px;
+	width:9px; height:9px;
 	background: url(../img/nav-tri.png) 0 0 no-repeat;
 }
 nav .group > li > a {
 	display: block;
-	padding-top:20px;
+	padding:17px 10px 0;
+	color:#636466;
+	font-weight: bold; line-height:normal; text-transform: uppercase;
+}
+nav .group > li a:hover {
+	text-decoration: none;
+}
+nav .group > li > a em {
+	display:block;
+	padding-left:33px;
 	background-image: url(../img/icons-nav.png);
 	background-repeat: no-repeat;
-	color:#636466;
 	font-weight: bold;
 }
-nav .group > li a:hover {text-decoration: none;}
-nav .group > li > a em {display:block; width:42.57%; font-weight: bold;}
 nav #newsales {width: 93px;}
-nav #newsales > a {padding-left:43px; padding-right:10px; background-position: 0 0;}
+nav #newsales > a em {background-position:0 0;}
 nav #ending {width:101px;}
-nav #ending > a {padding-left:43px; padding-right:10px; background-position: 0 0;}
+nav #ending > a em {background-position:0 -35px;}
 nav #bycat {width:121px;}
 nav #byage {width:104px;}
-nav .haschild > a {padding-left:10px; padding-right:43px; background-position: 100% 0;}
+nav .group li.haschild > a em {padding-left:0; padding-right:33px; background-position: 100% -69px;}
 
 /* subcats in main nav */
+nav .haschild ul {
+	position: absolute; top:auto; left: -999em;
+	float: none;
+	margin: 0; padding:0 0 8px;
+	width:100%;
+	border-top:none;
+}
+nav .haschild:hover ul {left:-1px;}
+nav .haschild li {
+	margin:0.25em 0;
+	line-height:1.5;
+}
+nav .haschild li:last-child {margin-bottom:0;}
 nav .haschild li a {
 	display: block;
 	padding: 0 10px;
-	color:#666;
+	color:#666; /* fallback */
+	color:rgba(0,0,0,0.6);
 }
 nav .haschild li a:hover {
 	background:#f7d7d6;
-	color:#666;
+	color:rgba(0,0,0,0.9);
 }
 /* user utils - cart, account, login */
 #totsy > header #userUtils {
 	position: relative;
-	margin:10px 10px 0 0; padding:6px 10px 0;
+	margin:9px 10px 0 0; padding:6px 10px 0;
 	background: #fff;
 	border:1px solid #ccc;
 	-webkit-border-radius:0 0 10px 10px;
