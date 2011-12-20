@@ -13,6 +13,26 @@ use app\models\Affiliate;
 
 class EventsController extends BaseController {
 
+	public function category() {
+		$datas = $this->request->args;
+		$categories = array();
+		$bannersCollection = Banner::collection();
+		$banner = $bannersCollection->findOne(array("enabled" => true, 'end_date' => array('$gte' => new MongoDate(strtotime('now')))));
+
+		if(empty($this->request->args[0])) {
+			$openEvents = Event::open();
+			$pendingEvents = Event::pending();
+		} else {
+			$categories = ucwords($this->request->args[0]);
+			$openEvents = Event::open(null,array(),null,$categories);
+			$pendingEvents = Event::pending(null,array(),null,$categories);
+		}
+
+		$itemCounts = array();
+
+		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner', 'categories');
+	}
+
 	public function index() {
 		$datas = $this->request->data;
 		$departments = array();
@@ -127,11 +147,11 @@ class EventsController extends BaseController {
 						}
 						else{
 							$notmissChristmasCount++;
-						}			
+						}
 						//end xmas
-						
-						
-						
+
+
+
 						if (array_key_exists('departments',$result) && !empty($result['departments'])) {
 							if(in_array($departments,$result['departments']) ) {
 								if ($eventItem->total_quantity <= 0) {
