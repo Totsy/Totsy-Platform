@@ -5,7 +5,7 @@
 		<a href="/sales" title="Totsy">totsy</a>
 	</h1>
 		
-	<div id="userUtils" class="menu_top_left">
+	<div id="userUtils">
 		<?php
 			if (!empty($userInfo)) { ?>
 				<div id="userinfo">
@@ -42,18 +42,32 @@
 		if (!(empty($userInfo))) { ?>
 			<nav>
 				<ul class="group">
-					<li><a href="/sales" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0 || $_SERVER['REQUEST_URI'] == '/') {
+					<li id="newsales"><a href="/sales" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0 || $_SERVER['REQUEST_URI'] == '/') {
 					echo 'class="active"';
 					} ?>>All Sales</a></li>
-					<li><a href="/sales/girls" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/girls') == 0) {
+					<li id="ending"><a href="/sales/girls" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/girls') == 0) {
 					echo 'class="active"';
 					} ?>>Girls</a></li>
-					<li><a href="/sales/boys" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/boys') == 0)  {
+					<li class="haschild"><a href="/sales/boys" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/boys') == 0)  {
 					echo 'class="active"';
-					} ?>>Boys</a></li>
-					<li><a href="/sales/momsdads" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/momsdads') == 0) {
+					} ?>>Boys</a>
+						<ul>
+							<li><a href="#" title="click here">link</a></li>
+							<li><a href="#" title="click here">link</a></li>
+							<li><a href="#" title="click here">link</a></li>
+							<li><a href="#" title="click here">link</a></li>
+						</ul>
+					</li>
+					<li class="haschild"><a href="/sales/momsdads" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/momsdads') == 0) {
 					echo 'class="active"';
-					} ?>>Moms &amp; Dads</a></li>
+					} ?>>Moms &amp; Dads</a>
+											<ul>
+							<li><a href="#" title="click here">link</a></li>
+							<li><a href="#" title="click here">link</a></li>
+							<li><a href="#" title="click here">link</a></li>
+							<li><a href="#" title="click here">link</a></li>
+						</ul>
+					</li>
 				</ul>
 			</nav>
 			<div id="invite">

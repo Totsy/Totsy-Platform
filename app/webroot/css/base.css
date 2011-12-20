@@ -4469,24 +4469,39 @@ nav .group > li {
 	margin-right:15px; padding:0 0 8px;
 	background: #fff;
 	border:1px solid #ccc;
+	-webkit-border-radius:0 0 10px 10px;
+	-moz-border-radius:0 0 10px 10px;
 	border-radius:0 0 10px 10px;
 }
-nav .group > li:after {
+nav .group > li:after,
+#totsy > header #userUtils:after {
 	content: "";
 	position: absolute; top:-2px; right:-10px;
 	display: block;
 	width:9px; height: 9px;
 	background: url(../img/nav-tri.png) 0 0 no-repeat;
 }
-
 nav .group > li > a {
 	display: block;
 	padding:20px 10px 0;
 }
+/* subcats in main nav */
+nav .haschild li {
+}
+nav .haschild li a {
+	display: block;
+	padding: 0 10px;
+}
+nav .haschild li a:hover {
+	background:#f7d7d6;
+}
 /* user utils - cart, account, login */
 #totsy > header #userUtils {
-	margin:10px 0 0;
+	position: relative;
+	margin:10px 10px 0 0; padding:6px 10px 0;
 	background: #fff;
 	border:1px solid #ccc;
+	-webkit-border-radius:0 0 10px 10px;
+	-moz-border-radius:0 0 10px 10px;
 	border-radius:0 0 10px 10px;
 }
