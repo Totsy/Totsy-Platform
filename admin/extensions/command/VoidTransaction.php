@@ -98,16 +98,16 @@ class VoidTransaction extends \lithium\console\Command {
 		#If Errors Send Email to Customer Service
 		if(!empty($report['updated']) || !empty($report['errors']) ) {
 			if (Environment::is('production')) {
-				Mailer::send('ReAuth_Errors_CyberSource','searnest@totsy.com', $report);
-				Mailer::send('ReAuth_Errors_CyberSource','mruiz@totsy.com', $report);
-				Mailer::send('ReAuth_Errors_CyberSource','gene@totsy.com', $report);
+				Mailer::send('Void_Errors_CyberSource','searnest@totsy.com', $report);
+				Mailer::send('Void_Errors_CyberSource','mruiz@totsy.com', $report);
+				Mailer::send('Void_Errors_CyberSource','gene@totsy.com', $report);
 			}
-			Mailer::send('ReAuth_Errors_CyberSource','troyer@totsy.com', $report);
+			Mailer::send('Void_Errors_CyberSource','troyer@totsy.com', $report);
 		}
 	}
 
 	public function manageVoid($orders = null, $limitDate = null) {
-		Logger::debug('Managing Reauth Type');
+		Logger::debug('Managing Void Type');
 		$report = array('updated' => null, 'errors' => null, 'skipped' => null);
 		foreach ($orders as $order) {
 			Logger::debug('Processing Order : ' . $order['order_id']);
@@ -184,7 +184,8 @@ class VoidTransaction extends \lithium\console\Command {
 			$report['errors'][] = array(
 					'error_message' => $message, 
 					'order_id' => $order['order_id'], 
-					'authKey' => $order['authKey'], 
+					'authKey' => $order['authKey'],
+					'authKeyDeclined' => $auth->key, 
 					'total' => $order['authTotal']
 			);
 		} else {
@@ -222,7 +223,7 @@ class VoidTransaction extends \lithium\console\Command {
 		$month = date("m",$now["0"]);
 		$day = date("d",$now["0"]);
 		$year = date("Y",$now["0"]);
-		$myFile =  "Log_Reauthorize_" . $month .'_'. $day . "_" . $year . "_" . $now["0"] . ".csv";
+		$myFile =  "Log_Void_" . $month .'_'. $day . "_" . $year . "_" . $now["0"] . ".csv";
 		$myFilePath = LITHIUM_APP_PATH . $this->source . $myFile;
 		$fh = fopen($myFilePath, 'wb');
 		if(!empty($report)) {

@@ -44,7 +44,7 @@ class ReAuthorize extends \lithium\console\Command {
 	
 	public $fullAmount = false;
 	
-	public $reauthVisaMC = false;
+	public $reauthVisaMC = true;
 	
 	public $unitTest = false;
 	/**
@@ -215,7 +215,7 @@ class ReAuthorize extends \lithium\console\Command {
 							$lastDateVoid = $record['date_saved'];
 						}
 					}
-					if($lastDateVoid->sec <= $limitDate) {
+					if($lastDateVoid->sec >= $limitDate) {
 						$reAuth = false;
 					}
 				} else {

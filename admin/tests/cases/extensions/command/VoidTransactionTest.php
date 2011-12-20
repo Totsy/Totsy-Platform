@@ -105,6 +105,8 @@ class VoidTransactionTest extends \lithium\test\Unit {
 		#Get Order Modified
 		$order_test = $ordersCollection->findOne(array("_id" => $order->_id));
 		#Testing Modifications
+		$this->assertTrue(!array_key_exists('void_records', $order));
+		$this->assertTrue(!array_key_exists('void_records', $order_test));
 		$this->assertEqual(true , $order_test['authKey'] == $order->authKey);
 		$this->assertEqual(false , $order_test['authTotal'] != 1.00);
 		#Delete Temporary Documents
@@ -150,6 +152,8 @@ class VoidTransactionTest extends \lithium\test\Unit {
 		#Get Order Modified
 		$order_test = $ordersCollection->findOne(array("_id" => $order->_id));
 		#Testing Modifications
+		$this->assertTrue(!array_key_exists('void_records', $order));
+		$this->assertTrue(array_key_exists('void_records', $order_test));
 		$this->assertEqual(false, $order_test['authKey'] == $order->authKey);
 		$this->assertEqual(true, $order_test['authTotal'] == 100.00);
 		#Delete Temporary Documents
@@ -157,7 +161,7 @@ class VoidTransactionTest extends \lithium\test\Unit {
 		Order::remove(array("_id" => $order->_id));
 	}
 	
-	public function testVoidwithFullAuth() {
+	public function testVoidwithFullAuthTooEarly() {
 		$ordersCollection = Order::Collection();
 		#Create Transaction initial Transaction in CyberSource
 		$authorizeObject = Processor::authorize('test', 1, $this->_Visacustomer);
@@ -169,7 +173,7 @@ class VoidTransactionTest extends \lithium\test\Unit {
 		$cc_encrypt = Order::creditCardEncrypt($this->_VisaCard, (string) $user->_id);
 		#Temporary Order Creation
 		$order = Order::create(array('_id' => new MongoId()));
-		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d") - $this->_VoidLimitDate, date("Y")));
+		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d") - ($this->_VoidLimitDate - 1), date("Y")));
 		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 		$order->save(array(
 				'total' => 100.00,
@@ -195,7 +199,9 @@ class VoidTransactionTest extends \lithium\test\Unit {
 		#Get Order Modified
 		$order_test = $ordersCollection->findOne(array("_id" => $order->_id));
 		#Testing Modifications
-		$this->assertEqual(false, $order_test['authKey'] == $order->authKey);
+		$this->assertTrue(!array_key_exists('void_records', $order));
+		$this->assertTrue(!array_key_exists('void_records', $order_test));
+		$this->assertEqual(true, $order_test['authKey'] == $order->authKey);
 		$this->assertEqual(true, $order_test['authTotal'] == 100.00);
 		#Delete Temporary Documents
 		User::remove(array("_id" => $user->_id));
