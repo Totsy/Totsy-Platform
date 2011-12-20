@@ -62,6 +62,8 @@ require __DIR__ . '/bootstrap/local_testing_cli.php';
  * selenium tests. Please note that `*chrome` will select Firefox as a browser
  * not as one would expect Google Chrome.
  */
+ 
+use lithium\core\Environment;
 Environment::set('test', array(
 	'browser' => '*chrome',
 	'browserUrl' => 'http://totsy'
