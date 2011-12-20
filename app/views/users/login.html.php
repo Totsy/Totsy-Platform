@@ -102,8 +102,9 @@ if(Session::read('layout', array('name' => 'default'))=='mamapedia') {
 
 <div class="round gradient" style="border:1px #eeeeee solid; height:330px; width:310px; margin-top:8px;">
 
+<!--
 <h2 style="width:300px; text-align:center; font-weight:bold; padding-top:10px; padding-bottom:20px; margin-bottom:10px;  border-bottom:1px #cccccc solid;">Member Sign in</h2>
-
+-->
 
 <?php echo $this->view()->render(array('element' => 'loginForm')); ?>
 </div>
@@ -158,7 +159,9 @@ var google_conversion_value = 0;
 <script>
 //your fb login function
 function fblogin() {
+<<<<<<< HEAD
 FB.login(function(response) {
-}, {scope:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
+}, 
+{scope:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
 }
 </script>

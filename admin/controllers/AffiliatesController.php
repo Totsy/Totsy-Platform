@@ -124,7 +124,10 @@ class AffiliatesController extends \admin\controllers\BaseController {
         $info = array();
         $landing = array();
        	$data = $this->request->data;
+<<<<<<< HEAD
 
+=======
+>>>>>>> f44c1ec1b9fdef2f85ecf218ce2e81c0b642d231
 		if ($data) {
             $info['active'] = (($data['active'] == '1' || $data['active'] == 'on')) ? true : false;
             $info['name'] = $data['affiliate_name'];
@@ -196,7 +199,11 @@ class AffiliatesController extends \admin\controllers\BaseController {
         }
         $data = $this->request->data;
 
+<<<<<<< HEAD
         if( ($data) ) {
+=======
+        if($data) {        	
+>>>>>>> f44c1ec1b9fdef2f85ecf218ce2e81c0b642d231
         	$i = 0;
 
 			foreach($data as $record=>$val) {

@@ -26,7 +26,8 @@
 	<?php echo '<script src="/js/jquery.uniform.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.uniform.min.js') . '" /></script>'; ?>
    <?php echo '<script src="/js/jquery.countdown.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.countdown.min.js') . '" /></script>'; ?>
 	<?php echo $this->scripts(); ?>
-	
+
+	<meta http-equiv="Expires" content="<?php echo date('D, d M Y h:i T', strtotime('tomorrow')); ?>"/>
 	<meta property="og:site_name" content="Totsy"/>
 	<meta property="fb:app_id" content="181445585225391"/>
 	<meta name="description" content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
@@ -65,6 +66,7 @@
 
 </head>
 <body class="app">
+
 	<?php if(isset($branch)) { echo $branch; } ?>
 <div class="container_16 roundy glow">
 	<div class="grid_6 alpha" style="margin:5px 0px 0px 5px;">
@@ -186,5 +188,6 @@
         };
     })();
 </script>
+
 </body>
 </html>
