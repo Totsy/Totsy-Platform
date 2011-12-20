@@ -472,7 +472,7 @@ span.filters a.active {
 div.code-coverage-results, h4.code-coverage-name {
 	clear: both;
 	color: #000000;
-	font-size: .8em;
+	font-size: .75em;
 	font-family: 'Andale Mono', Monaco, Courier, monospace !important;
 	background-color: #fafafa;
 	border: 1px solid #e6e6e6;
