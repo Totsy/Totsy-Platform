@@ -102,6 +102,7 @@ Libraries::add('li3_facebook', array(
 	'appId' => '130085027045086',
 	'secret' => '33a18cebb0ac415c6bddf28cebb48e96',
 	'cookie' => true,
+	'oauth'  => true,
 	'domain' => 'totsy.com'
 ));
 
