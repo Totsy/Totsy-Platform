@@ -924,7 +924,7 @@ class Order extends Base {
 		}
 		return $creditCard; 
 	}
-	
+
 	/**
 	 * Encrypt all credits card informations with MCRYPT and store it in the Session
 	 */
