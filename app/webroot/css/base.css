@@ -4476,24 +4476,30 @@ nav .group > li {
 nav .group > li:after,
 #totsy > header #userUtils:after {
 	content: "";
-	position: absolute; top:-2px; right:-10px;
+	position: absolute; top:-1px; right:-10px;
 	display: block;
-	width:9px; height: 9px;
+	width:9px; height:8px;
 	background: url(../img/nav-tri.png) 0 0 no-repeat;
 }
 nav .group > li > a {
 	display: block;
 	padding:20px 10px 0;
+	color:#636466;
+	font-weight: bold;
 }
+nav .group > li a:hover {text-decoration: none;}
+
 /* subcats in main nav */
 nav .haschild li {
 }
 nav .haschild li a {
 	display: block;
 	padding: 0 10px;
+	color:#666;
 }
 nav .haschild li a:hover {
 	background:#f7d7d6;
+	color:#666;
 }
 /* user utils - cart, account, login */
 #totsy > header #userUtils {
