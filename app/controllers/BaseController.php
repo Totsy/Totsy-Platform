@@ -42,19 +42,21 @@ class BaseController extends \lithium\action\Controller {
         User::setupCookie();
 		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
 	    $logoutUrl = $logoutUrl . "$_SERVER[SERVER_NAME]/logout";
+	    
 		/**
 		 * Setup all the necessary facebook stuff
 		 */
-		$this->fbsession = $fbsession = FacebookProxy::getSession();
-		$fbconfig = FacebookProxy::config();
-
-		if($this->fbsession){
-			$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
+		
+		if(!$this->fbsession){
+			$this->fbsession = $fbsession = FacebookProxy::getUser();		
+			$fbconfig = FacebookProxy::config();
+			
+			if ($this->fbsession && strlen(FacebookProxy::getUser())>0) {
+				$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
+			} else {
+				$fblogout = "/logout";
+			}
 		}
-		else{
-			$fblogout = "/logout";
-		}
-
 
 		if ($userInfo) {
 			$user = User::find('first', array(
@@ -65,11 +67,11 @@ class BaseController extends \lithium\action\Controller {
 			    /**
 			    * If the users account has been deactivated during login,
 			    * destroy the users session.
-			    **/
-			    if ($user->deactivated == true) {
+			    **/			    
+			    if ($user->deactivated == true) {			    
 			        Session::clear(array('name' => 'default'));
 			        Session::delete('appcookie', array('name' => 'cookie'));
-		            FacebookProxy::setSession(null);
+					//FacebookProxy::setSession(null);
 			    }
 				$decimal = ($user->total_credit < 1) ? 2 : 0;
 				$credit = ($user->total_credit > 0) ? number_format($user->total_credit, $decimal) : 0;
