@@ -1,12 +1,12 @@
-<?=$this->html->script('jquery-1.4.2.min.js');?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->script('TableTools.min.js');?>
-<?=$this->html->script('ZeroClipboard.js');?>
-<?=$this->html->style('table');?>
-<?=$this->html->style('TableTools');?>
+<?php echo $this->html->script('jquery-1.4.2.min.js');?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->script('TableTools.min.js');?>
+<?php echo $this->html->script('ZeroClipboard.js');?>
+<?php echo $this->html->style('table');?>
+<?php echo $this->html->style('TableTools');?>
 <?php if (!empty($event)): ?>
 	<div class="grid_16">
-		<h2 id="page-heading">Order File - <?=$event->name?></h2>
+		<h2 id="page-heading">Order File - <?php echo $event->name?></h2>
 	</div>
 <?php endif ?>
 
@@ -28,7 +28,7 @@
 					<?php foreach ($orderFile as $orders): ?>
 						<tr>
 							<?php foreach ($orders as $key => $value): ?>
-								<td><?=$value?></td>
+								<td><?php echo $value?></td>
 							<?php endforeach ?>
 						</tr>
 					<?php endforeach ?>

@@ -21,16 +21,16 @@
 		<?php echo $fileName ?>
 	</td>
 	<td align="center">
-		<?=$this->html->image("/image/$id.jpg", array('alt' => 'altText')); ?>
+		<?php echo $this->html->image("/image/$id.jpg", array('alt' => 'altText')); ?>
 	</td>
 	<td align="center">
-		<input type="radio" name="zoom_image" value="<?=$id;?>">
+		<input type="radio" name="zoom_image" value="<?php echo $id;?>">
 	</td>
 	<td align="center">
-		<input type="radio" name="primary_image" value="<?=$id;?>">
+		<input type="radio" name="primary_image" value="<?php echo $id;?>">
 	</td>
 	<td align="center">
-		<input type="checkbox" name="alternate-<?=$id;?>" value="<?=$id;?>">
+		<input type="checkbox" name="alternate-<?php echo $id;?>" value="<?php echo $id;?>">
 	</td>
 </tr>
 </table>
