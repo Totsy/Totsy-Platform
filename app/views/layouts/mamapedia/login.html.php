@@ -39,7 +39,6 @@
 </head>
 <body class="app login">
 	<div id="fb-root"></div>
-		</body>
 	<?php echo $this->content(); ?>
 	<?php
 
@@ -65,9 +64,7 @@
 	<script type="text/javascript">
 
 	    jQuery(document).ready(function($){
-
 	    	$.backstretch("<?=$imgDirectory . $image;?>");
-
 	    });
 
 	</script>
@@ -94,4 +91,5 @@
         document.getElementById('fb-root').appendChild(e);
       }());
     </script>
+  </body>
 </html>

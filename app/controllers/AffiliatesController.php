@@ -153,8 +153,10 @@ class AffiliatesController extends BaseController {
 		$cookie = Session::read('cookieCrumb',array('name'=>'cookie'));
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		
+		//mamasource regsitation
 		switch($this->request->env("HTTP_HOST")) {
 		    case "mamapedia.totsy.com":
+		    case "evan.totsy.com":
 		        $affiliate = "mamasource";
 		        break;
 		    default:

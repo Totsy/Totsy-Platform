@@ -240,7 +240,6 @@ class UsersController extends BaseController {
 	
 		$message = $resetAuth = $legacyAuth = $nativeAuth = false;
 		$rememberHash = '';
-		
 
 		//redirect to the right email if the user is coming from an email
 		//the session writes this variable on the register() method

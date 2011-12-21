@@ -65,6 +65,7 @@ class BaseController extends \lithium\action\Controller {
 				'conditions' => array('_id' => $userInfo['_id']),
 				'fields' => array('total_credit', 'deactivated','affiliate_share')
 			));
+						
 			if (isset($user) && $user) {
 			    /**
 			    * If the users account has been deactivated during login,

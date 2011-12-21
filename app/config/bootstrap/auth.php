@@ -56,14 +56,23 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	$granted = in_array($params['request']->url, $skip);
 	$granted = $allowed || $granted;
 	$granted = $granted || Auth::check('userLogin', $params['request']);
-
+	
 	// check if user already logged-in
 	if(Session::check('userLogin')) {
 		$logged_in = true;
+		
+		//for mamasource registered users logging into www.totsy.com
+		if( Session::read('invited_by', array('name' => 'default')) ) {
+			$affiliate_name =  Session::read('invited_by', array('name' => 'default'));
+			
+			if($affiliate_name=="mamasource" && $params['request']->env('SERVER_NAME')!=="mamasource.totsy.com") {
+				return new Response(array('location' => 'http://mamasource.totsy.com'));
+			}
+		}		
 	}
 	
 	// in case whe have an evnt's landing page , will nedd to reditec user to proper page
-	if ( !$logged_in && preg_match('(/sale/)','/'.$params['request']->url)){
+	if ( !$logged_in && preg_match('(/sale/)','/'.$params['request']->url)) {
 		Session::write('landing',$params['request']->url);
 	}
 
