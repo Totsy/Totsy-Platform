@@ -331,6 +331,7 @@ class FinancialExport extends Base  {
 	 * Find all the orders that haven't been shipped which have stock status.
 	 */
 	public function run() {
+	    var_dump(\lithium\core\Libraries::path("admin\models\Order"));
 		Environment::set($this->env);
 		MongoCursor::$timeout = -1;
 		$this->tmp = LITHIUM_APP_PATH . $this->tmp;
@@ -885,6 +886,7 @@ class FinancialExport extends Base  {
 	 * @param
 	 */
 	private function exportFiles() {
+	    var_dump("boo");
 	    $processed = LITHIUM_APP_PATH . $this->processed_dir;
 	    $source = $this->tmp;
 	    $finished = false;
@@ -939,22 +941,6 @@ class FinancialExport extends Base  {
                         }
                         fclose($fp);
                         curl_close ($ch);
-
-                        $subject = "Accounting Auto Reporting Job - Report";
-                        $message = "Automating reporting results: \r\n";
-                        if (!$reporting['success']) {
-                            $message .= implode("\r\n", $reporting['error']);
-                        }
-                        if (!empty($reporting['files_failed'])) {
-                            $message .= "The following files failed to transfer: \r\n";
-                            $message .= implode("\r\n", $reporting['files_failed']);
-                        }
-                        if (!empty($reporting['files_sent'])) {
-                            $message .= "The following files were transferred to $directory: \r\n";
-                            $message .= implode("\r\n", $reporting['files_sent']);
-                        }
-                        $this->log("Sending out email");
-                        mail($To , $subject , $message , $headers);
                        }
                     }
                 }
