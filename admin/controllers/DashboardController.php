@@ -20,9 +20,9 @@ class DashboardController extends \lithium\action\Controller {
 		 * Build a MongoDB group call for the monthly revenue
 		 * numbers.
 		 */
-
-		ini_set("display_errors", 1 );
-
+		
+		ini_set("display_errors", 1 ); 
+		 
 		$collection = Dashboard::collection();
 		$keys = new MongoCode("
 			function(doc){

@@ -136,6 +136,7 @@ class OrderImport extends \lithium\console\Command {
 	 * Parse XLS files.
 	 */
 	protected function _xlsParser() {
+		Logger::info('Parse XLS files.');
 		$objReader = PHPExcel_IOFactory::createReaderForFile("$this->path");
 		$objPHPExcel = $objReader->load("$this->path");
 		foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
@@ -165,6 +166,7 @@ class OrderImport extends \lithium\console\Command {
 	 *
 	 */
 	protected function _tabParser() {
+		Logger::info('Parse Tab delimited files.');
 		$nn = 0;
 		$header = array_keys(OrderShipped::schema());
 		if (($handle = fopen($this->path, "r")) !== FALSE) {
@@ -205,6 +207,7 @@ class OrderImport extends \lithium\console\Command {
 	 * @see admin\models\OrderShipped;
 	 */
 	private function _save($shipRecord) {
+		Logger::info('Saving Ship Record…');
 		$orderCollection = Order::connection()->connection->orders;
 		if (!empty($shipRecord)) {
 			$hash = array('hash' => md5(implode("", $shipRecord)));
@@ -215,7 +218,7 @@ class OrderImport extends \lithium\console\Command {
 				$ship->save();
 				if ($ship) {
 					preg_match('/[A-Z0-9]{8,12}/s', $ship->OrderNum, $match);
-					$this->log("Adding Ship Log MongoId $ship->_id to Order $match[0]");
+					Logger::info("Adding Ship Log MongoId $ship->_id to Order $match[0]");
 					$orderCollection->update(
 						array('$or' => array(array('order_id' => $match[0]), array('_id' => $ship->OrderId))),
 						array('$addToSet' => array('ship_records' => $ship->_id)),
@@ -226,6 +229,8 @@ class OrderImport extends \lithium\console\Command {
 				$message = $e->getMessage();
 				$this->log($message);
 			}
+		} else {
+			Logger::info('Ship Records is empty');
 		}
 		return true;
 	}
