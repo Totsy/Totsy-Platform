@@ -4417,7 +4417,7 @@ Text Align > left / right
 }
 #logo {
 	float:left;
-	margin-left:14px;
+	margin:0 25px 0 14px;
 	width:125px;
 	height:77px;
 }
@@ -4427,15 +4427,14 @@ Text Align > left / right
 	background: url(../img/logo-125x77.png) 0 0 no-repeat;
 	text-indent: -999em;
 }
-#totsy > header #userUtils,
 #totsy > header > nav {
-	float:right;
-}
-#totsy > header > nav {
-	margin-right:25px;
-	padding:9px 0 0;
+	float: right;
+	margin-right:7px; padding:9px 0 0;
+	max-width:82%;
 	font-size:12px;
 }
+#totsy > header #userUtils {float:right;}
+#totsy > header > nav > ul {float:left;}
 #totsy > header #invite {
 	position:absolute;
 	top:0;
@@ -4449,7 +4448,9 @@ Text Align > left / right
 	background: #ececec;
 	border:#ccc;
 	border-radius:0 0 10px 10px;
-	box-shadow: 2px 1px 5px rgba(0,0,0,0.3);
+	-webkit-box-shadow: 2px 1px 6px rgba(0,0,0,0.35);
+	-moz-box-shadow: 2px 1px 6px rgba(0,0,0,0.35);
+	box-shadow: 2px 1px 6px rgba(0,0,0,0.25);
 	color:#636466;
 	font-size:13px;
 	text-align: center;
@@ -4464,18 +4465,20 @@ Text Align > left / right
 	color:#d84643;
 	}
 /* main nav */
-nav .group > li,
+nav > ul > li,
 nav .haschild ul {
 	position: relative; z-index: 100;
 	float:left;
-	margin-right:15px; padding:0 0 8px;
+	margin-right:15px; padding:0 0 6px;
 	background: #fff;
 	border:1px solid #ccc;
 	-webkit-border-radius:0 0 10px 10px;
 	-moz-border-radius:0 0 10px 10px;
 	border-radius:0 0 10px 10px;
 }
-nav .group > li:after,
+nav > ul > li,
+#totsy > header #userUtils {box-shadow: 4px 4px 6px rgba(0,0,0,0.10);}
+nav > ul > li:after,
 #totsy > header #userUtils:after {
 	content: "";
 	position: absolute; top:-1px; right:-10px;
@@ -4483,16 +4486,16 @@ nav .group > li:after,
 	width:9px; height:9px;
 	background: url(../img/nav-tri.png) 0 0 no-repeat;
 }
-nav .group > li > a {
+nav > ul > li > a {
 	display: block;
-	padding:17px 10px 0;
+	padding:19px 10px 0;
 	color:#636466;
 	font-weight: bold; line-height:normal; text-transform: uppercase;
 }
-nav .group > li a:hover {
+nav > ul > li a:hover {
 	text-decoration: none;
 }
-nav .group > li > a em {
+nav > ul > li > a em {
 	display:block;
 	padding-left:33px;
 	background-image: url(../img/icons-nav.png);
@@ -4505,7 +4508,7 @@ nav #ending {width:101px;}
 nav #ending > a em {background-position:0 -35px;}
 nav #bycat {width:121px;}
 nav #byage {width:104px;}
-nav .group li.haschild > a em {padding-left:0; padding-right:33px; background-position: 100% -69px;}
+nav > ul li.haschild > a em {padding-left:0; padding-right:33px; background-position: 100% -69px;}
 
 /* subcats in main nav */
 nav .haschild ul {
@@ -4534,7 +4537,8 @@ nav .haschild li a:hover {
 /* user utils - cart, account, login */
 #totsy > header #userUtils {
 	position: relative;
-	margin:9px 10px 0 0; padding:2px 10px 5px;
+	margin:0 10px 0 0; padding:2px 10px 5px;
+	max-width:30%;
 	background: #fff;
 	border:1px solid #ccc;
 	-webkit-border-radius:0 0 10px 10px;

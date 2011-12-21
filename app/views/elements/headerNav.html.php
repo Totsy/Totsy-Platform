@@ -6,67 +6,68 @@
 	</h1>
 		
 	<?php 
-	use li3_facebook\extension\FacebookProxy; 
-	$fbconfig = FacebookProxy::config();
-	$appId = $fbconfig['appId'];	
-?>	
+		use li3_facebook\extension\FacebookProxy; 
+		$fbconfig = FacebookProxy::config();
+		$appId = $fbconfig['appId'];	
+	?>	
 		
-	<div id="userUtils">
-	<script type="text/javascript">
-		function deleteFBCookies() {
-			//all posible FB cookies
-			var fbCookie = 'fbsr_<?php echo $appId; ?>';	
-			
-			document.cookie = fbCookie + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			document.cookie = 'datr=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			document.cookie = 'locale=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			document.cookie = 'lu=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			document.cookie = 'reg_fb_gate=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			document.cookie = 'reg_fb_ref=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			document.cookie = 'lsd=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			document.cookie = 'L=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			document.cookie = 'act=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			document.cookie = 'openid_p=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-		}	
-	</script>
-
-	
-		<?php
-			if (!empty($userInfo)) { ?>
-				<div id="userinfo">
-					<strong>Hi
-					<?php
-						if (array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])) :
-							echo "{$userInfo['firstname']}";
-						else :
-							if (is_array($userInfo) && array_key_exists('email', $userInfo)) : echo $userInfo['email']; endif;
-						endif;
-					?></strong>
-					<?php 
-						$logout = ($fblogout) ? $fblogout : 'Users::logout';
-						echo $this->html->link('Sign Out', $logout, array('title' => 'Sign Out', 'onClick'=>'deleteFBCookies()')) . ' | <a href="/account" title="My Account">My Account</a>';
-					?>
-				</div>
-				<div id="usercart">
-					<a href="/cart/view" class="icon cart" title="My Cart (<?php echo $cartCount;?>)">$<?php echo $cartCount;?></a>
-					<a href="/cart/view" class="btn checkout" title="My Cart (<?php echo $cartCount;?>)">CHECKOUT</a>
-					<?php
-						// credits logic - retained but commented out for possible re-inclusion
-						//if (!(empty($credit))) : echo '<a href="/account/credits" title="My Credits $' . $credit . '>My Credits $' . $credit . '</a>';
-					?>
-				</div><?php
-			} else { ?>
-				<div id="loggedOut">
-					<a href="/login" title="Sign In">Sign In</a> | <strong>Not a member?</strong> <a href="/register" title="Sign Up">Join Now</a>
-				</div><?php
-			}
-		?>
-	</div>
 
 	<?php
 		if (!(empty($userInfo))) { ?>
-			<nav>
-				<ul class="group">
+			<nav class="group">
+				
+				<div id="userUtils">
+					<script type="text/javascript">
+						function deleteFBCookies() {
+							//all posible FB cookies
+							var fbCookie = 'fbsr_<?php echo $appId; ?>';	
+							
+							document.cookie = fbCookie + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+							document.cookie = 'datr=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+							document.cookie = 'locale=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+							document.cookie = 'lu=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+							document.cookie = 'reg_fb_gate=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+							document.cookie = 'reg_fb_ref=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+							document.cookie = 'lsd=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+							document.cookie = 'L=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+							document.cookie = 'act=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+							document.cookie = 'openid_p=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+						}	
+					</script>
+					<?php
+						if (!empty($userInfo)) { ?>
+							<div id="userinfo">
+								<strong>Hi xxxxxxxxxxxxxxcxzxxxxxxx
+								<?php
+									if (array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])) :
+										echo "{$userInfo['firstname']}";
+									else :
+										if (is_array($userInfo) && array_key_exists('email', $userInfo)) : echo $userInfo['email']; endif;
+									endif;
+								?></strong>
+								<?php 
+									$logout = ($fblogout) ? $fblogout : 'Users::logout';
+									echo $this->html->link('Sign Out', $logout, array('title' => 'Sign Out', 'onClick'=>'deleteFBCookies()')) . ' | <a href="/account" title="My Account">My Account</a>';
+								?>
+							</div>
+							<div id="usercart">
+								<a href="/cart/view" class="icon cart" title="My Cart (<?php echo $cartCount;?>)">$<?php echo $cartCount;?></a>
+								<a href="/cart/view" class="btn checkout" title="My Cart (<?php echo $cartCount;?>)">CHECKOUT</a>
+								<?php
+									// credits logic - retained but commented out for possible re-inclusion
+									//if (!(empty($credit))) : echo '<a href="/account/credits" title="My Credits $' . $credit . '>My Credits $' . $credit . '</a>';
+								?>
+							</div><?php
+						} else { ?>
+							<div id="loggedOut">
+								<a href="/login" title="Sign In">Sign In</a> | <strong>Not a member?</strong> <a href="/register" title="Sign Up">Join Now</a>
+							</div><?php
+						}
+					?>
+				</div>
+				<!-- /#userUtils -->
+
+				<ul>
 					<li id="newsales"><a href="/sales" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0 || $_SERVER['REQUEST_URI'] == '/') {
 					echo 'class="active"';
 					} ?>><em>New<br/> Sales</em></a></li>
@@ -94,6 +95,7 @@
 						</ul>
 					</li>
 				</ul>
+				
 			</nav>
 			<div id="invite">
 				<a href="/users/invite" title="Invite Friends, Get $15">Invite Your Friends, <strong>Get $15</strong></a>
