@@ -74,7 +74,7 @@ else
 <?php if (!empty($items)): ?>
 			<?php
 				$x=0;
-				foreach ($items as $item):
+				foreach ($items as $item) {
 			?>
 		<table border="1">
 		<thead>
@@ -167,80 +167,67 @@ else
 								</thead>
 								<fieldset>
 								<tbody>
-						<?php
+<?php
+	$i = 0;
 
-						$i=0;
-
-						foreach($orders as $order) {
-								$order_temp = $order->data();
-																
-								$o=0;
-								while ($o < sizeof($order_temp["items"])) {
-									if ($order_temp["items"][$o]["item_id"] == $item['_id']) {
-										$line_item = $order_temp["items"][$o];
-										$o = 99; //break out of loop
-									}
-									$o++;
-								}
-
-								foreach ($item['sku_details'] as $key => $value):
-									if ($key == $line_item["size"]) {
-										$sku = $value;
-									}
-								endforeach;
-
-
-
-								if ($sku == $search_sku) {
-
-						?>
-
-										<tr>
-											<td>
-
-		<div style="display: none;">
-			<input type="type" id="<?php echo $order[_id];?>" name="order[<?php echo $i;?>]" value="" class="cb-element" >
-			<input type="hidden" id="line_number[<?php echo $i;?>]" name="line_number[<?php echo $i;?>]" value="<?php echo $line_item[line_number];?>">
-
-		</div>
-
-<?php if ($order->auth_confirmation <= -1) { ?>
-
-<?php if (!$line_item["cancel"] || $line_item["cancel"] == 0): ?>
-		<input type="checkbox" id="<?php echo $order[_id];?>" name="order[<?php echo $i;?>]" value="<?php echo $order[_id];?>" class="cb-element" >
-		<input type="hidden" id="line_number[<?php echo $i;?>]" name="line_number[<?php echo $i;?>]" value="<?php echo $line_item[line_number];?>">
-<?php endif; ?>
-
-<? } ?>
-											</td>
-											<td><?php echo $order["order_id"];?></td>
-											<td><?php
-											    if ($line_item["cancel"] == 1): ?>
-											    <strong>Cancelled</strong>
-											    <?php else:?>
-											        <?php echo $line_item["status"];?>
-											    <?php endif; ?></td>
-											<td><?php echo $sku;?></td>
-											<td><?php echo $order->billing->firstname." ".$order->billing->lastname;?></td>
-											<td><?php echo $line_item["quantity"];?></td>
-											<td><?php echo $line_item["size"];?></td>
-											<td>
-								<?php if (empty($line_item['color'])): ?>
-									None
-								<?php else: ?>
-									<?php echo $line_item['color']?>
-								<?php endif; ?>
-											</td>
-											<td><?php echo date('Y-M-d h:i:s',$order_temp[date_created]['sec']);?></td>
-											<td>
-											<a href="/orders/view/<?php echo $order[_id];?>">View Order</a>
-											<?php if ($line_item[cancel] != 1) {?> | <a href="/orders/cancelOneItem?line_number=<?php echo $line_item[line_number];?>&order_id=<?php echo $order[_id];?>&item_id=<?php echo $item_id;?>&sku=<?php echo $sku;?>" onclick="return cancelLineItem();">Cancel</a><?php } ?></td>
-										</tr>
-									<?php
-						 		$i++;
-						 		} //end of search for sku
-						  }  //end of orders TR
-						?>
+foreach($orders as $order):
+	$order_temp = $order->data();								
+	$o = 0;
+	while ($o < sizeof($order_temp["items"])) {
+		if ($order_temp["items"][$o]["item_id"] == $item['_id']) {
+			$line_item = $order_temp["items"][$o];
+			$o = 99; //break out of loop
+		}
+		$o++;
+	}
+	foreach ($item['sku_details'] as $key => $value) {
+		if ($key == $line_item["size"]) {
+			$sku = $value;
+		}
+	}
+	if ($sku == $search_sku) : ?>
+		<tr>
+			<td>
+			<div style="display: none;">
+				<input type="type" id="<?php echo $order[_id];?>" name="order[<?php echo $i;?>]" value="" class="cb-element" >
+				<input type="hidden" id="line_number[<?php echo $i;?>]" name="line_number[<?php echo $i;?>]" value="<?php echo $line_item[line_number];?>">
+	
+			</div>
+			<?php if ($order->auth_confirmation <= -1) : ?>
+				<?php if (!$line_item["cancel"] || $line_item["cancel"] == 0): ?>
+	<input type="checkbox" id="<?php echo $order['_id']; ?>" name="order[<?php echo $i; ?>]" value="<?php echo $order['_id']; ?>" class="cb-element" >
+	<input type="hidden" id="line_number[<?php echo $i; ?>]" name="line_number[<?php echo $i; ?>]" value="<?php echo $line_item['line_number']; ?>">
+				<?php endif; ?>
+			<?php endif; ?>
+			</td>
+			<td><?php echo $order["order_id"];?></td>
+			<td><?php
+			    if ($line_item["cancel"] == 1): ?>
+			    <strong>Cancelled</strong>
+			    <?php else:?>
+			        <?php echo $line_item["status"];?>
+			    <?php endif; ?></td>
+			<td><?php echo $sku;?></td>
+			<td><?php echo $order->billing->firstname." ".$order->billing->lastname;?></td>
+			<td><?php echo $line_item["quantity"];?></td>
+			<td><?php echo $line_item["size"];?></td>
+			<td>
+			<?php if (empty($line_item['color'])): ?>
+				None
+			<?php else: ?>
+				<?php echo $line_item['color']?>
+			<?php endif; ?>
+			</td>
+			<td><?php echo date('Y-M-d h:i:s',$order_temp[date_created]['sec']);?></td>
+			<td>
+			<a href="/orders/view/<?php echo $order[_id];?>">View Order</a>
+			<?php if ($line_item[cancel] != 1) {?> | <a href="/orders/cancelOneItem?line_number=<?php echo $line_item[line_number];?>&order_id=<?php echo $order[_id];?>&item_id=<?php echo $item_id;?>&sku=<?php echo $sku;?>" onclick="return cancelLineItem();">Cancel</a><?php } ?></td>
+		</tr>
+<?php
+		$i++;
+	endif; //end of search for sku
+endforeach; //end of orders TR
+?>
 							</tbody>
 							</fieldset>
 						</table>
@@ -262,17 +249,10 @@ else
 			<?php
 			$x++;
 
-			endforeach  //end of items foreach
-
-			?>
+			}  //end of items foreach ?>
 	<!-- end of items table -->
-
-
-
 <?php  endif ?>
 </div>
-
-
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
 		TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
