@@ -206,10 +206,21 @@ class UsersController extends BaseController {
 							$params['token'] = $user['clear_token'];
 						}
 						Mailer::send($mail_template, $user->email,$params);
-						$name = null;
-						if (isset($data['firstname'])) $name = $data['firstname'];
-						if (isset($data['lastname'])) $name = is_null($name)?$data['lastname']:$name.$data['lastname'];
-						Mailer::addToMailingList($data['email'],is_null($name)?array():$name);
+						
+						$args = array();
+						if (!empty($user->firstname)) $args['name'] = $user->firstname;
+						if (!empty($user->lastname)) $args['name'] = $args['name'] . $user->lastname;
+						if (!empty($user->invited_by)) {
+							$affiliate_cusror = Affiliate::collection()->find(array('invitation_codes'=>$user->invited_by));
+							if ($affiliate_cusror->hasNext()){
+								$affiliate = $affiliate_cusror->getNext();
+								$args['source'] = $affiliate['name'];
+								unset($affiliate);
+							}
+							unset($affiliate_cusror);
+						}
+						
+						Mailer::addToMailingList($data['email'],$args);
 						Mailer::addToSuppressionList($data['email']);
 
 					}
