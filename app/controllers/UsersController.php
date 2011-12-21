@@ -67,14 +67,11 @@ class UsersController extends BaseController {
        if ($this->request->query["gotologin"]=="true") {
            $this->redirect("/login");
        }
-	
-		//print_r($fbsession);
-		//exit();
 
-		$this->_render['layout'] = 'login';
-		$message = false;
-		$data = $this->request->data;		
-		$this->autoLogin();
+	   $this->_render['layout'] = 'login';
+	   $message = false;
+	   $data = $this->request->data;		
+	   $this->autoLogin();
 		
 		/*
 		* redirects to the affiliate registration page if the left the page
@@ -85,19 +82,18 @@ class UsersController extends BaseController {
 		
 		if($cookie && preg_match('(/a/)', $cookie['landing_url'])){
 			return $this->redirect($cookie['landing_url']);
-
 		}
 
 		if (Session::read('layout', array('name' => 'default'))=='mamapedia') {
 		    $affiliate = new AffiliatesController(array('request' => $this->request));
 		    $affiliate->register("mamasource");
-
 		}
+		
 		$referer = parse_url($this->request->env('HTTP_REFERER'));
+		
 		if ($referer['host']==$this->request->env('HTTP_HOST') && preg_match('(/sale/)',$referer['path'])){
 			Session::write('landing',$referer['path'],array('name'=>'default'));
 		}
-
 
 		if (isset($data) && $this->request->data) {
 			$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
@@ -316,8 +312,6 @@ class UsersController extends BaseController {
 			} else {
 				$message = '<div class="error_flash">Login Failed - Your Password Is Blank</div>';
 			}
-
-
 		}
 
 		//new login layout to account for fullscreen image JL
@@ -326,10 +320,6 @@ class UsersController extends BaseController {
 		return compact('message', 'fbsession', 'fbconfig');
 	}
 	
-	public function mplogin() {
-		$this->_render['layout'] = 'mamapedia/login';
-	}
-
 	protected function autoLogin() {
 
 		$redirect = '/sales';
@@ -684,21 +674,7 @@ class UsersController extends BaseController {
 
 		return compact('message', 'user', 'fbuser');
 	}
-
-	public function mpregister() {
-		//$message = null;
-		//$user = null;
-		//$fbuser = FacebookProxy::api('/me');
-
-		$user = User::create();
-		if ( !preg_match( '/@proxymail\.facebook\.com/', $fbuser['email'] )) {
-			$user->email = $fbuser['email'];
-			$user->confirmemail = $fbuser['email'];
-		}
-
-		$this->_render['layout'] = 'mamapedia/login';
-	}
-
+	
 	/**
 	 * Auto login a user if the facebook session has been set.
 	 *
