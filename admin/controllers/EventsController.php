@@ -5,9 +5,12 @@ namespace admin\controllers;
 use admin\controllers\BaseController;
 use admin\models\Event;
 use admin\models\User;
+use admin\models\Order;
 use admin\models\Item;
 use lithium\storage\Session;
+use MongoCode;
 use MongoDate;
+use MongoRegex;
 use MongoId;
 use Mongo;
 use PHPExcel_IOFactory;
@@ -35,6 +38,52 @@ class EventsController extends BaseController {
 		'end_date',
 		'enabled'
 	);
+
+	public function combineskus($id = null) {
+	    $this->_render['layout'] = false;
+
+		//books event id hardcoded
+		$_id = (string)"4ee6437f943e83b010000007";
+
+		//items and orders collection calls
+		$itemsCollection = Item::Collection();
+		$ordersCollection = Order::collection();
+
+		//blank array for items
+		$items = array();
+
+		//query events table for items
+		$eventItems = Item::find('all', array('conditions' => array('event' => array($_id))));
+
+		foreach ($eventItems as $item) {
+			//add item ids to items array
+			$items[] = (string) $item['_id'];
+		}
+
+		//mongo query to get orders with these items
+		$orders = $ordersCollection->find(array('items' => array('$elemMatch' => array('item_id' => array('$in' => $items)))));
+		
+		foreach ($orders as $order) {
+			//total items in order
+			$orderitemCount = count($order['items']);
+
+			//loop through items in order
+			for($i=0; $i<$orderitemCount; $i++){
+				//check it size is NULL
+				if($order['items'][$i]['size']=="NULL"){
+					//set size to 'no size'
+					$order['items'][$i]['size'] = "no size";
+					
+					//save revised order
+					$ordersCollection->save($order);
+					
+				}
+			}
+		}
+		exit();
+
+
+	}
 
 
 	public function view($id = null) {
@@ -153,13 +202,13 @@ class EventsController extends BaseController {
 
 				//update enabled
 				$oitem['enabled'] = (bool)$enabled;
-				
+
 				//create a new item instance
 				$newItem = Item::create();
 
 				//set total quant
 				$oitem['total_quantity'] = (int)$total_quantity_new;
-				
+
 				//set new price
 				if($item_price_new){
 					unset($oitem['sale_retail']);
@@ -198,13 +247,13 @@ class EventsController extends BaseController {
 		$event = Event::find($_id);
 
 		$eventItems = array();
-		
+
 		$alleventids = array($_id);
 
 		foreach($alleventids as $thiseventid){
 			$eventItems = Item::find('all', array('conditions' => array('event' => $alleventids),
 					'order' => array('created_date' => 'ASC')
-				));	
+				));
 		}
 		return compact('eventItems','event');
 	}
@@ -243,7 +292,7 @@ class EventsController extends BaseController {
 		    $modification_datas["date"] = new MongoDate(strtotime('now'));
 		    $modification_datas["type"] = "modification";
 		    $modification_datas["changed"] = $changed;
-		
+
 		    //Pushing modification datas to db
 		    $modifications = $event->modifications;
 		    $modifications[] = $modification_datas;
