@@ -14,7 +14,7 @@ use lithium\analysis\Logger;
  */
 class Base extends \lithium\console\Command {
 
-    public $curl_error_codes=array(
+    public static $curl_error_codes=array(
             1 => 'CURLE_UNSUPPORTED_PROTOCOL',
             2 => 'CURLE_FAILED_INIT',
             3 => 'CURLE_URL_MALFORMAT',
