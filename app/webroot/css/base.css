@@ -4449,6 +4449,7 @@ Text Align > left / right
 	background: #ececec;
 	border:#ccc;
 	border-radius:0 0 10px 10px;
+	box-shadow: 2px 1px 5px rgba(0,0,0,0.3);
 	color:#636466;
 	font-size:13px;
 	text-align: center;
@@ -4556,7 +4557,7 @@ nav .haschild li a:hover {
 }
 #userUtils .btn { /* @TODO - abstract out all .btn styles… need design consistency / standards */
 	padding:3px 10px 1px;
-	background: url(../img/btn-glass.png) 0 50% no-repeat;
+	background: url(../img/btn-glass.png) 0 50.5% repeat-x;
 	border:1px solid rgba(0,0,0,0);
 	border-bottom:1px solid rgba(255,255,255,0.55);
 	border-radius:3px;
