@@ -23,8 +23,8 @@
 					?>
 				</div>
 				<div id="usercart">
-					<a href="/cart/view" class="cart_icon" title="My Cart (<?php echo $cartCount;?>)"><?php echo $cartCount;?></a>
-					<a href="/cart/view" class="btn" title="My Cart (<?php echo $cartCount;?>)">CHECKOUT</a>
+					<a href="/cart/view" class="icon cart" title="My Cart (<?php echo $cartCount;?>)">$<?php echo $cartCount;?></a>
+					<a href="/cart/view" class="btn checkout" title="My Cart (<?php echo $cartCount;?>)">CHECKOUT</a>
 					<?php
 						// credits logic - retained but commented out for possible re-inclusion
 						//if (!(empty($credit))) : echo '<a href="/account/credits" title="My Credits $' . $credit . '>My Credits $' . $credit . '</a>';
