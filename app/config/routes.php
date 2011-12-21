@@ -81,17 +81,6 @@ Router::connect('/checkout/shipping', 'Orders::shipping');
 Router::connect('/checkout/payment', 'Orders::payment');
 Router::connect('/checkout/review', 'Orders::review');
 
-/**
- * Redirect all non-authenticated users to
-*/
-
-if(!Session::check('userLogin')) {
-	Router::connect('/', 'Users::login');
-	Router::connect('/{:args}', 'Users::login');
-	return;
-}
-
-Router::connect('/', 'Events::index');
 Router::connect('/', 'Users::register');
 Router::connect('/sales/{:args}', 'Events::index');
 Router::connect('/{:action:login|logout}', array('controller' => 'users'));
