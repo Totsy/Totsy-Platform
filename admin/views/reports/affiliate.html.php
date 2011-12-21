@@ -161,18 +161,22 @@
 			<thead>
 				<tr>
 					<th>Email</th>
-					<th>Created Date</th>
 					<th>Bounce Type</th>
-					<th>Last Bounced</th>
+					<th>Created Date</th>
+					<th>Report Date</th>
+					<th>Delivery Date</th>
+					<th>Delivery Message</th>
 				</tr>
 			</thead>
 			<tbody>
 			<?php foreach ($cursor as $row): ?>
 				<tr>
 					<td><?php echo $row['email'];?></td>
-					<td><?php echo date('m/d/Y',$row['created_date']->sec);?></td>
 					<td><?php echo $row['email_engagement']['type'];?></td>
+					<td><?php echo date('m/d/Y',$row['created_date']->sec);?></td>
 					<td><?php echo date('m/d/Y',$row['email_engagement']['date']->sec);?></td>
+					<td><?php echo date('m/d/Y',$row['email_engagement']['delivery']['status_time']->sec);?></td>
+					<td><?php echo $row['email_engagement']['delivery']['message'];?></td>
 				</tr>
 			<?php endforeach;?>
 			</tbody>
