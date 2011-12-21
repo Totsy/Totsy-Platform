@@ -203,7 +203,11 @@ class BouncedEmails extends \lithium\console\Command {
 		    	} else if (in_array($data['2'], $this->bounceList)) {
 		    		$file[] = array(
 		    			'email_hash'=>$data['1'],
-		    			'engagement'=>$data['2']
+		    			'engagement'=>$data['2'],
+		    			'delivery' => array(
+		    				'status_time' => new MongoDate(strtotime($data['12'])),
+		    				'message' => $data['13']
+		    			)
 		    		);
 		    	}
 		    }
@@ -222,7 +226,8 @@ class BouncedEmails extends \lithium\console\Command {
 				array( '$set' => array( 
 									'email_engagement' => array(
 										'type' => $value['engagement'],
-										'date' => new MongoDate()
+										'date' => new MongoDate(),
+										'delivery' => $value['delivery']
 									)
 								))
 			);
