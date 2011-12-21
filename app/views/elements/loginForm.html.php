@@ -1,7 +1,7 @@
 <h2 style="margin-bottom:20px;">Sign In with Facebook</h2>
 	<a href="javascript:;" onclick="fblogin();return false;"><img src="/img/sign_in_fb.png" class="fr"></a>
 	<br />
-	<h2 style="margin-top:30px;margin-bottom:20px;border-top:1px solid #cccccc;padding-top:5px;">Or sign in with email</h2>	
+	<h2 style="margin-top:30px;margin-bottom:20px;padding-top:5px;">Sign in with email</h2>	
 <?php echo $this->form->create(null,array('id'=>'loginForm'));?>
 		
 

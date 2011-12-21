@@ -306,6 +306,7 @@ for ( i=1; i<6; i++ ) {
 
 				<table>					<?php echo $this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?>
 				</table>
+				
 				<div id="tags">
 					<?php echo $this->form->label('Tags'); ?>
 					<?php if ($event->tags): ?>
@@ -495,11 +496,11 @@ for ( i=1; i<6; i++ ) {
 					<?php echo $this->form->submit('Delete All Items'); ?>
 				<?php echo $this->form->end(); ?>
 		</div>
+
 		<div id="event_history">
 				<?php
 					if (sizeof($event->modifications) > 0) {
 				?>
-
 				<table>
 					<tr>
 						<td>User</td>

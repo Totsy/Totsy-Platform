@@ -36,7 +36,6 @@ var discountErrors = new Object();
 	$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
 	$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
 	$('#promocode_tooltip').tipsy({gravity: 'nw'}); // nw | n | ne | w | e | sw | s | se
-
 });
 
 </script>
@@ -94,13 +93,12 @@ var discountErrors = new Object();
 <?php if (!empty($subTotal)): ?>
 
 <div class="roundy_cart" style="width:935px !important">
-<?php echo $this->form->create(null ,array('id'=>'cartForm')); ?>
+<?php echo $this->form->create(null ,array('id'=>'cartForm', 'name'=>'cartForm')); ?>
 	<div id='message'><?php echo $message; ?></div>
 		<table class="cart-table">
 			<tbody>
 			<?php $x = 0; ?>
 			<?php foreach ($cart as $item): ?>
-
 			<!--temporary miss christmas check -->
 			<?php
 			if($item->miss_christmas){
@@ -176,7 +174,7 @@ var discountErrors = new Object();
 					?>
 					<?php echo $this->form->select("cart[{$item->_id}]", $select, array(
     					'id' => $item->_id, 'value' => $item->quantity, 'class'=>'quantity'
-					));
+					, 'onChange' => 'document.cartForm.submit()'));
 					?>
 										</td>
 					<td class="cart-actions">
@@ -208,7 +206,6 @@ var discountErrors = new Object();
 			        <span id="promocode_tooltip" original-title="Promo codes cannot be combined and can be applied once to an order per member." class="cart-tooltip">
 			        	<img src="/img/tooltip_icon.png">
 			        </span>
-
 				    <strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
 				    <?php if($serviceAvailable) : ?>
 				    	/ <strong><a href="#" id="reservices_lnk" onclick="reaplyService();">Re-Apply <?php echo $serviceAvailable; ?></a></strong>
@@ -329,7 +326,6 @@ var discountErrors = new Object();
 				elseif($missChristmasCount>0){
 				?>
 				* Your items will arrive safely, but after 12/25.
-
 				<?php
 				}
 				else{
@@ -384,6 +380,7 @@ var discountErrors = new Object();
 	$(document).ready( function(){
       		$(function () {
 			$(".quantity").live("change keyup", function () {
+							
 				if($("select").val() == 0) {
 					$('input[name="rmv_item_id"]').val($(this).attr('id'));
 					$('#removeForm').submit();
@@ -422,7 +419,6 @@ var discountErrors = new Object();
 			$("#promo").slideToggle("fast");
 		}
 	};
-
 	//Submit Reapply Old Service
 	function reaplyService() {
 		$('input[name="reapplyService"]').val('true');
