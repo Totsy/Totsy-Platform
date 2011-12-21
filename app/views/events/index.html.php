@@ -52,9 +52,16 @@
 		<div class="p-container roundy_product_home">
 					<!-- this is where the items count was -->
 					<?php
-						if (!empty($event->images->splash_big_image)) {
+						echo $x;
+						echo $y;
+					
+						if (($x <= 1)&&(!empty($event->images->splash_big_image))){
 							$productImage = "/image/{$event->images->splash_big_image}.jpg";
-						} else {
+						}
+						elseif(!empty($event->images->splash_small_image)){
+							$productImage = "/image/{$event->images->splash_small_image}.jpg";
+						}
+						else {
 							$productImage = ($x <= 1) ? "/img/no-image-large.jpeg" : "/img/no-image-small.jpeg";
 						}
 					?>
