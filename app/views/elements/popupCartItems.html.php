@@ -1,4 +1,4 @@
-<script id="template" type="text/html">
+<script id="template" type="text/x-jquery-tmpl">
  <div class="cart_popup_item_wrapper">
  	{{if primary_image}}
  	<div class="cart_popup_item_thumbnail">
