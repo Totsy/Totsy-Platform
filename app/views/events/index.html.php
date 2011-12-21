@@ -52,12 +52,11 @@
 		<div class="p-container roundy_product_home">
 					<!-- this is where the items count was -->
 					<?php
-						echo $x;
-						echo $y;
-					
+						//check if top two area, show big splash
 						if (($x <= 1)&&(!empty($event->images->splash_big_image))){
 							$productImage = "/image/{$event->images->splash_big_image}.jpg";
 						}
+						//else show small splash
 						elseif(!empty($event->images->splash_small_image)){
 							$productImage = "/image/{$event->images->splash_small_image}.jpg";
 						}
