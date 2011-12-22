@@ -80,7 +80,11 @@ class OrdersController extends BaseController {
 					}
 				}
 			}
+		}if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_index';
 		}
+		
 		return (compact('orders', 'shipDate', 'trackingNumbers', 'lifeTimeSavings'));
 	}
 

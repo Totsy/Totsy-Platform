@@ -38,7 +38,7 @@
 		<div style="float:right; margin-right:10px; font-size:12px; font-weight:normal!important; color:#999;">
 		<?php if(array_key_exists('firstname', $userInfo) &&     !empty($userInfo['firstname'])):
 					?>
-					    <a href="#" onclick="window.location.href='/account';return false;"><?=$userInfo['firstname'].' '.$userInfo['lastname'] ?></a><br />
+					    <a href="#" onclick="window.location.href='/account';return false;"><?php echo $userInfo['firstname'].' '.$userInfo['lastname'] ?></a><br />
 					<?php else: ?>
 					    <a href="#" onclick="window.location.href='/account';return false;">Totsy Member</a><br />
 					<?php endif;?>
