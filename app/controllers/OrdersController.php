@@ -81,10 +81,6 @@ class OrdersController extends BaseController {
 				}
 			}
 		}
-		if($this->request->is('mobile')){
-		 	$this->_render['layout'] = 'mobile_main';
-		 	$this->_render['template'] = 'mobile_index';
-		}	
 		return (compact('orders', 'shipDate', 'trackingNumbers', 'lifeTimeSavings'));
 	}
 
@@ -100,10 +96,7 @@ class OrdersController extends BaseController {
 	public function view($order_id) {
 		$orderClass     = $this->_classes['order'];
 		$affiliateClass = $this->_classes['affiliate'];
-		if($this->request->is('mobile')){
-		 	$this->_render['layout'] = 'mobile_main';
-		 	$this->_render['template'] = 'mobile_view';
-		}	
+
 		$user = Session::read('userLogin');
 		$order = $orderClass::find('first', $a =array(
 			'conditions' => array(
@@ -198,6 +191,10 @@ class OrdersController extends BaseController {
 			if (empty($item->cancel)) {
 				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
 			}
+		}
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_view';
 		}
 		return compact(
 			'order',
@@ -356,10 +353,7 @@ class OrdersController extends BaseController {
 	public function review() {
 		$taxClass   = $this->_classes['tax'];
 		$orderClass = $this->_classes['order'];
-		if($this->request->is('mobile')){
-		 	$this->_render['layout'] = 'mobile_main';
-		 	$this->_render['template'] = 'mobile_review';
-		}
+
 		#Check Users are in the correct step
 		if (!Session::check('shipping')) {
 			return $this->redirect(array('Orders::shipping'));
@@ -480,43 +474,11 @@ class OrdersController extends BaseController {
 		$serviceAvailable = false;
 		if(Session::check('service_available')) {
 			$serviceAvailable = Session::read('service_available');
-
+		}
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_review';
 		}
-		return $vars + compact('cartEmpty','order','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable','missChristmasCount','notmissChristmasCount');
-	}
-}
-	/**
-	 * Group all the items in an order by their corresponding event.
-	 *
-	 * The $order object is assumed to have originated from one of model types; Order or Cart.
-	 * Irrespective of the type both will return an associative array of event items.
-	 *
-	 * @param object $order
-	 * @return array $eventItems
-	 */
-	protected function itemGroupByEvent($object) {
-		$eventItems = null;
-		if ($object) {
-			$model = $object->model();
-			if ($model == 'app\models\Order') {
-				$orderItems = $object->items->data();
-				foreach ($orderItems as $item) {
-					$eventItems[$item['event_id']][] = $item;
-				}
-			}
-			if ($model == 'app\models\Cart') {
-				$orderItems = $object->data();
-				foreach ($orderItems as $item) {
-					$event = $item['event'][0];
-					unset($item['event']);
-					$eventItems[$event][] = $item;
-				}
-			}
-		}
-		
 		return $vars + compact(
 			'cartEmpty',
 			'order',
@@ -707,7 +669,6 @@ class OrdersController extends BaseController {
 			Session::delete('cc_error');
 			Session::delete('billing');
 		}
-		
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_payment';

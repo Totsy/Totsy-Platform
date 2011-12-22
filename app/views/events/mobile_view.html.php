@@ -27,15 +27,6 @@
 </div>
 <div id="listingCountdown" class="listingCountdown" style="text-align:center; margin:10px 0px;"></div>
 
-<div class="holiday_message">
-	<?php if($missChristmasCount>0){ ?>
-	<p>Items in this sale are not guaranteed to be delivered <br />on or before 12/25.*</p>
-	<?php } else{ ?>
-	<p>Items in this sale will be delivered on or before 12/23.*
-	</p>
-	<?php } ?>
-</div>
-
 <div style="clear:both;"></div>
 
 <div>
@@ -97,29 +88,7 @@
 		</div>
 	</div>
 <div class="clear"></div>
-<div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
-				<?php
-				if($missChristmasCount>0&&$notmissChristmasCount>0){
-				?>
-				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. 
-				
-				<?php
-				}
-				elseif($missChristmasCount>0){
-				?>
-				* Your items will arrive safely, but after 12/25.				
-				<?php
-				}
-				else{
-				?>
-				
-				* Our delivery guarantee does not apply when transportation networks are affected by weather.
-				
-				<?php
-				}
-				?>
-				
-</div>
+
 <script type="text/javascript">
 $(function () {
 	var saleStart = new Date();

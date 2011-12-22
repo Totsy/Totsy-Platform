@@ -238,33 +238,6 @@ var paymentForm = new Object();
 
 
 <div class="clear"></div>
-<div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
-				<?php
-				if($missChristmasCount>0&&$notmissChristmasCount>0){
-				?>
-				<div class="holiday_message" style="text-align:center;">
-				<p>* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. <p/></div>
-				
-				<?php
-				}
-				elseif($missChristmasCount>0){
-				?>
-				<div class="holiday_message" style="text-align:center;">
-				<p>* Your items will arrive safely, but after 12/25.<p/></div>
-				
-				<?php
-				}
-				else{
-				?>
-				
-				<div class="holiday_message" style="text-align:center;">
-				<p>* Our delivery guarantee does not apply when transportation networks are affected by weather.<p/></div>
-				
-				<?php
-				}
-				?>
-				
-</div>
 
 
 

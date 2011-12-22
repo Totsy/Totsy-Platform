@@ -55,21 +55,7 @@ var discountErrors = new Object();
 <?php echo $this->view()->render( array('element' => 'mobile_shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
 <div class="clear"></div>
 
-	<?php
-	if($missChristmasCount>0){
-	?>
-				<div class="holiday_message" style="text-align:center;">
-				<p>One or more of the items in your cart is <br />
-				not guaranteed to be delivered on or before 12/25*.
-				</p></div>
-	<?php
-	}
-	else{
-	?>
-
-	<?php
-	}
-	?>
+	
 <hr/>
 <?php endif ?>
 
@@ -86,27 +72,14 @@ var discountErrors = new Object();
 			
 
 				<!-- Build Product Row -->
-				<tr id="<?php echo $item->_id?>" class="<?php echo $tableclass?>">
-			<!--temporary miss christmas check -->
-			<?php
-			if($item->miss_christmas){
-				$tableclass = "alt0a";
-				if($notmissChristmasCount>0){
-					$shipmsg = "This item is not guaranteed to be delivered on or before 12/25.<br>Please remove this item from your cart and order separately to receive your other items on or before 12/23.*";
-				}
-				else{
-					$shipmsg = "This item is not guaranteed to be delivered on or before 12/25.*";
-				}
-			}
-			else{
-				$tableclass = "alt0";
-				$shipmsg = "Item will be delivered <br />on or before 12/23.*";
-			}			
-			?>
+				<tr id="<?php echo $item->_id?>">
+			
 			<!-- end xmas -->
 					<td class="cart-desc" style="width:174px;">
 						<?php echo $this->form->hidden("item$x", array('value' => $item->_id)); ?>
-						<strong><?php echo $this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url); ?></strong><br />
+						<strong><a href="#" onclick="window.location.href='/sale/<?php echo $item->event_url?>/<?php echo $item->url ?>';return false;"><?php echo $item->description ?></a>
+						
+						</strong><br />
 						<?php if($item->color) : ?>
 						<strong>Color:</strong> <?php echo $item->color;?><br />
 						<?php endif ?>
@@ -274,27 +247,7 @@ var discountErrors = new Object();
 
 
 <div class="clear"></div>
-				<?php
-				if($missChristmasCount>0&&$notmissChristmasCount>0){
-				?>
-				<div class="holiday_message"><p>* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. 
-						</p></div>	
-				<?php
-				}
-				elseif($missChristmasCount>0){
-				?>
-				<div class="holiday_message"><p>* Your items will arrive safely, but after 12/25.</p></div>
 				
-				<?php
-				}
-				else{
-				?>
-				
-				<div class="holiday_message"><p>* Our delivery guarantee does not apply when transportation networks are affected by weather.</p></div>
-				
-				<?php
-				}
-				?>
 				
 
 <div id="remove_form" style="display:none">
@@ -313,7 +266,6 @@ var discountErrors = new Object();
 
 <p></p>
 <?php echo $this->view()->render(array('element' => 'mobile_headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
-<?php echo $this->view()->render(array('element' => 'mobile_helpNav')); ?>
 
 <script type="text/javascript" charset="utf-8">
 

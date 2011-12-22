@@ -43,7 +43,7 @@
 </ul>
 <div class="clear"></div>
 	<div style="margin-bottom:35px; clear:both;"></div>
-
+ 
 		<h2>Upcoming Sales</h2>
 		<hr />
 <ul data-role="listview" data-inset="true">

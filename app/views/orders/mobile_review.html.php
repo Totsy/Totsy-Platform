@@ -103,27 +103,7 @@ var discountErrors = new Object();
 		
 	    
 <?php endif ?>
-	<?php
-	if($missChristmasCount>0){
-	?>
-				<div class="holiday_message" style="text-align:center;">
-				<p>One or more of the items in your cart is not guaranteed to be delivered on or before 12/25*.
-				</p></div>
-	
-	
-	<?php
-	}
-	elseif($notmissChristmasCount>0){
-	?>
-				<div class="holiday_message" style="text-align:center;">
-				<p>
-				Items will be delivered on or before 12/23.*
-				</p></div>
-	
-	
-	<?php
-	}
-	?>
+
 	<div class="clear"></div>
 <div class="message"></div>
 
@@ -137,22 +117,6 @@ var discountErrors = new Object();
 			<?php $x = 0; ?>
 			<?php foreach ($cart as $item): ?>
 
-
-			<?php
-			if($item['miss_christmas']){
-				$classadd = "background:#fde5e5;";
-				if($notmissChristmasCount>0){
-					$shipmsg = "<span class=\"shippingalert\">This item is not guaranteed to be delivered on or before 12/25.<br>Please remove this item from your cart and order separately to receive your other items on or before 12/23*.</span>";
-				}
-				else{
-					$shipmsg = "<span class=\"shippingalert\">This item is not guaranteed to be delivered on or before 12/25.*</span>";
-				}
-			}
-			else{
-				$shipmsg = "Item will be delivered on or before December 23.*";
-				$classadd = "";
-			}
-			?>
 
 
 	<div class="clear"></div>
@@ -249,9 +213,7 @@ var discountErrors = new Object();
    			    <?php endif ?>
 			    <div style="clear:both"></div>							
 			    <div style="font-weight:bold;" >
-			    <div class="subtotal">	
-			    <span id="shipping_tooltip" class="cart-tooltip" original-title="Shipping charges may vary depending on item type."><img src="/img/tooltip_icon.png">
-			        	</span>
+			    <div class="subtotal">
 			        <span style="float: left;" id="shipping">
 			        Shipping:</span> 
 			        <span style="float:right">$<?php echo number_format($shippingCost,2)?></span>
@@ -280,8 +242,7 @@ var discountErrors = new Object();
    			    
 			    <div style="clear:both"></div>	
 			    <div>
-			    <div class="subtotal">
-			        <span id="tax_tooltip" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary." class="cart-tooltip"><img src="/img/tooltip_icon.png"></span>		
+			    <div class="subtotal">	
 			    <span id="estimated_tax" style="float: left;">Estimated Tax:</span> 
 			        	<span style="float:right">$<?php echo number_format($tax,2)?></span>
 			    </div>
@@ -304,40 +265,15 @@ var discountErrors = new Object();
 			    </div>	
 		</div>				
 <hr />
-		      <a href="#" data-role="button" data-ajax="true" onclick="updateOrder();return false;">Place Your Order</a>
+		      <a href="#" data-role="button" data-ajax="false" onclick="updateOrder();return false;">Place Your Order</a>
+		                          		    
 
 	<div class="clear"></div>
 
 <?php echo $this->form->end(); ?>
 </div>
 <div class="clear"></div>
-<div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
-				<?php
-				if($missChristmasCount>0&&$notmissChristmasCount>0){
-				?>
-				<div class="holiday_message" style="text-align:center;">
-				<p>* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. </p></div>
-				
-				<?php
-				}
-				elseif($missChristmasCount>0){
-				?>
-				<div class="holiday_message" style="text-align:center;">
-				<p>* Your items will arrive safely, but after 12/25.</p></div>
-				
-				<?php
-				}
-				else{
-				?>
-				
-				<div class="holiday_message" style="text-align:center;">
-				<p>* Our delivery guarantee does not apply when transportation networks are affected by weather.</p></div>
-				
-				<?php
-				}
-				?>
-				
-</div>
+
 
 <div id="remove_form" style="display:none">
 	<?php echo $this->form->create(null ,array('id'=>'removeForm')); ?>
@@ -436,4 +372,20 @@ function open_promo() {
 		$("#promo").slideToggle("fast");
 	}
 };
+
+$(document).ready(function() {
+            $("#submit").click(function(){
+ 
+                var formData = $("#cartForm").serialize();
+ 
+                $.ajax({
+                    type: "POST",
+                    url: "/checkout/review",
+                    cache: false,
+                    data: formData
+                });
+ 
+                return false;
+            });
+        });
 </script>

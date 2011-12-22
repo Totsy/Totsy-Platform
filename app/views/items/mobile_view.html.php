@@ -118,15 +118,7 @@
 			</div>
 			<?php endif ?>
 		</div>
-<?php
-				if($item->miss_christmas){
-				?>
-				<p></p>
-				<div class="holiday_message error_flash" style="text-align:center;">
-				<p>NOTE: This item will ship AFTER xmas</p></div>
-		<?php
-				}
-				?>
+
 				<p></p>
 <form id="callAjaxForm">
 
@@ -150,44 +142,10 @@
 				
 				<div id="all-reserved"></div>
 				
-				<?php
-				if($item->miss_christmas){
-				?>
-				<p></p>
-				<div class="holiday_message">
-				<p>This item is not guaranteed to be delivered on or before 12/25.*</p></div>
-				<?php
-				}
-				else{
-				?>
-				<p></p>
-				<div class="holiday_message">
-				<p>This item will be delivered on or before 12/23*</p></div>
-				
-				
-				<?php
-				}
-				?>
 				
 			<?php endif ?>
 
-				<?php
-				if($item->miss_christmas){
-				?>
-				<p></p>
-				<div class="holiday_message">
-				<p>* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. 
-				<?php
-				}
-				else{
-				?>
-				
-				<div class="holiday_message">
-				<p>* Our delivery guarantee does not apply when transportation networks are affected by weather.
-				
-				<?php
-				}
-				?>
+
 				
 </div>
 </div>
@@ -254,16 +212,12 @@ $(document).ready(function() {
       }
     });
     
-    
-
-
-
-     
-        $(document).ready(function() {
+// this is a mobile only hack
+$(document).ready(function() {
             $(".button").click(function(){
                
-                 if ($('#size-select option:selected').val() == "no size" ) {
-                 var size = 'no%20size';
+                 if ($('#size-select option:selected').val() == null ) {
+                 var size = 'no size';
                  } else {
 				var size = $('#size-select option:selected').val();
 				 };

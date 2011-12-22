@@ -53,7 +53,7 @@
 </div>
 
 <?php else: ?>
-	<center><strong>You do not have any orders. <a href="/" title="Go Shopping">Go Shopping</a></strong></center>
+	<div class="holiday_message"><center><strong>You do not have any orders. <a href="/sales" title="Go Shopping">Go Shopping</a></strong></center></div>
 <?php endif ?>
 
 <p></p>

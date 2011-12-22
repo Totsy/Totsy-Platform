@@ -1,4 +1,4 @@
-  /*!
+/*!
  * jQuery Mobile v1.0rc2
  * http://jquerymobile.com/
  *
@@ -839,7 +839,7 @@ a.ui-link-inherit {
 .ui-icon-checkbox-off {
 	background-position: 	-684px 50%;
 }
-.ui-icon-checkbox-on {
+.ui-icon-checkbox-on { 
 	background-position: 	-648px 50%;
 }
 .ui-icon-radio-off {
@@ -869,12 +869,13 @@ a.ui-link-inherit {
 /* loading icon */
 .ui-icon-loading {
 	background-image: url(images/ajax-loader.png);
-	width: 40px;
-	height: 40px;
-	-moz-border-radius: 20px;
-	-webkit-border-radius: 20px;
-	border-radius: 20px;
-	background-size: 35px 35px;
+	width: 200px;
+	height: 200px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+	padding: 20px 0px;
+	//background-size: 40px 40px;
 }
 
 

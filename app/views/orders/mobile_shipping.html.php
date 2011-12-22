@@ -97,10 +97,9 @@ var addressForm = new Object();
 	</div>
 </h2>
 <?php if (!empty($error)) { ?>
-			<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2></div>
-			<?php } ?>
+	<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2></div>
+<?php } ?>
 <hr />
-
 
 <?php echo $this->view()->render( array('element' => 'mobile_shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
 	
@@ -114,7 +113,6 @@ var addressForm = new Object();
 
 			
 		<?php endif ?>
-		<div style="clear:both"></div>
 		<hr />
 		<?php echo $this->form->label('firstname', 'First Name <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 		<?php echo $this->form->text('firstname', array('class' => 'validate[required] inputbox', 'id'=>'firstname')); ?>
@@ -146,60 +144,13 @@ var addressForm = new Object();
 		<?php echo $this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
 		<?php echo $this->form->error('zip'); ?>
 		</span>
-		</div>
-		<div style="clear:both"></div>
 		<strong style="font-size:12px;">
 		<?php echo $this->form->checkbox("opt_save", array('id' => 'opt_save', 'data-role' => 'none')) ?>
 	Save this address
 		</strong>
-		<div>
-				<a href="javascript:document.getElementById('addressForm').submit();" data-role="button">Continue</a>
-		</div>	
-
-
-
-
-
-
-
-
-
-
-
-	</div>
-
+		<a href="javascript:document.getElementById('addressForm').submit();" data-role="button">Continue</a>
 <?php echo $this->form->end();?> 
 
-</div>
-
-<div class="clear"></div>
-<div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
-				<?php
-				if($missChristmasCount>0&&$notmissChristmasCount>0){
-				?>
-				<div class="holiday_message" style="text-align:center;">
-				<p>* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. <p/></div>
-				
-				<?php
-				}
-				elseif($missChristmasCount>0){
-				?>
-				<div class="holiday_message" style="text-align:center;">
-				<p>* Your items will arrives safely, but after 12/25.<p/></div>
-				
-				<?php
-				}
-				else{
-				?>
-				
-				<div class="holiday_message" style="text-align:center;">
-				<p>* Our delivery guarantee does not apply when transportation networks are affected by weather.<p/></div>
-				
-				<?php
-				}
-				?>
-				
-</div>
 
 
 <div id="address_form" style="display:none">
