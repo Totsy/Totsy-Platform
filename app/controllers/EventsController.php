@@ -29,21 +29,13 @@ class EventsController extends BaseController {
 		$eventCount = count($openEvents);		
 
 		$itemsCollection = Item::collection();
+
 		for($i=0; $i<$eventCount; $i++){
-			//foreach($openEvents as $event){
-			
 			$eventId = (string)$openEvents[$i]->_id;
 
-			//$openEvents[$i]->eventItems = Item::find('all', array('conditions' => array('event' => array('$in' => array($eventId)))));
-			
-			$items = $itemsCollection->find(array('event' =>  array($EventId)));
+			$items = $itemsCollection->find(array('event' =>  array($eventId)));
 
 			$openEvents[$i]->eventItems = $items;
-
-
-			//print_r($openEvents[$i]->eventItems);
-			//echo "<br>";
-			
 		}
 		
 
