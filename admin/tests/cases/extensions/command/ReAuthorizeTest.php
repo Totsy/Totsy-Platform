@@ -3,6 +3,7 @@
 namespace admin\tests\cases\extensions\command;
 
 use admin\extensions\command\ReAuthorize;
+use admin\extensions\command\VoidTransaction;
 use admin\models\Order;
 use admin\models\User;
 use MongoDate;
@@ -88,7 +89,7 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 			))
 		));
 	}
-	
+
 	public function testfullReAuthorizeAmex() {
 		$ordersCollection = Order::Collection();
 		#Create Transaction initial Transaction in CyberSource
@@ -280,21 +281,21 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 		$this->assertTrue($result->success());
 		$profileID = $result->response->paySubscriptionCreateReply->subscriptionID;
 		#Create Transaction initial Transaction in CyberSource
-		$authorizeObject = Processor::authorize('test', 1, $this->_Amexcustomer);
+		$authorizeObject = Processor::authorize('test', 1, $this->_Visacustomer);
 		$this->assertTrue($authorizeObject->success());		
 		#Temporary User Creation
 		$user = User::create(array('_id' => new MongoId()));
 		$user->save($this->_UserInfos);
 		#Encrypt Specificied Credit Card
-		$cc_encrypt = Order::creditCardEncrypt($this->_AmexCard, (string) $user->_id);
+		$cc_encrypt = Order::creditCardEncrypt($this->_VisaCard, (string) $user->_id);
 		#Temporary Order Creation
 		$order = Order::create(array('_id' => new MongoId()));
 		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d") - $this->_ReAuthLimitDate, date("Y")));
 		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 		$order->save(array(
 			'total' => 100.00,
-			'card_type' => 'amex',
-			'card_number' => '0005',
+			'card_type' => 'visa',
+			'card_number' => '1111',
 			'authKey' => $authorizeObject->key,
 			'auth' => $authorizeObject->export(),
 			'processor' => $authorizeObject->adapter,
@@ -304,7 +305,19 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 			'billing' => $this->_billingAddress,
 			'cyberSourceProfileId' => $profileID,
 			'test' => true
-		));
+		));		
+		#Running Li3 command Void
+		$VoidTransaction = new VoidTransaction();
+		$VoidTransaction->unitTest = true;
+		$VoidTransaction->run();
+		#Get Order Modified
+		$order_test = $ordersCollection->findOne(array("_id" => $order->_id));
+		$void_records = $order_test['void_records'];
+		$void_records[0]['date_saved'] = new MongoDate(mktime(0, 0, 0, date("m"), date("d") - 1, date("Y")));
+		$update = $ordersCollection->update(
+			array('_id' => $order->_id),
+			array('$set' => array('void_records' => $void_records)), array( 'upsert' => true)
+		);
 		#Running Li3 command Reauthorize
 		$ReAuthorize = new ReAuthorize();
 		$ReAuthorize->unitTest = true;
@@ -328,7 +341,7 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 		$user = User::create(array('_id' => new MongoId()));
 		$user->save($this->_UserInfos);
 		#Encrypt Specificied Credit Card
-		$cc_encrypt = Order::creditCardEncrypt($this->_AmexCard, (string) $user->_id);
+		$cc_encrypt = Order::creditCardEncrypt($this->_VisaCard, (string) $user->_id);
 		#Temporary Order Creation
 		$order = Order::create(array('_id' => new MongoId()));
 		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d") - $this->_ReAuthLimitDate, date("Y")));
@@ -355,6 +368,153 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 		#Testing Modifications
 		$this->assertEqual(false , $order_test['authKey'] != $order->authKey);
 		$this->assertEqual(false , $order_test['authTotal'] != 0.00);
+		#Delete Temporary Documents
+		User::remove(array("_id" => $user->_id));
+		Order::remove(array("_id" => $order->_id));
+	}
+	
+	public function testReAuthorizeVisa() {
+		$ordersCollection = Order::Collection();
+		#Create Transaction initial Transaction in CyberSource
+		$authorizeObject = Processor::authorize('test', 1, $this->_Visacustomer);
+		$this->assertTrue($authorizeObject->success());		
+		#Temporary User Creation
+		$user = User::create(array('_id' => new MongoId()));
+		$user->save($this->_UserInfos);
+		#Encrypt Specificied Credit Card
+		$cc_encrypt = Order::creditCardEncrypt($this->_VisaCard, (string) $user->_id);
+		#Temporary Order Creation
+		$order = Order::create(array('_id' => new MongoId()));
+		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d") - $this->_ReAuthLimitDate, date("Y")));
+		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
+		$order->save(array(
+				'total' => 100.00,
+				'card_type' => 'visa',
+				'card_number' => '1111',
+				'authKey' => $authorizeObject->key,
+				'auth' => $authorizeObject->export(),
+				'processor' => $authorizeObject->adapter,
+				'authTotal' => 100.00,
+				'cc_payment' => $cc_encrypt,
+				'user_id' => (string) $user->_id,
+				'billing' => $this->_billingAddress,
+				'test' => true
+		));
+		#Running Li3 command Void
+		$VoidTransaction = new VoidTransaction();
+		$VoidTransaction->unitTest = true;
+		$VoidTransaction->run();
+		#Get Order Modified
+		$order_test = $ordersCollection->findOne(array("_id" => $order->_id));
+		$void_records = $order_test['void_records'];
+		$void_records[0]['date_saved'] = new MongoDate(mktime(0, 0, 0, date("m"), date("d") - 1.1, date("Y")));
+		$update = $ordersCollection->update(
+			array('_id' => $order->_id),
+			array('$set' => array('void_records' => $void_records)), array( 'upsert' => true)
+		);
+		#Running Li3 command Reauthorize
+		$ReAuthorize = new ReAuthorize();
+		$ReAuthorize->unitTest = true;
+		$ReAuthorize->run();
+		#Get Order Modified
+		$order_test_auth = $ordersCollection->findOne(array("_id" => $order->_id));
+		#Testing Modifications
+		$this->assertEqual(true , $order_test['authKey'] != $order_test_auth['authKey']);
+		$this->assertEqual(true , $order_test_auth['authTotal'] == 100.00);
+		#Delete Temporary Documents
+		User::remove(array("_id" => $user->_id));
+		Order::remove(array("_id" => $order->_id));
+	}
+	
+	public function testReAuthorizeVisaWithTooEarlyVoid() {
+		$ordersCollection = Order::Collection();
+		#Create Transaction initial Transaction in CyberSource
+		$authorizeObject = Processor::authorize('test', 1, $this->_Visacustomer);
+		$this->assertTrue($authorizeObject->success());		
+		#Temporary User Creation
+		$user = User::create(array('_id' => new MongoId()));
+		$user->save($this->_UserInfos);
+		#Encrypt Specificied Credit Card
+		$cc_encrypt = Order::creditCardEncrypt($this->_VisaCard, (string) $user->_id);
+		#Temporary Order Creation
+		$order = Order::create(array('_id' => new MongoId()));
+		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d") - $this->_ReAuthLimitDate, date("Y")));
+		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
+		$order->save(array(
+				'total' => 100.00,
+				'card_type' => 'visa',
+				'card_number' => '1111',
+				'authKey' => $authorizeObject->key,
+				'auth' => $authorizeObject->export(),
+				'processor' => $authorizeObject->adapter,
+				'authTotal' => 100.00,
+				'cc_payment' => $cc_encrypt,
+				'user_id' => (string) $user->_id,
+				'billing' => $this->_billingAddress,
+				'test' => true
+		));
+		#Running Li3 command Void
+		$VoidTransaction = new VoidTransaction();
+		$VoidTransaction->unitTest = true;
+		$VoidTransaction->run();
+		#Get Order Modified
+		$order_test = $ordersCollection->findOne(array("_id" => $order->_id));
+		$void_records = $order_test['void_records'];
+		$void_records[0]['date_saved'] = new MongoDate(mktime(0, 0, 0, date("m"), date("d") - 0.5, date("Y")));
+		$update = $ordersCollection->update(
+			array('_id' => $order->_id),
+			array('$set' => array('void_records' => $void_records)), array( 'upsert' => true)
+		);
+		#Running Li3 command Reauthorize
+		$ReAuthorize = new ReAuthorize();
+		$ReAuthorize->unitTest = true;
+		$ReAuthorize->run();
+		#Get Order Modified
+		$order_test_auth = $ordersCollection->findOne(array("_id" => $order->_id));
+		#Testing Modifications
+		$this->assertEqual(true , $order_test['authKey'] == $order_test_auth['authKey']);
+		$this->assertEqual(true , $order_test_auth['authTotal'] == 100.00);
+		#Delete Temporary Documents
+		User::remove(array("_id" => $user->_id));
+		Order::remove(array("_id" => $order->_id));
+	}
+	
+	public function testReAuthorizeVisaWithNoVoid() {
+		$ordersCollection = Order::Collection();
+		#Create Transaction initial Transaction in CyberSource
+		$authorizeObject = Processor::authorize('test', 1, $this->_Visacustomer);
+		$this->assertTrue($authorizeObject->success());		
+		#Temporary User Creation
+		$user = User::create(array('_id' => new MongoId()));
+		$user->save($this->_UserInfos);
+		#Encrypt Specificied Credit Card
+		$cc_encrypt = Order::creditCardEncrypt($this->_VisaCard, (string) $user->_id);
+		#Temporary Order Creation
+		$order = Order::create(array('_id' => new MongoId()));
+		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d") - $this->_ReAuthLimitDate, date("Y")));
+		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
+		$order->save(array(
+				'total' => 100.00,
+				'card_type' => 'visa',
+				'card_number' => '1111',
+				'authKey' => $authorizeObject->key,
+				'auth' => $authorizeObject->export(),
+				'processor' => $authorizeObject->adapter,
+				'authTotal' => 100.00,
+				'cc_payment' => $cc_encrypt,
+				'user_id' => (string) $user->_id,
+				'billing' => $this->_billingAddress,
+				'test' => true
+		));
+		#Running Li3 command Reauthorize
+		$ReAuthorize = new ReAuthorize();
+		$ReAuthorize->unitTest = true;
+		$ReAuthorize->run();
+		#Get Order Modified
+		$order_test = $ordersCollection->findOne(array("_id" => $order->_id));
+		#Testing Modifications
+		$this->assertEqual(false , $order_test['authKey'] != $order->authKey);
+		$this->assertEqual(true , $order_test['authTotal'] == 100.00);
 		#Delete Temporary Documents
 		User::remove(array("_id" => $user->_id));
 		Order::remove(array("_id" => $order->_id));
