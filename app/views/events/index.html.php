@@ -207,7 +207,10 @@
 	});
 	
 	// countdown ticker
-	/*
+	/* this is breaking things in FF8.0.*
+		- causes flickering and scrolling buggy behavior
+		- not resolved
+	*/
 	$(document).ready(function() {
 		$(".counter").each( function () {
 		
@@ -233,8 +236,6 @@
 			}
 		 });
 	});
-	*/
-
 
 //-->
 </script>
