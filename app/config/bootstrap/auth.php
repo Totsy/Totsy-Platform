@@ -69,10 +69,7 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	    $affiliateName = $userLogin['invited_by'];
 	    
 	    if($affiliateName=="mamasource" && $params['request']->env('SERVER_NAME')!=="mamasource.totsy.com") {
-	    	print "test";
-	    	exit();
-	    
-	    	return new Response(array('location' => 'http://eric.totsy.com/login'));
+	    	//return new Response(array('location' => 'http://eric.totsy.com/login'));
 	   }
 	}		
 	

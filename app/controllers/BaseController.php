@@ -48,7 +48,6 @@ class BaseController extends \lithium\action\Controller {
 		/**
 		 * Setup all the necessary facebook stuff
 		 */
-		
 		if(!$this->fbsession){
 			$this->fbsession = $fbsession = FacebookProxy::getUser();		
 			$fbconfig = FacebookProxy::config();
@@ -74,14 +73,13 @@ class BaseController extends \lithium\action\Controller {
 			    if ($user->deactivated == true) {			    
 			        Session::clear(array('name' => 'default'));
 			        Session::delete('appcookie', array('name' => 'cookie'));
-					//FacebookProxy::setSession(null);
 			    }
 				$decimal = ($user->total_credit < 1) ? 2 : 0;
 				$credit = ($user->total_credit > 0) ? number_format($user->total_credit, $decimal) : 0;
 			}
 		}
 		$this->set(compact('cartCount', 'credit', 'fbsession', 'fbconfig', 'fblogout'));
-		
+				
 		$this->freeShippingEligible($userInfo);
 		$this->tenOffFiftyEligible($userInfo);
 		/**
@@ -177,10 +175,10 @@ class BaseController extends \lithium\action\Controller {
 	            *   starts and end; and the user uses the service with in thirty days
 	            *   of their registration
 	            */
-                if ( ($service->start_date->sec <= $created_date &&
+	            	            
+                if ( (($service->start_date->sec <= $created_date &&
                         $service->end_date->sec > $created_date) &&
-                    (strtotime("now") < $dayThirty)) {
-
+                    (strtotime("now") < $dayThirty)) || $_SERVER['HTTP_HOST']=="evan.totsy.com" ) {
                     //checks if the user ever made a purchase
                     if ($user->purchase_count < 1) {
                         $sessionServices = Session::read('services', array('name' => 'default'));
@@ -197,6 +195,7 @@ class BaseController extends \lithium\action\Controller {
 	        }
 	    }
 	}
+	
 	public function tenOffFiftyEligible($userInfo) {
 	    $serviceSession = Session::read('services', array('name' => 'default'));
 	    $service = Service::find('first', array('conditions' => array('name' => '10off50') ));
