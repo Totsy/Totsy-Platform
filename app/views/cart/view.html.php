@@ -267,6 +267,13 @@ var discountErrors = new Object();
 					<?php endif ?>
 				</div>
 				</div>
+					<?php if (!empty($overShippingCost)):?>
+			    		<div style="clear:both"></div>
+			    		<div class="subtotal">
+    		        		<span style="float: left;">Oversize Shipping:</span> 
+    		        		<span style="float:right">$<?php echo number_format($overShippingCost,2)?></span>
+    		    		</div>
+   			    	<?php endif ?>
 				<?php if (!empty($shipping_discount)):?>
 				<div style="clear:both"></div>
 				<div class="subtotal">
