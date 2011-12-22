@@ -34,7 +34,13 @@ CATEGORY VIEW
 	<?php $y = 0; ?>
 	<?php foreach ($openEvents as $event): ?>
 	
-	
+		
+	<div class="item">
+		<pre>
+		XXXXXXXXXXXXXXXXXXX
+		I AM AN EVENT
+		XXXXXXXXXXXXXXXXXXX
+		</pre>
 	<?php
 		//print_r($event->eventItems);
 		$items = $event->eventItems;
@@ -67,6 +73,7 @@ CATEGORY VIEW
 		
 		}
 	?>
+	</div>
 	
 	
 	
