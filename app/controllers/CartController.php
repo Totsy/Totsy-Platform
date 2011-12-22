@@ -255,6 +255,7 @@ class CartController extends BaseController {
 		$this->getCartPopupData();
 	}
 
+
 	/**
 	* Method for sending all required cart data to Ajax driven cart popup.
 	*

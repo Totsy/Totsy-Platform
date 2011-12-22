@@ -66,7 +66,7 @@
 	<?php if(isset($branch)) { echo $branch; } ?>
 	<div id="totsy" class="container_16 roundy glow">
 		
-		<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
+		<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout, 'cartSubTotal' =>$cartSubTotal)); ?>
 				
 		<div id="contentMain" class="container_16">
 			<?php echo $this->content(); ?>

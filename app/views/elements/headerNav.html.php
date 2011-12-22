@@ -53,7 +53,8 @@
 								</em>
 							</div>
 							<div id="usercart">
-								<a href="/cart/view" class="icon cart" title="My Cart (<?php echo $cartCount;?>)">$<?php echo $cartCount;?></a>
+							
+								<a href="/cart/view" class="icon cart cart_icon" title="My Cart total: $<?php echo number_format($cartSubTotal,2)?>">$<?php echo number_format($cartSubTotal,2)?></a>
 								<a href="/cart/view" class="btn checkout" title="My Cart (<?php echo $cartCount;?>)"><strong>CHECKOUT</strong></a>
 								<?php
 									// credits logic - retained but commented out for possible re-inclusion
