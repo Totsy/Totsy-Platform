@@ -63,8 +63,6 @@ class CartController extends BaseController {
 		$i = 0;
 		$subTotal = 0;
 		$itemCount = 0;
-		$missChristmasCount = 0;
-		$notmissChristmasCount = 0;
 
 		#Count of how many items in the cart are exempt of shipping cost
 		$exemptCount = 0;
@@ -90,15 +88,6 @@ class CartController extends BaseController {
 			$events = Event::find('all', array('conditions' => array('_id' => $item->event[0])));
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
 
-
-			//miss chrismtas stuff to be removed later
-			$item->miss_christmas = $itemInfo->miss_christmas;
-			if($item->miss_christmas){
-				$missChristmasCount++;
-			}
-			else{
-				$notmissChristmasCount++;
-			}
 
 			#Get Event End Date
 			$cartItemEventEndDates[$i] = is_object($events[0]->end_date) ? $events[0]->end_date->sec : $events[0]->end_date;
@@ -155,7 +144,7 @@ class CartController extends BaseController {
 		if(Session::check('service_available')) {
 			$serviceAvailable = Session::read('service_available');
 		}
-		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping','missChristmasCount','notmissChristmasCount', 'serviceAvailable');
+		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping', 'serviceAvailable');
 	}
 
 	/**
@@ -177,7 +166,6 @@ class CartController extends BaseController {
 				"no size": $data['item_size'];
 
 
-			//added miss_christmas, to be removed
 			$item = Item::find('first', array(
 				'conditions' => array(
 					'_id' => "$itemId"),
@@ -193,7 +181,6 @@ class CartController extends BaseController {
 					'product_weight',
 					'event',
 					'vendor_style',
-					'miss_christmas',
 					'discount_exempt'
 			)));
 
