@@ -69,8 +69,8 @@ class ProcessPayment extends \lithium\console\Command  {
 	    /**
 	        Continue to process no matter how long it takes
 	    **/
-	    MongoCursor::$timeout = -1;
-		$ordersCollection = Order::connection()->connection->orders;
+	    MongoCursor::$timeout = 50000;
+		$ordersCollection = Order::collection();
 		if ($this->test != 'true') {
             $orders = $ordersCollection->find(array(
                 'ship_records' => array('$exists' => true),
@@ -93,7 +93,7 @@ class ProcessPayment extends \lithium\console\Command  {
 				if (Order::failedCaptureCheck($order['order_id'])){
 				    $this->failedCaptures[] = $order['order_id'];
 				}
-				if ($processedOrder && $user->purchase_count == 1) {				
+				if ($processedOrder && $user->purchase_count == 1) {
 					if ($user->invited_by) {
 						$inviter = User::find('first', array(
 							'conditions' => array(
