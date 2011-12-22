@@ -35,7 +35,7 @@ CATEGORY VIEW
 	<?php foreach ($openEvents as $event): ?>
 	
 		
-	<div class="item">
+	<div class="event" style="outline:2px dotted #c00; width:930px; overflow:hidden;">
 		<pre>
 		XXXXXXXXXXXXXXXXXXX
 		I AM AN EVENT
@@ -45,7 +45,9 @@ CATEGORY VIEW
 		//print_r($event->eventItems);
 		$items = $event->eventItems;
 
-		foreach($items as $item){
+		foreach($items as $item){ ?>
+			<div class="item" style="float:left; margin-right:7px; width:125px; height:188px; border:1px solid #ccc;">
+		<?php	
 		
 			print_r($item);
 
@@ -70,10 +72,12 @@ CATEGORY VIEW
 			echo "<br>";
 			echo "<br>";
 			echo "<br>";
-		
+		?>
+			</div><!-- /.item -->
+		<?php
 		}
 	?>
-	</div>
+	</div><!-- /.event -->
 	
 	
 	
@@ -144,6 +148,7 @@ CATEGORY VIEW
 				</div>
 			</div>
 
+			<!-- @DG - no banners on the category landing page...
 			<?php if ($x == 1): ?>
 				<div id="banner_container" class="grid_5" style="height:405px; overflow:hidden;">
 					<div><a href="/users/invite"><img src="/img/invite_girl.png"></a></div>
@@ -168,6 +173,7 @@ CATEGORY VIEW
 				</div>
 				<div class="clear"></div>
 			<?php endif ?>
+			-->
 		<?php $x++; ?>
 		<?php $y++; ?>
 	<?php endforeach ?>
