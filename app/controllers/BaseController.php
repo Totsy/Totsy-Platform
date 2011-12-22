@@ -81,6 +81,7 @@ class BaseController extends \lithium\action\Controller {
 			}
 		}
 		$this->set(compact('cartCount', 'credit', 'fbsession', 'fbconfig', 'fblogout'));
+		
 		$this->freeShippingEligible($userInfo);
 		$this->tenOffFiftyEligible($userInfo);
 		/**

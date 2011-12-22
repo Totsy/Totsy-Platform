@@ -59,17 +59,22 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	
 	// check if user already logged-in
 	if(Session::check('userLogin')) {
-		$logged_in = true;
-		
-		//for mamasource registered users logging into www.totsy.com
-		if( Session::read('invited_by', array('name' => 'default')) ) {
-			$affiliate_name =  Session::read('invited_by', array('name' => 'default'));
-			
-			if($affiliate_name=="mamasource" && $params['request']->env('SERVER_NAME')!=="mamasource.totsy.com") {
-				return new Response(array('location' => 'http://mamasource.totsy.com'));
-			}
-		}		
+		$logged_in = true;		
 	}
+	
+	//for mamasource registered users logging into www.totsy.com
+	if( Session::read('userLogin', array('name' => 'default')) ) {
+	    $userLogin =  Session::read('userLogin', array('name' => 'default'));
+	    
+	    $affiliateName = $userLogin['invited_by'];
+	    
+	    if($affiliateName=="mamasource" && $params['request']->env('SERVER_NAME')!=="mamasource.totsy.com") {
+	    	print "test";
+	    	exit();
+	    
+	    	return new Response(array('location' => 'http://eric.totsy.com/login'));
+	   }
+	}		
 	
 	// in case whe have an evnt's landing page , will nedd to reditec user to proper page
 	if ( !$logged_in && preg_match('(/sale/)','/'.$params['request']->url)) {
@@ -93,7 +98,6 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	
 		return new Response(array('location' => 'Users::login'));
 	}
-
 
 	if (!$granted) {
 		/* Redirect all non-authenticated users to login page. */
