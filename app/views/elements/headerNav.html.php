@@ -33,7 +33,6 @@
 		<?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
 		(<?php echo $this->html->link('Sign Out', $logout, array('title' => 'Sign Out', 'onClick'=>'deleteFBCookies()')); ?>)
 		<?php endif ?>
-		
 	</div>
 
 	<div class="menu_top_right">
