@@ -40,18 +40,21 @@ CATEGORY VIEW
 		$items = $event->eventItems;
 
 		foreach($items as $item){
+		
+			print_r($item);
 
 			echo "<br>";
 			echo "id is " . $item['_id'];
 			echo "<br>";
 
-			echo "price is " . $item['sale_whol'];
+			echo "price is " . $item['sale_retail'];
 			echo "<br>";
 
 			echo "title is  " . $item['description'];
 			echo "<br>";
 			
 			echo "url slug is  " . $item['url'];
+			echo "<br>";
 			echo "so full clickthru is /sale/" . $item['url'];
 			echo "<br>";
 			
