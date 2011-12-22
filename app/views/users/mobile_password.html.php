@@ -22,11 +22,11 @@
 				?>
 			</div>
 			<br>
-			<?=$this->form->create(null, array('class' => "fl") );?>
+			<?php echo $this->form->create(null, array('class' => "fl") );?>
 				<div class="form-row">
 				<div class="form-row">
-					<?=$this->form->label('password', 'Current Password',array('class' => 'account' )); ?>
-					<?=$this->form->password('password', array(
+					<?php echo $this->form->label('password', 'Current Password',array('class' => 'account' )); ?>
+					<?php echo $this->form->password('password', array(
 							'class' => 'inputbox',
 							'type' => 'password',
 							'id' => 'password'
@@ -34,22 +34,21 @@
 					;?>
 				</div>
 				<div class="form-row">
-					<?=$this->form->label('new_password', 'New Password',array('class' => 'account' )); ?>
-					<?=$this->form->password('new_password', array(
+					<?php echo $this->form->label('new_password', 'New Password',array('class' => 'account' )); ?>
+					<?php echo $this->form->password('new_password', array(
 							'class' => 'inputbox'
 						))
 					;?>
 				</div>
 				<div class="form-row">
-					<?=$this->form->label('password_confirm', 'Confirm Password',array('class' => 'account' )); ?>
-					<?=$this->form->password('password_confirm', array(
+					<?php echo $this->form->label('password_confirm', 'Confirm Password',array('class' => 'account' )); ?>
+					<?php echo $this->form->password('password_confirm', array(
 							'class' => 'inputbox'
 						))
 					;?>
 				</div>
-			<?=$this->form->submit('Change Password', array('class' => 'button fr')); ?>
-			<?=$this->form->end();?>
+			<?php echo $this->form->submit('Change Password', array('class' => 'button fr')); ?>
+			<?php echo $this->form->end();?>
 		</fieldset>
 <p></p>
-<?php echo $this->view()->render(array('element' => 'mobile_helpNav')); ?>
 <?php echo $this->view()->render(array('element' => 'mobile_headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>

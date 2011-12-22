@@ -15,8 +15,6 @@
 				Office Hours:<br/> M-F 10am - 5pm EST</p>
 
 <p></p>
-<?php echo $this->view()->render(array('element' => 'mobile_aboutUsNav')); ?>
-<?php echo $this->view()->render(array('element' => 'mobile_helpNav')); ?>
 <?php if (!empty($userInfo)){ ?>
 <?php echo $this->view()->render(array('element' => 'mobile_headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
 <?php } ?>

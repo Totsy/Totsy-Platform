@@ -16,8 +16,6 @@
 		<p><a href="http://cli.linksynergy.com/cli/publisher/programs/advertiser_detail.php?oid=223740"  target="_blank">Linkshare Affiliate Network Login</a></p>
 		
 		<p></p>
-		<?php echo $this->view()->render(array('element' => 'mobile_aboutUsNav')); ?>
-		<?php echo $this->view()->render(array('element' => 'mobile_helpNav')); ?>
 		<?php if (!empty($userInfo)){ ?>
 		<?php echo $this->view()->render(array('element' => 'mobile_headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
 		<?php } ?>

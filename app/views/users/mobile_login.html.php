@@ -26,5 +26,5 @@
 
 <p><?php echo $this->form->checkbox('remember_me', array('class' => 'checkbox', 'data-role' => 'none')); ?> Remember Me </p>
 
-<?php echo $this->form->submit('Sign In', array('data-theme' => 'b', 'data-ajax' => 'false'));?> 
+<?php echo $this->form->submit('Sign In', array('data-theme' => 'b', 'data-ajax' => 'false', 'class' => 'button_mobile'));?> 
 <?php echo $this->form->end();?>

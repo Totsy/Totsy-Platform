@@ -13,11 +13,11 @@
 	<?php $invite = "http://www.totsy.com/join/" . $user->invitation_codes;?>
 <?php endif ?>
 
-<h2>My Invitations <span class="fr" style="font-size:12px; margin-top:-10px;">Share this link with your friends: <br><span style="word-wrap:break-word;"><strong><a href="<?=$invite?>" title="Your Invite Link"><?=$invite?></a></strong></span></span></h2>
+<h2>My Invitations <span class="fr" style="font-size:12px; margin-top:-10px;">Share this link with your friends: <br><span style="word-wrap:break-word;"><strong><a href="<?php echo $invite?>" title="Your Invite Link"><?php echo $invite?></a></strong></span></span></h2>
 	<hr />
 		<div id="tabs">
 			<?php if (!empty($flashMessage)): ?>
-				<div class='standard-message'><strong><?=$flashMessage?></strong></div>
+				<div class='standard-message'><strong><?php echo $flashMessage?></strong></div>
 				<br>
 			<?php endif ?>
 			<ul>
@@ -34,10 +34,10 @@
 					<p>For each friend you invite, Totsy will credit your account with <span style="color:#009900;">$15</span> after your friend's place their first order.</p>
 						<fieldset>
 							<br>
-							<?=$this->form->create( "", array("id"=>"inviteForm") ); ?>
-								<?=$this->form->label('Enter Your Friends Email Addresses:'); ?>
+							<?php echo $this->form->create( "", array("id"=>"inviteForm") ); ?>
+								<?php echo $this->form->label('Enter Your Friends Email Addresses:'); ?>
 								<br>
-								<?=$this->form->textarea('to', array(
+								<?php echo $this->form->textarea('to', array(
 									'class' => 'inputbox',
 									'id' => 'contact_list',
 									'value' => 'Separate email addresses by commas',
@@ -45,8 +45,8 @@
 									'onfocus' => "if(this.value=='Separate email addresses by commas') this.value='';"
 									)); ?>
 								<br>
-								<?=$this->form->label('Personalized Message To Friends:'); ?>
-								<?=$this->form->textarea('message', array(
+								<?php echo $this->form->label('Personalized Message To Friends:'); ?>
+								<?php echo $this->form->textarea('message', array(
 									'class' => 'inputbox',
 									'id' => 'comments',
 									'value' => "Please accept this invitation to join Totsy",
@@ -54,8 +54,8 @@
 									'onfocus' => "if(this.value=='Please accept this invitation to join Totsy') this.value='';"
 									)); ?>
 								<br>
-								<?=$this->form->submit('Send Invitations', array('class' => 'button fr')); ?>
-							<?=$this->form->end(); ?>
+								<?php echo $this->form->submit('Send Invitations', array('class' => 'button fr')); ?>
+							<?php echo $this->form->end(); ?>
 							<br><br><br>
 							
 							
@@ -96,9 +96,9 @@
 							<?php // $invites = $open->data() ?>
 					<?php foreach ($open as $invite): ?>
 							<tr class="alt<?php echo ( ($y++ % 2) == 1 ? 0 : 1); ?>">
-								<td><?=$x?></td>
-								<td><?=$invite->email; ?></td>
-								<td><?=date('M-d-Y', $invite->date_sent->sec); ?></td>
+								<td><?php echo $x?></td>
+								<td><?php echo $invite->email; ?></td>
+								<td><?php echo date('M-d-Y', $invite->date_sent->sec); ?></td>
 							</tr>
 						<?php $x++ ?>
 					<?php endforeach ?>
@@ -128,8 +128,8 @@
 						<tbody>
 					<?php foreach ($accepted as $invite): ?>
 							<tr class="alt<?php echo ( ($y++ % 2) == 1 ? 0 : 1); ?>">
-								<td nowrap="nowrap"><?=$x?></td>
-							  <td nowrap="nowrap"><?=$invite->email; ?></td>
+								<td nowrap="nowrap"><?php echo $x?></td>
+							  <td nowrap="nowrap"><?php echo $invite->email; ?></td>
 								<td nowrap="nowrap"><span style="color:#090; font-size:12px; font-weight:bold; float:right;">Accepted!</span></td>
 							</tr>
 						<?php $x++ ?>

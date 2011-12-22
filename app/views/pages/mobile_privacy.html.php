@@ -112,8 +112,6 @@
   <p>If you have questions or suggestions regarding this Privacy Policy or our privacy practices please contact us via email at <a href="mailto:support@totsy.com">support@totsy.com</a> or via postal mail at 10 West 18th street 4th Floor New York, NY 10011, Thank you.</p>
 
 <p></p>
-<?php echo $this->view()->render(array('element' => 'mobile_aboutUsNav')); ?>
-<?php echo $this->view()->render(array('element' => 'mobile_helpNav')); ?>
 <?php if (!empty($userInfo)){ ?>
 <?php echo $this->view()->render(array('element' => 'mobile_headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
 <?php } ?>

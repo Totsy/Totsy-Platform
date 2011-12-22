@@ -1,4 +1,4 @@
-	<h2>How Totsy Works</h2>
+	<h2>How Totsy Works</h2> 
     <hr>
 	<p>
 		Totsy offers moms on-the-go and moms-to-be access to brand-specific sales, up to 90% off retail, just for them and the kids, ages 0-8.
@@ -32,8 +32,6 @@
 	</p>
 
 <p></p>
-<?php echo $this->view()->render(array('element' => 'mobile_aboutUsNav')); ?>
-<?php echo $this->view()->render(array('element' => 'mobile_helpNav')); ?>
 <?php if (!empty($userInfo)){ ?>
 <?php echo $this->view()->render(array('element' => 'mobile_headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
 <?php } ?>
