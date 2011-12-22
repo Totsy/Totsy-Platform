@@ -37,7 +37,7 @@
 					<?php
 						if (!empty($userInfo)) { ?>
 							<div id="userinfo">
-								<strong>Hi xxxxxxxxxxxxxxcxzxxxxxxx
+								<strong>Hi 
 								<?php
 									if (array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])) :
 										echo "{$userInfo['firstname']}";
@@ -45,14 +45,16 @@
 										if (is_array($userInfo) && array_key_exists('email', $userInfo)) : echo $userInfo['email']; endif;
 									endif;
 								?></strong>
+								<em>
 								<?php 
 									$logout = ($fblogout) ? $fblogout : 'Users::logout';
 									echo $this->html->link('Sign Out', $logout, array('title' => 'Sign Out', 'onClick'=>'deleteFBCookies()')) . ' | <a href="/account" title="My Account">My Account</a>';
 								?>
+								</em>
 							</div>
 							<div id="usercart">
 								<a href="/cart/view" class="icon cart" title="My Cart (<?php echo $cartCount;?>)">$<?php echo $cartCount;?></a>
-								<a href="/cart/view" class="btn checkout" title="My Cart (<?php echo $cartCount;?>)">CHECKOUT</a>
+								<a href="/cart/view" class="btn checkout" title="My Cart (<?php echo $cartCount;?>)"><strong>CHECKOUT</strong></a>
 								<?php
 									// credits logic - retained but commented out for possible re-inclusion
 									//if (!(empty($credit))) : echo '<a href="/account/credits" title="My Credits $' . $credit . '>My Credits $' . $credit . '</a>';

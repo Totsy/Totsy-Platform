@@ -4430,11 +4430,9 @@ Text Align > left / right
 #totsy > header > nav {
 	float: right;
 	margin-right:7px; padding:9px 0 0;
-	max-width:82%;
+	width:788px;
 	font-size:12px;
 }
-#totsy > header #userUtils {float:right;}
-#totsy > header > nav > ul {float:left;}
 #totsy > header #invite {
 	position:absolute;
 	top:0;
@@ -4465,6 +4463,7 @@ Text Align > left / right
 	color:#d84643;
 	}
 /* main nav */
+#totsy > header > nav > ul {float:left;}
 nav > ul > li,
 nav .haschild ul {
 	position: relative; z-index: 100;
@@ -4537,8 +4536,9 @@ nav .haschild li a:hover {
 /* user utils - cart, account, login */
 #totsy > header #userUtils {
 	position: relative;
-	margin:0 10px 0 0; padding:2px 10px 5px;
-	max-width:30%;
+	float:right;
+	margin:0 10px 0 0; padding:2px 14px 5px 10px;
+	max-width:30%; min-width:210px;
 	background: #fff;
 	border:1px solid #ccc;
 	-webkit-border-radius:0 0 10px 10px;
@@ -4547,10 +4547,13 @@ nav .haschild li a:hover {
 }
 #userUtils #userinfo {
 	margin-bottom:5px;
+	text-align: right;
 }
-#userUtils #usercart {
-	float: right;
+#userUtils #userinfo em {
+	margin-left:10px; 
+	white-space: nowrap;
 }
+#userUtils #usercart {float: right;}
 #userUtils .icon { /* @TODO - abstract out all .icon styles… need design consistency / standards */
 	padding-left:23px;
 }
@@ -4576,3 +4579,6 @@ nav .haschild li a:hover {
 	background-color:rgb(218,80,77);
 	color:#fff;
 }
+#userUtils .checkout strong {
+	padding-right:9px;
+	background: url(../img/btn-arrow-s.png) 100% 35% no-repeat;
