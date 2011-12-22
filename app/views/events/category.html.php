@@ -33,6 +33,40 @@ CATEGORY VIEW
 	<?php $x = 0; ?>
 	<?php $y = 0; ?>
 	<?php foreach ($openEvents as $event): ?>
+	
+	
+	<?php
+		//print_r($event->eventItems);
+		$items = $event->eventItems;
+
+		foreach($items as $item){
+
+			echo "<br>";
+			echo "id is " . $item['_id'];
+			echo "<br>";
+
+			echo "price is " . $item['sale_whol'];
+			echo "<br>";
+
+			echo "title is  " . $item['description'];
+			echo "<br>";
+			
+			echo "url slug is  " . $item['url'];
+			echo "so full clickthru is /sale/" . $item['url'];
+			echo "<br>";
+			
+			
+			//var is just the jpg filename, hardcoded to www.totsy bc dev often doesnt have images
+			echo "http://www.totsy.com/images/" . $item['primary_image'] . ".jpg";
+			echo "<br>";
+			echo "<br>";
+			echo "<br>";
+		
+		}
+	?>
+	
+	
+	
 		<!-- Start product item -->
 		<?php if ($y == 0): ?>
 			<div class="grid_6">
