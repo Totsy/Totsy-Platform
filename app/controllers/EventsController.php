@@ -16,21 +16,38 @@ class EventsController extends BaseController {
 	public function category() {
 		$datas = $this->request->args;
 		$categories = array();
-		$bannersCollection = Banner::collection();
-		$banner = $bannersCollection->findOne(array("enabled" => true, 'end_date' => array('$gte' => new MongoDate(strtotime('now')))));
 
 		if(empty($this->request->args[0])) {
 			$openEvents = Event::open();
-			$pendingEvents = Event::pending();
 		} else {
 			$categories = ucwords($this->request->args[0]);
 			$openEvents = Event::open(null,array(),null,$categories);
-			$pendingEvents = Event::pending(null,array(),null,$categories);
 		}
 
 		$itemCounts = array();
 
-		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner', 'categories');
+		$eventCount = count($openEvents);		
+
+		$itemsCollection = Item::collection();
+		for($i=0; $i<$eventCount; $i++){
+			//foreach($openEvents as $event){
+			
+			$eventId = (string)$openEvents[$i]->_id;
+
+			//$openEvents[$i]->eventItems = Item::find('all', array('conditions' => array('event' => array('$in' => array($eventId)))));
+			
+			$items = $itemsCollection->find(array('event' =>  array($EventId)));
+
+			$openEvents[$i]->eventItems = $items;
+
+
+			//print_r($openEvents[$i]->eventItems);
+			//echo "<br>";
+			
+		}
+		
+
+		return compact('openEvents', 'items', 'categories');
 	}
 
 	public function index() {
