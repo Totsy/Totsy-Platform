@@ -45,6 +45,7 @@ class ReCaptureTest extends \lithium\test\Unit {
 				'firstname' => 'Tomfsfdsd',
 				'lastname' => 'Royerdfsfsdf',
 				'address' => '143 roebling street',
+				'address2' => 'apt1',
 				'city' => 'Brooklyn',
 				'state' => 'NY',
 				'zip' => '11211',
@@ -62,6 +63,7 @@ class ReCaptureTest extends \lithium\test\Unit {
 				'firstName' => 'Tomfsfdsd',
 				'lastName' => 'Royerdfsfsdf',
 				'address' => '143 roebling street',
+				'address2' => 'apt1',
 				'city' => 'Brooklyn',
 				'state' => 'NY',
 				'zip' => '11211',
@@ -80,6 +82,7 @@ class ReCaptureTest extends \lithium\test\Unit {
 				'firstName' => 'Tomfsfdsd',
 				'lastName' => 'Royerdfsfsdf',
 				'address' => '143 roebling street',
+				'address2' => 'apt1',
 				'city' => 'Brooklyn',
 				'state' => 'NY',
 				'zip' => '11211',
@@ -105,7 +108,7 @@ class ReCaptureTest extends \lithium\test\Unit {
 		$cc_encrypt = Order::creditCardEncrypt($this->_AmexCard, (string) $user->_id);
 		#Temporary Order Creation
 		$order = Order::create(array('_id' => new MongoId()));
-		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d") - $this->_FullReAuthLimitDate, date("Y")));
+		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y")));
 		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 		$order->save(array(
 				'total' => 100.00,
@@ -153,7 +156,7 @@ class ReCaptureTest extends \lithium\test\Unit {
 		$cc_encrypt = Order::creditCardEncrypt($this->_AmexCard, (string) $user->_id);
 		#Temporary Order Creation
 		$order = Order::create(array('_id' => new MongoId()));
-		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d") - $this->_FullReAuthLimitDate, date("Y")));
+		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y")));
 		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 		$order->save(array(
 				'total' => 100.00,
