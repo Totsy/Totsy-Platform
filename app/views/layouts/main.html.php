@@ -68,7 +68,7 @@
 		
 		<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout, 'cartSubTotal' =>$cartSubTotal)); ?>
 				
-		<div id="contentMain" class="container_16">
+		<div id="contentMain" class="container_16 group">
 			<?php echo $this->content(); ?>
 		</div>
 		<!-- /#contentMain -->
