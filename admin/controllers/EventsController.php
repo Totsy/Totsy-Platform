@@ -462,7 +462,6 @@ class EventsController extends BaseController {
 			$eventData[modifications] = $modifications;
 
 			// End of Comparison of OLD Event Attributes and NEW event attributes
-
 			if ($event->save($eventData)) {
 				$this->redirect(array(
 						'controller' => 'events', 'action' => 'edit',
