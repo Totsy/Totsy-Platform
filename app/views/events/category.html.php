@@ -161,7 +161,7 @@ CATEGORY VIEW
 
 	<div style="margin-bottom:35px;" class="clear"></div>
 
-</div><!-- a -->
+</div><!-- /.full-width -->
 </div><!-- b -->
 </div><!-- c -->
 <div id="modal" style="background:#fff!important;"></div>
