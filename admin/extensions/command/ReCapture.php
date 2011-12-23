@@ -153,6 +153,7 @@ class ReCapture extends \lithium\console\Command {
 						array('_id' => $order['_id']),
 						array('$set' => array('authKey' => $auth->key,
 											  'auth' => $auth->export(),
+											  'authTotal' => $order['total'],
 											  'processor' => $auth->adapter
 						)), array( 'upsert' => true)
 				);
