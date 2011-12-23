@@ -34,8 +34,19 @@ class EventsController extends BaseController {
 			$eventId = (string)$openEvents[$i]->_id;
 
 			$items = $itemsCollection->find(array('event' =>  array($eventId)));
+			
+			
+			$i=0;
+			$limiteditems = array();
+			foreach($items as $eachitem){
+				if($i<6){
+					$limiteditems[] = $eachitem;
+				}
+				$i++;
+			}
 
-			$openEvents[$i]->eventItems = $items;
+			$openEvents[$i]->eventItems = $limiteditems;
+			//$openEvents[$i]->eventItems = $items;
 		}
 		
 
