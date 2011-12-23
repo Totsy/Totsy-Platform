@@ -53,6 +53,48 @@ class EventsController extends BaseController {
 		return compact('openEvents', 'items', 'categories');
 	}
 
+
+	public function age() {
+		$datas = $this->request->args;
+		$categories = array();
+
+		if(empty($this->request->args[0])) {
+			$openEvents = Event::open();
+		} else {
+			$categories = ucwords($this->request->args[0]);
+			$openEvents = Event::open(null,array(),null,null, $ages);
+		}
+
+		$itemCounts = array();
+
+		$eventCount = count($openEvents);		
+
+		$itemsCollection = Item::collection();
+
+		for($i=0; $i<$eventCount; $i++){
+			$eventId = (string)$openEvents[$i]->_id;
+
+			$items = $itemsCollection->find(array('event' =>  array($eventId)));
+			
+			
+			$i=0;
+			$limiteditems = array();
+			foreach($items as $eachitem){
+				if($i<6){
+					$limiteditems[] = $eachitem;
+				}
+				$i++;
+			}
+
+			$openEvents[$i]->eventItems = $limiteditems;
+			//$openEvents[$i]->eventItems = $items;
+		}
+		
+				$this->_render['template'] = 'category';
+
+		return compact('openEvents', 'items', 'categories');
+	}
+
 	public function index() {
 		$datas = $this->request->data;
 		$departments = array();
