@@ -23,17 +23,11 @@
 </script>
 	<h2 class="page-title gray"><span class="_red">Today's Sales</span> </h2>
 	<hr />
-		<!--Disney -->
-<!--	<div class="disney disney_splash">
-		<p><strong>SPECIAL BONUS!</strong> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/parents.png" align="absmiddle" width="95px" /> ( a $10 value ) <span id="disney">Offer &amp; Refund Details</span></p>
-	</div>
--->
-CATEGORY VIEW
-<div class="fullwidth">
+<div id="events-wrap" class="fullwidth">
 	<?php $x = 0; ?>
 	<?php foreach ($openEvents as $event): ?>
 	
-		<div class="event grid-x" style="outline:2px dotted #c00; width:930px; overflow:hidden;">
+		<div class="event grid-x">
 			<div class="eventDetails">
 				<h3><?php echo $event->name; ?></h3>
 				<em id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $event->end_date->sec * 1000; ?>" class="counter end"></em><!-- @TODO - use data-attribute instead of title… better, use a date/time element instead of an em -->
@@ -74,7 +68,8 @@ CATEGORY VIEW
 					<p>$<?php echo $item['sale_retail'];?></p>
 			<?php	
 			/*
-			
+				// this is the data available to me
+				// @ TODO: remove prior to production...
 				echo "<!--";
 				echo "<pre>";
 				print_r($item);

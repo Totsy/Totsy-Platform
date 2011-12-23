@@ -4407,7 +4407,7 @@ Text Align > left / right
 }
 
 /* 
-	new header, nav with cats - @DG-2011.12
+	NEW new header, nav with cats - @DG-2011.12
 */
 #totsy {margin:43px auto 10px; overflow: visible;}
 #totsy > header {
@@ -4587,3 +4587,13 @@ nav .haschild li a:hover {
 #userUtils .checkout strong {
 	padding-right:9px;
 	background: url(../img/btn-arrow-s.png) 100% 35% no-repeat;
+
+/* 
+	Category Pages - events - @DG-2011.12
+*/
+#events-wrap {outline:2px dotted red;}
+#events-wrap .event {
+	width:948px;
+	border:1px solid #ccc;
+	border-radius:0px 0px 10px 10px;
+}
