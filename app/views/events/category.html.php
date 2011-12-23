@@ -30,12 +30,13 @@
 -->
 CATEGORY VIEW
 <div class="fullwidth">
+	<?php $x = 0; ?>
 	<?php foreach ($openEvents as $event): ?>
 	
 		<div class="event grid-x" style="outline:2px dotted #c00; width:930px; overflow:hidden;">
 			<div class="eventDetails">
 				<h3><?php echo $event->name; ?></h3>
-				<em data-date="<?php echo $date = $event->end_date->sec * 1000; ?>" class="counter end">*counter here*</em><!-- @TODO - use date/time element? -->
+				<em id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $event->end_date->sec * 1000; ?>" class="counter end"></em><!-- @TODO - use data-attribute instead of title… better, use a date/time element instead of an em -->
 				<p><?php echo $event['blurb']; ?></p>
 				<div>
 					<?php
@@ -121,7 +122,7 @@ CATEGORY VIEW
 			</div>
 
 		</div><!-- /.event -->
-	
+		<?php $x++; ?>
 		<?php endforeach ?>
 
 	<div style="margin-bottom:35px;" class="clear"></div>

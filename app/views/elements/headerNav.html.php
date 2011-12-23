@@ -74,9 +74,9 @@
 					<li id="newsales"><a href="/sales" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0 || $_SERVER['REQUEST_URI'] == '/') {
 					echo 'class="active"';
 					} ?>><em>New<br/> Sales</em></a></li>
-					<li id="ending"><a href="/sales/girls" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/girls') == 0) {
+					<li id="ending"><a href="/sales#upcoming" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/girls') == 0) {
 					echo 'class="active"';
-					} ?>><em>Ending<br/> Soon</em></a></li>
+					} ?>><em>Upcoming<br/> Sales</em></a></li>
 					<li id="bycat" class="haschild"><a href="/sales/boys" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/boys') == 0)  {
 					echo 'class="active"';
 					} ?>><em>Shop By<br/> Category</em></a>
@@ -93,7 +93,7 @@
 					<li id="byage" class="haschild"><a href="/sales/momsdads" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/momsdads') == 0) {
 					echo 'class="active"';
 					} ?>><em>Shop<br/> By Age</em></a>
-											<ul>
+						<ul>
 							<li><a href="/age/newborn" title="View items for Newborns">Newborn</a></li>
 							<li><a href="/age/infant" title="View items for Infants">Infant 0 -12M</a></li>
 							<li><a href="/age/toddler" title="View items for Toddlers">Toddler 1-3Y</a></li>
