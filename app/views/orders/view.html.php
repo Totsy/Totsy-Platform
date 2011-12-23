@@ -67,13 +67,10 @@
 											<td colspan="3" style="padding:5px; text-align:right;">
 												Estimated Ship Date:
 												<?php if (!empty($orderEvents[$key]['ship_date'])): ?>
-													<?
-													//echo date('M d, Y', strtotime($orderEvents[$key]['ship_date']));
-													echo $orderEvents[$key]['ship_date']
-												?>
+													<?php echo date('M d, Y', strtotime($orderEvents[$key]['ship_date'])); ?>
 													
 												<?php else: ?>
-													 <?php echo $shipDate; ?>
+													<?php echo date('m-d-Y', $shipDate) ?>
 												<?php endif ?>
 											</td>
 										</tr>
