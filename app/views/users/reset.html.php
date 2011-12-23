@@ -85,19 +85,19 @@ else{
 
 <h2>Reset Your Password</h2>
 <p>Please enter your email and further instructions will be provided.</p>
-											<?=$this->form->create(null, array('id'=>'loginForm')); ?>
+											<?php echo $this->form->create(null, array('id'=>'loginForm')); ?>
 
-		<?=$this->form->label('Email Address', 'Email Address <span>*</span>', array(
+		<?php echo $this->form->label('Email Address', 'Email Address <span>*</span>', array(
 		'escape' => false,
 		'class' => 'required'
 		));
 	?>	
-	<?=$this->form->text('email', array('class' => "validate['required'] inputbox", 'style' => 'width:158px', 'id' => 'email')); ?>
-	<?=$this->form->error('email'); ?>
+	<?php echo $this->form->text('email', array('class' => "validate['required'] inputbox", 'style' => 'width:158px', 'id' => 'email')); ?>
+	<?php echo $this->form->error('email'); ?>
 
 
-													<?=$this->form->submit('Reset Password', array('class' => 'button fr')); ?>
-											<?=$this->form->end(); ?>
+													<?php echo $this->form->submit('Reset Password', array('class' => 'button fr')); ?>
+											<?php echo $this->form->end(); ?>
 <?php
 }
 ?>
@@ -143,7 +143,7 @@ var google_conversion_value = 0;
 <script>
 //your fb login function
 function fblogin() {
-FB.login(function(response) {
+FB.login( function(response) {
 }, {perms:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
 }
 </script>

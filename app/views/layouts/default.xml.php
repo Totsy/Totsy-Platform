@@ -6,5 +6,5 @@
  * @license       http://opensource.org/licenses/bsd-license.php The BSD License
  */
 ?>
-<?=$this->xml->header();?>
-<?=$this->content;?>
+<?php echo $this->xml->header();?>
+<?php echo $this->content;?>

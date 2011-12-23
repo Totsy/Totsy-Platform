@@ -1,10 +1,10 @@
-<?=$this->html->script(array('jquery.nivo.slider.pack'));?>
+<?php echo $this->html->script(array('jquery.nivo.slider.pack'));?>
 <script src="/js/jquery.tmpl.js" type="text/javascript"></script>
 
-<?=$this->html->script(array('cart-timer.js?v=007', 'cart-items-timer.js?v=007', 'cart-popup.js?v=007'));?>
+<?php echo $this->html->script(array('cart-timer.js?v=007', 'cart-items-timer.js?v=007', 'cart-popup.js?v=007'));?>
 
 <!-- template used for items on cart. jquery.tmpl.js driven -->
-<?=$this->view()->render( array('element' => 'popupCartItems') ); ?>
+<?php echo $this->view()->render( array('element' => 'popupCartItems') ); ?>
 
 <script>
 (function($) {
@@ -52,9 +52,15 @@
 		<div class="p-container roundy_product_home">
 					<!-- this is where the items count was -->
 					<?php
-						if (!empty($event->images->splash_big_image)) {
+						//check if top two area, show big splash
+						if (($x <= 1)&&(!empty($event->images->splash_big_image))){
 							$productImage = "/image/{$event->images->splash_big_image}.jpg";
-						} else {
+						}
+						//else show small splash
+						elseif(!empty($event->images->splash_small_image)){
+							$productImage = "/image/{$event->images->splash_small_image}.jpg";
+						}
+						else {
 							$productImage = ($x <= 1) ? "/img/no-image-large.jpeg" : "/img/no-image-small.jpeg";
 						}
 					?>
@@ -66,7 +72,7 @@
 						}
 					?>
 					<?php if ($x <= 1): ?>
-						<?=$this->html->link(
+						<?php echo $this->html->link(
 							$this->html->image("$productImage", array(
 							'title' => $event->name,
 							'alt' => $event->name,
@@ -76,7 +82,7 @@
 							)), "sale/$url", array('escape'=> false));
 						?>
 					<?php else: ?>
-						<?=$this->html->link(
+						<?php echo $this->html->link(
 							$this->html->image("$productImage", array(
 							'title' => $event->name,
 							'alt' => $event->name,
@@ -93,7 +99,7 @@
 						</div>
 
 						<div class="table-cell right">
-							<?=$this->html->link('Shop', 'sale/'.$event->url, array('class' => 'button small', 'style'=>'display:table-cell !important'));?>
+							<?php echo $this->html->link('Shop', 'sale/'.$event->url, array('class' => 'button small', 'style'=>'display:table-cell !important'));?>
 						</div>
 					</div>
 				</div>
@@ -105,17 +111,17 @@
 					<?php if(!empty($banner["img"])): ?>
 						<?php foreach($banner["img"] as $image): ?>
 							<div><?php if(!empty($image["url"])):?>
-								<a href="<?=$image["url"]?>"
+								<a href="<?php echo $image["url"]?>"
 									<?php
 										if(array_key_exists('newPage', $image) && $image['newPage']) {
 											echo 'target="_blank"';
 										}
 									?>
 									>
-									<img src="/image/<?=$image["_id"]?>.jpeg" alt="" />
+									<img src="/image/<?php echo $image["_id"]?>.jpeg" alt="" />
 								</a>
 								<?php else: ?>
-									<img src="/image/<?=$image["_id"]?>.jpeg" alt="" />
+									<img src="/image/<?php echo $image["_id"]?>.jpeg" alt="" />
 								<?php endif ?>
 							</div>
 						<?php endforeach ?>
@@ -154,7 +160,7 @@
 								$productImage = "/img/no-image-small.jpeg";
 							}
 						?>
-						<?=$this->html->link(
+						<?php echo $this->html->link(
 						$this->html->image("$productImage", array(
 							'title' => $event->name,
 							'alt' => $event->name,
@@ -170,7 +176,7 @@
 						</div>
 
 						<div class="table-cell right">
-							<?=$this->html->link('View', 'sale/'.$event->url, array('class' => 'button small', 'style'=>'display:table-cell !important'));?>
+							<?php echo $this->html->link('View', 'sale/'.$event->url, array('class' => 'button small', 'style'=>'display:table-cell !important'));?>
 						</div>
 					</div>
 				</div>

@@ -106,6 +106,7 @@ case $COMMAND in
 		echo
 		;;
 
+
 	run-app-tests)
 		cd $PROJECT_DIR/app
 		libraries/lithium/console/li3 test tests/cases

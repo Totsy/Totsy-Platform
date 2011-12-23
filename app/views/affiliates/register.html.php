@@ -4,15 +4,15 @@
 	var categoryName = "";
 	
 	<?php if($affiliateName) {  ?>
-		affiliateName= "<?=$affiliateName?>";	
+		affiliateName= "<?php echo $affiliateName?>";	
 	<?php } ?>
 	
 	<?php if($affiliateName) { ?>
-		categoryName= "<?=$categoryName?>";
+		categoryName= "<?php echo $categoryName?>";
 	<?php } ?>
 	
 	<?php if($affBgroundImage) { ?>
-		affBgroundImage = "<?=$affBgroundImage?>"; 	
+		affBgroundImage = "<?php echo $affBgroundImage?>"; 	
 	<?php } ?>
 	
 </script>
@@ -157,7 +157,9 @@ var google_conversion_value = 0;
 //your fb login function
 function fblogin() {
 FB.login(function(response) {
-}, {perms:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
+	if (response.authResponse) {
+		window.location.reload();    
+  }}, {scope:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
 }
 </script>
 

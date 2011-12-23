@@ -1,4 +1,4 @@
-<?=$this->html->script(array('jquery.nivo.slider.pack'));?>
+<?php echo $this->html->script(array('jquery.nivo.slider.pack'));?>
 
 <script>
 (function($) {
@@ -58,7 +58,7 @@
                 <div class="md-gray p-container">
 
 						<?php if ($itemCounts[ (string) $event->_id] == 0): ?>
-								<?=$this->html->image('/img/soldout.png', array(
+								<?php echo $this->html->image('/img/soldout.png', array(
 									'title' => "Sold Out",
 									'style' => 'z-index : 2; position : absolute; left:69%; margin:10px;'
 								)); ?>
@@ -71,7 +71,7 @@
 						}
 					?>
 					<?php if ($x <= 1): ?>
-						<?=$this->html->link(
+						<?php echo $this->html->link(
 							$this->html->image("$productImage", array(
 							'title' => $event->name,
 							'alt' => $event->name,
@@ -81,7 +81,7 @@
 							)), "sale/$event->url", array('escape'=> false));
 						?>
 					<?php else: ?>
-						<?=$this->html->link(
+						<?php echo $this->html->link(
 							$this->html->image("$productImage", array(
 							'title' => $event->name,
 							'alt' => $event->name,
@@ -102,7 +102,7 @@
 						</div>
 
 						<div class="table-cell right" style="width:55px; display:block; padding:5px; margin:7px 0px 0px 0px; ">
-							<span><?=$this->html->link('Shop', 'sale/'.$event->url, array('class' => 'go-btn'));?></span>
+							<span><?php echo $this->html->link('Shop', 'sale/'.$event->url, array('class' => 'go-btn'));?></span>
 						</div>
 					</div>
 				</div>
@@ -127,11 +127,11 @@
                     <div><a href="/users/invite"><img src="/img/invite_girl.png" alt="" /></a></div>
                         <?php foreach($banner["img"] as $image): ?>
                             <div><?php if(!empty($image["url"])):?>
-                                <a href="<?=$image["url"]?>">
-                                    <img src="/image/<?=$image["_id"]?>.jpeg" alt="" />
+                                <a href="<?php echo $image["url"]?>">
+                                    <img src="/image/<?php echo $image["_id"]?>.jpeg" alt="" />
                                 </a>
                                 <?php else: ?>
-                                    <img src="/image/<?=$image["_id"]?>.jpeg" alt="" />
+                                    <img src="/image/<?php echo $image["_id"]?>.jpeg" alt="" />
                                 <?php endif ?>
                             </div>
                         <?php endforeach ?>
@@ -172,7 +172,7 @@
 								$productImage = "/img/no-image-small.jpeg";
 							}
 						?>
-						<?=$this->html->link(
+						<?php echo $this->html->link(
 						$this->html->image("$productImage", array(
 							'title' => $event->name,
 							'alt' => $event->name,
@@ -191,7 +191,7 @@
 							</div>
 
 							<div class="table-cell right" style="width:55px; display:block; padding:5px; margin:7px 0px 0px 0px;">
-								<?=$this->html->link('View', 'sale/'.$event->url, array('class' => 'preview-btn')
+								<?php echo $this->html->link('View', 'sale/'.$event->url, array('class' => 'preview-btn')
 									);
 								?>
 							</div>

@@ -1,8 +1,7 @@
 <h2 style="margin-bottom:20px;">Join with Facebook</h2>
 <a href="javascript:;" onclick="fblogin();return false;"><img src="/img/sign_in_fb.png" class="fr"></a>
 <br />
-<h2 style="margin-top:30px;margin-bottom:20px;">Or join with email</h2>
-
+<h2 style="margin-top:30px;margin-bottom:20px;">Join with email</h2>
 
 <?php if (preg_match('/join/',$_SERVER['REQUEST_URI'])): ?>
 	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/join']);">
@@ -16,7 +15,7 @@
 
 	<div style="width:70px; float:left">
 
-	<?=$this->form->label('email', 'Email <span>*</span>', array(
+	<?php echo $this->form->label('email', 'Email <span>*</span>', array(
 		'escape' => false,
 		'class' => 'required'
 		));
@@ -25,13 +24,13 @@
 	</div>
 
 	<div style="float:right">
-	<?=$this->form->text('email', array('class' => 'inputbox', 'style' => 'width:190px')); ?>
+	<?php echo $this->form->text('email', array('class' => 'inputbox', 'style' => 'width:190px')); ?>
 	</div>
 	<?=$this->form->error('email'); ?>
 
 	<div class="clear"></div>
 	<div style="width:70px; float:left">
-		<?=$this->form->label('confirmemail', 'Confirm Email <span>*</span>', array(
+		<?php echo $this->form->label('confirmemail', 'Confirm Email <span>*</span>', array(
 			'escape' => false,
 			'class' => 'required'
 			));
@@ -39,16 +38,15 @@
 	</div>
 
 	<div style="float:right">
-		<?=$this->form->text('confirmemail', array('class' => 'inputbox', 'style' => 'width:190px')); ?>
+		<?php echo $this->form->text('confirmemail', array('class' => 'inputbox', 'style' => 'width:190px')); ?>
 	</div>
-
 	<?=$this->form->error('confirmemail'); ?>
 	<?=$this->form->error('emailcheck'); ?>
 
 	<div class="clear"></div>
 
 	<div style="width:70px; float:left">
-	<?=$this->form->label('password','Password <span>*</span>', array(
+	<?php echo $this->form->label('password','Password <span>*</span>', array(
 		'class'=>'required',
 		'escape' => false
 		));
@@ -58,15 +56,15 @@
 	<div style="float:right">
 
 
-	<?=$this->form->password('password', array(
+	<?php echo $this->form->password('password', array(
 		'class'=>"inputbox",
 		'name' => 'password',
 		'id' => 'password', 'style' => 'width:190px'
 		));
 	?>
 	</div>
-	<?=$this->form->error('password'); ?>
-	<?=$this->form->checkbox('terms', array(
+	<?php echo $this->form->error('password'); ?>
+	<?php echo $this->form->checkbox('terms', array(
 		"checked" => "checked",
 		'style'=>"float:left;margin-right:4px; display: none;"
 		));
@@ -83,7 +81,7 @@
 	<?=$this->form->error('terms'); ?>
 
 
-<?=$this->form->end(); ?>
+<?php echo $this->form->end(); ?>
 
 <div id="psm" style="display:none;"></div>
 <div id="fbshoes" style="display:none;"></div>

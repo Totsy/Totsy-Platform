@@ -1,13 +1,13 @@
-<?=$this->html->script('jquery-1.4.2.min.js');?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->script('TableTools.min.js');?>
-<?=$this->html->script('ZeroClipboard.js');?>
-<?=$this->html->style('table');?>
-<?=$this->html->style('TableTools');?>
+<?php echo $this->html->script('jquery-1.4.2.min.js');?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->script('TableTools.min.js');?>
+<?php echo $this->html->script('ZeroClipboard.js');?>
+<?php echo $this->html->style('table');?>
+<?php echo $this->html->style('TableTools');?>
 
 <div class="grid_16">
-	<h2 id="page-heading">Purchase Order: <?=$poNumber; ?>
-	(<?=$event->name?>)</h2>
+	<h2 id="page-heading">Purchase Order: <?php echo $poNumber; ?>
+	(<?php echo $event->name?>)</h2>
 </div>
 <div id="clear"></div>
 <div class="grid_8">
@@ -15,8 +15,8 @@
 		<?php if ($total['sum'] == 0 && count($purchaseOrder) == 0): ?>
 			<h2>No product has been sold for this event.</h2>
 		<?php else: ?>
-            <p>Total Quantity - <?=$total['quantity']?></p>
-            <p>Order Total - $<?=number_format($total['sum'], 2)?></p>
+            <p>Total Quantity - <?php echo $total['quantity']?></p>
+            <p>Order Total - $<?php echo number_format($total['sum'], 2)?></p>
 		<?php endif ?>
 	</div>
 </div>
@@ -37,9 +37,9 @@
 						<tr>
 							<?php foreach ($items as $key => $value): ?>
 								<?php if (in_array($key, array('Total', 'Unit'))): ?>
-									<td>$<?=number_format($value, 2)?></td>
+									<td>$<?php echo number_format($value, 2)?></td>
 								<?php else: ?>
-									<td><?=$value?></td>
+									<td><?php echo $value?></td>
 								<?php endif ?>
 							<?php endforeach ?>
 						</tr>

@@ -1,7 +1,7 @@
-<?=$this->html->style('table');?>
+<?php echo $this->html->style('table');?>
 <div class="grid_16">
 	<?php if (!empty($start_date)): ?>
-		<h3>Showing Event '<?=$event_name?>' Details Running from <?=date('Y-m-d',$start_date)?> GMT to <?=date('Y-m-d',$end_date)?> GMT</h3>
+		<h3>Showing Event '<?php echo $event_name?>' Details Running from <?php echo date('Y-m-d',$start_date)?> GMT to <?php echo date('Y-m-d',$end_date)?> GMT</h3>
 	<?php endif ?>
 	<?php if (!empty($hours_setup)): ?>
 		<table id="summary_table" class="datatable" border="1">
@@ -9,7 +9,7 @@
 				<tr style = "width: auto">
 					<th style = "width: 30px"></th>
 					<?php foreach($stat as $key => $value) : ?>
-					<th style = "width: auto"><?=$key?></th>
+					<th style = "width: auto"><?php echo $key?></th>
 					<?php endforeach ?>
 					<th>Average by hour</th>
 				</tr>
@@ -25,10 +25,10 @@
 			</thead>
 		<?php foreach ($hours_setup as $hours): ?>
 			<tr style = "width: auto">
-				<td style = "width: auto"><?=$hours?>:00</td>
+				<td style = "width: auto"><?php echo $hours?>:00</td>
 				<?php foreach($stat as $key => $value) : ?>
 					<?php if(isset($stat[$key][$hours]['total'])) : ?>
-						<td style = "width: auto">$<?=round($stat[$key][$hours]['total'],2)." / ".$stat[$key][$hours]['quantity']?></td>
+						<td style = "width: auto">$<?php echo round($stat[$key][$hours]['total'],2)." / ".$stat[$key][$hours]['quantity']?></td>
 					<?php else : ?>
 						<td style = "width: auto"> / </td>
 					<?php endif ?>
@@ -36,7 +36,7 @@
 				<?php if(empty($total_hours[$hours]["average"])): ?>
 					<td> 0 </td>
 				<?php else :?>
-					<td>$<?=$total_hours[$hours]["average"]?></td>
+					<td>$<?php echo $total_hours[$hours]["average"]?></td>
 				<?php endif ?>
 			</tr>
 		<?php endforeach ?>
@@ -44,9 +44,9 @@
 		<tr>
 			<td>Total</td>
 			<?php foreach($total_days as $days) : ?>
-				<td>$<?=round($days['total'],2)?> / <?=$days['quantity']?></td>
+				<td>$<?php echo round($days['total'],2)?> / <?php echo $days['quantity']?></td>
 			<?php endforeach ?>
-			<td>$<?=round($total,2)?> / <?=$total_quantity?></td>
+			<td>$<?php echo round($total,2)?> / <?php echo $total_quantity?></td>
 		</tr>
 		</tfoot>
 	<?php endif ?>

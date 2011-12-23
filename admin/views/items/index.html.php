@@ -1,5 +1,5 @@
-<?=$this->html->script(array('jquery-1.4.2.min.js', 'jquery.dataTables.js'));?>
-<?=$this->html->style('table');?>
+<?php echo $this->html->script(array('jquery-1.4.2.min.js', 'jquery.dataTables.js'));?>
+<?php echo $this->html->style('table');?>
 
 
 <h1>Product Item Administration</h1>
@@ -11,11 +11,11 @@
 	} );
 </script>
 <div id="note">
-	<p>Select from the list below to edit an item. To create new items please select <?=$this->html->link('an event','/events')?> or create <?=$this->html->link('a new event','/events/add')?> first.</p>	
+	<p>Select from the list below to edit an item. To create new items please select <?php echo $this->html->link('an event','/events')?> or create <?php echo $this->html->link('a new event','/events/add')?> first.</p>	
 </div>
 
 <br>
-<?=$this->items->build($items); ?>
+<?php echo $this->items->build($items); ?>
 
 
 

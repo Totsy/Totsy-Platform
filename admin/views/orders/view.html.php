@@ -1,8 +1,8 @@
 <div id="entire">
-<?=$this->html->script('jquery-1.4.2');?>
-<?=$this->html->script('jquery.maskedinput-1.2.2')?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->style(array('jquery_ui_blitzer.css', 'table'));?>
+<?php echo $this->html->script('jquery-1.4.2');?>
+<?php echo $this->html->script('jquery.maskedinput-1.2.2')?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->style(array('jquery_ui_blitzer.css', 'table'));?>
 <?php
 	$this->title(" - Order Confirmation");
 ?>
@@ -33,12 +33,12 @@
 										<button id="abort_cancel" style="font-weight:bold;font-size:14px;">Abort</button>
 										<div style="clear:both"></div><br \>
 										Commment :
-						<?=$this->form->textarea("comment_text", array('style' => 'width:100%;', 'row' => '6', 'id' => "comment_text")); ?>
+						<?php echo $this->form->textarea("comment_text", array('style' => 'width:100%;', 'row' => '6', 'id' => "comment_text")); ?>
 										</div><br />
 									</div>
 									<div id="normal" style="display:block">
 										<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
-										The order is expected to ship on <?=date('M d, Y', $shipDate)?>
+										The order is expected to ship on <?php echo date('M d, Y', $shipDate)?>
 										</p>
 									<?php if($edit_mode): ?>
 									<p style="text-align:center;">
@@ -46,39 +46,164 @@
 									<button id="part_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Part Order TAX Return</button>
 									<button id="cancel_button" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
 									<button id="update_shipping" style="font-weight:bold;font-size:14px;">Update Shipping</button>
+									<button id="update_payment" style="font-weight:bold;font-size:14px;">Update Payment Information</button>
+									<button id="generate_order_file" style="font-weight:bold;font-size:14px;">Generate Order File</button>
 									</p></div>
 								<?php endif ?>
 									<?php /**/ ?>
 								  	<div id="full_order_tax_return_form" style="display:none">
-										<?=$this->form->create(null ,array( 'action'=>'taxreturn', 'id'=>'fullOrderTaxReturnForm','enctype' => "multipart/form-data")); ?>
-										<?=$this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"]));?>
-										<?=$this->form->hidden('fullordertaxreturn_action', array('class' => 'inputbox', 'id' => 'fullordertaxreturn_action', 'value' => 1)); ?>
-										<?=$this->form->end();?>
+										<?php echo $this->form->create(null ,array( 'action'=>'taxreturn', 'id'=>'fullOrderTaxReturnForm','enctype' => "multipart/form-data")); ?>
+										<?php echo $this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"]));?>
+										<?php echo $this->form->hidden('fullordertaxreturn_action', array('class' => 'inputbox', 'id' => 'fullordertaxreturn_action', 'value' => 1)); ?>
+										<?php echo $this->form->end();?>
 									</div>
 								  	<div id="part_order_tax_return_form" style="display:none">
-										<?=$this->form->create(null ,array( 'action'=>'taxreturn', 'id'=>'partOrderTaxReturnForm','enctype' => "multipart/form-data")); ?>
-										<?=$this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"]));?>
-										<?=$this->form->hidden('partordertaxreturn_action', array('class' => 'inputbox', 'id' => 'partordertaxreturn_action', 'value' => 1)); ?>
-										<?=$this->form->end();?>
+										<?php echo $this->form->create(null ,array( 'action'=>'taxreturn', 'id'=>'partOrderTaxReturnForm','enctype' => "multipart/form-data")); ?>
+										<?php echo $this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"]));?>
+										<?php echo $this->form->hidden('partordertaxreturn_action', array('class' => 'inputbox', 'id' => 'partordertaxreturn_action', 'value' => 1)); ?>
+										<?php echo $this->form->end();?>
 									</div>
 									<?php /**/ ?>
 									<div id="cancel_form" style="display:none">
-										<?=$this->form->create(null ,array('id'=>'cancelForm','enctype' => "multipart/form-data")); ?>
-										<?=$this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
-										<?=$this->form->hidden('cancel_action', array('class' => 'inputbox', 'id' => 'cancel_action', 'value' => 1)); ?>
-										<?=$this->form->hidden('comment', array('class' => 'textarea', 'id' => 'comment')); ?>
+										<?php echo $this->form->create(null ,array('id'=>'cancelForm','enctype' => "multipart/form-data")); ?>
+										<?php echo $this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
+										<?php echo $this->form->hidden('cancel_action', array('class' => 'inputbox', 'id' => 'cancel_action', 'value' => 1)); ?>
+										<?php echo $this->form->hidden('comment', array('class' => 'textarea', 'id' => 'comment')); ?>
+										<?php echo $this->form->end();?>
+									</div>
+									<div id="order_file" style="display:none">
+										<?=$this->form->create(null ,array('id'=>'newOrderFileForm','enctype' => "multipart/form-data")); ?>
+										<?=$this->form->hidden("process-as-an-exception", array('class' => 'inputbox', 'id' => "process-as-an-exception")); ?>
+										<?=$this->form->submit('OK')?>
 										<?=$this->form->end();?>
 									</div>
 									<div id="new_shipping" style="display:none">
 											<h2 id="new_shipping_address">New shipping address</h2>
-											<?=$this->form->create(null ,array('id'=>'newShippingForm','enctype' => "multipart/form-data")); ?>
+											<?php echo $this->form->create(null ,array('id'=>'newShippingForm','enctype' => "multipart/form-data")); ?>
+												<div class="form-row">
+													<?php echo $this->form->label('firstname', 'First Name', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?php echo $this->form->text('firstname', array('class' => 'inputbox')); ?>
+													<?php echo $this->form->error('firstname'); ?>
+												</div>
+												<div class="form-row">
+													<?php echo $this->form->label('lastname', 'Last Name', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?php echo $this->form->text('lastname', array('class' => 'inputbox')); ?>
+													<?php echo $this->form->error('lastname'); ?>
+												</div>
+												<div class="form-row">
+													<?php echo $this->form->label('address', 'Address', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?php echo $this->form->text('address', array('class' => 'inputbox')); ?>
+													<?php echo $this->form->error('address'); ?>
+												</div>
+											 	<div class="form-row">
+													<?php echo $this->form->label('city', 'City', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?php echo $this->form->text('city', array('class' => 'inputbox')); ?>
+													<?php echo $this->form->error('city'); ?>
+												</div>
+												<div class="form-row">
+													<?php echo $this->form->label('state', 'State', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?php echo $this->form->text('state', array('class' => 'inputbox')); ?>
+													<?php echo $this->form->error('state'); ?>
+												</div>
+												<div class="form-row">
+													<?php echo $this->form->label('zip', 'Zip', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?php echo $this->form->text('zip', array('class' => 'inputbox', 'id' => 'zip')); ?>
+													<?php echo $this->form->error('zip'); ?>
+												</div>
+												<div class="form-row">
+													<?php echo $this->form->label('phone', 'Phone', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+												<?php echo $this->form->text('phone', array('class' => 'inputbox', 'id' => 'phone')); ?>
+													<?php echo $this->form->error('phone'); ?>
+												</div>
+											<?php echo $this->form->submit('Confirm new shipping details')?>
+											<?php echo $this->form->end();?>
+										</div>
+										<div id="new_payment" style="display:none">
+											<?=$this->form->create(null ,array('id'=>'newPaymentForm','enctype' => "multipart/form-data")); ?>
+												<h2 id="new_credit_card_infos">Credit Card Informations</h2>
+												<div class="form-row">
+													<?=$this->form->label('type', 'Type', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->select('creditcard[type]', array('visa' => 'Visa', 'mc' => 'MasterCard','amex' => 'American Express'), array('id' => 'card_type', 'class'=>'inputbox')); ?>
+													<?=$this->form->error('creditcard[type]'); ?>
+												</div>												
+												<div class="form-row">
+													<?=$this->form->label('number', 'Number', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('creditcard[number]', 
+														array('class' => 'inputbox', 'id' => 'creditcard[number]')); ?>
+													<?=$this->form->error('number'); ?>
+												</div>
+												<div class="form-row">
+													<?=$this->form->label('month', 'Month', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+												<?=$this->form->text('creditcard[month]', 
+													array('class' => 'inputbox', 'id' => 'creditcard[month]')); ?>
+													<?=$this->form->error('month'); ?>
+												</div>
+												<div class="form-row">
+													<?=$this->form->label('year', 'Year', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('creditcard[year]', array('class' => 'inputbox', 'id' => 'creditcard[year]')); ?>
+													<?=$this->form->error('year'); ?>
+												</div>
+												<div class="form-row">
+													<?=$this->form->label('code', 'Code', array(
+														'escape' => false,
+														'class' => 'required'
+														));
+													?>
+													<?=$this->form->text('creditcard[code]', array('class' => 'inputbox', 'id' => 'creditcard[code]')); ?>
+													<?=$this->form->error('code'); ?>
+												</div>
+												<h2 id="new_billing_infos">Billing Informations</h2>
 												<div class="form-row">
 													<?=$this->form->label('firstname', 'First Name', array(
 														'escape' => false,
 														'class' => 'required'
 														));
 													?>
-													<?=$this->form->text('firstname', array('class' => 'inputbox')); ?>
+													<?=$this->form->text('billing[firstname]', array('class' => 'inputbox')); ?>
 													<?=$this->form->error('firstname'); ?>
 												</div>
 												<div class="form-row">
@@ -87,7 +212,7 @@
 														'class' => 'required'
 														));
 													?>
-													<?=$this->form->text('lastname', array('class' => 'inputbox')); ?>
+													<?=$this->form->text('billing[lastname]', array('class' => 'inputbox')); ?>
 													<?=$this->form->error('lastname'); ?>
 												</div>
 												<div class="form-row">
@@ -96,7 +221,7 @@
 														'class' => 'required'
 														));
 													?>
-													<?=$this->form->text('address', array('class' => 'inputbox')); ?>
+													<?=$this->form->text('billing[address]', array('class' => 'inputbox')); ?>
 													<?=$this->form->error('address'); ?>
 												</div>
 											 	<div class="form-row">
@@ -105,7 +230,7 @@
 														'class' => 'required'
 														));
 													?>
-													<?=$this->form->text('city', array('class' => 'inputbox')); ?>
+													<?=$this->form->text('billing[city]', array('class' => 'inputbox')); ?>
 													<?=$this->form->error('city'); ?>
 												</div>
 												<div class="form-row">
@@ -114,7 +239,7 @@
 														'class' => 'required'
 														));
 													?>
-													<?=$this->form->text('state', array('class' => 'inputbox')); ?>
+													<?=$this->form->text('billing[state]', array('class' => 'inputbox')); ?>
 													<?=$this->form->error('state'); ?>
 												</div>
 												<div class="form-row">
@@ -123,7 +248,7 @@
 														'class' => 'required'
 														));
 													?>
-													<?=$this->form->text('zip', array('class' => 'inputbox', 'id' => 'zip')); ?>
+													<?=$this->form->text('billing[zip]', array('class' => 'inputbox', 'id' => 'zip')); ?>
 													<?=$this->form->error('zip'); ?>
 												</div>
 												<div class="form-row">
@@ -132,10 +257,10 @@
 														'class' => 'required'
 														));
 													?>
-												<?=$this->form->text('phone', array('class' => 'inputbox', 'id' => 'phone')); ?>
+												<?=$this->form->text('billing[phone]', array('class' => 'inputbox', 'id' => 'phone')); ?>
 													<?=$this->form->error('phone'); ?>
 												</div>
-											<?=$this->form->submit('Confirm new shipping details')?>
+											<?=$this->form->submit('Create new Authorization')?>
 											<?=$this->form->end();?>
 										</div>
 										<?php endif ?>
@@ -158,10 +283,10 @@
 														<?php foreach ($numbers as $number): ?>
 														<tr>
 															<td style="padding:5px" title="number">
-															<?=$n?>
+															<?php echo $n?>
 															</td>
 															<td style="padding:5px" title="type">
-															<?=$this->shipment->link($number, array('type' => $order['shippingMethod']))?>
+															<?php echo $this->shipment->link($number, array('type' => $order['shippingMethod']))?>
 															</td>
 														<?php $n++; ?>
 														<?php endforeach ?>
@@ -196,16 +321,16 @@
 														<?php if ($n<6): ?>
 															<tr>
 																<td style="padding:5px" title="number">
-																	<?=$n?>
+																	<?php echo $n?>
 																</td>
 																<td style="padding:5px" title="type">
-																	<?=ucfirst($modification["type"])?>
+																	<?php echo ucfirst($modification["type"])?>
 																</td>
 																<td style="padding:5px" title="author">
-																	<?=$modification["author"]?>
+																	<?php echo $modification["author"]?>
 																</td>
 																<td style="padding:5px" title="date">
-																	<?=date('Y-M-d h:i:s', $modification["date"]["sec"])?>
+																	<?php echo date('Y-M-d h:i:s', $modification["date"]["sec"])?>
 																</td>
 																<?php if(!empty($modification["comment"])) :?>
 																<td style="padding:5px" title="comment">
@@ -244,7 +369,7 @@
 													<td style="padding:5px; width:30px;"><strong></strong></td>
 												<?php endif ?>
 											</tr>
-											<?=$this->form->create(null ,array('id'=>'itemsForm','enctype' => "multipart/form-data")); ?>
+											<?php echo $this->form->create(null ,array('id'=>'itemsForm','enctype' => "multipart/form-data")); ?>
 											<?php $items = $order->items; ?>
 											<?php foreach ($items as $key => $item): ?>
 											<?php $name = "items[".strval($key)."][cancel]"; ?>
@@ -257,13 +382,13 @@
 												  unset($itm);
 
 											?>
-							<?=$this->form->hidden($name, array('class' => 'inputbox', 'id' => $name, 'value' => (string) $item["cancel"])); ?>
-							<?=$this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
+							<?php echo $this->form->hidden($name, array('class' => 'inputbox', 'id' => $name, 'value' => (string) $item["cancel"])); ?>
+							<?php echo $this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
 												<tr class="item_line"
 												<?php if($item["cancel"] == true) {
 													echo "style='background-color:red;opacity:.5'";
 													} ?>
-													 id="<?=$key?>">
+													 id="<?php echo $key?>">
 												<?php
 													if (!empty($item['primary_image'])) {
 														$image = '/image/'. $item['primary_image'] . '.jpg';
@@ -272,7 +397,7 @@
 													}
 												?>
 												<td style="padding:5px;" title="item">
-													<?=$this->html->image("$image", array(
+													<?php echo $this->html->image("$image", array(
 														'width' => "60",
 														'height' => "60",
 														'style' => "margin:2px; padding:2px; background:#fff; border:1px solid #ddd;"
@@ -280,21 +405,21 @@
 													?>
 												</td>
 												<td style="padding:5px" title="description">
-													Event: <?=$this->html->link($item['event_name'], array(
+													Event: <?php echo $this->html->link($item['event_name'], array(
 														'Events::preview', 'args' => $item['event_id']),
 														array('target' =>'_blank')
 													); ?><br />
-													Item: <?=$this->html->link($item['description'],
+													Item: <?php echo $this->html->link($item['description'],
 														array('Items::preview', 'args' => $item['url']),
 														array('target' =>'_blank')
 													); ?><br />
-													Color: <?=$item['color']?><br/>
-													Size: <?=$item['size']?><br/>
-													Vendor Style: <?=$sku["$item[item_id]"];?><br/>
-													Category: <?=$item['category'];?><br/>
+													Color: <?php echo $item['color']?><br/>
+													Size: <?php echo $item['size']?><br/>
+													Vendor Style: <?php echo $sku["$item[item_id]"];?><br/>
+													Category: <?php echo $item['category'];?><br/>
 												</td>
 												<td style="padding:5px; color:#009900;" title="price">
-													$<?=number_format($item['sale_retail'],2); ?>
+													$<?php echo number_format($item['sale_retail'],2); ?>
 												</td>
 												<td style="padding:5px;" title="quantity">
 												<?php if($edit_mode): ?>
@@ -311,11 +436,11 @@
 														$i++;
 													} while ($i <= $limit)
 													?>
-													<?=$this->form->hidden("items[".$key."][initial_quantity]", array('class' => 'inputbox', 'id' => "initial_quantity", 'value' => $limit )); ?>
-													<?=$this->form->select('items['.$key.'][quantity]', $quantities, array('style' => 'float:left; width:50px; margin: 0px 20px 0px 0px;', 'id' => 'dd_qty', 'value' => $item['quantity'], 'onchange' => "change_quantity()"));
+													<?php echo $this->form->hidden("items[".$key."][initial_quantity]", array('class' => 'inputbox', 'id' => "initial_quantity", 'value' => $limit )); ?>
+													<?php echo $this->form->select('items['.$key.'][quantity]', $quantities, array('style' => 'float:left; width:50px; margin: 0px 20px 0px 0px;', 'id' => 'dd_qty', 'value' => $item['quantity'], 'onchange' => "change_quantity()"));
 													?>
 													<?php else :?>
-														<?=$item['quantity'] ?>
+														<?php echo $item['quantity'] ?>
 													<?php endif ?>
 													<?php if ($return_q>0){?>
 													<?php echo $return_q; ?> return(s)
@@ -328,10 +453,10 @@
 												<td>
 													<div style="text-align:center;">
 														<?php if($item["cancel"] == true){ ?>
-									<a href="#" onclick="open_item('<?=$key?>')" id="open_button">
+									<a href="#" onclick="open_item('<?php echo $key?>')" id="open_button">
 															<img src="/img/success-icon.png" width="20" height="20"></a>
 														<?php } else {?>
-									<a href="#" onclick="cancel_item('<?=$key?>')" id="remove_button">
+									<a href="#" onclick="cancel_item('<?php echo $key?>')" id="remove_button">
 										<img src="/img/error-icon.png" width="20" height="20"></a>
 														<?php }//endelse?>
 													</div>
@@ -353,21 +478,21 @@
 							<tr>
 								<td colspan="4">
 <!-- HIDDEN DATAS - ITEMS -->
-<?=$this->form->hidden("subTotal", array('class' => 'inputbox', 'id' => "subTotal", 'value' => $order->subTotal)); ?>
-<?=$this->form->hidden("credit_used", array('class' => 'inputbox', 'id' => "credit_used", 'value' => $order->credit_used)); ?>
-<?=$this->form->hidden("promo_discount", array('class' => 'inputbox', 'id' => "promo_discount", 'value' => $order->promo_discount)); ?>
-<?=$this->form->hidden("discount", array('class' => 'inputbox', 'id' => "discount", 'value' => $order->discount)); ?>
-<?=$this->form->hidden("service", array('class' => 'inputbox', 'id' => "service", 'value' => $service[0])); ?>
-<?=$this->form->hidden("promo_code", array('class' => 'inputbox', 'id' => "promo_code", 'value' => $order->promo_code)); ?>
-<?=$this->form->hidden("tax", array('class' => 'inputbox', 'id' => "tax", 'value' => $order->tax)); ?>
-<?=$this->form->hidden("handling", array('class' => 'inputbox', 'id' => "handling", 'value' => $order->handling)); ?>
-<?=$this->form->hidden("handlingDiscount", array('class' => 'inputbox', 'id' => "handlingDiscount", 'value' => $order->handlingDiscount)); ?>
-<?=$this->form->hidden("overSizeHandling", array('class' => 'inputbox', 'id' => "overSizeHandling", 'value' => $order->overSizeHandling)); ?>
-<?=$this->form->hidden("overSizeHandlingDiscount", array('class' => 'inputbox', 'id' => "overSizeHandlingDiscount", 'value' => $order->overSizeHandlingDiscount)); ?>
-<?=$this->form->hidden("total", array('class' => 'inputbox', 'id' => "total", 'value' => $order->total)); ?>
-<?=$this->form->hidden("original_credit_used", array('class' => 'inputbox', 'id' => "original_credit_used", 'value' => $order->original_credit_used)); ?>
-<?=$this->form->hidden("user_total_credits", array('class' => 'inputbox', 'id' => "user_total_credits", 'value' => $order->user_total_credits )); ?>
-<?=$this->form->hidden("promocode_disable", array('class' => 'inputbox', 'id' => "promocode_disable", 'value' => $order->promocode_disable )); ?>
+<?php echo $this->form->hidden("subTotal", array('class' => 'inputbox', 'id' => "subTotal", 'value' => $order->subTotal)); ?>
+<?php echo $this->form->hidden("credit_used", array('class' => 'inputbox', 'id' => "credit_used", 'value' => $order->credit_used)); ?>
+<?php echo $this->form->hidden("promo_discount", array('class' => 'inputbox', 'id' => "promo_discount", 'value' => $order->promo_discount)); ?>
+<?php echo $this->form->hidden("discount", array('class' => 'inputbox', 'id' => "discount", 'value' => $order->discount)); ?>
+<?php echo $this->form->hidden("service", array('class' => 'inputbox', 'id' => "service", 'value' => $service[0])); ?>
+<?php echo $this->form->hidden("promo_code", array('class' => 'inputbox', 'id' => "promo_code", 'value' => $order->promo_code)); ?>
+<?php echo $this->form->hidden("tax", array('class' => 'inputbox', 'id' => "tax", 'value' => $order->tax)); ?>
+<?php echo $this->form->hidden("handling", array('class' => 'inputbox', 'id' => "handling", 'value' => $order->handling)); ?>
+<?php echo $this->form->hidden("handlingDiscount", array('class' => 'inputbox', 'id' => "handlingDiscount", 'value' => $order->handlingDiscount)); ?>
+<?php echo $this->form->hidden("overSizeHandling", array('class' => 'inputbox', 'id' => "overSizeHandling", 'value' => $order->overSizeHandling)); ?>
+<?php echo $this->form->hidden("overSizeHandlingDiscount", array('class' => 'inputbox', 'id' => "overSizeHandlingDiscount", 'value' => $order->overSizeHandlingDiscount)); ?>
+<?php echo $this->form->hidden("total", array('class' => 'inputbox', 'id' => "total", 'value' => $order->total)); ?>
+<?php echo $this->form->hidden("original_credit_used", array('class' => 'inputbox', 'id' => "original_credit_used", 'value' => $order->original_credit_used)); ?>
+<?php echo $this->form->hidden("user_total_credits", array('class' => 'inputbox', 'id' => "user_total_credits", 'value' => $order->user_total_credits )); ?>
+<?php echo $this->form->hidden("promocode_disable", array('class' => 'inputbox', 'id' => "promocode_disable", 'value' => $order->promocode_disable )); ?>
 									<!--- END HIDDEN DATAS - ITEMS -->
 									<?php if(empty($order->cancel)): ?>
 									<table style="width:250px; float: right;">
@@ -380,11 +505,11 @@
 												<br>
 												<?php endif ?>
 												<?php if ((($order->promo_discount) && (empty($order->promocode_disable)))): ?>
-													Discount [<?=$order->promo_code;?>]:
+													Discount [<?php echo $order->promo_code;?>]:
 													<br>
 												<?php endif ?>
 												<?php if ($order->discount): ?>
-													Discount [<?=$order->service[0];?>]:
+													Discount [<?php echo $order->service[0];?>]:
 													<br>
 												<?php endif ?>
 												Sales Tax:
@@ -399,30 +524,30 @@
 												<strong style="font-weight:bold;color:#606060">Total:</strong>
 											</td>
 											<td style="padding-left:15px; text-align:right;" valign="top">
-											$<?=number_format($order->subTotal,2); ?>
+											$<?php echo number_format($order->subTotal,2); ?>
 											<br>
 											<?php if ($order->credit_used): ?>
-												-$<?=number_format(abs($order->credit_used),2); ?>
+												-$<?php echo number_format(abs($order->credit_used),2); ?>
 												<br>
 											<?php endif ?>
 											<?php if (($order->promo_discount) && (empty($order->promocode_disable))): ?>
-												-$<?=number_format(abs($order->promo_discount),2); ?>
+												-$<?php echo number_format(abs($order->promo_discount),2); ?>
 												<br>
 											<?php endif ?>
 											<?php if ($order->discount): ?>
-												-$<?=number_format(abs($order->discount),2); ?>
+												-$<?php echo number_format(abs($order->discount),2); ?>
 											<br>
 											<?php endif ?>
-											$<?=number_format($order->tax,2); ?>
+											$<?php echo number_format($order->tax,2); ?>
 											<br>
-											$<?=number_format($order->handling,2); ?>
+											$<?php echo number_format($order->handling,2); ?>
 											<br>
 											<?php if ($order->overSizeHandling): ?>
-												$<?=number_format($order->overSizeHandling,2); ?>
+												$<?php echo number_format($order->overSizeHandling,2); ?>
 												<br>
 											<?php endif ?>
 											<br><br>
-											<strong style="font-weight:bold;color:#009900;">$<?=number_format($order->total,2); ?></strong>
+											<strong style="font-weight:bold;color:#009900;">$<?php echo number_format($order->total,2); ?></strong>
 											</td>
 										</tr>
 									</table>
@@ -432,18 +557,18 @@
 											<td>
 												<div style="display:block; margin-bottom:10px; width:320px;">
 												  <strong>Shipping Address:</strong><br />
-													<?=$order->shipping->firstname;?> <?=$order->shipping->lastname;?><br>
-                                                                                                <?=$order->shipping->address; ?> <?=$order->shipping->address_2; ?><br />
-                                                                                                <?=$order->shipping->city; ?>, <?=$order->shipping->state; ?>
-                                                                                                <?=$order->shipping->zip; ?>
+													<?php echo $order->shipping->firstname;?> <?php echo $order->shipping->lastname;?><br>
+                                                                                                <?php echo $order->shipping->address; ?> <?php echo $order->shipping->address_2; ?><br />
+                                                                                                <?php echo $order->shipping->city; ?>, <?php echo $order->shipping->state; ?>
+                                                                                                <?php echo $order->shipping->zip; ?>
 												<hr /></div>
 													<div style="display:block; margin-bottom:10px; width:320px;">
-													  <strong>Billing Address:</strong><br />												<?=$order->billing->firstname;?> <?=$order->billing->lastname;?><br>
-	                                                                                                <?=$order->billing->address; ?> <?=$order->billing->address_2; ?><br />
-	                                                                                                <?=$order->billing->city; ?>, <?=$order->billing->state; ?>
-	                                                                                                <?=$order->billing->zip; ?>
+													  <strong>Billing Address:</strong><br />												<?php echo $order->billing->firstname;?> <?php echo $order->billing->lastname;?><br>
+	                                                                                                <?php echo $order->billing->address; ?> <?php echo $order->billing->address_2; ?><br />
+	                                                                                                <?php echo $order->billing->city; ?>, <?php echo $order->billing->state; ?>
+	                                                                                                <?php echo $order->billing->zip; ?>
 													<hr /></div>
-												<div style=" width:320px; display:block;"><strong>Payment Info:</strong> <br /><?=strtoupper($order->card_type)?> ending with <?=$order->card_number?></div>
+												<div style=" width:320px; display:block;"><strong>Payment Info:</strong> <br /><?php echo strtoupper($order->card_type)?> ending with <?php echo $order->card_number?></div>
 											</td>
 											<td>
 
@@ -466,15 +591,15 @@
 	</table>
 	<?php if($edit_mode): ?>
 	<?php if($itemscanceled == false): ?>
-	<?=$this->form->hidden("save", array('class' => 'inputbox', 'id' => "save")); ?>
+	<?php echo $this->form->hidden("save", array('class' => 'inputbox', 'id' => "save")); ?>
 	Commment :
-	<?=$this->form->textarea("comment", array('style' => 'width:100%;', 'row' => '6', 'id' => "comment")); ?>
+	<?php echo $this->form->textarea("comment", array('style' => 'width:100%;', 'row' => '6', 'id' => "comment")); ?>
 	<div style="clear:both"></div>
 	<p style="text-align:center;">
 		<input type="submit" id="update_button"  onclick="update_order(); return false;" value="Update Order"/>
 	</p>
 	<?php endif ?>
-	<?=$this->form->end();?>
+	<?php echo $this->form->end();?>
 	<?php endif ?>
 <?php else: ?>
 	<strong>Sorry, we cannot locate the order that you are looking for.</strong>
@@ -493,6 +618,19 @@ $(document).ready(function(){
 			$("#new_shipping").show("slow");
 		} else {
 			$("#new_shipping").slideUp();
+		}
+	});
+	$("#generate_order_file").click(function () {
+		if (confirm('Are you sure to send this order as exception to Dotcom ?')) {
+			$('input[name="process-as-an-exception"]').val("true");
+			$('#newOrderFileForm').submit();
+		}
+	});
+	$("#update_payment").click(function () {
+		if ($("#new_payment").is(":hidden")) {
+			$("#new_payment").show("slow");
+		} else {
+			$("#new_payment").slideUp();
 		}
 	});
 	$("#confirm_cancel").click(function () {
@@ -546,6 +684,7 @@ function open_item(val) {
 		$('#itemsForm').submit();
 	}
 };
+
 function update_order() {
 	var test = $('textarea#comment').val();
 	if(test == "") {

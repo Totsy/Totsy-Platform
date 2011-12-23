@@ -117,6 +117,7 @@ class CartController extends BaseController {
 		}
 
 		$shipping = Cart::shipping($cart, null);
+		$overShippingCost = Cart::overSizeShipping($cart);
 		#Get Last Url
 		if ($cart) {
 			krsort($itemlist);
@@ -126,16 +127,12 @@ class CartController extends BaseController {
 				$returnUrl = $event->url;
 			}
 		}
-
 		#Do not apply shipping cost if cart only has non-tangible items
 		if($exemptCount == $itemCount) {
-			$shipping = "";
-		} else {
-			$shipping = 7.95;
+			$shipping = 0;
 		}
-
 		#Get current Discount
-		$vars = Cart::getDiscount($subTotal, $shipping, 0, $this->request->data);
+		$vars = Cart::getDiscount($subTotal, $shipping, $overShippingCost, $this->request->data);
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
 		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
@@ -149,13 +146,13 @@ class CartController extends BaseController {
 			$shipping_discount = $shipping;
 		}
 		#Get Total of The Cart after Discount
-		$total = $vars['postDiscountTotal'];
+		$total = round(floatval($vars['postDiscountTotal']),2);
 		#Check if Services
 		$serviceAvailable = false;
 		if(Session::check('service_available')) {
 			$serviceAvailable = Session::read('service_available');
 		}
-		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping','missChristmasCount','notmissChristmasCount', 'serviceAvailable');
+		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping','overShippingCost', 'missChristmasCount','notmissChristmasCount', 'serviceAvailable');
 	}
 
 	/**
