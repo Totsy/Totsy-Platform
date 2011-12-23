@@ -32,18 +32,7 @@
  		    <span class="cart-review-color-size">Size:</span> ${size}
  		</div>
  		{{/if}}
- 		{{if miss_christmas}}
-            {{if miss_christmas>0}}
-            <div>
-                <span class="shippingalert">This item is not guaranteed to be delivered on or before 12/25.*</span>
-            </div>
-            {{/if}}
-            {{if miss_christmas<1}}
-            <div>
-                Item will be delivered on or before December 23.*
-            </div>
-            {{/if}}
- 		{{/if}}
+
  	</div>
  </div>
  <div style="clear:both"></div>
