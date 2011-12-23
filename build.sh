@@ -84,6 +84,8 @@ case $COMMAND in
 		libraries/lithium/console/li3 test --case=app.tests.cases.models.OrderTest
 		libraries/lithium/console/li3 test --case=li3_payments.tests.integration.TransactionsTest
 
+		echo
+		;;
 	run-app-tests)
 		cd $PROJECT_DIR/app
 		libraries/lithium/console/li3 test tests/cases
@@ -118,6 +120,8 @@ case $COMMAND in
 		echo "Running Lithium unit tests..."
 		$LI3 test libraries/lithium/tests/cases
 
+		echo
+		;;
 	optimize-repo)
 		echo "Optimizing local GIT repository..."
 		BEFORE=$(du -hs .git)
@@ -129,14 +133,19 @@ case $COMMAND in
 
 		echo "Result: $BEFORE -> $AFTER"
 
+		echo
+		;;
+
 	source-subs)
 		echo "Updating and initialising all registered submodules recursively..."
 		git submodule update --init --recursive
-
+		echo
+		;;
 	clear-cache)
 		find $PROJECT_DIR/app/resources/tmp/cache -name 'empty' -prune -o -type f | xargs rm -v
 		find $PROJECT_DIR/admin/resources/tmp/cache -name 'empty' -prune -o -type f | xargs rm -v
-
+        echo
+		;;
 	selenium-server)
 		echo "NOTE: If firefox doesn't start correctly on OSX execute the following steps."
 		echo "----------------------------------------------------------------------------"
@@ -148,7 +157,8 @@ case $COMMAND in
 			-firefoxProfileTemplate $PROJECT_DIR/selenium/tzp8knyf.selenium \
 			-log $PROJECT_DIR/selenium/selenium.log \
 			-browserSideLog
-
+        echo
+		;;
 	source-lithium)
 		TARGET=$PROJECT_DIR/libraries/lithium
 		TMP=$(mktemp -d /tmp/totsyXXXX)
@@ -162,7 +172,8 @@ case $COMMAND in
 		rm -fr .git
 		echo "Removing temporary directory..."
 		rm -fr $TMP
-
+        echo
+		;;
 	source-imagine)
 		TARGET_SOURCE=_source/Imagine
 		TARGET_LINK=Imagine
@@ -175,7 +186,8 @@ case $COMMAND in
 		cd $PROJECT_DIR/libraries
 		test -L $TARGET_LINK && rm $TARGET_LINK
 		ln -v -s $TARGET_SOURCE/lib/Imagine ./$TARGET_LINK
-
+        echo
+		;;
 	source-sabre)
 		VERSION="1.4.4"
 		TARGET_SOURCE=_source/sabredav
@@ -197,13 +209,15 @@ case $COMMAND in
 		echo "Cleaning up temporary directory..."
 		rm -r $TMP_DIR
 		cd $PROJECT_DIR/admin/libraries
-
+        echo
+		;;
 	source-pear)
 		PEAR=$(pear config-show  | grep php_dir | awk '{ print $4 }')
 		echo "Symlinking in PEAR from $PEAR..."
 		test -L $PROJECT_DIR/libraries/PEAR && rm $PROJECT_DIR/libraries/PEAR
 		ln -s $PEAR $PROJECT_DIR/libraries/PEAR
-
+		echo
+		;;
 	source-selenium)
 		echo "Installing pear package..."
 		pear install Testing_Selenium-alpha

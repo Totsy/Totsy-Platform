@@ -79,6 +79,7 @@ class AffiliatesController extends BaseController {
         $info = array();
         $landing = array();
        	$data = $this->request->data;
+
        	if (!array_key_exists('affiliate_id', $data) && empty($data['affiliate_id'])) {
 			$prospective_id = new MongoId();
 			$affiliate = Affiliate::create();
@@ -87,7 +88,6 @@ class AffiliatesController extends BaseController {
 			$affiliate = Affiliate::create();
 			$affiliate->_id = $data['affiliate_id'];
 		}
-
 		if ($data) {
 
             $info['active'] = (($data['active'] == '1' || $data['active'] == 'on')) ? true : false;
@@ -153,6 +153,7 @@ class AffiliatesController extends BaseController {
             $this->redirect( array('Affiliates::index') );
         }
         $data = $this->request->data;
+
         if( ($data) ) {
             $info['active'] = (($data['active'] == '1' || $data['active'] == 'on')) ? true : false;
             $info['name'] = $data['affiliate_name'];

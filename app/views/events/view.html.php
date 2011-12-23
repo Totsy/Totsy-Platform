@@ -4,10 +4,10 @@
 <div class="grid_16">
 		<h2 class="page-title gray"><span class="red">
 		<div id="listingCountdown" class="listingCountdown" style="float:right;"></div>
-		<a href="/" title="Sales"><?php echo $type?> Sales</a> /</span> <?php echo $event->name; ?> 
+		<a href="/sales" title="Sales"><?php echo $type?> Sales</a> /</span> <?php echo $event->name; ?> 
 		</h2>
 		<div style="clear:both;"></div>
-		<hr />
+		<hr/>
 <div class="md-gray" style="overflow:hidden; border: 1px solid #D7D7D7;  margin-bottom:10px">
 				<div class="grid_5 alpha omega" style="line-height:0px!important;">
 					<!-- Display Event Image -->
@@ -45,8 +45,8 @@
 					<?php
 					if($missChristmasCount>0){
 					?>
-								<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#990000; font-size:11px;text-align:left;">
-								<img src="/img/truck_red.png">
+								<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#eb132c; font-size:11px;text-align:left;">
+								<img src="/img/truck_grey.png">
 								Items in this sale are not guaranteed to be delivered on or before 12/25.* 
 								</div>
 					

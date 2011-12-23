@@ -7,6 +7,7 @@ use admin\tests\mocks\models\OrderMock;
 use admin\tests\mocks\payments\ProcessorMock;
 use admin\models\User;
 use admin\models\Item;
+use li3_payments\payments\TransactionResponse;
 use li3_payments\exceptions\TransactionException;
 use MongoId;
 use MongoDate;
@@ -81,7 +82,11 @@ class OrderTest extends \lithium\test\Unit {
 	public function testVoidWithTotalPositive() {
 		$data = array(
 			'total' => 1.23,
-			'authKey' => '090909099909'
+			'authKey' => '090909099909',
+			'auth' => array(
+				'key' => '090909099909',
+				'type' => 'authorize'
+			)
 		);
 		$order = OrderMock::create($data);
 		$order->save();
@@ -105,7 +110,7 @@ class OrderTest extends \lithium\test\Unit {
 		$result = $order->void_date;
 		$this->assertTrue($result);
 
-		$expected = array('key' => '090909099909');
+		$expected = array('key' => '090909099909', 'type' => 'authorize');
 		$result = ProcessorMock::$void[1];
 		$this->assertEqual($expected, $result);
 
@@ -115,7 +120,11 @@ class OrderTest extends \lithium\test\Unit {
 	public function testVoidFailingWithTotalZero() {
 		$data = array(
 			'total' => 0,
-			'authKey' => '090909099909'
+			'authKey' => '090909099909',
+			'auth' => array(
+				'key' => '090909099909',
+				'type' => 'authorize'
+			)
 		);
 		$order = OrderMock::create($data);
 		$order->save();
@@ -149,7 +158,11 @@ class OrderTest extends \lithium\test\Unit {
 	public function testProcess() {
 		$data = array(
 			'total' => 1.23,
-			'authKey' => '090909099909'
+			'authKey' => '090909099909',
+			'auth' => array(
+				'key' => '090909099909',
+				'type' => 'authorize'
+			)
 		);
 		$order = OrderMock::create($data);
 		$result = $order->save();
@@ -172,7 +185,7 @@ class OrderTest extends \lithium\test\Unit {
 		$result = $order->auth_confirmation;
 		$this->assertEqual($expected, $result);
 
-		$expected = array('key' => '090909099909');
+		$expected = array('key' => '090909099909', 'type' => 'authorize');
 		$result = ProcessorMock::$capture[1];
 		$this->assertEqual($expected, $result);
 
@@ -182,7 +195,11 @@ class OrderTest extends \lithium\test\Unit {
 	public function testProcessFailingWithTotalZero() {
 		$data = array(
 			'total' => 0,
-			'authKey' => '090909099909'
+			'authKey' => '090909099909',
+			'auth' => array(
+				'key' => '090909099909',
+				'type' => 'authorize'
+			)
 		);
 		$order = OrderMock::create($data);
 		$order->save();
@@ -368,6 +385,10 @@ class OrderTest extends \lithium\test\Unit {
 
 		$data = array(
 			'authKey' => '090909099909',
+			'auth' => array(
+				'key' => '090909099909',
+				'type' => 'authorize'
+			),
 			'credit_used' => -5,
 			'date_created' => 'Sat, 11 Dec 2010 09: 51: 15 -0500',
 			'handling' => 7.95,
@@ -633,6 +654,10 @@ class OrderTest extends \lithium\test\Unit {
 		$order_datas = array(
 			'_id' => new MongoId($order_id),
 			'authKey' => '090909099909',
+			'auth' => array(
+				'key' => '090909099909',
+				'type' => 'authorize'
+			),
 			'credit_used' => -5,
 			'date_created' => 'Sat, 11 Dec 2010 09: 51: 15 -0500',
 			'handling' => 7.95,
@@ -689,6 +714,10 @@ class OrderTest extends \lithium\test\Unit {
 		$current_order = array(
 			'id' => $order_id,
 			'authKey' => '090909099909',
+			'auth' => array(
+				'key' => '090909099909',
+				'type' => 'authorize'
+			),
 			'credit_used' => -5,
 			'date_created' => 'Sat, 11 Dec 2010 09: 51: 15 -0500',
 			'handling' => 7.95,
@@ -876,6 +905,10 @@ class OrderTest extends \lithium\test\Unit {
 
 		$data = array(
 			'authKey' => '090909099909',
+			'auth' => array(
+				'key' => '090909099909',
+				'type' => 'authorize'
+			),
 			'credit_used' => -5,
 			'date_created' => 'Sat, 11 Dec 2010 09: 51: 15 -0500',
 			'handling' => 7.95,
@@ -963,6 +996,10 @@ class OrderTest extends \lithium\test\Unit {
 		$order_datas = array(
 			'_id' => $order_id,
 			'authKey' => '090909099909',
+			'auth' => array(
+				'key' => '090909099909',
+				'type' => 'authorize'
+			),
 			'credit_used' => -5,
 			'date_created' => 'Sat, 11 Dec 2010 09: 51: 15 -0500',
 			'handling' => 7.95,
@@ -1035,6 +1072,10 @@ class OrderTest extends \lithium\test\Unit {
 		$order_datas = array(
 			'_id' => $order_id,
 			'authKey' => '090909099909',
+			'auth' => array(
+				'key' => '090909099909',
+				'type' => 'authorize'
+			),
 			'credit_used' => -5,
 			'date_created' => 'Sat, 11 Dec 2010 09: 51: 15 -0500',
 			'handling' => 7.95,
@@ -1193,6 +1234,10 @@ class OrderTest extends \lithium\test\Unit {
 		$order_datas = array(
 			'_id' => $order_id,
 			'authKey' => '090909099909',
+			'auth' => array(
+				'key' => '090909099909',
+				'type' => 'authorize'
+			),
 			'credit_used' => -5,
 			'date_created' => 'Sat, 11 Dec 2010 09: 51: 15 -0500',
 			'handling' => 7.95,
@@ -1407,6 +1452,10 @@ class OrderTest extends \lithium\test\Unit {
 	public function testOrderPaymentRequests() {
 		$data = array(
 			'authKey' => '090909',
+			'auth' => array(
+				'key' => '090909',
+				'type' => 'authorize'
+			),
 			'total' => 1.23
 		);
 		$order1 = Order::create($data);
@@ -1416,6 +1465,10 @@ class OrderTest extends \lithium\test\Unit {
 
 		$data = array(
 			'authKey' => '090909',
+			'auth' => array(
+				'key' => '090909',
+				'type' => 'authorize'
+			),
 			'total' => 4.56
 		);
 		$order2 = Order::create($data);

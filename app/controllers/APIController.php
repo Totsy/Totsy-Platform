@@ -230,7 +230,10 @@ class APIController extends  \lithium\action\Controller {
 				$it = $itm->data();
 				$it['base_url'] = $base_url;
 				$it['event_url'] = $ev['url'];
-				 
+				
+				if (!isset($it['percent_off'])){
+					$it['percent_off'] = 0;
+				}
 				if (preg_match('/[\%]+/',$it['percent_off'])){
 					$it['percent_off'] = substr($it['percent_off'],0,-1);
 					if (is_float($it['percent_off']) ) $it['percent_off'] = round($it['percent_off'],2);

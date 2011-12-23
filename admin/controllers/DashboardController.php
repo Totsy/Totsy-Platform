@@ -156,6 +156,7 @@ class DashboardController extends BaseController {
 		* Build chart for gross revenue
 		**/
 		$GrossRevChart = new FusionCharts("MSArea2D","800","350");
+
 		if ($gross) {
 			$currentMonthDesc = date('F', time());
 			$lastMonthDesc = date('F', strtotime('last month'));
@@ -261,8 +262,8 @@ class DashboardController extends BaseController {
 		$currentReg = array();
 		foreach ($current as $data) {
 			if (!in_array($data['date'], $dateList)) {
-				$dateList[] = $data['date']['sec'];
-				$dates[$data['date']['sec']] = date('d', $data['date']['sec']);
+				$dateList[] = $data['date'];
+				$dates[$data['date']] = date('d', $data['date']);
 			}
 		}
 		foreach ($current as $record) {
@@ -270,11 +271,11 @@ class DashboardController extends BaseController {
 				continue;
 			}
 			if ($record['type'] == 'revenue') {
-				$currentRevenue[$record['date']['sec']] = $record['total'];
+				$currentRevenue[$record['date']] = $record['total'];
 			} else if ($record['type'] == 'gross'){
-			    $currentGrossRev[$record['date']['sec']] = $record['total'];
+			    $currentGrossRev[$record['date']] = $record['total'];
 			} else {
-				$currentReg[$record['date']['sec']] = $record['total'];
+				$currentReg[$record['date']] = $record['total'];
 			}
 		}
 		ksort($dates);

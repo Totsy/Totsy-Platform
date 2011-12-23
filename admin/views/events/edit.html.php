@@ -478,11 +478,11 @@ $(function() {
 					<?=$this->form->submit('Delete All Items'); ?>
 				<?=$this->form->end(); ?>
 		</div>
+
 		<div id="event_history">
 				<?php
 					if (sizeof($event->modifications) > 0) {
 				?>
-
 				<table>
 					<tr>
 						<td>User</td>
