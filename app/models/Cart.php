@@ -428,7 +428,7 @@ class Cart extends Base {
 	 * @param object $order
 	 * @return string
 	 */
-	public static function shipDate($cart, $normal=false) {
+	public static function shipDate($cart, $normal=true) {
 
 		//shows calculated shipdate
 		if($normal){
