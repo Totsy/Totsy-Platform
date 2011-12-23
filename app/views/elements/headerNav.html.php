@@ -81,20 +81,24 @@
 					echo 'class="active"';
 					} ?>><em>Shop By<br/> Category</em></a>
 						<ul>
-							<li><a href="#" title="click here">link</a></li>
-							<li><a href="#" title="click here">link</a></li>
-							<li><a href="#" title="click here">link</a></li>
-							<li><a href="#" title="click here">link</a></li>
+							<li><a href="/category/girls-apparel " title="View Girls Apparel">Girls Apparel</a></li>
+							<li><a href="/category/boys-apparel " title="View Boys Apparel">Boys Apparel</a></li>
+							<li><a href="/category/shoes " title="View Shoes">Shoes</a></li>
+							<li><a href="/category/accessories" title="View Accessories">Accessories</a></li>
+							<li><a href="/category/toys-books" title="View Toys &amp; Books">Toys &amp; Books</a></li>
+							<li><a href="/category/gear" title="View Gear">Gear</a></li>
+							<li><a href="/category/moms-dads" title="View Moms &amp; Dads">Moms &amp; Dads</a></li>
 						</ul>
 					</li>
 					<li id="byage" class="haschild"><a href="/sales/momsdads" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/momsdads') == 0) {
 					echo 'class="active"';
 					} ?>><em>Shop<br/> By Age</em></a>
 											<ul>
-							<li><a href="#" title="click here">link</a></li>
-							<li><a href="#" title="click here">link</a></li>
-							<li><a href="#" title="click here">link</a></li>
-							<li><a href="#" title="click here">link</a></li>
+							<li><a href="/age/newborn" title="View items for Newborns">Newborn</a></li>
+							<li><a href="/age/infant" title="View items for Infants">Infant 0 -12M</a></li>
+							<li><a href="/age/toddler" title="View items for Toddlers">Toddler 1-3Y</a></li>
+							<li><a href="/age/preschool" title="View items for Preschoolers">Preschool 4-5Y</a></li>
+							<li><a href="/age/school" title="View items for School Age">School Age 5+</a></li>
 						</ul>
 					</li>
 				</ul>

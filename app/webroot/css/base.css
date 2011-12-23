@@ -4515,7 +4515,7 @@ nav > ul li.haschild > a em {padding-left:0; padding-right:33px; background-posi
 nav .haschild ul {
 	position: absolute; top:auto; left: -999em;
 	float: none;
-	margin:-1px 0 0; padding:1px 0 8px;
+	margin:-1px 0 0; padding:3px 0 8px;
 	width:100%;
 	border-top:none;
 	box-shadow: 4px 7px 6px rgba(0,0,0,0.09);
