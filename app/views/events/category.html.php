@@ -23,15 +23,14 @@
 </script>
 	<h2 class="page-title gray"><span class="_red">Today's Sales</span> </h2>
 	<hr />
-<div id="events-wrap" class="fullwidth">
-	<?php $x = 0; ?>
-	<?php foreach ($openEvents as $event): ?>
-	
+	<div id="events-wrap" class="fullwidth">
+		<?php $x = 0; ?>
+		<?php foreach ($openEvents as $event): ?>
+		
 		<div class="event grid-x">
-			<div class="eventDetails">
-				<h3><?php echo $event->name; ?></h3>
-				<em id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $event->end_date->sec * 1000; ?>" class="counter end"></em><!-- @TODO - use data-attribute instead of title… better, use a date/time element instead of an em -->
-				<p><?php echo $event['blurb']; ?></p>
+			<div class="eventDetails group">
+				<h3><?php echo $event->name; ?> <em id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $event->end_date->sec * 1000; ?>" class="counter end"></em><!-- @TODO - use data-attribute instead of title… better, use a date/time element instead of an em --></h3>
+				<p><?php echo strip_tags($event['blurb']); ?></p>
 				<div>
 					<?php
 					
@@ -42,7 +41,7 @@
 						else {
 							$eventImage = "img/no-image-small.jpeg";
 						}
-
+	
 					// build link and image
 						$url = $event->url;
 						echo $this->html->link(
@@ -115,11 +114,11 @@
 					);
 				?>
 			</div>
-
+	
 		</div><!-- /.event -->
 		<?php $x++; ?>
 		<?php endforeach ?>
-
+	
 	<div style="margin-bottom:35px;" class="clear"></div>
 
 </div><!-- /.full-width -->

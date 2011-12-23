@@ -4587,13 +4587,25 @@ nav .haschild li a:hover {
 #userUtils .checkout strong {
 	padding-right:9px;
 	background: url(../img/btn-arrow-s.png) 100% 35% no-repeat;
+	}
 
 /* 
 	Category Pages - events - @DG-2011.12
 */
-#events-wrap {outline:2px dotted red;}
 #events-wrap .event {
-	width:948px;
+	width:928px;
+	padding:10px;
 	border:1px solid #ccc;
 	border-radius:0px 0px 10px 10px;
 }
+#events-wrap .eventDetails > div {
+	float:left;
+	width:126px; height: 81px;
+}
+#events-wrap .eventDetails > h3,
+#events-wrap .eventDetails > p {
+	float: right;
+	margin-left:137px;
+	width:792px;
+}
+
