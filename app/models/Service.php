@@ -25,7 +25,7 @@ class Service extends Base {
 			} else {
 				$shippingCost = 0;
 				$overSizeHandling = 0;
-			}
+			}			
 		}
 		return compact('shippingCost', 'overSizeHandling', 'enable');
     }

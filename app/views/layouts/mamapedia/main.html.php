@@ -123,6 +123,41 @@
 	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 	  })();
 </script>
+<?php 
+	use li3_facebook\extension\FacebookProxy; 
+	$fbconfig = FacebookProxy::config();
+	$appId = $fbconfig['appId'];
+	
+	$logout = ($fblogout) ? $fblogout : 'Users::logout';	
+?>
+<script type="text/javascript">
+	var fbCookie = 'fbsr_<?php echo $appId; ?>';	
+	var logoutLink = '<?php echo $logout; ?>';
+
+	function deleteFBCookies() {
+	    //all posible FB cookies
+	    try {
+	    	document.cookie = fbCookie + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+	    	document.cookie = 'datr=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+	    	document.cookie = 'locale=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+	    	document.cookie = 'lu=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+	    	document.cookie = 'reg_fb_gate=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+	    	document.cookie = 'reg_fb_ref=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+	    	document.cookie = 'lsd=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+	    	document.cookie = 'L=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+	    	document.cookie = 'act=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+	    	document.cookie = 'openid_p=; expires=Thu, 01-Jan-70 00:00:01 GMT;'; 
+	    		    	
+			window.location = logoutLink;
+	    } catch (err) {
+	    	return false;
+	    }
+	}
+	
+	function goToLogout() {
+		deleteFBCookies();
+	} 
+</script>
 	
 	<script language="javascript">
 	document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s://www':'://www')+ '.upsellit.com/upsellitJS4.jsp?qs=237268202226312324343293280329277309292309329331334326345325&siteID=6605"><\/sc'+'ript>')

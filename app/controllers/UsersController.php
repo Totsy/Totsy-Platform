@@ -145,7 +145,13 @@ class UsersController extends BaseController {
 					'email' => $user->email
 				);
 				$mailer = $this->_classes['mailer'];
-				$mailer::send('Welcome_Free_Shipping', $user->email);
+				
+				$sessionServices = Session::read('services', array('name' => 'default'));
+				
+				if ( $sessionServices['freeshipping']!=="uneligible" ) {	
+					$mailer::send('Welcome_Free_Shipping', $user->email);
+				}
+				
 				$mailer::addToMailingList($data['email']);
 				$mailer::addToSuppressionList($data['email']);
 
@@ -233,14 +239,14 @@ class UsersController extends BaseController {
 	 * @return string The user is prompted with a message if authentication failed.
 	 */
 	public function login() {
-	
 		$message = $resetAuth = $legacyAuth = $nativeAuth = false;
 		$rememberHash = '';
 
 		//redirect to the right email if the user is coming from an email
 		//the session writes this variable on the register() method
 		//it writes it THERE because that is the method currently serving our homepage
-		$this->autoLogin();
+		$this->autoLogin();	
+		
 		if ($this->request->data) {
 
 			$email = trim(strtolower($this->request->data['email']));
@@ -312,7 +318,7 @@ class UsersController extends BaseController {
 			} else {
 				$message = '<div class="error_flash">Login Failed - Your Password Is Blank</div>';
 			}
-		}
+		} 
 
 		//new login layout to account for fullscreen image JL
 		$this->_render['layout'] = 'login';
@@ -321,15 +327,16 @@ class UsersController extends BaseController {
 	}
 	
 	protected function autoLogin() {
-
+	
 		$redirect = '/sales';
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 		
-		$result = static::facebookLogin(null, $cookie, $ipaddress);
+		if (FacebookProxy::getUser()) {
+			$result = static::facebookLogin(null, $cookie, $ipaddress);
+			extract($result);
+		}
 		
-		extract($result);
-
 		$fbCancelFlag = false;
 
 		if (array_key_exists('fbcancel', $this->request->query)) {
@@ -378,6 +385,13 @@ class UsersController extends BaseController {
 
 	public function logout() {
 
+		$fbconfig = FacebookProxy::config();
+		$appCookie = "fbsr_".$fbconfig["appId"];
+
+		//destroy FB session
+		Session::delete($appCookie , array('name' => 'cookie'));
+		FacebookProxy::destroySession();
+
 		$loginInfo = Session::read('userLogin');
 		$user = User::collection();
 		$user->update(
@@ -395,6 +409,7 @@ class UsersController extends BaseController {
 				
 		return $this->redirect(array('action' => 'login'));
 	}
+	
 	/**
 	 * This is only for legacy users that are coming with AuthLogic passwords and salt
 	 * @param string $password
@@ -694,7 +709,7 @@ class UsersController extends BaseController {
 		//If the users already exists in the database
 		$success = false;
 		$userfb = array();
-	
+		
 		if ($self->fbsession) {
 			$userfb = FacebookProxy::api('/me');
 			

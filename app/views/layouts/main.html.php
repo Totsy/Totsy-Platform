@@ -163,6 +163,35 @@
 	// end tabs
 </script>
 
+<script type="text/javascript">
+	var fbCookie = 'fbsr_<?php echo $appId; ?>';	
+	var logoutLink = '<?php echo $logout; ?>';
+
+	function deleteFBCookies() {
+	    //all posible FB cookies
+	    try {
+	    	document.cookie = fbCookie + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+	    	document.cookie = 'datr=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+	    	document.cookie = 'locale=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+	    	document.cookie = 'lu=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+	    	document.cookie = 'reg_fb_gate=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+	    	document.cookie = 'reg_fb_ref=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+	    	document.cookie = 'lsd=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+	    	document.cookie = 'L=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+	    	document.cookie = 'act=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+	    	document.cookie = 'openid_p=; expires=Thu, 01-Jan-70 00:00:01 GMT;'; 
+	    		    	
+			window.location = logoutLink;
+	    } catch (err) {
+	    	return false;
+	    }
+	}
+	
+	function goToLogout() {
+		deleteFBCookies();
+	} 
+</script>
+
 <!-- Sailthru Horizon -->
 <script type="text/javascript">
     (function() {

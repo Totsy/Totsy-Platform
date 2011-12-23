@@ -107,6 +107,10 @@
           window.location.reload();
         });
         
+         FB.Event.subscribe('auth.logout', function() {
+          window.location.reload();
+        });
+        
        };
 
       (function() {

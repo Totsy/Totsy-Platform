@@ -31,13 +31,13 @@ class BaseController extends \lithium\action\Controller {
 	 */
 
 	protected function _init() {
-
+	
 		parent::_init();
 	     if(!Environment::is('production')){
             $branch = "<h4 id='global_site_msg'>Current branch: " . $this->currentBranch() ."</h4>";
             $this->set(compact('branch'));
         }
-
+        
 		$userInfo = Session::read('userLogin');
 		$this->set(compact('userInfo'));
 		$cartCount = Cart::itemCount();
@@ -48,15 +48,14 @@ class BaseController extends \lithium\action\Controller {
 		/**
 		 * Setup all the necessary facebook stuff
 		 */
-		if(!$this->fbsession){
-			$this->fbsession = $fbsession = FacebookProxy::getUser();		
-			$fbconfig = FacebookProxy::config();
-			
-			if ($this->fbsession && strlen(FacebookProxy::getUser())>0) {
-				$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
-			} else {
-				$fblogout = "/logout";
-			}
+		 
+		$this->fbsession = $fbsession = FacebookProxy::getUser();		
+		$fbconfig = FacebookProxy::config(); 
+		
+		if ($this->fbsession) {
+			$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));			
+		} else {
+			$fblogout = "/logout";
 		}
 
 		if ($userInfo) {
@@ -78,6 +77,7 @@ class BaseController extends \lithium\action\Controller {
 				$credit = ($user->total_credit > 0) ? number_format($user->total_credit, $decimal) : 0;
 			}
 		}
+		
 		$this->set(compact('cartCount', 'credit', 'fbsession', 'fbconfig', 'fblogout'));
 				
 		$this->freeShippingEligible($userInfo);
@@ -95,7 +95,7 @@ class BaseController extends \lithium\action\Controller {
             }
             if (array_key_exists('invited_by',$userInfo)){
                 $invited_by = $userInfo['invited_by'];
-            }else if(array_key_exists('affiliate_share',$userData)){
+            } else if(array_key_exists('affiliate_share',$userData)){
                 $invited_by = $userData['affiliate_share']['affiliate'];
             }
 		}
@@ -158,7 +158,7 @@ class BaseController extends \lithium\action\Controller {
 	* @see app/controllers/AffiliatesController
 	* @see app/controllers/UsersController
 	**/
-	public function freeShippingEligible($userInfo){
+	public function freeShippingEligible($userInfo) {
 	    $sessionServices = Session::read('services', array('name' => 'default'));
 	    $service = Service::find('first', array('conditions' => array('name' => 'freeshipping') ));
 	    if ($userInfo && $service) {
@@ -178,9 +178,16 @@ class BaseController extends \lithium\action\Controller {
 	            	            
                 if ( (($service->start_date->sec <= $created_date &&
                         $service->end_date->sec > $created_date) &&
-                    (strtotime("now") < $dayThirty)) || $_SERVER['HTTP_HOST']=="evan.totsy.com" ) {
+                    (strtotime("now") < $dayThirty)) ) {
+                    
+                    //don't give mamasource users free shipping on the 1st order
+                    if( $_SERVER['HTTP_HOST']=="evan.totsy.com" || (isset($userInfo) && $userInfo['invited_by']=="mamasource") ) {
+                        $sessionServices['freeshipping'] = 'uneligible';
+						Session::write('services', $sessionServices,array('name' => 'default'));                    
+					}
+                    
                     //checks if the user ever made a purchase
-                    if ($user->purchase_count < 1) {
+                    if ($user->purchase_count < 1 ) {
                         $sessionServices = Session::read('services', array('name' => 'default'));
                         $sessionServices['freeshipping'] = 'eligible';
                         Session::write('services', $sessionServices, array('name' => 'default'));
