@@ -30,134 +30,100 @@
 -->
 CATEGORY VIEW
 <div class="fullwidth">
-	<?php $x = 0; ?>
-	<?php $y = 0; ?>
 	<?php foreach ($openEvents as $event): ?>
 	
-		
-	<div class="event" style="outline:2px dotted #c00; width:930px; overflow:hidden;">
-		<pre>
-		XXXXXXXXXXXXXXXXXXX
-		I AM AN EVENT
-		XXXXXXXXXXXXXXXXXXX
-		<?php echo $event['blurb']; ?>
-		</pre>
-	<?php
-		//print_r($event->eventItems);
-		$items = $event->eventItems;
-
-		foreach($items as $item){ ?>
-			<div class="item" style="float:left; margin-right:7px; width:125px; height:188px; border:1px solid #ccc;">
-		<?php	
-		
-			echo "<!--";
-			echo "<pre>";
-			print_r($item);
-			echo "</pre>";
-			echo "-->";
-
-			echo "<br>";
-			echo "id is " . $item['_id'];
-			echo "<br>";
-
-			echo "price is " . $item['sale_retail'];
-			echo "<br>";
-
-			echo "title is  " . $item['description'];
-			echo "<br>";
+		<div class="event grid-x" style="outline:2px dotted #c00; width:930px; overflow:hidden;">
+			<div class="eventDetails">
+				<h3><?php echo $event->name; ?></h3>
+				<em data-date="<?php echo $date = $event->end_date->sec * 1000; ?>" class="counter end">*counter here*</em><!-- @TODO - use date/time element? -->
+				<p><?php echo $event['blurb']; ?></p>
+				<div>
+					<?php
+						if (!empty($event->images->splash_big_image)) {
+							$productImage = "/image/{$event->images->splash_big_image}.jpg";
+						} else {
+							$productImage = ($x <= 1) ? "/img/no-image-large.jpeg" : "/img/no-image-small.jpeg";
+						}
+					?>
+					<?php
+						if(empty($departments)) {
+							$url = $event->url;
+						} else {
+							$url = $event->url.'/?filter='.$departments;
+						}
+					?>
+					<?php if ($x <= 1): ?>
+						<?php echo $this->html->link(
+							$this->html->image("$productImage", array(
+							'title' => $event->name,
+							'alt' => $event->name,
+							'width' => '349',
+							'height' => '403',
+					'style' => 'margin:0px 0px -6px 0px;'
+							)), "sale/$url", array('escape'=> false));
+						?>
+					<?php else: ?>
+						<?php echo $this->html->link(
+							$this->html->image("$productImage", array(
+							'title' => $event->name,
+							'alt' => $event->name,
+							'width' => '228',
+							'height' => '266'
+						)), "sale/$url", array('escape'=> false));
+						 ?>
+					<?php endif ?>
+				</div>
+			</div><!-- /.eventDetails -->
 			
-			echo "url slug is  " . $item['url'];
-			echo "<br>";
-			echo "so full clickthru is /sale/" . $item['url'];
-			echo "<br>";
-			
-			
-			//var is just the jpg filename, hardcoded to www.totsy bc dev often doesnt have images
-			echo "http://www.totsy.com/image/" . $item['primary_image'] . ".jpg";
-			echo "<br>";
-			echo "<br>";
-			echo "<br>";
-		?>
-			</div><!-- /.item -->
 		<?php
-		}
-	?>
-	</div><!-- /.event -->
+			//print_r($event->eventItems);
+			$items = $event->eventItems;
 	
+			foreach($items as $item){ ?>
+				<div class="item" style="float:left; margin-right:7px; width:125px; height:188px; border:1px solid #ccc;">
+			<?php	
+			/*
+			
+				echo "<!--";
+				echo "<pre>";
+				print_r($item);
+				echo "</pre>";
+				echo "-->";
 	
+				echo "<br>";
+				echo "id is " . $item['_id'];
+				echo "<br>";
 	
-		<!-- Start product item -->
-		<?php if ($y == 0): ?>
-			<div class="grid_6">
-		<?php endif ?>
-		<?php if ($y == 1): ?>
-			<div class="grid_6">
-		<?php endif ?>
-
-		<?php if (($y == 2) || ($y == 3)): ?>
-			<div class="grid_4">
-		<?php endif ?>
-		<?php if ($y == 4): ?>
-			<div class="grid_4">
-		<?php endif ?>
-		<?php if ($y == 3): ?>
-			<?php $y = 1; ?>
-		<?php endif ?>
-				<div class="p-container roundy_product_home">
-							<!-- this is where the items count was -->
-							<?php
-								if (!empty($event->images->splash_big_image)) {
-									$productImage = "/image/{$event->images->splash_big_image}.jpg";
-								} else {
-									$productImage = ($x <= 1) ? "/img/no-image-large.jpeg" : "/img/no-image-small.jpeg";
-								}
-							?>
-							<?php
-								if(empty($departments)) {
-									$url = $event->url;
-								} else {
-									$url = $event->url.'/?filter='.$departments;
-								}
-							?>
-							<?php if ($x <= 1): ?>
-								<?php echo $this->html->link(
-									$this->html->image("$productImage", array(
-									'title' => $event->name,
-									'alt' => $event->name,
-									'width' => '349',
-									'height' => '403',
-							'style' => 'margin:0px 0px -6px 0px;'
-									)), "sale/$url", array('escape'=> false));
-								?>
-							<?php else: ?>
-								<?php echo $this->html->link(
-									$this->html->image("$productImage", array(
-									'title' => $event->name,
-									'alt' => $event->name,
-									'width' => '228',
-									'height' => '266'
-								)), "sale/$url", array('escape'=> false));
-								 ?>
-							<?php endif ?>
+				echo "price is " . $item['sale_retail'];
+				echo "<br>";
+	
+				echo "title is  " . $item['description'];
+				echo "<br>";
 				
-					<div class="event-details">
-						<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
-							 <p style="padding:0px; margin:0px; font-size:15px; color:#fff; font-weight:normal; text-transform:none;"> 
-							 	======== EVENT NAME ========
-							 <?php echo $event->name; ?></p>
-							 <p style="padding:0px; margin:-3px 0px 0px 0px; font-size:12px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;"><span id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $event->end_date->sec * 1000; ?>" class="counter end"></span>
-						</div>
+				echo "url slug is  " . $item['url'];
+				echo "<br>";
+				echo "so full clickthru is /sale/" . $item['url'];
+				echo "<br>";
 				
-						<div class="table-cell right">
-							<?php echo $this->html->link('Shop', 'sale/'.$event->url, array('class' => 'button small', 'style'=>'display:table-cell !important'));?>
-						</div>
-					</div><!-- /.event-details -->
-				</div><!-- /.p-container -->
-			</div><!-- /.gridX -->
+				
+				//var is just the jpg filename, hardcoded to www.totsy bc dev often doesnt have images
+				echo "http://www.totsy.com/image/" . $item['primary_image'] . ".jpg";
+				echo "<br>";
+				echo "<br>";
+				echo "<br>";
+			*/
+			?>
+				</div><!-- /.item -->
+			<?php
+			}
+		?>
+			<div class="btn viewAllEvents">
+				<?php echo $this->html->link('Shop', 'sale/'.$event->url, array('class' => 'button small', 'style'=>'display:table-cell !important'));?>
+			</div>
 
-		<?php $x++; ?>
-		<?php $y++; ?>
-	<?php endforeach ?>
+		</div><!-- /.event -->
+	
+		<?php endforeach ?>
 
 	<div style="margin-bottom:35px;" class="clear"></div>
 
