@@ -81,7 +81,7 @@ CATEGORY VIEW
 	
 			foreach($items as $item){ ?>
 				<div class="item" style="float:left; margin-right:7px; width:125px; height:188px; border:1px solid #ccc;">
-					<img src="<?php echo "http://www.totsy.com/image/" . $item['primary_image'] . ".jpg";?>" alt="IMAGE ALT HERE" />
+					<img width="126" height="126" src="<?php echo "http://www.totsy.com/image/" . $item['primary_image'] . ".jpg";?>" alt="IMAGE ALT HERE" />
 					<h4><?php echo $item['description'];?></h4>
 					<p>$<?php echo $item['sale_retail'];?></p>
 			<?php	
