@@ -67,9 +67,6 @@ class UsersController extends BaseController {
        if ($this->request->query["gotologin"]=="true") {
            $this->redirect("/login");
        }
-	
-		//print_r($fbsession);
-		//exit();
 
 		$this->_render['layout'] = 'login';
 		$message = false;
@@ -375,6 +372,7 @@ class UsersController extends BaseController {
 
 	public function logout() {
 
+		FacebookProxy::destroySession();
 		$loginInfo = Session::read('userLogin');
 		$user = User::collection();
 		$user->update(
