@@ -71,7 +71,7 @@ class Event extends Base {
 			'order' => array('start_date' => 'DESC')
 		));
 		//Filter events results if settled
-		if(!empty($departments)||!empty($categories)){
+		if(!empty($departments)||!empty($categories)||!empty($ages)){
 			$itemsCollection = Item::collection();
 			foreach($events as $key_event =>$event) {
 				$events_id[] = (string) $event["_id"];
