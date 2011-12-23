@@ -38,40 +38,86 @@ CATEGORY VIEW
 				<em data-date="<?php echo $date = $event->end_date->sec * 1000; ?>" class="counter end">*counter here*</em><!-- @TODO - use date/time element? -->
 				<p><?php echo $event['blurb']; ?></p>
 				<div>
+
+					<!-- Display Event Image -->
 					<?php
+						// copied from view.html.php
+/*
+						if (!empty($event->images->event_image)) {
+							echo $this->html->image("/image/{$event->images->event_image}.jpg", array(
+								'title' => $event->name,
+								'width' => "280",
+							));
+						} else {
+							echo $this->html->image('/img/no-image-small.jpeg', array(
+									'title' => "No Image Available",
+									'width' => "280",
+									));
+						}
+*/
+					
+					
+					// store image
+						if(!empty($event->images->event_image)) {
+							$eventImage = "/image/{$event->images->event_image}.jpg";
+						}
+						else {
+							$eventImage = "img/no-image-small.jpeg";
+						}
+					
+					// build link and image
+						$url = $event->url;
+						echo $this->html->link(
+							$this->html->image("$eventImage", array(
+								'title' => $event->name,
+								'alt' => $event->name,
+								'width' => '126',
+								'height' => '81'
+							)), "sale/$url", array('escape'=> false)
+						);
+
+	
+						// original code for images
+				
+/*
 						if (!empty($event->images->splash_big_image)) {
 							$productImage = "/image/{$event->images->splash_big_image}.jpg";
 						} else {
 							$productImage = ($x <= 1) ? "/img/no-image-large.jpeg" : "/img/no-image-small.jpeg";
 						}
+*/
 					?>
 					<?php
+/*
 						if(empty($departments)) {
 							$url = $event->url;
 						} else {
 							$url = $event->url.'/?filter='.$departments;
 						}
+*/
 					?>
-					<?php if ($x <= 1): ?>
-						<?php echo $this->html->link(
-							$this->html->image("$productImage", array(
-							'title' => $event->name,
-							'alt' => $event->name,
-							'width' => '349',
-							'height' => '403',
-					'style' => 'margin:0px 0px -6px 0px;'
+					<?php 
+/*
+						if ($x <= 1): 
+							echo $this->html->link(
+								$this->html->image("$productImage", array(
+								'title' => $event->name,
+								'alt' => $event->name,
+								'width' => '349',
+								'height' => '403',
+						'style' => 'margin:0px 0px -6px 0px;'
+								)), "sale/$url", array('escape'=> false));
+						else: 
+							echo $this->html->link(
+								$this->html->image("$productImage", array(
+								'title' => $event->name,
+								'alt' => $event->name,
+								'width' => '228',
+								'height' => '266'
 							)), "sale/$url", array('escape'=> false));
-						?>
-					<?php else: ?>
-						<?php echo $this->html->link(
-							$this->html->image("$productImage", array(
-							'title' => $event->name,
-							'alt' => $event->name,
-							'width' => '228',
-							'height' => '266'
-						)), "sale/$url", array('escape'=> false));
-						 ?>
-					<?php endif ?>
+						endif;
+*/
+					?>
 				</div>
 			</div><!-- /.eventDetails -->
 			
