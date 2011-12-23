@@ -30,6 +30,7 @@ class ImageTest extends \lithium\test\Integration {
 
 		$file->delete();
 	}
+
 	public function testResizeAndSaveWithBytes() {
 		$backup = Image::$types;
 
@@ -166,6 +167,7 @@ class ImageTest extends \lithium\test\Integration {
 
 		$file->delete();
 	}
+
 	public function testDetectDimensions() {
 		$file = LITHIUM_APP_PATH . '/tests/data/image_jpg.jpg';
 		$bytes = file_get_contents($file);

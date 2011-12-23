@@ -17,7 +17,6 @@ ErrorHandler::apply(
 	function($info, $params) {
 		$url = $params['request']->url;
 		Logger::debug("Showing 404 for URL `/{$url}`");
-
 		return new Response(array(
 			'request' => $params['request'],
 			'status' => 404,
@@ -25,5 +24,4 @@ ErrorHandler::apply(
 		));
 	}
 );
-
 ?>

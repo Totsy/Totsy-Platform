@@ -84,6 +84,7 @@ Router::connect('/pages/{:args}', 'Pages::view');
 /**
  * Connect the testing routes.
  */
+
 if (!Environment::is('production')) {
 	Router::connect('/test/{:args}', array('controller' => '\lithium\test\Controller'));
 	Router::connect('/test', array('controller' => '\lithium\test\Controller'));
@@ -94,4 +95,5 @@ if (!Environment::is('production')) {
 Router::connect('/{:controller}/{:action}/{:id:[0-9]+}.{:type}', array('id' => null));
 Router::connect('/{:controller}/{:action}/{:id:[0-9]+}');
 Router::connect('/{:controller}/{:action}/{:args}');
+?>
 

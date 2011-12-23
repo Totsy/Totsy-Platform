@@ -151,6 +151,7 @@ class DashboardController extends BaseController {
 			ksort($revenue[1]);
 			$RevenueChart->addChartDataFromArray($revenue, $currentMonth['dates']);
 		}
+
 		/**
 		* Build chart for gross revenue
 		**/

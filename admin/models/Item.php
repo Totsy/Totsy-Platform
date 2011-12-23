@@ -129,6 +129,19 @@ class Item extends \lithium\data\Model {
 		}
 		return preg_replace('/\s*/m', '', implode('-', $sku));
 	}
+
+	public function uploadNames($entity) {
+		$results = array();
+
+		foreach (ItemImage::$types as $name => $type) {
+			$results['form'][$name] = String::insert($type['uploadName']['form'], array(
+				'url' => $entity->url,
+				'name' => $name
+			));
+		}
+		return $results;
+	}
+
 	public static function calculateProductGross($items) {
 		if (empty($items)) return 0;
 

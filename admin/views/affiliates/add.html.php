@@ -44,6 +44,7 @@ var affiliateCodes = "";
 		<input type="hidden" name="affiliate_id" value="<?=(string)$prospective_id?>">
 	</form>
 </div>
+<<<<<<< HEAD
 <div class="grid_7 box">
 	<div class="block forms">
 		<?=$this->form->create(null,array("id"=>"affForm")); ?>
@@ -53,13 +54,27 @@ var affiliateCodes = "";
 		<!--
 		Affiliate Category:
 		<input type="text" id="affiliate_category" name="affiliate_category" autocomplete="off" class="textbox"><br><br> -->
+=======
+
+<?=$this->form->create(null,array("id"=>"affForm")); ?>
+    <div id="submit button" class="grid_16">
+		<div class="grid_2" >
+			<?=$this->form->submit('Create', array('id'=>'create')); ?>
+		</div>
+	</div>
+<div class="grid_7 box">
+	<div class="block forms">
+		<input type="hidden" name="affiliate_id" value="<?=(string)$prospective_id?>">
+		Activate: <?=$this->form->checkbox('active', array('checked'=>'checked')); ?> <br/>
+		Affiliate Level: <?=$this->form->select('level',$packages); ?> <br/><br/>
+>>>>>>> 02e79d33972d8e11182859bed1d7c1bd804ffbd5
 		Affiliate Name:
-		<?=$this->form->text('affiliate_name'); ?> <br><br>
+		<?=$this->form->text('affiliate_name'); ?> <br/><br/>
 		Enter Code:
 		<?=$this->form->text('code'); ?>  <input type="button" name="add_code" id="add_code" value="add"/>
-		<br>
-		Affiliate codes:<br>
-		<?=$this->form->select('invitation_codes',array(),array('multiple'=>'multiple', 'size'=>5)); ?> <br>
+		<br/>
+		Affiliate codes:<br/>
+		<?=$this->form->select('invitation_codes',array(),array('multiple'=>'multiple', 'size'=>5)); ?> <br/>
 		<input type="button" name="edit_code" id="edit_code" value="Edit code"/>
 		<br><br>
 
@@ -69,22 +84,16 @@ var affiliateCodes = "";
 	<div class="block forms">
 		<div id="tabs">
 			<ul>
-				<li>
-					<a href="#pixel">
-					<span>Pixels</span>
-					</a>
-				</li>
-				<li>
-				    <a href="#landing_page"><span>Landing Pages</span></a>
-				</li>
-				<li>
-				    <a href="#pending_page"><span>Pending Backgrounds</span></a>
-				</li>
+				<li id="pixel_tab"><a href="#pixel"><span>Pixels</span></a></li>
+				<li id="landing_tab"><a href="#landing_page"><span>Dynamic Pages</span></a></li>
+				<li id="pending_tab"><a href="#pending_page"><span>Pending Backgrounds</span></a></li>
 			</ul>
 			<div id="pixel">
-				<div id="pixel_activate"> Affiliate uses pixels: <?=$this->form->checkbox('active_pixel', array('value'=>'1')); ?> </div>
+				<div id="pixel_activate">
+				    Affiliate uses pixels: <?=$this->form->checkbox('active_pixel', array('value'=>'1')); ?>
+				</div>
 				<div id="pixel_panel">
-					<br>
+					<br/>
 					<h5>Add Pixels</h5>
 					<div id="pixel_1">
 						Pixel:<br>
@@ -92,25 +101,22 @@ var affiliateCodes = "";
 						<?=$this->form->checkbox('pixel[0][enable]', array('value'=>'1', 'checked'=>'checked')); ?>
 						<br>
 						Select Page(s):
-						<br>
+						<br/>
 						<?=$this->form->select('pixel[0][page]', $sitePages, array('multiple'=>'multiple', 'size'=>5)); ?>
-						<br>
-						<br>
+						<br/>
+						<br/>
 						Select code(s) pixel applies to:
-						<br>
-						<?=$this->form->select('pixel[0][codes]',array(), array('multiple'=>'multiple', 'size'=>5, 'class' => 'relevantCodes')); ?>
-						<br>
-						<br>
+						<br/>
+						<?=$this->form->select('pixel[0][codes]',array('all'=>'all'), array('multiple'=>'multiple', 'size'=>5, 'class' => 'relevantCodes')); ?>
+						<br/>
+						<br/>
 						<?=$this->form->textarea('pixel[0][pixel]', array('rows'=>6,'cols'=>50)); ?>
-						<br>
-						<br>
-						<input type="hidden" name="background_image" value="" id="background_image"/>
 				    </div>
 				</div><!--end of pixel panel-->
 			</div><!--end of pixel-->
 			<div id="landing_page">
-			    <div id="landing_activate">
-			        Affiliate uses dynamic landing Pages:                            <?=$this->form->checkbox('active_landing', array('value'=>'1')); ?>
+			    <div id="landing_activate">			        Affiliate uses dynamic landing Pages:
+			        <?=$this->form->checkbox('active_landing', array('value'=>'1'));?>
 			    </div>
 			    <p>
 					<strong> Upload backgroud images for landing pages.  You can associate the images in the edit view.</strong>
@@ -154,20 +160,7 @@ var affiliateCodes = "";
 		</div><!--end tabs-->
 	</div>
 </div>
-
-<!--
-<div id="page_preview" style="display:none; width:800px; width: 500px; height: auto; z-index: 1000000000 !important; border-width: 2px; border-style: solid; background-color: rgb(255, 255, 255); left:445px; top: 15px; position: absolute;">
-	<img id="background_image">
-</div>
--->
-		<br>
-		<br>
 	<div class="clear"></div>
-	<div id="submit button" class="grid_2">
-		<div class="grid_2" >
-			<?=$this->form->submit('Create', array('id'=>'create')); ?>
-		</div>
-	</div>
 	<?=$this->form->end(); ?>
 </div>
 
@@ -219,12 +212,13 @@ var affiliateCodes = "";
 		//this jquery is for adding/removing pixel entry fields
 		var counter = 2;
 		$('#add_pixel').click(function(){
+		    codes = getCodes();
 			var newPixelDiv = $(document.createElement('div')).attr("id", "pixel_"+counter);
-			newPixelDiv.html("<label> Pixel #" +counter + "</label> <br> Enable:"+
-				'<?=$this->form->checkbox("pixel['+(counter-1)+'][enable]", array("value"=>"1", "checked"=>"checked")); ?> <br> Select Page:'+
-				'<?=$this->form->select("pixel['+(counter-1)+'][page]", $sitePages, array("multiple"=>"multiple", "size"=>5)); ?><br> Select code:'+
-				'<?=$this->form->select("pixel['+(counter-1)+'][page]",array(), array("multiple"=>"multiple", "size"=>5,"class" => "relevantCodes")); ?><br>Pixel<br>'+
-				'<?=$this->form->textarea("pixel['+(counter-1)+'][pixel]", array("rows"=>"5")); ?>'
+			newPixelDiv.html("<label> Pixel #" +counter + "</label> <br/> Enable:"+
+				'<?=$this->form->checkbox("pixel['+(counter-1)+'][enable]", array("value"=>"1", "checked"=>"checked")); ?> <br/> Select Page:'+
+				'<?=$this->form->select("pixel['+(counter-1)+'][page]", $sitePages, array("multiple"=>"multiple", "size"=>5)); ?><br/> Select code:'+
+				'<select name="pixel['+(counter-1)+'][codes][]" multiple="multiple"  size=5 class = "relevantCodes">' + codes+'</select><br/>Pixel<br/>'+
+				'<?=$this->form->textarea("pixel['+(counter-1)+'][pixel]", array("rows"=>"6", "cols" => "50")); ?>'
 				);
 			newPixelDiv.appendTo('#pixel_panel');
 			counter++;
@@ -272,11 +266,10 @@ var affiliateCodes = "";
 </script>
 <script type="text/javascript">
 function getCodes() {
-
-	var tmp =[];
+	var tmp = "<option value='all'>all</option>";
 
 	$('#InvitationCodes option').each(function(index,val){
-		tmp.push( $(val).text());
+		tmp = tmp + "<option value=" + $(val).text() + ">" + $(val).text() + "</option>";
 	});
 	return tmp;
 }

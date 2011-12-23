@@ -7,19 +7,19 @@
 <p>Here's some info for the development team:</p>
 
 <div>
-	<strong><?php echo $info['type']; ?></strong>: <?php echo $info['message']; ?>
+	<strong><?=$info['type']; ?></strong>: <?=$info['message']; ?>
 </div><div>
-	Thrown in <strong><pre><?php echo $info['stack'][0] ?></pre></strong>
-	at line <?php echo $info['line']; ?><br />
-	(<pre><?php echo $info['file']; ?></pre>)
+	Thrown in <strong><pre><?=$info['stack'][0] ?></pre></strong>
+	at line <?=$info['line']; ?><br />
+	(<pre><?=$info['file']; ?></pre>)
 </div><div>
 	<h4>Method parameters</h4>
-	<pre><?php echo preg_replace(
+	<pre><?=preg_replace(
 		'/::__set_state\(/', '(', preg_replace(
 			'/array\s+\(/', 'array(', var_export($params, true)
 		)
 	); ?></pre>
 </div><div>
 	<h4>JSON dump</h3>
-	<?php echo json_encode($params); ?>
+	<?=json_encode($params); ?>
 </div>

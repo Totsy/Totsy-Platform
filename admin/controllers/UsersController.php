@@ -284,7 +284,6 @@ class UsersController extends \admin\controllers\BaseController {
 		$user->save(compact('token'));
 		$session['token'] = $token;
 		Session::write('userLogin', $session);
-
 		return $this->redirect($this->request->referer());
 	}
 }

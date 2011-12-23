@@ -152,6 +152,7 @@ tinyMCE.init({
 				</div>
 
 				<br>
+
 		</div>
 		<div id="banner_images">
 			<h3 id="current_images">Current Images</h3>

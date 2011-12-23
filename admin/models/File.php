@@ -14,13 +14,6 @@ use Imagine\Gd\Imagine;
 class File extends \lithium\data\Model {
 
 	protected $_meta = array('source' => 'fs.files');
-	/**
-	 * Enable/disable deduping.
-	 *
-	 * @see admin\models\File::write()
-	 * @var boolean
-	 */
-	public static $dedupe = true;
 
 	/**
 	 * Enable/disable deduping.
@@ -242,7 +235,6 @@ class File extends \lithium\data\Model {
 
 		return $upgrade;
 	}
-
 /**
  * Ensure only unused files can be deleted.
  */

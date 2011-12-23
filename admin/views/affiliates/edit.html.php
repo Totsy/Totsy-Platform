@@ -262,9 +262,7 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
-
 	$(".affiliate_category").autocomplete({source: allAffiliateCategories, minChars:0, minLength:0, mustMatch:false});
-	$('#background_selection').hide();
 	//create tabs
 	$("#tabs").tabs();
 	$('#pending_page').hide();
@@ -279,6 +277,7 @@ $(document).ready(function() {
 		} else {
 			$('#pixel_panel').hide();
 		}
+
 		if($('#ActiveLanding').is(':checked')){
 			$('#landing_panel').show();
 			$('#pending_tab').show();
@@ -302,8 +301,12 @@ $(document).ready(function() {
 		$('input[name=active_landing]').change(function(){
 			if( $('#ActiveLanding:checked').val() == 1){
 				$('#landing_panel').show();
+				$('#pending_tab').show();
+				$('#pending_page').show();
 			}else{
 				$('#landing_panel').hide();
+				$('#pending_tab').hide();
+				$('#pending_page').hide();
 			}
 		});
 	});
@@ -335,6 +338,7 @@ $(document).ready(function() {
  				return false;
  			}
  		});
+
 		$(".affiliate_category").blur( function() {
 			//check if the category name has already been added
 			var catExists = false;
@@ -364,10 +368,11 @@ $(document).ready(function() {
 
 		$('#add_pixel').click(function() {
 			var newPixelDiv = $(document.createElement("div")).attr("id", "pixel_"+counter);
-
-			newPixelDiv.html(unescape("<label> Pixel #" +counter + "</label> <br> Enable:"+
-				'<?=$this->form->checkbox("pixel['+(counter-1)+'][enable]", array("value"=>"1", "checked"=>"checked")); ?> <br> Select:'+
-				'<?=$this->form->select("pixel['+(counter-1)+'][page]", $sitePages, array("multiple"=>"multiple", "size"=>5)); ?><br> Pixel<br>'+
+            codes = getCodes();
+			newPixelDiv.html(unescape("<label> Pixel #" +counter + "</label> <br/> Enable:"+
+				'<?=$this->form->checkbox("pixel['+(counter-1)+'][enable]", array("value"=>"1", "checked"=>"checked")); ?> <br/> Select:'+
+				'<?=$this->form->select("pixel['+(counter-1)+'][page]", $sitePages, array("multiple"=>"multiple", "size"=>5)); ?><br/> Pixel<br/>'+
+				'<select name="pixel['+(counter-1)+'][codes][]" multiple="multiple"  size=5 class = "relevantCodes">' + codes+'</select><br/>Pixel<br/>'+
 				'<?=$this->form->textarea("pixel['+(counter-1)+'][pixel]", array("rows"=>"5")); ?>'
 				));
 			newPixelDiv.appendTo('#pixel_panel');
@@ -398,7 +403,7 @@ $(document).ready(function() {
 		$('#edit_code').click(function(){
 			var value=$('#InvitationCodes option:selected').val();
 			$('#InvitationCodes option:selected').remove();
-			$('.relevantCodes option:selected').remove();
+			$('.relevantCodes option[value=' + value + ']').remove();
 			$('#Code').attr('value',value);
 		});
 	});

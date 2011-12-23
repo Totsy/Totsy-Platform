@@ -17,6 +17,7 @@ $(function() {
 	$('.file a[href*="/delete/"]').live('click', function(e) {
 		e.preventDefault();
 		var item = $(this).parent().parent();
+
 		$.ajax({
 			async: false,
 			type: "DELETE",
@@ -34,6 +35,7 @@ $(function() {
 
 	$('a[href*="/associate/pending"]').live('click', function(e) {
 		e.preventDefault();
+
 		$('#pending-data').html('<div class="loading">Associating…</div>');
 
 		$.ajax({

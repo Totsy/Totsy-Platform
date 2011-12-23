@@ -23,6 +23,15 @@
  * @see lithium\util\collection\Filters
  */
 
+// Uncomment this and comment the line below to use lithium core from app/libraries/lithium. */
+// if (!include LITHIUM_APP_PATH . '/libraries/lithium/core/Libraries.php') {
+if (!include LITHIUM_LIBRARY_PATH . '/lithium/core/Libraries.php') {
+	$message  = "Lithium core could not be found.  Check the value of LITHIUM_LIBRARY_PATH in ";
+	$message .= "config/bootstrap.php.  It should point to the directory containing your ";
+	$message .= "/libraries directory.";
+	trigger_error($message, E_USER_ERROR);
+}
+
 /**
  * The libraries file contains the loading instructions for all plugins, frameworks and other class
  * libraries used in the application, including the Lithium core, and the application itself. These
@@ -62,11 +71,10 @@ require __DIR__ . '/bootstrap/local_testing_cli.php';
  * selenium tests. Please note that `*chrome` will select Firefox as a browser
  * not as one would expect Google Chrome.
  */
- 
+
 use lithium\core\Environment;
 Environment::set('test', array(
 	'browser' => '*chrome',
 	'browserUrl' => 'http://totsy'
 ));
-
 ?>

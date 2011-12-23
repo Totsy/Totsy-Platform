@@ -15,6 +15,7 @@ if ($item) {
 if ($search_type) {
 	$refreshUrl['search_type'] = $associateUrl['search_type'] = $search_type;
 }
+
 ?>
 <div id="pending" class="box">
 	<h2>Manage Pending Files</h2>

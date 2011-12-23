@@ -151,7 +151,6 @@ class EventsController extends BaseController {
 
 				//update enabled
 				$oitem['enabled'] = (bool)$enabled;
-
 				//create a new item instance
 				$newItem = Item::create();
 
@@ -318,10 +317,9 @@ class EventsController extends BaseController {
 				unset($this->request->data['departments']);
 			}
 			unset($this->request->data['itemTable_length']);
-
 			$enableItems = $this->request->data['enable_items'];
 
-			/* // This is handling the upload of the excel file. 
+			/* // This is handling the upload of the excel file.
 			if ($_FILES['upload_file']['error'] == 0 && $_FILES['upload_file']['size'] > 0) {
 				if (is_array($this->_parseItems($_FILES, $event->_id, $enableItems))) {
 					unset($this->request->data['upload_file']);
@@ -371,7 +369,6 @@ class EventsController extends BaseController {
 
 			if ($eventData['tangible'] != $event->tangible) {
 				$changed .= 'Tangible changed from <strong>'.(int)$event->tangible.'</strong> to <strong>'.(int)$eventData['tangible'].'</strong><br/>';
-
 			}
 
 			if (strtotime($start_date) != $event->start_date->sec) {
@@ -447,7 +444,7 @@ class EventsController extends BaseController {
 
 		return compact('event', 'eventItems', 'items', 'all_filters', 'shortDescLimit');
 	}
-	
+
 	public function preview($_id = null) {
 
 		$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
@@ -482,6 +479,19 @@ class EventsController extends BaseController {
 
 	}
 
+	public function media_status() {
+		$id = $this->request->id;
+		$this->_render['layout'] = false;
+
+		$event = Event::first($id);
+		$event->items = Item::all(array(
+			'conditions' => array('event' => array($id)),
+			'order' => array('created_date' => 'ASC')
+		));
+
+		return compact('event');
+	}
+
 	public function inventoryCheck($events) {
 		$events = $events->data();
 		foreach ($events as $eventItems) {
@@ -501,20 +511,6 @@ class EventsController extends BaseController {
 		}
 		return $itemCounts;
 	}
-
-	public function media_status() {
-		$id = $this->request->id;
-		$this->_render['layout'] = false;
-
-		$event = Event::first($id);
-		$event->items = Item::all(array(
-			'conditions' => array('event' => array($id)),
-			'order' => array('created_date' => 'ASC')
-		));
-
-		return compact('event');
-	}
-
 	/**
 	 * This method parses the item file that is uploaded in the Events Edit View.
 	 *
@@ -716,7 +712,6 @@ class EventsController extends BaseController {
                 return $str;
             }
         }
-		
 	/**
 	 * Parse the images from the request using the key
 	 *

@@ -45,11 +45,6 @@ h2 + .actions {
 	margin-top: 2em;
 	min-height: 5em;
 }
-#pending-data,
-#orphaned-data {
-	margin-top: 2em;
-	min-height: 5em;
-}
 .files.naming {
 	font-weight: normal;
 }

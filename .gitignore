@@ -21,6 +21,11 @@ nbproject
 
 # lithium schtuff
 app/resources/tmp
+library
+admin/libraries/li3_payments
+admin/libraries/swiftmailer
+admin/libraries/li3_flash_message
+libraries
 
 # admin resource stuff
 admin/resources
@@ -35,6 +40,7 @@ admin/resources/totsy/shipfiles/backup/
 
 # selenium
 selenium/server.jar
+
 # stuff for selenium etc.
 libraries/PEAR
 selenium

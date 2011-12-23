@@ -12,15 +12,13 @@ use MongoCollection;
 class AffiliatesController extends BaseController {
 
 	public $sitePages = array(
-	    '/a/' => 'landing page',
+	    'Affiliates::register' => 'landing page',
 	    'after_reg' => 'after registering',
-	    '/' => 'login',
-	    '/sales' => 'sales',
+	    'Users::login' => 'login',
+	    'Events::index' => 'sales',
 	    'product' => 'product page',
 	    'event' => 'event page',
-	    '/shopping/checkout' => 'checkout',
-	    '/shopping/process' => 'checkout process',
-	    '/orders/view' => 'orders confirmation',
+	    'Orders::view' => 'orders confirmation',
 	    'order' =>'order confirmation(spinback)',
         'invite' => 'invite page(spinback)'
 	    );
@@ -29,10 +27,6 @@ class AffiliatesController extends BaseController {
 	    'regular' => 'regular',
 	    'super' => 'super',
 	);
-	public $templates = array(
-        'temp_1' => 'Template One',
-        'temp_2' => 'Template Two'
-    );
 
 	public function index() {
 
@@ -132,11 +126,17 @@ class AffiliatesController extends BaseController {
 					}
 				}
 			}
+
+			$info['created_by'] = Affiliate::createdBy();
+			$info['date_created'] = new MongoDate();
+
+       		if($affiliate->save($info)) {
+                $this->redirect(array('Affiliates::edit', 'args' => array($affiliate->_id)));
+            }
 		}
 
 		$sitePages = $this->sitePages;
 		$packages = $this->packages;
-		$templates = $this->templates;
 
         return compact('affiliate','sitePages','packages', 'prospective_id');
 	}
@@ -183,7 +183,7 @@ class AffiliatesController extends BaseController {
 		$packages = $this->packages;
         return compact('sitePages', 'packages','affiliate', 'affiliateCategories');
 	}
-	
+
 	public function categories($id = NULL) {
 		$this->_render['layout'] = !$this->request->is('ajax');
 		$categories = Affiliate::find('first', array('conditions' => array(

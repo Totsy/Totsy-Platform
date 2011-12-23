@@ -36,7 +36,7 @@ class FilesController extends \lithium\action\Controller {
 					Logger::debug('Searching for all pending affiliate backgrounds');
 					$conditions += array('affiliate_id' => $on);
 				break;
-				default:50.56.85.120
+				default:
 				Logger::debug('Searching for all pending event images');
 					$conditions += array('event_id' => $on);
 				break;
@@ -110,7 +110,7 @@ class FilesController extends \lithium\action\Controller {
 			$bytes = $file->file->getBytes();
 			$eventitems = $file->event_id && ( EventImage::process($bytes, $meta) || ItemImage::process($bytes, $meta) );
 			$banners = $file->banner_id && BannerImage::process($bytes, $meta);
-			$affiliates = $file->affiliate_id && AffiliateImage::process($bytes, $meta);
+			$affiliates = $file->affiliate_id && AffiliateImage::process($file, $meta);
 			if ($eventitems || $banners ||	$affiliates	) {
 				/* This implicitly moves it into the "orphaned" state. */
 				if (!$file->save(array('pending' => false))) {
@@ -240,6 +240,7 @@ class FilesController extends \lithium\action\Controller {
 		}
 		return true;
 	}
+
 	/**
 	 * Parses file upload error code into human-readable phrase.
 	 *

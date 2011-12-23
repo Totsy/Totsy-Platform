@@ -83,7 +83,74 @@ class Event extends \lithium\data\Model {
 		$time = date('ymdis', $event->_id->getTimestamp());
 		return 'TOT'.'-'.$vendorName.$time;
 	}
+	/* Handling of attached images. */
 
+	public function attachImage($entity, $name, $id) {
+		$id = (string) $id;
+		$type = EventImage::$types[$name];
+
+		$images = $entity->images ? $entity->images->data() : array();
+		$images[$type['field']] = $id;
+
+		$entity->images = $images;
+
+		return $entity;
+	}
+
+	public function detachImage($entity, $name, $id) {
+		$id = (string) $id;
+		$type = EventImage::$types[$name];
+
+		$images = $entity->images->data();
+		$images[$type['field']] = null;
+
+		$entity->images = $images;
+
+		return $entity;
+	}
+
+	public function images($entity) {
+		$results = array();
+
+		foreach (EventImage::$types as $name => $type) {
+			$results[$name] = $type['multiple'] ? array() : null;
+
+			if (!isset($entity->images[$type['field']])) {
+				continue;
+			}
+			if ($type['multiple']) {
+				foreach ($entity->images[$type['field']] as $key => $value) {
+					$results[$name][$key] = EventImage::first(array(
+						'conditions' => array('_id' => $value)
+					));
+				}
+			} else {
+				$results[$name] = EventImage::first(array(
+					'conditions' => array('_id' => $entity->images[$type['field']])
+				));
+			}
+		}
+		return $results;
+	}
+
+	public function uploadNames($entity) {
+		$results = array();
+
+		foreach (EventImage::$types as $name => $type) {
+			$results['form'][$name] = String::insert($type['uploadName']['form'], array(
+				'url' => $entity->url,
+				'name' => $name
+			));
+			$results['dav'][$name] = String::insert($type['uploadName']['dav'], array(
+				'event' => $entity->url,
+				'name' => $name,
+				'file' => 'example',
+				'month' => date('n', $entity->start_date->sec),
+				'year' => date('Y', $entity->start_date->sec)
+			));
+		}
+		return $results;
+	}
 	public static function makecell($content, $error = false) {
 		if($error){
 			return "<div class=xls_cell_error>$content</div>";

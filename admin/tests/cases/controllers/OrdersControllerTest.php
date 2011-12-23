@@ -109,6 +109,11 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$this->skipIf(PHP_SAPI == 'cli', $message);
 	}
 
+	public function skip() {
+		$message = "SAPI has no session support.";
+		$this->skipIf(PHP_SAPI == 'cli', $message);
+	}
+
 	/*
 	* Testing the Cancel method from the OrdersController
 	*/

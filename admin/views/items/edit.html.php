@@ -236,6 +236,7 @@ tinyMCE.init({
 			<?=$this->form->submit('Update Item'); ?>
 			<?=$this->form->end(); ?>
 		</div>
+
 		<div id="item_event_info">
 			<h1 id="event_information">Event Information</h1>
 			<?php if (!empty($event)): ?>

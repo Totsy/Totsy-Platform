@@ -7,6 +7,7 @@
 
 <?=$this->html->script('files.js');?>
 <?=$this->html->style('files.css');?>
+
 <script type="text/javascript">
 tinyMCE.init({
 	// General options
@@ -153,6 +154,7 @@ tinyMCE.init({
 			<div class="clear"></div>
 		</div>
 		<!-- End Tab -->
+
 	<?=$this->form->submit('Add Banner')?>
 <?=$this->form->end(); ?>
 

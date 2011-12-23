@@ -24,6 +24,7 @@ if (!empty($user['token'])) {
 }
 
 ?>
+
 <h1>File Management</h1>
 <div class="tab_region_left_col">
 
@@ -47,34 +48,6 @@ if (!empty($user['token'])) {
 				<?=$this->html->link('Cyberduck', 'http://cyberduck.ch/', array('target' => 'new')); ?>
 				is the recommended WebDAV client and works under both Windows and OSX.
 				Following a quick explanation of the directory structure.
-				<dl>
-					<dt>events</dt>
-					<dd>
-						Contains events and event items. Dropping files into image folders
-						will associate them with the item. Deleting files from the folders
-						will cause the files to be <em>disassociated</em>.
-
-						Please note that in contrast to uploading files via form,
-						files uploaded via WebDAV don't need to stick to the naming conventions
-						unless these files are added as pending.
-					</dd>
-
-					<dt>orphaned</dt>
-					<dd>
-						Items in this folder can be deleted only.
-					</dd>
-
-					<dt>pending</dt>
-					<dd>
-						Drop files here that belong to future events/items that don't exist yet.
-						Files can be added to and deleted from this folder.
-						Files added should stick to the naming conventions in order to enable <em>auto-association</em>.
-					</dd>
-				</dl>
-			</p>
-			<p>
-				When opening the WebDAV share you'll be presented with the following directory structure.
-
 				<dl>
 					<dt>events</dt>
 					<dd>
@@ -133,6 +106,7 @@ if (!empty($user['token'])) {
 						}
 					});
 				</script>
+
 				<a href="#" class="upload_files_link" onClick="document.getElementById('agileUploaderSWF').submit();">Start Upload <?=$this->html->image('agile_uploader/upload-icon.png', array('height' => '24')); ?></a>
 				<br style="clear: left;" />
 			</p>
@@ -160,12 +134,14 @@ if (!empty($user['token'])) {
 		<pre><?=$user['token']; ?></pre>
 		<?php endif; ?>
 	</div>
+
 	<?=$this->view()->render(array('element' => 'files_naming_event')); ?>
 	<?=$this->view()->render(array('element' => 'files_naming_item')); ?>
 </div>
 
 <div class="clear"></div>
 <?=$this->view()->render(array('element' => 'files_pending'), compact('item')); ?>
+
 <div class="clear"></div>
 <div id="orphaned" class="box">
 	<h2>Manage Orphan Files</h2>

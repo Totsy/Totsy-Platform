@@ -174,6 +174,7 @@ class Items extends \lithium\template\Helper {
 			return $html = "There are no items";
 		}
 	}
+
 	protected function _images($item=null) {
 		if(is_object($item)) {
 			$images = $item->images();

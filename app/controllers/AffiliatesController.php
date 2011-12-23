@@ -135,7 +135,6 @@ class AffiliatesController extends BaseController {
 		$cookie = Session::read('cookieCrumb',array('name'=>'cookie'));
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		if (($affiliate)) {
-			$pixel = Affiliate::getPixels('after_reg', $affiliate);
 			$gdata = $this->request->query;
 			$params = $this->request->params;
 			if (($gdata)) {
@@ -195,12 +194,12 @@ class AffiliatesController extends BaseController {
 				extract(UsersController::registration($data));
 				if ($saved) {
 					$message = $saved;
+					$pixel = Affiliate::getPixels('after_reg', $affiliate);
 					Affiliate::linkshareCheck($user->_id, $affiliate, $cookie);
 					$this->writeSession($user->data());
 					$cookie['user_id'] = $user->_id;
 					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 		            Session::write('pixel', $pixel, array('name' => 'default'));
-					Affiliate::linkshareCheck($user->_id, $affiliate, $cookie);
 					User::log($ipaddress);
 					$this->redirect($urlredirect);
 				}

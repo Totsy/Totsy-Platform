@@ -35,7 +35,6 @@ class Affiliate extends Base {
                     $temp['codes'] = $pixel['codes'];
                 }
 		    }
-
 		    $temp['page'] = array_values($pixel['page']);
 		    $temp['pixel'] = $pixel['pixel'];
 		    $formatted[] = $temp;
@@ -83,7 +82,6 @@ class Affiliate extends Base {
 		}
 		return $tmp;
 	}
-
 	public function attachImage($entity, $name, $id) {
 	    Logger::debug("Getting ready to attach images");
 		$id = (string)$id;

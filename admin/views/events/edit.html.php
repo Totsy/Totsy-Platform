@@ -1,5 +1,4 @@
-<?php ini_set("display_erros", 0);
-
+<?php
 use admin\models\Event;
 use lithium\util\Inflector;
 
@@ -9,7 +8,6 @@ use lithium\util\Inflector;
 <?=$this->html->script('jquery-dynamic-form.js');?>
 <?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
 <?=$this->html->script('handlers.js');?>
-<?=$this->html->script('fileprogress.js');?>
 <?=$this->html->style('jquery_ui_blitzer.css')?>
 <?=$this->html->script('jquery.dataTables.js');?>
 <?=$this->html->style('table');?>
@@ -30,6 +28,7 @@ use lithium\util\Inflector;
 <?=$this->html->style('admin_common.css');?>
 <?=$this->html->script('files.js');?>
 <?=$this->html->style('files.css');?>
+
 <style type="text/css">
 .selectlist-list {
     list-style: none outside none;
@@ -316,7 +315,8 @@ $(function() {
 			<input type="radio" name="clearance" value="1" id="clearance" <?php if ($event->clearance == 1) echo 'checked'; ?>> Clearance <br>
 			<input type="radio" name="clearance" value="0" id="clearance" <?php if ($event->clearance == 0) echo 'checked'; ?>> Not Clearance
 		</div>
-		<div id="event_duration">
+
+        <div id="event_duration">
             <h4 id="event_duration">Event Duration</h4>
             <?php
                 $start_date = date('m/d/Y H:i', $event->start_date->sec);
@@ -334,13 +334,13 @@ $(function() {
             ?>
         </div>
 				<?=$this->form->label('Departments')?><br />
-				
+
 				<?=$event->departments?>
 
 				<br><br>
 
-				<table>	
-					<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?>
+				<table>
+				<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?>
 				</table>
 
 				<div id="tags">
@@ -395,8 +395,7 @@ $(function() {
 					</table>
 				</div>
 				<!-- End Event Images -->
-			<br />
-			<?=$this->form->submit('Update Event')?>
+			</div>
 		</div>
 		<!-- End Tab -->
 
@@ -404,7 +403,24 @@ $(function() {
 		<div id="event_items">
 			<h3 id="">Item Management</h3>
 			<hr />
-			<div style="width:300px; height:500px; float:left">
+			<h3 id="">Upload Items</h3>
+            <hr />
+			<p>Please select the default option for all items being uploaded:</p>
+				<input type="radio" name="enable_items" value="1" id="enable_items"> Enable All <br>
+				<input type="radio" name="enable_items" value="0" id="enable_items" checked> Disable All <br><br>
+			<p>Add "Final Sale" to the item description?:</p>
+				<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
+				<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
+				<?=$this->form->file('upload_file'); ?>
+				<?=$this->form->submit('Update Event')?>
+				<?=$this->form->label('Upload Event (Excel Files): '); ?>
+<!--
+		<iframe id="upload_frame" name="upload_frame" src="/events/upload/<?=$event->_id?>" frameborder=0 scrolling=no width=400 height=250></iframe>
+		<div id="upload_error" name="upload_error" style="color:#ff0000; width:400px; float:right; height:250px; overflow:scroll;">(spreadsheet upload errors will appear here)</div>
+
+-->
+			<br><br>
+			<div style="width:300px; height:400px; float:left">
 				<h3 id="">Upload Items</h3>
 	            <hr />
 				<p>Please select default option for all items uploaded:</p>
@@ -413,6 +429,7 @@ $(function() {
 				<p>Add "Final Sale" to the item description?:</p>
 					<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
 					<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
+
 				<p>Will item/product ship for Christmas?:</p>
 					<input type="radio" name="miss_christmas" value="0" id="miss_christmas">Yes, ships before 12.23<br>
 					<input type="radio" name="miss_christmas" value="1" id="miss_christmas" checked>NO AFTER XMAS<br><br>
@@ -421,9 +438,7 @@ $(function() {
 					<?php echo $this->form->file('upload_file'); ?>
 					-->
 				<?=$this->form->field('items_submit', array('type' => 'textarea', 'rows' => '7', 'cols' => '50', 'name' => 'ItemsSubmit'));?><br>
-
-            <hr />
-			<br><br>
+			<?=$this->form->submit('Update Event')?>
 			<?=$this->form->end(); ?>
 			</div>
 
@@ -448,12 +463,13 @@ $(function() {
 							</div>
 				<br \>
 				<br \>
-
-				<?php echo $this->items->build($eventItems);?>
+				<?=$this->items->build($eventItems);?>
 
 				<div style="float:right; font: bold; font-size: 18px;">
 					<?=$this->form->submit('Update Event')?>
 				</div>
+			<?=$this->form->end(); ?>
+			<br><br>
 			<br><br>
 			<h2 id="">Delete Items</h2>
 				<p>Click the button below to delete all items from this event. <strong>WARNING - This action cannot be undone. All items associated with this event will be deleted!!!!!!</strong></p>
@@ -479,14 +495,14 @@ $(function() {
 
 				?>
 				<tr>
-					<td><?php echo $event->modifications[$i]->author;?></td>
+					<td><?=$event->modifications[$i]->author;?></td>
 					<td>
 					<?php
 							$date_changed = $event->modifications[$i]->date;
 							print date('Y-M-d h:i:s', $date_changed->sec);
 					?>
 					</td>
-					<td><?php echo $event->modifications[$i]->changed;?></td>
+					<td><?=$event->modifications[$i]->changed;?></td>
 				</tr>
 				<?php
 							$i++;
@@ -499,6 +515,22 @@ $(function() {
 					}
 				?>
 		</div>
+		<!-- End Tab -->
+		<!-- Start Tab -->
+		<div id="event_media_status">
+			<div class="actions">
+				<?=$this->html->link('refresh', array(
+					'action' => 'media_status', 'id' => $event->_id
+				), array(
+					'class' => 'refresh', 'target' => '#event_media_status_data'
+				)); ?>
+			</div>
+			<p>
+				This tab show the status of media associated with the items of this event.
+			</p>
+			<div id="event_media_status_data"><!-- Populated through AJAX request. --></div>
+		</div>
+		<!-- End Tab -->
 		<div id="event_inventory">
 			<iframe id="inventoryIframe" src="" style="width:900px; height:400px;"></iframe>
 		</div>
@@ -579,6 +611,7 @@ $(function() {
 				This tab show the status of media associated with the items of this event.
 			</p>
 			<div id="event_media_status_data"><!-- Populated through AJAX request. --></div>
+		</div>
 		<!-- End Tab -->
 	</div>
 	<!-- End Tabs -->

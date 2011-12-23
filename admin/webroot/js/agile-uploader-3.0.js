@@ -1,7 +1,6 @@
 (function($) {
 	var opts;
 	var noURI;
-
 	/**
 	 * Agile Uploader Event Handler
 	 * This method is responsible for catching all of the events coming from the swf.
@@ -81,7 +80,6 @@
 		var sizeKb = ((file.finalSize / 1024) * 100) / 100;
 		$('#id-'+file.uid+' .agileUploaderFileSize').text('('+ sizeKb.toFixed(2) +'Kb)');
 	}
-
 	/**
 	 * Callback after the form is submitted and data is returned from the server.
 	 * The data returned will vary depending on the script used, defined in the "form_action" variable.
@@ -119,7 +117,6 @@
 	 * This event is called when there's still an image file encoding.
 	 * The form can't be sent until everything is ready, otherwise, images could
 	 * pass on to the server at original size.
-	 *
 	 * @param file {string} The file object that hasn't completed encoding yet
 	*/
 	$.fn.agileUploaderNotReady = function(file) {
@@ -141,6 +138,7 @@
 		console.dir(file);
 		console.info('---');*/
 		// if in single file replace mode just empty the list visually, only the last attached file will be submitted by flash (rare, this shouldn't be w/ multiple uploads)
+
 		if(opts.flashVars.file_limit == -1) {
 			$('#agileUploaderFileList').empty();
 		}
@@ -159,7 +157,6 @@
 		if((typeof(opts.progressBar) == 'string') && (opts.progressBar != 'percent')) {
 			$('#'+file.uid+'CurrentProgress').css('background', opts.progressBarColor);
 		}
-
 		$('#agileUploaderFileInputText').val(file.fileName);
 	}
 
@@ -179,7 +176,6 @@
 			$('#'+file.uid+'CurrentProgress').css('width', parseInt(file.percentEncoded)+'%');
 			$('#agileUploaderProgressBar').css('width', parseInt(file.percentEncoded)+'%');
 		}
-
 		if(file.percentEncoded >= 100) {
 			$('#'+file.uid+'CurrentProgress').remove();
 			// add the file size
@@ -268,13 +264,13 @@
 				var data = new Image();
 				data.onload = data.onerror = function(){
 					if(this.width != 1 || this.height != 1) {
+
 						noURI = true;
 					}
 				}
 				data.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
 			}
 			// end data uri check
-
 			$('#'+this.id).append('<div id="agileUploaderAttachArea"><div id="agileUploaderEMBED"></div><div id="agileUploaderMessages"></div></div>');
 
 			$.fn.agileUploaderEmbed(); // embed
@@ -302,6 +298,7 @@
 		$.fn.agileUploader.defaults.flashVars.show_encode_progress = true;
 		// combine everything together
 		opts = $.extend({}, $.fn.agileUploader.defaults, options);
+
 		if(typeof(options.flashVars) == 'undefined') { options.flashVars = {}; }
 		opts.flashVars = $.extend({}, $.fn.agileUploader.defaults.flashVars, options.flashVars);
 		if(typeof(options.flashParams) == 'undefined') { options.flashParams = {}; }
@@ -309,6 +306,7 @@
 		if(typeof(options.flashAttributes) == 'undefined') { options.flashAttributes = {}; }
 		opts.flashAttributes = $.extend({}, $.fn.agileUploader.defaults.flashAttributes, options.flashAttributes);
 		// always set to -1 so it goes into a single replace mode
+
 		opts.flashVars.file_limit = -1;
 
 		return this.each(function() {

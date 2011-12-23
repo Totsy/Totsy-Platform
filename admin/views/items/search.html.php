@@ -85,9 +85,9 @@
 						}
 					?>
 					<td>
-					<?=$item[_id];?> in the event
+					<?=$item['_id'];?> in the event
 					<a href="/events/edit/<?=$item['event'][0];?>"><?=$item['event'][0];?></a><br>
-					date: <?=date("Y-m-d", $item['created_date']->sec);?>
+					date: <?=date("Y-m-d", $item['created_date']->sec);?>'
 					</td>
 					<td width="5%">
 						<?php echo $this->html->image("$image", array(
