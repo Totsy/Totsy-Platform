@@ -1,27 +1,3 @@
-<?php 
-	use li3_facebook\extension\FacebookProxy; 
-	$fbconfig = FacebookProxy::config();
-	$appId = $fbconfig['appId'];	
-?>
-
-<script type="text/javascript">
-		function deleteFBCookies() {
-			//all posible FB cookies
-			var fbCookie = 'fbsr_<?php echo $appId; ?>';	
-			
-			document.cookie = fbCookie + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			document.cookie = 'datr=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			document.cookie = 'locale=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			document.cookie = 'lu=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			document.cookie = 'reg_fb_gate=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			document.cookie = 'reg_fb_ref=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			document.cookie = 'lsd=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			document.cookie = 'L=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			document.cookie = 'act=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			document.cookie = 'openid_p=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-		}
-		
-</script>
 <div class="menu_top_left">
 		<?php if (!empty($userInfo)): ?>
 		Hello,
@@ -30,12 +6,9 @@
 		<?php else:?>
 		<?php if (is_array($userInfo) && array_key_exists('email', $userInfo)) { echo $userInfo['email']; } ?>
 		<?php endif; ?>		
-		<?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
-		(<?php echo $this->html->link('Sign Out', $logout, array('title' => 'Sign Out', 'onClick'=>'deleteFBCookies()')); ?>)
-		<?php endif ?>
-		
+		(<?php echo $this->html->link('Sign Out', "#", array('title' => 'Sign Out', 'onClick'=>'goToLogout()')); ?>)
+		<?php endif ?>		
 	</div>
-
 	<div class="menu_top_right">
 		<?php if (!(empty($userInfo))) { ?>
 		<a href="/account" title="My Account">My Account</a>
