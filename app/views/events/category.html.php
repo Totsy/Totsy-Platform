@@ -30,7 +30,6 @@
 		<div class="event grid-x">
 			<div class="eventDetails group">
 				<h3><?php echo $event->name; ?> <em id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $event->end_date->sec * 1000; ?>" class="counter end"></em><!-- @TODO - use data-attribute instead of title… better, use a date/time element instead of an em --></h3>
-				<p><?php echo strip_tags($event['blurb']); ?></p>
 				<div>
 					<?php
 					
@@ -54,15 +53,17 @@
 						);
 					?>
 				</div>
+				<p><?php echo strip_tags($event['blurb']); ?></p>
 			</div><!-- /.eventDetails -->
 			
-		<?php
+			<div class="items group">
+			<?php
 			//print_r($event->eventItems);
 			$items = $event->eventItems;
-	
+			
 			foreach($items as $item){ ?>
-				<div class="item" style="float:left; margin-right:7px; width:125px; height:188px; border:1px solid #ccc;">
-					<img width="126" height="126" src="<?php echo "http://www.totsy.com/image/" . $item['primary_image'] . ".jpg";?>" alt="IMAGE ALT HERE" />
+				<div class="item">
+					<img width="125" height="126" src="<?php echo "http://www.totsy.com/image/" . $item['primary_image'] . ".jpg";?>" alt="IMAGE ALT HERE" />
 					<h4><?php echo $item['description'];?></h4>
 					<p>$<?php echo $item['sale_retail'];?></p>
 			<?php	
@@ -74,14 +75,14 @@
 				print_r($item);
 				echo "</pre>";
 				echo "-->";
-	
+			
 				echo "<br>";
 				echo "id is " . $item['_id'];
 				echo "<br>";
-	
+			
 				echo "price is " . $item['sale_retail'];
 				echo "<br>";
-	
+			
 				echo "title is  " . $item['description'];
 				echo "<br>";
 				
@@ -101,20 +102,20 @@
 				</div><!-- /.item -->
 			<?php
 			}
-		?>
-			<div class="btn viewAllEvents">
-				<?php
-					echo $this->html->link(
-						$this->html->image("/img/btn-viewevents-bug.png", array(
-							'title' => 'View all items from this sale',
-							'alt' => 'View all items from this sale',
-							'width' => '135',
-							'height' => '189'
-						)), 'sale/'.$event->url, array('escape'=> false)
-					);
-				?>
-			</div>
-	
+			?>
+				<div class="btn viewAllEvents">
+					<?php
+						echo $this->html->link(
+							$this->html->image("/img/btn-viewevents-bug.png", array(
+								'title' => 'View all items from this sale',
+								'alt' => 'View all items from this sale',
+								'width' => '135',
+								'height' => '189'
+							)), 'sale/'.$event->url, array('escape'=> false)
+						);
+					?>
+				</div>
+			</div><!-- /.items -->
 		</div><!-- /.event -->
 		<?php $x++; ?>
 		<?php endforeach ?>
