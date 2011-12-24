@@ -156,10 +156,6 @@ class Items extends \lithium\template\Helper {
 				$html .= "<td width='30'>$item->enabled<br>";
 				
 
-				if($item->miss_christmas){
-					$html .= "wont ship for xmas";				
-				}
-				
 				//check to show flag for duplicate color/description url
 				if($isurlduplicate){
 					$html .= "<br><span style='color:#ff0000;'>color and/or description are duplicated!</span>";
