@@ -17,12 +17,13 @@ Environment::is(function($request) {
 		case '50.56.49.10': // This is the production rackspace load balancer IP
 			return 'production';
 		case 'test.totsy.com':
+			return 'test';
 		case 'totsystaging.com':
 		case 'admin.totsystaging.com':
 		case 'www.totsystaging.com':
 		case 'admin.totsy.com':
 		case '50.57.205.144': // This is the totsystaging load balancer IP
-			return 'test';
+		    return 'staging';
 		case 'dev.totsy.com':
 			return 'development';
 		default:

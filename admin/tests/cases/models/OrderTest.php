@@ -954,7 +954,8 @@ class OrderTest extends \lithium\test\Unit {
 			'credit_used' => -3.25,
 			'comment' => $comment,
 			'user_id' => (string) $userId,
-			'user_total_credits' => 1.75
+			'user_total_credits' => 1.75,
+			'original_credit_used' => -3.25
 		);
 		$remote = new OrderMock();
 		$result = $remote->saveCurrentOrder($data, $items, $author);

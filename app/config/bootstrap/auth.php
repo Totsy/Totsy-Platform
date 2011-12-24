@@ -6,11 +6,7 @@
 use lithium\security\Auth;
 use lithium\action\Dispatcher;
 use lithium\action\Response;
-<<<<<<< HEAD
 use admin\models\Affiliate;
-=======
-use lithium\storage\Session;
->>>>>>> 971676698cc814f0495f867b5d0b20f5a097f7c4
 
 Auth::config(array(
 	'userLogin' => array(
@@ -23,11 +19,7 @@ Auth::config(array(
 Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	$skip = array('/','login', 'logout', 'register',"register/facebook","reset");
 	$allowed = false;
-<<<<<<< HEAD
-=======
-	$logged_in = false;
 
->>>>>>> 971676698cc814f0495f867b5d0b20f5a097f7c4
 	#dynamic affiliate pages
 	 if(preg_match('#(^a/)[a-zA-Z_]+#', $params['request']->url)) {
 		 $allowed = true;

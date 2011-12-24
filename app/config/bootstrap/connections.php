@@ -28,15 +28,16 @@ use lithium\data\Connections;
                     'database' => 'totsy',
                     'host' => 'db1-dc1.totsystaging.com',
                     'adapter' => 'app\extensions\adapter\data\source\MongoDb'),
+        'staging' => array(
+                    'type' => 'MongoDb',
+                    'database' => 'totsy',
+                    'host' => 'db1-dc1.totsystaging.com',
+                    'adapter' => 'app\extensions\adapter\data\source\MongoDb'),
 		'development' => array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy',
 			'host' => 'localhost',
 		),
-		'eric' => array(
-			'type' =>  'MongoDb',
-			'database' => 'totsy_eric',
-			'host' => 'localhost'),
 		'local' =>array(
 			'type' =>  'MongoDb',
 			'database' => 'totsy',

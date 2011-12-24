@@ -39,6 +39,7 @@ if [ $# != 1 ]; then
 fi
 # Configuration
 PROJECT_DIR=$(pwd)
+LI3=$PROJECT_DIR/libraries/lithium/console/li3
 # Arguments
 COMMAND=$1
 case $COMMAND in
@@ -74,51 +75,53 @@ case $COMMAND in
 	# This section collects all commands required to run
 	# all tests contained within libraries and apps accross
 	# the entire codebase.
+	    echo
+	    ;;
 	run-tests)
 		echo "Running payment related tests..."
 		cd $PROJECT_DIR/admin
-		libraries/lithium/console/li3 --env=test test tests/cases/controllers/OrdersControllerTest.php
-		libraries/lithium/console/li3 --env=test test tests/cases/models/OrderTest.php
+		$LI3  --env=test test tests/cases/controllers/OrdersControllerTest.php
+		$LI3  --env=test test tests/cases/models/OrderTest.php
 		cd $PROJECT_DIR
-		libraries/lithium/console/li3 test --case=app.tests.cases.controllers.OrdersController
-		libraries/lithium/console/li3 test --case=app.tests.cases.models.OrderTest
-		libraries/lithium/console/li3 test --case=li3_payments.tests.integration.TransactionsTest
+		$LI3  test --case=app.tests.cases.controllers.OrdersController
+		$LI3  test --case=app.tests.cases.models.OrderTest
+		$LI3  test --case=$LI3 _payments.tests.integration.TransactionsTest
 
 		echo
 		;;
 	run-app-tests)
 		cd $PROJECT_DIR/app
-		libraries/lithium/console/li3 test tests/cases
-		libraries/lithium/console/li3 test ../libraries/li3_payments/tests
-		LI3=$PROJECT_DIR/libraries/lithium/console/li3
+		$LI3  test tests/cases
+		$LI3  test ../libraries/$LI3 _payments/tests
+
 
 		echo "Running (admin) Lithium unit tests..."
-		libraries/lithium/console/li3 --env=test test libraries/lithium/tests/cases
+		$LI3  --env=test test libraries/lithium/tests/cases
 
 		echo "Running admin tests..."
-		libraries/lithium/console/li3 --env=test test tests/cases/controllers/BannersControllerTest.php
-		libraries/lithium/console/li3 --env=test test tests/cases/extensions
-		libraries/lithium/console/li3 --env=test test tests/cases/models/EventImageTest.php
-		libraries/lithium/console/li3 --env=test test tests/cases/models/ItemImageTest.php
-		libraries/lithium/console/li3 --env=test test tests/integration
-		libraries/lithium/console/li3 --env=test test tests/functional/WebDavTest.php
-		libraries/lithium/console/li3 --env=test test tests/functional/data/FileAssociationTest.php
+		$LI3  --env=test test tests/cases/controllers/BannersControllerTest.php
+		$LI3  --env=test test tests/cases/extensions
+		$LI3  --env=test test tests/cases/models/EventImageTest.php
+		$LI3  --env=test test tests/cases/models/ItemImageTest.php
+		$LI3  --env=test test tests/integration
+		$LI3  --env=test test tests/functional/WebDavTest.php
+		$LI3  --env=test test tests/functional/data/FileAssociationTest.php
 
-		echo "Running li3_fixtures tests..."
-		libraries/lithium/console/li3 --env=test test ../libraries/li3_fixtures/tests/
+		echo "Running $LI3 _fixtures tests..."
+		$LI3  --env=test test ../libraries/$LI3 _fixtures/tests/
 
-		echo "Running li3_flash_message tests..."
-		libraries/lithium/console/li3 --env=test test libraries/li3_flash_message/tests/
+		echo "Running $LI3 _flash_message tests..."
+		$LI3  --env=test test libraries/$LI3 _flash_message/tests/
 
 		echo "Running SabreDAV tests..."
-		cd $PROJECT_DIR/admin/libraries/li3_dav/libraries/_source/sabredav/tests
+		cd $PROJECT_DIR/admin/libraries/$LI3 _dav/libraries/_source/sabredav/tests
 		phpunit
 
 		echo "Running Imagine tests..."
 		cd $PROJECT_DIR/admin/libraries/_source/Imagine
 
 		echo "Running Lithium unit tests..."
-		$LI3 test libraries/lithium/tests/cases
+		$$LI3  test libraries/lithium/tests/cases
 
 		echo
 		;;
@@ -192,7 +195,7 @@ case $COMMAND in
 		VERSION="1.4.4"
 		TARGET_SOURCE=_source/sabredav
 		TARGET_LINK=Sabre
-		cd $PROJECT_DIR/admin/libraries/li3_dav/libraries
+		cd $PROJECT_DIR/admin/libraries/$LI3 _dav/libraries
 		test -d $TARGET_SOURCE && rm -r $TARGET_SOURCE
 		echo "Downloading source..."
 		TMP_DIR=$(mktemp -d -t totsy)
@@ -224,7 +227,6 @@ case $COMMAND in
 		echo "Downloading server packages..."
 		curl http://selenium.googlecode.com/files/selenium-server-standalone-2.2.0.jar \
 			--O $PROJECT_DIR/selenium/server.jar
-	*)
 		echo "Unknown command '${COMMAND}'."
 		exit 1
 esac
