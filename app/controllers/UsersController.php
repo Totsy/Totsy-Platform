@@ -16,7 +16,7 @@ use li3_facebook\extension\FacebookProxy;
 class UsersController extends BaseController {
 
 	public $sessionKey = 'userLogin';
-
+	
 	/**
 	 * Instances
 	 * @var array
@@ -448,7 +448,7 @@ class UsersController extends BaseController {
 		
 		if ($fbsession && $linked == false) {
 			try {
-				$userfb = FacebookProxy::api('/me');
+				$userfb = FacebookProxy::api($fbsession);
 				$check = User::find('first', array(
 					'conditions' => array(
 							'facebook_info.id' => $userfb['id']
@@ -649,7 +649,7 @@ class UsersController extends BaseController {
 	public function fbregister() {
 		$message = null;
 		$user = null;
-		$fbuser = FacebookProxy::api('/me');
+		$fbuser = FacebookProxy::api(FacebookProxy::getUser());
 		$user = User::create();
 
 		if ( !preg_match( '/@proxymail\.facebook\.com/', $fbuser['email'] )) {
@@ -702,8 +702,9 @@ class UsersController extends BaseController {
 		$userfb = array();
 	
 		if ($self->fbsession) {
-			$userfb = FacebookProxy::api('/me');
-			
+		
+			$userfb = FacebookProxy::api($self->fbsession);
+
 			$user = User::find('first', array(
 				'conditions' => array(
 					'$or' => array(
@@ -713,7 +714,7 @@ class UsersController extends BaseController {
 							
 			if ($user) {
 			
-			$userfb = FacebookProxy::api('/me');		
+			//$userfb = FacebookProxy::getUser();		
 			$user->facebook_info = $userfb;
 			$user->save(null, array('validate' => false));
 				
