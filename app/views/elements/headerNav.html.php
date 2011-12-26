@@ -17,23 +17,6 @@
 			<nav class="group">
 				
 				<div id="userUtils">
-					<script type="text/javascript">
-						function deleteFBCookies() {
-							//all posible FB cookies
-							var fbCookie = 'fbsr_<?php echo $appId; ?>';	
-							
-							document.cookie = fbCookie + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-							document.cookie = 'datr=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-							document.cookie = 'locale=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-							document.cookie = 'lu=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-							document.cookie = 'reg_fb_gate=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-							document.cookie = 'reg_fb_ref=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-							document.cookie = 'lsd=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-							document.cookie = 'L=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-							document.cookie = 'act=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-							document.cookie = 'openid_p=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-						}	
-					</script>
 					<?php
 						if (!empty($userInfo)) { ?>
 							<div id="userinfo">
@@ -46,9 +29,8 @@
 									endif;
 								?></strong>
 								<em>
-								<?php 
-									$logout = ($fblogout) ? $fblogout : 'Users::logout';
-									echo $this->html->link('Sign Out', $logout, array('title' => 'Sign Out', 'onClick'=>'deleteFBCookies()')) . ' | <a href="/account" title="My Account">My Account</a>';
+								<?php
+									echo $this->html->link('Sign Out', "#", array('title' => 'Sign Out', 'onClick'=>'goToLogout()')) . ' | <a href="/account" title="My Account">My Account</a>';
 								?>
 								</em>
 							</div>
