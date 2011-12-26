@@ -4593,8 +4593,7 @@ nav .haschild li a:hover {
 	Category Pages - events - @DG-2011.12
 */
 #events-wrap .event {
-	margin-bottom:40px; padding:9px;
-	width:928px;
+	margin:0 5px 40px; padding:9px 8px;
 	border:1px solid #ccc;
 	border-radius:0px 0px 10px 10px;
 }
@@ -4615,11 +4614,12 @@ nav .haschild li a:hover {
 }
 #events-wrap .item {
 	float:left; 
-	margin-right:7px;
+	margin-left:7px;
 	width:125px; height:188px;
 	border:1px solid #bfbfbf;
 }
-#events-wrap .item:last-of-type {margin-right: 0;}
+#events-wrap .item:first-child {margin-left: 0;}
 #events-wrap .viewAllEvents {
+	position: relative; left:3px;
 	float:left;
 }
