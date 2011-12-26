@@ -75,7 +75,7 @@
 	<?php else: ?>
 		<h2 class="gray mar-b">Connect your Facebook Account with Totsy</h2>
 		<hr />
-		<fb:login-button perms="email" size="large" length="long" v="2" style="text-align:center;">Connect With Facebook</fb:login-button>
+		<fb:login-button scope="email" size="large" length="long" v="2" style="text-align:center;">Connect With Facebook</fb:login-button>
 		<div id="fb-root"></div>
 	<?php endif ?>
 </div>
