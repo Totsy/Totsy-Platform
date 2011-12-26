@@ -26,7 +26,7 @@
 	<div style="float:right">
 	<?php echo $this->form->text('email', array('class' => 'inputbox', 'style' => 'width:190px')); ?>
 	</div>
-	<?=$this->form->error('email'); ?>
+	<?php echo $this->form->error('email'); ?>
 
 	<div class="clear"></div>
 	<div style="width:70px; float:left">
@@ -40,8 +40,8 @@
 	<div style="float:right">
 		<?php echo $this->form->text('confirmemail', array('class' => 'inputbox', 'style' => 'width:190px')); ?>
 	</div>
-	<?=$this->form->error('confirmemail'); ?>
-	<?=$this->form->error('emailcheck'); ?>
+	<?php echo $this->form->error('confirmemail'); ?>
+	<?php echo $this->form->error('emailcheck'); ?>
 
 	<div class="clear"></div>
 
@@ -73,12 +73,12 @@
 	<div class="clear"></div>
 	<div style="font-size:11px;margin-top:10px; color:#999999;">
 		By joining you accept our
-		<?=$this->html->link('terms and conditions','pages/terms');?>.
+		<?php echo $this->html->link('terms and conditions','pages/terms');?>.
 	</div>
 
 	<input class="button fr" type="button" value="Join Now" onclick="return setIframe();" style="width:100px; height 28px; font-weight:important;">
 
-	<?=$this->form->error('terms'); ?>
+	<?php echo $this->form->error('terms'); ?>
 
 
 <?php echo $this->form->end(); ?>
