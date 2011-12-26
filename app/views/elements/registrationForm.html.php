@@ -73,7 +73,7 @@
 	<div class="clear"></div>
 	<div style="font-size:11px;margin-top:10px; color:#999999;">
 		By joining you accept our
-		<?=$this->html->link('terms and conditions','pages/terms');?>.
+		<?php echo $this->html->link('terms and conditions','pages/terms');?>.
 	</div>
 
 	<input class="button fr" type="button" value="Join Now" onclick="return setIframe();" style="width:100px; height 28px; font-weight:important;">
