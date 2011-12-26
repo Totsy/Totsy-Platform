@@ -103,6 +103,43 @@
 			<?php
 			}
 			?>
+			
+			<!-- STATIC CONTENT PENDING RETURN OF DATA -->
+			
+				<div class="item">
+					<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
+					<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
+					<p>$16.75</p>
+				</div>			
+				<div class="item">
+					<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
+					<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
+					<p>$16.75</p>
+				</div>			
+				<div class="item">
+					<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
+					<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
+					<p>$16.75</p>
+				</div>			
+				<div class="item">
+					<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
+					<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
+					<p>$16.75</p>
+				</div>			
+				<div class="item">
+					<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
+					<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
+					<p>$16.75</p>
+				</div>			
+				<div class="item">
+					<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
+					<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
+					<p>$16.75</p>
+				</div>			
+			
+			<!-- /END STATIC -->
+			
+			
 				<div class="btn viewAllEvents">
 					<?php
 						echo $this->html->link(
@@ -116,6 +153,7 @@
 					?>
 				</div>
 			</div><!-- /.items -->
+			<p>View all items from <?php echo $this->html->link($event->name, 'sale/'.$event->url, array('escape'=> false) );?></p>
 		</div><!-- /.event -->
 		<?php $x++; ?>
 		<?php endforeach ?>
