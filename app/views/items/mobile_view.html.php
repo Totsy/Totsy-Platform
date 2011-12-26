@@ -120,7 +120,6 @@
 		</div>
 
 				<p></p>
-<form id="callAjaxForm">
 
 <?php if (!empty($sizes)): ?>
 				<?php if ( !((string)strtolower($sizes[0]) ==='no size')): ?>
@@ -137,9 +136,7 @@
 			<?php if ($item->total_quantity >= 1): ?>
 					
 				<input type="button" value="Add to Cart" id="add-to-cart" class="button">
-				</form>
-				
-				
+													
 				<div id="all-reserved"></div>
 				
 				

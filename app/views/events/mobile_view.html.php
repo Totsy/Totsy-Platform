@@ -114,9 +114,9 @@ $(function () {
 });
 function filter() {
 	var filter = $('#filterby').val();
-	_gaq.push(['_setAccount', 'UA-675412-15']);
-	_gaq.push(['_trackPageview']);
-	_gaq.push(['_trackEvent', 'departments', 'dropdown', filter]);
+//	_gaq.push(['_setAccount', 'UA-675412-15']);
+//	_gaq.push(['_trackPageview']);
+//	_gaq.push(['_trackEvent', 'departments', 'dropdown', filter]);
 	$('#filterform').submit();
 };
 </script>

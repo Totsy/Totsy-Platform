@@ -9,7 +9,7 @@
 	
 	<meta name="description"
 	content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
-		<meta name="viewport" content="width=device-width,user-scalable=no" />
+	<meta id="view-lock" name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	
 	<link rel="stylesheet" href="/totsyMobile/themes/totsy.css">
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile.structure-1.0rc2.min.css" /> 

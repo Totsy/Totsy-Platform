@@ -47,7 +47,7 @@ class UsersController extends BaseController {
 	 * @return string User will be promoted that email is already registered.
 	 */
 	public function register($invite_code = null, $affiliate_user_id = null) {
-
+	
 		$parsedURI = parse_url($this->request->env("REQUEST_URI"));
 		$currentURI = $parsedURI['path'];
 
@@ -57,7 +57,7 @@ class UsersController extends BaseController {
 		    $URIArray = explode("/", $currentURI);
 		    $eventName = $URIArray[2];
 		}
-
+		
 		if ($eventName) {
            //write event name to the session
            Session::write( "eventFromEmailClick", $eventName, array("name"=>"default"));
@@ -67,11 +67,15 @@ class UsersController extends BaseController {
        if ($this->request->query["gotologin"]=="true") {
            $this->redirect("/login");
        }
+	
+		//print_r($fbsession);
+		//exit();
 
 		$this->_render['layout'] = 'login';
 		$message = false;
-		$data = $this->request->data;
+		$data = $this->request->data;		
 		$this->autoLogin();
+		
 		/*
 		* redirects to the affiliate registration page if the left the page
 		* and then decided to register afterwards.
@@ -238,8 +242,10 @@ class UsersController extends BaseController {
 	 * @return string The user is prompted with a message if authentication failed.
 	 */
 	public function login() {
+	
 		$message = $resetAuth = $legacyAuth = $nativeAuth = false;
 		$rememberHash = '';
+		
 
 		//redirect to the right email if the user is coming from an email
 		//the session writes this variable on the register() method
@@ -335,7 +341,9 @@ class UsersController extends BaseController {
 		$redirect = '/sales';
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
+		
 		$result = static::facebookLogin(null, $cookie, $ipaddress);
+		
 		extract($result);
 
 		$fbCancelFlag = false;
@@ -351,9 +359,9 @@ class UsersController extends BaseController {
 					return $this->redirect('/register/facebook');
 				}
 			}
-		}
+		}		
 
-		if(preg_match( '@[(/|login|register)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
+		if(preg_match( '@^[(/|login|register)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
 				'conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
 			if($user) {
@@ -383,7 +391,9 @@ class UsersController extends BaseController {
 	/**
 	 * Performs the logout action of the user removing '_id' from session details.
 	 */
+
 	public function logout() {
+
 		$loginInfo = Session::read('userLogin');
 		$user = User::collection();
 		$user->update(
@@ -392,11 +402,13 @@ class UsersController extends BaseController {
 			);
 		$success = Session::delete('userLogin');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-		unset($cookie['autoLoginHash']);
+		
+		unset($cookie['autoLoginHash']);	
+				
 		User::cleanSession();
 		Session::delete('cookieCrumb', array('name' => 'cookie'));
-		$cookieSuccess = Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
-		FacebookProxy::setSession(null);
+		$cookieSuccess = Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));		
+				
 		return $this->redirect(array('action' => 'login'));
 	}
 	/**
@@ -418,22 +430,32 @@ class UsersController extends BaseController {
 	 * @return array
 	 */
 	public function info() {
+	
 		$status = 'default';
 		$user = User::getUser();
+		
+		
 		$linked = (empty($user->facebook_info) ? false : true);
 		$connected = false;
 		if ($linked) {
 			$userId = $user->facebook_info->id;
 			$connected = true;
 			try {
+			
 				$accessToken = FacebookProxy::getAccessToken();
+				
 				$authCheck = FacebookProxy::api("/$userId?access_token=$accessToken");
 				$connected = (!empty($authCheck['email'])) ? true : false;
 			} catch (\Exception $e) {
 				$connected = false;
 			}
 		}
-		$fbsession = FacebookProxy::getSession();
+
+		
+		if(FacebookProxy::getUser()){
+			$fbsession = FacebookProxy::getUser();
+		}
+		
 		if ($fbsession && $linked == false) {
 			try {
 				$userfb = FacebookProxy::api('/me');
@@ -705,40 +727,53 @@ class UsersController extends BaseController {
 	 * @see Affiliates::register()
 	 * @see FacebookProxy::api()
 	 */
+
 	public static function facebookLogin($affiliate = null, $cookie = null, $ipaddress = null) {
 		$self = static::_object();
 
 		//If the users already exists in the database
 		$success = false;
 		$userfb = array();
+	
 		if ($self->fbsession) {
 			$userfb = FacebookProxy::api('/me');
-
+			
 			$user = User::find('first', array(
 				'conditions' => array(
 					'$or' => array(
 						array('email' => strtolower($userfb['email'])),
 						array('facebook_info.id' => $userfb['id'])
 			))));
+							
 			if ($user) {
-				$user->facebook_info = $userfb;
-				$user->save(null, array('validate' => false));
-				$sessionWrite = $self->writeSession($user->data());
-				Affiliate::linkshareCheck($user->_id, $affiliate, $cookie);
-				User::log($ipaddress);
-				$landing = null;
-				if (Session::check('landing')){
-					$landing = Session::read('landing');
-				}
-				if (!empty($landing)){
-					Session::delete('landing',array('name'=>'default'));
-					return $self->redirect($landing, array('exit' => true));
-					unset($landing);
-				} else {
-				    return $self->redirect("/sales", array('exit' => true));
-				}
+			
+			$userfb = FacebookProxy::api('/me');		
+			$user->facebook_info = $userfb;
+			$user->save(null, array('validate' => false));
+				
+			$sessionWrite = $self->writeSession($user->data());
+				
+			Affiliate::linkshareCheck($user->_id, $affiliate, $cookie);
+				
+			User::log($ipaddress);
+				
+			$landing = null;
+				
+			if (Session::check('landing')){
+				$landing = Session::read('landing');
+			}
+								
+			if (!empty($landing)) {
+			    Session::delete('landing',array('name'=>'default'));
+			    $self->redirect($landing, array('exit' => true));
+			    unset($landing);
+			} else {
+			    $self->redirect("/sales", array('exit' => true));
+			}
+				
 			}
 		}
+		
 		return compact('success', 'userfb');
 	}
 

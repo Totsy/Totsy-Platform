@@ -15,20 +15,13 @@
 
 <h2>My Invitations <span class="fr" style="font-size:12px; margin-top:-10px;">Share this link with your friends: <br><span style="word-wrap:break-word;"><strong><a href="<?php echo $invite?>" title="Your Invite Link"><?php echo $invite?></a></strong></span></span></h2>
 	<hr />
-		<div id="tabs">
-			<?php if (!empty($flashMessage)): ?>
-				<div class='standard-message'><strong><?php echo $flashMessage?></strong></div>
-				<br>
-			<?php endif ?>
-			<ul>
-				<li><a href="#sendinvites"><span>Send</span></a></li>
-			    <li><a href="#openinvites"><span>Open Invitations</span></a></li>
-			    <li><a href="#acceptedinvites"><span>Accepted</span></a></li>
-			    
-			</ul>
-			<!-- Start Open Invitations Tab -->
-			<div id="sendinvites" class="ui-tabs-hide">
-				<div class="grid_6">
+	<?php if (!empty($flashMessage)): ?>
+		<div class='standard-message'><strong><?php echo $flashMessage?></strong></div>
+		<br>
+	<?php endif ?>
+	<div data-role="collapsible-set" data-theme="c" data-content-theme="d">
+				<div data-role="collapsible">
+					<h3>Send Invitations, Get $15.00 in Totsy Credit</h3>
 					<h2 class="gray mar-b">Send Invitations</h2>
 					<hr />
 					<p>For each friend you invite, Totsy will credit your account with <span style="color:#009900;">$15</span> after your friend's place their first order.</p>
@@ -57,91 +50,83 @@
 								<?php echo $this->form->submit('Send Invitations', array('class' => 'button fr')); ?>
 							<?php echo $this->form->end(); ?>
 							<br><br><br>
+							<h2 class="gray clear mar-b">Invite friends from your address book</h2>
+													<hr />
+													<a href="#" title="Invite friends from your Gmail contacts" id="invite-gmail" class="invite-btn fl cs_import">Gmail</a>
+													<a href="#" title="Invite friends from your Yahoo! contacts" id="invite-yahoo" class="invite-btn fr cs_import">Yahoo!</a>
+							
+													<a href="#" title="Invite friends from your Outlook address book" id="invite-outlook" class="invite-btn fl cs_import">Outlook</a>
+													<a href="#" title="Invite friends from your AOL contacts" id="invite-aol" class="invite-btn fr cs_import">AOL</a>
+							
+													<a href="#" title="Invite friends from your MSN address book" id="invite-msn" class="invite-btn fl cs_import">MSN</a>
+													<a href="#" title="Invite friends" id="invite-others" class="invite-btn fr cs_import">Others</a>
 							
 							
 						</fieldset>
 				</div>
-				<div class="grid_5">
-
-						<h2 class="gray clear mar-b">Invite friends from your address book</h2>
-						<hr />
-						<a href="#" title="Invite friends from your Gmail contacts" id="invite-gmail" class="invite-btn fl cs_import">Gmail</a>
-						<a href="#" title="Invite friends from your Yahoo! contacts" id="invite-yahoo" class="invite-btn fr cs_import">Yahoo!</a>
-
-						<a href="#" title="Invite friends from your Outlook address book" id="invite-outlook" class="invite-btn fl cs_import">Outlook</a>
-						<a href="#" title="Invite friends from your AOL contacts" id="invite-aol" class="invite-btn fr cs_import">AOL</a>
-
-						<a href="#" title="Invite friends from your MSN address book" id="invite-msn" class="invite-btn fl cs_import">MSN</a>
-						<a href="#" title="Invite friends" id="invite-others" class="invite-btn fr cs_import">Others</a>
-
+				<div data-role="collapsible">
+					<h3>Open Invitations</h3>
+					<?php if (!empty($open)): ?>
+						<table cellpadding="0" cellspacing="0" border="0" width="100%" class="order-table">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>E-Mail</th>
+									<th>Date Sent</th>
+								</tr>
+							</thead>
+						<?php $x = 1;?>
+						<?php $y = 0;?>
+							<tbody>
+								<?php // $invites = $open->data() ?>
+						<?php foreach ($open as $invite): ?>
+								<tr class="alt<?php echo ( ($y++ % 2) == 1 ? 0 : 1); ?>">
+									<td><?php echo $x?></td>
+									<td><?php echo $invite->email; ?></td>
+									<td><?php echo date('M-d-Y', $invite->date_sent->sec); ?></td>
+								</tr>
+							<?php $x++ ?>
+						<?php endforeach ?>
+							</tbody>
+						</table>
+					<?php else: ?>
+						<strong>This feature is being migrated to the new site.</strong><br />
+						We'll have your invitation data loaded soon.
+					<?php endif ?>
+	
+	
 				</div>
-
+				<div data-role="collapsible">
+					<h3>Accepted Invitations</h3>
+					<?php if (!empty($accepted)): ?>
+					<span style="font-size:11px;">($15.00 credit will be applied for each friend making their 1st purchase)</span>
+						<table cellpadding="0" cellspacing="0" border="0" width="100%" class="order-table">
+							<thead>
+								<tr>
+									<th width="8%">#</th>
+									<th width="85%">Invitations</th>
+									<th width="7%">Status</th>
+					          </tr>
+							</thead>
+						<?php $x = 1;?>
+						<?php $y = 0;?>
+							<tbody>
+						<?php foreach ($accepted as $invite): ?>
+								<tr class="alt<?php echo ( ($y++ % 2) == 1 ? 0 : 1); ?>">
+									<td nowrap="nowrap"><?php echo $x?></td>
+								  <td nowrap="nowrap"><?php echo $invite->email; ?></td>
+									<td nowrap="nowrap"><span style="color:#090; font-size:12px; font-weight:bold; float:right;">Accepted!</span></td>
+								</tr>
+							<?php $x++ ?>
+						<?php endforeach ?>
+							</tbody>
+						</table>
+					<?php else: ?>
+						<strong>This feature is being migrated to the new site.</strong><br>
+						We have your invitation history and will have it loaded soon.
+					<?php endif ?>
+				</div>
 			</div>
-			<!-- End Send Invitations Tab -->
-
-			<!-- Start Open Invitations Tab -->
-			<div id="openinvites" class="ui-tabs-hide">
-				<?php if (!empty($open)): ?>
-					<table cellpadding="0" cellspacing="0" border="0" width="100%" class="order-table">
-						<thead>
-							<tr>
-								<th>#</th>
-								<th>E-Mail</th>
-								<th>Date Sent</th>
-							</tr>
-						</thead>
-					<?php $x = 1;?>
-					<?php $y = 0;?>
-						<tbody>
-							<?php // $invites = $open->data() ?>
-					<?php foreach ($open as $invite): ?>
-							<tr class="alt<?php echo ( ($y++ % 2) == 1 ? 0 : 1); ?>">
-								<td><?php echo $x?></td>
-								<td><?php echo $invite->email; ?></td>
-								<td><?php echo date('M-d-Y', $invite->date_sent->sec); ?></td>
-							</tr>
-						<?php $x++ ?>
-					<?php endforeach ?>
-						</tbody>
-					</table>
-				<?php else: ?>
-					<strong>This feature is being migrated to the new site.</strong><br />
-					We'll have your invitation data loaded soon.
-				<?php endif ?>
-			</div>
-			<!-- End Open Invitations Tab -->
-
-			<!-- Start Accepted Invitations Tab -->
-			<div id="acceptedinvites" class="ui-tabs-hide">
-				<?php if (!empty($accepted)): ?>
-                <span style="font-size:11px;">($15.00 credit will be applied for each friend making their 1st purchase)</span>
-					<table cellpadding="0" cellspacing="0" border="0" width="100%" class="order-table">
-						<thead>
-							<tr>
-								<th width="8%">#</th>
-								<th width="85%">Invitations</th>
-								<th width="7%">Status</th>
-				          </tr>
-						</thead>
-					<?php $x = 1;?>
-					<?php $y = 0;?>
-						<tbody>
-					<?php foreach ($accepted as $invite): ?>
-							<tr class="alt<?php echo ( ($y++ % 2) == 1 ? 0 : 1); ?>">
-								<td nowrap="nowrap"><?php echo $x?></td>
-							  <td nowrap="nowrap"><?php echo $invite->email; ?></td>
-								<td nowrap="nowrap"><span style="color:#090; font-size:12px; font-weight:bold; float:right;">Accepted!</span></td>
-							</tr>
-						<?php $x++ ?>
-					<?php endforeach ?>
-						</tbody>
-					</table>
-				<?php else: ?>
-					<strong>This feature is being migrated to the new site.</strong><br>
-					We have your invitation history and will have it loaded soon.
-				<?php endif ?>
-			</div>
-			<!-- End Accepted Invitations Tab -->
 
 
 <script type="text/javascript" charset="utf-8">

@@ -3,7 +3,6 @@
 <!-- JS for cart timer for individual items. -->
 <script type="text/javascript" src="/js/cart-items-timer.js"></script>
 <script type="text/javascript" src="/js/tipsy/src/javascripts/jquery.tipsy.js"></script>
-<link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
 
 <script type="text/javascript">	
 
@@ -29,10 +28,7 @@ var discountErrors = new Object();
 	cartTimer(cartExpires);
 	//set the timer on individual cart items
 	cartItemsTimer();
-	//applying tooltip
-	$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
-	$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
-	$('#promocode_tooltip').tipsy({gravity: 'nw'}); // nw | n | ne | w | e | sw | s | se
+
 	
 });
 			
@@ -191,9 +187,7 @@ var discountErrors = new Object();
 			
 				<div class="subtotal">
 					<?php if (!empty($shipping)):?>
-						<span id="shipping_tooltip" class="cart-tooltip" original-title="Shipping charges may vary depending on item type.">
-							<img src="/img/tooltip_icon.png">
-						</span>
+			
 						<span style="float:left;" id="shipping">
 				    		Shipping:
 				    	</span>
@@ -217,8 +211,7 @@ var discountErrors = new Object();
 				<div style="clear:both"></div>
 		
 				<div class="subtotal">
-				    <span id="tax_tooltip" class="cart-tooltip" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary"><img src="/img/tooltip_icon.png">
-</span>
+				  
 					<span id="estimated_tax" style="float:left;">Sales Tax:</span>
 				    <span style="float:right">$0.00</span>
 				</div>

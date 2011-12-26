@@ -137,7 +137,9 @@ var addressForm = new Object();
 		<?php echo $this->form->error('city'); ?>
 		<div style="clear:both"></div>
 		<?php echo $this->form->label('state', 'State <span>*</span>', array('escape' => false,'class' => 'required')); ?>
-		<?php echo $this->form->select('state', Address::$states, array('empty' => 'Select a state', 'class' => 'validate[required] inputbox','id'=>'state', 'style'=>'width:auto !important')); ?>
+		
+		
+		<?php echo $this->form->select('state', Address::$states, array('empty' => 'Select a state', 'class' => 'validate[required]', 'data-placeholder' => 'true', 'data-native-menu' => 'false', 'id'=>'state')); ?>
 		<?php echo $this->form->error('state'); ?>
 		<span class="cart-select">
 		<?php echo $this->form->label('zip', 'Zip Code<span>*</span>', array('escape' => false,'class' => 'required')); ?>

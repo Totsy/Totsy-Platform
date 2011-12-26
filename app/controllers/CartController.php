@@ -256,9 +256,12 @@ class CartController extends BaseController {
 				}
 			}
 		}
+		if(!$this->request->is('mobile')){
 		//call the cart popup
 		$this->getCartPopupData();
+		}
 	}
+	
 
 	/**
 	* Method for sending all required cart data to Ajax driven cart popup.

@@ -312,7 +312,7 @@ var discountErrors = new Object();
             $('#modal').dialog('open');
         }
     });
-</script>;
+</script>
 <?php } ?>
 
 </div>

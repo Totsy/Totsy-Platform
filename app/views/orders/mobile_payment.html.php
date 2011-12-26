@@ -133,7 +133,7 @@ var paymentForm = new Object();
 				<?php echo $this->form->error('cc_error'); ?>
 				<?php echo $this->form->hidden('opt_submitted', array('class'=>'inputbox', 'id' => 'opt_submitted')); ?>
 				<?php echo $this->form->label('card_type', 'Card Type', array('escape' => false,'class' => 'required')); ?>
-				<?php echo $this->form->select('card_type', array('visa' => 'Visa', 'mc' => 'MasterCard','amex' => 'American Express'), array('id' => 'card_type', 'class'=>'inputbox')); ?>
+				<?php echo $this->form->select('card_type', array('visa' => 'Visa', 'mc' => 'MasterCard','amex' => 'American Express'), array('id' => 'card_type', 'class'=>'inputbox', 'data-placeholder' => 'true', 'data-native-menu' => 'false')); ?>
 				</span>
 				
 				<?php echo $this->form->label('card_number', 'Card Number', array('escape' => false,'class' => 'required')); ?>
@@ -160,13 +160,13 @@ var paymentForm = new Object();
 										10 => 'October',
 										11 => 'November',
 										12 => 'December'
-				), array('id'=>"card_month", 'class'=>'validate[required] inputbox')); ?>
+				), array('id'=>"card_month", 'class'=>'validate[required] inputbox', 'data-placeholder' => 'true', 'data-native-menu' => 'false')); ?>
 				
 			
 				<?php
 					$now = intval(date('Y'));
 					$years = array_combine(range($now, $now + 15), range($now, $now + 15)); ?>
-				<?php echo $this->form->select('card_year', array('' => 'Year') + $years, array('id' => "card_year", 'class'=>'validate[required inputbox')); ?>
+				<?php echo $this->form->select('card_year', array('' => 'Year') + $years, array('id' => "card_year", 'class'=>'validate[required inputbox', 'data-placeholder' => 'true', 'data-native-menu' => 'false')); ?>
 			
 				<?php echo $this->form->label('card_code', 'Security Code', array('escape' => false,'class' => 'required')); ?>
 				<?php echo $this->form->text('card_code', array('id' => 'card_code','class'=>'validate[required] inputbox', 'maxlength' => '4', 'size' => '4')); ?>
@@ -200,8 +200,8 @@ var paymentForm = new Object();
 				<?php echo $this->form->text('address', array('class' => 'validate[required] inputbox', 'id'=>'address')); ?>
 				<?php echo $this->form->error('address'); ?>
 				<div style="clear:both"></div>
-				<?php echo $this->form->label('address2', 'Street Address 2', array('escape' => false,'class' => 'required')); ?>
-				<?php echo $this->form->text('address2', array('class' => 'inputbox', 'id'=>'address2')); ?>
+				<?php echo $this->form->label('address_2', 'Street Address 2', array('escape' => false,'class' => 'required')); ?>
+				<?php echo $this->form->text('address_2', array('class' => 'inputbox', 'id'=>'address_2')); ?>
 				<div style="clear:both"></div>
 				<?php echo $this->form->label('city', 'City <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?php echo $this->form->text('city', array('class' => 'validate[required] inputbox', 'id'=>'city')); ?>
@@ -209,23 +209,25 @@ var paymentForm = new Object();
 				<div style="clear:both"></div>
 				<span style="padding-left:2px">
 				<label for="state" class='required'>State <span>*</span></label>
-				<?php echo $this->form->select('state', Address::$states, array('empty' => 'Select a state', 'id'=>'state','class' => 'validate[required] inputbox')); ?>
+				<?php echo $this->form->select('state', Address::$states, array('empty' => 'Select a state', 'id'=>'state','class' => 'validate[required] inputbox', 'data-placeholder' => 'true', 'data-native-menu' => 'false')); ?>
 				<?php echo $this->form->error('state'); ?>
 				</span>
 				<div style="clear:both; padding-top:5px"></div>
 				<?php echo $this->form->label('zip', 'Zip Code <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?php echo $this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
 				<div style="clear:both"></div>
-				<div>
-					<?php echo $this->form->checkbox("opt_save", array('id' => 'opt_save', 'data-role' => 'none')) ?> <label for="opt_save"><span style="font-size:12px;">Save this address</span></label>
-				</div>
+				
+				<h3><span style="font-size:12px;"><?php echo $this->form->checkbox("opt_save", array('id' => 'opt_save', 'class' => 'custom' , 'data-role' => 'none', "checked" => $checked)) ?>
+				<label for="opt_shipping"> Save this address</label></span></h3>
+				<hr />
+				
+				
 				<?php echo $this->form->hidden('opt_description', array('id' => 'opt_description' , 'value' => 'billing')); ?>
 				<?php echo $this->form->hidden('opt_shipping_select', array('id' => 'opt_shipping_select')); ?>
-				</div>
+				
 
-			<div class="grid_16">
 				<a href="javascript:document.getElementById('paymentForm').submit();" data-role="button">Continue</a>
-			</div>
+		
 <?php echo $this->form->end();?>
 
 <?php else: ?>

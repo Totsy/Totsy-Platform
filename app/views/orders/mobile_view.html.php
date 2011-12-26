@@ -10,37 +10,39 @@
 	
 
 							<div>
+							<div class="holiday_message">
+							
+							<?php if (!empty($orderEvents[$key]['ship_message'])): ?>
+								
+									<?php echo $orderEvents[$key]['ship_message']?>
+							
+							<?php endif ?>
+								Estimated Ship Date:
+								<?php if (!empty($orderEvents[$key]['ship_date'])): ?>
+									<?
+									//echo date('M d, Y', strtotime($orderEvents[$key]['ship_date']));
+									echo $orderEvents[$key]['ship_date']
+								?>
+									
+								<?php else: ?>
+									 <?php echo $shipDate; ?>
+								<?php endif ?></div>
 								<?php foreach ($itemsByEvent as $key => $event): ?>
 									<?php if(!empty($openEvent[$orderEvents[$key]['_id']])): ?>
 									
-										<div class="holiday_message"><?php if (!empty($orderEvents[$key]['ship_message'])): ?>
-											
-												<?php echo $orderEvents[$key]['ship_message']?>
 										
-										<?php endif ?>
-											Estimated Ship Date:
-											<?php if (!empty($orderEvents[$key]['ship_date'])): ?>
-												<?
-												//echo date('M d, Y', strtotime($orderEvents[$key]['ship_date']));
-												echo $orderEvents[$key]['ship_date']
-											?>
-												
-											<?php else: ?>
-												 <?php echo $shipDate; ?>
-											<?php endif ?></div>
 										<?php foreach ($event as $item): ?>
 											<?php if(empty($item['cancel'])): ?>
 												
-												
 											
-											<?php echo $orderEvents[$key]['name']?><br />
+											<br />
+											<strong><?php echo $orderEvents[$key]['name']?></strong><br />
 											
 														<?php echo $item['description']?>
 														<br />
 														Color: <?php echo $item['color']?>
 														<br />
 														Size: <?php echo $item['size']?>
-														<br />
 														
 														<?php 
 														$convertdate = date("Y-m-d h:i:s", 1322071200);
@@ -49,13 +51,13 @@
 														if($order->date_created->sec>1322006400){
 															
 														}
-														?>
+														?><br />
 														
-														$<?php echo number_format($item['sale_retail'],2); ?>
+														Price: $<?php echo number_format($item['sale_retail'],2); ?><br />
 														
-														<?php echo $item['quantity']?>
+														Quantity: <?php echo $item['quantity']?><br />
 														
-														$<?php echo number_format(($item['quantity'] * $item['sale_retail']),2)?>
+														Total Price: $<?php echo number_format(($item['quantity'] * $item['sale_retail']),2)?><br />
 											
 											<?php endif ?>
 										<?php endforeach ?>
@@ -64,7 +66,6 @@
 <hr />	
 
 	<div class="clear"></div>
-	<div class="grid_3">
 		<strong>Shipping Address</strong>
 		<hr />
 		<?php echo $order->shipping->firstname;?> <?php echo $order->shipping->lastname;?>							
@@ -74,14 +75,10 @@
 		<?php echo $order->shipping->city; ?>, <?php echo $order->shipping->state; ?><?php echo $order->shipping->zip; ?>
 		<br />
 		<hr />	
-	</div>
-	<div class="grid_3">
 		<strong>Payment Method</strong>
 		<hr />
 		<?php echo strtoupper($order->card_type)?> XXXX-XXXX-XXXX-<?php echo $order->card_number?>
 		
-	</div>
-	<div class="grid_5">
 		<strong>Order Information</strong>
 		<hr />
 		Order Subtotal: <span class="fr">$<?php echo number_format($order->subTotal,2); ?></span>
@@ -112,11 +109,9 @@
 	<div class="clear"></div>
 	<br />
 	<hr/>
-	<div class="grid_11">
 		<p style="text-align: center; font-size:12px; margin-top:10px;" class="holiday_message">Thank you for shopping on Totsy.com!</p>
-	</div>	
-<div class="clear"></div>
-</div>
+		
+
 <div class="holiday_message">
 		<p>A tree was planted with your first order. It is watered with every additional order so it can grow big and strong to help our earth!<br>
 			<strong style="color:#E00000;font-weight:normal"></strong><br />
