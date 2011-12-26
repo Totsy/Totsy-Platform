@@ -752,6 +752,7 @@ li.item5 a:hover,li.item5.over a,li.active.item5 a {
 }
 
 h2.page-title {
+	margin:0 0 20px 5px;
 	font-weight:normal;
 	font-size:20px;
 }
