@@ -145,10 +145,24 @@ class EventsController extends BaseController {
 				$openEvents = $events_closed;
 			}
 		}
+		
+	if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_index';
+		} else {
+		
+		}
+	
 		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner', 'departments');
 	}
 
 	public function view() {
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_view';
+		} else {
+		
+		}
 		$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 		$url = $this->request->event;
 
