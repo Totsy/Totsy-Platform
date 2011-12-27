@@ -519,7 +519,9 @@ class EventsController extends BaseController {
 			'vendor',
 			'vendor_style',
 			'age',
+			'ages',
 			'departments',
+			'categories',
 			'category',
 			'sub_category',
 			'description',
@@ -561,6 +563,18 @@ class EventsController extends BaseController {
 							if (!empty($val)&&strlen($val)>1) {
 								$eventItems[$row - 1]['departments'][] = ucfirst(strtolower(trim($val)));
 								$eventItems[$row - 1]['departments'] = array_unique($eventItems[$row - 1]['departments']);
+							}
+						} else if(strstr($heading[$col], "age_")) {
+							if (!empty($val)&&strlen($val)>1) {
+								$eventItems[$row - 1]['age'] = ucfirst(strtolower(trim($val)));
+								$eventItems[$row - 1]['ages'][] = ucfirst(strtolower(trim($val)));
+								$eventItems[$row - 1]['ages'] = array_unique($eventItems[$row - 1]['ages']);
+							}
+						} else if(strstr($heading[$col], "category_")) {
+							if (!empty($val)&&strlen($val)>1) {
+								$eventItems[$row - 1]['category'] = ucfirst(strtolower(trim($val)));
+								$eventItems[$row - 1]['categories'][] = ucfirst(strtolower(trim($val)));
+								$eventItems[$row - 1]['categories'] = array_unique($eventItems[$row - 1]['categories']);
 							}
 						} else if (($heading[$col] === "related_1") || ($heading[$col] === "related_2") || ($heading[$col] === "related_3") || ($heading[$col] === "related_4") || ($heading[$col] === "related_5")) {
 							if (!empty($val)) {

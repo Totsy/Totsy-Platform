@@ -25,10 +25,10 @@ class Item extends Base {
 			$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'departments' => array('$in' => array($departments))), array('event' => 1));
 		}
 		elseif(!empty($categories)){
-			$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'category' => array('$in' => array($categories))), array('event' => 1));
+			$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'categories' => array('$in' => array($categories))), array('event' => 1));
 		}
 		elseif(!empty($ages)){
-			$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'age' => array('$in' => array($ages))), array('event' => 1));
+			$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'ages' => array('$in' => array($ages))), array('event' => 1));
 		}
 
 		return $items;
