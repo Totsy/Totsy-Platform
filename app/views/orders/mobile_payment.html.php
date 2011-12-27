@@ -145,7 +145,7 @@ var paymentForm = new Object();
 				</div>
 				<div style="clear:both"></div>
 				
-				<?php echo $this->form->label('card_month', 'Expiration Date', array('escape' => false,'class' => 'required')); ?>
+				<?php echo $this->form->label('card_month', 'Exp Date', array('escape' => false,'class' => 'required')); ?>
 				<?php echo $this->form->select('card_month', array(
 										'' => 'Month',
 										1 => 'January',

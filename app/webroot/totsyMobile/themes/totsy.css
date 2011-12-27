@@ -22,6 +22,23 @@
 .fl {
 	float: left;
 }
+.subtotal{
+	padding:0px;
+	font-weight:bold;
+}
+
+.cart-order-total{
+font-size:15px;
+}
+
+#ordertotal{
+color:#009900; 
+}
+
+.cart-savings{
+	//color:#ff6d1d; 
+	text-align: center;
+}
 input[disabled='disabled'] {
   background-color:#222;
   opacity:.7;
