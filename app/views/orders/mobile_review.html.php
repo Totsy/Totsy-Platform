@@ -108,7 +108,8 @@ var discountErrors = new Object();
 <div class="message"></div>
 
 <?php if (!empty($subTotal)): ?>
-
+<strong>Your Items</strong>
+<hr />
 <?php echo $this->form->create(null ,array('id'=>'cartForm')); ?>
 	<div id='message'><?php echo $message; ?></div>
 		<table class="cart-table">
@@ -120,9 +121,6 @@ var discountErrors = new Object();
 
 
 	<div class="clear"></div>
-<br />
-<strong>Your Items</strong>
-<hr />
 				<!-- Build Product Row -->
 				<tr id="<?php echo $item->_id?>" style="<?php echo $classadd?>">
 
