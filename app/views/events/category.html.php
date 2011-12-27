@@ -26,32 +26,26 @@
 		<?php $x = 0; ?>
 		<?php foreach ($openEvents as $event): ?>
 		
-<!--
-		<pre>
-			<?php print_r($event->data()); ?>
-		</pre>
--->
-		
 		<div class="event grid-x">
 			<div class="eventDetails group">
-				<h3><?php echo $event->name; ?> <em id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $event->end_date->sec * 1000; ?>" class="counter end"></em><!-- @TODO - use data-attribute instead of title… better, use a date/time element instead of an em --></h3>
+				<h3><?php echo $event['name']; ?> <em id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $event['end_date']->sec * 1000; ?>" class="counter end"></em><!-- @TODO - use data-attribute instead of title… better, use a date/time element instead of an em --></h3>
 				<div>
 					<?php
 					
 					// store event image
-						if(!empty($event->images->event_image)) {
-							$eventImage = "/image/{$event->images->event_image}.jpg";
+						if(!empty($event['images']['event_image'])) {
+							$eventImage = "/image/{$event['images']['event_image']}.jpg";
 						}
 						else {
 							$eventImage = "img/no-image-small.jpeg";
 						}
 	
 					// build link and image
-						$url = $event->url;
+						$url = $event['url'];
 						echo $this->html->link(
 							$this->html->image("$eventImage", array(
-								'title' => $event->name,
-								'alt' => $event->name,
+								'title' => $event['name'],
+								'alt' => $event['name'],
 								'width' => '126',
 								'height' => '81'
 							)), "sale/$url", array('escape'=> false)
@@ -64,7 +58,7 @@
 			<div class="items group">
 			<?php
 			//print_r($event->eventItems);
-			$items = $event->eventItems;
+			$items = $event['eventItems'];
 			
 			foreach($items as $item){ ?>
 				<div class="item">
@@ -73,92 +67,10 @@
 						<h4><?php echo $item['description'];?></h4>
 						<p>$<?php echo $item['sale_retail'];?></p>
 					<a></a>
-			<?php	
-			/*
-				// this is the data available to me
-				// @ TODO: remove prior to production...
-				echo "<!--";
-				echo "<pre>";
-				print_r($item);
-				echo "</pre>";
-				echo "-->";
-			
-				echo "<br>";
-				echo "id is " . $item['_id'];
-				echo "<br>";
-			
-				echo "price is " . $item['sale_retail'];
-				echo "<br>";
-			
-				echo "title is  " . $item['description'];
-				echo "<br>";
-				
-				echo "url slug is  " . $item['url'];
-				echo "<br>";
-				echo "so full clickthru is /sale/" . $item['url'];
-				echo "<br>";
-				
-				
-				//var is just the jpg filename, hardcoded to www.totsy bc dev often doesnt have images
-				echo "http://www.totsy.com/image/" . $item['primary_image'] . ".jpg";
-				echo "<br>";
-				echo "<br>";
-				echo "<br>";
-			*/
-			?>
 				</div><!-- /.item -->
 			<?php
 			}
 			?>
-			
-			<!-- STATIC CONTENT PENDING RETURN OF DATA -->
-			
-				<div class="item">
-					<a href="#">
-						<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
-						<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
-						<p>$16.75</p>
-					</a>
-				</div>			
-				<div class="item">
-					<a href="#">
-						<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
-						<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
-						<p>$16.75</p>
-					</a>
-				</div>			
-				<div class="item">
-					<a href="#">
-						<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
-						<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
-						<p>$16.75</p>
-					</a>
-				</div>			
-				<div class="item">
-					<a href="#">
-						<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
-						<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
-						<p>$16.75</p>
-					</a>
-				</div>			
-				<div class="item">
-					<a href="#">
-						<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
-						<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
-						<p>$16.75</p>
-					</a>
-				</div>			
-				<div class="item">
-					<a href="#">
-						<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
-						<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
-						<p>$16.75</p>
-					</a>
-				</div>			
-			
-			<!-- /END STATIC -->
-			
-			
 				<div class="btn viewAllEvents">
 					<?php
 						echo $this->html->link(
@@ -172,7 +84,7 @@
 					?>
 				</div>
 			</div><!-- /.items -->
-			<p>View all items from <?php echo $this->html->link($event->name, 'sale/'.$event->url, array('escape'=> false) );?></p>
+			<p>View all items from <?php echo $this->html->link($event['name'], 'sale/'.$event['url'], array('escape'=> false) );?></p>
 		</div><!-- /.event -->
 		<?php $x++; ?>
 		<?php endforeach ?>

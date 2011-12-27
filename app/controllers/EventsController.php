@@ -18,10 +18,10 @@ class EventsController extends BaseController {
 		$categories = array();
 
 		if(empty($this->request->args[0])) {
-			$openEvents = Event::open();
+			$openEvents = Event::open()->data();
 		} else {
 			$categories = ucwords($this->request->args[0]);
-			$openEvents = Event::open(null,array(),null,$categories);
+			$openEvents = Event::open(null,array(),null,$categories)->data();
 		}
 
 		$itemCounts = array();
@@ -31,25 +31,16 @@ class EventsController extends BaseController {
 		$itemsCollection = Item::collection();
 
 		for($i=0; $i<$eventCount; $i++){
-			$eventId = (string)$openEvents[$i]->_id;
-
-			$items = $itemsCollection->find(array('event' =>  array($eventId)));
+			$eventId = (string)$openEvents[$i]['_id'];
 			
+			$items = $itemsCollection->find( array('event' =>  array($eventId)) )
+									  ->limit(6);		
 			
-			$i=0;
-			$limiteditems = array();
 			foreach($items as $eachitem){
-				if($i<6){
-					$limiteditems[] = $eachitem;
-				}
-				$i++;
+				$openEvents[$i]['eventItems'][] = $eachitem;
 			}
-
-			$openEvents[$i]->eventItems = $limiteditems;
-			//$openEvents[$i]->eventItems = $items;
 		}
 		
-
 		return compact('openEvents', 'items', 'categories');
 	}
 
