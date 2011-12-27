@@ -87,7 +87,10 @@ class ItemsController extends BaseController {
 			$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
 				array('product' => $_SERVER['REQUEST_URI']));
 		}
-
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_view';
+		}
 		return compact(
 			'item',
 			'event',
