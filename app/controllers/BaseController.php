@@ -47,15 +47,17 @@ class BaseController extends \lithium\action\Controller {
 		 * Setup all the necessary facebook stuff
 		 */
 		
-		if(!$this->fbsession){
-			$this->fbsession = $fbsession = FacebookProxy::getUser();		
-			$fbconfig = FacebookProxy::config();
-			
-			if ($this->fbsession && strlen(FacebookProxy::getUser())>0) {
-				$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
-			} else {
-				$fblogout = "/logout";
-			}
+		/**
+		 * Setup all the necessary facebook stuff
+		 */
+
+		$this->fbsession = $fbsession = FacebookProxy::getUser();		
+		$fbconfig = FacebookProxy::config(); 
+
+		if ($this->fbsession) {
+			$fblogout = FacebookProxy::getLogoutUrl(array('next' => $logoutUrl));			
+		} else {
+			$fblogout = "/logout";
 		}
 
 		if ($userInfo) {

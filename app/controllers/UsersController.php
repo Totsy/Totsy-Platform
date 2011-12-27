@@ -16,7 +16,7 @@ use li3_facebook\extension\FacebookProxy;
 class UsersController extends BaseController {
 
 	public $sessionKey = 'userLogin';
-
+	
 	/**
 	 * Instances
 	 * @var array
@@ -67,9 +67,6 @@ class UsersController extends BaseController {
        if ($this->request->query["gotologin"]=="true") {
            $this->redirect("/login");
        }
-	
-		//print_r($fbsession);
-		//exit();
 
 		$this->_render['layout'] = 'login';
 		$message = false;
@@ -206,10 +203,21 @@ class UsersController extends BaseController {
 							$params['token'] = $user['clear_token'];
 						}
 						Mailer::send($mail_template, $user->email,$params);
-						$name = null;
-						if (isset($data['firstname'])) $name = $data['firstname'];
-						if (isset($data['lastname'])) $name = is_null($name)?$data['lastname']:$name.$data['lastname'];
-						Mailer::addToMailingList($data['email'],is_null($name)?array():$name);
+						
+						$args = array();
+						if (!empty($user->firstname)) $args['name'] = $user->firstname;
+						if (!empty($user->lastname)) $args['name'] = $args['name'] . $user->lastname;
+						if (!empty($user->invited_by)) {
+							$affiliate_cusror = Affiliate::collection()->find(array('invitation_codes'=>$user->invited_by));
+							if ($affiliate_cusror->hasNext()){
+								$affiliate = $affiliate_cusror->getNext();
+								$args['source'] = $affiliate['name'];
+								unset($affiliate);
+							}
+							unset($affiliate_cusror);
+						}
+						
+						Mailer::addToMailingList($data['email'],$args);
 						Mailer::addToSuppressionList($data['email']);
 
 					}
@@ -375,6 +383,7 @@ class UsersController extends BaseController {
 
 	public function logout() {
 
+		FacebookProxy::destroySession();
 		$loginInfo = Session::read('userLogin');
 		$user = User::collection();
 		$user->update(
@@ -439,7 +448,7 @@ class UsersController extends BaseController {
 		
 		if ($fbsession && $linked == false) {
 			try {
-				$userfb = FacebookProxy::api('/me');
+				$userfb = FacebookProxy::api($fbsession);
 				$check = User::find('first', array(
 					'conditions' => array(
 							'facebook_info.id' => $userfb['id']
@@ -640,7 +649,7 @@ class UsersController extends BaseController {
 	public function fbregister() {
 		$message = null;
 		$user = null;
-		$fbuser = FacebookProxy::api('/me');
+		$fbuser = FacebookProxy::api(FacebookProxy::getUser());
 		$user = User::create();
 
 		if ( !preg_match( '/@proxymail\.facebook\.com/', $fbuser['email'] )) {
@@ -693,8 +702,9 @@ class UsersController extends BaseController {
 		$userfb = array();
 	
 		if ($self->fbsession) {
-			$userfb = FacebookProxy::api('/me');
-			
+		
+			$userfb = FacebookProxy::api($self->fbsession);
+
 			$user = User::find('first', array(
 				'conditions' => array(
 					'$or' => array(
@@ -704,7 +714,7 @@ class UsersController extends BaseController {
 							
 			if ($user) {
 			
-			$userfb = FacebookProxy::api('/me');		
+			//$userfb = FacebookProxy::getUser();		
 			$user->facebook_info = $userfb;
 			$user->save(null, array('validate' => false));
 				
