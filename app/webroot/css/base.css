@@ -4607,11 +4607,23 @@ nav .haschild li a:hover {
 }
 #events-wrap .eventDetails > h3 {
 	float: right;
-	width:792px;
+	margin-bottom:12px;
+	width:796px;
+	color:#636466;
+	font-size: 16px;
 }
+#events-wrap .eventDetails > h3 em {
+	display: inline-block;
+	color:rgba(99,100,102,0.7);
+	font-size: 12px; font-weight: bold;
+	text-indent:30px;
+}
+#events-wrap .eventDetails > h3 em strong {font-size:14px; font-style: italic; font-weight: normal;}
 #events-wrap .eventDetails > p {
 	margin-left:137px;
-	width:792px;
+	width:796px;
+	color:#636466;
+	font-size: 12px; line-height:1.2;
 }
 #events-wrap .item {
 	float:left; 
@@ -4624,3 +4636,5 @@ nav .haschild li a:hover {
 	position: relative; left:3px;
 	float:left;
 }
+#events-wrap .items + p {text-align: right;}
+

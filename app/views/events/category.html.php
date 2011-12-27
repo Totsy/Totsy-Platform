@@ -21,7 +21,7 @@
 	};
 })(jQuery);
 </script>
-	<h2 class="page-title gray"><span class="_red">Today's Sales</span> </h2>
+	<h2 class="page-title gray">*NEED TO PULL IN CATEGORY NAME* <em>Need Total Sales Found</em></h2>
 	<div id="events-wrap" class="fullwidth">
 		<?php $x = 0; ?>
 		<?php foreach ($openEvents as $event): ?>
@@ -62,9 +62,11 @@
 			
 			foreach($items as $item){ ?>
 				<div class="item">
-					<img width="125" height="126" src="<?php echo "http://www.totsy.com/image/" . $item['primary_image'] . ".jpg";?>" alt="IMAGE ALT HERE" />
-					<h4><?php echo $item['description'];?></h4>
-					<p>$<?php echo $item['sale_retail'];?></p>
+					<a href="<?php echo 'sale/' . $item['url']?>" title="<?php echo $item['description'];?>">
+						<img width="125" height="126" src="<?php echo "http://www.totsy.com/image/" . $item['primary_image'] . ".jpg";?>" alt="IMAGE ALT HERE" />
+						<h4><?php echo $item['description'];?></h4>
+						<p>$<?php echo $item['sale_retail'];?></p>
+					<a></a>
 			<?php	
 			/*
 				// this is the data available to me
@@ -106,34 +108,46 @@
 			<!-- STATIC CONTENT PENDING RETURN OF DATA -->
 			
 				<div class="item">
-					<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
-					<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
-					<p>$16.75</p>
+					<a href="#">
+						<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
+						<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
+						<p>$16.75</p>
+					</a>
 				</div>			
 				<div class="item">
-					<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
-					<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
-					<p>$16.75</p>
+					<a href="#">
+						<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
+						<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
+						<p>$16.75</p>
+					</a>
 				</div>			
 				<div class="item">
-					<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
-					<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
-					<p>$16.75</p>
+					<a href="#">
+						<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
+						<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
+						<p>$16.75</p>
+					</a>
 				</div>			
 				<div class="item">
-					<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
-					<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
-					<p>$16.75</p>
+					<a href="#">
+						<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
+						<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
+						<p>$16.75</p>
+					</a>
 				</div>			
 				<div class="item">
-					<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
-					<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
-					<p>$16.75</p>
+					<a href="#">
+						<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
+						<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
+						<p>$16.75</p>
+					</a>
 				</div>			
 				<div class="item">
-					<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
-					<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
-					<p>$16.75</p>
+					<a href="#">
+						<img width="125" height="126" src="/img/FPO-item.png" alt="IMAGE ALT HERE" />
+						<h4>Newborn Alabama Bodysuit &amp; Pant Set</h4>
+						<p>$16.75</p>
+					</a>
 				</div>			
 			
 			<!-- /END STATIC -->
@@ -187,9 +201,9 @@
 		    }
 		} else {
 		    if((diff / 1000) < (24 * 60 * 60) ) {
-		    	$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {hnn}{sep}{mnn}{sep}{snn}'});
+		    	$("#" + this.id).countdown({until: saleTime, layout: 'Ends in <strong>{hnn}{sep}{mnn}{sep}{snn}</strong>'});
 		    } else {
-		    	$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+		    	$("#" + this.id).countdown({until: saleTime, layout: 'Ends in <strong>{dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}</strong>'});
 		    }
 		}
 	 });
