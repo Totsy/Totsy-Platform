@@ -4493,6 +4493,7 @@ nav > ul > li > a:visited {
 	padding:19px 10px 0;
 	color:#636466;
 	font-weight: bold; line-height:normal; text-transform: uppercase;
+	cursor: pointer;
 }
 nav > ul > li a:hover {text-decoration: none;}
 nav > ul > li > a:hover {padding-top:29px;}
