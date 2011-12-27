@@ -4494,6 +4494,7 @@ nav > ul > li > a:visited {
 	color:#636466;
 	font-weight: bold; line-height:normal; text-transform: uppercase;
 	cursor: pointer;
+	-moz-transition: padding-top 0.3s ease-in-out;
 }
 nav > ul > li a:hover {text-decoration: none;}
 nav > ul > li > a:hover {padding-top:29px;}
