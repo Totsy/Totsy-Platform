@@ -12,7 +12,7 @@
 										
 													
 <?php echo $this->form->label('email', 'Email Address<span>*</span>', array('escape' => false,'class' => 'required')); ?>
-<?php echo $this->form->text('email', array('class' => 'inputbox')); ?>
+<?php echo $this->form->email('email', array('class' => 'inputbox')); ?>
 <?php echo $this->form->error('email'); ?>
 												
 													

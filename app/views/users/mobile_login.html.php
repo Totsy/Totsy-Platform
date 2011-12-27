@@ -11,7 +11,7 @@
 											'style' => 'display:inline-block;'
 											));
 										?>
-<?php echo $this->form->text('email', array('class' => 'inputbox')); ?>
+<?php echo $this->form->email('email', array('class' => 'inputbox')); ?>
 <?php echo $this->form->error('email'); ?>
 </p>
 <p><?php echo $this->form->label('password', 'Password', array('escape' => false,
