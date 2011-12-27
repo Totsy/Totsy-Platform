@@ -4593,6 +4593,7 @@ nav .haschild li a:hover {
 /* 
 	Category Pages - events - @DG-2011.12
 */
+h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 #events-wrap .event {
 	margin:0 5px 40px; padding:9px 8px;
 	border:1px solid #ccc;
@@ -4636,11 +4637,27 @@ nav .haschild li a:hover {
 #events-wrap .item a:link,
 #events-wrap .item a:visited {color:inherit;}
 #events-wrap .item a:hover {text-decoration: none;}
-#events-wrap .item h4 {color:#636466; font-size:12px;}
-#events-wrap .item p {color:#009900; font-siz:16px; font-weight: bold;}
+#events-wrap .item h4 {
+	margin:0 5px 5px; padding:0 0 5px;
+	color:#636466; font-size:11px;
+	border-bottom:1px solid #e1e0e0;
+}
+#events-wrap .item p {
+	margin:0 5px; padding-right:11px;
+	background:url(../img/link-arrow-gr.png) 100% 48% no-repeat;
+	color:#009900; font-size:16px; font-weight: bold; line-height:1; text-align: right;
+}
 #events-wrap .viewAllEvents {
 	position: relative; left:2px;
 	float:left;
 }
+#events-wrap .viewAllEvents:after {
+	content: "";
+	position: absolute; top:40px; right:0px;
+	display: block;
+	width:1px; height:45px;
+	-webkit-box-shadow: 1px 0px 4px rgba(0,0,0,0.55);
+	-moz-box-shadow: 1px 0px 4px rgba(0,0,0,0.55);
+	box-shadow: 1px 0px 4px rgba(0,0,0,0.55);
+}
 #events-wrap .items + p {text-align: right;}
-
