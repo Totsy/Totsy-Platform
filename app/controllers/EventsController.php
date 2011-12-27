@@ -13,15 +13,38 @@ use app\models\Affiliate;
 
 class EventsController extends BaseController {
 
+	private $_mapCategories = array (
+		'category' =>  array(
+			'girls-apparel' => "Girls Apparel",
+			'boys-apparel' => "Boys Apparel",
+			'shoes' => "Shoes",
+			'accessories' =>"Accessories",
+			'toys-books' => "Toys &amp; Books",
+			'gear' => "Gear",
+			'home' => "Home",
+			'moms-dads' => "Moms &amp; Dads"
+		),
+		'age' => array(
+			'newborn' => 'Newborn',
+			'infant' => 'Infant 0 -12M',
+			'toddler' => 'Toddler 1-3Y',
+			'preschool' => 'Preschool 4-5Y',
+			'school' => 'School Age 5+'
+		)
+	);
+
 	public function category() {
 		$datas = $this->request->args;
 		$categories = array();
-
+		
+	
 		if(empty($this->request->args[0])) {
 			$openEvents = Event::open()->data();
 		} else {
-			$categories = ucwords($this->request->args[0]);
+			$map = $this->_mapCategories[ $this->request->params['action'] ];
+			$categories =  $map[ $this->request->args[0] ];
 			$openEvents = Event::open(null,array(),null,$categories)->data();
+			unset($map);
 		}
 
 		$itemCounts = array();
@@ -41,7 +64,7 @@ class EventsController extends BaseController {
 			}
 		}
 		
-		return compact('openEvents', 'items', 'categories');
+		return compact('openEvents', 'items', 'categories', 'eventCount');
 	}
 
 
@@ -50,10 +73,12 @@ class EventsController extends BaseController {
 		$categories = array();
 
 		if(empty($this->request->args[0])) {
-			$openEvents = Event::open();
+			$openEvents = Event::open()->data();
 		} else {
-			$categories = ucwords($this->request->args[0]);
-			$openEvents = Event::open(null,array(),null,null, $ages);
+			$map = $this->_mapCategories[ $this->request->params['action'] ];
+			$categories =  $map[ $this->request->args[0] ];
+			$openEvents = Event::open(null,array(),null,null, $ages)->data();
+			unset($map);
 		}
 
 		$itemCounts = array();
@@ -63,27 +88,19 @@ class EventsController extends BaseController {
 		$itemsCollection = Item::collection();
 
 		for($i=0; $i<$eventCount; $i++){
-			$eventId = (string)$openEvents[$i]->_id;
+			$eventId = (string)$openEvents[$i]['_id'];
 
-			$items = $itemsCollection->find(array('event' =>  array($eventId)));
+			$items = $itemsCollection->find(array('event' =>  array($eventId)))
+									 ->limit(6);
 			
-			
-			$i=0;
-			$limiteditems = array();
 			foreach($items as $eachitem){
-				if($i<6){
-					$limiteditems[] = $eachitem;
-				}
-				$i++;
+				$openEvents[$i]['eventItems'][] = $eachitem;
 			}
-
-			$openEvents[$i]->eventItems = $limiteditems;
-			//$openEvents[$i]->eventItems = $items;
 		}
 		
-				$this->_render['template'] = 'category';
+		$this->_render['template'] = 'category';
 
-		return compact('openEvents', 'items', 'categories');
+		return compact('openEvents', 'items', 'categories', 'eventCount');
 	}
 
 	public function index() {

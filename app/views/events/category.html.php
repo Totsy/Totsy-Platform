@@ -21,7 +21,7 @@
 	};
 })(jQuery);
 </script>
-	<h2 class="page-title gray">*NEED TO PULL IN CATEGORY NAME* <em>(Need Total Sales Found)</em></h2>
+	<h2 class="page-title gray"> <?php echo $categories; ?> <em>(<?php echo $eventCount; ?> Total Sales Found)</em></h2>
 	<div id="events-wrap" class="fullwidth">
 		<?php $x = 0; ?>
 		<?php foreach ($openEvents as $event): ?>
