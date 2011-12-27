@@ -4463,10 +4463,11 @@ Text Align > left / right
 	background: url(../img/btn-arrow.png) 100% 50% no-repeat;
 	color:#d84643;
 	}
+#totsy > header > #invite a strong:hover {text-decoration: underline;}
+
 /* main nav */
 #totsy > header > nav > ul {float:left;}
-nav > ul > li,
-nav .haschild ul {
+nav > ul > li {
 	position: relative; z-index: 100;
 	float:left;
 	margin-right:15px; padding:0 0 6px;
@@ -4495,6 +4496,8 @@ nav > ul > li > a:visited {
 	font-weight: bold; line-height:normal; text-transform: uppercase;
 	cursor: pointer;
 	-moz-transition: padding-top 0.3s ease-in-out;
+	-webkit-transition: padding-top 0.3s ease-in-out;
+	transition: padding-top 0.3s ease-in-out;
 }
 nav > ul > li a:hover {text-decoration: none;}
 nav > ul > li > a:hover {padding-top:29px;}
@@ -4516,25 +4519,29 @@ nav > ul li.haschild > a em {padding-left:0; padding-right:33px; background-posi
 
 /* subcats in main nav */
 nav .haschild ul {
-	position: absolute; top:auto; left: -999em;
-	float: none;
+	position: absolute; top:auto; left: -999em; z-index:100;
 	margin:-1px 0 0; padding:3px 0 8px;
 	width:100%;
+	background: #fff;
+	border:1px solid #ccc;
 	border-top:none;
+	-webkit-border-radius:0 0 10px 10px;
+	-moz-border-radius:0 0 10px 10px;
+	border-radius:0 0 10px 10px;
 	-webkit-box-shadow: 4px 7px 6px rgba(0,0,0,0.09);
 	-moz-box-shadow: 4px 7px 6px rgba(0,0,0,0.09);
 	box-shadow: 4px 7px 6px rgba(0,0,0,0.09);
 	opacity:0.3;
+	-webkit-transition: opacity 0.3s ease-in-out;
 	-moz-transition: opacity 0.3s ease-in-out;
+	transition: opacity 0.3s ease-in-out;
 }
 nav .haschild:hover ul {
 	left:-1px;
 	opacity:1;
 }
 nav .haschild li {
-/* 	margin:0.25em 0; */
 	line-height:1.5;
-/* 	-moz-transition: height 0.3s ease-in-out; */
 }
 nav .haschild li:last-child {margin-bottom:0;}
 nav .haschild:hover ul li {height: auto;}
@@ -4543,19 +4550,22 @@ nav .haschild li a {
 	padding: 0 10px;
 	color:#666; /* fallback */
 	color:rgba(0,0,0,0.6);
-/* 	-moz-transition: background 0.2s linear, color 0.2s linear; */
 }
 
 /* dropdown whizbang */
 nav .haschild li {
 	margin-top:-0.75em;
 	height:0.25em;
+	-webkit-transition: margin 0.4s ease-in-out, height 0.4s ease-in-out;
 	-moz-transition: margin 0.4s ease-in-out, height 0.4s ease-in-out;
+	transition: margin 0.4s ease-in-out, height 0.4s ease-in-out;
 }
 nav .haschild li a {
 	margin-top:-0.75em;
 	height:0.25em;
+	-webkit-transition: margin 0.4s ease-in-out, height 0.4s ease-in-out, background 0.2s ease-in-out, color 0.2s ease-in-out;
 	-moz-transition: margin 0.4s ease-in-out, height 0.4s ease-in-out, background 0.2s ease-in-out, color 0.2s ease-in-out;
+	transition: margin 0.4s ease-in-out, height 0.4s ease-in-out, background 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 nav .haschild:hover li {
 	margin:0.25em 0;
