@@ -2,7 +2,7 @@
 <script type="text/javascript">
 	var item_id = "<?php echo $item->_id?>";
 </script>
-
+	
 <?php echo $this->html->script(array('cart-timer.js?v=007', 'cart-items-timer.js?v=007'));?>
 
 <h2 style="font-size:12px;">
@@ -157,77 +157,89 @@ $(function () {
 
 
 <script type="text/javascript">
-$(document).ready(function() {
-	var itemCheck = function(){
-		var item_size = $('#size-select').attr('value');
-		if(item_size != '') {
-		    $.ajax({
-	            url: '/items/available',
-	            data: "item_id=" + item_id + "&" + "item_size=" + item_size,
-	            context: document.body,
-	            success: function(data){
-	                if (data == 'false') {
-	                    $('#all-reserved').show();
-	                    $('#add-to-cart').hide();
-	                    $('#all-reserved').html("<p style='background:#EB132C;padding:5px;text-align:center;color:#fff;border-radius:6px;'>All items are reserved <br>Check back in two minutes</p>");
-	                } else {
-	                    $('.button').show();
-	                    $('#all-reserved').hide();
-	                }
-	             }
-	        });
-		}
-	};
-	itemCheck();
+function checkOptions() {
+    var getSize = false;
+    $("select").each(function (index, element) {
+        if ($(element).val() == "") {
+            getSize = true;
+        }
+    });
+    if (getSize) {
+        $("#hidden-div").show();
+        //$("#add-to-cart").attr("disabled", "disabled");
+        //$('#add-to-cart').attr('disabled','disabled');
+        $('#add-to-cart').addClass('ui-disabled');
+    } else {
+        $("#hidden-div").hide();
+        $('#add-to-cart').removeClass('ui-disabled');
+        //$("#add-to-cart").removeAttr("disabled");
+    };
+}
 
-	$("#size-select").change(function(){
-		itemCheck();
-	});
+// init
+checkOptions();
+
+var remember_item_size = null;
+$(document).ready(function () {
+
+    $("#size-select").change(function () {
+        var item_size = $(this).attr('value');
+        if (item_size != remember_item_size) {
+            remember_item_size = item_size;
+            $.ajax({
+                url: '/items/available',
+                data: "item_id=" + item_id + "&" + "item_size=" + item_size,
+                context: document.body,
+                success: function (data) {
+                    if (data == 'false') {
+                        $('#all-reserved').show();
+                        $('#add-to-cart').hide();
+                        $('#all-reserved').html("<p style='background:#EB132C;padding:5px;text-align:center;color:#fff;border-radius:6px;'>All items are reserved <br>Check back in two minutes</p>");
+                    } else {
+                        $('.button').show();
+                        $('#all-reserved').hide();
+                    }
+                }
+            });
+        }
+        checkOptions();
+    });
 });
 </script>
 
 <script type="text/javascript" charset="utf-8">
-    $(document).ready(function () {
-      checkOptions();
-      $("select").change(checkOptions);
-
-      function checkOptions() {
-        var getSize = false;
-        $("select").each(function(index, element) {
-          if ( $(element).val() == "" ) {
-            getSize = true;
-          }
-        });
-
-        if (getSize) {
-          $("#hidden-div").show();
-          $("#add-to-cart").attr("disabled","disabled");
-        } else {
-          $("#hidden-div").hide();
-          $("#add-to-cart").removeAttr("disabled");
-        };
-      }
+var tmp = null;
+var counter = 0;
+$(document).ready(function () {
+    $('#slav').bind('change', function () {
+        if (tmp != $(this).val()) {
+            tmp = $(this).val();
+            alert(counter);
+            counter++;
+        }
     });
-    
-// this is a mobile only hack
-$(document).ready(function() {
-            $(".button").click(function(){
-               
-                 if ($('#size-select option:selected').val() == null ) {
-                 var size = 'no size';
-                 } else {
-				var size = $('#size-select option:selected').val();
-				 };
-                $.ajax({
-  url: "/cart/add?item_id=<?php echo $item->_id; ?>&item_size=" + size,
-  	}).done(function() {
-  $(location).attr('href','/cart/view')
+    //checkOptions();
+    //$("select").change(checkOptions);
 });
- 
-                return false;
-               
+
+// this is a mobile only hack
+var hacked = false;
+$(document).ready(function () {
+    $(".button").click(function () {
+        if (hacked == false) {
+            if ($('#size-select option:selected').val() == null) {
+                var size = 'no size';
+            } else {
+                var size = $('#size-select option:selected').val();
+            }
+            $.post("/cart/add?item_id=<?php echo $item->_id; ?>&item_size=" + size, function () {
+                window.location.href = '/cart/view';
             });
-        });
-        </script>
+            hacked = true;
+        }
+        return false;
+    });
+});
+</script>
 
 
