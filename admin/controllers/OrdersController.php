@@ -2,6 +2,7 @@
 
 namespace admin\controllers;
 
+use lithium\core\Environment;
 use admin\models\User;
 use admin\models\Event;
 use admin\models\Item;
@@ -223,14 +224,12 @@ class OrdersController extends BaseController {
 		$order_data['id'] = $order_data['_id'];
 		$order_data['items'][$line_number]['initial_quantity'] = $order_data['items'][$line_number]['quantity'];
 		$order_data['items'][$line_number]['cancel'] = "true";
-		$order_data['save'] = true;
 		$order_data['comment'] = 'Bulk Cancel of Item';
 
 		$this->request->data = $order_data;
 
 		$order_temp = $this->manage_items();
-		
-		echo 'PASSED';
+
 		#SAVING DATAS
 		$order_data_to_be_saved = $order_temp->data();
 		$order_data_to_be_saved[id] = $order_data[_id];
@@ -240,7 +239,7 @@ class OrdersController extends BaseController {
 		$order_data_to_be_saved[comment] = 'Bulk Cancel of Item';
 		$this->request->data = $order_data_to_be_saved;
 		$order = $this->manage_items();
-
+		
 		$this->redirect('/items/bulkCancel/' . $sku);
 
 	}
@@ -359,7 +358,9 @@ class OrdersController extends BaseController {
 					'order' => $order_temp->data(),
 					'shipDate' => date('M d, Y', $shipDate)
 				);
-				Mailer::send('Cancel_Order', $user["email"], $data);
+				if (Environment::is('production')) {
+					Mailer::send('Cancel_Order', $user["email"], $data);
+				}
 			}
 
 			// If order is updated without cancel, send email
@@ -379,7 +380,9 @@ class OrdersController extends BaseController {
 					'order' => $order->data(),
 					'shipDate' => date('M d, Y', $shipDate)
 				);
-				Mailer::send('Order_Update', $user["email"], $data);
+				if (Environment::is('production')) {
+					Mailer::send('Order_Update', $user["email"], $data);
+				}
 			}
 		}
 		return $order_temp;
@@ -544,7 +547,7 @@ class OrdersController extends BaseController {
 		#Save Old AuthKey with Date
 		$newRecord = array('authKey' => $order['authKey'], 'date_saved' => new MongoDate());
 		#Cancel Previous Transaction	
-		if($order['card_type'] != 'amex') {
+		if($order['card_type'] != 'amex' && !empty($order['authTotal'])) {
 			$auth = Processor::void('default', $order['auth'], array(
 				'processor' => isset($order['processor']) ? $order['processor'] : null
 			));
@@ -632,7 +635,9 @@ class OrdersController extends BaseController {
 				'order' => $order_temp->data(),
 				'shipDate' => date('M d, Y', $shipDate)
 			);
-			Mailer::send('Cancel_Order', $user["email"], $data);
+			if (Environment::is('production')) {
+				Mailer::send('Cancel_Order', $user["email"], $data);
+			}
 		}
 		if(!empty($datas["process-as-an-exception"])){
 			$update = $ordersCollection->update(

@@ -296,8 +296,13 @@ class ItemsController extends BaseController {
 					$search_sku = $search;
 					$search_item_id = $item_id;
 				}
+				
+				foreach ($items as $item) {
+					$orders = Order::find('all',array('conditions'=> array('items.item_id' => (string) $item['_id'])));
+					$ordersForItem[(string)$item['_id']] = $orders;
+				}
 
-				return compact("items","search_item_id","search_sku");
+				return compact("items", "search_item_id", "search_sku", "ordersForItem");
 			}
 
 	}
