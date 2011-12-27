@@ -1064,7 +1064,6 @@ ul.content-list {
 
 /* Cart Pop Up 
 ----------------------------------*/
-
 #cart_popup {
 margin:20px auto 0;
 width: 500px; 
@@ -1073,8 +1072,8 @@ z-index: 1000000000 !important;
 border-width: 2px; 
 border-style: solid; 
 background-color: rgb(255, 255, 255); 
-left:924px; 
-top:97px; 
+left:455px; 
+top:25px; 
 position: absolute;
 }
 
@@ -4410,7 +4409,11 @@ Text Align > left / right
 /* 
 	NEW new header, nav with cats - @DG-2011.12
 */
-#totsy {margin:43px auto 10px; overflow: visible;}
+#totsy {
+	position: relative;
+	margin:43px auto 10px;
+	overflow: visible;
+}
 #totsy > header {
 	position:relative; 
 	margin:-54px 0 30px; padding-top:26px;
