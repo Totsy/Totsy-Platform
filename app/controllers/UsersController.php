@@ -157,9 +157,24 @@ class UsersController extends BaseController {
 
 			}
 		}
-		elseif ($this->request->data && !$user->validates() ) {
+		
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_login';
+		 	$this->_render['template'] = 'mobile_register';
+		} else {
+			//$this->_render['layout'] = 'login';
+		}
+		
+		if ($this->request->data && !$user->validates() ) {
 			$message = '<div class="error_flash">Error in registering your account</div>';
 		}
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_login';
+		 	$this->_render['template'] = 'mobile_register';
+		} else {
+			//$this->_render['layout'] = 'login';
+		}
+		
 		return compact('message', 'user');
 	}
 
@@ -318,9 +333,13 @@ class UsersController extends BaseController {
 
 
 		}
-
-		//new login layout to account for fullscreen image JL
-		$this->_render['layout'] = 'login';
+		//detect mobile and make the view switch
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_login';
+		 	$this->_render['template'] = 'mobile_login';
+		} else {
+			$this->_render['layout'] = 'login';
+		}
 
 		return compact('message', 'fbsession', 'fbconfig');
 	}
@@ -487,6 +506,10 @@ class UsersController extends BaseController {
 				$status = "email";
 			}
 		}
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_info';
+		}
 		return compact('user', 'status', 'connected', 'failed', 'userfb');
 	}
 
@@ -506,7 +529,12 @@ class UsersController extends BaseController {
     }
 
 	public function reset() {
-		$this->_render['layout'] = 'login';
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_login';
+		 	$this->_render['template'] = 'mobile_reset';
+		} else {
+			$this->_render['layout'] = 'login';
+		}
 		$success = false;
 		if ($this->request->data) {
 			$email = strtolower($this->request->data['email']);
@@ -523,14 +551,22 @@ class UsersController extends BaseController {
 				if ($user->save(null, array('validate' => false))) {
 					$mailer = $this->_classes['mailer'];
 					$mailer::send('Reset_Password', $user->email, array('token' => $token));
-					$message = "Your password has been reset. Please check your email.";
+					Mailer::send('Reset_Password', $user->email, array('token' => $token));
+					$message = '<div class="success_flash">Your password has been reset. Please check your email.</div>';
 					$success = true;
 				} else {
-					$message = "Sorry your password has not been reset. Please try again.";
+					$message = '<div class="error_flash">Sorry your password has not been reset. Please try again.</div>';
 				}
 			} else {
-				$message = "This email doesn't exist.";
+				$message =  '<div class="error_flash">This email doesn\'t exist.</div>';
 			}
+			
+		}
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_login';
+		 	$this->_render['template'] = 'mobile_reset';
+		} else {
+			$this->_render['layout'] = 'login';
 		}
 		return compact('message', 'success');
 	}
@@ -570,7 +606,7 @@ class UsersController extends BaseController {
 				$mailer = $this->_classes['mailer'];
 				$mailer::send('Friend_Invite', $email, $args);
 			}
-			$flashMessage = "Your invitations have been sent";
+			$flashMessage = '<div class="success_flash">Your invitations have been sent</div>';
 		}
 		$open = Invitation::find('all', array(
 			'conditions' => array(
@@ -587,7 +623,10 @@ class UsersController extends BaseController {
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
 			                                            array('invite' => $_SERVER['REQUEST_URI'])
 			                                            );
-
+		if($this->request->is('mobile')){
+			$this->_render['layout'] = 'mobile_main';
+			$this->_render['template'] = 'mobile_invite';
+		}
 		return compact('user','open', 'accepted', 'flashMessage', 'spinback_fb');
 	}
 
@@ -638,6 +677,10 @@ class UsersController extends BaseController {
 					$status = 'errornewpass';
 				}
 			}
+		}
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_password';
 		}
 		return compact("user", "status");
 	}
