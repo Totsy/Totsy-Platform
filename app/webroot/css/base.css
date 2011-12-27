@@ -4633,7 +4633,7 @@ nav .haschild li a:hover {
 }
 #events-wrap .item:first-child {margin-left: 0;}
 #events-wrap .viewAllEvents {
-	position: relative; left:3px;
+	position: relative; left:2px;
 	float:left;
 }
 #events-wrap .items + p {text-align: right;}
