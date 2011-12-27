@@ -1,5 +1,30 @@
 <script type="text/javascript">
+		function fadeOut_CCForm() {
+			$('#credit_card_form').hide();
+		}
+		
+		function fadeOut_BillingAddressForm() {
+			$('#billing_address_form').hide();
+		}
+		
+		function fadeOut_saved_CCs() {
+			$('#saved_credit_cards').hide();
+		}
+		
+		function fadeIn_saved_CCs() {
+			$('#saved_credit_cards').show();
+		}
+		
+		function fadeIn_CCForm() {
+			$('#credit_card_form').show();
+		}
+		
+		function fadeIn_BillingAddressForm() {
+			$('#billing_address_form').show();
+		}
+
 	$( function () {
+
 	    var itemExpires = new Date(<?php echo ($cartExpirationDate  * 1000)?>);
 		var now = new Date();
 		$('#itemCounter').countdown( {until: itemExpires, onExpiry: refreshCart, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
@@ -10,6 +35,9 @@
 			window.location.reload(true);
 		}
 	});
+	
+
+
 </script>
 
 <script type="text/javascript">
@@ -49,7 +77,9 @@ var paymentForm = new Object();
     	//highlight the invalid fields and show a prompt for the first of those highlighted
     	$("#paymentForm").submit(function() {
 
-    		if(validCC()==false) {
+			var savedCreditCard = $('input:radio[name=savedCreditCard]:checked').val();
+
+    		if(validCC()==false && savedCreditCard === undefined) {
 				return false;
 			}
 
@@ -63,7 +93,7 @@ var paymentForm = new Object();
     		$("#paymentForm").validationEngine('init', { promptPosition : "centerRight", scroll: false } );
 
     		$.each(	paymentForm.form, function(i, field) {
-    		    if(	field.value=="" &&
+    		    if( savedCreditCard === undefined && field.value=="" &&
     		    	field.name!=="address2" &&
     		    	field.name!=="opt_submitted" &&
     		    	field.name!=="opt_shipping" &&
@@ -73,6 +103,8 @@ var paymentForm = new Object();
     		    	) {
 
     		 		if(set_bubble==false) {
+						alert(field.name);
+
     		 			$('#' + field.name + "").validationEngine('showPrompt','*This field is required', '', true);
     		 			$('#' + field.name + "").validationEngine({ promptPosition : "centerRight", scroll: false });
     		 			set_bubble=true;
@@ -133,8 +165,51 @@ var paymentForm = new Object();
 
 <div class="grid_16" style=" width:935px !important">
 				<hr /><br />
-				<h3>Pay with Credit Card :</h3>
+<?php 
+
+if (sizeof($creditcards) > 0) { ?> 
+<h3 style="margin-bottom: 11px;">Pay with a saved Credit Card: </h3>
+<div id="saved_credit_cards" style="display: block;">
+<table width="500px" border="0" cellspacing="0" cellpadding="0">
+
+<?php
+$i = 0;
+foreach ($creditcards as $creditcard):
+ ?>
+<tr>
+<td align="right"><input type="radio" name="savedCreditCard" value="<?php print $creditcard[profileId];?>" onclick="fadeOut_BillingAddressForm(); fadeOut_CCForm();" <?php if ($i == 0) print 'checked'; ?>></td>
+<td align="middle"><img src="
+<?php
+switch ($creditcard[type]) {
+case 'Visa': print "/img/cc_visa.gif"; break;
+case 'Mastercard': print "/img/cc_mastercard.gif"; break;
+case 'American Express': print "/img/cc_amex.gif"; break;
+}
+?>">
+</td>
+<td align="left"><?php echo ucfirst($creditcard[type]);?> ending in <?php echo substr($creditcard[number], -4); ?></td>
+<!-- <td><?php echo $creditcard[firstname]." ".$creditcard[lastname];?></td> -->
+<td>Expires on <?php echo $creditcard[month];?> / <?php echo $creditcard[year];?></td>
+</tr>
+<?php
+$i++;
+ endforeach;
+ ?>
+</table>
+</div>
+<h3 style="margin-top: 11px"><a href="#" onclick="fadeIn_saved_CCs(); fadeIn_CCForm(); fadeIn_BillingAddressForm(); clear_CCForm(); " style="text-decoration:underline;">Add New Card</a></h3>
+<?php
+} else {
+?>
+<h3>Pay with a Credit Card</h3>
+<?php
+}
+?> 
+
+				
 				<hr />
+				
+				<div id="credit_card_form" style="display: <?php if (sizeof($creditcards) > 0) print 'none'; else print 'block'; ?>;">				
 				<span class="cart-select">
 				<?php echo $this->form->error('cc_error'); ?>
 				<?php echo $this->form->hidden('opt_submitted', array('class'=>'inputbox', 'id' => 'opt_submitted')); ?>
@@ -182,8 +257,10 @@ var paymentForm = new Object();
 				}
 				?>
 				</span>
+				</div>
 				<br />
 				<br />
+				<div id="billing_address_form" style="display: <?php if (sizeof($creditcards) > 0) print 'none'; else print 'block'; ?>;">				
 				<h3>Billing Address</h3>
 				<hr />
 				<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
@@ -225,7 +302,7 @@ var paymentForm = new Object();
 				<?php echo $this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
 				<div style="clear:both"></div>
 				<div>
-					Save this address <?php echo $this->form->checkbox("opt_save", array('id' => 'opt_save')) ?>
+					Save this credit card and billing address <?php echo $this->form->checkbox("opt_save", array('id' => 'opt_save')) ?>
 				</div>
 				<?php echo $this->form->hidden('opt_description', array('id' => 'opt_description' , 'value' => 'billing')); ?>
 				<?php echo $this->form->hidden('opt_shipping_select', array('id' => 'opt_shipping_select')); ?>

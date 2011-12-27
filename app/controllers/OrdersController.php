@@ -489,17 +489,97 @@ class OrdersController extends BaseController {
 		$card = array();
 		$selected = array();
 		$addresses_ddwn = array();
-
+		
+		#Get the credit cards that the user is storing
+		$creditcards = CreditCard::retrieve_all_cards($user['_id']);
 
 		#Get billing address from shipping one in session
 		$shipping = json_encode(Session::read('shipping'));
+
 		#Get Billing Address from Session
 		if (Session::read('billing')) {
 			$payment = Address::create(Session::read('billing'));
 		}
+		
 		#Check Datas Form
 		if (!empty($this->request->data)) {
 			$datas = $this->request->data;
+			
+		//if the user selected a saved credit card, than prepopulate the relevant fields to go to the order review page
+			if ($datas['savedCreditCard']) {
+				$creditCard_profileId = $datas['savedCreditCard'];
+
+				$i=0;
+				while($i < sizeof($creditcards)) {
+					if ($creditcards[$i]['profileId'] == $creditCard_profileId) {
+						$creditCard = $creditcards[$i];
+					}
+					$i++;
+				}
+
+				$cc_infos['profileId'] = $datas['savedCreditCard'];
+				$cc_infos['type'] = $creditCard['type'];
+				$cc_infos['number'] = $creditCard['number'];
+				$cc_infos['valid'] = $creditCard['valid'];
+				$cc_infos['month'] = $creditCard['month'];
+				$cc_infos['year'] = $creditCard['year'];
+				
+				$cc_infos['firstname'] = $creditCard['firstname'];
+				$cc_infos['lastname'] = $creditCard['lastname'];
+				$cc_infos['telephone'] = $creditCard['telephone'];
+				$cc_infos['address'] = $creditCard['address'];
+				$cc_infos['address2'] = $creditCard['address2'];
+				$cc_infos['city'] = $creditCard['city'];
+				$cc_infos['state'] = $creditCard['state'];
+				$cc_infos['zip'] = $creditCard['zip'];
+
+				#Encrypt CC Infos with mcrypt
+				Session::write('cc_infos', $orderClass::creditCardEncrypt($cc_infos, (string)$user['_id'], true));
+				
+				$cc_passed = true;
+				#Remove Credit Card Errors
+				Session::delete('cc_error');
+
+				$address['firstname'] = $creditCard['firstname'];
+				$address['lastname'] = $creditCard['lastname'];
+				$address['telephone'] = $creditCard['telephone'];
+				$address['address'] = $creditCard['address'];
+				$address['address2'] = $creditCard['address2'];
+				$address['city'] = $creditCard['city'];
+				$address['state'] = $creditCard['state'];
+				$address['zip'] = $creditCard['zip'];
+								
+				Session::write('billing', $address);
+				$billing_passed = true;
+
+				/*
+				$datas['opt_submitted'] = 
+				$datas['opt_shipping'] = 
+				$datas['opt_save'] = 
+				$datas['opt_description'] = billing
+				$datas['opt_shipping_select']				
+				*/
+
+			} else if (!$datas['savedCreditCard'] && $datas['opt_save'] == 1) {
+				$creditCard[type] = $datas['card_type'];
+				$creditCard[number] = $datas['card_number'];
+				$creditCard[year] = $datas['card_year'];
+				$creditCard[month] = $datas['card_month'];
+				$creditCard[code] = $datas['card_code'];
+
+				$vars['billingAddr']['firstname'] = $datas[firstname];
+				$vars['billingAddr']['lastname'] = $datas[lastname];
+				$vars['billingAddr']['address'] = $datas[address];
+				$vars['billingAddr']['address2'] = $datas[address2];
+				$vars['billingAddr']['city'] = $datas[city];
+				$vars['billingAddr']['state'] = $datas[state];
+				$vars['billingAddr']['zip'] = $datas[zip];
+				$vars['user'] = $user;
+				$vars['creditCard'] = $creditCard;
+	
+			 	CreditCard::add($vars);
+			}
+			
 			#Check If the User want to save the current address
 			if(!empty($datas['opt_save'])) {
 				$save = true;
@@ -525,7 +605,6 @@ class OrdersController extends BaseController {
 			if($cc_infos->validates()) {
 				#Encrypt CC Infos with mcrypt
 				Session::write('cc_infos', $orderClass::creditCardEncrypt($cc_infos, (string)$user['_id'], true));
-				
 				
 				$cc_passed = true;
 				#Remove Credit Card Errors
@@ -562,7 +641,9 @@ class OrdersController extends BaseController {
 			$payment = Address::create(array_merge($data_add,$card));
 			#Init datas
 			$payment->shipping_select = '0';
-		}
+		} //END OF POST / REQUEST DATA
+		
+		
 		#Get all addresses of the current user
 		$addresses = Address::all(array(
 			'conditions' => array('user_id' => (string) $user['_id'], 'type' => 'Billing')
@@ -621,10 +702,13 @@ class OrdersController extends BaseController {
 			'payment',
 			'shipping',
 			'shipDate',
-			'cartExpirationDate'
+			'cartExpirationDate',
+			'missChristmasCount',
+			'notmissChristmasCount',
+			'creditcards'
 		);
 	}
-
+	
 	/**
 	 * Group all the items in an order by their corresponding event.
 	 *
