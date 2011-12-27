@@ -69,6 +69,7 @@
 							<li><a href="/category/accessories" title="View Accessories">Accessories</a></li>
 							<li><a href="/category/toys-books" title="View Toys &amp; Books">Toys &amp; Books</a></li>
 							<li><a href="/category/gear" title="View Gear">Gear</a></li>
+							<li><a href="/category/home" title="View Home">Home</a></li>
 							<li><a href="/category/moms-dads" title="View Moms &amp; Dads">Moms &amp; Dads</a></li>
 						</ul>
 					</li>

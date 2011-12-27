@@ -21,10 +21,16 @@
 	};
 })(jQuery);
 </script>
-	<h2 class="page-title gray">*NEED TO PULL IN CATEGORY NAME* <em>Need Total Sales Found</em></h2>
+	<h2 class="page-title gray">*NEED TO PULL IN CATEGORY NAME* <em>(Need Total Sales Found)</em></h2>
 	<div id="events-wrap" class="fullwidth">
 		<?php $x = 0; ?>
 		<?php foreach ($openEvents as $event): ?>
+		
+<!--
+		<pre>
+			<?php print_r($event->data()); ?>
+		</pre>
+-->
 		
 		<div class="event grid-x">
 			<div class="eventDetails group">
