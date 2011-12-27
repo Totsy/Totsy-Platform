@@ -4520,24 +4520,55 @@ nav .haschild ul {
 	margin:-1px 0 0; padding:3px 0 8px;
 	width:100%;
 	border-top:none;
+	-webkit-box-shadow: 4px 7px 6px rgba(0,0,0,0.09);
+	-moz-box-shadow: 4px 7px 6px rgba(0,0,0,0.09);
 	box-shadow: 4px 7px 6px rgba(0,0,0,0.09);
+	opacity:0.3;
+	-moz-transition: opacity 0.3s ease-in-out;
 }
-nav .haschild:hover ul {left:-1px;}
+nav .haschild:hover ul {
+	left:-1px;
+	opacity:1;
+}
 nav .haschild li {
-	margin:0.25em 0;
+/* 	margin:0.25em 0; */
 	line-height:1.5;
+/* 	-moz-transition: height 0.3s ease-in-out; */
 }
 nav .haschild li:last-child {margin-bottom:0;}
+nav .haschild:hover ul li {height: auto;}
 nav .haschild li a {
 	display: block;
 	padding: 0 10px;
 	color:#666; /* fallback */
 	color:rgba(0,0,0,0.6);
+/* 	-moz-transition: background 0.2s linear, color 0.2s linear; */
+}
+
+/* dropdown whizbang */
+nav .haschild li {
+	margin-top:-0.75em;
+	height:0.25em;
+	-moz-transition: margin 0.4s ease-in-out, height 0.4s ease-in-out;
+}
+nav .haschild li a {
+	margin-top:-0.75em;
+	height:0.25em;
+	-moz-transition: margin 0.4s ease-in-out, height 0.4s ease-in-out, background 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+nav .haschild:hover li {
+	margin:0.25em 0;
+	height: auto;
+}
+nav .haschild:hover li a {
+	margin:0;
+	height: auto;
 }
 nav .haschild li a:hover {
 	background:#f7d7d6;
 	color:rgba(0,0,0,0.9);
 }
+
 /* user utils - cart, account, login */
 #totsy > header #userUtils {
 	position: relative;
@@ -4583,13 +4614,16 @@ nav .haschild li a:hover {
 #userUtils .cart:hover,
 #userUtils .btn:hover {text-decoration: none;}
 #userUtils .checkout {
-	background-color:rgb(218,80,77);
+	background-color:rgb(218,80,77); /* fallback */
+	background-color:rgba(218,80,77,1);
 	color:#fff;
 }
 #userUtils .checkout strong {
 	padding-right:9px;
 	background: url(../img/btn-arrow-s.png) 100% 35% no-repeat;
 	}
+#userUtils .checkout:hover {background-color:rgba(230,87,84,1);}
+
 
 /* 
 	Category Pages - events - @DG-2011.12
