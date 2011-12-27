@@ -58,10 +58,10 @@ var discountErrors = new Object();
 <div class="message"></div>
 <?php if (!empty($subTotal)): ?>
 
-<div>
+
 <?php echo $this->form->create(null ,array('id'=>'cartForm')); ?>
 	<div id='message'><?php echo $message; ?></div>
-		<table class="cart-table">
+		<table class="cart-table" style="width: 100%;">
 			<tbody>
 			<?php $x = 0; ?>
 			<?php foreach ($cart as $item): ?>
@@ -71,7 +71,7 @@ var discountErrors = new Object();
 				<tr id="<?php echo $item->_id?>">
 			
 			<!-- end xmas -->
-					<td class="cart-desc" style="width:174px;">
+					<td class="cart-desc" style="width:260px;">
 						<?php echo $this->form->hidden("item$x", array('value' => $item->_id)); ?>
 						<strong><a href="#" onclick="window.location.href='/sale/<?php echo $item->event_url?>/<?php echo $item->url ?>';return false;"><?php echo $item->description ?></a>
 						
@@ -111,7 +111,7 @@ var discountErrors = new Object();
     					'id' => $item->_id, 'value' => $item->quantity, 'class'=>'quantity', 'data-role' => 'none'
 					));
 					?>
-										</td>
+					</td>
 
 					<td class="cart-time">
 						<div id='<?php echo "itemCounter$x"; ?>' class="counter" style="display:none;" title='<?php echo $date?>'></div>
@@ -120,11 +120,15 @@ var discountErrors = new Object();
 						<strong>$<?php echo number_format($item->sale_retail * $item->quantity ,2)?></strong>
 					</td>
 				</tr>
+				
+				
 				<?php $x++; ?>
 			<?php endforeach ?>
+			
 			</tbody>
 			</table>
-</div>
+			
+
 <?php echo $this->form->end(); ?>
 
 <div class="clear"></div>
@@ -132,10 +136,10 @@ var discountErrors = new Object();
 
 <div class="cart-code-buttons">
 	<?php if(!empty($credit)): ?>
-	<strong style="font-size:9px;"><a href="#" id="credits_lnk" onclick="open_credit();" >Use Credits</a></strong> /
+	<strong><a href="#" id="credits_lnk" onclick="open_credit();" >Use Credits</a></strong> /
 	<?php endif ?>
 	
-	<strong style="font-size:9px;"><a href="#" id="promos_lnk" onclick="open_promo();">Add Promo Code</a></strong>
+	<strong><a href="#" id="promos_lnk" onclick="open_promo();">Add Promo Code</a></strong>
 </div>
 
 <div style="clear:both"></div>
@@ -148,8 +152,15 @@ var discountErrors = new Object();
 	<div id="cred" style="display:none; text-align:left !important">
 	<?php echo $this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
 	</div>
+	
+	<hr />
 </div>
-			
+<p class="holiday_message">
+<?php if (!empty($savings)) : ?>
+Your Savings:
+$<?php echo number_format($savings,2)?>
+	<?php endif ?>
+</p>
 <div class="cart-subtotal-content">
 	<div class="subtotal" >
 	<span style="float:left;">Subtotal:</span>
@@ -219,12 +230,7 @@ var discountErrors = new Object();
 
 				<div style="clear:both" class="subtotal"><hr /></div>
 				<div>
-				    <div class="cart-savings" style="float:right;">
-				    <?php if (!empty($savings)) : ?>
-				    Your Savings:
-				    $<?php echo number_format($savings,2)?>
-				    	<?php endif ?>
-				    </div>
+				   
 				    <div class="clear"></div>
 				    <div class="subtotal" style="float:right;">
 				    <span class="cart-order-total">Order Total:</span>
