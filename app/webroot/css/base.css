@@ -4629,9 +4629,15 @@ nav .haschild li a:hover {
 	float:left; 
 	margin-left:7px;
 	width:125px; height:188px;
+	background:#f0eff9;
 	border:1px solid #bfbfbf;
 }
 #events-wrap .item:first-child {margin-left: 0;}
+#events-wrap .item a:link,
+#events-wrap .item a:visited {color:inherit;}
+#events-wrap .item a:hover {text-decoration: none;}
+#events-wrap .item h4 {color:#636466; font-size:12px;}
+#events-wrap .item p {color:#009900; font-siz:16px; font-weight: bold;}
 #events-wrap .viewAllEvents {
 	position: relative; left:2px;
 	float:left;

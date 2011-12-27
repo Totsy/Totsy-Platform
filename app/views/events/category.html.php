@@ -26,6 +26,12 @@
 		<?php $x = 0; ?>
 		<?php foreach ($openEvents as $event): ?>
 		
+<!--
+		<pre>
+			<?php print_r($event->data()); ?>
+		</pre>
+-->
+		
 		<div class="event grid-x">
 			<div class="eventDetails group">
 				<h3><?php echo $event->name; ?> <em id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $event->end_date->sec * 1000; ?>" class="counter end"></em><!-- @TODO - use data-attribute instead of title… better, use a date/time element instead of an em --></h3>
