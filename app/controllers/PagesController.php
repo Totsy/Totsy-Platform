@@ -38,8 +38,13 @@ class PagesController extends BaseController {
 		    }
 
 		}
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->render(array('template' => 'mobile_'.$path[0]));
+		} else {
+			$this->render(array('template' => $path[0]));
+		}
 		
-		$this->render(array('template' => $path[0]));
 	}
 
 }
