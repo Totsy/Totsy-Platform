@@ -7,6 +7,8 @@ use lithium\core\NetworkException;
 
 class MongoDb extends \lithium\data\source\MongoDb {
 
+	protected $_autoConfig = array('schema', 'handlers', 'classes' => 'merge');
+
 	/**
 	 * Instantiates the MongoDB adapter with the default connection information.
 	 *

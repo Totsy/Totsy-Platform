@@ -23,33 +23,48 @@ Connections::add('default', array(
 			'db2-dc1.totsy.com',
 			'db3-dc1.totsy.com'
 		),
-		'adapter' => 'app\extensions\adapter\data\source\MongoDb'
+		'adapter' => 'app\extensions\adapter\data\source\MongoDb',
+		'classes' => array(
+			'set' => 'app\extensions\data\DocumentSet'
+		)
 	),
 
 	'test' => array(
 		'type' => 'MongoDb',
 		'database' => 'totsy',
 		'host' => 'db1-dc1.totsystaging.com',
-		'adapter' => 'app\extensions\adapter\data\source\MongoDb'
+		'adapter' => 'app\extensions\adapter\data\source\MongoDb',
+		'classes' => array(
+			'set' => 'app\extensions\data\DocumentSet'
+		)
 	),
 
 	'development' => array(
 		'type' =>  'MongoDb',
 		'database' => 'totsy',
-		'host' => 'localhost'
+		'host' => 'localhost',
+		'classes' => array(
+			'set' => 'app\extensions\data\DocumentSet'
+		)
 	),
 
 	'eric' => array(
 		'type' =>  'MongoDb',
 		'database' => 'totsy_eric',
-		'host' => 'localhost'
+		'host' => 'localhost',
+		'classes' => array(
+			'set' => 'app\extensions\data\DocumentSet'
+		)
 	),
 
 	'local' =>array(
 		'type' =>  'MongoDb',
 		'database' => 'totsy',
 		'host' => 'localhost',
-		'adapter' => 'app\extensions\adapter\data\source\MongoDb'
+		'adapter' => 'app\extensions\adapter\data\source\MongoDb',
+		'classes' => array(
+			'set' => 'app\extensions\data\DocumentSet'
+		)
 	)
 
 ));

@@ -74,73 +74,82 @@
 				<option value="Medium">Medium</option>
 				<option value="Large">Large</option>
 			</select -->
+			<?php ob_start(); ?>
+				<?php if (!empty($items)): ?>
+					<?php $y = 0; ?>
+					<?php foreach ($items as $item): ?>
+						<?php
+							if (!empty($item->primary_image)) {
+								$image = $item->primary_image;
+								$productImage = "/image/$image.jpg";
+							} else {
+								$productImage = "/img/no-image-small.jpeg";
+							}
+						?>
+						<!-- Start the product loop to output all products in this view -->
+						<!-- Start product item -->
+							<?php if (($y == 0) || ($y == 2)): ?>
+								<div class="grid_4_hack">
+							<?php endif ?>
+							<?php if ($y == 1): ?>
+								<div class="grid_4_hack">
+							<?php endif ?>
+							<?php if ($y == 2): ?>
+								<?php $y = -1; ?>
+							<?php endif ?>
+							<div class="md-gray p-container roundy_product">
+								<?php if ($item->total_quantity <= 0): ?>
+										<?php echo $this->html->image('/img/soldout.png', array(
+											'title' => "Sold Out",
+											'style' => 'z-index : 99999; position : absolute; right:0;'
+										)); ?>
+								<?php endif ?>
+								<?php echo $this->html->link(
+									$this->html->image($productImage, array(
+										'alt' => $item->name,
+										'title' => $item->name,
+										'width' => '310')),
+									"sale/$event->url/{$item->url}",
+									array('title' => $item->name, 'escape' => false)
+								); ?>
+
+										<table style="margin:5px;">
+											<tr>
+												<td width="227" valign="top">
+													<a href="<?php echo "/sale/$event->url/$item->url"?>"><h2><?php echo $item->description ?></h2></a>
+												</td>
+												<td align="right">
+													<span class="price" style="text-transform:uppercase; font-weight:normal; font-size:20px; color: #009900; float:right;">$<?php echo number_format($item->sale_retail,2);?></span><br>
+													<span class="original-price" style="font-size:10px; white-space:nowrap;">Original $<?php echo number_format($item->msrp, 2);?></span>
+												</td>
+											</tr>
+										</table>
+							</div>
+						</div>
+						<?php $y++ ?>
+						<!-- End product item -->
+					<?php endforeach ?>
+				<?php endif ?>
+			<?php $itemResult = ob_get_clean(); ?>
+			<?php
+				$summary = $items->summarize();
+				$filters = $summary['filters'];
+			?>
 			<?php if(!empty($filters)): ?>
 		<div id='filterb' style='text-align:right'>
-			<?php echo $this->form->create(null, array('id' => 'filterform')); ?>
+			<?=$this->form->create(null, array('id' => 'filterform')); ?>
 			<label style="font-weight:bold; font-size:13px;">View by: &nbsp;</label>
-			<?php echo $this->form->select('filterby',$filters, array('onchange' => "filter()", 'id' => 'filterby', 'value' => array($departments => $departments))); ?>
-			<?php echo $this->form->end(); ?>
+			<?=$this->form->select('filterby', $filters, array(
+				'onchange' => "filter()",
+				'id' => 'filterby',
+				'value' => array($departments => $departments)
+			)); ?>
+			<?=$this->form->end(); ?>
 		</div>
 		<?php endif ?>
 		</div>
 		<br />
-		<?php if (!empty($items)): ?>
-			<?php $y = 0; ?>
-			<?php foreach ($items as $item): ?>
-				<?php
-					if (!empty($item->primary_image)) {
-						$image = $item->primary_image;
-						$productImage = "/image/$image.jpg";
-					} else {
-						$productImage = "/img/no-image-small.jpeg";
-					}
-				?>
-				<!-- Start the product loop to output all products in this view -->
-				<!-- Start product item -->
-					<?php if (($y == 0) || ($y == 2)): ?>
-						<div class="grid_4_hack">
-					<?php endif ?>
-					<?php if ($y == 1): ?>
-						<div class="grid_4_hack">
-					<?php endif ?>
-					<?php if ($y == 2): ?>
-						<?php $y = -1; ?>
-					<?php endif ?>
-					<div class="md-gray p-container roundy_product">
-						<?php if ($item->total_quantity <= 0): ?>
-								<?php echo $this->html->image('/img/soldout.png', array(
-									'title' => "Sold Out",
-									'style' => 'z-index : 99999; position : absolute; right:0;'
-								)); ?>
-						<?php endif ?>
-						<?php echo $this->html->link(
-							$this->html->image($productImage, array(
-								'alt' => $item->name,
-								'title' => $item->name,
-								'width' => '310')),
-							"sale/$event->url/{$item->url}",
-							array('title' => $item->name, 'escape' => false)
-						); ?>
-						
-						
-								<table style="margin:5px;">
-									<tr>
-										<td width="227" valign="top">
-											<a href="<?php echo "/sale/$event->url/$item->url"?>"><h2><?php echo $item->description ?></h2></a>
-										</td>
-										<td align="right">
-											<span class="price" style="text-transform:uppercase; font-weight:normal; font-size:20px; color: #009900; float:right;">$<?php echo number_format($item->sale_retail,2);?></span><br>
-											<span class="original-price" style="font-size:10px; white-space:nowrap;">Original $<?php echo number_format($item->msrp,2);?></span>
-										</td>
-									</tr>
-								</table>
-								
-					</div>
-				</div>
-				<?php $y++ ?>
-				<!-- End product item -->
-			<?php endforeach ?>
-		<?php endif ?>
+		<?php echo $itemResult; ?>
 <div class="clear"></div>
 
 

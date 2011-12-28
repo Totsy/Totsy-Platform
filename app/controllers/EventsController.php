@@ -63,22 +63,26 @@ class EventsController extends BaseController {
 		$url = $this->request->event;
 		$departments = '';
 
+		$pixel = Affiliate::getPixels('event', 'spinback');
+		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,  array(
+			'event' => $_SERVER['REQUEST_URI']
+		));
+
 		if (!empty($this->request->query['filter'])) {
 			$departments = ucwords($this->request->query['filter']);
 		}
-		if ($this->request->data){
+		if ($this->request->data) {
 			$datas = $this->request->data;
 			$departments = $datas["filterby"];
 		}
-		if (empty($departments)) {
-			$departments = 'All';
-		}
+		$departments = $departments ?: 'All';
+		$filters = array('All' => 'All');
+
 		if ($url == 'comingsoon') {
 			$this->_render['template'] = 'soon';
 		}
-		$event = Event::first(array('conditions' => array('enabled' => true, 'url' => $url)));
 
-		if (!$event) {
+		if (!$event = Event::first(array('conditions' => array('enabled' => true, 'url' => $url)))) {
 			$event = Event::first(array('conditions' => array('viewlive' => true, 'url' => $url)));
 		}
 		if (!$event) {
@@ -89,85 +93,55 @@ class EventsController extends BaseController {
 		if ($event->end_date->sec < time()) {
 			$this->redirect('/sales');
 		}
-		$pending = ($event->start_date->sec > time() ? true : false);
 
-		if ($pending == false) {
-			++$event->views;
-			$event->save();
-
-			if (!empty($departments)) {
-				$filters = array('All' => 'All', ucwords($departments) => ucwords($departments));
-			} else {
-				$filters = array('All' => 'All');
-			}
-			if (!empty($event->items)) {
-				$eventItems = Item::find('all', array(
-					'conditions' => array(
-						'event' => array((string) $event->_id),
-						'enabled' => true
-					),
-					'order' => array('created_date' => 'ASC')
-				));
-
-				foreach ($eventItems as $eventItem) {
-					$result = $eventItem->data();
-
-					if (array_key_exists('departments', $result) && !empty($result['departments'])) {
-						if (in_array($departments, $result['departments'])) {
-							if ($eventItem->total_quantity <= 0) {
-								$items_closed[] = $eventItem;
-							} else {
-								$items[] = $eventItem;
-							}
-						}
-						foreach($eventItem->departments as $value) {
-							$filters[$value] = $value;
-						}
-					}
-					if ($departments == 'All') {
-						if ($eventItem->total_quantity <= 0) {
-							$items_closed[] = $eventItem;
-						} else {
-							$items[] = $eventItem;
-						}
-						if (!empty($eventItem->departments)) {
-							foreach($eventItem->departments as $value) {
-								$filters[$value] = $value;
-							}
-						}
-					}
-				}
-				if (!empty($filters) && !empty($departments)) {
-					$filters = array_unique($filters);
-
-					if (array_key_exists('Momsdads', $filters) && !empty($filters['Momsdads'])) {
-						$filters['Momsdads'] = 'Moms & Dads';
-					}
-				}
-
-				//Sort items open/sold out
-				if (!empty($items_closed)) {
-					if (!empty($items)) {
-						foreach ($items_closed as $item) {
-							array_push($items, $item);
-						}
-					} else {
-						$items = $items_closed;
-					}
-				}
-			}
-			$type = 'Today\'s';
-		} else {
+		if ($pending = ($event->start_date->sec > time() ? true : false)) {
 			$items = null;
 			$type = 'Coming Soon';
+			return compact('event', 'items', 'shareurl', 'type', 'spinback_fb', 'departments', 'filters');
 		}
 
-		$pixel = Affiliate::getPixels('event', 'spinback');
-		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,  array(
-			'event' => $_SERVER['REQUEST_URI']
-		));
+		++$event->views;
+		$event->save();
 
-		return compact('event', 'items', 'shareurl', 'type', 'spinback_fb', 'departments', 'filters');
+		if ($departments) {
+			$filters = array('All' => 'All', ucwords($departments) => ucwords($departments));
+		}
+
+		if ($event->items && $event->items->count()) {
+			$items = Item::find('all', array(
+				'conditions' => array(
+					'event' => array((string) $event->_id),
+					'enabled' => true
+				),
+				'order' => array('created_date' => 'ASC', 'total_quantity' => 'DESC')
+			));
+
+			$items->addProcess(function($item, &$context) use ($filters, $departments) {
+				echo ".";
+				if (isset($context['filters'])) {
+					$filters = $context['filters'];
+				}
+				$itemDepts = $item->departments ? $item->departments->data() : array();
+
+				if ($itemDepts && (in_array($departments, $itemDepts) || $departments == 'All')) {
+					$filters = array_merge($filters, array_combine($itemDepts, $itemDepts));
+				}
+				$context['filters'] = $filters;
+			});
+
+			$items->finalize(function($context) use ($departments) {
+				$context += array('filters' => array());
+				$filters = array_unique((array) $context['filters']);
+
+				if (array_key_exists('Momsdads', $filters) && $departments) {
+					$filters['Momsdads'] = $filters['Momsdads'] ?: 'Moms & Dads';
+				}
+				return compact('filters');
+			});
+		}
+		$type = 'Today\'s';
+
+		return compact('event', 'items', 'shareurl', 'type', 'spinback_fb', 'departments');
 	}
 
 	public function inventoryCheck($events) {
