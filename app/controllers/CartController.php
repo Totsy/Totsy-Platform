@@ -140,10 +140,13 @@ class CartController extends BaseController {
 		$serviceAvailable = false;
 		if(Session::check('service_available')) {
 			$serviceAvailable = Session::read('service_available');
+		}		
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_view';
 		}
 		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping','overShippingCost', 'serviceAvailable');
-
-	}
+}
 
 	/**
 	 * The add method increments the quantity of one item.
@@ -236,9 +239,12 @@ class CartController extends BaseController {
 				}
 			}
 		}
+		if(!$this->request->is('mobile')){
 		//call the cart popup
 		$this->getCartPopupData();
+		}
 	}
+	
 
 
 	/**
