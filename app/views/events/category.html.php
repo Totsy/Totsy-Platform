@@ -65,7 +65,7 @@
 					<a href="<?php echo 'sale/' . $item['url']?>" title="<?php echo $item['description'];?>">
 						<img width="125" height="126" src="<?php echo "http://www.totsy.com/image/" . $item['primary_image'] . ".jpg";?>" alt="IMAGE ALT HERE" />
 						<h4><?php echo $item['description'];?></h4>
-						<p>$<?php echo $item['sale_retail'];?></p>
+						<p>$<?php echo number_format($item['sale_retail'],2);?></p>
 					<a></a>
 				</div><!-- /.item -->
 			<?php
