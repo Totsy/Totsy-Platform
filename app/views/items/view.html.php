@@ -87,7 +87,7 @@
 		<div id="listingCountdown" class="listingCountdown"></div>
 	</div>
 	<div id="detail-top-left"  style="width:405px;">
-		<h1><strong><?php echo $event->name?></strong> <?php echo $item->description." ".$item->color; ?></h1>
+		<h1><?php echo $item->description." ".$item->color; ?></h1>
 	</div>
 		<div class="clear"></div>
 
@@ -110,14 +110,6 @@
 			Complete shipping details are available at <?php echo $this->html->link('shipping terms', array('Pages::shipping')); ?>.
 
 			<p><strong>Returns:</strong> Totsy accept returns on selected items only. You will get a merchandise credit and free shipping (AK &amp; HI: air shipping rates apply). Simply be sure that we receive the merchandise you wish to return within 30 days from the date you originally received it in its original condition with all the packaging intact. Please note: Final Sale items cannot be returned. Want to learn more? Read more in our <?php echo $this->html->link('returns section', array('Pages::returns')); ?>.</p>
-
-			<?php
-			if($item->miss_christmas){
-				echo "<span style='color:#ff0000; font-weight:bold; font-size:30px;'>item will ship AFTER xmas</span>";
-			}
-
-			?>
-
 			</div>
 		</div>
 	<!--Disney -->
@@ -186,53 +178,16 @@
 				</span>
 				<div id="all-reserved"></div>
 
-				<?php
-				if($item->miss_christmas){
-				?>
-				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#ff0000; font-size:11px;text-align:left;">
-				<img src="/img/truck_grey.png">
-				This item is not guaranteed to be delivered on or before 12/25.*
-				</div>
-				<?php
-				}
-				else{
-				?>
-				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#999999; font-size:11px;text-align:left;">
-				<img src="/img/truck_grey.png">
-				This item will be delivered on or before 12/23*
-				</div>
-
-
-				<?php
-				}
-				?>
 
 			<?php endif ?>
 		</div>
 	</div>
-	<div style="padding:10px 0px; text-align:center !important;">
+	<div style="padding: 10px 0px; text-align: center ! important; position: absolute; top: 253px; right: 153px;">
 	    <?php echo $spinback_fb; ?>
 	</div>
 </div>
 <div class="clear"></div>
 
-<div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
-				<?php
-				if($item->miss_christmas){
-				?>
-				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions.
-				<?php
-				}
-				else{
-				?>
-
-				* Our delivery guarantee does not apply when transportation networks are affected by weather.
-
-				<?php
-				}
-				?>
-
-</div>
 </div>
 
 <div id="modal" style="background:#fff!important; z-index:999!important;"></div>

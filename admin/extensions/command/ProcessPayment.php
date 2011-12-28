@@ -50,6 +50,7 @@ class ProcessPayment extends \lithium\console\Command  {
 	 * Find all the orders that haven't been shipped which have stock status.
 	 */
 	public function run() {
+		error_reporting(E_ERROR | E_PARSE);
 		Logger::info('Starting Payment Processor');
 		Environment::set($this->env);
 		$this->capture();
@@ -68,8 +69,8 @@ class ProcessPayment extends \lithium\console\Command  {
 	    /**
 	        Continue to process no matter how long it takes
 	    **/
-	    MongoCursor::$timeout = -1;
-		$ordersCollection = Order::connection()->connection->orders;
+	    MongoCursor::$timeout = 50000;
+		$ordersCollection = Order::collection();
 		if ($this->test != 'true') {
             $orders = $ordersCollection->find(array(
                 'ship_records' => array('$exists' => true),
@@ -133,14 +134,14 @@ class ProcessPayment extends \lithium\console\Command  {
 	    }
 	    $content['tableInfo'] = $tableInfo;
 	    if ($failedOrders) {
-            if ($this->test != "true") {
+            if ($this->test != "true" && (Environment::is('production'))) {
                 Mailer::send('Failed_Capture_Report',"searnest@totsy.com",$content);
                 Mailer::send('Failed_Capture_Report',"gsuper@totsy.com",$content);
                 Mailer::send('Failed_Capture_Report',"kogrady@totsy.com",$content);
                 Mailer::send('Failed_Capture_Report',"mruiz@totsy.com",$content);
             } else {
-                 Mailer::send('Failed_Capture_Report',"lhanson@totsy.com",$content);
-                 Mailer::send('Failed_Capture_Report',"kkim@totsy.com",$content);
+                //Mailer::send('Failed_Capture_Report',"lhanson@totsy.com",$content);
+                Mailer::send('Failed_Capture_Report',"troyer@totsy.com",$content);
             }
         }
 	}

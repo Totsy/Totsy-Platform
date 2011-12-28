@@ -185,6 +185,49 @@ class Cart extends Base {
 	}
 
 	/**
+	* Computes the sales tax for all items in cart, based on the shipping destination.
+	*
+	* @param object $cart
+	* @param object $shipping
+	* @param float  $totalDiscount
+	* @return float
+	*/
+	public static function taxCart($cart, $shipping, $totalDiscount = 0) {
+		$states = array('ny','nj');
+		
+		// don't continue if state is not in a list of 'taxable' states
+		if (!in_array(strtolower($shipping['state']),$states) || !$cart ) return 0;
+		
+		$obj = new self();
+		$zipCheckPartial = in_array(substr($shipping['zip'], 0, 3), $obj->_nyczips);
+		$zipCheckFull = in_array($shipping['zip'], $obj->_nyczips);
+		$nysZip = ($zipCheckPartial || $zipCheckFull) ? true : false;
+		unset($obj);
+	
+		switch ($shipping['state']) {
+			case 'NY':
+				$taxRate = ($nysZip) ? static::TAX_RATE : static::TAX_RATE_NYS;
+				break;
+			case 'NJ':
+				$taxRate = static::TAX_RATE_NJS  ;
+				break;
+			default: 
+				$taxRate = 0;
+			break;
+		}
+		
+		$taxTotal = 0;
+		foreach ($cart as $item){		
+			$nycExempt = ($nysZip && $item->sale_retail < 110) ? true : false;
+			if ($item->taxable != false || $nycExempt) {
+				$taxTotal += ($item->sale_retail * $item->quantity) * $taxRate;
+			}
+		}
+	
+		return $taxTotal;
+	}
+	
+	/**
 	 * Computes the sales tax for an individual item, based on the shipping destination.
 	 *
 	 * @param object $cart
@@ -428,7 +471,7 @@ class Cart extends Base {
 	 * @param object $order
 	 * @return string
 	 */
-	public static function shipDate($cart, $normal=false) {
+	public static function shipDate($cart, $normal=true) {
 
 		//shows calculated shipdate
 		if($normal){
@@ -629,13 +672,11 @@ class Cart extends Base {
 		$postSubtotal = ($subTotal + $tax + $shippingCost + $overShippingCost - $services['tenOffFitfy'] - $services['freeshipping']['shippingCost'] - $services['freeshipping']['overSizeHandling']);
 		#Calculation After Promo
 		$postDiscountTotal = ($postSubtotal + $cartPromo['saved_amount']);
-		#Post Discount Credit
-		$preCreditSubTotal = ($subTotal + $cartPromo['saved_amount'] - $services['tenOffFitfy']);
 		#Avoid Negative Total
 		if($postDiscountTotal < 0.00) {
 			$postDiscountTotal = 0.00;
 		}
-		$cartCredit->checkCredit($credit_amount, $preCreditSubTotal, $userDoc);
+		$cartCredit->checkCredit($credit_amount, $postDiscountTotal, $userDoc);
 		#Apply credit to the Total
 		if(!empty($cartCredit->credit_amount)) {
 			$postDiscountTotal += $cartCredit->credit_amount;

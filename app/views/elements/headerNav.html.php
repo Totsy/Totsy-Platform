@@ -5,12 +5,10 @@
 		<?php echo "{$userInfo['firstname']} {$userInfo['lastname']}"; ?>
 		<?php else:?>
 		<?php if (is_array($userInfo) && array_key_exists('email', $userInfo)) { echo $userInfo['email']; } ?>
-		<?php endif; ?>
-		<?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
-		(<?php echo $this->html->link('Sign Out', $logout, array('title' => 'Sign Out')); ?>)
-		<?php endif ?>
+		<?php endif; ?>		
+		(<?php echo $this->html->link('Sign Out', "#", array('title' => 'Sign Out', 'onClick'=>'goToLogout()')); ?>)
+		<?php endif ?>		
 	</div>
-
 	<div class="menu_top_right">
 		<?php if (!(empty($userInfo))) { ?>
 		<a href="/account" title="My Account">My Account</a>

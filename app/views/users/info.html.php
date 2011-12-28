@@ -61,7 +61,7 @@
 						))
 					;?>
 				</div>
-
+				
 			<?php echo $this->form->submit('Update', array('class' => 'button fr')); ?>
 			<?php echo $this->form->end();?>
 		</fieldset>
@@ -75,7 +75,7 @@
 	<?php else: ?>
 		<h2 class="gray mar-b">Connect your Facebook Account with Totsy</h2>
 		<hr />
-		<fb:login-button perms="email,publish_stream, offline_access" size="large" length="long" v="2" style="text-align:center;">Connect With Facebook</fb:login-button>
+		<fb:login-button scope="email" size="large" length="long" v="2" style="text-align:center;">Connect With Facebook</fb:login-button>
 		<div id="fb-root"></div>
 	<?php endif ?>
 </div>
@@ -91,7 +91,8 @@
     FB.init({
       appId   : <?php echo $fbconfig['appId']; ?>,
       session : <?php echo json_encode($fbsession); ?>, // don't refetch the session when PHP already has it
-      status  : true, // check login status
+	  oauth: true,      
+	  status  : true, // check login status
       cookie  : true, // enable cookies to allow the server to access the session
       xfbml   : true // parse XFBML
     });

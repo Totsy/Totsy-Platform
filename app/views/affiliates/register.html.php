@@ -89,6 +89,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 <div class="round">
 <!-- left side -->
 <div class="grid_6">
+
 <?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
 </div>
 <!-- right side -->
@@ -157,7 +158,9 @@ var google_conversion_value = 0;
 //your fb login function
 function fblogin() {
 FB.login(function(response) {
-}, {perms:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
+	if (response.authResponse) {
+		window.location.reload();    
+  }}, {scope:'email'});
 }
 </script>
 

@@ -20,6 +20,7 @@ use lithium\util\Validator;
 use MongoDate;
 use MongoId;
 use app\extensions\Mailer;
+use app\extensions\AvaTax;
 
 /**
  * The Orders Controller
@@ -79,7 +80,11 @@ class OrdersController extends BaseController {
 					}
 				}
 			}
+		}if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_index';
 		}
+		
 		return (compact('orders', 'shipDate', 'trackingNumbers', 'lifeTimeSavings'));
 	}
 
@@ -123,6 +128,7 @@ class OrdersController extends BaseController {
 		$orderEvents = $this->_orderEvents($order);
 		//Check if all items from one event are closed
 		foreach($itemsByEvent as $key => $items_e) {
+			$url = Event::find('first', array('conditions' => array('_id'=> $key)));
 			foreach($items_e as $key_b => $item) {
 				if(empty($item['cancel'])) {
 					$openEvent[$item['event_id']] = true;
@@ -172,25 +178,17 @@ class OrdersController extends BaseController {
 		}
 		//Calculatings Savings
 		$savings = 0;
-		$missChristmasCount = 0;
-		$notmissChristmasCount = 0;
 		foreach ($order->items as $item) {
-
-			if($item['miss_christmas']){
-				$missChristmasCount++;
-			}
-			else{
-				$notmissChristmasCount++;
-			}
-
-
 
 			$itemInfo = Item::find('first', array('conditions' => array("_id" => new MongoId($item["item_id"]))));
 			if (empty($item->cancel)) {
 				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
 			}
 		}
-
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_view';
+		}
 		return compact(
 			'order',
 			'orderEvents',
@@ -203,8 +201,6 @@ class OrdersController extends BaseController {
 			'spinback_fb',
 			'shipRecord',
 			'openEvent',
-			'missChristmasCount',
-			'notmissChristmasCount',
 			'savings'
 		);
 	}
@@ -230,7 +226,6 @@ class OrdersController extends BaseController {
 			'primary_image',
 			'expires',
 			'event_name',
-			'miss_christmas',
 			'event'
 		);
 		#Check Expires
@@ -239,8 +234,6 @@ class OrdersController extends BaseController {
 		$address = null;
 		$selected = null;
 		$cartExpirationDate = 0;
-		$missChristmasCount = 0;
-		$notmissChristmasCount = 0;
 		$addresses_ddwn = array();
 		$shipDate = null;
 		$error = null;
@@ -307,20 +300,15 @@ class OrdersController extends BaseController {
 		$shipDate = Cart::shipDate($cart);
 		foreach($cart as $item){
 
-			if($item['miss_christmas']){
-				$missChristmasCount++;
-			}
-			else{
-				$notmissChristmasCount++;
-			}
-
-
 			if($cartExpirationDate < $item['expires']->sec) {
 				$cartExpirationDate = $item['expires']->sec;
 			}
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
-
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_shipping';
+		}
 		return compact(
 			'address',
 			'addresses_ddwn',
@@ -328,9 +316,7 @@ class OrdersController extends BaseController {
 			'cartEmpty',
 			'error',
 			'selected',
-			'cartExpirationDate',
-			'missChristmasCount',
-			'notmissChristmasCount'
+			'cartExpirationDate'
 		);
 	}
 
@@ -371,7 +357,6 @@ class OrdersController extends BaseController {
 			'primary_image',
 			'expires',
 			'event',
-			'miss_christmas',
 			'discount_exempt'
 		);
 		$promocode_disable = false;
@@ -384,16 +369,9 @@ class OrdersController extends BaseController {
 		#Get Value Of Each and Sum It
 		$subTotal = 0;
 		$cartExpirationDate = 0;
-		$missChristmasCount = 0;
-		$notmissChristmasCount = 0;
 
+		$i = 0;
 		foreach ($cart as $cartValue) {
-			if($cartValue->miss_christmas){
-				$missChristmasCount++;
-			}
-			else{
-				$notmissChristmasCount++;
-			}
 
 
 			#Get Last Expiration Date
@@ -403,10 +381,12 @@ class OrdersController extends BaseController {
 			$event = Event::find('first', array(
 				'conditions' => array('_id' => $cartValue->event[0])
 			));
+			$cartItemEventEndDates[$i] = is_object($event->end_date) ? $event->end_date->sec : $event->end_date;
 			$cartValue->event_name = $event->name;
 			$cartValue->event_url = $event->url;
 			$cartValue->event_id = $cartValue->event[0];
 			$subTotal += $cartValue->quantity * $cartValue->sale_retail;
+			$i++;
 			unset($cartValue->event);
 		}
 		#Get Shipping / Billing Infos + Costs
@@ -422,7 +402,6 @@ class OrdersController extends BaseController {
 		$avatax = $taxClass::getTax(compact(
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'));
-
 		$tax = (float) $avatax['tax'];
 		#Get current Discount
 		$vars = Cart::getDiscount($subTotal, $shippingCost, $overShippingCost, $this->request->data, $tax);
@@ -439,15 +418,14 @@ class OrdersController extends BaseController {
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
 			$shipping_discount = $shippingCost + $overShippingCost;
 		}
-
 		#Calculate Order Total
-		$total = $vars['postDiscountTotal'];
+		$total = round(floatval($vars['postDiscountTotal']), 2);
 		#Read Credit Card Informations
 		$creditCard = $orderClass::creditCardDecrypt((string)$user['_id']);
 		#Organize Datas
 		$vars = $vars + compact(
-			'user', 'cart', 'total', 'subTotal', 'creditCard',
-			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'shipping_discount'
+			'user', 'cart', 'total', 'subTotal',
+			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'shipping_discount','creditCard'
 		);
 		if ((!$cartEmpty) && (!empty($this->request->data['process']))) {
 
@@ -468,6 +446,10 @@ class OrdersController extends BaseController {
 		if(Session::check('service_available')) {
 			$serviceAvailable = Session::read('service_available');
 		}
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_review';
+		}
 		return $vars + compact(
 			'cartEmpty',
 			'order',
@@ -477,9 +459,8 @@ class OrdersController extends BaseController {
 			'services',
 			'cartExpirationDate',
 			'promocode_disable',
-			'missChristmasCount',
-			'notmissChristmasCount',
-			'serviceAvailable'
+			'serviceAvailable',
+			'cartItemEventEndDates'
 		);
 	}
 
@@ -510,15 +491,12 @@ class OrdersController extends BaseController {
 			'primary_image',
 			'expires',
 			'event_name',
-			'miss_christmas',
 			'event'
 		);
 		#Check Expires
 		Cart::cleanExpiredEventItems();
 		#Prepare datas
 		$cartExpirationDate = 0;
-		$missChristmasCount = 0;
-		$notmissChristmasCount = 0;
 
 		$address = null;
 		$payment = null;
@@ -562,6 +540,8 @@ class OrdersController extends BaseController {
 			if($cc_infos->validates()) {
 				#Encrypt CC Infos with mcrypt
 				Session::write('cc_infos', $orderClass::creditCardEncrypt($cc_infos, (string)$user['_id'], true));
+				
+				
 				$cc_passed = true;
 				#Remove Credit Card Errors
 				Session::delete('cc_error');
@@ -623,12 +603,6 @@ class OrdersController extends BaseController {
 		));
 		$shipDate = Cart::shipDate($cart);
 		foreach($cart as $item){
-			if($item['miss_christmas']){
-				$missChristmasCount++;
-			}
-			else{
-				$notmissChristmasCount++;
-			}
 
 			if($cartExpirationDate < $item['expires']->sec) {
 				$cartExpirationDate = $item['expires']->sec;
@@ -641,11 +615,33 @@ class OrdersController extends BaseController {
 				$data_add = Session::read('billing');
 				$payment = Address::create(array_merge($data_add,$card));
 			}
-			$payment->errors( $payment->errors() + array( 'cc_error' => Session::read('cc_error')));
+			
+			
+			//error handling is not properly done
+			//errors from cybersource are not description or consumer-friendly
+			//errors need to be captured and then re-worded for users
+			//for now we have hardcoded a generic error message for all cc_errors stored in Session
+			
+			
+			//$payment->errors( $payment->errors() + array( 'cc_error' => Session::read('cc_error')));
+			$ccErrorTextGeneric = "We are not able to charge this credit card.  Please verify that your credit card number, expiration date, and security code are valid, or try another card.";
+			$payment->errors(array( 'cc_error' => $ccErrorTextGeneric));
 			Session::delete('cc_error');
 			Session::delete('billing');
 		}
-		return compact('address','addresses_ddwn','selected','cartEmpty','payment','shipping','shipDate','cartExpirationDate','missChristmasCount','notmissChristmasCount');
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_payment';
+		}
+		return compact('address',
+			'addresses_ddwn',
+			'selected',
+			'cartEmpty',
+			'payment',
+			'shipping',
+			'shipDate',
+			'cartExpirationDate'
+		);
 	}
 
 	/**

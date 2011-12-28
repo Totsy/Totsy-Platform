@@ -24,6 +24,11 @@ class BaseController extends \lithium\action\Controller {
 		$this->_classes += $vars['_classes'];
 
 		parent::__construct($config);
+		if ($user && $this->request->is('mobile')) {
+		 		$this->_render['layout'] = 'mobile_main';
+			} else {
+				$this->_render['layout'] = 'main';
+			}
 	}
 
 	/**
@@ -42,19 +47,23 @@ class BaseController extends \lithium\action\Controller {
         User::setupCookie();
 		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
 	    $logoutUrl = $logoutUrl . "$_SERVER[SERVER_NAME]/logout";
+	    
 		/**
 		 * Setup all the necessary facebook stuff
 		 */
-		$this->fbsession = $fbsession = FacebookProxy::getSession();
-		$fbconfig = FacebookProxy::config();
+		
+		/**
+		 * Setup all the necessary facebook stuff
+		 */
 
-		if($this->fbsession){
-			$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
-		}
-		else{
+		$this->fbsession = $fbsession = FacebookProxy::getUser();		
+		$fbconfig = FacebookProxy::config(); 
+
+		if ($this->fbsession) {
+			$fblogout = FacebookProxy::getLogoutUrl(array('next' => $logoutUrl));			
+		} else {
 			$fblogout = "/logout";
 		}
-
 
 		if ($userInfo) {
 			$user = User::find('first', array(
@@ -65,11 +74,11 @@ class BaseController extends \lithium\action\Controller {
 			    /**
 			    * If the users account has been deactivated during login,
 			    * destroy the users session.
-			    **/
-			    if ($user->deactivated == true) {
+			    **/			    
+			    if ($user->deactivated == true) {			    
 			        Session::clear(array('name' => 'default'));
 			        Session::delete('appcookie', array('name' => 'cookie'));
-		            FacebookProxy::setSession(null);
+					//FacebookProxy::setSession(null);
 			    }
 				$decimal = ($user->total_credit < 1) ? 2 : 0;
 				$credit = ($user->total_credit > 0) ? number_format($user->total_credit, $decimal) : 0;
@@ -130,8 +139,8 @@ class BaseController extends \lithium\action\Controller {
 		**/
 		$this->set(compact('pixel'));
 
-		$this->_render['layout'] = 'main';
 
+			
 	}
 
 	/**
