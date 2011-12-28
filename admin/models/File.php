@@ -11,7 +11,7 @@ use MongoDate;
 use MongoCode;
 use Imagine\Gd\Imagine;
 
-class File extends \lithium\data\Model {
+class File extends Base {
 
 	protected $_meta = array('source' => 'fs.files');
 
@@ -22,6 +22,20 @@ class File extends \lithium\data\Model {
 	 * @var boolean
 	 */
 	public static $dedupe = true;
+
+	 /**
+     * Ensure only unused files can be deleted.
+     */
+    public function _init() {
+        File::applyFilter('delete', function($self, $params, $chain) {
+            if (File::$dedupe && File::used($params['entity']->_id)) {
+                return false;
+            }
+            return $chain->next($self, $params, $chain);
+        });
+        parent::_init();
+    }
+
 
 	/**
 	 * Writes contents of an open handle to GridFS. Deduplication will take
@@ -114,7 +128,7 @@ class File extends \lithium\data\Model {
 		));
 		if ($result->count()) {
 			return true;
-		}admin/tests/functional/WebDavTest.php
+		}
 
 		$result = Item::all(array(
 			'conditions' => array(
@@ -224,6 +238,7 @@ class File extends \lithium\data\Model {
 			return $type;
 		}
 	}
+
 	protected static function _upgrade($stream) {
 		$meta = stream_get_meta_data($stream);
 
@@ -235,14 +250,5 @@ class File extends \lithium\data\Model {
 
 		return $upgrade;
 	}
-/**
- * Ensure only unused files can be deleted.
- */
-File::applyFilter('delete', function($self, $params, $chain) {
-	if (File::$dedupe && File::used($params['entity']->_id)) {
-		return false;
-	}
-	return $chain->next($self, $params, $chain);
-});
-
+}
 ?>

@@ -41,20 +41,6 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 	));
 });
 
-/* affiliate routing for categories and affiliates in an URL */
-Router::connect('/{:category:[a-z_]+}', array(), function($request) {
-   if (!isset($request->query['a']) || !preg_match('/^[a-z_]+$/', $request->query['a'])) {
-       return false;
-   }
-   $request->params = array(
-       'controller' => 'affiliates',
-       'action' => 'register',
-       'args' => array($request->query['a'], $request->category)
-   );
-
-   return $request;
-});
-
 Router::connect('/api/help/{:args}', array('controller' => 'API', 'action' => 'help'));
 Router::connect('/api/{:args}', array('controller' => 'API', 'action' => 'index'));
 
@@ -70,9 +56,6 @@ Router::connect('/momoftheweek/fbml', 'MomOfTheWeeks::fbml');
 Router::connect('/surveys', 'Surveys::index');
 Router::connect('/invitation/{:args}', 'Users::register');
 Router::connect('/join/{:args}', 'Users::register');
-Router::connect('/affiliate/{:args}', 'Affiliates::registration');
-Router::connect('/a/{:args:[a-zA-Z0-9&\?\.=:/_]+}', 'Affiliates::register');
-
 Router::connect('/reset', 'Users::reset');
 Router::connect('/pages/{:args}', 'Pages::view');
 Router::connect('/livingsocial', array('Pages::view', 'args' => array('living_social')));
@@ -115,6 +98,24 @@ if (!Environment::is('production')) {
 	Router::connect('/test/{:args}', array('controller' => '\lithium\test\Controller'));
 	Router::connect('/test', array('controller' => '\lithium\test\Controller'));
 }
+
+#Affiliate Routing
+Router::connect('/affiliate/{:args}', 'Affiliates::registration');
+Router::connect('/a/{:args:[a-zA-Z0-9&\?\.=:/_]+}', 'Affiliates::register');
+
+/* affiliate routing for categories and affiliates in an URL */
+Router::connect('/{:category:[a-z_]+}', array(), function($request) {
+   if (!isset($request->query['a']) || !preg_match('/^[a-z_]+$/', $request->query['a'])) {
+       return false;
+   }
+   $request->params = array(
+       'controller' => 'affiliates',
+       'action' => 'register',
+       'args' => array($request->query['a'], $request->category)
+   );
+
+   return $request;
+});
 
 /**
  * Finally, connect the default routes.

@@ -260,26 +260,27 @@ class OrderTest extends \lithium\test\Unit {
 			'_test' => 'a',
 			'date_created' => new MongoDate(strtotime('August 3, 2011')),
 			'shipping' => array(
-				'firstname' => 'George',
+				'firstname' => 'Elephant',
 				'lastname' => 'Opossum'
 			)
 		);
 		$order1 = Order::create($data);
-		$order1->save(null, array('validate' => false));
-
+		$success = $order1->save(null, array('validate' => false));
+        $this->assertTrue($success, "Order 1 was successfully failed");
 		$data = array(
 			'_test' => 'b',
 			'date_created' => new MongoDate(strtotime('August 3, 2011')),
 			'billing' => array(
-				'firstname' => 'Leonardo',
+				'firstname' => 'Tigger',
 				'lastname' => 'di Caprio'
 			)
 		);
 		$order2 = Order::create($data);
-		$order2->save(null, array('validate' => false));
+		$success = $order2->save(null, array('validate' => false));
+		$this->assertTrue($success, "Order 2 was successfully failed");
 
 		$expected = 'a';
-		$result = current(iterator_to_array(Order::orderSearch('George', 'name')));
+		$result = current(iterator_to_array(Order::orderSearch('Elephant', 'name')));
 		$result = $result['_test'];
 		$this->assertEqual($expected, $result);
 
@@ -289,7 +290,7 @@ class OrderTest extends \lithium\test\Unit {
 		$this->assertEqual($expected, $result);
 
 		$expected = 'b';
-		$result = current(iterator_to_array(Order::orderSearch('Leonardo', 'name')));
+		$result = current(iterator_to_array(Order::orderSearch('Tigger', 'name')));
 		$result = $result['_test'];
 		$this->assertEqual($expected, $result);
 
@@ -299,7 +300,7 @@ class OrderTest extends \lithium\test\Unit {
 		$this->assertEqual($expected, $result);
 
 		$expected = 'b';
-		$result = current(iterator_to_array(Order::orderSearch('Leo', 'name')));
+		$result = current(iterator_to_array(Order::orderSearch('Tigg', 'name')));
 		$result = $result['_test'];
 		$this->assertEqual($expected, $result);
 

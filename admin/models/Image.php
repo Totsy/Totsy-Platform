@@ -158,13 +158,6 @@ class Image extends \admin\models\File {
 					Logger::debug("Found item `{$item->_id}` by URL for `{$meta['name']}`.");
 				}
 
-
-				if($banner){
-					$banner->img2 = $file->_id;
-					//return $banner->save();
-					//return $items;
-				}
-
 				if (!$item) {
 					return false;
 				}
