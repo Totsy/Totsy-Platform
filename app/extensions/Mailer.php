@@ -27,7 +27,7 @@ class Mailer {
 
 	public static function purchase($email,array $items = array(), array $args = array()){
 		// Remove Sailthru until it can be done asynchronously
-		/*	
+		/*
 		$data = array(
             'email' => $email,
             'items' => $items
