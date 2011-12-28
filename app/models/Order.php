@@ -68,7 +68,7 @@ class Order extends Base {
 				'state' => $vars['billingAddr']['state'],
 				'zip' => $vars['billingAddr']['zip'],
 				'country' => $vars['billingAddr']['country'] ?: 'US',
-				'email' =>  $vars['user']['email'] 
+				'email' =>  $vars['user']['email']
 		);
 		#Create Payment Object that contains Payment Informations
 		$paymentInfos = $payments::create('default', 'creditCard', $creditCard + array(
@@ -197,7 +197,7 @@ class Order extends Base {
 			unset($cc_encrypt['valid']);
 			$order->cc_payment = $cc_encrypt;
 		}
-		#Check in which case to store profile with token in Cybersource 
+		#Check in which case to store profile with token in Cybersource
 		$userInfos = $usersCollection->findOne(array('_id' => new MongoId($user['_id'])));
 		$profileID = User::hasCyberSourceProfile($userInfos, $creditCard['number']);
 		if(empty($profileID)) {
@@ -223,7 +223,7 @@ class Order extends Base {
 		}
 		$cart = Cart::active();
 		#Save Order Infos
-		$shipDate = Cart::shipDate($cart);
+		$shipDate = Cart::shipDate($cart,true);
 		if($shipDate=="On or before 12/23"){
 			$shipDateInsert = strtotime("2011-12-23".' +1 day');
 		}
