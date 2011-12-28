@@ -58,10 +58,14 @@
 			<div class="items group">
 			<?php
 			//print_r($event->eventItems);
-			$items = $event['eventItems'];
 			
-			foreach($items as $item){ ?>
-				<div class="item">
+			foreach($event['eventItems'] as $item){ ?>
+<!--
+					<pre>
+						<?//php print_r($item); ?>
+					</pre> 
+-->
+				<div class="item" data-prodID="<?php echo $item['_id'] ?>">
 					<a href="<?php echo 'sale/' . $item['url']?>" title="<?php echo $item['description'];?>">
 						<img width="125" height="126" src="<?php echo "http://www.totsy.com/image/" . $item['primary_image'] . ".jpg";?>" alt="IMAGE ALT HERE" />
 						<h4><?php echo $item['description'];?></h4>
