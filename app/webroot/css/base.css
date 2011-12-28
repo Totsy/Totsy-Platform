@@ -4520,7 +4520,7 @@ nav #bycat {width:121px;}
 nav #byage {width:104px;}
 nav > ul li.haschild > a em {padding-left:0; padding-right:33px; background-position: 100% -69px;}
 
-/* subcats in main nav */
+/* dropdown whizbang subcats in main nav */
 nav .haschild ul {
 	position: absolute; top:auto; left: -999em; z-index:100;
 	margin:-1px 0 0; padding:3px 0 8px;
@@ -4534,7 +4534,7 @@ nav .haschild ul {
 	-webkit-box-shadow: 4px 7px 6px rgba(0,0,0,0.09);
 	-moz-box-shadow: 4px 7px 6px rgba(0,0,0,0.09);
 	box-shadow: 4px 7px 6px rgba(0,0,0,0.09);
-	opacity:0.3;
+	opacity:0;
 	-webkit-transition: opacity 0.3s ease-in-out;
 	-moz-transition: opacity 0.3s ease-in-out;
 	transition: opacity 0.3s ease-in-out;
@@ -4544,29 +4544,19 @@ nav .haschild:hover ul {
 	opacity:1;
 }
 nav .haschild li {
-	line-height:1.5;
-}
-nav .haschild li:last-child {margin-bottom:0;}
-nav .haschild:hover ul li {height: auto;}
-nav .haschild li a {
-	display: block;
-	padding: 0 10px;
-	color:#666; /* fallback */
-	color:rgba(0,0,0,0.6);
-}
-
-/* dropdown whizbang */
-nav .haschild li {
 	margin-top:-0.75em;
 	height:0.25em;
-	-webkit-transition: margin 0.4s ease-in-out, height 0.4s ease-in-out;
+	line-height:1.5;
+/* 	-webkit-transition: margin 0.4s ease-in-out, height 0.4s ease-in-out; */
 	-moz-transition: margin 0.4s ease-in-out, height 0.4s ease-in-out;
 	transition: margin 0.4s ease-in-out, height 0.4s ease-in-out;
 }
+nav .haschild:hover ul li {height: auto;}
+nav .haschild li:last-child {margin-bottom:0;}
 nav .haschild li a {
 	margin-top:-0.75em;
 	height:0.25em;
-	-webkit-transition: margin 0.4s ease-in-out, height 0.4s ease-in-out, background 0.2s ease-in-out, color 0.2s ease-in-out;
+	-webkit-transition: /* margin 0.4s ease-in-out, height 0.4s ease-in-out,  */background 0.2s ease-in-out, color 0.2s ease-in-out;
 	-moz-transition: margin 0.4s ease-in-out, height 0.4s ease-in-out, background 0.2s ease-in-out, color 0.2s ease-in-out;
 	transition: margin 0.4s ease-in-out, height 0.4s ease-in-out, background 0.2s ease-in-out, color 0.2s ease-in-out;
 }
@@ -4575,8 +4565,11 @@ nav .haschild:hover li {
 	height: auto;
 }
 nav .haschild:hover li a {
-	margin:0;
+	display: block;
+	margin:0; padding: 0 10px;
 	height: auto;
+	color:#666; /* fallback */
+	color:rgba(0,0,0,0.6);
 }
 nav .haschild li a:hover {
 	background:#f7d7d6;
@@ -4683,6 +4676,7 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 	border:1px solid #bfbfbf;
 }
 #events-wrap .item:first-child {margin-left: 0;}
+#events-wrap .item a {display: block; width: 100%; height: 100%;}
 #events-wrap .item a:link,
 #events-wrap .item a:visited {color:inherit;}
 #events-wrap .item a:hover {text-decoration: none;}
