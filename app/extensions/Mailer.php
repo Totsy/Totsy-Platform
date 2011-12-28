@@ -11,6 +11,8 @@ class Mailer {
 
 	public static function send($template, $email, $vars = array(), $options = array(), $schedule_time = null) {
 		//Let transactional email go
+		// Remove Sailthru until it can be done asynchronously
+
 		Sailthru::send($template, $email, $vars, $options, $schedule_time);
 	}
 
@@ -27,7 +29,7 @@ class Mailer {
 
 	public static function purchase($email,array $items = array(), array $args = array()){
 		// Remove Sailthru until it can be done asynchronously
-		/*	
+		/*
 		$data = array(
             'email' => $email,
             'items' => $items
