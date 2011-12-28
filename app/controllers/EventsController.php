@@ -61,32 +61,25 @@ class EventsController extends BaseController {
 	public function view() {
 		$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 		$url = $this->request->event;
-
 		$departments = '';
-		if(!empty($this->request->query['filter'])) {
+
+		if (!empty($this->request->query['filter'])) {
 			$departments = ucwords($this->request->query['filter']);
 		}
-		if($this->request->data){
+		if ($this->request->data){
 			$datas = $this->request->data;
 			$departments = $datas["filterby"];
 		}
-		if(empty($departments)) {
+		if (empty($departments)) {
 			$departments = 'All';
 		}
 		if ($url == 'comingsoon') {
 			$this->_render['template'] = 'soon';
 		}
-		$event = Event::first(array(
-			'conditions' => array(
-				'enabled' => true,
-				'url' => $url
-		)));
+		$event = Event::first(array('conditions' => array('enabled' => true, 'url' => $url)));
+
 		if (!$event) {
-			$event = Event::first(array(
-				'conditions' => array(
-				'viewlive' => true,
-				'url' => $url
-			)));
+			$event = Event::first(array('conditions' => array('viewlive' => true, 'url' => $url)));
 		}
 		if (!$event) {
 			$this->_render['template'] = 'noevent';
@@ -94,63 +87,67 @@ class EventsController extends BaseController {
 		}
 
 		if ($event->end_date->sec < time()) {
-			$this->redirect('/sales ');
+			$this->redirect('/sales');
 		}
 		$pending = ($event->start_date->sec > time() ? true : false);
 
 		if ($pending == false) {
 			++$event->views;
 			$event->save();
-			if(!empty($departments)) {
+
+			if (!empty($departments)) {
 				$filters = array('All' => 'All', ucwords($departments) => ucwords($departments));
 			} else {
 				$filters = array('All' => 'All');
 			}
 			if (!empty($event->items)) {
-					$eventItems = Item::find('all', array( 'conditions' => array(
-													'event' => array((string)$event->_id),
-													'enabled' => true
-												),
-												'order' => array('created_date' => 'ASC')
-											));
-					foreach ($eventItems as $eventItem) {
-						$result = $eventItem->data();
+				$eventItems = Item::find('all', array(
+					'conditions' => array(
+						'event' => array((string) $event->_id),
+						'enabled' => true
+					),
+					'order' => array('created_date' => 'ASC')
+				));
 
-						
-						if (array_key_exists('departments',$result) && !empty($result['departments'])) {
-							if(in_array($departments,$result['departments']) ) {
-								if ($eventItem->total_quantity <= 0) {
-									$items_closed[] = $eventItem;
-								} else {
-									$items[] = $eventItem;
-								}
-							}
-							foreach($eventItem->departments as $value) {
-								$filters[$value] = $value;
+				foreach ($eventItems as $eventItem) {
+					$result = $eventItem->data();
+
+					if (array_key_exists('departments', $result) && !empty($result['departments'])) {
+						if (in_array($departments, $result['departments'])) {
+							if ($eventItem->total_quantity <= 0) {
+								$items_closed[] = $eventItem;
+							} else {
+								$items[] = $eventItem;
 							}
 						}
+						foreach($eventItem->departments as $value) {
+							$filters[$value] = $value;
+						}
+					}
 					if ($departments == 'All') {
 						if ($eventItem->total_quantity <= 0) {
 							$items_closed[] = $eventItem;
 						} else {
 							$items[] = $eventItem;
 						}
-						if(!empty($eventItem->departments)) {
-								foreach($eventItem->departments as $value) {
-									$filters[$value] = $value;
-								}
+						if (!empty($eventItem->departments)) {
+							foreach($eventItem->departments as $value) {
+								$filters[$value] = $value;
+							}
 						}
 					}
 				}
 				if (!empty($filters) && !empty($departments)) {
 					$filters = array_unique($filters);
-					if (array_key_exists('Momsdads',$filters) && !empty($filters['Momsdads'])) {
+
+					if (array_key_exists('Momsdads', $filters) && !empty($filters['Momsdads'])) {
 						$filters['Momsdads'] = 'Moms & Dads';
 					}
 				}
+
 				//Sort items open/sold out
 				if (!empty($items_closed)) {
-					if(!empty($items)) {
+					if (!empty($items)) {
 						foreach ($items_closed as $item) {
 							array_push($items, $item);
 						}
@@ -158,17 +155,17 @@ class EventsController extends BaseController {
 						$items = $items_closed;
 					}
 				}
-		}
-		$type = 'Today\'s';
+			}
+			$type = 'Today\'s';
 		} else {
 			$items = null;
 			$type = 'Coming Soon';
 		}
 
 		$pixel = Affiliate::getPixels('event', 'spinback');
-		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
-			                                            array('event' => $_SERVER['REQUEST_URI'])
-			                                            );
+		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,  array(
+			'event' => $_SERVER['REQUEST_URI']
+		));
 
 		return compact('event', 'items', 'shareurl', 'type', 'spinback_fb', 'departments', 'filters');
 	}
