@@ -529,12 +529,6 @@ class UsersController extends BaseController {
     }
 
 	public function reset() {
-		if($this->request->is('mobile')){
-		 	$this->_render['layout'] = 'mobile_login';
-		 	$this->_render['template'] = 'mobile_reset';
-		} else {
-			$this->_render['layout'] = 'login';
-		}
 		$success = false;
 		if ($this->request->data) {
 			$email = strtolower($this->request->data['email']);
@@ -550,7 +544,6 @@ class UsersController extends BaseController {
 				$user->email_hash = md5($user->email);
 				if ($user->save(null, array('validate' => false))) {
 					$mailer = $this->_classes['mailer'];
-					$mailer::send('Reset_Password', $user->email, array('token' => $token));
 					Mailer::send('Reset_Password', $user->email, array('token' => $token));
 					$message = '<div class="success_flash">Your password has been reset. Please check your email.</div>';
 					$success = true;
