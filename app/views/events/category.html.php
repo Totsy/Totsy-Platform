@@ -66,11 +66,11 @@
 					</pre> 
 -->
 				<div class="item" data-prodID="<?php echo $item['_id'] ?>">
-					<a href="<?php echo 'sale/' . $item['url']?>" title="<?php echo $item['description'];?>">
+					<a href="<?php echo '/sale/' . $event['url'] . '/' . $item['url']?>" title="<?php echo $item['description'];?>">
 						<img width="125" height="126" src="<?php echo "http://www.totsy.com/image/" . $item['primary_image'] . ".jpg";?>" alt="IMAGE ALT HERE" />
 						<h4><?php echo $item['description'];?></h4>
 						<p>$<?php echo number_format($item['sale_retail'],2);?></p>
-					<a></a>
+					</a>
 				</div><!-- /.item -->
 			<?php
 			}
@@ -83,7 +83,7 @@
 								'alt' => 'View all items from this sale',
 								'width' => '135',
 								'height' => '189'
-							)), 'sale/'.$event->url, array('escape'=> false)
+							)), 'sale/'.$event['url'], array('escape'=> false)
 						);
 					?>
 				</div>
