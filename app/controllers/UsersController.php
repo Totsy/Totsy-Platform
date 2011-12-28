@@ -551,7 +551,6 @@ class UsersController extends BaseController {
 				if ($user->save(null, array('validate' => false))) {
 					$mailer = $this->_classes['mailer'];
 					$mailer::send('Reset_Password', $user->email, array('token' => $token));
-					Mailer::send('Reset_Password', $user->email, array('token' => $token));
 					$message = '<div class="success_flash">Your password has been reset. Please check your email.</div>';
 					$success = true;
 				} else {
