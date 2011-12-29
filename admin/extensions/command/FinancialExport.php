@@ -141,7 +141,10 @@ class FinancialExport extends Base  {
 		'ship_records',
 		'cancel',
 		'gross_revenue',
-		'net_revenue'
+		'net_revenue',
+		'merchantReferenceCode',
+		'process_by',
+		'auth_records'
 	);
 
 	/**
@@ -244,7 +247,9 @@ class FinancialExport extends Base  {
 			'payment_date',
 			'service',
 			'shipping',
-			"cancel"
+			"cancel",
+			'auth',
+			'auth_records'
 		);
 	/**
 	 * Find all the orders that haven't been shipped which have stock status.
@@ -694,6 +699,22 @@ class FinancialExport extends Base  {
                 $order['gross_revenue'] = number_format((float)Item::calculateProductGross($order['items']), 2);
                 $order['net_revenue'] = $order['gross_revenue'] + $order['handling'] + $order['overSizeHandling'];
                 $order['net_revenue'] = number_format($order['net_revenue'] , 2);
+                $order['merchantReferenceCode'] = "";
+                $order['process_by'] = "AuthorizeNet";
+                if (array_key_exists('auth', $order)) {
+                	$order['merchantReferenceCode'] = $order['auth']['response']['merchantReferenceCode'];
+                	$order['process_by'] = $order['auth']['adapter'];
+                }
+                
+                if (array_key_exists('auth_records', $order)) {
+					$order['auth_records'] = $order['auth_records'];
+				} else {
+					$order['auth_records'] = array(
+						array(
+							'authKey' => "",
+							'date_saved' => ""
+						));
+				}
                 /*
                 * Get credit, promocodes,  and oversize handling information
                 */
@@ -712,7 +733,7 @@ class FinancialExport extends Base  {
                 $shipRecord = $ordersShipped->findOne(array('$or' => array(
                     array('OrderNum' => $order['order_id'])
                 )));
-                if (array_key_exists('ship_records', $order)) {
+                if ($order && array_key_exists('ship_records', $order)) {
                     $order['ship_records'] = "Yes";
                 } else {
                     $order['ship_records'] = "No";
@@ -894,8 +915,16 @@ class FinancialExport extends Base  {
         $recordTag = $this->xml->addChild('record');
         foreach($record as $key => $value) {
             //SimpleXMLElement doesn't like ampersand for some reason so I am replacing it with 'and'
-           $record[$key] = preg_replace('/&/','and',$record[$key]);
-            $recordTag->addChild($key, $record[$key]);
+           
+           if (is_array($value)) {
+				$parent = $recordTag->addChild($key);
+				foreach($value as $sub_key => $sub_value){
+					$parent->addChild($sub_key, $sub_value);
+				}
+		   } else {
+				$record[$key] = preg_replace('/&/','and',$record[$key]);
+				$recordTag->addChild($key, $record[$key]);
+			}
         }
 	}
 
