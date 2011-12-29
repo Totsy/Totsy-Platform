@@ -17,6 +17,28 @@ use li3_flash_message\extensions\storage\FlashMessage;
 
 class ItemsController extends BaseController {
 
+	private $_mapCategories = array (
+		'category' =>  array(
+			'' => 'None',
+			'Girls Apparel',
+			'Boys Apparel',
+			'Shoes',
+			'Accessories',
+			'Toys & Books',
+			'Gear',
+			'Home',
+			'Moms & Dads'
+		),
+		'age' => array(
+			'' => 'None',
+			'Newborn',
+			'Infant 0-12 M',
+			'Toddler 1-3Y',
+			'Preschool 4-5Y',
+			'School Age 5+'
+		)
+	);
+	
 	/**
 	 * Main display of item data
 	 */
@@ -45,7 +67,10 @@ class ItemsController extends BaseController {
 	public function edit($id = null) {
 		$item = Item::find('first', array('conditions' => array('_id' => $id)));
 		$event = Event::find('first', array('conditions' => array('_id' => $item->event[0])));
-
+		
+		$categories = $this->_mapCategories['category'];
+		$ages = $this->_mapCategories['age'];
+		
 		if ($item) {
 			$details = json_encode($item->details->data());
 		} else {
@@ -70,6 +95,28 @@ class ItemsController extends BaseController {
 			}
 		}
 		#END T
+		
+		//Filter ages
+		if(!empty($item->age)) {
+			$values = $item->age;
+			if (is_object($values)){ $values = $values->data(); }
+			if (is_array($values)){
+				foreach ($values as $value) {
+					$age_filters[$value] = $value;
+				}
+			} else {
+				$age_filters[$values] = $values;
+			}
+		} 
+		
+		//Filter categories
+		if(!empty($item->categories)) {
+			$values = $item->categories->data();
+			foreach ($values as $value) {
+				$category_filters[$value] = $value;
+			}
+		}
+		
 		if ($this->request->data) {
 			$alternate_images = array();
 			foreach ($this->request->data as $key => $value) {
@@ -136,7 +183,8 @@ class ItemsController extends BaseController {
 					));
 			}
 		}
-		return compact('item', 'details', 'event', 'all_filters', 'sel_filters');
+		return compact('item', 'details', 'event', 'all_filters', 'sel_filters', 
+					'categories', 'ages', 'category_filters', 'age_filters');
 	}
 
 	public function preview() {
