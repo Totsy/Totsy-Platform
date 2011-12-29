@@ -14,48 +14,51 @@ use lithium\storage\Session;
  */
 ErrorHandler::apply('lithium\action\Dispatcher::run', array('type' => 'Exception'),
     function($info, $params) {
+        $url = $params['request']->url;
 
-	if (Environment::is('production')) {
-		/* Do we want to provide any kind of info except a blank page? */
-		$inc = 0;
-		$message = "PAGE ERROR OCCURED ON: /{$params[request]->url} \n";
-		$message .= "TIMESTAMP: " . date("M/d/Y H:i:s") . "\n";
-		$message .= String::insert('EXCEPTION: {:message} on line {:line} of file {:file}.', $info);
-		$message .= "\nTrace: \n";
-		foreach($info['trace'] as $trace) {
-		    $message .= $inc . ". ";
-		    $message .= String::insert('Called {:function} function from {:class} class in {:file} on line {:line}.', $trace);
-		    $message .= "\n arguments: ";
-		    $message .= json_encode($trace['args']);
-		    $message .= "\n";
-		    ++$inc;
-		}
-	    $request = $params['request'];
-	    $response = new Response(array(
-	        'status' => 500,
-	        'request' => request));
-	     if (strpos($url, 'image/') === false) {
-            $response->body(Media::render($response, compact('info', 'params'), array(
-                'layout' => null,
-                'controller' => '_error',
-                'template' => '505'
-            )));
-		}
-		mail('bugs@totsy.com', "500 Error on /{$params[request]->url}", $message);
-	} else {
-		/* Full post mortem in non-production envs. */
-	    $request = $params['request'];
-	    $response = new Response(array(
-	        'status' => 500,
-	        'request' => request));
-	     if (strpos($url, 'image/') === false) {
-            $response->body(Media::render($response, compact('info', 'params'), array(
-                'layout' => null,
-                'controller' => '_error',
-                'template' => 'exception'
-            )));
-		}
-	}
+        if (!Environment::is('production')) {
+            /* Do we want to provide any kind of info except a blank page? */
+            $inc = 0;
+            $message = "PAGE ERROR OCCURED ON: /{$params['request']->url} \n";
+            $message .= "TIMESTAMP: " . date("M/d/Y H:i:s") . "\n";
+            $message .= String::insert('EXCEPTION: {:message} on line {:line} of file {:file}.', $info);
+            $message .= "\nTrace: \n";
+            foreach($info['trace'] as $trace) {
+                $message .= $inc . ". ";
+                $message .= String::insert('Called {:function} function from {:class} class in {:file} on line {:line}.', $trace);
+                $message .= "\n arguments: ";
+                $message .= json_encode($trace['args']);
+                $message .= "\n";
+                ++$inc;
+            }
+            $request = $params['request'];
+            Logger::error($message);
+
+            $response = new Response(array(
+                'status' => 500,
+                'request' => $request));
+             if (strpos($url, 'image/') === false) {
+                $response->body(Media::render($response, compact('info', 'params'), array(
+                    'layout' => null,
+                    'controller' => '_error',
+                    'template' => '505'
+                )));
+            }
+            mail('lhanson@totsy.com', "500 Error on /{$params['request']->url}", $message);
+        } else {
+            /* Full post mortem in non-production envs. */
+            $request = $params['request'];
+            $response = new Response(array(
+                'status' => 500,
+                'request' => $request));
+             if (strpos($url, 'image/') === false) {
+                $response->body(Media::render($response, compact('info', 'params'), array(
+                    'layout' => null,
+                    'controller' => '_error',
+                    'template' => 'exception'
+                )));
+            }
+	    }
 	return $response;
 });
 /**
@@ -86,5 +89,5 @@ ErrorHandler::apply(
 	}
 );
 
-ErrorHandler::run(array('trapErrors' => true, 'covertErrors' => true));
+ErrorHandler::run(array('trapErrors' => true, 'covertErrors' => false));
 ?>
