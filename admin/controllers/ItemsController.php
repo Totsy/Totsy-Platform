@@ -20,22 +20,22 @@ class ItemsController extends BaseController {
 	private $_mapCategories = array (
 		'category' =>  array(
 			'' => 'None',
-			'Girls Apparel',
-			'Boys Apparel',
-			'Shoes',
-			'Accessories',
-			'Toys & Books',
-			'Gear',
-			'Home',
-			'Moms & Dads'
+			'Girls Apparel' => 'Girls Apparel',
+			'Boys Apparel' => 'Boys Apparel',
+			'Shoes' => 'Shoes',
+			'Accessories' => 'Accessories',
+			'Toys and Books' => 'Toys and Books',
+			'Gear' => 'Gear',
+			'Home' => 'Home',
+			'Moms and Dads' => 'Moms and Dads'
 		),
 		'age' => array(
 			'' => 'None',
-			'Newborn',
-			'Infant 0-12 M',
-			'Toddler 1-3Y',
-			'Preschool 4-5Y',
-			'School Age 5+'
+			'Newborn' => 'Newborn',
+			'Infant 0-12 M' => 'Infant 0-12 M',
+			'Toddler 1-3 Y' => 'Toddler 1-3 Y',
+			'Preschool 4-5 Y' => 'Preschool 4-5 Y',
+			'School Age 5+' => 'School Age 5+'
 		)
 	);
 	
@@ -78,9 +78,11 @@ class ItemsController extends BaseController {
 		}
 		#T Get all possibles value for the multiple filters select
 		$sel_filters = array();
-		$all_filters = array();
+		$all_filters = array(''=>'None');
 		$result =  Item::getDepartments();
 		foreach ($result['values'] as $value) {
+			if(empty($value)){ continue; }
+			
 			$all_filters[$value] = $value;
 			if (array_key_exists('Momsdads',$all_filters) && !empty($all_filters['Momsdads'])) {
 				$all_filters['Momsdads'] = 'Moms & Dads';
@@ -94,18 +96,17 @@ class ItemsController extends BaseController {
 				$sel_filters[$value] = $value;
 			}
 		}
+		
+		if (empty($sel_filters)){
+			$sel_filters['None'] = '';
+		}
 		#END T
 		
 		//Filter ages
-		if(!empty($item->age)) {
-			$values = $item->age;
-			if (is_object($values)){ $values = $values->data(); }
-			if (is_array($values)){
-				foreach ($values as $value) {
-					$age_filters[$value] = $value;
-				}
-			} else {
-				$age_filters[$values] = $values;
+		if(!empty($item->ages)) {
+			$values = $item->ages->data();
+			foreach ($values as $value) {
+				$age_filters[$value] = $value;
 			}
 		} 
 		
