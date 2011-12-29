@@ -250,7 +250,7 @@ class ReAuthorize extends \lithium\console\Command {
 				));
 				if ($auth->success()) {
 */
-					$userInfos = $usersCollection->findOne(array('_id' => new MongoId($order['user_id'])));
+					$userInfos = User::lookup($order['user_id']);
 					#Create Card and Check Billing Infos
 					$card = Processor::create('authorizenet', 'creditCard', $creditCard + array(
 						'billing' => Processor::create('authorizenet', 'address', array(
@@ -342,7 +342,6 @@ class ReAuthorize extends \lithium\console\Command {
 	public function reAuthCyberSource($order, $report = null, $total) {
 		Logger::debug('Reauthorizing Through CyberSource');
 		$ordersCollection = Order::Collection();
-		$usersCollection = User::Collection();
 		#Save Old AuthKey with Date
 		$newRecord = array('authKey' => $order['authKey'], 'date_saved' => new MongoDate());
 		#Cancel Previous Transaction	
@@ -369,7 +368,7 @@ class ReAuthorize extends \lithium\console\Command {
 			$auth = Processor::authorize('default', $total, $profile);
 		} else {
 			Logger::debug("Getting Credit Card Informations");
-			$userInfos = $usersCollection->findOne(array('_id' => new MongoId($order['user_id'])));
+			$userInfos = User::lookup($order['user_id']);
 			$creditCard = Order::getCCinfos($order);
 			#Create Card and Check Billing Infos
 			$card = Processor::create('default', 'creditCard', $creditCard + array(
