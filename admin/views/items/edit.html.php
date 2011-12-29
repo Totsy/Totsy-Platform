@@ -67,6 +67,14 @@ tinyMCE.init({
 						'class' => 'general',
 						'value' => $item->age
 					));?>
+					<?php echo $this->form->label('Age')?><br />
+					<table>
+						<?php echo $this->form->select('categories',$ages,array('multiple'=>'multiple','value' => $age_filters)); ?> 
+					</table>
+					<?php echo $this->form->label('Categories')?><br />
+					<table>
+						<?php echo $this->form->select('categories',$categories,array('multiple'=>'multiple','value' => $category_filters)); ?> 
+					</table>
 					<?php echo $this->form->label('Departments')?><br />
 					<table>
 						<?php echo $this->form->select('departments',$all_filters,array('multiple'=>'multiple','value' => $sel_filters)); ?> 
