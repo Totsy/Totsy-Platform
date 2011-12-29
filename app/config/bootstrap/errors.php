@@ -18,7 +18,7 @@ ErrorHandler::apply('lithium\action\Dispatcher::run', array('type' => 'Exception
 	if (Environment::is('production')) {
 		/* Do we want to provide any kind of info except a blank page? */
 		$inc = 0;
-		$message = "PAGE ERROR OCCURED ON: /{$params[request]->url} \n";
+		$message = "PAGE ERROR OCCURED ON: /{$params['request']->url} \n";
 		$message .= "TIMESTAMP: " . date("M/d/Y H:i:s") . "\n";
 		$message .= String::insert('EXCEPTION: {:message} on line {:line} of file {:file}.', $info);
 		$message .= "\nTrace: \n";
@@ -41,7 +41,7 @@ ErrorHandler::apply('lithium\action\Dispatcher::run', array('type' => 'Exception
                 'template' => '505'
             )));
 		}
-		mail('bugs@totsy.com', "500 Error on /{$params[request]->url}", $message);
+		mail('bugs@totsy.com', "500 Error on /{$params['request']->url}", $message);
 	} else {
 		/* Full post mortem in non-production envs. */
 	    $request = $params['request'];
