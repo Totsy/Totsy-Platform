@@ -10,7 +10,7 @@ use lithium\action\Request;
 class Mailer {
 
 	public static function send($template, $email, $vars = array(), $options = array(), $schedule_time = null) {
-		// Remove Sailthru until it can be done asynchronously
+		//Let transactional email go
 		Sailthru::send($template, $email, $vars, $options, $schedule_time);
 	}
 

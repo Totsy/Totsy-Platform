@@ -199,7 +199,8 @@ class FinancialExport extends Base  {
 		'ship_date',
 		'modifications',
 		'avatax',
-		'savings'
+		'savings',
+		'auth'
 	);
 
 	/**
@@ -705,7 +706,7 @@ class FinancialExport extends Base  {
                 	$order['merchantReferenceCode'] = $order['auth']['response']['merchantReferenceCode'];
                 	$order['process_by'] = $order['auth']['adapter'];
                 }
-                
+
                 if (array_key_exists('auth_records', $order)) {
 					$order['auth_records'] = $order['auth_records'];
 				} else {
@@ -799,7 +800,7 @@ class FinancialExport extends Base  {
 		$ordered = array();
 		foreach($orderArray as $key) {
 			if(array_key_exists($key,$array)) {
-				$ordered[$key] = (string) $array[$key];
+				$ordered[$key] = $array[$key];
 				unset($array[$key]);
 			}
 		}
@@ -915,15 +916,20 @@ class FinancialExport extends Base  {
         $recordTag = $this->xml->addChild('record');
         foreach($record as $key => $value) {
             //SimpleXMLElement doesn't like ampersand for some reason so I am replacing it with 'and'
-           
-           if (is_array($value)) {
+            if (is_array($value) && ($key == "auth_records")) {
 				$parent = $recordTag->addChild($key);
 				foreach($value as $sub_key => $sub_value){
-					$parent->addChild($sub_key, $sub_value);
+                    if (is_array($sub_value)) {
+                        foreach($sub_value as $k => $v) {
+                            $parent->addChild($k, $v);
+                        }
+                    } else {
+                        $parent->addChild($sub_key, $sub_value);
+                    }
 				}
 		   } else {
 				$record[$key] = preg_replace('/&/','and',$record[$key]);
-				$recordTag->addChild($key, $record[$key]);
+				$recordTag->addChild($key, (string)$record[$key]);
 			}
         }
 	}
