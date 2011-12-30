@@ -110,9 +110,7 @@ var discountErrors = new Object();
 				    $<?php echo number_format($total,2)?> </span>
 				</span>    
 				<div style="text-align:center; diplay:inline-block !important">
-		      <input type="submit" class="button cartSubmit" style="float:none !important; margin-right:50px; diplay:block !important" onclick="$('#cartForm').submit();" />
-
-<!-- 			      <a href="#" class="button" style="float:none !important; diplay:block !important" onclick="updateOrder()">Place Your Order</a> -->
+					<input type="submit" class="button cartSubmit" style="float:none !important; margin-right:50px; diplay:block !important" value="Place Your Order" />
 			 	</div>
 			</div>
 		</div>
@@ -307,11 +305,7 @@ var discountErrors = new Object();
 </div>
 
 <div class="cart-button fr cart-nav-buttons">
-		      <input type="submit" class="button" style="float:none !important; margin-right:50px; diplay:block !important" onclick="$('#cartForm').submit();" />
-<!--
-		      <a href="#" class="button" style="float:none !important; margin-right:50px; diplay:block !important" onclick="updateOrder()">Place Your Order</a>
-		      <span id="waitMsg" style="display:none;">Please wait...</span>
--->
+	<input type="submit" class="button cartSubmit" style="float:none !important; margin-right:50px; diplay:block !important" value="Place Your Order" />
 	<div class="clear"></div>
 
 <?php echo $this->form->end(); ?>
@@ -372,40 +366,15 @@ var discountErrors = new Object();
 
 <script type="text/javascript" charset="utf-8">
 
-/*
-function updateOrder() 
-{
-	$('#process').val("true");
-	$('#cartForm').submit();	    
-}
-*/
-
-// submit cart
+// submit cart - bind click event to "buttons", prevent multiple clicks/submissions
 $(document).ready(function(){
-	$('#cartForm').submit(function(e)
-	{
-		$('input.cartSubmit').attr('disabled', 'disabled').val('Please wait…').css('cursor', 'default');
-		$('#process').val("true");
+	$('.cartSubmit').click(function(){
+		$('#process').val('true');
+		$('.cartSubmit').attr('disabled', 'disabled').val('Please wait…').css('cursor', 'default');
+		$('#cartForm').submit();
 	});
+
 });
-
-
-function updateOrder() 
-{
-	$('#process').val("true");
-	//$('#cartForm').submit();	    
-	
-	// prevent default and prevent multiple submits
-	$("#cartForm").submit(function(e)
-	{
-		//e.preventDefault();
-		//$().attr('disabled', 'disabled');
-		//alert('bingo');
-		//return false;
-	});
-}
-
-
 
 
 //SUBMIT THE ITEM WHICH IS DELETED
