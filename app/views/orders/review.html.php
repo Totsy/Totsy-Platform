@@ -110,7 +110,7 @@ var discountErrors = new Object();
 				    $<?php echo number_format($total,2)?> </span>
 				</span>    
 				<div style="text-align:center; diplay:inline-block !important">
-					<input type="submit" class="button cartSubmit" style="float:none !important; margin-right:50px; diplay:block !important" value="Place Your Order" />
+					<input type="submit" class="button cartSubmit" value="Place Your Order" />
 			 	</div>
 			</div>
 		</div>
@@ -305,7 +305,7 @@ var discountErrors = new Object();
 </div>
 
 <div class="cart-button fr cart-nav-buttons">
-	<input type="submit" class="button cartSubmit" style="float:none !important; margin-right:50px; diplay:block !important" value="Place Your Order" />
+	<input type="submit" class="button cartSubmit" value="Place Your Order" />
 	<div class="clear"></div>
 
 <?php echo $this->form->end(); ?>
@@ -371,7 +371,7 @@ $(document).ready(function(){
 	$('.cartSubmit').click(function(){
 		$('#process').val('true');
 		$('.cartSubmit').attr('disabled', 'disabled').val('Please wait…').css('cursor', 'default');
-		$('#cartForm').submit();
+		//$('#cartForm').submit();
 	});
 
 });

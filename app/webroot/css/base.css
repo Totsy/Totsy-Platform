@@ -2289,9 +2289,12 @@ td.return-policy a {
 }
 
 .cart-nav-buttons{
-margin:20px 0px 20px 0px;
+	margin:20px 0px 20px 0px;
+	padding-right:41px;
 }
-
+.cart-nav-buttons input.cartSubmit[disabled] {margin-right:18px;}
+.cart-order-place-inner input.cartSubmit[type="submit"],
+.cart-order-place-inner input.cartSubmit[disabled] {display: inline-block;}
 .cart-empty{
 padding:20px 0; 
 margin:0;
