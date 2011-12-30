@@ -371,7 +371,7 @@ $(document).ready(function(){
 	$('.cartSubmit').click(function(){
 		$('#process').val('true');
 		$('.cartSubmit').attr('disabled', 'disabled').val('Please wait…').css('cursor', 'default');
-		//$('#cartForm').submit();
+		$('#cartForm').submit();
 	});
 
 });
