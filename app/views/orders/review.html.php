@@ -44,7 +44,7 @@ var discountErrors = new Object();
 <link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
 
 <?php  if(!empty($subTotal)): ?>
-<div class="cart-content">
+<div class="cart-content" id="p-review">
 	<div class="grid_11 cart-header-left">
 		<div style="float:left;">
 			<h2 class="page-title gray">
@@ -110,7 +110,7 @@ var discountErrors = new Object();
 				    $<?php echo number_format($total,2)?> </span>
 				</span>    
 				<div style="text-align:center; diplay:inline-block !important">
-					<input type="submit" class="button cartSubmit" value="Place Your Order" />
+					<input type="submit" class="button cartSubmit" form="cartForm" value="Place Your Order" />
 			 	</div>
 			</div>
 		</div>
@@ -129,8 +129,6 @@ var discountErrors = new Object();
 			<?php echo $this->form->hidden("process", array('id'=>'process')); ?>
 			<?php $x = 0; ?>
 			<?php foreach ($cart as $item): ?>
-
-
 
 
 				<!-- Build Product Row -->
@@ -305,7 +303,7 @@ var discountErrors = new Object();
 </div>
 
 <div class="cart-button fr cart-nav-buttons">
-	<input type="submit" class="button cartSubmit" value="Place Your Order" />
+	<input type="submit" class="button cartSubmit" form="cartForm" value="Place Your Order" />
 	<div class="clear"></div>
 
 <?php echo $this->form->end(); ?>
@@ -366,16 +364,15 @@ var discountErrors = new Object();
 
 <script type="text/javascript" charset="utf-8">
 
-// submit cart - bind click event to "buttons", prevent multiple clicks/submissions
+// submit cart - bind click event to .cartSubmit buttons, prevent multiple clicks/submissions
 $(document).ready(function(){
-	$('.cartSubmit').click(function(){
+	$('.cartSubmit').click(function(e){
+		e.preventDefault(); // if JS is enabled, we can disable default submit behavior
 		$('#process').val('true');
 		$('.cartSubmit').attr('disabled', 'disabled').val('Please wait…').css('cursor', 'default');
 		$('#cartForm').submit();
 	});
-
 });
-
 
 //SUBMIT THE ITEM WHICH IS DELETED
 function deletechecked(message, id) {
