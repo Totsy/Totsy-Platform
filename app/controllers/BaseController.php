@@ -24,6 +24,11 @@ class BaseController extends \lithium\action\Controller {
 		$this->_classes += $vars['_classes'];
 
 		parent::__construct($config);
+		if ($user && $this->request->is('mobile')) {
+		 		$this->_render['layout'] = 'mobile_main';
+			} else {
+				$this->_render['layout'] = 'main';
+			}
 	}
 
 	/**
@@ -51,9 +56,16 @@ class BaseController extends \lithium\action\Controller {
 		 
 		$this->fbsession = $fbsession = FacebookProxy::getUser();		
 		$fbconfig = FacebookProxy::config(); 
-		
+
+		/**
+		 * Setup all the necessary facebook stuff
+		 */
+
+		$this->fbsession = $fbsession = FacebookProxy::getUser();		
+		$fbconfig = FacebookProxy::config(); 
+
 		if ($this->fbsession) {
-			$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));			
+			$fblogout = FacebookProxy::getLogoutUrl(array('next' => $logoutUrl));	
 		} else {
 			$fblogout = "/logout";
 		}
@@ -150,6 +162,8 @@ class BaseController extends \lithium\action\Controller {
 		    break;
 		}
 		$this->set(compact('img_path_prefix'));
+
+			
 	}
 
 	/**

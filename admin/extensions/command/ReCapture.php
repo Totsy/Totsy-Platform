@@ -148,6 +148,16 @@ class ReCapture extends \lithium\console\Command {
 		if ($auth->success()) {
 			Logger::debug('Authorize Complete: ' . $auth->key);
 			$authKey = $auth->key;
+			if(!empty($this->onlyReauth)) {
+				$update = $ordersCollection->update(
+						array('_id' => $order['_id']),
+						array('$set' => array('authKey' => $auth->key,
+											  'auth' => $auth->export(),
+											  'authTotal' => $order['total'],
+											  'processor' => $auth->adapter
+						)), array( 'upsert' => true)
+				);
+			}
 		} else {
 			Logger::debug('Authorize Error: ' . implode('; ', $auth->errors));
 			$reportAuthorize[] = 'authorize_error';
@@ -172,7 +182,7 @@ class ReCapture extends \lithium\console\Command {
 				)
 		);
 		if ($auth_capture->success()) {
-			Logger::debug('Capture Succeeded: ' . $auth_capture);
+			Logger::debug('Capture Succeeded: ' . $auth_capture->key);
 			$update = $ordersCollection->update(
 						array('_id' => $order['_id']),
 						array('$set' => array('authKey' => $auth_capture->key,

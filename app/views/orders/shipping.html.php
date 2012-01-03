@@ -1,7 +1,5 @@
-
-<script type="text/javascript">
+<script type="text/javascript">	
 	$( function () {
-
 	    var itemExpires = new Date(<?php echo ($cartExpirationDate  * 1000)?>);	    
 		var now = new Date();
 		$('#itemCounter').countdown( {until: itemExpires, onExpiry: refreshCart, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
@@ -15,11 +13,10 @@
 </script>
 
 <script type="text/javascript">
-	var addressForm = new Object();
+var addressForm = new Object();
 </script>
 <?php
 	use app\models\Address;
-	use lithium\storage\Session;
 	$this->html->script('application', array('inline' => false));
 	$this->form->config(array('text' => array('class' => 'inputbox')));
 	$countLayout = "layout: '{mnn}{sep}{snn} minutes'";
@@ -27,109 +24,91 @@
 
 <link rel="stylesheet" type="text/css" href="/css/validation-engine.jquery.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="/css/validation-template.css" media="screen" />
-<script type="text/javascript" src="/js/form_validator/jquery.validation-engine.js" charset="utf-8"></script>
+<script type="text/javascript" src="/js/form_validator/jquery.validation-engine.js" charset="utf-8"></script>   
 <script type="text/javascript" src="/js/form_validator/languages/jquery.validation-engine-en.js" charset="utf-8"></script>
 
 <script type="text/javascript">
 
     $(document).ready(function() {
-        $("#addressForm").validationEngine('attach');
+        $("#addressForm").validationEngine('attach');        
 		$("#addressForm").validationEngine({ promptPosition : "centerRight", scroll: false });
-    	$("#addressForm").validationEngine('init', { promptPosition : "centerRight", scroll: false });
-
+    	$("#addressForm").validationEngine('init', { promptPosition : "centerRight", scroll: false });   
+    	
     	$("#addressForm").submit( function() {
-
+    	
     		addressForm.submitted = true;
-    		addressForm.form = $(this).serializeArray();
-
+    		addressForm.form = $(this).serializeArray(); 
+    		
     		var invalid_count = 0;
     		var set_bubble = false;
-
-    		$("#addressForm").validationEngine('attach');
-    		$("#addressForm").validationEngine('init', { promptPosition : "centerRight", scroll: false } );
-
-    		$.each(	addressForm.form, function(i, field) {
-    		    if(	field.value=="" &&
-    		    	field.name!=="address_2" &&
+    		
+    		$("#addressForm").validationEngine('attach');        
+    		$("#addressForm").validationEngine('init', { promptPosition : "centerRight", scroll: false } );      		
+    		    		    		    		
+    		$.each(	addressForm.form, function(i, field) {	
+    		    if(	field.value=="" &&  
+    		    	field.name!=="address_2" && 
     		    	field.name!=="submitted" &&
     		    	field.name!=="opt_save"
 					) {
-
+    		    	
     		    	//the bubble will only be set for the first one in the set
-    		    	if(set_bubble==false){
+    		    	if(set_bubble==false){    		 		
     		 		$('#' + field.name + "").validationEngine('showPrompt','*This field is required', '', true);
     		 		$('#' + field.name + "").validationEngine({ promptPosition :"centerRight", scroll: false });
     		 		set_bubble = true;
     		 		}
-
+    		 		    		 		
     		 		$('#' + field.name + "").attr('style', 'background: #FFFFC5 !important');
-
+    		 		
     		 		invalid_count++;
-    		 	}
+    		 	} 
 			});
-
+						
 			if(invalid_count > 0 ) {
     		    return false;
-    		}
+    		}		
     	});
-
-    	$(".inputbox").blur( function() {
-
-			$('#' + this.id + "").validationEngine('hide');
+    	
+    	$(".inputbox").blur( function() { 
+    	    
+			$('#' + this.id + "").validationEngine('hide');	
 			//if they validate the field by filling it in, reset the background of the control to white again
-			if($('#' + this.id + "").val()!="" || this.id=="address_2") {
+			if($('#' + this.id + "").val()!="" || this.id=="address_2") { 
 			     $('#' + this.id + "").attr('style', 'background: #FFF !important');
 			} else {
 			    $('#' + this.id + "").attr('style', 'background: #FFFFC5 !important');
 			}
     	});
+    	    
     });
-
+   
 </script>
-<?php
-
-//check DNS here :)
-if(Session::read("layout", array("name"=>"default"))=="mamapedia") {
-	$is_mamapedia = true;
-} else {
-	$is_mamapedia = false;
-}
-
-//until DNS is created ;)
-$is_mamapedia = true;
-$img_path_prefix = "";
-
-if($is_mamapedia) {
-	$img_path_prefix = "/img/mamapedia";
-} else {
-	$img_path_prefix = "/img";
-}
-
-?>
-
 <?php  if(empty($cartEmpty)): ?>
 <div class="cart-content" style="height:700px">
 	<div class="grid_8 cart-header-left">
 		<div style="float:left">
 			<h2 class="page-title gray">
 				<span class="cart-step-status gray" style="font-weight:bold">Shipping Information</span>
-				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_completed.png"></span>
-				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps2.png"></span>
-				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_remaining.png"></span>
-				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_remaining.png"></span>
+				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
+				<span class="cart-step-status"><img src="/img/cart_steps2.png"></span>
+				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
+				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
 			</h2>
 			<?php if (!empty($error)) { ?>
 			<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2></div>
 			<?php } ?>
 		</div>
 	</div>
-
+	
 	<div class="grid_8 cart-header-right">
-		<?php echo $this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
+	<?php echo $this->view()->render( array('element' => 'shipdateTimer'), array( 'shipDate' => $shipDate) ); ?>
 	</div>	
 	
-<?php echo $this->form->create($address, array('id' => 'addressForm')); ?>				
+<?php echo $this->form->create($address, array('id' => 'addressForm')); ?>	
+			
 	<div class="grid_16">
+	
 		<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
 			<hr />Choose your address :<?php echo $this->form->select('addresses', $addresses_ddwn, array("id" => 'addresses', 'value' => $selected));?>
 		<?php endif ?>
@@ -176,8 +155,11 @@ if($is_mamapedia) {
 		<div>
 				<?php echo $this->form->submit('Continue', array('class' => 'button fr', 'style'=>'margin-right:10px;')); ?>
 		</div>	
+
 	</div>
+
 <?php echo $this->form->end();?> 
+
 </div>
 
 <div class="clear"></div>
@@ -217,12 +199,12 @@ if($is_mamapedia) {
 <?php else: ?>
 	<div class="grid_16 cart-empty">
 		<h1>
-			<span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span>
+			<span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> 	
 			<a href="/sales" title="Continue Shopping">Continue Shopping</a/></h1>
 	</div>
 <?php endif ?>
 <script>
-$(document).ready(function(){
+$(document).ready(function(){ 
 	$("#addresses").change(function () {
 		$("#address_id").val($("#addresses option:selected").val());
 		$("#selectForm").submit();

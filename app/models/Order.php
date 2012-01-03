@@ -9,9 +9,11 @@ use app\extensions\Mailer;
 use app\models\User;
 use app\models\Base;
 use app\models\FeatureToggles;
+
 use li3_payments\payments\TransactionResponse;
 use li3_payments\extensions\adapter\payment\CyberSource;
 use li3_payments\extensions\adapter\account\Customer;
+
 
 class Order extends Base {
 
@@ -267,9 +269,10 @@ class Order extends Base {
 		++$user->purchase_count;
 		$user->save(null, array('validate' => false));
 		#Send Order Confirmation Email
+		
 		$data = array(
 			'order' => $order->data(),
-			'shipDate' => Cart::shipDate($order)
+			'shipDate' => date('m-d-Y', $shipDateInsert)
 		);
 		#In Case Of First Order, Send an Email About 10$ Off Discount
 		if ($service && array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {

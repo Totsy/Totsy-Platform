@@ -214,26 +214,6 @@
 				</span>
 				<div id="all-reserved"></div>
 
-				<?php
-				if($item->miss_christmas){
-				?>
-				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#ff0000; font-size:11px;text-align:left;">
-				<img src="/img/truck_grey.png">
-				This item is not guaranteed to be delivered on or before 12/25.*
-				</div>
-				<?php
-				}
-				else{
-				?>
-				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#999999; font-size:11px;text-align:left;">
-				<img src="/img/truck_grey.png">
-				This item will be delivered on or before 12/23*
-				</div>
-
-
-				<?php
-				}
-				?>
 
 			<?php endif ?>
 		</div>
@@ -244,23 +224,6 @@
 </div>
 <div class="clear"></div>
 
-<div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
-				<?php
-				if($item->miss_christmas){
-				?>
-				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions.
-				<?php
-				}
-				else{
-				?>
-
-				* Our delivery guarantee does not apply when transportation networks are affected by weather.
-
-				<?php
-				}
-				?>
-
-</div>
 </div>
 
 <div id="modal" style="background:#fff!important; z-index:999!important;"></div>

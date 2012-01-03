@@ -16,7 +16,7 @@ use li3_facebook\extension\FacebookProxy;
 class UsersController extends BaseController {
 
 	public $sessionKey = 'userLogin';
-
+	
 	/**
 	 * Instances
 	 * @var array
@@ -68,10 +68,10 @@ class UsersController extends BaseController {
            $this->redirect("/login");
        }
 
-	   $this->_render['layout'] = 'login';
-	   $message = false;
-	   $data = $this->request->data;		
-	   $this->autoLogin();
+		$this->_render['layout'] = 'login';
+		$message = false;
+		$data = $this->request->data;		
+		$this->autoLogin();
 		
 		/*
 		* redirects to the affiliate registration page if the left the page
@@ -79,22 +79,14 @@ class UsersController extends BaseController {
 		*/
 
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-		
 		if($cookie && preg_match('(/a/)', $cookie['landing_url'])){
 			return $this->redirect($cookie['landing_url']);
 		}
-
-		if (Session::read('layout', array('name' => 'default'))=='mamapedia') {
-		    $affiliate = new AffiliatesController(array('request' => $this->request));
-		    $affiliate->register("mamasource");
-		}
-		
-		$referer = parse_url($this->request->env('HTTP_REFERER'));
-		
+		$referer = parse_url($this->request->env('HTTP_REFERER')) + array('host' => null);
 		if ($referer['host']==$this->request->env('HTTP_HOST') && preg_match('(/sale/)',$referer['path'])){
 			Session::write('landing',$referer['path'],array('name'=>'default'));
 		}
-
+		unset($referer);
 		if (isset($data) && $this->request->data) {
 			$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
 			$data['email'] = strtolower($this->request->data['email']);
@@ -145,16 +137,9 @@ class UsersController extends BaseController {
 					'email' => $user->email
 				);
 				$mailer = $this->_classes['mailer'];
-				
-				$sessionServices = Session::read('services', array('name' => 'default'));
-				
-				if ( $sessionServices['freeshipping']!=="uneligible" ) {	
-					$mailer::send('Welcome_Free_Shipping', $user->email);
-				}
-				
+				$mailer::send('Welcome_Free_Shipping', $user->email);
 				$mailer::addToMailingList($data['email']);
 				$mailer::addToSuppressionList($data['email']);
-
 				$ipaddress = $this->request->env('REMOTE_ADDR');
 				User::log($ipaddress);
 
@@ -172,9 +157,24 @@ class UsersController extends BaseController {
 
 			}
 		}
-		elseif ($this->request->data && !$user->validates() ) {
+		
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_login';
+		 	$this->_render['template'] = 'mobile_register';
+		} else {
+			//$this->_render['layout'] = 'login';
+		}
+		
+		if ($this->request->data && !$user->validates() ) {
 			$message = '<div class="error_flash">Error in registering your account</div>';
 		}
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_login';
+		 	$this->_render['template'] = 'mobile_register';
+		} else {
+			//$this->_render['layout'] = 'login';
+		}
+		
 		return compact('message', 'user');
 	}
 
@@ -218,10 +218,21 @@ class UsersController extends BaseController {
 							$params['token'] = $user['clear_token'];
 						}
 						Mailer::send($mail_template, $user->email,$params);
-						$name = null;
-						if (isset($data['firstname'])) $name = $data['firstname'];
-						if (isset($data['lastname'])) $name = is_null($name)?$data['lastname']:$name.$data['lastname'];
-						Mailer::addToMailingList($data['email'],is_null($name)?array():$name);
+						
+						$args = array();
+						if (!empty($user->firstname)) $args['name'] = $user->firstname;
+						if (!empty($user->lastname)) $args['name'] = $args['name'] . $user->lastname;
+						if (!empty($user->invited_by)) {
+							$affiliate_cusror = Affiliate::collection()->find(array('invitation_codes'=>$user->invited_by));
+							if ($affiliate_cusror->hasNext()){
+								$affiliate = $affiliate_cusror->getNext();
+								$args['source'] = $affiliate['name'];
+								unset($affiliate);
+							}
+							unset($affiliate_cusror);
+						}
+						
+						Mailer::addToMailingList($data['email'],$args);
 						Mailer::addToSuppressionList($data['email']);
 
 					}
@@ -239,14 +250,15 @@ class UsersController extends BaseController {
 	 * @return string The user is prompted with a message if authentication failed.
 	 */
 	public function login() {
+	
 		$message = $resetAuth = $legacyAuth = $nativeAuth = false;
 		$rememberHash = '';
+		
 
 		//redirect to the right email if the user is coming from an email
 		//the session writes this variable on the register() method
 		//it writes it THERE because that is the method currently serving our homepage
-		$this->autoLogin();	
-		
+		$this->autoLogin();
 		if ($this->request->data) {
 
 			$email = trim(strtolower($this->request->data['email']));
@@ -285,7 +297,7 @@ class UsersController extends BaseController {
             			//$userInfo = Session::read('userLogin');
             			$cookie['user_id'] = $user['_id'];
             			if(array_key_exists('redirect', $cookie) && $cookie['redirect'] ) {
-							$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$this->request->env('HTTP_HOST')));
+							$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$_SERVER['HTTP_HOST']));
 							unset($cookie['redirect']);
 						}
 
@@ -318,25 +330,30 @@ class UsersController extends BaseController {
 			} else {
 				$message = '<div class="error_flash">Login Failed - Your Password Is Blank</div>';
 			}
-		} 
 
-		//new login layout to account for fullscreen image JL
-		$this->_render['layout'] = 'login';
+
+		}
+		//detect mobile and make the view switch
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_login';
+		 	$this->_render['template'] = 'mobile_login';
+		} else {
+			$this->_render['layout'] = 'login';
+		}
 
 		return compact('message', 'fbsession', 'fbconfig');
 	}
-	
+
 	protected function autoLogin() {
-	
+
 		$redirect = '/sales';
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 		
-		if (FacebookProxy::getUser()) {
-			$result = static::facebookLogin(null, $cookie, $ipaddress);
-			extract($result);
-		}
+		$result = static::facebookLogin(null, $cookie, $ipaddress);
 		
+		extract($result);
+
 		$fbCancelFlag = false;
 
 		if (array_key_exists('fbcancel', $this->request->query)) {
@@ -385,13 +402,7 @@ class UsersController extends BaseController {
 
 	public function logout() {
 
-		$fbconfig = FacebookProxy::config();
-		$appCookie = "fbsr_".$fbconfig["appId"];
-
-		//destroy FB session
-		Session::delete($appCookie , array('name' => 'cookie'));
 		FacebookProxy::destroySession();
-
 		$loginInfo = Session::read('userLogin');
 		$user = User::collection();
 		$user->update(
@@ -409,7 +420,6 @@ class UsersController extends BaseController {
 				
 		return $this->redirect(array('action' => 'login'));
 	}
-	
 	/**
 	 * This is only for legacy users that are coming with AuthLogic passwords and salt
 	 * @param string $password
@@ -449,6 +459,7 @@ class UsersController extends BaseController {
 				$connected = false;
 			}
 		}
+
 		
 		if(FacebookProxy::getUser()){
 			$fbsession = FacebookProxy::getUser();
@@ -456,7 +467,7 @@ class UsersController extends BaseController {
 		
 		if ($fbsession && $linked == false) {
 			try {
-				$userfb = FacebookProxy::api('/me');
+				$userfb = FacebookProxy::api($fbsession);
 				$check = User::find('first', array(
 					'conditions' => array(
 							'facebook_info.id' => $userfb['id']
@@ -495,6 +506,10 @@ class UsersController extends BaseController {
 				$status = "email";
 			}
 		}
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_info';
+		}
 		return compact('user', 'status', 'connected', 'failed', 'userfb');
 	}
 
@@ -514,7 +529,12 @@ class UsersController extends BaseController {
     }
 
 	public function reset() {
-		$this->_render['layout'] = 'login';
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_login';
+		 	$this->_render['template'] = 'mobile_reset';
+		} else {
+			$this->_render['layout'] = 'login';
+		}
 		$success = false;
 		if ($this->request->data) {
 			$email = strtolower($this->request->data['email']);
@@ -531,14 +551,22 @@ class UsersController extends BaseController {
 				if ($user->save(null, array('validate' => false))) {
 					$mailer = $this->_classes['mailer'];
 					$mailer::send('Reset_Password', $user->email, array('token' => $token));
-					$message = "Your password has been reset. Please check your email.";
+					Mailer::send('Reset_Password', $user->email, array('token' => $token));
+					$message = '<div class="success_flash">Your password has been reset. Please check your email.</div>';
 					$success = true;
 				} else {
-					$message = "Sorry your password has not been reset. Please try again.";
+					$message = '<div class="error_flash">Sorry your password has not been reset. Please try again.</div>';
 				}
 			} else {
-				$message = "This email doesn't exist.";
+				$message =  '<div class="error_flash">This email doesn\'t exist.</div>';
 			}
+			
+		}
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_login';
+		 	$this->_render['template'] = 'mobile_reset';
+		} else {
+			$this->_render['layout'] = 'login';
 		}
 		return compact('message', 'success');
 	}
@@ -578,7 +606,7 @@ class UsersController extends BaseController {
 				$mailer = $this->_classes['mailer'];
 				$mailer::send('Friend_Invite', $email, $args);
 			}
-			$flashMessage = "Your invitations have been sent";
+			$flashMessage = '<div class="success_flash">Your invitations have been sent</div>';
 		}
 		$open = Invitation::find('all', array(
 			'conditions' => array(
@@ -595,7 +623,10 @@ class UsersController extends BaseController {
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
 			                                            array('invite' => $_SERVER['REQUEST_URI'])
 			                                            );
-
+		if($this->request->is('mobile')){
+			$this->_render['layout'] = 'mobile_main';
+			$this->_render['template'] = 'mobile_invite';
+		}
 		return compact('user','open', 'accepted', 'flashMessage', 'spinback_fb');
 	}
 
@@ -647,6 +678,10 @@ class UsersController extends BaseController {
 				}
 			}
 		}
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_password';
+		}
 		return compact("user", "status");
 	}
 
@@ -655,10 +690,9 @@ class UsersController extends BaseController {
 	 * @return compact
 	 */
 	public function fbregister() {
-
 		$message = null;
 		$user = null;
-		$fbuser = FacebookProxy::api('/me');
+		$fbuser = FacebookProxy::api(FacebookProxy::getUser());
 		$user = User::create();
 
 		if ( !preg_match( '/@proxymail\.facebook\.com/', $fbuser['email'] )) {
@@ -689,7 +723,7 @@ class UsersController extends BaseController {
 
 		return compact('message', 'user', 'fbuser');
 	}
-	
+
 	/**
 	 * Auto login a user if the facebook session has been set.
 	 *
@@ -709,10 +743,11 @@ class UsersController extends BaseController {
 		//If the users already exists in the database
 		$success = false;
 		$userfb = array();
-		
+	
 		if ($self->fbsession) {
-			$userfb = FacebookProxy::api('/me');
-			
+		
+			$userfb = FacebookProxy::api($self->fbsession);
+
 			$user = User::find('first', array(
 				'conditions' => array(
 					'$or' => array(
@@ -722,7 +757,7 @@ class UsersController extends BaseController {
 							
 			if ($user) {
 			
-			$userfb = FacebookProxy::api('/me');		
+			//$userfb = FacebookProxy::getUser();		
 			$user->facebook_info = $userfb;
 			$user->save(null, array('validate' => false));
 				

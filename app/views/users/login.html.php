@@ -1,4 +1,3 @@
-<?php use lithium\storage\Session; ?>
 <?php if ($message){ echo $message; } ?>
 <style>
 h2 {
@@ -85,21 +84,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 <div class="container_16 round_clear pushy" style="width:720px; height:473px; float:left; margin:85px 0px 0px 85px;">
 <div class="round gradient"  style="background:#ffffff; height:445px;">
 
+
+
 <!-- left side -->
 <div class="grid_6" style="float:left;width:315px;">
-
-<?php
-
-$brandLogo = "logo_reg_new.png";
-
-if(Session::read('layout', array('name' => 'default'))=='mamapedia') {
-	$brandLogo = "mamapedia/logo.png";
-}
-
-?>
-
-<?php echo $this->html->link($this->html->image($brandLogo, array('width'=>'280')), '', array('escape'=> false)); ?>
-
+<?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
 <div class="round gradient" style="border:1px #eeeeee solid; height:330px; width:310px; margin-top:8px;">
 
 <h2 style="width:300px; text-align:center; font-weight:bold; padding-top:10px; padding-bottom:20px; margin-bottom:10px;  border-bottom:1px #cccccc solid;">Member Sign in</h2>
@@ -161,6 +150,6 @@ function fblogin() {
 		if (response.authResponse) {
 			window.location.reload();    
   		}	
-	},		 {scope:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
+	}, 		 {scope:'email'});
 }
 </script>

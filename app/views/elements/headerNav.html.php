@@ -7,9 +7,8 @@
 		<?php if (is_array($userInfo) && array_key_exists('email', $userInfo)) { echo $userInfo['email']; } ?>
 		<?php endif; ?>		
 		(<?php echo $this->html->link('Sign Out', "#", array('title' => 'Sign Out', 'onClick'=>'goToLogout()')); ?>)
-		<?php endif ?>
+		<?php endif ?>		
 	</div>
-
 	<div class="menu_top_right">
 		<?php if (!(empty($userInfo))) { ?>
 		<a href="/account" title="My Account">My Account</a>
@@ -26,4 +25,4 @@
 			<a href="/users/invite" title="+ Invite Friends Get $15">+ Invite Friends Get $15</a>
 		</span>
 		<?php } ?>
-</div>
+	</div>

@@ -14,10 +14,7 @@
 	<?php echo '<link rel="stylesheet" type="text/css" href="/css/base.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/base.css') . '" />'; ?>
    <?php echo '<link rel="stylesheet" type="text/css" href="/css/960.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/960.css') . '" />'; ?>
    <?php echo '<link rel="stylesheet" type="text/css" href="/css/jquery_ui_custom/jquery.ui.all.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/jquery_ui_custom/jquery.ui.all.css') . '" />'; ?>
-
-	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>	
-	<?php echo $this->html->style(array('base.css?v=007', '960.css?v=007', 'jquery_ui_custom/jquery.ui.all.css?v=007'), array('media' => 'screen')); ?>
-	
+  
 	<script src="https://www.google.com/jsapi"></script>
 	<script> google.load("jquery", "1.6.1", {uncompressed:false});</script>
 	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
@@ -26,12 +23,10 @@
 	<?php echo '<script src="/js/jquery.uniform.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.uniform.min.js') . '" /></script>'; ?>
    <?php echo '<script src="/js/jquery.countdown.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.countdown.min.js') . '" /></script>'; ?>
 	<?php echo $this->scripts(); ?>
-
 	<meta http-equiv="Expires" content="<?php echo date('D, d M Y h:i T', strtotime('tomorrow')); ?>"/>
 	<meta property="og:site_name" content="Totsy"/>
-	<meta property="fb:app_id" content="181445585225391"/>
+	<meta property="fb:app_id" content="<?php echo $fbconfig['appId']; ?>"/>
 	<meta name="description" content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
-
 	<meta name="sailthru.date" content="<?php echo date('r')?>" /><?php
 
 		if(substr($request->url,0,5) == 'sales' || $_SERVER['REQUEST_URI'] == '/') {
@@ -47,7 +42,6 @@
 
 				if(isset($idata['departments'])) {
 					$title = $edata['name'] .' - '. $idata['description'];
-				
 					$tags = $edata['name'].', '.implode(', ',$idata['departments']).', '.$idata['category'];
 				}
 
@@ -69,30 +63,29 @@
 
 	<?php if(isset($branch)) { echo $branch; } ?>
 <div class="container_16 roundy glow">
-	<div class="grid_6 alpha" style="margin:5px 0px 0px 5px;">
+	<div class="grid_3 alpha" style="margin:5px 0px 0px 5px;">
 		<?php echo $this->html->link($this->html->image('logo.png', array('width'=>'120')), '/sales', array('escape'=> false)); ?>
-
 	</div>
-	<div class="grid_10">
 	<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
+
 		<div class="menu_main_global">
 		<?php if (!(empty($userInfo))): ?>
 		<ul class="nav main" id="navlist">
-		    <li><a href="/sales" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0 || $_SERVER['REQUEST_URI'] == '/') {
-		    echo "class='active'";
-		    } ?>>All Sales</a></li>
-		    <li><a href="/sales/girls" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/girls') == 0) {
-		    echo 'class="active"';
-		    } ?>>Girls</a></li>
-		    <li><a href="/sales/boys" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/boys') == 0)  {
-		    echo 'class="active"';
-		    } ?>>Boys</a></li>
-		    <li><a href="/sales/momsdads" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/momsdads') == 0) {
-		    echo 'class="active"';
-		    } ?>>Moms &amp; Dads</a></li>
+			<li><a href="/sales" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0 || $_SERVER['REQUEST_URI'] == '/') {
+			echo 'class="active"';
+			} ?>>All Sales</a></li>
+			<li><a href="/sales/girls" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/girls') == 0) {
+			echo 'class="active"';
+			} ?>>Girls</a></li>
+			<li><a href="/sales/boys" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/boys') == 0)  {
+			echo 'class="active"';
+			} ?>>Boys</a></li>
+			<li><a href="/sales/momsdads" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/momsdads') == 0) {
+			echo 'class="active"';
+			} ?>>Moms &amp; Dads</a></li>
 		</ul>
 		<?php endif ?>
-		</div>
+	</div>
 	<!-- end header nav -->
 
 	<div class="container_16">
@@ -100,7 +93,6 @@
 	</div>
 	<!-- main content -->
 </div>
-	<!-- main content -->
 
 <!-- end container_16 -->
 
@@ -114,7 +106,7 @@
 	</div>
 	<!-- end footer icons -->
 
-	<div id="toTop">^ Top</div>
+	<div id='toTop'>^ Top</div>
 
 	<!--affiliate pixels-->
 	<?php echo $pixel; ?>
@@ -131,11 +123,45 @@
 	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 	  })();
 </script>
+	<?php 
+	use li3_facebook\extension\FacebookProxy; 
+	$fbconfig = FacebookProxy::config();
+	$appId = $fbconfig['appId'];	
+?>
+<?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
+<script type="text/javascript">
+	var fbCookie = 'fbsr_<?php echo $appId; ?>';	
+	var logoutURL = '<?php echo $logout; ?>';
+	
+		function deleteFBCookies() {
+		    //all posible FB cookies
+		    try {
+		    	document.cookie = fbCookie + '=; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/';
+		    	document.cookie = 'datr=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+		    	document.cookie = 'locale=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+		    	document.cookie = 'lu=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+		    	document.cookie = 'reg_fb_gate=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+		    	document.cookie = 'reg_fb_ref=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+		    	document.cookie = 'lsd=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+		    	document.cookie = 'L=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+		    	document.cookie = 'act=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+		    	document.cookie = 'openid_p=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+		    	return true;
+		    } catch(err) {
+		    	return false;
+		    }
+		}
+		
+		function goToLogout() {
+			if (deleteFBCookies()==true) {
+		    	window.location = logoutURL;
+		    }
+		}	
+</script>
 
 	<script language="javascript">
 	document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s://www':'://www')+ '.upsellit.com/upsellitJS4.jsp?qs=237268202226312324343293280329277309292309329331334326345325&siteID=6605"><\/sc'+'ript>')
 	</script>
-
 	<script type="text/javascript">
 		// end uniform inputs
 		$(document).ready(function() {
@@ -163,34 +189,6 @@
 	// end tabs
 </script>
 
-<script type="text/javascript">
-	var fbCookie = 'fbsr_<?php echo $appId; ?>';	
-	var logoutLink = '<?php echo $logout; ?>';
-
-	function deleteFBCookies() {
-	    //all posible FB cookies
-	    try {
-	    	document.cookie = fbCookie + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-	    	document.cookie = 'datr=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-	    	document.cookie = 'locale=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-	    	document.cookie = 'lu=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-	    	document.cookie = 'reg_fb_gate=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-	    	document.cookie = 'reg_fb_ref=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-	    	document.cookie = 'lsd=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-	    	document.cookie = 'L=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-	    	document.cookie = 'act=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-	    	document.cookie = 'openid_p=; expires=Thu, 01-Jan-70 00:00:01 GMT;'; 
-	    		    	
-			window.location = logoutLink;
-	    } catch (err) {
-	    	return false;
-	    }
-	}
-	
-	function goToLogout() {
-		deleteFBCookies();
-	} 
-</script>
 
 <!-- Sailthru Horizon -->
 <script type="text/javascript">
