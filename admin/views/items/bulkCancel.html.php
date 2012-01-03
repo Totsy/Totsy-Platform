@@ -1,8 +1,3 @@
-<?
-use admin\models\Order;
-
-?>
-
 <?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
 <?php echo $this->html->script('jquery.dataTables.js');?>
 <?php echo $this->html->script('TableTools.min.js');?>
@@ -15,18 +10,14 @@ use admin\models\Order;
 <?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
 
 <script>
-
-function confirmSubmit()
-{
-
-var agree=confirm("Are you sure you wish to continue?");
-if (agree)
-	return true ;
-else
-	return false ;
+function confirmSubmit() {
+	var agree = confirm("Are you sure you wish to continue?");
+	if (agree) {
+		return true ;
+	} else {
+		return false ;
+	}
 }
-</script>
-
 </script>
 
 <div class="grid_16">
@@ -72,88 +63,77 @@ else
 
 <div class="grid_16">
 <?php if (!empty($items)): ?>
+	<?php
+		$x=0;
+		foreach ($items as $item) {
+	?>
+	<table border="1">
+	<thead>
+		<tr>
+			<th>Image</th>
+			<th>Sale Retail</th>
+			<th>MSRP</th>
+			<th>Description</th>
+			<th>Vendor</th>
+			<th>Vendor Style</th>
+			<th>Color</th>
+			<th>Size</th>
+			<th>Totsy SKU</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
 			<?php
-				$x=0;
-				foreach ($items as $item):
+				if (!empty($item['primary_image'])) {
+					$image = '/image/'. $item['primary_image'] . '.jpeg';
+				} else {
+					$image = "/img/no-image-small.jpeg";
+				}
 			?>
-		<table border="1">
-		<thead>
-			<tr>
-				<th>Image</th>
-				<th>Sale Retail</th>
-				<th>MSRP</th>
-				<th>Description</th>
-				<th>Vendor</th>
-				<th>Vendor Style</th>
-				<th>Color</th>
-				<th>Size</th>
-				<th>Totsy SKU</th>
-			</tr>
-		</thead>
-		<tbody>
-
-				<tr>
-					<?php
-						if (!empty($item['primary_image'])) {
-							$image = '/image/'. $item['primary_image'] . '.jpeg';
-						} else {
-							$image = "/img/no-image-small.jpeg";
-						}
-					?>
-					<td width="5%">
-						<?php echo $this->html->image("$image", array(
-							'width' => "110",
-							'height' => "110",
-							'style' => "margin:2px; padding:2px; background:#fff; border:1px solid #ddd;"
-							));
-						?>
-					</td>
-					<td>$<?php echo $item['sale_retail']?></td>
-					<td>$<?php echo $item['msrp']?></td>
-					<td width="5%"><?php echo $item['description']?></td>
-					<td><?php echo $item['vendor']?></td>
-					<td width="5%"><?php echo $item['vendor_style']?></td>
-					<td>
-					<?php if (empty($item['color'])): ?>
-						None
-					<?php else: ?>
-						<?php echo $item['color']?>
-					<?php endif ?>
-					</td>
-					<td>
-						<?php foreach ($item['sku_details'] as $key => $value): ?>
-							<?php echo $key?><br />
-						<?php endforeach ?>
-					</td>
-					<td>
-						<?php foreach ($item['sku_details'] as $key => $value): ?>
-							<a href="/items/bulkCancel/<?php echo $value;?>"><?php echo $value?></a><br />
-						<?php endforeach ?>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="9">
-
-					<?php echo $this->form->create(null, array('url'=>'/orders/cancelMultipleItems')); ?>
-
+			<td width="5%">
+				<?php echo $this->html->image("$image", array(
+					'width' => "110",
+					'height' => "110",
+					'style' => "margin:2px; padding:2px; background:#fff; border:1px solid #ddd;"
+					));
+				?>
+			</td>
+			<td>$<?php echo $item['sale_retail']?></td>
+			<td>$<?php echo $item['msrp']?></td>
+			<td width="5%"><?php echo $item['description']?></td>
+			<td><?php echo $item['vendor']?></td>
+			<td width="5%"><?php echo $item['vendor_style']?></td>
+			<td>
+			<?php if (empty($item['color'])): ?>
+				None
+			<?php else: ?>
+				<?php echo $item['color']?>
+			<?php endif ?>
+			</td>
+			<td>
+				<?php foreach ($item['sku_details'] as $key => $value): ?>
+					<?php echo $key?><br />
+				<?php endforeach ?>
+			</td>
+			<td>
+				<?php foreach ($item['sku_details'] as $key => $value): ?>
+					<a href="/items/bulkCancel/<?php echo $value;?>"><?php echo $value?></a><br />
+				<?php endforeach ?>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="9">
+				<?php echo $this->form->create(null, array('url'=>'/orders/cancelMultipleItems')); ?>
 					<?php echo $this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $item["_id"])); ?>
 					<?php echo $this->form->hidden('sku', array('class' => 'inputbox', 'sku' => 'sku', 'value' => $search_sku)); ?>
-
-<?php
-
-					$item_id =  $item['_id']->__toString();
-
-					$orders = Order::find('all',array('conditions'=> array('items.item_id' => $item_id)));
-?>
-
-
 						<table id="orderTable_<?php echo $x;?>" class="datatable" >
-		<thead>
+							<thead>
 								<tr>
 									<th><div class="controls">
-	<span><input type="checkbox" class="checkAll" /><!-- <b>Check All</b> <span> or
-	<span><a href="javascript:void(0);" class="invertSelection">Invert Selection</a></span> -->
-</div></th>
+										<span>
+											<input type="checkbox" class="checkAll" />
+										</span>
+									</th>
 									<th>Order ID</th>
 									<th>Order Status</th>
 									<th>SKU</th>
@@ -164,79 +144,72 @@ else
 									<th>Order Date / Time</th>
 									<th>Actions</th>
 								</tr>
-								</thead>
-								<fieldset>
-								<tbody>
-						<?php
-
-						$i=0;
-
-						foreach($orders as $order) {
-								$order_temp = $order->data();
-								$o=0;
-								while ($o < sizeof($order_temp["items"])) {
-									if ($order_temp["items"][$o]["item_id"] == $item['_id']) {
-										$line_item = $order_temp["items"][$o];
-										$o = 99; //break out of loop
-									}
-									$o++;
-								}
-
-								foreach ($item['sku_details'] as $key => $value):
-									if ($key == $line_item["size"]) {
-										$sku = $value;
-									}
-								endforeach;
-
-
-
-								if ($sku == $search_sku) {
-
-						?>
-
-										<tr>
-											<td>
-
-		<div style="display: none;">
-			<input type="type" id="<?php echo $order[_id];?>" name="order[<?php echo $i;?>]" value="" class="cb-element" >
-			<input type="hidden" id="line_number[<?php echo $i;?>]" name="line_number[<?php echo $i;?>]" value="<?php echo $line_item[line_number];?>">
-
-		</div>
-
-<?php if (!$line_item["cancel"] || $line_item["cancel"] == 0): ?>
-		<input type="checkbox" id="<?php echo $order[_id];?>" name="order[<?php echo $i;?>]" value="<?php echo $order[_id];?>" class="cb-element" >
-		<input type="hidden" id="line_number[<?php echo $i;?>]" name="line_number[<?php echo $i;?>]" value="<?php echo $line_item[line_number];?>">
-<?php endif; ?>
-											</td>
-											<td><?php echo $order["order_id"];?></td>
-											<td><?php
-											    if ($line_item["cancel"] == 1): ?>
-											    <strong>Cancelled</strong>
-											    <?php else:?>
-											        <?php echo $line_item["status"];?>
-											    <?php endif; ?></td>
-											<td><?php echo $sku;?></td>
-											<td><?php echo $order->billing->firstname." ".$order->billing->lastname;?></td>
-											<td><?php echo $line_item["quantity"];?></td>
-											<td><?php echo $line_item["size"];?></td>
-											<td>
-								<?php if (empty($line_item['color'])): ?>
-									None
-								<?php else: ?>
-									<?php echo $line_item['color']?>
-								<?php endif; ?>
-											</td>
-											<td><?php echo date('Y-M-d h:i:s',$order_temp[date_created]['sec']);?></td>
-											<td>
-
-											<a href="/orders/view/<?php echo $order[_id];?>">View Order</a>
-											<?php if ($line_item[cancel] != 1) {?> | <a href="/orders/cancelOneItem?line_number=<?php echo $line_item[line_number];?>&order_id=<?php echo $order[_id];?>&item_id=<?php echo $item_id;?>&sku=<?php echo $sku;?>" onclick="return cancelLineItem();">Cancel</a><?php } ?></td>
-										</tr>
-									<?php
-						 		$i++;
-						 		} //end of search for sku
-						  }  //end of orders TR
-						?>
+							</thead>
+						<fieldset>
+							<tbody>
+<?php
+$i = 0;
+foreach($ordersForItem[(string) $item['_id']] as $order):
+	$order_temp = $order->data();								
+	$o = 0;
+	while ($o < sizeof($order_temp["items"])) {
+		if ($order_temp["items"][$o]["item_id"] == $item['_id']) {
+			$line_item = $order_temp["items"][$o];
+			$o = 99; //break out of loop
+		}
+		$o++;
+	}
+	foreach ($item['sku_details'] as $key => $value) {
+		if ($key == $line_item["size"]) {
+			$sku = $value;
+		}
+	}
+	if ($sku == $search_sku) : ?>
+		<tr>
+			<td>
+			<div style="display: none;">
+				<input type="type" id="<?php echo $order[_id];?>" name="order[<?php echo $i;?>]" value="" class="cb-element" >
+				<input type="hidden" id="line_number[<?php echo $i;?>]" name="line_number[<?php echo $i;?>]" value="<?php echo $line_item[line_number];?>">
+	
+			</div>
+			<?php if ($order->auth_confirmation <= -1) : ?>
+				<?php if (!$line_item["cancel"] || $line_item["cancel"] == 0): ?>
+	<input type="checkbox" id="<?php echo $order['_id']; ?>" name="order[<?php echo $i; ?>]" value="<?php echo $order['_id']; ?>" class="cb-element" >
+	<input type="hidden" id="line_number[<?php echo $i; ?>]" name="line_number[<?php echo $i; ?>]" value="<?php echo $line_item['line_number']; ?>">
+				<?php endif; ?>
+			<?php endif; ?>
+			</td>
+			<td><?php echo $order["order_id"];?></td>
+			<td><?php
+			    if ($line_item["cancel"] == 1): ?>
+			    <strong>Cancelled</strong>
+			    <?php else:?>
+			        <?php echo $line_item["status"];?>
+			    <?php endif; ?></td>
+			<td><?php echo $sku;?></td>
+			<td><?php echo $order->billing->firstname." ".$order->billing->lastname;?></td>
+			<td><?php echo $line_item["quantity"];?></td>
+			<td><?php echo $line_item["size"];?></td>
+			<td>
+			<?php if (empty($line_item['color'])): ?>
+				None
+			<?php else: ?>
+				<?php echo $line_item['color']?>
+			<?php endif; ?>
+			</td>
+			<td><?php echo date('Y-M-d h:i:s',$order_temp[date_created]['sec']);?></td>
+			<td>
+			<a href="/orders/view/<?php echo $order[_id];?>">View Order</a>
+			<?php if ($order->auth_confirmation <= -1) : ?>
+			<?php if ($line_item[cancel] != 1) {?> | <a href="/orders/cancelOneItem?line_number=<?php echo $line_item[line_number];?>&order_id=<?php echo $order[_id];?>&item_id=<?php echo (string) $item['_id'];?>&sku=<?php echo $sku;?>" onclick="return cancelLineItem();">Cancel</a><?php } ?>
+			<?php endif; ?>
+			</td>
+		</tr>
+<?php
+		$i++;
+	endif; //end of search for sku
+endforeach; //end of orders TR
+?>
 							</tbody>
 							</fieldset>
 						</table>
@@ -258,17 +231,10 @@ else
 			<?php
 			$x++;
 
-			endforeach  //end of items foreach
-
-			?>
+			}  //end of items foreach ?>
 	<!-- end of items table -->
-
-
-
 <?php  endif ?>
 </div>
-
-
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
 		TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
