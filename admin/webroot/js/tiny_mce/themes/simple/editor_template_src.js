@@ -27,7 +27,7 @@
 					});
 				});
 
-				ed.dom.loadCSS(url + "/skins/" + s.skin + "/content.css");
+				ed.dom.loadCSS(url + "/skins/" + s.skin + "/content.css?v=123");
 			});
 
 			DOM.loadCSS((s.editor_css ? ed.documentBaseURI.toAbsolute(s.editor_css) : '') || url + "/skins/" + s.skin + "/ui.css");

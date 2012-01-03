@@ -130,8 +130,7 @@ class ReCapture extends \lithium\console\Command {
 		$ordersCollection = Order::Collection();
 		$report = null;
 		$authKey = null;
-		$usersCollection = User::Collection();
-		$userInfos = $usersCollection->findOne(array('_id' => new MongoId($order['user_id'])));
+		$userInfos = User::lookup($order['user_id']);
 		$card = Processor::create('default', 'creditCard', $creditCard + array(
 													'billing' => Processor::create('default', 'address', array(
 													'firstName' => $order['billing']['firstname'],
