@@ -25,6 +25,12 @@ class TicketsController extends BaseController {
 	 * TODO: in fufture make normal form errors error reports no extra params (data and error)
 	 */
 	public function add() {
+					if($this->request->is('mobile')){
+				 	$this->_render['layout'] = 'mobile_main';
+				 	$this->_render['template'] = 'mobile_add';
+				} else {
+					//$this->_render['template'] = 'sent';
+				}
 		$ticket = Ticket::create();
 		$user = Session::read('userLogin');
 		$orders = Order::findAllByUserId((string) $user['_id'])->invoke('summary', array(), array(
@@ -67,7 +73,12 @@ class TicketsController extends BaseController {
 					} 
 				}
 				Mailer::send('Tickets', $email, $args, $options);
-				$this->_render['template'] = 'sent';
+				if($this->request->is('mobile')){
+				 	$this->_render['layout'] = 'mobile_main';
+				 	$this->_render['template'] = 'mobile_sent';
+				} else {
+					$this->_render['template'] = 'sent';
+				}
 			}
 		}
 
