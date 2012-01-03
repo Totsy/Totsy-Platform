@@ -200,7 +200,10 @@ foreach($ordersForItem[(string) $item['_id']] as $order):
 			<td><?php echo date('Y-M-d h:i:s',$order_temp[date_created]['sec']);?></td>
 			<td>
 			<a href="/orders/view/<?php echo $order[_id];?>">View Order</a>
-			<?php if ($line_item[cancel] != 1) {?> | <a href="/orders/cancelOneItem?line_number=<?php echo $line_item[line_number];?>&order_id=<?php echo $order[_id];?>&item_id=<?php echo (string) $item['_id'];?>&sku=<?php echo $sku;?>" onclick="return cancelLineItem();">Cancel</a><?php } ?></td>
+			<?php if ($order->auth_confirmation <= -1) : ?>
+			<?php if ($line_item[cancel] != 1) {?> | <a href="/orders/cancelOneItem?line_number=<?php echo $line_item[line_number];?>&order_id=<?php echo $order[_id];?>&item_id=<?php echo (string) $item['_id'];?>&sku=<?php echo $sku;?>" onclick="return cancelLineItem();">Cancel</a><?php } ?>
+			<?php endif; ?>
+			</td>
 		</tr>
 <?php
 		$i++;
