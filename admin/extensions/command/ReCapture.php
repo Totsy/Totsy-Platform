@@ -159,6 +159,14 @@ class ReCapture extends \lithium\console\Command {
 			}
 		} else {
 			Logger::debug('Authorize Error: ' . implode('; ', $auth->errors));
+			#Record errors in DB
+			$update = $ordersCollection->update(
+						array('_id' => $order['_id']),
+						array('$set' => array('error_date' => new MongoDate(),
+											  'auth_error' => $auth->errors
+						)), array( 'upsert' => true)
+			);
+			#Include errors in Report
 			$reportAuthorize[] = 'authorize_error';
 			$reportAuthorize[] = implode('; ', $auth->errors);
 			$reportAuthorize[] = $order['order_id'];
@@ -192,6 +200,12 @@ class ReCapture extends \lithium\console\Command {
            									  'payment_captured' => true
 						)), array( 'upsert' => true)
 			);
+			#Unset Old Errors fields
+			$update = $ordersCollection->update(
+						array('_id' => $order['_id']),
+						array('$unset' => array('error_date' => 1,
+												'auth_error' => 1
+			)));
 			$report[] = 'capture_succeeded';
 			$report[] = '';
 			$report[] = $order['order_id'];
@@ -200,6 +214,14 @@ class ReCapture extends \lithium\console\Command {
 			Logger::debug('Order Document Updated!');
 		} else {
 			Logger::debug('Capture Error: ' . implode('; ', $auth_capture->errors));
+			#Record errors in DB
+			$update = $ordersCollection->update(
+						array('_id' => $order['_id']),
+						array('$set' => array('error_date' => new MongoDate(),
+											  'auth_error' => $auth_capture->errors
+						)), array( 'upsert' => true)
+			);
+			#Include errors in Report
 			$report[] = 'capture_error';
 			$report[] = implode('; ', $auth_capture->errors);
 			$report[] = $order['order_id'];
