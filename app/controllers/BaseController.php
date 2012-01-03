@@ -24,11 +24,29 @@ class BaseController extends \lithium\action\Controller {
 		$this->_classes += $vars['_classes'];
 
 		parent::__construct($config);
+		
 		if ($user && $this->request->is('mobile')) {
-		 		$this->_render['layout'] = 'mobile_main';
-			} else {
-				$this->_render['layout'] = 'main';
-			}
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->freeShippingEligible($userInfo);
+		} else {
+			switch($_SERVER['HTTP_HOST']) {
+		    	case "kkim.totsy.com":
+		    	case "evan.totsy.com":
+		    	case "mamapedia.totsy.com":
+		    	    Session::write('layout', 'mamapedia', array('name' => 'default'));
+		    	    $img_path_prefix = "/img/mamapedia/";
+		    	    $this->set(compact('img_path_prefix'));
+		    	    $this->_render['layout'] = '/mamapedia/main';
+		    	break;
+		    	default:
+		    	    Session::write('layout', 'main', array('name' => 'default'));
+		    	    $img_path_prefix = "/img/";
+		    	    $this->_render['layout'] = 'main';
+		    	    $this->freeShippingEligible($userInfo);
+		    	break;
+			}	
+		}
+		$this->set(compact('img_path_prefix'));		
 	}
 
 	/**
@@ -92,7 +110,6 @@ class BaseController extends \lithium\action\Controller {
 		
 		$this->set(compact('cartCount', 'credit', 'fbsession', 'fbconfig', 'fblogout'));
 				
-		$this->freeShippingEligible($userInfo);
 		$this->tenOffFiftyEligible($userInfo);
 		/**
 		* Get the pixels for a particular url.
@@ -145,25 +162,7 @@ class BaseController extends \lithium\action\Controller {
 		* Send pixel to layout
 		**/
 		$this->set(compact('pixel'));
-
-		switch($_SERVER['HTTP_HOST']) {
-		    case "kkim.totsy.com":
-		    case "evan.totsy.com":
-		    case "mamapedia.totsy.com":
-		        Session::write('layout', 'mamapedia', array('name' => 'default'));
-		        $img_path_prefix = "/img/mamapedia/";
-		        $this->set(compact('img_path_prefix'));
-		        $this->_render['layout'] = '/mamapedia/main';
-		    break;
-		    default:
-		        Session::write('layout', 'main', array('name' => 'default'));
-		        $img_path_prefix = "/img/";
-		        $this->_render['layout'] = 'main';
-		    break;
-		}
-		$this->set(compact('img_path_prefix'));
-
-			
+		
 	}
 
 	/**
