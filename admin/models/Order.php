@@ -116,6 +116,12 @@ class Order extends Base {
 		if ($order['total'] == 0 || !is_numeric($order['authKey'])) {
 			$data['void_confirm'] = -1;
 			$error = "Can't capture because total is zero.";
+		} else if ($order['card_type'] == 'amex') {
+			$data['void_confirm'] = -1;
+			$error = "Can't void because the card type is Amex.";
+		} else if ($order['authTotal'] == 0) {
+			$data['void_confirm'] = -1;
+			$error = "Can't void because authorization amount is 0";
 		} else {
 			if(!empty($order['auth'])) {
 				$transaction = $order['auth'];
