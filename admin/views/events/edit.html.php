@@ -93,7 +93,7 @@ selectlist.css (line 1)
 			    	<div id="short_description_characters_wrapper">
 			    		Total:
 			    		<span id="short_description_characters_counter">
-			    			<? if(isset($event->short)) {
+			    			<?php if(isset($event->short)) {
 			    			   		echo strlen($event->short);
 			    			   } else {
 			    			   		echo '0';
@@ -155,7 +155,7 @@ selectlist.css (line 1)
 
 				<table>					<?php echo $this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?>
 				</table>
-				
+
 				<div id="tags">
 					<?php echo $this->form->label('Tags'); ?>
 					<?php if ($event->tags): ?>
@@ -382,7 +382,7 @@ selectlist.css (line 1)
 		<div id="event_inventory">
 			<iframe id="inventoryIframe" src="" style="width:900px; height:400px;"></iframe>
 		</div>
-		
+
 	</div>
 </div>
 <script type="text/javascript">
@@ -528,15 +528,15 @@ for ( i=1; i<6; i++ ) {
 		$('#Short').focusout(function(){
 			return limitTextArea($(this),$('#short_description_characters_counter'),limit);
 		});
-		
+
 		//this loads the event/inventory iframe src when the tab is clicked
 		$("#inventoryLink").click(function(){
-			$("#inventoryIframe").attr('src', "/events/inventory/<?php echo $event->_id; ?>");	
+			$("#inventoryIframe").attr('src', "/events/inventory/<?php echo $event->_id; ?>");
 		});
-		
-		
-		
-		
+
+
+
+
 	});
 
 	function limitTextArea(text,info,limiter){
