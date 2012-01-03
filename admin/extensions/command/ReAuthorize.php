@@ -198,7 +198,7 @@ class ReAuthorize extends \lithium\console\Command {
 		}
 		#If The Order has been already full authorize and Order send to Dotcom. Don't reauth
 		if(!empty($this->fullAmount)) {
-			if((!isset($order['authTotal'])) || ($order['authTotal'] == $order['total'])) {
+			if((!isset($order['authTotal'])) || ($order['authTotal'] >= $order['total'])) {
 				$reAuth = false;
 			}
 		} else {
