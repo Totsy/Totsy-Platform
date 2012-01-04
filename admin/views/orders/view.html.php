@@ -71,6 +71,11 @@
 										<?php echo $this->form->hidden('comment', array('class' => 'textarea', 'id' => 'comment')); ?>
 										<?php echo $this->form->end();?>
 									</div>
+									<div id="capture_form" style="display:none">
+										<?php echo $this->form->create(null ,array('id'=>'captureForm','enctype' => "multipart/form-data")); ?>
+										<?php echo $this->form->hidden('capture_action', array('class' => 'inputbox', 'id' => 'cancel_action', 'value' => 1)); ?>
+										<?php echo $this->form->end();?>
+									</div>
 									<div id="order_file" style="display:none">
 										<?=$this->form->create(null ,array('id'=>'newOrderFileForm','enctype' => "multipart/form-data")); ?>
 										<?=$this->form->hidden("process-as-an-exception", array('class' => 'inputbox', 'id' => "process-as-an-exception")); ?>

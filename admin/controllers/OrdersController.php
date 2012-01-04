@@ -618,7 +618,6 @@ class OrdersController extends BaseController {
 		}
 		if (!empty($datas["cancel_action"])){
 			$this->cancel();
-
 			//If the order is canceled, send an email
 			$order_temp = $orderClass::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
 			if(strlen($order_temp["user_id"]) > 10){
@@ -653,6 +652,10 @@ class OrdersController extends BaseController {
 		}
 		if ($id && empty($datas["save"]) && empty($datas["cancel_action"]) && !empty($datas["phone"])) {
 			$this->updateShipping($id);
+		}
+		if ($id && empty($datas["save"]) && !empty($datas["capture_action"])) {
+			$orderToCapture = $orderClass::find('first', array('conditions' => array('_id' => new MongoId($id))));
+			$result = Order::process($orderToCapture);
 		}
 		if ($id && empty($datas["save"]) && empty($datas["cancel_action"]) && !empty($datas["billing"])) {
 			$this->updatePayment($id);
