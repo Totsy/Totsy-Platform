@@ -21,13 +21,20 @@
 	};
 })(jQuery);
 </script>
-	<h2 class="page-title gray"><span class="_red">Today's Sales</span> </h2>
-	<hr />
-		<!--Disney -->
-<!--	<div class="disney disney_splash">
+
+<?php
+	/* @DG-2012.01.04 - Commented out the "Disney" block
+		@ should be a generic "promo" when/if added back, not "disney" as the specific may change (i.e. Parents magazine)
+		@ e.g. <div class="promo">…</div>
+	
+	<!-- Disney -->
+	<!--
+	<div class="disney disney_splash">
 		<p><strong>SPECIAL BONUS!</strong> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/parents.png" align="absmiddle" width="95px" /> ( a $10 value ) <span id="disney">Offer &amp; Refund Details</span></p>
 	</div>
--->
+	-->
+	*/
+?>
 <div class="fullwidth">
 	<?php
 		/* 
@@ -40,6 +47,12 @@
 				- Upcoming Sales
 		*/
 	?>
+	
+<section id="openEvents">
+	<header class="grid_16">
+		<h2 class="page-title gray"><span class="_red">Today's Sales</span></h2>
+	</header>
+
 	<?php $x = 0; ?>
 	<?php $y = 0; ?>
 	<?php foreach ($openEvents as $event): ?>
@@ -52,10 +65,10 @@
 		<?php endif ?>
 
 		<?php if (($y == 2) || ($y == 3)): ?>
-			<div class="grid_4">
+			<div class="event grid_4">
 		<?php endif ?>
 		<?php if ($y == 4): ?>
-			<div class="grid_4">
+			<div class="event grid_4">
 		<?php endif ?>
 		<?php if ($y == 3): ?>
 			<?php $y = 1; ?>
@@ -144,59 +157,59 @@
 		<?php $y++; ?>
 	<?php endforeach ?>
 
+</section><!-- /#openEvents -->	
+
 	<div style="margin-bottom:35px;" class="clear"></div><!-- @TODO: rebuild template, remove clear divs, utilize #upcoming styles -->
 
-	<div id="upcoming" class="container_16 group">
-		<div class="grid_16">
-			<h2 class="page-title gray">Upcoming Sales</h2>
-			<hr />
-		</div>
-		<?php $x = 0; ?>
-		<?php $y = 0; ?>
-		<?php foreach ($pendingEvents as $event): ?>
-			<?php if (($y == 0) || ($y == 2)): ?>
-				<div class="grid_4">
-			<?php endif ?>
-			<?php if ($y == 1): ?>
-				<div class="grid_4">
-			<?php endif ?>
-			<?php if ($y == 2): ?>
-				<?php $y = -1; ?>
-			<?php endif ?>
-					<div class="p-container roundy_product_home">
-						<?php
-							if (!empty($event->images->splash_small_image)) {
-								$productImage = "/image/{$event->images->splash_small_image}.jpg";
-							} else {
-								$productImage = "/img/no-image-small.jpeg";
-							}
-						?>
-						<?php echo $this->html->link(
-						$this->html->image("$productImage", array(
-							'title' => $event->name,
-							'alt' => $event->name,
-							'width' => '228',
-							'height' => '266'
-						)), 'sale/'.$event->url, array('escape'=> false));
-						 ?>
-				<div class="splash-details">
+<section id="upcoming" class="container_16 group">
+	<header class="grid_16">
+		<h2 class="page-title gray">Upcoming Sales</h2>
+	</header>
+	<?php $x = 0; ?>
+	<?php $y = 0; ?>
+	<?php foreach ($pendingEvents as $event): ?>
+		<?php if (($y == 0) || ($y == 2)): ?>
+			<div class="event grid_4">
+		<?php endif ?>
+		<?php if ($y == 1): ?>
+			<div class="event grid_4">
+		<?php endif ?>
+		<?php if ($y == 2): ?>
+			<?php $y = -1; ?>
+		<?php endif ?>
+				<div class="p-container roundy_product_home">
+					<?php
+						if (!empty($event->images->splash_small_image)) {
+							$productImage = "/image/{$event->images->splash_small_image}.jpg";
+						} else {
+							$productImage = "/img/no-image-small.jpeg";
+						}
+					?>
+					<?php echo $this->html->link(
+					$this->html->image("$productImage", array(
+						'title' => $event->name,
+						'alt' => $event->name,
+						'width' => '228',
+						'height' => '266'
+					)), 'sale/'.$event->url, array('escape'=> false));
+					 ?>
+					<div class="splash-details">
 						<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
-						 <p style="padding:0px; margin:0px; font-size:15px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
-						 <p style="padding:0px; margin:-3px 0px 0px 0px; font-size:12px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;">
-						 <span id="<?php echo "futuresplash$x"; ?>" title="<?php echo $date = $event->start_date->sec * 1000; ?>" class="counter start"></span>
+						 	<p style="padding:0px; margin:0px; font-size:15px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
+						 	<p style="padding:0px; margin:-3px 0px 0px 0px; font-size:12px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;">
+						 		<span id="<?php echo "futuresplash$x"; ?>" title="<?php echo $date = $event->start_date->sec * 1000; ?>" class="counter start"></span>
+						 	</p>
 						</div>
-
 						<div class="table-cell right">
 							<?php echo $this->html->link('View', 'sale/'.$event->url, array('class' => 'button small', 'style'=>'display:table-cell !important'));?>
 						</div>
 					</div>
 				</div>
-			</div>
-
-			<?php $x++; ?>
-			<?php $y++; ?>
+			</div><!-- /.event -->
+		<?php $x++; ?>
+		<?php $y++; ?>
 	<?php endforeach ?>
-	</div>
+</section><!-- /#upcoming -->
 </div>
 </div>
 </div>
