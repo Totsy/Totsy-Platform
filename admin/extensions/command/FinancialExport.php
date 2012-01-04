@@ -599,7 +599,7 @@ class FinancialExport extends Base  {
                 $orderItems = $order['items'];
                 
                 if (array_key_exists('tax', $order) ){
-					$order['tax'] = (float) $prder['tax'];
+					$order['tax'] = (float) $order['tax'];
                 }
                 
                 if (array_key_exists('authKey', $order)) {
