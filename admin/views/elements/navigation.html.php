@@ -1,6 +1,6 @@
 <ul class="nav main">
 	<li>
-		<?php echo $this->html->link('Order Management', 'Orders::index'); ?>
+		<?php echo $this->html->link('Orders', 'Orders::index'); ?>
 		<ul>
 			<li>
 				<?php echo $this->html->link('Search Orders', 'Orders::index'); ?>
@@ -14,7 +14,7 @@
 		</ul>
 	</li>
 	<li>
-		<?php echo $this->html->link('Credit Management', '#'); ?>
+		<?php echo $this->html->link('Credits', '#'); ?>
 		<ul>
 			<li>
 				<?php echo $this->html->link('Report on Credits', '#'); ?>
@@ -25,7 +25,7 @@
 		</ul>
 	</li>
 	<li>
-		<?php echo $this->html->link('Event/Item Management', array('Base::selectEvent')); ?>
+		<?php echo $this->html->link('Events/Items', array('Base::selectEvent')); ?>
 		<ul>
 			<li>
 				<?php echo $this->html->link('Add New Event', 'Events::add'); ?>
@@ -53,7 +53,7 @@
 		</ul>
 	</li>
 	<li>
-		<?php echo $this->html->link('Banner Management', array('Banners::view')); ?>
+		<?php echo $this->html->link('Banners', array('Banners::view')); ?>
 		<ul>
 			<li>
 				<?php echo $this->html->link('Add New Banner', 'Banners::add'); ?>
@@ -66,9 +66,7 @@
 	<li>
 		<?php echo $this->html->link('Reports', '#'); ?>
 		<ul>
-            <li>
-				<?php echo $this->html->link('Google Analytics', 'Reports::googleAnalytics'); ?>
-			</li>
+            
 			<li>
 				<?php echo $this->html->link('Affiliate Report', 'Reports::affiliate'); ?>
 			</li>
@@ -106,7 +104,7 @@
 		</ul>
 	</li>
 	<li>
-		<?php echo $this->html->link('User Management', '#'); ?>
+		<?php echo $this->html->link('Users', '#'); ?>
 		<ul>
 			<li>
 				<?php echo $this->html->link('Search Users', 'Users::index'); ?>

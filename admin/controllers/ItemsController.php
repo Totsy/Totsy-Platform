@@ -18,6 +18,28 @@ use lithium\analysis\Logger;
 
 class ItemsController extends BaseController {
 
+	private $_mapCategories = array (
+		'category' =>  array(
+			'' => 'None',
+			'Girls Apparel' => 'Girls Apparel',
+			'Boys Apparel' => 'Boys Apparel',
+			'Shoes' => 'Shoes',
+			'Accessories' => 'Accessories',
+			'Toys and Books' => 'Toys and Books',
+			'Gear' => 'Gear',
+			'Home' => 'Home',
+			'Moms and Dads' => 'Moms and Dads'
+		),
+		'age' => array(
+			'' => 'None',
+			'Newborn' => 'Newborn',
+			'Infant 0-12 M' => 'Infant 0-12 M',
+			'Toddler 1-3 Y' => 'Toddler 1-3 Y',
+			'Preschool 4-5 Y' => 'Preschool 4-5 Y',
+			'School Age 5+' => 'School Age 5+'
+		)
+	);
+
 	/**
 	 * Main display of item data
 	 */
@@ -53,6 +75,9 @@ class ItemsController extends BaseController {
 		$item = Item::find('first', array('conditions' => array('_id' => $id)));
 		$event = Event::find('first', array('conditions' => array('_id' => $item->event[0])));
 
+		$categories = $this->_mapCategories['category'];
+		$ages = $this->_mapCategories['age'];
+
 		if ($item) {
 			$details = json_encode($item->details->data());
 		} else {
@@ -60,7 +85,7 @@ class ItemsController extends BaseController {
 		}
 		#T Get all possibles value for the multiple filters select
 		$sel_filters = array();
-		$all_filters = array();
+		$all_filters = array(''=>'None');
 		$result =  Item::getDepartments();
 		foreach ($result['values'] as $value) {
 			if (!is_scalar($value)) {
@@ -79,7 +104,28 @@ class ItemsController extends BaseController {
 				$sel_filters[$value] = $value;
 			}
 		}
+
+		if (empty($sel_filters)){
+			$sel_filters['None'] = '';
+		}
 		#END T
+
+		//Filter ages
+		if(!empty($item->ages)) {
+			$values = $item->ages->data();
+			foreach ($values as $value) {
+				$age_filters[$value] = $value;
+			}
+		}
+
+		//Filter categories
+		if(!empty($item->categories)) {
+			$values = $item->categories->data();
+			foreach ($values as $value) {
+				$category_filters[$value] = $value;
+			}
+		}
+
 		if ($this->request->data) {
 			if (!empty($item->event[0])) {
 				$this->request->data['event'] = array($item->event[0]);
@@ -147,7 +193,8 @@ class ItemsController extends BaseController {
 					));
 			}
 		}
-		return compact('item', 'details', 'event', 'all_filters', 'sel_filters');
+		return compact('item', 'details', 'event', 'all_filters', 'sel_filters',
+					'categories', 'ages', 'category_filters', 'age_filters');
 	}
 
 	public function preview() {

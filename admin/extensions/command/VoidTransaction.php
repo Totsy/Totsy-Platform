@@ -170,7 +170,6 @@ class VoidTransaction extends \lithium\console\Command {
 	public function voidTransaction($order, $report = null) {
 		Logger::debug('Void Through CyberSource');
 		$ordersCollection = Order::Collection();
-		$usersCollection = User::Collection();
 		#Save Old AuthKey with Date
 		$newRecord = array('authKey' => $order['authKey'], 'date_saved' => new MongoDate());
 		#Cancel Previous Transaction	

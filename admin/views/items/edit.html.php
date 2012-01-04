@@ -79,10 +79,20 @@ tinyMCE.init({
 						'class' => 'general',
 						'value' => $item->age
 					));?>
-					<?=$this->form->label('Departments')?><br />
+
+					<?php echo $this->form->label('Ages')?><br />
+					<table>
+						<?php echo $this->form->select('ages',$ages,array('multiple'=>'multiple','value' => $age_filters)); ?>
+					</table>
+					<?php echo $this->form->label('Categories')?><br />
+					<table>
+						<?php echo $this->form->select('categories',$categories,array('multiple'=>'multiple','value' => $category_filters)); ?>
+					</table>
+					<?php echo $this->form->label('Departments')?><br />
 					<table>
 						<?=$this->form->select('departments',$all_filters,array('multiple'=>'multiple','value' => $sel_filters)); ?>
 					</table>
+
 					<div id="item_status">
 						<h2 id="item_status">Item Status</h2>
 						<?php if ($item->enabled == 1): ?>

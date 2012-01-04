@@ -87,7 +87,7 @@ class Items extends \lithium\template\Helper {
 		$all_items = $this->dropDownText($itemRecords);
 
 		if (!empty($itemRecords)) {
-			$html .= "<table id='itemtable'";
+			$html .= '<table id=\'itemtable\'>';
 			//We need the thead for jquery datatables
 			$html .=  '<thead>';
 			$html .= '<tr>';
@@ -106,9 +106,9 @@ class Items extends \lithium\template\Helper {
 
 			//Lets start building the data fields
 			foreach ($itemRecords as $item) {
-				$html .= "<tr class=''>";
-				$html .= "<td width='400px'>";
 
+				$html .= "<tr>";
+				$html .= "<td width='400px'>";
 				//make mini array of color/description
 				$isurlduplicate = false;
 				$urlcheckminiarray = array($item->url);
@@ -139,6 +139,7 @@ class Items extends \lithium\template\Helper {
 				$html .= "</select>";
 
 				$html .= "</td>";
+
 				$imagesHtml = $this->_images($item);
 				$html .= "<td width='100'>{$imagesHtml}</td>";
 				$html .= "<td width='200'><a href=\"/items/edit/$item->_id\">$item->description</a><br />

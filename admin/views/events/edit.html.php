@@ -4,30 +4,41 @@ use lithium\util\Inflector;
 
 ?>
 
-<?=$this->html->script('tiny_mce/tiny_mce.js');?>
-<?=$this->html->script('jquery-dynamic-form.js');?>
-<?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
-<?=$this->html->script('handlers.js');?>
-<?=$this->html->style('jquery_ui_blitzer.css')?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->style('table');?>
-<?=$this->html->script('jquery-ui-timepicker.min.js');?>
-<?=$this->html->style('timepicker'); ?>
-<?=$this->html->script('jquery.countdown.min');?>
-<?=$this->html->style('jquery.countdown');?>
-<?=$this->html->script('jquery.maskedinput-1.2.2')?>
-<?=$this->html->script('http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js')?>
-<?=$this->html->script('jquery.iframe-transport.js')?>
-<?=$this->html->style('selectlist.css');?>
-<?=$this->html->script('jquery.selectlist.min.js')?>
-<?=$this->html->script('jquery.selectlist.pack.js')?>
+<?php echo '<link rel="stylesheet" type="text/css" href="/css/jquery_ui_blitzer.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/jquery_ui_blitzer.css') . '" />'; ?>
 
-<?=$this->html->script('jquery.flash.min.js')?>
-<?=$this->html->script('agile-uploader-3.0.js')?>
-<?=$this->html->style('agile_uploader.css');?>
-<?=$this->html->style('admin_common.css');?>
-<?=$this->html->script('files.js');?>
-<?=$this->html->style('files.css');?>
+<?php echo '<link rel="stylesheet" type="text/css" href="/css/table.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/table.css') . '" />'; ?>
+
+<?php echo '<link rel="stylesheet" type="text/css" href="/css/timepicker.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/timepicker.css') . '" />'; ?>
+
+<?php echo '<link rel="stylesheet" type="text/css" href="/css/jquery.countdown.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/jquery.countdown.css') . '" />'; ?>
+
+<?php echo '<link rel="stylesheet" type="text/css" href="/css/selectlist.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/selectlist.css') . '" />'; ?>
+
+<?php echo '<script src="/js/tiny_mce/tiny_mce.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/tiny_mce/tiny_mce.js') . '" /></script>'; ?>
+
+<?php echo '<script src="/js/jquery-dynamic-form.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery-dynamic-form.js') . '" /></script>'; ?>
+
+<?php echo '<script src="/js/swfupload.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/swfupload.js') . '" /></script>'; ?>
+
+<?php echo '<script src="/js/swfupload.queue.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/swfupload.queue.js') . '" /></script>'; ?>
+
+<?php echo '<script src="/js/fileprogress.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/fileprogress.js') . '" /></script>'; ?>
+
+<?php echo '<script src="/js/handlers.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/handlers.js') . '" /></script>'; ?>
+
+<?php echo '<script src="/js/event_upload.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/event_upload.js') . '" /></script>'; ?>
+
+<?php echo '<script src="/js/jquery.dataTables.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.dataTables.js') . '" /></script>'; ?>
+
+<?php echo '<script src="/js/jquery-ui-timepicker.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery-ui-timepicker.min.js') . '" /></script>'; ?>
+
+<?php echo '<script src="/js/jquery.countdown.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.countdown.min.js') . '" /></script>'; ?>
+
+<?php echo '<script src="/js/jquery.maskedinput-1.2.2.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.maskedinput-1.2.2.js') . '" /></script>'; ?>
+
+<?php echo '<script src="/js/jquery.selectlist.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.selectlist.min.js') . '" /></script>'; ?>
+
+<?php echo '<script src="/js/jquery.selectlist.pack.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.selectlist.pack.js') . '" /></script>'; ?>
 
 <style type="text/css">
 .selectlist-list {
@@ -45,170 +56,68 @@ use lithium\util\Inflector;
 
 $(document).ready(function(){
 
-tinyMCE.init({
-	// General options
-	mode : "exact",
-	elements: "Blurb,ShipMessage,"+allitemids,
-	theme : "advanced",
-	plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,preview,searchreplace,print,contextmenu,paste,directionality,noneditable,visualchars,nonbreaking,xhtmlxtras",
-	editor_deselector : "mceNoEditor",
-	// Theme options
-	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull",
+    tinyMCE.init({
+        // General options
+        mode : "exact",
+        elements: "Blurb,ShipMessage,"+allitemids,
+        theme : "advanced",
+        plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,preview,searchreplace,print,contextmenu,paste,directionality,noneditable,visualchars,nonbreaking,xhtmlxtras",
+        editor_deselector : "mceNoEditor",
+        // Theme options
+        theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull",
 
-	theme_advanced_buttons2: "styleselect,formatselect,fontselect,fontsizeselect",
+        theme_advanced_buttons2: "styleselect,formatselect,fontselect,fontsizeselect",
 
-	theme_advanced_buttons3 : "cut,copy,paste,pastetext,pasteword,|,bullist,numlist,|,indent,blockquote,|,anchor,code,|,forecolor,backcolor",
-	/* theme_advanced_button3:
-	 theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,charmap,iespell,advhr",
-	 theme_advanced_buttons4 : "spellchecker,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking,blockquote,pagebreak", */
+        theme_advanced_buttons3 : "cut,copy,paste,pastetext,pasteword,|,bullist,numlist,|,indent,blockquote,|,anchor,code,|,forecolor,backcolor",
+        /* theme_advanced_button3:
+         theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,charmap,iespell,advhr",
+         theme_advanced_buttons4 : "spellchecker,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking,blockquote,pagebreak", */
 
-	theme_advanced_toolbar_location : "top",
-	theme_advanced_toolbar_align : "left",
-	theme_advanced_statusbar_location : "bottom",
-	theme_advanced_resizing : false,
+        theme_advanced_toolbar_location : "top",
+        theme_advanced_toolbar_align : "left",
+        theme_advanced_statusbar_location : "bottom",
+        theme_advanced_resizing : false,
 
-});
-
-$('.table_link').click(function() {
-        $('tr').hide();
-      $('tr .').toggle('slow');
     });
 
-$('.related_items').selectList({
-	addAnimate: function (item, callback) {
-	$(item).slideDown(500, callback);
-	},
-	removeAnimate: function (item, callback) {
-	$(item).slideUp(500, callback);
-	}
+    $('.table_link').click(function() {
+            $('tr').hide();
+          $('tr .').toggle('slow');
+        });
+
+    $('.related_items').selectList({
+        addAnimate: function (item, callback) {
+        $(item).slideDown(500, callback);
+        },
+        removeAnimate: function (item, callback) {
+        $(item).slideUp(500, callback);
+        }
+    });
+    $('#Short').focusout(function(){
+        return limitTextArea($(this),$('#short_description_characters_counter'),limit);
+    });
+
+    //this loads the event/inventory iframe src when the tab is clicked
+    $("#inventoryLink").click(function(){
+        $("#inventoryIframe").attr('src', "/events/inventory/<?=$event->_id; ?>");
+    });
 });
 
-$('.related_items').change(function() {
 
-//parse out the current item's id
-var item_id = this.id.substring(9, this.id.length);
-var list_position = this.id.substring(7,8);
+<style type="text/css">
+    .selectlist-list {
+        list-style: none outside none;
+        margin: 0;
+        padding: 0;
+    }
 
-//create strings of the dropdown id's
-for ( i=1; i<6; i++ ) {
+    selectlist.css (line 1)
+    .selectlist-list {
+        width: 12em;
+    }
+</style>
 
-	var related_item_id = 'related'+ i + '_' + item_id;
-	//if its not the current dropdown
-	//and its value is the same as the current dropdown's value AND
-	//the item's value isnt an empty string
-	//than throw an alert message
-	if(i!=list_position && $("#" + related_item_id + " option:selected").val()!=="" ) {
-
-		if( $("#" + related_item_id + " option:selected").val() == $("#" + this.id + " option:selected").val() ) {
-			$("#" + this.id).val(0);
-			alert("please select a different item");
-			break;
-		}
-	}
-}
-
-});
-
-});
-
-</script>
-
-<script type="text/javascript">
-	$(document).ready(function(){
-		$("#duplicate").dynamicForm("#plus", "#minus", {limit:15, createColor: 'yellow', removeColor: 'red'});
-		});
-		</script>
-
-<script type="text/javascript" charset="utf-8">
-	$(function() {
-		var dates = $('#start_date, #end_date').datetimepicker({
-			defaultDate: "+1w",
-			changeMonth: true,
-			changeYear: true,
-			numberOfMonths: 1,
-			onSelect: function(selectedDate) {
-				var option = this.id == "start_date" ? "minDate" : "maxDate";
-				var instance = $(this).data("datetimepicker");
-				var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
-				dates.not(this).datepicker("option", option, date);
-			}
-		});
-	});
-</script>
-
-<script type="text/javascript" charset="utf-8">
-
-	var oTable;
-
-	$(document).ready(function() {
-		/* Add a click handler to the rows - this could be used as a callback */
-		$('#itemTable tr').click( function() {
-			if ( $(this).hasClass('row_selected') )
-				$(this).removeClass('row_selected');
-			else
-				$(this).addClass('row_selected');
-		} );
-
-		/* Init the table */
-		oTable = $('#itemTable').dataTable();
-
-	} );
-
-	function fnGetSelected( oTableLocal )
-	{
-		var aReturn = new Array();
-		var aTrs = oTableLocal.fnGetNodes();
-
-		for ( var i=0 ; i<aTrs.length ; i++ )
-		{
-			if ( $(aTrs[i]).hasClass('row_selected') )
-			{
-				aReturn.push( aTrs[i].id );
-			}
-		}
-		var eventItems = document.getElementById('event_items');
-		eventItems.innerHTML = eventItems.innerHTML + aReturn;
-		return aReturn;
-	}
-
-
-</script>
-<script type="text/javascript" charset="utf-8">
-	var limit = <?php echo $shortDescLimit;?>;
-	$(document).ready(function() {
-
-		$('#Short').keyup(function(){
-			return limitTextArea($(this),$('#short_description_characters_counter'),limit);
-		});
-
-		$('#Short').focusout(function(){
-			return limitTextArea($(this),$('#short_description_characters_counter'),limit);
-		});
-
-		//this loads the event/inventory iframe src when the tab is clicked
-		$("#inventoryLink").click(function(){
-			$("#inventoryIframe").attr('src', "/events/inventory/<?=$event->_id; ?>");
-		});
-
-
-
-
-	});
-
-	function limitTextArea(text,info,limiter){
-		var len = text.val().length;
-		if (len>limiter){
-			text.val(text.val().substr(0,limiter));
-			$('#short_description_characters_counter').text(limiter);
-			return false;
-		} else {
-			$('#short_description_characters_counter').text(len);
-			return true;
-		}
-	}
-</script>
-
-<!-- Sorting of primary/secondary event item images -->
+<!--- Sorting of primary/secondary event item images --->
 <script>
 $(function() {
 	$(".images.sortable").sortable({
@@ -232,6 +141,7 @@ $(function() {
 });
 </script>
 <?=$this->form->create(null, array('id' => "events_edit", 'enctype' => "multipart/form-data")); ?>
+
 
 <div class="grid_16">
 	<h2>Editing Event <em><?=$event->name; ?></em></h2>
@@ -625,3 +535,159 @@ $(document).ready(function() {
 	   $("#ship_date").mask("99/99/9999");
 	});
 </script>
+
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+tinyMCE.init({
+	// General options
+	mode : "exact",
+	elements: "Blurb,ShipMessage,"+allitemids,
+	theme : "simple",
+	editor_selector : "mceSimple"
+
+
+});
+
+$('.table_link').click(function() {
+        $('tr').hide();
+      $('tr .').toggle('slow');
+    });
+
+$('.related_items').selectList({
+	addAnimate: function (item, callback) {
+	$(item).slideDown(500, callback);
+	},
+	removeAnimate: function (item, callback) {
+	$(item).slideUp(500, callback);
+	}
+});
+
+$('.related_items').change(function() {
+
+//parse out the current item's id
+var item_id = this.id.substring(9, this.id.length);
+var list_position = this.id.substring(7,8);
+
+//create strings of the dropdown id's
+for ( i=1; i<6; i++ ) {
+
+	var related_item_id = 'related'+ i + '_' + item_id;
+	//if its not the current dropdown
+	//and its value is the same as the current dropdown's value AND
+	//the item's value isnt an empty string
+	//than throw an alert message
+	if(i!=list_position && $("#" + related_item_id + " option:selected").val()!=="" ) {
+
+		if( $("#" + related_item_id + " option:selected").val() == $("#" + this.id + " option:selected").val() ) {
+			$("#" + this.id).val(0);
+			alert("please select a different item");
+			break;
+		}
+	}
+}
+
+});
+
+});
+
+</script>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#duplicate").dynamicForm("#plus", "#minus", {limit:15, createColor: 'yellow', removeColor: 'red'});
+		});
+		</script>
+
+<script type="text/javascript" charset="utf-8">
+	$(function() {
+		var dates = $('#start_date, #end_date').datetimepicker({
+			defaultDate: "+1w",
+			changeMonth: true,
+			changeYear: true,
+			numberOfMonths: 1,
+			onSelect: function(selectedDate) {
+				var option = this.id == "start_date" ? "minDate" : "maxDate";
+				var instance = $(this).data("datetimepicker");
+				var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+				dates.not(this).datepicker("option", option, date);
+			}
+		});
+	});
+</script>
+
+<script type="text/javascript" charset="utf-8">
+
+	var oTable;
+
+	$(document).ready(function() {
+		/* Add a click handler to the rows - this could be used as a callback */
+		$('#itemTable tr').click( function() {
+			if ( $(this).hasClass('row_selected') )
+				$(this).removeClass('row_selected');
+			else
+				$(this).addClass('row_selected');
+		} );
+
+		/* Init the table */
+		oTable = $('#itemTable').dataTable();
+
+	} );
+
+	function fnGetSelected( oTableLocal )
+	{
+		var aReturn = new Array();
+		var aTrs = oTableLocal.fnGetNodes();
+
+		for ( var i=0 ; i<aTrs.length ; i++ )
+		{
+			if ( $(aTrs[i]).hasClass('row_selected') )
+			{
+				aReturn.push( aTrs[i].id );
+			}
+		}
+		var eventItems = document.getElementById('event_items');
+		eventItems.innerHTML = eventItems.innerHTML + aReturn;
+		return aReturn;
+	}
+
+
+</script>
+<script type="text/javascript" charset="utf-8">
+	var limit = <?php echo $shortDescLimit;?>;
+	$(document).ready(function() {
+
+		$('#Short').keyup(function(){
+			return limitTextArea($(this),$('#short_description_characters_counter'),limit);
+		});
+
+		$('#Short').focusout(function(){
+			return limitTextArea($(this),$('#short_description_characters_counter'),limit);
+		});
+
+		//this loads the event/inventory iframe src when the tab is clicked
+		$("#inventoryLink").click(function(){
+			$("#inventoryIframe").attr('src', "/events/inventory/<?php echo $event->_id; ?>");
+		});
+
+
+
+
+	});
+
+	function limitTextArea(text,info,limiter){
+		var len = text.val().length;
+		if (len>limiter){
+			text.val(text.val().substr(0,limiter));
+			$('#short_description_characters_counter').text(limiter);
+			return false;
+		} else {
+			$('#short_description_characters_counter').text(len);
+			return true;
+		}
+	}
+</script>
+
+
