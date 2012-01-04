@@ -506,7 +506,7 @@ class OrdersController extends BaseController {
 		$addresses_ddwn = array();
 		
 		#Get the credit cards that the user is storing
-		$creditcards = CreditCard::retrieve_all_cards($user['_id']);
+		$creditcards = CreditCard::retrieve_all_cards($user['_id'], 'saved');
 
 		#Get billing address from shipping one in session
 		$shipping = json_encode(Session::read('shipping'));
@@ -591,7 +591,8 @@ class OrdersController extends BaseController {
 				$vars['billingAddr']['zip'] = $datas[zip];
 				$vars['user'] = $user;
 				$vars['creditCard'] = $creditCard;
-	
+				$vars['savedByUser'] = true;
+
 			 	CreditCard::add($vars);
 			}
 			
@@ -722,8 +723,6 @@ class OrdersController extends BaseController {
 			'shipping',
 			'shipDate',
 			'cartExpirationDate',
-			'missChristmasCount',
-			'notmissChristmasCount',
 			'creditcards'
 		);
 	}

@@ -56,7 +56,7 @@
    	</td>
     <td width="67%">
     <?php echo $cc_name?> ending in <strong><?php echo substr($creditcard[number], -4);?></strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expires <strong><?php echo $creditcard[month];?>/<?php echo $creditcard[year];?></strong></td>
-    <td width="13%" align="right"><a href="#" id="remove_<?php echo $creditcard[profileId]?>" title="Remove Credit Card" class="creditcard_remove">Delete</a></td>
+    <td width="13%" align="right"><a href="/creditcards/remove?profileID=<?php echo $creditcard[profileId];?>" id="remove_<?php echo $creditcard[profileId]?>" title="Remove Credit Card" class="creditcard_remove">Delete</a></td>
   </tr>
   <tr>
     <td>&nbsp;</td>
@@ -99,33 +99,3 @@
 </div>
 </div>
 <div class="clear"></div>
-
-
-<script type="text/javascript">
-
-	$(document).ready( function() {
-		$(".creditcard_remove").each( function() {	
-		
-			var creditcard_id = this.id.replace("remove_", "");
-		
-			$('#' + this.id + "").click ( function () {
-			
-				var remove = confirm ("Are you sure you want to remove this credit card?"); 
-				
-				if ( remove ) {					
-			    	$('#' + creditcard_id + "").remove();
-			    	$.ajax({ url: $.base + "creditcards/remove_creditcard", 
-			    			 data: creditcard_id, 
-			    			 context: document.body, 
-			    			 success: function(data) {
-			    				//
-			    	      	 }
-					});
-				} else {
-					return false;
-				}	
-			});
-		});
-	});
-	
-</script>

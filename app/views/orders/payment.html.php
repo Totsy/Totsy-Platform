@@ -94,7 +94,7 @@ var paymentForm = new Object();
 
     		$.each(	paymentForm.form, function(i, field) {
     		    if( savedCreditCard === undefined && field.value=="" &&
-    		    	field.name!=="address2" &&
+    		    	field.name!=="address_2" &&
     		    	field.name!=="opt_submitted" &&
     		    	field.name!=="opt_shipping" &&
     		    	field.name!=="opt_shipping_select" &&
@@ -173,28 +173,41 @@ if (sizeof($creditcards) > 0) { ?>
 <table width="500px" border="0" cellspacing="0" cellpadding="0">
 
 <?php
-$i = 0;
-foreach ($creditcards as $creditcard):
- ?>
+	$i = 0;
+	foreach ($creditcards as $creditcard):
+?>
 <tr>
-<td align="right"><input type="radio" name="savedCreditCard" value="<?php print $creditcard[profileId];?>" onclick="fadeOut_BillingAddressForm(); fadeOut_CCForm();" <?php if ($i == 0) print 'checked'; ?>></td>
-<td align="middle"><img src="
-<?php
+	<td align="right">
+		<input type="radio" name="savedCreditCard" value="<?php print $creditcard[profileId];?>" onclick="fadeOut_BillingAddressForm(); fadeOut_CCForm();" <?php if ($i == 0) print 'checked'; ?>>
+	</td>
+	<td align="middle">
+		<img src="<?php
 switch ($creditcard[type]) {
-case 'Visa': print "/img/cc_visa.gif"; break;
-case 'Mastercard': print "/img/cc_mastercard.gif"; break;
-case 'American Express': print "/img/cc_amex.gif"; break;
-}
-?>">
-</td>
-<td align="left"><?php echo ucfirst($creditcard[type]);?> ending in <?php echo substr($creditcard[number], -4); ?></td>
-<!-- <td><?php echo $creditcard[firstname]." ".$creditcard[lastname];?></td> -->
-<td>Expires on <?php echo $creditcard[month];?> / <?php echo $creditcard[year];?></td>
+	case 'Visa': 
+		print "/img/cc_visa.gif"; 
+	break;
+	case 'Mastercard': 
+		print "/img/cc_mastercard.gif"; 
+	break;
+	case 'American Express': 
+		print "/img/cc_amex.gif"; 
+	break;
+}	?>">
+	</td>
+	<td align="left">
+		<?php echo ucfirst($creditcard[type]);?> ending in <?php echo substr($creditcard[number], -4); ?>
+	</td>
+	<!-- <td>
+		<?php echo $creditcard[firstname]." ".$creditcard[lastname];?>
+	</td> -->
+	<td>
+		Expires on <?php echo $creditcard[month];?> / <?php echo $creditcard[year];?>
+	</td>
 </tr>
 <?php
-$i++;
- endforeach;
- ?>
+	$i++;
+endforeach;
+?>
 </table>
 </div>
 <h3 style="margin-top: 11px"><a href="#" onclick="fadeIn_saved_CCs(); fadeIn_CCForm(); fadeIn_BillingAddressForm(); clear_CCForm(); " style="text-decoration:underline;">Add New Card</a></h3>
@@ -285,8 +298,8 @@ $i++;
 				<?php echo $this->form->text('address', array('class' => 'validate[required] inputbox', 'id'=>'address')); ?>
 				<?php echo $this->form->error('address'); ?>
 				<div style="clear:both"></div>
-				<?php echo $this->form->label('address2', 'Street Address 2', array('escape' => false,'class' => 'required')); ?>
-				<?php echo $this->form->text('address2', array('class' => 'inputbox', 'id'=>'address2')); ?>
+				<?php echo $this->form->label('address_2', 'Street Address 2', array('escape' => false,'class' => 'required')); ?>
+				<?php echo $this->form->text('address_2', array('class' => 'inputbox', 'id'=>'address_2')); ?>
 				<div style="clear:both"></div>
 				<?php echo $this->form->label('city', 'City <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?php echo $this->form->text('city', array('class' => 'validate[required] inputbox', 'id'=>'city')); ?>

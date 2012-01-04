@@ -21,7 +21,6 @@ class CreditCard extends \lithium\data\Model {
 		'now' => 0
 	);
 
-
 	public $validates = array(
 		'number' => array(
 			'notEmpty', 'required' => false, 'message' => 'Please add a credit card number'
@@ -66,32 +65,25 @@ class CreditCard extends \lithium\data\Model {
 		$validator::add('state', '[A-Z]{2}', array('contains' => false));
 	} 
 	
-	public static function retrieve_all_cards($user_id) {
+	public static function retrieve_all_cards($user_id, $saved) {
 		$payments = static::$_classes['payments'];
 		$usersCollection = User::Collection();
 		$userInfos = $usersCollection->findOne(array('_id' => new MongoId($user_id)));
 		
 		$cybersource = new CyberSource($payments::config('default'));
 		
-/*
-		Card type
-        [visa] => 001
-        [mc] => 002
-        [amex] => 003
-        [disc] => 004
-        [diners] => 005
-        [jcb] => 007
-        [enroute] => 014
-        [maestro] => 024
-        [electron] => 033
-*/		
-		
 		$creditcard = array();
 		$i=0;
 		
-		array_reverse($userInfos['cyberSourceProfiles']);
+		if(!$saved) {
+			array_reverse($userInfos['cyberSourceProfiles']);
+			$CyberSourceProfiles = $userInfos['cyberSourceProfiles'];
+		} else {
+			array_reverse($userInfos['cyberSourceProfilesSavedByUser']);
+			$CyberSourceProfiles = $userInfos['cyberSourceProfilesSavedByUser'];
+		}	
 		
-		foreach ($userInfos['cyberSourceProfiles'] as $profileId) {
+		foreach ($CyberSourceProfiles as $profileId) {
 			$profile = $cybersource->profile($profileId);
 			$profile = CreditCard::parseObject($profile);
 
@@ -143,19 +135,8 @@ class CreditCard extends \lithium\data\Model {
 		$creditCard = $vars['creditCard'];
 
 		#Get current credit cards to compare to this card
-		$creditcards = CreditCard::retrieve_all_cards($vars['user']['_id']);
-		
-		$i=0;
-		while ($i < sizeof($creditcards)) {
-			if (substr($creditcards[$i][number], -4) == substr($creditCard[number],-4)
-				&& $creditcards[$i][month] == $creditCard[month]
-				&& $creditcards[$i][year] == $creditCard[year]) {
-				$duplicate = 1;
-				$i=1000; //get out of the loop
-			}
-			$i++;
-		}		
-		
+		$creditcardsSaved = CreditCard::retrieve_all_cards($vars['user']['_id']);
+		$duplicate = User::hasCyberSourceProfile($creditcardsSaved, $creditCard);		
 		if ($duplicate) {
 			return "duplicate";
 		} else {	
@@ -170,21 +151,7 @@ class CreditCard extends \lithium\data\Model {
 					'country' => $vars['billingAddr']['country'] ?: 'US',
 					'email' =>  $vars['user']['email'] 
 			);
-	
-			$paymentInfos = $payments::create('default', 'creditCard', $creditCard + array(
-				'billing' => $payments::create('default', 'address', $address)
-				)
-			);
-	
-			#Switch Authorized Amount Transaction depending of CC Type
-			if($creditCard['type'] == 'visa') {
-				$authTotalAmount = 0;
-			} else {
-				$authTotalAmount = 1;
-			}
-			
-			$auth = $payments::authorize('default', $authTotalAmount, $paymentInfos);
-	
+
 			#Create A User Profile with CC Infos Through Auth.Net
 			$customer = $payments::create('default', 'customer', array(
 				'firstName' => $userInfos['firstname'],
@@ -200,7 +167,13 @@ class CreditCard extends \lithium\data\Model {
 					array('_id' => new MongoId($vars['user']['_id'])),
 					array('$push' => array('cyberSourceProfiles' => $profileID)), array( 'upsert' => true)
 				);
-				return "success";
+				if($vars['savedByUser']) {
+					$update = $usersCollection->update(
+						array('_id' => new MongoId($vars['user']['_id'])),
+						array('$push' => array('cyberSourceProfilesSavedByUser' => $profileID)), array( 'upsert' => true)
+					);
+				}
+				return $profileID;
 			} else { //return an error
 				return "error";
 			} //end of error / success
@@ -208,86 +181,85 @@ class CreditCard extends \lithium\data\Model {
 	}
 	
 	public static function remove_creditcard($user_id, $profileID) {
-			$usersCollection = User::Collection();
-			$update = $usersCollection->update(
-				array('_id' => new MongoId($user_id)),
-				array('$pull' => array('cyberSourceProfiles' => $profileID)), array( 'upsert' => true)
-			);		
-			
-			return $update;
+		$usersCollection = User::Collection();
+		$user = User::lookup($user_id);
+		$update = $usersCollection->update(
+			array('_id' => $user['_id']),
+			array('$pull' => array('cyberSourceProfiles' => $profileID)), array( 'upsert' => true)
+		);
+		$usersCollection->update(
+			array('_id' => $user['_id']),
+			array('$pull' => array('cyberSourceProfilesSavedByUser' => $profileID)), array( 'upsert' => true)
+		);
+		return $update;
 	}
 	
-	public static function parseObject($obj, $values=true){
- 
-    $obj_dump  = print_r($obj, 1);
-    $ret_list = array();
-    $ret_map = array();
-    $ret_name = '';
-    $dump_lines = preg_split('/[\r\n]+/',$obj_dump);
-    $ARR_NAME = 'arr_name';
-    $ARR_LIST = 'arr_list';
-    $arr_index = -1;
-   
-    // get the object type...
-    $matches = array();
-    preg_match('/^\s*(\S+)\s+\bObject\b/i',$obj_dump,$matches);
-    if(isset($matches[1])){ $ret_name = $matches[1]; }//if
-   
-    foreach($dump_lines as &$line){
-   
-      $matches = array();
-   
-      //load up var and values...
-      if(preg_match('/^\s*\[\s*(\S+)\s*\]\s+=>\s+(.*)$/', $line, $matches)){
-       
-        if(mb_stripos($matches[2],'array') !== false){
-       
-          $arr_map = array();
-          $arr_map[$ARR_NAME] = $matches[1];
-          $arr_map[$ARR_LIST] = array();
-          $arr_list[++$arr_index] = $arr_map;
-       
-        }else{
-       
-          // save normal variables and arrays differently...
-          if($arr_index >= 0){ 
-            $arr_list[$arr_index][$ARR_LIST][$matches[1]] = $matches[2];
-          }else{
-            $ret_list[$matches[1]] = $matches[2];
-          }//if/else
-       
-        }//if/else
-     
-      }else{
-     
-        // save the current array to the return list...
-        if(mb_stripos($line,')') !== false){
-       
-          if($arr_index >= 0){
-           
-            $arr_map = array_pop($arr_list);
-           
-            // if there is more than one array then this array belongs to the earlier array...
-            if($arr_index > 0){
-              $arr_list[($arr_index-1)][$ARR_LIST][$arr_map[$ARR_NAME]] = $arr_map[$ARR_LIST];
-            }else{
-              $ret_list[$arr_map[$ARR_NAME]] = $arr_map[$ARR_LIST];
-            }//if/else
-           
-            $arr_index--;
-           
-          }//if
-       
-        }//if
-     
-      }//if/else
-     
-    }//foreach
-   
-    $ret_map['name'] = $ret_name;
-    $ret_map['variables'] = $ret_list;
-    return $ret_map;
-   
-  }//method
+	public static function parseObject($obj, $values=true) {
+	    $obj_dump  = print_r($obj, 1);
+	    $ret_list = array();
+	    $ret_map = array();
+	    $ret_name = '';
+	    $dump_lines = preg_split('/[\r\n]+/',$obj_dump);
+	    $ARR_NAME = 'arr_name';
+	    $ARR_LIST = 'arr_list';
+	    $arr_index = -1;
+	   
+	    // get the object type...
+	    $matches = array();
+	    preg_match('/^\s*(\S+)\s+\bObject\b/i',$obj_dump,$matches);
+	    if(isset($matches[1])) { 
+	    	$ret_name = $matches[1];
+	    }//if
+	    foreach($dump_lines as &$line) {
+	   
+	      $matches = array();
+	   
+	      //load up var and values...
+	      if(preg_match('/^\s*\[\s*(\S+)\s*\]\s+=>\s+(.*)$/', $line, $matches)) {
+			if(mb_stripos($matches[2],'array') !== false){
+	       
+	          $arr_map = array();
+	          $arr_map[$ARR_NAME] = $matches[1];
+	          $arr_map[$ARR_LIST] = array();
+	          $arr_list[++$arr_index] = $arr_map;
+	       
+	        } else {
+	          // save normal variables and arrays differently...
+	          if($arr_index >= 0) { 
+	            $arr_list[$arr_index][$ARR_LIST][$matches[1]] = $matches[2];
+	          } else {
+	            $ret_list[$matches[1]] = $matches[2];
+	          }//if/else
+	        }//if/else	     
+	      }else{
+	     
+	        // save the current array to the return list...
+	        if(mb_stripos($line,')') !== false){
+	       
+	          if($arr_index >= 0){
+	           
+	            $arr_map = array_pop($arr_list);
+	           
+	            // if there is more than one array then this array belongs to the earlier array...
+	            if($arr_index > 0){
+	              $arr_list[($arr_index-1)][$ARR_LIST][$arr_map[$ARR_NAME]] = $arr_map[$ARR_LIST];
+	            }else{
+	              $ret_list[$arr_map[$ARR_NAME]] = $arr_map[$ARR_LIST];
+	            }//if/else
+	           
+	            $arr_index--;
+	           
+	          }//if
+	       
+	        }//if
+	     
+	      }//if/else
+	     
+	    }//foreach
+	   
+	    $ret_map['name'] = $ret_name;
+	    $ret_map['variables'] = $ret_list;
+	    return $ret_map;
+	}//method
 
 }
