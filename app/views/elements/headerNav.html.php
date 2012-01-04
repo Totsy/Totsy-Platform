@@ -73,10 +73,10 @@
 					</li>
 					<li id="byage" class="haschild"><a><em>Shop<br/> By Age</em></a>
 						<ul>
-							<li><a href="/age/newborn" title="View items for Newborns">Newborn</a></li>
-							<li><a href="/age/infant" title="View items for Infants">Infant 0 -12M</a></li>
+							<li><a href="/age/newborn" title="View items for Newborns">Newborn 0-6M</a></li>
+							<li><a href="/age/infant" title="View items for Infants">Infant 6-24M</a></li>
 							<li><a href="/age/toddler" title="View items for Toddlers">Toddler 1-3Y</a></li>
-							<li><a href="/age/preschool" title="View items for Preschoolers">Preschool 4-5Y</a></li>
+							<li><a href="/age/preschool" title="View items for Preschoolers">Preschool 3-4Y</a></li>
 							<li><a href="/age/school" title="View items for School Age">School Age 5+</a></li>
 						</ul>
 					</li>
