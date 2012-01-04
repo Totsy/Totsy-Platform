@@ -16,14 +16,11 @@ class Mailer {
 	}
 
 	public static function addToMailingList ($email,array $args = array()){
-		// Remove Sailthru until it can be done asynchronously
-		/*
 		Sailthru::setEmail(
              $email,
              $args,
              array('registered' => 1)
         );
-		*/
 	}
 
 	public static function purchase($email,array $items = array(), array $args = array()){
