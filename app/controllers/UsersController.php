@@ -158,12 +158,13 @@ class UsersController extends BaseController {
 			}
 		}
 		
+		/*
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_login';
 		 	$this->_render['template'] = 'mobile_register';
 		} else {
 			//$this->_render['layout'] = 'login';
-		}
+		}*/
 		
 		if ($this->request->data && !$user->validates() ) {
 			$message = '<div class="error_flash">Error in registering your account</div>';
@@ -171,9 +172,12 @@ class UsersController extends BaseController {
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_login';
 		 	$this->_render['template'] = 'mobile_register';
-		} else {
+		} 
+		
+		/*
+		else {
 			//$this->_render['layout'] = 'login';
-		}
+		} */
 		
 		return compact('message', 'user');
 	}
@@ -360,14 +364,14 @@ class UsersController extends BaseController {
 			$fbCancelFlag = $this->request->query['fbcancel'];
 		}
 
-		//if (!$success) {
+		if (!$success) {
 			if (!empty($userfb)) {
-				$self = static::_object();
-				if(!$fbCancelFlag) {
-					return $this->redirect('/register/facebook');
+				//$self = static::_object();
+				if(!$fbCancelFlag) {				
+					$this->redirect('/register/facebook');
 				}
 			}
-		//}		
+		}		
 
 		if(preg_match( '@^[(/|login|register)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
@@ -384,9 +388,9 @@ class UsersController extends BaseController {
 					}
 					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 					if (preg_match( '@[^(/|login|register)]@', $this->request->url ) && $this->request->url) {
-						return $this->redirect($this->request->url);
+						$this->redirect($this->request->url);
 					} else {
-						return $this->redirect($redirect);
+						$this->redirect($redirect);
 					}
 				} else {
 					$cookie['autoLoginHash'] = null;
@@ -443,14 +447,12 @@ class UsersController extends BaseController {
 		$status = 'default';
 		$user = User::getUser();
 		
-		
 		$linked = (empty($user->facebook_info) ? false : true);
 		$connected = false;
 		if ($linked) {
 			$userId = $user->facebook_info->id;
 			$connected = true;
 			try {
-			
 				$accessToken = FacebookProxy::getAccessToken();
 				
 				$authCheck = FacebookProxy::api("/$userId?access_token=$accessToken");
@@ -693,7 +695,7 @@ class UsersController extends BaseController {
 	
 		$message = null;
 		$user = null;
-		$fbuser = FacebookProxy::api(FacebookProxy::getUser());
+		$fbuser = FacebookProxy::api("/me");
 		$user = User::create();
 
 		if ( !preg_match( '/@proxymail\.facebook\.com/', $fbuser['email'] )) {
@@ -745,9 +747,9 @@ class UsersController extends BaseController {
 		$success = false;
 		$userfb = array();
 	
-		if ($self->fbsession) {
+		if ($self->fbsession){
 		
-			$userfb = FacebookProxy::api($self->fbsession);
+			$userfb = FacebookProxy::api("/me");
 
 			$user = User::find('first', array(
 				'conditions' => array(
@@ -758,29 +760,29 @@ class UsersController extends BaseController {
 							
 			if ($user) {
 			
-			//$userfb = FacebookProxy::getUser();		
-			$user->facebook_info = $userfb;
-			$user->save(null, array('validate' => false));
-				
-			$sessionWrite = $self->writeSession($user->data());
-				
-			Affiliate::linkshareCheck($user->_id, $affiliate, $cookie);
-				
-			User::log($ipaddress);
-				
-			$landing = null;
-				
-			if (Session::check('landing')){
-				$landing = Session::read('landing');
-			}
-								
-			if (!empty($landing)) {
-			    Session::delete('landing',array('name'=>'default'));
-			    $self->redirect($landing, array('exit' => true));
-			    unset($landing);
-			} else {
-			    $self->redirect("/sales", array('exit' => true));
-			}
+				//$userfb = FacebookProxy::getUser();		
+				$user->facebook_info = $userfb;
+				$user->save(null, array('validate' => false));
+					
+				$sessionWrite = $self->writeSession($user->data());
+					
+				Affiliate::linkshareCheck($user->_id, $affiliate, $cookie);
+					
+				User::log($ipaddress);
+					
+				$landing = null;
+					
+				if (Session::check('landing')){
+					$landing = Session::read('landing');
+				}
+									
+				if (!empty($landing)) {
+				    Session::delete('landing',array('name'=>'default'));
+				    $self->redirect($landing, array('exit' => true));
+				    unset($landing);
+				} else {
+				    $self->redirect("/sales", array('exit' => true));
+				}
 				
 			}
 		}
