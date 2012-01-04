@@ -93,7 +93,7 @@ selectlist.css (line 1)
 			    	<div id="short_description_characters_wrapper">
 			    		Total:
 			    		<span id="short_description_characters_counter">
-			    			<? if(isset($event->short)) {
+			    			<?php if(isset($event->short)) {
 			    			   		echo strlen($event->short);
 			    			   } else {
 			    			   		echo '0';
@@ -155,7 +155,7 @@ selectlist.css (line 1)
 
 				<table>					<?php echo $this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?>
 				</table>
-				
+
 				<div id="tags">
 					<?php echo $this->form->label('Tags'); ?>
 					<?php if ($event->tags): ?>
@@ -382,7 +382,7 @@ selectlist.css (line 1)
 		<div id="event_inventory">
 			<iframe id="inventoryIframe" src="" style="width:900px; height:400px;"></iframe>
 		</div>
-		
+
 	</div>
 </div>
 <script type="text/javascript">
@@ -404,12 +404,26 @@ $(document).ready(function() {
 $(document).ready(function(){
 
 tinyMCE.init({
-	// General options
-	mode : "exact",
-	elements: "Blurb,ShipMessage,"+allitemids,
-	theme : "simple",
-	editor_selector : "mceSimple"
+// General options
+mode : "exact",
+elements: "Blurb,ShipMessage,"+allitemids,
+theme : "advanced",
+plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,preview,searchreplace,print,contextmenu,paste,directionality,noneditable,visualchars,nonbreaking,xhtmlxtras",
+editor_deselector : "mceNoEditor",
+// Theme options
+theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull",
 
+theme_advanced_buttons2: "styleselect,formatselect,fontselect,fontsizeselect",
+
+theme_advanced_buttons3 : "cut,copy,paste,pastetext,pasteword,|,bullist,numlist,|,indent,blockquote,|,anchor,code,|,forecolor,backcolor",
+/* theme_advanced_button3:
+theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,charmap,iespell,advhr",
+theme_advanced_buttons4 : "spellchecker,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking,blockquote,pagebreak", */
+
+theme_advanced_toolbar_location : "top",
+theme_advanced_toolbar_align : "left",
+theme_advanced_statusbar_location : "bottom",
+theme_advanced_resizing : false,
 
 });
 
@@ -528,15 +542,15 @@ for ( i=1; i<6; i++ ) {
 		$('#Short').focusout(function(){
 			return limitTextArea($(this),$('#short_description_characters_counter'),limit);
 		});
-		
+
 		//this loads the event/inventory iframe src when the tab is clicked
 		$("#inventoryLink").click(function(){
-			$("#inventoryIframe").attr('src', "/events/inventory/<?php echo $event->_id; ?>");	
+			$("#inventoryIframe").attr('src', "/events/inventory/<?php echo $event->_id; ?>");
 		});
-		
-		
-		
-		
+
+
+
+
 	});
 
 	function limitTextArea(text,info,limiter){

@@ -69,15 +69,15 @@ tinyMCE.init({
 					));?>
 					<?php echo $this->form->label('Ages')?><br />
 					<table>
-						<?php echo $this->form->select('ages',$ages,array('multiple'=>'multiple','value' => $age_filters)); ?> 
+						<?php echo $this->form->select('ages',$ages,array('multiple'=>'multiple','value' => $age_filters)); ?>
 					</table>
 					<?php echo $this->form->label('Categories')?><br />
 					<table>
-						<?php echo $this->form->select('categories',$categories,array('multiple'=>'multiple','value' => $category_filters)); ?> 
+						<?php echo $this->form->select('categories',$categories,array('multiple'=>'multiple','value' => $category_filters)); ?>
 					</table>
 					<?php echo $this->form->label('Departments')?><br />
 					<table>
-						<?php echo $this->form->select('departments',$all_filters,array('multiple'=>'multiple','value' => $sel_filters)); ?> 
+						<?php echo $this->form->select('departments',$all_filters,array('multiple'=>'multiple','value' => $sel_filters)); ?>
 					</table>
 
 					<div id="item_status">
@@ -190,7 +190,7 @@ tinyMCE.init({
 				<div id="item_details">
 					<h2 id="">Item Details</h2>
 					<table border="0" cellspacing="5" cellpadding="5">
-						<?php foreach ($item->details->data() as $key => $value): ?>
+						<?php foreach ($item->details as $key => $value): ?>
 							<tr>
 								<td>
 									<?php echo $key?>
