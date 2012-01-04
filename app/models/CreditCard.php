@@ -133,10 +133,18 @@ class CreditCard extends \lithium\data\Model {
 		$userInfos = $usersCollection->findOne(array('_id' => new MongoId($vars['user']['_id'])));
 
 		$creditCard = $vars['creditCard'];
-
+		
+		#If credit card added manually by User, only retrieve manual credit card added
+		if($vars['savedByUser']) {
+			$save = true;
+		} else {
+			$save = false;
+		}
 		#Get current credit cards to compare to this card
-		$creditcardsSaved = CreditCard::retrieve_all_cards($vars['user']['_id']);
-		$duplicate = User::hasCyberSourceProfile($creditcardsSaved, $creditCard);		
+		$creditcardsSaved = CreditCard::retrieve_all_cards($vars['user']['_id'], $save);
+		
+		$duplicate = User::hasCyberSourceProfile($creditcardsSaved, $creditCard);	
+		
 		if ($duplicate) {
 			return "duplicate";
 		} else {	

@@ -519,9 +519,12 @@ class OrdersController extends BaseController {
 		#Check Datas Form
 		if (!empty($this->request->data)) {
 			$datas = $this->request->data;
-			
-		//if the user selected a saved credit card, than prepopulate the relevant fields to go to the order review page
-			if ($datas['savedCreditCard']) {
+			#Check If the User want to save the current address
+			if($datas['paymentInfosSave']) {
+				$save = true;
+			}
+			//if the user selected a saved credit card, than prepopulate the relevant fields to go to the order review page
+			if (!$save) {
 				$creditCard_profileId = $datas['savedCreditCard'];
 
 				$i=0;
@@ -567,15 +570,7 @@ class OrdersController extends BaseController {
 				Session::write('billing', $address);
 				$billing_passed = true;
 
-				/*
-				$datas['opt_submitted'] = 
-				$datas['opt_shipping'] = 
-				$datas['opt_save'] = 
-				$datas['opt_description'] = billing
-				$datas['opt_shipping_select']				
-				*/
-
-			} else if (!$datas['savedCreditCard'] && $datas['opt_save'] == 1) {
+			} else {
 				$creditCard[type] = $datas['card_type'];
 				$creditCard[number] = $datas['card_number'];
 				$creditCard[year] = $datas['card_year'];
@@ -592,15 +587,9 @@ class OrdersController extends BaseController {
 				$vars['user'] = $user;
 				$vars['creditCard'] = $creditCard;
 				$vars['savedByUser'] = true;
-
 			 	CreditCard::add($vars);
 			}
-			
-			#Check If the User want to save the current address
-			if(!empty($datas['opt_save'])) {
-				$save = true;
-				unset($datas['opt_save']);
-			}
+
 			if (!empty($datas['address_id'])) {
 				$address = Address::first(array(
 					'conditions' => array('_id' => new MongoId($datas['address_id'])

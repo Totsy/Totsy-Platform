@@ -99,12 +99,10 @@ var paymentForm = new Object();
     		    	field.name!=="opt_shipping" &&
     		    	field.name!=="opt_shipping_select" &&
     		    	field.name!=="card_valid" &&
-    		    	field.name!=="opt_save"
+    		    	field.name!=="paymentInfosSave"
     		    	) {
 
     		 		if(set_bubble==false) {
-						alert(field.name);
-
     		 			$('#' + field.name + "").validationEngine('showPrompt','*This field is required', '', true);
     		 			$('#' + field.name + "").validationEngine({ promptPosition : "centerRight", scroll: false });
     		 			set_bubble=true;
@@ -210,7 +208,7 @@ endforeach;
 ?>
 </table>
 </div>
-<h3 style="margin-top: 11px"><a href="#" onclick="fadeIn_saved_CCs(); fadeIn_CCForm(); fadeIn_BillingAddressForm(); clear_CCForm(); " style="text-decoration:underline;">Add New Card</a></h3>
+<h3 style="margin-top: 11px"><a href="#" onclick="fadeIn_saved_CCs(); fadeIn_CCForm(); fadeIn_BillingAddressForm();" style="text-decoration:underline;">Add New Card</a></h3>
 <?php
 } else {
 ?>
@@ -315,7 +313,7 @@ endforeach;
 				<?php echo $this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
 				<div style="clear:both"></div>
 				<div>
-					Save this credit card and billing address <?php echo $this->form->checkbox("opt_save", array('id' => 'opt_save')) ?>
+					Save this credit card and billing address <?php echo $this->form->checkbox("paymentInfosSave", array('id' => 'paymentInfosSave')); ?>
 				</div>
 				<?php echo $this->form->hidden('opt_description', array('id' => 'opt_description' , 'value' => 'billing')); ?>
 				<?php echo $this->form->hidden('opt_shipping_select', array('id' => 'opt_shipping_select')); ?>
@@ -332,9 +330,10 @@ endforeach;
 			<span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span>
 			<a href="/sales" title="Continue Shopping">Continue Shopping</a/></h1>
 	</div>
+	
 <?php endif ?>
+</div>
 <?php echo $this->form->end();?>
-
 
 <div class="clear"></div>
 
