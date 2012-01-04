@@ -18,10 +18,6 @@ use lithium\util\Inflector;
 
 <?php echo '<script src="/js/jquery-dynamic-form.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery-dynamic-form.js') . '" /></script>'; ?>
 
-<?php echo '<script src="/js/swfupload.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/swfupload.js') . '" /></script>'; ?>
-
-<?php echo '<script src="/js/swfupload.queue.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/swfupload.queue.js') . '" /></script>'; ?>
-
 <?php echo '<script src="/js/fileprogress.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/fileprogress.js') . '" /></script>'; ?>
 
 <?php echo '<script src="/js/handlers.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/handlers.js') . '" /></script>'; ?>
@@ -39,6 +35,12 @@ use lithium\util\Inflector;
 <?php echo '<script src="/js/jquery.selectlist.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.selectlist.min.js') . '" /></script>'; ?>
 
 <?php echo '<script src="/js/jquery.selectlist.pack.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.selectlist.pack.js') . '" /></script>'; ?>
+<?=$this->html->script('jquery.flash.min.js')?>
+<?=$this->html->script('agile-uploader-3.0.js')?>
+<?=$this->html->style('agile_uploader.css');?>
+<?=$this->html->style('admin_common.css');?>
+<?=$this->html->script('files.js');?>
+<?=$this->html->style('files.css');?>
 
 <style type="text/css">
 .selectlist-list {
@@ -313,23 +315,13 @@ $(function() {
 		<div id="event_items">
 			<h3 id="">Item Management</h3>
 			<hr />
-			<h3 id="">Upload Items</h3>
-            <hr />
-			<p>Please select the default option for all items being uploaded:</p>
-				<input type="radio" name="enable_items" value="1" id="enable_items"> Enable All <br>
-				<input type="radio" name="enable_items" value="0" id="enable_items" checked> Disable All <br><br>
-			<p>Add "Final Sale" to the item description?:</p>
-				<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
-				<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
-				<?=$this->form->file('upload_file'); ?>
-				<?=$this->form->submit('Update Event')?>
-				<?=$this->form->label('Upload Event (Excel Files): '); ?>
+
 <!--
 		<iframe id="upload_frame" name="upload_frame" src="/events/upload/<?=$event->_id?>" frameborder=0 scrolling=no width=400 height=250></iframe>
 		<div id="upload_error" name="upload_error" style="color:#ff0000; width:400px; float:right; height:250px; overflow:scroll;">(spreadsheet upload errors will appear here)</div>
 
 -->
-			<br><br>
+
 			<div style="width:300px; height:400px; float:left">
 				<h3 id="">Upload Items</h3>
 	            <hr />
@@ -347,7 +339,7 @@ $(function() {
 			<?=$this->form->submit('Update Event')?>
 			<?=$this->form->end(); ?>
 			</div>
-
+<br><br>
 			<div id="items_errors" name="items_errors" style="float:right; width:500px; height:400px;overflow:scroll;"></div>
 
 			<div style="clear:both; height:30px;"></div>
@@ -420,21 +412,6 @@ $(function() {
 						print 'No event modifications have been made.';
 					}
 				?>
-		</div>
-		<!-- End Tab -->
-		<!-- Start Tab -->
-		<div id="event_media_status">
-			<div class="actions">
-				<?=$this->html->link('refresh', array(
-					'action' => 'media_status', 'id' => $event->_id
-				), array(
-					'class' => 'refresh', 'target' => '#event_media_status_data'
-				)); ?>
-			</div>
-			<p>
-				This tab show the status of media associated with the items of this event.
-			</p>
-			<div id="event_media_status_data"><!-- Populated through AJAX request. --></div>
 		</div>
 		<!-- End Tab -->
 		<div id="event_inventory">
