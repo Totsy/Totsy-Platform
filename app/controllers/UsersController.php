@@ -360,14 +360,14 @@ class UsersController extends BaseController {
 			$fbCancelFlag = $this->request->query['fbcancel'];
 		}
 
-		if (!$success) {
+		//if (!$success) {
 			if (!empty($userfb)) {
 				$self = static::_object();
 				if(!$fbCancelFlag) {
 					return $this->redirect('/register/facebook');
 				}
 			}
-		}		
+		//}		
 
 		if(preg_match( '@^[(/|login|register)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
@@ -690,6 +690,7 @@ class UsersController extends BaseController {
 	 * @return compact
 	 */
 	public function fbregister() {
+	
 		$message = null;
 		$user = null;
 		$fbuser = FacebookProxy::api(FacebookProxy::getUser());
