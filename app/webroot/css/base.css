@@ -4684,6 +4684,7 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 	background:#f0eff9;
 	border:1px solid #bfbfbf;
 }
+*:first-child+html #events-wrap .item {margin-left:5px;} /* IE7 */
 #events-wrap .item:first-child {margin-left: 0;}
 #events-wrap .item a {display: block; width: 100%; height: 100%;}
 #events-wrap .item a:link,
