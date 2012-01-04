@@ -67,13 +67,6 @@ class BaseController extends \lithium\action\Controller {
         User::setupCookie();
 		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
 	    $logoutUrl = $logoutUrl . "$_SERVER[SERVER_NAME]/logout";
-	    
-		/**
-		 * Setup all the necessary facebook stuff
-		 */
-		 
-		$this->fbsession = $fbsession = FacebookProxy::getUser();		
-		$fbconfig = FacebookProxy::config(); 
 
 		/**
 		 * Setup all the necessary facebook stuff
