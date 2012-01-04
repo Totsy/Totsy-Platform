@@ -140,10 +140,13 @@ class CartController extends BaseController {
 		$serviceAvailable = false;
 		if(Session::check('service_available')) {
 			$serviceAvailable = Session::read('service_available');
+		}		
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_view';
 		}
 		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping','overShippingCost', 'serviceAvailable');
-
-	}
+}
 
 	/**
 	 * The add method increments the quantity of one item.
@@ -236,9 +239,12 @@ class CartController extends BaseController {
 				}
 			}
 		}
+		if(!$this->request->is('mobile')){
 		//call the cart popup
 		$this->getCartPopupData();
+		}
 	}
+	
 
 	/**
 	* Method for sending all required cart data to Ajax driven cart popup.
@@ -292,8 +298,8 @@ class CartController extends BaseController {
 		//get user savings. they were just put there by updateSavings()
 		$cartData['savings'] = Session::read('userSavings');
 		//get the ship date
-		//$cartData['shipDate'] = date('m-d-Y', Cart::shipDate(Cart::active()));
-		$cartData['shipDate'] = Cart::shipDate(Cart::active());
+		$cartData['shipDate'] = date('m-d-Y', Cart::shipDate(Cart::active()));
+		//$cartData['shipDate'] = Cart::shipDate(Cart::active());
 		//get the amount of items in the cart
 		$cartData['itemCount'] = Cart::itemCount();
 

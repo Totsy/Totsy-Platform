@@ -156,16 +156,6 @@ var addressForm = new Object();
 				<?php echo $this->form->submit('Continue', array('class' => 'button fr', 'style'=>'margin-right:10px;')); ?>
 		</div>	
 
-
-
-
-
-
-
-
-
-
-
 	</div>
 
 <?php echo $this->form->end();?> 

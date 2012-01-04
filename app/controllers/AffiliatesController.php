@@ -224,8 +224,12 @@ class AffiliatesController extends BaseController {
 				}
 			}
 		}
-				
-		$this->_render['layout'] = 'login';
+		if($this->request->is('mobile')){
+			$this->_render['layout'] = 'mobile_main';
+			$this->_render['template'] = 'mobile_register';
+		} else {
+			$this->_render['layout'] = 'login';
+		}	
 		return compact('message', 'user', 'userfb','categoryName','affiliateName','affBgroundImage','affiliateName');
 	}
 }

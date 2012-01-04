@@ -125,7 +125,7 @@
 					ed.onNodeChange.add(t._nodeChanged, t);
 
 				if (ed.settings.content_css !== false)
-					ed.dom.loadCSS(ed.baseURI.toAbsolute("themes/advanced/skins/" + ed.settings.skin + "/content.css"));
+					ed.dom.loadCSS(ed.baseURI.toAbsolute("themes/advanced/skins/" + ed.settings.skin + "/content.css?v=123"));
 			});
 
 			ed.onSetProgressState.add(function(ed, b, ti) {
