@@ -9,6 +9,7 @@ use app\extensions\Mailer;
 use app\models\User;
 use app\models\Base;
 use app\models\FeatureToggles;
+use app\models\CreditCard;
 
 use li3_payments\payments\TransactionResponse;
 use li3_payments\extensions\adapter\payment\CyberSource;
@@ -153,7 +154,8 @@ class Order extends Base {
 			#If FreeShipping put Handling/OverSizeHandling to Zero
 			if($vars['cartPromo']->type == 'free_shipping') {
 				$vars['shippingCostDiscount'] = $vars['shippingCost'];
-				$vars['overShippingCostDiscount'] = $vars['overShippingCost'];			}
+				$vars['overShippingCostDiscount'] = $vars['overShippingCost'];
+			}
 			#Update Order Information with PromoCode
 			$order->promo_code = $vars['cartPromo']->code;
 			$order->promo_type = $vars['cartPromo']->type;
@@ -199,25 +201,14 @@ class Order extends Base {
 		}
 		#Check in which case to store profile with token in Cybersource 
 		$userInfos = $usersCollection->findOne(array('_id' => new MongoId($user['_id'])));
-		$profileID = User::hasCyberSourceProfile($userInfos, $creditCard['number']);
+		#Get current credit cards to compare to this card
+		$creditcards = CreditCard::retrieve_all_cards($vars['user']['_id']);
+		$profileID = User::hasCyberSourceProfile($creditcardsSaved, $creditCard);
 		if(empty($profileID)) {
-			#Create A User Profile with CC Infos Through Auth.Net
-			$customer = $payments::create('default', 'customer', array(
-				'firstName' => $userInfos['firstname'],
-				'lastName' => $userInfos['lastname'],
-				'email' => $userInfos['email'],
-				'billing' => $payments::create('default', 'address', $address),
-				'payment' => $payments::create('default', 'creditCard', $creditCard)
-			));
-			$result = $customer->save();
-			if($result->success) {
-				$profileID = $result->response->paySubscriptionCreateReply->subscriptionID;
-				$update = $usersCollection->update(
-					array('_id' => new MongoId($user['_id'])),
-					array('$push' => array('cyberSourceProfiles' => $profileID)), array( 'upsert' => true)
-				);
-			}
+			$vars['savedByUser'] = false;
+			$profileID = CreditCard::add($vars);
 		}
+		#Get the profileID created previously and saved it on the order
 		if(!empty($profileID)) {
 			$order->cyberSourceProfileId = $profileID;
 		}
