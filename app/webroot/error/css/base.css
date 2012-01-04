@@ -82,7 +82,7 @@ span.breadcrumbs span { font-size:.7em; padding:0 3px }
 #topper { background-position:left top }
 #botter { background-position:left bottom }
 #wrapper { width:960px; padding:1px 18px 0 18px; margin:0 auto; background:url(../img/cnt-bg.png) repeat-y #FFF }
-#header { height:110px; margin:0px; background:url(../img/header-bg.png) repeat-x; font-size:12px }
+#header { height:110px; margin:0px; repeat-x; font-size:12px }
 #header-lt { width:230px; float:left }
 #main-logo { display:block; width:60px; height:60px; padding:5px 0 0 5px }
 #header-mid { width:475px; float:left; position:relative; height:90px; padding:20px 0 0 0; font-size:13px; z-index:200 }

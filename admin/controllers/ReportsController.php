@@ -26,7 +26,7 @@ use admin\extensions\util\String;
  */
 class ReportsController extends BaseController {
 
-	/**
+  /**
 	 * The purchase order column headings.
 	 *
 	 * @var array
@@ -257,16 +257,16 @@ class ReportsController extends BaseController {
 							prev.total += 1;
 							if (typeof(doc.email_engagement)!="undefined"){ prev.bounced++; }
 						}');
-		
+
 						$collection = User::collection();
 						$results = $collection->group($keys, $inital, $reduce, $conditions);
 						$results['total'] = $results['bounced'] = 0;
-						
+
 						foreach ($results['retval'] as $result) {
 							$results['bounced'] += $result['bounced'];
 							$results['total'] += $result['total'];
 						}
-						
+
 						$results['bounced'] = number_format($results['bounced']);
 						$results['total'] = number_format($results['total']);
 					break;
@@ -316,12 +316,12 @@ class ReportsController extends BaseController {
 			$time = date('ymdis', $event->_id->getTimestamp());
 			$poNumber = 'TOT'.'-'.$vendorName.$time;
 			$eventItems = Event::getItems($eventId);
-			
+
 			$itemIds = array();
 			foreach ($eventItems as $key => $eventItem) {
 				$eventItems[$eventItem['_id']] = $eventItem;
 				unset($eventItems[$key]);
-				
+
 				$itemIds[] = $eventItem['_id'];
 			}
 
@@ -359,7 +359,7 @@ class ReportsController extends BaseController {
 						}
 					}
 				}
-				
+
 				// Sloppy code to make sure that the results are sorted by Vendor Style then Size
 				foreach ($purchaseOrder as $key => $row) {
 				    $vendor_style[$key]  = $row['Vendor Style'];
@@ -1329,7 +1329,7 @@ class ReportsController extends BaseController {
 		}
 		return compact('ServiceCharts','Service2ndCharts');
 	}
-	
+
 	private function generateConditions(array $data = array()){
 		extract($data);
 		$conditions = array();

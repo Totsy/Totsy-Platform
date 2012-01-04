@@ -63,8 +63,6 @@ class CartController extends BaseController {
 		$i = 0;
 		$subTotal = 0;
 		$itemCount = 0;
-		$missChristmasCount = 0;
-		$notmissChristmasCount = 0;
 
 		#Count of how many items in the cart are exempt of shipping cost
 		$exemptCount = 0;
@@ -90,15 +88,6 @@ class CartController extends BaseController {
 			$events = Event::find('all', array('conditions' => array('_id' => $item->event[0])));
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
 
-
-			//miss chrismtas stuff to be removed later
-			$item->miss_christmas = $itemInfo->miss_christmas;
-			if($item->miss_christmas){
-				$missChristmasCount++;
-			}
-			else{
-				$notmissChristmasCount++;
-			}
 
 			#Get Event End Date
 			$cartItemEventEndDates[$i] = is_object($events[0]->end_date) ? $events[0]->end_date->sec : $events[0]->end_date;
@@ -151,9 +140,13 @@ class CartController extends BaseController {
 		$serviceAvailable = false;
 		if(Session::check('service_available')) {
 			$serviceAvailable = Session::read('service_available');
+		}		
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_view';
 		}
-		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping','overShippingCost', 'missChristmasCount','notmissChristmasCount', 'serviceAvailable');
-	}
+		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping','overShippingCost', 'serviceAvailable');
+}
 
 	/**
 	 * The add method increments the quantity of one item.
@@ -174,7 +167,6 @@ class CartController extends BaseController {
 				"no size": $data['item_size'];
 
 
-			//added miss_christmas, to be removed
 			$item = Item::find('first', array(
 				'conditions' => array(
 					'_id' => "$itemId"),
@@ -190,7 +182,6 @@ class CartController extends BaseController {
 					'product_weight',
 					'event',
 					'vendor_style',
-					'miss_christmas',
 					'discount_exempt'
 			)));
 
@@ -248,9 +239,12 @@ class CartController extends BaseController {
 				}
 			}
 		}
+		if(!$this->request->is('mobile')){
 		//call the cart popup
 		$this->getCartPopupData();
+		}
 	}
+	
 
 	/**
 	* Method for sending all required cart data to Ajax driven cart popup.
@@ -304,8 +298,8 @@ class CartController extends BaseController {
 		//get user savings. they were just put there by updateSavings()
 		$cartData['savings'] = Session::read('userSavings');
 		//get the ship date
-		//$cartData['shipDate'] = date('m-d-Y', Cart::shipDate(Cart::active()));
-		$cartData['shipDate'] = Cart::shipDate(Cart::active());
+		$cartData['shipDate'] = date('m-d-Y', Cart::shipDate(Cart::active()));
+		//$cartData['shipDate'] = Cart::shipDate(Cart::active());
 		//get the amount of items in the cart
 		$cartData['itemCount'] = Cart::itemCount();
 

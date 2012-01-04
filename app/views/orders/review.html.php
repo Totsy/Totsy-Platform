@@ -44,7 +44,7 @@ var discountErrors = new Object();
 <link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
 
 <?php  if(!empty($subTotal)): ?>
-<div class="cart-content">
+<div class="cart-content" id="p-review">
 	<div class="grid_11 cart-header-left">
 		<div style="float:left;">
 			<h2 class="page-title gray">
@@ -110,7 +110,7 @@ var discountErrors = new Object();
 				    $<?php echo number_format($total,2)?> </span>
 				</span>    
 				<div style="text-align:center; diplay:inline-block !important">
-			      <a href="#" class="button" style="float:none !important; diplay:block !important" onclick="updateOrder()">Place Your Order</a>
+					<input type="submit" class="button cartSubmit" form="cartForm" value="Place Your Order" />
 			 	</div>
 			</div>
 		</div>
@@ -118,28 +118,6 @@ var discountErrors = new Object();
 	    
 <?php endif ?>
 <div class="message"></div>
-	<?php
-	if($missChristmasCount>0){
-	?>
-				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#ff0000; font-size:11px;text-align:center;">
-				<img src="/img/truck_grey.png">
-				One or more of the items in your cart is not guaranteed to be delivered on or before 12/25*.
-				</div>
-	
-	
-	<?php
-	}
-	elseif($notmissChristmasCount>0){
-	?>
-				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#999999; font-size:11px;text-align:center;">
-				<img src="/img/truck_grey.png">
-				Items will be delivered on or before 12/23.*
-				</div>
-	
-	
-	<?php
-	}
-	?>
 
 <?php if (!empty($subTotal)): ?>
 
@@ -153,27 +131,8 @@ var discountErrors = new Object();
 			<?php foreach ($cart as $item): ?>
 
 
-			<?php
-			if($item['miss_christmas']){
-				$classadd = "background:#fde5e5;";
-				if($notmissChristmasCount>0){
-					$shipmsg = "<span class=\"shippingalert rounded\" style=\"display:block; padding:4px; color:#ff0000; background:#ffffff; border:1px solid #ff0000;\"><img src=\"/img/truck_grey.png\" style=\"padding-right:10px;\">This item is not guaranteed to be delivered on or before 12/25.<br>To receive your other items on or before 12/23, please remove this item from your cart and order it separately.*</span>";
-				}
-				else{
-					$shipmsg = "<span class=\"shippingalert\">This item is not guaranteed to be delivered on or before 12/25.*</span>";
-				}
-			}
-			else{
-				$shipmsg = "Item will be delivered on or before December 23.*";
-				$classadd = "";
-			}
-			?>
-
-
-
-
 				<!-- Build Product Row -->
-				<tr id="<?php echo $item->_id?>" style="<?php echo $classadd?>">
+				<tr id="<?php echo $item->_id?>">
 					<td colspan="1" class="cart-th">
 						<span class="cart-review-thumbnail">
 						<?php
@@ -344,36 +303,12 @@ var discountErrors = new Object();
 </div>
 
 <div class="cart-button fr cart-nav-buttons">
-		      <a href="#" class="button" style="float:none !important; margin-right:50px; diplay:block !important" onclick="updateOrder()">Place Your Order</a>
+	<input type="submit" class="button cartSubmit" form="cartForm" value="Place Your Order" />
 	<div class="clear"></div>
 
 <?php echo $this->form->end(); ?>
 </div>
 <div class="clear"></div>
-<div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
-				<?php
-				if($missChristmasCount>0&&$notmissChristmasCount>0){
-				?>
-				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. 
-				
-				<?php
-				}
-				elseif($missChristmasCount>0){
-				?>
-				* Your items will arrive safely, but after 12/25.
-				
-				<?php
-				}
-				else{
-				?>
-				
-				* Our delivery guarantee does not apply when transportation networks are affected by weather.
-				
-				<?php
-				}
-				?>
-				
-</div>
 
 <div id="remove_form" style="display:none">
 	<?php echo $this->form->create(null ,array('id'=>'removeForm')); ?>
@@ -429,10 +364,15 @@ var discountErrors = new Object();
 
 <script type="text/javascript" charset="utf-8">
 
-function updateOrder() {
-	$('#process').val("true");
-	$('#cartForm').submit();	    
-}
+// submit cart - bind click event to .cartSubmit buttons, prevent multiple clicks/submissions
+$(document).ready(function(){
+	$('.cartSubmit').click(function(e){
+		e.preventDefault(); // if JS is enabled, we can disable default submit behavior
+		$('#process').val('true');
+		$('.cartSubmit').attr('disabled', 'disabled').val('Please wait…').css('cursor', 'default');
+		$('#cartForm').submit();
+	});
+});
 
 //SUBMIT THE ITEM WHICH IS DELETED
 function deletechecked(message, id) {
