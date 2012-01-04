@@ -36,8 +36,8 @@
 							</div>
 							<div id="usercart">
 							
-								<a href="/cart/view" class="icon cart cart_icon" title="My Cart total: $<?php echo number_format($cartSubTotal,2)?>"><?php echo $cartCount;?> Items | $<?php echo number_format($cartSubTotal,2)?></a>
-								<a href="/cart/view" class="btn checkout" title="My Cart (<?php echo $cartCount;?>)"><strong>CHECKOUT</strong></a>
+								<a href="/cart/view" class="icon cart cart_icon" title="Go to My Cart"><em><?php echo $cartCount;?> Items</em> | <strong>$<?php echo number_format($cartSubTotal,2)?></strong></a>
+								<a href="/cart/view" class="btn checkout" title="My Cart: <?php echo $cartCount . ' Items | $' . number_format($cartSubTotal,2)?>"><strong>CHECKOUT</strong></a>
 								<?php
 									// credits logic - retained but commented out for possible re-inclusion
 									//if (!(empty($credit))) : echo '<a href="/account/credits" title="My Credits $' . $credit . '>My Credits $' . $credit . '</a>';

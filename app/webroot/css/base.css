@@ -4436,7 +4436,7 @@ Text Align > left / right
 #totsy > header > nav {
 	float: right;
 	margin-right:7px; padding:9px 0 0;
-	width:788px;
+	width:789px;
 	font-size:12px;
 }
 #totsy > header #invite {
@@ -4583,7 +4583,7 @@ nav .haschild li a:hover {
 	position: relative;
 	float:right;
 	margin:0 10px 0 0; padding:2px 14px 5px 10px;
-	max-width:30%; min-width:210px;
+	max-width:32%; min-width:210px;
 	background: #fff;
 	border:1px solid #ccc;
 	-webkit-border-radius:0 0 10px 10px;
@@ -4605,8 +4605,12 @@ nav .haschild li a:hover {
 #userUtils .cart {
 	margin-right:8px; padding-top: 2px;
 	background: url(../img/icon-cart.png) 0 0 no-repeat;
-	font:bold 14px/1 Helvetica, Arial, sans-serif;
+	color: #707070;
 }
+#userUtils .cart em,
+#userUtils .cart strong {color:#ED1C25;}
+#userUtils .cart *:hover {text-decoration:underline;}
+#userUtils .cart strong {font-size:14px; font-weight: bold;}
 #userUtils .btn { /* @TODO - abstract out all .btn styles… need design consistency / standards */
 	padding:3px 10px 1px;
 	background: url(../img/btn-glass.png) 0 50.5% repeat-x;
