@@ -1076,7 +1076,7 @@ left:455px;
 top:25px; 
 position: absolute;
 }
-
+#cart_popup {border:1px solid #d7d7d7\9;} /* IE8 and below */
 #cart_popup_header {
 margin: 0px 7px 0px 7px !important; 
 padding-bottom:60px !important;
@@ -4417,7 +4417,7 @@ Text Align > left / right
 	overflow: visible;
 }
 #totsy > header {
-	position:relative; 
+	position:relative; z-index: 100;
 	margin:-54px 0 30px; padding-top:26px;
 	width:100%;
 }
@@ -4433,7 +4433,7 @@ Text Align > left / right
 	background: url(../img/logo-125x77.png) 0 0 no-repeat;
 	text-indent: -999em;
 }
-#totsy > header > nav {
+#totsy > header nav {
 	float: right;
 	margin-right:7px; padding:9px 0 0;
 	width:789px;
@@ -4471,7 +4471,8 @@ Text Align > left / right
 #totsy > header > #invite a strong:hover {text-decoration: underline;}
 
 /* main nav */
-#totsy > header > nav > ul {float:left;}
+#totsy > header nav > ul {float:left;}
+*:first-child+html #totsy > header nav > ul {width:500px;} /* IE7 */
 nav > ul > li {
 	position: relative; z-index: 100;
 	float:left;
@@ -4482,6 +4483,7 @@ nav > ul > li {
 	-moz-border-radius:0 0 10px 10px;
 	border-radius:0 0 10px 10px;
 }
+*:first-child+html nav > ul > li {margin-right:10px;} /* IE7 */
 nav > ul > li,
 #totsy > header #userUtils {box-shadow: 4px 3px 6px rgba(0,0,0,0.10);}
 nav > ul > li:after,
