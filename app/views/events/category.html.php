@@ -26,8 +26,8 @@
 		<?php $x = 0; ?>
 		<?php foreach ($openEvents as $event): ?>
 		
-		<div class="event grid-x">
-			<div class="eventDetails group">
+		<article class="event grid-x">
+			<header class="eventDetails group">
 				<h3><?php echo $event['name']; ?> <em id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $event['end_date'] *1000 ; ?>" class="counter end"></em><!-- @TODO - use data-attribute instead of title… better, use a date/time element instead of an em --></h3>
 				<div>
 					<?php
@@ -53,7 +53,7 @@
 					?>
 				</div>
 				<p><?php echo strip_tags($event['blurb']); ?></p>
-			</div><!-- /.eventDetails -->
+			</header><!-- /.eventDetails -->
 			
 			<div class="items group">
 			<?php
@@ -67,7 +67,7 @@
 -->
 				<div class="item" data-prodID="<?php echo $item['_id'] ?>">
 					<a href="<?php echo '/sale/' . $event['url'] . '/' . $item['url']?>" title="<?php echo $item['description'];?>">
-						<img width="125" height="126" src="<?php echo "/image/" . $item['primary_image'] . ".jpg";?>" alt="<?php echo $item['description'];?>" />
+						<img width="125" height="144" src="<?php echo "/image/" . $item['primary_image'] . ".jpg";?>" alt="<?php echo $item['description'];?>" />
 						<h4><?php echo $item['description'];?></h4>
 						<p>$<?php echo number_format($item['sale_retail'],2);?></p>
 					</a>
@@ -88,8 +88,8 @@
 					?>
 				</div>
 			</div><!-- /.items -->
-			<p>View all items from <?php echo $this->html->link($event['name'], 'sale/'.$event['url'], array('escape'=> false) );?></p>
-		</div><!-- /.event -->
+			<footer>View all items from <?php echo $this->html->link($event['name'], 'sale/'.$event['url'], array('escape'=> false) );?></footer>
+		</article><!-- /.event -->
 		<?php $x++; ?>
 		<?php endforeach ?>
 	

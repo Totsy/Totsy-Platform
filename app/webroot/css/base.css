@@ -1,7 +1,12 @@
 /** Start YUI Resets **/
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td,legend {
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td,legend,
+article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary, time, mark, audio, video {
 	margin:0;
 	padding:0;
+}
+article,aside,details,figcaption,figure,
+footer,header,hgroup,menu,nav,section { 
+    display:block;
 }
 
 table {
@@ -38,11 +43,10 @@ abbr,acronym {
 	border:0;
 }
 
-
 	
 /** End YUI Resets **/
 body {
-	font-family:Helvetica, Arial, Sans-Serif;
+	font-family:Helvetica, Arial, sans-serif;
 	color:#707070;
 	background:#e0e0e0;
 	font-size:12px;
@@ -4676,12 +4680,13 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 	color:#636466;
 	font-size: 12px; line-height:1.2;
 }
+#events-wrap .items {margin-bottom:8px;} 
 #events-wrap .item {
 	position: relative;
 	float:left; 
-	margin-left:7px;
-	width:125px; min-height:187px;
-	background:#f0eff9;
+	margin-left:7px; padding-bottom: 22px;
+	width:125px; min-height:194px;
+	background:#f0efef;
 	border:1px solid #bfbfbf;
 }
 *:first-child+html #events-wrap .item {margin-left:5px;} /* IE7 */
@@ -4691,12 +4696,12 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 #events-wrap .item a:visited {color:inherit;}
 #events-wrap .item a:hover {text-decoration: none;}
 #events-wrap .item h4 {
-	margin:0 5px 5px; padding:0 0 5px;
+	margin:0 5px; padding:0 0 8px;
 	color:#636466; font-size:11px;
 }
 #events-wrap .item p {
 	position: absolute; bottom:1px; right: 0;
-	margin:0 5px; padding:5px 10px 0 0;
+	margin:0 5px; padding:6px 10px 2px 0;
 	width:105px;
 	background:url(../img/link-arrow-gr.png) 100% 60% no-repeat;
 	border-top:1px solid #e1e0e0;
@@ -4715,4 +4720,4 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 	-moz-box-shadow: 1px 0px 4px rgba(0,0,0,0.55);
 	box-shadow: 1px 0px 4px rgba(0,0,0,0.55);
 }
-#events-wrap .items + p {text-align: right;}
+#events-wrap .event > footer {text-align: right;}
