@@ -99,15 +99,20 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 </div>
 <div class="clear"></div>
 
+<?php 
+	if(isset($user->email)){
+		$email = $user->email; 
+	} else {
+		$email = "";
+	}
+?>
 
 <div class="round gradient" style="border:1px #eeeeee solid;height:300px;">
 
 	<div class="grid_6" style="float:left;">	
 		<div style="width:310px; margin-top:5px;">
-		<?php echo $this->view()->render(array('element' => 'registrationForm')); ?>
+		<?php echo $this->view()->render(array('element' => 'registrationForm'), array('email'=>$email)); ?>
 		</div>
-		
-		
 	</div>
 	<div class="grid_6" style="width:330px; margin-left:2px;float:left;margin-top:5px;">	
 		<h2 class="tagline" style="margin-top:2px;">Why savvy moms shop at Totsy?</h2>

@@ -24,7 +24,7 @@
 	</div>
 
 	<div style="float:right">
-	<?php echo $this->form->text('email', array('class' => 'inputbox', 'style' => 'width:190px')); ?>
+	<?php echo $this->form->text('email', array('class' => 'inputbox', 'style' => 'width:190px','value'=>$email)); ?>
 	</div>
 	<?php echo $this->form->error('email'); ?>
 
@@ -32,13 +32,11 @@
 	<div style="width:70px; float:left">
 		<?php echo $this->form->label('confirmemail', 'Confirm Email <span>*</span>', array(
 			'escape' => false,
-			'class' => 'required'
-			));
+			'class' => 'required'));
 		?>
 	</div>
-
 	<div style="float:right">
-		<?php echo $this->form->text('confirmemail', array('class' => 'inputbox', 'style' => 'width:190px')); ?>
+		<?php echo $this->form->text('confirmemail', array('class' => 'inputbox', 'style' => 'width:190px', 'value' => $email )); ?>
 	</div>
 	<?php echo $this->form->error('confirmemail'); ?>
 	<?php echo $this->form->error('emailcheck'); ?>
