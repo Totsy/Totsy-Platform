@@ -41,7 +41,7 @@ class BaseController extends \lithium\action\Controller {
             $branch = "<h4 id='global_site_msg'>Current branch: " . $this->currentBranch() ."</h4>";
             $this->set(compact('branch'));
         }
-        if(!Environment::is('production')){
+        if(Environment::is('production')){
             $version = "<!-- Current version: " . $this->currentVersion() . " -->";
             $this->set(compact('version'));
         }
