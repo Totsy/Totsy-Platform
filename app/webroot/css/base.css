@@ -4710,6 +4710,7 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 #events-wrap .viewAllEvents {
 	position: relative; left:2px;
 	float:left;
+	width:135px; height: 203px;
 }
 #events-wrap .viewAllEvents:after {
 	content: "";
@@ -4720,4 +4721,5 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 	box-shadow: 1px 0px 4px rgba(0,0,0,0.55);
 	-webkit-box-shadow: 1px 0px 4px rgba(0,0,0,0.3);
 }
+#events-wrap .viewAllEvents a {display: block; line-height: 0;}
 #events-wrap .event > footer {text-align: right;}
