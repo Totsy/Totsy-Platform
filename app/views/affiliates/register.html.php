@@ -98,20 +98,18 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 		<div class="free_shipping_banner_reg_new rollover_img" ><a href="javascript:;" title="Free Shipping"><span></span></a></div>
 </div>
 <div class="clear"></div>
-
-<?php 
-	if(isset($user->email)){
-		$email = $user->email; 
+<?php
+	if (isset($userfb)) {
+		$fbInfo = $userfb; 
 	} else {
-		$email = "";
+		$fbInfo = "";
 	}
 ?>
-
 <div class="round gradient" style="border:1px #eeeeee solid;height:300px;">
 
 	<div class="grid_6" style="float:left;">	
 		<div style="width:310px; margin-top:5px;">
-		<?php echo $this->view()->render(array('element' => 'registrationForm'), array('email'=>$email)); ?>
+		<?php echo $this->view()->render(array('element' => 'registrationForm'), array('fbInfo'=>$fbInfo)); ?>
 		</div>
 	</div>
 	<div class="grid_6" style="width:330px; margin-left:2px;float:left;margin-top:5px;">	

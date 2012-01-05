@@ -1,3 +1,12 @@
+<?php if (isset($fbInfo) && $fbInfo!==""): ?>
+	<h2><img src="https://graph.facebook.com/<?=$fbInfo['id']?>/picture"> <br/>
+	 Hi <?=$fbInfo['name']?> - you're one step away from joining with Facebook
+	</h2>
+<?php $email = $fbInfo['email']; ?>
+<?php else: ?>
+<?php $email = ""; ?>
+<?php endif; ?>
+
 <h2 style="margin-bottom:20px;">Join with Facebook</h2>
 <a href="javascript:;" onclick="fblogin();return false;"><img src="/img/sign_in_fb.png" class="fr"></a>
 <br />
