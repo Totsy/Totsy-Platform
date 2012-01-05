@@ -2,6 +2,7 @@
 
 namespace admin\models;
 use MongoDate;
+use lithium\data\Connections;
 use lithium\storage\Session as Session;
 
 class Base extends \lithium\data\Model {
