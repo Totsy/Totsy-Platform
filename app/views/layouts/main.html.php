@@ -140,9 +140,13 @@
 		}	
 </script>
 
-<script language="javascript">
+<!-- disable Jenny if in development -->
+<?php if(strcmp($_SERVER['SERVER_NAME'] == 'www.totsy.com')) { ?>
+	<script language="javascript"> 
 	document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s://www':'://www')+ '.upsellit.com/upsellitJS4.jsp?qs=237268202226312324343293280329277309292309329331334326345325&siteID=6605"><\/sc'+'ript>')
-</script>
+	</script>
+<?php } ?>	
+<!-- disable Jenny if in development -->
 
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -165,7 +169,6 @@
 				800);
 			});
 		});
-		
 	});
 </script>
 
@@ -194,6 +197,9 @@
         };
     })();
 </script>
+<!-- Server Name: <?php echo $_SERVER['SERVER_NAME']; ?> -->
+<!-- Host Name: <?php echo php_uname('n'); ?> -->
+<?php if(isset($version)) { echo $version; } ?>
 
 </body>
 </html>
