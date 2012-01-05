@@ -19,8 +19,26 @@
 	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
 	<!-- end jQuery / jQuery UI -->
 	<script src="http://code.jquery.com/mobile/1.0rc2/jquery.mobile-1.0rc2.min.js"></script>
+	
+	<link rel="apple-touch-startup-image" href="http://<?php echo $_SERVER['SERVER_NAME']; ?>/totsyMobile/themes/images/totsy_startup.png" />
+<link rel="apple-touch-icon" href="http://<?php echo $_SERVER['SERVER_NAME']; ?>/totsyMobile/themes/images/icon.png"/> 
+	
 	<?php echo $this->html->script('jquery.countdown.min.js?v=007'); ?>
 	<?php echo $this->scripts(); ?>
+
+	<script type="text/javascript">
+	
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-675412-20']);
+	  _gaq.push(['_trackPageview']);
+	
+	  (function() {
+	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+	
+	</script>
 </head>
 <body>
 <div class="nav_head"></div>
@@ -31,7 +49,7 @@
 	<div data-role="content">
 	<?php echo $this->content(); ?>
 	</div>
-	<p class="legal">&copy;2011 Totsy, Inc. All rights reserved.</p>
+	<p class="legal">&copy;2012 Totsy, Inc. All rights reserved.</p>
 </div>
 </body>
 </html>
