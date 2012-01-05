@@ -603,6 +603,11 @@ class FinancialExport extends Base  {
 	    while ($this->orders->hasNext()){
 	           $order = $this->orders->getNext();
                 $orderItems = $order['items'];
+                
+                if (array_key_exists('tax', $order) ){
+					$order['tax'] = (float) $order['tax'];
+                }
+                
                 if (array_key_exists('authKey', $order)) {
                    $order['authKey'] = $order['authKey'];
                 } else {
