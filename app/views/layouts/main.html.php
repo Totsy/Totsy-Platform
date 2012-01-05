@@ -135,7 +135,7 @@
 		function deleteFBCookies() {
 		    //all posible FB cookies
 		    try {
-		    	document.cookie = fbCookie + '=; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/';
+		    	document.cookie = fbCookie + '=; domain=.totsy.com; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/';
 		    	document.cookie = 'datr=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
 		    	document.cookie = 'locale=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
 		    	document.cookie = 'lu=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
@@ -157,13 +157,11 @@
 		    }
 		}	
 </script>
-<!-- disable Jenny if in development -->
-<?php if(strcmp($_SERVER['SERVER_NAME'] == 'www.totsy.com')) { ?>
+
 	<script language="javascript"> 
 	document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s://www':'://www')+ '.upsellit.com/upsellitJS4.jsp?qs=237268202226312324343293280329277309292309329331334326345325&siteID=6605"><\/sc'+'ript>')
 	</script>
-<?php } ?>	
-<!-- disable Jenny if in development -->
+	
 	<script type="text/javascript">
 		// end uniform inputs
 		$(document).ready(function() {
