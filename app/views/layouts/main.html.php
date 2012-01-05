@@ -135,7 +135,7 @@
 		function deleteFBCookies() {
 		    //all posible FB cookies
 		    try {
-		    	document.cookie = fbCookie + '=; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/';
+		    	document.cookie = fbCookie + '=; domain=.totsy.com; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/';
 		    	document.cookie = 'datr=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
 		    	document.cookie = 'locale=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
 		    	document.cookie = 'lu=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
