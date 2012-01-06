@@ -1,17 +1,27 @@
-<?php if (isset($fbInfo) && $fbInfo!==""): ?>
-	<h2><img src="https://graph.facebook.com/<?=$fbInfo['id']?>/picture"> <br/>
-	 Hi <?=$fbInfo['name']?> - you're one step away from joining with Facebook
-	</h2>
+<?php if ($fbInfo): ?>
+	<div style="float:left; display:block;">
+		<img src="https://graph.facebook.com/<?php echo $fbInfo['id']; ?>/picture" style="margin-right:5px;" />
+	</div>
+	<div style="float:left; display:block;">
+		<h2 style="font-size:18px; display:block; padding-top:15px;">You're Almost Finished!</h2>
+	</div>
+<div class="clear"></div>
+<br />
 <?php $email = $fbInfo['email']; ?>
 <?php else: ?>
 <?php $email = ""; ?>
 <?php endif; ?>
 
+<?php if (!$fbInfo): ?>
 <h2 style="margin-bottom:20px;">Join with Facebook</h2>
 <a href="javascript:;" onclick="fblogin();return false;"><img src="/img/sign_in_fb.png" class="fr"></a>
-<br />
+<br/>
+<?php endif; ?>
+<?php if (!$fbInfo): ?>
 <h2 style="margin-top:30px;margin-bottom:20px;">Join with email</h2>
-
+<?php else: ?>
+<h2 style="margin-top:30px;margin-bottom:20px;">Link your Totsy account</h2>
+<?php endif; ?>
 <?php if (preg_match('/join/',$_SERVER['REQUEST_URI'])): ?>
 	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/join']);">
 <?php elseif (preg_match('/register/',$_SERVER['REQUEST_URI'])): ?>

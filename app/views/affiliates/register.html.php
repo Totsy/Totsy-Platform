@@ -105,7 +105,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 		$fbInfo = "";
 	}
 ?>
-<div class="round gradient" style="border:1px #eeeeee solid;height:300px;">
+<div class="round gradient" style="border:1px #eeeeee solid; overflow:hidden;">
 
 	<div class="grid_6" style="float:left;">	
 		<div style="width:310px; margin-top:5px;">
