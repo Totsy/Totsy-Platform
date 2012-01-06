@@ -16,6 +16,7 @@
 		}
 		
 		function fadeIn_CCForm() {
+			$('input[name=savedCreditCard]').attr('checked', false);
 			$('#credit_card_form').show();
 		}
 		
@@ -82,7 +83,7 @@ var paymentForm = new Object();
     		if(validCC()==false && savedCreditCard === undefined) {
 				return false;
 			}
-
+			
     		paymentForm.submitted = true;
     		paymentForm.form = $(this).serializeArray();
 
@@ -165,45 +166,47 @@ var paymentForm = new Object();
 				<hr /><br />
 <?php 
 
-if (sizeof($creditcards) > 0) { ?> 
+if ($cyberSourceProfiles) { ?> 
 <h3 style="margin-bottom: 11px;">Pay with a saved Credit Card: </h3>
 <div id="saved_credit_cards" style="display: block;">
 <table width="500px" border="0" cellspacing="0" cellpadding="0">
 
 <?php
 	$i = 0;
-	foreach ($creditcards as $creditcard):
+	foreach ($cyberSourceProfiles as $cyberSourceProfile):
+		if($cyberSourceProfile[savedByUser]) :
 ?>
 <tr>
 	<td align="right">
-		<input type="radio" name="savedCreditCard" value="<?php print $creditcard[profileId];?>" onclick="fadeOut_BillingAddressForm(); fadeOut_CCForm();" <?php if ($i == 0) print 'checked'; ?>>
+		<input type="radio" name="savedCreditCard" value="<?php print $cyberSourceProfile[profileID];?>" onclick="fadeOut_BillingAddressForm(); fadeOut_CCForm();" <?php if ($i == 0) print 'checked'; ?>>
 	</td>
 	<td align="middle">
 		<img src="<?php
-switch ($creditcard[type]) {
-	case 'Visa': 
+switch ($cyberSourceProfile[creditCard][type]) {
+	case 'visa': 
 		print "/img/cc_visa.gif"; 
 	break;
-	case 'Mastercard': 
+	case 'mastercard': 
 		print "/img/cc_mastercard.gif"; 
 	break;
-	case 'American Express': 
+	case 'amex': 
 		print "/img/cc_amex.gif"; 
 	break;
 }	?>">
 	</td>
 	<td align="left">
-		<?php echo ucfirst($creditcard[type]);?> ending in <?php echo substr($creditcard[number], -4); ?>
+		<?php echo ucfirst($cyberSourceProfile[creditCard][type]);?> ending in <?php echo $cyberSourceProfile[creditCard][number]; ?>
 	</td>
 	<!-- <td>
-		<?php echo $creditcard[firstname]." ".$creditcard[lastname];?>
+		<?php echo $cyberSourceProfile[billing][firstname]." ".$cyberSourceProfile[billing][lastname];?>
 	</td> -->
 	<td>
-		Expires on <?php echo $creditcard[month];?> / <?php echo $creditcard[year];?>
+		Expires on <?php echo $cyberSourceProfile[creditCard][month];?> / <?php echo $cyberSourceProfile[creditCard][year];?>
 	</td>
 </tr>
 <?php
 	$i++;
+	endif;
 endforeach;
 ?>
 </table>
@@ -220,7 +223,7 @@ endforeach;
 				
 				<hr />
 				
-				<div id="credit_card_form" style="display: <?php if (sizeof($creditcards) > 0) print 'none'; else print 'block'; ?>;">				
+				<div id="credit_card_form" style="display: <?php if ($cyberSourceProfiles) print 'none'; else print 'block'; ?>;">				
 				<span class="cart-select">
 				<?php echo $this->form->error('cc_error'); ?>
 				<?php echo $this->form->hidden('opt_submitted', array('class'=>'inputbox', 'id' => 'opt_submitted')); ?>
@@ -271,7 +274,7 @@ endforeach;
 				</div>
 				<br />
 				<br />
-				<div id="billing_address_form" style="display: <?php if (sizeof($creditcards) > 0) print 'none'; else print 'block'; ?>;">				
+				<div id="billing_address_form" style="display: <?php if ($cyberSourceProfiles) print 'none'; else print 'block'; ?>;">				
 				<h3>Billing Address</h3>
 				<hr />
 				<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>

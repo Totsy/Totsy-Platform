@@ -65,87 +65,75 @@ class CreditCard extends \lithium\data\Model {
 		$validator::add('state', '[A-Z]{2}', array('contains' => false));
 	} 
 	
-	public static function retrieve_all_cards($user_id, $saved) {
+	public static function retrieveCard($profileID) {
 		$payments = static::$_classes['payments'];
-		$usersCollection = User::Collection();
-		$userInfos = $usersCollection->findOne(array('_id' => new MongoId($user_id)));
 		
 		$cybersource = new CyberSource($payments::config('default'));
 		
 		$creditcard = array();
-		$i=0;
 		
-		if(!$saved) {
-			array_reverse($userInfos['cyberSourceProfiles']);
-			$CyberSourceProfiles = $userInfos['cyberSourceProfiles'];
-		} else {
-			array_reverse($userInfos['cyberSourceProfilesSavedByUser']);
-			$CyberSourceProfiles = $userInfos['cyberSourceProfilesSavedByUser'];
-		}	
-		
-		foreach ($CyberSourceProfiles as $profileId) {
-			$profile = $cybersource->profile($profileId);
+		if($profileID) {
+			$profile = $cybersource->profile($profileID);
 			$profile = CreditCard::parseObject($profile);
 
 			if ($profile[variables][decision] != 'REJECT') {
 				$array_obj = $profile;							
 				$array_obj = $array_obj[variables];			
 															 
-				$creditcard[$i][profileId] = $profileId;
+				$creditcard[profileId] = $profileId;
 	    		switch ($array_obj[cardType]) {
-	    			case '001': $creditcard[$i][type] = 'Visa'; break;
-	    			case '002': $creditcard[$i][type] = 'Mastercard'; break;
-	    			case '003': $creditcard[$i][type] = 'American Express'; break;
-	    			case '004': $creditcard[$i][type] = 'Discover'; break;
-	    			case '005': 
-	    				//$creditcard[$i][type] = 'Diners Club';
-	    				$creditcard[$i][type] = 'Mastercard';
-	    			break;
-	    			case '007': $creditcard[$i][type] = 'JCB'; break;
-	    			case '014': $creditcard[$i][type] = 'Enroute'; break;
-	    			case '024': $creditcard[$i][type] = 'Maestro'; break;
-	    			case '033': $creditcard[$i][type] = 'Electron'; break;    			    			    			    			   	    
+	    			case '001': $creditcard[type] = 'Visa'; break;
+	    			case '002': $creditcard[type] = 'Mastercard'; break;
+	    			case '003': $creditcard[type] = 'American Express'; break;
+	    			case '004': $creditcard[type] = 'Discover'; break;
+	    			case '005': $creditcard[type] = 'Mastercard'; break;
+	    			case '007': $creditcard[type] = 'JCB'; break;
+	    			case '014': $creditcard[type] = 'Enroute'; break;
+	    			case '024': $creditcard[type] = 'Maestro'; break;
+	    			case '033': $creditcard[type] = 'Electron'; break;    			    			    			    			   	    
 	    		}
 	    		
-	    		$creditcard[$i][number] = $array_obj[cardAccountNumber];
-	    		$creditcard[$i][month] = $array_obj[cardExpirationMonth];
-	    		$creditcard[$i][year] = $array_obj[cardExpirationYear];
+	    		$creditcard[number] = $array_obj[cardAccountNumber];
+	    		$creditcard[month] = $array_obj[cardExpirationMonth];
+	    		$creditcard[year] = $array_obj[cardExpirationYear];
 	    		
-	    		$creditcard[$i][firstname] = $array_obj[firstName];
-	    		$creditcard[$i][lastname] = $array_obj[lastName];
+	    		$creditcard[firstname] = $array_obj[firstName];
+	    		$creditcard[lastname] = $array_obj[lastName];
 	
-				$creditcard[$i][address] = $array_obj[street1];
-				$creditcard[$i][address2] = $array_obj[street2];
-				$creditcard[$i][city] = $array_obj[city];
-				$creditcard[$i][state] = $array_obj[state];
-				$creditcard[$i][zip] = $array_obj[postalCode];
-	    		
-				$i++;
+				$creditcard[address] = $array_obj[street1];
+				$creditcard[address2] = $array_obj[street2];
+				$creditcard[city] = $array_obj[city];
+				$creditcard[state] = $array_obj[state];
+				$creditcard[zip] = $array_obj[postalCode];
 			}
 		}
-		
 		return $creditcard;
 	}
 	
 	public static function add($vars) {
 		$payments = static::$_classes['payments'];
 		$usersCollection = User::Collection();
-		$userInfos = $usersCollection->findOne(array('_id' => new MongoId($vars['user']['_id'])));
+		$userInfos = User::lookup($vars['user']['_id']);
 
 		$creditCard = $vars['creditCard'];
-		
+
 		#If credit card added manually by User, only retrieve manual credit card added
 		if($vars['savedByUser']) {
 			$save = true;
 		} else {
 			$save = false;
 		}
-		#Get current credit cards to compare to this card
-		$creditcardsSaved = CreditCard::retrieve_all_cards($vars['user']['_id'], $save);
-		
-		$duplicate = User::hasCyberSourceProfile($creditcardsSaved, $creditCard);	
-		
-		if ($duplicate) {
+
+		$cyberSourceProfileDuplicate = User::hasCyberSourceProfile($userInfos['cyberSourceProfiles'], $creditCard);	
+		if ($cyberSourceProfileDuplicate) {
+			#Check if SavedByUser
+			if($save) {
+				foreach($userInfos['cyberSourceProfiles'] as $key => $cyberSourceProfile) {
+					if($cyberSourceProfile['profileID'] == $cyberSourceProfileDuplicate['profileID'] && !$cyberSourceProfile['savedByUser']) {
+						$usersCollection->update(array('_id' => $userInfos['_id']), array('$set' => array('cyberSourceProfiles.'.$key.'.savedByUser' => true)));
+					}
+				}
+			}
 			return "duplicate";
 		} else {	
 			#Create Address Array
@@ -170,18 +158,20 @@ class CreditCard extends \lithium\data\Model {
 			));
 			$result = $customer->save();
 			if($result->success) {
-				$profileID = $result->response->paySubscriptionCreateReply->subscriptionID;
-				$update = $usersCollection->update(
-					array('_id' => new MongoId($vars['user']['_id'])),
-					array('$push' => array('cyberSourceProfiles' => $profileID)), array( 'upsert' => true)
-				);
+				$newCyberSourceProfile['profileID'] = $result->response->paySubscriptionCreateReply->subscriptionID;
+				$newCyberSourceProfile['creditCard']['number'] = substr($creditCard['number'], -4);
+				$newCyberSourceProfile['creditCard']['month'] = $creditCard['month'];
+				$newCyberSourceProfile['creditCard']['year'] = $creditCard['year'];
+				$newCyberSourceProfile['creditCard']['type'] = $creditCard['type'];
+				$newCyberSourceProfile['billing'] = $address;
 				if($vars['savedByUser']) {
-					$update = $usersCollection->update(
-						array('_id' => new MongoId($vars['user']['_id'])),
-						array('$push' => array('cyberSourceProfilesSavedByUser' => $profileID)), array( 'upsert' => true)
-					);
+					$newCyberSourceProfile['savedByUser'] = true;
 				}
-				return $profileID;
+				$update = $usersCollection->update(
+					array('_id' => $userInfos['_id']),
+					array('$push' => array('cyberSourceProfiles' => $newCyberSourceProfile)), array( 'upsert' => true)
+				);
+				return $newCyberSourceProfile;
 			} else { //return an error
 				return "error";
 			} //end of error / success
@@ -193,11 +183,7 @@ class CreditCard extends \lithium\data\Model {
 		$user = User::lookup($user_id);
 		$update = $usersCollection->update(
 			array('_id' => $user['_id']),
-			array('$pull' => array('cyberSourceProfiles' => $profileID)), array( 'upsert' => true)
-		);
-		$usersCollection->update(
-			array('_id' => $user['_id']),
-			array('$pull' => array('cyberSourceProfilesSavedByUser' => $profileID)), array( 'upsert' => true)
+			array('$pull' => array('cyberSourceProfiles' => array('profileID' => $profileID))), array( 'upsert' => true)
 		);
 		return $update;
 	}
@@ -269,5 +255,35 @@ class CreditCard extends \lithium\data\Model {
 	    $ret_map['variables'] = $ret_list;
 	    return $ret_map;
 	}//method
+	
+	/**
+	 * Decrypt credit card informations stored in the Session
+	 */
+	public static function decrypt($user_id) {
+		$cc_encrypt = Session::read('cc_infos');
 
+		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
+ 		$iv =  base64_decode(Session::read('vi'));
+		foreach	($cc_encrypt as $k => $cc_info) {
+			$crypt_info = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($user_id . $k), base64_decode($cc_info), MCRYPT_MODE_CFB, $iv);
+			$card[$k] = $crypt_info;
+		}
+		return $card;
+	}
+	
+	/**
+	* Encrypt all credits card informations with MCRYPT and store it in the Session
+	*/
+	public static function encrypt($cc_infos, $user_id,$save_iv_in_session = false) {
+		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
+		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+		if ($save_iv_in_session == true) {
+			Session::write('vi',base64_encode($iv));
+		}
+		foreach	($cc_infos as $k => $cc_info) {
+			$crypt_info = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($user_id . $k), $cc_info, MCRYPT_MODE_CFB, $iv);
+			$cc_encrypt[$k] = base64_encode($crypt_info);
+		}
+		return $cc_encrypt;
+	}
 }

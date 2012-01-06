@@ -23,12 +23,17 @@ class CreditcardsController extends BaseController {
 
 	public function index() {
 		$message = $this->request->query['message'];
-	
+		$cyberSourceProfiles = array();
+		
 		if ($user = Session::read('userLogin')) {
-			$creditcards = CreditCard::retrieve_all_cards($user['_id'], 'saved');
-
+			#Get CyberSourceProfiles recorded for this user
+			$userInfos = User::lookup($user['_id']);
+			$cyberSourceProfiles = array();
+			if($userInfos['cyberSourceProfiles']) {
+				$cyberSourceProfiles = $userInfos['cyberSourceProfiles'];
+			}
 		}
-		return compact("creditcards","message");
+		return compact("cyberSourceProfiles","message");
 	}
 
 	public function add() {

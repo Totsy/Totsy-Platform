@@ -90,13 +90,13 @@ class Order extends Base {
 			} else {
 				$authTotalAmount = 1;
 			}
-			$profileID = User::hasCyberSourceProfile($userInfos, $creditCard['number']);
+			$cyberSourceProfile = User::hasCyberSourceProfile($userInfos['cyberSourceProfiles'], $creditCard);
 			#If User has a CyberSource Profile, Use Token
-			if(empty($profileID)) {
+			if(empty($cyberSourceProfile)) {
 				$auth = $payments::authorize('default', $authTotalAmount, $paymentInfos);
 			} else {
 				$cybersource = new CyberSource($payments::config('default'));
-				$profile = $cybersource->profile($profileID);
+				$profile = $cybersource->profile($cyberSourceProfile['profileID']);
 				if($profile instanceof Customer) {
 					$auth = $payments::authorize('default', $authTotalAmount, $profile);
 				} else {
@@ -200,18 +200,16 @@ class Order extends Base {
 			$order->cc_payment = $cc_encrypt;
 		}
 		#Check in which case to store profile with token in Cybersource 
-		$userInfos = $usersCollection->findOne(array('_id' => new MongoId($user['_id'])));
+		$userInfos = User::lookup($user['_id']);
 		#Get current credit cards to compare to this card
-		$creditcards = CreditCard::retrieve_all_cards($vars['user']['_id']);
-		$profileID = User::hasCyberSourceProfile($creditcardsSaved, $creditCard);
-		if(empty($profileID)) {
+		if($userInfos['cyberSourceProfiles']) {
+			$cyberSourceProfile = User::hasCyberSourceProfile($userInfos['cyberSourceProfiles'], $creditCard);
+		}
+		if(empty($cyberSourceProfile)) {
 			$vars['savedByUser'] = false;
-			$profileID = CreditCard::add($vars);
+			$cyberSourceProfile = CreditCard::add($vars);
 		}
-		#Get the profileID created previously and saved it on the order
-		if(!empty($profileID)) {
-			$order->cyberSourceProfileId = $profileID;
-		}
+		$order->cyberSourceProfileId = $cyberSourceProfile['profileID'];
 		$cart = Cart::active();
 		#Save Order Infos
 		$shipDate = Cart::shipDate($cart);
@@ -274,36 +272,6 @@ class Order extends Base {
 		return $order;
 	}
 
-	/**
-	 * Decrypt credit card informations stored in the Session
-	 */
-	public static function creditCardDecrypt($user_id) {
-		$cc_encrypt = Session::read('cc_infos');
-
-		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
- 		$iv =  base64_decode(Session::read('vi'));
-		foreach	($cc_encrypt as $k => $cc_info) {
-			$crypt_info = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($user_id . $k), base64_decode($cc_info), MCRYPT_MODE_CFB, $iv);
-			$card[$k] = $crypt_info;
-		}
-		return $card;
-	}
-
-	/**
-	 * Encrypt all credits card informations with MCRYPT and store it in the Session
-	 */
-	public static function creditCardEncrypt($cc_infos, $user_id,$save_iv_in_session = false) {
-		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
-		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-		if ($save_iv_in_session == true) {
-			Session::write('vi',base64_encode($iv));
-		}
-		foreach	($cc_infos as $k => $cc_info) {
-			$crypt_info = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($user_id . $k), $cc_info, MCRYPT_MODE_CFB, $iv);
-			$cc_encrypt[$k] = base64_encode($crypt_info);
-		}
-		return $cc_encrypt;
-	}
 }
 
 ?>
