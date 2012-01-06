@@ -366,7 +366,7 @@ class UsersController extends BaseController {
 		if (!$success) {
 			if (!empty($userfb)) {	
 				if(!$fbCancelFlag) {				
-					$this->redirect('http://evan.totsy.com/register/facebook');
+					$this->redirect('/register/facebook');
 				}
 			}
 		}
