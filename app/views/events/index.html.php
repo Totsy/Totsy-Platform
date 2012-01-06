@@ -39,7 +39,7 @@
 	<?php
 		/* 
 			@TODO
-			@DG
+			@DG-2012.01.06 in progress:
 				- rebuild template to split into sections:
 				- Today's Sales
 					featured
@@ -159,7 +159,7 @@
 
 </section><!-- /#openEvents -->	
 
-	<div style="margin-bottom:35px;" class="clear"></div><!-- @TODO: rebuild template, remove clear divs, utilize #upcoming styles -->
+	<div style="margin-bottom:35px;" class="clear"></div><!-- @TODO: @DG-2012.01.06 - in progress - rebuilding template, remove clear divs -->
 
 <section id="upcoming" class="container_16 group">
 	<header class="grid_16">
@@ -190,7 +190,7 @@
 						'title' => $event->name,
 						'alt' => $event->name,
 						'width' => '228',
-						'height' => '266'
+						'height' => '263'
 					)), 'sale/'.$event->url, array('escape'=> false));
 					 ?>
 					<div class="splash-details">

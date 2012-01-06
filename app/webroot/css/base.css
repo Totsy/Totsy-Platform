@@ -4733,3 +4733,9 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 }
 #events-wrap .viewAllEvents a {display: block; line-height: 0;}
 #events-wrap .event > footer {text-align: right;}
+
+/* prevent image from breaking out of layout */
+/* - @DG thought: consider putting max-width on container, and setting image to width:100% */
+#description img {
+	max-width: 410px;
+}
