@@ -359,8 +359,6 @@ class User extends Base {
 	**/
 	public static function hasCyberSourceProfile($cyberSourceProfiles, $creditCard) {
 		$cyberSourceProfileDetected = null;
-		var_dump($cyberSourceProfiles);
-		var_dump($creditCard);
 		foreach($cyberSourceProfiles as $cyberSourceProfile) {
 			if ($cyberSourceProfile[creditCard][number] == substr($creditCard[number],-4)
 				&& $cyberSourceProfile[creditCard][month] == $creditCard[month]
