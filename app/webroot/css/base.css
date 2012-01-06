@@ -4609,8 +4609,9 @@ nav .haschild li a:hover {
 	padding-left:23px;
 }
 #userUtils .cart {
+	float: left;
 	margin-right:8px; padding-top: 2px;
-	background: url(../img/icon-cart.png) 0 0 no-repeat;
+	background: url(../img/icon-cart.png) 0 45% no-repeat;
 	color: #707070;
 }
 #userUtils .cart em,
@@ -4618,7 +4619,7 @@ nav .haschild li a:hover {
 #userUtils .cart *:hover {text-decoration:underline;}
 #userUtils .cart strong {font-size:14px; font-weight: bold;}
 #userUtils .btn { /* @TODO - abstract out all .btn styles… need design consistency / standards */
-	padding:3px 10px 1px;
+	padding:1px 10px 0;
 	background: url(../img/btn-glass.png) 0 50.5% repeat-x;
 	border:1px solid rgba(0,0,0,0);
 	border-bottom:1px solid rgba(255,255,255,0.55);
@@ -4626,23 +4627,32 @@ nav .haschild li a:hover {
 	-webkit-box-shadow: 0px 1px 2px rgba(0,0,0,0.45);
 	-moz-box-shadow: 0px 1px 2px rgba(0,0,0,0.45);
 	box-shadow: 0px 1px 2px rgba(0,0,0,0.45);
-	font:bold 10px/2 Helvetica, Arial, sans-serif;
+	font:bold 10px/0 Helvetica, Arial, sans-serif;
 	text-transform: uppercase;
 
 }
 #userUtils .cart:hover,
 #userUtils .btn:hover {text-decoration: none;}
 #userUtils .checkout {
+	float: left;
 	background-color:rgb(218,80,77); /* fallback */
 	background-color:rgba(218,80,77,1);
 	color:#fff;
 }
 #userUtils .checkout strong {
 	padding-right:9px;
-	background: url(../img/btn-arrow-s.png) 100% 35% no-repeat;
+	background: url(../img/btn-arrow-s.png) 100% 25% no-repeat;
+	line-height: 1.6;
 	}
 #userUtils .checkout:hover {background-color:rgba(230,87,84,1);}
 
+/* webkit one-offs for user utils - they want pixel-perfect, this is pixel perfection*/
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	#userUtils {padding-top:3px;}
+	#userUtils .cart {padding-top:1px;}
+	#userUtils .btn {padding:0px 10px;}
+	#userUtils .checkout strong {background-position:100% 50%;}
+}
 
 /* 
 	Category Pages - events - @DG-2011.12
