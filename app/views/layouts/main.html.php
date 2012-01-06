@@ -60,8 +60,7 @@
 
 </head>
 <body class="app">
-
-	<?php if(isset($branch)) { echo $branch; } ?>
+<?php if(isset($branch)) { echo $branch; } ?>
 <div class="container_16 roundy glow">
 	<div class="grid_3 alpha" style="margin:5px 0px 0px 5px;">
 		<?php echo $this->html->link($this->html->image('logo.png', array('width'=>'120')), '/sales', array('escape'=> false)); ?>
@@ -136,7 +135,7 @@
 		function deleteFBCookies() {
 		    //all posible FB cookies
 		    try {
-		    	document.cookie = fbCookie + '=; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/';
+		    	document.cookie = fbCookie + '=; domain=.totsy.com; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/';
 		    	document.cookie = 'datr=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
 		    	document.cookie = 'locale=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
 		    	document.cookie = 'lu=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
@@ -159,9 +158,10 @@
 		}	
 </script>
 
-	<script language="javascript">
+	<script language="javascript"> 
 	document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s://www':'://www')+ '.upsellit.com/upsellitJS4.jsp?qs=237268202226312324343293280329277309292309329331334326345325&siteID=6605"><\/sc'+'ript>')
 	</script>
+	
 	<script type="text/javascript">
 		// end uniform inputs
 		$(document).ready(function() {
@@ -189,7 +189,6 @@
 	// end tabs
 </script>
 
-
 <!-- Sailthru Horizon -->
 <script type="text/javascript">
     (function() {
@@ -215,6 +214,9 @@
         };
     })();
 </script>
+<!-- Server Name: <?php echo $_SERVER['SERVER_NAME']; ?> -->
+<!-- Host Name: <?php echo php_uname('n'); ?> -->
+<?php if(isset($version)) { echo $version; } ?>
 
 </body>
 </html>
