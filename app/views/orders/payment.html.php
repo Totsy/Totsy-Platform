@@ -164,9 +164,11 @@ var paymentForm = new Object();
 
 <div class="grid_16" style=" width:935px !important">
 				<hr /><br />
-<?php 
-
-if ($cyberSourceProfiles) { ?> 
+<?php
+ 
+if ($cyberSourceProfiles) { 
+	if (sizeof($cyberSourceProfiles->data()) > 0) { 
+?>
 <h3 style="margin-bottom: 11px;">Pay with a saved Credit Card: </h3>
 <div id="saved_credit_cards" style="display: block;">
 <table width="500px" border="0" cellspacing="0" cellpadding="0">
@@ -212,7 +214,8 @@ endforeach;
 </table>
 </div>
 <h3 style="margin-top: 11px"><a href="#" onclick="fadeIn_saved_CCs(); fadeIn_CCForm(); fadeIn_BillingAddressForm();" style="text-decoration:underline;">Add New Card</a></h3>
-<?php
+<?php 
+}
 } else {
 ?>
 <h3>Pay with a Credit Card</h3>
@@ -223,7 +226,7 @@ endforeach;
 				
 				<hr />
 				
-				<div id="credit_card_form" style="display: <?php if ($cyberSourceProfiles) print 'none'; else print 'block'; ?>;">				
+				<div id="credit_card_form" style="display: <?php if ($cyberSourceProfiles) { if (sizeof($cyberSourceProfiles->data()) > 0) { print 'none'; } } else { print 'block'; } ?>;">				
 				<span class="cart-select">
 				<?php echo $this->form->error('cc_error'); ?>
 				<?php echo $this->form->hidden('opt_submitted', array('class'=>'inputbox', 'id' => 'opt_submitted')); ?>
@@ -274,7 +277,7 @@ endforeach;
 				</div>
 				<br />
 				<br />
-				<div id="billing_address_form" style="display: <?php if ($cyberSourceProfiles) print 'none'; else print 'block'; ?>;">				
+				<div id="billing_address_form" style="display: <?php if ($cyberSourceProfiles) { if (sizeof($cyberSourceProfiles->data()) > 0) { print 'none'; } } else { print 'block'; } ?>;">				
 				<h3>Billing Address</h3>
 				<hr />
 				<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
@@ -316,7 +319,7 @@ endforeach;
 				<?php echo $this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
 				<div style="clear:both"></div>
 				<div>
-					Save this credit card and billing address <?php echo $this->form->checkbox("paymentInfosSave", array('id' => 'paymentInfosSave')); ?>
+					Save this credit card and billing address <?php echo $this->form->checkbox("paymentInfosSave", array('id' => 'paymentInfosSave', 'checked' => false)); ?>
 				</div>
 				<?php echo $this->form->hidden('opt_description', array('id' => 'opt_description' , 'value' => 'billing')); ?>
 				<?php echo $this->form->hidden('opt_shipping_select', array('id' => 'opt_shipping_select')); ?>

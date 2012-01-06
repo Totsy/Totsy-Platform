@@ -60,22 +60,26 @@ class Order extends Base {
 		$order = static::create(array('_id' => new MongoId()));
 		#Read Credit Card Informations
 		$creditCard = $vars['creditCard'];
+		$cyberSourceProfile = User::hasCyberSourceProfile($userInfos['cyberSourceProfiles'], $creditCard);
 		#Create Address Array
-		$address = array(
-				'firstName' =>  $vars['billingAddr']['firstname'],
-				'lastName' => $vars['billingAddr']['lastname'],
-				'address' => trim($vars['billingAddr']['address'] . ' ' . $vars['billingAddr']['address2']),
-				'city' => $vars['billingAddr']['city'],
-				'state' => $vars['billingAddr']['state'],
-				'zip' => $vars['billingAddr']['zip'],
-				'country' => $vars['billingAddr']['country'] ?: 'US',
-				'email' =>  $vars['user']['email'] 
-		);
-		#Create Payment Object that contains Payment Informations
-		$paymentInfos = $payments::create('default', 'creditCard', $creditCard + array(
-			'billing' => $payments::create('default', 'address', $address)
-			)
-		);
+		if (!$cyberSourceProfile) {
+			$address = array(
+					'firstName' =>  $vars['billingAddr']['firstname'],
+					'lastName' => $vars['billingAddr']['lastname'],
+					'address' => trim($vars['billingAddr']['address'] . ' ' . $vars['billingAddr']['address2']),
+					'city' => $vars['billingAddr']['city'],
+					'state' => $vars['billingAddr']['state'],
+					'zip' => $vars['billingAddr']['zip'],
+					'country' => $vars['billingAddr']['country'] ?: 'US',
+					'email' =>  $vars['user']['email'] 
+			);
+			#Create Payment Object that contains Payment Informations
+			$paymentInfos = $payments::create('default', 'creditCard', $creditCard + array(
+				'billing' => $payments::create('default', 'address', $address)
+				)
+			);
+		}
+		
 		if ($cart) {
 			$inc = 0;
 			foreach ($cart as $item) {
@@ -90,7 +94,7 @@ class Order extends Base {
 			} else {
 				$authTotalAmount = 1;
 			}
-			$cyberSourceProfile = User::hasCyberSourceProfile($userInfos['cyberSourceProfiles'], $creditCard);
+
 			#If User has a CyberSource Profile, Use Token
 			if(empty($cyberSourceProfile)) {
 				$auth = $payments::authorize('default', $authTotalAmount, $paymentInfos);
@@ -107,7 +111,7 @@ class Order extends Base {
 				Session::write('cc_error', implode('; ', $auth->errors));
 				return false;
 			}
-			return static::recordOrder($vars, $cart, $order, $avatax, $auth, $items, $authTotalAmount, $creditCard, $address);
+			return static::recordOrder($vars, $cart, $order, $avatax, $auth, $items, $authTotalAmount, $creditCard);
 		} else {
 			$order->errors(
 				$order->errors() + array($key => "All the items in your cart have expired. Please see our latest sales.")
@@ -121,7 +125,7 @@ class Order extends Base {
 	 * Record in DB all informations linked with the order
 	 * @return redirect
 	 */
-	public static function recordOrder($vars, $cart, $order, $avatax, TransactionResponse $auth, $items, $authTotalAmount, $creditCard, $address) {
+	public static function recordOrder($vars, $cart, $order, $avatax, TransactionResponse $auth, $items, $authTotalAmount, $creditCard) {
 		$tax = static::$_classes['tax'];
 		$payments = static::$_classes['payments'];
 		$usersCollection = User::Collection();
@@ -190,15 +194,7 @@ class Order extends Base {
 		$shippingMethod = 'ups';
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
-		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
-		#Get Credits Card Informations Encrypted and Store It
-		$storing_cc_encrypted = FeatureToggles::getValue('storing_credit_card_encrypted');
-		if(!empty($storing_cc_encrypted)) {
-			$cc_encrypt = Session::read('cc_infos');
-			$cc_encrypt['vi'] = Session::read('vi');
-			unset($cc_encrypt['valid']);
-			$order->cc_payment = $cc_encrypt;
-		}
+		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];	
 		#Check in which case to store profile with token in Cybersource 
 		$userInfos = User::lookup($user['_id']);
 		#Get current credit cards to compare to this card

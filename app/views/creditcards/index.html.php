@@ -91,7 +91,9 @@
 			<br/>
 			<?php endif; ?>
 			<?php endforeach; ?>
-		<?php } else { ?>
+		<?php } ?>
+				
+		<?php if ($x == 0 || !$cyberSourceProfiles) { ?>
 		<div style="text-align:center;">You don't have any saved credit cards.</div>
 		<?php } ?>
 </div>

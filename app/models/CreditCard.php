@@ -134,7 +134,7 @@ class CreditCard extends \lithium\data\Model {
 					}
 				}
 			}
-			return "duplicate";
+			return "success"; //returned duplicate before but should tell the user the card has been saved instead of saying it's a duplicate
 		} else {	
 			#Create Address Array
 			$address = array(
