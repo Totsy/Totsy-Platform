@@ -4397,3 +4397,7 @@ Text Align > left / right
 	border-bottom: 2px solid #DDDDDD!important;
 	margin: 9px 9px 3px!important;
 }
+
+#description img {
+	max-width: 410px;
+}

@@ -141,7 +141,10 @@ class FinancialExport extends Base  {
 		'ship_records',
 		'cancel',
 		'gross_revenue',
-		'net_revenue'
+		'net_revenue',
+		'merchantReferenceCode',
+		'process_by',
+		'auth_records'
 	);
 
 	/**
@@ -196,7 +199,8 @@ class FinancialExport extends Base  {
 		'ship_date',
 		'modifications',
 		'avatax',
-		'savings'
+		'savings',
+		'auth'
 	);
 
 	/**
@@ -244,7 +248,9 @@ class FinancialExport extends Base  {
 			'payment_date',
 			'service',
 			'shipping',
-			"cancel"
+			"cancel",
+			'auth',
+			'auth_records'
 		);
 	/**
 	 * Find all the orders that haven't been shipped which have stock status.
@@ -699,6 +705,22 @@ class FinancialExport extends Base  {
                 $order['gross_revenue'] = number_format((float)Item::calculateProductGross($order['items']), 2);
                 $order['net_revenue'] = $order['gross_revenue'] + $order['handling'] + $order['overSizeHandling'];
                 $order['net_revenue'] = number_format($order['net_revenue'] , 2);
+                $order['merchantReferenceCode'] = "";
+                $order['process_by'] = "AuthorizeNet";
+                if (array_key_exists('auth', $order)) {
+                	$order['merchantReferenceCode'] = $order['auth']['response']['merchantReferenceCode'];
+                	$order['process_by'] = $order['auth']['adapter'];
+                }
+
+                if (array_key_exists('auth_records', $order)) {
+					$order['auth_records'] = $order['auth_records'];
+				} else {
+					$order['auth_records'] = array(
+						array(
+							'authKey' => "",
+							'date_saved' => ""
+						));
+				}
                 /*
                 * Get credit, promocodes,  and oversize handling information
                 */
@@ -717,7 +739,7 @@ class FinancialExport extends Base  {
                 $shipRecord = $ordersShipped->findOne(array('$or' => array(
                     array('OrderNum' => $order['order_id'])
                 )));
-                if (array_key_exists('ship_records', $order)) {
+                if ($order && array_key_exists('ship_records', $order)) {
                     $order['ship_records'] = "Yes";
                 } else {
                     $order['ship_records'] = "No";
@@ -783,7 +805,7 @@ class FinancialExport extends Base  {
 		$ordered = array();
 		foreach($orderArray as $key) {
 			if(array_key_exists($key,$array)) {
-				$ordered[$key] = (string) $array[$key];
+				$ordered[$key] = $array[$key];
 				unset($array[$key]);
 			}
 		}
@@ -826,7 +848,7 @@ class FinancialExport extends Base  {
 	    };
 	    set_error_handler($error_handling, E_WARNING);
 
-	    $To = "lhanson@totsy.com,scott.fisher@yourtechso.com,sadler@totsy.com,rminns@totsy.com";
+	   $To = "lhanson@totsy.com,scott.fisher@yourtechso.com,sadler@totsy.com,rminns@totsy.com";
 	   $headers = "From: reports@totsy.com";
 	   echo "Exporting Files";
 	    $this->log("Exporting to Accounting Server...");
@@ -838,37 +860,31 @@ class FinancialExport extends Base  {
                     while(($file = readdir($localDirectory)) !== false) {
                         $length = strlen($file);
                        if (substr($file,$length - 4, $length) == ".xml") {
-                         $success = true;
-                         $connection = ssh2_connect('accounting.totsy.com',50220);
-                            if (!$connection) {
-                                $this->log("Fail: Unable to establish a connection.");
+                        $fp = fopen($source.$file,"r");
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, "scp://@accounting.totsy.com/C/TotsyData/{$file}");
+                        curl_setopt($ch, CURLOPT_PORT, 50220);
+                        curl_setopt($ch, CURLOPT_USERPWD, "administrator:accounting6N1Wlm5Ig");
+                        curl_setopt($ch, CURLOPT_UPLOAD, 1);
+                        curl_setopt($ch, CURLOPT_PROTOCOLS, CURLPROTO_SCP);
+                        curl_setopt($ch, CURLOPT_INFILE, $fp);
+                        curl_setopt($ch, CURLOPT_INFILESIZE, filesize($source.$file));
+                        curl_exec ($ch);
+                        $error_no = curl_errno($ch);
+                        if ($error_no == 0) {
+                                $reporting['success'] = true;
+                                $this->log("Moving " . $source.$file . " to processed folder.");
+                                $reporting['files_sent'][] = $file . " " . filesize($source.$file) . " Bytes" ;
+                                rename($source.$file,$processed.$file);
+                        } else {
+                                $this->log("Fail: " .  print_r(curl_error($ch), true));
                                 $reporting['success'] = false;
-                                $reporting['error'][] = "Fail: Unable to establish a connection.";
-                            } else{
-                               if (!ssh2_auth_password($connection, 'administrator', 'accounting6N1Wlm5Ig')) {
-                                    $this->log("Fail: Unable to authenticate.");
-                                    $reporting['success'] = false;
-                                    $reporting['error'][] = "Fail: Unable to authenticate.";
-                                }else{
-                                    $this->log("You are logged in.");
-                                    $this->log("Uploading " . $source.$file . " to accounting server");
-                                    $success = ssh2_scp_send($connection, $source.$file, "/C/$directory/$file", 0644);
-                                     if (!$success) {
-                                        $reporting['success'] = false;
-                                        $reporting['error'][] = "Fail: transfer failed.";
-                                        $reporting['files_failed'][] = $file . " " . filesize($source.$file) . " Bytes" ;
-                                        echo "transfer failed.\r\n";
-                                        $this->log("Fail: Unable to transfer " . $source.$file . " to Accounting Server.");
-                                     } else {
-                                        $reporting['success'] = true;
-                                        $this->log("Moving " . $source.$file . " to processed folder.");
-                                        $reporting['files_sent'][] = $file . " " . filesize($source.$file) . " Bytes" ;
-                                        rename($source.$file,$processed.$file);
-                                     }
-                                     sleep(10);
-                                     ssh2_exec($connection, 'exit');
-                                }
-                            }
+                                $reporting['error'][] = "Fail: " .  print_r(curl_error($ch), true);
+                                $this->log("Fail: File upload error.");
+                                $this->log("Fail: {$error_codes[$error_no]}");
+                        }
+                        fclose($fp);
+                        curl_close ($ch);
                        }
                     }
                 }
@@ -905,8 +921,21 @@ class FinancialExport extends Base  {
         $recordTag = $this->xml->addChild('record');
         foreach($record as $key => $value) {
             //SimpleXMLElement doesn't like ampersand for some reason so I am replacing it with 'and'
-           $record[$key] = preg_replace('/&/','and',$record[$key]);
-            $recordTag->addChild($key, $record[$key]);
+            if (is_array($value) && ($key == "auth_records")) {
+				$parent = $recordTag->addChild($key);
+				foreach($value as $sub_key => $sub_value){
+                    if (is_array($sub_value)) {
+                        foreach($sub_value as $k => $v) {
+                            $parent->addChild($k, $v);
+                        }
+                    } else {
+                        $parent->addChild($sub_key, $sub_value);
+                    }
+				}
+		   } else {
+				$record[$key] = preg_replace('/&/','and',$record[$key]);
+				$recordTag->addChild($key, (string)$record[$key]);
+			}
         }
 	}
 
