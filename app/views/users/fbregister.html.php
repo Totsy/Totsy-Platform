@@ -84,7 +84,7 @@
 											'class' => 'required'
 											));
 										?>
-										<?php echo $this->form->text('email', array('class' => 'inputbox')); ?>
+										<?php echo $this->form->text('email', array('class' => 'inputbox', 'value'=> $fbuser['email'])); ?>
 										<?php echo $this->form->error('email'); ?>
 									</div>
 									<div class="form-row">
@@ -93,7 +93,7 @@
 											'class' => 'required'
 											));
 										?>
-										<?php echo $this->form->text('confirmemail', array('class' => 'inputbox')); ?>
+										<?php echo $this->form->text('confirmemail', array('class' => 'inputbox','value'=> $fbuser['email'])); ?>
 										<?php echo $this->form->error('confirmemail'); ?>
 										<?php echo $this->form->error('emailcheck'); ?>
 									</div>

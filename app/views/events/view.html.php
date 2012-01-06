@@ -10,18 +10,18 @@
 		<div style="clear:both;"></div>
 		<hr/>
 <div class="md-gray" style="overflow:hidden; border: 1px solid #D7D7D7;  margin-bottom:10px">
-				<div class="grid_5 alpha omega" style="line-height:0px!important;">
+				<div class="grid_3 alpha omega" style="line-height:0px!important;">
 					<!-- Display Event Image -->
 					<?php
 						if (!empty($event->images->event_image)) {
 							echo $this->html->image("/image/{$event->images->event_image}.jpg", array(
 								'title' => $event->name,
-								'width' => "280",
+							'width' => '156'
 							));
 						} else {
 							echo $this->html->image('/img/no-image-small.jpeg', array(
 									'title' => "No Image Available",
-									'width' => "280",
+							'width' => '156'
 									));
 						}
 					?>

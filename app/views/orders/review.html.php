@@ -65,9 +65,8 @@ if($is_mamapedia) {
 
 ?>
 
-
 <?php  if(!empty($subTotal)): ?>
-<div class="cart-content">
+<div class="cart-content" id="p-review">
 	<div class="grid_11 cart-header-left">
 		<div style="float:left;">
 			<h2 class="page-title gray">
@@ -133,7 +132,7 @@ if($is_mamapedia) {
 				    $<?php echo number_format($total,2)?> </span>
 				</span>    
 				<div style="text-align:center; diplay:inline-block !important">
-			      <a href="#" class="button" style="float:none !important; diplay:block !important" onclick="updateOrder()">Place Your Order</a>
+					<input type="submit" class="button cartSubmit" form="cartForm" value="Place Your Order" />
 			 	</div>
 			</div>
 		</div>
@@ -152,8 +151,6 @@ if($is_mamapedia) {
 			<?php echo $this->form->hidden("process", array('id'=>'process')); ?>
 			<?php $x = 0; ?>
 			<?php foreach ($cart as $item): ?>
-
-
 
 
 				<!-- Build Product Row -->
@@ -331,7 +328,7 @@ if($is_mamapedia) {
 </div>
 
 <div class="cart-button fr cart-nav-buttons">
-		      <a href="#" class="button" style="float:none !important; margin-right:50px; diplay:block !important" onclick="updateOrder()">Place Your Order</a>
+	<input type="submit" class="button cartSubmit" form="cartForm" value="Place Your Order" />
 	<div class="clear"></div>
 
 <?php echo $this->form->end(); ?>
@@ -392,10 +389,15 @@ if($is_mamapedia) {
 
 <script type="text/javascript" charset="utf-8">
 
-function updateOrder() {
-	$('#process').val("true");
-	$('#cartForm').submit();
-}
+// submit cart - bind click event to .cartSubmit buttons, prevent multiple clicks/submissions
+$(document).ready(function(){
+	$('.cartSubmit').click(function(e){
+		e.preventDefault(); // if JS is enabled, we can disable default submit behavior
+		$('#process').val('true');
+		$('.cartSubmit').attr('disabled', 'disabled').val('Please wait…').css('cursor', 'default');
+		$('#cartForm').submit();
+	});
+});
 
 //SUBMIT THE ITEM WHICH IS DELETED
 function deletechecked(message, id) {

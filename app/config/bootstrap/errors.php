@@ -43,7 +43,7 @@ ErrorHandler::apply('lithium\action\Dispatcher::run', array('type' => 'Exception
                     'template' => '505'
                 )));
             }
-            mail('lhanson@totsy.com', "500 Error on /{$params['request']->url}", $message);
+            mail('bugs@totsy.com', "500 Error on /{$params['request']->url}", $message);
         } else {
             /* Full post mortem in non-production envs. */
             $request = $params['request'];

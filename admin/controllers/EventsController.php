@@ -62,7 +62,7 @@ class EventsController extends BaseController {
 
 		//mongo query to get orders with these items
 		$orders = $ordersCollection->find(array('items' => array('$elemMatch' => array('item_id' => array('$in' => $items)))));
-		
+
 		foreach ($orders as $order) {
 			//total items in order
 			$orderitemCount = count($order['items']);
@@ -73,10 +73,10 @@ class EventsController extends BaseController {
 				if($order['items'][$i]['size']=="NULL"){
 					//set size to 'no size'
 					$order['items'][$i]['size'] = "no size";
-					
+
 					//save revised order
 					$ordersCollection->save($order);
-					
+
 				}
 			}
 		}
@@ -121,7 +121,7 @@ class EventsController extends BaseController {
 		}
 
 		//mongo query, find all items with skus
-		$items_with_skus = Item::find('all', array('conditions' => array( 'skus' => array( "\$in" => $items_skus))));
+		$items_with_skus = Item::find('all', array('conditions' => array( 'skus' => array( '$in' => $items_skus))));
 
 		//loop through returned item results
 		foreach($items_with_skus as $olditem){
@@ -130,10 +130,14 @@ class EventsController extends BaseController {
 			$addnewitem = true;
 
 			//set new total quantity at 0
-			$total_quantity_new=0;
+			$total_quantity_new = 0;
 
 			//item data
-			$oitem = $olditem->data();
+			$oitem = $olditem;
+			# 01/03/2011 - it was done this way because lithium had a bug with the data() function
+			# So until that bug is fix, we will do it this way
+			$oitem = get_object_vars($olditem);
+			$oitem = $oitem['_config']['data'];
 
 			//existing sku and sku_details
 			$sku_details_arr = $oitem['sku_details'];
@@ -743,7 +747,7 @@ class EventsController extends BaseController {
 	}
 
 	public function inventoryCheck($events) {
-		$events = $events->data();
+
 		foreach ($events as $eventItems) {
 			$count = 0;
 			$id = $eventItems['_id'] ;

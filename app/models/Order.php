@@ -272,7 +272,7 @@ class Order extends Base {
 		
 		$data = array(
 			'order' => $order->data(),
-			'shipDate' => date('m-d-Y', $shipDateInsert)
+			'shipDate' =>  date('m-d-Y', $shipDateInsert)
 		);
 		#In Case Of First Order, Send an Email About 10$ Off Discount
 		if ($service && array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {

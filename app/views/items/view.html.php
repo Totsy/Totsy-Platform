@@ -218,7 +218,8 @@
 			<?php endif ?>
 		</div>
 	</div>
-	<div style="padding: 10px 0px; text-align: center ! important; position: absolute; top: 253px; right: 153px;">
+	<div class="clear"></div>
+	<div class="grid_3" style="padding-left:11px;">
 	    <?php echo $spinback_fb; ?>
 	</div>
 </div>
