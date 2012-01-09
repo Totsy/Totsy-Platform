@@ -37,6 +37,7 @@ function print_usage {
 	echo " - selenium-server   Start the selenium server."
 	echo " - analyze           Run static code analysis tools."
 	echo " - optimize-imgs     Run all images through optimizers, reducing size."
+	echo " - optimize-js       Run all JS through optimizers, reducing size."
 }
 
 if [ $# != 1 ]; then
@@ -209,6 +210,27 @@ case $COMMAND in
 
 		du -s app/webroot/img
 		;;
+
+	optimize-js)
+		cd $PROJECT_DIR
+		du -s app/webroot/js
+
+		YUICOMPRESSOR="java -jar $HOME/Scripts/yuicompressor.jar"
+
+		# SKIP='.*(analytics\.js|jquery\.js|jquery-ui\.js|markitup.*|plupload.*)'
+		SKIP='.*(plupload.*)'
+		for FILE in $(find -E app/webroot/js -regex $SKIP -prune -o -name "*.js" -print); do
+			BEFORE=$(ls -lah $FILE | awk '{ print $5 }')
+
+			$YUICOMPRESSOR -o $FILE --nomunge --charset utf-8 $FILE
+
+			AFTER=$(ls -lah $FILE | awk '{ print $5 }')
+			echo "$FILE ($BEFORE -> $AFTER)"
+		done
+
+		du -s app/webroot/js
+		;;
+
 
 	*)
 		echo "Unknown command '${COMMAND}'."
