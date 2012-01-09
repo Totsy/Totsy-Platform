@@ -35,6 +35,8 @@ function print_usage {
 	echo " - source-selenium   Install dependencies."
 	echo " - clear-cache       Clears file caches on admin and app."
 	echo " - selenium-server   Start the selenium server."
+	echo " - analyze           Run static code analysis tools."
+	echo " - optimize-imgs     Run all images through optimizers, reducing size."
 }
 
 if [ $# != 1 ]; then
@@ -173,6 +175,39 @@ case $COMMAND in
 			-firefoxProfileTemplate $PROJECT_DIR/selenium/tzp8knyf.selenium \
 			-log $PROJECT_DIR/selenium/selenium.log \
 			-browserSideLog
+		;;
+
+	analyze)
+		cd $PROJECT_DIR
+		phploc --exclude app/libraries --exclude app/tests app libraries/totsy_common
+		phpcpd --exclude app/libraries --exclude app/tests app libraries/totsy_common
+		# phpmd --exclude app/libraries,app/tests app,libraries/totsy_common text codesize,naming
+		;;
+
+	optimize-imgs)
+		cd $PROJECT_DIR
+		du -s app/webroot/img
+
+		for FILE in $(find app/webroot/img -name "*.png"); do
+			BEFORE=$(ls -lah $FILE | awk '{ print $5 }')
+
+			pngcrush -rem alla -rem text -q $FILE $FILE.tmp
+			mv $FILE.tmp $FILE
+
+			AFTER=$(ls -lah $FILE | awk '{ print $5 }')
+			echo "$FILE ($BEFORE -> $AFTER)"
+		done
+		for FILE in $(find app/webroot/img -name "*.jpg"); do
+			BEFORE=$(ls -lah $FILE | awk '{ print $5 }')
+
+			jpegtran -optimize -copy none $FILE > $FILE.tmp
+			mv $FILE.tmp $FILE
+
+			AFTER=$(ls -lah $FILE | awk '{ print $5 }')
+			echo "$FILE ($BEFORE -> $AFTER)"
+		done
+
+		du -s app/webroot/img
 		;;
 
 	*)
