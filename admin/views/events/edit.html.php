@@ -178,7 +178,7 @@ selectlist.css (line 1)
 					<?php echo $this->form->textarea('ship_message', array('value' => $event->ship_message)); ?>
 				</div>
 				<div id="shipDateOverride">
-					<?php echo $this->form->label('Estimated Ship Date'); ?>
+					<?php echo $this->form->label('Estimated Delivery Date'); ?>
 					<p>This date will override the calcualted ship date for orders.</p>
 					<?php echo $this->form->text('ship_date', array('id' => 'ship_date', 'value' => $event->ship_date)); ?>
 				</div>
