@@ -47,7 +47,7 @@
 								'title' => $event['name'],
 								'alt' => $event['name'],
 								'width' => '126',
-								'height' => '81'
+								'height' => '145'
 							)), "sale/$url", array('escape'=> false)
 						);
 					?>
