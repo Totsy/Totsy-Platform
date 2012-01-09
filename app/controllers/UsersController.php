@@ -86,6 +86,12 @@ class UsersController extends BaseController {
 		if ($referer['host']==$this->request->env('HTTP_HOST') && preg_match('(/sale/)',$referer['path'])){
 			Session::write('landing',$referer['path'],array('name'=>'default'));
 		}
+		
+		if (Session::read('layout', array('name' => 'default'))=='mamapedia') {
+           $affiliate = new AffiliatesController(array('request' => $this->request));
+           $affiliate->register("mamasource");
+       	}
+		
 		unset($referer);
 		if (isset($data) && $this->request->data) {
 			$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
@@ -277,7 +283,8 @@ class UsersController extends BaseController {
 				$redirect = "/sale/".Session::read("eventFromEmailClick", array("name"=>"default"));
 			} else {
 				$redirect = '/sales';
-			}
+			}			
+			
 			if ($user->deactivated) {
 				$message = '<div class="error_flash">Your account has been deactivated.  Please contact Customer Service at 888-247-9444 to reactivate your account</div>';
 			} else if (strlen($password) > 0) {

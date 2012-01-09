@@ -1,4 +1,7 @@
-<?php use lithium\net\http\Router; ?>
+<?php 
+use lithium\net\http\Router; 
+use lithium\storage\Session;
+?>
 <?php $request = $this->request(); ?>
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
@@ -11,9 +14,25 @@
 
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
 
-	<?php echo '<link rel="stylesheet" type="text/css" href="/css/base.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/base.css') . '" />'; ?>
-   <?php echo '<link rel="stylesheet" type="text/css" href="/css/960.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/960.css') . '" />'; ?>
-   <?php echo '<link rel="stylesheet" type="text/css" href="/css/jquery_ui_custom/jquery.ui.all.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/jquery_ui_custom/jquery.ui.all.css') . '" />'; ?>
+	<?php 
+		$baseCSSPath = "";
+		$jQueryAllPath = "";
+		$logoPath = "";
+		
+		//pick CSS for Mamasource vs Totsy based on session variable
+		if (Session::read("layout", array("name"=>"default"))=="mamapedia") {
+			$baseCSSPath = "/css/mamapedia/base.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/base.css");
+			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.mamapedia.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.mamapedia.css");	
+			$logoPath = "mamapedia/logo.png";	
+		} else {
+			$baseCSSPath = "/css/base.css?" . filemtime(LITHIUM_APP_PATH. "/webroot/css/base.css");
+			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.css");
+			$logoPath = "logo.png";	
+		}
+
+	 echo $this->html->style(Array( $baseCSSPath , "/css/960.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/960.css"), $jQueryAllPath));
+	 
+	 ?>
   
 	<script src="https://www.google.com/jsapi"></script>
 	<script> google.load("jquery", "1.6.1", {uncompressed:false});</script>
@@ -62,28 +81,31 @@
 <body class="app">
 <?php if(isset($branch)) { echo $branch; } ?>
 <div class="container_16 roundy glow">
-	<div class="grid_3 alpha" style="margin:5px 0px 0px 5px;">
-		<?php echo $this->html->link($this->html->image('logo.png', array('width'=>'120')), '/sales', array('escape'=> false)); ?>
+	<div class="grid_4 alpha" style="margin:5px 0px 0px 5px;">
+		<?php echo $this->html->link($this->html->image($logoPath , array('style'=>'width:auto')),'/sales', array('escape'=> false)); ?>
 	</div>
+	
+	<div class="grid_12">
 	<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
 
 		<div class="menu_main_global">
 		<?php if (!(empty($userInfo))): ?>
-		<ul class="nav main" id="navlist">
-			<li><a href="/sales" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0 || $_SERVER['REQUEST_URI'] == '/') {
-			echo 'class="active"';
-			} ?>>All Sales</a></li>
-			<li><a href="/sales/girls" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/girls') == 0) {
-			echo 'class="active"';
-			} ?>>Girls</a></li>
-			<li><a href="/sales/boys" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/boys') == 0)  {
-			echo 'class="active"';
-			} ?>>Boys</a></li>
-			<li><a href="/sales/momsdads" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/momsdads') == 0) {
-			echo 'class="active"';
-			} ?>>Moms &amp; Dads</a></li>
-		</ul>
+			<ul class="nav main" id="navlist">
+				<li><a href="/sales" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0 || $_SERVER['REQUEST_URI'] == '/') {
+				echo 'class="active"';
+				} ?>>All Sales</a></li>
+				<li><a href="/sales/girls" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/girls') == 0) {
+				echo 'class="active"';
+				} ?>>Girls</a></li>
+				<li><a href="/sales/boys" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/boys') == 0)  {
+				echo 'class="active"';
+				} ?>>Boys</a></li>
+				<li><a href="/sales/momsdads" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/momsdads') == 0) {
+				echo 'class="active"';
+				} ?>>Moms &amp; Dads</a></li>
+			</ul>
 		<?php endif ?>
+		</div>
 	</div>
 	<!-- end header nav -->
 

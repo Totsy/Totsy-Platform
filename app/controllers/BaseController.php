@@ -36,15 +36,14 @@ class BaseController extends \lithium\action\Controller {
 		    	    Session::write('layout', 'mamapedia', array('name' => 'default'));
 		    	    $img_path_prefix = "/img/mamapedia/";
 		    	    $this->set(compact('img_path_prefix'));
-		    	    $this->_render['layout'] = '/mamapedia/main';
 		    	break;
 		    	default:
 		    	    Session::write('layout', 'main', array('name' => 'default'));
 		    	    $img_path_prefix = "/img/";
-		    	    $this->_render['layout'] = 'main';
 		    	    $this->freeShippingEligible($userInfo);
 		    	break;
-			}	
+			}
+			$this->_render['layout'] = '/main';
 		}
 		$this->set(compact('img_path_prefix'));		
 	}
@@ -56,12 +55,13 @@ class BaseController extends \lithium\action\Controller {
 	protected function _init() {
 	
 		parent::_init();
-	     if(!Environment::is('production')){
+		
+	    if(!Environment::is('production')) {
             $branch = "<h4 id='global_site_msg'>Current branch: " . $this->currentBranch() ."</h4>";
             $this->set(compact('branch'));
         }
 
-        if(Environment::is('production')){
+        if(Environment::is('production')) {
             $version = "<!-- Current version: " . $this->currentVersion() . " -->";
             $this->set(compact('version'));
         }
@@ -81,7 +81,7 @@ class BaseController extends \lithium\action\Controller {
 		$fbconfig = FacebookProxy::config(); 
 
 		if ($this->fbsession) {
-			$fblogout = FacebookProxy::getLogoutUrl(array('next' => $logoutUrl));	
+			$fblogout = FacebookProxy::getLogoutUrl(array('next' => $logoutUrl));
 		} else {
 			$fblogout = "/logout";
 		}

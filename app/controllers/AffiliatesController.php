@@ -155,10 +155,10 @@ class AffiliatesController extends BaseController {
 		
 		//mamasource regsitation
 		switch($this->request->env("HTTP_HOST")) {
-		    case "mamapedia.totsy.com":
+		    case "mamasource.totsy.com":
 		    case "evan.totsy.com":
 		        $affiliate = "mamasource";
-		        break;
+		    	break;
 		    default:
 		        break;
 		}
